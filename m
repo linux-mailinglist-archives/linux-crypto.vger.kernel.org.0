@@ -2,56 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA66FDE5
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCEEFDE4
 	for <lists+linux-crypto@lfdr.de>; Tue, 30 Apr 2019 18:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbfD3Q3w (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1726028AbfD3Q3w (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Tue, 30 Apr 2019 12:29:52 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:55681 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726698AbfD3Q3w (ORCPT
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:43411 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726706AbfD3Q3w (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Tue, 30 Apr 2019 12:29:52 -0400
-Received: by mail-wm1-f66.google.com with SMTP id o25so4497037wmf.5
-        for <linux-crypto@vger.kernel.org>; Tue, 30 Apr 2019 09:29:50 -0700 (PDT)
+Received: by mail-wr1-f66.google.com with SMTP id a12so21734804wrq.10
+        for <linux-crypto@vger.kernel.org>; Tue, 30 Apr 2019 09:29:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=itoYXLY0qE+ThxcYSqGsicVXex5g/IXdD9HmYKoxPew=;
-        b=FGEyivk0RaQ9D4pFAwIzdCny3eiHOixy20MzQYhQfkkz3blNodYBYZHMrUuy+/Ohhs
-         MEgpkRXZMkKVMiEXPr/Z5N/LChzW4LlunO41LN+ZhCr5Ob+9RgD1IfeG0ODhUeeHuvds
-         qK6dHyeiA4DF8oxl0nBThqB8E/1/IIUjuora4XydKUcgQCbDiX6Y1naOUNCZ6r5Ame+F
-         V924j1bKt5IKubL8oG9u37wb61Dqjmk8Rqd+Gfl6A8LaTrorgb9+xVjHduFIhUMowqo4
-         izZ0KyJVX4AhwbtZ88myyKbyi2PZEljTJE3M2aGW7IGkiZoSP33XCVTbIti7eoNbF3us
-         CFYQ==
+        bh=OZdMMD/d049PgXvrPSeOT8GlS+Kf7F/BVLM3iDmEjB8=;
+        b=x32olgjIsDKXQnqTef0bHOIbkN+qEu+CC1h3ZDHczaZ96TaV8ivC5H1+nU6friSHZR
+         wvWou7IHHUYvYPgeSYtMofzMQQeH2lxl/8AJ3iA94pZrovItQazLuZ82zMyR7JqCjOc/
+         ulrgiyFNbu7uMkBSwNGBG7fDhaCIhoQ5gLtIzbb45epmrY6iDxAjYQJnXfMmcALo+HmV
+         3yozRVBYQHAaI9LbtC2/ctgCLyKsAUzUJPm+psF4gR/4rIYBalStPMNzQr1h1aYlbnP5
+         16enTDW5eA/jlVqVTTNKetDNNrYfoWYOssu7Hciu0sJd7QWFDFdoF9dYbHpCLsGKnYYq
+         1WSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=itoYXLY0qE+ThxcYSqGsicVXex5g/IXdD9HmYKoxPew=;
-        b=ctbSamKQYEHdk7Ktusl3pm/TVVKTQrrdGVihSlMdXknTTfF1SQ9FgMonDxQHr6SnAu
-         /sW9oFFul9ns7VS4xIKCyzD5HiFj8qq3X+eKjXlzTQRxRspyyOn6QtkrfVjumBxJxvJ1
-         WWoYMNtqNnuzFMGrz5t2mOR3sQoCFnm2awkClydwC71sfT8SlR9Qu9nZfyep/jcEk0Xv
-         LC//G8yJ22kJ172di6FKXPERjcFSlrgSQgS/4j/QX3frLquYV8GmsIO+e/ZlGiHnYUpP
-         DngXGurGl43znjxIE5EftfPHfisd9Qcc/4krIM2B0farmIv5+0/xRZ23DqFFQf4fMBmH
-         +dBg==
-X-Gm-Message-State: APjAAAUUhosGv0h16wTfxF+8qq86wUiccNzepG2yK7l8gb67BTX+QU+z
-        wHabqeaqYjtITVrhxJQHtKZe7LbE3RFJYQ==
-X-Google-Smtp-Source: APXvYqyNVC0pizV1lUNjkQ9pjQV0ZPJvdBq/9bUeOSrV1j/3DV8sCrArM8VRKUZPizpMU8Qeq/CpnA==
-X-Received: by 2002:a1c:b782:: with SMTP id h124mr3948711wmf.5.1556641789118;
-        Tue, 30 Apr 2019 09:29:49 -0700 (PDT)
+        bh=OZdMMD/d049PgXvrPSeOT8GlS+Kf7F/BVLM3iDmEjB8=;
+        b=dTN1hhfK1GcL4l8a3YO5GtnOZZhGY+kEF34NHqHWa1jCPO+EJGJXoIChnYMvTzWt2z
+         FCPn3+54zkQrR1WHhi6Fg5pxZhZCC3PHxVNv0DJEaemPj61+0IogGHCANpu9EMllILpW
+         cXe8Zhdg5Bmx86Ap0GkhZhhxHmpgysnPr48fKXK4m35dsakVBXUREX/H3S1QF7Rb+a1s
+         OyLJ3HOTBO2hzopQlrIDG0MF8fqr6nmjaGLyEhkfyztftCbsmlWEaJp8bbw/oHEDkFa0
+         sRphWcAjO0/sEliw5P0F1YAXuFFJPjSzTf7mTXSYr1A8ul2h/DGDmYiNtpFzSKUlbdwL
+         x/Mw==
+X-Gm-Message-State: APjAAAXKDztCOK5L8E4tciKrxkt7UfQmS6KTJ3ofIzh3W4zzHehbP6dV
+        MHaUoJG2iv+ecnKhOZWFUr85jIXqw45kdw==
+X-Google-Smtp-Source: APXvYqw3NRFWUcmKzt4tqocuhkSBoEawVFKii/IxnIPTo2/dCKgJdIaHgwPYMyDFehYGMUXKEN/4uw==
+X-Received: by 2002:adf:e486:: with SMTP id i6mr7676077wrm.42.1556641790585;
+        Tue, 30 Apr 2019 09:29:50 -0700 (PDT)
 Received: from sudo.home ([2a01:cb1d:112:6f00:1ca3:6afc:30c:1068])
-        by smtp.gmail.com with ESMTPSA id t67sm5848890wmg.0.2019.04.30.09.29.47
+        by smtp.gmail.com with ESMTPSA id t67sm5848890wmg.0.2019.04.30.09.29.49
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 30 Apr 2019 09:29:48 -0700 (PDT)
+        Tue, 30 Apr 2019 09:29:49 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linus.walleij@linaro.org,
-        joakim.bech@linaro.org, Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [PATCH 4/5] crypto: atmel-i2c: add support for SHA204A random number generator
-Date:   Tue, 30 Apr 2019 18:29:08 +0200
-Message-Id: <20190430162910.16771-5-ard.biesheuvel@linaro.org>
+        joakim.bech@linaro.org, Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH 5/5] dt-bindings: add Atmel SHA204A I2C crypto processor
+Date:   Tue, 30 Apr 2019 18:29:09 +0200
+Message-Id: <20190430162910.16771-6-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190430162910.16771-1-ard.biesheuvel@linaro.org>
 References: <20190430162910.16771-1-ard.biesheuvel@linaro.org>
@@ -62,321 +64,36 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The Linaro/96boards Secure96 mezzanine contains (among other things)
-an Atmel SHA204A symmetric crypto processor. This chip implements a
-number of different functionalities, but one that is highly useful
-for many different 96boards platforms is the random number generator.
+Add a compatible string for the Atmel SHA204A I2C crypto processor.
 
-So let's implement a driver for the SHA204A, and for the time being,
-implement support for the random number generator only.
-
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- drivers/crypto/Kconfig         |  14 ++
- drivers/crypto/Makefile        |   1 +
- drivers/crypto/atmel-i2c.c     |  15 ++
- drivers/crypto/atmel-i2c.h     |  10 ++
- drivers/crypto/atmel-sha204a.c | 171 ++++++++++++++++++++
- 5 files changed, 211 insertions(+)
+ Documentation/devicetree/bindings/crypto/atmel-crypto.txt | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 11b0de15a99d..fe143d6c6050 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -545,6 +545,20 @@ config CRYPTO_DEV_ATMEL_ECC
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called atmel-ecc.
- 
-+config CRYPTO_DEV_ATMEL_SHA204A
-+	tristate "Support for Microchip / Atmel SHA accelerator and RNG"
-+	depends on I2C
-+	select CRYPTO_DEV_ATMEL_I2C
-+	select HW_RANDOM
-+	help
-+	  Microhip / Atmel SHA accelerator and RNG.
-+	  Select this if you want to use the Microchip / Atmel SHA204A
-+	  module as a random number generator. (Other functions of the
-+	  chip are currently not exposed by this driver)
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called atmel-sha204a.
-+
- config CRYPTO_DEV_CCP
- 	bool "Support for AMD Secure Processor"
- 	depends on ((X86 && PCI) || (ARM64 && (OF_ADDRESS || ACPI))) && HAS_IOMEM
-diff --git a/drivers/crypto/Makefile b/drivers/crypto/Makefile
-index 85be01afcc41..5d054ffa8814 100644
---- a/drivers/crypto/Makefile
-+++ b/drivers/crypto/Makefile
-@@ -4,6 +4,7 @@ obj-$(CONFIG_CRYPTO_DEV_ATMEL_SHA) += atmel-sha.o
- obj-$(CONFIG_CRYPTO_DEV_ATMEL_TDES) += atmel-tdes.o
- obj-$(CONFIG_CRYPTO_DEV_ATMEL_I2C) += atmel-i2c.o
- obj-$(CONFIG_CRYPTO_DEV_ATMEL_ECC) += atmel-ecc.o
-+obj-$(CONFIG_CRYPTO_DEV_ATMEL_SHA204A) += atmel-sha204a.o
- obj-$(CONFIG_CRYPTO_DEV_CAVIUM_ZIP) += cavium/
- obj-$(CONFIG_CRYPTO_DEV_CCP) += ccp/
- obj-$(CONFIG_CRYPTO_DEV_CCREE) += ccree/
-diff --git a/drivers/crypto/atmel-i2c.c b/drivers/crypto/atmel-i2c.c
-index 5e099368d120..be49ab7f4338 100644
---- a/drivers/crypto/atmel-i2c.c
-+++ b/drivers/crypto/atmel-i2c.c
-@@ -58,6 +58,21 @@ void atmel_i2c_init_read_cmd(struct atmel_i2c_cmd *cmd)
- }
- EXPORT_SYMBOL(atmel_i2c_init_read_cmd);
- 
-+void atmel_i2c_init_random_cmd(struct atmel_i2c_cmd *cmd)
-+{
-+	cmd->word_addr = COMMAND;
-+	cmd->opcode = OPCODE_RANDOM;
-+	cmd->param1 = 0;
-+	cmd->param2 = 0;
-+	cmd->count = RANDOM_COUNT;
-+
-+	atmel_i2c_checksum(cmd);
-+
-+	cmd->msecs = MAX_EXEC_TIME_RANDOM;
-+	cmd->rxsize = RANDOM_RSP_SIZE;
-+}
-+EXPORT_SYMBOL(atmel_i2c_init_random_cmd);
-+
- void atmel_i2c_init_genkey_cmd(struct atmel_i2c_cmd *cmd, u16 keyid)
- {
- 	cmd->word_addr = COMMAND;
-diff --git a/drivers/crypto/atmel-i2c.h b/drivers/crypto/atmel-i2c.h
-index 82de5166acfa..c6bd43b78f33 100644
---- a/drivers/crypto/atmel-i2c.h
-+++ b/drivers/crypto/atmel-i2c.h
-@@ -7,6 +7,8 @@
- #ifndef __ATMEL_I2C_H__
- #define __ATMEL_I2C_H__
- 
-+#include <linux/hw_random.h>
-+
- #define ATMEL_ECC_PRIORITY		300
- 
- #define COMMAND				0x03 /* packet function */
-@@ -28,6 +30,7 @@
- #define GENKEY_RSP_SIZE			(ATMEL_ECC_PUBKEY_SIZE + \
- 					 CMD_OVERHEAD_SIZE)
- #define READ_RSP_SIZE			(4 + CMD_OVERHEAD_SIZE)
-+#define RANDOM_RSP_SIZE			(32 + CMD_OVERHEAD_SIZE)
- #define MAX_RSP_SIZE			GENKEY_RSP_SIZE
- 
- /**
-@@ -96,15 +99,20 @@ static const struct {
- #define MAX_EXEC_TIME_ECDH		58
- #define MAX_EXEC_TIME_GENKEY		115
- #define MAX_EXEC_TIME_READ		1
-+#define MAX_EXEC_TIME_RANDOM		50
- 
- /* Command opcode */
- #define OPCODE_ECDH			0x43
- #define OPCODE_GENKEY			0x40
- #define OPCODE_READ			0x02
-+#define OPCODE_RANDOM			0x1b
- 
- /* Definitions for the READ Command */
- #define READ_COUNT			7
- 
-+/* Definitions for the RANDOM Command */
-+#define RANDOM_COUNT			7
-+
- /* Definitions for the GenKey Command */
- #define GENKEY_COUNT			7
- #define GENKEY_MODE_PRIVATE		0x04
-@@ -142,6 +150,7 @@ struct atmel_i2c_client_priv {
- 	u8 wake_token[WAKE_TOKEN_MAX_SIZE];
- 	size_t wake_token_sz;
- 	atomic_t tfm_count ____cacheline_aligned;
-+	struct hwrng hwrng;
+diff --git a/Documentation/devicetree/bindings/crypto/atmel-crypto.txt b/Documentation/devicetree/bindings/crypto/atmel-crypto.txt
+index 6b458bb2440d..a93d4b024d0e 100644
+--- a/Documentation/devicetree/bindings/crypto/atmel-crypto.txt
++++ b/Documentation/devicetree/bindings/crypto/atmel-crypto.txt
+@@ -79,3 +79,16 @@ atecc508a@c0 {
+ 	compatible = "atmel,atecc508a";
+ 	reg = <0xC0>;
  };
- 
- /**
-@@ -179,6 +188,7 @@ void atmel_i2c_enqueue(struct atmel_i2c_work_data *work_data,
- int atmel_i2c_send_receive(struct i2c_client *client, struct atmel_i2c_cmd *cmd);
- 
- void atmel_i2c_init_read_cmd(struct atmel_i2c_cmd *cmd);
-+void atmel_i2c_init_random_cmd(struct atmel_i2c_cmd *cmd);
- void atmel_i2c_init_genkey_cmd(struct atmel_i2c_cmd *cmd, u16 keyid);
- int atmel_i2c_init_ecdh_cmd(struct atmel_i2c_cmd *cmd,
- 			    struct scatterlist *pubkey);
-diff --git a/drivers/crypto/atmel-sha204a.c b/drivers/crypto/atmel-sha204a.c
-new file mode 100644
-index 000000000000..ea0d2068ea4f
---- /dev/null
-+++ b/drivers/crypto/atmel-sha204a.c
-@@ -0,0 +1,171 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Microchip / Atmel SHA204A (I2C) driver.
-+ *
-+ * Copyright (c) 2019 Linaro, Ltd. <ard.biesheuvel@linaro.org>
-+ */
 +
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/errno.h>
-+#include <linux/i2c.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/scatterlist.h>
-+#include <linux/slab.h>
-+#include <linux/workqueue.h>
-+#include "atmel-i2c.h"
++* Symmetric Cryptography (I2C)
 +
-+static void atmel_sha204a_rng_done(struct atmel_i2c_work_data *work_data,
-+				   void *areq, int status)
-+{
-+	struct atmel_i2c_client_priv *i2c_priv = work_data->ctx;
-+	struct hwrng *rng = areq;
++Required properties:
++- compatible : must be "atmel,atsha204a".
++- reg: I2C bus address of the device.
++- clock-frequency: must be present in the i2c controller node.
 +
-+	if (status)
-+		dev_warn_ratelimited(&i2c_priv->client->dev,
-+				     "i2c transaction failed (%d)\n",
-+				     status);
-+
-+	rng->priv = (unsigned long)work_data;
-+	atomic_dec(&i2c_priv->tfm_count);
-+}
-+
-+static int atmel_sha204a_rng_read_nonblocking(struct hwrng *rng, void *data,
-+					      size_t max)
-+{
-+	struct atmel_i2c_client_priv *i2c_priv;
-+	struct atmel_i2c_work_data *work_data;
-+
-+	i2c_priv = container_of(rng, struct atmel_i2c_client_priv, hwrng);
-+
-+	/* keep maximum 1 asynchronous read in flight at any time */
-+	if (!atomic_add_unless(&i2c_priv->tfm_count, 1, 1))
-+		return 0;
-+
-+	if (rng->priv) {
-+		work_data = (struct atmel_i2c_work_data *)rng->priv;
-+		max = min(sizeof(work_data->cmd.data), max);
-+		memcpy(data, &work_data->cmd.data, max);
-+		rng->priv = 0;
-+	} else {
-+		work_data = kmalloc(sizeof(*work_data), GFP_ATOMIC);
-+		if (!work_data)
-+			return -ENOMEM;
-+
-+		work_data->ctx = i2c_priv;
-+		work_data->client = i2c_priv->client;
-+
-+		max = 0;
-+	}
-+
-+	atmel_i2c_init_random_cmd(&work_data->cmd);
-+	atmel_i2c_enqueue(work_data, atmel_sha204a_rng_done, rng);
-+
-+	return max;
-+}
-+
-+static int atmel_sha204a_rng_read(struct hwrng *rng, void *data, size_t max,
-+				  bool wait)
-+{
-+	struct atmel_i2c_client_priv *i2c_priv;
-+	struct atmel_i2c_cmd cmd;
-+	int ret;
-+
-+	if (!wait)
-+		return atmel_sha204a_rng_read_nonblocking(rng, data, max);
-+
-+	i2c_priv = container_of(rng, struct atmel_i2c_client_priv, hwrng);
-+
-+	atmel_i2c_init_random_cmd(&cmd);
-+
-+	ret = atmel_i2c_send_receive(i2c_priv->client, &cmd);
-+	if (ret)
-+		return ret;
-+
-+	max = min(sizeof(cmd.data), max);
-+	memcpy(data, cmd.data, max);
-+
-+	return max;
-+}
-+
-+static int atmel_sha204a_probe(struct i2c_client *client,
-+			       const struct i2c_device_id *id)
-+{
-+	struct atmel_i2c_client_priv *i2c_priv;
-+	int ret;
-+
-+	ret = atmel_i2c_probe(client, id);
-+	if (ret)
-+		return ret;
-+
-+	i2c_priv = i2c_get_clientdata(client);
-+
-+	memset(&i2c_priv->hwrng, 0, sizeof(i2c_priv->hwrng));
-+
-+	i2c_priv->hwrng.name = dev_name(&client->dev);
-+	i2c_priv->hwrng.read = atmel_sha204a_rng_read;
-+	i2c_priv->hwrng.quality = 1024;
-+
-+	ret = hwrng_register(&i2c_priv->hwrng);
-+	if (ret)
-+		dev_warn(&client->dev, "failed to register RNG (%d)\n", ret);
-+
-+	return ret;
-+}
-+
-+static int atmel_sha204a_remove(struct i2c_client *client)
-+{
-+	struct atmel_i2c_client_priv *i2c_priv = i2c_get_clientdata(client);
-+
-+	if (atomic_read(&i2c_priv->tfm_count)) {
-+		dev_err(&client->dev, "Device is busy\n");
-+		return -EBUSY;
-+	}
-+
-+	if (i2c_priv->hwrng.priv)
-+		kfree((void *)i2c_priv->hwrng.priv);
-+	hwrng_unregister(&i2c_priv->hwrng);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id atmel_sha204a_dt_ids[] = {
-+	{ .compatible = "atmel,atsha204a", },
-+	{ /* sentinel */ }
++Example:
++atsha204a@c0 {
++	compatible = "atmel,atsha204a";
++	reg = <0xC0>;
 +};
-+MODULE_DEVICE_TABLE(of, atmel_sha204a_dt_ids);
-+
-+static const struct i2c_device_id atmel_sha204a_id[] = {
-+	{ "atsha204a", 0 },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(i2c, atmel_sha204a_id);
-+
-+static struct i2c_driver atmel_sha204a_driver = {
-+	.probe			= atmel_sha204a_probe,
-+	.remove			= atmel_sha204a_remove,
-+	.id_table		= atmel_sha204a_id,
-+
-+	.driver.name		= "atmel-sha204a",
-+	.driver.of_match_table	= of_match_ptr(atmel_sha204a_dt_ids),
-+};
-+
-+static int __init atmel_sha204a_init(void)
-+{
-+	return i2c_add_driver(&atmel_sha204a_driver);
-+}
-+
-+static void __exit atmel_sha204a_exit(void)
-+{
-+	flush_scheduled_work();
-+	i2c_del_driver(&atmel_sha204a_driver);
-+}
-+
-+module_init(atmel_sha204a_init);
-+module_exit(atmel_sha204a_exit);
-+
-+MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
-+MODULE_LICENSE("GPL v2");
 -- 
 2.20.1
 
