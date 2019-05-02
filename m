@@ -2,93 +2,240 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F011189B
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 May 2019 14:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E001193A
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 May 2019 14:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbfEBMAR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 2 May 2019 08:00:17 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:34815 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbfEBMAQ (ORCPT
+        id S1726424AbfEBMlA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 2 May 2019 08:41:00 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.20]:15577 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726405AbfEBMlA (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 2 May 2019 08:00:16 -0400
-Received: by mail-wr1-f65.google.com with SMTP id e9so2992495wrc.1;
-        Thu, 02 May 2019 05:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SM8TsU3OFAbO4NmdaDg8HRLgXAeSxN+PITGV00fL/z8=;
-        b=RRe6eGaE2NobACjwADYIVifI7MLCrf179q/tvPwaPyETmkPdktv2tLUKfAdFhG8wju
-         ZdEBVQHzBK5n5BoDfz9jMZc7+n/yW3+B8crJINVwUZZpSF8jRcEL+lSgnQEOM3p3Rxvt
-         zLiy+PE/wLaLj7v6Kmpv0kJg3SgrHmv698Wz91H1+hlJQ2Tn8zSEm42/dI2RyxUVVWyp
-         atSsAbd+TFTQAA+kolYOgm1IbswbtxfzMKTTl2jb40Pc19soZQmG9Lq9dCTGy+qZCE1q
-         JIjW1AMtLteXKFpZ7K+oxbmSf0svRvFvDnGKc7BzA4l7Qv1WFKpUXvR8veMKd5kgf4p0
-         +yVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SM8TsU3OFAbO4NmdaDg8HRLgXAeSxN+PITGV00fL/z8=;
-        b=KqaAmlimuCd5QCLVrIr9fcwA0ZWVGndFB6T9/gjlGiaJQ6YqeImgLzZDsXPXCd3S5N
-         AGmXAdo29jh+/wW9yCMEBDf+mfNa7Dh5WHfmDuDuAPF7OYDCJokgKHQ4mTs5gxYwTrtv
-         OCfHD6XbVKksrO9HLOOSMOyLHt/kI+ZmVVL3E4O/4oQyh/W/xUVJ0c9upQV9pd8qRImD
-         UwFhvDb8OLOM9b1fDdiamyT3R8+GvM30u4ek4CyWOTYdTFqcuw1KMcxG+uNJf2+08r6i
-         LvzbyfsHf6myJfqBLusTKv4zG7BqnpevPLPpiOU9cqz9aRnHMegHalZkov2wLGYwT5Ko
-         LUnQ==
-X-Gm-Message-State: APjAAAXbkw9+XiGRr9pJMbPSsMdGDCgDp7436iF+4YuqFgzYrMSofxeL
-        eanFUe7jN9hNLTr0Dr76zCM=
-X-Google-Smtp-Source: APXvYqzn+hnz0noXV+/bfazc6gltFsCxIEfAJCDaQjenHHOvuLVabnZScGwgi7BuP3+NSYMljUc0fw==
-X-Received: by 2002:a5d:40cd:: with SMTP id b13mr2579466wrq.103.1556798414862;
-        Thu, 02 May 2019 05:00:14 -0700 (PDT)
-Received: from Red ([2a01:cb1d:147:7200:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id t126sm752981wma.1.2019.05.02.05.00.13
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 May 2019 05:00:14 -0700 (PDT)
-Date:   Thu, 2 May 2019 14:00:12 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Kalyani Akula <kalyani.akula@xilinx.com>
-Cc:     herbert@gondor.apana.org.au, kstewart@linuxfoundation.org,
-        gregkh@linuxfoundation.org, tglx@linutronix.de,
-        pombredanne@nexb.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        saratcha@xilinx.com, Kalyani Akula <kalyania@xilinx.com>
-Subject: Re: [RFC PATCH V3 0/4] Add Xilinx's ZynqMP SHA3 driver support
-Message-ID: <20190502120012.GA19008@Red>
-References: <1556793282-17346-1-git-send-email-kalyani.akula@xilinx.com>
+        Thu, 2 May 2019 08:41:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1556800854;
+        s=strato-dkim-0002; d=chronox.de;
+        h=Message-ID:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+        Subject:Sender;
+        bh=V+hejVqvGsikJWvISdncRwxiwJwKQHvvLXDBun/Ik20=;
+        b=rqB7Ex2evY40qSjstOwsQY5gbharGelKiC3/WPuU32EkGtuagX7IpHRlZRFro4zwd6
+        OOHwaEzn/elmfeRPBQeTEWNNaJR+LKVQg9kGKWV8s+TmxUTOBC2DdeLdJYotkJUKZgq2
+        Ms4hYHDeH1L+MdCapYpSWKASg/jGb8xmN+UIdMEGypf/HoxJLdV39kkTaugIM201DlxC
+        ASH1Ydj7a6WTz5uhGxOoMnTI4OKFSMert2+2Z8Z6YtLjsbW2UrVO16OLIbuBO5yJRLUi
+        IjXYMFCzw1ZxlKvtiCA8iNwDpak0pboClc1/zp2NCTEwl46E8NzFhKc7OAjWbhtOQBG0
+        1d8Q==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaJfSd/cc="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+        by smtp.strato.de (RZmta 44.18 DYNA|AUTH)
+        with ESMTPSA id R0373fv42Ceqifh
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve secp521r1 with 521 ECDH bits, eq. 15360 bits RSA))
+        (Client did not present a certificate);
+        Thu, 2 May 2019 14:40:52 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org
+Subject: [PATCH] crypto: DRBG - add FIPS 140-2 CTRNG for noise source
+Date:   Thu, 02 May 2019 14:40:51 +0200
+Message-ID: <1852500.fyBc0DU23F@positron.chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1556793282-17346-1-git-send-email-kalyani.akula@xilinx.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, May 02, 2019 at 04:04:38PM +0530, Kalyani Akula wrote:
-> This patch set adds support for
-> - dt-binding docs for Xilinx ZynqMP SHA3 driver
-> - Adds communication layer support for sha_hash in zynqmp.c
-> - Adds Xilinx ZynqMP driver for SHA3 Algorithm
-> - Adds device tree node for ZynqMP SHA3 driver
-> 
-> V3 Changes :
-> - Removed zynqmp_sha_import and export APIs.The reason as follows
-> The user space code does an accept on an already accepted FD
-> when we create AF_ALG socket and call accept on it,
-> it calls af_alg_accept and not hash_accept.
-> import and export APIs are called from hash_accept.
-> The flow is as below
-> accept--> af_alg_accept-->hash_accept_parent-->hash_accept_parent_nokey
-> for hash salg_type.
-> - Resolved comments from 
->         https://patchwork.kernel.org/patch/10753719/
-> 
+FIPS 140-2 section 4.9.2 requires a continuous self test of the noise
+source. Up to kernel 4.8 drivers/char/random.c provided this continuous
+self test. Afterwards it was moved to a location that is inconsistent
+with the FIPS 140-2 requirements.
+
+Thus, the FIPS 140-2 CTRNG is added to the DRBG when it obtains the
+seed. This patch resurrects the function drbg_fips_continous_test that
+existed some time ago and applies it to the noise sources.
+
+The Jitter RNG implements its own FIPS 140-2 self test and thus does not
+need to be subjected to the test in the DRBG.
+
+The patch contains a tiny fix to ensure proper zeroization in case of an
+error during the Jitter RNG data gathering.
+
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+---
+ crypto/drbg.c         | 83 +++++++++++++++++++++++++++++++++++++++++--
+ include/crypto/drbg.h |  4 +++
+ 2 files changed, 84 insertions(+), 3 deletions(-)
+
+diff --git a/crypto/drbg.c b/crypto/drbg.c
+index 2a5b16bb000c..6a2c3f7fbe1d 100644
+--- a/crypto/drbg.c
++++ b/crypto/drbg.c
+@@ -219,6 +219,57 @@ static inline unsigned short drbg_sec_strength(drbg_flag_t flags)
+ 	}
+ }
+ 
++/*
++ * FIPS 140-2 continuous self test for the noise source
++ * The test is performed on the noise source input data. Thus, the function
++ * implicitly knows the size of the buffer to be equal to the security
++ * strength.
++ *
++ * Note, this function disregards the nonce trailing the entropy data during
++ * initial seeding.
++ *
++ * drbg->drbg_mutex must have been taken.
++ *
++ * @drbg DRBG handle
++ * @entropy buffer of seed data to be checked
++ *
++ * return:
++ *	0 on success
++ *	-EAGAIN on when the CTRNG is not yet primed
++ *	< 0 on error
++ */
++static int drbg_fips_continuous_test(struct drbg_state *drbg,
++				     const unsigned char *entropy)
++{
++#ifdef CONFIG_CRYPTO_FIPS
++	unsigned short entropylen = drbg_sec_strength(drbg->core->flags);
++	int ret = 0;
++
++	/* skip test if we test the overall system */
++	if (list_empty(&drbg->test_data.list))
++		return true;
++	/* only perform test in FIPS mode */
++	if (!fips_enabled)
++		return true;
++
++	if (!drbg->fips_primed) {
++		/* Priming of FIPS test */
++		memcpy(drbg->prev, entropy, entropylen);
++		drbg->fips_primed = true;
++		/* return false due to priming, i.e. another round is needed */
++		return -EAGAIN;
++	}
++	ret = memcmp(drbg->prev, entropy, entropylen);
++	if (!ret)
++		panic("DRBG continuous self test failed\n");
++	memcpy(drbg->prev, entropy, entropylen);
++	/* the test shall pass when the two compared values are not equal */
++	return (ret != 0) ? 0 : -EFAULT;
++#else
++	return true;
++#endif /* CONFIG_CRYPTO_FIPS */
++}
++
+ /*
+  * Convert an integer into a byte representation of this integer.
+  * The byte representation is big-endian
+@@ -1006,16 +1057,23 @@ static void drbg_async_seed(struct work_struct *work)
+ 					       seed_work);
+ 	unsigned int entropylen = drbg_sec_strength(drbg->core->flags);
+ 	unsigned char entropy[32];
++	int ret;
+ 
+ 	BUG_ON(!entropylen);
+ 	BUG_ON(entropylen > sizeof(entropy));
+-	get_random_bytes(entropy, entropylen);
+ 
+ 	drbg_string_fill(&data, entropy, entropylen);
+ 	list_add_tail(&data.list, &seedlist);
+ 
+ 	mutex_lock(&drbg->drbg_mutex);
+ 
++	do {
++		get_random_bytes(entropy, entropylen);
++		ret = drbg_fips_continuous_test(drbg, entropy);
++		if (ret && ret != -EAGAIN)
++			goto unlock;
++	} while (ret);
++
+ 	/* If nonblocking pool is initialized, deactivate Jitter RNG */
+ 	crypto_free_rng(drbg->jent);
+ 	drbg->jent = NULL;
+@@ -1030,6 +1088,7 @@ static void drbg_async_seed(struct work_struct *work)
+ 	if (drbg->seeded)
+ 		drbg->reseed_threshold = drbg_max_requests(drbg);
+ 
++unlock:
+ 	mutex_unlock(&drbg->drbg_mutex);
+ 
+ 	memzero_explicit(entropy, entropylen);
+@@ -1081,7 +1140,12 @@ static int drbg_seed(struct drbg_state *drbg, struct drbg_string *pers,
+ 		BUG_ON((entropylen * 2) > sizeof(entropy));
+ 
+ 		/* Get seed from in-kernel /dev/urandom */
+-		get_random_bytes(entropy, entropylen);
++		do {
++			get_random_bytes(entropy, entropylen);
++			ret = drbg_fips_continuous_test(drbg, entropy);
++			if (ret && ret != -EAGAIN)
++				goto out;
++		} while (ret);
+ 
+ 		if (!drbg->jent) {
+ 			drbg_string_fill(&data1, entropy, entropylen);
+@@ -1094,7 +1158,7 @@ static int drbg_seed(struct drbg_state *drbg, struct drbg_string *pers,
+ 						   entropylen);
+ 			if (ret) {
+ 				pr_devel("DRBG: jent failed with %d\n", ret);
+-				return ret;
++				goto out;
+ 			}
+ 
+ 			drbg_string_fill(&data1, entropy, entropylen * 2);
+@@ -1121,6 +1185,7 @@ static int drbg_seed(struct drbg_state *drbg, struct drbg_string *pers,
+ 
+ 	ret = __drbg_seed(drbg, &seedlist, reseed);
+ 
++out:
+ 	memzero_explicit(entropy, entropylen * 2);
+ 
+ 	return ret;
+@@ -1142,6 +1207,11 @@ static inline void drbg_dealloc_state(struct drbg_state *drbg)
+ 	drbg->reseed_ctr = 0;
+ 	drbg->d_ops = NULL;
+ 	drbg->core = NULL;
++#ifdef CONFIG_CRYPTO_FIPS
++	kzfree(drbg->prev);
++	drbg->prev = NULL;
++	drbg->fips_primed = false;
++#endif
+ }
+ 
+ /*
+@@ -1211,6 +1281,13 @@ static inline int drbg_alloc_state(struct drbg_state *drbg)
+ 		drbg->scratchpad = PTR_ALIGN(drbg->scratchpadbuf, ret + 1);
+ 	}
+ 
++#ifdef CONFIG_CRYPTO_FIPS
++	drbg->prev = kzalloc(drbg_sec_strength(drbg->core->flags), GFP_KERNEL);
++	if (!drbg->prev)
++		goto fini;
++	drbg->fips_primed = false;
++#endif
++
+ 	return 0;
+ 
+ fini:
+diff --git a/include/crypto/drbg.h b/include/crypto/drbg.h
+index 3fb581bf3b87..7603f2d0e326 100644
+--- a/include/crypto/drbg.h
++++ b/include/crypto/drbg.h
+@@ -129,6 +129,10 @@ struct drbg_state {
+ 
+ 	bool seeded;		/* DRBG fully seeded? */
+ 	bool pr;		/* Prediction resistance enabled? */
++#ifdef CONFIG_CRYPTO_FIPS
++	bool fips_primed;	/* Continuous test primed? */
++	unsigned char *prev;	/* FIPS 140-2 continuous test value */
++#endif
+ 	struct work_struct seed_work;	/* asynchronous seeding support */
+ 	struct crypto_rng *jent;
+ 	const struct drbg_state_ops *d_ops;
+-- 
+2.21.0
 
 
-Your driver still doesnt handle the case where two hash are done in parallel.
 
-Furthermore, you miss the export/import functions.
 
-Regards
