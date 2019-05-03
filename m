@@ -2,24 +2,24 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB98B12FF1
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 May 2019 16:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC96212FF4
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 May 2019 16:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbfECORy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 3 May 2019 10:17:54 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:56494 "EHLO inva020.nxp.com"
+        id S1728104AbfECOR7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 3 May 2019 10:17:59 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:56564 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728079AbfECORx (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 3 May 2019 10:17:53 -0400
+        id S1728102AbfECOR4 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 3 May 2019 10:17:56 -0400
 Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 26EBB1A03C1;
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A4B181A0525;
         Fri,  3 May 2019 16:17:50 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 18F191A03AC;
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 95EAB1A03C9;
         Fri,  3 May 2019 16:17:50 +0200 (CEST)
 Received: from fsr-ub1864-014.ea.freescale.net (fsr-ub1864-014.ea.freescale.net [10.171.95.219])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 9FC04205F4;
-        Fri,  3 May 2019 16:17:49 +0200 (CEST)
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 286B0205F4;
+        Fri,  3 May 2019 16:17:50 +0200 (CEST)
 From:   =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -30,9 +30,9 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Iuliana Prodan <iuliana.prodan@nxp.com>,
         Marcin Niestroj <m.niestroj@grinn-global.com>,
         linux-crypto@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCH v2 2/7] crypto: caam - fix S/G table passing page boundary
-Date:   Fri,  3 May 2019 17:17:38 +0300
-Message-Id: <20190503141743.27129-3-horia.geanta@nxp.com>
+Subject: [PATCH v2 3/7] crypto: caam - convert top level drivers to libraries
+Date:   Fri,  3 May 2019 17:17:39 +0300
+Message-Id: <20190503141743.27129-4-horia.geanta@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190503141743.27129-1-horia.geanta@nxp.com>
 References: <20190503141743.27129-1-horia.geanta@nxp.com>
@@ -45,455 +45,893 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-According to CAAM RM:
--crypto engine reads 4 S/G entries (64 bytes) at a time,
-even if the S/G table has fewer entries
--it's the responsibility of the user / programmer to make sure
-this HW behaviour has no side effect
+Currently we allow top level code, i.e. that which sits between the
+low level (HW-specific) drivers and crypto API, to be built as several
+drivers: caamalg, caamhash, caam_pkc, caamrng, caamalg_qi.
 
-The drivers do not take care of this currently, leading to IOMMU faults
-when the S/G table ends close to a page boundary - since only one page
-is DMA mapped, while CAAM's DMA engine accesses two pages.
+There is no advantage in this, more it interferes with adding support
+for deferred probing (there are no corresponding devices and thus
+no bus).
 
-Fix this by rounding up the number of allocated S/G table entries
-to a multiple of 4.
-Note that in case of two *contiguous* S/G tables, only the last table
-might needs extra entries.
+Convert these drivers and call init() / exit() manually at the right
+time.
+Move algorithms initialization at JR probe / remove time:
+-the first probed JR registers the crypto algs
+-the last removed JR unregisters the crypto algs
+
+Note: caam_qi_init() is called before JR platform devices creation
+(of_populate_bus()), such that QI interface is initialized when
+the caam/qi algorithms are registered in the JR driver (by calling
+caam_qi_algapi_init().
+
+While here, fix the Kconfig entries under CRYPTO_DEV_FSL_CAAM_JR
+to be aligned.
 
 Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
 ---
- drivers/crypto/caam/caamalg.c     | 30 ++++++++++++++-
- drivers/crypto/caam/caamalg_qi.c  | 40 ++++++++++++++++++--
- drivers/crypto/caam/caamalg_qi2.c | 63 ++++++++++++++++++++++++-------
- drivers/crypto/caam/caamhash.c    | 33 ++++++++--------
- drivers/crypto/caam/caampkc.c     |  7 +++-
- drivers/crypto/caam/desc_constr.h | 11 ++++++
- 6 files changed, 147 insertions(+), 37 deletions(-)
+ drivers/crypto/caam/Kconfig      | 46 ++++++----------
+ drivers/crypto/caam/Makefile     | 18 +++----
+ drivers/crypto/caam/caamalg.c    | 43 ++-------------
+ drivers/crypto/caam/caamalg_qi.c | 45 ++--------------
+ drivers/crypto/caam/caamhash.c   | 48 ++---------------
+ drivers/crypto/caam/caampkc.c    | 50 ++---------------
+ drivers/crypto/caam/caamrng.c    | 54 +++----------------
+ drivers/crypto/caam/ctrl.c       | 45 +++++++++-------
+ drivers/crypto/caam/intern.h     | 93 ++++++++++++++++++++++++++++++--
+ drivers/crypto/caam/jr.c         | 43 +++++++++++++++
+ 10 files changed, 208 insertions(+), 277 deletions(-)
 
+diff --git a/drivers/crypto/caam/Kconfig b/drivers/crypto/caam/Kconfig
+index 577c9844b322..3720ddabb507 100644
+--- a/drivers/crypto/caam/Kconfig
++++ b/drivers/crypto/caam/Kconfig
+@@ -2,6 +2,12 @@
+ config CRYPTO_DEV_FSL_CAAM_COMMON
+ 	tristate
+ 
++config CRYPTO_DEV_FSL_CAAM_CRYPTO_API_DESC
++	tristate
++
++config CRYPTO_DEV_FSL_CAAM_AHASH_API_DESC
++	tristate
++
+ config CRYPTO_DEV_FSL_CAAM
+ 	tristate "Freescale CAAM-Multicore platform driver backend"
+ 	depends on FSL_SOC || ARCH_MXC || ARCH_LAYERSCAPE
+@@ -25,7 +31,7 @@ config CRYPTO_DEV_FSL_CAAM_DEBUG
+ 	  Selecting this will enable printing of various debug
+ 	  information in the CAAM driver.
+ 
+-config CRYPTO_DEV_FSL_CAAM_JR
++menuconfig CRYPTO_DEV_FSL_CAAM_JR
+ 	tristate "Freescale CAAM Job Ring driver backend"
+ 	default y
+ 	help
+@@ -86,8 +92,9 @@ config CRYPTO_DEV_FSL_CAAM_INTC_TIME_THLD
+ 	  threshold. Range is 1-65535.
+ 
+ config CRYPTO_DEV_FSL_CAAM_CRYPTO_API
+-	tristate "Register algorithm implementations with the Crypto API"
++	bool "Register algorithm implementations with the Crypto API"
+ 	default y
++	select CRYPTO_DEV_FSL_CAAM_CRYPTO_API_DESC
+ 	select CRYPTO_AEAD
+ 	select CRYPTO_AUTHENC
+ 	select CRYPTO_BLKCIPHER
+@@ -97,13 +104,11 @@ config CRYPTO_DEV_FSL_CAAM_CRYPTO_API
+ 	  scatterlist crypto API (such as the linux native IPSec
+ 	  stack) to the SEC4 via job ring.
+ 
+-	  To compile this as a module, choose M here: the module
+-	  will be called caamalg.
+-
+ config CRYPTO_DEV_FSL_CAAM_CRYPTO_API_QI
+-	tristate "Queue Interface as Crypto API backend"
++	bool "Queue Interface as Crypto API backend"
+ 	depends on FSL_DPAA && NET
+ 	default y
++	select CRYPTO_DEV_FSL_CAAM_CRYPTO_API_DESC
+ 	select CRYPTO_AUTHENC
+ 	select CRYPTO_BLKCIPHER
+ 	help
+@@ -114,33 +119,26 @@ config CRYPTO_DEV_FSL_CAAM_CRYPTO_API_QI
+ 	  assigned to the kernel should also be more than the number of
+ 	  job rings.
+ 
+-	  To compile this as a module, choose M here: the module
+-	  will be called caamalg_qi.
+-
+ config CRYPTO_DEV_FSL_CAAM_AHASH_API
+-	tristate "Register hash algorithm implementations with Crypto API"
++	bool "Register hash algorithm implementations with Crypto API"
+ 	default y
++	select CRYPTO_DEV_FSL_CAAM_AHASH_API_DESC
+ 	select CRYPTO_HASH
+ 	help
+ 	  Selecting this will offload ahash for users of the
+ 	  scatterlist crypto API to the SEC4 via job ring.
+ 
+-	  To compile this as a module, choose M here: the module
+-	  will be called caamhash.
+-
+ config CRYPTO_DEV_FSL_CAAM_PKC_API
+-        tristate "Register public key cryptography implementations with Crypto API"
++        bool "Register public key cryptography implementations with Crypto API"
+         default y
+         select CRYPTO_RSA
+         help
+           Selecting this will allow SEC Public key support for RSA.
+           Supported cryptographic primitives: encryption, decryption,
+           signature and verification.
+-          To compile this as a module, choose M here: the module
+-          will be called caam_pkc.
+ 
+ config CRYPTO_DEV_FSL_CAAM_RNG_API
+-	tristate "Register caam device for hwrng API"
++	bool "Register caam device for hwrng API"
+ 	default y
+ 	select CRYPTO_RNG
+ 	select HW_RANDOM
+@@ -148,9 +146,6 @@ config CRYPTO_DEV_FSL_CAAM_RNG_API
+ 	  Selecting this will register the SEC4 hardware rng to
+ 	  the hw_random API for suppying the kernel entropy pool.
+ 
+-	  To compile this as a module, choose M here: the module
+-	  will be called caamrng.
+-
+ endif # CRYPTO_DEV_FSL_CAAM_JR
+ 
+ endif # CRYPTO_DEV_FSL_CAAM
+@@ -160,6 +155,8 @@ config CRYPTO_DEV_FSL_DPAA2_CAAM
+ 	depends on FSL_MC_DPIO
+ 	depends on NETDEVICES
+ 	select CRYPTO_DEV_FSL_CAAM_COMMON
++	select CRYPTO_DEV_FSL_CAAM_CRYPTO_API_DESC
++	select CRYPTO_DEV_FSL_CAAM_AHASH_API_DESC
+ 	select CRYPTO_BLKCIPHER
+ 	select CRYPTO_AUTHENC
+ 	select CRYPTO_AEAD
+@@ -171,12 +168,3 @@ config CRYPTO_DEV_FSL_DPAA2_CAAM
+ 
+ 	  To compile this as a module, choose M here: the module
+ 	  will be called dpaa2_caam.
+-
+-config CRYPTO_DEV_FSL_CAAM_CRYPTO_API_DESC
+-	def_tristate (CRYPTO_DEV_FSL_CAAM_CRYPTO_API || \
+-		      CRYPTO_DEV_FSL_CAAM_CRYPTO_API_QI || \
+-		      CRYPTO_DEV_FSL_DPAA2_CAAM)
+-
+-config CRYPTO_DEV_FSL_CAAM_AHASH_API_DESC
+-	def_tristate (CRYPTO_DEV_FSL_CAAM_AHASH_API || \
+-		      CRYPTO_DEV_FSL_DPAA2_CAAM)
+diff --git a/drivers/crypto/caam/Makefile b/drivers/crypto/caam/Makefile
+index 7bbfd06a11ff..9ab4e81ea21e 100644
+--- a/drivers/crypto/caam/Makefile
++++ b/drivers/crypto/caam/Makefile
+@@ -11,20 +11,20 @@ ccflags-y += -DVERSION=\"\"
+ obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_COMMON) += error.o
+ obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM) += caam.o
+ obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_JR) += caam_jr.o
+-obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API) += caamalg.o
+-obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API_QI) += caamalg_qi.o
+ obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API_DESC) += caamalg_desc.o
+-obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_AHASH_API) += caamhash.o
+ obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_AHASH_API_DESC) += caamhash_desc.o
+-obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_RNG_API) += caamrng.o
+-obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_PKC_API) += caam_pkc.o
+ 
+-caam-objs := ctrl.o
+-caam_jr-objs := jr.o key_gen.o
+-caam_pkc-y := caampkc.o pkc_desc.o
++caam-y := ctrl.o
++caam_jr-y := jr.o key_gen.o
++caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API) += caamalg.o
++caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API_QI) += caamalg_qi.o
++caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_AHASH_API) += caamhash.o
++caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_RNG_API) += caamrng.o
++caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_PKC_API) += caampkc.o pkc_desc.o
++
++caam-$(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API_QI) += qi.o
+ ifneq ($(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API_QI),)
+ 	ccflags-y += -DCONFIG_CAAM_QI
+-	caam-objs += qi.o
+ endif
+ 
+ obj-$(CONFIG_CRYPTO_DEV_FSL_DPAA2_CAAM) += dpaa2_caam.o
 diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
-index e8f8be396796..ecb33644a085 100644
+index ecb33644a085..8593ae350c76 100644
 --- a/drivers/crypto/caam/caamalg.c
 +++ b/drivers/crypto/caam/caamalg.c
-@@ -1380,8 +1380,16 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 		}
- 	}
+@@ -3466,7 +3466,7 @@ static void caam_aead_exit(struct crypto_aead *tfm)
+ 	caam_exit_common(crypto_aead_ctx(tfm));
+ }
  
-+	/*
-+	 * HW reads 4 S/G entries at a time; make sure the reads don't go beyond
-+	 * the end of the table by allocating more S/G entries.
-+	 */
- 	sec4_sg_len = mapped_src_nents > 1 ? mapped_src_nents : 0;
--	sec4_sg_len += mapped_dst_nents > 1 ? mapped_dst_nents : 0;
-+	if (mapped_dst_nents > 1)
-+		sec4_sg_len += pad_sg_nents(mapped_dst_nents);
-+	else
-+		sec4_sg_len = pad_sg_nents(sec4_sg_len);
-+
- 	sec4_sg_bytes = sec4_sg_len * sizeof(struct sec4_sg_entry);
+-static void __exit caam_algapi_exit(void)
++void caam_algapi_exit(void)
+ {
+ 	int i;
  
- 	/* allocate space for base edesc and hw desc commands, link tables */
-@@ -1719,7 +1727,25 @@ static struct skcipher_edesc *skcipher_edesc_alloc(struct skcipher_request *req,
- 	else
- 		sec4_sg_ents = mapped_src_nents + !!ivsize;
- 	dst_sg_idx = sec4_sg_ents;
--	sec4_sg_ents += mapped_dst_nents > 1 ? mapped_dst_nents : 0;
-+
-+	/*
-+	 * HW reads 4 S/G entries at a time; make sure the reads don't go beyond
-+	 * the end of the table by allocating more S/G entries. Logic:
-+	 * if (src != dst && output S/G)
-+	 *      pad output S/G, if needed
-+	 * else if (src == dst && S/G)
-+	 *      overlapping S/Gs; pad one of them
-+	 * else if (input S/G) ...
-+	 *      pad input S/G, if needed
-+	 */
-+	if (mapped_dst_nents > 1)
-+		sec4_sg_ents += pad_sg_nents(mapped_dst_nents);
-+	else if ((req->src == req->dst) && (mapped_src_nents > 1))
-+		sec4_sg_ents = max(pad_sg_nents(sec4_sg_ents),
-+				   !!ivsize + pad_sg_nents(mapped_src_nents));
-+	else
-+		sec4_sg_ents = pad_sg_nents(sec4_sg_ents);
-+
- 	sec4_sg_bytes = sec4_sg_ents * sizeof(struct sec4_sg_entry);
+@@ -3511,43 +3511,15 @@ static void caam_aead_alg_init(struct caam_aead_alg *t_alg)
+ 	alg->exit = caam_aead_exit;
+ }
  
+-static int __init caam_algapi_init(void)
++int caam_algapi_init(struct device *ctrldev)
+ {
+-	struct device_node *dev_node;
+-	struct platform_device *pdev;
+-	struct caam_drv_private *priv;
++	struct caam_drv_private *priv = dev_get_drvdata(ctrldev);
+ 	int i = 0, err = 0;
+ 	u32 aes_vid, aes_inst, des_inst, md_vid, md_inst, ccha_inst, ptha_inst;
+ 	u32 arc4_inst;
+ 	unsigned int md_limit = SHA512_DIGEST_SIZE;
+ 	bool registered = false, gcm_support;
+ 
+-	dev_node = of_find_compatible_node(NULL, NULL, "fsl,sec-v4.0");
+-	if (!dev_node) {
+-		dev_node = of_find_compatible_node(NULL, NULL, "fsl,sec4.0");
+-		if (!dev_node)
+-			return -ENODEV;
+-	}
+-
+-	pdev = of_find_device_by_node(dev_node);
+-	if (!pdev) {
+-		of_node_put(dev_node);
+-		return -ENODEV;
+-	}
+-
+-	priv = dev_get_drvdata(&pdev->dev);
+-	of_node_put(dev_node);
+-
+-	/*
+-	 * If priv is NULL, it's probably because the caam driver wasn't
+-	 * properly initialized (e.g. RNG4 init failed). Thus, bail out here.
+-	 */
+-	if (!priv) {
+-		err = -ENODEV;
+-		goto out_put_dev;
+-	}
+-
+-
  	/*
+ 	 * Register crypto algorithms the device supports.
+ 	 * First, detect presence and attributes of DES, AES, and MD blocks.
+@@ -3690,14 +3662,5 @@ static int __init caam_algapi_init(void)
+ 	if (registered)
+ 		pr_info("caam algorithms registered in /proc/crypto\n");
+ 
+-out_put_dev:
+-	put_device(&pdev->dev);
+ 	return err;
+ }
+-
+-module_init(caam_algapi_init);
+-module_exit(caam_algapi_exit);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_DESCRIPTION("FSL CAAM support for crypto API");
+-MODULE_AUTHOR("Freescale Semiconductor - NMG/STC");
 diff --git a/drivers/crypto/caam/caamalg_qi.c b/drivers/crypto/caam/caamalg_qi.c
-index 992c498879a4..a1ed6a721834 100644
+index a1ed6a721834..b2e29be79d41 100644
 --- a/drivers/crypto/caam/caamalg_qi.c
 +++ b/drivers/crypto/caam/caamalg_qi.c
-@@ -4,7 +4,7 @@
-  * Based on caamalg.c
-  *
-  * Copyright 2013-2016 Freescale Semiconductor, Inc.
-- * Copyright 2016-2018 NXP
-+ * Copyright 2016-2019 NXP
-  */
+@@ -2489,7 +2489,7 @@ static void caam_aead_exit(struct crypto_aead *tfm)
+ 	caam_exit_common(crypto_aead_ctx(tfm));
+ }
  
- #include "compat.h"
-@@ -1018,9 +1018,24 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 	/*
- 	 * Create S/G table: req->assoclen, [IV,] req->src [, req->dst].
- 	 * Input is not contiguous.
-+	 * HW reads 4 S/G entries at a time; make sure the reads don't go beyond
-+	 * the end of the table by allocating more S/G entries. Logic:
-+	 * if (src != dst && output S/G)
-+	 *      pad output S/G, if needed
-+	 * else if (src == dst && S/G)
-+	 *      overlapping S/Gs; pad one of them
-+	 * else if (input S/G) ...
-+	 *      pad input S/G, if needed
- 	 */
--	qm_sg_ents = 1 + !!ivsize + mapped_src_nents +
--		     (mapped_dst_nents > 1 ? mapped_dst_nents : 0);
-+	qm_sg_ents = 1 + !!ivsize + mapped_src_nents;
-+	if (mapped_dst_nents > 1)
-+		qm_sg_ents += pad_sg_nents(mapped_dst_nents);
-+	else if ((req->src == req->dst) && (mapped_src_nents > 1))
-+		qm_sg_ents = max(pad_sg_nents(qm_sg_ents),
-+				 1 + !!ivsize + pad_sg_nents(mapped_src_nents));
-+	else
-+		qm_sg_ents = pad_sg_nents(qm_sg_ents);
-+
- 	sg_table = &edesc->sgt[0];
- 	qm_sg_bytes = qm_sg_ents * sizeof(*sg_table);
- 	if (unlikely(offsetof(struct aead_edesc, sgt) + qm_sg_bytes + ivsize >
-@@ -1275,7 +1290,24 @@ static struct skcipher_edesc *skcipher_edesc_alloc(struct skcipher_request *req,
- 	qm_sg_ents = 1 + mapped_src_nents;
- 	dst_sg_idx = qm_sg_ents;
+-static void __exit caam_qi_algapi_exit(void)
++void caam_qi_algapi_exit(void)
+ {
+ 	int i;
  
--	qm_sg_ents += mapped_dst_nents > 1 ? mapped_dst_nents : 0;
-+	/*
-+	 * HW reads 4 S/G entries at a time; make sure the reads don't go beyond
-+	 * the end of the table by allocating more S/G entries. Logic:
-+	 * if (src != dst && output S/G)
-+	 *      pad output S/G, if needed
-+	 * else if (src == dst && S/G)
-+	 *      overlapping S/Gs; pad one of them
-+	 * else if (input S/G) ...
-+	 *      pad input S/G, if needed
-+	 */
-+	if (mapped_dst_nents > 1)
-+		qm_sg_ents += pad_sg_nents(mapped_dst_nents);
-+	else if ((req->src == req->dst) && (mapped_src_nents > 1))
-+		qm_sg_ents = max(pad_sg_nents(qm_sg_ents),
-+				 1 + pad_sg_nents(mapped_src_nents));
-+	else
-+		qm_sg_ents = pad_sg_nents(qm_sg_ents);
-+
- 	qm_sg_bytes = qm_sg_ents * sizeof(struct qm_sg_entry);
- 	if (unlikely(offsetof(struct skcipher_edesc, sgt) + qm_sg_bytes +
- 		     ivsize > CAAM_QI_MEMCACHE_SIZE)) {
-diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
-index 627cf0fd37f1..148ad92c16a5 100644
---- a/drivers/crypto/caam/caamalg_qi2.c
-+++ b/drivers/crypto/caam/caamalg_qi2.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
- /*
-  * Copyright 2015-2016 Freescale Semiconductor Inc.
-- * Copyright 2017-2018 NXP
-+ * Copyright 2017-2019 NXP
-  */
+@@ -2534,45 +2534,17 @@ static void caam_aead_alg_init(struct caam_aead_alg *t_alg)
+ 	alg->exit = caam_aead_exit;
+ }
  
- #include "compat.h"
-@@ -459,9 +459,25 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 	/*
- 	 * Create S/G table: req->assoclen, [IV,] req->src [, req->dst].
- 	 * Input is not contiguous.
-+	 * HW reads 4 S/G entries at a time; make sure the reads don't go beyond
-+	 * the end of the table by allocating more S/G entries. Logic:
-+	 * if (src != dst && output S/G)
-+	 *      pad output S/G, if needed
-+	 * else if (src == dst && S/G)
-+	 *      overlapping S/Gs; pad one of them
-+	 * else if (input S/G) ...
-+	 *      pad input S/G, if needed
- 	 */
--	qm_sg_nents = 1 + !!ivsize + mapped_src_nents +
--		      (mapped_dst_nents > 1 ? mapped_dst_nents : 0);
-+	qm_sg_nents = 1 + !!ivsize + mapped_src_nents;
-+	if (mapped_dst_nents > 1)
-+		qm_sg_nents += pad_sg_nents(mapped_dst_nents);
-+	else if ((req->src == req->dst) && (mapped_src_nents > 1))
-+		qm_sg_nents = max(pad_sg_nents(qm_sg_nents),
-+				  1 + !!ivsize +
-+				  pad_sg_nents(mapped_src_nents));
-+	else
-+		qm_sg_nents = pad_sg_nents(qm_sg_nents);
-+
- 	sg_table = &edesc->sgt[0];
- 	qm_sg_bytes = qm_sg_nents * sizeof(*sg_table);
- 	if (unlikely(offsetof(struct aead_edesc, sgt) + qm_sg_bytes + ivsize >
-@@ -1085,7 +1101,24 @@ static struct skcipher_edesc *skcipher_edesc_alloc(struct skcipher_request *req)
- 	qm_sg_ents = 1 + mapped_src_nents;
- 	dst_sg_idx = qm_sg_ents;
+-static int __init caam_qi_algapi_init(void)
++int caam_qi_algapi_init(struct device *ctrldev)
+ {
+-	struct device_node *dev_node;
+-	struct platform_device *pdev;
+-	struct device *ctrldev;
+-	struct caam_drv_private *priv;
++	struct caam_drv_private *priv = dev_get_drvdata(ctrldev);
+ 	int i = 0, err = 0;
+ 	u32 aes_vid, aes_inst, des_inst, md_vid, md_inst;
+ 	unsigned int md_limit = SHA512_DIGEST_SIZE;
+ 	bool registered = false;
  
--	qm_sg_ents += mapped_dst_nents > 1 ? mapped_dst_nents : 0;
-+	/*
-+	 * HW reads 4 S/G entries at a time; make sure the reads don't go beyond
-+	 * the end of the table by allocating more S/G entries. Logic:
-+	 * if (src != dst && output S/G)
-+	 *      pad output S/G, if needed
-+	 * else if (src == dst && S/G)
-+	 *      overlapping S/Gs; pad one of them
-+	 * else if (input S/G) ...
-+	 *      pad input S/G, if needed
-+	 */
-+	if (mapped_dst_nents > 1)
-+		qm_sg_ents += pad_sg_nents(mapped_dst_nents);
-+	else if ((req->src == req->dst) && (mapped_src_nents > 1))
-+		qm_sg_ents = max(pad_sg_nents(qm_sg_ents),
-+				 1 + pad_sg_nents(mapped_src_nents));
-+	else
-+		qm_sg_ents = pad_sg_nents(qm_sg_ents);
-+
- 	qm_sg_bytes = qm_sg_ents * sizeof(struct dpaa2_sg_entry);
- 	if (unlikely(offsetof(struct skcipher_edesc, sgt) + qm_sg_bytes +
- 		     ivsize > CAAM_QI_MEMCACHE_SIZE)) {
-@@ -3412,7 +3445,7 @@ static int ahash_update_ctx(struct ahash_request *req)
- 
- 		edesc->src_nents = src_nents;
- 		qm_sg_src_index = 1 + (*buflen ? 1 : 0);
--		qm_sg_bytes = (qm_sg_src_index + mapped_nents) *
-+		qm_sg_bytes = pad_sg_nents(qm_sg_src_index + mapped_nents) *
- 			      sizeof(*sg_table);
- 		sg_table = &edesc->sgt[0];
- 
-@@ -3497,7 +3530,7 @@ static int ahash_final_ctx(struct ahash_request *req)
- 	gfp_t flags = (req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP) ?
- 		      GFP_KERNEL : GFP_ATOMIC;
- 	int buflen = *current_buflen(state);
--	int qm_sg_bytes, qm_sg_src_index;
-+	int qm_sg_bytes;
- 	int digestsize = crypto_ahash_digestsize(ahash);
- 	struct ahash_edesc *edesc;
- 	struct dpaa2_sg_entry *sg_table;
-@@ -3508,8 +3541,7 @@ static int ahash_final_ctx(struct ahash_request *req)
- 	if (!edesc)
- 		return -ENOMEM;
- 
--	qm_sg_src_index = 1 + (buflen ? 1 : 0);
--	qm_sg_bytes = qm_sg_src_index * sizeof(*sg_table);
-+	qm_sg_bytes = pad_sg_nents(1 + (buflen ? 1 : 0)) * sizeof(*sg_table);
- 	sg_table = &edesc->sgt[0];
- 
- 	ret = ctx_map_to_qm_sg(ctx->dev, state, ctx->ctx_len, sg_table,
-@@ -3521,7 +3553,7 @@ static int ahash_final_ctx(struct ahash_request *req)
- 	if (ret)
- 		goto unmap_ctx;
- 
--	dpaa2_sg_set_final(sg_table + qm_sg_src_index - 1, true);
-+	dpaa2_sg_set_final(sg_table + (buflen ? 1 : 0), true);
- 
- 	edesc->qm_sg_dma = dma_map_single(ctx->dev, sg_table, qm_sg_bytes,
- 					  DMA_TO_DEVICE);
-@@ -3602,7 +3634,8 @@ static int ahash_finup_ctx(struct ahash_request *req)
- 
- 	edesc->src_nents = src_nents;
- 	qm_sg_src_index = 1 + (buflen ? 1 : 0);
--	qm_sg_bytes = (qm_sg_src_index + mapped_nents) * sizeof(*sg_table);
-+	qm_sg_bytes = pad_sg_nents(qm_sg_src_index + mapped_nents) *
-+		      sizeof(*sg_table);
- 	sg_table = &edesc->sgt[0];
- 
- 	ret = ctx_map_to_qm_sg(ctx->dev, state, ctx->ctx_len, sg_table,
-@@ -3699,7 +3732,7 @@ static int ahash_digest(struct ahash_request *req)
- 		int qm_sg_bytes;
- 		struct dpaa2_sg_entry *sg_table = &edesc->sgt[0];
- 
--		qm_sg_bytes = mapped_nents * sizeof(*sg_table);
-+		qm_sg_bytes = pad_sg_nents(mapped_nents) * sizeof(*sg_table);
- 		sg_to_qm_sg_last(req->src, mapped_nents, sg_table, 0);
- 		edesc->qm_sg_dma = dma_map_single(ctx->dev, sg_table,
- 						  qm_sg_bytes, DMA_TO_DEVICE);
-@@ -3871,7 +3904,8 @@ static int ahash_update_no_ctx(struct ahash_request *req)
- 		}
- 
- 		edesc->src_nents = src_nents;
--		qm_sg_bytes = (1 + mapped_nents) * sizeof(*sg_table);
-+		qm_sg_bytes = pad_sg_nents(1 + mapped_nents) *
-+			      sizeof(*sg_table);
- 		sg_table = &edesc->sgt[0];
- 
- 		ret = buf_map_to_qm_sg(ctx->dev, sg_table, state);
-@@ -3990,7 +4024,7 @@ static int ahash_finup_no_ctx(struct ahash_request *req)
+-	dev_node = of_find_compatible_node(NULL, NULL, "fsl,sec-v4.0");
+-	if (!dev_node) {
+-		dev_node = of_find_compatible_node(NULL, NULL, "fsl,sec4.0");
+-		if (!dev_node)
+-			return -ENODEV;
+-	}
+-
+-	pdev = of_find_device_by_node(dev_node);
+-	of_node_put(dev_node);
+-	if (!pdev)
+-		return -ENODEV;
+-
+-	ctrldev = &pdev->dev;
+-	priv = dev_get_drvdata(ctrldev);
+-
+-	/*
+-	 * If priv is NULL, it's probably because the caam driver wasn't
+-	 * properly initialized (e.g. RNG4 init failed). Thus, bail out here.
+-	 */
+-	if (!priv || !priv->qi_present) {
+-		err = -ENODEV;
+-		goto out_put_dev;
+-	}
+-
+ 	if (caam_dpaa2) {
+ 		dev_info(ctrldev, "caam/qi frontend driver not suitable for DPAA 2.x, aborting...\n");
+-		err = -ENODEV;
+-		goto out_put_dev;
++		return -ENODEV;
  	}
  
- 	edesc->src_nents = src_nents;
--	qm_sg_bytes = (2 + mapped_nents) * sizeof(*sg_table);
-+	qm_sg_bytes = pad_sg_nents(2 + mapped_nents) * sizeof(*sg_table);
- 	sg_table = &edesc->sgt[0];
+ 	/*
+@@ -2685,14 +2657,5 @@ static int __init caam_qi_algapi_init(void)
+ 	if (registered)
+ 		dev_info(priv->qidev, "algorithms registered in /proc/crypto\n");
  
- 	ret = buf_map_to_qm_sg(ctx->dev, sg_table, state);
-@@ -4105,7 +4139,8 @@ static int ahash_update_first(struct ahash_request *req)
- 			int qm_sg_bytes;
- 
- 			sg_to_qm_sg_last(req->src, mapped_nents, sg_table, 0);
--			qm_sg_bytes = mapped_nents * sizeof(*sg_table);
-+			qm_sg_bytes = pad_sg_nents(mapped_nents) *
-+				      sizeof(*sg_table);
- 			edesc->qm_sg_dma = dma_map_single(ctx->dev, sg_table,
- 							  qm_sg_bytes,
- 							  DMA_TO_DEVICE);
+-out_put_dev:
+-	put_device(ctrldev);
+ 	return err;
+ }
+-
+-module_init(caam_qi_algapi_init);
+-module_exit(caam_qi_algapi_exit);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_DESCRIPTION("Support for crypto API using CAAM-QI backend");
+-MODULE_AUTHOR("Freescale Semiconductor");
 diff --git a/drivers/crypto/caam/caamhash.c b/drivers/crypto/caam/caamhash.c
-index b1eadc6652b5..200e533794c8 100644
+index 200e533794c8..cf67d92793e2 100644
 --- a/drivers/crypto/caam/caamhash.c
 +++ b/drivers/crypto/caam/caamhash.c
-@@ -759,7 +759,8 @@ static int ahash_edesc_add_src(struct caam_hash_ctx *ctx,
+@@ -1934,7 +1934,7 @@ static void caam_hash_cra_exit(struct crypto_tfm *tfm)
+ 	caam_jr_free(ctx->jrdev);
+ }
  
- 	if (nents > 1 || first_sg) {
- 		struct sec4_sg_entry *sg = edesc->sec4_sg;
--		unsigned int sgsize = sizeof(*sg) * (first_sg + nents);
-+		unsigned int sgsize = sizeof(*sg) *
-+				      pad_sg_nents(first_sg + nents);
+-static void __exit caam_algapi_hash_exit(void)
++void caam_algapi_hash_exit(void)
+ {
+ 	struct caam_hash_alg *t_alg, *n;
  
- 		sg_to_sec4_sg_last(req->src, nents, sg + first_sg, 0);
+@@ -1992,40 +1992,13 @@ caam_hash_alloc(struct caam_hash_template *template,
+ 	return t_alg;
+ }
  
-@@ -819,6 +820,8 @@ static int ahash_update_ctx(struct ahash_request *req)
+-static int __init caam_algapi_hash_init(void)
++int caam_algapi_hash_init(struct device *ctrldev)
+ {
+-	struct device_node *dev_node;
+-	struct platform_device *pdev;
+ 	int i = 0, err = 0;
+-	struct caam_drv_private *priv;
++	struct caam_drv_private *priv = dev_get_drvdata(ctrldev);
+ 	unsigned int md_limit = SHA512_DIGEST_SIZE;
+ 	u32 md_inst, md_vid;
+ 
+-	dev_node = of_find_compatible_node(NULL, NULL, "fsl,sec-v4.0");
+-	if (!dev_node) {
+-		dev_node = of_find_compatible_node(NULL, NULL, "fsl,sec4.0");
+-		if (!dev_node)
+-			return -ENODEV;
+-	}
+-
+-	pdev = of_find_device_by_node(dev_node);
+-	if (!pdev) {
+-		of_node_put(dev_node);
+-		return -ENODEV;
+-	}
+-
+-	priv = dev_get_drvdata(&pdev->dev);
+-	of_node_put(dev_node);
+-
+-	/*
+-	 * If priv is NULL, it's probably because the caam driver wasn't
+-	 * properly initialized (e.g. RNG4 init failed). Thus, bail out here.
+-	 */
+-	if (!priv) {
+-		err = -ENODEV;
+-		goto out_put_dev;
+-	}
+-
+ 	/*
+ 	 * Register crypto algorithms the device supports.  First, identify
+ 	 * presence and attributes of MD block.
+@@ -2046,10 +2019,8 @@ static int __init caam_algapi_hash_init(void)
+ 	 * Skip registration of any hashing algorithms if MD block
+ 	 * is not present.
+ 	 */
+-	if (!md_inst) {
+-		err = -ENODEV;
+-		goto out_put_dev;
+-	}
++	if (!md_inst)
++		return -ENODEV;
+ 
+ 	/* Limit digest size based on LP256 */
+ 	if (md_vid == CHA_VER_VID_MD_LP256)
+@@ -2106,14 +2077,5 @@ static int __init caam_algapi_hash_init(void)
+ 			list_add_tail(&t_alg->entry, &hash_list);
  	}
  
- 	if (to_hash) {
-+		int pad_nents;
-+
- 		src_nents = sg_nents_for_len(req->src,
- 					     req->nbytes - (*next_buflen));
- 		if (src_nents < 0) {
-@@ -838,15 +841,14 @@ static int ahash_update_ctx(struct ahash_request *req)
- 		}
- 
- 		sec4_sg_src_index = 1 + (*buflen ? 1 : 0);
--		sec4_sg_bytes = (sec4_sg_src_index + mapped_nents) *
--				 sizeof(struct sec4_sg_entry);
-+		pad_nents = pad_sg_nents(sec4_sg_src_index + mapped_nents);
-+		sec4_sg_bytes = pad_nents * sizeof(struct sec4_sg_entry);
- 
- 		/*
- 		 * allocate space for base edesc and hw desc commands,
- 		 * link tables
- 		 */
--		edesc = ahash_edesc_alloc(ctx, sec4_sg_src_index + mapped_nents,
--					  ctx->sh_desc_update,
-+		edesc = ahash_edesc_alloc(ctx, pad_nents, ctx->sh_desc_update,
- 					  ctx->sh_desc_update_dma, flags);
- 		if (!edesc) {
- 			dma_unmap_sg(jrdev, req->src, src_nents, DMA_TO_DEVICE);
-@@ -936,18 +938,17 @@ static int ahash_final_ctx(struct ahash_request *req)
- 		       GFP_KERNEL : GFP_ATOMIC;
- 	int buflen = *current_buflen(state);
- 	u32 *desc;
--	int sec4_sg_bytes, sec4_sg_src_index;
-+	int sec4_sg_bytes;
- 	int digestsize = crypto_ahash_digestsize(ahash);
- 	struct ahash_edesc *edesc;
- 	int ret;
- 
--	sec4_sg_src_index = 1 + (buflen ? 1 : 0);
--	sec4_sg_bytes = sec4_sg_src_index * sizeof(struct sec4_sg_entry);
-+	sec4_sg_bytes = pad_sg_nents(1 + (buflen ? 1 : 0)) *
-+			sizeof(struct sec4_sg_entry);
- 
- 	/* allocate space for base edesc and hw desc commands, link tables */
--	edesc = ahash_edesc_alloc(ctx, sec4_sg_src_index,
--				  ctx->sh_desc_fin, ctx->sh_desc_fin_dma,
--				  flags);
-+	edesc = ahash_edesc_alloc(ctx, 4, ctx->sh_desc_fin,
-+				  ctx->sh_desc_fin_dma, flags);
- 	if (!edesc)
- 		return -ENOMEM;
- 
-@@ -964,7 +965,7 @@ static int ahash_final_ctx(struct ahash_request *req)
- 	if (ret)
- 		goto unmap_ctx;
- 
--	sg_to_sec4_set_last(edesc->sec4_sg + sec4_sg_src_index - 1);
-+	sg_to_sec4_set_last(edesc->sec4_sg + (buflen ? 1 : 0));
- 
- 	edesc->sec4_sg_dma = dma_map_single(jrdev, edesc->sec4_sg,
- 					    sec4_sg_bytes, DMA_TO_DEVICE);
-@@ -1247,6 +1248,8 @@ static int ahash_update_no_ctx(struct ahash_request *req)
- 	}
- 
- 	if (to_hash) {
-+		int pad_nents;
-+
- 		src_nents = sg_nents_for_len(req->src,
- 					     req->nbytes - *next_buflen);
- 		if (src_nents < 0) {
-@@ -1265,14 +1268,14 @@ static int ahash_update_no_ctx(struct ahash_request *req)
- 			mapped_nents = 0;
- 		}
- 
--		sec4_sg_bytes = (1 + mapped_nents) *
--				sizeof(struct sec4_sg_entry);
-+		pad_nents = pad_sg_nents(1 + mapped_nents);
-+		sec4_sg_bytes = pad_nents * sizeof(struct sec4_sg_entry);
- 
- 		/*
- 		 * allocate space for base edesc and hw desc commands,
- 		 * link tables
- 		 */
--		edesc = ahash_edesc_alloc(ctx, 1 + mapped_nents,
-+		edesc = ahash_edesc_alloc(ctx, pad_nents,
- 					  ctx->sh_desc_update_first,
- 					  ctx->sh_desc_update_first_dma,
- 					  flags);
+-out_put_dev:
+-	put_device(&pdev->dev);
+ 	return err;
+ }
+-
+-module_init(caam_algapi_hash_init);
+-module_exit(caam_algapi_hash_exit);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_DESCRIPTION("FSL CAAM support for ahash functions of crypto API");
+-MODULE_AUTHOR("Freescale Semiconductor - NMG");
 diff --git a/drivers/crypto/caam/caampkc.c b/drivers/crypto/caam/caampkc.c
-index fe24485274e1..d97ffb03afc0 100644
+index d97ffb03afc0..34e37f9bd828 100644
 --- a/drivers/crypto/caam/caampkc.c
 +++ b/drivers/crypto/caam/caampkc.c
+@@ -1013,41 +1013,12 @@ static struct akcipher_alg caam_rsa = {
+ };
+ 
+ /* Public Key Cryptography module initialization handler */
+-static int __init caam_pkc_init(void)
++int caam_pkc_init(struct device *ctrldev)
+ {
+-	struct device_node *dev_node;
+-	struct platform_device *pdev;
+-	struct device *ctrldev;
+-	struct caam_drv_private *priv;
++	struct caam_drv_private *priv = dev_get_drvdata(ctrldev);
+ 	u32 pk_inst;
+ 	int err;
+ 
+-	dev_node = of_find_compatible_node(NULL, NULL, "fsl,sec-v4.0");
+-	if (!dev_node) {
+-		dev_node = of_find_compatible_node(NULL, NULL, "fsl,sec4.0");
+-		if (!dev_node)
+-			return -ENODEV;
+-	}
+-
+-	pdev = of_find_device_by_node(dev_node);
+-	if (!pdev) {
+-		of_node_put(dev_node);
+-		return -ENODEV;
+-	}
+-
+-	ctrldev = &pdev->dev;
+-	priv = dev_get_drvdata(ctrldev);
+-	of_node_put(dev_node);
+-
+-	/*
+-	 * If priv is NULL, it's probably because the caam driver wasn't
+-	 * properly initialized (e.g. RNG4 init failed). Thus, bail out here.
+-	 */
+-	if (!priv) {
+-		err = -ENODEV;
+-		goto out_put_dev;
+-	}
+-
+ 	/* Determine public key hardware accelerator presence. */
+ 	if (priv->era < 10)
+ 		pk_inst = (rd_reg32(&priv->ctrl->perfmon.cha_num_ls) &
+@@ -1056,10 +1027,8 @@ static int __init caam_pkc_init(void)
+ 		pk_inst = rd_reg32(&priv->ctrl->vreg.pkha) & CHA_VER_NUM_MASK;
+ 
+ 	/* Do not register algorithms if PKHA is not present. */
+-	if (!pk_inst) {
+-		err =  -ENODEV;
+-		goto out_put_dev;
+-	}
++	if (!pk_inst)
++		return 0;
+ 
+ 	err = crypto_register_akcipher(&caam_rsa);
+ 	if (err)
+@@ -1068,19 +1037,10 @@ static int __init caam_pkc_init(void)
+ 	else
+ 		dev_info(ctrldev, "caam pkc algorithms registered in /proc/crypto\n");
+ 
+-out_put_dev:
+-	put_device(ctrldev);
+ 	return err;
+ }
+ 
+-static void __exit caam_pkc_exit(void)
++void caam_pkc_exit(void)
+ {
+ 	crypto_unregister_akcipher(&caam_rsa);
+ }
+-
+-module_init(caam_pkc_init);
+-module_exit(caam_pkc_exit);
+-
+-MODULE_LICENSE("Dual BSD/GPL");
+-MODULE_DESCRIPTION("FSL CAAM support for PKC functions of crypto API");
+-MODULE_AUTHOR("Freescale Semiconductor");
+diff --git a/drivers/crypto/caam/caamrng.c b/drivers/crypto/caam/caamrng.c
+index 95eb5402c59f..1ece4ed571a2 100644
+--- a/drivers/crypto/caam/caamrng.c
++++ b/drivers/crypto/caam/caamrng.c
 @@ -3,7 +3,7 @@
-  * caam - Freescale FSL CAAM support for Public Key Cryptography
+  * caam - Freescale FSL CAAM support for hw_random
   *
-  * Copyright 2016 Freescale Semiconductor, Inc.
+  * Copyright 2011 Freescale Semiconductor, Inc.
 - * Copyright 2018 NXP
 + * Copyright 2018-2019 NXP
   *
-  * There is no Shared Descriptor for PKC so that the Job Descriptor must carry
-  * all the desired key parameters, input and output pointers.
-@@ -239,8 +239,11 @@ static struct rsa_edesc *rsa_edesc_alloc(struct akcipher_request *req,
+  * Based on caamalg.c crypto API driver.
+  *
+@@ -296,47 +296,20 @@ static struct hwrng caam_rng = {
+ 	.read		= caam_read,
+ };
  
- 	if (src_nents > 1)
- 		sec4_sg_len = src_nents;
+-static void __exit caam_rng_exit(void)
++void caam_rng_exit(void)
+ {
+ 	caam_jr_free(rng_ctx->jrdev);
+ 	hwrng_unregister(&caam_rng);
+ 	kfree(rng_ctx);
+ }
+ 
+-static int __init caam_rng_init(void)
++int caam_rng_init(struct device *ctrldev)
+ {
+ 	struct device *dev;
+-	struct device_node *dev_node;
+-	struct platform_device *pdev;
+-	struct caam_drv_private *priv;
+ 	u32 rng_inst;
++	struct caam_drv_private *priv = dev_get_drvdata(ctrldev);
+ 	int err;
+ 
+-	dev_node = of_find_compatible_node(NULL, NULL, "fsl,sec-v4.0");
+-	if (!dev_node) {
+-		dev_node = of_find_compatible_node(NULL, NULL, "fsl,sec4.0");
+-		if (!dev_node)
+-			return -ENODEV;
+-	}
+-
+-	pdev = of_find_device_by_node(dev_node);
+-	if (!pdev) {
+-		of_node_put(dev_node);
+-		return -ENODEV;
+-	}
+-
+-	priv = dev_get_drvdata(&pdev->dev);
+-	of_node_put(dev_node);
+-
+-	/*
+-	 * If priv is NULL, it's probably because the caam driver wasn't
+-	 * properly initialized (e.g. RNG4 init failed). Thus, bail out here.
+-	 */
+-	if (!priv) {
+-		err = -ENODEV;
+-		goto out_put_dev;
+-	}
+-
+ 	/* Check for an instantiated RNG before registration */
+ 	if (priv->era < 10)
+ 		rng_inst = (rd_reg32(&priv->ctrl->perfmon.cha_num_ls) &
+@@ -344,16 +317,13 @@ static int __init caam_rng_init(void)
+ 	else
+ 		rng_inst = rd_reg32(&priv->ctrl->vreg.rng) & CHA_VER_NUM_MASK;
+ 
+-	if (!rng_inst) {
+-		err = -ENODEV;
+-		goto out_put_dev;
+-	}
++	if (!rng_inst)
++		return 0;
+ 
+ 	dev = caam_jr_alloc();
+ 	if (IS_ERR(dev)) {
+ 		pr_err("Job Ring Device allocation for transform failed\n");
+-		err = PTR_ERR(dev);
+-		goto out_put_dev;
++		return PTR_ERR(dev);
+ 	}
+ 	rng_ctx = kmalloc(sizeof(*rng_ctx), GFP_DMA | GFP_KERNEL);
+ 	if (!rng_ctx) {
+@@ -364,7 +334,6 @@ static int __init caam_rng_init(void)
+ 	if (err)
+ 		goto free_rng_ctx;
+ 
+-	put_device(&pdev->dev);
+ 	dev_info(dev, "registering rng-caam\n");
+ 	return hwrng_register(&caam_rng);
+ 
+@@ -372,14 +341,5 @@ static int __init caam_rng_init(void)
+ 	kfree(rng_ctx);
+ free_caam_alloc:
+ 	caam_jr_free(dev);
+-out_put_dev:
+-	put_device(&pdev->dev);
+ 	return err;
+ }
+-
+-module_init(caam_rng_init);
+-module_exit(caam_rng_exit);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_DESCRIPTION("FSL CAAM support for hw_random API");
+-MODULE_AUTHOR("Freescale Semiconductor - NMG");
+diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+index e2ba3d202da5..36c2f15100a4 100644
+--- a/drivers/crypto/caam/ctrl.c
++++ b/drivers/crypto/caam/ctrl.c
+@@ -3,7 +3,7 @@
+  * Controller-level driver, kernel property detection, initialization
+  *
+  * Copyright 2008-2012 Freescale Semiconductor, Inc.
+- * Copyright 2018 NXP
++ * Copyright 2018-2019 NXP
+  */
+ 
+ #include <linux/device.h>
+@@ -703,12 +703,6 @@ static int caam_probe(struct platform_device *pdev)
+ 
+ 	ctrlpriv->era = caam_get_era(ctrl);
+ 
+-	ret = of_platform_populate(nprop, caam_match, NULL, dev);
+-	if (ret) {
+-		dev_err(dev, "JR platform devices creation error\n");
+-		goto iounmap_ctrl;
+-	}
+-
+ #ifdef CONFIG_DEBUG_FS
+ 	/*
+ 	 * FIXME: needs better naming distinction, as some amalgamation of
+@@ -721,19 +715,6 @@ static int caam_probe(struct platform_device *pdev)
+ 	ctrlpriv->ctl = debugfs_create_dir("ctl", ctrlpriv->dfs_root);
+ #endif
+ 
+-	ring = 0;
+-	for_each_available_child_of_node(nprop, np)
+-		if (of_device_is_compatible(np, "fsl,sec-v4.0-job-ring") ||
+-		    of_device_is_compatible(np, "fsl,sec4.0-job-ring")) {
+-			ctrlpriv->jr[ring] = (struct caam_job_ring __iomem __force *)
+-					     ((__force uint8_t *)ctrl +
+-					     (ring + JR_BLOCK_NUMBER) *
+-					      BLOCK_OFFSET
+-					     );
+-			ctrlpriv->total_jobrs++;
+-			ring++;
+-		}
+-
+ 	/* Check to see if (DPAA 1.x) QI present. If so, enable */
+ 	ctrlpriv->qi_present = !!(comp_params & CTPR_MS_QI_MASK);
+ 	if (ctrlpriv->qi_present && !caam_dpaa2) {
+@@ -752,6 +733,25 @@ static int caam_probe(struct platform_device *pdev)
+ #endif
+ 	}
+ 
++	ret = of_platform_populate(nprop, caam_match, NULL, dev);
++	if (ret) {
++		dev_err(dev, "JR platform devices creation error\n");
++		goto shutdown_qi;
++	}
 +
- 	if (dst_nents > 1)
--		sec4_sg_len += dst_nents;
-+		sec4_sg_len += pad_sg_nents(dst_nents);
-+	else
-+		sec4_sg_len = pad_sg_nents(sec4_sg_len);
++	ring = 0;
++	for_each_available_child_of_node(nprop, np)
++		if (of_device_is_compatible(np, "fsl,sec-v4.0-job-ring") ||
++		    of_device_is_compatible(np, "fsl,sec4.0-job-ring")) {
++			ctrlpriv->jr[ring] = (struct caam_job_ring __iomem __force *)
++					     ((__force uint8_t *)ctrl +
++					     (ring + JR_BLOCK_NUMBER) *
++					      BLOCK_OFFSET
++					     );
++			ctrlpriv->total_jobrs++;
++			ring++;
++		}
++
+ 	/* If no QI and no rings specified, quit and go home */
+ 	if ((!ctrlpriv->qi_present) && (!ctrlpriv->total_jobrs)) {
+ 		dev_err(dev, "no queues configured, terminating\n");
+@@ -898,6 +898,11 @@ static int caam_probe(struct platform_device *pdev)
+ 	caam_remove(pdev);
+ 	return ret;
  
- 	sec4_sg_bytes = sec4_sg_len * sizeof(struct sec4_sg_entry);
++shutdown_qi:
++#ifdef CONFIG_CAAM_QI
++	if (ctrlpriv->qidev)
++		caam_qi_shutdown(ctrlpriv->qidev);
++#endif
+ iounmap_ctrl:
+ 	iounmap(ctrl);
+ disable_caam_emi_slow:
+diff --git a/drivers/crypto/caam/intern.h b/drivers/crypto/caam/intern.h
+index 3392615dc91b..50e24ebc533b 100644
+--- a/drivers/crypto/caam/intern.h
++++ b/drivers/crypto/caam/intern.h
+@@ -4,7 +4,7 @@
+  * Private/internal definitions between modules
+  *
+  * Copyright 2008-2011 Freescale Semiconductor, Inc.
+- *
++ * Copyright 2019 NXP
+  */
  
-diff --git a/drivers/crypto/caam/desc_constr.h b/drivers/crypto/caam/desc_constr.h
-index 2980b8ef1fb1..5988a26a2441 100644
---- a/drivers/crypto/caam/desc_constr.h
-+++ b/drivers/crypto/caam/desc_constr.h
-@@ -3,6 +3,7 @@
-  * caam descriptor construction helper functions
+ #ifndef INTERN_H
+@@ -107,8 +107,95 @@ struct caam_drv_private {
+ #endif
+ };
+ 
+-void caam_jr_algapi_init(struct device *dev);
+-void caam_jr_algapi_remove(struct device *dev);
++#ifdef CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API
++
++int caam_algapi_init(struct device *dev);
++void caam_algapi_exit(void);
++
++#else
++
++static inline int caam_algapi_init(struct device *dev)
++{
++	return 0;
++}
++
++static inline void caam_algapi_exit(void)
++{
++}
++
++#endif /* CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API */
++
++#ifdef CONFIG_CRYPTO_DEV_FSL_CAAM_AHASH_API
++
++int caam_algapi_hash_init(struct device *dev);
++void caam_algapi_hash_exit(void);
++
++#else
++
++static inline int caam_algapi_hash_init(struct device *dev)
++{
++	return 0;
++}
++
++static inline void caam_algapi_hash_exit(void)
++{
++}
++
++#endif /* CONFIG_CRYPTO_DEV_FSL_CAAM_AHASH_API */
++
++#ifdef CONFIG_CRYPTO_DEV_FSL_CAAM_PKC_API
++
++int caam_pkc_init(struct device *dev);
++void caam_pkc_exit(void);
++
++#else
++
++static inline int caam_pkc_init(struct device *dev)
++{
++	return 0;
++}
++
++static inline void caam_pkc_exit(void)
++{
++}
++
++#endif /* CONFIG_CRYPTO_DEV_FSL_CAAM_PKC_API */
++
++#ifdef CONFIG_CRYPTO_DEV_FSL_CAAM_RNG_API
++
++int caam_rng_init(struct device *dev);
++void caam_rng_exit(void);
++
++#else
++
++static inline int caam_rng_init(struct device *dev)
++{
++	return 0;
++}
++
++static inline void caam_rng_exit(void)
++{
++}
++
++#endif /* CONFIG_CRYPTO_DEV_FSL_CAAM_RNG_API */
++
++#ifdef CONFIG_CAAM_QI
++
++int caam_qi_algapi_init(struct device *dev);
++void caam_qi_algapi_exit(void);
++
++#else
++
++static inline int caam_qi_algapi_init(struct device *dev)
++{
++	return 0;
++}
++
++static inline void caam_qi_algapi_exit(void)
++{
++}
++
++#endif /* CONFIG_CAAM_QI */
+ 
+ #ifdef CONFIG_DEBUG_FS
+ static int caam_debugfs_u64_get(void *data, u64 *val)
+diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
+index 044a69b526f7..64f3bc458fdd 100644
+--- a/drivers/crypto/caam/jr.c
++++ b/drivers/crypto/caam/jr.c
+@@ -4,6 +4,7 @@
+  * JobR backend functionality
   *
   * Copyright 2008-2012 Freescale Semiconductor, Inc.
 + * Copyright 2019 NXP
   */
  
- #ifndef DESC_CONSTR_H
-@@ -37,6 +38,16 @@
+ #include <linux/of_irq.h>
+@@ -23,6 +24,43 @@ struct jr_driver_data {
+ } ____cacheline_aligned;
  
- extern bool caam_little_end;
- 
-+/*
-+ * HW fetches 4 S/G table entries at a time, irrespective of how many entries
-+ * are in the table. It's SW's responsibility to make sure these accesses
-+ * do not have side effects.
-+ */
-+static inline int pad_sg_nents(int sg_nents)
+ static struct jr_driver_data driver_data;
++static DEFINE_MUTEX(algs_lock);
++static unsigned int active_devs;
++
++static void register_algs(struct device *dev)
 +{
-+	return ALIGN(sg_nents, 4);
++	mutex_lock(&algs_lock);
++
++	if (++active_devs != 1)
++		goto algs_unlock;
++
++	caam_algapi_init(dev);
++	caam_algapi_hash_init(dev);
++	caam_pkc_init(dev);
++	caam_rng_init(dev);
++	caam_qi_algapi_init(dev);
++
++algs_unlock:
++	mutex_unlock(&algs_lock);
 +}
 +
- static inline int desc_len(u32 * const desc)
++static void unregister_algs(void)
++{
++	mutex_lock(&algs_lock);
++
++	if (--active_devs != 0)
++		goto algs_unlock;
++
++	caam_qi_algapi_exit();
++
++	caam_rng_exit();
++	caam_pkc_exit();
++	caam_algapi_hash_exit();
++	caam_algapi_exit();
++
++algs_unlock:
++	mutex_unlock(&algs_lock);
++}
+ 
+ static int caam_reset_hw_jr(struct device *dev)
  {
- 	return caam32_to_cpu(*desc) & HDR_DESCLEN_MASK;
+@@ -109,6 +147,9 @@ static int caam_jr_remove(struct platform_device *pdev)
+ 		return -EBUSY;
+ 	}
+ 
++	/* Unregister JR-based RNG & crypto algorithms */
++	unregister_algs();
++
+ 	/* Remove the node from Physical JobR list maintained by driver */
+ 	spin_lock(&driver_data.jr_alloc_lock);
+ 	list_del(&jrpriv->list_node);
+@@ -541,6 +582,8 @@ static int caam_jr_probe(struct platform_device *pdev)
+ 
+ 	atomic_set(&jrpriv->tfm_count, 0);
+ 
++	register_algs(jrdev->parent);
++
+ 	return 0;
+ }
+ 
 -- 
 2.17.1
 
