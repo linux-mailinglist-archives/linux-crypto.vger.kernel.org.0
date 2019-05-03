@@ -2,24 +2,24 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C226312FEF
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 May 2019 16:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBDE12FF0
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 May 2019 16:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbfECORx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 3 May 2019 10:17:53 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:56626 "EHLO inva020.nxp.com"
+        id S1728079AbfECORy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 3 May 2019 10:17:54 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:56688 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728104AbfECORx (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 3 May 2019 10:17:53 -0400
+        id S1726679AbfECORy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 3 May 2019 10:17:54 -0400
 Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2A4971A03C9;
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A09BE1A03C5;
         Fri,  3 May 2019 16:17:51 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1E40B1A03BC;
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9B2C91A0528;
         Fri,  3 May 2019 16:17:51 +0200 (CEST)
 Received: from fsr-ub1864-014.ea.freescale.net (fsr-ub1864-014.ea.freescale.net [10.171.95.219])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id A5565205F4;
-        Fri,  3 May 2019 16:17:50 +0200 (CEST)
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 2D7A5205F4;
+        Fri,  3 May 2019 16:17:51 +0200 (CEST)
 From:   =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -30,9 +30,9 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Iuliana Prodan <iuliana.prodan@nxp.com>,
         Marcin Niestroj <m.niestroj@grinn-global.com>,
         linux-crypto@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCH v2 4/7] crypto: caam/qi - don't allocate an extra platform device
-Date:   Fri,  3 May 2019 17:17:40 +0300
-Message-Id: <20190503141743.27129-5-horia.geanta@nxp.com>
+Subject: [PATCH v2 5/7] crypto: caam/qi - fix address translations with IOMMU enabled
+Date:   Fri,  3 May 2019 17:17:41 +0300
+Message-Id: <20190503141743.27129-6-horia.geanta@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190503141743.27129-1-horia.geanta@nxp.com>
 References: <20190503141743.27129-1-horia.geanta@nxp.com>
@@ -45,214 +45,96 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Use the controller device for caam/qi instead of allocating
-a new platform device.
-This is needed as a preparation to add support for working behind an
-SMMU. A platform device allocated using platform_device_register_full()
-is not completely set up - most importantly .dma_configure()
-is not called.
+When IOMMU is enabled, iova -> phys address translation should be
+performed using iommu_ops, not dma_to_phys().
 
 Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
 ---
- drivers/crypto/caam/caamalg_qi.c |  6 +++---
- drivers/crypto/caam/ctrl.c       |  8 ++++----
- drivers/crypto/caam/intern.h     |  7 +++----
- drivers/crypto/caam/qi.c         | 33 +++++---------------------------
- 4 files changed, 15 insertions(+), 39 deletions(-)
+ drivers/crypto/caam/ctrl.c   |  1 +
+ drivers/crypto/caam/intern.h |  2 ++
+ drivers/crypto/caam/qi.c     | 16 ++++++++++++++--
+ 3 files changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/caam/caamalg_qi.c b/drivers/crypto/caam/caamalg_qi.c
-index b2e29be79d41..fd38200dbc1c 100644
---- a/drivers/crypto/caam/caamalg_qi.c
-+++ b/drivers/crypto/caam/caamalg_qi.c
-@@ -2439,7 +2439,7 @@ static int caam_init_common(struct caam_ctx *ctx, struct caam_alg_entry *caam,
- 	ctx->cdata.algtype = OP_TYPE_CLASS1_ALG | caam->class1_alg_type;
- 	ctx->adata.algtype = OP_TYPE_CLASS2_ALG | caam->class2_alg_type;
- 
--	ctx->qidev = priv->qidev;
-+	ctx->qidev = ctx->jrdev->parent;
- 
- 	spin_lock_init(&ctx->lock);
- 	ctx->drv_ctx[ENCRYPT] = NULL;
-@@ -2599,7 +2599,7 @@ int caam_qi_algapi_init(struct device *ctrldev)
- 
- 		err = crypto_register_skcipher(&t_alg->skcipher);
- 		if (err) {
--			dev_warn(priv->qidev, "%s alg registration failed\n",
-+			dev_warn(ctrldev, "%s alg registration failed\n",
- 				 t_alg->skcipher.base.cra_driver_name);
- 			continue;
- 		}
-@@ -2655,7 +2655,7 @@ int caam_qi_algapi_init(struct device *ctrldev)
- 	}
- 
- 	if (registered)
--		dev_info(priv->qidev, "algorithms registered in /proc/crypto\n");
-+		dev_info(ctrldev, "algorithms registered in /proc/crypto\n");
- 
- 	return err;
- }
 diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
-index 36c2f15100a4..38bcbbccdfda 100644
+index 38bcbbccdfda..bbde6efce8af 100644
 --- a/drivers/crypto/caam/ctrl.c
 +++ b/drivers/crypto/caam/ctrl.c
-@@ -323,8 +323,8 @@ static int caam_remove(struct platform_device *pdev)
- 	of_platform_depopulate(ctrldev);
+@@ -702,6 +702,7 @@ static int caam_probe(struct platform_device *pdev)
+ 	}
  
- #ifdef CONFIG_CAAM_QI
--	if (ctrlpriv->qidev)
--		caam_qi_shutdown(ctrlpriv->qidev);
-+	if (ctrlpriv->qi_init)
-+		caam_qi_shutdown(ctrldev);
- #endif
+ 	ctrlpriv->era = caam_get_era(ctrl);
++	ctrlpriv->domain = iommu_get_domain_for_dev(dev);
  
+ #ifdef CONFIG_DEBUG_FS
  	/*
-@@ -900,8 +900,8 @@ static int caam_probe(struct platform_device *pdev)
- 
- shutdown_qi:
- #ifdef CONFIG_CAAM_QI
--	if (ctrlpriv->qidev)
--		caam_qi_shutdown(ctrlpriv->qidev);
-+	if (ctrlpriv->qi_init)
-+		caam_qi_shutdown(dev);
- #endif
- iounmap_ctrl:
- 	iounmap(ctrl);
 diff --git a/drivers/crypto/caam/intern.h b/drivers/crypto/caam/intern.h
-index 50e24ebc533b..c9089da5dbaf 100644
+index c9089da5dbaf..6af84bbc612c 100644
 --- a/drivers/crypto/caam/intern.h
 +++ b/drivers/crypto/caam/intern.h
-@@ -63,10 +63,6 @@ struct caam_drv_private_jr {
-  * Driver-private storage for a single CAAM block instance
-  */
- struct caam_drv_private {
--#ifdef CONFIG_CAAM_QI
--	struct device *qidev;
--#endif
--
- 	/* Physical-presence section */
- 	struct caam_ctrl __iomem *ctrl; /* controller region */
- 	struct caam_deco __iomem *deco; /* DECO/CCB views */
-@@ -80,6 +76,9 @@ struct caam_drv_private {
- 	 */
- 	u8 total_jobrs;		/* Total Job Rings in device */
- 	u8 qi_present;		/* Nonzero if QI present in device */
-+#ifdef CONFIG_CAAM_QI
-+	u8 qi_init;		/* Nonzero if QI has been initialized */
-+#endif
- 	u8 mc_en;		/* Nonzero if MC f/w is active */
- 	int secvio_irq;		/* Security violation interrupt number */
- 	int virt_en;		/* Virtualization enabled in CAAM */
+@@ -70,6 +70,8 @@ struct caam_drv_private {
+ 	struct caam_queue_if __iomem *qi; /* QI control region */
+ 	struct caam_job_ring __iomem *jr[4];	/* JobR's register space */
+ 
++	struct iommu_domain *domain;
++
+ 	/*
+ 	 * Detected geometry block. Filled in from device tree if powerpc,
+ 	 * or from register-based version detection code
 diff --git a/drivers/crypto/caam/qi.c b/drivers/crypto/caam/qi.c
-index 2d9b0485141f..46fca2c9fb24 100644
+index 46fca2c9fb24..0fe618e3804a 100644
 --- a/drivers/crypto/caam/qi.c
 +++ b/drivers/crypto/caam/qi.c
-@@ -4,7 +4,7 @@
-  * Queue Interface backend functionality
-  *
-  * Copyright 2013-2016 Freescale Semiconductor, Inc.
-- * Copyright 2016-2017 NXP
-+ * Copyright 2016-2017, 2019 NXP
+@@ -94,6 +94,16 @@ static u64 times_congested;
   */
+ static struct kmem_cache *qi_cache;
  
- #include <linux/cpumask.h>
-@@ -59,11 +59,9 @@ static DEFINE_PER_CPU(int, last_cpu);
- /*
-  * caam_qi_priv - CAAM QI backend private params
-  * @cgr: QMan congestion group
-- * @qi_pdev: platform device for QI backend
-  */
- struct caam_qi_priv {
- 	struct qman_cgr cgr;
--	struct platform_device *qi_pdev;
- };
- 
- static struct caam_qi_priv qipriv ____cacheline_aligned;
-@@ -491,7 +489,7 @@ EXPORT_SYMBOL(caam_drv_ctx_rel);
- void caam_qi_shutdown(struct device *qidev)
- {
- 	int i;
--	struct caam_qi_priv *priv = dev_get_drvdata(qidev);
-+	struct caam_qi_priv *priv = &qipriv;
- 	const cpumask_t *cpus = qman_affine_cpus();
- 
- 	for_each_cpu(i, cpus) {
-@@ -509,8 +507,6 @@ void caam_qi_shutdown(struct device *qidev)
- 	qman_release_cgrid(priv->cgr.cgrid);
- 
- 	kmem_cache_destroy(qi_cache);
--
--	platform_device_unregister(priv->qi_pdev);
- }
- 
- static void cgr_cb(struct qman_portal *qm, struct qman_cgr *cgr, int congested)
-@@ -695,33 +691,17 @@ static void free_rsp_fqs(void)
- int caam_qi_init(struct platform_device *caam_pdev)
- {
- 	int err, i;
--	struct platform_device *qi_pdev;
- 	struct device *ctrldev = &caam_pdev->dev, *qidev;
- 	struct caam_drv_private *ctrlpriv;
- 	const cpumask_t *cpus = qman_affine_cpus();
--	static struct platform_device_info qi_pdev_info = {
--		.name = "caam_qi",
--		.id = PLATFORM_DEVID_NONE
--	};
--
--	qi_pdev_info.parent = ctrldev;
--	qi_pdev_info.dma_mask = dma_get_mask(ctrldev);
--	qi_pdev = platform_device_register_full(&qi_pdev_info);
--	if (IS_ERR(qi_pdev))
--		return PTR_ERR(qi_pdev);
--	set_dma_ops(&qi_pdev->dev, get_dma_ops(ctrldev));
- 
- 	ctrlpriv = dev_get_drvdata(ctrldev);
--	qidev = &qi_pdev->dev;
--
--	qipriv.qi_pdev = qi_pdev;
--	dev_set_drvdata(qidev, &qipriv);
-+	qidev = ctrldev;
- 
- 	/* Initialize the congestion detection */
- 	err = init_cgr(qidev);
- 	if (err) {
- 		dev_err(qidev, "CGR initialization failed: %d\n", err);
--		platform_device_unregister(qi_pdev);
- 		return err;
- 	}
- 
-@@ -730,7 +710,6 @@ int caam_qi_init(struct platform_device *caam_pdev)
- 	if (err) {
- 		dev_err(qidev, "Can't allocate CAAM response FQs: %d\n", err);
- 		free_rsp_fqs();
--		platform_device_unregister(qi_pdev);
- 		return err;
- 	}
- 
-@@ -753,15 +732,11 @@ int caam_qi_init(struct platform_device *caam_pdev)
- 		napi_enable(irqtask);
- 	}
- 
--	/* Hook up QI device to parent controlling caam device */
--	ctrlpriv->qidev = qidev;
--
- 	qi_cache = kmem_cache_create("caamqicache", CAAM_QI_MEMCACHE_SIZE, 0,
- 				     SLAB_CACHE_DMA, NULL);
- 	if (!qi_cache) {
- 		dev_err(qidev, "Can't allocate CAAM cache\n");
- 		free_rsp_fqs();
--		platform_device_unregister(qi_pdev);
- 		return -ENOMEM;
- 	}
- 
-@@ -769,6 +744,8 @@ int caam_qi_init(struct platform_device *caam_pdev)
- 	debugfs_create_file("qi_congested", 0444, ctrlpriv->ctl,
- 			    &times_congested, &caam_fops_u64_ro);
- #endif
++static void *caam_iova_to_virt(struct iommu_domain *domain,
++			       dma_addr_t iova_addr)
++{
++	phys_addr_t phys_addr;
 +
-+	ctrlpriv->qi_init = 1;
- 	dev_info(qidev, "Linux CAAM Queue I/F driver initialised\n");
- 	return 0;
- }
++	phys_addr = domain ? iommu_iova_to_phys(domain, iova_addr) : iova_addr;
++
++	return phys_to_virt(phys_addr);
++}
++
+ int caam_qi_enqueue(struct device *qidev, struct caam_drv_req *req)
+ {
+ 	struct qm_fd fd;
+@@ -134,6 +144,7 @@ static void caam_fq_ern_cb(struct qman_portal *qm, struct qman_fq *fq,
+ 	const struct qm_fd *fd;
+ 	struct caam_drv_req *drv_req;
+ 	struct device *qidev = &(raw_cpu_ptr(&pcpu_qipriv)->net_dev.dev);
++	struct caam_drv_private *priv = dev_get_drvdata(qidev);
+ 
+ 	fd = &msg->ern.fd;
+ 
+@@ -142,7 +153,7 @@ static void caam_fq_ern_cb(struct qman_portal *qm, struct qman_fq *fq,
+ 		return;
+ 	}
+ 
+-	drv_req = (struct caam_drv_req *)phys_to_virt(qm_fd_addr_get64(fd));
++	drv_req = caam_iova_to_virt(priv->domain, qm_fd_addr_get64(fd));
+ 	if (!drv_req) {
+ 		dev_err(qidev,
+ 			"Can't find original request for CAAM response\n");
+@@ -549,6 +560,7 @@ static enum qman_cb_dqrr_result caam_rsp_fq_dqrr_cb(struct qman_portal *p,
+ 	struct caam_drv_req *drv_req;
+ 	const struct qm_fd *fd;
+ 	struct device *qidev = &(raw_cpu_ptr(&pcpu_qipriv)->net_dev.dev);
++	struct caam_drv_private *priv = dev_get_drvdata(qidev);
+ 	u32 status;
+ 
+ 	if (caam_qi_napi_schedule(p, caam_napi))
+@@ -571,7 +583,7 @@ static enum qman_cb_dqrr_result caam_rsp_fq_dqrr_cb(struct qman_portal *p,
+ 		return qman_cb_dqrr_consume;
+ 	}
+ 
+-	drv_req = (struct caam_drv_req *)phys_to_virt(qm_fd_addr_get64(fd));
++	drv_req = caam_iova_to_virt(priv->domain, qm_fd_addr_get64(fd));
+ 	if (unlikely(!drv_req)) {
+ 		dev_err(qidev,
+ 			"Can't find original request for caam response\n");
 -- 
 2.17.1
 
