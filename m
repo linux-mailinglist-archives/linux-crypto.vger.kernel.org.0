@@ -2,42 +2,43 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A402916786
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 May 2019 18:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4876716795
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 May 2019 18:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbfEGQNc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 7 May 2019 12:13:32 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:36396 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbfEGQNc (ORCPT
+        id S1726874AbfEGQOO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 7 May 2019 12:14:14 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:43528 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbfEGQNd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 7 May 2019 12:13:32 -0400
-Received: by mail-pg1-f196.google.com with SMTP id 85so8550753pgc.3
-        for <linux-crypto@vger.kernel.org>; Tue, 07 May 2019 09:13:32 -0700 (PDT)
+        Tue, 7 May 2019 12:13:33 -0400
+Received: by mail-pl1-f196.google.com with SMTP id n8so8420564plp.10
+        for <linux-crypto@vger.kernel.org>; Tue, 07 May 2019 09:13:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=G8Fv5OtINQpv7rQM6n3u/8e+E08Vz7aR23eSUbSIdaA=;
-        b=m9QH7Pj+jWZ00plFaD34XJ4bXZX37XD/8YZSihND49nAlrV6HtJ88LaoUwJhJjW69T
-         GQ9JRw4jaMO5skBMR6BvxHWfV9SMdXzx+BcrjzOy1LAodcaBMtpxqEiUZJbZ3HjUeErm
-         l2nBytWD4PRqBDQj8o/EUasTGI5gnin1CorLw=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=EzKHhVoz8ac5WrBJUOYPI48ana8bRIkhRTi7PVVgpfQ=;
+        b=KS3gLbgNHZtVY2jdTyUeEPPPP1WbGcW/eiR/QF4P3Uaucmox7wXfYTJUnFpbgpTsfQ
+         hw9ztmgKmDgsTnGvw1rlV57ARKRv7m6f1D2DJOnMw49h/5KUiE+yV7/LRiCjRjVAQBPd
+         e4EocfVeor+V1AfwH5yXaMbsyIY1EoffJ5ek0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=G8Fv5OtINQpv7rQM6n3u/8e+E08Vz7aR23eSUbSIdaA=;
-        b=EtvdjJV/ZjYXpM+TCIVYQTZm3tfY8Gq0glTTLS0YHOXwqQH5srXSSlZpdxRk+xTw5Q
-         CV7XodbxCjqPfFp5DoRSDJTvWTn7HJ6A7qvsLzGSKg3eW302QfyyN6g9sJCNqxmqWH5r
-         1DHH5g0cauLvUrgoCRwxOY7RNbvfvNZMpj4LSGfbMFOYWbun4o7d7biEa3Vqf7hzZe3G
-         PolBWklZum3hjdawhUcyYSLTYimrRG5C4Gt4QTel03hvBbTbC093CnMoGdCZ8qnUs9xC
-         X7jeaLC1hsxDFTr/Pc6B0JjpSB3XUt68UOeWJ0wRVtNZto6oGsGZ1stVAnVCm/T9Ffgo
-         aKrw==
-X-Gm-Message-State: APjAAAWJvm+NVS9iHMsE5bsCHGNVqhXbF+Vt6JF6EC2jNshX64YdVyla
-        zvZaSlIoNaEMPZxDWYVi2g2PUg==
-X-Google-Smtp-Source: APXvYqx5bxQhuDKx6yG8AtxVsxUDq4d1U+bTyokMD+jyXXBS5DOFMePdxHMknm1qdR/wfQsbWkW94w==
-X-Received: by 2002:a63:d343:: with SMTP id u3mr40966454pgi.285.1557245611889;
-        Tue, 07 May 2019 09:13:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=EzKHhVoz8ac5WrBJUOYPI48ana8bRIkhRTi7PVVgpfQ=;
+        b=mCZnoU79OT03FkWPr83Jrgs7Rsc3I3RURbyD7wpXltotJyMyWgX0qHe93cZxAyt5XZ
+         lLnc5tNiBNBFqCAtz1uAPRJxo9mIQZCvZ09naQPTYwu4Mw7wJoz2Vzfsnnemq0O41pi6
+         RiLA5O94okcMbg50vSQkEEZf4urnB3m0TpKXvW53xXyCnjHDVsSQmhLz2Atf+wZ3iZbj
+         XqsFbuN0E5xCKjfQIhS3ekdiZruDtp+1DCO0J1bF3REKq9L9GiavOCpl7H0bmA/pHPEB
+         nyGb6qhl58T2cK/WqQOw3mfzDGxbMpPf4OAeRMPD8rFCXfDkot8dpNO4hddxz6m+y+BF
+         dyPw==
+X-Gm-Message-State: APjAAAW45ACMyjIdTiO9f7g60jysrAM3iEWr7Mg5ak6jGe7eCrq3lB4M
+        I1Cs5VeGr3xLiQYbfdN9BKhQVA==
+X-Google-Smtp-Source: APXvYqyGSe2J5kp+fbpzmqO4DRburwBMLORv3hWRJlVcfNP+lmtRv5nKbU9VeJO1al5k21nBvJDiPA==
+X-Received: by 2002:a17:902:d892:: with SMTP id b18mr25932914plz.209.1557245613269;
+        Tue, 07 May 2019 09:13:33 -0700 (PDT)
 Received: from www.outflux.net (173-164-112-133-Oregon.hfc.comcastbusiness.net. [173.164.112.133])
-        by smtp.gmail.com with ESMTPSA id u6sm19591747pfm.10.2019.05.07.09.13.30
+        by smtp.gmail.com with ESMTPSA id m16sm22906342pfi.29.2019.05.07.09.13.30
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Tue, 07 May 2019 09:13:30 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -49,10 +50,12 @@ Cc:     Kees Cook <keescook@chromium.org>, Joao Moreira <jmoreira@suse.de>,
         Borislav Petkov <bp@alien8.de>, x86@kernel.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-hardening@lists.openwall.com
-Subject: [PATCH v3 0/7] crypto: x86: Fix indirect function call casts
-Date:   Tue,  7 May 2019 09:13:14 -0700
-Message-Id: <20190507161321.34611-1-keescook@chromium.org>
+Subject: [PATCH v3 1/7] crypto: x86/glue_helper: Add static inline function glue macros
+Date:   Tue,  7 May 2019 09:13:15 -0700
+Message-Id: <20190507161321.34611-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190507161321.34611-1-keescook@chromium.org>
+References: <20190507161321.34611-1-keescook@chromium.org>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
@@ -77,50 +80,58 @@ pointer.
 Given the above, the current efforts to improve the Linux security,
 and the upcoming kernel support to compilers with CFI features, this
 creates macros to be used to build the needed function definitions,
-to be used in camellia, cast6, serpent, twofish, and aesni.
+to be used in later patches to camellia, cast6, serpent, twofish, and
+aesni.
 
--Kees (and Joao)
+Co-developed-by: Joao Moreira <jmoreira@suse.de>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ arch/x86/include/asm/crypto/glue_helper.h | 32 +++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-v3:
-- no longer RFC
-- consolidate macros into glue_helper.h
-- include aesni which was using casts as well
-- remove XTS_TWEAK_CAST while we're at it
-
-v2:
-- update cast macros for clarity
-
-v1:
-- initial prototype
-
-Joao Moreira (4):
-  crypto: x86/crypto: Use new glue function macros
-  crypto: x86/camellia: Use new glue function macros
-  crypto: x86/twofish: Use new glue function macros
-  crypto: x86/cast6: Use new glue function macros
-
-Kees Cook (3):
-  crypto: x86/glue_helper: Add static inline function glue macros
-  crypto: x86/aesni: Use new glue function macros
-  crypto: x86/glue_helper: Remove function prototype cast helpers
-
- arch/x86/crypto/aesni-intel_glue.c         | 31 ++++-----
- arch/x86/crypto/camellia_aesni_avx2_glue.c | 73 +++++++++-------------
- arch/x86/crypto/camellia_aesni_avx_glue.c  | 63 +++++++------------
- arch/x86/crypto/camellia_glue.c            | 21 +++----
- arch/x86/crypto/cast6_avx_glue.c           | 65 +++++++++----------
- arch/x86/crypto/serpent_avx2_glue.c        | 65 +++++++++----------
- arch/x86/crypto/serpent_avx_glue.c         | 58 ++++++-----------
- arch/x86/crypto/serpent_sse2_glue.c        | 27 +++++---
- arch/x86/crypto/twofish_avx_glue.c         | 71 ++++++++-------------
- arch/x86/crypto/twofish_glue_3way.c        | 28 ++++-----
- arch/x86/include/asm/crypto/camellia.h     | 64 ++++++-------------
- arch/x86/include/asm/crypto/glue_helper.h  | 34 ++++++++--
- arch/x86/include/asm/crypto/serpent-avx.h  | 28 ++++-----
- arch/x86/include/asm/crypto/twofish.h      | 22 ++++---
- include/crypto/xts.h                       |  2 -
- 15 files changed, 283 insertions(+), 369 deletions(-)
-
+diff --git a/arch/x86/include/asm/crypto/glue_helper.h b/arch/x86/include/asm/crypto/glue_helper.h
+index d1818634ae7e..3b039d563809 100644
+--- a/arch/x86/include/asm/crypto/glue_helper.h
++++ b/arch/x86/include/asm/crypto/glue_helper.h
+@@ -23,6 +23,38 @@ typedef void (*common_glue_xts_func_t)(void *ctx, u128 *dst, const u128 *src,
+ #define GLUE_CTR_FUNC_CAST(fn) ((common_glue_ctr_func_t)(fn))
+ #define GLUE_XTS_FUNC_CAST(fn) ((common_glue_xts_func_t)(fn))
+ 
++
++#define GLUE_CAST(func, context)					\
++asmlinkage void func(struct context *ctx, u8 *dst, const u8 *src);	\
++asmlinkage static inline						\
++void func ## _glue(void *ctx, u8 *dst, const u8 *src)			\
++{ func((struct context *) ctx, dst, src); }
++
++#define GLUE_CAST_XOR(func, context)					\
++asmlinkage void __ ## func(struct context *ctx, u8 *dst, const u8 *src,	\
++			   bool y);					\
++asmlinkage static inline						\
++void func(void *ctx, u8 *dst, const u8 *src)				\
++{ __ ## func((struct context *) ctx, dst, src, false); }		\
++asmlinkage static inline						\
++void func ## _xor(void *ctx, u8 *dst, const u8 *src)			\
++{ __ ## func((struct context *) ctx, dst, src, true); }
++
++#define GLUE_CAST_CBC(func, context)					\
++asmlinkage void func(struct context *ctx, u8 *dst, const u8 *src);	\
++asmlinkage static inline						\
++void func ## _cbc_glue(void *ctx, u128 *dst, const u128 *src)		\
++{ func((struct context *) ctx, (u8 *) dst, (u8 *) src); }
++
++#define GLUE_CAST_CTR(func, context)					\
++asmlinkage void func(struct context *ctx, u128 *dst,			\
++		     const u128 *src, le128 *iv);			\
++asmlinkage static inline						\
++void func ## _glue(void *ctx, u128 *dst, const u128 *src, le128 *iv)	\
++{ func((struct context *) ctx, dst, src, iv); }
++
++#define GLUE_CAST_XTS(func, context) GLUE_CAST_CTR(func, context)
++
+ struct common_glue_func_entry {
+ 	unsigned int num_blocks; /* number of blocks that @fn will process */
+ 	union {
 -- 
 2.17.1
 
