@@ -2,64 +2,64 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4930218403
-	for <lists+linux-crypto@lfdr.de>; Thu,  9 May 2019 05:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D66184CE
+	for <lists+linux-crypto@lfdr.de>; Thu,  9 May 2019 07:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbfEIDQj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 8 May 2019 23:16:39 -0400
-Received: from [5.180.42.13] ([5.180.42.13]:52918 "EHLO deadmen.hmeau.com"
+        id S1726281AbfEIFYF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 9 May 2019 01:24:05 -0400
+Received: from [5.180.42.13] ([5.180.42.13]:53918 "EHLO deadmen.hmeau.com"
         rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1726251AbfEIDQj (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 8 May 2019 23:16:39 -0400
+        id S1725936AbfEIFYF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 9 May 2019 01:24:05 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hOZXp-00005y-4k; Thu, 09 May 2019 11:16:29 +0800
+        id 1hObXG-0001CA-LP; Thu, 09 May 2019 13:24:02 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hOZXl-00086W-RE; Thu, 09 May 2019 11:16:25 +0800
-Date:   Thu, 9 May 2019 11:16:25 +0800
+        id 1hObX6-0001Yk-GZ; Thu, 09 May 2019 13:23:52 +0800
+Date:   Thu, 9 May 2019 13:23:52 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Joao Moreira <jmoreira@suse.de>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>
-Subject: Re: [PATCH v3 0/7] crypto: x86: Fix indirect function call casts
-Message-ID: <20190509031625.f6usxmqzfehrmx7r@gondor.apana.org.au>
-References: <20190507161321.34611-1-keescook@chromium.org>
- <20190507170039.GB1399@sol.localdomain>
- <CAGXu5jL7pWWXuJMinghn+3GjQLLBYguEtwNdZSQy++XGpGtsHQ@mail.gmail.com>
- <20190507215045.GA7528@sol.localdomain>
- <20190508133606.nsrzthbad5kynavp@gondor.apana.org.au>
- <CAGXu5jKdsuzX6KF74zAYw3PpEf8DExS9P0Y_iJrJVS+goHFbcA@mail.gmail.com>
- <20190509020439.GB693@sol.localdomain>
- <8c9a53b9-12e6-3380-21c8-4fe85342f0ac@suse.de>
+To:     Horia Geanta <horia.geanta@nxp.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Vakul Garg <vakul.garg@nxp.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH] crypto: caam/jr - Remove extra memory barrier during job
+ ring dequeue
+Message-ID: <20190509052352.nje7a4niuc2n6c57@gondor.apana.org.au>
+References: <87pnp2aflz.fsf@concordia.ellerman.id.au>
+ <VI1PR0402MB34851F6AB9FE68A2322EB09E98340@VI1PR0402MB3485.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8c9a53b9-12e6-3380-21c8-4fe85342f0ac@suse.de>
+In-Reply-To: <VI1PR0402MB34851F6AB9FE68A2322EB09E98340@VI1PR0402MB3485.eurprd04.prod.outlook.com>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, May 09, 2019 at 12:12:54AM -0300, Joao Moreira wrote:
+On Thu, May 02, 2019 at 11:08:55AM +0000, Horia Geanta wrote:
 >
-> This is how things were done in the original patch set, but some concerns
-> were raised about this approach:
+> >> +
+> >>  static inline void wr_reg32(void __iomem *reg, u32 data)
+> >>  {
+> >>  	if (caam_little_end)
+> > 
+> > This crashes on my p5020ds. Did you test on powerpc?
+> > 
+> > # first bad commit: [bbfcac5ff5f26aafa51935a62eb86b6eacfe8a49] crypto: caam/jr - Remove extra memory barrier during job ring dequeue
 > 
-> https://lkml.org/lkml/2018/4/16/74
+> Thanks for the report Michael.
+> 
+> Any hint what would be the proper approach here - to have relaxed I/O accessors
+> that would work both for ARM and PPC, and avoid ifdeffery etc.?
 
-No that's not what I'm suggesting at all.  Just get rid of those
-wrapper functions and change the underlying asm functions to take
-a void *.
+Since no fix has been found I'm reverting the commit in question.
 
-Cheers,
+Thanks,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
