@@ -2,84 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BB61A283
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 May 2019 19:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A971A44E
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 May 2019 23:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727580AbfEJRkc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 10 May 2019 13:40:32 -0400
-Received: from smtprelay0045.hostedemail.com ([216.40.44.45]:37638 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727557AbfEJRkc (ORCPT
+        id S1727835AbfEJVHS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 10 May 2019 17:07:18 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:44695 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727677AbfEJVHS (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 10 May 2019 13:40:32 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave03.hostedemail.com (Postfix) with ESMTP id 753E118032814;
-        Fri, 10 May 2019 17:40:31 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 9FE56442F;
-        Fri, 10 May 2019 17:40:30 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,:::::::::::::::::::::,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2691:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:4321:4605:5007:8603:10004:10400:10848:11232:11658:11914:12043:12048:12296:12438:12679:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14721:21080:21627:21796:30036:30054:30091,0,RBL:172.58.19.107:@perches.com:.lbl8.mailshell.net-62.8.0.180 64.201.201.201,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:neutral,Custom_rules:0:0:0,LFtime:28,LUA_SUMMARY:none
-X-HE-Tag: crook38_414a83b1b407
-X-Filterd-Recvd-Size: 2787
-Received: from XPS-9350 (unknown [172.58.19.107])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 10 May 2019 17:40:27 +0000 (UTC)
-Message-ID: <10021f43dc5b377340fde9a7716e083f6f1261c1.camel@perches.com>
-Subject: Re: [PATCH 1/2] zstd: pass pointer rathen than structure to
- functions
-From:   Joe Perches <joe@perches.com>
-To:     Maninder Singh <maninder1.s@samsung.com>, terrelln@fb.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        keescook@chromium.org, gustavo@embeddedor.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        a.sahrawat@samsung.com, pankaj.m@samsung.com,
-        Vaneet Narang <v.narang@samsung.com>
-Date:   Fri, 10 May 2019 10:39:57 -0700
-In-Reply-To: <1557468704-3014-1-git-send-email-maninder1.s@samsung.com>
-References: <CGME20190510061311epcas5p19e9bf3d08319ac99890e03e0bd59e478@epcas5p1.samsung.com>
-         <1557468704-3014-1-git-send-email-maninder1.s@samsung.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.30.1-1build1 
-Mime-Version: 1.0
+        Fri, 10 May 2019 17:07:18 -0400
+Received: by mail-ed1-f68.google.com with SMTP id b8so6860327edm.11
+        for <linux-crypto@vger.kernel.org>; Fri, 10 May 2019 14:07:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=elVk6sgIxZrDGVeevhQCe+vhDAsDu3sGw0QGBZMgA9M=;
+        b=hEQ/RQ4EGqpM7gmjQ5hQZMKLE4zaduR0T1/Ovknp4ZJfs91m9cgcVtNoDr7qao5jE9
+         PbltFAlFNWFeMl08Zlku5MBHVQfOremDpzWbaQ9gdjc3ufM/xIi1oyzWrtH2n9rMsPfJ
+         Y1w+X8UB4KqRHTEyY92iFG5SSr/DMeWXs0FQc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=elVk6sgIxZrDGVeevhQCe+vhDAsDu3sGw0QGBZMgA9M=;
+        b=kCYBjQ7bBJ3A0opTVT46x9LmjvmMUKLpEkryAIBQJdxW/M7Ao35gSWquGuau63QXiW
+         sOJ0As7VaJi2IAFSOsyXuf7kYz2t+8NqeWu//GJjlOK9A78gDxXozgnTacfyznlgCTqg
+         CZuJviMc47YXCqzRgA5Ewq6wLs7QjIAqT5Q7qZnOnZuq3/nZVhRTSyIDVRTq3uz5NCac
+         wu4BveGEKHpKyF7oM8ek4//FMnEVc/6zAgkPAGcQmnmC0mThC/PLqNfptQYlvs4H60Lq
+         Hc1ySGb/4HOHf8RhdHVHYxcjLnxtZ+oRR4LWCCubchwCP9fRRqGGYZwHhzVo1QEuvB1a
+         ZWng==
+X-Gm-Message-State: APjAAAXZbJlaaFII0+vTCIGEibTJEQbCMRSEw4jQMCfhIBoAjaLkT6pW
+        tmcabx/g8o4yPA4tVGKtfpeMIJJNO+d84w==
+X-Google-Smtp-Source: APXvYqy4AA+phRa0ZVJjTEkWVxJxy/0bAIGLY7h5DOIxSZDJDTQD4BIDQ2P98HZFQBLbeDvjy4VMhw==
+X-Received: by 2002:a50:bb24:: with SMTP id y33mr13550439ede.116.1557522436869;
+        Fri, 10 May 2019 14:07:16 -0700 (PDT)
+Received: from [10.136.8.252] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id b4sm1725867eda.9.2019.05.10.14.07.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 May 2019 14:07:16 -0700 (PDT)
+Subject: Re: [PATCH 0/2] hwrng: Support for 7211 in iproc-rng200
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     bcm-kernel-feedback-list@broadcom.com, stefan.wahren@i2se.com,
+        wahrenst@gmx.net, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, mpm@selenic.com
+References: <20190510173112.2196-1-f.fainelli@gmail.com>
+From:   Ray Jui <ray.jui@broadcom.com>
+Message-ID: <b1eb11c0-3aa9-52c1-da4c-e685e4bef48e@broadcom.com>
+Date:   Fri, 10 May 2019 14:07:12 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <20190510173112.2196-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, 2019-05-10 at 11:41 +0530, Maninder Singh wrote:
-> currently params structure is passed in all functions, which increases
-> stack usage in all the function and lead to stack overflow on target like
-> ARM with kernel stack size of 8 KB so better to pass pointer.
-[]
-> diff --git a/lib/zstd/compress.c b/lib/zstd/compress.c
-[]
-> @@ -206,18 +206,18 @@ ZSTD_compressionParameters ZSTD_adjustCParams(ZSTD_compressionParameters cPar, u
->  	return cPar;
->  }
->  
-> -static U32 ZSTD_equivalentParams(ZSTD_parameters param1, ZSTD_parameters param2)
-> +static U32 ZSTD_equivalentParams(const ZSTD_parameters *param1, const ZSTD_parameters *param2)
->  {
-> -	return (param1.cParams.hashLog == param2.cParams.hashLog) & (param1.cParams.chainLog == param2.cParams.chainLog) &
-> -	       (param1.cParams.strategy == param2.cParams.strategy) & ((param1.cParams.searchLength == 3) == (param2.cParams.searchLength == 3));
-> +	return (param1->cParams.hashLog == param2->cParams.hashLog) & (param1->cParams.chainLog == param2->cParams.chainLog) &
-> +	       (param1->cParams.strategy == param2->cParams.strategy) & ((param1->cParams.searchLength == 3) == (param2->cParams.searchLength == 3));
->  }
+Hi Florian,
 
-trivia:
+On 5/10/2019 10:31 AM, Florian Fainelli wrote:
+> Hi Herbert,
+> 
+> This patch series adds support for BCM7211 to the iproc-rng200 driver,
+> nothing special besides matching the compatibile string and updating the
+> binding document.
+> 
+> Florian Fainelli (2):
+>   dt-bindings: rng: Document BCM7211 RNG compatible string
+>   hwrng: iproc-rng200: Add support for 7211
+> 
+>  Documentation/devicetree/bindings/rng/brcm,iproc-rng200.txt | 1 +
+>  drivers/char/hw_random/iproc-rng200.c                       | 1 +
+>  2 files changed, 2 insertions(+)
+> 
 
-Using & instead of && makes this somewhat difficult to read.
-It's hard to believe this is a performance optimization.
+Patch series looks good to me. Thanks!
 
-It might be better as
-
-	return param1->cParams.hashLog == param2->cParams.hashLog &&
-	       param1->cParams.chainLog == param2->cParams.chainLog &&
-	       param1->cParams.strategy == param2->cParams.strategy &&
-	       param1->cParams.searchLength == 3 &&
-	       param1->cParams.searchLength == param2->cParams.searchLength;
-
-
+Ray
