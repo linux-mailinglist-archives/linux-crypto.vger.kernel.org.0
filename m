@@ -2,59 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA2119886
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 May 2019 08:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D16C1A248
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 May 2019 19:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbfEJGkF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 10 May 2019 02:40:05 -0400
-Received: from orcrist.hmeau.com ([5.180.42.13]:34110 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726940AbfEJGkF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 10 May 2019 02:40:05 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hOzBj-0001Lo-Ph; Fri, 10 May 2019 14:39:23 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hOzBb-0004u3-V0; Fri, 10 May 2019 14:39:16 +0800
-Date:   Fri, 10 May 2019 14:39:15 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Neal Liu <neal.liu@mediatek.com>
-Cc:     Stephan Mueller <smueller@chronox.de>, mpm@selenic.com,
-        robh+dt@kernel.org, mark.rutland@arm.com, matthias.bgg@gmail.com,
-        wsd_upstream@mediatek.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, Crystal.Guo@mediatek.com
-Subject: Re: [PATCH 3/3] hwrng: add mt67xx-rng driver
-Message-ID: <20190510063915.kwqy3e5urs6j7ity@gondor.apana.org.au>
-References: <1557287937-2410-1-git-send-email-neal.liu@mediatek.com>
- <1557287937-2410-4-git-send-email-neal.liu@mediatek.com>
- <12193108.aNnqf5ydOJ@tauon.chronox.de>
- <1557311737.11818.11.camel@mtkswgap22>
- <20190509052649.xfkgb3qd7rhcgktj@gondor.apana.org.au>
- <1557413686.23445.6.camel@mtkswgap22>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1557413686.23445.6.camel@mtkswgap22>
-User-Agent: NeoMutt/20170113 (1.7.2)
+        id S1727657AbfEJRbz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 10 May 2019 13:31:55 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:33213 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727453AbfEJRbz (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 10 May 2019 13:31:55 -0400
+Received: by mail-ed1-f67.google.com with SMTP id n17so6145350edb.0;
+        Fri, 10 May 2019 10:31:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=BkqdQRe9mocbh/BtLFtBEMRRvm28/epz/rHx+xkJ9iM=;
+        b=LQetLOnPrFa+mDUusRJd1emPoySXmgbg9gGBsqRa1gkTB2y4wi66UFsMzX1WrlwGRQ
+         rrtu86WTC3NZY9K0AyuKr5JCtxtmjzpSuIImgWB4jCMmgxgdK/jCKyG975vda4xcukoo
+         9Qtj48T145nefSBtk9+MZKNURYqnCb4i1yZWqiR2QAdyPRILMsUCQtfj2pLL1151G7cE
+         I5VZUicPf5NidKQ+MHpLlQ0YI++16dJRAptU10qq90VQiaoeEsTFbmBCBqPi0xuQ9NdE
+         F18KQl3sJkx4+s5PZGd6srAiEXBKvVcRc7+0TesGQtNVhbzc4tjP+kHXyhu8qveqX4jd
+         93HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=BkqdQRe9mocbh/BtLFtBEMRRvm28/epz/rHx+xkJ9iM=;
+        b=BnJXk48jQGmJ7wFe3mXpqSjJ0OnkWPts7OUIJV+BI5Srs1/NAFFJZdECDmoJ73exEb
+         Id+GM3WSNNoEF47pHb9SkCqw8faQzmkfjl7evODuX5c7vhzD1Gh05Br2M+G1twyO01BM
+         Xxxwq9uEeJI0iiY68Cy4I6b571Ckr1CJVxVJyJnOlRl9fANQQ9T5jZmcUc8bB0KtHI/k
+         09OOkNEejF+Rr62vaAc9x4yKD6vQL+7KkPelyH1TovA+9f4SSVKMazqGGYgAqPpeqkKC
+         udqwbaJaHJVcHhdh197nc/LnX2eJHC57yDVv7i/J0pWddNmQXX9Hr5tFN9zyVKW2OOxI
+         PyjA==
+X-Gm-Message-State: APjAAAVssQhIGA6g/XU8WSdk6NRkPq48A79XHij8jPXwkuGcG4Yr3lxN
+        UI08sEh3RmfD/WPmFdwbE0qYBEsL
+X-Google-Smtp-Source: APXvYqzU7LWG/KzpyyccU3qR3Ukd2BOwSZuj80PE5MrRIjQ4oMVuhPgVfRg5FzD5J01qcrs0RebmUA==
+X-Received: by 2002:a50:ed14:: with SMTP id j20mr12720362eds.84.1557509511839;
+        Fri, 10 May 2019 10:31:51 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.250])
+        by smtp.gmail.com with ESMTPSA id v16sm1599567edm.56.2019.05.10.10.31.49
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 May 2019 10:31:50 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     bcm-kernel-feedback-list@broadcom.com, stefan.wahren@i2se.com,
+        wahrenst@gmx.net, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, mpm@selenic.com,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 0/2] hwrng: Support for 7211 in iproc-rng200
+Date:   Fri, 10 May 2019 10:31:09 -0700
+Message-Id: <20190510173112.2196-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, May 09, 2019 at 10:54:46PM +0800, Neal Liu wrote:
->
-> Hi Stephan/Herbert,
-> 	My mistake. This buffer is allocated by kmalloc with larger than 32
-> bytes. So yes, it's word-align for sure.
-> 	reference:
-> https://elixir.bootlin.com/linux/latest/source/drivers/char/hw_random/core.c#L590
+Hi Herbert,
 
-Yes you're right.
+This patch series adds support for BCM7211 to the iproc-rng200 driver,
+nothing special besides matching the compatibile string and updating the
+binding document.
 
-Cheers,
+Florian Fainelli (2):
+  dt-bindings: rng: Document BCM7211 RNG compatible string
+  hwrng: iproc-rng200: Add support for 7211
+
+ Documentation/devicetree/bindings/rng/brcm,iproc-rng200.txt | 1 +
+ drivers/char/hw_random/iproc-rng200.c                       | 1 +
+ 2 files changed, 2 insertions(+)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.17.1
+
