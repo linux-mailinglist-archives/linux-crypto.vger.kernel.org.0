@@ -2,26 +2,25 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B47A21AEA6
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 May 2019 02:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24061B523
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 May 2019 13:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727216AbfEMA7Z (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 12 May 2019 20:59:25 -0400
-Received: from orcrist.hmeau.com ([5.180.42.13]:46794 "EHLO deadmen.hmeau.com"
+        id S1728969AbfEMLjb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 13 May 2019 07:39:31 -0400
+Received: from ozlabs.org ([203.11.71.1]:42739 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727203AbfEMA7Y (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 12 May 2019 20:59:24 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hPzJ7-0002Xv-Cj; Mon, 13 May 2019 08:59:09 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hPzIz-0000Cn-Av; Mon, 13 May 2019 08:59:01 +0800
-Date:   Mon, 13 May 2019 08:59:01 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nayna <nayna@linux.vnet.ibm.com>, Daniel Axtens <dja@axtens.net>,
+        id S1729239AbfEMLjb (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 13 May 2019 07:39:31 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 452f3z2zSzz9s00;
+        Mon, 13 May 2019 21:39:27 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     Nayna <nayna@linux.vnet.ibm.com>, Daniel Axtens <dja@axtens.net>,
         leo.barbosa@canonical.com, Stephan Mueller <smueller@chronox.de>,
         nayna@linux.ibm.com, omosnacek@gmail.com, leitao@debian.org,
         pfsmorigo@gmail.com, linux-crypto@vger.kernel.org,
@@ -29,37 +28,29 @@ Cc:     Michael Ellerman <mpe@ellerman.id.au>,
         George Wilson <gcwilson@linux.ibm.com>,
         linuxppc-dev@lists.ozlabs.org
 Subject: Re: [PATCH] crypto: vmx - fix copy-paste error in CTR mode
-Message-ID: <20190513005901.tsop4lz26vusr6o4@gondor.apana.org.au>
-References: <20190315020901.16509-1-dja@axtens.net>
- <20190315022414.GA1671@sol.localdomain>
- <875zsku5mk.fsf@dja-thinkpad.axtens.net>
- <20190315043433.GC1671@sol.localdomain>
- <8736nou2x5.fsf@dja-thinkpad.axtens.net>
- <20190410070234.GA12406@sol.localdomain>
- <87imvkwqdh.fsf@dja-thinkpad.axtens.net>
- <2c8b042f-c7df-cb8b-3fcd-15d6bb274d08@linux.vnet.ibm.com>
- <8736mmvafj.fsf@concordia.ellerman.id.au>
- <20190506155315.GA661@sol.localdomain>
+In-Reply-To: <20190513005901.tsop4lz26vusr6o4@gondor.apana.org.au>
+References: <20190315020901.16509-1-dja@axtens.net> <20190315022414.GA1671@sol.localdomain> <875zsku5mk.fsf@dja-thinkpad.axtens.net> <20190315043433.GC1671@sol.localdomain> <8736nou2x5.fsf@dja-thinkpad.axtens.net> <20190410070234.GA12406@sol.localdomain> <87imvkwqdh.fsf@dja-thinkpad.axtens.net> <2c8b042f-c7df-cb8b-3fcd-15d6bb274d08@linux.vnet.ibm.com> <8736mmvafj.fsf@concordia.ellerman.id.au> <20190506155315.GA661@sol.localdomain> <20190513005901.tsop4lz26vusr6o4@gondor.apana.org.au>
+Date:   Mon, 13 May 2019 21:39:26 +1000
+Message-ID: <87pnomtwgh.fsf@concordia.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190506155315.GA661@sol.localdomain>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, May 06, 2019 at 08:53:17AM -0700, Eric Biggers wrote:
+Herbert Xu <herbert@gondor.apana.org.au> writes:
+> On Mon, May 06, 2019 at 08:53:17AM -0700, Eric Biggers wrote:
+>>
+>> Any progress on this?  Someone just reported this again here:
+>> https://bugzilla.kernel.org/show_bug.cgi?id=203515
 >
-> Any progress on this?  Someone just reported this again here:
-> https://bugzilla.kernel.org/show_bug.cgi?id=203515
+> Guys if I don't get a fix for this soon I'll have to disable CTR
+> in vmx.
 
-Guys if I don't get a fix for this soon I'll have to disable CTR
-in vmx.
+No objection from me.
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+I'll try and debug it at some point if no one else does, but I can't
+make it my top priority sorry.
+
+cheers
