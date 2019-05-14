@@ -2,98 +2,73 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4BD1CE14
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 May 2019 19:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 039081D157
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 May 2019 23:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbfENRf5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 14 May 2019 13:35:57 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:33421 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbfENRf5 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 May 2019 13:35:57 -0400
-Received: by mail-pl1-f194.google.com with SMTP id y3so8601802plp.0
-        for <linux-crypto@vger.kernel.org>; Tue, 14 May 2019 10:35:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=ZTRncmxtDxlV1F7umKPD+uG9W2QsyoTTFP+CjuiFaiU=;
-        b=d1hrQP6HgUD01+7GWOVBzOQ5PTUN/qhB4jZMcGO/Pd+k4zKMHgoXcd+1fx31QklV7i
-         6BNhtNz3/WojLe294pPvIjAaip2059gJ2Ql2EITwg9Cpc2zE8yxq+RzOmtBf14B55RgX
-         r8EpWbSI34USzzL8RF0SpbroLrAQ4pb50Nfzs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=ZTRncmxtDxlV1F7umKPD+uG9W2QsyoTTFP+CjuiFaiU=;
-        b=LCe+bT2PN+Zc+MTgTlj55ehZHNdsCq2aQsLl7UGWspr7ER7EGz8KlXSada7VHZXfgK
-         6xnonDYhuGRsMX0eBPr8G5Sl71/18EcZwVlcSKqhiQacYXkNJ2Wpicu5GgPRLBIR6515
-         84wlinfPr6iKIb1iSYHAhubD7BEYKLK+8VOeGOk2TL9Y2cBJxVfzifhIROp4Gd2nqnwo
-         nHEAXNSQ0DFMQbg5/CaIQ9up7JAU+/yzpMV6gC4qziiO3aLhnPkrO69HFYFOBk4khYiu
-         ha4TgVCAiaaE8LnS9uJEBJUBSGpG1ilvI4HDZqaMHGvxSsGDJ2Ot3QPrTfhtBRsNoDyB
-         thgg==
-X-Gm-Message-State: APjAAAVhvfqdMBGPb1EENxVO9k+UnbQ0910Ag9aCNOZiKkXvieeGLRad
-        V2Xba0IBlglGzYGsAqsAy+CesYuxtCM=
-X-Google-Smtp-Source: APXvYqxCO66J3FmsHeZHkJs4q9kftmYeVs7T9n3Dd/MZ8iMbZu1RqUSoi9RyfgWX3G41jaR2cflEpA==
-X-Received: by 2002:a17:902:24a:: with SMTP id 68mr37701250plc.250.1557855355801;
-        Tue, 14 May 2019 10:35:55 -0700 (PDT)
-Received: from localhost (124-171-102-38.dyn.iinet.net.au. [124.171.102.38])
-        by smtp.gmail.com with ESMTPSA id y16sm13035325pfo.133.2019.05.14.10.35.53
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 May 2019 10:35:54 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     Nayna <nayna@linux.vnet.ibm.com>, leo.barbosa@canonical.com,
-        Stephan Mueller <smueller@chronox.de>, nayna@linux.ibm.com,
-        omosnacek@gmail.com, leitao@debian.org, pfsmorigo@gmail.com,
-        linux-crypto@vger.kernel.org, marcelo.cerri@canonical.com,
-        George Wilson <gcwilson@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] crypto: vmx - fix copy-paste error in CTR mode
-In-Reply-To: <87pnomtwgh.fsf@concordia.ellerman.id.au>
-References: <20190315020901.16509-1-dja@axtens.net> <20190315022414.GA1671@sol.localdomain> <875zsku5mk.fsf@dja-thinkpad.axtens.net> <20190315043433.GC1671@sol.localdomain> <8736nou2x5.fsf@dja-thinkpad.axtens.net> <20190410070234.GA12406@sol.localdomain> <87imvkwqdh.fsf@dja-thinkpad.axtens.net> <2c8b042f-c7df-cb8b-3fcd-15d6bb274d08@linux.vnet.ibm.com> <8736mmvafj.fsf@concordia.ellerman.id.au> <20190506155315.GA661@sol.localdomain> <20190513005901.tsop4lz26vusr6o4@gondor.apana.org.au> <87pnomtwgh.fsf@concordia.ellerman.id.au>
-Date:   Wed, 15 May 2019 03:35:51 +1000
-Message-ID: <877eat0wi0.fsf@dja-thinkpad.axtens.net>
+        id S1726523AbfENVeM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 14 May 2019 17:34:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726089AbfENVeM (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 14 May 2019 17:34:12 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DBFA20862;
+        Tue, 14 May 2019 21:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557869652;
+        bh=yp5vDecb7fjI+ywiWRJ0DWnZe3v5cnUIYIfAnA9p2m0=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=v3Nl8+PvRk9oI3IdjpCKGOTljU7wVAzidgmXYqBadBGQ8bveQQOx1zFjPVlX2yeeJ
+         TgBN8i9jVo+DislgBiPfKIE3gY8BMmCSfbCK3ReG19mFtfz2DidG22o1mCfBxuWVW3
+         oR/Qqscim7fPTarMugC2eu8kv9AWq3wJVQQzyvPU=
+Date:   Tue, 14 May 2019 14:34:10 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     dsterba@suse.cz, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Can crypto API provide information about hw acceleration?
+Message-ID: <20190514213409.GA115510@gmail.com>
+References: <20190514163348.GM3138@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190514163348.GM3138@twin.jikos.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Michael Ellerman <mpe@ellerman.id.au> writes:
+On Tue, May 14, 2019 at 06:33:48PM +0200, David Sterba wrote:
+> Hi,
+> 
+> Q: is there a way to query the crypto layer whether a given algorithm
+> (digest, crypto) is accelerated by the driver?
+> 
+> This information can be used to decide if eg. a checksum should can be
+> calculated right away or offloaded to a thread. This is done in btrfs,
+> (fs/btrfs/disk-io.c:check_async_write).
+> 
+> At this moment it contains a static check for a cpu feature, and only
+> for x86. I briefly searched the arch/ directory for implementations of
+> crc32c that possibly use hw aid and there are several of them. Adding a
+> static check a-la x86 for the other architectures (arm, ppc, mips,
+> sparc, s390) is wrong, so I'm looking for a clean solution.
+> 
+> The struct shash_alg definition of the algorithms does not say anything
+> about the acceleration. The closest thing is the cra_priority, but I
+> don't know if this is reliable information. The default implementations
+> seem to have 100, and acceleated 200 or 300.
+> 
+> This would be probably sufficient, but I'd like a confirmation from
+> crypto people.
+> 
 
-> Herbert Xu <herbert@gondor.apana.org.au> writes:
->> On Mon, May 06, 2019 at 08:53:17AM -0700, Eric Biggers wrote:
->>>
->>> Any progress on this?  Someone just reported this again here:
->>> https://bugzilla.kernel.org/show_bug.cgi?id=203515
->>
->> Guys if I don't get a fix for this soon I'll have to disable CTR
->> in vmx.
->
-> No objection from me.
->
-> I'll try and debug it at some point if no one else does, but I can't
-> make it my top priority sorry.
+There's only one default implementation of crc32c, not multiple, and it has
+priority 100.  All other crc32c implementations have priority > 100.  So yes,
+you can check the priority (which would require adding a function to
+lib/libcrc32c.c to get it).  Alternatively you could check whether the driver
+name is "crc32c-generic" or not.
 
-I'm a bit concerned that this will end up filtering down to distros and
-tanking crypto performance for the entire lifespan of the releases, so
-I'd rather fix it if I can.
-
-A quick additional test reveals an issue in the uneven misaligned
-splits. (the may-sleep may reveal an extra bug, but there's at least one
-with uneven/misaligned.)
-
-By all means disable vmx ctr if I don't get an answer to you in a
-timeframe you are comfortable with, but I am going to at least try to
-have a look.
-
-Regards,
-Daniel
-
->
-> cheers
+- Eric
