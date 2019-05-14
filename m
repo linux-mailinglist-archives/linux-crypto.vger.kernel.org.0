@@ -2,32 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1596C1D0D5
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 May 2019 22:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A93B1CD06
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 May 2019 18:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbfENUss (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 14 May 2019 16:48:48 -0400
-Received: from [198.199.123.59] ([198.199.123.59]:40074 "EHLO
-        centos-s-6vcpu-16gb-nyc1-03.localdomain" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726143AbfENUss (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 May 2019 16:48:48 -0400
-X-Greylist: delayed 16433 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 May 2019 16:48:48 EDT
-Received: from localhost (centos-s-6vcpu-16gb-nyc1-03 [IPv6:::1])
-        by centos-s-6vcpu-16gb-nyc1-03.localdomain (Postfix) with SMTP id BA6A76497A6
-        for <linux-crypto@vger.kernel.org>; Tue, 14 May 2019 15:40:20 +0000 (UTC)
-From:   linux-crypto@vger.kernel.org
+        id S1726109AbfENQct (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 14 May 2019 12:32:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55236 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726044AbfENQct (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 14 May 2019 12:32:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id D67C7AEF3;
+        Tue, 14 May 2019 16:32:47 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 8A58ADA866; Tue, 14 May 2019 18:33:48 +0200 (CEST)
+Date:   Tue, 14 May 2019 18:33:48 +0200
+From:   David Sterba <dsterba@suse.cz>
 To:     linux-crypto@vger.kernel.org
-Reply-To: prodawez@armyspy.com
-Subject: Zdravstvuyte! Vas interesuyut kliyentskiye bazy dannykh?
-Message-Id: <20190514154020.BA6A76497A6@centos-s-6vcpu-16gb-nyc1-03.localdomain>
-Date:   Tue, 14 May 2019 15:40:20 +0000 (UTC)
+Cc:     linux-kernel@vger.kernel.org
+Subject: Can crypto API provide information about hw acceleration?
+Message-ID: <20190514163348.GM3138@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Zdravstvuyte! Vas interesuyut kliyentskiye bazy dannykh?
+Hi,
 
+Q: is there a way to query the crypto layer whether a given algorithm
+(digest, crypto) is accelerated by the driver?
 
+This information can be used to decide if eg. a checksum should can be
+calculated right away or offloaded to a thread. This is done in btrfs,
+(fs/btrfs/disk-io.c:check_async_write).
 
+At this moment it contains a static check for a cpu feature, and only
+for x86. I briefly searched the arch/ directory for implementations of
+crc32c that possibly use hw aid and there are several of them. Adding a
+static check a-la x86 for the other architectures (arm, ppc, mips,
+sparc, s390) is wrong, so I'm looking for a clean solution.
+
+The struct shash_alg definition of the algorithms does not say anything
+about the acceleration. The closest thing is the cra_priority, but I
+don't know if this is reliable information. The default implementations
+seem to have 100, and acceleated 200 or 300.
+
+This would be probably sufficient, but I'd like a confirmation from
+crypto people.
+
+Thanks.
