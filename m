@@ -2,114 +2,247 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FE81EC11
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 May 2019 12:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688A31F090
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 May 2019 13:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725953AbfEOKY5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 15 May 2019 06:24:57 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:40172 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbfEOKY5 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 15 May 2019 06:24:57 -0400
-Received: by mail-pl1-f194.google.com with SMTP id g69so1123898plb.7
-        for <linux-crypto@vger.kernel.org>; Wed, 15 May 2019 03:24:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Sb4pV1d5lxWRP204NVfZBomUvfE6MxP49E2mX7dS5Bc=;
-        b=LNFk3SYqazir1mtooOos9X27csivCVSHkilxBtbcBBTJ57MuXcN0CJAkFjXJKhnyzh
-         0+HbVTAkpr6A5iI97f9dQH1bAk6JEdmmVWs6tLeIhjuNw7t0FG1iR8HKNUTvK89fS+wr
-         18lIAFxVcfHTtTnfVth8z84az/irEcPIUU+zI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Sb4pV1d5lxWRP204NVfZBomUvfE6MxP49E2mX7dS5Bc=;
-        b=PhFCaFgezShdmVYVhkebh/DDmGaI/F8TY07GZHzHV4OPAQOlueQgpAR/8Dn3+Gizrt
-         uTfebFegn8M+2hI5Qf5CGX90P+karbuoiZzPnHyTqoTqAjOxRgD24xRpeP9CCAvbqJ8G
-         oDPrudlf4bk+HXfkA/Jr02u0BidGkf6D/g9cmqsGBcz2i/D3L07/kyggTTb1nJ9cvwUb
-         g5chYDo3kqavumoao8OGTRV2inT0AYTELg5I1CYlJjL5in+QfN2V22V95Gl6ERORlhKs
-         kaoTa4K7wFQHjhL0NxlN0WK8YtGQzNhKoAWL4GguRuFLc0xyhQfAhB8NvHAjI0z54YEI
-         pXzw==
-X-Gm-Message-State: APjAAAU73UpTw2UzmsvNpVbgQz2B0UWRAH9Rt7dibT2T+Ov5+MGgAkGM
-        bf4dGNyncBRPV10r2Jz2K3eKMQ==
-X-Google-Smtp-Source: APXvYqyjLExp8dImFftLMhrdYyBWBoJDEuAc+MBp5wYkorCb8rPwgnHl5nUDBpqX3DRe2bDSKOSMwQ==
-X-Received: by 2002:a17:902:868c:: with SMTP id g12mr25668785plo.323.1557915897147;
-        Wed, 15 May 2019 03:24:57 -0700 (PDT)
-Received: from localhost (dip-220-235-49-186.wa.westnet.com.au. [220.235.49.186])
-        by smtp.gmail.com with ESMTPSA id 194sm4367930pfb.125.2019.05.15.03.24.55
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 15 May 2019 03:24:56 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     mpe@ellerman.id.au, ebiggers@kernel.org,
-        linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     marcelo.cerri@canonical.com, Stephan Mueller <smueller@chronox.de>,
-        leo.barbosa@canonical.com, linuxppc-dev@lists.ozlabs.org,
-        nayna@linux.ibm.com, pfsmorigo@gmail.com, leitao@debian.org,
-        gcwilson@linux.ibm.com, omosnacek@gmail.com
-Subject: [PATCH] crypto: vmx - CTR: always increment IV as quadword
-Date:   Wed, 15 May 2019 20:24:50 +1000
-Message-Id: <20190515102450.30557-1-dja@axtens.net>
-X-Mailer: git-send-email 2.19.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1730918AbfEOLZz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 15 May 2019 07:25:55 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:51932 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732065AbfEOLZz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 15 May 2019 07:25:55 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 07262200114;
+        Wed, 15 May 2019 13:25:53 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id ED6B62000D3;
+        Wed, 15 May 2019 13:25:52 +0200 (CEST)
+Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id A26FD205F4;
+        Wed, 15 May 2019 13:25:52 +0200 (CEST)
+From:   Iuliana Prodan <iuliana.prodan@nxp.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx <linux-imx@nxp.com>
+Subject: [PATCH v2 1/2] crypto: caam - fix pkcs1pad(rsa-caam, sha256) failure because of invalid input
+Date:   Wed, 15 May 2019 14:25:45 +0300
+Message-Id: <1557919546-360-1-git-send-email-iuliana.prodan@nxp.com>
+X-Mailer: git-send-email 2.1.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The kernel self-tests picked up an issue with CTR mode:
-alg: skcipher: p8_aes_ctr encryption test failed (wrong result) on test vector 3, cfg="uneven misaligned splits, may sleep"
+The problem is with the input data size sent to CAAM for encrypt/decrypt.
+Pkcs1pad is failing due to pkcs1 padding done in SW starting with0x01
+instead of 0x00 0x01.
+CAAM expects an input of modulus size. For this we strip the leading
+zeros in case the size is more than modulus or pad the input with zeros
+until the modulus size is reached.
 
-Test vector 3 has an IV of FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD, so
-after 3 increments it should wrap around to 0.
-
-In the aesp8-ppc code from OpenSSL, there are two paths that
-increment IVs: the bulk (8 at a time) path, and the individual
-path which is used when there are fewer than 8 AES blocks to
-process.
-
-In the bulk path, the IV is incremented with vadduqm: "Vector
-Add Unsigned Quadword Modulo", which does 128-bit addition.
-
-In the individual path, however, the IV is incremented with
-vadduwm: "Vector Add Unsigned Word Modulo", which instead
-does 4 32-bit additions. Thus the IV would instead become
-FFFFFFFFFFFFFFFFFFFFFFFF00000000, throwing off the result.
-
-Use vadduqm.
-
-This was probably a typo originally, what with q and w being
-adjacent. It is a pretty narrow edge case: I am really
-impressed by the quality of the kernel self-tests!
-
-Fixes: 5c380d623ed3 ("crypto: vmx - Add support for VMS instructions by ASM")
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Axtens <dja@axtens.net>
-
+Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
 ---
-
-I'll pass this along internally to get it into OpenSSL as well.
+Changes since V1:
+	- remove not needed initialization of a variable;
+	- free resources on error path.
 ---
- drivers/crypto/vmx/aesp8-ppc.pl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/caam/caampkc.c | 84 +++++++++++++++++++++++++++++++++++--------
+ drivers/crypto/caam/caampkc.h |  2 ++
+ 2 files changed, 72 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/crypto/vmx/aesp8-ppc.pl b/drivers/crypto/vmx/aesp8-ppc.pl
-index de78282b8f44..9c6b5c1d6a1a 100644
---- a/drivers/crypto/vmx/aesp8-ppc.pl
-+++ b/drivers/crypto/vmx/aesp8-ppc.pl
-@@ -1357,7 +1357,7 @@ Loop_ctr32_enc:
- 	addi		$idx,$idx,16
- 	bdnz		Loop_ctr32_enc
+diff --git a/drivers/crypto/caam/caampkc.c b/drivers/crypto/caam/caampkc.c
+index fe24485..e356413 100644
+--- a/drivers/crypto/caam/caampkc.c
++++ b/drivers/crypto/caam/caampkc.c
+@@ -24,6 +24,10 @@
+ 				 sizeof(struct rsa_priv_f2_pdb))
+ #define DESC_RSA_PRIV_F3_LEN	(2 * CAAM_CMD_SZ + \
+ 				 sizeof(struct rsa_priv_f3_pdb))
++#define CAAM_RSA_MAX_INPUT_SIZE	512 /* for a 4096-bit modulus */
++
++/* buffer filled with zeros, used for padding */
++static u8 *zero_buffer;
  
--	vadduwm		$ivec,$ivec,$one
-+	vadduqm		$ivec,$ivec,$one
- 	 vmr		$dat,$inptail
- 	 lvx		$inptail,0,$inp
- 	 addi		$inp,$inp,16
+ static void rsa_io_unmap(struct device *dev, struct rsa_edesc *edesc,
+ 			 struct akcipher_request *req)
+@@ -168,6 +172,13 @@ static void rsa_priv_f3_done(struct device *dev, u32 *desc, u32 err,
+ 	akcipher_request_complete(req, err);
+ }
+ 
++/**
++ * Count leading zeros, need it to strip, from a given scatterlist
++ *
++ * @sgl   : scatterlist to count zeros from
++ * @nbytes: number of zeros, in bytes, to strip
++ * @flags : operation flags
++ */
+ static int caam_rsa_count_leading_zeros(struct scatterlist *sgl,
+ 					unsigned int nbytes,
+ 					unsigned int flags)
+@@ -187,7 +198,8 @@ static int caam_rsa_count_leading_zeros(struct scatterlist *sgl,
+ 	lzeros = 0;
+ 	len = 0;
+ 	while (nbytes > 0) {
+-		while (len && !*buff) {
++		/* do not strip more than given bytes */
++		while (len && !*buff && lzeros < nbytes) {
+ 			lzeros++;
+ 			len--;
+ 			buff++;
+@@ -218,6 +230,7 @@ static struct rsa_edesc *rsa_edesc_alloc(struct akcipher_request *req,
+ 	struct caam_rsa_ctx *ctx = akcipher_tfm_ctx(tfm);
+ 	struct device *dev = ctx->dev;
+ 	struct caam_rsa_req_ctx *req_ctx = akcipher_request_ctx(req);
++	struct caam_rsa_key *key = &ctx->key;
+ 	struct rsa_edesc *edesc;
+ 	gfp_t flags = (req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP) ?
+ 		       GFP_KERNEL : GFP_ATOMIC;
+@@ -225,20 +238,37 @@ static struct rsa_edesc *rsa_edesc_alloc(struct akcipher_request *req,
+ 	int sgc;
+ 	int sec4_sg_index, sec4_sg_len = 0, sec4_sg_bytes;
+ 	int src_nents, dst_nents;
++	unsigned int diff_size = 0;
+ 	int lzeros;
+ 
+-	lzeros = caam_rsa_count_leading_zeros(req->src, req->src_len, sg_flags);
+-	if (lzeros < 0)
+-		return ERR_PTR(lzeros);
+-
+-	req->src_len -= lzeros;
+-	req->src = scatterwalk_ffwd(req_ctx->src, req->src, lzeros);
++	if (req->src_len > key->n_sz) {
++		/*
++		 * strip leading zeros and
++		 * return the number of zeros to skip
++		 */
++		lzeros = caam_rsa_count_leading_zeros(req->src, req->src_len -
++						      key->n_sz, sg_flags);
++		if (lzeros < 0)
++			return ERR_PTR(lzeros);
++
++		req->src_len -= lzeros;
++		req->src = scatterwalk_ffwd(req_ctx->src, req->src, lzeros);
++	} else {
++		/*
++		 * input src is less then n key modulus,
++		 * so there will be zero padding
++		 */
++		diff_size = key->n_sz - req->src_len;
++	}
+ 
+ 	src_nents = sg_nents_for_len(req->src, req->src_len);
+ 	dst_nents = sg_nents_for_len(req->dst, req->dst_len);
+ 
+-	if (src_nents > 1)
+-		sec4_sg_len = src_nents;
++	if (!diff_size && src_nents == 1)
++		sec4_sg_len = 0; /* no need for an input hw s/g table */
++	else
++		sec4_sg_len = src_nents + !!diff_size;
++	sec4_sg_index = sec4_sg_len;
+ 	if (dst_nents > 1)
+ 		sec4_sg_len += dst_nents;
+ 
+@@ -263,12 +293,14 @@ static struct rsa_edesc *rsa_edesc_alloc(struct akcipher_request *req,
+ 	}
+ 
+ 	edesc->sec4_sg = (void *)edesc + sizeof(*edesc) + desclen;
++	if (diff_size)
++		dma_to_sec4_sg_one(edesc->sec4_sg, ctx->padding_dma, diff_size,
++				   0);
++
++	if (sec4_sg_index)
++		sg_to_sec4_sg_last(req->src, src_nents, edesc->sec4_sg +
++				   !!diff_size, 0);
+ 
+-	sec4_sg_index = 0;
+-	if (src_nents > 1) {
+-		sg_to_sec4_sg_last(req->src, src_nents, edesc->sec4_sg, 0);
+-		sec4_sg_index += src_nents;
+-	}
+ 	if (dst_nents > 1)
+ 		sg_to_sec4_sg_last(req->dst, dst_nents,
+ 				   edesc->sec4_sg + sec4_sg_index, 0);
+@@ -289,6 +321,10 @@ static struct rsa_edesc *rsa_edesc_alloc(struct akcipher_request *req,
+ 
+ 	edesc->sec4_sg_bytes = sec4_sg_bytes;
+ 
++	print_hex_dump_debug("caampkc sec4_sg@" __stringify(__LINE__) ": ",
++			     DUMP_PREFIX_ADDRESS, 16, 4, edesc->sec4_sg,
++			     edesc->sec4_sg_bytes, 1);
++
+ 	return edesc;
+ 
+ sec4_sg_fail:
+@@ -978,6 +1014,15 @@ static int caam_rsa_init_tfm(struct crypto_akcipher *tfm)
+ 		return PTR_ERR(ctx->dev);
+ 	}
+ 
++	ctx->padding_dma = dma_map_single(ctx->dev, zero_buffer,
++					  CAAM_RSA_MAX_INPUT_SIZE - 1,
++					  DMA_TO_DEVICE);
++	if (dma_mapping_error(ctx->dev, ctx->padding_dma)) {
++		dev_err(ctx->dev, "unable to map padding\n");
++		caam_jr_free(ctx->dev);
++		return -ENOMEM;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -987,6 +1032,8 @@ static void caam_rsa_exit_tfm(struct crypto_akcipher *tfm)
+ 	struct caam_rsa_ctx *ctx = akcipher_tfm_ctx(tfm);
+ 	struct caam_rsa_key *key = &ctx->key;
+ 
++	dma_unmap_single(ctx->dev, ctx->padding_dma, CAAM_RSA_MAX_INPUT_SIZE -
++			 1, DMA_TO_DEVICE);
+ 	caam_rsa_free_key(key);
+ 	caam_jr_free(ctx->dev);
+ }
+@@ -1058,6 +1105,14 @@ static int __init caam_pkc_init(void)
+ 		goto out_put_dev;
+ 	}
+ 
++	/* allocate zero buffer, used for padding input */
++	zero_buffer = kzalloc(CAAM_RSA_MAX_INPUT_SIZE - 1, GFP_DMA |
++			      GFP_KERNEL);
++	if (!zero_buffer) {
++		err = -ENOMEM;
++		goto out_put_dev;
++	}
++
+ 	err = crypto_register_akcipher(&caam_rsa);
+ 	if (err)
+ 		dev_warn(ctrldev, "%s alg registration failed\n",
+@@ -1072,6 +1127,7 @@ static int __init caam_pkc_init(void)
+ 
+ static void __exit caam_pkc_exit(void)
+ {
++	kfree(zero_buffer);
+ 	crypto_unregister_akcipher(&caam_rsa);
+ }
+ 
+diff --git a/drivers/crypto/caam/caampkc.h b/drivers/crypto/caam/caampkc.h
+index 82645bc..5ac7201 100644
+--- a/drivers/crypto/caam/caampkc.h
++++ b/drivers/crypto/caam/caampkc.h
+@@ -89,10 +89,12 @@ struct caam_rsa_key {
+  * caam_rsa_ctx - per session context.
+  * @key         : RSA key in DMA zone
+  * @dev         : device structure
++ * @padding_dma : dma address of padding, for adding it to the input
+  */
+ struct caam_rsa_ctx {
+ 	struct caam_rsa_key key;
+ 	struct device *dev;
++	dma_addr_t padding_dma;
+ };
+ 
+ /**
 -- 
-2.19.1
+2.1.0
 
