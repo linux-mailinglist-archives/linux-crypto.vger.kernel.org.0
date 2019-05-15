@@ -2,43 +2,44 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEBF1F62F
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 May 2019 16:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2D61F678
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 May 2019 16:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbfEOOFP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 15 May 2019 10:05:15 -0400
-Received: from mail-eopbgr20081.outbound.protection.outlook.com ([40.107.2.81]:4622
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        id S1726821AbfEOOYF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 15 May 2019 10:24:05 -0400
+Received: from mail-eopbgr70040.outbound.protection.outlook.com ([40.107.7.40]:35796
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726646AbfEOOFO (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 15 May 2019 10:05:14 -0400
+        id S1726098AbfEOOYF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 15 May 2019 10:24:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZuWhjNo0yAfWVBkZhdwfp7qUe2X1r9MNjzX2ykJy+2M=;
- b=rYNRVOFXJ0KMJqnGQb3lXawAj2BfeP352mGNyuZ2C5tK+X12b+4a9dYrqhnoquaezy8ptsYYqJfM9MFdlR7KjGsCVWCPI45UYjTj9h9+Qrqs+al4woqKFwqe0n10/48Bsu0IWlRHd386h0stkqQugv0lzjP2ZtC582Z1+jeOrvc=
+ bh=SOjwZMSmfxO4wtNW6MlG9sdzVI4mtmRgijXh6zsftZk=;
+ b=nLxXMy09kmXn7KQWr5IwoOL8XtwCYHSfbcvzCP9+g/w0FQtdjZElsDtMVx0s2wbA8bIdeXwX0db0+tPU6YqYUiq9MjF8PaQo2Sqm4w/5KA4xKBTRYysXtEf+gkLLz6jX3gPxA/R53t+Mm6k7/YFEpZhb6cpzIo5ABkEcx1XXnqA=
 Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com (52.134.3.153) by
- VI1PR0402MB3533.eurprd04.prod.outlook.com (52.134.4.26) with Microsoft SMTP
+ VI1PR0402MB2911.eurprd04.prod.outlook.com (10.175.24.13) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1900.16; Wed, 15 May 2019 14:05:11 +0000
+ 15.20.1878.21; Wed, 15 May 2019 14:24:00 +0000
 Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com
  ([fe80::dd3c:969d:89b9:f422]) by VI1PR0402MB3485.eurprd04.prod.outlook.com
  ([fe80::dd3c:969d:89b9:f422%4]) with mapi id 15.20.1878.024; Wed, 15 May 2019
- 14:05:11 +0000
+ 14:24:00 +0000
 From:   Horia Geanta <horia.geanta@nxp.com>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>,
+To:     Iuliana Prodan <iuliana.prodan@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-CC:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH] crypto: talitos - fix skcipher failure due to wrong
- output IV
-Thread-Topic: [PATCH] crypto: talitos - fix skcipher failure due to wrong
- output IV
-Thread-Index: AQHVCxnMCzIthJlccEajEJwlNrxcew==
-Date:   Wed, 15 May 2019 14:05:11 +0000
-Message-ID: <VI1PR0402MB34858D80A15D4B55F64570E398090@VI1PR0402MB3485.eurprd04.prod.outlook.com>
-References: <a5b0d31d8fc9fc9bc2b69baa5330466090825a39.1557923113.git.christophe.leroy@c-s.fr>
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH v3] crypto: caam - strip input without changing crypto
+ request
+Thread-Topic: [PATCH v3] crypto: caam - strip input without changing crypto
+ request
+Thread-Index: AQHVCyaguwFNZWWr4kKcDDftCl1gCA==
+Date:   Wed, 15 May 2019 14:24:00 +0000
+Message-ID: <VI1PR0402MB3485EC92E27ECD4501587B4998090@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+References: <1557928856-9550-1-git-send-email-iuliana.prodan@nxp.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -47,62 +48,55 @@ authentication-results: spf=none (sender IP is )
  smtp.mailfrom=horia.geanta@nxp.com; 
 x-originating-ip: [212.146.100.6]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f7fdb8af-9fd2-46b4-c1e6-08d6d93e5888
+x-ms-office365-filtering-correlation-id: 028d9fdb-30f7-48e0-b19b-08d6d940f97e
 x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR0402MB3533;
-x-ms-traffictypediagnostic: VI1PR0402MB3533:
-x-microsoft-antispam-prvs: <VI1PR0402MB353302E4E36E8C6ADAF3DDE698090@VI1PR0402MB3533.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR0402MB2911;
+x-ms-traffictypediagnostic: VI1PR0402MB2911:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <VI1PR0402MB2911C1E989211449A80B102498090@VI1PR0402MB2911.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2201;
 x-forefront-prvs: 0038DE95A2
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(366004)(136003)(376002)(396003)(39860400002)(199004)(189003)(53546011)(81156014)(81166006)(8936002)(6506007)(8676002)(76176011)(74316002)(54906003)(316002)(7696005)(305945005)(7736002)(33656002)(3846002)(102836004)(2906002)(99286004)(229853002)(110136005)(256004)(14444005)(6116002)(6436002)(55016002)(9686003)(66476007)(52536014)(5660300002)(44832011)(71190400001)(66066001)(68736007)(26005)(71200400001)(66446008)(66556008)(64756008)(186003)(4326008)(53936002)(86362001)(476003)(6246003)(478600001)(14454004)(25786009)(486006)(66946007)(446003)(76116006)(73956011);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0402MB3533;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(346002)(39860400002)(136003)(366004)(376002)(189003)(199004)(446003)(66066001)(8676002)(66446008)(64756008)(81166006)(66556008)(66476007)(76116006)(81156014)(476003)(2906002)(9686003)(8936002)(66946007)(73956011)(6306002)(486006)(966005)(52536014)(305945005)(14454004)(86362001)(44832011)(53936002)(74316002)(55016002)(3846002)(4744005)(6116002)(5660300002)(316002)(54906003)(6436002)(110136005)(478600001)(99286004)(25786009)(53546011)(6246003)(7736002)(68736007)(229853002)(71190400001)(71200400001)(6506007)(26005)(7696005)(256004)(14444005)(4326008)(6636002)(76176011)(33656002)(102836004)(186003)(473944003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0402MB2911;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: nxp.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: tqRKJ8tn+veTogvMVEoaMg8qQ++6AsiP2XHRa2EwSnXCvbywl8PLczPTwZFA8hrZ3VeWGGxLBVGWhfP89SHEfOQ6NoQjU1Njse/DfmVq3LHNMxRZL7R54W+9xJ54rjUQ2faCGwJRIM6XR1+eyMieuvpOe74TlcpKIrAhkIFnekkIfPhrDFwOy4BKDyraR1AXrWz+UjucDSV6sAC4eM559kHOQe7/kyTClYDKwRGJ9dHb9+E/pi+GekeTIu+O15ORskuf7biBhXLhEzyEY6YYV8CC8C8EtQ+4XnuZlbsTm1TlAmbK+nfzMN9icSX3RV48nwGEHKjkWwcOrzGZuYNbUr9lJP/OkQNtIrhQVikWtnRLiNKdKS4DJYrzI0hA+SxRD/5V5QYZuc3hjz7foG8ReuPKSlv1KgrE4j+n9hkpDK0=
+x-microsoft-antispam-message-info: j8xNFIWTiJFpm4ByPSZLcS8DgRu4sJvfE9RbjP2fpKe+80/y++vMr3GbrqCUkeiz/MzU0MmnYeoar+G6ZEuAdD7lHDZYvNlSW0/VEe8pluK80hfn5Wt1vhpN0B6C+9SRgd7I9UA5wcolNh6ssZo37X71xBsnlKMQNjoUJZwX7KpZRX7RRkRkIMzZ8NZwLeFl4vltlzWD2iGEeltKE0p6rR9qIcqBjA5fC5Ja9cfS1W8O4FkG8u/ZFbSw6K3jjVTFSuW6uA2LuweU8SsyqIPgUiQ4xFfTdiDBdUH2ZIqsJrd/uhcz+JJW3wUTrShEpLGtnC0HbN+TuySdSsltojL6t9BeOjSKPYEacpDaSb/jTQk09kf0Ngm2NvTkRu6yiBWNbCnXLVBKesaML/PPiTY/4/gSQFBZhXNP9vJB9xelOgo=
 Content-Type: text/plain; charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7fdb8af-9fd2-46b4-c1e6-08d6d93e5888
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2019 14:05:11.4920
+X-MS-Exchange-CrossTenant-Network-Message-Id: 028d9fdb-30f7-48e0-b19b-08d6d940f97e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2019 14:24:00.5437
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3533
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2911
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 5/15/2019 3:29 PM, Christophe Leroy wrote:=0A=
-> Selftests report the following:=0A=
-> =0A=
-> [    2.984845] alg: skcipher: cbc-aes-talitos encryption test failed (wro=
-ng output IV) on test vector 0, cfg=3D"in-place"=0A=
-> [    2.995377] 00000000: 3d af ba 42 9d 9e b4 30 b4 22 da 80 2c 9f ac 41=
+On 5/15/2019 5:01 PM, Iuliana Prodan wrote:=0A=
+> For rsa and pkcs1pad, CAAM expects an input of modulus size.=0A=
+> For this we strip the leading zeros in case the size is more than modulus=
+.=0A=
+> This commit avoids modifying the crypto request while stripping zeros fro=
+m=0A=
+> input, to comply with the crypto API requirement. This is done by adding=
 =0A=
-> [    3.032673] alg: skcipher: cbc-des-talitos encryption test failed (wro=
-ng output IV) on test vector 0, cfg=3D"in-place"=0A=
-> [    3.043185] 00000000: fe dc ba 98 76 54 32 10=0A=
-> [    3.063238] alg: skcipher: cbc-3des-talitos encryption test failed (wr=
-ong output IV) on test vector 0, cfg=3D"in-place"=0A=
-> [    3.073818] 00000000: 7d 33 88 93 0f 93 b2 42=0A=
+> a fixup input pointer and length.=0A=
 > =0A=
-> This above dumps show that the actual output IV is indeed the input IV.=
-=0A=
-> This is due to the IV not being copied back into the request.=0A=
-> =0A=
-> This patch fixes that.=0A=
-> =0A=
-> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>=0A=
+> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>=0A=
 Reviewed-by: Horia Geant=E3 <horia.geanta@nxp.com>=0A=
 =0A=
-While here, could you please check ecb mode (which by definition does not h=
-ave=0A=
-an IV) is behaving correctly?=0A=
-Looking in driver_algs[] list of crypto algorithms supported by talitos,=0A=
-ecb(aes,des,3des) are declared with ivsize !=3D 0.=0A=
+Herbert,=0A=
+=0A=
+Just to avoid any confusion, this should be applied on top of=0A=
+[v2,1/2] crypto: caam - fix pkcs1pad(rsa-caam, sha256) failure because of=
+=0A=
+invalid input=0A=
+https://patchwork.kernel.org/patch/10944593/=0A=
 =0A=
 Thanks,=0A=
 Horia=0A=
