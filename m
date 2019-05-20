@@ -2,856 +2,146 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EAC923EAE
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 May 2019 19:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573EB2439B
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 May 2019 00:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404004AbfETR3B (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 20 May 2019 13:29:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403955AbfETR2z (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 20 May 2019 13:28:55 -0400
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22E9A217D9;
-        Mon, 20 May 2019 17:28:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558373333;
-        bh=K49xNA5LajWX0dA+IWfbgkwafYaJMe3gauw0F8WBX20=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aKG3mVRbQ6xD2yNVZq7ngQermnCpmL9n2rwgW5pSf3xdDAiMgQVDcI3ZWMcRRAiCd
-         jrDQJPdIzWp/vRSbezNMOspARCtfVhyRCvdN3L6Eak8CZgp8nRiTChVfD25whj0ldR
-         zaFL8F7l2dsSPQbVHEE5UxnXzbEw0NUurbw0L870=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     Satya Tangirala <satyat@google.com>, linux-api@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, keyrings@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>
-Subject: [PATCH v6 16/16] fscrypt: document the new ioctls and policy version
-Date:   Mon, 20 May 2019 10:25:52 -0700
-Message-Id: <20190520172552.217253-17-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
-In-Reply-To: <20190520172552.217253-1-ebiggers@kernel.org>
-References: <20190520172552.217253-1-ebiggers@kernel.org>
+        id S1726928AbfETWtZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 20 May 2019 18:49:25 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:53138 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726478AbfETWtZ (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 20 May 2019 18:49:25 -0400
+Received: by mail-wm1-f67.google.com with SMTP id y3so921815wmm.2;
+        Mon, 20 May 2019 15:49:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eBybowviEwMd49Lp/RNR8Wxgi+ru1oT9/Dj09HJb/2g=;
+        b=uay5W8U1TfvT+iAl73lF6369VnBYR+fK0SqlNuIKVjJaR1KSheKeoX0TGCWHirgxqS
+         jGaZXlZfs88YdTnfAT3i+8OV2fLiQHa41h0PTW6Iuxt/evnRRMrFiea1rSjBqKWBgl9h
+         fHT2chzB/yoWn9LL+UbJGhwasnNO7dLCZt/Ev+vP97BZ9QoNKxvKwvsYKqc//hRjDUZX
+         EaQu8DQh59CFcKwGi3BDNsTncdSYE6nLciAYUhDyMUox0SvyxZhIBd2GUv2U5bUuX6Ds
+         aO5ptjFaicCtY1m91hzQCYoWtW3TL55HFwwCApT4C32JaEb67WUdRXv473n2aQc9Xlxe
+         hNIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=eBybowviEwMd49Lp/RNR8Wxgi+ru1oT9/Dj09HJb/2g=;
+        b=aCd38nPgAgEy0ZbpnlHZslK2z4bZ4wpS3WbOkl79Q5IcKaEEiAcmEGVryfCHJfie5v
+         uXGtyDl7bYJ8D06NwQR2KwAalaAUAYb+9UfQWQ46kziAsYwTy6zT7kp+Ck2hNTfOMx6C
+         Q6WQOLJRUCUhxd/ufwliCc/yu+j1oEvKZcRuZo9NIzT6/uc6XhTGu628egV+NX6jaUo8
+         zJYUJq8UAf1iiq2PG4mHPCBmZR+hp+MZbF92rxn64Zn5IgnHrnCADsHgifH3K3bND+E5
+         13wLGo4q7q0653E6sWZ/zahgy8zk4NCAKBCdckxiuTvAvFXCB5gmaSqIOUa4L0pjkDn3
+         a5uA==
+X-Gm-Message-State: APjAAAXIGit386/lGhG5qrAKzX43f+pNntmB/t/RUtnqAy9mx9KxfCTC
+        iZTifyNRYAezFYCX5zjY9Pw=
+X-Google-Smtp-Source: APXvYqyDl9oFd1h4VTH+JLMEKK/jmafg+8s5huFEs8CoYwsGmqWXKMQS45aCYmIBSBU7h7QDTVQBXw==
+X-Received: by 2002:a1c:e30a:: with SMTP id a10mr1004580wmh.128.1558392562480;
+        Mon, 20 May 2019 15:49:22 -0700 (PDT)
+Received: from [10.67.49.52] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id n4sm648450wmk.24.2019.05.20.15.49.19
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 20 May 2019 15:49:21 -0700 (PDT)
+Subject: Re: [PATCH 0/2] hwrng: Support for 7211 in iproc-rng200
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au
+Cc:     bcm-kernel-feedback-list@broadcom.com, stefan.wahren@i2se.com,
+        wahrenst@gmx.net, linux-crypto@vger.kernel.org, mpm@selenic.com
+References: <20190510173112.2196-1-f.fainelli@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <c3a3dc05-17fb-09fe-7a22-43e748f88164@gmail.com>
+Date:   Mon, 20 May 2019 15:49:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190510173112.2196-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On 5/10/19 10:31 AM, Florian Fainelli wrote:
+> Hi Herbert,
+> 
+> This patch series adds support for BCM7211 to the iproc-rng200 driver,
+> nothing special besides matching the compatibile string and updating the
+> binding document.
 
-Update the fscrypt documentation file to catch up to all the latest
-changes, including the new ioctls to manage master encryption keys in
-the filesystem-level keyring and the support for v2 encryption policies.
+Herbert, can you apply those patches?
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- Documentation/filesystems/fscrypt.rst | 648 +++++++++++++++++++++-----
- 1 file changed, 532 insertions(+), 116 deletions(-)
+> 
+> Florian Fainelli (2):
+>   dt-bindings: rng: Document BCM7211 RNG compatible string
+>   hwrng: iproc-rng200: Add support for 7211
+> 
+>  Documentation/devicetree/bindings/rng/brcm,iproc-rng200.txt | 1 +
+>  drivers/char/hw_random/iproc-rng200.c                       | 1 +
+>  2 files changed, 2 insertions(+)
+> 
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 4f9df6ba669e5..d72591e3a911b 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -72,6 +72,9 @@ Online attacks
- fscrypt (and storage encryption in general) can only provide limited
- protection, if any at all, against online attacks.  In detail:
- 
-+Side-channel attacks
-+~~~~~~~~~~~~~~~~~~~~
-+
- fscrypt is only resistant to side-channel attacks, such as timing or
- electromagnetic attacks, to the extent that the underlying Linux
- Cryptographic API algorithms are.  If a vulnerable algorithm is used,
-@@ -80,29 +83,84 @@ attacker to mount a side channel attack against the online system.
- Side channel attacks may also be mounted against applications
- consuming decrypted data.
- 
--After an encryption key has been provided, fscrypt is not designed to
--hide the plaintext file contents or filenames from other users on the
--same system, regardless of the visibility of the keyring key.
--Instead, existing access control mechanisms such as file mode bits,
--POSIX ACLs, LSMs, or mount namespaces should be used for this purpose.
--Also note that as long as the encryption keys are *anywhere* in
--memory, an online attacker can necessarily compromise them by mounting
--a physical attack or by exploiting any kernel security vulnerability
--which provides an arbitrary memory read primitive.
--
--While it is ostensibly possible to "evict" keys from the system,
--recently accessed encrypted files will remain accessible at least
--until the filesystem is unmounted or the VFS caches are dropped, e.g.
--using ``echo 2 > /proc/sys/vm/drop_caches``.  Even after that, if the
--RAM is compromised before being powered off, it will likely still be
--possible to recover portions of the plaintext file contents, if not
--some of the encryption keys as well.  (Since Linux v4.12, all
--in-kernel keys related to fscrypt are sanitized before being freed.
--However, userspace would need to do its part as well.)
--
--Currently, fscrypt does not prevent a user from maliciously providing
--an incorrect key for another user's existing encrypted files.  A
--protection against this is planned.
-+Unauthorized file access
-+~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+After an encryption key has been added, fscrypt does not hide the
-+plaintext file contents or filenames from other users on the same
-+system.  Instead, existing access control mechanisms such as file mode
-+bits, POSIX ACLs, LSMs, or namespaces should be used for this purpose.
-+
-+(For the reasoning behind this, understand that while the key is
-+added, the confidentiality of the data, from the perspective of the
-+system itself, is *not* protected by the mathematical properties of
-+encryption but rather only by the correctness of the kernel.
-+Therefore, any encryption-specific access control checks would merely
-+be enforced by kernel *code* and therefore would be largely redundant
-+with the wide variety of access control mechanisms already available.)
-+
-+Kernel memory compromise
-+~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+An attacker who compromises the system enough to read from arbitrary
-+memory, e.g. by mounting a physical attack or by exploiting a kernel
-+security vulnerability, can compromise all encryption keys that are
-+currently in use.
-+
-+However, fscrypt allows encryption keys to be removed from the kernel,
-+which may protect them from later compromise.
-+
-+In more detail, the FS_IOC_REMOVE_ENCRYPTION_KEY ioctl will wipe a
-+master encryption key from kernel memory.  Moreover, it will try to
-+evict all cached inodes which had been "unlocked" using the key,
-+thereby wiping their per-file keys and making them once again appear
-+"locked", i.e. in ciphertext or encrypted form.
-+
-+However, FS_IOC_REMOVE_ENCRYPTION_KEY has some limitations:
-+
-+- Per-file keys for in-use files will *not* be removed or wiped.
-+  Therefore, for maximum effect, userspace should close the relevant
-+  encrypted files and directories before removing a master key, as
-+  well as kill any processes whose working directory is in an affected
-+  encrypted directory.
-+
-+- The kernel cannot magically wipe copies of the master key(s) that
-+  userspace might have as well.  Therefore, userspace must wipe all
-+  copies of the master key(s) it makes as well.  Naturally, the same
-+  also applies to all higher levels in the key hierarchy.  Userspace
-+  should also follow other security precautions such as mlock()ing
-+  memory containing keys to prevent it from being swapped out.
-+
-+- In general, decrypted contents and filenames in the kernel VFS
-+  caches are freed but not wiped.  Therefore, portions thereof may be
-+  recoverable from freed memory, even after the corresponding key(s)
-+  were wiped.  To partially solve this, you can set
-+  CONFIG_PAGE_POISONING=y in your kernel config and add page_poison=1
-+  to your kernel command line.  However, this has a performance cost.
-+
-+- Secret keys might still exist in CPU registers, in crypto
-+  accelerator hardware (if used by the crypto API to implement any of
-+  the algorithms), or in other places not explicitly considered here.
-+
-+Limitations of v1 policies
-+~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+v1 encryption policies have some weaknesses with respect to online
-+attacks:
-+
-+- There is no verification that the provided master key is correct.
-+  Consequently, malicious users can associate the wrong key with
-+  encrypted files, even files to which they have only read-only
-+  access.
-+
-+- A compromise of a per-file key also compromises the master key from
-+  which it was derived.
-+
-+- Non-root users cannot securely remove encryption keys.
-+
-+All the above problems are fixed with v2 encryption policies.  For
-+this reason among others, it is recommended to use v2 encryption
-+policies on all new encrypted directories.
- 
- Key hierarchy
- =============
-@@ -123,11 +181,46 @@ appropriate master key.  There can be any number of master keys, each
- of which protects any number of directory trees on any number of
- filesystems.
- 
--Userspace should generate master keys either using a cryptographically
--secure random number generator, or by using a KDF (Key Derivation
--Function).  Note that whenever a KDF is used to "stretch" a
--lower-entropy secret such as a passphrase, it is critical that a KDF
--designed for this purpose be used, such as scrypt, PBKDF2, or Argon2.
-+Master keys should be pseudorandom, i.e. indistinguishable from random
-+bytestrings of the same length.  This implies that users **must not**
-+directly use a password as a master key, zero-pad a shorter key, or
-+repeat a shorter key.  Instead, users should generate master keys
-+either using a cryptographically secure random number generator, or by
-+using a KDF (Key Derivation Function).  Note that whenever a KDF is
-+used to "stretch" a lower-entropy secret such as a passphrase, it is
-+critical that a KDF designed for this purpose be used, such as scrypt,
-+PBKDF2, or Argon2.
-+
-+Key derivation function
-+-----------------------
-+
-+With one exception, fscrypt never uses the master key(s) for
-+encryption directly.  Instead, they are only used as input to a KDF
-+(Key Derivation Function) to derive the actual keys.
-+
-+The KDF used for a particular master key differs depending on whether
-+the key is used for v1 encryption policies or for v2 encryption
-+policies.  Users **must not** use the same key for both v1 and v2
-+encryption policies.
-+
-+For v1 encryption policies, the KDF only supports deriving per-file
-+encryption keys.  It works by encrypting the master key with
-+AES-128-ECB, using the file's 16-byte nonce as the AES key.  The
-+resulting ciphertext is used as the derived key.  If the ciphertext is
-+longer than needed, then it is truncated to the needed length.
-+
-+For v2 encryption policies, the KDF is HKDF-SHA512.  The master key is
-+passed as the "input keying material", no salt is used, and a distinct
-+"application-specific information string" is used for each distinct
-+key to be derived.  For example, when a per-file encryption key is
-+derived, the application-specific information string is the file's
-+nonce prefixed with "fscrypt\0" and a context byte.  Different context
-+bytes are used for other types of derived keys.
-+
-+HKDF-SHA512 is preferred to the original AES-128-ECB based KDF because
-+HKDF is more flexible, is nonreversible, and evenly distributes
-+entropy from the master key.  HKDF is also standardized and widely
-+used by other software, whereas the AES-128-ECB based KDF is ad-hoc.
- 
- Per-file keys
- -------------
-@@ -138,29 +231,9 @@ files doesn't map to the same ciphertext, or vice versa.  In most
- cases, fscrypt does this by deriving per-file keys.  When a new
- encrypted inode (regular file, directory, or symlink) is created,
- fscrypt randomly generates a 16-byte nonce and stores it in the
--inode's encryption xattr.  Then, it uses a KDF (Key Derivation
--Function) to derive the file's key from the master key and nonce.
--
--The Adiantum encryption mode (see `Encryption modes and usage`_) is
--special, since it accepts longer IVs and is suitable for both contents
--and filenames encryption.  For it, a "direct key" option is offered
--where the file's nonce is included in the IVs and the master key is
--used for encryption directly.  This improves performance; however,
--users must not use the same master key for any other encryption mode.
--
--Below, the KDF and design considerations are described in more detail.
--
--The current KDF works by encrypting the master key with AES-128-ECB,
--using the file's nonce as the AES key.  The output is used as the
--derived key.  If the output is longer than needed, then it is
--truncated to the needed length.
--
--Note: this KDF meets the primary security requirement, which is to
--produce unique derived keys that preserve the entropy of the master
--key, assuming that the master key is already a good pseudorandom key.
--However, it is nonstandard and has some problems such as being
--reversible, so it is generally considered to be a mistake!  It may be
--replaced with HKDF or another more standard KDF in the future.
-+inode's encryption xattr.  Then, it uses a KDF (as described in `Key
-+derivation function`_) to derive the file's key from the master key
-+and nonce.
- 
- Key derivation was chosen over key wrapping because wrapped keys would
- require larger xattrs which would be less likely to fit in-line in the
-@@ -176,6 +249,37 @@ rejected as it would have prevented ext4 filesystems from being
- resized, and by itself still wouldn't have been sufficient to prevent
- the same key from being directly reused for both XTS and CTS-CBC.
- 
-+DIRECT_KEY and per-mode keys
-+----------------------------
-+
-+The Adiantum encryption mode (see `Encryption modes and usage`_) is
-+suitable for both contents and filenames encryption, and it accepts
-+long IVs --- long enough to hold both an 8-byte logical block number
-+and a 16-byte per-file nonce.  Also, the overhead of each Adiantum key
-+is greater than that of an AES-256-XTS key.
-+
-+Therefore, to improve performance and save memory, for Adiantum a
-+"direct key" configuration is supported.  When the user has enabled
-+this by setting FSCRYPT_POLICY_FLAG_DIRECT_KEY in the fscrypt policy,
-+per-file keys are not used.  Instead, whenever any data (contents or
-+filenames) is encrypted, the file's 16-byte nonce is included in the
-+IV.  Moreover:
-+
-+- For v1 encryption policies, the encryption is done directly with the
-+  master key.  Because of this, users **must not** use the same master
-+  key for any other purpose, even for other v1 policies.
-+
-+- For v2 encryption policies, the encryption is done with a per-mode
-+  key derived using the KDF.  Users may use the same master key for
-+  other v2 encryption policies.
-+
-+Key identifiers
-+---------------
-+
-+For master keys used for v2 encryption policies, a unique 16-byte "key
-+identifier" is also derived using the KDF.  This value is stored in
-+the clear, since it is needed to reliably identify the key itself.
-+
- Encryption modes and usage
- ==========================
- 
-@@ -271,21 +375,38 @@ Setting an encryption policy
- The FS_IOC_SET_ENCRYPTION_POLICY ioctl sets an encryption policy on an
- empty directory or verifies that a directory or regular file already
- has the specified encryption policy.  It takes in a pointer to a
--:c:type:`struct fscrypt_policy`, defined as follows::
-+:c:type:`struct fscrypt_policy_v1` or a :c:type:`struct
-+fscrypt_policy_v2`, defined as follows::
- 
--    #define FSCRYPT_KEY_DESCRIPTOR_SIZE  8
--
--    struct fscrypt_policy {
-+    #define FSCRYPT_POLICY_V1               0
-+    #define FSCRYPT_KEY_DESCRIPTOR_SIZE     8
-+    struct fscrypt_policy_v1 {
-             __u8 version;
-             __u8 contents_encryption_mode;
-             __u8 filenames_encryption_mode;
-             __u8 flags;
-             __u8 master_key_descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
-     };
-+    #define fscrypt_policy  fscrypt_policy_v1
-+
-+    #define FSCRYPT_POLICY_V2               2
-+    #define FSCRYPT_KEY_IDENTIFIER_SIZE     16
-+    struct fscrypt_policy_v2 {
-+            __u8 version;
-+            __u8 contents_encryption_mode;
-+            __u8 filenames_encryption_mode;
-+            __u8 flags;
-+            __u8 __reserved[4];
-+            __u8 master_key_identifier[FSCRYPT_KEY_IDENTIFIER_SIZE];
-+    };
- 
- This structure must be initialized as follows:
- 
--- ``version`` must be 0.
-+- ``version`` must be FSCRYPT_POLICY_V1 (0) if the struct is
-+  :c:type:`fscrypt_policy_v1` or FSCRYPT_POLICY_V2 (2) if the struct
-+  is :c:type:`fscrypt_policy_v2`.  (Note: we refer to the original
-+  policy version as "v1", though its version code is really 0.)  For
-+  new encrypted directories, use v2 policies.
- 
- - ``contents_encryption_mode`` and ``filenames_encryption_mode`` must
-   be set to constants from ``<linux/fs.h>`` which identify the
-@@ -295,21 +416,30 @@ This structure must be initialized as follows:
- 
- - ``flags`` must contain a value from ``<linux/fs.h>`` which
-   identifies the amount of NUL-padding to use when encrypting
--  filenames.  If unsure, use FSCRYPT_POLICY_FLAGS_PAD_32 (0x3).  In
--  addition, if the chosen encryption modes are both
-+  filenames.  If unsure, use FSCRYPT_POLICY_FLAGS_PAD_32 (0x3).
-+  Additionally, if the encryption modes are both
-   FSCRYPT_MODE_ADIANTUM, this can contain
--  FSCRYPT_POLICY_FLAG_DIRECT_KEY to specify that the master key should
--  be used directly, without key derivation.
-+  FSCRYPT_POLICY_FLAG_DIRECT_KEY; see `DIRECT_KEY and per-mode keys`_.
- 
--- ``master_key_descriptor`` specifies how to find the master key in
--  the keyring; see `Adding keys`_.  It is up to userspace to choose a
--  unique ``master_key_descriptor`` for each master key.  The e4crypt
--  and fscrypt tools use the first 8 bytes of
-+- For v2 encryption policies, ``__reserved`` must be zeroed.
-+
-+- For v1 encryption policies, ``master_key_descriptor`` specifies how
-+  to find the master key in a keyring; see `Adding keys`_.  It is up
-+  to userspace to choose a unique ``master_key_descriptor`` for each
-+  master key.  The e4crypt and fscrypt tools use the first 8 bytes of
-   ``SHA-512(SHA-512(master_key))``, but this particular scheme is not
-   required.  Also, the master key need not be in the keyring yet when
-   FS_IOC_SET_ENCRYPTION_POLICY is executed.  However, it must be added
-   before any files can be created in the encrypted directory.
- 
-+  For v2 encryption policies, ``master_key_descriptor`` has been
-+  replaced with ``master_key_identifier``, which is longer and cannot
-+  be arbitrarily chosen.  Instead, the key must first be added using
-+  FS_IOC_ADD_ENCRYPTION_KEY, as described in `Adding keys`_.  Then,
-+  the ``key_spec.u.identifier`` the kernel returned in the
-+  :c:type:`struct fscrypt_add_key_arg` must be used as the
-+  ``master_key_identifier`` in the :c:type:`struct fscrypt_policy_v2`.
-+
- If the file is not yet encrypted, then FS_IOC_SET_ENCRYPTION_POLICY
- verifies that the file is an empty directory.  If so, the specified
- encryption policy is assigned to the directory, turning it into an
-@@ -325,6 +455,15 @@ policy exactly matches the actual one.  If they match, then the ioctl
- returns 0.  Otherwise, it fails with EEXIST.  This works on both
- regular files and directories, including nonempty directories.
- 
-+When a v2 encryption policy is assigned to a directory, it is also
-+required that either the specified key has been added by the current
-+user or that the caller has CAP_FOWNER in the initial user namespace.
-+(This is needed to prevent a user from encrypting their data with
-+another user's key.)  The key must remain added while
-+FS_IOC_SET_ENCRYPTION_POLICY is executing.  However, if the new
-+encrypted directory does not need to be accessed immediately, then the
-+key can be removed right away afterwards.
-+
- Note that the ext4 filesystem does not allow the root directory to be
- encrypted, even if it is empty.  Users who want to encrypt an entire
- filesystem with one key should consider using dm-crypt instead.
-@@ -337,7 +476,11 @@ FS_IOC_SET_ENCRYPTION_POLICY can fail with the following errors:
- - ``EEXIST``: the file is already encrypted with an encryption policy
-   different from the one specified
- - ``EINVAL``: an invalid encryption policy was specified (invalid
--  version, mode(s), or flags)
-+  version, mode(s), or flags; or reserved bits were set)
-+- ``ENOKEY``: a v2 encryption policy was specified, but the key with
-+  the specified ``master_key_identifier`` has not been added, nor does
-+  the process have the CAP_FOWNER capability in the initial user
-+  namespace
- - ``ENOTDIR``: the file is unencrypted and is a regular file, not a
-   directory
- - ``ENOTEMPTY``: the file is unencrypted and is a nonempty directory
-@@ -356,25 +499,78 @@ FS_IOC_SET_ENCRYPTION_POLICY can fail with the following errors:
- Getting an encryption policy
- ----------------------------
- 
--The FS_IOC_GET_ENCRYPTION_POLICY ioctl retrieves the :c:type:`struct
--fscrypt_policy`, if any, for a directory or regular file.  See above
--for the struct definition.  No additional permissions are required
--beyond the ability to open the file.
-+Two ioctls are available to get a file's encryption policy:
-+
-+- FS_IOC_GET_ENCRYPTION_POLICY_EX
-+- FS_IOC_GET_ENCRYPTION_POLICY
-+
-+The extended (_EX) version of the ioctl is more general and is
-+recommended to use when possible.  However, on older kernels only the
-+original ioctl is available.  Applications should try the extended
-+version, and if it fails with ENOTTY fall back to the original
-+version.
-+
-+Preferred method
-+~~~~~~~~~~~~~~~~
-+
-+The FS_IOC_GET_ENCRYPTION_POLICY_EX ioctl retrieves the encryption
-+policy, if any, for a directory or regular file.  No additional
-+permissions are required beyond the ability to open the file.  It
-+takes in a pointer to a :c:type:`struct fscrypt_get_policy_ex_arg`,
-+defined as follows::
-+
-+    struct fscrypt_get_policy_ex_arg {
-+            __u64 policy_size; /* input/output */
-+            union {
-+                    __u8 version;
-+                    struct fscrypt_policy_v1 v1;
-+                    struct fscrypt_policy_v2 v2;
-+            } policy; /* output */
-+    };
-+
-+The caller must initialize ``policy_size`` to the size available for
-+the policy struct, i.e. ``sizeof(arg.policy)``.
-+
-+On success, the policy struct is returned in ``policy``, and its
-+actual size is returned in ``policy_size``.  ``policy.version`` should
-+be checked to determine the version of policy returned.  Note that the
-+version code for the "v1" policy is actually 0 (FSCRYPT_POLICY_V1).
- 
--FS_IOC_GET_ENCRYPTION_POLICY can fail with the following errors:
-+FS_IOC_GET_ENCRYPTION_POLICY_EX can fail with the following errors:
- 
- - ``EINVAL``: the file is encrypted, but it uses an unrecognized
--  encryption context format
-+  encryption policy version
- - ``ENODATA``: the file is not encrypted
--- ``ENOTTY``: this type of filesystem does not implement encryption
-+- ``ENOTTY``: this type of filesystem does not implement encryption,
-+  or this kernel is too old to support FS_IOC_GET_ENCRYPTION_POLICY_EX
-+  (try FS_IOC_GET_ENCRYPTION_POLICY instead)
- - ``EOPNOTSUPP``: the kernel was not configured with encryption
-   support for this filesystem
-+- ``EOVERFLOW``: the file is encrypted and uses a recognized
-+  encryption policy version, but the policy struct does not fit into
-+  the provided buffer
- 
- Note: if you only need to know whether a file is encrypted or not, on
- most filesystems it is also possible to use the FS_IOC_GETFLAGS ioctl
- and check for FS_ENCRYPT_FL, or to use the statx() system call and
- check for STATX_ATTR_ENCRYPTED in stx_attributes.
- 
-+Legacy method
-+~~~~~~~~~~~~~
-+
-+The FS_IOC_GET_ENCRYPTION_POLICY ioctl can also retrieve the
-+encryption policy, if any, for a directory or regular file.  However,
-+unlike the extended version (FS_IOC_GET_ENCRYPTION_POLICY_EX),
-+FS_IOC_GET_ENCRYPTION_POLICY only supports the original policy
-+version.  It takes in a pointer directly to a :c:type:`struct
-+fscrypt_policy_v1` rather than a :c:type:`struct
-+fscrypt_get_policy_ex_arg`.
-+
-+The error codes for FS_IOC_GET_ENCRYPTION_POLICY are the same as those
-+for FS_IOC_GET_ENCRYPTION_POLICY_EX, except that
-+FS_IOC_GET_ENCRYPTION_POLICY also returns ``EINVAL`` if the file is
-+encrypted using a newer encryption policy version.
-+
- Getting the per-filesystem salt
- -------------------------------
- 
-@@ -390,8 +586,98 @@ generate and manage any needed salt(s) in userspace.
- Adding keys
- -----------
- 
--To provide a master key, userspace must add it to an appropriate
--keyring using the add_key() system call (see:
-+Preferred method
-+~~~~~~~~~~~~~~~~
-+
-+The FS_IOC_ADD_ENCRYPTION_KEY ioctl adds a master encryption key to
-+the filesystem, making all files on the filesystem which were
-+encrypted using that key appear "unlocked", i.e. in plaintext form.
-+It can be executed on any file or directory on the target filesystem,
-+but using the filesystem's root directory is recommended.  It takes in
-+a pointer to a :c:type:`struct fscrypt_add_key_arg`, defined as
-+follows::
-+
-+    struct fscrypt_add_key_arg {
-+            struct fscrypt_key_specifier key_spec;
-+            __u32 raw_size;
-+            __u32 __reserved[9];
-+            __u8 raw[];
-+    };
-+
-+    struct fscrypt_key_specifier {
-+    #define FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR        1
-+    #define FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER        2
-+            __u32 type;
-+            __u32 __reserved;
-+            union {
-+                    __u8 __reserved[32]; /* reserve some extra space */
-+                    __u8 descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
-+                    __u8 identifier[FSCRYPT_KEY_IDENTIFIER_SIZE];
-+            } u;
-+    };
-+
-+:c:type:`struct fscrypt_add_key_arg` must be zeroed, then initialized
-+as follows:
-+
-+- If the key is being added for use by v1 encryption policies, then
-+  ``key_spec.type`` must contain FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR, and
-+  ``key_spec.u.descriptor`` must contain the descriptor of the key
-+  being added, corresponding to the value in the
-+  ``master_key_descriptor`` field of :c:type:`struct
-+  fscrypt_policy_v1`.  To add this type of key, the calling process
-+  must have the CAP_SYS_ADMIN capability in the initial user
-+  namespace.
-+
-+  Alternatively, if the key is being added for use by v2 encryption
-+  policies, then ``key_spec.type`` must contain
-+  FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER, and ``key_spec.u.identifier`` is
-+  an *output* field which the kernel fills in with a cryptographic
-+  hash of the key.  To add this type of key, the calling process does
-+  not need any privileges.  However, the number of keys that can be
-+  added is limited by the user's quota for the keyrings service (see
-+  ``Documentation/security/keys/core.rst``).
-+
-+- ``raw_size`` must be the size of the ``raw`` key provided, in bytes.
-+
-+- ``raw`` is a variable-length field which must contain the actual
-+  key, ``raw_size`` bytes long.
-+
-+FS_IOC_ADD_ENCRYPTION_KEY can fail with the following errors:
-+
-+- ``EACCES``: FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR was specified, but the
-+  caller does not have the CAP_SYS_ADMIN capability in the initial
-+  user namespace
-+- ``EDQUOT``: the key quota for this user would be exceeded by adding
-+  the key
-+- ``EINVAL``: invalid key size or key specifier type, or reserved bits
-+  were set
-+- ``ENOTTY``: this type of filesystem does not implement encryption
-+- ``EOPNOTSUPP``: the kernel was not configured with encryption
-+  support for this filesystem, or the filesystem superblock has not
-+  had encryption enabled on it
-+
-+Legacy method
-+~~~~~~~~~~~~~
-+
-+For v1 encryption policies, a master encryption key can also be
-+provided by adding it to a process-subscribed keyring, e.g. to a
-+session keyring, or to a user keyring if the user keyring is linked
-+into the session keyring.
-+
-+This method is deprecated (and not supported for v2 encryption
-+policies) for several reasons.  First, it cannot be used in
-+combination with FS_IOC_REMOVE_ENCRYPTION_KEY (see `Removing keys`_),
-+so for removing a key a workaround such as keyctl_unlink() in
-+combination with ``sync; echo 2 > /proc/sys/vm/drop_caches`` would
-+have to be used.  Second, it doesn't match the fact that the
-+locked/unlocked status of encrypted files (i.e. whether they appear to
-+be in plaintext form or in ciphertext form) is global.  This mismatch
-+has caused much confusion as well as real problems when processes
-+running under different UIDs, such as a ``sudo`` command, need to
-+access encrypted files.
-+
-+Nevertheless, to add a key to one of the process-subscribed keyrings,
-+the add_key() system call can be used (see:
- ``Documentation/security/keys/core.rst``).  The key type must be
- "logon"; keys of this type are kept in kernel memory and cannot be
- read back by userspace.  The key description must be "fscrypt:"
-@@ -399,12 +685,12 @@ followed by the 16-character lower case hex representation of the
- ``master_key_descriptor`` that was set in the encryption policy.  The
- key payload must conform to the following structure::
- 
--    #define FSCRYPT_MAX_KEY_SIZE 64
-+    #define FSCRYPT_MAX_KEY_SIZE            64
- 
-     struct fscrypt_key {
--            u32 mode;
--            u8 raw[FSCRYPT_MAX_KEY_SIZE];
--            u32 size;
-+            __u32 mode;
-+            __u8 raw[FSCRYPT_MAX_KEY_SIZE];
-+            __u32 size;
-     };
- 
- ``mode`` is ignored; just set it to 0.  The actual key is provided in
-@@ -416,26 +702,145 @@ with a filesystem-specific prefix such as "ext4:".  However, the
- filesystem-specific prefixes are deprecated and should not be used in
- new programs.
- 
--There are several different types of keyrings in which encryption keys
--may be placed, such as a session keyring, a user session keyring, or a
--user keyring.  Each key must be placed in a keyring that is "attached"
--to all processes that might need to access files encrypted with it, in
--the sense that request_key() will find the key.  Generally, if only
--processes belonging to a specific user need to access a given
--encrypted directory and no session keyring has been installed, then
--that directory's key should be placed in that user's user session
--keyring or user keyring.  Otherwise, a session keyring should be
--installed if needed, and the key should be linked into that session
--keyring, or in a keyring linked into that session keyring.
--
--Note: introducing the complex visibility semantics of keyrings here
--was arguably a mistake --- especially given that by design, after any
--process successfully opens an encrypted file (thereby setting up the
--per-file key), possessing the keyring key is not actually required for
--any process to read/write the file until its in-memory inode is
--evicted.  In the future there probably should be a way to provide keys
--directly to the filesystem instead, which would make the intended
--semantics clearer.
-+Removing keys
-+-------------
-+
-+The FS_IOC_REMOVE_ENCRYPTION_KEY ioctl can be used to remove a master
-+encryption key from the kernel, wiping the corresponding secrets from
-+memory and causing any files which were "unlocked" with the key to
-+appear "locked" again.  It can be executed on any file or directory on
-+the target filesystem, but using the filesystem's root directory is
-+recommended.  It takes in a pointer to a :c:type:`struct
-+fscrypt_remove_key_arg`, defined as follows::
-+
-+    struct fscrypt_remove_key_arg {
-+            struct fscrypt_key_specifier key_spec;
-+    #define FSCRYPT_REMOVE_KEY_FLAG_ALL_USERS       0x00000001
-+            __u32 flags;
-+            __u32 __reserved[5];
-+    };
-+
-+This structure must be zeroed, then initialized as follows:
-+
-+- The key to remove is specified by ``key_spec``:
-+
-+    - To remove a key used by v1 encryption policies, set
-+      ``key_spec.type`` to FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR and fill
-+      in ``key_spec.u.descriptor``.  To remove this type of key, the
-+      calling process must have the CAP_SYS_ADMIN capability in the
-+      initial user namespace.
-+
-+    - To remove a key used by v2 encryption policies, set
-+      ``key_spec.type`` to FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER and fill
-+      in ``key_spec.u.identifier``.  To remove this type of key, no
-+      privileges are needed.  However, users can only remove keys that
-+      they added themselves, subject to privileged override with
-+      FSCRYPT_REMOVE_KEY_FLAG_ALL_USERS.
-+
-+- ``flags`` can contain the following flags:
-+
-+    - ``FSCRYPT_REMOVE_KEY_FLAG_ALL_USERS`` specifies that the key
-+      should be removed even if it has also been added by other users.
-+      Specifying this flag requires the CAP_SYS_ADMIN capability in
-+      the initial user namespace.
-+
-+FS_IOC_REMOVE_ENCRYPTION_KEY can fail with the following errors:
-+
-+- ``EACCES``: The FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR key specifier type
-+  and/or the FSCRYPT_REMOVE_KEY_FLAG_ALL_USERS flag was specified, but
-+  the caller does not have the CAP_SYS_ADMIN capability in the initial
-+  user namespace
-+- ``EBUSY``: the master key secret was wiped from memory, but some
-+  files which were unlocked with it are still in use.  Such files
-+  could not be locked, nor could their per-file keys be wiped from
-+  memory.  The ioctl may be retried later to re-attempt locking the
-+  remaining files.  Note: if the files cease being used, the key
-+  removal may (but is not guaranteed to) complete before this ioctl is
-+  retried; in this case, retrying this ioctl will return ``ENOKEY``.
-+- ``EINVAL``: invalid flags or key specifier type, or reserved bits
-+  were set
-+- ``ENOKEY``: the key is not present or has already been fully removed
-+- ``ENOTTY``: this type of filesystem does not implement encryption
-+- ``EOPNOTSUPP``: the kernel was not configured with encryption
-+  support for this filesystem, or the filesystem superblock has not
-+  had encryption enabled on it
-+- ``EUSERS``: the key cannot be removed because other users have added
-+  it too
-+
-+Before using this ioctl, read the `Kernel memory compromise`_ section
-+for a discussion of the security goals and limitations of this ioctl.
-+
-+Getting key status
-+------------------
-+
-+The FS_IOC_GET_ENCRYPTION_KEY_STATUS ioctl retrieves the status of a
-+master encryption key.  It can be executed on any file or directory on
-+the target filesystem, but using the filesystem's root directory is
-+recommended.  It takes in a pointer to a :c:type:`struct
-+fscrypt_get_key_status_arg`, defined as follows::
-+
-+    struct fscrypt_get_key_status_arg {
-+            /* input */
-+            struct fscrypt_key_specifier key_spec;
-+            __u32 __reserved[6];
-+
-+            /* output */
-+    #define FSCRYPT_KEY_STATUS_ABSENT               1
-+    #define FSCRYPT_KEY_STATUS_PRESENT              2
-+    #define FSCRYPT_KEY_STATUS_INCOMPLETELY_REMOVED 3
-+            __u32 status;
-+    #define FSCRYPT_KEY_STATUS_FLAG_ADDED_BY_SELF   0x00000001
-+            __u32 status_flags;
-+            __u32 user_count;
-+            __u32 __out_reserved[13];
-+    };
-+
-+The caller must zero all input fields, then fill in ``key_spec``:
-+
-+    - To get the status of a key for v1 encryption policies, set
-+      ``key_spec.type`` to FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR and fill
-+      in ``key_spec.u.descriptor``.
-+
-+    - To get the status of a key for v2 encryption policies, set
-+      ``key_spec.type`` to FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER and fill
-+      in ``key_spec.u.identifier``.
-+
-+On success, 0 is returned and the kernel fills in the output fields:
-+
-+- ``status`` indicates whether the key is absent, present, or
-+  incompletely removed.  Incompletely removed means that the master
-+  secret has been removed, but some files are still in use; i.e.,
-+  FS_IOC_REMOVE_ENCRYPTION_KEY returned EBUSY.
-+
-+- ``status_flags`` can contain the following flags:
-+
-+    - ``FSCRYPT_KEY_STATUS_FLAG_ADDED_BY_SELF`` indicates that the key
-+      has added by the current user.  This is only set for keys
-+      identified by ``identifier`` rather than by ``descriptor``.
-+
-+- ``user_count`` specifies the number of users who have added the key.
-+  This is only set for keys identified by ``identifier`` rather than
-+  by ``descriptor``.
-+
-+FS_IOC_GET_ENCRYPTION_KEY_STATUS can fail with the following errors:
-+
-+- ``EINVAL``: invalid key specifier type, or reserved bits were set
-+- ``ENOTTY``: this type of filesystem does not implement encryption
-+- ``EOPNOTSUPP``: the kernel was not configured with encryption
-+  support for this filesystem, or the filesystem superblock has not
-+  had encryption enabled on it
-+
-+Among other use cases, FS_IOC_GET_ENCRYPTION_KEY_STATUS might be
-+useful for determining whether the key for a given encrypted directory
-+needs to be added before prompting the user for the passphrase needed
-+to derive the key.
-+
-+FS_IOC_GET_ENCRYPTION_KEY_STATUS can only get the status of keys in
-+the filesystem-level keyring, i.e. the keyring managed by
-+FS_IOC_ADD_ENCRYPTION_KEY and FS_IOC_REMOVE_ENCRYPTION_KEY.  It cannot
-+get the status of a key that has only been added for use by v1
-+encryption policies using the legacy mechanism involving
-+process-subscribed keyrings.
- 
- Access semantics
- ================
-@@ -498,7 +903,7 @@ Without the key
- 
- Some filesystem operations may be performed on encrypted regular
- files, directories, and symlinks even before their encryption key has
--been provided:
-+been added, or after their encryption key has been removed:
- 
- - File metadata may be read, e.g. using stat().
- 
-@@ -563,20 +968,20 @@ Encryption context
- ------------------
- 
- An encryption policy is represented on-disk by a :c:type:`struct
--fscrypt_context`.  It is up to individual filesystems to decide where
--to store it, but normally it would be stored in a hidden extended
--attribute.  It should *not* be exposed by the xattr-related system
--calls such as getxattr() and setxattr() because of the special
--semantics of the encryption xattr.  (In particular, there would be
--much confusion if an encryption policy were to be added to or removed
--from anything other than an empty directory.)  The struct is defined
--as follows::
-+fscrypt_context_v1` or a :c:type:`struct fscrypt_context_v2`.  It is
-+up to individual filesystems to decide where to store it, but normally
-+it would be stored in a hidden extended attribute.  It should *not* be
-+exposed by the xattr-related system calls such as getxattr() and
-+setxattr() because of the special semantics of the encryption xattr.
-+(In particular, there would be much confusion if an encryption policy
-+were to be added to or removed from anything other than an empty
-+directory.)  These structs are defined as follows::
- 
--    #define FSCRYPT_KEY_DESCRIPTOR_SIZE  8
-     #define FS_KEY_DERIVATION_NONCE_SIZE 16
- 
--    struct fscrypt_context {
--            u8 format;
-+    #define FSCRYPT_KEY_DESCRIPTOR_SIZE  8
-+    struct fscrypt_context_v1 {
-+            u8 version;
-             u8 contents_encryption_mode;
-             u8 filenames_encryption_mode;
-             u8 flags;
-@@ -584,12 +989,23 @@ as follows::
-             u8 nonce[FS_KEY_DERIVATION_NONCE_SIZE];
-     };
- 
--Note that :c:type:`struct fscrypt_context` contains the same
--information as :c:type:`struct fscrypt_policy` (see `Setting an
--encryption policy`_), except that :c:type:`struct fscrypt_context`
--also contains a nonce.  The nonce is randomly generated by the kernel
--and is used to derive the inode's encryption key as described in
--`Per-file keys`_.
-+    #define FSCRYPT_KEY_IDENTIFIER_SIZE  16
-+    struct fscrypt_context_v2 {
-+            u8 version;
-+            u8 contents_encryption_mode;
-+            u8 filenames_encryption_mode;
-+            u8 flags;
-+            u8 __reserved[4];
-+            u8 master_key_identifier[FSCRYPT_KEY_IDENTIFIER_SIZE];
-+            u8 nonce[FS_KEY_DERIVATION_NONCE_SIZE];
-+    };
-+
-+The context structs contain the same information as the corresponding
-+policy structs (see `Setting an encryption policy`_), except that the
-+context structs also contain a nonce.  The nonce is randomly generated
-+by the kernel and is used as KDF input or as a tweak to cause
-+different files to be encrypted differently; see `Per-file keys`_ and
-+`DIRECT_KEY and per-mode keys`_.
- 
- Data path changes
- -----------------
+
 -- 
-2.21.0.1020.gf2820cf01a-goog
-
+Florian
