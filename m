@@ -2,85 +2,83 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA76C24DE4
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 May 2019 13:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFFA25093
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 May 2019 15:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbfEULar (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 May 2019 07:30:47 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:2593 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726296AbfEULao (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 May 2019 07:30:44 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 399FB3082200;
-        Tue, 21 May 2019 11:30:39 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.43.17.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EC4F9176D4;
-        Tue, 21 May 2019 11:30:35 +0000 (UTC)
-Subject: Re: [PATCH] crypto: af_alg - implement keyring support
-To:     Ondrej Mosnacek <omosnace@redhat.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        keyrings@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Milan Broz <gmazyland@gmail.com>,
-        Daniel Zatovic <dzatovic@redhat.com>
-References: <20190521100034.9651-1-omosnace@redhat.com>
- <A3BC3B07-6446-4631-862A-F661FB9D63B9@holtmann.org>
- <CAFqZXNtCNG2s_Rk_v332HJA5HVXsJYXDsyzfTNgSU_MJ-mMByA@mail.gmail.com>
-From:   Ondrej Kozina <okozina@redhat.com>
-Message-ID: <265b6c1b-3ea9-15f6-29d4-3e5988248db1@redhat.com>
-Date:   Tue, 21 May 2019 13:30:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1728060AbfEUNiA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 May 2019 09:38:00 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:59382 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727969AbfEUNiA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 21 May 2019 09:38:00 -0400
+X-Greylist: delayed 2376 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 May 2019 09:38:00 EDT
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1hT4LW-0001TA-HU; Tue, 21 May 2019 20:58:22 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1hT4LR-0003Ma-I4; Tue, 21 May 2019 20:58:17 +0800
+Date:   Tue, 21 May 2019 20:58:17 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [GIT] Crypto Fixes for 5.2
+Message-ID: <20190521125817.6lqknb2kztxddi4p@gondor.apana.org.au>
+References: <20180428080517.haxgpvqrwgotakyo@gondor.apana.org.au>
+ <20180622145403.6ltjip7che227fuo@gondor.apana.org.au>
+ <20180829033353.agnzxra3jk2r2mzg@gondor.apana.org.au>
+ <20181116063146.e7a3mep3ghnfltxe@gondor.apana.org.au>
+ <20181207061409.xflg423nknleuddw@gondor.apana.org.au>
+ <20190118104006.ye5amhxkgd4xrbmc@gondor.apana.org.au>
+ <20190201054204.ehl7u7aaqmkdh5b6@gondor.apana.org.au>
+ <20190215024738.fynl64d5u5htcy2l@gondor.apana.org.au>
+ <20190312045818.bgpiuxogmaxyscdv@gondor.apana.org.au>
+ <20190515060552.ecfwhazt2fnthepg@gondor.apana.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAFqZXNtCNG2s_Rk_v332HJA5HVXsJYXDsyzfTNgSU_MJ-mMByA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-MW
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.47]); Tue, 21 May 2019 11:30:44 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190515060552.ecfwhazt2fnthepg@gondor.apana.org.au>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 5/21/19 1:02 PM, Ondrej Mosnacek wrote:
-> Hi Marcel,
-> 
-> On Tue, May 21, 2019 at 12:48 PM Marcel Holtmann <marcel@holtmann.org> wrote:
->> Hi Ondrej,
->>
->>> This patch adds new socket options to AF_ALG that allow setting key from
->>> kernel keyring. For simplicity, each keyring key type (logon, user,
->>> trusted, encrypted) has its own socket option name and the value is just
->>> the key description string that identifies the key to be used. The key
->>> description doesn't need to be NULL-terminated, but bytes after the
->>> first zero byte are ignored.
->>
->> why use the description instead the actual key id? I wonder if a single socket option and a struct providing the key type and key id might be more useful.
-> 
-> I was basing this on the approach taken by dm-crypt/cryptsetup, which
-> is actually the main target consumer for this feature (cryptsetup
-> needs to be able to encrypt/decrypt data using a keyring key (possibly
-> unreadable by userspace) without having to create a temporary dm-crypt
-> mapping, which requires CAP_SYSADMIN). I'm not sure why they didn't
-> just use key IDs there... @Milan/Ondrej, what was you motivation for
-> using key descriptions rather than key IDs?
-> 
-We decided to use key descriptions so that we could identify more 
-clearly devices managed by cryptsetup (thus 'cryptsetup:' prefix in our 
-descriptions put in dm-crypt table). I understood numeric ids were too 
-generic for this purpose. Also cryptsetup uses by default thread keyring 
-to upload keys in kernel. Such keys are obsolete the moment cryptsetup 
-process finishes.
+Hi Linus: 
 
-I don't think it's any problem to go with IDs for your patch. IIUC, as 
-long as process has permission to access key metadata it can obtain also 
-current key id so it's not a big problem for as to adapt when we use kcapi.
+This push fixes the following issues:
 
-Regards
-O.
+- Two long-standing bugs in the powerpc assembly of vmx.
+- Stack overrun caused by HASH_MAX_DESCSIZE being too small.
+- Regression in caam.
+
+
+Please pull from
+
+git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+
+
+Daniel Axtens (2):
+      crypto: vmx - CTR: always increment IV as quadword
+      crypto: vmx - ghash: do nosimd fallback manually
+
+Eric Biggers (1):
+      crypto: hash - fix incorrect HASH_MAX_DESCSIZE
+
+Iuliana Prodan (1):
+      crypto: caam - fix typo in i.MX6 devices list for errata
+
+ crypto/hmac.c                   |   2 +
+ drivers/crypto/caam/ctrl.c      |   2 +-
+ drivers/crypto/vmx/aesp8-ppc.pl |   2 +-
+ drivers/crypto/vmx/ghash.c      | 211 ++++++++++++++++------------------------
+ include/crypto/hash.h           |   8 +-
+ 5 files changed, 97 insertions(+), 128 deletions(-)
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
