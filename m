@@ -2,83 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFFA25093
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 May 2019 15:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD0625067
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 May 2019 15:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbfEUNiA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 May 2019 09:38:00 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:59382 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727969AbfEUNiA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 May 2019 09:38:00 -0400
-X-Greylist: delayed 2376 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 May 2019 09:38:00 EDT
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hT4LW-0001TA-HU; Tue, 21 May 2019 20:58:22 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hT4LR-0003Ma-I4; Tue, 21 May 2019 20:58:17 +0800
-Date:   Tue, 21 May 2019 20:58:17 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [GIT] Crypto Fixes for 5.2
-Message-ID: <20190521125817.6lqknb2kztxddi4p@gondor.apana.org.au>
-References: <20180428080517.haxgpvqrwgotakyo@gondor.apana.org.au>
- <20180622145403.6ltjip7che227fuo@gondor.apana.org.au>
- <20180829033353.agnzxra3jk2r2mzg@gondor.apana.org.au>
- <20181116063146.e7a3mep3ghnfltxe@gondor.apana.org.au>
- <20181207061409.xflg423nknleuddw@gondor.apana.org.au>
- <20190118104006.ye5amhxkgd4xrbmc@gondor.apana.org.au>
- <20190201054204.ehl7u7aaqmkdh5b6@gondor.apana.org.au>
- <20190215024738.fynl64d5u5htcy2l@gondor.apana.org.au>
- <20190312045818.bgpiuxogmaxyscdv@gondor.apana.org.au>
- <20190515060552.ecfwhazt2fnthepg@gondor.apana.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190515060552.ecfwhazt2fnthepg@gondor.apana.org.au>
-User-Agent: NeoMutt/20170113 (1.7.2)
+        id S1728357AbfEUNeI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 May 2019 09:34:08 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:51174 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727986AbfEUNeI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 21 May 2019 09:34:08 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 457cDY6p7wz9v1nn;
+        Tue, 21 May 2019 15:34:05 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=v5L0ne9l; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id n2tkmpse9POB; Tue, 21 May 2019 15:34:05 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 457cDY5mh8z9v1nh;
+        Tue, 21 May 2019 15:34:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1558445645; bh=4k6PLmXdY0SvqmTbZLBIzVnywVWKh7ktdtBKLg7zhR0=;
+        h=From:Subject:To:Cc:Date:From;
+        b=v5L0ne9l7IeJ6j1RlEtDlB3tznGmL91nYxqqzqAQ9628UCkLw7a61V7lU7BlOMeaI
+         b0O1Pfn3sC/WTzObfEfPlukMzbiQDm5GZ/6SBtxI8+0WZYgmM+uRDgWxmfFVG8vyhS
+         VJTPMoNWaUD4+epVtwrFHblur8GZGQQvo7qCoHJ0=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 455248B80D;
+        Tue, 21 May 2019 15:34:07 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 45QZsARu0znr; Tue, 21 May 2019 15:34:07 +0200 (CEST)
+Received: from po16846vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0F4598B803;
+        Tue, 21 May 2019 15:34:07 +0200 (CEST)
+Received: by po16846vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id A260268458; Tue, 21 May 2019 13:34:06 +0000 (UTC)
+Message-Id: <cover.1558445259.git.christophe.leroy@c-s.fr>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: [PATCH v1 00/15] Fixing selftests failure on Talitos driver
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>, horia.geanta@nxp.com
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Date:   Tue, 21 May 2019 13:34:06 +0000 (UTC)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Linus: 
+Several test failures have popped up following recent changes to crypto
+selftests.
 
-This push fixes the following issues:
+This series fixes (most of) them.
 
-- Two long-standing bugs in the powerpc assembly of vmx.
-- Stack overrun caused by HASH_MAX_DESCSIZE being too small.
-- Regression in caam.
+The last three patches are trivial cleanups.
 
+Christophe Leroy (15):
+  crypto: talitos - fix skcipher failure due to wrong output IV
+  crypto: talitos - rename alternative AEAD algos.
+  crypto: talitos - reduce max key size for SEC1
+  crypto: talitos - check AES key size
+  crypto: talitos - fix CTR alg blocksize
+  crypto: talitos - check data blocksize in ablkcipher.
+  crypto: talitos - fix ECB algs ivsize
+  crypto: talitos - Do not modify req->cryptlen on decryption.
+  crypto: talitos - HMAC SNOOP NO AFEU mode requires SW icv checking.
+  crypto: talitos - properly handle split ICV.
+  crypto: talitos - Align SEC1 accesses to 32 bits boundaries.
+  crypto: talitos - fix AEAD processing.
+  Revert "crypto: talitos - export the talitos_submit function"
+  crypto: talitos - use IS_ENABLED() in has_ftr_sec1()
+  crypto: talitos - use SPDX-License-Identifier
 
-Please pull from
+ drivers/crypto/talitos.c | 281 ++++++++++++++++++++++-------------------------
+ drivers/crypto/talitos.h |  45 ++------
+ 2 files changed, 139 insertions(+), 187 deletions(-)
 
-git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
-
-
-Daniel Axtens (2):
-      crypto: vmx - CTR: always increment IV as quadword
-      crypto: vmx - ghash: do nosimd fallback manually
-
-Eric Biggers (1):
-      crypto: hash - fix incorrect HASH_MAX_DESCSIZE
-
-Iuliana Prodan (1):
-      crypto: caam - fix typo in i.MX6 devices list for errata
-
- crypto/hmac.c                   |   2 +
- drivers/crypto/caam/ctrl.c      |   2 +-
- drivers/crypto/vmx/aesp8-ppc.pl |   2 +-
- drivers/crypto/vmx/ghash.c      | 211 ++++++++++++++++------------------------
- include/crypto/hash.h           |   8 +-
- 5 files changed, 97 insertions(+), 128 deletions(-)
-
-Thanks,
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.13.3
+
