@@ -2,138 +2,118 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D32D625071
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 May 2019 15:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B855251BD
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 May 2019 16:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728362AbfEUNe2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 May 2019 09:34:28 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:37697 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728519AbfEUNeZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 May 2019 09:34:25 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 457cDs4lyTz9v2Xb;
-        Tue, 21 May 2019 15:34:21 +0200 (CEST)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=dIhmanit; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 5vq0Z9pgLHLZ; Tue, 21 May 2019 15:34:21 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 457cDs3jhfz9v2XX;
-        Tue, 21 May 2019 15:34:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1558445661; bh=Czw9zgUq/xnju+0JxkkUiUmxRuO8CAHXojk1KcQDyBc=;
-        h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
-        b=dIhmanitQXnn3JLvz24ToyoRX/uz/AnDPWsjSyvw9iPB9472QLn/VQVzG/hGZgd+D
-         F/bbit2R2kiZ7B7J/wKFbOklJYRDRHLpKAdegycazg8qHri5ZN7FOCS7+S0m+m91Bt
-         HImjYVA1UJVKi7Zy63wHdVvI06ZFzuCVvO4bJqUs=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D57228B80E;
-        Tue, 21 May 2019 15:34:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id qzTIDAwoXeA9; Tue, 21 May 2019 15:34:22 +0200 (CEST)
-Received: from po16846vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 662498B803;
-        Tue, 21 May 2019 15:34:22 +0200 (CEST)
-Received: by po16846vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 250B168458; Tue, 21 May 2019 13:34:22 +0000 (UTC)
-Message-Id: <b70fd8ac4c05d3eb846bf451d6eae114162c065d.1558445259.git.christophe.leroy@c-s.fr>
-In-Reply-To: <cover.1558445259.git.christophe.leroy@c-s.fr>
-References: <cover.1558445259.git.christophe.leroy@c-s.fr>
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [PATCH v1 15/15] crypto: talitos - use SPDX-License-Identifier
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, horia.geanta@nxp.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 21 May 2019 13:34:22 +0000 (UTC)
+        id S1728295AbfEUOSU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 May 2019 10:18:20 -0400
+Received: from mail-eopbgr10078.outbound.protection.outlook.com ([40.107.1.78]:23360
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726750AbfEUOST (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 21 May 2019 10:18:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F5ut99AYanfwbPz4JuKZP5ugvRWkJVj+8nWCB+RBiWQ=;
+ b=AxoWZ6TG9PJ/RRbRqFLKIJDySrnQIGPvu3QreP1iHyOib/7lBuDvD1C2ug6t6vClUGR1fuR6iccgbl7y8gGbFXz8+k4vcGKmXMaO5zzQl3/1ZBSCM08uxsmkqPLt6ywgvZrk7EMfHIn0DlHfdLKxyOTZWqZFSkSYXecLMasFKXI=
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com (52.134.3.153) by
+ VI1PR0402MB3725.eurprd04.prod.outlook.com (52.134.15.31) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1900.17; Tue, 21 May 2019 14:18:16 +0000
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::a450:3c13:d7af:7451]) by VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::a450:3c13:d7af:7451%3]) with mapi id 15.20.1900.020; Tue, 21 May 2019
+ 14:18:16 +0000
+From:   Horia Geanta <horia.geanta@nxp.com>
+To:     Sascha Hauer <s.hauer@pengutronix.de>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>
+Subject: Re: [PATCH 2/3] crypto: caam: print debug messages at debug level
+Thread-Topic: [PATCH 2/3] crypto: caam: print debug messages at debug level
+Thread-Index: AQHVDJL8mmT01przhESHS2q17fhpQg==
+Date:   Tue, 21 May 2019 14:18:16 +0000
+Message-ID: <VI1PR0402MB34858BA974ECCBF303931CC198070@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+References: <20190517092905.1264-1-s.hauer@pengutronix.de>
+ <20190517092905.1264-3-s.hauer@pengutronix.de>
+ <20190517095018.7qcufwb77nu3owb4@pengutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=horia.geanta@nxp.com; 
+x-originating-ip: [94.69.234.123]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 124777c3-a56a-4f1a-8abf-08d6ddf72afc
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR0402MB3725;
+x-ms-traffictypediagnostic: VI1PR0402MB3725:
+x-microsoft-antispam-prvs: <VI1PR0402MB372587121AE1AEC309EBD18098070@VI1PR0402MB3725.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 0044C17179
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39860400002)(376002)(136003)(396003)(366004)(346002)(199004)(189003)(316002)(66476007)(5660300002)(2906002)(15650500001)(66066001)(7696005)(76176011)(110136005)(53546011)(6246003)(6506007)(99286004)(25786009)(66556008)(6436002)(9686003)(68736007)(71190400001)(74316002)(229853002)(478600001)(71200400001)(14454004)(55016002)(2501003)(33656002)(44832011)(486006)(186003)(53936002)(86362001)(476003)(6116002)(446003)(3846002)(305945005)(7736002)(66946007)(64756008)(66446008)(73956011)(52536014)(26005)(81156014)(81166006)(4326008)(76116006)(8676002)(102836004)(256004)(8936002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0402MB3725;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: TJmVFahiG4G7BIFXG2IDWNl/nu4o7KIUu9qYK48Lhle08GoIJkTplX+VH+0k01VyIRKjcjBhgQ5LS8D4VGG7Yx7OKpUnptH5G1yaHUu4zNRMZSLBLhIStLiIOah3ZZrCABv8yfIdRIby3TAlu6xN/QXcQp1fLOB3sKuYX5wDcYW/4yn5mXYF+Qu4z4XwcMHLSb7eO+EuRORRpDCmwNqQRi/ljmZp/3Q/x9A7dbU2/0tVrqQmHbPOg2Q4O+CEV9QbKEd8jMsE8onmthNaxbcVVGuV5HHQynWU40qDES0nRJ/aE+qhfNgW3X4xk6gdYmpdUwKcdDuq9YewUEeazBqpFSHRPyBmHFUrrqz3eCgpi2gxQnFA1EJFpVgScOQ8HNA41YSuRUBrUEDzfcPL8V62a/+G/stnhwWtXrj0e4qQBe4=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 124777c3-a56a-4f1a-8abf-08d6ddf72afc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2019 14:18:16.6378
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3725
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch drops the license text and replaces it
-with an SPDX-License-Identifier tag.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
----
- drivers/crypto/talitos.c | 15 +--------------
- drivers/crypto/talitos.h | 25 +------------------------
- 2 files changed, 2 insertions(+), 38 deletions(-)
-
-diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-index 6fe900d8e5d8..32a7e747dc5f 100644
---- a/drivers/crypto/talitos.c
-+++ b/drivers/crypto/talitos.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0+
- /*
-  * talitos - Freescale Integrated Security Engine (SEC) device driver
-  *
-@@ -9,20 +10,6 @@
-  * Crypto algorithm registration code copied from hifn driver:
-  * 2007+ Copyright (c) Evgeniy Polyakov <johnpol@2ka.mipt.ru>
-  * All rights reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-  */
- 
- #include <linux/kernel.h>
-diff --git a/drivers/crypto/talitos.h b/drivers/crypto/talitos.h
-index 5699d46401e6..32ad4fc679ed 100644
---- a/drivers/crypto/talitos.h
-+++ b/drivers/crypto/talitos.h
-@@ -1,31 +1,8 @@
-+/* SPDX-License-Identifier: BSD-3-Clause */
- /*
-  * Freescale SEC (talitos) device register and descriptor header defines
-  *
-  * Copyright (c) 2006-2011 Freescale Semiconductor, Inc.
-- *
-- * Redistribution and use in source and binary forms, with or without
-- * modification, are permitted provided that the following conditions
-- * are met:
-- *
-- * 1. Redistributions of source code must retain the above copyright
-- *    notice, this list of conditions and the following disclaimer.
-- * 2. Redistributions in binary form must reproduce the above copyright
-- *    notice, this list of conditions and the following disclaimer in the
-- *    documentation and/or other materials provided with the distribution.
-- * 3. The name of the author may not be used to endorse or promote products
-- *    derived from this software without specific prior written permission.
-- *
-- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- *
-  */
- 
- #define TALITOS_TIMEOUT 100000
--- 
-2.13.3
-
+On 5/17/2019 12:50 PM, Sascha Hauer wrote:=0A=
+> On Fri, May 17, 2019 at 11:29:04AM +0200, Sascha Hauer wrote:=0A=
+>> The CAAM driver used to put its debug messages inside #ifdef DEBUG and=
+=0A=
+>> then prints the messages at KERN_ERR level. Replace this with proper=0A=
+>> functions printing at KERN_DEBUG level. The #ifdef DEBUG gets=0A=
+>> unnecessary when the right functions are used.=0A=
+>>=0A=
+>> This replaces:=0A=
+>>=0A=
+>> - print_hex_dump(KERN_ERR ...) inside #ifdef DEBUG with=0A=
+>>   print_hex_dump_debug(...)=0A=
+>> - dev_err() inside #ifdef DEBUG with dev_dbg()=0A=
+>> - printk(KERN_ERR ...) inside #ifdef DEBUG with dev_dbg()=0A=
+>>=0A=
+>> Some parts of the driver use these functions already, so it is only=0A=
+>> consequent to use the debug function consistently.=0A=
+>>=0A=
+>> @@ -993,20 +978,17 @@ static void skcipher_encrypt_done(struct device *j=
+rdev, u32 *desc, u32 err,=0A=
+>>  	struct crypto_skcipher *skcipher =3D crypto_skcipher_reqtfm(req);=0A=
+>>  	int ivsize =3D crypto_skcipher_ivsize(skcipher);=0A=
+>>  =0A=
+>> -#ifdef DEBUG=0A=
+>> -	print_hex_dump(KERN_ERR, "dstiv  @"__stringify(__LINE__)": ",=0A=
+>> +	print_hex_dump_debug("dstiv  @"__stringify(__LINE__)": ",=0A=
+>>  		       DUMP_PREFIX_ADDRESS, 16, 4, req->iv,=0A=
+>>  		       edesc->src_nents > 1 ? 100 : ivsize, 1);=0A=
+>> -#endif=0A=
+>> +=0A=
+> =0A=
+> I just realized that this print_hex_dump_debug() needs to be inside if (i=
+vsize)=0A=
+> because since eaed71a44ad9 ("crypto: caam - add ecb(*) support") req->iv=
+=0A=
+> can be NULL. This is broken with or without this patch, I can include a=
+=0A=
+> patch fixing this up when doing a v2.=0A=
+> =0A=
+That's true.=0A=
+Since this patch set is orthogonal to the bug, IMO the fix shouldn't be par=
+t of it.=0A=
+=0A=
+Thanks,=0A=
+Horia=0A=
