@@ -2,38 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E0226DC2
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 May 2019 21:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7D826CEB
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 May 2019 21:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732582AbfEVToH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 22 May 2019 15:44:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50822 "EHLO mail.kernel.org"
+        id S1731620AbfEVT3p (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 22 May 2019 15:29:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732502AbfEVT2O (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 22 May 2019 15:28:14 -0400
+        id S1732968AbfEVT3p (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 22 May 2019 15:29:45 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E677E2177E;
-        Wed, 22 May 2019 19:28:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 183B32173C;
+        Wed, 22 May 2019 19:29:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558553293;
+        s=default; t=1558553384;
         bh=pO38k8VhxEzdquYnHIYEk/3gJ31kyCzgKZhOtvkygOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=exIMuKYEDkbuW3aUqk0IwkmOzFQpNUfZAUYGcUQzYGTQvV3uN9KtZUP9xu3592qFG
-         ila6G0jOI6CIHDVhV6XolpPvLQd3DfxyCND3S9t//pbVjCeGF0mtceryZFGgwWuFtI
-         UxfhgSO+YNXWYaCKNC79CpJ7dldVjgz/jVIBJNZ4=
+        b=TfpDmu3R6WnpY+z31+Ic4evLB87SYo97+W4hac9nzU33BA7bAZ6K7zEOm5/M6H6xP
+         UMncA6QHNEZk7f3LI4AwamzjiLUKw8kxNOnPDr+ufhVnf6eRPaWyViudt3GPNy/t0i
+         uESzKFiuBTN8vQRfjzHuPZDcZKuleSQmqjzsKOwg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 065/244] crypto: sun4i-ss - Fix invalid calculation of hash end
-Date:   Wed, 22 May 2019 15:23:31 -0400
-Message-Id: <20190522192630.24917-65-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 042/167] crypto: sun4i-ss - Fix invalid calculation of hash end
+Date:   Wed, 22 May 2019 15:26:37 -0400
+Message-Id: <20190522192842.25858-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190522192630.24917-1-sashal@kernel.org>
-References: <20190522192630.24917-1-sashal@kernel.org>
+In-Reply-To: <20190522192842.25858-1-sashal@kernel.org>
+References: <20190522192842.25858-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
