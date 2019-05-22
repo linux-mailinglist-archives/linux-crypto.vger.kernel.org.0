@@ -2,38 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7D826CEB
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 May 2019 21:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA57826C8C
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 May 2019 21:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731620AbfEVT3p (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 22 May 2019 15:29:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52916 "EHLO mail.kernel.org"
+        id S1731163AbfEVTfi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 22 May 2019 15:35:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732968AbfEVT3p (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 22 May 2019 15:29:45 -0400
+        id S1731851AbfEVTbA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 22 May 2019 15:31:00 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 183B32173C;
-        Wed, 22 May 2019 19:29:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 28D9B20675;
+        Wed, 22 May 2019 19:30:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558553384;
-        bh=pO38k8VhxEzdquYnHIYEk/3gJ31kyCzgKZhOtvkygOk=;
+        s=default; t=1558553459;
+        bh=M61L/6BGJAO/b4IL2zPrUUeO5cdIEunpER62ILyu/fI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TfpDmu3R6WnpY+z31+Ic4evLB87SYo97+W4hac9nzU33BA7bAZ6K7zEOm5/M6H6xP
-         UMncA6QHNEZk7f3LI4AwamzjiLUKw8kxNOnPDr+ufhVnf6eRPaWyViudt3GPNy/t0i
-         uESzKFiuBTN8vQRfjzHuPZDcZKuleSQmqjzsKOwg=
+        b=l/pD/prmw/Wnp3JpbUHi0stwBNwt6i6EbcIEn5/tdwvW9+l53UGc3QSmPJ+Ddp3hA
+         wzc7acWEFEVuyIqSbd+fff1dacN5BVI5FMQ8xnRG6Wcp2Uw2RDl+x2+4loceJJvqq3
+         H8UIF9qzhqM9gy/mVV/cs3KGXnkyAwaDxP0Tcieg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 042/167] crypto: sun4i-ss - Fix invalid calculation of hash end
-Date:   Wed, 22 May 2019 15:26:37 -0400
-Message-Id: <20190522192842.25858-42-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 027/114] crypto: sun4i-ss - Fix invalid calculation of hash end
+Date:   Wed, 22 May 2019 15:28:50 -0400
+Message-Id: <20190522193017.26567-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190522192842.25858-1-sashal@kernel.org>
-References: <20190522192842.25858-1-sashal@kernel.org>
+In-Reply-To: <20190522193017.26567-1-sashal@kernel.org>
+References: <20190522193017.26567-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -62,10 +62,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/crypto/sunxi-ss/sun4i-ss-hash.c b/drivers/crypto/sunxi-ss/sun4i-ss-hash.c
-index a4b5ff2b72f87..f6936bb3b7be4 100644
+index 0de2f62d51ff7..ec16ec2e284d0 100644
 --- a/drivers/crypto/sunxi-ss/sun4i-ss-hash.c
 +++ b/drivers/crypto/sunxi-ss/sun4i-ss-hash.c
-@@ -240,7 +240,10 @@ static int sun4i_hash(struct ahash_request *areq)
+@@ -250,7 +250,10 @@ static int sun4i_hash(struct ahash_request *areq)
  		}
  	} else {
  		/* Since we have the flag final, we can go up to modulo 4 */
@@ -76,7 +76,7 @@ index a4b5ff2b72f87..f6936bb3b7be4 100644
 +			end = ((areq->nbytes + op->len) / 4) * 4 - op->len;
  	}
  
- 	/* TODO if SGlen % 4 and !op->len then DMA */
+ 	/* TODO if SGlen % 4 and op->len == 0 then DMA */
 -- 
 2.20.1
 
