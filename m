@@ -2,34 +2,35 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0406D27869
-	for <lists+linux-crypto@lfdr.de>; Thu, 23 May 2019 10:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A11727870
+	for <lists+linux-crypto@lfdr.de>; Thu, 23 May 2019 10:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbfEWIuj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 23 May 2019 04:50:39 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:56605 "EHLO
+        id S1726429AbfEWIuq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 23 May 2019 04:50:46 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:54601 "EHLO
         metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726230AbfEWIuj (ORCPT
+        with ESMTP id S1726363AbfEWIuq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 23 May 2019 04:50:39 -0400
+        Thu, 23 May 2019 04:50:46 -0400
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.89)
         (envelope-from <sha@pengutronix.de>)
-        id 1hTjQq-0002wv-Rm; Thu, 23 May 2019 10:50:36 +0200
+        id 1hTjQq-0002ww-Rp; Thu, 23 May 2019 10:50:36 +0200
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <sha@pengutronix.de>)
-        id 1hTjQq-0001fG-4j; Thu, 23 May 2019 10:50:36 +0200
+        id 1hTjQq-0001fI-5b; Thu, 23 May 2019 10:50:36 +0200
 From:   Sascha Hauer <s.hauer@pengutronix.de>
 To:     linux-crypto@vger.kernel.org
 Cc:     =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
         kernel@pengutronix.de, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH v2 0/4] crypto: CAAM: Print debug messages at debug level
-Date:   Thu, 23 May 2019 10:50:26 +0200
-Message-Id: <20190523085030.4969-1-s.hauer@pengutronix.de>
+Subject: [PATCH 1/4] crypto: caam: print IV only when non NULL
+Date:   Thu, 23 May 2019 10:50:27 +0200
+Message-Id: <20190523085030.4969-2-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190523085030.4969-1-s.hauer@pengutronix.de>
+References: <20190523085030.4969-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
 X-SA-Exim-Mail-From: sha@pengutronix.de
@@ -40,42 +41,34 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The CAAM driver has most of its debug messages inside #ifdef DEBUG and
-then prints them at KERN_ERR level. Do this properly and print the
-messages at DEBUG_LEVEL as they are supposed to. With this we can get
-rid of a lot of ifdefs in the code.
+Since eaed71a44ad9 ("crypto: caam - add ecb(*) support") the IV can be
+NULL, so only dump it when it's non NULL as designated by the ivsize
+variable.
 
-Sascha
+Fixes: eaed71a44ad9 ("crypto: caam - add ecb(*) support")
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/crypto/caam/caamalg.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Changes since v1:
-- Fix alignment on following lines when converting print_hex_dump to
-  print_hex_dump_debug
-- Add 1/4 to avoid crash when debugging is enabled
-
-Sascha Hauer (4):
-  crypto: caam: print IV only when non NULL
-  crypto: caam: remove unused defines
-  crypto: caam: print debug messages at debug level
-  crypto: caam: print messages in caam_dump_sg at debug level
-
-Sascha Hauer (4):
-  crypto: caam: print IV only when non NULL
-  crypto: caam: remove unused defines
-  crypto: caam: print debug messages at debug level
-  crypto: caam: print messages in caam_dump_sg at debug level
-
- drivers/crypto/caam/caamalg.c      | 161 ++++++++------------
- drivers/crypto/caam/caamalg_desc.c | 116 ++++++--------
- drivers/crypto/caam/caamalg_qi.c   |  56 +++----
- drivers/crypto/caam/caamalg_qi2.c  |   4 +-
- drivers/crypto/caam/caamhash.c     | 233 ++++++++++++-----------------
- drivers/crypto/caam/caamrng.c      |  22 ++-
- drivers/crypto/caam/error.c        |   8 +-
- drivers/crypto/caam/error.h        |   2 +-
- drivers/crypto/caam/key_gen.c      |  28 ++--
- drivers/crypto/caam/sg_sw_sec4.h   |   8 +-
- 10 files changed, 253 insertions(+), 385 deletions(-)
-
+diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
+index c0ece44f303b..bffff5415c74 100644
+--- a/drivers/crypto/caam/caamalg.c
++++ b/drivers/crypto/caam/caamalg.c
+@@ -1011,9 +1011,10 @@ static void skcipher_encrypt_done(struct device *jrdev, u32 *desc, u32 err,
+ 		caam_jr_strstatus(jrdev, err);
+ 
+ #ifdef DEBUG
+-	print_hex_dump(KERN_ERR, "dstiv  @"__stringify(__LINE__)": ",
+-		       DUMP_PREFIX_ADDRESS, 16, 4, req->iv,
+-		       edesc->src_nents > 1 ? 100 : ivsize, 1);
++	if (ivsize)
++		print_hex_dump(KERN_ERR, "dstiv  @"__stringify(__LINE__)": ",
++			       DUMP_PREFIX_ADDRESS, 16, 4, req->iv,
++			       edesc->src_nents > 1 ? 100 : ivsize, 1);
+ #endif
+ 	caam_dump_sg(KERN_ERR, "dst    @" __stringify(__LINE__)": ",
+ 		     DUMP_PREFIX_ADDRESS, 16, 4, req->dst,
 -- 
 2.20.1
 
