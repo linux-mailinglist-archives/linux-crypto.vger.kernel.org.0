@@ -2,21 +2,21 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C304D2B7E9
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 May 2019 16:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8492B7DC
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 May 2019 16:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbfE0Ov5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 27 May 2019 10:51:57 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:43077 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727055AbfE0Ov5 (ORCPT
+        id S1726908AbfE0Ovp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 27 May 2019 10:51:45 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:44561 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726883AbfE0Ovn (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 27 May 2019 10:51:57 -0400
+        Mon, 27 May 2019 10:51:43 -0400
 X-Originating-IP: 90.88.147.134
 Received: from localhost (aaubervilliers-681-1-27-134.w90-88.abo.wanadoo.fr [90.88.147.134])
         (Authenticated sender: antoine.tenart@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 139731C0017;
-        Mon, 27 May 2019 14:51:50 +0000 (UTC)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 8EFE8FF80A;
+        Mon, 27 May 2019 14:51:38 +0000 (UTC)
 From:   Antoine Tenart <antoine.tenart@bootlin.com>
 To:     herbert@gondor.apana.org.au, davem@davemloft.net
 Cc:     Antoine Tenart <antoine.tenart@bootlin.com>,
@@ -24,9 +24,9 @@ Cc:     Antoine Tenart <antoine.tenart@bootlin.com>,
         thomas.petazzoni@bootlin.com, maxime.chevallier@bootlin.com,
         gregory.clement@bootlin.com, miquel.raynal@bootlin.com,
         nadavh@marvell.com, igall@marvell.com
-Subject: [PATCH 09/14] crypto: inside-secure - fix zeroing of the request in ahash_exit_inv
-Date:   Mon, 27 May 2019 16:51:01 +0200
-Message-Id: <20190527145106.8693-10-antoine.tenart@bootlin.com>
+Subject: [PATCH 10/14] crypto: inside-secure - fix queued len computation
+Date:   Mon, 27 May 2019 16:51:02 +0200
+Message-Id: <20190527145106.8693-11-antoine.tenart@bootlin.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190527145106.8693-1-antoine.tenart@bootlin.com>
 References: <20190527145106.8693-1-antoine.tenart@bootlin.com>
@@ -37,30 +37,36 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-A request is zeroed in safexcel_ahash_exit_inv(). This request total
-size is EIP197_AHASH_REQ_SIZE while the memset zeroing it uses
-sizeof(struct ahash_request), which happens to be less than
-EIP197_AHASH_REQ_SIZE. This patch fixes it.
+This patch fixes the queued len computation, which could theoretically
+be wrong if req->len[1] - req->processed[1] > 1. Be future-proof here,
+and fix it.
 
-Fixes: f6beaea30487 ("crypto: inside-secure - authenc(hmac(sha256), cbc(aes)) support")
+Fixes: b460edb6230a ("crypto: inside-secure - sha512 support")
 Signed-off-by: Antoine Tenart <antoine.tenart@bootlin.com>
 ---
- drivers/crypto/inside-secure/safexcel_hash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/inside-secure/safexcel_hash.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
-index a79a73bb3969..ba0732fd4ed4 100644
+index ba0732fd4ed4..a9197d2c5a48 100644
 --- a/drivers/crypto/inside-secure/safexcel_hash.c
 +++ b/drivers/crypto/inside-secure/safexcel_hash.c
-@@ -487,7 +487,7 @@ static int safexcel_ahash_exit_inv(struct crypto_tfm *tfm)
- 	struct safexcel_inv_result result = {};
- 	int ring = ctx->base.ring;
+@@ -50,10 +50,12 @@ struct safexcel_ahash_req {
  
--	memset(req, 0, sizeof(struct ahash_request));
-+	memset(req, 0, EIP197_AHASH_REQ_SIZE);
+ static inline u64 safexcel_queued_len(struct safexcel_ahash_req *req)
+ {
+-	if (req->len[1] > req->processed[1])
+-		return 0xffffffff - (req->len[0] - req->processed[0]);
++	u64 len, processed;
  
- 	/* create invalidation request */
- 	init_completion(&result.completion);
+-	return req->len[0] - req->processed[0];
++	len = (0xffffffff * req->len[1]) + req->len[0];
++	processed = (0xffffffff * req->processed[1]) + req->processed[0];
++
++	return len - processed;
+ }
+ 
+ static void safexcel_hash_token(struct safexcel_command_desc *cdesc,
 -- 
 2.21.0
 
