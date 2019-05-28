@@ -2,69 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DD32CDEE
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 May 2019 19:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647DD2CEF5
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 May 2019 20:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbfE1RsN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 28 May 2019 13:48:13 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:50582 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727532AbfE1RsN (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 28 May 2019 13:48:13 -0400
-Received: by mail-wm1-f67.google.com with SMTP id f204so3940253wme.0
-        for <linux-crypto@vger.kernel.org>; Tue, 28 May 2019 10:48:12 -0700 (PDT)
+        id S1726845AbfE1SvK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 28 May 2019 14:51:10 -0400
+Received: from mail-eopbgr150112.outbound.protection.outlook.com ([40.107.15.112]:41811
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726481AbfE1SvK (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 28 May 2019 14:51:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=N7NNdSz4K/pyRw9vjZqPUEc0RpRHZJm1k3JG9bxXqIk=;
-        b=kyWCLzzQYJu9g0p/KHdncRLVwFl53qW32iD/FA9xud1tBlIkFmxC3nA8SUqEyNneGn
-         KXehFkqJkXt36FMJmpZ3dD7yMVJiFgKyxyeE3IgKnrXYeUgiFUYIEZ5aytoEJsI8jsnW
-         myLycHNBGE96DymNW29WQHaCJDoqeeMK4ltRUpzuXM5Vx3QML+Dh9jrSUW5f1559QKUZ
-         7E1+e6XMoqWdpMplTk07a7CfpX+A5PgNyBKvDzN2STzdST4aV8a9hBzvmPbOGjOcF1or
-         CDB/TCgLqOvKYrecOtqUIr7YfBf8iEOFWctYJ/tHIyImpZ6ptGDrjCKlLDf3gsXd0yzI
-         1NZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=N7NNdSz4K/pyRw9vjZqPUEc0RpRHZJm1k3JG9bxXqIk=;
-        b=JRh1oqfptUpKrLeMtZ/ZykzyBLmAvXp3mcrlmrg/+KVy8IM9YF0toUh+hu7WzNfwR0
-         RAswrlYVGMloG3DqjUfO/xD0dkxMWD6fIo741hDGbfeoc+i42nX7S0kLr0n9CY5TQxDn
-         vZzgnTIx3GbOWssrP8OuKXy/wCdixVUmeHWlRIExQ/BmtBoY7qbf3NvxMtt4LBRA19KQ
-         68wpA1HYTAvZWBQ3W8wvt90OKVt+zQPhGy7KGtn87xoiT7yc7u43eDZoMMxnTq+XKhJV
-         L5BuI0fArarTv0WljBbzLOCQ4NsPw2NJ/ipWS817BiaDrW5Kk/rZmgumOLw4WWswId4j
-         4XlA==
-X-Gm-Message-State: APjAAAXsQrZLX85v5r6MnpVaqFplWxadwSu/DV5FgvM407VW3PWga7/C
-        JS8KHP0OjPHrKJD9tCLIRJHO5EAhvCa//gtWf7o=
-X-Google-Smtp-Source: APXvYqz3u0efEowa88uQnStP7iOZcmIgmDYavZF4Fdyic0WHHMQOMwPHkY/IHwPplb0i2BZO7n/Ohut7I1kx6lNOagM=
-X-Received: by 2002:a1c:a942:: with SMTP id s63mr1670950wme.76.1559065691571;
- Tue, 28 May 2019 10:48:11 -0700 (PDT)
+ d=insidesecure.onmicrosoft.com; s=selector1-insidesecure-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RPRs8qrVbIxPkBpOkxDhzp7ka49Ka5X1CxgSptVFus0=;
+ b=JHhsVkRgtvel3fnWWOOeDoMRd0bJA436wg89fBUUn5J8Rz+I157torHPw0B7VUqOFJYh8LhJrzMVAycAFW1UC3OvNi7f1aHpOhC2w32UCaxAty9qGpEEZ0eZn3jnhFXHjHGlimGROwK7GmxVV75w8O5S5Lp6yqhVF3HMzUf+/vM=
+Received: from AM6PR09MB3523.eurprd09.prod.outlook.com (10.255.99.206) by
+ AM6PR09MB2247.eurprd09.prod.outlook.com (20.177.113.76) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1922.16; Tue, 28 May 2019 18:51:07 +0000
+Received: from AM6PR09MB3523.eurprd09.prod.outlook.com
+ ([fe80::8c11:e692:3a44:a3a9]) by AM6PR09MB3523.eurprd09.prod.outlook.com
+ ([fe80::8c11:e692:3a44:a3a9%6]) with mapi id 15.20.1922.021; Tue, 28 May 2019
+ 18:51:07 +0000
+From:   Pascal Van Leeuwen <pvanleeuwen@insidesecure.com>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
+CC:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Subject: RE: Conding style question regarding configuration
+Thread-Topic: Conding style question regarding configuration
+Thread-Index: AdUVadXkEfSYWnL2TvyyCw6EdJwBbwAA23iAAAYjRWA=
+Date:   Tue, 28 May 2019 18:51:07 +0000
+Message-ID: <AM6PR09MB3523B77DE66DD5353F08A687D21E0@AM6PR09MB3523.eurprd09.prod.outlook.com>
+References: <AM6PR09MB3523ADF4617CB97D59904616D21E0@AM6PR09MB3523.eurprd09.prod.outlook.com>
+ <CAKv+Gu8bReGWAUm4GrCg7kefVR7U0Z8XBt_GVV4WEvgOpCtjpA@mail.gmail.com>
+In-Reply-To: <CAKv+Gu8bReGWAUm4GrCg7kefVR7U0Z8XBt_GVV4WEvgOpCtjpA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=pvanleeuwen@insidesecure.com; 
+x-originating-ip: [188.204.2.113]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ddfaceb8-52cc-4aff-852e-08d6e39d7183
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:AM6PR09MB2247;
+x-ms-traffictypediagnostic: AM6PR09MB2247:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <AM6PR09MB22479330086D1DE54CEA5DD6D21E0@AM6PR09MB2247.eurprd09.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 00514A2FE6
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(346002)(376002)(39850400004)(366004)(396003)(189003)(199004)(25786009)(33656002)(99286004)(5660300002)(66556008)(53936002)(76116006)(6246003)(73956011)(14444005)(66946007)(52536014)(66476007)(64756008)(66446008)(26005)(256004)(186003)(86362001)(102836004)(76176011)(11346002)(6506007)(446003)(7696005)(486006)(476003)(6436002)(2906002)(229853002)(14454004)(68736007)(305945005)(6916009)(66066001)(81156014)(8676002)(7736002)(6116002)(478600001)(74316002)(71190400001)(71200400001)(3846002)(15974865002)(4326008)(316002)(9686003)(55016002)(8936002)(81166006)(21314003)(18886075002);DIR:OUT;SFP:1102;SCL:1;SRVR:AM6PR09MB2247;H:AM6PR09MB3523.eurprd09.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: insidesecure.com does not
+ designate permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 2TZXEUgKP5LCCl8iCtCgJ6CsDgvMWVaC9BB20cA1/D9tppBXzxn/QXJVIq8B50wNbCycjAac+2MEM+3Qq5BozFn1zAgr856pMvkVeNjL1AD/pdDaoHQ0oDrtjsJNdornPnTwqttmFKFVV+t/EXw+J+exEeeEzsTiZpKtHgsd+KEB+dWGw3RfDBUvLie1m8fjCoKelnRPJxTntYjyairxMJTC7xyDEUY2ySi342gDpuz9t7nirLPisY7eIhdz1bkvfWWOpxAD/y2/HOkr9vXvS0gDCGVGkTjhdwoo+whb4lPypkzRy6P6f8SckyolFRxMpgbK+6spPAEKCYlbAbIjC9mm2KU1wsimj44D02G3dfEb+q/IhtKa5xNbQT7SZyGKZH5RRxPqx83MBrNJwJn5s+YS/ekNfbftNJYXQjrvHts=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Received: by 2002:a5d:4645:0:0:0:0:0 with HTTP; Tue, 28 May 2019 10:48:11
- -0700 (PDT)
-Reply-To: mrsveronicaali@gmail.com
-From:   Veronica Ali <aa91429086@gmail.com>
-Date:   Tue, 28 May 2019 10:48:11 -0700
-Message-ID: <CAPF1-=xSAR7nkgV-wKguHgUV+1KGriYZyqWW0wfzBGkP5fXV=g@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: insidesecure.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ddfaceb8-52cc-4aff-852e-08d6e39d7183
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2019 18:51:07.2139
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3c07df58-7760-4e85-afd5-84803eac70ce
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pvanleeuwen@insidesecure.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR09MB2247
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-good day, My name is Veronica Ali. a France Nationality, I am a widow,
-currently hospitalized due to cancer illness . Meanwhile, I have
-decided to donate my fund to you as a reliable individual that will
-use this money wisely, =E2=82=AC3,800.000 Million Euros. to help the poor a=
-nd
-less privileged.
-
-So if you are willing to accept this offer and do exactly as I will
-instruct, then get back to me for more details.
-
-Mrs Veronica Ali.
+PiA+IFF1aWNrIHF1ZXN0aW9uIHJlZ2FyZGluZyBob3cgdG8gY29uZmlndXJlIG91dCBjb2RlIGRl
+cGVuZGluZyBvbiBhDQo+IENPTkZJR194eHgNCj4gPiBzd2l0Y2guIEFzIGZhciBhcyBJIHVuZGVy
+c3Rvb2Qgc28gZmFyLCB0aGUgcHJvcGVyIHdheSB0byBkbyB0aGlzIGlzDQo+IG5vdCBieQ0KPiA+
+IGRvaW5nIGFuICNpZmRlZiBidXQgYnkgdXNpbmcgYSByZWd1bGFyIGlmIHdpdGggSVNfRU5BQkxF
+RCBsaWtlIHNvOg0KPiA+DQo+ID4gaWYgKElTX0VOQUJMRUQoQ09ORklHX1BDSSkpIHsNCj4gPiB9
+DQo+ID4NCj4gPiBTdWNoIHRoYXQgdGhlIGNvbXBpbGVyIGNhbiBzdGlsbCBjaGVjayB0aGUgY29k
+ZSBldmVuIGlmIHRoZSBzd2l0Y2ggaXMNCj4gPiBkaXNhYmxlZC4gTm93IHRoYXQgYWxsIHdvcmtz
+IGZpbmUgYW5kIGRhbmR5IGZvciBzdGF0ZW1lbnRzIHdpdGhpbiBhDQo+ID4gZnVuY3Rpb24sIGJ1
+dCBob3cgZG8geW91IGNvbmZpZ3VyZSBvdXQsIHNheSwgZ2xvYmFsIHZhcmlhYmxlDQo+IGRlZmlu
+aXRpb25zDQo+ID4gcmVmZXJlbmNpbmcgdHlwZXMgdGhhdCBhcmUgdGllZCB0byB0aGlzIGNvbmZp
+Z3VyYXRpb24gc3dpdGNoPyBPcg0KPiBzaG91bGQNCj4gPiBJIGp1c3QgbGVhdmUgdGhlbSBpbiwg
+ZGVwZW5kaW5nIG9uIHRoZSBjb21waWxlciB0byBvcHRpbWl6ZSB0aGVtIGF3YXk/DQo+ID4NCj4g
+PiBPYnZpb3VzbHkgdGhlIGNvZGUgZGVwZW5kcyBvbiB0aG9zZSB2YXJpYWJsZXMgYWdhaW4sIHNv
+IGlmIGl0J3Mgbm90DQo+ID4gZG9uZSBjb25zaXN0ZW50bHkgdGhlIGNvbXBpbGVyIHdpbGwgY29t
+cGxhaW4gc29tZWhvdyBpZiB0aGUgc3dpdGNoIGlzDQo+IG5vdA0KPiA+IGRlZmluZWQgLi4uDQo+
+ID4NCj4gPiBBbHNvLCB3aXRoIGlmIChJU19FTkFCTEVEKCkpIEkgY2Fubm90IHJlbW92ZSBteSBm
+dW5jdGlvbiBwcm90b3R5cGVzLA0KPiA+IGp1c3QgdGhlIGZ1bmN0aW9uIGJvZHkuIElzIHRoYXQg
+cmVhbGx5IGhvdyBpdCdzIHN1cHBvc2VkIHRvIGJlIGRvbmU/DQo+ID4NCj4gDQo+IFllcy4gQ29k
+ZSBhbmQgZGF0YSB3aXRoIHN0YXRpYyBsaW5rYWdlIHdpbGwganVzdCBiZSBvcHRpbWl6ZWQgYXdh
+eSBieQ0KPiB0aGUgY29tcGlsZXIgaWYgdGhlIENPTkZJR194eCBvcHRpb24gaXMgbm90IGVuYWJs
+ZWQsIHNvIGFsbCB5b3UgbmVlZA0KPiB0byBndWFyZCBhcmUgdGhlIGFjdHVhbCBzdGF0ZW1lbnRz
+LCBmdW5jdGlvbiBjYWxscyBldGMuDQo+DQpPaywgbWFrZXMgc2Vuc2UuIFRoZW4gSSdsbCBqdXN0
+IGNvbmZpZyBvdXQgdGhlIHJlbGV2YW50IGZ1bmN0aW9uIGJvZGllcw0KYW5kIGFzc3VtZSB0aGUg
+Y29tcGlsZXIgd2lsbCBkbyB0aGUgcmVzdCAuLi4NCg0KVGhhbmtzLA0KUGFzY2FsIHZhbiBMZWV1
+d2VuDQpTaWxpY29uIElQIEFyY2hpdGVjdCwgTXVsdGktUHJvdG9jb2wgRW5naW5lcyBAIEluc2lk
+ZSBTZWN1cmUNCnd3dy5pbnNpZGVzZWN1cmUuY29tDQoNCg0KDQo=
