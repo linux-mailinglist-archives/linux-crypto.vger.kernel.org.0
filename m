@@ -2,214 +2,136 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DB92C389
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 May 2019 11:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3924A2C4FE
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 May 2019 12:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbfE1JwR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 28 May 2019 05:52:17 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:44018 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726362AbfE1JwR (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 28 May 2019 05:52:17 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6AC421A0DFB;
-        Tue, 28 May 2019 11:52:15 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5E3381A02B9;
-        Tue, 28 May 2019 11:52:15 +0200 (CEST)
-Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 11CFF205F4;
-        Tue, 28 May 2019 11:52:15 +0200 (CEST)
-From:   Iuliana Prodan <iuliana.prodan@nxp.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx <linux-imx@nxp.com>
-Subject: [PATCH v5 2/2] crypto: caam - strip input without changing crypto request
-Date:   Tue, 28 May 2019 12:52:11 +0300
-Message-Id: <1559037131-4601-2-git-send-email-iuliana.prodan@nxp.com>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1559037131-4601-1-git-send-email-iuliana.prodan@nxp.com>
-References: <1559037131-4601-1-git-send-email-iuliana.prodan@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726557AbfE1K7W (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 28 May 2019 06:59:22 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:58998 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726305AbfE1K7V (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 28 May 2019 06:59:21 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4SAmnFc051794;
+        Tue, 28 May 2019 10:59:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2018-07-02;
+ bh=Xrr8dZjVVWPnemFqGgwt1Gdv0kDCsmuTR340Iy0CgXs=;
+ b=yGLBRGFHoyPVyCjHUcnlTIeYJEzeCcz4BXC/I/r1AzBkjti+IWc+J7FAyVEg0YFBJ9vu
+ /+LkdpDWE0I/h3d+Y39dlf5/NivDaqpW3womAShH7Pfdjz0CKWF3/gVrNqdn2bNx1g74
+ RIbcVCTxHViYKzd/mqy2rkfZJl3FsAZopz/sryGILmHe287zokqIA5wSH6hgooy3Neas
+ QZyMu5+y3vpMjI4tkEhtnqVIplk65zv5x6e3/we6LVnnvqYjmFyQcTDVR8F/MqPqP0Hz
+ uM6rag6wZLbJW0Sd5yLMgt8DDObxzLYMxMI+VsGF1FRQIG47VzHBaYzbMBEgNtYkVWy8 YQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 2spu7dae8c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 May 2019 10:59:18 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4SAu1c6058593;
+        Tue, 28 May 2019 10:57:17 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 2sr31ukdp9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 May 2019 10:57:17 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4SAvGZq013216;
+        Tue, 28 May 2019 10:57:16 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 28 May 2019 03:57:16 -0700
+Date:   Tue, 28 May 2019 13:57:10 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     tadeusz.struk@intel.com
+Cc:     qat-linux@intel.com, linux-crypto@vger.kernel.org
+Subject: [bug report] crypto: qat - Intel(R) QAT driver framework
+Message-ID: <20190528105709.GA3643@mwanda>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9270 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1905280072
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9270 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905280072
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-For rsa and pkcs1pad, CAAM expects an input of modulus size.
-For this we strip the leading zeros in case the size is more than modulus.
-This commit avoids modifying the crypto request while stripping zeros from
-input, to comply with the crypto API requirement. This is done by adding
-a fixup input pointer and length.
+Hello Tadeusz Struk,
 
-Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
-Reviewed-by: Horia Geanta <horia.geanta@nxp.com>
----
-Changes since V4:
-	- added Reviewed-by;
-	- changed version to be in sync with patch 1/2.
----
- drivers/crypto/caam/caampkc.c | 39 ++++++++++++++++++++++++++-------------
- drivers/crypto/caam/caampkc.h |  7 ++++++-
- 2 files changed, 32 insertions(+), 14 deletions(-)
+The patch d8cba25d2c68: "crypto: qat - Intel(R) QAT driver framework"
+from Jun 5, 2014, leads to the following static checker warning:
 
-diff --git a/drivers/crypto/caam/caampkc.c b/drivers/crypto/caam/caampkc.c
-index 2bd3a17..19b02c1 100644
---- a/drivers/crypto/caam/caampkc.c
-+++ b/drivers/crypto/caam/caampkc.c
-@@ -32,8 +32,10 @@ static u8 *zero_buffer;
- static void rsa_io_unmap(struct device *dev, struct rsa_edesc *edesc,
- 			 struct akcipher_request *req)
- {
-+	struct caam_rsa_req_ctx *req_ctx = akcipher_request_ctx(req);
-+
- 	dma_unmap_sg(dev, req->dst, edesc->dst_nents, DMA_FROM_DEVICE);
--	dma_unmap_sg(dev, req->src, edesc->src_nents, DMA_TO_DEVICE);
-+	dma_unmap_sg(dev, req_ctx->fixup_src, edesc->src_nents, DMA_TO_DEVICE);
- 
- 	if (edesc->sec4_sg_bytes)
- 		dma_unmap_single(dev, edesc->sec4_sg_dma, edesc->sec4_sg_bytes,
-@@ -251,17 +253,21 @@ static struct rsa_edesc *rsa_edesc_alloc(struct akcipher_request *req,
- 		if (lzeros < 0)
- 			return ERR_PTR(lzeros);
- 
--		req->src_len -= lzeros;
--		req->src = scatterwalk_ffwd(req_ctx->src, req->src, lzeros);
-+		req_ctx->fixup_src = scatterwalk_ffwd(req_ctx->src, req->src,
-+						      lzeros);
-+		req_ctx->fixup_src_len = req->src_len - lzeros;
- 	} else {
- 		/*
- 		 * input src is less then n key modulus,
- 		 * so there will be zero padding
- 		 */
- 		diff_size = key->n_sz - req->src_len;
-+		req_ctx->fixup_src = req->src;
-+		req_ctx->fixup_src_len = req->src_len;
- 	}
- 
--	src_nents = sg_nents_for_len(req->src, req->src_len);
-+	src_nents = sg_nents_for_len(req_ctx->fixup_src,
-+				     req_ctx->fixup_src_len);
- 	dst_nents = sg_nents_for_len(req->dst, req->dst_len);
- 
- 	if (!diff_size && src_nents == 1)
-@@ -282,7 +288,7 @@ static struct rsa_edesc *rsa_edesc_alloc(struct akcipher_request *req,
- 	if (!edesc)
- 		return ERR_PTR(-ENOMEM);
- 
--	sgc = dma_map_sg(dev, req->src, src_nents, DMA_TO_DEVICE);
-+	sgc = dma_map_sg(dev, req_ctx->fixup_src, src_nents, DMA_TO_DEVICE);
- 	if (unlikely(!sgc)) {
- 		dev_err(dev, "unable to map source\n");
- 		goto src_fail;
-@@ -300,8 +306,8 @@ static struct rsa_edesc *rsa_edesc_alloc(struct akcipher_request *req,
- 				   0);
- 
- 	if (sec4_sg_index)
--		sg_to_sec4_sg_last(req->src, src_nents, edesc->sec4_sg +
--				   !!diff_size, 0);
-+		sg_to_sec4_sg_last(req_ctx->fixup_src, src_nents,
-+				   edesc->sec4_sg + !!diff_size, 0);
- 
- 	if (dst_nents > 1)
- 		sg_to_sec4_sg_last(req->dst, dst_nents,
-@@ -332,7 +338,7 @@ static struct rsa_edesc *rsa_edesc_alloc(struct akcipher_request *req,
- sec4_sg_fail:
- 	dma_unmap_sg(dev, req->dst, dst_nents, DMA_FROM_DEVICE);
- dst_fail:
--	dma_unmap_sg(dev, req->src, src_nents, DMA_TO_DEVICE);
-+	dma_unmap_sg(dev, req_ctx->fixup_src, src_nents, DMA_TO_DEVICE);
- src_fail:
- 	kfree(edesc);
- 	return ERR_PTR(-ENOMEM);
-@@ -342,6 +348,7 @@ static int set_rsa_pub_pdb(struct akcipher_request *req,
- 			   struct rsa_edesc *edesc)
- {
- 	struct crypto_akcipher *tfm = crypto_akcipher_reqtfm(req);
-+	struct caam_rsa_req_ctx *req_ctx = akcipher_request_ctx(req);
- 	struct caam_rsa_ctx *ctx = akcipher_tfm_ctx(tfm);
- 	struct caam_rsa_key *key = &ctx->key;
- 	struct device *dev = ctx->dev;
-@@ -366,7 +373,7 @@ static int set_rsa_pub_pdb(struct akcipher_request *req,
- 		pdb->f_dma = edesc->sec4_sg_dma;
- 		sec4_sg_index += edesc->src_nents;
- 	} else {
--		pdb->f_dma = sg_dma_address(req->src);
-+		pdb->f_dma = sg_dma_address(req_ctx->fixup_src);
- 	}
- 
- 	if (edesc->dst_nents > 1) {
-@@ -378,7 +385,7 @@ static int set_rsa_pub_pdb(struct akcipher_request *req,
- 	}
- 
- 	pdb->sgf |= (key->e_sz << RSA_PDB_E_SHIFT) | key->n_sz;
--	pdb->f_len = req->src_len;
-+	pdb->f_len = req_ctx->fixup_src_len;
- 
- 	return 0;
- }
-@@ -411,7 +418,9 @@ static int set_rsa_priv_f1_pdb(struct akcipher_request *req,
- 		pdb->g_dma = edesc->sec4_sg_dma;
- 		sec4_sg_index += edesc->src_nents;
- 	} else {
--		pdb->g_dma = sg_dma_address(req->src);
-+		struct caam_rsa_req_ctx *req_ctx = akcipher_request_ctx(req);
-+
-+		pdb->g_dma = sg_dma_address(req_ctx->fixup_src);
- 	}
- 
- 	if (edesc->dst_nents > 1) {
-@@ -474,7 +483,9 @@ static int set_rsa_priv_f2_pdb(struct akcipher_request *req,
- 		pdb->g_dma = edesc->sec4_sg_dma;
- 		sec4_sg_index += edesc->src_nents;
- 	} else {
--		pdb->g_dma = sg_dma_address(req->src);
-+		struct caam_rsa_req_ctx *req_ctx = akcipher_request_ctx(req);
-+
-+		pdb->g_dma = sg_dma_address(req_ctx->fixup_src);
- 	}
- 
- 	if (edesc->dst_nents > 1) {
-@@ -561,7 +572,9 @@ static int set_rsa_priv_f3_pdb(struct akcipher_request *req,
- 		pdb->g_dma = edesc->sec4_sg_dma;
- 		sec4_sg_index += edesc->src_nents;
- 	} else {
--		pdb->g_dma = sg_dma_address(req->src);
-+		struct caam_rsa_req_ctx *req_ctx = akcipher_request_ctx(req);
-+
-+		pdb->g_dma = sg_dma_address(req_ctx->fixup_src);
- 	}
- 
- 	if (edesc->dst_nents > 1) {
-diff --git a/drivers/crypto/caam/caampkc.h b/drivers/crypto/caam/caampkc.h
-index 5ac7201..2c488c9 100644
---- a/drivers/crypto/caam/caampkc.h
-+++ b/drivers/crypto/caam/caampkc.h
-@@ -95,14 +95,19 @@ struct caam_rsa_ctx {
- 	struct caam_rsa_key key;
- 	struct device *dev;
- 	dma_addr_t padding_dma;
-+
- };
- 
- /**
-  * caam_rsa_req_ctx - per request context.
-- * @src: input scatterlist (stripped of leading zeros)
-+ * @src           : input scatterlist (stripped of leading zeros)
-+ * @fixup_src     : input scatterlist (that might be stripped of leading zeros)
-+ * @fixup_src_len : length of the fixup_src input scatterlist
-  */
- struct caam_rsa_req_ctx {
- 	struct scatterlist src[2];
-+	struct scatterlist *fixup_src;
-+	unsigned int fixup_src_len;
- };
- 
- /**
--- 
-2.1.0
+	drivers/crypto/qat/qat_common/adf_ctl_drv.c:159 adf_add_key_value_data()
+	warn: 'adf_cfg_add_key_value_param' unterminated user string 'key_val->key'
 
+drivers/crypto/qat/qat_common/adf_ctl_drv.c
+   151  static int adf_add_key_value_data(struct adf_accel_dev *accel_dev,
+   152                                    const char *section,
+   153                                    const struct adf_user_cfg_key_val *key_val)
+   154  {
+   155          if (key_val->type == ADF_HEX) {
+   156                  long *ptr = (long *)key_val->val;
+   157                  long val = *ptr;
+   158  
+   159                  if (adf_cfg_add_key_value_param(accel_dev, section,
+   160                                                  key_val->key, (void *)val,
+                                                        ^^^^^^^^^^^^
+Not terminated.  We end up adding the named item into a list.  Then we
+look it up but when we're looking it up, we don't ensure that those
+strings are NUL terminated either so there is a potential that it
+overflows beyond the end of the array.
+
+   161                                                  key_val->type)) {
+   162                          dev_err(&GET_DEV(accel_dev),
+   163                                  "failed to add hex keyvalue.\n");
+   164                          return -EFAULT;
+   165                  }
+   166          } else {
+   167                  if (adf_cfg_add_key_value_param(accel_dev, section,
+   168                                                  key_val->key, key_val->val,
+   169                                                  key_val->type)) {
+   170                          dev_err(&GET_DEV(accel_dev),
+   171                                  "failed to add keyvalue.\n");
+   172                          return -EFAULT;
+   173                  }
+   174          }
+   175          return 0;
+   176  }
+
+[ snip ]
+
+   203                  while (params_head) {
+   204                          if (copy_from_user(&key_val, (void __user *)params_head,
+                                                   ^^^^^^^^
+Gets set here.
+
+   205                                             sizeof(key_val))) {
+   206                                  dev_err(&GET_DEV(accel_dev),
+   207                                          "Failed to copy keyvalue.\n");
+   208                                  goto out_err;
+   209                          }
+   210                          if (adf_add_key_value_data(accel_dev, section.name,
+   211                                                     &key_val)) {
+   212                                  goto out_err;
+   213                          }
+   214                          params_head = key_val.next;
+   215                  }
+
+See also:
+drivers/crypto/qat/qat_common/adf_ctl_drv.c:159 adf_add_key_value_data() warn: 'adf_cfg_add_key_value_param' unterminated user string 'key_val->key'
+drivers/crypto/qat/qat_common/adf_ctl_drv.c:167 adf_add_key_value_data() warn: 'adf_cfg_add_key_value_param' unterminated user string 'key_val->key'
+drivers/crypto/qat/qat_common/adf_ctl_drv.c:167 adf_add_key_value_data() warn: 'adf_cfg_add_key_value_param' unterminated user string 'key_val->val'
+drivers/crypto/qat/qat_common/adf_ctl_drv.c:195 adf_copy_key_value_data() warn: 'adf_cfg_section_add' unterminated user string 'section.name'
+
+regards,
+dan carpenter
