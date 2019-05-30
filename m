@@ -2,64 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CBE2EABB
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 May 2019 04:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A73B2F71B
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 May 2019 07:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727339AbfE3CeL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 29 May 2019 22:34:11 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:59044 "EHLO deadmen.hmeau.com"
+        id S1726548AbfE3Fec (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 30 May 2019 01:34:32 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:60942 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726483AbfE3CeL (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 29 May 2019 22:34:11 -0400
+        id S1725961AbfE3Fec (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 30 May 2019 01:34:32 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hWAtH-0000Lt-Ia; Thu, 30 May 2019 10:34:03 +0800
+        id 1hWDhr-0002Go-07; Thu, 30 May 2019 13:34:27 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hWAtB-00059j-7J; Thu, 30 May 2019 10:33:57 +0800
-Date:   Thu, 30 May 2019 10:33:57 +0800
+        id 1hWDhl-0005JK-D2; Thu, 30 May 2019 13:34:21 +0800
+Date:   Thu, 30 May 2019 13:34:21 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Richard Weinberger <richard@nod.at>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        festevam@gmail.com, kernel@pengutronix.de, s.hauer@pengutronix.de,
-        shawnguo@kernel.org, davem@davemloft.net, david@sigma-star.at
-Subject: Re: [RFC PATCH 1/2] crypto: Allow working with key references
-Message-ID: <20190530023357.2mrjtslnka4i6dbl@gondor.apana.org.au>
-References: <20190529224844.25203-1-richard@nod.at>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Iuliana Prodan <iuliana.prodan@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH] crypto: gcm - fix cacheline sharing
+Message-ID: <20190530053421.keesqb54yu5w7hgk@gondor.apana.org.au>
+References: <1559149856-7938-1-git-send-email-iuliana.prodan@nxp.com>
+ <20190529202728.GA35103@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190529224844.25203-1-richard@nod.at>
+In-Reply-To: <20190529202728.GA35103@gmail.com>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, May 30, 2019 at 12:48:43AM +0200, Richard Weinberger wrote:
-> Some crypto accelerators allow working with secure or hidden keys.
-> This keys are not exposed to Linux nor main memory. To use them
-> for a crypto operation they are referenced with a device specific id.
+On Wed, May 29, 2019 at 01:27:28PM -0700, Eric Biggers wrote:
+>
+> So what about the other places that also pass an IV located next to the data,
+> like crypto/ccm.c and crypto/adiantum.c?  If we're actually going to make this a
+> new API requirement, then we need to add a debugging option that makes the API
+> detect this violation so that the other places can be fixed too.
 > 
-> This patch adds a new flag, CRYPTO_TFM_REQ_REF_KEY.
-> If this flag is set, crypto drivers should tread the key as
-> specified via setkey as reference and not as regular key.
-> Since we reuse the key data structure such a reference is limited
-> by the key size of the chiper and is chip specific.
+> Also, doing a kmalloc() per requset is inefficient and very error-prone.  In
+> fact there are at least 3 bugs here: (1) not checking the return value, (2)
+> incorrectly using GFP_KERNEL when it may be atomic context, and (3) not always
+> freeing the memory.  Why not use cacheline-aligned memory within the request
+> context, so that a separate kmalloc() isn't needed?
 > 
-> TODO: If the cipher implementation or the driver does not
-> support reference keys, we need a way to detect this an fail
-> upon setkey.
-> How should the driver indicate that it supports this feature?
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+> Also, did you consider whether there's any way to make the crypto API handle
+> this automatically, so that all the individual users don't have to?
 
-We already have existing drivers doing this.  Please have a look
-at how they're doing it and use the same paradigm.  You can grep
-for paes under drivers/crypto.
+You're absolutely right Eric.
 
-Cheers,
+What I suggested in the old thread is non-sense.  While you can
+force GCM to provide the right pointers you cannot force all the
+other crypto API users to do this.
+
+It would appear that Ard's latest suggestion should fix the problem
+and is the correct approach.
+
+Thanks,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
