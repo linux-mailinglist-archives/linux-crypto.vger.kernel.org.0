@@ -2,55 +2,48 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8489C2FC6B
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 May 2019 15:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B502FC7A
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 May 2019 15:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbfE3Nfd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 30 May 2019 09:35:33 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:37900 "EHLO deadmen.hmeau.com"
+        id S1726825AbfE3Nkr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 30 May 2019 09:40:47 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:37924 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725919AbfE3Nfd (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 30 May 2019 09:35:33 -0400
+        id S1726225AbfE3Nkr (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 30 May 2019 09:40:47 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hWLDK-0005N5-NP; Thu, 30 May 2019 21:35:26 +0800
+        id 1hWLIQ-0005Un-Qz; Thu, 30 May 2019 21:40:42 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hWLDD-0003ai-Cu; Thu, 30 May 2019 21:35:19 +0800
-Date:   Thu, 30 May 2019 21:35:19 +0800
+        id 1hWLIL-0003cM-6P; Thu, 30 May 2019 21:40:37 +0800
+Date:   Thu, 30 May 2019 21:40:37 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Vaneet Narang <v.narang@samsung.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Maninder Singh <maninder1.s@samsung.com>,
-        "terrelln@fb.com" <terrelln@fb.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        AMIT SAHRAWAT <a.sahrawat@samsung.com>,
-        PANKAJ MISHRA <pankaj.m@samsung.com>
-Subject: Re: [PATCH 1/2] zstd: pass pointer rathen than structure to functions
-Message-ID: <20190530133519.gdkxey5lv4hrrv7q@gondor.apana.org.au>
-References: <1557468704-3014-1-git-send-email-maninder1.s@samsung.com>
- <CGME20190510061311epcas5p19e9bf3d08319ac99890e03e0bd59e478@epcms5p1>
- <20190530091327epcms5p11a7725e9c01286b1a7c023737bf4e448@epcms5p1>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     mpm@selenic.com, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] char: hw_random: meson-rng: update with SPDX Licence
+ identifier
+Message-ID: <20190530134037.joqdncbvbz5b2v3h@gondor.apana.org.au>
+References: <20190520135919.28946-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190530091327epcms5p11a7725e9c01286b1a7c023737bf4e448@epcms5p1>
+In-Reply-To: <20190520135919.28946-1-narmstrong@baylibre.com>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, May 30, 2019 at 02:43:27PM +0530, Vaneet Narang wrote:
-> [Reminder] Any updates ?
+On Mon, May 20, 2019 at 03:59:19PM +0200, Neil Armstrong wrote:
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  drivers/char/hw_random/meson-rng.c | 52 +-----------------------------
+>  1 file changed, 1 insertion(+), 51 deletions(-)
 
-I was assuming that Andrew was going to pick this up.  Andrew?
-
-Cheers,
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
