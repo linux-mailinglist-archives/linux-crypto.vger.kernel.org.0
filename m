@@ -2,158 +2,69 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 562032FE93
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 May 2019 16:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5182C2FEC4
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 May 2019 17:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbfE3OyA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 30 May 2019 10:54:00 -0400
-Received: from mail-eopbgr30124.outbound.protection.outlook.com ([40.107.3.124]:45771
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727532AbfE3OyA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 30 May 2019 10:54:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=insidesecure.onmicrosoft.com; s=selector1-insidesecure-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+ghuhcCq9PH9Pe/HujctKC0Qm3qBIrl6+xaLwSbM7iI=;
- b=Lr2Jg3kUa6o6/Mv8hwo24lCe3pFiSmlvS+prNMK3KHUm6Iw4rkgiE8q2gyjEjFxjHf0fwXUdFrMNMycLi2ufl10h+hjR6fMK5zM0zMiMTr44bcKLALPah3OOdmxTku2h+ZNIFGgo/V48rLejntnDsWXcL9+vt4T4atNQqhMeQY8=
-Received: from AM6PR09MB3523.eurprd09.prod.outlook.com (10.255.99.206) by
- AM6PR09MB2376.eurprd09.prod.outlook.com (20.177.113.149) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1922.17; Thu, 30 May 2019 14:53:56 +0000
-Received: from AM6PR09MB3523.eurprd09.prod.outlook.com
- ([fe80::8c11:e692:3a44:a3a9]) by AM6PR09MB3523.eurprd09.prod.outlook.com
- ([fe80::8c11:e692:3a44:a3a9%6]) with mapi id 15.20.1922.021; Thu, 30 May 2019
- 14:53:56 +0000
-From:   Pascal Van Leeuwen <pvanleeuwen@insidesecure.com>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-CC:     Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH] crypto: gcm - fix cacheline sharing
-Thread-Topic: [PATCH] crypto: gcm - fix cacheline sharing
-Thread-Index: AQHVFkGC+Z078hijGEOmhwjdTCZ6EaaDsZ8AgAAAcYCAAAkRAIAAAGAAgAAAoYCAAANzkA==
-Date:   Thu, 30 May 2019 14:53:56 +0000
-Message-ID: <AM6PR09MB3523A665C9D9334659F05F90D2180@AM6PR09MB3523.eurprd09.prod.outlook.com>
-References: <1559149856-7938-1-git-send-email-iuliana.prodan@nxp.com>
- <20190529202728.GA35103@gmail.com>
- <CAKv+Gu-4KqcY=WhwY98JigTzeXaL5ggYEcu7+kNzNtpO2FLQXg@mail.gmail.com>
- <VI1PR04MB44459EEF7BCD3458BB3D143D8C180@VI1PR04MB4445.eurprd04.prod.outlook.com>
- <20190530133427.qrwjzctac2x6nsby@gondor.apana.org.au>
- <VI1PR04MB444562A2352FE4BAD7F681258C180@VI1PR04MB4445.eurprd04.prod.outlook.com>
- <CAKv+Gu-jTWQP0Zp=QpuzX41v8Eb5Bvd0O9ajwSnFkDO-ijBf_A@mail.gmail.com>
- <CAKv+Gu9JoC+GKJ6mMAE25mr_k2gbznh-83jApT4=FZsAW=jd8w@mail.gmail.com>
- <20190530142734.qlhgzeal22zxfhk5@gondor.apana.org.au>
- <CAKv+Gu8jJQCZwiHFORUJUzRaAizWzBQ95EAgYe36sFrcvzb6vg@mail.gmail.com>
- <CAKv+Gu-KBgiyNY2Dypx6vqtmpTXNfOxxWxJf50BTiF2rCOFqnw@mail.gmail.com>
-In-Reply-To: <CAKv+Gu-KBgiyNY2Dypx6vqtmpTXNfOxxWxJf50BTiF2rCOFqnw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=pvanleeuwen@insidesecure.com; 
-x-originating-ip: [188.204.2.113]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 696cdddd-8a93-40bb-7245-08d6e50ea3f4
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:AM6PR09MB2376;
-x-ms-traffictypediagnostic: AM6PR09MB2376:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <AM6PR09MB237635EDCAD716C043934E14D2180@AM6PR09MB2376.eurprd09.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 00531FAC2C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39850400004)(396003)(376002)(136003)(346002)(366004)(189003)(199004)(476003)(446003)(76116006)(11346002)(6116002)(86362001)(68736007)(4326008)(6246003)(5660300002)(229853002)(8676002)(55016002)(71190400001)(81156014)(8936002)(74316002)(52536014)(7416002)(3846002)(81166006)(25786009)(66446008)(486006)(6506007)(33656002)(66066001)(316002)(71200400001)(54906003)(110136005)(102836004)(14444005)(2906002)(305945005)(186003)(66946007)(66556008)(73956011)(64756008)(7696005)(6436002)(66476007)(9686003)(26005)(15974865002)(7736002)(76176011)(14454004)(99286004)(478600001)(256004)(53936002)(18886075002);DIR:OUT;SFP:1102;SCL:1;SRVR:AM6PR09MB2376;H:AM6PR09MB3523.eurprd09.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: insidesecure.com does not
- designate permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: W1WM/8KdXhKZ32+z97+dUoFmZUqd0dQ6kngPEEQou4RK1PkrEyhSHh3mseQIbT6x9YmhZCNUmvF8//xdq8Kgr006dCkz70Y2wFPQdnBeigchBFD07TWif2tzlg/6kvBx6FhqiZKEB/2opYHd8QUhcCsFDdxfZXNb8/jYc9XSRtrpuVQhM/FBycIov3Zm3UxCSOJ0r00/8ibvtxJgNPWS7wlQOPYuF6xck3IO/mcVbSUH51Kp1Pk7J6mVud4f41JRsWG145l9l56G+6sx/4QPu4rbzjpdIdzauMBivzPirxiUqU0M2T/JIDM6FSTa41dIBByDsAgX23cXDmqA7UZ/W0JdhxSCuueDYb008X/1Ox9y5gFHpAN6SJlVbD1p65DWxBlOJigmePNtwEMiANVkGQenfJrqwET16P1WLDAncpY=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1725897AbfE3PCV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 30 May 2019 11:02:21 -0400
+Received: from sonic309-24.consmr.mail.ir2.yahoo.com ([77.238.179.82]:33046
+        "EHLO sonic309-24.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726065AbfE3PCV (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 30 May 2019 11:02:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1559228538; bh=r8mvpsdSWTgrFU7sKbqDDOp6njqb0485clzVt3O86CA=; h=Date:From:Reply-To:Subject:References:From:Subject; b=dm7XchzcaZdS1nR8inQcRkFtHStwSzpiaJqZvKecWO9BMrq47HQSa1Po52AkPdtfUtMMUseeLmLmgoMoXqSQSsm0Mkz3HBDSgaIVUlpTMFfny9hMtPx/z8K0PWZKcTaj3tPPLhUVnxR8f1kviTdmGA7A4u6oJf/iB7Bmg2h/sLSnTPJObTj/EkSPPUCjKbrpsMpDkY6dEm95LZ2/JQ2Vg4z3TuF0rAYVV4OcJOImF/pBjOhCFcElWiUYVfM3XBlLkIcApXZlRSM+0JqSop1ikGiFOS8+j2Y13v4P2bfskfZuYvJ/grjgxxO2zvETe6vT59mKksjHLmZQiPwqEnF61w==
+X-YMail-OSG: JCpGDtoVM1lQ7.noNWZkJqrVTxtsZPFvmAMP0pGiDVvTS0kOJ6mVOIjIiVwACeo
+ VtUiyBzQlFLoDpCubM.KZDAGPfxVatE8UyUtUFW8_K6BMZOfZovFI3bBCbHgxFjNeStSaZqAv1xr
+ n2qpD0TRpfQLOhmIJVWcaakRMGizI43B9TdS8ONPja6Ltb3_tJxVyZL48ajNeDv5moV3fhmgkGIJ
+ w6ni.W.ByI3xwgWpnpYhFuPob.HL5XvmIjKGORT8VPpZ0bLHylaiDUGc.43GIJb1E2sNy87oJDzY
+ CbCqafPoCfW9y0fmEddfqKpbvjhB1kemK0XIcxKDBu2XMZUdpcHHNY3b311zZeyHlx8DEflAz7ns
+ 2RUSZOPOpd5JqGDIpuq0e7WiT_gBuA5NfLqEQ1G..emjRtKXfyT.Y9ZE_655f5F7ib.HHdlbQ7Ec
+ ow3dXRXNHcoLpkzdFnqwhpiiyW.HS.JMeVi7gh_wMHvq70ARVnc3RCzPlKjD3YPlCfS28rsfYa9A
+ FNFw_xvVty2EMjVndIf8MXJ1joFgHLUvyIugmTtU5YrmdMjL2kRAqL6D.RxEKO7Y6FE0g.SQKFhi
+ Ex2kC.L3MT07p3EEkU8.qvfTe1TEkzYuaJfwcqf0Vjd1R4Os2khqJ0lAKlvJxS1APee7YXxM1QOG
+ EzNMok33h8436EK2MTfu.l9SK7YjXQVDroooWExh98Xqida5Ar.JpBq4kvZu9GEOM9VlHJuA8ZVY
+ I3B_PwUhw.BftklQRcVM.QaYOnbgJiE96IRxYFOwf54PLJ6SStkZleWuVU9e3r1GPX3aSC2nYXPd
+ 2izJkebyqIEpHlV_SrYpXfOG2bh8F_B4Fbpd4qdo1LVYKz0rE_W09V5_fUenbr6DsJjdC67W_yGW
+ WVmHuUo7ZlH0cJqhJybXLhmihOQt_5slYl83Q9SmS_lV0zDy5jCyzCwWfLm3nkC8UXZcVPzJUl1o
+ jO_yRZom3eS9tkI5jy.M2Ep.79rEN3bWSX2wIkPX1le2hSeoxoW1Ir6AZFWVefetDnwEkprCEMgN
+ EPKkPII0iNyfC2zyxMhoAsCRiunt4OvRC8pBcEVdnMdhToutepM5PvcwHLvuM2VKs8KhrNhjq9f.
+ Butox8lRFJGzhuGgIxklGpzyLQO.UKHSQTFDspPQTmTBU6x3qv_SVMYwFalQLt4boSG6d2Z53Xbt
+ 04Xxfy8iv9pxrt8dmnmbFNz7ROm2LoadHe.b3tt6Mvno3Q1xb06AmMl4Q7ThzLQ--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ir2.yahoo.com with HTTP; Thu, 30 May 2019 15:02:18 +0000
+Date:   Thu, 30 May 2019 15:02:16 +0000 (UTC)
+From:   "Mr. Nor Hizam Hashim" <abmousa444@gmail.com>
+Reply-To: "Mr. Nor Hizam Hashim" <nhizamhshi@gmail.com>
+Message-ID: <1955570798.13522196.1559228536186@mail.yahoo.com>
+Subject: Waiting for your urgent reply,
 MIME-Version: 1.0
-X-OriginatorOrg: insidesecure.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 696cdddd-8a93-40bb-7245-08d6e50ea3f4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2019 14:53:56.0763
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3c07df58-7760-4e85-afd5-84803eac70ce
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pvanleeuwen@insidesecure.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR09MB2376
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1955570798.13522196.1559228536186.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.13634 YahooMailBasic Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-PiANCj4gVGhpcyBtaWdodCB3b3JrOg0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvY3J5cHRv
-L2NhYW0vY2FhbWFsZy5jIGIvZHJpdmVycy9jcnlwdG8vY2FhbS9jYWFtYWxnLmMNCj4gaW5kZXgg
-YzBlY2U0NGYzMDNiLi4zZDMxM2QyYTI3OWEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvY3J5cHRv
-L2NhYW0vY2FhbWFsZy5jDQo+ICsrKyBiL2RyaXZlcnMvY3J5cHRvL2NhYW0vY2FhbWFsZy5jDQo+
-IEBAIC0xNjYxLDcgKzE2NjEsOCBAQCBzdGF0aWMgaW50IGFlYWRfZGVjcnlwdChzdHJ1Y3QgYWVh
-ZF9yZXF1ZXN0ICpyZXEpDQo+ICAgKiBhbGxvY2F0ZSBhbmQgbWFwIHRoZSBza2NpcGhlciBleHRl
-bmRlZCBkZXNjcmlwdG9yIGZvciBza2NpcGhlcg0KPiAgICovDQo+ICBzdGF0aWMgc3RydWN0IHNr
-Y2lwaGVyX2VkZXNjICpza2NpcGhlcl9lZGVzY19hbGxvYyhzdHJ1Y3QNCj4gc2tjaXBoZXJfcmVx
-dWVzdCAqcmVxLA0KPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBpbnQgZGVzY19ieXRlcykNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgaW50IGRlc2NfYnl0ZXMsDQo+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHU4IGNvbnN0ICppbnB1dF9pdikNCj4g
-IHsNCj4gICAgICAgICBzdHJ1Y3QgY3J5cHRvX3NrY2lwaGVyICpza2NpcGhlciA9IGNyeXB0b19z
-a2NpcGhlcl9yZXF0Zm0ocmVxKTsNCj4gICAgICAgICBzdHJ1Y3QgY2FhbV9jdHggKmN0eCA9IGNy
-eXB0b19za2NpcGhlcl9jdHgoc2tjaXBoZXIpOw0KPiBAQCAtMTc0NSw3ICsxNzQ2LDcgQEAgc3Rh
-dGljIHN0cnVjdCBza2NpcGhlcl9lZGVzYw0KPiAqc2tjaXBoZXJfZWRlc2NfYWxsb2Moc3RydWN0
-IHNrY2lwaGVyX3JlcXVlc3QgKnJlcSwNCj4gICAgICAgICAvKiBNYWtlIHN1cmUgSVYgaXMgbG9j
-YXRlZCBpbiBhIERNQWFibGUgYXJlYSAqLw0KPiAgICAgICAgIGlmIChpdnNpemUpIHsNCj4gICAg
-ICAgICAgICAgICAgIGl2ID0gKHU4ICopZWRlc2MtPmh3X2Rlc2MgKyBkZXNjX2J5dGVzICsgc2Vj
-NF9zZ19ieXRlczsNCj4gLSAgICAgICAgICAgICAgIG1lbWNweShpdiwgcmVxLT5pdiwgaXZzaXpl
-KTsNCj4gKyAgICAgICAgICAgICAgIG1lbWNweShpdiwgaW5wdXRfaXYsIGl2c2l6ZSk7DQo+IA0K
-PiAgICAgICAgICAgICAgICAgaXZfZG1hID0gZG1hX21hcF9zaW5nbGUoanJkZXYsIGl2LCBpdnNp
-emUsIERNQV9UT19ERVZJQ0UpOw0KPiAgICAgICAgICAgICAgICAgaWYgKGRtYV9tYXBwaW5nX2Vy
-cm9yKGpyZGV2LCBpdl9kbWEpKSB7DQo+IEBAIC0xODAxLDcgKzE4MDIsOCBAQCBzdGF0aWMgaW50
-IHNrY2lwaGVyX2VuY3J5cHQoc3RydWN0IHNrY2lwaGVyX3JlcXVlc3QNCj4gKnJlcSkNCj4gICAg
-ICAgICBpbnQgcmV0ID0gMDsNCj4gDQo+ICAgICAgICAgLyogYWxsb2NhdGUgZXh0ZW5kZWQgZGVz
-Y3JpcHRvciAqLw0KPiAtICAgICAgIGVkZXNjID0gc2tjaXBoZXJfZWRlc2NfYWxsb2MocmVxLCBE
-RVNDX0pPQl9JT19MRU4gKiBDQUFNX0NNRF9TWik7DQo+ICsgICAgICAgZWRlc2MgPSBza2NpcGhl
-cl9lZGVzY19hbGxvYyhyZXEsIERFU0NfSk9CX0lPX0xFTiAqIENBQU1fQ01EX1NaLA0KPiArICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmVxLT5pdik7DQo+ICAgICAgICAgaWYg
-KElTX0VSUihlZGVzYykpDQo+ICAgICAgICAgICAgICAgICByZXR1cm4gUFRSX0VSUihlZGVzYyk7
-DQo+IA0KPiBAQCAtMTgzMiwxMyArMTgzNCwxMSBAQCBzdGF0aWMgaW50IHNrY2lwaGVyX2RlY3J5
-cHQoc3RydWN0DQo+IHNrY2lwaGVyX3JlcXVlc3QgKnJlcSkNCj4gICAgICAgICBzdHJ1Y3QgY2Fh
-bV9jdHggKmN0eCA9IGNyeXB0b19za2NpcGhlcl9jdHgoc2tjaXBoZXIpOw0KPiAgICAgICAgIGlu
-dCBpdnNpemUgPSBjcnlwdG9fc2tjaXBoZXJfaXZzaXplKHNrY2lwaGVyKTsNCj4gICAgICAgICBz
-dHJ1Y3QgZGV2aWNlICpqcmRldiA9IGN0eC0+anJkZXY7DQo+ICsgICAgICAgdTggaW5faXZbQUVT
-X0JMT0NLX1NJWkVdOw0KPiAgICAgICAgIHUzMiAqZGVzYzsNCj4gICAgICAgICBpbnQgcmV0ID0g
-MDsNCj4gDQo+IC0gICAgICAgLyogYWxsb2NhdGUgZXh0ZW5kZWQgZGVzY3JpcHRvciAqLw0KPiAt
-ICAgICAgIGVkZXNjID0gc2tjaXBoZXJfZWRlc2NfYWxsb2MocmVxLCBERVNDX0pPQl9JT19MRU4g
-KiBDQUFNX0NNRF9TWik7DQo+IC0gICAgICAgaWYgKElTX0VSUihlZGVzYykpDQo+IC0gICAgICAg
-ICAgICAgICByZXR1cm4gUFRSX0VSUihlZGVzYyk7DQo+ICsgICAgICAgbWVtY3B5KGluX2l2LCBy
-ZXEtPml2LCBpdnNpemUpOw0KPiANCj4gICAgICAgICAvKg0KPiAgICAgICAgICAqIFRoZSBjcnlw
-dG8gQVBJIGV4cGVjdHMgdXMgdG8gc2V0IHRoZSBJViAocmVxLT5pdikgdG8gdGhlIGxhc3QNCj4g
-QEAgLTE4NDgsNiArMTg0OCwxMSBAQCBzdGF0aWMgaW50IHNrY2lwaGVyX2RlY3J5cHQoc3RydWN0
-IHNrY2lwaGVyX3JlcXVlc3QNCj4gKnJlcSkNCj4gICAgICAgICAgICAgICAgIHNjYXR0ZXJ3YWxr
-X21hcF9hbmRfY29weShyZXEtPml2LCByZXEtPnNyYywgcmVxLT5jcnlwdGxlbg0KPiAtDQo+ICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaXZzaXplLCBpdnNpemUsIDAp
-Ow0KPiANCj4gKyAgICAgICAvKiBhbGxvY2F0ZSBleHRlbmRlZCBkZXNjcmlwdG9yICovDQo+ICsg
-ICAgICAgZWRlc2MgPSBza2NpcGhlcl9lZGVzY19hbGxvYyhyZXEsIERFU0NfSk9CX0lPX0xFTiAq
-IENBQU1fQ01EX1NaLA0KPiBpbl9pdik7DQo+ICsgICAgICAgaWYgKElTX0VSUihlZGVzYykpDQo+
-ICsgICAgICAgICAgICAgICByZXR1cm4gUFRSX0VSUihlZGVzYyk7DQo+ICsNCj4gICAgICAgICAv
-KiBDcmVhdGUgYW5kIHN1Ym1pdCBqb2IgZGVzY3JpcHRvciovDQo+ICAgICAgICAgaW5pdF9za2Np
-cGhlcl9qb2IocmVxLCBlZGVzYywgZmFsc2UpOw0KPiAgICAgICAgIGRlc2MgPSBlZGVzYy0+aHdf
-ZGVzYzsNCg0KSW50ZXJlc3RpbmcuIFRoaXMgZGlzY3Vzc2lvbiBtYWRlIG1lIHJlZXZhbHVhdGUg
-bXkgb3duIGltcGxlbWVudGF0aW9uLg0KDQpGaXJzdCB0aGluZyBJIHJlYWxpc2VkIGlzIHRoYXQg
-SSAqYW0qIGN1cnJlbnRseSBkb2luZyB0aGUgSVYgY29weWluZyB3aXRoDQp0aGUgZGF0YSBidWZm
-ZXIgbWFwcGVkIGZvciBETUEgLi4uIElmIEkgdW5kZXJzdGFuZCBjb3JyZWN0bHkgdGhhdCBtYXkg
-YmUgYQ0KYmFkIGlkZWEgb24gc29tZSBzeXN0ZW1zPyBJIHdoaWNoIGNhc2UgSSB3aWxsIG5lZWQg
-dG8gZG8gbXkgY29weSBlYXJsaWVyLg0KDQpTZWNvbmQgdGhpbmcgaXMgdGhlIGFib3ZlIGltcGxl
-bWVudGF0aW9uIG1hZGUgbWUgcmVhbGlzZSBJIGRvbid0IG5lZWQgdG8NCmJ1ZmZlciB0aGUgSVYg
-YXMgcGFydCBvZiB0aGUgc2tjaXBoZXJfcmVxdWVzdF9jdHgsIEkgY2FuIGp1c3QgY29weSB0aGUN
-Cm9yaWdpbmFsIHJlcS0+aXYgdG8gc29tZSBsb2NhbCB2YXJpYWJsZSwgcGFzcyBhIHBvaW50ZXIg
-dG8gdGhhdCBhbG9uZyBhbmQNCnRoZW4gb3ZlcndyaXRlIHJlcS0+aXYgZGlyZWN0bHkuIE1vcmUg
-ZWxlZ2FudCBhbmQgaG9wZWZ1bGx5IGFsc28gbW9yZQ0KZWZmaWNpZW50IC4uLg0KDQpSZWdhcmRz
-LA0KUGFzY2FsIHZhbiBMZWV1d2VuDQpTaWxpY29uIElQIEFyY2hpdGVjdCwgTXVsdGktUHJvdG9j
-b2wgRW5naW5lcw0Kd3d3Lmluc2lkZXNlY3VyZS5jb20NCg0KDQo=
+Dear Sir/ Madam,
+
+Please forgive me if my request is not acceptable by your kind person.
+
+I am Mr. Nor Hizam Hashim, Working at MAYBANK (Malaysia) as the Independent Non-Executive Director & Audit Committee. During our last banking Audits we discovered an abandoned account belongs to one of our Foreign Deceased Customer, Late Mr. Wang Jian, The Co-founder and Co-chairman of HNA Group, a Chinese conglomerate with significant real estate ownerships across the U.S., died in an accident while on a business trip in France on Tuesday.
+
+
+Please go through this link:https://observer.com/2018/07/wang-jian-hna-founder-dies-tragic-fall/
+
+I am writing to request your assistance in transferring the sum of $15.000.000.00 (Fifteen Million United States Dollars) into your account as the Late Mr. Wang Jian Foreign Business Partner. Meanwhile, before I contacted you I have done personal investigation in locating any of Late Mr. Wang Jian relatives who knows about the account, but I came out unsuccessful.
+
+I will like to bring to your notice that I have made all the necessary arrangements with my colleagues to transfer the funds into your nominated bank account without any problem.  Upon your consideration and acceptance of this offer, I am willing to offer you 40% for your assistant, while 60% for me which I am planning to invest into a profitable business venture in your country.
+
+More details information will be forwarded to you to breakdown explaining comprehensively what require of you.
+
+ 
+Waiting for your urgent reply,
+Best Regards
+Mr. Nor Hizam Hashim.
+E-Mail Address (nhizam.has@yahoo.com)
+
