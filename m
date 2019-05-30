@@ -2,51 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D692FC87
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 May 2019 15:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380062FC88
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 May 2019 15:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726849AbfE3Nlu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 30 May 2019 09:41:50 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:38008 "EHLO deadmen.hmeau.com"
+        id S1726509AbfE3NmS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 30 May 2019 09:42:18 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:38042 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725913AbfE3Nlu (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 30 May 2019 09:41:50 -0400
+        id S1725913AbfE3NmS (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 30 May 2019 09:42:18 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hWLJU-0005b9-Uf; Thu, 30 May 2019 21:41:48 +0800
+        id 1hWLJq-0005bs-ME; Thu, 30 May 2019 21:42:10 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hWLJU-0003el-OH; Thu, 30 May 2019 21:41:48 +0800
-Date:   Thu, 30 May 2019 21:41:48 +0800
+        id 1hWLJo-0003f3-NQ; Thu, 30 May 2019 21:42:08 +0800
+Date:   Thu, 30 May 2019 21:42:08 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: algapi - remove crypto_tfm_in_queue()
-Message-ID: <20190530134148.2xh3bpyz6lr6edig@gondor.apana.org.au>
-References: <20190520165515.169823-1-ebiggers@kernel.org>
+To:     Christophe Leroy <christophe.leroy@c-s.fr>
+Cc:     "David S. Miller" <davem@davemloft.net>, horia.geanta@nxp.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v1 00/15] Fixing selftests failure on Talitos driver
+Message-ID: <20190530134208.frpozzmqtafw35hy@gondor.apana.org.au>
+References: <cover.1558445259.git.christophe.leroy@c-s.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190520165515.169823-1-ebiggers@kernel.org>
+In-Reply-To: <cover.1558445259.git.christophe.leroy@c-s.fr>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, May 20, 2019 at 09:55:15AM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Tue, May 21, 2019 at 01:34:06PM +0000, Christophe Leroy wrote:
+> Several test failures have popped up following recent changes to crypto
+> selftests.
 > 
-> Remove the crypto_tfm_in_queue() function, which is unused.
+> This series fixes (most of) them.
 > 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  crypto/algapi.c                | 13 -------------
->  include/crypto/algapi.h        |  7 -------
->  include/crypto/internal/hash.h |  6 ------
->  3 files changed, 26 deletions(-)
+> The last three patches are trivial cleanups.
+> 
+> Christophe Leroy (15):
+>   crypto: talitos - fix skcipher failure due to wrong output IV
+>   crypto: talitos - rename alternative AEAD algos.
+>   crypto: talitos - reduce max key size for SEC1
+>   crypto: talitos - check AES key size
+>   crypto: talitos - fix CTR alg blocksize
+>   crypto: talitos - check data blocksize in ablkcipher.
+>   crypto: talitos - fix ECB algs ivsize
+>   crypto: talitos - Do not modify req->cryptlen on decryption.
+>   crypto: talitos - HMAC SNOOP NO AFEU mode requires SW icv checking.
+>   crypto: talitos - properly handle split ICV.
+>   crypto: talitos - Align SEC1 accesses to 32 bits boundaries.
+>   crypto: talitos - fix AEAD processing.
+>   Revert "crypto: talitos - export the talitos_submit function"
+>   crypto: talitos - use IS_ENABLED() in has_ftr_sec1()
+>   crypto: talitos - use SPDX-License-Identifier
+> 
+>  drivers/crypto/talitos.c | 281 ++++++++++++++++++++++-------------------------
+>  drivers/crypto/talitos.h |  45 ++------
+>  2 files changed, 139 insertions(+), 187 deletions(-)
 
-Patch applied.  Thanks.
+Patch 1 was already applied.
+
+2-15 applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
