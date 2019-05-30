@@ -2,69 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5182C2FEC4
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 May 2019 17:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C79CF2FED5
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 May 2019 17:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725897AbfE3PCV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 30 May 2019 11:02:21 -0400
-Received: from sonic309-24.consmr.mail.ir2.yahoo.com ([77.238.179.82]:33046
-        "EHLO sonic309-24.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726065AbfE3PCV (ORCPT
+        id S1726512AbfE3PFG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 30 May 2019 11:05:06 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:37710 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727437AbfE3PFF (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 30 May 2019 11:02:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1559228538; bh=r8mvpsdSWTgrFU7sKbqDDOp6njqb0485clzVt3O86CA=; h=Date:From:Reply-To:Subject:References:From:Subject; b=dm7XchzcaZdS1nR8inQcRkFtHStwSzpiaJqZvKecWO9BMrq47HQSa1Po52AkPdtfUtMMUseeLmLmgoMoXqSQSsm0Mkz3HBDSgaIVUlpTMFfny9hMtPx/z8K0PWZKcTaj3tPPLhUVnxR8f1kviTdmGA7A4u6oJf/iB7Bmg2h/sLSnTPJObTj/EkSPPUCjKbrpsMpDkY6dEm95LZ2/JQ2Vg4z3TuF0rAYVV4OcJOImF/pBjOhCFcElWiUYVfM3XBlLkIcApXZlRSM+0JqSop1ikGiFOS8+j2Y13v4P2bfskfZuYvJ/grjgxxO2zvETe6vT59mKksjHLmZQiPwqEnF61w==
-X-YMail-OSG: JCpGDtoVM1lQ7.noNWZkJqrVTxtsZPFvmAMP0pGiDVvTS0kOJ6mVOIjIiVwACeo
- VtUiyBzQlFLoDpCubM.KZDAGPfxVatE8UyUtUFW8_K6BMZOfZovFI3bBCbHgxFjNeStSaZqAv1xr
- n2qpD0TRpfQLOhmIJVWcaakRMGizI43B9TdS8ONPja6Ltb3_tJxVyZL48ajNeDv5moV3fhmgkGIJ
- w6ni.W.ByI3xwgWpnpYhFuPob.HL5XvmIjKGORT8VPpZ0bLHylaiDUGc.43GIJb1E2sNy87oJDzY
- CbCqafPoCfW9y0fmEddfqKpbvjhB1kemK0XIcxKDBu2XMZUdpcHHNY3b311zZeyHlx8DEflAz7ns
- 2RUSZOPOpd5JqGDIpuq0e7WiT_gBuA5NfLqEQ1G..emjRtKXfyT.Y9ZE_655f5F7ib.HHdlbQ7Ec
- ow3dXRXNHcoLpkzdFnqwhpiiyW.HS.JMeVi7gh_wMHvq70ARVnc3RCzPlKjD3YPlCfS28rsfYa9A
- FNFw_xvVty2EMjVndIf8MXJ1joFgHLUvyIugmTtU5YrmdMjL2kRAqL6D.RxEKO7Y6FE0g.SQKFhi
- Ex2kC.L3MT07p3EEkU8.qvfTe1TEkzYuaJfwcqf0Vjd1R4Os2khqJ0lAKlvJxS1APee7YXxM1QOG
- EzNMok33h8436EK2MTfu.l9SK7YjXQVDroooWExh98Xqida5Ar.JpBq4kvZu9GEOM9VlHJuA8ZVY
- I3B_PwUhw.BftklQRcVM.QaYOnbgJiE96IRxYFOwf54PLJ6SStkZleWuVU9e3r1GPX3aSC2nYXPd
- 2izJkebyqIEpHlV_SrYpXfOG2bh8F_B4Fbpd4qdo1LVYKz0rE_W09V5_fUenbr6DsJjdC67W_yGW
- WVmHuUo7ZlH0cJqhJybXLhmihOQt_5slYl83Q9SmS_lV0zDy5jCyzCwWfLm3nkC8UXZcVPzJUl1o
- jO_yRZom3eS9tkI5jy.M2Ep.79rEN3bWSX2wIkPX1le2hSeoxoW1Ir6AZFWVefetDnwEkprCEMgN
- EPKkPII0iNyfC2zyxMhoAsCRiunt4OvRC8pBcEVdnMdhToutepM5PvcwHLvuM2VKs8KhrNhjq9f.
- Butox8lRFJGzhuGgIxklGpzyLQO.UKHSQTFDspPQTmTBU6x3qv_SVMYwFalQLt4boSG6d2Z53Xbt
- 04Xxfy8iv9pxrt8dmnmbFNz7ROm2LoadHe.b3tt6Mvno3Q1xb06AmMl4Q7ThzLQ--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ir2.yahoo.com with HTTP; Thu, 30 May 2019 15:02:18 +0000
-Date:   Thu, 30 May 2019 15:02:16 +0000 (UTC)
-From:   "Mr. Nor Hizam Hashim" <abmousa444@gmail.com>
-Reply-To: "Mr. Nor Hizam Hashim" <nhizamhshi@gmail.com>
-Message-ID: <1955570798.13522196.1559228536186@mail.yahoo.com>
-Subject: Waiting for your urgent reply,
+        Thu, 30 May 2019 11:05:05 -0400
+Received: by mail-io1-f67.google.com with SMTP id e5so5345852iok.4
+        for <linux-crypto@vger.kernel.org>; Thu, 30 May 2019 08:05:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jvt0JcWpyPlkkNAtAO9YUzPTlBiKUJt7TcdxdDpdEuk=;
+        b=YeeHVzkHGt0/TRrPUDvopCGyBPvlJT5jKL5fhU9erhoHrokOiEbeVGuVnHm+Ppnyaa
+         kobKTc3vQXpOK2NOww38wGIYlJIev8bd2vIhC9expYN+5HdY3fqV5CeA3ZvrYkixAEZF
+         x0NPoYFdcuLlPBfVYES7gcPd5QzHcmyzPPB2zXIx6cPo8mUGhC03s6VtLiu2iunOVvs6
+         OJ2MZF0anx/ZNMCCD7cQvbKnfKrYMSWjm60QM96JF6Lt6p+qTTDmfz0DBFM3c3t6rkmf
+         WsDYV52q7WKU/4fnQQMabGYWCYB/JUHj7W8Ek4qloibiPjKDYxwfW2ZAZ65tN/dvwtnZ
+         zyyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jvt0JcWpyPlkkNAtAO9YUzPTlBiKUJt7TcdxdDpdEuk=;
+        b=QeMgQv06v0vwVmAnHS9OFEXHUb31mFXYqJwTeu8bVD5VDxgtS3koxF4XDCw9/rDZuJ
+         bJiLN32Hg46jdjk51U+ZbSYffAiSllf5Q71DLbKS+hSHzYzk+HMJHEe5ZnFknKpr6q/j
+         GHpSpCylPscbZBed1pmR1ZUCQeRz2xs8A1YqrvLlWwtQV53FIHVhACPVRgBwoR/0aJmj
+         huK/dBSUF9hTwvzytn5IORpe98riKaOpnU67y7WXs7EQDEHM4mSfTWFC5aEOtMBxVw0R
+         MBrOD5oxuwn+eKDWaVLDXGyr6hN6oxPuESwKOwP/bGX+5v6zPsnm/Lfw8vOWuf+FUww2
+         Bncw==
+X-Gm-Message-State: APjAAAW9n3Cdb/CGneaa5ZRJWLvVl4Fcb+8jVgqKBE5zou4wOYFfwvIz
+        tNgX/v/HYcFOPR19P5Fx/MuR07tIwdQaWSqW8JZr2g==
+X-Google-Smtp-Source: APXvYqzARUXWGq6q8/hYIVYeT219CiA8uTD6iRPTxw6rj46PxQ9tfJpySmwAjxlwp+nKTX+Z1+8Oi64X31H+Yk76o9E=
+X-Received: by 2002:a5d:9d83:: with SMTP id 3mr2768462ion.65.1559228704949;
+ Thu, 30 May 2019 08:05:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1955570798.13522196.1559228536186.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.13634 YahooMailBasic Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+References: <20190529202728.GA35103@gmail.com> <CAKv+Gu-4KqcY=WhwY98JigTzeXaL5ggYEcu7+kNzNtpO2FLQXg@mail.gmail.com>
+ <VI1PR04MB44459EEF7BCD3458BB3D143D8C180@VI1PR04MB4445.eurprd04.prod.outlook.com>
+ <20190530133427.qrwjzctac2x6nsby@gondor.apana.org.au> <VI1PR04MB444562A2352FE4BAD7F681258C180@VI1PR04MB4445.eurprd04.prod.outlook.com>
+ <CAKv+Gu-jTWQP0Zp=QpuzX41v8Eb5Bvd0O9ajwSnFkDO-ijBf_A@mail.gmail.com>
+ <CAKv+Gu9JoC+GKJ6mMAE25mr_k2gbznh-83jApT4=FZsAW=jd8w@mail.gmail.com>
+ <20190530142734.qlhgzeal22zxfhk5@gondor.apana.org.au> <CAKv+Gu8jJQCZwiHFORUJUzRaAizWzBQ95EAgYe36sFrcvzb6vg@mail.gmail.com>
+ <CAKv+Gu-KBgiyNY2Dypx6vqtmpTXNfOxxWxJf50BTiF2rCOFqnw@mail.gmail.com> <20190530143438.d62y3woaogyivqpm@gondor.apana.org.au>
+In-Reply-To: <20190530143438.d62y3woaogyivqpm@gondor.apana.org.au>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Thu, 30 May 2019 17:04:51 +0200
+Message-ID: <CAKv+Gu87wkLkZZLfsJwc02yuKpDx7Sa=Nx+1YW8pPE4DoWXGRw@mail.gmail.com>
+Subject: Re: [PATCH] crypto: gcm - fix cacheline sharing
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Iuliana Prodan <iuliana.prodan@nxp.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear Sir/ Madam,
+On Thu, 30 May 2019 at 16:34, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Thu, May 30, 2019 at 04:31:09PM +0200, Ard Biesheuvel wrote:
+> >
+> > This might work:
+>
+> Looks good to me.
+>
 
-Please forgive me if my request is not acceptable by your kind person.
+Thanks Herbert,
 
-I am Mr. Nor Hizam Hashim, Working at MAYBANK (Malaysia) as the Independent Non-Executive Director & Audit Committee. During our last banking Audits we discovered an abandoned account belongs to one of our Foreign Deceased Customer, Late Mr. Wang Jian, The Co-founder and Co-chairman of HNA Group, a Chinese conglomerate with significant real estate ownerships across the U.S., died in an accident while on a business trip in France on Tuesday.
+But given your remark regarding CBC being the only algo that has this
+requirement, I wonder if this might be sufficient as well.
+
+diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
+index c0ece44f303b..65b050e3742f 100644
+--- a/drivers/crypto/caam/caamalg.c
++++ b/drivers/crypto/caam/caamalg.c
+@@ -1844,7 +1844,7 @@ static int skcipher_decrypt(struct skcipher_request *req)
+         * The crypto API expects us to set the IV (req->iv) to the last
+         * ciphertext block.
+         */
+-       if (ivsize)
++       if (ctx->cdata.algtype & OP_ALG_AAI_CBC)
+                scatterwalk_map_and_copy(req->iv, req->src, req->cryptlen -
+                                         ivsize, ivsize, 0);
 
 
-Please go through this link:https://observer.com/2018/07/wang-jian-hna-founder-dies-tragic-fall/
-
-I am writing to request your assistance in transferring the sum of $15.000.000.00 (Fifteen Million United States Dollars) into your account as the Late Mr. Wang Jian Foreign Business Partner. Meanwhile, before I contacted you I have done personal investigation in locating any of Late Mr. Wang Jian relatives who knows about the account, but I came out unsuccessful.
-
-I will like to bring to your notice that I have made all the necessary arrangements with my colleagues to transfer the funds into your nominated bank account without any problem.  Upon your consideration and acceptance of this offer, I am willing to offer you 40% for your assistant, while 60% for me which I am planning to invest into a profitable business venture in your country.
-
-More details information will be forwarded to you to breakdown explaining comprehensively what require of you.
-
- 
-Waiting for your urgent reply,
-Best Regards
-Mr. Nor Hizam Hashim.
-E-Mail Address (nhizam.has@yahoo.com)
-
+Iulia, Horia?
