@@ -2,133 +2,101 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 183FC309E6
-	for <lists+linux-crypto@lfdr.de>; Fri, 31 May 2019 10:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2396930B70
+	for <lists+linux-crypto@lfdr.de>; Fri, 31 May 2019 11:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbfEaIOZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 31 May 2019 04:14:25 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:51807 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726002AbfEaIOZ (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 31 May 2019 04:14:25 -0400
-Received: by mail-wm1-f65.google.com with SMTP id f10so5450192wmb.1
-        for <linux-crypto@vger.kernel.org>; Fri, 31 May 2019 01:14:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2xX51WQIoP1+ZqR28S6jiUO+xuvJxJXjpCal4lbmyxE=;
-        b=Tl2OcOqbB8XjOC6BJxwKg+4cuNCQNR5SdpBqRJ9ngj8WJEbAEc94aZb0N7TVr+u7kv
-         isicPM9PWHcLsw3e98KCvJUF0RrU6cFBrzxcbwXiKkOzlhRgg4W9Z9eJBBKZV3YFXmwD
-         sgkGFndqw0klmAlBPJomzj2pjlhpQ1mpRLcCE8v1JWgJRbsp7tLC0kPO0+bGvVKLpph0
-         yLf1b16lJtxyhsNgZS9LR8gm+g93u+ToI9QsAK+dS/MqKrH2QFullEmcan6c8AfyiFOV
-         Iuju4Ui6pBONdWNtP6rWbBLY7vXQVeVQUTMXmbQwfyu+Aic/GTk7iiugDUwEXltXOEHt
-         /GpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2xX51WQIoP1+ZqR28S6jiUO+xuvJxJXjpCal4lbmyxE=;
-        b=oH8XcI5xCK8GqvW+5wrUz2L7NPqp5DR6bfmQtJp26Y1In2RKTkrxL6MlAXMXUNWXU2
-         xDLqxJu4cOC0m5BnDjEoJhGMgcEtkzh9bPDMsparqau37Bppzkiy6bY1fHIH11DqWV7T
-         2W6DvNwBXvpgtatZgMLjR9plLTAu1fe4B/zr8h0s9+/cRwv+VjBxT4Rhg0O0u9icfaqB
-         gnLovCoU01sDEqs6zLD+Bcxd379ZTgHQ3dHe02ntOe9YPoHGmg28YZ4nPkGR4MyAJKbG
-         eJitWzaP1UieK42/B++4xyWLTJN6CgK9bCI558v3waPZ4GDJMQ3yPCPdhTQb0z5yS5RR
-         w/Kg==
-X-Gm-Message-State: APjAAAUdFUDKCbCbJkXurlU/m++t5eZN0y/xAJRVopb1JCZnJ94LQdeK
-        2ztDNftjRwaARXkk11yCvMKhleofmacI5g==
-X-Google-Smtp-Source: APXvYqzAUiZbLhJDQ8+JtEH8qQr/me62fo7Ty3AgFzlwlZvazkOMTxh/18WNYZ86J7DfzOwkVQFWpA==
-X-Received: by 2002:a1c:e356:: with SMTP id a83mr4941760wmh.38.1559290462493;
-        Fri, 31 May 2019 01:14:22 -0700 (PDT)
-Received: from sudo.home ([2a01:cb1d:112:6f00:c225:e9ff:fe2e:ea8])
-        by smtp.gmail.com with ESMTPSA id j2sm7013804wrx.65.2019.05.31.01.14.21
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 31 May 2019 01:14:21 -0700 (PDT)
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
-        pvanleeuwen@insidesecure.com, linux-imx@nxp.com,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH] crypto: caam - limit output IV to CBC to work around CTR mode DMA issue
-Date:   Fri, 31 May 2019 10:13:06 +0200
-Message-Id: <20190531081306.30359-1-ard.biesheuvel@linaro.org>
-X-Mailer: git-send-email 2.20.1
+        id S1726275AbfEaJ0r (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 31 May 2019 05:26:47 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:45052 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726240AbfEaJ0r (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 31 May 2019 05:26:47 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 6C9C2CF031826829C3CD;
+        Fri, 31 May 2019 17:26:43 +0800 (CST)
+Received: from [127.0.0.1] (10.177.19.180) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.439.0; Fri, 31 May 2019
+ 17:26:37 +0800
+Subject: Re: [PATCH] crypto: pcrypt: Fix possible deadlock in
+ padata_sysfs_release
+To:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+References: <20190531092923.4874-1-wangkefeng.wang@huawei.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <1b71b136-3501-db1c-834b-ba7ed1431f4d@huawei.com>
+Date:   Fri, 31 May 2019 17:23:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190531092923.4874-1-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.177.19.180]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The CAAM driver currently violates an undocumented and slightly
-controversial requirement imposed by the crypto stack that a buffer
-referred to by the request structure via its virtual address may not
-be modified while any scatterlists passed via the same request
-structure are mapped for inbound DMA.
 
-This may result in errors like
+On 2019/5/31 17:29, Kefeng Wang wrote:
+> There is a deadlock issue in pcrypt_init_padata(),
+>
+> pcrypt_init_padata()
+>     cpus_read_lock()
+>       padata_free()
+>         padata_sysfs_release()
+>           cpus_read_lock()
+>
+> Narrow rcu_read_lock/unlock() and move put_online_cpus()
+> before padata_free() to fix it.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  crypto/pcrypt.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/crypto/pcrypt.c b/crypto/pcrypt.c
+> index 0e9ce329fd47..662228b48b70 100644
+> --- a/crypto/pcrypt.c
+> +++ b/crypto/pcrypt.c
+> @@ -407,13 +407,14 @@ static int pcrypt_init_padata(struct padata_pcrypt *pcrypt,
+>  	int ret = -ENOMEM;
+>  	struct pcrypt_cpumask *mask;
+>  
+> -	get_online_cpus();
+>  
+>  	pcrypt->wq = alloc_workqueue("%s", WQ_MEM_RECLAIM | WQ_CPU_INTENSIVE,
+>  				     1, name);
+>  	if (!pcrypt->wq)
+>  		goto err;
+>  
+> +	get_online_cpus();
+> +
+>  	pcrypt->pinst = padata_alloc_possible(pcrypt->wq);
+>  	if (!pcrypt->pinst) 
 
-  alg: aead: decryption failed on test 1 for gcm_base(ctr-aes-caam,ghash-generic): ret=74
-  alg: aead: Failed to load transform for gcm(aes): -2
+Oh, forget to add put_online_cpus in this error path, will resend v2 if there is no comment.
 
-on non-cache coherent systems, due to the fact that the GCM driver
-passes an IV buffer by virtual address which shares a cacheline with
-the auth_tag buffer passed via a scatterlist, resulting in corruption
-of the auth_tag when the IV is updated while the DMA mapping is live.
 
-Since the IV that is returned to the caller is only valid for CBC mode,
-and given that the in-kernel users of CBC (such as CTS) don't trigger the
-same issue as the GCM driver, let's just disable the output IV generation
-for all modes except CBC for the time being.
-
-Cc: Horia Geanta <horia.geanta@nxp.com>
-Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
-Reported-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
- drivers/crypto/caam/caamalg.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
-index c0ece44f303b..e1778e209ea2 100644
---- a/drivers/crypto/caam/caamalg.c
-+++ b/drivers/crypto/caam/caamalg.c
-@@ -999,6 +999,7 @@ static void skcipher_encrypt_done(struct device *jrdev, u32 *desc, u32 err,
- 	struct skcipher_request *req = context;
- 	struct skcipher_edesc *edesc;
- 	struct crypto_skcipher *skcipher = crypto_skcipher_reqtfm(req);
-+	struct caam_ctx *ctx = crypto_skcipher_ctx(skcipher);
- 	int ivsize = crypto_skcipher_ivsize(skcipher);
- 
- #ifdef DEBUG
-@@ -1023,9 +1024,9 @@ static void skcipher_encrypt_done(struct device *jrdev, u32 *desc, u32 err,
- 
- 	/*
- 	 * The crypto API expects us to set the IV (req->iv) to the last
--	 * ciphertext block. This is used e.g. by the CTS mode.
-+	 * ciphertext block when running in CBC mode.
- 	 */
--	if (ivsize)
-+	if ((ctx->cdata.algtype & OP_ALG_AAI_MASK) == OP_ALG_AAI_CBC)
- 		scatterwalk_map_and_copy(req->iv, req->dst, req->cryptlen -
- 					 ivsize, ivsize, 0);
- 
-@@ -1842,9 +1843,9 @@ static int skcipher_decrypt(struct skcipher_request *req)
- 
- 	/*
- 	 * The crypto API expects us to set the IV (req->iv) to the last
--	 * ciphertext block.
-+	 * ciphertext block when running in CBC mode.
- 	 */
--	if (ivsize)
-+	if ((ctx->cdata.algtype & OP_ALG_AAI_MASK) == OP_ALG_AAI_CBC)
- 		scatterwalk_map_and_copy(req->iv, req->src, req->cryptlen -
- 					 ivsize, ivsize, 0);
- 
--- 
-2.20.1
+>  		goto err_destroy_workqueue;
+> @@ -448,12 +449,11 @@ static int pcrypt_init_padata(struct padata_pcrypt *pcrypt,
+>  	free_cpumask_var(mask->mask);
+>  	kfree(mask);
+>  err_free_padata:
+> +	put_online_cpus();
+>  	padata_free(pcrypt->pinst);
+>  err_destroy_workqueue:
+>  	destroy_workqueue(pcrypt->wq);
+>  err:
+> -	put_online_cpus();
+> -
+>  	return ret;
+>  }
+>  
 
