@@ -2,95 +2,82 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B23331F73
-	for <lists+linux-crypto@lfdr.de>; Sat,  1 Jun 2019 15:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495E331F84
+	for <lists+linux-crypto@lfdr.de>; Sat,  1 Jun 2019 15:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726075AbfFANx3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 1 Jun 2019 09:53:29 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:58567 "EHLO
+        id S1726179AbfFANxa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 1 Jun 2019 09:53:30 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:54109 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbfFANx3 (ORCPT
+        with ESMTP id S1725946AbfFANx3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Sat, 1 Jun 2019 09:53:29 -0400
 Received: from orion.localdomain ([95.114.112.19]) by mrelayeu.kundenserver.de
  (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MIbzB-1hLIkZ45gL-00EggC; Sat, 01 Jun 2019 15:53:07 +0200
+ 1MTw02-1h6Dtx1pq6-00R0rf; Sat, 01 Jun 2019 15:53:07 +0200
 From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
 To:     linux-kernel@vger.kernel.org
 Cc:     vireshk@kernel.org, b.zolnierkie@samsung.com, axboe@kernel.dk,
         herbert@gondor.apana.org.au, davem@davemloft.net,
         linux-ide@vger.kernel.org, linux-block@vger.kernel.org,
         linux-crypto@vger.kernel.org
-Subject: [PATCH 2/4] drivers: block: xsysace: use MODULE_DECLARE_OF_TABLE() and of_match_ptr()
-Date:   Sat,  1 Jun 2019 15:52:57 +0200
-Message-Id: <1559397179-5833-3-git-send-email-info@metux.net>
+Subject: [PATCH 3/4] drivers: crypto: picoxcell_crypto: use MODULE_DECLARE_OF_TABLE()
+Date:   Sat,  1 Jun 2019 15:52:58 +0200
+Message-Id: <1559397179-5833-4-git-send-email-info@metux.net>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1559397179-5833-1-git-send-email-info@metux.net>
 References: <1559397179-5833-1-git-send-email-info@metux.net>
-X-Provags-ID: V03:K1:Qws35knXlKzgk+L1gebf0oiijncZZPU9G9DE2m8RHGqmAPjbRcA
- Mhq4EwWUM8vDnhRs6XarGCNQPHg6hZyZ7kcJCkdTNrgJRZ+rUXDDMCTmXZAUMQvrMAsgDgD
- Xmbr8eVRjoviX/kCBksWZDgdHED/Yc0cP1wq0ZUPTixMb6eH0QV0J4twNfGrYthAysMDTSH
- Q1fTYPAaZFaorgEw5bxZg==
+X-Provags-ID: V03:K1:qwswbfsbvcAggPFe5jRUevX7/A5BbeCTENYHWUVjYy9ksEyQhA9
+ OxftUN0YxwjGzkm7dnhtXTUp4VGMvBnf5s5uog1bOvoNoVDeRjKjdu7UV3ggR7tWzI0551l
+ BIBn0W+KoFTrEnrQZVvGHDj4GV3aOZujsZQIwmjD9tLRLjIaGjQ74hOvn/gpoLukASgwrCP
+ EfVLAfcbVALxSiQBDuciQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:uuKrLSRJacE=:/7Ki9GCY77ZmN88TKQhAtt
- OlRRVthFBqWQJJtOLa9CHRGORp/PxILNq7x+jDsxD45M8HWtb/EHWkwRBECt/k/BVvhQB5goE
- QaXRsWqDMr87XXz9NMqtt4zM8niABNYY7txVkcDvy0mOiAuxHj3Po1z7tfkIs2z8xdVjh0d8z
- hfkAFxOsXD219fiMLJuzP+9NCvaL9wjfroU2bZmjZKG//NDuOiQWAWvpXoA4s5IQMrR2dtuJ3
- BVV0Tx6h0v3z6NFymIUK9RwqswD5U+Y1/GzaVMauszPTIk+NS2j1HrgPZBF0S5ezaeJQp8YX2
- IFMnzIeUurxUOBLq/q6/MH73k4RQuBzAYd8hxhufWNtkMC5yTW4hq1MX726KwH4PHq5INhjXt
- VBF2h8KzhM4SuGzjz5ZwTPSFOFLXskBZTZkDzA5Jzt5xT852IPa9r8DKlKdvj4VMwG6+eN8hw
- qTGp2H9U8MpJn9Npz8bwvcpWGo1t/smXEeZNgwFLHokhPt5VYFX7ltnCsEQcz+h/SjORPwV2a
- FgVCwG9YFxN10hD4m/09MX5d559OsSE+oAIVgjuv3l3TDcEsH7LS/8pjGCYdTNxzat83zhV7M
- 7pMxKeEScVm2NMwNXd/r9/RAdwG96EmbzZjp5oVugHypMTiX/k8plpmwCLlgWloCsS56fQii+
- 0202TEScVy8oHaWwDy7EzHwmg9Oh9S27R00vzngmJiyx9Z3/Qs3ExQSo7L9DFf7lJSdPHyHmE
- uuvuuvmgtJoiRLxpOUMqcCPdlnLmZsbKVel1qw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:OXM7CkWxg4A=:poWmuNctcuGgq2p8sHSagT
+ YncLYj93yDEF5hQ7MYor5eLIrYS3v44+0x6m3HysZGCWoSMC9gOc1ZKxwWG4xrlyTD4GfeXik
+ pifkdZ0wiGov9BdsXRlyh28txjb7ZkCAq69j0Y9wp/I40GXD/3bLDM6awSisE5alWDGEeMjks
+ CgD0YzIdYNbpvtPEl3qfAvRn4JIu0Z89u+lrccoLDzIHC+Q+cgy4xY783Za2M2wi5s/lPPRwU
+ GtH4tbDZFJv3z4YOtxHloeg1oN+dADDqT5+3hq4mIbEcJHI58yVOO2CnofVNlaV1+W80ES3Gn
+ WPjPdv9FD1EbAiZBF6Lzo3+Xy32Ioqr1logauTJBL8RMTO43shroi0fKtIwedj5Rf4JeXxuwm
+ BFayYW9PQ9Knuahc6Bzi1p7YYx5ddJFkO+/KgmV1kiOmOZAOMm32EDBXS73l2h3vgA9u9NdgZ
+ yXVYYpvrIZNuigM3VvYUB560uCK0XhOb8ibNvtkGFBwX2dvHfnMpji0O1b6c0OQcwPJstus7q
+ 72+6qWjcLu/7LnOnniO1NQMLR6WKsMJGjbpV5NmkQzfaWx8/J6Bj6HoUCc+VmdRWt/9oJ46/O
+ CvX2Gtpw4K4n0npAyc7YHASxqSIPzvE//nBE41GusxWshI3RwnTOM/7wRDwkzIx81wwZNFao9
+ f3mr0CZapnBAJhlfFqe7wCQiwW8e/ppajAtRPyPH/PztxfVv39+ifnN6zm41lNguzHngvBfs8
+ CS/lifrJCPXnTVqoSiyD97FNNMQF4Z+cw5reCw==
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Using MODULE_DECLARE_OF_TABLE() and of_match_ptr() macros to get
-rid of some #ifdef CONFIG_OF and thus make the code a bit slimmer.
+Using MODULE_DECLARE_OF_TABLE() macro to get rid of some #ifdef CONFIG_OF
+and make the code a bit slimmer.
 
 Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 ---
- drivers/block/xsysace.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ drivers/crypto/picoxcell_crypto.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/block/xsysace.c b/drivers/block/xsysace.c
-index 464c9092..d8e5dd7 100644
---- a/drivers/block/xsysace.c
-+++ b/drivers/block/xsysace.c
-@@ -1219,26 +1219,18 @@ static int ace_remove(struct platform_device *dev)
- 	return 0;
- }
- 
--#if defined(CONFIG_OF)
--/* Match table for of_platform binding */
--static const struct of_device_id ace_of_match[] = {
-+MODULE_DECLARE_OF_TABLE(ace_of_match,
- 	{ .compatible = "xlnx,opb-sysace-1.00.b", },
- 	{ .compatible = "xlnx,opb-sysace-1.00.c", },
- 	{ .compatible = "xlnx,xps-sysace-1.00.a", },
--	{ .compatible = "xlnx,sysace", },
--	{},
--};
--MODULE_DEVICE_TABLE(of, ace_of_match);
--#else /* CONFIG_OF */
--#define ace_of_match NULL
--#endif /* CONFIG_OF */
-+	{ .compatible = "xlnx,sysace", });
- 
- static struct platform_driver ace_platform_driver = {
- 	.probe = ace_probe,
- 	.remove = ace_remove,
- 	.driver = {
- 		.name = "xsysace",
--		.of_match_table = ace_of_match,
-+		.of_match_table = of_match_ptr(ace_of_match),
+diff --git a/drivers/crypto/picoxcell_crypto.c b/drivers/crypto/picoxcell_crypto.c
+index b985cb85..3c299f2 100644
+--- a/drivers/crypto/picoxcell_crypto.c
++++ b/drivers/crypto/picoxcell_crypto.c
+@@ -1612,14 +1612,9 @@ static DEVICE_ATTR(stat_irq_thresh, 0644, spacc_stat_irq_thresh_show,
  	},
  };
  
+-#ifdef CONFIG_OF
+-static const struct of_device_id spacc_of_id_table[] = {
++MODULE_DECLARE_OF_TABLE(spacc_of_id_table,
+ 	{ .compatible = "picochip,spacc-ipsec" },
+-	{ .compatible = "picochip,spacc-l2" },
+-	{}
+-};
+-MODULE_DEVICE_TABLE(of, spacc_of_id_table);
+-#endif /* CONFIG_OF */
++	{ .compatible = "picochip,spacc-l2" });
+ 
+ static int spacc_probe(struct platform_device *pdev)
+ {
 -- 
 1.9.1
 
