@@ -2,103 +2,80 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 450AA31F7E
-	for <lists+linux-crypto@lfdr.de>; Sat,  1 Jun 2019 15:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350AB31FB4
+	for <lists+linux-crypto@lfdr.de>; Sat,  1 Jun 2019 16:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbfFANxa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 1 Jun 2019 09:53:30 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:40515 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbfFANx3 (ORCPT
+        id S1726211AbfFAOt5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 1 Jun 2019 10:49:57 -0400
+Received: from sonic306-20.consmr.mail.gq1.yahoo.com ([98.137.68.83]:38617
+        "EHLO sonic306-20.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725965AbfFAOt5 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 1 Jun 2019 09:53:29 -0400
-Received: from orion.localdomain ([95.114.112.19]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MY5XR-1h5yn83lFt-00YPOK; Sat, 01 Jun 2019 15:53:08 +0200
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     vireshk@kernel.org, b.zolnierkie@samsung.com, axboe@kernel.dk,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-ide@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH 4/4] drivers: ata: use MODULE_DECLARE_OF_TABLE()
-Date:   Sat,  1 Jun 2019 15:52:59 +0200
-Message-Id: <1559397179-5833-5-git-send-email-info@metux.net>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1559397179-5833-1-git-send-email-info@metux.net>
-References: <1559397179-5833-1-git-send-email-info@metux.net>
-X-Provags-ID: V03:K1:zlZQLw/7X/h00DT4khIXd7jjS4solJe6AYqFAW61yXbLkxP/FKv
- 2SIn8J4GncUnBymImySqQuvaZ6hc0os0iWfIgCYSLkrsfUdlrbRZOWW+Dl7RYMVd8VtAlXe
- VyYoxafCnE4KHfCkp85GNni5xN9+R3q29+pht6cYEC0WNM/q4+t9Ayqgq8oiA4+JHqz4sft
- Nv7++ZTKqDPO13S9DkX5Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NL9r01+H0YU=:N9E0t5e+9MRvzhoQBaW1lK
- 2gvx90Ty9dQwzFrFOja096OXdWC9vhoccvHP0T1R4HLpjjFAj+hHa4RG/4Z863q3jMBUuQ2W5
- +Fkbk4bjIaJPzGkhJdF4zRYwYXu/J28mKstKoTVXJ7aEsMt7C6mjiEZDTLZgVEsqIfl2IxZKT
- uqx9WH6/nF4LXEA0+Ck2EB8+nUWQd+oOxPxw9FvKEZ2CmNCkQckNZEDXUoz1JwWhnb0gcaRcU
- STNGY/HBIagnYyn8oZIls5tyGMOpwBovXMObz5AOfQb33Nj8yQLujlm6FS5B7E+kUoVnCkhnq
- qwiVfQO0VBim3JEienuGW7r+XIwoFSmGopFRY5yRYey6o5/y32LQIIokN5ZGa9nFPVIYlWd51
- xn67VKtNP3M0s2p8M/Oaq4cHMo/kz50dbY8KAnmZrtQYfNSuCxtpbmd2oJR2mk3nCIlAhZUrN
- VgUD6JhJ37Ar78pM7GBEQ3VOUaVf7kHv0pZAjdLmjLsiEH7SHzyRTtaOL6zpFLmzpfg2LTuyU
- DPFlrxpVztGS93UxY8MEWC8MJv6sq6xKklUEEQVUts0YtQ9FyOCqVZZDpjg+j/WryUVTJU0MU
- 0ieMX09LWeQlnBuy4WEKgDmCkvokafurb7anxKTuHlxWoP0ms4DxAn9fjhWZnSrWP4nNSSkVJ
- l0ZipRPqvrF/t5hZ/9l0XLiL5kxLl8vFpAtiQUKELnhfN56e8pmJjcSCZsLQgPKaLsxh5i+jM
- XievQ5ggM51mt1gbSjWdKm1FclP3k5m0dDHWAQ==
+        Sat, 1 Jun 2019 10:49:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1559400594; bh=+FzsEswF8TO/uXcnNYhQmpuXhgJ4Ib1a9HuuWhRst2M=; h=From:To:Cc:Subject:Date:From:Subject; b=inLolirgV5LNclRrIx8nzdggEuMyGfPUi3HjN7gCB+4lp7VLU78RORfFU7MCjfuWP0tzq+pfEdFaMcaLsO08BXWESlyENEg2QhJw1zwkSZFY0NruJhnzGee8Uzobc/dON4+y80QH+4Ei5+9H38YTUV9BpOG6NyEitCpr/QPy0WUH88j2SZa6nZl//Krl6pWkSEDqyx0caQn4e9uK/v8TB2FcQ4VVGHvzQJ7IfEt2TfmKLmp/SCBNhgHC8K1Zha9SaDkM1w66nWVflvWlikKrCEjuLoIvholXxI3oyUZWVyL30ArVzqPsY9B2Oz1K1oc07DXN13DIuWeSmicXw4vcJA==
+X-YMail-OSG: bs9eEw4VM1k_cUQemsl_R7K6eSi11LXPHCsKKbXcZ19749GV2DjRjlelFP0SS4N
+ csgAxnXCLiGltmqAefoFiuIvU0mlxpBix7.oG2yBfRs6I10VjLnxbAeLvYdwAfNezE.TEKoMbG3W
+ gR9.9tHD9lKe3mu7eOj9ewK20Fke7KnZZ9jgJPIk_9Q70AtHKBFpzzCVbM6OV4bDYWccxyOe5H8c
+ Zo0UP0yOdNRHzNsLN5nK0xshAfXmuw0puDqctvl1PFVRqLTleOy0rh.fS4wGHPM0L5cwHJRb0ZuU
+ 7VVgv.NFsYiWAFqfZiju7xDyEKM7RUurtF_g47lSNdYf4WSYzTsS_9YvNRhmMIDiOmPLldgpZlnn
+ hkZNCh6J9HjqgjOXTsueyVhFULAfjafnktpyg3Ln5jz9YU8JlFatUcA6S6v8.GTI_CJDJM9j7Y4h
+ WaykDdXiHb0i28nnVGGs8ytTKacjHAgzQbuMucY2KcQhrBPn0GRuUa0OftPVqUI0dMOiy4fIwiNB
+ GRunGnDoVixRv8vOFGogdjbkW0nn4DaAs.pg2nM9dpWQSsT.H99SoRD7004I4q96uPvxUtM7qUaR
+ sffA4AX4Y3qU20ixgw2VgdetGEDYTbW1RnphDhd_rlhiCAWDnwdbYzEH7Hwv10j5UzVyhy2GD8lS
+ LwkDD3ofzt7Jw36r7Lo3E.t20tkE9hlbT5cDcJLbjKHJY337.jCJoeP..rmgYgr2mTk8Kw2UCx2.
+ hXaYllIYahsElF8YsK_t_vcgO1rF2f8QUEntfp4cEQa4i83Ij8EC8tLJD463T5rVf6N.J5rWZ0LI
+ adsxPXaLWO9Dno2hu4eckJ9CZbd516XgEXKp9Bh5iE67SeVvrGJJApOKHKwrwDofX3LcGgdw3ReK
+ Hi_FslLLL1O0mtMeNPHTV5xnRL7y8a0_pArdmsNntccGHzCdNecXlf.JyMUyi7FeH_Z7Iz3e9KPR
+ MmTEO.duYZ5gUORst73Wm0fnLYMpwetiMMM4BZ_YL6Pa.K1m0UmshtzLRpCc43LT2wd7rBfZi9.i
+ Z6.Ns1ylT6nm2To23xxEIAUhnXHatoZLabsm20nl.PgBpQu8r5Dz3ax0o0D8QdD_zxf.KVoRT525
+ oL7XQuTx0_mCyPF3s6BlHN7lDzfmdRaQIR_uQHqEOSOsuHqy_x6LFhcv.cQogvw5Hbk7AoPboUAw
+ kil6h.l6yXZWM87MWGZys7_WAIRYU
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.gq1.yahoo.com with HTTP; Sat, 1 Jun 2019 14:49:54 +0000
+Received: from CPE00fc8de26033-CM00fc8de26030.cpe.net.cable.rogers.com (EHLO localhost) ([99.228.156.240])
+          by smtp424.mail.gq1.yahoo.com (Oath Hermes SMTP Server) with ESMTPA ID 0c5696934456779ae32f2b5029b3dd5e;
+          Sat, 01 Jun 2019 14:49:52 +0000 (UTC)
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        tglx@linutronix.de
+Cc:     allison@lohutok.net, alexios.zavras@intel.com, swinslow@gmail.com,
+        rfontana@redhat.com, gregkh@linuxfoundation.org,
+        linux-spdx@vger.kernel.org, torvalds@linux-foundation.org,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: [PATCH] crypto: ux500 - fix license comment syntax error
+Date:   Sat,  1 Jun 2019 10:49:43 -0400
+Message-Id: <20190601144943.126995-1-alex_y_xu@yahoo.ca>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Using MODULE_DECLARE_OF_TABLE() macro to get rid of some #ifdef CONFIG_OF
-and make the code a bit slimmer.
+Causes error: drivers/crypto/ux500/cryp/Makefile:5: *** missing
+separator.  Stop.
 
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+Fixes: af873fcecef5 ("treewide: Replace GPLv2 boilerplate/reference with
+SPDX - rule 194")
+
+Signed-off-by: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
 ---
- drivers/ata/pata_arasan_cf.c | 9 ++-------
- drivers/ata/sata_mv.c        | 9 ++-------
- 2 files changed, 4 insertions(+), 14 deletions(-)
+ drivers/crypto/ux500/cryp/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/ata/pata_arasan_cf.c b/drivers/ata/pata_arasan_cf.c
-index ebecab8..22de61f 100644
---- a/drivers/ata/pata_arasan_cf.c
-+++ b/drivers/ata/pata_arasan_cf.c
-@@ -943,13 +943,8 @@ static int arasan_cf_resume(struct device *dev)
+diff --git a/drivers/crypto/ux500/cryp/Makefile b/drivers/crypto/ux500/cryp/Makefile
+index a90b50597e5c..3e67531f484c 100644
+--- a/drivers/crypto/ux500/cryp/Makefile
++++ b/drivers/crypto/ux500/cryp/Makefile
+@@ -2,7 +2,7 @@
+ #/*
+ # * Copyright (C) ST-Ericsson SA 2010
+ # * Author: shujuan.chen@stericsson.com for ST-Ericsson.
+- */
++# */
  
- static SIMPLE_DEV_PM_OPS(arasan_cf_pm_ops, arasan_cf_suspend, arasan_cf_resume);
+ ccflags-$(CONFIG_CRYPTO_DEV_UX500_DEBUG) += -DDEBUG
  
--#ifdef CONFIG_OF
--static const struct of_device_id arasan_cf_id_table[] = {
--	{ .compatible = "arasan,cf-spear1340" },
--	{}
--};
--MODULE_DEVICE_TABLE(of, arasan_cf_id_table);
--#endif
-+MODULE_DECLARE_OF_TABLE(arasan_cf_id_table,
-+	{ .compatible = "arasan,cf-spear1340" });
- 
- static struct platform_driver arasan_cf_driver = {
- 	.probe		= arasan_cf_probe,
-diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
-index da585d2..bac48cd 100644
---- a/drivers/ata/sata_mv.c
-+++ b/drivers/ata/sata_mv.c
-@@ -4273,14 +4273,9 @@ static int mv_platform_resume(struct platform_device *pdev)
- #define mv_platform_resume NULL
- #endif
- 
--#ifdef CONFIG_OF
--static const struct of_device_id mv_sata_dt_ids[] = {
-+MODULE_DECLARE_OF_TABLE(mv_sata_dt_ids,
- 	{ .compatible = "marvell,armada-370-sata", },
--	{ .compatible = "marvell,orion-sata", },
--	{},
--};
--MODULE_DEVICE_TABLE(of, mv_sata_dt_ids);
--#endif
-+	{ .compatible = "marvell,orion-sata", });
- 
- static struct platform_driver mv_platform_driver = {
- 	.probe		= mv_platform_probe,
 -- 
-1.9.1
+2.21.0
 
