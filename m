@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E09883281E
-	for <lists+linux-crypto@lfdr.de>; Mon,  3 Jun 2019 07:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87493281F
+	for <lists+linux-crypto@lfdr.de>; Mon,  3 Jun 2019 07:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbfFCFpH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 3 Jun 2019 01:45:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57852 "EHLO mail.kernel.org"
+        id S1726406AbfFCFpf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 3 Jun 2019 01:45:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726314AbfFCFpH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 3 Jun 2019 01:45:07 -0400
+        id S1726314AbfFCFpf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 3 Jun 2019 01:45:35 -0400
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 352C627739
-        for <linux-crypto@vger.kernel.org>; Mon,  3 Jun 2019 05:45:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2585F27739
+        for <linux-crypto@vger.kernel.org>; Mon,  3 Jun 2019 05:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559540706;
-        bh=CUXvcJAEwQL16djW8U7Y89SxxwgNQNaOLNGmNMx3Ho0=;
+        s=default; t=1559540734;
+        bh=7TvPRfXl/nERyuF2efL4XbdZGnXdQZdhdBY1PHonRL8=;
         h=From:To:Subject:Date:From;
-        b=XfASZjfCa1NIzLy68yMzd0g0xOZz2eS4wOChQw1nBoNVQVuVtCA/TkVuyY4wz+oG5
-         VighxaypALJrEQuClFzZzOXRSWyLV+kkY31MbOhg+fpz7gg95ymdJ2V/z4LT2T72vB
-         ImE2N1X2ylgxTKneSz87HRxDiIsoGNSn+i6Ju/F8=
+        b=rMV+GPNkQLoPPXD2fYogKJ2WyNyGBW03P1SICNmCtRof3xl3+aZjDCTsQBFtPAXzc
+         GV/YpAa6xlHgDwTUH5x4N14q/CaAGFDkX2QE/wh15QqOOGk/eUgh7tln/0YJ3tOxbT
+         56uqgmoXzsaQzH97yHKCqBN0VLLPEh1tCh+8seZo=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH] crypto: x86/aesni - remove unused internal cipher algorithm
-Date:   Sun,  2 Jun 2019 22:44:50 -0700
-Message-Id: <20190603054450.5993-1-ebiggers@kernel.org>
+Subject: [PATCH] crypto: aead - un-inline encrypt and decrypt functions
+Date:   Sun,  2 Jun 2019 22:45:16 -0700
+Message-Id: <20190603054516.6080-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,113 +38,121 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Since commit 944585a64f5e ("crypto: x86/aes-ni - remove special handling
-of AES in PCBC mode"), the "__aes-aesni" internal cipher algorithm is no
-longer used.  So remove it too.
+crypto_aead_encrypt() and crypto_aead_decrypt() have grown to be more
+than a single indirect function call.  They now also check whether a key
+has been set, the decryption side checks whether the input is at least
+as long as the authentication tag length, and with CONFIG_CRYPTO_STATS=y
+they also update the crypto statistics.  That can add up to a lot of
+bloat at every call site.  Moreover, these always involve a function
+call anyway, which greatly limits the benefits of inlining.
+
+So change them to be non-inline.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/x86/crypto/aesni-intel_glue.c | 45 +++++-------------------------
- 1 file changed, 7 insertions(+), 38 deletions(-)
+ crypto/aead.c         | 36 ++++++++++++++++++++++++++++++++++++
+ include/crypto/aead.h | 34 ++--------------------------------
+ 2 files changed, 38 insertions(+), 32 deletions(-)
 
-diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-index 21c246799aa58..c95bd397dc076 100644
---- a/arch/x86/crypto/aesni-intel_glue.c
-+++ b/arch/x86/crypto/aesni-intel_glue.c
-@@ -375,20 +375,6 @@ static void aes_decrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
- 	}
+diff --git a/crypto/aead.c b/crypto/aead.c
+index 4908b5e846f0e..fc1d7ad8a487d 100644
+--- a/crypto/aead.c
++++ b/crypto/aead.c
+@@ -89,6 +89,42 @@ int crypto_aead_setauthsize(struct crypto_aead *tfm, unsigned int authsize)
  }
+ EXPORT_SYMBOL_GPL(crypto_aead_setauthsize);
  
--static void __aes_encrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
--{
--	struct crypto_aes_ctx *ctx = aes_ctx(crypto_tfm_ctx(tfm));
--
--	aesni_enc(ctx, dst, src);
--}
--
--static void __aes_decrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
--{
--	struct crypto_aes_ctx *ctx = aes_ctx(crypto_tfm_ctx(tfm));
--
--	aesni_dec(ctx, dst, src);
--}
--
- static int aesni_skcipher_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 			         unsigned int len)
++int crypto_aead_encrypt(struct aead_request *req)
++{
++	struct crypto_aead *aead = crypto_aead_reqtfm(req);
++	struct crypto_alg *alg = aead->base.__crt_alg;
++	unsigned int cryptlen = req->cryptlen;
++	int ret;
++
++	crypto_stats_get(alg);
++	if (crypto_aead_get_flags(aead) & CRYPTO_TFM_NEED_KEY)
++		ret = -ENOKEY;
++	else
++		ret = crypto_aead_alg(aead)->encrypt(req);
++	crypto_stats_aead_encrypt(cryptlen, alg, ret);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(crypto_aead_encrypt);
++
++int crypto_aead_decrypt(struct aead_request *req)
++{
++	struct crypto_aead *aead = crypto_aead_reqtfm(req);
++	struct crypto_alg *alg = aead->base.__crt_alg;
++	unsigned int cryptlen = req->cryptlen;
++	int ret;
++
++	crypto_stats_get(alg);
++	if (crypto_aead_get_flags(aead) & CRYPTO_TFM_NEED_KEY)
++		ret = -ENOKEY;
++	else if (req->cryptlen < crypto_aead_authsize(aead))
++		ret = -EINVAL;
++	else
++		ret = crypto_aead_alg(aead)->decrypt(req);
++	crypto_stats_aead_decrypt(cryptlen, alg, ret);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(crypto_aead_decrypt);
++
+ static void crypto_aead_exit_tfm(struct crypto_tfm *tfm)
  {
-@@ -924,7 +910,7 @@ static int helper_rfc4106_decrypt(struct aead_request *req)
- }
- #endif
+ 	struct crypto_aead *aead = __crypto_aead_cast(tfm);
+diff --git a/include/crypto/aead.h b/include/crypto/aead.h
+index 9ad595f97c65a..020d581373abd 100644
+--- a/include/crypto/aead.h
++++ b/include/crypto/aead.h
+@@ -322,21 +322,7 @@ static inline struct crypto_aead *crypto_aead_reqtfm(struct aead_request *req)
+  *
+  * Return: 0 if the cipher operation was successful; < 0 if an error occurred
+  */
+-static inline int crypto_aead_encrypt(struct aead_request *req)
+-{
+-	struct crypto_aead *aead = crypto_aead_reqtfm(req);
+-	struct crypto_alg *alg = aead->base.__crt_alg;
+-	unsigned int cryptlen = req->cryptlen;
+-	int ret;
+-
+-	crypto_stats_get(alg);
+-	if (crypto_aead_get_flags(aead) & CRYPTO_TFM_NEED_KEY)
+-		ret = -ENOKEY;
+-	else
+-		ret = crypto_aead_alg(aead)->encrypt(req);
+-	crypto_stats_aead_encrypt(cryptlen, alg, ret);
+-	return ret;
+-}
++int crypto_aead_encrypt(struct aead_request *req);
  
--static struct crypto_alg aesni_algs[] = { {
-+static struct crypto_alg aesni_cipher_alg = {
- 	.cra_name		= "aes",
- 	.cra_driver_name	= "aes-aesni",
- 	.cra_priority		= 300,
-@@ -941,24 +927,7 @@ static struct crypto_alg aesni_algs[] = { {
- 			.cia_decrypt		= aes_decrypt
- 		}
- 	}
--}, {
--	.cra_name		= "__aes",
--	.cra_driver_name	= "__aes-aesni",
--	.cra_priority		= 300,
--	.cra_flags		= CRYPTO_ALG_TYPE_CIPHER | CRYPTO_ALG_INTERNAL,
--	.cra_blocksize		= AES_BLOCK_SIZE,
--	.cra_ctxsize		= CRYPTO_AES_CTX_SIZE,
--	.cra_module		= THIS_MODULE,
--	.cra_u	= {
--		.cipher	= {
--			.cia_min_keysize	= AES_MIN_KEY_SIZE,
--			.cia_max_keysize	= AES_MAX_KEY_SIZE,
--			.cia_setkey		= aes_set_key,
--			.cia_encrypt		= __aes_encrypt,
--			.cia_decrypt		= __aes_decrypt
--		}
--	}
--} };
-+};
+ /**
+  * crypto_aead_decrypt() - decrypt ciphertext
+@@ -360,23 +346,7 @@ static inline int crypto_aead_encrypt(struct aead_request *req)
+  *	   integrity of the ciphertext or the associated data was violated);
+  *	   < 0 if an error occurred.
+  */
+-static inline int crypto_aead_decrypt(struct aead_request *req)
+-{
+-	struct crypto_aead *aead = crypto_aead_reqtfm(req);
+-	struct crypto_alg *alg = aead->base.__crt_alg;
+-	unsigned int cryptlen = req->cryptlen;
+-	int ret;
+-
+-	crypto_stats_get(alg);
+-	if (crypto_aead_get_flags(aead) & CRYPTO_TFM_NEED_KEY)
+-		ret = -ENOKEY;
+-	else if (req->cryptlen < crypto_aead_authsize(aead))
+-		ret = -EINVAL;
+-	else
+-		ret = crypto_aead_alg(aead)->decrypt(req);
+-	crypto_stats_aead_decrypt(cryptlen, alg, ret);
+-	return ret;
+-}
++int crypto_aead_decrypt(struct aead_request *req);
  
- static struct skcipher_alg aesni_skciphers[] = {
- 	{
-@@ -1154,7 +1123,7 @@ static int __init aesni_init(void)
- #endif
- #endif
- 
--	err = crypto_register_algs(aesni_algs, ARRAY_SIZE(aesni_algs));
-+	err = crypto_register_alg(&aesni_cipher_alg);
- 	if (err)
- 		return err;
- 
-@@ -1162,7 +1131,7 @@ static int __init aesni_init(void)
- 					     ARRAY_SIZE(aesni_skciphers),
- 					     aesni_simd_skciphers);
- 	if (err)
--		goto unregister_algs;
-+		goto unregister_cipher;
- 
- 	err = simd_register_aeads_compat(aesni_aeads, ARRAY_SIZE(aesni_aeads),
- 					 aesni_simd_aeads);
-@@ -1174,8 +1143,8 @@ static int __init aesni_init(void)
- unregister_skciphers:
- 	simd_unregister_skciphers(aesni_skciphers, ARRAY_SIZE(aesni_skciphers),
- 				  aesni_simd_skciphers);
--unregister_algs:
--	crypto_unregister_algs(aesni_algs, ARRAY_SIZE(aesni_algs));
-+unregister_cipher:
-+	crypto_unregister_alg(&aesni_cipher_alg);
- 	return err;
- }
- 
-@@ -1185,7 +1154,7 @@ static void __exit aesni_exit(void)
- 			      aesni_simd_aeads);
- 	simd_unregister_skciphers(aesni_skciphers, ARRAY_SIZE(aesni_skciphers),
- 				  aesni_simd_skciphers);
--	crypto_unregister_algs(aesni_algs, ARRAY_SIZE(aesni_algs));
-+	crypto_unregister_alg(&aesni_cipher_alg);
- }
- 
- late_initcall(aesni_init);
+ /**
+  * DOC: Asynchronous AEAD Request Handle
 -- 
 2.21.0
 
