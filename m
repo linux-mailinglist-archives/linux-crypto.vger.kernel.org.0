@@ -2,156 +2,86 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5ABF326B2
-	for <lists+linux-crypto@lfdr.de>; Mon,  3 Jun 2019 04:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1643C32813
+	for <lists+linux-crypto@lfdr.de>; Mon,  3 Jun 2019 07:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbfFCCjk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 2 Jun 2019 22:39:40 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:44256 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726270AbfFCCjk (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 2 Jun 2019 22:39:40 -0400
-X-UUID: d9b9fdf348414a908333ce071f8181ea-20190603
-X-UUID: d9b9fdf348414a908333ce071f8181ea-20190603
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <neal.liu@mediatek.com>)
-        (mhqrelay.mediatek.com ESMTP with TLS)
-        with ESMTP id 491747659; Mon, 03 Jun 2019 10:39:34 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Mon, 3 Jun 2019 10:39:33 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Mon, 3 Jun 2019 10:39:33 +0800
-Message-ID: <1559529573.6663.12.camel@mtkswgap22>
-Subject: Re: [PATCH v2 1/3] soc: mediatek: add SMC fid table for SIP
- interface
-From:   Neal Liu <neal.liu@mediatek.com>
-To:     Sean Wang <sean.wang@kernel.org>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Matt Mackall <mpm@selenic.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Crystal Guo =?UTF-8?Q?=28=E9=83=AD=E6=99=B6=29?= 
-        <Crystal.Guo@mediatek.com>,
-        "linux-arm Mailing List" <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 3 Jun 2019 10:39:33 +0800
-In-Reply-To: <CAGp9LzpkhDhSHL=go3fvzn2Oh8DrsW8F=1YKP4ne9TDvWQVq6Q@mail.gmail.com>
-References: <1558946326-13630-1-git-send-email-neal.liu@mediatek.com>
-         <1558946326-13630-2-git-send-email-neal.liu@mediatek.com>
-         <CAGp9LzpkhDhSHL=go3fvzn2Oh8DrsW8F=1YKP4ne9TDvWQVq6Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
-Content-Transfer-Encoding: 7bit
+        id S1726603AbfFCFlj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 3 Jun 2019 01:41:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726409AbfFCFlj (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 3 Jun 2019 01:41:39 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABFF7247B4
+        for <linux-crypto@vger.kernel.org>; Mon,  3 Jun 2019 05:41:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1559540498;
+        bh=DVVRgzvHhp0k9HGT9E6RwM+fmkPorW5IgIeEOkCSJo4=;
+        h=From:To:Subject:Date:From;
+        b=ItmNaEPPx0mmVkqFOVC322Knw1tGLj1uG4Noq2FUS0Q2sCfhdNYVDQsqzv1Tt3Qay
+         R8ix+UkzvCDjkWamswSYbyA/MbHrO6NPW9dZA4qYAtPVpWxpabUloal+VuaBc50/7L
+         umajVKj40sa1omEMjbWfpXDFDUYvB7ug7fa+HQVc=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-crypto@vger.kernel.org
+Subject: [PATCH 0/2] crypto: make cra_driver_name mandatory
+Date:   Sun,  2 Jun 2019 22:40:56 -0700
+Message-Id: <20190603054058.5449-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Sean,
+Most generic crypto algorithms declare a driver name ending in
+"-generic".  The rest don't declare a driver name and instead rely on
+the crypto API automagically appending "-generic" upon registration.
 
+Having multiple conventions is unnecessarily confusing and makes it
+harder to grep for all generic algorithms in the kernel source tree.
+But also, allowing NULL driver names is problematic because sometimes
+people fail to set it, e.g. the case fixed by commit 417980364300
+("crypto: cavium/zip - fix collision with generic cra_driver_name").
 
-On Fri, 2019-05-31 at 06:50 +0800, Sean Wang wrote:
-> Hi Neal,
-> 
-> On Mon, May 27, 2019 at 1:39 AM Neal Liu <neal.liu@mediatek.com> wrote:
-> >
-> > 1. Add a header file to provide SIP interface to ARM Trusted
-> > Firmware(ATF)
-> > 2. Add hwrng SMC fid
-> >
-> > Signed-off-by: Neal Liu <neal.liu@mediatek.com>
-> > ---
-> >  include/linux/soc/mediatek/mtk_sip_svc.h |   51 ++++++++++++++++++++++++++++++
-> >  1 file changed, 51 insertions(+)
-> >  create mode 100644 include/linux/soc/mediatek/mtk_sip_svc.h
-> >
-> > diff --git a/include/linux/soc/mediatek/mtk_sip_svc.h b/include/linux/soc/mediatek/mtk_sip_svc.h
-> > new file mode 100644
-> > index 0000000..f65d403
-> > --- /dev/null
-> > +++ b/include/linux/soc/mediatek/mtk_sip_svc.h
-> > @@ -0,0 +1,51 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (c) 2019 MediaTek Inc.
-> > + */
-> > +
-> > +#ifndef _MTK_SECURE_API_H_
-> > +#define _MTK_SECURE_API_H_
-> > +
-> > +#include <linux/kernel.h>
-> > +
-> > +/* Error Code */
-> > +#define SIP_SVC_E_SUCCESS                      0
-> > +#define SIP_SVC_E_NOT_SUPPORTED                        -1
-> > +#define SIP_SVC_E_INVALID_PARAMS               -2
-> > +#define SIP_SVC_E_INVALID_RANGE                        -3
-> > +#define SIP_SVC_E_PERMISSION_DENY              -4
-> > +
-> > +#ifdef CONFIG_ARM64
-> > +#define MTK_SIP_SMC_AARCH_BIT                  0x40000000
-> 
-> #define MTK_SIP_SMC_AARCH_BIT                  BIT(30)
-> 
-> > +#else
-> > +#define MTK_SIP_SMC_AARCH_BIT                  0x00000000
-> 
-> #define MTK_SIP_SMC_AARCH_BIT                  0
-> 
-> > +#endif
-> > +
-> > +/*******************************************************************************
-> > + * Defines for Mediatek runtime services func ids
-> > + ******************************************************************************/
-> 
-> It would be good if remove the trivial and below all unused comments.
+Of course, people can also incorrectly name their drivers "-generic".
+But that's much easier to notice / grep for.
 
-Okay, I'll keep the necessary parts, thanks
+Therefore, let's make cra_driver_name mandatory.  Patch 1 gives all
+generic algorithms an explicit cra_driver_name, and Patch 2 makes
+cra_driver_name required for algorithm registration.
 
-> 
-> > +
-> > +/* Debug feature and ATF related SMC call */
-> > +
-> > +/* CPU operations related SMC call */
-> > +
-> > +/* SPM related SMC call */
-> > +
-> > +/* Low power related SMC call */
-> > +
-> > +/* AMMS related SMC call */
-> > +
-> > +/* Security related SMC call */
-> > +/* HWRNG */
-> > +#define MTK_SIP_KERNEL_GET_RND \
-> > +       (0x82000206 | MTK_SIP_SMC_AARCH_BIT)
-> > +
-> > +/* Storage Encryption related SMC call */
-> > +
-> > +/* Platform related SMC call */
-> > +
-> > +/* Pheripheral related SMC call */
-> > +
-> > +/* MM related SMC call */
-> > +
-> > +#endif /* _MTK_SECURE_API_H_ */
-> > --
-> > 1.7.9.5
-> >
-> 
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Eric Biggers (2):
+  crypto: make all generic algorithms set cra_driver_name
+  crypto: algapi - require cra_name and cra_driver_name
 
+ crypto/algapi.c          | 22 ++++------------------
+ crypto/anubis.c          |  1 +
+ crypto/arc4.c            |  2 ++
+ crypto/crypto_null.c     |  3 +++
+ crypto/deflate.c         |  1 +
+ crypto/fcrypt.c          |  1 +
+ crypto/khazad.c          |  1 +
+ crypto/lz4.c             |  1 +
+ crypto/lz4hc.c           |  1 +
+ crypto/lzo-rle.c         |  1 +
+ crypto/lzo.c             |  1 +
+ crypto/md4.c             |  7 ++++---
+ crypto/md5.c             |  7 ++++---
+ crypto/michael_mic.c     |  1 +
+ crypto/rmd128.c          |  1 +
+ crypto/rmd160.c          |  1 +
+ crypto/rmd256.c          |  1 +
+ crypto/rmd320.c          |  1 +
+ crypto/serpent_generic.c |  1 +
+ crypto/tea.c             |  3 +++
+ crypto/tgr192.c          | 21 ++++++++++++---------
+ crypto/wp512.c           | 21 ++++++++++++---------
+ crypto/zstd.c            |  1 +
+ 23 files changed, 59 insertions(+), 42 deletions(-)
+
+-- 
+2.21.0
 
