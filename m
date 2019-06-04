@@ -2,129 +2,89 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5068A34AFD
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Jun 2019 16:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40540350F1
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Jun 2019 22:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727608AbfFDOyS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 4 Jun 2019 10:54:18 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17665 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727563AbfFDOyS (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 4 Jun 2019 10:54:18 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 5E0234E8820ACC109B4F;
-        Tue,  4 Jun 2019 22:54:14 +0800 (CST)
-Received: from localhost (10.133.213.239) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.439.0; Tue, 4 Jun 2019
- 22:54:04 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <ebiggers@google.com>, <rob.rice@broadcom.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] crypto: bcm - Make some symbols static
-Date:   Tue, 4 Jun 2019 22:53:51 +0800
-Message-ID: <20190604145351.19392-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1726573AbfFDUbz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 4 Jun 2019 16:31:55 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:10746 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726312AbfFDUbd (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 4 Jun 2019 16:31:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1559680292; x=1591216292;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=Qvgi9EebcCKTkJL3XH6n75abRSmA+1KjL0uPQ7HHAeo=;
+  b=Ta7hdhGDoJNbDuzf92aEfFIfqNN7443vpBk8sGQTF9UWGhbUKN9ieR59
+   gsOnxsL2GrXJiVmfPM2HkOzhTY9q92lesBR/VXMUAM+pHEjrLOA09O8jI
+   BKOzdV6ci24zWxs9CLvPCpUGLHq9Yr61HX8G6106erqcQDVO2MscpDLhF
+   o=;
+X-IronPort-AV: E=Sophos;i="5.60,550,1549929600"; 
+   d="scan'208";a="399352827"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-e7be2041.us-west-2.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 04 Jun 2019 20:31:30 +0000
+Received: from EX13MTAUEB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-e7be2041.us-west-2.amazon.com (Postfix) with ESMTPS id 4FA1CA21DD;
+        Tue,  4 Jun 2019 20:31:29 +0000 (UTC)
+Received: from EX13D08UEB001.ant.amazon.com (10.43.60.245) by
+ EX13MTAUEB001.ant.amazon.com (10.43.60.96) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 4 Jun 2019 20:31:28 +0000
+Received: from EX13MTAUEB001.ant.amazon.com (10.43.60.96) by
+ EX13D08UEB001.ant.amazon.com (10.43.60.245) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 4 Jun 2019 20:31:28 +0000
+Received: from dev-dsk-alisaidi-i31e-4ac69482.us-east-1.amazon.com
+ (10.200.136.151) by mail-relay.amazon.com (10.43.60.129) with Microsoft SMTP
+ Server id 15.0.1367.3 via Frontend Transport; Tue, 4 Jun 2019 20:31:28 +0000
+Received: by dev-dsk-alisaidi-i31e-4ac69482.us-east-1.amazon.com (Postfix, from userid 5131138)
+        id 9A8BA47DE4; Tue,  4 Jun 2019 20:31:28 +0000 (UTC)
+From:   Ali Saidi <alisaidi@amazon.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-crypto@vger.kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Ali Saidi <alisaidi@amazon.com>,
+        Ron Rindjunsky <ronrindj@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        David Woodhouse <dwmw@amazon.co.uk>
+Subject: [PATCH 0/3] Add support for Graviton TRNG
+Date:   Tue, 4 Jun 2019 20:30:57 +0000
+Message-ID: <20190604203100.15050-1-alisaidi@amazon.com>
+X-Mailer: git-send-email 2.15.3.AMZN
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.133.213.239]
-X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Fix sparse warnings:
+AWS Graviton based systems provide an Arm SMC call in the vendor defined
+hypervisor region to read random numbers from a HW TRNG and return them to the
+guest. 
 
-drivers/crypto/bcm/cipher.c:99:6: warning: symbol 'BCMHEADER' was not declared. Should it be static?
-drivers/crypto/bcm/cipher.c:2096:6: warning: symbol 'spu_no_incr_hash' was not declared. Should it be static?
-drivers/crypto/bcm/cipher.c:4823:5: warning: symbol 'bcm_spu_probe' was not declared. Should it be static?
-drivers/crypto/bcm/cipher.c:4867:5: warning: symbol 'bcm_spu_remove' was not declared. Should it be static?
-drivers/crypto/bcm/spu2.c:52:6: warning: symbol 'spu2_cipher_type_names' was not declared. Should it be static?
-drivers/crypto/bcm/spu2.c:56:6: warning: symbol 'spu2_cipher_mode_names' was not declared. Should it be static?
-drivers/crypto/bcm/spu2.c:60:6: warning: symbol 'spu2_hash_type_names' was not declared. Should it be static?
-drivers/crypto/bcm/spu2.c:66:6: warning: symbol 'spu2_hash_mode_names' was not declared. Should it be static?
+We've observed slower guest boot and especially reboot times due to lack of
+entropy and providing access to a TRNG is meant to address this. 
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/crypto/bcm/cipher.c |  8 ++++----
- drivers/crypto/bcm/spu2.c   | 10 +++++-----
- 2 files changed, 9 insertions(+), 9 deletions(-)
+Ali Saidi (3):
+  arm/arm64: Add smccc hypervisor service identifiers
+  arm64: export acpi_psci_use_hvc
+  hwrng: Add support for AWS Graviton TRNG
 
-diff --git a/drivers/crypto/bcm/cipher.c b/drivers/crypto/bcm/cipher.c
-index 25f8d39..d972ffa 100644
---- a/drivers/crypto/bcm/cipher.c
-+++ b/drivers/crypto/bcm/cipher.c
-@@ -96,7 +96,7 @@ MODULE_PARM_DESC(aead_pri, "Priority for AEAD algos");
-  * 0x70 - ring 2
-  * 0x78 - ring 3
-  */
--char BCMHEADER[] = { 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28 };
-+static char BCMHEADER[] = { 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28 };
- /*
-  * Some SPU hw does not use BCM header on SPU messages. So BCM_HDR_LEN
-  * is set dynamically after reading SPU type from device tree.
-@@ -2094,7 +2094,7 @@ static int __ahash_init(struct ahash_request *req)
-  * Return: true if incremental hashing is not supported
-  *         false otherwise
-  */
--bool spu_no_incr_hash(struct iproc_ctx_s *ctx)
-+static bool spu_no_incr_hash(struct iproc_ctx_s *ctx)
- {
- 	struct spu_hw *spu = &iproc_priv.spu;
- 
-@@ -4820,7 +4820,7 @@ static int spu_dt_read(struct platform_device *pdev)
- 	return 0;
- }
- 
--int bcm_spu_probe(struct platform_device *pdev)
-+static int bcm_spu_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct spu_hw *spu = &iproc_priv.spu;
-@@ -4864,7 +4864,7 @@ int bcm_spu_probe(struct platform_device *pdev)
- 	return err;
- }
- 
--int bcm_spu_remove(struct platform_device *pdev)
-+static int bcm_spu_remove(struct platform_device *pdev)
- {
- 	int i;
- 	struct device *dev = &pdev->dev;
-diff --git a/drivers/crypto/bcm/spu2.c b/drivers/crypto/bcm/spu2.c
-index bf7ac62..960b472 100644
---- a/drivers/crypto/bcm/spu2.c
-+++ b/drivers/crypto/bcm/spu2.c
-@@ -49,21 +49,21 @@ enum spu2_proto_sel {
- 	SPU2_DTLS_AEAD = 10
- };
- 
--char *spu2_cipher_type_names[] = { "None", "AES128", "AES192", "AES256",
-+static char *spu2_cipher_type_names[] = { "None", "AES128", "AES192", "AES256",
- 	"DES", "3DES"
- };
- 
--char *spu2_cipher_mode_names[] = { "ECB", "CBC", "CTR", "CFB", "OFB", "XTS",
--	"CCM", "GCM"
-+static char *spu2_cipher_mode_names[] = { "ECB", "CBC", "CTR", "CFB", "OFB",
-+	"XTS", "CCM", "GCM"
- };
- 
--char *spu2_hash_type_names[] = { "None", "AES128", "AES192", "AES256",
-+static char *spu2_hash_type_names[] = { "None", "AES128", "AES192", "AES256",
- 	"Reserved", "Reserved", "MD5", "SHA1", "SHA224", "SHA256", "SHA384",
- 	"SHA512", "SHA512/224", "SHA512/256", "SHA3-224", "SHA3-256",
- 	"SHA3-384", "SHA3-512"
- };
- 
--char *spu2_hash_mode_names[] = { "CMAC", "CBC-MAC", "XCBC-MAC", "HMAC",
-+static char *spu2_hash_mode_names[] = { "CMAC", "CBC-MAC", "XCBC-MAC", "HMAC",
- 	"Rabin", "CCM", "GCM", "Reserved"
- };
- 
+ MAINTAINERS                           |   6 ++
+ arch/arm64/kernel/acpi.c              |   1 +
+ drivers/char/hw_random/Kconfig        |  13 ++++
+ drivers/char/hw_random/Makefile       |   1 +
+ drivers/char/hw_random/graviton-rng.c | 123 ++++++++++++++++++++++++++++++++++
+ include/linux/arm-smccc.h             |   2 +
+ 6 files changed, 146 insertions(+)
+ create mode 100644 drivers/char/hw_random/graviton-rng.c
+
 -- 
-2.7.4
-
+2.15.3.AMZN
 
