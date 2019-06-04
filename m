@@ -2,43 +2,44 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40540350F1
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Jun 2019 22:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7453350E3
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Jun 2019 22:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbfFDUbz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 4 Jun 2019 16:31:55 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:10746 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbfFDUbd (ORCPT
+        id S1726422AbfFDUbc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 4 Jun 2019 16:31:32 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:63635 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726238AbfFDUbc (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 4 Jun 2019 16:31:33 -0400
+        Tue, 4 Jun 2019 16:31:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1559680292; x=1591216292;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=Qvgi9EebcCKTkJL3XH6n75abRSmA+1KjL0uPQ7HHAeo=;
-  b=Ta7hdhGDoJNbDuzf92aEfFIfqNN7443vpBk8sGQTF9UWGhbUKN9ieR59
-   gsOnxsL2GrXJiVmfPM2HkOzhTY9q92lesBR/VXMUAM+pHEjrLOA09O8jI
-   BKOzdV6ci24zWxs9CLvPCpUGLHq9Yr61HX8G6106erqcQDVO2MscpDLhF
-   o=;
+  t=1559680291; x=1591216291;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=GcMoPRXMHB7SOwtcOdUWfd9ABsMHYh/l/vnzcxwmq0E=;
+  b=PvF4LzwJP/2+qkL4b6iZPQT9gwP54T7Ys/5RvhMAABx50/TQekh2DTMc
+   ybdIHuHMemmKzLvMC2d+leNntiR96vPoDSfNgCA/tkoR0HoeYFDzaUT6P
+   c5BgTzpIPT9eGlKOPREZae4k2S9QjOBmRDsITLzB3f1n3w4uIw5Nl0Ije
+   s=;
 X-IronPort-AV: E=Sophos;i="5.60,550,1549929600"; 
-   d="scan'208";a="399352827"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-e7be2041.us-west-2.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 04 Jun 2019 20:31:30 +0000
+   d="scan'208";a="803552790"
+Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.47.22.34])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 04 Jun 2019 20:31:29 +0000
 Received: from EX13MTAUEB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-e7be2041.us-west-2.amazon.com (Postfix) with ESMTPS id 4FA1CA21DD;
+        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 554C11A0D0E;
         Tue,  4 Jun 2019 20:31:29 +0000 (UTC)
-Received: from EX13D08UEB001.ant.amazon.com (10.43.60.245) by
- EX13MTAUEB001.ant.amazon.com (10.43.60.96) with Microsoft SMTP Server (TLS)
+Received: from EX13D08UEB003.ant.amazon.com (10.43.60.11) by
+ EX13MTAUEB001.ant.amazon.com (10.43.60.129) with Microsoft SMTP Server (TLS)
  id 15.0.1367.3; Tue, 4 Jun 2019 20:31:28 +0000
 Received: from EX13MTAUEB001.ant.amazon.com (10.43.60.96) by
- EX13D08UEB001.ant.amazon.com (10.43.60.245) with Microsoft SMTP Server (TLS)
+ EX13D08UEB003.ant.amazon.com (10.43.60.11) with Microsoft SMTP Server (TLS)
  id 15.0.1367.3; Tue, 4 Jun 2019 20:31:28 +0000
 Received: from dev-dsk-alisaidi-i31e-4ac69482.us-east-1.amazon.com
  (10.200.136.151) by mail-relay.amazon.com (10.43.60.129) with Microsoft SMTP
  Server id 15.0.1367.3 via Frontend Transport; Tue, 4 Jun 2019 20:31:28 +0000
 Received: by dev-dsk-alisaidi-i31e-4ac69482.us-east-1.amazon.com (Postfix, from userid 5131138)
-        id 9A8BA47DE4; Tue,  4 Jun 2019 20:31:28 +0000 (UTC)
+        id 9D9CC47DE5; Tue,  4 Jun 2019 20:31:28 +0000 (UTC)
 From:   Ali Saidi <alisaidi@amazon.com>
 To:     <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
@@ -53,10 +54,12 @@ CC:     Catalin Marinas <catalin.marinas@arm.com>,
         Ron Rindjunsky <ronrindj@amazon.com>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         David Woodhouse <dwmw@amazon.co.uk>
-Subject: [PATCH 0/3] Add support for Graviton TRNG
-Date:   Tue, 4 Jun 2019 20:30:57 +0000
-Message-ID: <20190604203100.15050-1-alisaidi@amazon.com>
+Subject: [PATCH 1/3] arm/arm64: Add smccc hypervisor service identifiers
+Date:   Tue, 4 Jun 2019 20:30:58 +0000
+Message-ID: <20190604203100.15050-2-alisaidi@amazon.com>
 X-Mailer: git-send-email 2.15.3.AMZN
+In-Reply-To: <20190604203100.15050-1-alisaidi@amazon.com>
+References: <20190604203100.15050-1-alisaidi@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-crypto-owner@vger.kernel.org
@@ -64,27 +67,28 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-AWS Graviton based systems provide an Arm SMC call in the vendor defined
-hypervisor region to read random numbers from a HW TRNG and return them to the
-guest. 
+The SMC calling convention defines service identifiers for generic and
+vendor specific hypervisor services. This patch adds those services to
+the list of existing service identifiers.
 
-We've observed slower guest boot and especially reboot times due to lack of
-entropy and providing access to a TRNG is meant to address this. 
+Signed-off-by: Ali Saidi <alisaidi@amazon.com>
+---
+ include/linux/arm-smccc.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Ali Saidi (3):
-  arm/arm64: Add smccc hypervisor service identifiers
-  arm64: export acpi_psci_use_hvc
-  hwrng: Add support for AWS Graviton TRNG
-
- MAINTAINERS                           |   6 ++
- arch/arm64/kernel/acpi.c              |   1 +
- drivers/char/hw_random/Kconfig        |  13 ++++
- drivers/char/hw_random/Makefile       |   1 +
- drivers/char/hw_random/graviton-rng.c | 123 ++++++++++++++++++++++++++++++++++
- include/linux/arm-smccc.h             |   2 +
- 6 files changed, 146 insertions(+)
- create mode 100644 drivers/char/hw_random/graviton-rng.c
-
+diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
+index 18863d56273c..bcf796801e3b 100644
+--- a/include/linux/arm-smccc.h
++++ b/include/linux/arm-smccc.h
+@@ -54,6 +54,8 @@
+ #define ARM_SMCCC_OWNER_SIP		2
+ #define ARM_SMCCC_OWNER_OEM		3
+ #define ARM_SMCCC_OWNER_STANDARD	4
++#define ARM_SMCCC_OWNER_STANDARD_HV	5
++#define ARM_SMCCC_OWNER_VENDOR_HV	6
+ #define ARM_SMCCC_OWNER_TRUSTED_APP	48
+ #define ARM_SMCCC_OWNER_TRUSTED_APP_END	49
+ #define ARM_SMCCC_OWNER_TRUSTED_OS	50
 -- 
 2.15.3.AMZN
 
