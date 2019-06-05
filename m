@@ -2,107 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 048DB35DCD
-	for <lists+linux-crypto@lfdr.de>; Wed,  5 Jun 2019 15:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A54360D3
+	for <lists+linux-crypto@lfdr.de>; Wed,  5 Jun 2019 18:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727914AbfFENWC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 5 Jun 2019 09:22:02 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:33424 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726442AbfFENWB (ORCPT
+        id S1728442AbfFEQHd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 5 Jun 2019 12:07:33 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:32336 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728421AbfFEQHc (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 5 Jun 2019 09:22:01 -0400
-Received: by mail-pl1-f196.google.com with SMTP id g21so9695475plq.0;
-        Wed, 05 Jun 2019 06:22:01 -0700 (PDT)
+        Wed, 5 Jun 2019 12:07:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=hXsQr/OkSzH/u4JLYwMI74MVQvCM/DsvMDlyfR8YPSs=;
-        b=vAcs7pC2kqhFsFdLMdboV71PC8Al8p5Fqgrp92x24xcLKrspdV3OUmr94JSM7zHNWH
-         UJpI+hKMpr1bC7hxlNuwVIn3NFxeqATaHm3lbTVOYLA3KMw4fZol2lRcwDxqSi07FKOJ
-         jsn4zOPQ/EbGXeqm9Ze1nw49PjZAyG6azwChEvZ09uXbvyAGipkJioxdlPyENZ2WdlMG
-         Mw7JB+4kDzjCo4VdSGO3Qj6l2ODva8Dh2YwWpK7WkIlgX/Ufd4Wek6h9PRUuFO5LlSqo
-         +CvOsEHO4LCeLTIOsDmZlUVOeIwcUJEqfvJ9RzaX0QaGmggeWQe4KxWOSo0Zm/ZPsVn3
-         XpCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=hXsQr/OkSzH/u4JLYwMI74MVQvCM/DsvMDlyfR8YPSs=;
-        b=KqfT+a+n1jGa9S+D19z7LKdrgu+Bwff+VJPZsG+1utfegFvGkHZdsNY9/d76C6Xh44
-         QybgSugm3ThM5VL5HoPjHxEaKq/Mp1XRKZmdo3+up8GfPNR2jEkF0xZU+iXlhFiWBhYl
-         bj4pxHAHKmmzCZnTdxH5lmY8qRNSHBzWw9gl8k7Tf+y6lzSthpd1eG5NVwwRKN4A9BeA
-         s9egZakqlvXDw7OX9qPTQRRJx43S4e072QvLUm8mc6bkIY9xGIt2LzvrEkmE8qDSQbRc
-         hECD80WcWqefxBaxGEQJL9g+rnScJ0QsdgdGxM75aUu5lhR3g5hF9EwTJ/1WXTVNC1j5
-         p5qw==
-X-Gm-Message-State: APjAAAWGXxz2SGrISB/pgFCVnCX5e+8anmUqLSR6yTuu+ZaBg8pRWoqm
-        trOtaT6E8l2+maOHPNJwACk=
-X-Google-Smtp-Source: APXvYqy3yOZ8VjiWRMUeMtJatt8B5MqTPmZEf84WUyyqZ00JqPIqt8WpUbID9fsep+oJRJqxX4KoJA==
-X-Received: by 2002:a17:902:28c9:: with SMTP id f67mr43935186plb.19.1559740921154;
-        Wed, 05 Jun 2019 06:22:01 -0700 (PDT)
-Received: from nishad (p3261240-ipngn21201hodogaya.kanagawa.ocn.ne.jp. [153.202.122.240])
-        by smtp.gmail.com with ESMTPSA id i3sm22254201pfa.175.2019.06.05.06.21.57
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 05 Jun 2019 06:22:00 -0700 (PDT)
-Date:   Wed, 5 Jun 2019 18:51:53 +0530
-From:   Nishad Kamdar <nishadkamdar@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joe Perches <joe@perches.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: cavium/nitrox - Use the correct style for SPDX
- License Identifier
-Message-ID: <20190605132149.GA5589@nishad>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1559750852; x=1591286852;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=Z+5gkqiGLrc1+ckzFfGnbs6e2GkIHGZDRzA+b4QtS/Y=;
+  b=Esh4MHGf3yH3oElus5kS42LeZz+r97xBFxa+le2P5GYWVcz0wPTw03Z6
+   hLJxruIVRjf2G+mX9S4VucuaQAZL3lgh/8A3lu7QvClozSrWtmCXkPiqm
+   RgY5c1EH+KfE+hhGNLHZvi7GWHzKF3/iso2g8lHn8MrdqS4CCM1kpXbOJ
+   Y=;
+X-IronPort-AV: E=Sophos;i="5.60,550,1549929600"; 
+   d="scan'208";a="678327978"
+Received: from sea3-co-svc-lb6-vlan3.sea.amazon.com (HELO email-inbound-relay-1e-c7c08562.us-east-1.amazon.com) ([10.47.22.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 05 Jun 2019 16:07:26 +0000
+Received: from EX13MTAUEB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1e-c7c08562.us-east-1.amazon.com (Postfix) with ESMTPS id 87368241DA6;
+        Wed,  5 Jun 2019 16:07:23 +0000 (UTC)
+Received: from EX13D08UEB002.ant.amazon.com (10.43.60.107) by
+ EX13MTAUEB001.ant.amazon.com (10.43.60.129) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 5 Jun 2019 16:07:22 +0000
+Received: from EX13D02UWC004.ant.amazon.com (10.43.162.236) by
+ EX13D08UEB002.ant.amazon.com (10.43.60.107) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 5 Jun 2019 16:07:22 +0000
+Received: from EX13D02UWC004.ant.amazon.com ([10.43.162.236]) by
+ EX13D02UWC004.ant.amazon.com ([10.43.162.236]) with mapi id 15.00.1367.000;
+ Wed, 5 Jun 2019 16:07:21 +0000
+From:   "Saidi, Ali" <alisaidi@amazon.com>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matt Mackall" <mpm@selenic.com>,
+        Will Deacon <will.deacon@arm.com>,
+        "Rindjunsky, Ron" <ronrindj@amazon.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 2/3] arm64: export acpi_psci_use_hvc
+Thread-Topic: [PATCH 2/3] arm64: export acpi_psci_use_hvc
+Thread-Index: AQHVGxR9cfXbpWZUwE2BXRlhLfgFYKaMz0WAgAAQPwCAAAgCAA==
+Date:   Wed, 5 Jun 2019 16:07:21 +0000
+Message-ID: <8C0E3CF9-36FD-439A-8D65-0FC688BD5C80@amazon.com>
+References: <20190604203100.15050-1-alisaidi@amazon.com>
+ <20190604203100.15050-3-alisaidi@amazon.com>
+ <20190605094031.GB28613@e107155-lin>
+ <20190605103840.GA30925@lakrids.cambridge.arm.com>
+In-Reply-To: <20190605103840.GA30925@lakrids.cambridge.arm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.161.148]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <11CAE4E330D68C43AF225BE971716552@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch corrects the SPDX License Identifier style
-in header files related to Crypto Drivers for Cavium Nitrox
-family CNN55XX devices.
-For C header files Documentation/process/license-rules.rst
-mandates C-like comments (opposed to C source files where
-C++ style should be used)
-
-Changes made by using a script provided by Joe Perches here:
-https://lkml.org/lkml/2019/2/7/46
-
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
----
- drivers/crypto/cavium/nitrox/nitrox_debugfs.h | 2 +-
- drivers/crypto/cavium/nitrox/nitrox_mbx.h     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/crypto/cavium/nitrox/nitrox_debugfs.h b/drivers/crypto/cavium/nitrox/nitrox_debugfs.h
-index f177b79bbab0..09c4cf2513fb 100644
---- a/drivers/crypto/cavium/nitrox/nitrox_debugfs.h
-+++ b/drivers/crypto/cavium/nitrox/nitrox_debugfs.h
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: GPL-2.0
-+/* SPDX-License-Identifier: GPL-2.0 */
- #ifndef __NITROX_DEBUGFS_H
- #define __NITROX_DEBUGFS_H
- 
-diff --git a/drivers/crypto/cavium/nitrox/nitrox_mbx.h b/drivers/crypto/cavium/nitrox/nitrox_mbx.h
-index 5008399775a9..7c93d0282174 100644
---- a/drivers/crypto/cavium/nitrox/nitrox_mbx.h
-+++ b/drivers/crypto/cavium/nitrox/nitrox_mbx.h
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: GPL-2.0
-+/* SPDX-License-Identifier: GPL-2.0 */
- #ifndef __NITROX_MBX_H
- #define __NITROX_MBX_H
- 
--- 
-2.17.1
-
+DQoNCu+7v09uIDYvNS8xOSwgNTo0MCBBTSwgIk1hcmsgUnV0bGFuZCIgPG1hcmsucnV0bGFuZEBh
+cm0uY29tPiB3cm90ZToNCg0KICAgIEFsaSwgSSBhc3N1bWUgeW91ciBmaXJtd2FyZSBoYXMgU01D
+Q0N2MS4xKy4gSXMgdGhhdCB0aGUgY2FzZT8NCiAgICANCg0KWWVzLCBpdCBkb2VzLiBJJ20gaGFw
+cHkgdG8gYmUgYWJsZSB0byBjYWxsIGEgZ2VuZXJpYyBmdW5jdGlvbiBpbnN0ZWFkIG9mIGhhdmlu
+ZyB0byBmaWd1cmUgb3V0IHdoaWNoIGNvbmR1aXQgdG8gdXNlLg0KDQpBbGkNCg0KICAgIA0KDQo=
