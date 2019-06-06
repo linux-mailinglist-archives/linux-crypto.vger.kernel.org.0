@@ -2,58 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D5636C9D
-	for <lists+linux-crypto@lfdr.de>; Thu,  6 Jun 2019 08:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614F736C9E
+	for <lists+linux-crypto@lfdr.de>; Thu,  6 Jun 2019 08:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbfFFGx5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 6 Jun 2019 02:53:57 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:38930 "EHLO deadmen.hmeau.com"
+        id S1726501AbfFFGyK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 6 Jun 2019 02:54:10 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:38938 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbfFFGx5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 6 Jun 2019 02:53:57 -0400
+        id S1725947AbfFFGyK (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 6 Jun 2019 02:54:10 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hYmHZ-0006xN-RD; Thu, 06 Jun 2019 14:53:53 +0800
+        id 1hYmHp-0006xu-HW; Thu, 06 Jun 2019 14:54:09 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hYmHZ-0006kr-4v; Thu, 06 Jun 2019 14:53:53 +0800
-Date:   Thu, 6 Jun 2019 14:53:53 +0800
+        id 1hYmHn-0006l5-P4; Thu, 06 Jun 2019 14:54:07 +0800
+Date:   Thu, 6 Jun 2019 14:54:07 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>
-Subject: Re: [PATCH] crypto: lrw - use correct alignmask
-Message-ID: <20190606065353.ur5ljwzceiofbzzs@gondor.apana.org.au>
-References: <20190530175308.196938-1-ebiggers@kernel.org>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc:     linux-crypto@vger.kernel.org, ebiggers@kernel.org,
+        pvanleeuwen@insidesecure.com, linux-imx@nxp.com,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH] crypto: caam - limit output IV to CBC to work around CTR
+ mode DMA issue
+Message-ID: <20190606065407.sc5bzbtxigii7bac@gondor.apana.org.au>
+References: <20190531081306.30359-1-ard.biesheuvel@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190530175308.196938-1-ebiggers@kernel.org>
+In-Reply-To: <20190531081306.30359-1-ard.biesheuvel@linaro.org>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, May 30, 2019 at 10:53:08AM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Fri, May 31, 2019 at 10:13:06AM +0200, Ard Biesheuvel wrote:
+> The CAAM driver currently violates an undocumented and slightly
+> controversial requirement imposed by the crypto stack that a buffer
+> referred to by the request structure via its virtual address may not
+> be modified while any scatterlists passed via the same request
+> structure are mapped for inbound DMA.
 > 
-> Commit c778f96bf347 ("crypto: lrw - Optimize tweak computation")
-> incorrectly reduced the alignmask of LRW instances from
-> '__alignof__(u64) - 1' to '__alignof__(__be32) - 1'.
+> This may result in errors like
 > 
-> However, xor_tweak() and setkey() assume that the data and key,
-> respectively, are aligned to 'be128', which has u64 alignment.
+>   alg: aead: decryption failed on test 1 for gcm_base(ctr-aes-caam,ghash-generic): ret=74
+>   alg: aead: Failed to load transform for gcm(aes): -2
 > 
-> Fix the alignmask to be at least '__alignof__(be128) - 1'.
+> on non-cache coherent systems, due to the fact that the GCM driver
+> passes an IV buffer by virtual address which shares a cacheline with
+> the auth_tag buffer passed via a scatterlist, resulting in corruption
+> of the auth_tag when the IV is updated while the DMA mapping is live.
 > 
-> Fixes: c778f96bf347 ("crypto: lrw - Optimize tweak computation")
-> Cc: <stable@vger.kernel.org> # v4.20+
-> Cc: Ondrej Mosnacek <omosnace@redhat.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Since the IV that is returned to the caller is only valid for CBC mode,
+> and given that the in-kernel users of CBC (such as CTS) don't trigger the
+> same issue as the GCM driver, let's just disable the output IV generation
+> for all modes except CBC for the time being.
+> 
+> Cc: Horia Geanta <horia.geanta@nxp.com>
+> Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
+> Reported-by: Sascha Hauer <s.hauer@pengutronix.de>
+> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 > ---
->  crypto/lrw.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/crypto/caam/caamalg.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 
 Patch applied.  Thanks.
 -- 
