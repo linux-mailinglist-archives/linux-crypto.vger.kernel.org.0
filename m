@@ -2,87 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8CE372F2
+	by mail.lfdr.de (Postfix) with ESMTP id 7735B372F3
 	for <lists+linux-crypto@lfdr.de>; Thu,  6 Jun 2019 13:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728520AbfFFLbl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 6 Jun 2019 07:31:41 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:57901 "EHLO pegase1.c-s.fr"
+        id S1728529AbfFFLbm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 6 Jun 2019 07:31:42 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:53996 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728513AbfFFLbl (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 6 Jun 2019 07:31:41 -0400
+        id S1727585AbfFFLbm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 6 Jun 2019 07:31:42 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 45KNlt4kgyzB09ZS;
-        Thu,  6 Jun 2019 13:31:38 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 45KNlv59S7zB09ZT;
+        Thu,  6 Jun 2019 13:31:39 +0200 (CEST)
 Authentication-Results: localhost; dkim=pass
         reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=wKNxZuab; dkim-adsp=pass;
+        header.d=c-s.fr header.i=@c-s.fr header.b=s8SV6TPa; dkim-adsp=pass;
         dkim-atps=neutral
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id LGvoxYt9z0Ek; Thu,  6 Jun 2019 13:31:38 +0200 (CEST)
+        with ESMTP id LDyzcTRL0Pw3; Thu,  6 Jun 2019 13:31:39 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 45KNlt3hh9zB09ZF;
-        Thu,  6 Jun 2019 13:31:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1559820698; bh=z1F6PHZmuc1YG8A1ts1rr1gl6K/z7hQn1Ct+jqvfadg=;
-        h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
-        b=wKNxZuabiknkjHFhEpNMEBBYKgYEVsqPmVlWVKH23OOngNkAMOXv/WWpirLrthAf4
-         dxdL5Ni2QCUIUjzkBGvQIOWCYaej6e6GYGQIsfxPMh/cgCO8fx3vC6p6WamX+EzeFL
-         caskyQmrz3JaWNqIIMh45RuODxBm43ZAfoWnKb4k=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C28508B894;
+        by pegase1.c-s.fr (Postfix) with ESMTP id 45KNlv47SgzB09ZF;
         Thu,  6 Jun 2019 13:31:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1559820699; bh=qIFQKb1N1ogct12r5N11IyeBAwzBADP2oCf+gxBp0T4=;
+        h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
+        b=s8SV6TPaEgaJ3fs8aE/PfEZpUKWX6GQFed9TV6rdiwpF0svv46OQH5qWTYysAW93f
+         wamkF8kCxBmx36XB/AzzzJNSFYF1S3tEe4Fh6Sc4td/YpwPOrUQMGcuihl25rhDlc2
+         nxVqzriH6THsN3uiJ2ckbD48alHYmymrXXe42l5g=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D183C8B894;
+        Thu,  6 Jun 2019 13:31:40 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id KnPu75gGijjF; Thu,  6 Jun 2019 13:31:39 +0200 (CEST)
+        with ESMTP id C7IcPtaUiVJW; Thu,  6 Jun 2019 13:31:40 +0200 (CEST)
 Received: from po16838vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9677C8B891;
-        Thu,  6 Jun 2019 13:31:39 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9F5838B891;
+        Thu,  6 Jun 2019 13:31:40 +0200 (CEST)
 Received: by po16838vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 74F2668CFD; Thu,  6 Jun 2019 11:31:39 +0000 (UTC)
-Message-Id: <4d6b83bfa9a832229de142551cea779ddc56cf9a.1559819372.git.christophe.leroy@c-s.fr>
+        id 7B3C568CFD; Thu,  6 Jun 2019 11:31:40 +0000 (UTC)
+Message-Id: <a8d43c4414fc4fc3442f185b304ca9f659e6bfbb.1559819372.git.christophe.leroy@c-s.fr>
 In-Reply-To: <cover.1559819372.git.christophe.leroy@c-s.fr>
 References: <cover.1559819372.git.christophe.leroy@c-s.fr>
 From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [PATCH v1 4/5] crypto: talitos - eliminate unneeded 'done' functions
- at build time
+Subject: [PATCH v1 5/5] crypto: talitos - drop icv_ool
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>, horia.geanta@nxp.com
 Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org
-Date:   Thu,  6 Jun 2019 11:31:39 +0000 (UTC)
+Date:   Thu,  6 Jun 2019 11:31:40 +0000 (UTC)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-When building for SEC1 only, talitos2_done functions are unneeded
-and should go away.
+icv_ool is not used anymore, drop it.
 
-For this, use has_ftr_sec1() which will always return true when only
-SEC1 support is being built, allowing GCC to drop TALITOS2 functions.
-
+Fixes: 9cc87bc3613b ("crypto: talitos - fix AEAD processing")
 Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 ---
- drivers/crypto/talitos.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/talitos.c | 3 ---
+ drivers/crypto/talitos.h | 2 --
+ 2 files changed, 5 deletions(-)
 
 diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-index 4f03baef952b..b2de931de623 100644
+index b2de931de623..03b7a5d28fb0 100644
 --- a/drivers/crypto/talitos.c
 +++ b/drivers/crypto/talitos.c
-@@ -3401,7 +3401,7 @@ static int talitos_probe(struct platform_device *ofdev)
- 	if (err)
- 		goto err_out;
+@@ -1278,9 +1278,6 @@ static int ipsec_esp(struct talitos_edesc *edesc, struct aead_request *areq,
+ 				 is_ipsec_esp && !encrypt);
+ 	tbl_off += ret;
  
--	if (of_device_is_compatible(np, "fsl,sec1.0")) {
-+	if (has_ftr_sec1(priv)) {
- 		if (priv->num_channels == 1)
- 			tasklet_init(&priv->done_task[0], talitos1_done_ch0,
- 				     (unsigned long)dev);
+-	/* ICV data */
+-	edesc->icv_ool = !encrypt;
+-
+ 	if (!encrypt && is_ipsec_esp) {
+ 		struct talitos_ptr *tbl_ptr = &edesc->link_tbl[tbl_off];
+ 
+diff --git a/drivers/crypto/talitos.h b/drivers/crypto/talitos.h
+index 95f78c6d9206..1469b956948a 100644
+--- a/drivers/crypto/talitos.h
++++ b/drivers/crypto/talitos.h
+@@ -46,7 +46,6 @@ struct talitos_desc {
+  * talitos_edesc - s/w-extended descriptor
+  * @src_nents: number of segments in input scatterlist
+  * @dst_nents: number of segments in output scatterlist
+- * @icv_ool: whether ICV is out-of-line
+  * @iv_dma: dma address of iv for checking continuity and link table
+  * @dma_len: length of dma mapped link_tbl space
+  * @dma_link_tbl: bus physical address of link_tbl/buf
+@@ -61,7 +60,6 @@ struct talitos_desc {
+ struct talitos_edesc {
+ 	int src_nents;
+ 	int dst_nents;
+-	bool icv_ool;
+ 	dma_addr_t iv_dma;
+ 	int dma_len;
+ 	dma_addr_t dma_link_tbl;
 -- 
 2.13.3
 
