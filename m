@@ -2,143 +2,115 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAB53766F
-	for <lists+linux-crypto@lfdr.de>; Thu,  6 Jun 2019 16:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D1E377B3
+	for <lists+linux-crypto@lfdr.de>; Thu,  6 Jun 2019 17:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729062AbfFFOWh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 6 Jun 2019 10:22:37 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:64231 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729058AbfFFOWg (ORCPT
+        id S1728812AbfFFPUV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 6 Jun 2019 11:20:21 -0400
+Received: from gateway33.websitewelcome.com ([192.185.146.130]:23932 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727309AbfFFPUV (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 6 Jun 2019 10:22:36 -0400
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20190606142233epoutp0387fac31e5af5914d4c41f0e4607975da~lofzgW4kK1877218772epoutp03I
-        for <linux-crypto@vger.kernel.org>; Thu,  6 Jun 2019 14:22:33 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20190606142233epoutp0387fac31e5af5914d4c41f0e4607975da~lofzgW4kK1877218772epoutp03I
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1559830953;
-        bh=o26+u579wDsd8MOvWNPCpXlg+PYIMQU4Ow6RM7p975c=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=TH/8VoQzYaXX+wk7+1mrGZcUkwtXLZDLPRniSYALcnf/ORVrYGuOPQT3rquBGT1kA
-         9sqCI0uFymXryZu069ag4J3ZszXLIROTdCsPhKY9feROAz/4SJntZHLA9uYXGVj5lV
-         7R0X+hVu3bfcuetkVR5S4KoGCIjat98PC3NyTqYk=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.40.192]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20190606142230epcas5p393c19e211d4324b8c8c8291a2b3b2b13~lofxDsG6k2622226222epcas5p3m;
-        Thu,  6 Jun 2019 14:22:30 +0000 (GMT)
-X-AuditID: b6c32a49-5b7ff70000000fe7-f4-5cf921a6715b
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DB.03.04071.6A129FC5; Thu,  6 Jun 2019 23:22:30 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE:(2) [PATCH 1/4] zstd: pass pointer rathen than structure to
- functions
-Reply-To: v.narang@samsung.com
-From:   Vaneet Narang <v.narang@samsung.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     Maninder Singh <maninder1.s@samsung.com>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
-        "joe@perches.com" <joe@perches.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        AMIT SAHRAWAT <a.sahrawat@samsung.com>,
-        PANKAJ MISHRA <pankaj.m@samsung.com>,
-        Vaneet Narang <v.narang@samsung.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "terrelln@fb.com" <terrelln@fb.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20190605143219.248ca514546f69946aa2e07e@linux-foundation.org>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20190606141019epcms5p1e9c394d2c2ef37506c8004fe48edd29f@epcms5p1>
-Date:   Thu, 06 Jun 2019 19:40:19 +0530
-X-CMS-MailID: 20190606141019epcms5p1e9c394d2c2ef37506c8004fe48edd29f
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBJsWRmVeSWpSXmKPExsWy7bCmuu4yxZ8xBovXaFlc3J1qMWf9GjaL
-        Sf0z2C3mnG9hsbjwo5HJYvHv7ywWW/eoWnS/krGYff8xi8Wfh4YWZ7pzLS49XsFucf/eTyaL
-        y7vmsFkcnt/GYnHvzVYmi1f/rrFZHDo5l9FByGN2w0UWjy0rbzJ5rDuo6jGx+R27x7YDqh4n
-        Zvxm8fiy6hqzR9+WVYwe67dcZfE4s+AIu8eEzRtZPT5vkgvgicqxyUhNTEktUkjNS85PycxL
-        t1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAH6TEmhLDGnFCgUkFhcrKRvZ1OUX1qS
-        qpCRX1xiq5RakJJTYGhUoFecmFtcmpeul5yfa2VoYGBkClSZkJPx8vl+9oLbEhWTV7k3MDZJ
-        dDFyckgImEisWt3B2sXIxSEksJtR4vqZZqYuRg4OXgFBib87hEFMYYFgifl/MkDKhQTkJI7f
-        2M0IYgsL6EicmLeGEaSETUBL4mNLOEhYRCBE4s7HCywgE5kFnrFKHDi/hRViFa/EjPanLBC2
-        tMT25VvBejkFvCUWfK+GCItK3Fz9lh3Gfn9sPiOELSLReu8sM4QtKPHg526wVgkBGYldb8VB
-        VkkIdDNKTDi3nBXCmcEocar3DVSDucT5k/PBbF4BX4n504+C2SwCqhJLGz6xQgxykbj4lAck
-        zCygLbFs4WtmkDCzgKbE+l36EFNkJaaeWscEUcIn0fv7CRPMVzvmwdhKEucO7mSDsCUknnTO
-        hLrAQ+LR2jZoIE9nlpi64hDbBEaFWYhwnoVk8yyEzQsYmVcxSqYWFOempxabFhjmpZYjR+4m
-        RnAq1/LcwTjrnM8hRgEORiUe3hlMP2OEWBPLiitzDzFKcDArifCWXfgRI8SbklhZlVqUH19U
-        mpNafIjRFBgEE5mlRJPzgXkmryTe0NTIzMzA0sDU2MLMUEmcdxLr1RghgfTEktTs1NSC1CKY
-        PiYOTqkGRvMjX2/oip50mrshhvkaw9VntaX19+dsefYnpOTEZ77Oom6RA7r/lV4ds3HJ57jK
-        oH60zfr8ZtXwrWXbbi08YmHxmoH3RJHJyk2q5xt7Ds4uXnxAc56URU2Ytb+oymax/YytIp7x
-        ImJfDY/Jc51dtHz9xPXZPn7fDptenbLz1Ow/e8tOMNlt2aTEUpyRaKjFXFScCACaZWMH+wMA
-        AA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20190603090232epcas5p1630d0584e8a1aa9495edc819605664fc
-References: <20190605143219.248ca514546f69946aa2e07e@linux-foundation.org>
-        <1559552526-4317-1-git-send-email-maninder1.s@samsung.com>
-        <1559552526-4317-2-git-send-email-maninder1.s@samsung.com>
-        <20190604154326.8868a10f896c148a0ce804d1@linux-foundation.org>
-        <20190605115703.GY15290@twin.jikos.cz> <20190605123253.GZ15290@suse.cz>
-        <CGME20190603090232epcas5p1630d0584e8a1aa9495edc819605664fc@epcms5p1>
+        Thu, 6 Jun 2019 11:20:21 -0400
+X-Greylist: delayed 1384 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 Jun 2019 11:20:20 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 86B7520AA5B
+        for <linux-crypto@vger.kernel.org>; Thu,  6 Jun 2019 09:57:15 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id YtpLhH8dU2qH7YtpLhTRbM; Thu, 06 Jun 2019 09:57:15 -0500
+X-Authority-Reason: nr=8
+Received: from [189.250.127.120] (port=43322 helo=embeddedor)
+        by gator4166.hostgator.com with esmtpa (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1hYtpK-000MlG-DQ; Thu, 06 Jun 2019 09:57:14 -0500
+Date:   Thu, 6 Jun 2019 09:57:13 -0500
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     qat-linux@intel.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] crypto: qat - use struct_size() helper
+Message-ID: <20190606145713.GA16636@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 189.250.127.120
+X-Source-L: No
+X-Exim-ID: 1hYtpK-000MlG-DQ
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (embeddedor) [189.250.127.120]:43322
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 11
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Andrew / David,
+One of the more common cases of allocation size calculations is finding
+the size of a structure that has a zero-sized array at the end, along
+with memory for some number of elements for that array. For example:
 
-=C2=A0=0D=0A>>=C2=A0>=C2=A0>=C2=A0-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0ZSTD_parameters=C2=A0params=C2=A0=3D=C2=A0ZSTD_getParams(level,=C2=
-=A0src_len,=C2=A00);=0D=0A>>=C2=A0>=C2=A0>=C2=A0+=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0static=C2=A0ZSTD_parameters=C2=A0params;=0D=0A>>=C2=
-=A0>=C2=A0=0D=0A>>=C2=A0>=C2=A0>=C2=A0+=0D=0A>>=C2=A0>=C2=A0>=C2=A0+=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0params=C2=A0=3D=C2=A0ZSTD_getPara=
-ms(level,=C2=A0src_len,=C2=A00);=0D=0A>>=C2=A0>=C2=A0=0D=0A>>=C2=A0>=C2=A0N=
-o=C2=A0thats'=C2=A0broken,=C2=A0the=C2=A0params=C2=A0can't=C2=A0be=C2=A0sta=
-tic=C2=A0as=C2=A0it=C2=A0depends=C2=A0on=C2=A0level=C2=A0and=0D=0A>>=C2=A0>=
-=C2=A0src_len.=C2=A0What=C2=A0happens=C2=A0if=C2=A0there=C2=A0are=C2=A0seve=
-ral=C2=A0requests=C2=A0in=C2=A0parallel=C2=A0with=0D=0A>>=C2=A0>=C2=A0eg.=
-=C2=A0different=C2=A0levels?=0D=0A=0D=0AThere=20is=20no=20need=20to=20make=
-=20static=20for=20btrfs.=20We=20can=20keep=20it=20as=20a=20stack=20variable=
-.=0D=0AThis=20patch=20set=20=20focussed=20on=20reducing=20stack=20usage=20o=
-f=20zstd=20compression=20when=20triggered=0D=0Athrough=20zram.=20ZRAM=20int=
-ernally=20uses=20crypto=20and=20currently=20crpto=20uses=20fixed=20level=20=
-and=20also=0D=0Anot=20dependent=20upon=20source=20length.=0D=0A=0D=0Acrypto=
-/zstd.c:=20=20=0D=0Astatic=20ZSTD_parameters=20zstd_params(void)=0D=0A=7B=
-=0D=0A=20=20=20=20=20=20=20=20return=20ZSTD_getParams(ZSTD_DEF_LEVEL,=200,=
-=200);=0D=0A=7D=0D=0A=0D=0A=0D=0AActually=20high=20stack=20usage=20problem=
-=20with=20zstd=20compression=20patch=20gets=20exploited=20more=20incase=20o=
-f=20=0D=0Ashrink=20path=20which=20gets=20triggered=20randomly=20from=20any=
-=20call=20flow=20in=20case=20of=20low=20memory=20and=20adds=20overhead=0D=
-=0Aof=20more=20than=202000=20byte=20of=20stack=20and=20results=20in=20stack=
-=20overflow.=0D=0A=0D=0AStack=20usage=20of=20alloc_page=20in=20case=20of=20=
-low=20memory=0D=0A=0D=0A=20=20=2072=20=20=20HUF_compressWeights_wksp+0x140/=
-0x200=20=20=0D=0A=20=20=2064=20=20=20HUF_writeCTable_wksp+0xdc/0x1c8=20=20=
-=20=20=20=20=0D=0A=20=20=2088=20=20=20HUF_compress4X_repeat+0x214/0x450=20=
-=20=20=20=20=0D=0A=20=20208=20=20=20ZSTD_compressBlock_internal+0x224/0x137=
-c=0D=0A=20=20136=20=20=20ZSTD_compressContinue_internal+0x210/0x3b0=0D=0A=
-=20=20192=20=20=20ZSTD_compressCCtx+0x6c/0x144=0D=0A=20=20144=20=20=20zstd_=
-compress+0x40/0x58=0D=0A=20=20=2032=20=20=20crypto_compress+0x2c/0x34=0D=0A=
-=20=20=2032=20=20=20zcomp_compress+0x3c/0x44=0D=0A=20=20=2080=20=20=20zram_=
-bvec_rw+0x2f8/0xa7c=0D=0A=20=20=2064=20=20=20zram_rw_page+0x104/0x170=0D=0A=
-=20=20=2048=20=20=20bdev_write_page+0x80/0xb4=0D=0A=20=20112=20=20=20__swap=
-_writepage+0x160/0x29c=0D=0A=20=20=2024=20=20=20swap_writepage+0x3c/0x58=0D=
-=0A=20=20160=20=20=20shrink_page_list+0x788/0xae0=0D=0A=20=20128=20=20=20sh=
-rink_inactive_list+0x210/0x4a8=0D=0A=20=20184=20=20=20shrink_zone+0x53c/0x7=
-c0=0D=0A=20=20160=20=20=20try_to_free_pages+0x2fc/0x7cc=0D=0A=20=20=2080=20=
-=20=20__alloc_pages_nodemask+0x534/0x91c=0D=0A=0D=0AThanks=20&=20Regards,=
-=0D=0AVaneet=20Narang=C2=A0=0D=0A=C2=A0
+struct qat_alg_buf_list {
+	...
+        struct qat_alg_buf bufers[];
+} __packed __aligned(64);
+
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes.
+
+So, replace the following form:
+
+sizeof(struct qat_alg_buf_list) + ((1 + n) * sizeof(struct qat_alg_buf))
+
+with:
+
+struct_size(bufl, bufers, n + 1)
+
+This code was detected with the help of Coccinelle.
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/crypto/qat/qat_common/qat_algs.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/crypto/qat/qat_common/qat_algs.c b/drivers/crypto/qat/qat_common/qat_algs.c
+index 2842b2cdaa90..b50eb55f8f57 100644
+--- a/drivers/crypto/qat/qat_common/qat_algs.c
++++ b/drivers/crypto/qat/qat_common/qat_algs.c
+@@ -717,8 +717,7 @@ static int qat_alg_sgl_to_bufl(struct qat_crypto_instance *inst,
+ 	dma_addr_t blp;
+ 	dma_addr_t bloutp = 0;
+ 	struct scatterlist *sg;
+-	size_t sz_out, sz = sizeof(struct qat_alg_buf_list) +
+-			((1 + n) * sizeof(struct qat_alg_buf));
++	size_t sz_out, sz = struct_size(bufl, bufers, n + 1);
+ 
+ 	if (unlikely(!n))
+ 		return -EINVAL;
+@@ -755,8 +754,7 @@ static int qat_alg_sgl_to_bufl(struct qat_crypto_instance *inst,
+ 		struct qat_alg_buf *bufers;
+ 
+ 		n = sg_nents(sglout);
+-		sz_out = sizeof(struct qat_alg_buf_list) +
+-			((1 + n) * sizeof(struct qat_alg_buf));
++		sz_out = struct_size(buflout, bufers, n + 1);
+ 		sg_nctr = 0;
+ 		buflout = kzalloc_node(sz_out, GFP_ATOMIC,
+ 				       dev_to_node(&GET_DEV(inst->accel_dev)));
+-- 
+2.21.0
+
