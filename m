@@ -2,79 +2,97 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D39D37808
-	for <lists+linux-crypto@lfdr.de>; Thu,  6 Jun 2019 17:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3316637941
+	for <lists+linux-crypto@lfdr.de>; Thu,  6 Jun 2019 18:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729165AbfFFPdX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 6 Jun 2019 11:33:23 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:53640 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728916AbfFFPdW (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 6 Jun 2019 11:33:22 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 6C971B97A2064D149B70;
-        Thu,  6 Jun 2019 23:23:04 +0800 (CST)
-Received: from localhost (10.202.226.61) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.439.0; Thu, 6 Jun 2019
- 23:23:00 +0800
-Date:   Thu, 6 Jun 2019 16:22:49 +0100
-From:   Jonathan Cameron <jonathan.cameron@huawei.com>
-To:     Nishad Kamdar <nishadkamdar@gmail.com>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Joe Perches" <joe@perches.com>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] crypto: hisilicon - Use the correct style for SPDX
- License Identifier
-Message-ID: <20190606162249.00002da5@huawei.com>
-In-Reply-To: <20190606150612.GA4002@nishad>
-References: <20190606150612.GA4002@nishad>
-Organization: Huawei
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.226.61]
-X-CFilter-Loop: Reflected
+        id S1729548AbfFFQOG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 6 Jun 2019 12:14:06 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:34195 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729274AbfFFQOG (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 6 Jun 2019 12:14:06 -0400
+Received: by mail-qt1-f194.google.com with SMTP id m29so3356303qtu.1
+        for <linux-crypto@vger.kernel.org>; Thu, 06 Jun 2019 09:14:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3pUyKz+cgfJSIYJH5CSG3LK8DCCSkGfDGktfMqsXauk=;
+        b=tokbpkE8SkO2KvucEaK+J9Q3coW5TOoBG+YuT9aLXFinup+SHPjugYyRKE10Qczn+6
+         yIuex4e8+ZA9Ikq1bHnavZ+iCeJscxhh4sTIleOXvuv1d6a4hVqHvk8ZwAihJ/+od5tJ
+         Ku7WsVY0ZxdVjhvHIKpnaDR3hdsGZBf/6axPpYRL44GZi2uHyJfewOFoDsVBFiR7INE+
+         jxiZwm0/aooddxSwdQuoX8Yy0tFcyBAJdOXJDqM72nB/eSYXOLy1U2DsHdKskZ/I/Bu6
+         0iKZUkUMnEQDWvvcmza9F5a2ordQFLti/QJfINAoB18nlsJJQuH8fdUKuAcSsYYQTNcT
+         Vb+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3pUyKz+cgfJSIYJH5CSG3LK8DCCSkGfDGktfMqsXauk=;
+        b=oTiTvBb0MeOAQz/xvLUI37WatEwhzGV6t1Pggyo3tWp2GD/LN1/ePuSmj0oZ/Az0zd
+         9+6dTNKb2o82e2Vm9Vb8PH+bXZ2o+6YCZ7IOZjm7H86zZn79x3zvTb/IEfzYSEsFImgN
+         3dghMgmnzKesicQtk1hapEEsf3wKQW685bK0Hx56K00MgRBEwIe78+l8sIEnQYiSVwO1
+         xZJM93X5RPWXuXOctsw+lBX44o8dxDU2ippMi52absIgoX+2WdQd5XKySrWdLNwAlbN6
+         IKxjNTD1TyMV0HAP/c9iHF7om6K/VH9yjq397ZBN4iDSTS4LHZZTKF0UJDw/W8jXGJ4Z
+         qoJg==
+X-Gm-Message-State: APjAAAVUM9tuf+hr6QhDtHNrYpLE2Jd4jZa9bICCBZ69gSB2ejk7vSfm
+        3Ynh5rn95EJn0RkMB7SBDNE=
+X-Google-Smtp-Source: APXvYqzsXUBcmxxB61eBhi9+hRSHs6HB64RrmJ8qa6CwhX8m37ofpc6FlZrVve/2IMSI/amX+rH90Q==
+X-Received: by 2002:a0c:ad53:: with SMTP id v19mr40280752qvc.40.1559837645613;
+        Thu, 06 Jun 2019 09:14:05 -0700 (PDT)
+Received: from fabio-Latitude-E5450.am.freescale.net ([177.221.114.206])
+        by smtp.gmail.com with ESMTPSA id u26sm604337qtc.33.2019.06.06.09.14.02
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 06 Jun 2019 09:14:04 -0700 (PDT)
+From:   Fabio Estevam <festevam@gmail.com>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, horia.geanta@nxp.com,
+        Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/2] crypto: mxs-dcp - Use devm_platform_ioremap_resource()
+Date:   Thu,  6 Jun 2019 13:13:48 -0300
+Message-Id: <20190606161349.5227-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, 6 Jun 2019 20:36:17 +0530
-Nishad Kamdar <nishadkamdar@gmail.com> wrote:
+Use devm_platform_ioremap_resource() to simplify the code a bit.
 
-> This patch corrects the SPDX License Identifier style
-> in header file related to Crypto Drivers for Hisilicon
-> SEC Engine in Hip06 and Hip07.
-> For C header files Documentation/process/license-rules.rst
-> mandates C-like comments (opposed to C source files where
-> C++ style should be used)
-> 
-> Changes made by using a script provided by Joe Perches here:
-> https://lkml.org/lkml/2019/2/7/46
-> 
-> Suggested-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+ drivers/crypto/mxs-dcp.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  drivers/crypto/hisilicon/sec/sec_drv.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/crypto/hisilicon/sec/sec_drv.h b/drivers/crypto/hisilicon/sec/sec_drv.h
-> index 2d2f186674ba..4d9063a8b10b 100644
-> --- a/drivers/crypto/hisilicon/sec/sec_drv.h
-> +++ b/drivers/crypto/hisilicon/sec/sec_drv.h
-> @@ -1,4 +1,4 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +/* SPDX-License-Identifier: GPL-2.0 */
->  /* Copyright (c) 2016-2017 Hisilicon Limited. */
->  
->  #ifndef _SEC_DRV_H_
-
+diff --git a/drivers/crypto/mxs-dcp.c b/drivers/crypto/mxs-dcp.c
+index bdc4c42d3ac8..f1fa637cb029 100644
+--- a/drivers/crypto/mxs-dcp.c
++++ b/drivers/crypto/mxs-dcp.c
+@@ -986,8 +986,6 @@ static int mxs_dcp_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct dcp *sdcp = NULL;
+ 	int i, ret;
+-
+-	struct resource *iores;
+ 	int dcp_vmi_irq, dcp_irq;
+ 
+ 	if (global_sdcp) {
+@@ -995,7 +993,6 @@ static int mxs_dcp_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	dcp_vmi_irq = platform_get_irq(pdev, 0);
+ 	if (dcp_vmi_irq < 0) {
+ 		dev_err(dev, "Failed to get IRQ: (%d)!\n", dcp_vmi_irq);
+@@ -1013,7 +1010,7 @@ static int mxs_dcp_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	sdcp->dev = dev;
+-	sdcp->base = devm_ioremap_resource(dev, iores);
++	sdcp->base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(sdcp->base))
+ 		return PTR_ERR(sdcp->base);
+ 
+-- 
+2.17.1
 
