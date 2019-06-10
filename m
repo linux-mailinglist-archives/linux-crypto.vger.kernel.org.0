@@ -2,210 +2,112 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FE13B349
-	for <lists+linux-crypto@lfdr.de>; Mon, 10 Jun 2019 12:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDD63B38F
+	for <lists+linux-crypto@lfdr.de>; Mon, 10 Jun 2019 12:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389328AbfFJKgj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 10 Jun 2019 06:36:39 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58327 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388708AbfFJKgj (ORCPT
+        id S2388749AbfFJK6S (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 10 Jun 2019 06:58:18 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:42790 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388100AbfFJK6S (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 10 Jun 2019 06:36:39 -0400
-X-UUID: e94ee55e12924c7ab24c280262a0d252-20190610
-X-UUID: e94ee55e12924c7ab24c280262a0d252-20190610
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
-        (envelope-from <neal.liu@mediatek.com>)
-        (mhqrelay.mediatek.com ESMTP with TLS)
-        with ESMTP id 334693022; Mon, 10 Jun 2019 18:36:35 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Mon, 10 Jun 2019 18:36:33 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Mon, 10 Jun 2019 18:36:33 +0800
-From:   Neal Liu <neal.liu@mediatek.com>
-To:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>
-CC:     Neal Liu <neal.liu@mediatek.com>, <linux-crypto@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        Crystal Guo <Crystal.Guo@mediatek.com>
-Subject: [PATCH v3 3/3] hwrng: add mtk-sec-rng driver
-Date:   Mon, 10 Jun 2019 18:36:24 +0800
-Message-ID: <1560162984-26104-4-git-send-email-neal.liu@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1560162984-26104-1-git-send-email-neal.liu@mediatek.com>
-References: <1560162984-26104-1-git-send-email-neal.liu@mediatek.com>
+        Mon, 10 Jun 2019 06:58:18 -0400
+Received: by mail-io1-f68.google.com with SMTP id u19so6495800ior.9
+        for <linux-crypto@vger.kernel.org>; Mon, 10 Jun 2019 03:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c/b3tFGEWgoEdACLdg7bokuFxZeG6ioFu7pHbHubtFI=;
+        b=ZxLTd3tK5rGZM6S/oPVuEsCRQRG6sqjjVvC72/00peTjqUw43MsXlIruiVrqQ/lu9e
+         9vFdvWqlAZxyAWnU40mxayVAsSHBXA39zzKfoydpGIYpF0Fps6tDAkh1A9akJIkB+MAx
+         NQFEvdBSkA+5ff55xrX5PHjx58LEnIlhXtA4CY0I9Frq1eEXBlWa72loYV9l4hdO4QFb
+         jO4Q3hIZFPegygoQNy7dbaNTNCXscGAZy4pXv9AnlPuAcGG4McsSqj9RV9C2IORKWTN+
+         1dY4w9VWso8rMkQe6+BwexeSH6S2t/6yrHxo2AnkzguU6NxuqNHR4qhu7FkwCCy7ZQ7r
+         iHhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c/b3tFGEWgoEdACLdg7bokuFxZeG6ioFu7pHbHubtFI=;
+        b=ZMe9Q6IO9r1uj4Ly7Vxh8tGjLG+y67+6m5NSv5qYOwipUGYG0thH6Rc0YEsVU+SjRL
+         R/066XDvo+EpSKMvj4N6EyLKq5Wq2sLQ6W1PWnXtsjTNce1bX+v7a4QNiqxyTHhDvynT
+         COGMKPhUBVE7g6vKKdydd/nVzSKJ+kG7u3uMJX1wYnfY1oYKD4XLreq9Cg343mxnP66A
+         /l4+ux3b1qfW8JqSSAem0OvHj3ye6mP1TLF41ksmbEvIx1llqn7c0gkZObJdij1l3Elg
+         yaUsWsmLgkakDsrHj912I8bFZL8xNT3QGQdLkLXhf0bSQuD/3p7WBhZGhLqzEYVEHB5F
+         Sxvw==
+X-Gm-Message-State: APjAAAUfhfz+ZGDMwdNWTo9ovnGusoeS8H/MlLD2rGnF2Z7qGLGoNoz6
+        hxqgWtLfft0JNoeaNO68BDrgVFTd9nYwjDG7LSKVzQ==
+X-Google-Smtp-Source: APXvYqwcRurlC0KKJ62r5ApibARM+qdQ7meWrwXkgJri6K8WHRmL/lsqRVwhESAZpZPNromQfB+E0wEWUv/kHehTPBI=
+X-Received: by 2002:a05:6602:98:: with SMTP id h24mr9343513iob.49.1560164297208;
+ Mon, 10 Jun 2019 03:58:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20190609115509.26260-1-ard.biesheuvel@linaro.org>
+ <20190609115509.26260-3-ard.biesheuvel@linaro.org> <107dc7707e6c9d0110aa5535bd5baf4f6db7f6a5.camel@sipsolutions.net>
+In-Reply-To: <107dc7707e6c9d0110aa5535bd5baf4f6db7f6a5.camel@sipsolutions.net>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Mon, 10 Jun 2019 12:58:04 +0200
+Message-ID: <CAKv+Gu9jknEqPN15pKW7PGDww_xcoF0o5piUi0SJphw2e_QwTA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] net/mac80211: move WEP handling to ARC4 library interface
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Biggers <ebiggers@google.com>,
+        "<linux-wireless@vger.kernel.org>" <linux-wireless@vger.kernel.org>,
+        "John W. Linville" <linville@tuxdriver.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-For MediaTek SoCs on ARMv8 with TrustZone enabled, peripherals like
-entropy sources is not accessible from normal world (linux) and
-rather accessible from secure world (ATF/TEE) only. This driver aims
-to provide a generic interface to ATF rng service.
+On Sun, 9 Jun 2019 at 22:09, Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> Hi Ard,
+>
+> In general, I have no objections to this.
+>
+> However, with this
+>
+> > -     select CRYPTO_ARC4
+> > +     select CRYPTO_LIB_ARC4
+>
+> and this
+>
+> >       case WLAN_CIPHER_SUITE_WEP40:
+> >       case WLAN_CIPHER_SUITE_TKIP:
+> >       case WLAN_CIPHER_SUITE_WEP104:
+> > -             if (IS_ERR(local->wep_tx_tfm))
+> > -                     return -EINVAL;
+> > -             break;
+>
+> there's one quirk that I worry about. Does this mean WEP is now *always*
+> available/enabled?
+>
+> I had to dig in history a bit, but vaguely remembered this commit:
+>
+> commit 3473187d2459a078e00e5fac8aafc30af69c57fa
+> Author: John W. Linville <linville@tuxdriver.com>
+> Date:   Wed Jul 7 15:07:49 2010 -0400
+>
+>     mac80211: remove wep dependency
+>
+>
+> Since you create the new CRYPTO_LIB_ARC4 in patch 1, I wonder if
+> something is broken? I can't really seem to figure out how WEP is
+> disallowed in FIPS mode to start with though.
+>
+>
+> (This also is the reason for all the code that removes WEP/TKIP from the
+> list of permitted cipher suites when ARC4 isn't available...)
+>
 
-Signed-off-by: Neal Liu <neal.liu@mediatek.com>
----
- drivers/char/hw_random/Kconfig       |   16 ++++++
- drivers/char/hw_random/Makefile      |    1 +
- drivers/char/hw_random/mtk-sec-rng.c |   97 ++++++++++++++++++++++++++++++++++
- 3 files changed, 114 insertions(+)
- create mode 100644 drivers/char/hw_random/mtk-sec-rng.c
+Good point. And in the future, there may be other reasons besides FIPS
+compliance to turn off WEP support, so it makes sense to retain this
+logic.
 
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 25a7d8f..6c82a3b 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -398,6 +398,22 @@ config HW_RANDOM_MTK
- 
- 	  If unsure, say Y.
- 
-+config HW_RANDOM_MTK_SEC
-+	tristate "MediaTek Security Random Number Generator support"
-+	depends on HW_RANDOM
-+	depends on ARCH_MEDIATEK || COMPILE_TEST
-+	default HW_RANDOM
-+	help
-+	  This driver provides kernel-side support for the Random Number
-+	  Generator hardware found on MediaTek SoCs. The difference with
-+	  mtk-rng is the Random Number Generator hardware is secure
-+	  access only.
-+
-+	  To compile this driver as a module, choose M here. the
-+	  module will be called mtk-sec-rng.
-+
-+	  If unsure, say Y.
-+
- config HW_RANDOM_S390
- 	tristate "S390 True Random Number Generator support"
- 	depends on S390
-diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-index 7c9ef4a..0ae4993 100644
---- a/drivers/char/hw_random/Makefile
-+++ b/drivers/char/hw_random/Makefile
-@@ -36,6 +36,7 @@ obj-$(CONFIG_HW_RANDOM_PIC32) += pic32-rng.o
- obj-$(CONFIG_HW_RANDOM_MESON) += meson-rng.o
- obj-$(CONFIG_HW_RANDOM_CAVIUM) += cavium-rng.o cavium-rng-vf.o
- obj-$(CONFIG_HW_RANDOM_MTK)	+= mtk-rng.o
-+obj-$(CONFIG_HW_RANDOM_MTK_SEC) += mtk-sec-rng.o
- obj-$(CONFIG_HW_RANDOM_S390) += s390-trng.o
- obj-$(CONFIG_HW_RANDOM_KEYSTONE) += ks-sa-rng.o
- obj-$(CONFIG_HW_RANDOM_OPTEE) += optee-rng.o
-diff --git a/drivers/char/hw_random/mtk-sec-rng.c b/drivers/char/hw_random/mtk-sec-rng.c
-new file mode 100644
-index 0000000..ecd2e29
---- /dev/null
-+++ b/drivers/char/hw_random/mtk-sec-rng.c
-@@ -0,0 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2019 MediaTek Inc.
-+ */
-+
-+#include <linux/arm-smccc.h>
-+#include <linux/hw_random.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/soc/mediatek/mtk_sip_svc.h>
-+
-+#define MT67XX_RNG_MAGIC	0x74726e67
-+#define SMC_RET_NUM		4
-+#define MTK_SEC_RND_SIZE	(sizeof(u32) * SMC_RET_NUM)
-+
-+struct mtk_sec_rng_priv {
-+	struct hwrng rng;
-+};
-+
-+static void mtk_sec_get_rnd(uint32_t *val)
-+{
-+	struct arm_smccc_res res;
-+
-+	arm_smccc_smc(MTK_SIP_KERNEL_GET_RND,
-+		      MT67XX_RNG_MAGIC, 0, 0, 0, 0, 0, 0, &res);
-+
-+	val[0] = res.a0;
-+	val[1] = res.a1;
-+	val[2] = res.a2;
-+	val[3] = res.a3;
-+}
-+
-+static int mtk_sec_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
-+{
-+	u32 val[4] = {0};
-+	int retval = 0;
-+	int i;
-+
-+	while (max >= MTK_SEC_RND_SIZE) {
-+		mtk_sec_get_rnd(val);
-+
-+		for (i = 0; i < SMC_RET_NUM; i++) {
-+			*(u32 *)buf = val[i];
-+			buf += sizeof(u32);
-+		}
-+
-+		retval += MTK_SEC_RND_SIZE;
-+		max -= MTK_SEC_RND_SIZE;
-+	}
-+
-+	return retval;
-+}
-+
-+static int mtk_sec_rng_probe(struct platform_device *pdev)
-+{
-+	struct mtk_sec_rng_priv *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->rng.name = pdev->name;
-+	priv->rng.read = mtk_sec_rng_read;
-+	priv->rng.priv = (unsigned long)&pdev->dev;
-+	priv->rng.quality = 900;
-+
-+	ret = devm_hwrng_register(&pdev->dev, &priv->rng);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to register rng device: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id mtk_sec_rng_match[] = {
-+	{ .compatible = "mediatek,mtk-sec-rng", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, mtk_sec_rng_match);
-+
-+static struct platform_driver mtk_sec_rng_driver = {
-+	.probe = mtk_sec_rng_probe,
-+	.driver = {
-+		.name = KBUILD_MODNAME,
-+		.owner = THIS_MODULE,
-+		.of_match_table = mtk_sec_rng_match,
-+	},
-+};
-+
-+module_platform_driver(mtk_sec_rng_driver);
-+
-+MODULE_DESCRIPTION("MediaTek Security Random Number Generator Driver");
-+MODULE_AUTHOR("Neal Liu <neal.liu@mediatek.com>");
-+MODULE_LICENSE("GPL");
--- 
-1.7.9.5
-
+I am still curious whether FIPS compliance actually requires us to do
+this, or whether that code is simply there to work around the lack of
+RC4 in the crypto API when FIPS support happens to be enabled.
