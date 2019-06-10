@@ -2,24 +2,24 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A323B352
-	for <lists+linux-crypto@lfdr.de>; Mon, 10 Jun 2019 12:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1082A3B34E
+	for <lists+linux-crypto@lfdr.de>; Mon, 10 Jun 2019 12:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389466AbfFJKgm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 10 Jun 2019 06:36:42 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:16561 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2389308AbfFJKgm (ORCPT
+        id S2389524AbfFJKgt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 10 Jun 2019 06:36:49 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:6479 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2389217AbfFJKgn (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 10 Jun 2019 06:36:42 -0400
-X-UUID: c4feae6bd63740d299065c72a64fd4a0-20190610
-X-UUID: c4feae6bd63740d299065c72a64fd4a0-20190610
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        Mon, 10 Jun 2019 06:36:43 -0400
+X-UUID: fbe0b5d2e00a47b19b283de073143dad-20190610
+X-UUID: fbe0b5d2e00a47b19b283de073143dad-20190610
+Received: from mtkcas09.mediatek.inc [(172.21.101.178)] by mailgw02.mediatek.com
         (envelope-from <neal.liu@mediatek.com>)
         (mhqrelay.mediatek.com ESMTP with TLS)
-        with ESMTP id 1785317434; Mon, 10 Jun 2019 18:36:34 +0800
+        with ESMTP id 697743266; Mon, 10 Jun 2019 18:36:35 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
  15.0.1395.4; Mon, 10 Jun 2019 18:36:33 +0800
 Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
@@ -37,55 +37,69 @@ CC:     Neal Liu <neal.liu@mediatek.com>, <linux-crypto@vger.kernel.org>,
         <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
         Crystal Guo <Crystal.Guo@mediatek.com>
-Subject: [PATCH v3 0/3] MediaTek Security random number generator support
-Date:   Mon, 10 Jun 2019 18:36:21 +0800
-Message-ID: <1560162984-26104-1-git-send-email-neal.liu@mediatek.com>
+Subject: [PATCH v3 1/3] soc: mediatek: add SMC fid table for SIP interface
+Date:   Mon, 10 Jun 2019 18:36:22 +0800
+Message-ID: <1560162984-26104-2-git-send-email-neal.liu@mediatek.com>
 X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <1560162984-26104-1-git-send-email-neal.liu@mediatek.com>
+References: <1560162984-26104-1-git-send-email-neal.liu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-SNTS-SMTP: AB049FDEE81F782DF02F0C1296A73261E00F082DEA0E126DB98903FBC0B15F5C2000:8
 X-MTK:  N
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-These patch series introduce a generic rng driver for Trustzone
-based kernel driver which would like to communicate with ATF
-SIP services.
+1. Add a header file to provide SIP interface to ATF
+2. Add hwrng SMC fid
 
-Patch #1 initials SMC fid table for Mediatek SIP interfaces and
-adds HWRNG related SMC call.
-
-Patch #2..3 adds mtk-sec-rng kernel driver for Trustzone based SoCs.
-For MediaTek SoCs on ARMv8 with TrustZone enabled, peripherals like
-entropy sources is not accessible from normal world (linux) and
-rather accessible from secure world (ATF/TEE) only. This driver aims
-to provide a generic interface to ATF rng service.
-
-
-changes since v1:
-- rename mt67xx-rng to mtk-sec-rng since all MediaTek ARMv8 SoCs
-can reuse this driver.
-- refine coding style and unnecessary check.
-
-changes since v2:
-- remove unused comments.
-- remove redundant variable.
-
-Neal Liu (3):
-  soc: mediatek: add SMC fid table for SIP interface
-  dt-bindings: rng: update bindings for MediaTek ARMv8 SoCs
-  hwrng: add mtk-sec-rng driver
-
- .../devicetree/bindings/rng/mtk-rng.txt       | 15 ++-
- drivers/char/hw_random/Kconfig                | 16 +++
- drivers/char/hw_random/Makefile               |  1 +
- drivers/char/hw_random/mtk-sec-rng.c          | 97 +++++++++++++++++++
- include/linux/soc/mediatek/mtk_sip_svc.h      | 33 +++++++
- 5 files changed, 159 insertions(+), 3 deletions(-)
- create mode 100644 drivers/char/hw_random/mtk-sec-rng.c
+Signed-off-by: Neal Liu <neal.liu@mediatek.com>
+---
+ include/linux/soc/mediatek/mtk_sip_svc.h |   33 ++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
  create mode 100644 include/linux/soc/mediatek/mtk_sip_svc.h
 
+diff --git a/include/linux/soc/mediatek/mtk_sip_svc.h b/include/linux/soc/mediatek/mtk_sip_svc.h
+new file mode 100644
+index 0000000..e70c325
+--- /dev/null
++++ b/include/linux/soc/mediatek/mtk_sip_svc.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (c) 2019 MediaTek Inc.
++ */
++
++#ifndef _MTK_SECURE_API_H_
++#define _MTK_SECURE_API_H_
++
++#include <linux/kernel.h>
++
++/* Error Code */
++#define SIP_SVC_E_SUCCESS		0
++#define SIP_SVC_E_NOT_SUPPORTED		-1
++#define SIP_SVC_E_INVALID_PARAMS	-2
++#define SIP_SVC_E_INVALID_RANGE		-3
++#define SIP_SVC_E_PERMISSION_DENY	-4
++
++#ifdef CONFIG_ARM64
++#define MTK_SIP_SMC_AARCH_BIT		BIT(30)
++#else
++#define MTK_SIP_SMC_AARCH_BIT		0
++#endif
++
++/*******************************************************************************
++ * Defines for Mediatek runtime services func ids
++ ******************************************************************************/
++
++/* Security related SMC call */
++/* HWRNG */
++#define MTK_SIP_KERNEL_GET_RND \
++	(0x82000206 | MTK_SIP_SMC_AARCH_BIT)
++
++#endif /* _MTK_SECURE_API_H_ */
 -- 
-2.18.0
+1.7.9.5
 
