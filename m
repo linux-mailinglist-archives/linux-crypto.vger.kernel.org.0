@@ -2,123 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA9D3C119
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jun 2019 03:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D325E3C33B
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jun 2019 07:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390400AbfFKByh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 10 Jun 2019 21:54:37 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:34358 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390388AbfFKByg (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 10 Jun 2019 21:54:36 -0400
-Received: by mail-pf1-f195.google.com with SMTP id c85so6367245pfc.1
-        for <linux-crypto@vger.kernel.org>; Mon, 10 Jun 2019 18:54:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d8vqyEfyEGXEarVNNYpCOFtLHlqzQ7o7fyj/liwhzuE=;
-        b=dQpPZ6woCtcySsrf4Ul24GN4v7BttX0OsyBXheASptYvWUSyDbA8NWCGKPrtzLqrrv
-         l7K8qC2z/2pi73CIZUzt9wGWtnEYd8AlZiYKTJWC787q4ePdDEMTa8c4vEX7IO97tRxm
-         +3EMgB0ZMLZh1elTgLedz+xdXlx53qs8ajD7M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d8vqyEfyEGXEarVNNYpCOFtLHlqzQ7o7fyj/liwhzuE=;
-        b=ilO/gBJ7FlAyn3p2VurGtVZJjMSxCcdxmfkXqdWv1a6tMrDaGX+5MzO+Lx26JIaHJK
-         Cxg5lrYnnLjWRbDmjEI+gIAcGPQZVE+zNNVVjXzTEefdEReYstYQUNOU0Up+YStDf3GH
-         kUqr5B7Lq0q1xKlK79zu4Wak+1W6MKnvpJgl1kKBdRFDiiJGItryZRTogCD9ijhfcbja
-         xDv4dEBiHRf01GenMvp6buFBDq/7kUbPvHsxn7DRLMnefoySXjd0auLu42J82mte3ud0
-         fBxIkKG0sVZNofEiUm4ahXMkPcntUqM/yAeN0gDxLj43cFfvgdlWLByl738F8+u6N5RD
-         smjg==
-X-Gm-Message-State: APjAAAVqlQs1VVEuW4KDk1Ps2eqCBbDy8nppludGfXLzdbO48QZrjpCj
-        1NP9zxclrOKl1kwtvu0EXEzbhw==
-X-Google-Smtp-Source: APXvYqw3WSeugZDuLtsfP733puLMUeQvH9dbPzsXTHy2ldDDcutOiW/unPP4BCv/v+BIqhRKFY58ig==
-X-Received: by 2002:a65:6284:: with SMTP id f4mr18441480pgv.14.1560218076066;
-        Mon, 10 Jun 2019 18:54:36 -0700 (PDT)
-Received: from localhost (ppp167-251-205.static.internode.on.net. [59.167.251.205])
-        by smtp.gmail.com with ESMTPSA id b26sm7741233pfo.129.2019.06.10.18.54.34
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 10 Jun 2019 18:54:35 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     mpe@ellerman.id.au, ebiggers@kernel.org,
-        linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     marcelo.cerri@canonical.com, Stephan Mueller <smueller@chronox.de>,
-        leo.barbosa@canonical.com, linuxppc-dev@lists.ozlabs.org,
-        nayna@linux.ibm.com, pfsmorigo@gmail.com, leitao@debian.org,
-        gcwilson@linux.ibm.com, omosnacek@gmail.com
-Subject: [PATCH] crypto: vmx - Document CTR mode counter width quirks
-Date:   Tue, 11 Jun 2019 11:54:31 +1000
-Message-Id: <20190611015431.26772-1-dja@axtens.net>
-X-Mailer: git-send-email 2.20.1
+        id S2391214AbfFKFKF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Tue, 11 Jun 2019 01:10:05 -0400
+Received: from slot0.etcslc.ga ([85.204.116.123]:51300 "EHLO slot0.etcslc.ga"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390911AbfFKFKF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 11 Jun 2019 01:10:05 -0400
+X-Greylist: delayed 625 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 Jun 2019 01:10:04 EDT
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Quation needed For June Inquiry
+To:     Recipients <purchase@greattrades.ga>
+From:   "Jpexcc Salesi" <purchase@greattrades.ga>
+Date:   Tue, 11 Jun 2019 07:50:01 +0300
+Reply-To: jpexcc@aol.com
+Message-ID: <0.0.0.CF8.1D52011124414C4.0@slot0.etcslc.ga>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The CTR code comes from OpenSSL, where it does a 32-bit counter.
-The kernel has a 128-bit counter. This difference has lead to
-issues.
-
-Document it.
-
-Signed-off-by: Daniel Axtens <dja@axtens.net>
----
- drivers/crypto/vmx/aesp8-ppc.pl | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/crypto/vmx/aesp8-ppc.pl b/drivers/crypto/vmx/aesp8-ppc.pl
-index 9c6b5c1d6a1a..db874367b602 100644
---- a/drivers/crypto/vmx/aesp8-ppc.pl
-+++ b/drivers/crypto/vmx/aesp8-ppc.pl
-@@ -1286,6 +1286,24 @@ ___
+Hello dear,
  
- #########################################################################
- {{{	# CTR procedure[s]						#
-+
-+####################### WARNING: Here be dragons! #######################
-+#
-+# This code is written as 'ctr32', based on a 32-bit counter used
-+# upstream. The kernel does *not* use a 32-bit counter. The kernel uses
-+# a 128-bit counter.
-+#
-+# This leads to subtle changes from the upstream code: the counter
-+# is incremented with vaddu_q_m rather than vaddu_w_m. This occurs in
-+# both the bulk (8 blocks at a time) path, and in the individual block
-+# path. Be aware of this when doing updates.
-+#
-+# See:
-+# 1d4aa0b4c181 ("crypto: vmx - Fixing AES-CTR counter bug")
-+# 009b30ac7444 ("crypto: vmx - CTR: always increment IV as quadword")
-+# https://github.com/openssl/openssl/pull/8942
-+#
-+#########################################################################
- my ($inp,$out,$len,$key,$ivp,$x10,$rounds,$idx)=map("r$_",(3..10));
- my ($rndkey0,$rndkey1,$inout,$tmp)=		map("v$_",(0..3));
- my ($ivec,$inptail,$inpperm,$outhead,$outperm,$outmask,$keyperm,$one)=
-@@ -1357,7 +1375,7 @@ Loop_ctr32_enc:
- 	addi		$idx,$idx,16
- 	bdnz		Loop_ctr32_enc
+We are in the market for your products after meeting at your stand during last expo.
  
--	vadduqm		$ivec,$ivec,$one
-+	vadduqm		$ivec,$ivec,$one	# Kernel change for 128-bit
- 	 vmr		$dat,$inptail
- 	 lvx		$inptail,0,$inp
- 	 addi		$inp,$inp,16
-@@ -1501,7 +1519,7 @@ Load_ctr32_enc_key:
- 	$SHL		$len,$len,4
+Please kindly send us your latest catalog and price list so as to start a new project/order as promised during the exhibition. 
  
- 	vadduqm		$out1,$ivec,$one	# counter values ...
--	vadduqm		$out2,$ivec,$two
-+	vadduqm		$out2,$ivec,$two	# (do all ctr adds as 128-bit)
- 	vxor		$out0,$ivec,$rndkey0	# ... xored with rndkey[0]
- 	 le?li		$idx,8
- 	vadduqm		$out3,$out1,$two
--- 
-2.20.1
-
+I would appreciate your response about the above details required so we can revert back to you asap.
+ 
+Kind regards
+ 
+Rhema Zoeh
