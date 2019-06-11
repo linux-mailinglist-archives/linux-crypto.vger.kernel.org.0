@@ -2,110 +2,101 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E743C43C
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jun 2019 08:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775C53C7BB
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jun 2019 11:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404196AbfFKGa1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 11 Jun 2019 02:30:27 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49774 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404193AbfFKGa1 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 11 Jun 2019 02:30:27 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5B6TRfN038344
-        for <linux-crypto@vger.kernel.org>; Tue, 11 Jun 2019 02:30:25 -0400
-Received: from e35.co.us.ibm.com (e35.co.us.ibm.com [32.97.110.153])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2t241np3md-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-crypto@vger.kernel.org>; Tue, 11 Jun 2019 02:30:25 -0400
-Received: from localhost
-        by e35.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-crypto@vger.kernel.org> from <bauerman@linux.ibm.com>;
-        Tue, 11 Jun 2019 07:30:24 +0100
-Received: from b03cxnp08026.gho.boulder.ibm.com (9.17.130.18)
-        by e35.co.us.ibm.com (192.168.1.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 11 Jun 2019 07:30:20 +0100
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5B6UIWP26280258
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Jun 2019 06:30:18 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 09AD7C605B;
-        Tue, 11 Jun 2019 06:30:18 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 843A5C606C;
-        Tue, 11 Jun 2019 06:30:13 +0000 (GMT)
-Received: from morokweng.localdomain.com (unknown [9.85.227.34])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 11 Jun 2019 06:30:13 +0000 (GMT)
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Subject: [PATCH v11 13/13] ima: Allow template= option for appraise rules as well
-Date:   Tue, 11 Jun 2019 03:28:17 -0300
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190611062817.18412-1-bauerman@linux.ibm.com>
-References: <20190611062817.18412-1-bauerman@linux.ibm.com>
+        id S1729018AbfFKJ4p (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 11 Jun 2019 05:56:45 -0400
+Received: from mail-eopbgr80077.outbound.protection.outlook.com ([40.107.8.77]:1856
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727726AbfFKJ4p (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 11 Jun 2019 05:56:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P2+iRFvcKX/B0Fgo8rl2Va9Wr5wecC2g8skImnvvOt4=;
+ b=d6W435ilLK7PLGLjYDS65kjb9XWAWxAHO/05QG3z/K6WUnla3HS1p8YmhKuYy8XqN5MpO0Gr+vM5Y2JanNOk2Dy4OQeCdFLvKHPM+rTxjnlrHLgJ9SXaScnh2UB3g1OlVhFSOwLnO4mFFhE7olIqKc9A88WZ+jHZRm5uSIHz4Ik=
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com (52.134.3.153) by
+ VI1PR0402MB3677.eurprd04.prod.outlook.com (52.134.15.19) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1965.15; Tue, 11 Jun 2019 09:56:41 +0000
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::ccaf:f4a1:704a:e745]) by VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::ccaf:f4a1:704a:e745%4]) with mapi id 15.20.1965.017; Tue, 11 Jun 2019
+ 09:56:41 +0000
+From:   Horia Geanta <horia.geanta@nxp.com>
+To:     Andrey Smirnov <andrew.smirnov@gmail.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+CC:     Chris Spencer <christopher.spencer@sea.co.uk>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Cory Tusar <cory.tusar@zii.aero>,
+        Chris Healy <cphealy@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v2 1/4] crypto: caam - do not initialise clocks on the
+ i.MX8
+Thread-Topic: [PATCH v2 1/4] crypto: caam - do not initialise clocks on the
+ i.MX8
+Thread-Index: AQHVHWwGsMxFSBPcUUWzlXHZD6TwyA==
+Date:   Tue, 11 Jun 2019 09:56:40 +0000
+Message-ID: <VI1PR0402MB34855AC8C617A3D7A584A1B798ED0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+References: <20190607200225.21419-1-andrew.smirnov@gmail.com>
+ <20190607200225.21419-2-andrew.smirnov@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=horia.geanta@nxp.com; 
+x-originating-ip: [212.146.100.6]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1e8d4328-fb86-46c4-d806-08d6ee531a5d
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR0402MB3677;
+x-ms-traffictypediagnostic: VI1PR0402MB3677:
+x-microsoft-antispam-prvs: <VI1PR0402MB3677CB501F7CA9E8DBD6238098ED0@VI1PR0402MB3677.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 006546F32A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(366004)(39860400002)(346002)(396003)(136003)(189003)(199004)(4744005)(66066001)(3846002)(4326008)(52536014)(2906002)(74316002)(81156014)(6116002)(71200400001)(81166006)(71190400001)(8936002)(305945005)(55016002)(229853002)(7736002)(8676002)(478600001)(14454004)(2501003)(6436002)(66476007)(110136005)(66446008)(66556008)(476003)(53936002)(5660300002)(64756008)(316002)(102836004)(25786009)(54906003)(9686003)(76116006)(86362001)(66946007)(256004)(446003)(73956011)(53546011)(68736007)(76176011)(6246003)(33656002)(26005)(186003)(7696005)(6506007)(486006)(99286004)(44832011);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0402MB3677;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 4uFTjBb6zhrXMfmPlFhHOYmNtCiQlApNIOx70ctP1hwMNDQ67bZ+/atSKi20MNYngJ5dBvxqUUaQT4erMpdgwQN3I4kPZIMBXRcnQQY/El7bahjEJiTHxzyYHyHkQsJPlKn/5B8O/XDjaAejlQ1aHbIPF0v0mGPiYnsTz3L+PlK1YRW3kvXkQ9fnWubkTPlQ6i+tiRKelx+BghBpz+XD4dnbjIed2iVODQQ8bX4sWkP5bUyIYGD0cFAxQqHD00lhn79Ol3u2iSc0XPci6VS/7LevdcoZxoCFawBdJBHdOcN3vuQfqHSqTx3OiAtbQnDAta2739fWAolNnA0EECRO5PbzjkhGmqC71nruW33bw2Eou21L7eZfV79CFtfk4jg42DVw3olSD5pDLCBvSw4VZRpgR343ejwtvoVaLzGwDoE=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19061106-0012-0000-0000-00001742EB62
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011245; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01216304; UDB=6.00639510; IPR=6.00997404;
- MB=3.00027259; MTD=3.00000008; XFM=3.00000015; UTC=2019-06-11 06:30:24
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19061106-0013-0000-0000-000057A5FBBC
-Message-Id: <20190611062817.18412-14-bauerman@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-11_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=846 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906110044
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e8d4328-fb86-46c4-d806-08d6ee531a5d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2019 09:56:40.9638
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: horia.geanta@nxp.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3677
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-It's useful being able to specify a different IMA template on appraise
-policy rules, so allow it.
-
-Signed-off-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
----
- security/integrity/ima/ima_policy.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index 6463ab8921ea..1ac1ef458f2e 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -1110,7 +1110,8 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
- 			break;
- 		case Opt_template:
- 			ima_log_string(ab, "template", args[0].from);
--			if (entry->action != MEASURE) {
-+			if (entry->action != MEASURE &&
-+			    entry->action != APPRAISE) {
- 				result = -EINVAL;
- 				break;
- 			}
-
+On 6/7/2019 11:03 PM, Andrey Smirnov wrote:=0A=
+> From: Chris Spencer <christopher.spencer@sea.co.uk>=0A=
+> =0A=
+> There are no clocks that the CAAM driver needs to initialise on the=0A=
+> i.MX8.=0A=
+> =0A=
+RM lists 5 clocks for CAAM module (instance.clock): caam.aclk, caam.ipg_clk=
+,=0A=
+caam.ipg_clk_s, caam_exsc.aclk_exsc, caam_mem.clk=0A=
+				=0A=
+Wouldn't it be better to have these clocks in DT, instead of relying that t=
+heir=0A=
+root clocks (ccm_ahb_clk_root, ccm_ipg_clk_root) are critical / always on?=
+=0A=
+=0A=
+Thanks,=0A=
+Horia=0A=
+=0A=
