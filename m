@@ -2,59 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF85F418AB
-	for <lists+linux-crypto@lfdr.de>; Wed, 12 Jun 2019 01:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9686418AF
+	for <lists+linux-crypto@lfdr.de>; Wed, 12 Jun 2019 01:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407948AbfFKXJw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 11 Jun 2019 19:09:52 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44382 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407947AbfFKXJw (ORCPT
+        id S2407945AbfFKXJz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 11 Jun 2019 19:09:55 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:37408 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407944AbfFKXJy (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 11 Jun 2019 19:09:52 -0400
-Received: by mail-wr1-f66.google.com with SMTP id b17so14781806wrq.11
-        for <linux-crypto@vger.kernel.org>; Tue, 11 Jun 2019 16:09:51 -0700 (PDT)
+        Tue, 11 Jun 2019 19:09:54 -0400
+Received: by mail-wr1-f65.google.com with SMTP id v14so14787857wrr.4
+        for <linux-crypto@vger.kernel.org>; Tue, 11 Jun 2019 16:09:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fbFfAJKsga0PzbfD0B7XAZEFIq7kpWzA1cLLaRgcgAY=;
-        b=bOMcCobRUQbk/QWR7eKt7dvcIO0/PB+C9MITBHROZlDjRAiTT8Bjqy/Bjq2LgiSVgt
-         0aXXFQ/4ztEH4TNl9zvaHP5v8QAwk06nExUBzQBEFgAIHrFrav+jY+9iP1dFGMhanL8i
-         vSWbPhzdmHjTRZknabgxbs5fQ8V5AIjvziK31DYU0GeQ7vO1DomiSd/eDWpSjPoVwO/d
-         /dYeL/KU71bfm60u1owCxpUgVvxp4KJe9CKSCZ4+nOWgkWMiCInPvHlYJcVcXlDUvXrz
-         mEcfH5MJURvp3RYnxSfOBTentrrM22AC1DVf6TjyQB5p2O2oh2SBfLFlJXfJPStCgS/n
-         rUbQ==
+        bh=eTEZv0K1lF9tA5eNEQyGpuRSHV9usD2RVcNmVJMhy6c=;
+        b=H1abtSRnx6N5T81k0VGsqn+9tRmk4pAbxzr3lRfQ+j4SmDl1RkrvCAE7BPiJf2lBJZ
+         10kB5jUCvqgiByC3idIosbVez/e4+1xGGu3jbhAVoM16jnfoy6s+pSuZL+7LL4UMU7DF
+         l7WVxRmklXxwDEqB70kmfZIM6nJrt/2gAS0srMegbNXaTOkpQjE3XpM4z4Sft9BYjOa4
+         DWouJqSTlzOUS8WLONrOzU6zqEevcM596K8N8yvHeE9uzRP2jYSyE6XRIZy6ngUElYiM
+         4gNqfrB0OWs2ndVVGIm4kmrxS7bMBTEW4MqWSPOhk2JcOswRG1FlM5n52JChODddugc+
+         28oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fbFfAJKsga0PzbfD0B7XAZEFIq7kpWzA1cLLaRgcgAY=;
-        b=EIYcc0qsH7qmR+BkzrS+bACLGvrS9jQ2mMtIMbda05V8tJ7uDWugGjEG3Ay5Qnyn1D
-         hB4KPKauC9iDfVZsRZaWb77oHl72FAHFP+OALxmNv3QodadIruA4yNU6QChOHH6N3TiB
-         r/1LY8u8FKL0OCJsoBi5AW2gS4jfhKK8aQ60whLJ5GELOL9mOx00qEtoXrYB/K8D1noM
-         2uuLttR69I+gVtU7+LGTYLHUXZN0gNvxfAvDLa+tnFV+abEl0N5txDyiU/uDPilgI9b7
-         v5NfTdV42aZECR0RhYVe7cBRgr2PnHdrrpPfezmzL3phVhveD1t0glWIkBKFbcQQtc7U
-         /E8w==
-X-Gm-Message-State: APjAAAXhCcbWnnvqC0aJ8yWLPxPJKfbl+EPZO5w8QgDu3qqiKvLpFae/
-        lSxWG5y5ZN6jJRdY9PmksDk/QpvQDHak1ik5
-X-Google-Smtp-Source: APXvYqx2rU3S2gqmVNjNoYKBr7y2S77LwQYfTWid0wDD2wkahZA3k43znmmvL18hEIeqdlApXr1DsA==
-X-Received: by 2002:a5d:618d:: with SMTP id j13mr29159735wru.195.1560294590135;
-        Tue, 11 Jun 2019 16:09:50 -0700 (PDT)
+        bh=eTEZv0K1lF9tA5eNEQyGpuRSHV9usD2RVcNmVJMhy6c=;
+        b=HrfK7p1yAF7Rv1a2TirgtugSgBjcYcOWJ9XBf9JJvt+Iv8r7y6jlvSDucf8xNu7GjA
+         dxfmvlMQuj60ZD87xZDsguourKsjhVcq4Ln5DjAtLBMmJUkXQq1Y9LZoYXZdvWQIeJfR
+         fuCMbrZ/K+SqtUQSaEZFax2PzdwCHkpptg0nQQqPr5d9Np4tolQ0AOFr/zQtBLsfqMb3
+         hAZ6GP9jGGThMxK4zbi2W3FTQsRD8BtatUSEl5wpxEGJdRrnghj9i+/WGD5RKsylVZ2v
+         ZzJs+xROZws4qDENOGNrO8u8yjKWLDkKm7dF8+vmBosnO4xkbYQJPwxmqV7f2AUBvUHG
+         lMqQ==
+X-Gm-Message-State: APjAAAW0REYMDN/T4CaRwQ5ZoyEewui4wALlzQo1l/+8oC5/p2dxLS+E
+        9nusqWhfBCdVEOQRf2HBQQJ+cS8sZvMxHIGH
+X-Google-Smtp-Source: APXvYqyWkd+gPYYLCQryzFYO6QGy4fdxARQcia0hJe9jAKbAYrXm05U33E/acrw9mpr8Tx0if9y7qg==
+X-Received: by 2002:a5d:6312:: with SMTP id i18mr11440352wru.203.1560294591558;
+        Tue, 11 Jun 2019 16:09:51 -0700 (PDT)
 Received: from sudo.home ([2a01:cb1d:112:6f00:24bb:7f31:25fe:43a7])
-        by smtp.gmail.com with ESMTPSA id g11sm10827813wrq.89.2019.06.11.16.09.48
+        by smtp.gmail.com with ESMTPSA id g11sm10827813wrq.89.2019.06.11.16.09.50
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 11 Jun 2019 16:09:49 -0700 (PDT)
+        Tue, 11 Jun 2019 16:09:50 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Biggers <ebiggers@google.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v4 5/7] crypto: arc4 - remove cipher implementation
-Date:   Wed, 12 Jun 2019 01:09:36 +0200
-Message-Id: <20190611230938.19265-6-ard.biesheuvel@linaro.org>
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-ppp@vger.kernel.org, Paul Mackerras <paulus@samba.org>
+Subject: [PATCH v4 6/7] ppp: mppe: switch to RC4 library interface
+Date:   Wed, 12 Jun 2019 01:09:37 +0200
+Message-Id: <20190611230938.19265-7-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190611230938.19265-1-ard.biesheuvel@linaro.org>
 References: <20190611230938.19265-1-ard.biesheuvel@linaro.org>
@@ -65,117 +66,257 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-There are no remaining users of the cipher implementation, and there
-are no meaningful ways in which the arc4 cipher can be combined with
-templates other than ECB (and the way we do provide that combination
-is highly dubious to begin with).
+The MPPE code uses the sync skcipher to invoke the ecb(arc4) skcipher,
+of which only a single generic C code implementation exists. This means
+that going through all the trouble of using scatterlists etc buys us
+very little, and we're better off just invoking the arc4 library directly.
 
-So let's drop the arc4 cipher altogether, and only keep the ecb(arc4)
-skcipher, which is used in various places in the kernel.
+Note that the SHA1 shash used by this driver has several accelerated
+implementations for various architectures, so retaining that part does
+make sense.
 
+Cc: linux-ppp@vger.kernel.org
+Cc: Paul Mackerras <paulus@samba.org>
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- crypto/arc4.c | 56 ++++----------------
- 1 file changed, 9 insertions(+), 47 deletions(-)
+ drivers/net/ppp/Kconfig    |  3 +-
+ drivers/net/ppp/ppp_mppe.c | 97 +++-----------------
+ 2 files changed, 15 insertions(+), 85 deletions(-)
 
-diff --git a/crypto/arc4.c b/crypto/arc4.c
-index 6974dba1b7b9..35a44e84158e 100644
---- a/crypto/arc4.c
-+++ b/crypto/arc4.c
-@@ -13,26 +13,15 @@
- #include <linux/init.h>
+diff --git a/drivers/net/ppp/Kconfig b/drivers/net/ppp/Kconfig
+index bf395df3bb37..1a2e2f7629f3 100644
+--- a/drivers/net/ppp/Kconfig
++++ b/drivers/net/ppp/Kconfig
+@@ -87,8 +87,7 @@ config PPP_MPPE
+ 	depends on PPP
+ 	select CRYPTO
+ 	select CRYPTO_SHA1
+-	select CRYPTO_ARC4
+-	select CRYPTO_ECB
++	select CRYPTO_LIB_ARC4
+ 	---help---
+ 	  Support for the MPPE Encryption protocol, as employed by the
+ 	  Microsoft Point-to-Point Tunneling Protocol.
+diff --git a/drivers/net/ppp/ppp_mppe.c b/drivers/net/ppp/ppp_mppe.c
+index ff61dd8748de..de3b57d09d0c 100644
+--- a/drivers/net/ppp/ppp_mppe.c
++++ b/drivers/net/ppp/ppp_mppe.c
+@@ -42,9 +42,10 @@
+  *                    deprecated in 2.6
+  */
+ 
++#include <crypto/arc4.h>
+ #include <crypto/hash.h>
+-#include <crypto/skcipher.h>
+ #include <linux/err.h>
++#include <linux/fips.h>
  #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+@@ -65,13 +66,6 @@ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_ALIAS("ppp-compress-" __stringify(CI_MPPE));
+ MODULE_VERSION("1.0.2");
  
--static int arc4_set_key(struct crypto_tfm *tfm, const u8 *in_key,
--			unsigned int key_len)
-+static int crypto_arc4_setkey(struct crypto_skcipher *tfm, const u8 *in_key,
-+			      unsigned int key_len)
- {
--	struct arc4_ctx *ctx = crypto_tfm_ctx(tfm);
-+	struct arc4_ctx *ctx = crypto_skcipher_ctx(tfm);
- 
- 	return arc4_setkey(ctx, in_key, key_len);
- }
- 
--static int arc4_set_key_skcipher(struct crypto_skcipher *tfm, const u8 *in_key,
--				 unsigned int key_len)
+-static unsigned int
+-setup_sg(struct scatterlist *sg, const void *address, unsigned int length)
 -{
--	return arc4_set_key(&tfm->base, in_key, key_len);
+-	sg_set_buf(sg, address, length);
+-	return length;
 -}
 -
--static void arc4_crypt_one(struct crypto_tfm *tfm, u8 *out, const u8 *in)
--{
--	arc4_crypt(crypto_tfm_ctx(tfm), out, in, 1);
--}
--
--static int ecb_arc4_crypt(struct skcipher_request *req)
-+static int crypto_arc4_crypt(struct skcipher_request *req)
+ #define SHA1_PAD_SIZE 40
+ 
+ /*
+@@ -95,7 +89,7 @@ static inline void sha_pad_init(struct sha_pad *shapad)
+  * State for an MPPE (de)compressor.
+  */
+ struct ppp_mppe_state {
+-	struct crypto_sync_skcipher *arc4;
++	struct arc4_ctx arc4;
+ 	struct shash_desc *sha1;
+ 	unsigned char *sha1_digest;
+ 	unsigned char master_key[MPPE_MAX_KEY_LEN];
+@@ -154,24 +148,11 @@ static void get_new_key_from_sha(struct ppp_mppe_state * state)
+  */
+ static void mppe_rekey(struct ppp_mppe_state * state, int initial_key)
  {
- 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
- 	struct arc4_ctx *ctx = crypto_skcipher_ctx(tfm);
-@@ -50,23 +39,6 @@ static int ecb_arc4_crypt(struct skcipher_request *req)
- 	return err;
+-	struct scatterlist sg_in[1], sg_out[1];
+-	SYNC_SKCIPHER_REQUEST_ON_STACK(req, state->arc4);
+-
+-	skcipher_request_set_sync_tfm(req, state->arc4);
+-	skcipher_request_set_callback(req, 0, NULL, NULL);
+-
+ 	get_new_key_from_sha(state);
+ 	if (!initial_key) {
+-		crypto_sync_skcipher_setkey(state->arc4, state->sha1_digest,
+-					    state->keylen);
+-		sg_init_table(sg_in, 1);
+-		sg_init_table(sg_out, 1);
+-		setup_sg(sg_in, state->sha1_digest, state->keylen);
+-		setup_sg(sg_out, state->session_key, state->keylen);
+-		skcipher_request_set_crypt(req, sg_in, sg_out, state->keylen,
+-					   NULL);
+-		if (crypto_skcipher_encrypt(req))
+-    		    printk(KERN_WARNING "mppe_rekey: cipher_encrypt failed\n");
++		arc4_setkey(&state->arc4, state->sha1_digest, state->keylen);
++		arc4_crypt(&state->arc4, state->session_key, state->sha1_digest,
++			   state->keylen);
+ 	} else {
+ 		memcpy(state->session_key, state->sha1_digest, state->keylen);
+ 	}
+@@ -181,9 +162,7 @@ static void mppe_rekey(struct ppp_mppe_state * state, int initial_key)
+ 		state->session_key[1] = 0x26;
+ 		state->session_key[2] = 0x9e;
+ 	}
+-	crypto_sync_skcipher_setkey(state->arc4, state->session_key,
+-				    state->keylen);
+-	skcipher_request_zero(req);
++	arc4_setkey(&state->arc4, state->session_key, state->keylen);
  }
  
--static struct crypto_alg arc4_cipher = {
--	.cra_name		=	"arc4",
--	.cra_flags		=	CRYPTO_ALG_TYPE_CIPHER,
--	.cra_blocksize		=	ARC4_BLOCK_SIZE,
--	.cra_ctxsize		=	sizeof(struct arc4_ctx),
--	.cra_module		=	THIS_MODULE,
--	.cra_u			=	{
--		.cipher = {
--			.cia_min_keysize	=	ARC4_MIN_KEY_SIZE,
--			.cia_max_keysize	=	ARC4_MAX_KEY_SIZE,
--			.cia_setkey		=	arc4_set_key,
--			.cia_encrypt		=	arc4_crypt_one,
--			.cia_decrypt		=	arc4_crypt_one,
--		},
--	},
--};
--
- static struct skcipher_alg arc4_skcipher = {
- 	.base.cra_name		=	"ecb(arc4)",
- 	.base.cra_priority	=	100,
-@@ -75,28 +47,18 @@ static struct skcipher_alg arc4_skcipher = {
- 	.base.cra_module	=	THIS_MODULE,
- 	.min_keysize		=	ARC4_MIN_KEY_SIZE,
- 	.max_keysize		=	ARC4_MAX_KEY_SIZE,
--	.setkey			=	arc4_set_key_skcipher,
--	.encrypt		=	ecb_arc4_crypt,
--	.decrypt		=	ecb_arc4_crypt,
-+	.setkey			=	crypto_arc4_setkey,
-+	.encrypt		=	crypto_arc4_crypt,
-+	.decrypt		=	crypto_arc4_crypt,
- };
+ /*
+@@ -196,7 +175,8 @@ static void *mppe_alloc(unsigned char *options, int optlen)
+ 	unsigned int digestsize;
  
- static int __init arc4_init(void)
+ 	if (optlen != CILEN_MPPE + sizeof(state->master_key) ||
+-	    options[0] != CI_MPPE || options[1] != CILEN_MPPE)
++	    options[0] != CI_MPPE || options[1] != CILEN_MPPE ||
++	    fips_enabled)
+ 		goto out;
+ 
+ 	state = kzalloc(sizeof(*state), GFP_KERNEL);
+@@ -204,12 +184,6 @@ static void *mppe_alloc(unsigned char *options, int optlen)
+ 		goto out;
+ 
+ 
+-	state->arc4 = crypto_alloc_sync_skcipher("ecb(arc4)", 0, 0);
+-	if (IS_ERR(state->arc4)) {
+-		state->arc4 = NULL;
+-		goto out_free;
+-	}
+-
+ 	shash = crypto_alloc_shash("sha1", 0, 0);
+ 	if (IS_ERR(shash))
+ 		goto out_free;
+@@ -250,7 +224,6 @@ static void *mppe_alloc(unsigned char *options, int optlen)
+ 		crypto_free_shash(state->sha1->tfm);
+ 		kzfree(state->sha1);
+ 	}
+-	crypto_free_sync_skcipher(state->arc4);
+ 	kfree(state);
+ out:
+ 	return NULL;
+@@ -266,8 +239,7 @@ static void mppe_free(void *arg)
+ 		kfree(state->sha1_digest);
+ 		crypto_free_shash(state->sha1->tfm);
+ 		kzfree(state->sha1);
+-		crypto_free_sync_skcipher(state->arc4);
+-		kfree(state);
++		kzfree(state);
+ 	}
+ }
+ 
+@@ -366,10 +338,7 @@ mppe_compress(void *arg, unsigned char *ibuf, unsigned char *obuf,
+ 	      int isize, int osize)
  {
+ 	struct ppp_mppe_state *state = (struct ppp_mppe_state *) arg;
+-	SYNC_SKCIPHER_REQUEST_ON_STACK(req, state->arc4);
+ 	int proto;
 -	int err;
--
--	err = crypto_register_alg(&arc4_cipher);
--	if (err)
--		return err;
--
--	err = crypto_register_skcipher(&arc4_skcipher);
--	if (err)
--		crypto_unregister_alg(&arc4_cipher);
--	return err;
-+	return crypto_register_skcipher(&arc4_skcipher);
- }
+-	struct scatterlist sg_in[1], sg_out[1];
  
- static void __exit arc4_exit(void)
+ 	/*
+ 	 * Check that the protocol is in the range we handle.
+@@ -420,21 +389,7 @@ mppe_compress(void *arg, unsigned char *ibuf, unsigned char *obuf,
+ 	ibuf += 2;		/* skip to proto field */
+ 	isize -= 2;
+ 
+-	/* Encrypt packet */
+-	sg_init_table(sg_in, 1);
+-	sg_init_table(sg_out, 1);
+-	setup_sg(sg_in, ibuf, isize);
+-	setup_sg(sg_out, obuf, osize);
+-
+-	skcipher_request_set_sync_tfm(req, state->arc4);
+-	skcipher_request_set_callback(req, 0, NULL, NULL);
+-	skcipher_request_set_crypt(req, sg_in, sg_out, isize, NULL);
+-	err = crypto_skcipher_encrypt(req);
+-	skcipher_request_zero(req);
+-	if (err) {
+-		printk(KERN_DEBUG "crypto_cypher_encrypt failed\n");
+-		return -1;
+-	}
++	arc4_crypt(&state->arc4, obuf, ibuf, isize);
+ 
+ 	state->stats.unc_bytes += isize;
+ 	state->stats.unc_packets++;
+@@ -480,10 +435,8 @@ mppe_decompress(void *arg, unsigned char *ibuf, int isize, unsigned char *obuf,
+ 		int osize)
  {
--	crypto_unregister_alg(&arc4_cipher);
- 	crypto_unregister_skcipher(&arc4_skcipher);
- }
+ 	struct ppp_mppe_state *state = (struct ppp_mppe_state *) arg;
+-	SYNC_SKCIPHER_REQUEST_ON_STACK(req, state->arc4);
+ 	unsigned ccount;
+ 	int flushed = MPPE_BITS(ibuf) & MPPE_BIT_FLUSHED;
+-	struct scatterlist sg_in[1], sg_out[1];
  
-@@ -106,4 +68,4 @@ module_exit(arc4_exit);
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("ARC4 Cipher Algorithm");
- MODULE_AUTHOR("Jon Oberheide <jon@oberheide.org>");
--MODULE_ALIAS_CRYPTO("arc4");
-+MODULE_ALIAS_CRYPTO("ecb(arc4)");
+ 	if (isize <= PPP_HDRLEN + MPPE_OVHD) {
+ 		if (state->debug)
+@@ -610,19 +563,7 @@ mppe_decompress(void *arg, unsigned char *ibuf, int isize, unsigned char *obuf,
+ 	 * Decrypt the first byte in order to check if it is
+ 	 * a compressed or uncompressed protocol field.
+ 	 */
+-	sg_init_table(sg_in, 1);
+-	sg_init_table(sg_out, 1);
+-	setup_sg(sg_in, ibuf, 1);
+-	setup_sg(sg_out, obuf, 1);
+-
+-	skcipher_request_set_sync_tfm(req, state->arc4);
+-	skcipher_request_set_callback(req, 0, NULL, NULL);
+-	skcipher_request_set_crypt(req, sg_in, sg_out, 1, NULL);
+-	if (crypto_skcipher_decrypt(req)) {
+-		printk(KERN_DEBUG "crypto_cypher_decrypt failed\n");
+-		osize = DECOMP_ERROR;
+-		goto out_zap_req;
+-	}
++	arc4_crypt(&state->arc4, obuf, ibuf, 1);
+ 
+ 	/*
+ 	 * Do PFC decompression.
+@@ -637,14 +578,7 @@ mppe_decompress(void *arg, unsigned char *ibuf, int isize, unsigned char *obuf,
+ 	}
+ 
+ 	/* And finally, decrypt the rest of the packet. */
+-	setup_sg(sg_in, ibuf + 1, isize - 1);
+-	setup_sg(sg_out, obuf + 1, osize - 1);
+-	skcipher_request_set_crypt(req, sg_in, sg_out, isize - 1, NULL);
+-	if (crypto_skcipher_decrypt(req)) {
+-		printk(KERN_DEBUG "crypto_cypher_decrypt failed\n");
+-		osize = DECOMP_ERROR;
+-		goto out_zap_req;
+-	}
++	arc4_crypt(&state->arc4, obuf + 1, ibuf + 1, isize - 1);
+ 
+ 	state->stats.unc_bytes += osize;
+ 	state->stats.unc_packets++;
+@@ -654,8 +588,6 @@ mppe_decompress(void *arg, unsigned char *ibuf, int isize, unsigned char *obuf,
+ 	/* good packet credit */
+ 	state->sanity_errors >>= 1;
+ 
+-out_zap_req:
+-	skcipher_request_zero(req);
+ 	return osize;
+ 
+ sanity_error:
+@@ -728,8 +660,7 @@ static struct compressor ppp_mppe = {
+ static int __init ppp_mppe_init(void)
+ {
+ 	int answer;
+-	if (!(crypto_has_skcipher("ecb(arc4)", 0, CRYPTO_ALG_ASYNC) &&
+-	      crypto_has_ahash("sha1", 0, CRYPTO_ALG_ASYNC)))
++	if (fips_enabled || !crypto_has_ahash("sha1", 0, CRYPTO_ALG_ASYNC))
+ 		return -ENODEV;
+ 
+ 	sha_pad = kmalloc(sizeof(struct sha_pad), GFP_KERNEL);
 -- 
 2.20.1
 
