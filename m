@@ -2,109 +2,154 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB563D49E
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jun 2019 19:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0857C3D4D2
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jun 2019 19:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406612AbfFKRyW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 11 Jun 2019 13:54:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48196 "EHLO mail.kernel.org"
+        id S2405972AbfFKR74 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 11 Jun 2019 13:59:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405972AbfFKRyW (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 11 Jun 2019 13:54:22 -0400
+        id S2406702AbfFKR7z (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 11 Jun 2019 13:59:55 -0400
 Received: from gmail.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB2A32086D;
-        Tue, 11 Jun 2019 17:54:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF68C2086D;
+        Tue, 11 Jun 2019 17:59:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560275661;
-        bh=WOLzjtOo0cPYBq8H9pJ7UXlbpV/3DfejycQDMklAFrg=;
+        s=default; t=1560275995;
+        bh=RIvt6aFwbzoPJ/O4E8G+pHOOUutW3QegOcElFotzJEU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mtutbYLwneUKbgj6JCWJ5TrJ6+mPpPJFVqCNPCUNmnXnZML7MciT5nf9+fkEv/mdJ
-         14iTYgr7Wo+1ODlqYzNt8SGt7IfK+sdgNDziJHwn+WwnYfohGZgPpDepND4nAMMXgu
-         YW3bfs6TmAO/WYlP5De+IfSb4FwY/hN6c33Xb2Fg=
-Date:   Tue, 11 Jun 2019 10:54:20 -0700
+        b=TU8D9iBBu0IHWSFq5XfEoSvZsAR5tps/qUdvgwHUg8ZWHxOL0CeLU/44LIIo4hfGr
+         4U9/xjEh2rfJxwLacPNd0ldTwZ3dDCY5SiEHNdkRP3KWUgfhEMHMsK6L5mh2sEbz8h
+         +5bOx3xNjQ3STnalhV+8tEUyBJsX+Ltf2rECAK6s=
+Date:   Tue, 11 Jun 2019 10:59:53 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Cc:     linux-crypto@vger.kernel.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>,
         Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [PATCH v3 2/7] net/mac80211: move WEP handling to ARC4 library
- interface
-Message-ID: <20190611175419.GB66728@gmail.com>
+Subject: Re: [PATCH v3 3/7] net/lib80211: move WEP handling to ARC4 library
+ code
+Message-ID: <20190611175952.GC66728@gmail.com>
 References: <20190611134750.2974-1-ard.biesheuvel@linaro.org>
- <20190611134750.2974-3-ard.biesheuvel@linaro.org>
+ <20190611134750.2974-4-ard.biesheuvel@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190611134750.2974-3-ard.biesheuvel@linaro.org>
+In-Reply-To: <20190611134750.2974-4-ard.biesheuvel@linaro.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jun 11, 2019 at 03:47:45PM +0200, Ard Biesheuvel wrote:
+On Tue, Jun 11, 2019 at 03:47:46PM +0200, Ard Biesheuvel wrote:
+> The crypto API abstraction is not very useful for invoking ciphers
+> directly, especially in the case of arc4, which only has a generic
+> implementation in C. So let's invoke the library code directly.
+> 
+> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> ---
+>  net/wireless/Kconfig              |  1 +
+>  net/wireless/lib80211_crypt_wep.c | 49 +++++---------------
+>  2 files changed, 13 insertions(+), 37 deletions(-)
+> 
+> diff --git a/net/wireless/Kconfig b/net/wireless/Kconfig
+> index 6310ddede220..6d9c48cea07e 100644
+> --- a/net/wireless/Kconfig
+> +++ b/net/wireless/Kconfig
+> @@ -213,6 +213,7 @@ config LIB80211
 >  
-> -void ieee80211_wep_free(struct ieee80211_local *local)
-> -{
-> -	if (!IS_ERR(local->wep_tx_tfm))
-> -		crypto_free_cipher(local->wep_tx_tfm);
-> -	if (!IS_ERR(local->wep_rx_tfm))
-> -		crypto_free_cipher(local->wep_rx_tfm);
-> -}
-> -
-
-This function was removed, but its declaration in net/mac80211/wep.h was not.
-
->  static inline bool ieee80211_wep_weak_iv(u32 iv, int keylen)
+>  config LIB80211_CRYPT_WEP
+>  	tristate
+> +	select CRYPTO_LIB_ARC4
+>  
+>  config LIB80211_CRYPT_CCMP
+>  	tristate
+> diff --git a/net/wireless/lib80211_crypt_wep.c b/net/wireless/lib80211_crypt_wep.c
+> index 20c1ad63ad44..9a4e4653fe64 100644
+> --- a/net/wireless/lib80211_crypt_wep.c
+> +++ b/net/wireless/lib80211_crypt_wep.c
+> @@ -11,6 +11,7 @@
+>   */
+>  
+>  #include <linux/err.h>
+> +#include <linux/fips.h>
+>  #include <linux/module.h>
+>  #include <linux/init.h>
+>  #include <linux/slab.h>
+> @@ -22,7 +23,7 @@
+>  
+>  #include <net/lib80211.h>
+>  
+> -#include <linux/crypto.h>
+> +#include <crypto/arc4.h>
+>  #include <linux/crc32.h>
+>  
+>  MODULE_AUTHOR("Jouni Malinen");
+> @@ -35,51 +36,30 @@ struct lib80211_wep_data {
+>  	u8 key[WEP_KEY_LEN + 1];
+>  	u8 key_len;
+>  	u8 key_idx;
+> -	struct crypto_cipher *tx_tfm;
+> -	struct crypto_cipher *rx_tfm;
+> +	struct arc4_ctx tx_ctx;
+> +	struct arc4_ctx rx_ctx;
+>  };
+>  
+>  static void *lib80211_wep_init(int keyidx)
 >  {
->  	/*
-> @@ -131,21 +110,16 @@ static void ieee80211_wep_remove_iv(struct ieee80211_local *local,
->  /* Perform WEP encryption using given key. data buffer must have tailroom
->   * for 4-byte ICV. data_len must not include this ICV. Note: this function
->   * does _not_ add IV. data = RC4(data | CRC32(data)) */
-> -int ieee80211_wep_encrypt_data(struct crypto_cipher *tfm, u8 *rc4key,
-> +int ieee80211_wep_encrypt_data(struct arc4_ctx *ctx, u8 *rc4key,
->  			       size_t klen, u8 *data, size_t data_len)
->  {
->  	__le32 icv;
-> -	int i;
+>  	struct lib80211_wep_data *priv;
+>  
+> +	if (fips_enabled)
+> +		return NULL;
+> +
+>  	priv = kzalloc(sizeof(*priv), GFP_ATOMIC);
+>  	if (priv == NULL)
+> -		goto fail;
+> +		return NULL;
+>  	priv->key_idx = keyidx;
+>  
+> -	priv->tx_tfm = crypto_alloc_cipher("arc4", 0, 0);
+> -	if (IS_ERR(priv->tx_tfm)) {
+> -		priv->tx_tfm = NULL;
+> -		goto fail;
+> -	}
 > -
-> -	if (IS_ERR(tfm))
-> -		return -1;
+> -	priv->rx_tfm = crypto_alloc_cipher("arc4", 0, 0);
+> -	if (IS_ERR(priv->rx_tfm)) {
+> -		priv->rx_tfm = NULL;
+> -		goto fail;
+> -	}
+>  	/* start WEP IV from a random value */
+>  	get_random_bytes(&priv->iv, 4);
 >  
->  	icv = cpu_to_le32(~crc32_le(~0, data, data_len));
->  	put_unaligned(icv, (__le32 *)(data + data_len));
->  
-> -	crypto_cipher_setkey(tfm, rc4key, klen);
-> -	for (i = 0; i < data_len + IEEE80211_WEP_ICV_LEN; i++)
-> -		crypto_cipher_encrypt_one(tfm, data + i, data + i);
-> +	arc4_setkey(ctx, rc4key, klen);
-> +	arc4_crypt(ctx, data, data, data_len + IEEE80211_WEP_ICV_LEN);
-
-How about adding:
-
-	memzero_explicit(ctx, sizeof(*ctx));
-
-> -int ieee80211_wep_decrypt_data(struct crypto_cipher *tfm, u8 *rc4key,
-> +int ieee80211_wep_decrypt_data(struct arc4_ctx *ctx, u8 *rc4key,
->  			       size_t klen, u8 *data, size_t data_len)
->  {
->  	__le32 crc;
-> -	int i;
+>  	return priv;
 > -
-> -	if (IS_ERR(tfm))
-> -		return -1;
+> -      fail:
+> -	if (priv) {
+> -		crypto_free_cipher(priv->tx_tfm);
+> -		crypto_free_cipher(priv->rx_tfm);
+> -		kfree(priv);
+> -	}
+> -	return NULL;
+>  }
 >  
-> -	crypto_cipher_setkey(tfm, rc4key, klen);
-> -	for (i = 0; i < data_len + IEEE80211_WEP_ICV_LEN; i++)
-> -		crypto_cipher_decrypt_one(tfm, data + i, data + i);
-> +	arc4_setkey(ctx, rc4key, klen);
-> +	arc4_crypt(ctx, data, data, data_len + IEEE80211_WEP_ICV_LEN);
+>  static void lib80211_wep_deinit(void *priv)
+>  {
+> -	struct lib80211_wep_data *_priv = priv;
+> -	if (_priv) {
+> -		crypto_free_cipher(_priv->tx_tfm);
+> -		crypto_free_cipher(_priv->rx_tfm);
+> -	}
+>  	kfree(priv);
+>  }
 
-Same here.
+How about changing lib80211_wep_deinit() to use kzfree()?  As a result of
+changing to the ARC4 library, the arc4_ctx is no longer zeroed.  Of course it's
+not any worse than it was before since the raw key is already in
+lib80211_wep_data too, but it really ought to be kzfree()...
 
 - Eric
