@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD33418AA
-	for <lists+linux-crypto@lfdr.de>; Wed, 12 Jun 2019 01:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE1D418AC
+	for <lists+linux-crypto@lfdr.de>; Wed, 12 Jun 2019 01:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407946AbfFKXJw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S2407947AbfFKXJw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Tue, 11 Jun 2019 19:09:52 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:44379 "EHLO
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:43086 "EHLO
         mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407944AbfFKXJt (ORCPT
+        with ESMTP id S2404669AbfFKXJv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 11 Jun 2019 19:09:49 -0400
-Received: by mail-wr1-f67.google.com with SMTP id b17so14781735wrq.11
-        for <linux-crypto@vger.kernel.org>; Tue, 11 Jun 2019 16:09:48 -0700 (PDT)
+        Tue, 11 Jun 2019 19:09:51 -0400
+Received: by mail-wr1-f67.google.com with SMTP id p13so4697008wru.10
+        for <linux-crypto@vger.kernel.org>; Tue, 11 Jun 2019 16:09:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OwqgljQ1B81ow4cCya6JJaWKyb9eZkcUJZbKrShyt74=;
-        b=ego+R3yLJjqYVtyUtNrsfCkWcown+rLk6UiEMaUUHboV16q9o9u6eUIx0pPbTGUl78
-         s6l9Eu2dLFAUXEJSrIG7rQ61m8dSJTtKMZpGXd9Lgq2sYQ2Hxv0PYjiVM6KiIVw3ZZN9
-         ID6Vfmj69tmcxnAFhIfTX+OPddLrTow8v5bwRUSP/5Cqn3IW6ovVvxbtFdoYxzWBP4cH
-         yG/1DomuX7SwXvJfGcoN5JZMLi0Y724gkGMCMmvwc6QfJCeClju1uT5MKaO0fU4u9RPS
-         iN2Jd/S/SyT8tgfJtjpnSt4nG99xaUsy3Jodom3iaoq0SzmQlFYjCf/drbf+HQLfQMVz
-         h4gA==
+        bh=m6lrx96N+/HTU2cRYNepLqRT1HXoGD2ZJBZ5Rjzicn4=;
+        b=IAYd2yE7uLIkXSx1AbP0/RxZdmrVhO3G70eJypgZyLFMr4mDN+owMR/Ub8fYn+2N7B
+         DwiLaJ1lfDs1UxPtxIaRnPz0fAiTZfJHbGN/oxr3Y102QQf408l0ArIN/oHTcLKrS72i
+         2Nl56OMEyL77bQBo3++xDTWh5LvDU6AmgQofxeKJeDZ+MYlYZ9kxaPbv01zgJFsAP8Gl
+         Yqz5taSjXzoXs0oL1HcJY2XU/1hdyQLUPtRBTnfX+4gUTBaNV5th+hvxVPkoeGv6hnn7
+         AH42QuDzt0MDP139cU38akAY1Z+mZcuvwm7xRvB7YZVW8ueAKJl7dkXkuVSP1euA1qmD
+         gJdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OwqgljQ1B81ow4cCya6JJaWKyb9eZkcUJZbKrShyt74=;
-        b=W7LiGRXOY/aU+KpkJNiMur3YOrLW7BHV3tvpAeTYfonAX8rBluwC0kBfd+zUn+kHa/
-         D6dAU54g+TdTwNYvvHO9IkbzSc9pIj9sil6RhcsmpADejEFAsK59zLAKxTE1RR647Snl
-         +G4lWYWBiulCfbqJ9ZjQa1Yqam7HccZ4cp7tS0GF8+Ab3dW4R4cnwrT3j989FT1J/p4H
-         0nQSlu3zC/NB+A1u9gnIpeKsDsLLVlsFNZvk3C2J6gu60sk8balGB8r4qLRji0hgo6gf
-         43TJl1PLDCEh0Rk/5ooRzRV3G1D2m/BjneUybZpucyjryRwKc98JsvdrLPZfFIC+ikkn
-         Zkgw==
-X-Gm-Message-State: APjAAAWPEkP/wDdFTuvVCUFwbdG2jflbe5m1XfTp44Whmub6eaYkZshi
-        OStLcyQtP25fFHT0D8z/2WHWAUsxwDauxmco
-X-Google-Smtp-Source: APXvYqwe0qh5KCdEObXGrwrG8XcYiFPBSNgBk9/cJ1qN2P+HkqhsOumLiyz4IItU+OrOlbkJcRGUKA==
-X-Received: by 2002:a05:6000:1c9:: with SMTP id t9mr26667190wrx.187.1560294587363;
-        Tue, 11 Jun 2019 16:09:47 -0700 (PDT)
+        bh=m6lrx96N+/HTU2cRYNepLqRT1HXoGD2ZJBZ5Rjzicn4=;
+        b=sJWPK0JsTWlBJw5qZVbh/+p2RiX03RIvjDeq7/4HS1BoN3y/HGXY4OWIJ2qIWY5+dP
+         IwQgq+Wt3lm+BLQ5Sxt/LGU9Uabv0SrJ8M9bUWxzwSNTeE70lLz9idWFIwcvBbfvma1F
+         4sAp8s7YC3yL0G0cMNNveiqjkJ25++H6Lkywf3jN9tJz6VlCxGvy6Gdi1USqccQ2i0oU
+         MnQWP9JYlZMQpgz3pY4I6QFYLPG86g0E1m8z5UgvBxUWShCc0QmbDau3zM28wXOq2Y2X
+         56xezUwjGcUj/2S7SJT30EVnABc5R9T6YH39l7a8eNvWdHEy7sJ388CkhDKkFYhp6eue
+         NahQ==
+X-Gm-Message-State: APjAAAXBeq40c45Bvl7IfIfHE6Y3IyGvp9CaqY1vJvvo+ja8mHZ5iaUf
+        yqP/ZzmFZGcrbtAuJ692fkHlJOpFDQmhdx/W
+X-Google-Smtp-Source: APXvYqxaj9JzxXHCZf2WK4ZiFqe21Q/j/iEyKh1FPLS8PvcZZRT16BgyRK8IIrHTLlJXtqhp9s9d3w==
+X-Received: by 2002:a05:6000:181:: with SMTP id p1mr28182832wrx.247.1560294588640;
+        Tue, 11 Jun 2019 16:09:48 -0700 (PDT)
 Received: from sudo.home ([2a01:cb1d:112:6f00:24bb:7f31:25fe:43a7])
-        by smtp.gmail.com with ESMTPSA id g11sm10827813wrq.89.2019.06.11.16.09.46
+        by smtp.gmail.com with ESMTPSA id g11sm10827813wrq.89.2019.06.11.16.09.47
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 11 Jun 2019 16:09:46 -0700 (PDT)
+        Tue, 11 Jun 2019 16:09:47 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
@@ -52,9 +52,9 @@ Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Biggers <ebiggers@google.com>,
         Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v4 3/7] net/lib80211: move WEP handling to ARC4 library code
-Date:   Wed, 12 Jun 2019 01:09:34 +0200
-Message-Id: <20190611230938.19265-4-ard.biesheuvel@linaro.org>
+Subject: [PATCH v4 4/7] net/lib80211: move TKIP handling to ARC4 library code
+Date:   Wed, 12 Jun 2019 01:09:35 +0200
+Message-Id: <20190611230938.19265-5-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190611230938.19265-1-ard.biesheuvel@linaro.org>
 References: <20190611230938.19265-1-ard.biesheuvel@linaro.org>
@@ -71,144 +71,161 @@ implementation in C. So let's invoke the library code directly.
 
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- net/wireless/Kconfig              |  1 +
- net/wireless/lib80211_crypt_wep.c | 51 +++++---------------
- 2 files changed, 14 insertions(+), 38 deletions(-)
+ net/wireless/lib80211_crypt_tkip.c | 48 +++++++-------------
+ 1 file changed, 17 insertions(+), 31 deletions(-)
 
-diff --git a/net/wireless/Kconfig b/net/wireless/Kconfig
-index 6310ddede220..6d9c48cea07e 100644
---- a/net/wireless/Kconfig
-+++ b/net/wireless/Kconfig
-@@ -213,6 +213,7 @@ config LIB80211
- 
- config LIB80211_CRYPT_WEP
- 	tristate
-+	select CRYPTO_LIB_ARC4
- 
- config LIB80211_CRYPT_CCMP
- 	tristate
-diff --git a/net/wireless/lib80211_crypt_wep.c b/net/wireless/lib80211_crypt_wep.c
-index 20c1ad63ad44..04e4d66ea19d 100644
---- a/net/wireless/lib80211_crypt_wep.c
-+++ b/net/wireless/lib80211_crypt_wep.c
-@@ -11,6 +11,7 @@
-  */
+diff --git a/net/wireless/lib80211_crypt_tkip.c b/net/wireless/lib80211_crypt_tkip.c
+index 11eaa5956f00..0fd155c4e0a6 100644
+--- a/net/wireless/lib80211_crypt_tkip.c
++++ b/net/wireless/lib80211_crypt_tkip.c
+@@ -13,6 +13,7 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/err.h>
 +#include <linux/fips.h>
  #include <linux/module.h>
  #include <linux/init.h>
  #include <linux/slab.h>
-@@ -22,7 +23,7 @@
+@@ -29,6 +30,7 @@
+ #include <linux/ieee80211.h>
+ #include <net/iw_handler.h>
  
- #include <net/lib80211.h>
- 
--#include <linux/crypto.h>
 +#include <crypto/arc4.h>
+ #include <crypto/hash.h>
+ #include <linux/crypto.h>
  #include <linux/crc32.h>
+@@ -64,9 +66,9 @@ struct lib80211_tkip_data {
  
- MODULE_AUTHOR("Jouni Malinen");
-@@ -35,52 +36,31 @@ struct lib80211_wep_data {
- 	u8 key[WEP_KEY_LEN + 1];
- 	u8 key_len;
- 	u8 key_idx;
--	struct crypto_cipher *tx_tfm;
--	struct crypto_cipher *rx_tfm;
-+	struct arc4_ctx tx_ctx;
-+	struct arc4_ctx rx_ctx;
- };
+ 	int key_idx;
  
- static void *lib80211_wep_init(int keyidx)
+-	struct crypto_cipher *rx_tfm_arc4;
++	struct arc4_ctx rx_ctx_arc4;
++	struct arc4_ctx tx_ctx_arc4;
+ 	struct crypto_shash *rx_tfm_michael;
+-	struct crypto_cipher *tx_tfm_arc4;
+ 	struct crypto_shash *tx_tfm_michael;
+ 
+ 	/* scratch buffers for virt_to_page() (crypto API) */
+@@ -93,30 +95,21 @@ static void *lib80211_tkip_init(int key_idx)
  {
- 	struct lib80211_wep_data *priv;
+ 	struct lib80211_tkip_data *priv;
  
 +	if (fips_enabled)
 +		return NULL;
 +
  	priv = kzalloc(sizeof(*priv), GFP_ATOMIC);
  	if (priv == NULL)
--		goto fail;
-+		return NULL;
- 	priv->key_idx = keyidx;
+ 		goto fail;
  
--	priv->tx_tfm = crypto_alloc_cipher("arc4", 0, 0);
--	if (IS_ERR(priv->tx_tfm)) {
--		priv->tx_tfm = NULL;
+ 	priv->key_idx = key_idx;
+ 
+-	priv->tx_tfm_arc4 = crypto_alloc_cipher("arc4", 0, 0);
+-	if (IS_ERR(priv->tx_tfm_arc4)) {
+-		priv->tx_tfm_arc4 = NULL;
 -		goto fail;
 -	}
 -
--	priv->rx_tfm = crypto_alloc_cipher("arc4", 0, 0);
--	if (IS_ERR(priv->rx_tfm)) {
--		priv->rx_tfm = NULL;
+ 	priv->tx_tfm_michael = crypto_alloc_shash("michael_mic", 0, 0);
+ 	if (IS_ERR(priv->tx_tfm_michael)) {
+ 		priv->tx_tfm_michael = NULL;
+ 		goto fail;
+ 	}
+ 
+-	priv->rx_tfm_arc4 = crypto_alloc_cipher("arc4", 0, 0);
+-	if (IS_ERR(priv->rx_tfm_arc4)) {
+-		priv->rx_tfm_arc4 = NULL;
 -		goto fail;
 -	}
- 	/* start WEP IV from a random value */
- 	get_random_bytes(&priv->iv, 4);
- 
- 	return priv;
 -
--      fail:
--	if (priv) {
--		crypto_free_cipher(priv->tx_tfm);
--		crypto_free_cipher(priv->rx_tfm);
--		kfree(priv);
--	}
--	return NULL;
- }
+ 	priv->rx_tfm_michael = crypto_alloc_shash("michael_mic", 0, 0);
+ 	if (IS_ERR(priv->rx_tfm_michael)) {
+ 		priv->rx_tfm_michael = NULL;
+@@ -128,9 +121,7 @@ static void *lib80211_tkip_init(int key_idx)
+       fail:
+ 	if (priv) {
+ 		crypto_free_shash(priv->tx_tfm_michael);
+-		crypto_free_cipher(priv->tx_tfm_arc4);
+ 		crypto_free_shash(priv->rx_tfm_michael);
+-		crypto_free_cipher(priv->rx_tfm_arc4);
+ 		kfree(priv);
+ 	}
  
- static void lib80211_wep_deinit(void *priv)
- {
--	struct lib80211_wep_data *_priv = priv;
--	if (_priv) {
--		crypto_free_cipher(_priv->tx_tfm);
--		crypto_free_cipher(_priv->rx_tfm);
--	}
+@@ -142,11 +133,9 @@ static void lib80211_tkip_deinit(void *priv)
+ 	struct lib80211_tkip_data *_priv = priv;
+ 	if (_priv) {
+ 		crypto_free_shash(_priv->tx_tfm_michael);
+-		crypto_free_cipher(_priv->tx_tfm_arc4);
+ 		crypto_free_shash(_priv->rx_tfm_michael);
+-		crypto_free_cipher(_priv->rx_tfm_arc4);
+ 	}
 -	kfree(priv);
 +	kzfree(priv);
  }
  
- /* Add WEP IV/key info to a frame that has at least 4 bytes of headroom */
-@@ -132,7 +112,6 @@ static int lib80211_wep_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
- 	u32 crc, klen, len;
- 	u8 *pos, *icv;
- 	u8 key[WEP_KEY_LEN + 3];
+ static inline u16 RotR1(u16 val)
+@@ -345,7 +334,6 @@ static int lib80211_tkip_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
+ 	int len;
+ 	u8 rc4key[16], *pos, *icv;
+ 	u32 crc;
 -	int i;
  
- 	/* other checks are in lib80211_wep_build_iv */
- 	if (skb_tailroom(skb) < 4)
-@@ -160,10 +139,8 @@ static int lib80211_wep_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
+ 	if (tkey->flags & IEEE80211_CRYPTO_TKIP_COUNTERMEASURES) {
+ 		struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+@@ -370,9 +358,9 @@ static int lib80211_tkip_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
  	icv[2] = crc >> 16;
  	icv[3] = crc >> 24;
  
--	crypto_cipher_setkey(wep->tx_tfm, key, klen);
--
+-	crypto_cipher_setkey(tkey->tx_tfm_arc4, rc4key, 16);
 -	for (i = 0; i < len + 4; i++)
--		crypto_cipher_encrypt_one(wep->tx_tfm, pos + i, pos + i);
-+	arc4_setkey(&wep->tx_ctx, key, klen);
-+	arc4_crypt(&wep->tx_ctx, pos, pos, len + 4);
- 
+-		crypto_cipher_encrypt_one(tkey->tx_tfm_arc4, pos + i, pos + i);
++	arc4_setkey(&tkey->tx_ctx_arc4, rc4key, 16);
++	arc4_crypt(&tkey->tx_ctx_arc4, pos, pos, len + 4);
++
  	return 0;
  }
-@@ -181,7 +158,6 @@ static int lib80211_wep_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
- 	u32 crc, klen, plen;
- 	u8 key[WEP_KEY_LEN + 3];
- 	u8 keyidx, *pos, icv[4];
+ 
+@@ -400,7 +388,6 @@ static int lib80211_tkip_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
+ 	u8 icv[4];
+ 	u32 crc;
+ 	int plen;
 -	int i;
  
- 	if (skb->len < hdr_len + 8)
- 		return -1;
-@@ -202,9 +178,8 @@ static int lib80211_wep_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
- 	/* Apply RC4 to data and compute CRC32 over decrypted data */
- 	plen = skb->len - hdr_len - 8;
+ 	hdr = (struct ieee80211_hdr *)skb->data;
  
--	crypto_cipher_setkey(wep->rx_tfm, key, klen);
+@@ -453,9 +440,8 @@ static int lib80211_tkip_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
+ 
+ 	plen = skb->len - hdr_len - 12;
+ 
+-	crypto_cipher_setkey(tkey->rx_tfm_arc4, rc4key, 16);
 -	for (i = 0; i < plen + 4; i++)
--		crypto_cipher_decrypt_one(wep->rx_tfm, pos + i, pos + i);
-+	arc4_setkey(&wep->rx_ctx, key, klen);
-+	arc4_crypt(&wep->rx_ctx, pos, pos, plen + 4);
+-		crypto_cipher_decrypt_one(tkey->rx_tfm_arc4, pos + i, pos + i);
++	arc4_setkey(&tkey->rx_ctx_arc4, rc4key, 16);
++	arc4_crypt(&tkey->rx_ctx_arc4, pos, pos, plen + 4);
  
  	crc = ~crc32_le(~0, pos, plen);
  	icv[0] = crc;
+@@ -640,17 +626,17 @@ static int lib80211_tkip_set_key(void *key, int len, u8 * seq, void *priv)
+ 	struct lib80211_tkip_data *tkey = priv;
+ 	int keyidx;
+ 	struct crypto_shash *tfm = tkey->tx_tfm_michael;
+-	struct crypto_cipher *tfm2 = tkey->tx_tfm_arc4;
++	struct arc4_ctx *tfm2 = &tkey->tx_ctx_arc4;
+ 	struct crypto_shash *tfm3 = tkey->rx_tfm_michael;
+-	struct crypto_cipher *tfm4 = tkey->rx_tfm_arc4;
++	struct arc4_ctx *tfm4 = &tkey->rx_ctx_arc4;
+ 
+ 	keyidx = tkey->key_idx;
+ 	memset(tkey, 0, sizeof(*tkey));
+ 	tkey->key_idx = keyidx;
+ 	tkey->tx_tfm_michael = tfm;
+-	tkey->tx_tfm_arc4 = tfm2;
++	tkey->tx_ctx_arc4 = *tfm2;
+ 	tkey->rx_tfm_michael = tfm3;
+-	tkey->rx_tfm_arc4 = tfm4;
++	tkey->rx_ctx_arc4 = *tfm4;
+ 	if (len == TKIP_KEY_LEN) {
+ 		memcpy(tkey->key, key, TKIP_KEY_LEN);
+ 		tkey->key_set = 1;
 -- 
 2.20.1
 
