@@ -2,69 +2,78 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A297642847
-	for <lists+linux-crypto@lfdr.de>; Wed, 12 Jun 2019 16:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7344284E
+	for <lists+linux-crypto@lfdr.de>; Wed, 12 Jun 2019 16:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439542AbfFLOAN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 Jun 2019 10:00:13 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:56396 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439517AbfFLOAM (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 Jun 2019 10:00:12 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hb3nB-0008FY-7x; Wed, 12 Jun 2019 21:59:57 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hb3n6-0000yf-Ll; Wed, 12 Jun 2019 21:59:52 +0800
-Date:   Wed, 12 Jun 2019 21:59:52 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Horia Geanta <horia.geanta@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ARM: dts: imx7ulp: add crypto support
-Message-ID: <20190612135952.ds6zzh7ppahiuodd@gondor.apana.org.au>
-References: <20190606080255.25504-1-horia.geanta@nxp.com>
- <20190612103926.GE11086@dragon>
- <VI1PR0402MB3485A573518D60A573BA55C298EC0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
- <20190612130602.GH11086@dragon>
- <VI1PR0402MB348596BF52CE43B5D4CD534798EC0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
- <20190612132600.GI11086@dragon>
+        id S1727683AbfFLOAe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 12 Jun 2019 10:00:34 -0400
+Received: from mail-it1-f194.google.com ([209.85.166.194]:52141 "EHLO
+        mail-it1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbfFLOAe (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 12 Jun 2019 10:00:34 -0400
+Received: by mail-it1-f194.google.com with SMTP id m3so10961789itl.1
+        for <linux-crypto@vger.kernel.org>; Wed, 12 Jun 2019 07:00:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lNz38gVScH0ZwwXvZkA7lMudaa552h7GcsXKvCgK7n8=;
+        b=ZDBcRF02811s+WSMjtbQKUc3cu4oy5WYhiiDmv32leJtdNBnhdCpMoup+0zyYfahvY
+         SF9ELNHUnXtz76GV6EmYvqhViKW83l1mK+QaKO8K0shTZVum8usa5lKLHO/gJfZT1Mm6
+         TZlh30TC9qoknmanOSeTwnHcYB8ys6A4G9D17t3auUOIlZKAumPnmimzGsoOknC3UkcF
+         pURsxKVE033qhEExP68wYT4Y6Sxa/q7s1NainUELd86WPaRZnFEmigkJl/CyhpfB1hU9
+         HqBJsOJozWYYjxwd78mht9jHSi9nB1DKyzWev+0TIkCpBYLTUBAeW+LJm0hYpw9KQg6R
+         LHiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lNz38gVScH0ZwwXvZkA7lMudaa552h7GcsXKvCgK7n8=;
+        b=bW1/IvYuT7jH5MAr/Ap794raT6NkOp2zwhRcEAxXyOlXr+nFwoDeivAZ72MqgzuwC1
+         ajB+tszEf86oMCaiLAT6iJnTxhQ3aANczc4My2GVOmRKXKtr0FtuYHZUkpBmytRiUppi
+         Q2Bg+KsZSoKDPNzxI3KnlN+ccmSzwUc3Ijp3XXP5KETlEN42Kj0qibjMuB5ZUDcsHrZo
+         b0MgKMijLED0c3BcbCO41HNDtlRGod970zSScgktgKYQnU1VfSBKwhLX2aEGN6jaF5V8
+         xneX+HYDKHUDTGMjYrYGYoiMuTccrIhUbF+uT8dvfZ8abkw1iwEVtGocaVZX8q54liaY
+         mbzw==
+X-Gm-Message-State: APjAAAX09f2eEjvOQS6RpfCVndKXbwTawvBSWJqssALet1G6vcXxLJId
+        FJu4cWXsi/POA53BMYlZnkqNiADkVqTALnWys/ZOWBJwE/I=
+X-Google-Smtp-Source: APXvYqw7/sEbaUteIwmblPQFjFM+lCFMOD3TIl/N8yU/hAnc3dFy9GTBIsWEbA8rFzGhV+wbmDAKo5sqQbxDMnkvJx8=
+X-Received: by 2002:a05:660c:44a:: with SMTP id d10mr20502727itl.153.1560348033660;
+ Wed, 12 Jun 2019 07:00:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190612132600.GI11086@dragon>
-User-Agent: NeoMutt/20170113 (1.7.2)
+References: <20190612124838.2492-1-ard.biesheuvel@linaro.org> <20190612135823.5w2dkibl4r7qcxx4@gondor.apana.org.au>
+In-Reply-To: <20190612135823.5w2dkibl4r7qcxx4@gondor.apana.org.au>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Wed, 12 Jun 2019 16:00:20 +0200
+Message-ID: <CAKv+Gu83M9_3DbAz9u_nmLs=4VL-BJh_L-FsEcFRAf4c2P=Gpw@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/20] AES cleanup
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>, Eric Biggers <ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 09:26:02PM +0800, Shawn Guo wrote:
+On Wed, 12 Jun 2019 at 15:58, Herbert Xu <herbert@gondor.apana.org.au> wrote:
 >
-> Yes, it happens from time to time depending on maintainer's style. I'm
-> fine with the DT changes going through other subsystem tree, if the
-> subsystem maintainer wants to and is willing to take the risk of merge
-> conflict between his tree and arm-soc tree.
+> On Wed, Jun 12, 2019 at 02:48:18PM +0200, Ard Biesheuvel wrote:
+> >
+> > All the patches leading up to that are cleanups for the AES code, to reduce
+> > the dependency on the generic table based AES code, or in some cases, hardcoded
+> > dependencies on the scalar arm64 asm code which suffers from the same problem.
+> > It also removes redundant key expansion routines, and gets rid of the x86
+> > scalar asm code, which is a maintenance burden and is not actually faster than
+> > the generic code built with a modern compiler.
+>
+> Nice, I like this a lot.
+>
+> I presume you'll be converting the AES cipher users throughout
+> the kernel (such as net/ipv4/tcp_fastopen) at some point, right?
+>
 
-I have no problems with potential merge conflicts.
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Yes. I am currently surveying which users need to switch to a proper
+mode, and which ones can just use the unoptimized library version
+(such as tcp_fastopen).
