@@ -2,56 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED2842683
-	for <lists+linux-crypto@lfdr.de>; Wed, 12 Jun 2019 14:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE6042687
+	for <lists+linux-crypto@lfdr.de>; Wed, 12 Jun 2019 14:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439232AbfFLMtH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 Jun 2019 08:49:07 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:37905 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439229AbfFLMtG (ORCPT
+        id S2439227AbfFLMtK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 12 Jun 2019 08:49:10 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:55485 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439231AbfFLMtJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 Jun 2019 08:49:06 -0400
-Received: by mail-wm1-f65.google.com with SMTP id s15so6411027wmj.3
-        for <linux-crypto@vger.kernel.org>; Wed, 12 Jun 2019 05:49:05 -0700 (PDT)
+        Wed, 12 Jun 2019 08:49:09 -0400
+Received: by mail-wm1-f66.google.com with SMTP id a15so6430130wmj.5
+        for <linux-crypto@vger.kernel.org>; Wed, 12 Jun 2019 05:49:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Lm7oGps4teOEwcLPMuq0r39VG4DYBydnuDjdvE8qRsQ=;
-        b=PhOA519RQ/KSm8Wq2yejvZbrXDftUtvpiVOr23t3wVMghc2GenkIWkRSLQWvCugDB1
-         fHLSI958DpSR+ppikmXzADwbVAEpbWu8fxOTcoTPM27vCiB0Vb6vvCNNp9FYtEQbtBOI
-         fmSNGvDIcxoK+95wfBwL0ji7nw4Y3rZQBz15O32vV5o7WCkv2S7vxfoR2vLdx1trUutS
-         tfiwpTr16f864dZ1gQ57VWdZ8oXo+aGb1SreN1vg7eVFbVITaAd+vLOcdsIDjh4WPPTz
-         AJe4gMbJD1EpUW8DVBHTMvnwN7VR1Cw6wJYetUc9g5LnM2M+av50xnw/8QAG/CbWijEm
-         GbFw==
+        bh=FRmUfZcZrs5gwbshqgmWeJhm624aavbe4mR2Os9kVds=;
+        b=ox4tpd6P6ar74xvJmGEDOZ3bY7LZM6d2Wf22j9f17GQSx52dugdszFmC8DA6E1ppeL
+         gQnDg3vb90lRTgUxt1dIpIvaeVp20WKtg6C3KQN1Cc9axY+s8kCQ7GmeSnFRBb18zhL+
+         0eys7sjuzou33znvRYpG8SuL8thxqv892ZnATw5UmNEQGnyr4scvk70CUlR1dsvxb0af
+         yx8EjN45Zers8YamyBGPXvV8l9dwGjOhwYRmzUpJf73gu6nNQ9vGG9pq+of/yNJtXFhO
+         HUv+iSin+Pgv/FHfJE/7Wj5g1bnNppQEizdaJirgMbCCPAZXCaGxXXILj/kzeSzd/Hw3
+         wJjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Lm7oGps4teOEwcLPMuq0r39VG4DYBydnuDjdvE8qRsQ=;
-        b=lHkpNO9yXO0R/aT0ga5qd4UYiDgsWtBoOg3u/gP3Ac6JGxXFDX3ZHAPMYbR45COhNo
-         aqgTMZAYA3f/byjJnWX5PBniPit5IbQsdTW2yB33hlbok9kvZIj40zkIKSZREvSML2qY
-         omrcIveagADus1MbFDQkZgBogRURl2KwP0WTetz2CG0eQDXeltbAz9lWSGEVFKtGKe6j
-         PRvAthYgmY814rmJitHh3sepqLaUw0NbmOFkeQE2iQhyxqlMJToAHJAx/RwWRQ8Ey+Ja
-         FUaNOd/4BlfmJ+DU6xUjclPDjpGy3GcOuB5DH3bkqvwpXdTB593g5AZPxkmCcAGgdg1b
-         Y65w==
-X-Gm-Message-State: APjAAAXjpPhHc/hpXhRdiqj+7d+CAj2YsPah7ojIHSGiw5159s+IKM7I
-        ubkwlIPPo+aHoBYodAjXjD054ogr03EpGA==
-X-Google-Smtp-Source: APXvYqzHFhZd9Lo9GxcvMVDWmdhtntULzodtBWuiah4NQZql4MQH5zvRXcR8CgE5ZJkyFGZsBBc/pQ==
-X-Received: by 2002:a05:600c:23d2:: with SMTP id p18mr21441697wmb.108.1560343744412;
-        Wed, 12 Jun 2019 05:49:04 -0700 (PDT)
+        bh=FRmUfZcZrs5gwbshqgmWeJhm624aavbe4mR2Os9kVds=;
+        b=IpsS6RmvJk0Si7VnY8aoNTMXkqEbAIncKXpvNlNXlQJ/8kgAWPdiwXZFK7/EKAbwXV
+         mxjqWZQ+ct+pelkUl+WLqnPJXhswk7Q+oszNuNOtkrDpxHnDEIFYqMI8usZ4bKzvXW7q
+         mPzeAqn7M71IvzacVkT5JAFeAgu0NbeqAteX8PnhmvZ2B1WeKetc0JKWzgkRE7DPY0d3
+         3NNR3sx+NA9AGXUEOZuTCO0BifjKDDM51ukZnc4EKpICBpZRnIRbIgQBzeMpPRNmO4lK
+         YrU8UwLHSPZxZV91a2COy63NlH9LrkKQDH9QyOZQnokIZBoht7dbOste31q5vfdrGIB6
+         WIRw==
+X-Gm-Message-State: APjAAAWmwONs2Cu5COb3pytgAFrBs1EW+6xK1M22/WYsZW9ljBCPGe2l
+        5M9CsjyYgNF04C26HGH4h/3DOJAYDKnikA==
+X-Google-Smtp-Source: APXvYqxd41RPyGlCq2WkdPX/ISV2qfcqiTJ1HY+ag6kqkFOkGEU0EfSPQmXHChF8S0G1+UUDVZka5Q==
+X-Received: by 2002:a7b:c74a:: with SMTP id w10mr20999150wmk.99.1560343745519;
+        Wed, 12 Jun 2019 05:49:05 -0700 (PDT)
 Received: from sudo.home ([2a01:cb1d:112:6f00:353a:f33a:a393:3ada])
-        by smtp.gmail.com with ESMTPSA id s8sm28505480wra.55.2019.06.12.05.49.03
+        by smtp.gmail.com with ESMTPSA id s8sm28505480wra.55.2019.06.12.05.49.04
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 12 Jun 2019 05:49:03 -0700 (PDT)
+        Wed, 12 Jun 2019 05:49:04 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
         Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [RFC PATCH 16/20] crypto: arm64/aes-ce-cipher - use AES library as fallback
-Date:   Wed, 12 Jun 2019 14:48:34 +0200
-Message-Id: <20190612124838.2492-17-ard.biesheuvel@linaro.org>
+Subject: [RFC PATCH 17/20] crypto: aes - move ctr(aes) non-SIMD fallback to AES library
+Date:   Wed, 12 Jun 2019 14:48:35 +0200
+Message-Id: <20190612124838.2492-18-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190612124838.2492-1-ard.biesheuvel@linaro.org>
 References: <20190612124838.2492-1-ard.biesheuvel@linaro.org>
@@ -62,78 +62,250 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Instead of calling into the table based scalar AES code in situations
-where the SIMD unit may not be used, use the generic AES code, which
-is more appropriate since it is less likely to be susceptible to
-timing attacks.
+In preparation of duplicating the sync ctr(aes) functionality to modules
+under arch/arm, move the helper function from a inline .h file to the
+AES library, which is already depended upon by the drivers that use this
+fallback.
 
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- arch/arm64/crypto/Kconfig           | 2 +-
- arch/arm64/crypto/aes-ce-glue.c     | 7 ++-----
- arch/arm64/crypto/aes-cipher-glue.c | 3 ---
- 3 files changed, 3 insertions(+), 9 deletions(-)
+ arch/arm64/crypto/aes-ctr-fallback.h | 53 --------------------
+ arch/arm64/crypto/aes-glue.c         | 17 ++++---
+ arch/arm64/crypto/aes-neonbs-glue.c  | 12 +++--
+ crypto/Kconfig                       |  1 +
+ include/crypto/aes.h                 | 11 ++++
+ lib/crypto/aes.c                     | 41 +++++++++++++++
+ 6 files changed, 72 insertions(+), 63 deletions(-)
 
-diff --git a/arch/arm64/crypto/Kconfig b/arch/arm64/crypto/Kconfig
-index 66dea518221c..4922c4451e7c 100644
---- a/arch/arm64/crypto/Kconfig
-+++ b/arch/arm64/crypto/Kconfig
-@@ -73,7 +73,7 @@ config CRYPTO_AES_ARM64_CE
- 	tristate "AES core cipher using ARMv8 Crypto Extensions"
- 	depends on ARM64 && KERNEL_MODE_NEON
- 	select CRYPTO_ALGAPI
--	select CRYPTO_AES_ARM64
-+	select CRYPTO_LIB_AES
+diff --git a/arch/arm64/crypto/aes-ctr-fallback.h b/arch/arm64/crypto/aes-ctr-fallback.h
+deleted file mode 100644
+index c9285717b6b5..000000000000
+--- a/arch/arm64/crypto/aes-ctr-fallback.h
++++ /dev/null
+@@ -1,53 +0,0 @@
+-/*
+- * Fallback for sync aes(ctr) in contexts where kernel mode NEON
+- * is not allowed
+- *
+- * Copyright (C) 2017 Linaro Ltd <ard.biesheuvel@linaro.org>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+-
+-#include <crypto/aes.h>
+-#include <crypto/internal/skcipher.h>
+-
+-asmlinkage void __aes_arm64_encrypt(u32 *rk, u8 *out, const u8 *in, int rounds);
+-
+-static inline int aes_ctr_encrypt_fallback(struct crypto_aes_ctx *ctx,
+-					   struct skcipher_request *req)
+-{
+-	struct skcipher_walk walk;
+-	u8 buf[AES_BLOCK_SIZE];
+-	int err;
+-
+-	err = skcipher_walk_virt(&walk, req, true);
+-
+-	while (walk.nbytes > 0) {
+-		u8 *dst = walk.dst.virt.addr;
+-		u8 *src = walk.src.virt.addr;
+-		int nbytes = walk.nbytes;
+-		int tail = 0;
+-
+-		if (nbytes < walk.total) {
+-			nbytes = round_down(nbytes, AES_BLOCK_SIZE);
+-			tail = walk.nbytes % AES_BLOCK_SIZE;
+-		}
+-
+-		do {
+-			int bsize = min(nbytes, AES_BLOCK_SIZE);
+-
+-			__aes_arm64_encrypt(ctx->key_enc, buf, walk.iv,
+-					    6 + ctx->key_length / 4);
+-			crypto_xor_cpy(dst, src, buf, bsize);
+-			crypto_inc(walk.iv, AES_BLOCK_SIZE);
+-
+-			dst += AES_BLOCK_SIZE;
+-			src += AES_BLOCK_SIZE;
+-			nbytes -= AES_BLOCK_SIZE;
+-		} while (nbytes > 0);
+-
+-		err = skcipher_walk_done(&walk, tail);
+-	}
+-	return err;
+-}
+diff --git a/arch/arm64/crypto/aes-glue.c b/arch/arm64/crypto/aes-glue.c
+index 8fa17a764802..3d9cedbb91c9 100644
+--- a/arch/arm64/crypto/aes-glue.c
++++ b/arch/arm64/crypto/aes-glue.c
+@@ -21,7 +21,6 @@
+ #include <crypto/xts.h>
  
- config CRYPTO_AES_ARM64_CE_CCM
- 	tristate "AES in CCM mode using ARMv8 Crypto Extensions"
-diff --git a/arch/arm64/crypto/aes-ce-glue.c b/arch/arm64/crypto/aes-ce-glue.c
-index 3213843fcb46..6890e003b8f1 100644
---- a/arch/arm64/crypto/aes-ce-glue.c
-+++ b/arch/arm64/crypto/aes-ce-glue.c
-@@ -23,9 +23,6 @@ MODULE_DESCRIPTION("Synchronous AES cipher using ARMv8 Crypto Extensions");
+ #include "aes-ce-setkey.h"
+-#include "aes-ctr-fallback.h"
+ 
+ #ifdef USE_V8_CRYPTO_EXTENSIONS
+ #define MODE			"ce"
+@@ -409,8 +408,15 @@ static int ctr_encrypt_sync(struct skcipher_request *req)
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+ 	struct crypto_aes_ctx *ctx = crypto_skcipher_ctx(tfm);
+ 
+-	if (!crypto_simd_usable())
+-		return aes_ctr_encrypt_fallback(ctx, req);
++	if (!crypto_simd_usable()) {
++		struct skcipher_walk walk;
++		int err;
++
++		err = skcipher_walk_virt(&walk, req, true);
++		if (err)
++			return err;
++		return skcipher_encrypt_aes_ctr(&walk, ctx);
++	}
+ 
+ 	return ctr_encrypt(req);
+ }
+@@ -653,15 +659,14 @@ static void mac_do_update(struct crypto_aes_ctx *ctx, u8 const in[], int blocks,
+ 		kernel_neon_end();
+ 	} else {
+ 		if (enc_before)
+-			__aes_arm64_encrypt(ctx->key_enc, dg, dg, rounds);
++			aes_encrypt(ctx, dg, dg);
+ 
+ 		while (blocks--) {
+ 			crypto_xor(dg, in, AES_BLOCK_SIZE);
+ 			in += AES_BLOCK_SIZE;
+ 
+ 			if (blocks || enc_after)
+-				__aes_arm64_encrypt(ctx->key_enc, dg, dg,
+-						    rounds);
++				aes_encrypt(ctx, dg, dg);
+ 		}
+ 	}
+ }
+diff --git a/arch/arm64/crypto/aes-neonbs-glue.c b/arch/arm64/crypto/aes-neonbs-glue.c
+index cb8d90f795a0..02d46e97c1e1 100644
+--- a/arch/arm64/crypto/aes-neonbs-glue.c
++++ b/arch/arm64/crypto/aes-neonbs-glue.c
+@@ -16,8 +16,6 @@
+ #include <crypto/xts.h>
+ #include <linux/module.h>
+ 
+-#include "aes-ctr-fallback.h"
+-
  MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
  MODULE_LICENSE("GPL v2");
  
--asmlinkage void __aes_arm64_encrypt(u32 *rk, u8 *out, const u8 *in, int rounds);
--asmlinkage void __aes_arm64_decrypt(u32 *rk, u8 *out, const u8 *in, int rounds);
--
- struct aes_block {
- 	u8 b[AES_BLOCK_SIZE];
- };
-@@ -54,7 +51,7 @@ static void aes_cipher_encrypt(struct crypto_tfm *tfm, u8 dst[], u8 const src[])
- 	struct crypto_aes_ctx *ctx = crypto_tfm_ctx(tfm);
+@@ -288,9 +286,15 @@ static int ctr_encrypt_sync(struct skcipher_request *req)
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+ 	struct aesbs_ctr_ctx *ctx = crypto_skcipher_ctx(tfm);
  
- 	if (!crypto_simd_usable()) {
--		__aes_arm64_encrypt(ctx->key_enc, dst, src, num_rounds(ctx));
-+		aes_encrypt(ctx, dst, src);
- 		return;
- 	}
+-	if (!crypto_simd_usable())
+-		return aes_ctr_encrypt_fallback(&ctx->fallback, req);
++	if (!crypto_simd_usable()) {
++		struct skcipher_walk walk;
++		int err;
  
-@@ -68,7 +65,7 @@ static void aes_cipher_decrypt(struct crypto_tfm *tfm, u8 dst[], u8 const src[])
- 	struct crypto_aes_ctx *ctx = crypto_tfm_ctx(tfm);
++		err = skcipher_walk_virt(&walk, req, true);
++		if (err)
++			return err;
++		return skcipher_encrypt_aes_ctr(&walk, &ctx->fallback);
++	}
+ 	return ctr_encrypt(req);
+ }
  
- 	if (!crypto_simd_usable()) {
--		__aes_arm64_decrypt(ctx->key_dec, dst, src, num_rounds(ctx));
-+		aes_decrypt(ctx, dst, src);
- 		return;
- 	}
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 3b08230fe3ba..efeb307c0594 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -1061,6 +1061,7 @@ comment "Ciphers"
  
-diff --git a/arch/arm64/crypto/aes-cipher-glue.c b/arch/arm64/crypto/aes-cipher-glue.c
-index 0e90b06ebcec..bf32cc6489e1 100644
---- a/arch/arm64/crypto/aes-cipher-glue.c
-+++ b/arch/arm64/crypto/aes-cipher-glue.c
-@@ -13,10 +13,7 @@
- #include <linux/module.h>
+ config CRYPTO_LIB_AES
+ 	tristate
++	select CRYPTO_ALGAPI
  
- asmlinkage void __aes_arm64_encrypt(u32 *rk, u8 *out, const u8 *in, int rounds);
--EXPORT_SYMBOL(__aes_arm64_encrypt);
--
- asmlinkage void __aes_arm64_decrypt(u32 *rk, u8 *out, const u8 *in, int rounds);
--EXPORT_SYMBOL(__aes_arm64_decrypt);
+ config CRYPTO_AES
+ 	tristate "AES cipher algorithms"
+diff --git a/include/crypto/aes.h b/include/crypto/aes.h
+index 31ba40d803df..f67c38500746 100644
+--- a/include/crypto/aes.h
++++ b/include/crypto/aes.h
+@@ -8,6 +8,8 @@
  
- static void aes_arm64_encrypt(struct crypto_tfm *tfm, u8 *out, const u8 *in)
- {
+ #include <linux/types.h>
+ #include <linux/crypto.h>
++#include <crypto/algapi.h>
++#include <crypto/internal/skcipher.h>
+ 
+ #define AES_MIN_KEY_SIZE	16
+ #define AES_MAX_KEY_SIZE	32
+@@ -69,4 +71,13 @@ void aes_encrypt(const struct crypto_aes_ctx *ctx, u8 *out, const u8 *in);
+  */
+ void aes_decrypt(const struct crypto_aes_ctx *ctx, u8 *out, const u8 *in);
+ 
++/**
++ * skcipher_encrypt_aes_ctr - Process a aes(ctr) skcipher encryption request
++ *                            using the generic AES implementation.
++ * @walk: the skcipher walk data structure that describes the data to operate on
++ * @ctx: the AES key schedule
++ */
++int skcipher_encrypt_aes_ctr(struct skcipher_walk *walk,
++			     const struct crypto_aes_ctx *ctx);
++
+ #endif
+diff --git a/lib/crypto/aes.c b/lib/crypto/aes.c
+index 57596148b010..f5ef29eaa714 100644
+--- a/lib/crypto/aes.c
++++ b/lib/crypto/aes.c
+@@ -363,6 +363,47 @@ void aes_decrypt(const struct crypto_aes_ctx *ctx, u8 *out, const u8 *in)
+ }
+ EXPORT_SYMBOL(aes_decrypt);
+ 
++/**
++ * skcipher_encrypt_aes_ctr - Process a aes(ctr) skcipher encryption request
++ *                            using the generic AES implementation.
++ * @walk: the skcipher walk data structure that describes the data to operate on
++ * @ctx: the AES key schedule
++ */
++int skcipher_encrypt_aes_ctr(struct skcipher_walk *walk,
++			     const struct crypto_aes_ctx *ctx)
++{
++	u8 buf[AES_BLOCK_SIZE];
++	int err = 0;
++
++	while (walk->nbytes > 0) {
++		u8 *dst = walk->dst.virt.addr;
++		u8 *src = walk->src.virt.addr;
++		int nbytes = walk->nbytes;
++		int tail = 0;
++
++		if (nbytes < walk->total) {
++			nbytes = round_down(nbytes, AES_BLOCK_SIZE);
++			tail = walk->nbytes % AES_BLOCK_SIZE;
++		}
++
++		do {
++			int bsize = min(nbytes, AES_BLOCK_SIZE);
++
++			aes_encrypt(ctx, buf, walk->iv);
++			crypto_xor_cpy(dst, src, buf, bsize);
++			crypto_inc(walk->iv, AES_BLOCK_SIZE);
++
++			dst += AES_BLOCK_SIZE;
++			src += AES_BLOCK_SIZE;
++			nbytes -= AES_BLOCK_SIZE;
++		} while (nbytes > 0);
++
++		err = skcipher_walk_done(walk, tail);
++	}
++	return err;
++}
++EXPORT_SYMBOL(skcipher_encrypt_aes_ctr);
++
+ MODULE_DESCRIPTION("Generic AES library");
+ MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.20.1
 
