@@ -2,23 +2,23 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F8142258
-	for <lists+linux-crypto@lfdr.de>; Wed, 12 Jun 2019 12:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0DD42262
+	for <lists+linux-crypto@lfdr.de>; Wed, 12 Jun 2019 12:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732111AbfFLKW5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 Jun 2019 06:22:57 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:58688 "EHLO mx1.redhat.com"
+        id S2408075AbfFLKXA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 12 Jun 2019 06:23:00 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:33240 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726823AbfFLKW5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 Jun 2019 06:22:57 -0400
+        id S2407987AbfFLKW7 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 12 Jun 2019 06:22:59 -0400
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 0E25D30821AE;
-        Wed, 12 Jun 2019 10:22:57 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id 792A82F8BD6;
+        Wed, 12 Jun 2019 10:22:59 +0000 (UTC)
 Received: from t460s.redhat.com (ovpn-116-159.ams2.redhat.com [10.36.116.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D6E1060CCC;
-        Wed, 12 Jun 2019 10:22:54 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 56FA160CCC;
+        Wed, 12 Jun 2019 10:22:57 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
@@ -30,15 +30,15 @@ Cc:     linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
         Christian Borntraeger <borntraeger@de.ibm.com>,
         Harald Freudenberger <freude@linux.ibm.com>,
         Cornelia Huck <cohuck@redhat.com>
-Subject: [PATCH v2 2/4] s390/crypto: ghash: Use -ENODEV instead of -EOPNOTSUPP
-Date:   Wed, 12 Jun 2019 12:22:46 +0200
-Message-Id: <20190612102248.18903-3-david@redhat.com>
+Subject: [PATCH v2 3/4] s390/crypto: prng: Use -ENODEV instead of -EOPNOTSUPP
+Date:   Wed, 12 Jun 2019 12:22:47 +0200
+Message-Id: <20190612102248.18903-4-david@redhat.com>
 In-Reply-To: <20190612102248.18903-1-david@redhat.com>
 References: <20190612102248.18903-1-david@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.47]); Wed, 12 Jun 2019 10:22:57 +0000 (UTC)
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.38]); Wed, 12 Jun 2019 10:22:59 +0000 (UTC)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
@@ -50,22 +50,31 @@ systemd-modules-load.service expects.
 
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- arch/s390/crypto/ghash_s390.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/crypto/prng.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/crypto/ghash_s390.c b/arch/s390/crypto/ghash_s390.c
-index 86aed30fad3a..eeeb6a7737a4 100644
---- a/arch/s390/crypto/ghash_s390.c
-+++ b/arch/s390/crypto/ghash_s390.c
-@@ -137,7 +137,7 @@ static struct shash_alg ghash_alg = {
- static int __init ghash_mod_init(void)
- {
- 	if (!cpacf_query_func(CPACF_KIMD, CPACF_KIMD_GHASH))
+diff --git a/arch/s390/crypto/prng.c b/arch/s390/crypto/prng.c
+index 12cca467af7d..d977643fa627 100644
+--- a/arch/s390/crypto/prng.c
++++ b/arch/s390/crypto/prng.c
+@@ -824,7 +824,7 @@ static int __init prng_init(void)
+ 
+ 	/* check if the CPU has a PRNG */
+ 	if (!cpacf_query_func(CPACF_KMC, CPACF_KMC_PRNG))
 -		return -EOPNOTSUPP;
 +		return -ENODEV;
  
- 	return crypto_register_shash(&ghash_alg);
- }
+ 	/* check if TRNG subfunction is available */
+ 	if (cpacf_query_func(CPACF_PRNO, CPACF_PRNO_TRNG))
+@@ -837,7 +837,7 @@ static int __init prng_init(void)
+ 			if (prng_mode == PRNG_MODE_SHA512) {
+ 				pr_err("The prng module cannot "
+ 				       "start in SHA-512 mode\n");
+-				return -EOPNOTSUPP;
++				return -ENODEV;
+ 			}
+ 			prng_mode = PRNG_MODE_TDES;
+ 		} else
 -- 
 2.21.0
 
