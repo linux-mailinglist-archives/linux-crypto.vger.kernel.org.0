@@ -2,74 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6094D444FF
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 Jun 2019 18:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF6E444EC
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 Jun 2019 18:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392692AbfFMQk5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 13 Jun 2019 12:40:57 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50050 "EHLO deadmen.hmeau.com"
+        id S2392730AbfFMQkO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 13 Jun 2019 12:40:14 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:50088 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730569AbfFMG4u (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 13 Jun 2019 02:56:50 -0400
+        id S1730578AbfFMG5Y (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 13 Jun 2019 02:57:24 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hbJf4-0006EI-Qa; Thu, 13 Jun 2019 14:56:38 +0800
+        id 1hbJfa-0006EV-Ae; Thu, 13 Jun 2019 14:57:10 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hbJf0-00055K-Vu; Thu, 13 Jun 2019 14:56:35 +0800
-Date:   Thu, 13 Jun 2019 14:56:34 +0800
+        id 1hbJfU-00056q-Ni; Thu, 13 Jun 2019 14:57:04 +0800
+Date:   Thu, 13 Jun 2019 14:57:04 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Horia Geanta <horia.geanta@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ARM: dts: imx7ulp: add crypto support
-Message-ID: <20190613065634.alck5wads6toe7uk@gondor.apana.org.au>
-References: <20190606080255.25504-1-horia.geanta@nxp.com>
- <20190612103926.GE11086@dragon>
- <VI1PR0402MB3485A573518D60A573BA55C298EC0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
- <20190612130602.GH11086@dragon>
- <VI1PR0402MB348596BF52CE43B5D4CD534798EC0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
- <20190612132600.GI11086@dragon>
- <20190612135952.ds6zzh7ppahiuodd@gondor.apana.org.au>
- <20190613004709.GB20747@dragon>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, qat-linux@intel.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: qat - use struct_size() helper
+Message-ID: <20190613065704.x3wij3dfpcvv54eg@gondor.apana.org.au>
+References: <20190606145713.GA16636@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190613004709.GB20747@dragon>
+In-Reply-To: <20190606145713.GA16636@embeddedor>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 08:47:10AM +0800, Shawn Guo wrote:
-> On Wed, Jun 12, 2019 at 09:59:52PM +0800, Herbert Xu wrote:
-> > On Wed, Jun 12, 2019 at 09:26:02PM +0800, Shawn Guo wrote:
-> > >
-> > > Yes, it happens from time to time depending on maintainer's style. I'm
-> > > fine with the DT changes going through other subsystem tree, if the
-> > > subsystem maintainer wants to and is willing to take the risk of merge
-> > > conflict between his tree and arm-soc tree.
-> > 
-> > I have no problems with potential merge conflicts.
+On Thu, Jun 06, 2019 at 09:57:13AM -0500, Gustavo A. R. Silva wrote:
+> One of the more common cases of allocation size calculations is finding
+> the size of a structure that has a zero-sized array at the end, along
+> with memory for some number of elements for that array. For example:
 > 
-> Then feel free to take it:
+> struct qat_alg_buf_list {
+> 	...
+>         struct qat_alg_buf bufers[];
+> } __packed __aligned(64);
 > 
-> Acked-by: Shawn Guo <shawnguo@kernel.org>
+> Make use of the struct_size() helper instead of an open-coded version
+> in order to avoid any potential type mistakes.
+> 
+> So, replace the following form:
+> 
+> sizeof(struct qat_alg_buf_list) + ((1 + n) * sizeof(struct qat_alg_buf))
+> 
+> with:
+> 
+> struct_size(bufl, bufers, n + 1)
+> 
+> This code was detected with the help of Coccinelle.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> ---
+>  drivers/crypto/qat/qat_common/qat_algs.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 
 Patch applied.  Thanks.
 -- 
