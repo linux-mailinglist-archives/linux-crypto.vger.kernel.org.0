@@ -2,69 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A4942FD7
-	for <lists+linux-crypto@lfdr.de>; Wed, 12 Jun 2019 21:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE4C44749
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 Jun 2019 18:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbfFLTVq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 Jun 2019 15:21:46 -0400
-Received: from s3.sipsolutions.net ([144.76.43.62]:55108 "EHLO
-        sipsolutions.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727443AbfFLTVq (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 Jun 2019 15:21:46 -0400
-Received: by sipsolutions.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1hb8oX-0006v6-EC; Wed, 12 Jun 2019 21:21:41 +0200
-Message-ID: <5fc4b94a1b4abe6b79ce7e20ddf26e762f1b687d.camel@sipsolutions.net>
-Subject: Re: [PATCH v5 0/7] crypto: rc4 cleanup
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-crypto@vger.kernel.org
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        id S1729854AbfFMQ6b (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 13 Jun 2019 12:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729886AbfFMArs (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 12 Jun 2019 20:47:48 -0400
+Received: from dragon (li1322-146.members.linode.com [45.79.223.146])
+        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E0644215EA;
+        Thu, 13 Jun 2019 00:47:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560386868;
+        bh=4lclOnf/sfAPyFXVi/HGPDJVKp6DvLHCXDKLDcqvQaU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Apd1/9RvRe5RRMZS7XQ5mBXWsp+u6fbo99Qa+k24pfkJ/rDYjokzMyqi2R02tYu1U
+         mgmuZuNYIIQgcl/+J3WTW0OGIJYhv4veu1KwtcdtxW3zcTFlr1GggxJDg5cBz95zlI
+         xTfzNH3Q9tNXDAlBIzzqKKbubumC1q/twZiOPTBc=
+Date:   Thu, 13 Jun 2019 08:47:10 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Horia Geanta <horia.geanta@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>
-Date:   Wed, 12 Jun 2019 21:21:39 +0200
-In-Reply-To: <20190612161959.30478-1-ard.biesheuvel@linaro.org> (sfid-20190612_182005_417614_E8F05E5C)
-References: <20190612161959.30478-1-ard.biesheuvel@linaro.org>
-         (sfid-20190612_182005_417614_E8F05E5C)
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-2.fc28) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ARM: dts: imx7ulp: add crypto support
+Message-ID: <20190613004709.GB20747@dragon>
+References: <20190606080255.25504-1-horia.geanta@nxp.com>
+ <20190612103926.GE11086@dragon>
+ <VI1PR0402MB3485A573518D60A573BA55C298EC0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+ <20190612130602.GH11086@dragon>
+ <VI1PR0402MB348596BF52CE43B5D4CD534798EC0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+ <20190612132600.GI11086@dragon>
+ <20190612135952.ds6zzh7ppahiuodd@gondor.apana.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190612135952.ds6zzh7ppahiuodd@gondor.apana.org.au>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, 2019-06-12 at 18:19 +0200, Ard Biesheuvel wrote:
-> This is a follow-up to, and supersedes [0], which moved some WEP code from
-> the cipher to the skcipher interface, in order to reduce the use of the bare
-> cipher interface in non-crypto subsystem code.
+On Wed, Jun 12, 2019 at 09:59:52PM +0800, Herbert Xu wrote:
+> On Wed, Jun 12, 2019 at 09:26:02PM +0800, Shawn Guo wrote:
+> >
+> > Yes, it happens from time to time depending on maintainer's style. I'm
+> > fine with the DT changes going through other subsystem tree, if the
+> > subsystem maintainer wants to and is willing to take the risk of merge
+> > conflict between his tree and arm-soc tree.
 > 
-> Since using the skcipher interface to invoke the generic C implementation of
-> an algorithm that is known at compile time is rather pointless, this series
-> moves those users to a new arc4 library interface instead, which is based on
-> the existing code.
-> 
-> Along the way, the arc4 cipher implementation is removed entirely, and only
-> the ecb(arc4) code is preserved, which is used in a number of places in the
-> kernel, and is known to be used by at least 'iwd' from user space via the
-> algif_skcipher API.
+> I have no problems with potential merge conflicts.
 
-[...]
+Then feel free to take it:
 
-Looks good to me.
-
-Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
-
-(most closely the first 4 patches)
-
-How do you want to handle merging this? I guess keeping all the patches
-together would be good. I have no objection to the mac80211/lib80211
-patches going through any arbitrary tree, this code is hardly ever
-touched, so highly unlikely to lead to conflicts.
-
-johannes
-
-
+Acked-by: Shawn Guo <shawnguo@kernel.org>
