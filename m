@@ -2,75 +2,82 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE4C44749
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 Jun 2019 18:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CEA44685
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 Jun 2019 18:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729854AbfFMQ6b (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 13 Jun 2019 12:58:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53208 "EHLO mail.kernel.org"
+        id S2404325AbfFMQw1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 13 Jun 2019 12:52:27 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:56480 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729886AbfFMArs (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 Jun 2019 20:47:48 -0400
-Received: from dragon (li1322-146.members.linode.com [45.79.223.146])
-        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E0644215EA;
-        Thu, 13 Jun 2019 00:47:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560386868;
-        bh=4lclOnf/sfAPyFXVi/HGPDJVKp6DvLHCXDKLDcqvQaU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Apd1/9RvRe5RRMZS7XQ5mBXWsp+u6fbo99Qa+k24pfkJ/rDYjokzMyqi2R02tYu1U
-         mgmuZuNYIIQgcl/+J3WTW0OGIJYhv4veu1KwtcdtxW3zcTFlr1GggxJDg5cBz95zlI
-         xTfzNH3Q9tNXDAlBIzzqKKbubumC1q/twZiOPTBc=
-Date:   Thu, 13 Jun 2019 08:47:10 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Horia Geanta <horia.geanta@nxp.com>,
+        id S1730117AbfFMDOA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 12 Jun 2019 23:14:00 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1hbGBa-0004Tx-6t; Thu, 13 Jun 2019 11:13:58 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1hbGBX-0001u2-TG; Thu, 13 Jun 2019 11:13:55 +0800
+Date:   Thu, 13 Jun 2019 11:13:55 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ARM: dts: imx7ulp: add crypto support
-Message-ID: <20190613004709.GB20747@dragon>
-References: <20190606080255.25504-1-horia.geanta@nxp.com>
- <20190612103926.GE11086@dragon>
- <VI1PR0402MB3485A573518D60A573BA55C298EC0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
- <20190612130602.GH11086@dragon>
- <VI1PR0402MB348596BF52CE43B5D4CD534798EC0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
- <20190612132600.GI11086@dragon>
- <20190612135952.ds6zzh7ppahiuodd@gondor.apana.org.au>
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Subject: Re: [PATCH v3 0/4] s390/crypto: Use -ENODEV instead of -EOPNOTSUPP
+Message-ID: <20190613031355.7vya4vwhr3eia5g4@gondor.apana.org.au>
+References: <20190612133306.10231-1-david@redhat.com>
+ <20190612150850.GA4038@osiris>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190612135952.ds6zzh7ppahiuodd@gondor.apana.org.au>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20190612150850.GA4038@osiris>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 09:59:52PM +0800, Herbert Xu wrote:
-> On Wed, Jun 12, 2019 at 09:26:02PM +0800, Shawn Guo wrote:
-> >
-> > Yes, it happens from time to time depending on maintainer's style. I'm
-> > fine with the DT changes going through other subsystem tree, if the
-> > subsystem maintainer wants to and is willing to take the risk of merge
-> > conflict between his tree and arm-soc tree.
+On Wed, Jun 12, 2019 at 05:08:50PM +0200, Heiko Carstens wrote:
+> On Wed, Jun 12, 2019 at 03:33:02PM +0200, David Hildenbrand wrote:
+> > s390x crypto is one of the rare modules that returns -EOPNOTSUPP instead of
+> > -ENODEV in case HW support is not available.
+> > 
+> > Convert to -ENODEV, so e.g., systemd's systemd-modules-load.service
+> > ignores this error properly.
+> > 
+> > v2 -> v3:
+> > - "s390/pkey: Use -ENODEV instead of -EOPNOTSUPP"
+> > -- Also convert pkey_clr2protkey() as requested by Harald
+> > - Add r-b's (thanks!)
+> > 
+> > v1 -> v2:
+> > - Include
+> > -- "s390/crypto: ghash: Use -ENODEV instead of -EOPNOTSUPP"
+> > -- "s390/crypto: prng: Use -ENODEV instead of -EOPNOTSUPP"
+> > -- "s390/crypto: sha: Use -ENODEV instead of -EOPNOTSUPP"
+> > 
+> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+> > Cc: Vasily Gorbik <gor@linux.ibm.com>
+> > Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> > Cc: Harald Freudenberger <freude@linux.ibm.com>
+> > Cc: Cornelia Huck <cohuck@redhat.com>
+> > 
+> > David Hildenbrand (4):
+> >   s390/pkey: Use -ENODEV instead of -EOPNOTSUPP
+> >   s390/crypto: ghash: Use -ENODEV instead of -EOPNOTSUPP
+> >   s390/crypto: prng: Use -ENODEV instead of -EOPNOTSUPP
+> >   s390/crypto: sha: Use -ENODEV instead of -EOPNOTSUPP
 > 
-> I have no problems with potential merge conflicts.
+> Should I pick these up so they can go upstream via the s390 tree?
 
-Then feel free to take it:
-
-Acked-by: Shawn Guo <shawnguo@kernel.org>
+Sure Heiko.  Thanks!
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
