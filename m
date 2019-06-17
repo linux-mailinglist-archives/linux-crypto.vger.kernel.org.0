@@ -2,102 +2,118 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F9D4883F
-	for <lists+linux-crypto@lfdr.de>; Mon, 17 Jun 2019 18:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F9048984
+	for <lists+linux-crypto@lfdr.de>; Mon, 17 Jun 2019 19:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbfFQQEE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 17 Jun 2019 12:04:04 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:34303 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727996AbfFQQEE (ORCPT
+        id S1726091AbfFQRAb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 17 Jun 2019 13:00:31 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:40887 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725863AbfFQRAb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 17 Jun 2019 12:04:04 -0400
-Received: by mail-pf1-f195.google.com with SMTP id c85so5944036pfc.1;
-        Mon, 17 Jun 2019 09:04:03 -0700 (PDT)
+        Mon, 17 Jun 2019 13:00:31 -0400
+Received: by mail-pf1-f193.google.com with SMTP id p184so6008709pfp.7;
+        Mon, 17 Jun 2019 10:00:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NffYjCT+19kqu15C0XR6euahrUMgoS4xoGIubo2p80U=;
-        b=R3cBNid62KF9am1jU12o6Vn2rYWB32GFZt9Ocsfq6Zl0q4mIRtbdYY/CYx2PtfBQwU
-         Is+SPejpfpMVzkxVeMAwPldav5ZOicXXWNriEAaKO/GBIIiJvdmTMKWwWOuk8IYTfmCy
-         kk2j6S2hbeU8o4Pm6d+iORUrkJsKnsLo70IjKCKcyZbppSQabbXYrXVCme+7XIElmOo3
-         gYQ0O2PmLVy93JdBTDRMrtDp6ETe0QcF9YYl7TV9LeYc+f812hUJGkQYX//zFKUliOQc
-         YdFzZiKCGD+Pui/oFiCaIz61EGepuhmKXDJuzThekR+krWtKOAw8BVPHsoPrG381WNW7
-         YR/g==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PWC+RbxtlMDHshNLSaHRZ424esMvY5x7T2f733VpE/M=;
+        b=upDVNYelb9DUB/83bN9uWmEr9jt871fNfLI5T0ZdvUdJ8DAnQ0qnF7Ja6X7Wn2suj9
+         4hdqCuD943g4PL1FC6ClHYljI0bF8vlkLKWNDxSKBL+Gc9pvvmxf4pd1E5Q5IeqsqbVg
+         nnSivwFlG5JzpTJg1nbsQhx5LBL3ISkYVSW/p6HkRyj5KwP77B8k9CFtBJcucttxH8eb
+         dNU1nSookMwuKeNmC5kjQiB/bMx+1u1YKbphgCOXU8qlfwDzLxZpsoOWmv/gMecdMHa9
+         yC+MJyyxc6R/+OT5Rj1m+svVQ4vaJuM/9ZtwZSlCw32+gEpBya/yIcDoD1xM910hiYcn
+         pLjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NffYjCT+19kqu15C0XR6euahrUMgoS4xoGIubo2p80U=;
-        b=EO1hSGv3RJtnvJvl1Q+8Osq2HXdlAtNxpw8YP37qaP0z/p1HyphhZJBclSzRomdl9P
-         8g1dTlm9kpp7u/3pAzRMLoFdSEEY4duuDIjUGTM1JoVGK8zgCsbCN4JLLU0eXyly/fMw
-         F2qhwFh3Zf7dmyE1/iqRgBBMzWMESe3VJyc0rbSkWRIPFc4VZfdznPHTvF0/KuvgG2hq
-         DHqCJ4SioCNjH2hNiiSlTvOniS8cSo2V7TkdPNGcSTphZehuxANcXHwGn/hIsQJ9QdXC
-         Ur1TzZ0Be+epbr/0yb4kLp0ErnCCgKDE638UazPt6MWmEPtLl1702g0+XwndUv9wBtth
-         VRmQ==
-X-Gm-Message-State: APjAAAVtZ9/VeaERkEkaSxaDzM7YtA4n3AH9yAFtlj+SiiWdwHqoCRtU
-        HKExV7vvlxeycGEW/J/jjbj2dOpBD3k=
-X-Google-Smtp-Source: APXvYqwGL2+Nxya4XyPZRBn7XDI9RyxIsPE29y5kHHokxNLIRcofTWz35lXpf0khrx3oEdO4HI6kcQ==
-X-Received: by 2002:aa7:8394:: with SMTP id u20mr102119781pfm.252.1560787442976;
-        Mon, 17 Jun 2019 09:04:02 -0700 (PDT)
-Received: from localhost.lan (c-24-22-235-96.hsd1.wa.comcast.net. [24.22.235.96])
-        by smtp.gmail.com with ESMTPSA id d187sm12834073pfa.38.2019.06.17.09.04.01
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 17 Jun 2019 09:04:02 -0700 (PDT)
-From:   Andrey Smirnov <andrew.smirnov@gmail.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Chris Spencer <christopher.spencer@sea.co.uk>,
-        Cory Tusar <cory.tusar@zii.aero>,
-        Chris Healy <cphealy@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] crypto: caam - add clock entry for i.MX8MQ
-Date:   Mon, 17 Jun 2019 09:03:39 -0700
-Message-Id: <20190617160339.29179-6-andrew.smirnov@gmail.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190617160339.29179-1-andrew.smirnov@gmail.com>
-References: <20190617160339.29179-1-andrew.smirnov@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PWC+RbxtlMDHshNLSaHRZ424esMvY5x7T2f733VpE/M=;
+        b=jfSMMeJdq4fPeEpme1ayyv7JlVvFrmyPt25lZexAN0+D5zrrqz93MkOARbI3zT2y44
+         fxoTeeH7AjzzdVf0aHJI3iUig4i/QLDPzG2F4YhRLCGsjOHreA80BdJ/YvlQ+G/DKDMY
+         agECWO8wUgXGrY9u5Ubh8P4B1sH7jAB7ut9xOFLr7BLHfClvQN5GZOsHcVQapi1QrgtM
+         iu5tpYt9N6LdS2AwTFzOgX7BbCO9Ed8UhUv9kpdjlzru0j3FVlzHoSNPNhXo8MCkuUbq
+         /CXY6g5WqrDBXbcgzZvYWowlUS4rcJtDCWMR3UBeblJkeL0iobsQZnuvKaY3NrvJjZFb
+         hLwA==
+X-Gm-Message-State: APjAAAUgSertC24rigTu/NlCvUKqW+KG59PdJfAx2j2bzgAGCKihEuiA
+        ZrsLTwA+nqo25oxJSuganXU=
+X-Google-Smtp-Source: APXvYqw6wt+Opahah8Vn7nUIT5LdVOYWnQNKWZfnggSuwHfRwOO3nFjPPvZvbDGLoocfMFVJhjaLFg==
+X-Received: by 2002:a17:90a:cb97:: with SMTP id a23mr26512512pju.67.1560790830866;
+        Mon, 17 Jun 2019 10:00:30 -0700 (PDT)
+Received: from ?IPv6:2620:15c:2c1:200:55c7:81e6:c7d8:94b? ([2620:15c:2c1:200:55c7:81e6:c7d8:94b])
+        by smtp.gmail.com with ESMTPSA id d123sm15587217pfc.144.2019.06.17.10.00.29
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Mon, 17 Jun 2019 10:00:29 -0700 (PDT)
+Subject: Re: [PATCH v3] net: ipv4: move tcp_fastopen server side code to
+ SipHash library
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>, netdev@vger.kernel.org
+Cc:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+        ebiggers@kernel.org, edumazet@google.com, davem@davemloft.net,
+        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, jbaron@akamai.com,
+        cpaasch@apple.com, David.Laight@aculab.com, ycheng@google.com
+References: <20190617080933.32152-1-ard.biesheuvel@linaro.org>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <e1c4c9b6-3668-106a-69ef-7ef6c016a5f6@gmail.com>
+Date:   Mon, 17 Jun 2019 10:00:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190617080933.32152-1-ard.biesheuvel@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add clock entry needed to support i.MX8MQ.
 
-Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
-Cc: Chris Spencer <christopher.spencer@sea.co.uk>
-Cc: Cory Tusar <cory.tusar@zii.aero>
-Cc: Chris Healy <cphealy@gmail.com>
-Cc: Lucas Stach <l.stach@pengutronix.de>
-Cc: Horia Geantă <horia.geanta@nxp.com>
-Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
-Cc: Leonard Crestez <leonard.crestez@nxp.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- drivers/crypto/caam/ctrl.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
-index b9655957d369..888eacc7c17d 100644
---- a/drivers/crypto/caam/ctrl.c
-+++ b/drivers/crypto/caam/ctrl.c
-@@ -528,6 +528,7 @@ static const struct soc_device_attribute imx_soc[] = {
- 	{ .soc_id = "i.MX6UL", .data = &caam_imx6ul_clk_data },
- 	{ .soc_id = "i.MX6*",  .data = &caam_imx6_clk_data },
- 	{ .soc_id = "i.MX7*",  .data = &caam_imx7_clk_data },
-+	{ .soc_id = "i.MX8MQ", .data = &caam_imx7_clk_data },
- 	{ .family = "Freescale i.MX" },
- };
- 
--- 
-2.21.0
+On 6/17/19 1:09 AM, Ard Biesheuvel wrote:
+> Using a bare block cipher in non-crypto code is almost always a bad idea,
+> not only for security reasons (and we've seen some examples of this in
+> the kernel in the past), but also for performance reasons.
+> 
+> In the TCP fastopen case, we call into the bare AES block cipher one or
+> two times (depending on whether the connection is IPv4 or IPv6). On most
+> systems, this results in a call chain such as
+> 
+>   crypto_cipher_encrypt_one(ctx, dst, src)
+>     crypto_cipher_crt(tfm)->cit_encrypt_one(crypto_cipher_tfm(tfm), ...);
+>       aesni_encrypt
+>         kernel_fpu_begin();
+>         aesni_enc(ctx, dst, src); // asm routine
+>         kernel_fpu_end();
+> 
+> It is highly unlikely that the use of special AES instructions has a
+> benefit in this case, especially since we are doing the above twice
+> for IPv6 connections, instead of using a transform which can process
+> the entire input in one go.
+> 
+> We could switch to the cbcmac(aes) shash, which would at least get
+> rid of the duplicated overhead in *some* cases (i.e., today, only
+> arm64 has an accelerated implementation of cbcmac(aes), while x86 will
+> end up using the generic cbcmac template wrapping the AES-NI cipher,
+> which basically ends up doing exactly the above). However, in the given
+> context, it makes more sense to use a light-weight MAC algorithm that
+> is more suitable for the purpose at hand, such as SipHash.
+> 
+> Since the output size of SipHash already matches our chosen value for
+> TCP_FASTOPEN_COOKIE_SIZE, and given that it accepts arbitrary input
+> sizes, this greatly simplifies the code as well.
+> 
+> NOTE: Server farms backing a single server IP for load balancing purposes
+>       and sharing a single fastopen key will be adversely affected by
+>       this change unless all systems in the pool receive their kernel
+>       upgrades at the same time.
+> 
+> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> ---
+
+All our fastopen packetdrill tests pass (after I changed all the cookie values in them)
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+
 
