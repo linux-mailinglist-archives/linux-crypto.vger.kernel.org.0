@@ -2,84 +2,120 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4ABF497BA
-	for <lists+linux-crypto@lfdr.de>; Tue, 18 Jun 2019 05:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7234497F0
+	for <lists+linux-crypto@lfdr.de>; Tue, 18 Jun 2019 06:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbfFRDTy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 17 Jun 2019 23:19:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36418 "EHLO mail.kernel.org"
+        id S1726232AbfFREOL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 18 Jun 2019 00:14:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725829AbfFRDTx (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 17 Jun 2019 23:19:53 -0400
+        id S1725826AbfFREOL (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 18 Jun 2019 00:14:11 -0400
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0EA82084B;
-        Tue, 18 Jun 2019 03:19:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29A7C2085A;
+        Tue, 18 Jun 2019 04:14:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560827992;
-        bh=cVwUgvpthCIfOlkvKKJ0rtxT+EtZpK0NgTGeSQI83jw=;
+        s=default; t=1560831250;
+        bh=nlZXgfeO6Lsh2kyizJV7f0jo6QHVyCgeaN7az9UUvCg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xn/5ENu41WjIXlEdMNgtlz8x/UcPMWYZBFVrSZ1v6F2WUatIhnDocnRjh0fxeTztE
-         WjvED2rFL7hMo3+nXpAwC88KNK6eRxrpZYoQX5vtWXCLdVN1S2ZXQeuC4IJi8cqytv
-         5vaBwuiFCQAakXrgbLNXgu9EZHDHmaHreJDZ+S5c=
-Date:   Mon, 17 Jun 2019 20:19:51 -0700
+        b=kY7iHu16DRL/De7QSnn93HiZnBvHZ7nuR0sz2+igmPIjXrbIHvQb/A99QarMRMITN
+         PzUN7LxK/YihJm+Lpj2ontkYOyOMlAaoYY2NRZZA8S3h1YTlKBM8CcV780UdPlqG5S
+         Xyk4/xFcbJBcBbvDmveLcChxf6NZmuFQH1iAOta4=
+Date:   Mon, 17 Jun 2019 21:14:08 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: serpent - mark __serpent_setkey_sbox noinline
-Message-ID: <20190618031951.GA2266@sol.localdomain>
-References: <20190617115927.3813471-1-arnd@arndb.de>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc:     netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+        herbert@gondor.apana.org.au, edumazet@google.com,
+        davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        jbaron@akamai.com, cpaasch@apple.com, David.Laight@aculab.com,
+        ycheng@google.com
+Subject: Re: [PATCH v3] net: ipv4: move tcp_fastopen server side code to
+ SipHash library
+Message-ID: <20190618041408.GB2266@sol.localdomain>
+References: <20190617080933.32152-1-ard.biesheuvel@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190617115927.3813471-1-arnd@arndb.de>
+In-Reply-To: <20190617080933.32152-1-ard.biesheuvel@linaro.org>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Arnd,
-
-On Mon, Jun 17, 2019 at 01:59:08PM +0200, Arnd Bergmann wrote:
-> The same bug that gcc hit in the past is apparently now showing
-> up with clang, which decides to inline __serpent_setkey_sbox:
-> 
-> crypto/serpent_generic.c:268:5: error: stack frame size of 2112 bytes in function '__serpent_setkey' [-Werror,-Wframe-larger-than=]
-> 
-> Marking it 'noinline' reduces the stack usage from 2112 bytes to
-> 192 and 96 bytes, respectively, and seems to generate more
-> useful object code.
-> 
-> Fixes: c871c10e4ea7 ("crypto: serpent - improve __serpent_setkey with UBSAN")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  crypto/serpent_generic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/crypto/serpent_generic.c b/crypto/serpent_generic.c
-> index e57757904677..183661faf420 100644
-> --- a/crypto/serpent_generic.c
-> +++ b/crypto/serpent_generic.c
-> @@ -225,7 +225,7 @@
->  	x4 ^= x2;					\
->  	})
+On Mon, Jun 17, 2019 at 10:09:33AM +0200, Ard Biesheuvel wrote:
+> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+> index c23019a3b264..9ea0e71f5c6a 100644
+> --- a/include/linux/tcp.h
+> +++ b/include/linux/tcp.h
+> @@ -58,12 +58,7 @@ static inline unsigned int tcp_optlen(const struct sk_buff *skb)
 >  
-> -static void __serpent_setkey_sbox(u32 r0, u32 r1, u32 r2, u32 r3, u32 r4, u32 *k)
-> +static void noinline __serpent_setkey_sbox(u32 r0, u32 r1, u32 r2, u32 r3, u32 r4, u32 *k)
->  {
->  	k += 100;
->  	S3(r3, r4, r0, r1, r2); store_and_load_keys(r1, r2, r4, r3, 28, 24);
-> -- 
-> 2.20.0
-> 
+>  /* TCP Fast Open Cookie as stored in memory */
+>  struct tcp_fastopen_cookie {
+> -	union {
+> -		u8	val[TCP_FASTOPEN_COOKIE_MAX];
+> -#if IS_ENABLED(CONFIG_IPV6)
+> -		struct in6_addr addr;
+> -#endif
+> -	};
+> +	u64	val[TCP_FASTOPEN_COOKIE_MAX / sizeof(u64)];
+>  	s8	len;
+>  	bool	exp;	/* In RFC6994 experimental option format */
+>  };
 
-A few nits: 'static noinline void' seems to be the much more common order,
-presumably to match 'static inline void'.  Line breaking at 80 characters would
-also be nice.  Finally, a brief comment explaining the purpose of 'noinline'
-might be helpful for people working with this code later.
+Is it okay that the cookies will depend on CPU endianness?
+
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index 96e0e53ff440..184930b02779 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -1628,9 +1628,9 @@ bool tcp_fastopen_defer_connect(struct sock *sk, int *err);
+>  
+>  /* Fastopen key context */
+>  struct tcp_fastopen_context {
+> -	struct crypto_cipher	*tfm[TCP_FASTOPEN_KEY_MAX];
+> -	__u8			key[TCP_FASTOPEN_KEY_BUF_LENGTH];
+> -	struct rcu_head		rcu;
+> +	__u8		key[TCP_FASTOPEN_KEY_MAX][TCP_FASTOPEN_KEY_LENGTH];
+> +	int		num;
+> +	struct rcu_head	rcu;
+>  };
+
+Why not use 'siphash_key_t' here?  Then the (potentially alignment-violating)
+cast in __tcp_fastopen_cookie_gen_cipher() wouldn't be needed.
+
+>  int tcp_fastopen_reset_cipher(struct net *net, struct sock *sk,
+>  			      void *primary_key, void *backup_key,
+>  			      unsigned int len)
+> @@ -115,11 +75,20 @@ int tcp_fastopen_reset_cipher(struct net *net, struct sock *sk,
+>  	struct fastopen_queue *q;
+>  	int err = 0;
+>  
+> -	ctx = tcp_fastopen_alloc_ctx(primary_key, backup_key, len);
+> -	if (IS_ERR(ctx)) {
+> -		err = PTR_ERR(ctx);
+> +	ctx = kmalloc(sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx) {
+> +		err = -ENOMEM;
+>  		goto out;
+>  	}
+> +
+> +	memcpy(ctx->key[0], primary_key, len);
+> +	if (backup_key) {
+> +		memcpy(ctx->key[1], backup_key, len);
+> +		ctx->num = 2;
+> +	} else {
+> +		ctx->num = 1;
+> +	}
+> +
+>  	spin_lock(&net->ipv4.tcp_fastopen_ctx_lock);
+>  	if (sk) {
+>  		q = &inet_csk(sk)->icsk_accept_queue.fastopenq;
+
+Shouldn't there be a check that 'len == TCP_FASTOPEN_KEY_LENGTH'?  I see that
+all callers pass that, but it seems unnecessarily fragile for this to accept
+short lengths and leave uninitialized memory in that case.
 
 - Eric
