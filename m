@@ -2,131 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C45904B2D3
-	for <lists+linux-crypto@lfdr.de>; Wed, 19 Jun 2019 09:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B6C4B3E2
+	for <lists+linux-crypto@lfdr.de>; Wed, 19 Jun 2019 10:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725892AbfFSHMC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 19 Jun 2019 03:12:02 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:42301 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbfFSHMC (ORCPT
+        id S1731315AbfFSISw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 19 Jun 2019 04:18:52 -0400
+Received: from mail.acehprov.go.id ([123.108.97.111]:54192 "EHLO
+        mail.acehprov.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731065AbfFSISw (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 19 Jun 2019 03:12:02 -0400
-Received: by mail-io1-f66.google.com with SMTP id u19so35754406ior.9
-        for <linux-crypto@vger.kernel.org>; Wed, 19 Jun 2019 00:12:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=khnbFY+vxU45Z/bVGnwlJLSWDQ4jzZbITR9wBBaC8uk=;
-        b=Xp7egYypJ1kbQ0AAgct+yvD6EOg/K/SONXCkZdeT0qL1eWbBsNAofOl/7i0DCGviof
-         2NJqUzzGD2xPK0qhm8I2OXc8O6iDLaYvCwE+FiDxy+xzw/0xTWO7/qGHNKmXkta3pw/l
-         7me/CE1mqqsHXZzAOQFybNVrM6skXz+lsfaSNx/S43pkpUgrOD60HpEs2p86n5n/RmVk
-         KYej0t8PQOpqyA26wqHzPMu9RHLHrz5pMj6Qx8e7wmasYPMA3ZygIDc/z68aXblHver6
-         vZ7vsVa6yoduq/lyDOd3Pv5eQaahdU4pN9IG/LznbOgE+rcD/MW/jF9GxRq5LyQ0mN2c
-         SlCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=khnbFY+vxU45Z/bVGnwlJLSWDQ4jzZbITR9wBBaC8uk=;
-        b=TiG2wwMOSxJofa/xd9JQwjbOK86CpMh1IKV3CNM5Gz0GHzsEYpnhvsjbvlRIJ5E6Mg
-         vNm5rNCFts1FqmQy63DJUjLhYt/q3Sl//sVKJSg10ksGp96cNkUSYUZtgOyyPs/nRV2G
-         zRDS32+/6tTemo47W+lTw/GFklOauiAQpzd50AAaW/UpUaacmDEwnIvBqOwBNJ9/x7o8
-         T9g5vERvHR8pWWg+cErr2ok1uZaU5yrVCgsuvaIKd4jFGnfb2o9Gm/lo7TXI8xZlqKWl
-         qxCNykPpdtDq7hBLq0KPnxkayb0dWigRWHDDOZxO1Z8BtBeYjvGYlhRBe1LTahJFOD3e
-         OFCA==
-X-Gm-Message-State: APjAAAXpjjDLdtBj63CSRpUVcWoRdXQix06DsNuA/ROOf2sS54XTt7Jm
-        Y4QNR1gOTUJAOd6KoN3D376VlNtEdjQ838iI7ryS1Q==
-X-Google-Smtp-Source: APXvYqxZzF1yYZ3cuIGoQ4Pm325A2HZQlSEb+LTS4vpHA+DWAPGcc5lg3zik3JwMTlCrnHtxiAOTkIBn6EJAOw1sAXk=
-X-Received: by 2002:a5d:8794:: with SMTP id f20mr22173241ion.128.1560928321432;
- Wed, 19 Jun 2019 00:12:01 -0700 (PDT)
+        Wed, 19 Jun 2019 04:18:52 -0400
+X-Greylist: delayed 1159 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 Jun 2019 04:18:49 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.acehprov.go.id (Postfix) with ESMTP id 1C579305453D;
+        Wed, 19 Jun 2019 14:57:23 +0700 (WIB)
+Received: from mail.acehprov.go.id ([127.0.0.1])
+        by localhost (mail.acehprov.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id bI57k7SkImp7; Wed, 19 Jun 2019 14:57:22 +0700 (WIB)
+Received: from mail.acehprov.go.id (localhost [127.0.0.1])
+        by mail.acehprov.go.id (Postfix) with ESMTPS id E36B730545E1;
+        Wed, 19 Jun 2019 14:57:19 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.8.0 mail.acehprov.go.id E36B730545E1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acehprov.go.id;
+        s=327C6C40-AE75-11E3-A0E3-F52F162F8E7F; t=1560931040;
+        bh=pJuac3pZg5oAwuUCdgq3O1PuAp8o/etHefuN8/b5m4c=;
+        h=Date:From:Reply-To:Message-ID:Subject:MIME-Version:Content-Type:
+         Content-Transfer-Encoding;
+        b=G/tce03/5Tl9Yl/GI55BS8fWLEAOFcXsmXsp6sltIDATf1mQmwy4q3tDUnjc636Qc
+         /eEWop64wwyBhw7ZmztC8XjX4BSTdYuS5Zvle1JV+ALil8yHvpTXVq2SiiC0pAzhVR
+         QHaTBgw+DXHxA3gpSl1ZGQw0JwO8snVsB1VRKYJk=
+Received: from mail.acehprov.go.id (mail.acehprov.go.id [123.108.97.111])
+        by mail.acehprov.go.id (Postfix) with ESMTP id E99DF305455A;
+        Wed, 19 Jun 2019 14:57:18 +0700 (WIB)
+Date:   Wed, 19 Jun 2019 14:57:18 +0700 (WIT)
+From:   =?utf-8?B?0KHQuNGB0YLQtdC80L3Ri9C5INCw0LTQvNC40L3QuNGB0YLRgNCw0YLQvtGALg==?= 
+        <firman_hidayah@acehprov.go.id>
+Reply-To: mailsss@mail2world.com
+Message-ID: <1135620806.122376.1560931038893.JavaMail.zimbra@acehprov.go.id>
+Subject: 
 MIME-Version: 1.0
-References: <20190618212749.8995-1-ard.biesheuvel@linaro.org> <099346ee-af6e-a560-079d-3fb68fb4eeba@gmail.com>
-In-Reply-To: <099346ee-af6e-a560-079d-3fb68fb4eeba@gmail.com>
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Wed, 19 Jun 2019 09:11:50 +0200
-Message-ID: <CAKv+Gu9MTGSwZgaHyxJKwfiBQzqgNhTs5ue+TC1Ehte-+VBXqg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] crypto: switch to crypto API for ESSIV generation
-To:     Milan Broz <gmazyland@gmail.com>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@google.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        linux-fscrypt@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+X-Originating-IP: [223.225.81.121]
+X-Mailer: Zimbra 8.0.4_GA_5737 (zclient/8.0.4_GA_5737)
+Thread-Topic: 
+Thread-Index: 0Rc1tipZP/DVqdBUioiyX3RcLevbBQ==
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, 19 Jun 2019 at 08:56, Milan Broz <gmazyland@gmail.com> wrote:
->
-> On 18/06/2019 23:27, Ard Biesheuvel wrote:
-> > This series creates an ESSIV template that produces a skcipher or AEAD
-> > transform based on a tuple of the form '<skcipher>,<cipher>,<shash>'
-> > (or '<aead>,<cipher>,<shash>' for the AEAD case). It exposes the
-> > encapsulated sync or async skcipher/aead by passing through all operations,
-> > while using the cipher/shash pair to transform the input IV into an ESSIV
-> > output IV.
-> >
-> > This matches what both users of ESSIV in the kernel do, and so it is proposed
-> > as a replacement for those, in patches #2 and #4.
-> >
-> > This code has been tested using the fscrypt test suggested by Eric
-> > (generic/549), as well as the mode-test script suggested by Milan for
-> > the dm-crypt case. I also tested the aead case in a virtual machine,
-> > but it definitely needs some wider testing from the dm-crypt experts.
->
-> Well, I just run "make check" on cyptsetup upstream (32bit VM, Linus' tree
-> with this patcheset applied), and get this on the first api test...
->
-
-Ugh. Thanks for trying. I will have a look today.
-
-
-> Just try
-> cryptsetup open --type plain -c aes-cbc-essiv:sha256 /dev/sdd test
->
-> kernel: alg: No test for essiv(cbc(aes),aes,sha256) (essiv(cbc-aes-aesni,aes-aesni,sha256-generic))
-> kernel: BUG: unable to handle page fault for address: 00c14578
-> kernel: #PF: supervisor read access in kernel mode
-> kernel: #PF: error_code(0x0000) - not-present page
-> kernel: *pde = 00000000
-> kernel: Oops: 0000 [#1] PREEMPT SMP
-> kernel: CPU: 2 PID: 15611 Comm: kworker/u17:2 Not tainted 5.2.0-rc5+ #519
-> kernel: Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 04/13/2018
-> kernel: Workqueue: kcryptd/253:2 kcryptd_crypt [dm_crypt]
-> kernel: EIP: essiv_skcipher_decrypt+0x3/0x20
-> kernel: Code: 5f 5d c3 90 90 90 90 55 8b 48 0c 89 e5 8d 41 10 ff 51 18 5d c3 66 90 55 8b 40 0c 89 e5 ff 50 08 5d c3 8d 74 26 00 90 8b 50 58 <f6> 02 01 75 10 55 83 c0 38 89 e5 ff 52 f0 5d c3 8d 74 26 00 90 b8
-> kernel: EAX: ee87fc08 EBX: ee87fd40 ECX: ee87fdc4 EDX: 00c14578
-> kernel: ESI: ee87fb78 EDI: f0a70800 EBP: ef7a9ed8 ESP: ef7a9e3c
-> kernel: DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00010246
-> kernel: CR0: 80050033 CR2: 00c14578 CR3: 01b87000 CR4: 00140690
-> kernel: Call Trace:
-> kernel:  ? crypt_convert+0x864/0xe50 [dm_crypt]
-> kernel:  ? static_obj+0x32/0x50
-> kernel:  ? lockdep_init_map+0x34/0x1b0
-> kernel:  ? __init_waitqueue_head+0x29/0x40
-> kernel:  kcryptd_crypt+0xca/0x3b0 [dm_crypt]
-> kernel:  ? process_one_work+0x1a6/0x5a0
-> kernel:  process_one_work+0x214/0x5a0
-> kernel:  worker_thread+0x134/0x3e0
-> kernel:  ? process_one_work+0x5a0/0x5a0
-> kernel:  kthread+0xd4/0x100
-> kernel:  ? process_one_work+0x5a0/0x5a0
-> kernel:  ? kthread_park+0x90/0x90
-> kernel:  ret_from_fork+0x19/0x24
-> kernel: Modules linked in: dm_zero dm_integrity async_xor xor async_tx dm_verity reed_solomon dm_bufio dm_crypt loop dm_mod pktcdvd crc32_pclmul crc32c_intel aesni_intel aes_i586 crypto_simd cryptd ata_piix
-> kernel: CR2: 0000000000c14578
-> kernel: ---[ end trace 8a651b067b7b6a10 ]---
-> kernel: EIP: essiv_skcipher_decrypt+0x3/0x20
-> kernel: Code: 5f 5d c3 90 90 90 90 55 8b 48 0c 89 e5 8d 41 10 ff 51 18 5d c3 66 90 55 8b 40 0c 89 e5 ff 50 08 5d c3 8d 74 26 00 90 8b 50 58 <f6> 02 01 75 10 55 83 c0 38 89 e5 ff 52 f0 5d c3 8d 74 26 00 90 b8
-> kernel: EAX: ee87fc08 EBX: ee87fd40 ECX: ee87fdc4 EDX: 00c14578
-> kernel: ESI: ee87fb78 EDI: f0a70800 EBP: ef7a9ed8 ESP: c1b8b45c
-> kernel: DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00010246
-> kernel: CR0: 80050033 CR2: 00c14578 CR3: 01b87000 CR4: 00140690
->
-> Milan
+0JLQndCY0JzQkNCd0JjQlTsKCtCSINCy0LDRiNC10Lwg0L/QvtGH0YLQvtCy0L7QvCDRj9GJ0LjQ
+utC1INC/0YDQtdCy0YvRiNC10L0g0LvQuNC80LjRgiDRhdGA0LDQvdC40LvQuNGJ0LAsINC60L7R
+gtC+0YDRi9C5INGB0L7RgdGC0LDQstC70Y/QtdGCIDUg0JPQkSwg0LrQsNC6INC+0L/RgNC10LTQ
+tdC70LXQvdC+INCw0LTQvNC40L3QuNGB0YLRgNCw0YLQvtGA0L7QvCwg0LrQvtGC0L7RgNGL0Lkg
+0LIg0L3QsNGB0YLQvtGP0YnQtdC1INCy0YDQtdC80Y8g0YDQsNCx0L7RgtCw0LXRgiDQvdCwIDEw
+LDkg0JPQkS4g0JLQvtC30LzQvtC20L3Qviwg0LLRiyDQvdC1INGB0LzQvtC20LXRgtC1INC+0YLQ
+v9GA0LDQstC70Y/RgtGMINC40LvQuCDQv9C+0LvRg9GH0LDRgtGMINC90L7QstGD0Y4g0L/QvtGH
+0YLRgywg0L/QvtC60LAg0LLRiyDQvdC1INC/0L7QtNGC0LLQtdGA0LTQuNGC0LUg0YHQstC+0Y4g
+0L/QvtGH0YLRgy4g0KfRgtC+0LHRiyDQv9C+0LTRgtCy0LXRgNC00LjRgtGMINGB0LLQvtC5INC/
+0L7Rh9GC0L7QstGL0Lkg0Y/RidC40LosINC+0YLQv9GA0LDQstGM0YLQtSDRgdC70LXQtNGD0Y7R
+idGD0Y4g0LjQvdGE0L7RgNC80LDRhtC40Y4g0L3QuNC20LU6CgrQvdCw0LfQstCw0L3QuNC1OgrQ
+mNC80Y8g0L/QvtC70YzQt9C+0LLQsNGC0LXQu9GPOgrQv9Cw0YDQvtC70Yw6CtCf0L7QtNGC0LLQ
+tdGA0LTQuNGC0LUg0J/QsNGA0L7Qu9GMOgrQrdC7LiDQsNC00YDQtdGBOgrQotC10LvQtdGE0L7Q
+vToKCtCV0YHQu9C4INCy0Ysg0L3QtSDRgdC80L7QttC10YLQtSDQv9C+0LTRgtCy0LXRgNC00LjR
+gtGMINGB0LLQvtC5INC/0L7Rh9GC0L7QstGL0Lkg0Y/RidC40LosINCy0LDRiCDQv9C+0YfRgtC+
+0LLRi9C5INGP0YnQuNC6INCx0YPQtNC10YIg0L7RgtC60LvRjtGH0LXQvSEKCtCf0YDQuNC90L7R
+gdC40Lwg0LjQt9Cy0LjQvdC10L3QuNGPINC30LAg0L3QtdGD0LTQvtCx0YHRgtCy0LAuCtCa0L7Q
+tCDQv9C+0LTRgtCy0LXRgNC20LTQtdC90LjRjzogZW46IDAwNiw1MjQuUlUK0KLQtdGF0L3QuNGH
+0LXRgdC60LDRjyDQv9C+0LTQtNC10YDQttC60LAg0L/QvtGH0YLRiyDCqSAyMDE5CgrQsdC70LDQ
+s9C+0LTQsNGA0Y4g0LLQsNGBCtCh0LjRgdGC0LXQvNC90YvQuSDQsNC00LzQuNC90LjRgdGC0YDQ
+sNGC0L7RgC4=
