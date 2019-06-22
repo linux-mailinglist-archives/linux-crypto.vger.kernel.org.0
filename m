@@ -2,86 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F314F437
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jun 2019 09:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418164F6D8
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jun 2019 18:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726099AbfFVHqr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 22 Jun 2019 03:46:47 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:44014 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbfFVHqr (ORCPT
+        id S1726378AbfFVQ2u (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 22 Jun 2019 12:28:50 -0400
+Received: from sonic301-3.consmr.mail.bf2.yahoo.com ([74.6.129.42]:38120 "EHLO
+        sonic301-3.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726416AbfFVQ2u (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 22 Jun 2019 03:46:47 -0400
-Received: by mail-io1-f66.google.com with SMTP id k20so1020329ios.10
-        for <linux-crypto@vger.kernel.org>; Sat, 22 Jun 2019 00:46:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gO7xV8V8rMbz4lgHVplKKXB/U2QvprMvnG6pGySatqk=;
-        b=H3YtZKM7zFp0i8WuqRiNgB0j8Sn1qzSIOW0qcqN0BOvt0rsEplslV46GIknNHVjkGK
-         HnfytRxZjjhZcH0hIdCY8HDMMoXyNeQr/WhzhQKhAi0NQLcDJkEzs/GM5Z7KoSWEN9Hm
-         U3L/YwAUhuYzVBf1wD+ODzTE0wv0sgo40ZkcVh9++oy55tBpOFaed9mTwsA8JDNzvcgs
-         vlIIZcA2ybG/WQbUHp6Dy30dKWdWzuTPovXGwZGoUxVbkMJA1MZgB5Z1Hp2AucjtwLdO
-         sJONtYvg2UxARs0eCxHqsmVF8YAuIjr+cdjAqMCLWsLiie72gQv3EPg9v5GncF3h1bg7
-         qg1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gO7xV8V8rMbz4lgHVplKKXB/U2QvprMvnG6pGySatqk=;
-        b=gMh6ZCEMorqYlUCE1TVkqpC3tzGv/vwFR5ll64AabJrWxnnwocOAPTPujHYCfWGhdL
-         OshQqOoGA3jH/FaaDZVA8+bytuv40dmk2KPQapyEYzZaTci+dujBC5eL7aOP3q9X7sry
-         l0uQEmtzTKXPpBWjgNPncPOIjllZArCESWBkLL43rCffRE6RQI2BNg0SQVgOj1GJo6Io
-         ODLmi+FIEshvuJPIE2rfn959YceRh1ShEI8pko9OYRmMopby8V2vDk1bBG4wrMst0w/F
-         iWZ3//n2e+F713VwZQSxQ4MtpFhMdV/i52YU+BIIRuKMXEeyEr2YttW9tRkhRxJzwSry
-         08rQ==
-X-Gm-Message-State: APjAAAUt2+KEjP21xOkkZ0PS7PFtBBRV7cpku6yFmgpG3tOZ/2MEJtNO
-        AxsUcMS5V2k2oMgLIJZeUlvamoBecPbH0ybjYoYXOg==
-X-Google-Smtp-Source: APXvYqyJ5nuXrjj1zzssij63VHNVEXLvpGvrNpCLEHANe4DNdYxOsPDprp5pZcIP2UOcT5WmlEhwi99p2NOHagmCfbw=
-X-Received: by 2002:a5d:9d83:: with SMTP id 3mr11486248ion.65.1561189606435;
- Sat, 22 Jun 2019 00:46:46 -0700 (PDT)
+        Sat, 22 Jun 2019 12:28:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1561220929; bh=3fXYToOZXvh5MOJ1JSawYDThjnynC/Ekt2gucIg6zZg=; h=Date:From:Reply-To:Subject:From:Subject; b=FwrBLUl7u665XwQeVPTq5hUQ4Ptv5qPcwgE0MfCyAxPjQW66W+sBKlTITy95Xiak8M/9mL3k87XvuhuNYmdzjOXFqAsXXJ7ZeR0tr0xQhaR4qpp9+I79zHB4JVXDeOtUnrv/ni1DEn3m49tSMIml9+1SbDvUcui/xLYzcB7mOtvlwJJC6bBkcbOwJW8drH7WnSKYQVlUvO9PRg8+IWYABo4m/HoTrmg3JSd7+tfq1bmdsTjreC9G6uwJClVG1p8XyGEOijmNqXv9Ivunj8UzUvxVldTIg/taTAKdSlSG3i+xbnz28LKLpxSK2+M63p52Vf+hNJ0OycyVj1TkO+H8OQ==
+X-YMail-OSG: BClZlNgVM1mJa1pSUAMlnjmDwJQUKDn0osVKNVIeZ6AC0JZQ8NzrV_.P2vPToBw
+ lk4l1yMYy0P1wu9iKWHPF1vwWtED.NCcY6jE.jXdELnZdUngnDzcX.f1Ik7TcPjN._6dUftCNvSG
+ 0ilPDIIh6JKut3rld3EDzfXqVTEprJFL10dLfXEmdNXy8_9HzWnLN9Uxxh6FWr8nj4DbExyF48M8
+ b8CzHn8AtWzh0fDjJqMRXb5UR1L1fHF.mq4wk_41bl8VHLLREhO8D9AiMB_Iou.TvP.xektI4Uzf
+ lBotEg54S8nbe5a5a2eamKaLSiD6XaCIzSQkrGwkgk9qzk7J4361PG1C2lAWhSULJjGYH.uKi9SH
+ 8omXh8MvwuZmVU7umqXbA4eIFWV8ruRR3qRFWtA.2B0Eer.D49EbNovsAu.wRPm8yYyL6YMdaoys
+ 3vYAkjype1yPgR0gHAH3zObnNPMrtMzQfsTzcaha59dNYsVWPRo5EvcFgAIKXVIUqnKnooWuODru
+ O4SgrdrM8PGEZGs5dJS.h.dJB3gwQ.0I1wf1Q_CLgJhbPMrumaMiWl3ifhN9G_CCxrGhRPRltqdB
+ RyAvAXGENXKEJswzM.sYWHkLQyblOWaGX5TLKzeDGaJCZVu7CtZvQ0aNcyWtqrf4SAtE7MK9SqUH
+ 7phABBxeBrGdyDkvdUQOX_EPh25.Hb3SncDKllMEIHjvEdwbQcMGmqMEDVCI8Jh0nfgpjh259ODl
+ q.bGW_sz63_QvjPWXygjUQ4RzfXiei1bHIkvbkPAHc04dS.Qr8LP1Jyxp2QD0wtNtJgo5RScK99X
+ P5NPqcNAR8eez8YgXpk3cKLQCR9JSylhL6QyUVACODhQSLMO_l73eEDpWzNQUeEQLrEwA53TFUO9
+ BXx4lR26gADp4OeWMANR3pTNDn8J7Oc5G1l.tF8AqVFtdsoB5vgCdw0tzoX9_22cJzNNteihaN9H
+ ktOSXaCeUY26x9DWNkYi7HTOCc9F4vHnioRwelB9Lv.KGDeGPUJBBPmfcn0xXC8MB2YTlUFeVHzN
+ FJsHhvFz9eJx.VwEAdhJs3DHW6xmbj9a_RSOf.BoLPiAvMAdoBe_1sVY8nFOqhuBwpkbj17TOzIW
+ ts0JEWafkyantIFw8kEnIr0AHDEAK4aB1fgOVS8TQpbEaj2tB4pKHPa4OOjXszQAPBozr7PYVj2f
+ 6AcwHFYhcmsrFfliX20p43dgFMRY8GMXgvUWeegBAeAuOTxCoUC9WvAdL
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.bf2.yahoo.com with HTTP; Sat, 22 Jun 2019 16:28:49 +0000
+Date:   Sat, 22 Jun 2019 16:28:46 +0000 (UTC)
+From:   "Miss.Fatima Yusuf" <fatimayusuf5@outlook.fr>
+Reply-To: miss.fmayusuf11@gmail.com
+Message-ID: <270302503.296556.1561220926635@mail.yahoo.com>
+Subject: From:Miss: Fatima Yusuf.
 MIME-Version: 1.0
-References: <20190622003112.31033-1-ard.biesheuvel@linaro.org>
- <20190622003112.31033-2-ard.biesheuvel@linaro.org> <20190622050622.zztsonohpmjvrovn@gondor.apana.org.au>
-In-Reply-To: <20190622050622.zztsonohpmjvrovn@gondor.apana.org.au>
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Sat, 22 Jun 2019 09:46:32 +0200
-Message-ID: <CAKv+Gu8s9HKpWAo=4509zuZxe9rfWo2x69XFyEYOqicN3zYhrw@mail.gmail.com>
-Subject: Re: [RFC PATCH 01/30] crypto: des/3des_ede - add new helpers to
- verify key length
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>, Eric Biggers <ebiggers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, 22 Jun 2019 at 07:06, Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Sat, Jun 22, 2019 at 02:30:43AM +0200, Ard Biesheuvel wrote:
-> > The recently added helper routines to perform key strength validation
-> > of 3ede_keys is slightly inadequate, since it doesn't check the key
-> > length, and it comes in two versions, neither of which are highly
->
-> The skcipher helper doesn't need to check the key length because
-> it's the responsibility of the crypto API to check the key length
-> through min_keysize/max_keysize.
->
-> But yes if you're going to do a helper for lib/des then you'd need
-> to check the key length but please keep it separate from the skcipher
-> helper.
->
 
-Ah yes, I had missed the fact that skcipher checks the lengths
-already. But actually, that applies equally to ablkcipher and cipher,
-so only aead instantiations need to perform the length check
-explicitly.
 
-I will drop the key_len arg from these helper routines, but I'd still
-like to convert the skcipher helper into a generic helper that takes a
-struct crypto_tfm*.
+From:Miss: Fatima Yusuf.
 
-I'll also add some better documentation of the API in the next rev.
+For sure this mail would definitely come to you as a surprise, but do take your good time to go through it, My name is Ms. Fatima Yusuf,i am from Ivory Coast.
+
+I lost my parents a year and couple of months ago. My father was a serving director of the Agro-exporting board until his death. He was assassinated by his business partners.Before his death, he made a deposit of US$9.7 Million Dollars here in Cote d'ivoire which was for the purchase of cocoa processing machine and development of another factory before his untimely death.
+
+Being that this part of the world experiences political and crises time without number, there is no guarantee of lives and properties. I cannot invest this money here any long, despite the fact it had been my late father's industrial plans.
+
+I want you to do me a favor to receive this funds into your country or any safer place as the beneficiary, I have plans to invest this money in continuation with the investment vision of my late father, but not in this place again rather in your country. I have the vision of going into real estate and industrial production or any profitable business venture.
+
+I will be ready to compensate you with 20% of the total Amount, now all my hope is banked on you and i really wants to invest this money in your country, where there is stability of Government, political and economic welfare.
+
+My greatest worry now is how to move out of this country because my uncle is threatening to kill me as he killed my father,Please do not let anybody hear about this, it is between me and you alone because of my security reason.
+
+I am waiting to hear from you.
+Yours Sincerely,
+Miss.Fatima Yusuf.
