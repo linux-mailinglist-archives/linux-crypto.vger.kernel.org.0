@@ -2,56 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D5B4F7FB
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jun 2019 21:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C15F4F7FC
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jun 2019 21:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbfFVTeu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 22 Jun 2019 15:34:50 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:53471 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbfFVTeu (ORCPT
+        id S1726351AbfFVTev (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 22 Jun 2019 15:34:51 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:37423 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbfFVTev (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 22 Jun 2019 15:34:50 -0400
-Received: by mail-wm1-f67.google.com with SMTP id x15so9147968wmj.3
-        for <linux-crypto@vger.kernel.org>; Sat, 22 Jun 2019 12:34:48 -0700 (PDT)
+        Sat, 22 Jun 2019 15:34:51 -0400
+Received: by mail-wm1-f66.google.com with SMTP id f17so9609732wme.2
+        for <linux-crypto@vger.kernel.org>; Sat, 22 Jun 2019 12:34:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QMunKwfP+ecJeJsjLgotGX9cYxNfDTWVUzGiozUxkpA=;
-        b=HRL4wYu2j3ZC8ztFcw5jusvcO70KmvcLgz/loyCoCvT4/QqUZ2KGzp4oEzGr6zSvQP
-         z9uBHfwDsrks9peolBIaZ3LI7xvxLkZW8NK+vEhm5HXBiLD05vCph9smlQ1zLtrSmFLi
-         GZNqkbrPsxSj1r1XFjIZe+0OyMC/eiPbT0DzXSwYLMFi+NcoB+arPCwqUhgaIIl3j/IY
-         TY2Q17mbD/wxjM7wJfxfOx2+fC8gahXqf6TMdvlDjXmih9XU/jI427uc6o0TQjwuRZch
-         wgy0iieM62PaOoZX++/M92IbZ53JtpBrwUBMeqB+bMygBWuRip3zZdJH/ZbQDgsnMt9H
-         anYw==
+        bh=lQLA1Z6u9tD3If/MHOVikbtefg1FLPAfk8jJsqm/d/c=;
+        b=MYRAFNetilQRuZslBml8aKhDISEudeoPejyATZfvssgTxaDE/R1CKYQt6EVyk0b4jg
+         Rh6Xxk8espv5gC83N6yobsZ2u3+e/bPXfbY4vgjDK6pbyepwv3NufLqIqo1DpVtGjxG5
+         LuZVwxF3ZFCsWDOBrAVGL9pKcj+k2Dit3xkITDL9AeB+qiv8h4pS+X9eQNtOpTs5EI9p
+         PuB5hVD755KqNcIbZfbHTAr4G78BS/qFDiQrPDx9xZ6mTRJ3paRktbKbAk8DLDCdexzk
+         02XLXUhiUXeu/M51zGgMPXL1ofFPl2LQqy7JrkCSDoO3I9fldGnGLo+jgeOjn4qLPMEa
+         jt3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QMunKwfP+ecJeJsjLgotGX9cYxNfDTWVUzGiozUxkpA=;
-        b=lxXPpdAxpSPGjm8Il1VUqUTD9sHEBDmRgsPan42HnEeIwytr98TpQ907nP0TPuLlvW
-         Ra46grIWj733jPv5HkBLwW/vUR+29Sbp7Mkmd+Y3wW/zrI/6hrmf6bKG25OY4zrcMLOA
-         1EZFmwY7H2MM0+LmnaoZjf59J1bEDtLiuS1QseAPNrEIkaTVzVBPxE6XpIgFdoW9pWXR
-         0X0THwk2yrqjFusjP86RkPygyzji9zpWFdSlh22w46I5J1UGX1kxGndsq9RC1MvY6Jxj
-         0iDp+APt0NVqePR7Y/x+9sfNPxyx4+oIBpfNPnIBNiptHiYrwnZdut6Fu6gPXT6tKN1S
-         L3TA==
-X-Gm-Message-State: APjAAAUa1ZEP6dqHSqKQtuV0pme7AefJJ+WhWALZDR6XAkjWogOnGtqG
-        ge0DKQM24p3A+wwXqgfOuBHOTCBzPxz4yMei
-X-Google-Smtp-Source: APXvYqxcDE7tvsqOJWWduMtHNknhY1vQqoT3HjIqlWqg00mnWVUb88cbORSiaTv7EB+TG0+p8iIVug==
-X-Received: by 2002:a05:600c:28d:: with SMTP id 13mr8899720wmk.5.1561232087743;
-        Sat, 22 Jun 2019 12:34:47 -0700 (PDT)
+        bh=lQLA1Z6u9tD3If/MHOVikbtefg1FLPAfk8jJsqm/d/c=;
+        b=pbZlTIcqXQF4OEDdZtJ7whRWfzA06YxQEXEvbeqszo6sfFBVHOupAoo8iLPaMRHZu/
+         LcoSoO6bJMDG0A99mSVNQklktkFk87T9Xswux1T4AQWQYq2kE/4y1a3DfiFrJYZjGCaj
+         U8VRRcZp1gEkU/aWVCHWxFXqMFTWzZdexL3PyV2DfI9jeAJ5CwIJ5r/SLeanQ9DvSigy
+         tSou3CpdOrry+u0Ifsu4wUqpJtRK2MsZa7ky2+Mr2OgbtL5hAV87vksP9kInvQok5tCV
+         498s3SdN+U1sX9YNU/sUYrvXnRf5BOqwPYYVcYaZmyPVCKWw8Ycma4O4/HtL1YmYfY1T
+         pqzA==
+X-Gm-Message-State: APjAAAV2r0v2GZU4wVyz4IxcdSJS8Nwjq/jlSI9FBLjBYLuqb//0GIz6
+        C8xYszOh7K9Lgdg7ji5+GaMcdWeoHFq/3KBB
+X-Google-Smtp-Source: APXvYqxnobQMcJ/eR87Lco38fWkmNHterSKYBfPKaGpcNfdA/IeBwF1Dw3JZE+csmsoUZmzddoHWTA==
+X-Received: by 2002:a1c:80c1:: with SMTP id b184mr8037126wmd.24.1561232088802;
+        Sat, 22 Jun 2019 12:34:48 -0700 (PDT)
 Received: from sudo.home ([2a01:cb1d:112:6f00:4bd:3f91:4ef8:ae7e])
-        by smtp.gmail.com with ESMTPSA id h8sm4814494wmf.12.2019.06.22.12.34.46
+        by smtp.gmail.com with ESMTPSA id h8sm4814494wmf.12.2019.06.22.12.34.47
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 22 Jun 2019 12:34:47 -0700 (PDT)
+        Sat, 22 Jun 2019 12:34:48 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, ebiggers@google.com,
         Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [PATCH v2 07/26] crypto: padlock/aes - switch to library version of key expansion routine
-Date:   Sat, 22 Jun 2019 21:34:08 +0200
-Message-Id: <20190622193427.20336-8-ard.biesheuvel@linaro.org>
+Subject: [PATCH v2 08/26] crypto: cesa/aes - switch to library version of key expansion routine
+Date:   Sat, 22 Jun 2019 21:34:09 +0200
+Message-Id: <20190622193427.20336-9-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190622193427.20336-1-ard.biesheuvel@linaro.org>
 References: <20190622193427.20336-1-ard.biesheuvel@linaro.org>
@@ -68,36 +68,36 @@ generic AES cipher, allowing it to be omitted entirely in the future.
 
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- drivers/crypto/Kconfig       | 2 +-
- drivers/crypto/padlock-aes.c | 2 +-
+ drivers/crypto/Kconfig          | 2 +-
+ drivers/crypto/marvell/cipher.c | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 67af688d7d84..3fca5f7e38f0 100644
+index 3fca5f7e38f0..fdccadc94819 100644
 --- a/drivers/crypto/Kconfig
 +++ b/drivers/crypto/Kconfig
-@@ -26,7 +26,7 @@ config CRYPTO_DEV_PADLOCK_AES
- 	tristate "PadLock driver for AES algorithm"
- 	depends on CRYPTO_DEV_PADLOCK
- 	select CRYPTO_BLKCIPHER
+@@ -213,7 +213,7 @@ config CRYPTO_CRC32_S390
+ config CRYPTO_DEV_MARVELL_CESA
+ 	tristate "Marvell's Cryptographic Engine driver"
+ 	depends on PLAT_ORION || ARCH_MVEBU
 -	select CRYPTO_AES
 +	select CRYPTO_LIB_AES
- 	help
- 	  Use VIA PadLock for AES algorithm.
+ 	select CRYPTO_DES
+ 	select CRYPTO_BLKCIPHER
+ 	select CRYPTO_HASH
+diff --git a/drivers/crypto/marvell/cipher.c b/drivers/crypto/marvell/cipher.c
+index 2fd936b19c6d..debe7d9f00ae 100644
+--- a/drivers/crypto/marvell/cipher.c
++++ b/drivers/crypto/marvell/cipher.c
+@@ -257,7 +257,7 @@ static int mv_cesa_aes_setkey(struct crypto_skcipher *cipher, const u8 *key,
+ 	int ret;
+ 	int i;
  
-diff --git a/drivers/crypto/padlock-aes.c b/drivers/crypto/padlock-aes.c
-index 854539512c35..af90138eddb7 100644
---- a/drivers/crypto/padlock-aes.c
-+++ b/drivers/crypto/padlock-aes.c
-@@ -144,7 +144,7 @@ static int aes_set_key(struct crypto_tfm *tfm, const u8 *in_key,
- 	ctx->cword.encrypt.keygen = 1;
- 	ctx->cword.decrypt.keygen = 1;
- 
--	if (crypto_aes_expand_key(&gen_aes, in_key, key_len)) {
-+	if (aes_expandkey(&gen_aes, in_key, key_len)) {
- 		*flags |= CRYPTO_TFM_RES_BAD_KEY_LEN;
- 		return -EINVAL;
- 	}
+-	ret = crypto_aes_expand_key(&ctx->aes, key, len);
++	ret = aes_expandkey(&ctx->aes, key, len);
+ 	if (ret) {
+ 		crypto_skcipher_set_flags(cipher, CRYPTO_TFM_RES_BAD_KEY_LEN);
+ 		return ret;
 -- 
 2.20.1
 
