@@ -2,65 +2,205 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 418164F6D8
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jun 2019 18:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DCF4F7F5
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jun 2019 21:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726378AbfFVQ2u (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 22 Jun 2019 12:28:50 -0400
-Received: from sonic301-3.consmr.mail.bf2.yahoo.com ([74.6.129.42]:38120 "EHLO
-        sonic301-3.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726416AbfFVQ2u (ORCPT
+        id S1726326AbfFVTem (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 22 Jun 2019 15:34:42 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:43435 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726276AbfFVTem (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 22 Jun 2019 12:28:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1561220929; bh=3fXYToOZXvh5MOJ1JSawYDThjnynC/Ekt2gucIg6zZg=; h=Date:From:Reply-To:Subject:From:Subject; b=FwrBLUl7u665XwQeVPTq5hUQ4Ptv5qPcwgE0MfCyAxPjQW66W+sBKlTITy95Xiak8M/9mL3k87XvuhuNYmdzjOXFqAsXXJ7ZeR0tr0xQhaR4qpp9+I79zHB4JVXDeOtUnrv/ni1DEn3m49tSMIml9+1SbDvUcui/xLYzcB7mOtvlwJJC6bBkcbOwJW8drH7WnSKYQVlUvO9PRg8+IWYABo4m/HoTrmg3JSd7+tfq1bmdsTjreC9G6uwJClVG1p8XyGEOijmNqXv9Ivunj8UzUvxVldTIg/taTAKdSlSG3i+xbnz28LKLpxSK2+M63p52Vf+hNJ0OycyVj1TkO+H8OQ==
-X-YMail-OSG: BClZlNgVM1mJa1pSUAMlnjmDwJQUKDn0osVKNVIeZ6AC0JZQ8NzrV_.P2vPToBw
- lk4l1yMYy0P1wu9iKWHPF1vwWtED.NCcY6jE.jXdELnZdUngnDzcX.f1Ik7TcPjN._6dUftCNvSG
- 0ilPDIIh6JKut3rld3EDzfXqVTEprJFL10dLfXEmdNXy8_9HzWnLN9Uxxh6FWr8nj4DbExyF48M8
- b8CzHn8AtWzh0fDjJqMRXb5UR1L1fHF.mq4wk_41bl8VHLLREhO8D9AiMB_Iou.TvP.xektI4Uzf
- lBotEg54S8nbe5a5a2eamKaLSiD6XaCIzSQkrGwkgk9qzk7J4361PG1C2lAWhSULJjGYH.uKi9SH
- 8omXh8MvwuZmVU7umqXbA4eIFWV8ruRR3qRFWtA.2B0Eer.D49EbNovsAu.wRPm8yYyL6YMdaoys
- 3vYAkjype1yPgR0gHAH3zObnNPMrtMzQfsTzcaha59dNYsVWPRo5EvcFgAIKXVIUqnKnooWuODru
- O4SgrdrM8PGEZGs5dJS.h.dJB3gwQ.0I1wf1Q_CLgJhbPMrumaMiWl3ifhN9G_CCxrGhRPRltqdB
- RyAvAXGENXKEJswzM.sYWHkLQyblOWaGX5TLKzeDGaJCZVu7CtZvQ0aNcyWtqrf4SAtE7MK9SqUH
- 7phABBxeBrGdyDkvdUQOX_EPh25.Hb3SncDKllMEIHjvEdwbQcMGmqMEDVCI8Jh0nfgpjh259ODl
- q.bGW_sz63_QvjPWXygjUQ4RzfXiei1bHIkvbkPAHc04dS.Qr8LP1Jyxp2QD0wtNtJgo5RScK99X
- P5NPqcNAR8eez8YgXpk3cKLQCR9JSylhL6QyUVACODhQSLMO_l73eEDpWzNQUeEQLrEwA53TFUO9
- BXx4lR26gADp4OeWMANR3pTNDn8J7Oc5G1l.tF8AqVFtdsoB5vgCdw0tzoX9_22cJzNNteihaN9H
- ktOSXaCeUY26x9DWNkYi7HTOCc9F4vHnioRwelB9Lv.KGDeGPUJBBPmfcn0xXC8MB2YTlUFeVHzN
- FJsHhvFz9eJx.VwEAdhJs3DHW6xmbj9a_RSOf.BoLPiAvMAdoBe_1sVY8nFOqhuBwpkbj17TOzIW
- ts0JEWafkyantIFw8kEnIr0AHDEAK4aB1fgOVS8TQpbEaj2tB4pKHPa4OOjXszQAPBozr7PYVj2f
- 6AcwHFYhcmsrFfliX20p43dgFMRY8GMXgvUWeegBAeAuOTxCoUC9WvAdL
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.bf2.yahoo.com with HTTP; Sat, 22 Jun 2019 16:28:49 +0000
-Date:   Sat, 22 Jun 2019 16:28:46 +0000 (UTC)
-From:   "Miss.Fatima Yusuf" <fatimayusuf5@outlook.fr>
-Reply-To: miss.fmayusuf11@gmail.com
-Message-ID: <270302503.296556.1561220926635@mail.yahoo.com>
-Subject: From:Miss: Fatima Yusuf.
+        Sat, 22 Jun 2019 15:34:42 -0400
+Received: by mail-wr1-f51.google.com with SMTP id p13so9693637wru.10
+        for <linux-crypto@vger.kernel.org>; Sat, 22 Jun 2019 12:34:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sF051ileh54l0aMFAbBQnpaORRhuhIyArr6dJaAH4JU=;
+        b=Jcll5BDqeXjf74c8VNi1W30NYBa9HA8Lzky0ytiWF9h7a2OoW9kbyA9bCc1jeOphXg
+         vM7IPq/sVSrSkj4FU4/ER/mfroRXCrU6Vs3c8Vd3cvPUbMmqpDfqW8c8vBV5ryJB5t6k
+         BrbTKnSrnU9iQNsMQFbSskuTIazPRn+zFpff+h6T9Nc2Ssuplw1XFk2lb/AeCfl5txQN
+         9JHvnbE1Rk+kEjL0ZRFf7LABMGVvrzVOKKuyU3cUrOXvFX018B17T32gGGwbfT0EkepH
+         9Bxj7RW19WCeMI6YddT5qJ7ni44GbL2Ieg70O6lmeoMNWOCMRBlmqq+RMiz02vKBUzln
+         q98A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sF051ileh54l0aMFAbBQnpaORRhuhIyArr6dJaAH4JU=;
+        b=bVThAEFozKFRtlHhokENoeXKLWnrw7ERETbdxZ+0NJCQKkMP5flTNnRnWQUv0v6vIv
+         H0vMMgsdEUskKW59WJoSS2Aim9IxWUBknQhYaPcfA5KsqoYBWfR7JsKXcTwQSvYZWwst
+         DbG+deYIPr7Af0QbIMGzbVPE1G7bQ8nyEM8ERMJm/TPQ/DcW75NKHKHroXyldoGQ78Cg
+         0LDTXjNbkwvmbUDa9r8lquwaJJ0kJL/HZMdUq4SjgsQbXhW9fEP0Sep2IrqjGAWBSMnd
+         5prrTuwsLidXhh6e5zAMuNvwwMc+MHtOOIr1W+Jz90aLttoFiea6dcr1Jd5/Nkdy3qAC
+         PGsg==
+X-Gm-Message-State: APjAAAWgJdN9rFxRwYMSSbPJkKTZe6aSCKHl4IqTiqK7+NMRrpOPpUvK
+        uRhREO/UBGg1YTt8Lzr2rtcbhcaRZ2KmpzfL
+X-Google-Smtp-Source: APXvYqyG6MPxC64RCjkmVVkGjTQrzZpCLIL+1o12vM/VsN8iBCqB4G1//UqM2z+1GACzDljeKWVoHA==
+X-Received: by 2002:adf:afd5:: with SMTP id y21mr99772387wrd.12.1561232079294;
+        Sat, 22 Jun 2019 12:34:39 -0700 (PDT)
+Received: from sudo.home ([2a01:cb1d:112:6f00:4bd:3f91:4ef8:ae7e])
+        by smtp.gmail.com with ESMTPSA id h8sm4814494wmf.12.2019.06.22.12.34.37
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 22 Jun 2019 12:34:38 -0700 (PDT)
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+To:     linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, ebiggers@google.com,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Subject: [PATCH v2 00/26]crypto: AES cleanup
+Date:   Sat, 22 Jun 2019 21:34:01 +0200
+Message-Id: <20190622193427.20336-1-ard.biesheuvel@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+This started out as an attempt to provide synchronous SIMD based GCM
+on 32-bit ARM, but along the way, I ended up changing and cleaning up
+so many things that it is more of a general AES cleanup now rather than
+anything else.
 
+Changes since v1/RFC:
+- rename x86 AES-NI and padlock routines as well, in order to avoid clashes (#2)
+- move irq en/disabling out of the AES library into the callers (aes-ti
+  and the skcipher helper for sync ctr(aes) added in #17)
+- align 32-bit ARM CE key schedule endianness with other AES drivers, to
+  avoid problems on BE systems when using the synchronous ctr fallback (#18)
+- replace some occurrences where a "aes" or "aes-generic" cipher was allocated
+  explicitly, and use library calls instead.
+- use a generic helper in crypto/ctr.h instead of adding a CTR helper to the
+  AES library for providing the synchronous CTR fallback code.
 
-From:Miss: Fatima Yusuf.
+Some users of the AES cipher are being switched to other algorithms (i.e.,
+SipHash for TCP fastopen and CCM or cbcmac for wusb and lib80211). These
+have been posted separately, since they have no build time interdependencies.
 
-For sure this mail would definitely come to you as a surprise, but do take your good time to go through it, My name is Ms. Fatima Yusuf,i am from Ivory Coast.
+----- Original blurb below ------
 
-I lost my parents a year and couple of months ago. My father was a serving director of the Agro-exporting board until his death. He was assassinated by his business partners.Before his death, he made a deposit of US$9.7 Million Dollars here in Cote d'ivoire which was for the purchase of cocoa processing machine and development of another factory before his untimely death.
+On 32-bit ARM, asynchronous GCM can be provided by the following drivers:
 
-Being that this part of the world experiences political and crises time without number, there is no guarantee of lives and properties. I cannot invest this money here any long, despite the fact it had been my late father's industrial plans.
+                                              |  cycles per byte on low end Si
+  gcm_base(ctr(aes-generic),ghash-generic)    |            65.3
+  gcm_base(ctr-aes-neonbs,ghash-ce) [*]       |            27.7
+  gcm_base(ctr-aes-ce,ghash-ce) [**]          |             3.7
 
-I want you to do me a favor to receive this funds into your country or any safer place as the beneficiary, I have plans to invest this money in continuation with the investment vision of my late father, but not in this place again rather in your country. I have the vision of going into real estate and industrial production or any profitable business venture.
+  [*]  ghash-ce using vmull.p8 instructions
+  [**] ghash-ce using optional vmull.p64 instructions
 
-I will be ready to compensate you with 20% of the total Amount, now all my hope is banked on you and i really wants to invest this money in your country, where there is stability of Government, political and economic welfare.
+The third and fastest option is actually only available on 32-bit cores that
+implement the v8 Crypto Extensions, which are rare, but the NEON based runner
+up is obviously a huge improvement over the generic code, not only in terms of
+performance, but also because it is time invariant (generic AES and generic
+GHASH are both implemented using lookup tables, which are susceptible to
+cache timing attacks)
 
-My greatest worry now is how to move out of this country because my uncle is threatening to kill me as he killed my father,Please do not let anybody hear about this, it is between me and you alone because of my security reason.
+However, when allocating the gcm(aes) skcipher in synchronous mode, we end up
+with the generic code, due to the fact that the NEON code has no handling for
+invocations that occur from a context where the NEON cannot be used, and so
+it defers the processing to a kthread, which is only permitted for asynchronous
+ciphers.
 
-I am waiting to hear from you.
-Yours Sincerely,
-Miss.Fatima Yusuf.
+So let's implement this fallback handling, by reusing some of the logic that
+has already been implemented for arm64. Note that these fallbacks are rarely
+called in practice, but the API requires the functionality to be there.
+This is implemented in patches 16-22.
+
+All the patches leading up to that are cleanups for the AES code, to reduce
+the dependency on the generic table based AES code, or in some cases, hardcoded
+dependencies on the scalar arm64 asm code which suffers from the same problem.
+It also removes redundant key expansion routines, and gets rid of the x86
+scalar asm code, which is a maintenance burden and is not actually faster than
+the generic code built with a modern compiler.
+
+Ard Biesheuvel (26):
+  crypto: arm/aes-ce - cosmetic/whitespace cleanup
+  crypto: aes - rename local routines to prevent future clashes
+  crypto: aes/fixed-time - align key schedule with other implementations
+  crypto: aes - create AES library based on the fixed time AES code
+  crypto: x86/aes-ni - switch to generic for fallback and key routines
+  crypto: x86/aes - drop scalar assembler implementations
+  crypto: padlock/aes - switch to library version of key expansion
+    routine
+  crypto: cesa/aes - switch to library version of key expansion routine
+  crypto: safexcel/aes - switch to library version of key expansion
+    routine
+  crypto: arm64/ghash - switch to AES library
+  crypto: arm/aes-neonbs - switch to library version of key expansion
+    routine
+  crypto: arm64/aes-ccm - switch to AES library
+  crypto: arm64/aes-neonbs - switch to library version of key expansion
+    routine
+  crypto: arm64/aes-ce - switch to library version of key expansion
+    routine
+  crypto: generic/aes - drop key expansion routine in favor of library
+    version
+  crypto: ctr - add helper for performing a CTR encryption walk
+  crypto: aes - move sync ctr(aes) to AES library and generic helper
+  crypto: arm64/aes-ce-cipher - use AES library as fallback
+  crypto: aes/arm - use native endiannes for key schedule
+  crypto: arm/aes-ce - provide a synchronous version of ctr(aes)
+  crypto: arm/aes-neonbs - provide a synchronous version of ctr(aes)
+  crypto: arm/ghash - provide a synchronous version
+  bluetooth: switch to AES library
+  crypto: amcc/aes - switch to AES library for GCM key derivation
+  crypto: ccp - move to AES library for CMAC key derivation
+  crypto: chelsio/aes - replace AES cipher calls with library calls
+
+ arch/arm/crypto/Kconfig                        |   2 +-
+ arch/arm/crypto/aes-ce-core.S                  |  20 +-
+ arch/arm/crypto/aes-ce-glue.c                  | 168 +++++----
+ arch/arm/crypto/aes-cipher-glue.c              |   8 +-
+ arch/arm/crypto/aes-neonbs-glue.c              |  69 +++-
+ arch/arm/crypto/ghash-ce-glue.c                |  78 +++--
+ arch/arm64/crypto/Kconfig                      |  10 +-
+ arch/arm64/crypto/aes-ce-ccm-glue.c            |  18 +-
+ arch/arm64/crypto/aes-ce-glue.c                |   7 +-
+ arch/arm64/crypto/aes-cipher-glue.c            |  11 +-
+ arch/arm64/crypto/aes-ctr-fallback.h           |  53 ---
+ arch/arm64/crypto/aes-glue.c                   |  39 ++-
+ arch/arm64/crypto/aes-neonbs-glue.c            |  29 +-
+ arch/arm64/crypto/ghash-ce-glue.c              |  30 +-
+ arch/x86/crypto/Makefile                       |   4 -
+ arch/x86/crypto/aes-i586-asm_32.S              | 362 --------------------
+ arch/x86/crypto/aes-x86_64-asm_64.S            | 185 ----------
+ arch/x86/crypto/aes_glue.c                     |  70 ----
+ arch/x86/crypto/aesni-intel_glue.c             |  23 +-
+ arch/x86/include/asm/crypto/aes.h              |  12 -
+ crypto/Kconfig                                 |  52 +--
+ crypto/aes_generic.c                           | 161 +--------
+ crypto/aes_ti.c                                | 317 +----------------
+ drivers/crypto/Kconfig                         |   8 +-
+ drivers/crypto/amcc/crypto4xx_alg.c            |  24 +-
+ drivers/crypto/ccp/Kconfig                     |   1 +
+ drivers/crypto/ccp/ccp-crypto-aes-cmac.c       |  25 +-
+ drivers/crypto/ccp/ccp-crypto.h                |   3 -
+ drivers/crypto/chelsio/Kconfig                 |   1 +
+ drivers/crypto/chelsio/chcr_algo.c             |  46 +--
+ drivers/crypto/chelsio/chcr_crypto.h           |   1 -
+ drivers/crypto/chelsio/chcr_ipsec.c            |  19 +-
+ drivers/crypto/chelsio/chtls/chtls_hw.c        |  20 +-
+ drivers/crypto/inside-secure/safexcel_cipher.c |   2 +-
+ drivers/crypto/marvell/cipher.c                |   2 +-
+ drivers/crypto/padlock-aes.c                   |  10 +-
+ include/crypto/aes.h                           |  36 +-
+ include/crypto/ctr.h                           |  53 +++
+ lib/crypto/Makefile                            |   3 +
+ lib/crypto/aes.c                               | 350 +++++++++++++++++++
+ net/bluetooth/Kconfig                          |   3 +-
+ net/bluetooth/smp.c                            | 103 ++----
+ 42 files changed, 860 insertions(+), 1578 deletions(-)
+ delete mode 100644 arch/arm64/crypto/aes-ctr-fallback.h
+ delete mode 100644 arch/x86/crypto/aes-i586-asm_32.S
+ delete mode 100644 arch/x86/crypto/aes-x86_64-asm_64.S
+ delete mode 100644 arch/x86/crypto/aes_glue.c
+ delete mode 100644 arch/x86/include/asm/crypto/aes.h
+ create mode 100644 lib/crypto/aes.c
+
+-- 
+2.20.1
+
