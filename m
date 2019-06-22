@@ -2,140 +2,55 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 980654F2BF
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jun 2019 02:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4FE4F3CB
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jun 2019 07:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbfFVAcS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 21 Jun 2019 20:32:18 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:55808 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726270AbfFVAcS (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 21 Jun 2019 20:32:18 -0400
-Received: by mail-wm1-f68.google.com with SMTP id a15so7712590wmj.5
-        for <linux-crypto@vger.kernel.org>; Fri, 21 Jun 2019 17:32:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mCsEnAP2oL66UMgflkiPsBtum694MAUnMKTZwZyY2CQ=;
-        b=dZTd+802WlPaJ1ZQsrZxqUX9/heuVYJkSzVtU7Ygjw6KyQLH+YruszrRWdjahzXJ5n
-         s4FAz+L8q+9OXE1nwe/pWoP9BRH1BGaDzoLHGUZKEse33IpSeamAYWGtfQqe0vTBVqzG
-         yVPe2Nkr3j8Jl11kd834kuU8/A6LDkNzOd/k/IYS1/5mdpaV/1qPeT9aAU4adzn0J5Fw
-         y/rHBkaFfc+BTa+01Qn7yheezs5GftP/luxbilPW4KG0LQoy5QkPD5HmOvSQo5jymFV8
-         uaT6fcTSZUPhzcIKvLKh/sV70Lq0MgmMaETnbo6Q/ZSyyJymI6/lC5olAB6LVim3m+BR
-         b2CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mCsEnAP2oL66UMgflkiPsBtum694MAUnMKTZwZyY2CQ=;
-        b=ID3MHixH/ZFJrdXqPDLGMZIBBUojyIghWh7pwyGo3UwWmmN0K4ONgnxlPTcmJepj9u
-         NGP3Sze1vIMldTtQ0A7SY/OBwspSVYmEejYzACLtFX7/2cSecKIE0JZroPZ60w0r4V3v
-         HY1mgy5sTKN2/EUMk9Sotyvg+nrZUTUm6nWK/AQCOv/gGMGtAbfgoZtXGg2Mp0A9765k
-         L8iTZae7Fv0KdepwHyvlo7GpKKsaDisdnxBJlN/vCsjmU/K6mREpoxRVnel28gJWizcf
-         PzxaGKCDrKtos76V+vc4EsexdG9K0kh97UBrp94ftc8F3bTkcYKwtqrAsHWPTlOuHCIW
-         sttg==
-X-Gm-Message-State: APjAAAXGy3Nc/0BmZpApy55nWMJeKYM8+VM0ETWrguDluyoiRDSR3jLF
-        v/IbkvH5/HRmjbJibG8AMEqJmlKIQZ/+MphN
-X-Google-Smtp-Source: APXvYqxs0wf+qi+h/+CYW84SSxRQwd+7vF5zqxQWLfOLkyMXPlZTFHMoEzSZKx+G9LfevZaiLEH/Ow==
-X-Received: by 2002:a7b:cc09:: with SMTP id f9mr5912789wmh.68.1561163536119;
-        Fri, 21 Jun 2019 17:32:16 -0700 (PDT)
-Received: from sudo.home ([2a01:cb1d:112:6f00:99d4:1ff0:ed6:dfbb])
-        by smtp.gmail.com with ESMTPSA id v18sm4792019wrd.51.2019.06.21.17.32.15
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Jun 2019 17:32:15 -0700 (PDT)
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, ebiggers@google.com,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [RFC PATCH 30/30] fs: cifs: move from the crypto cipher API to the new DES library interface
-Date:   Sat, 22 Jun 2019 02:31:12 +0200
-Message-Id: <20190622003112.31033-31-ard.biesheuvel@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190622003112.31033-1-ard.biesheuvel@linaro.org>
+        id S1726049AbfFVFG0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 22 Jun 2019 01:06:26 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:54772 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725994AbfFVFG0 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 22 Jun 2019 01:06:26 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1heYEL-0001Yo-2q; Sat, 22 Jun 2019 13:06:25 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1heYEI-0000rj-AE; Sat, 22 Jun 2019 13:06:22 +0800
+Date:   Sat, 22 Jun 2019 13:06:22 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc:     linux-crypto@vger.kernel.org, ebiggers@google.com
+Subject: Re: [RFC PATCH 01/30] crypto: des/3des_ede - add new helpers to
+ verify key length
+Message-ID: <20190622050622.zztsonohpmjvrovn@gondor.apana.org.au>
 References: <20190622003112.31033-1-ard.biesheuvel@linaro.org>
+ <20190622003112.31033-2-ard.biesheuvel@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190622003112.31033-2-ard.biesheuvel@linaro.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Some legacy code in the CIFS driver uses single DES to calculate
-some password hash, and uses the crypto cipher API to do so. Given
-that there is no point in invoking an accelerated cipher for doing
-56-bit symmetric encryption on a single 8-byte block of input, the
-flexibility of the crypto cipher API does not add much value here,
-and so we're much better off using a library call into the generic
-C implementation.
+On Sat, Jun 22, 2019 at 02:30:43AM +0200, Ard Biesheuvel wrote:
+> The recently added helper routines to perform key strength validation
+> of 3ede_keys is slightly inadequate, since it doesn't check the key
+> length, and it comes in two versions, neither of which are highly
 
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
- fs/cifs/Kconfig      |  2 +-
- fs/cifs/smbencrypt.c | 18 +++++++++---------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+The skcipher helper doesn't need to check the key length because
+it's the responsibility of the crypto API to check the key length
+through min_keysize/max_keysize.
 
-diff --git a/fs/cifs/Kconfig b/fs/cifs/Kconfig
-index 3da294231dcc..dedab8f79ee8 100644
---- a/fs/cifs/Kconfig
-+++ b/fs/cifs/Kconfig
-@@ -14,7 +14,7 @@ config CIFS
- 	select CRYPTO_CCM
- 	select CRYPTO_ECB
- 	select CRYPTO_AES
--	select CRYPTO_DES
-+	select CRYPTO_LIB_DES
- 	help
- 	  This is the client VFS module for the SMB3 family of NAS protocols,
- 	  (including support for the most recent, most secure dialect SMB3.1.1)
-diff --git a/fs/cifs/smbencrypt.c b/fs/cifs/smbencrypt.c
-index a0b80ac651a6..5c55c35f47d6 100644
---- a/fs/cifs/smbencrypt.c
-+++ b/fs/cifs/smbencrypt.c
-@@ -23,13 +23,14 @@
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
- 
--#include <linux/crypto.h>
- #include <linux/module.h>
- #include <linux/slab.h>
-+#include <linux/fips.h>
- #include <linux/fs.h>
- #include <linux/string.h>
- #include <linux/kernel.h>
- #include <linux/random.h>
-+#include <crypto/des.h>
- #include "cifs_fs_sb.h"
- #include "cifs_unicode.h"
- #include "cifspdu.h"
-@@ -70,19 +71,18 @@ static int
- smbhash(unsigned char *out, const unsigned char *in, unsigned char *key)
- {
- 	unsigned char key2[8];
--	struct crypto_cipher *tfm_des;
-+	struct des_ctx ctx;
- 
- 	str_to_key(key, key2);
- 
--	tfm_des = crypto_alloc_cipher("des", 0, 0);
--	if (IS_ERR(tfm_des)) {
--		cifs_dbg(VFS, "could not allocate des crypto API\n");
--		return PTR_ERR(tfm_des);
-+	if (fips_enabled) {
-+		cifs_dbg(VFS, "FIPS compliance enabled: DES not permitted\n");
-+		return -ENOENT;
- 	}
- 
--	crypto_cipher_setkey(tfm_des, key2, 8);
--	crypto_cipher_encrypt_one(tfm_des, out, in);
--	crypto_free_cipher(tfm_des);
-+	des_expand_key(&ctx, key2, DES_KEY_SIZE);
-+	des_encrypt(&ctx, out, in);
-+	memzero_explicit(&ctx, sizeof(ctx));
- 
- 	return 0;
- }
+But yes if you're going to do a helper for lib/des then you'd need
+to check the key length but please keep it separate from the skcipher
+helper.
+
+Thanks,
 -- 
-2.20.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
