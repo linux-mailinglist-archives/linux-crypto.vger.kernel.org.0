@@ -2,56 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E275C4FE30
-	for <lists+linux-crypto@lfdr.de>; Sun, 23 Jun 2019 23:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F9050073
+	for <lists+linux-crypto@lfdr.de>; Mon, 24 Jun 2019 06:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbfFWVea (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 23 Jun 2019 17:34:30 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:45354 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbfFWVea (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 23 Jun 2019 17:34:30 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f80:35cd::d71])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id CDF99142DE3A5;
-        Sun, 23 Jun 2019 14:34:26 -0700 (PDT)
-Date:   Sun, 23 Jun 2019 14:34:24 -0700 (PDT)
-Message-Id: <20190623.143424.1962536673442328783.davem@davemloft.net>
-To:     gomonovych@gmail.com
-Cc:     george.cherian@cavium.com, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: cavium remove casting dma_alloc
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20190623204849.22089-1-gomonovych@gmail.com>
-References: <20190623204849.22089-1-gomonovych@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sun, 23 Jun 2019 14:34:27 -0700 (PDT)
+        id S1727387AbfFXEH3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 24 Jun 2019 00:07:29 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:52070 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725769AbfFXEH3 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 24 Jun 2019 00:07:29 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1hfGGM-000441-N0; Mon, 24 Jun 2019 12:07:26 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1hfGGK-0003eE-Ae; Mon, 24 Jun 2019 12:07:24 +0800
+Date:   Mon, 24 Jun 2019 12:07:24 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Aditya Parekh <kerneladi@gmail.com>
+Cc:     davem@davemloft.net, trivial@kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] Crypto: fixed a comment coding style issue
+Message-ID: <20190624040724.4te3ud3dtvshxanm@gondor.apana.org.au>
+References: <20190623014000.2935-1-kerneladi@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190623014000.2935-1-kerneladi@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Vasyl Gomonovych <gomonovych@gmail.com>
-Date: Sun, 23 Jun 2019 22:48:49 +0200
-
-> @@ -233,7 +233,7 @@ static int alloc_command_queues(struct cpt_vf *cptvf,
+On Sat, Jun 22, 2019 at 09:40:00PM -0400, Aditya Parekh wrote:
+> Fixed a coding style issue.
+> 
+> Signed-off-by: Aditya Parekh <kerneladi@gmail.com>
+> ---
+>  crypto/fcrypt.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/crypto/fcrypt.c b/crypto/fcrypt.c
+> index 4e8704405a3b..3828266af0b8 100644
+> --- a/crypto/fcrypt.c
+> +++ b/crypto/fcrypt.c
+> @@ -306,7 +306,8 @@ static int fcrypt_setkey(struct crypto_tfm *tfm, const u8 *key, unsigned int key
 >  
->  			c_size = (rem_q_size > qcsize_bytes) ? qcsize_bytes :
->  					rem_q_size;
-> -			curr->head = (u8 *)dma_alloc_coherent(&pdev->dev,
-> +			curr->head = dma_alloc_coherent(&pdev->dev,
->  							      c_size + CPT_NEXT_CHUNK_PTR_SIZE,
->  							      &curr->dma_addr,
->  							      GFP_KERNEL);
+>  #if BITS_PER_LONG == 64  /* the 64-bit version can also be used for 32-bit
+>  			  * kernels - it seems to be faster but the code is
+> -			  * larger */
+> +			  * larger
+> +			  */
+>  
+>  	u64 k;	/* k holds all 56 non-parity bits */
 
-Please fix up the indentation of the 2nd, 3rd, and 4th line of the call
-if you do this.  Each of those lines should start precisely at the
-first column after the openning parenthesis of the first line.
-
-Thank you.
+Nack.  This patch doesn't improve the code at all.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
