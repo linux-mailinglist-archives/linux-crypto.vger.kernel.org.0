@@ -2,117 +2,96 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B689450309
-	for <lists+linux-crypto@lfdr.de>; Mon, 24 Jun 2019 09:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BE65033A
+	for <lists+linux-crypto@lfdr.de>; Mon, 24 Jun 2019 09:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbfFXHV5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 24 Jun 2019 03:21:57 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:9623 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726077AbfFXHV5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 24 Jun 2019 03:21:57 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 45XLML6hfCz9vBmm;
-        Mon, 24 Jun 2019 09:21:50 +0200 (CEST)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=fr1nAfXR; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id bVhUwPat72lk; Mon, 24 Jun 2019 09:21:50 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 45XLML5gX7z9vBml;
-        Mon, 24 Jun 2019 09:21:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1561360910; bh=uqSyYAuIgffBR0A50tqUgIECoBVIQIvOhmxv2zbmqbg=;
-        h=From:Subject:To:Cc:Date:From;
-        b=fr1nAfXR5k6RCYhXpFmkXlofj/WpB8XH4YC/0LFO0OhP69azmMA6IGpHAfjGd+4m+
-         tYsax/ac4Gu2NlzvTyIQTSEA8uy/GECXazhRwLKdFxxy0NBEeyyIUCDlHT67I+nh6O
-         sZR6Ppy3Ror5TQufdkvkxgYv6F5SYIouDAGgjCFI=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5EC0A8B787;
-        Mon, 24 Jun 2019 09:21:55 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id a_sM-AAY_GJE; Mon, 24 Jun 2019 09:21:55 +0200 (CEST)
-Received: from po16838vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.101])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3F2078B74C;
-        Mon, 24 Jun 2019 09:21:55 +0200 (CEST)
-Received: by po16838vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 44DB467424; Mon, 24 Jun 2019 07:21:55 +0000 (UTC)
-Message-Id: <cover.1561360551.git.christophe.leroy@c-s.fr>
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [PATCH v5 0/4] Additional fixes on Talitos driver
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, horia.geanta@nxp.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 24 Jun 2019 07:21:55 +0000 (UTC)
+        id S1727928AbfFXHYm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 24 Jun 2019 03:24:42 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:46671 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726719AbfFXHYl (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 24 Jun 2019 03:24:41 -0400
+X-UUID: a763fee8f60547f9a7d74f0d789bde4e-20190624
+X-UUID: a763fee8f60547f9a7d74f0d789bde4e-20190624
+Received: from mtkcas09.mediatek.inc [(172.21.101.178)] by mailgw01.mediatek.com
+        (envelope-from <neal.liu@mediatek.com>)
+        (mhqrelay.mediatek.com ESMTP with TLS)
+        with ESMTP id 2119492074; Mon, 24 Jun 2019 15:24:29 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Mon, 24 Jun 2019 15:24:28 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
+ Transport; Mon, 24 Jun 2019 15:24:28 +0800
+From:   Neal Liu <neal.liu@mediatek.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>
+CC:     Neal Liu <neal.liu@mediatek.com>,
+        Crystal Guo <Crystal.Guo@mediatek.com>,
+        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Subject: [PATCH v4 0/3] MediaTek Security random number generator support
+Date:   Mon, 24 Jun 2019 15:24:09 +0800
+Message-ID: <1561361052-13072-1-git-send-email-neal.liu@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This series is the last set of fixes for the Talitos driver.
+These patch series introduce a generic rng driver for Trustzone
+based kernel driver which would like to communicate with ATF
+SIP services.
 
-We now get a fully clean boot on both SEC1 (SEC1.2 on mpc885) and
-SEC2 (SEC2.2 on mpc8321E) with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS:
+Patch #1 initials SMC fid table for Mediatek SIP interfaces and
+adds HWRNG related SMC call.
 
-[    3.385197] bus: 'platform': really_probe: probing driver talitos with device ff020000.crypto
-[    3.450982] random: fast init done
-[   12.252548] alg: No test for authenc(hmac(md5),cbc(aes)) (authenc-hmac-md5-cbc-aes-talitos-hsna)
-[   12.262226] alg: No test for authenc(hmac(md5),cbc(des3_ede)) (authenc-hmac-md5-cbc-3des-talitos-hsna)
-[   43.310737] Bug in SEC1, padding ourself
-[   45.603318] random: crng init done
-[   54.612333] talitos ff020000.crypto: fsl,sec1.2 algorithms registered in /proc/crypto
-[   54.620232] driver: 'talitos': driver_bound: bound to device 'ff020000.crypto'
+Patch #2..3 adds mtk-sec-rng kernel driver for Trustzone based SoCs.
+For MediaTek SoCs on ARMv8 with TrustZone enabled, peripherals like
+entropy sources is not accessible from normal world (linux) and
+rather accessible from secure world (ATF/TEE) only. This driver aims
+to provide a generic interface to ATF rng service.
 
-[    1.193721] bus: 'platform': really_probe: probing driver talitos with device b0030000.crypto
-[    1.229197] random: fast init done
-[    2.714920] alg: No test for authenc(hmac(sha224),cbc(aes)) (authenc-hmac-sha224-cbc-aes-talitos)
-[    2.724312] alg: No test for authenc(hmac(sha224),cbc(aes)) (authenc-hmac-sha224-cbc-aes-talitos-hsna)
-[    4.482045] alg: No test for authenc(hmac(md5),cbc(aes)) (authenc-hmac-md5-cbc-aes-talitos)
-[    4.490940] alg: No test for authenc(hmac(md5),cbc(aes)) (authenc-hmac-md5-cbc-aes-talitos-hsna)
-[    4.500280] alg: No test for authenc(hmac(md5),cbc(des3_ede)) (authenc-hmac-md5-cbc-3des-talitos)
-[    4.509727] alg: No test for authenc(hmac(md5),cbc(des3_ede)) (authenc-hmac-md5-cbc-3des-talitos-hsna)
-[    6.631781] random: crng init done
-[   11.521795] talitos b0030000.crypto: fsl,sec2.2 algorithms registered in /proc/crypto
-[   11.529803] driver: 'talitos': driver_bound: bound to device 'b0030000.crypto'
 
-v2: dropped patch 1 which was irrelevant due to a rebase weirdness. Added Cc to stable on the 2 first patches.
+changes since v1:
+- rename mt67xx-rng to mtk-sec-rng since all MediaTek ARMv8 SoCs
+can reuse this driver.
+- refine coding style and unnecessary check.
 
-v3:
- - removed stable reference in patch 1
- - reworded patch 1 to include name of patch 2 for the dependency.
- - mentionned this dependency in patch 2 as well.
- - corrected the Fixes: sha1 in patch 4
- 
-v4:
- - using scatterwalk_ffwd() instead of opencodying SG list forwarding.
- - Added a patch to fix sg_copy_to_buffer() when sg->offset() is greater than PAGE_SIZE,
- otherwise sg_copy_to_buffer() fails when the list has been forwarded with scatterwalk_ffwd().
- - taken the patch "crypto: talitos - eliminate unneeded 'done' functions at build time"
- out of the series because it is independent.
- - added a helper to find the header field associated to a request in flush_channe()
- 
-v5:
- - Replacing the while loop by a direct shift/mask operation, as suggested by Herbert in patch 1.
+changes since v2:
+- remove unused comments.
+- remove redundant variable.
 
-Christophe Leroy (4):
-  lib/scatterlist: Fix mapping iterator when sg->offset is greater than
-    PAGE_SIZE
-  crypto: talitos - move struct talitos_edesc into talitos.h
-  crypto: talitos - fix hash on SEC1.
-  crypto: talitos - drop icv_ool
+changes since v3:
+- add dt-bindings for MediaTek rng with TrustZone enabled
+- revise HWRNG SMC call fid
 
- drivers/crypto/talitos.c | 102 +++++++++++++++++++----------------------------
- drivers/crypto/talitos.h |  28 +++++++++++++
- lib/scatterlist.c        |   9 +++--
- 3 files changed, 74 insertions(+), 65 deletions(-)
+
+Neal Liu (3):
+  soc: mediatek: add SMC fid table for SIP interface
+  dt-bindings: rng: add bindings for MediaTek ARMv8 SoCs
+  hwrng: add mtk-sec-rng driver
+
+ .../devicetree/bindings/rng/mtk-sec-rng.txt   | 10 ++
+ drivers/char/hw_random/Kconfig                | 16 +++
+ drivers/char/hw_random/Makefile               |  1 +
+ drivers/char/hw_random/mtk-sec-rng.c          | 97 +++++++++++++++++++
+ include/linux/soc/mediatek/mtk_sip_svc.h      | 33 +++++++
+ 5 files changed, 157 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rng/mtk-sec-rng.txt
+ create mode 100644 drivers/char/hw_random/mtk-sec-rng.c
+ create mode 100644 include/linux/soc/mediatek/mtk_sip_svc.h
 
 -- 
-2.13.3
+2.18.0
 
