@@ -2,24 +2,24 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1C450337
-	for <lists+linux-crypto@lfdr.de>; Mon, 24 Jun 2019 09:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B24950335
+	for <lists+linux-crypto@lfdr.de>; Mon, 24 Jun 2019 09:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbfFXHYi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1727910AbfFXHYi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Mon, 24 Jun 2019 03:24:38 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:65524 "EHLO
+Received: from mailgw01.mediatek.com ([210.61.82.183]:17835 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726548AbfFXHYi (ORCPT
+        with ESMTP id S1726795AbfFXHYi (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 24 Jun 2019 03:24:38 -0400
-X-UUID: 6038677deac746839ca01a7844137d8d-20190624
-X-UUID: 6038677deac746839ca01a7844137d8d-20190624
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw01.mediatek.com
+X-UUID: 0704b223eb5949cbbda10de7e55c1fb2-20190624
+X-UUID: 0704b223eb5949cbbda10de7e55c1fb2-20190624
+Received: from mtkcas09.mediatek.inc [(172.21.101.178)] by mailgw01.mediatek.com
         (envelope-from <neal.liu@mediatek.com>)
         (mhqrelay.mediatek.com ESMTP with TLS)
-        with ESMTP id 653087093; Mon, 24 Jun 2019 15:24:30 +0800
+        with ESMTP id 1259754356; Mon, 24 Jun 2019 15:24:29 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
  15.0.1395.4; Mon, 24 Jun 2019 15:24:28 +0800
 Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
@@ -37,9 +37,9 @@ CC:     Neal Liu <neal.liu@mediatek.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
-Subject: [PATCH v4 1/3] soc: mediatek: add SMC fid table for SIP interface
-Date:   Mon, 24 Jun 2019 15:24:10 +0800
-Message-ID: <1561361052-13072-2-git-send-email-neal.liu@mediatek.com>
+Subject: [PATCH v4 2/3] dt-bindings: rng: add bindings for MediaTek ARMv8 SoCs
+Date:   Mon, 24 Jun 2019 15:24:11 +0800
+Message-ID: <1561361052-13072-3-git-send-email-neal.liu@mediatek.com>
 X-Mailer: git-send-email 1.7.9.5
 In-Reply-To: <1561361052-13072-1-git-send-email-neal.liu@mediatek.com>
 References: <1561361052-13072-1-git-send-email-neal.liu@mediatek.com>
@@ -51,54 +51,31 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-1. Add a header file to provide SIP interface to ATF
-2. Add hwrng SMC fid
+Document the binding used by the MediaTek ARMv8 SoCs random
+number generator with TrustZone enabled.
 
 Signed-off-by: Neal Liu <neal.liu@mediatek.com>
 ---
- include/linux/soc/mediatek/mtk_sip_svc.h |   33 ++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
- create mode 100644 include/linux/soc/mediatek/mtk_sip_svc.h
+ .../devicetree/bindings/rng/mtk-sec-rng.txt        |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rng/mtk-sec-rng.txt
 
-diff --git a/include/linux/soc/mediatek/mtk_sip_svc.h b/include/linux/soc/mediatek/mtk_sip_svc.h
+diff --git a/Documentation/devicetree/bindings/rng/mtk-sec-rng.txt b/Documentation/devicetree/bindings/rng/mtk-sec-rng.txt
 new file mode 100644
-index 0000000..8cc8b5c
+index 0000000..c04ce15
 --- /dev/null
-+++ b/include/linux/soc/mediatek/mtk_sip_svc.h
-@@ -0,0 +1,33 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (c) 2019 MediaTek Inc.
-+ */
++++ b/Documentation/devicetree/bindings/rng/mtk-sec-rng.txt
+@@ -0,0 +1,10 @@
++MediaTek random number generator with TrustZone enabled
 +
-+#ifndef _MTK_SECURE_API_H_
-+#define _MTK_SECURE_API_H_
++Required properties:
++- compatible : Should be "mediatek,mtk-sec-rng"
 +
-+#include <linux/kernel.h>
++Example:
 +
-+/* Error Code */
-+#define SIP_SVC_E_SUCCESS		0
-+#define SIP_SVC_E_NOT_SUPPORTED		-1
-+#define SIP_SVC_E_INVALID_PARAMS	-2
-+#define SIP_SVC_E_INVALID_RANGE		-3
-+#define SIP_SVC_E_PERMISSION_DENY	-4
-+
-+#ifdef CONFIG_ARM64
-+#define MTK_SIP_SMC_AARCH_BIT		BIT(30)
-+#else
-+#define MTK_SIP_SMC_AARCH_BIT		0
-+#endif
-+
-+/*******************************************************************************
-+ * Defines for Mediatek runtime services func ids
-+ ******************************************************************************/
-+
-+/* Security related SMC call */
-+/* HWRNG */
-+#define MTK_SIP_KERNEL_GET_RND \
-+	(0x8200026A | MTK_SIP_SMC_AARCH_BIT)
-+
-+#endif /* _MTK_SECURE_API_H_ */
++hwrng: hwrng {
++	compatible = "mediatek,mtk-sec-rng";
++}
 -- 
 1.7.9.5
 
