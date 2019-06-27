@@ -2,61 +2,90 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B02E5882E
-	for <lists+linux-crypto@lfdr.de>; Thu, 27 Jun 2019 19:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9D35887F
+	for <lists+linux-crypto@lfdr.de>; Thu, 27 Jun 2019 19:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbfF0RSy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 27 Jun 2019 13:18:54 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38464 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726315AbfF0RSy (ORCPT
+        id S1726631AbfF0Rfe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 27 Jun 2019 13:35:34 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:33099 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726508AbfF0Rfd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 27 Jun 2019 13:18:54 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5RHIeeq021689
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jun 2019 13:18:41 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 687B842002E; Thu, 27 Jun 2019 13:18:40 -0400 (EDT)
-Date:   Thu, 27 Jun 2019 13:18:40 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] fscrypt: remove selection of CONFIG_CRYPTO_SHA256
-Message-ID: <20190627171840.GB31445@mit.edu>
-References: <20190620181505.225232-1-ebiggers@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190620181505.225232-1-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Thu, 27 Jun 2019 13:35:33 -0400
+Received: by mail-pg1-f195.google.com with SMTP id m4so1347272pgk.0;
+        Thu, 27 Jun 2019 10:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=84ahqC+50mO9UAvH/8d+QbUCMmIMaV0w1CUferEMczw=;
+        b=PQeEpo4wE9FmqoMEGX+E1GRBFCAtoLnmlmwiA3EMaSdvtKw48PTDtpIl+OEA0Q7n/L
+         rsX1UoffZBqTwE+9nK/4H0ZY9fqoFM/APDLPfJzqFkxHWFBvLZi5mp9iDqP492hXf0hb
+         TJRc7/Cs3J9xEHPlNQ1BDXvhsCYdSXIk3bxCfbt/eJxCX9Bb3P9BPoF+JE35+e3MsinN
+         qbOYzYeV9Pq4eGXZ2bmO46Mj6UMSwPp2akfLm2ZaCg5eWSG97fIoS/dL3NusrsCnZxxJ
+         TbkDgvxaVSuX4fGJv5qWzhcNY77KV6UEg09VOqDRCi5EXyQMvpEypYdFXGNNnY+pyvvt
+         y2Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=84ahqC+50mO9UAvH/8d+QbUCMmIMaV0w1CUferEMczw=;
+        b=DKtVBRqZti4Z7m393uJ2rh8AGdLOFBY9LN69wWtNoimFuPseIAXVXxN6GuxnIF8ixP
+         HsQJb+HKYC4+ltun78d/C+HDUlAnQFtom/jtMMWlDWhjPMl0EBp+KsOndpq+nKYlZ7BI
+         MXuJvwVW4tRw6IsogBYAXFeDiUn9cT37CczSHDIhVCUuOnB21W/5cm0EzX3Iwq4Au4H4
+         3QfXVGV0rHwUCtu3G5AjW2QDWd1CwDFMJPpowL4BxyHVbx07QeHTmdM5HNLWjq4wah/S
+         OIr7GaKXZrhnRscL1/zPo/oc0C0vttkTgftybH9lUx0A2iejP6zxHazhAfCMjrEGUtnC
+         0WQQ==
+X-Gm-Message-State: APjAAAWqZpHuAroiL+syH2BWaQLJO4dH4G6LoXjmEdY6hHfaPPpiKzQv
+        6HviKx7uGdRrGJp8snw2arg=
+X-Google-Smtp-Source: APXvYqxeCvY50jYpTWVeQxBWVRm9La51KkeHY6C5ZyqNYd1dHoCt4hRfyl9lKtVVM4bUl7byG1qlKg==
+X-Received: by 2002:a63:18c:: with SMTP id 134mr4728426pgb.432.1561656932949;
+        Thu, 27 Jun 2019 10:35:32 -0700 (PDT)
+Received: from hfq-skylake.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
+        by smtp.googlemail.com with ESMTPSA id c130sm3739317pfc.184.2019.06.27.10.35.29
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 27 Jun 2019 10:35:32 -0700 (PDT)
+From:   Fuqian Huang <huangfq.daxian@gmail.com>
+Cc:     Fuqian Huang <huangfq.daxian@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Richard Fontana <rfontana@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Eric Biggers <ebiggers@google.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 11/87] crypto: amcc: Remove call to memset after dma_alloc_coherent
+Date:   Fri, 28 Jun 2019 01:35:23 +0800
+Message-Id: <20190627173524.2403-1-huangfq.daxian@gmail.com>
+X-Mailer: git-send-email 2.11.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Jun 20, 2019 at 11:15:05AM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> fscrypt only uses SHA-256 for AES-128-CBC-ESSIV, which isn't the default
-> and is only recommended on platforms that have hardware accelerated
-> AES-CBC but not AES-XTS.  There's no link-time dependency, since SHA-256
-> is requested via the crypto API on first use.
-> 
-> To reduce bloat, we should limit FS_ENCRYPTION to selecting the default
-> algorithms only.  SHA-256 by itself isn't that much bloat, but it's
-> being discussed to move ESSIV into a crypto API template, which would
-> incidentally bring in other things like "authenc" support, which would
-> all end up being built-in since FS_ENCRYPTION is now a bool.
-> 
-> For Adiantum encryption we already just document that users who want to
-> use it have to enable CONFIG_CRYPTO_ADIANTUM themselves.  So, let's do
-> the same for AES-128-CBC-ESSIV and CONFIG_CRYPTO_SHA256.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+    In commit af7ddd8a627c
+("Merge tag 'dma-mapping-4.21' of git://git.infradead.org/users/hch/dma-mapping"),
+    dma_alloc_coherent has already zeroed the memory.
+    So memset is not needed.
 
-Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
+---
+ drivers/crypto/amcc/crypto4xx_core.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/crypto/amcc/crypto4xx_core.c b/drivers/crypto/amcc/crypto4xx_core.c
+index 16d911aaa508..5e7f2e233406 100644
+--- a/drivers/crypto/amcc/crypto4xx_core.c
++++ b/drivers/crypto/amcc/crypto4xx_core.c
+@@ -182,7 +182,6 @@ static u32 crypto4xx_build_pdr(struct crypto4xx_device *dev)
+ 				  dev->pdr_pa);
+ 		return -ENOMEM;
+ 	}
+-	memset(dev->pdr, 0, sizeof(struct ce_pd) * PPC4XX_NUM_PD);
+ 	dev->shadow_sa_pool = dma_alloc_coherent(dev->core_dev->device,
+ 				   sizeof(union shadow_sa_buf) * PPC4XX_NUM_PD,
+ 				   &dev->shadow_sa_pool_pa,
+-- 
+2.11.0
+
