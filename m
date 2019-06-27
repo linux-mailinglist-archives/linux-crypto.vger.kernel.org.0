@@ -2,56 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 852615805C
-	for <lists+linux-crypto@lfdr.de>; Thu, 27 Jun 2019 12:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4520758059
+	for <lists+linux-crypto@lfdr.de>; Thu, 27 Jun 2019 12:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbfF0K2V (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1726523AbfF0K2V (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Thu, 27 Jun 2019 06:28:21 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:38343 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726682AbfF0K2S (ORCPT
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:33587 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbfF0K2U (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 27 Jun 2019 06:28:18 -0400
-Received: by mail-wr1-f68.google.com with SMTP id d18so1923029wrs.5
-        for <linux-crypto@vger.kernel.org>; Thu, 27 Jun 2019 03:28:17 -0700 (PDT)
+        Thu, 27 Jun 2019 06:28:20 -0400
+Received: by mail-wr1-f65.google.com with SMTP id n9so1950597wru.0
+        for <linux-crypto@vger.kernel.org>; Thu, 27 Jun 2019 03:28:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=h9xdExBrqYFWsuLQCJksPQkQTr4z/marqcQjFd4StkE=;
-        b=bY+OLwCRpBmnowhgehO5dqYTwvrIIXAtSeaPTWQypdaJtfTLWdzos7Shnt5ZWRSLT3
-         HqUEYEnmcXzXLOVxxOdef9ETkAF3VOxK0o697B90/JL4GyxGDQ86vPY4707hnY+TFH1D
-         mx6cvKlM2dySCzI2ilc0FTXHPzkjnB1A/cjNoe/emKsOYcGDzhtPLDXm4jmLc89LRcvB
-         hqh9cbVU7QEdJtC7998ZiFohjsFGLpa2rEr9sRYe/LhXiXwvKaKgK3CqpCEqSdFln3ht
-         l3mQWZ+dfLWGkGNUuUlexCwMTx6S/QEclc1Sm/hMKlx9b4LatfP73dNpY2PkvA1m7qYN
-         RVFQ==
+        bh=Fm4ramXN1vd7JQGliUbSFSJzkgKkgIE9Zzs9yUh/C1k=;
+        b=fFy98Taa+uZKo/+CTlhAZt+/oqgxSi4LEvHwozvTfwz0O52XhYxDVGCK9x7vTuxtya
+         3OSxoMTU+XoxQPloPMPjU+bI2a+eRaXSjcJljiz4fmdhIQtBNXAfab6ifcd5053CudR7
+         xSADxmsHtGXQQ6I4ek03F5YqGAQAIceFvKDqP903Jfm2DpG8zmQJnh97bP2hH/LdUDOJ
+         JOKtztYKLXZ0uRg3jSpxxEIOjaXp3cOqVlGo7+B3dlGOP1kbpswp6qcInrgiN5ZjLQ4q
+         eEsEStLmi6rxDudRziw1UJoqeoy4+IMvIXFOQGgJoYzrSTLGoD8AG8fSrSt+ZfvoILK8
+         llyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=h9xdExBrqYFWsuLQCJksPQkQTr4z/marqcQjFd4StkE=;
-        b=EsWnWoNC+5VfjpZUUKEjePKV2y5/g1vYi1u0E4yfVDStkoObAX75YLq3VCW9LUvuSr
-         6A6QZrBnG5n44PswheGYTWMDivpsPKLCNBwYM5Z5+AEaRafwGidP5yiCQv4FX7/7Oz6j
-         9G1lxzTtIbcvrn1Firr9FxP7jAMwI0WXIlKRCfcfVEB0BNS32hPN/A54q/uRudOYf0XH
-         znP7jXj+JjBpzk2RBVeKSr41zpgP7r7VK/dW1H2AgKtUMgCmAvReWx5pNcBtvtoaGiIY
-         KaKhNR/fdk9BL0sXzEl3oUq8GTYcArBtWIdFxd9lLX6iM51EphD05xJQiNDPbFa6BnGk
-         fmTg==
-X-Gm-Message-State: APjAAAWXp7gL/HEOdltPaGWTuhNpHO9ey3C+yKCpJ7xE8YHObGK5GTc8
-        kkP/gSFw9pZQm/kbes6E0ecwyzo1Slk=
-X-Google-Smtp-Source: APXvYqxmlzY6WJqXcm+jusuE50s3ZHygVT+MisEpqk6Tz/DRcXaVD0xeJFT6qMg1lvk1TPfpz1BttQ==
-X-Received: by 2002:a5d:4647:: with SMTP id j7mr2804360wrs.334.1561631296694;
-        Thu, 27 Jun 2019 03:28:16 -0700 (PDT)
+        bh=Fm4ramXN1vd7JQGliUbSFSJzkgKkgIE9Zzs9yUh/C1k=;
+        b=erwf5oAhgkD6dCpasNihVntF3X+z6/wH2IOH1NZInNYsKWynukPSFKB1e5I6YWWMjo
+         NlpqQ2wGJtqnxs88t11a77+3qb0V3CLWzEDNQGw306L/MI4o5uuLkVe7yvmsl6UlsLAd
+         8aedfGIJ8qNuF7w1pz43WRLApOhPY802n3GyI1TTlDYYlnn1OjaWEPd1wf9JmMTGUFNx
+         WpbWyMTZFlBSuO5EykXZYw8rnHwDTU8YKtsDWry0vtlsSabrwJUPbiqgFM7Mh8qFHs2B
+         t+xhVBi23LW338G9M+1xutRoQlu+4iCrt+v3wQEgNu0wSPsqRzc8g2RiBVTeedUtKbGS
+         yEVQ==
+X-Gm-Message-State: APjAAAW8cJIZUhbvRK33FteaotevFM3Ltym4EXhAT1qV4MWQee7+2ISF
+        EmxZJmaX+l07bJyFeYGwD/EmqJyhB/A=
+X-Google-Smtp-Source: APXvYqwT+4TxFwY4e3RJcyJ41MreCyupon1MA4Z/B1UPP6KElG7o/HnamUWablVqF82tuJ2lZQLv3w==
+X-Received: by 2002:adf:c654:: with SMTP id u20mr2784397wrg.271.1561631297735;
+        Thu, 27 Jun 2019 03:28:17 -0700 (PDT)
 Received: from localhost.localdomain (aaubervilliers-681-1-8-173.w90-88.abo.wanadoo.fr. [90.88.13.173])
-        by smtp.gmail.com with ESMTPSA id g2sm5584533wmh.0.2019.06.27.03.28.15
+        by smtp.gmail.com with ESMTPSA id g2sm5584533wmh.0.2019.06.27.03.28.16
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 27 Jun 2019 03:28:16 -0700 (PDT)
+        Thu, 27 Jun 2019 03:28:17 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
         Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [PATCH v3 24/32] crypto: amcc/aes - switch to AES library for GCM key derivation
-Date:   Thu, 27 Jun 2019 12:26:39 +0200
-Message-Id: <20190627102647.2992-25-ard.biesheuvel@linaro.org>
+Subject: [PATCH v3 25/32] crypto: ccp - move to AES library for CMAC key derivation
+Date:   Thu, 27 Jun 2019 12:26:40 +0200
+Message-Id: <20190627102647.2992-26-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190627102647.2992-1-ard.biesheuvel@linaro.org>
 References: <20190627102647.2992-1-ard.biesheuvel@linaro.org>
@@ -62,70 +62,114 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The AMCC code for GCM key derivation allocates a AES cipher to
-perform a single block encryption. So let's switch to the new
-and more lightweight AES library instead.
+Use the AES library instead of the cipher interface to perform
+the single block of AES processing involved in updating the key
+of the cmac(aes) hash.
 
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- drivers/crypto/Kconfig              |  2 +-
- drivers/crypto/amcc/crypto4xx_alg.c | 24 +++++++-------------
- 2 files changed, 9 insertions(+), 17 deletions(-)
+ drivers/crypto/ccp/Kconfig               |  1 +
+ drivers/crypto/ccp/ccp-crypto-aes-cmac.c | 25 ++++----------------
+ drivers/crypto/ccp/ccp-crypto.h          |  3 ---
+ 3 files changed, 5 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index b30b84089d11..c7ac1e6d23d4 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -311,7 +311,7 @@ config CRYPTO_DEV_PPC4XX
- 	depends on PPC && 4xx
- 	select CRYPTO_HASH
- 	select CRYPTO_AEAD
--	select CRYPTO_AES
+diff --git a/drivers/crypto/ccp/Kconfig b/drivers/crypto/ccp/Kconfig
+index b9dfae47aefd..ee06d0fccdb5 100644
+--- a/drivers/crypto/ccp/Kconfig
++++ b/drivers/crypto/ccp/Kconfig
+@@ -29,6 +29,7 @@ config CRYPTO_DEV_CCP_CRYPTO
+ 	select CRYPTO_BLKCIPHER
+ 	select CRYPTO_AUTHENC
+ 	select CRYPTO_RSA
 +	select CRYPTO_LIB_AES
- 	select CRYPTO_CCM
- 	select CRYPTO_CTR
- 	select CRYPTO_GCM
-diff --git a/drivers/crypto/amcc/crypto4xx_alg.c b/drivers/crypto/amcc/crypto4xx_alg.c
-index 26f86fd7532b..d3660703a36c 100644
---- a/drivers/crypto/amcc/crypto4xx_alg.c
-+++ b/drivers/crypto/amcc/crypto4xx_alg.c
-@@ -536,28 +536,20 @@ static int crypto4xx_aes_gcm_validate_keylen(unsigned int keylen)
- static int crypto4xx_compute_gcm_hash_key_sw(__le32 *hash_start, const u8 *key,
- 					     unsigned int keylen)
+ 	help
+ 	  Support for using the cryptographic API with the AMD Cryptographic
+ 	  Coprocessor. This module supports offload of SHA and AES algorithms.
+diff --git a/drivers/crypto/ccp/ccp-crypto-aes-cmac.c b/drivers/crypto/ccp/ccp-crypto-aes-cmac.c
+index f6e252c1d6fb..c8f4b29bf044 100644
+--- a/drivers/crypto/ccp/ccp-crypto-aes-cmac.c
++++ b/drivers/crypto/ccp/ccp-crypto-aes-cmac.c
+@@ -264,6 +264,7 @@ static int ccp_aes_cmac_setkey(struct crypto_ahash *tfm, const u8 *key,
+ 		ccp_crypto_ahash_alg(crypto_ahash_tfm(tfm));
+ 	u64 k0_hi, k0_lo, k1_hi, k1_lo, k2_hi, k2_lo;
+ 	u64 rb_hi = 0x00, rb_lo = 0x87;
++	struct crypto_aes_ctx aes;
+ 	__be64 *gk;
+ 	int ret;
+ 
+@@ -287,14 +288,14 @@ static int ccp_aes_cmac_setkey(struct crypto_ahash *tfm, const u8 *key,
+ 	ctx->u.aes.key_len = 0;
+ 
+ 	/* Set the key for the AES cipher used to generate the keys */
+-	ret = crypto_cipher_setkey(ctx->u.aes.tfm_cipher, key, key_len);
++	ret = aes_expandkey(&aes, key, key_len);
+ 	if (ret)
+ 		return ret;
+ 
+ 	/* Encrypt a block of zeroes - use key area in context */
+ 	memset(ctx->u.aes.key, 0, sizeof(ctx->u.aes.key));
+-	crypto_cipher_encrypt_one(ctx->u.aes.tfm_cipher, ctx->u.aes.key,
+-				  ctx->u.aes.key);
++	aes_encrypt(&aes, ctx->u.aes.key, ctx->u.aes.key);
++	memzero_explicit(&aes, sizeof(aes));
+ 
+ 	/* Generate K1 and K2 */
+ 	k0_hi = be64_to_cpu(*((__be64 *)ctx->u.aes.key));
+@@ -339,32 +340,15 @@ static int ccp_aes_cmac_cra_init(struct crypto_tfm *tfm)
  {
--	struct crypto_cipher *aes_tfm = NULL;
-+	struct crypto_aes_ctx ctx;
- 	uint8_t src[16] = { 0 };
--	int rc = 0;
--
--	aes_tfm = crypto_alloc_cipher("aes", 0, CRYPTO_ALG_NEED_FALLBACK);
--	if (IS_ERR(aes_tfm)) {
--		rc = PTR_ERR(aes_tfm);
--		pr_warn("could not load aes cipher driver: %d\n", rc);
--		return rc;
+ 	struct ccp_ctx *ctx = crypto_tfm_ctx(tfm);
+ 	struct crypto_ahash *ahash = __crypto_ahash_cast(tfm);
+-	struct crypto_cipher *cipher_tfm;
+ 
+ 	ctx->complete = ccp_aes_cmac_complete;
+ 	ctx->u.aes.key_len = 0;
+ 
+ 	crypto_ahash_set_reqsize(ahash, sizeof(struct ccp_aes_cmac_req_ctx));
+ 
+-	cipher_tfm = crypto_alloc_cipher("aes", 0, CRYPTO_ALG_NEED_FALLBACK);
+-	if (IS_ERR(cipher_tfm)) {
+-		pr_warn("could not load aes cipher driver\n");
+-		return PTR_ERR(cipher_tfm);
 -	}
-+	int rc;
- 
--	rc = crypto_cipher_setkey(aes_tfm, key, keylen);
-+	rc = aes_expandkey(&ctx, key, keylen);
- 	if (rc) {
--		pr_err("setkey() failed: %d\n", rc);
--		goto out;
-+		pr_err("aes_expandkey() failed: %d\n", rc);
-+		return rc;
- 	}
- 
--	crypto_cipher_encrypt_one(aes_tfm, src, src);
-+	aes_encrypt(&ctx, src, src);
- 	crypto4xx_memcpy_to_le32(hash_start, src, 16);
--out:
--	crypto_free_cipher(aes_tfm);
--	return rc;
-+	memzero_explicit(&ctx, sizeof(ctx));
-+	return 0;
+-	ctx->u.aes.tfm_cipher = cipher_tfm;
+-
+ 	return 0;
  }
  
- int crypto4xx_setkey_aes_gcm(struct crypto_aead *cipher,
+-static void ccp_aes_cmac_cra_exit(struct crypto_tfm *tfm)
+-{
+-	struct ccp_ctx *ctx = crypto_tfm_ctx(tfm);
+-
+-	if (ctx->u.aes.tfm_cipher)
+-		crypto_free_cipher(ctx->u.aes.tfm_cipher);
+-	ctx->u.aes.tfm_cipher = NULL;
+-}
+-
+ int ccp_register_aes_cmac_algs(struct list_head *head)
+ {
+ 	struct ccp_crypto_ahash_alg *ccp_alg;
+@@ -404,7 +388,6 @@ int ccp_register_aes_cmac_algs(struct list_head *head)
+ 	base->cra_ctxsize = sizeof(struct ccp_ctx);
+ 	base->cra_priority = CCP_CRA_PRIORITY;
+ 	base->cra_init = ccp_aes_cmac_cra_init;
+-	base->cra_exit = ccp_aes_cmac_cra_exit;
+ 	base->cra_module = THIS_MODULE;
+ 
+ 	ret = crypto_register_ahash(alg);
+diff --git a/drivers/crypto/ccp/ccp-crypto.h b/drivers/crypto/ccp/ccp-crypto.h
+index 28819e11db96..9100df77a7b3 100644
+--- a/drivers/crypto/ccp/ccp-crypto.h
++++ b/drivers/crypto/ccp/ccp-crypto.h
+@@ -90,9 +90,6 @@ struct ccp_aes_ctx {
+ 	/* Fallback cipher for XTS with unsupported unit sizes */
+ 	struct crypto_sync_skcipher *tfm_skcipher;
+ 
+-	/* Cipher used to generate CMAC K1/K2 keys */
+-	struct crypto_cipher *tfm_cipher;
+-
+ 	enum ccp_engine engine;
+ 	enum ccp_aes_type type;
+ 	enum ccp_aes_mode mode;
 -- 
 2.20.1
 
