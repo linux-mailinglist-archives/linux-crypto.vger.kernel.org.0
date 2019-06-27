@@ -2,153 +2,134 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E96B558222
-	for <lists+linux-crypto@lfdr.de>; Thu, 27 Jun 2019 14:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0FF58369
+	for <lists+linux-crypto@lfdr.de>; Thu, 27 Jun 2019 15:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbfF0MEC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 27 Jun 2019 08:04:02 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:50815 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbfF0MEC (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 27 Jun 2019 08:04:02 -0400
-Received: by mail-wm1-f67.google.com with SMTP id c66so5474412wmf.0
-        for <linux-crypto@vger.kernel.org>; Thu, 27 Jun 2019 05:04:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JECSO/bEpbkseNS0KKB92/HftgO7GU1wpPzeVM070Yw=;
-        b=ZAcK2nlwd7nE2u1VzolngiDy5WZV49PtW7B9sRIZiYINoYR56ehr2hSy81OMcZMxtT
-         3bd646J8JJuUxrc9ogwItMSYd3Bgga0iYrq60V7YVNI/8pT9O2fuj9H17wVfovYgNaRJ
-         RJne5vWKOkUIvZPwYqgYIT1EE73yWdWzvxOwgBUCk2hLO9+wQkTTgOStFsxZDyE0Q4Sx
-         eoXGuGREuns2Cj3txzjEJ0j3wR44+O1hNCsrE506lAoOvHTNbrisQQkQSqwYZ5lZFttM
-         Qn1Jjz/iyN7OcCAZIYiW49Sf9CLMg3Z7MwZQfUzMdJ7ZCJhzleUSsnjaH23Kn5Jix5Ng
-         mzBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JECSO/bEpbkseNS0KKB92/HftgO7GU1wpPzeVM070Yw=;
-        b=QLHP9L03xWrQYCusdSMxyGkVx5kUVvapEwB7yBmcX0sLzLSs7sbF1NHQ/EZhjwRHEB
-         rXtxTE+obuwNroaJWA3/9crzIv1Y+PvsMO/pwkGq+dW3CLIvJ8iSFQfOhD0Ud02QxF9m
-         qjcu7uSJS10SW03Pcu+8hC6Z1IJSef8KvNJkMKUfw3Vhc87J+7uB4PEnIyXrMgAZgcDy
-         u1lTl83/7zmoV3kVi/rUnmH5Q/el718IeUY4W6i1jK3xq1O5df9XO6OeN56Rq/uNJrAR
-         Rh7T8bmGBM/NLCvSMC2PCMpXzw5pHf1azOUFORGFBoTMb1N8DNqN5VZdhnxu/NkM/pwB
-         B2jA==
-X-Gm-Message-State: APjAAAWt4TGyqbQDXKmMPHUgwTi7wz1TN5EWHR+zgpFokDYVu/bhvAsn
-        6L9SuUzJAttEpUUYc8irvN7e2UY5gDSllg==
-X-Google-Smtp-Source: APXvYqzcKbSdQS1Y6lJR1HWtLk3VJ5hbCc78fSgNPKezrFy1XzN72uGrKZK1vEgyzZdzp0zVbQYsFw==
-X-Received: by 2002:a1c:96c7:: with SMTP id y190mr2751564wmd.87.1561637039257;
-        Thu, 27 Jun 2019 05:03:59 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-657-1-83-120.w92-154.abo.wanadoo.fr. [92.154.90.120])
-        by smtp.gmail.com with ESMTPSA id z126sm7732431wmb.32.2019.06.27.05.03.57
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 27 Jun 2019 05:03:58 -0700 (PDT)
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
-        horia.geanta@nxp.com, Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [PATCH v2 30/30] fs: cifs: move from the crypto cipher API to the new DES library interface
-Date:   Thu, 27 Jun 2019 14:03:14 +0200
-Message-Id: <20190627120314.7197-31-ard.biesheuvel@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190627120314.7197-1-ard.biesheuvel@linaro.org>
+        id S1726370AbfF0N0o (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 27 Jun 2019 09:26:44 -0400
+Received: from mail-eopbgr150057.outbound.protection.outlook.com ([40.107.15.57]:7022
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726059AbfF0N0o (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 27 Jun 2019 09:26:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gyMevtMb9EwFRn5zNy9qWVNQjV6M96HZ+ziXnigQpsA=;
+ b=ScE79fmdF0iVRUa9mWlpV2CwjoC8QwJt2lp2S+Gzj4o6Vhqju11GIPuikko1nnyBkFCmN/ZUCsX2dfohNKDgGILfBgrfYhGPjKTVHqXFUCdiOn0loC9CHp1nfI4tVv//SepqrLS1q2+AvSfFAy7FmCG0gXFRnDUOLAawn/y1U98=
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com (52.134.3.153) by
+ VI1PR0402MB3853.eurprd04.prod.outlook.com (52.134.16.149) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2008.16; Thu, 27 Jun 2019 13:26:40 +0000
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::14c8:b254:33f0:fdba]) by VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::14c8:b254:33f0:fdba%6]) with mapi id 15.20.2008.014; Thu, 27 Jun 2019
+ 13:26:40 +0000
+From:   Horia Geanta <horia.geanta@nxp.com>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+CC:     "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "ebiggers@kernel.org" <ebiggers@kernel.org>
+Subject: Re: [PATCH v2 06/30] crypto: caam/des - switch to new verification
+ routines
+Thread-Topic: [PATCH v2 06/30] crypto: caam/des - switch to new verification
+ routines
+Thread-Index: AQHVLOBY89fT5Pwhp0Geyrqw7e8u3g==
+Date:   Thu, 27 Jun 2019 13:26:40 +0000
+Message-ID: <VI1PR0402MB348532DF646DA7522F7B689698FD0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
 References: <20190627120314.7197-1-ard.biesheuvel@linaro.org>
+ <20190627120314.7197-7-ard.biesheuvel@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=horia.geanta@nxp.com; 
+x-originating-ip: [212.146.100.6]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7616284f-9198-411e-f61e-08d6fb0316ea
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:VI1PR0402MB3853;
+x-ms-traffictypediagnostic: VI1PR0402MB3853:
+x-microsoft-antispam-prvs: <VI1PR0402MB38535A81AC372075080A6A5498FD0@VI1PR0402MB3853.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 008184426E
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(346002)(39860400002)(396003)(366004)(376002)(189003)(199004)(256004)(66946007)(6506007)(86362001)(316002)(53546011)(26005)(99286004)(44832011)(102836004)(81156014)(76176011)(71200400001)(71190400001)(6116002)(6246003)(305945005)(3846002)(74316002)(2501003)(14454004)(33656002)(68736007)(8676002)(73956011)(7696005)(476003)(81166006)(5660300002)(478600001)(7736002)(486006)(186003)(14444005)(4326008)(64756008)(66066001)(52536014)(2906002)(66446008)(6436002)(54906003)(229853002)(110136005)(66476007)(8936002)(15650500001)(53936002)(25786009)(9686003)(446003)(55016002)(66556008)(76116006);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0402MB3853;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: U5+DovVvPe+AulRpMlxt8c60KxtCj/B8a+qznLpKl1PalukQzN1ib0JMuhysAyvD8PIUA4M/ljsOox0G4SQt1Mdga9Eo5ALDcuUQb3ZkbmjDTlO5b770bQJ49v0RlGEJIh2PziDhCFjTlI+kaQbWoV/FCtoPCwlnNOfjqWbyAuLjmosnZDi59QoNB/KHn8e9Fi49vZ49lqz8Q7QjFnqdwqk9aAGev034c/uaKAOGkM7WzK2pFWVEUiFaHVcc+wqrpTOah3LcmUOdbJrqjpi6wjPhoxmIz2gVTNKa3mrqR6/L8gguLXRAI75Ve2hx8At4aOa3BVRWbsjhfYv48VlpZ3Hef5YRHAYgoz49uQkTzD1RCTE3ECqgFV7wTu2SQaapXR834Hf6M0lvpjaFOMKC3nQ708EUKVpmfks7w1vHVK8=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7616284f-9198-411e-f61e-08d6fb0316ea
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jun 2019 13:26:40.5845
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: horia.geanta@nxp.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3853
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Some legacy code in the CIFS driver uses single DES to calculate
-some password hash, and uses the crypto cipher API to do so. Given
-that there is no point in invoking an accelerated cipher for doing
-56-bit symmetric encryption on a single 8-byte block of input, the
-flexibility of the crypto cipher API does not add much value here,
-and so we're much better off using a library call into the generic
-C implementation.
-
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
- fs/cifs/Kconfig      |  2 +-
- fs/cifs/cifsfs.c     |  1 -
- fs/cifs/smbencrypt.c | 18 +++++++++---------
- 3 files changed, 10 insertions(+), 11 deletions(-)
-
-diff --git a/fs/cifs/Kconfig b/fs/cifs/Kconfig
-index 3da294231dcc..dedab8f79ee8 100644
---- a/fs/cifs/Kconfig
-+++ b/fs/cifs/Kconfig
-@@ -14,7 +14,7 @@ config CIFS
- 	select CRYPTO_CCM
- 	select CRYPTO_ECB
- 	select CRYPTO_AES
--	select CRYPTO_DES
-+	select CRYPTO_LIB_DES
- 	help
- 	  This is the client VFS module for the SMB3 family of NAS protocols,
- 	  (including support for the most recent, most secure dialect SMB3.1.1)
-diff --git a/fs/cifs/cifsfs.c b/fs/cifs/cifsfs.c
-index e55afaf9e5a3..44f4cc160197 100644
---- a/fs/cifs/cifsfs.c
-+++ b/fs/cifs/cifsfs.c
-@@ -1590,7 +1590,6 @@ MODULE_DESCRIPTION
- 	("VFS to access SMB3 servers e.g. Samba, Macs, Azure and Windows (and "
- 	"also older servers complying with the SNIA CIFS Specification)");
- MODULE_VERSION(CIFS_VERSION);
--MODULE_SOFTDEP("pre: des");
- MODULE_SOFTDEP("pre: ecb");
- MODULE_SOFTDEP("pre: hmac");
- MODULE_SOFTDEP("pre: md4");
-diff --git a/fs/cifs/smbencrypt.c b/fs/cifs/smbencrypt.c
-index a0b80ac651a6..5c55c35f47d6 100644
---- a/fs/cifs/smbencrypt.c
-+++ b/fs/cifs/smbencrypt.c
-@@ -23,13 +23,14 @@
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
- 
--#include <linux/crypto.h>
- #include <linux/module.h>
- #include <linux/slab.h>
-+#include <linux/fips.h>
- #include <linux/fs.h>
- #include <linux/string.h>
- #include <linux/kernel.h>
- #include <linux/random.h>
-+#include <crypto/des.h>
- #include "cifs_fs_sb.h"
- #include "cifs_unicode.h"
- #include "cifspdu.h"
-@@ -70,19 +71,18 @@ static int
- smbhash(unsigned char *out, const unsigned char *in, unsigned char *key)
- {
- 	unsigned char key2[8];
--	struct crypto_cipher *tfm_des;
-+	struct des_ctx ctx;
- 
- 	str_to_key(key, key2);
- 
--	tfm_des = crypto_alloc_cipher("des", 0, 0);
--	if (IS_ERR(tfm_des)) {
--		cifs_dbg(VFS, "could not allocate des crypto API\n");
--		return PTR_ERR(tfm_des);
-+	if (fips_enabled) {
-+		cifs_dbg(VFS, "FIPS compliance enabled: DES not permitted\n");
-+		return -ENOENT;
- 	}
- 
--	crypto_cipher_setkey(tfm_des, key2, 8);
--	crypto_cipher_encrypt_one(tfm_des, out, in);
--	crypto_free_cipher(tfm_des);
-+	des_expand_key(&ctx, key2, DES_KEY_SIZE);
-+	des_encrypt(&ctx, out, in);
-+	memzero_explicit(&ctx, sizeof(ctx));
- 
- 	return 0;
- }
--- 
-2.20.1
-
+On 6/27/2019 3:03 PM, Ard Biesheuvel wrote:=0A=
+> @@ -785,20 +781,23 @@ static int skcipher_setkey(struct crypto_skcipher *=
+skcipher, const u8 *key,=0A=
+>  static int des_skcipher_setkey(struct crypto_skcipher *skcipher,=0A=
+>  			       const u8 *key, unsigned int keylen)=0A=
+>  {=0A=
+> -	u32 tmp[DES3_EDE_EXPKEY_WORDS];=0A=
+> -	struct crypto_tfm *tfm =3D crypto_skcipher_tfm(skcipher);=0A=
+> +	int err;=0A=
+>  =0A=
+> -	if (keylen =3D=3D DES3_EDE_KEY_SIZE &&=0A=
+> -	    __des3_ede_setkey(tmp, &tfm->crt_flags, key, DES3_EDE_KEY_SIZE)) {=
+=0A=
+> -		return -EINVAL;=0A=
+> -	}=0A=
+> +	err =3D crypto_des_verify_key(crypto_skcipher_tfm(skcipher), key);=0A=
+> +	if (unlikely(err))=0A=
+> +		return err;=0A=
+>  =0A=
+> -	if (!des_ekey(tmp, key) && (crypto_skcipher_get_flags(skcipher) &=0A=
+> -	    CRYPTO_TFM_REQ_FORBID_WEAK_KEYS)) {=0A=
+> -		crypto_skcipher_set_flags(skcipher,=0A=
+> -					  CRYPTO_TFM_RES_WEAK_KEY);=0A=
+> -		return -EINVAL;=0A=
+> -	}=0A=
+> +	return skcipher_setkey(skcipher, key, keylen);=0A=
+=0A=
+This would be a bit more compact:=0A=
+=0A=
+	return unlikely(crypto_des_verify_key(crypto_skcipher_tfm(skcipher), key))=
+ ?:=0A=
+	       skcipher_setkey(skcipher, key, keylen);=0A=
+=0A=
+and could be used in most places.=0A=
+=0A=
+Actually here:=0A=
+=0A=
+> @@ -697,8 +693,13 @@ static int skcipher_setkey(struct crypto_skcipher *s=
+kcipher, const u8 *key,=0A=
+>  static int des3_skcipher_setkey(struct crypto_skcipher *skcipher,=0A=
+>  				const u8 *key, unsigned int keylen)=0A=
+>  {=0A=
+> -	return unlikely(des3_verify_key(skcipher, key)) ?:=0A=
+> -	       skcipher_setkey(skcipher, key, keylen);=0A=
+> +	int err;=0A=
+> +=0A=
+> +	err =3D crypto_des3_ede_verify_key(crypto_skcipher_tfm(skcipher), key);=
+=0A=
+> +	if (unlikely(err))=0A=
+> +		return err;=0A=
+> +=0A=
+> +	return skcipher_setkey(skcipher, key, keylen);=0A=
+>  }=0A=
+=0A=
+this pattern is already used, only the verification function=0A=
+has to be replaced.=0A=
+=0A=
+Horia=0A=
