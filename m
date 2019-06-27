@@ -2,56 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B7458045
-	for <lists+linux-crypto@lfdr.de>; Thu, 27 Jun 2019 12:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9943C58047
+	for <lists+linux-crypto@lfdr.de>; Thu, 27 Jun 2019 12:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbfF0K16 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 27 Jun 2019 06:27:58 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:38992 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726664AbfF0K16 (ORCPT
+        id S1726401AbfF0K2B (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 27 Jun 2019 06:28:01 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:34246 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726605AbfF0K2A (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 27 Jun 2019 06:27:58 -0400
-Received: by mail-wm1-f67.google.com with SMTP id z23so5116606wma.4
-        for <linux-crypto@vger.kernel.org>; Thu, 27 Jun 2019 03:27:56 -0700 (PDT)
+        Thu, 27 Jun 2019 06:28:00 -0400
+Received: by mail-wm1-f65.google.com with SMTP id w9so6715218wmd.1
+        for <linux-crypto@vger.kernel.org>; Thu, 27 Jun 2019 03:27:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5Oqvcot1yZKpSWtboJ7OjflLCxxMos1RB3yPJW9XMLo=;
-        b=IV0UzQeU5nxRPBwgUzmlex0+nuCJuhK1tG6xuTVNNDrs5l8F5NP2aal5QT9p8LmBRl
-         31agMe1aPpyGI+ScZ6c7H06SRbRp+Z03pmXGCZZ5ZZImO7hYL+ffNgoXMrL7SM1Y37fd
-         HW5NaYoNOp+sq5nmLdpCFYveBbhB9iXI9VpT82bM1/ZdljTclos8ZpYrkvCU75bEJtrV
-         3AZofas0KtNQEu0tcl0EE0JCWdA3vCrisj02vKy1Tvjw4jdHyfNMVAmpgIbOym3IejTn
-         QJULX9rmoJ1cdcQML8+p6ihG19GjxkWaNCybX787p7bJcpthAE/RgCVfoO2wdAucwg4N
-         85/A==
+        bh=Rk3H4Hh084k052p7bt4Y0A038t9wYhRs8MD3q3JWnkU=;
+        b=nTCJIHt/TxG9oNyEeTW3PxQPHEjOsiwO7gOlk/8YEuZwDfilHS0kF4BOM07itElgAR
+         jBy2BXe8ngkoTtomfftE9Eu5/GXvXqYKpzxEpOtlvuqTBQC+kLOjTVWX0qH74RqmERTP
+         cQWUe4y0Z8ZaqtsBvD2NMLQAJrAhlXN6tI3x75JHsjo6qLKluPpS4HC28tVCKBdzaZP+
+         bJBjtM2yVW++QtQl+L/QfjQiRudp1CTbCTCUeDBhc/Chc209th6G/Jxg3D9rQ6jDrZ+f
+         w4OcEbYqSiTfju1+hd+d42YkrhsVDzBYci2IZEnY6V7hmPj06k+SXuwz5iTqZ3E2UyVa
+         3/pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5Oqvcot1yZKpSWtboJ7OjflLCxxMos1RB3yPJW9XMLo=;
-        b=srGG581k74g+rULPzrbf+3KufCGBYyc2Dx/J0yR5csB8/IYdv7zkxr3DMQoU3pz3M6
-         iXLUchteDDsZthBMxtFGwpinb631zW9h8Dpw80x0zl8j8qbRJxQ6bBzGQ8nfBLQDzBox
-         8SiSbD3jLYAXn1LjmRkmM+ArS4m+Brrt01S8Dz5tYZXSKm53L20/Ar11q8Lrd51Lo+10
-         DBZZpSfG/xH2ebC4UmvhWXv0sUhKOJxi7ZhCWBKZ6sXPcro86xOcp2VHWR492/HqTkuM
-         yPGbKxOcmFh9cZQuNoh3cu2wsrnvVi3EaFh4KNp34JykqzT1ZyzIaLv/a/3n9KG0pg+D
-         +98A==
-X-Gm-Message-State: APjAAAWRM9gjYX+FMyLJ+PXSg1qzEtsNFs6baKgBoQarT/cT1u1GhSZl
-        N+DYC078MOiyLFgDgq/41bpDtYde6sE=
-X-Google-Smtp-Source: APXvYqxC4Szcz/bxJgRBVAL+IFzpTr8DvVkDvyNg5HR561frbHERZj5cVjL4XtvpMfi1L2UigjSHPQ==
-X-Received: by 2002:a7b:c8c3:: with SMTP id f3mr2884629wml.124.1561631275846;
-        Thu, 27 Jun 2019 03:27:55 -0700 (PDT)
+        bh=Rk3H4Hh084k052p7bt4Y0A038t9wYhRs8MD3q3JWnkU=;
+        b=NzZyI3EQGJM1epU2RZPaEaAzKPIxHQhIJZqEfYsBdKcpNUCD1P0YkvxV7jzI0RSzuH
+         ERu1+0B7EiywqC5K98tHLu8ho7qD4f6w/Zs75Za5/52+LCqK6/VfZ3RvgihyLMS7Ax8D
+         OmInDjYbWsu5knh+xUVdr8NYW0I1DZoImUsXrGcNlowDF+VPDT572XNvMBIx7gtg98qJ
+         i3JkUeUf1Vhu0RlyHpAmH8cXjVchUwn0wHlCw37YiVxvasbsJeRQxoMAxiai2U8kgYrm
+         dl1dxtoR4XcgOtbCnRIkTvnDhfFwTHMXHeLT+gOQufE0c9ipZlOxMXuAfXdE/mR6LO+5
+         Is4w==
+X-Gm-Message-State: APjAAAUKEL7XaTUtppmXnohuEZ/8vdeasTg2GA4SwvIgMfLdMexSK25x
+        WNizU/85RG1hokUYyhWanrTBbYXo8Uc=
+X-Google-Smtp-Source: APXvYqzJcmFfighmipKVpTMMA7Ecv+rOqpp+oKQuKyO1RPAdDhCga9WsOISbXIM5DuLteoWf/KC61w==
+X-Received: by 2002:a1c:7a01:: with SMTP id v1mr2845568wmc.10.1561631277078;
+        Thu, 27 Jun 2019 03:27:57 -0700 (PDT)
 Received: from localhost.localdomain (aaubervilliers-681-1-8-173.w90-88.abo.wanadoo.fr. [90.88.13.173])
-        by smtp.gmail.com with ESMTPSA id g2sm5584533wmh.0.2019.06.27.03.27.54
+        by smtp.gmail.com with ESMTPSA id g2sm5584533wmh.0.2019.06.27.03.27.55
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 27 Jun 2019 03:27:54 -0700 (PDT)
+        Thu, 27 Jun 2019 03:27:56 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
         Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [PATCH v3 05/32] crypto: x86/aes-ni - switch to generic for fallback and key routines
-Date:   Thu, 27 Jun 2019 12:26:20 +0200
-Message-Id: <20190627102647.2992-6-ard.biesheuvel@linaro.org>
+Subject: [PATCH v3 06/32] crypto: x86/aes - drop scalar assembler implementations
+Date:   Thu, 27 Jun 2019 12:26:21 +0200
+Message-Id: <20190627102647.2992-7-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190627102647.2992-1-ard.biesheuvel@linaro.org>
 References: <20190627102647.2992-1-ard.biesheuvel@linaro.org>
@@ -62,102 +62,741 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The AES-NI code contains fallbacks for invocations that occur from a
-context where the SIMD unit is unavailable, which really only occurs
-when running in softirq context that was entered from a hard IRQ that
-was taken while running kernel code that was already using the FPU.
-
-That means performance is not really a consideration, and we can just
-use the new library code for this use case, which has a smaller
-footprint and is believed to be time invariant. This will allow us to
-drop the non-SIMD asm routines in a subsequent patch.
+The AES assembler code for x86 isn't actually faster than code
+generated by the compiler from aes_generic.c, and considering
+the disproportionate maintenance burden of assembler code on
+x86, it is better just to drop it entirely. Modern x86 systems
+will use AES-NI anyway, and given that the modules being removed
+have a dependency on aes_generic already, we can remove them
+without running the risk of regressions.
 
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- arch/x86/crypto/aesni-intel_glue.c | 15 +++++++--------
- arch/x86/include/asm/crypto/aes.h  | 12 ------------
- crypto/Kconfig                     |  3 +--
- 3 files changed, 8 insertions(+), 22 deletions(-)
+ arch/x86/crypto/Makefile            |   4 -
+ arch/x86/crypto/aes-i586-asm_32.S   | 362 --------------------
+ arch/x86/crypto/aes-x86_64-asm_64.S | 185 ----------
+ arch/x86/crypto/aes_glue.c          |  70 ----
+ crypto/Kconfig                      |  44 ---
+ 5 files changed, 665 deletions(-)
 
-diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-index 836d50bd096f..42873c1f6bb4 100644
---- a/arch/x86/crypto/aesni-intel_glue.c
-+++ b/arch/x86/crypto/aesni-intel_glue.c
-@@ -30,7 +30,6 @@
- #include <crypto/gcm.h>
- #include <crypto/xts.h>
- #include <asm/cpu_device_id.h>
--#include <asm/crypto/aes.h>
- #include <asm/simd.h>
- #include <crypto/scatterwalk.h>
- #include <crypto/internal/aead.h>
-@@ -333,7 +332,7 @@ static int aes_set_key_common(struct crypto_tfm *tfm, void *raw_ctx,
- 	}
+diff --git a/arch/x86/crypto/Makefile b/arch/x86/crypto/Makefile
+index 45734e1cf967..b96a14e67ab0 100644
+--- a/arch/x86/crypto/Makefile
++++ b/arch/x86/crypto/Makefile
+@@ -14,11 +14,9 @@ sha256_ni_supported :=$(call as-instr,sha256msg1 %xmm0$(comma)%xmm1,yes,no)
  
- 	if (!crypto_simd_usable())
--		err = crypto_aes_expand_key(ctx, in_key, key_len);
-+		err = aes_expandkey(ctx, in_key, key_len);
- 	else {
- 		kernel_fpu_begin();
- 		err = aesni_set_key(ctx, in_key, key_len);
-@@ -353,9 +352,9 @@ static void aesni_encrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
- {
- 	struct crypto_aes_ctx *ctx = aes_ctx(crypto_tfm_ctx(tfm));
+ obj-$(CONFIG_CRYPTO_GLUE_HELPER_X86) += glue_helper.o
  
--	if (!crypto_simd_usable())
--		crypto_aes_encrypt_x86(ctx, dst, src);
--	else {
-+	if (!crypto_simd_usable()) {
-+		aes_encrypt(ctx, dst, src);
-+	} else {
- 		kernel_fpu_begin();
- 		aesni_enc(ctx, dst, src);
- 		kernel_fpu_end();
-@@ -366,9 +365,9 @@ static void aesni_decrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
- {
- 	struct crypto_aes_ctx *ctx = aes_ctx(crypto_tfm_ctx(tfm));
+-obj-$(CONFIG_CRYPTO_AES_586) += aes-i586.o
+ obj-$(CONFIG_CRYPTO_TWOFISH_586) += twofish-i586.o
+ obj-$(CONFIG_CRYPTO_SERPENT_SSE2_586) += serpent-sse2-i586.o
  
--	if (!crypto_simd_usable())
--		crypto_aes_decrypt_x86(ctx, dst, src);
--	else {
-+	if (!crypto_simd_usable()) {
-+		aes_decrypt(ctx, dst, src);
-+	} else {
- 		kernel_fpu_begin();
- 		aesni_dec(ctx, dst, src);
- 		kernel_fpu_end();
-diff --git a/arch/x86/include/asm/crypto/aes.h b/arch/x86/include/asm/crypto/aes.h
+-obj-$(CONFIG_CRYPTO_AES_X86_64) += aes-x86_64.o
+ obj-$(CONFIG_CRYPTO_DES3_EDE_X86_64) += des3_ede-x86_64.o
+ obj-$(CONFIG_CRYPTO_CAMELLIA_X86_64) += camellia-x86_64.o
+ obj-$(CONFIG_CRYPTO_BLOWFISH_X86_64) += blowfish-x86_64.o
+@@ -68,11 +66,9 @@ ifeq ($(avx2_supported),yes)
+ 	obj-$(CONFIG_CRYPTO_MORUS1280_AVX2) += morus1280-avx2.o
+ endif
+ 
+-aes-i586-y := aes-i586-asm_32.o aes_glue.o
+ twofish-i586-y := twofish-i586-asm_32.o twofish_glue.o
+ serpent-sse2-i586-y := serpent-sse2-i586-asm_32.o serpent_sse2_glue.o
+ 
+-aes-x86_64-y := aes-x86_64-asm_64.o aes_glue.o
+ des3_ede-x86_64-y := des3_ede-asm_64.o des3_ede_glue.o
+ camellia-x86_64-y := camellia-x86_64-asm_64.o camellia_glue.o
+ blowfish-x86_64-y := blowfish-x86_64-asm_64.o blowfish_glue.o
+diff --git a/arch/x86/crypto/aes-i586-asm_32.S b/arch/x86/crypto/aes-i586-asm_32.S
 deleted file mode 100644
-index c508521dd190..000000000000
---- a/arch/x86/include/asm/crypto/aes.h
+index 2849dbc59e11..000000000000
+--- a/arch/x86/crypto/aes-i586-asm_32.S
 +++ /dev/null
-@@ -1,12 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef ASM_X86_AES_H
--#define ASM_X86_AES_H
+@@ -1,362 +0,0 @@
+-// -------------------------------------------------------------------------
+-// Copyright (c) 2001, Dr Brian Gladman <                 >, Worcester, UK.
+-// All rights reserved.
+-//
+-// LICENSE TERMS
+-//
+-// The free distribution and use of this software in both source and binary 
+-// form is allowed (with or without changes) provided that:
+-//
+-//   1. distributions of this source code include the above copyright 
+-//      notice, this list of conditions and the following disclaimer//
+-//
+-//   2. distributions in binary form include the above copyright
+-//      notice, this list of conditions and the following disclaimer
+-//      in the documentation and/or other associated materials//
+-//
+-//   3. the copyright holder's name is not used to endorse products 
+-//      built using this software without specific written permission.
+-//
+-//
+-// ALTERNATIVELY, provided that this notice is retained in full, this product
+-// may be distributed under the terms of the GNU General Public License (GPL),
+-// in which case the provisions of the GPL apply INSTEAD OF those given above.
+-//
+-// Copyright (c) 2004 Linus Torvalds <torvalds@osdl.org>
+-// Copyright (c) 2004 Red Hat, Inc., James Morris <jmorris@redhat.com>
 -
--#include <linux/crypto.h>
--#include <crypto/aes.h>
+-// DISCLAIMER
+-//
+-// This software is provided 'as is' with no explicit or implied warranties
+-// in respect of its properties including, but not limited to, correctness 
+-// and fitness for purpose.
+-// -------------------------------------------------------------------------
+-// Issue Date: 29/07/2002
 -
--void crypto_aes_encrypt_x86(struct crypto_aes_ctx *ctx, u8 *dst,
--			    const u8 *src);
--void crypto_aes_decrypt_x86(struct crypto_aes_ctx *ctx, u8 *dst,
--			    const u8 *src);
+-.file "aes-i586-asm.S"
+-.text
+-
+-#include <linux/linkage.h>
+-#include <asm/asm-offsets.h>
+-
+-#define tlen 1024   // length of each of 4 'xor' arrays (256 32-bit words)
+-
+-/* offsets to parameters with one register pushed onto stack */
+-#define ctx 8
+-#define out_blk 12
+-#define in_blk 16
+-
+-/* offsets in crypto_aes_ctx structure */
+-#define klen (480)
+-#define ekey (0)
+-#define dkey (240)
+-
+-// register mapping for encrypt and decrypt subroutines
+-
+-#define r0  eax
+-#define r1  ebx
+-#define r2  ecx
+-#define r3  edx
+-#define r4  esi
+-#define r5  edi
+-
+-#define eaxl  al
+-#define eaxh  ah
+-#define ebxl  bl
+-#define ebxh  bh
+-#define ecxl  cl
+-#define ecxh  ch
+-#define edxl  dl
+-#define edxh  dh
+-
+-#define _h(reg) reg##h
+-#define h(reg) _h(reg)
+-
+-#define _l(reg) reg##l
+-#define l(reg) _l(reg)
+-
+-// This macro takes a 32-bit word representing a column and uses
+-// each of its four bytes to index into four tables of 256 32-bit
+-// words to obtain values that are then xored into the appropriate
+-// output registers r0, r1, r4 or r5.  
+-
+-// Parameters:
+-// table table base address
+-//   %1  out_state[0]
+-//   %2  out_state[1]
+-//   %3  out_state[2]
+-//   %4  out_state[3]
+-//   idx input register for the round (destroyed)
+-//   tmp scratch register for the round
+-// sched key schedule
+-
+-#define do_col(table, a1,a2,a3,a4, idx, tmp)	\
+-	movzx   %l(idx),%tmp;			\
+-	xor     table(,%tmp,4),%a1;		\
+-	movzx   %h(idx),%tmp;			\
+-	shr     $16,%idx;			\
+-	xor     table+tlen(,%tmp,4),%a2;	\
+-	movzx   %l(idx),%tmp;			\
+-	movzx   %h(idx),%idx;			\
+-	xor     table+2*tlen(,%tmp,4),%a3;	\
+-	xor     table+3*tlen(,%idx,4),%a4;
+-
+-// initialise output registers from the key schedule
+-// NB1: original value of a3 is in idx on exit
+-// NB2: original values of a1,a2,a4 aren't used
+-#define do_fcol(table, a1,a2,a3,a4, idx, tmp, sched) \
+-	mov     0 sched,%a1;			\
+-	movzx   %l(idx),%tmp;			\
+-	mov     12 sched,%a2;			\
+-	xor     table(,%tmp,4),%a1;		\
+-	mov     4 sched,%a4;			\
+-	movzx   %h(idx),%tmp;			\
+-	shr     $16,%idx;			\
+-	xor     table+tlen(,%tmp,4),%a2;	\
+-	movzx   %l(idx),%tmp;			\
+-	movzx   %h(idx),%idx;			\
+-	xor     table+3*tlen(,%idx,4),%a4;	\
+-	mov     %a3,%idx;			\
+-	mov     8 sched,%a3;			\
+-	xor     table+2*tlen(,%tmp,4),%a3;
+-
+-// initialise output registers from the key schedule
+-// NB1: original value of a3 is in idx on exit
+-// NB2: original values of a1,a2,a4 aren't used
+-#define do_icol(table, a1,a2,a3,a4, idx, tmp, sched) \
+-	mov     0 sched,%a1;			\
+-	movzx   %l(idx),%tmp;			\
+-	mov     4 sched,%a2;			\
+-	xor     table(,%tmp,4),%a1;		\
+-	mov     12 sched,%a4;			\
+-	movzx   %h(idx),%tmp;			\
+-	shr     $16,%idx;			\
+-	xor     table+tlen(,%tmp,4),%a2;	\
+-	movzx   %l(idx),%tmp;			\
+-	movzx   %h(idx),%idx;			\
+-	xor     table+3*tlen(,%idx,4),%a4;	\
+-	mov     %a3,%idx;			\
+-	mov     8 sched,%a3;			\
+-	xor     table+2*tlen(,%tmp,4),%a3;
+-
+-
+-// original Gladman had conditional saves to MMX regs.
+-#define save(a1, a2)		\
+-	mov     %a2,4*a1(%esp)
+-
+-#define restore(a1, a2)		\
+-	mov     4*a2(%esp),%a1
+-
+-// These macros perform a forward encryption cycle. They are entered with
+-// the first previous round column values in r0,r1,r4,r5 and
+-// exit with the final values in the same registers, using stack
+-// for temporary storage.
+-
+-// round column values
+-// on entry: r0,r1,r4,r5
+-// on exit:  r2,r1,r4,r5
+-#define fwd_rnd1(arg, table)						\
+-	save   (0,r1);							\
+-	save   (1,r5);							\
+-									\
+-	/* compute new column values */					\
+-	do_fcol(table, r2,r5,r4,r1, r0,r3, arg);	/* idx=r0 */	\
+-	do_col (table, r4,r1,r2,r5, r0,r3);		/* idx=r4 */	\
+-	restore(r0,0);							\
+-	do_col (table, r1,r2,r5,r4, r0,r3);		/* idx=r1 */	\
+-	restore(r0,1);							\
+-	do_col (table, r5,r4,r1,r2, r0,r3);		/* idx=r5 */
+-
+-// round column values
+-// on entry: r2,r1,r4,r5
+-// on exit:  r0,r1,r4,r5
+-#define fwd_rnd2(arg, table)						\
+-	save   (0,r1);							\
+-	save   (1,r5);							\
+-									\
+-	/* compute new column values */					\
+-	do_fcol(table, r0,r5,r4,r1, r2,r3, arg);	/* idx=r2 */	\
+-	do_col (table, r4,r1,r0,r5, r2,r3);		/* idx=r4 */	\
+-	restore(r2,0);							\
+-	do_col (table, r1,r0,r5,r4, r2,r3);		/* idx=r1 */	\
+-	restore(r2,1);							\
+-	do_col (table, r5,r4,r1,r0, r2,r3);		/* idx=r5 */
+-
+-// These macros performs an inverse encryption cycle. They are entered with
+-// the first previous round column values in r0,r1,r4,r5 and
+-// exit with the final values in the same registers, using stack
+-// for temporary storage
+-
+-// round column values
+-// on entry: r0,r1,r4,r5
+-// on exit:  r2,r1,r4,r5
+-#define inv_rnd1(arg, table)						\
+-	save    (0,r1);							\
+-	save    (1,r5);							\
+-									\
+-	/* compute new column values */					\
+-	do_icol(table, r2,r1,r4,r5, r0,r3, arg);	/* idx=r0 */	\
+-	do_col (table, r4,r5,r2,r1, r0,r3);		/* idx=r4 */	\
+-	restore(r0,0);							\
+-	do_col (table, r1,r4,r5,r2, r0,r3);		/* idx=r1 */	\
+-	restore(r0,1);							\
+-	do_col (table, r5,r2,r1,r4, r0,r3);		/* idx=r5 */
+-
+-// round column values
+-// on entry: r2,r1,r4,r5
+-// on exit:  r0,r1,r4,r5
+-#define inv_rnd2(arg, table)						\
+-	save    (0,r1);							\
+-	save    (1,r5);							\
+-									\
+-	/* compute new column values */					\
+-	do_icol(table, r0,r1,r4,r5, r2,r3, arg);	/* idx=r2 */	\
+-	do_col (table, r4,r5,r0,r1, r2,r3);		/* idx=r4 */	\
+-	restore(r2,0);							\
+-	do_col (table, r1,r4,r5,r0, r2,r3);		/* idx=r1 */	\
+-	restore(r2,1);							\
+-	do_col (table, r5,r0,r1,r4, r2,r3);		/* idx=r5 */
+-
+-// AES (Rijndael) Encryption Subroutine
+-/* void aes_enc_blk(struct crypto_aes_ctx *ctx, u8 *out_blk, const u8 *in_blk) */
+-
+-.extern  crypto_ft_tab
+-.extern  crypto_fl_tab
+-
+-ENTRY(aes_enc_blk)
+-	push    %ebp
+-	mov     ctx(%esp),%ebp
+-
+-// CAUTION: the order and the values used in these assigns 
+-// rely on the register mappings
+-
+-1:	push    %ebx
+-	mov     in_blk+4(%esp),%r2
+-	push    %esi
+-	mov     klen(%ebp),%r3   // key size
+-	push    %edi
+-#if ekey != 0
+-	lea     ekey(%ebp),%ebp  // key pointer
 -#endif
+-
+-// input four columns and xor in first round key
+-
+-	mov     (%r2),%r0
+-	mov     4(%r2),%r1
+-	mov     8(%r2),%r4
+-	mov     12(%r2),%r5
+-	xor     (%ebp),%r0
+-	xor     4(%ebp),%r1
+-	xor     8(%ebp),%r4
+-	xor     12(%ebp),%r5
+-
+-	sub     $8,%esp		// space for register saves on stack
+-	add     $16,%ebp	// increment to next round key
+-	cmp     $24,%r3
+-	jb      4f		// 10 rounds for 128-bit key
+-	lea     32(%ebp),%ebp
+-	je      3f		// 12 rounds for 192-bit key
+-	lea     32(%ebp),%ebp
+-
+-2:	fwd_rnd1( -64(%ebp), crypto_ft_tab)	// 14 rounds for 256-bit key
+-	fwd_rnd2( -48(%ebp), crypto_ft_tab)
+-3:	fwd_rnd1( -32(%ebp), crypto_ft_tab)	// 12 rounds for 192-bit key
+-	fwd_rnd2( -16(%ebp), crypto_ft_tab)
+-4:	fwd_rnd1(    (%ebp), crypto_ft_tab)	// 10 rounds for 128-bit key
+-	fwd_rnd2( +16(%ebp), crypto_ft_tab)
+-	fwd_rnd1( +32(%ebp), crypto_ft_tab)
+-	fwd_rnd2( +48(%ebp), crypto_ft_tab)
+-	fwd_rnd1( +64(%ebp), crypto_ft_tab)
+-	fwd_rnd2( +80(%ebp), crypto_ft_tab)
+-	fwd_rnd1( +96(%ebp), crypto_ft_tab)
+-	fwd_rnd2(+112(%ebp), crypto_ft_tab)
+-	fwd_rnd1(+128(%ebp), crypto_ft_tab)
+-	fwd_rnd2(+144(%ebp), crypto_fl_tab)	// last round uses a different table
+-
+-// move final values to the output array.  CAUTION: the 
+-// order of these assigns rely on the register mappings
+-
+-	add     $8,%esp
+-	mov     out_blk+12(%esp),%ebp
+-	mov     %r5,12(%ebp)
+-	pop     %edi
+-	mov     %r4,8(%ebp)
+-	pop     %esi
+-	mov     %r1,4(%ebp)
+-	pop     %ebx
+-	mov     %r0,(%ebp)
+-	pop     %ebp
+-	ret
+-ENDPROC(aes_enc_blk)
+-
+-// AES (Rijndael) Decryption Subroutine
+-/* void aes_dec_blk(struct crypto_aes_ctx *ctx, u8 *out_blk, const u8 *in_blk) */
+-
+-.extern  crypto_it_tab
+-.extern  crypto_il_tab
+-
+-ENTRY(aes_dec_blk)
+-	push    %ebp
+-	mov     ctx(%esp),%ebp
+-
+-// CAUTION: the order and the values used in these assigns 
+-// rely on the register mappings
+-
+-1:	push    %ebx
+-	mov     in_blk+4(%esp),%r2
+-	push    %esi
+-	mov     klen(%ebp),%r3   // key size
+-	push    %edi
+-#if dkey != 0
+-	lea     dkey(%ebp),%ebp  // key pointer
+-#endif
+-	
+-// input four columns and xor in first round key
+-
+-	mov     (%r2),%r0
+-	mov     4(%r2),%r1
+-	mov     8(%r2),%r4
+-	mov     12(%r2),%r5
+-	xor     (%ebp),%r0
+-	xor     4(%ebp),%r1
+-	xor     8(%ebp),%r4
+-	xor     12(%ebp),%r5
+-
+-	sub     $8,%esp		// space for register saves on stack
+-	add     $16,%ebp	// increment to next round key
+-	cmp     $24,%r3
+-	jb      4f		// 10 rounds for 128-bit key
+-	lea     32(%ebp),%ebp
+-	je      3f		// 12 rounds for 192-bit key
+-	lea     32(%ebp),%ebp
+-
+-2:	inv_rnd1( -64(%ebp), crypto_it_tab)	// 14 rounds for 256-bit key
+-	inv_rnd2( -48(%ebp), crypto_it_tab)
+-3:	inv_rnd1( -32(%ebp), crypto_it_tab)	// 12 rounds for 192-bit key
+-	inv_rnd2( -16(%ebp), crypto_it_tab)
+-4:	inv_rnd1(    (%ebp), crypto_it_tab)	// 10 rounds for 128-bit key
+-	inv_rnd2( +16(%ebp), crypto_it_tab)
+-	inv_rnd1( +32(%ebp), crypto_it_tab)
+-	inv_rnd2( +48(%ebp), crypto_it_tab)
+-	inv_rnd1( +64(%ebp), crypto_it_tab)
+-	inv_rnd2( +80(%ebp), crypto_it_tab)
+-	inv_rnd1( +96(%ebp), crypto_it_tab)
+-	inv_rnd2(+112(%ebp), crypto_it_tab)
+-	inv_rnd1(+128(%ebp), crypto_it_tab)
+-	inv_rnd2(+144(%ebp), crypto_il_tab)	// last round uses a different table
+-
+-// move final values to the output array.  CAUTION: the 
+-// order of these assigns rely on the register mappings
+-
+-	add     $8,%esp
+-	mov     out_blk+12(%esp),%ebp
+-	mov     %r5,12(%ebp)
+-	pop     %edi
+-	mov     %r4,8(%ebp)
+-	pop     %esi
+-	mov     %r1,4(%ebp)
+-	pop     %ebx
+-	mov     %r0,(%ebp)
+-	pop     %ebp
+-	ret
+-ENDPROC(aes_dec_blk)
+diff --git a/arch/x86/crypto/aes-x86_64-asm_64.S b/arch/x86/crypto/aes-x86_64-asm_64.S
+deleted file mode 100644
+index 8739cf7795de..000000000000
+--- a/arch/x86/crypto/aes-x86_64-asm_64.S
++++ /dev/null
+@@ -1,185 +0,0 @@
+-/* AES (Rijndael) implementation (FIPS PUB 197) for x86_64
+- *
+- * Copyright (C) 2005 Andreas Steinmetz, <ast@domdv.de>
+- *
+- * License:
+- * This code can be distributed under the terms of the GNU General Public
+- * License (GPL) Version 2 provided that the above header down to and
+- * including this sentence is retained in full.
+- */
+-
+-.extern crypto_ft_tab
+-.extern crypto_it_tab
+-.extern crypto_fl_tab
+-.extern crypto_il_tab
+-
+-.text
+-
+-#include <linux/linkage.h>
+-#include <asm/asm-offsets.h>
+-
+-#define R1	%rax
+-#define R1E	%eax
+-#define R1X	%ax
+-#define R1H	%ah
+-#define R1L	%al
+-#define R2	%rbx
+-#define R2E	%ebx
+-#define R2X	%bx
+-#define R2H	%bh
+-#define R2L	%bl
+-#define R3	%rcx
+-#define R3E	%ecx
+-#define R3X	%cx
+-#define R3H	%ch
+-#define R3L	%cl
+-#define R4	%rdx
+-#define R4E	%edx
+-#define R4X	%dx
+-#define R4H	%dh
+-#define R4L	%dl
+-#define R5	%rsi
+-#define R5E	%esi
+-#define R6	%rdi
+-#define R6E	%edi
+-#define R7	%r9	/* don't use %rbp; it breaks stack traces */
+-#define R7E	%r9d
+-#define R8	%r8
+-#define R10	%r10
+-#define R11	%r11
+-
+-#define prologue(FUNC,KEY,B128,B192,r1,r2,r5,r6,r7,r8,r9,r10,r11) \
+-	ENTRY(FUNC);			\
+-	movq	r1,r2;			\
+-	leaq	KEY+48(r8),r9;		\
+-	movq	r10,r11;		\
+-	movl	(r7),r5 ## E;		\
+-	movl	4(r7),r1 ## E;		\
+-	movl	8(r7),r6 ## E;		\
+-	movl	12(r7),r7 ## E;		\
+-	movl	480(r8),r10 ## E;	\
+-	xorl	-48(r9),r5 ## E;	\
+-	xorl	-44(r9),r1 ## E;	\
+-	xorl	-40(r9),r6 ## E;	\
+-	xorl	-36(r9),r7 ## E;	\
+-	cmpl	$24,r10 ## E;		\
+-	jb	B128;			\
+-	leaq	32(r9),r9;		\
+-	je	B192;			\
+-	leaq	32(r9),r9;
+-
+-#define epilogue(FUNC,r1,r2,r5,r6,r7,r8,r9) \
+-	movq	r1,r2;			\
+-	movl	r5 ## E,(r9);		\
+-	movl	r6 ## E,4(r9);		\
+-	movl	r7 ## E,8(r9);		\
+-	movl	r8 ## E,12(r9);		\
+-	ret;				\
+-	ENDPROC(FUNC);
+-
+-#define round(TAB,OFFSET,r1,r2,r3,r4,r5,r6,r7,r8,ra,rb,rc,rd) \
+-	movzbl	r2 ## H,r5 ## E;	\
+-	movzbl	r2 ## L,r6 ## E;	\
+-	movl	TAB+1024(,r5,4),r5 ## E;\
+-	movw	r4 ## X,r2 ## X;	\
+-	movl	TAB(,r6,4),r6 ## E;	\
+-	roll	$16,r2 ## E;		\
+-	shrl	$16,r4 ## E;		\
+-	movzbl	r4 ## L,r7 ## E;	\
+-	movzbl	r4 ## H,r4 ## E;	\
+-	xorl	OFFSET(r8),ra ## E;	\
+-	xorl	OFFSET+4(r8),rb ## E;	\
+-	xorl	TAB+3072(,r4,4),r5 ## E;\
+-	xorl	TAB+2048(,r7,4),r6 ## E;\
+-	movzbl	r1 ## L,r7 ## E;	\
+-	movzbl	r1 ## H,r4 ## E;	\
+-	movl	TAB+1024(,r4,4),r4 ## E;\
+-	movw	r3 ## X,r1 ## X;	\
+-	roll	$16,r1 ## E;		\
+-	shrl	$16,r3 ## E;		\
+-	xorl	TAB(,r7,4),r5 ## E;	\
+-	movzbl	r3 ## L,r7 ## E;	\
+-	movzbl	r3 ## H,r3 ## E;	\
+-	xorl	TAB+3072(,r3,4),r4 ## E;\
+-	xorl	TAB+2048(,r7,4),r5 ## E;\
+-	movzbl	r1 ## L,r7 ## E;	\
+-	movzbl	r1 ## H,r3 ## E;	\
+-	shrl	$16,r1 ## E;		\
+-	xorl	TAB+3072(,r3,4),r6 ## E;\
+-	movl	TAB+2048(,r7,4),r3 ## E;\
+-	movzbl	r1 ## L,r7 ## E;	\
+-	movzbl	r1 ## H,r1 ## E;	\
+-	xorl	TAB+1024(,r1,4),r6 ## E;\
+-	xorl	TAB(,r7,4),r3 ## E;	\
+-	movzbl	r2 ## H,r1 ## E;	\
+-	movzbl	r2 ## L,r7 ## E;	\
+-	shrl	$16,r2 ## E;		\
+-	xorl	TAB+3072(,r1,4),r3 ## E;\
+-	xorl	TAB+2048(,r7,4),r4 ## E;\
+-	movzbl	r2 ## H,r1 ## E;	\
+-	movzbl	r2 ## L,r2 ## E;	\
+-	xorl	OFFSET+8(r8),rc ## E;	\
+-	xorl	OFFSET+12(r8),rd ## E;	\
+-	xorl	TAB+1024(,r1,4),r3 ## E;\
+-	xorl	TAB(,r2,4),r4 ## E;
+-
+-#define move_regs(r1,r2,r3,r4) \
+-	movl	r3 ## E,r1 ## E;	\
+-	movl	r4 ## E,r2 ## E;
+-
+-#define entry(FUNC,KEY,B128,B192) \
+-	prologue(FUNC,KEY,B128,B192,R2,R8,R1,R3,R4,R6,R10,R5,R11)
+-
+-#define return(FUNC) epilogue(FUNC,R8,R2,R5,R6,R3,R4,R11)
+-
+-#define encrypt_round(TAB,OFFSET) \
+-	round(TAB,OFFSET,R1,R2,R3,R4,R5,R6,R7,R10,R5,R6,R3,R4) \
+-	move_regs(R1,R2,R5,R6)
+-
+-#define encrypt_final(TAB,OFFSET) \
+-	round(TAB,OFFSET,R1,R2,R3,R4,R5,R6,R7,R10,R5,R6,R3,R4)
+-
+-#define decrypt_round(TAB,OFFSET) \
+-	round(TAB,OFFSET,R2,R1,R4,R3,R6,R5,R7,R10,R5,R6,R3,R4) \
+-	move_regs(R1,R2,R5,R6)
+-
+-#define decrypt_final(TAB,OFFSET) \
+-	round(TAB,OFFSET,R2,R1,R4,R3,R6,R5,R7,R10,R5,R6,R3,R4)
+-
+-/* void aes_enc_blk(stuct crypto_tfm *tfm, u8 *out, const u8 *in) */
+-
+-	entry(aes_enc_blk,0,.Le128,.Le192)
+-	encrypt_round(crypto_ft_tab,-96)
+-	encrypt_round(crypto_ft_tab,-80)
+-.Le192:	encrypt_round(crypto_ft_tab,-64)
+-	encrypt_round(crypto_ft_tab,-48)
+-.Le128:	encrypt_round(crypto_ft_tab,-32)
+-	encrypt_round(crypto_ft_tab,-16)
+-	encrypt_round(crypto_ft_tab,  0)
+-	encrypt_round(crypto_ft_tab, 16)
+-	encrypt_round(crypto_ft_tab, 32)
+-	encrypt_round(crypto_ft_tab, 48)
+-	encrypt_round(crypto_ft_tab, 64)
+-	encrypt_round(crypto_ft_tab, 80)
+-	encrypt_round(crypto_ft_tab, 96)
+-	encrypt_final(crypto_fl_tab,112)
+-	return(aes_enc_blk)
+-
+-/* void aes_dec_blk(struct crypto_tfm *tfm, u8 *out, const u8 *in) */
+-
+-	entry(aes_dec_blk,240,.Ld128,.Ld192)
+-	decrypt_round(crypto_it_tab,-96)
+-	decrypt_round(crypto_it_tab,-80)
+-.Ld192:	decrypt_round(crypto_it_tab,-64)
+-	decrypt_round(crypto_it_tab,-48)
+-.Ld128:	decrypt_round(crypto_it_tab,-32)
+-	decrypt_round(crypto_it_tab,-16)
+-	decrypt_round(crypto_it_tab,  0)
+-	decrypt_round(crypto_it_tab, 16)
+-	decrypt_round(crypto_it_tab, 32)
+-	decrypt_round(crypto_it_tab, 48)
+-	decrypt_round(crypto_it_tab, 64)
+-	decrypt_round(crypto_it_tab, 80)
+-	decrypt_round(crypto_it_tab, 96)
+-	decrypt_final(crypto_il_tab,112)
+-	return(aes_dec_blk)
+diff --git a/arch/x86/crypto/aes_glue.c b/arch/x86/crypto/aes_glue.c
+deleted file mode 100644
+index e26984f7ab8d..000000000000
+--- a/arch/x86/crypto/aes_glue.c
++++ /dev/null
+@@ -1,70 +0,0 @@
+-/*
+- * Glue Code for the asm optimized version of the AES Cipher Algorithm
+- *
+- */
+-
+-#include <linux/module.h>
+-#include <crypto/aes.h>
+-#include <asm/crypto/aes.h>
+-
+-asmlinkage void aes_enc_blk(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in);
+-asmlinkage void aes_dec_blk(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in);
+-
+-void crypto_aes_encrypt_x86(struct crypto_aes_ctx *ctx, u8 *dst, const u8 *src)
+-{
+-	aes_enc_blk(ctx, dst, src);
+-}
+-EXPORT_SYMBOL_GPL(crypto_aes_encrypt_x86);
+-
+-void crypto_aes_decrypt_x86(struct crypto_aes_ctx *ctx, u8 *dst, const u8 *src)
+-{
+-	aes_dec_blk(ctx, dst, src);
+-}
+-EXPORT_SYMBOL_GPL(crypto_aes_decrypt_x86);
+-
+-static void aes_encrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
+-{
+-	aes_enc_blk(crypto_tfm_ctx(tfm), dst, src);
+-}
+-
+-static void aes_decrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
+-{
+-	aes_dec_blk(crypto_tfm_ctx(tfm), dst, src);
+-}
+-
+-static struct crypto_alg aes_alg = {
+-	.cra_name		= "aes",
+-	.cra_driver_name	= "aes-asm",
+-	.cra_priority		= 200,
+-	.cra_flags		= CRYPTO_ALG_TYPE_CIPHER,
+-	.cra_blocksize		= AES_BLOCK_SIZE,
+-	.cra_ctxsize		= sizeof(struct crypto_aes_ctx),
+-	.cra_module		= THIS_MODULE,
+-	.cra_u	= {
+-		.cipher	= {
+-			.cia_min_keysize	= AES_MIN_KEY_SIZE,
+-			.cia_max_keysize	= AES_MAX_KEY_SIZE,
+-			.cia_setkey		= crypto_aes_set_key,
+-			.cia_encrypt		= aes_encrypt,
+-			.cia_decrypt		= aes_decrypt
+-		}
+-	}
+-};
+-
+-static int __init aes_init(void)
+-{
+-	return crypto_register_alg(&aes_alg);
+-}
+-
+-static void __exit aes_fini(void)
+-{
+-	crypto_unregister_alg(&aes_alg);
+-}
+-
+-module_init(aes_init);
+-module_exit(aes_fini);
+-
+-MODULE_DESCRIPTION("Rijndael (AES) Cipher Algorithm, asm optimized");
+-MODULE_LICENSE("GPL");
+-MODULE_ALIAS_CRYPTO("aes");
+-MODULE_ALIAS_CRYPTO("aes-asm");
 diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 091ebbbc9655..20af58068e6b 100644
+index 20af58068e6b..df6f0be66574 100644
 --- a/crypto/Kconfig
 +++ b/crypto/Kconfig
-@@ -1156,8 +1156,7 @@ config CRYPTO_AES_NI_INTEL
+@@ -1108,50 +1108,6 @@ config CRYPTO_AES_TI
+ 	  block. Interrupts are also disabled to avoid races where cachelines
+ 	  are evicted when the CPU is interrupted to do something else.
+ 
+-config CRYPTO_AES_586
+-	tristate "AES cipher algorithms (i586)"
+-	depends on (X86 || UML_X86) && !64BIT
+-	select CRYPTO_ALGAPI
+-	select CRYPTO_AES
+-	help
+-	  AES cipher algorithms (FIPS-197). AES uses the Rijndael
+-	  algorithm.
+-
+-	  Rijndael appears to be consistently a very good performer in
+-	  both hardware and software across a wide range of computing
+-	  environments regardless of its use in feedback or non-feedback
+-	  modes. Its key setup time is excellent, and its key agility is
+-	  good. Rijndael's very low memory requirements make it very well
+-	  suited for restricted-space environments, in which it also
+-	  demonstrates excellent performance. Rijndael's operations are
+-	  among the easiest to defend against power and timing attacks.
+-
+-	  The AES specifies three key sizes: 128, 192 and 256 bits
+-
+-	  See <http://csrc.nist.gov/encryption/aes/> for more information.
+-
+-config CRYPTO_AES_X86_64
+-	tristate "AES cipher algorithms (x86_64)"
+-	depends on (X86 || UML_X86) && 64BIT
+-	select CRYPTO_ALGAPI
+-	select CRYPTO_AES
+-	help
+-	  AES cipher algorithms (FIPS-197). AES uses the Rijndael
+-	  algorithm.
+-
+-	  Rijndael appears to be consistently a very good performer in
+-	  both hardware and software across a wide range of computing
+-	  environments regardless of its use in feedback or non-feedback
+-	  modes. Its key setup time is excellent, and its key agility is
+-	  good. Rijndael's very low memory requirements make it very well
+-	  suited for restricted-space environments, in which it also
+-	  demonstrates excellent performance. Rijndael's operations are
+-	  among the easiest to defend against power and timing attacks.
+-
+-	  The AES specifies three key sizes: 128, 192 and 256 bits
+-
+-	  See <http://csrc.nist.gov/encryption/aes/> for more information.
+-
+ config CRYPTO_AES_NI_INTEL
  	tristate "AES cipher algorithms (AES-NI)"
  	depends on X86
- 	select CRYPTO_AEAD
--	select CRYPTO_AES_X86_64 if 64BIT
--	select CRYPTO_AES_586 if !64BIT
-+	select CRYPTO_LIB_AES
- 	select CRYPTO_ALGAPI
- 	select CRYPTO_BLKCIPHER
- 	select CRYPTO_GLUE_HELPER_X86 if 64BIT
 -- 
 2.20.1
 
