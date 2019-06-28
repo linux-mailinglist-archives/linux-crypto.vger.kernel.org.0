@@ -2,93 +2,81 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 181B75A1E4
-	for <lists+linux-crypto@lfdr.de>; Fri, 28 Jun 2019 19:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7E85A2B8
+	for <lists+linux-crypto@lfdr.de>; Fri, 28 Jun 2019 19:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbfF1RIQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 28 Jun 2019 13:08:16 -0400
-Received: from mail-wr1-f49.google.com ([209.85.221.49]:34148 "EHLO
-        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbfF1RIQ (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 28 Jun 2019 13:08:16 -0400
-Received: by mail-wr1-f49.google.com with SMTP id k11so7068858wrl.1
-        for <linux-crypto@vger.kernel.org>; Fri, 28 Jun 2019 10:08:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=b79/g9Nvq0eGYqHdJhiJkLQryIln2SAfitFpz7glqUo=;
-        b=avVT/BO95F2mxYjDV/SPWpg4poWAaieylUFyi04ik8E4GQK9n6N0r1HcFgMdlmgtb3
-         qAfQtwseUAGlJKvIDy+TPYhVNRHC2MVb5q74nZfqSnz7z3E4tMwwWJPnxvwI47uwOYYR
-         UMdnEr/eMufjK0+ckQS6h0sHQ91S2AOp9V6sk3P7/o+wOCqoz1UlYAyThsqUWE1+qJvM
-         xn35M12zBnM7xAO5i6MbnXyqu1Mgri1KuEv2xMjwojrmCpMRq/16oL3NDAGsr66XAGUg
-         P6oJ3Gzj6Qn3Ls9SvIhkiuMDw6NO9mgUUC/aw8lQYpBRGUvs/7bsrp8/6VqsmQsM/Tzl
-         BEjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=b79/g9Nvq0eGYqHdJhiJkLQryIln2SAfitFpz7glqUo=;
-        b=D47HuVYrL3QFSD2drGD3BF8oEBrlYyOkkfNNdICcaC7oAFgQ8ny/Aj8mxgmGdJmIDS
-         19eBz57A940lEzSLLK/LJWGwashZ3nnAOFr6+H9U2Qso1Akg3DKrc/4woF/MlUfdsSP5
-         hWH+2sK4dXvGZDS5zHYedkydBCdYIBzk2VXtDrk5o+eisfaIb16pvVHi8d6rjMnP/06p
-         6CWSxQRtQDYItg6QJtpcQ8xUwC1JRSS98OmfDFj7j7bxhdUM3/BCceJtW8AqZMy/QmTb
-         aJ+YFQjTNUpJNxybVjJcP5pJ9DXeYyCwwfKo8qgG8+6Q02YdbtF9icbUgGqDbhGiIehN
-         cpsQ==
-X-Gm-Message-State: APjAAAUcycnR+OoC7oa0CmS9CqrsZ+YgHyn9N99/kbhq53Dn7+JB1hg0
-        ZvAqSvK3FQcL4dgOGWP0P1xel18s90wkqA==
-X-Google-Smtp-Source: APXvYqx7pNuM2IFFIIDpCzpdmdtqIBasSAu6ZL/rKGsa2kZkIs0DdrWJvipcIy/ZfMALWMU0NmTyfA==
-X-Received: by 2002:adf:ebc4:: with SMTP id v4mr8644522wrn.113.1561741693838;
-        Fri, 28 Jun 2019 10:08:13 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-657-1-83-120.w92-154.abo.wanadoo.fr. [92.154.90.120])
-        by smtp.gmail.com with ESMTPSA id c15sm3833251wrd.88.2019.06.28.10.08.12
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 28 Jun 2019 10:08:13 -0700 (PDT)
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Eric Biggers <ebiggers@google.com>,
+        id S1726809AbfF1Rt2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 28 Jun 2019 13:49:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726443AbfF1Rt1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 28 Jun 2019 13:49:27 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA7FF208C4;
+        Fri, 28 Jun 2019 17:49:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1561744166;
+        bh=ylC+7sFJxaB6Cj5A/cOO9045bcE5QhDv/k/YY8QEgk8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qBsq+AbRiZZPZ3Hh9bpgGCN7bX93oEbWP0TpF+qy7L1qIR5G1Q6wXve2qHxs0Dmth
+         TF19zv1ism3kr9sqfdDBCdZFzn95NPuXlV2ztni7DsFjg3F8DgieKzKWHcAaKzoyBA
+         brWGXeTaOuwABx77YO09pZJZ3pjF/BNRejv9onNA=
+Date:   Fri, 28 Jun 2019 10:49:25 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc:     linux-crypto@vger.kernel.org,
         Ondrej Mosnacek <omosnace@redhat.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Steve Capper <steve.capper@arm.com>,
         Milan Broz <gmazyland@gmail.com>
-Subject: [PATCH v2 7/7] crypto: tcrypt - add a speed test for AEGIS128
-Date:   Fri, 28 Jun 2019 19:07:46 +0200
-Message-Id: <20190628170746.28768-8-ard.biesheuvel@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190628170746.28768-1-ard.biesheuvel@linaro.org>
+Subject: Re: [PATCH v2 2/7] crypto: aegis128l/aegis256 - remove x86 and
+ generic implementations
+Message-ID: <20190628174924.GB103946@gmail.com>
 References: <20190628170746.28768-1-ard.biesheuvel@linaro.org>
+ <20190628170746.28768-3-ard.biesheuvel@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190628170746.28768-3-ard.biesheuvel@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
- crypto/tcrypt.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+On Fri, Jun 28, 2019 at 07:07:41PM +0200, Ard Biesheuvel wrote:
+> Three variants of AEGIS were proposed for the CAESAR competition, and
+> only one was selected for the final portfolio: AEGIS128.
+> 
+> The other variants, AEGIS128L and AEGIS256, are not likely to ever turn
+> up in networking protocols or other places where interoperability
+> between Linux and other systems is a concern, nor are they likely to
+> be subjected to further cryptanalysis. However, uninformed users may
+> think that AEGIS128L (which is faster) is equally fit for use.
+> 
+> So let's remove them now, before anyone starts using them and we are
+> forced to support them forever.
+> 
+> Note that there are no known flaws in the algorithms or in any of these
+> implementations, but they have simply outlived their usefulness.
+> 
+> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> ---
+>  arch/x86/crypto/Makefile               |   4 -
+>  arch/x86/crypto/aegis128l-aesni-asm.S  | 826 ----------------
+>  arch/x86/crypto/aegis128l-aesni-glue.c | 297 ------
+>  arch/x86/crypto/aegis256-aesni-asm.S   | 703 --------------
+>  arch/x86/crypto/aegis256-aesni-glue.c  | 297 ------
+>  crypto/Makefile                        |   2 -
+>  crypto/aegis128l.c                     | 522 -----------
+>  crypto/aegis256.c                      | 473 ----------
+>  crypto/testmgr.c                       |  12 -
+>  crypto/testmgr.h                       | 984 --------------------
+>  10 files changed, 4120 deletions(-)
+> 
 
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index 798253f05203..72dc84e1c647 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -2332,6 +2332,13 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 				  0, speed_template_32);
- 		break;
- 
-+	case 221:
-+		test_aead_speed("aegis128", ENCRYPT, sec,
-+				NULL, 0, 16, 8, speed_template_16);
-+		test_aead_speed("aegis128", DECRYPT, sec,
-+				NULL, 0, 16, 8, speed_template_16);
-+		break;
-+
- 	case 300:
- 		if (alg) {
- 			test_hash_speed(alg, sec, generic_hash_speed_template);
--- 
-2.20.1
+Need to remove the options from crypto/Kconfig too.
 
+- Eric
