@@ -2,56 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07315597AC
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB8D597AD
 	for <lists+linux-crypto@lfdr.de>; Fri, 28 Jun 2019 11:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbfF1JgE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1726734AbfF1JgE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Fri, 28 Jun 2019 05:36:04 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:35557 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726706AbfF1JgB (ORCPT
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:38530 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726702AbfF1JgB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Fri, 28 Jun 2019 05:36:01 -0400
-Received: by mail-wm1-f67.google.com with SMTP id c6so8334933wml.0
-        for <linux-crypto@vger.kernel.org>; Fri, 28 Jun 2019 02:35:59 -0700 (PDT)
+Received: by mail-wr1-f67.google.com with SMTP id d18so5546955wrs.5
+        for <linux-crypto@vger.kernel.org>; Fri, 28 Jun 2019 02:36:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=K222XYBP17tSu5k19NnMFnfodyv8IVdo2b46vWib5MQ=;
-        b=cX4JGEFXO5VmJM2e5FpHXtbXwUVXAEsK/csLWR+EqZoubHgnfh7BAMiw7xAOU54xj3
-         abheNFTjuHtphO6hpRH+XLstLP0MWJlS2DwliWghS+beVeH6pNwtT44wragY4VqlK4aL
-         wA0Wh2WojWF/C3Q9bKrP3lDz3x/IPMc7o2lcXlxMGnOaxKY+HKiSqIYSifzmFOyUekES
-         O8+LwTu+DB+2M5U7PDoPiV4YZxrz+OLVyaYcH2KZGk8w2JgTPyx63wme7eZ4DmJ/R6kQ
-         gD6H6ulB7A+kFc++VxdMqtR3UjXVWt5hi1VNeknvzKAcaehWAXtLmhRNW9z802yK+6hC
-         DiEg==
+        bh=BBtjv0mX3l20qT+8X4zS6U3CU75NGBuRJ4htuDc2CpI=;
+        b=UEN4T0ziMKU+6EBQ1exK9Y/LYpmLXGHDfemNF5GTYMVK0DIj95tqV792DMmD/Q4RrM
+         ccYCHnkD0uN7vsl4Hl1CCTc1DG9M3dyxKcvD+oNZxjlBuApAXaw2Xc9A1FRfYVIgIwYB
+         4lrQgksi0s7df3SS4If/6llVVFnrjNXK203MboD/+LQWm5OacGxH63J3Bkiag1E9DF19
+         0CLvQ5HBjPI4M8/gGFKtrPZGys8JwYtfe1uFN72kiYKWcckjCjJ4nZEnyR2xrhi9vCOu
+         UlE5wdd3niYvOsQxcWzGAQFbj3JoxzV8FV7qGg7TpQasGmT07GdysgR1T7U1Aknl62Pp
+         mmRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=K222XYBP17tSu5k19NnMFnfodyv8IVdo2b46vWib5MQ=;
-        b=si5MWVNu7RIYigFEKJAamn/CwJshti1wuG5JJIlc+W6IQacQbeou48vKGaJylVPfAM
-         Kb8GJcvvr53gyVUaHDoyT1BU52iPVDRodKaXj3s2zOdobuRskj7EnVl6mJYcnsW1XzTR
-         QXefxqSTDB3jmoo1rY5/XayDCiSa0YnEQj1txWyvnTu0oZQeF8pcg0XjH0OJj0JWFDD5
-         Mtg3QAbmPa7UxDImluez7PoiGKeRoo9gT1Kq8osCT44cUp18i9Xs+/vtipVTnD2ILSHN
-         IMOPEzyz0oB2o986wMTPm4R9KVSE2uip7hqcFONJ8RyiKvLIYWjSJztFPm+jv+5qY6Dl
-         OwFA==
-X-Gm-Message-State: APjAAAU09onZaYFToo1/+YLPvxGNAYD/wvtsWhWNj5dD9Uob2OImI4ZU
-        5qsoOJk5XZg9yLKuYWizNFR2r5I7aN9AuA==
-X-Google-Smtp-Source: APXvYqxHtFnC+m1zX2moM/tf/j5BtTYCVrlbH2jGtY5g/005vlpSeIY9izTQFsBK7l0MaK7ynU3S6g==
-X-Received: by 2002:a1c:a654:: with SMTP id p81mr6210556wme.36.1561714558596;
-        Fri, 28 Jun 2019 02:35:58 -0700 (PDT)
+        bh=BBtjv0mX3l20qT+8X4zS6U3CU75NGBuRJ4htuDc2CpI=;
+        b=PLDMY9i3ONE8FhIShtKp8W8+ObGjpDbuX2uXi7t7T+w5Uv0ZxeMngxLvz1AgkeBCjn
+         pYrbks52oE67tmV1+d9hHkq5oQRSPLYgUsUVBHJAwSuLJvoFJ4eKEZ0rXhTzpy0W2bJA
+         NKuIpu1KVCXZdbc88yXl/NW/3mzQZhsH6QNM/tILHoA9c6PcJlzUAcH6xbMQ18PsTH4L
+         S7wgcHuKSJbyHzeNSnIgrWt11rN8eauFotZF7VG82ls9Cz/PXoIc4XOepF961CmdCXb6
+         LTrjA5bPVYsa3k2tQP/d4MPd2TPHWN1fnravrj9JtopIk+2E0xlIxNDLi2NXf1SY3cGI
+         qZPA==
+X-Gm-Message-State: APjAAAWaNYVcatW3VJTlENHjUrHEQgJCexmTsRhLy6kAvV4NYPrW28Tj
+        YZoFMETZaNPxUKQjN9Vt+mGWIK5NuYGdgw==
+X-Google-Smtp-Source: APXvYqyal48oF9oi65iTOJAjdtLaKNzYcrlLsqHcaAOoeZwN13XmazcGN2LT1CqO6Lz3NWeLWEt4Vw==
+X-Received: by 2002:adf:a55b:: with SMTP id j27mr477097wrb.154.1561714560007;
+        Fri, 28 Jun 2019 02:36:00 -0700 (PDT)
 Received: from localhost.localdomain (laubervilliers-657-1-83-120.w92-154.abo.wanadoo.fr. [92.154.90.120])
-        by smtp.gmail.com with ESMTPSA id m24sm1709910wmi.39.2019.06.28.02.35.57
+        by smtp.gmail.com with ESMTPSA id m24sm1709910wmi.39.2019.06.28.02.35.58
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 28 Jun 2019 02:35:58 -0700 (PDT)
+        Fri, 28 Jun 2019 02:35:59 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
         horia.geanta@nxp.com, Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [PATCH v3 19/30] crypto: qce/des - switch to new verification routines
-Date:   Fri, 28 Jun 2019 11:35:18 +0200
-Message-Id: <20190628093529.12281-20-ard.biesheuvel@linaro.org>
+Subject: [PATCH v3 20/30] crypto: rk3288/des - switch to new verification routines
+Date:   Fri, 28 Jun 2019 11:35:19 +0200
+Message-Id: <20190628093529.12281-21-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190628093529.12281-1-ard.biesheuvel@linaro.org>
 References: <20190628093529.12281-1-ard.biesheuvel@linaro.org>
@@ -64,110 +64,66 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- drivers/crypto/qce/ablkcipher.c | 55 ++++++++++----------
- 1 file changed, 27 insertions(+), 28 deletions(-)
+ drivers/crypto/rockchip/rk3288_crypto.h            |  2 +-
+ drivers/crypto/rockchip/rk3288_crypto_ablkcipher.c | 21 +++++++-------------
+ 2 files changed, 8 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/crypto/qce/ablkcipher.c b/drivers/crypto/qce/ablkcipher.c
-index 8d3493855a70..d9e067885a0e 100644
---- a/drivers/crypto/qce/ablkcipher.c
-+++ b/drivers/crypto/qce/ablkcipher.c
-@@ -15,7 +15,7 @@
- #include <linux/interrupt.h>
- #include <linux/types.h>
+diff --git a/drivers/crypto/rockchip/rk3288_crypto.h b/drivers/crypto/rockchip/rk3288_crypto.h
+index 54ee5b3ed9db..18e2b3f29336 100644
+--- a/drivers/crypto/rockchip/rk3288_crypto.h
++++ b/drivers/crypto/rockchip/rk3288_crypto.h
+@@ -3,7 +3,7 @@
+ #define __RK3288_CRYPTO_H__
+ 
  #include <crypto/aes.h>
 -#include <crypto/des.h>
 +#include <crypto/internal/des.h>
- #include <crypto/internal/skcipher.h>
- 
- #include "cipher.h"
-@@ -162,27 +162,17 @@ static int qce_ablkcipher_setkey(struct crypto_ablkcipher *ablk, const u8 *key,
+ #include <crypto/algapi.h>
+ #include <linux/interrupt.h>
+ #include <linux/delay.h>
+diff --git a/drivers/crypto/rockchip/rk3288_crypto_ablkcipher.c b/drivers/crypto/rockchip/rk3288_crypto_ablkcipher.c
+index 313759521a0f..ef9f192339c7 100644
+--- a/drivers/crypto/rockchip/rk3288_crypto_ablkcipher.c
++++ b/drivers/crypto/rockchip/rk3288_crypto_ablkcipher.c
+@@ -49,15 +49,12 @@ static int rk_aes_setkey(struct crypto_ablkcipher *cipher,
+ static int rk_des_setkey(struct crypto_ablkcipher *cipher,
+ 			 const u8 *key, unsigned int keylen)
  {
- 	struct crypto_tfm *tfm = crypto_ablkcipher_tfm(ablk);
- 	struct qce_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
--	unsigned long flags = to_cipher_tmpl(tfm)->alg_flags;
- 	int ret;
- 
- 	if (!key || !keylen)
- 		return -EINVAL;
- 
--	if (IS_AES(flags)) {
--		switch (keylen) {
--		case AES_KEYSIZE_128:
--		case AES_KEYSIZE_256:
--			break;
--		default:
--			goto fallback;
--		}
--	} else if (IS_DES(flags)) {
--		u32 tmp[DES_EXPKEY_WORDS];
--
--		ret = des_ekey(tmp, key);
--		if (!ret && (crypto_ablkcipher_get_flags(ablk) &
--			     CRYPTO_TFM_REQ_FORBID_WEAK_KEYS))
--			goto weakkey;
-+	switch (keylen) {
-+	case AES_KEYSIZE_128:
-+	case AES_KEYSIZE_256:
-+		break;
-+	default:
-+		goto fallback;
- 	}
- 
- 	ctx->enc_keylen = keylen;
-@@ -193,24 +183,32 @@ static int qce_ablkcipher_setkey(struct crypto_ablkcipher *ablk, const u8 *key,
- 	if (!ret)
- 		ctx->enc_keylen = keylen;
- 	return ret;
--weakkey:
--	crypto_ablkcipher_set_flags(ablk, CRYPTO_TFM_RES_WEAK_KEY);
--	return -EINVAL;
-+}
-+
-+static int qce_des_setkey(struct crypto_ablkcipher *ablk, const u8 *key,
-+			  unsigned int keylen)
-+{
-+	struct qce_cipher_ctx *ctx = crypto_ablkcipher_ctx(ablk);
+-	struct crypto_tfm *tfm = crypto_ablkcipher_tfm(cipher);
+-	struct rk_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
+-	u32 tmp[DES_EXPKEY_WORDS];
++	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(cipher);
 +	int err;
-+
-+	err = crypto_des_verify_key(crypto_ablkcipher_tfm(ablk), key);
+ 
+-	if (!des_ekey(tmp, key) &&
+-	    (tfm->crt_flags & CRYPTO_TFM_REQ_FORBID_WEAK_KEYS)) {
+-		tfm->crt_flags |= CRYPTO_TFM_RES_WEAK_KEY;
+-		return -EINVAL;
+-	}
++	err = crypto_des_verify_key(crypto_ablkcipher_tfm(cipher), key);
 +	if (err)
 +		return err;
-+
-+	ctx->enc_keylen = keylen;
-+	memcpy(ctx->enc_key, key, keylen);
-+	return 0;
- }
  
- static int qce_des3_setkey(struct crypto_ablkcipher *ablk, const u8 *key,
- 			   unsigned int keylen)
+ 	ctx->keylen = keylen;
+ 	memcpy_toio(ctx->dev->reg + RK_CRYPTO_TDES_KEY1_0, key, keylen);
+@@ -68,15 +65,11 @@ static int rk_tdes_setkey(struct crypto_ablkcipher *cipher,
+ 			  const u8 *key, unsigned int keylen)
  {
- 	struct qce_cipher_ctx *ctx = crypto_ablkcipher_ctx(ablk);
+ 	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(cipher);
 -	u32 flags;
  	int err;
  
--	flags = crypto_ablkcipher_get_flags(ablk);
+-	flags = crypto_ablkcipher_get_flags(cipher);
 -	err = __des3_verify_key(&flags, key);
 -	if (unlikely(err)) {
--		crypto_ablkcipher_set_flags(ablk, flags);
-+	err = crypto_des3_ede_verify_key(crypto_ablkcipher_tfm(ablk), key);
+-		crypto_ablkcipher_set_flags(cipher, flags);
++	err = crypto_des3_ede_verify_key(crypto_ablkcipher_tfm(cipher), key);
 +	if (err)
  		return err;
 -	}
  
- 	ctx->enc_keylen = keylen;
- 	memcpy(ctx->enc_key, key, keylen);
-@@ -382,8 +380,9 @@ static int qce_ablkcipher_register_one(const struct qce_ablkcipher_def *def,
- 	alg->cra_ablkcipher.ivsize = def->ivsize;
- 	alg->cra_ablkcipher.min_keysize = def->min_keysize;
- 	alg->cra_ablkcipher.max_keysize = def->max_keysize;
--	alg->cra_ablkcipher.setkey = IS_3DES(def->flags) ?
--				     qce_des3_setkey : qce_ablkcipher_setkey;
-+	alg->cra_ablkcipher.setkey = IS_3DES(def->flags) ? qce_des3_setkey :
-+				     IS_DES(def->flags) ? qce_des_setkey :
-+				     qce_ablkcipher_setkey;
- 	alg->cra_ablkcipher.encrypt = qce_ablkcipher_encrypt;
- 	alg->cra_ablkcipher.decrypt = qce_ablkcipher_decrypt;
- 
+ 	ctx->keylen = keylen;
+ 	memcpy_toio(ctx->dev->reg + RK_CRYPTO_TDES_KEY1_0, key, keylen);
 -- 
 2.20.1
 
