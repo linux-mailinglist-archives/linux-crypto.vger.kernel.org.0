@@ -2,153 +2,157 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E14FF597B5
-	for <lists+linux-crypto@lfdr.de>; Fri, 28 Jun 2019 11:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B06597D0
+	for <lists+linux-crypto@lfdr.de>; Fri, 28 Jun 2019 11:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbfF1JgM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 28 Jun 2019 05:36:12 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:33759 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726796AbfF1JgM (ORCPT
+        id S1726476AbfF1JpW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 28 Jun 2019 05:45:22 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:33551 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726470AbfF1JpW (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 28 Jun 2019 05:36:12 -0400
-Received: by mail-wm1-f68.google.com with SMTP id h19so8945212wme.0
-        for <linux-crypto@vger.kernel.org>; Fri, 28 Jun 2019 02:36:11 -0700 (PDT)
+        Fri, 28 Jun 2019 05:45:22 -0400
+Received: by mail-io1-f65.google.com with SMTP id u13so11236518iop.0
+        for <linux-crypto@vger.kernel.org>; Fri, 28 Jun 2019 02:45:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JECSO/bEpbkseNS0KKB92/HftgO7GU1wpPzeVM070Yw=;
-        b=zlY2AJucQbYM/macwfXX7nkWL8+g71mABisTQgAR01ipSHJ5py7TXZCc59woXboj0q
-         SVRpo8+B+ByhLMsma4XJGGPVYmIl0QOd4pDKmxWX458MlzC07SBaLH3Yas+N6ib3BzpT
-         83od6GJnu0hO3hbQzd9JOX8SEVVYZGqTsDdvsRAMUceCFK5WVs/tQENe/OuNT/Mtk2GK
-         K27x3JPYokGcTJ9fUic3tidzYQtk7ZCQc0bnOIt+kLF9/JmKqlz95A/wQmJh+fvTDOul
-         pwUl42BzDufuoRNh70U3rzvCzT7o82wp1QQyNnTzQAcQm+OR05LI1QZd9/Qtn2YII2dh
-         AT6w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZEchM1qjffw8o6kgwI/WRhUWoDP8c6OravR8Vsi88Tg=;
+        b=yiHb9nBChk0nXHY8DTstXfmLWET39cyFoM0OPP7tBZoPbK9EvwNZybvCvLeLRwLHZ4
+         5j5JcdwiBo68Grjsu3EwTmTYIiAwroDnQRV4dHAgZEX8t47fkjEK47N0xeLJwivqETZd
+         DbpgFpX4qGmniBbsZ4cih6QRQyqKC7YRkI2hJrX0q+l48xyJ4ONFLbrX1pZqtWc4Gq0V
+         W9DRIBLPjk7iQqaupqckQ/a0jvE/sA5PO9olrhVAicDGFhOJgZHM+9s6cwHet3z4s/xD
+         +kd7i+Y2+j9e3z2jVLKZulFwSiwSpPw3/c3dVzBJw+7mRm9PJ7q5lyX9tUfMdO2TRbi8
+         9jJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JECSO/bEpbkseNS0KKB92/HftgO7GU1wpPzeVM070Yw=;
-        b=dbLZFLcH79kk6NXEjhe+7wNMexIfLCNPBEO7ARmITeY4rV7uew1r+MSsXAV/dvxAGy
-         9utubmGlgzVa48ZiVYDaFVIC1rE5nyze7rdCQkkY7iZjzLTzznoMLzcs6iZfPo4qvbsZ
-         hOro7ZZOk0fqCh0M+ZXrBtEdDZuCGKE0B06FPUiNWJ33sIXjXpPJ0/NRcO2kCLSqY75o
-         OFwKmjtX2NERlo514Ao50bocG81w39c7XpQcCTY1p6uawQs5xQSBRrVnjhJz27/i3zNS
-         w1wRO5bdD3PNI6YMtZ3zr2vh950xvGXWHS3jyBlOkF1kS3mR8vUyhap7dNGDaUKZQcdN
-         YovA==
-X-Gm-Message-State: APjAAAVFsKktS3J+xSppKFTDbDr/KR47zE6b6rCZfuw0HrvIUQeS/mkI
-        HYvxaSa+wOKtwMWJVE1gHdVqxB+Z2xlPhQ==
-X-Google-Smtp-Source: APXvYqyHuCkuY0/CaKWDCyXSnvGM3nHguLQfJOorrYKl4B0sBF19cbO7gKI1Kist4v0AoV/blci+Vg==
-X-Received: by 2002:a7b:c455:: with SMTP id l21mr6763458wmi.114.1561714570778;
-        Fri, 28 Jun 2019 02:36:10 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-657-1-83-120.w92-154.abo.wanadoo.fr. [92.154.90.120])
-        by smtp.gmail.com with ESMTPSA id m24sm1709910wmi.39.2019.06.28.02.36.09
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 28 Jun 2019 02:36:10 -0700 (PDT)
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
-        horia.geanta@nxp.com, Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [PATCH v3 30/30] fs: cifs: move from the crypto cipher API to the new DES library interface
-Date:   Fri, 28 Jun 2019 11:35:29 +0200
-Message-Id: <20190628093529.12281-31-ard.biesheuvel@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190628093529.12281-1-ard.biesheuvel@linaro.org>
-References: <20190628093529.12281-1-ard.biesheuvel@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZEchM1qjffw8o6kgwI/WRhUWoDP8c6OravR8Vsi88Tg=;
+        b=pkh663hbnnzUuoRm4qMCIsponhlqN1kBXMOSQTbqrMxlCYg8gO0KjREW3J9KXitBSM
+         BpLtA7H4tFo8FJE9kpbp6F1V2D6hZJ34IdUbQsuitv5/L3h0vpGVlL/1oyTJBo1kxQKP
+         7KWARGDszkp6n+io5r3V8O1/O4IdrLt3qEWvQqa00PlvzycGWVX6WOLHGpQNVSrXuUm5
+         kz/IaU6cGFAeRqxc93oruI2z4SPPBxm+AJnrU9/W7dWbF04TkAzsdJUC69z239hfn2SB
+         +texcTCa8LM7bxgUgwmC6sl+gi4TUoR3lCQX68FeS3Fg7+kBD3pqJva1Y5tW4djwLSBf
+         Ftow==
+X-Gm-Message-State: APjAAAWFWYxLMr62r4R1Mop+14xaR5qgXbklL6t6AygBYPBeeOIarB9d
+        u1wnKfkCg3YhWtz4Zyg/mAmDWVsknlymfFZ1hEWERw==
+X-Google-Smtp-Source: APXvYqwBAjA74Wd1LyHPC4Kja2Uis9WWkkoocjEJfuUxOtscEdyQl6nugvn3CLiz9NK1PW3AThNMZl6gPUlyBBxtSD4=
+X-Received: by 2002:a5e:d51a:: with SMTP id e26mr9929707iom.71.1561715121020;
+ Fri, 28 Jun 2019 02:45:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190627102647.2992-1-ard.biesheuvel@linaro.org>
+ <20190627102647.2992-29-ard.biesheuvel@linaro.org> <20190627175233.GI686@sol.localdomain>
+In-Reply-To: <20190627175233.GI686@sol.localdomain>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Fri, 28 Jun 2019 11:45:09 +0200
+Message-ID: <CAKv+Gu8vTXnHLUZUijC733+FA9OJyTVYnLRRc-+=x_j+kMOKAA@mail.gmail.com>
+Subject: Re: [PATCH v3 28/32] crypto: lib/aes - export sbox and inverse sbox
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Some legacy code in the CIFS driver uses single DES to calculate
-some password hash, and uses the crypto cipher API to do so. Given
-that there is no point in invoking an accelerated cipher for doing
-56-bit symmetric encryption on a single 8-byte block of input, the
-flexibility of the crypto cipher API does not add much value here,
-and so we're much better off using a library call into the generic
-C implementation.
+On Thu, 27 Jun 2019 at 19:52, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Thu, Jun 27, 2019 at 12:26:43PM +0200, Ard Biesheuvel wrote:
+> > There are a few copies of the AES S-boxes floating around, so export
+> > the ones from the AES library so that we can reuse them in other
+> > modules.
+> >
+> > Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> > ---
+> >  include/crypto/aes.h | 3 +++
+> >  lib/crypto/aes.c     | 6 ++++++
+> >  2 files changed, 9 insertions(+)
+> >
+> > diff --git a/include/crypto/aes.h b/include/crypto/aes.h
+> > index df8426fd8051..8e0f4cf948e5 100644
+> > --- a/include/crypto/aes.h
+> > +++ b/include/crypto/aes.h
+> > @@ -67,4 +67,7 @@ void aes_encrypt(const struct crypto_aes_ctx *ctx, u8=
+ *out, const u8 *in);
+> >   */
+> >  void aes_decrypt(const struct crypto_aes_ctx *ctx, u8 *out, const u8 *=
+in);
+> >
+> > +extern const u8 crypto_aes_sbox[];
+> > +extern const u8 crypto_aes_inv_sbox[];
+> > +
+> >  #endif
+> > diff --git a/lib/crypto/aes.c b/lib/crypto/aes.c
+> > index 9928b23e0a8a..467f0c35a0e0 100644
+> > --- a/lib/crypto/aes.c
+> > +++ b/lib/crypto/aes.c
+> > @@ -82,6 +82,12 @@ static volatile const u8 __cacheline_aligned aes_inv=
+_sbox[] =3D {
+> >       0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d,
+> >  };
+> >
+> > +extern const u8 crypto_aes_sbox[] __alias(aes_sbox);
+> > +extern const u8 crypto_aes_inv_sbox[] __alias(aes_inv_sbox);
+> > +
+> > +EXPORT_SYMBOL(crypto_aes_sbox);
+> > +EXPORT_SYMBOL(crypto_aes_inv_sbox);
+>
+> I got a compiler warning:
+>
+> In file included from ./include/linux/linkage.h:7,
+>                  from ./include/linux/kernel.h:8,
+>                  from ./include/linux/crypto.h:16,
+>                  from ./include/crypto/aes.h:10,
+>                  from lib/crypto/aes.c:6:
+> lib/crypto/aes.c:88:15: warning: array =E2=80=98crypto_aes_sbox=E2=80=99 =
+assumed to have one element
+>  EXPORT_SYMBOL(crypto_aes_sbox);
+>                ^~~~~~~~~~~~~~~
+> ./include/linux/export.h:79:21: note: in definition of macro =E2=80=98___=
+EXPORT_SYMBOL=E2=80=99
+>   extern typeof(sym) sym;      \
+>                      ^~~
+> lib/crypto/aes.c:88:1: note: in expansion of macro =E2=80=98EXPORT_SYMBOL=
+=E2=80=99
+>  EXPORT_SYMBOL(crypto_aes_sbox);
+>  ^~~~~~~~~~~~~
+> lib/crypto/aes.c:89:15: warning: array =E2=80=98crypto_aes_inv_sbox=E2=80=
+=99 assumed to have one element
+>  EXPORT_SYMBOL(crypto_aes_inv_sbox);
+>                ^~~~~~~~~~~~~~~~~~~
+> ./include/linux/export.h:79:21: note: in definition of macro =E2=80=98___=
+EXPORT_SYMBOL=E2=80=99
+>   extern typeof(sym) sym;      \
+>                      ^~~
+> lib/crypto/aes.c:89:1: note: in expansion of macro =E2=80=98EXPORT_SYMBOL=
+=E2=80=99
+>  EXPORT_SYMBOL(crypto_aes_inv_sbox);
+>  ^~~~~~~~~~~~~
 
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
- fs/cifs/Kconfig      |  2 +-
- fs/cifs/cifsfs.c     |  1 -
- fs/cifs/smbencrypt.c | 18 +++++++++---------
- 3 files changed, 10 insertions(+), 11 deletions(-)
+OK, I'll need to apply the following hunk on top to fix that
 
-diff --git a/fs/cifs/Kconfig b/fs/cifs/Kconfig
-index 3da294231dcc..dedab8f79ee8 100644
---- a/fs/cifs/Kconfig
-+++ b/fs/cifs/Kconfig
-@@ -14,7 +14,7 @@ config CIFS
- 	select CRYPTO_CCM
- 	select CRYPTO_ECB
- 	select CRYPTO_AES
--	select CRYPTO_DES
-+	select CRYPTO_LIB_DES
- 	help
- 	  This is the client VFS module for the SMB3 family of NAS protocols,
- 	  (including support for the most recent, most secure dialect SMB3.1.1)
-diff --git a/fs/cifs/cifsfs.c b/fs/cifs/cifsfs.c
-index e55afaf9e5a3..44f4cc160197 100644
---- a/fs/cifs/cifsfs.c
-+++ b/fs/cifs/cifsfs.c
-@@ -1590,7 +1590,6 @@ MODULE_DESCRIPTION
- 	("VFS to access SMB3 servers e.g. Samba, Macs, Azure and Windows (and "
- 	"also older servers complying with the SNIA CIFS Specification)");
- MODULE_VERSION(CIFS_VERSION);
--MODULE_SOFTDEP("pre: des");
- MODULE_SOFTDEP("pre: ecb");
- MODULE_SOFTDEP("pre: hmac");
- MODULE_SOFTDEP("pre: md4");
-diff --git a/fs/cifs/smbencrypt.c b/fs/cifs/smbencrypt.c
-index a0b80ac651a6..5c55c35f47d6 100644
---- a/fs/cifs/smbencrypt.c
-+++ b/fs/cifs/smbencrypt.c
-@@ -23,13 +23,14 @@
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
- 
--#include <linux/crypto.h>
- #include <linux/module.h>
- #include <linux/slab.h>
-+#include <linux/fips.h>
- #include <linux/fs.h>
- #include <linux/string.h>
- #include <linux/kernel.h>
- #include <linux/random.h>
-+#include <crypto/des.h>
- #include "cifs_fs_sb.h"
- #include "cifs_unicode.h"
- #include "cifspdu.h"
-@@ -70,19 +71,18 @@ static int
- smbhash(unsigned char *out, const unsigned char *in, unsigned char *key)
- {
- 	unsigned char key2[8];
--	struct crypto_cipher *tfm_des;
-+	struct des_ctx ctx;
- 
- 	str_to_key(key, key2);
- 
--	tfm_des = crypto_alloc_cipher("des", 0, 0);
--	if (IS_ERR(tfm_des)) {
--		cifs_dbg(VFS, "could not allocate des crypto API\n");
--		return PTR_ERR(tfm_des);
-+	if (fips_enabled) {
-+		cifs_dbg(VFS, "FIPS compliance enabled: DES not permitted\n");
-+		return -ENOENT;
- 	}
- 
--	crypto_cipher_setkey(tfm_des, key2, 8);
--	crypto_cipher_encrypt_one(tfm_des, out, in);
--	crypto_free_cipher(tfm_des);
-+	des_expand_key(&ctx, key2, DES_KEY_SIZE);
-+	des_encrypt(&ctx, out, in);
-+	memzero_explicit(&ctx, sizeof(ctx));
- 
- 	return 0;
- }
--- 
-2.20.1
+diff --git a/lib/crypto/aes.c b/lib/crypto/aes.c
+index 467f0c35a0e0..4e100af38c51 100644
+--- a/lib/crypto/aes.c
++++ b/lib/crypto/aes.c
+@@ -82,8 +82,8 @@ static volatile const u8 __cacheline_aligned
+aes_inv_sbox[] =3D {
+        0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d,
+ };
 
+-extern const u8 crypto_aes_sbox[] __alias(aes_sbox);
+-extern const u8 crypto_aes_inv_sbox[] __alias(aes_inv_sbox);
++extern const u8 crypto_aes_sbox[256] __alias(aes_sbox);
++extern const u8 crypto_aes_inv_sbox[256] __alias(aes_inv_sbox);
+
+ EXPORT_SYMBOL(crypto_aes_sbox);
+ EXPORT_SYMBOL(crypto_aes_inv_sbox);
+
+I'll leave it up to Herbert to decide whether he wants that as a
+follow up patch or whether I should respin and resend (assuming there
+are no other reasons to do so)
