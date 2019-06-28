@@ -2,114 +2,114 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE56592D4
-	for <lists+linux-crypto@lfdr.de>; Fri, 28 Jun 2019 06:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335E359303
+	for <lists+linux-crypto@lfdr.de>; Fri, 28 Jun 2019 06:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbfF1E2I (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 28 Jun 2019 00:28:08 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:58080 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726961AbfF1E2C (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 28 Jun 2019 00:28:02 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x5S4Rsjg003036;
-        Thu, 27 Jun 2019 23:27:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1561696074;
-        bh=y47Dmxqdu2axu8XFuL5chdma5kAOZBKLQnnNccav38w=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=wTgnMSG1EnCSpzKdj0L05ZF21h4ZXDMeep3xa+FESUPz/zN2EaeijIQFEI3gcJ2FV
-         I74buze/0BngPIlAXc7CKxkXZ2GpHDFBPdmPi+C2ckC/W5T1dN2w1a2T/oynpEn9do
-         6ngzyrV/5xkWdy+E8giwq8qVNyiEtwjD0Lu9AQ4c=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x5S4RsqR032679
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 27 Jun 2019 23:27:54 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Thu, 27
- Jun 2019 23:27:54 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Thu, 27 Jun 2019 23:27:54 -0500
-Received: from a0393675ula.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x5S4RKPU062595;
-        Thu, 27 Jun 2019 23:27:51 -0500
-From:   Keerthy <j-keerthy@ti.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <robh+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <t-kristo@ti.com>,
-        <j-keerthy@ti.com>, <linux-crypto@vger.kernel.org>, <nm@ti.com>
-Subject: [RESEND PATCH 10/10] arm64: dts: k3-am6: Add crypto accelarator node
-Date:   Fri, 28 Jun 2019 09:57:45 +0530
-Message-ID: <20190628042745.28455-11-j-keerthy@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190628042745.28455-1-j-keerthy@ti.com>
+        id S1726420AbfF1ExW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 28 Jun 2019 00:53:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726240AbfF1ExW (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 28 Jun 2019 00:53:22 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC29A20656;
+        Fri, 28 Jun 2019 04:53:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1561697600;
+        bh=xyfM4ZWcVSKm8cjlTQWt6Dt2SEgAkACNyGwMNKTacAo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z3bBPa40+DwkDvULVLnnYbo1JZ4XWv6vjxv/VDsDg4XaHDOxyLs/a29o2G5izpXRS
+         tV9rI2CL2aUtlgnfH29W2eShhpazNje3MwhMuKTERKz5mbpC59ewRFYE2CXkMeCQdj
+         aQLfoPNd/8LGSWv1cB0P8081htHFDUfJPm7MmVg4=
+Date:   Thu, 27 Jun 2019 21:53:18 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Keerthy <j-keerthy@ti.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        t-kristo@ti.com, linux-crypto@vger.kernel.org, nm@ti.com
+Subject: Re: [RESEND PATCH 00/10] crypto: k3: Add sa2ul driver
+Message-ID: <20190628045318.GC673@sol.localdomain>
 References: <20190628042745.28455-1-j-keerthy@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190628042745.28455-1-j-keerthy@ti.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add crypto accelarator node. Define the psil specific config
-node as well. This can be used in Packet Mode alone.
+Hi Keerthy,
 
-Signed-off-by: Keerthy <j-keerthy@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 33 ++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+On Fri, Jun 28, 2019 at 09:57:35AM +0530, Keerthy wrote:
+> The series adds Crypto hardware accelerator support for SA2UL.
+> SA2UL stands for security accelerator ultra lite.
+> 
+> The Security Accelerator (SA2_UL) subsystem provides hardware
+> cryptographic acceleration for the following use cases:
+> • Encryption and authentication for secure boot
+> • Encryption and authentication of content in applications
+>   requiring DRM (digital rights management) and
+>   content/asset protection
+> The device includes one instantiation of SA2_UL named SA2_UL0
+> 
+> SA2UL needs on tx channel and a pair of rx dma channels.
+> 
+> This series has dependency on UDMA series. Hence is based on top of:
+> 
+> https://patchwork.kernel.org/project/linux-dmaengine/list/?series=114105
+> 
+> The above series adds couple of dmaengine APIs that are used
+> by the sa2ul driver. Hence there is a hard dependency on the
+> above series.
+> 
+> Resending with linux-crypto list in Cc.
+> 
+> Keerthy (10):
+>   dt-bindings: crypto: k3: Add sa2ul bindings documentation
+>   crypto: sa2ul: Add crypto driver
+>   crypto: sa2ul: Add AES ECB Mode support
+>   crypto: sa2ul: Add aead support for hmac(sha1)cbc(aes) algorithm
+>   crypto: sha256_generic: Export the Transform function
+>   crypto: sa2ul: Add hmac(sha256)cbc(aes) AEAD Algo support
+>   crypto: sa2ul: Add hmac(sha1) HMAC algorithm support
+>   crypto: sa2ul: Add hmac(sha256) HMAC algorithm support
+>   sa2ul: Add 3DES ECB & CBC Mode support
+>   arm64: dts: k3-am6: Add crypto accelarator node
+> 
+>  .../devicetree/bindings/crypto/sa2ul.txt      |   47 +
+>  arch/arm64/boot/dts/ti/k3-am65-main.dtsi      |   33 +
+>  crypto/sha256_generic.c                       |    3 +-
+>  drivers/crypto/Kconfig                        |   17 +
+>  drivers/crypto/Makefile                       |    1 +
+>  drivers/crypto/sa2ul.c                        | 2232 +++++++++++++++++
+>  drivers/crypto/sa2ul.h                        |  384 +++
+>  include/crypto/sha.h                          |    1 +
+>  8 files changed, 2717 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/crypto/sa2ul.txt
+>  create mode 100644 drivers/crypto/sa2ul.c
+>  create mode 100644 drivers/crypto/sa2ul.h
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-index 91ca5bfeefc2..5e4f9ec39f01 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-@@ -91,6 +91,39 @@
- 		power-domains = <&k3_pds 148>;
- 	};
- 
-+	crypto: crypto@4E00000 {
-+		compatible = "ti,sa2ul-crypto";
-+		label = "crypto-aes-gbe";
-+		reg = <0x0 0x4E00000 0x0 0x1200>;
-+
-+		status = "okay";
-+		ti,psil-base = <0x4000>;
-+
-+		/* tx: crypto_pnp-1, rx: crypto_pnp-1 */
-+		dmas = <&main_udmap &crypto 0 UDMA_DIR_TX>,
-+				<&main_udmap &crypto 0 UDMA_DIR_RX>,
-+				<&main_udmap &crypto 1 UDMA_DIR_RX>;
-+		dma-names = "tx", "rx1", "rx2";
-+
-+		ti,psil-config0 {
-+			linux,udma-mode = <UDMA_PKT_MODE>;
-+			ti,needs-epib;
-+			ti,psd-size = <64>;
-+		};
-+
-+		ti,psil-config1 {
-+			linux,udma-mode = <UDMA_PKT_MODE>;
-+			ti,needs-epib;
-+			ti,psd-size = <64>;
-+		};
-+
-+		ti,psil-config2 {
-+			linux,udma-mode = <UDMA_PKT_MODE>;
-+			ti,needs-epib;
-+			ti,psd-size = <64>;
-+		};
-+	};
-+
- 	main_pmx0: pinmux@11c000 {
- 		compatible = "pinctrl-single";
- 		reg = <0x0 0x11c000 0x0 0x2e4>;
--- 
-2.17.1
+Did you run the crypto self-tests on this driver?  i.e. boot a kernel with
 
+	# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
+	CONFIG_DEBUG_KERNEL=y
+	CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y
+
+What are the results?
+
+Also, this patchset does not compile for me.
+
+Error: arch/arm64/boot/dts/ti/k3-am65-main.dtsi:103.33-34 syntax error
+FATAL ERROR: Unable to parse input tree
+  DTC     arch/arm64/boot/dts/nvidia/tegra210-p2571.dtb
+make[2]: *** [scripts/Makefile.lib:294: arch/arm64/boot/dts/ti/k3-am654-base-board.dtb] Error 1
+make[1]: *** [scripts/Makefile.build:489: arch/arm64/boot/dts/ti] Error 2
+make[1]: *** Waiting for unfinished jobs....
+
+- Eric
