@@ -2,103 +2,90 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 293695D321
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Jul 2019 17:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1557A5D39E
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Jul 2019 17:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725858AbfGBPlZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Jul 2019 11:41:25 -0400
-Received: from mail-eopbgr750045.outbound.protection.outlook.com ([40.107.75.45]:24708
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725780AbfGBPlZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Jul 2019 11:41:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector1-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5iMY03FxnNPk9Bvi0MCYQ80rze6xHLN/U7cSyGSkjHA=;
- b=h7w+7gNSugd1vsyDM81hUuWjRpVa4lrMWI8sAswlWRl7CWuVPh728B+lJubjFXLaDkDQwMEvd2DcS4wpd2Arz3RDi4mQ4xROrjYR8D7PwQd81BwVcaW7M8X8TDOd2TkBAKsGWOTH7+TZSkt5n2Yr0Id7AYTQUV58dWK2ClmKRH4=
-Received: from DM5PR12MB1449.namprd12.prod.outlook.com (10.172.40.14) by
- DM5PR12MB1483.namprd12.prod.outlook.com (10.172.38.148) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2032.20; Tue, 2 Jul 2019 15:41:23 +0000
-Received: from DM5PR12MB1449.namprd12.prod.outlook.com
- ([fe80::180c:ff0c:37e6:a482]) by DM5PR12MB1449.namprd12.prod.outlook.com
- ([fe80::180c:ff0c:37e6:a482%10]) with mapi id 15.20.2032.019; Tue, 2 Jul 2019
- 15:41:23 +0000
-From:   Gary R Hook <ghook@amd.com>
-To:     Eric Biggers <ebiggers@kernel.org>, Cfir Cohen <cfir@google.com>
-CC:     "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        id S1726252AbfGBPxn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 2 Jul 2019 11:53:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726308AbfGBPxk (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 2 Jul 2019 11:53:40 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C1E42082F;
+        Tue,  2 Jul 2019 15:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1562082819;
+        bh=H9aGzcRIAF8z4znsY082TkkEBo8mLXRjkdpeEtNj/VE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GQyZzmZt+hAFbRuIk9/PKT9lT2fPlVjgT/gP4qos5EpIEGEgKjNF1290flNniLpBB
+         jUYizh3qkyO9Ksv+gk14yXnADZBxYDO2dnGlDns6fDwXFH6WWK+/laPgUv0xrCGcjn
+         66Torw3LgSM0m78lPcZdICvQm4e4NiR+B8veDoUw=
+Date:   Tue, 2 Jul 2019 08:53:37 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gary R Hook <ghook@amd.com>
+Cc:     Cfir Cohen <cfir@google.com>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
         "Hook, Gary" <Gary.Hook@amd.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         David Rientjes <rientjes@google.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
 Subject: Re: [PATCH] crypto: ccp/gcm - use const time tag comparison.
-Thread-Topic: [PATCH] crypto: ccp/gcm - use const time tag comparison.
-Thread-Index: AQHVMGlxe9at0dFonUmGbCxN6WOFAKa2eHIAgAD/6wA=
-Date:   Tue, 2 Jul 2019 15:41:23 +0000
-Message-ID: <1eea04e4-ac19-241d-695b-61be43640509@amd.com>
+Message-ID: <20190702155337.GA895@sol.localdomain>
 References: <20190702000132.88836-1-cfir@google.com>
  <20190702002522.GA693@sol.localdomain>
-In-Reply-To: <20190702002522.GA693@sol.localdomain>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: SN6PR0102CA0002.prod.exchangelabs.com (2603:10b6:805:1::15)
- To DM5PR12MB1449.namprd12.prod.outlook.com (2603:10b6:4:10::14)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Gary.Hook@amd.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [165.204.78.1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a873109a-2af5-4bfc-7700-08d6ff03bc35
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DM5PR12MB1483;
-x-ms-traffictypediagnostic: DM5PR12MB1483:
-x-microsoft-antispam-prvs: <DM5PR12MB1483D854CB00EFD28DCD74AEFDF80@DM5PR12MB1483.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-forefront-prvs: 008663486A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(189003)(199004)(11346002)(6512007)(316002)(31696002)(6436002)(6486002)(4326008)(446003)(186003)(36756003)(256004)(3846002)(53936002)(478600001)(2906002)(31686004)(54906003)(6116002)(110136005)(229853002)(66066001)(6246003)(26005)(6506007)(5660300002)(66446008)(66946007)(25786009)(486006)(7736002)(71190400001)(53546011)(8936002)(68736007)(386003)(102836004)(71200400001)(76176011)(81156014)(99286004)(52116002)(8676002)(2616005)(73956011)(81166006)(66556008)(476003)(14454004)(64756008)(305945005)(72206003)(14444005)(66476007);DIR:OUT;SFP:1101;SCL:1;SRVR:DM5PR12MB1483;H:DM5PR12MB1449.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: BDVIK6/i6LDK76vYEGSOmtcP95b6Hl743w0DFaA6QIHtQlEyGeX2uenuEmFLVHmVwZYtp3wbqqA9/zVH5Aer8rgEjKaZ9/gANip3ipeaq7axRtNEs/4xfdCrFsDhBCwR4VpYnxT8QrBu0vGtENSCHjuWSMnATmE2Xgroe9TEphcH+1PBKmluTijZxWsGDhfXj4h9CWXBEZNJFmLxzob3wiq8AnvtZnAtffwZ9RMOUDaVfr+hakcxfudCZ2fuD0mZyObJEGpbD9rorpLq+0K9EO91yCoTYclXonN4DqINRB5IdOQo/LeyYcjOmQtpoy+PqjDCU/NVuds7l84a/dVoaJ51X/ZoxxLUOp3atDiwZxi6+3oNplRovL+1Tgu4j0lGoOzUCcnpaaMxjkyoySu4W25Q37eBDna6FNx+Eat1PLg=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F13352138BA5964B9EDFB4E7FF36AFBC@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <1eea04e4-ac19-241d-695b-61be43640509@amd.com>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a873109a-2af5-4bfc-7700-08d6ff03bc35
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2019 15:41:23.5115
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ghook@amd.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1483
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1eea04e4-ac19-241d-695b-61be43640509@amd.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-T24gNy8xLzE5IDc6MjUgUE0sIEVyaWMgQmlnZ2VycyB3cm90ZToNCj4gT24gTW9uLCBKdWwgMDEs
-IDIwMTkgYXQgMDU6MDE6MzJQTSAtMDcwMCwgQ2ZpciBDb2hlbiB3cm90ZToNCj4+IEF2b2lkIGxl
-YWtpbmcgR0NNIHRhZyB0aHJvdWdoIHRpbWluZyBzaWRlIGNoYW5uZWwuDQo+Pg0KPj4gU2lnbmVk
-LW9mZi1ieTogQ2ZpciBDb2hlbiA8Y2ZpckBnb29nbGUuY29tPg0KPj4gLS0tDQo+PiAgIGRyaXZl
-cnMvY3J5cHRvL2NjcC9jY3Atb3BzLmMgfCAzICsrLQ0KPj4gICAxIGZpbGUgY2hhbmdlZCwgMiBp
-bnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-Y3J5cHRvL2NjcC9jY3Atb3BzLmMgYi9kcml2ZXJzL2NyeXB0by9jY3AvY2NwLW9wcy5jDQo+PiBp
-bmRleCBkYjhkZTg5ZDk5MGYuLjYzMzY3MDIyMGY2YyAxMDA2NDQNCj4+IC0tLSBhL2RyaXZlcnMv
-Y3J5cHRvL2NjcC9jY3Atb3BzLmMNCj4+ICsrKyBiL2RyaXZlcnMvY3J5cHRvL2NjcC9jY3Atb3Bz
-LmMNCj4+IEBAIC04NDAsNyArODQwLDggQEAgc3RhdGljIGludCBjY3BfcnVuX2Flc19nY21fY21k
-KHN0cnVjdCBjY3BfY21kX3F1ZXVlICpjbWRfcSwNCj4+ICAgCQlpZiAocmV0KQ0KPj4gICAJCQln
-b3RvIGVfdGFnOw0KPj4gICANCj4+IC0JCXJldCA9IG1lbWNtcCh0YWcuYWRkcmVzcywgZmluYWxf
-d2EuYWRkcmVzcywgQUVTX0JMT0NLX1NJWkUpOw0KPj4gKwkJcmV0ID0gY3J5cHRvX21lbW5lcSh0
-YWcuYWRkcmVzcywgZmluYWxfd2EuYWRkcmVzcywNCj4+ICsJCQkJICAgIEFFU19CTE9DS19TSVpF
-KSA/IC1FQkFETVNHIDogMDsNCj4+ICAgCQljY3BfZG1fZnJlZSgmdGFnKTsNCj4+ICAgCX0NCj4+
-ICAgDQo+PiAtLSANCj4+IDIuMjIuMC40MTAuZ2Q4ZmRiZTIxYjUtZ29vZw0KPj4NCj4gDQo+IExv
-b2tzIGxpa2UgdGhpcyBuZWVkczoNCj4gDQo+IAlGaXhlczogMzZjZjUxNWI5YmJlICgiY3J5cHRv
-OiBjY3AgLSBFbmFibGUgc3VwcG9ydCBmb3IgQUVTIEdDTSBvbiB2NSBDQ1BzIikNCj4gCUNjOiA8
-c3RhYmxlQHZnZXIua2VybmVsLm9yZz4gIyB2NC4xMisNCg0KDQpZZXMsIGl0IGRvZXMuIEZvciBj
-bGFyaXR5LCBkb2VzIHRoYXQgbWVhbiB5b3UndmUgdGFrZW4gY2FyZSBvZiB0aGlzPw0KDQo=
+On Tue, Jul 02, 2019 at 03:41:23PM +0000, Gary R Hook wrote:
+> On 7/1/19 7:25 PM, Eric Biggers wrote:
+> > On Mon, Jul 01, 2019 at 05:01:32PM -0700, Cfir Cohen wrote:
+> >> Avoid leaking GCM tag through timing side channel.
+> >>
+> >> Signed-off-by: Cfir Cohen <cfir@google.com>
+> >> ---
+> >>   drivers/crypto/ccp/ccp-ops.c | 3 ++-
+> >>   1 file changed, 2 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/crypto/ccp/ccp-ops.c b/drivers/crypto/ccp/ccp-ops.c
+> >> index db8de89d990f..633670220f6c 100644
+> >> --- a/drivers/crypto/ccp/ccp-ops.c
+> >> +++ b/drivers/crypto/ccp/ccp-ops.c
+> >> @@ -840,7 +840,8 @@ static int ccp_run_aes_gcm_cmd(struct ccp_cmd_queue *cmd_q,
+> >>   		if (ret)
+> >>   			goto e_tag;
+> >>   
+> >> -		ret = memcmp(tag.address, final_wa.address, AES_BLOCK_SIZE);
+> >> +		ret = crypto_memneq(tag.address, final_wa.address,
+> >> +				    AES_BLOCK_SIZE) ? -EBADMSG : 0;
+> >>   		ccp_dm_free(&tag);
+> >>   	}
+> >>   
+> >> -- 
+> >> 2.22.0.410.gd8fdbe21b5-goog
+> >>
+> > 
+> > Looks like this needs:
+> > 
+> > 	Fixes: 36cf515b9bbe ("crypto: ccp - Enable support for AES GCM on v5 CCPs")
+> > 	Cc: <stable@vger.kernel.org> # v4.12+
+> 
+> 
+> Yes, it does. For clarity, does that mean you've taken care of this?
+> 
+
+Herbert is the person who will apply this, so he'd need to do it.  But it might
+be better just to resend.
+
+- Eric
