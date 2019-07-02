@@ -2,89 +2,144 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5D75CA2F
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Jul 2019 09:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B47D5CAC5
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Jul 2019 10:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbfGBH7G (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Jul 2019 03:59:06 -0400
-Received: from bastet.se.axis.com ([195.60.68.11]:38275 "EHLO
-        bastet.se.axis.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbfGBH7F (ORCPT
+        id S1728323AbfGBIHq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 2 Jul 2019 04:07:46 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:36369 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728318AbfGBIHp (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Jul 2019 03:59:05 -0400
-X-Greylist: delayed 328 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Jul 2019 03:59:04 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by bastet.se.axis.com (Postfix) with ESMTP id 83CAB182EC;
-        Tue,  2 Jul 2019 09:53:35 +0200 (CEST)
-X-Axis-User: NO
-X-Axis-NonUser: YES
-X-Virus-Scanned: Debian amavisd-new at bastet.se.axis.com
-Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
-        by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id LkaPNXZJqsvy; Tue,  2 Jul 2019 09:53:34 +0200 (CEST)
-Received: from boulder03.se.axis.com (boulder03.se.axis.com [10.0.8.17])
-        by bastet.se.axis.com (Postfix) with ESMTPS id 261EC18095;
-        Tue,  2 Jul 2019 09:53:33 +0200 (CEST)
-Received: from boulder03.se.axis.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C66BB1E07D;
-        Tue,  2 Jul 2019 09:53:33 +0200 (CEST)
-Received: from boulder03.se.axis.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BA6001E078;
-        Tue,  2 Jul 2019 09:53:33 +0200 (CEST)
-Received: from thoth.se.axis.com (unknown [10.0.2.173])
-        by boulder03.se.axis.com (Postfix) with ESMTP;
-        Tue,  2 Jul 2019 09:53:33 +0200 (CEST)
-Received: from lnxartpec.se.axis.com (lnxartpec.se.axis.com [10.88.4.9])
-        by thoth.se.axis.com (Postfix) with ESMTP id AE67027BE;
-        Tue,  2 Jul 2019 09:53:33 +0200 (CEST)
-Received: by lnxartpec.se.axis.com (Postfix, from userid 10564)
-        id 96D0A801D8; Tue,  2 Jul 2019 09:53:33 +0200 (CEST)
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Whitchurch <rabinv@axis.com>
-Subject: [PATCH] crypto: cryptd - Fix skcipher instance memory leak
-Date:   Tue,  2 Jul 2019 09:53:25 +0200
-Message-Id: <20190702075325.27940-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.20.0
+        Tue, 2 Jul 2019 04:07:45 -0400
+Received: by mail-wr1-f65.google.com with SMTP id n4so16660944wrs.3
+        for <linux-crypto@vger.kernel.org>; Tue, 02 Jul 2019 01:07:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fVYsMgjvlhzbh/TqKhi7d4SFK7B/Ukhib20YGwD2OlM=;
+        b=q9ZilC05a2m+mrPUNO5+3iadDkIlMvNCFVYKl5FwLDPma2TRWE2R0chNTM9iMMEJrH
+         ln26Gtv3kLxEQ7ulT1DkTflxRzOwddrLnWXMwiWJwKlsKAnIi7J33WBU5V1Quqvbc72s
+         dd52JvuRxilYVEeEFwthTvCbMFJTWKlEdApwk2O4qdpjwKuR8kZiIU2pFTfsAa23aVMb
+         8FwY1p93XrB1ewOEpLAGY23N5AibhbXyLd4QbBrI/O8VD+2yiqIzRtZrmonKEEpGn9wS
+         WRwgd95Nut+jEnE6ytQXprbCcr0g9xR14lMdywhfUMDKpnS6rB3KHbxwPdR0YL1tJpfH
+         RWlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fVYsMgjvlhzbh/TqKhi7d4SFK7B/Ukhib20YGwD2OlM=;
+        b=M/wUCgSlENmBDAS2i7/d4Ps6z40/HzwSubVGW1L7e0oUDG3UyijJGiL6GJxDo9KXcn
+         T1ehq7+bvpqAlZiNepfo9G5sCc/zzEUTfBxh5l0hsLJESxIFtrr7KErRq5qLkbjuhyZ0
+         bePGLHjUmAtqThsMzJ/6scBn9luxals1K+Mj67voNueI0EqA7whZGntz4SrDkJ6F/wA0
+         MZxSo4gybvnqiKfA1o6DLthVOGaxn7X5RUTPQk3vAfwdBDGGftySMxXAsLOm38/SNlmd
+         zj7i5P8+5JU8D2ZCbMNm/aSJqLFbriSQ3lqAavblfufDh4X5/1ajXSJ/Cv8pfGUAs5Q3
+         9wJA==
+X-Gm-Message-State: APjAAAXWjxN3UaKkzQPyIJtG7esfgZMbUvjMIH8eLwRUQH5pkCFgiVmh
+        IkpcL3u6tqWhpijb6uhBCQ6UzdfrnCGl0D3dNjGehg==
+X-Google-Smtp-Source: APXvYqxFTr09aEUjlKJBTyUb2A6Ysfnih9bFlGYN09LsP6ZlqtItJRPDuv1wBv6XO4bEEeoL2GdtXHtohvv80mpjsQ8=
+X-Received: by 2002:a5d:6b07:: with SMTP id v7mr7958887wrw.169.1562054863371;
+ Tue, 02 Jul 2019 01:07:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+References: <20190628152112.914-1-ard.biesheuvel@linaro.org>
+ <20190628152112.914-5-ard.biesheuvel@linaro.org> <f068888f-1a13-babf-0144-07939a79d9d9@gmail.com>
+In-Reply-To: <f068888f-1a13-babf-0144-07939a79d9d9@gmail.com>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Tue, 2 Jul 2019 10:07:32 +0200
+Message-ID: <CAKv+Gu-gnKk2EQ4Asq2evghhyTFYVq9SRQ8tu_p4VCA1dSJfHQ@mail.gmail.com>
+Subject: Re: [PATCH v6 4/7] md: dm-crypt: switch to ESSIV crypto API template
+To:     Milan Broz <gmazyland@gmail.com>
+Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@google.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        linux-fscrypt@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-cryptd_skcipher_free() fails to free the struct skcipher_instance
-allocated in cryptd_create_skcipher(), leading to a memory leak.  This
-is detected by kmemleak on bootup on ARM64 platforms:
+On Mon, 1 Jul 2019 at 10:59, Milan Broz <gmazyland@gmail.com> wrote:
+>
+> On 28/06/2019 17:21, Ard Biesheuvel wrote:
+> > Replace the explicit ESSIV handling in the dm-crypt driver with calls
+> > into the crypto API, which now possesses the capability to perform
+> > this processing within the crypto subsystem.
+> >
+> > Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+>
+> >  drivers/md/dm-crypt.c | 200 ++++----------------
+>
+> ...
+>
+> > -/* Wipe salt and reset key derived from volume key */
+> > -static int crypt_iv_essiv_wipe(struct crypt_config *cc)
+>
+> Do I understand it correctly, that this is now called inside the whole cipher
+> set key in wipe command (in crypt_wipe_key())?
+>
+> (Wipe message is meant to suspend the device and wipe all key material
+> from memory without actually destroying the device.)
+>
 
- unreferenced object 0xffff80003377b180 (size 1024):
-   comm "cryptomgr_probe", pid 822, jiffies 4294894830 (age 52.760s)
-   backtrace:
-     kmem_cache_alloc_trace+0x270/0x2d0
-     cryptd_create+0x990/0x124c
-     cryptomgr_probe+0x5c/0x1e8
-     kthread+0x258/0x318
-     ret_from_fork+0x10/0x1c
+Yes, setting the random key in wipe() triggers the SHA256 operation as
+normal, which is slightly wasteful but not a big deal imo.
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- crypto/cryptd.c | 1 +
- 1 file changed, 1 insertion(+)
+> > -{
+> > -     struct iv_essiv_private *essiv = &cc->iv_gen_private.essiv;
+> > -     unsigned salt_size = crypto_shash_digestsize(essiv->hash_tfm);
+> > -     struct crypto_cipher *essiv_tfm;
+> > -     int r, err = 0;
+> > -
+> > -     memset(essiv->salt, 0, salt_size);
+> > -
+> > -     essiv_tfm = cc->iv_private;
+> > -     r = crypto_cipher_setkey(essiv_tfm, essiv->salt, salt_size);
+> > -     if (r)
+> > -             err = r;
+> > -
+> > -     return err;
+> > -}
+>
+> ...
+>
+> > @@ -2435,9 +2281,19 @@ static int crypt_ctr_cipher_new(struct dm_target *ti, char *cipher_in, char *key
+> >       }
+> >
+> >       ret = crypt_ctr_blkdev_cipher(cc, cipher_api);
+> > -     if (ret < 0) {
+> > -             ti->error = "Cannot allocate cipher string";
+> > -             return -ENOMEM;
+> > +     if (ret < 0)
+> > +             goto bad_mem;
+> > +
+> > +     if (*ivmode && !strcmp(*ivmode, "essiv")) {
+> > +             if (!*ivopts) {
+> > +                     ti->error = "Digest algorithm missing for ESSIV mode";
+> > +                     return -EINVAL;
+> > +             }
+> > +             ret = snprintf(buf, CRYPTO_MAX_ALG_NAME, "essiv(%s,%s,%s)",
+> > +                            cipher_api, cc->cipher, *ivopts);
+> > +             if (ret < 0 || ret >= CRYPTO_MAX_ALG_NAME)
+> > +                     goto bad_mem;
+>
+> Hm, nitpicking, but goto from only one place while we have another -ENOMEM above...
+>
+> Just place this here without goto?
+>
 
-diff --git a/crypto/cryptd.c b/crypto/cryptd.c
-index 1ce1bf6d3bab..5f76c6e222c6 100644
---- a/crypto/cryptd.c
-+++ b/crypto/cryptd.c
-@@ -388,6 +388,7 @@ static void cryptd_skcipher_free(struct skcipher_instance *inst)
- 	struct skcipherd_instance_ctx *ctx = skcipher_instance_ctx(inst);
- 
- 	crypto_drop_skcipher(&ctx->spawn);
-+	kfree(inst);
- }
- 
- static int cryptd_create_skcipher(struct crypto_template *tmpl,
--- 
-2.20.0
+OK
 
+> > +     ti->error = "Cannot allocate cipher string";
+> > +     return -ENOMEM;
+>
+> Otherwise
+>
+> Reviewed-by: Milan Broz <gmazyland@gmail.com>
+>
+> Thanks,
+> Milan
