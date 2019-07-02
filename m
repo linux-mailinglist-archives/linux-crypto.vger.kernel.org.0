@@ -2,55 +2,55 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B115D71C
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Jul 2019 21:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5F85D71E
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Jul 2019 21:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbfGBTmg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Jul 2019 15:42:36 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:43128 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727077AbfGBTmg (ORCPT
+        id S1727084AbfGBTmi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 2 Jul 2019 15:42:38 -0400
+Received: from mail-lf1-f47.google.com ([209.85.167.47]:38246 "EHLO
+        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727077AbfGBTmh (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Jul 2019 15:42:36 -0400
-Received: by mail-lj1-f196.google.com with SMTP id 16so18134504ljv.10
-        for <linux-crypto@vger.kernel.org>; Tue, 02 Jul 2019 12:42:35 -0700 (PDT)
+        Tue, 2 Jul 2019 15:42:37 -0400
+Received: by mail-lf1-f47.google.com with SMTP id b11so12268243lfa.5
+        for <linux-crypto@vger.kernel.org>; Tue, 02 Jul 2019 12:42:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=RA/9IzM/wteRuTKu0pLDxMNR1Wzx064tA8Ih0Blx/i0=;
-        b=cFSPCIG/bffIkSOQesv7FkfPabeFVhhkSZpvMaJ1VeLDzo7FC5pD7m6sQB3EJMQBSO
-         r2GYUbQ0o51V6I4iDxEk3PTvelCfsdtr6JBBVTHt1KVlGIuGgbbPQHoNEfZX+oGzUqLQ
-         4ubA3HfxM6y+lDhP8dcgOYQUnGBhZcV83YuXXNKq0GlXSJCWvShzeGL1A2e3/xfgB9Tz
-         PK9i1cDfy3MuSDa9fs9IQogmvpLGe/VMI/XwcZbu8eD4cVgocfUIWuH1p1kq4PcwlxvC
-         ztqvhoN9z/yYEgAoRs7DBZdkKnjLvjkDmRIoSm6wPd8/g1gf4IFesjFS4pbcJDQllhrO
-         T9Ww==
+        bh=s+NhQ00hAhL+HJIqCr189mBOpkGb5PuAQij3uwTGDWg=;
+        b=vQm1OGzhhvdX92Ew1zFqtbcLd9L5I8rOiqRKh5575j6jviesSFNzqvLTdWHuISXm/p
+         Yl5ccJ2UCXeKUrBO7xeSAP1Jf5//rR2pKLchEwVD975XpdkRHpzX8xgA5p8pOnrjqzvP
+         lrMMXcd+y94W41YoalMOKFrvHvXy9ybe3bVMCSwMtRI8aXf7X+ZKyLbLqmuwPQM7KPCD
+         PyLWB66suIQNrZHbCASVUG1/+fMnu6xk+5mGG2aJ+TekYEkYRumVjOihPfw67uHPNLn5
+         m78j1ydBk5NWVvypJ9azy1mKRxn7BeuLNySUSwXaDTIMZSSeVhutLETxh5pNPNQYgT6q
+         WiPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=RA/9IzM/wteRuTKu0pLDxMNR1Wzx064tA8Ih0Blx/i0=;
-        b=X9939y6R63Z4MwTIob/wtmKD9gORjKAskZD8xQFrzzv4LXoz3gagc+N0m2/meH6lvl
-         KIXXcefIYaEyQ8DLQWwLZvIv9hEyRPybMPM/eu9+NUCmlvXVEpWYisoKkFusWL7RJWpH
-         HmN82UlFJhC5Qkv7BEI6zlQVjWQbapv7ls4TUMsxuIYtkz7JcNGurrYjdQJkc6SHA/yE
-         r3FzkT5gQsUg3Fj/MQlHUteTAFaoGSO8OZ2LXB2qmmLk/V05EtSkLa1G1+vJtVUU4M7w
-         0WQjmavNxQjMSwlauVTToEDByAusEHT8AT3p9cxpJuNRxhhD8rsV2UXesqOFgxDe7FaP
-         3S1A==
-X-Gm-Message-State: APjAAAWizuGs8LTjVC816Vl9AfV23F8B6oR39R60TptaC98Snbps5j29
-        h3A0jiQ73T3tLLZ7KN+gOSVxCYPujGI6qJeX
-X-Google-Smtp-Source: APXvYqxAavoMSRtKSF5TetHoVj18kzccCHeX/StX5kHh1C2q79XskppXcmcL8eiYLynkOuxtZXYGaQ==
-X-Received: by 2002:a2e:3e01:: with SMTP id l1mr18413773lja.208.1562096554329;
-        Tue, 02 Jul 2019 12:42:34 -0700 (PDT)
+        bh=s+NhQ00hAhL+HJIqCr189mBOpkGb5PuAQij3uwTGDWg=;
+        b=pNiP/ZmCnhL7MQ8kO0AmCy20JCKTAREFCcY4eKCpMPYgzRfckW63gKEUu0GAFK4NLV
+         i11G6JcA4sFruyRGe718eBAfjG+n9eOyk9CSiBIg69dUNcm6o28IMDkT3PcNne1LIqkh
+         Q7Tivk3xnm/TB15fDT0+whri9eXr+rt48e0uA9k4fYEWkYg4vNemb1AGcDhs5c/lSlHP
+         hYQp/Vu3GKRQriCkaqggGhzQjAy95BCOGzQtb3R1/muugCfQLno6SPN9oS2oxxc875o7
+         jyU9Hpvl1q6houKKYaAB1k8DT4CNLwtgO0UYtsmchNQt3dJjHh3ezmpkJBGgYXIm0FxO
+         Zymw==
+X-Gm-Message-State: APjAAAXEksUpur6PSfOGiUnRA0L2eD/5rigBOr+tqjZR+cgHOaKw+e/r
+        JbYOm8wzbxnMyLSqe/w8HNx5/x5iKDX1d8yY
+X-Google-Smtp-Source: APXvYqxqyVIbxJ9RTOK2ScNPusxvZyqUCpmuIhlumuNXPLmJ1xNJEvwRy3Evy1w0s9gH+q9e0TwqwA==
+X-Received: by 2002:a19:80c4:: with SMTP id b187mr1104007lfd.122.1562096555686;
+        Tue, 02 Jul 2019 12:42:35 -0700 (PDT)
 Received: from e111045-lin.arm.com (89-212-78-239.static.t-2.net. [89.212.78.239])
-        by smtp.gmail.com with ESMTPSA id 24sm4475163ljs.63.2019.07.02.12.42.33
+        by smtp.gmail.com with ESMTPSA id 24sm4475163ljs.63.2019.07.02.12.42.34
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 02 Jul 2019 12:42:33 -0700 (PDT)
+        Tue, 02 Jul 2019 12:42:34 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, ebiggers@google.com,
         Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [PATCH v4 18/32] crypto: arm64/aes-ce-cipher - use AES library as fallback
-Date:   Tue,  2 Jul 2019 21:41:36 +0200
-Message-Id: <20190702194150.10405-19-ard.biesheuvel@linaro.org>
+Subject: [PATCH v4 19/32] crypto: aes/arm - use native endiannes for key schedule
+Date:   Tue,  2 Jul 2019 21:41:37 +0200
+Message-Id: <20190702194150.10405-20-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190702194150.10405-1-ard.biesheuvel@linaro.org>
 References: <20190702194150.10405-1-ard.biesheuvel@linaro.org>
@@ -59,78 +59,104 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Instead of calling into the table based scalar AES code in situations
-where the SIMD unit may not be used, use the generic AES code, which
-is more appropriate since it is less likely to be susceptible to
-timing attacks.
+Align ARM's hw instruction based AES implementation with other versions
+that keep the key schedule in native endianness. This will allow us to
+merge the various implementations going forward.
 
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- arch/arm64/crypto/Kconfig           | 2 +-
- arch/arm64/crypto/aes-ce-glue.c     | 7 ++-----
- arch/arm64/crypto/aes-cipher-glue.c | 3 ---
- 3 files changed, 3 insertions(+), 9 deletions(-)
+ arch/arm/crypto/aes-ce-core.S | 20 ++++++++++----------
+ arch/arm/crypto/aes-ce-glue.c |  9 +++------
+ 2 files changed, 13 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm64/crypto/Kconfig b/arch/arm64/crypto/Kconfig
-index 66dea518221c..4922c4451e7c 100644
---- a/arch/arm64/crypto/Kconfig
-+++ b/arch/arm64/crypto/Kconfig
-@@ -73,7 +73,7 @@ config CRYPTO_AES_ARM64_CE
- 	tristate "AES core cipher using ARMv8 Crypto Extensions"
- 	depends on ARM64 && KERNEL_MODE_NEON
- 	select CRYPTO_ALGAPI
--	select CRYPTO_AES_ARM64
-+	select CRYPTO_LIB_AES
+diff --git a/arch/arm/crypto/aes-ce-core.S b/arch/arm/crypto/aes-ce-core.S
+index bc53bcaa772e..3692b8735ef7 100644
+--- a/arch/arm/crypto/aes-ce-core.S
++++ b/arch/arm/crypto/aes-ce-core.S
+@@ -91,19 +91,19 @@
  
- config CRYPTO_AES_ARM64_CE_CCM
- 	tristate "AES in CCM mode using ARMv8 Crypto Extensions"
-diff --git a/arch/arm64/crypto/aes-ce-glue.c b/arch/arm64/crypto/aes-ce-glue.c
-index 3213843fcb46..6890e003b8f1 100644
---- a/arch/arm64/crypto/aes-ce-glue.c
-+++ b/arch/arm64/crypto/aes-ce-glue.c
-@@ -23,9 +23,6 @@ MODULE_DESCRIPTION("Synchronous AES cipher using ARMv8 Crypto Extensions");
- MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
- MODULE_LICENSE("GPL v2");
+ 	.macro		do_block, dround, fround
+ 	cmp		r3, #12			@ which key size?
+-	vld1.8		{q10-q11}, [ip]!
++	vld1.32		{q10-q11}, [ip]!
+ 	\dround		q8, q9
+-	vld1.8		{q12-q13}, [ip]!
++	vld1.32		{q12-q13}, [ip]!
+ 	\dround		q10, q11
+-	vld1.8		{q10-q11}, [ip]!
++	vld1.32		{q10-q11}, [ip]!
+ 	\dround		q12, q13
+-	vld1.8		{q12-q13}, [ip]!
++	vld1.32		{q12-q13}, [ip]!
+ 	\dround		q10, q11
+ 	blo		0f			@ AES-128: 10 rounds
+-	vld1.8		{q10-q11}, [ip]!
++	vld1.32		{q10-q11}, [ip]!
+ 	\dround		q12, q13
+ 	beq		1f			@ AES-192: 12 rounds
+-	vld1.8		{q12-q13}, [ip]
++	vld1.32		{q12-q13}, [ip]
+ 	\dround		q10, q11
+ 0:	\fround		q12, q13, q14
+ 	bx		lr
+@@ -152,8 +152,8 @@ ENDPROC(aes_decrypt_3x)
  
--asmlinkage void __aes_arm64_encrypt(u32 *rk, u8 *out, const u8 *in, int rounds);
--asmlinkage void __aes_arm64_decrypt(u32 *rk, u8 *out, const u8 *in, int rounds);
--
- struct aes_block {
- 	u8 b[AES_BLOCK_SIZE];
- };
-@@ -54,7 +51,7 @@ static void aes_cipher_encrypt(struct crypto_tfm *tfm, u8 dst[], u8 const src[])
- 	struct crypto_aes_ctx *ctx = crypto_tfm_ctx(tfm);
+ 	.macro		prepare_key, rk, rounds
+ 	add		ip, \rk, \rounds, lsl #4
+-	vld1.8		{q8-q9}, [\rk]		@ load first 2 round keys
+-	vld1.8		{q14}, [ip]		@ load last round key
++	vld1.32		{q8-q9}, [\rk]		@ load first 2 round keys
++	vld1.32		{q14}, [ip]		@ load last round key
+ 	.endm
  
- 	if (!crypto_simd_usable()) {
--		__aes_arm64_encrypt(ctx->key_enc, dst, src, num_rounds(ctx));
-+		aes_encrypt(ctx, dst, src);
- 		return;
- 	}
+ 	/*
+@@ -508,8 +508,8 @@ ENDPROC(ce_aes_sub)
+ 	 *                                        operation on round key *src
+ 	 */
+ ENTRY(ce_aes_invert)
+-	vld1.8		{q0}, [r1]
++	vld1.32		{q0}, [r1]
+ 	aesimc.8	q0, q0
+-	vst1.8		{q0}, [r0]
++	vst1.32		{q0}, [r0]
+ 	bx		lr
+ ENDPROC(ce_aes_invert)
+diff --git a/arch/arm/crypto/aes-ce-glue.c b/arch/arm/crypto/aes-ce-glue.c
+index 04ba66903674..e6da3e30018b 100644
+--- a/arch/arm/crypto/aes-ce-glue.c
++++ b/arch/arm/crypto/aes-ce-glue.c
+@@ -10,6 +10,7 @@
  
-@@ -68,7 +65,7 @@ static void aes_cipher_decrypt(struct crypto_tfm *tfm, u8 dst[], u8 const src[])
- 	struct crypto_aes_ctx *ctx = crypto_tfm_ctx(tfm);
+ #include <asm/hwcap.h>
+ #include <asm/neon.h>
++#include <asm/unaligned.h>
+ #include <crypto/aes.h>
+ #include <crypto/internal/simd.h>
+ #include <crypto/internal/skcipher.h>
+@@ -80,21 +81,17 @@ static int ce_aes_expandkey(struct crypto_aes_ctx *ctx, const u8 *in_key,
+ 	    key_len != AES_KEYSIZE_256)
+ 		return -EINVAL;
  
- 	if (!crypto_simd_usable()) {
--		__aes_arm64_decrypt(ctx->key_dec, dst, src, num_rounds(ctx));
-+		aes_decrypt(ctx, dst, src);
- 		return;
- 	}
+-	memcpy(ctx->key_enc, in_key, key_len);
+ 	ctx->key_length = key_len;
++	for (i = 0; i < kwords; i++)
++		ctx->key_enc[i] = get_unaligned_le32(in_key + i * sizeof(u32));
  
-diff --git a/arch/arm64/crypto/aes-cipher-glue.c b/arch/arm64/crypto/aes-cipher-glue.c
-index 0e90b06ebcec..bf32cc6489e1 100644
---- a/arch/arm64/crypto/aes-cipher-glue.c
-+++ b/arch/arm64/crypto/aes-cipher-glue.c
-@@ -13,10 +13,7 @@
- #include <linux/module.h>
+ 	kernel_neon_begin();
+ 	for (i = 0; i < sizeof(rcon); i++) {
+ 		u32 *rki = ctx->key_enc + (i * kwords);
+ 		u32 *rko = rki + kwords;
  
- asmlinkage void __aes_arm64_encrypt(u32 *rk, u8 *out, const u8 *in, int rounds);
--EXPORT_SYMBOL(__aes_arm64_encrypt);
--
- asmlinkage void __aes_arm64_decrypt(u32 *rk, u8 *out, const u8 *in, int rounds);
--EXPORT_SYMBOL(__aes_arm64_decrypt);
- 
- static void aes_arm64_encrypt(struct crypto_tfm *tfm, u8 *out, const u8 *in)
- {
+-#ifndef CONFIG_CPU_BIG_ENDIAN
+ 		rko[0] = ror32(ce_aes_sub(rki[kwords - 1]), 8);
+ 		rko[0] = rko[0] ^ rki[0] ^ rcon[i];
+-#else
+-		rko[0] = rol32(ce_aes_sub(rki[kwords - 1]), 8);
+-		rko[0] = rko[0] ^ rki[0] ^ (rcon[i] << 24);
+-#endif
+ 		rko[1] = rko[0] ^ rki[1];
+ 		rko[2] = rko[1] ^ rki[2];
+ 		rko[3] = rko[2] ^ rki[3];
 -- 
 2.17.1
 
