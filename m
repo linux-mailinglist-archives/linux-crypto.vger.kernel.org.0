@@ -2,57 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E26E5D326
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Jul 2019 17:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1966C5D328
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Jul 2019 17:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726193AbfGBPme (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Jul 2019 11:42:34 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:45681 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbfGBPme (ORCPT
+        id S1725868AbfGBPmg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 2 Jul 2019 11:42:36 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:37259 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbfGBPmf (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Jul 2019 11:42:34 -0400
-Received: by mail-ed1-f65.google.com with SMTP id a14so27716735edv.12
+        Tue, 2 Jul 2019 11:42:35 -0400
+Received: by mail-ed1-f66.google.com with SMTP id w13so27778375eds.4
         for <linux-crypto@vger.kernel.org>; Tue, 02 Jul 2019 08:42:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=PA1W2yEPydW7wsqbi4j6WUd6vVkBNcCcTeaKe4F0464=;
-        b=JTyK9D1JGlEJKJS66ZJ+W13XUFLVahdqRUzw8kDOkSYib3g0x4SI46rPM7wCntagxV
-         /+zZf+TGc9Amp5iIxZeJiBBeU/BVRbWkyVVuP0nNyw35E8eyRVEZ4/rxSKvS82MlRXyQ
-         21y2Iyw4KVZlabjxKqj/gFm/XTDnLwYqaXMEuczp4cUwKfaSYO8840+ofaUZ5lCqiobn
-         sK3IzwKuYMdxi+tTZJS0hknsN760LJ4M/8e4592qwy0wYAmX/D0QBHgI1hGrXMDzNwDS
-         buwA9VyS7JfclYi2qDXFURFDZu308yY9wWnMIydlD2gUQ1gQ+fi4s+bLyPedWUQ3/v3A
-         DPAg==
+        bh=vZnlmmUbRyy5SsAkG70FDrW+zpbeTRvS6+FDgcL8QHg=;
+        b=fHCJAfPenIKZQyWJ7OnNEXtCE0mWkjzl/aNBITxknPcobNuSgm0+qR+XRKC1kISUQa
+         bcby/OH9XsZCxOYlMu2P0J/bS0AunS4Wa3GzGrd5FAHkHKRC64clkHBMn5WgZRm8MW9C
+         4vHBGWvxL6HjGLDcpCDDW7rsYWqU6fuIwGrcb911b1VjCgdaBGwHazrwSmmafOFldo6Y
+         HSsxvvyFkrpZlImLcxpiarkbS4feHQjsnVGh45451tO5R1LRI6XvdGvwh/33mFXujXIb
+         ulXfCsvuvjl53hjNl/GIWOWJIzNumzCR7pg6tORNlNXgmF0LzCLfjOqebf/pbDPTaC+J
+         8Gjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=PA1W2yEPydW7wsqbi4j6WUd6vVkBNcCcTeaKe4F0464=;
-        b=s2o9uRLcRgtGQH/qb2/3ABjp6SpIWiT3nKabMOfhz2HbRDpdHSLFkW7l4EZekpVzi/
-         n60SNjl83+Kt6//aGScTZQsFtlHXZf3yNxiGfItMhntVVEAfQTx908NLPf2nCe8OvJ8g
-         9wltRU0XyOcilOPflu4JrqSStAyYj6HTMnZOe6MahHHuRgsn9gGuLhg8a/1fgwIIKpyk
-         AUfsnlnMD0MMkNJ74NUmHIBnhGL5yB8bdGu+/rbcg6Kc8qyDkPBgTL0OxqzVkKyZxfmE
-         RoRzc0hkNDXSt9nv1RZk1X2sCmNpCn4htyGosYlCfds+O5ovCjBLOUQrSF+WwBW9Kvzr
-         FM8Q==
-X-Gm-Message-State: APjAAAXcM1xxxOjSvQ8DGTOY8Oy203gl+XAMH9rtB7lLFkrZL93AH/L8
-        CZdDPiMmuxnkoxwH8eAqB+PKr1Jy
-X-Google-Smtp-Source: APXvYqx3Tm0OHBSb2B8JrP88BOZtZ3PvOxpsJQcna8JswLhDmgBqZoAI2I3hG1v6FyZ4sg+Tsc8d0A==
-X-Received: by 2002:a50:91ae:: with SMTP id g43mr36528658eda.279.1562082152232;
+        bh=vZnlmmUbRyy5SsAkG70FDrW+zpbeTRvS6+FDgcL8QHg=;
+        b=i10X7IkAAFBYVwl3BZjl0DF5h+XbiLd0w0EU0XiFNLdLW7fiOzOd6BAjF+OgfISz+w
+         9agzXdSolowPZH3Z7tDpA3hFiFTtN3NGuzfJfr8W3rFAzZtG/cTmQ9zVaRZhbq/qWXdG
+         11RvNaO9jcv8lvKP6TAgelCohOUYVTLrtFhTkTtt0moeP6BHUHpeq0g0UOL6g3+iMXHc
+         2PeLIqUaxNBi5g8Jmagy23OSwaipP+yjmmUrNiVTAhd/OexGWRj+Nt0N+Nqowc2welU9
+         jHHQlbvxl1sZWhXrYf7/4JzeDK1Sc34mixdqesEK9+WaE3X9/TTQArrMfSm7vOtT9A7S
+         DZQg==
+X-Gm-Message-State: APjAAAUCtYqSJFthlk4spoQ1LDuFrdZJX6tmIAJO+DVDznfw/2E9/OkJ
+        gc8lq2SWS6zgvnPV5KnJfNttWkX4
+X-Google-Smtp-Source: APXvYqz1ArlfRiKRUep2TrCj9zggU+4haHRj+FQKe1pF13mQ1fvGEzEKkL9wJIj3UHZ+4O6hcjHKiQ==
+X-Received: by 2002:aa7:de0e:: with SMTP id h14mr36783509edv.36.1562082152980;
         Tue, 02 Jul 2019 08:42:32 -0700 (PDT)
 Received: from localhost.localdomain.com ([188.204.2.113])
-        by smtp.gmail.com with ESMTPSA id j11sm2341704ejr.69.2019.07.02.08.42.31
+        by smtp.gmail.com with ESMTPSA id j11sm2341704ejr.69.2019.07.02.08.42.32
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Jul 2019 08:42:31 -0700 (PDT)
+        Tue, 02 Jul 2019 08:42:32 -0700 (PDT)
 From:   Pascal van Leeuwen <pascalvanl@gmail.com>
 X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
         davem@davemloft.net,
         Pascal van Leeuwen <pvanleeuwen@insidesecure.com>
-Subject: [PATCH] crypto: inside-secure - fix scatter/gather list handling issues
-Date:   Tue,  2 Jul 2019 16:39:50 +0200
-Message-Id: <1562078400-969-2-git-send-email-pvanleeuwen@verimatrix.com>
+Subject: [PATCH] crypto: inside-secure - fix scatter/gather list to descriptor conversion
+Date:   Tue,  2 Jul 2019 16:39:51 +0200
+Message-Id: <1562078400-969-3-git-send-email-pvanleeuwen@verimatrix.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1562078400-969-1-git-send-email-pvanleeuwen@verimatrix.com>
 References: <1562078400-969-1-git-send-email-pvanleeuwen@verimatrix.com>
@@ -63,12 +63,18 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Pascal van Leeuwen <pvanleeuwen@insidesecure.com>
 
+Fixed issues with the skcipher and AEAD scatter/gather list to engine
+descriptor conversion code which caused either too much or too little
+buffer space to be provided to the hardware. This caused errors with the
+testmgr extra tests, either kernel panics (on x86-EIP197-FPGA) or engine
+descriptor errors 0x1, 0x8 or 0x9 (on Macchiatobin e.g. Marvell A8K).
+With this patch in place, all skcipher and AEAD (extra) tests pass.
 ---
- drivers/crypto/inside-secure/safexcel_cipher.c | 178 +++++++++++++++++++------
- 1 file changed, 136 insertions(+), 42 deletions(-)
+ drivers/crypto/inside-secure/safexcel_cipher.c | 182 ++++++++++++++++++-------
+ 1 file changed, 136 insertions(+), 46 deletions(-)
 
 diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers/crypto/inside-secure/safexcel_cipher.c
-index 7977e4c..9ba2c21 100644
+index 9aebc0a..c839514 100644
 --- a/drivers/crypto/inside-secure/safexcel_cipher.c
 +++ b/drivers/crypto/inside-secure/safexcel_cipher.c
 @@ -54,6 +54,7 @@ struct safexcel_cipher_req {
@@ -79,7 +85,7 @@ index 7977e4c..9ba2c21 100644
  };
  
  static void safexcel_skcipher_token(struct safexcel_cipher_ctx *ctx, u8 *iv,
-@@ -374,10 +375,10 @@ static int safexcel_handle_req_result(struct safexcel_crypto_priv *priv, int rin
+@@ -358,10 +359,10 @@ static int safexcel_handle_req_result(struct safexcel_crypto_priv *priv, int rin
  	safexcel_complete(priv, ring);
  
  	if (src == dst) {
@@ -92,8 +98,17 @@ index 7977e4c..9ba2c21 100644
 +		dma_unmap_sg(priv->dev, dst, sreq->nr_dst, DMA_FROM_DEVICE);
  	}
  
- 	*should_complete = true;
-@@ -395,50 +396,90 @@ static int safexcel_send_req(struct crypto_async_request *base, int ring,
+ 	/*
+@@ -370,7 +371,7 @@ static int safexcel_handle_req_result(struct safexcel_crypto_priv *priv, int rin
+ 	if ((!ctx->aead) && (ctx->mode == CONTEXT_CONTROL_CRYPTO_MODE_CBC) &&
+ 	    (sreq->direction == SAFEXCEL_ENCRYPT)) {
+ 		/* For encrypt take the last output word */
+-		sg_pcopy_to_buffer(dst, sg_nents(dst), areq->iv,
++		sg_pcopy_to_buffer(dst, sreq->nr_dst, areq->iv,
+ 				   crypto_skcipher_ivsize(skcipher),
+ 				   (cryptlen -
+ 				    crypto_skcipher_ivsize(skcipher)));
+@@ -393,63 +394,99 @@ static int safexcel_send_req(struct crypto_async_request *base, int ring,
  	struct safexcel_cipher_ctx *ctx = crypto_tfm_ctx(base->tfm);
  	struct safexcel_crypto_priv *priv = ctx->priv;
  	struct safexcel_command_desc *cdesc;
@@ -109,6 +124,10 @@ index 7977e4c..9ba2c21 100644
 +	int n_cdesc = 0, n_rdesc = 0;
 +	int queued, i, ret = 0;
 +	bool first = true;
+ 
+-	if ((!ctx->aead) && (ctx->mode == CONTEXT_CONTROL_CRYPTO_MODE_CBC) &&
+-	    (sreq->direction == SAFEXCEL_DECRYPT)) {
++	sreq->nr_src = sg_nents_for_len(src, totlen_src);
 +
 +	if (ctx->aead) {
 +		/*
@@ -125,7 +144,22 @@ index 7977e4c..9ba2c21 100644
 +		memcpy(ctx->base.ctxr->data + (ctx->key_len + ctx->state_sz) /
 +		       sizeof(u32),
 +		       ctx->opad, ctx->state_sz);
-+	}
++	} else if ((ctx->mode == CONTEXT_CONTROL_CRYPTO_MODE_CBC) &&
++		   (sreq->direction == SAFEXCEL_DECRYPT)) {
+ 		/*
+ 		 * Save IV from last crypto input word for CBC modes in decrypt
+ 		 * direction. Need to do this first in case of inplace operation
+ 		 * as it will be overwritten.
+ 		 */
+-		sg_pcopy_to_buffer(src, sg_nents(src), areq->iv,
++		sg_pcopy_to_buffer(src, sreq->nr_src, areq->iv,
+ 				   crypto_skcipher_ivsize(skcipher),
+-				   (totlen -
++				   (totlen_src -
+ 				    crypto_skcipher_ivsize(skcipher)));
+ 	}
+ 
++	sreq->nr_dst = sg_nents_for_len(dst, totlen_dst);
 +
 +	/*
 +	 * Remember actual input length, source buffer length may be
@@ -133,41 +167,36 @@ index 7977e4c..9ba2c21 100644
 +	 */
 +	totlen = totlen_src;
 +	queued = totlen_src;
- 
++
  	if (src == dst) {
 -		nr_src = dma_map_sg(priv->dev, src, sg_nents(src),
 -				    DMA_BIDIRECTIONAL);
 -		nr_dst = nr_src;
 -		if (!nr_src)
-+		totlen_src = max(totlen_src, totlen_dst);
-+		sreq->nr_src = sg_nents_for_len(src, totlen_src);
-+		if (unlikely(totlen_src && (sreq->nr_src <= 0))) {
++		sreq->nr_src = max(sreq->nr_src, sreq->nr_dst);
++		sreq->nr_dst = sreq->nr_src;
++		if (unlikely((totlen_src || totlen_dst) &&
++		    (sreq->nr_src <= 0))) {
 +			dev_err(priv->dev, "In-place buffer not large enough (need %d bytes)!",
-+				totlen_src);
++				max(totlen_src, totlen_dst));
  			return -EINVAL;
 +		}
-+		sreq->nr_src = dma_map_sg(priv->dev, src, sreq->nr_src,
-+					  DMA_BIDIRECTIONAL);
-+		sreq->nr_dst = sreq->nr_src;
++		dma_map_sg(priv->dev, src, sreq->nr_src, DMA_BIDIRECTIONAL);
  	} else {
 -		nr_src = dma_map_sg(priv->dev, src, sg_nents(src),
 -				    DMA_TO_DEVICE);
 -		if (!nr_src)
-+		sreq->nr_src = sg_nents_for_len(src, totlen_src);
 +		if (unlikely(totlen_src && (sreq->nr_src <= 0))) {
 +			dev_err(priv->dev, "Source buffer not large enough (need %d bytes)!",
 +				totlen_src);
  			return -EINVAL;
--
++		}
++		dma_map_sg(priv->dev, src, sreq->nr_src, DMA_TO_DEVICE);
+ 
 -		nr_dst = dma_map_sg(priv->dev, dst, sg_nents(dst),
 -				    DMA_FROM_DEVICE);
 -		if (!nr_dst) {
 -			dma_unmap_sg(priv->dev, src, nr_src, DMA_TO_DEVICE);
-+		}
-+		sreq->nr_src = dma_map_sg(priv->dev, src, sreq->nr_src,
-+					  DMA_TO_DEVICE);
-+
-+		sreq->nr_dst = sg_nents_for_len(dst, totlen_dst);
 +		if (unlikely(totlen_dst && (sreq->nr_dst <= 0))) {
 +			dev_err(priv->dev, "Dest buffer not large enough (need %d bytes)!",
 +				totlen_dst);
@@ -175,9 +204,7 @@ index 7977e4c..9ba2c21 100644
 +				     DMA_TO_DEVICE);
  			return -EINVAL;
  		}
-+
-+		sreq->nr_dst = dma_map_sg(priv->dev, dst, sreq->nr_dst,
-+					  DMA_FROM_DEVICE);
++		dma_map_sg(priv->dev, dst, sreq->nr_dst, DMA_FROM_DEVICE);
  	}
  
  	memcpy(ctx->base.ctxr->data, ctx->key, ctx->key_len);
@@ -207,7 +234,7 @@ index 7977e4c..9ba2c21 100644
  					   sg_dma_address(sg), len, totlen,
  					   ctx->base.ctxr_dma);
  		if (IS_ERR(cdesc)) {
-@@ -449,14 +490,7 @@ static int safexcel_send_req(struct crypto_async_request *base, int ring,
+@@ -460,14 +497,7 @@ static int safexcel_send_req(struct crypto_async_request *base, int ring,
  		n_cdesc++;
  
  		if (n_cdesc == 1) {
@@ -223,7 +250,7 @@ index 7977e4c..9ba2c21 100644
  		}
  
  		queued -= len;
-@@ -464,23 +498,83 @@ static int safexcel_send_req(struct crypto_async_request *base, int ring,
+@@ -475,23 +505,83 @@ static int safexcel_send_req(struct crypto_async_request *base, int ring,
  			break;
  	}
  
@@ -312,7 +339,7 @@ index 7977e4c..9ba2c21 100644
  	safexcel_rdr_req_set(priv, ring, first_rdesc, base);
  
  	*commands = n_cdesc;
-@@ -495,10 +589,10 @@ static int safexcel_send_req(struct crypto_async_request *base, int ring,
+@@ -506,10 +596,10 @@ static int safexcel_send_req(struct crypto_async_request *base, int ring,
  		safexcel_ring_rollback_wptr(priv, &priv->ring[ring].cdr);
  
  	if (src == dst) {
