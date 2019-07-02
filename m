@@ -2,175 +2,103 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 366EA5D32F
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Jul 2019 17:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293695D321
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Jul 2019 17:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbfGBPmm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Jul 2019 11:42:42 -0400
-Received: from mail-ed1-f54.google.com ([209.85.208.54]:45833 "EHLO
-        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726434AbfGBPmm (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Jul 2019 11:42:42 -0400
-Received: by mail-ed1-f54.google.com with SMTP id a14so27717154edv.12
-        for <linux-crypto@vger.kernel.org>; Tue, 02 Jul 2019 08:42:40 -0700 (PDT)
+        id S1725858AbfGBPlZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 2 Jul 2019 11:41:25 -0400
+Received: from mail-eopbgr750045.outbound.protection.outlook.com ([40.107.75.45]:24708
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725780AbfGBPlZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 2 Jul 2019 11:41:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ksYCsc0lRfHM828MeC22NSXrVVriqg78KyiC2mMDSvo=;
-        b=qRw3sEy6w5+eoTCuFj0iAZ2AX4nZmc2ereXWgntyX1WiHO+uRMpBWXJqfNz0RcRMMI
-         Uq4rQFEcDB08V0jhaPgtX3GdbBa3OuIRrb/pev1M3kH65QoT2j0BADsSGK2DPn+gTY5p
-         uqMjOwLu3YO+Oh1ZuWNT8IFIUCT0+g9CKZnulDHmWs/cmo73FDMmYiQUlFlsPA77eP1z
-         MnZfe7OJiMI7Y7EjALSRm4Hd4U7tsIF0/8WdhxHUTtk5tXS4/JVe3edokilyvJrrZmnj
-         Bt6EdcOr7ptXZ633CtiOivKtMdw2QohYX02T92rx9zvgJUsMnDCZBkQJqRcNG+j3XxF+
-         689Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ksYCsc0lRfHM828MeC22NSXrVVriqg78KyiC2mMDSvo=;
-        b=T12wjYCsp9x3ct4kaNqfJ9bGmbSakmibSsMS87GklVcmO5ITwNAWQCnwHkDE43WOWi
-         lf1XKVgFcyXuj/x9mBWcwVHEX2t3pqs+oHWLwKI/jk/FFlBc/gL6kzUV0AcEgY6qgJQP
-         1uxR3SA8X651z5GrqqRKThzF+Wi6m2YqCCdw8uIrHeXkicPocTZm+5H/kCEbwfqxn2PF
-         +wZylU7iODOuFBbFOmK8aD8x7UHQF1okr2fYKWFw9QQg4m9xrLaVci2ZYKEIj/VnDWtC
-         Oscoz/2O77h7SewSfnPeOIoHco3zKK6QCDIqWPhiAdPLwcOvCjg9ntEWFLNnxmCPAPj2
-         VnQA==
-X-Gm-Message-State: APjAAAWpu9BHmZVfLUp6lx7CDoqnkGNqb3hMo4gw+fY9ZOevD07A/1ku
-        spQoR65PWICOja0ud0jRHGnrGWLR
-X-Google-Smtp-Source: APXvYqxa2FwlEALveUOXcWrbzZOVjFn8qfyu4hg1EtQEAZrmIUzHD+fNBgalnoSSVswbeBU+I/VBcA==
-X-Received: by 2002:a50:a56a:: with SMTP id z39mr36960414edb.107.1562082159943;
-        Tue, 02 Jul 2019 08:42:39 -0700 (PDT)
-Received: from localhost.localdomain.com ([188.204.2.113])
-        by smtp.gmail.com with ESMTPSA id j11sm2341704ejr.69.2019.07.02.08.42.39
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Jul 2019 08:42:39 -0700 (PDT)
-From:   Pascal van Leeuwen <pascalvanl@gmail.com>
-X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net,
-        Pascal van Leeuwen <pvanleeuwen@insidesecure.com>,
-        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: [PATCH 9/9] crypto: inside-secure - add support for 0 length HMAC messages
-Date:   Tue,  2 Jul 2019 16:40:00 +0200
-Message-Id: <1562078400-969-12-git-send-email-pvanleeuwen@verimatrix.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1562078400-969-1-git-send-email-pvanleeuwen@verimatrix.com>
-References: <1562078400-969-1-git-send-email-pvanleeuwen@verimatrix.com>
+ d=amdcloud.onmicrosoft.com; s=selector1-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5iMY03FxnNPk9Bvi0MCYQ80rze6xHLN/U7cSyGSkjHA=;
+ b=h7w+7gNSugd1vsyDM81hUuWjRpVa4lrMWI8sAswlWRl7CWuVPh728B+lJubjFXLaDkDQwMEvd2DcS4wpd2Arz3RDi4mQ4xROrjYR8D7PwQd81BwVcaW7M8X8TDOd2TkBAKsGWOTH7+TZSkt5n2Yr0Id7AYTQUV58dWK2ClmKRH4=
+Received: from DM5PR12MB1449.namprd12.prod.outlook.com (10.172.40.14) by
+ DM5PR12MB1483.namprd12.prod.outlook.com (10.172.38.148) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2032.20; Tue, 2 Jul 2019 15:41:23 +0000
+Received: from DM5PR12MB1449.namprd12.prod.outlook.com
+ ([fe80::180c:ff0c:37e6:a482]) by DM5PR12MB1449.namprd12.prod.outlook.com
+ ([fe80::180c:ff0c:37e6:a482%10]) with mapi id 15.20.2032.019; Tue, 2 Jul 2019
+ 15:41:23 +0000
+From:   Gary R Hook <ghook@amd.com>
+To:     Eric Biggers <ebiggers@kernel.org>, Cfir Cohen <cfir@google.com>
+CC:     "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "Hook, Gary" <Gary.Hook@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        David Rientjes <rientjes@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH] crypto: ccp/gcm - use const time tag comparison.
+Thread-Topic: [PATCH] crypto: ccp/gcm - use const time tag comparison.
+Thread-Index: AQHVMGlxe9at0dFonUmGbCxN6WOFAKa2eHIAgAD/6wA=
+Date:   Tue, 2 Jul 2019 15:41:23 +0000
+Message-ID: <1eea04e4-ac19-241d-695b-61be43640509@amd.com>
+References: <20190702000132.88836-1-cfir@google.com>
+ <20190702002522.GA693@sol.localdomain>
+In-Reply-To: <20190702002522.GA693@sol.localdomain>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: SN6PR0102CA0002.prod.exchangelabs.com (2603:10b6:805:1::15)
+ To DM5PR12MB1449.namprd12.prod.outlook.com (2603:10b6:4:10::14)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Gary.Hook@amd.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [165.204.78.1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a873109a-2af5-4bfc-7700-08d6ff03bc35
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DM5PR12MB1483;
+x-ms-traffictypediagnostic: DM5PR12MB1483:
+x-microsoft-antispam-prvs: <DM5PR12MB1483D854CB00EFD28DCD74AEFDF80@DM5PR12MB1483.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-forefront-prvs: 008663486A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(189003)(199004)(11346002)(6512007)(316002)(31696002)(6436002)(6486002)(4326008)(446003)(186003)(36756003)(256004)(3846002)(53936002)(478600001)(2906002)(31686004)(54906003)(6116002)(110136005)(229853002)(66066001)(6246003)(26005)(6506007)(5660300002)(66446008)(66946007)(25786009)(486006)(7736002)(71190400001)(53546011)(8936002)(68736007)(386003)(102836004)(71200400001)(76176011)(81156014)(99286004)(52116002)(8676002)(2616005)(73956011)(81166006)(66556008)(476003)(14454004)(64756008)(305945005)(72206003)(14444005)(66476007);DIR:OUT;SFP:1101;SCL:1;SRVR:DM5PR12MB1483;H:DM5PR12MB1449.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: BDVIK6/i6LDK76vYEGSOmtcP95b6Hl743w0DFaA6QIHtQlEyGeX2uenuEmFLVHmVwZYtp3wbqqA9/zVH5Aer8rgEjKaZ9/gANip3ipeaq7axRtNEs/4xfdCrFsDhBCwR4VpYnxT8QrBu0vGtENSCHjuWSMnATmE2Xgroe9TEphcH+1PBKmluTijZxWsGDhfXj4h9CWXBEZNJFmLxzob3wiq8AnvtZnAtffwZ9RMOUDaVfr+hakcxfudCZ2fuD0mZyObJEGpbD9rorpLq+0K9EO91yCoTYclXonN4DqINRB5IdOQo/LeyYcjOmQtpoy+PqjDCU/NVuds7l84a/dVoaJ51X/ZoxxLUOp3atDiwZxi6+3oNplRovL+1Tgu4j0lGoOzUCcnpaaMxjkyoySu4W25Q37eBDna6FNx+Eat1PLg=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F13352138BA5964B9EDFB4E7FF36AFBC@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a873109a-2af5-4bfc-7700-08d6ff03bc35
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2019 15:41:23.5115
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ghook@amd.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1483
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Pascal van Leeuwen <pvanleeuwen@insidesecure.com>
-
-This patch adds support for the specific corner case of performing HMAC
-on an empty string (i.e. payload length is zero). This solves the last
-failing cryptomgr extratests for HMAC.
-
-Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
----
- drivers/crypto/inside-secure/safexcel_hash.c | 47 ++++++++++++++++++++++++++--
- 1 file changed, 44 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
-index 59ec7dc..bdbaea9 100644
---- a/drivers/crypto/inside-secure/safexcel_hash.c
-+++ b/drivers/crypto/inside-secure/safexcel_hash.c
-@@ -29,6 +29,8 @@ struct safexcel_ahash_req {
- 	bool finish;
- 	bool hmac;
- 	bool needs_inv;
-+	bool hmac_zlen;
-+	bool len_is_le;
- 
- 	int nents;
- 	dma_addr_t result_dma;
-@@ -117,7 +119,7 @@ static void safexcel_context_control(struct safexcel_ahash_ctx *ctx,
- 	if (req->finish) {
- 		/* Compute digest count for hash/HMAC finish operations */
- 		if ((req->digest == CONTEXT_CONTROL_DIGEST_PRECOMPUTED) ||
--		    req->processed[1] ||
-+		    req->hmac_zlen || req->processed[1] ||
- 		    (req->processed[0] != req->block_sz)) {
- 			count = req->processed[0] / EIP197_COUNTER_BLOCK_SIZE;
- 			count += ((0x100000000ULL / EIP197_COUNTER_BLOCK_SIZE) *
-@@ -136,6 +138,8 @@ static void safexcel_context_control(struct safexcel_ahash_ctx *ctx,
- 		}
- 
- 		if ((req->digest == CONTEXT_CONTROL_DIGEST_PRECOMPUTED) ||
-+		    /* Special case: zero length HMAC */
-+		    req->hmac_zlen ||
- 		    /* PE HW < 4.4 cannot do HMAC continue, fake using hash */
- 		    ((req->processed[1] ||
- 		      (req->processed[0] != req->block_sz)))) {
-@@ -144,11 +148,18 @@ static void safexcel_context_control(struct safexcel_ahash_ctx *ctx,
- 				CONTEXT_CONTROL_SIZE((req->state_sz >> 2) + 1) |
- 				CONTEXT_CONTROL_TYPE_HASH_OUT |
- 				CONTEXT_CONTROL_DIGEST_PRECOMPUTED;
-+			/* For zero-len HMAC, don't finalize, already padded! */
-+			if (req->hmac_zlen)
-+				cdesc->control_data.control0 |=
-+					CONTEXT_CONTROL_NO_FINISH_HASH;
- 			cdesc->control_data.control1 |=
- 				CONTEXT_CONTROL_DIGEST_CNT;
- 			ctx->base.ctxr->data[req->state_sz >> 2] =
- 				cpu_to_le32(count);
- 			req->digest = CONTEXT_CONTROL_DIGEST_PRECOMPUTED;
-+
-+			/* Clear zero-length HMAC flag for next operation! */
-+			req->hmac_zlen = false;
- 		} else { /* HMAC */
- 			/* Need outer digest for HMAC finalization */
- 			memcpy(ctx->base.ctxr->data + (req->state_sz >> 2),
-@@ -701,8 +712,37 @@ static int safexcel_ahash_final(struct ahash_request *areq)
- 	} else if (unlikely(req->hmac && !req->len[1] &&
- 			    (req->len[0] == req->block_sz) &&
- 			    !areq->nbytes)) {
--		/* TODO: add support for zero length HMAC */
--		return 0;
-+		/*
-+		 * If we have an overall 0 length *HMAC* request:
-+		 * For HMAC, we need to finalize the inner digest
-+		 * and then perform the outer hash.
-+		 */
-+
-+		/* generate pad block in the cache */
-+		/* start with a hash block of all zeroes */
-+		memset(req->cache, 0, req->block_sz);
-+		/* set the first byte to 0x80 to 'append a 1 bit' */
-+		req->cache[0] = 0x80;
-+		/* add the length in bits in the last 2 bytes */
-+		if (req->len_is_le) {
-+			/* Little endian length word (e.g. MD5) */
-+			req->cache[req->block_sz-8] = (req->block_sz << 3) &
-+						      255;
-+			req->cache[req->block_sz-7] = (req->block_sz >> 5);
-+		} else {
-+			/* Big endian length word (e.g. any SHA) */
-+			req->cache[req->block_sz-2] = (req->block_sz >> 5);
-+			req->cache[req->block_sz-1] = (req->block_sz << 3) &
-+						      255;
-+		}
-+
-+		req->len[0] += req->block_sz; /* plus 1 hash block */
-+
-+		/* Set special zero-length HMAC flag */
-+		req->hmac_zlen = true;
-+
-+		/* Finalize HMAC */
-+		req->digest = CONTEXT_CONTROL_DIGEST_HMAC;
- 	} else if (req->hmac) {
- 		/* Finalize HMAC */
- 		req->digest = CONTEXT_CONTROL_DIGEST_HMAC;
-@@ -1656,6 +1696,7 @@ static int safexcel_hmac_md5_init(struct ahash_request *areq)
- 	req->digest = CONTEXT_CONTROL_DIGEST_PRECOMPUTED;
- 	req->state_sz = MD5_DIGEST_SIZE;
- 	req->block_sz = MD5_HMAC_BLOCK_SIZE;
-+	req->len_is_le = true; /* MD5 is little endian! ... */
- 	req->hmac = true;
- 
- 	return 0;
--- 
-1.8.3.1
-
+T24gNy8xLzE5IDc6MjUgUE0sIEVyaWMgQmlnZ2VycyB3cm90ZToNCj4gT24gTW9uLCBKdWwgMDEs
+IDIwMTkgYXQgMDU6MDE6MzJQTSAtMDcwMCwgQ2ZpciBDb2hlbiB3cm90ZToNCj4+IEF2b2lkIGxl
+YWtpbmcgR0NNIHRhZyB0aHJvdWdoIHRpbWluZyBzaWRlIGNoYW5uZWwuDQo+Pg0KPj4gU2lnbmVk
+LW9mZi1ieTogQ2ZpciBDb2hlbiA8Y2ZpckBnb29nbGUuY29tPg0KPj4gLS0tDQo+PiAgIGRyaXZl
+cnMvY3J5cHRvL2NjcC9jY3Atb3BzLmMgfCAzICsrLQ0KPj4gICAxIGZpbGUgY2hhbmdlZCwgMiBp
+bnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+Y3J5cHRvL2NjcC9jY3Atb3BzLmMgYi9kcml2ZXJzL2NyeXB0by9jY3AvY2NwLW9wcy5jDQo+PiBp
+bmRleCBkYjhkZTg5ZDk5MGYuLjYzMzY3MDIyMGY2YyAxMDA2NDQNCj4+IC0tLSBhL2RyaXZlcnMv
+Y3J5cHRvL2NjcC9jY3Atb3BzLmMNCj4+ICsrKyBiL2RyaXZlcnMvY3J5cHRvL2NjcC9jY3Atb3Bz
+LmMNCj4+IEBAIC04NDAsNyArODQwLDggQEAgc3RhdGljIGludCBjY3BfcnVuX2Flc19nY21fY21k
+KHN0cnVjdCBjY3BfY21kX3F1ZXVlICpjbWRfcSwNCj4+ICAgCQlpZiAocmV0KQ0KPj4gICAJCQln
+b3RvIGVfdGFnOw0KPj4gICANCj4+IC0JCXJldCA9IG1lbWNtcCh0YWcuYWRkcmVzcywgZmluYWxf
+d2EuYWRkcmVzcywgQUVTX0JMT0NLX1NJWkUpOw0KPj4gKwkJcmV0ID0gY3J5cHRvX21lbW5lcSh0
+YWcuYWRkcmVzcywgZmluYWxfd2EuYWRkcmVzcywNCj4+ICsJCQkJICAgIEFFU19CTE9DS19TSVpF
+KSA/IC1FQkFETVNHIDogMDsNCj4+ICAgCQljY3BfZG1fZnJlZSgmdGFnKTsNCj4+ICAgCX0NCj4+
+ICAgDQo+PiAtLSANCj4+IDIuMjIuMC40MTAuZ2Q4ZmRiZTIxYjUtZ29vZw0KPj4NCj4gDQo+IExv
+b2tzIGxpa2UgdGhpcyBuZWVkczoNCj4gDQo+IAlGaXhlczogMzZjZjUxNWI5YmJlICgiY3J5cHRv
+OiBjY3AgLSBFbmFibGUgc3VwcG9ydCBmb3IgQUVTIEdDTSBvbiB2NSBDQ1BzIikNCj4gCUNjOiA8
+c3RhYmxlQHZnZXIua2VybmVsLm9yZz4gIyB2NC4xMisNCg0KDQpZZXMsIGl0IGRvZXMuIEZvciBj
+bGFyaXR5LCBkb2VzIHRoYXQgbWVhbiB5b3UndmUgdGFrZW4gY2FyZSBvZiB0aGlzPw0KDQo=
