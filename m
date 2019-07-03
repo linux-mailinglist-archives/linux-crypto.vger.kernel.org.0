@@ -2,102 +2,180 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 572515DF69
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Jul 2019 10:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075E05E04C
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Jul 2019 10:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727454AbfGCIOU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 3 Jul 2019 04:14:20 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:34620 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727442AbfGCIOU (ORCPT
+        id S1726670AbfGCIzr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 3 Jul 2019 04:55:47 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:45224 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbfGCIzr (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 3 Jul 2019 04:14:20 -0400
-Received: by mail-pg1-f195.google.com with SMTP id p10so825100pgn.1;
-        Wed, 03 Jul 2019 01:14:19 -0700 (PDT)
+        Wed, 3 Jul 2019 04:55:47 -0400
+Received: by mail-lj1-f196.google.com with SMTP id m23so1485113lje.12
+        for <linux-crypto@vger.kernel.org>; Wed, 03 Jul 2019 01:55:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=p3NE6eF8wtZSbcEMraRfzpbuJsj8vIEFXgZ9uVdKcjs=;
-        b=MjGvB2vdicUC+rpaKAkXobo4d4VHJRRoHXJfCbyAa/hzEWdvz8mdYPZiIwCB46+imG
-         DDNtYWfLtizE6NhwQmkrSzcMBVXU4z3kRgDuOgPYJ48fVdoo+5smd8lySjs4Rwo+qWf+
-         27L0n6Br7f3GCdtpc1BQTIB0OSQ1odY/rxsJxJSqFkpG3v/RPqn/LrYulYJvC5hA08Y5
-         syancLCDgupxxzz8dlWLIa37qsiuP/0IRh0B1hGGFAnNzt9XGd3JWARku2O0V8VF7PQ5
-         UA4UOCjeclOtCo3XgjuxtatOiJL/NWkqmvGTjMDhbFtXMexUNMOqgMioriSqoD0Q6Pqa
-         JaEQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=BTr6fg1Hs9FFHmhEKIExNXDxUhJliY2YcV2IbTXbo5A=;
+        b=x9uIM2l9AHL3+msXH1V2Cu/PAe9MUHbJht883gdQG/7nISlgMj6Z2lugEItNg8zlMJ
+         xOzb5y4sGEfybDAeWahpnCM6zCoMtjpZpKR+MvU8slo3lESrTyf5R1Dq+RIf7GjPwfqK
+         czNATtut3vmANaVQ22FXWRuaaSrqB7zfLsh5pdJnNRYyZgieNwAg8L7lgi4U9ZDWAaxd
+         YTSY0WBY9oC4wCc1j5LEEHi3dCbgElCTMwc0XVjroxN3hW9AHkFusyF6hSA0cTe6jsHw
+         PXh0aKK81Zk6TEixjr585PeJBgTtdetLi/tQm/DvCFPWUs5GrnaJvu30cXIlfbdV7Pfy
+         ZnlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=p3NE6eF8wtZSbcEMraRfzpbuJsj8vIEFXgZ9uVdKcjs=;
-        b=Li/KLlhSy2QYL6rkOncx2AM2x4wOr8pRw1pr5rBmosjCIIf59Vx6wt4jqm7RKm6QFb
-         iUHsYiLsOd61JHbrVqtzE74iOUfBVzlPdosR9G5UXOjPgADm4hNrTNZ3yAGd+PYk2/6n
-         NFrG67mCW9PPja/05hajf4CRAq33W3z4kpzO15KrRUhvR2qZV11A/x+O0h9n9zCVZNeP
-         fiJxX/qDzbPOKMIovkj0tpWNA4ngs/6MgR6PjICwY8hXOczxadfgE+gmkVSnwQm8PvDF
-         r6HbZ4xoHEYU/TlQ/wsQ2VJ9+I4QqHaZIw5ucESvxg7YDy6eXuXK7Iu0fduRyXknXzyt
-         GPtg==
-X-Gm-Message-State: APjAAAUtSl3w9PDRSlIpkDKCN9jhLKC1wUgb9YaSn+vMa75sdmyXmyQ5
-        sItP429o61afEN+2fYboVxdi9FFucFM=
-X-Google-Smtp-Source: APXvYqxD0vSuPSwOFaa0ONFk6vM54vgp5nr7d54JfN1Tutz7WSjZUlZ3J8J0UV1Jul9hXde0zjsmFQ==
-X-Received: by 2002:a63:545c:: with SMTP id e28mr36881906pgm.374.1562141659184;
-        Wed, 03 Jul 2019 01:14:19 -0700 (PDT)
-Received: from localhost.lan (c-67-185-54-80.hsd1.wa.comcast.net. [67.185.54.80])
-        by smtp.gmail.com with ESMTPSA id d2sm1445306pgo.0.2019.07.03.01.14.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=BTr6fg1Hs9FFHmhEKIExNXDxUhJliY2YcV2IbTXbo5A=;
+        b=ayrIgBnswcEGoRKdVE23s20CtQRFLS/slTc19qrF4UFqsDSnppB0jY22CQkGTZAmed
+         GmQhboUcP4MnBoSLYcafT/ySQi3iSu9T+G9IHmoR+/FR5fvqttGHjH4n4uYZvHoMV/fG
+         Gyo38Fz2De+irODEppTzuCRKJSjam4CvhR8Tf107Rr6vDZa8A+jCm67WjvE0zJ0HqXHa
+         aAxhMH93xbO8JfSXZab1/hCr+N6UAXDpUCcq9itR2y99kaaGfM15OM1+ncyXdFHuiJ2B
+         cdBT9vmmTpDC1zpIBb+nMharzz2ks5GPKmZVEwSKEuo+zOUvHBOAhK/654e3B+HdFpwz
+         LGDg==
+X-Gm-Message-State: APjAAAUSyvs1jyczVyBe9XXqb8dZ20hcck6Qn6utBuwQPCG7sTbmgDVq
+        3SL8P8Jp8UizLYVU7p6eUHjgnTORIPUsQ/RO
+X-Google-Smtp-Source: APXvYqxGX3H3ahlNB3L4mTj4NnodleeyB4RW3wEJOWQzIkYlsu6PDY3Ftzd91IecGK9q7ph7hBJePg==
+X-Received: by 2002:a2e:88d3:: with SMTP id a19mr7591789ljk.32.1562144144770;
+        Wed, 03 Jul 2019 01:55:44 -0700 (PDT)
+Received: from e111045-lin.arm.com (89-212-78-239.static.t-2.net. [89.212.78.239])
+        by smtp.gmail.com with ESMTPSA id h4sm354529ljj.31.2019.07.03.01.55.43
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 03 Jul 2019 01:14:18 -0700 (PDT)
-From:   Andrey Smirnov <andrew.smirnov@gmail.com>
+        Wed, 03 Jul 2019 01:55:43 -0700 (PDT)
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
-Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Chris Spencer <christopher.spencer@sea.co.uk>,
-        Cory Tusar <cory.tusar@zii.aero>,
-        Chris Healy <cphealy@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 16/16] crypto: caam - add clock entry for i.MX8MQ
-Date:   Wed,  3 Jul 2019 01:13:27 -0700
-Message-Id: <20190703081327.17505-17-andrew.smirnov@gmail.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190703081327.17505-1-andrew.smirnov@gmail.com>
-References: <20190703081327.17505-1-andrew.smirnov@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steve Capper <steve.capper@arm.com>,
+        Milan Broz <gmazyland@gmail.com>
+Subject: [PATCH v4 0/7] crypto: CAESAR final portfolio follow-up
+Date:   Wed,  3 Jul 2019 10:55:05 +0200
+Message-Id: <20190703085512.13915-1-ard.biesheuvel@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add clock entry needed to support i.MX8MQ.
+This v2/v3/v4 is a follow-up to both 'crypto: aegis128 - add NEON intrinsics
+version for ARM/arm64' [0] and 'crypto: morus - remove generic and x86
+implementations' [1]. Since there is some overlap, it makes sense to merge
+them and avoid merge conflicts.
 
-Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
-Cc: Chris Spencer <christopher.spencer@sea.co.uk>
-Cc: Cory Tusar <cory.tusar@zii.aero>
-Cc: Chris Healy <cphealy@gmail.com>
-Cc: Lucas Stach <l.stach@pengutronix.de>
-Cc: Horia Geantă <horia.geanta@nxp.com>
-Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
-Cc: Leonard Crestez <leonard.crestez@nxp.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- drivers/crypto/caam/ctrl.c | 1 +
- 1 file changed, 1 insertion(+)
+Now that aegis128 has been announced as one of the winners of the CAESAR
+competition, it's time to provide some better support for it on arm64 (and
+32-bit ARM *)
 
-diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
-index a354c64ca39d..916b63f4f93b 100644
---- a/drivers/crypto/caam/ctrl.c
-+++ b/drivers/crypto/caam/ctrl.c
-@@ -527,6 +527,7 @@ static const struct soc_device_attribute caam_imx_soc_table[] = {
- 	{ .soc_id = "i.MX6UL", .data = &caam_imx6ul_data },
- 	{ .soc_id = "i.MX6*",  .data = &caam_imx6_data },
- 	{ .soc_id = "i.MX7*",  .data = &caam_imx7_data },
-+	{ .soc_id = "i.MX8MQ", .data = &caam_imx7_data },
- 	{ .family = "Freescale i.MX" },
- };
- 
+This time, instead of cloning the generic driver twice and rewriting half
+of it in arm64 and ARM assembly, add hooks for an accelerated SIMD path to
+the generic driver, and populate it with a C version using NEON intrinsics
+that can be built for both ARM and arm64. This results in a speedup of ~11x,
+resulting in a performance of 2.2 cycles per byte on Cortex-A53.
+
+Patches #3 and #4 are fixes/improvements for the generic code. Patch #5
+adds the plumbing for using a SIMD accelerated implementation. Patch #6
+adds the ARM and arm64 code, and patch #7 adds a speed test.
+
+Since aegis128l and aegis256 were not selected, and nor where any of the
+morus contestants (which are in fact found to be cryptographically broken),
+patches #1 and #2 remove these entirely.
+
+Changes since v3:
+- drop always_inline annotation from aegis_aes_round(), which triggers a
+  warning on ARM
+- add Ondrej's R-b to the series
+
+Changes since v2:
+- drop AEGIS128L/256 Kconfig symbols from crypto/Kconfig
+- ensure that aese/aesmc are issued in pairs
+
+Changes since v1s:
+- add reference to research paper (#1)
+- drop hunks against m68k defconfigs - these get regenerated automatically
+  anyway, and so it is better to avoid the potential merge conflicts.
+- drop patch to use unaligned accessors where it isn't needed
+- drop hunks against aegis variants that are being removed (#3)
+- add acks from Ondrej
+
+* 32-bit ARM today rarely provides the special AES instruction that the
+  implementation in this series relies on, but this may change in the future,
+  and the NEON intrinsics code can be compiled for both ISAs.
+
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: Ondrej Mosnacek <omosnace@redhat.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Steve Capper <steve.capper@arm.com>
+Cc: Milan Broz <gmazyland@gmail.com>
+
+[0] https://lore.kernel.org/linux-crypto/20190624073818.29296-1-ard.biesheuvel@linaro.org/
+[1] https://lore.kernel.org/linux-crypto/20190625145254.28510-1-ard.biesheuvel@linaro.org/
+
+Ard Biesheuvel (7):
+  crypto: morus - remove generic and x86 implementations
+  crypto: aegis128l/aegis256 - remove x86 and generic implementations
+  crypto: aegis128 - drop empty TFM init/exit routines
+  crypto: aegis - avoid prerotated AES tables
+  crypto: aegis128 - add support for SIMD acceleration
+  crypto: aegis128 - provide a SIMD implementation based on NEON
+    intrinsics
+  crypto: tcrypt - add a speed test for AEGIS128
+
+ arch/x86/crypto/Makefile               |   17 -
+ arch/x86/crypto/aegis128l-aesni-asm.S  |  826 ------
+ arch/x86/crypto/aegis128l-aesni-glue.c |  297 ---
+ arch/x86/crypto/aegis256-aesni-asm.S   |  703 -----
+ arch/x86/crypto/aegis256-aesni-glue.c  |  297 ---
+ arch/x86/crypto/morus1280-avx2-asm.S   |  622 -----
+ arch/x86/crypto/morus1280-avx2-glue.c  |   66 -
+ arch/x86/crypto/morus1280-sse2-asm.S   |  896 -------
+ arch/x86/crypto/morus1280-sse2-glue.c  |   65 -
+ arch/x86/crypto/morus1280_glue.c       |  209 --
+ arch/x86/crypto/morus640-sse2-asm.S    |  615 -----
+ arch/x86/crypto/morus640-sse2-glue.c   |   65 -
+ arch/x86/crypto/morus640_glue.c        |  204 --
+ crypto/Kconfig                         |   89 +-
+ crypto/Makefile                        |   16 +-
+ crypto/aegis.h                         |   28 +-
+ crypto/{aegis128.c => aegis128-core.c} |   53 +-
+ crypto/aegis128-neon-inner.c           |  149 ++
+ crypto/aegis128-neon.c                 |   43 +
+ crypto/aegis128l.c                     |  522 ----
+ crypto/aegis256.c                      |  473 ----
+ crypto/morus1280.c                     |  542 ----
+ crypto/morus640.c                      |  533 ----
+ crypto/tcrypt.c                        |    7 +
+ crypto/testmgr.c                       |   24 -
+ crypto/testmgr.h                       | 2691 --------------------
+ include/crypto/morus1280_glue.h        |   97 -
+ include/crypto/morus640_glue.h         |   97 -
+ include/crypto/morus_common.h          |   18 -
+ 29 files changed, 266 insertions(+), 9998 deletions(-)
+ delete mode 100644 arch/x86/crypto/aegis128l-aesni-asm.S
+ delete mode 100644 arch/x86/crypto/aegis128l-aesni-glue.c
+ delete mode 100644 arch/x86/crypto/aegis256-aesni-asm.S
+ delete mode 100644 arch/x86/crypto/aegis256-aesni-glue.c
+ delete mode 100644 arch/x86/crypto/morus1280-avx2-asm.S
+ delete mode 100644 arch/x86/crypto/morus1280-avx2-glue.c
+ delete mode 100644 arch/x86/crypto/morus1280-sse2-asm.S
+ delete mode 100644 arch/x86/crypto/morus1280-sse2-glue.c
+ delete mode 100644 arch/x86/crypto/morus1280_glue.c
+ delete mode 100644 arch/x86/crypto/morus640-sse2-asm.S
+ delete mode 100644 arch/x86/crypto/morus640-sse2-glue.c
+ delete mode 100644 arch/x86/crypto/morus640_glue.c
+ rename crypto/{aegis128.c => aegis128-core.c} (89%)
+ create mode 100644 crypto/aegis128-neon-inner.c
+ create mode 100644 crypto/aegis128-neon.c
+ delete mode 100644 crypto/aegis128l.c
+ delete mode 100644 crypto/aegis256.c
+ delete mode 100644 crypto/morus1280.c
+ delete mode 100644 crypto/morus640.c
+ delete mode 100644 include/crypto/morus1280_glue.h
+ delete mode 100644 include/crypto/morus640_glue.h
+ delete mode 100644 include/crypto/morus_common.h
+
 -- 
-2.21.0
+2.17.1
 
