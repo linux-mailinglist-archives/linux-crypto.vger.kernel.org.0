@@ -2,179 +2,97 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1BE5DAA7
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Jul 2019 03:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0EDA5DE21
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Jul 2019 08:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727219AbfGCBUm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Jul 2019 21:20:42 -0400
-Received: from mail-pg1-f202.google.com ([209.85.215.202]:45406 "EHLO
-        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbfGCBUk (ORCPT
+        id S1726684AbfGCGhr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 3 Jul 2019 02:37:47 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:40495 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726327AbfGCGhq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Jul 2019 21:20:40 -0400
-Received: by mail-pg1-f202.google.com with SMTP id n7so513866pgr.12
-        for <linux-crypto@vger.kernel.org>; Tue, 02 Jul 2019 18:20:39 -0700 (PDT)
+        Wed, 3 Jul 2019 02:37:46 -0400
+Received: by mail-io1-f68.google.com with SMTP id n5so2153457ioc.7;
+        Tue, 02 Jul 2019 23:37:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=5pef2FmAnlM+QWRsh4dTLRGQILNCjv4NmeuYpQBmgEA=;
-        b=HFTGEtAH+TiPSW0rjw3Mi+iJdcR98StRYDiH88gvvbwa6f/D0j8dTS7RXBv9w26MId
-         SfRPUxiljRg2yh/fQ558NrAbM/8elfRqhcdJN7x+tYTwZLmQF5OP8LhDnGk7JqPqjWLv
-         tqLWCH1zVSyWQScYIQqJvuxzO8AIdqWbBGpEyzdKtT6f9cPh27ACMxAYZDSz5AapvhWu
-         rT73tfO1uup3LaVGb7e/lEjey5r3LN2IyH48iSwKeg5xGL3gNg9GazedobtHrspjH//R
-         4XAHipiFE8qrM8hVBXabL16ovb1CDR1dB9xbE+1QJMlpZrm++PKrVQMqTtvTBrSWkrWZ
-         sjXw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FOIxNlDzVh5kXdl9uOiCioxQI2rCCNBXDcfxZ9oiGn4=;
+        b=oQrvKYN6+Oa/mi5oqHJm/0u1d3bIJSZvqt/2eGg8P4ktEZTx14HyMyCIxEvYI2B47V
+         4VsUmdNttA9TSM+TZLgpm0PDvKjyAgy6GUAREped91mDu/QX+CltfgdXh38jba5ZKmhd
+         P2AK0d/w1qNtPkjFY9xb5mktdhaE7uih5Av11615R4hJy0wb0yzqczDF7HYpVFJpv6/6
+         s3hCxB8VolfGSXpmccI/iIYtGaaqPGqKhLuh5cU3IXY74iOMUdruB89oozjiPO3Dy+gr
+         pZlFmom46AbUUceksx7V0grs2DsemIajtC3WLtW8zVxkoNwidJm0HYjD3bK6ejRS98NQ
+         05ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=5pef2FmAnlM+QWRsh4dTLRGQILNCjv4NmeuYpQBmgEA=;
-        b=SIHEKodz/ptKajeVJd6llmvlVq7vRDxe61mpebVxUb7Z8N0W+yHuDGYEWvSdc7ghbE
-         oVQAvhqgA2b//ReJc7zebFMhorMKiNFTIIrgDphuI0NnBe1YBYnHJdKL7M8NAFZFgavQ
-         alDizK4GpkSfM2oIXQyGKo56E6iRIUk0KIvOYpKEO8c9Rff61kacKJtFVyKUAD037y5G
-         fXg+MGBZUsMBT24V235NgjFoVvLjah5kfXD72YosOe/GGQmDiatE5XrV92RWXXtgbl1O
-         YjonHpGcmps8mwRDS/VKEVxRAirbWDuYpRLX5upfql/Pi2yry4qLkwIDtvlykp2HiEG2
-         YXXw==
-X-Gm-Message-State: APjAAAVHWUZfjiFlTolTu8GnjZvjwo+rqvQX8zlNRoP2KTrcKH1o8lQm
-        4SKHSYPV6VRwgiqYT+F7fe3GR0UfqwbZ1hI=
-X-Google-Smtp-Source: APXvYqyGy2X1QyFInWll9cR9+qCKZirNRmZ7tB0RIVjS53rewNqC45t5w4HsIlrc5nNmfd1XHbj1RJqDHbSXSc0=
-X-Received: by 2002:a63:e250:: with SMTP id y16mr32019623pgj.392.1562105829343;
- Tue, 02 Jul 2019 15:17:09 -0700 (PDT)
-Date:   Tue,  2 Jul 2019 15:16:02 -0700
-Message-Id: <20190702221602.120879-1-hannahpan@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-Subject: [PATCH] crypto: testmgr - add tests for lzo-rle
-From:   Hannah Pan <hannahpan@google.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org
-Cc:     Dave Rodgman <dave.rodgman@arm.com>,
-        Hannah Pan <hannahpan@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FOIxNlDzVh5kXdl9uOiCioxQI2rCCNBXDcfxZ9oiGn4=;
+        b=UEDxaF+aYdGrgVc3Gt1/Du0+jG0uYirsVwt55eUdCSEG6tO0p1Vv3dHiQ8PrAuVDEf
+         jRVl4RybltNLOPkjXod4eA+ZtgPV4Ih9JvvtCo9B4I1av7KxDyMNh7d6n3FyiQJSwp3Z
+         BXZMva5a1U33rOC9phhiA5fKVB825N8TxCxdnmyfUpDFfn0pDsFArBZKL3L1khQv5SaH
+         xUHteoje2g+A4F6EEACFCaY/CaWkf8EQcVMiah6GL4aeNKQhYRMpi1EP2+fpAmQ/B1O6
+         LsXpmiDerVCnaigWPAKAfeEUgewQiOlprSn/AuIng+pfKT/V/1tVxXWvR08vvhN6ZmMo
+         cNmw==
+X-Gm-Message-State: APjAAAUPHhJ/YlGRPF5U4A60Bw0qsM33lvgcZHAbsfIqA+A7dYQxmDeG
+        7cVp5ZWeJFeBtFKUEuqAQLqGtgDl9yHi6h83ROeqpeV+
+X-Google-Smtp-Source: APXvYqzUoLIbKm+T5fsnG1Of6uNoe9L4Lk43sPF5Mm1NCv7QtIHFm6oVd5rzrOle8bjQuRlwvYUdK+/9Ip+p+q6a0f8=
+X-Received: by 2002:a6b:4107:: with SMTP id n7mr4379048ioa.12.1562135865720;
+ Tue, 02 Jul 2019 23:37:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190617160339.29179-1-andrew.smirnov@gmail.com>
+ <20190617160339.29179-2-andrew.smirnov@gmail.com> <VI1PR0402MB3485542286BC0F8814DE4EB098FD0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+In-Reply-To: <VI1PR0402MB3485542286BC0F8814DE4EB098FD0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+From:   Andrey Smirnov <andrew.smirnov@gmail.com>
+Date:   Tue, 2 Jul 2019 23:37:41 -0700
+Message-ID: <CAHQ1cqH4t7zge8ceNQ9GSA=ioMNJxerz9qJ4vtgY_Gh0Bz689A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] crypto: caam - move DMA mask selection into a function
+To:     Horia Geanta <horia.geanta@nxp.com>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Chris Spencer <christopher.spencer@sea.co.uk>,
+        Cory Tusar <cory.tusar@zii.aero>,
+        Chris Healy <cphealy@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add self-tests for the lzo-rle algorithm.
+On Thu, Jun 27, 2019 at 3:50 AM Horia Geanta <horia.geanta@nxp.com> wrote:
+>
+> On 6/17/2019 7:04 PM, Andrey Smirnov wrote:
+> > Exactly the same code to figure out DMA mask is repeated twice in the
+> > driver code. To avoid repetition, move that logic into a standalone
+> > subroutine in intern.h. While at it re-shuffle the code to make it
+> > more readable with early returns.
+> >
+> > Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+> > Cc: Chris Spencer <christopher.spencer@sea.co.uk>
+> > Cc: Cory Tusar <cory.tusar@zii.aero>
+> > Cc: Chris Healy <cphealy@gmail.com>
+> > Cc: Lucas Stach <l.stach@pengutronix.de>
+> > Cc: Horia Geant=C4=83 <horia.geanta@nxp.com>
+> > Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
+> > Cc: Leonard Crestez <leonard.crestez@nxp.com>
+> > Cc: linux-crypto@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> Reviewed-by: Horia Geant=C4=83 <horia.geanta@nxp.com>
+>
+> Being the 1st patch in the series and not i.MX8-specific, I'd say it shou=
+ld
+> be merged separately.
+>
 
-Signed-off-by: Hannah Pan <hannahpan@google.com>
----
- crypto/testmgr.c | 10 ++++++
- crypto/testmgr.h | 80 ++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 90 insertions(+)
+Can it be done by cherry picking it from the series or does it have to
+be submitted as a separate patch? I am hoping the former is possible
+since it'd make life easier for me.
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 658a7eeebab2..c8a2fd96384d 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4437,6 +4437,16 @@ static const struct alg_test_desc alg_test_descs[] = {
- 				.decomp = __VECS(lzo_decomp_tv_template)
- 			}
- 		}
-+	}, {
-+		.alg = "lzo-rle",
-+		.test = alg_test_comp,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.comp = {
-+				.comp = __VECS(lzorle_comp_tv_template),
-+				.decomp = __VECS(lzorle_decomp_tv_template)
-+			}
-+		}
- 	}, {
- 		.alg = "md4",
- 		.test = alg_test_hash,
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index 1fdae5993bc3..e7f71df2386e 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -32454,6 +32454,86 @@ static const struct comp_testvec lzo_decomp_tv_template[] = {
- 	},
- };
- 
-+static const struct comp_testvec lzorle_comp_tv_template[] = {
-+	{
-+		.inlen	= 70,
-+		.outlen	= 59,
-+		.input	= "Join us now and share the software "
-+			"Join us now and share the software ",
-+		.output	= "\x11\x01\x00\x0d\x4a\x6f\x69\x6e"
-+			  "\x20\x75\x73\x20\x6e\x6f\x77\x20"
-+			  "\x61\x6e\x64\x20\x73\x68\x61\x72"
-+			  "\x65\x20\x74\x68\x65\x20\x73\x6f"
-+			  "\x66\x74\x77\x70\x01\x32\x88\x00"
-+			  "\x0c\x65\x20\x74\x68\x65\x20\x73"
-+			  "\x6f\x66\x74\x77\x61\x72\x65\x20"
-+			  "\x11\x00\x00",
-+	}, {
-+		.inlen	= 159,
-+		.outlen	= 133,
-+		.input	= "This document describes a compression method based on the LZO "
-+			"compression algorithm.  This document defines the application of "
-+			"the LZO algorithm used in UBIFS.",
-+		.output	= "\x11\x01\x00\x2c\x54\x68\x69\x73"
-+			  "\x20\x64\x6f\x63\x75\x6d\x65\x6e"
-+			  "\x74\x20\x64\x65\x73\x63\x72\x69"
-+			  "\x62\x65\x73\x20\x61\x20\x63\x6f"
-+			  "\x6d\x70\x72\x65\x73\x73\x69\x6f"
-+			  "\x6e\x20\x6d\x65\x74\x68\x6f\x64"
-+			  "\x20\x62\x61\x73\x65\x64\x20\x6f"
-+			  "\x6e\x20\x74\x68\x65\x20\x4c\x5a"
-+			  "\x4f\x20\x2a\x8c\x00\x09\x61\x6c"
-+			  "\x67\x6f\x72\x69\x74\x68\x6d\x2e"
-+			  "\x20\x20\x2e\x54\x01\x03\x66\x69"
-+			  "\x6e\x65\x73\x20\x74\x06\x05\x61"
-+			  "\x70\x70\x6c\x69\x63\x61\x74\x76"
-+			  "\x0a\x6f\x66\x88\x02\x60\x09\x27"
-+			  "\xf0\x00\x0c\x20\x75\x73\x65\x64"
-+			  "\x20\x69\x6e\x20\x55\x42\x49\x46"
-+			  "\x53\x2e\x11\x00\x00",
-+	},
-+};
-+
-+static const struct comp_testvec lzorle_decomp_tv_template[] = {
-+	{
-+		.inlen	= 133,
-+		.outlen	= 159,
-+		.input	= "\x00\x2b\x54\x68\x69\x73\x20\x64"
-+			  "\x6f\x63\x75\x6d\x65\x6e\x74\x20"
-+			  "\x64\x65\x73\x63\x72\x69\x62\x65"
-+			  "\x73\x20\x61\x20\x63\x6f\x6d\x70"
-+			  "\x72\x65\x73\x73\x69\x6f\x6e\x20"
-+			  "\x6d\x65\x74\x68\x6f\x64\x20\x62"
-+			  "\x61\x73\x65\x64\x20\x6f\x6e\x20"
-+			  "\x74\x68\x65\x20\x4c\x5a\x4f\x2b"
-+			  "\x8c\x00\x0d\x61\x6c\x67\x6f\x72"
-+			  "\x69\x74\x68\x6d\x2e\x20\x20\x54"
-+			  "\x68\x69\x73\x2a\x54\x01\x02\x66"
-+			  "\x69\x6e\x65\x73\x94\x06\x05\x61"
-+			  "\x70\x70\x6c\x69\x63\x61\x74\x76"
-+			  "\x0a\x6f\x66\x88\x02\x60\x09\x27"
-+			  "\xf0\x00\x0c\x20\x75\x73\x65\x64"
-+			  "\x20\x69\x6e\x20\x55\x42\x49\x46"
-+			  "\x53\x2e\x11\x00\x00",
-+		.output	= "This document describes a compression method based on the LZO "
-+			"compression algorithm.  This document defines the application of "
-+			"the LZO algorithm used in UBIFS.",
-+	}, {
-+		.inlen	= 59,
-+		.outlen	= 70,
-+		.input	= "\x11\x01\x00\x0d\x4a\x6f\x69\x6e"
-+			  "\x20\x75\x73\x20\x6e\x6f\x77\x20"
-+			  "\x61\x6e\x64\x20\x73\x68\x61\x72"
-+			  "\x65\x20\x74\x68\x65\x20\x73\x6f"
-+			  "\x66\x74\x77\x70\x01\x32\x88\x00"
-+			  "\x0c\x65\x20\x74\x68\x65\x20\x73"
-+			  "\x6f\x66\x74\x77\x61\x72\x65\x20"
-+			  "\x11\x00\x00",
-+		.output	= "Join us now and share the software "
-+			"Join us now and share the software ",
-+	},
-+};
-+
- /*
-  * Michael MIC test vectors from IEEE 802.11i
-  */
--- 
-2.22.0.410.gd8fdbe21b5-goog
-
+Thanks,
+Andrey Smirnov
