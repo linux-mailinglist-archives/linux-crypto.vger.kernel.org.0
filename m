@@ -2,91 +2,145 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E14CD5E051
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Jul 2019 10:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 083975E503
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Jul 2019 15:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727004AbfGCIz5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 3 Jul 2019 04:55:57 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:45242 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727056AbfGCIz4 (ORCPT
+        id S1726825AbfGCNOM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 3 Jul 2019 09:14:12 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:36628 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbfGCNOM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 3 Jul 2019 04:55:56 -0400
-Received: by mail-lj1-f194.google.com with SMTP id m23so1485575lje.12
-        for <linux-crypto@vger.kernel.org>; Wed, 03 Jul 2019 01:55:55 -0700 (PDT)
+        Wed, 3 Jul 2019 09:14:12 -0400
+Received: by mail-pg1-f195.google.com with SMTP id c13so1246420pgg.3;
+        Wed, 03 Jul 2019 06:14:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=v0PIVf9kJ6MvTQ8WZzVWxmoyZ6elecqslJ5g4IBD9LA=;
-        b=zlO5fXgV7lnU3kXFwn6kwVVN76FkzIcBhnN9xYidaAVf3c6LDy7ovqPCz7Uoryf3sj
-         8d19eCWB+fJnCAzfRxXh9oqAOeReDmPomQujOdfcUA0hpT34VQt7PEihhEemE/14IjOb
-         kCYs1b3hKkkvQemSZZmuDBWFOXaKT8dQaTeDYUnZanLzarQKWnR0mjRZIBijTHVsnj82
-         +ghnbRxlFcf0SSWnzK/ad9PmeJ3SOW+iKem/4JS8IBuxvmC9TssqEiCAFoW+KeAmx/nh
-         4LQ66dMxzZRobQ6SDqUmgaG2VBoi5cERM2NReec+loz4JnVLSz8GPfcMhM9o6ZqiHpxe
-         VqjA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=jBkyRyPJyPqYCM7LVKEeTlHKLt/amBJBKugaRL0hZwE=;
+        b=DGEIzb1kDhOG9CcvmiofF51lt2Oy3LBkNSFVAyi4SdU9RMsBh0V1qV3pYI6gzIFB8X
+         +WZiD2cNpLTG6ASxIPJoB6W9KZ8x9u3XWIq6xQ5/cCqfLU0qAabCO+U8SgkkG5/PqTU5
+         Lovz+MSpHRrvjqqgJA38Bsdj382YQcZMoCvqtrg7iiSLesFNpkm1c4zOtzq0oYTCx6/k
+         qiNsgR+HsMpilCWODBGJkZ6egXasBuP0QuE1ocEyk5w3eQpaoWc/AxbqQP4DitTn0jnH
+         HW/DWB1U2qZl4BE15Ydo3bxKTaJFrrZBJrDox1CXPCEE49MphuvrE9tT8caMvlQb/f01
+         dTzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=v0PIVf9kJ6MvTQ8WZzVWxmoyZ6elecqslJ5g4IBD9LA=;
-        b=X4NlPyqRMgr22bsITKwAKp8ZJc/EhSvlitkMp6kCT1csVaxcybRiwMqKJfDjSVFGU7
-         MI2mLzmKkfJFKE8dU3cazGJ4pAChElAPrpg1Aw0bIpwWxje6NgH4/z/IgvlabrY57TWg
-         3di7wIUS4XcM0s1ymBpdvMbVoh5fLV1BjKhVoX8fxxMiVDvNtk2rUKc7/h3GQkG+Ijic
-         /UUw0IqEinUarzl2oTG2ii3wXrvs+mononK2fJfHVaeNoaT0SlqRvC6r6kYfjXB3srT5
-         nUbCcKivO9gwqkeGZdTUNGiXHeUI+QRGz6FbZ8MV+75NhPCESJLIUwECf72MizmiOqh3
-         3mTw==
-X-Gm-Message-State: APjAAAVkABEjBuU9PWQF1tdkDnDntwasNHWrKSBqn0tEDDxt+9HW4i88
-        HHsj+DhHJmbfCROrhgHE4anj5FizkIAK1Kx5
-X-Google-Smtp-Source: APXvYqy+Ip15Qn8Y1pI1rDQCVvh45qnllCIZwFTX73w+d3BLkADVmWcpuaSuXGGpwhXZY8rrNKIA9A==
-X-Received: by 2002:a2e:635d:: with SMTP id x90mr20607515ljb.140.1562144154649;
-        Wed, 03 Jul 2019 01:55:54 -0700 (PDT)
-Received: from e111045-lin.arm.com (89-212-78-239.static.t-2.net. [89.212.78.239])
-        by smtp.gmail.com with ESMTPSA id h4sm354529ljj.31.2019.07.03.01.55.53
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 03 Jul 2019 01:55:53 -0700 (PDT)
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Eric Biggers <ebiggers@google.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=jBkyRyPJyPqYCM7LVKEeTlHKLt/amBJBKugaRL0hZwE=;
+        b=gdccX6cS/M5ng8hZF5+1RC9ZqqKYkn+JV8dheADo1HJ1PkZ932dra6tlL0G0lY1h3m
+         jI3Dfe8ERyaQzhtraku58K+UyRliSYcdaAxgR/1HnyuTRj619q3Hh/oZ35A0ouEDZ0uo
+         9Itt+QDIEkDLL4qnXgeOy8cCSdfu03Kby9TWlM6DbeS1GeqRKc+64zPoxvFbK1fQPt7F
+         +L90nQt2UVjAqreXUiKv+gwSbBO9fczUeMQmjuI7WSpXHrRTqSpD5Dtcu22jX6/zXGyn
+         3n6De9YbGYzSMgGDB6YJEveAA81PwAQRYVX2v2XfSNlM0Nlxnnk051HnGAV22XpofK9K
+         f4BQ==
+X-Gm-Message-State: APjAAAVrnzxr6pwzANlyYaPyHwfqxvGmKVMQxAwf9Z8BGb4IFtDTwJg5
+        ka/HIVLS+w3rKPpCbVA9Yb8=
+X-Google-Smtp-Source: APXvYqyEZ8G/Ytxhng2bseN0byMkFtJdOYaPxiWptFTsBwFatUfS+q+t/spJFJj85TPYnm1YL2gsvA==
+X-Received: by 2002:a17:90a:ad41:: with SMTP id w1mr12692927pjv.52.1562159651356;
+        Wed, 03 Jul 2019 06:14:11 -0700 (PDT)
+Received: from hfq-skylake.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
+        by smtp.googlemail.com with ESMTPSA id q98sm903544pjq.20.2019.07.03.06.14.06
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Jul 2019 06:14:11 -0700 (PDT)
+From:   Fuqian Huang <huangfq.daxian@gmail.com>
+Cc:     =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Steve Capper <steve.capper@arm.com>,
-        Milan Broz <gmazyland@gmail.com>
-Subject: [PATCH v4 7/7] crypto: tcrypt - add a speed test for AEGIS128
-Date:   Wed,  3 Jul 2019 10:55:12 +0200
-Message-Id: <20190703085512.13915-8-ard.biesheuvel@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190703085512.13915-1-ard.biesheuvel@linaro.org>
-References: <20190703085512.13915-1-ard.biesheuvel@linaro.org>
+        "David S . Miller" <davem@davemloft.net>,
+        Gonglei <arei.gonglei@huawei.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Fuqian Huang <huangfq.daxian@gmail.com>
+Subject: [PATCH 05/30] crypto: Use kmemdup rather than duplicating its implementation
+Date:   Wed,  3 Jul 2019 21:13:58 +0800
+Message-Id: <20190703131358.24901-1-huangfq.daxian@gmail.com>
+X-Mailer: git-send-email 2.11.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
- crypto/tcrypt.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+kmemdup is introduced to duplicate a region of memory in a neat way.
+Rather than kmalloc/kzalloc + memset, which the programmer needs to
+write the size twice (sometimes lead to mistakes), kmemdup improves
+readability, leads to smaller code and also reduce the chances of mistakes.
+Suggestion to use kmemdup rather than using kmalloc/kzalloc + memset.
 
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index 798253f05203..72dc84e1c647 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -2332,6 +2332,13 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 				  0, speed_template_32);
- 		break;
+Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
+---
+ drivers/crypto/caam/caampkc.c              | 11 +++--------
+ drivers/crypto/virtio/virtio_crypto_algs.c |  4 +---
+ 2 files changed, 4 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/crypto/caam/caampkc.c b/drivers/crypto/caam/caampkc.c
+index fe24485274e1..a03464b4c019 100644
+--- a/drivers/crypto/caam/caampkc.c
++++ b/drivers/crypto/caam/caampkc.c
+@@ -816,7 +816,7 @@ static int caam_rsa_set_pub_key(struct crypto_akcipher *tfm, const void *key,
+ 		return ret;
  
-+	case 221:
-+		test_aead_speed("aegis128", ENCRYPT, sec,
-+				NULL, 0, 16, 8, speed_template_16);
-+		test_aead_speed("aegis128", DECRYPT, sec,
-+				NULL, 0, 16, 8, speed_template_16);
-+		break;
-+
- 	case 300:
- 		if (alg) {
- 			test_hash_speed(alg, sec, generic_hash_speed_template);
+ 	/* Copy key in DMA zone */
+-	rsa_key->e = kzalloc(raw_key.e_sz, GFP_DMA | GFP_KERNEL);
++	rsa_key->e = kmemdup(raw_key.e, raw_key.e_sz, GFP_DMA | GFP_KERNEL);
+ 	if (!rsa_key->e)
+ 		goto err;
+ 
+@@ -838,8 +838,6 @@ static int caam_rsa_set_pub_key(struct crypto_akcipher *tfm, const void *key,
+ 	rsa_key->e_sz = raw_key.e_sz;
+ 	rsa_key->n_sz = raw_key.n_sz;
+ 
+-	memcpy(rsa_key->e, raw_key.e, raw_key.e_sz);
+-
+ 	return 0;
+ err:
+ 	caam_rsa_free_key(rsa_key);
+@@ -920,11 +918,11 @@ static int caam_rsa_set_priv_key(struct crypto_akcipher *tfm, const void *key,
+ 		return ret;
+ 
+ 	/* Copy key in DMA zone */
+-	rsa_key->d = kzalloc(raw_key.d_sz, GFP_DMA | GFP_KERNEL);
++	rsa_key->d = kmemdup(raw_key.d, raw_key.d_sz, GFP_DMA | GFP_KERNEL);
+ 	if (!rsa_key->d)
+ 		goto err;
+ 
+-	rsa_key->e = kzalloc(raw_key.e_sz, GFP_DMA | GFP_KERNEL);
++	rsa_key->e = kmemdup(raw_key.e, raw_key.e_sz, GFP_DMA | GFP_KERNEL);
+ 	if (!rsa_key->e)
+ 		goto err;
+ 
+@@ -947,9 +945,6 @@ static int caam_rsa_set_priv_key(struct crypto_akcipher *tfm, const void *key,
+ 	rsa_key->e_sz = raw_key.e_sz;
+ 	rsa_key->n_sz = raw_key.n_sz;
+ 
+-	memcpy(rsa_key->d, raw_key.d, raw_key.d_sz);
+-	memcpy(rsa_key->e, raw_key.e, raw_key.e_sz);
+-
+ 	caam_rsa_set_priv_key_form(ctx, &raw_key);
+ 
+ 	return 0;
+diff --git a/drivers/crypto/virtio/virtio_crypto_algs.c b/drivers/crypto/virtio/virtio_crypto_algs.c
+index 10f266d462d6..42d19205166b 100644
+--- a/drivers/crypto/virtio/virtio_crypto_algs.c
++++ b/drivers/crypto/virtio/virtio_crypto_algs.c
+@@ -129,13 +129,11 @@ static int virtio_crypto_alg_ablkcipher_init_session(
+ 	 * Avoid to do DMA from the stack, switch to using
+ 	 * dynamically-allocated for the key
+ 	 */
+-	uint8_t *cipher_key = kmalloc(keylen, GFP_ATOMIC);
++	uint8_t *cipher_key = kmemdup(key, keylen, GFP_ATOMIC);
+ 
+ 	if (!cipher_key)
+ 		return -ENOMEM;
+ 
+-	memcpy(cipher_key, key, keylen);
+-
+ 	spin_lock(&vcrypto->ctrl_lock);
+ 	/* Pad ctrl header */
+ 	vcrypto->ctrl.header.opcode =
 -- 
-2.17.1
+2.11.0
 
