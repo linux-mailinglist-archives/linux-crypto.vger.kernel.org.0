@@ -2,68 +2,108 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 483C86029E
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Jul 2019 10:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3216035C
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Jul 2019 11:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbfGEIvV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 5 Jul 2019 04:51:21 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:40692 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726427AbfGEIvV (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 5 Jul 2019 04:51:21 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hjJw2-0004ul-QO; Fri, 05 Jul 2019 16:51:14 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hjJvz-00030Q-8S; Fri, 05 Jul 2019 16:51:11 +0800
-Date:   Fri, 5 Jul 2019 16:51:11 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc:     Milan Broz <gmazyland@gmail.com>,
-        Eric Biggers <ebiggers@google.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>
-Subject: Re: [PATCH 3/3] dm-crypt: Implement eboiv - encrypted byte-offset
- initialization vector.
-Message-ID: <20190705085111.ibpv3bmbxzy4mxgo@gondor.apana.org.au>
-References: <20190704131033.9919-1-gmazyland@gmail.com>
- <20190704131033.9919-3-gmazyland@gmail.com>
- <7a8d13ee-2d3f-5357-48c6-37f56d7eff07@gmail.com>
- <CAKv+Gu_c+OpOwrr0dSM=j=HiDpfM4sarq6u=6AXrU8jwLaEr-w@mail.gmail.com>
- <CAKv+Gu8a6cBQYsbYs8CDyGbhHx0E=+1SU7afqoy9Cs+K8PMfqA@mail.gmail.com>
- <4286b8f6-03b5-a8b4-4db2-35dda954e518@gmail.com>
- <CAKv+Gu_Nesqtz-xs0LkHYZ6HXrKkbJjq8dKL6Cnrk9ZsQ=T3jg@mail.gmail.com>
- <20190705030827.k6f7hnhxjsoxdj6b@gondor.apana.org.au>
- <CAKv+Gu-Nye8TF68bZ=fKzU-SBpW7nx3F8ECcZjLjKD_TTbtsmw@mail.gmail.com>
+        id S1727251AbfGEJs5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 5 Jul 2019 05:48:57 -0400
+Received: from mail-eopbgr690054.outbound.protection.outlook.com ([40.107.69.54]:50564
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727225AbfGEJs4 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 5 Jul 2019 05:48:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=verimatrix.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DTWMgTTf+O5xkMALT+LvaeyK0X7McomLgF+FpVVlm1s=;
+ b=LPujDsplbfd5e1qa3uzkGNtnWTP8gyQuKtBdUeCkkhn+7rL9RoWi8n8dFURz9lAOZPmFaYiUrhWGEI94rZi93Y8JvS3DVUgdcgnnMVCpwhTY2Zk+5XiVVRtOszt2b12WtDK/q5AEcF+Nrrf6f465ymWcxzHtL/uDR4+liFuB7YM=
+Received: from BY5PR20MB2962.namprd20.prod.outlook.com (52.133.254.94) by
+ BY5PR20MB3203.namprd20.prod.outlook.com (52.133.252.97) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2052.18; Fri, 5 Jul 2019 09:48:53 +0000
+Received: from BY5PR20MB2962.namprd20.prod.outlook.com
+ ([fe80::cda8:e2df:aa73:4a4e]) by BY5PR20MB2962.namprd20.prod.outlook.com
+ ([fe80::cda8:e2df:aa73:4a4e%6]) with mapi id 15.20.2052.019; Fri, 5 Jul 2019
+ 09:48:53 +0000
+From:   Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
+To:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+CC:     "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>
+Subject: skcipher and aead API question
+Thread-Topic: skcipher and aead API question
+Thread-Index: AdUzFZSC+g/TbhjQSoOcPg+7Aq6e8g==
+Date:   Fri, 5 Jul 2019 09:48:53 +0000
+Message-ID: <BY5PR20MB296261AC5E07B6E7E2B7E6A9CAF50@BY5PR20MB2962.namprd20.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=pvanleeuwen@verimatrix.com; 
+x-originating-ip: [188.204.2.113]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1b8a50a1-b2e9-454d-9b49-08d7012dfd6e
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BY5PR20MB3203;
+x-ms-traffictypediagnostic: BY5PR20MB3203:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <BY5PR20MB3203B0E9466737B1E9E61FB6CAF50@BY5PR20MB3203.namprd20.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 008960E8EC
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(39850400004)(376002)(346002)(136003)(396003)(199004)(189003)(99286004)(54906003)(53936002)(8936002)(8676002)(5660300002)(3846002)(6116002)(4326008)(81156014)(9686003)(81166006)(316002)(14454004)(2351001)(2501003)(15974865002)(26005)(186003)(6506007)(2906002)(7696005)(256004)(476003)(102836004)(486006)(55016002)(66446008)(64756008)(76116006)(73956011)(66556008)(66476007)(71200400001)(71190400001)(7736002)(66066001)(478600001)(305945005)(74316002)(86362001)(33656002)(25786009)(52536014)(6916009)(66946007)(6436002)(5640700003)(68736007)(18886075002);DIR:OUT;SFP:1101;SCL:1;SRVR:BY5PR20MB3203;H:BY5PR20MB2962.namprd20.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: verimatrix.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: hooiVMPBMitNqfVuP6h7G6o0jVR9cK+ZxH1y7OHSTSjLEbpeGrv+HuxtEjcPO8AWm5/8pVSUybIcl7w65/xF/nKcvrtn/5tmB8VuLb6g7YaDcnwpo0HMfnFZ6kg7hsSU2DdrT6MtDnSkdmyelwduzzql1WnD3sQ0KTRzfOg7N1XsbdWN3DFql+pQzP4T2DwGtKhVVOtWZK8y5IORQcrSUfnzsYov8lYautIPY4tHOKCzmaZDZ8QHp5PaTZPMPfRQs7JYVkeMn8ujl/oPeFX6LvpDDmo2CupTeYGd3rHan7o8dPdebFN0PBpbDUPR+nIXPqgJNRcyp6ov4nmZqMwN5xGzwLMcIRPCqBr09/HANVh4UlZGFqErA1sscsyLlYIGcDPtkJBM+SkSRH2d8rK+N1JP2bj0lfqJpOohmWIeByY=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKv+Gu-Nye8TF68bZ=fKzU-SBpW7nx3F8ECcZjLjKD_TTbtsmw@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+X-OriginatorOrg: verimatrix.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b8a50a1-b2e9-454d-9b49-08d7012dfd6e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jul 2019 09:48:53.2395
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: dcb260f9-022d-4495-8602-eae51035a0d0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pvanleeuwen@verimatrix.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR20MB3203
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Jul 05, 2019 at 08:32:03AM +0200, Ard Biesheuvel wrote:
->
-> > AFAICS this is using the same key as the actual data.  So why
-> > don't you combine it with the actual data when encrypting/decrypting?
-> >
-> > That is, add a block at the front of the actual data containing
-> > the little-endian byte offset and then use an IV of zero.
-> >
-> 
-> That would only work for encryption.
+Hi,
 
-True.  So this doesn't obviate the need to access the single-block
-cipher.  But the code probably should still do it that way for
-encryption for performance reasons.
+Just browsing through include/crypto/skcipher.h and include/crypto/aead.h I=
+ noticed that
+struct skcipher_alg and struct aead_alg define callbacks named 'init' and '=
+exit' as well as a
+field called 'chunksize'. The inside-secure driver is currently initializin=
+g these fields to NULL
+or 0 and that appears to work fine, but the respective heade files mention =
+that all fields
+should be filled in except for 'ivsize' ...
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+From the code I deduce that init and exit are not called if they are null p=
+ointers, which is
+fine for me as I have no need for such callbacks, but can I rely on that go=
+ing forward?
+
+I also deduce that if chunksize is set to 0, the chunksize will actually be=
+ taken from
+cra_blocksize, which is at least fine for block ciphers. Again, can I rely =
+on that?
+If so, I guess I would  still have to set it for CTR modes which have cra_b=
+locksize is 1?
+
+Finally, I noticed that aead.h defines an additional callback 'setauthsize'=
+, which the
+driver currently also keeps at NULL and that *seems* to work fine with all =
+current
+testmgr tests ... so I do wonder whether that is a must implement or not?
+And if so, which subset of auth sizes MUST be implemented?
+
+Regards,
+Pascal van Leeuwen
+Silicon IP Architect, Multi-Protocol Engines @ Verimatrix
+www.insidesecure.com
+
