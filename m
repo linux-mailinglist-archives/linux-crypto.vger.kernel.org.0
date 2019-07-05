@@ -2,492 +2,325 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37138601CE
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Jul 2019 09:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE05A6024D
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Jul 2019 10:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbfGEHxM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 5 Jul 2019 03:53:12 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:44697 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbfGEHxM (ORCPT
+        id S1727113AbfGEIjB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 5 Jul 2019 04:39:01 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:37191 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727060AbfGEIjB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 5 Jul 2019 03:53:12 -0400
-Received: by mail-ed1-f67.google.com with SMTP id k8so7390225edr.11
-        for <linux-crypto@vger.kernel.org>; Fri, 05 Jul 2019 00:53:10 -0700 (PDT)
+        Fri, 5 Jul 2019 04:39:01 -0400
+Received: by mail-ed1-f68.google.com with SMTP id w13so7546081eds.4
+        for <linux-crypto@vger.kernel.org>; Fri, 05 Jul 2019 01:38:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dAIrQUNXz4sThzPed45ui7vlPENL1s9+05aSnqLSyls=;
-        b=dLWHiX+HTU2Fk5pLT3I/8kJuR6Fe5KzSUx10rQYCD9AzR0nvN1Hy/CD1+z8FcWlP1e
-         hPmXs1ch+pec5iCLyWGpXm+lsVuK4VXEGESvW8S7qYIu1ExzvbTHgxUBIjaCV5yqNvZs
-         eB2SZDruHbwT2RpyRW1oPa7HrtU2m7ld0j5JKR7ZJAqPz9ee2EUcbE0h37J6uuJ+19oS
-         1jJbFC5wHfHjnu94re7h0a3uBS33AWlKZvJ4Y0fNrwyXMU4836lmfs1n4tbrripLAemP
-         Ips88UO+0nx+TVgoqinMrnjrl9tTpPbJbp2Rc+QreHGRUlyfiLSNlirLrT4VIY86j3SZ
-         XvZw==
+        h=from:to:cc:subject:date:message-id;
+        bh=0wG0Qp0DymOFsW+hfNfz0YB5oNq3mQs/TYBemqc1SNE=;
+        b=cr7SZLNjQkEIW7VK9CvdSCSgl9yttfJsBrx6OcHUYalczB80C1wUhL+5+T16T51Sfi
+         ozrR2qwc4Zbx+9XGfdQxUsvIHyZ8rr4MN3w3eWPvJtZFOU5NOvBqL7u9xVllb+zqYTfT
+         kTlvHiMGDmA0/VkmFnM/rsgQ3UnxFiCk1cP0whE+FRuj7y4PnjZzimglQ79oAFJp5uu+
+         9NfcXUomOqKyfY+q6+4KilUfNJbrFY1rjRVRKWHee3awWq9hgjrv0mJlqkqIXwKFxA7r
+         KElHdOXpXTjXFhhtQ3M7YH8R+op3ZTqjd6c7gNrYgfSBwSmJgZXFJRz3cStQua9eD9rU
+         1ZEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=dAIrQUNXz4sThzPed45ui7vlPENL1s9+05aSnqLSyls=;
-        b=DAxmFRaUpYgazECwbG6KHSiI3iVKR3YgvMksBKrqaktVEA8CY1hYY/79tQw+jpptY7
-         DQJeFTH0DJw8UVX0clGZYaeF1qDh4xVKwuhndh7YWQaxZTrGOGlT/bvHT4umNgs6YLQ0
-         +RVXgHBXhk/TwmJ2NTJ+6yojJqIKBirS5mZRMNBdAasBtridhT2xxb5mZMaPf9j9hUvD
-         Yw4+OeRQ15SkwFtbMFvUDkGOaO7FtyfRruD143uf4QUFqSFoplsRPsKWw2yXfYb67Y+t
-         TqeVxTUUWiafTGvko9Sufk4gnU6J76Y41kmwuaazAR14K1YKEYGtfNa5w4bLLW1bB+90
-         4TdQ==
-X-Gm-Message-State: APjAAAVyJb1+fPWdjAPMLgCjyxwhLhKP8Shjp9vHm+uqCJ83Tu4NPN4D
-        ljk1qlPXM7sLrOo7eclJzC6K2vFo
-X-Google-Smtp-Source: APXvYqwaF1hk6NCgvQqaGfTFXcfVu9MvT3A64EUAV+/SuI22hy837As26cZYY1p6QPqTiVH1DJC+rQ==
-X-Received: by 2002:a50:a56d:: with SMTP id z42mr2933564edb.241.1562313189632;
-        Fri, 05 Jul 2019 00:53:09 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=0wG0Qp0DymOFsW+hfNfz0YB5oNq3mQs/TYBemqc1SNE=;
+        b=FlucLHE9Di5kD0gaOQG4pG0XqblyeFmifydnLQf7B0OHUHGjeaVT1JH9ILltFAmKX9
+         DqPsr6PQ+wPWW4Y5Zfa5G71W7vUrOu4Xhh5WfUDNpW/czUI9jBJ2uRfRNRFIi+cC8eox
+         RjPrWLVWDUExPJZriXdCne3BHC0gVCUuwtXqEiaSadb40n1X/uQhSc+awIZWCKNWKa9B
+         LRCwZMBR/jHYugsFdfyLrPwLTlEShA1LtXGqc+8h/pypOK1mXWqiW+DsStSsUDwGfqFK
+         TqNyenAzyDZDcl+PI0tyzSjKuSOXMJT0lQdPnPxpdKkBBk0o4pOvVswmdfAcly3ka6js
+         2E6Q==
+X-Gm-Message-State: APjAAAWQSX+3mfd53yuTTJ+5bXRnIOtpI2qOnBqyB1+Oc/CSOYavk0xX
+        eyTAM/v67p+63niR4JZQk+4rYndy
+X-Google-Smtp-Source: APXvYqxkqO0QUG68MK4MqWtHOPSptm81nukfn5w1h56BYkVN0Yu4m6pjJoxAyTupLoLdR1jfYM8EkA==
+X-Received: by 2002:a17:906:505:: with SMTP id j5mr2303032eja.261.1562315938358;
+        Fri, 05 Jul 2019 01:38:58 -0700 (PDT)
 Received: from localhost.localdomain.com ([188.204.2.113])
-        by smtp.gmail.com with ESMTPSA id z2sm1551438ejp.73.2019.07.05.00.53.09
+        by smtp.gmail.com with ESMTPSA id r44sm2457525edd.20.2019.07.05.01.38.57
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Jul 2019 00:53:09 -0700 (PDT)
+        Fri, 05 Jul 2019 01:38:57 -0700 (PDT)
 From:   Pascal van Leeuwen <pascalvanl@gmail.com>
 X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
         davem@davemloft.net,
         Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: [PATCH 3/3] crypto: inside-secure - add support for authenc(hmac(sha*),rfc3686(ctr(aes))) suites
-Date:   Fri,  5 Jul 2019 08:49:24 +0200
-Message-Id: <1562309364-942-4-git-send-email-pvanleeuwen@verimatrix.com>
+Subject: [PATCH] crypto: inside-secure -reduce hash byte counters to 64 bits
+Date:   Fri,  5 Jul 2019 09:36:31 +0200
+Message-Id: <1562312191-8202-1-git-send-email-pvanleeuwen@verimatrix.com>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1562309364-942-1-git-send-email-pvanleeuwen@verimatrix.com>
-References: <1562309364-942-1-git-send-email-pvanleeuwen@verimatrix.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds support for the following AEAD ciphersuites:
-- authenc(hmac(sha1),rfc3686(ctr(aes)))
-- authenc(hmac(sha224),rfc3686(ctr(aes)))
-- authenc(hmac(sha256),rfc3686(ctr(aes)))
-- authenc(hmac(sha384),rfc3686(ctr(aes)))
-- authenc(hmac(sha512),rfc3686(ctr(aes)))
+This patch recognises the fact that the hardware cannot ever process more
+than 2,199,023,386,111 bytes of hash or HMAC payload, so there is no point
+in maintaining 128 bit wide byte counters, 64 bits is more than sufficient
 
 Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
 ---
- drivers/crypto/inside-secure/safexcel.c        |  14 +-
- drivers/crypto/inside-secure/safexcel.h        |   5 +
- drivers/crypto/inside-secure/safexcel_cipher.c | 276 +++++++++++++++++++++----
- 3 files changed, 250 insertions(+), 45 deletions(-)
+ drivers/crypto/inside-secure/safexcel.h      |  4 +-
+ drivers/crypto/inside-secure/safexcel_hash.c | 88 +++++++++++-----------------
+ 2 files changed, 36 insertions(+), 56 deletions(-)
 
-diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/inside-secure/safexcel.c
-index 26f086b..ca84119 100644
---- a/drivers/crypto/inside-secure/safexcel.c
-+++ b/drivers/crypto/inside-secure/safexcel.c
-@@ -697,17 +697,18 @@ inline int safexcel_rdesc_check_errors(struct safexcel_crypto_priv *priv,
- 	if (rdesc->buffer_overflow)
- 		dev_err(priv->dev, "Buffer overflow detected");
- 
--	if (rdesc->result_data.error_code & 0x4067) {
--		/* Fatal error (bits 0,1,2,5,6 & 14) */
-+	if (rdesc->result_data.error_code & 0x4066) {
-+		/* Fatal error (bits 1,2,5,6 & 14) */
- 		dev_err(priv->dev,
- 			"result descriptor error (%x)",
- 			rdesc->result_data.error_code);
- 		return -EIO;
- 	} else if (rdesc->result_data.error_code &
--		   (BIT(7) | BIT(4) | BIT(3))) {
-+		   (BIT(7) | BIT(4) | BIT(3) | BIT(0))) {
- 		/*
- 		 * Give priority over authentication fails:
--		 * Blocksize & overflow errors, something wrong with the input!
-+		 * Blocksize, length & overflow errors,
-+		 * something wrong with the input!
- 		 */
- 		return -EINVAL;
- 	} else if (rdesc->result_data.error_code & BIT(9)) {
-@@ -998,6 +999,11 @@ static int safexcel_request_ring_irq(void *pdev, int irqid,
- 	&safexcel_alg_authenc_hmac_sha384_cbc_aes,
- 	&safexcel_alg_authenc_hmac_sha512_cbc_aes,
- 	&safexcel_alg_authenc_hmac_sha1_cbc_des3_ede,
-+	&safexcel_alg_authenc_hmac_sha1_ctr_aes,
-+	&safexcel_alg_authenc_hmac_sha224_ctr_aes,
-+	&safexcel_alg_authenc_hmac_sha256_ctr_aes,
-+	&safexcel_alg_authenc_hmac_sha384_ctr_aes,
-+	&safexcel_alg_authenc_hmac_sha512_ctr_aes,
- };
- 
- static int safexcel_register_algorithms(struct safexcel_crypto_priv *priv)
 diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/inside-secure/safexcel.h
-index af71120..36657c3 100644
+index 36657c3..379d0b0 100644
 --- a/drivers/crypto/inside-secure/safexcel.h
 +++ b/drivers/crypto/inside-secure/safexcel.h
-@@ -740,5 +740,10 @@ int safexcel_hmac_setkey(const char *alg, const u8 *key, unsigned int keylen,
- extern struct safexcel_alg_template safexcel_alg_authenc_hmac_sha384_cbc_aes;
- extern struct safexcel_alg_template safexcel_alg_authenc_hmac_sha512_cbc_aes;
- extern struct safexcel_alg_template safexcel_alg_authenc_hmac_sha1_cbc_des3_ede;
-+extern struct safexcel_alg_template safexcel_alg_authenc_hmac_sha1_ctr_aes;
-+extern struct safexcel_alg_template safexcel_alg_authenc_hmac_sha224_ctr_aes;
-+extern struct safexcel_alg_template safexcel_alg_authenc_hmac_sha256_ctr_aes;
-+extern struct safexcel_alg_template safexcel_alg_authenc_hmac_sha384_ctr_aes;
-+extern struct safexcel_alg_template safexcel_alg_authenc_hmac_sha512_ctr_aes;
+@@ -643,8 +643,8 @@ struct safexcel_context {
+ #define HASH_CACHE_SIZE			SHA512_BLOCK_SIZE
  
- #endif
-diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers/crypto/inside-secure/safexcel_cipher.c
-index 91945b1..1783483 100644
---- a/drivers/crypto/inside-secure/safexcel_cipher.c
-+++ b/drivers/crypto/inside-secure/safexcel_cipher.c
-@@ -58,11 +58,9 @@ struct safexcel_cipher_req {
- 	int  nr_src, nr_dst;
- };
+ struct safexcel_ahash_export_state {
+-	u64 len[2];
+-	u64 processed[2];
++	u64 len;
++	u64 processed;
  
--static void safexcel_skcipher_token(struct safexcel_cipher_ctx *ctx, u8 *iv,
--				    struct safexcel_command_desc *cdesc,
--				    u32 length)
-+static void safexcel_cipher_token(struct safexcel_cipher_ctx *ctx, u8 *iv,
-+				  struct safexcel_command_desc *cdesc)
+ 	u32 digest;
+ 
+diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
+index bdbaea9..626dd82 100644
+--- a/drivers/crypto/inside-secure/safexcel_hash.c
++++ b/drivers/crypto/inside-secure/safexcel_hash.c
+@@ -41,8 +41,8 @@ struct safexcel_ahash_req {
+ 	u8 block_sz;    /* block size, only set once */
+ 	u32 state[SHA512_DIGEST_SIZE / sizeof(u32)] __aligned(sizeof(u32));
+ 
+-	u64 len[2];
+-	u64 processed[2];
++	u64 len;
++	u64 processed;
+ 
+ 	u8 cache[HASH_CACHE_SIZE] __aligned(sizeof(u32));
+ 	dma_addr_t cache_dma;
+@@ -53,12 +53,7 @@ struct safexcel_ahash_req {
+ 
+ static inline u64 safexcel_queued_len(struct safexcel_ahash_req *req)
  {
--	struct safexcel_token *token;
- 	u32 block_sz = 0;
+-	u64 len, processed;
+-
+-	len = (0xffffffff * req->len[1]) + req->len[0];
+-	processed = (0xffffffff * req->processed[1]) + req->processed[0];
+-
+-	return len - processed;
++	return req->len - req->processed;
+ }
  
- 	if (ctx->mode != CONTEXT_CONTROL_CRYPTO_MODE_ECB) {
-@@ -92,6 +90,15 @@ static void safexcel_skcipher_token(struct safexcel_cipher_ctx *ctx, u8 *iv,
- 			memcpy(cdesc->control_data.token, iv, block_sz);
+ static void safexcel_hash_token(struct safexcel_command_desc *cdesc,
+@@ -94,7 +89,7 @@ static void safexcel_context_control(struct safexcel_ahash_ctx *ctx,
+ 	 * fields. Do this now as we need it to setup the first command
+ 	 * descriptor.
+ 	 */
+-	if ((!req->processed[0]) && (!req->processed[1])) {
++	if (!req->processed) {
+ 		/* First - and possibly only - block of basic hash only */
+ 		if (req->finish) {
+ 			cdesc->control_data.control0 |=
+@@ -119,11 +114,8 @@ static void safexcel_context_control(struct safexcel_ahash_ctx *ctx,
+ 	if (req->finish) {
+ 		/* Compute digest count for hash/HMAC finish operations */
+ 		if ((req->digest == CONTEXT_CONTROL_DIGEST_PRECOMPUTED) ||
+-		    req->hmac_zlen || req->processed[1] ||
+-		    (req->processed[0] != req->block_sz)) {
+-			count = req->processed[0] / EIP197_COUNTER_BLOCK_SIZE;
+-			count += ((0x100000000ULL / EIP197_COUNTER_BLOCK_SIZE) *
+-				  req->processed[1]);
++		    req->hmac_zlen || (req->processed != req->block_sz)) {
++			count = req->processed / EIP197_COUNTER_BLOCK_SIZE;
+ 
+ 			/* This is a hardware limitation, as the
+ 			 * counter must fit into an u32. This represents
+@@ -141,8 +133,7 @@ static void safexcel_context_control(struct safexcel_ahash_ctx *ctx,
+ 		    /* Special case: zero length HMAC */
+ 		    req->hmac_zlen ||
+ 		    /* PE HW < 4.4 cannot do HMAC continue, fake using hash */
+-		    ((req->processed[1] ||
+-		      (req->processed[0] != req->block_sz)))) {
++		    (req->processed != req->block_sz)) {
+ 			/* Basic hash continue operation, need digest + cnt */
+ 			cdesc->control_data.control0 |=
+ 				CONTEXT_CONTROL_SIZE((req->state_sz >> 2) + 1) |
+@@ -234,11 +225,9 @@ static int safexcel_handle_req_result(struct safexcel_crypto_priv *priv,
+ 
+ 			memcpy(sreq->state, ctx->opad, sreq->state_sz);
+ 
+-			sreq->len[0] = sreq->block_sz +
+-				       crypto_ahash_digestsize(ahash);
+-			sreq->len[1] = 0;
+-			sreq->processed[0] = sreq->block_sz;
+-			sreq->processed[1] = 0;
++			sreq->len = sreq->block_sz +
++				    crypto_ahash_digestsize(ahash);
++			sreq->processed = sreq->block_sz;
+ 			sreq->hmac = 0;
+ 
+ 			ctx->base.needs_inv = true;
+@@ -393,9 +382,7 @@ static int safexcel_ahash_send_req(struct crypto_async_request *async, int ring,
+ 
+ 	safexcel_rdr_req_set(priv, ring, rdesc, &areq->base);
+ 
+-	req->processed[0] += len;
+-	if (req->processed[0] < len)
+-		req->processed[1]++;
++	req->processed += len;
+ 
+ 	*commands = n_cdesc;
+ 	*results = 1;
+@@ -603,15 +590,14 @@ static int safexcel_ahash_enqueue(struct ahash_request *areq)
+ 
+ 	if (ctx->base.ctxr) {
+ 		if (priv->flags & EIP197_TRC_CACHE && !ctx->base.needs_inv &&
+-		    (req->processed[0] || req->processed[1]) &&
++		    req->processed &&
+ 		    (/* invalidate for basic hash continuation finish */
+ 		     (req->finish &&
+ 		      (req->digest == CONTEXT_CONTROL_DIGEST_PRECOMPUTED)) ||
+ 		     /* invalidate if (i)digest changed */
+ 		     memcmp(ctx->base.ctxr->data, req->state, req->state_sz) ||
+ 		     /* invalidate for HMAC continuation finish */
+-		     (req->finish && (req->processed[1] ||
+-		      (req->processed[0] != req->block_sz))) ||
++		     (req->finish && (req->processed != req->block_sz)) ||
+ 		     /* invalidate for HMAC finish with odigest changed */
+ 		     (req->finish &&
+ 		      memcmp(ctx->base.ctxr->data + (req->state_sz>>2),
+@@ -662,9 +648,7 @@ static int safexcel_ahash_update(struct ahash_request *areq)
+ 	ret = safexcel_ahash_cache(areq);
+ 
+ 	/* Update total request length */
+-	req->len[0] += areq->nbytes;
+-	if (req->len[0] < areq->nbytes)
+-		req->len[1]++;
++	req->len += areq->nbytes;
+ 
+ 	/* If not all data could fit into the cache, go process the excess.
+ 	 * Also go process immediately for an HMAC IV precompute, which
+@@ -683,7 +667,7 @@ static int safexcel_ahash_final(struct ahash_request *areq)
+ 
+ 	req->finish = true;
+ 
+-	if (unlikely(!req->len[0] && !req->len[1] && !areq->nbytes)) {
++	if (unlikely(!req->len && !areq->nbytes)) {
+ 		/*
+ 		 * If we have an overall 0 length *hash* request:
+ 		 * The HW cannot do 0 length hash, so we provide the correct
+@@ -709,8 +693,8 @@ static int safexcel_ahash_final(struct ahash_request *areq)
+ 			       SHA512_DIGEST_SIZE);
+ 
+ 		return 0;
+-	} else if (unlikely(req->hmac && !req->len[1] &&
+-			    (req->len[0] == req->block_sz) &&
++	} else if (unlikely(req->hmac &&
++			    (req->len == req->block_sz) &&
+ 			    !areq->nbytes)) {
+ 		/*
+ 		 * If we have an overall 0 length *HMAC* request:
+@@ -736,7 +720,7 @@ static int safexcel_ahash_final(struct ahash_request *areq)
+ 						      255;
  		}
- 	}
-+}
-+
-+static void safexcel_skcipher_token(struct safexcel_cipher_ctx *ctx, u8 *iv,
-+				    struct safexcel_command_desc *cdesc,
-+				    u32 length)
-+{
-+	struct safexcel_token *token;
-+
-+	safexcel_cipher_token(ctx, iv, cdesc);
  
- 	/* skip over worst case IV of 4 dwords, no need to be exact */
- 	token = (struct safexcel_token *)(cdesc->control_data.token + 4);
-@@ -111,26 +118,8 @@ static void safexcel_aead_token(struct safexcel_cipher_ctx *ctx, u8 *iv,
- 				u32 cryptlen, u32 assoclen, u32 digestsize)
- {
- 	struct safexcel_token *token;
--	u32 block_sz = 0;
+-		req->len[0] += req->block_sz; /* plus 1 hash block */
++		req->len += req->block_sz; /* plus 1 hash block */
  
--	if (ctx->mode != CONTEXT_CONTROL_CRYPTO_MODE_ECB) {
--		switch (ctx->alg) {
--		case SAFEXCEL_DES:
--			block_sz = DES_BLOCK_SIZE;
--			cdesc->control_data.options |= EIP197_OPTION_2_TOKEN_IV_CMD;
--			break;
--		case SAFEXCEL_3DES:
--			block_sz = DES3_EDE_BLOCK_SIZE;
--			cdesc->control_data.options |= EIP197_OPTION_2_TOKEN_IV_CMD;
--			break;
--		case SAFEXCEL_AES:
--			block_sz = AES_BLOCK_SIZE;
--			cdesc->control_data.options |= EIP197_OPTION_4_TOKEN_IV_CMD;
--			break;
--		}
--
--		memcpy(cdesc->control_data.token, iv, block_sz);
--	}
-+	safexcel_cipher_token(ctx, iv, cdesc);
+ 		/* Set special zero-length HMAC flag */
+ 		req->hmac_zlen = true;
+@@ -766,10 +750,8 @@ static int safexcel_ahash_export(struct ahash_request *areq, void *out)
+ 	struct safexcel_ahash_req *req = ahash_request_ctx(areq);
+ 	struct safexcel_ahash_export_state *export = out;
  
- 	if (direction == SAFEXCEL_DECRYPT)
- 		cryptlen -= digestsize;
-@@ -165,18 +154,27 @@ static void safexcel_aead_token(struct safexcel_cipher_ctx *ctx, u8 *iv,
- 		token[3].instructions = EIP197_TOKEN_INS_TYPE_OUTPUT;
- 	}
+-	export->len[0] = req->len[0];
+-	export->len[1] = req->len[1];
+-	export->processed[0] = req->processed[0];
+-	export->processed[1] = req->processed[1];
++	export->len = req->len;
++	export->processed = req->processed;
  
--	token[0].opcode = EIP197_TOKEN_OPCODE_DIRECTION;
--	token[0].packet_length = assoclen;
--	token[0].instructions = EIP197_TOKEN_INS_TYPE_HASH;
--
--	token[1].opcode = EIP197_TOKEN_OPCODE_DIRECTION;
--	token[1].packet_length = cryptlen;
--	token[1].stat = EIP197_TOKEN_STAT_LAST_HASH;
--	token[1].instructions = EIP197_TOKEN_INS_LAST |
--				EIP197_TOKEN_INS_TYPE_CRYPTO |
--				EIP197_TOKEN_INS_TYPE_HASH |
--				EIP197_TOKEN_INS_TYPE_OUTPUT;
-+	if (unlikely(!cryptlen)) {
-+		token[1].opcode = EIP197_TOKEN_OPCODE_DIRECTION;
-+		token[1].packet_length = assoclen;
-+		token[1].stat = EIP197_TOKEN_STAT_LAST_HASH;
-+		token[1].instructions = EIP197_TOKEN_INS_LAST |
-+					EIP197_TOKEN_INS_TYPE_HASH;
-+	} else {
-+		if (likely(assoclen)) {
-+			token[0].opcode = EIP197_TOKEN_OPCODE_DIRECTION;
-+			token[0].packet_length = assoclen;
-+			token[0].instructions = EIP197_TOKEN_INS_TYPE_HASH;
-+		}
+ 	export->digest = req->digest;
  
-+		token[1].opcode = EIP197_TOKEN_OPCODE_DIRECTION;
-+		token[1].packet_length = cryptlen;
-+		token[1].stat = EIP197_TOKEN_STAT_LAST_HASH;
-+		token[1].instructions = EIP197_TOKEN_INS_LAST |
-+					EIP197_TOKEN_INS_TYPE_CRYPTO |
-+					EIP197_TOKEN_INS_TYPE_HASH |
-+					EIP197_TOKEN_INS_TYPE_OUTPUT;
-+	}
- }
+@@ -789,10 +771,8 @@ static int safexcel_ahash_import(struct ahash_request *areq, const void *in)
+ 	if (ret)
+ 		return ret;
  
- static int safexcel_skcipher_aes_setkey(struct crypto_skcipher *ctfm,
-@@ -220,23 +218,43 @@ static int safexcel_aead_setkey(struct crypto_aead *ctfm, const u8 *key,
- 	struct safexcel_ahash_export_state istate, ostate;
- 	struct safexcel_crypto_priv *priv = ctx->priv;
- 	struct crypto_authenc_keys keys;
-+	struct crypto_aes_ctx aes;
- 	u32 flags;
--	int err;
-+	int err = -EINVAL;
+-	req->len[0] = export->len[0];
+-	req->len[1] = export->len[1];
+-	req->processed[0] = export->processed[0];
+-	req->processed[1] = export->processed[1];
++	req->len = export->len;
++	req->processed = export->processed;
  
- 	if (crypto_authenc_extractkeys(&keys, key, len) != 0)
- 		goto badkey;
+ 	req->digest = export->digest;
  
--	if (keys.enckeylen > sizeof(ctx->key))
--		goto badkey;
-+	if (ctx->mode == CONTEXT_CONTROL_CRYPTO_MODE_CTR_LOAD) {
-+		/* 20 is minimum AES key: 16 bytes + 4 bytes nonce */
-+		if (keys.enckeylen < 20)
-+			goto badkey;
-+		/* last 4 bytes of key are the nonce! */
-+		ctx->nonce = *(u32 *)(keys.enckey + keys.enckeylen - 4);
-+		/* exclude the nonce here */
-+		keys.enckeylen -= 4;
-+	}
+@@ -902,8 +882,8 @@ static int safexcel_hmac_sha1_init(struct ahash_request *areq)
+ 	/* Start from ipad precompute */
+ 	memcpy(req->state, ctx->ipad, SHA1_DIGEST_SIZE);
+ 	/* Already processed the key^ipad part now! */
+-	req->len[0]	  = SHA1_BLOCK_SIZE;
+-	req->processed[0] = SHA1_BLOCK_SIZE;
++	req->len	= SHA1_BLOCK_SIZE;
++	req->processed	= SHA1_BLOCK_SIZE;
  
- 	/* Encryption key */
--	if (ctx->alg == SAFEXCEL_3DES) {
-+	switch (ctx->alg) {
-+	case SAFEXCEL_3DES:
-+		if (keys.enckeylen != 24)
-+			goto badkey;
- 		flags = crypto_aead_get_flags(ctfm);
- 		err = __des3_verify_key(&flags, keys.enckey);
- 		crypto_aead_set_flags(ctfm, flags);
+ 	ctx->alg = CONTEXT_CONTROL_CRYPTO_ALG_SHA1;
+ 	req->digest = CONTEXT_CONTROL_DIGEST_PRECOMPUTED;
+@@ -1258,8 +1238,8 @@ static int safexcel_hmac_sha224_init(struct ahash_request *areq)
+ 	/* Start from ipad precompute */
+ 	memcpy(req->state, ctx->ipad, SHA256_DIGEST_SIZE);
+ 	/* Already processed the key^ipad part now! */
+-	req->len[0]	  = SHA256_BLOCK_SIZE;
+-	req->processed[0] = SHA256_BLOCK_SIZE;
++	req->len	= SHA256_BLOCK_SIZE;
++	req->processed	= SHA256_BLOCK_SIZE;
  
- 		if (unlikely(err))
--			return err;
-+			goto badkey_expflags;
-+		break;
-+	case SAFEXCEL_AES:
-+		err = crypto_aes_expand_key(&aes, keys.enckey, keys.enckeylen);
-+		if (unlikely(err))
-+			goto badkey;
-+		break;
-+	default:
-+		dev_err(priv->dev, "aead: unsupported cipher algorithm\n");
-+		goto badkey;
- 	}
+ 	ctx->alg = CONTEXT_CONTROL_CRYPTO_ALG_SHA224;
+ 	req->digest = CONTEXT_CONTROL_DIGEST_PRECOMPUTED;
+@@ -1327,8 +1307,8 @@ static int safexcel_hmac_sha256_init(struct ahash_request *areq)
+ 	/* Start from ipad precompute */
+ 	memcpy(req->state, ctx->ipad, SHA256_DIGEST_SIZE);
+ 	/* Already processed the key^ipad part now! */
+-	req->len[0]	  = SHA256_BLOCK_SIZE;
+-	req->processed[0] = SHA256_BLOCK_SIZE;
++	req->len	= SHA256_BLOCK_SIZE;
++	req->processed	= SHA256_BLOCK_SIZE;
  
- 	if (priv->flags & EIP197_TRC_CACHE && ctx->base.ctxr_dma &&
-@@ -295,8 +313,9 @@ static int safexcel_aead_setkey(struct crypto_aead *ctfm, const u8 *key,
+ 	ctx->alg = CONTEXT_CONTROL_CRYPTO_ALG_SHA256;
+ 	req->digest = CONTEXT_CONTROL_DIGEST_PRECOMPUTED;
+@@ -1504,8 +1484,8 @@ static int safexcel_hmac_sha512_init(struct ahash_request *areq)
+ 	/* Start from ipad precompute */
+ 	memcpy(req->state, ctx->ipad, SHA512_DIGEST_SIZE);
+ 	/* Already processed the key^ipad part now! */
+-	req->len[0]	  = SHA512_BLOCK_SIZE;
+-	req->processed[0] = SHA512_BLOCK_SIZE;
++	req->len	= SHA512_BLOCK_SIZE;
++	req->processed	= SHA512_BLOCK_SIZE;
  
- badkey:
- 	crypto_aead_set_flags(ctfm, CRYPTO_TFM_RES_BAD_KEY_LEN);
-+badkey_expflags:
- 	memzero_explicit(&keys, sizeof(keys));
--	return -EINVAL;
-+	return err;
- }
+ 	ctx->alg = CONTEXT_CONTROL_CRYPTO_ALG_SHA512;
+ 	req->digest = CONTEXT_CONTROL_DIGEST_PRECOMPUTED;
+@@ -1573,8 +1553,8 @@ static int safexcel_hmac_sha384_init(struct ahash_request *areq)
+ 	/* Start from ipad precompute */
+ 	memcpy(req->state, ctx->ipad, SHA512_DIGEST_SIZE);
+ 	/* Already processed the key^ipad part now! */
+-	req->len[0]	  = SHA512_BLOCK_SIZE;
+-	req->processed[0] = SHA512_BLOCK_SIZE;
++	req->len	= SHA512_BLOCK_SIZE;
++	req->processed	= SHA512_BLOCK_SIZE;
  
- static int safexcel_context_control(struct safexcel_cipher_ctx *ctx,
-@@ -1386,6 +1405,7 @@ static int safexcel_aead_cra_init(struct crypto_tfm *tfm)
+ 	ctx->alg = CONTEXT_CONTROL_CRYPTO_ALG_SHA384;
+ 	req->digest = CONTEXT_CONTROL_DIGEST_PRECOMPUTED;
+@@ -1689,8 +1669,8 @@ static int safexcel_hmac_md5_init(struct ahash_request *areq)
+ 	/* Start from ipad precompute */
+ 	memcpy(req->state, ctx->ipad, MD5_DIGEST_SIZE);
+ 	/* Already processed the key^ipad part now! */
+-	req->len[0]	  = MD5_HMAC_BLOCK_SIZE;
+-	req->processed[0] = MD5_HMAC_BLOCK_SIZE;
++	req->len	= MD5_HMAC_BLOCK_SIZE;
++	req->processed	= MD5_HMAC_BLOCK_SIZE;
  
- 	ctx->priv = tmpl->priv;
- 
-+	ctx->alg  = SAFEXCEL_AES; /* default */
- 	ctx->aead = true;
- 	ctx->base.send = safexcel_aead_send;
- 	ctx->base.handle_result = safexcel_aead_handle_result;
-@@ -1562,6 +1582,15 @@ struct safexcel_alg_template safexcel_alg_authenc_hmac_sha384_cbc_aes = {
- 	},
- };
- 
-+static int safexcel_aead_sha1_des3_cra_init(struct crypto_tfm *tfm)
-+{
-+	struct safexcel_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	safexcel_aead_sha1_cra_init(tfm);
-+	ctx->alg = SAFEXCEL_3DES; /* override default */
-+	return 0;
-+}
-+
- static int safexcel_aead_encrypt_3des(struct aead_request *req)
- {
- 	struct safexcel_cipher_req *creq = aead_request_ctx(req);
-@@ -1595,7 +1624,172 @@ struct safexcel_alg_template safexcel_alg_authenc_hmac_sha1_cbc_des3_ede = {
- 			.cra_blocksize = DES3_EDE_BLOCK_SIZE,
- 			.cra_ctxsize = sizeof(struct safexcel_cipher_ctx),
- 			.cra_alignmask = 0,
--			.cra_init = safexcel_aead_sha1_cra_init,
-+			.cra_init = safexcel_aead_sha1_des3_cra_init,
-+			.cra_exit = safexcel_aead_cra_exit,
-+			.cra_module = THIS_MODULE,
-+		},
-+	},
-+};
-+
-+static int safexcel_aead_sha1_ctr_cra_init(struct crypto_tfm *tfm)
-+{
-+	struct safexcel_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	safexcel_aead_sha1_cra_init(tfm);
-+	ctx->mode = CONTEXT_CONTROL_CRYPTO_MODE_CTR_LOAD; /* override default */
-+	return 0;
-+}
-+
-+struct safexcel_alg_template safexcel_alg_authenc_hmac_sha1_ctr_aes = {
-+	.type = SAFEXCEL_ALG_TYPE_AEAD,
-+	.alg.aead = {
-+		.setkey = safexcel_aead_setkey,
-+		.encrypt = safexcel_aead_encrypt_aes,
-+		.decrypt = safexcel_aead_decrypt_aes,
-+		.ivsize = 8,
-+		.maxauthsize = SHA1_DIGEST_SIZE,
-+		.base = {
-+			.cra_name = "authenc(hmac(sha1),rfc3686(ctr(aes)))",
-+			.cra_driver_name = "safexcel-authenc-hmac-sha1-ctr-aes",
-+			.cra_priority = 300,
-+			.cra_flags = CRYPTO_ALG_ASYNC |
-+				     CRYPTO_ALG_KERN_DRIVER_ONLY,
-+			.cra_blocksize = 1,
-+			.cra_ctxsize = sizeof(struct safexcel_cipher_ctx),
-+			.cra_alignmask = 0,
-+			.cra_init = safexcel_aead_sha1_ctr_cra_init,
-+			.cra_exit = safexcel_aead_cra_exit,
-+			.cra_module = THIS_MODULE,
-+		},
-+	},
-+};
-+
-+static int safexcel_aead_sha256_ctr_cra_init(struct crypto_tfm *tfm)
-+{
-+	struct safexcel_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	safexcel_aead_sha256_cra_init(tfm);
-+	ctx->mode = CONTEXT_CONTROL_CRYPTO_MODE_CTR_LOAD; /* override default */
-+	return 0;
-+}
-+
-+struct safexcel_alg_template safexcel_alg_authenc_hmac_sha256_ctr_aes = {
-+	.type = SAFEXCEL_ALG_TYPE_AEAD,
-+	.alg.aead = {
-+		.setkey = safexcel_aead_setkey,
-+		.encrypt = safexcel_aead_encrypt_aes,
-+		.decrypt = safexcel_aead_decrypt_aes,
-+		.ivsize = 8,
-+		.maxauthsize = SHA256_DIGEST_SIZE,
-+		.base = {
-+			.cra_name = "authenc(hmac(sha256),rfc3686(ctr(aes)))",
-+			.cra_driver_name = "safexcel-authenc-hmac-sha256-ctr-aes",
-+			.cra_priority = 300,
-+			.cra_flags = CRYPTO_ALG_ASYNC |
-+				     CRYPTO_ALG_KERN_DRIVER_ONLY,
-+			.cra_blocksize = 1,
-+			.cra_ctxsize = sizeof(struct safexcel_cipher_ctx),
-+			.cra_alignmask = 0,
-+			.cra_init = safexcel_aead_sha256_ctr_cra_init,
-+			.cra_exit = safexcel_aead_cra_exit,
-+			.cra_module = THIS_MODULE,
-+		},
-+	},
-+};
-+
-+static int safexcel_aead_sha224_ctr_cra_init(struct crypto_tfm *tfm)
-+{
-+	struct safexcel_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	safexcel_aead_sha224_cra_init(tfm);
-+	ctx->mode = CONTEXT_CONTROL_CRYPTO_MODE_CTR_LOAD; /* override default */
-+	return 0;
-+}
-+
-+struct safexcel_alg_template safexcel_alg_authenc_hmac_sha224_ctr_aes = {
-+	.type = SAFEXCEL_ALG_TYPE_AEAD,
-+	.alg.aead = {
-+		.setkey = safexcel_aead_setkey,
-+		.encrypt = safexcel_aead_encrypt_aes,
-+		.decrypt = safexcel_aead_decrypt_aes,
-+		.ivsize = 8,
-+		.maxauthsize = SHA224_DIGEST_SIZE,
-+		.base = {
-+			.cra_name = "authenc(hmac(sha224),rfc3686(ctr(aes)))",
-+			.cra_driver_name = "safexcel-authenc-hmac-sha224-ctr-aes",
-+			.cra_priority = 300,
-+			.cra_flags = CRYPTO_ALG_ASYNC |
-+				     CRYPTO_ALG_KERN_DRIVER_ONLY,
-+			.cra_blocksize = 1,
-+			.cra_ctxsize = sizeof(struct safexcel_cipher_ctx),
-+			.cra_alignmask = 0,
-+			.cra_init = safexcel_aead_sha224_ctr_cra_init,
-+			.cra_exit = safexcel_aead_cra_exit,
-+			.cra_module = THIS_MODULE,
-+		},
-+	},
-+};
-+
-+static int safexcel_aead_sha512_ctr_cra_init(struct crypto_tfm *tfm)
-+{
-+	struct safexcel_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	safexcel_aead_sha512_cra_init(tfm);
-+	ctx->mode = CONTEXT_CONTROL_CRYPTO_MODE_CTR_LOAD; /* override default */
-+	return 0;
-+}
-+
-+struct safexcel_alg_template safexcel_alg_authenc_hmac_sha512_ctr_aes = {
-+	.type = SAFEXCEL_ALG_TYPE_AEAD,
-+	.alg.aead = {
-+		.setkey = safexcel_aead_setkey,
-+		.encrypt = safexcel_aead_encrypt_aes,
-+		.decrypt = safexcel_aead_decrypt_aes,
-+		.ivsize = 8,
-+		.maxauthsize = SHA512_DIGEST_SIZE,
-+		.base = {
-+			.cra_name = "authenc(hmac(sha512),rfc3686(ctr(aes)))",
-+			.cra_driver_name = "safexcel-authenc-hmac-sha512-ctr-aes",
-+			.cra_priority = 300,
-+			.cra_flags = CRYPTO_ALG_ASYNC |
-+				     CRYPTO_ALG_KERN_DRIVER_ONLY,
-+			.cra_blocksize = 1,
-+			.cra_ctxsize = sizeof(struct safexcel_cipher_ctx),
-+			.cra_alignmask = 0,
-+			.cra_init = safexcel_aead_sha512_ctr_cra_init,
-+			.cra_exit = safexcel_aead_cra_exit,
-+			.cra_module = THIS_MODULE,
-+		},
-+	},
-+};
-+
-+static int safexcel_aead_sha384_ctr_cra_init(struct crypto_tfm *tfm)
-+{
-+	struct safexcel_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	safexcel_aead_sha384_cra_init(tfm);
-+	ctx->mode = CONTEXT_CONTROL_CRYPTO_MODE_CTR_LOAD; /* override default */
-+	return 0;
-+}
-+
-+struct safexcel_alg_template safexcel_alg_authenc_hmac_sha384_ctr_aes = {
-+	.type = SAFEXCEL_ALG_TYPE_AEAD,
-+	.alg.aead = {
-+		.setkey = safexcel_aead_setkey,
-+		.encrypt = safexcel_aead_encrypt_aes,
-+		.decrypt = safexcel_aead_decrypt_aes,
-+		.ivsize = 8,
-+		.maxauthsize = SHA384_DIGEST_SIZE,
-+		.base = {
-+			.cra_name = "authenc(hmac(sha384),rfc3686(ctr(aes)))",
-+			.cra_driver_name = "safexcel-authenc-hmac-sha384-ctr-aes",
-+			.cra_priority = 300,
-+			.cra_flags = CRYPTO_ALG_ASYNC |
-+				     CRYPTO_ALG_KERN_DRIVER_ONLY,
-+			.cra_blocksize = 1,
-+			.cra_ctxsize = sizeof(struct safexcel_cipher_ctx),
-+			.cra_alignmask = 0,
-+			.cra_init = safexcel_aead_sha384_ctr_cra_init,
- 			.cra_exit = safexcel_aead_cra_exit,
- 			.cra_module = THIS_MODULE,
- 		},
+ 	ctx->alg = CONTEXT_CONTROL_CRYPTO_ALG_MD5;
+ 	req->digest = CONTEXT_CONTROL_DIGEST_PRECOMPUTED;
 -- 
 1.8.3.1
 
