@@ -2,63 +2,96 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D03B760D72
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Jul 2019 23:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B4961A93
+	for <lists+linux-crypto@lfdr.de>; Mon,  8 Jul 2019 08:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbfGEV7o (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 5 Jul 2019 17:59:44 -0400
-Received: from out176.e-adjacentdigital.co.uk ([178.156.202.12]:42116 "EHLO
-        slot0.mathewsons.ga" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbfGEV7o (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 5 Jul 2019 17:59:44 -0400
-X-Greylist: delayed 625 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Jul 2019 17:59:42 EDT
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=mathewsons.ga;
- h=Content-Type:MIME-Version:Content-Transfer-Encoding:Content-Description:Subject:To:From:Date:Reply-To:Message-ID; i=purchase@mathewsons.ga;
- bh=onxYcir3NvpNjk2I/gjm/O+ljxo=;
- b=CZzNdon15Y6PWDFgBHrnkB5Ii0NaKRaAM5XCe6o/qAr5cgYTlhFoPeSvv1e6bPf40Z6LxWPn2aH2
-   AyurfD+ky9MT7i89cRu5uQZqQe2KUAZN+wWLrIN7PQVS+4fN/xvdQwQ9CQ2+4gdHPPs1+wl9mKP4
-   SJZFSYdIo5Ldavpc+agCDphdeWHjQuoxowqNufDnZLGVueblIo2VyoLdBre9Kv3wmLTiTWmSOJfK
-   XN8EWaas0+lcCn6DS/VSB376FCX6uCNb27dHw4Ls+lDNyMoiuwmb7u8I0s3pbAX9rh52xDQLdHOG
-   81qgdgWyIALLHN+yiS61Z7m9fC1Ar3gYbPhfAQ==
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=mathewsons.ga;
- b=Ko5C02W4H6J2BMjYTUcxdF/x5nUcyBXS5Veo7swcxMCybk6/rRgndQIqDT+7MYr68Eu1GV8/uez0
-   Y1U6OFcOdZfEEaxIUph1Hla9cqo87kW/Ji7sTnT2XYDBVrCj7uxjYLPkco579grEMPzv7x49Udyg
-   pPIZ/Sldx6ATEcoyK9ObEBduEslCV3xNrIHVwFXpV+HfgHY69HyI0IZ4PRCO9AwEEnHsgdsUFsn2
-   /UjXZAw5gODIwixH2+ylbX/mn6rxkM/ss1ZNpAJlDulLGrVC4kMo33m4YtAgttAS6ltUBkO06eT4
-   4g+KKH4V8/sNaOAMUtL0U0+JxPrgisJ0Ovkpow==;
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Quotes needed For July Shipments
-To:     Recipients <purchase@mathewsons.ga>
-From:   "Sales -Jpexcc." <purchase@mathewsons.ga>
-Date:   Sat, 06 Jul 2019 00:39:12 +0300
-Reply-To: jpexcc@aol.com
-Message-ID: <0.0.4D.139.1D53379E42173C6.0@slot0.mathewsons.ga>
+        id S1729073AbfGHGVS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 8 Jul 2019 02:21:18 -0400
+Received: from mxhk.zte.com.cn ([63.217.80.70]:24398 "EHLO mxhk.zte.com.cn"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727218AbfGHGVR (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 8 Jul 2019 02:21:17 -0400
+Received: from mse-fl2.zte.com.cn (unknown [10.30.14.239])
+        by Forcepoint Email with ESMTPS id 1146F7C42D795FFB758E;
+        Mon,  8 Jul 2019 14:21:16 +0800 (CST)
+Received: from notes_smtp.zte.com.cn ([10.30.1.239])
+        by mse-fl2.zte.com.cn with ESMTP id x686KmPG049233;
+        Mon, 8 Jul 2019 14:20:48 +0800 (GMT-8)
+        (envelope-from wen.yang99@zte.com.cn)
+Received: from fox-host8.localdomain ([10.74.120.8])
+          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
+          with ESMTP id 2019070814205197-2164427 ;
+          Mon, 8 Jul 2019 14:20:51 +0800 
+From:   Wen Yang <wen.yang99@zte.com.cn>
+To:     linux-kernel@vger.kernel.org
+Cc:     xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
+        cheng.shengyu@zte.com.cn, Wen Yang <wen.yang99@zte.com.cn>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        Armijn Hemel <armijn@tjaldur.nl>,
+        Julia Lawall <Julia.Lawall@lip6.fr>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH] crypto: crypto4xx: fix a potential double free in ppc4xx_trng_probe
+Date:   Mon, 8 Jul 2019 14:19:03 +0800
+Message-Id: <1562566745-7447-2-git-send-email-wen.yang99@zte.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1562566745-7447-1-git-send-email-wen.yang99@zte.com.cn>
+References: <1562566745-7447-1-git-send-email-wen.yang99@zte.com.cn>
+X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
+ 21, 2013) at 2019-07-08 14:20:52,
+        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
+ 2019-07-08 14:20:49,
+        Serialize complete at 2019-07-08 14:20:49
+X-MAIL: mse-fl2.zte.com.cn x686KmPG049233
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello dear,
- =
+There is a possible double free issue in ppc4xx_trng_probe():
 
-We are in the market for your products after meeting at your stand during l=
-ast expo.
- =
+85:	dev->trng_base = of_iomap(trng, 0);
+86:	of_node_put(trng);          ---> released here
+87:	if (!dev->trng_base)
+88:		goto err_out;
+...
+110:	ierr_out:
+111:		of_node_put(trng);  ---> double released here
+...
 
-Please kindly send us your latest catalog and price list so as to start a n=
-ew project/order as promised during the exhibition. =
+This issue was detected by using the Coccinelle software.
+We fix it by removing the unnecessary of_node_put().
 
- =
+Fixes: 5343e674f32 ("crypto4xx: integrate ppc4xx-rng into crypto4xx")
+Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Allison Randal <allison@lohutok.net>
+Cc: Armijn Hemel <armijn@tjaldur.nl>
+Cc: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/crypto/amcc/crypto4xx_trng.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I would appreciate your response about the above details required so we can=
- revert back to you asap.
- =
+diff --git a/drivers/crypto/amcc/crypto4xx_trng.c b/drivers/crypto/amcc/crypto4xx_trng.c
+index 02a6bed3..f10a87e 100644
+--- a/drivers/crypto/amcc/crypto4xx_trng.c
++++ b/drivers/crypto/amcc/crypto4xx_trng.c
+@@ -108,7 +108,6 @@ void ppc4xx_trng_probe(struct crypto4xx_core_device *core_dev)
+ 	return;
+ 
+ err_out:
+-	of_node_put(trng);
+ 	iounmap(dev->trng_base);
+ 	kfree(rng);
+ 	dev->trng_base = NULL;
+-- 
+2.9.5
 
-Kind regards
- =
-
-Rhema Zoeh
