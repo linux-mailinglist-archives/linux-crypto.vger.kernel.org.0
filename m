@@ -2,48 +2,85 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FC264E59
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jul 2019 00:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7D5647C7
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jul 2019 16:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbfGJWE1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Wed, 10 Jul 2019 18:04:27 -0400
-Received: from 50-244-196-250-static.hfc.comcastbusiness.net ([50.244.196.250]:56929
-        "EHLO hometime.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726245AbfGJWE0 (ORCPT
+        id S1727658AbfGJOFz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 10 Jul 2019 10:05:55 -0400
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:43392 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727541AbfGJOFy (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 10 Jul 2019 18:04:26 -0400
-X-Greylist: delayed 18198 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Jul 2019 18:04:22 EDT
-Received: from [100.120.45.199] ([195.181.172.132]) by hometime.com with Microsoft SMTPSVC(6.0.3790.4675);
-         Wed, 10 Jul 2019 00:08:11 -0500
-Content-Type: text/plain; charset="iso-8859-1"
+        Wed, 10 Jul 2019 10:05:54 -0400
+Received: by mail-ua1-f41.google.com with SMTP id o2so907712uae.10
+        for <linux-crypto@vger.kernel.org>; Wed, 10 Jul 2019 07:05:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mn+ZlmXMoQVb8yGmJIWtoOdOytUNAr89dX9zWx6CB0A=;
+        b=Qjdcrz2I8BrO/Fp8heGmw+8ii1A686F5gxDnoYaVIphQ3/bq6JxCkW7NWLWM/THhVM
+         W0JHZkIXWWgYJrb/i2IM27neacw57z7X0zbGHwr1ksGUkeqMlpPiBMsKVvIp6VU6OPFv
+         TawjXFNnxQD/VG0Ebvw0KoNrU1QjEubmSRPw1XijCTdNBCWmwLDhkg1xvTPH3xsL0QyA
+         T3UUXqYAFi6zjSLLFGtQ8wgYiHp3qxhsspn3qeQmUHAp2cuxaeybjnSjksDV0T72XPcH
+         Mi+sSDpSaecJuqvR6xqSGuDpMV1QN4eyr/dIGPaUgPQD9EgRudb+E8diYlGLvF2WxD9M
+         o5yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mn+ZlmXMoQVb8yGmJIWtoOdOytUNAr89dX9zWx6CB0A=;
+        b=BDWN2F74J8O+cq0taxtGy5veQJxQ8SrGTXaN1fGP3QkiNtO2HbkEfCOLPb9lXvn/Pl
+         y3QtxxJQzZyfwubFwOGn1IAKlxTys10n7DwBufrBzhTwmDvgzE4j/AQWCHoKHst8nYXc
+         MXesb8XRbOfmo6fSaVNtmHoDNP4F/q7BjBvYRcZYgXPH+DS3mETUzAJc6PUVilZpy1V2
+         mKqZRt7sM64HIq6IFEmHxSph0D1wUuZ0O+m2f8pfUVzNtfXRVr8+IBc987qk08sPmRXv
+         KCkuFMgRsdbbcaE/wBXIIKNeC9pc6aJ4VezD0UlUmFo3Go6JRnvxCPyeXP4JmFcRem+f
+         r8lA==
+X-Gm-Message-State: APjAAAXsYh3CCHuAYHW9UMJj+PWj8RIoOQLeFpNWPnSsf5Xlu/QuSaDi
+        ZjEHwOnzMQqJ8hAyt5UcucGvbXPOGLnsDFqGnCHzm07A+cc=
+X-Google-Smtp-Source: APXvYqxPIo/zI7WlN+1FZszqnuulz7d5DHaC8rUzK4VeHniB0Rh0XbNaLNITGUVXBGq8bifcxRMFXpQGieJCj0zs4/Y=
+X-Received: by 2002:ab0:168a:: with SMTP id e10mr17886088uaf.87.1562767553483;
+ Wed, 10 Jul 2019 07:05:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Greetings!
-To:     Recipients <fuqingzheng@asia.com>
-From:   fuqingzheng@asia.com
-Date:   Wed, 10 Jul 2019 07:07:37 +0200
-Reply-To: zhengfuqing@yandex.com
-X-Antivirus: Avast (VPS 190709-4, 09-07-2019), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <SBSSeKg1bzuDwP6SAH200008fea@hometime.com>
-X-OriginalArrivalTime: 10 Jul 2019 05:08:11.0766 (UTC) FILETIME=[78AE5160:01D536DD]
+References: <TU4PR8401MB0544875B118D39899547FDEFF6F10@TU4PR8401MB0544.NAMPRD84.PROD.OUTLOOK.COM>
+ <CAOtvUMcUeVYh_eUrQWqunR8NUpos5-7zRU0jn0RdSTMtikm0XQ@mail.gmail.com> <TU4PR8401MB0544C80A8F678CF1DF2BCDF5F6F10@TU4PR8401MB0544.NAMPRD84.PROD.OUTLOOK.COM>
+In-Reply-To: <TU4PR8401MB0544C80A8F678CF1DF2BCDF5F6F10@TU4PR8401MB0544.NAMPRD84.PROD.OUTLOOK.COM>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Wed, 10 Jul 2019 17:05:42 +0300
+Message-ID: <CAOtvUMeTciKu91cwGidXm1bvaAB+zWvfdARgwF5m64QWEpYx8Q@mail.gmail.com>
+Subject: Re: CAVS test harness
+To:     "Bhat, Jayalakshmi Manjunath" <jayalakshmi.bhat@hp.com>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Good day,
+On Tue, Jul 9, 2019 at 7:07 PM Bhat, Jayalakshmi Manjunath
+<jayalakshmi.bhat@hp.com> wrote:
+>
+> Hi Gilad,
+>
+> Thank you very much for the response. I am an entry level engineer when it comes to Linux Kernel.  I have gone through the testmgr. I am not very clear on how to use it for KAT (Known answer tests), MMT and MCT tests.
+> Also I am not clear on how to use it with various test vectors for AES, SHA, HMAC, DRBG and RSA
+>
+> If you point me any example on how to use it, it will provide me a direction to use it.
 
-  I have a mutual business proposal, which refers to the transfer of a large amount of money to an account abroad, with your help as a foreign partner as a beneficiary of the funds. Everything about this transaction will be legal without any bridge of financial authority both in my country and yours. If you are interested and I will give you more information about the project as soon as I receive your positive response.
 
-Best regards,
+testmgr automatically runs KAT tests for every crypto protocol that
+registers with the kernel at the time of registration. You don't have
+to do anything for it to work (except avoiding disabling it - there is
+a kernel config option to do that at build time but it is not the
+default).
+This is typically either at boot for statically built drivers or at
+module load time for dynamically built drivers.
 
-Executive Director.
- 
-ICBC. China
+If the test fails the specific implementation of that crypto algorithm
+will be disabled and if running in FIPS enforcement mode the entire
+system will be shut down.
 
----
-Dit e-mailbericht is gecontroleerd op virussen met Avast antivirussoftware.
-https://www.avast.com/antivirus
+I am not sure what MMT and MCT tests are.
 
+I hope this helped.
+Gilad
