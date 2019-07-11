@@ -2,59 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73115654FC
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jul 2019 13:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C78F65659
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jul 2019 14:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728055AbfGKLKT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 11 Jul 2019 07:10:19 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:39668 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727865AbfGKLKT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 11 Jul 2019 07:10:19 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hlWxr-0001EV-Au; Thu, 11 Jul 2019 19:10:15 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hlWxn-0006ie-Mw; Thu, 11 Jul 2019 19:10:11 +0800
-Date:   Thu, 11 Jul 2019 19:10:11 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Kalyani Akula <kalyania@xilinx.com>
-Cc:     Stephan Mueller <smueller@chronox.de>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sarat Chand Savitala <saratcha@xilinx.com>
-Subject: Re: [RFC PATCH 4/5] crypto: Adds user space interface for
- ALG_SET_KEY_TYPE
-Message-ID: <20190711111011.x3qzukon2zqnsgac@gondor.apana.org.au>
-References: <1547708541-23730-1-git-send-email-kalyani.akula@xilinx.com>
- <18759853.IUaQuE38eh@tauon.chronox.de>
- <SN6PR02MB5135CE53C3E3FB34CA5E6BA8AF320@SN6PR02MB5135.namprd02.prod.outlook.com>
- <2554415.t45IJDmies@tauon.chronox.de>
- <BN7PR02MB5124A7E685AC0F59AFBEFC8DAF130@BN7PR02MB5124.namprd02.prod.outlook.com>
- <20190610063501.u3q2k2vgytvknxs3@gondor.apana.org.au>
- <BN7PR02MB5124F4680E424C25D77D178DAFF30@BN7PR02MB5124.namprd02.prod.outlook.com>
+        id S1728320AbfGKMEs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 11 Jul 2019 08:04:48 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:30341 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728427AbfGKMEs (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 11 Jul 2019 08:04:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1562846686;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=QDS5m6ANTja1UHGsEZTYM5Uqcp3Q5tifOJ+FzapbgHU=;
+        b=p2mj6ert5DYU2/pDGFn3m5hsdjkaPRT031SKXff0W83OSFfYVT9WRo2K5EIQlLWsru
+        GZ2TO0ZsDotSnyx1d9SpnaV1Z8ygjubfNSRKjcg0CpiF0A8ZhAB4RsVSo1Ds2ClyXgcv
+        lQHypijIeMXfmDIk5CcmreePPFluwOG2FcmoeqTX4oQ32WGpWmslqS0kK6ONTADr4oWe
+        tqpJpUQop4GRM4+4PJ09c6DIO+JssW2SXX7qHWa2BZH36W9wMiOgYWcb27tu6h1qni0O
+        7m7CIeqzb1EaLh+kY5sb6wPmmFH4GzREcx4HA2vyarjyWKXJtyxs1/2quGth/ssi5Xsj
+        WeeA==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xm0dNS3IdRcRALiq2+M="
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+        by smtp.strato.de (RZmta 44.24 DYNA|AUTH)
+        with ESMTPSA id 9078d1v6BBqTwpr
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve secp521r1 with 521 ECDH bits, eq. 15360 bits RSA))
+        (Client did not present a certificate);
+        Thu, 11 Jul 2019 13:52:29 +0200 (CEST)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     "Bhat, Jayalakshmi Manjunath" <jayalakshmi.bhat@hp.com>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Subject: Re: CAVS test harness
+Date:   Thu, 11 Jul 2019 13:52:29 +0200
+Message-ID: <3201120.NINpRaGeap@tauon.chronox.de>
+In-Reply-To: <TU4PR8401MB0544875B118D39899547FDEFF6F10@TU4PR8401MB0544.NAMPRD84.PROD.OUTLOOK.COM>
+References: <TU4PR8401MB0544875B118D39899547FDEFF6F10@TU4PR8401MB0544.NAMPRD84.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN7PR02MB5124F4680E424C25D77D178DAFF30@BN7PR02MB5124.namprd02.prod.outlook.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Jul 11, 2019 at 09:25:38AM +0000, Kalyani Akula wrote:
->
-> How about using same interface to distinguish between the User supplied key Vs HW key selection based on key_len parameter.
+Am Dienstag, 9. Juli 2019, 08:43:51 CEST schrieb Bhat, Jayalakshmi Manjunath:
 
-As long as you use the paes name instead of aes you can do whatever
-you want with the key encoding.
+Hi Jayalakshmi,
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> Hi All,
+> 
+> We are working on a product that requires NIAP certification and use IPSec
+> environment for certification. IPSec functionality is achieved by third
+> party IPsec library and native XFRM. Third  party IPsec library is used for
+> ISAKMP and XFRM for IPsec.
+> 
+> CAVS test cases are required for NIAP certification.  Thus we need to
+> implement CAVS test harness for Third party library and Linux crypto
+> algorithms. I found the documentation on kernel crypto API usage.
+> 
+> Please can you indication what is the right method to implement the test
+> harness for Linux crypto algorithms.
+> 1.	Should I implement CAVS test
+> harness for Linux kernel crypto algorithms as a user space application that
+> exercise the kernel crypto API?
+> 2.	Should I implement  CAVS test harness as
+> module in Linux kernel?
+
+As I have implemented the full CAVS test framework I can tell you that the 
+AF_ALG interface will not allow you to perform all tests required by CAVS.
+
+Thus you need to implement your own kernel module with its own interface.
+> 
+> 
+> Any information on this will help me very much on implementation.
+> 
+> Regards,
+> Jayalakshmi
+
+
+
+Ciao
+Stephan
+
+
