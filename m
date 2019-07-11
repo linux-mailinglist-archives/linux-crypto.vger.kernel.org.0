@@ -2,43 +2,45 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C78F65659
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jul 2019 14:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB256563F
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jul 2019 14:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728320AbfGKMEs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 11 Jul 2019 08:04:48 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:30341 "EHLO
+        id S1728488AbfGKMAH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 11 Jul 2019 08:00:07 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:15462 "EHLO
         mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728427AbfGKMEs (ORCPT
+        with ESMTP id S1728578AbfGKMAH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 11 Jul 2019 08:04:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1562846686;
+        Thu, 11 Jul 2019 08:00:07 -0400
+X-Greylist: delayed 359 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Jul 2019 08:00:06 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1562846405;
         s=strato-dkim-0002; d=chronox.de;
         h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
         X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=QDS5m6ANTja1UHGsEZTYM5Uqcp3Q5tifOJ+FzapbgHU=;
-        b=p2mj6ert5DYU2/pDGFn3m5hsdjkaPRT031SKXff0W83OSFfYVT9WRo2K5EIQlLWsru
-        GZ2TO0ZsDotSnyx1d9SpnaV1Z8ygjubfNSRKjcg0CpiF0A8ZhAB4RsVSo1Ds2ClyXgcv
-        lQHypijIeMXfmDIk5CcmreePPFluwOG2FcmoeqTX4oQ32WGpWmslqS0kK6ONTADr4oWe
-        tqpJpUQop4GRM4+4PJ09c6DIO+JssW2SXX7qHWa2BZH36W9wMiOgYWcb27tu6h1qni0O
-        7m7CIeqzb1EaLh+kY5sb6wPmmFH4GzREcx4HA2vyarjyWKXJtyxs1/2quGth/ssi5Xsj
-        WeeA==
+        bh=FYeHa/LQBgNc1fXBsPNk0LV3l5dXWty8yWc+ydNtiKs=;
+        b=Y9zNsnLfuCVgwIimRHQa+YyfobVsWuBepdqJSq5O/fYzoQ+1FXqf5Og/Nh5OTx/nb9
+        HJN89Ha6EVuwiPPKpxQZgHy2hznKnya5LT4dKBa6zaZe4/xK6my7q9dCyWUupaOBZNMO
+        +zsQpWQB8p8i/GKDzr93u5NjtQIoj9F3xmtahY/V6lBlAW5/0195tzn6W/zNk0YVm+sh
+        HVEet4YNbFPnEXCOWyVpqjtzySzDskaQabmCQ4kkWgw1uR/NejVzwaNMgDgrYF/7hcGG
+        lBZpEL3xXVMxiDk52/lPlZlUdUjID5oSlVXygFcU28pEBhAyar5TM8UuQ5UZ1B+FqQi7
+        UeXA==
 X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xm0dNS3IdRcRALiq2+M="
 X-RZG-CLASS-ID: mo00
 Received: from tauon.chronox.de
         by smtp.strato.de (RZmta 44.24 DYNA|AUTH)
-        with ESMTPSA id 9078d1v6BBqTwpr
+        with ESMTPSA id 9078d1v6BBs5wqk
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve secp521r1 with 521 ECDH bits, eq. 15360 bits RSA))
         (Client did not present a certificate);
-        Thu, 11 Jul 2019 13:52:29 +0200 (CEST)
+        Thu, 11 Jul 2019 13:54:05 +0200 (CEST)
 From:   Stephan Mueller <smueller@chronox.de>
-To:     "Bhat, Jayalakshmi Manjunath" <jayalakshmi.bhat@hp.com>
-Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+To:     Gilad Ben-Yossef <gilad@benyossef.com>
+Cc:     "Bhat, Jayalakshmi Manjunath" <jayalakshmi.bhat@hp.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
 Subject: Re: CAVS test harness
-Date:   Thu, 11 Jul 2019 13:52:29 +0200
-Message-ID: <3201120.NINpRaGeap@tauon.chronox.de>
-In-Reply-To: <TU4PR8401MB0544875B118D39899547FDEFF6F10@TU4PR8401MB0544.NAMPRD84.PROD.OUTLOOK.COM>
-References: <TU4PR8401MB0544875B118D39899547FDEFF6F10@TU4PR8401MB0544.NAMPRD84.PROD.OUTLOOK.COM>
+Date:   Thu, 11 Jul 2019 13:54:05 +0200
+Message-ID: <2656048.2Ru0tYgSs3@tauon.chronox.de>
+In-Reply-To: <CAOtvUMcUeVYh_eUrQWqunR8NUpos5-7zRU0jn0RdSTMtikm0XQ@mail.gmail.com>
+References: <TU4PR8401MB0544875B118D39899547FDEFF6F10@TU4PR8401MB0544.NAMPRD84.PROD.OUTLOOK.COM> <CAOtvUMcUeVYh_eUrQWqunR8NUpos5-7zRU0jn0RdSTMtikm0XQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -47,39 +49,44 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Am Dienstag, 9. Juli 2019, 08:43:51 CEST schrieb Bhat, Jayalakshmi Manjunath:
+Am Dienstag, 9. Juli 2019, 13:34:21 CEST schrieb Gilad Ben-Yossef:
 
-Hi Jayalakshmi,
+Hi Gilad,
 
-> Hi All,
+> On Tue, Jul 9, 2019 at 9:44 AM Bhat, Jayalakshmi Manjunath
 > 
-> We are working on a product that requires NIAP certification and use IPSec
-> environment for certification. IPSec functionality is achieved by third
-> party IPsec library and native XFRM. Third  party IPsec library is used for
-> ISAKMP and XFRM for IPsec.
+> <jayalakshmi.bhat@hp.com> wrote:
+> > Hi All,
+> > 
+> > We are working on a product that requires NIAP certification and use IPSec
+> > environment for certification. IPSec functionality is achieved by third
+> > party IPsec library and native XFRM. Third  party IPsec library is used
+> > for ISAKMP and XFRM for IPsec.
+> > 
+> > CAVS test cases are required for NIAP certification.  Thus we need to
+> > implement CAVS test harness for Third party library and Linux crypto
+> > algorithms. I found the documentation on kernel crypto API usage.
+> > 
+> > Please can you indication what is the right method to implement the test
+> > harness for Linux crypto algorithms. 1.      Should I implement CAVS test
+> > harness for Linux kernel crypto algorithms as a user space application
+> > that exercise the kernel crypto API? 2.      Should I implement  CAVS
+> > test harness as module in Linux kernel?
+> > 
+> > 
+> > Any information on this will help me very much on implementation.
 > 
-> CAVS test cases are required for NIAP certification.  Thus we need to
-> implement CAVS test harness for Third party library and Linux crypto
-> algorithms. I found the documentation on kernel crypto API usage.
-> 
-> Please can you indication what is the right method to implement the test
-> harness for Linux crypto algorithms.
-> 1.	Should I implement CAVS test
-> harness for Linux kernel crypto algorithms as a user space application that
-> exercise the kernel crypto API?
-> 2.	Should I implement  CAVS test harness as
-> module in Linux kernel?
+> Are you sure the needed tests are not already implemented in the
+> kernel crypto API testmgr?
 
-As I have implemented the full CAVS test framework I can tell you that the 
-AF_ALG interface will not allow you to perform all tests required by CAVS.
+The testmgr implements the power-on self tests required by FIPS 140-2. But 
+CAVS testing implies that there is a large set of test vectors which need to 
+be processed by the crypto implementations.
 
-Thus you need to implement your own kernel module with its own interface.
+These test vectors are generated anew for each test round. Only the test 
+approach remains stable.
 > 
-> 
-> Any information on this will help me very much on implementation.
-> 
-> Regards,
-> Jayalakshmi
+> Gilad
 
 
 
