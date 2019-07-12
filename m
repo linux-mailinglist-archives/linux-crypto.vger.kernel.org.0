@@ -2,80 +2,59 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA96E6838B
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2019 08:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E210683A0
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2019 08:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728952AbfGOG0a (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Jul 2019 02:26:30 -0400
-Received: from smtp3.goneo.de ([85.220.129.37]:38280 "EHLO smtp3.goneo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726579AbfGOG0a (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Jul 2019 02:26:30 -0400
-X-Greylist: delayed 565 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Jul 2019 02:26:28 EDT
+        id S1726579AbfGOGlL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Mon, 15 Jul 2019 02:41:11 -0400
+Received: from mail.iara.government.bg ([95.43.208.99]:34218 "EHLO
+        iara.government.bg" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726425AbfGOGlL (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 15 Jul 2019 02:41:11 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by smtp3.goneo.de (Postfix) with ESMTP id C2C2623F2CD;
-        Mon, 15 Jul 2019 08:17:00 +0200 (CEST)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.761
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.761 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=0.139, BAYES_00=-1.9] autolearn=ham
-Received: from smtp3.goneo.de ([127.0.0.1])
-        by localhost (smtp3.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 9DTgEevx57Ss; Mon, 15 Jul 2019 08:16:59 +0200 (CEST)
-Received: from [192.168.1.127] (dyndsl-091-248-140-021.ewe-ip-backbone.de [91.248.140.21])
-        by smtp3.goneo.de (Postfix) with ESMTPSA id 7016023F001;
-        Mon, 15 Jul 2019 08:16:54 +0200 (CEST)
-Subject: Re: [PATCH 8/8] docs: remove extra conf.py files
-To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@infradead.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Sean Paul <sean@poorly.run>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-crypto@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-input@vger.kernel.org, netdev@vger.kernel.org,
-        linux-sh@vger.kernel.org, alsa-devel@alsa-project.org
-References: <cover.1563115732.git.mchehab+samsung@kernel.org>
- <12a160afc9e70156f671010bd4ccff9311acdc5e.1563115732.git.mchehab+samsung@kernel.org>
-From:   Markus Heiser <markus.heiser@darmarit.de>
-Message-ID: <e3ff0a8a-6956-3855-07be-9c126df2da2d@darmarit.de>
-Date:   Mon, 15 Jul 2019 08:16:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        by iara.government.bg (Postfix) with ESMTP id B9BAE34E3D4;
+        Sat, 13 Jul 2019 04:49:41 +0300 (EEST)
+Received: from iara.government.bg ([127.0.0.1])
+        by localhost (iara.government.bg [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 6hmlxUZrnGPS; Sat, 13 Jul 2019 04:49:41 +0300 (EEST)
+Received: from localhost (localhost [127.0.0.1])
+        by iara.government.bg (Postfix) with ESMTP id AF8A82A8E26;
+        Sat, 13 Jul 2019 02:23:37 +0300 (EEST)
+X-Virus-Scanned: amavisd-new at iara.government.bg
+Received: from iara.government.bg ([127.0.0.1])
+        by localhost (iara.government.bg [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id m8o0h_l5hSPT; Sat, 13 Jul 2019 02:23:37 +0300 (EEST)
+Received: from [10.108.11.57] (unknown [105.12.6.226])
+        by iara.government.bg (Postfix) with ESMTPSA id 7094A32BC6D;
+        Sat, 13 Jul 2019 00:10:23 +0300 (EEST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <12a160afc9e70156f671010bd4ccff9311acdc5e.1563115732.git.mchehab+samsung@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?b?RndkOiBSZTog4oKsIDIsMDAwLDAwMC4wMCBFdXJv?=
+To:     Recipients <silistra@iara.government.bg>
+From:   silistra@iara.government.bg
+Date:   Fri, 12 Jul 2019 14:10:08 -0700
+Reply-To: carfleon@gmail.com
+Message-Id: <20190712211023.7094A32BC6D@iara.government.bg>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Mauro,
+Lieber Freund,
 
-sorry, I havn't tested your patch, but one question ...
+Ich bin Herr Richard Wahl der Mega-Gewinner von $ 533M In Mega Millions Jackpot spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt. Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt. Ich habe mich freiwillig dazu entschieden, Ihnen den Betrag von € 2.000.000,00 zu spenden eine der ausgewählten 5, um meine Gewinne zu überprüfen, finden Sie auf meiner You Tube Seite unten.
 
-Am 14.07.19 um 17:10 schrieb Mauro Carvalho Chehab:
-> Now that the latex_documents are handled automatically, we can
-> remove those extra conf.py files.
+UHR MICH HIER: https://www.youtube.com/watch?v=tne02ExNDrw
 
-We need these conf.py also for compiling books' into HTML.  For this
-the tags.add("subproject") is needed.  Should we realy drop this feature?
+Das ist dein Spendencode: [DF00430342018]
 
--- Markus --
+Antworten Sie mit dem Spendencode auf diese E-Mail: liezlnatashavanessa@gmail.com
+
+Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+
+Grüße
+
+Herr Richard Wahl
