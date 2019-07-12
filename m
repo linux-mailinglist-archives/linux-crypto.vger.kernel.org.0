@@ -2,61 +2,79 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D3166ACF
-	for <lists+linux-crypto@lfdr.de>; Fri, 12 Jul 2019 12:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A6266FF3
+	for <lists+linux-crypto@lfdr.de>; Fri, 12 Jul 2019 15:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbfGLKSI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 12 Jul 2019 06:18:08 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:44124 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726050AbfGLKSH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 12 Jul 2019 06:18:07 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hlscw-0005dZ-Q1; Fri, 12 Jul 2019 18:18:06 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hlsct-0008Km-Uh; Fri, 12 Jul 2019 18:18:03 +0800
-Date:   Fri, 12 Jul 2019 18:18:03 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     "Hook, Gary" <Gary.Hook@amd.com>
-Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>
-Subject: Re: [PATCH v2] crypto: ccp - memset structure fields to zero before
- reuse
-Message-ID: <20190712101803.7fhefacu6l33eu4u@gondor.apana.org.au>
-References: <20190710000849.3131-1-gary.hook@amd.com>
+        id S1727145AbfGLNXh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 12 Jul 2019 09:23:37 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:38660 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbfGLNXh (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 12 Jul 2019 09:23:37 -0400
+Received: by mail-io1-f65.google.com with SMTP id j6so20266400ioa.5;
+        Fri, 12 Jul 2019 06:23:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ED7nLvnywkFVSysEQZ0OXOazHI/ma8KNYWcu1c32QPE=;
+        b=WMC/sPErkaF5pH850n5h+uitn0l2BoT+D6RS4kkQpGPLmvucTDCARMURUfKW+jhJze
+         nO0EqG7nhfO035FsGIQo7uV1HvD3Bv76SoBq19CwQngKXRumut12PfSUhKlPetSFkGVi
+         J1eez7EjkGvCsJGEZWDrUHj1nG/76oqmr6Xrq8Y4OIi0KA2wa4rpoh4rY86gKxPWr+Eu
+         c+N9gefrY2FQx1lIisOQusBoNL0t3nIQHpDmF5GMEbPQyvhfrpM01TKkvmMxzRnvW5rm
+         uLGb71ZWHm84HOJ0M7jp1KcHRn8R8d6lLlv5X5TgGJUVcplR/pV+qAjkMvjPCjeyiu7u
+         5OFQ==
+X-Gm-Message-State: APjAAAUXua+7X0UFHcsEETKrGT26jas1btuGlEM5eF3gFwsmGn9Ba/2O
+        J8bkRl/xc+COUSdalQkwXg==
+X-Google-Smtp-Source: APXvYqwtZSqCWcobJ/R917NbEBSOARis/jLrEID6T8BhdTU1lDdG6dMatZvDE3fwzuxxAuJm+RHdiw==
+X-Received: by 2002:a5d:8416:: with SMTP id i22mr10620291ion.248.1562937816200;
+        Fri, 12 Jul 2019 06:23:36 -0700 (PDT)
+Received: from localhost ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id z19sm9502604ioh.12.2019.07.12.06.23.35
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 12 Jul 2019 06:23:35 -0700 (PDT)
+Date:   Fri, 12 Jul 2019 07:23:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Maxime Ripard <maxime.ripard@bootlin.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: crypto: Convert Allwinner A10 Security
+ Engine to a schema
+Message-ID: <20190712132335.GA14684@bogus>
+References: <20190711122301.8193-1-maxime.ripard@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190710000849.3131-1-gary.hook@amd.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20190711122301.8193-1-maxime.ripard@bootlin.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jul 10, 2019 at 12:09:22AM +0000, Hook, Gary wrote:
-> The AES GCM function reuses an 'op' data structure, which members
-> contain values that must be cleared for each (re)use.
+On Thu, 11 Jul 2019 14:23:01 +0200, Maxime Ripard wrote:
+> The older Allwinner SoCs have a crypto engine that is supported in Linux,
+> with a matching Device Tree binding.
 > 
-> This fix resolves a crypto self-test failure:
-> alg: aead: gcm-aes-ccp encryption test failed (wrong result) on test vector 2, cfg="two even aligned splits"
+> Now that we have the DT validation in place, let's convert the device tree
+> bindings for that controller over to a YAML schemas.
 > 
-> Fixes: 36cf515b9bbe ("crypto: ccp - Enable support for AES GCM on v5 CCPs")
-> 
-> Signed-off-by: Gary R Hook <gary.hook@amd.com>
+> Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 > ---
+>  .../crypto/allwinner,sun4i-a10-crypto.yaml    | 79 +++++++++++++++++++
+>  .../devicetree/bindings/crypto/sun4i-ss.txt   | 23 ------
+>  2 files changed, 79 insertions(+), 23 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/crypto/sun4i-ss.txt
 > 
-> Changes since v1:
->  - Explain in the commit message that this fix resolves a failed test
-> 
->  drivers/crypto/ccp/ccp-ops.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Applied, thanks.
+
+Rob
