@@ -2,39 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 050E668B42
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2019 15:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C8268BF2
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2019 15:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731359AbfGONkD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Jul 2019 09:40:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41650 "EHLO mail.kernel.org"
+        id S1731211AbfGONsD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Jul 2019 09:48:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731354AbfGONkC (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Jul 2019 09:40:02 -0400
+        id S1731347AbfGONsC (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 15 Jul 2019 09:48:02 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6532321530;
-        Mon, 15 Jul 2019 13:40:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4387321530;
+        Mon, 15 Jul 2019 13:47:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563198001;
-        bh=FTKJOaDBqWWGx5K6l7a3GQeiN9iEecrkXmoJNkID+74=;
+        s=default; t=1563198482;
+        bh=wrjyNQbObLvjelRCjEwGsOG2WLTckPtUZUU2q/uxbrI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RGgGeG+lZSFdupfdn2tznN7C2qv+oYdY7DRpz/n1VzBEGfQ14CKHgJnrcclPNQ4LG
-         He+dnoDkznCpNKRc4g1NxcypeEBpRmS6nnFghLeVBv7hH1DjVayt9UiHUszXhxaMdt
-         4VKOsfqkrfFYZ3G7qgOMg6r45lJqcpkUQ3JwVtp8=
+        b=RcauP7+G+CTMqTIoraxkDpWlLmFpf3nsqOMCvbvZUDBVlMN/OlEH+jPx1sEOm5Zo8
+         aL0J0GW9ZAUR/i3CTa4fUS4ooVC/sNsdK08zd/unBoJJXq7d6+YhF0cHP8+slALc52
+         4qucBY/U96LdsjtO30JkUg9cm08wk72eKWEEMb08=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
         =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 013/158] crypto: talitos - fix skcipher failure due to wrong output IV
-Date:   Mon, 15 Jul 2019 09:36:58 -0400
-Message-Id: <20190715133923.2890-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 021/249] crypto: talitos - fix skcipher failure due to wrong output IV
+Date:   Mon, 15 Jul 2019 09:43:06 -0400
+Message-Id: <20190715134655.4076-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190715133923.2890-1-sashal@kernel.org>
-References: <20190715133923.2890-1-sashal@kernel.org>
+In-Reply-To: <20190715134655.4076-1-sashal@kernel.org>
+References: <20190715134655.4076-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
@@ -72,10 +72,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-index c5859d3cb825..9cc5309a3fbf 100644
+index 427c78d4d948..2d9a0971a7fc 100644
 --- a/drivers/crypto/talitos.c
 +++ b/drivers/crypto/talitos.c
-@@ -1571,11 +1571,15 @@ static void ablkcipher_done(struct device *dev,
+@@ -1624,11 +1624,15 @@ static void ablkcipher_done(struct device *dev,
  			    int err)
  {
  	struct ablkcipher_request *areq = context;
