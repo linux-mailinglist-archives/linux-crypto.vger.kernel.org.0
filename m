@@ -2,35 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A804368E6A
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2019 16:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA8868EB0
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2019 16:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387737AbfGOOG0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Jul 2019 10:06:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53934 "EHLO mail.kernel.org"
+        id S2388588AbfGOOIq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Jul 2019 10:08:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388271AbfGOOGZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:06:25 -0400
+        id S2388584AbfGOOIp (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:08:45 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F18712081C;
-        Mon, 15 Jul 2019 14:06:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D4E02081C;
+        Mon, 15 Jul 2019 14:08:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563199584;
-        bh=5/5P5rZqEabXQLNQN+ytFnOrpxWRQNyEO9PmKYglEAc=;
+        s=default; t=1563199725;
+        bh=eX5Dh/FSm7XbycA/GmS0XdIfSyzLkNPai12gSFWdfU0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MpZLjY0RaqEklcxBxnLx0o5mr4HQTfhM7qgA/taYxvR6PzOzaNM3b9+ZurCaoCQlS
-         GDCaH68ja+5kRe4MKdMlREBaXTSC9gzQdgnzIG9Rziy4BpM+Fkji7ECYszznQh3vVw
-         B4FvZMb4du8RviHS8roiwQRKuwXWQdWq8kvLSStk=
+        b=UhlUnexoDTZZIPn9M1/NQmg3enw86gv/G26GAhUQ634YcjizhZsT21/eZSJY4iRuf
+         YxZnd9LoTKmc7D9Yu5oKjnLKPOyPcwQa7bjvF/vzmD3EGZa0gz9P5nLHzN9D2OXoMo
+         eGMC2uh6bJ2U+sK5pPrUpQ85wLWyzfRdVBjOYlM4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
+Cc:     Eric Biggers <ebiggers@google.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 049/219] crypto: talitos - Align SEC1 accesses to 32 bits boundaries.
-Date:   Mon, 15 Jul 2019 10:00:50 -0400
-Message-Id: <20190715140341.6443-49-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 086/219] crypto: testmgr - add some more preemption points
+Date:   Mon, 15 Jul 2019 10:01:27 -0400
+Message-Id: <20190715140341.6443-86-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
 References: <20190715140341.6443-1-sashal@kernel.org>
@@ -43,42 +44,76 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@c-s.fr>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit c9cca7034b34a2d82e9a03b757de2485c294851c ]
+[ Upstream commit e63e1b0dd0003dc31f73d875907432be3a2abe5d ]
 
-The MPC885 reference manual states:
+Call cond_resched() after each fuzz test iteration.  This avoids stall
+warnings if fuzz_iterations is set very high for testing purposes.
 
-SEC Lite-initiated 8xx writes can occur only on 32-bit-word boundaries, but
-reads can occur on any byte boundary. Writing back a header read from a
-non-32-bit-word boundary will yield unpredictable results.
+While we're at it, also call cond_resched() after finishing testing each
+test vector.
 
-In order to ensure that, cra_alignmask is set to 3 for SEC1.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-Fixes: 9c4a79653b35 ("crypto: talitos - Freescale integrated security engine (SEC) driver")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Acked-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/talitos.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ crypto/testmgr.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-index 3bf727c89647..f857f873da89 100644
---- a/drivers/crypto/talitos.c
-+++ b/drivers/crypto/talitos.c
-@@ -3209,7 +3209,10 @@ static struct talitos_crypto_alg *talitos_alg_alloc(struct device *dev,
- 		alg->cra_priority = t_alg->algt.priority;
- 	else
- 		alg->cra_priority = TALITOS_CRA_PRIORITY;
--	alg->cra_alignmask = 0;
-+	if (has_ftr_sec1(priv))
-+		alg->cra_alignmask = 3;
-+	else
-+		alg->cra_alignmask = 0;
- 	alg->cra_ctxsize = sizeof(struct talitos_ctx);
- 	alg->cra_flags |= CRYPTO_ALG_KERN_DRIVER_ONLY;
- 
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index 8386038d67c7..51540dbee23b 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -1050,6 +1050,7 @@ static int test_hash_vec(const char *driver, const struct hash_testvec *vec,
+ 						req, tsgl, hashstate);
+ 			if (err)
+ 				return err;
++			cond_resched();
+ 		}
+ 	}
+ #endif
+@@ -1105,6 +1106,7 @@ static int __alg_test_hash(const struct hash_testvec *vecs,
+ 		err = test_hash_vec(driver, &vecs[i], i, req, tsgl, hashstate);
+ 		if (err)
+ 			goto out;
++		cond_resched();
+ 	}
+ 	err = 0;
+ out:
+@@ -1346,6 +1348,7 @@ static int test_aead_vec(const char *driver, int enc,
+ 						&cfg, req, tsgls);
+ 			if (err)
+ 				return err;
++			cond_resched();
+ 		}
+ 	}
+ #endif
+@@ -1365,6 +1368,7 @@ static int test_aead(const char *driver, int enc,
+ 				    tsgls);
+ 		if (err)
+ 			return err;
++		cond_resched();
+ 	}
+ 	return 0;
+ }
+@@ -1679,6 +1683,7 @@ static int test_skcipher_vec(const char *driver, int enc,
+ 						    &cfg, req, tsgls);
+ 			if (err)
+ 				return err;
++			cond_resched();
+ 		}
+ 	}
+ #endif
+@@ -1698,6 +1703,7 @@ static int test_skcipher(const char *driver, int enc,
+ 					tsgls);
+ 		if (err)
+ 			return err;
++		cond_resched();
+ 	}
+ 	return 0;
+ }
 -- 
 2.20.1
 
