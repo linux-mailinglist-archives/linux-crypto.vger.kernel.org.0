@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F0F69C9A
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2019 22:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFC369C90
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2019 22:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732620AbfGOUUD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Jul 2019 16:20:03 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:39188 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732433AbfGOUUC (ORCPT
+        id S1732668AbfGOUUF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Jul 2019 16:20:05 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:45926 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732633AbfGOUUE (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Jul 2019 16:20:02 -0400
-Received: by mail-pf1-f196.google.com with SMTP id f17so3958845pfn.6;
-        Mon, 15 Jul 2019 13:20:02 -0700 (PDT)
+        Mon, 15 Jul 2019 16:20:04 -0400
+Received: by mail-pl1-f194.google.com with SMTP id y8so8851437plr.12;
+        Mon, 15 Jul 2019 13:20:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BNJCQUNcof8kUIy33ye35eh+3AWm1VC+G5oQzkM3XSE=;
-        b=Ww0C+505X6n3XgMvUlrWf6u0PaU62GuD+U5FMuCONhBOeQAcCP9eRV3gfwVo+b6qhk
-         OqVjFT2l/qgSbnt/o4MH+9MTg7TvymdF3Vj3PnF8d4wGcz3n8QNVNTMQ1z613PbyKkMz
-         l3r3FWXSwEDq1FwSBa6djhcAQuaPTKjT2OQEkWVkLzVxhCCPFyeismwZVfJuQLw09CY5
-         CkEHT0roLGDNfD5YCCjbjGns5RWI1D8y6zqfHBOJJhBW07cEGZrSGIK7LunHhHbgWdwA
-         YPGrpbJjNXlKKCFnHinIOKTbIXLzK9FFhrfoXykGUWGBtLYothgAvfBJjHg2NovtyWVU
-         gv9Q==
+        bh=v0KaQPCfQffqqno8qfHHdJ/uoZgjFiZttDU6BoijTkI=;
+        b=DV8BDn8EKkL9wrYL1UFWA+m0J3q1uZCRTagWuHIXWawKky4QL1HUe0DAw4APOEhQUc
+         I5GXS6lPzJk6ZNvpQEmCxAstySoI1hNhxWJSf8triLR367NpG3phEJ2RY7WS3mkcfQ3W
+         q9zHdteuEFq6+bv2ds2DKrjdudSJdpSnS9SFlq2Ajbe/JeMaC23m7ZCmAn/ArNjb8iv7
+         bHwRys1XU9ujhIzXWYwa5cBssIDKZqm8RFWpiazSRdGUUJokoTHPr5EoRDM5NiA426S+
+         aYKokJ/HAKfAmMI7Z36f/ClK52xkxVYeb0/0HB4rdr0kx0XNz8ZWLBnWYmZ1MEFwCWxI
+         lO5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BNJCQUNcof8kUIy33ye35eh+3AWm1VC+G5oQzkM3XSE=;
-        b=GjlNFYjwCuZQcbIplKHakkeQ/5yIjMZAVpxB5Gh2afSmyBaANSqQKR8nt2jfMZ/5Tb
-         j+pBNsTuFrlurQBNacdoOzTz8ssLqgCxNhB4ZDRjZh6I2TZjHoXh5avtnbCXIpl4fKw0
-         7TLZoSIwzukQ+oKYeWqvHQ/XothwgQLUqPghXcrfteGZ4rVJQtF4fgRu/9qPXtmhKyvC
-         N4MtZrp2JKlCZdlJCMRASt24EgtBgr3JSw71aIItvbVzRXE204STtPfYjbkUj1DetxvR
-         Re0HxBpGGnDrOZBjs1tGk1yLiZZsvUN5QzBmakTu5YyAYcJ8FpldY8p9XFGoM5o2twRz
-         NtqA==
-X-Gm-Message-State: APjAAAVTQNs8CIWWz0kvf5bts1wxvsDIng+t9r2oo8SkMXU6drTUW3+K
-        VR/0Po6PHg3jUlaNsvwXpxhtLbBx
-X-Google-Smtp-Source: APXvYqxwfZBozuoIG0wO3hu6LnBKbUBELfmsWKETncHYMl7rfVA5xkGyab1ktpvHUA+D+FbPZr1tLQ==
-X-Received: by 2002:a63:5d45:: with SMTP id o5mr29266075pgm.40.1563222001189;
-        Mon, 15 Jul 2019 13:20:01 -0700 (PDT)
+        bh=v0KaQPCfQffqqno8qfHHdJ/uoZgjFiZttDU6BoijTkI=;
+        b=eUZOdKZecAS+BVbFWkSDNIZY8Ju5tpyAizK3iWGL9DnQqhXABYuzabsx0qDmYn6i/5
+         RrzLnY4ltiZ0TzGynbn8V/g4eRvmftmbIPbgMGprGix7Iv6AyGyZIrqLr/tZihRqlM/u
+         XUutZ832mQ4lkJLUaVWOftSSjotEt4HZYHXwp/kea2cj+1L6mOwIAg72yErp7yXZW4rF
+         gx8Vsnl9YXe3jNazC/0RsY6ZQJun8efwQMprI4xTCSFYIP2GRVkmONsqW2G0V3dhV77w
+         D33HTqxn47CWSRnMLW0vfHZTk8RcwLQeyAaLlZgX57NBPjB4G7fWzt0PRXdbwNTRgaRC
+         cO4w==
+X-Gm-Message-State: APjAAAWxSTVwtId26BJiJGAtNSeBAlh/cFQGmHV2CWEsL7sWcWyXELXw
+        UChAcnb4qmmQNs2C+f36fAeB6Yct
+X-Google-Smtp-Source: APXvYqwJC5XZ/9TJdRsYk08Bn8E7oAHF0rw5vl+CC64O+Kc34gcrHYYi5RInPAg6h5SbItJsh/xIKA==
+X-Received: by 2002:a17:902:788f:: with SMTP id q15mr30988867pll.236.1563222002701;
+        Mon, 15 Jul 2019 13:20:02 -0700 (PDT)
 Received: from localhost.lan (c-67-185-54-80.hsd1.wa.comcast.net. [67.185.54.80])
-        by smtp.gmail.com with ESMTPSA id h1sm22730534pfg.55.2019.07.15.13.19.59
+        by smtp.gmail.com with ESMTPSA id h1sm22730534pfg.55.2019.07.15.13.20.01
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 15 Jul 2019 13:20:00 -0700 (PDT)
+        Mon, 15 Jul 2019 13:20:02 -0700 (PDT)
 From:   Andrey Smirnov <andrew.smirnov@gmail.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
@@ -56,9 +56,9 @@ Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
         Aymen Sghaier <aymen.sghaier@nxp.com>,
         Leonard Crestez <leonard.crestez@nxp.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 09/14] crypto: caam - move cpu_to_caam_dma() selection to runtime
-Date:   Mon, 15 Jul 2019 13:19:37 -0700
-Message-Id: <20190715201942.17309-10-andrew.smirnov@gmail.com>
+Subject: [PATCH v5 10/14] crypto: caam - drop explicit usage of struct jr_outentry
+Date:   Mon, 15 Jul 2019 13:19:38 -0700
+Message-Id: <20190715201942.17309-11-andrew.smirnov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190715201942.17309-1-andrew.smirnov@gmail.com>
 References: <20190715201942.17309-1-andrew.smirnov@gmail.com>
@@ -70,11 +70,12 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Instead of selecting the implementation of
-cpu_to_caam_dma()/caam_dma_to_cpu() at build time using the
-preprocessor, convert the code to do that at run-time using IS_ENABLED
-macro. This is needed to add support for i.MX8MQ. No functional change
-intended.
+Using struct jr_outentry to specify the layout of JobR output ring is
+not appropriate for all 64-bit SoC, since some of them, like i.MX8MQ,
+use 32-bit pointers there which doesn't match 64-bit
+dma_addr_t. Convert existing code to use explicit helper functions to
+access any of the JobR output ring elements, so that the support for
+i.MX8MQ can be added later. No functional change intended.
 
 Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
 Cc: Chris Spencer <christopher.spencer@sea.co.uk>
@@ -87,42 +88,124 @@ Cc: Leonard Crestez <leonard.crestez@nxp.com>
 Cc: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
- drivers/crypto/caam/regs.h | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ drivers/crypto/caam/intern.h |  2 +-
+ drivers/crypto/caam/jr.c     | 10 +++++----
+ drivers/crypto/caam/regs.h   | 40 ++++++++++++++++++++++++++++++++----
+ 3 files changed, 43 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/crypto/caam/regs.h b/drivers/crypto/caam/regs.h
-index fb494d14f262..511e28ba740a 100644
---- a/drivers/crypto/caam/regs.h
-+++ b/drivers/crypto/caam/regs.h
-@@ -188,13 +188,21 @@ static inline u64 caam_dma64_to_cpu(u64 value)
- 	return caam64_to_cpu(value);
- }
- 
--#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
--#define cpu_to_caam_dma(value) cpu_to_caam_dma64(value)
--#define caam_dma_to_cpu(value) caam_dma64_to_cpu(value)
--#else
--#define cpu_to_caam_dma(value) cpu_to_caam32(value)
--#define caam_dma_to_cpu(value) caam32_to_cpu(value)
--#endif /* CONFIG_ARCH_DMA_ADDR_T_64BIT */
-+static inline u64 cpu_to_caam_dma(u64 value)
-+{
-+	if (IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT))
-+		return cpu_to_caam_dma64(value);
-+	else
-+		return cpu_to_caam32(value);
-+}
-+
-+static inline u64 caam_dma_to_cpu(u64 value)
-+{
-+	if (IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT))
-+		return caam_dma64_to_cpu(value);
-+	else
-+		return caam32_to_cpu(value);
-+}
+diff --git a/drivers/crypto/caam/intern.h b/drivers/crypto/caam/intern.h
+index 1f01703f510a..081805c0f88b 100644
+--- a/drivers/crypto/caam/intern.h
++++ b/drivers/crypto/caam/intern.h
+@@ -58,7 +58,7 @@ struct caam_drv_private_jr {
+ 	dma_addr_t *inpring;	/* Base of input ring, alloc DMA-safe */
+ 	int out_ring_read_index;	/* Output index "tail" */
+ 	int tail;			/* entinfo (s/w ring) tail index */
+-	struct jr_outentry *outring;	/* Base of output ring, DMA-safe */
++	void *outring;			/* Base of output ring, DMA-safe */
+ };
  
  /*
+diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
+index 98e0a504322f..138f71adb7e6 100644
+--- a/drivers/crypto/caam/jr.c
++++ b/drivers/crypto/caam/jr.c
+@@ -211,7 +211,7 @@ static void caam_jr_dequeue(unsigned long devarg)
+ 		for (i = 0; CIRC_CNT(head, tail + i, JOBR_DEPTH) >= 1; i++) {
+ 			sw_idx = (tail + i) & (JOBR_DEPTH - 1);
+ 
+-			if (jrp->outring[hw_idx].desc ==
++			if (jr_outentry_desc(jrp->outring, hw_idx) ==
+ 			    caam_dma_to_cpu(jrp->entinfo[sw_idx].desc_addr_dma))
+ 				break; /* found */
+ 		}
+@@ -220,7 +220,8 @@ static void caam_jr_dequeue(unsigned long devarg)
+ 
+ 		/* Unmap just-run descriptor so we can post-process */
+ 		dma_unmap_single(dev,
+-				 caam_dma_to_cpu(jrp->outring[hw_idx].desc),
++				 caam_dma_to_cpu(jr_outentry_desc(jrp->outring,
++								  hw_idx)),
+ 				 jrp->entinfo[sw_idx].desc_size,
+ 				 DMA_TO_DEVICE);
+ 
+@@ -231,7 +232,8 @@ static void caam_jr_dequeue(unsigned long devarg)
+ 		usercall = jrp->entinfo[sw_idx].callbk;
+ 		userarg = jrp->entinfo[sw_idx].cbkarg;
+ 		userdesc = jrp->entinfo[sw_idx].desc_addr_virt;
+-		userstatus = caam32_to_cpu(jrp->outring[hw_idx].jrstatus);
++		userstatus = caam32_to_cpu(jr_outentry_jrstatus(jrp->outring,
++								hw_idx));
+ 
+ 		/*
+ 		 * Make sure all information from the job has been obtained
+@@ -439,7 +441,7 @@ static int caam_jr_init(struct device *dev)
+ 	if (!jrp->inpring)
+ 		return -ENOMEM;
+ 
+-	jrp->outring = dmam_alloc_coherent(dev, sizeof(*jrp->outring) *
++	jrp->outring = dmam_alloc_coherent(dev, SIZEOF_JR_OUTENTRY *
+ 					   JOBR_DEPTH, &outbusaddr,
+ 					   GFP_KERNEL);
+ 	if (!jrp->outring)
+diff --git a/drivers/crypto/caam/regs.h b/drivers/crypto/caam/regs.h
+index 511e28ba740a..0cc4a48dfc30 100644
+--- a/drivers/crypto/caam/regs.h
++++ b/drivers/crypto/caam/regs.h
+@@ -71,6 +71,7 @@
+ 
+ extern bool caam_little_end;
+ extern bool caam_imx;
++extern size_t caam_ptr_sz;
+ 
+ #define caam_to_cpu(len)						\
+ static inline u##len caam##len ## _to_cpu(u##len val)			\
+@@ -208,10 +209,41 @@ static inline u64 caam_dma_to_cpu(u64 value)
   * jr_outentry
+  * Represents each entry in a JobR output ring
+  */
+-struct jr_outentry {
+-	dma_addr_t desc;/* Pointer to completed descriptor */
+-	u32 jrstatus;	/* Status for completed descriptor */
+-} __packed;
++
++static inline void jr_outentry_get(void *outring, int hw_idx, dma_addr_t *desc,
++				   u32 *jrstatus)
++{
++	struct {
++		dma_addr_t desc;/* Pointer to completed descriptor */
++		u32 jrstatus;	/* Status for completed descriptor */
++	} __packed *outentry = outring;
++
++	*desc = outentry[hw_idx].desc;
++	*jrstatus = outentry[hw_idx].jrstatus;
++}
++
++#define SIZEOF_JR_OUTENTRY	(caam_ptr_sz + sizeof(u32))
++
++static inline dma_addr_t jr_outentry_desc(void *outring, int hw_idx)
++{
++	dma_addr_t desc;
++	u32 unused;
++
++	jr_outentry_get(outring, hw_idx, &desc, &unused);
++
++	return desc;
++}
++
++static inline u32 jr_outentry_jrstatus(void *outring, int hw_idx)
++{
++	dma_addr_t unused;
++	u32 jrstatus;
++
++	jr_outentry_get(outring, hw_idx, &unused, &jrstatus);
++
++	return jrstatus;
++}
++
+ 
+ /* Version registers (Era 10+)	e80-eff */
+ struct version_regs {
 -- 
 2.21.0
 
