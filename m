@@ -2,35 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C575A6935E
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2019 16:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C224D69328
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2019 16:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732437AbfGOOni (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Jul 2019 10:43:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60560 "EHLO mail.kernel.org"
+        id S2390831AbfGOOmO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Jul 2019 10:42:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391092AbfGOOhz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:37:55 -0400
+        id S2404476AbfGOOkl (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:40:41 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91186204FD;
-        Mon, 15 Jul 2019 14:37:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CC49204FD;
+        Mon, 15 Jul 2019 14:40:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563201474;
-        bh=LIVUyXiJJy2i93PADfK/sUcCicuFFHTD68KAW/cqkXY=;
+        s=default; t=1563201641;
+        bh=DJbrE1O1zB+v1rzzUPlHxWpLKZaxQ9ZdCmFlxx9QI3o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O9a0szBkEZggTZhvisD8u9+OCOohlZpo0qrcYMKbzXeyPrjwfabJCL/FgNd3y4eS4
-         IGBujGTQnP0rq3lovXLDwTKIPRe8artTIO3opM+bk5tr4nIr+7jQ1zjFE1jJwecjST
-         VhDRPdFXkJJ54KhEPkKGbyNFT6q8cORJUwl4Z3p8=
+        b=CixLkruRhwliLXH+tZnEIhQ6n31IYL6ltm11ieREtN4Tta0EcTmT0eObpt1DvTQCC
+         YY6ws267QuIt6BtdY8/TwWnCzS15Q3ppSSZYfD4EexeFYfg8KsaeXCtZ/TolucozI7
+         gPqRgVM0ghF6h1tqEVyzqqk3gZhnD8zQ9AqU9cmo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
+Cc:     Arnd Bergmann <arnd@arndb.de>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 22/73] crypto: talitos - properly handle split ICV.
-Date:   Mon, 15 Jul 2019 10:35:38 -0400
-Message-Id: <20190715143629.10893-22-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 61/73] crypto: asymmetric_keys - select CRYPTO_HASH where needed
+Date:   Mon, 15 Jul 2019 10:36:17 -0400
+Message-Id: <20190715143629.10893-61-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190715143629.10893-1-sashal@kernel.org>
 References: <20190715143629.10893-1-sashal@kernel.org>
@@ -43,97 +44,60 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@c-s.fr>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit eae55a586c3c8b50982bad3c3426e9c9dd7a0075 ]
+[ Upstream commit 90acc0653d2bee203174e66d519fbaaa513502de ]
 
-The driver assumes that the ICV is as a single piece in the last
-element of the scatterlist. This assumption is wrong.
+Build testing with some core crypto options disabled revealed
+a few modules that are missing CRYPTO_HASH:
 
-This patch ensures that the ICV is properly handled regardless of
-the scatterlist layout.
+crypto/asymmetric_keys/x509_public_key.o: In function `x509_get_sig_params':
+x509_public_key.c:(.text+0x4c7): undefined reference to `crypto_alloc_shash'
+x509_public_key.c:(.text+0x5e5): undefined reference to `crypto_shash_digest'
+crypto/asymmetric_keys/pkcs7_verify.o: In function `pkcs7_digest.isra.0':
+pkcs7_verify.c:(.text+0xab): undefined reference to `crypto_alloc_shash'
+pkcs7_verify.c:(.text+0x1b2): undefined reference to `crypto_shash_digest'
+pkcs7_verify.c:(.text+0x3c1): undefined reference to `crypto_shash_update'
+pkcs7_verify.c:(.text+0x411): undefined reference to `crypto_shash_finup'
 
-Fixes: 9c4a79653b35 ("crypto: talitos - Freescale integrated security engine (SEC) driver")
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+This normally doesn't show up in randconfig tests because there is
+a large number of other options that select CRYPTO_HASH.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/talitos.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+ crypto/asymmetric_keys/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-index 166e216b02b2..36d4f2a32e54 100644
---- a/drivers/crypto/talitos.c
-+++ b/drivers/crypto/talitos.c
-@@ -984,7 +984,6 @@ static void ipsec_esp_encrypt_done(struct device *dev,
- 	struct crypto_aead *authenc = crypto_aead_reqtfm(areq);
- 	unsigned int authsize = crypto_aead_authsize(authenc);
- 	struct talitos_edesc *edesc;
--	struct scatterlist *sg;
- 	void *icvdata;
- 
- 	edesc = container_of(desc, struct talitos_edesc, desc);
-@@ -998,9 +997,8 @@ static void ipsec_esp_encrypt_done(struct device *dev,
- 		else
- 			icvdata = &edesc->link_tbl[edesc->src_nents +
- 						   edesc->dst_nents + 2];
--		sg = sg_last(areq->dst, edesc->dst_nents);
--		memcpy((char *)sg_virt(sg) + sg->length - authsize,
--		       icvdata, authsize);
-+		sg_pcopy_from_buffer(areq->dst, edesc->dst_nents ? : 1, icvdata,
-+				     authsize, areq->assoclen + areq->cryptlen);
- 	}
- 
- 	kfree(edesc);
-@@ -1016,7 +1014,6 @@ static void ipsec_esp_decrypt_swauth_done(struct device *dev,
- 	struct crypto_aead *authenc = crypto_aead_reqtfm(req);
- 	unsigned int authsize = crypto_aead_authsize(authenc);
- 	struct talitos_edesc *edesc;
--	struct scatterlist *sg;
- 	char *oicv, *icv;
- 	struct talitos_private *priv = dev_get_drvdata(dev);
- 	bool is_sec1 = has_ftr_sec1(priv);
-@@ -1026,9 +1023,18 @@ static void ipsec_esp_decrypt_swauth_done(struct device *dev,
- 	ipsec_esp_unmap(dev, edesc, req);
- 
- 	if (!err) {
-+		char icvdata[SHA512_DIGEST_SIZE];
-+		int nents = edesc->dst_nents ? : 1;
-+		unsigned int len = req->assoclen + req->cryptlen;
-+
- 		/* auth check */
--		sg = sg_last(req->dst, edesc->dst_nents ? : 1);
--		icv = (char *)sg_virt(sg) + sg->length - authsize;
-+		if (nents > 1) {
-+			sg_pcopy_to_buffer(req->dst, nents, icvdata, authsize,
-+					   len - authsize);
-+			icv = icvdata;
-+		} else {
-+			icv = (char *)sg_virt(req->dst) + len - authsize;
-+		}
- 
- 		if (edesc->dma_len) {
- 			if (is_sec1)
-@@ -1458,7 +1464,6 @@ static int aead_decrypt(struct aead_request *req)
- 	struct talitos_ctx *ctx = crypto_aead_ctx(authenc);
- 	struct talitos_private *priv = dev_get_drvdata(ctx->dev);
- 	struct talitos_edesc *edesc;
--	struct scatterlist *sg;
- 	void *icvdata;
- 
- 	req->cryptlen -= authsize;
-@@ -1493,9 +1498,8 @@ static int aead_decrypt(struct aead_request *req)
- 	else
- 		icvdata = &edesc->link_tbl[0];
- 
--	sg = sg_last(req->src, edesc->src_nents ? : 1);
--
--	memcpy(icvdata, (char *)sg_virt(sg) + sg->length - authsize, authsize);
-+	sg_pcopy_to_buffer(req->src, edesc->src_nents ? : 1, icvdata, authsize,
-+			   req->assoclen + req->cryptlen - authsize);
- 
- 	return ipsec_esp(edesc, req, ipsec_esp_decrypt_swauth_done);
- }
+diff --git a/crypto/asymmetric_keys/Kconfig b/crypto/asymmetric_keys/Kconfig
+index 331f6baf2df8..13f3de68b479 100644
+--- a/crypto/asymmetric_keys/Kconfig
++++ b/crypto/asymmetric_keys/Kconfig
+@@ -14,6 +14,7 @@ config ASYMMETRIC_PUBLIC_KEY_SUBTYPE
+ 	select MPILIB
+ 	select CRYPTO_HASH_INFO
+ 	select CRYPTO_AKCIPHER
++	select CRYPTO_HASH
+ 	help
+ 	  This option provides support for asymmetric public key type handling.
+ 	  If signature generation and/or verification are to be used,
+@@ -33,6 +34,7 @@ config X509_CERTIFICATE_PARSER
+ config PKCS7_MESSAGE_PARSER
+ 	tristate "PKCS#7 message parser"
+ 	depends on X509_CERTIFICATE_PARSER
++	select CRYPTO_HASH
+ 	select ASN1
+ 	select OID_REGISTRY
+ 	help
+@@ -55,6 +57,7 @@ config SIGNED_PE_FILE_VERIFICATION
+ 	bool "Support for PE file signature verification"
+ 	depends on PKCS7_MESSAGE_PARSER=y
+ 	depends on SYSTEM_DATA_VERIFICATION
++	select CRYPTO_HASH
+ 	select ASN1
+ 	select OID_REGISTRY
+ 	help
 -- 
 2.20.1
 
