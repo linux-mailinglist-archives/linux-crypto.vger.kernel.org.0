@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 323AF6BEFF
-	for <lists+linux-crypto@lfdr.de>; Wed, 17 Jul 2019 17:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B48F6BF02
+	for <lists+linux-crypto@lfdr.de>; Wed, 17 Jul 2019 17:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727519AbfGQPZU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 17 Jul 2019 11:25:20 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:46855 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727248AbfGQPZT (ORCPT
+        id S1727647AbfGQPZV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 17 Jul 2019 11:25:21 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:44767 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727526AbfGQPZU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 17 Jul 2019 11:25:19 -0400
-Received: by mail-pg1-f193.google.com with SMTP id i8so11310538pgm.13;
-        Wed, 17 Jul 2019 08:25:19 -0700 (PDT)
+        Wed, 17 Jul 2019 11:25:20 -0400
+Received: by mail-pg1-f195.google.com with SMTP id i18so11325833pgl.11;
+        Wed, 17 Jul 2019 08:25:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=75RddUUYOCkJTxyQ1DWwpfzp/lCGZ4Ryw21Tf0UA6Hg=;
-        b=tNI8nCv8AU0UUJ3gy/qCGOGpNatzJjVHjK027I8FfFAqzJS+xDpL/1jusxi2+nqJnI
-         2dzvFf6wj5tcYqdjVjKaMY6mdRjPS3RnSpzKhA+ILpvmDoYEo8cel45T8FWsuJyKj6XX
-         82X6Y7KR5cOHcrCWBpBoyYnFNNWvnbqgELCWEJza2Ckv7cOwjPUbKz26TSOeu69hMChi
-         docAuMhR2yMs+Em+2C41ZSppkSegmCLkI5qk5BsQCiVbmmQOr9S2zIy3jmxFqP3nBhBL
-         SqutFWqg0oefVuGgq15SsDN3W08lsq4Bi6PoN3lQdxXjvFLgKGF2yCMoJJOqp7oSXUw0
-         OwiQ==
+        bh=E8M9KHyXwUEtFUyzJoarpboyeyNZ234MBzkiPCu7LgU=;
+        b=n/n+DW0taP8/HfeX4rPsPKG2wVzWmOztrUf1yTrdJAgRnCQJTEE/+TvvkriIq2LKln
+         mRD74523p00BpOw0mEZj3SwSNXGGWkh9/mwwX115X6ggxYLWa8ijT4PgLSPPQOYIOO3I
+         xzwl/C4kIxmiP+Yj2u4ITtRd6dzNXxsYK1C7lVIhUf9+QkBPpjxmRKAZ0v2OFsqrhdR6
+         SqHYr4DGewnqBmARyyYwx3PsspDCAQXVsjoS37h39p2/NeTNCLZlkljkRWgPxgFh52OJ
+         78vWWRPdwmxC0K2RKDRl8c8EITWIARWjPNuc/gkMhb3svFjMO0DFLbI+x6vagF7EbTNk
+         k1AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=75RddUUYOCkJTxyQ1DWwpfzp/lCGZ4Ryw21Tf0UA6Hg=;
-        b=tyx90d07DyLbnJi8Il9PlroI4PXTwTSMxEOD0H3wi56u9ft1svG9lnS6uxkehX7+jA
-         mQL2csQ9UKw7TpqXPVyyd6kjI45m8jQllEOcTRruEiVp5EKZxLZCsHDD9t8T6DtjvO6Z
-         bXMPfoX3p8gpwqXpBDlAoxqYMCnE4Vvg6/0QkCYEkAg69EcGVk8sItgGrtYW1AoasVTz
-         m0TFYjGYjVBZjxYqZS2lK53QJ5BOmsTKHPaPDU80V2qRrWbXLWQJ0Tll7PYFXfRi64DJ
-         e8RplqjDN0+mMoYlSmVePhYGivCoPbpxc7Bb83KOYyxpL8hLCxVBVwODlhA45nZqZaAU
-         hKpA==
-X-Gm-Message-State: APjAAAW9KgSBL4OkjAyPVnz+fw686b3SIuUQMRFAnFvxjEYgeG8cU0/K
-        dYmfasz86viSvGP6rEMiHdsJeQ/b
-X-Google-Smtp-Source: APXvYqw6UxhgUEcouVJ0obRew6hH0PqoSDXEJsFWyhkQIXt+lXEnZxUprtgq6gW2WEmcCuE+rkWjZw==
-X-Received: by 2002:a63:2a08:: with SMTP id q8mr9757498pgq.415.1563377118235;
-        Wed, 17 Jul 2019 08:25:18 -0700 (PDT)
+        bh=E8M9KHyXwUEtFUyzJoarpboyeyNZ234MBzkiPCu7LgU=;
+        b=L4wnpWxJMch2byo0dErfT3OY8K+NShXMrJlxQyMVete40UadYOFcHFrFCyrAE9SeOx
+         5u+T0z7cDl1vRRqPdLHhD1xTrcZ8wxcZCv1iUO41/s7nnkvyCTGI0RfaaOKfc5F9nu6v
+         gfsazFbjqo3vf6a4py/pcc99HVVtmTjrQxsZxW//Zbc46Ch8ZKwQZw2TnDu53FXtNdbh
+         1kNTnMhQ9bisiO6I2A3fFjRSTL0O/oHQ4GwH2Ag9K9+Zlrv/qS7x5N8dDx8LL8QMFdv7
+         zbbT268fmMyT4FxV9QKiNN8ZqgQ5e+qa0dAeFXbj9ZZMCk2qlFBVRi6D6sUjsRJ2d2Es
+         wMGg==
+X-Gm-Message-State: APjAAAU+3ajvzYutz9ecvy9hfAeDuyZwQP6dTAs0pNgB+d2DlP0KlC7k
+        udDiFhcU3tBfx0Tg3vNN2iMBuRc0
+X-Google-Smtp-Source: APXvYqw2YEpJNPIX81qCLdEx9tmqo9nHz4BtRiuhX9dj2fM/KOX/e3nrAlZTyPeLiAXLMbPpTEYnYw==
+X-Received: by 2002:a63:6d8d:: with SMTP id i135mr41329413pgc.303.1563377119725;
+        Wed, 17 Jul 2019 08:25:19 -0700 (PDT)
 Received: from localhost.lan (c-67-185-54-80.hsd1.wa.comcast.net. [67.185.54.80])
-        by smtp.gmail.com with ESMTPSA id l1sm33771386pfl.9.2019.07.17.08.25.16
+        by smtp.gmail.com with ESMTPSA id l1sm33771386pfl.9.2019.07.17.08.25.18
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 17 Jul 2019 08:25:17 -0700 (PDT)
+        Wed, 17 Jul 2019 08:25:19 -0700 (PDT)
 From:   Andrey Smirnov <andrew.smirnov@gmail.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
@@ -56,9 +56,9 @@ Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
         Aymen Sghaier <aymen.sghaier@nxp.com>,
         Leonard Crestez <leonard.crestez@nxp.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v6 04/14] crypto: caam - request JR IRQ as the last step
-Date:   Wed, 17 Jul 2019 08:24:48 -0700
-Message-Id: <20190717152458.22337-5-andrew.smirnov@gmail.com>
+Subject: [PATCH v6 05/14] crytpo: caam - make use of iowrite64*_hi_lo in wr_reg64
+Date:   Wed, 17 Jul 2019 08:24:49 -0700
+Message-Id: <20190717152458.22337-6-andrew.smirnov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190717152458.22337-1-andrew.smirnov@gmail.com>
 References: <20190717152458.22337-1-andrew.smirnov@gmail.com>
@@ -70,10 +70,76 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-In order to avoid any risk of JR IRQ request being handled while some
-of the resources used for that are not yet allocated move the code
-requesting said IRQ to the endo of caam_jr_init(). No functional
-change intended.
+In order to be able to unify 64 and 32 bit implementations of
+wr_reg64, let's convert it to use helpers from
+<linux/io-64-nonatomic-hi-lo.h> first. Here are the steps of the
+transformation:
+
+1. Inline wr_reg32 helpers:
+
+	if (!caam_imx && caam_little_end) {
+		if (caam_little_end) {
+			iowrite32(data >> 32, (u32 __iomem *)(reg) + 1);
+			iowrite32(data, (u32 __iomem *)(reg));
+		} else {
+			iowrite32be(data >> 32, (u32 __iomem *)(reg) + 1);
+			iowrite32be(data, (u32 __iomem *)(reg));
+		}
+	} else {
+		if (caam_little_end) {
+			iowrite32(data >> 32, (u32 __iomem *)(reg));
+			iowrite32(data, (u32 __iomem *)(reg) + 1);
+		} else {
+			iowrite32be(data >> 32, (u32 __iomem *)(reg));
+			iowrite32be(data, (u32 __iomem *)(reg) + 1);
+		}
+	}
+
+2. Transfrom the conditionals such that the check for
+'caam_little_end' is at the top level:
+
+	if (caam_little_end) {
+		if (!caam_imx) {
+			iowrite32(data >> 32, (u32 __iomem *)(reg) + 1);
+			iowrite32(data, (u32 __iomem *)(reg));
+		} else {
+			iowrite32(data >> 32, (u32 __iomem *)(reg));
+			iowrite32(data, (u32 __iomem *)(reg) + 1);
+		}
+	} else {
+		iowrite32be(data >> 32, (u32 __iomem *)(reg));
+		iowrite32be(data, (u32 __iomem *)(reg) + 1);
+	}
+
+3. Invert the check for !caam_imx:
+
+	if (caam_little_end) {
+		if (caam_imx) {
+			iowrite32(data >> 32, (u32 __iomem *)(reg));
+			iowrite32(data, (u32 __iomem *)(reg) + 1);
+		} else {
+			iowrite32(data >> 32, (u32 __iomem *)(reg) + 1);
+			iowrite32(data, (u32 __iomem *)(reg));
+		}
+	} else {
+		iowrite32be(data >> 32, (u32 __iomem *)(reg));
+		iowrite32be(data, (u32 __iomem *)(reg) + 1);
+	}
+
+4. Make use of iowrite64* helpers from <linux/io-64-nonatomic-hi-lo.h>
+
+	if (caam_little_end) {
+		if (caam_imx) {
+			iowrite32(data >> 32, (u32 __iomem *)(reg));
+			iowrite32(data, (u32 __iomem *)(reg) + 1);
+		} else {
+			iowrite64(data, reg);
+		}
+	} else {
+		iowrite64be(data, reg);
+	}
+
+No functional change intended.
 
 Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
 Cc: Chris Spencer <christopher.spencer@sea.co.uk>
@@ -86,78 +152,41 @@ Cc: Leonard Crestez <leonard.crestez@nxp.com>
 Cc: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
- drivers/crypto/caam/jr.c | 34 ++++++++++++++++------------------
- 1 file changed, 16 insertions(+), 18 deletions(-)
+ drivers/crypto/caam/regs.h | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
-index ea02f7774f7c..98e0a504322f 100644
---- a/drivers/crypto/caam/jr.c
-+++ b/drivers/crypto/caam/jr.c
-@@ -428,38 +428,27 @@ static int caam_jr_init(struct device *dev)
+diff --git a/drivers/crypto/caam/regs.h b/drivers/crypto/caam/regs.h
+index 8591914d5c51..6e8352ac0d92 100644
+--- a/drivers/crypto/caam/regs.h
++++ b/drivers/crypto/caam/regs.h
+@@ -12,6 +12,7 @@
+ #include <linux/types.h>
+ #include <linux/bitops.h>
+ #include <linux/io.h>
++#include <linux/io-64-nonatomic-hi-lo.h>
  
- 	jrp = dev_get_drvdata(dev);
- 
--	tasklet_init(&jrp->irqtask, caam_jr_dequeue, (unsigned long)dev);
--
--	/* Connect job ring interrupt handler. */
--	error = devm_request_irq(dev, jrp->irq, caam_jr_interrupt, IRQF_SHARED,
--				 dev_name(dev), dev);
--	if (error) {
--		dev_err(dev, "can't connect JobR %d interrupt (%d)\n",
--			jrp->ridx, jrp->irq);
--		goto out_kill_deq;
--	}
--
- 	error = caam_reset_hw_jr(dev);
- 	if (error)
--		goto out_kill_deq;
-+		return error;
- 
- 	error = -ENOMEM;
- 	jrp->inpring = dmam_alloc_coherent(dev, sizeof(*jrp->inpring) *
- 					   JOBR_DEPTH, &inpbusaddr,
- 					   GFP_KERNEL);
- 	if (!jrp->inpring)
--		goto out_kill_deq;
-+		return -ENOMEM;
- 
- 	jrp->outring = dmam_alloc_coherent(dev, sizeof(*jrp->outring) *
- 					   JOBR_DEPTH, &outbusaddr,
- 					   GFP_KERNEL);
- 	if (!jrp->outring)
--		goto out_kill_deq;
-+		return -ENOMEM;
- 
- 	jrp->entinfo = devm_kcalloc(dev, JOBR_DEPTH, sizeof(*jrp->entinfo),
- 				    GFP_KERNEL);
- 	if (!jrp->entinfo)
--		goto out_kill_deq;
-+		return -ENOMEM;
- 
- 	for (i = 0; i < JOBR_DEPTH; i++)
- 		jrp->entinfo[i].desc_addr_dma = !0;
-@@ -483,10 +472,19 @@ static int caam_jr_init(struct device *dev)
- 		      (JOBR_INTC_COUNT_THLD << JRCFG_ICDCT_SHIFT) |
- 		      (JOBR_INTC_TIME_THLD << JRCFG_ICTT_SHIFT));
- 
-+	tasklet_init(&jrp->irqtask, caam_jr_dequeue, (unsigned long)dev);
-+
-+	/* Connect job ring interrupt handler. */
-+	error = devm_request_irq(dev, jrp->irq, caam_jr_interrupt, IRQF_SHARED,
-+				 dev_name(dev), dev);
-+	if (error) {
-+		dev_err(dev, "can't connect JobR %d interrupt (%d)\n",
-+			jrp->ridx, jrp->irq);
-+		tasklet_kill(&jrp->irqtask);
-+		return error;
-+	}
-+
- 	return 0;
--out_kill_deq:
--	tasklet_kill(&jrp->irqtask);
--	return error;
+ /*
+  * Architecture-specific register access methods
+@@ -157,12 +158,15 @@ static inline u64 rd_reg64(void __iomem *reg)
+ #else /* CONFIG_64BIT */
+ static inline void wr_reg64(void __iomem *reg, u64 data)
+ {
+-	if (!caam_imx && caam_little_end) {
+-		wr_reg32((u32 __iomem *)(reg) + 1, data >> 32);
+-		wr_reg32((u32 __iomem *)(reg), data);
++	if (caam_little_end) {
++		if (caam_imx) {
++			iowrite32(data >> 32, (u32 __iomem *)(reg));
++			iowrite32(data, (u32 __iomem *)(reg) + 1);
++		} else {
++			iowrite64(data, reg);
++		}
+ 	} else {
+-		wr_reg32((u32 __iomem *)(reg), data >> 32);
+-		wr_reg32((u32 __iomem *)(reg) + 1, data);
++		iowrite64be(data, reg);
+ 	}
  }
- 
  
 -- 
 2.21.0
