@@ -2,24 +2,24 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8326D025
-	for <lists+linux-crypto@lfdr.de>; Thu, 18 Jul 2019 16:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE496D01E
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Jul 2019 16:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390707AbfGROqD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 18 Jul 2019 10:46:03 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:40164 "EHLO inva021.nxp.com"
+        id S2390754AbfGROpr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 18 Jul 2019 10:45:47 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:49544 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390571AbfGROpn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S2390689AbfGROpn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 18 Jul 2019 10:45:43 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 27BB62000FF;
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 869431A035F;
         Thu, 18 Jul 2019 16:45:40 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1AB16200009;
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 78BE51A0006;
         Thu, 18 Jul 2019 16:45:40 +0200 (CEST)
 Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id C3FF6205C7;
-        Thu, 18 Jul 2019 16:45:39 +0200 (CEST)
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 2A139205C7;
+        Thu, 18 Jul 2019 16:45:40 +0200 (CEST)
 From:   Iuliana Prodan <iuliana.prodan@nxp.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         Horia Geanta <horia.geanta@nxp.com>,
@@ -27,9 +27,9 @@ To:     Herbert Xu <herbert@gondor.apana.org.au>,
 Cc:     "David S. Miller" <davem@davemloft.net>,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-imx <linux-imx@nxp.com>
-Subject: [PATCH 09/14] crypto: caam - keep both virtual and dma key addresses
-Date:   Thu, 18 Jul 2019 17:45:19 +0300
-Message-Id: <1563461124-24641-10-git-send-email-iuliana.prodan@nxp.com>
+Subject: [PATCH 10/14] crypto: caam - fix DKP for certain key lengths
+Date:   Thu, 18 Jul 2019 17:45:20 +0300
+Message-Id: <1563461124-24641-11-git-send-email-iuliana.prodan@nxp.com>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1563461124-24641-1-git-send-email-iuliana.prodan@nxp.com>
 References: <1563461124-24641-1-git-send-email-iuliana.prodan@nxp.com>
@@ -44,182 +44,453 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Horia Geantă <horia.geanta@nxp.com>
 
-Update alginfo struct to keep both virtual and dma key addresses,
-so that descriptors have them at hand.
-One example where this is needed is in the xcbc(aes) shared descriptors,
-which are updated in current patch.
-Another example is the upcoming fix for DKP.
+DKP cannot be used with immediate input key if |user key| > |derived key|,
+since the resulting descriptor (after DKP execution) would be invalid -
+having a few bytes from user key left in descriptor buffer
+as incorrect opcodes.
+
+Fix DKP usage both in standalone hmac and in authenc algorithms.
+For authenc the logic is simplified, by always storing both virtual
+and dma key addresses.
 
 Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
 ---
- drivers/crypto/caam/caamhash.c      | 26 ++++++++++++--------------
- drivers/crypto/caam/caamhash_desc.c |  5 ++---
- drivers/crypto/caam/caamhash_desc.h |  2 +-
- drivers/crypto/caam/desc_constr.h   | 10 ++++------
- 4 files changed, 19 insertions(+), 24 deletions(-)
+ drivers/crypto/caam/caamalg.c     | 42 +++++++----------------
+ drivers/crypto/caam/caamalg_qi.c  | 42 +++++++----------------
+ drivers/crypto/caam/caamalg_qi2.c | 70 ++++++++++++++++++++++++++++-----------
+ drivers/crypto/caam/caamhash.c    | 54 +++++++++++++++++++++---------
+ drivers/crypto/caam/desc_constr.h | 24 ++++++++++----
+ 5 files changed, 131 insertions(+), 101 deletions(-)
 
+diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
+index 9a7bb06..22d9fa0 100644
+--- a/drivers/crypto/caam/caamalg.c
++++ b/drivers/crypto/caam/caamalg.c
+@@ -206,6 +206,18 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
+ 				ctx->cdata.keylen - CTR_RFC3686_NONCE_SIZE);
+ 	}
+ 
++	/*
++	 * In case |user key| > |derived key|, using DKP<imm,imm>
++	 * would result in invalid opcodes (last bytes of user key) in
++	 * the resulting descriptor. Use DKP<ptr,imm> instead => both
++	 * virtual and dma key addresses are needed.
++	 */
++	ctx->adata.key_virt = ctx->key;
++	ctx->adata.key_dma = ctx->key_dma;
++
++	ctx->cdata.key_virt = ctx->key + ctx->adata.keylen_pad;
++	ctx->cdata.key_dma = ctx->key_dma + ctx->adata.keylen_pad;
++
+ 	data_len[0] = ctx->adata.keylen_pad;
+ 	data_len[1] = ctx->cdata.keylen;
+ 
+@@ -222,16 +234,6 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
+ 			      ARRAY_SIZE(data_len)) < 0)
+ 		return -EINVAL;
+ 
+-	if (inl_mask & 1)
+-		ctx->adata.key_virt = ctx->key;
+-	else
+-		ctx->adata.key_dma = ctx->key_dma;
+-
+-	if (inl_mask & 2)
+-		ctx->cdata.key_virt = ctx->key + ctx->adata.keylen_pad;
+-	else
+-		ctx->cdata.key_dma = ctx->key_dma + ctx->adata.keylen_pad;
+-
+ 	ctx->adata.key_inline = !!(inl_mask & 1);
+ 	ctx->cdata.key_inline = !!(inl_mask & 2);
+ 
+@@ -254,16 +256,6 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
+ 			      ARRAY_SIZE(data_len)) < 0)
+ 		return -EINVAL;
+ 
+-	if (inl_mask & 1)
+-		ctx->adata.key_virt = ctx->key;
+-	else
+-		ctx->adata.key_dma = ctx->key_dma;
+-
+-	if (inl_mask & 2)
+-		ctx->cdata.key_virt = ctx->key + ctx->adata.keylen_pad;
+-	else
+-		ctx->cdata.key_dma = ctx->key_dma + ctx->adata.keylen_pad;
+-
+ 	ctx->adata.key_inline = !!(inl_mask & 1);
+ 	ctx->cdata.key_inline = !!(inl_mask & 2);
+ 
+@@ -288,16 +280,6 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
+ 			      ARRAY_SIZE(data_len)) < 0)
+ 		return -EINVAL;
+ 
+-	if (inl_mask & 1)
+-		ctx->adata.key_virt = ctx->key;
+-	else
+-		ctx->adata.key_dma = ctx->key_dma;
+-
+-	if (inl_mask & 2)
+-		ctx->cdata.key_virt = ctx->key + ctx->adata.keylen_pad;
+-	else
+-		ctx->cdata.key_dma = ctx->key_dma + ctx->adata.keylen_pad;
+-
+ 	ctx->adata.key_inline = !!(inl_mask & 1);
+ 	ctx->cdata.key_inline = !!(inl_mask & 2);
+ 
+diff --git a/drivers/crypto/caam/caamalg_qi.c b/drivers/crypto/caam/caamalg_qi.c
+index b2dd4f3..c7cebd6 100644
+--- a/drivers/crypto/caam/caamalg_qi.c
++++ b/drivers/crypto/caam/caamalg_qi.c
+@@ -106,6 +106,18 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
+ 				ctx->cdata.keylen - CTR_RFC3686_NONCE_SIZE);
+ 	}
+ 
++	/*
++	 * In case |user key| > |derived key|, using DKP<imm,imm> would result
++	 * in invalid opcodes (last bytes of user key) in the resulting
++	 * descriptor. Use DKP<ptr,imm> instead => both virtual and dma key
++	 * addresses are needed.
++	 */
++	ctx->adata.key_virt = ctx->key;
++	ctx->adata.key_dma = ctx->key_dma;
++
++	ctx->cdata.key_virt = ctx->key + ctx->adata.keylen_pad;
++	ctx->cdata.key_dma = ctx->key_dma + ctx->adata.keylen_pad;
++
+ 	data_len[0] = ctx->adata.keylen_pad;
+ 	data_len[1] = ctx->cdata.keylen;
+ 
+@@ -119,16 +131,6 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
+ 			      ARRAY_SIZE(data_len)) < 0)
+ 		return -EINVAL;
+ 
+-	if (inl_mask & 1)
+-		ctx->adata.key_virt = ctx->key;
+-	else
+-		ctx->adata.key_dma = ctx->key_dma;
+-
+-	if (inl_mask & 2)
+-		ctx->cdata.key_virt = ctx->key + ctx->adata.keylen_pad;
+-	else
+-		ctx->cdata.key_dma = ctx->key_dma + ctx->adata.keylen_pad;
+-
+ 	ctx->adata.key_inline = !!(inl_mask & 1);
+ 	ctx->cdata.key_inline = !!(inl_mask & 2);
+ 
+@@ -144,16 +146,6 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
+ 			      ARRAY_SIZE(data_len)) < 0)
+ 		return -EINVAL;
+ 
+-	if (inl_mask & 1)
+-		ctx->adata.key_virt = ctx->key;
+-	else
+-		ctx->adata.key_dma = ctx->key_dma;
+-
+-	if (inl_mask & 2)
+-		ctx->cdata.key_virt = ctx->key + ctx->adata.keylen_pad;
+-	else
+-		ctx->cdata.key_dma = ctx->key_dma + ctx->adata.keylen_pad;
+-
+ 	ctx->adata.key_inline = !!(inl_mask & 1);
+ 	ctx->cdata.key_inline = !!(inl_mask & 2);
+ 
+@@ -172,16 +164,6 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
+ 			      ARRAY_SIZE(data_len)) < 0)
+ 		return -EINVAL;
+ 
+-	if (inl_mask & 1)
+-		ctx->adata.key_virt = ctx->key;
+-	else
+-		ctx->adata.key_dma = ctx->key_dma;
+-
+-	if (inl_mask & 2)
+-		ctx->cdata.key_virt = ctx->key + ctx->adata.keylen_pad;
+-	else
+-		ctx->cdata.key_dma = ctx->key_dma + ctx->adata.keylen_pad;
+-
+ 	ctx->adata.key_inline = !!(inl_mask & 1);
+ 	ctx->cdata.key_inline = !!(inl_mask & 2);
+ 
+diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
+index 285e3c9..6541b10 100644
+--- a/drivers/crypto/caam/caamalg_qi2.c
++++ b/drivers/crypto/caam/caamalg_qi2.c
+@@ -199,6 +199,18 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
+ 				ctx->cdata.keylen - CTR_RFC3686_NONCE_SIZE);
+ 	}
+ 
++	/*
++	 * In case |user key| > |derived key|, using DKP<imm,imm> would result
++	 * in invalid opcodes (last bytes of user key) in the resulting
++	 * descriptor. Use DKP<ptr,imm> instead => both virtual and dma key
++	 * addresses are needed.
++	 */
++	ctx->adata.key_virt = ctx->key;
++	ctx->adata.key_dma = ctx->key_dma;
++
++	ctx->cdata.key_virt = ctx->key + ctx->adata.keylen_pad;
++	ctx->cdata.key_dma = ctx->key_dma + ctx->adata.keylen_pad;
++
+ 	data_len[0] = ctx->adata.keylen_pad;
+ 	data_len[1] = ctx->cdata.keylen;
+ 
+@@ -210,16 +222,6 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
+ 			      ARRAY_SIZE(data_len)) < 0)
+ 		return -EINVAL;
+ 
+-	if (inl_mask & 1)
+-		ctx->adata.key_virt = ctx->key;
+-	else
+-		ctx->adata.key_dma = ctx->key_dma;
+-
+-	if (inl_mask & 2)
+-		ctx->cdata.key_virt = ctx->key + ctx->adata.keylen_pad;
+-	else
+-		ctx->cdata.key_dma = ctx->key_dma + ctx->adata.keylen_pad;
+-
+ 	ctx->adata.key_inline = !!(inl_mask & 1);
+ 	ctx->cdata.key_inline = !!(inl_mask & 2);
+ 
+@@ -248,16 +250,6 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
+ 			      ARRAY_SIZE(data_len)) < 0)
+ 		return -EINVAL;
+ 
+-	if (inl_mask & 1)
+-		ctx->adata.key_virt = ctx->key;
+-	else
+-		ctx->adata.key_dma = ctx->key_dma;
+-
+-	if (inl_mask & 2)
+-		ctx->cdata.key_virt = ctx->key + ctx->adata.keylen_pad;
+-	else
+-		ctx->cdata.key_dma = ctx->key_dma + ctx->adata.keylen_pad;
+-
+ 	ctx->adata.key_inline = !!(inl_mask & 1);
+ 	ctx->cdata.key_inline = !!(inl_mask & 2);
+ 
+@@ -2999,14 +2991,18 @@ enum hash_optype {
+ /**
+  * caam_hash_ctx - ahash per-session context
+  * @flc: Flow Contexts array
++ * @key: authentication key
+  * @flc_dma: I/O virtual addresses of the Flow Contexts
++ * @key_dma: I/O virtual address of the key
+  * @dev: dpseci device
+  * @ctx_len: size of Context Register
+  * @adata: hashing algorithm details
+  */
+ struct caam_hash_ctx {
+ 	struct caam_flc flc[HASH_NUM_OP];
++	u8 key[CAAM_MAX_HASH_BLOCK_SIZE] ____cacheline_aligned;
+ 	dma_addr_t flc_dma[HASH_NUM_OP];
++	dma_addr_t key_dma;
+ 	struct device *dev;
+ 	int ctx_len;
+ 	struct alginfo adata;
+@@ -3306,6 +3302,20 @@ static int ahash_setkey(struct crypto_ahash *ahash, const u8 *key,
+ 	ctx->adata.key_virt = key;
+ 	ctx->adata.key_inline = true;
+ 
++	/*
++	 * In case |user key| > |derived key|, using DKP<imm,imm> would result
++	 * in invalid opcodes (last bytes of user key) in the resulting
++	 * descriptor. Use DKP<ptr,imm> instead => both virtual and dma key
++	 * addresses are needed.
++	 */
++	if (keylen > ctx->adata.keylen_pad) {
++		ctx->adata.key_dma = ctx->key_dma;
++		memcpy(ctx->key, key, keylen);
++		dma_sync_single_for_device(ctx->dev, ctx->key_dma,
++					   ctx->adata.keylen_pad,
++					   DMA_TO_DEVICE);
++	}
++
+ 	ret = ahash_set_sh_desc(ahash);
+ 	kfree(hashed_key);
+ 	return ret;
+@@ -4536,11 +4546,27 @@ static int caam_hash_cra_init(struct crypto_tfm *tfm)
+ 
+ 	ctx->dev = caam_hash->dev;
+ 
++	if (alg->setkey) {
++		ctx->key_dma = dma_map_single_attrs(ctx->dev, ctx->key,
++						    ARRAY_SIZE(ctx->key),
++						    DMA_TO_DEVICE,
++						    DMA_ATTR_SKIP_CPU_SYNC);
++		if (dma_mapping_error(ctx->dev, ctx->key_dma)) {
++			dev_err(ctx->dev, "unable to map key\n");
++			return -ENOMEM;
++		}
++	}
++
+ 	dma_addr = dma_map_single_attrs(ctx->dev, ctx->flc, sizeof(ctx->flc),
+ 					DMA_BIDIRECTIONAL,
+ 					DMA_ATTR_SKIP_CPU_SYNC);
+ 	if (dma_mapping_error(ctx->dev, dma_addr)) {
+ 		dev_err(ctx->dev, "unable to map shared descriptors\n");
++		if (ctx->key_dma)
++			dma_unmap_single_attrs(ctx->dev, ctx->key_dma,
++					       ARRAY_SIZE(ctx->key),
++					       DMA_TO_DEVICE,
++					       DMA_ATTR_SKIP_CPU_SYNC);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -4566,6 +4592,10 @@ static void caam_hash_cra_exit(struct crypto_tfm *tfm)
+ 
+ 	dma_unmap_single_attrs(ctx->dev, ctx->flc_dma[0], sizeof(ctx->flc),
+ 			       DMA_BIDIRECTIONAL, DMA_ATTR_SKIP_CPU_SYNC);
++	if (ctx->key_dma)
++		dma_unmap_single_attrs(ctx->dev, ctx->key_dma,
++				       ARRAY_SIZE(ctx->key), DMA_TO_DEVICE,
++				       DMA_ATTR_SKIP_CPU_SYNC);
+ }
+ 
+ static struct caam_hash_alg *caam_hash_alloc(struct device *dev,
 diff --git a/drivers/crypto/caam/caamhash.c b/drivers/crypto/caam/caamhash.c
-index 2ec4bad..14fdfa1 100644
+index 14fdfa1..e89913b 100644
 --- a/drivers/crypto/caam/caamhash.c
 +++ b/drivers/crypto/caam/caamhash.c
-@@ -283,13 +283,10 @@ static int axcbc_set_sh_desc(struct crypto_ahash *ahash)
- 	struct device *jrdev = ctx->jrdev;
- 	u32 *desc;
+@@ -98,6 +98,7 @@ struct caam_hash_ctx {
+ 	dma_addr_t sh_desc_digest_dma;
+ 	dma_addr_t key_dma;
+ 	enum dma_data_direction dir;
++	enum dma_data_direction key_dir;
+ 	struct device *jrdev;
+ 	int ctx_len;
+ 	struct alginfo adata;
+@@ -475,6 +476,19 @@ static int ahash_setkey(struct crypto_ahash *ahash,
+ 			goto bad_free_key;
  
--	/* key is loaded from memory for UPDATE and FINALIZE states */
--	ctx->adata.key_dma = ctx->key_dma;
+ 		memcpy(ctx->key, key, keylen);
++
++		/*
++		 * In case |user key| > |derived key|, using DKP<imm,imm>
++		 * would result in invalid opcodes (last bytes of user key) in
++		 * the resulting descriptor. Use DKP<ptr,imm> instead => both
++		 * virtual and dma key addresses are needed.
++		 */
++		if (keylen > ctx->adata.keylen_pad) {
++			ctx->adata.key_dma = ctx->key_dma;
++			dma_sync_single_for_device(ctx->jrdev, ctx->key_dma,
++						   ctx->adata.keylen_pad,
++						   DMA_TO_DEVICE);
++		}
+ 	} else {
+ 		ret = gen_split_key(ctx->jrdev, ctx->key, &ctx->adata, key,
+ 				    keylen, CAAM_MAX_HASH_KEY_SIZE);
+@@ -1825,40 +1839,50 @@ static int caam_hash_cra_init(struct crypto_tfm *tfm)
+ 
+ 	if (is_xcbc_aes(caam_hash->alg_type)) {
+ 		ctx->dir = DMA_TO_DEVICE;
++		ctx->key_dir = DMA_BIDIRECTIONAL;
+ 		ctx->adata.algtype = OP_TYPE_CLASS1_ALG | caam_hash->alg_type;
+ 		ctx->ctx_len = 48;
 -
- 	/* shared descriptor for ahash_update */
- 	desc = ctx->sh_desc_update;
- 	cnstr_shdsc_sk_hash(desc, &ctx->adata, OP_ALG_AS_UPDATE,
--			    ctx->ctx_len, ctx->ctx_len, 0);
-+			    ctx->ctx_len, ctx->ctx_len);
- 	dma_sync_single_for_device(jrdev, ctx->sh_desc_update_dma,
- 				   desc_bytes(desc), ctx->dir);
- 	print_hex_dump_debug("axcbc update shdesc@" __stringify(__LINE__)" : ",
-@@ -299,20 +296,17 @@ static int axcbc_set_sh_desc(struct crypto_ahash *ahash)
- 	/* shared descriptor for ahash_{final,finup} */
- 	desc = ctx->sh_desc_fin;
- 	cnstr_shdsc_sk_hash(desc, &ctx->adata, OP_ALG_AS_FINALIZE,
--			    digestsize, ctx->ctx_len, 0);
-+			    digestsize, ctx->ctx_len);
- 	dma_sync_single_for_device(jrdev, ctx->sh_desc_fin_dma,
- 				   desc_bytes(desc), ctx->dir);
- 	print_hex_dump_debug("axcbc finup shdesc@" __stringify(__LINE__)" : ",
- 			     DUMP_PREFIX_ADDRESS, 16, 4, desc, desc_bytes(desc),
- 			     1);
+-		ctx->key_dma = dma_map_single_attrs(ctx->jrdev, ctx->key,
+-						    ARRAY_SIZE(ctx->key),
+-						    DMA_BIDIRECTIONAL,
+-						    DMA_ATTR_SKIP_CPU_SYNC);
+-		if (dma_mapping_error(ctx->jrdev, ctx->key_dma)) {
+-			dev_err(ctx->jrdev, "unable to map key\n");
+-			caam_jr_free(ctx->jrdev);
+-			return -ENOMEM;
+-		}
+ 	} else if (is_cmac_aes(caam_hash->alg_type)) {
+ 		ctx->dir = DMA_TO_DEVICE;
++		ctx->key_dir = DMA_NONE;
+ 		ctx->adata.algtype = OP_TYPE_CLASS1_ALG | caam_hash->alg_type;
+ 		ctx->ctx_len = 32;
+ 	} else {
+-		ctx->dir = priv->era >= 6 ? DMA_BIDIRECTIONAL : DMA_TO_DEVICE;
++		if (priv->era >= 6) {
++			ctx->dir = DMA_BIDIRECTIONAL;
++			ctx->key_dir = DMA_TO_DEVICE;
++		} else {
++			ctx->dir = DMA_TO_DEVICE;
++			ctx->key_dir = DMA_NONE;
++		}
+ 		ctx->adata.algtype = OP_TYPE_CLASS2_ALG | caam_hash->alg_type;
+ 		ctx->ctx_len = runninglen[(ctx->adata.algtype &
+ 					   OP_ALG_ALGSEL_SUBMASK) >>
+ 					  OP_ALG_ALGSEL_SHIFT];
+ 	}
  
--	/* key is immediate data for INIT and INITFINAL states */
--	ctx->adata.key_virt = ctx->key;
--
- 	/* shared descriptor for first invocation of ahash_update */
- 	desc = ctx->sh_desc_update_first;
- 	cnstr_shdsc_sk_hash(desc, &ctx->adata, OP_ALG_AS_INIT, ctx->ctx_len,
--			    ctx->ctx_len, ctx->key_dma);
-+			    ctx->ctx_len);
- 	dma_sync_single_for_device(jrdev, ctx->sh_desc_update_first_dma,
- 				   desc_bytes(desc), ctx->dir);
- 	print_hex_dump_debug("axcbc update first shdesc@" __stringify(__LINE__)
-@@ -322,7 +316,7 @@ static int axcbc_set_sh_desc(struct crypto_ahash *ahash)
- 	/* shared descriptor for ahash_digest */
- 	desc = ctx->sh_desc_digest;
- 	cnstr_shdsc_sk_hash(desc, &ctx->adata, OP_ALG_AS_INITFINAL,
--			    digestsize, ctx->ctx_len, 0);
-+			    digestsize, ctx->ctx_len);
- 	dma_sync_single_for_device(jrdev, ctx->sh_desc_digest_dma,
- 				   desc_bytes(desc), ctx->dir);
- 	print_hex_dump_debug("axcbc digest shdesc@" __stringify(__LINE__)" : ",
-@@ -341,7 +335,7 @@ static int acmac_set_sh_desc(struct crypto_ahash *ahash)
- 	/* shared descriptor for ahash_update */
- 	desc = ctx->sh_desc_update;
- 	cnstr_shdsc_sk_hash(desc, &ctx->adata, OP_ALG_AS_UPDATE,
--			    ctx->ctx_len, ctx->ctx_len, 0);
-+			    ctx->ctx_len, ctx->ctx_len);
- 	dma_sync_single_for_device(jrdev, ctx->sh_desc_update_dma,
- 				   desc_bytes(desc), ctx->dir);
- 	print_hex_dump_debug("acmac update shdesc@" __stringify(__LINE__)" : ",
-@@ -351,7 +345,7 @@ static int acmac_set_sh_desc(struct crypto_ahash *ahash)
- 	/* shared descriptor for ahash_{final,finup} */
- 	desc = ctx->sh_desc_fin;
- 	cnstr_shdsc_sk_hash(desc, &ctx->adata, OP_ALG_AS_FINALIZE,
--			    digestsize, ctx->ctx_len, 0);
-+			    digestsize, ctx->ctx_len);
- 	dma_sync_single_for_device(jrdev, ctx->sh_desc_fin_dma,
- 				   desc_bytes(desc), ctx->dir);
- 	print_hex_dump_debug("acmac finup shdesc@" __stringify(__LINE__)" : ",
-@@ -361,7 +355,7 @@ static int acmac_set_sh_desc(struct crypto_ahash *ahash)
- 	/* shared descriptor for first invocation of ahash_update */
- 	desc = ctx->sh_desc_update_first;
- 	cnstr_shdsc_sk_hash(desc, &ctx->adata, OP_ALG_AS_INIT, ctx->ctx_len,
--			    ctx->ctx_len, 0);
-+			    ctx->ctx_len);
- 	dma_sync_single_for_device(jrdev, ctx->sh_desc_update_first_dma,
- 				   desc_bytes(desc), ctx->dir);
- 	print_hex_dump_debug("acmac update first shdesc@" __stringify(__LINE__)
-@@ -371,7 +365,7 @@ static int acmac_set_sh_desc(struct crypto_ahash *ahash)
- 	/* shared descriptor for ahash_digest */
- 	desc = ctx->sh_desc_digest;
- 	cnstr_shdsc_sk_hash(desc, &ctx->adata, OP_ALG_AS_INITFINAL,
--			    digestsize, ctx->ctx_len, 0);
-+			    digestsize, ctx->ctx_len);
- 	dma_sync_single_for_device(jrdev, ctx->sh_desc_digest_dma,
- 				   desc_bytes(desc), ctx->dir);
- 	print_hex_dump_debug("acmac digest shdesc@" __stringify(__LINE__)" : ",
-@@ -508,6 +502,10 @@ static int axcbc_setkey(struct crypto_ahash *ahash, const u8 *key,
- 	memcpy(ctx->key, key, keylen);
- 	dma_sync_single_for_device(jrdev, ctx->key_dma, keylen, DMA_TO_DEVICE);
- 	ctx->adata.keylen = keylen;
-+	/* key is loaded from memory for UPDATE and FINALIZE states */
-+	ctx->adata.key_dma = ctx->key_dma;
-+	/* key is immediate data for INIT and INITFINAL states */
-+	ctx->adata.key_virt = ctx->key;
++	if (ctx->key_dir != DMA_NONE) {
++		ctx->key_dma = dma_map_single_attrs(ctx->jrdev, ctx->key,
++						    ARRAY_SIZE(ctx->key),
++						    ctx->key_dir,
++						    DMA_ATTR_SKIP_CPU_SYNC);
++		if (dma_mapping_error(ctx->jrdev, ctx->key_dma)) {
++			dev_err(ctx->jrdev, "unable to map key\n");
++			caam_jr_free(ctx->jrdev);
++			return -ENOMEM;
++		}
++	}
++
+ 	dma_addr = dma_map_single_attrs(ctx->jrdev, ctx->sh_desc_update,
+ 					offsetof(struct caam_hash_ctx, key),
+ 					ctx->dir, DMA_ATTR_SKIP_CPU_SYNC);
+ 	if (dma_mapping_error(ctx->jrdev, dma_addr)) {
+ 		dev_err(ctx->jrdev, "unable to map shared descriptors\n");
  
- 	print_hex_dump_debug("axcbc ctx.key@" __stringify(__LINE__)" : ",
- 			     DUMP_PREFIX_ADDRESS, 16, 4, ctx->key, keylen, 1);
-diff --git a/drivers/crypto/caam/caamhash_desc.c b/drivers/crypto/caam/caamhash_desc.c
-index 71d0183..78383d7 100644
---- a/drivers/crypto/caam/caamhash_desc.c
-+++ b/drivers/crypto/caam/caamhash_desc.c
-@@ -83,10 +83,9 @@ EXPORT_SYMBOL(cnstr_shdsc_ahash);
-  * @state: algorithm state OP_ALG_AS_{INIT, FINALIZE, INITFINALIZE, UPDATE}
-  * @digestsize: algorithm's digest size
-  * @ctx_len: size of Context Register
-- * @key_dma: I/O Virtual Address of the key
-  */
- void cnstr_shdsc_sk_hash(u32 * const desc, struct alginfo *adata, u32 state,
--			 int digestsize, int ctx_len, dma_addr_t key_dma)
-+			 int digestsize, int ctx_len)
- {
- 	u32 *skip_key_load;
+-		if (is_xcbc_aes(caam_hash->alg_type))
++		if (ctx->key_dir != DMA_NONE)
+ 			dma_unmap_single_attrs(ctx->jrdev, ctx->key_dma,
+ 					       ARRAY_SIZE(ctx->key),
+-					       DMA_BIDIRECTIONAL,
++					       ctx->key_dir,
+ 					       DMA_ATTR_SKIP_CPU_SYNC);
  
-@@ -136,7 +135,7 @@ void cnstr_shdsc_sk_hash(u32 * const desc, struct alginfo *adata, u32 state,
- 			 LDST_SRCDST_BYTE_CONTEXT);
- 	if (is_xcbc_aes(adata->algtype) && state == OP_ALG_AS_INIT)
- 		/* Save K1 */
--		append_fifo_store(desc, key_dma, adata->keylen,
-+		append_fifo_store(desc, adata->key_dma, adata->keylen,
- 				  LDST_CLASS_1_CCB | FIFOST_TYPE_KEY_KEK);
+ 		caam_jr_free(ctx->jrdev);
+@@ -1891,9 +1915,9 @@ static void caam_hash_cra_exit(struct crypto_tfm *tfm)
+ 	dma_unmap_single_attrs(ctx->jrdev, ctx->sh_desc_update_dma,
+ 			       offsetof(struct caam_hash_ctx, key),
+ 			       ctx->dir, DMA_ATTR_SKIP_CPU_SYNC);
+-	if (is_xcbc_aes(ctx->adata.algtype))
++	if (ctx->key_dir != DMA_NONE)
+ 		dma_unmap_single_attrs(ctx->jrdev, ctx->key_dma,
+-				       ARRAY_SIZE(ctx->key), DMA_BIDIRECTIONAL,
++				       ARRAY_SIZE(ctx->key), ctx->key_dir,
+ 				       DMA_ATTR_SKIP_CPU_SYNC);
+ 	caam_jr_free(ctx->jrdev);
  }
- EXPORT_SYMBOL(cnstr_shdsc_sk_hash);
-diff --git a/drivers/crypto/caam/caamhash_desc.h b/drivers/crypto/caam/caamhash_desc.h
-index 6947ee1..4f369b8 100644
---- a/drivers/crypto/caam/caamhash_desc.h
-+++ b/drivers/crypto/caam/caamhash_desc.h
-@@ -25,5 +25,5 @@ void cnstr_shdsc_ahash(u32 * const desc, struct alginfo *adata, u32 state,
- 		       int digestsize, int ctx_len, bool import_ctx, int era);
- 
- void cnstr_shdsc_sk_hash(u32 * const desc, struct alginfo *adata, u32 state,
--			 int digestsize, int ctx_len, dma_addr_t key_dma);
-+			 int digestsize, int ctx_len);
- #endif /* _CAAMHASH_DESC_H_ */
 diff --git a/drivers/crypto/caam/desc_constr.h b/drivers/crypto/caam/desc_constr.h
-index 5988a26..8154174 100644
+index 8154174..536f360 100644
 --- a/drivers/crypto/caam/desc_constr.h
 +++ b/drivers/crypto/caam/desc_constr.h
-@@ -457,8 +457,8 @@ do { \
-  *           functions where it is used.
-  * @keylen: length of the provided algorithm key, in bytes
-  * @keylen_pad: padded length of the provided algorithm key, in bytes
-- * @key: address where algorithm key resides; virtual address if key_inline
-- *       is true, dma (bus) address if key_inline is false.
-+ * @key_dma: dma (bus) address where algorithm key resides
-+ * @key_virt: virtual address where algorithm key resides
-  * @key_inline: true - key can be inlined in the descriptor; false - key is
-  *              referenced by the descriptor
-  */
-@@ -466,10 +466,8 @@ struct alginfo {
- 	u32 algtype;
- 	unsigned int keylen;
- 	unsigned int keylen_pad;
--	union {
--		dma_addr_t key_dma;
--		const void *key_virt;
--	};
-+	dma_addr_t key_dma;
-+	const void *key_virt;
- 	bool key_inline;
- };
+@@ -533,14 +533,26 @@ static inline void append_proto_dkp(u32 * const desc, struct alginfo *adata)
+ 	if (adata->key_inline) {
+ 		int words;
  
+-		append_operation(desc, OP_TYPE_UNI_PROTOCOL | protid |
+-				 OP_PCL_DKP_SRC_IMM | OP_PCL_DKP_DST_IMM |
+-				 adata->keylen);
+-		append_data(desc, adata->key_virt, adata->keylen);
++		if (adata->keylen > adata->keylen_pad) {
++			append_operation(desc, OP_TYPE_UNI_PROTOCOL | protid |
++					 OP_PCL_DKP_SRC_PTR |
++					 OP_PCL_DKP_DST_IMM | adata->keylen);
++			append_ptr(desc, adata->key_dma);
++
++			words = (ALIGN(adata->keylen_pad, CAAM_CMD_SZ) -
++				 CAAM_PTR_SZ) / CAAM_CMD_SZ;
++		} else {
++			append_operation(desc, OP_TYPE_UNI_PROTOCOL | protid |
++					 OP_PCL_DKP_SRC_IMM |
++					 OP_PCL_DKP_DST_IMM | adata->keylen);
++			append_data(desc, adata->key_virt, adata->keylen);
++
++			words = (ALIGN(adata->keylen_pad, CAAM_CMD_SZ) -
++				 ALIGN(adata->keylen, CAAM_CMD_SZ)) /
++				CAAM_CMD_SZ;
++		}
+ 
+ 		/* Reserve space in descriptor buffer for the derived key */
+-		words = (ALIGN(adata->keylen_pad, CAAM_CMD_SZ) -
+-			 ALIGN(adata->keylen, CAAM_CMD_SZ)) / CAAM_CMD_SZ;
+ 		if (words)
+ 			(*desc) = cpu_to_caam32(caam32_to_cpu(*desc) + words);
+ 	} else {
 -- 
 2.1.0
 
