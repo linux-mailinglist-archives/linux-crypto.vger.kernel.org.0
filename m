@@ -2,68 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A636D778
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 Jul 2019 01:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B0D6D88E
+	for <lists+linux-crypto@lfdr.de>; Fri, 19 Jul 2019 03:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbfGRX6o (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 18 Jul 2019 19:58:44 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:53232 "EHLO inva021.nxp.com"
+        id S1726092AbfGSBrk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 18 Jul 2019 21:47:40 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:38846 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726385AbfGRX6T (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 18 Jul 2019 19:58:19 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AD6082003CB;
-        Fri, 19 Jul 2019 01:58:17 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A07C6200003;
-        Fri, 19 Jul 2019 01:58:17 +0200 (CEST)
-Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 4DDEE205D1;
-        Fri, 19 Jul 2019 01:58:17 +0200 (CEST)
-From:   Iuliana Prodan <iuliana.prodan@nxp.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        id S1726066AbfGSBrk (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 18 Jul 2019 21:47:40 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1hoHzg-0004m2-W8; Fri, 19 Jul 2019 09:47:33 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1hoHza-0007Nw-NB; Fri, 19 Jul 2019 09:47:26 +0800
+Date:   Fri, 19 Jul 2019 09:47:26 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
+Cc:     Milan Broz <gmazyland@gmail.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         Horia Geanta <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx <linux-imx@nxp.com>
-Subject: [PATCH v2 14/14] crypto: caam - change return value in case CAAM has no MDHA
-Date:   Fri, 19 Jul 2019 02:57:56 +0300
-Message-Id: <1563494276-3993-15-git-send-email-iuliana.prodan@nxp.com>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1563494276-3993-1-git-send-email-iuliana.prodan@nxp.com>
-References: <1563494276-3993-1-git-send-email-iuliana.prodan@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>
+Subject: Re: xts fuzz testing and lack of ciphertext stealing support
+Message-ID: <20190719014726.erp3bf26oi4rducm@gondor.apana.org.au>
+References: <CAKv+Gu__offPaWvyURJr8v56ig58q-Deo16QhP26EJ32uf5m3w@mail.gmail.com>
+ <20190718065223.4xaefcwjoxvujntw@gondor.apana.org.au>
+ <CAKv+Gu9-EWNpJ9viSsjhYRdOZb=7a=Mpddmyt8SLEq9aFtawjg@mail.gmail.com>
+ <20190718072154.m2umem24x4grbf6w@gondor.apana.org.au>
+ <36e78459-1594-6d19-0ab4-95b03a6de036@gmail.com>
+ <MN2PR20MB2973E61815F069E8C7D74177CAC80@MN2PR20MB2973.namprd20.prod.outlook.com>
+ <20190718152908.xiuze3kb3fdc7ov6@gondor.apana.org.au>
+ <MN2PR20MB2973E1A367986303566E80FCCAC80@MN2PR20MB2973.namprd20.prod.outlook.com>
+ <20190718155140.b6ig3zq22askmfpy@gondor.apana.org.au>
+ <MN2PR20MB2973DE83980D271CC847CA6BCAC80@MN2PR20MB2973.namprd20.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR20MB2973DE83980D271CC847CA6BCAC80@MN2PR20MB2973.namprd20.prod.outlook.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-To be consistent with other CAAM modules, caamhash should return 0
-instead of -ENODEV in case CAAM has no MDHA.
+On Thu, Jul 18, 2019 at 04:35:26PM +0000, Pascal Van Leeuwen wrote:
+>
+> Tthen there's still the issue of advancing that last tweak. From what I've seen,
+> the xts implementation does not output the last tweak so you would have to 
+> recompute it locally in cts.c as block_cipher_enc(iv) * alpha^j. Which is wasteful.
+> Of course this could be solved by redefining xts to output the last tweak
+> like CBC/CTR output their last IV ... Which would probably give us HW guys
+> trouble again because our HW cannot do *that* ... (While the HW very likely 
+> *does* implement the cipher text stealing properly, just to be able to boast
+> about IEEE P1619 compliance ...)
 
-Based on commit 1b46c90c8e00 ("crypto: caam - convert top level drivers to libraries")
-the value returned by entry point is never checked and
-the exit point is always executed.
+If your hardware supports XTS properly then you wouldn't even need
+to use this new template.  You would directly export the xts
+interface.
 
-Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
----
- drivers/crypto/caam/caamhash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/caam/caamhash.c b/drivers/crypto/caam/caamhash.c
-index e89913b..d4e047f 100644
---- a/drivers/crypto/caam/caamhash.c
-+++ b/drivers/crypto/caam/caamhash.c
-@@ -2008,7 +2008,7 @@ int caam_algapi_hash_init(struct device *ctrldev)
- 	 * is not present.
- 	 */
- 	if (!md_inst)
--		return -ENODEV;
-+		return 0;
- 
- 	/* Limit digest size based on LP256 */
- 	if (md_vid == CHA_VER_VID_MD_LP256)
+Cheers,
 -- 
-2.1.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
