@@ -2,123 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CEB56EE3E
-	for <lists+linux-crypto@lfdr.de>; Sat, 20 Jul 2019 09:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0D56F20D
+	for <lists+linux-crypto@lfdr.de>; Sun, 21 Jul 2019 08:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbfGTHfa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 20 Jul 2019 03:35:30 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:44410 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbfGTHfa (ORCPT
+        id S1725943AbfGUGrv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 21 Jul 2019 02:47:51 -0400
+Received: from mail.ampi.com.tw ([211.22.54.232]:36654 "EHLO
+        HQIMSVA.ampi.com.tw" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725830AbfGUGrv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 20 Jul 2019 03:35:30 -0400
-Received: by mail-wr1-f65.google.com with SMTP id p17so34256624wrf.11
-        for <linux-crypto@vger.kernel.org>; Sat, 20 Jul 2019 00:35:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:openpgp:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aTgqFuUx+iLi6PHQcMOEzebXL2+OwnsPRMPIdzzMI50=;
-        b=N98VZMUn7EWiC0MbiNP40BvMrQe6p/Gx2mE8wmrMIVNtjMd+JpagvU0arbPSWEYp81
-         z7mvzLbLjYXz8BkgtHt5Ul+GRXesG4W/QYbuM/TxkcbADf571wVtIlD90aAuJRkjxHhh
-         7s2l6XXzn57y0zimmCg1VTQxeVT7NRp/Fa/SmC6JbknLplEVj6oF/bvRKdm1AVa/Ydkh
-         QpcXz5yiyOF4NUDCfpzc1a17PAgr5+RuxaGj5v8UjqSFR8kTAFO4HkzA5MLHYBZFFQqZ
-         3QJTUEqSRDhXMuodbt0PgyPjfFiRZofYaHaeT/KM3iDpxcsPU3M6MY4vOZgLieHdV3bX
-         cpCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:openpgp:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aTgqFuUx+iLi6PHQcMOEzebXL2+OwnsPRMPIdzzMI50=;
-        b=CzINJ3wbky8/9HCPkp2TUg+aa4X8Yc+dWSaw4UkwvocWUhs0JnD2PhnIt+cvqtFhso
-         7Y4mCah5NWRWnzvk3k/vcw68vp1DA2gAillqJUzt1P7eR6YDVUPYi2KOzhX0BUUE7QAf
-         oafx4Fz687pHwkTfZV/ZB7jo0cz3ihh2pUlWuGN6suhn5188VV275bJhkfRB2YEiHT2/
-         ASRPQs50dzzibVl7St7J28cMc/IKHHwD3EoW6UaHgf79wj7Rllbg/gQHyYAvg+8M9TCx
-         3MB+63Fo+/XZI5m/J7FygCidO+5kYiAVHpQKHGI9KVC77hWd4euQCZCcvcqFudHHvqER
-         jCQA==
-X-Gm-Message-State: APjAAAXZoYczZQazuv1JULT6q67d8K9MTy9KEW0gZ1vpmYsA7cRWuiYD
-        cJCODxPIYnLR/p45crWz+cs=
-X-Google-Smtp-Source: APXvYqzvUhh9TQTW84Wl2D2uGdpRQNZAqbHpd8XnY5c27KNJo7o336kxlMhwPJAFaXL7/TxXbySorQ==
-X-Received: by 2002:adf:dd8e:: with SMTP id x14mr59960579wrl.344.1563608128567;
-        Sat, 20 Jul 2019 00:35:28 -0700 (PDT)
-Received: from [192.168.8.100] (37-48-49-65.nat.epc.tmcz.cz. [37.48.49.65])
-        by smtp.gmail.com with ESMTPSA id p14sm27232138wrx.17.2019.07.20.00.35.27
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Sat, 20 Jul 2019 00:35:27 -0700 (PDT)
-Subject: Re: [dm-devel] xts fuzz testing and lack of ciphertext stealing
- support
-To:     Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Horia Geanta <horia.geanta@nxp.com>
-References: <20190716221639.GA44406@gmail.com>
- <VI1PR0402MB34857BBB18C2BB8CBA2DEC7198C90@VI1PR0402MB3485.eurprd04.prod.outlook.com>
- <20190717172823.GA205944@gmail.com>
- <CAKv+Gu__offPaWvyURJr8v56ig58q-Deo16QhP26EJ32uf5m3w@mail.gmail.com>
- <20190718065223.4xaefcwjoxvujntw@gondor.apana.org.au>
- <CAKv+Gu9-EWNpJ9viSsjhYRdOZb=7a=Mpddmyt8SLEq9aFtawjg@mail.gmail.com>
- <20190718072154.m2umem24x4grbf6w@gondor.apana.org.au>
- <36e78459-1594-6d19-0ab4-95b03a6de036@gmail.com>
- <MN2PR20MB2973E61815F069E8C7D74177CAC80@MN2PR20MB2973.namprd20.prod.outlook.com>
- <b042649c-db98-9710-b063-242bdf520252@gmail.com>
- <20190720065807.GA711@sol.localdomain>
-From:   Milan Broz <gmazyland@gmail.com>
-Openpgp: preference=signencrypt
-Message-ID: <0d4d6387-777c-bfd3-e54a-e7244fde0096@gmail.com>
-Date:   Sat, 20 Jul 2019 09:35:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sun, 21 Jul 2019 02:47:51 -0400
+X-Greylist: delayed 1441 seconds by postgrey-1.27 at vger.kernel.org; Sun, 21 Jul 2019 02:47:50 EDT
+Received: from HQIMSVA.ampi.com.tw (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E687FFC242;
+        Sun, 21 Jul 2019 14:23:47 +0800 (CST)
+Received: from HQIMSVA.ampi.com.tw (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE74FFC236;
+        Sun, 21 Jul 2019 14:23:47 +0800 (CST)
+Received: from mail.ampi.com.tw (unknown [192.168.1.248])
+        by HQIMSVA.ampi.com.tw (Postfix) with ESMTPS;
+        Sun, 21 Jul 2019 14:23:47 +0800 (CST)
+Received: from ampi.com.tw (localhost [127.0.0.1])
+        by mail.ampi.com.tw (8.14.4/8.14.4) with ESMTP id x6L6UaEO008085;
+        Sun, 21 Jul 2019 14:30:36 +0800
+From:   "=?UTF-8?Q?PMB_=EF=BF=BD?=\=?UTF-8?Q?=EF=BF=BD?=}=?UTF-8?Q?=EF=BF=BDa?=" 
+        <re_shu@ampi.com.tw>
+Reply-To: yrc.co.ltd.jp@hotmail.com
+Subject: RE
+Date:   Sun, 21 Jul 2019 14:30:36 +0800
+Message-Id: <20190721063031.M11027@ampi.com.tw>
+X-Mailer: OpenWebMail 3.00_beta4 20140806 79bb7cc
+X-OriginatingIP: 105.112.98.71 (re_shu)
 MIME-Version: 1.0
-In-Reply-To: <20190720065807.GA711@sol.localdomain>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     undisclosed-recipients:;
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSVA-9.1.0.1600-8.5.0.1020-24782.005
+X-TM-AS-Result: No-4.527-5.0-31-10
+X-imss-scan-details: No-4.527-5.0-31-10
+X-TMASE-Version: IMSVA-9.1.0.1600-8.5.1020-24782.005
+X-TMASE-Result: 10-4.527200-10.000000
+X-TMASE-MatchedRID: NVd9t7aJM2dEN1lrY4B1Df48iDghCUMx+JrusXmPH9gJEXxmav2ijB6m
+        H3EG+jcfeEsd0ktnjr831HzuueQGju/Pzxjxyhd5SdzZs8Odv6qs/vMFnvXRhlIwpPWB00V2V45
+        xebOrd5Jf3/muWhRDq51cIkNY9iUDnKg65KVB+P0q+YfQqUJoXJdVhpfI8IEDmbdPE3zcujgs3j
+        1Y8+uIxR8GgtDrJ1crnMvC67olx74/fJqz2fxZF/chnc7wRcMU+WTbxKBj+esgbDoGOzjZ62Xpd
+        FT3sj5Mime1Av5S+OR7wldoFev5rw9bh4WEvKYfvHKClHGjjr3V+4fM7EOkuDtRBnJrWkwP4bZt
+        9+qxj0P+quxBz2an+l+24nCsUSFNei68po9xfQascQW+NCamorJz0UuwlI0dPcCXjNqUmkXfd+P
+        6wwCt8xoxTJ4LSy1oFQs4aFTGDtIyW6LbcL+0zDOjkTNGR4oq1mz8dMl3h/K+cGd9O9QU5TgHS1
+        xUOOxWovlg3yH363HRXm0uOnmo177XShnjyRg6kIvYAgU40apQgM35Z0mqSLPS0dNMJOiaHdyTD
+        eYcI9Ea9ETZoom49UersMJuvMO5
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 20/07/2019 08:58, Eric Biggers wrote:
-> On Thu, Jul 18, 2019 at 01:19:41PM +0200, Milan Broz wrote:
->> Also, I would like to avoid another "just because it is nicer" module dependence (XTS->XEX->ECB).
->> Last time (when XTS was reimplemented using ECB) we have many reports with initramfs
->> missing ECB module preventing boot from AES-XTS encrypted root after kernel upgrade...
->> Just saying. (Despite the last time it was keyring what broke encrypted boot ;-)
->>
-> 
-> Can't the "missing modules in initramfs" issue be solved by using a
-> MODULE_SOFTDEP()?  Actually, why isn't that being used for xts -> ecb already?
-> 
-> (There was also a bug where CONFIG_CRYPTO_XTS didn't select CONFIG_CRYPTO_ECB,
-> but that was simply a bug, which was fixed.)
+Dear:
 
-Sure, and it is solved now. (Some systems with a hardcoded list of modules
-have to be manually updated etc., but that is just bad design).
-It can be done properly from the beginning.
+Yokohama Rubber Manufacturing Company requires a reputable individual and 
+company representation for our delinquent accounts customers in America 
+and North America. We are seeking for representation for our business 
+interest in America and North America.
 
-I just want to say that that switching to XEX looks like wasting time to me
-for no additional benefit.
+We are currently having a high volume of delinquent customers in this 
+region. Haven't fully respected and completed our own side of the supply 
+obligations,  we need an Agent representative who can assist in handling 
+our delinquent account collections in your region.
 
-Fully implementing XTS does make much more sense for me, even though it is long-term
-the effort and the only user, for now, would be testmgr.
+Upon your prompt acceptance of the above proposal, we shall be requiring 
+your details  as  listed bellow.
 
-So, there are no users because it does not work. It makes no sense
-to implement it, because there are no users... (sorry, sounds like catch 22 :)
+Full Names:
+Full Contact Address:
+Occupation:
+Company Name: (If Any)
+Tel:
+Cell Phone Number:
+Fax Numbers:
+Age:
 
-(Maybe someone can use it for keyslot encryption for keys not aligned to
-block size, dunno. Actually, some filesystem encryption could have use for it.) 
+Please accept our warmest appreciation of your decision in offering your 
+services as we look forward to your prompt response.
 
-> Or "xts" and "xex" could go in the same kernel module xts.ko, which would make
-> this a non-issue.
 
-If it is not available for users, I really see no reason to introduce XEX when
-it is just XTS with full blocks.
+Note: You shall be entitle to 10% of every collection from our clients.
 
-If it is visible to users, it needs some work in userspace - XEX (as XTS) need two keys,
-people are already confused enough that 256bit key in AES-XTS means AES-128...
-So the examples, hints, man pages need to be updated, at least.
+Regards,
+Head of Tire
+Takaharu Fushimi
+Yokohama Rubber Manufacturing Company
 
-Milan
