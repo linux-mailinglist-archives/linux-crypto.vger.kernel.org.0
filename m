@@ -2,130 +2,79 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 352C371E28
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jul 2019 19:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0042071EDC
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jul 2019 20:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbfGWR6j (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 23 Jul 2019 13:58:39 -0400
-Received: from mga06.intel.com ([134.134.136.31]:37893 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726513AbfGWR6j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 23 Jul 2019 13:58:39 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Jul 2019 10:58:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,299,1559545200"; 
-   d="scan'208";a="160276390"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga007.jf.intel.com with ESMTP; 23 Jul 2019 10:58:38 -0700
-Date:   Tue, 23 Jul 2019 10:58:38 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
+        id S1726386AbfGWSOO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 23 Jul 2019 14:14:14 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:37368 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbfGWSOO (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 23 Jul 2019 14:14:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=meFPjAHnVpkx5LzG9td2xbKYymV0m46R0toM8uhLgg4=; b=JCBoGa/9fMlH12kemgaHenbGi
+        Y4ZMyaL5fQuZnEcxRikVrj03Lz0tgfVMCuczzN07zpVBD0rNInixq1H9UAaW6FSvOqwF11DL7A4fo
+        CfObJnXMtoO3//rBTxCSrSu/pCnlVVWIYTXirei8pOS7LsJcimLotK/Oy9EcFQTrrTHg+pTQaDFsm
+        D4vP8YZnwRIeci4FPJgi976tbB2AVhRiwW/sIREyXx23Xj3gW5lvMlYV4bGksXwIZAdbK7CtbgMyr
+        G3cz7l2Kig4hHN7JNCmZNWvVb07hCTvLGJgOL6sgItjf/8EYQjF8uss8/NDmslnZgsdZ9tDkucoHA
+        9xe/HMC/A==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1hpzIj-00021d-9d; Tue, 23 Jul 2019 18:14:13 +0000
+Date:   Tue, 23 Jul 2019 11:14:13 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ira Weiny <ira.weiny@intel.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Atul Gupta <atul.gupta@chelsio.com>,
         linux-crypto@vger.kernel.org
 Subject: Re: [PATCH v2 1/3] mm: Introduce page_size()
-Message-ID: <20190723175838.GA29729@iweiny-DESK2.sc.intel.com>
+Message-ID: <20190723181413.GN363@bombadil.infradead.org>
 References: <20190721104612.19120-1-willy@infradead.org>
  <20190721104612.19120-2-willy@infradead.org>
  <20190723004307.GB10284@iweiny-DESK2.sc.intel.com>
  <20190723160248.GK363@bombadil.infradead.org>
+ <20190723175838.GA29729@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190723160248.GK363@bombadil.infradead.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20190723175838.GA29729@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 09:02:48AM -0700, Matthew Wilcox wrote:
-> On Mon, Jul 22, 2019 at 05:43:07PM -0700, Ira Weiny wrote:
-> > > diff --git a/drivers/crypto/chelsio/chtls/chtls_io.c b/drivers/crypto/chelsio/chtls/chtls_io.c
-> > > index 551bca6fef24..925be5942895 100644
-> > > --- a/drivers/crypto/chelsio/chtls/chtls_io.c
-> > > +++ b/drivers/crypto/chelsio/chtls/chtls_io.c
-> > > @@ -1078,7 +1078,7 @@ int chtls_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
-> > >  			bool merge;
-> > >  
-> > >  			if (page)
-> > > -				pg_size <<= compound_order(page);
-> > > +				pg_size = page_size(page);
-> > >  			if (off < pg_size &&
-> > >  			    skb_can_coalesce(skb, i, page, off)) {
-> > >  				merge = 1;
-> > > @@ -1105,8 +1105,7 @@ int chtls_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
-> > >  							   __GFP_NORETRY,
-> > >  							   order);
-> > >  					if (page)
-> > > -						pg_size <<=
-> > > -							compound_order(page);
-> > > +						pg_size <<= order;
-> > 
-> > Looking at the code I see pg_size should be PAGE_SIZE right before this so why
-> > not just use the new call and remove the initial assignment?
+On Tue, Jul 23, 2019 at 10:58:38AM -0700, Ira Weiny wrote:
+> > @@ -1092,7 +1092,7 @@ int chtls_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+> >  			if (page && off == pg_size) {
+> >  				put_page(page);
+> >  				TCP_PAGE(sk) = page = NULL;
+> > -				pg_size = PAGE_SIZE;
+> > +				pg_size = 0;
 > 
-> This driver is really convoluted.
+> Yea...  I was not sure about this one at first...  :-/
 
-Agreed...
+I'm not sure we actually need to change pg_size here, but it seemed
+appropriate to set it back to 0.
 
->
-> I wasn't certain I wouldn't break it
-> in some horrid way.  I made larger changes to it originally, then they
-> touched this part of the driver and I had to rework the patch to apply
-> on top of their changes.  So I did something more minimal.
+> >  							   __GFP_NORETRY,
+> >  							   order);
+> > -					if (page)
+> > -						pg_size <<= order;
+> >  				}
+> >  				if (!page) {
+> >  					page = alloc_page(gfp);
+> > -					pg_size = PAGE_SIZE;
+> >  				}
+> >  				if (!page)
+> >  					goto wait_for_memory;
 > 
-> This, on top of what's in Andrew's tree, would be my guess, but I don't
-> have the hardware.
-> 
-> diff --git a/drivers/crypto/chelsio/chtls/chtls_io.c b/drivers/crypto/chelsio/chtls/chtls_io.c
-> index 925be5942895..d4eb0fcd04c7 100644
-> --- a/drivers/crypto/chelsio/chtls/chtls_io.c
-> +++ b/drivers/crypto/chelsio/chtls/chtls_io.c
-> @@ -1073,7 +1073,7 @@ int chtls_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
->  		} else {
->  			int i = skb_shinfo(skb)->nr_frags;
->  			struct page *page = TCP_PAGE(sk);
-> -			int pg_size = PAGE_SIZE;
-> +			unsigned int pg_size = 0;
->  			int off = TCP_OFF(sk);
->  			bool merge;
->  
-> @@ -1092,7 +1092,7 @@ int chtls_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
->  			if (page && off == pg_size) {
->  				put_page(page);
->  				TCP_PAGE(sk) = page = NULL;
-> -				pg_size = PAGE_SIZE;
-> +				pg_size = 0;
+> Side note: why 2 checks for !page?
 
-Yea...  I was not sure about this one at first...  :-/
+Because page is assigned to after the first check ...
 
->  			}
->  
->  			if (!page) {
-> @@ -1104,15 +1104,13 @@ int chtls_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
->  							   __GFP_NOWARN |
->  							   __GFP_NORETRY,
->  							   order);
-> -					if (page)
-> -						pg_size <<= order;
->  				}
->  				if (!page) {
->  					page = alloc_page(gfp);
-> -					pg_size = PAGE_SIZE;
->  				}
->  				if (!page)
->  					goto wait_for_memory;
-
-Side note: why 2 checks for !page?
-
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-
-> +				pg_size = page_size(page);
->  				off = 0;
->  			}
->  copy:
