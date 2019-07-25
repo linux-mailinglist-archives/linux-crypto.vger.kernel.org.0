@@ -2,41 +2,41 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3FB7597F
-	for <lists+linux-crypto@lfdr.de>; Thu, 25 Jul 2019 23:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0F37597C
+	for <lists+linux-crypto@lfdr.de>; Thu, 25 Jul 2019 23:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbfGYVZs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 25 Jul 2019 17:25:48 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54674 "EHLO
+        id S1726803AbfGYVZq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 25 Jul 2019 17:25:46 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:54622 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726805AbfGYVZr (ORCPT
+        with ESMTP id S1726674AbfGYVZq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 25 Jul 2019 17:25:47 -0400
+        Thu, 25 Jul 2019 17:25:46 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6PLNt5p028711;
-        Thu, 25 Jul 2019 21:25:25 GMT
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6PLNQux028419;
+        Thu, 25 Jul 2019 21:25:24 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2018-07-02;
- bh=Rl5zKs4e7TLkh5L9k95As/3+ePV4kn0EOJ93KQGkcbo=;
- b=cAwVKBMbgxni+nV7KTunHBxxzeLRAIXfvKo5pknhrZHOPJwdxasCwo62QP/JXSVyyibF
- pMqpC258ZJSW0XJEHiVjCai0jPchcCW86QBgT/Fq6UHPe7ur0N8plYrK6o1nzJqJA22I
- I5rrq7K3KCVFLQBACs0UMF/ul6C3+RZcrrVmrcvagk8VjYZLDVn3NP0+ew+Hjm81mEO6
- VKcX3LxVb7YiW6EzbfwvfyCbUYeXc7/ARzLpApDCXLqOqrphpZhp3SvFUWHGo9wyBg//
- OZ7q5MShl1xP9pS/u4Icl1tvIrK8PAQn5GXyRyAEIN9qQT5HdWjLwdRfLwzMVjrG791W TA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2tx61c6mew-1
+ bh=0FHLYwXChjiQiSvTSooHeQULBjqit8SM8K4FegGSKjQ=;
+ b=VJDvALEbh2WRLgJ51/lOw+GuVaIChEtBFMVzz7/5m656+BbbSE1Pp93KOvuF/C9ekWGj
+ dRTl9WLuZV5CDpXGZPAIvVQIanEfDbADCQtquO4r6a4kijH7FHN4mdsfHRNdAcmN/SyY
+ iAUdHLkgTOLPp+dw7pcsoqLcqDtM8HW1m5AK0hPrktlIXx9cJb9gb+XHAvJ9XOnlNETz
+ x98DDCPF+9KKnhwoM6sFxrZjjhTiQPMXXVexeW1kesJ3oiq3Y2mbg/791zkvye+8vGye
+ JXMNb8mz+FngZZpNyO5x0kK4FUZuuSHC9HGxI6HJwXTpSFJ5jrj37e00K8NGyhu4T7bn dg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2tx61c6mev-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Jul 2019 21:25:25 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6PLNJ0K188233;
+        Thu, 25 Jul 2019 21:25:24 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6PLNIT3066990;
         Thu, 25 Jul 2019 21:25:24 GMT
 Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 2tx60y2ak3-1
+        by userp3030.oracle.com with ESMTP id 2tx60yj90c-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 25 Jul 2019 21:25:24 +0000
 Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6PLPJcb030872;
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6PLPKx1030875;
         Thu, 25 Jul 2019 21:25:22 GMT
 Received: from localhost.localdomain (/73.60.114.248)
         by default (Oracle Beehive Gateway v4.0)
@@ -48,23 +48,23 @@ Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
         Peter Zijlstra <peterz@infradead.org>,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: [RFC 2/9] workqueue: unconfine alloc/apply/free_workqueue_attrs()
-Date:   Thu, 25 Jul 2019 17:24:58 -0400
-Message-Id: <20190725212505.15055-3-daniel.m.jordan@oracle.com>
+Subject: [RFC 3/9] workqueue: require CPU hotplug read exclusion for apply_workqueue_attrs
+Date:   Thu, 25 Jul 2019 17:24:59 -0400
+Message-Id: <20190725212505.15055-4-daniel.m.jordan@oracle.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190725212505.15055-1-daniel.m.jordan@oracle.com>
 References: <20190725212505.15055-1-daniel.m.jordan@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9329 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=914
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.0.1-1906280000 definitions=main-1907250257
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9329 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=956 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
  definitions=main-1907250257
 Sender: linux-crypto-owner@vger.kernel.org
@@ -72,60 +72,71 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-padata will use these these interfaces in a later patch, so unconfine them.
+Change the calling convention for apply_workqueue_attrs to require CPU
+hotplug read exclusion.
+
+Avoids lockdep complaints about nested calls to get_online_cpus in a
+future patch where padata calls apply_workqueue_attrs when changing
+other CPU-hotplug-sensitive data structures with the CPU read lock
+already held.
 
 Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
 ---
- include/linux/workqueue.h | 4 ++++
- kernel/workqueue.c        | 6 +++---
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ kernel/workqueue.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-index b7c585b5ec1c..4261d1c6e87b 100644
---- a/include/linux/workqueue.h
-+++ b/include/linux/workqueue.h
-@@ -435,6 +435,10 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
- 
- extern void destroy_workqueue(struct workqueue_struct *wq);
- 
-+struct workqueue_attrs *alloc_workqueue_attrs(void);
-+void free_workqueue_attrs(struct workqueue_attrs *attrs);
-+int apply_workqueue_attrs(struct workqueue_struct *wq,
-+			  const struct workqueue_attrs *attrs);
- int workqueue_set_unbound_cpumask(cpumask_var_t cpumask);
- 
- extern bool queue_work_on(int cpu, struct workqueue_struct *wq,
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 601d61150b65..f53705ff3ff1 100644
+index f53705ff3ff1..bc2e09a8ea61 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
-@@ -3329,7 +3329,7 @@ EXPORT_SYMBOL_GPL(execute_in_process_context);
+@@ -4030,6 +4030,8 @@ static int apply_workqueue_attrs_locked(struct workqueue_struct *wq,
   *
-  * Undo alloc_workqueue_attrs().
-  */
--static void free_workqueue_attrs(struct workqueue_attrs *attrs)
-+void free_workqueue_attrs(struct workqueue_attrs *attrs)
- {
- 	if (attrs) {
- 		free_cpumask_var(attrs->cpumask);
-@@ -3345,7 +3345,7 @@ static void free_workqueue_attrs(struct workqueue_attrs *attrs)
+  * Performs GFP_KERNEL allocations.
   *
-  * Return: The allocated new workqueue_attr on success. %NULL on failure.
-  */
--static struct workqueue_attrs *alloc_workqueue_attrs(void)
-+struct workqueue_attrs *alloc_workqueue_attrs(void)
- {
- 	struct workqueue_attrs *attrs;
- 
-@@ -4032,7 +4032,7 @@ static int apply_workqueue_attrs_locked(struct workqueue_struct *wq,
-  *
++ * Assumes caller has CPU hotplug read exclusion, i.e. get_online_cpus().
++ *
   * Return: 0 on success and -errno on failure.
   */
--static int apply_workqueue_attrs(struct workqueue_struct *wq,
-+int apply_workqueue_attrs(struct workqueue_struct *wq,
- 			  const struct workqueue_attrs *attrs)
+ int apply_workqueue_attrs(struct workqueue_struct *wq,
+@@ -4037,9 +4039,11 @@ int apply_workqueue_attrs(struct workqueue_struct *wq,
  {
  	int ret;
+ 
+-	apply_wqattrs_lock();
++	lockdep_assert_cpus_held();
++
++	mutex_lock(&wq_pool_mutex);
+ 	ret = apply_workqueue_attrs_locked(wq, attrs);
+-	apply_wqattrs_unlock();
++	mutex_unlock(&wq_pool_mutex);
+ 
+ 	return ret;
+ }
+@@ -4152,16 +4156,21 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
+ 			mutex_unlock(&wq->mutex);
+ 		}
+ 		return 0;
+-	} else if (wq->flags & __WQ_ORDERED) {
++	}
++
++	get_online_cpus();
++	if (wq->flags & __WQ_ORDERED) {
+ 		ret = apply_workqueue_attrs(wq, ordered_wq_attrs[highpri]);
+ 		/* there should only be single pwq for ordering guarantee */
+ 		WARN(!ret && (wq->pwqs.next != &wq->dfl_pwq->pwqs_node ||
+ 			      wq->pwqs.prev != &wq->dfl_pwq->pwqs_node),
+ 		     "ordering guarantee broken for workqueue %s\n", wq->name);
+-		return ret;
+ 	} else {
+-		return apply_workqueue_attrs(wq, unbound_std_wq_attrs[highpri]);
++		ret = apply_workqueue_attrs(wq, unbound_std_wq_attrs[highpri]);
+ 	}
++	put_online_cpus();
++
++	return ret;
+ }
+ 
+ static int wq_clamp_max_active(int max_active, unsigned int flags,
 -- 
 2.22.0
 
