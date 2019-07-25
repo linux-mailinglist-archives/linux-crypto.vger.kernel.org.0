@@ -2,23 +2,23 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BFD7506B
-	for <lists+linux-crypto@lfdr.de>; Thu, 25 Jul 2019 16:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E57C75051
+	for <lists+linux-crypto@lfdr.de>; Thu, 25 Jul 2019 15:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404612AbfGYN7a (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 25 Jul 2019 09:59:30 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:58230 "EHLO inva021.nxp.com"
+        id S2404183AbfGYN6j (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 25 Jul 2019 09:58:39 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:58250 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404170AbfGYN6j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S2404172AbfGYN6j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 25 Jul 2019 09:58:39 -0400
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 78CA72001A5;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D0706200710;
         Thu, 25 Jul 2019 15:58:36 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6A819200053;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C3540200053;
         Thu, 25 Jul 2019 15:58:36 +0200 (CEST)
 Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 0BC39205E8;
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 78783205E8;
         Thu, 25 Jul 2019 15:58:36 +0200 (CEST)
 From:   Iuliana Prodan <iuliana.prodan@nxp.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
@@ -27,10 +27,12 @@ To:     Herbert Xu <herbert@gondor.apana.org.au>,
 Cc:     "David S. Miller" <davem@davemloft.net>,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-imx <linux-imx@nxp.com>
-Subject: [PATCH v3 00/14] crypto: caam - fixes for kernel v5.3
-Date:   Thu, 25 Jul 2019 16:58:12 +0300
-Message-Id: <1564063106-9552-1-git-send-email-iuliana.prodan@nxp.com>
+Subject: [PATCH v3 01/14] crypto: caam/qi - fix error handling in ERN handler
+Date:   Thu, 25 Jul 2019 16:58:13 +0300
+Message-Id: <1564063106-9552-2-git-send-email-iuliana.prodan@nxp.com>
 X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1564063106-9552-1-git-send-email-iuliana.prodan@nxp.com>
+References: <1564063106-9552-1-git-send-email-iuliana.prodan@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,70 +42,74 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The series solves:
-- the failures found with fuzz testing;
-- resources clean-up on caampkc/caamrng exit path.
+From: Horia Geantă <horia.geanta@nxp.com>
 
-The first 10 patches solve the issues found with
-CONFIG_CRYPTO_MANAGER_EXTRA_TESTS enabled.
-They modify the drivers to provide a valid error (and not the hardware
-error ID) to the user, via completion callbacks.
-They check key length, assoclen, authsize and input size to solve the
-fuzz tests that expect -EINVAL to be returned when these values are
-not valid.
+ERN handler calls the caam/qi frontend "done" callback with a status
+of -EIO. This is incorrect, since the callback expects a status value
+meaningful for the crypto engine - hence the cryptic messages
+like the one below:
+platform caam_qi: 15: unknown error source
 
-The next 4 patches check the algorithm registration for caampkc
-module and unregister it only if the registration was successful.
-Also, on caampkc/caamrng, the exit point function is executed only if the
-registration was successful to avoid double freeing of resources in case
-the initialization function failed.
+Fix this by providing the callback with:
+-the status returned by the crypto engine (fd[status]) in case
+it contains an error, OR
+-a QI "No error" code otherwise; this will trigger the message:
+platform caam_qi: 50000000: Queue Manager Interface: No error
+which is fine, since QMan driver provides details about the cause of
+failure
 
-This patch depends on series:
-https://patchwork.kernel.org/project/linux-crypto/list/?series=150651
-
+Cc: <stable@vger.kernel.org> # v5.1+
+Fixes: 67c2315d ("crypto: caam - add Queue Interface (QI) backend support")
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+---
 Changes since v2:
-- use helper functions from crypto API, to validate the inputs;
-- update rfc4106 shared descriptor with the erratum workaround;
-- fix MDHA key derivation for CAAM with era < 6;
-- remove check for keylen < 4, since is included in check_aes_keylen.
+-update stable version
+---
+ drivers/crypto/caam/error.c | 1 +
+ drivers/crypto/caam/qi.c    | 5 ++++-
+ drivers/crypto/caam/regs.h  | 1 +
+ 3 files changed, 6 insertions(+), 1 deletion(-)
 
-Horia Geantă (5):
-  crypto: caam/qi - fix error handling in ERN handler
-  crypto: caam - fix return code in completion callbacks
-  crypto: caam - update IV only when crypto operation succeeds
-  crypto: caam - keep both virtual and dma key addresses
-  crypto: caam - fix MDHA key derivation for certain user key lengths
-
-Iuliana Prodan (9):
-  crypto: caam - check key length
-  crypto: caam - check authsize
-  crypto: caam - check assoclen
-  crypto: caam - check zero-length input
-  crypto: caam - update rfc4106 sh desc to support zero length input
-  crypto: caam - free resources in case caam_rng registration failed
-  crypto: caam - execute module exit point only if necessary
-  crypto: caam - unregister algorithm only if the registration succeeded
-  crypto: caam - change return value in case CAAM has no MDHA
-
- drivers/crypto/caam/Kconfig         |   2 +
- drivers/crypto/caam/caamalg.c       | 227 +++++++++++++++----------
- drivers/crypto/caam/caamalg_desc.c  |  45 +++--
- drivers/crypto/caam/caamalg_desc.h  |   2 +-
- drivers/crypto/caam/caamalg_qi.c    | 223 +++++++++++++++----------
- drivers/crypto/caam/caamalg_qi2.c   | 320 +++++++++++++++++++++++-------------
- drivers/crypto/caam/caamhash.c      | 114 ++++++++-----
- drivers/crypto/caam/caamhash_desc.c |   5 +-
- drivers/crypto/caam/caamhash_desc.h |   2 +-
- drivers/crypto/caam/caampkc.c       |  80 ++++++---
- drivers/crypto/caam/caamrng.c       |  17 +-
- drivers/crypto/caam/desc_constr.h   |  34 ++--
- drivers/crypto/caam/error.c         |  61 ++++---
- drivers/crypto/caam/error.h         |   2 +-
- drivers/crypto/caam/key_gen.c       |  14 +-
- drivers/crypto/caam/qi.c            |  10 +-
- drivers/crypto/caam/regs.h          |   1 +
- 17 files changed, 745 insertions(+), 414 deletions(-)
-
+diff --git a/drivers/crypto/caam/error.c b/drivers/crypto/caam/error.c
+index 4f0d458..95da6ae 100644
+--- a/drivers/crypto/caam/error.c
++++ b/drivers/crypto/caam/error.c
+@@ -118,6 +118,7 @@ static const struct {
+ 	u8 value;
+ 	const char *error_text;
+ } qi_error_list[] = {
++	{ 0x00, "No error" },
+ 	{ 0x1F, "Job terminated by FQ or ICID flush" },
+ 	{ 0x20, "FD format error"},
+ 	{ 0x21, "FD command format error"},
+diff --git a/drivers/crypto/caam/qi.c b/drivers/crypto/caam/qi.c
+index 0fe618e..19a378b 100644
+--- a/drivers/crypto/caam/qi.c
++++ b/drivers/crypto/caam/qi.c
+@@ -163,7 +163,10 @@ static void caam_fq_ern_cb(struct qman_portal *qm, struct qman_fq *fq,
+ 	dma_unmap_single(drv_req->drv_ctx->qidev, qm_fd_addr(fd),
+ 			 sizeof(drv_req->fd_sgt), DMA_BIDIRECTIONAL);
+ 
+-	drv_req->cbk(drv_req, -EIO);
++	if (fd->status)
++		drv_req->cbk(drv_req, be32_to_cpu(fd->status));
++	else
++		drv_req->cbk(drv_req, JRSTA_SSRC_QI);
+ }
+ 
+ static struct qman_fq *create_caam_req_fq(struct device *qidev,
+diff --git a/drivers/crypto/caam/regs.h b/drivers/crypto/caam/regs.h
+index 8591914..7c7ea8a 100644
+--- a/drivers/crypto/caam/regs.h
++++ b/drivers/crypto/caam/regs.h
+@@ -641,6 +641,7 @@ struct caam_job_ring {
+ #define JRSTA_SSRC_CCB_ERROR        0x20000000
+ #define JRSTA_SSRC_JUMP_HALT_USER   0x30000000
+ #define JRSTA_SSRC_DECO             0x40000000
++#define JRSTA_SSRC_QI               0x50000000
+ #define JRSTA_SSRC_JRERROR          0x60000000
+ #define JRSTA_SSRC_JUMP_HALT_CC     0x70000000
+ 
 -- 
 2.1.0
 
