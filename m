@@ -2,183 +2,94 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FCE767AD
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jul 2019 15:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 083AF768D4
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jul 2019 15:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbfGZNin (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 26 Jul 2019 09:38:43 -0400
-Received: from mail-eopbgr680056.outbound.protection.outlook.com ([40.107.68.56]:23399
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726265AbfGZNin (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 26 Jul 2019 09:38:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i1HdT1Ji87NbpAm+mT0ARjyK9csrnH5XGSzV7awD6+RDqFsjjkYBVoodu2BdmUPUI6IzCkaKzCQfqPAU842K/BL4/W9Jym5W6qurVjGCOqfdUzhehZ0NhvnQ4YmF4TKY0kVw5Jza1TzyD0eHUgP7om9Z1s5LKQjrN+n2Na6m/ik1QjyOecZQkmGfNvfctD7aO7sQy+SpiOc9ryORqJmjmIIhgiMQwhh6dcAnf/qffJqcOfW/xco7HKQwJCFDAnSG9bNpBlNLDXMRULjNLNfXv5xadEcHqg6662yoQ0PI6lCwJQAPDoaqobnuJSyPwN0J52I1BJzyuPPJe0eWFW2Lng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RBxRsnehKokC9O4qN/+PZxjQWASFfo2k1UTDaYrX3jY=;
- b=WrAwfd24O5X+Sj6PL3L4izVOf9JQ+X3yfPahgpvpi8lTcCdhTQ5l6ltn+GMweHvhD707+VODFN/iKl4UWMfFAtC1ktRiY5K/MbifSUIDzWY3zSiriE3W/dLHDATuh4QPTBy4rgiepXOWUSwcrIDGlKLpKDnb7/2B0hq5XDbzfQF9gykS7TzC+XVCpcIjsAyl6Rsj9Z/Gt751me/aNoRCLbCIBjhfcQ0B3t9UcdOyo2fe9k1NAhSdm7M4jn2wHkluCC/iAKmjVIfFl78rXTd70dCNdCeMepzEqxQcbIPdV2A+odKOal4Jafixh8DK0S5ohVfmnshhOV1SKi+XXtZ/tA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=verimatrix.com;dmarc=pass action=none
- header.from=verimatrix.com;dkim=pass header.d=verimatrix.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=verimatrix.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RBxRsnehKokC9O4qN/+PZxjQWASFfo2k1UTDaYrX3jY=;
- b=iYg53RO9ExzNRaCPLi+aykaRCtPUnZwl5O26YoRW04nnEBZnffCvzpQVF62BwDDUzIqm+KC8HKem2cOZ+VtSYS99Xqsyjg8B7tWUjOK8vzOPEiF+vZ7+84DcvVUzeIUUkzFQgV9WrFX5s6zFeEUALXgKHheg9Y+NbjM5qLsmYBc=
-Received: from MN2PR20MB2973.namprd20.prod.outlook.com (52.132.172.146) by
- MN2PR20MB2975.namprd20.prod.outlook.com (52.132.172.148) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2115.10; Fri, 26 Jul 2019 13:38:37 +0000
-Received: from MN2PR20MB2973.namprd20.prod.outlook.com
- ([fe80::68d7:2bbb:af61:2e69]) by MN2PR20MB2973.namprd20.prod.outlook.com
- ([fe80::68d7:2bbb:af61:2e69%6]) with mapi id 15.20.2094.017; Fri, 26 Jul 2019
- 13:38:37 +0000
-From:   Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
-To:     Antoine Tenart <antoine.tenart@bootlin.com>
-CC:     Pascal van Leeuwen <pascalvanl@gmail.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Subject: RE: [PATCH 1/3] crypto: inside-secure - add support for
- authenc(hmac(sha1),cbc(des3_ede))
-Thread-Topic: [PATCH 1/3] crypto: inside-secure - add support for
- authenc(hmac(sha1),cbc(des3_ede))
-Thread-Index: AQHVMwaxl7vezQ4XF0yNrfTnczMQM6bc8rsAgAAGFCCAAAdAAIAACBrQ
-Date:   Fri, 26 Jul 2019 13:38:36 +0000
-Message-ID: <MN2PR20MB2973B22C06721A0E880F2526CAC00@MN2PR20MB2973.namprd20.prod.outlook.com>
-References: <1562309364-942-1-git-send-email-pvanleeuwen@verimatrix.com>
- <1562309364-942-2-git-send-email-pvanleeuwen@verimatrix.com>
- <20190726121938.GC3235@kwain>
- <MN2PR20MB2973B64FD27EA16A6FADBAFBCAC00@MN2PR20MB2973.namprd20.prod.outlook.com>
- <20190726130720.GC5031@kwain>
-In-Reply-To: <20190726130720.GC5031@kwain>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=pvanleeuwen@verimatrix.com; 
-x-originating-ip: [188.204.2.113]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d4946f36-25c0-4629-5737-08d711ce903a
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR20MB2975;
-x-ms-traffictypediagnostic: MN2PR20MB2975:
-x-ms-exchange-purlcount: 2
-x-microsoft-antispam-prvs: <MN2PR20MB297504FF664F2452AC78E105CAC00@MN2PR20MB2975.namprd20.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 01106E96F6
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(39850400004)(396003)(376002)(366004)(136003)(189003)(199004)(13464003)(81166006)(11346002)(486006)(26005)(52536014)(446003)(478600001)(6116002)(74316002)(7696005)(316002)(476003)(81156014)(8676002)(66066001)(256004)(15974865002)(5660300002)(186003)(305945005)(54906003)(33656002)(71200400001)(66574012)(76176011)(86362001)(99286004)(8936002)(53546011)(64756008)(66446008)(66556008)(9686003)(53936002)(6436002)(6506007)(102836004)(6916009)(55016002)(7736002)(76116006)(2906002)(71190400001)(14454004)(229853002)(6246003)(14444005)(66476007)(4326008)(966005)(3846002)(68736007)(66946007)(6306002)(25786009)(18886075002);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR20MB2975;H:MN2PR20MB2973.namprd20.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: verimatrix.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: /YN/LKrFLN1H2LEaSg7aaUMP09RmeIMvNyJfQbPPALPZV2cn8LhZZz7OwNnU9trHQsepEryCT9bRFrERBBzSX9nPoJ+KVzNuvai50g5Sy8EcZCcFuuskEUPh+0nuiLpaWtkzKiwcdy2C0rSxlQh8HkHFPPP9Lsnb+Zzp1snrcgQC+ZDTiINC0+wT6SfrlvpfEdU8iv7GD3KZV5UmJAH+jLqDTNwZh3Dpy8sQt4GWcLBbqYItR3Zoda0UNmsD4maVNOkmAt+HzykqpD4bwd0bU3DgMF/kZ6sAhDFukzUJtO9NwcMbVbXPMk86naINVBhfHO+ueS3egjOBBsETSpQlo3YATN3SDKbb9FvNVswjLFsmCusQc3OjXPfqTBhqQMngIKgVDaCdsDexWqVnOtmcKXT8919b1hN21mAKwDtA3Cc=
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: verimatrix.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4946f36-25c0-4629-5737-08d711ce903a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jul 2019 13:38:36.8637
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: dcb260f9-022d-4495-8602-eae51035a0d0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pvanleeuwen@verimatrix.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR20MB2975
+        id S2388077AbfGZNrn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 26 Jul 2019 09:47:43 -0400
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:41646 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388296AbfGZNpw (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 26 Jul 2019 09:45:52 -0400
+Received: by mail-ed1-f49.google.com with SMTP id p15so53297258eds.8
+        for <linux-crypto@vger.kernel.org>; Fri, 26 Jul 2019 06:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=fFB59i/KR1NFPnF58ScmWzSYAxJrvQ5w2m22vY6o9Q4=;
+        b=I6up5k5jF5TcM2gFSkA0bQyN0zOjnQJlr+eJPrPB7TbqFpjBNTKTNTEej1rNsO2aYE
+         RcX8jfWSxPBcAnrNrFFdjicX1LIeqG+xF40mu9KI1beH2R0iE7hMt0Sut2Jk7XGAwOaa
+         kKII90mt2wKzUgJV9hs/3v8ipx2i6Nq9h2hBrDMcd7W5UypkjFzIremc17IrzuBJTVAB
+         CcR6hv+OdB9kac4b65xNMFdG5nb8JhmgdVKfQsEUu/6VWavNcYGjOjjWWjA0kXctek3H
+         kuks9CUZ4T1+N660HvkyByRpbQ/WGM2hGgUj2vIuOhc9Oia21eHqMU58Gh1u3INuJLOx
+         ddQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fFB59i/KR1NFPnF58ScmWzSYAxJrvQ5w2m22vY6o9Q4=;
+        b=S4yKC/si0aOeudEJYkQdhHndn8sTumKVo376GpY246eJtNNy4PK5V3dAj5WdatgNP/
+         bYOdUSO6pX+KU0wpJCZpVjb8j78qmGYqnsQ1SbhRPffuDQrEpO2iE5d4NPP7z5lcxWlb
+         sKSJJPwZy2UEM0vdQupqhX2s33gKHYwNm7p5yXO0zL6OL8O6RmHChAd5mE73Jll03IBg
+         fB9T//BbfOOdeVQHd2P4oBIYh08Ttc95qZwlk3xxlUnUDByBR62WqEvmgiPChbhaLqvK
+         w0rVYniILtmZHye428K3B+J0jDaI3TJ4+a8Nz/33C6MKXaACMkz96Tc6wZyfKj1eCoDX
+         e4gA==
+X-Gm-Message-State: APjAAAUKXYc/77HZGua29EaXfpwEzpt4WG87pMD3mC2FEuD8IQO+x5Rr
+        m5n+pSetcNI/8djQ2DoOXG2H7tH/
+X-Google-Smtp-Source: APXvYqzm4XatAl2zC4IFzpMpp+EfOwNiJXm5wmU/kDbx8/mmn8FqKJol8O3NMrQ9jXsnmqT+KaWPFQ==
+X-Received: by 2002:a50:922a:: with SMTP id i39mr82185648eda.219.1564148749982;
+        Fri, 26 Jul 2019 06:45:49 -0700 (PDT)
+Received: from localhost.localdomain.com ([188.204.2.113])
+        by smtp.gmail.com with ESMTPSA id 34sm14061423eds.5.2019.07.26.06.45.49
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 26 Jul 2019 06:45:49 -0700 (PDT)
+From:   Pascal van Leeuwen <pascalvanl@gmail.com>
+X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+To:     linux-crypto@vger.kernel.org
+Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net,
+        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+Subject: [PATCHv2 0/3] crypto: inside-secure - broaden driver scope 
+Date:   Fri, 26 Jul 2019 14:43:22 +0200
+Message-Id: <1564145005-26731-1-git-send-email-pvanleeuwen@verimatrix.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Antoine,
+This is a first baby step towards making the inside-secure crypto driver
+more broadly useful. The current driver only works for Marvell Armada HW
+and requires proprietary firmware, only available under NDA from Marvell,
+to be installed. This patch set allows the driver to be used with other
+hardware and removes the dependence on that proprietary firmware.
 
-> -----Original Message-----
-> From: linux-crypto-owner@vger.kernel.org <linux-crypto-owner@vger.kernel.=
-org> On Behalf Of Antoine Tenart
-> Sent: Friday, July 26, 2019 3:07 PM
-> To: Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
-> Cc: Antoine Tenart <antoine.tenart@bootlin.com>; Pascal van Leeuwen <pasc=
-alvanl@gmail.com>; linux-crypto@vger.kernel.org;
-> herbert@gondor.apana.org.au; davem@davemloft.net
-> Subject: Re: [PATCH 1/3] crypto: inside-secure - add support for authenc(=
-hmac(sha1),cbc(des3_ede))
->=20
-> Hi Pascal,
->=20
-> On Fri, Jul 26, 2019 at 12:57:21PM +0000, Pascal Van Leeuwen wrote:
-> > > On Fri, Jul 05, 2019 at 08:49:22AM +0200, Pascal van Leeuwen wrote:
-> > > > Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-> > >
-> > > Could you provide a commit message, explaining briefly what the patch=
- is
-> > > doing?
-> > >
-> > I initially figured that to be redundant if the subject already covered=
- it completely.
-> > But now that I think of it, it's possible the subject does not end up i=
-n the commit
-> > at all ... if that is the case, would it work if I just copy-paste the =
-relevant part of the
-> > subject message? Or do I need to be more verbose?
->=20
-> The subject will be the commit title. I know sometimes the commit
-> message is trivial or redundant, but it's still a good practice to
-> always have one (and many maintainers will ask for one). Even if it's
-> only two lines :)
->=20
-Ok, good to know. I'm still learning how this works. I'll try and remember =
-;-)
+changes since v1:
+- changed dev_info's into dev_dbg to reduce normal verbosity
+- terminate all message strings with \n
+- use priv->version field strictly to enumerate device context
+- fixed some code & comment style issues
+- removed EIP97/197 references from messages
+- use #if(IS_ENABLED(CONFIG_PCI)) to remove all PCI related code
+- use #if(IS_ENABLED(CONFIG_OF)) to remove all device tree related code
+- do not inline the minifw but read it from /lib/firmware instead
 
-> > > > @@ -199,6 +201,15 @@ static int safexcel_aead_aes_setkey(struct cry=
-pto_aead *ctfm, const u8 *key,
-> > > >  		goto badkey;
-> > > >
-> > > >  	/* Encryption key */
-> > > > +	if (ctx->alg =3D=3D SAFEXCEL_3DES) {
-> > > > +		flags =3D crypto_aead_get_flags(ctfm);
-> > > > +		err =3D __des3_verify_key(&flags, keys.enckey);
-> > > > +		crypto_aead_set_flags(ctfm, flags);
-> > >
-> > > You could use directly des3_verify_key() which does exactly this.
-> > >
-> > Actually, I couldn't due to des3_verify_key expecting a struct crypto_s=
-kcipher as input,
-> > and not a struct crypto_aead, that's why I had to do it this way ...
->=20
-> I see. Maybe a good way would be to provide a function taking
-> 'struct crypto_aead' as an argument so that not every single driver
-> reimplement the same logic. But this can come later if needed.
->=20
-Agree. But being a newby and all, I did not dare to touch des.h itself ...
+Pascal van Leeuwen (3):
+  crypto: inside-secure - make driver selectable for non-Marvell
+    hardware
+  crypto: inside-secure - add support for PCI based FPGA development
+    board
+  crypto: inside-secure - add support for using the EIP197 without
+    vendor firmware
 
-> > > > +struct safexcel_alg_template safexcel_alg_authenc_hmac_sha1_cbc_de=
-s3_ede =3D {
-> > > > +	.type =3D SAFEXCEL_ALG_TYPE_AEAD,
-> > >
-> > > You either missed to fill .engines member of this struct, or this ser=
-ies
-> > > is based on another one not merged yet.
-> > >
-> > Yes, that happened in the patchset of which v2 did not make it to the m=
-ailing list ...
->=20
-> :)
->=20
-> So in general if there's a dependency you should say so in the cover
-> letter.
->=20
-I'll try to do that insofar I actually realise such a dependency exists ...
+ drivers/crypto/Kconfig                         |  12 +-
+ drivers/crypto/inside-secure/safexcel.c        | 748 +++++++++++++++++--------
+ drivers/crypto/inside-secure/safexcel.h        |  36 +-
+ drivers/crypto/inside-secure/safexcel_cipher.c |  11 -
+ drivers/crypto/inside-secure/safexcel_hash.c   |  12 -
+ drivers/crypto/inside-secure/safexcel_ring.c   |   3 +-
+ 6 files changed, 569 insertions(+), 253 deletions(-)
 
-> Thanks!
-> Antoine
->=20
-> --
-> Antoine T=E9nart, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+-- 
+1.8.3.1
 
-Regards,
-Pascal van Leeuwen
-Silicon IP Architect, Multi-Protocol Engines @ Verimatrix
-www.insidesecure.com
