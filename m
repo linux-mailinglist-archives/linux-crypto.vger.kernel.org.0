@@ -2,33 +2,33 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E92FD765F8
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jul 2019 14:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B575F76602
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jul 2019 14:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727206AbfGZMgC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 26 Jul 2019 08:36:02 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:46542 "EHLO fornost.hmeau.com"
+        id S1727345AbfGZMgy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 26 Jul 2019 08:36:54 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:46552 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726591AbfGZMgB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 26 Jul 2019 08:36:01 -0400
+        id S1727025AbfGZMgy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 26 Jul 2019 08:36:54 -0400
 Received: from gondolin.me.apana.org.au ([192.168.0.6] helo=gondolin.hengli.com.au)
         by fornost.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hqzRy-00042T-46; Fri, 26 Jul 2019 22:35:54 +1000
+        id 1hqzSl-00043x-Bc; Fri, 26 Jul 2019 22:36:43 +1000
 Received: from herbert by gondolin.hengli.com.au with local (Exim 4.80)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hqzRx-0002EN-Fm; Fri, 26 Jul 2019 22:35:53 +1000
-Date:   Fri, 26 Jul 2019 22:35:53 +1000
+        id 1hqzSj-0002Ei-Lr; Fri, 26 Jul 2019 22:36:41 +1000
+Date:   Fri, 26 Jul 2019 22:36:41 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Iuliana Prodan <iuliana.prodan@nxp.com>
-Cc:     davem@davemloft.net, gilad@benyossef.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: Re: [PATCH 1/2] crypto: ccree - check assoclen for rfc4543
-Message-ID: <20190726123553.GA8568@gondor.apana.org.au>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     steffen.klassert@secunet.com, daniel.m.jordan@oracle.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] padata: purge get_cpu and reorder_via_wq from
+ padata_do_serial
+Message-ID: <20190726123641.GA8589@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1563520164-1153-1-git-send-email-iuliana.prodan@nxp.com>
+In-Reply-To: <20190719190444.15143-1-daniel.m.jordan@oracle.com>
 Organization: Core
 X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
 User-Agent: Mutt/1.5.21 (2010-09-15)
@@ -37,22 +37,20 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Iuliana Prodan <iuliana.prodan@nxp.com> wrote:
-> Check assoclen to solve the extra tests that expect -EINVAL to be
-> returned when the associated data size is not valid.
+Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
+> With the removal of the padata timer, padata_do_serial no longer
+> needs special CPU handling, so remove it.
 > 
-> Validated assoclen for RFC4543 which expects an assoclen
-> of 16 or 20, the same as RFC4106.
-> Based on seqiv, IPsec ESP and RFC4543/RFC4106 the assoclen is sizeof
-> IP Header (spi, seq_no, extended seq_no) and IV len. This can be 16 or
-> 20 bytes.
-> 
-> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+> Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: Steffen Klassert <steffen.klassert@secunet.com>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
 > ---
-> drivers/crypto/ccree/cc_aead.c | 26 ++++++++++++++++++++------
-> 1 file changed, 20 insertions(+), 6 deletions(-)
+> kernel/padata.c | 23 +++--------------------
+> 1 file changed, 3 insertions(+), 20 deletions(-)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
