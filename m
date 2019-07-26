@@ -2,86 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3C9765DD
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jul 2019 14:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE74765DE
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jul 2019 14:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727193AbfGZMdW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 26 Jul 2019 08:33:22 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:46446 "EHLO fornost.hmeau.com"
+        id S1726277AbfGZMdt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 26 Jul 2019 08:33:49 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:46458 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726366AbfGZMdV (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 26 Jul 2019 08:33:21 -0400
+        id S1726130AbfGZMdt (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 26 Jul 2019 08:33:49 -0400
 Received: from gondolin.me.apana.org.au ([192.168.0.6] helo=gondolin.hengli.com.au)
         by fornost.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hqzPT-0003rw-Qf; Fri, 26 Jul 2019 22:33:19 +1000
+        id 1hqzPu-0003tm-2o; Fri, 26 Jul 2019 22:33:46 +1000
 Received: from herbert by gondolin.hengli.com.au with local (Exim 4.80)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hqzPS-00029x-3X; Fri, 26 Jul 2019 22:33:18 +1000
-Date:   Fri, 26 Jul 2019 22:33:18 +1000
+        id 1hqzPs-0002Ah-WB; Fri, 26 Jul 2019 22:33:44 +1000
+Date:   Fri, 26 Jul 2019 22:33:44 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     "Hook, Gary" <Gary.Hook@amd.com>
-Cc:     linux-crypto@vger.kernel.org, Thomas.Lendacky@amd.com,
-        davem@davemloft.net
-Subject: Re: [PATCH v2 0/4] Add module parameters to control CCP activation
-Message-ID: <20190726123317.GA8294@gondor.apana.org.au>
+To:     Phani Kiran Hemadri <phemadri@marvell.com>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phemadri@marvell.com
+Subject: Re: [PATCH] crypto: cavium/nitrox - Add support for loading
+ asymmetric crypto firmware
+Message-ID: <20190726123344.GA8340@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <156268468861.18577.13211913750250195885.stgit@sosrh3.amd.com>
+In-Reply-To: <20190709152341.20953-1-phemadri@marvell.com>
 Organization: Core
-X-Newsgroups: apana.lists.os.linux.cryptoapi
+X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hook, Gary <Gary.Hook@amd.com> wrote:
-> Firstly, add a switch to allow/disallow debugfs code to be built into
-> the CCP driver.
+Phani Kiran Hemadri <phemadri@marvell.com> wrote:
+> This patch adds support to load Asymmetric crypto firmware on
+> AE cores of CNN55XX device. Firmware is stored on UCD block 2
+> and all available AE cores are tagged to group 0.
 > 
-> This rest of the patch series implements a set of module parameters
-> that allows control over which CCPs on a system are enabled by the
-> driver, and how many queues on each device are activated.^M
-> 
-> A switch to enable/disable DMA engine registration is implemented.
-> 
-> Details:
-> nqueues - configure N queues per CCP (default: 0 - all queues enabled)
-> max_devs - maximum number of devices to enable (default: 0 - all
->           devices activated)
-> dmaengine - Register services with the DMA subsystem (default: true)
-> 
-> Only activated devices will have their DMA services registered,
-> comprehensively controlled by the dmaengine parameter.
-> 
-> Changes since v1:
-> - Remove debugfs patches that duplicates sysfs function
-> - Remove patches for filtering by pcibus and pci device ID
-> - Utilize underscores for consistency in variable names
-> - Correct commit message for nqueues regarding default value
-> - Alter verbage of parameter description (dmaengine)
-> - Help text in Kconfig: remove reference to parameters in debugfs
-> 
+> Signed-off-by: Phani Kiran Hemadri <phemadri@marvell.com>
+> Reviewed-by: Srikanth Jampala <jsrikanth@marvell.com>
 > ---
-> 
-> Gary R Hook (4):^M
->      crypto: ccp - Make CCP debugfs support optional
->      crypto: ccp - Add a module parameter to specify a queue count
->      crypto: ccp - module parameter to limit the number of enabled CCPs
->      crypto: ccp - Add a module parameter to control registration for DMA
-> 
-> 
-> drivers/crypto/ccp/Kconfig         |    8 ++++++++
-> drivers/crypto/ccp/Makefile        |    4 ++--
-> drivers/crypto/ccp/ccp-dev-v3.c    |    2 +-
-> drivers/crypto/ccp/ccp-dev-v5.c    |   11 ++++++-----
-> drivers/crypto/ccp/ccp-dev.c       |   29 ++++++++++++++++++++++++++++-
-> drivers/crypto/ccp/ccp-dev.h       |    1 +
-> drivers/crypto/ccp/ccp-dmaengine.c |   12 +++++++++++-
-> 7 files changed, 57 insertions(+), 10 deletions(-)
+> drivers/crypto/cavium/nitrox/nitrox_csr.h     | 124 ++++++++++++++-
+> drivers/crypto/cavium/nitrox/nitrox_debugfs.c |   3 +-
+> drivers/crypto/cavium/nitrox/nitrox_dev.h     |   4 +-
+> drivers/crypto/cavium/nitrox/nitrox_main.c    | 144 ++++++++++++++----
+> 4 files changed, 244 insertions(+), 31 deletions(-)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
