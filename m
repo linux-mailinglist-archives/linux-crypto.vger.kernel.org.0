@@ -2,351 +2,112 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BAB768B1
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jul 2019 15:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBF5768B6
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jul 2019 15:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388714AbfGZNq2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 26 Jul 2019 09:46:28 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:41279 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388706AbfGZNq2 (ORCPT
+        id S2388333AbfGZNqp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 26 Jul 2019 09:46:45 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:43335 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387830AbfGZNqo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 26 Jul 2019 09:46:28 -0400
-Received: by mail-ed1-f65.google.com with SMTP id p15so53298886eds.8
-        for <linux-crypto@vger.kernel.org>; Fri, 26 Jul 2019 06:46:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=7GWRjN+h8VxTSHo6gHqpeTxdDWC4Tob4LN4YAG9hhzo=;
-        b=p116ZgMoh9CbxCKa1v7Ji5X6L6Y9jQygSXakCFUNVYHIB3y886bMo5M68tm494Mhel
-         PYm+fdRIZkApR0Q50y/H7w3BCpImXyrbsv8GmSHWsqbfjtXZLjDaWUlfcDDFUvKOIbED
-         7CIFYLWxg/FpkiepArLN02nZWb/Xglt8ecmAN19XE8qdZ38WZpFVZcmKXQdgLDKEluzm
-         +a4Wn+Wwn3zsRBGrhYbJurF2L0KtxXSvXx+VX/vBHPXygctjsioF5SgffN0kFGoR9mzW
-         /Xkx0pk0WL0j8A3TDSEpWxpMviCyUx+A7yowUEoDiSF3GYjv+4Mw883MecuzNuCn9w33
-         xNIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=7GWRjN+h8VxTSHo6gHqpeTxdDWC4Tob4LN4YAG9hhzo=;
-        b=S/yv94mTkmxwHGOgqoeKoSnyg2tVfZ1xvLoF+rO9qx5fM0j9nsCdHjjZ1djdB4hzIj
-         +614lCZeEwDanxOyu/QyLk7iV9jUmtoT8SaqyRF9fmjV/zzUuqmOI2L7EoN0MVTQ0b35
-         I8rjCoMEBxsOImH2m06mNyrLIXx3ClMa+KTu30U9+Qk0fTa8dTSEzegmwuqzvGJ5zWmZ
-         PHxcRoLmJwYSOzPXT5cmCI0NWfr4YP7kJ2ECb0/+1qyllS+Bvu/Lr5uxCvT5jprmaDL0
-         1thWSlxRPnnb6a28CwLmTkVskd3tUzNhbm8N+uz0cuZdHwwx+jlwZF07Vqf1vO1lm2dB
-         UJ/A==
-X-Gm-Message-State: APjAAAVf7M9bh7kOzLyMVuTXyIs2uBqZJZXrg/9p8keufQLgf1qaWgvI
-        GbOfTUrLWIzGoe5FPj+DDiRmTHcI
-X-Google-Smtp-Source: APXvYqxoegy48Xl+zG6VuaTQkkCLqEttbSYespZAiakmI2O9ZbJYio2TphouzvZnmT1q6T2A0TG9Zg==
-X-Received: by 2002:aa7:ca41:: with SMTP id j1mr84178827edt.149.1564148785891;
-        Fri, 26 Jul 2019 06:46:25 -0700 (PDT)
-Received: from localhost.localdomain.com ([188.204.2.113])
-        by smtp.gmail.com with ESMTPSA id 34sm14061423eds.5.2019.07.26.06.46.25
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Jul 2019 06:46:25 -0700 (PDT)
-From:   Pascal van Leeuwen <pascalvanl@gmail.com>
-X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net,
-        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: [PATCHv2 3/3] crypto: inside-secure - add support for using the EIP197 without vendor firmware
-Date:   Fri, 26 Jul 2019 14:43:25 +0200
-Message-Id: <1564145005-26731-4-git-send-email-pvanleeuwen@verimatrix.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1564145005-26731-1-git-send-email-pvanleeuwen@verimatrix.com>
-References: <1564145005-26731-1-git-send-email-pvanleeuwen@verimatrix.com>
+        Fri, 26 Jul 2019 09:46:44 -0400
+Received: from localhost (lfbn-1-17395-211.w86-250.abo.wanadoo.fr [86.250.200.211])
+        (Authenticated sender: antoine.tenart@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 19CA9200004;
+        Fri, 26 Jul 2019 13:46:41 +0000 (UTC)
+Date:   Fri, 26 Jul 2019 15:46:40 +0200
+From:   Antoine Tenart <antoine.tenart@bootlin.com>
+To:     Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
+Cc:     Antoine Tenart <antoine.tenart@bootlin.com>,
+        Pascal van Leeuwen <pascalvanl@gmail.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>
+Subject: Re: [PATCH 2/3] crypto: inside-secure - added support for
+ rfc3686(ctr(aes))
+Message-ID: <20190726134640.GD5031@kwain>
+References: <1562309364-942-1-git-send-email-pvanleeuwen@verimatrix.com>
+ <1562309364-942-3-git-send-email-pvanleeuwen@verimatrix.com>
+ <20190726123305.GD3235@kwain>
+ <MN2PR20MB2973C6D05EED9B878D2EC4B9CAC00@MN2PR20MB2973.namprd20.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <MN2PR20MB2973C6D05EED9B878D2EC4B9CAC00@MN2PR20MB2973.namprd20.prod.outlook.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Until now, the inside-secure driver required a set of firmware images
-supplied by the silicon vendor, typically under NDA, to be present in
-/lib/firmware/inside-secure in order to be able to function.
-This patch removes the dependence on this official vendor firmware by
-falling back to generic "mini" FW - developed specifically for this
-driver - that can be provided under GPL 2.0 through linux-firmwares.
+Hi Pascal,
 
-Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
----
- drivers/crypto/inside-secure/safexcel.c | 194 ++++++++++++++++++++++++--------
- drivers/crypto/inside-secure/safexcel.h |   6 +
- 2 files changed, 153 insertions(+), 47 deletions(-)
+On Fri, Jul 26, 2019 at 01:28:13PM +0000, Pascal Van Leeuwen wrote:
+> > On Fri, Jul 05, 2019 at 08:49:23AM +0200, Pascal van Leeuwen wrote:
+> 
+> > > -		/* H/W capabilities selection */
+> > > -		val = EIP197_FUNCTION_RSVD;
+> > > -		val |= EIP197_PROTOCOL_ENCRYPT_ONLY | EIP197_PROTOCOL_HASH_ONLY;
+> > > -		val |= EIP197_PROTOCOL_ENCRYPT_HASH | EIP197_PROTOCOL_HASH_DECRYPT;
+> > > -		val |= EIP197_ALG_DES_ECB | EIP197_ALG_DES_CBC;
+> > > -		val |= EIP197_ALG_3DES_ECB | EIP197_ALG_3DES_CBC;
+> > > -		val |= EIP197_ALG_AES_ECB | EIP197_ALG_AES_CBC;
+> > > -		val |= EIP197_ALG_MD5 | EIP197_ALG_HMAC_MD5;
+> > > -		val |= EIP197_ALG_SHA1 | EIP197_ALG_HMAC_SHA1;
+> > > -		val |= EIP197_ALG_SHA2 | EIP197_ALG_HMAC_SHA2;
+> > > -		writel(val, EIP197_PE(priv) + EIP197_PE_EIP96_FUNCTION_EN(pe));
+> > > +		/* H/W capabilities selection: just enable everything */
+> > > +		writel(EIP197_FUNCTION_ALL,
+> > > +		       EIP197_PE(priv) + EIP197_PE_EIP96_FUNCTION_EN(pe));
+> > 
+> > This should be in a separate patch.
+> >
+> It was added specifically to  get this functionality working as CTR mode was not
+> enabled.  So I don't see why it should be a seperate patch, really?
+> Instead of adding CTR mode to the list (which would have been perfectly valid
+> in this context anyway), I just chose to enable everything instead.
 
-diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/inside-secure/safexcel.c
-index fe9b6d0..503fef0 100644
---- a/drivers/crypto/inside-secure/safexcel.c
-+++ b/drivers/crypto/inside-secure/safexcel.c
-@@ -108,44 +108,139 @@ static void eip197_trc_cache_init(struct safexcel_crypto_priv *priv)
- 	writel(val, priv->base + EIP197_TRC_PARAMS);
- }
- 
--static void eip197_write_firmware(struct safexcel_crypto_priv *priv,
--				  const struct firmware *fw, int pe, u32 ctrl,
--				  u32 prog_en)
-+static void eip197_init_firmware(struct safexcel_crypto_priv *priv)
- {
--	const u32 *data = (const u32 *)fw->data;
-+	int pe, i;
- 	u32 val;
--	int i;
- 
--	/* Reset the engine to make its program memory accessible */
--	writel(EIP197_PE_ICE_x_CTRL_SW_RESET |
--	       EIP197_PE_ICE_x_CTRL_CLR_ECC_CORR |
--	       EIP197_PE_ICE_x_CTRL_CLR_ECC_NON_CORR,
--	       EIP197_PE(priv) + ctrl);
-+	for (pe = 0; pe < priv->config.pes; pe++) {
-+		/* Configure the token FIFO's */
-+		writel(3, EIP197_PE(priv) + EIP197_PE_ICE_PUTF_CTRL(pe));
-+		writel(0, EIP197_PE(priv) + EIP197_PE_ICE_PPTF_CTRL(pe));
- 
--	/* Enable access to the program memory */
--	writel(prog_en, EIP197_PE(priv) + EIP197_PE_ICE_RAM_CTRL(pe));
-+		/* Clear the ICE scratchpad memory */
-+		val = readl(EIP197_PE(priv) + EIP197_PE_ICE_SCRATCH_CTRL(pe));
-+		val |= EIP197_PE_ICE_SCRATCH_CTRL_CHANGE_TIMER |
-+		       EIP197_PE_ICE_SCRATCH_CTRL_TIMER_EN |
-+		       EIP197_PE_ICE_SCRATCH_CTRL_SCRATCH_ACCESS |
-+		       EIP197_PE_ICE_SCRATCH_CTRL_CHANGE_ACCESS;
-+		writel(val, EIP197_PE(priv) + EIP197_PE_ICE_SCRATCH_CTRL(pe));
-+
-+		/* clear the scratchpad RAM using 32 bit writes only */
-+		for (i = 0; i < EIP197_NUM_OF_SCRATCH_BLOCKS; i++)
-+			writel(0, EIP197_PE(priv) +
-+				  EIP197_PE_ICE_SCRATCH_RAM(pe) + (i<<2));
-+
-+		/* Reset the IFPP engine to make its program mem accessible */
-+		writel(EIP197_PE_ICE_x_CTRL_SW_RESET |
-+		       EIP197_PE_ICE_x_CTRL_CLR_ECC_CORR |
-+		       EIP197_PE_ICE_x_CTRL_CLR_ECC_NON_CORR,
-+		       EIP197_PE(priv) + EIP197_PE_ICE_FPP_CTRL(pe));
-+
-+		/* Reset the IPUE engine to make its program mem accessible */
-+		writel(EIP197_PE_ICE_x_CTRL_SW_RESET |
-+		       EIP197_PE_ICE_x_CTRL_CLR_ECC_CORR |
-+		       EIP197_PE_ICE_x_CTRL_CLR_ECC_NON_CORR,
-+		       EIP197_PE(priv) + EIP197_PE_ICE_PUE_CTRL(pe));
-+
-+		/* Enable access to all IFPP program memories */
-+		writel(EIP197_PE_ICE_RAM_CTRL_FPP_PROG_EN,
-+		       EIP197_PE(priv) + EIP197_PE_ICE_RAM_CTRL(pe));
-+	}
-+
-+}
-+
-+static int eip197_write_firmware(struct safexcel_crypto_priv *priv,
-+				  const struct firmware *fw)
-+{
-+	const u32 *data = (const u32 *)fw->data;
-+	int i;
- 
- 	/* Write the firmware */
- 	for (i = 0; i < fw->size / sizeof(u32); i++)
- 		writel(be32_to_cpu(data[i]),
- 		       priv->base + EIP197_CLASSIFICATION_RAMS + i * sizeof(u32));
- 
--	/* Disable access to the program memory */
--	writel(0, EIP197_PE(priv) + EIP197_PE_ICE_RAM_CTRL(pe));
-+	return i - 2;
-+}
-+
-+/*
-+ * If FW is actual production firmware, then poll for its initialization
-+ * to complete and check if it is good for the HW, otherwise just return OK.
-+ */
-+static bool poll_fw_ready(struct safexcel_crypto_priv *priv, int fpp)
-+{
-+	int pe, pollcnt;
-+	u32 base, pollofs;
- 
--	/* Release engine from reset */
--	val = readl(EIP197_PE(priv) + ctrl);
--	val &= ~EIP197_PE_ICE_x_CTRL_SW_RESET;
--	writel(val, EIP197_PE(priv) + ctrl);
-+	if (fpp)
-+		pollofs  = EIP197_FW_FPP_READY;
-+	else
-+		pollofs  = EIP197_FW_PUE_READY;
-+
-+	for (pe = 0; pe < priv->config.pes; pe++) {
-+		base = EIP197_PE_ICE_SCRATCH_RAM(pe);
-+		pollcnt = EIP197_FW_START_POLLCNT;
-+		while (pollcnt &&
-+		       (readl(EIP197_PE(priv) + base +
-+			      pollofs) != 1)) {
-+			pollcnt--;
-+			cpu_relax();
-+		}
-+		if (!pollcnt) {
-+			dev_err(priv->dev, "FW(%d) for PE %d failed to start",
-+				fpp, pe);
-+			return false;
-+		}
-+	}
-+	return true;
-+}
-+
-+static bool eip197_start_firmware(struct safexcel_crypto_priv *priv,
-+				  int ipuesz, int ifppsz, int minifw)
-+{
-+	int pe;
-+	u32 val;
-+
-+	for (pe = 0; pe < priv->config.pes; pe++) {
-+		/* Disable access to all program memory */
-+		writel(0, EIP197_PE(priv) + EIP197_PE_ICE_RAM_CTRL(pe));
-+
-+		/* Start IFPP microengines */
-+		if (minifw)
-+			val = 0;
-+		else
-+			val = (((ifppsz - 1) & 0x7ff0) << 16) | BIT(3);
-+		writel(val, EIP197_PE(priv) + EIP197_PE_ICE_FPP_CTRL(pe));
-+
-+		/* Start IPUE microengines */
-+		if (minifw)
-+			val = 0;
-+		else
-+			val = ((ipuesz - 1) & 0x7ff0) << 16 | BIT(3);
-+		writel(val, EIP197_PE(priv) + EIP197_PE_ICE_PUE_CTRL(pe));
-+	}
-+
-+	/* For miniFW startup, there is no initialization, so always succeed */
-+	if (minifw)
-+		return true;
-+
-+	/* Wait until all the firmwares have properly started up */
-+	if (!poll_fw_ready(priv, 1))
-+		return false;
-+	if (!poll_fw_ready(priv, 0))
-+		return false;
-+
-+	return true;
- }
- 
- static int eip197_load_firmwares(struct safexcel_crypto_priv *priv)
- {
- 	const char *fw_name[] = {"ifpp.bin", "ipue.bin"};
- 	const struct firmware *fw[FW_NB];
--	char fw_path[31], *dir = NULL;
-+	char fw_path[37], *dir = NULL;
- 	int i, j, ret = 0, pe;
--	u32 val;
-+	int ipuesz, ifppsz, minifw = 0;
- 
- 	if (priv->version == EIP97IES_MRVL)
- 		/* No firmware is required */
-@@ -156,52 +251,57 @@ static int eip197_load_firmwares(struct safexcel_crypto_priv *priv)
- 		/* Default to minimum EIP197 config */
- 		dir = "eip197b";
- 
-+retry_fw:
- 	for (i = 0; i < FW_NB; i++) {
--		snprintf(fw_path, 31, "inside-secure/%s/%s", dir, fw_name[i]);
--		ret = request_firmware(&fw[i], fw_path, priv->dev);
-+		snprintf(fw_path, 37, "inside-secure/%s/%s", dir, fw_name[i]);
-+		ret = firmware_request_nowarn(&fw[i], fw_path, priv->dev);
- 		if (ret) {
--			if (!(priv->version == EIP197B_MRVL))
-+			if (minifw || !(priv->version == EIP197B_MRVL))
- 				goto release_fw;
- 
- 			/*
- 			 * Fallback to the old firmware location for the
- 			 * EIP197b.
- 			 */
--			ret = request_firmware(&fw[i], fw_name[i], priv->dev);
--			if (ret) {
--				dev_err(priv->dev,
--					"Failed to request firmware %s (%d)\n",
--					fw_name[i], ret);
-+			ret = firmware_request_nowarn(&fw[i], fw_name[i],
-+						      priv->dev);
-+			if (ret)
- 				goto release_fw;
--			}
- 		}
- 	}
- 
--	for (pe = 0; pe < priv->config.pes; pe++) {
--		/* Clear the scratchpad memory */
--		val = readl(EIP197_PE(priv) + EIP197_PE_ICE_SCRATCH_CTRL(pe));
--		val |= EIP197_PE_ICE_SCRATCH_CTRL_CHANGE_TIMER |
--		       EIP197_PE_ICE_SCRATCH_CTRL_TIMER_EN |
--		       EIP197_PE_ICE_SCRATCH_CTRL_SCRATCH_ACCESS |
--		       EIP197_PE_ICE_SCRATCH_CTRL_CHANGE_ACCESS;
--		writel(val, EIP197_PE(priv) + EIP197_PE_ICE_SCRATCH_CTRL(pe));
-+	eip197_init_firmware(priv);
-+
-+	ifppsz = eip197_write_firmware(priv, fw[FW_IFPP]);
- 
--		memset_io(EIP197_PE(priv) + EIP197_PE_ICE_SCRATCH_RAM(pe), 0,
--			  EIP197_NUM_OF_SCRATCH_BLOCKS * sizeof(u32));
-+	/* Enable access to IPUE program memories */
-+	for (pe = 0; pe < priv->config.pes; pe++)
-+		writel(EIP197_PE_ICE_RAM_CTRL_PUE_PROG_EN,
-+		       EIP197_PE(priv) + EIP197_PE_ICE_RAM_CTRL(pe));
- 
--		eip197_write_firmware(priv, fw[FW_IFPP], pe,
--				      EIP197_PE_ICE_FPP_CTRL(pe),
--				      EIP197_PE_ICE_RAM_CTRL_FPP_PROG_EN);
-+	ipuesz = eip197_write_firmware(priv, fw[FW_IPUE]);
- 
--		eip197_write_firmware(priv, fw[FW_IPUE], pe,
--				      EIP197_PE_ICE_PUE_CTRL(pe),
--				      EIP197_PE_ICE_RAM_CTRL_PUE_PROG_EN);
-+	if (eip197_start_firmware(priv, ipuesz, ifppsz, minifw)) {
-+		dev_dbg(priv->dev, "Firmware loaded successfully");
-+		return 0;
- 	}
- 
-+	ret = -ENODEV;
-+
- release_fw:
- 	for (j = 0; j < i; j++)
- 		release_firmware(fw[j]);
- 
-+	if (!minifw) {
-+		/* Retry with minifw path */
-+		dev_dbg(priv->dev, "Firmware set not (fully) present or init failed, falling back to BCLA mode");
-+		dir = "eip197_minifw";
-+		minifw = 1;
-+		goto retry_fw;
-+	}
-+
-+	dev_dbg(priv->dev, "Firmware load failed.");
-+
- 	return ret;
- }
- 
-diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/inside-secure/safexcel.h
-index d07bec1..ed47df0 100644
---- a/drivers/crypto/inside-secure/safexcel.h
-+++ b/drivers/crypto/inside-secure/safexcel.h
-@@ -136,8 +136,10 @@
- #define EIP197_PE_IN_TBUF_THRES(n)		(0x0100 + (0x2000 * (n)))
- #define EIP197_PE_ICE_SCRATCH_RAM(n)		(0x0800 + (0x2000 * (n)))
- #define EIP197_PE_ICE_PUE_CTRL(n)		(0x0c80 + (0x2000 * (n)))
-+#define EIP197_PE_ICE_PUTF_CTRL(n)		(0x0d00 + (0x2000 * (n)))
- #define EIP197_PE_ICE_SCRATCH_CTRL(n)		(0x0d04 + (0x2000 * (n)))
- #define EIP197_PE_ICE_FPP_CTRL(n)		(0x0d80 + (0x2000 * (n)))
-+#define EIP197_PE_ICE_PPTF_CTRL(n)		(0x0e00 + (0x2000 * (n)))
- #define EIP197_PE_ICE_RAM_CTRL(n)		(0x0ff0 + (0x2000 * (n)))
- #define EIP197_PE_EIP96_TOKEN_CTRL(n)		(0x1000 + (0x2000 * (n)))
- #define EIP197_PE_EIP96_FUNCTION_EN(n)		(0x1004 + (0x2000 * (n)))
-@@ -530,6 +532,10 @@ struct safexcel_command_desc {
-  * Internal structures & functions
-  */
- 
-+#define EIP197_FW_START_POLLCNT		16
-+#define EIP197_FW_PUE_READY		0x14
-+#define EIP197_FW_FPP_READY		0x18
-+
- enum eip197_fw {
- 	FW_IFPP = 0,
- 	FW_IPUE,
+Because it's not the same thing to enable everything and to add one extra
+alg. This makes bissecting the driver harder because one would not except
+this change in this kind of patch.
+
+> > I'm also not sure about it, as
+> > controlling exactly what algs are enabled in the h/w could prevent
+> > misconfiguration issues in the control descriptors.
+> > 
+> That's not really what it's supposed to be used for. It's supposed to be used for
+> disabling algorithms the application is not ALLOWED to use e.g. because they are
+> not deemed secure enough (in case you have to comply, with,  say, FIPS or so).
+
+OK, that answer my question and this makes sense.
+
+> > > @@ -62,9 +63,9 @@ static void safexcel_skcipher_token(struct safexcel_cipher_ctx *ctx, u8 *iv,
+> > >  				    u32 length)
+> > > -	if (ctx->mode == CONTEXT_CONTROL_CRYPTO_MODE_CBC) {
+> > > +	if (ctx->mode != CONTEXT_CONTROL_CRYPTO_MODE_ECB) {
+> > 
+> > I think it's better for maintenance and readability to have something
+> > like:
+> > 
+> >   if (ctx->mode == CONTEXT_CONTROL_CRYPTO_MODE_CBC ||
+> >       ctx->mode == CONTEXT_CONTROL_CRYPTO_MODE_CTR_LOAD)
+> > 
+> Not really. I *really* want to execute that for any mode other than ECB,
+> ECB being the *only* mode that does not require an IV (which I know
+> for a fact, being the architect and all :-).
+> And I don't believe a long list of modes that *do* require an IV would 
+> be  more readable or easy to maintain than this single compare ...
+
+That's where I disagree as you need extra knowledge to be aware of this.
+Being explicit removes any possible question one may ask. But that's a
+small point really :)
+
+Thanks!
+Antoine
+
 -- 
-1.8.3.1
-
+Antoine Ténart, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
