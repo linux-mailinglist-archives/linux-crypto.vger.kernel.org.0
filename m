@@ -2,37 +2,33 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DF9765EC
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jul 2019 14:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E44765F5
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jul 2019 14:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbfGZMf1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 26 Jul 2019 08:35:27 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:46510 "EHLO fornost.hmeau.com"
+        id S1727034AbfGZMft (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 26 Jul 2019 08:35:49 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:46530 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbfGZMf1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 26 Jul 2019 08:35:27 -0400
+        id S1727206AbfGZMft (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 26 Jul 2019 08:35:49 -0400
 Received: from gondolin.me.apana.org.au ([192.168.0.6] helo=gondolin.hengli.com.au)
         by fornost.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hqzRS-0003zh-Uo; Fri, 26 Jul 2019 22:35:23 +1000
+        id 1hqzRg-00040d-2g; Fri, 26 Jul 2019 22:35:36 +1000
 Received: from herbert by gondolin.hengli.com.au with local (Exim 4.80)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hqzRS-0002Cn-Gq; Fri, 26 Jul 2019 22:35:22 +1000
-Date:   Fri, 26 Jul 2019 22:35:22 +1000
+        id 1hqzRe-0002E3-BI; Fri, 26 Jul 2019 22:35:34 +1000
+Date:   Fri, 26 Jul 2019 22:35:34 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Chuhong Yuan <hslester96@gmail.com>
-Cc:     unlisted-recipients:; thomas.lendacky@amd.com, gary.hook@amd.com,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hslester96@gmail.com
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     unlisted-recipients:;thomas.lendacky@amd.com
-                                             ^-missing end of address
-Subject: Re: [PATCH] crypto: ccp - Replace dma_pool_alloc + memset with
- dma_pool_zalloc
-Message-ID: <20190726123522.GA8470@gondor.apana.org.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     davem@davemloft.net, arnd@arndb.de, omosnacek@gmail.com,
+        ard.biesheuvel@linaro.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] crypto: aegis: fix badly optimized clang output
+Message-ID: <20190726123534.GA8490@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190718131609.10974-1-hslester96@gmail.com>
+In-Reply-To: <20190718135017.2493006-1-arnd@arndb.de>
 Organization: Core
 X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
 User-Agent: Mutt/1.5.21 (2010-09-15)
@@ -41,15 +37,33 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Chuhong Yuan <hslester96@gmail.com> wrote:
-> Use dma_pool_zalloc instead of using dma_pool_alloc to allocate
-> memory and then zeroing it with memset 0.
-> This simplifies the code.
+Arnd Bergmann <arnd@arndb.de> wrote:
+> Clang sometimes makes very different inlining decisions from gcc.
+> In case of the aegis crypto algorithms, it decides to turn the innermost
+> primitives (and, xor, ...) into separate functions but inline most of
+> the rest.
 > 
-> Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+> This results in a huge amount of variables spilled on the stack, leading
+> to rather slow execution as well as kernel stack usage beyond the 32-bit
+> warning limit when CONFIG_KASAN is enabled:
+> 
+> crypto/aegis256.c:123:13: warning: stack frame size of 648 bytes in function 'crypto_aegis256_encrypt_chunk' [-Wframe-larger-than=]
+> crypto/aegis256.c:366:13: warning: stack frame size of 1264 bytes in function 'crypto_aegis256_crypt' [-Wframe-larger-than=]
+> crypto/aegis256.c:187:13: warning: stack frame size of 656 bytes in function 'crypto_aegis256_decrypt_chunk' [-Wframe-larger-than=]
+> crypto/aegis128l.c:135:13: warning: stack frame size of 832 bytes in function 'crypto_aegis128l_encrypt_chunk' [-Wframe-larger-than=]
+> crypto/aegis128l.c:415:13: warning: stack frame size of 1480 bytes in function 'crypto_aegis128l_crypt' [-Wframe-larger-than=]
+> crypto/aegis128l.c:218:13: warning: stack frame size of 848 bytes in function 'crypto_aegis128l_decrypt_chunk' [-Wframe-larger-than=]
+> crypto/aegis128.c:116:13: warning: stack frame size of 584 bytes in function 'crypto_aegis128_encrypt_chunk' [-Wframe-larger-than=]
+> crypto/aegis128.c:351:13: warning: stack frame size of 1064 bytes in function 'crypto_aegis128_crypt' [-Wframe-larger-than=]
+> crypto/aegis128.c:177:13: warning: stack frame size of 592 bytes in function 'crypto_aegis128_decrypt_chunk' [-Wframe-larger-than=]
+> 
+> Forcing the primitives to all get inlined avoids the issue and the
+> resulting code is similar to what gcc produces.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
-> drivers/crypto/ccp/ccp-ops.c | 3 +--
-> 1 file changed, 1 insertion(+), 2 deletions(-)
+> crypto/aegis.h | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
 
 Patch applied.  Thanks.
 -- 
