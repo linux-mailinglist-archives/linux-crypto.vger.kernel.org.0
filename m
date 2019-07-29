@@ -2,88 +2,164 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C32797E1
-	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jul 2019 22:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F909798EE
+	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jul 2019 22:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390527AbfG2UDQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 29 Jul 2019 16:03:16 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:39952 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389655AbfG2TrY (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 29 Jul 2019 15:47:24 -0400
-Received: by mail-pf1-f194.google.com with SMTP id p184so28539471pfp.7;
-        Mon, 29 Jul 2019 12:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2JgYHzqNnYMbq7QqePEAwhLQIzlDp4XtBvYAFqSnWLk=;
-        b=LPpKEy+A5eKaoM6ZZUwmP4ih1i45Cfa5UJ19jSn6m23KtwH5q1K7qnK69JmnVU8AgB
-         17ntomkNGHdLJYXaSO2jdDsif7xbc53qoQ+CWC/RF1L5zClPyMx7JXUGZAh1BQgPkJpb
-         W8MjQqNFV2pcDyI4/HhKljCNJla9si10VOwB1ogAbDJ44LVF3x5qDRiYg8O5qZqGwriG
-         o84XT8dTON0IPRTmft3svncKt/seI/0ifmxgJtpjaAGMoQ5tMbRyw4eVX0ls9a5RL2KS
-         Ti8q3EG+yBbiuNzYI8d1RYplzyglgivxtwPvIqMLP73KeEcQq5BW1YRhxJc5rQJea6We
-         N5iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2JgYHzqNnYMbq7QqePEAwhLQIzlDp4XtBvYAFqSnWLk=;
-        b=e9KAFPwPNtvtjC8oKvk3WGgiCjXI+72xV1UXr/8A4gsgil/B9+5eFsR9MrtqpqZBbU
-         3IrgFAvxdIoi4vrX5jQEViQFqN1ZE5jnxxi+8jXGuMSt9zfYXDcp3Y6/+BeQIFv0jToo
-         wZfjJ89QSQODPw0ZbEhffgQXqxtXLf+pvUdzSdRxVXay7+zDlUF8at+cTCxZMvQOQAPc
-         RQSSjeKeUx8Xkoy/smkztrLUekgfGC+jaRf9DxoGc9Ck2HHMWLBcx1qsaIh9/JVDNNS4
-         ZXb4RiPFyh2xr+YSpxY7kwhyzQLLzbBoatsIwxPry0peh9yOYO4+R6rB+Q+DWItXXb4v
-         pR+g==
-X-Gm-Message-State: APjAAAVzC7DiCrC8zr8YSWvPogf8dzuTu7NWido+k11uLZibNX5Ugdes
-        INyoyoR83Ps7XCqwvyrKgAE=
-X-Google-Smtp-Source: APXvYqwBf0nTxIgL92NZbxqAJPF/sLgeYwP6UdQlrpMicCppeAM83QBPHj4IGPp5tG6F6kCKrlj/3Q==
-X-Received: by 2002:aa7:8102:: with SMTP id b2mr38661685pfi.105.1564429643669;
-        Mon, 29 Jul 2019 12:47:23 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::1:309b])
-        by smtp.gmail.com with ESMTPSA id a25sm36604374pfo.60.2019.07.29.12.47.22
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Jul 2019 12:47:23 -0700 (PDT)
-Date:   Mon, 29 Jul 2019 12:47:21 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        id S1729804AbfG2TdJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 29 Jul 2019 15:33:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47060 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729812AbfG2TdI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 29 Jul 2019 15:33:08 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D226F21773;
+        Mon, 29 Jul 2019 19:33:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564428787;
+        bh=nS+P0xEdNX2Rityxe+sq+lJ71ZCbNvBhaBhuLMPIssY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=h7ZKI7BfrfRh16KfBRNpVDgoPCTJv81EAoiocddUC33F5JR1nLNkxFP7X7jFeZ49t
+         bp7iCVR7/qt7oT7opP9XNpIJGBpkR6QV48IiEx+7acJ/PgCQ7BUHi2CxLQx2Z/vvvR
+         zcgwwFMxKIPrdz72uM3mVScLC4txoWvgNRjKB1CU=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Andrea Parri <andrea.parri@amarulasolutions.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 3/9] workqueue: require CPU hotplug read exclusion for
- apply_workqueue_attrs
-Message-ID: <20190729194721.GG569612@devbig004.ftw2.facebook.com>
-References: <20190725212505.15055-1-daniel.m.jordan@oracle.com>
- <20190725212505.15055-4-daniel.m.jordan@oracle.com>
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-arch@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: [PATCH 4.14 147/293] padata: use smp_mb in padata_reorder to avoid orphaned padata jobs
+Date:   Mon, 29 Jul 2019 21:20:38 +0200
+Message-Id: <20190729190835.818681103@linuxfoundation.org>
+X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20190729190820.321094988@linuxfoundation.org>
+References: <20190729190820.321094988@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190725212505.15055-4-daniel.m.jordan@oracle.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Jul 25, 2019 at 05:24:59PM -0400, Daniel Jordan wrote:
-> Change the calling convention for apply_workqueue_attrs to require CPU
-> hotplug read exclusion.
-> 
-> Avoids lockdep complaints about nested calls to get_online_cpus in a
-> future patch where padata calls apply_workqueue_attrs when changing
-> other CPU-hotplug-sensitive data structures with the CPU read lock
-> already held.
-> 
-> Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+From: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-Acked-by: Tejun Heo <tj@kernel.org>
+commit cf144f81a99d1a3928f90b0936accfd3f45c9a0a upstream.
 
-Please feel free to route with the rest of the patchset.
+Testing padata with the tcrypt module on a 5.2 kernel...
 
-Thanks.
+    # modprobe tcrypt alg="pcrypt(rfc4106(gcm(aes)))" type=3
+    # modprobe tcrypt mode=211 sec=1
 
--- 
-tejun
+...produces this splat:
+
+    INFO: task modprobe:10075 blocked for more than 120 seconds.
+          Not tainted 5.2.0-base+ #16
+    modprobe        D    0 10075  10064 0x80004080
+    Call Trace:
+     ? __schedule+0x4dd/0x610
+     ? ring_buffer_unlock_commit+0x23/0x100
+     schedule+0x6c/0x90
+     schedule_timeout+0x3b/0x320
+     ? trace_buffer_unlock_commit_regs+0x4f/0x1f0
+     wait_for_common+0x160/0x1a0
+     ? wake_up_q+0x80/0x80
+     { crypto_wait_req }             # entries in braces added by hand
+     { do_one_aead_op }
+     { test_aead_jiffies }
+     test_aead_speed.constprop.17+0x681/0xf30 [tcrypt]
+     do_test+0x4053/0x6a2b [tcrypt]
+     ? 0xffffffffa00f4000
+     tcrypt_mod_init+0x50/0x1000 [tcrypt]
+     ...
+
+The second modprobe command never finishes because in padata_reorder,
+CPU0's load of reorder_objects is executed before the unlocking store in
+spin_unlock_bh(pd->lock), causing CPU0 to miss CPU1's increment:
+
+CPU0                                 CPU1
+
+padata_reorder                       padata_do_serial
+  LOAD reorder_objects  // 0
+                                       INC reorder_objects  // 1
+                                       padata_reorder
+                                         TRYLOCK pd->lock   // failed
+  UNLOCK pd->lock
+
+CPU0 deletes the timer before returning from padata_reorder and since no
+other job is submitted to padata, modprobe waits indefinitely.
+
+Add a pair of full barriers to guarantee proper ordering:
+
+CPU0                                 CPU1
+
+padata_reorder                       padata_do_serial
+  UNLOCK pd->lock
+  smp_mb()
+  LOAD reorder_objects
+                                       INC reorder_objects
+                                       smp_mb__after_atomic()
+                                       padata_reorder
+                                         TRYLOCK pd->lock
+
+smp_mb__after_atomic is needed so the read part of the trylock operation
+comes after the INC, as Andrea points out.   Thanks also to Andrea for
+help with writing a litmus test.
+
+Fixes: 16295bec6398 ("padata: Generic parallelization/serialization interface")
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: <stable@vger.kernel.org>
+Cc: Andrea Parri <andrea.parri@amarulasolutions.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Paul E. McKenney <paulmck@linux.ibm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: linux-arch@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ kernel/padata.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -265,7 +265,12 @@ static void padata_reorder(struct parall
+ 	 * The next object that needs serialization might have arrived to
+ 	 * the reorder queues in the meantime, we will be called again
+ 	 * from the timer function if no one else cares for it.
++	 *
++	 * Ensure reorder_objects is read after pd->lock is dropped so we see
++	 * an increment from another task in padata_do_serial.  Pairs with
++	 * smp_mb__after_atomic in padata_do_serial.
+ 	 */
++	smp_mb();
+ 	if (atomic_read(&pd->reorder_objects)
+ 			&& !(pinst->flags & PADATA_RESET))
+ 		mod_timer(&pd->timer, jiffies + HZ);
+@@ -334,6 +339,13 @@ void padata_do_serial(struct padata_priv
+ 	list_add_tail(&padata->list, &pqueue->reorder.list);
+ 	spin_unlock(&pqueue->reorder.lock);
+ 
++	/*
++	 * Ensure the atomic_inc of reorder_objects above is ordered correctly
++	 * with the trylock of pd->lock in padata_reorder.  Pairs with smp_mb
++	 * in padata_reorder.
++	 */
++	smp_mb__after_atomic();
++
+ 	put_cpu();
+ 
+ 	padata_reorder(pd);
+
+
