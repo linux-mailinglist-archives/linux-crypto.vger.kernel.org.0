@@ -2,99 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DB77C2BE
-	for <lists+linux-crypto@lfdr.de>; Wed, 31 Jul 2019 15:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B4E7C2CC
+	for <lists+linux-crypto@lfdr.de>; Wed, 31 Jul 2019 15:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387877AbfGaNGI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 31 Jul 2019 09:06:08 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:41214 "EHLO inva021.nxp.com"
+        id S1729231AbfGaNIX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 31 Jul 2019 09:08:23 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:42690 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387730AbfGaNGH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 31 Jul 2019 09:06:07 -0400
+        id S1727768AbfGaNIW (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 31 Jul 2019 09:08:22 -0400
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1A17A200A1F;
-        Wed, 31 Jul 2019 15:06:05 +0200 (CEST)
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DEDD02009FA;
+        Wed, 31 Jul 2019 15:08:20 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0E0EF2009FA;
-        Wed, 31 Jul 2019 15:06:05 +0200 (CEST)
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D1552200042;
+        Wed, 31 Jul 2019 15:08:20 +0200 (CEST)
 Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id C22B7205F3;
-        Wed, 31 Jul 2019 15:06:04 +0200 (CEST)
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 864DA205F3;
+        Wed, 31 Jul 2019 15:08:20 +0200 (CEST)
 From:   Iuliana Prodan <iuliana.prodan@nxp.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-imx <linux-imx@nxp.com>
-Subject: [PATCH v3 2/2] crypto: aes - helper function to validate key length for AES algorithms
-Date:   Wed, 31 Jul 2019 16:05:55 +0300
-Message-Id: <1564578355-9639-3-git-send-email-iuliana.prodan@nxp.com>
+Subject: [PATCH v5 00/14] crypto: caam - fixes for kernel v5.3
+Date:   Wed, 31 Jul 2019 16:08:01 +0300
+Message-Id: <1564578495-9883-1-git-send-email-iuliana.prodan@nxp.com>
 X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1564578355-9639-1-git-send-email-iuliana.prodan@nxp.com>
-References: <1564578355-9639-1-git-send-email-iuliana.prodan@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add inline helper function to check key length for AES algorithms.
-The key can be 128, 192 or 256 bits size.
-This function is used in the generic aes implementation.
+The series solves:
+- the failures found with fuzz testing;
+- resources clean-up on caampkc/caamrng exit path.
 
-Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
----
- include/crypto/aes.h | 17 +++++++++++++++++
- lib/crypto/aes.c     |  8 ++++----
- 2 files changed, 21 insertions(+), 4 deletions(-)
+The first 10 patches solve the issues found with
+CONFIG_CRYPTO_MANAGER_EXTRA_TESTS enabled.
+They modify the drivers to provide a valid error (and not the hardware
+error ID) to the user, via completion callbacks.
+They check key length, assoclen, authsize and input size to solve the
+fuzz tests that expect -EINVAL to be returned when these values are
+not valid.
 
-diff --git a/include/crypto/aes.h b/include/crypto/aes.h
-index 8e0f4cf..2090729 100644
---- a/include/crypto/aes.h
-+++ b/include/crypto/aes.h
-@@ -31,6 +31,23 @@ struct crypto_aes_ctx {
- extern const u32 crypto_ft_tab[4][256] ____cacheline_aligned;
- extern const u32 crypto_it_tab[4][256] ____cacheline_aligned;
- 
-+/*
-+ * validate key length for AES algorithms
-+ */
-+static inline int aes_check_keylen(unsigned int keylen)
-+{
-+	switch (keylen) {
-+	case AES_KEYSIZE_128:
-+	case AES_KEYSIZE_192:
-+	case AES_KEYSIZE_256:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- int crypto_aes_set_key(struct crypto_tfm *tfm, const u8 *in_key,
- 		unsigned int key_len);
- 
-diff --git a/lib/crypto/aes.c b/lib/crypto/aes.c
-index 4e100af..827fe89 100644
---- a/lib/crypto/aes.c
-+++ b/lib/crypto/aes.c
-@@ -187,11 +187,11 @@ int aes_expandkey(struct crypto_aes_ctx *ctx, const u8 *in_key,
- {
- 	u32 kwords = key_len / sizeof(u32);
- 	u32 rc, i, j;
-+	int err;
- 
--	if (key_len != AES_KEYSIZE_128 &&
--	    key_len != AES_KEYSIZE_192 &&
--	    key_len != AES_KEYSIZE_256)
--		return -EINVAL;
-+	err = aes_check_keylen(key_len);
-+	if (err)
-+		return err;
- 
- 	ctx->key_length = key_len;
- 
+The next 4 patches check the algorithm registration for caampkc
+module and unregister it only if the registration was successful.
+Also, on caampkc/caamrng, the exit point function is executed only if the
+registration was successful to avoid double freeing of resources in case
+the initialization function failed.
+
+This patch depends on series:
+https://patchwork.kernel.org/project/linux-crypto/list/?series=153441
+
+Changes since v4:
+- use, newly renamed, helper aes function, to validate keylen.
+
+Horia Geantă (5):
+  crypto: caam/qi - fix error handling in ERN handler
+  crypto: caam - fix return code in completion callbacks
+  crypto: caam - update IV only when crypto operation succeeds
+  crypto: caam - keep both virtual and dma key addresses
+  crypto: caam - fix MDHA key derivation for certain user key lengths
+
+Iuliana Prodan (9):
+  crypto: caam - check key length
+  crypto: caam - check authsize
+  crypto: caam - check assoclen
+  crypto: caam - check zero-length input
+  crypto: caam - update rfc4106 sh desc to support zero length input
+  crypto: caam - free resources in case caam_rng registration failed
+  crypto: caam - execute module exit point only if necessary
+  crypto: caam - unregister algorithm only if the registration succeeded
+  crypto: caam - change return value in case CAAM has no MDHA
+
+ drivers/crypto/caam/Kconfig         |   2 +
+ drivers/crypto/caam/caamalg.c       | 227 +++++++++++++++----------
+ drivers/crypto/caam/caamalg_desc.c  |  47 ++++--
+ drivers/crypto/caam/caamalg_desc.h  |   2 +-
+ drivers/crypto/caam/caamalg_qi.c    | 225 +++++++++++++++----------
+ drivers/crypto/caam/caamalg_qi2.c   | 320 +++++++++++++++++++++++-------------
+ drivers/crypto/caam/caamhash.c      | 114 ++++++++-----
+ drivers/crypto/caam/caamhash_desc.c |   5 +-
+ drivers/crypto/caam/caamhash_desc.h |   2 +-
+ drivers/crypto/caam/caampkc.c       |  80 ++++++---
+ drivers/crypto/caam/caamrng.c       |  17 +-
+ drivers/crypto/caam/desc_constr.h   |  34 ++--
+ drivers/crypto/caam/error.c         |  61 ++++---
+ drivers/crypto/caam/error.h         |   2 +-
+ drivers/crypto/caam/key_gen.c       |  14 +-
+ drivers/crypto/caam/qi.c            |  10 +-
+ drivers/crypto/caam/regs.h          |   1 +
+ 17 files changed, 748 insertions(+), 415 deletions(-)
+
 -- 
 2.1.0
 
