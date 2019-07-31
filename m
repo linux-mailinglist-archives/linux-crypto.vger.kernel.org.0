@@ -2,61 +2,118 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4737C0A5
-	for <lists+linux-crypto@lfdr.de>; Wed, 31 Jul 2019 14:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4AB7C0AD
+	for <lists+linux-crypto@lfdr.de>; Wed, 31 Jul 2019 14:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbfGaMDz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 31 Jul 2019 08:03:55 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:40500 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725935AbfGaMDz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 31 Jul 2019 08:03:55 -0400
-Received: from gondolin.me.apana.org.au ([192.168.0.6] helo=gondolin.hengli.com.au)
-        by fornost.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hsnKd-00062h-2z; Wed, 31 Jul 2019 22:03:47 +1000
-Received: from herbert by gondolin.hengli.com.au with local (Exim 4.80)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hsnKa-0005Ys-H1; Wed, 31 Jul 2019 22:03:44 +1000
-Date:   Wed, 31 Jul 2019 22:03:44 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
-Cc:     Antoine Tenart <antoine.tenart@bootlin.com>,
-        Pascal van Leeuwen <pascalvanl@gmail.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Subject: Re: [PATCHv2 2/3] crypto: inside-secure - add support for PCI based
- FPGA development board
-Message-ID: <20190731120344.GA21352@gondor.apana.org.au>
-References: <1564145005-26731-1-git-send-email-pvanleeuwen@verimatrix.com>
- <1564145005-26731-3-git-send-email-pvanleeuwen@verimatrix.com>
- <20190730090811.GF3108@kwain>
- <MN2PR20MB2973B37C90FBD6E6C97B8E09CADC0@MN2PR20MB2973.namprd20.prod.outlook.com>
- <MN2PR20MB29734DDABC5D2812EAFEFBABCADF0@MN2PR20MB2973.namprd20.prod.outlook.com>
- <20190731110750.GA20643@gondor.apana.org.au>
- <MN2PR20MB29731297E57536B08BF82A56CADF0@MN2PR20MB2973.namprd20.prod.outlook.com>
+        id S1728746AbfGaMFR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 31 Jul 2019 08:05:17 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:16607 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727370AbfGaMFR (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 31 Jul 2019 08:05:17 -0400
+Received-SPF: Pass (esa5.microchip.iphmx.com: domain of
+  Ludovic.Desroches@microchip.com designates 198.175.253.82 as
+  permitted sender) identity=mailfrom;
+  client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
+  envelope-from="Ludovic.Desroches@microchip.com";
+  x-sender="Ludovic.Desroches@microchip.com";
+  x-conformance=spf_only; x-record-type="v=spf1";
+  x-record-text="v=spf1 mx a:ushub1.microchip.com
+  a:smtpout.microchip.com a:mx1.microchip.iphmx.com
+  a:mx2.microchip.iphmx.com include:servers.mcsv.net
+  include:mktomail.com include:spf.protection.outlook.com ~all"
+Received-SPF: None (esa5.microchip.iphmx.com: no sender
+  authenticity information available from domain of
+  postmaster@email.microchip.com) identity=helo;
+  client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
+  envelope-from="Ludovic.Desroches@microchip.com";
+  x-sender="postmaster@email.microchip.com";
+  x-conformance=spf_only
+Authentication-Results: esa5.microchip.iphmx.com; dkim=none (message not signed) header.i=none; spf=Pass smtp.mailfrom=Ludovic.Desroches@microchip.com; spf=None smtp.helo=postmaster@email.microchip.com; dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: 1AVScHoOHG8smU+2JLHkpw75Dn9uq+ogTvKf34gG8Ztu/JmJ6tfStGOMNoiBH1vz5OqSajEDa1
+ BzygZno+/BHj10OFyzIgjXcvsDwpGCfq5jw2rhep9Q/u7YrxEwDWZfkBeO9ZtEu0cWKqLnewIl
+ OUE8OQW4p6ltTC2r8zF7GdLxg6qnZ4T3EwuBnt1+RZy6U14iwIam6KQ9bkQ0ymQvvM7KI10VZx
+ yH6S+rRlUYYW6UQbKkT1dHsl3QBG0GpTYrhc3Yf3HTDVjayYIgGeDXcsIXFynfbYPLHhnk0pxg
+ ntE=
+X-IronPort-AV: E=Sophos;i="5.64,330,1559545200"; 
+   d="scan'208";a="41849008"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Jul 2019 05:05:16 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 31 Jul 2019 05:05:15 -0700
+Received: from localhost (10.10.85.251) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
+ Transport; Wed, 31 Jul 2019 05:05:14 -0700
+Date:   Wed, 31 Jul 2019 14:04:20 +0200
+From:   Ludovic Desroches <ludovic.desroches@microchip.com>
+To:     Chuhong Yuan <hslester96@gmail.com>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        <linux-crypto@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] crypto: atmel-sha204a: Use device-managed registration
+ API
+Message-ID: <20190731120420.4lqguk22ua5r2tqo@M43218.corp.atmel.com>
+Mail-Followup-To: Chuhong Yuan <hslester96@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20190723071934.12528-1-hslester96@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <MN2PR20MB29731297E57536B08BF82A56CADF0@MN2PR20MB2973.namprd20.prod.outlook.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20190723071934.12528-1-hslester96@gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jul 31, 2019 at 11:37:08AM +0000, Pascal Van Leeuwen wrote:
->
-> > In general we want to maximise compiler coverage under all config
-> > options so if we can make it compiler without too much effort that
-> > would be the preferred solution.
-> >
-> I understand that, and I tried to do that initially, but that wouldn't
-> work so I ended up with this as a compromise ...
+On Tue, Jul 23, 2019 at 03:19:36PM +0800, Chuhong Yuan wrote:
+> 
+> Use devm_hwrng_register to get rid of manual
+> unregistration.
+> 
+> Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
 
-If it's too hard then #if is the way to go.
+Thanks
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> ---
+>  drivers/crypto/atmel-sha204a.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/crypto/atmel-sha204a.c b/drivers/crypto/atmel-sha204a.c
+> index ea0d2068ea4f..c96c14e7dab1 100644
+> --- a/drivers/crypto/atmel-sha204a.c
+> +++ b/drivers/crypto/atmel-sha204a.c
+> @@ -109,7 +109,7 @@ static int atmel_sha204a_probe(struct i2c_client *client,
+>  	i2c_priv->hwrng.read = atmel_sha204a_rng_read;
+>  	i2c_priv->hwrng.quality = 1024;
+>  
+> -	ret = hwrng_register(&i2c_priv->hwrng);
+> +	ret = devm_hwrng_register(&client->dev, &i2c_priv->hwrng);
+>  	if (ret)
+>  		dev_warn(&client->dev, "failed to register RNG (%d)\n", ret);
+>  
+> @@ -127,7 +127,6 @@ static int atmel_sha204a_remove(struct i2c_client *client)
+>  
+>  	if (i2c_priv->hwrng.priv)
+>  		kfree((void *)i2c_priv->hwrng.priv);
+> -	hwrng_unregister(&i2c_priv->hwrng);
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.20.1
+> 
+> 
