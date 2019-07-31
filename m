@@ -2,366 +2,103 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E63097C8B9
-	for <lists+linux-crypto@lfdr.de>; Wed, 31 Jul 2019 18:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204FD7C8F7
+	for <lists+linux-crypto@lfdr.de>; Wed, 31 Jul 2019 18:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729439AbfGaQbv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 31 Jul 2019 12:31:51 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:46197 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729474AbfGaQbu (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 31 Jul 2019 12:31:50 -0400
-Received: by mail-ed1-f68.google.com with SMTP id d4so66299734edr.13
-        for <linux-crypto@vger.kernel.org>; Wed, 31 Jul 2019 09:31:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=n5+T9IunOvffgvGvv6Fd8GLOGXif0umgdwo8Dp3RiyI=;
-        b=pzPo+WAkCECHngdDkXATkpSNlMonVEOZW3iGV2DZa/I6dEYotDfLpsMaIKe1zsz1SG
-         MXEHBP/EKGyC5VpD+3TF9siRW4e3H1hKYHzGDaTEkydd8Y+nnzgbIMsHEAgOsVXHaWIN
-         rsbLYvpQ+T2t0xdXvK5PfxQQWSuG+0NUMlB2lqAuUjyZbIb1YwLR9+JXbJBSdaQm1WUj
-         QoiPTSLvO+jHSbWP6rooc1I8I78onSMBiaoQHt0XE270BjYNYBE4ZGzGe6+1UzhQrsc6
-         18nJN2kNWLnhRb2wgJE3uatQUYIx8ExmKVX20MhlSCHNvOhZMY2oxhO/1vi8OC2iwa6f
-         Xfxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=n5+T9IunOvffgvGvv6Fd8GLOGXif0umgdwo8Dp3RiyI=;
-        b=OS97d1NE5smtYchXlWdUrddNjDu7Wb0chwlXac8zbKJiPqxFj3XZio0LuQkvx+fFv6
-         cQT4JNBYi+gj9rv2R4IFWZMgeYlAGJhe8mggn9BzRq1DEknUCd5d7DgtDxrA+pVQPVnN
-         DRCZC1XRqvql5fnT6qQskui1r8DhZ+iGnJqPdQsT0eLztxcsi7ZkbWl/jcQQmy6O2nD/
-         YiBSrGenWBPKazh2a+me5THwwmS+FaPp3iuRRblEuo/bKSd3jovUEISHnwHoIjKTPBkj
-         Pxg/r292qi+shTFnujWozwdoQAxhitB0CPhl9/bsXyg2bbTE4gaDQ80iSIlq0r1+4LcO
-         Z+qA==
-X-Gm-Message-State: APjAAAXPuGWgRDVm/d6u1PS3au10M3TF+wcD6EzDQnKP9wd4fO8vrW32
-        FwhJoZGQ6wO//Uo01fn667tHRkLD
-X-Google-Smtp-Source: APXvYqxBHGkkk7BhnNVESgtPW0Co6JVqqAjOv3Y+6swOR+TDXnjiJtVyyaWQuqCIV/ImPmMtScs8yw==
-X-Received: by 2002:a17:906:c2c9:: with SMTP id ch9mr3184591ejb.167.1564590708069;
-        Wed, 31 Jul 2019 09:31:48 -0700 (PDT)
-Received: from localhost.localdomain.com ([188.204.2.113])
-        by smtp.gmail.com with ESMTPSA id u6sm6116892ejb.58.2019.07.31.09.31.47
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 31 Jul 2019 09:31:47 -0700 (PDT)
-From:   Pascal van Leeuwen <pascalvanl@gmail.com>
-X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net,
-        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: [PATCHv3 4/4] crypto: inside-secure - add support for using the EIP197 without vendor firmware
-Date:   Wed, 31 Jul 2019 17:29:19 +0200
-Message-Id: <1564586959-9963-5-git-send-email-pvanleeuwen@verimatrix.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1564586959-9963-1-git-send-email-pvanleeuwen@verimatrix.com>
-References: <1564586959-9963-1-git-send-email-pvanleeuwen@verimatrix.com>
+        id S1729558AbfGaQkq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 31 Jul 2019 12:40:46 -0400
+Received: from mail-eopbgr810050.outbound.protection.outlook.com ([40.107.81.50]:3536
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726908AbfGaQkq (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 31 Jul 2019 12:40:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AS1aoeuZf+SUL1mkXa9nufCo6mQhSzN+vPrLKDQGdlMnIYn2WWv4TIZ6JkM37NHpwEcjNN40YPaEWxvtvAEeVvH3XTQyGohRViLD9NEunXYf8+hOh/XwO8Bk66IMYWO+Gz4+AlfKsm8QWyuDVvyVotfTz0fRlJwhbUPtkpHXMbzeJ1FMV2u0YEF1ZmeahUfme6UYi5s754pBSF9s9lnSA3reqYY3Og+pf7y+L1VHL6BO8fnGU+e5L7LGoFxX4kfMBWLtVVMgKU5Oh5uojPmL7lMbbrI4hPopKyhlgi0JQOm3KVzUrCNbgCM7rW9Rip+yGMCDUm7ZQtfdU7KCDBERvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KXXy2oICXVirlHDvHqg5byr3LK82gj+HP6aJa07Xvyc=;
+ b=gwqtIU5UUJzDNexPO4Fnle3vugdDONIxemUePJ2Aw6LmVXbvpo5otXu+yvN7jzbxlDAR5r+sOOImW2eHCir7m1O8qrT/7Yyd6nVVOW6XMEncQ7y5+T1K0qsty6LMzJfWH+MSc/2tpcSf8g7vNIW6EATvO5tA3AaywnXkTBAkLZLCiTDFNcBLdeDIO5j3qxhDC0uYL89ly/QIsGlkTbv3ytizu+e8k6YfigNBG5d51rTDOlKz+gCbTwfkHwD/ALVR/QGXMT4DewNW42lOid7tASFFJM9TKh6xYWyqauClZvQnDoP2W1IFbhU/zyuNtMXFIBUKO8b81Ev4JXah3dtfyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=verimatrix.com;dmarc=pass action=none
+ header.from=verimatrix.com;dkim=pass header.d=verimatrix.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=verimatrix.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KXXy2oICXVirlHDvHqg5byr3LK82gj+HP6aJa07Xvyc=;
+ b=fPN5Xd7QZ+n/436e8P2u7tlw+y/0zPMCP1UrYBQw9eRXBur/EWCsmSAspVWVCLIgBw+qvbgf7DUcPI9qFcWMyYt8uk2PNBPe6BDfkEm8MzPUQGtK1oYNgr4yIgTbMV6nQW0e9ZrB9eVKeQGIp5PryV5xInSov+q5ClZFY0R8aJg=
+Received: from MN2PR20MB2973.namprd20.prod.outlook.com (52.132.172.146) by
+ MN2PR20MB2654.namprd20.prod.outlook.com (20.178.252.21) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2136.16; Wed, 31 Jul 2019 16:40:44 +0000
+Received: from MN2PR20MB2973.namprd20.prod.outlook.com
+ ([fe80::d96f:39b2:19f4:c7c1]) by MN2PR20MB2973.namprd20.prod.outlook.com
+ ([fe80::d96f:39b2:19f4:c7c1%7]) with mapi id 15.20.2115.005; Wed, 31 Jul 2019
+ 16:40:44 +0000
+From:   Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
+To:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Antoine Tenart <antoine.tenart@bootlin.com>
+Subject: Sent out some incorrect patch mails for crypto:inside-secure, please
+ ignore
+Thread-Topic: Sent out some incorrect patch mails for crypto:inside-secure,
+ please ignore
+Thread-Index: AdVHvgkZ/1X58xPQRnqRcAQ6q9e5xw==
+Date:   Wed, 31 Jul 2019 16:40:43 +0000
+Message-ID: <MN2PR20MB297319C3B890B338D5F21005CADF0@MN2PR20MB2973.namprd20.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=pvanleeuwen@verimatrix.com; 
+x-originating-ip: [188.204.2.113]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9317ec8d-3826-4112-6585-08d715d5d4e7
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR20MB2654;
+x-ms-traffictypediagnostic: MN2PR20MB2654:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <MN2PR20MB2654CC9CF3ED37B3EC9704B3CADF0@MN2PR20MB2654.namprd20.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 011579F31F
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(376002)(396003)(366004)(39850400004)(136003)(199004)(189003)(256004)(14444005)(55016002)(486006)(478600001)(66946007)(25786009)(66476007)(66556008)(64756008)(66446008)(76116006)(66066001)(14454004)(53936002)(9686003)(52536014)(6436002)(476003)(71200400001)(71190400001)(4744005)(81156014)(33656002)(81166006)(15974865002)(2906002)(26005)(2501003)(8676002)(5660300002)(186003)(8936002)(74316002)(3846002)(6116002)(110136005)(68736007)(6506007)(86362001)(7696005)(102836004)(316002)(305945005)(99286004)(7736002)(18886075002);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR20MB2654;H:MN2PR20MB2973.namprd20.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: verimatrix.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: sXJkCGKk+rYBiS5ZwZahP/ReBjBYil3oz8cx+LryI9fxLhqH+ovwxEpSjm4F4fpOuva0IMO5k/d4vWzW3C2WrCAHbPZnx3L4Y23XQ5im85Nph4+idNWVk12K4pzXQ2e93ZMVbPxi3Ktyxci0K5smbL6PSozyO622hNcHqvx1diiUKJK1tAlWGSGxUBqRx9lH1fQNRxMTcywH0ojhjkgduF/yOHGUut4y9d676/8UpxjkgVKumcjImrH1hgF5yBTEm2blPskXjesvuZ00HSGw1dSF+cSNC5kEThgPA8xAhGZMJit1SINc5uJtGG9BHVIdVJm/r/A3p6UyKWCMU/vWjxndsY8hnRL+cS6X1emX2e/7yhUvz6A/d8YeAKZY8ObQky3FXKBxrV2k8dfa8Q9I2whfkZo0wgfWaR6M+eAx9mE=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: verimatrix.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9317ec8d-3826-4112-6585-08d715d5d4e7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2019 16:40:43.8577
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: dcb260f9-022d-4495-8602-eae51035a0d0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pvanleeuwen@verimatrix.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR20MB2654
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Until now, the inside-secure driver required a set of firmware images
-supplied by the silicon vendor, typically under NDA, to be present in
-/lib/firmware/inside-secure in order to be able to function.
-This patch removes the dependence on this official vendor firmware by
-falling back to generic "mini" FW - developed specifically for this
-driver - that can be provided under GPL 2.0 through linux-firmwares.
+Hi,
 
-Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
----
- drivers/crypto/inside-secure/safexcel.c | 194 ++++++++++++++++++++++++--------
- drivers/crypto/inside-secure/safexcel.h |  12 ++
- 2 files changed, 161 insertions(+), 45 deletions(-)
+I just sent out a batch of 5 patches for crypto: inside-secure that=20
+still contained some errors in the header (missing patch version,=20
+incorrect e-mail address).
 
-diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/inside-secure/safexcel.c
-index 01e03ca..e25beef 100644
---- a/drivers/crypto/inside-secure/safexcel.c
-+++ b/drivers/crypto/inside-secure/safexcel.c
-@@ -108,44 +108,143 @@ static void eip197_trc_cache_init(struct safexcel_crypto_priv *priv)
- 	writel(val, priv->base + EIP197_TRC_PARAMS);
- }
+I resent the corrected version immediately thereafter, so please=20
+ignore the first set of 5 (recognisable by having my old insidesecure
+.com email adres in the From: header line, instead of verimatrix),
+and take only the second, corrected set of 5.
 
--static void eip197_write_firmware(struct safexcel_crypto_priv *priv,
--				  const struct firmware *fw, int pe, u32 ctrl,
--				  u32 prog_en)
-+static void eip197_init_firmware(struct safexcel_crypto_priv *priv)
- {
--	const u32 *data = (const u32 *)fw->data;
-+	int pe, i;
- 	u32 val;
--	int i;
+Sorry about that.
 
--	/* Reset the engine to make its program memory accessible */
--	writel(EIP197_PE_ICE_x_CTRL_SW_RESET |
--	       EIP197_PE_ICE_x_CTRL_CLR_ECC_CORR |
--	       EIP197_PE_ICE_x_CTRL_CLR_ECC_NON_CORR,
--	       EIP197_PE(priv) + ctrl);
-+	for (pe = 0; pe < priv->config.pes; pe++) {
-+		/* Configure the token FIFO's */
-+		writel(3, EIP197_PE(priv) + EIP197_PE_ICE_PUTF_CTRL(pe));
-+		writel(0, EIP197_PE(priv) + EIP197_PE_ICE_PPTF_CTRL(pe));
-+
-+		/* Clear the ICE scratchpad memory */
-+		val = readl(EIP197_PE(priv) + EIP197_PE_ICE_SCRATCH_CTRL(pe));
-+		val |= EIP197_PE_ICE_SCRATCH_CTRL_CHANGE_TIMER |
-+		       EIP197_PE_ICE_SCRATCH_CTRL_TIMER_EN |
-+		       EIP197_PE_ICE_SCRATCH_CTRL_SCRATCH_ACCESS |
-+		       EIP197_PE_ICE_SCRATCH_CTRL_CHANGE_ACCESS;
-+		writel(val, EIP197_PE(priv) + EIP197_PE_ICE_SCRATCH_CTRL(pe));
-+
-+		/* clear the scratchpad RAM using 32 bit writes only */
-+		for (i = 0; i < EIP197_NUM_OF_SCRATCH_BLOCKS; i++)
-+			writel(0, EIP197_PE(priv) +
-+				  EIP197_PE_ICE_SCRATCH_RAM(pe) + (i<<2));
-+
-+		/* Reset the IFPP engine to make its program mem accessible */
-+		writel(EIP197_PE_ICE_x_CTRL_SW_RESET |
-+		       EIP197_PE_ICE_x_CTRL_CLR_ECC_CORR |
-+		       EIP197_PE_ICE_x_CTRL_CLR_ECC_NON_CORR,
-+		       EIP197_PE(priv) + EIP197_PE_ICE_FPP_CTRL(pe));
-+
-+		/* Reset the IPUE engine to make its program mem accessible */
-+		writel(EIP197_PE_ICE_x_CTRL_SW_RESET |
-+		       EIP197_PE_ICE_x_CTRL_CLR_ECC_CORR |
-+		       EIP197_PE_ICE_x_CTRL_CLR_ECC_NON_CORR,
-+		       EIP197_PE(priv) + EIP197_PE_ICE_PUE_CTRL(pe));
-+
-+		/* Enable access to all IFPP program memories */
-+		writel(EIP197_PE_ICE_RAM_CTRL_FPP_PROG_EN,
-+		       EIP197_PE(priv) + EIP197_PE_ICE_RAM_CTRL(pe));
-+	}
-+
-+}
+Regards,
+Pascal van Leeuwen
+Silicon IP Architect, Multi-Protocol Engines @ Verimatrix
+www.insidesecure.com
 
--	/* Enable access to the program memory */
--	writel(prog_en, EIP197_PE(priv) + EIP197_PE_ICE_RAM_CTRL(pe));
-+static int eip197_write_firmware(struct safexcel_crypto_priv *priv,
-+				  const struct firmware *fw)
-+{
-+	const u32 *data = (const u32 *)fw->data;
-+	int i;
-
- 	/* Write the firmware */
- 	for (i = 0; i < fw->size / sizeof(u32); i++)
- 		writel(be32_to_cpu(data[i]),
- 		       priv->base + EIP197_CLASSIFICATION_RAMS + i * sizeof(u32));
-
--	/* Disable access to the program memory */
--	writel(0, EIP197_PE(priv) + EIP197_PE_ICE_RAM_CTRL(pe));
-+	/* Exclude final 2 NOPs from size */
-+	return i - EIP197_FW_TERMINAL_NOPS;
-+}
-+
-+/*
-+ * If FW is actual production firmware, then poll for its initialization
-+ * to complete and check if it is good for the HW, otherwise just return OK.
-+ */
-+static bool poll_fw_ready(struct safexcel_crypto_priv *priv, int fpp)
-+{
-+	int pe, pollcnt;
-+	u32 base, pollofs;
-+
-+	if (fpp)
-+		pollofs  = EIP197_FW_FPP_READY;
-+	else
-+		pollofs  = EIP197_FW_PUE_READY;
-
--	/* Release engine from reset */
--	val = readl(EIP197_PE(priv) + ctrl);
--	val &= ~EIP197_PE_ICE_x_CTRL_SW_RESET;
--	writel(val, EIP197_PE(priv) + ctrl);
-+	for (pe = 0; pe < priv->config.pes; pe++) {
-+		base = EIP197_PE_ICE_SCRATCH_RAM(pe);
-+		pollcnt = EIP197_FW_START_POLLCNT;
-+		while (pollcnt &&
-+		       (readl_relaxed(EIP197_PE(priv) + base +
-+			      pollofs) != 1)) {
-+			pollcnt--;
-+		}
-+		if (!pollcnt) {
-+			dev_err(priv->dev, "FW(%d) for PE %d failed to start\n",
-+				fpp, pe);
-+			return false;
-+		}
-+	}
-+	return true;
-+}
-+
-+static bool eip197_start_firmware(struct safexcel_crypto_priv *priv,
-+				  int ipuesz, int ifppsz, int minifw)
-+{
-+	int pe;
-+	u32 val;
-+
-+	for (pe = 0; pe < priv->config.pes; pe++) {
-+		/* Disable access to all program memory */
-+		writel(0, EIP197_PE(priv) + EIP197_PE_ICE_RAM_CTRL(pe));
-+
-+		/* Start IFPP microengines */
-+		if (minifw)
-+			val = 0;
-+		else
-+			val = EIP197_PE_ICE_UENG_START_OFFSET((ifppsz - 1) &
-+					EIP197_PE_ICE_UENG_INIT_ALIGN_MASK) |
-+				EIP197_PE_ICE_UENG_DEBUG_RESET;
-+		writel(val, EIP197_PE(priv) + EIP197_PE_ICE_FPP_CTRL(pe));
-+
-+		/* Start IPUE microengines */
-+		if (minifw)
-+			val = 0;
-+		else
-+			val = EIP197_PE_ICE_UENG_START_OFFSET((ipuesz - 1) &
-+					EIP197_PE_ICE_UENG_INIT_ALIGN_MASK) |
-+				EIP197_PE_ICE_UENG_DEBUG_RESET;
-+		writel(val, EIP197_PE(priv) + EIP197_PE_ICE_PUE_CTRL(pe));
-+	}
-+
-+	/* For miniFW startup, there is no initialization, so always succeed */
-+	if (minifw)
-+		return true;
-+
-+	/* Wait until all the firmwares have properly started up */
-+	if (!poll_fw_ready(priv, 1))
-+		return false;
-+	if (!poll_fw_ready(priv, 0))
-+		return false;
-+
-+	return true;
- }
-
- static int eip197_load_firmwares(struct safexcel_crypto_priv *priv)
- {
- 	const char *fw_name[] = {"ifpp.bin", "ipue.bin"};
- 	const struct firmware *fw[FW_NB];
--	char fw_path[31], *dir = NULL;
-+	char fw_path[37], *dir = NULL;
- 	int i, j, ret = 0, pe;
--	u32 val;
-+	int ipuesz, ifppsz, minifw = 0;
-
- 	if (priv->version == EIP197D_MRVL)
- 		dir = "eip197d";
-@@ -155,51 +254,56 @@ static int eip197_load_firmwares(struct safexcel_crypto_priv *priv)
- 	else
- 		return -ENODEV;
-
-+retry_fw:
- 	for (i = 0; i < FW_NB; i++) {
--		snprintf(fw_path, 31, "inside-secure/%s/%s", dir, fw_name[i]);
--		ret = request_firmware(&fw[i], fw_path, priv->dev);
-+		snprintf(fw_path, 37, "inside-secure/%s/%s", dir, fw_name[i]);
-+		ret = firmware_request_nowarn(&fw[i], fw_path, priv->dev);
- 		if (ret) {
--			if (priv->version != EIP197B_MRVL)
-+			if (minifw || priv->version != EIP197B_MRVL)
- 				goto release_fw;
-
- 			/* Fallback to the old firmware location for the
- 			 * EIP197b.
- 			 */
--			ret = request_firmware(&fw[i], fw_name[i], priv->dev);
--			if (ret) {
--				dev_err(priv->dev,
--					"Failed to request firmware %s (%d)\n",
--					fw_name[i], ret);
-+			ret = firmware_request_nowarn(&fw[i], fw_name[i],
-+						      priv->dev);
-+			if (ret)
- 				goto release_fw;
--			}
- 		}
- 	}
-
--	for (pe = 0; pe < priv->config.pes; pe++) {
--		/* Clear the scratchpad memory */
--		val = readl(EIP197_PE(priv) + EIP197_PE_ICE_SCRATCH_CTRL(pe));
--		val |= EIP197_PE_ICE_SCRATCH_CTRL_CHANGE_TIMER |
--		       EIP197_PE_ICE_SCRATCH_CTRL_TIMER_EN |
--		       EIP197_PE_ICE_SCRATCH_CTRL_SCRATCH_ACCESS |
--		       EIP197_PE_ICE_SCRATCH_CTRL_CHANGE_ACCESS;
--		writel(val, EIP197_PE(priv) + EIP197_PE_ICE_SCRATCH_CTRL(pe));
-+	eip197_init_firmware(priv);
-
--		memset_io(EIP197_PE(priv) + EIP197_PE_ICE_SCRATCH_RAM(pe), 0,
--			  EIP197_NUM_OF_SCRATCH_BLOCKS * sizeof(u32));
-+	ifppsz = eip197_write_firmware(priv, fw[FW_IFPP]);
-
--		eip197_write_firmware(priv, fw[FW_IFPP], pe,
--				      EIP197_PE_ICE_FPP_CTRL(pe),
--				      EIP197_PE_ICE_RAM_CTRL_FPP_PROG_EN);
-+	/* Enable access to IPUE program memories */
-+	for (pe = 0; pe < priv->config.pes; pe++)
-+		writel(EIP197_PE_ICE_RAM_CTRL_PUE_PROG_EN,
-+		       EIP197_PE(priv) + EIP197_PE_ICE_RAM_CTRL(pe));
-
--		eip197_write_firmware(priv, fw[FW_IPUE], pe,
--				      EIP197_PE_ICE_PUE_CTRL(pe),
--				      EIP197_PE_ICE_RAM_CTRL_PUE_PROG_EN);
-+	ipuesz = eip197_write_firmware(priv, fw[FW_IPUE]);
-+
-+	if (eip197_start_firmware(priv, ipuesz, ifppsz, minifw)) {
-+		dev_dbg(priv->dev, "Firmware loaded successfully");
-+		return 0;
- 	}
-
-+	ret = -ENODEV;
-+
- release_fw:
- 	for (j = 0; j < i; j++)
- 		release_firmware(fw[j]);
-
-+	if (!minifw) {
-+		/* Retry with minifw path */
-+		dev_dbg(priv->dev, "Firmware set not (fully) present or init failed, falling back to BCLA mode\n");
-+		dir = "eip197_minifw";
-+		minifw = 1;
-+		goto retry_fw;
-+	}
-+
-+	dev_dbg(priv->dev, "Firmware load failed.\n");
-+
- 	return ret;
- }
-
-diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/inside-secure/safexcel.h
-index a9a239b..ffb1c66 100644
---- a/drivers/crypto/inside-secure/safexcel.h
-+++ b/drivers/crypto/inside-secure/safexcel.h
-@@ -136,8 +136,10 @@
- #define EIP197_PE_IN_TBUF_THRES(n)		(0x0100 + (0x2000 * (n)))
- #define EIP197_PE_ICE_SCRATCH_RAM(n)		(0x0800 + (0x2000 * (n)))
- #define EIP197_PE_ICE_PUE_CTRL(n)		(0x0c80 + (0x2000 * (n)))
-+#define EIP197_PE_ICE_PUTF_CTRL(n)		(0x0d00 + (0x2000 * (n)))
- #define EIP197_PE_ICE_SCRATCH_CTRL(n)		(0x0d04 + (0x2000 * (n)))
- #define EIP197_PE_ICE_FPP_CTRL(n)		(0x0d80 + (0x2000 * (n)))
-+#define EIP197_PE_ICE_PPTF_CTRL(n)		(0x0e00 + (0x2000 * (n)))
- #define EIP197_PE_ICE_RAM_CTRL(n)		(0x0ff0 + (0x2000 * (n)))
- #define EIP197_PE_EIP96_TOKEN_CTRL(n)		(0x1000 + (0x2000 * (n)))
- #define EIP197_PE_EIP96_FUNCTION_EN(n)		(0x1004 + (0x2000 * (n)))
-@@ -228,6 +230,11 @@
- #define EIP197_DxE_THR_CTRL_EN			BIT(30)
- #define EIP197_DxE_THR_CTRL_RESET_PE		BIT(31)
-
-+/* EIP197_PE_ICE_PUE/FPP_CTRL */
-+#define EIP197_PE_ICE_UENG_START_OFFSET(n)	((n) << 16)
-+#define EIP197_PE_ICE_UENG_INIT_ALIGN_MASK	0x7ff0
-+#define EIP197_PE_ICE_UENG_DEBUG_RESET		BIT(3)
-+
- /* EIP197_HIA_AIC_G_ENABLED_STAT */
- #define EIP197_G_IRQ_DFE(n)			BIT((n) << 1)
- #define EIP197_G_IRQ_DSE(n)			BIT(((n) << 1) + 1)
-@@ -530,6 +537,11 @@ struct safexcel_command_desc {
-  * Internal structures & functions
-  */
-
-+#define EIP197_FW_TERMINAL_NOPS		2
-+#define EIP197_FW_START_POLLCNT		16
-+#define EIP197_FW_PUE_READY		0x14
-+#define EIP197_FW_FPP_READY		0x18
-+
- enum eip197_fw {
- 	FW_IFPP = 0,
- 	FW_IPUE,
---
-1.8.3.1
