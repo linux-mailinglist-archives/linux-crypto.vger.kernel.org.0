@@ -2,68 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3997DEAA
-	for <lists+linux-crypto@lfdr.de>; Thu,  1 Aug 2019 17:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FDE7E105
+	for <lists+linux-crypto@lfdr.de>; Thu,  1 Aug 2019 19:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731421AbfHAPUS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 1 Aug 2019 11:20:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40194 "EHLO mail.kernel.org"
+        id S1731067AbfHARY1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 1 Aug 2019 13:24:27 -0400
+Received: from mga02.intel.com ([134.134.136.20]:32341 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730087AbfHAPUS (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 1 Aug 2019 11:20:18 -0400
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2ADEC2171F;
-        Thu,  1 Aug 2019 15:20:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564672817;
-        bh=A5WVsf7G2kFJI6lI2lC6kb+wdtK4qcYkyJefqOmwKnE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iPvinyI9HCcagqoyjJOmSXdt/1odOuDy24qOv1sHtO2tFYo60EpDtdKR/vJkNTLxQ
-         p1YslmBdSI7GE9rHshrM3LJXBthjFmaRgRZ9sLnG6U5C+jCVIzUBAcJCSQjEKodcOE
-         71A/4oGB0Wb1P3jtkbdnyfpUrr3DzyZXYWLie7KI=
-Received: by mail-qk1-f171.google.com with SMTP id t8so52311763qkt.1;
-        Thu, 01 Aug 2019 08:20:17 -0700 (PDT)
-X-Gm-Message-State: APjAAAUhQtWm2yMF57edw3SiqTqvh8y85xNfkgv0moKbWm6+3XY9gZRk
-        OU7rCs9BMzjKS837zryKDyNaw/oCewbsLzILHA==
-X-Google-Smtp-Source: APXvYqyOTDfIkp0PiGP+4XgmfZUgR81KtILQm6TcrNNBpWndNc5glbXR+cfHFaU1qak5P984zIWlLDST+tVjYpRqtxI=
-X-Received: by 2002:a37:a44a:: with SMTP id n71mr21061481qke.393.1564672816295;
- Thu, 01 Aug 2019 08:20:16 -0700 (PDT)
+        id S1726017AbfHARY0 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 1 Aug 2019 13:24:26 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 01 Aug 2019 10:24:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,334,1559545200"; 
+   d="scan'208";a="184315116"
+Received: from nippert-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.36.219])
+  by orsmga002.jf.intel.com with ESMTP; 01 Aug 2019 10:24:17 -0700
+Date:   Thu, 1 Aug 2019 20:24:15 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org, dhowells@redhat.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jejb@linux.ibm.com, zohar@linux.ibm.com, jmorris@namei.org,
+        serge@hallyn.com, casey@schaufler-ca.com,
+        ard.biesheuvel@linaro.org, daniel.thompson@linaro.org,
+        linux-kernel@vger.kernel.org, tee-dev@lists.linaro.org
+Subject: Re: [RFC/RFT v2 1/2] KEYS: trusted: create trusted keys subsystem
+Message-ID: <20190801172310.cldcftfdoh5vyfjg@linux.intel.com>
+References: <1563449086-13183-1-git-send-email-sumit.garg@linaro.org>
+ <1563449086-13183-2-git-send-email-sumit.garg@linaro.org>
 MIME-Version: 1.0
-References: <20190801135644.12843-1-narmstrong@baylibre.com>
-In-Reply-To: <20190801135644.12843-1-narmstrong@baylibre.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 1 Aug 2019 09:20:03 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL7FEAJ9S5j9JSwfj+t8434KsEOcxKEMWNFnG00b07JMA@mail.gmail.com>
-Message-ID: <CAL_JsqL7FEAJ9S5j9JSwfj+t8434KsEOcxKEMWNFnG00b07JMA@mail.gmail.com>
-Subject: Re: [RFC 0/9] dt-bindings: first tentative of conversion to yaml format
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>, devicetree@vger.kernel.org,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1563449086-13183-2-git-send-email-sumit.garg@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: NeoMutt/20180716
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Aug 1, 2019 at 7:56 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> This is a first tentative to convert some of the simplest Amlogic
-> dt-bindings to the yaml format.
+On Thu, Jul 18, 2019 at 04:54:45PM +0530, Sumit Garg wrote:
+> Move existing code to trusted keys subsystem. Also, rename files with
+> "tpm" as suffix which provides the underlying implementation.
+> 
+> Suggested-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 
-Great to see this.
+What about TPM2 trusted keys code?
 
-I've gone thru all of the patches. Some of the same minor comments I
-made also apply to the patches I didn't comment on.
-
-Rob
+/Jarkko
