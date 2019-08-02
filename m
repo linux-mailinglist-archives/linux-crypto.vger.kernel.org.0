@@ -2,70 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 938217EBBB
-	for <lists+linux-crypto@lfdr.de>; Fri,  2 Aug 2019 06:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B119A7EBAF
+	for <lists+linux-crypto@lfdr.de>; Fri,  2 Aug 2019 06:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732296AbfHBE41 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 2 Aug 2019 00:56:27 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:48728 "EHLO fornost.hmeau.com"
+        id S1732100AbfHBEzx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 2 Aug 2019 00:55:53 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:48682 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732224AbfHBE41 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 2 Aug 2019 00:56:27 -0400
+        id S1731919AbfHBEzx (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 2 Aug 2019 00:55:53 -0400
 Received: from gondolin.me.apana.org.au ([192.168.0.6] helo=gondolin.hengli.com.au)
         by fornost.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1htPbT-0006IL-3e; Fri, 02 Aug 2019 14:55:43 +1000
+        id 1htPbb-0006Iw-8i; Fri, 02 Aug 2019 14:55:51 +1000
 Received: from herbert by gondolin.hengli.com.au with local (Exim 4.80)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1htPbN-0004jz-DL; Fri, 02 Aug 2019 14:55:37 +1000
-Date:   Fri, 2 Aug 2019 14:55:37 +1000
+        id 1htPbZ-0004kT-Bp; Fri, 02 Aug 2019 14:55:49 +1000
+Date:   Fri, 2 Aug 2019 14:55:49 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Chuhong Yuan <hslester96@gmail.com>
-Cc:     Matt Mackall <mpm@selenic.com>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Deepak Saxena <dsaxena@plexity.net>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Patrice Chotard <patrice.chotard@st.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] hwrng: Use device-managed registration API
-Message-ID: <20190802045537.GG18077@gondor.apana.org.au>
-References: <20190725080155.19875-1-hslester96@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-crypto@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH] crypto: Remove redundant #ifdef in crypto_yield()
+Message-ID: <20190802045549.GH18077@gondor.apana.org.au>
+References: <alpine.DEB.2.21.1907262217130.1791@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190725080155.19875-1-hslester96@gmail.com>
+In-Reply-To: <alpine.DEB.2.21.1907262217130.1791@nanos.tec.linutronix.de>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Jul 25, 2019 at 04:01:55PM +0800, Chuhong Yuan wrote:
-> Use devm_hwrng_register to simplify the implementation.
-> Manual unregistration and some remove functions can be
-> removed now.
+On Fri, Jul 26, 2019 at 10:19:07PM +0200, Thomas Gleixner wrote:
+> While looking at CONFIG_PREEMPT dependencies treewide the #ifdef in
+> crypto_yield() matched.
 > 
-> Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+> CONFIG_PREEMPT and CONFIG_PREEMPT_VOLUNTARY are mutually exclusive so the
+> extra !CONFIG_PREEMPT conditional is redundant.
+> 
+> cond_resched() has only an effect when CONFIG_PREEMPT_VOLUNTARY is set,
+> otherwise it's a stub which the compiler optimizes out.
+> 
+> Remove the whole conditional.
+> 
+> No functional change.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
 > ---
->  drivers/char/hw_random/atmel-rng.c     |  3 +--
->  drivers/char/hw_random/cavium-rng-vf.c | 11 +----------
->  drivers/char/hw_random/exynos-trng.c   |  3 +--
->  drivers/char/hw_random/n2-drv.c        |  4 +---
->  drivers/char/hw_random/nomadik-rng.c   |  3 +--
->  drivers/char/hw_random/omap-rng.c      |  3 +--
->  drivers/char/hw_random/powernv-rng.c   | 10 +---------
->  drivers/char/hw_random/st-rng.c        |  4 +---
->  drivers/char/hw_random/xgene-rng.c     |  4 +---
->  9 files changed, 9 insertions(+), 36 deletions(-)
+>  include/crypto/algapi.h |    2 --
+>  1 file changed, 2 deletions(-)
 
 Patch applied.  Thanks.
 -- 
