@@ -2,83 +2,102 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6A87EE5E
-	for <lists+linux-crypto@lfdr.de>; Fri,  2 Aug 2019 10:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 979B87EE97
+	for <lists+linux-crypto@lfdr.de>; Fri,  2 Aug 2019 10:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390621AbfHBIHW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 2 Aug 2019 04:07:22 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:59956 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731650AbfHBIHV (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 2 Aug 2019 04:07:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=oQGkgX+xjP5mcvxvnZUNTJDjzsROZ8JGq6RAdmO4uPA=; b=Kn7zyiwFYY1w4GG19f5Z+fxXG
-        rpdCjyayz/9gviyRYspgLpeSBWC2GfVoCY+63/ODQnmLa1Ss8JkqUpftu3V0chMAiw/KlU2kDYgEh
-        oR5YKgy/zWb5/EAWdvNxCcTyybQ/h6IZloFk2u58KpdWjALZ6VxSlYgO9NyD6ORVH0k4+/SJs5gc5
-        s9u9DnNkq+UczyxB+jcY/9wLHc7m1xooYunausG0HwlgSx5YAgAGjYk+/D776D8302Y3gySch17HH
-        NqaNqFjlPIzia2+bWk3vao3mV6/a02u4eJ9MN9jE/yE1oy7yiEOCMpBpQIwm2mrZk60vD3Q8D3Ve6
-        97+ImnTKw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1htSZZ-0007h0-0W; Fri, 02 Aug 2019 08:05:57 +0000
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8B3D42029F4CB; Fri,  2 Aug 2019 10:05:54 +0200 (CEST)
-Date:   Fri, 2 Aug 2019 10:05:54 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     john.hubbard@gmail.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, ceph-devel@vger.kernel.org,
-        devel@driverdev.osuosl.org, devel@lists.orangefs.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org, linux-xfs@vger.kernel.org,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        sparclinux@vger.kernel.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org, John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH 00/34] put_user_pages(): miscellaneous call sites
-Message-ID: <20190802080554.GD2332@hirez.programming.kicks-ass.net>
-References: <20190802021653.4882-1-jhubbard@nvidia.com>
+        id S2390806AbfHBIQw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 2 Aug 2019 04:16:52 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:49856 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390804AbfHBIQw (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 2 Aug 2019 04:16:52 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 63D6DC10F1FDFDB74E08;
+        Fri,  2 Aug 2019 16:16:50 +0800 (CST)
+Received: from localhost.localdomain (10.67.212.75) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.439.0; Fri, 2 Aug 2019 16:16:43 +0800
+From:   Zhou Wang <wangzhou1@hisilicon.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <linux-crypto@vger.kernel.org>
+CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
+        Zhou Wang <wangzhou1@hisilicon.com>
+Subject: [PATCH v3 0/7] crypto: hisilicon: Add HiSilicon QM and ZIP controller driver
+Date:   Fri, 2 Aug 2019 15:57:49 +0800
+Message-ID: <1564732676-35987-1-git-send-email-wangzhou1@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190802021653.4882-1-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.67.212.75]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Aug 01, 2019 at 07:16:19PM -0700, john.hubbard@gmail.com wrote:
+This series adds HiSilicon QM and ZIP controller driver in crypto subsystem.
 
-> This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
-> ("mm: introduce put_user_page*(), placeholder versions"). That commit
-> has an extensive description of the problem and the planned steps to
-> solve it, but the highlites are:
+A simple QM/ZIP driver which helps to provide an example for a general
+accelerator framework is under review in community[1]. Based on this simple
+driver, this series adds HW v2 support, PCI passthrough, PCI/misc error
+handler, debug support. But unlike [1], driver in this patchset only registers
+to crypto subsystem.
 
-That is one horridly mangled Changelog there :-/ It looks like it's
-partially duplicated.
+There will be a long discussion about above accelerator framework in the
+process of upstreaming. So let's firstly review and upstream QM/ZIP crypto
+driver.
 
-Anyway; no objections to any of that, but I just wanted to mention that
-there are other problems with long term pinning that haven't been
-mentioned, notably they inhibit compaction.
+Changes v2 -> v3:
+- Change to register zlib/gzip to crypto acomp.
+- As acomp is using sgl interface, add a common hardware sgl module which
+  also can be used in other HiSilicon accelerator drivers.
+- Change irq thread to work queue in the flow of irq handler in QM.
+- Split SRIOV and debugfs out for the convenience of review.
+- rebased on v5.3-rc1.
+- Some tiny fixes.
 
-A long time ago I proposed an interface to mark pages as pinned, such
-that we could run compaction before we actually did the pinning.
+Links:
+- v2  https://lkml.org/lkml/2019/1/23/358
+- v1  https://lwn.net/Articles/775484/
+- rfc https://lkml.org/lkml/2018/12/13/290
+
+Note: this series is based on https://lkml.org/lkml/2019/7/23/1135
+
+Reference:
+[1] https://lkml.org/lkml/2018/11/12/1951
+
+Zhou Wang (7):
+  crypto: hisilicon: Add queue management driver for HiSilicon QM module
+  crypto: hisilicon: Add hardware SGL support
+  crypto: hisilicon: Add HiSilicon ZIP accelerator support
+  crypto: hisilicon: Add SRIOV support for ZIP
+  Documentation: Add debugfs doc for hisi_zip
+  crypto: hisilicon: Add debugfs for ZIP and QM
+  MAINTAINERS: add maintainer for HiSilicon QM and ZIP controller driver
+
+ Documentation/ABI/testing/debugfs-hisi-zip |   50 +
+ MAINTAINERS                                |   11 +
+ drivers/crypto/hisilicon/Kconfig           |   23 +
+ drivers/crypto/hisilicon/Makefile          |    3 +
+ drivers/crypto/hisilicon/qm.c              | 1912 ++++++++++++++++++++++++++++
+ drivers/crypto/hisilicon/qm.h              |  215 ++++
+ drivers/crypto/hisilicon/sgl.c             |  214 ++++
+ drivers/crypto/hisilicon/sgl.h             |   24 +
+ drivers/crypto/hisilicon/zip/Makefile      |    2 +
+ drivers/crypto/hisilicon/zip/zip.h         |   71 ++
+ drivers/crypto/hisilicon/zip/zip_crypto.c  |  651 ++++++++++
+ drivers/crypto/hisilicon/zip/zip_main.c    | 1013 +++++++++++++++
+ 12 files changed, 4189 insertions(+)
+ create mode 100644 Documentation/ABI/testing/debugfs-hisi-zip
+ create mode 100644 drivers/crypto/hisilicon/qm.c
+ create mode 100644 drivers/crypto/hisilicon/qm.h
+ create mode 100644 drivers/crypto/hisilicon/sgl.c
+ create mode 100644 drivers/crypto/hisilicon/sgl.h
+ create mode 100644 drivers/crypto/hisilicon/zip/Makefile
+ create mode 100644 drivers/crypto/hisilicon/zip/zip.h
+ create mode 100644 drivers/crypto/hisilicon/zip/zip_crypto.c
+ create mode 100644 drivers/crypto/hisilicon/zip/zip_main.c
+
+-- 
+2.8.1
+
