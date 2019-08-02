@@ -2,107 +2,66 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62FAA802BC
-	for <lists+linux-crypto@lfdr.de>; Sat,  3 Aug 2019 00:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D6680324
+	for <lists+linux-crypto@lfdr.de>; Sat,  3 Aug 2019 01:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388697AbfHBWcj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 2 Aug 2019 18:32:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44032 "EHLO mail.kernel.org"
+        id S2388599AbfHBXUd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 2 Aug 2019 19:20:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729919AbfHBWci (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 2 Aug 2019 18:32:38 -0400
-Received: from tleilax.poochiereds.net (cpe-71-70-156-158.nc.res.rr.com [71.70.156.158])
+        id S2387495AbfHBXUd (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 2 Aug 2019 19:20:33 -0400
+Received: from localhost (unknown [69.71.4.100])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58F57206A3;
-        Fri,  2 Aug 2019 22:32:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F38422087E;
+        Fri,  2 Aug 2019 23:20:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564785158;
-        bh=z6ytUlp+CIECyVYgzsmKAgNAlD3y+8CHq71PuCQ0D+c=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=cpjIBy8JqGDmfo2YvJ1zHX2H3F5SzV7XyBEUvKOoDGfZiHGtVeJHlsiNF8f/o/lw/
-         1IriX/50tm1jxxFU6BHxnU7AmYr31cK1qfEIW7FiUI67JvLd42gEz50jymZEZTSESa
-         2e28o/zwwAXm5Iq/SkAmipJbFc8z+f7/iU9PnXtA=
-Message-ID: <2f0d5993e9731808b73b0018f5fc4b3335fc6373.camel@kernel.org>
-Subject: Re: [PATCH 03/34] net/ceph: convert put_page() to put_user_page*()
-From:   Jeff Layton <jlayton@kernel.org>
-To:     john.hubbard@gmail.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?ISO-8859-1?Q?J=E9r=F4me?= Glisse <jglisse@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, ceph-devel@vger.kernel.org,
-        devel@driverdev.osuosl.org, devel@lists.orangefs.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org, linux-xfs@vger.kernel.org,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        sparclinux@vger.kernel.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org, John Hubbard <jhubbard@nvidia.com>,
-        Ilya Dryomov <idryomov@gmail.com>, Sage Weil <sage@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>
-Date:   Fri, 02 Aug 2019 18:32:33 -0400
-In-Reply-To: <20190802022005.5117-4-jhubbard@nvidia.com>
-References: <20190802022005.5117-1-jhubbard@nvidia.com>
-         <20190802022005.5117-4-jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        s=default; t=1564788032;
+        bh=5MDWMZ+Bb+H1JLI7zlax6RlbYeorlnYGQAZD3xSaKLo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CtHrXPeQaqIFT1kGAnW5DOoL8nsvXXEeu7tkt5g7Mxl5bfl8RedIJaHQArwrWFdyE
+         L6JPaV9JlfPhnE00BtjeQHNIQxZJVil3TZyX3zyNKIgyRLxJhVb4OkCNmO4/AZdcIn
+         J1SflbREfyPuEfw1L3nbDzBH3pDvS3rV2LZ8uIN8=
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Gary Hook <gary.hook@amd.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 0/2] crypto: ccp - Remove unnecessary includes
+Date:   Fri,  2 Aug 2019 18:20:10 -0500
+Message-Id: <20190802232013.15957-1-helgaas@kernel.org>
+X-Mailer: git-send-email 2.22.0.770.g0f2c4a37fd-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, 2019-08-01 at 19:19 -0700, john.hubbard@gmail.com wrote:
-> From: John Hubbard <jhubbard@nvidia.com>
-> 
-> For pages that were retained via get_user_pages*(), release those pages
-> via the new put_user_page*() routines, instead of via put_page() or
-> release_pages().
-> 
-> This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
-> ("mm: introduce put_user_page*(), placeholder versions").
-> 
-> Cc: Ilya Dryomov <idryomov@gmail.com>
-> Cc: Sage Weil <sage@redhat.com>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: ceph-devel@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  net/ceph/pagevec.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/net/ceph/pagevec.c b/net/ceph/pagevec.c
-> index 64305e7056a1..c88fff2ab9bd 100644
-> --- a/net/ceph/pagevec.c
-> +++ b/net/ceph/pagevec.c
-> @@ -12,13 +12,7 @@
->  
->  void ceph_put_page_vector(struct page **pages, int num_pages, bool dirty)
->  {
-> -	int i;
-> -
-> -	for (i = 0; i < num_pages; i++) {
-> -		if (dirty)
-> -			set_page_dirty_lock(pages[i]);
-> -		put_page(pages[i]);
-> -	}
-> +	put_user_pages_dirty_lock(pages, num_pages, dirty);
->  	kvfree(pages);
->  }
->  EXPORT_SYMBOL(ceph_put_page_vector);
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-This patch looks sane enough. Assuming that the earlier patches are OK:
+CCP includes <linux/pci.h> many times unnecessarily.  Add a couple
+DMA-related includes for dma_direction and dma_get_mask(), which were
+previously included indirectly via <linux/pci.h>.  Then remove the
+unnecessary includes of <linux/pci.h>.
 
-Acked-by: Jeff Layton <jlayton@kernel.org>
+Bjorn Helgaas (2):
+  crypto: ccp - Include DMA declarations explicitly
+  crypto: ccp - Remove unnecessary linux/pci.h include
+
+ drivers/crypto/ccp/ccp-crypto.h    | 1 -
+ drivers/crypto/ccp/ccp-dev-v3.c    | 1 -
+ drivers/crypto/ccp/ccp-dev-v5.c    | 1 -
+ drivers/crypto/ccp/ccp-dev.h       | 2 +-
+ drivers/crypto/ccp/ccp-dmaengine.c | 1 +
+ drivers/crypto/ccp/ccp-ops.c       | 1 -
+ drivers/crypto/ccp/psp-dev.h       | 1 -
+ drivers/crypto/ccp/sp-dev.h        | 1 -
+ 8 files changed, 2 insertions(+), 7 deletions(-)
+
+-- 
+2.22.0.770.g0f2c4a37fd-goog
 
