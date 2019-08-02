@@ -2,84 +2,104 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B787FB7A
-	for <lists+linux-crypto@lfdr.de>; Fri,  2 Aug 2019 15:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E167FC0A
+	for <lists+linux-crypto@lfdr.de>; Fri,  2 Aug 2019 16:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394164AbfHBNrO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 2 Aug 2019 09:47:14 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:35066 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731713AbfHBNrM (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 2 Aug 2019 09:47:12 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D20C772E3A367252B563;
-        Fri,  2 Aug 2019 21:31:22 +0800 (CST)
-Received: from localhost (10.133.213.239) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0; Fri, 2 Aug 2019
- 21:31:15 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <lars.persson@axis.com>,
-        <jesper.nilsson@axis.com>, <davem@davemloft.net>,
-        <thomas.lendacky@amd.com>, <gary.hook@amd.com>, <krzk@kernel.org>,
-        <kgene@kernel.org>, <antoine.tenart@bootlin.com>,
-        <matthias.bgg@gmail.com>, <jamie@jamieiles.com>,
-        <agross@kernel.org>, <heiko@sntech.de>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
-        <clabbe.montjoie@gmail.com>, <mripard@kernel.org>, <wens@csie.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-arm-kernel@axis.com>, <linux-samsung-soc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
+        id S2392311AbfHBOWe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 2 Aug 2019 10:22:34 -0400
+Received: from mga09.intel.com ([134.134.136.24]:45140 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726667AbfHBOWd (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 2 Aug 2019 10:22:33 -0400
+X-Amp-Result: UNSCANNABLE
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 02 Aug 2019 07:22:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,338,1559545200"; 
+   d="scan'208";a="167245949"
+Received: from unknown (HELO localhost.localdomain) ([10.232.112.69])
+  by orsmga008.jf.intel.com with ESMTP; 02 Aug 2019 07:22:29 -0700
+Date:   Fri, 2 Aug 2019 08:19:52 -0600
+From:   Keith Busch <keith.busch@intel.com>
+To:     john.hubbard@gmail.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, ceph-devel@vger.kernel.org,
+        devel@driverdev.osuosl.org, devel@lists.orangefs.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org, linux-xfs@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        sparclinux@vger.kernel.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org, John Hubbard <jhubbard@nvidia.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
         YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next 06/12] crypto: mediatek - use devm_platform_ioremap_resource() to simplify code
-Date:   Fri, 2 Aug 2019 21:28:03 +0800
-Message-ID: <20190802132809.8116-7-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-In-Reply-To: <20190802132809.8116-1-yuehaibing@huawei.com>
-References: <20190802132809.8116-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH 26/34] mm/gup_benchmark.c: convert put_page() to
+ put_user_page*()
+Message-ID: <20190802141952.GA18214@localhost.localdomain>
+References: <20190802022005.5117-1-jhubbard@nvidia.com>
+ <20190802022005.5117-27-jhubbard@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.133.213.239]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190802022005.5117-27-jhubbard@nvidia.com>
+User-Agent: Mutt/1.9.1 (2017-09-22)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Use devm_platform_ioremap_resource() to simplify the code a bit.
-This is detected by coccinelle.
+On Thu, Aug 01, 2019 at 07:19:57PM -0700, john.hubbard@gmail.com wrote:
+> From: John Hubbard <jhubbard@nvidia.com>
+> 
+> For pages that were retained via get_user_pages*(), release those pages
+> via the new put_user_page*() routines, instead of via put_page() or
+> release_pages().
+> 
+> This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
+> ("mm: introduce put_user_page*(), placeholder versions").
+> 
+> Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Keith Busch <keith.busch@intel.com>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Michael S. Tsirkin <mst@redhat.com>
+> Cc: YueHaibing <yuehaibing@huawei.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/crypto/mediatek/mtk-platform.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Looks fine.
 
-diff --git a/drivers/crypto/mediatek/mtk-platform.c b/drivers/crypto/mediatek/mtk-platform.c
-index 125318a..12462136 100644
---- a/drivers/crypto/mediatek/mtk-platform.c
-+++ b/drivers/crypto/mediatek/mtk-platform.c
-@@ -481,7 +481,6 @@ static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
- 
- static int mtk_crypto_probe(struct platform_device *pdev)
- {
--	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	struct mtk_cryp *cryp;
- 	int i, err;
- 
-@@ -489,7 +488,7 @@ static int mtk_crypto_probe(struct platform_device *pdev)
- 	if (!cryp)
- 		return -ENOMEM;
- 
--	cryp->base = devm_ioremap_resource(&pdev->dev, res);
-+	cryp->base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(cryp->base))
- 		return PTR_ERR(cryp->base);
- 
--- 
-2.7.4
+Reviewed-by: Keith Busch <keith.busch@intel.com>
 
-
+>  mm/gup_benchmark.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/gup_benchmark.c b/mm/gup_benchmark.c
+> index 7dd602d7f8db..515ac8eeb6ee 100644
+> --- a/mm/gup_benchmark.c
+> +++ b/mm/gup_benchmark.c
+> @@ -79,7 +79,7 @@ static int __gup_benchmark_ioctl(unsigned int cmd,
+>  	for (i = 0; i < nr_pages; i++) {
+>  		if (!pages[i])
+>  			break;
+> -		put_page(pages[i]);
+> +		put_user_page(pages[i]);
+>  	}
+>  	end_time = ktime_get();
+>  	gup->put_delta_usec = ktime_us_delta(end_time, start_time);
+> -- 
