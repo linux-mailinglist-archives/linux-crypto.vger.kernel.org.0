@@ -2,146 +2,140 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B9580327
-	for <lists+linux-crypto@lfdr.de>; Sat,  3 Aug 2019 01:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCE1803BD
+	for <lists+linux-crypto@lfdr.de>; Sat,  3 Aug 2019 03:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387495AbfHBXUi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 2 Aug 2019 19:20:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437495AbfHBXUh (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 2 Aug 2019 19:20:37 -0400
-Received: from localhost (unknown [69.71.4.100])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 966A0217D6;
-        Fri,  2 Aug 2019 23:20:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564788036;
-        bh=DTtqR6dimKI2HoN5TUSVU4siXsFOcGGZxXJOm4LmKSA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JiNDddZzvKbeHuMCQGZAziBlty3jtqkmTvACDhLYBEkP8PWQawtKFBnvULRYH5ANI
-         C04rPO+R3Iy/1nvUCqrK2Y1HH2/i+Juts8Ck3ymX8GfTd7kMKWALyfxMGBBudRQqDH
-         hV7Wrvv7hi47e2RcRi1qM2znmeW5y9Mu/yXu9INI=
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Gary Hook <gary.hook@amd.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 2/2] crypto: ccp - Remove unnecessary linux/pci.h include
-Date:   Fri,  2 Aug 2019 18:20:12 -0500
-Message-Id: <20190802232013.15957-3-helgaas@kernel.org>
-X-Mailer: git-send-email 2.22.0.770.g0f2c4a37fd-goog
-In-Reply-To: <20190802232013.15957-1-helgaas@kernel.org>
-References: <20190802232013.15957-1-helgaas@kernel.org>
+        id S2390521AbfHCBdj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 2 Aug 2019 21:33:39 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:60096 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390493AbfHCBdj (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 2 Aug 2019 21:33:39 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x731TjiM041024;
+        Sat, 3 Aug 2019 01:30:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc : subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=PzG5W+xMCPCqX5V/WwOxL0iZTAvQCXHlqgOKkoOg1MQ=;
+ b=2UsMaGPWcwZDgPtPG4vvO4o2+XprVDs5YewZlGJ99NG/oeu5neHqgRolXDdQUDZF8YMI
+ IxYI2JZfBcSTSH5fID80qQTk2RWiC2i2+JKhPWGaFknkpOXtRCnVCla7UCXQjDJ07TcC
+ Y8zIof10PGpETzEquU4Ep6o2lM98f1fWi0d++c5eyIcbTbo8lM/F3e4I2lqnL2U/DsCA
+ 8mUjAebH6kYb0xf2V8EwArlSIvwpZUBAi4UxsNctBmeyR2rpJRijKuOrdEc0RMfPWfzX
+ anPCkdDrm0pEBpPwYOnfJAsFmVDpXvcG9fkUEJAY/0LPZMTheZ3JVp0D915Q7k5fKIRC kQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2u0f8rn4cg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 03 Aug 2019 01:30:13 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x731SCbQ177888;
+        Sat, 3 Aug 2019 01:28:12 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 2u50aa8apf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 03 Aug 2019 01:28:12 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x731SC7W177834;
+        Sat, 3 Aug 2019 01:28:12 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 2u50aa8ap0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 03 Aug 2019 01:28:12 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x731S6LT032689;
+        Sat, 3 Aug 2019 01:28:06 GMT
+Received: from mbp2018.cdmnet.org (/82.27.120.181)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 02 Aug 2019 18:28:05 -0700
+Cc:     calum.mackay@oracle.com, Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, ceph-devel@vger.kernel.org,
+        devel@driverdev.osuosl.org, devel@lists.orangefs.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org, linux-xfs@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        sparclinux@vger.kernel.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org, John Hubbard <jhubbard@nvidia.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>
+Subject: Re: [PATCH 31/34] nfs: convert put_page() to put_user_page*()
+To:     john.hubbard@gmail.com, Andrew Morton <akpm@linux-foundation.org>
+References: <20190802022005.5117-1-jhubbard@nvidia.com>
+ <20190802022005.5117-32-jhubbard@nvidia.com>
+From:   Calum Mackay <calum.mackay@oracle.com>
+Organization: Oracle
+Message-ID: <1738cb1e-15d8-0bbe-5362-341664f6efc8@oracle.com>
+Date:   Sat, 3 Aug 2019 02:27:55 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0)
+ Gecko/20100101 Thunderbird/70.0a1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190802022005.5117-32-jhubbard@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9337 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908030013
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+On 02/08/2019 3:20 am, john.hubbard@gmail.com wrote:
+> From: John Hubbard <jhubbard@nvidia.com>
+> 
+> For pages that were retained via get_user_pages*(), release those pages
+> via the new put_user_page*() routines, instead of via put_page() or
+> release_pages().
+> 
+> This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
+> ("mm: introduce put_user_page*(), placeholder versions").
+> 
+> Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+> Cc: Anna Schumaker <anna.schumaker@netapp.com>
+> Cc: linux-nfs@vger.kernel.org
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>   fs/nfs/direct.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
+> index 0cb442406168..b00b89dda3c5 100644
+> --- a/fs/nfs/direct.c
+> +++ b/fs/nfs/direct.c
+> @@ -278,9 +278,7 @@ ssize_t nfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+>   
+>   static void nfs_direct_release_pages(struct page **pages, unsigned int npages)
+>   {
+> -	unsigned int i;
+> -	for (i = 0; i < npages; i++)
+> -		put_page(pages[i]);
+> +	put_user_pages(pages, npages);
+>   }
 
-Remove unused includes of linux/pci.h.
+Since it's static, and only called twice, might it be better to change 
+its two callers [nfs_direct_{read,write}_schedule_iovec()] to call 
+put_user_pages() directly, and remove nfs_direct_release_pages() entirely?
 
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/crypto/ccp/ccp-crypto.h | 1 -
- drivers/crypto/ccp/ccp-dev-v3.c | 1 -
- drivers/crypto/ccp/ccp-dev-v5.c | 1 -
- drivers/crypto/ccp/ccp-dev.h    | 1 -
- drivers/crypto/ccp/ccp-ops.c    | 1 -
- drivers/crypto/ccp/psp-dev.h    | 1 -
- drivers/crypto/ccp/sp-dev.h     | 1 -
- 7 files changed, 7 deletions(-)
+thanks,
+calum.
 
-diff --git a/drivers/crypto/ccp/ccp-crypto.h b/drivers/crypto/ccp/ccp-crypto.h
-index 622b34c17643..903e74e7ad1b 100644
---- a/drivers/crypto/ccp/ccp-crypto.h
-+++ b/drivers/crypto/ccp/ccp-crypto.h
-@@ -12,7 +12,6 @@
- 
- #include <linux/list.h>
- #include <linux/wait.h>
--#include <linux/pci.h>
- #include <linux/ccp.h>
- #include <crypto/algapi.h>
- #include <crypto/aes.h>
-diff --git a/drivers/crypto/ccp/ccp-dev-v3.c b/drivers/crypto/ccp/ccp-dev-v3.c
-index 2b7d47ed5c74..09924f2c264f 100644
---- a/drivers/crypto/ccp/ccp-dev-v3.c
-+++ b/drivers/crypto/ccp/ccp-dev-v3.c
-@@ -10,7 +10,6 @@
- 
- #include <linux/module.h>
- #include <linux/kernel.h>
--#include <linux/pci.h>
- #include <linux/kthread.h>
- #include <linux/interrupt.h>
- #include <linux/ccp.h>
-diff --git a/drivers/crypto/ccp/ccp-dev-v5.c b/drivers/crypto/ccp/ccp-dev-v5.c
-index 217e41bbadaf..0b6ef334f9b7 100644
---- a/drivers/crypto/ccp/ccp-dev-v5.c
-+++ b/drivers/crypto/ccp/ccp-dev-v5.c
-@@ -9,7 +9,6 @@
- 
- #include <linux/module.h>
- #include <linux/kernel.h>
--#include <linux/pci.h>
- #include <linux/kthread.h>
- #include <linux/debugfs.h>
- #include <linux/dma-mapping.h>
-diff --git a/drivers/crypto/ccp/ccp-dev.h b/drivers/crypto/ccp/ccp-dev.h
-index 89aee0900a06..57749c5a5373 100644
---- a/drivers/crypto/ccp/ccp-dev.h
-+++ b/drivers/crypto/ccp/ccp-dev.h
-@@ -12,7 +12,6 @@
- #define __CCP_DEV_H__
- 
- #include <linux/device.h>
--#include <linux/pci.h>
- #include <linux/spinlock.h>
- #include <linux/mutex.h>
- #include <linux/list.h>
-diff --git a/drivers/crypto/ccp/ccp-ops.c b/drivers/crypto/ccp/ccp-ops.c
-index c69ed4bae2eb..b565c08bbe28 100644
---- a/drivers/crypto/ccp/ccp-ops.c
-+++ b/drivers/crypto/ccp/ccp-ops.c
-@@ -10,7 +10,6 @@
- 
- #include <linux/module.h>
- #include <linux/kernel.h>
--#include <linux/pci.h>
- #include <linux/interrupt.h>
- #include <crypto/scatterwalk.h>
- #include <crypto/des.h>
-diff --git a/drivers/crypto/ccp/psp-dev.h b/drivers/crypto/ccp/psp-dev.h
-index c5e06c92d40e..82a084f02990 100644
---- a/drivers/crypto/ccp/psp-dev.h
-+++ b/drivers/crypto/ccp/psp-dev.h
-@@ -11,7 +11,6 @@
- #define __PSP_DEV_H__
- 
- #include <linux/device.h>
--#include <linux/pci.h>
- #include <linux/spinlock.h>
- #include <linux/mutex.h>
- #include <linux/list.h>
-diff --git a/drivers/crypto/ccp/sp-dev.h b/drivers/crypto/ccp/sp-dev.h
-index 8abe9ea7e76f..53c12562d31e 100644
---- a/drivers/crypto/ccp/sp-dev.h
-+++ b/drivers/crypto/ccp/sp-dev.h
-@@ -13,7 +13,6 @@
- #define __SP_DEV_H__
- 
- #include <linux/device.h>
--#include <linux/pci.h>
- #include <linux/spinlock.h>
- #include <linux/mutex.h>
- #include <linux/list.h>
--- 
-2.22.0.770.g0f2c4a37fd-goog
 
+>   
+>   void nfs_init_cinfo_from_dreq(struct nfs_commit_info *cinfo,
+> 
