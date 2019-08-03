@@ -2,78 +2,118 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD60805E7
-	for <lists+linux-crypto@lfdr.de>; Sat,  3 Aug 2019 13:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A047F8068D
+	for <lists+linux-crypto@lfdr.de>; Sat,  3 Aug 2019 16:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389388AbfHCLM0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Sat, 3 Aug 2019 07:12:26 -0400
-Received: from gvtcout.syn-alias.com ([208.47.184.56]:54523 "EHLO
-        gvtcout.emerald.synacor.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389332AbfHCLM0 (ORCPT
+        id S2388544AbfHCONE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 3 Aug 2019 10:13:04 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:40235 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388759AbfHCONE (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 3 Aug 2019 07:12:26 -0400
-X-Greylist: delayed 1200 seconds by postgrey-1.27 at vger.kernel.org; Sat, 03 Aug 2019 07:12:25 EDT
-X_CMAE_Category: , ,
-X-CNFS-Analysis: v=2.3 cv=RLfN4Lq+ c=1 sm=1 tr=0 a=sOJG561dOovE9JBqKNxcJA==:117 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=KGjhK52YXX0A:10 a=FKkrIqjQGGEA:10 a=C6kauv21zXkA:10 a=IkcTkHD0fZMA:10 a=FmdZ9Uzk2mMA:10 a=Znk0L6apymMA:10 a=zh-eaAJ7AAAA:8 a=Zk3OmFfbAAAA:8 a=SJQ7RR0x0G3YY8P78vQA:9 a=-outFh3-4v8sHQ4f:21 a=m6WmQATi1E6AhuVg:21 a=QEXdDO2ut3YA:10 a=z-pUQg4ojLkCqcOT4a6X:22
-X-CM-Score: 0
-X-Scanned-by: Cloudmark Authority Engine
-X-Authed-Username: Y3ZqMjIyQGd2dGMuY29t
-X_CMAE_Category: , ,
-X-CNFS-Analysis: 
-X-CM-Score: 
-X-Scanned-by: Cloudmark Authority Engine
-Authentication-Results: smtp02.emerald.cmh.synacor.com smtp.mail=cvj222@gvtc.com; spf=neutral; sender-id=neutral
-Authentication-Results: smtp02.emerald.cmh.synacor.com header.from=cvj222@gvtc.com; sender-id=neutral
-Received: from [10.33.73.65] ([10.33.73.65:34578] helo=md03.emerald.cmh.synacor.com)
-        by smtp.etc.emerald.synacor.com (envelope-from <cvj222@gvtc.com>)
-        (ecelerity 3.6.25.56547 r(Core:3.6.25.0)) with ESMTP
-        id 08/41-16751-767654D5; Sat, 03 Aug 2019 06:52:23 -0400
-Date:   Sat, 3 Aug 2019 06:52:22 -0400 (EDT)
-From:   Ventura <cvj222@gvtc.com>
-Reply-To: ventura34@myfairpoint.net
-To:     eur@live.com
-Message-ID: <827567562.260254624.1564829542930.JavaMail.zimbra@gvtc.com>
-In-Reply-To: <1516488663.260248429.1564829169252.JavaMail.zimbra@gvtc.com>
-References: <1516488663.260248429.1564829169252.JavaMail.zimbra@gvtc.com>
-Subject: =?utf-8?Q?Re:_=E2=82=AC2,000,000.00_!!!?=
+        Sat, 3 Aug 2019 10:13:04 -0400
+Received: by mail-wr1-f65.google.com with SMTP id r1so80015968wrl.7
+        for <linux-crypto@vger.kernel.org>; Sat, 03 Aug 2019 07:13:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jamieiles-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NH76ZaePsP0z4l5OXFKg/g6flaC7aHRV+c6EeQ9kS6o=;
+        b=yve9gbrhv6FJmbJUZg2guU8pzriDoGRPtUNSqiUWlqQ4TkPhE7DfhQZ1Lvl6wlYKgn
+         CUij4lT37fx3UBTzDkqS1of8xRypgfYdRJr/ZTXH9n4ogxbAsHcYxCGIrI95URXflv1g
+         FJP9gYfinhrvwugGqlcrYzi3n2ruWV0GhOFk8DMONyy7mf8VlBaevDWMWbiu3MutmmwQ
+         QmpvFm+ZUvNuHH0b4aYZwIypRKx4k7GEt4Eb0TgahitiT6Dp+zPrFxSJt1f2evofobtU
+         wg0yc6oNTEOJez1sFjYfahVNfvSfG3X1JEqTzitL04k5N+LcsbHTEjXGJOyHEMLK2GEh
+         3LLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NH76ZaePsP0z4l5OXFKg/g6flaC7aHRV+c6EeQ9kS6o=;
+        b=YQLUvjB6k3Wsr+Gq1maugFe0x+edL/LAhxAAC8rSrTuJYzlP6D+CfAdScgU25Mn/7G
+         CYl/pGydMjEPd2UMtQTg9kpUogm82yUnorFtu+NzE0rsTjC5+qB0Q7puD+kKY8Co69BI
+         j6XImnnMQ2DY43CZ3StImmrn+Wd7Ht03VPjsFiwn/Lpury4REv4Osm6AJOhEqQzsUHIu
+         aK8FAdOAll5iFygDiWzl1J3keRWaNXwL4iQA2fU72gISN5CuFYm1ezupYPAVad41alkU
+         4gKK6+DL0TD8+G9FMkk5Ao8v3MV7NGTsIeOYMbxPSyQCkMa/0mWWjKzudw/xfL5OgGIy
+         G7Wg==
+X-Gm-Message-State: APjAAAV1JqSm0X1rX9wudE6FvE50VEiEmazk1KQrJMg91kxdGw8xWNjC
+        Lgi7Z0j7pKQSFwFIJRRZI7k=
+X-Google-Smtp-Source: APXvYqwdvvXxz41HQ2tdGIQL/JsFnK1YhppKjv+IAl3mDZiell5PlMgO40s/vhGd/eO9sYQEnXx8mQ==
+X-Received: by 2002:a5d:4b50:: with SMTP id w16mr143525518wrs.132.1564841581912;
+        Sat, 03 Aug 2019 07:13:01 -0700 (PDT)
+Received: from localhost (cpc128704-hawk17-2-0-cust94.know.cable.virginm.net. [82.38.213.95])
+        by smtp.gmail.com with ESMTPSA id c65sm80532453wma.44.2019.08.03.07.13.00
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sat, 03 Aug 2019 07:13:00 -0700 (PDT)
+Date:   Sat, 3 Aug 2019 15:13:00 +0100
+From:   Jamie Iles <jamie@jamieiles.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     herbert@gondor.apana.org.au, lars.persson@axis.com,
+        jesper.nilsson@axis.com, davem@davemloft.net,
+        thomas.lendacky@amd.com, gary.hook@amd.com, krzk@kernel.org,
+        kgene@kernel.org, antoine.tenart@bootlin.com,
+        matthias.bgg@gmail.com, jamie@jamieiles.com, agross@kernel.org,
+        heiko@sntech.de, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, clabbe.montjoie@gmail.com,
+        mripard@kernel.org, wens@csie.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@axis.com,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH -next 07/12] crypto: picoxcell - use
+ devm_platform_ioremap_resource() to simplify code
+Message-ID: <20190803141300.GA26817@willow>
+References: <20190802132809.8116-1-yuehaibing@huawei.com>
+ <20190802132809.8116-8-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [185.13.106.222, 54.39.53.104]
-X-Mailer: Zimbra 8.0.7_GA_6021 (zclient/8.0.7_GA_6021)
-Thread-Topic: =?utf-8?B?4oKsMiwwMDAsMDAwLjAw?= !!!
-Thread-Index: hyQuqhSp5BU0ZGiTNOD1fDW9dDZZgf95Iej6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190802132809.8116-8-yuehaibing@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Your e-mail has been selected as the PRIZE winner in Ventura Promo.
-FILL FORM FOR CLAIMS
-Forward below.
-Names......
-Residential address........
-Telephone:......
-Congratulation once more.
-Claim Mgr
+On Fri, Aug 02, 2019 at 09:28:04PM +0800, YueHaibing wrote:
+> Use devm_platform_ioremap_resource() to simplify the code a bit.
+> This is detected by coccinelle.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
+Acked-by: Jamie Iles <jamie@jamieiles.com>
 
-
-
-
-
-
-
-
-
-
-
-
-
------ Original Message -----
-From: Ventura <cvj222@gvtc.com>
-To: eur@live.com
-Sent: Sat, 03 Aug 2019 06:46:09 -0400 (EDT)
-Subject: €2,000,000.00 !!!
-
-s
+> ---
+>  drivers/crypto/picoxcell_crypto.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/crypto/picoxcell_crypto.c b/drivers/crypto/picoxcell_crypto.c
+> index b985cb85..9a939b4 100644
+> --- a/drivers/crypto/picoxcell_crypto.c
+> +++ b/drivers/crypto/picoxcell_crypto.c
+> @@ -1624,7 +1624,7 @@ MODULE_DEVICE_TABLE(of, spacc_of_id_table);
+>  static int spacc_probe(struct platform_device *pdev)
+>  {
+>  	int i, err, ret;
+> -	struct resource *mem, *irq;
+> +	struct resource *irq;
+>  	struct device_node *np = pdev->dev.of_node;
+>  	struct spacc_engine *engine = devm_kzalloc(&pdev->dev, sizeof(*engine),
+>  						   GFP_KERNEL);
+> @@ -1653,8 +1653,7 @@ static int spacc_probe(struct platform_device *pdev)
+>  
+>  	engine->name = dev_name(&pdev->dev);
+>  
+> -	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	engine->regs = devm_ioremap_resource(&pdev->dev, mem);
+> +	engine->regs = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(engine->regs))
+>  		return PTR_ERR(engine->regs);
+>  
+> -- 
+> 2.7.4
+> 
+> 
