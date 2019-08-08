@@ -2,718 +2,659 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCE385FEA
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Aug 2019 12:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF3F86038
+	for <lists+linux-crypto@lfdr.de>; Thu,  8 Aug 2019 12:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731487AbfHHKiA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 8 Aug 2019 06:38:00 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:35645 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730678AbfHHKiA (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 8 Aug 2019 06:38:00 -0400
-Received: by mail-wr1-f65.google.com with SMTP id k2so8546617wrq.2
-        for <linux-crypto@vger.kernel.org>; Thu, 08 Aug 2019 03:37:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JQnD9pmF/QKreMe0D50+Np0sJs3e+o+f4s91lIMBF/k=;
-        b=WzLdBITtP00loiAxNFwC+UJNWKWZIdGfMstb8U2ZEUWlLranU55EE99migYj+QmZHR
-         djKZnVwF1VDjyYSdl6ZgtGYd6ViRst5TXhHfkRFse3F9CEkJVAgCYcI1ppPVe2EoT5LI
-         DMdAddur8icX0NT3yYotj+a8poaiRPjl3qTDnSFhcrTwsuHT04NX0M2AJvLsHenEjFZ0
-         jen+7TG/8kheDdYaSGLN4Nii6QvrGzR6FrR26cjm3gjCyktGgQ2HaztMQA7ffQezeTv0
-         Z/B4PgiOVi97CZv0hAXDM0LghYoi+t7acQzZonuhKb6nnLM843NVDfwDcDibO2T1qZvA
-         M+0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JQnD9pmF/QKreMe0D50+Np0sJs3e+o+f4s91lIMBF/k=;
-        b=YpeHIC1u/4o/LJXLrfA4CFnMLtGBugR5NGCnMtaXDYut2Uu6mzsM8pudeRHuPSd0Eq
-         9UaJWPLpLs/Mjbk7+iwEAVIYD6V3RfNHjeGODK0s+e20zoSUhHv2Y898tuclQMAowNoK
-         iVymnxXSvlNM32OOBVZGOPdeLuVzsgVqqB/pcYHHbd1LT4xVWNQTKnsbf1yNlCV43uIu
-         lvW7P0LpkQzBmLlVMHAuwr32/q87O3QgQUek54JLz91FjthVAzKFVH/EiA0BXv8kihJH
-         RIJl1KKZqifKQALoJVq2Jtnd5oQtc4O3WTdGhDIMLMEcXxGvWqBei1EnIoMFwxKCHCFO
-         94eQ==
-X-Gm-Message-State: APjAAAX1JB8kt79zY7uFDEERbXuFOD0cZeKFBTSsRWD7u0BDCAGbtkwL
-        6Abg82ts28oncHS0fQ9fO9NRLMTX15FMnoKblQUPyQ==
-X-Google-Smtp-Source: APXvYqwF/rO/YTai+So0PWbYGj9VqOThSFJ4pEArUZ7RZMaMr9HARd+ATOC/hjnYkdpFm63BzzGu1/TigEtqE1NpVDY=
-X-Received: by 2002:adf:e8c2:: with SMTP id k2mr15797295wrn.198.1565260674990;
- Thu, 08 Aug 2019 03:37:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <1565245094-8584-1-git-send-email-pvanleeuwen@verimatrix.com>
- <CAKv+Gu_r+iF=gWk_sMesKSyxSZB5Z5pC6jNQmi8uf+0cY7K-6g@mail.gmail.com>
- <CH2PR20MB296824F38C44E32D8C82D0B8CAD70@CH2PR20MB2968.namprd20.prod.outlook.com>
- <CAKv+Gu_uzt-cQF9ZPuM=4zot7UTogifWk3Pjr7Rcz1QWnqKaog@mail.gmail.com> <MN2PR20MB297393DA81B7FFE9C1B904DBCAD70@MN2PR20MB2973.namprd20.prod.outlook.com>
-In-Reply-To: <MN2PR20MB297393DA81B7FFE9C1B904DBCAD70@MN2PR20MB2973.namprd20.prod.outlook.com>
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Thu, 8 Aug 2019 13:37:42 +0300
-Message-ID: <CAKv+Gu-vT2tf-UEyxMSE2kRsWEYy+ab6T+37pF23jy_0+M-z2Q@mail.gmail.com>
-Subject: Re: [PATCHv2] crypto: xts - Add support for Cipher Text Stealing
-To:     Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
-Cc:     Pascal van Leeuwen <pascalvanl@gmail.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
+        id S2403815AbfHHKkb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 8 Aug 2019 06:40:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47452 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390006AbfHHKjD (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 8 Aug 2019 06:39:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id F31A2AF35;
+        Thu,  8 Aug 2019 10:39:00 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     bp@alien8.de
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH v8 06/28] x86/asm/crypto: annotate local functions
+Date:   Thu,  8 Aug 2019 12:38:32 +0200
+Message-Id: <20190808103854.6192-7-jslaby@suse.cz>
+X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20190808103854.6192-1-jslaby@suse.cz>
+References: <20190808103854.6192-1-jslaby@suse.cz>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, 8 Aug 2019 at 13:16, Pascal Van Leeuwen
-<pvanleeuwen@verimatrix.com> wrote:
->
-> > -----Original Message-----
-> > From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> > Sent: Thursday, August 8, 2019 10:33 AM
-> > To: Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
-> > Cc: Pascal van Leeuwen <pascalvanl@gmail.com>; open list:HARDWARE RANDOM NUMBER GENERATOR
-> > CORE <linux-crypto@vger.kernel.org>; Herbert Xu <herbert@gondor.apana.org.au>; David S.
-> > Miller <davem@davemloft.net>
-> > Subject: Re: [PATCHv2] crypto: xts - Add support for Cipher Text Stealing
-> >
-> > On Thu, 8 Aug 2019 at 11:18, Pascal Van Leeuwen
-> > <pvanleeuwen@verimatrix.com> wrote:
-> > >
-> > > Ard,
-> > >
-> > > > -----Original Message-----
-> > > > From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> > > > Sent: Thursday, August 8, 2019 9:45 AM
-> > > > To: Pascal van Leeuwen <pascalvanl@gmail.com>
-> > > > Cc: open list:HARDWARE RANDOM NUMBER GENERATOR CORE <linux-crypto@vger.kernel.org>;
-> > > > Herbert Xu <herbert@gondor.apana.org.au>; David S. Miller <davem@davemloft.net>;
-> > Pascal
-> > > > Van Leeuwen <pvanleeuwen@verimatrix.com>
-> > > > Subject: Re: [PATCHv2] crypto: xts - Add support for Cipher Text Stealing
-> > > >
-> > > > Hello Pascal,
-> > > >
-> > > > Thanks for looking into this.
-> > > >
-> > > > On Thu, 8 Aug 2019 at 10:20, Pascal van Leeuwen <pascalvanl@gmail.com> wrote:
-> > > > >
-> > > > > This adds support for Cipher Text Stealing for data blocks that are not an
-> > > > > integer multiple of the cipher block size in size, bringing it fully in
-> > > > > line with the IEEE P1619/D16 standard.
-> > > > >
-> > > > > This has been tested with the AES-XTS test vectors from the IEEE P1619/D16
-> > > > > specification as well as some additional test vectors supplied to the
-> > > > > linux_crypto mailing list previously. It has also been fuzzed against
-> > > > > Inside Secure AES-XTS hardware which has been actively used in the field
-> > > > > for more than a decade already.
-> > > > >
-> > > > > changes since v1:
-> > > > > - Fixed buffer overflow issue due to subreq not being the last entry in
-> > > > >   rctx, this turns out to be a crypto API requirement. Thanks to Milan
-> > > > >   Broz <gmazyland@gmail.com> for finding this and providing the solution.
-> > > > > - Removed some redundant error returning code from the _finish_cts()
-> > > > >   functions that currently cannot fail, therefore would always return 0.
-> > > > > - removed rem_bytes computation behind init_crypt() in the encrypt() and
-> > > > >   decrypt() functions, no need to compute for lengths < 16
-> > > > > - Fixed comment style for single line comments
-> > > > >
-> > > >
-> > > > Please put the changelog below the ---
-> > > >
-> > > Ok, I can resubmit with that fixed
-> > >
-> > > > > Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-> > > > > ---
-> > > > >  crypto/xts.c | 229 +++++++++++++++++++++++++++++++++++++++++++++++++++++------
-> > > > >  1 file changed, 209 insertions(+), 20 deletions(-)
-> > > > >
-> > > > > diff --git a/crypto/xts.c b/crypto/xts.c
-> > > > > index 33cf726..17b551d 100644
-> > > > > --- a/crypto/xts.c
-> > > > > +++ b/crypto/xts.c
-> > > > > @@ -1,7 +1,5 @@
-> > > > >  /* XTS: as defined in IEEE1619/D16
-> > > > >   *     http://grouper.ieee.org/groups/1619/email/pdf00086.pdf
-> > > > > - *     (sector sizes which are not a multiple of 16 bytes are,
-> > > > > - *     however currently unsupported)
-> > > > >   *
-> > > > >   * Copyright (c) 2007 Rik Snel <rsnel@cube.dyndns.org>
-> > > > >   *
-> > > > > @@ -28,6 +26,7 @@
-> > > > >
-> > > > >  struct priv {
-> > > > >         struct crypto_skcipher *child;
-> > > > > +       struct crypto_cipher *base;
-> > > >
-> > > > Why do you need a separate cipher for the ciphertext stealing? ECB can
-> > > > be invoked with a single block just fine, and it will behave exactly
-> > > > like the bare cipher.
-> > > >
-> > > As you already pointed out, it may be a different key from the tweak,
-> > > and as I myself already explained I really do *not* want to use the
-> > > skcipher which may be HW accelerated with terrible latency.
-> > >
-> >
-> > I think using the skcipher directly should be the default, regardless
-> > of the latency, especially since you are doing a 'correctness first'
-> > implementation.
-> >
-> I disagree with the latter part, as the cipher based implementation is
-> a lot easier/straightforward then an skcipher implementation would be.
-> I would consider using the skcipher an optimization to be done later.
->
+Use the newly added SYM_FUNC_START_LOCAL to annotate starts of all
+functions which do not have ".globl" annotation, but their ends are
+annotated by ENDPROC. This is needed to balance ENDPROC for tools that
+generate debuginfo.
 
-The thing is, we have already established that adding CTS support
-solves a non-issue, since no users exists that require it. However, by
-allocating an additional cipher TFM each time the XTS skcipher is
-instantiated, you are increasing the memory footprint, which may be
-noticeable for users like fscrypt which have lots of different keys.
+To be symmetric, we also convert their ENDPROCs to the new SYM_FUNC_END.
 
-So the first step towards implementing CTS should be to reuse as much
-of what we already have as possible, and only deal with performance
-issues when they materialize in reality.
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: <x86@kernel.org>
+Cc: <linux-crypto@vger.kernel.org>
+---
+ arch/x86/crypto/aegis128-aesni-asm.S         |  8 ++--
+ arch/x86/crypto/aesni-intel_asm.S            | 49 ++++++++------------
+ arch/x86/crypto/camellia-aesni-avx-asm_64.S  | 20 ++++----
+ arch/x86/crypto/camellia-aesni-avx2-asm_64.S | 20 ++++----
+ arch/x86/crypto/cast5-avx-x86_64-asm_64.S    |  8 ++--
+ arch/x86/crypto/cast6-avx-x86_64-asm_64.S    |  8 ++--
+ arch/x86/crypto/chacha-ssse3-x86_64.S        |  4 +-
+ arch/x86/crypto/ghash-clmulni-intel_asm.S    |  4 +-
+ arch/x86/crypto/serpent-avx-x86_64-asm_64.S  |  8 ++--
+ arch/x86/crypto/serpent-avx2-asm_64.S        |  8 ++--
+ arch/x86/crypto/twofish-avx-x86_64-asm_64.S  |  8 ++--
+ 11 files changed, 68 insertions(+), 77 deletions(-)
 
-> Actually, having equivalent crypto_skcipher_en/decrypt_one() functions
-> available from the crypto API would help a lot (as I also need similar
-> functionality for the inside-secure driver). And make sense to have,
-> from the perspective of code duplication / reinventing the wheel.
->
+diff --git a/arch/x86/crypto/aegis128-aesni-asm.S b/arch/x86/crypto/aegis128-aesni-asm.S
+index 4434607e366d..b7026fdef4ff 100644
+--- a/arch/x86/crypto/aegis128-aesni-asm.S
++++ b/arch/x86/crypto/aegis128-aesni-asm.S
+@@ -71,7 +71,7 @@
+  *   %r8
+  *   %r9
+  */
+-__load_partial:
++SYM_FUNC_START_LOCAL(__load_partial)
+ 	xor %r9d, %r9d
+ 	pxor MSG, MSG
+ 
+@@ -123,7 +123,7 @@ __load_partial:
+ 
+ .Lld_partial_8:
+ 	ret
+-ENDPROC(__load_partial)
++SYM_FUNC_END(__load_partial)
+ 
+ /*
+  * __store_partial: internal ABI
+@@ -137,7 +137,7 @@ ENDPROC(__load_partial)
+  *   %r9
+  *   %r10
+  */
+-__store_partial:
++SYM_FUNC_START_LOCAL(__store_partial)
+ 	mov LEN, %r8
+ 	mov DST, %r9
+ 
+@@ -181,7 +181,7 @@ __store_partial:
+ 
+ .Lst_partial_1:
+ 	ret
+-ENDPROC(__store_partial)
++SYM_FUNC_END(__store_partial)
+ 
+ /*
+  * void crypto_aegis128_aesni_init(void *state, const void *key, const void *iv);
+diff --git a/arch/x86/crypto/aesni-intel_asm.S b/arch/x86/crypto/aesni-intel_asm.S
+index e40bdf024ba7..e0a5fb462a0a 100644
+--- a/arch/x86/crypto/aesni-intel_asm.S
++++ b/arch/x86/crypto/aesni-intel_asm.S
+@@ -1759,7 +1759,7 @@ ENDPROC(aesni_gcm_finalize)
+ 
+ .align 4
+ _key_expansion_128:
+-_key_expansion_256a:
++SYM_FUNC_START_LOCAL(_key_expansion_256a)
+ 	pshufd $0b11111111, %xmm1, %xmm1
+ 	shufps $0b00010000, %xmm0, %xmm4
+ 	pxor %xmm4, %xmm0
+@@ -1770,10 +1770,9 @@ _key_expansion_256a:
+ 	add $0x10, TKEYP
+ 	ret
+ ENDPROC(_key_expansion_128)
+-ENDPROC(_key_expansion_256a)
++SYM_FUNC_END(_key_expansion_256a)
+ 
+-.align 4
+-_key_expansion_192a:
++SYM_FUNC_START_LOCAL(_key_expansion_192a)
+ 	pshufd $0b01010101, %xmm1, %xmm1
+ 	shufps $0b00010000, %xmm0, %xmm4
+ 	pxor %xmm4, %xmm0
+@@ -1795,10 +1794,9 @@ _key_expansion_192a:
+ 	movaps %xmm1, 0x10(TKEYP)
+ 	add $0x20, TKEYP
+ 	ret
+-ENDPROC(_key_expansion_192a)
++SYM_FUNC_END(_key_expansion_192a)
+ 
+-.align 4
+-_key_expansion_192b:
++SYM_FUNC_START_LOCAL(_key_expansion_192b)
+ 	pshufd $0b01010101, %xmm1, %xmm1
+ 	shufps $0b00010000, %xmm0, %xmm4
+ 	pxor %xmm4, %xmm0
+@@ -1815,10 +1813,9 @@ _key_expansion_192b:
+ 	movaps %xmm0, (TKEYP)
+ 	add $0x10, TKEYP
+ 	ret
+-ENDPROC(_key_expansion_192b)
++SYM_FUNC_END(_key_expansion_192b)
+ 
+-.align 4
+-_key_expansion_256b:
++SYM_FUNC_START_LOCAL(_key_expansion_256b)
+ 	pshufd $0b10101010, %xmm1, %xmm1
+ 	shufps $0b00010000, %xmm2, %xmm4
+ 	pxor %xmm4, %xmm2
+@@ -1828,7 +1825,7 @@ _key_expansion_256b:
+ 	movaps %xmm2, (TKEYP)
+ 	add $0x10, TKEYP
+ 	ret
+-ENDPROC(_key_expansion_256b)
++SYM_FUNC_END(_key_expansion_256b)
+ 
+ /*
+  * int aesni_set_key(struct crypto_aes_ctx *ctx, const u8 *in_key,
+@@ -1981,8 +1978,7 @@ ENDPROC(aesni_enc)
+  *	KEY
+  *	TKEYP (T1)
+  */
+-.align 4
+-_aesni_enc1:
++SYM_FUNC_START_LOCAL(_aesni_enc1)
+ 	movaps (KEYP), KEY		# key
+ 	mov KEYP, TKEYP
+ 	pxor KEY, STATE		# round 0
+@@ -2025,7 +2021,7 @@ _aesni_enc1:
+ 	movaps 0x70(TKEYP), KEY
+ 	AESENCLAST KEY STATE
+ 	ret
+-ENDPROC(_aesni_enc1)
++SYM_FUNC_END(_aesni_enc1)
+ 
+ /*
+  * _aesni_enc4:	internal ABI
+@@ -2045,8 +2041,7 @@ ENDPROC(_aesni_enc1)
+  *	KEY
+  *	TKEYP (T1)
+  */
+-.align 4
+-_aesni_enc4:
++SYM_FUNC_START_LOCAL(_aesni_enc4)
+ 	movaps (KEYP), KEY		# key
+ 	mov KEYP, TKEYP
+ 	pxor KEY, STATE1		# round 0
+@@ -2134,7 +2129,7 @@ _aesni_enc4:
+ 	AESENCLAST KEY STATE3
+ 	AESENCLAST KEY STATE4
+ 	ret
+-ENDPROC(_aesni_enc4)
++SYM_FUNC_END(_aesni_enc4)
+ 
+ /*
+  * void aesni_dec (struct crypto_aes_ctx *ctx, u8 *dst, const u8 *src)
+@@ -2173,8 +2168,7 @@ ENDPROC(aesni_dec)
+  *	KEY
+  *	TKEYP (T1)
+  */
+-.align 4
+-_aesni_dec1:
++SYM_FUNC_START_LOCAL(_aesni_dec1)
+ 	movaps (KEYP), KEY		# key
+ 	mov KEYP, TKEYP
+ 	pxor KEY, STATE		# round 0
+@@ -2217,7 +2211,7 @@ _aesni_dec1:
+ 	movaps 0x70(TKEYP), KEY
+ 	AESDECLAST KEY STATE
+ 	ret
+-ENDPROC(_aesni_dec1)
++SYM_FUNC_END(_aesni_dec1)
+ 
+ /*
+  * _aesni_dec4:	internal ABI
+@@ -2237,8 +2231,7 @@ ENDPROC(_aesni_dec1)
+  *	KEY
+  *	TKEYP (T1)
+  */
+-.align 4
+-_aesni_dec4:
++SYM_FUNC_START_LOCAL(_aesni_dec4)
+ 	movaps (KEYP), KEY		# key
+ 	mov KEYP, TKEYP
+ 	pxor KEY, STATE1		# round 0
+@@ -2326,7 +2319,7 @@ _aesni_dec4:
+ 	AESDECLAST KEY STATE3
+ 	AESDECLAST KEY STATE4
+ 	ret
+-ENDPROC(_aesni_dec4)
++SYM_FUNC_END(_aesni_dec4)
+ 
+ /*
+  * void aesni_ecb_enc(struct crypto_aes_ctx *ctx, const u8 *dst, u8 *src,
+@@ -2604,8 +2597,7 @@ ENDPROC(aesni_cbc_dec)
+  *	INC:	== 1, in little endian
+  *	BSWAP_MASK == endian swapping mask
+  */
+-.align 4
+-_aesni_inc_init:
++SYM_FUNC_START_LOCAL(_aesni_inc_init)
+ 	movaps .Lbswap_mask, BSWAP_MASK
+ 	movaps IV, CTR
+ 	PSHUFB_XMM BSWAP_MASK CTR
+@@ -2613,7 +2605,7 @@ _aesni_inc_init:
+ 	MOVQ_R64_XMM TCTR_LOW INC
+ 	MOVQ_R64_XMM CTR TCTR_LOW
+ 	ret
+-ENDPROC(_aesni_inc_init)
++SYM_FUNC_END(_aesni_inc_init)
+ 
+ /*
+  * _aesni_inc:		internal ABI
+@@ -2630,8 +2622,7 @@ ENDPROC(_aesni_inc_init)
+  *	CTR:	== output IV, in little endian
+  *	TCTR_LOW: == lower qword of CTR
+  */
+-.align 4
+-_aesni_inc:
++SYM_FUNC_START_LOCAL(_aesni_inc)
+ 	paddq INC, CTR
+ 	add $1, TCTR_LOW
+ 	jnc .Linc_low
+@@ -2642,7 +2633,7 @@ _aesni_inc:
+ 	movaps CTR, IV
+ 	PSHUFB_XMM BSWAP_MASK IV
+ 	ret
+-ENDPROC(_aesni_inc)
++SYM_FUNC_END(_aesni_inc)
+ 
+ /*
+  * void aesni_ctr_enc(struct crypto_aes_ctx *ctx, const u8 *dst, u8 *src,
+diff --git a/arch/x86/crypto/camellia-aesni-avx-asm_64.S b/arch/x86/crypto/camellia-aesni-avx-asm_64.S
+index a14af6eb09cb..f4408ca55fdb 100644
+--- a/arch/x86/crypto/camellia-aesni-avx-asm_64.S
++++ b/arch/x86/crypto/camellia-aesni-avx-asm_64.S
+@@ -189,20 +189,20 @@
+  * larger and would only be 0.5% faster (on sandy-bridge).
+  */
+ .align 8
+-roundsm16_x0_x1_x2_x3_x4_x5_x6_x7_y0_y1_y2_y3_y4_y5_y6_y7_cd:
++SYM_FUNC_START_LOCAL(roundsm16_x0_x1_x2_x3_x4_x5_x6_x7_y0_y1_y2_y3_y4_y5_y6_y7_cd)
+ 	roundsm16(%xmm0, %xmm1, %xmm2, %xmm3, %xmm4, %xmm5, %xmm6, %xmm7,
+ 		  %xmm8, %xmm9, %xmm10, %xmm11, %xmm12, %xmm13, %xmm14, %xmm15,
+ 		  %rcx, (%r9));
+ 	ret;
+-ENDPROC(roundsm16_x0_x1_x2_x3_x4_x5_x6_x7_y0_y1_y2_y3_y4_y5_y6_y7_cd)
++SYM_FUNC_END(roundsm16_x0_x1_x2_x3_x4_x5_x6_x7_y0_y1_y2_y3_y4_y5_y6_y7_cd)
+ 
+ .align 8
+-roundsm16_x4_x5_x6_x7_x0_x1_x2_x3_y4_y5_y6_y7_y0_y1_y2_y3_ab:
++SYM_FUNC_START_LOCAL(roundsm16_x4_x5_x6_x7_x0_x1_x2_x3_y4_y5_y6_y7_y0_y1_y2_y3_ab)
+ 	roundsm16(%xmm4, %xmm5, %xmm6, %xmm7, %xmm0, %xmm1, %xmm2, %xmm3,
+ 		  %xmm12, %xmm13, %xmm14, %xmm15, %xmm8, %xmm9, %xmm10, %xmm11,
+ 		  %rax, (%r9));
+ 	ret;
+-ENDPROC(roundsm16_x4_x5_x6_x7_x0_x1_x2_x3_y4_y5_y6_y7_y0_y1_y2_y3_ab)
++SYM_FUNC_END(roundsm16_x4_x5_x6_x7_x0_x1_x2_x3_y4_y5_y6_y7_y0_y1_y2_y3_ab)
+ 
+ /*
+  * IN/OUT:
+@@ -722,7 +722,7 @@ ENDPROC(roundsm16_x4_x5_x6_x7_x0_x1_x2_x3_y4_y5_y6_y7_y0_y1_y2_y3_ab)
+ .text
+ 
+ .align 8
+-__camellia_enc_blk16:
++SYM_FUNC_START_LOCAL(__camellia_enc_blk16)
+ 	/* input:
+ 	 *	%rdi: ctx, CTX
+ 	 *	%rax: temporary storage, 256 bytes
+@@ -806,10 +806,10 @@ __camellia_enc_blk16:
+ 		     %xmm15, %rax, %rcx, 24);
+ 
+ 	jmp .Lenc_done;
+-ENDPROC(__camellia_enc_blk16)
++SYM_FUNC_END(__camellia_enc_blk16)
+ 
+ .align 8
+-__camellia_dec_blk16:
++SYM_FUNC_START_LOCAL(__camellia_dec_blk16)
+ 	/* input:
+ 	 *	%rdi: ctx, CTX
+ 	 *	%rax: temporary storage, 256 bytes
+@@ -891,7 +891,7 @@ __camellia_dec_blk16:
+ 	      ((key_table + (24) * 8) + 4)(CTX));
+ 
+ 	jmp .Ldec_max24;
+-ENDPROC(__camellia_dec_blk16)
++SYM_FUNC_END(__camellia_dec_blk16)
+ 
+ ENTRY(camellia_ecb_enc_16way)
+ 	/* input:
+@@ -1120,7 +1120,7 @@ ENDPROC(camellia_ctr_16way)
+ 	vpxor tmp, iv, iv;
+ 
+ .align 8
+-camellia_xts_crypt_16way:
++SYM_FUNC_START_LOCAL(camellia_xts_crypt_16way)
+ 	/* input:
+ 	 *	%rdi: ctx, CTX
+ 	 *	%rsi: dst (16 blocks)
+@@ -1254,7 +1254,7 @@ camellia_xts_crypt_16way:
+ 
+ 	FRAME_END
+ 	ret;
+-ENDPROC(camellia_xts_crypt_16way)
++SYM_FUNC_END(camellia_xts_crypt_16way)
+ 
+ ENTRY(camellia_xts_enc_16way)
+ 	/* input:
+diff --git a/arch/x86/crypto/camellia-aesni-avx2-asm_64.S b/arch/x86/crypto/camellia-aesni-avx2-asm_64.S
+index 4be4c7c3ba27..72ae3edd0997 100644
+--- a/arch/x86/crypto/camellia-aesni-avx2-asm_64.S
++++ b/arch/x86/crypto/camellia-aesni-avx2-asm_64.S
+@@ -223,20 +223,20 @@
+  * larger and would only marginally faster.
+  */
+ .align 8
+-roundsm32_x0_x1_x2_x3_x4_x5_x6_x7_y0_y1_y2_y3_y4_y5_y6_y7_cd:
++SYM_FUNC_START_LOCAL(roundsm32_x0_x1_x2_x3_x4_x5_x6_x7_y0_y1_y2_y3_y4_y5_y6_y7_cd)
+ 	roundsm32(%ymm0, %ymm1, %ymm2, %ymm3, %ymm4, %ymm5, %ymm6, %ymm7,
+ 		  %ymm8, %ymm9, %ymm10, %ymm11, %ymm12, %ymm13, %ymm14, %ymm15,
+ 		  %rcx, (%r9));
+ 	ret;
+-ENDPROC(roundsm32_x0_x1_x2_x3_x4_x5_x6_x7_y0_y1_y2_y3_y4_y5_y6_y7_cd)
++SYM_FUNC_END(roundsm32_x0_x1_x2_x3_x4_x5_x6_x7_y0_y1_y2_y3_y4_y5_y6_y7_cd)
+ 
+ .align 8
+-roundsm32_x4_x5_x6_x7_x0_x1_x2_x3_y4_y5_y6_y7_y0_y1_y2_y3_ab:
++SYM_FUNC_START_LOCAL(roundsm32_x4_x5_x6_x7_x0_x1_x2_x3_y4_y5_y6_y7_y0_y1_y2_y3_ab)
+ 	roundsm32(%ymm4, %ymm5, %ymm6, %ymm7, %ymm0, %ymm1, %ymm2, %ymm3,
+ 		  %ymm12, %ymm13, %ymm14, %ymm15, %ymm8, %ymm9, %ymm10, %ymm11,
+ 		  %rax, (%r9));
+ 	ret;
+-ENDPROC(roundsm32_x4_x5_x6_x7_x0_x1_x2_x3_y4_y5_y6_y7_y0_y1_y2_y3_ab)
++SYM_FUNC_END(roundsm32_x4_x5_x6_x7_x0_x1_x2_x3_y4_y5_y6_y7_y0_y1_y2_y3_ab)
+ 
+ /*
+  * IN/OUT:
+@@ -760,7 +760,7 @@ ENDPROC(roundsm32_x4_x5_x6_x7_x0_x1_x2_x3_y4_y5_y6_y7_y0_y1_y2_y3_ab)
+ .text
+ 
+ .align 8
+-__camellia_enc_blk32:
++SYM_FUNC_START_LOCAL(__camellia_enc_blk32)
+ 	/* input:
+ 	 *	%rdi: ctx, CTX
+ 	 *	%rax: temporary storage, 512 bytes
+@@ -844,10 +844,10 @@ __camellia_enc_blk32:
+ 		     %ymm15, %rax, %rcx, 24);
+ 
+ 	jmp .Lenc_done;
+-ENDPROC(__camellia_enc_blk32)
++SYM_FUNC_END(__camellia_enc_blk32)
+ 
+ .align 8
+-__camellia_dec_blk32:
++SYM_FUNC_START_LOCAL(__camellia_dec_blk32)
+ 	/* input:
+ 	 *	%rdi: ctx, CTX
+ 	 *	%rax: temporary storage, 512 bytes
+@@ -929,7 +929,7 @@ __camellia_dec_blk32:
+ 	      ((key_table + (24) * 8) + 4)(CTX));
+ 
+ 	jmp .Ldec_max24;
+-ENDPROC(__camellia_dec_blk32)
++SYM_FUNC_END(__camellia_dec_blk32)
+ 
+ ENTRY(camellia_ecb_enc_32way)
+ 	/* input:
+@@ -1222,7 +1222,7 @@ ENDPROC(camellia_ctr_32way)
+ 	vpxor tmp1, iv, iv;
+ 
+ .align 8
+-camellia_xts_crypt_32way:
++SYM_FUNC_START_LOCAL(camellia_xts_crypt_32way)
+ 	/* input:
+ 	 *	%rdi: ctx, CTX
+ 	 *	%rsi: dst (32 blocks)
+@@ -1367,7 +1367,7 @@ camellia_xts_crypt_32way:
+ 
+ 	FRAME_END
+ 	ret;
+-ENDPROC(camellia_xts_crypt_32way)
++SYM_FUNC_END(camellia_xts_crypt_32way)
+ 
+ ENTRY(camellia_xts_enc_32way)
+ 	/* input:
+diff --git a/arch/x86/crypto/cast5-avx-x86_64-asm_64.S b/arch/x86/crypto/cast5-avx-x86_64-asm_64.S
+index dc55c3332fcc..ef86c6a966de 100644
+--- a/arch/x86/crypto/cast5-avx-x86_64-asm_64.S
++++ b/arch/x86/crypto/cast5-avx-x86_64-asm_64.S
+@@ -209,7 +209,7 @@
+ .text
+ 
+ .align 16
+-__cast5_enc_blk16:
++SYM_FUNC_START_LOCAL(__cast5_enc_blk16)
+ 	/* input:
+ 	 *	%rdi: ctx
+ 	 *	RL1: blocks 1 and 2
+@@ -280,10 +280,10 @@ __cast5_enc_blk16:
+ 	outunpack_blocks(RR4, RL4, RTMP, RX, RKM);
+ 
+ 	ret;
+-ENDPROC(__cast5_enc_blk16)
++SYM_FUNC_END(__cast5_enc_blk16)
+ 
+ .align 16
+-__cast5_dec_blk16:
++SYM_FUNC_START_LOCAL(__cast5_dec_blk16)
+ 	/* input:
+ 	 *	%rdi: ctx
+ 	 *	RL1: encrypted blocks 1 and 2
+@@ -357,7 +357,7 @@ __cast5_dec_blk16:
+ .L__skip_dec:
+ 	vpsrldq $4, RKR, RKR;
+ 	jmp .L__dec_tail;
+-ENDPROC(__cast5_dec_blk16)
++SYM_FUNC_END(__cast5_dec_blk16)
+ 
+ ENTRY(cast5_ecb_enc_16way)
+ 	/* input:
+diff --git a/arch/x86/crypto/cast6-avx-x86_64-asm_64.S b/arch/x86/crypto/cast6-avx-x86_64-asm_64.S
+index 4f0a7cdb94d9..b080a7454e70 100644
+--- a/arch/x86/crypto/cast6-avx-x86_64-asm_64.S
++++ b/arch/x86/crypto/cast6-avx-x86_64-asm_64.S
+@@ -247,7 +247,7 @@
+ .text
+ 
+ .align 8
+-__cast6_enc_blk8:
++SYM_FUNC_START_LOCAL(__cast6_enc_blk8)
+ 	/* input:
+ 	 *	%rdi: ctx
+ 	 *	RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2: blocks
+@@ -292,10 +292,10 @@ __cast6_enc_blk8:
+ 	outunpack_blocks(RA2, RB2, RC2, RD2, RTMP, RX, RKRF, RKM);
+ 
+ 	ret;
+-ENDPROC(__cast6_enc_blk8)
++SYM_FUNC_END(__cast6_enc_blk8)
+ 
+ .align 8
+-__cast6_dec_blk8:
++SYM_FUNC_START_LOCAL(__cast6_dec_blk8)
+ 	/* input:
+ 	 *	%rdi: ctx
+ 	 *	RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2: encrypted blocks
+@@ -339,7 +339,7 @@ __cast6_dec_blk8:
+ 	outunpack_blocks(RA2, RB2, RC2, RD2, RTMP, RX, RKRF, RKM);
+ 
+ 	ret;
+-ENDPROC(__cast6_dec_blk8)
++SYM_FUNC_END(__cast6_dec_blk8)
+ 
+ ENTRY(cast6_ecb_enc_8way)
+ 	/* input:
+diff --git a/arch/x86/crypto/chacha-ssse3-x86_64.S b/arch/x86/crypto/chacha-ssse3-x86_64.S
+index 2d86c7d6dc88..361d2bfc253c 100644
+--- a/arch/x86/crypto/chacha-ssse3-x86_64.S
++++ b/arch/x86/crypto/chacha-ssse3-x86_64.S
+@@ -33,7 +33,7 @@ CTRINC:	.octa 0x00000003000000020000000100000000
+  *
+  * Clobbers: %r8d, %xmm4-%xmm7
+  */
+-chacha_permute:
++SYM_FUNC_START_LOCAL(chacha_permute)
+ 
+ 	movdqa		ROT8(%rip),%xmm4
+ 	movdqa		ROT16(%rip),%xmm5
+@@ -109,7 +109,7 @@ chacha_permute:
+ 	jnz		.Ldoubleround
+ 
+ 	ret
+-ENDPROC(chacha_permute)
++SYM_FUNC_END(chacha_permute)
+ 
+ ENTRY(chacha_block_xor_ssse3)
+ 	# %rdi: Input state matrix, s
+diff --git a/arch/x86/crypto/ghash-clmulni-intel_asm.S b/arch/x86/crypto/ghash-clmulni-intel_asm.S
+index 5d53effe8abe..e81da25a33ca 100644
+--- a/arch/x86/crypto/ghash-clmulni-intel_asm.S
++++ b/arch/x86/crypto/ghash-clmulni-intel_asm.S
+@@ -44,7 +44,7 @@
+  *	T2
+  *	T3
+  */
+-__clmul_gf128mul_ble:
++SYM_FUNC_START_LOCAL(__clmul_gf128mul_ble)
+ 	movaps DATA, T1
+ 	pshufd $0b01001110, DATA, T2
+ 	pshufd $0b01001110, SHASH, T3
+@@ -87,7 +87,7 @@ __clmul_gf128mul_ble:
+ 	pxor T2, T1
+ 	pxor T1, DATA
+ 	ret
+-ENDPROC(__clmul_gf128mul_ble)
++SYM_FUNC_END(__clmul_gf128mul_ble)
+ 
+ /* void clmul_ghash_mul(char *dst, const u128 *shash) */
+ ENTRY(clmul_ghash_mul)
+diff --git a/arch/x86/crypto/serpent-avx-x86_64-asm_64.S b/arch/x86/crypto/serpent-avx-x86_64-asm_64.S
+index ddc51dbba3af..a098aa015784 100644
+--- a/arch/x86/crypto/serpent-avx-x86_64-asm_64.S
++++ b/arch/x86/crypto/serpent-avx-x86_64-asm_64.S
+@@ -555,7 +555,7 @@
+ 	transpose_4x4(x0, x1, x2, x3, t0, t1, t2)
+ 
+ .align 8
+-__serpent_enc_blk8_avx:
++SYM_FUNC_START_LOCAL(__serpent_enc_blk8_avx)
+ 	/* input:
+ 	 *	%rdi: ctx, CTX
+ 	 *	RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2: blocks
+@@ -606,10 +606,10 @@ __serpent_enc_blk8_avx:
+ 	write_blocks(RA2, RB2, RC2, RD2, RK0, RK1, RK2);
+ 
+ 	ret;
+-ENDPROC(__serpent_enc_blk8_avx)
++SYM_FUNC_END(__serpent_enc_blk8_avx)
+ 
+ .align 8
+-__serpent_dec_blk8_avx:
++SYM_FUNC_START_LOCAL(__serpent_dec_blk8_avx)
+ 	/* input:
+ 	 *	%rdi: ctx, CTX
+ 	 *	RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2: encrypted blocks
+@@ -660,7 +660,7 @@ __serpent_dec_blk8_avx:
+ 	write_blocks(RC2, RD2, RB2, RE2, RK0, RK1, RK2);
+ 
+ 	ret;
+-ENDPROC(__serpent_dec_blk8_avx)
++SYM_FUNC_END(__serpent_dec_blk8_avx)
+ 
+ ENTRY(serpent_ecb_enc_8way_avx)
+ 	/* input:
+diff --git a/arch/x86/crypto/serpent-avx2-asm_64.S b/arch/x86/crypto/serpent-avx2-asm_64.S
+index 37bc1d48106c..6149ba80b4d1 100644
+--- a/arch/x86/crypto/serpent-avx2-asm_64.S
++++ b/arch/x86/crypto/serpent-avx2-asm_64.S
+@@ -561,7 +561,7 @@
+ 	transpose_4x4(x0, x1, x2, x3, t0, t1, t2)
+ 
+ .align 8
+-__serpent_enc_blk16:
++SYM_FUNC_START_LOCAL(__serpent_enc_blk16)
+ 	/* input:
+ 	 *	%rdi: ctx, CTX
+ 	 *	RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2: plaintext
+@@ -612,10 +612,10 @@ __serpent_enc_blk16:
+ 	write_blocks(RA2, RB2, RC2, RD2, RK0, RK1, RK2);
+ 
+ 	ret;
+-ENDPROC(__serpent_enc_blk16)
++SYM_FUNC_END(__serpent_enc_blk16)
+ 
+ .align 8
+-__serpent_dec_blk16:
++SYM_FUNC_START_LOCAL(__serpent_dec_blk16)
+ 	/* input:
+ 	 *	%rdi: ctx, CTX
+ 	 *	RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2: ciphertext
+@@ -666,7 +666,7 @@ __serpent_dec_blk16:
+ 	write_blocks(RC2, RD2, RB2, RE2, RK0, RK1, RK2);
+ 
+ 	ret;
+-ENDPROC(__serpent_dec_blk16)
++SYM_FUNC_END(__serpent_dec_blk16)
+ 
+ ENTRY(serpent_ecb_enc_16way)
+ 	/* input:
+diff --git a/arch/x86/crypto/twofish-avx-x86_64-asm_64.S b/arch/x86/crypto/twofish-avx-x86_64-asm_64.S
+index 698b8f2a56e2..588f0a2f63ab 100644
+--- a/arch/x86/crypto/twofish-avx-x86_64-asm_64.S
++++ b/arch/x86/crypto/twofish-avx-x86_64-asm_64.S
+@@ -234,7 +234,7 @@
+ 	vpxor		x3, wkey, x3;
+ 
+ .align 8
+-__twofish_enc_blk8:
++SYM_FUNC_START_LOCAL(__twofish_enc_blk8)
+ 	/* input:
+ 	 *	%rdi: ctx, CTX
+ 	 *	RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2: blocks
+@@ -273,10 +273,10 @@ __twofish_enc_blk8:
+ 	outunpack_blocks(RC2, RD2, RA2, RB2, RK1, RX0, RY0, RK2);
+ 
+ 	ret;
+-ENDPROC(__twofish_enc_blk8)
++SYM_FUNC_END(__twofish_enc_blk8)
+ 
+ .align 8
+-__twofish_dec_blk8:
++SYM_FUNC_START_LOCAL(__twofish_dec_blk8)
+ 	/* input:
+ 	 *	%rdi: ctx, CTX
+ 	 *	RC1, RD1, RA1, RB1, RC2, RD2, RA2, RB2: encrypted blocks
+@@ -313,7 +313,7 @@ __twofish_dec_blk8:
+ 	outunpack_blocks(RA2, RB2, RC2, RD2, RK1, RX0, RY0, RK2);
+ 
+ 	ret;
+-ENDPROC(__twofish_dec_blk8)
++SYM_FUNC_END(__twofish_dec_blk8)
+ 
+ ENTRY(twofish_ecb_enc_8way)
+ 	/* input:
+-- 
+2.22.0
 
-True. This is another thing on my list, but it is not that
-straight-forward, given that existing skcipher implementations can
-only be expected to deal with virtual addresses from the linear map,
-while a simple encrypt/decrypt routine would take arbitrary virtual
-addresses and not scatterlists.
-
-> > In reality, I think very few users that care about performance would
-> > opt for the XTS template wrapping a ecb(xx) implementation. In that
-> > case, you are more likely to stick with something that your hardware
-> > supports natively.
-> >
-> Algorithm wise, you may not have any choice. I actually don't know of
-> any suitable alternatives to XTS for in-place encryption that provide
-> similar (or better) security properties for this particular purpose.
->
-
-Of course you have a choice. If your hardware supports cbc(aes) but
-not xts(aes), you use the former for full disk encyption (e.g,. on
-Android).
-
-> So then it depends on whether template + HW AES can outperform the full
-> software alternative. Which is NOT unlikely to be the case on a weak
-> CPU without AES acceleration. The tweak encryption + xor is very
-> lightweight, so it would still offload the bulk of the work to the HW.
->
-> But with potentially thousands of CPU clocks of latency in the mix,
-> you really don't want to run those blocking single block CTS
-> encryptions though the hardware, as that would totally wipe out any
-> benefit that might have provided.
->
-
-That depends on whether single block latency is a metric you care
-about. If it is battery life, the picture may look completely
-different.
-
-So optimizing for the case where a) CTS is on any kind of critical
-path and b) the skcipher is backed by an async h/w implementation is
-very premature.
-
-> I do agree that if the underlying cipher is a software implementation,
-> you probably would want it to go through the main skcipher to avoid another
-> spin of the key scheduler. But obviously, my main focus is HW performance.
-> Ideally, you'd want to select the approach based on the skcipher
-> implementation / properties ...
->
-
-Yes. And my educated guess is that CTS on systems with accelerated
-ecb(aes) but lacking xts(aes) is not a use case we should burden every
-current user of the XTS template with.
-
-> > > I want some SW implementation that's fast on a single block here. And I
-> > > can't call a library function directly as the underlying cipher can be
-> > > anything (with a 128 bit blocksize).
-> > >
-> >
-> > True. Which is another historical mistake imo, since XTS is only
-> > specified for AES, but I digress ... :-)
-> >
-> Yes, I was also surprised by the use of XTS with other blockciphers.
-> It sort of violates the don't roll your own crypto paradigm ...
-> (although some might argue that XTS is supposed to be secure if the
-> underlying blockcipher is, regardless of what that cipher actually is)
->
-
-That doesn't really matter. What matters is that nobody took a careful
-look whether XTS combined with other ciphers is a good idea before
-throwing it out into the world.
-
-> > > Also, pushing it through the main skcipher was a bit more complexity
-> > > than I could manage, not being a software engineer by profession.
-> > > I leave the optimizations to people better equipped to do them :-)
-> > >
-> >
-> > It shouldn't be that complicated. It is simply a matter of setting up
-> > the subrequest.
-> >
-> "simply"
->
-> Well I actually tried and couldn't get it to work :-) (and did not have
-> the time to keep trying things so I took the easy way out)
->
-
-I see. I already looked into CTS for the arm/arm64 implementations, so
-I have already spent some time thinking about this. I'll try to have a
-look shortly.
-
-> Did I mention before that I'm not a software engineer, and, before I
-> started working on the inside-secure driver, wasn't familiar with C at
-> all? ;-) Any help would be appreciated though! (also see my comment
-> aboce about making single-block skcipher calls a standard API function)
->
-
-Only a few times :-)
-
-But seriously, I value the contribution and the discussion, especially
-with someone whose background deviates from most contributors on this
-list. However, once your C skills start to become an impediment, it
-might be better to proceed in collaboration rather than trying to make
-sense of our suggestions.
-
-
-> >
-> > > > >         struct crypto_cipher *tweak;
-> > > > >  };
-> > > > >
-> > > > > @@ -37,7 +36,9 @@ struct xts_instance_ctx {
-> > > > >  };
-> > > > >
-> > > > >  struct rctx {
-> > > > > -       le128 t;
-> > > > > +       le128 t, tcur;
-> > > > > +       int rem_bytes, is_encrypt;
-> > > >
-> > > > Instead of adding the is_encrypt flag, could we change crypt_done into
-> > > > encrypt_done/decrypt_done?
-> > > >
-> > > That's possible, but what would be the advantage? Ok, it would save one
-> > > conditional branch for the case where you do need CTS. But I doubt that
-> > > is significant on the total CTS overhead. The implementation is far from
-> > > optimal anyway, as the goal was to get something functional first ...
-> > >
-> >
-> > It is not about the conditional branch, but about having clean code.
-> > Sharing code between the encrypt and decrypt paths only makes sense if
-> > there is sufficient overlap, but given how simply crypt_done is, I'd
-> > prefer to just have two versions.
-> >
-> I actually thought about that, but at the time didn't see how I could
-> have separate callback functions for encrypt and decrypt ...
->
-> But knowing the code a bit better now, I realise this is setup in
-> init_crypt for every individual cipher request, so it knows about the
-> direction, therefore it can be handled there.
->
-> TL;DR: I will make that change.
->
-
-OK
-
->
-> > > > > +       /* must be the last, expanded beyond end of struct! */
-> > > > >         struct skcipher_request subreq;
-> > > >
-> > > > This is not sufficient. You have to add a TFM init() function which
-> > > > sets the request size. Please look at the cts code for an example.
-> > > >
-> > > I believe that is already done correctly (then again I'm no expert).
-> > > Note that I did *not* add the subreq, it was already there. I just
-> > > added some more struct members that needed to be above, not below.
-> > > I originally did not even know it could grow beyond its struct size.
-> > >
-> >
-> > Ah, my bad. I didn't look at the code itself, only at the patch and I
-> > did not spot the init() function.
-> >
-> > > > >  };
-> > > > >
-> > > > > @@ -47,6 +48,7 @@ static int setkey(struct crypto_skcipher *parent, const u8 *key,
-> > > > >         struct priv *ctx = crypto_skcipher_ctx(parent);
-> > > > >         struct crypto_skcipher *child;
-> > > > >         struct crypto_cipher *tweak;
-> > > > > +       struct crypto_cipher *base;
-> > > > >         int err;
-> > > > >
-> > > > >         err = xts_verify_key(parent, key, keylen);
-> > > > > @@ -55,9 +57,11 @@ static int setkey(struct crypto_skcipher *parent, const u8 *key,
-> > > > >
-> > > > >         keylen /= 2;
-> > > > >
-> > > > > -       /* we need two cipher instances: one to compute the initial 'tweak'
-> > > > > -        * by encrypting the IV (usually the 'plain' iv) and the other
-> > > > > -        * one to encrypt and decrypt the data */
-> > > > > +       /* we need three cipher instances: one to compute the initial 'tweak'
-> > > > > +        * by encrypting the IV (usually the 'plain' iv), one to encrypt and
-> > > > > +        * decrypt the data and finally one to encrypt the last block(s) for
-> > > > > +        * cipher text stealing
-> > > > > +        */
-> > > > >
-> > > > >         /* tweak cipher, uses Key2 i.e. the second half of *key */
-> > > > >         tweak = ctx->tweak;
-> > > > > @@ -79,6 +83,13 @@ static int setkey(struct crypto_skcipher *parent, const u8 *key,
-> > > > >         crypto_skcipher_set_flags(parent, crypto_skcipher_get_flags(child) &
-> > > > >                                           CRYPTO_TFM_RES_MASK);
-> > > > >
-> > > > > +       /* Also data cipher, using Key1, for applying CTS */
-> > > > > +       base = ctx->base;
-> > > > > +       crypto_cipher_clear_flags(base, CRYPTO_TFM_REQ_MASK);
-> > > > > +       crypto_cipher_set_flags(base, crypto_skcipher_get_flags(parent) &
-> > > > > +                                     CRYPTO_TFM_REQ_MASK);
-> > > > > +       err = crypto_cipher_setkey(base, key, keylen);
-> > > > > +
-> > > > >         return err;
-> > > > >  }
-> > > > >
-> > > > > @@ -88,13 +99,12 @@ static int setkey(struct crypto_skcipher *parent, const u8 *key,
-> > > > >   * mutliple calls to the 'ecb(..)' instance, which usually would be slower than
-> > > > >   * just doing the gf128mul_x_ble() calls again.
-> > > > >   */
-> > > > > -static int xor_tweak(struct skcipher_request *req, bool second_pass)
-> > > > > +static int xor_tweak(struct skcipher_request *req, bool second_pass, le128 *t)
-> > > > >  {
-> > > > >         struct rctx *rctx = skcipher_request_ctx(req);
-> > > > >         struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-> > > > >         const int bs = XTS_BLOCK_SIZE;
-> > > > >         struct skcipher_walk w;
-> > > > > -       le128 t = rctx->t;
-> > > > >         int err;
-> > > > >
-> > > > >         if (second_pass) {
-> > > > > @@ -104,6 +114,7 @@ static int xor_tweak(struct skcipher_request *req, bool
-> > second_pass)
-> > > > >         }
-> > > > >         err = skcipher_walk_virt(&w, req, false);
-> > > > >
-> > > > > +       *t = rctx->t;
-> > > > >         while (w.nbytes) {
-> > > > >                 unsigned int avail = w.nbytes;
-> > > > >                 le128 *wsrc;
-> > > > > @@ -113,8 +124,8 @@ static int xor_tweak(struct skcipher_request *req, bool
-> > second_pass)
-> > > > >                 wdst = w.dst.virt.addr;
-> > > > >
-> > > > >                 do {
-> > > > > -                       le128_xor(wdst++, &t, wsrc++);
-> > > > > -                       gf128mul_x_ble(&t, &t);
-> > > > > +                       le128_xor(wdst++, t, wsrc++);
-> > > > > +                       gf128mul_x_ble(t, t);
-> > > > >                 } while ((avail -= bs) >= bs);
-> > > > >
-> > > > >                 err = skcipher_walk_done(&w, avail);
-> > > > > @@ -123,14 +134,97 @@ static int xor_tweak(struct skcipher_request *req, bool
-> > > > second_pass)
-> > > > >         return err;
-> > > > >  }
-> > > > >
-> > > > > -static int xor_tweak_pre(struct skcipher_request *req)
-> > > > > +static int xor_tweak_pre(struct skcipher_request *req, le128 *t)
-> > > > > +{
-> > > > > +       return xor_tweak(req, false, t);
-> > > > > +}
-> > > > > +
-> > > > > +static int xor_tweak_post(struct skcipher_request *req, le128 *t)
-> > > > >  {
-> > > > > -       return xor_tweak(req, false);
-> > > > > +       return xor_tweak(req, true, t);
-> > > > > +}
-> > > > > +
-> > > > > +static void encrypt_finish_cts(struct skcipher_request *req)
-> > > > > +{
-> > > > > +       struct rctx *rctx = skcipher_request_ctx(req);
-> > > > > +       /* Not a multiple of cipher blocksize, need CTS applied */
-> > > > > +       struct priv *ctx = crypto_skcipher_ctx(crypto_skcipher_reqtfm(req));
-> > > > > +       le128 lastblock, lastptext;
-> > > > > +
-> > > > > +       /* Handle last partial block - apply Cipher Text Stealing */
-> > > > > +
-> > > > > +       /* Copy last ciphertext block just processed to buffer  */
-> > > > > +       sg_pcopy_to_buffer(req->dst, sg_nents(req->dst), &lastblock,
-> > > > > +                          XTS_BLOCK_SIZE,
-> > > > > +                          req->cryptlen - XTS_BLOCK_SIZE);
-> > > > > +       /* Save last plaintext bytes, next step may overwrite!! */
-> > > > > +       sg_pcopy_to_buffer(req->src, sg_nents(req->src), &lastptext,
-> > > > > +                          rctx->rem_bytes, req->cryptlen);
-> > > > > +       /* Copy first rem_bytes of ciphertext behind last full block */
-> > > > > +       sg_pcopy_from_buffer(req->dst, sg_nents(req->dst), &lastblock,
-> > > > > +                            rctx->rem_bytes, req->cryptlen);
-> > > > > +       /*
-> > > > > +        * Copy last remaining bytes of plaintext to combine buffer,
-> > > > > +        * replacing part of the ciphertext
-> > > > > +        */
-> > > > > +       memcpy(&lastblock, &lastptext, rctx->rem_bytes);
-> > > > > +       /* XTS encrypt the combined block */
-> > > > > +       le128_xor(&lastblock, &rctx->tcur, &lastblock);
-> > > > > +       crypto_cipher_encrypt_one(ctx->base, (u8 *)&lastblock,
-> > > > > +                                 (u8 *)&lastblock);
-> > > > > +       le128_xor(&lastblock, &rctx->tcur, &lastblock);
-> > > > > +       /* Write combined block to dst as 2nd last cipherblock */
-> > > > > +       sg_pcopy_from_buffer(req->dst, sg_nents(req->dst), &lastblock,
-> > > > > +                            XTS_BLOCK_SIZE,
-> > > > > +                            req->cryptlen - XTS_BLOCK_SIZE);
-> > > > > +
-> > > > > +       /* Fix up original request length */
-> > > > > +       req->cryptlen += rctx->rem_bytes;
-> > > > > +       return;
-> > > > >  }
-> > > > >
-> > > > > -static int xor_tweak_post(struct skcipher_request *req)
-> > > > > +static void decrypt_finish_cts(struct skcipher_request *req)
-> > > > >  {
-> > > > > -       return xor_tweak(req, true);
-> > > > > +       struct rctx *rctx = skcipher_request_ctx(req);
-> > > > > +       /* Not a multiple of cipher blocksize, need CTS applied */
-> > > > > +       struct priv *ctx = crypto_skcipher_ctx(crypto_skcipher_reqtfm(req));
-> > > > > +       le128 tnext, lastblock, lastctext;
-> > > > > +
-> > > > > +       /* Handle last 2 (partial) blocks - apply Cipher Text Stealing */
-> > > > > +
-> > > > > +       /* Copy last full ciphertext block to buffer  */
-> > > > > +       sg_pcopy_to_buffer(req->src, sg_nents(req->src), &lastblock,
-> > > > > +                          XTS_BLOCK_SIZE, req->cryptlen);
-> > > > > +       /* Decrypt last full block using *next* tweak */
-> > > > > +       gf128mul_x_ble(&tnext, &rctx->tcur);
-> > > > > +       le128_xor(&lastblock, &tnext, &lastblock);
-> > > > > +       crypto_cipher_decrypt_one(ctx->base, (u8 *)&lastblock,
-> > > > > +                                 (u8 *)&lastblock);
-> > > > > +       le128_xor(&lastblock, &tnext, &lastblock);
-> > > > > +       /* Save last ciphertext bytes, next step may overwrite!! */
-> > > > > +       sg_pcopy_to_buffer(req->src, sg_nents(req->src), &lastctext,
-> > > > > +                          rctx->rem_bytes, req->cryptlen + XTS_BLOCK_SIZE);
-> > > > > +       /* Copy first rem_bytes of this ptext as last partial block */
-> > > > > +       sg_pcopy_from_buffer(req->dst, sg_nents(req->dst), &lastblock,
-> > > > > +                            rctx->rem_bytes,
-> > > > > +                            req->cryptlen + XTS_BLOCK_SIZE);
-> > > > > +       /*
-> > > > > +        * Copy last remaining bytes of "plaintext" to combine buffer,
-> > > > > +        * replacing part of the ciphertext
-> > > > > +        */
-> > > > > +       memcpy(&lastblock, &lastctext, rctx->rem_bytes);
-> > > > > +       /* XTS decrypt the combined block */
-> > > > > +       le128_xor(&lastblock, &rctx->tcur, &lastblock);
-> > > > > +       crypto_cipher_decrypt_one(ctx->base, (u8 *)&lastblock,
-> > > > > +                                 (u8 *)&lastblock);
-> > > > > +       le128_xor(&lastblock, &rctx->tcur, &lastblock);
-> > > > > +       /* Write combined block to dst as 2nd last plaintext block */
-> > > > > +       sg_pcopy_from_buffer(req->dst, sg_nents(req->dst), &lastblock,
-> > > > > +                            XTS_BLOCK_SIZE, req->cryptlen);
-> > > > > +
-> > > > > +       /* Fix up original request length */
-> > > > > +       req->cryptlen += rctx->rem_bytes + XTS_BLOCK_SIZE;
-> > > > > +       return;
-> > > > >  }
-> > > > >
-> > > > >  static void crypt_done(struct crypto_async_request *areq, int err)
-> > > > > @@ -139,9 +233,16 @@ static void crypt_done(struct crypto_async_request *areq, int
-> > err)
-> > > > >
-> > > > >         if (!err) {
-> > > > >                 struct rctx *rctx = skcipher_request_ctx(req);
-> > > > > +               le128 t;
-> > > > >
-> > > > >                 rctx->subreq.base.flags &= ~CRYPTO_TFM_REQ_MAY_SLEEP;
-> > > > > -               err = xor_tweak_post(req);
-> > > > > +               err = xor_tweak_post(req, &t);
-> > > > > +
-> > > > > +               if (unlikely(!err && rctx->rem_bytes)) {
-> > > > > +                       rctx->is_encrypt ?
-> > > > > +                         encrypt_finish_cts(req) :
-> > > > > +                         decrypt_finish_cts(req);
-> > > > > +               }
-> > > > >         }
-> > > > >
-> > > > >         skcipher_request_complete(req, err);
-> > > > > @@ -167,10 +268,45 @@ static int encrypt(struct skcipher_request *req)
-> > > > >         struct rctx *rctx = skcipher_request_ctx(req);
-> > > > >         struct skcipher_request *subreq = &rctx->subreq;
-> > > > >
-> > > > > +       /* IEEE P1619 does not allow less data than block cipher blocksize */
-> > > > > +       if (unlikely(req->cryptlen < XTS_BLOCK_SIZE))
-> > > > > +               return -EINVAL;
-> > > > > +
-> > > > >         init_crypt(req);
-> > > > > -       return xor_tweak_pre(req) ?:
-> > > > > +
-> > > > > +       /* valid bytes in last crypto block */
-> > > > > +       rctx->rem_bytes = req->cryptlen & (XTS_BLOCK_SIZE - 1);
-> > > > > +       if (unlikely(rctx->rem_bytes)) {
-> > > > > +               /* Not a multiple of cipher blocksize, need CTS applied */
-> > > > > +               int err = 0;
-> > > > > +
-> > > > > +               /* First process all *full* cipher blocks */
-> > > > > +               req->cryptlen -= rctx->rem_bytes;
-> > > > > +               subreq->cryptlen -= rctx->rem_bytes;
-> > > > > +               err = xor_tweak_pre(req, &rctx->tcur);
-> > > > > +               if (err)
-> > > > > +                       goto encrypt_exit;
-> > > > > +               rctx->is_encrypt = 1;
-> > > > > +               err = crypto_skcipher_encrypt(subreq);
-> > > > > +               if (err)
-> > > > > +                       goto encrypt_exit;
-> > > > > +               err = xor_tweak_post(req, &rctx->tcur);
-> > > > > +               if (err)
-> > > > > +                       goto encrypt_exit;
-> > > > > +
-> > > > > +               encrypt_finish_cts(req);
-> > > > > +               return 0;
-> > > > > +
-> > > > > +encrypt_exit:
-> > > > > +               /* Fix up original request length */
-> > > > > +               req->cryptlen += rctx->rem_bytes;
-> > > > > +               return err;
-> > > > > +       }
-> > > > > +
-> > > > > +       /* Multiple of cipher blocksize, no CTS required */
-> > > > > +       return xor_tweak_pre(req, &rctx->tcur) ?:
-> > > > >                 crypto_skcipher_encrypt(subreq) ?:
-> > > > > -               xor_tweak_post(req);
-> > > > > +               xor_tweak_post(req, &rctx->tcur);
-> > > > >  }
-> > > > >
-> > > > >  static int decrypt(struct skcipher_request *req)
-> > > > > @@ -178,10 +314,50 @@ static int decrypt(struct skcipher_request *req)
-> > > > >         struct rctx *rctx = skcipher_request_ctx(req);
-> > > > >         struct skcipher_request *subreq = &rctx->subreq;
-> > > > >
-> > > > > +       /* IEEE P1619 does not allow less data than block cipher blocksize */
-> > > > > +       if (unlikely(req->cryptlen < XTS_BLOCK_SIZE))
-> > > > > +               return -EINVAL;
-> > > > > +
-> > > > >         init_crypt(req);
-> > > > > -       return xor_tweak_pre(req) ?:
-> > > > > +
-> > > > > +       /* valid bytes in last crypto block */
-> > > > > +       rctx->rem_bytes = req->cryptlen & (XTS_BLOCK_SIZE - 1);
-> > > > > +       if (unlikely(rctx->rem_bytes)) {
-> > > > > +               int err = 0;
-> > > > > +
-> > > > > +               /* First process all but the last(!) full cipher blocks */
-> > > > > +               req->cryptlen -= rctx->rem_bytes + XTS_BLOCK_SIZE;
-> > > > > +               subreq->cryptlen -= rctx->rem_bytes + XTS_BLOCK_SIZE;
-> > > > > +               /* May not have any full blocks to process here */
-> > > > > +               if (req->cryptlen) {
-> > > > > +                       err = xor_tweak_pre(req, &rctx->tcur);
-> > > > > +                       if (err)
-> > > > > +                               goto decrypt_exit;
-> > > > > +                       rctx->is_encrypt = 0;
-> > > > > +                       err = crypto_skcipher_decrypt(subreq);
-> > > > > +                       if (err)
-> > > > > +                               goto decrypt_exit;
-> > > > > +                       err = xor_tweak_post(req, &rctx->tcur);
-> > > > > +                       if (err)
-> > > > > +                               goto decrypt_exit;
-> > > > > +               } else {
-> > > > > +                       /* Start from initial tweak */
-> > > > > +                       rctx->tcur = rctx->t;
-> > > > > +               }
-> > > > > +
-> > > > > +               decrypt_finish_cts(req);
-> > > > > +               return 0;
-> > > > > +
-> > > > > +decrypt_exit:
-> > > > > +               /* Fix up original request length */
-> > > > > +               req->cryptlen += rctx->rem_bytes + XTS_BLOCK_SIZE;
-> > > > > +               return err;
-> > > > > +       }
-> > > > > +
-> > > > > +       /* Multiple of cipher blocksize, no CTS required */
-> > > > > +       return xor_tweak_pre(req, &rctx->tcur) ?:
-> > > > >                 crypto_skcipher_decrypt(subreq) ?:
-> > > > > -               xor_tweak_post(req);
-> > > > > +               xor_tweak_post(req, &rctx->tcur);
-> > > > >  }
-> > > > >
-> > > > >  static int init_tfm(struct crypto_skcipher *tfm)
-> > > > > @@ -191,6 +367,7 @@ static int init_tfm(struct crypto_skcipher *tfm)
-> > > > >         struct priv *ctx = crypto_skcipher_ctx(tfm);
-> > > > >         struct crypto_skcipher *child;
-> > > > >         struct crypto_cipher *tweak;
-> > > > > +       struct crypto_cipher *base;
-> > > > >
-> > > > >         child = crypto_spawn_skcipher(&ictx->spawn);
-> > > > >         if (IS_ERR(child))
-> > > > > @@ -206,6 +383,16 @@ static int init_tfm(struct crypto_skcipher *tfm)
-> > > > >
-> > > > >         ctx->tweak = tweak;
-> > > > >
-> > > > > +       base = crypto_alloc_cipher(ictx->name, 0, 0);
-> > > > > +       if (IS_ERR(base)) {
-> > > > > +               crypto_free_skcipher(ctx->child);
-> > > > > +               crypto_free_cipher(ctx->tweak);
-> > > > > +               return PTR_ERR(base);
-> > > > > +       }
-> > > > > +
-> > > > > +       ctx->base = base;
-> > > > > +
-> > > > > +       /* struct rctx expanded by sub cipher request size! */
-> > > > >         crypto_skcipher_set_reqsize(tfm, crypto_skcipher_reqsize(child) +
-> > > > >                                          sizeof(struct rctx));
-> > > > >
-> > > > > @@ -218,6 +405,7 @@ static void exit_tfm(struct crypto_skcipher *tfm)
-> > > > >
-> > > > >         crypto_free_skcipher(ctx->child);
-> > > > >         crypto_free_cipher(ctx->tweak);
-> > > > > +       crypto_free_cipher(ctx->base);
-> > > > >  }
-> > > > >
-> > > > >  static void free(struct skcipher_instance *inst)
-> > > > > @@ -314,11 +502,12 @@ static int create(struct crypto_template *tmpl, struct rtattr
-> > > > **tb)
-> > > > >
-> > > > >         inst->alg.base.cra_flags = alg->base.cra_flags & CRYPTO_ALG_ASYNC;
-> > > > >         inst->alg.base.cra_priority = alg->base.cra_priority;
-> > > > > -       inst->alg.base.cra_blocksize = XTS_BLOCK_SIZE;
-> > > > > +       inst->alg.base.cra_blocksize = 1;
-> > > >
-> > > > I don't think this is necessary or correct.
-> > > >
-> > > > >         inst->alg.base.cra_alignmask = alg->base.cra_alignmask |
-> > > > >                                        (__alignof__(u64) - 1);
-> > > > >
-> > > > >         inst->alg.ivsize = XTS_BLOCK_SIZE;
-> > > > > +       inst->alg.chunksize = XTS_BLOCK_SIZE;
-> > > >
-> > > > ... and you don't need this if you drop the above change.
-> > > >
-> >
-> > Any comments here?
-> >
-> Actually, I previously missed this remark, didn't scroll this far down.
-> But why don't you believe the blocksize = 16 is correct? With CTS in the
-> mix, there is no 16 byte  blocksize restriction anymore, the input can be
-> any number bytes, just like a streamcipher. Which also seem to specify
-> blocksize = 1, i.e. see the ctr() template.
-> So I think it is both necessary and correct?
->
-
-No it is not
-
-crypto/cts.s is probably a better reference than ctr.c to infer things
-about implementing block ciphers that can operate on arbitrary lengths
->= the block size.
-
-> >
-> > > > >         inst->alg.min_keysize = crypto_skcipher_alg_min_keysize(alg) * 2;
-> > > > >         inst->alg.max_keysize = crypto_skcipher_alg_max_keysize(alg) * 2;
-> > > > >
-> > > > > --
-> > > > > 1.8.3.1
-> > >
-> > > Regards,
-> > > Pascal van Leeuwen
-> > > Silicon IP Architect, Multi-Protocol Engines @ Verimatrix
-> > > www.insidesecure.com
-> > >
->
-> Regards,
-> Pascal van Leeuwen
-> Silicon IP Architect, Multi-Protocol Engines @ Verimatrix
-> www.insidesecure.com
->
