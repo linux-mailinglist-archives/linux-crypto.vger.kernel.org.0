@@ -2,223 +2,197 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 690CC882FE
-	for <lists+linux-crypto@lfdr.de>; Fri,  9 Aug 2019 20:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1610088346
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 Aug 2019 21:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbfHISwt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 9 Aug 2019 14:52:49 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:35566 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726168AbfHISws (ORCPT
+        id S1726417AbfHIT3R (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 9 Aug 2019 15:29:17 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50594 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbfHIT3Q (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 9 Aug 2019 14:52:48 -0400
-Received: by mail-wm1-f66.google.com with SMTP id l2so6478864wmg.0
-        for <linux-crypto@vger.kernel.org>; Fri, 09 Aug 2019 11:52:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jva4IllYopbsrm/y3/X7WqbwqZFCf5iLfNxoz0XqtZI=;
-        b=VOI5nGc2ZQmXD7kwFPQoSYXcu1xM/xQmi6PwhYUnPckejvpuM6qyjzJooEmosNiNO+
-         WNm2dv8MKdEtUhdnbiKOrCG1S7kCfwX89cBY8FVD3JQJcFIoqv8CKXKlrbsytbTI2vXO
-         Z98S2AuxtNpnfqJoE+1URjhdayr/fhRLdy6jfGf0nYOATPEI9h00ezqWZTFOL3d6pIjb
-         Ejr15f+uxwD/XVvyZowTXzQ6mfql02AFaT++SLjbQk4rldN2+roclIkriN5Os14pR2tL
-         4w3AjRuQR/OS27UrKJczIYQ7Bn8N6OfGbtyQ2wxz9ivmi7xX8qArpTmLzfAPJxWsKEK9
-         Ytyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jva4IllYopbsrm/y3/X7WqbwqZFCf5iLfNxoz0XqtZI=;
-        b=ndHVG7pyDj5IbEtiKcr/K1SUtL23x22q+er5QcmfYyKDjWVEzy30X4pbh/byAz1Qgx
-         gCrMK1wqzJqnZUTqRd/osB7X2WxnIr41ObOCzjY4b+qq5V3c3Blye3N3LiYFRZe6qTvU
-         SHJeBzq8dmUOsWK3RGlSOOe2mhU4YerpXhNiXkpRoJVgNYCynW+XDIq2G6iM39WGiYbC
-         SEjVxEOjn0xw6L/bw8Dge359n3xB9HEtOorrJITjZi7N8Nq/7F8TbKfxYbUfd6/3fLv3
-         LRbzVLzNbdZ2CqpUmyrhYUkx9U598u2Q9Rt6elcY8wS2x7ppcol/lxtXTP05j64539Yk
-         vQ9A==
-X-Gm-Message-State: APjAAAWWpb/osTAtGvX/Y4IRTUz7pdrpqXZn9OFm+zt6Bl+gUtSPnQCR
-        nxDZSj5nDzFf+3U5IdU65c8aXpS3Yg6138Qe+YyfbQ==
-X-Google-Smtp-Source: APXvYqw4Ilzxya6hIiDOjE3ote/Aq97/U2eUbYXu5BS0rpMErX03XS26xpvIctl8LCuLv7fb5eKXBQulHLXp8GOn7Cg=
-X-Received: by 2002:a05:600c:20c1:: with SMTP id y1mr12784864wmm.10.1565376765631;
- Fri, 09 Aug 2019 11:52:45 -0700 (PDT)
+        Fri, 9 Aug 2019 15:29:16 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x79JIbuB170462;
+        Fri, 9 Aug 2019 19:29:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2019-08-05; bh=qy8Hj53Xb1Dfh7O7VOv0dgBCkLnskXSxJx2txNy1KfQ=;
+ b=JsGevr6FC4QjGUTTA76pyDACP1sX0fQfr1zjm+IiO4tI8cyPz4AZL9FGqG1etgGUSFTW
+ 9ET5b/96hdUEW93BGbHXIj4K0KVSkOQRCB504uQs5z561siCV8YFTvUuRzrqVrGaJfE9
+ SjtmOpFjHx92OrOpuh3DzCgXT1uY5EqZgAFgYXd4xOJPp3XNa2ohw3MM7HbHbjldNNKn
+ +Cr3e1KGqoKwwOsxPqcC2LW2nVdRt4pXg9Qz/izJTw4rpc++OJlb+KlIPDrv6AH/lDX5
+ YZ+zFQJTOy5MBwdstqol5Z0UzxYnmM8xStC2cQZgWLusbf6Fw7J6ASyutkxmyswfKgLO fQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2018-07-02; bh=qy8Hj53Xb1Dfh7O7VOv0dgBCkLnskXSxJx2txNy1KfQ=;
+ b=Cai3YE3sSvSOhoAV1ti3U/JkV2Pvc3SG1ck6OKO8MbRz03fXi7rAVuCxR0g8MclYKG4L
+ 46nw3TEBf84Wn42wyt9xQVP9xtkVPbvnF3O7xJVwDYY0MxQ301ZNbJUfChzmUwZ+0xOn
+ mubNAnkH0rlllZB/gC70h/dDJGptlSvdoK1YTtGBa1L1ffCju5nSVMg87YuTHJPZ+YWx
+ XbixtWILHT/n8pQqYJi5XCLZU8e68VoFybRwPzfmVxYb3SoJPLRou1NVJ0T+xupOaQUz
+ pNsA7Gxk0hQ2Z1vQuIPLt/adlt6hfDg4h/E2jGEAoQMshpCnbQHbXTBRUhVM20F5x4wV 7Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2u8hgp9pwf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 09 Aug 2019 19:29:06 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x79JIwjH035307;
+        Fri, 9 Aug 2019 19:29:06 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 2u8x1h34ws-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 09 Aug 2019 19:29:05 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x79JT3Gr017790;
+        Fri, 9 Aug 2019 19:29:04 GMT
+Received: from localhost.localdomain (/73.60.114.248)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 09 Aug 2019 12:29:03 -0700
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] padata: always acquire cpu_hotplug_lock before pinst->lock
+Date:   Fri,  9 Aug 2019 15:28:56 -0400
+Message-Id: <20190809192857.26585-1-daniel.m.jordan@oracle.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-References: <20190807055022.15551-1-ard.biesheuvel@linaro.org> <e13525a4-4885-e0f3-6711-efd83dd4a9fb@gmail.com>
-In-Reply-To: <e13525a4-4885-e0f3-6711-efd83dd4a9fb@gmail.com>
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Fri, 9 Aug 2019 21:52:07 +0300
-Message-ID: <CAKv+Gu-X5D8U-getjTmpn1x50E41GvSRTPPvOL=NbB9Q33=PFQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] md/dm-crypt - reuse eboiv skcipher for IV generation
-To:     Milan Broz <gmazyland@gmail.com>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Alasdair G. Kergon" <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9344 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908090190
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9344 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908090190
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, 8 Aug 2019 at 14:53, Milan Broz <gmazyland@gmail.com> wrote:
->
-> Hi,
->
-> On 07/08/2019 07:50, Ard Biesheuvel wrote:
-> > Instead of instantiating a separate cipher to perform the encryption
-> > needed to produce the IV, reuse the skcipher used for the block data
-> > and invoke it one additional time for each block to encrypt a zero
-> > vector and use the output as the IV.
-> >
-> > For CBC mode, this is equivalent to using the bare block cipher, but
-> > without the risk of ending up with a non-time invariant implementation
-> > of AES when the skcipher itself is time variant (e.g., arm64 without
-> > Crypto Extensions has a NEON based time invariant implementation of
-> > cbc(aes) but no time invariant implementation of the core cipher other
-> > than aes-ti, which is not enabled by default)
-> >
-> > This approach is a compromise between dm-crypt API flexibility and
-> > reducing dependence on parts of the crypto API that should not usually
-> > be exposed to other subsystems, such as the bare cipher API.
-> >
-> > Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
->
-> For now I have just pair of images here to test, but seems checksums are ok.
->
-> Tested-by: Milan Broz <gmazyland@gmail.com>
->
-> I talked with Mike already, so it should go through DM tree now.
->
+On a 5.2 kernel, lockdep complains when offlining a CPU and writing to a
+parallel_cpumask sysfs file.
 
-Thanks!
+  echo 0 > /sys/devices/system/cpu/cpu1/online
+  echo ff > /sys/kernel/pcrypt/pencrypt/parallel_cpumask
 
+  ======================================================
+  WARNING: possible circular locking dependency detected
+  5.2.0-padata-base+ #19 Not tainted
+  ------------------------------------------------------
+  cpuhp/1/13 is trying to acquire lock:
+  ...  (&pinst->lock){+.+.}, at: padata_cpu_prep_down+0x37/0x70
 
->
-> > ---
-> >  drivers/md/dm-crypt.c | 70 ++++++++++++++-----------------------------
-> >  1 file changed, 22 insertions(+), 48 deletions(-)
-> >
-> > diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-> > index d5216bcc4649..48cd76c88d77 100644
-> > --- a/drivers/md/dm-crypt.c
-> > +++ b/drivers/md/dm-crypt.c
-> > @@ -120,10 +120,6 @@ struct iv_tcw_private {
-> >       u8 *whitening;
-> >  };
-> >
-> > -struct iv_eboiv_private {
-> > -     struct crypto_cipher *tfm;
-> > -};
-> > -
-> >  /*
-> >   * Crypt: maps a linear range of a block device
-> >   * and encrypts / decrypts at the same time.
-> > @@ -163,7 +159,6 @@ struct crypt_config {
-> >               struct iv_benbi_private benbi;
-> >               struct iv_lmk_private lmk;
-> >               struct iv_tcw_private tcw;
-> > -             struct iv_eboiv_private eboiv;
-> >       } iv_gen_private;
-> >       u64 iv_offset;
-> >       unsigned int iv_size;
-> > @@ -847,65 +842,47 @@ static int crypt_iv_random_gen(struct crypt_config *cc, u8 *iv,
-> >       return 0;
-> >  }
-> >
-> > -static void crypt_iv_eboiv_dtr(struct crypt_config *cc)
-> > -{
-> > -     struct iv_eboiv_private *eboiv = &cc->iv_gen_private.eboiv;
-> > -
-> > -     crypto_free_cipher(eboiv->tfm);
-> > -     eboiv->tfm = NULL;
-> > -}
-> > -
-> >  static int crypt_iv_eboiv_ctr(struct crypt_config *cc, struct dm_target *ti,
-> >                           const char *opts)
-> >  {
-> > -     struct iv_eboiv_private *eboiv = &cc->iv_gen_private.eboiv;
-> > -     struct crypto_cipher *tfm;
-> > -
-> > -     tfm = crypto_alloc_cipher(cc->cipher, 0, 0);
-> > -     if (IS_ERR(tfm)) {
-> > -             ti->error = "Error allocating crypto tfm for EBOIV";
-> > -             return PTR_ERR(tfm);
-> > +     if (test_bit(CRYPT_MODE_INTEGRITY_AEAD, &cc->cipher_flags)) {
-> > +             ti->error = "AEAD transforms not supported for EBOIV";
-> > +             return -EINVAL;
-> >       }
-> >
-> > -     if (crypto_cipher_blocksize(tfm) != cc->iv_size) {
-> > +     if (crypto_skcipher_blocksize(any_tfm(cc)) != cc->iv_size) {
-> >               ti->error = "Block size of EBOIV cipher does "
-> >                           "not match IV size of block cipher";
-> > -             crypto_free_cipher(tfm);
-> >               return -EINVAL;
-> >       }
-> >
-> > -     eboiv->tfm = tfm;
-> >       return 0;
-> >  }
-> >
-> > -static int crypt_iv_eboiv_init(struct crypt_config *cc)
-> > +static int crypt_iv_eboiv_gen(struct crypt_config *cc, u8 *iv,
-> > +                         struct dm_crypt_request *dmreq)
-> >  {
-> > -     struct iv_eboiv_private *eboiv = &cc->iv_gen_private.eboiv;
-> > +     u8 buf[MAX_CIPHER_BLOCKSIZE] __aligned(__alignof__(__le64));
-> > +     struct skcipher_request *req;
-> > +     struct scatterlist src, dst;
-> > +     struct crypto_wait wait;
-> >       int err;
-> >
-> > -     err = crypto_cipher_setkey(eboiv->tfm, cc->key, cc->key_size);
-> > -     if (err)
-> > -             return err;
-> > -
-> > -     return 0;
-> > -}
-> > -
-> > -static int crypt_iv_eboiv_wipe(struct crypt_config *cc)
-> > -{
-> > -     /* Called after cc->key is set to random key in crypt_wipe() */
-> > -     return crypt_iv_eboiv_init(cc);
-> > -}
-> > +     req = skcipher_request_alloc(any_tfm(cc), GFP_KERNEL | GFP_NOFS);
-> > +     if (!req)
-> > +             return -ENOMEM;
-> >
-> > -static int crypt_iv_eboiv_gen(struct crypt_config *cc, u8 *iv,
-> > -                         struct dm_crypt_request *dmreq)
-> > -{
-> > -     struct iv_eboiv_private *eboiv = &cc->iv_gen_private.eboiv;
-> > +     memset(buf, 0, cc->iv_size);
-> > +     *(__le64 *)buf = cpu_to_le64(dmreq->iv_sector * cc->sector_size);
-> >
-> > -     memset(iv, 0, cc->iv_size);
-> > -     *(__le64 *)iv = cpu_to_le64(dmreq->iv_sector * cc->sector_size);
-> > -     crypto_cipher_encrypt_one(eboiv->tfm, iv, iv);
-> > +     sg_init_one(&src, page_address(ZERO_PAGE(0)), cc->iv_size);
-> > +     sg_init_one(&dst, iv, cc->iv_size);
-> > +     skcipher_request_set_crypt(req, &src, &dst, cc->iv_size, buf);
-> > +     skcipher_request_set_callback(req, 0, crypto_req_done, &wait);
-> > +     err = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
-> > +     skcipher_request_free(req);
-> >
-> > -     return 0;
-> > +     return err;
-> >  }
-> >
-> >  static const struct crypt_iv_operations crypt_iv_plain_ops = {
-> > @@ -962,9 +939,6 @@ static struct crypt_iv_operations crypt_iv_random_ops = {
-> >
-> >  static struct crypt_iv_operations crypt_iv_eboiv_ops = {
-> >       .ctr       = crypt_iv_eboiv_ctr,
-> > -     .dtr       = crypt_iv_eboiv_dtr,
-> > -     .init      = crypt_iv_eboiv_init,
-> > -     .wipe      = crypt_iv_eboiv_wipe,
-> >       .generator = crypt_iv_eboiv_gen
-> >  };
-> >
-> >
+  but task is already holding lock:
+  ...  (cpuhp_state-down){+.+.}, at: cpuhp_thread_fun+0x34/0x240
+
+  which lock already depends on the new lock.
+
+padata doesn't take cpu_hotplug_lock and pinst->lock in a consistent
+order.  Which should be first?  CPU hotplug calls into padata with
+cpu_hotplug_lock already held, so it should have priority.
+
+Remove the cpu_hotplug_lock acquisition from __padata_stop and hoist it
+up to padata_stop, before pd->lock is taken.  That fixes a
+recursive acquisition of cpu_hotplug_lock in padata_remove_cpu at the
+same time:
+
+  padata_remove_cpu
+    mutex_lock(&pinst->lock)
+    get_online_cpus()
+    __padata_remove_cpu
+      __padata_stop
+        get_online_cpus()
+
+The rest is just switching the order where the two locks are taken
+together.
+
+Fixes: 6751fb3c0e0c ("padata: Use get_online_cpus/put_online_cpus")
+Fixes: 65ff577e6b6e ("padata: Rearrange set_cpumask functions")
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+
+Hello, these two patches are based on all padata fixes now in cryptodev-2.6.
+
+ kernel/padata.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/padata.c b/kernel/padata.c
+index b60cc3dcee58..d056276a96ce 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -487,9 +487,7 @@ static void __padata_stop(struct padata_instance *pinst)
+ 
+ 	synchronize_rcu();
+ 
+-	get_online_cpus();
+ 	padata_flush_queues(pinst->pd);
+-	put_online_cpus();
+ }
+ 
+ /* Replace the internal control structure with a new one. */
+@@ -614,8 +612,8 @@ int padata_set_cpumask(struct padata_instance *pinst, int cpumask_type,
+ 	struct cpumask *serial_mask, *parallel_mask;
+ 	int err = -EINVAL;
+ 
+-	mutex_lock(&pinst->lock);
+ 	get_online_cpus();
++	mutex_lock(&pinst->lock);
+ 
+ 	switch (cpumask_type) {
+ 	case PADATA_CPU_PARALLEL:
+@@ -633,8 +631,8 @@ int padata_set_cpumask(struct padata_instance *pinst, int cpumask_type,
+ 	err =  __padata_set_cpumasks(pinst, parallel_mask, serial_mask);
+ 
+ out:
+-	put_online_cpus();
+ 	mutex_unlock(&pinst->lock);
++	put_online_cpus();
+ 
+ 	return err;
+ }
+@@ -669,9 +667,11 @@ EXPORT_SYMBOL(padata_start);
+  */
+ void padata_stop(struct padata_instance *pinst)
+ {
++	get_online_cpus();
+ 	mutex_lock(&pinst->lock);
+ 	__padata_stop(pinst);
+ 	mutex_unlock(&pinst->lock);
++	put_online_cpus();
+ }
+ EXPORT_SYMBOL(padata_stop);
+ 
+@@ -739,18 +739,18 @@ int padata_remove_cpu(struct padata_instance *pinst, int cpu, int mask)
+ 	if (!(mask & (PADATA_CPU_SERIAL | PADATA_CPU_PARALLEL)))
+ 		return -EINVAL;
+ 
++	get_online_cpus();
+ 	mutex_lock(&pinst->lock);
+ 
+-	get_online_cpus();
+ 	if (mask & PADATA_CPU_SERIAL)
+ 		cpumask_clear_cpu(cpu, pinst->cpumask.cbcpu);
+ 	if (mask & PADATA_CPU_PARALLEL)
+ 		cpumask_clear_cpu(cpu, pinst->cpumask.pcpu);
+ 
+ 	err = __padata_remove_cpu(pinst, cpu);
+-	put_online_cpus();
+ 
+ 	mutex_unlock(&pinst->lock);
++	put_online_cpus();
+ 
+ 	return err;
+ }
+-- 
+2.22.0
+
