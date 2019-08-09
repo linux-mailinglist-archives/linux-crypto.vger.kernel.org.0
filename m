@@ -2,65 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D9387226
-	for <lists+linux-crypto@lfdr.de>; Fri,  9 Aug 2019 08:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136E88722D
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 Aug 2019 08:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405510AbfHIGUn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 9 Aug 2019 02:20:43 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:37496 "EHLO fornost.hmeau.com"
+        id S2405616AbfHIGVK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 9 Aug 2019 02:21:10 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:37522 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405415AbfHIGUm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 9 Aug 2019 02:20:42 -0400
+        id S2405603AbfHIGVK (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 9 Aug 2019 02:21:10 -0400
 Received: from gondolin.me.apana.org.au ([192.168.0.6] helo=gondolin.hengli.com.au)
         by fornost.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1hvyGS-0007Rv-0g; Fri, 09 Aug 2019 16:20:36 +1000
+        id 1hvyGr-0007Tk-EU; Fri, 09 Aug 2019 16:21:01 +1000
 Received: from herbert by gondolin.hengli.com.au with local (Exim 4.80)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1hvyGQ-0002sq-Hg; Fri, 09 Aug 2019 16:20:34 +1000
-Date:   Fri, 9 Aug 2019 16:20:34 +1000
+        id 1hvyGn-0002tT-S8; Fri, 09 Aug 2019 16:20:57 +1000
+Date:   Fri, 9 Aug 2019 16:20:57 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Gary Hook <gary.hook@amd.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 0/2] crypto: ccp - Remove unnecessary includes
-Message-ID: <20190809062034.GQ10392@gondor.apana.org.au>
-References: <20190802232013.15957-1-helgaas@kernel.org>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] padata: initialize pd->cpu with effective cpumask
+Message-ID: <20190809062057.GR10392@gondor.apana.org.au>
+References: <20190808160535.27219-1-daniel.m.jordan@oracle.com>
+ <84c4dc26-856a-7641-db38-62fa62ce8034@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190802232013.15957-1-helgaas@kernel.org>
+In-Reply-To: <84c4dc26-856a-7641-db38-62fa62ce8034@oracle.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Aug 02, 2019 at 06:20:10PM -0500, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
+On Thu, Aug 08, 2019 at 12:54:16PM -0400, Daniel Jordan wrote:
+> On 8/8/19 12:05 PM, Daniel Jordan wrote:
+> >Fixes: 726e431130f3 ("padata: Replace delayed timer with immediate workqueue in padata_reorder")
 > 
-> CCP includes <linux/pci.h> many times unnecessarily.  Add a couple
-> DMA-related includes for dma_direction and dma_get_mask(), which were
-> previously included indirectly via <linux/pci.h>.  Then remove the
-> unnecessary includes of <linux/pci.h>.
+> Should be
 > 
-> Bjorn Helgaas (2):
->   crypto: ccp - Include DMA declarations explicitly
->   crypto: ccp - Remove unnecessary linux/pci.h include
-> 
->  drivers/crypto/ccp/ccp-crypto.h    | 1 -
->  drivers/crypto/ccp/ccp-dev-v3.c    | 1 -
->  drivers/crypto/ccp/ccp-dev-v5.c    | 1 -
->  drivers/crypto/ccp/ccp-dev.h       | 2 +-
->  drivers/crypto/ccp/ccp-dmaengine.c | 1 +
->  drivers/crypto/ccp/ccp-ops.c       | 1 -
->  drivers/crypto/ccp/psp-dev.h       | 1 -
->  drivers/crypto/ccp/sp-dev.h        | 1 -
->  8 files changed, 2 insertions(+), 7 deletions(-)
+> 	 6fc4dbcf0276 ("padata: Replace delayed timer with immediate workqueue in padata_reorder")
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
