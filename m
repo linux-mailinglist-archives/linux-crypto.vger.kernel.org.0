@@ -2,170 +2,128 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F13AF8A577
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Aug 2019 20:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11AA88A708
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Aug 2019 21:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbfHLSOn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 12 Aug 2019 14:14:43 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:42410 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbfHLSOn (ORCPT
+        id S1726735AbfHLT1w (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 12 Aug 2019 15:27:52 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:34737 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726681AbfHLT1v (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 12 Aug 2019 14:14:43 -0400
-Received: by mail-wr1-f65.google.com with SMTP id b16so8687834wrq.9
-        for <linux-crypto@vger.kernel.org>; Mon, 12 Aug 2019 11:14:41 -0700 (PDT)
+        Mon, 12 Aug 2019 15:27:51 -0400
+Received: by mail-ot1-f67.google.com with SMTP id n5so163333113otk.1;
+        Mon, 12 Aug 2019 12:27:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=td30Df60zYQdPauBnpDDGLnmsKaqAG05ryFV6T8tnYI=;
-        b=LJXFZhazAaYyE1NX23w2Ir2SROLQSTsrtJUvEfonLL6kK2jFvBEDZfyaPdGuKhAe69
-         xMJ+GmTvpsM4RK01gt7kNCfbpP19Wlq0YnwtjjLxRvwiDnNrWe3CnmmTSFcK7aKCTI7Y
-         aoo5eKDYB3pPFuyBSj7NwwU4hV/WAJtt1wyU0VyWhjM1sMu3+BOigWbaFB/oyMRAQUS5
-         xUbL/mUmyanwvng6bj9qAgnkBiwORoqAavw8NumaTw2V5tTxVWCNUvXj0ikBX1s1kXf7
-         f4j9KO6HebbpaMinmA7u/KewKtxFwcf5p0unxK7220b0yTi1MGQ5VX4xJPjw0Ak2FDvZ
-         C49A==
+        bh=ILsSYtoFc2CKUlsvQby1NfpnXmUVs1DoYSPvAsEfls8=;
+        b=o2QA/lHtWsZXoUWoPCY1fi2EbjP3gU2sfs7+RY7eESxVYX8lLeUmip9oXzJ7XGDJIR
+         MR0abaxb3jMRolf3wgB78dNbWcvM0hnBgRq22Ta8W21hxFjeSgc6TpXFToll2I/kqPvd
+         jghGveeNTsg30U1mIIgM4bo23kl3dE/Z1hrXuQRC3MPbjgCPIVe6hSCaLTXOfCmLJeWl
+         PojFObeFGcz37hrOMnRu1e2xlwmCyyeuUJ2kaiLIxIPNuqhfrsdaJ5jcvogDB0GMOqwn
+         sZC4TbnU8vDoEqfmxaFXkPrji8il2qEl0gGVkzlGC1uNCptGdCT9wegAPhltsU1T4ycC
+         nToA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=td30Df60zYQdPauBnpDDGLnmsKaqAG05ryFV6T8tnYI=;
-        b=jOnSu9zkRS3N8HLi3vE0M6/zHaoyBtPk2YmfElJNEuzeKOXiXemERcb/RP/a+COZhG
-         4p2QtRfyG1u2QX62WpprpANGvYgucJiiRvR2/oF1O7qfzq/cSPqks6udsry1lEhB+TtR
-         b5p3T53zP7+eh9C2VzZ67WykvSdigDOpQsjkUjU6wRSvfQDrsYrKEuzEKt2PvS1lAxDJ
-         GbKvOPqf7QDEEz/x6Lfh6Zy/XsMqspk6VzrKGquMw8pxKuEsYqqh/ytjNSdrC+nslnaS
-         hQ+kfA9XpX5Xo1SZvZwA93pLoGM0S8FZ5hvbOLzcy/aBQTynQDAr9AQYopr3YVX1LVJ3
-         sSwA==
-X-Gm-Message-State: APjAAAWlkC0CpA+splJQskzBOwZAG5/OwzYJllt9kVWJPnnGdiqEUhWs
-        9XXvCbLUwN9DMCOvrxNPpYQ32vlVjrO9WRdPQtFQCg==
-X-Google-Smtp-Source: APXvYqxZcP6s29ZLbaENCkKaUzUxll5WY7bQCSlcW2ERvvXMZ0NtNN7kvXKsScPEMeuQWlpJ+LaDpCIW8ardSrcmA3g=
-X-Received: by 2002:adf:e8c2:: with SMTP id k2mr41186046wrn.198.1565633680343;
- Mon, 12 Aug 2019 11:14:40 -0700 (PDT)
+        bh=ILsSYtoFc2CKUlsvQby1NfpnXmUVs1DoYSPvAsEfls8=;
+        b=ZCHiW31uACdNKcpr92+17y556Yxj+1iIQtTByh5vKpHAH+IHd8IzMq5gCBoBE02DWg
+         g75W3YDfj/1VjmX3nuxs1asJZ8MyzWuzSOi7TGksrxVqP1OZl6J24mQeTPs+nZcmGXjP
+         +MAfG08rVHNmDxBgjVU3sDOcvW6lvq1nqmKkrVvKqoG2b7SpN6EDXBa8YmZQKCV2jNGv
+         qqXgvcmyclw/SaLH4RF5Vgy1bev/AlR5y6U30mReGmwHJ2uZ3SDwqGhO67VmQmVPH3Li
+         5xGqYLZmBcwpR0N+xwn95wKf5+h0LFlpENpb9qQBjQIKr8tt4Pzbwq/KdWxX0ZH2CuyC
+         9r7A==
+X-Gm-Message-State: APjAAAXFvZyvCGP9E6rR+8oSdh4MmBT55PFLavRiHOcrGauah82H/zrL
+        ErXBVQ129brykx45CaYSLofDRia3/DoygztUid4=
+X-Google-Smtp-Source: APXvYqyFv5k85LuUb92ftiZ5NcKrsW1BBLp8/X85YaDKrUsvOGGM29LDofD561J6Qe5XmNJQ26XFzrsVX+X/wKpwUOc=
+X-Received: by 2002:a6b:4107:: with SMTP id n7mr11786212ioa.12.1565638070771;
+ Mon, 12 Aug 2019 12:27:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190811225912.19412-1-ard.biesheuvel@linaro.org>
- <20190811225912.19412-4-ard.biesheuvel@linaro.org> <CAKwvOd=uxi8qmQEjOudvSUVW6vc42b-SmoV91DeWfBkp3kOJcQ@mail.gmail.com>
- <CAKv+Gu9KKvCXAm=1hJ-owkL4BTi=hmCXA8ag_rTvdnUgn_zvUg@mail.gmail.com> <CAKwvOd=9KP9j7SkyCJ6xBWmVQn8nSsP78PasdtBO5aDFcSm2Rg@mail.gmail.com>
-In-Reply-To: <CAKwvOd=9KP9j7SkyCJ6xBWmVQn8nSsP78PasdtBO5aDFcSm2Rg@mail.gmail.com>
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Mon, 12 Aug 2019 21:14:28 +0300
-Message-ID: <CAKv+Gu8jnAyAF_ABmNTmP8QRzLNXj919OzGywjg05jCBsD_b-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] crypto: arm64/aegis128 - implement plain NEON version
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>
+References: <20190717152458.22337-1-andrew.smirnov@gmail.com>
+ <20190717152458.22337-13-andrew.smirnov@gmail.com> <VI1PR0402MB348580480F5EAF5F539B585A98DA0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+In-Reply-To: <VI1PR0402MB348580480F5EAF5F539B585A98DA0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+From:   Andrey Smirnov <andrew.smirnov@gmail.com>
+Date:   Mon, 12 Aug 2019 12:27:38 -0700
+Message-ID: <CAHQ1cqEiCkXP+-w9WUc33oW6vDhHza2Jq_kQsXjKZ+__T5g77g@mail.gmail.com>
+Subject: Re: [PATCH v6 12/14] crypto: caam - force DMA address to 32-bit on
+ 64-bit i.MX SoCs
+To:     Horia Geanta <horia.geanta@nxp.com>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Chris Spencer <christopher.spencer@sea.co.uk>,
+        Cory Tusar <cory.tusar@zii.aero>,
+        Chris Healy <cphealy@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, 12 Aug 2019 at 20:31, Nick Desaulniers <ndesaulniers@google.com> wrote:
+On Mon, Aug 5, 2019 at 1:23 AM Horia Geanta <horia.geanta@nxp.com> wrote:
 >
-> On Mon, Aug 12, 2019 at 10:22 AM Ard Biesheuvel
-> <ard.biesheuvel@linaro.org> wrote:
-> >
-> > On Mon, 12 Aug 2019 at 19:50, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > >
-> > > On Sun, Aug 11, 2019 at 3:59 PM Ard Biesheuvel
-> > > <ard.biesheuvel@linaro.org> wrote:
-> > > > diff --git a/crypto/Makefile b/crypto/Makefile
-> > > > index 99a9fa9087d1..0d2cdd523fd9 100644
-> > > > --- a/crypto/Makefile
-> > > > +++ b/crypto/Makefile
-> > > > @@ -98,7 +98,14 @@ CFLAGS_aegis128-neon-inner.o += -mfpu=crypto-neon-fp-armv8
-> > > >  aegis128-$(CONFIG_CRYPTO_AEGIS128_SIMD) += aegis128-neon.o aegis128-neon-inner.o
-> > > >  endif
-> > > >  ifeq ($(ARCH),arm64)
-> > > > -CFLAGS_aegis128-neon-inner.o += -ffreestanding -mcpu=generic+crypto
-> > > > +aegis128-cflags-y := -ffreestanding -mcpu=generic+crypto
-> > > > +aegis128-cflags-$(CONFIG_CC_IS_GCC) += -ffixed-q16 -ffixed-q17 -ffixed-q18 \
-> > > > +                                      -ffixed-q19 -ffixed-q20 -ffixed-q21 \
-> > > > +                                      -ffixed-q22 -ffixed-q23 -ffixed-q24 \
-> > > > +                                      -ffixed-q25 -ffixed-q26 -ffixed-q27 \
-> > > > +                                      -ffixed-q28 -ffixed-q29 -ffixed-q30 \
-> > > > +                                      -ffixed-q31
-> > >
-> > > I've filed https://bugs.llvm.org/show_bug.cgi?id=42974 for a feature
-> > > request for this in Clang.
-> > >
-> >
-> > Good. But even GCC has issues here. Most notably, something like
-> >
-> > register uint8x16_t foo asm ("v16");
-> >
-> > should permit a register that is excluded from general allocation to
-> > be used explicitly, but this throws a warning on GCC and an error with
-> > Clang.
->
-> Consider filing bugs against GCC's issue tracker so that they're aware
-> of the issue if you think there's more that can be improved on their
-> end (for bugs in Clang, I'm always happy to help submit bug reports).
-> What is the warning?
+> On 7/17/2019 6:25 PM, Andrey Smirnov wrote:
+> > i.MX8 SoC still use 32-bit addresses in its CAAM implmentation, so
+> i.MX8 SoC or i.MX8 mScale?
+> Looking at the documentation, some i.MX8 parts (for e.g. QM and QXP)
+> allow for 36-bit addresses.
 >
 
-Cheers.
+mScale. Will update the message.
 
-With Clang, I get
-
-$ clang -target aarch64-linux-gnu -S -o - -O2 neon.c
-neon.c:4:1: error: bad type for named register variable
-register uint8x16_t foo asm ("v0");
-^
-1 error generated.
-
-but given that -fixed-vNN is not implemented either, this is not
-unexpected. But the latter is much more useful if the former is
-supported as well.
-
-I can't actually get the GCC warning to reproduce, so it might have
-been operator error :-) But if I define the sbox like this
-
-register uint8x16x4_t sbox0 asm ("v16");
-register uint8x16x4_t sbox1 asm ("v20");
-register uint8x16x4_t sbox2 asm ("v24");
-register uint8x16x4_t sbox3 asm ("v28");
-
-and use it in the sbox substitution, GCC emits lots of code like
-
-     2bc:       4eb01e08        mov     v8.16b, v16.16b
-     2c0:       4eb11e29        mov     v9.16b, v17.16b
-     2c4:       4eb21e4a        mov     v10.16b, v18.16b
-     2c8:       4eb31e6b        mov     v11.16b, v19.16b
-     ..
-     2d4:       4e0e610e        tbl     v14.16b, {v8.16b-v11.16b}, v14.16b
-     2d8:       4e0d610d        tbl     v13.16b, {v8.16b-v11.16b}, v13.16b
-
-i.e., it moves the register contents around rather than use it in the
-tbl/tbx instructions directly, and the resulting code is absolutely
-dreadful.
-
-I will bring this up with the GCC developers, but it might be more
-useful to grab someone internally rather than go via the bugzilla.
-
-
-
-
-
-> for -ffixed-q* and `asm ("v16")`, on aarch64, what are the q registers
-> and v registers?  I assume they're related to NEON, but I'd only even
-> worked with w* and x* GPRs.  I *think* the explicit register syntax
-> works for GPRs in Clang; maybe the v* and q* registers being broken is
-> just oversight and can be fixed.
+> > change all of the code to be able to handle that.
+> >
+> Shouldn't this case (32-bit CAAM and CONFIG_ARCH_DMA_ADDR_T_64BIT=y) work
+> for any ARMv8 SoC, i.e. how is this i.MX-specific?
 >
 
-Yes. NEON/FP registers are referenced in different ways based on context:
+It's a generic change.
 
-v0.16b, v0.8h, v0.4s, v0.2d for SIMD bytes, halfwords, single words double words
+> > @@ -603,11 +603,13 @@ static int caam_probe(struct platform_device *pdev)
+> >               ret = init_clocks(dev, ctrlpriv, imx_soc_match->data);
+> >               if (ret)
+> >                       return ret;
+> > +
+> > +             caam_ptr_sz = sizeof(u32);
+> > +     } else {
+> > +             caam_ptr_sz = sizeof(dma_addr_t);
+> caam_ptr_sz should be deduced by reading MCFGR[PS] bit, i.e. decoupled
+> from dma_addr_t.
+>
 
-q0/d0/s0 etc for scalar 128/64/32 bit FP
+MCFGR[PS] is not mentioned in i.MX8MQ SRM and MCFG_PS in CTPR_MS is
+documented as set to "0" (seems to match in real HW as well). Doesn't
+seem like a workable solution for i.MX8MQ. Is there something I am
+missing?
 
+> There is another configuration that should be considered
+> (even though highly unlikely):
+> caam_ptr_sz=1  - > 32-bit addresses for CAAM
+> CONFIG_ARCH_DMA_ADDR_T_64BIT=n - 32-bit dma_addr_t
+> so the logic has to be carefully evaluated.
+>
 
-> > > With those 2 recommendations:
-> > > Acked-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > in regards to compiling w/ Clang.  Someone else should review the
-> > > implementation of this crypto routine.
-> --
-> Thanks,
-> ~Nick Desaulniers
+I don't understand what you mean here. 32-bit CAAM + 32-bit dma_addr_t
+should already be the case for i.MX6, etc. how is what you describe
+different?
+
+> > @@ -191,7 +191,8 @@ static inline u64 caam_dma64_to_cpu(u64 value)
+> >
+> >  static inline u64 cpu_to_caam_dma(u64 value)
+> >  {
+> > -     if (IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT))
+> > +     if (IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT) &&
+> > +         !caam_imx)
+> Related to my previous comment (i.MX-specific vs. SoC-generic),
+> this should probably change to smth. like: caam_ptr_sz == sizeof(u64)
+>
+
+Makes sense, will do here and in other places.
+
+Thanks,
+Andrey Smirnov
