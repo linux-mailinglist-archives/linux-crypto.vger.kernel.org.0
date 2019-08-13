@@ -2,149 +2,130 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DF68AC31
-	for <lists+linux-crypto@lfdr.de>; Tue, 13 Aug 2019 02:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2585F8AE99
+	for <lists+linux-crypto@lfdr.de>; Tue, 13 Aug 2019 07:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbfHMAxI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 12 Aug 2019 20:53:08 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:54988 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726296AbfHMAxI (ORCPT
+        id S1726836AbfHMFJy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 13 Aug 2019 01:09:54 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:39473 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726000AbfHMFJx (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 12 Aug 2019 20:53:08 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7D0nMoh183576;
-        Tue, 13 Aug 2019 00:52:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2019-08-05;
- bh=mzpN7aIIjiVBw2Ca3IS9VSdJfpiIorifKKRhclI4kho=;
- b=ljj1/Fuq0hyvIN7i+4u9WhWw2wkqMeexjNOyMcmP99ZA1RLcOBNgWDXtxSByPo+wtQMi
- MUS9XqYWUPuKkSc0fBuZClQnz3MH1zE2SzebB4EWZcnmTLFU1Ul3KpDuLboiiX5EDe/a
- EeGvZdrfDcuEeki1JpmoFkeAqpu0DDmgJOfPIDwuUofYSvW6MZgkl1Mm+io3XMv5Fw3R
- 69bMEcStAmN/91o1O50wwtLLy/Gav3aUPebJ03/dTOvgn+8U5Y5xezNYtrVKaDWCxWF0
- qxQ4mCiU03wFIi13yZ1XPf8a/cKijoA04kCnoFjYBCHKQqurLcZJiaVxiPRrCPVUlYHh fA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2018-07-02;
- bh=mzpN7aIIjiVBw2Ca3IS9VSdJfpiIorifKKRhclI4kho=;
- b=BgVBxJBHev7Zu9RTdJBcylfHMUBmsdIHd2MmvgpZ3fik7OYkb48bUsqZfx4JWGXQjjHz
- z30aVMY2vdAdtWBU+99HRd7hX6vPwy1kLKz1Lrlz7sXguatKSfDqYuNr991ScCS4uyNZ
- C0WQEo2VPSTJd/rmHRg0hHwOvaEkZbeHJ5w5+WuzPQusPHJ2TGvXQlf1ycyDQl8W8/9t
- jPb3UoKPrVvm79KulFhaWR4/z6yU2np3v7G1xwCeWcXCP/ENa32rJl1D5Qyi+OJLiPEP
- m02RClK8puoaPkPKYMvNC1hmCX6WuqYsB7MevQQzPt4gj1iaGQ0YZRmJUBFrmiTkR8G5 Pg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2u9nvp2v4d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Aug 2019 00:52:48 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7D0nI3q152604;
-        Tue, 13 Aug 2019 00:52:48 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2u9k1vuuyv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Aug 2019 00:52:48 +0000
-Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7D0ql07003301;
-        Tue, 13 Aug 2019 00:52:47 GMT
-Received: from parnassus.us.oracle.com (/10.39.240.231)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 12 Aug 2019 17:52:46 -0700
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 9/9] padata: remove cpu_index from the parallel_queue
-Date:   Mon, 12 Aug 2019 20:52:24 -0400
-Message-Id: <20190813005224.30779-10-daniel.m.jordan@oracle.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190813005224.30779-1-daniel.m.jordan@oracle.com>
-References: <20190813005224.30779-1-daniel.m.jordan@oracle.com>
+        Tue, 13 Aug 2019 01:09:53 -0400
+Received: by mail-wm1-f67.google.com with SMTP id i63so255276wmg.4
+        for <linux-crypto@vger.kernel.org>; Mon, 12 Aug 2019 22:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=ZnFsdjJmeL4sHyht3BAAxUOXidvsHhILUUcniVeWojA=;
+        b=uHejEa96zT80k3ajRLhA4BU+iT0qQ8fUJh8p50Rq4bAy8PIv1sU801kZmyDKqIDfFC
+         +ov5ks5m/Js+C+og7ZP33zk9wv3lHMtjTc23VbhD/jEweDKfiEXbIiHHyiTsCUdgxW/6
+         qJPaNwbdxIZkfeASrPxFLhm6Zrppy2WLaNoebYrHgoKmT8gMfTo2t9g3uokkg6LGSmR9
+         xeNuGcnsgHOKSkFQOT51KBctHIh0szAY8NEKyiGtzFdSdfxMgnETf0MhoTzcYXeIgGBz
+         VHWh3fKhqVM50xqbr2JpkRw9yceaamAeuVbr2qsVrM+i6aaal3CoOCgqSX3nbrk3s8t9
+         /HSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=ZnFsdjJmeL4sHyht3BAAxUOXidvsHhILUUcniVeWojA=;
+        b=Y38FETzWChb1nLZUL2jNefNvqNh7BfNEZsuHBgIsekIw7rwbgfrLVUNy3YdeSrJXLQ
+         vAYIMY0vXKlnEAyu3JNHi9Z4M6RJWbq9/JlyRDAD04bx+XuiZchKWU9mx6DrukIMzEFj
+         9W7b9bFfnUvGVNDJPh54QZu1HoYNvd0x+1CrUYbUQET9K91RrYGIbV6rsICRs4DT+0BG
+         yxvU+/5tyRj5i2LTlW8JwREKHSiHTlapIBilYm0Nz4itlQeufRvzd8koPZui4WAr7sU+
+         RUGiW9d4uyhzYYz8KVvRtGImz3+5HnlwNkbA+MYpL/CoP0SxUtau04CkdnE+bV7HYMKY
+         4YuQ==
+X-Gm-Message-State: APjAAAWnn0PKIoa9zxiQ17qe3Yc6wBw+E6bpUUa6z9YrgfamE6kWkaux
+        3Cz1Fc2IRtijZgb6fGUtUzRrK/qrBpxl3bfQGDbYsP7QKRs=
+X-Google-Smtp-Source: APXvYqwf7IjfSieinPs7ESCgDSduH5DW1k3a5XCnPYLPKw+bqOUKAY8U4nqBAvyr2mcYG875gSTrVGL3J/7ddOJRc/A=
+X-Received: by 2002:a1c:f511:: with SMTP id t17mr744937wmh.53.1565672991566;
+ Mon, 12 Aug 2019 22:09:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9347 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908130005
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9347 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908130005
+References: <20190812145324.27090-1-ard.biesheuvel@linaro.org>
+ <20190812145324.27090-3-ard.biesheuvel@linaro.org> <20190812194747.GB131059@gmail.com>
+In-Reply-To: <20190812194747.GB131059@gmail.com>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Tue, 13 Aug 2019 08:09:41 +0300
+Message-ID: <CAKv+Gu-9aHY0op6MEmN8PfQhNa0kv=xNYB6rqtaCoiUdH4OASA@mail.gmail.com>
+Subject: Re: [PATCH v10 2/7] fs: crypto: invoke crypto API for ESSIV handling
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        device-mapper development <dm-devel@redhat.com>,
+        linux-fscrypt@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Milan Broz <gmazyland@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-With the removal of the ENODATA case from padata_get_next, the cpu_index
-field is no longer useful, so it can go away.
+On Mon, 12 Aug 2019 at 22:47, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Mon, Aug 12, 2019 at 05:53:19PM +0300, Ard Biesheuvel wrote:
+> > Instead of open coding the calculations for ESSIV handling, use a
+> > ESSIV skcipher which does all of this under the hood.
+> >
+> > Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+>
+> This looks fine (except for one comment below), but this heavily conflicts with
+> the fscrypt patches planned for v5.4.  So I suggest moving this to the end of
+> the series and having Herbert take only 1-6, and I'll apply this one to the
+> fscrypt tree later.
+>
 
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- include/linux/padata.h |  2 --
- kernel/padata.c        | 13 ++-----------
- 2 files changed, 2 insertions(+), 13 deletions(-)
+I think the same applies to dm-crypt: at least patch #7 cannot be
+applied until my eboiv patch is applied there as well, but [Milan
+should confirm] I'd expect them to prefer taking those patches via the
+dm tree anyway.
 
-diff --git a/include/linux/padata.h b/include/linux/padata.h
-index cc420064186f..a39c7b9cec3c 100644
---- a/include/linux/padata.h
-+++ b/include/linux/padata.h
-@@ -75,14 +75,12 @@ struct padata_serial_queue {
-  * @swork: work struct for serialization.
-  * @work: work struct for parallelization.
-  * @num_obj: Number of objects that are processed by this cpu.
-- * @cpu_index: Index of the cpu.
-  */
- struct padata_parallel_queue {
-        struct padata_list    parallel;
-        struct padata_list    reorder;
-        struct work_struct    work;
-        atomic_t              num_obj;
--       int                   cpu_index;
- };
- 
- /**
-diff --git a/kernel/padata.c b/kernel/padata.c
-index 5615f6b60dab..32e810bd4c47 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -399,21 +399,12 @@ static void padata_init_squeues(struct parallel_data *pd)
- /* Initialize all percpu queues used by parallel workers */
- static void padata_init_pqueues(struct parallel_data *pd)
- {
--	int cpu_index, cpu;
-+	int cpu;
- 	struct padata_parallel_queue *pqueue;
- 
--	cpu_index = 0;
--	for_each_possible_cpu(cpu) {
-+	for_each_cpu(cpu, pd->cpumask.pcpu) {
- 		pqueue = per_cpu_ptr(pd->pqueue, cpu);
- 
--		if (!cpumask_test_cpu(cpu, pd->cpumask.pcpu)) {
--			pqueue->cpu_index = -1;
--			continue;
--		}
--
--		pqueue->cpu_index = cpu_index;
--		cpu_index++;
--
- 		__padata_list_init(&pqueue->reorder);
- 		__padata_list_init(&pqueue->parallel);
- 		INIT_WORK(&pqueue->work, padata_parallel_worker);
--- 
-2.22.0
+Herbert, what would you prefer:
+- taking a pull request from a [signed] tag based on v4.3-rc1 that
+contains patches #1, #4, #5 and #6, allowing Eric and Milan/Mike to
+merge it as well, and apply the respective fscrypt and dm-crypt
+changes on top
+- just take patches #1, #4, #5 and #6 as usual, and let the fscrypt
+and dm-crypt changes be reposted to the respective lists during the
+next cycle
 
+
+>
+> > ---
+> >  fs/crypto/Kconfig           |  1 +
+> >  fs/crypto/crypto.c          |  5 --
+> >  fs/crypto/fscrypt_private.h |  9 --
+> >  fs/crypto/keyinfo.c         | 92 +-------------------
+> >  4 files changed, 4 insertions(+), 103 deletions(-)
+> >
+> > diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
+> > index 5fdf24877c17..6f3d59b880b7 100644
+> > --- a/fs/crypto/Kconfig
+> > +++ b/fs/crypto/Kconfig
+> > @@ -5,6 +5,7 @@ config FS_ENCRYPTION
+> >       select CRYPTO_AES
+> >       select CRYPTO_CBC
+> >       select CRYPTO_ECB
+> > +     select CRYPTO_ESSIV
+> >       select CRYPTO_XTS
+> >       select CRYPTO_CTS
+> >       select KEYS
+>
+> In v5.3 I removed the 'select CRYPTO_SHA256', so now ESSIV shouldn't be selected
+> here either.  Instead we should just update the documentation:
+>
+> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+> index 82efa41b0e6c02..a1e2ab12a99943 100644
+> --- a/Documentation/filesystems/fscrypt.rst
+> +++ b/Documentation/filesystems/fscrypt.rst
+> @@ -193,7 +193,8 @@ If unsure, you should use the (AES-256-XTS, AES-256-CTS-CBC) pair.
+>  AES-128-CBC was added only for low-powered embedded devices with
+>  crypto accelerators such as CAAM or CESA that do not support XTS.  To
+>  use AES-128-CBC, CONFIG_CRYPTO_SHA256 (or another SHA-256
+> -implementation) must be enabled so that ESSIV can be used.
+> +implementation) and CONFIG_CRYPTO_ESSIV must be enabled so that ESSIV
+> +can be used.
+>
+>  Adiantum is a (primarily) stream cipher-based mode that is fast even
+>  on CPUs without dedicated crypto instructions.  It's also a true
