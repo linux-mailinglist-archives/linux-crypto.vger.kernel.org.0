@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D58DA8CF96
-	for <lists+linux-crypto@lfdr.de>; Wed, 14 Aug 2019 11:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2F38CF9D
+	for <lists+linux-crypto@lfdr.de>; Wed, 14 Aug 2019 11:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbfHNJbF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 14 Aug 2019 05:31:05 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:44662 "EHLO huawei.com"
+        id S1726937AbfHNJbC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 14 Aug 2019 05:31:02 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:44640 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727067AbfHNJbE (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 14 Aug 2019 05:31:04 -0400
+        id S1726411AbfHNJa7 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 14 Aug 2019 05:30:59 -0400
 Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 426B721764E76EDA9307;
+        by Forcepoint Email with ESMTP id 3A91F2AB08A1131FE742;
         Wed, 14 Aug 2019 17:30:56 +0800 (CST)
 Received: from localhost.localdomain (10.67.212.75) by
  DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Zhou Wang <wangzhou1@hisilicon.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linuxarm@huawei.com>, Zhou Wang <wangzhou1@hisilicon.com>
-Subject: [PATCH 2/5] crypto: hisilicon - add dependency for CRYPTO_DEV_HISI_ZIP
-Date:   Wed, 14 Aug 2019 17:28:36 +0800
-Message-ID: <1565774919-31853-3-git-send-email-wangzhou1@hisilicon.com>
+Subject: [PATCH 3/5] crypto: hisilicon - init curr_sgl_dma to fix compile warning
+Date:   Wed, 14 Aug 2019 17:28:37 +0800
+Message-ID: <1565774919-31853-4-git-send-email-wangzhou1@hisilicon.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1565774919-31853-1-git-send-email-wangzhou1@hisilicon.com>
 References: <1565774919-31853-1-git-send-email-wangzhou1@hisilicon.com>
@@ -36,27 +36,28 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add ARM64/PCI/PCI_MSI dependency for CRYPTO_DEV_HISI_ZIP.
+Just init curr_sgl_dma = 0 to avoid compile warning.
 
-Fixes: 62c455ca853e ("crypto: hisilicon - add HiSilicon ZIP accelerator support")
+Fixes: dfed0098ab91 ("crypto: hisilicon - add hardware SGL support")
 Reported-by: kbuild test robot <lkp@intel.com>
 Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
 ---
- drivers/crypto/hisilicon/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/crypto/hisilicon/sgl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
-index 1929317..fa8aa06 100644
---- a/drivers/crypto/hisilicon/Kconfig
-+++ b/drivers/crypto/hisilicon/Kconfig
-@@ -30,6 +30,7 @@ config CRYPTO_HISI_SGL
- 
- config CRYPTO_DEV_HISI_ZIP
- 	tristate "Support for HiSilicon ZIP accelerator"
-+	depends on ARM64 && PCI && PCI_MSI
- 	select CRYPTO_DEV_HISI_QM
- 	select CRYPTO_HISI_SGL
- 	select SG_SPLIT
+diff --git a/drivers/crypto/hisilicon/sgl.c b/drivers/crypto/hisilicon/sgl.c
+index 8ef7679..e083d17 100644
+--- a/drivers/crypto/hisilicon/sgl.c
++++ b/drivers/crypto/hisilicon/sgl.c
+@@ -150,7 +150,7 @@ hisi_acc_sg_buf_map_to_hw_sgl(struct device *dev,
+ 			      u32 index, dma_addr_t *hw_sgl_dma)
+ {
+ 	struct hisi_acc_hw_sgl *curr_hw_sgl;
+-	dma_addr_t curr_sgl_dma;
++	dma_addr_t curr_sgl_dma = 0;
+ 	struct acc_hw_sge *curr_hw_sge;
+ 	struct scatterlist *sg;
+ 	int sg_n = sg_nents(sgl);
 -- 
 2.8.1
 
