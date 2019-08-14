@@ -2,40 +2,125 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA278DEEF
-	for <lists+linux-crypto@lfdr.de>; Wed, 14 Aug 2019 22:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F62E8E0D9
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Aug 2019 00:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728494AbfHNUgF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 14 Aug 2019 16:36:05 -0400
-Received: from mta6.epbfi.com ([74.205.143.41]:40731 "EHLO mta6.epbfi.com"
+        id S1728864AbfHNWfr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 14 Aug 2019 18:35:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725895AbfHNUgF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 14 Aug 2019 16:36:05 -0400
-X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Aug 2019 16:36:04 EDT
-Received: from mail1.epbfi.com ([74.205.143.164])
-        by cmsmtp with SMTP
-        id xzsBhGsnJYCqLxzsBhvV4L; Wed, 14 Aug 2019 16:27:55 -0400
-X-Authority-Analysis: v=2.1 cv=TLq4MARa c=1 sm=1 tr=0
- a=5ScIZQf/Q5/3FLbwc1EtpQ==:117 a=L9H7d07YOLsA:10 a=9cW_t1CCXrUA:10
- a=s5jvgZ67dGcA:10 a=FKkrIqjQGGEA:10 a=grFN1ervr_QA:10 a=UG-uvQm33TwA:10
- a=IkcTkHD0fZMA:10 a=x7bEGLp0ZPQA:10 a=DFN9YHfRJOsA:10
- a=wXAVZr1hBdtwWWVGSaMA:9 a=QEXdDO2ut3YA:10 a=9ZFY-tFxM8eGAlHkra-o:22
-Date:   Wed, 14 Aug 2019 16:27:55 -0400 (EDT)
-From:   "I.D" <incordesign@epbfi.com>
-Reply-To: mattadams.cclc@gmail.com
-Message-ID: <1012346246.30499326.1565814475610.JavaMail.zimbra@epbfi.com>
-Subject: 3% L OANS.
+        id S1727217AbfHNWfq (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 14 Aug 2019 18:35:46 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 081B12064A;
+        Wed, 14 Aug 2019 22:35:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565822145;
+        bh=l8Slk/c9NCmIURt4vJ515GO1o+OGPytEBQ6mmXfsoCc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HZrWel2TOGlxa/OLzSgK6FZYkC9k5fmPXmA7SczQPr/nZXF5fhlrN12mEtzuphrKx
+         naClhxqMHYFXy1R/MsRWN561L+U0nJMj+RQmokWi+/oM+CwhuEESn4oiXIYXhBuZnf
+         2ZHVbx8JH1SSewjdXfJj0RGtoca3cSvPVjunHj9Y=
+Date:   Wed, 14 Aug 2019 15:35:43 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-api@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Paul Crowley <paulcrowley@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [PATCH v8 10/20] fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
+Message-ID: <20190814223542.GE101319@gmail.com>
+Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-api@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Paul Crowley <paulcrowley@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+References: <20190805162521.90882-1-ebiggers@kernel.org>
+ <20190805162521.90882-11-ebiggers@kernel.org>
+ <20190813000644.GH28705@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [185.242.6.5]
-X-Mailer: Zimbra 8.6.0_GA_1242 (zclient/8.6.0_GA_1242)
-Thread-Topic: 3% L OANS.
-Thread-Index: WFJVs1zIIRsiGV1zsMUTB0cTYIUd0w==
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190813000644.GH28705@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi, Contact us for a 3% L oan today. Let me know how much you need and duration to pay back for more details. Thanks.
+On Mon, Aug 12, 2019 at 08:06:44PM -0400, Theodore Y. Ts'o wrote:
+> > +		/* Some inodes still reference this key; try to evict them. */
+> > +		if (try_to_lock_encrypted_files(sb, mk) != 0)
+> > +			status_flags |=
+> > +				FSCRYPT_KEY_REMOVAL_STATUS_FLAG_FILES_BUSY;
+> > +	}
+> 
+> try_to_lock_encrypted_files() can return other errors besides -EBUSY;
+> in particular sync_filesystem() can return other errors, such as -EIO
+> or -EFSCORUPTED.  In that case, I think we're better off returning the
+> relevant status code back to the user.  We will have already wiped the
+> master key, but this situation will only happen in exceptional
+> conditions (e.g., user has ejected the sdcard, etc.), so it's not
+> worth it to try to undo the master key wipe to try to restore things
+> to the pre-ioctl execution state.
+> 
+> So I think we should capture the return code from
+> try_to_lock_encrypted_files, and if it is EBUSY, we can set FILES_BUSY
+> flag and return success.  Otherwise, we should return the error.
+> 
+> If you agree, please fix that up and then feel free to add:
+> 
+> Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+> 
+> 						- Ted
+
+Yes, that makes sense.  I've made the following change to this patch:
+
+diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+index 9901593051424b..c3423f0edc7014 100644
+--- a/fs/crypto/keyring.c
++++ b/fs/crypto/keyring.c
+@@ -479,6 +479,7 @@ int fscrypt_ioctl_remove_key(struct file *filp, void __user *_uarg)
+ 	struct key *key;
+ 	struct fscrypt_master_key *mk;
+ 	u32 status_flags = 0;
++	int err;
+ 	bool dead;
+ 
+ 	if (copy_from_user(&arg, uarg, sizeof(arg)))
+@@ -514,11 +515,15 @@ int fscrypt_ioctl_remove_key(struct file *filp, void __user *_uarg)
+ 		 * key object is free to be removed from the keyring.
+ 		 */
+ 		key_invalidate(key);
++		err = 0;
+ 	} else {
+ 		/* Some inodes still reference this key; try to evict them. */
+-		if (try_to_lock_encrypted_files(sb, mk) != 0)
++		err = try_to_lock_encrypted_files(sb, mk);
++		if (err == -EBUSY) {
+ 			status_flags |=
+ 				FSCRYPT_KEY_REMOVAL_STATUS_FLAG_FILES_BUSY;
++			err = 0;
++		}
+ 	}
+ 	/*
+ 	 * We return 0 if we successfully did something: wiped the secret, or
+@@ -527,7 +532,9 @@ int fscrypt_ioctl_remove_key(struct file *filp, void __user *_uarg)
+ 	 * including all files locked.
+ 	 */
+ 	key_put(key);
+-	return put_user(status_flags, &uarg->removal_status_flags);
++	if (err == 0)
++		err = put_user(status_flags, &uarg->removal_status_flags);
++	return err;
+ }
+ EXPORT_SYMBOL_GPL(fscrypt_ioctl_remove_key);
+ 
