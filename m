@@ -2,110 +2,78 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D5A8EA58
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Aug 2019 13:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42228EA6C
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Aug 2019 13:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731315AbfHOLdD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 15 Aug 2019 07:33:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55906 "EHLO mail.kernel.org"
+        id S1730533AbfHOLgE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 15 Aug 2019 07:36:04 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:57148 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731463AbfHOLdD (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 15 Aug 2019 07:33:03 -0400
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB68220665
-        for <linux-crypto@vger.kernel.org>; Thu, 15 Aug 2019 11:33:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565868782;
-        bh=htLQyccyyZq45OLs8p2cO5sUWxPFaNLzaE6EwhwfkXk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sxMHIGQDLg1eAexYUqgtA+vdCrWhQPHQm166/9cUBo8uuvknhliXIr4BFrtASmX0V
-         0/n1ONXtSBB6B80h+qIpkedjM/flSFWEji68QMtH6AqqAos3aGiTYzlKWetNrYfJr/
-         e+a5qJmdaqvOfkj9hEBCRpvqDhLINyepvpsa5yXE=
-Received: by mail-qt1-f178.google.com with SMTP id u34so1975626qte.2
-        for <linux-crypto@vger.kernel.org>; Thu, 15 Aug 2019 04:33:02 -0700 (PDT)
-X-Gm-Message-State: APjAAAUs/1WBynVh8t6cGwscOE7FZvpsZgLVoy8iU/FK1FODSR5p9INR
-        KLQmcD+wiDNDzu2ODV+RVwqQyRPt7x2K0QHzsMo=
-X-Google-Smtp-Source: APXvYqwQufZiIh+xxs/a/m0h0OrI9uLFsgVcdwYRXQR3GBN1s0x70v3AGodzXqKkeNxSZLJt5c3xKzpy4UWJJGDl5oQ=
-X-Received: by 2002:ad4:438c:: with SMTP id s12mr2906142qvr.17.1565868781944;
- Thu, 15 Aug 2019 04:33:01 -0700 (PDT)
+        id S1726008AbfHOLgD (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 15 Aug 2019 07:36:03 -0400
+Received: from gondolin.me.apana.org.au ([192.168.0.6] helo=gondolin.hengli.com.au)
+        by fornost.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1hyE2o-0002lm-65; Thu, 15 Aug 2019 21:35:50 +1000
+Received: from herbert by gondolin.hengli.com.au with local (Exim 4.80)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1hyE2m-0007Es-JS; Thu, 15 Aug 2019 21:35:48 +1000
+Date:   Thu, 15 Aug 2019 21:35:48 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>, Eric Biggers <ebiggers@google.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        linux-fscrypt@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Milan Broz <gmazyland@gmail.com>
+Subject: Re: [PATCH v11 1/4] crypto: essiv - create wrapper template for
+ ESSIV generation
+Message-ID: <20190815113548.GA27723@gondor.apana.org.au>
+References: <20190814163746.3525-1-ard.biesheuvel@linaro.org>
+ <20190814163746.3525-2-ard.biesheuvel@linaro.org>
+ <20190815023734.GB23782@gondor.apana.org.au>
+ <CAKv+Gu_maif=kZk-HRMx7pP=ths1vuTgcu4kFpzz0tCkO2+DFA@mail.gmail.com>
+ <20190815051320.GA24982@gondor.apana.org.au>
+ <CAKv+Gu_OVUfXW6t+j1RHA4_Uc43o50Sspke2KkVw9djbFDd04g@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAK9qPMA=-MnkdpkUE_CU5FRmZ6LSk2FzfBJNsB0XRiaYxy9UWA@mail.gmail.com>
-In-Reply-To: <CAK9qPMA=-MnkdpkUE_CU5FRmZ6LSk2FzfBJNsB0XRiaYxy9UWA@mail.gmail.com>
-From:   Josh Boyer <jwboyer@kernel.org>
-Date:   Thu, 15 Aug 2019 07:32:50 -0400
-X-Gmail-Original-Message-ID: <CA+5PVA5BC7AtcJ4Ud33Ft9h_=kRcqeLoHtjRfvu_XBSvgej74g@mail.gmail.com>
-Message-ID: <CA+5PVA5BC7AtcJ4Ud33Ft9h_=kRcqeLoHtjRfvu_XBSvgej74g@mail.gmail.com>
-Subject: Re: [GIT PULL] inside-secure: add new GPLv2 "mini" firmware for the
- EIP197 driver
-To:     Pascal van Leeuwen <pascalvanl@gmail.com>
-Cc:     Linux Firmware <linux-firmware@kernel.org>,
-        linux-crypto@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKv+Gu_OVUfXW6t+j1RHA4_Uc43o50Sspke2KkVw9djbFDd04g@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Aug 6, 2019 at 8:54 AM Pascal van Leeuwen <pascalvanl@gmail.com> wrote:
->
-> The following changes since commit dff98c6c57383fe343407bcb7b6e775e0b87274f:
->
->   Merge branch 'master' of git://github.com/skeggsb/linux-firmware
-> (2019-07-26 07:32:37 -0400)
->
-> are available in the git repository at:
->
->
->   https://github.com/pvanleeuwen/linux-firmware-clean.git is_driver_fw
->
-> for you to fetch changes up to fbfe41f92f941d19b840ec0e282f422379982ccb:
->
->   inside-secure: add new GPLv2 "mini" firmware for the EIP197 driver
-> (2019-08-06 13:19:44 +0200)
->
-> ----------------------------------------------------------------
-> Pascal van Leeuwen (1):
->       inside-secure: add new GPLv2 "mini" firmware for the EIP197 driver
->
->  WHENCE                               |  10 ++++++++++
->  inside-secure/eip197_minifw/ifpp.bin | Bin 0 -> 100 bytes
->  inside-secure/eip197_minifw/ipue.bin | Bin 0 -> 108 bytes
->  3 files changed, 10 insertions(+)
->  create mode 100644 inside-secure/eip197_minifw/ifpp.bin
->  create mode 100644 inside-secure/eip197_minifw/ipue.bin
+On Thu, Aug 15, 2019 at 08:15:29AM +0300, Ard Biesheuvel wrote:
+> 
+> So what about checking that the cipher key size matches the shash
+> digest size, or that the cipher block size matches the skcipher IV
+> size? This all moves to the TFM init function?
 
-If this is GPLv2, where is the source code?
+I don't think you need to check those things.  If the shash produces
+an incorrect key size the setkey will just fail naturally.  As to
+the block size matching the IV size, in the kernel it's not actually
+possible to get an underlying cipher with different block size
+than the cbc mode that you used to derive it.
 
-josh
+The size checks that we have in general are to stop people from
+making crazy combinations such as lrw(des3_ede), it's not there
+to test the correctness of a given implementation.  That is,
+we assume that whoever provides "aes" will give it the correct
+geometry for it.
 
+Sure we haven't made it explicit (which we should at some point)
+but as it stands, it can only occur if we have a bug or someone
+loads a malicious kernel module in which case none of this matters.
 
-> diff --git a/WHENCE b/WHENCE
-> index 31edbd4..fce2ef7 100644
-> --- a/WHENCE
-> +++ b/WHENCE
-> @@ -4514,3 +4514,13 @@ File: meson/vdec/gxl_mpeg4_5.bin
->  File: meson/vdec/gxm_h264.bin
->
->  Licence: Redistributable. See LICENSE.amlogic_vdec for details.
-> +
-> +--------------------------------------------------------------------------
-> +
-> +Driver: inside-secure -- Inside Secure EIP197 crypto driver
-> +
-> +File: inside-secure/eip197_minifw/ipue.bin
-> +File: inside-secure/eip197_minifw/ifpp.bin
-> +
-> +Licence: GPLv2. See GPL-2 for details.
-> +
-> diff --git a/inside-secure/eip197_minifw/ifpp.bin
-> b/inside-secure/eip197_minifw/ifpp.bin
-> new file mode 100644
-> index 0000000..b4a8322
-> Binary files /dev/null and b/inside-secure/eip197_minifw/ifpp.bin differ
-> diff --git a/inside-secure/eip197_minifw/ipue.bin
-> b/inside-secure/eip197_minifw/ipue.bin
-> new file mode 100644
-> index 0000000..2f54999
-> Binary files /dev/null and b/inside-secure/eip197_minifw/ipue.bin differ
+> Are there any existing templates that use this approach?
+
+I'm not sure of templates doing this but this is similar to fallbacks.
+In fact we don't check any gemoetry on the fallbacks at all.
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
