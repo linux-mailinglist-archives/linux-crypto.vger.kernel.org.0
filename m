@@ -2,60 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A3B8FBAB
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Aug 2019 09:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFFA8FB9E
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Aug 2019 09:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727011AbfHPHGH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 16 Aug 2019 03:06:07 -0400
-Received: from mail.someserver.de ([31.15.66.35]:54022 "EHLO
-        mail.someserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725945AbfHPHGH (ORCPT
+        id S1725945AbfHPHCk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 16 Aug 2019 03:02:40 -0400
+Received: from mail-pg1-f173.google.com ([209.85.215.173]:43277 "EHLO
+        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725829AbfHPHCk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 16 Aug 2019 03:06:07 -0400
-X-Greylist: delayed 343 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Aug 2019 03:06:06 EDT
-Received: from localhost (87-231-101-12.rev.numericable.fr [87.231.101.12])
-        by mail.someserver.de (Postfix) with ESMTPSA id 66533121546;
-        Fri, 16 Aug 2019 09:00:20 +0200 (CEST)
-From:   Christina Quast <contact@christina-quast.de>
-To:     ard.biesheuvel@linaro.org
-Cc:     Christina Quast <contact@christina-quast.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Payal Kshirsagar <payal.s.kshirsagar.98@gmail.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Anushka Shukla <anushkacharu9@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Zach Turner <turnerzdp@gmail.com>,
-        linux-wireless@vger.kernel.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH 0/2] Use ccm(aes) aead transform in staging drivers
-Date:   Fri, 16 Aug 2019 08:59:34 +0200
-Message-Id: <20190816065936.12214-1-contact@christina-quast.de>
-X-Mailer: git-send-email 2.20.1
+        Fri, 16 Aug 2019 03:02:40 -0400
+Received: by mail-pg1-f173.google.com with SMTP id k3so2465344pgb.10
+        for <linux-crypto@vger.kernel.org>; Fri, 16 Aug 2019 00:02:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WWDcS1MtmkAPxQpLDIQPln5wnsWSy27rRb70gzCDixU=;
+        b=CsAKE+2XFHczapDtYLQMpdAdya4ovVmg0OrT93AWcTGkpueJj+wCuoBVvWt5RDsVSU
+         QwmwfNa6KY1Bi5fEbXpval7RHUDW3uk25bnJ67kmEIxZer2R2TtnDhpB7J+QIufgwBAS
+         A38mQPWzmYcRMt/MXKvql7Luc6jIdzz4RiL/bhIMJ+aqofuXQxWUob9rdqu2VfejkfHf
+         Vo5rmPntxJplKK3Jk69UhpgP92VOfmIMBHno2R+6juzExnOgx5iJCf1B9VYBvMQVeSao
+         33tdwoxian/XnA6NcupijgqRyA+HrFOZeDFU9eoOOnriV77v4muRB9hyKfTYiD9Uv1Gx
+         9ovA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WWDcS1MtmkAPxQpLDIQPln5wnsWSy27rRb70gzCDixU=;
+        b=OmgbkthHRpxcNAnva/w46C0Tn+Tct+OBT/xCtIBsoHsvip+fyjsekTJ8MLlGcaI9jd
+         WYQRnkjn5JkIiPyF97tWgpYB3UC3y04lPdxAcTEl//CxF0ebyk+JalLa85+Xnwq6WU2n
+         G/xhk+uMozOHNH1f6x3EaxKCrX6ME4rrbWW/hKYSZ4tkEnsjOLaqNM8iBPMRBzorlyIs
+         2cjhd1rH05AeLgrUkGjNNKVPKuAuZ4mCJmtewdMg7R2L/4drcUzsli6lrmfMP2Yzrsll
+         LgAVKimFrVbJnfUNexgYq+dSYlk5WkX9+nqgnlQybgqGUifzb1xjO8+FgPL3iJjnyYb+
+         XCmQ==
+X-Gm-Message-State: APjAAAWhFF2WJ3HQsOrVQKA9eliRjaJW/Ly5At4UCQLuEPoJPZZW3Ljy
+        frDTvY044gr9K2WM36Q0VT1b62WeMr7QVF9Jo6QbrGW5W+U=
+X-Google-Smtp-Source: APXvYqyD41u4F+8Y08zOevSgThaIg4PKCYVSPlThvRndRI7n2MnFawGdMgUM9xiTgpChu4alMgS8waCs6FbuR9BSg9o=
+X-Received: by 2002:a63:b10f:: with SMTP id r15mr6421028pgf.230.1565938959380;
+ Fri, 16 Aug 2019 00:02:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190815120313.GA29253@gondor.apana.org.au> <5D556981.2080309@hisilicon.com>
+ <20190815224207.GA3047@gondor.apana.org.au>
+In-Reply-To: <20190815224207.GA3047@gondor.apana.org.au>
+From:   =?UTF-8?B?T25kcmVqIE1vc27DocSNZWs=?= <omosnacek@gmail.com>
+Date:   Fri, 16 Aug 2019 09:02:27 +0200
+Message-ID: <CAAUqJDsvG-c=svGzszE8nCXwjGSYUa9BB1Jj0srY+_rX0X-jyw@mail.gmail.com>
+Subject: Re: crypto: hisilicon - Fix warning on printing %p with dma_addr_t
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Zhou Wang <wangzhou1@hisilicon.com>, linux-crypto@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Use ccm(aes) aead transform instead of invoking the AES block cipher
-block by block.
+Hi Herbert,
 
-Christina Quast (2):
-  staging: rtl8192u: ieee80211: ieee80211_crypt_ccmp.c: Use crypto API
-    ccm(aes)
-  staging: rtl8192e: rtllib_crypt_ccmp.c: Use crypto API ccm(aes)
+pi 16. 8. 2019 o 1:52 Herbert Xu <herbert@gondor.apana.org.au> nap=C3=ADsal=
+(a):
+> On Thu, Aug 15, 2019 at 10:17:37PM +0800, Zhou Wang wrote:
+> >
+> > > -   dev_dbg(&qm->pdev->dev, "QM mailbox request to q%u: %u-%pad\n", q=
+ueue,
+> > > -           cmd, dma_addr);
+> > > +   dev_dbg(&qm->pdev->dev, "QM mailbox request to q%u: %u-%#lxad\n",
+> > > +           queue, cmd, (unsigned long)dma_addr);
+> >
+> > Thanks. However, to be honest I can't get why we fix it like this.
+> > Can you give me a clue?
+>
+> dma_addr_t is not a pointer.  It's an integer type and therefore
+> you need to print it out as such.
 
- drivers/staging/rtl8192e/Kconfig              |   1 +
- drivers/staging/rtl8192e/rtllib_crypt_ccmp.c  | 187 ++++++++----------
- drivers/staging/rtl8192u/Kconfig              |   2 +
- .../rtl8192u/ieee80211/ieee80211_crypt_ccmp.c | 187 ++++++++----------
- 4 files changed, 159 insertions(+), 218 deletions(-)
+According to Documentation/core-api/printk-formats.rst, %pad is the
+format specifier intended specifically for dma_addr_t [1], so perhaps
+the kbuild robot warning was in fact bogus?
 
--- 
-2.20.1
+[1] https://www.kernel.org/doc/html/latest/core-api/printk-formats.html#dma=
+-address-types-dma-addr-t
 
+>
+> Actually my patch is buggy too, on some architectures it can be
+> a long long so we need to cast is such.
+>
+> Cheers,
+> --
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
