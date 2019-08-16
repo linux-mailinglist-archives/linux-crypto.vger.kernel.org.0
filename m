@@ -2,70 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7952B8FA97
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Aug 2019 08:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A3B8FBAB
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Aug 2019 09:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbfHPGE3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 16 Aug 2019 02:04:29 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4719 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725897AbfHPGE2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 16 Aug 2019 02:04:28 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 0EAF7C4772418BAE435A
-        for <linux-crypto@vger.kernel.org>; Fri, 16 Aug 2019 14:04:25 +0800 (CST)
-Received: from [127.0.0.1] (10.63.139.185) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.439.0; Fri, 16 Aug 2019
- 14:04:24 +0800
-Subject: Re: [v3 PATCH] crypto: hisilicon - Fix warning on printing %p with
- dma_addr_t
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        <linux-crypto@vger.kernel.org>
-References: <20190815120313.GA29253@gondor.apana.org.au>
- <20190815224521.GA3188@gondor.apana.org.au>
- <20190815224743.GA3261@gondor.apana.org.au>
-From:   Zhou Wang <wangzhou1@hisilicon.com>
-Message-ID: <5D564757.5040009@hisilicon.com>
-Date:   Fri, 16 Aug 2019 14:04:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.5.1
+        id S1727011AbfHPHGH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 16 Aug 2019 03:06:07 -0400
+Received: from mail.someserver.de ([31.15.66.35]:54022 "EHLO
+        mail.someserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725945AbfHPHGH (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 16 Aug 2019 03:06:07 -0400
+X-Greylist: delayed 343 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Aug 2019 03:06:06 EDT
+Received: from localhost (87-231-101-12.rev.numericable.fr [87.231.101.12])
+        by mail.someserver.de (Postfix) with ESMTPSA id 66533121546;
+        Fri, 16 Aug 2019 09:00:20 +0200 (CEST)
+From:   Christina Quast <contact@christina-quast.de>
+To:     ard.biesheuvel@linaro.org
+Cc:     Christina Quast <contact@christina-quast.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Payal Kshirsagar <payal.s.kshirsagar.98@gmail.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Anushka Shukla <anushkacharu9@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Zach Turner <turnerzdp@gmail.com>,
+        linux-wireless@vger.kernel.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH 0/2] Use ccm(aes) aead transform in staging drivers
+Date:   Fri, 16 Aug 2019 08:59:34 +0200
+Message-Id: <20190816065936.12214-1-contact@christina-quast.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20190815224743.GA3261@gondor.apana.org.au>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.63.139.185]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 2019/8/16 6:47, Herbert Xu wrote:
-> This patch fixes a printk format warning by replacing %p with %#llx
-> for dma_addr_t.
-> 
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> 
-> diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-> index d72e062..4ad4de4 100644
-> --- a/drivers/crypto/hisilicon/qm.c
-> +++ b/drivers/crypto/hisilicon/qm.c
-> @@ -347,8 +353,8 @@ static int qm_mb(struct hisi_qm *qm, u8 cmd, dma_addr_t dma_addr, u16 queue,
->  	struct qm_mailbox mailbox;
->  	int ret = 0;
->  
-> -	dev_dbg(&qm->pdev->dev, "QM mailbox request to q%u: %u-%pad\n", queue,
-> -		cmd, dma_addr);
-> +	dev_dbg(&qm->pdev->dev, "QM mailbox request to q%u: %u-%llx\n",
-> +		queue, cmd, (unsigned long long)dma_addr);
+Use ccm(aes) aead transform instead of invoking the AES block cipher
+block by block.
 
-I should modify this as:
+Christina Quast (2):
+  staging: rtl8192u: ieee80211: ieee80211_crypt_ccmp.c: Use crypto API
+    ccm(aes)
+  staging: rtl8192e: rtllib_crypt_ccmp.c: Use crypto API ccm(aes)
 
-	dev_dbg(&qm->pdev->dev, "QM mailbox request to q%u: %u-%pad\n",
-		queue, cmd, &dma_addr);
+ drivers/staging/rtl8192e/Kconfig              |   1 +
+ drivers/staging/rtl8192e/rtllib_crypt_ccmp.c  | 187 ++++++++----------
+ drivers/staging/rtl8192u/Kconfig              |   2 +
+ .../rtl8192u/ieee80211/ieee80211_crypt_ccmp.c | 187 ++++++++----------
+ 4 files changed, 159 insertions(+), 218 deletions(-)
 
->  
->  	mailbox.w0 = cmd |
->  		     (op ? 0x1 << QM_MB_OP_SHIFT : 0) |
-> 
+-- 
+2.20.1
 
