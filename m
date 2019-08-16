@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFFA8FB9E
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Aug 2019 09:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A12B18FBB3
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Aug 2019 09:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725945AbfHPHCk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 16 Aug 2019 03:02:40 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:43277 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725829AbfHPHCk (ORCPT
+        id S1726880AbfHPHIz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 16 Aug 2019 03:08:55 -0400
+Received: from mail-pf1-f175.google.com ([209.85.210.175]:43585 "EHLO
+        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726866AbfHPHIy (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 16 Aug 2019 03:02:40 -0400
-Received: by mail-pg1-f173.google.com with SMTP id k3so2465344pgb.10
-        for <linux-crypto@vger.kernel.org>; Fri, 16 Aug 2019 00:02:39 -0700 (PDT)
+        Fri, 16 Aug 2019 03:08:54 -0400
+Received: by mail-pf1-f175.google.com with SMTP id v12so2656931pfn.10
+        for <linux-crypto@vger.kernel.org>; Fri, 16 Aug 2019 00:08:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=WWDcS1MtmkAPxQpLDIQPln5wnsWSy27rRb70gzCDixU=;
-        b=CsAKE+2XFHczapDtYLQMpdAdya4ovVmg0OrT93AWcTGkpueJj+wCuoBVvWt5RDsVSU
-         QwmwfNa6KY1Bi5fEbXpval7RHUDW3uk25bnJ67kmEIxZer2R2TtnDhpB7J+QIufgwBAS
-         A38mQPWzmYcRMt/MXKvql7Luc6jIdzz4RiL/bhIMJ+aqofuXQxWUob9rdqu2VfejkfHf
-         Vo5rmPntxJplKK3Jk69UhpgP92VOfmIMBHno2R+6juzExnOgx5iJCf1B9VYBvMQVeSao
-         33tdwoxian/XnA6NcupijgqRyA+HrFOZeDFU9eoOOnriV77v4muRB9hyKfTYiD9Uv1Gx
-         9ovA==
+        bh=bWiAoe+gK8jziCl/V5duDiKDckl5BO2yBTCVW/CX3vs=;
+        b=j5GqyvBC3G4liHuK2mA9vCDKnDSqQh4DrOcM6goqFN4gNz5g3qNCFPWRN9qqvakagK
+         kg7YAjNi0PuGzqukj4FboLsx11mMMVyPMTv81bd87sJ9NxzokHNGXI5cxbJI5mIa6i5X
+         M99eex2BgOw7rdAc/zx5Tci3GPLsF2EzU6MGcVjVxubMm0FklnR3dcTH52Ptan1l1mHZ
+         DJROkRgsPJ0XBlV1bUZmj93P6vfEk/w4p3m83Q1FM9UBpar6L8FEEq+pz7hBS9Ny+uXo
+         AYSPxfGR29moRKLjwDrbSeJ1W0PL2qPCwtf+00QM7cuwx2b08CT/oCxKURI6Fgw2YzkL
+         OdWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WWDcS1MtmkAPxQpLDIQPln5wnsWSy27rRb70gzCDixU=;
-        b=OmgbkthHRpxcNAnva/w46C0Tn+Tct+OBT/xCtIBsoHsvip+fyjsekTJ8MLlGcaI9jd
-         WYQRnkjn5JkIiPyF97tWgpYB3UC3y04lPdxAcTEl//CxF0ebyk+JalLa85+Xnwq6WU2n
-         G/xhk+uMozOHNH1f6x3EaxKCrX6ME4rrbWW/hKYSZ4tkEnsjOLaqNM8iBPMRBzorlyIs
-         2cjhd1rH05AeLgrUkGjNNKVPKuAuZ4mCJmtewdMg7R2L/4drcUzsli6lrmfMP2Yzrsll
-         LgAVKimFrVbJnfUNexgYq+dSYlk5WkX9+nqgnlQybgqGUifzb1xjO8+FgPL3iJjnyYb+
-         XCmQ==
-X-Gm-Message-State: APjAAAWhFF2WJ3HQsOrVQKA9eliRjaJW/Ly5At4UCQLuEPoJPZZW3Ljy
-        frDTvY044gr9K2WM36Q0VT1b62WeMr7QVF9Jo6QbrGW5W+U=
-X-Google-Smtp-Source: APXvYqyD41u4F+8Y08zOevSgThaIg4PKCYVSPlThvRndRI7n2MnFawGdMgUM9xiTgpChu4alMgS8waCs6FbuR9BSg9o=
-X-Received: by 2002:a63:b10f:: with SMTP id r15mr6421028pgf.230.1565938959380;
- Fri, 16 Aug 2019 00:02:39 -0700 (PDT)
+        bh=bWiAoe+gK8jziCl/V5duDiKDckl5BO2yBTCVW/CX3vs=;
+        b=Ha0jfyUUHSlGpO3flSMdFsO0D/+z6qtpoC1c9pGKrgbcO7R6JVOyRyLiJx6WpCUgT+
+         +E/VGPNvahhlZJlL/JLGO4KKtkeJScL68c1U9SS+NZYUwzmV9kXYnj6aFXrFKHRO5jHz
+         G5ZiwuBbkC+V/DXfpKaR9Q9jguj7wvgRgqQB7KNsi6XVJ9QWtFOps70C19wYLl8lmPcW
+         /rKBhJTT4ife+wxajbgj+amxivydJeL39ALEEaWlqmXF56lyQPwAzyklFizL87HpRwz6
+         ShrtPSws+cGKwYnfz7uTNdD/lVmDo3TGOyxZMTG0VO7ZLraSN49kzVUmLWZwMq13z9oL
+         n6Dg==
+X-Gm-Message-State: APjAAAWkdCQ7NlDUPqNV6Kkz0pqCh44N1R2l0NLxdVxcoV6xmZI7r8yh
+        flReEhpQY0vvySoPMyIe9qFU6OXl3fPOo4tFNmmz90XUO05Y1A==
+X-Google-Smtp-Source: APXvYqzOa7JcmpXLi1TMBuMnlFdNjbSO8cgWefDE2QKJxaY9oipfAx8JtgOaVORxFEldvE0UjjUTuBtk7vu6tfSN1jw=
+X-Received: by 2002:a17:90a:be07:: with SMTP id a7mr5789193pjs.88.1565939334170;
+ Fri, 16 Aug 2019 00:08:54 -0700 (PDT)
 MIME-Version: 1.0
 References: <20190815120313.GA29253@gondor.apana.org.au> <5D556981.2080309@hisilicon.com>
- <20190815224207.GA3047@gondor.apana.org.au>
-In-Reply-To: <20190815224207.GA3047@gondor.apana.org.au>
+ <20190815224207.GA3047@gondor.apana.org.au> <CAAUqJDsvG-c=svGzszE8nCXwjGSYUa9BB1Jj0srY+_rX0X-jyw@mail.gmail.com>
+In-Reply-To: <CAAUqJDsvG-c=svGzszE8nCXwjGSYUa9BB1Jj0srY+_rX0X-jyw@mail.gmail.com>
 From:   =?UTF-8?B?T25kcmVqIE1vc27DocSNZWs=?= <omosnacek@gmail.com>
-Date:   Fri, 16 Aug 2019 09:02:27 +0200
-Message-ID: <CAAUqJDsvG-c=svGzszE8nCXwjGSYUa9BB1Jj0srY+_rX0X-jyw@mail.gmail.com>
+Date:   Fri, 16 Aug 2019 09:08:42 +0200
+Message-ID: <CAAUqJDuzUPUW=qvhEo6tU==Ycw0aijJM9pQk5W50kw=EgEG3ow@mail.gmail.com>
 Subject: Re: crypto: hisilicon - Fix warning on printing %p with dma_addr_t
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     Zhou Wang <wangzhou1@hisilicon.com>, linux-crypto@vger.kernel.org
@@ -58,37 +58,47 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Herbert,
-
-pi 16. 8. 2019 o 1:52 Herbert Xu <herbert@gondor.apana.org.au> nap=C3=ADsal=
-(a):
-> On Thu, Aug 15, 2019 at 10:17:37PM +0800, Zhou Wang wrote:
+pi 16. 8. 2019 o 9:02 Ondrej Mosn=C3=A1=C4=8Dek <omosnacek@gmail.com> nap=
+=C3=ADsal(a):
+> Hi Herbert,
+>
+> pi 16. 8. 2019 o 1:52 Herbert Xu <herbert@gondor.apana.org.au> nap=C3=ADs=
+al(a):
+> > On Thu, Aug 15, 2019 at 10:17:37PM +0800, Zhou Wang wrote:
+> > >
+> > > > -   dev_dbg(&qm->pdev->dev, "QM mailbox request to q%u: %u-%pad\n",=
+ queue,
+> > > > -           cmd, dma_addr);
+> > > > +   dev_dbg(&qm->pdev->dev, "QM mailbox request to q%u: %u-%#lxad\n=
+",
+> > > > +           queue, cmd, (unsigned long)dma_addr);
+> > >
+> > > Thanks. However, to be honest I can't get why we fix it like this.
+> > > Can you give me a clue?
 > >
-> > > -   dev_dbg(&qm->pdev->dev, "QM mailbox request to q%u: %u-%pad\n", q=
-ueue,
-> > > -           cmd, dma_addr);
-> > > +   dev_dbg(&qm->pdev->dev, "QM mailbox request to q%u: %u-%#lxad\n",
-> > > +           queue, cmd, (unsigned long)dma_addr);
+> > dma_addr_t is not a pointer.  It's an integer type and therefore
+> > you need to print it out as such.
+>
+> According to Documentation/core-api/printk-formats.rst, %pad is the
+> format specifier intended specifically for dma_addr_t [1], so perhaps
+> the kbuild robot warning was in fact bogus?
+>
+> [1] https://www.kernel.org/doc/html/latest/core-api/printk-formats.html#d=
+ma-address-types-dma-addr-t
+
+Oh, wait, in that section it actually says "Passed by reference.", so
+Zhou is most likely right that the proper fix is to pass a pointer to
+the variable containing the address (I assume this is to make the
+generic GCC's format checking pass even if dma_addr_t is not actually
+a pointer).
+
+>
 > >
-> > Thanks. However, to be honest I can't get why we fix it like this.
-> > Can you give me a clue?
->
-> dma_addr_t is not a pointer.  It's an integer type and therefore
-> you need to print it out as such.
-
-According to Documentation/core-api/printk-formats.rst, %pad is the
-format specifier intended specifically for dma_addr_t [1], so perhaps
-the kbuild robot warning was in fact bogus?
-
-[1] https://www.kernel.org/doc/html/latest/core-api/printk-formats.html#dma=
--address-types-dma-addr-t
-
->
-> Actually my patch is buggy too, on some architectures it can be
-> a long long so we need to cast is such.
->
-> Cheers,
-> --
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> > Actually my patch is buggy too, on some architectures it can be
+> > a long long so we need to cast is such.
+> >
+> > Cheers,
+> > --
+> > Email: Herbert Xu <herbert@gondor.apana.org.au>
+> > Home Page: http://gondor.apana.org.au/~herbert/
+> > PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
