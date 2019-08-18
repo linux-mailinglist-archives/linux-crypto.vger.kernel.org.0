@@ -2,365 +2,111 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEA2910CD
-	for <lists+linux-crypto@lfdr.de>; Sat, 17 Aug 2019 16:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF899155B
+	for <lists+linux-crypto@lfdr.de>; Sun, 18 Aug 2019 09:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbfHQOZG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 17 Aug 2019 10:25:06 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:41768 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726370AbfHQOZC (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 17 Aug 2019 10:25:02 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 10CCF189D9EB;
-        Sat, 17 Aug 2019 14:25:02 +0000 (UTC)
-Received: from shalem.localdomain.com (ovpn-116-22.ams2.redhat.com [10.36.116.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F28D4E;
-        Sat, 17 Aug 2019 14:24:59 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/7] crypto: sha256_generic - Switch to the generic lib/crypto/sha256.c lib code
-Date:   Sat, 17 Aug 2019 16:24:35 +0200
-Message-Id: <20190817142435.8532-8-hdegoede@redhat.com>
-In-Reply-To: <20190817142435.8532-1-hdegoede@redhat.com>
-References: <20190817142435.8532-1-hdegoede@redhat.com>
+        id S1726079AbfHRH1K (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 18 Aug 2019 03:27:10 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:39944 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725209AbfHRH1K (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 18 Aug 2019 03:27:10 -0400
+Received: by mail-io1-f68.google.com with SMTP id t6so14509140ios.7;
+        Sun, 18 Aug 2019 00:27:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hyti0k3I4PddbIsJ2d/2Akjf5/MoSL1kv1XKngBQJOo=;
+        b=FTlO+BCfHT5CiogCPtviZJdjXIvZgNtQMnFI7Mo/qCwDB8hRTByMsHXaS9ahXiwLr9
+         +JqFS+i9QbweMvitF1EAfFLAXB5uYMlXDFW4GBB0nuvEbcVAWpy7/yfhE6a/qEeHCKGg
+         NFk8+aAS3S4lSBiXxcQXJXGKWG6LQNiMTwL4OVTEjOfuFcIgMpjmHU4SlQCOGMnXSHGe
+         eDVfmWXf+AfEdLJ7k7sg4r9gsWu3mVMouVWx9SOMSuoqmg+kaSG4ygMMz4/mcN9SrYxP
+         YQYgr4ge/WoDgnKNGNSt7Mml3wHwU3OLaFElcqpyq1URLXiy43A/k5alDdf2feaxkuIw
+         zxwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hyti0k3I4PddbIsJ2d/2Akjf5/MoSL1kv1XKngBQJOo=;
+        b=rk1SPYvR1No/NR0ZrlBNNNMts4HCtmSvLLKchnrjtLVTUPqjfPJXHRISvaBl+d2vv5
+         aQY4a3iJPEKZrueHhRPKcUXtoKxXICa8fSSMmsmwxDDMV1b6Oof8/0fmJiT4XyTtYcoG
+         7N7Qywo2h/G/KlJIxsagV7oHjz6c5qHRAiWu5fO3fqjHsJRT6E3pv7Gced8ZdsDvtS0r
+         e4U8LgL0DDk2QkJKloBeKyh0q14tdoYECJDx+S9GpU8gAGHhEuthdkbFaKUpK049T2kR
+         SqfrAL/HRsg8LXwW7JSkro8iJM2ij0SyhBlZMHQq0u7R9JM+ohRzCjq7N7uT/fo7YYCv
+         Ib4A==
+X-Gm-Message-State: APjAAAVOaVLz88nhNT9g0uLuHKSWGwCzeb90/lTZl3mE1xqktOsmSVT4
+        ejSHvMF27mIswd20M5PjMg4qGK/K3uc4DrdBQiHp
+X-Google-Smtp-Source: APXvYqxE4N+ukRZoeLACGYSa52461Et2fY/bhWQMNyj5zf+NUxDZpmJdVQSUvr/srmpOXiKfiPFnVZnL7do/dItbTCg=
+X-Received: by 2002:a5e:c601:: with SMTP id f1mr19110129iok.57.1566113229392;
+ Sun, 18 Aug 2019 00:27:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.63]); Sat, 17 Aug 2019 14:25:02 +0000 (UTC)
+References: <20190722150241.345609-1-tmaimon77@gmail.com> <20190722150241.345609-2-tmaimon77@gmail.com>
+ <20190812233623.GA24924@bogus>
+In-Reply-To: <20190812233623.GA24924@bogus>
+From:   Avi Fishman <avifishman70@gmail.com>
+Date:   Sun, 18 Aug 2019 10:26:17 +0300
+Message-ID: <CAKKbWA607qZ+LODfYi7yUWOQ3DV4Wxi4VUGkW=waSzzRbHp+OA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] dt-binding: hwrng: add NPCM RNG documentation
+To:     Rob Herring <robh@kernel.org>
+Cc:     Tomer Maimon <tmaimon77@gmail.com>, mpm@selenic.com,
+        herbert@gondor.apana.org.au, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>, sumit.garg@linaro.org,
+        jens.wiklander@linaro.org, vkoul@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joel Stanley <joel@jms.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-crypto@vger.kernel.org,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Drop the duplicate generic sha256 (and sha224) implementation from
-crypto/sha256_generic.c and use the implementation from
-lib/crypto/sha256.c instead.
+On Tue, Aug 13, 2019 at 2:36 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, Jul 22, 2019 at 06:02:40PM +0300, Tomer Maimon wrote:
+> > Added device tree binding documentation for Nuvoton BMC
+> > NPCM Random Number Generator (RNG).
+> >
+> > Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> > ---
+> >  .../bindings/rng/nuvoton,npcm-rng.txt           | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.txt
+> >
+> > diff --git a/Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.txt b/Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.txt
+> > new file mode 100644
+> > index 000000000000..a697b4425fb3
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.txt
+> > @@ -0,0 +1,17 @@
+> > +NPCM SoC Random Number Generator
+> > +
+> > +Required properties:
+> > +- compatible  : "nuvoton,npcm750-rng" for the NPCM7XX BMC.
+> > +- reg         : Specifies physical base address and size of the registers.
+> > +
+> > +Optional property:
+> > +- quality : estimated number of bits of true entropy per 1024 bits
+> > +                     read from the rng.
+> > +                     If this property is not defined, it defaults to 1000.
+>
+> This would need a vendor prefix, however, I think it should be implied
+> by the compatible string. It is fixed per SoC, right?
 
-"diff -u lib/crypto/sha256.c sha256_generic.c" shows that the core
-sha256_transform function from both implementations is identical and
-the other code is functionally identical too.
+Tomer is on vacation, so I answer instead:
+This value is the same for all our SoC flavor that contains this RNG HW.
 
-Suggested-by: Eric Biggers <ebiggers@kernel.org>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
-Changes in v2:
-- Not only switch to sha256_transform from lib/crypto/sha256.c but also
-  switch to using sha256_init, sha256_update and sha256_final from there
-  so that the crypto subsys selftests fully test the lib/crypto/sha256.c
-  implementation
----
- crypto/Kconfig          |   1 +
- crypto/sha256_generic.c | 225 ++++------------------------------------
- 2 files changed, 19 insertions(+), 207 deletions(-)
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 3dc3f13dfcad..19bdfa22d60d 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -935,6 +935,7 @@ config CRYPTO_LIB_SHA256
- config CRYPTO_SHA256
- 	tristate "SHA224 and SHA256 digest algorithm"
- 	select CRYPTO_HASH
-+	select CRYPTO_LIB_SHA256
- 	help
- 	  SHA256 secure hash standard (DFIPS 180-2).
- 
-diff --git a/crypto/sha256_generic.c b/crypto/sha256_generic.c
-index dac930ca827d..eafd10f9bf86 100644
---- a/crypto/sha256_generic.c
-+++ b/crypto/sha256_generic.c
-@@ -1,11 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Cryptographic API.
-- *
-- * SHA-256, as specified in
-- * http://csrc.nist.gov/groups/STM/cavp/documents/shs/sha256-384-512.pdf
-- *
-- * SHA-256 code by Jean-Luc Cooke <jlcooke@certainkey.com>.
-+ * Crypto API wrapper for the generic SHA256 code from lib/crypto/sha256.c
-  *
-  * Copyright (c) Jean-Luc Cooke <jlcooke@certainkey.com>
-  * Copyright (c) Andrew McDonald <andrew@mcdonald.org.uk>
-@@ -18,6 +13,7 @@
- #include <linux/mm.h>
- #include <linux/types.h>
- #include <crypto/sha.h>
-+#include <crypto/sha256.h>
- #include <crypto/sha256_base.h>
- #include <asm/byteorder.h>
- #include <asm/unaligned.h>
-@@ -38,229 +34,44 @@ const u8 sha256_zero_message_hash[SHA256_DIGEST_SIZE] = {
- };
- EXPORT_SYMBOL_GPL(sha256_zero_message_hash);
- 
--static inline u32 Ch(u32 x, u32 y, u32 z)
--{
--	return z ^ (x & (y ^ z));
--}
--
--static inline u32 Maj(u32 x, u32 y, u32 z)
-+static int crypto_sha256_init(struct shash_desc *desc)
- {
--	return (x & y) | (z & (x | y));
-+	return sha256_init(shash_desc_ctx(desc));
- }
- 
--#define e0(x)       (ror32(x, 2) ^ ror32(x, 13) ^ ror32(x, 22))
--#define e1(x)       (ror32(x, 6) ^ ror32(x, 11) ^ ror32(x, 25))
--#define s0(x)       (ror32(x, 7) ^ ror32(x, 18) ^ (x >> 3))
--#define s1(x)       (ror32(x, 17) ^ ror32(x, 19) ^ (x >> 10))
--
--static inline void LOAD_OP(int I, u32 *W, const u8 *input)
-+static int crypto_sha224_init(struct shash_desc *desc)
- {
--	W[I] = get_unaligned_be32((__u32 *)input + I);
--}
--
--static inline void BLEND_OP(int I, u32 *W)
--{
--	W[I] = s1(W[I-2]) + W[I-7] + s0(W[I-15]) + W[I-16];
--}
--
--static void sha256_transform(u32 *state, const u8 *input)
--{
--	u32 a, b, c, d, e, f, g, h, t1, t2;
--	u32 W[64];
--	int i;
--
--	/* load the input */
--	for (i = 0; i < 16; i++)
--		LOAD_OP(i, W, input);
--
--	/* now blend */
--	for (i = 16; i < 64; i++)
--		BLEND_OP(i, W);
--
--	/* load the state into our registers */
--	a = state[0];  b = state[1];  c = state[2];  d = state[3];
--	e = state[4];  f = state[5];  g = state[6];  h = state[7];
--
--	/* now iterate */
--	t1 = h + e1(e) + Ch(e, f, g) + 0x428a2f98 + W[0];
--	t2 = e0(a) + Maj(a, b, c);    d += t1;    h = t1 + t2;
--	t1 = g + e1(d) + Ch(d, e, f) + 0x71374491 + W[1];
--	t2 = e0(h) + Maj(h, a, b);    c += t1;    g = t1 + t2;
--	t1 = f + e1(c) + Ch(c, d, e) + 0xb5c0fbcf + W[2];
--	t2 = e0(g) + Maj(g, h, a);    b += t1;    f = t1 + t2;
--	t1 = e + e1(b) + Ch(b, c, d) + 0xe9b5dba5 + W[3];
--	t2 = e0(f) + Maj(f, g, h);    a += t1;    e = t1 + t2;
--	t1 = d + e1(a) + Ch(a, b, c) + 0x3956c25b + W[4];
--	t2 = e0(e) + Maj(e, f, g);    h += t1;    d = t1 + t2;
--	t1 = c + e1(h) + Ch(h, a, b) + 0x59f111f1 + W[5];
--	t2 = e0(d) + Maj(d, e, f);    g += t1;    c = t1 + t2;
--	t1 = b + e1(g) + Ch(g, h, a) + 0x923f82a4 + W[6];
--	t2 = e0(c) + Maj(c, d, e);    f += t1;    b = t1 + t2;
--	t1 = a + e1(f) + Ch(f, g, h) + 0xab1c5ed5 + W[7];
--	t2 = e0(b) + Maj(b, c, d);    e += t1;    a = t1 + t2;
--
--	t1 = h + e1(e) + Ch(e, f, g) + 0xd807aa98 + W[8];
--	t2 = e0(a) + Maj(a, b, c);    d += t1;    h = t1 + t2;
--	t1 = g + e1(d) + Ch(d, e, f) + 0x12835b01 + W[9];
--	t2 = e0(h) + Maj(h, a, b);    c += t1;    g = t1 + t2;
--	t1 = f + e1(c) + Ch(c, d, e) + 0x243185be + W[10];
--	t2 = e0(g) + Maj(g, h, a);    b += t1;    f = t1 + t2;
--	t1 = e + e1(b) + Ch(b, c, d) + 0x550c7dc3 + W[11];
--	t2 = e0(f) + Maj(f, g, h);    a += t1;    e = t1 + t2;
--	t1 = d + e1(a) + Ch(a, b, c) + 0x72be5d74 + W[12];
--	t2 = e0(e) + Maj(e, f, g);    h += t1;    d = t1 + t2;
--	t1 = c + e1(h) + Ch(h, a, b) + 0x80deb1fe + W[13];
--	t2 = e0(d) + Maj(d, e, f);    g += t1;    c = t1 + t2;
--	t1 = b + e1(g) + Ch(g, h, a) + 0x9bdc06a7 + W[14];
--	t2 = e0(c) + Maj(c, d, e);    f += t1;    b = t1 + t2;
--	t1 = a + e1(f) + Ch(f, g, h) + 0xc19bf174 + W[15];
--	t2 = e0(b) + Maj(b, c, d);    e += t1;    a = t1 + t2;
--
--	t1 = h + e1(e) + Ch(e, f, g) + 0xe49b69c1 + W[16];
--	t2 = e0(a) + Maj(a, b, c);    d += t1;    h = t1 + t2;
--	t1 = g + e1(d) + Ch(d, e, f) + 0xefbe4786 + W[17];
--	t2 = e0(h) + Maj(h, a, b);    c += t1;    g = t1 + t2;
--	t1 = f + e1(c) + Ch(c, d, e) + 0x0fc19dc6 + W[18];
--	t2 = e0(g) + Maj(g, h, a);    b += t1;    f = t1 + t2;
--	t1 = e + e1(b) + Ch(b, c, d) + 0x240ca1cc + W[19];
--	t2 = e0(f) + Maj(f, g, h);    a += t1;    e = t1 + t2;
--	t1 = d + e1(a) + Ch(a, b, c) + 0x2de92c6f + W[20];
--	t2 = e0(e) + Maj(e, f, g);    h += t1;    d = t1 + t2;
--	t1 = c + e1(h) + Ch(h, a, b) + 0x4a7484aa + W[21];
--	t2 = e0(d) + Maj(d, e, f);    g += t1;    c = t1 + t2;
--	t1 = b + e1(g) + Ch(g, h, a) + 0x5cb0a9dc + W[22];
--	t2 = e0(c) + Maj(c, d, e);    f += t1;    b = t1 + t2;
--	t1 = a + e1(f) + Ch(f, g, h) + 0x76f988da + W[23];
--	t2 = e0(b) + Maj(b, c, d);    e += t1;    a = t1 + t2;
--
--	t1 = h + e1(e) + Ch(e, f, g) + 0x983e5152 + W[24];
--	t2 = e0(a) + Maj(a, b, c);    d += t1;    h = t1 + t2;
--	t1 = g + e1(d) + Ch(d, e, f) + 0xa831c66d + W[25];
--	t2 = e0(h) + Maj(h, a, b);    c += t1;    g = t1 + t2;
--	t1 = f + e1(c) + Ch(c, d, e) + 0xb00327c8 + W[26];
--	t2 = e0(g) + Maj(g, h, a);    b += t1;    f = t1 + t2;
--	t1 = e + e1(b) + Ch(b, c, d) + 0xbf597fc7 + W[27];
--	t2 = e0(f) + Maj(f, g, h);    a += t1;    e = t1 + t2;
--	t1 = d + e1(a) + Ch(a, b, c) + 0xc6e00bf3 + W[28];
--	t2 = e0(e) + Maj(e, f, g);    h += t1;    d = t1 + t2;
--	t1 = c + e1(h) + Ch(h, a, b) + 0xd5a79147 + W[29];
--	t2 = e0(d) + Maj(d, e, f);    g += t1;    c = t1 + t2;
--	t1 = b + e1(g) + Ch(g, h, a) + 0x06ca6351 + W[30];
--	t2 = e0(c) + Maj(c, d, e);    f += t1;    b = t1 + t2;
--	t1 = a + e1(f) + Ch(f, g, h) + 0x14292967 + W[31];
--	t2 = e0(b) + Maj(b, c, d);    e += t1;    a = t1 + t2;
--
--	t1 = h + e1(e) + Ch(e, f, g) + 0x27b70a85 + W[32];
--	t2 = e0(a) + Maj(a, b, c);    d += t1;    h = t1 + t2;
--	t1 = g + e1(d) + Ch(d, e, f) + 0x2e1b2138 + W[33];
--	t2 = e0(h) + Maj(h, a, b);    c += t1;    g = t1 + t2;
--	t1 = f + e1(c) + Ch(c, d, e) + 0x4d2c6dfc + W[34];
--	t2 = e0(g) + Maj(g, h, a);    b += t1;    f = t1 + t2;
--	t1 = e + e1(b) + Ch(b, c, d) + 0x53380d13 + W[35];
--	t2 = e0(f) + Maj(f, g, h);    a += t1;    e = t1 + t2;
--	t1 = d + e1(a) + Ch(a, b, c) + 0x650a7354 + W[36];
--	t2 = e0(e) + Maj(e, f, g);    h += t1;    d = t1 + t2;
--	t1 = c + e1(h) + Ch(h, a, b) + 0x766a0abb + W[37];
--	t2 = e0(d) + Maj(d, e, f);    g += t1;    c = t1 + t2;
--	t1 = b + e1(g) + Ch(g, h, a) + 0x81c2c92e + W[38];
--	t2 = e0(c) + Maj(c, d, e);    f += t1;    b = t1 + t2;
--	t1 = a + e1(f) + Ch(f, g, h) + 0x92722c85 + W[39];
--	t2 = e0(b) + Maj(b, c, d);    e += t1;    a = t1 + t2;
--
--	t1 = h + e1(e) + Ch(e, f, g) + 0xa2bfe8a1 + W[40];
--	t2 = e0(a) + Maj(a, b, c);    d += t1;    h = t1 + t2;
--	t1 = g + e1(d) + Ch(d, e, f) + 0xa81a664b + W[41];
--	t2 = e0(h) + Maj(h, a, b);    c += t1;    g = t1 + t2;
--	t1 = f + e1(c) + Ch(c, d, e) + 0xc24b8b70 + W[42];
--	t2 = e0(g) + Maj(g, h, a);    b += t1;    f = t1 + t2;
--	t1 = e + e1(b) + Ch(b, c, d) + 0xc76c51a3 + W[43];
--	t2 = e0(f) + Maj(f, g, h);    a += t1;    e = t1 + t2;
--	t1 = d + e1(a) + Ch(a, b, c) + 0xd192e819 + W[44];
--	t2 = e0(e) + Maj(e, f, g);    h += t1;    d = t1 + t2;
--	t1 = c + e1(h) + Ch(h, a, b) + 0xd6990624 + W[45];
--	t2 = e0(d) + Maj(d, e, f);    g += t1;    c = t1 + t2;
--	t1 = b + e1(g) + Ch(g, h, a) + 0xf40e3585 + W[46];
--	t2 = e0(c) + Maj(c, d, e);    f += t1;    b = t1 + t2;
--	t1 = a + e1(f) + Ch(f, g, h) + 0x106aa070 + W[47];
--	t2 = e0(b) + Maj(b, c, d);    e += t1;    a = t1 + t2;
--
--	t1 = h + e1(e) + Ch(e, f, g) + 0x19a4c116 + W[48];
--	t2 = e0(a) + Maj(a, b, c);    d += t1;    h = t1 + t2;
--	t1 = g + e1(d) + Ch(d, e, f) + 0x1e376c08 + W[49];
--	t2 = e0(h) + Maj(h, a, b);    c += t1;    g = t1 + t2;
--	t1 = f + e1(c) + Ch(c, d, e) + 0x2748774c + W[50];
--	t2 = e0(g) + Maj(g, h, a);    b += t1;    f = t1 + t2;
--	t1 = e + e1(b) + Ch(b, c, d) + 0x34b0bcb5 + W[51];
--	t2 = e0(f) + Maj(f, g, h);    a += t1;    e = t1 + t2;
--	t1 = d + e1(a) + Ch(a, b, c) + 0x391c0cb3 + W[52];
--	t2 = e0(e) + Maj(e, f, g);    h += t1;    d = t1 + t2;
--	t1 = c + e1(h) + Ch(h, a, b) + 0x4ed8aa4a + W[53];
--	t2 = e0(d) + Maj(d, e, f);    g += t1;    c = t1 + t2;
--	t1 = b + e1(g) + Ch(g, h, a) + 0x5b9cca4f + W[54];
--	t2 = e0(c) + Maj(c, d, e);    f += t1;    b = t1 + t2;
--	t1 = a + e1(f) + Ch(f, g, h) + 0x682e6ff3 + W[55];
--	t2 = e0(b) + Maj(b, c, d);    e += t1;    a = t1 + t2;
--
--	t1 = h + e1(e) + Ch(e, f, g) + 0x748f82ee + W[56];
--	t2 = e0(a) + Maj(a, b, c);    d += t1;    h = t1 + t2;
--	t1 = g + e1(d) + Ch(d, e, f) + 0x78a5636f + W[57];
--	t2 = e0(h) + Maj(h, a, b);    c += t1;    g = t1 + t2;
--	t1 = f + e1(c) + Ch(c, d, e) + 0x84c87814 + W[58];
--	t2 = e0(g) + Maj(g, h, a);    b += t1;    f = t1 + t2;
--	t1 = e + e1(b) + Ch(b, c, d) + 0x8cc70208 + W[59];
--	t2 = e0(f) + Maj(f, g, h);    a += t1;    e = t1 + t2;
--	t1 = d + e1(a) + Ch(a, b, c) + 0x90befffa + W[60];
--	t2 = e0(e) + Maj(e, f, g);    h += t1;    d = t1 + t2;
--	t1 = c + e1(h) + Ch(h, a, b) + 0xa4506ceb + W[61];
--	t2 = e0(d) + Maj(d, e, f);    g += t1;    c = t1 + t2;
--	t1 = b + e1(g) + Ch(g, h, a) + 0xbef9a3f7 + W[62];
--	t2 = e0(c) + Maj(c, d, e);    f += t1;    b = t1 + t2;
--	t1 = a + e1(f) + Ch(f, g, h) + 0xc67178f2 + W[63];
--	t2 = e0(b) + Maj(b, c, d);    e += t1;    a = t1 + t2;
--
--	state[0] += a; state[1] += b; state[2] += c; state[3] += d;
--	state[4] += e; state[5] += f; state[6] += g; state[7] += h;
--
--	/* clear any sensitive info... */
--	a = b = c = d = e = f = g = h = t1 = t2 = 0;
--	memzero_explicit(W, 64 * sizeof(u32));
--}
--
--static void sha256_generic_block_fn(struct sha256_state *sst, u8 const *src,
--				    int blocks)
--{
--	while (blocks--) {
--		sha256_transform(sst->state, src);
--		src += SHA256_BLOCK_SIZE;
--	}
-+	return sha224_init(shash_desc_ctx(desc));
- }
- 
- int crypto_sha256_update(struct shash_desc *desc, const u8 *data,
- 			  unsigned int len)
- {
--	return sha256_base_do_update(desc, data, len, sha256_generic_block_fn);
-+	return sha256_update(shash_desc_ctx(desc), data, len);
- }
- EXPORT_SYMBOL(crypto_sha256_update);
- 
--static int sha256_final(struct shash_desc *desc, u8 *out)
-+static int crypto_sha256_final(struct shash_desc *desc, u8 *out)
- {
--	sha256_base_do_finalize(desc, sha256_generic_block_fn);
--	return sha256_base_finish(desc, out);
-+	if (crypto_shash_digestsize(desc->tfm) == SHA224_DIGEST_SIZE)
-+		return sha224_final(shash_desc_ctx(desc), out);
-+	else
-+		return sha256_final(shash_desc_ctx(desc), out);
- }
- 
- int crypto_sha256_finup(struct shash_desc *desc, const u8 *data,
- 			unsigned int len, u8 *hash)
- {
--	sha256_base_do_update(desc, data, len, sha256_generic_block_fn);
--	return sha256_final(desc, hash);
-+	sha256_update(shash_desc_ctx(desc), data, len);
-+	return crypto_sha256_final(desc, hash);
- }
- EXPORT_SYMBOL(crypto_sha256_finup);
- 
- static struct shash_alg sha256_algs[2] = { {
- 	.digestsize	=	SHA256_DIGEST_SIZE,
--	.init		=	sha256_base_init,
-+	.init		=	crypto_sha256_init,
- 	.update		=	crypto_sha256_update,
--	.final		=	sha256_final,
-+	.final		=	crypto_sha256_final,
- 	.finup		=	crypto_sha256_finup,
- 	.descsize	=	sizeof(struct sha256_state),
- 	.base		=	{
-@@ -272,9 +83,9 @@ static struct shash_alg sha256_algs[2] = { {
- 	}
- }, {
- 	.digestsize	=	SHA224_DIGEST_SIZE,
--	.init		=	sha224_base_init,
-+	.init		=	crypto_sha224_init,
- 	.update		=	crypto_sha256_update,
--	.final		=	sha256_final,
-+	.final		=	crypto_sha256_final,
- 	.finup		=	crypto_sha256_finup,
- 	.descsize	=	sizeof(struct sha256_state),
- 	.base		=	{
 -- 
-2.23.0.rc2
-
+Regards,
+Avi
