@@ -2,132 +2,137 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 41CC096A57
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Aug 2019 22:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6F396A87
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Aug 2019 22:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730088AbfHTUZQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 20 Aug 2019 16:25:16 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:34680 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731034AbfHTUYl (ORCPT
+        id S1728283AbfHTU3U (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 20 Aug 2019 16:29:20 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:43066 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730618AbfHTU3U (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 20 Aug 2019 16:24:41 -0400
-Received: by mail-pg1-f193.google.com with SMTP id n9so3861924pgc.1;
-        Tue, 20 Aug 2019 13:24:41 -0700 (PDT)
+        Tue, 20 Aug 2019 16:29:20 -0400
+Received: by mail-io1-f65.google.com with SMTP id 18so14950813ioe.10;
+        Tue, 20 Aug 2019 13:29:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ft8Npgk0V4h9gCTebElLh/LI6ukT30/vubgsZx1GmhY=;
-        b=d2j0eVEwUkOjKehYUVYShyqYad1M0D+4rOI3N9h5ZQWYNTGJ7OZBjElGiWp+z+ivdW
-         WfwgkwPA7xPs4pdQtkOiKwNd/h7LrZDfZ4Swg4ncl0VqoeqaCUT0Zr6R8tmjffHCkH3b
-         VUg4VAJWysSQGm8TGZS0BUewta/ZKLUd8zprzQoWKrR76Ns32JLQEkjILg1MMltVqWdm
-         1YvM6PHbiWyQy4oUOHFKKX1jnIzvWHdPxw0aioi2df4pXcb8YhwVEatBfBQUkDrh6Ebo
-         Lt55mSzDwnKuB2b1/ifvYhaBBk9fno9cU0aMcULpjG6ohZfl/x+0jfsyA/ERWEFwdsLR
-         hxbQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6qXb3+hkNMLokNbmTsp+ObVF0F8sjhOp4GiAYlV6riw=;
+        b=FapWINcpbfTZ7UsJb/RlukZqqcIV1FVnESoBlEBwGB7TFPLwfKoXQpusi9gIN9XWDs
+         nRi28QbUJ++5GcrC524pDsRJCDrTPbAT1IWULg1ST6eiiyc050z7bkOCJgsvVGIuXhRp
+         gM/w67h+FSQ3JXCI8YXx9eEZ0M7DPziQByz/zuShlA3BM4cBBDDAYlML3AvwZcIrjlDU
+         uwUL0KClJRQ2OisKv1rqJwCppzUT+EO+c1J0AXaKSIHGSBCdEWHm/8AFWvxCPbgX70mz
+         ziYmPdkDS3mYjqOUTgZNNOboIXjlx3BTXXtImkkshc6oZMzmlq3YEYSec18NU1zXoYJb
+         Ew2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ft8Npgk0V4h9gCTebElLh/LI6ukT30/vubgsZx1GmhY=;
-        b=f2h/yl3RPIGPgIMd03RAIIs2HZqVoEnUlcfox6L4Iz8H2Zcfu3pP5HEeqiV2DL+dl8
-         wfrGgt0F2WpuH+Fv9ULv+N93Sa7ShnFDhct0Kmp4PHUfPSrFkWlgFxzBRZGvJrZ+rpQI
-         Y//RdE0A+ntOxJLWauI1R9uJTv1A5nscYOGtryhx1Z1QKhhE/d+H/URbQ7DjaNNeu7bl
-         YWlR/azO52YKy3AEqrDG3wAS+PkDKGxvrNscFeXKnpw30JNSh6ZOTAAMsNX8I2GOsNvO
-         uUlBLv9C8NpmoxQ7poM/u7hjyEu8vZY76teezmcNzfDbb+gLHV3rnCPBvp52zRopeQGT
-         sw/g==
-X-Gm-Message-State: APjAAAXyC33ZH2JfVvSlEhN697yjL+XWjvB3fCWsu1hXeHGgzQk6Vg59
-        OeqfRKHxdIib0+gsSDPbPGHVbeopMeY=
-X-Google-Smtp-Source: APXvYqz5LaptY3v8E8pw3wBFDoIcNq4pLkDihisOWtEG8qhQrDhJ14BYb3A4if0r5f4CwzdlbPovPw==
-X-Received: by 2002:a62:4e09:: with SMTP id c9mr33083657pfb.130.1566332680533;
-        Tue, 20 Aug 2019 13:24:40 -0700 (PDT)
-Received: from localhost.lan (c-67-185-54-80.hsd1.wa.comcast.net. [67.185.54.80])
-        by smtp.gmail.com with ESMTPSA id k3sm36149846pfg.23.2019.08.20.13.24.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Aug 2019 13:24:39 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6qXb3+hkNMLokNbmTsp+ObVF0F8sjhOp4GiAYlV6riw=;
+        b=lfstOBpVRH5SEZRdV6abhJ/ve74avjjwq5azmUuE7NS83TPd0E01JO7Mjw9619Jg2T
+         ktulOOrlGs3cjcpLhZICwU+zJp/D6oTDBc98M8khsyyF1SqK6bFqOk2MXbijOrCJZgTD
+         kq5kDuBlcAhUwPAkeCCEZYSGwN/53ocmVrXXdjdchq/cIlxnimz6eXugleEoWcvgE+70
+         +Z7y6ZTlAb8JQjmLh4T1yC66SP9yxX+mDs54iylH6yMYzcgfFMsGYOel4+X6rfDSILFX
+         6heUBGmhe/Znieo2kw41igr2TxS+25CDvzdnnx/Mq52XdGuQ8UwBm/CPgjb79e2eVDQt
+         azQg==
+X-Gm-Message-State: APjAAAWk8aRQaA5idD+fiWVYAjU6bWm/rewE9IniH+0Q7txh4L8gtSak
+        JhGCk3mAMl7y6i6OrgG5arCP/qRpuUTv/2AtLvY=
+X-Google-Smtp-Source: APXvYqxMUioSlImyCRLbkJuFjkcI+OqNzU5slZDniWJefqW4ZaPyuq4O4QUo+14sHbcyMfMBzeDaNnDSeb3OpBIIPcE=
+X-Received: by 2002:a5e:8e08:: with SMTP id a8mr17306812ion.94.1566332959424;
+ Tue, 20 Aug 2019 13:29:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190820202402.24951-1-andrew.smirnov@gmail.com> <20190820202402.24951-14-andrew.smirnov@gmail.com>
+In-Reply-To: <20190820202402.24951-14-andrew.smirnov@gmail.com>
 From:   Andrey Smirnov <andrew.smirnov@gmail.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Chris Spencer <christopher.spencer@sea.co.uk>,
+Date:   Tue, 20 Aug 2019 13:29:07 -0700
+Message-ID: <CAHQ1cqFWEmJsE1XrUBVvGqp-aEy5HE6GO18DX+y0kOGsc7PbMw@mail.gmail.com>
+Subject: Re: [PATCH v8 13/16] crypto: caam - select DMA address size at runtime
+To:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>
+Cc:     Chris Spencer <christopher.spencer@sea.co.uk>,
         Cory Tusar <cory.tusar@zii.aero>,
         Chris Healy <cphealy@gmail.com>,
         Lucas Stach <l.stach@pengutronix.de>,
         Aymen Sghaier <aymen.sghaier@nxp.com>,
         Leonard Crestez <leonard.crestez@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v8 16/16] arm64: dts: imx8mq: Add CAAM node
-Date:   Tue, 20 Aug 2019 13:24:02 -0700
-Message-Id: <20190820202402.24951-17-andrew.smirnov@gmail.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190820202402.24951-1-andrew.smirnov@gmail.com>
-References: <20190820202402.24951-1-andrew.smirnov@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-crypto@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add node for CAAM - Cryptographic Acceleration and Assurance Module.
+On Tue, Aug 20, 2019 at 1:24 PM Andrey Smirnov <andrew.smirnov@gmail.com> w=
+rote:
+>
+> i.MX8 mScale SoC still use 32-bit addresses in its CAAM implmentation,
+> so we can't rely on sizeof(dma_addr_t) to detemine CAAM pointer
+> size. Convert the code to query CTPR and MCFGR for that during driver
+> probing.
+>
+> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+> Cc: Chris Spencer <christopher.spencer@sea.co.uk>
+> Cc: Cory Tusar <cory.tusar@zii.aero>
+> Cc: Chris Healy <cphealy@gmail.com>
+> Cc: Lucas Stach <l.stach@pengutronix.de>
+> Cc: Horia Geant=C4=83 <horia.geanta@nxp.com>
+> Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
+> Cc: Leonard Crestez <leonard.crestez@nxp.com>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  drivers/crypto/caam/caampkc.c     |  8 +++----
+>  drivers/crypto/caam/ctrl.c        |  5 +++-
+>  drivers/crypto/caam/desc_constr.h | 10 ++++++--
+>  drivers/crypto/caam/intern.h      |  2 +-
+>  drivers/crypto/caam/pdb.h         | 16 +++++++++----
+>  drivers/crypto/caam/pkc_desc.c    |  8 +++----
+>  drivers/crypto/caam/regs.h        | 40 +++++++++++++++++++++++--------
+>  7 files changed, 63 insertions(+), 26 deletions(-)
+>
+> diff --git a/drivers/crypto/caam/caampkc.c b/drivers/crypto/caam/caampkc.=
+c
+> index 5b12b232ee5e..83f96d4f86e0 100644
+> --- a/drivers/crypto/caam/caampkc.c
+> +++ b/drivers/crypto/caam/caampkc.c
+> @@ -17,13 +17,13 @@
+>  #include "sg_sw_sec4.h"
+>  #include "caampkc.h"
+>
+> -#define DESC_RSA_PUB_LEN       (2 * CAAM_CMD_SZ + sizeof(struct rsa_pub_=
+pdb))
+> +#define DESC_RSA_PUB_LEN       (2 * CAAM_CMD_SZ + SIZEOF_RSA_PUB_PDB)
+>  #define DESC_RSA_PRIV_F1_LEN   (2 * CAAM_CMD_SZ + \
+> -                                sizeof(struct rsa_priv_f1_pdb))
+> +                                SIZEOF_RSA_PRIV_F1_PDB)
+>  #define DESC_RSA_PRIV_F2_LEN   (2 * CAAM_CMD_SZ + \
+> -                                sizeof(struct rsa_priv_f2_pdb))
+> +                                SIZEOF_RSA_PRIV_F2_PDB)
+>  #define DESC_RSA_PRIV_F3_LEN   (2 * CAAM_CMD_SZ + \
+> -                                sizeof(struct rsa_priv_f3_pdb))
+> +                                SIZEOF_RSA_PRIV_F3_PDB)
+>  #define CAAM_RSA_MAX_INPUT_SIZE        512 /* for a 4096-bit modulus */
+>
+>  /* buffer filled with zeros, used for padding */
+> diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+> index 47b92451756f..4b7f95f64e34 100644
+> --- a/drivers/crypto/caam/ctrl.c
+> +++ b/drivers/crypto/caam/ctrl.c
+> @@ -602,7 +602,10 @@ static int caam_probe(struct platform_device *pdev)
+>         caam_imx =3D (bool)imx_soc_match;
+>
+>         comp_params =3D rd_reg32(&ctrl->perfmon.comp_parms_ms);
+> -       caam_ptr_sz =3D sizeof(dma_addr_t);
+> +       if (comp_params & CTPR_MS_PS && rd_reg32(&ctrl->mcr) & MCFGR_LONG=
+_PTR)
 
-Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
-Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
-Cc: Chris Spencer <christopher.spencer@sea.co.uk>
-Cc: Cory Tusar <cory.tusar@zii.aero>
-Cc: Chris Healy <cphealy@gmail.com>
-Cc: Lucas Stach <l.stach@pengutronix.de>
-Cc: Horia Geantă <horia.geanta@nxp.com>
-Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
-Cc: Leonard Crestez <leonard.crestez@nxp.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 30 +++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+Horia:
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index d09b808eff87..752d5a61878c 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -728,6 +728,36 @@
- 				status = "disabled";
- 			};
- 
-+			crypto: crypto@30900000 {
-+				compatible = "fsl,sec-v4.0";
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+				reg = <0x30900000 0x40000>;
-+				ranges = <0 0x30900000 0x40000>;
-+				interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX8MQ_CLK_AHB>,
-+					 <&clk IMX8MQ_CLK_IPG_ROOT>;
-+				clock-names = "aclk", "ipg";
-+
-+				sec_jr0: jr@1000 {
-+					compatible = "fsl,sec-v4.0-job-ring";
-+					reg = <0x1000 0x1000>;
-+					interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
-+				};
-+
-+				sec_jr1: jr@2000 {
-+					compatible = "fsl,sec-v4.0-job-ring";
-+					reg = <0x2000 0x1000>;
-+					interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
-+				};
-+
-+				sec_jr2: jr@3000 {
-+					compatible = "fsl,sec-v4.0-job-ring";
-+					reg = <0x3000 0x1000>;
-+					interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
-+				};
-+			};
-+
- 			i2c1: i2c@30a20000 {
- 				compatible = "fsl,imx8mq-i2c", "fsl,imx21-i2c";
- 				reg = <0x30a20000 0x10000>;
--- 
-2.21.0
+As I previously mentioned, i.MX8MQ SRM I have doesn't document MCFGR
+bits related to this. If you don't mind, please double check that
+using MCFGR_LONG_PTR here is correct.
 
+Thanks,
+Andrey Smirnov
