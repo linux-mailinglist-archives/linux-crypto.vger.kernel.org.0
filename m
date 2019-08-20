@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EAF296A55
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Aug 2019 22:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4A896A3E
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Aug 2019 22:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731005AbfHTUYi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 20 Aug 2019 16:24:38 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:39175 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730993AbfHTUYf (ORCPT
+        id S1731002AbfHTUYg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 20 Aug 2019 16:24:36 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:38486 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731001AbfHTUYg (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 20 Aug 2019 16:24:35 -0400
-Received: by mail-pg1-f193.google.com with SMTP id u17so3855567pgi.6;
-        Tue, 20 Aug 2019 13:24:34 -0700 (PDT)
+        Tue, 20 Aug 2019 16:24:36 -0400
+Received: by mail-pl1-f195.google.com with SMTP id m12so40149plt.5;
+        Tue, 20 Aug 2019 13:24:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=J7nGZ1PjKiueBrVV7uB5YkN75klJuuzhInUcsWCHplk=;
-        b=I89tyuE9PHqI2AwMrotj0klla5L3x4uk4wPNan2EG/4+AVN33AItMi/+i/JhiH+/xL
-         6MA/l7sGhlv3JklGiG5TgAk/bmb78w5AhS4sVU+EXDkFu6w+YOU+9ka4K5ZBJgQXYLpM
-         UF2XekloSLxK7TBnx6A2gJ/KAzCAeIhylmNsLpQYvq4f0i4irD0ZYLjuHOVmf+lAenv7
-         TwBWbvs+dkxkvrUFIspatlLp9LcbNKHvhnBUGMb5A5J0w4xAGCkxwPTkXy9pSaVkOyqO
-         zDb1FqZaPvagZLNIEZN823B3Xe7cPu2YFcOvkHsPqrhNg86/rmdsLooeiDftGsZxHCfy
-         mjyw==
+        bh=41CIshzGWkv7KtXuXJVjibF9O1EhLdAcmlG3QhRo590=;
+        b=o4TkNsG4VKGXmj8YecwUAjiTxuLXqo5mRq+0lyNxOn/ihNYecJUEwCBzd5xoZPHnJG
+         XCC2NM29L+STqa2/HODLoDePubSqmqpnmgFjWPuk3SSRMn1SLFPmrx7UpPC0KxQwZykn
+         8E9oUCrzNL4sxwAZkwcFw/nZAFcAh5BjFQ8/byVTamR56VVMyMsbFNLeUyshNi2hQNy7
+         b0yJwbRJnkJgpi5Ee4CLWDA8xszBN0LVMB2S2SfjhqrzAGd2OZ3cmwR3f+gmfiROkZpS
+         Fnesxz3t8erJyvzCQdMyCayLlEyri4NmspQzL1LpN0XsK9s7QLGniZ15gtpv5m1b5wqj
+         uNow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=J7nGZ1PjKiueBrVV7uB5YkN75klJuuzhInUcsWCHplk=;
-        b=MwBBuTfuiN0QtohItbCTpGjZXCWlPep21EpLvHHbnnQmkTEUbD/zSNi0wQGDuerdB4
-         A1OqHVdqD1mdwcT/+6N1MjLRsn0lf/23F+Hgi9RtjVjQnRwtaGScv6+Mv85ElxNfWpBS
-         jgPWe4Rh1iTtkVlDi9WrOruqWSfQrT8PTeyzTMQbhkg+3lgQkD0oJJ40LAlW0IpThA+s
-         68OSdXzMT5rz7+itvQupITppLNOm5+0KIsIuiNJk/mTv+TuS7+hMuHWWda/LKsrkiZxp
-         B57GsP/uI4w/eChzYSeRoWUwlJ/sLTK/0ADo889+WrcGVudV1fXYwmVz5Vtqod6cRaBJ
-         mvww==
-X-Gm-Message-State: APjAAAWdTm2Xk02Z0WDdaNwBacOCb2n2zxXRDHTJhMTnR/USwuQu/eMD
-        sWmWQ4K+9CnNnjsPisaCFeobawb5Xhk=
-X-Google-Smtp-Source: APXvYqw0gu7JW7kIL2AU41OE90KkBlie8NFwxcoYppdBzK7ZKOGWY6bNpt8iVP5rV+IQlpWjOay0tg==
-X-Received: by 2002:a63:c70d:: with SMTP id n13mr26101377pgg.171.1566332673744;
-        Tue, 20 Aug 2019 13:24:33 -0700 (PDT)
+        bh=41CIshzGWkv7KtXuXJVjibF9O1EhLdAcmlG3QhRo590=;
+        b=el9SVmYDhQxECO4PC692r9A61DibWA2YV3tZu4wMUh87Q4eOGRAi5Fo+q5i+eWY6bo
+         Q2+lbh0iZNf9fSVQGJfWAi5ZuhAy0jdpKFEX0xyZ5WNCKvGjhrytV9YRlZ7l9I0E2Zsc
+         1hN2qN+IgbC7YgN7QRFlP5gNgMxZbIpD0NFuaOPqESm7uxQpEiLuKjR9UTYB7BYgWWXF
+         9xlXms7VyXas10VHaIv9xH05Poen33jb+hmuZ//kIvMnRB7q+f55bYxChHvrbDUJxgJH
+         Shw8sskuBTsXg55a4oR+Ul7mCFpVkC5X6+zu88Nx0CTe+OLWDkljEOgEYI+cElB0yTZt
+         xJYA==
+X-Gm-Message-State: APjAAAUlp/PwCn7XpqJvZdsYt6ooGhUdQBwwQbTA6HH9FTUooxEdiVjT
+        5dv2TRe2NmksAEK9Kf6BzkT9pfYNnLc=
+X-Google-Smtp-Source: APXvYqymvn8S+nzVlTObKe0xiL56gvAQoUZk+mP7jibvgl2vQtS/hfmAZat11FmbFBeNjIfo1bAPoQ==
+X-Received: by 2002:a17:902:41:: with SMTP id 59mr7843549pla.268.1566332675116;
+        Tue, 20 Aug 2019 13:24:35 -0700 (PDT)
 Received: from localhost.lan (c-67-185-54-80.hsd1.wa.comcast.net. [67.185.54.80])
-        by smtp.gmail.com with ESMTPSA id k3sm36149846pfg.23.2019.08.20.13.24.32
+        by smtp.gmail.com with ESMTPSA id k3sm36149846pfg.23.2019.08.20.13.24.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Aug 2019 13:24:33 -0700 (PDT)
+        Tue, 20 Aug 2019 13:24:34 -0700 (PDT)
 From:   Andrey Smirnov <andrew.smirnov@gmail.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
@@ -56,9 +56,9 @@ Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
         Aymen Sghaier <aymen.sghaier@nxp.com>,
         Leonard Crestez <leonard.crestez@nxp.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v8 11/16] crypto: caam - drop explicit usage of struct jr_outentry
-Date:   Tue, 20 Aug 2019 13:23:57 -0700
-Message-Id: <20190820202402.24951-12-andrew.smirnov@gmail.com>
+Subject: [PATCH v8 12/16] crypto: caam - don't hardcode inpentry size
+Date:   Tue, 20 Aug 2019 13:23:58 -0700
+Message-Id: <20190820202402.24951-13-andrew.smirnov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190820202402.24951-1-andrew.smirnov@gmail.com>
 References: <20190820202402.24951-1-andrew.smirnov@gmail.com>
@@ -70,12 +70,11 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Using struct jr_outentry to specify the layout of JobR output ring is
-not appropriate for all 64-bit SoC, since some of them, like i.MX8MQ,
-use 32-bit pointers there which doesn't match 64-bit
-dma_addr_t. Convert existing code to use explicit helper functions to
-access any of the JobR output ring elements, so that the support for
-i.MX8MQ can be added later. No functional change intended.
+Using dma_addr_t for elements of JobR input ring is not appropriate on
+all 64-bit SoCs, some of which, like i.MX8MQ, use only 32-bit wide
+pointers there. Convert all of the code to use explicit helper
+function that can be later extended to support i.MX8MQ. No functional
+change intended.
 
 Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
 Cc: Chris Spencer <christopher.spencer@sea.co.uk>
@@ -88,120 +87,63 @@ Cc: Leonard Crestez <leonard.crestez@nxp.com>
 Cc: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
- drivers/crypto/caam/intern.h |  2 +-
- drivers/crypto/caam/jr.c     | 10 +++++----
- drivers/crypto/caam/regs.h   | 40 ++++++++++++++++++++++++++++++++----
- 3 files changed, 43 insertions(+), 9 deletions(-)
+ drivers/crypto/caam/intern.h | 3 ++-
+ drivers/crypto/caam/jr.c     | 4 ++--
+ drivers/crypto/caam/regs.h   | 9 +++++++++
+ 3 files changed, 13 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/crypto/caam/intern.h b/drivers/crypto/caam/intern.h
-index 1f01703f510a..081805c0f88b 100644
+index 081805c0f88b..c00c7c84ec84 100644
 --- a/drivers/crypto/caam/intern.h
 +++ b/drivers/crypto/caam/intern.h
-@@ -58,7 +58,7 @@ struct caam_drv_private_jr {
- 	dma_addr_t *inpring;	/* Base of input ring, alloc DMA-safe */
+@@ -55,7 +55,8 @@ struct caam_drv_private_jr {
+ 	spinlock_t inplock ____cacheline_aligned; /* Input ring index lock */
+ 	u32 inpring_avail;	/* Number of free entries in input ring */
+ 	int head;			/* entinfo (s/w ring) head index */
+-	dma_addr_t *inpring;	/* Base of input ring, alloc DMA-safe */
++	void *inpring;			/* Base of input ring, alloc
++					 * DMA-safe */
  	int out_ring_read_index;	/* Output index "tail" */
  	int tail;			/* entinfo (s/w ring) tail index */
--	struct jr_outentry *outring;	/* Base of output ring, DMA-safe */
-+	void *outring;			/* Base of output ring, DMA-safe */
- };
- 
- /*
+ 	void *outring;			/* Base of output ring, DMA-safe */
 diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
-index 98b308de42c0..6c91f38862e4 100644
+index 6c91f38862e4..417ad52615c6 100644
 --- a/drivers/crypto/caam/jr.c
 +++ b/drivers/crypto/caam/jr.c
-@@ -211,7 +211,7 @@ static void caam_jr_dequeue(unsigned long devarg)
- 		for (i = 0; CIRC_CNT(head, tail + i, JOBR_DEPTH) >= 1; i++) {
- 			sw_idx = (tail + i) & (JOBR_DEPTH - 1);
+@@ -388,7 +388,7 @@ int caam_jr_enqueue(struct device *dev, u32 *desc,
+ 	head_entry->cbkarg = areq;
+ 	head_entry->desc_addr_dma = desc_dma;
  
--			if (jrp->outring[hw_idx].desc ==
-+			if (jr_outentry_desc(jrp->outring, hw_idx) ==
- 			    caam_dma_to_cpu(jrp->entinfo[sw_idx].desc_addr_dma))
- 				break; /* found */
- 		}
-@@ -220,7 +220,8 @@ static void caam_jr_dequeue(unsigned long devarg)
+-	jrp->inpring[head] = cpu_to_caam_dma(desc_dma);
++	jr_inpentry_set(jrp->inpring, head, cpu_to_caam_dma(desc_dma));
  
- 		/* Unmap just-run descriptor so we can post-process */
- 		dma_unmap_single(dev,
--				 caam_dma_to_cpu(jrp->outring[hw_idx].desc),
-+				 caam_dma_to_cpu(jr_outentry_desc(jrp->outring,
-+								  hw_idx)),
- 				 jrp->entinfo[sw_idx].desc_size,
- 				 DMA_TO_DEVICE);
+ 	/*
+ 	 * Guarantee that the descriptor's DMA address has been written to
+@@ -434,7 +434,7 @@ static int caam_jr_init(struct device *dev)
+ 	if (error)
+ 		return error;
  
-@@ -231,7 +232,8 @@ static void caam_jr_dequeue(unsigned long devarg)
- 		usercall = jrp->entinfo[sw_idx].callbk;
- 		userarg = jrp->entinfo[sw_idx].cbkarg;
- 		userdesc = jrp->entinfo[sw_idx].desc_addr_virt;
--		userstatus = caam32_to_cpu(jrp->outring[hw_idx].jrstatus);
-+		userstatus = caam32_to_cpu(jr_outentry_jrstatus(jrp->outring,
-+								hw_idx));
- 
- 		/*
- 		 * Make sure all information from the job has been obtained
-@@ -438,7 +440,7 @@ static int caam_jr_init(struct device *dev)
- 	if (!jrp->inpring)
- 		return -ENOMEM;
- 
--	jrp->outring = dmam_alloc_coherent(dev, sizeof(*jrp->outring) *
-+	jrp->outring = dmam_alloc_coherent(dev, SIZEOF_JR_OUTENTRY *
- 					   JOBR_DEPTH, &outbusaddr,
+-	jrp->inpring = dmam_alloc_coherent(dev, sizeof(*jrp->inpring) *
++	jrp->inpring = dmam_alloc_coherent(dev, SIZEOF_JR_INPENTRY *
+ 					   JOBR_DEPTH, &inpbusaddr,
  					   GFP_KERNEL);
- 	if (!jrp->outring)
+ 	if (!jrp->inpring)
 diff --git a/drivers/crypto/caam/regs.h b/drivers/crypto/caam/regs.h
-index 0df4cf32fe78..cf73015b3be0 100644
+index cf73015b3be0..6dbb269a3e7e 100644
 --- a/drivers/crypto/caam/regs.h
 +++ b/drivers/crypto/caam/regs.h
-@@ -71,6 +71,7 @@
+@@ -244,6 +244,15 @@ static inline u32 jr_outentry_jrstatus(void *outring, int hw_idx)
+ 	return jrstatus;
+ }
  
- extern bool caam_little_end;
- extern bool caam_imx;
-+extern size_t caam_ptr_sz;
- 
- #define caam_to_cpu(len)						\
- static inline u##len caam##len ## _to_cpu(u##len val)			\
-@@ -208,10 +209,41 @@ static inline u64 caam_dma_to_cpu(u64 value)
-  * jr_outentry
-  * Represents each entry in a JobR output ring
-  */
--struct jr_outentry {
--	dma_addr_t desc;/* Pointer to completed descriptor */
--	u32 jrstatus;	/* Status for completed descriptor */
--} __packed;
-+
-+static inline void jr_outentry_get(void *outring, int hw_idx, dma_addr_t *desc,
-+				   u32 *jrstatus)
++static inline void jr_inpentry_set(void *inpring, int hw_idx, dma_addr_t val)
 +{
-+	struct {
-+		dma_addr_t desc;/* Pointer to completed descriptor */
-+		u32 jrstatus;	/* Status for completed descriptor */
-+	} __packed *outentry = outring;
++	dma_addr_t *inpentry = inpring;
 +
-+	*desc = outentry[hw_idx].desc;
-+	*jrstatus = outentry[hw_idx].jrstatus;
++	inpentry[hw_idx] = val;
 +}
 +
-+#define SIZEOF_JR_OUTENTRY	(caam_ptr_sz + sizeof(u32))
-+
-+static inline dma_addr_t jr_outentry_desc(void *outring, int hw_idx)
-+{
-+	dma_addr_t desc;
-+	u32 unused;
-+
-+	jr_outentry_get(outring, hw_idx, &desc, &unused);
-+
-+	return desc;
-+}
-+
-+static inline u32 jr_outentry_jrstatus(void *outring, int hw_idx)
-+{
-+	dma_addr_t unused;
-+	u32 jrstatus;
-+
-+	jr_outentry_get(outring, hw_idx, &unused, &jrstatus);
-+
-+	return jrstatus;
-+}
++#define SIZEOF_JR_INPENTRY	caam_ptr_sz
 +
  
  /* Version registers (Era 10+)	e80-eff */
