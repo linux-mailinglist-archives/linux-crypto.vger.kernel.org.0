@@ -2,100 +2,127 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D3C9A2A9
-	for <lists+linux-crypto@lfdr.de>; Fri, 23 Aug 2019 00:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1359A351
+	for <lists+linux-crypto@lfdr.de>; Fri, 23 Aug 2019 00:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390281AbfHVWNl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 22 Aug 2019 18:13:41 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:38584 "EHLO
+        id S2405322AbfHVWxX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 22 Aug 2019 18:53:23 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:51958 "EHLO
         userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390161AbfHVWNl (ORCPT
+        with ESMTP id S2405321AbfHVWxX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 22 Aug 2019 18:13:41 -0400
+        Thu, 22 Aug 2019 18:53:23 -0400
 Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7MM46Db107969;
-        Thu, 22 Aug 2019 22:13:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7MMiR8f137545;
+        Thu, 22 Aug 2019 22:53:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
  content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=YQfxUm4RiEvSqlcjX0k9QKDvOnMyqXQq+e0T49ZJ0/o=;
- b=G8G+3jdfo8lxnRB0Y0IEllzGd50Pman7d/LDg3V18TA+/oKZxcmBqG4pDBEJafKfLzrb
- /GKnaFIc0oflWVwhZ4OPScaMivjhyMjv0Q1L42EgbfD/0WMdA7iDis1k9p5Trh6Vbgyg
- fwN0pv9svTrHVYLzGx1Xa+9CIUeHNG1tTVnUu9V4ryQtjMzA8Woj3heafFmSuLG9udxy
- 7yfNF2XrryIbaD4PWpv885fVe+YM3PYWuN/sLCMls0gBSYaLspiVlOKndyV7VO3AbSvh
- ULbUPzNd7lKNcZpOWYxkMCtY940iCFik5djkQNNT5+pwTfS7GOdwsUtJAFLt/R4ln0kv mg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2uea7r8uus-1
+ bh=vpVu2VZRtNah6ylpgnywGvA55NJhIJGRcvAqj+DChyw=;
+ b=NVV8kon+IlvlvC423xl7cR5HmEvnrJ2TgEOHtaqMdQLZvfV+GH7bfnbEBMPaiW+H5Uux
+ +S2tBikRm8BWXBAaM7V23EEhj99jNTUPxCMd0bR1iEvER+6kOTh6AZXljSrt0reFhYOe
+ Fro4Xasfz/ZxMHev65VDkFcRQK3f/NQStfZIY2sx+lRgRXkqnwYTUyj13Pgx6JhaYhm2
+ UTHZfJh2KM0ckKkQOt8D/4ibYMYGsrtIf1Cxd3iob4xFc5Mhj45TXCJoY6A/miwCavAF
+ 0q6EexfYl7cuERK24nvg6IXYXMOKl8e0JQyxWIdsgo6BRtGWL4838Sd2RejIXb2zx6SQ Gw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2uea7r9003-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Aug 2019 22:13:18 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7MM41UL194552;
-        Thu, 22 Aug 2019 22:13:18 GMT
+        Thu, 22 Aug 2019 22:53:10 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7MMhXOd043707;
+        Thu, 22 Aug 2019 22:53:09 GMT
 Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2uh2q6hut4-1
+        by aserp3020.oracle.com with ESMTP id 2uj1xyuhdm-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Aug 2019 22:13:17 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7MMDGP6005900;
-        Thu, 22 Aug 2019 22:13:16 GMT
+        Thu, 22 Aug 2019 22:53:09 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7MMr7p7026926;
+        Thu, 22 Aug 2019 22:53:08 GMT
 Received: from [192.168.1.219] (/98.229.125.203)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 22 Aug 2019 15:13:16 -0700
-Subject: Re: [PATCH 8/9] padata: unbind parallel jobs from specific CPUs
+        with ESMTP ; Thu, 22 Aug 2019 15:53:07 -0700
+Subject: Re: [PATCH v2] padata: validate cpumask without removed CPU during
+ offline
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20190813005224.30779-1-daniel.m.jordan@oracle.com>
- <20190813005224.30779-9-daniel.m.jordan@oracle.com>
- <20190822041340.GA590@gondor.apana.org.au>
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-Message-ID: <dd31ec02-4a52-995d-801a-95bec39f4944@oracle.com>
-Date:   Thu, 22 Aug 2019 18:13:15 -0400
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20190809192857.26585-2-daniel.m.jordan@oracle.com>
+ <20190809210603.20900-1-daniel.m.jordan@oracle.com>
+ <20190822035005.GA32551@gondor.apana.org.au>
+ <6a15a323-7e61-79b5-d3db-3c8717f50196@oracle.com>
+Message-ID: <b341a330-0e85-e386-1f74-89219c4f511f@oracle.com>
+Date:   Thu, 22 Aug 2019 18:53:06 -0400
 MIME-Version: 1.0
-In-Reply-To: <20190822041340.GA590@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <6a15a323-7e61-79b5-d3db-3c8717f50196@oracle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9357 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908220194
+ engine=8.0.1-1906280000 definitions=main-1908220199
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9357 signatures=668684
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908220194
+ definitions=main-1908220199
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 8/22/19 12:13 AM, Herbert Xu wrote:
-> On Mon, Aug 12, 2019 at 08:52:23PM -0400, Daniel Jordan wrote:
->>
->> @@ -191,22 +184,25 @@ static struct padata_priv *padata_get_next(struct parallel_data *pd)
->>   		padata = list_entry(reorder->list.next,
->>   				    struct padata_priv, list);
->>   
->> -		list_del_init(&padata->list);
->> -		atomic_dec(&pd->reorder_objects);
->> +		/*
->> +		 * The check fails in the unlikely event that two or more
->> +		 * parallel jobs have hashed to the same CPU and one of the
->> +		 * later ones finishes first.
->> +		 */
->> +		if (padata->seq_nr == pd->processed) {
->> +			list_del_init(&padata->list);
->> +			atomic_dec(&pd->reorder_objects);
-> 
-> Now that you've changed the test for whether there is work to be
-> done you also need to update the code at the end of padata_reorder
-> that checks whether there is work to do.  Otherwise we can end up
-> in a busy loop that just wastes CPU cycles.
 
-So we can, thanks for catching that.
+
+On 8/22/19 6:10 PM, Daniel Jordan wrote:
+> On 8/21/19 11:50 PM, Herbert Xu wrote:
+>> On Fri, Aug 09, 2019 at 05:06:03PM -0400, Daniel Jordan wrote:
+>>> diff --git a/kernel/padata.c b/kernel/padata.c
+>>> index d056276a96ce..01460ea1d160 100644
+>>> --- a/kernel/padata.c
+>>> +++ b/kernel/padata.c
+>>> @@ -702,10 +702,7 @@ static int __padata_remove_cpu(struct padata_instance *pinst, int cpu)
+>>>       struct parallel_data *pd = NULL;
+>>>       if (cpumask_test_cpu(cpu, cpu_online_mask)) {
+>>> -
+>>> -        if (!padata_validate_cpumask(pinst, pinst->cpumask.pcpu) ||
+>>> -            !padata_validate_cpumask(pinst, pinst->cpumask.cbcpu))
+>>> -            __padata_stop(pinst);
+>>> +        __padata_stop(pinst);
+>>>           pd = padata_alloc_pd(pinst, pinst->cpumask.pcpu,
+>>>                        pinst->cpumask.cbcpu);
+>>> @@ -716,6 +713,9 @@ static int __padata_remove_cpu(struct padata_instance *pinst, int cpu)
+>>>           cpumask_clear_cpu(cpu, pd->cpumask.cbcpu);
+>>>           cpumask_clear_cpu(cpu, pd->cpumask.pcpu);
+>>> +        if (padata_validate_cpumask(pinst, pd->cpumask.pcpu) &&
+>>> +            padata_validate_cpumask(pinst, pd->cpumask.cbcpu))
+>>> +            __padata_start(pinst);
+>>>       }
+>>
+>> I looked back at the original code and in fact the original
+>> assumption is to call this after cpu_online_mask has been modified.
+>>
+>> So I suspect we need to change the state at which this is called
+>> by CPU hotplug.
+> 
+> Yes the state idea is good, it's cleaner to have the CPU out of the online mask ahead of time.
+> 
+> I think we'll need two states.  We want a CPU being offlined to already be removed from the online cpumask so and'ing the user-supplied and online masks reflects conditions after the hotplug operation is finished.  For the same reason we want a CPU being onlined to already be in the online mask, and we can use the existing hotplug state for that, though we'd need a new padata-specific state for the offline case.
+
+The new state would be something before CPUHP_BRINGUP_CPU so the cpu isn't in the online mask yet.
+
+> 
+>> IOW the commit that broke this is 30e92153b4e6.
+> 
+> I don't think 30e92153b4e6 is the one since the commit before that only allows __padata_remove_cpu to do its work if @cpu is in the online mask, so the call happens before cpu_online_mask has been modified.  Same story for the very first padata commit, so it seems like that should actually be Fixes.
+> 
+>> This would also allow us to get rid of the two cpumask_clear_cpu
+>> calls on pd->cpumask which is just bogus as you should only ever
+>> modify the pd->cpumask prior to the padata_repalce call (because
+>> the readers are not serialised with respect to this).
+> 
+> Yeah, makes sense.
+> 
+> Daniel
