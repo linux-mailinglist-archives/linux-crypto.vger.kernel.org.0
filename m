@@ -2,91 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A17E899876
-	for <lists+linux-crypto@lfdr.de>; Thu, 22 Aug 2019 17:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB359A2A6
+	for <lists+linux-crypto@lfdr.de>; Fri, 23 Aug 2019 00:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387888AbfHVPri (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 22 Aug 2019 11:47:38 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:54244 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387880AbfHVPri (ORCPT
+        id S2390311AbfHVWLW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Thu, 22 Aug 2019 18:11:22 -0400
+Received: from mail.physics.pub.ro ([141.85.216.3]:39268 "EHLO
+        physics1.physics.pub.ro" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390281AbfHVWLW (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 22 Aug 2019 11:47:38 -0400
-Received: by mail-wm1-f68.google.com with SMTP id 10so6121472wmp.3
-        for <linux-crypto@vger.kernel.org>; Thu, 22 Aug 2019 08:47:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=ePEhvI4Ou85as0xCHV2LBgE4jtxI043xEpOM+J7yQmU=;
-        b=NAKrHCFJmq8WKxoxGP/IRY1YFhYN7z4m+YH8w/gA21gZ44+QyW5djQ+Fkb8KEguhQ5
-         UZUmxVoot1+faBVGjFdbM2rTTz6NLrBgminmlzDxGXgl+grvpIyx8kkcTLN21cybjAaw
-         k2hXF9320G1s2xOTSFqMjprtVCL7UwE8PwvvalPtFBuztq41tC6urXcFDMqudAyiNip6
-         jvPMxh6AY16oVhUwSqX0tZT/GP3WIdae07NMKzicBpajyhlA8cIH0Gs3xYilVkVTbRB4
-         qYwL1j30y70gCMEr9XUU3ysBM7lRSguW41bFtOT2F9pS9U3o1H7wHtsstkQlaRRzwgC4
-         HgDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ePEhvI4Ou85as0xCHV2LBgE4jtxI043xEpOM+J7yQmU=;
-        b=tKTLPFMK2MDNI/L85JbV0xJt4McdTCcyFsL/wQ0SK6k/Lgfa0ORq1GI8PuMan0cD4O
-         RGOw7apoEYX1pd/kgwgPeGcPWopQZoB+Bzuu7v3aMYs6SB6nZGmbantpWSV1mVsqv2tH
-         GlnwXbiC0eJH2yAH400O+HXS1NhHLeiohSP2Wmt9iC0FauQUFmVSWDD4uqPqzHCEPYsT
-         9/V9SozrV+aR4jT+nL1j9lLQHMAk4Fk+W0/rmg3LQb5Y5W6H/ypuDpIjlIKLmOxIxAKK
-         ocsrMZIKtNfv4ux/9PSH5J5cmGaZlXPhTegsGpa9NixiobzlbaNvx3HV6xLMHhRPo2Sr
-         qzTQ==
-X-Gm-Message-State: APjAAAUrglpD1oi3xbGKd2MKpQPi0TyZp1FrbjQ0dVyGTC/OCXMajKu6
-        BBsLeGRueWeSvTA/sDYBxosEdJktS2VdMw==
-X-Google-Smtp-Source: APXvYqyNKdZtQJW2eRwHXoJNvpP5SXDzLDDLHDeCqNh2NEYwxtolQbqEAiuY3M1FSHXXsBPLg90c3w==
-X-Received: by 2002:a05:600c:24cf:: with SMTP id 15mr7265597wmu.76.1566488856953;
-        Thu, 22 Aug 2019 08:47:36 -0700 (PDT)
-Received: from localhost.localdomain (adsl-91.109.242.50.tellas.gr. [109.242.50.91])
-        by smtp.gmail.com with ESMTPSA id e10sm637wrn.33.2019.08.22.08.47.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Aug 2019 08:47:36 -0700 (PDT)
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Gary Hook <gary.hook@amd.com>
-Subject: [PATCH] crypto: ccp - invoke fallback for XTS ciphertext stealing
-Date:   Thu, 22 Aug 2019 18:47:31 +0300
-Message-Id: <20190822154731.13301-1-ard.biesheuvel@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Thu, 22 Aug 2019 18:11:22 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by physics1.physics.pub.ro (Postfix) with ESMTP id 9BD08E3CE1A;
+        Thu, 22 Aug 2019 13:58:04 +0300 (EEST)
+X-Virus-Scanned: amavisd-new at physics.pub.ro
+Received: from physics1.physics.pub.ro ([127.0.0.1])
+        by localhost (physics1.physics.pub.ro [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id HzUniSoLWss6; Thu, 22 Aug 2019 13:58:04 +0300 (EEST)
+Received: from [10.51.176.174] (unknown [105.4.6.61])
+        by physics1.physics.pub.ro (Postfix) with ESMTPSA id EF88DE3CD9D;
+        Thu, 22 Aug 2019 13:57:51 +0300 (EEST)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
+To:     Recipients <niculae-tiberiu.puscas@physics.pub.ro>
+From:   ''Tayeb Souami'' <niculae-tiberiu.puscas@physics.pub.ro>
+Date:   Thu, 22 Aug 2019 12:57:47 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20190822105751.EF88DE3CD9D@physics1.physics.pub.ro>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-For correctness and compliance with the XTS-AES specification, we are
-adding support for ciphertext stealing to XTS implementations, even
-though no use cases are known that will be enabled by this.
+Lieber Freund,
 
-Since the ccp driver already has a fallback skcipher standby for
-dealing with input sizes other than [16, 512, 1024, 2048, 4096],
-just drop the check against the block size.
+Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden, um meine Gewinne zu überprüfen, sehen Sie bitte meine You Tube Seite unten.
 
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Gary Hook <gary.hook@amd.com>
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
- drivers/crypto/ccp/ccp-crypto-aes-xts.c | 3 ---
- 1 file changed, 3 deletions(-)
+UHR MICH HIER: https://www.youtube.com/watch?v=Z6ui8ZDQ6Ks
 
-diff --git a/drivers/crypto/ccp/ccp-crypto-aes-xts.c b/drivers/crypto/ccp/ccp-crypto-aes-xts.c
-index 783ba75e0618..8e4a531f4f70 100644
---- a/drivers/crypto/ccp/ccp-crypto-aes-xts.c
-+++ b/drivers/crypto/ccp/ccp-crypto-aes-xts.c
-@@ -116,9 +116,6 @@ static int ccp_aes_xts_crypt(struct ablkcipher_request *req,
- 	if (!ctx->u.aes.key_len)
- 		return -EINVAL;
- 
--	if (req->nbytes & (AES_BLOCK_SIZE - 1))
--		return -EINVAL;
--
- 	if (!req->info)
- 		return -EINVAL;
- 
--- 
-2.17.1
+Das ist dein Spendencode: [TS530342018]
 
+Antworten Sie mit dem SPENDE-CODE an diese E-Mail:Tayebsouam.spende@gmail.com
+
+Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+
+Grüße
+Herr Tayeb Souami
