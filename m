@@ -2,28 +2,28 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B5C9FA9C
-	for <lists+linux-crypto@lfdr.de>; Wed, 28 Aug 2019 08:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E9F9FAA0
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 Aug 2019 08:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbfH1Gh3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 28 Aug 2019 02:37:29 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:16591 "EHLO
+        id S1726527AbfH1Ghl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 28 Aug 2019 02:37:41 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:42182 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726374AbfH1Gh3 (ORCPT
+        with ESMTP id S1726376AbfH1Gh1 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 28 Aug 2019 02:37:29 -0400
-X-UUID: e9c422f9d0b1419582e8cf49c49553fb-20190828
-X-UUID: e9c422f9d0b1419582e8cf49c49553fb-20190828
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        Wed, 28 Aug 2019 02:37:27 -0400
+X-UUID: 1825b6b15721413db17fdb3e7714b78a-20190828
+X-UUID: 1825b6b15721413db17fdb3e7714b78a-20190828
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
         (envelope-from <vic.wu@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 2125458992; Wed, 28 Aug 2019 14:37:21 +0800
+        with ESMTP id 1076583874; Wed, 28 Aug 2019 14:37:23 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Wed, 28 Aug 2019 14:37:27 +0800
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Wed, 28 Aug 2019 14:37:29 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Wed, 28 Aug 2019 14:37:27 +0800
+ Transport; Wed, 28 Aug 2019 14:37:29 +0800
 From:   Vic Wu <vic.wu@mediatek.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 CC:     "David S . Miller" <davem@davemloft.net>,
@@ -32,15 +32,14 @@ CC:     "David S . Miller" <davem@davemloft.net>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, Vic Wu <vic.wu@mediatek.com>
-Subject: [PATCH 2/5] crypto: mediatek: fix uninitialized value of gctx->textlen
-Date:   Wed, 28 Aug 2019 14:37:13 +0800
-Message-ID: <20190828063716.22689-2-vic.wu@mediatek.com>
+Subject: [PATCH 3/5] crypto: mediatek: only treat EBUSY as transient if backlog
+Date:   Wed, 28 Aug 2019 14:37:14 +0800
+Message-ID: <20190828063716.22689-3-vic.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20190828063716.22689-1-vic.wu@mediatek.com>
 References: <20190828063716.22689-1-vic.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-SNTS-SMTP: F65AEE53D721DE43A7E2257D0A165C3D3E3FC6680F81F063306A834E96B04F1A2000:8
 X-MTK:  N
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
@@ -49,59 +48,32 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Ryder Lee <ryder.lee@mediatek.com>
 
-Add a pre-computed text length to avoid uninitialized value in the check.
+The driver was treating -EBUSY as indication of queueing to backlog
+without checking that backlog is enabled for the request.
 
-Fixes: e47270665b5f ("crypto: mediatek - Add empty messages check in GCM mode")
+Fix it by checking request flags.
+
 Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
 Signed-off-by: Vic Wu <vic.wu@mediatek.com>
 ---
- drivers/crypto/mediatek/mtk-aes.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/crypto/mediatek/mtk-sha.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/mediatek/mtk-aes.c b/drivers/crypto/mediatek/mtk-aes.c
-index 43fcc8b5..425d7f3f 100644
---- a/drivers/crypto/mediatek/mtk-aes.c
-+++ b/drivers/crypto/mediatek/mtk-aes.c
-@@ -896,14 +896,11 @@ static int mtk_aes_gcm_start(struct mtk_cryp *cryp, struct mtk_aes_rec *aes)
- 		aes->resume = mtk_aes_transfer_complete;
- 		/* Compute total process length. */
- 		aes->total = len + gctx->authsize;
--		/* Compute text length. */
--		gctx->textlen = req->cryptlen;
- 		/* Hardware will append authenticated tag to output buffer */
- 		scatterwalk_map_and_copy(tag, req->dst, len, gctx->authsize, 1);
- 	} else {
- 		aes->resume = mtk_aes_gcm_tag_verify;
- 		aes->total = len;
--		gctx->textlen = req->cryptlen - gctx->authsize;
- 	}
+diff --git a/drivers/crypto/mediatek/mtk-sha.c b/drivers/crypto/mediatek/mtk-sha.c
+index 2226f12d..1ecef3b5 100644
+--- a/drivers/crypto/mediatek/mtk-sha.c
++++ b/drivers/crypto/mediatek/mtk-sha.c
+@@ -781,7 +781,9 @@ static int mtk_sha_finup(struct ahash_request *req)
+ 	ctx->flags |= SHA_FLAGS_FINUP;
  
- 	return mtk_aes_gcm_dma(cryp, aes, req->src, req->dst, len);
-@@ -915,19 +912,22 @@ static int mtk_aes_gcm_crypt(struct aead_request *req, u64 mode)
- 	struct mtk_aes_gcm_ctx *gctx = mtk_aes_gcm_ctx_cast(ctx);
- 	struct mtk_aes_reqctx *rctx = aead_request_ctx(req);
- 	struct mtk_cryp *cryp;
-+	bool enc = !!(mode & AES_FLAGS_ENCRYPT);
- 
- 	cryp = mtk_aes_find_dev(ctx);
- 	if (!cryp)
- 		return -ENODEV;
- 
-+	/* Compute text length. */
-+	gctx->textlen = req->cryptlen - (enc ? 0 : gctx->authsize);
-+
- 	/* Empty messages are not supported yet */
- 	if (!gctx->textlen && !req->assoclen)
- 		return -EINVAL;
- 
- 	rctx->mode = AES_FLAGS_GCM | mode;
- 
--	return mtk_aes_handle_queue(cryp, !!(mode & AES_FLAGS_ENCRYPT),
--				    &req->base);
-+	return mtk_aes_handle_queue(cryp, enc, &req->base);
- }
- 
- /*
+ 	err1 = mtk_sha_update(req);
+-	if (err1 == -EINPROGRESS || err1 == -EBUSY)
++	if (err1 == -EINPROGRESS ||
++	    (err1 == -EBUSY && (ahash_request_flags(req) &
++				CRYPTO_TFM_REQ_MAY_BACKLOG)))
+ 		return err1;
+ 	/*
+ 	 * final() has to be always called to cleanup resources
 -- 
 2.17.1
 
