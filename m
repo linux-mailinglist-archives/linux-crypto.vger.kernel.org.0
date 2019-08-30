@@ -2,46 +2,46 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06CD4A332F
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2019 10:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CB4A332C
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2019 10:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbfH3IzU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 30 Aug 2019 04:55:20 -0400
-Received: from mail-ed1-f45.google.com ([209.85.208.45]:34410 "EHLO
-        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbfH3IzR (ORCPT
+        id S1726495AbfH3IzS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 30 Aug 2019 04:55:18 -0400
+Received: from mail-ed1-f41.google.com ([209.85.208.41]:34408 "EHLO
+        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727125AbfH3IzR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Fri, 30 Aug 2019 04:55:17 -0400
-Received: by mail-ed1-f45.google.com with SMTP id s49so7197392edb.1
+Received: by mail-ed1-f41.google.com with SMTP id s49so7197436edb.1
         for <linux-crypto@vger.kernel.org>; Fri, 30 Aug 2019 01:55:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=w3VdgrMr7X3NYHGz48j/rPdCwHMJfcgYryQUB4FBkgg=;
-        b=bHU/vtJ+KNGsSFEsAOGrYL62/t7Tc5I1oLEE6pR4MNeY10cF+mUnGPiJ56Xksl25Wi
-         5kiFFJe5mCnywerWalndvr+OLDf49bHb/dRAp28zbuGxa2WqRDeNQ7EpCQDvp5RLWrRw
-         QCQwOuTk+E1pZynB3QBnwqU2bNNGMss7qmnrUstq/MARjM5MBbO/7YfQCLU+ngfMHqDw
-         2jBlmtHfStaUPR6nL2oBCezl74T9p5BkuegeFySCDKythWpAerRAe78efh/G2AmC1xAi
-         GYDnGNY0izMvFUsH7m7TPsVmm0sgufUB7kG5wNUr1GKn82xhTrBftJaYJ0RcZUC3uvdQ
-         AOvQ==
+        bh=smhViiXIJXblfhnsNWm/TA8dyuw/uxFK/cFDIU0Wcao=;
+        b=J7MW5/HlXCcU2LVBmoscDg5PZBE7KSzymWAB5FDVgsbkYrFoXWykrFQTQbBZABCqiF
+         wK6NV0yM3uooB9os1yxH7f1O9XlW8piDRIeqWgFSws28UKGPxGuKVPNZV22b+gjjX22t
+         WmTZBisWhFQTXkM9kMCtAUpLUBBVmKgYEAyWm3HwiKzNCUx7uyi4kEDWUvSL0debyclC
+         RsIY+w9po+52CT5aaZs3pqqOVdD7jA+jEpF/k7+W483EKNTmLzbLMA4Uq3DC6qOnjIgT
+         V1FLhFcnKTpr+Nu8oG/4ZnlqwEJWwI0i2fvT/A5ZawXhNpX7xgo4+MQ+2uHTdxDPDgxX
+         BwFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=w3VdgrMr7X3NYHGz48j/rPdCwHMJfcgYryQUB4FBkgg=;
-        b=c7gQwF8IOEZhaf86PRSLFoOWQQrzekx3LWpsoytBZWf6qadj8ogpuc/myV4D7Am0vx
-         nFIRdq6BS+wYmKn0N9nk24vXWPePIq/H9GVC6437Yv4smjGGQlREGNOgO7+w1pdXsRqU
-         ImtpjvjUYPuxCfzwyMUrB5dzmU1CuPFCaKwlM0Mmy3zgAz97lk7uOmPXsb5D+EMMLGYK
-         CPGK0SzjqIe4ZqdACKUwiRz82pN+MkuiCopqMrAZ7YPFVgeuvuEi/KwMd1ZKnOZ8ZNWu
-         hhPZJfxXMgmjVXn2H4dSUYG1LhOv0WZE3H1GD9g133g9GfhFO8Zb9j920KpaxJJuL48j
-         HAUA==
-X-Gm-Message-State: APjAAAVhFu7CVsVUcMgbC0HBzW9XdLJz1Htcwa2gZrI4sJ6Oq0YQvE3N
-        +OqBuG4Fbrg0gPhOO0MYugI7FkzN
-X-Google-Smtp-Source: APXvYqzoqB8e+o/Wrhx0bEXejNd6NCh/F3IAcprKKIaBNL6J/LMSJRLnT1iEt3tik+qQYgTR7YBPRw==
-X-Received: by 2002:a17:906:6d2:: with SMTP id v18mr2400055ejb.249.1567155315486;
-        Fri, 30 Aug 2019 01:55:15 -0700 (PDT)
+        bh=smhViiXIJXblfhnsNWm/TA8dyuw/uxFK/cFDIU0Wcao=;
+        b=JrGmRMcwHMLuSzWwJm8L8arjlM5oVdtBIg2kpiHjeMHneTn+vRV/EgCAP9WMnmUsme
+         7M5wQhYqknq7NmfJipx8TKlA4NM8OZ9BP+aizcgnjbnfEp7S10MZzR5VQn25bCWpOK8U
+         6JFJxRGBGqIAnc9zVppmqrC89g4GPS26z3ZclHLC10v5sRBxQBg2kvCGglTxAdg5vqEg
+         rZw3kMAE1Em5MH1bNG6jlWyEknyb6cA41mrCiHEQxIjTO9sUoa6W2m7t1mfu+qD0Dtm4
+         mtIX5bNIs46NR/5YpvUjfBTABwhOX/7iWQdtKUv3ZxTrO5MfZUMXEL0jZKbq78sw1eZg
+         3yUQ==
+X-Gm-Message-State: APjAAAV/2yQt6QVXNiG88vPQV0zJoR8e6xaqAxIxz1nT/HSPQXYnJrhO
+        lu14CvbWveu96PCDMs/I5/lFCGdL
+X-Google-Smtp-Source: APXvYqzdIaih8WfyK4GoOMTND1rL/rzDV0XVn8ieZ8yIJHAXc8nB3dnrg64D+KWx1xz07akF8Px9XQ==
+X-Received: by 2002:aa7:d80d:: with SMTP id v13mr8850368edq.168.1567155316136;
+        Fri, 30 Aug 2019 01:55:16 -0700 (PDT)
 Received: from localhost.localdomain.com ([188.204.2.113])
-        by smtp.gmail.com with ESMTPSA id l9sm335610eda.51.2019.08.30.01.55.14
+        by smtp.gmail.com with ESMTPSA id l9sm335610eda.51.2019.08.30.01.55.15
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
         Fri, 30 Aug 2019 01:55:15 -0700 (PDT)
 From:   Pascal van Leeuwen <pascalvanl@gmail.com>
@@ -50,9 +50,9 @@ To:     linux-crypto@vger.kernel.org
 Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
         davem@davemloft.net,
         Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: [PATCH 2/4] crypto: inside-secure - Added AES-CFB support
-Date:   Fri, 30 Aug 2019 09:52:31 +0200
-Message-Id: <1567151553-11108-3-git-send-email-pvanleeuwen@verimatrix.com>
+Subject: [PATCH 3/4] crypto: inside-secure - Added AES-OFB support
+Date:   Fri, 30 Aug 2019 09:52:32 +0200
+Message-Id: <1567151553-11108-4-git-send-email-pvanleeuwen@verimatrix.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1567151553-11108-1-git-send-email-pvanleeuwen@verimatrix.com>
 References: <1567151553-11108-1-git-send-email-pvanleeuwen@verimatrix.com>
@@ -61,7 +61,7 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds support for AES in 128 bit cipher feedback mode (AES-CFB).
+This patch adds support for AES in output feedback mode (AES-OFB).
 
 Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
 ---
@@ -71,56 +71,56 @@ Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
  3 files changed, 39 insertions(+)
 
 diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/inside-secure/safexcel.c
-index 46cdcbe..3196cb3 100644
+index 3196cb3..5ad4feb 100644
 --- a/drivers/crypto/inside-secure/safexcel.c
 +++ b/drivers/crypto/inside-secure/safexcel.c
-@@ -981,6 +981,7 @@ static int safexcel_request_ring_irq(void *pdev, int irqid,
- 	&safexcel_alg_cbc_des3_ede,
+@@ -982,6 +982,7 @@ static int safexcel_request_ring_irq(void *pdev, int irqid,
  	&safexcel_alg_ecb_aes,
  	&safexcel_alg_cbc_aes,
-+	&safexcel_alg_cfb_aes,
+ 	&safexcel_alg_cfb_aes,
++	&safexcel_alg_ofb_aes,
  	&safexcel_alg_ctr_aes,
  	&safexcel_alg_md5,
  	&safexcel_alg_sha1,
 diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/inside-secure/safexcel.h
-index c6f93ec..6f781ed 100644
+index 6f781ed..0eb3445 100644
 --- a/drivers/crypto/inside-secure/safexcel.h
 +++ b/drivers/crypto/inside-secure/safexcel.h
 @@ -336,6 +336,7 @@ struct safexcel_context_record {
  /* control1 */
  #define CONTEXT_CONTROL_CRYPTO_MODE_ECB		(0 << 0)
  #define CONTEXT_CONTROL_CRYPTO_MODE_CBC		(1 << 0)
-+#define CONTEXT_CONTROL_CRYPTO_MODE_CFB		(5 << 0)
++#define CONTEXT_CONTROL_CRYPTO_MODE_OFB		(4 << 0)
+ #define CONTEXT_CONTROL_CRYPTO_MODE_CFB		(5 << 0)
  #define CONTEXT_CONTROL_CRYPTO_MODE_CTR_LOAD	(6 << 0)
  #define CONTEXT_CONTROL_CRYPTO_MODE_XTS		(7 << 0)
- #define CONTEXT_CONTROL_CRYPTO_MODE_XCM		((6 << 0) | BIT(17))
-@@ -767,6 +768,7 @@ int safexcel_hmac_setkey(const char *alg, const u8 *key, unsigned int keylen,
- extern struct safexcel_alg_template safexcel_alg_cbc_des3_ede;
+@@ -769,6 +770,7 @@ int safexcel_hmac_setkey(const char *alg, const u8 *key, unsigned int keylen,
  extern struct safexcel_alg_template safexcel_alg_ecb_aes;
  extern struct safexcel_alg_template safexcel_alg_cbc_aes;
-+extern struct safexcel_alg_template safexcel_alg_cfb_aes;
+ extern struct safexcel_alg_template safexcel_alg_cfb_aes;
++extern struct safexcel_alg_template safexcel_alg_ofb_aes;
  extern struct safexcel_alg_template safexcel_alg_ctr_aes;
  extern struct safexcel_alg_template safexcel_alg_md5;
  extern struct safexcel_alg_template safexcel_alg_sha1;
 diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers/crypto/inside-secure/safexcel_cipher.c
-index 6f088b4..2a7d51b 100644
+index 2a7d51b..bc4ebc7 100644
 --- a/drivers/crypto/inside-secure/safexcel_cipher.c
 +++ b/drivers/crypto/inside-secure/safexcel_cipher.c
-@@ -1142,6 +1142,42 @@ struct safexcel_alg_template safexcel_alg_cbc_aes = {
+@@ -1178,6 +1178,42 @@ struct safexcel_alg_template safexcel_alg_cfb_aes = {
  	},
  };
  
-+static int safexcel_skcipher_aes_cfb_cra_init(struct crypto_tfm *tfm)
++static int safexcel_skcipher_aes_ofb_cra_init(struct crypto_tfm *tfm)
 +{
 +	struct safexcel_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
 +
 +	safexcel_skcipher_cra_init(tfm);
 +	ctx->alg  = SAFEXCEL_AES;
-+	ctx->mode = CONTEXT_CONTROL_CRYPTO_MODE_CFB;
++	ctx->mode = CONTEXT_CONTROL_CRYPTO_MODE_OFB;
 +	return 0;
 +}
 +
-+struct safexcel_alg_template safexcel_alg_cfb_aes = {
++struct safexcel_alg_template safexcel_alg_ofb_aes = {
 +	.type = SAFEXCEL_ALG_TYPE_SKCIPHER,
 +	.algo_mask = SAFEXCEL_ALG_AES | SAFEXCEL_ALG_AES_XFB,
 +	.alg.skcipher = {
@@ -131,15 +131,15 @@ index 6f088b4..2a7d51b 100644
 +		.max_keysize = AES_MAX_KEY_SIZE,
 +		.ivsize = AES_BLOCK_SIZE,
 +		.base = {
-+			.cra_name = "cfb(aes)",
-+			.cra_driver_name = "safexcel-cfb-aes",
++			.cra_name = "ofb(aes)",
++			.cra_driver_name = "safexcel-ofb-aes",
 +			.cra_priority = SAFEXCEL_CRA_PRIORITY,
 +			.cra_flags = CRYPTO_ALG_ASYNC |
 +				     CRYPTO_ALG_KERN_DRIVER_ONLY,
 +			.cra_blocksize = 1,
 +			.cra_ctxsize = sizeof(struct safexcel_cipher_ctx),
 +			.cra_alignmask = 0,
-+			.cra_init = safexcel_skcipher_aes_cfb_cra_init,
++			.cra_init = safexcel_skcipher_aes_ofb_cra_init,
 +			.cra_exit = safexcel_skcipher_cra_exit,
 +			.cra_module = THIS_MODULE,
 +		},
