@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBD7A323B
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2019 10:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA61A3238
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2019 10:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728197AbfH3IZb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 30 Aug 2019 04:25:31 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:59708 "EHLO fornost.hmeau.com"
+        id S1725822AbfH3IZE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 30 Aug 2019 04:25:04 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:59666 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726325AbfH3IZa (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 30 Aug 2019 04:25:30 -0400
+        id S1728174AbfH3IZD (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 30 Aug 2019 04:25:03 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1i3cDE-0005fd-OT; Fri, 30 Aug 2019 18:24:53 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 30 Aug 2019 18:24:47 +1000
-Date:   Fri, 30 Aug 2019 18:24:47 +1000
+        id 1i3cDL-0005gh-8q; Fri, 30 Aug 2019 18:25:00 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 30 Aug 2019 18:24:57 +1000
+Date:   Fri, 30 Aug 2019 18:24:57 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     leitao@debian.org, nayna@linux.ibm.com, pfsmorigo@gmail.com,
-        benh@kernel.crashing.org, paulus@samba.org, mpe@ellerman.id.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] crypto: nx - remove unused variables
- 'nx_driver_string' and 'nx_driver_version'
-Message-ID: <20190830082447.GG8033@gondor.apana.org.au>
-References: <20190822144649.19880-1-yuehaibing@huawei.com>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc:     linux-crypto@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Gary Hook <gary.hook@amd.com>
+Subject: Re: [PATCH] crypto: ccp - invoke fallback for XTS ciphertext stealing
+Message-ID: <20190830082457.GH8033@gondor.apana.org.au>
+References: <20190822154731.13301-1-ard.biesheuvel@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190822144649.19880-1-yuehaibing@huawei.com>
+In-Reply-To: <20190822154731.13301-1-ard.biesheuvel@linaro.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Aug 22, 2019 at 10:46:49PM +0800, YueHaibing wrote:
-> drivers/crypto/nx/nx.h:12:19: warning:
->  nx_driver_string defined but not used [-Wunused-const-variable=]
-> drivers/crypto/nx/nx.h:13:19: warning:
->  nx_driver_version defined but not used [-Wunused-const-variable=]
+On Thu, Aug 22, 2019 at 06:47:31PM +0300, Ard Biesheuvel wrote:
+> For correctness and compliance with the XTS-AES specification, we are
+> adding support for ciphertext stealing to XTS implementations, even
+> though no use cases are known that will be enabled by this.
 > 
-> They are never used, so just remove it.
+> Since the ccp driver already has a fallback skcipher standby for
+> dealing with input sizes other than [16, 512, 1024, 2048, 4096],
+> just drop the check against the block size.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Gary Hook <gary.hook@amd.com>
+> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 > ---
->  drivers/crypto/nx/nx.h | 3 ---
+>  drivers/crypto/ccp/ccp-crypto-aes-xts.c | 3 ---
 >  1 file changed, 3 deletions(-)
 
 Patch applied.  Thanks.
