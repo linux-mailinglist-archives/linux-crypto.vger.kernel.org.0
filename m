@@ -2,207 +2,189 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A39A61E3
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Sep 2019 08:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B448A622D
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Sep 2019 09:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbfICGyo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Sep 2019 02:54:44 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:60002 "EHLO fornost.hmeau.com"
+        id S1726473AbfICHFF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Sep 2019 03:05:05 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:60012 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726053AbfICGyo (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Sep 2019 02:54:44 -0400
+        id S1726062AbfICHFF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 3 Sep 2019 03:05:05 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1i52i8-0002Xb-5G; Tue, 03 Sep 2019 16:54:41 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 03 Sep 2019 16:54:38 +1000
-Date:   Tue, 3 Sep 2019 16:54:38 +1000
+        id 1i52sA-0002p4-1b; Tue, 03 Sep 2019 17:05:03 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 03 Sep 2019 17:05:01 +1000
+Date:   Tue, 3 Sep 2019 17:05:01 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
 To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
         <linux-crypto@vger.kernel.org>, Eric Biggers <ebiggers@kernel.org>
-Subject: crypto: skcipher - Unmap pages after an external error
-Message-ID: <20190903065438.GA9372@gondor.apana.org.au>
+Subject: crypto: ablkcipher - Unmap pages after an external error
+Message-ID: <20190903070501.GA9978@gondor.apana.org.au>
 References: <20190821143253.30209-1-ard.biesheuvel@linaro.org>
  <20190821143253.30209-9-ard.biesheuvel@linaro.org>
  <20190830080347.GA6677@gondor.apana.org.au>
  <CAKv+Gu-4QBvPcE7YUqgWbT31gdLM8vcHTPbdOCN+UnUMXreuPg@mail.gmail.com>
+ <20190903065438.GA9372@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKv+Gu-4QBvPcE7YUqgWbT31gdLM8vcHTPbdOCN+UnUMXreuPg@mail.gmail.com>
+In-Reply-To: <20190903065438.GA9372@gondor.apana.org.au>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Aug 31, 2019 at 09:01:33PM +0300, Ard Biesheuvel wrote:
->
-> This might be a problem with the implementation of
-> skcipher_walk_done() in general rather than a limitation in this
-> particular case, but when calling skcipher_walk_done() with a negative
-> err value, we never kunmap the src and dst pages. So should I propose
-> a fix for that instead? Or are the internal callers dealing with this
-> correctly? (and is it forbidden for external callers to pass negative
-> values?)
-
-Thanks for pointing this out.  This is in fact a bug introduced
-by the bug fix:
-
-commit 8088d3dd4d7c6933a65aa169393b5d88d8065672
-Author: Eric Biggers <ebiggers@google.com>
-Date:   Mon Jul 23 10:54:56 2018 -0700
-
-    crypto: skcipher - fix crash flushing dcache in error path
-
-In particular it fails to distinguish between errors arising from
-internal callers where we shouldn't unmap vs. external callers
-where unmapping is absolutely required.
-
-So I'm going to revert that patch and fix it like this:
-
----8<---
-skcipher_walk_done may be called with an error by internal or
+ablkcipher_walk_done may be called with an error by internal or
 external callers.  For those internal callers we shouldn't unmap
 pages but for external callers we must unmap any pages that are
 in use.
 
-This patch adds a new function skcipher_walk_unwind so that we
+This patch adds a new function ablkcipher_walk_unwind so that we
 can eliminate the internal callers.
 
 Reported-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Fixes: 8088d3dd4d7c ("crypto: skcipher - fix crash flushing...")
+Fixes: 318abdfbe708 ("crypto: ablkcipher - fix crash flushing...")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-diff --git a/crypto/skcipher.c b/crypto/skcipher.c
-index 5d836fc3df3e..eb3eb38a28b2 100644
---- a/crypto/skcipher.c
-+++ b/crypto/skcipher.c
-@@ -39,6 +39,7 @@ struct skcipher_walk_buffer {
- 	u8 buffer[];
- };
- 
-+static int skcipher_walk_unwind(struct skcipher_walk *walk, int err);
- static int skcipher_walk_next(struct skcipher_walk *walk);
- 
- static inline void skcipher_unmap(struct scatter_walk *walk, void *vaddr)
-@@ -90,7 +91,7 @@ static inline u8 *skcipher_get_spot(u8 *start, unsigned int len)
+diff --git a/crypto/ablkcipher.c b/crypto/ablkcipher.c
+index 072b5646a0a3..a61d13fabe3c 100644
+--- a/crypto/ablkcipher.c
++++ b/crypto/ablkcipher.c
+@@ -66,9 +66,11 @@ static inline u8 *ablkcipher_get_spot(u8 *start, unsigned int len)
  	return max(start, end_page);
  }
  
--static void skcipher_done_slow(struct skcipher_walk *walk, unsigned int bsize)
-+static int skcipher_done_slow(struct skcipher_walk *walk, unsigned int bsize)
+-static inline void ablkcipher_done_slow(struct ablkcipher_walk *walk,
+-					unsigned int n)
++static inline unsigned int ablkcipher_done_slow(struct ablkcipher_walk *walk,
++						unsigned int bsize)
  {
- 	u8 *addr;
++	unsigned int n = bsize;
++
+ 	for (;;) {
+ 		unsigned int len_this_page = scatterwalk_pagelen(&walk->out);
  
-@@ -98,24 +99,23 @@ static void skcipher_done_slow(struct skcipher_walk *walk, unsigned int bsize)
- 	addr = skcipher_get_spot(addr, bsize);
- 	scatterwalk_copychunks(addr, &walk->out, bsize,
- 			       (walk->flags & SKCIPHER_WALK_PHYS) ? 2 : 1);
-+	return 0;
+@@ -80,59 +82,73 @@ static inline void ablkcipher_done_slow(struct ablkcipher_walk *walk,
+ 		n -= len_this_page;
+ 		scatterwalk_start(&walk->out, sg_next(walk->out.sg));
+ 	}
++
++	return bsize;
  }
  
- int skcipher_walk_done(struct skcipher_walk *walk, int err)
+-static inline void ablkcipher_done_fast(struct ablkcipher_walk *walk,
+-					unsigned int n)
++static inline unsigned int ablkcipher_done_fast(struct ablkcipher_walk *walk,
++						unsigned int n)
  {
+ 	scatterwalk_advance(&walk->in, n);
+ 	scatterwalk_advance(&walk->out, n);
++
++	return n;
+ }
+ 
++static int ablkcipher_walk_unwind(struct ablkcipher_request *req,
++				  struct ablkcipher_walk *walk, int err);
+ static int ablkcipher_walk_next(struct ablkcipher_request *req,
+ 				struct ablkcipher_walk *walk);
+ 
+ int ablkcipher_walk_done(struct ablkcipher_request *req,
+ 			 struct ablkcipher_walk *walk, int err)
+ {
+-	struct crypto_tfm *tfm = req->base.tfm;
 -	unsigned int n; /* bytes processed */
 -	bool more;
 -
 -	if (unlikely(err < 0))
 -		goto finish;
-+	unsigned int n = walk->nbytes - err;
-+	unsigned int nbytes;
++	unsigned int nbytes = 0;
  
 -	n = walk->nbytes - err;
 -	walk->total -= n;
 -	more = (walk->total != 0);
-+	nbytes = walk->total - n;
++	if (likely(err >= 0)) {
++		unsigned int n = walk->nbytes - err;
  
--	if (likely(!(walk->flags & (SKCIPHER_WALK_PHYS |
--				    SKCIPHER_WALK_SLOW |
--				    SKCIPHER_WALK_COPY |
--				    SKCIPHER_WALK_DIFF)))) {
-+	if (unlikely(err < 0)) {
-+		nbytes = 0;
-+		n = 0;
-+	} else if (likely(!(walk->flags & (SKCIPHER_WALK_PHYS |
-+					   SKCIPHER_WALK_SLOW |
-+					   SKCIPHER_WALK_COPY |
-+					   SKCIPHER_WALK_DIFF)))) {
- unmap_src:
- 		skcipher_unmap_src(walk);
- 	} else if (walk->flags & SKCIPHER_WALK_DIFF) {
-@@ -134,25 +134,34 @@ int skcipher_walk_done(struct skcipher_walk *walk, int err)
- 			 * the algorithm requires it.
- 			 */
+-	if (likely(!(walk->flags & ABLKCIPHER_WALK_SLOW))) {
+-		ablkcipher_done_fast(walk, n);
+-	} else {
+-		if (WARN_ON(err)) {
+-			/* unexpected case; didn't process all bytes */
++		if (likely(!(walk->flags & ABLKCIPHER_WALK_SLOW)))
++			n = ablkcipher_done_fast(walk, n);
++		else if (WARN_ON(err)) {
  			err = -EINVAL;
 -			goto finish;
 -		}
--		skcipher_done_slow(walk, n);
--		goto already_advanced;
-+			nbytes = 0;
+-		ablkcipher_done_slow(walk, n);
++			goto err;
 +		} else
-+			n = skcipher_done_slow(walk, n);
++			n = ablkcipher_done_slow(walk, n);
++
++		nbytes = walk->total - n;
++		err = 0;
  	}
  
-+	if (err > 0)
-+		err = 0;
-+
-+	walk->total = nbytes;
-+	walk->nbytes = nbytes;
-+
- 	scatterwalk_advance(&walk->in, n);
- 	scatterwalk_advance(&walk->out, n);
--already_advanced:
 -	scatterwalk_done(&walk->in, 0, more);
 -	scatterwalk_done(&walk->out, 1, more);
 +	scatterwalk_done(&walk->in, 0, nbytes);
 +	scatterwalk_done(&walk->out, 1, nbytes);
++
++err:
++	walk->total = nbytes;
++	walk->nbytes = nbytes;
  
 -	if (more) {
 +	if (nbytes) {
- 		crypto_yield(walk->flags & SKCIPHER_WALK_SLEEP ?
- 			     CRYPTO_TFM_REQ_MAY_SLEEP : 0);
- 		return skcipher_walk_next(walk);
+ 		crypto_yield(req->base.flags);
+ 		return ablkcipher_walk_next(req, walk);
  	}
 -	err = 0;
 -finish:
 +
-+	return skcipher_walk_unwind(walk, err);
++	return ablkcipher_walk_unwind(req, walk, err);
 +}
-+EXPORT_SYMBOL_GPL(skcipher_walk_done);
++EXPORT_SYMBOL_GPL(ablkcipher_walk_done);
 +
-+static int skcipher_walk_unwind(struct skcipher_walk *walk, int err)
++static int ablkcipher_walk_unwind(struct ablkcipher_request *req,
++				  struct ablkcipher_walk *walk, int err)
 +{
++	struct crypto_tfm *tfm = req->base.tfm;
++
  	walk->nbytes = 0;
- 
- 	/* Short-circuit for the common/fast path. */
-@@ -172,7 +181,6 @@ int skcipher_walk_done(struct skcipher_walk *walk, int err)
- out:
++
+ 	if (walk->iv != req->info)
+ 		memcpy(req->info, walk->iv, tfm->crt_ablkcipher.ivsize);
+ 	kfree(walk->iv_buffer);
++
  	return err;
  }
--EXPORT_SYMBOL_GPL(skcipher_walk_done);
+-EXPORT_SYMBOL_GPL(ablkcipher_walk_done);
  
- void skcipher_walk_complete(struct skcipher_walk *walk, int err)
- {
-@@ -253,7 +261,7 @@ static int skcipher_next_slow(struct skcipher_walk *walk, unsigned int bsize)
+ static inline int ablkcipher_next_slow(struct ablkcipher_request *req,
+ 				       struct ablkcipher_walk *walk,
+@@ -151,7 +167,7 @@ static inline int ablkcipher_next_slow(struct ablkcipher_request *req,
  
- 	v = kzalloc(n, skcipher_walk_gfp(walk));
- 	if (!v)
--		return skcipher_walk_done(walk, -ENOMEM);
-+		return skcipher_walk_unwind(walk, -ENOMEM);
+ 	p = kmalloc(n, GFP_ATOMIC);
+ 	if (!p)
+-		return ablkcipher_walk_done(req, walk, -ENOMEM);
++		return ablkcipher_walk_unwind(req, walk, -ENOMEM);
  
- 	if (phys) {
- 		p = v;
-@@ -352,7 +360,7 @@ static int skcipher_walk_next(struct skcipher_walk *walk)
+ 	base = p + 1;
  
- 	if (unlikely(n < bsize)) {
- 		if (unlikely(walk->total < walk->blocksize))
--			return skcipher_walk_done(walk, -EINVAL);
-+			return skcipher_walk_unwind(walk, -EINVAL);
+@@ -222,7 +238,7 @@ static int ablkcipher_walk_next(struct ablkcipher_request *req,
+ 	n = walk->total;
+ 	if (unlikely(n < crypto_tfm_alg_blocksize(tfm))) {
+ 		req->base.flags |= CRYPTO_TFM_RES_BAD_BLOCK_LEN;
+-		return ablkcipher_walk_done(req, walk, -EINVAL);
++		return ablkcipher_walk_unwind(req, walk, -EINVAL);
+ 	}
  
- slow_path:
- 		err = skcipher_next_slow(walk, bsize);
+ 	walk->flags &= ~ABLKCIPHER_WALK_SLOW;
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
