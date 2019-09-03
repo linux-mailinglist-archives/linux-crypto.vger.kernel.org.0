@@ -2,79 +2,122 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E29A7011
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Sep 2019 18:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16692A70C0
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Sep 2019 18:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730775AbfICQgt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Sep 2019 12:36:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730766AbfICQ1D (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Sep 2019 12:27:03 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 531F6238C7;
-        Tue,  3 Sep 2019 16:27:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567528023;
-        bh=UAiGUdrPfb+g2lb5wdRr2F7sPCY1m57xplW9JvOlQ/Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NVen0V82SYj3OwXJ/xZY4rm2TYBtDsVpWVFbloDGmQSHl+I0vyingezhH9vl1Zrp7
-         w3XHUvoQ1JIFNQ0UH9t33dGWUTwqzEoixkOFxqZCZfgGbFG2RyWhVoM96rk3dOFRZc
-         7uO5pD+ckVqUwBKWUKxmh1DDNRD6AhBV6TUc/oR0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gilad Ben-Yossef <gilad@benyossef.com>, stable@kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 058/167] crypto: ccree - add missing inline qualifier
-Date:   Tue,  3 Sep 2019 12:23:30 -0400
-Message-Id: <20190903162519.7136-58-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190903162519.7136-1-sashal@kernel.org>
-References: <20190903162519.7136-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1729894AbfICQno (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Sep 2019 12:43:44 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:44508 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728854AbfICQnn (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 3 Sep 2019 12:43:43 -0400
+Received: by mail-pf1-f196.google.com with SMTP id q21so6089273pfn.11
+        for <linux-crypto@vger.kernel.org>; Tue, 03 Sep 2019 09:43:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Xrbhv/sSGjGF3D/o14uNfHtjbfk8IOEqr2rv0xU8tc8=;
+        b=Wg1xwPEUBt/yYcal44/DhHmaOzlTgud9utBeCMGz70/hJcfBas4YwzEf3hntKVAMYS
+         leXs5A/leol6OUnzBiAJml6BroLq3g3/KXLwfqbe8nVHDEa///YQrAVIS04E1REGuWwL
+         M926mJZaewg7qs6si1oY2O1P1nPd/Ho6EpuDUV5UU6mkI64A/3gS4JmZ0RAVvESVzPan
+         BiRTUd8g70QN1qNcTBxMlOrP0BOlIpamzrT7tVpZFPPXP5xPu/z9lrPrFJoQtU9yutul
+         h3lKnI+pU9FqdLIzfeYNExQ/euNVFaxCni2ZElVnDIh2ZK9rE3AqPDZZVm3DlGTfMuqx
+         NPqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Xrbhv/sSGjGF3D/o14uNfHtjbfk8IOEqr2rv0xU8tc8=;
+        b=iEyKqd1xo24+7n20poz8fxQdjVwuwK5LgDN7WsN7j5sIJYOrYv4eL699j4fwgtVr3I
+         3xwjDyuROWzYOoLg2cbMcn7LXIM9zTq7J5kBpuLYm2tmNjvfmUSWILJC+eHZhCp5wR7G
+         frMjfdur804/nctd7LMFeuMblSStAhGUva2hxQ0DdtCA9wz36j0dYIn1lxYzi1Cno8F6
+         i+9OBOACjFQ9VJ3GSG12SgwjbMosNplixL4N46a2kGhFuhf7QKbOQ0DbzZyfHkPvBPHg
+         1xSBwimpai71wweonehkDImrcbh5T3hX6T+3M9R0AHEZOQGExsfBpIGLaWHvh0YX5bJs
+         RfJA==
+X-Gm-Message-State: APjAAAWXAFu8io6Ds8Bl1mEZieM0r7mc+GLzbKUqTgL4a/vep1+JK4pu
+        5YPX4g03+RxaUuQrIGPVKY+R+fyJDvqcNIWp
+X-Google-Smtp-Source: APXvYqze0AL/6gnkc+OqEIm9pRaeKbhQZ0k10EedlVkyUqq3/eo7FZdFBMQO2ZPiY0fpRDeVyLizkg==
+X-Received: by 2002:a63:10a:: with SMTP id 10mr31511303pgb.281.1567529022646;
+        Tue, 03 Sep 2019 09:43:42 -0700 (PDT)
+Received: from e111045-lin.nice.arm.com ([104.133.8.102])
+        by smtp.gmail.com with ESMTPSA id b126sm20311847pfb.110.2019.09.03.09.43.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Sep 2019 09:43:41 -0700 (PDT)
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+To:     linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Subject: [PATCH v2 00/17] crypto: arm/aes - XTS ciphertext stealing and other updates
+Date:   Tue,  3 Sep 2019 09:43:22 -0700
+Message-Id: <20190903164339.27984-1-ard.biesheuvel@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Gilad Ben-Yossef <gilad@benyossef.com>
+This is a collection of improvements for the ARM and arm64 implementations
+of the AES based skciphers.
 
-[ Upstream commit f1071c3e2473ae19a7f5d892a187c4cab1a61f2e ]
+NOTES:
+- the last two patches add XTS ciphertext stealing test vectors and should
+  NOT be merged until all AES-XTS implementations have been confirmed to work
+- tested for correctness [on both QEMU and actual hardware (via kernelci)] but
+  not for performance regressions
 
-Commit 1358c13a48c4 ("crypto: ccree - fix resume race condition on init")
-was missing a "inline" qualifier for stub function used when CONFIG_PM
-is not set causing a build warning.
+The most important part of this series is the implementation of ciphertext
+stealing support for the XTS skciphers. The CE and NEON bit slicing based
+code for both ARM and arm64 is updated to handle inputs of any length >= the
+XTS block size of 16 bytes.
 
-Fixes: 1358c13a48c4 ("crypto: ccree - fix resume race condition on init")
-Cc: stable@kernel.org # v4.20
-Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/crypto/ccree/cc_pm.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It also updates the arm64 CTS/CBC implementation not to use a request ctx
+structure, and ports the resulting implementation to ARM as well.
 
-diff --git a/drivers/crypto/ccree/cc_pm.h b/drivers/crypto/ccree/cc_pm.h
-index f626243570209..907a6db4d6c03 100644
---- a/drivers/crypto/ccree/cc_pm.h
-+++ b/drivers/crypto/ccree/cc_pm.h
-@@ -30,7 +30,7 @@ static inline int cc_pm_init(struct cc_drvdata *drvdata)
- 	return 0;
- }
- 
--static void cc_pm_go(struct cc_drvdata *drvdata) {}
-+static inline void cc_pm_go(struct cc_drvdata *drvdata) {}
- 
- static inline void cc_pm_fini(struct cc_drvdata *drvdata) {}
- 
+The remaining patches are cleanups and minor improvements in the 'ongoing
+maintenance' category. None of these are -stable candidates AFAICT.
+
+Changes since v1:
+- simply skcipher_walk_abort() - pass -ECANCELED instead of walk->nbytes into
+  skcipher_walk_done() so that the latter does not require any changes (#8)
+- rebased onto cryptodev/master
+
+
+Ard Biesheuvel (16):
+  crypto: arm/aes - fix round key prototypes
+  crypto: arm/aes-ce - yield the SIMD unit between scatterwalk steps
+  crypto: arm/aes-ce - switch to 4x interleave
+  crypto: arm/aes-ce - replace tweak mask literal with composition
+  crypto: arm/aes-neonbs - replace tweak mask literal with composition
+  crypto: arm64/aes-neonbs - replace tweak mask literal with composition
+  crypto: arm64/aes-neon - limit exposed routines if faster driver is
+    enabled
+  crypto: skcipher - add the ability to abort a skcipher walk
+  crypto: arm64/aes-cts-cbc-ce - performance tweak
+  crypto: arm64/aes-cts-cbc - move request context data to the stack
+  crypto: arm64/aes - implement support for XTS ciphertext stealing
+  crypto: arm64/aes-neonbs - implement ciphertext stealing for XTS
+  crypto: arm/aes-ce - implement ciphertext stealing for XTS
+  crypto: arm/aes-neonbs - implement ciphertext stealing for XTS
+  crypto: arm/aes-ce - implement ciphertext stealing for CBC
+  crypto: testmgr - add test vectors for XTS ciphertext stealing
+
+Pascal van Leeuwen (1):
+  crypto: testmgr - Add additional AES-XTS vectors for covering CTS
+
+ arch/arm/crypto/aes-ce-core.S       | 462 ++++++++++++++------
+ arch/arm/crypto/aes-ce-glue.c       | 377 +++++++++++++---
+ arch/arm/crypto/aes-neonbs-core.S   |  24 +-
+ arch/arm/crypto/aes-neonbs-glue.c   |  91 +++-
+ arch/arm64/crypto/aes-ce.S          |   3 +
+ arch/arm64/crypto/aes-glue.c        | 299 ++++++++-----
+ arch/arm64/crypto/aes-modes.S       | 107 ++++-
+ arch/arm64/crypto/aes-neon.S        |   5 +
+ arch/arm64/crypto/aes-neonbs-core.S |   9 +-
+ arch/arm64/crypto/aes-neonbs-glue.c | 111 ++++-
+ crypto/testmgr.h                    | 368 ++++++++++++++++
+ include/crypto/internal/skcipher.h  |   5 +
+ 12 files changed, 1495 insertions(+), 366 deletions(-)
+
 -- 
-2.20.1
+2.17.1
 
