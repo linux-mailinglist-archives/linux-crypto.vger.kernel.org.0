@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEA6A78C8
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Sep 2019 04:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7090EA78DF
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Sep 2019 04:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727499AbfIDCfc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Sep 2019 22:35:32 -0400
-Received: from mail-pf1-f170.google.com ([209.85.210.170]:41646 "EHLO
-        mail-pf1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727222AbfIDCfc (ORCPT
+        id S1727950AbfIDCff (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Sep 2019 22:35:35 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:45904 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727222AbfIDCfd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Sep 2019 22:35:32 -0400
-Received: by mail-pf1-f170.google.com with SMTP id b13so5578993pfo.8;
-        Tue, 03 Sep 2019 19:35:32 -0700 (PDT)
+        Tue, 3 Sep 2019 22:35:33 -0400
+Received: by mail-pg1-f195.google.com with SMTP id 4so6784367pgm.12;
+        Tue, 03 Sep 2019 19:35:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bSgxG3inIUDth+MW6z7dzN3SicTuf5PF5fcMI36bTe0=;
-        b=fWmNIHojJ8bdZ+jOjMHSj14XPMrrH7xiny3mqeB9h5bv1HuWRT2RLIH0uK8wOgW2ga
-         wvFg69dJhUGjkVc8kI23uojwBYYUJQQIKJPu7X5Iu+JMQGeupwBOOOC7k0CLs6MPFhM/
-         mW29DuPUrCW1VhJK3Gp6h1zXHzS0DVKHJntSVhuq31KVNwa6BrwicYIIm4Z0TVOtkmej
-         2PfkycOCqQd5xkPahzYzif3RK+MROozeENIDF/K4YOaIznsbYy3j4cDnfS6jhuz7G/FH
-         ahC/PLpoPbPTMZKhCDfl7g5Ecj7Orheuw4JGMvu9gplTtkGA8+jDo//6vBtLn1emF0E8
-         xvYA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/Vz3+FFcpK6JU84307Yag/Sm9BKHY7RRzc3BqadD5HQ=;
+        b=aKwsNpRyh/V2OWW7e4hCWXCs0PB2rvQR5ufxCbysYv26uMecM6hOmgW6I5EIcFRwBU
+         sEoAwPkhkru9Z+y7aZTarzJCJn9b9PxyPLnCI0Xknn5xvybgmn3Hsw4nYCS3f56lmX70
+         6WNotQ57WjfveCHi0zqCHrjdFcMBg700cc/rzDKvTBNntDtTYjJCBHysIKb5dkG3oJPD
+         k5LXIZx1OVeg7Wjvpg6ooeKPt040Q76njTMyZmJONQon67ww81S/GkRxgjoKsF+L1xPq
+         HZB4meG2rJVO01Jv39J526ZgBbSQjBxFI9m6QGxw9VvbdaXizZGVSUuYjSfBZv7/BxNW
+         f/XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bSgxG3inIUDth+MW6z7dzN3SicTuf5PF5fcMI36bTe0=;
-        b=reh+F2ty1lO0OQBkcmTY9Oi8ZNNdKpcfG1yQNyG+jFMlt24DBQLgz9vfw3zo6FUHB2
-         KVoOxKpe4wZedrwxIX6OAkZRtTp+3xlrQoZSUY+Q+RvNSc2RJZMky4BY6YkGVo9dliK6
-         qnGO7+4777CYvNoQwgwFP95LW5QNeMRo/Qcj/Ms8T3k2PPGBwn85I3b2UoMbXlaUHX7o
-         BzVr1MCLAMMiL9TVJIZDBdDiY5nS1hn6yintknwre8n6QMgRcbZqUOsJH1QUO+MxiHMZ
-         HnI8kgir1wkGsa4vVFbfMtq4h2FN/puZZTcKUBSVr3JIw6DPzlRrHjxiYOZSlnZlJ92a
-         UTDA==
-X-Gm-Message-State: APjAAAX56TVTa9cR3syOKJM8abv1RLAH6uAZW9lBGRuuTFE6MlFu3cjG
-        wJYQ2iiWc7Ql28dv0Bb/QuioSwmVW8I=
-X-Google-Smtp-Source: APXvYqxvJ2BVyRpv/VivRUas05d7eAKzgkM/N0ZVkbmVuwZbwAr3XSnciM2DF1PEnuSFyM90E10TTA==
-X-Received: by 2002:a17:90a:e292:: with SMTP id d18mr1288259pjz.100.1567564531178;
-        Tue, 03 Sep 2019 19:35:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/Vz3+FFcpK6JU84307Yag/Sm9BKHY7RRzc3BqadD5HQ=;
+        b=UAlP/VimAyUDkSMAdjsJuoOH6j/yoIAh2qHpyDv218+I04YNdbm8O0Al8bdihK1v8v
+         0VJkFfgE3ti8Yg7Ic7MJKI6Wc9wSIDM6VHFnqsWWUSYx1EnaO8f+HUsdzKDc7J5EUrJV
+         IBLvkhOlbLII0bhoQ9jFe5/YuaY4fsj8WtHqRRUdlSdhpDqfN+2A9LVMrlxxrSeWN59V
+         lEnh1o4DChAOOlNaUgst4lA6eeedjB5zbhXDiLs5LFMlWzHYCx1N7jfzWsyPuPl9htKw
+         5KFdQGDEPyvW42e24WAgtVHTnA+/oxnYLs9X2z+j+G1cy/J91J8zWEfemHxE23oriT3c
+         YVDA==
+X-Gm-Message-State: APjAAAUdMq4VTd/zQse7QrHzOsec7h8ztdkNRcSiPlw0YFrGrJxJ1fre
+        5/RjPlCgOnQoSZiahMlaYMQopBr7uQM=
+X-Google-Smtp-Source: APXvYqxHYh3GCWa0AI1Ai2/9QvB01YG7eDooQPP9i1ZoxJRNQjuB6bjsvTas0nFhCn9yaCO95RqSpg==
+X-Received: by 2002:a17:90a:19c4:: with SMTP id 4mr2635503pjj.20.1567564532375;
+        Tue, 03 Sep 2019 19:35:32 -0700 (PDT)
 Received: from localhost.lan (c-67-185-54-80.hsd1.wa.comcast.net. [67.185.54.80])
-        by smtp.gmail.com with ESMTPSA id i74sm7480250pfe.28.2019.09.03.19.35.29
+        by smtp.gmail.com with ESMTPSA id i74sm7480250pfe.28.2019.09.03.19.35.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Sep 2019 19:35:30 -0700 (PDT)
+        Tue, 03 Sep 2019 19:35:31 -0700 (PDT)
 From:   Andrey Smirnov <andrew.smirnov@gmail.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
@@ -54,10 +54,12 @@ Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Iuliana Prodan <iuliana.prodan@nxp.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 00/12] CAAM bugfixes, small improvements
-Date:   Tue,  3 Sep 2019 19:35:03 -0700
-Message-Id: <20190904023515.7107-1-andrew.smirnov@gmail.com>
+Subject: [PATCH 01/12] crypto: caam - make sure clocks are enabled first
+Date:   Tue,  3 Sep 2019 19:35:04 -0700
+Message-Id: <20190904023515.7107-2-andrew.smirnov@gmail.com>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190904023515.7107-1-andrew.smirnov@gmail.com>
+References: <20190904023515.7107-1-andrew.smirnov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -66,66 +68,89 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Everyone:
+In order to access IP block's registers we need to enable appropriate
+clocks first, otherwise we are risking hanging the CPU.
 
-This series bugfixes and small improvement I made while doing more
-testing of CAAM code:
+The problem becomes very apparent when trying to use CAAM driver built
+as a kernel module. In that case caam_probe() gets called after
+clk_disable_unused() which means all of the necessary clocks are
+guaranteed to be disabled.
 
- - "crypto: caam - make sure clocks are enabled first"
+Coincidentally, this change also fixes iomap leak introduced by early
+return (instead of "goto iounmap_ctrl") in commit
+41fc54afae70 ("crypto: caam - simplfy clock initialization")
 
-   fixes a recent regression (and, conincidentally a leak cause by one
-   of my i.MX8MQ patches)
+Tested on ZII i.MX6Q+ RDU2
 
- - "crypto: caam - use devres to unmap JR's registers"
-   "crypto: caam - check irq_of_parse_and_map for errors"
+Fixes: 176435ad2ac7 ("crypto: caam - defer probing until QMan is available")
+Fixes: 41fc54afae70 ("crypto: caam - simplfy clock initialization")
+Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc: Chris Healy <cphealy@gmail.com>
+Cc: Lucas Stach <l.stach@pengutronix.de>
+Cc: Horia Geantă <horia.geanta@nxp.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/crypto/caam/ctrl.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-   are small improvements
-
- - "crypto: caam - dispose of IRQ mapping only after IRQ is freed"
-
-   fixes a bug introduced by my i.MX8MQ series
-
- - "crypto: caam - use devres to unmap memory"
-   "crypto: caam - use devres to remove debugfs"
-   "crypto: caam - use devres to de-initialize the RNG"
-   "crypto: caam - use devres to de-initialize QI"
-   "crypto: caam - user devres to populate platform devices"
-   "crypto: caam - populate platform devices last"
-
-   are devres conversions/small improvments
-
- - "crypto: caam - convert caamrng to platform device"
-   "crypto: caam - change JR device ownership scheme"
-
-   are more of an RFC than proper fixes. I don't have a very high
-   confidence in those fixes, but I think they are a good conversation
-   stater about the best approach to fix those issues
-
-Thanks,
-Andrey Smirnov
-
-Andrey Smirnov (12):
-  crypto: caam - make sure clocks are enabled first
-  crypto: caam - use devres to unmap JR's registers
-  crypto: caam - check irq_of_parse_and_map for errors
-  crypto: caam - dispose of IRQ mapping only after IRQ is freed
-  crypto: caam - use devres to unmap memory
-  crypto: caam - use devres to remove debugfs
-  crypto: caam - use devres to de-initialize the RNG
-  crypto: caam - use devres to de-initialize QI
-  crypto: caam - user devres to populate platform devices
-  crypto: caam - populate platform devices last
-  crypto: caam - convert caamrng to platform device
-  crypto: caam - change JR device ownership scheme
-
- drivers/crypto/caam/caamrng.c | 102 +++++-------
- drivers/crypto/caam/ctrl.c    | 294 ++++++++++++++++++----------------
- drivers/crypto/caam/intern.h  |   4 -
- drivers/crypto/caam/jr.c      |  90 ++++++++---
- drivers/crypto/caam/qi.c      |   8 +-
- drivers/crypto/caam/qi.h      |   1 -
- 6 files changed, 267 insertions(+), 232 deletions(-)
-
+diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+index 3c059d0e4207..db22777d59b4 100644
+--- a/drivers/crypto/caam/ctrl.c
++++ b/drivers/crypto/caam/ctrl.c
+@@ -594,6 +594,21 @@ static int caam_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(dev, ctrlpriv);
+ 	nprop = pdev->dev.of_node;
+ 
++	imx_soc_match = soc_device_match(caam_imx_soc_table);
++	caam_imx = (bool)imx_soc_match;
++
++	if (imx_soc_match) {
++		if (!imx_soc_match->data) {
++			dev_err(dev, "No clock data provided for i.MX SoC");
++			return -EINVAL;
++		}
++
++		ret = init_clocks(dev, imx_soc_match->data);
++		if (ret)
++			return ret;
++	}
++
++
+ 	/* Get configuration properties from device tree */
+ 	/* First, get register page */
+ 	ctrl = of_iomap(nprop, 0);
+@@ -604,9 +619,6 @@ static int caam_probe(struct platform_device *pdev)
+ 
+ 	caam_little_end = !(bool)(rd_reg32(&ctrl->perfmon.status) &
+ 				  (CSTA_PLEND | CSTA_ALT_PLEND));
+-	imx_soc_match = soc_device_match(caam_imx_soc_table);
+-	caam_imx = (bool)imx_soc_match;
+-
+ 	comp_params = rd_reg32(&ctrl->perfmon.comp_parms_ms);
+ 	if (comp_params & CTPR_MS_PS && rd_reg32(&ctrl->mcr) & MCFGR_LONG_PTR)
+ 		caam_ptr_sz = sizeof(u64);
+@@ -640,18 +652,6 @@ static int caam_probe(struct platform_device *pdev)
+ 	}
+ #endif
+ 
+-	if (imx_soc_match) {
+-		if (!imx_soc_match->data) {
+-			dev_err(dev, "No clock data provided for i.MX SoC");
+-			return -EINVAL;
+-		}
+-
+-		ret = init_clocks(dev, imx_soc_match->data);
+-		if (ret)
+-			return ret;
+-	}
+-
+-
+ 	/* Allocating the BLOCK_OFFSET based on the supported page size on
+ 	 * the platform
+ 	 */
 -- 
 2.21.0
 
