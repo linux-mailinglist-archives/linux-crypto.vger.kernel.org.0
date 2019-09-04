@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A07A791C
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Sep 2019 05:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125A4A7923
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Sep 2019 05:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727709AbfIDDEX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1727956AbfIDDEX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Tue, 3 Sep 2019 23:04:23 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:33988 "EHLO huawei.com"
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5749 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727701AbfIDDEX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1727692AbfIDDEX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Tue, 3 Sep 2019 23:04:23 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id ACDD0E8BC4200A95E5CD;
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 86B82D3A8C19B60C797D;
         Wed,  4 Sep 2019 11:04:21 +0800 (CST)
 Received: from linux-ibm.site (10.175.102.37) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
@@ -23,9 +23,9 @@ To:     <davem@davemloft.net>, <herbert@gondor.apana.org.au>,
         <gregkh@linuxfoundation.org>
 CC:     <zhongjiang@huawei.com>, <iommu@lists.linux-foundation.org>,
         <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/3] crypto: marvell: Use kzfree rather than its implementation
-Date:   Wed, 4 Sep 2019 11:01:17 +0800
-Message-ID: <1567566079-7412-2-git-send-email-zhongjiang@huawei.com>
+Subject: [PATCH 2/3] iommu/pamu: Use kzfree rather than its implementation
+Date:   Wed, 4 Sep 2019 11:01:18 +0800
+Message-ID: <1567566079-7412-3-git-send-email-zhongjiang@huawei.com>
 X-Mailer: git-send-email 1.7.12.4
 In-Reply-To: <1567566079-7412-1-git-send-email-zhongjiang@huawei.com>
 References: <1567566079-7412-1-git-send-email-zhongjiang@huawei.com>
@@ -42,23 +42,26 @@ Use kzfree instead of memset() + kfree().
 
 Signed-off-by: zhong jiang <zhongjiang@huawei.com>
 ---
- drivers/crypto/marvell/hash.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/iommu/fsl_pamu.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/marvell/hash.c b/drivers/crypto/marvell/hash.c
-index 0f0ac85..a2b35fb 100644
---- a/drivers/crypto/marvell/hash.c
-+++ b/drivers/crypto/marvell/hash.c
-@@ -1148,8 +1148,7 @@ static int mv_cesa_ahmac_pad_init(struct ahash_request *req,
- 		}
+diff --git a/drivers/iommu/fsl_pamu.c b/drivers/iommu/fsl_pamu.c
+index cde281b..ca6d147 100644
+--- a/drivers/iommu/fsl_pamu.c
++++ b/drivers/iommu/fsl_pamu.c
+@@ -1174,10 +1174,8 @@ static int fsl_pamu_probe(struct platform_device *pdev)
+ 	if (irq != NO_IRQ)
+ 		free_irq(irq, data);
  
- 		/* Set the memory region to 0 to avoid any leak. */
--		memset(keydup, 0, keylen);
--		kfree(keydup);
-+		kzfree(keydup);
+-	if (data) {
+-		memset(data, 0, sizeof(struct pamu_isr_data));
+-		kfree(data);
+-	}
++	if (data)
++		kzfree(data);
  
- 		if (ret)
- 			return ret;
+ 	if (pamu_regs)
+ 		iounmap(pamu_regs);
 -- 
 1.7.12.4
 
