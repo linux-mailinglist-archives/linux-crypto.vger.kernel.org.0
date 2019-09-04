@@ -2,55 +2,130 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4024EA771A
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Sep 2019 00:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEA6A78C8
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Sep 2019 04:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbfICWgo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Sep 2019 18:36:44 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:60202 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726079AbfICWgo (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Sep 2019 18:36:44 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1i5HPl-0002or-Nf; Wed, 04 Sep 2019 08:36:42 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 04 Sep 2019 08:36:41 +1000
-Date:   Wed, 4 Sep 2019 08:36:41 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>
-Subject: Re: crypto: skcipher - Unmap pages after an external error
-Message-ID: <20190903223641.GA7430@gondor.apana.org.au>
-References: <20190821143253.30209-1-ard.biesheuvel@linaro.org>
- <20190821143253.30209-9-ard.biesheuvel@linaro.org>
- <20190830080347.GA6677@gondor.apana.org.au>
- <CAKv+Gu-4QBvPcE7YUqgWbT31gdLM8vcHTPbdOCN+UnUMXreuPg@mail.gmail.com>
- <20190903065438.GA9372@gondor.apana.org.au>
- <20190903135020.GB5144@zzz.localdomain>
+        id S1727499AbfIDCfc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Sep 2019 22:35:32 -0400
+Received: from mail-pf1-f170.google.com ([209.85.210.170]:41646 "EHLO
+        mail-pf1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727222AbfIDCfc (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 3 Sep 2019 22:35:32 -0400
+Received: by mail-pf1-f170.google.com with SMTP id b13so5578993pfo.8;
+        Tue, 03 Sep 2019 19:35:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bSgxG3inIUDth+MW6z7dzN3SicTuf5PF5fcMI36bTe0=;
+        b=fWmNIHojJ8bdZ+jOjMHSj14XPMrrH7xiny3mqeB9h5bv1HuWRT2RLIH0uK8wOgW2ga
+         wvFg69dJhUGjkVc8kI23uojwBYYUJQQIKJPu7X5Iu+JMQGeupwBOOOC7k0CLs6MPFhM/
+         mW29DuPUrCW1VhJK3Gp6h1zXHzS0DVKHJntSVhuq31KVNwa6BrwicYIIm4Z0TVOtkmej
+         2PfkycOCqQd5xkPahzYzif3RK+MROozeENIDF/K4YOaIznsbYy3j4cDnfS6jhuz7G/FH
+         ahC/PLpoPbPTMZKhCDfl7g5Ecj7Orheuw4JGMvu9gplTtkGA8+jDo//6vBtLn1emF0E8
+         xvYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bSgxG3inIUDth+MW6z7dzN3SicTuf5PF5fcMI36bTe0=;
+        b=reh+F2ty1lO0OQBkcmTY9Oi8ZNNdKpcfG1yQNyG+jFMlt24DBQLgz9vfw3zo6FUHB2
+         KVoOxKpe4wZedrwxIX6OAkZRtTp+3xlrQoZSUY+Q+RvNSc2RJZMky4BY6YkGVo9dliK6
+         qnGO7+4777CYvNoQwgwFP95LW5QNeMRo/Qcj/Ms8T3k2PPGBwn85I3b2UoMbXlaUHX7o
+         BzVr1MCLAMMiL9TVJIZDBdDiY5nS1hn6yintknwre8n6QMgRcbZqUOsJH1QUO+MxiHMZ
+         HnI8kgir1wkGsa4vVFbfMtq4h2FN/puZZTcKUBSVr3JIw6DPzlRrHjxiYOZSlnZlJ92a
+         UTDA==
+X-Gm-Message-State: APjAAAX56TVTa9cR3syOKJM8abv1RLAH6uAZW9lBGRuuTFE6MlFu3cjG
+        wJYQ2iiWc7Ql28dv0Bb/QuioSwmVW8I=
+X-Google-Smtp-Source: APXvYqxvJ2BVyRpv/VivRUas05d7eAKzgkM/N0ZVkbmVuwZbwAr3XSnciM2DF1PEnuSFyM90E10TTA==
+X-Received: by 2002:a17:90a:e292:: with SMTP id d18mr1288259pjz.100.1567564531178;
+        Tue, 03 Sep 2019 19:35:31 -0700 (PDT)
+Received: from localhost.lan (c-67-185-54-80.hsd1.wa.comcast.net. [67.185.54.80])
+        by smtp.gmail.com with ESMTPSA id i74sm7480250pfe.28.2019.09.03.19.35.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Sep 2019 19:35:30 -0700 (PDT)
+From:   Andrey Smirnov <andrew.smirnov@gmail.com>
+To:     linux-crypto@vger.kernel.org
+Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
+        Chris Healy <cphealy@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/12] CAAM bugfixes, small improvements
+Date:   Tue,  3 Sep 2019 19:35:03 -0700
+Message-Id: <20190904023515.7107-1-andrew.smirnov@gmail.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190903135020.GB5144@zzz.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Sep 03, 2019 at 08:50:20AM -0500, Eric Biggers wrote:
->
-> Doesn't this re-introduce the same bug that my patch fixed -- that
-> scatterwalk_done() could be called after 0 bytes processed, causing a crash in
-> scatterwalk_pagedone()?
+Everyone:
 
-No because that crash is caused by the internal calls to the
-function skcipher_walk_done with an error.  Those two internal
-calls have now been changed into skcipher_walk_unwind which does
-not try to unmap the pages.
+This series bugfixes and small improvement I made while doing more
+testing of CAAM code:
 
-Cheers,
+ - "crypto: caam - make sure clocks are enabled first"
+
+   fixes a recent regression (and, conincidentally a leak cause by one
+   of my i.MX8MQ patches)
+
+ - "crypto: caam - use devres to unmap JR's registers"
+   "crypto: caam - check irq_of_parse_and_map for errors"
+
+   are small improvements
+
+ - "crypto: caam - dispose of IRQ mapping only after IRQ is freed"
+
+   fixes a bug introduced by my i.MX8MQ series
+
+ - "crypto: caam - use devres to unmap memory"
+   "crypto: caam - use devres to remove debugfs"
+   "crypto: caam - use devres to de-initialize the RNG"
+   "crypto: caam - use devres to de-initialize QI"
+   "crypto: caam - user devres to populate platform devices"
+   "crypto: caam - populate platform devices last"
+
+   are devres conversions/small improvments
+
+ - "crypto: caam - convert caamrng to platform device"
+   "crypto: caam - change JR device ownership scheme"
+
+   are more of an RFC than proper fixes. I don't have a very high
+   confidence in those fixes, but I think they are a good conversation
+   stater about the best approach to fix those issues
+
+Thanks,
+Andrey Smirnov
+
+Andrey Smirnov (12):
+  crypto: caam - make sure clocks are enabled first
+  crypto: caam - use devres to unmap JR's registers
+  crypto: caam - check irq_of_parse_and_map for errors
+  crypto: caam - dispose of IRQ mapping only after IRQ is freed
+  crypto: caam - use devres to unmap memory
+  crypto: caam - use devres to remove debugfs
+  crypto: caam - use devres to de-initialize the RNG
+  crypto: caam - use devres to de-initialize QI
+  crypto: caam - user devres to populate platform devices
+  crypto: caam - populate platform devices last
+  crypto: caam - convert caamrng to platform device
+  crypto: caam - change JR device ownership scheme
+
+ drivers/crypto/caam/caamrng.c | 102 +++++-------
+ drivers/crypto/caam/ctrl.c    | 294 ++++++++++++++++++----------------
+ drivers/crypto/caam/intern.h  |   4 -
+ drivers/crypto/caam/jr.c      |  90 ++++++++---
+ drivers/crypto/caam/qi.c      |   8 +-
+ drivers/crypto/caam/qi.h      |   1 -
+ 6 files changed, 267 insertions(+), 232 deletions(-)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.21.0
+
