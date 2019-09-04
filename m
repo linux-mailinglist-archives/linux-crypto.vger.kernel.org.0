@@ -2,204 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A84A7EAD
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Sep 2019 11:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23239A7F8E
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Sep 2019 11:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727562AbfIDJBe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 4 Sep 2019 05:01:34 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:46554 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727426AbfIDJBe (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 4 Sep 2019 05:01:34 -0400
-Received: by mail-ed1-f65.google.com with SMTP id i8so7948474edn.13
-        for <linux-crypto@vger.kernel.org>; Wed, 04 Sep 2019 02:01:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=WsMVygqBHKqObiKFhuGWzWU/88m8QMm3pr1+OK1sgaU=;
-        b=MzXMJbbfmqgzwW5zf9k0RymSo8e5AjXQ+4j5dHhMYZPxqhP2JsZnSPj8V0x2cfF8Ii
-         LB6Xu50FYEBS8CCJmCEYHpaAJrT2KkxFMErpjFxs/zh6L9aCKNRJjbo+H0S12002R/b/
-         dFaSREdr76isaBtv4Ih36GPQMqN6tp27nAP5UE8NotcfYxoBgwFvtJutpkBwCBBu4Lhx
-         CYHnjAPZI8VOBFD/YupWyYOoRX97meMgeCAXLbpRqPhCo8/T2/9r8JI15L/Wfq1Qx+dE
-         vRuFmf6k+BdIwdNze0ORtNvgmkZeXQuWCKos36YZ5zST9oNhmhofspDO6Wm/jJfg78iF
-         33TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=WsMVygqBHKqObiKFhuGWzWU/88m8QMm3pr1+OK1sgaU=;
-        b=rEE8ms4NKg73NAzK/0a5hmxn+snkH7ZkWAVTCw0E0sjhWgOYzA/T2ci5AB3QdJTlpY
-         feIes36Qgar86MXrE1fsLUiJu6N+nG5U/MTN6ybox0EOTIFl8+oMwfAkcq5GkM6hPGbb
-         oVyZarFswWWfIa4J/HNkvNdFDTKsTLUVpdLgFR89tPahTjfkGy6Fw5Q+j+bAV5V9MgeO
-         b2dwu376I90LBGCqJzDvSAqoj3dUbo8+cjcWDAqAm2VTCp4qXODNnCJNaKVBR+uVFyx/
-         iu9cxxvg2QsKtGUHGv3dhsBVLVFA+gQ6FRhEvtbqP//o7aRb3WnOgjpf8JROCLC8M73G
-         areg==
-X-Gm-Message-State: APjAAAXuF97nP+Mo9ejbxE2KmaEQrADGTS3P1Xas/ZZCBFyPEVV45xa+
-        Nb6LFpAqDPSvsqVWQ8kgiPyImbzb
-X-Google-Smtp-Source: APXvYqxi/v5IeBUPWD4tcb/Bbth0iqBmEsONtMEJymB5ga5ojL/KHDiOqheHEBYfjJqyHlcBjl3oDg==
-X-Received: by 2002:a17:906:5391:: with SMTP id g17mr10238145ejo.79.1567587692609;
-        Wed, 04 Sep 2019 02:01:32 -0700 (PDT)
-Received: from localhost.localdomain.com ([188.204.2.113])
-        by smtp.gmail.com with ESMTPSA id t30sm1473997edt.91.2019.09.04.02.01.31
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Sep 2019 02:01:31 -0700 (PDT)
-From:   Pascal van Leeuwen <pascalvanl@gmail.com>
-X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net,
-        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: [PATCH 3/3] crypto: inside-secure - Added support for the AES-CMAC ahash
-Date:   Wed,  4 Sep 2019 09:36:48 +0200
-Message-Id: <1567582608-29177-4-git-send-email-pvanleeuwen@verimatrix.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1567582608-29177-1-git-send-email-pvanleeuwen@verimatrix.com>
-References: <1567582608-29177-1-git-send-email-pvanleeuwen@verimatrix.com>
+        id S1729475AbfIDJiV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 4 Sep 2019 05:38:21 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5755 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726045AbfIDJiV (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 4 Sep 2019 05:38:21 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 86C12F2FF5C3E59212E6;
+        Wed,  4 Sep 2019 17:38:19 +0800 (CST)
+Received: from [127.0.0.1] (10.177.29.68) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Wed, 4 Sep 2019
+ 17:38:15 +0800
+Message-ID: <5D6F8606.8030109@huawei.com>
+Date:   Wed, 4 Sep 2019 17:38:14 +0800
+From:   zhong jiang <zhongjiang@huawei.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:12.0) Gecko/20120428 Thunderbird/12.0.1
+MIME-Version: 1.0
+To:     Joerg Roedel <joro@8bytes.org>
+CC:     <davem@davemloft.net>, <herbert@gondor.apana.org.au>,
+        <arno@natisbad.org>, <gregkh@linuxfoundation.org>,
+        <iommu@lists.linux-foundation.org>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/3] iommu/pamu: Use kzfree rather than its implementation
+References: <1567566079-7412-1-git-send-email-zhongjiang@huawei.com> <1567566079-7412-3-git-send-email-zhongjiang@huawei.com> <20190904081517.GA29855@8bytes.org>
+In-Reply-To: <20190904081517.GA29855@8bytes.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.177.29.68]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds support for the AES-CMAC authentication algorithm.
+On 2019/9/4 16:15, Joerg Roedel wrote:
+> On Wed, Sep 04, 2019 at 11:01:18AM +0800, zhong jiang wrote:
+>> Use kzfree instead of memset() + kfree().
+>>
+>> Signed-off-by: zhong jiang <zhongjiang@huawei.com>
+>> ---
+>>  drivers/iommu/fsl_pamu.c | 6 ++----
+>>  1 file changed, 2 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/iommu/fsl_pamu.c b/drivers/iommu/fsl_pamu.c
+>> index cde281b..ca6d147 100644
+>> --- a/drivers/iommu/fsl_pamu.c
+>> +++ b/drivers/iommu/fsl_pamu.c
+>> @@ -1174,10 +1174,8 @@ static int fsl_pamu_probe(struct platform_device *pdev)
+>>  	if (irq != NO_IRQ)
+>>  		free_irq(irq, data);
+>>  
+>> -	if (data) {
+>> -		memset(data, 0, sizeof(struct pamu_isr_data));
+>> -		kfree(data);
+>> -	}
+>> +	if (data)
+>> +		kzfree(data);
+> kzfree() is doing its own NULL-ptr check, no need to do it here.
+Yep,   we should also remove the condition before kzfree.  will repost.
 
-Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
----
- drivers/crypto/inside-secure/safexcel.c      |  1 +
- drivers/crypto/inside-secure/safexcel.h      |  1 +
- drivers/crypto/inside-secure/safexcel_hash.c | 99 ++++++++++++++++++++++++++++
- 3 files changed, 101 insertions(+)
-
-diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/inside-secure/safexcel.c
-index bc8bd69..2e421f6 100644
---- a/drivers/crypto/inside-secure/safexcel.c
-+++ b/drivers/crypto/inside-secure/safexcel.c
-@@ -1012,6 +1012,7 @@ static int safexcel_request_ring_irq(void *pdev, int irqid,
- 	&safexcel_alg_crc32,
- 	&safexcel_alg_cbcmac,
- 	&safexcel_alg_xcbcmac,
-+	&safexcel_alg_cmac,
- };
- 
- static int safexcel_register_algorithms(struct safexcel_crypto_priv *priv)
-diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/inside-secure/safexcel.h
-index 809d8d0..d76a4fa 100644
---- a/drivers/crypto/inside-secure/safexcel.h
-+++ b/drivers/crypto/inside-secure/safexcel.h
-@@ -809,5 +809,6 @@ int safexcel_hmac_setkey(const char *alg, const u8 *key, unsigned int keylen,
- extern struct safexcel_alg_template safexcel_alg_crc32;
- extern struct safexcel_alg_template safexcel_alg_cbcmac;
- extern struct safexcel_alg_template safexcel_alg_xcbcmac;
-+extern struct safexcel_alg_template safexcel_alg_cmac;
- 
- #endif
-diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
-index 6576430..0224779 100644
---- a/drivers/crypto/inside-secure/safexcel_hash.c
-+++ b/drivers/crypto/inside-secure/safexcel_hash.c
-@@ -2122,3 +2122,102 @@ struct safexcel_alg_template safexcel_alg_xcbcmac = {
- 		},
- 	},
- };
-+
-+static int safexcel_cmac_setkey(struct crypto_ahash *tfm, const u8 *key,
-+				unsigned int len)
-+{
-+	struct safexcel_ahash_ctx *ctx = crypto_tfm_ctx(crypto_ahash_tfm(tfm));
-+	struct crypto_aes_ctx aes;
-+	__be64 consts[4];
-+	u64 _const[2];
-+	u8 msb_mask, gfmask;
-+	int ret, i;
-+
-+	ret = aes_expandkey(&aes, key, len);
-+	if (ret) {
-+		crypto_ahash_set_flags(tfm, CRYPTO_TFM_RES_BAD_KEY_LEN);
-+		return ret;
-+	}
-+
-+	for (i = 0; i < len / sizeof(u32); i++)
-+		ctx->ipad[i + 8] = cpu_to_be32(aes.key_enc[i]);
-+
-+	/* precompute the CMAC key material */
-+	crypto_cipher_clear_flags(ctx->kaes, CRYPTO_TFM_REQ_MASK);
-+	crypto_cipher_set_flags(ctx->kaes, crypto_ahash_get_flags(tfm) &
-+				CRYPTO_TFM_REQ_MASK);
-+	ret = crypto_cipher_setkey(ctx->kaes, key, len);
-+	crypto_ahash_set_flags(tfm, crypto_cipher_get_flags(ctx->kaes) &
-+			       CRYPTO_TFM_RES_MASK);
-+	if (ret)
-+		return ret;
-+
-+	/* code below borrowed from crypto/cmac.c */
-+	/* encrypt the zero block */
-+	memset(consts, 0, AES_BLOCK_SIZE);
-+	crypto_cipher_encrypt_one(ctx->kaes, (u8 *)consts, (u8 *)consts);
-+
-+	gfmask = 0x87;
-+	_const[0] = be64_to_cpu(consts[1]);
-+	_const[1] = be64_to_cpu(consts[0]);
-+
-+	/* gf(2^128) multiply zero-ciphertext with u and u^2 */
-+	for (i = 0; i < 4; i += 2) {
-+		msb_mask = ((s64)_const[1] >> 63) & gfmask;
-+		_const[1] = (_const[1] << 1) | (_const[0] >> 63);
-+		_const[0] = (_const[0] << 1) ^ msb_mask;
-+
-+		consts[i + 0] = cpu_to_be64(_const[1]);
-+		consts[i + 1] = cpu_to_be64(_const[0]);
-+	}
-+	/* end of code borrowed from crypto/cmac.c */
-+
-+	for (i = 0; i < 2 * AES_BLOCK_SIZE / sizeof(u32); i++)
-+		ctx->ipad[i] = cpu_to_be32(((u32 *)consts)[i]);
-+
-+	if (len == AES_KEYSIZE_192) {
-+		ctx->alg    = CONTEXT_CONTROL_CRYPTO_ALG_XCBC192;
-+		ctx->key_sz = AES_MAX_KEY_SIZE + 2 * AES_BLOCK_SIZE;
-+	} else if (len == AES_KEYSIZE_256) {
-+		ctx->alg    = CONTEXT_CONTROL_CRYPTO_ALG_XCBC256;
-+		ctx->key_sz = AES_MAX_KEY_SIZE + 2 * AES_BLOCK_SIZE;
-+	} else {
-+		ctx->alg    = CONTEXT_CONTROL_CRYPTO_ALG_XCBC128;
-+		ctx->key_sz = AES_MIN_KEY_SIZE + 2 * AES_BLOCK_SIZE;
-+	}
-+	ctx->cbcmac = false;
-+
-+	memzero_explicit(&aes, sizeof(aes));
-+	return 0;
-+}
-+
-+struct safexcel_alg_template safexcel_alg_cmac = {
-+	.type = SAFEXCEL_ALG_TYPE_AHASH,
-+	.algo_mask = 0,
-+	.alg.ahash = {
-+		.init = safexcel_cbcmac_init,
-+		.update = safexcel_ahash_update,
-+		.final = safexcel_ahash_final,
-+		.finup = safexcel_ahash_finup,
-+		.digest = safexcel_cbcmac_digest,
-+		.setkey = safexcel_cmac_setkey,
-+		.export = safexcel_ahash_export,
-+		.import = safexcel_ahash_import,
-+		.halg = {
-+			.digestsize = AES_BLOCK_SIZE,
-+			.statesize = sizeof(struct safexcel_ahash_export_state),
-+			.base = {
-+				.cra_name = "cmac(aes)",
-+				.cra_driver_name = "safexcel-cmac-aes",
-+				.cra_priority = SAFEXCEL_CRA_PRIORITY,
-+				.cra_flags = CRYPTO_ALG_ASYNC |
-+					     CRYPTO_ALG_KERN_DRIVER_ONLY,
-+				.cra_blocksize = AES_BLOCK_SIZE,
-+				.cra_ctxsize = sizeof(struct safexcel_ahash_ctx),
-+				.cra_init = safexcel_xcbcmac_cra_init,
-+				.cra_exit = safexcel_xcbcmac_cra_exit,
-+				.cra_module = THIS_MODULE,
-+			},
-+		},
-+	},
-+};
--- 
-1.8.3.1
+Thanks,
+zhong jiang
+> Regards,
+>
+> 	Joerg
 
