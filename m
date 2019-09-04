@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9362DA78DB
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Sep 2019 04:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F696A78CB
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Sep 2019 04:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728067AbfIDCfk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1728046AbfIDCfk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Tue, 3 Sep 2019 22:35:40 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:46741 "EHLO
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:43241 "EHLO
         mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727995AbfIDCfh (ORCPT
+        with ESMTP id S1727222AbfIDCfj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Sep 2019 22:35:37 -0400
-Received: by mail-pg1-f195.google.com with SMTP id m3so10307789pgv.13;
-        Tue, 03 Sep 2019 19:35:36 -0700 (PDT)
+        Tue, 3 Sep 2019 22:35:39 -0400
+Received: by mail-pg1-f195.google.com with SMTP id u72so6147327pgb.10;
+        Tue, 03 Sep 2019 19:35:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RzbHrWIg0lBmbShcmgiv3bz+4va6hNwAkwxG7N3nZBA=;
-        b=ufvRrBj+X4/HCzkx/G0GmmmdwOwqBYJF3kBUUebp9LPIMk548rPc6wAJ6NqmcFzPZU
-         /6IKwQmbgBYpGtoSBgshWR5c499Lpr/BbJ/LhM1u3qKyLms1jtMmOETLC9vaOfoyAfsf
-         cRGjvTSDUz0HqtSVXPD5lGmd52VPAbBOF6kXm/w8jKmMB6uba7m9O8KkCcyylAKQ4sRe
-         Zn0m1CJnj5eAQkG17ftnKzsEvDX6CP4ulOgvJbnXnsyVgCAHuTxwVC3oz4QdGM3lwR7s
-         Nyt6X9/5gkcbv3USjWheep1tq4JCWfzPrnMzRi8Ew6xX0K77YJDWnmrZ3Tm2fTDk429s
-         Zmrw==
+        bh=VBYI9fYSI2nwboVcyiJxwUOgiBRwP/UdUW2a0Ojdh5g=;
+        b=PIelyfrAXDiumhGRN4EjKHVTz8kwW9LilaHYfvmElZBKbdCVullDzD9Ne6yDZZ1QOv
+         Wiq/+ts2cQaODhSncAwQ62j3JAmwFPBEwh/B+7l8WrJO91+Otn2FiJx0Qd0Tp3S+Fcwf
+         JnnEqzoMMSOqdFGe7nE7/t45YUHLSpiDIUsoNSLk/d4I8g3j4l2KgKA8UGf2bJ5q8glx
+         IKmi1h+HFfhFdHVMh1mS+ZFf983QuMrVVqnRbp/WJ8OHXbuk2igaW/h0033f84aC2kUw
+         09hA1ytd15j4zSVaag53xBnV/TnROOadTyxbleeyz7GDRmpPsQqtvBPpf/U2zxkwCyIV
+         m/Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RzbHrWIg0lBmbShcmgiv3bz+4va6hNwAkwxG7N3nZBA=;
-        b=qSIh85dvpVXUq9vVMh+EppTHFox4mnQb9L0w3CQhI43wWhDwsebpCyXw7SYvjqayQ/
-         r9pHkD06vwwLcsdGMeD8fA/8ICjzA2zUjxWm1aWVhJgGs5Hy3DfKCE/0zdT8TfMVPB5p
-         fu1HChP45m1clRCiHaFNeV7DOwt4crLokDAOHZYu7Alcrn1RM4leqpZyYap8/SkkjoZn
-         /J27qI7AKu/8AW4gJORJjVKOHUMwQ41E9jse9sLQb65mlj3CJes9gTdE81+2SIfI5xBD
-         sio+5U8Srmc2sr1jbJZMnNCo6eVr94vf7johdtoQp9J2CdJtNNBYulvZ4wO7Oc/6WgvZ
-         KTQg==
-X-Gm-Message-State: APjAAAW7pV1k+rA4Af+SMXrZfXlcgCrYcYp/AY7K/UflgwpfAlctXI1p
-        z9RXWT3crDnZVc1rln5pxQB/eZyIJnY=
-X-Google-Smtp-Source: APXvYqyyz1ppKDoCfLzcc42jJI63cCVNbyYUIXxpPJ8LP/vk3zxG1+L1pTb2r3pPJePVtvcp+2hZPA==
-X-Received: by 2002:a17:90a:24a1:: with SMTP id i30mr2729879pje.128.1567564536188;
-        Tue, 03 Sep 2019 19:35:36 -0700 (PDT)
+        bh=VBYI9fYSI2nwboVcyiJxwUOgiBRwP/UdUW2a0Ojdh5g=;
+        b=QcKcLyRFQbB9/XLB7Clp5EMobzq/jYLwAh3JrLCb0+mbPQ9xk5HM7w27aoKiXJyK4T
+         byUMO4a5UhTu+XklrWlrik6LQ0PWLV/xaaVeS5yVv8KMyZy5hTx6Tl+e5vN9hcgZZqtj
+         ZzgTkYVW6E3XWzGutzIvtaeNz7XQ69qdQrxyahCWFsCunz8H5bZivYMUYjgojIUrDLtI
+         o1uoLdD5YT1d311M/ggddz56qCLRa+6PU7goZRt5PSfbvwZG9V7UfJ9yihfRN7qdvpfI
+         B7iEciJUcaak0AoKw70I+27HdGhUHdLsHLgDJ2RqaR1E2QzwImIw/cL9psC/5gA/cwDE
+         9lvw==
+X-Gm-Message-State: APjAAAUmDJWYr9PcG00RHFSnob6pGITwN4xrksyny1CuBo5nXN+ghILa
+        /tOnvp5tSUGZ1T8jmjsJcSIMCjHJFEE=
+X-Google-Smtp-Source: APXvYqwbNaCiBRsKe1mxnFrqF9NZwtUDANOKU0kvpPSpBPZk6/adsZ8v83rhU3tryOl/O0h96Xch9w==
+X-Received: by 2002:a62:63c1:: with SMTP id x184mr45048290pfb.11.1567564537345;
+        Tue, 03 Sep 2019 19:35:37 -0700 (PDT)
 Received: from localhost.lan (c-67-185-54-80.hsd1.wa.comcast.net. [67.185.54.80])
-        by smtp.gmail.com with ESMTPSA id i74sm7480250pfe.28.2019.09.03.19.35.35
+        by smtp.gmail.com with ESMTPSA id i74sm7480250pfe.28.2019.09.03.19.35.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Sep 2019 19:35:35 -0700 (PDT)
+        Tue, 03 Sep 2019 19:35:36 -0700 (PDT)
 From:   Andrey Smirnov <andrew.smirnov@gmail.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
@@ -54,9 +54,9 @@ Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Iuliana Prodan <iuliana.prodan@nxp.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 04/12] crypto: caam - dispose of IRQ mapping only after IRQ is freed
-Date:   Tue,  3 Sep 2019 19:35:07 -0700
-Message-Id: <20190904023515.7107-5-andrew.smirnov@gmail.com>
+Subject: [PATCH 05/12] crypto: caam - use devres to unmap memory
+Date:   Tue,  3 Sep 2019 19:35:08 -0700
+Message-Id: <20190904023515.7107-6-andrew.smirnov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190904023515.7107-1-andrew.smirnov@gmail.com>
 References: <20190904023515.7107-1-andrew.smirnov@gmail.com>
@@ -68,12 +68,8 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-With IRQ requesting being managed by devres we need to make sure that
-we dispose of IRQ mapping after and not before it is free'd (otherwise
-we'll end up with a warning from the kernel). To achieve that simply
-convert IRQ mapping to rely on devres as well.
+Use devres to unmap memory and drop corresponding iounmap() call.
 
-Fixes: f314f12db65c ("crypto: caam - convert caam_jr_init() to use devres")
 Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
 Cc: Chris Healy <cphealy@gmail.com>
 Cc: Lucas Stach <l.stach@pengutronix.de>
@@ -83,51 +79,95 @@ Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
 Cc: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
- drivers/crypto/caam/jr.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/crypto/caam/ctrl.c | 28 +++++++++-------------------
+ 1 file changed, 9 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
-index 2732f3a0725a..d11956bc358f 100644
---- a/drivers/crypto/caam/jr.c
-+++ b/drivers/crypto/caam/jr.c
-@@ -146,7 +146,6 @@ static int caam_jr_remove(struct platform_device *pdev)
- 	ret = caam_jr_shutdown(jrdev);
- 	if (ret)
- 		dev_err(jrdev, "Failed to shut down job ring\n");
--	irq_dispose_mapping(jrpriv->irq);
+diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+index db22777d59b4..35bf82d1bedc 100644
+--- a/drivers/crypto/caam/ctrl.c
++++ b/drivers/crypto/caam/ctrl.c
+@@ -308,11 +308,9 @@ static int caam_remove(struct platform_device *pdev)
+ {
+ 	struct device *ctrldev;
+ 	struct caam_drv_private *ctrlpriv;
+-	struct caam_ctrl __iomem *ctrl;
  
- 	return ret;
+ 	ctrldev = &pdev->dev;
+ 	ctrlpriv = dev_get_drvdata(ctrldev);
+-	ctrl = (struct caam_ctrl __iomem *)ctrlpriv->ctrl;
+ 
+ 	/* Remove platform devices under the crypto node */
+ 	of_platform_depopulate(ctrldev);
+@@ -334,9 +332,6 @@ static int caam_remove(struct platform_device *pdev)
+ 	debugfs_remove_recursive(ctrlpriv->dfs_root);
+ #endif
+ 
+-	/* Unmap controller region */
+-	iounmap(ctrl);
+-
+ 	return 0;
  }
-@@ -487,6 +486,10 @@ static int caam_jr_init(struct device *dev)
- 	return error;
- }
  
-+static void caam_jr_irq_dispose_mapping(void *data)
-+{
-+	irq_dispose_mapping((int)data);
-+}
+@@ -611,10 +606,11 @@ static int caam_probe(struct platform_device *pdev)
  
- /*
-  * Probe routine for each detected JobR subsystem.
-@@ -542,12 +545,15 @@ static int caam_jr_probe(struct platform_device *pdev)
- 		return -EINVAL;
+ 	/* Get configuration properties from device tree */
+ 	/* First, get register page */
+-	ctrl = of_iomap(nprop, 0);
+-	if (!ctrl) {
++	ctrl = devm_of_iomap(dev, nprop, 0, NULL);
++	ret = PTR_ERR_OR_ZERO(ctrl);
++	if (ret) {
+ 		dev_err(dev, "caam: of_iomap() failed\n");
+-		return -ENOMEM;
++		return ret;
  	}
  
-+	error = devm_add_action_or_reset(jrdev, caam_jr_irq_dispose_mapping,
-+					 (void *)jrpriv->irq);
-+	if (error)
-+		return error;
-+
- 	/* Now do the platform independent part */
- 	error = caam_jr_init(jrdev); /* now turn on hardware */
--	if (error) {
--		irq_dispose_mapping(jrpriv->irq);
-+	if (error)
- 		return error;
--	}
+ 	caam_little_end = !(bool)(rd_reg32(&ctrl->perfmon.status) &
+@@ -632,22 +628,18 @@ static int caam_probe(struct platform_device *pdev)
+ 	if (ctrlpriv->qi_present && !caam_dpaa2) {
+ 		ret = qman_is_probed();
+ 		if (!ret) {
+-			ret = -EPROBE_DEFER;
+-			goto iounmap_ctrl;
++			return -EPROBE_DEFER;
+ 		} else if (ret < 0) {
+ 			dev_err(dev, "failing probe due to qman probe error\n");
+-			ret = -ENODEV;
+-			goto iounmap_ctrl;
++			return -ENODEV;
+ 		}
  
- 	jrpriv->dev = jrdev;
- 	spin_lock(&driver_data.jr_alloc_lock);
+ 		ret = qman_portals_probed();
+ 		if (!ret) {
+-			ret = -EPROBE_DEFER;
+-			goto iounmap_ctrl;
++			return -EPROBE_DEFER;
+ 		} else if (ret < 0) {
+ 			dev_err(dev, "failing probe due to qman portals probe error\n");
+-			ret = -ENODEV;
+-			goto iounmap_ctrl;
++			return -ENODEV;
+ 		}
+ 	}
+ #endif
+@@ -722,7 +714,7 @@ static int caam_probe(struct platform_device *pdev)
+ 	ret = dma_set_mask_and_coherent(dev, caam_get_dma_mask(dev));
+ 	if (ret) {
+ 		dev_err(dev, "dma_set_mask_and_coherent failed (%d)\n", ret);
+-		goto iounmap_ctrl;
++		return ret;
+ 	}
+ 
+ 	ctrlpriv->era = caam_get_era(ctrl);
+@@ -927,8 +919,6 @@ static int caam_probe(struct platform_device *pdev)
+ 	if (ctrlpriv->qi_init)
+ 		caam_qi_shutdown(dev);
+ #endif
+-iounmap_ctrl:
+-	iounmap(ctrl);
+ 	return ret;
+ }
+ 
 -- 
 2.21.0
 
