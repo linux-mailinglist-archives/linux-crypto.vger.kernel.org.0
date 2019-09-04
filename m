@@ -2,63 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0774A7920
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Sep 2019 05:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2C7A7D6B
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Sep 2019 10:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbfIDDE2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Sep 2019 23:04:28 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33082 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726770AbfIDDE2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Sep 2019 23:04:28 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 917C6A5EED8200FBE134;
-        Wed,  4 Sep 2019 11:04:26 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.439.0; Wed, 4 Sep 2019 11:04:15 +0800
-From:   zhong jiang <zhongjiang@huawei.com>
-To:     <davem@davemloft.net>, <herbert@gondor.apana.org.au>,
-        <arno@natisbad.org>, <joro@8bytes.org>,
-        <gregkh@linuxfoundation.org>
-CC:     <zhongjiang@huawei.com>, <iommu@lists.linux-foundation.org>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] Staging: rtl8723bs: Use kzfree rather than its implementation
-Date:   Wed, 4 Sep 2019 11:01:19 +0800
-Message-ID: <1567566079-7412-4-git-send-email-zhongjiang@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
-In-Reply-To: <1567566079-7412-1-git-send-email-zhongjiang@huawei.com>
+        id S1728604AbfIDIPU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 4 Sep 2019 04:15:20 -0400
+Received: from 8bytes.org ([81.169.241.247]:53108 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725267AbfIDIPU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 4 Sep 2019 04:15:20 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 8A42E445; Wed,  4 Sep 2019 10:15:17 +0200 (CEST)
+Date:   Wed, 4 Sep 2019 10:15:17 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     zhong jiang <zhongjiang@huawei.com>
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        arno@natisbad.org, gregkh@linuxfoundation.org,
+        iommu@lists.linux-foundation.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] iommu/pamu: Use kzfree rather than its implementation
+Message-ID: <20190904081517.GA29855@8bytes.org>
 References: <1567566079-7412-1-git-send-email-zhongjiang@huawei.com>
+ <1567566079-7412-3-git-send-email-zhongjiang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1567566079-7412-3-git-send-email-zhongjiang@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Use kzfree instead of memset() + kfree().
+On Wed, Sep 04, 2019 at 11:01:18AM +0800, zhong jiang wrote:
+> Use kzfree instead of memset() + kfree().
+> 
+> Signed-off-by: zhong jiang <zhongjiang@huawei.com>
+> ---
+>  drivers/iommu/fsl_pamu.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iommu/fsl_pamu.c b/drivers/iommu/fsl_pamu.c
+> index cde281b..ca6d147 100644
+> --- a/drivers/iommu/fsl_pamu.c
+> +++ b/drivers/iommu/fsl_pamu.c
+> @@ -1174,10 +1174,8 @@ static int fsl_pamu_probe(struct platform_device *pdev)
+>  	if (irq != NO_IRQ)
+>  		free_irq(irq, data);
+>  
+> -	if (data) {
+> -		memset(data, 0, sizeof(struct pamu_isr_data));
+> -		kfree(data);
+> -	}
+> +	if (data)
+> +		kzfree(data);
 
-Signed-off-by: zhong jiang <zhongjiang@huawei.com>
----
- drivers/staging/rtl8723bs/core/rtw_security.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+kzfree() is doing its own NULL-ptr check, no need to do it here.
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-index 979056c..57cfe06 100644
---- a/drivers/staging/rtl8723bs/core/rtw_security.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-@@ -2290,8 +2290,7 @@ static void gf_mulx(u8 *pad)
- 
- static void aes_encrypt_deinit(void *ctx)
- {
--	memset(ctx, 0, AES_PRIV_SIZE);
--	kfree(ctx);
-+	kzfree(ctx);
- }
- 
- 
--- 
-1.7.12.4
+Regards,
 
+	Joerg
