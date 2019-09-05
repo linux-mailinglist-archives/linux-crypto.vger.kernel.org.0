@@ -2,55 +2,78 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DD0A9A24
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Sep 2019 07:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E05A9AA1
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Sep 2019 08:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731199AbfIEFkg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 5 Sep 2019 01:40:36 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:60574 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725786AbfIEFkg (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 5 Sep 2019 01:40:36 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1i5kVU-0006s7-KO; Thu, 05 Sep 2019 15:40:33 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 05 Sep 2019 15:40:32 +1000
-Date:   Thu, 5 Sep 2019 15:40:32 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-crypto@vger.kernel.org
-Subject: Re: crypto: skcipher - Unmap pages after an external error
-Message-ID: <20190905054032.GA3022@gondor.apana.org.au>
-References: <20190821143253.30209-1-ard.biesheuvel@linaro.org>
- <20190821143253.30209-9-ard.biesheuvel@linaro.org>
- <20190830080347.GA6677@gondor.apana.org.au>
- <CAKv+Gu-4QBvPcE7YUqgWbT31gdLM8vcHTPbdOCN+UnUMXreuPg@mail.gmail.com>
- <20190903065438.GA9372@gondor.apana.org.au>
- <20190903135020.GB5144@zzz.localdomain>
- <20190903223641.GA7430@gondor.apana.org.au>
- <20190905052217.GA722@sol.localdomain>
+        id S1731542AbfIEGZc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 5 Sep 2019 02:25:32 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:42094 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731359AbfIEGZc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 5 Sep 2019 02:25:32 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 81238E957918129EA04E;
+        Thu,  5 Sep 2019 14:25:30 +0800 (CST)
+Received: from [127.0.0.1] (10.177.29.68) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0; Thu, 5 Sep 2019
+ 14:25:28 +0800
+Message-ID: <5D70AA57.5080700@huawei.com>
+Date:   Thu, 5 Sep 2019 14:25:27 +0800
+From:   zhong jiang <zhongjiang@huawei.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:12.0) Gecko/20120428 Thunderbird/12.0.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190905052217.GA722@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+To:     Will Deacon <will@kernel.org>, <herbert@gondor.apana.org.au>
+CC:     <davem@davemloft.net>, <catalin.marinas@arm.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] crypto: arm64: Use PTR_ERR_OR_ZERO rather than its implementation.
+References: <1567493656-19916-1-git-send-email-zhongjiang@huawei.com> <20190904102526.5vtdv5ofuezn7fre@willie-the-truck>
+In-Reply-To: <20190904102526.5vtdv5ofuezn7fre@willie-the-truck>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.177.29.68]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Sep 04, 2019 at 10:22:17PM -0700, Eric Biggers wrote:
+On 2019/9/4 18:25, Will Deacon wrote:
+> On Tue, Sep 03, 2019 at 02:54:16PM +0800, zhong jiang wrote:
+>> PTR_ERR_OR_ZERO contains if(IS_ERR(...)) + PTR_ERR. It is better to
+>> use it directly. hence just replace it.
+>>
+>> Signed-off-by: zhong jiang <zhongjiang@huawei.com>
+>> ---
+>>  arch/arm64/crypto/aes-glue.c | 4 +---
+>>  1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/arch/arm64/crypto/aes-glue.c b/arch/arm64/crypto/aes-glue.c
+>> index ca0c84d..2a2e0a3 100644
+>> --- a/arch/arm64/crypto/aes-glue.c
+>> +++ b/arch/arm64/crypto/aes-glue.c
+>> @@ -409,10 +409,8 @@ static int essiv_cbc_init_tfm(struct crypto_skcipher *tfm)
+>>  	struct crypto_aes_essiv_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
+>>  
+>>  	ctx->hash = crypto_alloc_shash("sha256", 0, 0);
+>> -	if (IS_ERR(ctx->hash))
+>> -		return PTR_ERR(ctx->hash);
+>>  
+>> -	return 0;
+>> +	return PTR_ERR_OR_ZERO(ctx->hash);
+>>  }
+>>  
+>>  static void essiv_cbc_exit_tfm(struct crypto_skcipher *tfm)
+> Acked-by: Will Deacon <will@kernel.org>
+Thanks.
+
+Sincerely,
+zhong jiang
+> Assuming this will go via Herbert.
 >
-> Okay, but what about external callers that pass in an error?  (I mean, I don't
-> actually see any currently, but the point of this patch is to allow it...)
-> What would prevent the crash in scatterwalk_done() in that case?
+> Will
+>
+> .
+>
 
-With external callers the pages are always mapped and therefore
-they have to be unmapped, regardless of whether the actual crypto
-succeeded or not.
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
