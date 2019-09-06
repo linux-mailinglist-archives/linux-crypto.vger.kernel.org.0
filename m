@@ -2,42 +2,42 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEC9AB041
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Sep 2019 03:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B250AB050
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Sep 2019 03:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403987AbfIFBlI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 5 Sep 2019 21:41:08 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:47266 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391150AbfIFBlG (ORCPT
+        id S2391931AbfIFBnr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 5 Sep 2019 21:43:47 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57982 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391930AbfIFBnr (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 5 Sep 2019 21:41:06 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x861cktU029107;
-        Fri, 6 Sep 2019 01:40:44 GMT
+        Thu, 5 Sep 2019 21:43:47 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x861gtxj026350;
+        Fri, 6 Sep 2019 01:43:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2019-08-05;
- bh=Ws2aR+Add5xNm/Tkp7hM9s0Hd53px/3jGUbROhNSGYI=;
- b=i2n8oD0uhjxa4stMYdgeaFTdAoGJ9+/UOt/ICJx5KlYaUyRnnIAJL1z7ltNVc9oY0NfC
- eBdu58+9N10KJxtzNFq2OQyd4XOm1nALpPMrahHnO671GvQwGVdMrw+qwJCklbfG1fVt
- W/YeMizjAFU0YTB3HFivloUZk2KWoPBlDgLzNPIcGFLGO6Rm0tQ9/vtMX0g5003ksW+2
- KJZ9yWpLbBk/0uyw4zbwaYw1xECdV1eJ90KCjylRuPRjU2/3hAfwJF+w9ZNy75x3MOaC
- 5sXCI6Bc0+SBUN7kxkcZa3l5xhvJwBqqvhmzm6zzRD2vGnygY1OeC3HuJMHSTW6Rkif3 zA== 
+ bh=HDJotMfJ0oHz8HxUSu0ZzPbbbnN4HvFLkMPPfdPoerA=;
+ b=hEfTsCpsNXnz+zAQqJYpVYeWGNuyVzQPCmabJKEY5tCpsGCRDApx2ePtiEAEnD4rEVIy
+ 86uV+ahBByb2jbkfSuSSYElCAj49qmOCP0XNHnrSKsRcOHuXuuoxWru81F3rhnD0KgUf
+ 4qeQ2un87B7oZgjzkSKeJeGMaFkYpfaioQZDVoATVVXnyLorUY6lPLDES5/pRVQzso4e
+ BNqcsfx+vw4LIKXDLVINYSg0u+ra6eR/2zw1Aw8d++8xE6ayLAEPKaTILbX/7UcH9y5S
+ r42+pIvj7sLhw3W6Lm9WUTGoCr4X/wXDka42aBezveYzXYit+9ofjgwTqJbmeDY6CmTU lg== 
 Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2uudjs02rh-1
+        by userp2120.oracle.com with ESMTP id 2uue1f803f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Sep 2019 01:43:34 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x861cYW1188431;
+        Fri, 6 Sep 2019 01:40:44 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 2utpmc44vt-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Fri, 06 Sep 2019 01:40:44 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x861cXnN188294;
-        Fri, 6 Sep 2019 01:40:43 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2utpmc44vv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Sep 2019 01:40:43 +0000
 Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x861eejJ004040;
-        Fri, 6 Sep 2019 01:40:40 GMT
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x861efca021705;
+        Fri, 6 Sep 2019 01:40:41 GMT
 Received: from localhost.localdomain (/98.229.125.203)
         by default (Oracle Beehive Gateway v4.0)
         with ESMTP ; Thu, 05 Sep 2019 18:40:40 -0700
@@ -49,22 +49,22 @@ Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
         Tejun Heo <tj@kernel.org>, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: [PATCH v3 3/9] workqueue: require CPU hotplug read exclusion for apply_workqueue_attrs
-Date:   Thu,  5 Sep 2019 21:40:23 -0400
-Message-Id: <20190906014029.3345-4-daniel.m.jordan@oracle.com>
+Subject: [PATCH v3 4/9] padata: make padata_do_parallel find alternate callback CPU
+Date:   Thu,  5 Sep 2019 21:40:24 -0400
+Message-Id: <20190906014029.3345-5-daniel.m.jordan@oracle.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190906014029.3345-1-daniel.m.jordan@oracle.com>
 References: <20190906014029.3345-1-daniel.m.jordan@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9371 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.0.1-1906280000 definitions=main-1909060015
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9371 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
  definitions=main-1909060016
@@ -73,78 +73,165 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Change the calling convention for apply_workqueue_attrs to require CPU
-hotplug read exclusion.
+padata_do_parallel currently returns -EINVAL if the callback CPU isn't
+in the callback cpumask.
 
-Avoids lockdep complaints about nested calls to get_online_cpus in a
-future patch where padata calls apply_workqueue_attrs when changing
-other CPU-hotplug-sensitive data structures with the CPU read lock
-already held.
+pcrypt tries to prevent this situation by keeping its own callback
+cpumask in sync with padata's and checks that the callback CPU it passes
+to padata is valid.  Make padata handle this instead.
+
+padata_do_parallel now takes a pointer to the callback CPU and updates
+it for the caller if an alternate CPU is used.  Overall behavior in
+terms of which callback CPUs are chosen stays the same.
+
+Prepares for removal of the padata cpumask notifier in pcrypt, which
+will fix a lockdep complaint about nested acquisition of the CPU hotplug
+lock later in the series.
 
 Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Acked-by: Tejun Heo <tj@kernel.org>
 Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
 Cc: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Tejun Heo <tj@kernel.org>
 Cc: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
- kernel/workqueue.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ crypto/pcrypt.c        | 33 ++-------------------------------
+ include/linux/padata.h |  2 +-
+ kernel/padata.c        | 27 ++++++++++++++++++++-------
+ 3 files changed, 23 insertions(+), 39 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index f53705ff3ff1..bc2e09a8ea61 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4030,6 +4030,8 @@ static int apply_workqueue_attrs_locked(struct workqueue_struct *wq,
-  *
-  * Performs GFP_KERNEL allocations.
-  *
-+ * Assumes caller has CPU hotplug read exclusion, i.e. get_online_cpus().
-+ *
-  * Return: 0 on success and -errno on failure.
-  */
- int apply_workqueue_attrs(struct workqueue_struct *wq,
-@@ -4037,9 +4039,11 @@ int apply_workqueue_attrs(struct workqueue_struct *wq,
+diff --git a/crypto/pcrypt.c b/crypto/pcrypt.c
+index d67293063c7f..efca962ab12a 100644
+--- a/crypto/pcrypt.c
++++ b/crypto/pcrypt.c
+@@ -57,35 +57,6 @@ struct pcrypt_aead_ctx {
+ 	unsigned int cb_cpu;
+ };
+ 
+-static int pcrypt_do_parallel(struct padata_priv *padata, unsigned int *cb_cpu,
+-			      struct padata_pcrypt *pcrypt)
+-{
+-	unsigned int cpu_index, cpu, i;
+-	struct pcrypt_cpumask *cpumask;
+-
+-	cpu = *cb_cpu;
+-
+-	rcu_read_lock_bh();
+-	cpumask = rcu_dereference_bh(pcrypt->cb_cpumask);
+-	if (cpumask_test_cpu(cpu, cpumask->mask))
+-			goto out;
+-
+-	if (!cpumask_weight(cpumask->mask))
+-			goto out;
+-
+-	cpu_index = cpu % cpumask_weight(cpumask->mask);
+-
+-	cpu = cpumask_first(cpumask->mask);
+-	for (i = 0; i < cpu_index; i++)
+-		cpu = cpumask_next(cpu, cpumask->mask);
+-
+-	*cb_cpu = cpu;
+-
+-out:
+-	rcu_read_unlock_bh();
+-	return padata_do_parallel(pcrypt->pinst, padata, cpu);
+-}
+-
+ static int pcrypt_aead_setkey(struct crypto_aead *parent,
+ 			      const u8 *key, unsigned int keylen)
  {
- 	int ret;
+@@ -157,7 +128,7 @@ static int pcrypt_aead_encrypt(struct aead_request *req)
+ 			       req->cryptlen, req->iv);
+ 	aead_request_set_ad(creq, req->assoclen);
  
--	apply_wqattrs_lock();
-+	lockdep_assert_cpus_held();
+-	err = pcrypt_do_parallel(padata, &ctx->cb_cpu, &pencrypt);
++	err = padata_do_parallel(pencrypt.pinst, padata, &ctx->cb_cpu);
+ 	if (!err)
+ 		return -EINPROGRESS;
+ 
+@@ -199,7 +170,7 @@ static int pcrypt_aead_decrypt(struct aead_request *req)
+ 			       req->cryptlen, req->iv);
+ 	aead_request_set_ad(creq, req->assoclen);
+ 
+-	err = pcrypt_do_parallel(padata, &ctx->cb_cpu, &pdecrypt);
++	err = padata_do_parallel(pdecrypt.pinst, padata, &ctx->cb_cpu);
+ 	if (!err)
+ 		return -EINPROGRESS;
+ 
+diff --git a/include/linux/padata.h b/include/linux/padata.h
+index 839d9319920a..f7851f8e2190 100644
+--- a/include/linux/padata.h
++++ b/include/linux/padata.h
+@@ -154,7 +154,7 @@ struct padata_instance {
+ extern struct padata_instance *padata_alloc_possible(const char *name);
+ extern void padata_free(struct padata_instance *pinst);
+ extern int padata_do_parallel(struct padata_instance *pinst,
+-			      struct padata_priv *padata, int cb_cpu);
++			      struct padata_priv *padata, int *cb_cpu);
+ extern void padata_do_serial(struct padata_priv *padata);
+ extern int padata_set_cpumask(struct padata_instance *pinst, int cpumask_type,
+ 			      cpumask_var_t cpumask);
+diff --git a/kernel/padata.c b/kernel/padata.c
+index 58728cd7f40c..9a17922ec436 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -94,17 +94,19 @@ static void padata_parallel_worker(struct work_struct *parallel_work)
+  *
+  * @pinst: padata instance
+  * @padata: object to be parallelized
+- * @cb_cpu: cpu the serialization callback function will run on,
+- *          must be in the serial cpumask of padata(i.e. cpumask.cbcpu).
++ * @cb_cpu: pointer to the CPU that the serialization callback function should
++ *          run on.  If it's not in the serial cpumask of @pinst
++ *          (i.e. cpumask.cbcpu), this function selects a fallback CPU and if
++ *          none found, returns -EINVAL.
+  *
+  * The parallelization callback function will run with BHs off.
+  * Note: Every object which is parallelized by padata_do_parallel
+  * must be seen by padata_do_serial.
+  */
+ int padata_do_parallel(struct padata_instance *pinst,
+-		       struct padata_priv *padata, int cb_cpu)
++		       struct padata_priv *padata, int *cb_cpu)
+ {
+-	int target_cpu, err;
++	int i, cpu, cpu_index, target_cpu, err;
+ 	struct padata_parallel_queue *queue;
+ 	struct parallel_data *pd;
+ 
+@@ -116,8 +118,19 @@ int padata_do_parallel(struct padata_instance *pinst,
+ 	if (!(pinst->flags & PADATA_INIT) || pinst->flags & PADATA_INVALID)
+ 		goto out;
+ 
+-	if (!cpumask_test_cpu(cb_cpu, pd->cpumask.cbcpu))
+-		goto out;
++	if (!cpumask_test_cpu(*cb_cpu, pd->cpumask.cbcpu)) {
++		if (!cpumask_weight(pd->cpumask.cbcpu))
++			goto out;
 +
-+	mutex_lock(&wq_pool_mutex);
- 	ret = apply_workqueue_attrs_locked(wq, attrs);
--	apply_wqattrs_unlock();
-+	mutex_unlock(&wq_pool_mutex);
- 
- 	return ret;
- }
-@@ -4152,16 +4156,21 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
- 			mutex_unlock(&wq->mutex);
- 		}
- 		return 0;
--	} else if (wq->flags & __WQ_ORDERED) {
++		/* Select an alternate fallback CPU and notify the caller. */
++		cpu_index = *cb_cpu % cpumask_weight(pd->cpumask.cbcpu);
++
++		cpu = cpumask_first(pd->cpumask.cbcpu);
++		for (i = 0; i < cpu_index; i++)
++			cpu = cpumask_next(cpu, pd->cpumask.cbcpu);
++
++		*cb_cpu = cpu;
 +	}
-+
-+	get_online_cpus();
-+	if (wq->flags & __WQ_ORDERED) {
- 		ret = apply_workqueue_attrs(wq, ordered_wq_attrs[highpri]);
- 		/* there should only be single pwq for ordering guarantee */
- 		WARN(!ret && (wq->pwqs.next != &wq->dfl_pwq->pwqs_node ||
- 			      wq->pwqs.prev != &wq->dfl_pwq->pwqs_node),
- 		     "ordering guarantee broken for workqueue %s\n", wq->name);
--		return ret;
- 	} else {
--		return apply_workqueue_attrs(wq, unbound_std_wq_attrs[highpri]);
-+		ret = apply_workqueue_attrs(wq, unbound_std_wq_attrs[highpri]);
- 	}
-+	put_online_cpus();
-+
-+	return ret;
- }
  
- static int wq_clamp_max_active(int max_active, unsigned int flags,
+ 	err =  -EBUSY;
+ 	if ((pinst->flags & PADATA_RESET))
+@@ -129,7 +142,7 @@ int padata_do_parallel(struct padata_instance *pinst,
+ 	err = 0;
+ 	atomic_inc(&pd->refcnt);
+ 	padata->pd = pd;
+-	padata->cb_cpu = cb_cpu;
++	padata->cb_cpu = *cb_cpu;
+ 
+ 	target_cpu = padata_cpu_hash(pd);
+ 	padata->cpu = target_cpu;
 -- 
 2.23.0
 
