@@ -2,204 +2,115 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A432CAD8B2
-	for <lists+linux-crypto@lfdr.de>; Mon,  9 Sep 2019 14:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51810AD8BB
+	for <lists+linux-crypto@lfdr.de>; Mon,  9 Sep 2019 14:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404803AbfIIMQE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 9 Sep 2019 08:16:04 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:32880 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391095AbfIIMQC (ORCPT
+        id S2404836AbfIIMQx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 9 Sep 2019 08:16:53 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:48050 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404832AbfIIMQw (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 9 Sep 2019 08:16:02 -0400
-Received: by mail-ed1-f65.google.com with SMTP id o9so12779063edq.0
-        for <linux-crypto@vger.kernel.org>; Mon, 09 Sep 2019 05:16:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=WsMVygqBHKqObiKFhuGWzWU/88m8QMm3pr1+OK1sgaU=;
-        b=rEivIHVOsInAtILPxOsu0yv9/dCmvAQZmyzLopbnCDmcj450UGeL1pnRkBentOMjER
-         R85PmtTPALWobVJD2t/TYWo5G3WBET/pJ2AQuRh1gzXJt8pTwC/b/PkvUfs3wLP4DV/D
-         Mb8jP6ABbM39qWQPyHoyKxEIiBQHp9U1ydQSf0xPjPiay1eJnXuJ/GIU5+L9PS8LwwJ5
-         esG7RgFk0qHD+4RqLNQUBtnbiO/zQxmvaUFB2OUuvJcXKDplzFpI/cgLzPLHBDyikMT6
-         VOKMG11+vL5u+/IJXHpAoiTBFAM1bcnHhYv681yWXUW837tTAJW0ALNO/Kad574qIsK8
-         uDwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=WsMVygqBHKqObiKFhuGWzWU/88m8QMm3pr1+OK1sgaU=;
-        b=G0h4RIRX1O4RU29JVqQ7RXfu5blHoyxiIPY3MJrfD5FCDzw7QKZJvwFiQ8O/qewHJv
-         McP+WbTKs/5ZZfedQhhqqt2KeSj8xoLkgdJPI7K8uy8QOjzSfc0iNXPesAZwWXoF0BLa
-         mQ5oxOqByjyZBJexgvDWF031lFqkV0IpB9pRhcEHGUr55mL3+QUQWPT7iqFueQ8EciFB
-         XqT5LdRdWheIXBcGKlqAj9ZFRgDTRj731FfNCUdpCr2uForLr58h0t37XesMsj3xRZ/E
-         dO0CFqxLEBsD8RrQgfV7rw8di0E0ZVHhA2UiB6gPvu9LVO5ir1Iw8WNDQxXccbk24cqw
-         uyLw==
-X-Gm-Message-State: APjAAAWBcTxM1X5khZvodQ7PLiEJ0zGwFyTv6+SHLMZuVvdXT4RLiCPx
-        JjCSibi0L4Qjr9uZfk+yV2/KPhue
-X-Google-Smtp-Source: APXvYqz8TxdCFzmPaZUcYSvYz/lAucTahJZJl0PJkvOeFS7MWxABBlinWhTPOwMIIyhno1ZzIWV54w==
-X-Received: by 2002:a50:9734:: with SMTP id c49mr24220102edb.93.1568031359542;
-        Mon, 09 Sep 2019 05:15:59 -0700 (PDT)
-Received: from localhost.localdomain.com ([188.204.2.113])
-        by smtp.gmail.com with ESMTPSA id d24sm3001208edp.88.2019.09.09.05.15.58
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Sep 2019 05:15:59 -0700 (PDT)
-From:   Pascal van Leeuwen <pascalvanl@gmail.com>
-X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net,
-        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: [PATCH 3/3] crypto: inside-secure - Added support for the AES-CMAC ahash
-Date:   Mon,  9 Sep 2019 13:13:08 +0200
-Message-Id: <1568027588-31997-4-git-send-email-pvanleeuwen@verimatrix.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1568027588-31997-1-git-send-email-pvanleeuwen@verimatrix.com>
-References: <1568027588-31997-1-git-send-email-pvanleeuwen@verimatrix.com>
+        Mon, 9 Sep 2019 08:16:52 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 6E8478EE180;
+        Mon,  9 Sep 2019 05:16:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1568031412;
+        bh=A4wO046/2GXXt4hgSTTGToYKR3Su1LXB/mUtb9Xom3U=;
+        h=Subject:From:To:Cc:Date:From;
+        b=V57AIN2QFFSA2qS6cMyM/XLS44bcn94woPkECenIfuOFhV6QfYozDdE7LxfBCN24a
+         VfsEjHtZIom7OIVWbtdZ6PF8QE+mS660fFxc9Y/T591pBumucsP7xJ5I/ek3mf6Dvb
+         8fTdy/T0c6kb3lnZX6S8W79AXDMN5vE/eT+CR+/A=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id hDGJeiVB2gl1; Mon,  9 Sep 2019 05:16:52 -0700 (PDT)
+Received: from [192.168.6.117] (unknown [148.69.85.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 228358EE105;
+        Mon,  9 Sep 2019 05:16:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1568031412;
+        bh=A4wO046/2GXXt4hgSTTGToYKR3Su1LXB/mUtb9Xom3U=;
+        h=Subject:From:To:Cc:Date:From;
+        b=V57AIN2QFFSA2qS6cMyM/XLS44bcn94woPkECenIfuOFhV6QfYozDdE7LxfBCN24a
+         VfsEjHtZIom7OIVWbtdZ6PF8QE+mS660fFxc9Y/T591pBumucsP7xJ5I/ek3mf6Dvb
+         8fTdy/T0c6kb3lnZX6S8W79AXDMN5vE/eT+CR+/A=
+Message-ID: <1568031408.6613.29.camel@HansenPartnership.com>
+Subject: [PATCH v6 00/12] add integrity and security to TPM2 transactions
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     linux-integrity@vger.kernel.org
+Cc:     linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Date:   Mon, 09 Sep 2019 13:16:48 +0100
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds support for the AES-CMAC authentication algorithm.
+Link to previous cover letter:
 
-Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+https://lore.kernel.org/linux-integrity/1540193596.3202.7.camel@HansenPartnership.com/
+
+This is marked v6 instead of v5 because I did a v5 after feedback on v4
+but didn't get around to posting it and then had to rework the whole of
+the kernel space handling while I was on holiday.  I also added the
+documentation of how the whole thing works and the rationale for doing
+it in tpm-security.rst (patch 11).  The main reason for doing this now
+is so we have something to discuss at Plumbers.
+
+The new patch set implements the various splits requested, but the main
+changes are that the kernel space is gone and is replaced by a context
+save and restore of the generated null seed.  This is easier to handle
+than a full kernel space given the new threading for TPM spaces, but
+conceptually it is still very like a space.  I've also made whether
+integrity and encryption is turned on a Kconfig option.
+
+James
+
 ---
- drivers/crypto/inside-secure/safexcel.c      |  1 +
- drivers/crypto/inside-secure/safexcel.h      |  1 +
- drivers/crypto/inside-secure/safexcel_hash.c | 99 ++++++++++++++++++++++++++++
- 3 files changed, 101 insertions(+)
 
-diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/inside-secure/safexcel.c
-index bc8bd69..2e421f6 100644
---- a/drivers/crypto/inside-secure/safexcel.c
-+++ b/drivers/crypto/inside-secure/safexcel.c
-@@ -1012,6 +1012,7 @@ static int safexcel_request_ring_irq(void *pdev, int irqid,
- 	&safexcel_alg_crc32,
- 	&safexcel_alg_cbcmac,
- 	&safexcel_alg_xcbcmac,
-+	&safexcel_alg_cmac,
- };
- 
- static int safexcel_register_algorithms(struct safexcel_crypto_priv *priv)
-diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/inside-secure/safexcel.h
-index 809d8d0..d76a4fa 100644
---- a/drivers/crypto/inside-secure/safexcel.h
-+++ b/drivers/crypto/inside-secure/safexcel.h
-@@ -809,5 +809,6 @@ int safexcel_hmac_setkey(const char *alg, const u8 *key, unsigned int keylen,
- extern struct safexcel_alg_template safexcel_alg_crc32;
- extern struct safexcel_alg_template safexcel_alg_cbcmac;
- extern struct safexcel_alg_template safexcel_alg_xcbcmac;
-+extern struct safexcel_alg_template safexcel_alg_cmac;
- 
- #endif
-diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
-index 6576430..0224779 100644
---- a/drivers/crypto/inside-secure/safexcel_hash.c
-+++ b/drivers/crypto/inside-secure/safexcel_hash.c
-@@ -2122,3 +2122,102 @@ struct safexcel_alg_template safexcel_alg_xcbcmac = {
- 		},
- 	},
- };
-+
-+static int safexcel_cmac_setkey(struct crypto_ahash *tfm, const u8 *key,
-+				unsigned int len)
-+{
-+	struct safexcel_ahash_ctx *ctx = crypto_tfm_ctx(crypto_ahash_tfm(tfm));
-+	struct crypto_aes_ctx aes;
-+	__be64 consts[4];
-+	u64 _const[2];
-+	u8 msb_mask, gfmask;
-+	int ret, i;
-+
-+	ret = aes_expandkey(&aes, key, len);
-+	if (ret) {
-+		crypto_ahash_set_flags(tfm, CRYPTO_TFM_RES_BAD_KEY_LEN);
-+		return ret;
-+	}
-+
-+	for (i = 0; i < len / sizeof(u32); i++)
-+		ctx->ipad[i + 8] = cpu_to_be32(aes.key_enc[i]);
-+
-+	/* precompute the CMAC key material */
-+	crypto_cipher_clear_flags(ctx->kaes, CRYPTO_TFM_REQ_MASK);
-+	crypto_cipher_set_flags(ctx->kaes, crypto_ahash_get_flags(tfm) &
-+				CRYPTO_TFM_REQ_MASK);
-+	ret = crypto_cipher_setkey(ctx->kaes, key, len);
-+	crypto_ahash_set_flags(tfm, crypto_cipher_get_flags(ctx->kaes) &
-+			       CRYPTO_TFM_RES_MASK);
-+	if (ret)
-+		return ret;
-+
-+	/* code below borrowed from crypto/cmac.c */
-+	/* encrypt the zero block */
-+	memset(consts, 0, AES_BLOCK_SIZE);
-+	crypto_cipher_encrypt_one(ctx->kaes, (u8 *)consts, (u8 *)consts);
-+
-+	gfmask = 0x87;
-+	_const[0] = be64_to_cpu(consts[1]);
-+	_const[1] = be64_to_cpu(consts[0]);
-+
-+	/* gf(2^128) multiply zero-ciphertext with u and u^2 */
-+	for (i = 0; i < 4; i += 2) {
-+		msb_mask = ((s64)_const[1] >> 63) & gfmask;
-+		_const[1] = (_const[1] << 1) | (_const[0] >> 63);
-+		_const[0] = (_const[0] << 1) ^ msb_mask;
-+
-+		consts[i + 0] = cpu_to_be64(_const[1]);
-+		consts[i + 1] = cpu_to_be64(_const[0]);
-+	}
-+	/* end of code borrowed from crypto/cmac.c */
-+
-+	for (i = 0; i < 2 * AES_BLOCK_SIZE / sizeof(u32); i++)
-+		ctx->ipad[i] = cpu_to_be32(((u32 *)consts)[i]);
-+
-+	if (len == AES_KEYSIZE_192) {
-+		ctx->alg    = CONTEXT_CONTROL_CRYPTO_ALG_XCBC192;
-+		ctx->key_sz = AES_MAX_KEY_SIZE + 2 * AES_BLOCK_SIZE;
-+	} else if (len == AES_KEYSIZE_256) {
-+		ctx->alg    = CONTEXT_CONTROL_CRYPTO_ALG_XCBC256;
-+		ctx->key_sz = AES_MAX_KEY_SIZE + 2 * AES_BLOCK_SIZE;
-+	} else {
-+		ctx->alg    = CONTEXT_CONTROL_CRYPTO_ALG_XCBC128;
-+		ctx->key_sz = AES_MIN_KEY_SIZE + 2 * AES_BLOCK_SIZE;
-+	}
-+	ctx->cbcmac = false;
-+
-+	memzero_explicit(&aes, sizeof(aes));
-+	return 0;
-+}
-+
-+struct safexcel_alg_template safexcel_alg_cmac = {
-+	.type = SAFEXCEL_ALG_TYPE_AHASH,
-+	.algo_mask = 0,
-+	.alg.ahash = {
-+		.init = safexcel_cbcmac_init,
-+		.update = safexcel_ahash_update,
-+		.final = safexcel_ahash_final,
-+		.finup = safexcel_ahash_finup,
-+		.digest = safexcel_cbcmac_digest,
-+		.setkey = safexcel_cmac_setkey,
-+		.export = safexcel_ahash_export,
-+		.import = safexcel_ahash_import,
-+		.halg = {
-+			.digestsize = AES_BLOCK_SIZE,
-+			.statesize = sizeof(struct safexcel_ahash_export_state),
-+			.base = {
-+				.cra_name = "cmac(aes)",
-+				.cra_driver_name = "safexcel-cmac-aes",
-+				.cra_priority = SAFEXCEL_CRA_PRIORITY,
-+				.cra_flags = CRYPTO_ALG_ASYNC |
-+					     CRYPTO_ALG_KERN_DRIVER_ONLY,
-+				.cra_blocksize = AES_BLOCK_SIZE,
-+				.cra_ctxsize = sizeof(struct safexcel_ahash_ctx),
-+				.cra_init = safexcel_xcbcmac_cra_init,
-+				.cra_exit = safexcel_xcbcmac_cra_exit,
-+				.cra_module = THIS_MODULE,
-+			},
-+		},
-+	},
-+};
+James Bottomley (12):
+  tpm-buf: move from static inlines to real functions
+  tpm-buf: add handling for TPM2B types
+  tpm-buf: add cursor based functions for response parsing
+  tpm2-space: export the context save and load commands
+  tpm2-sessions: Add full HMAC and encrypt/decrypt session handling
+  tpm-buf: add tpm_buf_parameters()
+  tpm2: add hmac checks to tpm2_pcr_extend()
+  tpm2: add session encryption protection to tpm2_get_random()
+  trusted keys: Add session encryption protection to the seal/unseal
+    path
+  tpm: add the null key name as a tpm2 sysfs variable
+  Documentation: add tpm-security.rst
+  tpm2-sessions: NOT FOR COMMITTING add sessions testing
+
+ Documentation/security/tpm/tpm-security.rst |  204 +++++
+ drivers/char/tpm/Kconfig                    |   11 +
+ drivers/char/tpm/Makefile                   |    4 +
+ drivers/char/tpm/tpm-buf.c                  |  202 +++++
+ drivers/char/tpm/tpm-chip.c                 |    1 +
+ drivers/char/tpm/tpm-sysfs.c                |   27 +-
+ drivers/char/tpm/tpm.h                      |  117 +--
+ drivers/char/tpm/tpm2-cmd.c                 |  202 +++--
+ drivers/char/tpm/tpm2-sessions-test.c       |  795 ++++++++++++++++++
+ drivers/char/tpm/tpm2-sessions.c            | 1204 +++++++++++++++++++++++++++
+ drivers/char/tpm/tpm2-sessions.h            |  138 +++
+ drivers/char/tpm/tpm2-space.c               |    8 +-
+ include/linux/tpm.h                         |   29 +
+ 13 files changed, 2787 insertions(+), 155 deletions(-)
+ create mode 100644 Documentation/security/tpm/tpm-security.rst
+ create mode 100644 drivers/char/tpm/tpm-buf.c
+ create mode 100644 drivers/char/tpm/tpm2-sessions-test.c
+ create mode 100644 drivers/char/tpm/tpm2-sessions.c
+ create mode 100644 drivers/char/tpm/tpm2-sessions.h
+
 -- 
-1.8.3.1
+2.16.4
 
