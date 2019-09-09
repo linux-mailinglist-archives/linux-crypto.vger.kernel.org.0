@@ -2,57 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E02BAD3FB
-	for <lists+linux-crypto@lfdr.de>; Mon,  9 Sep 2019 09:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A4FAD41B
+	for <lists+linux-crypto@lfdr.de>; Mon,  9 Sep 2019 09:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbfIIHiB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 9 Sep 2019 03:38:01 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:32846 "EHLO fornost.hmeau.com"
+        id S2388315AbfIIHqt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 9 Sep 2019 03:46:49 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:32860 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726026AbfIIHiA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 9 Sep 2019 03:38:00 -0400
+        id S2388282AbfIIHqt (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 9 Sep 2019 03:46:49 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1i7EFJ-0007Mc-5U; Mon, 09 Sep 2019 17:37:58 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 09 Sep 2019 17:37:52 +1000
-Date:   Mon, 9 Sep 2019 17:37:52 +1000
+        id 1i7ENi-0007V3-Pf; Mon, 09 Sep 2019 17:46:39 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 09 Sep 2019 17:46:37 +1000
+Date:   Mon, 9 Sep 2019 17:46:37 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Pascal van Leeuwen <pascalvanl@gmail.com>
-Cc:     linux-crypto@vger.kernel.org, antoine.tenart@bootlin.com,
-        davem@davemloft.net,
-        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: Re: [PATCH 0/3] crypto: inside-secure - Add support for the CBCMAC
-Message-ID: <20190909073752.GA20487@gondor.apana.org.au>
-References: <1567582608-29177-1-git-send-email-pvanleeuwen@verimatrix.com>
+To:     Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc:     linux-crypto@vger.kernel.org, Chris Healy <cphealy@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: crypto: caam - Cast to long first before pointer conversion
+Message-ID: <20190909074636.GA21024@gondor.apana.org.au>
+References: <20190904023515.7107-1-andrew.smirnov@gmail.com>
+ <20190904023515.7107-5-andrew.smirnov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1567582608-29177-1-git-send-email-pvanleeuwen@verimatrix.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190904023515.7107-5-andrew.smirnov@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Sep 04, 2019 at 09:36:45AM +0200, Pascal van Leeuwen wrote:
-> This patchset adds support for the (AES) CBCMAC family of authentication
-> algorithms: AES-CBCMAC, AES-XCBCMAC and AES-MAC
-> It has been verified with a Xilinx PCIE FPGA board as well as the Marvell
-> Armada A8K based Macchiatobin development board.
+On Tue, Sep 03, 2019 at 07:35:07PM -0700, Andrey Smirnov wrote:
+> With IRQ requesting being managed by devres we need to make sure that
+> we dispose of IRQ mapping after and not before it is free'd (otherwise
+> we'll end up with a warning from the kernel). To achieve that simply
+> convert IRQ mapping to rely on devres as well.
 > 
-> Pascal van Leeuwen (3):
->   crypto: inside-secure - Added support for the AES CBCMAC ahash
->   crypto: inside-secure - Added support for the AES XCBC ahash
->   crypto: inside-secure - Added support for the AES-CMAC ahash
-> 
->  drivers/crypto/inside-secure/safexcel.c      |   3 +
->  drivers/crypto/inside-secure/safexcel.h      |   3 +
->  drivers/crypto/inside-secure/safexcel_hash.c | 462 ++++++++++++++++++++++++---
->  3 files changed, 427 insertions(+), 41 deletions(-)
+> Fixes: f314f12db65c ("crypto: caam - convert caam_jr_init() to use devres")
+> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+> Cc: Chris Healy <cphealy@gmail.com>
+> Cc: Lucas Stach <l.stach@pengutronix.de>
+> Cc: Horia Geantă <horia.geanta@nxp.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  drivers/crypto/caam/jr.c | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
 
-This does not apply against cryptodev.
+I needed to apply this on top of it to shut up the compiler:
 
-Cheers,
+---8<---
+While storing an int in a pointer is safe the compiler is not
+happy about it.  So we need some extra casting in order to make
+this warning free.
+
+Fixes: 1d3f75bce123 ("crypto: caam - dispose of IRQ mapping only...")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
+index 8a30bbd7f2aa..c5acd9e24e14 100644
+--- a/drivers/crypto/caam/jr.c
++++ b/drivers/crypto/caam/jr.c
+@@ -500,7 +500,7 @@ static int caam_jr_init(struct device *dev)
+ 
+ static void caam_jr_irq_dispose_mapping(void *data)
+ {
+-	irq_dispose_mapping((int)data);
++	irq_dispose_mapping((unsigned long)data);
+ }
+ 
+ /*
+@@ -558,7 +558,7 @@ static int caam_jr_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	error = devm_add_action_or_reset(jrdev, caam_jr_irq_dispose_mapping,
+-					 (void *)jrpriv->irq);
++					 (void *)(unsigned long)jrpriv->irq);
+ 	if (error)
+ 		return error;
+ 
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
