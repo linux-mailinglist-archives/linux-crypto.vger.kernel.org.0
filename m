@@ -2,102 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD876AD42C
-	for <lists+linux-crypto@lfdr.de>; Mon,  9 Sep 2019 09:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E981BAD435
+	for <lists+linux-crypto@lfdr.de>; Mon,  9 Sep 2019 09:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727749AbfIIHxU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 9 Sep 2019 03:53:20 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:32890 "EHLO fornost.hmeau.com"
+        id S2388503AbfIIHyR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 9 Sep 2019 03:54:17 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:32910 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727635AbfIIHxU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 9 Sep 2019 03:53:20 -0400
+        id S2388497AbfIIHyQ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 9 Sep 2019 03:54:16 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1i7EU2-0007cL-GH; Mon, 09 Sep 2019 17:53:11 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 09 Sep 2019 17:53:08 +1000
-Date:   Mon, 9 Sep 2019 17:53:08 +1000
+        id 1i7EUn-0007dH-9C; Mon, 09 Sep 2019 17:53:58 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 09 Sep 2019 17:53:50 +1000
+Date:   Mon, 9 Sep 2019 17:53:50 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Andrey Smirnov <andrew.smirnov@gmail.com>
-Cc:     linux-crypto@vger.kernel.org, Chris Healy <cphealy@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/12] CAAM bugfixes, small improvements
-Message-ID: <20190909075308.GC21364@gondor.apana.org.au>
-References: <20190904023515.7107-1-andrew.smirnov@gmail.com>
+To:     zhong jiang <zhongjiang@huawei.com>
+Cc:     davem@davemloft.net, arno@natisbad.org, joro@8bytes.org,
+        gregkh@linuxfoundation.org, iommu@lists.linux-foundation.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] crypto: marvell: Use kzfree rather than its
+ implementation
+Message-ID: <20190909075349.GD21364@gondor.apana.org.au>
+References: <1567566079-7412-1-git-send-email-zhongjiang@huawei.com>
+ <1567566079-7412-2-git-send-email-zhongjiang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190904023515.7107-1-andrew.smirnov@gmail.com>
+In-Reply-To: <1567566079-7412-2-git-send-email-zhongjiang@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Sep 03, 2019 at 07:35:03PM -0700, Andrey Smirnov wrote:
-> Everyone:
+On Wed, Sep 04, 2019 at 11:01:17AM +0800, zhong jiang wrote:
+> Use kzfree instead of memset() + kfree().
 > 
-> This series bugfixes and small improvement I made while doing more
-> testing of CAAM code:
-> 
->  - "crypto: caam - make sure clocks are enabled first"
-> 
->    fixes a recent regression (and, conincidentally a leak cause by one
->    of my i.MX8MQ patches)
-> 
->  - "crypto: caam - use devres to unmap JR's registers"
->    "crypto: caam - check irq_of_parse_and_map for errors"
-> 
->    are small improvements
-> 
->  - "crypto: caam - dispose of IRQ mapping only after IRQ is freed"
-> 
->    fixes a bug introduced by my i.MX8MQ series
-> 
->  - "crypto: caam - use devres to unmap memory"
->    "crypto: caam - use devres to remove debugfs"
->    "crypto: caam - use devres to de-initialize the RNG"
->    "crypto: caam - use devres to de-initialize QI"
->    "crypto: caam - user devres to populate platform devices"
->    "crypto: caam - populate platform devices last"
-> 
->    are devres conversions/small improvments
-> 
->  - "crypto: caam - convert caamrng to platform device"
->    "crypto: caam - change JR device ownership scheme"
-> 
->    are more of an RFC than proper fixes. I don't have a very high
->    confidence in those fixes, but I think they are a good conversation
->    stater about the best approach to fix those issues
-> 
-> Thanks,
-> Andrey Smirnov
-> 
-> Andrey Smirnov (12):
->   crypto: caam - make sure clocks are enabled first
->   crypto: caam - use devres to unmap JR's registers
->   crypto: caam - check irq_of_parse_and_map for errors
->   crypto: caam - dispose of IRQ mapping only after IRQ is freed
->   crypto: caam - use devres to unmap memory
->   crypto: caam - use devres to remove debugfs
->   crypto: caam - use devres to de-initialize the RNG
->   crypto: caam - use devres to de-initialize QI
->   crypto: caam - user devres to populate platform devices
->   crypto: caam - populate platform devices last
->   crypto: caam - convert caamrng to platform device
->   crypto: caam - change JR device ownership scheme
-> 
->  drivers/crypto/caam/caamrng.c | 102 +++++-------
->  drivers/crypto/caam/ctrl.c    | 294 ++++++++++++++++++----------------
->  drivers/crypto/caam/intern.h  |   4 -
->  drivers/crypto/caam/jr.c      |  90 ++++++++---
->  drivers/crypto/caam/qi.c      |   8 +-
->  drivers/crypto/caam/qi.h      |   1 -
->  6 files changed, 267 insertions(+), 232 deletions(-)
+> Signed-off-by: zhong jiang <zhongjiang@huawei.com>
+> ---
+>  drivers/crypto/marvell/hash.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
