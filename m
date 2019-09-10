@@ -2,71 +2,166 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA735AEA50
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Sep 2019 14:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1246CAEAC6
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Sep 2019 14:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbfIJMZk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 10 Sep 2019 08:25:40 -0400
-Received: from sonic302-21.consmr.mail.ne1.yahoo.com ([66.163.186.147]:41441
-        "EHLO sonic302-21.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391687AbfIJMZj (ORCPT
+        id S2403831AbfIJMmz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 10 Sep 2019 08:42:55 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:34882 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727945AbfIJMmy (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 10 Sep 2019 08:25:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1568118338; bh=tPdyM4f7Tq8kspt5syr9wxbiHLUxanV8lkCr2Pkkkas=; h=Date:From:Reply-To:Subject:From:Subject; b=Iy2laReeF0kfoYA0ikj9W5h8nyVukqKRnzKnD/vwvr0GnQ2QvAUGPf1lucDZbwEdIsLrBBZl1rWNH716x/DvDG5EALDwSzQp6HJ5PeGiVkKrdIfeBlvYqw5xYw6Mh5SI7es3GgSemiD1MsPYCcCEq/NXIQgIKeQYMkYGage9iSwbGkulQO2CHlH94XnQ6O/Km/aPkUJkDuU0R5/rInCz6hxtx+SEhE1U52kHQeFqpsnGXNVSfq5KT5z+UH8rHRONf+HBgDs5UleS8tk8Y9i8ikmIXYuo3aHNpdOPJAU28P3/RhKBokK4OCJBQwx8UvTTPbqFhGv+/+ZWePuVdOAl5w==
-X-YMail-OSG: 6o92XAsVM1njTQGHD5bdvY1HY.V0p32MH.Fisw1GDIRKdxNriF.RUxRIlrdXYwh
- _2Ze2_lH2vEO74nFoHXWDaVL8HOA4Kk9eWt4GzciEDpGITzsGATctx_HNJqPrJVcG7hXF_5bSg5Y
- iQfFXrGoHyeosuqVbtB7TzgEvKzpX9X1SXUp0GjCJESkpQ6zDrA93Yd9D2ZLR_rd7hedeG1p0cZZ
- 4zGi_rzAy5uGLxRBsLWnsPMDoc79AT7uWK7x17WnSLsPIUpTUnFK2JKjW626GqrX8CtLo00RIarr
- _Z7Csv22Y3iyRajKDMZoKXyxkCGCx6ZY_w7WqRhUjLMEkedp_spOrUL4hQS8A.ERZhcCACPV9zWl
- C_YmLMPDORda2iSJr7_zgobFCKFDKDfIVFlbZofAmgrMVbOa9uk_9nsC.09kgyArYMApZrSXKaUA
- b1hpewgsTPIXMM8GYdp1OG3lL9L0xRk91zGR__mUMblzg7aR67qaEpPHdmgSjtfH4HmTwJ7Igolk
- PALmiZBAyY.IauSCglbxJojOvNkR2Ej.3mGyHppNv.toLpEvNG72opq.If7K67bvd1zVcnVis4HF
- C2izhKM5q2l2HFwOY_4.H6ri7lAOTvD2l1ogs63vC_RKTvKA9BE7gJ.Me3KsU80veBdghe9oCMsW
- Ppx8ITyZixYWAwge0s7xeua.5CeLadQmtyDwEsL_x3uR8MKd1GQg6eDGNKNoU0zfVu57ARceBU4H
- R0QqNeGqBhECpbL67hfxWHEGvxAtxKZ3o8JOTyp8uYxxQFLmBCSrx32ICn.ff2TsqDnMmFPh._IF
- dXZKRKV1cYJ9Eks7okzrHYQqvLoApfH8uTUrxMzna4G4TjLwwXgROKq9JYMe63kelDhfoOgIk..o
- rwLfOMzoO.pRR.qQH_SpBF1guoUtXh_9owW.Q9nZD1OjXLkBbsvOMCaHjoFibO0VswVW8hY1ZNIa
- cq5GNwKTlciMHhD32d8BXW87fKzJzX46Vn6CnENopCcoAbT4WUw34_PXpMA6SSTPp.LutBsI_Roa
- 2ewAb.caN0evmzv1jEII0QGsrjWmSkQ5Hv_jvPTaBeqGwb2ngh6kW8u.3atSDwBSGcurFdGz85AH
- maYL2V3uyJXXijoTxpe9QS9MVnTZugqUTjR4POCNz2_BxnmtRZTQ46e5I3ZQApbNjHFbElzUWrbD
- hQiBERk3N7WPTEPX4h9rcHCDC_tB9AdPOWIrKcAHAGgPQvTIAjdx6L.oqLqEzkuuHIPqriA9s7dx
- .6_CVgTlU5rSdlGxsxaoeBb2diIu94PBxPqsh7Um6dDLQIzLBrR9D
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Tue, 10 Sep 2019 12:25:38 +0000
-Date:   Tue, 10 Sep 2019 12:25:34 +0000 (UTC)
-From:   Aisha Gaddafi <agaddafibb@gmail.com>
-Reply-To: gaisha983@gmail.com
-Message-ID: <588297563.4913702.1568118334292@mail.yahoo.com>
-Subject: Dear Friend,
+        Tue, 10 Sep 2019 08:42:54 -0400
+Received: by mail-wr1-f65.google.com with SMTP id g7so19990292wrx.2
+        for <linux-crypto@vger.kernel.org>; Tue, 10 Sep 2019 05:42:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ub4SnTSb6gIhX0nmNU7ISH0G8O7vugmWfe28Zf8iviI=;
+        b=pEwdeA+6eJ8v3UkA9Jzqd5hUweTKn/5vjQBsphWKp3lGezCEmdxB0gkbJnCOEKhGrz
+         od2fxEWrNAXGFXdzA33ye3zBGBOj/TLNpu8qryAqCl36Q8YrMxPchxUjjH/s6iaAskST
+         nG14v8Olaqg4c72biCSQvDGbqyDto7+ftndjhrijahjXqLbo57GqwAN8Tu7vSi6kOGXL
+         dv6Mz5F+83dIbK/Fc3+of/C+73aiioDMEJ/03ccEPHtQpdIUlIxBolLpu6aWQe/SbT09
+         lz7f3H58FD/0HQqJttinWByYSGkebP5i289Jmv9hiLHi+8LDCuWuizCnIIOfEnizaqIK
+         tEyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ub4SnTSb6gIhX0nmNU7ISH0G8O7vugmWfe28Zf8iviI=;
+        b=LsT+RsovRFgs0YK3Qsj1c6KVPAXQnKZ0MTPkY640fIRZtaegeI4TZuXisWIhj0Fe68
+         v3qyswCYL9UzgYkGXwHgn9VTmRQ34FA6Kj3YStCfSqZ4FIUC/oT9k9BlSpWZ8GEcqB1k
+         Gq/bDnih1+gOOaSiYC4AsdgtCFOZ2raT2Rh6x0DTE00ZVt7EjKjh3ELlEhv5oh7EqDUx
+         M4WeLfF1INlXPtedfmjN8DLhMyDujw+WgyyLpmwbKwL5E1nmvgINbmm+SCvM6QwtDMwO
+         MYPEHw39RkCBnmesl5ehuwoYK5t0TQBYTII/yBx0TINwMhgcx4N9kBZhtfNYasATAvPV
+         5nzg==
+X-Gm-Message-State: APjAAAU8o7WWh4K6tXdwjfEV2S2M2wuoS82ogHWxXAJTx0dJvEbwzDt9
+        f0y9hgncx9OhypH2eGCmhqgRTg==
+X-Google-Smtp-Source: APXvYqxFgL8FIlOMUuSCgraQ22g8Zjq1m1xa+tcRMBGgUky84S5wpONFoqDvxPucL2VbgiLpgWRkng==
+X-Received: by 2002:a05:6000:12d1:: with SMTP id l17mr25805559wrx.91.1568119372913;
+        Tue, 10 Sep 2019 05:42:52 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id h5sm13118486wrr.10.2019.09.10.05.42.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Sep 2019 05:42:52 -0700 (PDT)
+Date:   Tue, 10 Sep 2019 13:42:50 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Tomer Maimon <tmaimon77@gmail.com>
+Cc:     mpm@selenic.com, herbert@gondor.apana.org.au,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>, sumit.garg@linaro.org,
+        jens.wiklander@linaro.org, vkoul@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joel Stanley <joel@jms.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-crypto@vger.kernel.org,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>
+Subject: Re: [PATCH v2 1/2] dt-binding: hwrng: add NPCM RNG documentation
+Message-ID: <20190910124250.2i5muqjt5c35kvgb@holly.lan>
+References: <20190909123840.154745-1-tmaimon77@gmail.com>
+ <20190909123840.154745-2-tmaimon77@gmail.com>
+ <20190910102505.vgyomi575ldrk2lq@holly.lan>
+ <CAP6Zq1igPJ5PvaA2YaC-=ngQOnatt4PFJj-QzaJCueDf6KA19A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP6Zq1igPJ5PvaA2YaC-=ngQOnatt4PFJj-QzaJCueDf6KA19A@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear Friend,
+On Tue, Sep 10, 2019 at 02:55:44PM +0300, Tomer Maimon wrote:
+> Hi Daniel,
+> 
+> Sorry but I have probably miss it, thanks a lot for your comment
+> 
+> On Tue, 10 Sep 2019 at 13:25, Daniel Thompson <daniel.thompson@linaro.org>
+> wrote:
+> 
+> > On Mon, Sep 09, 2019 at 03:38:39PM +0300, Tomer Maimon wrote:
+> > > Added device tree binding documentation for Nuvoton BMC
+> > > NPCM Random Number Generator (RNG).
+> > >
+> > > Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> > > ---
+> > >  .../bindings/rng/nuvoton,npcm-rng.txt           | 17 +++++++++++++++++
+> > >  1 file changed, 17 insertions(+)
+> > >  create mode 100644
+> > Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.txt
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.txt
+> > b/Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.txt
+> > > new file mode 100644
+> > > index 000000000000..a697b4425fb3
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.txt
+> > > @@ -0,0 +1,17 @@
+> > > +NPCM SoC Random Number Generator
+> > > +
+> > > +Required properties:
+> > > +- compatible  : "nuvoton,npcm750-rng" for the NPCM7XX BMC.
+> > > +- reg         : Specifies physical base address and size of the
+> > registers.
+> > > +
+> > > +Optional property:
+> > > +- quality : estimated number of bits of true entropy per 1024 bits
+> > > +                     read from the rng.
+> > > +                     If this property is not defined, it defaults to
+> > 1000.
+> >
+> > There are pending unreplied review comments about this property (my own
+> > as it happens):
+> > https://patchwork.kernel.org/patch/11119371/
+> >
+> > No, there isn't different SoCs.
+> we had checked the quality of the hwrng and the results we got are set as
+> default.
+> we been asked from one of our client to have a dynamic quality, they will
+> like to be more strict when using the hwrng.
+> is it problematic to add it?
 
-I came across your e-mail contact prior a private search while in need of 
-your assistance. My name is Aisha  Gaddafi a single Mother and a Widow with 
-three Children. I am the only biological Daughter of late Libyan President 
-(Late Colonel Muammar Gaddafi).
+It's a slightly grey area but in general the role of devicetree is to
+describe the hardware. This parameter is not doing that.
 
-I have investment funds worth Twenty Seven Million Five Hundred Thousand 
-United State Dollar ($27.500.000.00 ) and i need a trusted investment 
-Manager/Partner because of my current refugee status, however, I am 
-interested in you for investment project assistance in your country, may be 
-from there, we can build business relationship in the nearest future.
+If you view the quality assessment of this RNG to be a user preference
+it is better set the quality to zero which is what the vast majority of
+hwrng devices do. When the driver sets the quality to zero then the
+kernel does not stir the entropy pool automatically... instead it
+relies on the userspace rngd to do that. If the user wants the kernel
+to stir the pool automatically then the quality can be set using the
+default_quality kernel parameter.
 
-I am willing to negotiate investment/business profit sharing ratio with you 
-base on the future investment earning profits.
 
-If you are willing to handle this project on my behalf kindly reply urgent 
-to enable me provide you more information about the investment funds.
+Daniel.
 
-Your Urgent Reply Will Be Appreciated.
-
-Best Regards
-Mrs Aisha Gaddafi
-(gaisha983@gmail.com)
+> 
+> Having a controllable quality implies that the numeric quality of the
+> peripheral changes when it is stamped out on different SoCs (otherwise
+> the driver can confidently set the quality without needing any hint
+> from the DT). Is that really true here?
+> 
+> 
+> > Daniel.
+> >
+> > > +
+> > > +Example:
+> > > +
+> > > +rng: rng@f000b000 {
+> > > +     compatible = "nuvoton,npcm750-rng";
+> > > +     reg = <0xf000b000 0x8>;
+> > > +};
+> > > --
+> > > 2.18.0
+> > >
+> >
