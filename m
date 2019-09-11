@@ -2,46 +2,46 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B53AFB94
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDFDAFB95
 	for <lists+linux-crypto@lfdr.de>; Wed, 11 Sep 2019 13:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727740AbfIKLlO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Sep 2019 07:41:14 -0400
-Received: from mail-ed1-f51.google.com ([209.85.208.51]:33799 "EHLO
-        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727745AbfIKLlO (ORCPT
+        id S1727779AbfIKLlP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Sep 2019 07:41:15 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:46818 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727749AbfIKLlO (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Wed, 11 Sep 2019 07:41:14 -0400
-Received: by mail-ed1-f51.google.com with SMTP id c20so11316080eds.1
-        for <linux-crypto@vger.kernel.org>; Wed, 11 Sep 2019 04:41:13 -0700 (PDT)
+Received: by mail-ed1-f67.google.com with SMTP id i8so20272644edn.13
+        for <linux-crypto@vger.kernel.org>; Wed, 11 Sep 2019 04:41:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ulbi2R+ZAw3wpW+xEZ5EPih00BeH2OA8SyaWTPW8uyk=;
-        b=S+w/yNppjRaNnV1OdcxsgYoGKtfGLWET9DFblphXF6mFdiRrXqGXJKfVp9PWdLQFu0
-         ClCm0VjqjnGcuRqpuf430u5GmRCt7H7PAQw/CpMWMjMqz64HIjzTQywz0+wZiu/8Q3Kv
-         NydFtVFdp6TDIz/0rcexLhoNS1JjrCKQPvrvxg5f5Nn0Wj1d6rmjbNtiBrXmonXpmtAR
-         FD6Q/k01o8ZZvwwNdZBl/ZoOAJqRc96gRiJq5/DcuSJd8qbiV9SiN+68YCwAAlINcv/z
-         gENLfIU5sUmac6Oe68CGmbwJicugy9ii+8bqCiqmd1foqWXmf/TCJbpWDFwdDv6wGhEL
-         zkuw==
+        bh=oDWh0PfuOEYRj5yeDVqEmYIGYXhJ8f9PajvmcjVvmoI=;
+        b=AyjeTdfMNQsymhlEkE3ZTIpxFrT2YzbcXe2uGvI1iVHm9c1uEHnGRiXWkjjfgHiP5G
+         k4yFpV4/Lk1o3hSvsUizINRe4yH7Kutl7wMkjl1Q9SrOVcNh4Wz1YnE8KV6lR7sEbjDS
+         T7GcYbXWIdsf4/ciW9ASxB93bHILHlwwvAwqTZ4Mp5q5+n83WeYb6nKqvLjha87mFaJE
+         ZB1PSjyTdKbcw4EA8hBv5JFoGvdB/f7YSVkWbwwz11zszVFoz9ASOYT+IQAH6gs/4fs2
+         iJm/cxJwUwZ25NOovsB3Ai/KLzKdeHeve/+OMwam91wwcieitKu7mLjDtOWjEChcsT4s
+         4Lpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=ulbi2R+ZAw3wpW+xEZ5EPih00BeH2OA8SyaWTPW8uyk=;
-        b=Yjc/wlTwmRPUpeUp82Pz+YgVi7t26w6WYZIiuGZnXNB36bIHcEjdW0DZ/QAkD0EwKb
-         K5DOq+yvbXUKfpxvAapaBwMEqimuqsMpk5FKdEMO70mXSSzut+0McIHuGgua/0rVLe8I
-         qq+UEqItyHcPFacsdhx13jgu04ONeWTLVR5OLv3t0HfNpQSnxYJUVQD6BRNLHltxzvgf
-         DGmm1+IwvNLcvRdZUByD4UqPa5DyvBKLa5MlmoQm1oDpiVVP9Jd7JWdrBBfThm7oUJze
-         qygmbeNUMoif0t+x3Vu2lKxYuApl45YvnfImeqHk/dUcsG7G6IX3smEaqDkWpQAIAM6o
-         noZg==
-X-Gm-Message-State: APjAAAVwUZJmgC7lRy4/S+3X0n23IA9jt60ObQ5c+LWoGaSRFVZKo8ee
-        HZ7GrQsDt2BES8WsdF4Qk7dznpFF
-X-Google-Smtp-Source: APXvYqyURXlrggL4x3kaTYS8E80PlpxSl0Ipll5u9DolM34U8ZcYKV37z247J8Vn32L58698TmGPeg==
-X-Received: by 2002:a17:906:308a:: with SMTP id 10mr25880532ejv.277.1568202072682;
-        Wed, 11 Sep 2019 04:41:12 -0700 (PDT)
+        bh=oDWh0PfuOEYRj5yeDVqEmYIGYXhJ8f9PajvmcjVvmoI=;
+        b=MOOrvsSlZUlC9GkV2EuiKERF3QlcdJ+9WAVfziZarrzLX/atzvdbBX40XdeFVd3rsA
+         TbWsk325kfNZgrzbsDtlyjdocVHYAHKz4cAIm/F0HsOXyzQZIimeMsY9gb5XWNWdDRfE
+         CPUqhYBBkmSnxCaXLOHWgSngS+9TzzdVqOlUCLt2KKYDOfj2O0hwfNiFmqZ7LT42IrxP
+         OwZdWJJqCrHBKsgAlBV8G6fzfVwbRRPznaSCQ1c9BmHNZTt93DJJRNc/o+GUYNjgXG2N
+         tEYmn0ltGH1KVGdlU4+/g1vwioY329lYMYPvWHifrDsWT1UmU2+mp/EN1kQJ7cVWED9e
+         E4vw==
+X-Gm-Message-State: APjAAAXhrnPG2qTkE1FiH4WcHQqlwhr7GeJZJWqpolu58gfajrId2S7n
+        VxwFhb9Aa/j93gCcfIAq50mfJYEK
+X-Google-Smtp-Source: APXvYqzYcgB+558aqm1KuztjrFBEWuKxhc8WjWG7ZJ0uqevg7/UseGB29akfqkVXO/bl9wynI81rzQ==
+X-Received: by 2002:a50:8a9a:: with SMTP id j26mr36070987edj.251.1568202073408;
+        Wed, 11 Sep 2019 04:41:13 -0700 (PDT)
 Received: from localhost.localdomain.com ([188.204.2.113])
-        by smtp.gmail.com with ESMTPSA id z6sm2448022ejo.26.2019.09.11.04.41.11
+        by smtp.gmail.com with ESMTPSA id z6sm2448022ejo.26.2019.09.11.04.41.12
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
         Wed, 11 Sep 2019 04:41:12 -0700 (PDT)
 From:   Pascal van Leeuwen <pascalvanl@gmail.com>
@@ -50,9 +50,9 @@ To:     linux-crypto@vger.kernel.org
 Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
         davem@davemloft.net,
         Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: [PATCH 2/7] crypto: inside-secure - Add support for the cbc(sm4) skcipher
-Date:   Wed, 11 Sep 2019 12:38:19 +0200
-Message-Id: <1568198304-8101-3-git-send-email-pvanleeuwen@verimatrix.com>
+Subject: [PATCH 3/7] crypto: inside-secure - Add support for the ofb(sm4) skcipher
+Date:   Wed, 11 Sep 2019 12:38:20 +0200
+Message-Id: <1568198304-8101-4-git-send-email-pvanleeuwen@verimatrix.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1568198304-8101-1-git-send-email-pvanleeuwen@verimatrix.com>
 References: <1568198304-8101-1-git-send-email-pvanleeuwen@verimatrix.com>
@@ -61,7 +61,7 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds support for SM4 in CBC mode, i.e. skcipher cbc(sm4).
+This patch adds support for SM4 in OFB mode, i.e. skcipher ofb(sm4).
 
 Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
 ---
@@ -71,67 +71,67 @@ Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
  3 files changed, 38 insertions(+)
 
 diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/inside-secure/safexcel.c
-index fe785e8..4320992 100644
+index 4320992..fbfda68 100644
 --- a/drivers/crypto/inside-secure/safexcel.c
 +++ b/drivers/crypto/inside-secure/safexcel.c
-@@ -1179,6 +1179,7 @@ static int safexcel_request_ring_irq(void *pdev, int irqid,
- 	&safexcel_alg_sm3,
+@@ -1180,6 +1180,7 @@ static int safexcel_request_ring_irq(void *pdev, int irqid,
  	&safexcel_alg_hmac_sm3,
  	&safexcel_alg_ecb_sm4,
-+	&safexcel_alg_cbc_sm4,
+ 	&safexcel_alg_cbc_sm4,
++	&safexcel_alg_ofb_sm4,
  };
  
  static int safexcel_register_algorithms(struct safexcel_crypto_priv *priv)
 diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/inside-secure/safexcel.h
-index 970b5cd..1339f0e 100644
+index 1339f0e..448db38 100644
 --- a/drivers/crypto/inside-secure/safexcel.h
 +++ b/drivers/crypto/inside-secure/safexcel.h
-@@ -874,5 +874,6 @@ int safexcel_hmac_setkey(const char *alg, const u8 *key, unsigned int keylen,
- extern struct safexcel_alg_template safexcel_alg_sm3;
+@@ -875,5 +875,6 @@ int safexcel_hmac_setkey(const char *alg, const u8 *key, unsigned int keylen,
  extern struct safexcel_alg_template safexcel_alg_hmac_sm3;
  extern struct safexcel_alg_template safexcel_alg_ecb_sm4;
-+extern struct safexcel_alg_template safexcel_alg_cbc_sm4;
+ extern struct safexcel_alg_template safexcel_alg_cbc_sm4;
++extern struct safexcel_alg_template safexcel_alg_ofb_sm4;
  
  #endif
 diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers/crypto/inside-secure/safexcel_cipher.c
-index fc75f2f..a2e65fd 100644
+index a2e65fd..0a30e7a 100644
 --- a/drivers/crypto/inside-secure/safexcel_cipher.c
 +++ b/drivers/crypto/inside-secure/safexcel_cipher.c
-@@ -2710,3 +2710,39 @@ struct safexcel_alg_template safexcel_alg_ecb_sm4 = {
+@@ -2746,3 +2746,39 @@ struct safexcel_alg_template safexcel_alg_cbc_sm4 = {
  		},
  	},
  };
 +
-+static int safexcel_skcipher_sm4_cbc_cra_init(struct crypto_tfm *tfm)
++static int safexcel_skcipher_sm4_ofb_cra_init(struct crypto_tfm *tfm)
 +{
 +	struct safexcel_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
 +
 +	safexcel_skcipher_cra_init(tfm);
 +	ctx->alg  = SAFEXCEL_SM4;
-+	ctx->mode = CONTEXT_CONTROL_CRYPTO_MODE_CBC;
++	ctx->mode = CONTEXT_CONTROL_CRYPTO_MODE_OFB;
 +	return 0;
 +}
 +
-+struct safexcel_alg_template safexcel_alg_cbc_sm4 = {
++struct safexcel_alg_template safexcel_alg_ofb_sm4 = {
 +	.type = SAFEXCEL_ALG_TYPE_SKCIPHER,
-+	.algo_mask = SAFEXCEL_ALG_SM4,
++	.algo_mask = SAFEXCEL_ALG_SM4 | SAFEXCEL_ALG_AES_XFB,
 +	.alg.skcipher = {
 +		.setkey = safexcel_skcipher_sm4_setkey,
-+		.encrypt = safexcel_sm4_blk_encrypt,
-+		.decrypt = safexcel_sm4_blk_decrypt,
++		.encrypt = safexcel_encrypt,
++		.decrypt = safexcel_decrypt,
 +		.min_keysize = SM4_KEY_SIZE,
 +		.max_keysize = SM4_KEY_SIZE,
 +		.ivsize = SM4_BLOCK_SIZE,
 +		.base = {
-+			.cra_name = "cbc(sm4)",
-+			.cra_driver_name = "safexcel-cbc-sm4",
++			.cra_name = "ofb(sm4)",
++			.cra_driver_name = "safexcel-ofb-sm4",
 +			.cra_priority = SAFEXCEL_CRA_PRIORITY,
 +			.cra_flags = CRYPTO_ALG_ASYNC |
 +				     CRYPTO_ALG_KERN_DRIVER_ONLY,
-+			.cra_blocksize = SM4_BLOCK_SIZE,
++			.cra_blocksize = 1,
 +			.cra_ctxsize = sizeof(struct safexcel_cipher_ctx),
 +			.cra_alignmask = 0,
-+			.cra_init = safexcel_skcipher_sm4_cbc_cra_init,
++			.cra_init = safexcel_skcipher_sm4_ofb_cra_init,
 +			.cra_exit = safexcel_skcipher_cra_exit,
 +			.cra_module = THIS_MODULE,
 +		},
