@@ -2,232 +2,82 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB0BAF7F0
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Sep 2019 10:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B373AF830
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Sep 2019 10:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727286AbfIKI30 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Sep 2019 04:29:26 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:37866 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727270AbfIKI30 (ORCPT
+        id S1726889AbfIKIoB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Sep 2019 04:44:01 -0400
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:33728 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726657AbfIKIoB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Sep 2019 04:29:26 -0400
-Received: by mail-wr1-f65.google.com with SMTP id i1so22879593wro.4
-        for <linux-crypto@vger.kernel.org>; Wed, 11 Sep 2019 01:29:24 -0700 (PDT)
+        Wed, 11 Sep 2019 04:44:01 -0400
+Received: by mail-ed1-f49.google.com with SMTP id o9so19920847edq.0
+        for <linux-crypto@vger.kernel.org>; Wed, 11 Sep 2019 01:43:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Zw/nRHbA6gamXFMmZttwtsUXOgGchhd99CivFz+b1ms=;
-        b=u0pbm4YkiCRxVqqTlQ17p+Il0Iq7bPi7W8wjju8PlHbUVeulbXKRqd9omxqw5yeMVe
-         /4ZRs6QTvbxt6r3tPNXanJbHRqH8t2HYKXN8n5Yf3Y/bfPCgSFYzjmwJejNbVJVzZEtl
-         GsfTsXrQ9kKT/+4AjWaDBEWjJYJALxmMyhFSQ6V7Lu3IeeR5l7yGBrGdeLSAX5E/dVyD
-         0sqhmY1l0mg7KjOVKiw6XfTWzvAFqWDg9tuaAINSjscPW8bxXY+3NdNAAp/EdsvGoDAP
-         Et1IKxclqpqnG4r/ju0lJkqb2EstcCx0tsWb+mLBtc2E5x0IlxUnHhlxfw/wtyKMIb/M
-         BueQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=cCKe9sc9WhMUME4iOB2bNUe4kdVeUl12Cn8tXnr6OII=;
+        b=SJ7Vwh953IN2cXV5HsjXAK6ipxgwyXerxFjVTRyIAKj+lfUh72a6LbtrWu4FUTdLYc
+         sbWftTWHG+qFzsp9BsSyGFWEM1OjRpv0Qz5IoE2PYWE8HzXEJ0hBX49Uu1g0hD36ygr5
+         Nez2W9RFjwGDjfmHkGe5Us8Jo9X6cRWoO64BlzzhfmIVdBLAFXEXSkOYrr0OBg8WLMV7
+         bQLcNlt2PBSirj2xj6XtF633Jk7onQSC5KD647J5FXtEbV5MDQLxTZOOWJ072uaILhL3
+         bCnoUrfpImB9y82FS5IfDpRcc7Hp4f89N7q19iuDmPxGM5jz78kjczebt5M9Tu775iXd
+         FuTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Zw/nRHbA6gamXFMmZttwtsUXOgGchhd99CivFz+b1ms=;
-        b=cVG7+JBqCwkp9t1MSChrYYX+07cFmjO6iU4u27Aecx8L3LEZXQdAtuQPDNxlM81Pk/
-         oRk56lNO8PhAke9/P1tNUEY1jCdnVJfTOq7RaShiNuuZYoSkR0t/7DnS+sZz9uM8Faux
-         FuzGvhoKI93p8zXamR/gphD9GqFN9YOLhGkQKoET5185nlAbqx7V1IDYNSaeAEL4TukK
-         PjJLllmdcyWUq+i7Z+dPfGhiGMU57nmdGrIon1zI0MxqVsqOhgErvImp7CIWR7XobTVf
-         Gi0RnfleTEGHxhlYEXk627WFCdp9yfZmCQ01pDNj7Nv12eSZ7B8QS9D33V6/XzLlkw2o
-         L4kQ==
-X-Gm-Message-State: APjAAAVBiUDOMfttDIjjHyMvcddQVTXTxrKZK089GRVKSEF+FUXY7WtD
-        ZQAFB31F+f3ZQOMpgmrIlASiGw==
-X-Google-Smtp-Source: APXvYqzitrYD1GNdHxRYy6bTZs5uxP1EO8paIe/T9nQnXD2+EkqWuheIGfM1+1JX7yJBlp5XGl+wLA==
-X-Received: by 2002:a5d:43cc:: with SMTP id v12mr2981046wrr.75.1568190563862;
-        Wed, 11 Sep 2019 01:29:23 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id a13sm36205561wrf.73.2019.09.11.01.29.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Sep 2019 01:29:22 -0700 (PDT)
-Date:   Wed, 11 Sep 2019 09:29:20 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Milton Miller II <miltonm@us.ibm.com>
-Cc:     Tomer Maimon <tmaimon77@gmail.com>, mpm@selenic.com,
-        herbert@gondor.apana.org.au, arnd@arndb.de,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, avifishman70@gmail.com,
-        tali.perry1@gmail.com, venture@google.com, yuenn@google.com,
-        benjaminfair@google.com, sumit.garg@linaro.org,
-        jens.wiklander@linaro.org, vkoul@kernel.org, tglx@linutronix.de,
-        joel@jms.id.au, devicetree@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] hwrng: npcm: add NPCM RNG driver
-Message-ID: <20190911082920.4vxw7om5aqcfrxmy@holly.lan>
-References: <20190909123840.154745-3-tmaimon77@gmail.com>
- <20190909123840.154745-1-tmaimon77@gmail.com>
- <OFDC101E51.54765CB8-ON00258471.006F34B7-00258471.0072BCA7@notes.na.collabserv.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OFDC101E51.54765CB8-ON00258471.006F34B7-00258471.0072BCA7@notes.na.collabserv.com>
-User-Agent: NeoMutt/20180716
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=cCKe9sc9WhMUME4iOB2bNUe4kdVeUl12Cn8tXnr6OII=;
+        b=O3/jIJ5TPVRhkwOjz0UZeeYJI9iPEMoF0kqbDT0QH1tLFaSt9lZvm3dTdhls99+5kr
+         +/2wpHKHIHxps7mmK+J9oBLQLddkuaw/1pVqZO7RLUXxdndmxkYLZyYt5U45OUElrsYK
+         jJmbxoldrx1g5qbezlnL1fErMtOv1iUiKoTnzCVBoSZKR8jkMz7FXcqc+s3HzY4gs9CB
+         /4l3rku+4a8o7HyQagjGDynhTzWFxDMEZEaO73zb0t8k/IPNBWglsAJi3xeq4+q2hK4G
+         DtuFtC/pBL/SoBnjSE2L08NGTh13r1OT00GGmyejK+AdsggL8vE8pwK19ARs5AadF8Gm
+         O40Q==
+X-Gm-Message-State: APjAAAVzUuF5a60TqwO1DfJXpvhGv0mdgtBEzLXWa8rsErVXNvlywUmE
+        B2alNBek7rs8R/JEj1sAuSBN247N
+X-Google-Smtp-Source: APXvYqxv16fDNcNG+yCL2Z3WkJi/JIW27Bj3G0tpEAQX9aHqgaJly3r63NdA+sCsjoR36HmeYjgUcw==
+X-Received: by 2002:a17:906:660c:: with SMTP id b12mr1467517ejp.102.1568191437982;
+        Wed, 11 Sep 2019 01:43:57 -0700 (PDT)
+Received: from localhost.localdomain.com ([188.204.2.113])
+        by smtp.gmail.com with ESMTPSA id h38sm207138edh.13.2019.09.11.01.43.56
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 11 Sep 2019 01:43:57 -0700 (PDT)
+From:   Pascal van Leeuwen <pascalvanl@gmail.com>
+X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+To:     linux-crypto@vger.kernel.org
+Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net,
+        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+Subject: [PATCH 0/3] crypto: inside-secure - Add support for (HMAC) SM3
+Date:   Wed, 11 Sep 2019 09:41:08 +0200
+Message-Id: <1568187671-8540-1-git-send-email-pvanleeuwen@verimatrix.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Sep 10, 2019 at 08:53:13PM +0000, Milton Miller II wrote:
-> On September 9, 2019 around 7:40AM in somet timezone, Tomer Maimon wrote:
-> >+#define NPCM_RNG_TIMEOUT_USEC	20000
-> >+#define NPCM_RNG_POLL_USEC	1000
-> 
-> ...
-> 
-> >+static int npcm_rng_init(struct hwrng *rng)
-> >+{
-> >+	struct npcm_rng *priv = to_npcm_rng(rng);
-> >+	u32 val;
-> >+
-> >+	val = readl(priv->base + NPCM_RNGCS_REG);
-> >+	val |= NPCM_RNG_ENABLE;
-> >+	writel(val, priv->base + NPCM_RNGCS_REG);
-> >+
-> >+	return 0;
-> >+}
-> >+
-> >+static void npcm_rng_cleanup(struct hwrng *rng)
-> >+{
-> >+	struct npcm_rng *priv = to_npcm_rng(rng);
-> >+	u32 val;
-> >+
-> >+	val = readl(priv->base + NPCM_RNGCS_REG);
-> >+	val &= ~NPCM_RNG_ENABLE;
-> >+	writel(val, priv->base + NPCM_RNGCS_REG);
-> >+}
-> >+
-> >+static int npcm_rng_read(struct hwrng *rng, void *buf, size_t max,
-> >bool wait)
-> >+{
-> >+	struct npcm_rng *priv = to_npcm_rng(rng);
-> >+	int retval = 0;
-> >+	int ready;
-> >+
-> >+	pm_runtime_get_sync((struct device *)priv->rng.priv);
-> >+
-> >+	while (max >= sizeof(u32)) {
-> >+		ready = readl(priv->base + NPCM_RNGCS_REG) &
-> >+			NPCM_RNG_DATA_VALID;
-> >+		if (!ready) {
-> >+			if (wait) {
-> >+				if (readl_poll_timeout(priv->base + NPCM_RNGCS_REG,
-> >+						       ready,
-> >+						       ready & NPCM_RNG_DATA_VALID,
-> >+						       NPCM_RNG_POLL_USEC,
-> >+						       NPCM_RNG_TIMEOUT_USEC))
-> >+					break;
-> >+			} else {
-> >+				break;
-> 
-> This break is too far from the condition and deeply nested to follow.
-> 
-> And looking further, readl_poll_timeout will read and check the condition before
-> calling usleep, so the the initial readl and check is redundant
-> 
-> Rearrange to make wait determine if you call readl_poll_timeout or 
-> readl / compare / break.
-> 
-> >+			}
-> >+		}
-> >+
-> >+		*(u32 *)buf = readl(priv->base + NPCM_RNGD_REG);
-> >+		retval += sizeof(u32);
-> >+		buf += sizeof(u32);
-> >+		max -= sizeof(u32);
-> >+	}
-> >+
-> >+	pm_runtime_mark_last_busy((struct device *)priv->rng.priv);
-> >+	pm_runtime_put_sync_autosuspend((struct device *)priv->rng.priv);
-> >+
-> >+	return retval || !wait ? retval : -EIO;
-> >+}
-> >+
-> >+static int npcm_rng_probe(struct platform_device *pdev)
-> >+{
-> >+	struct npcm_rng *priv;
-> >+	struct resource *res;
-> >+	bool pm_dis = false;
-> >+	u32 quality;
-> >+	int ret;
-> >+
-> >+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> >+	if (!priv)
-> >+		return -ENOMEM;
-> >+
-> >+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> >+	priv->base = devm_ioremap_resource(&pdev->dev, res);
-> >+	if (IS_ERR(priv->base))
-> >+		return PTR_ERR(priv->base);
-> >+
-> >+	priv->rng.name = pdev->name;
-> >+#ifndef CONFIG_PM
-> >+	pm_dis = true;
-> >+	priv->rng.init = npcm_rng_init;
-> >+	priv->rng.cleanup = npcm_rng_cleanup;
-> >+#endif
-> 
-> if you move this down you can use one if (ENABLED_CONFIG_PM) {}
-> 
-> >+	priv->rng.read = npcm_rng_read;
-> >+	priv->rng.priv = (unsigned long)&pdev->dev;
-> >+	if (of_property_read_u32(pdev->dev.of_node, "quality", &quality))
-> >+		priv->rng.quality = 1000;
-> >+	else
-> >+		priv->rng.quality = quality;
-> >+
-> >+	writel(NPCM_RNG_M1ROSEL, priv->base + NPCM_RNGMODE_REG);
-> >+	if (pm_dis)
-> >+		writel(NPCM_RNG_CLK_SET_25MHZ, priv->base + NPCM_RNGCS_REG);
-> >+	else
-> >+		writel(NPCM_RNG_CLK_SET_25MHZ | NPCM_RNG_ENABLE,
-> >+		       priv->base + NPCM_RNGCS_REG);
-> 
-> wait ... if we know the whole value here, why read/modify/write the value
-> in the init and cleanup hook?   Save the io read and write the known value
->  ... define the value to be written for clarity between enable/disable if
-> needed
-> 
-> 
-> 
-> >+
-> >+	ret = devm_hwrng_register(&pdev->dev, &priv->rng);
-> >+	if (ret) {
-> >+		dev_err(&pdev->dev, "Failed to register rng device: %d\n",
-> >+			ret);
-> 
-> need to disable if CONFIG_PM ?
-> 
-> >+		return ret;
-> >+	}
-> >+
-> >+	dev_set_drvdata(&pdev->dev, priv);
-> 
-> This should probably be before the register.
-> 
-> >+	pm_runtime_set_autosuspend_delay(&pdev->dev, 100);
-> 
-> So every 100ms power off, and if userspace does a read we
-> will poll every 1ms for upto 20ms.
-> 
-> If userspace says try once a second with -ENODELAY so no wait,
-> it never gets data.
+Extend driver support with sm3 and hmac(sm3) ahash support.
+Also add GM/T 0042-2015 hmac(sm3) testvectors to the testmgr.
+The patchset has been tested with the eip197c_iewxkbc configuration
+on the Xilinx VCU118 development board, including the crypto extra tests.
 
-I didn't follow this.
+Note that this patchset applies on top of the earlier submitted
+"Add support for the Chacha20 kcipher and the Chacha20-Poly..." series.
 
-In the time before the device is suspended it should have generated
-data and this can be sent to the userspace. Providing the suspend delay
-is longer than the buffer size of the hardware then there won't
-necessarily be performance problems because the device is "full" when
-it is suspended.
+Pascal van Leeuwen (3):
+  crypto: inside-secure - Added support for basic SM3 ahash
+  crypto: inside-secure - Added support for HMAC-SM3 ahash
+  crypto: testmgr - Added testvectors for the hmac(sm3) ahash
 
-Of course if the hardware loses state when it is suspended then the
-driver would need extra code on the PM paths to preserve the data...
+ crypto/testmgr.c                             |   6 ++
+ crypto/testmgr.h                             |  56 ++++++++++++
+ drivers/crypto/inside-secure/safexcel.c      |   2 +
+ drivers/crypto/inside-secure/safexcel.h      |   3 +
+ drivers/crypto/inside-secure/safexcel_hash.c | 129 +++++++++++++++++++++++++++
+ 5 files changed, 196 insertions(+)
 
+-- 
+1.8.3.1
 
-Daniel.
