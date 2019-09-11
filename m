@@ -2,157 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AD9AF833
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Sep 2019 10:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF919AF82B
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Sep 2019 10:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726724AbfIKIoD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Sep 2019 04:44:03 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:38954 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbfIKIoD (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Sep 2019 04:44:03 -0400
-Received: by mail-ed1-f65.google.com with SMTP id u6so19868494edq.6
-        for <linux-crypto@vger.kernel.org>; Wed, 11 Sep 2019 01:44:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=/EfhpaultkDrd7IBT0y0Pc89vlj4ZVcFAAL9jivLVfM=;
-        b=arYIlxEUeCEkPp4lXYTRN3dkvp1iBgJ6PNxm66xCRzjf1NTWGZv9urX2EygfEYKqft
-         kn4W41Ab4mwxoOzWGDCGhhtMoEVXXwIeNabnoDBR/SkPOUmX0vKeoKEOap0VBKu27V0n
-         DTHma6S3nwiE1Ag8YoLWiZ+P2EPVGI/KjIlL6YxyyKInD6QwklWxiWcUPMBeLv8Kq0Ce
-         o+OAC7ZOYL/oHOtjYNhJx6vbpioIbmJzkcvRNmBujaWia7DKv5ETYGpEYjT+qp+Cctvz
-         biaeqoJkLnhWWSExuUvzYvN3hHjrWq/w3h5np1EcD5JrvTlWFvfwnieWSNqSS2nnk8+I
-         9Frw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=/EfhpaultkDrd7IBT0y0Pc89vlj4ZVcFAAL9jivLVfM=;
-        b=P1GqUp7fYgHJp11rCDuL1EQluL2W+ioZnJnehXrYuHO0SjIIxz7GgnSjeFaPPN8Pdn
-         iYKgB44FE75yjxFkQ1wD0Z52yfJJjeFJFBoUYRfGvpOPGjha6PlApxVKZONUezLY1yNj
-         ULJCv9IpZ58/XRimxdYEpgTSZDt6kE5BbtGs68ktYOazg2E6/2HVBDyX7JXe+YHQ+iDl
-         se9o8VD1GlC5HDF7BXv5H1smyLPqkFF0a7ZPcuj+DoOB4egu0xNxby4M/oY2A6FFnSnJ
-         hE1oD18Aha5WXUW3pdsjIs/uxSbu0t9s1rHY5r1U2P7RB7mDVDYU38Pp4E1iDOh0ge2E
-         OwQA==
-X-Gm-Message-State: APjAAAXYmwgoT5W6veqT8yGTu8lQxOnwqZXXzaDFiJ59MgN3YzEqN/NW
-        3oohFsyvVLV5ipNdgGIzw/f1f92y
-X-Google-Smtp-Source: APXvYqyZfOPIatU2CEA7yjAQ7Dsi2JseDWRvAI6BcLRz+7rF+oJE/woVshYpEFp9SpEdgwYuPBuNQQ==
-X-Received: by 2002:aa7:d0d1:: with SMTP id u17mr30142895edo.99.1568191440955;
-        Wed, 11 Sep 2019 01:44:00 -0700 (PDT)
-Received: from localhost.localdomain.com ([188.204.2.113])
-        by smtp.gmail.com with ESMTPSA id h38sm207138edh.13.2019.09.11.01.44.00
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 11 Sep 2019 01:44:00 -0700 (PDT)
-From:   Pascal van Leeuwen <pascalvanl@gmail.com>
-X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net,
-        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: [PATCH 3/3] crypto: testmgr - Added testvectors for the hmac(sm3) ahash
-Date:   Wed, 11 Sep 2019 09:41:11 +0200
-Message-Id: <1568187671-8540-4-git-send-email-pvanleeuwen@verimatrix.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1568187671-8540-1-git-send-email-pvanleeuwen@verimatrix.com>
-References: <1568187671-8540-1-git-send-email-pvanleeuwen@verimatrix.com>
+        id S1726561AbfIKImx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Sep 2019 04:42:53 -0400
+Received: from mga06.intel.com ([134.134.136.31]:56754 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbfIKImx (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 11 Sep 2019 04:42:53 -0400
+X-Amp-Result: UNSCANNABLE
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Sep 2019 01:42:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,492,1559545200"; 
+   d="scan'208";a="189611282"
+Received: from dgonsal1-mobl.ger.corp.intel.com (HELO localhost) ([10.249.38.48])
+  by orsmga006.jf.intel.com with ESMTP; 11 Sep 2019 01:42:50 -0700
+Date:   Wed, 11 Sep 2019 09:42:49 +0100
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     linux-integrity@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v6 00/12] add integrity and security to TPM2 transactions
+Message-ID: <20190911084249.GA7436@linux.intel.com>
+References: <1568031408.6613.29.camel@HansenPartnership.com>
+ <20190910162132.GA11338@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190910162132.GA11338@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Added testvectors for the hmac(sm3) ahash authentication algorithm
+On Tue, Sep 10, 2019 at 05:21:32PM +0100, Jarkko Sakkinen wrote:
+> On Mon, Sep 09, 2019 at 01:16:48PM +0100, James Bottomley wrote:
+> > Link to previous cover letter:
+> > 
+> > https://lore.kernel.org/linux-integrity/1540193596.3202.7.camel@HansenPartnership.com/
+> > 
+> > This is marked v6 instead of v5 because I did a v5 after feedback on v4
+> > but didn't get around to posting it and then had to rework the whole of
+> > the kernel space handling while I was on holiday.  I also added the
+> > documentation of how the whole thing works and the rationale for doing
+> > it in tpm-security.rst (patch 11).  The main reason for doing this now
+> > is so we have something to discuss at Plumbers.
+> > 
+> > The new patch set implements the various splits requested, but the main
+> > changes are that the kernel space is gone and is replaced by a context
+> > save and restore of the generated null seed.  This is easier to handle
+> > than a full kernel space given the new threading for TPM spaces, but
+> > conceptually it is still very like a space.  I've also made whether
+> > integrity and encryption is turned on a Kconfig option.
+> > 
+> > James
+> 
+> So... is there a changelog for the revisions?
 
-Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
----
- crypto/testmgr.c |  6 ++++++
- crypto/testmgr.h | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 62 insertions(+)
+This also desperately needs a cover letter with the full rationale and
+not just a link to an aged cover letter. I have bigger problems with the
+form than the function ATM.
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 001e62f..3604c9d 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4921,6 +4921,12 @@ static int alg_test_null(const struct alg_test_desc *desc,
- 			.hash = __VECS(hmac_sha512_tv_template)
- 		}
- 	}, {
-+		.alg = "hmac(sm3)",
-+		.test = alg_test_hash,
-+		.suite = {
-+			.hash = __VECS(hmac_sm3_tv_template)
-+		}
-+	}, {
- 		.alg = "hmac(streebog256)",
- 		.test = alg_test_hash,
- 		.suite = {
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index 25572c3..1f56293 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -2935,6 +2935,62 @@ struct len_range_sel {
- 	}
- };
- 
-+/* Example vectors below taken from
-+ * GM/T 0042-2015 Appendix D.3
-+ */
-+static const struct hash_testvec hmac_sm3_tv_template[] = {
-+	{
-+		.key	= "\x01\x02\x03\x04\x05\x06\x07\x08"
-+			  "\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10"
-+			  "\x11\x12\x13\x14\x15\x16\x17\x18"
-+			  "\x19\x1a\x1b\x1c\x1d\x1e\x1f\x20",
-+		.ksize	= 32,
-+		.plaintext = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
-+			     "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
-+		.psize	= 112,
-+		.digest	= "\xca\x05\xe1\x44\xed\x05\xd1\x85"
-+			  "\x78\x40\xd1\xf3\x18\xa4\xa8\x66"
-+			  "\x9e\x55\x9f\xc8\x39\x1f\x41\x44"
-+			  "\x85\xbf\xdf\x7b\xb4\x08\x96\x3a",
-+	}, {
-+		.key	= "\x01\x02\x03\x04\x05\x06\x07\x08"
-+			  "\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10"
-+			  "\x11\x12\x13\x14\x15\x16\x17\x18"
-+			  "\x19\x1a\x1b\x1c\x1d\x1e\x1f\x20"
-+			  "\x21\x22\x23\x24\x25",
-+		.ksize	= 37,
-+		.plaintext = "\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd"
-+			"\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd"
-+			"\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd"
-+			"\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd",
-+		.psize	= 50,
-+		.digest	= "\x22\x0b\xf5\x79\xde\xd5\x55\x39"
-+			  "\x3f\x01\x59\xf6\x6c\x99\x87\x78"
-+			  "\x22\xa3\xec\xf6\x10\xd1\x55\x21"
-+			  "\x54\xb4\x1d\x44\xb9\x4d\xb3\xae",
-+	}, {
-+		.key	= "\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b"
-+			  "\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b"
-+			 "\x0b\x0b\x0b\x0b\x0b\x0b",
-+		.ksize	= 32,
-+		.plaintext = "Hi There",
-+		.psize	= 8,
-+		.digest	= "\xc0\xba\x18\xc6\x8b\x90\xc8\x8b"
-+			  "\xc0\x7d\xe7\x94\xbf\xc7\xd2\xc8"
-+			  "\xd1\x9e\xc3\x1e\xd8\x77\x3b\xc2"
-+			  "\xb3\x90\xc9\x60\x4e\x0b\xe1\x1e",
-+	}, {
-+		.key	= "Jefe",
-+		.ksize	= 4,
-+		.plaintext = "what do ya want for nothing?",
-+		.psize	= 28,
-+		.digest	= "\x2e\x87\xf1\xd1\x68\x62\xe6\xd9"
-+			  "\x64\xb5\x0a\x52\x00\xbf\x2b\x10"
-+			  "\xb7\x64\xfa\xa9\x68\x0a\x29\x6a"
-+			  "\x24\x05\xf2\x4b\xec\x39\xf8\x82",
-+	},
-+};
-+
- /*
-  * SHA1 test vectors  from from FIPS PUB 180-1
-  * Long vector from CAVS 5.0
--- 
-1.8.3.1
+TPM's threat model does not cover hardware attacks. It is hardware
+designed to give some protection against software attacks. If I were
+sending these patches I would start to look for an angle from that
+perspective.
 
+/Jarkko
