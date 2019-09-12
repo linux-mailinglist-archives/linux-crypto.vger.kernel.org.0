@@ -2,160 +2,220 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8815B0C5C
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Sep 2019 12:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C532B0FF0
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Sep 2019 15:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730936AbfILKNG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 12 Sep 2019 06:13:06 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:41859 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731037AbfILKNF (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 12 Sep 2019 06:13:05 -0400
-Received: by mail-ed1-f66.google.com with SMTP id z9so23411586edq.8
-        for <linux-crypto@vger.kernel.org>; Thu, 12 Sep 2019 03:13:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=8RK8ctadvpPxabPbDiGr6iVefXFeHDtLg1PlSuCBDmY=;
-        b=BGo10uvevXt/mqWvTi9oKcm0v3Xs9NBYTEjoYL4//+/w1FSAX5z4Z1tAw/n0Z0Jqli
-         omjyE02fhABmQVvZ5MPeFc414sNHXBV18OnDtPEIieBPaoG/DdQEUY4mUs1pG0+7vKhB
-         aouc4w1aRIDkWzkNa5ihqZqRIAcsKonQ0zRVaA/9iyamu7Ch5jeCfdB1TLtQ6TeBDF/K
-         Un5Tk1P0PxvKZxxU/4YSpay9NK16zZWnAAyInmaYR75fZpi+9fSkNy30Oh5uYsfMCeUY
-         BGiJD7h1kl0wghyOCZpCPcf5Brot6p0A4jhI5gJ6vhx4xZwYHpUbbvY/jh1o59e5vKx7
-         e06g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=8RK8ctadvpPxabPbDiGr6iVefXFeHDtLg1PlSuCBDmY=;
-        b=gbDdFBMgYvH51yZWOhyQ1WNEN7BFxhthebsqov2cilEsdj7kXDM1g8qNKtzc0soceV
-         SbouarLyky0yIcqAH1/sQCtECJJw5NLg0e1n+4Tj2XUBDCjjoaCJeEEBDitAjjafiDJj
-         j2S3j0KoWExyvWpjQZ3FsZ+u0/m8HVWQOe7e+BjpQ105WhFtqPs0qCgBBkFZwFlnI16U
-         L7dD6Y+p2vEgPIiXF7pDsXJNOUUFS8cTK6lJxjPIouWQKXv0Uqvj6HHmtxRt1nPUQw9u
-         H5JQOdS5ku3dpbnI/VZOMW9l4lZ8tP4JeB+daYRX8OMyvqGJtAhxNbp6rjMscdtaLV/h
-         SiDw==
-X-Gm-Message-State: APjAAAW0KEGRhESlPvkWdOWhkvM+0hx1QWSNF45kjmRROvDmngzs6A7S
-        0rU6ygzB10EtekubOFP5WAasr3O+
-X-Google-Smtp-Source: APXvYqx3Hnxfg3tF3KcB4l9w2y2+TsG0hr8E1bZQRqPSls5xUMfsgJ82CkYu+ZHEvNttTFB0UlGyEw==
-X-Received: by 2002:a50:9250:: with SMTP id j16mr41145344eda.160.1568283183722;
-        Thu, 12 Sep 2019 03:13:03 -0700 (PDT)
-Received: from localhost.localdomain.com ([188.204.2.113])
-        by smtp.gmail.com with ESMTPSA id k11sm2561499ejr.3.2019.09.12.03.13.03
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 12 Sep 2019 03:13:03 -0700 (PDT)
-From:   Pascal van Leeuwen <pascalvanl@gmail.com>
-X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net,
-        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: [PATCHv2 3/3] crypto: testmgr - Added testvectors for the hmac(sm3) ahash
-Date:   Thu, 12 Sep 2019 11:10:14 +0200
-Message-Id: <1568279414-16773-4-git-send-email-pvanleeuwen@verimatrix.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1568279414-16773-1-git-send-email-pvanleeuwen@verimatrix.com>
-References: <1568279414-16773-1-git-send-email-pvanleeuwen@verimatrix.com>
+        id S1732112AbfILNaZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 12 Sep 2019 09:30:25 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:55394 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731687AbfILNaZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 12 Sep 2019 09:30:25 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id CDFA08980E1;
+        Thu, 12 Sep 2019 13:30:24 +0000 (UTC)
+Received: from thinkpad.redhat.com (ovpn-116-207.ams2.redhat.com [10.36.116.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4718D608AB;
+        Thu, 12 Sep 2019 13:30:23 +0000 (UTC)
+From:   Laurent Vivier <lvivier@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Matt Mackall <mpm@selenic.com>,
+        Laurent Vivier <lvivier@redhat.com>
+Subject: [PATCH] hw_random: move add_early_randomness() out of rng_mutex
+Date:   Thu, 12 Sep 2019 15:30:22 +0200
+Message-Id: <20190912133022.14870-1-lvivier@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.67]); Thu, 12 Sep 2019 13:30:25 +0000 (UTC)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Added testvectors for the hmac(sm3) ahash authentication algorithm
+add_early_randomness() is called every time a new rng backend is added
+and every time it is set as the current rng provider.
 
-changes since v1:
-- nothing
+add_early_randomness() is called from functions locking rng_mutex,
+and if it hangs all the hw_random framework hangs: we can't read sysfs,
+add or remove a backend.
 
-Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+This patch move add_early_randomness() out of the rng_mutex zone.
+It only needs the reading_mutex.
+
+Signed-off-by: Laurent Vivier <lvivier@redhat.com>
 ---
- crypto/testmgr.c |  6 ++++++
- crypto/testmgr.h | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 62 insertions(+)
+ drivers/char/hw_random/core.c | 60 +++++++++++++++++++++++++----------
+ 1 file changed, 44 insertions(+), 16 deletions(-)
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 001e62f..3604c9d 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4921,6 +4921,12 @@ static int alg_test_null(const struct alg_test_desc *desc,
- 			.hash = __VECS(hmac_sha512_tv_template)
- 		}
- 	}, {
-+		.alg = "hmac(sm3)",
-+		.test = alg_test_hash,
-+		.suite = {
-+			.hash = __VECS(hmac_sm3_tv_template)
-+		}
-+	}, {
- 		.alg = "hmac(streebog256)",
- 		.test = alg_test_hash,
- 		.suite = {
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index 25572c3..1f56293 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -2935,6 +2935,62 @@ struct len_range_sel {
- 	}
- };
+diff --git a/drivers/char/hw_random/core.c b/drivers/char/hw_random/core.c
+index 9044d31ab1a1..745ace6fffd7 100644
+--- a/drivers/char/hw_random/core.c
++++ b/drivers/char/hw_random/core.c
+@@ -111,6 +111,14 @@ static void drop_current_rng(void)
+ }
  
-+/* Example vectors below taken from
-+ * GM/T 0042-2015 Appendix D.3
-+ */
-+static const struct hash_testvec hmac_sm3_tv_template[] = {
-+	{
-+		.key	= "\x01\x02\x03\x04\x05\x06\x07\x08"
-+			  "\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10"
-+			  "\x11\x12\x13\x14\x15\x16\x17\x18"
-+			  "\x19\x1a\x1b\x1c\x1d\x1e\x1f\x20",
-+		.ksize	= 32,
-+		.plaintext = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
-+			     "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
-+		.psize	= 112,
-+		.digest	= "\xca\x05\xe1\x44\xed\x05\xd1\x85"
-+			  "\x78\x40\xd1\xf3\x18\xa4\xa8\x66"
-+			  "\x9e\x55\x9f\xc8\x39\x1f\x41\x44"
-+			  "\x85\xbf\xdf\x7b\xb4\x08\x96\x3a",
-+	}, {
-+		.key	= "\x01\x02\x03\x04\x05\x06\x07\x08"
-+			  "\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10"
-+			  "\x11\x12\x13\x14\x15\x16\x17\x18"
-+			  "\x19\x1a\x1b\x1c\x1d\x1e\x1f\x20"
-+			  "\x21\x22\x23\x24\x25",
-+		.ksize	= 37,
-+		.plaintext = "\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd"
-+			"\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd"
-+			"\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd"
-+			"\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd",
-+		.psize	= 50,
-+		.digest	= "\x22\x0b\xf5\x79\xde\xd5\x55\x39"
-+			  "\x3f\x01\x59\xf6\x6c\x99\x87\x78"
-+			  "\x22\xa3\xec\xf6\x10\xd1\x55\x21"
-+			  "\x54\xb4\x1d\x44\xb9\x4d\xb3\xae",
-+	}, {
-+		.key	= "\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b"
-+			  "\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b"
-+			 "\x0b\x0b\x0b\x0b\x0b\x0b",
-+		.ksize	= 32,
-+		.plaintext = "Hi There",
-+		.psize	= 8,
-+		.digest	= "\xc0\xba\x18\xc6\x8b\x90\xc8\x8b"
-+			  "\xc0\x7d\xe7\x94\xbf\xc7\xd2\xc8"
-+			  "\xd1\x9e\xc3\x1e\xd8\x77\x3b\xc2"
-+			  "\xb3\x90\xc9\x60\x4e\x0b\xe1\x1e",
-+	}, {
-+		.key	= "Jefe",
-+		.ksize	= 4,
-+		.plaintext = "what do ya want for nothing?",
-+		.psize	= 28,
-+		.digest	= "\x2e\x87\xf1\xd1\x68\x62\xe6\xd9"
-+			  "\x64\xb5\x0a\x52\x00\xbf\x2b\x10"
-+			  "\xb7\x64\xfa\xa9\x68\x0a\x29\x6a"
-+			  "\x24\x05\xf2\x4b\xec\x39\xf8\x82",
-+	},
-+};
+ /* Returns ERR_PTR(), NULL or refcounted hwrng */
++static struct hwrng *get_current_rng_nolock(void)
++{
++	if (current_rng)
++		kref_get(&current_rng->ref);
 +
- /*
-  * SHA1 test vectors  from from FIPS PUB 180-1
-  * Long vector from CAVS 5.0
++	return current_rng;
++}
++
+ static struct hwrng *get_current_rng(void)
+ {
+ 	struct hwrng *rng;
+@@ -118,9 +126,7 @@ static struct hwrng *get_current_rng(void)
+ 	if (mutex_lock_interruptible(&rng_mutex))
+ 		return ERR_PTR(-ERESTARTSYS);
+ 
+-	rng = current_rng;
+-	if (rng)
+-		kref_get(&rng->ref);
++	rng = get_current_rng_nolock();
+ 
+ 	mutex_unlock(&rng_mutex);
+ 	return rng;
+@@ -155,8 +161,6 @@ static int hwrng_init(struct hwrng *rng)
+ 	reinit_completion(&rng->cleanup_done);
+ 
+ skip_init:
+-	add_early_randomness(rng);
+-
+ 	current_quality = rng->quality ? : default_quality;
+ 	if (current_quality > 1024)
+ 		current_quality = 1024;
+@@ -320,12 +324,13 @@ static ssize_t hwrng_attr_current_store(struct device *dev,
+ 					const char *buf, size_t len)
+ {
+ 	int err = -ENODEV;
+-	struct hwrng *rng;
++	struct hwrng *rng, *old_rng, *new_rng;
+ 
+ 	err = mutex_lock_interruptible(&rng_mutex);
+ 	if (err)
+ 		return -ERESTARTSYS;
+ 
++	old_rng = current_rng;
+ 	if (sysfs_streq(buf, "")) {
+ 		err = enable_best_rng();
+ 	} else {
+@@ -337,9 +342,15 @@ static ssize_t hwrng_attr_current_store(struct device *dev,
+ 			}
+ 		}
+ 	}
+-
++	new_rng = get_current_rng_nolock();
+ 	mutex_unlock(&rng_mutex);
+ 
++	if (new_rng) {
++		if (new_rng != old_rng)
++			add_early_randomness(new_rng);
++		put_rng(new_rng);
++	}
++
+ 	return err ? : len;
+ }
+ 
+@@ -457,13 +468,17 @@ static void start_khwrngd(void)
+ int hwrng_register(struct hwrng *rng)
+ {
+ 	int err = -EINVAL;
+-	struct hwrng *old_rng, *tmp;
++	struct hwrng *old_rng, *new_rng, *tmp;
+ 	struct list_head *rng_list_ptr;
+ 
+ 	if (!rng->name || (!rng->data_read && !rng->read))
+ 		goto out;
+ 
+ 	mutex_lock(&rng_mutex);
++
++	old_rng = current_rng;
++	new_rng = NULL;
++
+ 	/* Must not register two RNGs with the same name. */
+ 	err = -EEXIST;
+ 	list_for_each_entry(tmp, &rng_list, list) {
+@@ -482,7 +497,6 @@ int hwrng_register(struct hwrng *rng)
+ 	}
+ 	list_add_tail(&rng->list, rng_list_ptr);
+ 
+-	old_rng = current_rng;
+ 	err = 0;
+ 	if (!old_rng ||
+ 	    (!cur_rng_set_by_user && rng->quality > old_rng->quality)) {
+@@ -496,19 +510,24 @@ int hwrng_register(struct hwrng *rng)
+ 			goto out_unlock;
+ 	}
+ 
+-	if (old_rng && !rng->init) {
++	new_rng = rng;
++	kref_get(&new_rng->ref);
++out_unlock:
++	mutex_unlock(&rng_mutex);
++
++	if (new_rng) {
++		if (new_rng != old_rng || !rng->init) {
+ 		/*
+ 		 * Use a new device's input to add some randomness to
+ 		 * the system.  If this rng device isn't going to be
+ 		 * used right away, its init function hasn't been
+-		 * called yet; so only use the randomness from devices
+-		 * that don't need an init callback.
++		 * called yet by set_current_rng(); so only use the
++		 * randomness from devices that don't need an init callback
+ 		 */
+-		add_early_randomness(rng);
++			add_early_randomness(new_rng);
++		}
++		put_rng(new_rng);
+ 	}
+-
+-out_unlock:
+-	mutex_unlock(&rng_mutex);
+ out:
+ 	return err;
+ }
+@@ -516,10 +535,12 @@ EXPORT_SYMBOL_GPL(hwrng_register);
+ 
+ void hwrng_unregister(struct hwrng *rng)
+ {
++	struct hwrng *old_rng, *new_rng;
+ 	int err;
+ 
+ 	mutex_lock(&rng_mutex);
+ 
++	old_rng = current_rng;
+ 	list_del(&rng->list);
+ 	if (current_rng == rng) {
+ 		err = enable_best_rng();
+@@ -529,6 +550,7 @@ void hwrng_unregister(struct hwrng *rng)
+ 		}
+ 	}
+ 
++	new_rng = get_current_rng_nolock();
+ 	if (list_empty(&rng_list)) {
+ 		mutex_unlock(&rng_mutex);
+ 		if (hwrng_fill)
+@@ -536,6 +558,12 @@ void hwrng_unregister(struct hwrng *rng)
+ 	} else
+ 		mutex_unlock(&rng_mutex);
+ 
++	if (new_rng) {
++		if (old_rng != new_rng)
++			add_early_randomness(new_rng);
++		put_rng(new_rng);
++	}
++
+ 	wait_for_completion(&rng->cleanup_done);
+ }
+ EXPORT_SYMBOL_GPL(hwrng_unregister);
 -- 
-1.8.3.1
+2.21.0
 
