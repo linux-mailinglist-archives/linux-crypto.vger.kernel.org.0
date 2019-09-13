@@ -2,97 +2,90 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78276B2551
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2019 20:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A33B25AE
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2019 21:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730277AbfIMSn4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 13 Sep 2019 14:43:56 -0400
-Received: from mail-ed1-f41.google.com ([209.85.208.41]:37194 "EHLO
-        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726822AbfIMSnz (ORCPT
+        id S2388638AbfIMTEr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 13 Sep 2019 15:04:47 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:41702 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728935AbfIMTEp (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 13 Sep 2019 14:43:55 -0400
-Received: by mail-ed1-f41.google.com with SMTP id i1so27933520edv.4
-        for <linux-crypto@vger.kernel.org>; Fri, 13 Sep 2019 11:43:54 -0700 (PDT)
+        Fri, 13 Sep 2019 15:04:45 -0400
+Received: by mail-ed1-f68.google.com with SMTP id z9so27916258edq.8
+        for <linux-crypto@vger.kernel.org>; Fri, 13 Sep 2019 12:04:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=YWhv/GYp7+pgiOC3FdmOYcWNjzfsucRCnlTD8L3LiYA=;
-        b=YWNZNq8wna6X0mBTVBmiuu+/RMyYaVVu7WGRs3folgQ6DmzCs8mKgT0Oh52Wx0NVME
-         vRGcRbJQwmkN4xDPXqngpkjRj4g2NV8qQlfaOQvarusX1umtG2kxG6IKaICocmj0ALal
-         NFZHw8SclljoYaJo9yNV1rhiJZZFGAl6LBN0U0UB16HAWaKiPnK2hpdbqPyUCKbopBFS
-         +3nW7CMSst5fo9dLIN3fBEvr/056GN+dHhOmn4+7Uqg8X0iwjNcgUYknP+LMyb6kOm/z
-         eTJ1uLxgWdzZqtd9lyh4dcnUdMP7PA/3nhlX611gLU/Rcy3VZLRawQ/3HreSBludrhXw
-         2xyA==
+        h=from:to:cc:subject:date:message-id;
+        bh=99D+Bdz1iAyW31OkwtjCR8anZQFy/QR6OerJdff2IWQ=;
+        b=ZsLodRlP/FKcfkjQ8Ydd5kLPygahH96a97bnJ2yVpWHI3dOx6JL169u1J5LHGp099d
+         5LdruAJ6fekayYBcoHtu0ni5i2AwGfKHjvYBLiFr9KLhYRcMz+SfFJqLbu/y0RHJtfdd
+         vdu1SMao2layU8vFeXKSbFCJo8iXx/+/05nzPknNnTqE6MQGHLxCYjMEDIwamj95hNTf
+         pQIYB1BtCc+JtFQBV70IcSpBKHjiXgJHx1FE70JvY33/zQoLVeWbvhN7zfGRCx835AN4
+         rh+Pv3iK+/el3brLp1gw7lgFyWbqrKXw6jws0YL/MriWPnVKRldGrsirRygs2qUEN6qG
+         6dUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=YWhv/GYp7+pgiOC3FdmOYcWNjzfsucRCnlTD8L3LiYA=;
-        b=lrkv1aDJY50hqNPzGmU3ZLjn6G9gf4WR2d1OMzx3zkBv05vlP2tvfL3NneYb49Gy27
-         xi2zi3TawStFId4fs4eLLW56a7ZzCF0be1Eav6DLPP0CfSOpSLzfgzDcEmeJcvdGvE/v
-         I5f0N2C99i7aL+WShBRlnbUKDCWDd7zDXIfwYs7MpFdsdkhTqCYcyZsFG3gknbXE+l5t
-         xFVOuCN0/yKYamJycC7HBJ3kTxsNjRFpnLnEhKQqmsKzngqCTr3orlKteC3QyCV2R+ra
-         GFs972hPYEyBNgoylYu5QoW9NFK09DE2GyLAL0yeWlpS+0ybGiRP7D3FxEpHt3FXM6Lp
-         A6DA==
-X-Gm-Message-State: APjAAAV8dkvFnCNv7r2ouWjpa5oOvyiCSO3E+6g04ltP0zgKMdI0vcZq
-        brnO5zh33QpNdst/dTPo3ep7gELi
-X-Google-Smtp-Source: APXvYqzjmsdJksvR+dWYEWmH7mrwSmXfRDwiCtvLWUZiqblMmpLq3+mRoXCqWxbyWr5NU4LAeXPpyw==
-X-Received: by 2002:a17:907:2065:: with SMTP id qp5mr39969029ejb.151.1568400233620;
-        Fri, 13 Sep 2019 11:43:53 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=99D+Bdz1iAyW31OkwtjCR8anZQFy/QR6OerJdff2IWQ=;
+        b=nvm1PjGQyVQY/Z7N5ax2ZzsVQJvPoBxYiN8HEgHbSt2UN52MyxNZqZShwkU86h8RDu
+         Gg0RuLuyAP3l44BgyVdMkpOJUjXkcM4LIPxUm/d0mW5S3lgJQAmz/GOeirR7XOa8yKNc
+         TvBLu9Fb+74P/LQSWRelLTScT58narNu+YCcfgfMjlqPMWRxipkKknTJ4f2mLpanCGDj
+         1D7MAbmN8lhd8tcl4HOrpcDh1bNLWm2Y/SHJ2Vvk67prGbNNyaWiAb3Jzl9daQNEVXKz
+         OZx6p/qhDENVsF/vNN8J4Qg8Sw4F+wfojmwGssIH8MzJutTeiUMvAkY50AvDcff3YYk1
+         cDrQ==
+X-Gm-Message-State: APjAAAUb95udRlvy08grGn7Khs6ohGFli0BvmOzuC4bOMkP55LWJBVhX
+        NGvkINWN2XuuVqqek78wVGOOnMlL
+X-Google-Smtp-Source: APXvYqxausWoPUWISBgEQqA4wpRM/U4QH5p7/vojIMT0EoR3KUNZOGyON/HYS4j2o5CQyioWtvc/rQ==
+X-Received: by 2002:a05:6402:516:: with SMTP id m22mr27777088edv.83.1568401483195;
+        Fri, 13 Sep 2019 12:04:43 -0700 (PDT)
 Received: from localhost.localdomain.com ([188.204.2.113])
-        by smtp.gmail.com with ESMTPSA id 16sm2416225ejz.52.2019.09.13.11.43.53
+        by smtp.gmail.com with ESMTPSA id ba28sm49099edb.4.2019.09.13.12.04.42
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Sep 2019 11:43:53 -0700 (PDT)
+        Fri, 13 Sep 2019 12:04:42 -0700 (PDT)
 From:   Pascal van Leeuwen <pascalvanl@gmail.com>
 X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
         davem@davemloft.net,
         Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: [PATCHv2 3/3] crypto: Kconfig - Add CRYPTO_CHACHA20POLY1305 to CRYPTO_DEV_SAFEXCEL
-Date:   Fri, 13 Sep 2019 19:41:02 +0200
-Message-Id: <1568396462-20245-4-git-send-email-pvanleeuwen@verimatrix.com>
+Subject: [PATCHv3 0/3] crypto: inside-secure: Add support for the Chacha20 skcipher and the Chacha20-Poly1305 AEAD suites
+Date:   Fri, 13 Sep 2019 20:01:52 +0200
+Message-Id: <1568397715-2535-1-git-send-email-pvanleeuwen@verimatrix.com>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1568396462-20245-1-git-send-email-pvanleeuwen@verimatrix.com>
-References: <1568396462-20245-1-git-send-email-pvanleeuwen@verimatrix.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Due to the addition of Chacha20-Poly1305 support to the inside-secure
-driver, it now depends on CRYPTO_CHACHA20POLY1305. Added reference.
+Extend driver support with chacha20, rfc7539(chacha20,poly1305) and
+rfc7539esp(chacha20,poly1305) ciphers.
+The patchset has been tested with the eip197c_iesb and eip197c_iewxkbc
+configurations on the Xilinx VCU118 development board, including the
+crypto extra tests.
+
+Note that this patchset applies on top of the earlier submitted
+"Add support for the CBCMAC" series.
 
 changes since v1:
-- added missing dependency to crypto/Kconfig
+- rebased on top of DES library changes done on cryptodev/master
+- fixed crypto/Kconfig so that generic fallback is compiled as well
 
-Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
----
- drivers/crypto/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+changes since v2:
+- made switch entry SAFEXCEL_AES explit and added empty default, as 
+  requested by Antoine Tenart. Also needed to make SM4 patches apply.
 
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 83271d9..2ed1a2b 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -19,7 +19,7 @@ config CRYPTO_DEV_PADLOCK
- 	  (so called VIA PadLock ACE, Advanced Cryptography Engine)
- 	  that provides instructions for very fast cryptographic
- 	  operations with supported algorithms.
--	  
-+
- 	  The instructions are used only when the CPU supports them.
- 	  Otherwise software encryption is used.
- 
-@@ -728,6 +728,7 @@ config CRYPTO_DEV_SAFEXCEL
- 	select CRYPTO_SHA1
- 	select CRYPTO_SHA256
- 	select CRYPTO_SHA512
-+	select CRYPTO_CHACHA20POLY1305
- 	help
- 	  This driver interfaces with the SafeXcel EIP-97 and EIP-197 cryptographic
- 	  engines designed by Inside Secure. It currently accelerates DES, 3DES and
+Pascal van Leeuwen (3):
+  crypto: inside-secure - Added support for the CHACHA20 skcipher
+  crypto: inside-secure - Add support for the Chacha20-Poly1305 AEAD
+  crypto: Kconfig - Add CRYPTO_CHACHA20POLY1305 to CRYPTO_DEV_SAFEXCEL
+
+ drivers/crypto/Kconfig                         |   3 +-
+ drivers/crypto/inside-secure/safexcel.c        |   3 +
+ drivers/crypto/inside-secure/safexcel.h        |  11 +
+ drivers/crypto/inside-secure/safexcel_cipher.c | 335 ++++++++++++++++++++++++-
+ 4 files changed, 338 insertions(+), 14 deletions(-)
+
 -- 
 1.8.3.1
 
