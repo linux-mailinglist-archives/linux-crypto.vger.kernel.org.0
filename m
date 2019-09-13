@@ -2,263 +2,85 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C45F4B2821
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Sep 2019 00:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27986B28F5
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Sep 2019 01:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403862AbfIMWJk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 13 Sep 2019 18:09:40 -0400
-Received: from muru.com ([72.249.23.125]:60782 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403839AbfIMWJk (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 13 Sep 2019 18:09:40 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 177AB827D;
-        Fri, 13 Sep 2019 22:10:08 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Matt Mackall <mpm@selenic.com>,
+        id S2390606AbfIMXsj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 13 Sep 2019 19:48:39 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:45783 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390597AbfIMXsi (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 13 Sep 2019 19:48:38 -0400
+Received: by mail-io1-f68.google.com with SMTP id f12so66282162iog.12;
+        Fri, 13 Sep 2019 16:48:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=GM8PB7dX+o/8qn6bAAUtttU+f7SZoyImDe+8xUZo7YE=;
+        b=rqL6bhr+wZpI82VpkH0lghLYPfFzKW4vpMBu+cKu3dpDnhRTyKkTiZ+rxx2RHFQlpr
+         yHzrOMmqcPVi3Br7ng3sP5MF5dz0U5XL++uzjStYZ5RrmYY89pPcCQgmd/aXPWIJAw3b
+         SAEGanmvh6MEWQDoONuQvOurbv0fqYF6S3jsgtKSs+xIR9TCCbCsa2HNRgU8wvXgAwvW
+         zJN7ulRnCCi13T5n/DCC9uoRvhaGloOkuA5bWhxXAXSfSUgXPG6jV41BSbTm42+JCTPu
+         aDR2I9HKSk6LB+7l4LFELVpiaPhSFRgTsHD2e3RnKUTEYERChCk0Ywj0egzbV1MZmT68
+         SQ6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=GM8PB7dX+o/8qn6bAAUtttU+f7SZoyImDe+8xUZo7YE=;
+        b=U9ksryWF1LtznJEA3z3Nck2ZkK0yftDssgeRP2yPx8CT3e0UtL73s6sci6Zle699VP
+         TWfxIYzPjPSG+sO+K98an4ihuEU0jubGeX+mSG5nbt5XjuIm7bA+eRFE0/BVzmycoFdo
+         Tja0P4ZTxWElqWwc/bsKOjrLx5QFCW+dgaOucRaiXFTeSL2lSwwlZwRR27M6IygXa9Xt
+         IgmddbBVev7S+d53el1D4trVdj5EDxAj8WPAg+9SPuFcd4ZbypA5GIqQPptLu27crgb9
+         Mf1harAJohZ1ZpwvU5fgz4Zd7ZdxmfovCgOCfl605DlOHlT/zbHKQTm6WVUfZNyNVGWo
+         ZzZQ==
+X-Gm-Message-State: APjAAAUiUtkAFMHmQfP106c9m/bxVzYTKDZXKji8KptLkcJlcO91KPIT
+        w3IHlZhjYyp3i2QNEShdenQ=
+X-Google-Smtp-Source: APXvYqwybFQ8OXkHoqS/pXQXiUwqO4qQLl6hFL1gJ7ZtFFEOb4A+/dKBgPQ4EPKEbKamlLAFJFcLgQ==
+X-Received: by 2002:a5e:c107:: with SMTP id v7mr3041743iol.200.1568418516590;
+        Fri, 13 Sep 2019 16:48:36 -0700 (PDT)
+Received: from cs-dulles.cs.umn.edu (cs-dulles.cs.umn.edu. [128.101.35.54])
+        by smtp.googlemail.com with ESMTPSA id t9sm3944122iop.86.2019.09.13.16.48.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Sep 2019 16:48:36 -0700 (PDT)
+From:   Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc:     emamd001@umn.edu, smccaman@umn.edu, kjlu@umn.edu,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Gary Hook <gary.hook@amd.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Cc:     linux-crypto@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Adam Ford <aford173@gmail.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>, devicetree@vger.kernel.org
-Subject: [PATCH 6/6] hwrng: omap3-rom - Use runtime PM instead of custom functions
-Date:   Fri, 13 Sep 2019 15:09:22 -0700
-Message-Id: <20190913220922.29501-7-tony@atomide.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20190913220922.29501-1-tony@atomide.com>
-References: <20190913220922.29501-1-tony@atomide.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: ccp - release hmac_buf if ccp_run_sha_cmd fails
+Date:   Fri, 13 Sep 2019 18:48:23 -0500
+Message-Id: <20190913234824.8521-1-navid.emamdoost@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Nowadays we have runtime PM, and we can use it with autosuspend_timeout
-to idle things automatically. This allows us to get rid of the custom
-PM implementation.
+In ccp_run_sha_cmd, if the type of sha is invalid, the allocated
+hmac_buf should be released.
 
-We enable clocks and init RNG in runtime_resume, and reset RNG and
-disable clocks in runtime_suspend. And then omap3_rom_rng_read()
-becomes very simple and we don't need the old functions for
-omap3_rom_rng_idle() and omap3_rom_rng_get_random().
-
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
 ---
- drivers/char/hw_random/omap3-rom-rng.c | 127 +++++++++++++++----------
- 1 file changed, 77 insertions(+), 50 deletions(-)
+ drivers/crypto/ccp/ccp-ops.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/char/hw_random/omap3-rom-rng.c b/drivers/char/hw_random/omap3-rom-rng.c
---- a/drivers/char/hw_random/omap3-rom-rng.c
-+++ b/drivers/char/hw_random/omap3-rom-rng.c
-@@ -23,73 +23,83 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- 
- #define RNG_RESET			0x01
- #define RNG_GEN_PRNG_HW_INIT		0x02
- #define RNG_GEN_HW			0x08
- 
--/* param1: ptr, param2: count, param3: flag */
--static u32 (*omap3_rom_rng_call)(u32, u32, u32);
--
- struct omap_rom_rng {
- 	struct clk *clk;
- 	struct device *dev;
- 	struct hwrng ops;
-+	u32 (*rom_rng_call)(u32 ptr, u32 count, u32 flag);
- };
- 
--static struct delayed_work idle_work;
--static int rng_idle;
--static struct clk *rng_clk;
--
--static void omap3_rom_rng_idle(struct work_struct *work)
-+static int omap3_rom_rng_read(struct hwrng *rng, void *data, size_t max, bool w)
- {
-+	struct omap_rom_rng *ddata;
-+	u32 ptr;
- 	int r;
- 
--	r = omap3_rom_rng_call(0, 0, RNG_RESET);
--	if (r != 0) {
--		pr_err("reset failed: %d\n", r);
--		return;
-+	ddata = (struct omap_rom_rng *)rng->priv;
-+
-+	r = pm_runtime_get_sync(ddata->dev);
-+	if (r < 0) {
-+		pm_runtime_put_noidle(ddata->dev);
-+
-+		return r;
- 	}
--	clk_disable(rng_clk);
--	rng_idle = 1;
-+
-+	ptr = virt_to_phys(data);
-+	r = ddata->rom_rng_call(ptr, 4, RNG_GEN_HW);
-+	if (r != 0)
-+		r = -EINVAL;
-+	else
-+		r = 4;
-+
-+	pm_runtime_mark_last_busy(ddata->dev);
-+	pm_runtime_put_autosuspend(ddata->dev);
-+
-+	return r;
- }
- 
--static int omap3_rom_rng_get_random(void *buf, unsigned int count)
-+static int omap_rom_rng_runtime_suspend(struct device *dev)
- {
--	u32 r;
--	u32 ptr;
-+	struct omap_rom_rng *ddata;
-+	int r;
- 
--	cancel_delayed_work_sync(&idle_work);
--	if (rng_idle) {
--		r = clk_enable(rng_clk);
--		if (r)
--			return r;
--
--		r = omap3_rom_rng_call(0, 0, RNG_GEN_PRNG_HW_INIT);
--		if (r != 0) {
--			clk_disable(rng_clk);
--			pr_err("HW init failed: %d\n", r);
--			return -EIO;
--		}
--		rng_idle = 0;
--	}
-+	ddata = dev_get_drvdata(dev);
- 
--	ptr = virt_to_phys(buf);
--	r = omap3_rom_rng_call(ptr, count, RNG_GEN_HW);
--	schedule_delayed_work(&idle_work, msecs_to_jiffies(500));
-+	r = ddata->rom_rng_call(0, 0, RNG_RESET);
- 	if (r != 0)
--		return -EINVAL;
-+		pr_err("reset failed: %d\n", r);
-+
-+	clk_disable(ddata->clk);
-+
- 	return 0;
- }
- 
--static int omap3_rom_rng_read(struct hwrng *rng, void *data, size_t max, bool w)
-+static int omap_rom_rng_runtime_resume(struct device *dev)
- {
-+	struct omap_rom_rng *ddata;
- 	int r;
- 
--	r = omap3_rom_rng_get_random(data, 4);
-+	ddata = dev_get_drvdata(dev);
-+
-+	r = clk_enable(ddata->clk);
- 	if (r < 0)
- 		return r;
--	return 4;
-+
-+	r = ddata->rom_rng_call(0, 0, RNG_GEN_PRNG_HW_INIT);
-+	if (r != 0) {
-+		clk_disable(ddata->clk);
-+		dev_err(ddata->dev, "HW init failed: %d\n", r);
-+
-+		return -EIO;
-+	}
-+
-+	return 0;
- }
- 
- static int omap3_rom_rng_probe(struct platform_device *pdev)
-@@ -113,19 +123,17 @@ static int omap3_rom_rng_probe(struct platform_device *pdev)
- 	}
- 	dev_set_drvdata(ddata->dev, ddata);
- 
--	omap3_rom_rng_call = pdev->dev.platform_data;
--	if (!omap3_rom_rng_call) {
-+	ddata->rom_rng_call = pdev->dev.platform_data;
-+	if (!ddata->rom_rng_call) {
- 		dev_err(ddata->dev, "rom_rng_call is NULL\n");
- 		return -EINVAL;
- 	}
- 
--	INIT_DELAYED_WORK(&idle_work, omap3_rom_rng_idle);
- 	ddata->clk = devm_clk_get(ddata->dev, "ick");
- 	if (IS_ERR(ddata->clk)) {
- 		dev_err(ddata->dev, "unable to get RNG clock\n");
- 		return PTR_ERR(ddata->clk);
- 	}
--	rng_clk = ddata->clk;
- 
- 	ret = clk_prepare(ddata->clk);
- 	if (ret < 0) {
-@@ -133,15 +141,27 @@ static int omap3_rom_rng_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	/* Leave the RNG in reset state. */
--	ret = clk_enable(ddata->clk);
--	if (ret)
--		goto err_unprepare;
--	omap3_rom_rng_idle(0);
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, 500);
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+	ret = pm_runtime_get_sync(&pdev->dev);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(&pdev->dev);
-+		goto err_disable;
- 
--	return hwrng_register(&ddata->ops);
-+		return ret;
-+	}
- 
--err_unprepare:
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_put_autosuspend(&pdev->dev);
-+
-+	ret = hwrng_register(&ddata->ops);
-+	if (!ret)
-+		return 0;
-+
-+err_disable:
-+	pm_runtime_dont_use_autosuspend(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
- 	clk_unprepare(ddata->clk);
- 
- 	return ret;
-@@ -152,8 +172,9 @@ static int omap3_rom_rng_remove(struct platform_device *pdev)
- 	struct omap_rom_rng *ddata;
- 
- 	ddata = dev_get_drvdata(&pdev->dev);
--	cancel_delayed_work_sync(&idle_work);
- 	hwrng_unregister(&ddata->ops);
-+	pm_runtime_dont_use_autosuspend(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
- 	clk_unprepare(ddata->clk);
- 
- 	return 0;
-@@ -165,10 +186,16 @@ static const struct of_device_id omap_rom_rng_match[] = {
- };
- MODULE_DEVICE_TABLE(of, omap_rom_rng_match);
- 
-+static const struct dev_pm_ops omap_rom_rng_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(omap_rom_rng_runtime_suspend,
-+				omap_rom_rng_runtime_resume)
-+};
-+
- static struct platform_driver omap3_rom_rng_driver = {
- 	.driver = {
- 		.name		= "omap3-rom-rng",
- 		.of_match_table = omap_rom_rng_match,
-+		.pm = &omap_rom_rng_pm_ops,
- 	},
- 	.probe		= omap3_rom_rng_probe,
- 	.remove		= omap3_rom_rng_remove,
+diff --git a/drivers/crypto/ccp/ccp-ops.c b/drivers/crypto/ccp/ccp-ops.c
+index 9bc3c62157d7..cff16f0cc15b 100644
+--- a/drivers/crypto/ccp/ccp-ops.c
++++ b/drivers/crypto/ccp/ccp-ops.c
+@@ -1782,6 +1782,7 @@ static int ccp_run_sha_cmd(struct ccp_cmd_queue *cmd_q, struct ccp_cmd *cmd)
+ 			       LSB_ITEM_SIZE);
+ 			break;
+ 		default:
++			kfree(hmac_buf);
+ 			ret = -EINVAL;
+ 			goto e_ctx;
+ 		}
 -- 
-2.23.0
+2.17.1
+
