@@ -2,122 +2,91 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58388B2D10
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Sep 2019 23:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D834B2F57
+	for <lists+linux-crypto@lfdr.de>; Sun, 15 Sep 2019 11:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731485AbfINVDU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 14 Sep 2019 17:03:20 -0400
-Received: from muru.com ([72.249.23.125]:32974 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731477AbfINVDT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 14 Sep 2019 17:03:19 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id F057B813A;
-        Sat, 14 Sep 2019 21:03:48 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Cc:     linux-crypto@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Adam Ford <aford173@gmail.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH 7/7] hwrng: omap3-rom - Use devm hwrng and runtime PM
-Date:   Sat, 14 Sep 2019 14:03:00 -0700
-Message-Id: <20190914210300.15836-8-tony@atomide.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20190914210300.15836-1-tony@atomide.com>
-References: <20190914210300.15836-1-tony@atomide.com>
+        id S1727444AbfIOJ1Y (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 15 Sep 2019 05:27:24 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:42428 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727442AbfIOJ1X (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 15 Sep 2019 05:27:23 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id F37E6BBF8125940F6708;
+        Sun, 15 Sep 2019 17:27:20 +0800 (CST)
+Received: from [127.0.0.1] (10.177.251.225) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.439.0; Sun, 15 Sep 2019
+ 17:27:14 +0800
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <john.garry@huawei.com>, <Jonathan.Cameron@huawei.com>,
+        <mcgrof@kernel.org>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   Yunfeng Ye <yeyunfeng@huawei.com>
+Subject: [PATCH 1/2] crypto: hisilicon - Fix double free in sec_free_hw_sgl()
+Message-ID: <c9c52443-59a6-f909-f98b-eddffe999c2b@huawei.com>
+Date:   Sun, 15 Sep 2019 17:26:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.177.251.225]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This allows us to simplify things more for probe and exit.
+There are two problems in sec_free_hw_sgl():
 
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: Adam Ford <aford173@gmail.com>
-Cc: Pali Rohár <pali.rohar@gmail.com>
-Cc: Sebastian Reichel <sre@kernel.org>
-Cc: Tero Kristo <t-kristo@ti.com>
-Suggested-by: Sebastian Reichel <sre@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+First, when sgl_current->next is valid, @hw_sgl will be freed in the
+first loop, but it free again after the loop.
+
+Second, sgl_current and sgl_current->next_sgl is not match when
+dma_pool_free() is invoked, the third parameter should be the dma
+address of sgl_current, but sgl_current->next_sgl is the dma address
+of next chain, so use sgl_current->next_sgl is wrong.
+
+Fix this by deleting the last dma_pool_free() in sec_free_hw_sgl(),
+modifying the condition for while loop, and matching the address for
+dma_pool_free().
+
+Fixes: 915e4e8413da ("crypto: hisilicon - SEC security accelerator driver")
+Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
 ---
- drivers/char/hw_random/omap3-rom-rng.c | 42 ++++++++++----------------
- 1 file changed, 16 insertions(+), 26 deletions(-)
+ drivers/crypto/hisilicon/sec/sec_algs.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/char/hw_random/omap3-rom-rng.c b/drivers/char/hw_random/omap3-rom-rng.c
---- a/drivers/char/hw_random/omap3-rom-rng.c
-+++ b/drivers/char/hw_random/omap3-rom-rng.c
-@@ -100,6 +100,14 @@ static int omap_rom_rng_runtime_resume(struct device *dev)
- 	return 0;
- }
- 
-+static void omap_rom_rng_finish(void *data)
-+{
-+	struct omap_rom_rng *ddata = data;
-+
-+	pm_runtime_dont_use_autosuspend(ddata->dev);
-+	pm_runtime_disable(ddata->dev);
-+}
-+
- static int omap3_rom_rng_probe(struct platform_device *pdev)
+diff --git a/drivers/crypto/hisilicon/sec/sec_algs.c b/drivers/crypto/hisilicon/sec/sec_algs.c
+index 02768af0dccd..8c789b8671fc 100644
+--- a/drivers/crypto/hisilicon/sec/sec_algs.c
++++ b/drivers/crypto/hisilicon/sec/sec_algs.c
+@@ -215,17 +215,18 @@ static void sec_free_hw_sgl(struct sec_hw_sgl *hw_sgl,
+ 			    dma_addr_t psec_sgl, struct sec_dev_info *info)
  {
- 	struct omap_rom_rng *ddata;
-@@ -133,33 +141,16 @@ static int omap3_rom_rng_probe(struct platform_device *pdev)
- 		return PTR_ERR(ddata->clk);
+ 	struct sec_hw_sgl *sgl_current, *sgl_next;
++	dma_addr_t sgl_next_dma;
+
+-	if (!hw_sgl)
+-		return;
+ 	sgl_current = hw_sgl;
+-	while (sgl_current->next) {
++	while (sgl_current) {
+ 		sgl_next = sgl_current->next;
+-		dma_pool_free(info->hw_sgl_pool, sgl_current,
+-			      sgl_current->next_sgl);
++		sgl_next_dma = sgl_current->next_sgl;
++
++		dma_pool_free(info->hw_sgl_pool, sgl_current, psec_sgl);
++
+ 		sgl_current = sgl_next;
++		psec_sgl = sgl_next_dma;
  	}
- 
--	pm_runtime_enable(ddata->dev);
--
--	ret = hwrng_register(&ddata->ops);
--	if (!ret)
--		goto err_disable;
--
--	pm_runtime_set_autosuspend_delay(ddata->dev, 500);
--	pm_runtime_use_autosuspend(ddata->dev);
--
--	return 0;
--
--err_disable:
--	pm_runtime_disable(ddata->dev);
--
--	return ret;
--}
--
--static int omap3_rom_rng_remove(struct platform_device *pdev)
--{
--	struct omap_rom_rng *ddata;
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, 500);
-+	pm_runtime_use_autosuspend(&pdev->dev);
- 
--	ddata = dev_get_drvdata(&pdev->dev);
--	hwrng_unregister(&ddata->ops);
--	pm_runtime_dont_use_autosuspend(ddata->dev);
--	pm_runtime_disable(ddata->dev);
-+	ret = devm_add_action_or_reset(ddata->dev, omap_rom_rng_finish,
-+				       ddata);
-+	if (ret)
-+		return ret;
- 
--	return 0;
-+	return devm_hwrng_register(ddata->dev, &ddata->ops);
+-	dma_pool_free(info->hw_sgl_pool, hw_sgl, psec_sgl);
  }
- 
- static const struct of_device_id omap_rom_rng_match[] = {
-@@ -180,7 +171,6 @@ static struct platform_driver omap3_rom_rng_driver = {
- 		.pm = &omap_rom_rng_pm_ops,
- 	},
- 	.probe		= omap3_rom_rng_probe,
--	.remove		= omap3_rom_rng_remove,
- };
- 
- module_platform_driver(omap3_rom_rng_driver);
+
+ static int sec_alg_skcipher_setkey(struct crypto_skcipher *tfm,
 -- 
 2.23.0
+
