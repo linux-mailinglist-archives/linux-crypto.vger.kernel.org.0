@@ -2,29 +2,31 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1211EB49D3
+	by mail.lfdr.de (Postfix) with ESMTP id EE20EB49D5
 	for <lists+linux-crypto@lfdr.de>; Tue, 17 Sep 2019 10:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389207AbfIQIuT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 17 Sep 2019 04:50:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:53120 "EHLO foss.arm.com"
+        id S2389188AbfIQIuU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 17 Sep 2019 04:50:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:53126 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389188AbfIQIuT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 17 Sep 2019 04:50:19 -0400
+        id S1728698AbfIQIuU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 17 Sep 2019 04:50:20 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD84E28;
-        Tue, 17 Sep 2019 01:50:18 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90B69142F;
+        Tue, 17 Sep 2019 01:50:19 -0700 (PDT)
 Received: from e111045-lin.cambridge.arm.com (e120756.arm.com [10.1.39.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2C4B63F575;
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F3B063F575;
         Tue, 17 Sep 2019 01:50:18 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@arm.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au,
         Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [PATCH 1/2] crypto: arm/aes-ce - build for v8 architecture explicitly
-Date:   Tue, 17 Sep 2019 09:50:00 +0100
-Message-Id: <20190917085001.792-1-ard.biesheuvel@arm.com>
+Subject: [PATCH 2/2] crypto: arm/aes-ce - add dependency on AES library
+Date:   Tue, 17 Sep 2019 09:50:01 +0100
+Message-Id: <20190917085001.792-2-ard.biesheuvel@arm.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190917085001.792-1-ard.biesheuvel@arm.com>
+References: <20190917085001.792-1-ard.biesheuvel@arm.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
@@ -32,45 +34,26 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-The NEON/Crypto Extensions based AES implementation for 32-bit ARM
-can be built in a kernel that targets ARMv6 CPUs and higher, even
-though the actual code will not be able to run on that generation,
-but it allows for a portable image to be generated that can will
-use the special instructions only when they are available.
+The ARM accelerated AES driver depends on the new AES library for
+its non-SIMD fallback so express this in its Kconfig declaration.
 
-Since those instructions are part of a FPU profile rather than a
-CPU profile, we don't override the architecture in the assembler
-code, and most of the scalar code is simple enough to be ARMv6
-compatible. However, that changes with commit c61b1607ed4fbbf2,
-which introduces calls to the movw/movt instructions, which are
-v7+ only.
-
-So override the architecture in the .S file to armv8-a, which
-matches the architecture specification in the crypto-neon-fp-armv8
-FPU specificier that we already using. Note that using armv7-a
-here may trigger an issue with the upcoming Clang 10 release,
-which no longer permits .arch/.fpu combinations it views as
-incompatible.
-
-Reported-by: kbuild test robot <lkp@intel.com>
-Fixes: c61b1607ed4fbbf2("crypto: arm/aes-ce - implement ciphertext stealing ...")
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- arch/arm/crypto/aes-ce-core.S | 1 +
+ arch/arm/crypto/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/crypto/aes-ce-core.S b/arch/arm/crypto/aes-ce-core.S
-index b978cdf133af..4d1707388d94 100644
---- a/arch/arm/crypto/aes-ce-core.S
-+++ b/arch/arm/crypto/aes-ce-core.S
-@@ -9,6 +9,7 @@
- #include <asm/assembler.h>
- 
- 	.text
-+	.arch		armv8-a
- 	.fpu		crypto-neon-fp-armv8
- 	.align		3
- 
+diff --git a/arch/arm/crypto/Kconfig b/arch/arm/crypto/Kconfig
+index b24df84a1d7a..043b0b18bf7e 100644
+--- a/arch/arm/crypto/Kconfig
++++ b/arch/arm/crypto/Kconfig
+@@ -98,6 +98,7 @@ config CRYPTO_AES_ARM_CE
+ 	tristate "Accelerated AES using ARMv8 Crypto Extensions"
+ 	depends on KERNEL_MODE_NEON
+ 	select CRYPTO_BLKCIPHER
++	select CRYPTO_LIB_AES
+ 	select CRYPTO_SIMD
+ 	help
+ 	  Use an implementation of AES in CBC, CTR and XTS modes that uses
 -- 
 2.17.1
 
