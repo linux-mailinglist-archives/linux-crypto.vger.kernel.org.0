@@ -2,60 +2,80 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8214B4C3D
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Sep 2019 12:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053EDB4C60
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Sep 2019 12:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725601AbfIQKvS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Tue, 17 Sep 2019 06:51:18 -0400
-Received: from mail.11d03.mspz7.gob.ec ([190.214.23.250]:55772 "EHLO
-        mail.11d03.mspz7.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725270AbfIQKvS (ORCPT
+        id S1726181AbfIQK6M (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 17 Sep 2019 06:58:12 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:36482 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbfIQK6L (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 17 Sep 2019 06:51:18 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.11d03.mspz7.gob.ec (Postfix) with ESMTP id 20A0F405C86BC;
-        Mon, 16 Sep 2019 23:54:58 -0500 (-05)
-Received: from mail.11d03.mspz7.gob.ec ([127.0.0.1])
-        by localhost (mail.11d03.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id vFXpyAnqAtGs; Mon, 16 Sep 2019 23:54:57 -0500 (-05)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.11d03.mspz7.gob.ec (Postfix) with ESMTP id 5CB33405C8B4F;
-        Mon, 16 Sep 2019 23:54:07 -0500 (-05)
-X-Virus-Scanned: amavisd-new at 11d03.mspz7.gob.ec
-Received: from mail.11d03.mspz7.gob.ec ([127.0.0.1])
-        by localhost (mail.11d03.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Zucqf1M4EvCU; Mon, 16 Sep 2019 23:54:07 -0500 (-05)
-Received: from [10.33.79.142] (unknown [105.4.0.133])
-        by mail.11d03.mspz7.gob.ec (Postfix) with ESMTPSA id D8B7D405C5ACB;
-        Mon, 16 Sep 2019 23:53:15 -0500 (-05)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
-To:     Recipients <vicenta.sinche@11d03.mspz7.gob.ec>
-From:   ''Tayeb souami'' <vicenta.sinche@11d03.mspz7.gob.ec>
-Date:   Tue, 17 Sep 2019 06:53:06 +0200
-Reply-To: Tayebsouam.spende@gmail.com
-Message-Id: <20190917045315.D8B7D405C5ACB@mail.11d03.mspz7.gob.ec>
+        Tue, 17 Sep 2019 06:58:11 -0400
+Received: by mail-ed1-f67.google.com with SMTP id f2so2917490edw.3
+        for <linux-crypto@vger.kernel.org>; Tue, 17 Sep 2019 03:58:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=cP2LPFmLh3GNI8yVGWwIXDObCOn2NdEu2bxRoo7ljoA=;
+        b=LmAA+iKj0C0oeocUxTZ+0qqPHs74wA27ChkXDgIvPbE8/pvzfdjdOJ+ErcbniwFC5U
+         AC2qyZ43Uh2Gs8O0EgV2t5L3Neko43H8/Z07Ng1MNyDkDAc+IxfEvW4sIG3uf7pbmnIp
+         QpXHCTw1IXSkQavbvADZV67SrunMZyx/igPFLXUHnTs7iO729j/6h5izgdzmffnq7a2k
+         lpabCp0eB4yt6+YibEqjyW85+kYFamllThUuLPwF+swDLwm/BD8KYM1680gdbULg0DdL
+         1R1esYWud3qH+C5oY/Qvo86HU2aAX7pXKUAle0RhShlgMY0WImEFL6Wlhq4ifvQnKPep
+         enLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=cP2LPFmLh3GNI8yVGWwIXDObCOn2NdEu2bxRoo7ljoA=;
+        b=kC3LLNCYCKxYDUztJJA6eEsrpJ0GXq5hb66Z5C1HiBAdnBiBpfxrnQcC1qk6emm1/u
+         m0mavu0O7UXY0FPYv8jSDvU3p8S3m17kSA9O4krC7IbhWwhFowBAL4RRzBZTM1iJS253
+         FPfuaGY7vKyzKB+9797m3MIfmB5INXE5D27SdPonQbJmNprm3KcJxSxO5XIIRpch5MOY
+         UQr33M3N1l+zJzsnNQc09i+VSx/HVWCzPlpHMoE4ZBNAXwrBvGaE2h4ERd3n6AoMGUl7
+         to0DljcUnZLCM5X0UKSZcitjprmaREJhAUeEIT5CkYoJe3XB8OsVt6HZtRp69kR2tojY
+         OYwQ==
+X-Gm-Message-State: APjAAAUufcWAIEYE18FOvx6DJ5u7X1LMu3e2BG0JwngjfvkrSa96drMH
+        3LImAYHLE87KgIu68aDWZocn02fs
+X-Google-Smtp-Source: APXvYqwKVPJ2MlataSAMbwm+MJxGvff9PGWEDzutm3xi/rKnTbreIsLRA3Ptq1rFlJ9aaa3TVBILbQ==
+X-Received: by 2002:aa7:d789:: with SMTP id s9mr3981664edq.62.1568717890296;
+        Tue, 17 Sep 2019 03:58:10 -0700 (PDT)
+Received: from localhost.localdomain.com ([188.204.2.113])
+        by smtp.gmail.com with ESMTPSA id i53sm367253eda.33.2019.09.17.03.58.09
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Sep 2019 03:58:09 -0700 (PDT)
+From:   Pascal van Leeuwen <pascalvanl@gmail.com>
+X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+To:     linux-crypto@vger.kernel.org
+Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net,
+        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+Subject: [PATCH 0/2] crypto: inside-secure: [URGENT] Fix stability issue
+Date:   Tue, 17 Sep 2019 11:55:17 +0200
+Message-Id: <1568714119-29945-1-git-send-email-pvanleeuwen@verimatrix.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Lieber Freund,
+This patchset fixes some issues with the TRC RAM probing that caused
+instability (random failures) on the Macchiatobin board and incorrect
+configuration of the TRC for some other corner case RAM configuration.
 
-Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden, um meine Gewinne zu überprüfen, sehen Sie bitte meine You Tube Seite unten.
+The patchset has been tested with the eip197c_iewxkbc configuration with
+163840 bytes of TRC data RAM and 4096 words of TRC admin RAM on the
+Xilinx VCU118 development board as well as on the Macchiatobin board
+(Marvell A8K: EIP197b-ieswx w/ 15350 bytes data RAM & 80 words admin RAM),
+including the testmgr extra tests.
 
-UHR MICH HIER: https://www.youtube.com/watch?v=Z6ui8ZDQ6Ks
+Pascal van Leeuwen (2):
+  crypto: inside-secure: [URGENT] Fix stability issue with Macchiatobin
+  crypto: inside-secure - Fixed corner case TRC admin RAM probing issue
 
-Das ist dein Spendencode: [TS530342018]
+ drivers/crypto/inside-secure/safexcel.c | 52 +++++++++++++++++++++------------
+ drivers/crypto/inside-secure/safexcel.h |  2 ++
+ 2 files changed, 36 insertions(+), 18 deletions(-)
 
-Antworten Sie mit dem SPENDE-CODE an diese 
+-- 
+1.8.3.1
 
-E-Mail:Tayebsouam.spende@gmail.com
-
-Ich hoffe, Sie und Ihre Familie glücklich zu machen.
-
-Grüße
-Herr Tayeb Souami
