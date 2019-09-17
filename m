@@ -2,44 +2,44 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE979B4C90
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Sep 2019 13:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD02B4C93
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Sep 2019 13:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbfIQLKy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 17 Sep 2019 07:10:54 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:37638 "EHLO
+        id S1726091AbfIQLK4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 17 Sep 2019 07:10:56 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:34216 "EHLO
         mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726091AbfIQLKy (ORCPT
+        with ESMTP id S1726106AbfIQLK4 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 17 Sep 2019 07:10:54 -0400
-Received: by mail-ed1-f65.google.com with SMTP id r4so2943790edy.4
-        for <linux-crypto@vger.kernel.org>; Tue, 17 Sep 2019 04:10:52 -0700 (PDT)
+        Tue, 17 Sep 2019 07:10:56 -0400
+Received: by mail-ed1-f65.google.com with SMTP id p10so1126960edq.1
+        for <linux-crypto@vger.kernel.org>; Tue, 17 Sep 2019 04:10:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=3pV72v+HekKUSoOyILO4L2qwgl1bruaqxWxUTO5sFRM=;
-        b=X5qH06wLjUF+XBmy0job3gNMX4bv+FNRQHAaPka2U3XAramDwgXedTNz2XgI9hOTP+
-         PXmFWrkkstj3iY+bItf+Yw+hXy/wf8yuumbnRTlVTSlJNXoo2WP2WglaKg16dWukUv36
-         Qn9/pIhOH4Z7bs/KefyreAkO6yiuuYEH0XgiWpgTC0Y5OOf2ENVmG6lcjlqtVU5phrUy
-         6TAiz+q/SnakRTWWdcMevTNBzQsfYBhrmfP0igIE2ei993dVkqPm6tv57LJ2lQhywBeX
-         MlD6zMeFsu8yLsptG0WjnlS0rTVj77FB+2dqGOY3KoxMJGQvPyeONdL6ibYpGBRqqWou
-         fN+A==
+        bh=JMGijuVBDaDenJrhTm5WZLRlGbMeFLDTEP7N9jFf1yU=;
+        b=AVAtW4ao03Jk+yBwCM8W80qYco9YtrVKtLahiUYl0kqErirpkpFnNB8jB2lUIV9eC1
+         v121W+vx4GIWc0hhK5/oaBMYTMKiUNohODWGEEyx2qNCFVSgF4Jr+vTDjWggwJhfzafg
+         GAK77vAcPptEg34B6ixVe6Bfr/SWIUDuJL8AA1QkLLzcU/DM2dz5EmuiPuCCXyc5ojn2
+         FXbKj5OlwdJJ5Ag+KgXLc/4JqrtcP2AQzBbhQrjYj+9JYZXsD0hljXLvAmuJXpgtbsLl
+         C8xSav6VjVha5Gjy3+r66FiCy0IUkPgQR5Blo+AQ6t/VY6WgJqfh1QNgdlD3foB3cSrP
+         H+jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=3pV72v+HekKUSoOyILO4L2qwgl1bruaqxWxUTO5sFRM=;
-        b=ZjhJv8j3uuVeVgWEwiTmE83MzAA1wLGWSAagAhYwNB1onfzbv6lGIZ3K2zItjimES+
-         bZ1m6alHh5e2fe0VJTZVIotCi6Ebf50or3OcotzR1/2CRNkNYpeiX0PNXnR9fP1cGtm1
-         t5ac0DCVm6T5L41/YyuxHlUQV9zCIACe40MrOSz98mN6bh123CNkQr90SlmHnKh1Rsbz
-         0v2NzipAjLT/u8tuRm2RLqrJyxVBlQav+CSioPo0nLK6Ez3twfNz+e58JG8NhToOC/a8
-         yRYTJ9X0mjffg328/LuK1gi3/lAgACCB3Gd+hMRwjspeDxSwPLh6HmNUyvDKysQDoV8V
-         5KoA==
-X-Gm-Message-State: APjAAAVyZ5WBhvtaMavDjxA7OHp1ildCwdRJYYoHCieAtAOGn3XRrJa6
-        +RbNX1catIxgPazXZtwMd3M9i0aM
-X-Google-Smtp-Source: APXvYqx4YlLvLkT/9CQgBSRrMgBxJi5ByKdQB8wsw9dg3GtvU2vcCBR205nFROM9f6Wqm052oeQMkw==
-X-Received: by 2002:a50:baa5:: with SMTP id x34mr4154109ede.148.1568718651758;
-        Tue, 17 Sep 2019 04:10:51 -0700 (PDT)
+        bh=JMGijuVBDaDenJrhTm5WZLRlGbMeFLDTEP7N9jFf1yU=;
+        b=GIEaJyU/SQHn1pyhXi6i6e5YZO8/H2J+YxBgoMiozgapRMzyO05vfbKJ5AacWEPOaH
+         3tAvAwCT+SpeGsY53gM/0K5LSP8DE08eFjY9Mo518PBjTFhW/ScIQhDRW2XXgK2d7qLt
+         Vepdo0SHyS5ycuibAThCn7VwMVvwnr+Sx4t9M8I30Yt6xM1PN3pKx/vq3Vu18DjcvnZj
+         xub2l/WLgjLu9nnqbkWQ/2z3MOXigjOaLv49IO1aWU5ByiuvbRJ0mSYlNqFewN+GvXty
+         vkZrcyg8uTm14o7Ssd6u4GJEZ1Gix91dOWVawwSXnVMQqzCoy357JMx7Y73dMK9ye1Nn
+         ORUg==
+X-Gm-Message-State: APjAAAX3IRktsiKo06+btdkjG30y5/m1+lTrc2ZJwKT0WUEzfyF4U77M
+        WDAIYz0svmuRSlWhB0DhP7l6io+N
+X-Google-Smtp-Source: APXvYqz6CPaEif9Z1gPTrR1iZiknNkGyQ1BmQOpgzj7UJtktXEkDBf8O+4zhx3cZhcw96bgZKnrrIg==
+X-Received: by 2002:a50:fd83:: with SMTP id o3mr4001703edt.67.1568718652549;
+        Tue, 17 Sep 2019 04:10:52 -0700 (PDT)
 Received: from localhost.localdomain.com ([188.204.2.113])
         by smtp.gmail.com with ESMTPSA id a50sm376204eda.25.2019.09.17.04.10.51
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
@@ -50,9 +50,9 @@ To:     linux-crypto@vger.kernel.org
 Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
         davem@davemloft.net,
         Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: [PATCH 1/3] crypto: inside-secure - Added support for the rfc4106(gcm(aes)) AEAD
-Date:   Tue, 17 Sep 2019 12:07:59 +0200
-Message-Id: <1568714881-30426-2-git-send-email-pvanleeuwen@verimatrix.com>
+Subject: [PATCH 2/3] crypto: inside-secure - Added support for the rfc4543(gcm(aes)) "AEAD"
+Date:   Tue, 17 Sep 2019 12:08:00 +0200
+Message-Id: <1568714881-30426-3-git-send-email-pvanleeuwen@verimatrix.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1568714881-30426-1-git-send-email-pvanleeuwen@verimatrix.com>
 References: <1568714881-30426-1-git-send-email-pvanleeuwen@verimatrix.com>
@@ -61,179 +61,175 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds support for rfc4106(gcm(aes)) for use with IPsec ESP
+This patch adds support for rfc4543(gcm(aes)) - i.e. AES-GMAC - for use
+with IPsec ESP
 
 Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
 ---
- drivers/crypto/inside-secure/safexcel.c        |   1 +
- drivers/crypto/inside-secure/safexcel.h        |   1 +
- drivers/crypto/inside-secure/safexcel_cipher.c | 112 ++++++++++++++++++++-----
- 3 files changed, 91 insertions(+), 23 deletions(-)
+ drivers/crypto/inside-secure/safexcel.c        |  1 +
+ drivers/crypto/inside-secure/safexcel.h        |  2 +
+ drivers/crypto/inside-secure/safexcel_cipher.c | 86 +++++++++++++++++++++-----
+ 3 files changed, 74 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/inside-secure/safexcel.c
-index 094b581..1914124 100644
+index 1914124..09d17f3 100644
 --- a/drivers/crypto/inside-secure/safexcel.c
 +++ b/drivers/crypto/inside-secure/safexcel.c
-@@ -1204,6 +1204,7 @@ static int safexcel_request_ring_irq(void *pdev, int irqid,
- 	&safexcel_alg_authenc_hmac_sha224_cbc_des,
+@@ -1205,6 +1205,7 @@ static int safexcel_request_ring_irq(void *pdev, int irqid,
  	&safexcel_alg_authenc_hmac_sha512_cbc_des,
  	&safexcel_alg_authenc_hmac_sha384_cbc_des,
-+	&safexcel_alg_rfc4106_gcm,
+ 	&safexcel_alg_rfc4106_gcm,
++	&safexcel_alg_rfc4543_gcm,
  };
  
  static int safexcel_register_algorithms(struct safexcel_crypto_priv *priv)
 diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/inside-secure/safexcel.h
-index 9522594..6c91d49 100644
+index 6c91d49..c172b97 100644
 --- a/drivers/crypto/inside-secure/safexcel.h
 +++ b/drivers/crypto/inside-secure/safexcel.h
-@@ -910,5 +910,6 @@ int safexcel_hmac_setkey(const char *alg, const u8 *key, unsigned int keylen,
- extern struct safexcel_alg_template safexcel_alg_authenc_hmac_sha224_cbc_des;
+@@ -407,6 +407,7 @@ struct safexcel_context_record {
+ #define EIP197_XCM_MODE_CCM			2
+ 
+ #define EIP197_AEAD_TYPE_IPSEC_ESP		2
++#define EIP197_AEAD_TYPE_IPSEC_ESP_GMAC		3
+ #define EIP197_AEAD_IPSEC_IV_SIZE		8
+ #define EIP197_AEAD_IPSEC_NONCE_SIZE		4
+ 
+@@ -911,5 +912,6 @@ int safexcel_hmac_setkey(const char *alg, const u8 *key, unsigned int keylen,
  extern struct safexcel_alg_template safexcel_alg_authenc_hmac_sha512_cbc_des;
  extern struct safexcel_alg_template safexcel_alg_authenc_hmac_sha384_cbc_des;
-+extern struct safexcel_alg_template safexcel_alg_rfc4106_gcm;
+ extern struct safexcel_alg_template safexcel_alg_rfc4106_gcm;
++extern struct safexcel_alg_template safexcel_alg_rfc4543_gcm;
  
  #endif
 diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers/crypto/inside-secure/safexcel_cipher.c
-index 9768db3..d0334b2 100644
+index d0334b2..e895c5a 100644
 --- a/drivers/crypto/inside-secure/safexcel_cipher.c
 +++ b/drivers/crypto/inside-secure/safexcel_cipher.c
-@@ -77,47 +77,47 @@ static void safexcel_cipher_token(struct safexcel_cipher_ctx *ctx, u8 *iv,
- {
+@@ -47,7 +47,7 @@ struct safexcel_cipher_ctx {
+ 
+ 	u32 mode;
+ 	enum safexcel_cipher_alg alg;
+-	char aead; /* !=0=AEAD, 2=IPSec ESP AEAD */
++	char aead; /* !=0=AEAD, 2=IPSec ESP AEAD, 3=IPsec ESP GMAC */
+ 	char xcm;  /* 0=authenc, 1=GCM, 2 reserved for CCM */
+ 
+ 	__le32 key[16];
+@@ -78,7 +78,7 @@ static void safexcel_cipher_token(struct safexcel_cipher_ctx *ctx, u8 *iv,
  	u32 block_sz = 0;
  
--	if (ctx->mode == CONTEXT_CONTROL_CRYPTO_MODE_CTR_LOAD) {
-+	if (ctx->mode == CONTEXT_CONTROL_CRYPTO_MODE_CTR_LOAD ||
-+	    ctx->aead == EIP197_AEAD_TYPE_IPSEC_ESP) {
+ 	if (ctx->mode == CONTEXT_CONTROL_CRYPTO_MODE_CTR_LOAD ||
+-	    ctx->aead == EIP197_AEAD_TYPE_IPSEC_ESP) {
++	    ctx->aead & EIP197_AEAD_TYPE_IPSEC_ESP) { /* _ESP and _ESP_GMAC */
  		cdesc->control_data.options |= EIP197_OPTION_4_TOKEN_IV_CMD;
  
  		/* 32 bit nonce */
- 		cdesc->control_data.token[0] = ctx->nonce;
- 		/* 64 bit IV part */
- 		memcpy(&cdesc->control_data.token[1], iv, 8);
--		/* 32 bit counter, start at 1 (big endian!) */
--		cdesc->control_data.token[3] = cpu_to_be32(1);
-+
-+		if (ctx->alg == SAFEXCEL_CHACHA20) {
-+			/* 32 bit counter, starting at 0 */
-+			cdesc->control_data.token[3] = 0;
+@@ -219,7 +219,7 @@ static void safexcel_aead_token(struct safexcel_cipher_ctx *ctx, u8 *iv,
+ 	}
+ 
+ 	if (ctx->aead == EIP197_AEAD_TYPE_IPSEC_ESP) {
+-		/* For ESP mode, skip over the IV */
++		/* For ESP mode (and not GMAC), skip over the IV */
+ 		token[7].opcode = EIP197_TOKEN_OPCODE_DIRECTION;
+ 		token[7].packet_length = EIP197_AEAD_IPSEC_IV_SIZE;
+ 
+@@ -235,10 +235,18 @@ static void safexcel_aead_token(struct safexcel_cipher_ctx *ctx, u8 *iv,
+ 		token[10].opcode = EIP197_TOKEN_OPCODE_DIRECTION;
+ 		token[10].packet_length = cryptlen;
+ 		token[10].stat = EIP197_TOKEN_STAT_LAST_HASH;
+-		token[10].instructions = EIP197_TOKEN_INS_LAST |
+-					 EIP197_TOKEN_INS_TYPE_CRYPTO |
+-					 EIP197_TOKEN_INS_TYPE_HASH |
+-					 EIP197_TOKEN_INS_TYPE_OUTPUT;
++		if (unlikely(ctx->aead == EIP197_AEAD_TYPE_IPSEC_ESP_GMAC)) {
++			token[6].instructions = EIP197_TOKEN_INS_TYPE_HASH;
++			/* Do not send to crypt engine in case of GMAC */
++			token[10].instructions = EIP197_TOKEN_INS_LAST |
++						 EIP197_TOKEN_INS_TYPE_HASH |
++						 EIP197_TOKEN_INS_TYPE_OUTPUT;
 +		} else {
-+			/* 32 bit counter, start at 1 (big endian!) */
-+			cdesc->control_data.token[3] = cpu_to_be32(1);
++			token[10].instructions = EIP197_TOKEN_INS_LAST |
++						 EIP197_TOKEN_INS_TYPE_CRYPTO |
++						 EIP197_TOKEN_INS_TYPE_HASH |
++						 EIP197_TOKEN_INS_TYPE_OUTPUT;
 +		}
- 
- 		return;
--	} else if (ctx->alg == SAFEXCEL_CHACHA20) {
-+	} else if (ctx->xcm == EIP197_XCM_MODE_GCM ||
-+		   (ctx->aead && ctx->alg == SAFEXCEL_CHACHA20)) {
- 		cdesc->control_data.options |= EIP197_OPTION_4_TOKEN_IV_CMD;
- 
--		if (ctx->aead == EIP197_AEAD_TYPE_IPSEC_ESP) {
--			/* 32 bit nonce part */
--			cdesc->control_data.token[0] = ctx->nonce;
--			/* 64 bit IV part */
--			memcpy(&cdesc->control_data.token[1], iv, 8);
--			/* 32 bit counter, starting at 0 */
--			cdesc->control_data.token[3] = 0;
--		} else if (ctx->aead) {
--			/* 96 bit nonce part */
--			memcpy(&cdesc->control_data.token[0], iv, 12);
-+		/* 96 bit IV part */
-+		memcpy(&cdesc->control_data.token[0], iv, 12);
-+
-+		if (ctx->alg == SAFEXCEL_CHACHA20) {
- 			/* 32 bit counter, starting at 0 */
- 			cdesc->control_data.token[3] = 0;
- 		} else {
--			/* 96 bit nonce part */
--			memcpy(&cdesc->control_data.token[0], &iv[4], 12);
--			/* 32 bit counter */
--			cdesc->control_data.token[3] = *(u32 *)iv;
-+			/* 32 bit counter, start at 1 (big endian!) */
-+			cdesc->control_data.token[3] = cpu_to_be32(1);
+ 	} else if (ctx->xcm != EIP197_XCM_MODE_CCM) {
+ 		token[6].stat = EIP197_TOKEN_STAT_LAST_HASH;
+ 	}
+@@ -494,17 +502,21 @@ static int safexcel_context_control(struct safexcel_cipher_ctx *ctx,
+ 				ctx->hash_alg |
+ 				CONTEXT_CONTROL_SIZE(ctrl_size);
  		}
+-		if (sreq->direction == SAFEXCEL_ENCRYPT)
+-			cdesc->control_data.control0 |=
+-				(ctx->xcm == EIP197_XCM_MODE_CCM) ?
+-					CONTEXT_CONTROL_TYPE_HASH_ENCRYPT_OUT :
+-					CONTEXT_CONTROL_TYPE_ENCRYPT_HASH_OUT;
  
- 		return;
--	} else if (ctx->xcm == EIP197_XCM_MODE_GCM) {
-+	} else if (ctx->alg == SAFEXCEL_CHACHA20) {
- 		cdesc->control_data.options |= EIP197_OPTION_4_TOKEN_IV_CMD;
- 
--		/* 96 bit IV part */
--		memcpy(&cdesc->control_data.token[0], iv, 12);
--		/* 32 bit counter, start at 1 (big endian!) */
--		cdesc->control_data.token[3] = cpu_to_be32(1);
-+		/* 96 bit nonce part */
-+		memcpy(&cdesc->control_data.token[0], &iv[4], 12);
-+		/* 32 bit counter */
-+		cdesc->control_data.token[3] = *(u32 *)iv;
- 
- 		return;
- 	} else if (ctx->xcm == EIP197_XCM_MODE_CCM) {
-@@ -3428,3 +3428,69 @@ struct safexcel_alg_template safexcel_alg_authenc_hmac_sm3_ctr_sm4 = {
++		if (sreq->direction == SAFEXCEL_ENCRYPT &&
++		    (ctx->xcm == EIP197_XCM_MODE_CCM ||
++		     ctx->aead == EIP197_AEAD_TYPE_IPSEC_ESP_GMAC))
++			cdesc->control_data.control0 |=
++				CONTEXT_CONTROL_TYPE_HASH_ENCRYPT_OUT;
++		else if (sreq->direction == SAFEXCEL_ENCRYPT)
++			cdesc->control_data.control0 |=
++				CONTEXT_CONTROL_TYPE_ENCRYPT_HASH_OUT;
++		else if (ctx->xcm == EIP197_XCM_MODE_CCM)
++			cdesc->control_data.control0 |=
++				CONTEXT_CONTROL_TYPE_DECRYPT_HASH_IN;
+ 		else
+ 			cdesc->control_data.control0 |=
+-				(ctx->xcm == EIP197_XCM_MODE_CCM) ?
+-					CONTEXT_CONTROL_TYPE_DECRYPT_HASH_IN :
+-					CONTEXT_CONTROL_TYPE_HASH_DECRYPT_IN;
++				CONTEXT_CONTROL_TYPE_HASH_DECRYPT_IN;
+ 	} else {
+ 		if (sreq->direction == SAFEXCEL_ENCRYPT)
+ 			cdesc->control_data.control0 =
+@@ -3494,3 +3506,47 @@ struct safexcel_alg_template safexcel_alg_rfc4106_gcm = {
  		},
  	},
  };
 +
-+static int safexcel_rfc4106_gcm_setkey(struct crypto_aead *ctfm, const u8 *key,
-+				       unsigned int len)
-+{
-+	struct crypto_tfm *tfm = crypto_aead_tfm(ctfm);
-+	struct safexcel_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	/* last 4 bytes of key are the nonce! */
-+	ctx->nonce = *(u32 *)(key + len - CTR_RFC3686_NONCE_SIZE);
-+
-+	len -= CTR_RFC3686_NONCE_SIZE;
-+	return safexcel_aead_gcm_setkey(ctfm, key, len);
-+}
-+
-+static int safexcel_rfc4106_gcm_setauthsize(struct crypto_aead *tfm,
++static int safexcel_rfc4543_gcm_setauthsize(struct crypto_aead *tfm,
 +					    unsigned int authsize)
 +{
-+	return crypto_rfc4106_check_authsize(authsize);
++	if (authsize != GHASH_DIGEST_SIZE)
++		return -EINVAL;
++
++	return 0;
 +}
 +
-+static int safexcel_rfc4106_encrypt(struct aead_request *req)
-+{
-+	return crypto_ipsec_check_assoclen(req->assoclen) ?:
-+	       safexcel_aead_encrypt(req);
-+}
-+
-+static int safexcel_rfc4106_decrypt(struct aead_request *req)
-+{
-+	return crypto_ipsec_check_assoclen(req->assoclen) ?:
-+	       safexcel_aead_decrypt(req);
-+}
-+
-+static int safexcel_rfc4106_gcm_cra_init(struct crypto_tfm *tfm)
++static int safexcel_rfc4543_gcm_cra_init(struct crypto_tfm *tfm)
 +{
 +	struct safexcel_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
 +	int ret;
 +
 +	ret = safexcel_aead_gcm_cra_init(tfm);
-+	ctx->aead  = EIP197_AEAD_TYPE_IPSEC_ESP;
++	ctx->aead  = EIP197_AEAD_TYPE_IPSEC_ESP_GMAC;
 +	return ret;
 +}
 +
-+struct safexcel_alg_template safexcel_alg_rfc4106_gcm = {
++struct safexcel_alg_template safexcel_alg_rfc4543_gcm = {
 +	.type = SAFEXCEL_ALG_TYPE_AEAD,
 +	.algo_mask = SAFEXCEL_ALG_AES | SAFEXCEL_ALG_GHASH,
 +	.alg.aead = {
 +		.setkey = safexcel_rfc4106_gcm_setkey,
-+		.setauthsize = safexcel_rfc4106_gcm_setauthsize,
++		.setauthsize = safexcel_rfc4543_gcm_setauthsize,
 +		.encrypt = safexcel_rfc4106_encrypt,
 +		.decrypt = safexcel_rfc4106_decrypt,
-+		.ivsize = GCM_RFC4106_IV_SIZE,
++		.ivsize = GCM_RFC4543_IV_SIZE,
 +		.maxauthsize = GHASH_DIGEST_SIZE,
 +		.base = {
-+			.cra_name = "rfc4106(gcm(aes))",
-+			.cra_driver_name = "safexcel-rfc4106-gcm-aes",
++			.cra_name = "rfc4543(gcm(aes))",
++			.cra_driver_name = "safexcel-rfc4543-gcm-aes",
 +			.cra_priority = SAFEXCEL_CRA_PRIORITY,
 +			.cra_flags = CRYPTO_ALG_ASYNC |
 +				     CRYPTO_ALG_KERN_DRIVER_ONLY,
 +			.cra_blocksize = 1,
 +			.cra_ctxsize = sizeof(struct safexcel_cipher_ctx),
 +			.cra_alignmask = 0,
-+			.cra_init = safexcel_rfc4106_gcm_cra_init,
++			.cra_init = safexcel_rfc4543_gcm_cra_init,
 +			.cra_exit = safexcel_aead_gcm_cra_exit,
 +		},
 +	},
