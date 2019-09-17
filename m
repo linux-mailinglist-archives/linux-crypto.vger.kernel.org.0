@@ -2,67 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F15B4B51
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Sep 2019 11:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8214B4C3D
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Sep 2019 12:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbfIQJyx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 17 Sep 2019 05:54:53 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:57801 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbfIQJyx (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 17 Sep 2019 05:54:53 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id DC9DC308213F;
-        Tue, 17 Sep 2019 09:54:52 +0000 (UTC)
-Received: from thinkpad.redhat.com (ovpn-116-217.ams2.redhat.com [10.36.116.217])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E2A965D6A9;
-        Tue, 17 Sep 2019 09:54:50 +0000 (UTC)
-From:   Laurent Vivier <lvivier@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Amit Shah <amit@kernel.org>, linux-crypto@vger.kernel.org,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Laurent Vivier <lvivier@redhat.com>
-Subject: [PATCH] hw_random: don't wait on add_early_randomness()
-Date:   Tue, 17 Sep 2019 11:54:50 +0200
-Message-Id: <20190917095450.11625-1-lvivier@redhat.com>
+        id S1725601AbfIQKvS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Tue, 17 Sep 2019 06:51:18 -0400
+Received: from mail.11d03.mspz7.gob.ec ([190.214.23.250]:55772 "EHLO
+        mail.11d03.mspz7.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725270AbfIQKvS (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 17 Sep 2019 06:51:18 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.11d03.mspz7.gob.ec (Postfix) with ESMTP id 20A0F405C86BC;
+        Mon, 16 Sep 2019 23:54:58 -0500 (-05)
+Received: from mail.11d03.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.11d03.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id vFXpyAnqAtGs; Mon, 16 Sep 2019 23:54:57 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.11d03.mspz7.gob.ec (Postfix) with ESMTP id 5CB33405C8B4F;
+        Mon, 16 Sep 2019 23:54:07 -0500 (-05)
+X-Virus-Scanned: amavisd-new at 11d03.mspz7.gob.ec
+Received: from mail.11d03.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.11d03.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Zucqf1M4EvCU; Mon, 16 Sep 2019 23:54:07 -0500 (-05)
+Received: from [10.33.79.142] (unknown [105.4.0.133])
+        by mail.11d03.mspz7.gob.ec (Postfix) with ESMTPSA id D8B7D405C5ACB;
+        Mon, 16 Sep 2019 23:53:15 -0500 (-05)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.42]); Tue, 17 Sep 2019 09:54:53 +0000 (UTC)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
+To:     Recipients <vicenta.sinche@11d03.mspz7.gob.ec>
+From:   ''Tayeb souami'' <vicenta.sinche@11d03.mspz7.gob.ec>
+Date:   Tue, 17 Sep 2019 06:53:06 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20190917045315.D8B7D405C5ACB@mail.11d03.mspz7.gob.ec>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-add_early_randomness() is called by hwrng_register() when the
-hardware is added. If this hardware and its module are present
-at boot, and if there is no data available the boot hangs until
-data are available and can't be interrupted.
+Lieber Freund,
 
-To avoid that, call rng_get_data() in non-blocking mode (wait=0)
-from add_early_randomness().
+Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden, um meine Gewinne zu überprüfen, sehen Sie bitte meine You Tube Seite unten.
 
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
----
- drivers/char/hw_random/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+UHR MICH HIER: https://www.youtube.com/watch?v=Z6ui8ZDQ6Ks
 
-diff --git a/drivers/char/hw_random/core.c b/drivers/char/hw_random/core.c
-index 9044d31ab1a1..8d53b8ef545c 100644
---- a/drivers/char/hw_random/core.c
-+++ b/drivers/char/hw_random/core.c
-@@ -67,7 +67,7 @@ static void add_early_randomness(struct hwrng *rng)
- 	size_t size = min_t(size_t, 16, rng_buffer_size());
- 
- 	mutex_lock(&reading_mutex);
--	bytes_read = rng_get_data(rng, rng_buffer, size, 1);
-+	bytes_read = rng_get_data(rng, rng_buffer, size, 0);
- 	mutex_unlock(&reading_mutex);
- 	if (bytes_read > 0)
- 		add_device_randomness(rng_buffer, bytes_read);
--- 
-2.21.0
+Das ist dein Spendencode: [TS530342018]
 
+Antworten Sie mit dem SPENDE-CODE an diese 
+
+E-Mail:Tayebsouam.spende@gmail.com
+
+Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+
+Grüße
+Herr Tayeb Souami
