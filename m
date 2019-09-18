@@ -2,164 +2,188 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4F6B5E3B
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Sep 2019 09:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33253B6080
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Sep 2019 11:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbfIRHoc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 18 Sep 2019 03:44:32 -0400
-Received: from mout.web.de ([212.227.15.4]:60187 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbfIRHoc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 18 Sep 2019 03:44:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1568792649;
-        bh=caFlKgqR6Wv8ag8+Edy0U8SPuU2/zu9u+4Af/rVsdRw=;
-        h=X-UI-Sender-Class:To:Cc:From:Subject:Date;
-        b=NFE7W9eWEbAMy8LL8+dsY0qApCZuqaTgX1tVY6r/iKo2e37EV4PXmxdSNLM5xW2jI
-         8LXpQbz0fIK3xTC9KmJxaSmcWnrFCz1nOfL/pH+3eW3kGzPy1YEojModg52Goyn6JY
-         9Q0F4qbSSEuD76M6Lk/yBLmAktIPKvbUoBMCFjnc=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([2.244.2.101]) by smtp.web.de (mrweb003
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0M9ome-1iLSzp32To-00B4Os; Wed, 18
- Sep 2019 09:44:09 +0200
-To:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Matt Mackall <mpm@selenic.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Himanshu Jha <himanshujha199640@gmail.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] hwrng: mediatek: Use devm_platform_ioremap_resource() in
- mtk_rng_probe()
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <e6e03822-c68f-55ea-3a65-ee2a44f50e8c@web.de>
-Date:   Wed, 18 Sep 2019 09:44:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1726772AbfIRJjr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 18 Sep 2019 05:39:47 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:2146 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726382AbfIRJjr (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 18 Sep 2019 05:39:47 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x8I9ZQYs010577;
+        Wed, 18 Sep 2019 02:39:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pfpt0818; bh=1YxlYm7hz6Dp6VyliP4Ie2oWjHnMdKc0ZotKYsLPgUU=;
+ b=PwdS/Eix0lTovrdbD+vwCPESn0DiYp0FalOJZf/rxpDC0NKmMeHUfQ21795vDGbX8jOF
+ 2ejJSBwDBEAlWdhpOXocC56u8kpuwwstr5PLcbVtNC33ZsWpa4OfGLMBwguzhb4rGc+k
+ vo7R/23cSE/5ESvO/Uqe82lfhRj/n4yhrppjinrBNqsPVFwtT73+9Etf8JvMpLRfN4ai
+ XkeX0TdAUJ69DpydZOw3vgsLK2EyhQ6ksPQbRNVTJJHWVjKD0IBNCWYoAQGA+kGGjNsp
+ Hq/6ghvhw6wbNkA+7WMPQIWRxovDnfJ9NYI/xQpAGG7w2FAkBfOpRhmo2Uc+TuseP4Ek nQ== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 2v37mg252n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 18 Sep 2019 02:39:38 -0700
+Received: from SC-EXCH02.marvell.com (10.93.176.82) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Wed, 18 Sep
+ 2019 02:39:36 -0700
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com (104.47.33.54) by
+ SC-EXCH02.marvell.com (10.93.176.82) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Wed, 18 Sep 2019 02:39:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D2yx5RYURJij2Uy3szT8DyJR+vTdAdIFVxli4sxjS3YzqaRjmWMLCDhUdRWdbs8LKj4RKFlR1QTKUgtls0hB2miMjdARg8xOoF3G2hrPLa3jyxjBqx3jyNd7DHTm/qlE6fdj8PXw32WkpSYyZy+Q30v6zckK3Xs5BPZi3iPO60xpyOakkKabfgH+lreihgDZFzM5EbD76kQP/qyC26XOyEeib8tQSpklUGGr94FhAh3QwsBkM6KK5BNUcUfaUFhRxnUJMZY7RUE6hqjBDYtOmWmtTDaa024nb6r1VBWW3l1HaZcl+XlOGENzKPOl0FkZnOro//FbiUgkSHcZMIPdZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1YxlYm7hz6Dp6VyliP4Ie2oWjHnMdKc0ZotKYsLPgUU=;
+ b=KPgiOkJ68mArcl0lanhIKQks/v4XVx3OAouJ7UBX4/D0cxDAgnf/s32vMUtsmUIKd2MALklUTHHbbFjjnNHH0uxajSSnpe2U0ZFmraOfIbJ1MBERyQQaPwKCCcJ93PDjqt0mGZek2Zy8Rb+U15GaqQLmtiaOnpkgFNhxRfcq55KS7GWa+YgAvCPmYS4OQhBDt/SLI6NtblGkixf4VwXpiOOLma0ue81DXegSyOBVmDDclbeBmt//VEVC8WwBmr1rmApcwyUUJBb32KHBE4r4Lr43FtVNXEmSV7xm5wIycymklzCt3+uRT7wt6JIUAb3BuL2RcIW2kHYqlDM+oPSYxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector2-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1YxlYm7hz6Dp6VyliP4Ie2oWjHnMdKc0ZotKYsLPgUU=;
+ b=m5Y1H/qsVVRxMM1Ge9YckR4d5Mhyugr9pnd7PnrvBT1If7Iazv55lqa91LUcDjSh9BQOTDAHC2njeDNGUfMNh1l1JYrNi+9z9kyyLNXBOhh+63PLsBLczyuJlV4RgdJsIPCgVfe02Yfrnh0JoDIqppf3uMqXdXWlWVFktlQsoOY=
+Received: from MN2PR18MB2797.namprd18.prod.outlook.com (20.179.22.16) by
+ MN2PR18MB3085.namprd18.prod.outlook.com (20.179.21.16) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2284.18; Wed, 18 Sep 2019 09:39:35 +0000
+Received: from MN2PR18MB2797.namprd18.prod.outlook.com
+ ([fe80::2010:7134:bdcf:8ad9]) by MN2PR18MB2797.namprd18.prod.outlook.com
+ ([fe80::2010:7134:bdcf:8ad9%7]) with mapi id 15.20.2263.023; Wed, 18 Sep 2019
+ 09:39:35 +0000
+From:   Nagadheeraj Rottela <rnagadheeraj@marvell.com>
+To:     "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>
+CC:     Srikanth Jampala <jsrikanth@marvell.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nagadheeraj Rottela <rnagadheeraj@marvell.com>
+Subject: [PATCH] crypto: cavium/nitrox - Add mailbox message to get mcode info
+ in VF
+Thread-Topic: [PATCH] crypto: cavium/nitrox - Add mailbox message to get mcode
+ info in VF
+Thread-Index: AQHVbgT7evuBeNkKn0+ndI98tEnhjw==
+Date:   Wed, 18 Sep 2019 09:39:34 +0000
+Message-ID: <20190918093901.6477-1-rnagadheeraj@marvell.com>
+Accept-Language: en-IN, en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BMXPR01CA0025.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:c::11) To MN2PR18MB2797.namprd18.prod.outlook.com
+ (2603:10b6:208:a0::16)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.13.6
+x-originating-ip: [115.113.156.2]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7ada9b43-7afb-44d5-d30b-08d73c1c1d77
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600167)(711020)(4605104)(1401327)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:MN2PR18MB3085;
+x-ms-traffictypediagnostic: MN2PR18MB3085:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR18MB3085AAC11D3C2EDB70DCB54AD68E0@MN2PR18MB3085.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:257;
+x-forefront-prvs: 01644DCF4A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(396003)(346002)(366004)(376002)(136003)(189003)(199004)(86362001)(2906002)(256004)(66946007)(66556008)(15650500001)(36756003)(2501003)(6116002)(81166006)(81156014)(54906003)(6486002)(107886003)(110136005)(8676002)(3846002)(8936002)(1076003)(316002)(50226002)(5660300002)(66066001)(7736002)(305945005)(102836004)(6506007)(4326008)(55236004)(386003)(26005)(6512007)(25786009)(64756008)(186003)(66476007)(66446008)(486006)(478600001)(71190400001)(99286004)(71200400001)(476003)(2616005)(14454004)(6436002)(52116002)(6606295002);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB3085;H:MN2PR18MB2797.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: marvell.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: L8CTZ48z1rEuT7adXcHnOtAHag4eBb0AHwhhvYVf/ZZKM93nD6tkxLsNhsxEE+qoD7UnDQ3Pk7928ogK2VjTWhNeP0VZ0rmhsyqjjTnXFcsSXBE5BNMb548uALex/qFIsGmRoWmXv6pnbJGZfMBMIAckGbuEnk3FzqSfJml/7MYvaZp7C9qWpoT9aC+oKehCDtTfvEMlGiToe7bz11mfSjMQU3NsJHFd6N22DUEoOxKsDJQLmMsMYD4KKR6w7g6AuYf/o4pj22vgsnoPxdrSVYIxkb5tm8BwMcSZqTvQ2x4xywu1ZR6v+s0nCDmCltES3DpxfAed+iJEhi7J/acv7SKVoiUdTftovUwN5OS8tiuciAPV2ielTkPx0sk3gUNVJTyuZzHLJYW7WOa7bPzDAQheB1itjpdZz5LC9kmmAVc=
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TVr6y4BRlKjPTWQx2XV0ctmQfukyEOFSyasBxHm0cPqp4kGnbCx
- 3CTyjRCtl/6XgA40ZC7LZQ0Is9PIZuyInCqJxyMiWbGqx2QXFXanTkT54S76bZBjy5Th9V+
- /Ezib46AKGIJ8/WBIh63P0mCPgdLj1+YheoQgt8F4wrwiOJVRTsQe6s+UwxXUqwYcdsg7bo
- jgdIUcnh2iCJzwsOmnk4A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rhlOwn4khUE=:Cs3LDjWNfGQIwK9jjg8Tb5
- 0CByEG0g1DNdKHXAntaVmaokfVKhSfQzWKow4JQbsQGKVDT4WShzgmsaDPEH5Ft/++z9rS+ab
- ifdO2Rj2qm4TSquSfaVPaWIUrq7w4itO88Figd3MkLpu1yeTavHqp1902+SkAlOxJLtojeCZ3
- 5x+PlANKBDDe+L3Y6ykjt1p3VolIoVczFxGNDUwu4DwYekdXJJ0GUj1IKZllihiBEc50wN1E5
- lZD6kgteK74dUNJeEJ8GKu+bS4PqmDu8ipdWYrcIXu7uh1A39RxxPbVhtG2oLB1YSstRGj5r5
- ubi33y7rko9XOzhlWyNBFc1ycU6Q0UpdRB6TP04lqI3TIpxKI+wYa/qjqI/AMTc6I4dNNHW/O
- Wh/QKYlaDB0IycRVRBwxQv9ZjQTgnMmEUm6v+d7NGP4NnynsHa2Eg2nCo1wkaZnfzHSj9Wj6F
- Z9/AOtEjdGRwl8mD5Yi5A7Fd8F3DgLgU6RDYDFdoPQlkdA55dm9+Zyi5yLWtiSrEfF8bbjG6q
- 8AQVFJ90svuGjZd3X07GM+/H4JD5mZgXT/ZAL37h4wWs10Z/ZY+rbyVXJk9S1qD9/BqmmEXqC
- 6fdSwxUYjcqaz2ewVyZ4vCcWh1Gsv73Me45kcKCgQd0gYuKwL5+A2XodN3x0OcqFXli9oJngi
- jwO4CkO5wXPbz/+Hy/PeEuJpSfVzJmCrcmZQeklk8zOHcO2JzJ5GFgMqwd3Paf1hCqRMTXJhm
- 5789Imgo4WAQzboqg3r+BRocwrvbK2LMe2taMWcWdWo1mb3tjTb1t/fpXpShEo7XL7rJmbGuf
- NqqO/yba605V0ldFr+NQjkcYbMOreAAoETL5JVbF8tH2I3ClVexDfEE/9U3ZSTtlMTGBt+REI
- 2/ZykXANYGmCOdhpxkktW6sLO/0bfh5DwlcsgRIdjUm4Kxa9DATBufqF7q8mqsXECynqzZmq7
- jnuMuyz5XgC5BD2XGrxrxLPPYsdXwOwvN5xVNsEJrpd7fLmh9GQQ5jRaN90KEPChkMOc12zPB
- Tan2S1OgeVXvIDt/6PejXFkli7GkDKpxSOolScaJwMzr6gT1Y5WndGodRAgkFzFHBW0xGykoJ
- rYdJTuSdKfqgBnQEegRa53Vnetn5Om9Hem+bRmFtFXX1oYP/2XDi/g7v5nKs81ASrHdumQ0rX
- b3hPJDixQLdgreMC2nbXiPZ86T9JnLCnWaTJ3g8rKNwSuekDNXKZdMOnRveHxyMyYB/AyHYXL
- SJZ6tr7r5q7MlteDllmsWB1ePDRG8FBF80hbi65kWbCQB3bxbMUpwoVSOjuA=
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ada9b43-7afb-44d5-d30b-08d73c1c1d77
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2019 09:39:34.9516
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: r2A490Cj97sDMKq0ri+KWeZ9CzOik0GupTocX1Jd3z8D9vyR0CW0lfFR3OPJmO2I3WyHQPXkmBlg8vdIbSb7XTAiVkQNHk2Dpl9GIjCkPDQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB3085
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
+ definitions=2019-09-18_06:2019-09-17,2019-09-18 signatures=0
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 18 Sep 2019 09:34:11 +0200
+Add support to get microcode information in VF from PF via mailbox
+message.
 
-Simplify this function implementation by using a known wrapper function.
+Signed-off-by: Nagadheeraj Rottela <rnagadheeraj@marvell.com>
+Reviewed-by: Srikanth Jampala <jsrikanth@marvell.com>
+---
+ drivers/crypto/cavium/nitrox/nitrox_dev.h | 15 +++++++++++++++
+ drivers/crypto/cavium/nitrox/nitrox_mbx.c |  8 ++++++++
+ 2 files changed, 23 insertions(+)
 
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/char/hw_random/mtk-rng.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
-
-diff --git a/drivers/char/hw_random/mtk-rng.c b/drivers/char/hw_random/mtk=
--rng.c
-index e649be5a5f13..8ad7b515a51b 100644
-=2D-- a/drivers/char/hw_random/mtk-rng.c
-+++ b/drivers/char/hw_random/mtk-rng.c
-@@ -105,16 +105,9 @@ static int mtk_rng_read(struct hwrng *rng, void *buf,=
- size_t max, bool wait)
-
- static int mtk_rng_probe(struct platform_device *pdev)
- {
--	struct resource *res;
- 	int ret;
- 	struct mtk_rng *priv;
-
--	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
--		dev_err(&pdev->dev, "no iomem resource\n");
--		return -ENXIO;
--	}
--
- 	priv =3D devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
- 		return -ENOMEM;
-@@ -135,7 +128,7 @@ static int mtk_rng_probe(struct platform_device *pdev)
- 		return ret;
- 	}
-
--	priv->base =3D devm_ioremap_resource(&pdev->dev, res);
-+	priv->base =3D devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(priv->base))
- 		return PTR_ERR(priv->base);
-
-=2D-
-2.23.0
+diff --git a/drivers/crypto/cavium/nitrox/nitrox_dev.h b/drivers/crypto/cav=
+ium/nitrox/nitrox_dev.h
+index 2217a2736c8e..c2d0c23fb81b 100644
+--- a/drivers/crypto/cavium/nitrox/nitrox_dev.h
++++ b/drivers/crypto/cavium/nitrox/nitrox_dev.h
+@@ -109,6 +109,13 @@ struct nitrox_q_vector {
+ 	};
+ };
+=20
++enum mcode_type {
++	MCODE_TYPE_INVALID,
++	MCODE_TYPE_AE,
++	MCODE_TYPE_SE_SSL,
++	MCODE_TYPE_SE_IPSEC,
++};
++
+ /**
+  * mbox_msg - Mailbox message data
+  * @type: message type
+@@ -128,6 +135,14 @@ union mbox_msg {
+ 		u64 chipid: 8;
+ 		u64 vfid: 8;
+ 	} id;
++	struct {
++		u64 type: 2;
++		u64 opcode: 6;
++		u64 count: 4;
++		u64 info: 40;
++		u64 next_se_grp: 3;
++		u64 next_ae_grp: 3;
++	} mcode_info;
+ };
+=20
+ /**
+diff --git a/drivers/crypto/cavium/nitrox/nitrox_mbx.c b/drivers/crypto/cav=
+ium/nitrox/nitrox_mbx.c
+index 02ee95064841..b51b0449b478 100644
+--- a/drivers/crypto/cavium/nitrox/nitrox_mbx.c
++++ b/drivers/crypto/cavium/nitrox/nitrox_mbx.c
+@@ -25,6 +25,7 @@ enum mbx_msg_opcode {
+ 	MSG_OP_VF_UP,
+ 	MSG_OP_VF_DOWN,
+ 	MSG_OP_CHIPID_VFID,
++	MSG_OP_MCODE_INFO =3D 11,
+ };
+=20
+ struct pf2vf_work {
+@@ -73,6 +74,13 @@ static void pf2vf_send_response(struct nitrox_device *nd=
+ev,
+ 		vfdev->nr_queues =3D 0;
+ 		atomic_set(&vfdev->state, __NDEV_NOT_READY);
+ 		break;
++	case MSG_OP_MCODE_INFO:
++		msg.data =3D 0;
++		msg.mcode_info.count =3D 2;
++		msg.mcode_info.info =3D MCODE_TYPE_SE_SSL | (MCODE_TYPE_AE << 5);
++		msg.mcode_info.next_se_grp =3D 1;
++		msg.mcode_info.next_ae_grp =3D 1;
++		break;
+ 	default:
+ 		msg.type =3D MBX_MSG_TYPE_NOP;
+ 		break;
+--=20
+2.13.6
 
