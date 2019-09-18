@@ -2,95 +2,82 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F37EB5E05
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Sep 2019 09:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE49FB5E43
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Sep 2019 09:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbfIRH3J (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 18 Sep 2019 03:29:09 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:43434 "EHLO
+        id S1727566AbfIRHpb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 18 Sep 2019 03:45:31 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:41276 "EHLO
         mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbfIRH3J (ORCPT
+        with ESMTP id S1726116AbfIRHpb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 18 Sep 2019 03:29:09 -0400
-Received: by mail-ed1-f66.google.com with SMTP id r9so5647647edl.10
-        for <linux-crypto@vger.kernel.org>; Wed, 18 Sep 2019 00:29:08 -0700 (PDT)
+        Wed, 18 Sep 2019 03:45:31 -0400
+Received: by mail-ed1-f66.google.com with SMTP id f20so3266070edv.8
+        for <linux-crypto@vger.kernel.org>; Wed, 18 Sep 2019 00:45:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SAUp7GUy7+YR4UkJWKFGN2oQNliV/e1MDD0neuFDSNg=;
-        b=HoYLeJDji281qlqnWxubAf5BROHoj3b+TI+m0+tn47U9Cieern97B5DQ9JVcsHAbw8
-         NrTqYBNOCEvNCiPTiEbQdiUEC7gMTq2dCq/nr5YI1TqqoSGmBoMldt/lwTeaLpDdWOmh
-         /3kBmcuOcb15WEC3gsPJSFcqu+gP1vbwMz1ewHf4cJz33sSOmpCfip+8hOK8fBnlWWt2
-         TiiAX169hrW6fZPWWKQfpBd3RpoeBR7Z5vmX5IXwwE/9b+gbeIzkDOOgqxmaCXrqoFJi
-         ua+2IAH5auPt1Sh+Ejz4zoytwkkjbRFeypWW+0ifA86icSQVjbVe/12pmM83Mob9CNDZ
-         YkBQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=uBhDxMTSQK8UnHlvPSJo3an4tMDit6CyIfh/LILy62I=;
+        b=gIAFHTAvjDpTCyW/0FMsaECQMCRTOMuQK8wBRFeUZfxXI03W6dqcH8Y2A8N0EalYuR
+         wVWvkzXkxxWOlUH+O1tqhLxNek3Q95jnGXGTO31RcGoi+sBT1j63kyQBi/GQQYUeUyfN
+         XO8eneFu4KEMlEBTGpPp2hSQ2ZkeSRCLdJG+sfhu2dj8sEKDFw3Ei0RfYRukLiZsjH9Q
+         KR6woSuQGYYnX+SEjjdE15Cu0iOtRBHYx1QH2r67o7t8LrpxENwEyC6bF/QNEGq3sE7Z
+         nUqhdDCNe0AI0+aSoYSo9+V9YVfWkr2CgNZfsvc/AkWVEHNLk7j1FhkphWxNzHKaWOk/
+         HZPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SAUp7GUy7+YR4UkJWKFGN2oQNliV/e1MDD0neuFDSNg=;
-        b=JPajAQJ8U2VyC9XyIL6hkeskjYilhg7Nzhm6d0zMjq1hr9CDk/RDU/rU3H1O9JzYdT
-         +GwPpkpTaLm4qkslOjWm7paXQwXpEadtr4LTwEPPm9HkJAuDhY0uGjJhvmzx2D+lG+dh
-         IjEqiVRn2Wt1ldcsz2L/cP5wX+baaHfpPzXnRusJqnn+ptbX8xo+tIFpJjN5ZPdwPBDt
-         cDmvWsHT4mVM6MlFBO4u+M9Zsu8bkitXdcE6Ww8gNw+DZnECs4usdoRWB4Pe+8Rl4Oty
-         53siz0p3/kpB2HX/9+vkyfIe9WyawDFQiuapGlzgCmiSJAGKXpm6Xhw7q/yan8SMzMLn
-         7zwQ==
-X-Gm-Message-State: APjAAAVI5pywYXBu1ZTbcAZzh4gC9Yp/k1/rqrgIerr23ITtc/kG5K9U
-        GhveK43QeBoIEJdngTn1jCk0ubEXtJiYYi0C
-X-Google-Smtp-Source: APXvYqykp/i56Wi55mw2HpUfFK71RtGnBQGDnWDExCEJYINRTOr+rGQkrS3KrytqSRhqPGhrRXtm9g==
-X-Received: by 2002:a50:8a9d:: with SMTP id j29mr8941846edj.283.1568791747233;
-        Wed, 18 Sep 2019 00:29:07 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:200:301a:5:438:b21e:5369:b7fd])
-        by smtp.gmail.com with ESMTPSA id a20sm849952edt.95.2019.09.18.00.29.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Sep 2019 00:29:06 -0700 (PDT)
-From:   "Alexander E. Patrakov" <patrakov@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=uBhDxMTSQK8UnHlvPSJo3an4tMDit6CyIfh/LILy62I=;
+        b=GrBFMH1xaeXgvjxPJEXn2V+4DgGldROJ/39uYMAEqSXIzWsIrXmDBttnHWPZKOdctv
+         sBL0xrp9VK5/sXrEE9Es4elIfHCuPKejUPXJNCDqCc17wrWqYpQmfs8wGhJWLg4Wuxqr
+         4S5p/FhbWooFgw0tjxTfL/sb2theAzZJEuqG+oBjc4oDWEF4r5xZAY42fPFCRD78yk26
+         rt8zMmRB6oGQ0xRoCEG9nFuT0JUmN7JfoRdFAcZrsgaUiY/cXbeZOkA08O8GM51HpDH+
+         vo37yZx/3wRsJSrlhvxpqZ6B8J2JrWa92pWT2pXFOvQ2feXG+VeJkg+C67f6feCCtUy4
+         GlrA==
+X-Gm-Message-State: APjAAAXHK/HSsnRLkfOySOLnQFzuYuvGB41JLfaTp/bOnY4+l+CtPFjR
+        KFxnstJofMrsWVEInxOW4yTEkPjm
+X-Google-Smtp-Source: APXvYqxd/v7qPrgbYlsJK3ypEv44rSshFEaY/jrhWt05K/m7w2c1MQKbiE4Z74btg+pFCKY/ATFYgw==
+X-Received: by 2002:a50:e79b:: with SMTP id b27mr8850653edn.186.1568792729748;
+        Wed, 18 Sep 2019 00:45:29 -0700 (PDT)
+Received: from localhost.localdomain.com ([188.204.2.113])
+        by smtp.gmail.com with ESMTPSA id hh11sm18332ejb.33.2019.09.18.00.45.28
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 18 Sep 2019 00:45:29 -0700 (PDT)
+From:   Pascal van Leeuwen <pascalvanl@gmail.com>
+X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
 To:     linux-crypto@vger.kernel.org
-Cc:     smueller@chronox.de, "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: [PATCH] jitterentropy: fix comments
-Date:   Wed, 18 Sep 2019 12:28:49 +0500
-Message-Id: <20190918072849.6749-1-patrakov@gmail.com>
-X-Mailer: git-send-email 2.23.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net,
+        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+Subject: [PATCH 0/2] crypto: inside-secure - Add support for eip197f_iewc 
+Date:   Wed, 18 Sep 2019 08:42:38 +0200
+Message-Id: <1568788960-7829-1-git-send-email-pvanleeuwen@verimatrix.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-One should not say "ec can be NULL" and then dereference it.
-One cannot talk about the return value if the function returns void.
+This patchset adds support for the eip197f_iewc configuration that is
+currently being taped-out by a customer. It adds support for the 256 bit
+internal buswidth used by larger EIP197's as well as support for having
+less ring interrupt controllers than rings.
 
-Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
----
- crypto/jitterentropy.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The patchset has been tested with the eip197f_iewc_w8 and eip197c_iewxkbc
+configurations on the Xilinx VCU118 development board as well as on the
+Macchiatobin board (Marvell A8K/eip197b_ieswx), including the crypto extra
+tests.
 
-diff --git a/crypto/jitterentropy.c b/crypto/jitterentropy.c
-index 77fa2120fe0c..9597f9f5723d 100644
---- a/crypto/jitterentropy.c
-+++ b/crypto/jitterentropy.c
-@@ -172,7 +172,7 @@ static __u64 jent_loop_shuffle(struct rand_data *ec,
-  * implies that careful retesting must be done.
-  *
-  * Input:
-- * @ec entropy collector struct -- may be NULL
-+ * @ec entropy collector struct
-  * @time time stamp to be injected
-  * @loop_cnt if a value not equal to 0 is set, use the given value as number of
-  *	     loops to perform the folding
-@@ -400,8 +400,8 @@ static void jent_gen_entropy(struct rand_data *ec)
-  * primes the test if needed.
-  *
-  * Return:
-- * 0 if FIPS test passed
-- * < 0 if FIPS test failed
-+ * returns normally if FIPS test passed
-+ * panics the kernel if FIPS test failed
-  */
- static void jent_fips_test(struct rand_data *ec)
- {
+Pascal van Leeuwen (2):
+  crypto: inside-secure - Add support for 256 bit wide internal bus
+  crypto: inside-secure - Add support for HW with less ring AIC's than
+    rings
+
+ drivers/crypto/inside-secure/safexcel.c      | 119 ++++++++++++++++-----------
+ drivers/crypto/inside-secure/safexcel.h      |  22 +++--
+ drivers/crypto/inside-secure/safexcel_ring.c |   4 +-
+ 3 files changed, 91 insertions(+), 54 deletions(-)
+
 -- 
-2.23.0
+1.8.3.1
 
