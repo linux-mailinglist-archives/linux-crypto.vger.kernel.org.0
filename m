@@ -2,91 +2,64 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB37B81C1
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 Sep 2019 21:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E34B822B
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 Sep 2019 22:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404485AbfISTvF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 19 Sep 2019 15:51:05 -0400
-Received: from werkudoro.jatengprov.go.id ([103.9.227.34]:45448 "EHLO
-        werkudoro.jatengprov.go.id" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404481AbfISTvF (ORCPT
+        id S2392446AbfISUFE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 19 Sep 2019 16:05:04 -0400
+Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:48109 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388220AbfISUFE (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 19 Sep 2019 15:51:05 -0400
-X-Greylist: delayed 30804 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Sep 2019 15:51:04 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=jatengprov.go.id; s=default; h=Message-ID:Reply-To:To:From:Date:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:Sender:Subject:Cc:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=IlrCxIBWvxOzPALn47D3+2101Gu2SIzn6UIt1KekVro=; b=UFkjypvY3zJfWrf2OKq4ot/1g
-        wBlXrpqu/KR60T7dh2v3iK4BjrrPb+42PJ+MSKo1DyyaObN7yJMb1RFtYJ8IhwaKBK0XzA9rdC73N
-        ht4X+hejJVQCxnl2nxNNvhkTwW9g9WZIeZ/g3sZOwDSZCf+ugnWooz/mydfQV2i2mkXopefu0jd0I
-        vWs0mstcp/pn6Sg7MW29IqgCB9Y7niI8D8wAGJtVpOrVONez+ypx/Uiyy1QGQ4gLE/cP0b4kPHDzv
-        Zfh3fNaZWxL90WzjxX+xtw+PF18RCZtusjDE0A88zEzsdmUmOlWEiV1iud80pA6JB9lcJ2w5bKzMS
-        X1jW6dQcg==;
-Received: from localhost ([127.0.0.1]:40052 helo=werkudoro.jatengprov.go.id)
-        by werkudoro.jatengprov.go.id with esmtpa (Exim 4.92)
-        (envelope-from <bpsdmd@jatengprov.go.id>)
-        id 1iAuPJ-0000hD-4w; Thu, 19 Sep 2019 18:15:30 +0700
+        Thu, 19 Sep 2019 16:05:04 -0400
+Received: from localhost.localdomain ([93.22.37.255])
+        by mwinf5d35 with ME
+        id 3Y4t2100P5WHhHH03Y4tp2; Thu, 19 Sep 2019 22:05:02 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 19 Sep 2019 22:05:02 +0200
+X-ME-IP: 93.22.37.255
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     atul.gupta@chelsio.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, akpm@linux-foundation.org,
+        willy@infradead.org, kirill.shutemov@linux.intel.com,
+        kstewart@linuxfoundation.org, yuehaibing@huawei.com,
+        tglx@linutronix.de
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] crypto: chtls - simplify a bit 'create_flowc_wr_skb()'
+Date:   Thu, 19 Sep 2019 22:04:28 +0200
+Message-Id: <20190919200428.2664-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
-Date:   Thu, 19 Sep 2019 18:15:29 +0700
-From:   =?UTF-8?Q?=D0=B0=D0=B4=D0=BC=D0=B8=D0=BD=D0=B8=D1=81=D1=82=D1=80?=
-         =?UTF-8?Q?=D0=B0=D1=82=D0=BE=D1=80?= <bpsdmd@jatengprov.go.id>
-To:     undisclosed-recipients:;
-Reply-To: mailsss@mail2world.com
-Mail-Reply-To: mailsss@mail2world.com
-Message-ID: <3f1518d5d3d1582f69bc203be46ea474@jatengprov.go.id>
-X-Sender: bpsdmd@jatengprov.go.id
-User-Agent: Roundcube Webmail/1.3.8
-X-OutGoing-Spam-Status: No, score=3.3
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - werkudoro.jatengprov.go.id
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - jatengprov.go.id
-X-Get-Message-Sender-Via: werkudoro.jatengprov.go.id: authenticated_id: bpsdmd@jatengprov.go.id
-X-Authenticated-Sender: werkudoro.jatengprov.go.id: bpsdmd@jatengprov.go.id
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Use '__skb_put_data()' instead of rewritting it.
+This improves readability.
 
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/crypto/chelsio/chtls/chtls_io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/crypto/chelsio/chtls/chtls_io.c b/drivers/crypto/chelsio/chtls/chtls_io.c
+index 0891ab829b1b..2512bfb24d71 100644
+--- a/drivers/crypto/chelsio/chtls/chtls_io.c
++++ b/drivers/crypto/chelsio/chtls/chtls_io.c
+@@ -97,7 +97,7 @@ static struct sk_buff *create_flowc_wr_skb(struct sock *sk,
+ 	if (!skb)
+ 		return NULL;
+ 
+-	memcpy(__skb_put(skb, flowclen), flowc, flowclen);
++	__skb_put_data(skb, flowc, flowclen);
+ 	skb_set_queue_mapping(skb, (csk->txq_idx << 1) | CPL_PRIORITY_DATA);
+ 
+ 	return skb;
 -- 
-ВНИМАНИЕ;
+2.20.1
 
-В вашем почтовом ящике превышен лимит
-хранилища, который составляет 5 ГБ, как
-определено администратором, который в
-настоящее время работает на 10,9 ГБ.
-Возможно, вы не сможете отправлять или
-получать новую почту, пока вы не
-подтвердите свою почту. Чтобы
-подтвердить свой почтовый ящик,
-отправьте следующую информацию ниже:
-
-название:
-Имя пользователя:
-пароль:
-Подтвердите Пароль:
-Эл. адрес:
-Телефон:
-
-Если вы не сможете подтвердить свой
-почтовый ящик, ваш почтовый ящик будет
-отключен!
-
-Приносим извинения за неудобства.
-Код подтверждения: en: 006,524.RU
-Техническая поддержка почты © 2019
-
-благодарю вас
-Системный администратор.
