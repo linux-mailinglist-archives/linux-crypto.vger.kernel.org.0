@@ -2,39 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 970E7BA739
-	for <lists+linux-crypto@lfdr.de>; Sun, 22 Sep 2019 21:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03094BA78F
+	for <lists+linux-crypto@lfdr.de>; Sun, 22 Sep 2019 21:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394622AbfIVS4q (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 22 Sep 2019 14:56:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58948 "EHLO mail.kernel.org"
+        id S2438483AbfIVS7M (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 22 Sep 2019 14:59:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438477AbfIVS4p (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 22 Sep 2019 14:56:45 -0400
+        id S2395029AbfIVS7K (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 22 Sep 2019 14:59:10 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D2162184D;
-        Sun, 22 Sep 2019 18:56:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D87C721BE5;
+        Sun, 22 Sep 2019 18:59:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569178604;
-        bh=s7x370y95jXHCMWBXfaRjHHLe9MY1QprAjrHw4KTmss=;
+        s=default; t=1569178749;
+        bh=e9BSFUibeBe+oRteLZzZcuFsV4x7EMeuZV+E0L70dd0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SKPkDpCLijuk+ubOgLmRV/Fvyi/HNaAi+Icm50vOAirq2drOjGxkjcI6tcL4YIR7R
-         6+SeSzTim0LxyQmbbyf2Kfp9nE6SvNxylBWWMfZlbFN27q0tQWIMbPN1Qolkl0Hva2
-         7AEt7M5UZ8UqmwB4Rqf5SYiorNKE4SMoAIpEvZQ0=
+        b=I+1Dm9FncHmXkC/E1eOaDTtxvWx8Nls3p81A0X+o8fjGDdo2tVcDl1ZcMgq2jBJqz
+         ng95bESfcB+fbWz8CqrqQybHpgzvvkyd2rteQHN8dlkxhDxUMCQl/T/j8ACiF3MQ01
+         IvPVzk9L9YT1/Ue+a0G78P7dAH8E3m8wxGZU/LfA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Harald Freudenberger <freude@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
         linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 107/128] s390/crypto: xts-aes-s390 fix extra run-time crypto self tests finding
-Date:   Sun, 22 Sep 2019 14:53:57 -0400
-Message-Id: <20190922185418.2158-107-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 74/89] s390/crypto: xts-aes-s390 fix extra run-time crypto self tests finding
+Date:   Sun, 22 Sep 2019 14:57:02 -0400
+Message-Id: <20190922185717.3412-74-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190922185418.2158-1-sashal@kernel.org>
-References: <20190922185418.2158-1-sashal@kernel.org>
+In-Reply-To: <20190922185717.3412-1-sashal@kernel.org>
+References: <20190922185717.3412-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -68,10 +68,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 6 insertions(+)
 
 diff --git a/arch/s390/crypto/aes_s390.c b/arch/s390/crypto/aes_s390.c
-index 8ff7cb3da1cba..2bc189187ed40 100644
+index 591cbdf615af0..1a906dd7ca7d9 100644
 --- a/arch/s390/crypto/aes_s390.c
 +++ b/arch/s390/crypto/aes_s390.c
-@@ -585,6 +585,9 @@ static int xts_aes_encrypt(struct blkcipher_desc *desc,
+@@ -572,6 +572,9 @@ static int xts_aes_encrypt(struct blkcipher_desc *desc,
  	struct s390_xts_ctx *xts_ctx = crypto_blkcipher_ctx(desc->tfm);
  	struct blkcipher_walk walk;
  
@@ -81,7 +81,7 @@ index 8ff7cb3da1cba..2bc189187ed40 100644
  	if (unlikely(!xts_ctx->fc))
  		return xts_fallback_encrypt(desc, dst, src, nbytes);
  
-@@ -599,6 +602,9 @@ static int xts_aes_decrypt(struct blkcipher_desc *desc,
+@@ -586,6 +589,9 @@ static int xts_aes_decrypt(struct blkcipher_desc *desc,
  	struct s390_xts_ctx *xts_ctx = crypto_blkcipher_ctx(desc->tfm);
  	struct blkcipher_walk walk;
  
