@@ -2,39 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03094BA78F
-	for <lists+linux-crypto@lfdr.de>; Sun, 22 Sep 2019 21:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B4BBA7FC
+	for <lists+linux-crypto@lfdr.de>; Sun, 22 Sep 2019 21:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438483AbfIVS7M (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 22 Sep 2019 14:59:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34170 "EHLO mail.kernel.org"
+        id S2392102AbfIVTAo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 22 Sep 2019 15:00:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395029AbfIVS7K (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 22 Sep 2019 14:59:10 -0400
+        id S2436695AbfIVTAm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 22 Sep 2019 15:00:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D87C721BE5;
-        Sun, 22 Sep 2019 18:59:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0AEAC21907;
+        Sun, 22 Sep 2019 19:00:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569178749;
+        s=default; t=1569178841;
         bh=e9BSFUibeBe+oRteLZzZcuFsV4x7EMeuZV+E0L70dd0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I+1Dm9FncHmXkC/E1eOaDTtxvWx8Nls3p81A0X+o8fjGDdo2tVcDl1ZcMgq2jBJqz
-         ng95bESfcB+fbWz8CqrqQybHpgzvvkyd2rteQHN8dlkxhDxUMCQl/T/j8ACiF3MQ01
-         IvPVzk9L9YT1/Ue+a0G78P7dAH8E3m8wxGZU/LfA=
+        b=Ds5So0Uq/X3sedcPqzlvj6Vuo9XEZfSlxVI9ksPfOoVSvUk6Ik1RTVFpxbaPS0JDY
+         5wQxlPE4evZufPfs5lgWesdPqjCCCx4IN74rV2e6DOUfI8KMYhLJGpYXA9htSD6EaE
+         FZYpPr4lHoW1YcP6mlAtdOKbhVysUD8QPTQY+tP0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Harald Freudenberger <freude@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
         linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 74/89] s390/crypto: xts-aes-s390 fix extra run-time crypto self tests finding
-Date:   Sun, 22 Sep 2019 14:57:02 -0400
-Message-Id: <20190922185717.3412-74-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 49/60] s390/crypto: xts-aes-s390 fix extra run-time crypto self tests finding
+Date:   Sun, 22 Sep 2019 14:59:22 -0400
+Message-Id: <20190922185934.4305-49-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190922185717.3412-1-sashal@kernel.org>
-References: <20190922185717.3412-1-sashal@kernel.org>
+In-Reply-To: <20190922185934.4305-1-sashal@kernel.org>
+References: <20190922185934.4305-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
