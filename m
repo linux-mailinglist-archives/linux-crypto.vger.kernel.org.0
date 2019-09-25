@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84230BE212
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Sep 2019 18:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66183BE213
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Sep 2019 18:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388052AbfIYQOF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S2387965AbfIYQOF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Wed, 25 Sep 2019 12:14:05 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:38807 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388006AbfIYQOE (ORCPT
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:33312 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388050AbfIYQOF (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 25 Sep 2019 12:14:04 -0400
-Received: by mail-wm1-f67.google.com with SMTP id 3so5623041wmi.3
-        for <linux-crypto@vger.kernel.org>; Wed, 25 Sep 2019 09:14:02 -0700 (PDT)
+        Wed, 25 Sep 2019 12:14:05 -0400
+Received: by mail-wr1-f68.google.com with SMTP id b9so7650017wrs.0
+        for <linux-crypto@vger.kernel.org>; Wed, 25 Sep 2019 09:14:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xpVJhurqboKmy8zjq8NwWmF/2cOoT7sCwN/7BICzDQc=;
-        b=CAnW7qsqfrk5KFVvsKsDcgra7HlMJjjL2tpzu+fodKYoLQDhcCrInovzV4qj/eASai
-         ROhGsosp9+zoYMmAiL7lA45JmrJWYK0TqGMRZDRBciGaidScg1iKhQdEAmgkieeDIWXZ
-         JL5s8XsQU42tg8wpyuiAuFAEcuyVWFjAy3leU5/kX/IyBF4sAvKQtp3CHt5B7ZvnBQUs
-         7y1XO507W5aBNQo46ccGXQBjrrDCJ3LNHNF3QTG3Ham4ymf4ixhVpKQYRB0gVwJuOMgL
-         1us8T+MeoWba7+PVMVgfW7xU+5siLN0AeEAhvisjNVnnslWCJPlLqKgFgIjK4Ajsf4Fh
-         YFmg==
+        bh=GHZTUsgGCCxhaUqhh6GFmynzyGA2xAGilsSBrwWL8Ec=;
+        b=EZelB1bmBbVqkj69RFWzhZDiyl+QrRS1Ld/4jAK9o8wa+U3Y4C9KupSUIqj2czhl7k
+         ITiHGURXEqXrMJmGJNB9KMIUGwxFnx7bIhXwPlyP3otwQoRuaqODihXzE3AhyE+SuMOe
+         Eupyf7hjZZlON1Utlzp/RmQMPvLJn2rjU8LmbXlYIzGZ+eXKz+3lmREZnr2u+zWgdOnC
+         DnAE1RwkIUI90BBXqLfP2SQt/xl177ryb9XkpwBkxrUMcHJChPVU9vFbBntefNklJgCR
+         eMbWcs4UmklFy7RjjpAUH6gGYaPbUv9a9jmIlTOejjFpzVISicNuFbq7E+U5L0HF88Yg
+         IqzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xpVJhurqboKmy8zjq8NwWmF/2cOoT7sCwN/7BICzDQc=;
-        b=p+Jg/R7HF6pn7DQ1RSxHFF6YqH+xdB3uu+9Wv3nyw45OJnMAORsUXsnyQmAezO2er4
-         L67RWVQjR+eLYeFCUwx1DsqrDj+KypOQp/5HJOdLeTWTwCdnFQJgu0MBsVE0J4SO9xhp
-         hCixALqsIH3zaQ/Q3XwnkPTtmyCzgkXF+fnFPniHL6c4fXMNOoSCPrYVrhDXfG2OEHE3
-         4Ah4BJUR2PGB0jI6fmJP+FmuNoPs110Y5sKcps9DSujyLq1SriUSlI2TCZk+FpmbyVJl
-         x/zmYd7A5LTBzDk+VrN8d7QE02kZe0TtIncWj02N5x5SKQtWNVu8knXVujBVHTr0+hHo
-         hL1w==
-X-Gm-Message-State: APjAAAW5v4tLWSJ2buxymxGCGTTQSkGkQ5C9NDyV/HOLIlBtEqfvxgWo
-        VB2To64M2VKd/RZ1GNlWhM0GzHAsCxyQd1Wx
-X-Google-Smtp-Source: APXvYqzjKIx5BU0X+hSOnuLm57ITShsKdJWzENe3xNpvJbLScKbHsUEDABMKZdHgw9OoOMLqLWiLEw==
-X-Received: by 2002:a7b:cb8b:: with SMTP id m11mr3358192wmi.145.1569428041353;
-        Wed, 25 Sep 2019 09:14:01 -0700 (PDT)
+        bh=GHZTUsgGCCxhaUqhh6GFmynzyGA2xAGilsSBrwWL8Ec=;
+        b=PKJYWQnQKCXS+nktF7hzgWv9njLa5LaL6/EbqUeXVmnkEWgPwqaKCu1iUx6gedbxM4
+         BTQGpyWgosStPi723MzNUmb92YlztxwLYjNwzTidojMDo1wVcZOv3MKFJibDyqxmSwzZ
+         AlNj4oHWkvqmgSaDipgLvb1AJD4rC5GHktoawJz+uNZrcg19pcTLGDOz8nfGpgKicgkU
+         yODFHDZFrEmzBIIesODAmq/k4SQzWsSFYUxu7u0Vx5+8ZhjWB2vahzNf1M2O3Xvf/jIV
+         OjP8lmbjK8g+5b6yr4yhOmVFTMgx7ziOlmO8MHmNol0DIP9IKemnCAycbcZ/RBWW1Hal
+         Jthg==
+X-Gm-Message-State: APjAAAWIojzUrjU1etvZ4CBJDRTAJW+8o4EflYwyGtkoAET9mZ1jG1qx
+        J80H3JyH8PjPAwTfYXZXlo1SAIOoQBGK3BEJ
+X-Google-Smtp-Source: APXvYqz1sBIY8jpDffs/GzFrwhS+OK125T+2rgBRUTsh9BLcog3Q1msw/qOOPlbx/V81RfwvRmI7vA==
+X-Received: by 2002:a5d:62c6:: with SMTP id o6mr9945348wrv.243.1569428043029;
+        Wed, 25 Sep 2019 09:14:03 -0700 (PDT)
 Received: from localhost.localdomain (laubervilliers-657-1-83-120.w92-154.abo.wanadoo.fr. [92.154.90.120])
-        by smtp.gmail.com with ESMTPSA id o70sm4991085wme.29.2019.09.25.09.13.59
+        by smtp.gmail.com with ESMTPSA id o70sm4991085wme.29.2019.09.25.09.14.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Sep 2019 09:14:00 -0700 (PDT)
+        Wed, 25 Sep 2019 09:14:02 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org,
@@ -61,332 +61,90 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Andy Lutomirski <luto@kernel.org>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>
-Subject: [RFC PATCH 10/18] crypto: poly1305 - add init/update/final library routines
-Date:   Wed, 25 Sep 2019 18:12:47 +0200
-Message-Id: <20190925161255.1871-11-ard.biesheuvel@linaro.org>
+Subject: [RFC PATCH 11/18] int128: move __uint128_t compiler test to Kconfig
+Date:   Wed, 25 Sep 2019 18:12:48 +0200
+Message-Id: <20190925161255.1871-12-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190925161255.1871-1-ard.biesheuvel@linaro.org>
 References: <20190925161255.1871-1-ard.biesheuvel@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add the usual init/update/final library routines for the Poly1305
-keyed hash library. Since this will be the external interface of
-the library, move the poly1305_core_* routines to the internal
-header (and update the users to refer to it where needed)
+In order to use 128-bit integer arithmetic in C code, the architecture
+needs to have declared support for it by setting ARCH_SUPPORTS_INT128,
+and it requires a version of the toolchain that supports this at build
+time. This is why all existing tests for ARCH_SUPPORTS_INT128 also test
+whether __SIZEOF_INT128__ is defined, since this is only the case for
+compilers that can support 128-bit integers.
+
+Let's fold this additional test into the Kconfig declaration of
+ARCH_SUPPORTS_INT128 so that we can also use the symbol in Makefiles,
+e.g., to decide whether a certain object needs to be included in the
+first place.
 
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- crypto/adiantum.c                  |  1 +
- crypto/nhpoly1305.c                |  1 +
- crypto/poly1305_generic.c          | 57 +++++++------------
- include/crypto/internal/poly1305.h | 16 ++----
- include/crypto/poly1305.h          | 34 ++++++++++--
- lib/crypto/poly1305.c              | 58 ++++++++++++++++++++
- 6 files changed, 115 insertions(+), 52 deletions(-)
+ crypto/ecc.c | 2 +-
+ init/Kconfig | 1 +
+ lib/ubsan.c  | 2 +-
+ lib/ubsan.h  | 2 +-
+ 4 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/crypto/adiantum.c b/crypto/adiantum.c
-index 775ed1418e2b..aded26092268 100644
---- a/crypto/adiantum.c
-+++ b/crypto/adiantum.c
-@@ -33,6 +33,7 @@
- #include <crypto/b128ops.h>
- #include <crypto/chacha.h>
- #include <crypto/internal/hash.h>
-+#include <crypto/internal/poly1305.h>
- #include <crypto/internal/skcipher.h>
- #include <crypto/nhpoly1305.h>
- #include <crypto/scatterwalk.h>
-diff --git a/crypto/nhpoly1305.c b/crypto/nhpoly1305.c
-index b88a6a71e3e2..f6b6a52092b4 100644
---- a/crypto/nhpoly1305.c
-+++ b/crypto/nhpoly1305.c
-@@ -33,6 +33,7 @@
- #include <asm/unaligned.h>
- #include <crypto/algapi.h>
- #include <crypto/internal/hash.h>
-+#include <crypto/internal/poly1305.h>
- #include <crypto/nhpoly1305.h>
- #include <linux/crypto.h>
- #include <linux/kernel.h>
-diff --git a/crypto/poly1305_generic.c b/crypto/poly1305_generic.c
-index 46a2da1abac7..69241e7e85be 100644
---- a/crypto/poly1305_generic.c
-+++ b/crypto/poly1305_generic.c
-@@ -23,8 +23,8 @@ int crypto_poly1305_init(struct shash_desc *desc)
+diff --git a/crypto/ecc.c b/crypto/ecc.c
+index dfe114bc0c4a..6e6aab6c987c 100644
+--- a/crypto/ecc.c
++++ b/crypto/ecc.c
+@@ -336,7 +336,7 @@ static u64 vli_usub(u64 *result, const u64 *left, u64 right,
+ static uint128_t mul_64_64(u64 left, u64 right)
  {
- 	struct poly1305_desc_ctx *dctx = shash_desc_ctx(desc);
+ 	uint128_t result;
+-#if defined(CONFIG_ARCH_SUPPORTS_INT128) && defined(__SIZEOF_INT128__)
++#if defined(CONFIG_ARCH_SUPPORTS_INT128)
+ 	unsigned __int128 m = (unsigned __int128)left * right;
  
--	poly1305_core_init(&dctx->h);
--	dctx->buflen = 0;
-+	poly1305_core_init(&dctx->desc.h);
-+	dctx->desc.buflen = 0;
- 	dctx->rset = false;
- 	dctx->sset = false;
+ 	result.m_low  = m;
+diff --git a/init/Kconfig b/init/Kconfig
+index bd7d650d4a99..e66f64a26d7d 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -785,6 +785,7 @@ config ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+ #
+ config ARCH_SUPPORTS_INT128
+ 	bool
++	depends on !$(cc-option,-D__SIZEOF_INT128__=0)
  
-@@ -42,16 +42,16 @@ unsigned int crypto_poly1305_setdesckey(struct poly1305_desc_ctx *dctx,
+ # For architectures that (ab)use NUMA to represent different memory regions
+ # all cpu-local but of different latencies, such as SuperH.
+diff --git a/lib/ubsan.c b/lib/ubsan.c
+index e7d31735950d..b652cc14dd60 100644
+--- a/lib/ubsan.c
++++ b/lib/ubsan.c
+@@ -119,7 +119,7 @@ static void val_to_string(char *str, size_t size, struct type_descriptor *type,
  {
- 	if (!dctx->sset) {
- 		if (!dctx->rset && srclen >= POLY1305_BLOCK_SIZE) {
--			poly1305_core_setkey(&dctx->r, src);
-+			poly1305_core_setkey(&dctx->desc.r, src);
- 			src += POLY1305_BLOCK_SIZE;
- 			srclen -= POLY1305_BLOCK_SIZE;
- 			dctx->rset = true;
- 		}
- 		if (srclen >= POLY1305_BLOCK_SIZE) {
--			dctx->s[0] = get_unaligned_le32(src +  0);
--			dctx->s[1] = get_unaligned_le32(src +  4);
--			dctx->s[2] = get_unaligned_le32(src +  8);
--			dctx->s[3] = get_unaligned_le32(src + 12);
-+			dctx->desc.s[0] = get_unaligned_le32(src +  0);
-+			dctx->desc.s[1] = get_unaligned_le32(src +  4);
-+			dctx->desc.s[2] = get_unaligned_le32(src +  8);
-+			dctx->desc.s[3] = get_unaligned_le32(src + 12);
- 			src += POLY1305_BLOCK_SIZE;
- 			srclen -= POLY1305_BLOCK_SIZE;
- 			dctx->sset = true;
-@@ -72,7 +72,7 @@ static void poly1305_blocks(struct poly1305_desc_ctx *dctx, const u8 *src,
- 		srclen = datalen;
- 	}
+ 	if (type_is_int(type)) {
+ 		if (type_bit_width(type) == 128) {
+-#if defined(CONFIG_ARCH_SUPPORTS_INT128) && defined(__SIZEOF_INT128__)
++#if defined(CONFIG_ARCH_SUPPORTS_INT128)
+ 			u_max val = get_unsigned_val(type, value);
  
--	poly1305_core_blocks(&dctx->h, &dctx->r, src,
-+	poly1305_core_blocks(&dctx->desc.h, &dctx->desc.r, src,
- 			     srclen / POLY1305_BLOCK_SIZE, 1);
- }
- 
-@@ -82,16 +82,17 @@ int crypto_poly1305_update(struct shash_desc *desc,
- 	struct poly1305_desc_ctx *dctx = shash_desc_ctx(desc);
- 	unsigned int bytes;
- 
--	if (unlikely(dctx->buflen)) {
--		bytes = min(srclen, POLY1305_BLOCK_SIZE - dctx->buflen);
--		memcpy(dctx->buf + dctx->buflen, src, bytes);
-+	if (unlikely(dctx->desc.buflen)) {
-+		bytes = min(srclen, POLY1305_BLOCK_SIZE - dctx->desc.buflen);
-+		memcpy(dctx->desc.buf + dctx->desc.buflen, src, bytes);
- 		src += bytes;
- 		srclen -= bytes;
--		dctx->buflen += bytes;
-+		dctx->desc.buflen += bytes;
- 
--		if (dctx->buflen == POLY1305_BLOCK_SIZE) {
--			poly1305_blocks(dctx, dctx->buf, POLY1305_BLOCK_SIZE);
--			dctx->buflen = 0;
-+		if (dctx->desc.buflen == POLY1305_BLOCK_SIZE) {
-+			poly1305_blocks(dctx, dctx->desc.buf,
-+					POLY1305_BLOCK_SIZE);
-+			dctx->desc.buflen = 0;
- 		}
- 	}
- 
-@@ -102,8 +103,8 @@ int crypto_poly1305_update(struct shash_desc *desc,
- 	}
- 
- 	if (unlikely(srclen)) {
--		dctx->buflen = srclen;
--		memcpy(dctx->buf, src, srclen);
-+		dctx->desc.buflen = srclen;
-+		memcpy(dctx->desc.buf, src, srclen);
- 	}
- 
- 	return 0;
-@@ -113,31 +114,11 @@ EXPORT_SYMBOL_GPL(crypto_poly1305_update);
- int crypto_poly1305_final(struct shash_desc *desc, u8 *dst)
- {
- 	struct poly1305_desc_ctx *dctx = shash_desc_ctx(desc);
--	__le32 digest[4];
--	u64 f = 0;
- 
- 	if (unlikely(!dctx->sset))
- 		return -ENOKEY;
- 
--	if (unlikely(dctx->buflen)) {
--		dctx->buf[dctx->buflen++] = 1;
--		memset(dctx->buf + dctx->buflen, 0,
--		       POLY1305_BLOCK_SIZE - dctx->buflen);
--		poly1305_core_blocks(&dctx->h, &dctx->r, dctx->buf, 1, 0);
--	}
--
--	poly1305_core_emit(&dctx->h, digest);
--
--	/* mac = (h + s) % (2^128) */
--	f = (f >> 32) + le32_to_cpu(digest[0]) + dctx->s[0];
--	put_unaligned_le32(f, dst + 0);
--	f = (f >> 32) + le32_to_cpu(digest[1]) + dctx->s[1];
--	put_unaligned_le32(f, dst + 4);
--	f = (f >> 32) + le32_to_cpu(digest[2]) + dctx->s[2];
--	put_unaligned_le32(f, dst + 8);
--	f = (f >> 32) + le32_to_cpu(digest[3]) + dctx->s[3];
--	put_unaligned_le32(f, dst + 12);
--
-+	poly1305_final(&dctx->desc, dst);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(crypto_poly1305_final);
-diff --git a/include/crypto/internal/poly1305.h b/include/crypto/internal/poly1305.h
-index ae0466c4ce59..619705200e70 100644
---- a/include/crypto/internal/poly1305.h
-+++ b/include/crypto/internal/poly1305.h
-@@ -10,22 +10,18 @@
- #include <crypto/poly1305.h>
- 
- struct poly1305_desc_ctx {
--	/* key */
--	struct poly1305_key r;
--	/* finalize key */
--	u32 s[4];
--	/* accumulator */
--	struct poly1305_state h;
--	/* partial buffer */
--	u8 buf[POLY1305_BLOCK_SIZE];
--	/* bytes used in partial buffer */
--	unsigned int buflen;
-+	struct poly1305_desc desc;
- 	/* r key has been set */
- 	bool rset;
- 	/* s key has been set */
- 	bool sset;
+ 			scnprintf(str, size, "0x%08x%08x%08x%08x",
+diff --git a/lib/ubsan.h b/lib/ubsan.h
+index b8fa83864467..7b56c09473a9 100644
+--- a/lib/ubsan.h
++++ b/lib/ubsan.h
+@@ -78,7 +78,7 @@ struct invalid_value_data {
+ 	struct type_descriptor *type;
  };
  
-+void poly1305_core_blocks(struct poly1305_state *state,
-+			  const struct poly1305_key *key, const void *src,
-+			  unsigned int nblocks, u32 hibit);
-+void poly1305_core_emit(const struct poly1305_state *state, void *dst);
-+
- /* Crypto API helper functions for the Poly1305 MAC */
- int crypto_poly1305_init(struct shash_desc *desc);
- unsigned int crypto_poly1305_setdesckey(struct poly1305_desc_ctx *dctx,
-diff --git a/include/crypto/poly1305.h b/include/crypto/poly1305.h
-index 83e4b4c69a5a..148d9049b906 100644
---- a/include/crypto/poly1305.h
-+++ b/include/crypto/poly1305.h
-@@ -6,6 +6,7 @@
- #ifndef _CRYPTO_POLY1305_H
- #define _CRYPTO_POLY1305_H
- 
-+#include <asm/unaligned.h>
- #include <linux/types.h>
- #include <linux/crypto.h>
- 
-@@ -21,6 +22,19 @@ struct poly1305_state {
- 	u32 h[5];	/* accumulator, base 2^26 */
- };
- 
-+struct poly1305_desc {
-+	/* key */
-+	struct poly1305_key r;
-+	/* finalize key */
-+	u32 s[4];
-+	/* accumulator */
-+	struct poly1305_state h;
-+	/* partial buffer */
-+	u8 buf[POLY1305_BLOCK_SIZE];
-+	/* bytes used in partial buffer */
-+	unsigned int buflen;
-+};
-+
- /*
-  * Poly1305 core functions.  These implement the ε-almost-∆-universal hash
-  * function underlying the Poly1305 MAC, i.e. they don't add an encrypted nonce
-@@ -31,8 +45,20 @@ static inline void poly1305_core_init(struct poly1305_state *state)
- {
- 	*state = (struct poly1305_state){};
- }
--void poly1305_core_blocks(struct poly1305_state *state,
--			  const struct poly1305_key *key, const void *src,
--			  unsigned int nblocks, u32 hibit);
--void poly1305_core_emit(const struct poly1305_state *state, void *dst);
-+
-+static inline void poly1305_init(struct poly1305_desc *desc, const u8 *key)
-+{
-+	poly1305_core_setkey(&desc->r, key);
-+	desc->s[0] = get_unaligned_le32(key + 16);
-+	desc->s[1] = get_unaligned_le32(key + 20);
-+	desc->s[2] = get_unaligned_le32(key + 24);
-+	desc->s[3] = get_unaligned_le32(key + 28);
-+	poly1305_core_init(&desc->h);
-+	desc->buflen = 0;
-+}
-+
-+void poly1305_update(struct poly1305_desc *desc, const u8 *src,
-+		     unsigned int nbytes);
-+void poly1305_final(struct poly1305_desc *desc, u8 *digest);
-+
- #endif
-diff --git a/lib/crypto/poly1305.c b/lib/crypto/poly1305.c
-index abe6fccf7b9c..9af7cb5364af 100644
---- a/lib/crypto/poly1305.c
-+++ b/lib/crypto/poly1305.c
-@@ -154,5 +154,63 @@ void poly1305_core_emit(const struct poly1305_state *state, void *dst)
- }
- EXPORT_SYMBOL_GPL(poly1305_core_emit);
- 
-+void poly1305_update(struct poly1305_desc *desc, const u8 *src,
-+		     unsigned int nbytes)
-+{
-+	unsigned int bytes;
-+
-+	if (unlikely(desc->buflen)) {
-+		bytes = min(nbytes, POLY1305_BLOCK_SIZE - desc->buflen);
-+		memcpy(desc->buf + desc->buflen, src, bytes);
-+		src += bytes;
-+		nbytes -= bytes;
-+		desc->buflen += bytes;
-+
-+		if (desc->buflen == POLY1305_BLOCK_SIZE) {
-+			poly1305_core_blocks(&desc->h, &desc->r, desc->buf, 1, 1);
-+			desc->buflen = 0;
-+		}
-+	}
-+
-+	if (likely(nbytes >= POLY1305_BLOCK_SIZE)) {
-+		poly1305_core_blocks(&desc->h, &desc->r, src,
-+				     nbytes / POLY1305_BLOCK_SIZE, 1);
-+		src += nbytes - (nbytes % POLY1305_BLOCK_SIZE);
-+		nbytes %= POLY1305_BLOCK_SIZE;
-+	}
-+
-+	if (unlikely(nbytes)) {
-+		desc->buflen = nbytes;
-+		memcpy(desc->buf, src, nbytes);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(poly1305_update);
-+
-+void poly1305_final(struct poly1305_desc *desc, u8 *dst)
-+{
-+	__le32 digest[4];
-+	u64 f = 0;
-+
-+	if (unlikely(desc->buflen)) {
-+		desc->buf[desc->buflen++] = 1;
-+		memset(desc->buf + desc->buflen, 0,
-+		       POLY1305_BLOCK_SIZE - desc->buflen);
-+		poly1305_core_blocks(&desc->h, &desc->r, desc->buf, 1, 0);
-+	}
-+
-+	poly1305_core_emit(&desc->h, digest);
-+
-+	/* mac = (h + s) % (2^128) */
-+	f = (f >> 32) + le32_to_cpu(digest[0]) + desc->s[0];
-+	put_unaligned_le32(f, dst + 0);
-+	f = (f >> 32) + le32_to_cpu(digest[1]) + desc->s[1];
-+	put_unaligned_le32(f, dst + 4);
-+	f = (f >> 32) + le32_to_cpu(digest[2]) + desc->s[2];
-+	put_unaligned_le32(f, dst + 8);
-+	f = (f >> 32) + le32_to_cpu(digest[3]) + desc->s[3];
-+	put_unaligned_le32(f, dst + 12);
-+}
-+EXPORT_SYMBOL_GPL(poly1305_final);
-+
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Martin Willi <martin@strongswan.org>");
+-#if defined(CONFIG_ARCH_SUPPORTS_INT128) && defined(__SIZEOF_INT128__)
++#if defined(CONFIG_ARCH_SUPPORTS_INT128)
+ typedef __int128 s_max;
+ typedef unsigned __int128 u_max;
+ #else
 -- 
 2.20.1
 
