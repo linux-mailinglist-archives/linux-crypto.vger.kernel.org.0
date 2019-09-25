@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B545BE20B
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Sep 2019 18:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C1CBE209
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Sep 2019 18:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732807AbfIYQNx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 25 Sep 2019 12:13:53 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:37830 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387908AbfIYQNw (ORCPT
+        id S2387914AbfIYQNv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 25 Sep 2019 12:13:51 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:38778 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387893AbfIYQNv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 25 Sep 2019 12:13:52 -0400
-Received: by mail-wm1-f68.google.com with SMTP id f22so5642972wmc.2
-        for <linux-crypto@vger.kernel.org>; Wed, 25 Sep 2019 09:13:49 -0700 (PDT)
+        Wed, 25 Sep 2019 12:13:51 -0400
+Received: by mail-wm1-f65.google.com with SMTP id 3so5622385wmi.3
+        for <linux-crypto@vger.kernel.org>; Wed, 25 Sep 2019 09:13:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Tn6PuyCvHzBYqw98o/h7jtBUwnaA2ySt5tvs6NRZxxw=;
-        b=sVEBaPJKCR8iK0Ti7MEQI9T+ABca2s8phVUtojeWGaOvvOnjGzCAWbIcwzTp83jDXY
-         m5r+f8qSrlBt5lQOpjo4PbCjfXkKE1E7AhkpXc7Gewyt0NaJ1VnNP6JhkqSfMoqmY7GF
-         j8xyagkcnqsJPh13J/t3KvX77GFGnCn2aaaOo208psPIV4dtHsVaEJ/ehJH3zSYUCemn
-         4MlEFV8zbH5FzW68MLAwQC6BkiilCT/nnAaN30Tx0lJxhAMMEHA1RjS7B96k4pywgs/l
-         E8RSZdVJ1XxGKuaBONZ5Q7tUfH03ni0EiUQRWdXTdNNWtPojWjjnjsAtJEFlLJjTztif
-         q7sA==
+        bh=D96R9BcQ8eKJUV7xjET5CNTgwensabrJ4To3CfkaNW8=;
+        b=s3m7b9naLnNHrD0f/3+dV9tT2F26ZviX7fM8ksVZppWW7QbSmlRyhtUnKmysWyycxL
+         QRgbfaz9jdwloFQ0zmVeGl860ldSIqTCS24yRKEnUgkxsXZQBieWx7+RsIyOabP5l1NI
+         CaLze6rOX7Ks1YC8g2XOeNtTS5/IG33f917vYpdsKsKh+XoLQsYogu3bdNXE8TKiSMoO
+         lVMRxjAD1pES7Xjw4dmUla/yurD8Lb3HymYsZJKnl29MJ9Ye7dH//ulN/TgabxNdsScb
+         YMXMeYP5mQpbr4owmS5HBlq8lFvmKyx5dR9AUIJbus4U0FMeHDjZ1RVoAnMfdwEKJ7H9
+         JNOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Tn6PuyCvHzBYqw98o/h7jtBUwnaA2ySt5tvs6NRZxxw=;
-        b=WXQYLmPjuH73q/3X3Aq3HEjt8ZMOjKDRT1hnVFESa+tiSYUAUl6pWi/MBdgE76WQF/
-         YmyWgp1skZZ6fAMnawKwwuO6qQRgP0nEkh7HFd8E/oJnUphiz5tAgmBuQ3Y/QY4VhQfb
-         hxUUQ0GmxeEhGF00PHrjHqh6hmIT0aS76U0JhIeIkkUS5QnSdrqRcexOvxpcssaeYMF3
-         A4eMn1BtysDTHn7BJln6gH0jfRp9A0HqAcoF6D1v96tiBW56JXXLJOeccpG3qgqjibez
-         DhhLhzJ3xlIVcsZdzClAdnP++12d/mXGhz5RRg4t7Mif15VyVG+WCSnu/iGnM6H9YMw4
-         rYMQ==
-X-Gm-Message-State: APjAAAXiO9xvxuR3KZB8EykakLz5TcE+A0B7ZmRH+HWes7mE56CRMrn+
-        y8G0v+ueZ1jLJK7PowWOPoaIK4yM+0AInbbD
-X-Google-Smtp-Source: APXvYqyiGoS0vuNCTz14AtTm1UOuqGwmutm4W/PM/ZgKxsJ2voQXgcF4hUOWb9WVVS3FaxjAQLdoPg==
-X-Received: by 2002:a1c:a516:: with SMTP id o22mr5410877wme.116.1569428028214;
-        Wed, 25 Sep 2019 09:13:48 -0700 (PDT)
+        bh=D96R9BcQ8eKJUV7xjET5CNTgwensabrJ4To3CfkaNW8=;
+        b=ZoPYf+lN7U1nJ+G2fWnyHAmu4gB12sDHCg1WzBlcyV3UJbjdWbMFp4ukJTCLwnqngg
+         tA0zzVpvvLdsAvnuLHFGfwHQwXgusRpjpIFeHRPPJS04oxIIkzjk6+N1NINCNU87nn9w
+         f7jNqiofLkqCH1f23OyIvpNy0rHtbDID28NXr3KXM8TntLD0n3eFk0oZZxonTGlyW/dx
+         eNmVCrqDiGIcYKsPey2/ocTTNndA9+gWA+ega/E5zsy9bCHld8DIKm4gneWYqVsemf/q
+         gqAMR4EwFRHRWI12Z243v8jUpZuvyoHzS9HGpy5Nv/cl5PRoEap2g1RM1nfkerGcac/L
+         glzA==
+X-Gm-Message-State: APjAAAVPocXuueUSKrE7usXK3KNnMegafjb76C4wePWARXY1XPboah6I
+        Hh1GiGQ6IiD2EcJuO/ybsJPKFKxXY0LK4G54
+X-Google-Smtp-Source: APXvYqw7KfClP8SL65AqCCS1/nALL/cUk8vlg2o2VxH4LDsP9p1MBordH+gxH4Q/8d+71ltDn1xJjA==
+X-Received: by 2002:a1c:f602:: with SMTP id w2mr8378409wmc.145.1569428029595;
+        Wed, 25 Sep 2019 09:13:49 -0700 (PDT)
 Received: from localhost.localdomain (laubervilliers-657-1-83-120.w92-154.abo.wanadoo.fr. [92.154.90.120])
-        by smtp.gmail.com with ESMTPSA id o70sm4991085wme.29.2019.09.25.09.13.46
+        by smtp.gmail.com with ESMTPSA id o70sm4991085wme.29.2019.09.25.09.13.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Sep 2019 09:13:47 -0700 (PDT)
+        Wed, 25 Sep 2019 09:13:48 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org,
@@ -61,9 +61,9 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Andy Lutomirski <luto@kernel.org>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>
-Subject: [RFC PATCH 01/18] crypto: shash - add plumbing for operating on scatterlists
-Date:   Wed, 25 Sep 2019 18:12:38 +0200
-Message-Id: <20190925161255.1871-2-ard.biesheuvel@linaro.org>
+Subject: [RFC PATCH 02/18] crypto: x86/poly1305 - implement .update_from_sg method
+Date:   Wed, 25 Sep 2019 18:12:39 +0200
+Message-Id: <20190925161255.1871-3-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190925161255.1871-1-ard.biesheuvel@linaro.org>
 References: <20190925161255.1871-1-ard.biesheuvel@linaro.org>
@@ -74,143 +74,102 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add an internal method to the shash interface that permits templates
-to invoke it with a scatterlist. Drivers implementing the shash
-interface can opt into using this method, making it more straightforward
-for templates to pass down data provided via scatterlists without forcing
-the underlying shash to process each scatterlist entry with a discrete
-update() call. This will be used later in the SIMD accelerated Poly1305
-to amortize SIMD begin()/end() calls over the entire input.
+In order to reduce the number of invocations of the RFC7539 template
+into the Poly1305 driver, implement the new internal .update_from_sg
+method that allows the driver to amortize the cost of FPU preserve/
+restore sequences over a larger chunk of input.
 
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- crypto/ahash.c                 | 18 +++++++++++++++
- crypto/shash.c                 | 24 ++++++++++++++++++++
- include/crypto/hash.h          |  3 +++
- include/crypto/internal/hash.h | 19 ++++++++++++++++
- 4 files changed, 64 insertions(+)
+ arch/x86/crypto/poly1305_glue.c | 54 ++++++++++++++++----
+ 1 file changed, 43 insertions(+), 11 deletions(-)
 
-diff --git a/crypto/ahash.c b/crypto/ahash.c
-index 3815b363a693..aecb48f0f50c 100644
---- a/crypto/ahash.c
-+++ b/crypto/ahash.c
-@@ -144,6 +144,24 @@ int crypto_hash_walk_first(struct ahash_request *req,
+diff --git a/arch/x86/crypto/poly1305_glue.c b/arch/x86/crypto/poly1305_glue.c
+index 4a1c05dce950..f2afaa8e23c2 100644
+--- a/arch/x86/crypto/poly1305_glue.c
++++ b/arch/x86/crypto/poly1305_glue.c
+@@ -115,18 +115,11 @@ static unsigned int poly1305_simd_blocks(struct poly1305_desc_ctx *dctx,
+ 	return srclen;
  }
- EXPORT_SYMBOL_GPL(crypto_hash_walk_first);
  
-+int crypto_shash_walk_sg(struct shash_desc *desc, struct scatterlist *sg,
-+			 int nbytes, struct crypto_hash_walk *walk, int flags)
-+{
-+	walk->total = nbytes;
-+
-+	if (!walk->total) {
-+		walk->entrylen = 0;
-+		return 0;
-+	}
-+
-+	walk->alignmask = crypto_shash_alignmask(desc->tfm);
-+	walk->sg = sg;
-+	walk->flags = flags;
-+
-+	return hash_walk_new_entry(walk);
-+}
-+EXPORT_SYMBOL_GPL(crypto_shash_walk_sg);
-+
- int crypto_ahash_walk_first(struct ahash_request *req,
- 			    struct crypto_hash_walk *walk)
+-static int poly1305_simd_update(struct shash_desc *desc,
+-				const u8 *src, unsigned int srclen)
++static void poly1305_simd_do_update(struct shash_desc *desc,
++				    const u8 *src, unsigned int srclen)
  {
-diff --git a/crypto/shash.c b/crypto/shash.c
-index e83c5124f6eb..b16ab5590dc4 100644
---- a/crypto/shash.c
-+++ b/crypto/shash.c
-@@ -121,6 +121,30 @@ int crypto_shash_update(struct shash_desc *desc, const u8 *data,
- }
- EXPORT_SYMBOL_GPL(crypto_shash_update);
+-	struct poly1305_desc_ctx *dctx = shash_desc_ctx(desc);
+ 	unsigned int bytes;
  
-+int crypto_shash_update_from_sg(struct shash_desc *desc, struct scatterlist *sg,
-+				unsigned int len, bool atomic)
+-	/* kernel_fpu_begin/end is costly, use fallback for small updates */
+-	if (srclen <= 288 || !crypto_simd_usable())
+-		return crypto_poly1305_update(desc, src, srclen);
+-
+-	kernel_fpu_begin();
+-
+ 	if (unlikely(dctx->buflen)) {
+ 		bytes = min(srclen, POLY1305_BLOCK_SIZE - dctx->buflen);
+ 		memcpy(dctx->buf + dctx->buflen, src, bytes);
+@@ -147,12 +140,50 @@ static int poly1305_simd_update(struct shash_desc *desc,
+ 		srclen = bytes;
+ 	}
+ 
+-	kernel_fpu_end();
+-
+ 	if (unlikely(srclen)) {
+ 		dctx->buflen = srclen;
+ 		memcpy(dctx->buf, src, srclen);
+ 	}
++}
++
++static int poly1305_simd_update(struct shash_desc *desc,
++				const u8 *src, unsigned int srclen)
 +{
-+	struct crypto_shash *tfm = desc->tfm;
-+	struct shash_alg *shash = crypto_shash_alg(tfm);
++	/* kernel_fpu_begin/end is costly, use fallback for small updates */
++	if (srclen <= 288 || !crypto_simd_usable())
++		return crypto_poly1305_update(desc, src, srclen);
++
++	kernel_fpu_begin();
++	poly1305_simd_do_update(desc, src, srclen);
++	kernel_fpu_end();
++
++	return 0;
++}
++
++static int poly1305_simd_update_from_sg(struct shash_desc *desc,
++					struct scatterlist *sg,
++					unsigned int srclen,
++					int flags)
++{
++	bool do_simd = crypto_simd_usable() && srclen > 288;
 +	struct crypto_hash_walk walk;
-+	int flags = 0;
 +	int nbytes;
 +
-+	if (!atomic)
-+		flags = CRYPTO_TFM_REQ_MAY_SLEEP;
++	if (do_simd) {
++		kernel_fpu_begin();
++		flags &= ~CRYPTO_TFM_REQ_MAY_SLEEP;
++	}
 +
-+	if (shash->update_from_sg)
-+		return shash->update_from_sg(desc, sg, len, flags);
-+
-+	for (nbytes = crypto_shash_walk_sg(desc, sg, len, &walk, flags);
++	for (nbytes = crypto_shash_walk_sg(desc, sg, srclen, &walk, flags);
 +	     nbytes > 0;
-+	     nbytes = crypto_hash_walk_done(&walk, nbytes))
-+		nbytes = crypto_shash_update(desc, walk.data, nbytes);
-+
-+	return nbytes;
-+}
-+EXPORT_SYMBOL_GPL(crypto_shash_update_from_sg);
-+
- static int shash_final_unaligned(struct shash_desc *desc, u8 *out)
- {
- 	struct crypto_shash *tfm = desc->tfm;
-diff --git a/include/crypto/hash.h b/include/crypto/hash.h
-index ef10c370605a..0b83d85a3828 100644
---- a/include/crypto/hash.h
-+++ b/include/crypto/hash.h
-@@ -158,6 +158,7 @@ struct shash_desc {
-  * struct shash_alg - synchronous message digest definition
-  * @init: see struct ahash_alg
-  * @update: see struct ahash_alg
-+ * @update_from_sg: variant of update() taking a scatterlist as input [optional]
-  * @final: see struct ahash_alg
-  * @finup: see struct ahash_alg
-  * @digest: see struct ahash_alg
-@@ -175,6 +176,8 @@ struct shash_alg {
- 	int (*init)(struct shash_desc *desc);
- 	int (*update)(struct shash_desc *desc, const u8 *data,
- 		      unsigned int len);
-+	int (*update_from_sg)(struct shash_desc *desc, struct scatterlist *sg,
-+			      unsigned int len, int flags);
- 	int (*final)(struct shash_desc *desc, u8 *out);
- 	int (*finup)(struct shash_desc *desc, const u8 *data,
- 		     unsigned int len, u8 *out);
-diff --git a/include/crypto/internal/hash.h b/include/crypto/internal/hash.h
-index bfc9db7b100d..6f4bfa057bea 100644
---- a/include/crypto/internal/hash.h
-+++ b/include/crypto/internal/hash.h
-@@ -50,6 +50,8 @@ extern const struct crypto_type crypto_ahash_type;
- int crypto_hash_walk_done(struct crypto_hash_walk *walk, int err);
- int crypto_hash_walk_first(struct ahash_request *req,
- 			   struct crypto_hash_walk *walk);
-+int crypto_shash_walk_sg(struct shash_desc *desc, struct scatterlist *sg,
-+			 int nbytes, struct crypto_hash_walk *walk, int flags);
- int crypto_ahash_walk_first(struct ahash_request *req,
- 			   struct crypto_hash_walk *walk);
++	     nbytes = crypto_hash_walk_done(&walk, 0)) {
++		if (do_simd)
++			poly1305_simd_do_update(desc, walk.data, nbytes);
++		else
++			crypto_poly1305_update(desc, walk.data, nbytes);
++	}
++	if (do_simd)
++		kernel_fpu_end();
  
-@@ -242,5 +244,22 @@ static inline struct crypto_shash *__crypto_shash_cast(struct crypto_tfm *tfm)
- 	return container_of(tfm, struct crypto_shash, base);
+ 	return 0;
  }
- 
-+/**
-+ * crypto_shash_update_from_sg() - add data from a scatterlist to message digest
-+ * 				   for processing
-+ * @desc: operational state handle that is already initialized
-+ * @data: scatterlist with input data to be added to the message digest
-+ * @len: length of the input data
-+ * @atomic: whether or not the call is permitted to sleep
-+ *
-+ * Updates the message digest state of the operational state handle.
-+ *
-+ * Context: Any context.
-+ * Return: 0 if the message digest update was successful; < 0 if an error
-+ *	   occurred
-+ */
-+int crypto_shash_update_from_sg(struct shash_desc *desc, struct scatterlist *sg,
-+				unsigned int len, bool atomic);
-+
- #endif	/* _CRYPTO_INTERNAL_HASH_H */
- 
+@@ -161,6 +192,7 @@ static struct shash_alg alg = {
+ 	.digestsize	= POLY1305_DIGEST_SIZE,
+ 	.init		= poly1305_simd_init,
+ 	.update		= poly1305_simd_update,
++	.update_from_sg	= poly1305_simd_update_from_sg,
+ 	.final		= crypto_poly1305_final,
+ 	.descsize	= sizeof(struct poly1305_simd_desc_ctx),
+ 	.base		= {
 -- 
 2.20.1
 
