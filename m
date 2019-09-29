@@ -2,38 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0694C1801
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Sep 2019 19:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 845C3C17BE
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Sep 2019 19:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730234AbfI2Rd6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 29 Sep 2019 13:33:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45388 "EHLO mail.kernel.org"
+        id S1729428AbfI2RfN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 29 Sep 2019 13:35:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730227AbfI2Rd5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 29 Sep 2019 13:33:57 -0400
+        id S1729347AbfI2RfL (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 29 Sep 2019 13:35:11 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA93621925;
-        Sun, 29 Sep 2019 17:33:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20DE121925;
+        Sun, 29 Sep 2019 17:35:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569778436;
-        bh=VHqFPei1l3XYQuzGwjYB6MtsKq7T/Rtc2e+h2ot99yM=;
+        s=default; t=1569778510;
+        bh=d5x6H7X8RM/sSGV+fpNeGD/8PnIzqMfJl2docqT8a5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Irz6hmSUN8YBddT9ot4xN7SpSCDIw2Uqkkkx4VlUexieP2UrCd9iP7Kdary2HiA86
-         AgvXS8228QYmeP1dghFZfOF7Q+x+rtXtIHYGpecx8B4yg3K0pPVz2FV9TgMFmIzVlP
-         mlSe5b9p3pZbwRo858bdjx06J18+QUk2yDxR1LtI=
+        b=m8WVzHEXnPob+CYJbBLua8uhhKyY4U9OrNpnRMGKvS0sC3uEeK2PP1jtfDdjxVfqB
+         8y6/bG7cAV+XdD7jIjNYSwMI3TKih7eSoNFnihAmJ3nteu74agwtwa7eCX4Dt6qX/9
+         vEo4HqBJZDOKjc6yb3/4n/a892iKfU9v7n3AjLU0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Yunfeng Ye <yeyunfeng@huawei.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 35/42] crypto: hisilicon - Fix double free in sec_free_hw_sgl()
-Date:   Sun, 29 Sep 2019 13:32:34 -0400
-Message-Id: <20190929173244.8918-35-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 26/33] crypto: hisilicon - Fix double free in sec_free_hw_sgl()
+Date:   Sun, 29 Sep 2019 13:34:14 -0400
+Message-Id: <20190929173424.9361-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190929173244.8918-1-sashal@kernel.org>
-References: <20190929173244.8918-1-sashal@kernel.org>
+In-Reply-To: <20190929173424.9361-1-sashal@kernel.org>
+References: <20190929173424.9361-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -70,7 +70,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/sec/sec_algs.c b/drivers/crypto/hisilicon/sec/sec_algs.c
-index 02768af0dccdd..8c789b8671fc4 100644
+index cdc4f9a171d98..db2983c51f1e6 100644
 --- a/drivers/crypto/hisilicon/sec/sec_algs.c
 +++ b/drivers/crypto/hisilicon/sec/sec_algs.c
 @@ -215,17 +215,18 @@ static void sec_free_hw_sgl(struct sec_hw_sgl *hw_sgl,
