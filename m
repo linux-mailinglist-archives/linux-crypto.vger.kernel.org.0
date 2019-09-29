@@ -2,65 +2,102 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B69DBC1601
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Sep 2019 17:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B121CC16B0
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Sep 2019 19:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbfI2Pvu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 29 Sep 2019 11:51:50 -0400
-Received: from padbanking.net ([31.220.0.186]:49471 "EHLO
-        slot0.jntechglass.com" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbfI2Pvu (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 29 Sep 2019 11:51:50 -0400
-X-Greylist: delayed 609 seconds by postgrey-1.27 at vger.kernel.org; Sun, 29 Sep 2019 11:51:49 EDT
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=jntechglass.com;
- h=Content-Type:MIME-Version:Content-Transfer-Encoding:Content-Description:Subject:To:From:Date:Reply-To:Message-ID; i=admin@jntechglass.com;
- bh=SQLP4om4P2qFu3Jv36hG0y56Qcw=;
- b=PTP3yKDmilenplyuJrfjGyNuvTMYGhtQhY7aDb17oMr2DWrUYjx6992eaM4PMiSIwRXpCdWylne1
-   4t7VPKhCjUogegB7lRFEkaZXuDDqeP6B7Euf04Tfoeh6PmwYj1BM8LYU0Wqz0hefJa9q0ZK01UBX
-   Q/4m04fy8wnJsCCmM+viTLq8AJDS5fPR6fxJQLd2h0cyQVpXx+50iNnvpGZREazUjlbc1Erk0O62
-   xYjV0mfV5/9ZDsO/FCCcUq2Jax7xN/JoS81unqc9T3l3/eSmCxKwhdY7BRWkL5wNUrTxUHQLv/lc
-   6CK1WjS3xe7Rmzo6WHZX06XdaAh9SSO8UYxRGQ==
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=jntechglass.com;
- b=fl5nPD+SRsmdkuIPlk4XfmAWE3ZRyRudot/uoRuRkuRwmYBL26GszqRgBu/zmNPQTAtqanc9ctnY
-   2Hy5dMpWRQxufs7ZITdGVaBgyDGo4raDmfO3gzas2dqOzNOdCc70DsOyCcQKiCYmHiNkYrQTBfCj
-   BPj/+hUu5hzqYxQjkgJDjLiOyEg0N9ht1AGYZWhUOd5ajEyzoBwB4TE1sQ41QzFQUmpALZS/g41n
-   MlksLN2BTNjQEeLT1b1avt8wHn32hDi0hQ3xS9fN15a8glnn4+i98UD0/YXxX75Cg37wUnVeG0C6
-   bshr6MZrtlPhTSFYEvMjl/DjFAnn/kA/1GZZMA==;
-Content-Type: text/plain; charset="utf-8"
+        id S1729705AbfI2RcQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 29 Sep 2019 13:32:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729690AbfI2RcN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 29 Sep 2019 13:32:13 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D2A021906;
+        Sun, 29 Sep 2019 17:32:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1569778332;
+        bh=VHqFPei1l3XYQuzGwjYB6MtsKq7T/Rtc2e+h2ot99yM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UZ99K9rDMiD6+svrKZVZJl3eu0E/4zV20KF0IXwVXHnVdsj5uSwzsNOno3frUmcsS
+         upNM5mCkqcCkwqO7np+HG2qVAI90Xjjodc5Ac7fllJCp4ymqjM1JeZu1PZaIb8+11E
+         SKT3oZ0yP1emhMHb+rUThz4gVTzbgtNaTjb7J170=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Yunfeng Ye <yeyunfeng@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.3 41/49] crypto: hisilicon - Fix double free in sec_free_hw_sgl()
+Date:   Sun, 29 Sep 2019 13:30:41 -0400
+Message-Id: <20190929173053.8400-41-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190929173053.8400-1-sashal@kernel.org>
+References: <20190929173053.8400-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?b?UmU6IOKCrCAyLDAwMCwwMDAtMDAgRVVS?=
-To:     Recipients <admin@jntechglass.com>
-From:   "Herr Richard Wahl" <admin@jntechglass.com>
-Date:   Sun, 29 Sep 2019 08:33:02 -0700
-Reply-To: unitednationscouncilrefunds@gmail.com
-Message-ID: <0.0.19.F4A.1D576DB2E370B2A.0@slot0.jntechglass.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Lieber Freund,
+From: Yunfeng Ye <yeyunfeng@huawei.com>
 
-Ich bin Herr Richard Wahl der Mega-Gewinner von $ 533M In Mega Millions Jac=
-kpot spende ich an 5 zuf=C3=A4llige Personen, wenn Sie diese E-Mail erhalte=
-n, dann wurde Ihre E-Mail nach einem Spinball ausgew=C3=A4hlt. Ich habe den=
- gr=C3=B6=C3=9Ften Teil meines Verm=C3=B6gens auf eine Reihe von Wohlt=C3=
-=A4tigkeitsorganisationen und Organisationen verteilt. Ich habe mich freiwi=
-llig dazu entschieden, Ihnen den Betrag von =E2=82=AC 2.000.000,00 zu spend=
-en eine der ausgew=C3=A4hlten 5, um meine Gewinne zu =C3=BCberpr=C3=BCfen, =
-finden Sie auf meiner You Tube Seite unten.
+[ Upstream commit 24fbf7bad888767bed952f540ac963bc57e47e15 ]
 
-UHR MICH HIER: https://www.youtube.com/watch?v=3Dtne02ExNDrw
+There are two problems in sec_free_hw_sgl():
 
-Das ist dein Spendencode: [DF00430342018]
+First, when sgl_current->next is valid, @hw_sgl will be freed in the
+first loop, but it free again after the loop.
 
-Antworten Sie mit dem Spendencode auf diese E-Mail: andrebotha@yahoo.com
+Second, sgl_current and sgl_current->next_sgl is not match when
+dma_pool_free() is invoked, the third parameter should be the dma
+address of sgl_current, but sgl_current->next_sgl is the dma address
+of next chain, so use sgl_current->next_sgl is wrong.
 
-Ich hoffe, Sie und Ihre Familie gl=C3=BCcklich zu machen.
+Fix this by deleting the last dma_pool_free() in sec_free_hw_sgl(),
+modifying the condition for while loop, and matching the address for
+dma_pool_free().
 
-Gr=C3=BC=C3=9Fe
+Fixes: 915e4e8413da ("crypto: hisilicon - SEC security accelerator driver")
+Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/crypto/hisilicon/sec/sec_algs.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-Herr Richard Wahl
+diff --git a/drivers/crypto/hisilicon/sec/sec_algs.c b/drivers/crypto/hisilicon/sec/sec_algs.c
+index 02768af0dccdd..8c789b8671fc4 100644
+--- a/drivers/crypto/hisilicon/sec/sec_algs.c
++++ b/drivers/crypto/hisilicon/sec/sec_algs.c
+@@ -215,17 +215,18 @@ static void sec_free_hw_sgl(struct sec_hw_sgl *hw_sgl,
+ 			    dma_addr_t psec_sgl, struct sec_dev_info *info)
+ {
+ 	struct sec_hw_sgl *sgl_current, *sgl_next;
++	dma_addr_t sgl_next_dma;
+ 
+-	if (!hw_sgl)
+-		return;
+ 	sgl_current = hw_sgl;
+-	while (sgl_current->next) {
++	while (sgl_current) {
+ 		sgl_next = sgl_current->next;
+-		dma_pool_free(info->hw_sgl_pool, sgl_current,
+-			      sgl_current->next_sgl);
++		sgl_next_dma = sgl_current->next_sgl;
++
++		dma_pool_free(info->hw_sgl_pool, sgl_current, psec_sgl);
++
+ 		sgl_current = sgl_next;
++		psec_sgl = sgl_next_dma;
+ 	}
+-	dma_pool_free(info->hw_sgl_pool, hw_sgl, psec_sgl);
+ }
+ 
+ static int sec_alg_skcipher_setkey(struct crypto_skcipher *tfm,
+-- 
+2.20.1
+
