@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FCBC1BF6
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Sep 2019 09:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279CFC1BF0
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Sep 2019 09:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729503AbfI3HMx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 30 Sep 2019 03:12:53 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3178 "EHLO huawei.com"
+        id S1729478AbfI3HMX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 Sep 2019 03:12:23 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3180 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729525AbfI3HMw (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 30 Sep 2019 03:12:52 -0400
+        id S1726008AbfI3HMX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 30 Sep 2019 03:12:23 -0400
 Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 405692E7C6CBD5C69828;
+        by Forcepoint Email with ESMTP id 494BD480D7532B268F3E;
         Mon, 30 Sep 2019 15:12:19 +0800 (CST)
 Received: from localhost.localdomain (10.67.212.75) by
  DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
@@ -21,11 +21,11 @@ From:   Zhou Wang <wangzhou1@hisilicon.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <linuxarm@huawei.com>,
-        Shukun Tan <tanshukun1@huawei.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>
-Subject: [PATCH 2/4] crypto: hisilicon - add sgl_sge_nr module param for zip
-Date:   Mon, 30 Sep 2019 15:08:53 +0800
-Message-ID: <1569827335-21822-3-git-send-email-wangzhou1@hisilicon.com>
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Shukun Tan <tanshukun1@huawei.com>
+Subject: [PATCH 3/4] crypto: hisilicon - fix large sgl memory allocation problem when disable smmu
+Date:   Mon, 30 Sep 2019 15:08:54 +0800
+Message-ID: <1569827335-21822-4-git-send-email-wangzhou1@hisilicon.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1569827335-21822-1-git-send-email-wangzhou1@hisilicon.com>
 References: <1569827335-21822-1-git-send-email-wangzhou1@hisilicon.com>
@@ -38,90 +38,161 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Shukun Tan <tanshukun1@huawei.com>
+When disabling SMMU, it may fail to allocate large continuous memory. This
+patch fixes this by allocating memory as blocks.
 
-Add a module parameter for zip driver to set the number of SGE in one SGL.
-
-Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
 Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
+Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
 ---
- drivers/crypto/hisilicon/qm.h             |  2 ++
- drivers/crypto/hisilicon/sgl.c            |  2 +-
- drivers/crypto/hisilicon/zip/zip_crypto.c | 26 +++++++++++++++++++++++++-
- 3 files changed, 28 insertions(+), 2 deletions(-)
+ drivers/crypto/hisilicon/sgl.c | 83 ++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 68 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/qm.h b/drivers/crypto/hisilicon/qm.h
-index 978d2ae..103e2fd 100644
---- a/drivers/crypto/hisilicon/qm.h
-+++ b/drivers/crypto/hisilicon/qm.h
-@@ -75,6 +75,8 @@
- 
- #define QM_Q_DEPTH			1024
- 
-+#define HISI_ACC_SGL_SGE_NR_MAX		255
-+
- enum qp_state {
- 	QP_STOP,
- };
 diff --git a/drivers/crypto/hisilicon/sgl.c b/drivers/crypto/hisilicon/sgl.c
-index 81a9040..f71de0d 100644
+index f71de0d..f017361 100644
 --- a/drivers/crypto/hisilicon/sgl.c
 +++ b/drivers/crypto/hisilicon/sgl.c
-@@ -3,9 +3,9 @@
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
- #include <linux/slab.h>
-+#include "qm.h"
- 
+@@ -8,6 +8,7 @@
  #define HISI_ACC_SGL_SGE_NR_MIN		1
--#define HISI_ACC_SGL_SGE_NR_MAX		255
  #define HISI_ACC_SGL_NR_MAX		256
  #define HISI_ACC_SGL_ALIGN_SIZE		64
++#define HISI_ACC_MEM_BLOCK_NR		5
  
-diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
-index a82bee5..9d31b80 100644
---- a/drivers/crypto/hisilicon/zip/zip_crypto.c
-+++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
-@@ -79,6 +79,30 @@ struct hisi_zip_ctx {
- 	struct hisi_zip_qp_ctx qp_ctx[HZIP_CTX_Q_NUM];
- };
+ struct acc_hw_sge {
+ 	dma_addr_t buf;
+@@ -31,9 +32,13 @@ struct hisi_acc_hw_sgl {
+ } __aligned(1);
  
-+static int sgl_sge_nr_set(const char *val, const struct kernel_param *kp)
-+{
-+	int ret;
-+	u16 n;
-+
-+	if (!val)
-+		return -EINVAL;
-+
-+	ret = kstrtou16(val, 10, &n);
-+	if (ret || n == 0 || n > HISI_ACC_SGL_SGE_NR_MAX)
-+		return -EINVAL;
-+
-+	return param_set_int(val, kp);
-+}
-+
-+static const struct kernel_param_ops sgl_sge_nr_ops = {
-+	.set = sgl_sge_nr_set,
-+	.get = param_get_int,
-+};
-+
-+static u16 sgl_sge_nr = HZIP_SGL_SGE_NR;
-+module_param_cb(sgl_sge_nr, &sgl_sge_nr_ops, &sgl_sge_nr, 0444);
-+MODULE_PARM_DESC(sgl_sge_nr, "Number of sge in sgl(1-255)");
-+
- static void hisi_zip_config_buf_type(struct hisi_zip_sqe *sqe, u8 buf_type)
+ struct hisi_acc_sgl_pool {
+-	struct hisi_acc_hw_sgl *sgl;
+-	dma_addr_t sgl_dma;
+-	size_t size;
++	struct mem_block {
++		struct hisi_acc_hw_sgl *sgl;
++		dma_addr_t sgl_dma;
++		size_t size;
++	} mem_block[HISI_ACC_MEM_BLOCK_NR];
++	u32 sgl_num_per_block;
++	u32 block_num;
+ 	u32 count;
+ 	u32 sge_nr;
+ 	size_t sgl_size;
+@@ -51,33 +56,66 @@ struct hisi_acc_sgl_pool {
+ struct hisi_acc_sgl_pool *hisi_acc_create_sgl_pool(struct device *dev,
+ 						   u32 count, u32 sge_nr)
  {
- 	u32 val;
-@@ -273,7 +297,7 @@ static int hisi_zip_create_sgl_pool(struct hisi_zip_ctx *ctx)
- 		tmp = &ctx->qp_ctx[i];
- 		dev = &tmp->qp->qm->pdev->dev;
- 		tmp->sgl_pool = hisi_acc_create_sgl_pool(dev, QM_Q_DEPTH << 1,
--							 HZIP_SGL_SGE_NR);
-+							 sgl_sge_nr);
- 		if (IS_ERR(tmp->sgl_pool)) {
- 			if (i == 1)
- 				goto err_free_sgl_pool0;
++	u32 sgl_size, block_size, sgl_num_per_block, block_num, remain_sgl = 0;
+ 	struct hisi_acc_sgl_pool *pool;
+-	u32 sgl_size;
+-	u32 size;
++	struct mem_block *block;
++	u32 i, j;
+ 
+ 	if (!dev || !count || !sge_nr || sge_nr > HISI_ACC_SGL_SGE_NR_MAX)
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	sgl_size = sizeof(struct acc_hw_sge) * sge_nr +
+ 		   sizeof(struct hisi_acc_hw_sgl);
+-	size = sgl_size * count;
++	block_size = PAGE_SIZE * (1 << (MAX_ORDER - 1));
++	sgl_num_per_block = block_size / sgl_size;
++	block_num = count / sgl_num_per_block;
++	remain_sgl = count % sgl_num_per_block;
++
++	if ((!remain_sgl && block_num > HISI_ACC_MEM_BLOCK_NR) ||
++	    (remain_sgl > 0 && block_num > HISI_ACC_MEM_BLOCK_NR - 1))
++		return ERR_PTR(-EINVAL);
+ 
+ 	pool = kzalloc(sizeof(*pool), GFP_KERNEL);
+ 	if (!pool)
+ 		return ERR_PTR(-ENOMEM);
++	block = pool->mem_block;
+ 
+-	pool->sgl = dma_alloc_coherent(dev, size, &pool->sgl_dma, GFP_KERNEL);
+-	if (!pool->sgl) {
+-		kfree(pool);
+-		return ERR_PTR(-ENOMEM);
++	for (i = 0; i < block_num; i++) {
++		block[i].sgl = dma_alloc_coherent(dev, block_size,
++						  &block[i].sgl_dma,
++						  GFP_KERNEL);
++		if (!block[i].sgl)
++			goto err_free_mem;
++
++		block[i].size = block_size;
+ 	}
+ 
+-	pool->size = size;
++	if (remain_sgl > 0) {
++		block[i].sgl = dma_alloc_coherent(dev, remain_sgl * sgl_size,
++						  &block[i].sgl_dma,
++						  GFP_KERNEL);
++		if (!block[i].sgl)
++			goto err_free_mem;
++
++		block[i].size = remain_sgl * sgl_size;
++	}
++
++	pool->sgl_num_per_block = sgl_num_per_block;
++	pool->block_num = remain_sgl ? block_num + 1 : block_num;
+ 	pool->count = count;
+ 	pool->sgl_size = sgl_size;
+ 	pool->sge_nr = sge_nr;
+ 
+ 	return pool;
++
++err_free_mem:
++	for (j = 0; j < i; j++) {
++		dma_free_coherent(dev, block_size, block[j].sgl,
++				  block[j].sgl_dma);
++		memset(block + j, 0, sizeof(*block));
++	}
++	kfree(pool);
++	return ERR_PTR(-ENOMEM);
+ }
+ EXPORT_SYMBOL_GPL(hisi_acc_create_sgl_pool);
+ 
+@@ -90,10 +128,18 @@ EXPORT_SYMBOL_GPL(hisi_acc_create_sgl_pool);
+  */
+ void hisi_acc_free_sgl_pool(struct device *dev, struct hisi_acc_sgl_pool *pool)
+ {
++	struct mem_block *block;
++	int i;
++
+ 	if (!dev || !pool)
+ 		return;
+ 
+-	dma_free_coherent(dev, pool->size, pool->sgl, pool->sgl_dma);
++	block = pool->mem_block;
++
++	for (i = 0; i < pool->block_num; i++)
++		dma_free_coherent(dev, block[i].size, block[i].sgl,
++				  block[i].sgl_dma);
++
+ 	kfree(pool);
+ }
+ EXPORT_SYMBOL_GPL(hisi_acc_free_sgl_pool);
+@@ -101,11 +147,18 @@ EXPORT_SYMBOL_GPL(hisi_acc_free_sgl_pool);
+ struct hisi_acc_hw_sgl *acc_get_sgl(struct hisi_acc_sgl_pool *pool, u32 index,
+ 				    dma_addr_t *hw_sgl_dma)
+ {
+-	if (!pool || !hw_sgl_dma || index >= pool->count || !pool->sgl)
++	struct mem_block *block;
++	u32 block_index, offset;
++
++	if (!pool || !hw_sgl_dma || index >= pool->count)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	*hw_sgl_dma = pool->sgl_dma + pool->sgl_size * index;
+-	return (void *)pool->sgl + pool->sgl_size * index;
++	block = pool->mem_block;
++	block_index = index / pool->sgl_num_per_block;
++	offset = index % pool->sgl_num_per_block;
++
++	*hw_sgl_dma = block[block_index].sgl_dma + pool->sgl_size * offset;
++	return (void *)block[block_index].sgl + pool->sgl_size * offset;
+ }
+ 
+ void acc_put_sgl(struct hisi_acc_sgl_pool *pool, u32 index) {}
 -- 
 2.8.1
 
