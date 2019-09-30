@@ -2,56 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D53EC270B
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Sep 2019 22:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D33C26B2
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Sep 2019 22:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729459AbfI3UpR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 30 Sep 2019 16:45:17 -0400
-Received: from mail-eopbgr810049.outbound.protection.outlook.com ([40.107.81.49]:12860
+        id S1729748AbfI3Ui7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 Sep 2019 16:38:59 -0400
+Received: from mail-eopbgr810042.outbound.protection.outlook.com ([40.107.81.42]:46352
         "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727508AbfI3UpR (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 30 Sep 2019 16:45:17 -0400
+        id S1729636AbfI3Ui4 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 30 Sep 2019 16:38:56 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BBEY8BqneKM/iBwfjZXN25Bz0dua9bv+sHLm2zVrt5P6EJobVVvzwuxNLyYqKfY/g67QitwgmmAlY96WGoCrY1IBHYX+NGr5jrOoweXrZ9CpYZTFEVYNi6BG8flbayjx6Lo4gA0AImLc9xenlSSXih97+CCVUQpEsvr4mWZkGy5O3njTMButrNgsrPTZOEQT33kIPr7O+zVOAdAJV1bmaxSx0NYMalcy56kTJpRCKqSRB2iPta3R+zJKCA+uqzoJD31P6gGgDuDNPu9zklgDxNAZ/5xuKUsebnknPjGEEhe8iXhqbMrKgG6U0nbMMPZhZCv9jqrVwqNiV0BsDU+4fg==
+ b=PfHHkDnRSqOxZzcrwKkGakWhQOj/0nb+rDfJUHmFhghksX/E21MQQJzXc70cEqs+NsV0Lkxkz+CHmLiLydM44lMWELJgdF4g9+arjsirwnAcXw5G7HIK5FGmkzrvrXwVagMlb/LXJvjWa1OuSre7sEYOV+kLsi1/g/fEgDh1s0nTvMTc62AOme1JagFhvaw1Hrj1AoMw4P1ZoWcIR6nr311QsC5Jdl01TSdEIWYqETbbmoyKteX5bDIp8XPsxqDQvSWy8/u3CVGLFgi9LKgLXvK5KNaagWGJeeomZNYunV/WUdjPFrm3pq4is05QaA+zrsPuhtsTg+Ws5sqkKM52Lw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vPIbVktKM/JIpADJbjiLRJKgympdn7C6CMrqlVdZTYs=;
- b=RflDtPO9KsbkOl/z1eXK5TbIbSE6sb46qL30xvQhJX4+6VuWEACjSKZV5R6RxNuH2Cr3QXtRsbxrelRLuo+W6C1r55HMlXF4it6Y8YOTvn1ox9OMnItHZe9mWBkDthdrOStcYjlIC/SzNJeZF5m0GC1OcjC+GAjHBe79FpGPrvTR/t9YUQvbMawd0Lbp3CERBn9JOXZNXZ4ivp3EnGl30KlTNxNhIPhJB6UgOFvI9nlVc+LPGXJDTXWtwEjijMxbMrnWQUWNvruzZax2EwiOAtqP8BocDlHltPF2H5LAmUpjf34wX2Wgh+PoSC5lmHq7nNx5PP12y5R3+NFGE2IJhQ==
+ bh=FL1Voe/YukiInIpN+TRUbtVw0raKOWtIDr3KoQi9GxI=;
+ b=QAFGt+HDgz9AL6PK14VeKMM9tl/wjvRcXbN1vNbOMGf1p9SP34PU0i9rjKkDTejNY/Q7q7D1AAMXSxVYGZ27wyDtmOYsFi709bwEoXcqFXpGUuNwCkt5V04/8KipWlMRQC6q7PBT1szbfQZtm0iOKv0AJ+hcyia+wxMq8PFeHydF3K4vkXq5SLKcGsHWAicvAZ2YqOToVhvc5fP6ivQxs3JGFlW+Ubs0x0hX45PohbKMW/xApt4AE3H2Toy7B7nGJpEHV0w2DZmC1srDz8H7h49i5O4UQzNtFhKYl4skpCUyKFXA4g8rwi7/X+aG//PLVopdy/lMAEfhm1kkMAWDDQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=verimatrix.com; dmarc=pass action=none
  header.from=verimatrix.com; dkim=pass header.d=verimatrix.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=verimatrix.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vPIbVktKM/JIpADJbjiLRJKgympdn7C6CMrqlVdZTYs=;
- b=sUMnUVh6V+LTQZF1Zqh80tzDqEWzvZe51bYUz+98DMzRmrg+EpDS2cA5P/5jInA8BvfL1UAcVcNkaSfVQ0tz7p7PMDyp0BI0Qp/SpmP2YsEhNlkpjeSmC44scR8VzFBz2VPZ4rNejfYPviF6QqSat6zRtIE7Nx0Jb5TnK3xv1Y8=
+ bh=FL1Voe/YukiInIpN+TRUbtVw0raKOWtIDr3KoQi9GxI=;
+ b=rJKZfeudlRzsnzrlTxblD3vRbIdxqtu7Wor1QsJCVj8f/TL5wbh2R7u1W0l9TL5B6yyeA7w+kPIkHod4zbmjGdyt3MaR1PIDTj0QxxFcDoh5q5oRVEKeYUGciJGC5Gw7Vv8SGiuYewpJMVLAhZoAOQx5piJSD2+4Cd8wjbTf0t4=
 Received: from CH2PR20MB2968.namprd20.prod.outlook.com (10.255.156.33) by
- CH2PR20MB2934.namprd20.prod.outlook.com (10.255.156.91) with Microsoft SMTP
+ CH2SPR01MB0005.namprd20.prod.outlook.com (10.255.155.138) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2305.20; Mon, 30 Sep 2019 18:50:45 +0000
+ 15.20.2305.17; Mon, 30 Sep 2019 19:04:24 +0000
 Received: from CH2PR20MB2968.namprd20.prod.outlook.com
  ([fe80::e8b0:cb5f:268e:e3ae]) by CH2PR20MB2968.namprd20.prod.outlook.com
  ([fe80::e8b0:cb5f:268e:e3ae%5]) with mapi id 15.20.2305.017; Mon, 30 Sep 2019
- 18:50:44 +0000
+ 19:04:23 +0000
 From:   Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
 To:     Arnd Bergmann <arnd@arndb.de>,
         Antoine Tenart <antoine.tenart@bootlin.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>
 CC:     Pascal van Leeuwen <pascalvanl@gmail.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Eric Biggers <ebiggers@google.com>,
         "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/3] crypto: inside-secure - Fix a maybe-uninitialized
- warning
-Thread-Topic: [PATCH 1/3] crypto: inside-secure - Fix a maybe-uninitialized
- warning
-Thread-Index: AQHVd4jI0FLkks7xkkmieh+BnXbyw6dEj6DA
-Date:   Mon, 30 Sep 2019 18:50:44 +0000
-Message-ID: <CH2PR20MB29689C8C08D524BA05573EE9CA820@CH2PR20MB2968.namprd20.prod.outlook.com>
+Subject: RE: [PATCH 2/3] crypto: inside-secure - Reduce stack usage
+Thread-Topic: [PATCH 2/3] crypto: inside-secure - Reduce stack usage
+Thread-Index: AQHVd4jLpZQEIOemw0ukUdKdGUz6fqdEkO9A
+Date:   Mon, 30 Sep 2019 19:04:23 +0000
+Message-ID: <CH2PR20MB2968B7855D241C747BEB68B9CA820@CH2PR20MB2968.namprd20.prod.outlook.com>
 References: <20190930121520.1388317-1-arnd@arndb.de>
-In-Reply-To: <20190930121520.1388317-1-arnd@arndb.de>
+ <20190930121520.1388317-2-arnd@arndb.de>
+In-Reply-To: <20190930121520.1388317-2-arnd@arndb.de>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -60,31 +61,31 @@ authentication-results: spf=none (sender IP is )
  smtp.mailfrom=pvanleeuwen@verimatrix.com; 
 x-originating-ip: [188.204.2.113]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1113a9f0-262c-48a3-e4d7-08d745d719b7
-x-ms-traffictypediagnostic: CH2PR20MB2934:
+x-ms-office365-filtering-correlation-id: fbdcd030-0bf0-4ec9-c0bb-08d745d901cb
+x-ms-traffictypediagnostic: CH2SPR01MB0005:
 x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <CH2PR20MB29340330782B095C36FE17D8CA820@CH2PR20MB2934.namprd20.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:345;
+x-microsoft-antispam-prvs: <CH2SPR01MB00058F2AC4E1631B5DF69476CA820@CH2SPR01MB0005.namprd20.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
 x-forefront-prvs: 01762B0D64
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(396003)(346002)(39850400004)(136003)(376002)(13464003)(199004)(189003)(11346002)(102836004)(53546011)(6506007)(6116002)(3846002)(26005)(229853002)(446003)(33656002)(2906002)(5660300002)(99286004)(7736002)(305945005)(486006)(52536014)(54906003)(6436002)(76176011)(186003)(71190400001)(71200400001)(476003)(7696005)(316002)(8936002)(110136005)(55016002)(81166006)(8676002)(9686003)(25786009)(86362001)(81156014)(74316002)(15974865002)(66556008)(66066001)(6246003)(66476007)(256004)(66446008)(14444005)(64756008)(76116006)(478600001)(66946007)(14454004)(4326008)(18886075002);DIR:OUT;SFP:1101;SCL:1;SRVR:CH2PR20MB2934;H:CH2PR20MB2968.namprd20.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(39850400004)(376002)(346002)(366004)(136003)(189003)(199004)(13464003)(51444003)(256004)(5660300002)(2906002)(478600001)(76116006)(99286004)(9686003)(86362001)(26005)(8676002)(81156014)(6506007)(76176011)(229853002)(53546011)(14444005)(81166006)(8936002)(15974865002)(66946007)(14454004)(66476007)(66446008)(66556008)(6436002)(55016002)(52536014)(7696005)(186003)(33656002)(7736002)(3846002)(71200400001)(305945005)(476003)(74316002)(71190400001)(66066001)(316002)(102836004)(54906003)(446003)(64756008)(25786009)(486006)(4326008)(11346002)(110136005)(6116002)(6246003)(18886075002);DIR:OUT;SFP:1101;SCL:1;SRVR:CH2SPR01MB0005;H:CH2PR20MB2968.namprd20.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: verimatrix.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 28l2+VgICUBpCc+RpmlYwHHvFVX61rMs4ghLffNkdJ5OcNFG540Yln6Dpj8uGjezaIof8tS3nB2snGZX6LTdKj9wmp2uAzalMQQrM3hSWWRR1SesDXUpsLVKn3hYdICFI2iOVRdybQy8ILkZuATcwWjCT/wjwZQs+qFx18mnpPcQ/cxMJKw0LWtET2NEx47EWM/J6fbNQZNFLVvMmAMgvo33eo41i+0WRZcFXRTBEnQbESKKXUp0S+AbZ000tUVewOBwz0OPRxb+jYvicZs5mv6qA24Z/IphKVwUWWCMoiebZ0lMTApNFxdy7+8qdE8C+SPKfw4Th4e9jnh9n/+9/2FLUBQ93ZHlv6+bblsqpzRctfSWsrcRSJbhspbCg84Rtuy0E021Z6EmecGg+BwezoblA6lqDGZLCUfnMdLgElk=
+x-microsoft-antispam-message-info: +vQG8ViFzOzrmj/9kjXkYFrZoTfiqqZ4XGy6OjTlRbs88sZSjCtEn8IykEdWTgSd914pCSA+ZgepV2GAzZazEtO2nsvMnzdELfM0Wy50YuvmCdgXlo5tutzvEhrB34jn1iV9A7zh4bqX/Yx8jHMIQnNOqsKCdexUAzpPTorMCRTQewODKy/iFiw7cHt+1RNisJQBEyB/bF6ST+PX709cPWoYdwkz64LXjMIPrLUAjGvo8PkEptTNNRexaA/fAI4NBU48qyDCEZfNdi/2sUNQuJoctJkfbX2tglneG0uwtivg/JP3EVlmtW9n2DyBMKUMG5FceFDrXHG18SypZX5vaeXhA5l8//RgDd5nTXLVxfFTHoKBWqMEsAtuQgZUbNYYBy+pAHtDHEZJ3J9mdppkJsY9y28iuBhhU+wxg6Ae+/I=
 x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: verimatrix.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1113a9f0-262c-48a3-e4d7-08d745d719b7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2019 18:50:44.5213
+X-MS-Exchange-CrossTenant-Network-Message-Id: fbdcd030-0bf0-4ec9-c0bb-08d745d901cb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2019 19:04:23.5635
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: dcb260f9-022d-4495-8602-eae51035a0d0
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BJlPPiBYvaSDO3gnHWC9czdtR8HsWh1t/eFX/0fWTDUuJTj+2HdiXOtUIEdfm95wNlwuhGxkoDZj/hI09zsx3nMVp92vfMMXmnMXllc55XU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR20MB2934
+X-MS-Exchange-CrossTenant-userprincipalname: EIua5YWqSTkQw1wXlQq9MRxCvR6PggX22phHAxZS+4XZjUng9HT2lLTMOYe13Rnh9ir3nQS/9YD9GNwPrWIZxhArqu3ru2MIngxI+NB8THg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2SPR01MB0005
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
@@ -97,54 +98,184 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 or.apana.org.au>;
 > David S. Miller <davem@davemloft.net>
 > Cc: Arnd Bergmann <arnd@arndb.de>; Pascal Van Leeuwen <pvanleeuwen@verima=
-trix.com>; Pascal van
-> Leeuwen <pascalvanl@gmail.com>; linux-crypto@vger.kernel.org; linux-kerne=
-l@vger.kernel.org
-> Subject: [PATCH 1/3] crypto: inside-secure - Fix a maybe-uninitialized wa=
-rning
+trix.com>; Pascal
+> van Leeuwen <pascalvanl@gmail.com>; Ard Biesheuvel <ard.biesheuvel@linaro=
+.org>; Eric Biggers
+> <ebiggers@google.com>; linux-crypto@vger.kernel.org; linux-kernel@vger.ke=
+rnel.org
+> Subject: [PATCH 2/3] crypto: inside-secure - Reduce stack usage
 >=20
-> A previous fixup avoided an unused variable warning but replaced
-> it with a slightly scarier warning:
+> safexcel_aead_setkey() contains three large stack variables, totalling
+> slightly more than the 1024 byte warning limit:
 >=20
-> drivers/crypto/inside-secure/safexcel.c:1100:6: error: variable 'irq' is =
-used uninitialized
-> whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+> drivers/crypto/inside-secure/safexcel_cipher.c:303:12: error: stack frame=
+ size of 1032 bytes
+> in function 'safexcel_aead_setkey' [-Werror,-Wframe-larger-than=3D]
 >=20
-> This is harmless as it is impossible to get into this case, but
-> the compiler has no way of knowing that. Add an explicit error
-> handling case to make it obvious to both compilers and humans
-> reading the source.
+Ok, I did not realise that, so thanks for pointing that out to me.
+
+> The function already contains a couple of dynamic allocations, so it is
+> likely not performance critical and it can only be called in a context
+> that allows sleeping, so the easiest workaround is to add change it
+> to use dynamic allocations. Combining istate and ostate into a single
+> variable simplifies the allocation at the cost of making it slightly
+> less readable.
 >=20
-> Fixes: 212ef6f29e5b ("crypto: inside-secure - Fix unused variable warning=
- when CONFIG_PCI=3Dn")
+Hmmm... I wouldn't exactly consider it to be not performance critical - it
+can be under certain circumstanced, but I guess it's already wasting lots
+of cycles on allocations and key precomputes in safexcel_hmac_setkey, so
+for now dynamically allocating the state is fine.
+
+> Alternatively, it should be possible to shrink these allocations
+> as the extra buffers appear to be largely unnecessary, but doing
+> this would be a much more invasive change.
+>=20
+Actually, for HMAC-SHA512 you DO need all that buffer space.
+You could shrink it to 2 * ctx->state_sz but then your simple indexing
+is no longer going to fly. Not sure if that would be worth the effort.
+
+I don't like the part where you dynamically allocate the cryto_aes_ctx
+though, I think that was not necessary considering its a lot smaller.
+And it conflicts with another change I have waiting that gets rid of=20
+aes_expandkey and that struct alltogether (since it was really just
+abused to do a key size check, which was very wasteful since the=20
+function actually generates all roundkeys we don't need at all ...)
+
+So I'll get rid of that struct anyway and doing it in this patch just
+complicates applying your patch to my code or rebasing my stuff later.
+
+> Fixes: 0e17e3621a28 ("crypto: inside-secure - add support for
+> authenc(hmac(sha*),rfc3686(ctr(aes))) suites")
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/crypto/inside-secure/safexcel.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  .../crypto/inside-secure/safexcel_cipher.c    | 53 ++++++++++++-------
+>  1 file changed, 35 insertions(+), 18 deletions(-)
 >=20
-> diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/ins=
-ide-secure/safexcel.c
-> index 4ab1bde8dd9b..311bf60df39f 100644
-> --- a/drivers/crypto/inside-secure/safexcel.c
-> +++ b/drivers/crypto/inside-secure/safexcel.c
-> @@ -1120,6 +1120,8 @@ static int safexcel_request_ring_irq(void *pdev, in=
-t irqid,
->  				irq_name, irq);
->  			return irq;
->  		}
-> +	} else {
-> +		return -ENXIO;
+> diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers/cry=
+pto/inside-
+> secure/safexcel_cipher.c
+> index ef51f8c2b473..51a4112aa9bc 100644
+> --- a/drivers/crypto/inside-secure/safexcel_cipher.c
+> +++ b/drivers/crypto/inside-secure/safexcel_cipher.c
+> @@ -305,10 +305,10 @@ static int safexcel_aead_setkey(struct crypto_aead =
+*ctfm, const u8
+> *key,
+>  {
+>  	struct crypto_tfm *tfm =3D crypto_aead_tfm(ctfm);
+>  	struct safexcel_cipher_ctx *ctx =3D crypto_tfm_ctx(tfm);
+> -	struct safexcel_ahash_export_state istate, ostate;
+> +	struct safexcel_ahash_export_state *state;
+>  	struct safexcel_crypto_priv *priv =3D ctx->priv;
+> +	struct crypto_aes_ctx *aes;
+>  	struct crypto_authenc_keys keys;
+> -	struct crypto_aes_ctx aes;
+>  	int err =3D -EINVAL;
+>=20
+>  	if (crypto_authenc_extractkeys(&keys, key, len) !=3D 0)
+> @@ -334,7 +334,14 @@ static int safexcel_aead_setkey(struct crypto_aead *=
+ctfm, const u8 *key,
+>  			goto badkey_expflags;
+>  		break;
+>  	case SAFEXCEL_AES:
+> -		err =3D aes_expandkey(&aes, keys.enckey, keys.enckeylen);
+> +		aes =3D kzalloc(sizeof(*aes), GFP_KERNEL);
+> +		if (!aes) {
+> +			err =3D -ENOMEM;
+> +			goto badkey;
+> +		}
+> +
+> +		err =3D aes_expandkey(aes, keys.enckey, keys.enckeylen);
+> +		kfree(aes);
+>  		if (unlikely(err))
+>  			goto badkey;
+>  		break;
+> @@ -347,56 +354,66 @@ static int safexcel_aead_setkey(struct crypto_aead =
+*ctfm, const u8
+> *key,
+>  	    memcmp(ctx->key, keys.enckey, keys.enckeylen))
+>  		ctx->base.needs_inv =3D true;
+>=20
+> +	state =3D kzalloc(sizeof(struct safexcel_ahash_export_state) * 2, GFP_K=
+ERNEL);
+> +	if (!state) {
+> +		err =3D -ENOMEM;
+> +		goto badkey;
+> +	}
+> +
+>  	/* Auth key */
+>  	switch (ctx->hash_alg) {
+>  	case CONTEXT_CONTROL_CRYPTO_ALG_SHA1:
+>  		if (safexcel_hmac_setkey("safexcel-sha1", keys.authkey,
+> -					 keys.authkeylen, &istate, &ostate))
+> -			goto badkey;
+> +					 keys.authkeylen, &state[0], &state[1]))
+> +			goto badkey_free;
+>  		break;
+>  	case CONTEXT_CONTROL_CRYPTO_ALG_SHA224:
+>  		if (safexcel_hmac_setkey("safexcel-sha224", keys.authkey,
+> -					 keys.authkeylen, &istate, &ostate))
+> -			goto badkey;
+> +					 keys.authkeylen, &state[0], &state[1]))
+> +			goto badkey_free;
+>  		break;
+>  	case CONTEXT_CONTROL_CRYPTO_ALG_SHA256:
+>  		if (safexcel_hmac_setkey("safexcel-sha256", keys.authkey,
+> -					 keys.authkeylen, &istate, &ostate))
+> -			goto badkey;
+> +					 keys.authkeylen, &state[0], &state[1]))
+> +			goto badkey_free;
+>  		break;
+>  	case CONTEXT_CONTROL_CRYPTO_ALG_SHA384:
+>  		if (safexcel_hmac_setkey("safexcel-sha384", keys.authkey,
+> -					 keys.authkeylen, &istate, &ostate))
+> -			goto badkey;
+> +					 keys.authkeylen, &state[0], &state[1]))
+> +			goto badkey_free;
+>  		break;
+>  	case CONTEXT_CONTROL_CRYPTO_ALG_SHA512:
+>  		if (safexcel_hmac_setkey("safexcel-sha512", keys.authkey,
+> -					 keys.authkeylen, &istate, &ostate))
+> -			goto badkey;
+> +					 keys.authkeylen, &state[0], &state[1]))
+> +			goto badkey_free;
+>  		break;
+>  	default:
+>  		dev_err(priv->dev, "aead: unsupported hash algorithm\n");
+> -		goto badkey;
+> +		goto badkey_free;
 >  	}
 >=20
->  	ret =3D devm_request_threaded_irq(dev, irq, handler,
+>  	crypto_aead_set_flags(ctfm, crypto_aead_get_flags(ctfm) &
+>  				    CRYPTO_TFM_RES_MASK);
+>=20
+>  	if (priv->flags & EIP197_TRC_CACHE && ctx->base.ctxr_dma &&
+> -	    (memcmp(ctx->ipad, istate.state, ctx->state_sz) ||
+> -	     memcmp(ctx->opad, ostate.state, ctx->state_sz)))
+> +	    (memcmp(ctx->ipad, &state[0].state, ctx->state_sz) ||
+> +	     memcmp(ctx->opad, &state[1].state, ctx->state_sz)))
+>  		ctx->base.needs_inv =3D true;
+>=20
+>  	/* Now copy the keys into the context */
+>  	memcpy(ctx->key, keys.enckey, keys.enckeylen);
+>  	ctx->key_len =3D keys.enckeylen;
+>=20
+> -	memcpy(ctx->ipad, &istate.state, ctx->state_sz);
+> -	memcpy(ctx->opad, &ostate.state, ctx->state_sz);
+> +	memcpy(ctx->ipad, &state[0].state, ctx->state_sz);
+> +	memcpy(ctx->opad, &state[1].state, ctx->state_sz);
+>=20
+>  	memzero_explicit(&keys, sizeof(keys));
+> +	kfree(state);
+> +
+>  	return 0;
+>=20
+> +badkey_free:
+> +	kfree(state);
+>  badkey:
+>  	crypto_aead_set_flags(ctfm, CRYPTO_TFM_RES_BAD_KEY_LEN);
+>  badkey_expflags:
 > --
 > 2.20.0
-
-Ok, this won't hurt in any way I guess, so fine by me (assuming that error
-code makes sense).
-
-Acked-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-
 
 Regards,
 Pascal van Leeuwen
