@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CE1C1DE8
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Sep 2019 11:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD209C1DE5
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Sep 2019 11:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730483AbfI3JYR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 30 Sep 2019 05:24:17 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:37954 "EHLO huawei.com"
+        id S1730444AbfI3JYC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 Sep 2019 05:24:02 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:38026 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730000AbfI3JX4 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 30 Sep 2019 05:23:56 -0400
+        id S1730310AbfI3JX6 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 30 Sep 2019 05:23:58 -0400
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6AB2A9E785368D6E3BF1;
+        by Forcepoint Email with ESMTP id 7C70A36B7C16CBE378DA;
         Mon, 30 Sep 2019 17:23:53 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
@@ -21,10 +21,10 @@ From:   Zaibo Xu <xuzaibo@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
         <linuxarm@huawei.com>, <forest.zhouchang@huawei.com>,
-        Zaibo Xu <xuzaibo@huawei.com>, Hui tang <tanghui20@huawei.com>
-Subject: [PATCH 2/5] crypto: hisilicon - add SRIOV support for HPRE
-Date:   Mon, 30 Sep 2019 17:20:06 +0800
-Message-ID: <1569835209-44326-3-git-send-email-xuzaibo@huawei.com>
+        Zaibo Xu <xuzaibo@huawei.com>, Hui Tang <tanghui20@huawei.com>
+Subject: [PATCH 3/5] Documentation: Add debugfs doc for hisi_hpre
+Date:   Mon, 30 Sep 2019 17:20:07 +0800
+Message-ID: <1569835209-44326-4-git-send-email-xuzaibo@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1569835209-44326-1-git-send-email-xuzaibo@huawei.com>
 References: <1569835209-44326-1-git-send-email-xuzaibo@huawei.com>
@@ -37,230 +37,78 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-HiSilicon HPRE engine supports PCI SRIOV. This patch enable
-this feature. User can enable VFs and pass through them to VM,
-same HPRE driver can work in VM to provide RSA and DH algorithms
-by crypto akcipher and kpp interfaces.
+Add debugfs descriptions for HiSilicon HPRE driver.
 
 Signed-off-by: Zaibo Xu <xuzaibo@huawei.com>
-Signed-off-by: Hui tang <tanghui20@huawei.com>
+Signed-off-by: Hui Tang <tanghui20@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre.h      |   1 +
- drivers/crypto/hisilicon/hpre/hpre_main.c | 139 ++++++++++++++++++++++++++++--
- 2 files changed, 133 insertions(+), 7 deletions(-)
+ Documentation/ABI/testing/debugfs-hisi-hpre | 57 +++++++++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
+ create mode 100644 Documentation/ABI/testing/debugfs-hisi-hpre
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre.h b/drivers/crypto/hisilicon/hpre/hpre.h
-index d219599..bcf825b 100644
---- a/drivers/crypto/hisilicon/hpre/hpre.h
-+++ b/drivers/crypto/hisilicon/hpre/hpre.h
-@@ -14,6 +14,7 @@
- struct hpre {
- 	struct hisi_qm qm;
- 	struct list_head list;
-+	u32 num_vfs;
- 	unsigned long status;
- };
- 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 9cf46e4..31d01d3 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -71,6 +71,7 @@
- #define HPRE_REG_RD_TMOUT_US		1000
- #define HPRE_DBGFS_VAL_MAX_LEN		20
- #define HPRE_PCI_DEVICE_ID		0xa258
-+#define HPRE_PCI_VF_DEVICE_ID		0xa259
- #define HPRE_ADDR(qm, offset)		(qm->io_base + (offset))
- #define HPRE_QM_USR_CFG_MASK		0xfffffffe
- #define HPRE_QM_AXI_CFG_MASK		0xffff
-@@ -85,6 +86,7 @@ static DEFINE_MUTEX(hpre_list_lock);
- static const char hpre_name[] = "hisi_hpre";
- static const struct pci_device_id hpre_dev_ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, HPRE_PCI_DEVICE_ID) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, HPRE_PCI_VF_DEVICE_ID) },
- 	{ 0, }
- };
- 
-@@ -318,8 +320,12 @@ static int hpre_qm_pre_init(struct hisi_qm *qm, struct pci_dev *pdev)
- 	qm->ver = rev_id;
- 	qm->sqe_size = HPRE_SQE_SIZE;
- 	qm->dev_name = hpre_name;
--	qm->qp_base = HPRE_PF_DEF_Q_BASE;
--	qm->qp_num = hpre_pf_q_num;
-+	qm->fun_type = (pdev->device == HPRE_PCI_DEVICE_ID) ?
-+		       QM_HW_PF : QM_HW_VF;
-+	if (pdev->is_physfn) {
-+		qm->qp_base = HPRE_PF_DEF_Q_BASE;
-+		qm->qp_num = hpre_pf_q_num;
-+	}
- 	qm->use_dma_api = true;
- 
- 	return 0;
-@@ -369,9 +375,16 @@ static int hpre_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (ret)
- 		return ret;
- 
--	ret = hpre_pf_probe_init(hpre);
--	if (ret)
--		goto err_with_qm_init;
-+	if (pdev->is_physfn) {
-+		ret = hpre_pf_probe_init(hpre);
-+		if (ret)
-+			goto err_with_qm_init;
-+	} else if (qm->fun_type == QM_HW_VF && qm->ver == QM_HW_V2) {
-+		/* v2 starts to support get vft by mailbox */
-+		ret = hisi_qm_get_vft(qm, &qm->qp_base, &qm->qp_num);
-+		if (ret)
-+			goto err_with_qm_init;
-+	}
- 
- 	ret = hisi_qm_start(qm);
- 	if (ret)
-@@ -391,7 +404,8 @@ static int hpre_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	hisi_qm_stop(qm);
- 
- err_with_err_init:
--	hpre_hw_error_disable(hpre);
-+	if (pdev->is_physfn)
-+		hpre_hw_error_disable(hpre);
- 
- err_with_qm_init:
- 	hisi_qm_uninit(qm);
-@@ -399,15 +413,125 @@ static int hpre_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	return ret;
- }
- 
-+static int hpre_vf_q_assign(struct hpre *hpre, int num_vfs)
-+{
-+	struct hisi_qm *qm = &hpre->qm;
-+	u32 qp_num = qm->qp_num;
-+	int q_num, remain_q_num, i;
-+	u32 q_base = qp_num;
-+	int ret;
+diff --git a/Documentation/ABI/testing/debugfs-hisi-hpre b/Documentation/ABI/testing/debugfs-hisi-hpre
+new file mode 100644
+index 0000000..ec4a79e
+--- /dev/null
++++ b/Documentation/ABI/testing/debugfs-hisi-hpre
+@@ -0,0 +1,57 @@
++What:           /sys/kernel/debug/hisi_hpre/<bdf>/cluster[0-3]/regs
++Date:           Sep 2019
++Contact:        linux-crypto@vger.kernel.org
++Description:    Dump debug registers from the HPRE cluster.
++		Only available for PF.
 +
-+	if (!num_vfs)
-+		return -EINVAL;
++What:           /sys/kernel/debug/hisi_hpre/<bdf>/cluster[0-3]/cluster_ctrl
++Date:           Sep 2019
++Contact:        linux-crypto@vger.kernel.org
++Description:    Write the HPRE core selection in the cluster into this file,
++		and then we can read the debug information of the core.
++		Only available for PF.
 +
-+	remain_q_num = qm->ctrl_qp_num - qp_num;
++What:           /sys/kernel/debug/hisi_hpre/<bdf>/rdclr_en
++Date:           Sep 2019
++Contact:        linux-crypto@vger.kernel.org
++Description:    HPRE cores debug registers read clear control. 1 means enable
++		register read clear, otherwise 0. Writing to this file has no
++		functional effect, only enable or disable counters clear after
++		reading of these registers.
++		Only available for PF.
 +
-+	/* If remaining queues are not enough, return error. */
-+	if (remain_q_num < num_vfs)
-+		return -EINVAL;
++What:           /sys/kernel/debug/hisi_hpre/<bdf>/current_qm
++Date:           Sep 2019
++Contact:        linux-crypto@vger.kernel.org
++Description:    One HPRE controller has one PF and multiple VFs, each function
++		has a QM. Select the QM which below qm refers to.
++		Only available for PF.
 +
-+	q_num = remain_q_num / num_vfs;
-+	for (i = 1; i <= num_vfs; i++) {
-+		if (i == num_vfs)
-+			q_num += remain_q_num % num_vfs;
-+		ret = hisi_qm_set_vft(qm, i, q_base, (u32)q_num);
-+		if (ret)
-+			return ret;
-+		q_base += q_num;
-+	}
++What:           /sys/kernel/debug/hisi_hpre/<bdf>/regs
++Date:           Sep 2019
++Contact:        linux-crypto@vger.kernel.org
++Description:    Dump debug registers from the HPRE.
++		Only available for PF.
 +
-+	return 0;
-+}
++What:           /sys/kernel/debug/hisi_hpre/<bdf>/qm/qm_regs
++Date:           Sep 2019
++Contact:        linux-crypto@vger.kernel.org
++Description:    Dump debug registers from the QM.
++		Available for PF and VF in host. VF in guest currently only
++		has one debug register.
 +
-+static int hpre_clear_vft_config(struct hpre *hpre)
-+{
-+	struct hisi_qm *qm = &hpre->qm;
-+	u32 num_vfs = hpre->num_vfs;
-+	int ret;
-+	u32 i;
++What:           /sys/kernel/debug/hisi_hpre/<bdf>/qm/current_q
++Date:           Sep 2019
++Contact:        linux-crypto@vger.kernel.org
++Description:    One QM may contain multiple queues. Select specific queue to
++		show its debug registers in above qm_regs.
++		Only available for PF.
 +
-+	for (i = 1; i <= num_vfs; i++) {
-+		ret = hisi_qm_set_vft(qm, i, 0, 0);
-+		if (ret)
-+			return ret;
-+	}
-+	hpre->num_vfs = 0;
-+
-+	return 0;
-+}
-+
-+static int hpre_sriov_enable(struct pci_dev *pdev, int max_vfs)
-+{
-+	struct hpre *hpre = pci_get_drvdata(pdev);
-+	int pre_existing_vfs, num_vfs, ret;
-+
-+	pre_existing_vfs = pci_num_vf(pdev);
-+	if (pre_existing_vfs) {
-+		pci_err(pdev,
-+			"Can't enable VF. Please disable pre-enabled VFs!\n");
-+		return 0;
-+	}
-+
-+	num_vfs = min_t(int, max_vfs, HPRE_VF_NUM);
-+	ret = hpre_vf_q_assign(hpre, num_vfs);
-+	if (ret) {
-+		pci_err(pdev, "Can't assign queues for VF!\n");
-+		return ret;
-+	}
-+
-+	hpre->num_vfs = num_vfs;
-+
-+	ret = pci_enable_sriov(pdev, num_vfs);
-+	if (ret) {
-+		pci_err(pdev, "Can't enable VF!\n");
-+		hpre_clear_vft_config(hpre);
-+		return ret;
-+	}
-+
-+	return num_vfs;
-+}
-+
-+static int hpre_sriov_disable(struct pci_dev *pdev)
-+{
-+	struct hpre *hpre = pci_get_drvdata(pdev);
-+
-+	if (pci_vfs_assigned(pdev)) {
-+		pci_err(pdev, "Failed to disable VFs while VFs are assigned!\n");
-+		return -EPERM;
-+	}
-+
-+	/* remove in hpre_pci_driver will be called to free VF resources */
-+	pci_disable_sriov(pdev);
-+
-+	return hpre_clear_vft_config(hpre);
-+}
-+
-+static int hpre_sriov_configure(struct pci_dev *pdev, int num_vfs)
-+{
-+	if (num_vfs)
-+		return hpre_sriov_enable(pdev, num_vfs);
-+	else
-+		return hpre_sriov_disable(pdev);
-+}
-+
- static void hpre_remove(struct pci_dev *pdev)
- {
- 	struct hpre *hpre = pci_get_drvdata(pdev);
- 	struct hisi_qm *qm = &hpre->qm;
-+	int ret;
- 
- 	hpre_algs_unregister();
- 	hpre_remove_from_list(hpre);
-+	if (qm->fun_type == QM_HW_PF && hpre->num_vfs != 0) {
-+		ret = hpre_sriov_disable(pdev);
-+		if (ret) {
-+			pci_err(pdev, "Disable SRIOV fail!\n");
-+			return;
-+		}
-+	}
- 	hisi_qm_stop(qm);
--	hpre_hw_error_disable(hpre);
-+	if (qm->fun_type == QM_HW_PF)
-+		hpre_hw_error_disable(hpre);
- 	hisi_qm_uninit(qm);
- }
- 
-@@ -476,6 +600,7 @@ static struct pci_driver hpre_pci_driver = {
- 	.id_table		= hpre_dev_ids,
- 	.probe			= hpre_probe,
- 	.remove			= hpre_remove,
-+	.sriov_configure	= hpre_sriov_configure,
- 	.err_handler		= &hpre_err_handler,
- };
- 
++What:           /sys/kernel/debug/hisi_hpre/<bdf>/qm/clear_enable
++Date:           Sep 2019
++Contact:        linux-crypto@vger.kernel.org
++Description:    QM debug registers(qm_regs) read clear control. 1 means enable
++		register read clear, otherwise 0.
++		Writing to this file has no functional effect, only enable or
++		disable counters clear after reading of these registers.
++		Only available for PF.
 -- 
 2.8.1
 
