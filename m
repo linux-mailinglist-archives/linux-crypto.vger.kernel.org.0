@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 766B8C8ABD
-	for <lists+linux-crypto@lfdr.de>; Wed,  2 Oct 2019 16:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCF3C8ABF
+	for <lists+linux-crypto@lfdr.de>; Wed,  2 Oct 2019 16:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727656AbfJBORo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 2 Oct 2019 10:17:44 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:52801 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727210AbfJBORn (ORCPT
+        id S1727382AbfJBORp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 2 Oct 2019 10:17:45 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:39313 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727536AbfJBORo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 2 Oct 2019 10:17:43 -0400
-Received: by mail-wm1-f68.google.com with SMTP id r19so7410765wmh.2
-        for <linux-crypto@vger.kernel.org>; Wed, 02 Oct 2019 07:17:42 -0700 (PDT)
+        Wed, 2 Oct 2019 10:17:44 -0400
+Received: by mail-wm1-f65.google.com with SMTP id v17so7190051wml.4
+        for <linux-crypto@vger.kernel.org>; Wed, 02 Oct 2019 07:17:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9eoG0Ja/MkKdV4fIyrYwW1AyCVa60yb4N0sHgj42YTs=;
-        b=B+lm8R/nN/ZWjtHJoIeJNWQxYFloKyi1DRQo8Ky/B8LNhnhVxligrSXzQdCWBJvZHZ
-         8gRjC3oe8686Iha7gOdKkCj3/QtNBsIQw632s7nA2hxw5awYOp/UVJXyUhHCBDZvthfy
-         sS51VSaokdKNQJRAhc1jBg+JPWlV/K0VpaXQ0KGtRdA0Ost8du9jjqYJa/wqgImMARog
-         QDdEmNhwMtoMOdRV+1yh02s2LwT6EzmLAMZr4sCo7feIsgUl6KApHFsW1wC4Es8hOEoh
-         hkihIRQRp8qiGqdO8YYMcbhWoxTRN7IooneWfm8Rx1l8STr+56YmzHRfYqv8ozVRPJVn
-         WbcA==
+        bh=TmuuAqRzPZh0E74Jry6k34vaegwkUQMiM0zjPLz+tsA=;
+        b=uIGw6UPHuVu79PfMpOds4Kc5zn6vX3EgWiyZqRZg5lVLp4QEma+hXrnvsVDrKufPu3
+         OhyGfqXyAmyL72sXoQMe6eofTIoa4g0uoLyTVY2MBp2ymjeYkvGL48WdMYlSZBuKNpFG
+         Jww6lUi2UOI9tj566fyb8q6/ug6N5hcdlOtUFwsgPmxM653Y8uFrevtNLi2iks7pTPhR
+         bmSthj7Wm0Nf/XzJ2TwUO7N9ovUPhhX6i3je7koK/NgQ057CJHDA6dmmdHkCgvf1yp1C
+         HTENoC5ta/6ZZPV52h4qAJRIAuk6jYd7THQT6+XL+KXZGwvXLzsD0nJRWYC9ZvW8UfMf
+         KkyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9eoG0Ja/MkKdV4fIyrYwW1AyCVa60yb4N0sHgj42YTs=;
-        b=H5YSnrQzlEN3Fv7yATUEfoyXIEjJyd/KOb8iuEdEZhTglm1SZ+tPIYdCSiNwgSXuZL
-         EGy92h+BkPuZqzkyk+x9gLxa3BrlKT5vkwnya4t1AAlUMtHFI2GrvTUF4nDFFZ+PNe64
-         WSgO95Y1HwOnQ3HNynUnCnoMdytjZ1z38Ct6V/NkDlnY9Na/IluH3RQ9lAA3S+U0SwyS
-         vZUsP+4kp1EM+8w+Bjn9uWsT7xosD+YnlIWj0RnjCt/yNQrZyoEiKlJc7jI6e3Ymx/zV
-         aytPdg7NrJ+jXlOKEZjqbf3MN20PyMnnSM3Div3345xuJ4ZNx8Hr9NZRtHfYACmLo3Pn
-         5P0g==
-X-Gm-Message-State: APjAAAX1ls3GQr4XGdk3hJhEsHj+uyMtGQSRgLB80rXlGGb53pJEZb0j
-        JxwvAXcUTsi0O7zZVm2yce58hfPcPL0KSMoU
-X-Google-Smtp-Source: APXvYqx2jSDqFkEG0V1c9ieZBWD4ZB279jmvaZYLiBkr52PdQhmLUrASDchxLjfBa9SyUojhMMmBKw==
-X-Received: by 2002:a05:600c:351:: with SMTP id u17mr3033643wmd.1.1570025861369;
-        Wed, 02 Oct 2019 07:17:41 -0700 (PDT)
+        bh=TmuuAqRzPZh0E74Jry6k34vaegwkUQMiM0zjPLz+tsA=;
+        b=UA1z92TW938ahx4ECa7nZmmxlXBKk4An3t971+dubuaRRlv02EpF/gaBYGVapEACaH
+         rVugRQDoRfDhHruBORXrsPoEHkDZDxZc4v+6fneZLrY2ZTeNB9BM/0BtXocAoiXCQKBc
+         51gaiTYwcjaxDeAk6gU5kpWA05G6x+KFvI42isIs9rwlBvigSgqoGWp4NWzW4qIqOHd4
+         Yj7Q+1hr3TsAO59hDcu5kTLXdzVZM10qs2ERuY2g9zxUc3rvP3T13nx08FL+QyUXGir2
+         Ne/eL3LD13iqV9HPMMym0fy2gI2GUdLdpx7lwNzhapK994ZuDPzbaTdAN8cIcuePh6+A
+         e4+w==
+X-Gm-Message-State: APjAAAW3bVv0cmo1K+JYnN0/9WvNWApx8x3NTLsMo0ExWSfwMd2FFeiy
+        aotyd+mJYIA5ovt7iBt5S+qw1V20aNKsJE+r
+X-Google-Smtp-Source: APXvYqzLhY18cdBAmBMBP0kHc6Vflhy64HBuX+U4ye9YRAcTwBIymQeQe7/SA6KHtr/o5aMuD58ooA==
+X-Received: by 2002:a7b:c112:: with SMTP id w18mr3263701wmi.88.1570025862744;
+        Wed, 02 Oct 2019 07:17:42 -0700 (PDT)
 Received: from sudo.home ([2a01:cb1d:112:6f00:f145:3252:fc29:76c9])
-        by smtp.gmail.com with ESMTPSA id t13sm41078149wra.70.2019.10.02.07.17.39
+        by smtp.gmail.com with ESMTPSA id t13sm41078149wra.70.2019.10.02.07.17.41
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Oct 2019 07:17:40 -0700 (PDT)
+        Wed, 02 Oct 2019 07:17:42 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
@@ -63,9 +63,9 @@ Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         Martin Willi <martin@strongswan.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH v2 02/20] crypto: x86/chacha - expose SIMD ChaCha routine as library function
-Date:   Wed,  2 Oct 2019 16:16:55 +0200
-Message-Id: <20191002141713.31189-3-ard.biesheuvel@linaro.org>
+Subject: [PATCH v2 03/20] crypto: arm64/chacha - expose arm64 ChaCha routine as library function
+Date:   Wed,  2 Oct 2019 16:16:56 +0200
+Message-Id: <20191002141713.31189-4-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191002141713.31189-1-ard.biesheuvel@linaro.org>
 References: <20191002141713.31189-1-ard.biesheuvel@linaro.org>
@@ -76,42 +76,49 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Wire the existing x86 SIMD ChaCha code into the new ChaCha library
-interface.
+Expose the accelerated NEON ChaCha routine directly as a symbol
+export so that users of the ChaCha library can use it directly.
 
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- arch/x86/crypto/chacha_glue.c | 36 ++++++++++++++++++++
- crypto/Kconfig                |  1 +
- include/crypto/chacha.h       |  6 ++++
- 3 files changed, 43 insertions(+)
+ arch/arm64/crypto/Kconfig            |  1 +
+ arch/arm64/crypto/chacha-neon-glue.c | 30 ++++++++++++++++++++
+ 2 files changed, 31 insertions(+)
 
-diff --git a/arch/x86/crypto/chacha_glue.c b/arch/x86/crypto/chacha_glue.c
-index bc62daa8dafd..fd9ef42842cf 100644
---- a/arch/x86/crypto/chacha_glue.c
-+++ b/arch/x86/crypto/chacha_glue.c
-@@ -123,6 +123,42 @@ static void chacha_dosimd(u32 *state, u8 *dst, const u8 *src,
+diff --git a/arch/arm64/crypto/Kconfig b/arch/arm64/crypto/Kconfig
+index 4922c4451e7c..09aa69ccc792 100644
+--- a/arch/arm64/crypto/Kconfig
++++ b/arch/arm64/crypto/Kconfig
+@@ -104,6 +104,7 @@ config CRYPTO_CHACHA20_NEON
+ 	depends on KERNEL_MODE_NEON
+ 	select CRYPTO_BLKCIPHER
+ 	select CRYPTO_CHACHA20
++	select CRYPTO_ARCH_HAVE_LIB_CHACHA
+ 
+ config CRYPTO_NHPOLY1305_NEON
+ 	tristate "NHPoly1305 hash function using NEON instructions (for Adiantum)"
+diff --git a/arch/arm64/crypto/chacha-neon-glue.c b/arch/arm64/crypto/chacha-neon-glue.c
+index d4cc61bfe79d..982a07070675 100644
+--- a/arch/arm64/crypto/chacha-neon-glue.c
++++ b/arch/arm64/crypto/chacha-neon-glue.c
+@@ -59,6 +59,36 @@ static void chacha_doneon(u32 *state, u8 *dst, const u8 *src,
  	}
  }
  
 +void hchacha_block(const u32 *state, u32 *stream, int nrounds)
 +{
-+	state = PTR_ALIGN(state, CHACHA_STATE_ALIGN);
-+
 +	if (!crypto_simd_usable()) {
 +		hchacha_block_generic(state, stream, nrounds);
 +	} else {
-+		kernel_fpu_begin();
-+		hchacha_block_ssse3(state, stream, nrounds);
-+		kernel_fpu_end();
++		kernel_neon_begin();
++		hchacha_block_neon(state, stream, nrounds);
++		kernel_neon_end();
 +	}
 +}
 +EXPORT_SYMBOL(hchacha_block);
 +
 +void chacha_init(u32 *state, const u32 *key, const u8 *iv)
 +{
-+	state = PTR_ALIGN(state, CHACHA_STATE_ALIGN);
-+
 +	chacha_init_generic(state, key, iv);
 +}
 +EXPORT_SYMBOL(chacha_init);
@@ -119,49 +126,18 @@ index bc62daa8dafd..fd9ef42842cf 100644
 +void chacha_crypt(u32 *state, u8 *dst, const u8 *src, unsigned int bytes,
 +		  int nrounds)
 +{
-+	state = PTR_ALIGN(state, CHACHA_STATE_ALIGN);
-+
 +	if (bytes <= CHACHA_BLOCK_SIZE || !crypto_simd_usable())
 +		return chacha_crypt_generic(state, dst, src, bytes, nrounds);
 +
-+	kernel_fpu_begin();
-+	chacha_dosimd(state, dst, src, bytes, nrounds);
-+	kernel_fpu_end();
++	kernel_neon_begin();
++	chacha_doneon(state, dst, src, bytes, nrounds);
++	kernel_neon_end();
 +}
 +EXPORT_SYMBOL(chacha_crypt);
 +
- static int chacha_simd_stream_xor(struct skcipher_walk *walk,
+ static int chacha_neon_stream_xor(struct skcipher_request *req,
  				  const struct chacha_ctx *ctx, const u8 *iv)
  {
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 074b125819b0..f90b53a526ba 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1436,6 +1436,7 @@ config CRYPTO_CHACHA20_X86_64
- 	depends on X86 && 64BIT
- 	select CRYPTO_BLKCIPHER
- 	select CRYPTO_CHACHA20
-+	select CRYPTO_ARCH_HAVE_LIB_CHACHA
- 	help
- 	  SSSE3, AVX2, and AVX-512VL optimized implementations of the ChaCha20,
- 	  XChaCha20, and XChaCha12 stream ciphers.
-diff --git a/include/crypto/chacha.h b/include/crypto/chacha.h
-index 95a4a0ff4f7d..58192096679d 100644
---- a/include/crypto/chacha.h
-+++ b/include/crypto/chacha.h
-@@ -25,6 +25,12 @@
- #define CHACHA_BLOCK_SIZE	64
- #define CHACHAPOLY_IV_SIZE	12
- 
-+#ifdef CONFIG_X86_64
-+#define CHACHA_STATE_WORDS	((CHACHA_BLOCK_SIZE + 12) / sizeof(u32))
-+#else
-+#define CHACHA_STATE_WORDS	(CHACHA_BLOCK_SIZE / sizeof(u32))
-+#endif
-+
- /* 192-bit nonce, then 64-bit stream position */
- #define XCHACHA_IV_SIZE		32
- 
 -- 
 2.20.1
 
