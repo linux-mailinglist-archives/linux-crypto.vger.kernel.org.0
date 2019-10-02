@@ -2,93 +2,162 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A7DC4216
-	for <lists+linux-crypto@lfdr.de>; Tue,  1 Oct 2019 22:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387EEC473C
+	for <lists+linux-crypto@lfdr.de>; Wed,  2 Oct 2019 07:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbfJAUyv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 1 Oct 2019 16:54:51 -0400
-Received: from mga17.intel.com ([192.55.52.151]:14871 "EHLO mga17.intel.com"
+        id S1726392AbfJBFzD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 2 Oct 2019 01:55:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726195AbfJAUyv (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 1 Oct 2019 16:54:51 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 01 Oct 2019 13:54:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,571,1559545200"; 
-   d="scan'208";a="275119848"
-Received: from nbaca1-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.37.57])
-  by orsmga001.jf.intel.com with ESMTP; 01 Oct 2019 13:54:46 -0700
-Date:   Tue, 1 Oct 2019 23:54:45 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     linux-integrity@vger.kernel.org, stable@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        "open list:CRYPTO API" <linux-crypto@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] KEYS: asym_tpm: Switch to get_random_bytes()
-Message-ID: <20191001205445.GC26709@linux.intel.com>
-References: <20190926171601.30404-1-jarkko.sakkinen@linux.intel.com>
- <20190928180559.jivt5zlisr43fnva@cantor>
+        id S1726152AbfJBFzD (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 2 Oct 2019 01:55:03 -0400
+Received: from localhost (lfbn-1-10718-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 365D72086A;
+        Wed,  2 Oct 2019 05:55:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1569995701;
+        bh=wtOtOFphvhIR12Sw79063XbPCHTzfD6ZAz0An0TI4w4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H8MbhzvorA/X5IA8IvWZUg8Jo9It3tP9Ey+rxONzf2AMfBEYoE9UM9XWcUGsueedk
+         jgNVjcYcMR3b59MBRVqs+vqqIYPsxYXTC9dsWvVM5SwrQiHY6am21me7k4nGzNxytC
+         j13KLlST3J5UYFqYRYmY6saU0znZuEOvYeB+qpX0=
+Date:   Wed, 2 Oct 2019 07:54:58 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     catalin.marinas@arm.com, davem@davemloft.net,
+        herbert@gondor.apana.org.au, linux@armlinux.org.uk,
+        mark.rutland@arm.com, robh+dt@kernel.org, wens@csie.org,
+        will@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v2 03/11] dt-bindings: crypto: Add DT bindings
+ documentation for sun8i-ce Crypto Engine
+Message-ID: <20191002055458.zo2vdbxodj3ch53g@gilmour>
+References: <20191001184141.27956-1-clabbe.montjoie@gmail.com>
+ <20191001184141.27956-4-clabbe.montjoie@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2fgyg66uvun6eeak"
 Content-Disposition: inline
-In-Reply-To: <20190928180559.jivt5zlisr43fnva@cantor>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191001184141.27956-4-clabbe.montjoie@gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Sep 28, 2019 at 11:05:59AM -0700, Jerry Snitselaar wrote:
-> On Thu Sep 26 19, Jarkko Sakkinen wrote:
-> > Only the kernel random pool should be used for generating random numbers.
-> > TPM contributes to that pool among the other sources of entropy. In here it
-> > is not, agreed, absolutely critical because TPM is what is trusted anyway
-> > but in order to remove tpm_get_random() we need to first remove all the > > call sites.  > > 
-> > Cc: stable@vger.kernel.org
-> > Fixes: 0c36264aa1d5 ("KEYS: asym_tpm: Add loadkey2 and flushspecific [ver #2]")
-> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > ---
-> > crypto/asymmetric_keys/asym_tpm.c | 7 ++-----
-> > 1 file changed, 2 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/crypto/asymmetric_keys/asym_tpm.c b/crypto/asymmetric_keys/asym_tpm.c
-> > index 76d2ce3a1b5b..c14b8d186e93 100644
-> > --- a/crypto/asymmetric_keys/asym_tpm.c
-> > +++ b/crypto/asymmetric_keys/asym_tpm.c
-> > @@ -6,6 +6,7 @@
-> > #include <linux/kernel.h>
-> > #include <linux/seq_file.h>
-> > #include <linux/scatterlist.h>
-> > +#include <linux/random.h>
-> > #include <linux/tpm.h>
-> > #include <linux/tpm_command.h>
-> > #include <crypto/akcipher.h>
-> > @@ -54,11 +55,7 @@ static int tpm_loadkey2(struct tpm_buf *tb,
-> > 	}
-> > 
-> > 	/* generate odd nonce */
-> > -	ret = tpm_get_random(NULL, nonceodd, TPM_NONCE_SIZE);
-> > -	if (ret < 0) {
-> > -		pr_info("tpm_get_random failed (%d)\n", ret);
-> > -		return ret;
-> > -	}
-> > +	get_random_bytes(nonceodd, TPM_NONCE_SIZE);
-> > 
-> > 	/* calculate authorization HMAC value */
-> > 	ret = TSS_authhmac(authdata, keyauth, SHA1_DIGEST_SIZE, enonce,
-> > -- 
-> > 2.20.1
-> > 
-> 
-> Should tpm_unbind and tpm_sign in asym_tpm.c be switched as well then?
 
-Without doubt. Thanks. I'll send an update soon.
+--2fgyg66uvun6eeak
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-/Jarkko
+On Tue, Oct 01, 2019 at 08:41:33PM +0200, Corentin Labbe wrote:
+> This patch adds documentation for Device-Tree bindings for the
+> Crypto Engine cryptographic accelerator driver.
+>
+> Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> ---
+>  .../bindings/crypto/allwinner,sun8i-ce.yaml   | 92 +++++++++++++++++++
+>  1 file changed, 92 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml b/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml
+> new file mode 100644
+> index 000000000000..9bd26a2eff33
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml
+> @@ -0,0 +1,92 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/crypto/allwinner,sun8i-ce.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Allwinner Crypto Engine driver
+> +
+> +maintainers:
+> +  - Corentin Labbe <clabbe.montjoie@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - allwinner,sun8i-h3-crypto
+> +      - allwinner,sun8i-r40-crypto
+> +      - allwinner,sun50i-a64-crypto
+> +      - allwinner,sun50i-h5-crypto
+> +      - allwinner,sun50i-h6-crypto
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Bus clock
+> +      - description: Module clock
+> +      - description: MBus clock
+> +    minItems: 2
+> +    maxItems: 3
+> +
+> +  clock-names:
+> +    items:
+> +      - const: bus
+> +      - const: mod
+> +      - const: ram
+> +    minItems: 2
+> +    maxItems: 3
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    const: bus
+> +
+> +if:
+> +  properties:
+> +    compatible:
+> +      items:
+> +        const: allwinner,sun50i-h6-crypto
+> +then:
+> +  properties:
+> +      clocks:
+> +        minItems: 3
+> +      clock-names:
+> +        minItems: 3
+> +else:
+> +  properties:
+> +      clocks:
+> +        maxItems: 2
+> +      clock-names:
+> +        maxItems: 2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - resets
+> +
+> +additionalProperties: true
+
+I guess you meant false here?
+
+Maxime
+
+--2fgyg66uvun6eeak
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXZQ7rQAKCRDj7w1vZxhR
+xdFbAQCEkUlhME2ax9rLhbr3MrlsTcoOQtlq/F3s52pxJLaI3QD+OMbHPPV//HCY
+MPqSdqIOu1r5jzZjtXPgjsZTo4VsqAo=
+=m0Hw
+-----END PGP SIGNATURE-----
+
+--2fgyg66uvun6eeak--
