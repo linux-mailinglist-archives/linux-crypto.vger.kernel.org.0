@@ -2,51 +2,69 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E51CBFA0
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Oct 2019 17:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0A1CBFA5
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Oct 2019 17:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389921AbfJDPpd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 4 Oct 2019 11:45:33 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:42652 "EHLO fornost.hmeau.com"
+        id S2390082AbfJDPp6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 4 Oct 2019 11:45:58 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:42680 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389807AbfJDPpd (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 4 Oct 2019 11:45:33 -0400
+        id S2389886AbfJDPp6 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 4 Oct 2019 11:45:58 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1iGPlk-0001V9-Mg; Sat, 05 Oct 2019 01:45:25 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Sat, 05 Oct 2019 01:45:22 +1000
-Date:   Sat, 5 Oct 2019 01:45:22 +1000
+        id 1iGPlz-0001XF-61; Sat, 05 Oct 2019 01:45:40 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Sat, 05 Oct 2019 01:45:38 +1000
+Date:   Sat, 5 Oct 2019 01:45:38 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Phani Kiran Hemadri <phemadri@marvell.com>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-Subject: Re: [PATCH] crypto: cavium/nitrox - fix firmware assignment to AE
- cores
-Message-ID: <20191004154522.GA5148@gondor.apana.org.au>
-References: <20190920063439.26486-1-phemadri@marvell.com>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     davem@davemloft.net, mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v3 0/2] crypto: sun4i-ss: Enable power management
+Message-ID: <20191004154538.GB5148@gondor.apana.org.au>
+References: <20190924080832.18694-1-clabbe.montjoie@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190920063439.26486-1-phemadri@marvell.com>
+In-Reply-To: <20190924080832.18694-1-clabbe.montjoie@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Sep 20, 2019 at 06:35:19AM +0000, Phani Kiran Hemadri wrote:
-> This patch fixes assigning UCD block number of Asymmetric crypto
-> firmware to AE cores of CNN55XX device.
+On Tue, Sep 24, 2019 at 10:08:30AM +0200, Corentin Labbe wrote:
+> Hello
 > 
-> Fixes: a7268c4d4205 ("crypto: cavium/nitrox - Add support for loading asymmetric crypto firmware")
-> Signed-off-by: Phani Kiran Hemadri <phemadri@marvell.com>
-> Reviewed-by: Srikanth Jampala <jsrikanth@marvell.com>
+> This serie enables power management in the sun4i-ss driver.
 > 
-> ---
->  drivers/crypto/cavium/nitrox/nitrox_main.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+> Regards
+> 
+> Changes since v2 ( https://lore.kernel.org/linux-arm-kernel/20190919051035.4111-2-clabbe.montjoie@gmail.com/T/ ):
+> - depends on PM
+> - fusioned suspend/resume functions with sun4i_ssenable/disable
+> - fixed style problem
+> 
+> Changes since v1:
+> - Fixed style in patch #1
+> - Check more return code of PM functions
+> - Add PM support in hash/prng
+> - reworked the probe order of PM functions and the PM strategy
+> 
+> Corentin Labbe (2):
+>   crypto: sun4i-ss: simplify enable/disable of the device
+>   crypto: sun4i-ss: enable pm_runtime
+> 
+>  drivers/crypto/Kconfig                    |   1 +
+>  drivers/crypto/sunxi-ss/sun4i-ss-cipher.c |  10 ++
+>  drivers/crypto/sunxi-ss/sun4i-ss-core.c   | 139 ++++++++++++++++------
+>  drivers/crypto/sunxi-ss/sun4i-ss-hash.c   |  12 ++
+>  drivers/crypto/sunxi-ss/sun4i-ss-prng.c   |   9 +-
+>  drivers/crypto/sunxi-ss/sun4i-ss.h        |   2 +
+>  6 files changed, 133 insertions(+), 40 deletions(-)
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
