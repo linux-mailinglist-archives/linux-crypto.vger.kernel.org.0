@@ -2,170 +2,77 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C7DCC222
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Oct 2019 19:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C352FCC27F
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Oct 2019 20:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388648AbfJDRxM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 4 Oct 2019 13:53:12 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:37192 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388880AbfJDRxM (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 4 Oct 2019 13:53:12 -0400
-Received: by mail-wm1-f66.google.com with SMTP id f22so6734395wmc.2;
-        Fri, 04 Oct 2019 10:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SiYnbzF7WkjqWKJjUmGyqc1k8qogotE1jvdb1MCejmk=;
-        b=rqFfmPBjt5rNehUrfCoog3sBIjQKw8DOTHfqANDdbh6jLSdp3Jt4BHH2BqNPxDJkPf
-         X9GmB0XLf5OILRwmuglpo4UHl9sJPPoTlrXu6ADQEiAZEetGw2XgIlzniuQdX8DCAHje
-         4USGkdxGIrdT0zkJ87uc27k538trG28T3Jo3c7cZE6FYXI40/vp3QY58vrjZGd7tCFBJ
-         16gdzjIHv+UtYdOz1n2+9TbrnQfQYNT/a8cPNeyboqCehSOnkRQGg67jSRVJ3pIhxflF
-         IY8/P91g35XLJfSnbnjHsfQW0c/ML1NcmgXpv6KFcWdfqjbcKsZ5yTQioEB+YWCTH+gM
-         oWUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SiYnbzF7WkjqWKJjUmGyqc1k8qogotE1jvdb1MCejmk=;
-        b=LVnDQ04qMrZ5znamXsk/HkfKI5M5yN5FmBQ2m+fsvArUTyxCt5OQnnaHZzf9Y4DRpm
-         CNui/c6GqE6JaKuxHY46KK03Cfl4EYcPjfkXgnYEv0+cmTBw7bWxyeIwoIQRz4CwB3lZ
-         CVYc1TBA8DqOTqN+QajuRPH7ZZGQJaqXLhWfJILt04snSCEej4OthidIOihD10SZMI0J
-         VbGEmxcJawtsOBZLnQ+N1HYbYdZkSj95MQyDDpcS29rHjQYiLv0X77SuMyuzYkj0ZsNU
-         vcfBUxmVOmSPf1nxDo8Voz+5R3H/iERvRfJxtF2nJuzMeT3/dkKiX4lg+0nm/rXoruY/
-         SK5A==
-X-Gm-Message-State: APjAAAUZzjhueG2+H7/E3OYxfwKGPx+al/uAhDLGXTGt5FZ08w2sjQK8
-        hHdX/wmTGdLq7EtZJ0Kb2do=
-X-Google-Smtp-Source: APXvYqyyUV/AKwxAyN9TZuMCT9wd+X8T76PBdPNUsiucJS6dHYCgcxvSYkeRlQ7nwRaHVXmuaanUnw==
-X-Received: by 2002:a05:600c:2252:: with SMTP id a18mr5967972wmm.141.1570211590660;
-        Fri, 04 Oct 2019 10:53:10 -0700 (PDT)
-Received: from Red ([2a01:cb1d:147:7200:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id e9sm17598865wme.3.2019.10.04.10.53.09
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Oct 2019 10:53:09 -0700 (PDT)
-Date:   Fri, 4 Oct 2019 19:53:07 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     catalin.marinas@arm.com, davem@davemloft.net,
-        herbert@gondor.apana.org.au, linux@armlinux.org.uk,
-        mark.rutland@arm.com, robh+dt@kernel.org, wens@csie.org,
-        will@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v2 03/11] dt-bindings: crypto: Add DT bindings
- documentation for sun8i-ce Crypto Engine
-Message-ID: <20191004175307.GB11208@Red>
-References: <20191001184141.27956-1-clabbe.montjoie@gmail.com>
- <20191001184141.27956-4-clabbe.montjoie@gmail.com>
- <20191002055458.zo2vdbxodj3ch53g@gilmour>
+        id S1725907AbfJDSUQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 4 Oct 2019 14:20:16 -0400
+Received: from mga07.intel.com ([134.134.136.100]:15752 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725730AbfJDSUP (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 4 Oct 2019 14:20:15 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Oct 2019 11:20:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.67,257,1566889200"; 
+   d="scan'208";a="205910170"
+Received: from nzaki1-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.4.57])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Oct 2019 11:20:08 -0700
+Date:   Fri, 4 Oct 2019 21:20:07 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     David Safford <david.safford@ge.com>,
+        linux-integrity@vger.kernel.org, stable@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        "open list:CRYPTO API" <linux-crypto@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] KEYS: asym_tpm: Switch to get_random_bytes()
+Message-ID: <20191004182007.GA6945@linux.intel.com>
+References: <20190926171601.30404-1-jarkko.sakkinen@linux.intel.com>
+ <1570024819.4999.119.camel@linux.ibm.com>
+ <20191003114119.GF8933@linux.intel.com>
+ <1570107752.4421.183.camel@linux.ibm.com>
+ <20191003175854.GB19679@linux.intel.com>
+ <1570128827.5046.19.camel@linux.ibm.com>
+ <20191003215125.GA30511@linux.intel.com>
+ <20191003215743.GB30511@linux.intel.com>
+ <1570140491.5046.33.camel@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20191002055458.zo2vdbxodj3ch53g@gilmour>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1570140491.5046.33.camel@linux.ibm.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Oct 02, 2019 at 07:54:58AM +0200, Maxime Ripard wrote:
-> On Tue, Oct 01, 2019 at 08:41:33PM +0200, Corentin Labbe wrote:
-> > This patch adds documentation for Device-Tree bindings for the
-> > Crypto Engine cryptographic accelerator driver.
-> >
-> > Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-> > ---
-> >  .../bindings/crypto/allwinner,sun8i-ce.yaml   | 92 +++++++++++++++++++
-> >  1 file changed, 92 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml b/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml
-> > new file mode 100644
-> > index 000000000000..9bd26a2eff33
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml
-> > @@ -0,0 +1,92 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/crypto/allwinner,sun8i-ce.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Allwinner Crypto Engine driver
-> > +
-> > +maintainers:
-> > +  - Corentin Labbe <clabbe.montjoie@gmail.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - allwinner,sun8i-h3-crypto
-> > +      - allwinner,sun8i-r40-crypto
-> > +      - allwinner,sun50i-a64-crypto
-> > +      - allwinner,sun50i-h5-crypto
-> > +      - allwinner,sun50i-h6-crypto
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: Bus clock
-> > +      - description: Module clock
-> > +      - description: MBus clock
-> > +    minItems: 2
-> > +    maxItems: 3
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: bus
-> > +      - const: mod
-> > +      - const: ram
-> > +    minItems: 2
-> > +    maxItems: 3
-> > +
-> > +  resets:
-> > +    maxItems: 1
-> > +
-> > +  reset-names:
-> > +    const: bus
-> > +
-> > +if:
-> > +  properties:
-> > +    compatible:
-> > +      items:
-> > +        const: allwinner,sun50i-h6-crypto
-> > +then:
-> > +  properties:
-> > +      clocks:
-> > +        minItems: 3
-> > +      clock-names:
-> > +        minItems: 3
-> > +else:
-> > +  properties:
-> > +      clocks:
-> > +        maxItems: 2
-> > +      clock-names:
-> > +        maxItems: 2
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - clocks
-> > +  - clock-names
-> > +  - resets
-> > +
-> > +additionalProperties: true
+On Thu, Oct 03, 2019 at 06:08:11PM -0400, Mimi Zohar wrote:
+> > At the time when trusted keys was introduced I'd say that it was a wrong
+> > design decision and badly implemented code. But you are right in that as
+> > far that code is considered it would unfair to speak of a regression.
+> > 
+> > asym-tpm.c on the other hand this is fresh new code. There has been
+> > *countless* of discussions over the years that random numbers should
+> > come from multiple sources of entropy. There is no other categorization
+> > than a bug for the tpm_get_random() there.
 > 
-> I guess you meant false here?
-> 
+> This week's LWN article on "5.4 Merge window, part 2" discusses "boot-
+> time entropy".  This article couldn't have been more perfectly timed.
 
-Yes. i wil fix that.
+Do not see any obvious relation to this dicussion. Are you saying that
+you should not use the defacto kernel API's but instead bake your own
+hacks because even defacto stuff bumps into issues from time to time?
 
-Regards
+And BTW, at the time you call tpm_get_random(), TPM driver is already
+contributing to the entropy pool (registered as hwrng).
+
+/Jarkko
