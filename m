@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF00CCE9A8
-	for <lists+linux-crypto@lfdr.de>; Mon,  7 Oct 2019 18:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4495CE9AA
+	for <lists+linux-crypto@lfdr.de>; Mon,  7 Oct 2019 18:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729014AbfJGQq1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 7 Oct 2019 12:46:27 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:52976 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728996AbfJGQq1 (ORCPT
+        id S1728939AbfJGQq2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 7 Oct 2019 12:46:28 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:36234 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729003AbfJGQq2 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 7 Oct 2019 12:46:27 -0400
-Received: by mail-wm1-f66.google.com with SMTP id r19so218856wmh.2
-        for <linux-crypto@vger.kernel.org>; Mon, 07 Oct 2019 09:46:25 -0700 (PDT)
+        Mon, 7 Oct 2019 12:46:28 -0400
+Received: by mail-wm1-f65.google.com with SMTP id m18so211915wmc.1
+        for <linux-crypto@vger.kernel.org>; Mon, 07 Oct 2019 09:46:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/xYmnzDkc9yQ0OtCwCnJ3CTcS5Xt6sT/idWBbaIdRPk=;
-        b=JOJX2qCXfKKeWvdVooGf6Pv4NIb59sUmNDOxdyUlLTAt0N8IL07uvSQ5ZQT5sHx8iG
-         5580j7sxP/DExSIbnCRj7FexlKlBb60NCvTdtwqXIxH84ZTg6HPQCg1/tXc0NKdQfxUd
-         ho+PZAc2QdEcbSTckAXUghSz728ejFODUgZ5BgMA/tDZlLpQQvqMq9LOGtQpty/3uB0y
-         g6F6hTMIDltUxYmQt4Qf/nH/hQbNW9ORTRVFgWyPndqFyZLAbFELW81NCdf9SNgApbfD
-         EeaJAqnVzkaK2BAhPmkNd3sIuXyN+Q6YH7oFicAUCBpKUb2OqoRICstHwL+zkx/FUT8v
-         2L8A==
+        bh=JUtSu2dFwCY1DgItWOyayZqegd+iOxLLlyUn/RxwQH4=;
+        b=ee7QoeFuMaJ/4z/z0PSsyJNlt6IzvHrCKHoj213MKF7s83aFtpEe8Mm7N79VI+ZLiC
+         UKQkKv0T8rUUwtrVJbl7rKR1v+qzYl+EWqbUYtzA60Z5O/mfLO3Zv7GKpdbWYyZObnyP
+         F2Plzoo5dpF2cDD686uZBk5j83cnFRxXzuKlOiJp0kw56Jlp5SqU9nNoTGenBl/X6C1j
+         xgpus41rLKea/XhYl4YzYqpO+4rArAhEY2GcVH2pAicHWkEsveWS3pN2buAQJ/ACw9+N
+         0So+uv3Kc26xVfAnxtT8+jQuwHi93rjAsYrudsa9X3/hQyIkaSTXCW6ZBTH8bFglhS6f
+         NGnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/xYmnzDkc9yQ0OtCwCnJ3CTcS5Xt6sT/idWBbaIdRPk=;
-        b=lFdWPg55Q+fPYtU9dDmDTstkFoZw8kwYYk3UIXJW9uBlyQ5c6plmRIM6EzQys9eAyM
-         IjYJcHRLvlBbRfapWFusLU6gqXqMC26QpN2gZgJ8zPc4gCyuwvuxWyoXHG0o5Jj4IzOh
-         VVcIYgOOBwjbTY4hmB7Jhr4GlL/2HSISeYvEadsIzZcGmdUTEg3dqKb+Qsp8zFAkoRZT
-         ewdEb7nfS3vlw/b0kwiHiZA/j28aLe26KPCGcw+DKfSmDbHFdJmhh79yH4ZL9Y132nTX
-         gXIN/sFyflrLhxAqN39U+/c/4CnAaB0CkISSccTk6VPKIjHW0k4Ind4sorEHAY0w+bHp
-         0pbg==
-X-Gm-Message-State: APjAAAVIanhhFI7+okJLjZBUQDGts2cLguPof3UD4pxpxaTy3wEZC/PO
-        CE7JVzZUuZTWXRFwzrAw0BLYxnIdNwOoPA==
-X-Google-Smtp-Source: APXvYqxxbUc6W/LRzfhn8cGNZTSsP3SG7UaUNdgGJuVtqY1UgNCYtvUge5MiYOTQDQUN4/VculM2gA==
-X-Received: by 2002:a1c:49c2:: with SMTP id w185mr190520wma.16.1570466784595;
-        Mon, 07 Oct 2019 09:46:24 -0700 (PDT)
+        bh=JUtSu2dFwCY1DgItWOyayZqegd+iOxLLlyUn/RxwQH4=;
+        b=DGzDylDpkhzQPx6HA+e46TxOlFZZ8catuCoL8mnB34AG/226yjJ8ZgJ/X8ALra5n+y
+         NJMu4uYxhXEwiWZEwg/7iQv4xeQLKI2Wj1hYSpNnwlgBtByvTQiE7ECX6xl9Z8W6415b
+         6NghS3ztXpJk5pg2/BNwZut/pgZGf717DbHw/BqMLsAD0mZQb+X1dt+4Gf9YLqFdlJj7
+         IkEXXzFTyg9ybaUwbp/HEhXi/xzrPfhHeSisW93xeGbrgIwdnfLcMNdW49AMIHD5pHgz
+         HNg9AvJ5upUVLVLsS9JdIHltmrWvO1amVj4PLrcfSnPatKCq4xlUHvO7sj9GgOE2a9z8
+         tmsw==
+X-Gm-Message-State: APjAAAXfK19Xoe7I0FQoMDUE73Nqhp+AfaqPlMD+r3edvZoki2KU1lVl
+        798CoAS5oFr646l0k84WC6WJv555N2Fk5A==
+X-Google-Smtp-Source: APXvYqy0yOja1bbKeGW6uZfHZbTEmUfWblTf/nQk2/bvcn9HaIODTFipt7ubcytEGOBW6e+foLw9vQ==
+X-Received: by 2002:a1c:6709:: with SMTP id b9mr202093wmc.14.1570466785874;
+        Mon, 07 Oct 2019 09:46:25 -0700 (PDT)
 Received: from localhost.localdomain (laubervilliers-657-1-83-120.w92-154.abo.wanadoo.fr. [92.154.90.120])
-        by smtp.gmail.com with ESMTPSA id b22sm68507wmj.36.2019.10.07.09.46.23
+        by smtp.gmail.com with ESMTPSA id b22sm68507wmj.36.2019.10.07.09.46.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2019 09:46:23 -0700 (PDT)
+        Mon, 07 Oct 2019 09:46:25 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
@@ -56,9 +56,9 @@ Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         Andy Lutomirski <luto@kernel.org>,
         Martin Willi <martin@strongswan.org>,
         Rene van Dorst <opensource@vdorst.com>
-Subject: [PATCH v3 04/29] crypto: arm64/chacha - depend on generic chacha library instead of crypto driver
-Date:   Mon,  7 Oct 2019 18:45:45 +0200
-Message-Id: <20191007164610.6881-5-ard.biesheuvel@linaro.org>
+Subject: [PATCH v3 05/29] crypto: arm64/chacha - expose arm64 ChaCha routine as library function
+Date:   Mon,  7 Oct 2019 18:45:46 +0200
+Message-Id: <20191007164610.6881-6-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191007164610.6881-1-ard.biesheuvel@linaro.org>
 References: <20191007164610.6881-1-ard.biesheuvel@linaro.org>
@@ -69,149 +69,132 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Depend on the generic ChaCha library routines instead of pulling in the
-generic ChaCha skcipher driver, which is more than we need, and makes
-managing the dependencies between the generic library, generic driver,
-accelerated library and driver more complicated.
+Expose the accelerated NEON ChaCha routine directly as a symbol
+export so that users of the ChaCha library API can use it directly.
+
+Given that calls into the library API will always go through the
+routines in this module if it is enabled, switch to static keys
+to select the optimal implementation available (which may be none
+at all, in which case we defer to the generic implementation for
+all invocations).
 
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- arch/arm64/crypto/Kconfig            |  2 +-
- arch/arm64/crypto/chacha-neon-glue.c | 54 +++++++++++++-------
- 2 files changed, 37 insertions(+), 19 deletions(-)
+ arch/arm64/crypto/Kconfig            |  1 +
+ arch/arm64/crypto/chacha-neon-glue.c | 47 ++++++++++++++++++--
+ 2 files changed, 44 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/crypto/Kconfig b/arch/arm64/crypto/Kconfig
-index 4922c4451e7c..fdf52d5f18f9 100644
+index fdf52d5f18f9..17bada4b9dd2 100644
 --- a/arch/arm64/crypto/Kconfig
 +++ b/arch/arm64/crypto/Kconfig
-@@ -103,7 +103,7 @@ config CRYPTO_CHACHA20_NEON
- 	tristate "ChaCha20, XChaCha20, and XChaCha12 stream ciphers using NEON instructions"
+@@ -104,6 +104,7 @@ config CRYPTO_CHACHA20_NEON
  	depends on KERNEL_MODE_NEON
  	select CRYPTO_BLKCIPHER
--	select CRYPTO_CHACHA20
-+	select CRYPTO_LIB_CHACHA_GENERIC
+ 	select CRYPTO_LIB_CHACHA_GENERIC
++	select CRYPTO_ARCH_HAVE_LIB_CHACHA
  
  config CRYPTO_NHPOLY1305_NEON
  	tristate "NHPoly1305 hash function using NEON instructions (for Adiantum)"
 diff --git a/arch/arm64/crypto/chacha-neon-glue.c b/arch/arm64/crypto/chacha-neon-glue.c
-index d4cc61bfe79d..6450bb9f55f4 100644
+index 6450bb9f55f4..57e50acf35f8 100644
 --- a/arch/arm64/crypto/chacha-neon-glue.c
 +++ b/arch/arm64/crypto/chacha-neon-glue.c
-@@ -64,22 +64,30 @@ static int chacha_neon_stream_xor(struct skcipher_request *req,
+@@ -23,6 +23,7 @@
+ #include <crypto/internal/chacha.h>
+ #include <crypto/internal/simd.h>
+ #include <crypto/internal/skcipher.h>
++#include <linux/jump_label.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ 
+@@ -36,6 +37,8 @@ asmlinkage void chacha_4block_xor_neon(u32 *state, u8 *dst, const u8 *src,
+ 				       int nrounds, int bytes);
+ asmlinkage void hchacha_block_neon(const u32 *state, u32 *out, int nrounds);
+ 
++static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_neon);
++
+ static void chacha_doneon(u32 *state, u8 *dst, const u8 *src,
+ 			  int bytes, int nrounds)
  {
- 	struct skcipher_walk walk;
- 	u32 state[16];
-+	bool do_neon;
- 	int err;
+@@ -59,6 +62,37 @@ static void chacha_doneon(u32 *state, u8 *dst, const u8 *src,
+ 	}
+ }
  
- 	err = skcipher_walk_virt(&walk, req, false);
- 
--	crypto_chacha_init(state, ctx, iv);
-+	chacha_init_generic(state, ctx->key, iv);
- 
-+	do_neon = (req->cryptlen > CHACHA_BLOCK_SIZE) && crypto_simd_usable();
- 	while (walk.nbytes > 0) {
- 		unsigned int nbytes = walk.nbytes;
- 
++void hchacha_block(const u32 *state, u32 *stream, int nrounds)
++{
++	if (!static_branch_likely(&have_neon) || !crypto_simd_usable()) {
++		hchacha_block_generic(state, stream, nrounds);
++	} else {
++		kernel_neon_begin();
++		hchacha_block_neon(state, stream, nrounds);
++		kernel_neon_end();
++	}
++}
++EXPORT_SYMBOL(hchacha_block);
++
++void chacha_init(u32 *state, const u32 *key, const u8 *iv)
++{
++	chacha_init_generic(state, key, iv);
++}
++EXPORT_SYMBOL(chacha_init);
++
++void chacha_crypt(u32 *state, u8 *dst, const u8 *src, unsigned int bytes,
++		  int nrounds)
++{
++	if (!static_branch_likely(&have_neon) || bytes <= CHACHA_BLOCK_SIZE ||
++	    !crypto_simd_usable())
++		return chacha_crypt_generic(state, dst, src, bytes, nrounds);
++
++	kernel_neon_begin();
++	chacha_doneon(state, dst, src, bytes, nrounds);
++	kernel_neon_end();
++}
++EXPORT_SYMBOL(chacha_crypt);
++
+ static int chacha_neon_stream_xor(struct skcipher_request *req,
+ 				  const struct chacha_ctx *ctx, const u8 *iv)
+ {
+@@ -78,7 +112,7 @@ static int chacha_neon_stream_xor(struct skcipher_request *req,
  		if (nbytes < walk.total)
  			nbytes = rounddown(nbytes, walk.stride);
  
--		kernel_neon_begin();
--		chacha_doneon(state, walk.dst.virt.addr, walk.src.virt.addr,
--			      nbytes, ctx->nrounds);
--		kernel_neon_end();
-+		if (!do_neon) {
-+			chacha_crypt_generic(state, walk.dst.virt.addr,
-+					     walk.src.virt.addr, nbytes,
-+					     ctx->nrounds);
-+		} else {
-+			kernel_neon_begin();
-+			chacha_doneon(state, walk.dst.virt.addr,
-+				      walk.src.virt.addr, nbytes, ctx->nrounds);
-+			kernel_neon_end();
-+		}
- 		err = skcipher_walk_done(&walk, walk.nbytes - nbytes);
- 	}
+-		if (!do_neon) {
++		if (!static_branch_likely(&have_neon) || !do_neon) {
+ 			chacha_crypt_generic(state, walk.dst.virt.addr,
+ 					     walk.src.virt.addr, nbytes,
+ 					     ctx->nrounds);
+@@ -112,7 +146,9 @@ static int xchacha_neon(struct skcipher_request *req)
  
-@@ -91,9 +99,6 @@ static int chacha_neon(struct skcipher_request *req)
- 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
- 	struct chacha_ctx *ctx = crypto_skcipher_ctx(tfm);
+ 	chacha_init_generic(state, ctx->key, req->iv);
  
--	if (req->cryptlen <= CHACHA_BLOCK_SIZE || !crypto_simd_usable())
--		return crypto_chacha_crypt(req);
--
- 	return chacha_neon_stream_xor(req, ctx, req->iv);
+-	if (req->cryptlen > CHACHA_BLOCK_SIZE && crypto_simd_usable()) {
++	if (static_branch_likely(&have_neon) &&
++	    req->cryptlen > CHACHA_BLOCK_SIZE &&
++	    crypto_simd_usable()) {
+ 		kernel_neon_begin();
+ 		hchacha_block_neon(state, subctx.key, ctx->nrounds);
+ 		kernel_neon_end();
+@@ -193,14 +229,17 @@ static struct skcipher_alg algs[] = {
+ static int __init chacha_simd_mod_init(void)
+ {
+ 	if (!cpu_have_named_feature(ASIMD))
+-		return -ENODEV;
++		return 0;
++
++	static_branch_enable(&have_neon);
+ 
+ 	return crypto_register_skciphers(algs, ARRAY_SIZE(algs));
  }
  
-@@ -105,14 +110,15 @@ static int xchacha_neon(struct skcipher_request *req)
- 	u32 state[16];
- 	u8 real_iv[16];
- 
--	if (req->cryptlen <= CHACHA_BLOCK_SIZE || !crypto_simd_usable())
--		return crypto_xchacha_crypt(req);
-+	chacha_init_generic(state, ctx->key, req->iv);
- 
--	crypto_chacha_init(state, ctx, req->iv);
--
--	kernel_neon_begin();
--	hchacha_block_neon(state, subctx.key, ctx->nrounds);
--	kernel_neon_end();
-+	if (req->cryptlen > CHACHA_BLOCK_SIZE && crypto_simd_usable()) {
-+		kernel_neon_begin();
-+		hchacha_block_neon(state, subctx.key, ctx->nrounds);
-+		kernel_neon_end();
-+	} else {
-+		hchacha_block_generic(state, subctx.key, ctx->nrounds);
-+	}
- 	subctx.nrounds = ctx->nrounds;
- 
- 	memcpy(&real_iv[0], req->iv + 24, 8);
-@@ -120,6 +126,18 @@ static int xchacha_neon(struct skcipher_request *req)
- 	return chacha_neon_stream_xor(req, &subctx, real_iv);
+ static void __exit chacha_simd_mod_fini(void)
+ {
+-	crypto_unregister_skciphers(algs, ARRAY_SIZE(algs));
++	if (cpu_have_named_feature(ASIMD))
++		crypto_unregister_skciphers(algs, ARRAY_SIZE(algs));
  }
  
-+static int chacha20_setkey(struct crypto_skcipher *tfm, const u8 *key,
-+		    unsigned int keysize)
-+{
-+	return chacha_setkey(tfm, key, keysize, 20);
-+}
-+
-+static int chacha12_setkey(struct crypto_skcipher *tfm, const u8 *key,
-+		    unsigned int keysize)
-+{
-+	return chacha_setkey(tfm, key, keysize, 12);
-+}
-+
- static struct skcipher_alg algs[] = {
- 	{
- 		.base.cra_name		= "chacha20",
-@@ -134,7 +152,7 @@ static struct skcipher_alg algs[] = {
- 		.ivsize			= CHACHA_IV_SIZE,
- 		.chunksize		= CHACHA_BLOCK_SIZE,
- 		.walksize		= 5 * CHACHA_BLOCK_SIZE,
--		.setkey			= crypto_chacha20_setkey,
-+		.setkey			= chacha20_setkey,
- 		.encrypt		= chacha_neon,
- 		.decrypt		= chacha_neon,
- 	}, {
-@@ -150,7 +168,7 @@ static struct skcipher_alg algs[] = {
- 		.ivsize			= XCHACHA_IV_SIZE,
- 		.chunksize		= CHACHA_BLOCK_SIZE,
- 		.walksize		= 5 * CHACHA_BLOCK_SIZE,
--		.setkey			= crypto_chacha20_setkey,
-+		.setkey			= chacha20_setkey,
- 		.encrypt		= xchacha_neon,
- 		.decrypt		= xchacha_neon,
- 	}, {
-@@ -166,7 +184,7 @@ static struct skcipher_alg algs[] = {
- 		.ivsize			= XCHACHA_IV_SIZE,
- 		.chunksize		= CHACHA_BLOCK_SIZE,
- 		.walksize		= 5 * CHACHA_BLOCK_SIZE,
--		.setkey			= crypto_chacha12_setkey,
-+		.setkey			= chacha12_setkey,
- 		.encrypt		= xchacha_neon,
- 		.decrypt		= xchacha_neon,
- 	}
+ module_init(chacha_simd_mod_init);
 -- 
 2.20.1
 
