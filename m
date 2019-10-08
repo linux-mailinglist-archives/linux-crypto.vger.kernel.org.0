@@ -2,176 +2,157 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B574FCF512
-	for <lists+linux-crypto@lfdr.de>; Tue,  8 Oct 2019 10:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA95CF84F
+	for <lists+linux-crypto@lfdr.de>; Tue,  8 Oct 2019 13:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730036AbfJHIdk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 8 Oct 2019 04:33:40 -0400
-Received: from mail-eopbgr810050.outbound.protection.outlook.com ([40.107.81.50]:60289
-        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728866AbfJHIdk (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 8 Oct 2019 04:33:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BSIhPu8/3/kAUG4nbBLuAmTW2ogf+/Xpd3+Nij1ZuHVeXx8NoBOxufj4/v7TrDD6AYZHWSDpDYUPI1SWacBH5D27PJCSJh9cqMguoiAHcDWAEWRA64TqNaSfVGxgDfrIjOXeCRlv2zeXSlJivzpCKiplMzkZKLCUtNJweiY3ofE18RMM7PgHHcKsDsEaUq7n3o1i0fLpq6IyElW0VEt9AlkQLjeR6XPtp9VaI02WSx0/TLMfrI6EfOgH/E+YYB7nt+zNsiuVZWG86BQh1mTxLGPTGCzZuG0Zu7uwSgQBLwqsMZJED/90EdP/e+aFy47OmhFXfTicHyLmBRZCic7bQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KL6nCTI8avtdDO1+DUELOote4DR2Ynei3eSCXN7aks4=;
- b=GiGyaT8dAkGnWbMg0ZRzU3X3/Mns5rLTOpxo5Wl1L5viy/A0fRnSxtSM66dRqWKpzOT+uur3BrhFjo1bPVeZTO9OmscLBMxPJrdB1B5B5aivn9ABn/eL5ASsnpahiSSmO2i1D2P6oa/l5XWWztHYA+O2SyGUTZ4hPk7KMYyYaihnr69c71lA8Akl5SgR5jcGZ2ihNE+1uxT3Mnm+6X/thzOuF45IMGLOPpNipTqvFiUBFeKkjzqv0BbBfn6jBde/PNCsveD+B0MHuNWfsxtVFFOq0sCxs6ICRrHxgwQeGg7V5QbZ/9kXgMQZfTg1f4R9xi0yX+PD26M+SHu0O8keRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=verimatrix.com; dmarc=pass action=none
- header.from=verimatrix.com; dkim=pass header.d=verimatrix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=verimatrix.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KL6nCTI8avtdDO1+DUELOote4DR2Ynei3eSCXN7aks4=;
- b=S+wuLjKLovUVSLDDzihYssWOE7eQw4E0WaeR1eh74gAEq6Vzr2R+GJ3PxhVAS45/ndGt+SB8umtIsdr5tBf0QK1uMbPFkyOOJlOzvHHTV8nTgGZt807MgZNTjAwnYZL490jf3UUSKmOVQ8AxZ7p8w1vHAtzFw7DcRZH5Un1RYRU=
-Received: from MN2PR20MB2973.namprd20.prod.outlook.com (52.132.172.86) by
- MN2PR20MB3136.namprd20.prod.outlook.com (52.132.175.83) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2327.23; Tue, 8 Oct 2019 08:33:35 +0000
-Received: from MN2PR20MB2973.namprd20.prod.outlook.com
- ([fe80::b986:4f02:3206:31e4]) by MN2PR20MB2973.namprd20.prod.outlook.com
- ([fe80::b986:4f02:3206:31e4%7]) with mapi id 15.20.2347.016; Tue, 8 Oct 2019
- 08:33:35 +0000
-From:   Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
-To:     Joe Perches <joe@perches.com>,
-        Colin King <colin.king@canonical.com>,
-        Antoine Tenart <antoine.tenart@bootlin.com>,
+        id S1730779AbfJHLdf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 8 Oct 2019 07:33:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:47840 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730710AbfJHLdf (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 8 Oct 2019 07:33:35 -0400
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1iHnk3-0008DR-CC; Tue, 08 Oct 2019 13:33:23 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id E98E01C0325;
+        Tue,  8 Oct 2019 13:33:22 +0200 (CEST)
+Date:   Tue, 08 Oct 2019 11:33:22 -0000
+From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] lib/string: Make memzero_explicit() inline instead
+ of external
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH][next] crypto: inside-secure: fix spelling mistake
- "algorithmn" -> "algorithm"
-Thread-Topic: [PATCH][next] crypto: inside-secure: fix spelling mistake
- "algorithmn" -> "algorithm"
-Thread-Index: AQHVfbBiWkZb4mCzbk2SwbBbsORNa6dQZX5AgAAD7YCAAAB/4A==
-Date:   Tue, 8 Oct 2019 08:33:34 +0000
-Message-ID: <MN2PR20MB297358121F5F6D5B4B07ED13CA9A0@MN2PR20MB2973.namprd20.prod.outlook.com>
-References: <20191008081410.18857-1-colin.king@canonical.com>
-         <MN2PR20MB29735A64971670E9CE56821ECA9A0@MN2PR20MB2973.namprd20.prod.outlook.com>
- <f7fada8a8afce542e5ac08f804df8d5c8d8a726b.camel@perches.com>
-In-Reply-To: <f7fada8a8afce542e5ac08f804df8d5c8d8a726b.camel@perches.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=pvanleeuwen@verimatrix.com; 
-x-originating-ip: [188.204.2.113]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a7f58ca6-91c5-41a5-c12c-08d74bca359a
-x-ms-traffictypediagnostic: MN2PR20MB3136:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <MN2PR20MB3136EA60F5E7CA5C4C75A601CA9A0@MN2PR20MB3136.namprd20.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-forefront-prvs: 01842C458A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(376002)(346002)(396003)(39850400004)(366004)(189003)(199004)(13464003)(7736002)(33656002)(305945005)(76176011)(15974865002)(8936002)(99286004)(25786009)(110136005)(74316002)(316002)(7696005)(5660300002)(81166006)(2501003)(478600001)(14454004)(8676002)(54906003)(81156014)(71190400001)(52536014)(71200400001)(11346002)(446003)(66556008)(3846002)(14444005)(66476007)(256004)(6246003)(64756008)(66946007)(486006)(102836004)(9686003)(76116006)(66446008)(476003)(229853002)(66066001)(186003)(26005)(6506007)(53546011)(55016002)(6436002)(2906002)(86362001)(6116002)(4326008)(18886075002);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR20MB3136;H:MN2PR20MB2973.namprd20.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: verimatrix.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kDtJdm0WhEXiZN3MnET6WYidea3oPaTinMMepnkzASULJhoj0G7mmRM/AxYSL3HIHX8Z0ZvVoDZcQNKXcMhr331ajd1TQfp99ydEeGgZB3JYT3qdr0qse70C7g5znZ7BegMnsGFIhnNBhiUrud9auaCWCsdtDyWcHrDwzl39wlwPCsr2niHvqjx48iGek0BCip/ac6JTI8HvKdu58/hT8oPGJwKnAatHlS2sc3eXsla2h3q3t2gqQaAhx87kap/ukYoos4GCDiWgTdcgHOTICxB2EkU7dERrbBZevCeHxXFrDzijgiPweakyzNaGbx9JdTz4YqO4Rk2mWtdJWLUaeMenKlBBz1naGXx/DpgK7seNSUH0CYt3UQ8GuhQ6lbCred2PO6fWXg3oL2DYl242PQ1F3T+uwx68fIBZMXOKygc=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephan Mueller <smueller@chronox.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <20191007220000.GA408752@rani.riverdale.lan>
+References: <20191007220000.GA408752@rani.riverdale.lan>
 MIME-Version: 1.0
-X-OriginatorOrg: verimatrix.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7f58ca6-91c5-41a5-c12c-08d74bca359a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2019 08:33:35.0066
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: dcb260f9-022d-4495-8602-eae51035a0d0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0ogOlx220Vl6DEhaL2NriDIZFvgz3kZ0x+NN/UGLl/WG76clpfkg47u9qfxtNmkKyP5OxmKE42UgKEtVSkru6O0wm+/5Wi4vYeioJPbydVg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR20MB3136
+Message-ID: <157053440280.9978.14856787712173585355.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-> -----Original Message-----
-> From: Joe Perches <joe@perches.com>
-> Sent: Tuesday, October 8, 2019 10:29 AM
-> To: Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>; Colin King <colin.ki=
-ng@canonical.com>;
-> Antoine Tenart <antoine.tenart@bootlin.com>; Herbert Xu <herbert@gondor.a=
-pana.org.au>; David S .
-> Miller <davem@davemloft.net>; linux-crypto@vger.kernel.org
-> Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH][next] crypto: inside-secure: fix spelling mistake "a=
-lgorithmn" ->
-> "algorithm"
->=20
-> On Tue, 2019-10-08 at 08:15 +0000, Pascal Van Leeuwen wrote:
-> > > There is a spelling mistake in a dev_err message. Fix it.
-> []
-> > > diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers=
-/crypto/inside-
-> []
-> > > @@ -437,7 +437,7 @@ static int safexcel_aead_setkey(struct crypto_aea=
-d *ctfm, const u8 *key,
-> > >  			goto badkey;
-> > >  		break;
-> > >  	default:
-> > > -		dev_err(priv->dev, "aead: unsupported hash algorithmn");
-> > > +		dev_err(priv->dev, "aead: unsupported hash algorithm");
-> > >  		goto badkey;
-> > >  	}
-> []
-> > Actually, the typing error is well spotted, but the fix is not correct.
-> > What actually happened here is that a \ got accidentally deleted,
-> > there should have been a "\n" at the end of the line ...
->=20
-> Other missing newlines in the same file:
-> ---
->  drivers/crypto/inside-secure/safexcel_cipher.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers/cry=
-pto/inside-
-> secure/safexcel_cipher.c
-> index cecc56073337..47fec8a0a4e1 100644
-> --- a/drivers/crypto/inside-secure/safexcel_cipher.c
-> +++ b/drivers/crypto/inside-secure/safexcel_cipher.c
-> @@ -695,21 +695,21 @@ static int safexcel_send_req(struct crypto_async_re=
-quest *base, int ring,
->  		sreq->nr_dst =3D sreq->nr_src;
->  		if (unlikely((totlen_src || totlen_dst) &&
->  		    (sreq->nr_src <=3D 0))) {
-> -			dev_err(priv->dev, "In-place buffer not large enough (need %d bytes)!=
-",
-> +			dev_err(priv->dev, "In-place buffer not large enough (need %d bytes)!=
-\n",
->  				max(totlen_src, totlen_dst));
->  			return -EINVAL;
->  		}
->  		dma_map_sg(priv->dev, src, sreq->nr_src, DMA_BIDIRECTIONAL);
->  	} else {
->  		if (unlikely(totlen_src && (sreq->nr_src <=3D 0))) {
-> -			dev_err(priv->dev, "Source buffer not large enough (need %d bytes)!",
-> +			dev_err(priv->dev, "Source buffer not large enough (need %d bytes)!\n=
-",
->  				totlen_src);
->  			return -EINVAL;
->  		}
->  		dma_map_sg(priv->dev, src, sreq->nr_src, DMA_TO_DEVICE);
->=20
->  		if (unlikely(totlen_dst && (sreq->nr_dst <=3D 0))) {
-> -			dev_err(priv->dev, "Dest buffer not large enough (need %d bytes)!",
-> +			dev_err(priv->dev, "Dest buffer not large enough (need %d bytes)!\n",
->  				totlen_dst);
->  			dma_unmap_sg(priv->dev, src, sreq->nr_src,
->  				     DMA_TO_DEVICE);
+The following commit has been merged into the x86/urgent branch of tip:
 
-Yes, thanks!
+Commit-ID:     bec500777089b3c96c53681fc0aa6fee59711d4a
+Gitweb:        https://git.kernel.org/tip/bec500777089b3c96c53681fc0aa6fee59711d4a
+Author:        Arvind Sankar <nivedita@alum.mit.edu>
+AuthorDate:    Mon, 07 Oct 2019 18:00:02 -04:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 08 Oct 2019 13:27:05 +02:00
 
-Acked-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+lib/string: Make memzero_explicit() inline instead of external
 
-Regards,
-Pascal van Leeuwen
-Silicon IP Architect, Multi-Protocol Engines @ Verimatrix
-www.insidesecure.com
+With the use of the barrier implied by barrier_data(), there is no need
+for memzero_explicit() to be extern. Making it inline saves the overhead
+of a function call, and allows the code to be reused in arch/*/purgatory
+without having to duplicate the implementation.
+
+Tested-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: H . Peter Anvin <hpa@zytor.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephan Mueller <smueller@chronox.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-s390@vger.kernel.org
+Fixes: 906a4bb97f5d ("crypto: sha256 - Use get/put_unaligned_be32 to get input, memzero_explicit")
+Link: https://lkml.kernel.org/r/20191007220000.GA408752@rani.riverdale.lan
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ include/linux/string.h | 21 ++++++++++++++++++++-
+ lib/string.c           | 21 ---------------------
+ 2 files changed, 20 insertions(+), 22 deletions(-)
+
+diff --git a/include/linux/string.h b/include/linux/string.h
+index b2f9df7..b6ccdc2 100644
+--- a/include/linux/string.h
++++ b/include/linux/string.h
+@@ -227,7 +227,26 @@ static inline bool strstarts(const char *str, const char *prefix)
+ }
+ 
+ size_t memweight(const void *ptr, size_t bytes);
+-void memzero_explicit(void *s, size_t count);
++
++/**
++ * memzero_explicit - Fill a region of memory (e.g. sensitive
++ *		      keying data) with 0s.
++ * @s: Pointer to the start of the area.
++ * @count: The size of the area.
++ *
++ * Note: usually using memset() is just fine (!), but in cases
++ * where clearing out _local_ data at the end of a scope is
++ * necessary, memzero_explicit() should be used instead in
++ * order to prevent the compiler from optimising away zeroing.
++ *
++ * memzero_explicit() doesn't need an arch-specific version as
++ * it just invokes the one of memset() implicitly.
++ */
++static inline void memzero_explicit(void *s, size_t count)
++{
++	memset(s, 0, count);
++	barrier_data(s);
++}
+ 
+ /**
+  * kbasename - return the last part of a pathname.
+diff --git a/lib/string.c b/lib/string.c
+index cd7a10c..08ec58c 100644
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -748,27 +748,6 @@ void *memset(void *s, int c, size_t count)
+ EXPORT_SYMBOL(memset);
+ #endif
+ 
+-/**
+- * memzero_explicit - Fill a region of memory (e.g. sensitive
+- *		      keying data) with 0s.
+- * @s: Pointer to the start of the area.
+- * @count: The size of the area.
+- *
+- * Note: usually using memset() is just fine (!), but in cases
+- * where clearing out _local_ data at the end of a scope is
+- * necessary, memzero_explicit() should be used instead in
+- * order to prevent the compiler from optimising away zeroing.
+- *
+- * memzero_explicit() doesn't need an arch-specific version as
+- * it just invokes the one of memset() implicitly.
+- */
+-void memzero_explicit(void *s, size_t count)
+-{
+-	memset(s, 0, count);
+-	barrier_data(s);
+-}
+-EXPORT_SYMBOL(memzero_explicit);
+-
+ #ifndef __HAVE_ARCH_MEMSET16
+ /**
+  * memset16() - Fill a memory area with a uint16_t
