@@ -2,77 +2,99 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 614B8D2A79
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Oct 2019 15:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F962D2BCE
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Oct 2019 15:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387999AbfJJNKZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Oct 2019 09:10:25 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:33600 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387898AbfJJNKY (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 10 Oct 2019 09:10:24 -0400
-Received: by mail-wm1-f67.google.com with SMTP id r17so7112082wme.0
-        for <linux-crypto@vger.kernel.org>; Thu, 10 Oct 2019 06:10:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ub-ac-id.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=GO77O9NugfDMF3sM0pFxjAVwqVXEKORDEOteZl6SPpM=;
-        b=CGCreGJpdYxCMpEc/r9slhW8rmU4TymtGsZBbMvDrYU9kNDYb/svfNqW4a9C3bf+BM
-         kbbK67I1e9UwX3fKfloVVqGUficTgv9o2fidC9QOglrpEVTLPie7uGXXXMLngCYMp9E6
-         e1G7SoSNqGaXSVVCXpOpdpvb0A8fMNBKZxZ0BtpQtjukZwxsZRCmNZI4BAshhKy/TpMX
-         cw6GUcF4zQkxYbiYk8Zc9Q5BgmsPWwDaAcit4uR9TdxpIZhjqfdPdhnWI4FmlB59CCrQ
-         jL4JcdQ1JsmKakx8RnWJPmM+NlHwOF4if6xijGII/IpnJBxXJ+ZMDdPqVJen2xHSCBhr
-         7XbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=GO77O9NugfDMF3sM0pFxjAVwqVXEKORDEOteZl6SPpM=;
-        b=HPcmhJn7+SfI9JvI6h5eXfWiChHAV3WTtlqhSsjUHgNdDv5DqPw/f43Cwn0kFtUroR
-         a4EvB160UdFrgUzzxkKHyafkjez45cqE2DY8dcssiKiyIOmcFX0UkGWzKh4kA/MqDDnS
-         WB07IqZ1l39P/ZMv4FaHz5Q8xvi4WgeuvcDsaU+35kf2Exrhxzjbru34XqNgCyYcN7aB
-         3OjlSjm7uWGxpWzLD5o4v2qjn2XLc2sdXHNLKczqIx8tsLD06xQltEIMNwUm8VSgwDPq
-         ekqo493P96J3DwHZhk4x3megHUjT8r8vhS9KZiwEhMt3ncDadL24EUTWLXvNEV24O0SI
-         lRDw==
-X-Gm-Message-State: APjAAAV/kZsHpI9oBB1mBZzfPaP2uTDQnJCS0e6GQPy/QrH9aTZPlCF7
-        JX6oby0a9YE6Hbi/M54Ui53Ko1yrmqvnUJXSS8x8tQ==
-X-Google-Smtp-Source: APXvYqz37xeAxTc9n4Vw6+baO3ezaqmb44jTN53afpnazNh08T2YGGy0G+RdMm3GW6VpJFx3Vu2hAyZqrm4Tj/MIr/c=
-X-Received: by 2002:a7b:c3cf:: with SMTP id t15mr7388687wmj.85.1570713023114;
- Thu, 10 Oct 2019 06:10:23 -0700 (PDT)
+        id S1726073AbfJJNxe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Oct 2019 09:53:34 -0400
+Received: from mga12.intel.com ([192.55.52.136]:15874 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725905AbfJJNxd (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 10 Oct 2019 09:53:33 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Oct 2019 06:53:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.67,280,1566889200"; 
+   d="scan'208";a="277784035"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 10 Oct 2019 06:53:31 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1iIYsl-000ETz-B3; Thu, 10 Oct 2019 21:53:31 +0800
+Date:   Thu, 10 Oct 2019 21:53:11 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Zaibo Xu <xuzaibo@huawei.com>
+Cc:     kbuild-all@01.org, linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hui Tang <tanghui20@huawei.com>
+Subject: [cryptodev:master 66/78]
+ drivers/crypto/hisilicon/hpre/hpre_main.c:450:16: sparse: sparse: incorrect
+ type in assignment (different base types)
+Message-ID: <201910102109.AWW4BMfE%lkp@intel.com>
 MIME-Version: 1.0
-Received: by 2002:adf:efc4:0:0:0:0:0 with HTTP; Thu, 10 Oct 2019 06:10:22
- -0700 (PDT)
-Reply-To: sunrisefundingltd50@gmail.com
-From:   "Coryna Rizky Amelia, SST" <coryna_fk@ub.ac.id>
-Date:   Thu, 10 Oct 2019 14:10:22 +0100
-Message-ID: <CADotR_p9GxtkfVe36w7PBHwuwOdZcV4TCMOT+O50+azDL8EhmA@mail.gmail.com>
-Subject: Apply For Financial investment at a lower rate 2%
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Patchwork-Hint: ignore
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--- 
-Hello,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
+head:   504582e8e40b90b8f8c58783e2d1e4f6a2b71a3a
+commit: c8b4b477079d1995cc0a1c10d5cdfd02be938cdf [66/78] crypto: hisilicon - add HiSilicon HPRE accelerator
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-rc1-42-g38eda53-dirty
+        git checkout c8b4b477079d1995cc0a1c10d5cdfd02be938cdf
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
 
-We are private lenders based in UK.
-Do you need a loan (credit) as soon as possible. Are you in search of
-money to solve your personal needs or finance your business venture,
-then get Your desired loan today! Consult us at Sunrise Funding Ltd.
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
 
-* We offer personal loan & huge capital loan at 2% interest rate to
-the general public both locally and internationally.
-* Credit amount range from $5,000.00 -- $500,000.00 and above.
-* Special $10,000,000.00 Loan offer for huge project also available.
-* Loan period of 6 months -- 10 years.
-* Loan is granted 24 hours after approval and accredited, directly in
-hand or bank account.
 
-Please note that you are advised to contact us for more details via
-the following e-mail address below;
+sparse warnings: (new ones prefixed by >>)
 
-EMAIL : sunrisefundingltd50@gmail.com
-FIRM : Sunrise Funding Ltd UK.
+>> drivers/crypto/hisilicon/hpre/hpre_main.c:450:16: sparse: sparse: incorrect type in assignment (different base types) @@    expected restricted pci_ers_result_t [usertype] qm_ret @@    got e] qm_ret @@
+>> drivers/crypto/hisilicon/hpre/hpre_main.c:450:16: sparse:    expected restricted pci_ers_result_t [usertype] qm_ret
+>> drivers/crypto/hisilicon/hpre/hpre_main.c:450:16: sparse:    got int
+--
+>> drivers/crypto/hisilicon/hpre/hpre_crypto.c:378:26: sparse: sparse: restricted __le16 degrades to integer
+>> drivers/crypto/hisilicon/hpre/hpre_crypto.c:475:26: sparse: sparse: invalid assignment: |=
+>> drivers/crypto/hisilicon/hpre/hpre_crypto.c:475:26: sparse:    left side has type restricted __le32
+>> drivers/crypto/hisilicon/hpre/hpre_crypto.c:475:26: sparse:    right side has type int
+   drivers/crypto/hisilicon/hpre/hpre_crypto.c:477:26: sparse: sparse: invalid assignment: |=
+   drivers/crypto/hisilicon/hpre/hpre_crypto.c:477:26: sparse:    left side has type restricted __le32
+   drivers/crypto/hisilicon/hpre/hpre_crypto.c:477:26: sparse:    right side has type int
+   drivers/crypto/hisilicon/hpre/hpre_crypto.c:740:26: sparse: sparse: invalid assignment: |=
+   drivers/crypto/hisilicon/hpre/hpre_crypto.c:740:26: sparse:    left side has type restricted __le32
+   drivers/crypto/hisilicon/hpre/hpre_crypto.c:740:26: sparse:    right side has type int
+
+vim +450 drivers/crypto/hisilicon/hpre/hpre_main.c
+
+   443	
+   444	static pci_ers_result_t hpre_process_hw_error(struct pci_dev *pdev)
+   445	{
+   446		struct hpre *hpre = pci_get_drvdata(pdev);
+   447		pci_ers_result_t qm_ret, hpre_ret;
+   448	
+   449		/* log qm error */
+ > 450		qm_ret = hisi_qm_hw_error_handle(&hpre->qm);
+   451	
+   452		/* log hpre error */
+   453		hpre_ret = hpre_hw_error_handle(hpre);
+   454	
+   455		return (qm_ret == PCI_ERS_RESULT_NEED_RESET ||
+   456			hpre_ret == PCI_ERS_RESULT_NEED_RESET) ?
+   457			PCI_ERS_RESULT_NEED_RESET : PCI_ERS_RESULT_RECOVERED;
+   458	}
+   459	
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
