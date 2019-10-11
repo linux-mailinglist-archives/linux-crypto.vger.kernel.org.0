@@ -2,98 +2,61 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C83AD54CE
-	for <lists+linux-crypto@lfdr.de>; Sun, 13 Oct 2019 08:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3B5D5504
+	for <lists+linux-crypto@lfdr.de>; Sun, 13 Oct 2019 09:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727382AbfJMG3u (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 13 Oct 2019 02:29:50 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:37885 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726698AbfJMG3u (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 13 Oct 2019 02:29:50 -0400
-Received: by mail-wm1-f65.google.com with SMTP id f22so13677430wmc.2
-        for <linux-crypto@vger.kernel.org>; Sat, 12 Oct 2019 23:29:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KcJ7Kv1ST9YbGxqx4tgfEVL19WmMfSIFjEryHkrxqaM=;
-        b=ShHctQMIAMUEsc4GsPIKwVo7BaxtA/IH8w/7Imj4tm0mGBrIFwVfV7ELQaSvJSlEjc
-         r6G/5eGmPT4AmRnsFXTU4hud3uI5T8lcoG6t5Au5+2XmTznxgF7jdxBXqGCwcPofCqiN
-         K8ePCjmhAVEQSOS48hJ3Ap0yr4Ev4qvnWlpkyPNwMoYW65uFF7td0WNt8yC+znjxNxhf
-         f87SIcJ/405TP5H1YSlhz/FYH42vWWIP+YIzS6Fm4lGkEVwyJHIVSgmli91yQqv2xHrr
-         6JCiVL8HkhUVImkuKO9S/LYvzH8u8opYzoSE8JUpL4OTKI0HYsQenqJNA0qkll1KaqGB
-         luZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KcJ7Kv1ST9YbGxqx4tgfEVL19WmMfSIFjEryHkrxqaM=;
-        b=r+Z+9C1PLZ3SrFyCAnFamFEvanQtI/97pXZTxD80pxVZ7NZpGzNI7kFuFTX6HU5zXk
-         6jRpwAh4upXAjymgG26DJCkGHmJDn8hHCXMx2Ao5X8ck19HA4mALf1yBW4F5Fmi0fQBP
-         F/fst7JSmPPg+Thc/6LlSIoBWS9crBJtFoxtAQpcpd1JOjujwnL6N8s5i9tMhbEB1ev2
-         4oN7YMeW64CPfCZLf6AYllJIhPj2jnl4PW1XsVj7VuVvWBET5tdyI0CQOLaM9NDHe9EW
-         bjqRoNabEb4gZGcNW2KA5fK5jWQ3IhcKoWEq7QrUqmAEQk9ShE+vxJMcwtEtVMLGCzZm
-         w8Qg==
-X-Gm-Message-State: APjAAAXykiKIBUMYAObp3rUQyl0ZWMKceYys2iRMIubVZWumcvmx1/Kc
-        BKyrY/oMbo2Gl0gZTW+kOmUSDlNgvABv4kpphQ7fhg==
-X-Google-Smtp-Source: APXvYqxQOJKzj7kLS8VKcVx0K23FigMu5lWnFTg7n8/Dbq+Wi535YTj5c3SXPfhU3OGjcDrK5VwCQXY8VlhZG3vRdGQ=
-X-Received: by 2002:a7b:ce01:: with SMTP id m1mr9465516wmc.136.1570948187865;
- Sat, 12 Oct 2019 23:29:47 -0700 (PDT)
+        id S1728604AbfJMHgC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 13 Oct 2019 03:36:02 -0400
+Received: from [206.81.8.171] ([206.81.8.171]:56546 "EHLO varon.localdomain"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728198AbfJMHgB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 13 Oct 2019 03:36:01 -0400
+Received: from 127.0.0.1 (varon [127.0.0.1])
+        by varon.localdomain (Postfix) with SMTP id 290C355D635;
+        Fri, 11 Oct 2019 10:21:17 +0000 (UTC)
+Received: from (HELO 1iqb) [176.71.184.19] by 127.0.0.1 for <linhao63@jlonline.com>; Fri, 11 Oct 2019 03:19:21 -0700
+Message-ID: <4-806$5o5$$r$as6q109r731c@hkg.so2qo8>
+From:   "Mr Barrister Hans Erich" <dave@dbsoundfactory.com>
+Reply-To: "Mr Barrister Hans Erich" <dave@dbsoundfactory.com>
+To:     linhao63@jlonline.com
+Subject: RE:PERSONAL LETTER FROM MRS RASHIA AMIRA ??
+Date:   Fri, 11 Oct 19 03:19:21 GMT
+X-Mailer: Microsoft Outlook IMO, Build 9.0.2416 (9.0.2910.0)
 MIME-Version: 1.0
-References: <20191013043918.337113-1-ebiggers@kernel.org>
-In-Reply-To: <20191013043918.337113-1-ebiggers@kernel.org>
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Sun, 13 Oct 2019 08:29:35 +0200
-Message-ID: <CAKv+Gu8nN48aWoeW-aA_1OA_s8Qw0nUbyg+GCZ9DsUA3tDNprg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] crypto: nx - convert to skcipher API
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        =?UTF-8?Q?Breno_Leit=C3=A3o?= <leitao@debian.org>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/alternative;
+        boundary="C.F387.BA..3D"
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sun, 13 Oct 2019 at 06:40, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> This series converts the PowerPC Nest (NX) implementations of AES modes
-> from the deprecated "blkcipher" API to the "skcipher" API.  This is
-> needed in order for the blkcipher API to be removed.
->
-> This patchset is compile-tested only, as I don't have this hardware.
-> If anyone has this hardware, please test this patchset with
-> CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y.
->
-> Eric Biggers (4):
->   crypto: nx - don't abuse blkcipher_desc to pass iv around
->   crypto: nx - convert AES-ECB to skcipher API
->   crypto: nx - convert AES-CBC to skcipher API
->   crypto: nx - convert AES-CTR to skcipher API
->
->  drivers/crypto/nx/nx-aes-cbc.c | 81 ++++++++++++++-----------------
->  drivers/crypto/nx/nx-aes-ccm.c | 40 ++++++----------
->  drivers/crypto/nx/nx-aes-ctr.c | 87 +++++++++++++++-------------------
->  drivers/crypto/nx/nx-aes-ecb.c | 76 +++++++++++++----------------
->  drivers/crypto/nx/nx-aes-gcm.c | 24 ++++------
->  drivers/crypto/nx/nx.c         | 64 ++++++++++++++-----------
->  drivers/crypto/nx/nx.h         | 19 ++++----
->  7 files changed, 176 insertions(+), 215 deletions(-)
->
 
-Hi Eric,
+--C.F387.BA..3D
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for taking this on. I'll look in more detail at these patches
-during the week. In the meantime, I may have a stab at converting ccp,
-virtio-crypto and omap aes/des myself, since i have the hardware to
-test those.
+Greetings
 
-Thanks,
-Ard.
+My name is Barrister Hans Erich.
+
+I have a client who is interested to invest in your country, she is a well=
+ known politician in her country and deserve a lucrative investment partne=
+rship with you outside her country without any delay   Please can you mana=
+ge such investment please Kindly reply for further details.
+
+Your full nameS -----------
+
+
+Your urgent response will be appreciated
+
+Thank you and God bless you.
+
+Barrister Hans Erich
+
+Yours sincerely,
+Barrister Hans Erich
+
+--C.F387.BA..3D--
+
