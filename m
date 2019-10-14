@@ -2,98 +2,79 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DDCD5A9A
-	for <lists+linux-crypto@lfdr.de>; Mon, 14 Oct 2019 07:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98CF5D5AAC
+	for <lists+linux-crypto@lfdr.de>; Mon, 14 Oct 2019 07:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729752AbfJNFSw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 14 Oct 2019 01:18:52 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:53226 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729706AbfJNFSw (ORCPT
+        id S1725878AbfJNFYI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 14 Oct 2019 01:24:08 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:43733 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725869AbfJNFYH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 14 Oct 2019 01:18:52 -0400
-Received: by mail-wm1-f66.google.com with SMTP id r19so15712115wmh.2;
-        Sun, 13 Oct 2019 22:18:50 -0700 (PDT)
+        Mon, 14 Oct 2019 01:24:07 -0400
+Received: by mail-wr1-f67.google.com with SMTP id j18so17998721wrq.10;
+        Sun, 13 Oct 2019 22:24:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IYELzo9paCdNSHZmbtgi4XuRP3zt69X3tMzTrt8WAxw=;
-        b=BD+S0sfz4B7A/bxxA6b4D/PzrFOg/tbJ6HIHK6u8MQCD5Y6fmIxJlq7XsFAih10qFc
-         fe+7G+8Oq7sseBQX30ziTyxqsqKOnX1+lj4Di4mwwp4zxrcpvGFD2Au6c+XoKTnhxtFh
-         aOwDZgV/o/jeeInR/ue6gDpFrOYcsEn67ZBKYx9u3JNVojcx5qMKOwy/GgZtb3sQ6/FK
-         bexRD373A4R0XwRpS+/pkfx5dS6Fx1ujfkeCxV/SvFFTtI4ZHqZFARwzri4sAHt/j1MU
-         FKn9U3Do26GNlOWfYg7E4d1jfyVWzTQni+tBYRsoTjmL2ODBxKYwQ3T1h3b6rf9vsDg/
-         e14g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xve2QTvqqiIPdY2swYgSXv/9sUgWk5VFoJkt1OR92XM=;
+        b=ebDLvX1bdKNXz7niKOTITJlttM2yqn+U5mSeSdx27Nw37ZJBHchbVsxjnm9S+9kdFS
+         ZUPGWBIqR9kAzDAWdVzk1t8JqcBFqs1q0++geYj+3QVKD7PtyvGb+YiEXMx4GzEUR7AH
+         xApeg3UjxYXIBBcsg4SBLCS7X7p+s0j7/CQ0vEFQB+YAEvTfLT+tExNJpWrVnUCzrpDj
+         1zw7IjL4AuuM7xemnvCOXOIAWfTbvKQF4kApFHr1wdiYHROp2NXzb9HMtlBJMuaoc+M8
+         Z4m2nm1Tu8246UrIeeP3hv7/bawLQ2ImT+Y7C0UJnCWONfVGDZ+Qi484My6zd3b43CeG
+         yfiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IYELzo9paCdNSHZmbtgi4XuRP3zt69X3tMzTrt8WAxw=;
-        b=mOXQxff7vJfHaAYIs0dGPp2Y9scHPyOWp2wMWfQ5fFvkN64ZsrmJqxhItd8zpeqKQL
-         ndM7rFhGRT8mx1BT0qMKSJFp8qFbMSoH40OAziGUjPZDcdMSg+kb9NNbi8nX+tFyb1Na
-         X24qhgpPAgZ6SP9dEnoGDBAREi8Fn2L5XTALo5HNu65BNuQfK1vhRPIEt8mdwFIoPG+x
-         cJiUVHUng9Ak9jVopX9zyy4dxTM3p7btg3v1uIhLfWwjfM/9CDqaUScxcuPSrIO+Ib+O
-         fwC/LeoIOgkSYwmC8sQ5j62zZqXaL+Iz5kdGkFtSZLQMma98f4voE5xMUREo5XTcYUbe
-         SVdw==
-X-Gm-Message-State: APjAAAV+JSzgLt0NRFQr1biZJgyNf2Jt0TFU8LdcMoAavF+FSBkl6HSq
-        f89G29cpi60iHlShfHnoXyI=
-X-Google-Smtp-Source: APXvYqzDeIQMzuATD9N9pJOIMujxL8TUHVaFwMZVR/+YhNBw4jMhgGwy4f0S8CRJNje0FHxlYVxgMQ==
-X-Received: by 2002:a7b:c8c5:: with SMTP id f5mr13251625wml.170.1571030329786;
-        Sun, 13 Oct 2019 22:18:49 -0700 (PDT)
-Received: from Red.localdomain ([2a01:cb1d:147:7200:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id 5sm14660340wrk.86.2019.10.13.22.18.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xve2QTvqqiIPdY2swYgSXv/9sUgWk5VFoJkt1OR92XM=;
+        b=nr3LhvXQ8lnalwRgnRkwUV5tmmbV628JNW2ZSXDUpnrz+PiB7Km/E2XeMIJEHchA+i
+         lAys2G1GPFnCj8GKGOxazwe4vlxdU7ASpo+7voBt59TGTg3iN1K9/p1lmhZuSt6tq9Bt
+         j4L/Rh1Q+TeOpOp1GDgF285StEoAUZjYq+GyFAoyzLLShVL31RqYvdsVKtp4NDf2Xb2L
+         WHQDDvibTAUkzYLqM5kkXA40/E8Mgxwk9mALnZq9d3jRR6dDOdf9U+c0K4He51+Y5nZ/
+         00ibcDokEJug7Eurx3PFG4xUnLWK89+MFigGaFWKaOJas03WMSIcy0DTQ7+Ljbd8wjWb
+         qxjQ==
+X-Gm-Message-State: APjAAAWiwCtaXtcEn5wefhZKOFDvLCDhppBa7OXFKvnWvUf5dmWxVXbn
+        2itpYdf7Kw4q67yq7Dasaw4=
+X-Google-Smtp-Source: APXvYqzKonVFcIAEMzbOIakcFdq1lvZBSxABTbSM+x411K7O0LoCDjIwqijCbmQF+KV9mHQY1ymlRA==
+X-Received: by 2002:adf:9ec7:: with SMTP id b7mr1185229wrf.221.1571030645335;
+        Sun, 13 Oct 2019 22:24:05 -0700 (PDT)
+Received: from Red ([2a01:cb1d:147:7200:2e56:dcff:fed2:c6d6])
+        by smtp.googlemail.com with ESMTPSA id n17sm16898743wrp.37.2019.10.13.22.24.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Oct 2019 22:18:49 -0700 (PDT)
+        Sun, 13 Oct 2019 22:24:04 -0700 (PDT)
+Date:   Mon, 14 Oct 2019 07:24:02 +0200
 From:   Corentin Labbe <clabbe.montjoie@gmail.com>
 To:     davem@davemloft.net, herbert@gondor.apana.org.au,
         khilman@baylibre.com, mark.rutland@arm.com, robh+dt@kernel.org,
         martin.blumenstingl@googlemail.com
 Cc:     devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH v2 4/4] ARM64: dts: amlogic: adds crypto hardware node
-Date:   Mon, 14 Oct 2019 07:18:39 +0200
-Message-Id: <20191014051839.32274-5-clabbe.montjoie@gmail.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191014051839.32274-1-clabbe.montjoie@gmail.com>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] crypto: add amlogic crypto offloader driver
+Message-ID: <20191014052402.GA30688@Red>
 References: <20191014051839.32274-1-clabbe.montjoie@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191014051839.32274-1-clabbe.montjoie@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds the GXL crypto hardware node for all GXL SoCs.
+On Mon, Oct 14, 2019 at 07:18:35AM +0200, Corentin Labbe wrote:
+> Hello
+> 
+> This serie adds support for the crypto offloader present on amlogic GXL
+> SoCs.
+> 
+> Tested on meson-gxl-s905x-khadas-vim and meson-gxl-s905x-libretech-cc
+> 
+> Regards
+> 
 
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- arch/arm64/boot/dts/amlogic/meson-gxl.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
-index 49ff0a7d0210..ed33d8efaf62 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
-@@ -36,6 +36,16 @@
- 				phys = <&usb3_phy>, <&usb2_phy0>, <&usb2_phy1>;
- 			};
- 		};
-+
-+		crypto: crypto@c883e000 {
-+			compatible = "amlogic,gxl-crypto";
-+			reg = <0x0 0xc883e000 0x0 0x36>;
-+			interrupts = <GIC_SPI 188 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 189 IRQ_TYPE_EDGE_RISING>;
-+			clocks = <&clkc CLKID_BLKMV>;
-+			clock-names = "blkmv";
-+			status = "okay";
-+		};
- 	};
- };
- 
--- 
-2.21.0
-
+Oups sorry please ignore this patchset, I forgot to send from my work address.
