@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 654F4D6249
+	by mail.lfdr.de (Postfix) with ESMTP id D3F72D624A
 	for <lists+linux-crypto@lfdr.de>; Mon, 14 Oct 2019 14:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730309AbfJNMUH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1730317AbfJNMUH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Mon, 14 Oct 2019 08:20:07 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:33349 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727409AbfJNMUG (ORCPT
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33354 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729054AbfJNMUG (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 14 Oct 2019 08:20:06 -0400
-Received: by mail-wr1-f66.google.com with SMTP id b9so19504794wrs.0
-        for <linux-crypto@vger.kernel.org>; Mon, 14 Oct 2019 05:20:02 -0700 (PDT)
+Received: by mail-wr1-f67.google.com with SMTP id b9so19504880wrs.0
+        for <linux-crypto@vger.kernel.org>; Mon, 14 Oct 2019 05:20:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iDXwkl7O2yYcupCDQGZpR6b45iWm8a4P/toc4fBfMes=;
-        b=x10DFkT8B5qOpDZyhv01DBUES+o3abX6KTZto38qzT+/nQopl+Gw5ulkwl83d3NxpI
-         Ptdn+aIp3Xk2spcA6Un+jW5iTfnHu4uyZ/yz645Bn2snkupT+iPTrF6tjwBONGbMCnNk
-         0ZCTmBZhbJh/wVk9d52YnW4vMY+9xmmqGplDq36w9f0nE5FqhLeCywZ6mMJI8tgt2Ijl
-         hc9vL68E7o9GXNYkTRnm9SFne5DN1hmHr/B1BzPXI3mVE6EEXQX7D2CWCjhXTNy1JgDU
-         B59TfSn81/ou+mZVOGa7BMvWBQPUSSJelct/FScqMvqA++4taM24mp2IGs19VuRk+WxA
-         H9hQ==
+        bh=g2guTtZQNpFmVRb5THlXvx+Ph/1cQAsy90V4CVYSsag=;
+        b=N9lVd+Bh39u3/S3K0f9urEmptroQKjQIFBcxrkmQgNQYPjs29A4AmhH2jqIY/sMNOn
+         c3YO0dDW+T50NFhC1xju2vEMLSNntHPMIAxp7O2yjhxVn1I1k5RX5zsroLc9YEwaimA8
+         4SohgAe7TQz7CAzVOk7Ei9U5B1cRIJ7A0acxOTb6kopiAnfSivcuRMA0QGJd4V050RuD
+         16NC18kSyWzQO13Y3808w1bPvCcWwb8K9fDIiWB95vjNZhVirLygVlaISDThVno4egVG
+         65IV985pi5Md9J4My7hynPatvbM7le+QP1lad8uSiZjrBAEsxABJaGbXN9eHgbGlf5U7
+         JDtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iDXwkl7O2yYcupCDQGZpR6b45iWm8a4P/toc4fBfMes=;
-        b=BYJoEEhrQfNqKoqR0o7+qiSUbFrY6aG8hSk4NLbBpWbpKqGLx1y0HPpGAFL8X9wkQV
-         M5z1lF34UNWOkKg55/0odHmUa9rlvtK0YN7HXhcv8SC08j/N46/qohTs7jeoZnMiY3Jc
-         HEQh1T67VhoXLzbb1vUeTMcaqOwyGVo6elfXK+u/6yGKFIfiuqdg6lRqfQQ/QE6lz9XW
-         ac2Su/x/lF21N/gDTsKuq7eqi/J2tqKDkl7WJi3mYjPRyeo9fKy4p9uv+3jNYRDJi7pv
-         rmFRIhZ5zSJZZIj96Hq5/QNwQ+6F2dnCkxAr9t5b05XTfTrsTZLVUuNkg1V+tDwobOXv
-         o2gg==
-X-Gm-Message-State: APjAAAW3v36qpFQcOgWpDpyJ7aRxaVHgl8OCP4QKh55WP0QgiDPXkNll
-        sfEB2Hld5gw0iMl5ebw8Z6I13f600BNLrw==
-X-Google-Smtp-Source: APXvYqxlqwO8J8OKUPls95f5oexWvuFZP4Q/71goRqiJ45mLdlAbhx8sXV/XnwRiKYlKCL1n5TqMmw==
-X-Received: by 2002:a5d:4a87:: with SMTP id o7mr26620721wrq.374.1571055600950;
-        Mon, 14 Oct 2019 05:20:00 -0700 (PDT)
+        bh=g2guTtZQNpFmVRb5THlXvx+Ph/1cQAsy90V4CVYSsag=;
+        b=oUMkNXKiWO3RMWZiLHkAx3qnqFmwWt+5FBR5Iqc7dr2l2YcBGQExTPSKo8+u+ej1zg
+         ACtZKFfuko9LIb1W64Wd33f65ruKBLtpZFYuO1bm0rRI/FDqbT6wfFQRmmCxmz4uPR5s
+         nYlnnl9rR0URLXC1wIuFe8bqWdr57jEeT6EX2dQJQ9+srh+Vs3JOGhrCGYqNjDygbBLU
+         PGahQ5/haQmWEMi6+9MSC95XJ5S/IfRU9sI2wDtDoa0M/ad3tgKrtiEGNdUroQKWVqnm
+         8r/AnNT8NHzlDgQrOW8nBg7dib/ZdN72C7dxKa+cPuN2l486p2NPlXuHpEuLjG0RFxAY
+         QH9w==
+X-Gm-Message-State: APjAAAWA8xsvII1rh3wlMlZ5qoQ9s4VjBIB4MQDHQhOn2XzlLQN1f2bf
+        sUG3VPzjO9wyEPzkNaJlQf4sDdolFQN4+Q==
+X-Google-Smtp-Source: APXvYqwlu0lv8ThqWCyynL192SKZWSBQVEnHVN/AiWWipQPtVPMleribcYARFY2rJN1/gKWgvEIz5g==
+X-Received: by 2002:a05:6000:49:: with SMTP id k9mr26295844wrx.289.1571055602160;
+        Mon, 14 Oct 2019 05:20:02 -0700 (PDT)
 Received: from localhost.localdomain (91-167-84-221.subs.proxad.net. [91.167.84.221])
-        by smtp.gmail.com with ESMTPSA id i1sm20222470wmb.19.2019.10.14.05.19.59
+        by smtp.gmail.com with ESMTPSA id i1sm20222470wmb.19.2019.10.14.05.20.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Oct 2019 05:19:59 -0700 (PDT)
+        Mon, 14 Oct 2019 05:20:01 -0700 (PDT)
 From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
@@ -52,11 +52,10 @@ Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Biggers <ebiggers@google.com>,
         linux-arm-kernel@lists.infradead.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-Subject: [PATCH 20/25] crypto: stm32 - switch to skcipher API
-Date:   Mon, 14 Oct 2019 14:19:05 +0200
-Message-Id: <20191014121910.7264-21-ard.biesheuvel@linaro.org>
+        Heiko Stuebner <heiko@sntech.de>
+Subject: [PATCH 21/25] crypto: rockchip - switch to skcipher API
+Date:   Mon, 14 Oct 2019 14:19:06 +0200
+Message-Id: <20191014121910.7264-22-ard.biesheuvel@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191014121910.7264-1-ard.biesheuvel@linaro.org>
 References: <20191014121910.7264-1-ard.biesheuvel@linaro.org>
@@ -77,586 +76,1187 @@ code to expose [a]blkciphers via the skcipher API.
 So switch this driver to the skcipher API, allowing us to finally drop the
 blkcipher code in the near future.
 
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- drivers/crypto/stm32/stm32-cryp.c | 338 +++++++++-----------
- 1 file changed, 159 insertions(+), 179 deletions(-)
+ drivers/crypto/rockchip/Makefile                   |   2 +-
+ drivers/crypto/rockchip/rk3288_crypto.c            |   8 +-
+ drivers/crypto/rockchip/rk3288_crypto.h            |   3 +-
+ drivers/crypto/rockchip/rk3288_crypto_ablkcipher.c | 556 --------------------
+ drivers/crypto/rockchip/rk3288_crypto_skcipher.c   | 538 +++++++++++++++++++
+ 5 files changed, 545 insertions(+), 562 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index ba5ea6434f9c..d347a1d6e351 100644
---- a/drivers/crypto/stm32/stm32-cryp.c
-+++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -19,6 +19,7 @@
- #include <crypto/engine.h>
- #include <crypto/scatterwalk.h>
- #include <crypto/internal/aead.h>
+diff --git a/drivers/crypto/rockchip/Makefile b/drivers/crypto/rockchip/Makefile
+index 6e23764e6c8a..785277aca71e 100644
+--- a/drivers/crypto/rockchip/Makefile
++++ b/drivers/crypto/rockchip/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_CRYPTO_DEV_ROCKCHIP) += rk_crypto.o
+ rk_crypto-objs := rk3288_crypto.o \
+-		  rk3288_crypto_ablkcipher.o \
++		  rk3288_crypto_skcipher.o \
+ 		  rk3288_crypto_ahash.o
+diff --git a/drivers/crypto/rockchip/rk3288_crypto.c b/drivers/crypto/rockchip/rk3288_crypto.c
+index e5714ef24bf2..f385587f99af 100644
+--- a/drivers/crypto/rockchip/rk3288_crypto.c
++++ b/drivers/crypto/rockchip/rk3288_crypto.c
+@@ -264,8 +264,8 @@ static int rk_crypto_register(struct rk_crypto_info *crypto_info)
+ 	for (i = 0; i < ARRAY_SIZE(rk_cipher_algs); i++) {
+ 		rk_cipher_algs[i]->dev = crypto_info;
+ 		if (rk_cipher_algs[i]->type == ALG_TYPE_CIPHER)
+-			err = crypto_register_alg(
+-					&rk_cipher_algs[i]->alg.crypto);
++			err = crypto_register_skcipher(
++					&rk_cipher_algs[i]->alg.skcipher);
+ 		else
+ 			err = crypto_register_ahash(
+ 					&rk_cipher_algs[i]->alg.hash);
+@@ -277,7 +277,7 @@ static int rk_crypto_register(struct rk_crypto_info *crypto_info)
+ err_cipher_algs:
+ 	for (k = 0; k < i; k++) {
+ 		if (rk_cipher_algs[i]->type == ALG_TYPE_CIPHER)
+-			crypto_unregister_alg(&rk_cipher_algs[k]->alg.crypto);
++			crypto_unregister_skcipher(&rk_cipher_algs[k]->alg.skcipher);
+ 		else
+ 			crypto_unregister_ahash(&rk_cipher_algs[i]->alg.hash);
+ 	}
+@@ -290,7 +290,7 @@ static void rk_crypto_unregister(void)
+ 
+ 	for (i = 0; i < ARRAY_SIZE(rk_cipher_algs); i++) {
+ 		if (rk_cipher_algs[i]->type == ALG_TYPE_CIPHER)
+-			crypto_unregister_alg(&rk_cipher_algs[i]->alg.crypto);
++			crypto_unregister_skcipher(&rk_cipher_algs[i]->alg.skcipher);
+ 		else
+ 			crypto_unregister_ahash(&rk_cipher_algs[i]->alg.hash);
+ 	}
+diff --git a/drivers/crypto/rockchip/rk3288_crypto.h b/drivers/crypto/rockchip/rk3288_crypto.h
+index 18e2b3f29336..2b49c677afdb 100644
+--- a/drivers/crypto/rockchip/rk3288_crypto.h
++++ b/drivers/crypto/rockchip/rk3288_crypto.h
+@@ -8,6 +8,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/delay.h>
+ #include <crypto/internal/hash.h>
 +#include <crypto/internal/skcipher.h>
  
- #define DRIVER_NAME             "stm32-cryp"
- 
-@@ -137,7 +138,7 @@ struct stm32_cryp {
- 
- 	struct crypto_engine    *engine;
- 
--	struct ablkcipher_request *req;
-+	struct skcipher_request *req;
- 	struct aead_request     *areq;
- 
- 	size_t                  authsize;
-@@ -395,8 +396,8 @@ static void stm32_cryp_hw_write_iv(struct stm32_cryp *cryp, u32 *iv)
- 
- static void stm32_cryp_get_iv(struct stm32_cryp *cryp)
- {
--	struct ablkcipher_request *req = cryp->req;
--	u32 *tmp = req->info;
-+	struct skcipher_request *req = cryp->req;
-+	u32 *tmp = (void *)req->iv;
- 
- 	if (!tmp)
- 		return;
-@@ -616,7 +617,7 @@ static int stm32_cryp_hw_init(struct stm32_cryp *cryp)
- 	case CR_TDES_CBC:
- 	case CR_AES_CBC:
- 	case CR_AES_CTR:
--		stm32_cryp_hw_write_iv(cryp, (u32 *)cryp->req->info);
-+		stm32_cryp_hw_write_iv(cryp, (u32 *)cryp->req->iv);
- 		break;
- 
- 	default:
-@@ -667,7 +668,7 @@ static void stm32_cryp_finish_req(struct stm32_cryp *cryp, int err)
- 	if (is_gcm(cryp) || is_ccm(cryp))
- 		crypto_finalize_aead_request(cryp->engine, cryp->areq, err);
- 	else
--		crypto_finalize_ablkcipher_request(cryp->engine, cryp->req,
-+		crypto_finalize_skcipher_request(cryp->engine, cryp->req,
- 						   err);
- 
- 	memset(cryp->ctx->key, 0, cryp->ctx->keylen);
-@@ -685,11 +686,11 @@ static int stm32_cryp_cipher_one_req(struct crypto_engine *engine, void *areq);
- static int stm32_cryp_prepare_cipher_req(struct crypto_engine *engine,
- 					 void *areq);
- 
--static int stm32_cryp_cra_init(struct crypto_tfm *tfm)
-+static int stm32_cryp_init_tfm(struct crypto_skcipher *tfm)
- {
--	struct stm32_cryp_ctx *ctx = crypto_tfm_ctx(tfm);
-+	struct stm32_cryp_ctx *ctx = crypto_skcipher_ctx(tfm);
- 
--	tfm->crt_ablkcipher.reqsize = sizeof(struct stm32_cryp_reqctx);
-+	crypto_skcipher_set_reqsize(tfm, sizeof(struct stm32_cryp_reqctx));
- 
- 	ctx->enginectx.op.do_one_request = stm32_cryp_cipher_one_req;
- 	ctx->enginectx.op.prepare_request = stm32_cryp_prepare_cipher_req;
-@@ -714,11 +715,11 @@ static int stm32_cryp_aes_aead_init(struct crypto_aead *tfm)
- 	return 0;
- }
- 
--static int stm32_cryp_crypt(struct ablkcipher_request *req, unsigned long mode)
-+static int stm32_cryp_crypt(struct skcipher_request *req, unsigned long mode)
- {
--	struct stm32_cryp_ctx *ctx = crypto_ablkcipher_ctx(
--			crypto_ablkcipher_reqtfm(req));
--	struct stm32_cryp_reqctx *rctx = ablkcipher_request_ctx(req);
-+	struct stm32_cryp_ctx *ctx = crypto_skcipher_ctx(
-+			crypto_skcipher_reqtfm(req));
-+	struct stm32_cryp_reqctx *rctx = skcipher_request_ctx(req);
- 	struct stm32_cryp *cryp = stm32_cryp_find_dev(ctx);
- 
- 	if (!cryp)
-@@ -726,7 +727,7 @@ static int stm32_cryp_crypt(struct ablkcipher_request *req, unsigned long mode)
- 
- 	rctx->mode = mode;
- 
--	return crypto_transfer_ablkcipher_request_to_engine(cryp->engine, req);
-+	return crypto_transfer_skcipher_request_to_engine(cryp->engine, req);
- }
- 
- static int stm32_cryp_aead_crypt(struct aead_request *req, unsigned long mode)
-@@ -743,10 +744,10 @@ static int stm32_cryp_aead_crypt(struct aead_request *req, unsigned long mode)
- 	return crypto_transfer_aead_request_to_engine(cryp->engine, req);
- }
- 
--static int stm32_cryp_setkey(struct crypto_ablkcipher *tfm, const u8 *key,
-+static int stm32_cryp_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 			     unsigned int keylen)
- {
--	struct stm32_cryp_ctx *ctx = crypto_ablkcipher_ctx(tfm);
-+	struct stm32_cryp_ctx *ctx = crypto_skcipher_ctx(tfm);
- 
- 	memcpy(ctx->key, key, keylen);
- 	ctx->keylen = keylen;
-@@ -754,7 +755,7 @@ static int stm32_cryp_setkey(struct crypto_ablkcipher *tfm, const u8 *key,
- 	return 0;
- }
- 
--static int stm32_cryp_aes_setkey(struct crypto_ablkcipher *tfm, const u8 *key,
-+static int stm32_cryp_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 				 unsigned int keylen)
- {
- 	if (keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_192 &&
-@@ -764,17 +765,17 @@ static int stm32_cryp_aes_setkey(struct crypto_ablkcipher *tfm, const u8 *key,
- 		return stm32_cryp_setkey(tfm, key, keylen);
- }
- 
--static int stm32_cryp_des_setkey(struct crypto_ablkcipher *tfm, const u8 *key,
-+static int stm32_cryp_des_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 				 unsigned int keylen)
- {
--	return verify_ablkcipher_des_key(tfm, key) ?:
-+	return verify_skcipher_des_key(tfm, key) ?:
- 	       stm32_cryp_setkey(tfm, key, keylen);
- }
- 
--static int stm32_cryp_tdes_setkey(struct crypto_ablkcipher *tfm, const u8 *key,
-+static int stm32_cryp_tdes_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 				  unsigned int keylen)
- {
--	return verify_ablkcipher_des3_key(tfm, key) ?:
-+	return verify_skcipher_des3_key(tfm, key) ?:
- 	       stm32_cryp_setkey(tfm, key, keylen);
- }
- 
-@@ -818,32 +819,32 @@ static int stm32_cryp_aes_ccm_setauthsize(struct crypto_aead *tfm,
- 	return 0;
- }
- 
--static int stm32_cryp_aes_ecb_encrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_aes_ecb_encrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_AES | FLG_ECB | FLG_ENCRYPT);
- }
- 
--static int stm32_cryp_aes_ecb_decrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_aes_ecb_decrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_AES | FLG_ECB);
- }
- 
--static int stm32_cryp_aes_cbc_encrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_aes_cbc_encrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_AES | FLG_CBC | FLG_ENCRYPT);
- }
- 
--static int stm32_cryp_aes_cbc_decrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_aes_cbc_decrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_AES | FLG_CBC);
- }
- 
--static int stm32_cryp_aes_ctr_encrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_aes_ctr_encrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_AES | FLG_CTR | FLG_ENCRYPT);
- }
- 
--static int stm32_cryp_aes_ctr_decrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_aes_ctr_decrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_AES | FLG_CTR);
- }
-@@ -868,47 +869,47 @@ static int stm32_cryp_aes_ccm_decrypt(struct aead_request *req)
- 	return stm32_cryp_aead_crypt(req, FLG_AES | FLG_CCM);
- }
- 
--static int stm32_cryp_des_ecb_encrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_des_ecb_encrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_DES | FLG_ECB | FLG_ENCRYPT);
- }
- 
--static int stm32_cryp_des_ecb_decrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_des_ecb_decrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_DES | FLG_ECB);
- }
- 
--static int stm32_cryp_des_cbc_encrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_des_cbc_encrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_DES | FLG_CBC | FLG_ENCRYPT);
- }
- 
--static int stm32_cryp_des_cbc_decrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_des_cbc_decrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_DES | FLG_CBC);
- }
- 
--static int stm32_cryp_tdes_ecb_encrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_tdes_ecb_encrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_TDES | FLG_ECB | FLG_ENCRYPT);
- }
- 
--static int stm32_cryp_tdes_ecb_decrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_tdes_ecb_decrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_TDES | FLG_ECB);
- }
- 
--static int stm32_cryp_tdes_cbc_encrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_tdes_cbc_encrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_TDES | FLG_CBC | FLG_ENCRYPT);
- }
- 
--static int stm32_cryp_tdes_cbc_decrypt(struct ablkcipher_request *req)
-+static int stm32_cryp_tdes_cbc_decrypt(struct skcipher_request *req)
- {
- 	return stm32_cryp_crypt(req, FLG_TDES | FLG_CBC);
- }
- 
--static int stm32_cryp_prepare_req(struct ablkcipher_request *req,
-+static int stm32_cryp_prepare_req(struct skcipher_request *req,
- 				  struct aead_request *areq)
- {
- 	struct stm32_cryp_ctx *ctx;
-@@ -919,7 +920,7 @@ static int stm32_cryp_prepare_req(struct ablkcipher_request *req,
- 	if (!req && !areq)
- 		return -EINVAL;
- 
--	ctx = req ? crypto_ablkcipher_ctx(crypto_ablkcipher_reqtfm(req)) :
-+	ctx = req ? crypto_skcipher_ctx(crypto_skcipher_reqtfm(req)) :
- 		    crypto_aead_ctx(crypto_aead_reqtfm(areq));
- 
- 	cryp = ctx->cryp;
-@@ -927,7 +928,7 @@ static int stm32_cryp_prepare_req(struct ablkcipher_request *req,
- 	if (!cryp)
- 		return -ENODEV;
- 
--	rctx = req ? ablkcipher_request_ctx(req) : aead_request_ctx(areq);
-+	rctx = req ? skcipher_request_ctx(req) : aead_request_ctx(areq);
- 	rctx->mode &= FLG_MODE_MASK;
- 
- 	ctx->cryp = cryp;
-@@ -939,7 +940,7 @@ static int stm32_cryp_prepare_req(struct ablkcipher_request *req,
- 	if (req) {
- 		cryp->req = req;
- 		cryp->areq = NULL;
--		cryp->total_in = req->nbytes;
-+		cryp->total_in = req->cryptlen;
- 		cryp->total_out = cryp->total_in;
- 	} else {
- 		/*
-@@ -1016,8 +1017,8 @@ static int stm32_cryp_prepare_req(struct ablkcipher_request *req,
- static int stm32_cryp_prepare_cipher_req(struct crypto_engine *engine,
- 					 void *areq)
- {
--	struct ablkcipher_request *req = container_of(areq,
--						      struct ablkcipher_request,
-+	struct skcipher_request *req = container_of(areq,
-+						      struct skcipher_request,
- 						      base);
- 
- 	return stm32_cryp_prepare_req(req, NULL);
-@@ -1025,11 +1026,11 @@ static int stm32_cryp_prepare_cipher_req(struct crypto_engine *engine,
- 
- static int stm32_cryp_cipher_one_req(struct crypto_engine *engine, void *areq)
- {
--	struct ablkcipher_request *req = container_of(areq,
--						      struct ablkcipher_request,
-+	struct skcipher_request *req = container_of(areq,
-+						      struct skcipher_request,
- 						      base);
--	struct stm32_cryp_ctx *ctx = crypto_ablkcipher_ctx(
--			crypto_ablkcipher_reqtfm(req));
-+	struct stm32_cryp_ctx *ctx = crypto_skcipher_ctx(
-+			crypto_skcipher_reqtfm(req));
- 	struct stm32_cryp *cryp = ctx->cryp;
- 
- 	if (!cryp)
-@@ -1724,150 +1725,129 @@ static irqreturn_t stm32_cryp_irq(int irq, void *arg)
- 	return IRQ_WAKE_THREAD;
- }
- 
--static struct crypto_alg crypto_algs[] = {
+ #include <crypto/md5.h>
+ #include <crypto/sha.h>
+@@ -256,7 +257,7 @@ enum alg_type {
+ struct rk_crypto_tmp {
+ 	struct rk_crypto_info		*dev;
+ 	union {
+-		struct crypto_alg	crypto;
++		struct skcipher_alg	skcipher;
+ 		struct ahash_alg	hash;
+ 	} alg;
+ 	enum alg_type			type;
+diff --git a/drivers/crypto/rockchip/rk3288_crypto_ablkcipher.c b/drivers/crypto/rockchip/rk3288_crypto_ablkcipher.c
+deleted file mode 100644
+index d0f4b2d18059..000000000000
+--- a/drivers/crypto/rockchip/rk3288_crypto_ablkcipher.c
++++ /dev/null
+@@ -1,556 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Crypto acceleration support for Rockchip RK3288
+- *
+- * Copyright (c) 2015, Fuzhou Rockchip Electronics Co., Ltd
+- *
+- * Author: Zain Wang <zain.wang@rock-chips.com>
+- *
+- * Some ideas are from marvell-cesa.c and s5p-sss.c driver.
+- */
+-#include "rk3288_crypto.h"
+-
+-#define RK_CRYPTO_DEC			BIT(0)
+-
+-static void rk_crypto_complete(struct crypto_async_request *base, int err)
 -{
--	.cra_name		= "ecb(aes)",
--	.cra_driver_name	= "stm32-ecb-aes",
--	.cra_priority		= 200,
--	.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
--				  CRYPTO_ALG_ASYNC,
--	.cra_blocksize		= AES_BLOCK_SIZE,
--	.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
--	.cra_alignmask		= 0xf,
--	.cra_type		= &crypto_ablkcipher_type,
--	.cra_module		= THIS_MODULE,
--	.cra_init		= stm32_cryp_cra_init,
--	.cra_ablkcipher = {
--		.min_keysize	= AES_MIN_KEY_SIZE,
--		.max_keysize	= AES_MAX_KEY_SIZE,
--		.setkey		= stm32_cryp_aes_setkey,
--		.encrypt	= stm32_cryp_aes_ecb_encrypt,
--		.decrypt	= stm32_cryp_aes_ecb_decrypt,
+-	if (base->complete)
+-		base->complete(base, err);
+-}
+-
+-static int rk_handle_req(struct rk_crypto_info *dev,
+-			 struct ablkcipher_request *req)
+-{
+-	if (!IS_ALIGNED(req->nbytes, dev->align_size))
+-		return -EINVAL;
+-	else
+-		return dev->enqueue(dev, &req->base);
+-}
+-
+-static int rk_aes_setkey(struct crypto_ablkcipher *cipher,
+-			 const u8 *key, unsigned int keylen)
+-{
+-	struct crypto_tfm *tfm = crypto_ablkcipher_tfm(cipher);
+-	struct rk_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
+-
+-	if (keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_192 &&
+-	    keylen != AES_KEYSIZE_256) {
+-		crypto_ablkcipher_set_flags(cipher, CRYPTO_TFM_RES_BAD_KEY_LEN);
+-		return -EINVAL;
 -	}
-+static struct skcipher_alg crypto_algs[] = {
+-	ctx->keylen = keylen;
+-	memcpy_toio(ctx->dev->reg + RK_CRYPTO_AES_KEY_0, key, keylen);
+-	return 0;
+-}
+-
+-static int rk_des_setkey(struct crypto_ablkcipher *cipher,
+-			 const u8 *key, unsigned int keylen)
+-{
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(cipher);
+-	int err;
+-
+-	err = verify_ablkcipher_des_key(cipher, key);
+-	if (err)
+-		return err;
+-
+-	ctx->keylen = keylen;
+-	memcpy_toio(ctx->dev->reg + RK_CRYPTO_TDES_KEY1_0, key, keylen);
+-	return 0;
+-}
+-
+-static int rk_tdes_setkey(struct crypto_ablkcipher *cipher,
+-			  const u8 *key, unsigned int keylen)
+-{
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(cipher);
+-	int err;
+-
+-	err = verify_ablkcipher_des3_key(cipher, key);
+-	if (err)
+-		return err;
+-
+-	ctx->keylen = keylen;
+-	memcpy_toio(ctx->dev->reg + RK_CRYPTO_TDES_KEY1_0, key, keylen);
+-	return 0;
+-}
+-
+-static int rk_aes_ecb_encrypt(struct ablkcipher_request *req)
+-{
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	struct rk_crypto_info *dev = ctx->dev;
+-
+-	ctx->mode = RK_CRYPTO_AES_ECB_MODE;
+-	return rk_handle_req(dev, req);
+-}
+-
+-static int rk_aes_ecb_decrypt(struct ablkcipher_request *req)
+-{
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	struct rk_crypto_info *dev = ctx->dev;
+-
+-	ctx->mode = RK_CRYPTO_AES_ECB_MODE | RK_CRYPTO_DEC;
+-	return rk_handle_req(dev, req);
+-}
+-
+-static int rk_aes_cbc_encrypt(struct ablkcipher_request *req)
+-{
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	struct rk_crypto_info *dev = ctx->dev;
+-
+-	ctx->mode = RK_CRYPTO_AES_CBC_MODE;
+-	return rk_handle_req(dev, req);
+-}
+-
+-static int rk_aes_cbc_decrypt(struct ablkcipher_request *req)
+-{
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	struct rk_crypto_info *dev = ctx->dev;
+-
+-	ctx->mode = RK_CRYPTO_AES_CBC_MODE | RK_CRYPTO_DEC;
+-	return rk_handle_req(dev, req);
+-}
+-
+-static int rk_des_ecb_encrypt(struct ablkcipher_request *req)
+-{
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	struct rk_crypto_info *dev = ctx->dev;
+-
+-	ctx->mode = 0;
+-	return rk_handle_req(dev, req);
+-}
+-
+-static int rk_des_ecb_decrypt(struct ablkcipher_request *req)
+-{
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	struct rk_crypto_info *dev = ctx->dev;
+-
+-	ctx->mode = RK_CRYPTO_DEC;
+-	return rk_handle_req(dev, req);
+-}
+-
+-static int rk_des_cbc_encrypt(struct ablkcipher_request *req)
+-{
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	struct rk_crypto_info *dev = ctx->dev;
+-
+-	ctx->mode = RK_CRYPTO_TDES_CHAINMODE_CBC;
+-	return rk_handle_req(dev, req);
+-}
+-
+-static int rk_des_cbc_decrypt(struct ablkcipher_request *req)
+-{
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	struct rk_crypto_info *dev = ctx->dev;
+-
+-	ctx->mode = RK_CRYPTO_TDES_CHAINMODE_CBC | RK_CRYPTO_DEC;
+-	return rk_handle_req(dev, req);
+-}
+-
+-static int rk_des3_ede_ecb_encrypt(struct ablkcipher_request *req)
+-{
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	struct rk_crypto_info *dev = ctx->dev;
+-
+-	ctx->mode = RK_CRYPTO_TDES_SELECT;
+-	return rk_handle_req(dev, req);
+-}
+-
+-static int rk_des3_ede_ecb_decrypt(struct ablkcipher_request *req)
+-{
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	struct rk_crypto_info *dev = ctx->dev;
+-
+-	ctx->mode = RK_CRYPTO_TDES_SELECT | RK_CRYPTO_DEC;
+-	return rk_handle_req(dev, req);
+-}
+-
+-static int rk_des3_ede_cbc_encrypt(struct ablkcipher_request *req)
+-{
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	struct rk_crypto_info *dev = ctx->dev;
+-
+-	ctx->mode = RK_CRYPTO_TDES_SELECT | RK_CRYPTO_TDES_CHAINMODE_CBC;
+-	return rk_handle_req(dev, req);
+-}
+-
+-static int rk_des3_ede_cbc_decrypt(struct ablkcipher_request *req)
+-{
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	struct rk_crypto_info *dev = ctx->dev;
+-
+-	ctx->mode = RK_CRYPTO_TDES_SELECT | RK_CRYPTO_TDES_CHAINMODE_CBC |
+-		    RK_CRYPTO_DEC;
+-	return rk_handle_req(dev, req);
+-}
+-
+-static void rk_ablk_hw_init(struct rk_crypto_info *dev)
+-{
+-	struct ablkcipher_request *req =
+-		ablkcipher_request_cast(dev->async_req);
+-	struct crypto_ablkcipher *cipher = crypto_ablkcipher_reqtfm(req);
+-	struct crypto_tfm *tfm = crypto_ablkcipher_tfm(cipher);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(cipher);
+-	u32 ivsize, block, conf_reg = 0;
+-
+-	block = crypto_tfm_alg_blocksize(tfm);
+-	ivsize = crypto_ablkcipher_ivsize(cipher);
+-
+-	if (block == DES_BLOCK_SIZE) {
+-		ctx->mode |= RK_CRYPTO_TDES_FIFO_MODE |
+-			     RK_CRYPTO_TDES_BYTESWAP_KEY |
+-			     RK_CRYPTO_TDES_BYTESWAP_IV;
+-		CRYPTO_WRITE(dev, RK_CRYPTO_TDES_CTRL, ctx->mode);
+-		memcpy_toio(dev->reg + RK_CRYPTO_TDES_IV_0, req->info, ivsize);
+-		conf_reg = RK_CRYPTO_DESSEL;
+-	} else {
+-		ctx->mode |= RK_CRYPTO_AES_FIFO_MODE |
+-			     RK_CRYPTO_AES_KEY_CHANGE |
+-			     RK_CRYPTO_AES_BYTESWAP_KEY |
+-			     RK_CRYPTO_AES_BYTESWAP_IV;
+-		if (ctx->keylen == AES_KEYSIZE_192)
+-			ctx->mode |= RK_CRYPTO_AES_192BIT_key;
+-		else if (ctx->keylen == AES_KEYSIZE_256)
+-			ctx->mode |= RK_CRYPTO_AES_256BIT_key;
+-		CRYPTO_WRITE(dev, RK_CRYPTO_AES_CTRL, ctx->mode);
+-		memcpy_toio(dev->reg + RK_CRYPTO_AES_IV_0, req->info, ivsize);
+-	}
+-	conf_reg |= RK_CRYPTO_BYTESWAP_BTFIFO |
+-		    RK_CRYPTO_BYTESWAP_BRFIFO;
+-	CRYPTO_WRITE(dev, RK_CRYPTO_CONF, conf_reg);
+-	CRYPTO_WRITE(dev, RK_CRYPTO_INTENA,
+-		     RK_CRYPTO_BCDMA_ERR_ENA | RK_CRYPTO_BCDMA_DONE_ENA);
+-}
+-
+-static void crypto_dma_start(struct rk_crypto_info *dev)
+-{
+-	CRYPTO_WRITE(dev, RK_CRYPTO_BRDMAS, dev->addr_in);
+-	CRYPTO_WRITE(dev, RK_CRYPTO_BRDMAL, dev->count / 4);
+-	CRYPTO_WRITE(dev, RK_CRYPTO_BTDMAS, dev->addr_out);
+-	CRYPTO_WRITE(dev, RK_CRYPTO_CTRL, RK_CRYPTO_BLOCK_START |
+-		     _SBF(RK_CRYPTO_BLOCK_START, 16));
+-}
+-
+-static int rk_set_data_start(struct rk_crypto_info *dev)
+-{
+-	int err;
+-	struct ablkcipher_request *req =
+-		ablkcipher_request_cast(dev->async_req);
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	u32 ivsize = crypto_ablkcipher_ivsize(tfm);
+-	u8 *src_last_blk = page_address(sg_page(dev->sg_src)) +
+-		dev->sg_src->offset + dev->sg_src->length - ivsize;
+-
+-	/* Store the iv that need to be updated in chain mode.
+-	 * And update the IV buffer to contain the next IV for decryption mode.
+-	 */
+-	if (ctx->mode & RK_CRYPTO_DEC) {
+-		memcpy(ctx->iv, src_last_blk, ivsize);
+-		sg_pcopy_to_buffer(dev->first, dev->src_nents, req->info,
+-				   ivsize, dev->total - ivsize);
+-	}
+-
+-	err = dev->load_data(dev, dev->sg_src, dev->sg_dst);
+-	if (!err)
+-		crypto_dma_start(dev);
+-	return err;
+-}
+-
+-static int rk_ablk_start(struct rk_crypto_info *dev)
+-{
+-	struct ablkcipher_request *req =
+-		ablkcipher_request_cast(dev->async_req);
+-	unsigned long flags;
+-	int err = 0;
+-
+-	dev->left_bytes = req->nbytes;
+-	dev->total = req->nbytes;
+-	dev->sg_src = req->src;
+-	dev->first = req->src;
+-	dev->src_nents = sg_nents(req->src);
+-	dev->sg_dst = req->dst;
+-	dev->dst_nents = sg_nents(req->dst);
+-	dev->aligned = 1;
+-
+-	spin_lock_irqsave(&dev->lock, flags);
+-	rk_ablk_hw_init(dev);
+-	err = rk_set_data_start(dev);
+-	spin_unlock_irqrestore(&dev->lock, flags);
+-	return err;
+-}
+-
+-static void rk_iv_copyback(struct rk_crypto_info *dev)
+-{
+-	struct ablkcipher_request *req =
+-		ablkcipher_request_cast(dev->async_req);
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	u32 ivsize = crypto_ablkcipher_ivsize(tfm);
+-
+-	/* Update the IV buffer to contain the next IV for encryption mode. */
+-	if (!(ctx->mode & RK_CRYPTO_DEC)) {
+-		if (dev->aligned) {
+-			memcpy(req->info, sg_virt(dev->sg_dst) +
+-				dev->sg_dst->length - ivsize, ivsize);
+-		} else {
+-			memcpy(req->info, dev->addr_vir +
+-				dev->count - ivsize, ivsize);
+-		}
+-	}
+-}
+-
+-static void rk_update_iv(struct rk_crypto_info *dev)
+-{
+-	struct ablkcipher_request *req =
+-		ablkcipher_request_cast(dev->async_req);
+-	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(req);
+-	struct rk_cipher_ctx *ctx = crypto_ablkcipher_ctx(tfm);
+-	u32 ivsize = crypto_ablkcipher_ivsize(tfm);
+-	u8 *new_iv = NULL;
+-
+-	if (ctx->mode & RK_CRYPTO_DEC) {
+-		new_iv = ctx->iv;
+-	} else {
+-		new_iv = page_address(sg_page(dev->sg_dst)) +
+-			 dev->sg_dst->offset + dev->sg_dst->length - ivsize;
+-	}
+-
+-	if (ivsize == DES_BLOCK_SIZE)
+-		memcpy_toio(dev->reg + RK_CRYPTO_TDES_IV_0, new_iv, ivsize);
+-	else if (ivsize == AES_BLOCK_SIZE)
+-		memcpy_toio(dev->reg + RK_CRYPTO_AES_IV_0, new_iv, ivsize);
+-}
+-
+-/* return:
+- *	true	some err was occurred
+- *	fault	no err, continue
+- */
+-static int rk_ablk_rx(struct rk_crypto_info *dev)
+-{
+-	int err = 0;
+-	struct ablkcipher_request *req =
+-		ablkcipher_request_cast(dev->async_req);
+-
+-	dev->unload_data(dev);
+-	if (!dev->aligned) {
+-		if (!sg_pcopy_from_buffer(req->dst, dev->dst_nents,
+-					  dev->addr_vir, dev->count,
+-					  dev->total - dev->left_bytes -
+-					  dev->count)) {
+-			err = -EINVAL;
+-			goto out_rx;
+-		}
+-	}
+-	if (dev->left_bytes) {
+-		rk_update_iv(dev);
+-		if (dev->aligned) {
+-			if (sg_is_last(dev->sg_src)) {
+-				dev_err(dev->dev, "[%s:%d] Lack of data\n",
+-					__func__, __LINE__);
+-				err = -ENOMEM;
+-				goto out_rx;
+-			}
+-			dev->sg_src = sg_next(dev->sg_src);
+-			dev->sg_dst = sg_next(dev->sg_dst);
+-		}
+-		err = rk_set_data_start(dev);
+-	} else {
+-		rk_iv_copyback(dev);
+-		/* here show the calculation is over without any err */
+-		dev->complete(dev->async_req, 0);
+-		tasklet_schedule(&dev->queue_task);
+-	}
+-out_rx:
+-	return err;
+-}
+-
+-static int rk_ablk_cra_init(struct crypto_tfm *tfm)
+-{
+-	struct rk_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
+-	struct crypto_alg *alg = tfm->__crt_alg;
+-	struct rk_crypto_tmp *algt;
+-
+-	algt = container_of(alg, struct rk_crypto_tmp, alg.crypto);
+-
+-	ctx->dev = algt->dev;
+-	ctx->dev->align_size = crypto_tfm_alg_alignmask(tfm) + 1;
+-	ctx->dev->start = rk_ablk_start;
+-	ctx->dev->update = rk_ablk_rx;
+-	ctx->dev->complete = rk_crypto_complete;
+-	ctx->dev->addr_vir = (char *)__get_free_page(GFP_KERNEL);
+-
+-	return ctx->dev->addr_vir ? ctx->dev->enable_clk(ctx->dev) : -ENOMEM;
+-}
+-
+-static void rk_ablk_cra_exit(struct crypto_tfm *tfm)
+-{
+-	struct rk_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
+-
+-	free_page((unsigned long)ctx->dev->addr_vir);
+-	ctx->dev->disable_clk(ctx->dev);
+-}
+-
+-struct rk_crypto_tmp rk_ecb_aes_alg = {
+-	.type = ALG_TYPE_CIPHER,
+-	.alg.crypto = {
+-		.cra_name		= "ecb(aes)",
+-		.cra_driver_name	= "ecb-aes-rk",
+-		.cra_priority		= 300,
+-		.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
+-					  CRYPTO_ALG_ASYNC,
+-		.cra_blocksize		= AES_BLOCK_SIZE,
+-		.cra_ctxsize		= sizeof(struct rk_cipher_ctx),
+-		.cra_alignmask		= 0x0f,
+-		.cra_type		= &crypto_ablkcipher_type,
+-		.cra_module		= THIS_MODULE,
+-		.cra_init		= rk_ablk_cra_init,
+-		.cra_exit		= rk_ablk_cra_exit,
+-		.cra_u.ablkcipher	= {
+-			.min_keysize	= AES_MIN_KEY_SIZE,
+-			.max_keysize	= AES_MAX_KEY_SIZE,
+-			.setkey		= rk_aes_setkey,
+-			.encrypt	= rk_aes_ecb_encrypt,
+-			.decrypt	= rk_aes_ecb_decrypt,
+-		}
+-	}
+-};
+-
+-struct rk_crypto_tmp rk_cbc_aes_alg = {
+-	.type = ALG_TYPE_CIPHER,
+-	.alg.crypto = {
+-		.cra_name		= "cbc(aes)",
+-		.cra_driver_name	= "cbc-aes-rk",
+-		.cra_priority		= 300,
+-		.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
+-					  CRYPTO_ALG_ASYNC,
+-		.cra_blocksize		= AES_BLOCK_SIZE,
+-		.cra_ctxsize		= sizeof(struct rk_cipher_ctx),
+-		.cra_alignmask		= 0x0f,
+-		.cra_type		= &crypto_ablkcipher_type,
+-		.cra_module		= THIS_MODULE,
+-		.cra_init		= rk_ablk_cra_init,
+-		.cra_exit		= rk_ablk_cra_exit,
+-		.cra_u.ablkcipher	= {
+-			.min_keysize	= AES_MIN_KEY_SIZE,
+-			.max_keysize	= AES_MAX_KEY_SIZE,
+-			.ivsize		= AES_BLOCK_SIZE,
+-			.setkey		= rk_aes_setkey,
+-			.encrypt	= rk_aes_cbc_encrypt,
+-			.decrypt	= rk_aes_cbc_decrypt,
+-		}
+-	}
+-};
+-
+-struct rk_crypto_tmp rk_ecb_des_alg = {
+-	.type = ALG_TYPE_CIPHER,
+-	.alg.crypto = {
+-		.cra_name		= "ecb(des)",
+-		.cra_driver_name	= "ecb-des-rk",
+-		.cra_priority		= 300,
+-		.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
+-					  CRYPTO_ALG_ASYNC,
+-		.cra_blocksize		= DES_BLOCK_SIZE,
+-		.cra_ctxsize		= sizeof(struct rk_cipher_ctx),
+-		.cra_alignmask		= 0x07,
+-		.cra_type		= &crypto_ablkcipher_type,
+-		.cra_module		= THIS_MODULE,
+-		.cra_init		= rk_ablk_cra_init,
+-		.cra_exit		= rk_ablk_cra_exit,
+-		.cra_u.ablkcipher	= {
+-			.min_keysize	= DES_KEY_SIZE,
+-			.max_keysize	= DES_KEY_SIZE,
+-			.setkey		= rk_des_setkey,
+-			.encrypt	= rk_des_ecb_encrypt,
+-			.decrypt	= rk_des_ecb_decrypt,
+-		}
+-	}
+-};
+-
+-struct rk_crypto_tmp rk_cbc_des_alg = {
+-	.type = ALG_TYPE_CIPHER,
+-	.alg.crypto = {
+-		.cra_name		= "cbc(des)",
+-		.cra_driver_name	= "cbc-des-rk",
+-		.cra_priority		= 300,
+-		.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
+-					  CRYPTO_ALG_ASYNC,
+-		.cra_blocksize		= DES_BLOCK_SIZE,
+-		.cra_ctxsize		= sizeof(struct rk_cipher_ctx),
+-		.cra_alignmask		= 0x07,
+-		.cra_type		= &crypto_ablkcipher_type,
+-		.cra_module		= THIS_MODULE,
+-		.cra_init		= rk_ablk_cra_init,
+-		.cra_exit		= rk_ablk_cra_exit,
+-		.cra_u.ablkcipher	= {
+-			.min_keysize	= DES_KEY_SIZE,
+-			.max_keysize	= DES_KEY_SIZE,
+-			.ivsize		= DES_BLOCK_SIZE,
+-			.setkey		= rk_des_setkey,
+-			.encrypt	= rk_des_cbc_encrypt,
+-			.decrypt	= rk_des_cbc_decrypt,
+-		}
+-	}
+-};
+-
+-struct rk_crypto_tmp rk_ecb_des3_ede_alg = {
+-	.type = ALG_TYPE_CIPHER,
+-	.alg.crypto = {
+-		.cra_name		= "ecb(des3_ede)",
+-		.cra_driver_name	= "ecb-des3-ede-rk",
+-		.cra_priority		= 300,
+-		.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
+-					  CRYPTO_ALG_ASYNC,
+-		.cra_blocksize		= DES_BLOCK_SIZE,
+-		.cra_ctxsize		= sizeof(struct rk_cipher_ctx),
+-		.cra_alignmask		= 0x07,
+-		.cra_type		= &crypto_ablkcipher_type,
+-		.cra_module		= THIS_MODULE,
+-		.cra_init		= rk_ablk_cra_init,
+-		.cra_exit		= rk_ablk_cra_exit,
+-		.cra_u.ablkcipher	= {
+-			.min_keysize	= DES3_EDE_KEY_SIZE,
+-			.max_keysize	= DES3_EDE_KEY_SIZE,
+-			.ivsize		= DES_BLOCK_SIZE,
+-			.setkey		= rk_tdes_setkey,
+-			.encrypt	= rk_des3_ede_ecb_encrypt,
+-			.decrypt	= rk_des3_ede_ecb_decrypt,
+-		}
+-	}
+-};
+-
+-struct rk_crypto_tmp rk_cbc_des3_ede_alg = {
+-	.type = ALG_TYPE_CIPHER,
+-	.alg.crypto = {
+-		.cra_name		= "cbc(des3_ede)",
+-		.cra_driver_name	= "cbc-des3-ede-rk",
+-		.cra_priority		= 300,
+-		.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
+-					  CRYPTO_ALG_ASYNC,
+-		.cra_blocksize		= DES_BLOCK_SIZE,
+-		.cra_ctxsize		= sizeof(struct rk_cipher_ctx),
+-		.cra_alignmask		= 0x07,
+-		.cra_type		= &crypto_ablkcipher_type,
+-		.cra_module		= THIS_MODULE,
+-		.cra_init		= rk_ablk_cra_init,
+-		.cra_exit		= rk_ablk_cra_exit,
+-		.cra_u.ablkcipher	= {
+-			.min_keysize	= DES3_EDE_KEY_SIZE,
+-			.max_keysize	= DES3_EDE_KEY_SIZE,
+-			.ivsize		= DES_BLOCK_SIZE,
+-			.setkey		= rk_tdes_setkey,
+-			.encrypt	= rk_des3_ede_cbc_encrypt,
+-			.decrypt	= rk_des3_ede_cbc_decrypt,
+-		}
+-	}
+-};
+diff --git a/drivers/crypto/rockchip/rk3288_crypto_skcipher.c b/drivers/crypto/rockchip/rk3288_crypto_skcipher.c
+new file mode 100644
+index 000000000000..ca4de4ddfe1f
+--- /dev/null
++++ b/drivers/crypto/rockchip/rk3288_crypto_skcipher.c
+@@ -0,0 +1,538 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Crypto acceleration support for Rockchip RK3288
++ *
++ * Copyright (c) 2015, Fuzhou Rockchip Electronics Co., Ltd
++ *
++ * Author: Zain Wang <zain.wang@rock-chips.com>
++ *
++ * Some ideas are from marvell-cesa.c and s5p-sss.c driver.
++ */
++#include "rk3288_crypto.h"
++
++#define RK_CRYPTO_DEC			BIT(0)
++
++static void rk_crypto_complete(struct crypto_async_request *base, int err)
 +{
-+	.base.cra_name		= "ecb(aes)",
-+	.base.cra_driver_name	= "stm32-ecb-aes",
-+	.base.cra_priority	= 200,
-+	.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+	.base.cra_blocksize	= AES_BLOCK_SIZE,
-+	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-+	.base.cra_alignmask	= 0xf,
-+	.base.cra_module	= THIS_MODULE,
++	if (base->complete)
++		base->complete(base, err);
++}
 +
-+	.init			= stm32_cryp_init_tfm,
-+	.min_keysize		= AES_MIN_KEY_SIZE,
-+	.max_keysize		= AES_MAX_KEY_SIZE,
-+	.setkey			= stm32_cryp_aes_setkey,
-+	.encrypt		= stm32_cryp_aes_ecb_encrypt,
-+	.decrypt		= stm32_cryp_aes_ecb_decrypt,
- },
- {
--	.cra_name		= "cbc(aes)",
--	.cra_driver_name	= "stm32-cbc-aes",
--	.cra_priority		= 200,
--	.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
--				  CRYPTO_ALG_ASYNC,
--	.cra_blocksize		= AES_BLOCK_SIZE,
--	.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
--	.cra_alignmask		= 0xf,
--	.cra_type		= &crypto_ablkcipher_type,
--	.cra_module		= THIS_MODULE,
--	.cra_init		= stm32_cryp_cra_init,
--	.cra_ablkcipher = {
--		.min_keysize	= AES_MIN_KEY_SIZE,
--		.max_keysize	= AES_MAX_KEY_SIZE,
--		.ivsize		= AES_BLOCK_SIZE,
--		.setkey		= stm32_cryp_aes_setkey,
--		.encrypt	= stm32_cryp_aes_cbc_encrypt,
--		.decrypt	= stm32_cryp_aes_cbc_decrypt,
--	}
-+	.base.cra_name		= "cbc(aes)",
-+	.base.cra_driver_name	= "stm32-cbc-aes",
-+	.base.cra_priority	= 200,
-+	.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+	.base.cra_blocksize	= AES_BLOCK_SIZE,
-+	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-+	.base.cra_alignmask	= 0xf,
-+	.base.cra_module	= THIS_MODULE,
++static int rk_handle_req(struct rk_crypto_info *dev,
++			 struct skcipher_request *req)
++{
++	if (!IS_ALIGNED(req->cryptlen, dev->align_size))
++		return -EINVAL;
++	else
++		return dev->enqueue(dev, &req->base);
++}
 +
-+	.init			= stm32_cryp_init_tfm,
-+	.min_keysize		= AES_MIN_KEY_SIZE,
-+	.max_keysize		= AES_MAX_KEY_SIZE,
-+	.ivsize			= AES_BLOCK_SIZE,
-+	.setkey			= stm32_cryp_aes_setkey,
-+	.encrypt		= stm32_cryp_aes_cbc_encrypt,
-+	.decrypt		= stm32_cryp_aes_cbc_decrypt,
- },
- {
--	.cra_name		= "ctr(aes)",
--	.cra_driver_name	= "stm32-ctr-aes",
--	.cra_priority		= 200,
--	.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
--				  CRYPTO_ALG_ASYNC,
--	.cra_blocksize		= 1,
--	.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
--	.cra_alignmask		= 0xf,
--	.cra_type		= &crypto_ablkcipher_type,
--	.cra_module		= THIS_MODULE,
--	.cra_init		= stm32_cryp_cra_init,
--	.cra_ablkcipher = {
--		.min_keysize	= AES_MIN_KEY_SIZE,
--		.max_keysize	= AES_MAX_KEY_SIZE,
--		.ivsize		= AES_BLOCK_SIZE,
--		.setkey		= stm32_cryp_aes_setkey,
--		.encrypt	= stm32_cryp_aes_ctr_encrypt,
--		.decrypt	= stm32_cryp_aes_ctr_decrypt,
--	}
-+	.base.cra_name		= "ctr(aes)",
-+	.base.cra_driver_name	= "stm32-ctr-aes",
-+	.base.cra_priority	= 200,
-+	.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+	.base.cra_blocksize	= 1,
-+	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-+	.base.cra_alignmask	= 0xf,
-+	.base.cra_module	= THIS_MODULE,
++static int rk_aes_setkey(struct crypto_skcipher *cipher,
++			 const u8 *key, unsigned int keylen)
++{
++	struct crypto_tfm *tfm = crypto_skcipher_tfm(cipher);
++	struct rk_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
 +
-+	.init			= stm32_cryp_init_tfm,
-+	.min_keysize		= AES_MIN_KEY_SIZE,
-+	.max_keysize		= AES_MAX_KEY_SIZE,
-+	.ivsize			= AES_BLOCK_SIZE,
-+	.setkey			= stm32_cryp_aes_setkey,
-+	.encrypt		= stm32_cryp_aes_ctr_encrypt,
-+	.decrypt		= stm32_cryp_aes_ctr_decrypt,
- },
- {
--	.cra_name		= "ecb(des)",
--	.cra_driver_name	= "stm32-ecb-des",
--	.cra_priority		= 200,
--	.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
--				  CRYPTO_ALG_ASYNC,
--	.cra_blocksize		= DES_BLOCK_SIZE,
--	.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
--	.cra_alignmask		= 0xf,
--	.cra_type		= &crypto_ablkcipher_type,
--	.cra_module		= THIS_MODULE,
--	.cra_init		= stm32_cryp_cra_init,
--	.cra_ablkcipher = {
--		.min_keysize	= DES_BLOCK_SIZE,
--		.max_keysize	= DES_BLOCK_SIZE,
--		.setkey		= stm32_cryp_des_setkey,
--		.encrypt	= stm32_cryp_des_ecb_encrypt,
--		.decrypt	= stm32_cryp_des_ecb_decrypt,
--	}
-+	.base.cra_name		= "ecb(des)",
-+	.base.cra_driver_name	= "stm32-ecb-des",
-+	.base.cra_priority	= 200,
-+	.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+	.base.cra_blocksize	= DES_BLOCK_SIZE,
-+	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-+	.base.cra_alignmask	= 0xf,
-+	.base.cra_module	= THIS_MODULE,
++	if (keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_192 &&
++	    keylen != AES_KEYSIZE_256) {
++		crypto_skcipher_set_flags(cipher, CRYPTO_TFM_RES_BAD_KEY_LEN);
++		return -EINVAL;
++	}
++	ctx->keylen = keylen;
++	memcpy_toio(ctx->dev->reg + RK_CRYPTO_AES_KEY_0, key, keylen);
++	return 0;
++}
 +
-+	.init			= stm32_cryp_init_tfm,
-+	.min_keysize		= DES_BLOCK_SIZE,
-+	.max_keysize		= DES_BLOCK_SIZE,
-+	.setkey			= stm32_cryp_des_setkey,
-+	.encrypt		= stm32_cryp_des_ecb_encrypt,
-+	.decrypt		= stm32_cryp_des_ecb_decrypt,
- },
- {
--	.cra_name		= "cbc(des)",
--	.cra_driver_name	= "stm32-cbc-des",
--	.cra_priority		= 200,
--	.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
--				  CRYPTO_ALG_ASYNC,
--	.cra_blocksize		= DES_BLOCK_SIZE,
--	.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
--	.cra_alignmask		= 0xf,
--	.cra_type		= &crypto_ablkcipher_type,
--	.cra_module		= THIS_MODULE,
--	.cra_init		= stm32_cryp_cra_init,
--	.cra_ablkcipher = {
--		.min_keysize	= DES_BLOCK_SIZE,
--		.max_keysize	= DES_BLOCK_SIZE,
--		.ivsize		= DES_BLOCK_SIZE,
--		.setkey		= stm32_cryp_des_setkey,
--		.encrypt	= stm32_cryp_des_cbc_encrypt,
--		.decrypt	= stm32_cryp_des_cbc_decrypt,
--	}
-+	.base.cra_name		= "cbc(des)",
-+	.base.cra_driver_name	= "stm32-cbc-des",
-+	.base.cra_priority	= 200,
-+	.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+	.base.cra_blocksize	= DES_BLOCK_SIZE,
-+	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-+	.base.cra_alignmask	= 0xf,
-+	.base.cra_module	= THIS_MODULE,
++static int rk_des_setkey(struct crypto_skcipher *cipher,
++			 const u8 *key, unsigned int keylen)
++{
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(cipher);
++	int err;
 +
-+	.init			= stm32_cryp_init_tfm,
-+	.min_keysize		= DES_BLOCK_SIZE,
-+	.max_keysize		= DES_BLOCK_SIZE,
-+	.ivsize			= DES_BLOCK_SIZE,
-+	.setkey			= stm32_cryp_des_setkey,
-+	.encrypt		= stm32_cryp_des_cbc_encrypt,
-+	.decrypt		= stm32_cryp_des_cbc_decrypt,
- },
- {
--	.cra_name		= "ecb(des3_ede)",
--	.cra_driver_name	= "stm32-ecb-des3",
--	.cra_priority		= 200,
--	.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
--				  CRYPTO_ALG_ASYNC,
--	.cra_blocksize		= DES_BLOCK_SIZE,
--	.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
--	.cra_alignmask		= 0xf,
--	.cra_type		= &crypto_ablkcipher_type,
--	.cra_module		= THIS_MODULE,
--	.cra_init		= stm32_cryp_cra_init,
--	.cra_ablkcipher = {
--		.min_keysize	= 3 * DES_BLOCK_SIZE,
--		.max_keysize	= 3 * DES_BLOCK_SIZE,
--		.setkey		= stm32_cryp_tdes_setkey,
--		.encrypt	= stm32_cryp_tdes_ecb_encrypt,
--		.decrypt	= stm32_cryp_tdes_ecb_decrypt,
--	}
-+	.base.cra_name		= "ecb(des3_ede)",
-+	.base.cra_driver_name	= "stm32-ecb-des3",
-+	.base.cra_priority	= 200,
-+	.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+	.base.cra_blocksize	= DES_BLOCK_SIZE,
-+	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-+	.base.cra_alignmask	= 0xf,
-+	.base.cra_module	= THIS_MODULE,
++	err = verify_skcipher_des_key(cipher, key);
++	if (err)
++		return err;
 +
-+	.init			= stm32_cryp_init_tfm,
-+	.min_keysize		= 3 * DES_BLOCK_SIZE,
-+	.max_keysize		= 3 * DES_BLOCK_SIZE,
-+	.setkey			= stm32_cryp_tdes_setkey,
-+	.encrypt		= stm32_cryp_tdes_ecb_encrypt,
-+	.decrypt		= stm32_cryp_tdes_ecb_decrypt,
- },
- {
--	.cra_name		= "cbc(des3_ede)",
--	.cra_driver_name	= "stm32-cbc-des3",
--	.cra_priority		= 200,
--	.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
--				  CRYPTO_ALG_ASYNC,
--	.cra_blocksize		= DES_BLOCK_SIZE,
--	.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
--	.cra_alignmask		= 0xf,
--	.cra_type		= &crypto_ablkcipher_type,
--	.cra_module		= THIS_MODULE,
--	.cra_init		= stm32_cryp_cra_init,
--	.cra_ablkcipher = {
--		.min_keysize	= 3 * DES_BLOCK_SIZE,
--		.max_keysize	= 3 * DES_BLOCK_SIZE,
--		.ivsize		= DES_BLOCK_SIZE,
--		.setkey		= stm32_cryp_tdes_setkey,
--		.encrypt	= stm32_cryp_tdes_cbc_encrypt,
--		.decrypt	= stm32_cryp_tdes_cbc_decrypt,
--	}
-+	.base.cra_name		= "cbc(des3_ede)",
-+	.base.cra_driver_name	= "stm32-cbc-des3",
-+	.base.cra_priority	= 200,
-+	.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+	.base.cra_blocksize	= DES_BLOCK_SIZE,
-+	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-+	.base.cra_alignmask	= 0xf,
-+	.base.cra_module	= THIS_MODULE,
++	ctx->keylen = keylen;
++	memcpy_toio(ctx->dev->reg + RK_CRYPTO_TDES_KEY1_0, key, keylen);
++	return 0;
++}
 +
-+	.init			= stm32_cryp_init_tfm,
-+	.min_keysize		= 3 * DES_BLOCK_SIZE,
-+	.max_keysize		= 3 * DES_BLOCK_SIZE,
-+	.ivsize			= DES_BLOCK_SIZE,
-+	.setkey			= stm32_cryp_tdes_setkey,
-+	.encrypt		= stm32_cryp_tdes_cbc_encrypt,
-+	.decrypt		= stm32_cryp_tdes_cbc_decrypt,
- },
- };
- 
-@@ -2010,7 +1990,7 @@ static int stm32_cryp_probe(struct platform_device *pdev)
- 		goto err_engine2;
- 	}
- 
--	ret = crypto_register_algs(crypto_algs, ARRAY_SIZE(crypto_algs));
-+	ret = crypto_register_skciphers(crypto_algs, ARRAY_SIZE(crypto_algs));
- 	if (ret) {
- 		dev_err(dev, "Could not register algs\n");
- 		goto err_algs;
-@@ -2027,7 +2007,7 @@ static int stm32_cryp_probe(struct platform_device *pdev)
- 	return 0;
- 
- err_aead_algs:
--	crypto_unregister_algs(crypto_algs, ARRAY_SIZE(crypto_algs));
-+	crypto_unregister_skciphers(crypto_algs, ARRAY_SIZE(crypto_algs));
- err_algs:
- err_engine2:
- 	crypto_engine_exit(cryp->engine);
-@@ -2059,7 +2039,7 @@ static int stm32_cryp_remove(struct platform_device *pdev)
- 		return ret;
- 
- 	crypto_unregister_aeads(aead_algs, ARRAY_SIZE(aead_algs));
--	crypto_unregister_algs(crypto_algs, ARRAY_SIZE(crypto_algs));
-+	crypto_unregister_skciphers(crypto_algs, ARRAY_SIZE(crypto_algs));
- 
- 	crypto_engine_exit(cryp->engine);
- 
++static int rk_tdes_setkey(struct crypto_skcipher *cipher,
++			  const u8 *key, unsigned int keylen)
++{
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(cipher);
++	int err;
++
++	err = verify_skcipher_des3_key(cipher, key);
++	if (err)
++		return err;
++
++	ctx->keylen = keylen;
++	memcpy_toio(ctx->dev->reg + RK_CRYPTO_TDES_KEY1_0, key, keylen);
++	return 0;
++}
++
++static int rk_aes_ecb_encrypt(struct skcipher_request *req)
++{
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct rk_crypto_info *dev = ctx->dev;
++
++	ctx->mode = RK_CRYPTO_AES_ECB_MODE;
++	return rk_handle_req(dev, req);
++}
++
++static int rk_aes_ecb_decrypt(struct skcipher_request *req)
++{
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct rk_crypto_info *dev = ctx->dev;
++
++	ctx->mode = RK_CRYPTO_AES_ECB_MODE | RK_CRYPTO_DEC;
++	return rk_handle_req(dev, req);
++}
++
++static int rk_aes_cbc_encrypt(struct skcipher_request *req)
++{
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct rk_crypto_info *dev = ctx->dev;
++
++	ctx->mode = RK_CRYPTO_AES_CBC_MODE;
++	return rk_handle_req(dev, req);
++}
++
++static int rk_aes_cbc_decrypt(struct skcipher_request *req)
++{
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct rk_crypto_info *dev = ctx->dev;
++
++	ctx->mode = RK_CRYPTO_AES_CBC_MODE | RK_CRYPTO_DEC;
++	return rk_handle_req(dev, req);
++}
++
++static int rk_des_ecb_encrypt(struct skcipher_request *req)
++{
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct rk_crypto_info *dev = ctx->dev;
++
++	ctx->mode = 0;
++	return rk_handle_req(dev, req);
++}
++
++static int rk_des_ecb_decrypt(struct skcipher_request *req)
++{
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct rk_crypto_info *dev = ctx->dev;
++
++	ctx->mode = RK_CRYPTO_DEC;
++	return rk_handle_req(dev, req);
++}
++
++static int rk_des_cbc_encrypt(struct skcipher_request *req)
++{
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct rk_crypto_info *dev = ctx->dev;
++
++	ctx->mode = RK_CRYPTO_TDES_CHAINMODE_CBC;
++	return rk_handle_req(dev, req);
++}
++
++static int rk_des_cbc_decrypt(struct skcipher_request *req)
++{
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct rk_crypto_info *dev = ctx->dev;
++
++	ctx->mode = RK_CRYPTO_TDES_CHAINMODE_CBC | RK_CRYPTO_DEC;
++	return rk_handle_req(dev, req);
++}
++
++static int rk_des3_ede_ecb_encrypt(struct skcipher_request *req)
++{
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct rk_crypto_info *dev = ctx->dev;
++
++	ctx->mode = RK_CRYPTO_TDES_SELECT;
++	return rk_handle_req(dev, req);
++}
++
++static int rk_des3_ede_ecb_decrypt(struct skcipher_request *req)
++{
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct rk_crypto_info *dev = ctx->dev;
++
++	ctx->mode = RK_CRYPTO_TDES_SELECT | RK_CRYPTO_DEC;
++	return rk_handle_req(dev, req);
++}
++
++static int rk_des3_ede_cbc_encrypt(struct skcipher_request *req)
++{
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct rk_crypto_info *dev = ctx->dev;
++
++	ctx->mode = RK_CRYPTO_TDES_SELECT | RK_CRYPTO_TDES_CHAINMODE_CBC;
++	return rk_handle_req(dev, req);
++}
++
++static int rk_des3_ede_cbc_decrypt(struct skcipher_request *req)
++{
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct rk_crypto_info *dev = ctx->dev;
++
++	ctx->mode = RK_CRYPTO_TDES_SELECT | RK_CRYPTO_TDES_CHAINMODE_CBC |
++		    RK_CRYPTO_DEC;
++	return rk_handle_req(dev, req);
++}
++
++static void rk_ablk_hw_init(struct rk_crypto_info *dev)
++{
++	struct skcipher_request *req =
++		skcipher_request_cast(dev->async_req);
++	struct crypto_skcipher *cipher = crypto_skcipher_reqtfm(req);
++	struct crypto_tfm *tfm = crypto_skcipher_tfm(cipher);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(cipher);
++	u32 ivsize, block, conf_reg = 0;
++
++	block = crypto_tfm_alg_blocksize(tfm);
++	ivsize = crypto_skcipher_ivsize(cipher);
++
++	if (block == DES_BLOCK_SIZE) {
++		ctx->mode |= RK_CRYPTO_TDES_FIFO_MODE |
++			     RK_CRYPTO_TDES_BYTESWAP_KEY |
++			     RK_CRYPTO_TDES_BYTESWAP_IV;
++		CRYPTO_WRITE(dev, RK_CRYPTO_TDES_CTRL, ctx->mode);
++		memcpy_toio(dev->reg + RK_CRYPTO_TDES_IV_0, req->iv, ivsize);
++		conf_reg = RK_CRYPTO_DESSEL;
++	} else {
++		ctx->mode |= RK_CRYPTO_AES_FIFO_MODE |
++			     RK_CRYPTO_AES_KEY_CHANGE |
++			     RK_CRYPTO_AES_BYTESWAP_KEY |
++			     RK_CRYPTO_AES_BYTESWAP_IV;
++		if (ctx->keylen == AES_KEYSIZE_192)
++			ctx->mode |= RK_CRYPTO_AES_192BIT_key;
++		else if (ctx->keylen == AES_KEYSIZE_256)
++			ctx->mode |= RK_CRYPTO_AES_256BIT_key;
++		CRYPTO_WRITE(dev, RK_CRYPTO_AES_CTRL, ctx->mode);
++		memcpy_toio(dev->reg + RK_CRYPTO_AES_IV_0, req->iv, ivsize);
++	}
++	conf_reg |= RK_CRYPTO_BYTESWAP_BTFIFO |
++		    RK_CRYPTO_BYTESWAP_BRFIFO;
++	CRYPTO_WRITE(dev, RK_CRYPTO_CONF, conf_reg);
++	CRYPTO_WRITE(dev, RK_CRYPTO_INTENA,
++		     RK_CRYPTO_BCDMA_ERR_ENA | RK_CRYPTO_BCDMA_DONE_ENA);
++}
++
++static void crypto_dma_start(struct rk_crypto_info *dev)
++{
++	CRYPTO_WRITE(dev, RK_CRYPTO_BRDMAS, dev->addr_in);
++	CRYPTO_WRITE(dev, RK_CRYPTO_BRDMAL, dev->count / 4);
++	CRYPTO_WRITE(dev, RK_CRYPTO_BTDMAS, dev->addr_out);
++	CRYPTO_WRITE(dev, RK_CRYPTO_CTRL, RK_CRYPTO_BLOCK_START |
++		     _SBF(RK_CRYPTO_BLOCK_START, 16));
++}
++
++static int rk_set_data_start(struct rk_crypto_info *dev)
++{
++	int err;
++	struct skcipher_request *req =
++		skcipher_request_cast(dev->async_req);
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	u32 ivsize = crypto_skcipher_ivsize(tfm);
++	u8 *src_last_blk = page_address(sg_page(dev->sg_src)) +
++		dev->sg_src->offset + dev->sg_src->length - ivsize;
++
++	/* Store the iv that need to be updated in chain mode.
++	 * And update the IV buffer to contain the next IV for decryption mode.
++	 */
++	if (ctx->mode & RK_CRYPTO_DEC) {
++		memcpy(ctx->iv, src_last_blk, ivsize);
++		sg_pcopy_to_buffer(dev->first, dev->src_nents, req->iv,
++				   ivsize, dev->total - ivsize);
++	}
++
++	err = dev->load_data(dev, dev->sg_src, dev->sg_dst);
++	if (!err)
++		crypto_dma_start(dev);
++	return err;
++}
++
++static int rk_ablk_start(struct rk_crypto_info *dev)
++{
++	struct skcipher_request *req =
++		skcipher_request_cast(dev->async_req);
++	unsigned long flags;
++	int err = 0;
++
++	dev->left_bytes = req->cryptlen;
++	dev->total = req->cryptlen;
++	dev->sg_src = req->src;
++	dev->first = req->src;
++	dev->src_nents = sg_nents(req->src);
++	dev->sg_dst = req->dst;
++	dev->dst_nents = sg_nents(req->dst);
++	dev->aligned = 1;
++
++	spin_lock_irqsave(&dev->lock, flags);
++	rk_ablk_hw_init(dev);
++	err = rk_set_data_start(dev);
++	spin_unlock_irqrestore(&dev->lock, flags);
++	return err;
++}
++
++static void rk_iv_copyback(struct rk_crypto_info *dev)
++{
++	struct skcipher_request *req =
++		skcipher_request_cast(dev->async_req);
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	u32 ivsize = crypto_skcipher_ivsize(tfm);
++
++	/* Update the IV buffer to contain the next IV for encryption mode. */
++	if (!(ctx->mode & RK_CRYPTO_DEC)) {
++		if (dev->aligned) {
++			memcpy(req->iv, sg_virt(dev->sg_dst) +
++				dev->sg_dst->length - ivsize, ivsize);
++		} else {
++			memcpy(req->iv, dev->addr_vir +
++				dev->count - ivsize, ivsize);
++		}
++	}
++}
++
++static void rk_update_iv(struct rk_crypto_info *dev)
++{
++	struct skcipher_request *req =
++		skcipher_request_cast(dev->async_req);
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	u32 ivsize = crypto_skcipher_ivsize(tfm);
++	u8 *new_iv = NULL;
++
++	if (ctx->mode & RK_CRYPTO_DEC) {
++		new_iv = ctx->iv;
++	} else {
++		new_iv = page_address(sg_page(dev->sg_dst)) +
++			 dev->sg_dst->offset + dev->sg_dst->length - ivsize;
++	}
++
++	if (ivsize == DES_BLOCK_SIZE)
++		memcpy_toio(dev->reg + RK_CRYPTO_TDES_IV_0, new_iv, ivsize);
++	else if (ivsize == AES_BLOCK_SIZE)
++		memcpy_toio(dev->reg + RK_CRYPTO_AES_IV_0, new_iv, ivsize);
++}
++
++/* return:
++ *	true	some err was occurred
++ *	fault	no err, continue
++ */
++static int rk_ablk_rx(struct rk_crypto_info *dev)
++{
++	int err = 0;
++	struct skcipher_request *req =
++		skcipher_request_cast(dev->async_req);
++
++	dev->unload_data(dev);
++	if (!dev->aligned) {
++		if (!sg_pcopy_from_buffer(req->dst, dev->dst_nents,
++					  dev->addr_vir, dev->count,
++					  dev->total - dev->left_bytes -
++					  dev->count)) {
++			err = -EINVAL;
++			goto out_rx;
++		}
++	}
++	if (dev->left_bytes) {
++		rk_update_iv(dev);
++		if (dev->aligned) {
++			if (sg_is_last(dev->sg_src)) {
++				dev_err(dev->dev, "[%s:%d] Lack of data\n",
++					__func__, __LINE__);
++				err = -ENOMEM;
++				goto out_rx;
++			}
++			dev->sg_src = sg_next(dev->sg_src);
++			dev->sg_dst = sg_next(dev->sg_dst);
++		}
++		err = rk_set_data_start(dev);
++	} else {
++		rk_iv_copyback(dev);
++		/* here show the calculation is over without any err */
++		dev->complete(dev->async_req, 0);
++		tasklet_schedule(&dev->queue_task);
++	}
++out_rx:
++	return err;
++}
++
++static int rk_ablk_init_tfm(struct crypto_skcipher *tfm)
++{
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct skcipher_alg *alg = crypto_skcipher_alg(tfm);
++	struct rk_crypto_tmp *algt;
++
++	algt = container_of(alg, struct rk_crypto_tmp, alg.skcipher);
++
++	ctx->dev = algt->dev;
++	ctx->dev->align_size = crypto_tfm_alg_alignmask(crypto_skcipher_tfm(tfm)) + 1;
++	ctx->dev->start = rk_ablk_start;
++	ctx->dev->update = rk_ablk_rx;
++	ctx->dev->complete = rk_crypto_complete;
++	ctx->dev->addr_vir = (char *)__get_free_page(GFP_KERNEL);
++
++	return ctx->dev->addr_vir ? ctx->dev->enable_clk(ctx->dev) : -ENOMEM;
++}
++
++static void rk_ablk_exit_tfm(struct crypto_skcipher *tfm)
++{
++	struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++
++	free_page((unsigned long)ctx->dev->addr_vir);
++	ctx->dev->disable_clk(ctx->dev);
++}
++
++struct rk_crypto_tmp rk_ecb_aes_alg = {
++	.type = ALG_TYPE_CIPHER,
++	.alg.skcipher = {
++		.base.cra_name		= "ecb(aes)",
++		.base.cra_driver_name	= "ecb-aes-rk",
++		.base.cra_priority	= 300,
++		.base.cra_flags		= CRYPTO_ALG_ASYNC,
++		.base.cra_blocksize	= AES_BLOCK_SIZE,
++		.base.cra_ctxsize	= sizeof(struct rk_cipher_ctx),
++		.base.cra_alignmask	= 0x0f,
++		.base.cra_module	= THIS_MODULE,
++
++		.init			= rk_ablk_init_tfm,
++		.exit			= rk_ablk_exit_tfm,
++		.min_keysize		= AES_MIN_KEY_SIZE,
++		.max_keysize		= AES_MAX_KEY_SIZE,
++		.setkey			= rk_aes_setkey,
++		.encrypt		= rk_aes_ecb_encrypt,
++		.decrypt		= rk_aes_ecb_decrypt,
++	}
++};
++
++struct rk_crypto_tmp rk_cbc_aes_alg = {
++	.type = ALG_TYPE_CIPHER,
++	.alg.skcipher = {
++		.base.cra_name		= "cbc(aes)",
++		.base.cra_driver_name	= "cbc-aes-rk",
++		.base.cra_priority	= 300,
++		.base.cra_flags		= CRYPTO_ALG_ASYNC,
++		.base.cra_blocksize	= AES_BLOCK_SIZE,
++		.base.cra_ctxsize	= sizeof(struct rk_cipher_ctx),
++		.base.cra_alignmask	= 0x0f,
++		.base.cra_module	= THIS_MODULE,
++
++		.init			= rk_ablk_init_tfm,
++		.exit			= rk_ablk_exit_tfm,
++		.min_keysize		= AES_MIN_KEY_SIZE,
++		.max_keysize		= AES_MAX_KEY_SIZE,
++		.ivsize			= AES_BLOCK_SIZE,
++		.setkey			= rk_aes_setkey,
++		.encrypt		= rk_aes_cbc_encrypt,
++		.decrypt		= rk_aes_cbc_decrypt,
++	}
++};
++
++struct rk_crypto_tmp rk_ecb_des_alg = {
++	.type = ALG_TYPE_CIPHER,
++	.alg.skcipher = {
++		.base.cra_name		= "ecb(des)",
++		.base.cra_driver_name	= "ecb-des-rk",
++		.base.cra_priority	= 300,
++		.base.cra_flags		= CRYPTO_ALG_ASYNC,
++		.base.cra_blocksize	= DES_BLOCK_SIZE,
++		.base.cra_ctxsize	= sizeof(struct rk_cipher_ctx),
++		.base.cra_alignmask	= 0x07,
++		.base.cra_module	= THIS_MODULE,
++
++		.init			= rk_ablk_init_tfm,
++		.exit			= rk_ablk_exit_tfm,
++		.min_keysize		= DES_KEY_SIZE,
++		.max_keysize		= DES_KEY_SIZE,
++		.setkey			= rk_des_setkey,
++		.encrypt		= rk_des_ecb_encrypt,
++		.decrypt		= rk_des_ecb_decrypt,
++	}
++};
++
++struct rk_crypto_tmp rk_cbc_des_alg = {
++	.type = ALG_TYPE_CIPHER,
++	.alg.skcipher = {
++		.base.cra_name		= "cbc(des)",
++		.base.cra_driver_name	= "cbc-des-rk",
++		.base.cra_priority	= 300,
++		.base.cra_flags		= CRYPTO_ALG_ASYNC,
++		.base.cra_blocksize	= DES_BLOCK_SIZE,
++		.base.cra_ctxsize	= sizeof(struct rk_cipher_ctx),
++		.base.cra_alignmask	= 0x07,
++		.base.cra_module	= THIS_MODULE,
++
++		.init			= rk_ablk_init_tfm,
++		.exit			= rk_ablk_exit_tfm,
++		.min_keysize		= DES_KEY_SIZE,
++		.max_keysize		= DES_KEY_SIZE,
++		.ivsize			= DES_BLOCK_SIZE,
++		.setkey			= rk_des_setkey,
++		.encrypt		= rk_des_cbc_encrypt,
++		.decrypt		= rk_des_cbc_decrypt,
++	}
++};
++
++struct rk_crypto_tmp rk_ecb_des3_ede_alg = {
++	.type = ALG_TYPE_CIPHER,
++	.alg.skcipher = {
++		.base.cra_name		= "ecb(des3_ede)",
++		.base.cra_driver_name	= "ecb-des3-ede-rk",
++		.base.cra_priority	= 300,
++		.base.cra_flags		= CRYPTO_ALG_ASYNC,
++		.base.cra_blocksize	= DES_BLOCK_SIZE,
++		.base.cra_ctxsize	= sizeof(struct rk_cipher_ctx),
++		.base.cra_alignmask	= 0x07,
++		.base.cra_module	= THIS_MODULE,
++
++		.init			= rk_ablk_init_tfm,
++		.exit			= rk_ablk_exit_tfm,
++		.min_keysize		= DES3_EDE_KEY_SIZE,
++		.max_keysize		= DES3_EDE_KEY_SIZE,
++		.ivsize			= DES_BLOCK_SIZE,
++		.setkey			= rk_tdes_setkey,
++		.encrypt		= rk_des3_ede_ecb_encrypt,
++		.decrypt		= rk_des3_ede_ecb_decrypt,
++	}
++};
++
++struct rk_crypto_tmp rk_cbc_des3_ede_alg = {
++	.type = ALG_TYPE_CIPHER,
++	.alg.skcipher = {
++		.base.cra_name		= "cbc(des3_ede)",
++		.base.cra_driver_name	= "cbc-des3-ede-rk",
++		.base.cra_priority	= 300,
++		.base.cra_flags		= CRYPTO_ALG_ASYNC,
++		.base.cra_blocksize	= DES_BLOCK_SIZE,
++		.base.cra_ctxsize	= sizeof(struct rk_cipher_ctx),
++		.base.cra_alignmask	= 0x07,
++		.base.cra_module	= THIS_MODULE,
++
++		.init			= rk_ablk_init_tfm,
++		.exit			= rk_ablk_exit_tfm,
++		.min_keysize		= DES3_EDE_KEY_SIZE,
++		.max_keysize		= DES3_EDE_KEY_SIZE,
++		.ivsize			= DES_BLOCK_SIZE,
++		.setkey			= rk_tdes_setkey,
++		.encrypt		= rk_des3_ede_cbc_encrypt,
++		.decrypt		= rk_des3_ede_cbc_decrypt,
++	}
++};
 -- 
 2.20.1
 
