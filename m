@@ -2,231 +2,120 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C89D94B9
-	for <lists+linux-crypto@lfdr.de>; Wed, 16 Oct 2019 17:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE2BD961D
+	for <lists+linux-crypto@lfdr.de>; Wed, 16 Oct 2019 17:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392894AbfJPPB5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 16 Oct 2019 11:01:57 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:41486 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392725AbfJPPB4 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 16 Oct 2019 11:01:56 -0400
-Received: by mail-wr1-f68.google.com with SMTP id p4so12589294wrm.8;
-        Wed, 16 Oct 2019 08:01:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=e457YyDFVfE5IUj3AWYMM47UgnP78lQnD30EkuZGvV4=;
-        b=IbvFwY7y30vzZmQNQZIdNwtpOJW3l/IQEoam6v99L4QEnCH773bL58VkU8OkkT8W+t
-         fbTZvpkR8YBT+PlV374xiKueR6wTf99r8NJPMF+vx+jizVYbSRcXaFywAxq70iVM0gX/
-         +7OQD6wxYq72vzAiykXQ4gULTs+vzG6TN/NLwwQ3ZUVv4y+YdQ2HUjpVS2kF2NxTTpD5
-         BQ3sFQAKhDACFjUnBgP7t0WCQHfwDnanmEAEzd5OmTms90ICnMwBoHoJUGdZSbBGiJXY
-         si97Fj9Sm2Puh+Wy5hp92JVLGsEu8j6R74lVyWpbEDRS+UzTzZ8p5pKPQWgmyg8LaEpQ
-         jJAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=e457YyDFVfE5IUj3AWYMM47UgnP78lQnD30EkuZGvV4=;
-        b=gQgAHSlNry0NvvXNTShn1PpSOvG3HdfV+zqCTgaNW5FNdrw0vMxm4Ti198fxZMJvoC
-         W/t2ji/5UrbkauhqpjIfv2WU7AzSIf4jt43gvMeDo16ZrgQfXYmhoCgAOP9Y6KmYRo34
-         Cw40ogQpQqZo0Qqw+4d4grJptoAytW8WqpE9XsVDuef7xTwaMKLy37JrtNA58BJ8MexX
-         vWTknIhZGwoewPHKSToSLd08x9dDk1I2SY8XDkfuijI4JoqFB6kSHtAFBhDEtDwwBFiv
-         y8QC8aa8Maz+llAtH3eib75ox8t+FWEGRACW44XUIrRsFQ5guDX/zxOygfT3cTDZcW6o
-         k8NQ==
-X-Gm-Message-State: APjAAAUXfoYzYqmt5N9pGrFcK1IO2Ob14vAefPvl6gMOfwm/j6IoHmSX
-        T8GxJP9VxRvgvkc4N4d+Miw=
-X-Google-Smtp-Source: APXvYqyoh/WOojasasugeXydDJgc+8u1z2I8bcvkAOZUBZ1n6Lp44HwStUcdBzPDTzjZHU0Vyq6V+A==
-X-Received: by 2002:adf:e8c6:: with SMTP id k6mr3139239wrn.78.1571238113369;
-        Wed, 16 Oct 2019 08:01:53 -0700 (PDT)
-Received: from Red.localdomain ([2a01:cb1d:147:7200:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id r18sm3215437wme.48.2019.10.16.08.01.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Oct 2019 08:01:52 -0700 (PDT)
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     catalin.marinas@arm.com, davem@davemloft.net,
-        herbert@gondor.apana.org.au, linux@armlinux.org.uk,
-        mark.rutland@arm.com, mripard@kernel.org, robh+dt@kernel.org,
-        wens@csie.org, will@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH v5 11/11] crypto: sun4i-ss: Move to Allwinner directory
-Date:   Wed, 16 Oct 2019 17:01:31 +0200
-Message-Id: <20191016150131.15430-12-clabbe.montjoie@gmail.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191016150131.15430-1-clabbe.montjoie@gmail.com>
-References: <20191016150131.15430-1-clabbe.montjoie@gmail.com>
+        id S1729646AbfJPP76 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 16 Oct 2019 11:59:58 -0400
+Received: from mail-eopbgr140047.outbound.protection.outlook.com ([40.107.14.47]:19430
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727881AbfJPP76 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 16 Oct 2019 11:59:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Lp9fQj7irYirL04vh0yp4XhhYv7KRltXXVFvNynAIz+SfjZw8UKrL2XHqG8he6GSrWQS+V9DEbMn7RKa87Ct9vjqmZWD8v6d7uGtS2RPslto6Q8VfV5shEFWNV7rWTV6oBL+ZE/TaHYbpsspzIGoJ/6K+WC7vcf33PCWfSTeEus7dD/3BweLPJWchYTIJMaiJRQTJ9I6Uw92aawrps+sPM7Nln2tmBh313eIGD7otoeAwBnBOgwgJytyZdxEKgHmD9+k5E03rpNy933xKn4vwcPJOjN/9Nb0oIh6J6wfV+Hf74p7SU3i7Rnyilzl8njMWjRkSFg4d2z8XnKohBxZxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T6Ahsux/oCqXs30SJCwnXjrqt2oCUgizyF4ltv4PT2c=;
+ b=d7JD7o+uJtqHDf3Dre3weAUMG3B9wesYUimlrAB37CfV2CFuMxwq1jCoxrE+FnC9ad+s0/E4/6SJ8e19HXmnm5SlU3tuIXQKsBzDOxJ48gAxpp0LqAf8+gFR6IBr6TBKOvxQgywqsdJxw9KiOyIhXKKbcYppbpdTt5GI136hpcEl24CQwAXGHwGoqeWMCETFhPR3oHcVsEThfXhsStvksmIlqK9YOH7B/FQwpT3iHg5VTlTB55hFVcPqShhFHld4EGh4zJjNubFHfedniA1vaScMMEilfdoCRpZ418mTgYaI5//zsu04cKH69jrHCzxF7Bu3MslozMu3Ghr7RmPreg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T6Ahsux/oCqXs30SJCwnXjrqt2oCUgizyF4ltv4PT2c=;
+ b=QWmDgKMz2KHinrLgmSVIFRKbH9+A4Ro5ymIsSMuE20q9CM9Te0QCArGoiahATcmwP7XDHlVOPV5QyFOu7XxuzjccxjU9VIawWrplXZM3WRav14dXMPuYYo/LoEkElpmTdir3UFJ6gKlDR1fDoLRRDiLXBAcsUDN9wCMBPcX2m0w=
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com (52.134.3.153) by
+ VI1PR0402MB3453.eurprd04.prod.outlook.com (52.134.3.33) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.22; Wed, 16 Oct 2019 15:59:54 +0000
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::ec9b:b8ee:6fa4:7f9e]) by VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::ec9b:b8ee:6fa4:7f9e%6]) with mapi id 15.20.2347.023; Wed, 16 Oct 2019
+ 15:59:54 +0000
+From:   Horia Geanta <horia.geanta@nxp.com>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Biggers <ebiggers@google.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH 16/25] crypto: mxs - switch to skcipher API
+Thread-Topic: [PATCH 16/25] crypto: mxs - switch to skcipher API
+Thread-Index: AQHVgomysWWO9xvSwkmhz+CnuRW5ww==
+Date:   Wed, 16 Oct 2019 15:59:54 +0000
+Message-ID: <VI1PR0402MB3485D17490694EAEC115371E98920@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+References: <20191014121910.7264-1-ard.biesheuvel@linaro.org>
+ <20191014121910.7264-17-ard.biesheuvel@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=horia.geanta@nxp.com; 
+x-originating-ip: [212.146.100.6]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7fa95d06-a18d-454c-f2c8-08d75251e296
+x-ms-office365-filtering-ht: Tenant
+x-ms-traffictypediagnostic: VI1PR0402MB3453:|VI1PR0402MB3453:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR0402MB3453E4BCFCEBA903B92C9CF198920@VI1PR0402MB3453.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 0192E812EC
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(39860400002)(366004)(346002)(396003)(199004)(189003)(26005)(9686003)(110136005)(186003)(5660300002)(76176011)(25786009)(4744005)(66946007)(66476007)(66556008)(76116006)(64756008)(66446008)(91956017)(102836004)(53546011)(2501003)(71200400001)(71190400001)(99286004)(7696005)(229853002)(6436002)(81166006)(54906003)(6246003)(55016002)(3846002)(8936002)(81156014)(316002)(8676002)(2906002)(6506007)(6116002)(4326008)(305945005)(7416002)(52536014)(74316002)(33656002)(7736002)(486006)(476003)(14454004)(86362001)(446003)(478600001)(44832011)(66066001)(256004);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0402MB3453;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Jeb6UQvug9WHpPvGzGEYHlDh7jLduCPMhNBZDnSDUyiK7vh+fhN44cYuOCoj3v+pH31b3/VwXc1P6/5fYqqp8nczrBhjTx4sQq50X/BawDwnVbXlk+VwkJd/EESyqLIVhhqQD3th5UOX4nc8jbFSuhG1dm+EZVu+I75plxZePZbBKg9Dtr7AAdtMezejVN58/gnYgB+OPwUcBVkOHikwsyObsLpjsGTfiuMdNn1gdqNbHLOSREtk9v5Aeu+zhmW0ECp+AHayBiCIYmOflWB9KcSubRCnZDShbBIdBdM9BB5EBKczlEkt89GIsZyd0oDidm454RA1dUP9DEpFF3JbO4+FXQ2bkbDCSVFGeRsdT+qVhKoTwe3HImzFxDoGwtan4wTb5bFpGHt55my2B6rblYyqvk4HUaB/U4klLst85K4=
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7fa95d06-a18d-454c-f2c8-08d75251e296
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2019 15:59:54.2647
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NqkCFiIDEWdlL8VzUh6lLIm7nWTeTkUc/4a9zz+BozI83VSjwFCe7kA/JOmuFfZP4lZH3pX90WfknhRJHi6rmA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3453
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Since we have a dedicated Allwinner directory for crypto driver, move
-the sun4i-ss driver in it.
-
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- MAINTAINERS                                   |  6 -----
- drivers/crypto/Kconfig                        | 26 ------------------
- drivers/crypto/Makefile                       |  1 -
- drivers/crypto/allwinner/Kconfig              | 27 +++++++++++++++++++
- drivers/crypto/allwinner/Makefile             |  1 +
- .../{sunxi-ss => allwinner/sun4i-ss}/Makefile |  0
- .../sun4i-ss}/sun4i-ss-cipher.c               |  0
- .../sun4i-ss}/sun4i-ss-core.c                 |  0
- .../sun4i-ss}/sun4i-ss-hash.c                 |  0
- .../sun4i-ss}/sun4i-ss-prng.c                 |  0
- .../sun4i-ss}/sun4i-ss.h                      |  0
- 11 files changed, 28 insertions(+), 33 deletions(-)
- rename drivers/crypto/{sunxi-ss => allwinner/sun4i-ss}/Makefile (100%)
- rename drivers/crypto/{sunxi-ss => allwinner/sun4i-ss}/sun4i-ss-cipher.c (100%)
- rename drivers/crypto/{sunxi-ss => allwinner/sun4i-ss}/sun4i-ss-core.c (100%)
- rename drivers/crypto/{sunxi-ss => allwinner/sun4i-ss}/sun4i-ss-hash.c (100%)
- rename drivers/crypto/{sunxi-ss => allwinner/sun4i-ss}/sun4i-ss-prng.c (100%)
- rename drivers/crypto/{sunxi-ss => allwinner/sun4i-ss}/sun4i-ss.h (100%)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9153c02e1f63..2120c74f476a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -684,12 +684,6 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/opp/sun50i-nvmem-cpufreq.txt
- F:	drivers/cpufreq/sun50i-cpufreq-nvmem.c
- 
--ALLWINNER SECURITY SYSTEM
--M:	Corentin Labbe <clabbe.montjoie@gmail.com>
--L:	linux-crypto@vger.kernel.org
--S:	Maintained
--F:	drivers/crypto/sunxi-ss/
--
- ALLWINNER CRYPTO DRIVERS
- M:	Corentin Labbe <clabbe.montjoie@gmail.com>
- L:	linux-crypto@vger.kernel.org
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 610bb52d77d6..9f08ed72eae8 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -659,32 +659,6 @@ config CRYPTO_DEV_IMGTEC_HASH
- 	  hardware hash accelerator. Supporting MD5/SHA1/SHA224/SHA256
- 	  hashing algorithms.
- 
--config CRYPTO_DEV_SUN4I_SS
--	tristate "Support for Allwinner Security System cryptographic accelerator"
--	depends on ARCH_SUNXI && !64BIT
--	depends on PM
--	select CRYPTO_MD5
--	select CRYPTO_SHA1
--	select CRYPTO_AES
--	select CRYPTO_LIB_DES
--	select CRYPTO_BLKCIPHER
--	help
--	  Some Allwinner SoC have a crypto accelerator named
--	  Security System. Select this if you want to use it.
--	  The Security System handle AES/DES/3DES ciphers in CBC mode
--	  and SHA1 and MD5 hash algorithms.
--
--	  To compile this driver as a module, choose M here: the module
--	  will be called sun4i-ss.
--
--config CRYPTO_DEV_SUN4I_SS_PRNG
--	bool "Support for Allwinner Security System PRNG"
--	depends on CRYPTO_DEV_SUN4I_SS
--	select CRYPTO_RNG
--	help
--	  Select this option if you want to provide kernel-side support for
--	  the Pseudo-Random Number Generator found in the Security System.
--
- config CRYPTO_DEV_ROCKCHIP
- 	tristate "Rockchip's Cryptographic Engine driver"
- 	depends on OF && ARCH_ROCKCHIP
-diff --git a/drivers/crypto/Makefile b/drivers/crypto/Makefile
-index 90d60eff5ecc..79e2da4a51e4 100644
---- a/drivers/crypto/Makefile
-+++ b/drivers/crypto/Makefile
-@@ -40,7 +40,6 @@ obj-$(CONFIG_CRYPTO_DEV_ROCKCHIP) += rockchip/
- obj-$(CONFIG_CRYPTO_DEV_S5P) += s5p-sss.o
- obj-$(CONFIG_CRYPTO_DEV_SAHARA) += sahara.o
- obj-$(CONFIG_ARCH_STM32) += stm32/
--obj-$(CONFIG_CRYPTO_DEV_SUN4I_SS) += sunxi-ss/
- obj-$(CONFIG_CRYPTO_DEV_TALITOS) += talitos.o
- obj-$(CONFIG_CRYPTO_DEV_UX500) += ux500/
- obj-$(CONFIG_CRYPTO_DEV_VIRTIO) += virtio/
-diff --git a/drivers/crypto/allwinner/Kconfig b/drivers/crypto/allwinner/Kconfig
-index a3e5781fa95e..9c445973ca08 100644
---- a/drivers/crypto/allwinner/Kconfig
-+++ b/drivers/crypto/allwinner/Kconfig
-@@ -5,6 +5,33 @@ config CRYPTO_DEV_ALLWINNER
- 	help
- 	  Say Y here to get to see options for Allwinner hardware crypto devices
- 
-+config CRYPTO_DEV_SUN4I_SS
-+	tristate "Support for Allwinner Security System cryptographic accelerator"
-+	depends on ARCH_SUNXI && !64BIT
-+	depends on PM
-+	depends on CRYPTO_DEV_ALLWINNER
-+	select CRYPTO_MD5
-+	select CRYPTO_SHA1
-+	select CRYPTO_AES
-+	select CRYPTO_LIB_DES
-+	select CRYPTO_BLKCIPHER
-+	help
-+	  Some Allwinner SoC have a crypto accelerator named
-+	  Security System. Select this if you want to use it.
-+	  The Security System handle AES/DES/3DES ciphers in CBC mode
-+	  and SHA1 and MD5 hash algorithms.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called sun4i-ss.
-+
-+config CRYPTO_DEV_SUN4I_SS_PRNG
-+	bool "Support for Allwinner Security System PRNG"
-+	depends on CRYPTO_DEV_SUN4I_SS
-+	select CRYPTO_RNG
-+	help
-+	  Select this option if you want to provide kernel-side support for
-+	  the Pseudo-Random Number Generator found in the Security System.
-+
- config CRYPTO_DEV_SUN8I_CE
- 	tristate "Support for Allwinner Crypto Engine cryptographic offloader"
- 	select CRYPTO_BLKCIPHER
-diff --git a/drivers/crypto/allwinner/Makefile b/drivers/crypto/allwinner/Makefile
-index 11f02db9ee06..fdb720c5bcc7 100644
---- a/drivers/crypto/allwinner/Makefile
-+++ b/drivers/crypto/allwinner/Makefile
-@@ -1 +1,2 @@
-+obj-$(CONFIG_CRYPTO_DEV_SUN4I_SS) += sun4i-ss/
- obj-$(CONFIG_CRYPTO_DEV_SUN8I_CE) += sun8i-ce/
-diff --git a/drivers/crypto/sunxi-ss/Makefile b/drivers/crypto/allwinner/sun4i-ss/Makefile
-similarity index 100%
-rename from drivers/crypto/sunxi-ss/Makefile
-rename to drivers/crypto/allwinner/sun4i-ss/Makefile
-diff --git a/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-similarity index 100%
-rename from drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
-rename to drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-diff --git a/drivers/crypto/sunxi-ss/sun4i-ss-core.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-similarity index 100%
-rename from drivers/crypto/sunxi-ss/sun4i-ss-core.c
-rename to drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-diff --git a/drivers/crypto/sunxi-ss/sun4i-ss-hash.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-similarity index 100%
-rename from drivers/crypto/sunxi-ss/sun4i-ss-hash.c
-rename to drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-diff --git a/drivers/crypto/sunxi-ss/sun4i-ss-prng.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
-similarity index 100%
-rename from drivers/crypto/sunxi-ss/sun4i-ss-prng.c
-rename to drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
-diff --git a/drivers/crypto/sunxi-ss/sun4i-ss.h b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
-similarity index 100%
-rename from drivers/crypto/sunxi-ss/sun4i-ss.h
-rename to drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
--- 
-2.21.0
-
+On 10/14/2019 3:19 PM, Ard Biesheuvel wrote:=0A=
+> Commit 7a7ffe65c8c5 ("crypto: skcipher - Add top-level skcipher interface=
+")=0A=
+> dated 20 august 2015 introduced the new skcipher API which is supposed to=
+=0A=
+> replace both blkcipher and ablkcipher. While all consumers of the API hav=
+e=0A=
+> been converted long ago, some producers of the ablkcipher remain, forcing=
+=0A=
+> us to keep the ablkcipher support routines alive, along with the matching=
+=0A=
+> code to expose [a]blkciphers via the skcipher API.=0A=
+> =0A=
+> So switch this driver to the skcipher API, allowing us to finally drop th=
+e=0A=
+> blkcipher code in the near future.=0A=
+> =0A=
+> Cc: Shawn Guo <shawnguo@kernel.org>=0A=
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>=0A=
+> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>=0A=
+> Cc: Fabio Estevam <festevam@gmail.com>=0A=
+> Cc: NXP Linux Team <linux-imx@nxp.com>=0A=
+> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>=0A=
+Tested-by: Horia Geant=E3 <horia.geanta@nxp.com>=0A=
+=0A=
+Thanks,=0A=
+Horia=0A=
