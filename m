@@ -2,80 +2,77 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42696D9746
-	for <lists+linux-crypto@lfdr.de>; Wed, 16 Oct 2019 18:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018B9D9790
+	for <lists+linux-crypto@lfdr.de>; Wed, 16 Oct 2019 18:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393752AbfJPQ0r (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 16 Oct 2019 12:26:47 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:34481 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729156AbfJPQ0r (ORCPT
+        id S2405765AbfJPQiJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 16 Oct 2019 12:38:09 -0400
+Received: from mail-ua1-f66.google.com ([209.85.222.66]:35471 "EHLO
+        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404745AbfJPQiJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 16 Oct 2019 12:26:47 -0400
-Received: by mail-pg1-f194.google.com with SMTP id k20so7240827pgi.1
-        for <linux-crypto@vger.kernel.org>; Wed, 16 Oct 2019 09:26:45 -0700 (PDT)
+        Wed, 16 Oct 2019 12:38:09 -0400
+Received: by mail-ua1-f66.google.com with SMTP id n41so2989249uae.2
+        for <linux-crypto@vger.kernel.org>; Wed, 16 Oct 2019 09:38:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=2XIK6irSOUYOqaT55Cb2rTG7oY2nstdNhyuJ62jJp1w=;
-        b=LgzC5Cn/xPt2olUE60N4pEOt4RSI2ZpcK9ac3jR5QUoHjfZ6KopcgFKySrAzfqZTLK
-         xw/GP4Ayp98mwvf5lXiBtokVwF22c/go7Jq2fmAHO3+z/dfZ4UGj2h2lSPA4WPi3wTu5
-         kx2xY3EISo3KDeawhuE8CoFt6RS3ckhddrTpZUBfj85vPWLuQ5gjqKgIodSgMg2Z8UOE
-         QLXiWAtlZnMJukqaX13llRVWRA5GhM1++i+VT2hv2z7Jz1d1zTL4o+yZm0aV0tI5Dor3
-         5/Lm+xvgudiyUXI4Q4b3d+P6YU/hlFTOozKWQPwvl5Qs3pkxxAMSoh8rHBJCZr+G0LNL
-         AJnA==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=KPbcLzmN3JirQxcIsMNAPGvvWsFgMpVPgXZTiKQLiRk=;
+        b=YoqW6TGEpe64b8F55Xt9nHKo2+EUkvKEQ18HLsfxXJaS/xq+V5StSnV2E5bNIy9vPZ
+         +7pO54asETHMhE/oepoatX3/FA/+jDabXbtZxwxWopme8ZeCWCeABUSHgzGp/tKuPSBE
+         zk1pubsRbD2klvI+PDi9YwXra4qJv/yrT9P36tHtL0pER5pSjJ3YM2iDH79jTPM+QOS7
+         Ry9Fiq0NbF19K/5kzLiqtnEB9kxWtHBrGR4C+aYCykFe50tCX/kou//EUF5fCoIJ4mmL
+         ZPw6f7mBx8R5qs+Dz7a1B7fxK2ca6NZJBGfU2l7S/wbQDXx/ZxKAIfOmRhMEc8gutD9U
+         yBkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=2XIK6irSOUYOqaT55Cb2rTG7oY2nstdNhyuJ62jJp1w=;
-        b=JvqDCGZjpJX3T5UOAGj4jcIg5sHtEniq1d/FWrII25/jVnyFshQCaTNXv0bdnY8vIl
-         X8ORsB24VqpJgZaLATXyIp5gI5Aja7CJQBYVxfUxF5DedqKQe6qR88lP3GopUDEukak9
-         apqdtktIeLzaMxzg2s0N9wHWCmyIvQAVM5ZED5PbCFORr0LDXvF7FNXNV0NVY0ZbJrLH
-         /dPmjQ5br+tcKrD/T/rHJv2S0OghHtAQqsP8MkK+9a3HRI9aJHwpa4eHgHjJ1e20HRaG
-         vUF02d4eiJTQhRVw46CxE+qdkYbfw/9XXdF3capqW0biJj0TFPBdJ/ktqV0Sw2YX7exF
-         iRaw==
-X-Gm-Message-State: APjAAAUxS1zTzuCrjJXBUmGpGlsweMAcdF6YuMeHTd51ZpB23De3tzTL
-        xTRBWAdSPCOgAobrP0OHpzKFTQ==
-X-Google-Smtp-Source: APXvYqygm5XuOYj8EY825cN0gcWiXGpwZtxv9FetNVUXLKyxWccm3GGuLgq33/o/9nNMAg3YUL0DMw==
-X-Received: by 2002:a63:4705:: with SMTP id u5mr24757808pga.317.1571243205298;
-        Wed, 16 Oct 2019 09:26:45 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id c16sm3155360pja.2.2019.10.16.09.26.44
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Oct 2019 09:26:44 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     YueHaibing <yuehaibing@huawei.com>, herbert@gondor.apana.org.au,
-        mpm@selenic.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        ludovic.desroches@microchip.com, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, eric@anholt.net,
-        wahrenst@gmx.net, l.stelmach@samsung.com, kgene@kernel.org,
-        krzk@kernel.org, dsaxena@plexity.net, patrice.chotard@st.com
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: Re: [PATCH -next 06/13] hwrng: meson - use devm_platform_ioremap_resource() to simplify code
-In-Reply-To: <20191016104621.26056-7-yuehaibing@huawei.com>
-References: <20191016104621.26056-1-yuehaibing@huawei.com> <20191016104621.26056-7-yuehaibing@huawei.com>
-Date:   Wed, 16 Oct 2019 09:26:43 -0700
-Message-ID: <7h4l08hd18.fsf@baylibre.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=KPbcLzmN3JirQxcIsMNAPGvvWsFgMpVPgXZTiKQLiRk=;
+        b=RqBlUL89O6pCEIXQSYaWl5d41jQDnpm03aMD8l2z7IhjI6wyBPGMdn06xnzwLRWYXM
+         dVFtTQkK8eC4J0ieKs4lpMc+WPaSaZRScxNq2ZJyy+wTCxCxs+vm2OjVp6fIRyv4aNFq
+         UEoQ5cc9EC6mwolYVsa3etbjk5dcxZq9OrBYAY6q1wfClsegN8k6g5woedSPKKUIN0Ca
+         I/7pQPg4HgYrq2YhghPMqSJCAo2bpqufQB6cmB9f2zHnOH4Y6DU9yRcWGY3D7XefTluA
+         aFuLUXL1L8uMdt77vnR2C4hK0ZrNuGMIVBdJRxjnGAfWbVTnrO7L2eKhI8C8FiEwe3Vh
+         KYBw==
+X-Gm-Message-State: APjAAAUyKnsSqcx6K4XQhWoMoUE+H88kqGHc9u59lI8Fmeee2qW/rVsK
+        MxBwOFuy+oI3IlH/gLTV5ZPrYk+WurjysJXTyo8=
+X-Google-Smtp-Source: APXvYqx2tmqtx4qRp3FUcl+yH8hN42tbYdysRNLpUP/YDG5UA6snmzJJEovGhVmwUzLvhYML6lZ7uZYSwhZoMO7O4Qk=
+X-Received: by 2002:ab0:2044:: with SMTP id g4mr18490465ual.136.1571243888395;
+ Wed, 16 Oct 2019 09:38:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: by 2002:ab0:688a:0:0:0:0:0 with HTTP; Wed, 16 Oct 2019 09:38:07
+ -0700 (PDT)
+Reply-To: m.lirnalaboso@yandex.com
+From:   Mr TAPIOKA LORNALABOSO <oriakuowen1978@gmail.com>
+Date:   Wed, 16 Oct 2019 18:38:07 +0200
+Message-ID: <CACUyLgNssgRz=ge5y2GWT7t_a_Y+X5OLL+VFHDgcoBmoYxLaBQ@mail.gmail.com>
+Subject: very very urgent
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-YueHaibing <yuehaibing@huawei.com> writes:
+Iam Mr Taptoka Lornalaboso.
 
-> Use devm_platform_ioremap_resource() to simplify the code a bit.
-> This is detected by coccinelle.
->
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+I have a Geniue business transaction of 18.5 Million Us Dollars to do
+with You Hence You Co-operate with me I am assured you that within (7)
+seven banking working days, this said amount will enter your given
+Bank account with immediate alacrity. If you agree to my business
+proposal, further details of the transfer will be forwarded to you as
+soon as I receive your wiliness to join hand with me. Am awaiting your
+urgent response with this informations Name:...................
+Sex:...............
+Age:...................
+Occupation:........
+Address:...............
+Tel/ Fax:...............
+State:.............
+Country Of origin:..........
 
-Reviewed-by: Kevin Hilman <khilman@baylibre.com>
+You have to contact me through my private e-mail at
+(m.lirnalaboso@yandex.com)
+
+Have a nice day!!
