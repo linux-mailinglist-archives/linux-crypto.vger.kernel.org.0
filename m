@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 391C7D94CB
-	for <lists+linux-crypto@lfdr.de>; Wed, 16 Oct 2019 17:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B2CD94C1
+	for <lists+linux-crypto@lfdr.de>; Wed, 16 Oct 2019 17:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393082AbfJPPCP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 16 Oct 2019 11:02:15 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:50728 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388424AbfJPPBt (ORCPT
+        id S2404586AbfJPPCG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 16 Oct 2019 11:02:06 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:54007 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392684AbfJPPBv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 16 Oct 2019 11:01:49 -0400
-Received: by mail-wm1-f66.google.com with SMTP id 5so3313821wmg.0;
-        Wed, 16 Oct 2019 08:01:48 -0700 (PDT)
+        Wed, 16 Oct 2019 11:01:51 -0400
+Received: by mail-wm1-f67.google.com with SMTP id i16so3296547wmd.3;
+        Wed, 16 Oct 2019 08:01:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BlSNEKakkPz3qSacpRbF5fymVNSJO3OQiWGq/ZKj+yQ=;
-        b=GkCbdZxZSlrSuU1lMZlxTCRgfOho3FeWP9Qb8VexJMxSLiNn5QjHzSDGN78YTYZ6sY
-         HKcjigC+gPZxcNGwA+C9HVpZNGqNRCIMCliHH6+LLpJo/rYCco8kbNNcxtKNclmJCNxu
-         fUf3b1rOa5YFScI5y3mJyeStfmJbnwLf1KI3rznvtXKk6YpImbYcjFzIYeLQT88OVbjh
-         50Zmmg9bqWdU5PesiUkB+cQmqKOpb4PZ0VAV2BfqcJ9QC14Nbh0RaZYXqcoeQlIswlDI
-         fLh6Xsp8MlT7CWp0QWf9W2nfQP35hri/lFKjBDEY/3WM0nYcvgdZEeM7DfEa1s9BPBfG
-         //0w==
+        bh=44TuELDtNCusYZupj5B8B0t5vnjX1mlerc4abRfeM5Q=;
+        b=qAuaa7ZSjn0FhJ00uXag5V81k2j4Jd8wB3mlHyQMAOmseqw6EhNJ8BC2g7O+/gpJT0
+         AKHLSx/YhDsRflFs6PfgQ0DbQPo9jkyYQg7zMZ0eMTGS9WkCPvY774POUrzSJkebbp4Z
+         NmKFTj4ZFuku85+S/jOGzuoEZYoA2+nJ3i4lrs+uenKplwZ9WN3BcFpQLSZV5wX9pcZg
+         UWfDhZmF/MG4FqIGd64FhvJ8EMp2GNS+7+3FxYLPXOxa6EGjbxbAjChZU5+ZcWuuJaDK
+         YAaI6H5jMk7+hk6rb2Gzw6rMT4e5y6Z+2Lrs4KBWwyTX0PJQjj4u3nmgy4nMaLVa2JTE
+         4PTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BlSNEKakkPz3qSacpRbF5fymVNSJO3OQiWGq/ZKj+yQ=;
-        b=dCxLFPbLZVl+X/AHILEnw6DU/6ZpYgsUihGIyu8LyHeWL+SZc/dch/FEOFs0Xblzd7
-         C7iyRdP4WX7iYJ1R2PWUVMnmADcP2qnwe21o/NpF/EiZsL2h4+lpijmwAntbJLAnIyKZ
-         CeVV4DJHANH532lvZc+icwKuLB8Fs6YyYPLrEc0VLOdvuEuOg91V7CC/IcAukOK/6Srf
-         p5ZC0f6c+wvLi+W54zYzUE8h5r7vturNY+w0ra5yPVdcLhIx+QIznmL1/KhAHuJMizqc
-         getLXGWzJxAazhI5aFjfdFXan5OtPFY9PDMz8wUtXsVez2JAO3xjIovwCjynbHZR3E9L
-         cDFA==
-X-Gm-Message-State: APjAAAWnaL8yZ5odTiKd/SNmnWqU156dQ/vE0LfxmBHoQ2Xkr3wuPCDk
-        DRbEcJMe1pCNf5nM08HL2C4=
-X-Google-Smtp-Source: APXvYqyue6RFZDMQ83zyZKJMte1ssg/sfGhwzL3H+VaAWeAsF0+fICPVm1OXG4lzzdoLXx3jmhHPPA==
-X-Received: by 2002:a05:600c:2185:: with SMTP id e5mr3908701wme.78.1571238107027;
-        Wed, 16 Oct 2019 08:01:47 -0700 (PDT)
+        bh=44TuELDtNCusYZupj5B8B0t5vnjX1mlerc4abRfeM5Q=;
+        b=KA99nAaBVU3mveb6vtWR6WfBb6CQY4GTh0N+0HFZ+bOyYwOz1xksTWXQA6Y7I2hrF7
+         vu2+xnTCSP3ngsaEUi8KfIH5gLSsWzST8Ojpwpm0SWkd3domSvAiA91DcTBzhkTPzzsH
+         ss0lyp4k/X22pUd3Z97FM6lGY+a7JfcRI2uQp3/5A5KG1F3TRn3dzo/STv5f9124cQQQ
+         +O7FCpxFmBsetc7WGxcJgBAi4CIFoAnqDhyk7FWifi8LqZh7Y+v8vbuBBuFepGU/N6kH
+         9cN+QNkSpJ7TK/mSggZSYMJiUryPuIUpQ7N67QDtn7qwv3TRdvKIsPsF+8eeHzqb6GrO
+         DO6w==
+X-Gm-Message-State: APjAAAW5xRVyBVZmbU2qpvO6JyYseAm1ol9ZCNSfnhzdGbv7fBWBfey9
+        rztqObH6e9WEToCb8tdMEy4=
+X-Google-Smtp-Source: APXvYqyNHc0RjhVWHeqLrSGbq0CGiXXruOOIi8EuUr/Eh09bdBgr0c8S1gBOy4aPvU+bHsSf/Gguqg==
+X-Received: by 2002:a05:600c:22d7:: with SMTP id 23mr3765323wmg.31.1571238108577;
+        Wed, 16 Oct 2019 08:01:48 -0700 (PDT)
 Received: from Red.localdomain ([2a01:cb1d:147:7200:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id r18sm3215437wme.48.2019.10.16.08.01.45
+        by smtp.googlemail.com with ESMTPSA id r18sm3215437wme.48.2019.10.16.08.01.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Oct 2019 08:01:46 -0700 (PDT)
+        Wed, 16 Oct 2019 08:01:47 -0700 (PDT)
 From:   Corentin Labbe <clabbe.montjoie@gmail.com>
 To:     catalin.marinas@arm.com, davem@davemloft.net,
         herbert@gondor.apana.org.au, linux@armlinux.org.uk,
@@ -54,9 +54,9 @@ Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com,
         Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH v5 07/11] ARM64: dts: allwinner: sun50i: Add crypto engine node on H5
-Date:   Wed, 16 Oct 2019 17:01:27 +0200
-Message-Id: <20191016150131.15430-8-clabbe.montjoie@gmail.com>
+Subject: [PATCH v5 08/11] ARM64: dts: allwinner: sun50i: Add Crypto Engine node on H6
+Date:   Wed, 16 Oct 2019 17:01:28 +0200
+Message-Id: <20191016150131.15430-9-clabbe.montjoie@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191016150131.15430-1-clabbe.montjoie@gmail.com>
 References: <20191016150131.15430-1-clabbe.montjoie@gmail.com>
@@ -69,35 +69,34 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 The Crypto Engine is a hardware cryptographic accelerator that supports
 many algorithms.
-It could be found on most Allwinner SoCs.
 
-This patch enables the Crypto Engine on the Allwinner H5 SoC Device-tree.
+This patch enables the Crypto Engine on the Allwinner H6 SoC Device-tree.
 
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi | 9 +++++++++
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
-index f002a496d7cb..e92c4de5bf3b 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
-@@ -127,6 +127,15 @@
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+index 5d7ab540b950..89d09b441abc 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+@@ -149,6 +149,15 @@
  			allwinner,sram = <&ve_sram 1>;
  		};
  
-+		crypto: crypto@1c15000 {
-+			compatible = "allwinner,sun50i-h5-crypto";
-+			reg = <0x01c15000 0x1000>;
-+			interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CE>, <&ccu CLK_CE>;
-+			clock-names = "bus", "mod";
++		crypto: crypto@1904000 {
++			compatible = "allwinner,sun50i-h6-crypto";
++			reg = <0x01904000 0x1000>;
++			interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_CE>, <&ccu CLK_CE>, <&ccu CLK_MBUS_CE>;
++			clock-names = "bus", "mod", "ram";
 +			resets = <&ccu RST_BUS_CE>;
 +		};
 +
- 		mali: gpu@1e80000 {
- 			compatible = "allwinner,sun50i-h5-mali", "arm,mali-450";
- 			reg = <0x01e80000 0x30000>;
+ 		syscon: syscon@3000000 {
+ 			compatible = "allwinner,sun50i-h6-system-control",
+ 				     "allwinner,sun50i-a64-system-control";
 -- 
 2.21.0
 
