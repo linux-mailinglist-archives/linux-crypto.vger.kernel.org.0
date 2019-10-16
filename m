@@ -2,98 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE37D928E
-	for <lists+linux-crypto@lfdr.de>; Wed, 16 Oct 2019 15:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B76D92B5
+	for <lists+linux-crypto@lfdr.de>; Wed, 16 Oct 2019 15:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405435AbfJPNeA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 16 Oct 2019 09:34:00 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:38661 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405422AbfJPNeA (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 16 Oct 2019 09:34:00 -0400
-Received: by mail-wr1-f65.google.com with SMTP id y18so18651958wrn.5;
-        Wed, 16 Oct 2019 06:33:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dpe0zCbR3c1VkH/n1U/vOC6ekNORqcDkTSfYoQ4laf4=;
-        b=vfOKhkD/B4LEg6089Khw6AZt10guS5PRPkM3bMi0lgUqnTMUx0pI1R8LsienxZEMm2
-         E05kaPmoQtQvR2H7jKVnidLwW3Vejkt1ELE9yb6dTGA2vAXYEYNry0LWvHFcAA0NMpOv
-         k9G0Md+1zn8hR7VVE4Uz7lwin5Z9FyvKKqdFUOnLGNqjbls1aQdFZSeEunuMxh26BU81
-         QtFKBERwt2fYrJOFrRPVY3TP6wi6aJ4kvsqpXHpYY4+AV4mzKPJkNxdtZSnIoibCMRuB
-         E5ylZ26gQET4N1EgAmHkHImIdXAjm+dZYd0rRiSNOvxBD/pevTw0thJR010OqXlc0IAd
-         tDtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dpe0zCbR3c1VkH/n1U/vOC6ekNORqcDkTSfYoQ4laf4=;
-        b=Gs5rQOZNvDDaxWPHN1bf00MJnr/soXR0S6uvw7Ed5VjOUDB4ZXQKo4gb9nuc1YkWHZ
-         awZ1J9EaulnseL+ia7ePpLtWRqpHs3g3hI6ORLwr+zHZgR81m6FSmDILEtOug1Llqeec
-         k2nnnvQBZ+9mZd/N3O5phjYHvF30wiAVDHbSz7rQxyJlqcWlzHOR95nZzecZ+hYZ0VO+
-         JFlqloyw1wG7DVB/QHjqAGSMuZX9EOFwmSGRyK908BSbkYqmyJkgefhez+puq1PNqQ8V
-         ipUL9EReZuVJSV8BvG24QqVLGirTYDhgBPAY0yvvI9sjN3A25mfZwkWV8L3poAG7UBWH
-         yxEw==
-X-Gm-Message-State: APjAAAW/7DjDzuMnIJwGGARNdb+ogjdisiHu+erzA8jnUHA8omImknLu
-        6IVVoAIYe9mXBV7bhLisbC0=
-X-Google-Smtp-Source: APXvYqxz+OWi0tp3OSsbB23tWAXSlMcqgwlRvvpcPVUGZGYuP9JlM3ADHjooxy1QYXOvh/7QHnqaEQ==
-X-Received: by 2002:a5d:5011:: with SMTP id e17mr2790378wrt.160.1571232835526;
-        Wed, 16 Oct 2019 06:33:55 -0700 (PDT)
-Received: from Red.localdomain ([2a01:cb1d:147:7200:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id h17sm3139998wme.6.2019.10.16.06.33.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Oct 2019 06:33:54 -0700 (PDT)
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        mark.rutland@arm.com, mripard@kernel.org, robh+dt@kernel.org,
-        wens@csie.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S2391969AbfJPNji (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 16 Oct 2019 09:39:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391938AbfJPNji (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 16 Oct 2019 09:39:38 -0400
+Received: from localhost (lfbn-1-10718-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75D5D2168B;
+        Wed, 16 Oct 2019 13:39:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1571233178;
+        bh=dDExEC2557cmtq3X/4XRJPOkG/r/cnDMPOGXwrWXLoM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L+FbZCkdkd9GpK7nEZefieerlnRs7S6ZXE6J7iRlAmUzCy5s6bxANCkhxRUWZGaKI
+         sBeLWzxWO4IglbGp0fJVwJQB3DSlTbZ+iVw1IhX0xQvB+Uno4HRiWKjmkaYR9jpDX0
+         yX5gKWGo/5MvUHFZt7/oeBJu1lkFh0OKHV7dWFbY=
+Date:   Wed, 16 Oct 2019 15:39:35 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mark.rutland@arm.com, robh+dt@kernel.org, wens@csie.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH 4/4] ARM: dts: sun9i: a80: Add Security System node
-Date:   Wed, 16 Oct 2019 15:33:45 +0200
-Message-Id: <20191016133345.9076-5-clabbe.montjoie@gmail.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191016133345.9076-1-clabbe.montjoie@gmail.com>
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 0/4] crypto: add sun8i-ss driver for Allwinner Security
+ System
+Message-ID: <20191016133935.e67kevjyugxn5rki@gilmour>
 References: <20191016133345.9076-1-clabbe.montjoie@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191016133345.9076-1-clabbe.montjoie@gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patchs the node for sun8i-ss which is availlable on the A80.
+On Wed, Oct 16, 2019 at 03:33:41PM +0200, Corentin Labbe wrote:
+> Hello
+>
+> This patch serie adds support for the second version of Allwinner Security System.
+> The first generation of the Security System is already handled by the sun4i-ss driver.
+> Due to major change, the first driver cannot handle the second one.
+> This new Security System is present on A80 and A83T SoCs.
+>
+> For the moment, the driver support only DES3/AES in ECB/CBC mode.
+> Patchs for CTR/CTS, RSA and RNGs will came later.
+>
+> This serie is tested with CRYPTO_MANAGER_EXTRA_TESTS
+> and tested on:
+> sun8i-a83t-bananapi-m3
+> sun9i-a80-cubieboard4
+>
+> This serie is based on top of the "crypto: add sun8i-ce driver for
+> Allwinner crypto engine" serie.
 
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- arch/arm/boot/dts/sun9i-a80.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+For the crypto part,
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
-diff --git a/arch/arm/boot/dts/sun9i-a80.dtsi b/arch/arm/boot/dts/sun9i-a80.dtsi
-index b9b6fb00be28..d7498a1a158e 100644
---- a/arch/arm/boot/dts/sun9i-a80.dtsi
-+++ b/arch/arm/boot/dts/sun9i-a80.dtsi
-@@ -457,6 +457,16 @@
- 			reg = <0x01700000 0x100>;
- 		};
- 
-+		crypto: crypto@1c02000 {
-+			compatible = "allwinner,sun9i-a80-crypto";
-+			reg = <0x01c02000 0x1000>;
-+			interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
-+			resets = <&ccu RST_BUS_SS>;
-+			reset-names = "bus";
-+			clocks = <&ccu CLK_BUS_SS>, <&ccu CLK_SS>;
-+			clock-names = "bus", "mod";
-+		};
-+
- 		mmc0: mmc@1c0f000 {
- 			compatible = "allwinner,sun9i-a80-mmc";
- 			reg = <0x01c0f000 0x1000>;
--- 
-2.21.0
+I'll apply patches 3 and 4 once Herbert will have merged the patches 1 and 2
 
+Thanks!
+Maxime
