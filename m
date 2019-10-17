@@ -2,102 +2,62 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF6DDC598
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Oct 2019 15:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A08DC627
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Oct 2019 15:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410147AbfJRNAY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Oct 2019 09:00:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44458 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2410136AbfJRNAY (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Oct 2019 09:00:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 56EC6AEF6;
-        Fri, 18 Oct 2019 13:00:22 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BD3FEDA785; Fri, 18 Oct 2019 15:00:36 +0200 (CEST)
-Date:   Fri, 18 Oct 2019 15:00:36 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc:     David Sterba <dsterba@suse.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>, Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v5 2/2] crypto: add test vectors for blake2b
-Message-ID: <20191018130036.GC3001@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        David Sterba <dsterba@suse.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" <linux-crypto@vger.kernel.org>,
-        Eric Biggers <ebiggers@google.com>
-References: <cover.1571043883.git.dsterba@suse.com>
- <a4e3e9db53b01c4092309a75e5b5d703ed344c5a.1571043883.git.dsterba@suse.com>
- <CAKv+Gu8m+CkrWj6fZi4XtEbpcDTM=d8HNS=9A5piJD8v41B-HQ@mail.gmail.com>
+        id S2393700AbfJRNea (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Oct 2019 09:34:30 -0400
+Received: from mail.keramplus.com ([212.3.124.226]:15590 "EHLO
+        trixbox1.localdomain" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730379AbfJRNea (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 18 Oct 2019 09:34:30 -0400
+Received: from 127.0.0.1 (trixbox1.localdomain [127.0.0.1])
+        by trixbox1.localdomain (Postfix) with SMTP id A59D5A2B7E4;
+        Fri, 18 Oct 2019 01:10:05 +0300 (EEST)
+Received: from (HELO ek8m) [152.107.137.128] by 127.0.0.1 id hQ6K1zj04hdc; Thu, 17 Oct 2019 17:08:21 -0600
+Message-ID: <h61n$dke-eh76n@nw1k.0.t.4dp9>
+From:   "Mr Barrister Hans Erich" <Barrister_Hans@stationlibraryjhelum.com>
+Reply-To: "Mr Barrister Hans Erich" <Barrister_Hans@stationlibraryjhelum.com>
+To:     cake@brothercake.net
+Subject: RE:PERSONAL LETTER FROM MRS RASHIA AMIRA
+Date:   Thu, 17 Oct 19 17:08:21 GMT
+X-Mailer: Microsoft Outlook IMO, Build 9.0.2416 (9.0.2910.0)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKv+Gu8m+CkrWj6fZi4XtEbpcDTM=d8HNS=9A5piJD8v41B-HQ@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: multipart/alternative;
+        boundary="_D6C4C62.49.."
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Oct 17, 2019 at 12:22:57PM +0200, Ard Biesheuvel wrote:
-> On Mon, 14 Oct 2019 at 11:17, David Sterba <dsterba@suse.com> wrote:
-> >
-> > Test vectors for blake2b with various digest sizes. As the algorithm is
-> > the same up to the digest calculation, the key and input data length is
-> > distributed in a way that tests all combinanions of the two over the
-> > digest sizes.
-> >
-> > Based on the suggestion from Eric, the following input sizes are tested
-> > [0, 1, 7, 15, 64, 247, 256], where blake2b blocksize is 128, so the
-> > padded and the non-padded input buffers are tested.
-> >
-> >           blake2b-160  blake2b-256  blake2b-384  blake2b-512
-> >          ---------------------------------------------------
-> > len=0   | klen=0       klen=1       klen=32      klen=64
-> > len=1   | klen=32      klen=64      klen=0       klen=1
-> > len=7   | klen=64      klen=0       klen=1       klen=32
-> > len=15  | klen=1       klen=32      klen=64      klen=0
-> > len=64  | klen=0       klen=1       klen=32      klen=64
-> > len=247 | klen=32      klen=64      klen=0       klen=1
-> > len=256 | klen=64      klen=0       klen=1       klen=32
-> >
-> 
-> I don't think your vectors match this table. It looks to me that you
-> used the first column for all of them?
 
-You're right, the script that generated each digest picked the key/len
-sequence from the beginning and I did not catch that, sorry.
+--_D6C4C62.49..
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-> > +               .plaintext =
-> > +                       "\x00\x01\x02\x03\x04\x05\x06\x07"
-> > +                       "\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f"
-> > +                       "\x10\x11\x12\x13\x14\x15\x16\x17"
-> > +                       "\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"
-> > +                       "\x20\x21\x22\x23\x24\x25\x26\x27"
-> > +                       "\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f"
-> > +                       "\x30\x31\x32\x33\x34\x35\x36\x37"
-> > +                       "\x38\x39\x3a\x3b\x3c\x3d\x3e\x3f",
-> 
-> Given the number of occurrences of this sequence, I suggest we break
-> it out of this data structure, i.e.,
-> 
-> static const char blake2s_ordered_sequence[256] = {
->   ...
-> };
-> 
-> and use
-> 
-> .plaintext = blake2s_ordered_sequence
-> 
-> here, and in all other places where the entire sequence or part of it
-> is being used.
-> 
-> I'm adopting this approach for my Blake2s tests as well - I'll cc you
-> on those patches.
+Greetings
 
-That's a great simplification, I'll do the same then.
+My name is Barrister Hans Erich.
+
+I have a client who is interested to invest in your country, she is a well=
+ known politician in her country and deserve a lucrative investment partne=
+rship with you outside her country without any delay   Please can you mana=
+ge such investment please Kindly reply for further details.
+
+Your full names ---------
+
+
+Your urgent response will be appreciated
+
+Thank you and God bless you.
+
+Barrister Hans Erich
+
+Yours sincerely,
+Barrister Hans Erich
+
+--_D6C4C62.49..--
+
