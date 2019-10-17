@@ -2,94 +2,104 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8FBDA4ED
-	for <lists+linux-crypto@lfdr.de>; Thu, 17 Oct 2019 07:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CFEDA558
+	for <lists+linux-crypto@lfdr.de>; Thu, 17 Oct 2019 08:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391749AbfJQFGt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 17 Oct 2019 01:06:49 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:51993 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726394AbfJQFGt (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 17 Oct 2019 01:06:49 -0400
-Received: by mail-wm1-f66.google.com with SMTP id 7so1045215wme.1
-        for <linux-crypto@vger.kernel.org>; Wed, 16 Oct 2019 22:06:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=pg/p3AMzyR1Wsfbjwo4TUDBEOFDuNcbzBHUL3mVG5Co=;
-        b=2KerGRiawXAcoyU5jZdb0jN3uqQDas6YiYGKblTYiUv++5sGE29UBHO37R2wOlCCtZ
-         jm1ojMM6n32rM3pie09wLOogX4O0RXkPAqYFEDq6Uwk7xGsNnKtXMEbEaJPyciOPDJND
-         tYsluIbhk8k8oFJfwp/k559K1UhuRvKzW2iAXiMW2xfoTimq2EmUZkDpv5jcd/ESQBsI
-         dyxBBN/Xzn6VbtVb8JwD6msoz9CztW1MENjN5mqpPYYGyNE7MtrEQplHxhir+wpTzWFx
-         ZM60i8qRFCWqArLQvGrg6FS4WWepa6fq1oHCZUmUVEJ3eV01qR5DvKFbf+i+LKU1gQOx
-         qSTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=pg/p3AMzyR1Wsfbjwo4TUDBEOFDuNcbzBHUL3mVG5Co=;
-        b=T0+XN1YH6bZ16YB2mbbMXwirERnVcYEacYkFurbunPTO9RBynxI6M6sdm86+u/4hME
-         V7mb19WdlH2ncpLwFNnrvylQmkTqe+Ngc5omg3iWEYSlQtRBQGezLdedB8cnVjui7sTD
-         NjYKPn7LMuey2ywRQx26aSKpuRnsvWjm0DBGEBvQ+SyiexAZ45EtMvAABsLz+K2Fyec0
-         MS7NpiCAMb4e+4kOi3MlZ49ZnQSycycJ0uH+fBQK8sdyguERHqSHO94L4ONk8h2rYKJp
-         Q2klmAA0TyRZguBeuCGNOVrSETPei/iOTJsqFcMqCnIlIE+SdlkRdMpYz1n/tJnNC0/p
-         YAww==
-X-Gm-Message-State: APjAAAVAY4Bdbw6TyoFJAtu1NJrQfSD5fnNK/6Y0axov8DohU2t+Syxf
-        pW4GkdLeDhN61xUmgpGz6osbTA==
-X-Google-Smtp-Source: APXvYqwsyi5V+5cR6/K2hgajkrfncw2TMPjLW5hIO9IlryAJhwY0DliIR8XdvOONvx2HmfA/ssyQXg==
-X-Received: by 2002:a7b:ce89:: with SMTP id q9mr1071924wmj.2.1571288806246;
-        Wed, 16 Oct 2019 22:06:46 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id b5sm1010762wmj.18.2019.10.16.22.06.45
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 16 Oct 2019 22:06:45 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        khilman@baylibre.com, mark.rutland@arm.com, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v3 4/4] ARM64: dts: amlogic: adds crypto hardware node
-Date:   Thu, 17 Oct 2019 05:06:26 +0000
-Message-Id: <1571288786-34601-5-git-send-email-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1571288786-34601-1-git-send-email-clabbe@baylibre.com>
-References: <1571288786-34601-1-git-send-email-clabbe@baylibre.com>
+        id S2392543AbfJQGNF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 17 Oct 2019 02:13:05 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:53390 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390377AbfJQGNF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 17 Oct 2019 02:13:05 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 8F22C6C241B7173D4BA4;
+        Thu, 17 Oct 2019 14:13:03 +0800 (CST)
+Received: from [127.0.0.1] (10.63.139.185) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.439.0; Thu, 17 Oct 2019
+ 14:12:55 +0800
+Subject: Re: [PATCH] crypto: zlib-deflate - add zlib-deflate test case in
+ tcrypt
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+References: <1570695707-46528-1-git-send-email-wangzhou1@hisilicon.com>
+CC:     <linux-crypto@vger.kernel.org>, <linuxarm@huawei.com>
+From:   Zhou Wang <wangzhou1@hisilicon.com>
+Message-ID: <5DA80666.5020504@hisilicon.com>
+Date:   Thu, 17 Oct 2019 14:12:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.5.1
+MIME-Version: 1.0
+In-Reply-To: <1570695707-46528-1-git-send-email-wangzhou1@hisilicon.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.63.139.185]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds the GXL crypto hardware node for all GXL SoCs.
+On 2019/10/10 16:21, Zhou Wang wrote:
+> As a type CRYPTO_ALG_TYPE_ACOMPRESS is needed to trigger crypto acomp test,
+> we introduce a new help function tcrypto_test_extend to pass type and mask
+> to alg_test.
+> 
+> Then tcrypto module can be used to do basic acomp test by:
+> insmod tcrypto.ko alg="zlib-deflate" mode=55 type=10
+> 
+> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
+> ---
+>  crypto/tcrypt.c | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
+> index 83ad0b1..6ad821c 100644
+> --- a/crypto/tcrypt.c
+> +++ b/crypto/tcrypt.c
+> @@ -72,7 +72,7 @@ static char *check[] = {
+>  	"khazad", "wp512", "wp384", "wp256", "tnepres", "xeta",  "fcrypt",
+>  	"camellia", "seed", "salsa20", "rmd128", "rmd160", "rmd256", "rmd320",
+>  	"lzo", "lzo-rle", "cts", "sha3-224", "sha3-256", "sha3-384",
+> -	"sha3-512", "streebog256", "streebog512",
+> +	"sha3-512", "streebog256", "streebog512", "zlib-deflate",
+>  	NULL
+>  };
+>  
+> @@ -1657,6 +1657,19 @@ static inline int tcrypt_test(const char *alg)
+>  	return ret;
+>  }
+>  
+> +static inline int tcrypt_test_extend(const char *alg, u32 type, u32 mask)
+> +{
+> +	int ret;
+> +
+> +	pr_debug("testing %s\n", alg);
+> +
+> +	ret = alg_test(alg, alg, type, mask);
+> +	/* non-fips algs return -EINVAL in fips mode */
+> +	if (fips_enabled && ret == -EINVAL)
+> +		ret = 0;
+> +	return ret;
+> +}
+> +
+>  static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
+>  {
+>  	int i;
+> @@ -1919,6 +1932,10 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
+>  		ret += tcrypt_test("streebog512");
+>  		break;
+>  
+> +	case 55:
+> +		ret += tcrypt_test_extend("zlib-deflate", type, mask);
+> +		break;
+> +
+>  	case 100:
+>  		ret += tcrypt_test("hmac(md5)");
+>  		break;
+> 
 
-Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- arch/arm64/boot/dts/amlogic/meson-gxl.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Any feedback about this patch?
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
-index 49ff0a7d0210..ed33d8efaf62 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxl.dtsi
-@@ -36,6 +36,16 @@
- 				phys = <&usb3_phy>, <&usb2_phy0>, <&usb2_phy1>;
- 			};
- 		};
-+
-+		crypto: crypto@c883e000 {
-+			compatible = "amlogic,gxl-crypto";
-+			reg = <0x0 0xc883e000 0x0 0x36>;
-+			interrupts = <GIC_SPI 188 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 189 IRQ_TYPE_EDGE_RISING>;
-+			clocks = <&clkc CLKID_BLKMV>;
-+			clock-names = "blkmv";
-+			status = "okay";
-+		};
- 	};
- };
- 
--- 
-2.21.0
+Best,
+Zhou
 
