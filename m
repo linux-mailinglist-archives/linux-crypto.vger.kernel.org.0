@@ -2,365 +2,211 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7055DB705
-	for <lists+linux-crypto@lfdr.de>; Thu, 17 Oct 2019 21:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC29CDB7F9
+	for <lists+linux-crypto@lfdr.de>; Thu, 17 Oct 2019 21:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729093AbfJQTK7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 17 Oct 2019 15:10:59 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38894 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503411AbfJQTK7 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 17 Oct 2019 15:10:59 -0400
-Received: by mail-wr1-f66.google.com with SMTP id o15so3166016wru.5
-        for <linux-crypto@vger.kernel.org>; Thu, 17 Oct 2019 12:10:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ptVEPi1+21330fzygKJEswMpXlPGXyeoY6xDdlb4XMc=;
-        b=LSCwiA1X7A3/4IlgSJblWtvq/TVWbO0qnWZNuXog3yyD5W/+klYKEBOhLGcVKfg9uL
-         fGijP/P+eR7du5rcz7/y/P8uU2bpPF4R17YPqApZkskXuRN9VKAgdXdkq6dWokiO3Gdi
-         oOva70Z34bxN8ZBL7ofnsGXxnnC0RsIFEDNA45dOCA8YjzNRZj5YJh59i/dpxNit0Tla
-         WZ1kYvcov70/a60YzGeYDnLkSP5+LmQYlP4bKG8564Xg068SlAqPh/qx++fbje41YosO
-         xdSMeBDvlA3UfAiJv2Yjjkuu2F0vT712Kq+tEQEQyV4vuHua8lqRSxbG7cBtqFaV7qaL
-         sFvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ptVEPi1+21330fzygKJEswMpXlPGXyeoY6xDdlb4XMc=;
-        b=fpKw/KSkAcFBliNyD2E+YcyKfMEuJ4Yc1geP48Agf7ej5BJSaLRvWxavUaZSk9MtqF
-         oVGhduSwiqJhJ9OFXHT3m6ZiZ3vLUnNvVzmmEjKuPlkRSUjTYf/cvNRMcJksTlmMVE3d
-         jdHqoyxwcp3DCYjdXQnILlU63E4n+kaOUQsv9aAP/R/9z2caLbsVlfAeAQpvtPwaomNs
-         RZbe5QOM9IZ+1CXnIFyuHwdUNXGru+COEq2AvCmHwKykqySGn8hgXURP9etKVIWWsBKy
-         0EftyOBrtzCgLxAwd7F1cTuC+YvV2KrvBqn0T2I/w6cCEE3ThHPJIRKeleg8G2cAwQOf
-         A3nA==
-X-Gm-Message-State: APjAAAUYrphDRTPYK/pg+xmqE5uKxVkzRuj7lAwybfkBzafwMJkDCKE3
-        DT6+6WGVFcmnTUks545dKUoJSOEjtBEy0fTg
-X-Google-Smtp-Source: APXvYqyxw3a5Z4oXXr6FbUY95Bvct4Q0Oq34d41aDll9EWuIHC20j9eIlQ4XCKKrrMLpcW7B0p5qaA==
-X-Received: by 2002:a5d:5408:: with SMTP id g8mr4275612wrv.202.1571339454647;
-        Thu, 17 Oct 2019 12:10:54 -0700 (PDT)
-Received: from sudo.home ([2a01:cb1d:112:6f00:ccb6:e9d4:c1bc:d107])
-        by smtp.gmail.com with ESMTPSA id y3sm5124528wro.36.2019.10.17.12.10.53
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Oct 2019 12:10:53 -0700 (PDT)
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        id S2440541AbfJQTq1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 17 Oct 2019 15:46:27 -0400
+Received: from mail-eopbgr720085.outbound.protection.outlook.com ([40.107.72.85]:55474
+        "EHLO NAM05-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387813AbfJQTq1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 17 Oct 2019 15:46:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PIss7AYQLZMIVO0LcKS14980i/WfEsUKexRlnkm0wv0o8UaAfW/G05dUDjRvF8wALVmMtsXwECmOH6PUQ7879WsQj6TeTqr+E80fFwKtEWWLK3Kg+fjb1jSnLixS7Fh43QXNx9Ad5BpEiRLPEJPCdRhkl7x6aemc3ybjBvCmH9ox05KRZiMc4FDIO36xZ4J0LHzHBYo/zVlo1ypoEB1CnJT5+bEcfqEevHk6j7XGO05wuBnsPSf7r2KQPMp73ebLvq2q1rYQ9QeToA+L6Kbz6tx3/Q1/ad051ea+YRc8VV4Jd+Ne0KGTIOlaE9R3EDPCpvw6yygIIuHFVhJYBc6L9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZMRL204//eSw8H5dDzYGDxtWXbvYm1u29QntHYqTg8Q=;
+ b=hvTtFFW+mEYv4J4+w1FEes5wCA+LYUj2rkjddt3VuvKeY8Hwb+x1oin8GUGSYXpECePdJV4KssjYeM7GdW8pxbWfVfAgovAagCHXzl++91ZrqertdDs50O/ZmaRjKr70O8iNIuOUiJCT4VEp0Zeb0tK5VhZRnZJXBW6Fu3ae1MSA6rpk6ZenvGyrT+6WaTsZ7TraJRIYj8zxwsspW2tYgQUmRtVXejOfWR0nf6isFE89l0iAA9vbjyQtzOcbRm1L8sCPObKypFuQU8eY8xsDJdPmlsMu6o3xhQgmyEOweEVbZsdnUqIQWFkcq6d6MbUEL4CyYQqBf4gAVXEgVP4yag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=verimatrix.com; dmarc=pass action=none
+ header.from=verimatrix.com; dkim=pass header.d=verimatrix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=verimatrix.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZMRL204//eSw8H5dDzYGDxtWXbvYm1u29QntHYqTg8Q=;
+ b=RlcreHUYLPiC4gRtpy8Aux08WUCWSJQeH61ino+dggn3m20JOnhxRcuhjEX0ILBIH0SYaeOKIHPGS+onGwaZogrNKdvlQUVoqZ6vGwJWBh0FPvPp7jHVLneWn9zVfwKiZJva+D6D9NZ8ZxlPVBxIy2s2BA9lKQD7CXAHnXixzUY=
+Received: from MN2PR20MB2973.namprd20.prod.outlook.com (52.132.172.86) by
+ MN2PR20MB2639.namprd20.prod.outlook.com (20.178.251.31) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.23; Thu, 17 Oct 2019 19:46:23 +0000
+Received: from MN2PR20MB2973.namprd20.prod.outlook.com
+ ([fe80::b986:4f02:3206:31e4]) by MN2PR20MB2973.namprd20.prod.outlook.com
+ ([fe80::b986:4f02:3206:31e4%7]) with mapi id 15.20.2347.023; Thu, 17 Oct 2019
+ 19:46:23 +0000
+From:   Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
+To:     "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
+        "linux-kernel@lists.codethink.co.uk" 
+        <linux-kernel@lists.codethink.co.uk>
+CC:     Antoine Tenart <antoine.tenart@bootlin.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        David Miller <davem@davemloft.net>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Samuel Neves <sneves@dei.uc.pt>, Arnd Bergmann <arnd@arndb.de>,
-        Eric Biggers <ebiggers@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Martin Willi <martin@strongswan.org>,
-        Rene van Dorst <opensource@vdorst.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH v4 35/35] crypto: lib/chacha20poly1305 - reimplement crypt_from_sg() routine
-Date:   Thu, 17 Oct 2019 21:09:32 +0200
-Message-Id: <20191017190932.1947-36-ard.biesheuvel@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191017190932.1947-1-ard.biesheuvel@linaro.org>
-References: <20191017190932.1947-1-ard.biesheuvel@linaro.org>
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] crypto: inside-secure - fix type of buffer in
+ eip197_write_firmware
+Thread-Topic: [PATCH] crypto: inside-secure - fix type of buffer in
+ eip197_write_firmware
+Thread-Index: AQHVhBfWMp/OQ1W3YkiqzB+SEDRBb6dfDogAgAAvRhA=
+Date:   Thu, 17 Oct 2019 19:46:21 +0000
+Message-ID: <MN2PR20MB2973592C6237B840BC63B71ACA6D0@MN2PR20MB2973.namprd20.prod.outlook.com>
+References: <20191016114945.30451-1-ben.dooks@codethink.co.uk> 
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=pvanleeuwen@verimatrix.com; 
+x-originating-ip: [188.204.2.113]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: dc2b18a1-3102-40a9-92a0-08d7533ab08e
+x-ms-traffictypediagnostic: MN2PR20MB2639:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <MN2PR20MB263972D9F8F19424C89158EFCA6D0@MN2PR20MB2639.namprd20.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:260;
+x-forefront-prvs: 01930B2BA8
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(39850400004)(396003)(346002)(136003)(366004)(13464003)(189003)(199004)(3846002)(6116002)(81166006)(14454004)(476003)(81156014)(8936002)(25786009)(8676002)(55016002)(446003)(71190400001)(9686003)(14444005)(256004)(6436002)(33656002)(71200400001)(2501003)(52536014)(478600001)(486006)(316002)(66066001)(305945005)(7736002)(229853002)(15974865002)(4326008)(64756008)(66946007)(2906002)(186003)(74316002)(76116006)(66476007)(54906003)(86362001)(66556008)(5660300002)(66446008)(110136005)(26005)(53546011)(6506007)(102836004)(76176011)(7696005)(6246003)(99286004)(18886075002);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR20MB2639;H:MN2PR20MB2973.namprd20.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: verimatrix.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PUEni7NPqFamYko+ExhLNjhmQp6orsX7NxSHw89ZfAzEmVHOTSsf06O8Uh1XvzBv0qkuVRWbIf3AYMhPnTUjj9KUGm32Uvlm5znrvyyzzJyrg1L/BJkmgihqYAcJQNoE3glpbjFtY7l5x4SBg9PbVF5Y3VW+ikKngOFtuyhrT0ZxSWspfReTCOYzJ0RD8nB83HZXIWu/y9bPPp2et7o0aBQ17vnlVvppmnqjZHvoLJb2k9mOqFOQtaEwXrtoJF/4b8lkIbbjZHr0gOmUnTd4opursWfmqWUxmb3LcQwQfnRjWycCTh3fpCVA/K5ZuJSlI+OJW3qRTP4u6MetR4TDFNtH5SZPE3zudFe2PRnQlUIAQOJQf/InXrXc8idLJaRPdIl1QprInJ5sNAB4v+RfCV1HI+EhTrLDNzesrUD0jnI=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: verimatrix.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc2b18a1-3102-40a9-92a0-08d7533ab08e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Oct 2019 19:46:22.5250
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: dcb260f9-022d-4495-8602-eae51035a0d0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AygHh9atVGNV3UOdDiX8dmTHLUuiy+Ukvyj9hUNcbcZExW0c/Z8w84UgnZbb8I/61drJicO+Wuq7SxBBqvyW3jXcJVO6ilQp5i5FMtBoKBI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR20MB2639
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Reimplement the library routines to perform chacha20poly1305 en/decryption
-on scatterlists, without [ab]using the [deprecated] blkcipher interface,
-which is rather heavyweight and does things we don't really need.
+> -----Original Message-----
+> From: Pascal Van Leeuwen
+> Sent: Thursday, October 17, 2019 7:14 PM
+> To: 'Ben Dooks (Codethink)' <ben.dooks@codethink.co.uk>; linux-
+> kernel@lists.codethink.co.uk
+> Cc: Antoine Tenart <antoine.tenart@bootlin.com>; Herbert Xu
+> <herbert@gondor.apana.org.au>; David S. Miller <davem@davemloft.net>; lin=
+ux-
+> crypto@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: RE: [PATCH] crypto: inside-secure - fix type of buffer in eip197=
+_write_firmware
+>=20
+> > -----Original Message-----
+> > From: linux-crypto-owner@vger.kernel.org <linux-crypto-owner@vger.kerne=
+l.org> On Behalf
+> Of Ben
+> > Dooks (Codethink)
+> > Sent: Wednesday, October 16, 2019 1:50 PM
+> > To: linux-kernel@lists.codethink.co.uk
+> > Cc: Ben Dooks (Codethink) <ben.dooks@codethink.co.uk>; Antoine Tenart
+> > <antoine.tenart@bootlin.com>; Herbert Xu <herbert@gondor.apana.org.au>;=
+ David S. Miller
+> > <davem@davemloft.net>; linux-crypto@vger.kernel.org; linux-kernel@vger.=
+kernel.org
+> > Subject: [PATCH] crypto: inside-secure - fix type of buffer in eip197_w=
+rite_firmware
+> >
+> > In eip197_write_firmware() the firmware buffer is sent using
+> > writel(be32_to_cpu(),,,) this produces a number of warnings.
+> >
+> > Note, should this really be cpu_to_be32()  ?
+> >
+> No, it should certainly not be cpu_to_be32() since the HW itself is most
+> definitely little endian, so that would not make sense to me.
+>=20
+> Actually, I don't think either solution would be correct on a big-endian
+> CPU. But I don't have any big-endian CPU available to test that theory.
+>=20
+> What I believe must happen is that the bytes must *always* be swapped
+> here, regardless of the endianness of the CPU. And with a little-endian
+> CPU, be32_to_cpu() coincidentally always does that.
+>=20
+> Basically, what we need here is: read a dword (32 bits) from the memory
+> subsystem and write it back to the memory subsystem with bytes reversed.
+>=20
+> Does the kernel have any dedicated function for just always swapping?
+>=20
 
-Instead, we use the sg_miter API in a novel and clever way, to iterate
-over the scatterlist in-place (i.e., source == destination, which is the
-only way this library is expected to be used). That way, we don't have to
-iterate over two scatterlists in parallel.
+After some more thought on the train home:
 
-Another optimization is that, instead of relying on the blkcipher walker
-to present the input in suitable chunks, we recognize that ChaCha is a
-streamcipher, and so we can simply deal with partial blocks by keeping a
-block of cipherstream on the stack and use crypto_xor() to mix it with
-the in/output.
+I think the correct construct would be cpu_to_le32(be32_to_cpu(data[i]))
+This would correctly reflect that the data is read from big-endian
+memory and subsequently written to little-endian "memory" (aka the EIP).
+It also fits in nicely with your other changes. Could you work that into
+a patch v2? Then I would ack it (after testing).
 
-Finally, we omit the scatterwalk_and_copy() call if the last element of
-the scatterlist covers the MAC as well (which is the common case),
-avoiding the need to walk the scatterlist and kmap() the page twice.
+> Anyway: NACK on this patch for now due to this.
+>=20
+> > drivers/crypto/inside-secure/safexcel.c:306:17: warning: cast to restri=
+cted __be32
+> > drivers/crypto/inside-secure/safexcel.c:306:17: warning: cast to restri=
+cted __be32
+> > drivers/crypto/inside-secure/safexcel.c:306:17: warning: cast to restri=
+cted __be32
+> > drivers/crypto/inside-secure/safexcel.c:306:17: warning: cast to restri=
+cted __be32
+> > drivers/crypto/inside-secure/safexcel.c:306:17: warning: cast to restri=
+cted __be32
+> > drivers/crypto/inside-secure/safexcel.c:306:17: warning: cast to restri=
+cted __be32
+> >
+> > Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> > ---
+> > Cc: Antoine Tenart <antoine.tenart@bootlin.com>
+> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: linux-crypto@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> >  drivers/crypto/inside-secure/safexcel.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/i=
+nside-
+> secure/safexcel.c
+> > index 223d1bfdc7e6..dd33f6dda295 100644
+> > --- a/drivers/crypto/inside-secure/safexcel.c
+> > +++ b/drivers/crypto/inside-secure/safexcel.c
+> > @@ -298,13 +298,13 @@ static void eip197_init_firmware(struct safexcel_=
+crypto_priv
+> *priv)
+> >  static int eip197_write_firmware(struct safexcel_crypto_priv *priv,
+> >  				  const struct firmware *fw)
+> >  {
+> > -	const u32 *data =3D (const u32 *)fw->data;
+> > +	const __be32 *data =3D (const __be32 *)fw->data;
+> >  	int i;
+> >
+> >  	/* Write the firmware */
+> > -	for (i =3D 0; i < fw->size / sizeof(u32); i++)
+> > +	for (i =3D 0; i < fw->size / sizeof(__be32); i++)
+> >  		writel(be32_to_cpu(data[i]),
+> > -		       priv->base + EIP197_CLASSIFICATION_RAMS + i * sizeof(u32));
+> > +		       priv->base + EIP197_CLASSIFICATION_RAMS + i * sizeof(__be32))=
+;
+> >
+> >  	/* Exclude final 2 NOPs from size */
+> >  	return i - EIP197_FW_TERMINAL_NOPS;
+> > --
+> > 2.23.0
+>=20
+> Regards,
+> Pascal van Leeuwen
+> Silicon IP Architect, Multi-Protocol Engines @ Verimatrix
+> www.insidesecure.com
 
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
- include/crypto/chacha20poly1305.h      |  11 ++
- lib/crypto/chacha20poly1305-selftest.c |  45 ++++++
- lib/crypto/chacha20poly1305.c          | 150 ++++++++++++++++++++
- 3 files changed, 206 insertions(+)
-
-diff --git a/include/crypto/chacha20poly1305.h b/include/crypto/chacha20poly1305.h
-index ad3b1de58df8..234ee28078ef 100644
---- a/include/crypto/chacha20poly1305.h
-+++ b/include/crypto/chacha20poly1305.h
-@@ -7,6 +7,7 @@
- #define __CHACHA20POLY1305_H
- 
- #include <linux/types.h>
-+#include <linux/scatterlist.h>
- 
- enum chacha20poly1305_lengths {
- 	XCHACHA20POLY1305_NONCE_SIZE = 24,
-@@ -34,4 +35,14 @@ bool __must_check xchacha20poly1305_decrypt(
- 	const size_t ad_len, const u8 nonce[XCHACHA20POLY1305_NONCE_SIZE],
- 	const u8 key[CHACHA20POLY1305_KEY_SIZE]);
- 
-+bool chacha20poly1305_encrypt_sg_inplace(struct scatterlist *src, size_t src_len,
-+					 const u8 *ad, const size_t ad_len,
-+					 const u64 nonce,
-+					 const u8 key[CHACHA20POLY1305_KEY_SIZE]);
-+
-+bool chacha20poly1305_decrypt_sg_inplace(struct scatterlist *src, size_t src_len,
-+					 const u8 *ad, const size_t ad_len,
-+					 const u64 nonce,
-+					 const u8 key[CHACHA20POLY1305_KEY_SIZE]);
-+
- #endif /* __CHACHA20POLY1305_H */
-diff --git a/lib/crypto/chacha20poly1305-selftest.c b/lib/crypto/chacha20poly1305-selftest.c
-index d1ed0f27cfdb..465de46dbdef 100644
---- a/lib/crypto/chacha20poly1305-selftest.c
-+++ b/lib/crypto/chacha20poly1305-selftest.c
-@@ -7250,6 +7250,7 @@ bool __init chacha20poly1305_selftest(void)
- 	enum { MAXIMUM_TEST_BUFFER_LEN = 1UL << 12 };
- 	size_t i;
- 	u8 *computed_output = NULL, *heap_src = NULL;
-+	struct scatterlist sg_src;
- 	bool success = true, ret;
- 
- 	heap_src = kmalloc(MAXIMUM_TEST_BUFFER_LEN, GFP_KERNEL);
-@@ -7280,6 +7281,29 @@ bool __init chacha20poly1305_selftest(void)
- 		}
- 	}
- 
-+	for (i = 0; i < ARRAY_SIZE(chacha20poly1305_enc_vectors); ++i) {
-+		if (chacha20poly1305_enc_vectors[i].nlen != 8)
-+			continue;
-+		memcpy(heap_src, chacha20poly1305_enc_vectors[i].input,
-+		       chacha20poly1305_enc_vectors[i].ilen);
-+		sg_init_one(&sg_src, heap_src,
-+			    chacha20poly1305_enc_vectors[i].ilen + POLY1305_DIGEST_SIZE);
-+		chacha20poly1305_encrypt_sg_inplace(&sg_src,
-+			chacha20poly1305_enc_vectors[i].ilen,
-+			chacha20poly1305_enc_vectors[i].assoc,
-+			chacha20poly1305_enc_vectors[i].alen,
-+			get_unaligned_le64(chacha20poly1305_enc_vectors[i].nonce),
-+			chacha20poly1305_enc_vectors[i].key);
-+		if (memcmp(heap_src,
-+				   chacha20poly1305_enc_vectors[i].output,
-+				   chacha20poly1305_enc_vectors[i].ilen +
-+							POLY1305_DIGEST_SIZE)) {
-+			pr_err("chacha20poly1305 sg encryption self-test %zu: FAIL\n",
-+			       i + 1);
-+			success = false;
-+		}
-+	}
-+
- 	for (i = 0; i < ARRAY_SIZE(chacha20poly1305_dec_vectors); ++i) {
- 		memset(computed_output, 0, MAXIMUM_TEST_BUFFER_LEN);
- 		ret = chacha20poly1305_decrypt(computed_output,
-@@ -7301,6 +7325,27 @@ bool __init chacha20poly1305_selftest(void)
- 		}
- 	}
- 
-+	for (i = 0; i < ARRAY_SIZE(chacha20poly1305_dec_vectors); ++i) {
-+		memcpy(heap_src, chacha20poly1305_dec_vectors[i].input,
-+		       chacha20poly1305_dec_vectors[i].ilen);
-+		sg_init_one(&sg_src, heap_src,
-+			    chacha20poly1305_dec_vectors[i].ilen);
-+		ret = chacha20poly1305_decrypt_sg_inplace(&sg_src,
-+			chacha20poly1305_dec_vectors[i].ilen,
-+			chacha20poly1305_dec_vectors[i].assoc,
-+			chacha20poly1305_dec_vectors[i].alen,
-+			get_unaligned_le64(chacha20poly1305_dec_vectors[i].nonce),
-+			chacha20poly1305_dec_vectors[i].key);
-+		if (!decryption_success(ret,
-+			chacha20poly1305_dec_vectors[i].failure,
-+			memcmp(heap_src, chacha20poly1305_dec_vectors[i].output,
-+			       chacha20poly1305_dec_vectors[i].ilen -
-+							POLY1305_DIGEST_SIZE))) {
-+			pr_err("chacha20poly1305 sg decryption self-test %zu: FAIL\n",
-+			       i + 1);
-+			success = false;
-+		}
-+	}
- 
- 	for (i = 0; i < ARRAY_SIZE(xchacha20poly1305_enc_vectors); ++i) {
- 		memset(computed_output, 0, MAXIMUM_TEST_BUFFER_LEN);
-diff --git a/lib/crypto/chacha20poly1305.c b/lib/crypto/chacha20poly1305.c
-index bf9e993ba388..9d7a753689ab 100644
---- a/lib/crypto/chacha20poly1305.c
-+++ b/lib/crypto/chacha20poly1305.c
-@@ -11,6 +11,7 @@
- #include <crypto/chacha20poly1305.h>
- #include <crypto/chacha.h>
- #include <crypto/poly1305.h>
-+#include <crypto/scatterwalk.h>
- 
- #include <asm/unaligned.h>
- #include <linux/kernel.h>
-@@ -205,6 +206,155 @@ bool xchacha20poly1305_decrypt(u8 *dst, const u8 *src, const size_t src_len,
- }
- EXPORT_SYMBOL(xchacha20poly1305_decrypt);
- 
-+static
-+bool chacha20poly1305_crypt_sg_inplace(struct scatterlist *src,
-+				       const size_t src_len,
-+				       const u8 *ad, const size_t ad_len,
-+				       const u64 nonce,
-+				       const u8 key[CHACHA20POLY1305_KEY_SIZE],
-+				       int encrypt)
-+{
-+	const u8 *pad0 = page_address(ZERO_PAGE(0));
-+	struct poly1305_desc_ctx poly1305_state;
-+	u32 chacha_state[CHACHA_STATE_WORDS];
-+	struct sg_mapping_iter miter;
-+	size_t partial = 0;
-+	unsigned int flags;
-+	bool ret = true;
-+	int sl;
-+	union {
-+		struct {
-+			u32 k[CHACHA_KEY_WORDS];
-+			__le64 iv[2];
-+		};
-+		u8 block0[POLY1305_KEY_SIZE];
-+		u8 chacha_stream[CHACHA_BLOCK_SIZE];
-+		struct {
-+			u8 mac[2][POLY1305_DIGEST_SIZE];
-+		};
-+		__le64 lens[2];
-+	} b __aligned(16);
-+
-+	chacha_load_key(b.k, key);
-+
-+	b.iv[0] = 0;
-+	b.iv[1] = cpu_to_le64(nonce);
-+
-+	chacha_init(chacha_state, b.k, (u8 *)b.iv);
-+	chacha_crypt(chacha_state, b.block0, pad0, sizeof(b.block0), 20);
-+	poly1305_init(&poly1305_state, b.block0);
-+
-+	if (unlikely(ad_len)) {
-+		poly1305_update(&poly1305_state, ad, ad_len);
-+		if (ad_len & 0xf)
-+			poly1305_update(&poly1305_state, pad0, 0x10 - (ad_len & 0xf));
-+	}
-+
-+	flags = SG_MITER_TO_SG;
-+	if (!preemptible())
-+		flags |= SG_MITER_ATOMIC;
-+
-+	sg_miter_start(&miter, src, sg_nents(src), flags);
-+
-+	for (sl = src_len; sl > 0 && sg_miter_next(&miter); sl -= miter.length) {
-+		u8 *addr = miter.addr;
-+		size_t length = min_t(size_t, sl, miter.length);
-+
-+		if (!encrypt)
-+			poly1305_update(&poly1305_state, addr, length);
-+
-+		if (unlikely(partial)) {
-+			size_t l = min(length, CHACHA_BLOCK_SIZE - partial);
-+
-+			crypto_xor(addr, b.chacha_stream + partial, l);
-+			partial = (partial + l) & (CHACHA_BLOCK_SIZE - 1);
-+
-+			addr += l;
-+			length -= l;
-+		}
-+
-+		if (likely(length >= CHACHA_BLOCK_SIZE || length == sl)) {
-+			size_t l = length;
-+
-+			if (unlikely(length < sl))
-+				l &= ~(CHACHA_BLOCK_SIZE - 1);
-+			chacha_crypt(chacha_state, addr, addr, l, 20);
-+			addr += l;
-+			length -= l;
-+		}
-+
-+		if (unlikely(length > 0)) {
-+			chacha_crypt(chacha_state, b.chacha_stream, pad0,
-+				     CHACHA_BLOCK_SIZE, 20);
-+			crypto_xor(addr, b.chacha_stream, length);
-+			partial = length;
-+		}
-+
-+		if (encrypt)
-+			poly1305_update(&poly1305_state, miter.addr,
-+					min_t(size_t, sl, miter.length));
-+	}
-+
-+	if (src_len & 0xf)
-+		poly1305_update(&poly1305_state, pad0, 0x10 - (src_len & 0xf));
-+
-+	b.lens[0] = cpu_to_le64(ad_len);
-+	b.lens[1] = cpu_to_le64(src_len);
-+	poly1305_update(&poly1305_state, (u8 *)b.lens, sizeof(b.lens));
-+
-+	if (likely(sl <= -POLY1305_DIGEST_SIZE)) {
-+		if (encrypt) {
-+			poly1305_final(&poly1305_state,
-+				       miter.addr + miter.length + sl);
-+			ret = true;
-+		} else {
-+			poly1305_final(&poly1305_state, b.mac[0]);
-+			ret = !crypto_memneq(b.mac[0],
-+					     miter.addr + miter.length + sl,
-+					     POLY1305_DIGEST_SIZE);
-+		}
-+	}
-+
-+	sg_miter_stop(&miter);
-+
-+	if (unlikely(sl > -POLY1305_DIGEST_SIZE)) {
-+		poly1305_final(&poly1305_state, b.mac[1]);
-+		scatterwalk_map_and_copy(b.mac[encrypt], src, src_len,
-+					 sizeof(b.mac[1]), encrypt);
-+		ret = encrypt ||
-+		      !crypto_memneq(b.mac[0], b.mac[1], POLY1305_DIGEST_SIZE);
-+	}
-+
-+	memzero_explicit(chacha_state, sizeof(chacha_state));
-+	memzero_explicit(&b, sizeof(b));
-+
-+	return ret;
-+}
-+
-+bool chacha20poly1305_encrypt_sg_inplace(struct scatterlist *src, size_t src_len,
-+					 const u8 *ad, const size_t ad_len,
-+					 const u64 nonce,
-+					 const u8 key[CHACHA20POLY1305_KEY_SIZE])
-+{
-+	return chacha20poly1305_crypt_sg_inplace(src, src_len, ad, ad_len,
-+						 nonce, key, 1);
-+}
-+EXPORT_SYMBOL(chacha20poly1305_encrypt_sg_inplace);
-+
-+bool chacha20poly1305_decrypt_sg_inplace(struct scatterlist *src, size_t src_len,
-+					 const u8 *ad, const size_t ad_len,
-+					 const u64 nonce,
-+					 const u8 key[CHACHA20POLY1305_KEY_SIZE])
-+{
-+	if (unlikely(src_len < POLY1305_DIGEST_SIZE))
-+		return false;
-+
-+	return chacha20poly1305_crypt_sg_inplace(src,
-+						 src_len - POLY1305_DIGEST_SIZE,
-+						 ad, ad_len, nonce, key, 0);
-+}
-+EXPORT_SYMBOL(chacha20poly1305_decrypt_sg_inplace);
-+
- static int __init mod_init(void)
- {
- 	if (!IS_ENABLED(CONFIG_CRYPTO_MANAGER_DISABLE_TESTS) &&
--- 
-2.20.1
-
+Regards,
+Pascal van Leeuwen
+Silicon IP Architect, Multi-Protocol Engines @ Verimatrix
+www.insidesecure.com
