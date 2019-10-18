@@ -2,51 +2,66 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7376BDBF41
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Oct 2019 10:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EAFEDBF53
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Oct 2019 10:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405177AbfJRICn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Oct 2019 04:02:43 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:37294 "EHLO fornost.hmeau.com"
+        id S2391356AbfJRIEI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Oct 2019 04:04:08 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:37306 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729376AbfJRICn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Oct 2019 04:02:43 -0400
+        id S1727888AbfJRIEI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 18 Oct 2019 04:04:08 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1iLNDb-0001rH-Uo; Fri, 18 Oct 2019 19:02:41 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Oct 2019 19:02:39 +1100
-Date:   Fri, 18 Oct 2019 19:02:39 +1100
+        id 1iLNEp-0001uY-CI; Fri, 18 Oct 2019 19:03:56 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Oct 2019 19:03:55 +1100
+Date:   Fri, 18 Oct 2019 19:03:55 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Cc:     linux-crypto@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH] dt-bindings: hwrng: Add Samsung Exynos 5250+ True RNG
- bindings
-Message-ID: <20191018080239.GD25128@gondor.apana.org.au>
-References: <CGME20191009141735eucas1p216018d6fd7716bde4143f70e51b58ef2@eucas1p2.samsung.com>
- <20191009141732.1489-1-l.stelmach@samsung.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-crypto@vger.kernel.org, linux-geode@lists.infradead.org,
+        Gert Robben <t2@gert.gr>, Florian Bezdeka <florian@bezdeka.de>,
+        Jelle de Jong <jelledejong@powercraft.nl>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Subject: Re: [PATCH] crypto: geode-aes - convert to skcipher API and make
+ thread-safe
+Message-ID: <20191018080355.GE25128@gondor.apana.org.au>
+References: <20191011045132.159422-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20191009141732.1489-1-l.stelmach@samsung.com>
+In-Reply-To: <20191011045132.159422-1-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Oct 09, 2019 at 04:17:32PM +0200, Łukasz Stelmach wrote:
-> Add binding documentation for the True Random Number Generator
-> found on Samsung Exynos 5250+ SoCs.
+On Thu, Oct 10, 2019 at 09:51:32PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+> The geode AES driver is heavily broken because it stores per-request
+> state in the transform context.  So it will crash or produce the wrong
+> result if used by any of the many places in the kernel that issue
+> concurrent requests for the same transform object.
+> 
+> This driver is also implemented using the deprecated blkcipher API,
+> which makes it difficult to fix, and puts it among the drivers
+> preventing that API from being removed.
+> 
+> Convert this driver to use the skcipher API, and change it to not store
+> per-request state in the transform context.
+> 
+> Fixes: 9fe757b0cfce ("[PATCH] crypto: Add support for the Geode LX AES hardware")
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 > ---
->  .../bindings/rng/samsung,exynos5250-trng.txt    | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/rng/samsung,exynos5250-trng.txt
+> 
+> NOTE: I don't have the hardware to test this patch.  Anyone who does,
+> please check whether it passes CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y, and
+> whether it still works for anything else you're using it for.
+> 
+>  drivers/crypto/geode-aes.c | 440 +++++++++++++------------------------
+>  drivers/crypto/geode-aes.h |  15 +-
+>  2 files changed, 149 insertions(+), 306 deletions(-)
 
 Patch applied.  Thanks.
 -- 
