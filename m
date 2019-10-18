@@ -2,38 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC30CDD3A1
-	for <lists+linux-crypto@lfdr.de>; Sat, 19 Oct 2019 00:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E7CDD2E4
+	for <lists+linux-crypto@lfdr.de>; Sat, 19 Oct 2019 00:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732021AbfJRWHB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Oct 2019 18:07:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39124 "EHLO mail.kernel.org"
+        id S2388024AbfJRWIk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Oct 2019 18:08:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732275AbfJRWHB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Oct 2019 18:07:01 -0400
+        id S2388015AbfJRWIj (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 18 Oct 2019 18:08:39 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38DDF22468;
-        Fri, 18 Oct 2019 22:07:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C94C2245D;
+        Fri, 18 Oct 2019 22:08:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571436420;
+        s=default; t=1571436519;
         bh=aCSTbAXnQHzJmonbmjRU/TNSmpSmUo2JY9jr4+RSpH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UGGcueTAINxrjRjROzRRfHKy289JVCfrgJpcEvGesZ6FnpQk2/hXLZy+QyEvRF9W8
-         8WLh1bEp0SgDTamqvIrjB7wM1K3CFEyeBa70uvjlTdQ7dFXhxZrP4KvwqMD0Q6T0GO
-         JmurC0sFVW/Zp8Cy/lzY7tRSvhQUPwglzyWmhBPs=
+        b=oaJFm9eszIobE5UrYyzc6uZN6ZaPR1Jp6Nfq2D1tbTtwij05q6TaPpaaDtfTuRoyz
+         5KI5JrnF6PAa/c0pryofVcXj676makHrdKmdRp5+92UOoYVLm+AeKX9CUpUNysO84E
+         iSk0c3xSTfylFpvhp0f2WUY+q538WuLuKvf8KP/w=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 063/100] crypto: arm/aes-ce - add dependency on AES library
-Date:   Fri, 18 Oct 2019 18:04:48 -0400
-Message-Id: <20191018220525.9042-63-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 26/56] crypto: arm/aes-ce - add dependency on AES library
+Date:   Fri, 18 Oct 2019 18:07:23 -0400
+Message-Id: <20191018220753.10002-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191018220525.9042-1-sashal@kernel.org>
-References: <20191018220525.9042-1-sashal@kernel.org>
+In-Reply-To: <20191018220753.10002-1-sashal@kernel.org>
+References: <20191018220753.10002-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
