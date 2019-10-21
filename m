@@ -2,96 +2,54 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC3FDE451
-	for <lists+linux-crypto@lfdr.de>; Mon, 21 Oct 2019 08:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28854DE56B
+	for <lists+linux-crypto@lfdr.de>; Mon, 21 Oct 2019 09:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbfJUGIS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 21 Oct 2019 02:08:18 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:37818 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726394AbfJUGIR (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 21 Oct 2019 02:08:17 -0400
-Received: by mail-wm1-f65.google.com with SMTP id f22so11407869wmc.2
-        for <linux-crypto@vger.kernel.org>; Sun, 20 Oct 2019 23:08:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4/kY4Iuh46NZmdPYDysMt8pq2ZGIAr2/rIRYTWprc/0=;
-        b=oB1t6MTnzf47Ko9MJt4hXHXmaNHS2l9pnu0h4fYYHPxKIGDHcsgPdVyoo/NsSbv1O2
-         uCTLW6kDH+oaDa+OMJSo40Otaxe8aaCJyyKm9bN3s9j4EHVixD6E9soNlalXtzJTWADB
-         DJAKX4ZjYEgZQhvNbjmZOLQGmhA8Tfzz55vmJQ2/davbZjC6n55rh+rbvIs7L5/4FTeh
-         v8rUweDQ7PsWfJKC1LWaVdS5zxkjcbVH9fZsEzb+BaiK8YYGPR1pSrYpSBoj+M+uiEAl
-         Gg2xxpmKbyh4ZnDMCR1dI6pO2bfUnkE9t5szRJWG2hWKS4uYzRdfRc2y2t5fUGvCStDh
-         /nlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4/kY4Iuh46NZmdPYDysMt8pq2ZGIAr2/rIRYTWprc/0=;
-        b=O780Ay6mK5nBkKsPQU8a+EfxKNitQ1rZ0IoGbrW9rhPM5CMnAVE7W0GF78isQqqBhm
-         p/a2ZBsMLkgKptJQIwaJZkqq1fYrb/Cwl4EnEOvBI+Xsmlijhnh2N5jyknZqdkYx4AYl
-         WG3EHkAwnpm6Wr/NH07+H99zl+PwexL4e7I88UA2w+eY13dT1J1A2ut/aj7w18ULvVUq
-         GvNBSECNokGY61Tu8K4lwgWSapc1zZS9J5Yx7N7w3IqpNXsJ36Gk6pcI85ku4l9g/5mS
-         mwuJhN+IWYVWQZNGoqhJyK8wb9k2YAwJvqnpsFblLNPfo6krQfDAyofpf460tPKnOVWg
-         r3Cg==
-X-Gm-Message-State: APjAAAWoQwEYNws8EJc1/j6kHt13NyFtF1gPWV7apRicBCQHuo3Osu/p
-        HCJ+/I5m69zTqfAOKcAhB6E+LHviAdwQzoce8gmCGA==
-X-Google-Smtp-Source: APXvYqx7XQxrLMJoK6NNdCUXziFruma0esfovBxJGHOWgCA/3qMDBV1vUmG67RGywQZI7SPK2OszFu1whjLRm3Zdceg=
-X-Received: by 2002:a7b:cb54:: with SMTP id v20mr16697896wmj.119.1571638093988;
- Sun, 20 Oct 2019 23:08:13 -0700 (PDT)
+        id S1727297AbfJUHkb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 21 Oct 2019 03:40:31 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:57396 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727097AbfJUHka (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 21 Oct 2019 03:40:30 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id D33854A323ABC7A7D38C;
+        Mon, 21 Oct 2019 15:40:26 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.439.0; Mon, 21 Oct 2019 15:40:18 +0800
+From:   Shukun Tan <tanshukun1@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <wangzhou1@hisilicon.com>, <linux-crypto@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH 0/4] Misc fixes and optimisation patch
+Date:   Mon, 21 Oct 2019 15:40:59 +0800
+Message-ID: <1571643663-29593-1-git-send-email-tanshukun1@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20191018220525.9042-1-sashal@kernel.org> <20191018220525.9042-63-sashal@kernel.org>
-In-Reply-To: <20191018220525.9042-63-sashal@kernel.org>
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Mon, 21 Oct 2019 08:08:02 +0200
-Message-ID: <CAKv+Gu_6vzE-Je4G-ZZ=jU1qAWnCcADr7cJ_MG8m+tPzcC0QBw@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 4.19 063/100] crypto: arm/aes-ce - add dependency
- on AES library
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, 19 Oct 2019 at 00:07, Sasha Levin <sashal@kernel.org> wrote:
->
-> From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
->
-> [ Upstream commit f703964fc66804e6049f2670fc11045aa8359b1a ]
->
-> The ARM accelerated AES driver depends on the new AES library for
-> its non-SIMD fallback so express this in its Kconfig declaration.
->
-> Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+This series mainly fix sparse warnings, optimise the code to be more concise.
 
-Please drop this, it doesn't belong in -stable.
+Shukun Tan (3):
+  crypto: hisilicon - Fix using plain integer as NULL pointer
+  crypto: hisilicon - fix param should be static when not external.
+  crypto: hisilicon - fix endianness verification problem of QM
 
-> ---
->  arch/arm/crypto/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/arm/crypto/Kconfig b/arch/arm/crypto/Kconfig
-> index b8e69fe282b8d..44278f375ae23 100644
-> --- a/arch/arm/crypto/Kconfig
-> +++ b/arch/arm/crypto/Kconfig
-> @@ -89,6 +89,7 @@ config CRYPTO_AES_ARM_CE
->         tristate "Accelerated AES using ARMv8 Crypto Extensions"
->         depends on KERNEL_MODE_NEON
->         select CRYPTO_BLKCIPHER
-> +       select CRYPTO_LIB_AES
->         select CRYPTO_SIMD
->         help
->           Use an implementation of AES in CBC, CTR and XTS modes that uses
-> --
-> 2.20.1
->
+Zhou Wang (1):
+  crypto: hisilicon - tiny fix about QM/ZIP error callback print
+
+ drivers/crypto/hisilicon/qm.c             | 96 +++++++++++++++----------------
+ drivers/crypto/hisilicon/qm.h             |  2 +-
+ drivers/crypto/hisilicon/zip/zip_crypto.c |  2 +-
+ drivers/crypto/hisilicon/zip/zip_main.c   |  9 ++-
+ 4 files changed, 52 insertions(+), 57 deletions(-)
+
+-- 
+2.7.4
+
