@@ -2,61 +2,61 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF45BE076E
+	by mail.lfdr.de (Postfix) with ESMTP id 55B55E076D
 	for <lists+linux-crypto@lfdr.de>; Tue, 22 Oct 2019 17:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732331AbfJVPac (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1730720AbfJVPac (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Tue, 22 Oct 2019 11:30:32 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:41900 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731847AbfJVPaa (ORCPT
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:43881 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732328AbfJVPac (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Oct 2019 11:30:30 -0400
-Received: by mail-pl1-f193.google.com with SMTP id t10so8508676plr.8;
-        Tue, 22 Oct 2019 08:30:29 -0700 (PDT)
+        Tue, 22 Oct 2019 11:30:32 -0400
+Received: by mail-pl1-f196.google.com with SMTP id v5so3789554ply.10;
+        Tue, 22 Oct 2019 08:30:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ms5yYseASytAjz6fyuBFRj0zh2PNWY/vP3+FE4TWBFA=;
-        b=Efu2Ml4tEtH3KCvIu6URPx9Zp/jzK+3nRR5uZv1453cN8qiUNmkiqxGPMLJPsTJgNC
-         3+1hB+IcqrcYuNwPpADR/TCpnj0r002hsuEK/czMWBnHZEkNwb8L8rTQ2vz3/DoKpsf5
-         hddAp+2vho++n9C/PoVw4sGHOEmLX1A1LlJi3N5IgUcj0GtG8kr79vEY7VMTwbLFwyTE
-         a398JpfOp6z8OjlyxfjWZfkZXaTIOmV8X58wOyYu6tTBc777HGzwDpV0MinXluMm7bPV
-         YuXIL5qe+uFMUkZGO9uf89sWMlkm7Pq08n1x/zX1saCsxYnt4cXe14BvlBLOyPpJfG4j
-         7duA==
+        bh=Q8gWc5J/oCoXIx5BDQrMSebjO4yMPwjpyADtE3ynQqA=;
+        b=FV/G6B86QblOcvwX8xLacb4A5cbeKWR7XsgcSLGLjZAteBvZD/0DL0QvNXmH9j3X5J
+         KcVxC2u6xjiRFZtAG1KK787z8OhfUBttZddImowWDyFhx+/JFv4uZVjvnsgGuVp4mqGJ
+         SUi9NGCHtAJz7Zo9cM4SAzBw+75cp+XUAkLEbhBXV1xEyqzjbI4vIu7FLOw0T6kcz2MG
+         o/9WSGFwJSWsdVNoaj3SXFsLlj1rCMU4QcKJY6BPJSpKCvAcBmkwg3OksHbfN3Lo8Iut
+         MydDm6CYHalYl2rXK73iiKHI/aVLHtgN+3xVmGRjduzp7p4Wctf3QoH4wrOTX+RPRsoX
+         XS/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ms5yYseASytAjz6fyuBFRj0zh2PNWY/vP3+FE4TWBFA=;
-        b=GTzmK8EB4Wz5nkffWNop/T4ZL0PFeVUppV1ig02DzbW58C0UdDluFVuI2pZ4AsIzpd
-         hqo2JXg58i2b6hXjIopeZW7GfaxqYy5E80//sxE6d0IcLxlDUy9wOLzXFhSkZMU/UIxp
-         bvAR/iL/SPEYK3C0f6KjJS2/+U1nJh+dS8gIkFsKSA5Ohd/dTS/7tADG9Uu4YDCdsomM
-         siU81Fo0vxjGUqsTEz+ihhkxSaHsZ+BPsN1nmwAA/Pl3Hv2psHabIXVy7rvgvGcN6gY8
-         byLvUSnCsSFK8717wQkT9vnEAKTjOfSiPOdoj6SXdXTvtGKoGt9z8Hr7QmkPxyusWqXU
-         ZYaQ==
-X-Gm-Message-State: APjAAAXnfYEzZ7gWDs4+j5v20OEOdS81m2Cz6RmOQvx7arznOD3wNWj1
-        tipoN7omyRAcNRF1bhChl06IA0Hs
-X-Google-Smtp-Source: APXvYqyeJZUIHz+MfQhYPiPiN9eY40k5/qc05LGDxHHd1twd5g9bP8uAd9C5WjZmh653MupLA+EXjQ==
-X-Received: by 2002:a17:902:b287:: with SMTP id u7mr4325682plr.65.1571758228944;
-        Tue, 22 Oct 2019 08:30:28 -0700 (PDT)
+        bh=Q8gWc5J/oCoXIx5BDQrMSebjO4yMPwjpyADtE3ynQqA=;
+        b=h4u0goMzzS6/raPgUgWk2b2aToIIUIkOAfXjdQjmFYWkImQMY0jm7F4/aSspieBljp
+         lP7af48d2GRShIk46ohOgETAWYOhTlHb7GD+WVhSJ6XJfB/2Ut1BKsqL3CakwrQ2zX2d
+         uZCGwIk1og7dxBsyXozeqgI2aGQviWG1IurcdeacQ/ERmZJJ/tLsrkZm4hJScRuKhRvF
+         VoxIBgyz7sgdqkiRFS//3v4q/TKtm0irO8gj3CX6zZkSWMvctVUNYfSdiNm3hqoQ3wu7
+         mKeAJHZgD7wRuv3hFdy5VoHfNJJwZuY70WCnDmx2armi5nFixPhiNMXW2tnI/m9KmE+v
+         GWnQ==
+X-Gm-Message-State: APjAAAXODA1RcKqbl+kLqUl4s0ehMexxn4969XQ7WUf0lQZZWTWSZKow
+        UW2l/DGI5vIyCLugroiL9/QF/wL+
+X-Google-Smtp-Source: APXvYqzYnHFhxF0RHgswSV8/p/C/lR8uqfu8jZjkCrwMYVFhxfr1gz7ora3bFK9GRqDg+9i5LPi5Jg==
+X-Received: by 2002:a17:902:fe0f:: with SMTP id g15mr1398239plj.224.1571758230500;
+        Tue, 22 Oct 2019 08:30:30 -0700 (PDT)
 Received: from localhost.lan (c-67-185-54-80.hsd1.wa.comcast.net. [67.185.54.80])
-        by smtp.gmail.com with ESMTPSA id z63sm6066128pgb.75.2019.10.22.08.30.27
+        by smtp.gmail.com with ESMTPSA id z63sm6066128pgb.75.2019.10.22.08.30.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Oct 2019 08:30:27 -0700 (PDT)
+        Tue, 22 Oct 2019 08:30:29 -0700 (PDT)
 From:   Andrey Smirnov <andrew.smirnov@gmail.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
         Chris Healy <cphealy@gmail.com>,
         Lucas Stach <l.stach@pengutronix.de>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Iuliana Prodan <iuliana.prodan@nxp.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/6] crypto: caam - use devres to de-initialize the RNG
-Date:   Tue, 22 Oct 2019 08:30:10 -0700
-Message-Id: <20191022153013.3692-4-andrew.smirnov@gmail.com>
+Subject: [PATCH v2 4/6] crypto: caam - use devres to de-initialize QI
+Date:   Tue, 22 Oct 2019 08:30:11 -0700
+Message-Id: <20191022153013.3692-5-andrew.smirnov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191022153013.3692-1-andrew.smirnov@gmail.com>
 References: <20191022153013.3692-1-andrew.smirnov@gmail.com>
@@ -68,10 +68,11 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Use devres to de-initialize the RNG and drop explicit de-initialization
+Use devres to de-initialize the QI and drop explicit de-initialization
 code in caam_remove().
 
 Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
 Cc: Chris Healy <cphealy@gmail.com>
 Cc: Lucas Stach <l.stach@pengutronix.de>
 Cc: Horia Geantă <horia.geanta@nxp.com>
@@ -80,164 +81,105 @@ Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
 Cc: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
- drivers/crypto/caam/ctrl.c | 130 ++++++++++++++++++++-----------------
- 1 file changed, 70 insertions(+), 60 deletions(-)
+ drivers/crypto/caam/ctrl.c   | 14 +-------------
+ drivers/crypto/caam/intern.h |  3 ---
+ drivers/crypto/caam/qi.c     |  8 ++++++--
+ drivers/crypto/caam/qi.h     |  1 -
+ 4 files changed, 7 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
-index 254963498abc..f8c75a999913 100644
+index f8c75a999913..7cdb48c7e28e 100644
 --- a/drivers/crypto/caam/ctrl.c
 +++ b/drivers/crypto/caam/ctrl.c
-@@ -175,6 +175,73 @@ static inline int run_descriptor_deco0(struct device *ctrldev, u32 *desc,
+@@ -332,11 +332,6 @@ static int caam_remove(struct platform_device *pdev)
+ 	/* Remove platform devices under the crypto node */
+ 	of_platform_depopulate(ctrldev);
+ 
+-#ifdef CONFIG_CAAM_QI
+-	if (ctrlpriv->qi_init)
+-		caam_qi_shutdown(ctrldev);
+-#endif
+-
  	return 0;
  }
  
-+/*
-+ * deinstantiate_rng - builds and executes a descriptor on DECO0,
-+ *		       which deinitializes the RNG block.
-+ * @ctrldev - pointer to device
-+ * @state_handle_mask - bitmask containing the instantiation status
-+ *			for the RNG4 state handles which exist in
-+ *			the RNG4 block: 1 if it's been instantiated
-+ *
-+ * Return: - 0 if no error occurred
-+ *	   - -ENOMEM if there isn't enough memory to allocate the descriptor
-+ *	   - -ENODEV if DECO0 couldn't be acquired
-+ *	   - -EAGAIN if an error occurred when executing the descriptor
-+ */
-+static int deinstantiate_rng(struct device *ctrldev, int state_handle_mask)
-+{
-+	u32 *desc, status;
-+	int sh_idx, ret = 0;
-+
-+	desc = kmalloc(CAAM_CMD_SZ * 3, GFP_KERNEL);
-+	if (!desc)
-+		return -ENOMEM;
-+
-+	for (sh_idx = 0; sh_idx < RNG4_MAX_HANDLES; sh_idx++) {
-+		/*
-+		 * If the corresponding bit is set, then it means the state
-+		 * handle was initialized by us, and thus it needs to be
-+		 * deinitialized as well
-+		 */
-+		if ((1 << sh_idx) & state_handle_mask) {
-+			/*
-+			 * Create the descriptor for deinstantating this state
-+			 * handle
-+			 */
-+			build_deinstantiation_desc(desc, sh_idx);
-+
-+			/* Try to run it through DECO0 */
-+			ret = run_descriptor_deco0(ctrldev, desc, &status);
-+
-+			if (ret ||
-+			    (status && status != JRSTA_SSRC_JUMP_HALT_CC)) {
-+				dev_err(ctrldev,
-+					"Failed to deinstantiate RNG4 SH%d\n",
-+					sh_idx);
-+				break;
-+			}
-+			dev_info(ctrldev, "Deinstantiated RNG4 SH%d\n", sh_idx);
-+		}
-+	}
-+
-+	kfree(desc);
-+
-+	return ret;
-+}
-+
-+static void devm_deinstantiate_rng(void *data)
-+{
-+	struct device *ctrldev = data;
-+	struct caam_drv_private *ctrlpriv = dev_get_drvdata(ctrldev);
-+
-+	/*
-+	 * De-initialize RNG state handles initialized by this driver.
-+	 * In case of SoCs with Management Complex, RNG is managed by MC f/w.
-+	 */
-+	if (ctrlpriv->rng4_sh_init)
-+		deinstantiate_rng(ctrldev, ctrlpriv->rng4_sh_init);
-+}
-+
- /*
-  * instantiate_rng - builds and executes a descriptor on DECO0,
-  *		     which initializes the RNG block.
-@@ -247,59 +314,9 @@ static int instantiate_rng(struct device *ctrldev, int state_handle_mask,
+@@ -769,7 +764,7 @@ static int caam_probe(struct platform_device *pdev)
+ 	ret = of_platform_populate(nprop, caam_match, NULL, dev);
+ 	if (ret) {
+ 		dev_err(dev, "JR platform devices creation error\n");
+-		goto shutdown_qi;
++		return ret;
+ 	}
  
- 	kfree(desc);
- 
--	return ret;
--}
--
--/*
-- * deinstantiate_rng - builds and executes a descriptor on DECO0,
-- *		       which deinitializes the RNG block.
-- * @ctrldev - pointer to device
-- * @state_handle_mask - bitmask containing the instantiation status
-- *			for the RNG4 state handles which exist in
-- *			the RNG4 block: 1 if it's been instantiated
-- *
-- * Return: - 0 if no error occurred
-- *	   - -ENOMEM if there isn't enough memory to allocate the descriptor
-- *	   - -ENODEV if DECO0 couldn't be acquired
-- *	   - -EAGAIN if an error occurred when executing the descriptor
-- */
--static int deinstantiate_rng(struct device *ctrldev, int state_handle_mask)
--{
--	u32 *desc, status;
--	int sh_idx, ret = 0;
--
--	desc = kmalloc(CAAM_CMD_SZ * 3, GFP_KERNEL);
--	if (!desc)
--		return -ENOMEM;
--
--	for (sh_idx = 0; sh_idx < RNG4_MAX_HANDLES; sh_idx++) {
--		/*
--		 * If the corresponding bit is set, then it means the state
--		 * handle was initialized by us, and thus it needs to be
--		 * deinitialized as well
--		 */
--		if ((1 << sh_idx) & state_handle_mask) {
--			/*
--			 * Create the descriptor for deinstantating this state
--			 * handle
--			 */
--			build_deinstantiation_desc(desc, sh_idx);
--
--			/* Try to run it through DECO0 */
--			ret = run_descriptor_deco0(ctrldev, desc, &status);
--
--			if (ret ||
--			    (status && status != JRSTA_SSRC_JUMP_HALT_CC)) {
--				dev_err(ctrldev,
--					"Failed to deinstantiate RNG4 SH%d\n",
--					sh_idx);
--				break;
--			}
--			dev_info(ctrldev, "Deinstantiated RNG4 SH%d\n", sh_idx);
--		}
--	}
--
--	kfree(desc);
-+	if (!ret)
-+		ret = devm_add_action_or_reset(ctrldev, devm_deinstantiate_rng,
-+					       ctrldev);
- 
+ 	ring = 0;
+@@ -930,13 +925,6 @@ static int caam_probe(struct platform_device *pdev)
+ caam_remove:
+ 	caam_remove(pdev);
  	return ret;
+-
+-shutdown_qi:
+-#ifdef CONFIG_CAAM_QI
+-	if (ctrlpriv->qi_init)
+-		caam_qi_shutdown(dev);
+-#endif
+-	return ret;
  }
-@@ -320,13 +337,6 @@ static int caam_remove(struct platform_device *pdev)
- 		caam_qi_shutdown(ctrldev);
+ 
+ static struct platform_driver caam_driver = {
+diff --git a/drivers/crypto/caam/intern.h b/drivers/crypto/caam/intern.h
+index 359eb76d1259..c7c10c90464b 100644
+--- a/drivers/crypto/caam/intern.h
++++ b/drivers/crypto/caam/intern.h
+@@ -81,9 +81,6 @@ struct caam_drv_private {
+ 	 */
+ 	u8 total_jobrs;		/* Total Job Rings in device */
+ 	u8 qi_present;		/* Nonzero if QI present in device */
+-#ifdef CONFIG_CAAM_QI
+-	u8 qi_init;		/* Nonzero if QI has been initialized */
+-#endif
+ 	u8 mc_en;		/* Nonzero if MC f/w is active */
+ 	int secvio_irq;		/* Security violation interrupt number */
+ 	int virt_en;		/* Virtualization enabled in CAAM */
+diff --git a/drivers/crypto/caam/qi.c b/drivers/crypto/caam/qi.c
+index 378f627e1d64..dacf2fa4aa8e 100644
+--- a/drivers/crypto/caam/qi.c
++++ b/drivers/crypto/caam/qi.c
+@@ -500,9 +500,10 @@ void caam_drv_ctx_rel(struct caam_drv_ctx *drv_ctx)
+ }
+ EXPORT_SYMBOL(caam_drv_ctx_rel);
+ 
+-void caam_qi_shutdown(struct device *qidev)
++static void caam_qi_shutdown(void *data)
+ {
+ 	int i;
++	struct device *qidev = data;
+ 	struct caam_qi_priv *priv = &qipriv;
+ 	const cpumask_t *cpus = qman_affine_cpus();
+ 
+@@ -761,7 +762,10 @@ int caam_qi_init(struct platform_device *caam_pdev)
+ 			    &times_congested, &caam_fops_u64_ro);
  #endif
  
--	/*
--	 * De-initialize RNG state handles initialized by this driver.
--	 * In case of SoCs with Management Complex, RNG is managed by MC f/w.
--	 */
--	if (!ctrlpriv->mc_en && ctrlpriv->rng4_sh_init)
--		deinstantiate_rng(ctrldev, ctrlpriv->rng4_sh_init);
--
+-	ctrlpriv->qi_init = 1;
++	err = devm_add_action_or_reset(qidev, caam_qi_shutdown, ctrlpriv);
++	if (err)
++		return err;
++
+ 	dev_info(qidev, "Linux CAAM Queue I/F driver initialised\n");
  	return 0;
  }
+diff --git a/drivers/crypto/caam/qi.h b/drivers/crypto/caam/qi.h
+index db0549549e3b..848958951f68 100644
+--- a/drivers/crypto/caam/qi.h
++++ b/drivers/crypto/caam/qi.h
+@@ -147,7 +147,6 @@ int caam_drv_ctx_update(struct caam_drv_ctx *drv_ctx, u32 *sh_desc);
+ void caam_drv_ctx_rel(struct caam_drv_ctx *drv_ctx);
  
+ int caam_qi_init(struct platform_device *pdev);
+-void caam_qi_shutdown(struct device *dev);
+ 
+ /**
+  * qi_cache_alloc - Allocate buffers from CAAM-QI cache
 -- 
 2.21.0
 
