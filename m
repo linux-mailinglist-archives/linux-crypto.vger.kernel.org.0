@@ -2,28 +2,28 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B53CBE106C
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Oct 2019 05:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716CFE106D
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Oct 2019 05:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbfJWDKO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Oct 2019 23:10:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
+        id S1729666AbfJWDMi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 22 Oct 2019 23:12:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727403AbfJWDKO (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Oct 2019 23:10:14 -0400
+        id S1727403AbfJWDMi (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 22 Oct 2019 23:12:38 -0400
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C10322064A;
-        Wed, 23 Oct 2019 03:10:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8463214B2;
+        Wed, 23 Oct 2019 03:12:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571800213;
-        bh=/2J5Wb1EU6oo8p74l66/XEQWhrel6LVJuend+kjBnhs=;
+        s=default; t=1571800358;
+        bh=BxUK91/M+YWCaDkNl/CLZhfosu+hGHtgWdkVtNETawc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LJ1O9lZLx14qIfdup+28TF/+6VoWTQu6sfX1SQN/H4wFBuiM8RiYhIgjetYcXCLvD
-         w5fyXrrir+en35Y3TvkH9Be7oFtBlxuTRpUHSDnAhLzeutd7PHvCv1Q4y70r0ZPDOu
-         UF3bIL0TaLe+JFtCESu5OBNyGyDXZ8rwP3EqIERE=
-Date:   Tue, 22 Oct 2019 20:10:11 -0700
+        b=f6mh52GtyNeFXsUl+M9Mcj5IrdtcqGEiKoP7HBh3RdR64b7GLml6zbmCtTXhiY/Gg
+         IVjb1xYjZD2zQIc5XZLrWllhmuWd7NCM9c/Rv+BoE978/GlZ4IyOVDeAZxHRrPCI0X
+         YBIsBaN9SKRTNuQ91hzrjXCnolGyY8cFfkx+tnyQ=
+Date:   Tue, 22 Oct 2019 20:12:36 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Cc:     linux-crypto@vger.kernel.org,
@@ -35,9 +35,9 @@ Cc:     linux-crypto@vger.kernel.org,
         Martin Willi <martin@strongswan.org>,
         Rene van Dorst <opensource@vdorst.com>,
         David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH v4 04/35] crypto: x86/chacha - expose SIMD ChaCha routine
- as library function
-Message-ID: <20191023031011.GC4278@sol.localdomain>
+Subject: Re: [PATCH v4 02/35] crypto: chacha - move existing library code
+ into lib/crypto
+Message-ID: <20191023031236.GD4278@sol.localdomain>
 Mail-Followup-To: Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         linux-crypto@vger.kernel.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
@@ -49,80 +49,32 @@ Mail-Followup-To: Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         Rene van Dorst <opensource@vdorst.com>,
         David Sterba <dsterba@suse.com>
 References: <20191017190932.1947-1-ard.biesheuvel@linaro.org>
- <20191017190932.1947-5-ard.biesheuvel@linaro.org>
+ <20191017190932.1947-3-ard.biesheuvel@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191017190932.1947-5-ard.biesheuvel@linaro.org>
+In-Reply-To: <20191017190932.1947-3-ard.biesheuvel@linaro.org>
 User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Oct 17, 2019 at 09:09:01PM +0200, Ard Biesheuvel wrote:
-> +void hchacha_block_arch(const u32 *state, u32 *stream, int nrounds)
-> +{
-> +	state = PTR_ALIGN(state, CHACHA_STATE_ALIGN);
-> +
-> +	if (!static_branch_likely(&chacha_use_simd) || !crypto_simd_usable()) {
-> +		hchacha_block_generic(state, stream, nrounds);
-> +	} else {
-> +		kernel_fpu_begin();
-> +		hchacha_block_ssse3(state, stream, nrounds);
-> +		kernel_fpu_end();
-> +	}
-> +}
-> +EXPORT_SYMBOL(hchacha_block_arch);
+On Thu, Oct 17, 2019 at 09:08:59PM +0200, Ard Biesheuvel wrote:
+> diff --git a/lib/crypto/libchacha.c b/lib/crypto/libchacha.c
+> new file mode 100644
+> index 000000000000..7b4b97811f71
+> --- /dev/null
+> +++ b/lib/crypto/libchacha.c
+> @@ -0,0 +1,35 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * The "hash function" used as the core of the ChaCha stream cipher (RFC7539)
+> + *
+> + * Copyright (C) 2015 Martin Willi
+> + */
 
-I generally find negative logic like the above harder to read than the other
-way:
-
-	if (static_branch_likely(&chacha_use_simd) && crypto_simd_usable()) {
-		kernel_fpu_begin();
-		hchacha_block_ssse3(state, stream, nrounds);
-		kernel_fpu_end();
-	} else {
-		hchacha_block_generic(state, stream, nrounds);
-	}
-
-(This applies to lots of places in this patch series.)  Not a big deal though.
-
->  static int __init chacha_simd_mod_init(void)
->  {
->  	if (!boot_cpu_has(X86_FEATURE_SSSE3))
-> -		return -ENODEV;
-> -
-> -#ifdef CONFIG_AS_AVX2
-> -	chacha_use_avx2 = boot_cpu_has(X86_FEATURE_AVX) &&
-> -			  boot_cpu_has(X86_FEATURE_AVX2) &&
-> -			  cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM, NULL);
-> -#ifdef CONFIG_AS_AVX512
-> -	chacha_use_avx512vl = chacha_use_avx2 &&
-> -			      boot_cpu_has(X86_FEATURE_AVX512VL) &&
-> -			      boot_cpu_has(X86_FEATURE_AVX512BW); /* kmovq */
-> -#endif
-> -#endif
-> +		return 0;
-> +
-> +	static_branch_enable(&chacha_use_simd);
-> +
-> +	if (IS_ENABLED(CONFIG_AS_AVX2) &&
-> +	    boot_cpu_has(X86_FEATURE_AVX) &&
-> +	    boot_cpu_has(X86_FEATURE_AVX2) &&
-> +	    cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM, NULL)) {
-> +		static_branch_enable(&chacha_use_avx2);
-> +
-> +		if (IS_ENABLED(CONFIG_AS_AVX512) &&
-> +		    boot_cpu_has(X86_FEATURE_AVX512VL) &&
-> +		    boot_cpu_has(X86_FEATURE_AVX512BW)) /* kmovq */
-> +			static_branch_enable(&chacha_use_avx512vl);
-> +	}
->  	return crypto_register_skciphers(algs, ARRAY_SIZE(algs));
->  }
->  
-
-This patch is missing the corresponding change to chacha_simd_mod_fini(), to
-skip unregistering the skcipher algorithms if they weren't registered.
+This new file actually contains the ChaCha stream cipher, not the ChaCha core.
+So this file comment is incorrect.
 
 - Eric
