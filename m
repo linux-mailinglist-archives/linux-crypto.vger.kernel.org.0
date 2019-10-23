@@ -2,64 +2,61 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 185F4E23EC
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Oct 2019 22:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70826E2408
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Oct 2019 22:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405532AbfJWUFi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 23 Oct 2019 16:05:38 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:51095 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407364AbfJWUFi (ORCPT
+        id S2389796AbfJWUKW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Oct 2019 16:10:22 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:46931 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389786AbfJWUKW (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 23 Oct 2019 16:05:38 -0400
-Received: by mail-wm1-f66.google.com with SMTP id q13so285791wmj.0;
-        Wed, 23 Oct 2019 13:05:35 -0700 (PDT)
+        Wed, 23 Oct 2019 16:10:22 -0400
+Received: by mail-wr1-f65.google.com with SMTP id n15so12669196wrw.13;
+        Wed, 23 Oct 2019 13:10:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=e457YyDFVfE5IUj3AWYMM47UgnP78lQnD30EkuZGvV4=;
-        b=Nd5+8WyfUvMvrRGpAoQzAIWF3RPRPKytP45I3c6Eu9F5W6Y/MRlrceT/kdCy7vg6bq
-         EtLJJIpSHXC52vNPUadKytkaujNUGUMZhst5iZI3nvSdB4PBUcUHlyzKeUBgDhJ3jJeE
-         nShz+HHFspjQddQifOtG+y0axO+D0UMJiOSkNLppnLqGas8fxrqvObMGYAA02GDFfXic
-         FUBX3IFSt9CNSBpLTa2bfRcRwTIRRSyzxJw7LeXGrKkGTnguNec70OpSSUJwzozMEDN0
-         uQqNS84h5TriKM05W2Gxw4xIkQ6pb1I/FfLY7Pb3F+fOWj6EmySQFJ+JZjIM7VuSWIcH
-         suSQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bpwS+F/PeAnITy9k+IFP+J0FMYCUcRVSLDnqP4k8tK4=;
+        b=hBvZU4+rsFkkIkAEUe2UK9p+3+5+JWXtPl1AZcdpLaBuLUxk+tc9T4L0jRNaLQMGVw
+         L+y3LVknu1uoc9CULFzf8dej8BNFwUTSnBIZzaZ6iMqnEGcQ10BglL/pjhbRsbFxA0nG
+         TUqdThzwoDwZu8AijYEmyE0CjhaPz4jnW2qwRoJzTgGNO4lhQchAbhoHa8LC0QfcPbOv
+         g1q9PZPUfgx5oe/ytQHpOxqMmbMNySxPiEVN4Udp/G5hmQpBdyBv4D+tK0ktG3Ky/40m
+         h+3TAhalZNBLSbza7mE3tyVo0jG0X1Kgu7C9aFGpwlAh61iL9Qo30+bbPsMNkVnN2H8m
+         4Cnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=e457YyDFVfE5IUj3AWYMM47UgnP78lQnD30EkuZGvV4=;
-        b=jgJoBtHHEKT2C7sxoqpDVj1nYM9jK8Ej7wHAX+U8KRz0VhKb0JR41PFWt075r/N9t3
-         0dK4GcTURP8/+fpLMhEOGzCP7ZIsOTaJSu9+pcude14lsV+OeTvuDehzyhKjGL2LzGKn
-         V82C+pobcBTSACMsslWIszmkP6RyU7gX0fJxJZCujheeeN7zxWIpifyGG/pQbxfZPYt/
-         f+r2176xX4RPKlB5qeAYgpEHcehi8X/xlcy11cRnWWY33fOXUVIzTpvm/Zas+HIUogOY
-         U4SXih4KoSdh9IG6jDtn3+/NBDbbImpLhSoGjO3Tx5gvCBn+3DTK8GC1ncsVifVynj/S
-         65Bw==
-X-Gm-Message-State: APjAAAUf/t+eXFlITZP0iNkRHcQJVwBMn1HbF6/K6ofLpQVyUZipZ+Zb
-        cbyGgCgMzxGqUJ6J1CD7mMFuAtA3
-X-Google-Smtp-Source: APXvYqyQF9MvnVeDCqE61Au88klmgqDp9o2axtuvArdAeZ73CHrG1gCZf+jFhAwBD0chDF00HDWoYg==
-X-Received: by 2002:a05:600c:21d7:: with SMTP id x23mr1497043wmj.6.1571861134886;
-        Wed, 23 Oct 2019 13:05:34 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bpwS+F/PeAnITy9k+IFP+J0FMYCUcRVSLDnqP4k8tK4=;
+        b=dxd1ArwrZjuJxpHEaGY2XYn4dahMUkk3ADNBqViPLrxwMLfhkMOEXVaw6T6k6+DttR
+         WYxv2+edP3zy2+mOWSku4sl3qJXLJZmENZF5w1/kQgFVHelqkgdcyt1s7kot8KG/7vNO
+         OLhZs22c9AvX96LA+gaQCvOtkcReipPRUX8F6yWx9hlOeHIxKha8wgW2M7CacnrNOQww
+         lK4a5SrENkgOsiE1ji9t87VLqe5adQkYv9pH7705U67fQLbWbq0IYrL4RvWn6BkSPAbk
+         6beO/Ko5CYHZbLUeRR8IbMR/6n96jYSQ20uiz0VrxNCfuw6AYlP7DBjHhXDejVo/4izN
+         A0qA==
+X-Gm-Message-State: APjAAAUGhjRQOtEW6B7xfhhUMlCF03Puluz5cezHTFzzssRA/JzHUKyr
+        UiXFvdSHNYGQNwbCQr1VcYI=
+X-Google-Smtp-Source: APXvYqwp9Wm0ez8TH/4MwrhNc/lRRV96afQBfhg751QLdG3fu7ojJDzZdlM9I3dHNw1gPuQ8UjiZig==
+X-Received: by 2002:a5d:568b:: with SMTP id f11mr449675wrv.301.1571861419759;
+        Wed, 23 Oct 2019 13:10:19 -0700 (PDT)
 Received: from Red.localdomain (lfbn-1-7036-79.w90-116.abo.wanadoo.fr. [90.116.209.79])
-        by smtp.googlemail.com with ESMTPSA id b5sm177555wmj.18.2019.10.23.13.05.33
+        by smtp.googlemail.com with ESMTPSA id h17sm277261wmb.33.2019.10.23.13.10.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2019 13:05:34 -0700 (PDT)
+        Wed, 23 Oct 2019 13:10:18 -0700 (PDT)
 From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     catalin.marinas@arm.com, davem@davemloft.net,
-        herbert@gondor.apana.org.au, linux@armlinux.org.uk,
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
         mark.rutland@arm.com, mripard@kernel.org, robh+dt@kernel.org,
-        wens@csie.org, will@kernel.org
+        wens@csie.org
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com,
         Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH v6 11/11] crypto: sun4i-ss: Move to Allwinner directory
-Date:   Wed, 23 Oct 2019 22:05:13 +0200
-Message-Id: <20191023200513.22630-12-clabbe.montjoie@gmail.com>
+Subject: [PATCH v2 0/4] crypto: add sun8i-ss driver for Allwinner Security System
+Date:   Wed, 23 Oct 2019 22:10:12 +0200
+Message-Id: <20191023201016.26195-1-clabbe.montjoie@gmail.com>
 X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191023200513.22630-1-clabbe.montjoie@gmail.com>
-References: <20191023200513.22630-1-clabbe.montjoie@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
@@ -67,166 +64,53 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Since we have a dedicated Allwinner directory for crypto driver, move
-the sun4i-ss driver in it.
+Hello
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- MAINTAINERS                                   |  6 -----
- drivers/crypto/Kconfig                        | 26 ------------------
- drivers/crypto/Makefile                       |  1 -
- drivers/crypto/allwinner/Kconfig              | 27 +++++++++++++++++++
- drivers/crypto/allwinner/Makefile             |  1 +
- .../{sunxi-ss => allwinner/sun4i-ss}/Makefile |  0
- .../sun4i-ss}/sun4i-ss-cipher.c               |  0
- .../sun4i-ss}/sun4i-ss-core.c                 |  0
- .../sun4i-ss}/sun4i-ss-hash.c                 |  0
- .../sun4i-ss}/sun4i-ss-prng.c                 |  0
- .../sun4i-ss}/sun4i-ss.h                      |  0
- 11 files changed, 28 insertions(+), 33 deletions(-)
- rename drivers/crypto/{sunxi-ss => allwinner/sun4i-ss}/Makefile (100%)
- rename drivers/crypto/{sunxi-ss => allwinner/sun4i-ss}/sun4i-ss-cipher.c (100%)
- rename drivers/crypto/{sunxi-ss => allwinner/sun4i-ss}/sun4i-ss-core.c (100%)
- rename drivers/crypto/{sunxi-ss => allwinner/sun4i-ss}/sun4i-ss-hash.c (100%)
- rename drivers/crypto/{sunxi-ss => allwinner/sun4i-ss}/sun4i-ss-prng.c (100%)
- rename drivers/crypto/{sunxi-ss => allwinner/sun4i-ss}/sun4i-ss.h (100%)
+This patch serie adds support for the second version of Allwinner Security System.
+The first generation of the Security System is already handled by the sun4i-ss driver.
+Due to major change, the first driver cannot handle the second one.
+This new Security System is present on A80 and A83T SoCs.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9153c02e1f63..2120c74f476a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -684,12 +684,6 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/opp/sun50i-nvmem-cpufreq.txt
- F:	drivers/cpufreq/sun50i-cpufreq-nvmem.c
- 
--ALLWINNER SECURITY SYSTEM
--M:	Corentin Labbe <clabbe.montjoie@gmail.com>
--L:	linux-crypto@vger.kernel.org
--S:	Maintained
--F:	drivers/crypto/sunxi-ss/
--
- ALLWINNER CRYPTO DRIVERS
- M:	Corentin Labbe <clabbe.montjoie@gmail.com>
- L:	linux-crypto@vger.kernel.org
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 610bb52d77d6..9f08ed72eae8 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -659,32 +659,6 @@ config CRYPTO_DEV_IMGTEC_HASH
- 	  hardware hash accelerator. Supporting MD5/SHA1/SHA224/SHA256
- 	  hashing algorithms.
- 
--config CRYPTO_DEV_SUN4I_SS
--	tristate "Support for Allwinner Security System cryptographic accelerator"
--	depends on ARCH_SUNXI && !64BIT
--	depends on PM
--	select CRYPTO_MD5
--	select CRYPTO_SHA1
--	select CRYPTO_AES
--	select CRYPTO_LIB_DES
--	select CRYPTO_BLKCIPHER
--	help
--	  Some Allwinner SoC have a crypto accelerator named
--	  Security System. Select this if you want to use it.
--	  The Security System handle AES/DES/3DES ciphers in CBC mode
--	  and SHA1 and MD5 hash algorithms.
--
--	  To compile this driver as a module, choose M here: the module
--	  will be called sun4i-ss.
--
--config CRYPTO_DEV_SUN4I_SS_PRNG
--	bool "Support for Allwinner Security System PRNG"
--	depends on CRYPTO_DEV_SUN4I_SS
--	select CRYPTO_RNG
--	help
--	  Select this option if you want to provide kernel-side support for
--	  the Pseudo-Random Number Generator found in the Security System.
--
- config CRYPTO_DEV_ROCKCHIP
- 	tristate "Rockchip's Cryptographic Engine driver"
- 	depends on OF && ARCH_ROCKCHIP
-diff --git a/drivers/crypto/Makefile b/drivers/crypto/Makefile
-index 90d60eff5ecc..79e2da4a51e4 100644
---- a/drivers/crypto/Makefile
-+++ b/drivers/crypto/Makefile
-@@ -40,7 +40,6 @@ obj-$(CONFIG_CRYPTO_DEV_ROCKCHIP) += rockchip/
- obj-$(CONFIG_CRYPTO_DEV_S5P) += s5p-sss.o
- obj-$(CONFIG_CRYPTO_DEV_SAHARA) += sahara.o
- obj-$(CONFIG_ARCH_STM32) += stm32/
--obj-$(CONFIG_CRYPTO_DEV_SUN4I_SS) += sunxi-ss/
- obj-$(CONFIG_CRYPTO_DEV_TALITOS) += talitos.o
- obj-$(CONFIG_CRYPTO_DEV_UX500) += ux500/
- obj-$(CONFIG_CRYPTO_DEV_VIRTIO) += virtio/
-diff --git a/drivers/crypto/allwinner/Kconfig b/drivers/crypto/allwinner/Kconfig
-index a3e5781fa95e..9c445973ca08 100644
---- a/drivers/crypto/allwinner/Kconfig
-+++ b/drivers/crypto/allwinner/Kconfig
-@@ -5,6 +5,33 @@ config CRYPTO_DEV_ALLWINNER
- 	help
- 	  Say Y here to get to see options for Allwinner hardware crypto devices
- 
-+config CRYPTO_DEV_SUN4I_SS
-+	tristate "Support for Allwinner Security System cryptographic accelerator"
-+	depends on ARCH_SUNXI && !64BIT
-+	depends on PM
-+	depends on CRYPTO_DEV_ALLWINNER
-+	select CRYPTO_MD5
-+	select CRYPTO_SHA1
-+	select CRYPTO_AES
-+	select CRYPTO_LIB_DES
-+	select CRYPTO_BLKCIPHER
-+	help
-+	  Some Allwinner SoC have a crypto accelerator named
-+	  Security System. Select this if you want to use it.
-+	  The Security System handle AES/DES/3DES ciphers in CBC mode
-+	  and SHA1 and MD5 hash algorithms.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called sun4i-ss.
-+
-+config CRYPTO_DEV_SUN4I_SS_PRNG
-+	bool "Support for Allwinner Security System PRNG"
-+	depends on CRYPTO_DEV_SUN4I_SS
-+	select CRYPTO_RNG
-+	help
-+	  Select this option if you want to provide kernel-side support for
-+	  the Pseudo-Random Number Generator found in the Security System.
-+
- config CRYPTO_DEV_SUN8I_CE
- 	tristate "Support for Allwinner Crypto Engine cryptographic offloader"
- 	select CRYPTO_BLKCIPHER
-diff --git a/drivers/crypto/allwinner/Makefile b/drivers/crypto/allwinner/Makefile
-index 11f02db9ee06..fdb720c5bcc7 100644
---- a/drivers/crypto/allwinner/Makefile
-+++ b/drivers/crypto/allwinner/Makefile
-@@ -1 +1,2 @@
-+obj-$(CONFIG_CRYPTO_DEV_SUN4I_SS) += sun4i-ss/
- obj-$(CONFIG_CRYPTO_DEV_SUN8I_CE) += sun8i-ce/
-diff --git a/drivers/crypto/sunxi-ss/Makefile b/drivers/crypto/allwinner/sun4i-ss/Makefile
-similarity index 100%
-rename from drivers/crypto/sunxi-ss/Makefile
-rename to drivers/crypto/allwinner/sun4i-ss/Makefile
-diff --git a/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-similarity index 100%
-rename from drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
-rename to drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-diff --git a/drivers/crypto/sunxi-ss/sun4i-ss-core.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-similarity index 100%
-rename from drivers/crypto/sunxi-ss/sun4i-ss-core.c
-rename to drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-diff --git a/drivers/crypto/sunxi-ss/sun4i-ss-hash.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-similarity index 100%
-rename from drivers/crypto/sunxi-ss/sun4i-ss-hash.c
-rename to drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-diff --git a/drivers/crypto/sunxi-ss/sun4i-ss-prng.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
-similarity index 100%
-rename from drivers/crypto/sunxi-ss/sun4i-ss-prng.c
-rename to drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
-diff --git a/drivers/crypto/sunxi-ss/sun4i-ss.h b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
-similarity index 100%
-rename from drivers/crypto/sunxi-ss/sun4i-ss.h
-rename to drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
+For the moment, the driver support only DES3/AES in ECB/CBC mode.
+Patchs for CTR/CTS, RSA and RNGs will came later.
+
+This serie is tested with CRYPTO_MANAGER_EXTRA_TESTS
+and tested on:
+sun8i-a83t-bananapi-m3
+sun9i-a80-cubieboard4
+
+This serie is based on top of the "crypto: add sun8i-ce driver for
+Allwinner crypto engine" serie.
+
+Regards
+
+Changes since v1:
+- fixed uninitialized err in sun8i_ss_allocate_chanlist
+- Added missing commit description on DT Documentation patch
+
+Corentin Labbe (4):
+  crypto: Add Allwinner sun8i-ss cryptographic offloader
+  dt-bindings: crypto: Add DT bindings documentation for sun8i-ss
+    Security System
+  ARM: dts: sun8i: a83t: Add Security System node
+  ARM: dts: sun9i: a80: Add Security System node
+
+ .../bindings/crypto/allwinner,sun8i-ss.yaml   |  64 ++
+ arch/arm/boot/dts/sun8i-a83t.dtsi             |  10 +
+ arch/arm/boot/dts/sun9i-a80.dtsi              |  10 +
+ drivers/crypto/allwinner/Kconfig              |  28 +
+ drivers/crypto/allwinner/Makefile             |   1 +
+ drivers/crypto/allwinner/sun8i-ss/Makefile    |   2 +
+ .../allwinner/sun8i-ss/sun8i-ss-cipher.c      | 438 ++++++++++++
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 642 ++++++++++++++++++
+ drivers/crypto/allwinner/sun8i-ss/sun8i-ss.h  | 218 ++++++
+ 9 files changed, 1413 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/crypto/allwinner,sun8i-ss.yaml
+ create mode 100644 drivers/crypto/allwinner/sun8i-ss/Makefile
+ create mode 100644 drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ss/sun8i-ss.h
+
 -- 
 2.21.0
 
