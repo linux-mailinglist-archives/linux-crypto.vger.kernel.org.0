@@ -2,135 +2,59 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0FDE1C0F
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Oct 2019 15:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B59AE1CBB
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Oct 2019 15:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391172AbfJWNO4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 23 Oct 2019 09:14:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389590AbfJWNO4 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 23 Oct 2019 09:14:56 -0400
-Received: from earth.universe (monacowifi.monaco.mc [82.113.13.92])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D31E21906;
-        Wed, 23 Oct 2019 13:14:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571836495;
-        bh=E6T55uP3FrNoFRn1ScztDiriAouaJNVm+C23qSgGr54=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KRZo+1m99h+6klvOJNcfToHQwLue1EIjCd65zwAMbXCJmUecwaD6rTEZZMg9+kYGQ
-         X5a4WwTr2/f7Tv+/O8EavXhqMgoo2QXEcQz50Xv0uqv9yVI1aI0ToD4bwbFdEjF4FY
-         xMiNVRLd3aBYkcz5+MbbKBcELuqBmnzcS8WN5k6k=
-Received: by earth.universe (Postfix, from userid 1000)
-        id 6FA8C3C09B2; Wed, 23 Oct 2019 15:14:52 +0200 (CEST)
-Date:   Wed, 23 Oct 2019 15:14:52 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Adam Ford <aford173@gmail.com>,
-        Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>,
-        Tero Kristo <t-kristo@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwrng: omap3-rom - Fix unused function warnings
-Message-ID: <20191023131452.2rilepif7x5lpfma@earth.universe>
-References: <20191022142741.1794378-1-arnd@arndb.de>
+        id S2405893AbfJWNfy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Oct 2019 09:35:54 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:33380 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405885AbfJWNfy (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 23 Oct 2019 09:35:54 -0400
+Received: by mail-wr1-f66.google.com with SMTP id s1so13381166wro.0
+        for <linux-crypto@vger.kernel.org>; Wed, 23 Oct 2019 06:35:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=dVgB2gHwyu9BrwAHrTVrhxxTLMnU+GjkCtVmW3QXNgU=;
+        b=A1sd8nVHR9uQiD6rSXLgHcb6vg4kFg7r/FfCmaHMEeG2j1uzf1nh3DYJkiiBVZu2qj
+         bsmAtgviGlo3pT0ngfbu6AAf5yZLtRcexjFysB1x6NNudh6B2YXeL+JCmYe/Pdd/lSjT
+         XcRLLOZ0SG7LIUiBtxeOJRj3C1Ezj0PI+9bklCPVqfih7jgRZdAGtb6QTKoSvtV/1BDE
+         mb+p6NjTDDmrbU0EYA+SCru29kjbvnnWyMiXfeIBQ729+AfSfPbTdwz1KpdmVfOwgDzm
+         dl2OpmhcdldHP3izLtWZ0bxyOVJelURFhyDtu0OXmdHX06VPzu+XdFJ8OHbuIlou9yln
+         zNrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=dVgB2gHwyu9BrwAHrTVrhxxTLMnU+GjkCtVmW3QXNgU=;
+        b=csu7lusN5gCh7vH/Py9uQKV/QSP5Rd4Im9GOD6M4rQWxJhPA622ppUly1+2VVvM5jI
+         H5QqzRiche16l8nl4TTmudynWAc/FfPJRN7QcVxw5L0tpu1lkWJx/T3GT2Swys0j+2+I
+         AYNUwspdYq4t18EBMgi8yUOIBufhdJIgK2WSiQPKifajhrfqDTzUBhNWuaoT32VMHnvQ
+         jy8FS42jFnrBt8k/V1ECCoHEe96YmP8610cdmwhg7nu4Cuds9ic/OHmHE75xBUcSuSZo
+         0dG6XZei6w7AN0JpNnHGRaxz94I8xODOgFJPGvkKpOGyGuYQLBmCs93noo9Y6bQoh4P6
+         VRsg==
+X-Gm-Message-State: APjAAAVD2HwmAIEt2bWi0j1kkqN5VNBz82FconI7I3SsEL3GErp482n8
+        CBm5EZuIyf5U1ycANkOBoRKJMQx83fIKd+esE38=
+X-Google-Smtp-Source: APXvYqwlaomCfDlYbNNF8YV7bmOiA+RBcC2Lj4IMuUuRMpLg0+bmLmxHgplYSxfX9KJ2jH/5Utbw4xrv7YTsiZGNk50=
+X-Received: by 2002:adf:dbc4:: with SMTP id e4mr8432672wrj.354.1571837752639;
+ Wed, 23 Oct 2019 06:35:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sf4hte6kcc3ifsee"
-Content-Disposition: inline
-In-Reply-To: <20191022142741.1794378-1-arnd@arndb.de>
-User-Agent: NeoMutt/20180716
+Received: by 2002:a5d:400a:0:0:0:0:0 with HTTP; Wed, 23 Oct 2019 06:35:51
+ -0700 (PDT)
+Reply-To: mrs.lisarobinson746@gmail.com
+From:   "Mrs. Lisa" <helpdesk.eit.ac.nz@gmail.com>
+Date:   Wed, 23 Oct 2019 06:35:51 -0700
+Message-ID: <CAK7Er8ZGwF5nM0uBJxWx9uuPAN=Bbc0y8Jfd5b0stynKODG32g@mail.gmail.com>
+Subject: Mrs. Lisa Charity Donation
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-
---sf4hte6kcc3ifsee
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Tue, Oct 22, 2019 at 04:27:31PM +0200, Arnd Bergmann wrote:
-> When runtime-pm is disabled, we get a few harmless warnings:
->=20
-> drivers/char/hw_random/omap3-rom-rng.c:65:12: error: unused function 'oma=
-p_rom_rng_runtime_suspend' [-Werror,-Wunused-function]
-> drivers/char/hw_random/omap3-rom-rng.c:81:12: error: unused function 'oma=
-p_rom_rng_runtime_resume' [-Werror,-Wunused-function]
->=20
-> Mark these functions as __maybe_unused so gcc can drop them
-> silently.
->=20
-> Fixes: 8d9d4bdc495f ("hwrng: omap3-rom - Use runtime PM instead of custom=
- functions")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-
--- Sebastian
-
->  drivers/char/hw_random/omap3-rom-rng.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/char/hw_random/omap3-rom-rng.c b/drivers/char/hw_ran=
-dom/omap3-rom-rng.c
-> index 0b90983c95c8..e08a8887e718 100644
-> --- a/drivers/char/hw_random/omap3-rom-rng.c
-> +++ b/drivers/char/hw_random/omap3-rom-rng.c
-> @@ -62,7 +62,7 @@ static int omap3_rom_rng_read(struct hwrng *rng, void *=
-data, size_t max, bool w)
->  	return r;
->  }
-> =20
-> -static int omap_rom_rng_runtime_suspend(struct device *dev)
-> +static int __maybe_unused omap_rom_rng_runtime_suspend(struct device *de=
-v)
->  {
->  	struct omap_rom_rng *ddata;
->  	int r;
-> @@ -78,7 +78,7 @@ static int omap_rom_rng_runtime_suspend(struct device *=
-dev)
->  	return 0;
->  }
-> =20
-> -static int omap_rom_rng_runtime_resume(struct device *dev)
-> +static int __maybe_unused omap_rom_rng_runtime_resume(struct device *dev)
->  {
->  	struct omap_rom_rng *ddata;
->  	int r;
-> --=20
-> 2.20.0
->=20
-
---sf4hte6kcc3ifsee
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl2wUkQACgkQ2O7X88g7
-+prkIQ//eDW6JCdb1BVZK+8ld4GNb5f9QiGBp78CEzw4Nt7b9sjiSkuODvtpwUEz
-LUYeSj3XJErABjT9CEteFHYmXlS4Tge9a12s4596KR1sut3960u83ZSVMD2MaFd7
-jnNp9oZsiJivbZPWMqCiFPxpaV8nmvYvnyX5yMgDFrAMFFS6qk2w6ZznJctahXzs
-WyKmQQTOc7wFo0AsT3iomSxZsyPKjPWUcXF1fO49Anzka3+6aV5k6mmEVEhMep/r
-txA1zr6Fw3OKwF72r1x1bg2VcLluU4K66cm8R636W1FzujvHUgkWYr3BcUwaCqwr
-LlTzvVokm6Pq2L9hFVIo5WrCP2qnnlzKXu6M0BoFcSWq0sXi2slhE1J1jlg63NpG
-nHn/cpu8DPDfvZ/SdvDfESCGaMubItcv4EhauN/Ar8x2buf3duK4OE4ApJGUWnOV
-BzghZnt1iY6y1JC4Rbnl6NJYaZm54sYjMildCKza4OuoLYGeTZKEM/bqpbiVodtI
-Rm4nUpxCkZ2vfI2XxyDYuxmzzF/lu+1oZOTHDpVlv0OlqAJhgXzvUiuikMxS+6xQ
-LSAzY1uG14pfrwKAUtWoh1vG/ZVoK5UpRYyhBnAAPcXH3C4h6TKxBwGCJ0BrhLmI
-PfZIF2uCFofMB8Q3A8/cGxx6WGVgKWU1xkQhGr51TMgxA13+vwk=
-=uPzb
------END PGP SIGNATURE-----
-
---sf4hte6kcc3ifsee--
+-- 
+I am Lisa Robinson, you have a donation of $1,200,000.00 USD. Contact
+me now for more information.
