@@ -2,98 +2,110 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A365FE240F
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Oct 2019 22:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD5FE2A95
+	for <lists+linux-crypto@lfdr.de>; Thu, 24 Oct 2019 08:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391530AbfJWUK2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 23 Oct 2019 16:10:28 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:45802 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391332AbfJWUK1 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 23 Oct 2019 16:10:27 -0400
-Received: by mail-wr1-f68.google.com with SMTP id q13so18491642wrs.12;
-        Wed, 23 Oct 2019 13:10:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dpe0zCbR3c1VkH/n1U/vOC6ekNORqcDkTSfYoQ4laf4=;
-        b=iYHQNJHmQbhRm4umf4o2ihYkcxoZoiFdeHMW6g10R+LYk5ClYI4rP3GaTktcJuUIHs
-         HQxSdartm1UsLMWKhma8Fk31En2dOM4r2stHvB3TA3irwopFfnmnJgBlfRzzTghStD2s
-         GEEHGXA872OvJ1TKQGRg2cPB6BTvcxXH1bO/eoTHqiGOhdX8rBj91SV3fjkggIM5BcqC
-         1nSU9YcIIHbmiRPK6g9Ow7QzAra7eBFzUePfQEgLpZ1XMk9KleGi4Qspt84bWr2ayqVV
-         g74jQvyQLno/hsohQwudKYKam9vDmUnAZ3u+qGslOtIYgygjF0A+6Oef1qTS2U+tU3Fu
-         6/gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dpe0zCbR3c1VkH/n1U/vOC6ekNORqcDkTSfYoQ4laf4=;
-        b=JsqEu1OkOViFVOPSddnXhaVFrxrM5795x42E6cedm4ZLhiObQ2nr/MdrOFGOEMJpxf
-         aVok/lw2BgMPVCK7j5umZxpHY9tf6NszxVpsIoCi63KJ281gTR72r54IaJMMOgUwwHN0
-         dZ7eBjFp27ExZ0rgRAk31fIDy6QbUVh3mjAQWNgogzAqBW+4kKik6e2pIqUgvI1gKuR4
-         UmUD0b6OjSuG+Laru1SW7TkslDhsm5vlKF7rOaoPdXC4QS8gCMAh1RJ01cPphJZDopIX
-         veevbdhLni1clV2fuaEytfYWOfxCMysXSnp2ghq3lhNTDbzQ1QLhE7403HWd4yBQJMZ/
-         cvAg==
-X-Gm-Message-State: APjAAAVoHKsLOGDDTN7aNcMtMQjiMUUpAE2ivztBq+nP373hgxhYuRNJ
-        guSXbMl04rc+wsvagROmFqI=
-X-Google-Smtp-Source: APXvYqz68Wn9kNMfnDrY2c9bI9xvs8OblM3ux7zEgB84kOYTwNMVTM+UoHgwIP1ztIVFRF33kYRzyw==
-X-Received: by 2002:a5d:4d46:: with SMTP id a6mr480347wru.196.1571861425413;
-        Wed, 23 Oct 2019 13:10:25 -0700 (PDT)
-Received: from Red.localdomain (lfbn-1-7036-79.w90-116.abo.wanadoo.fr. [90.116.209.79])
-        by smtp.googlemail.com with ESMTPSA id h17sm277261wmb.33.2019.10.23.13.10.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2019 13:10:24 -0700 (PDT)
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        mark.rutland@arm.com, mripard@kernel.org, robh+dt@kernel.org,
-        wens@csie.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S2437797AbfJXGuJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 24 Oct 2019 02:50:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437772AbfJXGuJ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 24 Oct 2019 02:50:09 -0400
+Received: from localhost (lfbn-1-10718-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 277AF20856;
+        Thu, 24 Oct 2019 06:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1571899808;
+        bh=vwDg4QSnLPpz0IdyymC3+iUBe78FE7J5ogjvzY1gXeo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d2OqChICAciMS2Otm1pRPt3j2bUApcX3Wd4AGCQdAHdYPsDJf6mDvkzJ18Yt5pl6g
+         Hh3htj5C1ye5pjj++MCDdViPGeVj+ZGLbM186VaDZ4vGMIkN7nhePLxgARH+Q/y5Uk
+         ppyycWTlrYS7dVW/cyv98/FuxuKmGhSSo5wCM0us=
+Date:   Thu, 24 Oct 2019 08:50:05 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mark.rutland@arm.com, robh+dt@kernel.org, wens@csie.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH v2 4/4] ARM: dts: sun9i: a80: Add Security System node
-Date:   Wed, 23 Oct 2019 22:10:16 +0200
-Message-Id: <20191023201016.26195-5-clabbe.montjoie@gmail.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191023201016.26195-1-clabbe.montjoie@gmail.com>
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v2 2/4] dt-bindings: crypto: Add DT bindings
+ documentation for sun8i-ss Security System
+Message-ID: <20191024065005.hdypdl2dgqsrry5i@gilmour>
 References: <20191023201016.26195-1-clabbe.montjoie@gmail.com>
+ <20191023201016.26195-3-clabbe.montjoie@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191023201016.26195-3-clabbe.montjoie@gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patchs the node for sun8i-ss which is availlable on the A80.
+Hi,
 
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- arch/arm/boot/dts/sun9i-a80.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+On Wed, Oct 23, 2019 at 10:10:14PM +0200, Corentin Labbe wrote:
+> This patch adds documentation for Device-Tree bindings of the
+> Security System cryptographic offloader driver.
+>
+> Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> ---
+>  .../bindings/crypto/allwinner,sun8i-ss.yaml   | 64 +++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/crypto/allwinner,sun8i-ss.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ss.yaml b/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ss.yaml
+> new file mode 100644
+> index 000000000000..99b7736975bc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ss.yaml
+> @@ -0,0 +1,64 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/crypto/allwinner,sun8i-ss.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Allwinner Security System v2 driver
+> +
+> +maintainers:
+> +  - Corentin Labbe <corentin.labbe@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - allwinner,sun8i-a83t-crypto
+> +      - allwinner,sun9i-a80-crypto
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Bus clock
+> +      - description: Module clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: bus
+> +      - const: mod
+> +
+> +  resets:
+> +    maxItems: 1
 
-diff --git a/arch/arm/boot/dts/sun9i-a80.dtsi b/arch/arm/boot/dts/sun9i-a80.dtsi
-index b9b6fb00be28..d7498a1a158e 100644
---- a/arch/arm/boot/dts/sun9i-a80.dtsi
-+++ b/arch/arm/boot/dts/sun9i-a80.dtsi
-@@ -457,6 +457,16 @@
- 			reg = <0x01700000 0x100>;
- 		};
- 
-+		crypto: crypto@1c02000 {
-+			compatible = "allwinner,sun9i-a80-crypto";
-+			reg = <0x01c02000 0x1000>;
-+			interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
-+			resets = <&ccu RST_BUS_SS>;
-+			reset-names = "bus";
-+			clocks = <&ccu CLK_BUS_SS>, <&ccu CLK_SS>;
-+			clock-names = "bus", "mod";
-+		};
-+
- 		mmc0: mmc@1c0f000 {
- 			compatible = "allwinner,sun9i-a80-mmc";
- 			reg = <0x01c0f000 0x1000>;
--- 
-2.21.0
+The A83t at least has a reset line, so please make a condition to have
+it required.
 
+> +  reset-names:
+> +    const: bus
+
+You don't need reset-names at all in that binding.
+
+Maxime
