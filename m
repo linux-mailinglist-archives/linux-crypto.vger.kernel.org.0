@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C83EE53F7
-	for <lists+linux-crypto@lfdr.de>; Fri, 25 Oct 2019 20:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E09E53F5
+	for <lists+linux-crypto@lfdr.de>; Fri, 25 Oct 2019 20:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbfJYSvs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 25 Oct 2019 14:51:48 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:40573 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727477AbfJYSvi (ORCPT
+        id S1726985AbfJYSvm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 25 Oct 2019 14:51:42 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:45294 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727741AbfJYSvj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 25 Oct 2019 14:51:38 -0400
-Received: by mail-wm1-f66.google.com with SMTP id w9so3037172wmm.5;
-        Fri, 25 Oct 2019 11:51:37 -0700 (PDT)
+        Fri, 25 Oct 2019 14:51:39 -0400
+Received: by mail-wr1-f68.google.com with SMTP id q13so3471057wrs.12;
+        Fri, 25 Oct 2019 11:51:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KGIesSOkGwApOOGAHM3QK9LBzsdCUeL5VgZ/hmT4hUE=;
-        b=TTLBq6NzJND6uythkPOsimx2qWJ7DMULExibFcNOgQWbcW69NIJNz/Zd5EAUfhoS6B
-         E2z/IT4ilfKnetfuBDXXmmIoSvjqWeWo/1OSrV9PvPQA8wh+0YKJZ8vutfc8AxE4fD1t
-         rqtKB8EshoYKYPUGt9p6i0gQl2FYA5R6jukLSfiFQnDgPYjAMLOLF+1YBseLOP1Wkp0i
-         BEv7DgUrz7wqhn6MsGgZ5pY85pc88tujKIDxtoM7SFuVBxkl5jQpdkD2OKE8dV72JuUg
-         4MZq2szS214OMD19ifPgd2SeQgdRnBsCaGO/cIHYs+YlX/sjVN5tRCMHnkMfq84WdHGY
-         tAjg==
+        bh=Q+iACLBvw6hCCkNMWVDo9dYY6POCxwyjg5JBiN7Fojg=;
+        b=hH3PiQ5/C4qYxSEafpBHVzLMCHo2J8w8CaFH8dzSqQ5dZQ1MdF+nCFkUgvxrVhHu8N
+         6Pr0NJNWZh9Js2JvQrcAuP69DLEmY4RJL4gWcoK+FSrWyjs/h2iJc1laowwR21SEV9c+
+         h+6quHN/6rLXtZjjds2vwt8sBLwdegz5sY3/GxPIltxQx5GkF9/BKHswcwmBOBwQeWpn
+         e/D00AkZX6JGayCqws4pD6jJNusH42MeN+iFdJd3fV3tDxS25lziBRXb0x693TkEkijj
+         LcCvy1j9ZnkYDKjrN/8Bt3rx6ZsgAclMOtJpyNI15d4GWcPH7L8YYqrFNLuuKARVPgpl
+         GQ2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KGIesSOkGwApOOGAHM3QK9LBzsdCUeL5VgZ/hmT4hUE=;
-        b=fcEqa/tofXY1MhFW3cM0/oSyZSJU1278VPzeNYKVfybQi5HvAic5K61r6ljnHeuRya
-         zv6A4QsnEZmM4aFabxMLjyM+T28hPVoeMKqG+sw/lZzKGIxlF/XSkZZIt6lA8XRkSTa/
-         6SxMzTb4b2McvY33ylVuwc48GcWMUazYAjGj3IIvFoEh05Cum/nPjSmkKfPcAXamgb/O
-         YN9VPgMppnVDhnG0KRwKNOLtdSCwwdX29gh0tcKccgLglp5M2LiHT6yge/PT4e3qGhvZ
-         AqYBgO1fMQN29EEtQy7euBP0BQMnmKEEYx1NfhCbq4f3rjZKqNj7SvErEXWtsq5MADgs
-         GqPA==
-X-Gm-Message-State: APjAAAUG/KdG3TxU9UoY9O3VQ07CXLnRBwYo4NXwTCOP6h3MFhAPBnpJ
-        5pAm24Dd2JHvAoAvY8D3cAg=
-X-Google-Smtp-Source: APXvYqxDRsHU/WrPkh4yTXfAT1FOirDWF/0Tj/sFEhqwQGBDLAVkLi7VgtoybQ85lECKmR5+LYyBeQ==
-X-Received: by 2002:a7b:ce84:: with SMTP id q4mr4528137wmj.36.1572029496587;
-        Fri, 25 Oct 2019 11:51:36 -0700 (PDT)
+        bh=Q+iACLBvw6hCCkNMWVDo9dYY6POCxwyjg5JBiN7Fojg=;
+        b=R3NkAuCU5vOwfVVjMsHJxQu9emoyhNa136ZxFvT7K1T3sUszuZGQHKlMvaecxyTuSJ
+         wzfIJfHgrPQY7G6/CDntPiszGlfbN+o+4I6HtcVFtJV2CR8vsb+dtx5XLeNErcaJkQby
+         Vh+7cSYbDOucJ9a3uEwpbN2MPE1cxnIqQIIOckoQSjGaqPN4RS7OEhEEug+hf8dLMJO7
+         igULcPB2KiMR4hv+lwGjbSZfd5ehiV0ZgaT6adfQ03tPIYF7GNRrSiCy7l5O/49yFBZE
+         xYu+C2qsbIdDloK9Ktmzj1fsqk7HEVRf5av8ESUhP+Tpql0N9bSrhnHT/+lz/6dL9nG7
+         9rzA==
+X-Gm-Message-State: APjAAAUz5/XnIlJ6yAdOdRq1mg+q9/+s5bPzjqO4TQGIr+LQoc4+RM80
+        qVq+jctouMgwwuO7axjosuI=
+X-Google-Smtp-Source: APXvYqw6fwwDvCcymz+NQ1L4FhDY53LrjehhsmqG/5kU0ansV1t3WcjQGsP4tlyreAjV4OdTXN0m8Q==
+X-Received: by 2002:a5d:4283:: with SMTP id k3mr4346397wrq.236.1572029497894;
+        Fri, 25 Oct 2019 11:51:37 -0700 (PDT)
 Received: from Red.localdomain (lfbn-1-7036-79.w90-116.abo.wanadoo.fr. [90.116.209.79])
-        by smtp.googlemail.com with ESMTPSA id l22sm4821683wrb.45.2019.10.25.11.51.35
+        by smtp.googlemail.com with ESMTPSA id l22sm4821683wrb.45.2019.10.25.11.51.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2019 11:51:36 -0700 (PDT)
+        Fri, 25 Oct 2019 11:51:37 -0700 (PDT)
 From:   Corentin Labbe <clabbe.montjoie@gmail.com>
 To:     davem@davemloft.net, herbert@gondor.apana.org.au,
         mark.rutland@arm.com, mripard@kernel.org, p.zabel@pengutronix.de,
@@ -53,9 +53,9 @@ Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com,
         Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH v3 3/4] ARM: dts: sun8i: a83t: Add Security System node
-Date:   Fri, 25 Oct 2019 20:51:27 +0200
-Message-Id: <20191025185128.24068-4-clabbe.montjoie@gmail.com>
+Subject: [PATCH v3 4/4] ARM: dts: sun9i: a80: Add Security System node
+Date:   Fri, 25 Oct 2019 20:51:28 +0200
+Message-Id: <20191025185128.24068-5-clabbe.montjoie@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191025185128.24068-1-clabbe.montjoie@gmail.com>
 References: <20191025185128.24068-1-clabbe.montjoie@gmail.com>
@@ -70,33 +70,33 @@ The Security System is a hardware cryptographic accelerator that support
 AES/MD5/SHA1/DES/3DES/PRNG/RSA algorithms.
 It could be found on Allwinner SoC A80 and A83T
 
-This patch adds it on the Allwinner A83T SoC Device-tree.
+This patch adds it on the Allwinner A80 SoC Device-tree.
 
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
- arch/arm/boot/dts/sun8i-a83t.dtsi | 9 +++++++++
+ arch/arm/boot/dts/sun9i-a80.dtsi | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-a83t.dtsi b/arch/arm/boot/dts/sun8i-a83t.dtsi
-index 74bb053cf23c..53c38deb8a08 100644
---- a/arch/arm/boot/dts/sun8i-a83t.dtsi
-+++ b/arch/arm/boot/dts/sun8i-a83t.dtsi
-@@ -583,6 +583,15 @@
- 			reg = <0x1c14000 0x400>;
+diff --git a/arch/arm/boot/dts/sun9i-a80.dtsi b/arch/arm/boot/dts/sun9i-a80.dtsi
+index b5c46934b5b1..1d900f591d5f 100644
+--- a/arch/arm/boot/dts/sun9i-a80.dtsi
++++ b/arch/arm/boot/dts/sun9i-a80.dtsi
+@@ -457,6 +457,15 @@
+ 			reg = <0x01700000 0x100>;
  		};
  
-+		crypto: crypto@1c15000 {
-+			compatible = "allwinner,sun8i-a83t-crypto";
-+			reg = <0x01c15000 0x1000>;
++		crypto: crypto@1c02000 {
++			compatible = "allwinner,sun9i-a80-crypto";
++			reg = <0x01c02000 0x1000>;
 +			interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
 +			resets = <&ccu RST_BUS_SS>;
 +			clocks = <&ccu CLK_BUS_SS>, <&ccu CLK_SS>;
 +			clock-names = "bus", "mod";
 +		};
 +
- 		usb_otg: usb@1c19000 {
- 			compatible = "allwinner,sun8i-a83t-musb",
- 				     "allwinner,sun8i-a33-musb";
+ 		mmc0: mmc@1c0f000 {
+ 			compatible = "allwinner,sun9i-a80-mmc";
+ 			reg = <0x01c0f000 0x1000>;
 -- 
 2.21.0
 
