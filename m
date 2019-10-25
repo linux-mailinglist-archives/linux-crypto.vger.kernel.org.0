@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CCCE5492
-	for <lists+linux-crypto@lfdr.de>; Fri, 25 Oct 2019 21:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312BEE5495
+	for <lists+linux-crypto@lfdr.de>; Fri, 25 Oct 2019 21:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727547AbfJYTpY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 25 Oct 2019 15:45:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43790 "EHLO mail.kernel.org"
+        id S1727551AbfJYTpZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 25 Oct 2019 15:45:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727543AbfJYTpY (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 25 Oct 2019 15:45:24 -0400
+        id S1727545AbfJYTpZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 25 Oct 2019 15:45:25 -0400
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5A7B21D81
+        by mail.kernel.org (Postfix) with ESMTPSA id E67B721D82
         for <linux-crypto@vger.kernel.org>; Fri, 25 Oct 2019 19:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572032723;
-        bh=jkpKxXyYn0u1RzNF5gaPc7wqx1vcfBZwfbducWpI+Lo=;
+        s=default; t=1572032724;
+        bh=Uz30zkD8i+4maJkolb49XrN1RYHmbyvgQ1ee7eQO1/4=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=YjBUsmpAMHSAHjDAx6Podv8bMmTmxvTVqfIT3mSJPS40nWO2SWcSuPnJKoY1nkp9V
-         mBykMfF7ekesWvxFqFwfKooPNvJveRuNrVdaNsbkNgbQL1gZUs7ORKGUwcxZhYOCMQ
-         FsPZhxd3U/2e52m/irOuUs+featMzfbG7bakK7jE=
+        b=PkqQs0m2JfSbxoxUORRyjy2kjtUJiuLsmIDzyqzl9iuA4wnCYdmsJkTmHoVy/1n7p
+         hivTvuksH0Egyv3ww6e2DWFfOdt22CCLr4IKFrWr5+JKe7fJklyA5LDfc66aFqqJLD
+         79mEr2gsR7rFri3Gp91Mo8DzZCogYmVK7u8e+5kU=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 1/5] crypto: unify the crypto_has_skcipher*() functions
-Date:   Fri, 25 Oct 2019 12:41:09 -0700
-Message-Id: <20191025194113.217451-2-ebiggers@kernel.org>
+Subject: [PATCH 2/5] crypto: remove crypto_has_ablkcipher()
+Date:   Fri, 25 Oct 2019 12:41:10 -0700
+Message-Id: <20191025194113.217451-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191025194113.217451-1-ebiggers@kernel.org>
 References: <20191025194113.217451-1-ebiggers@kernel.org>
@@ -40,75 +40,79 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-crypto_has_skcipher() and crypto_has_skcipher2() do the same thing: they
-check for the availability of an algorithm of type skcipher, blkcipher,
-or ablkcipher, which also meets any non-type constraints the caller
-specified.  And they have exactly the same prototype.
-
-Therefore, eliminate the redundancy by removing crypto_has_skcipher()
-and renaming crypto_has_skcipher2() to crypto_has_skcipher().
+crypto_has_ablkcipher() has no users, and it does the same thing as
+crypto_has_skcipher() anyway.  So remove it.  This also removes the last
+user of crypto_skcipher_type() and crypto_skcipher_mask(), so remove
+those too.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/skcipher.c         |  4 ++--
- include/crypto/skcipher.h | 19 +------------------
- 2 files changed, 3 insertions(+), 20 deletions(-)
+ Documentation/crypto/api-skcipher.rst |  2 +-
+ include/linux/crypto.h                | 31 ---------------------------
+ 2 files changed, 1 insertion(+), 32 deletions(-)
 
-diff --git a/crypto/skcipher.c b/crypto/skcipher.c
-index 22753c1c7202..233678d07816 100644
---- a/crypto/skcipher.c
-+++ b/crypto/skcipher.c
-@@ -1017,12 +1017,12 @@ struct crypto_sync_skcipher *crypto_alloc_sync_skcipher(
- }
- EXPORT_SYMBOL_GPL(crypto_alloc_sync_skcipher);
+diff --git a/Documentation/crypto/api-skcipher.rst b/Documentation/crypto/api-skcipher.rst
+index 20ba08dddf2e..55e0851f6fed 100644
+--- a/Documentation/crypto/api-skcipher.rst
++++ b/Documentation/crypto/api-skcipher.rst
+@@ -41,7 +41,7 @@ Asynchronous Block Cipher API - Deprecated
+    :doc: Asynchronous Block Cipher API
  
--int crypto_has_skcipher2(const char *alg_name, u32 type, u32 mask)
-+int crypto_has_skcipher(const char *alg_name, u32 type, u32 mask)
- {
- 	return crypto_type_has_alg(alg_name, &crypto_skcipher_type2,
- 				   type, mask);
- }
--EXPORT_SYMBOL_GPL(crypto_has_skcipher2);
-+EXPORT_SYMBOL_GPL(crypto_has_skcipher);
+ .. kernel-doc:: include/linux/crypto.h
+-   :functions: crypto_free_ablkcipher crypto_has_ablkcipher crypto_ablkcipher_ivsize crypto_ablkcipher_blocksize crypto_ablkcipher_setkey crypto_ablkcipher_reqtfm crypto_ablkcipher_encrypt crypto_ablkcipher_decrypt
++   :functions: crypto_free_ablkcipher crypto_ablkcipher_ivsize crypto_ablkcipher_blocksize crypto_ablkcipher_setkey crypto_ablkcipher_reqtfm crypto_ablkcipher_encrypt crypto_ablkcipher_decrypt
  
- static int skcipher_prepare_alg(struct skcipher_alg *alg)
- {
-diff --git a/include/crypto/skcipher.h b/include/crypto/skcipher.h
-index aada87916918..e34993f5d190 100644
---- a/include/crypto/skcipher.h
-+++ b/include/crypto/skcipher.h
-@@ -218,30 +218,13 @@ static inline void crypto_free_sync_skcipher(struct crypto_sync_skcipher *tfm)
-  * crypto_has_skcipher() - Search for the availability of an skcipher.
-  * @alg_name: is the cra_name / name or cra_driver_name / driver name of the
-  *	      skcipher
+ Asynchronous Cipher Request Handle - Deprecated
+ -----------------------------------------------
+diff --git a/include/linux/crypto.h b/include/linux/crypto.h
+index 19ea3a371d7b..b7855743f7e3 100644
+--- a/include/linux/crypto.h
++++ b/include/linux/crypto.h
+@@ -900,20 +900,6 @@ static inline struct crypto_ablkcipher *__crypto_ablkcipher_cast(
+ 	return (struct crypto_ablkcipher *)tfm;
+ }
+ 
+-static inline u32 crypto_skcipher_type(u32 type)
+-{
+-	type &= ~CRYPTO_ALG_TYPE_MASK;
+-	type |= CRYPTO_ALG_TYPE_BLKCIPHER;
+-	return type;
+-}
+-
+-static inline u32 crypto_skcipher_mask(u32 mask)
+-{
+-	mask &= ~CRYPTO_ALG_TYPE_MASK;
+-	mask |= CRYPTO_ALG_TYPE_BLKCIPHER_MASK;
+-	return mask;
+-}
+-
+ /**
+  * DOC: Asynchronous Block Cipher API
+  *
+@@ -959,23 +945,6 @@ static inline void crypto_free_ablkcipher(struct crypto_ablkcipher *tfm)
+ 	crypto_free_tfm(crypto_ablkcipher_tfm(tfm));
+ }
+ 
+-/**
+- * crypto_has_ablkcipher() - Search for the availability of an ablkcipher.
+- * @alg_name: is the cra_name / name or cra_driver_name / driver name of the
+- *	      ablkcipher
 - * @type: specifies the type of the cipher
 - * @mask: specifies the mask for the cipher
 - *
-- * Return: true when the skcipher is known to the kernel crypto API; false
+- * Return: true when the ablkcipher is known to the kernel crypto API; false
 - *	   otherwise
 - */
--static inline int crypto_has_skcipher(const char *alg_name, u32 type,
+-static inline int crypto_has_ablkcipher(const char *alg_name, u32 type,
 -					u32 mask)
 -{
 -	return crypto_has_alg(alg_name, crypto_skcipher_type(type),
 -			      crypto_skcipher_mask(mask));
 -}
 -
--/**
-- * crypto_has_skcipher2() - Search for the availability of an skcipher.
-- * @alg_name: is the cra_name / name or cra_driver_name / driver name of the
-- *	      skcipher
-  * @type: specifies the type of the skcipher
-  * @mask: specifies the mask for the skcipher
-  *
-  * Return: true when the skcipher is known to the kernel crypto API; false
-  *	   otherwise
-  */
--int crypto_has_skcipher2(const char *alg_name, u32 type, u32 mask);
-+int crypto_has_skcipher(const char *alg_name, u32 type, u32 mask);
- 
- static inline const char *crypto_skcipher_driver_name(
- 	struct crypto_skcipher *tfm)
+ static inline struct ablkcipher_tfm *crypto_ablkcipher_crt(
+ 	struct crypto_ablkcipher *tfm)
+ {
 -- 
 2.23.0
 
