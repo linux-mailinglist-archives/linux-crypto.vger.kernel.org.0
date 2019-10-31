@@ -2,80 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AF2EAAD1
-	for <lists+linux-crypto@lfdr.de>; Thu, 31 Oct 2019 08:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BBBEAB08
+	for <lists+linux-crypto@lfdr.de>; Thu, 31 Oct 2019 08:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbfJaHCR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 31 Oct 2019 03:02:17 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5658 "EHLO huawei.com"
+        id S1726971AbfJaHjO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 31 Oct 2019 03:39:14 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:52452 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726535AbfJaHCR (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 31 Oct 2019 03:02:17 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 269BFEE5CC8800A2EB72;
-        Thu, 31 Oct 2019 15:02:15 +0800 (CST)
-Received: from [127.0.0.1] (10.177.251.225) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Thu, 31 Oct 2019
- 15:02:08 +0800
-Subject: [PATCH v3] crypto: arm64/aes-neonbs - add return value of
- skcipher_walk_done() in __xts_crypt()
-From:   Yunfeng Ye <yeyunfeng@huawei.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <ard.biesheuvel@linaro.org>, <linux-crypto@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <hushiyuan@huawei.com>,
-        "linfeilong@huawei.com" <linfeilong@huawei.com>
-References: <aaf0f585-3a06-8af1-e2f1-ab301e560d49@huawei.com>
-Message-ID: <32b39396-d514-524f-a85c-3bc627454ba7@huawei.com>
-Date:   Thu, 31 Oct 2019 15:01:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726965AbfJaHjN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 31 Oct 2019 03:39:13 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 41608BD17B82B6EAD804;
+        Thu, 31 Oct 2019 15:39:10 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.439.0; Thu, 31 Oct 2019 15:39:01 +0800
+From:   Zaibo Xu <xuzaibo@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <jonathan.cameron@huawei.com>,
+        <liulongfang@huawei.com>, <wangzhou1@hisilicon.com>,
+        <linuxarm@huawei.com>, <zhangwei375@huawei.com>,
+        <yekai13@huawei.com>, <forest.zhouchang@huawei.com>
+Subject: [PATCH 0/5] crypto: hisilicon - add HiSilicon SEC V2 support
+Date:   Thu, 31 Oct 2019 15:35:25 +0800
+Message-ID: <1572507330-34502-1-git-send-email-xuzaibo@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <aaf0f585-3a06-8af1-e2f1-ab301e560d49@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.177.251.225]
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
 X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-A warning is found by the static code analysis tool:
-  "Identical condition 'err', second condition is always false"
+This series adds HiSilicon Security Engine (SEC) version 2 controller
+driver in Crypto subsystem. It includes PCIe enabling, Skcipher, DebugFS
+and SRIOV support of SEC.
 
-Fix this by adding return value of skcipher_walk_done().
+This patchset rebases on:
+git://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git
 
-Fixes: 67cfa5d3b721 ("crypto: arm64/aes-neonbs - implement ciphertext stealing for XTS")
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
-Acked-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
-v2 -> v3:
- - add "Acked-by:"
+This patchset is based on:
+https://www.spinics.net/lists/linux-crypto/msg43520.html
 
-v1 -> v2:
- - update the subject and comment
- - add return value of skcipher_walk_done()
+Longfang Liu (1):
+  Documentation: add DebugFS doc for HiSilicon SEC
 
- arch/arm64/crypto/aes-neonbs-glue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Zaibo Xu (4):
+  crypto: hisilicon - add HiSilicon SEC V2 driver
+  crypto: hisilicon - add SRIOV for HiSilicon SEC
+  crypto: hisilicon - add DebugFS for HiSilicon SEC
+  MAINTAINERS: Add maintainer for HiSilicon SEC V2 driver
 
-diff --git a/arch/arm64/crypto/aes-neonbs-glue.c b/arch/arm64/crypto/aes-neonbs-glue.c
-index ea873b8904c4..e3e27349a9fe 100644
---- a/arch/arm64/crypto/aes-neonbs-glue.c
-+++ b/arch/arm64/crypto/aes-neonbs-glue.c
-@@ -384,7 +384,7 @@ static int __xts_crypt(struct skcipher_request *req, bool encrypt,
- 			goto xts_tail;
+ Documentation/ABI/testing/debugfs-hisi-sec |   43 ++
+ MAINTAINERS                                |   10 +
+ drivers/crypto/hisilicon/Kconfig           |   16 +
+ drivers/crypto/hisilicon/Makefile          |    1 +
+ drivers/crypto/hisilicon/sec2/Makefile     |    2 +
+ drivers/crypto/hisilicon/sec2/sec.h        |  156 ++++
+ drivers/crypto/hisilicon/sec2/sec_crypto.c |  862 +++++++++++++++++++++
+ drivers/crypto/hisilicon/sec2/sec_crypto.h |  198 +++++
+ drivers/crypto/hisilicon/sec2/sec_main.c   | 1112 ++++++++++++++++++++++++++++
+ 9 files changed, 2400 insertions(+)
+ create mode 100644 Documentation/ABI/testing/debugfs-hisi-sec
+ create mode 100644 drivers/crypto/hisilicon/sec2/Makefile
+ create mode 100644 drivers/crypto/hisilicon/sec2/sec.h
+ create mode 100644 drivers/crypto/hisilicon/sec2/sec_crypto.c
+ create mode 100644 drivers/crypto/hisilicon/sec2/sec_crypto.h
+ create mode 100644 drivers/crypto/hisilicon/sec2/sec_main.c
 
- 		kernel_neon_end();
--		skcipher_walk_done(&walk, nbytes);
-+		err = skcipher_walk_done(&walk, nbytes);
- 	}
-
- 	if (err || likely(!tail))
 -- 
-2.7.4.3
-
+2.8.1
 
