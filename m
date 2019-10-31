@@ -2,99 +2,258 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D00EB47D
-	for <lists+linux-crypto@lfdr.de>; Thu, 31 Oct 2019 17:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E6EEB66E
+	for <lists+linux-crypto@lfdr.de>; Thu, 31 Oct 2019 18:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728520AbfJaQOs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 31 Oct 2019 12:14:48 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:52437 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbfJaQOs (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 31 Oct 2019 12:14:48 -0400
-Received: by mail-wm1-f67.google.com with SMTP id p21so6550755wmg.2
-        for <linux-crypto@vger.kernel.org>; Thu, 31 Oct 2019 09:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RqwYOiN2KGqpLlf/ZRc9wSeyek8W+EvrYA8vHyutvuA=;
-        b=ATINM0Yf2zbUcYuZGChFzCdl9tiVcNGTXnZN/FdQihGwfv1R1knVJerg3VwNNABN6s
-         wT+Eiw0VzFALW2XPHrTIPuB2DbkxcEWDQvT3ZTtL9m3rGvRFhkcgxpJFn9/OfEiB3ml4
-         z7YMishQmuZ9e+0xW1ZHVE1BAmqq30yMfbABC/TyUghBKz5V5glA5yAjAefPdmoW4LP6
-         xI8qKAbzP6OrQO86hVLXlehsXfiz3fMV7lo0OWNF28/CYlzOrKEkGLSS9bPSX4u+JYbE
-         5Hqb82udeyhoWue7tcoBQCmVOEYFxNDici3SYZIlhmc/srMoCe9lK1mBFC9de2sbId7T
-         SwsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RqwYOiN2KGqpLlf/ZRc9wSeyek8W+EvrYA8vHyutvuA=;
-        b=az6zzSLL5dC4JBvhXBdLsHzAdtn5l4mh8Nq7Iqt9mzbaqCoC8J4bxP6KM4z/+j65T+
-         SQjUhoazFCpLik4gYePm5187dNESnxF1mhwSPSSKeOpMP3urQl3Ju5r/Swnc9bO5szH2
-         /R8CWsvBMExQ93Shm/JIKoNdv+PatvdFx1mZnU+rJfh2buCfuW/CUD+HfPwvFRAcHgQh
-         GOCsv8SHLZSoDu5XcGqYp1r7RtdEc2R5UGtGcivjhxoNWwncwNb4Lkguct66qt4T9oYe
-         Klc4UqtLE2qbU/KiZX6E/kBKB1vrTRkJJYHxje6saTppsQ0vj9e6EifmgwXJ+rWSO2s/
-         Uh6w==
-X-Gm-Message-State: APjAAAWFyks3u6v3ttHfZzORWxD9HnEaAytK/HpGFhrJChcJQD1OWa3O
-        eF0vk9hrQWb2E1sMkT6fSxe1TJsE
-X-Google-Smtp-Source: APXvYqwQ8LNBLKL+kn9h3cPNBvwnnAlIKu+Agn8yoJbc0r3h9y5RTm4P7EIjYxb6YhfxjUyAcSJOMg==
-X-Received: by 2002:a1c:1f03:: with SMTP id f3mr5900613wmf.131.1572538485096;
-        Thu, 31 Oct 2019 09:14:45 -0700 (PDT)
-Received: from debian64.daheim (p200300D5FF0185FC6CD68BFF00000D54.dip0.t-ipconnect.de. [2003:d5:ff01:85fc:6cd6:8bff:0:d54])
-        by smtp.gmail.com with ESMTPSA id b1sm4440305wru.83.2019.10.31.09.14.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Oct 2019 09:14:44 -0700 (PDT)
-Received: from chuck by debian64.daheim with local (Exim 4.92.3)
-        (envelope-from <chunkeey@gmail.com>)
-        id 1iQD5q-0001HG-7A; Thu, 31 Oct 2019 17:14:38 +0100
-From:   Christian Lamparter <chunkeey@gmail.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH] crypto: crypto4xx - fix double-free in crypto4xx_destroy_sdr
-Date:   Thu, 31 Oct 2019 17:14:38 +0100
-Message-Id: <20191031161438.4806-1-chunkeey@gmail.com>
-X-Mailer: git-send-email 2.24.0.rc2
+        id S1729117AbfJaRyB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 31 Oct 2019 13:54:01 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:51318 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726602AbfJaRyA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 31 Oct 2019 13:54:00 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 9F120B745E310E6913F0;
+        Fri,  1 Nov 2019 01:53:58 +0800 (CST)
+Received: from localhost (10.202.226.61) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.439.0; Fri, 1 Nov 2019
+ 01:53:51 +0800
+Date:   Thu, 31 Oct 2019 15:37:11 +0000
+From:   Jonathan Cameron <jonathan.cameron@huawei.com>
+To:     Zhangfei Gao <zhangfei.gao@linaro.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        <grant.likely@arm.com>, jean-philippe <jean-philippe@linaro.org>,
+        "Jerome Glisse" <jglisse@redhat.com>,
+        <ilias.apalodimas@linaro.org>, <francois.ozog@linaro.org>,
+        <kenneth-lee-2012@foxmail.com>, Wangzhou <wangzhou1@hisilicon.com>,
+        "haojian . zhuang" <haojian.zhuang@linaro.org>,
+        <guodong.xu@linaro.org>, <linux-accelerators@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>,
+        Kenneth Lee <liguozhu@hisilicon.com>,
+        Zaibo Xu <xuzaibo@huawei.com>
+Subject: Re: [PATCH v7 1/3] uacce: Add documents for uacce
+Message-ID: <20191031153711.00001708@huawei.com>
+In-Reply-To: <1572331216-9503-2-git-send-email-zhangfei.gao@linaro.org>
+References: <1572331216-9503-1-git-send-email-zhangfei.gao@linaro.org>
+        <1572331216-9503-2-git-send-email-zhangfei.gao@linaro.org>
+Organization: Huawei
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.226.61]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch fixes a crash that can happen during probe
-when the available dma memory is not enough (this can
-happen if the crypto4xx is built as a module).
+On Tue, 29 Oct 2019 14:40:14 +0800
+Zhangfei Gao <zhangfei.gao@linaro.org> wrote:
 
-The descriptor window mapping would end up being free'd
-twice, once in crypto4xx_build_pdr() and the second time
-in crypto4xx_destroy_sdr().
+> From: Kenneth Lee <liguozhu@hisilicon.com>
+> 
+> Uacce (Unified/User-space-access-intended Accelerator Framework) is
+> a kernel module targets to provide Shared Virtual Addressing (SVA)
+> between the accelerator and process.
+> 
+> This patch add document to explain how it works.
+> 
+> Signed-off-by: Kenneth Lee <liguozhu@hisilicon.com>
+> Signed-off-by: Zaibo Xu <xuzaibo@huawei.com>
+> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
+> Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+> ---
+>  Documentation/misc-devices/uacce.rst | 160 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 160 insertions(+)
+>  create mode 100644 Documentation/misc-devices/uacce.rst
+> 
+> diff --git a/Documentation/misc-devices/uacce.rst b/Documentation/misc-devices/uacce.rst
+> new file mode 100644
+> index 0000000..ecd5d8b
+> --- /dev/null
+> +++ b/Documentation/misc-devices/uacce.rst
+> @@ -0,0 +1,160 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +Introduction of Uacce
+> +=========================
 
-Fixes: 5d59ad6eea82 ("crypto: crypto4xx - fix crypto4xx_build_pdr, crypto4xx_build_sdr leak")
-Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
----
- drivers/crypto/amcc/crypto4xx_core.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Fix the underline length to match the title.
 
-diff --git a/drivers/crypto/amcc/crypto4xx_core.c b/drivers/crypto/amcc/crypto4xx_core.c
-index de5e9352e920..7d6b695c4ab3 100644
---- a/drivers/crypto/amcc/crypto4xx_core.c
-+++ b/drivers/crypto/amcc/crypto4xx_core.c
-@@ -365,12 +365,8 @@ static u32 crypto4xx_build_sdr(struct crypto4xx_device *dev)
- 		dma_alloc_coherent(dev->core_dev->device,
- 			PPC4XX_SD_BUFFER_SIZE * PPC4XX_NUM_SD,
- 			&dev->scatter_buffer_pa, GFP_ATOMIC);
--	if (!dev->scatter_buffer_va) {
--		dma_free_coherent(dev->core_dev->device,
--				  sizeof(struct ce_sd) * PPC4XX_NUM_SD,
--				  dev->sdr, dev->sdr_pa);
-+	if (!dev->scatter_buffer_va)
- 		return -ENOMEM;
--	}
- 
- 	for (i = 0; i < PPC4XX_NUM_SD; i++) {
- 		dev->sdr[i].ptr = dev->scatter_buffer_pa +
--- 
-2.24.0.rc2
+> +
+> +Uacce (Unified/User-space-access-intended Accelerator Framework) targets to
+> +provide Shared Virtual Addressing (SVA) between accelerators and processes.
+> +So accelerator can access any data structure of the main cpu.
+> +This differs from the data sharing between cpu and io device, which share
+> +data content rather than address.
+
+which share only data content rather than address.
+
+> +Because of the unified address, hardware and user space of process can
+> +share the same virtual address in the communication.
+> +Uacce takes the hardware accelerator as a heterogeneous processor, while
+> +IOMMU share the same CPU page tables and as a result the same translation
+> +from va to pa.
+> +
+> +	 __________________________       __________________________
+> +	|                          |     |                          |
+> +	|  User application (CPU)  |     |   Hardware Accelerator   |
+> +	|__________________________|     |__________________________|
+> +
+> +	             |                                 |
+> +	             | va                              | va
+> +	             V                                 V
+> +                 __________                        __________
+> +                |          |                      |          |
+> +                |   MMU    |                      |  IOMMU   |
+> +                |__________|                      |__________|
+> +		     |                                 |
+> +	             |                                 |
+> +	             V pa                              V pa
+> +		 _______________________________________
+> +		|                                       |
+> +		|              Memory                   |
+> +		|_______________________________________|
+> +
+> +
+> +
+> +Architecture
+> +------------
+> +
+> +Uacce is the kernel module, taking charge of iommu and address sharing.
+> +The user drivers and libraries are called WarpDrive.
+> +
+> +The uacce device, built around the IOMMU SVA API, can access multiple
+> +address spaces, including the one without PASID.
+> +
+> +A virtual concept, queue, is used for the communication. It provides a
+> +FIFO-like interface. And it maintains a unified address space between the
+> +application and all involved hardware.
+> +
+> +                             ___________________                  ________________
+> +                            |                   |   user API     |                |
+> +                            | WarpDrive library | ------------>  |  user driver   |
+> +                            |___________________|                |________________|
+> +                                     |                                    |
+> +                                     |                                    |
+> +                                     | queue fd                           |
+> +                                     |                                    |
+> +                                     |                                    |
+> +                                     v                                    |
+> +     ___________________         _________                                |
+> +    |                   |       |         |                               | mmap memory
+> +    | Other framework   |       |  uacce  |                               | r/w interface
+> +    | crypto/nic/others |       |_________|                               |
+> +    |___________________|                                                 |
+> +             |                       |                                    |
+> +             | register              | register                           |
+> +             |                       |                                    |
+> +             |                       |                                    |
+> +             |                _________________       __________          |
+> +             |               |                 |     |          |         |
+> +              -------------  |  Device Driver  |     |  IOMMU   |         |
+> +                             |_________________|     |__________|         |
+> +                                     |                                    |
+> +                                     |                                    V
+> +                                     |                            ___________________
+> +                                     |                           |                   |
+> +                                     --------------------------  |  Device(Hardware) |
+> +                                                                 |___________________|
+> +
+> +
+> +How does it work
+> +================
+> +
+> +Uacce uses mmap and IOMMU to play the trick.
+> +
+> +Uacce create a chrdev for every device registered to it. New queue is
+> +created when user application open the chrdev. The file descriptor is used
+> +as the user handle of the queue.
+> +The accelerator device present itself as an Uacce object, which exports as
+> +chrdev to the user space. The user application communicates with the
+> +hardware by ioctl (as control path) or share memory (as data path).
+> +
+> +The control path to the hardware is via file operation, while data path is
+> +via mmap space of the queue fd.
+> +
+> +The queue file address space:
+> +/**
+> + * enum uacce_qfrt: qfrt type
+> + * @UACCE_QFRT_MMIO: device mmio region
+> + * @UACCE_QFRT_DUS: device user share region
+> + */
+> +enum uacce_qfrt {
+> +	UACCE_QFRT_MMIO = 0,
+> +	UACCE_QFRT_DUS = 1,
+> +};
+> +
+> +All regions are optional and differ from device type to type. The
+> +communication protocol is wrapped by the user driver.
+
+Can you have more than one of each? If not state this clearly.
+
+> +
+> +The device mmio region is mapped to the hardware mmio space. It is generally
+> +used for doorbell or other notification to the hardware. It is not fast enough
+> +as data channel.
+> +
+> +The device user share region is used for share data buffer between user process
+> +and device.
+> +
+> +
+> +The Uacce register API
+> +-----------------------
+blank line here.
+
+> +The register API is defined in uacce.h.
+> +
+> +struct uacce_interface {
+> +	char name[UACCE_MAX_NAME_SIZE];
+> +	enum uacce_dev_flag flags;
+
+Having an enum for a flags variable / bitmap is odd.  Just use an
+appropriate sized integer.
+
+> +	struct uacce_ops *ops;
+> +};
+Use indenting to get literal formatting of this block. Will
+give formatting like the code blocks in here compiled:
+https://www.kernel.org/doc/html/latest/driver-api/iio/buffers.html
+
+> +
+> +According to the IOMMU capability, uacce_interface flags can be:
+> +
+> +/**
+> + * enum uacce_dev_flag: Device flags:
+> + * @UACCE_DEV_SVA: Shared Virtual Addresses
+> + *		   Support PASID
+> + *		   Support device page faults (PCI PRI or SMMU Stall)
+> + */
+> +enum uacce_dev_flag {
+> +	UACCE_DEV_SVA = BIT(0),
+> +};
+> +
+> +struct uacce_device *uacce_register(struct device *parent,
+> +				    struct uacce_interface *interface);
+> +void uacce_unregister(struct uacce_device *uacce);
+> +
+> +uacce_register results can be:
+> +a. If uacce module is not compiled, ERR_PTR(-ENODEV)
+> +b. Succeed with the desired flags
+> +c. Succeed with the negotiated flags, for example
+> +   uacce_interface.flags = UACCE_DEV_SVA but uacce->flags = ~UACCE_DEV_SVA
+> +So user driver need check return value as well as the negotiated uacce->flags.
+> +
+> +
+> +The user driver
+> +---------------
+> +
+> +The queue file mmap space will need a user driver to wrap the communication
+> +protocol. Uacce provides some attributes in sysfs for the user driver to
+> +match the right accelerator accordingly.
+> +More details in Documentation/ABI/testing/sysfs-driver-uacce.
+
 
