@@ -2,56 +2,61 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7A9EBD8C
-	for <lists+linux-crypto@lfdr.de>; Fri,  1 Nov 2019 07:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72362EBD92
+	for <lists+linux-crypto@lfdr.de>; Fri,  1 Nov 2019 07:07:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729650AbfKAGHH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 1 Nov 2019 02:07:07 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:37478 "EHLO deadmen.hmeau.com"
+        id S1727492AbfKAGHm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 1 Nov 2019 02:07:42 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:37530 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729274AbfKAGHH (ORCPT <rfc822;linux-crypto@vger.kernel.orG>);
-        Fri, 1 Nov 2019 02:07:07 -0400
+        id S1725784AbfKAGHm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 1 Nov 2019 02:07:42 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1iQQ5S-0001rc-GJ; Fri, 01 Nov 2019 14:07:06 +0800
+        id 1iQQ5n-0001sz-Vi; Fri, 01 Nov 2019 14:07:28 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1iQQ5R-0004p4-Jn; Fri, 01 Nov 2019 14:07:05 +0800
-Date:   Fri, 1 Nov 2019 14:07:05 +0800
+        id 1iQQ5i-0004pU-QY; Fri, 01 Nov 2019 14:07:22 +0800
+Date:   Fri, 1 Nov 2019 14:07:22 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Pascal van Leeuwen <pascalvanl@gmail.com>
-Cc:     linux-crypto@vger.kernel.org, antoine.tenart@bootlin.com,
-        davem@davemloft.net,
-        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
-Subject: Re: [PATCH] crypto: inside-secure - Fixed warnings on inconsistent
- byte order handling
-Message-ID: <20191101060705.inuebiukpfrx4ndd@gondor.apana.org.au>
-References: <1571734903-24443-1-git-send-email-pvanleeuwen@verimatrix.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Adam Ford <aford173@gmail.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Tero Kristo <t-kristo@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwrng: omap3-rom - Fix unused function warnings
+Message-ID: <20191101060722.56nbwi575qpzj65e@gondor.apana.org.au>
+References: <20191022142741.1794378-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1571734903-24443-1-git-send-email-pvanleeuwen@verimatrix.com>
+In-Reply-To: <20191022142741.1794378-1-arnd@arndb.de>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 11:01:43AM +0200, Pascal van Leeuwen wrote:
-> This fixes a bunch of endianness related sparse warnings reported by the
-> kbuild test robot as well as Ben Dooks.
+On Tue, Oct 22, 2019 at 04:27:31PM +0200, Arnd Bergmann wrote:
+> When runtime-pm is disabled, we get a few harmless warnings:
 > 
-> Credits for the fix to safexcel.c go to Ben Dooks.
+> drivers/char/hw_random/omap3-rom-rng.c:65:12: error: unused function 'omap_rom_rng_runtime_suspend' [-Werror,-Wunused-function]
+> drivers/char/hw_random/omap3-rom-rng.c:81:12: error: unused function 'omap_rom_rng_runtime_resume' [-Werror,-Wunused-function]
 > 
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Reported-by: Ben Dooks <ben.dooks@codethink.co.uk>
-> Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+> Mark these functions as __maybe_unused so gcc can drop them
+> silently.
+> 
+> Fixes: 8d9d4bdc495f ("hwrng: omap3-rom - Use runtime PM instead of custom functions")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/crypto/inside-secure/safexcel.c        |  5 +-
->  drivers/crypto/inside-secure/safexcel.h        |  4 +-
->  drivers/crypto/inside-secure/safexcel_cipher.c | 88 ++++++++++++--------------
->  drivers/crypto/inside-secure/safexcel_hash.c   | 31 +++++----
->  4 files changed, 61 insertions(+), 67 deletions(-)
+>  drivers/char/hw_random/omap3-rom-rng.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
 Patch applied.  Thanks.
 -- 
