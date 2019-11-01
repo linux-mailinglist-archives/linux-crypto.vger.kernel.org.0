@@ -2,60 +2,61 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDDBEBE4E
-	for <lists+linux-crypto@lfdr.de>; Fri,  1 Nov 2019 08:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1103BEBF2B
+	for <lists+linux-crypto@lfdr.de>; Fri,  1 Nov 2019 09:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728529AbfKAHEX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 1 Nov 2019 03:04:23 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5678 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727038AbfKAHEX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 1 Nov 2019 03:04:23 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E5EF8A8D770151638263;
-        Fri,  1 Nov 2019 15:04:20 +0800 (CST)
-Received: from [127.0.0.1] (10.63.139.185) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Fri, 1 Nov 2019
- 15:04:16 +0800
-Subject: Re: [PATCH] crypto: hisilicon - use sgl API to get sgl dma addr and
- len
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-References: <1572058641-173376-1-git-send-email-wangzhou1@hisilicon.com>
- <20191101061307.xu2d7hjjhxddlzyw@gondor.apana.org.au>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>
-From:   Zhou Wang <wangzhou1@hisilicon.com>
-Message-ID: <5DBBD8F1.2020605@hisilicon.com>
-Date:   Fri, 1 Nov 2019 15:04:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.5.1
+        id S1729942AbfKAIYS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 1 Nov 2019 04:24:18 -0400
+Received: from mga18.intel.com ([134.134.136.126]:38372 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730284AbfKAIYS (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 1 Nov 2019 04:24:18 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 01 Nov 2019 01:24:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,254,1569308400"; 
+   d="scan'208";a="402158208"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Nov 2019 01:24:16 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1iQSEC-000Hou-DM; Fri, 01 Nov 2019 16:24:16 +0800
+Date:   Fri, 1 Nov 2019 16:24:09 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [cryptodev:master 150/163]
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c:558:52-53: Unneeded
+ semicolon
+Message-ID: <201911011602.zkLvFEQE%lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20191101061307.xu2d7hjjhxddlzyw@gondor.apana.org.au>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.63.139.185]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Patchwork-Hint: ignore
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 2019/11/1 14:13, Herbert Xu wrote:
-> On Sat, Oct 26, 2019 at 10:57:21AM +0800, Zhou Wang wrote:
->> Use sgl API to get sgl dma addr and len, this will help to avoid compile
->> error in some platforms. So NEED_SG_DMA_LENGTH can be removed here, which
->> can only be selected by arch code.
->>
->> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
->> Suggested-by: Herbert Xu <herbert@gondor.apana.org.au>
->> ---
->>  drivers/crypto/hisilicon/Kconfig | 1 -
->>  drivers/crypto/hisilicon/sgl.c   | 4 ++--
->>  2 files changed, 2 insertions(+), 3 deletions(-)
-> 
-> Patch applied.  Thanks.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
+head:   298b4c604008025b134bc6fccbc4018449945d60
+commit: 06f751b613296cc34b86fc83fccaf30d646eb8bc [150/163] crypto: allwinner - Add sun8i-ce Crypto Engine
 
-Thanks.
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
 
-> 
 
+coccinelle warnings: (new ones prefixed by >>)
+
+>> drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c:558:52-53: Unneeded semicolon
+
+Please review and possibly fold the followup patch.
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
