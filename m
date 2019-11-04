@@ -2,468 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 973ECEC93E
-	for <lists+linux-crypto@lfdr.de>; Fri,  1 Nov 2019 20:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B47ED85F
+	for <lists+linux-crypto@lfdr.de>; Mon,  4 Nov 2019 06:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727270AbfKATvy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 1 Nov 2019 15:51:54 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:42756 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbfKATvx (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 1 Nov 2019 15:51:53 -0400
-Received: by mail-lj1-f193.google.com with SMTP id n5so362282ljc.9
-        for <linux-crypto@vger.kernel.org>; Fri, 01 Nov 2019 12:51:51 -0700 (PDT)
+        id S1727551AbfKDFQi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 4 Nov 2019 00:16:38 -0500
+Received: from mail-me1aus01hn2109.outbound.protection.outlook.com ([52.103.198.109]:38014
+        "EHLO AUS01-ME1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725857AbfKDFQi (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 4 Nov 2019 00:16:38 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AInkYC0NutD3XUQ1KYTV+4+q94RrGYtlXlvapp/Xi0NInjeLS08ldPlblFMSSItpXQ/FVRT//x+h3lBs6+LCPtf8/+sLA63f9HM9CfL8s5+6QqB43nZrkTCLj3pyu6078iUyhUyp6lZoIlVWpD7UXQIcBeGyr/2LUUNRT8NWNF9y+zFdBOYEvmmVm39oPRNNyr+GhfbKzH9q+UDP2InM0Tf6iC7/nIlV9KPXXpducJxzSvu1CSStDozOsglf97Tm02ihRI68xiEbVUURIQxlvlOak0nz3gMEROpujwcps+n6YtYc6mxLWCoRAkWXOx11Grn2UMja9D3RcI9MoKM+jg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XHR0LCawLQw0BrBRQk0jwmF0DuSo7ydVLux3J63rn44=;
+ b=mZ+maIdPZyyKjoTChVXsJcWP5T4cr/BJUEnLBmoo9uYwpvPNA7eiIoLhkOnammd2c6fond6bLW17Lt9a13v4i2dXnvuMQ0SxTps9z3GVAbZgCH+d1/mu7V/rsBFU9MY9B/PWUVnPGnfz1ZdFGI5cjnqYvjJ377h8wLUuZbp6S7TjCtfoyueZTih9QFSNThNB6LP4knC+rrGsvNxpPGMUymsUVFuLPgYHDgkVnElI4pPh0WZBEb9dmKYuuN18qBFGVpwk6p2jgCHp8iB6gRA9nC6hmPfaRDnIQ6gQgCiY2EQMKskfWaZArTbHrr8LCV3dh0VV/Z7A4FsXdDLPpBPEyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=student.uts.edu.au; dmarc=pass action=none
+ header.from=student.uts.edu.au; dkim=pass header.d=student.uts.edu.au;
+ arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version;
-        bh=5ha11ZVkcxZ26lpTg0eOSwyU3b6PXye9IzhfITxqsys=;
-        b=MsefNbDbNw/+ubsvVPmNC1TQJN5WyAjshdy8W5cUPMaHJmo/yFD55kxLnopLXRo8U7
-         pnkZ5EvEQsY7I9taHenM3OYadlDn6gT26H33wNf7+CgPJ9URtlwxfpimsDv2ez1KlQIw
-         zsQJdkdoakzmDoKqFcAAoDbLwnrOaEOtJ72ibB3Qlj5q0VrjzVeEsaaMuH8fBTAZiWHN
-         iorSgud3kpoOgzOAfhYABj69bF/N+2WiM6LRHK9Ver0P7s5+onLbYqkG3MupMOPR36Rj
-         Zr/f9y0QCrjnEpuBhGOTWVPzydPfigV/NY0dSm9SG31QuHx4qmGV/Q50PQuGtfTqZApD
-         22Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version;
-        bh=5ha11ZVkcxZ26lpTg0eOSwyU3b6PXye9IzhfITxqsys=;
-        b=tXjXQCZG5erCrnmal5PFEZVEftApnQKV1O4T2ix8dfSTexC5399OyCuGrnYlstdY4E
-         kUgDNpG+Qb0KK8tnj4i1yt+9klHvbveH93vDRH/6sWr61rVf6cUsNPbQQm7dByi85Dv+
-         YXymadhYW20ozKGoOMBLeJEcHTRJacw5ee5smG3VST5NP1a2hEE2M0vYHt7L3pNyRBiy
-         a1qK4oISsl8Mkf2k1Gm74hcbbNZelhkZfW+hyxWOm3HqwIy/ubsx+n2v1YB4oIjTrmTc
-         8TsygvCnzJhJpGlWPYScFjq0tNNiM26G2hSWtzETk+KKcD/wNeticf1R5bNQi+tmqxB4
-         yALg==
-X-Gm-Message-State: APjAAAVfkYOSQYI47P7DLmVAV4BTTJv4Cb6ETjMDz/Out0VEvu00qrnu
-        rhUdAI4+SuFFGo5/7ManeIxaWw==
-X-Google-Smtp-Source: APXvYqwWyKrngAw3GUgVjrTW/vPRUzJgh6qNmbG8mvTpwFdL86YoU7neKf95TDIpirLajjt+fNX9rQ==
-X-Received: by 2002:a2e:a16d:: with SMTP id u13mr9747217ljl.214.1572637911013;
-        Fri, 01 Nov 2019 12:51:51 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id s26sm919319ljj.12.2019.11.01.12.51.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Nov 2019 12:51:50 -0700 (PDT)
-Date:   Fri, 1 Nov 2019 12:51:39 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        oss-drivers@netronome.com, borisp@mellanox.com,
-        aviadye@mellanox.com, daniel@iogearbox.net,
-        syzbot+f8495bff23a879a6d0bd@syzkaller.appspotmail.com,
-        syzbot+6f50c99e8f6194bf363f@syzkaller.appspotmail.com,
-        Eric Biggers <ebiggers@kernel.org>,
-        herbert@gondor.apana.org.au, glider@google.com,
-        linux-crypto@vger.kernel.org
-Subject: Re: [oss-drivers] Re: [PATCH net] net/tls: fix sk_msg trim on
- fallback to copy mode
-Message-ID: <20191101125139.77eb57aa@cakuba.netronome.com>
-In-Reply-To: <20191101102238.7f56cb84@cakuba.netronome.com>
-References: <20191030160542.30295-1-jakub.kicinski@netronome.com>
-        <5dbb5ac1c208d_4c722b0ec06125c0cc@john-XPS-13-9370.notmuch>
-        <20191031152444.773c183b@cakuba.netronome.com>
-        <5dbbb83d61d0c_46342ae580f765bc78@john-XPS-13-9370.notmuch>
-        <20191031215444.68a12dfe@cakuba.netronome.com>
-        <5dbc48ac3a8cc_e4e2b12b10265b8a1@john-XPS-13-9370.notmuch>
-        <20191101102238.7f56cb84@cakuba.netronome.com>
-Organization: Netronome Systems, Ltd.
+ d=studentutsedu.onmicrosoft.com; s=selector2-studentutsedu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XHR0LCawLQw0BrBRQk0jwmF0DuSo7ydVLux3J63rn44=;
+ b=fz5GhvrJ3/2eYjF1qZdZd4xM6fiTA6X39kpapgObn7pWKlQbrWa/q2KjgdsDzplpzG3o2qFRCMyXhdxkFx2BQk7cNf83okzfyB1TjUU2z8aM8V+C8vD6RQKMd+O5/7I9Xu/k3/PiQJjSR5bRH1fo/6TSKJYYQ3Gy2rKFKMHDrcA=
+Received: from SYAPR01MB3022.ausprd01.prod.outlook.com (52.134.181.151) by
+ SYAPR01MB2303.ausprd01.prod.outlook.com (52.134.178.141) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2408.24; Mon, 4 Nov 2019 05:16:34 +0000
+Received: from SYAPR01MB3022.ausprd01.prod.outlook.com
+ ([fe80::7102:dff3:2053:e07d]) by SYAPR01MB3022.ausprd01.prod.outlook.com
+ ([fe80::7102:dff3:2053:e07d%4]) with mapi id 15.20.2408.024; Mon, 4 Nov 2019
+ 05:16:34 +0000
+From:   Donation For You <12965430@student.uts.edu.au>
+To:     Lucy Parsons <Lucy.E.Parsons@student.uts.edu.au>
+Subject: Donation For You 
+Thread-Topic: Donation For You 
+Thread-Index: AQHVks7Ar0Zgp5TYEEGnrp3bm+rDVA==
+Date:   Mon, 4 Nov 2019 05:14:35 +0000
+Message-ID: <SYAPR01MB3022C3DD40DA17AFA4BB43B8A17F0@SYAPR01MB3022.ausprd01.prod.outlook.com>
+Reply-To: "g00glewinner2019@gmail.com" <g00glewinner2019@gmail.com>
+Accept-Language: en-AU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM0PR02CA0014.eurprd02.prod.outlook.com
+ (2603:10a6:208:3e::27) To SYAPR01MB3022.ausprd01.prod.outlook.com
+ (2603:10c6:1:b::23)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Lucy.E.Parsons@student.uts.edu.au; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-antivirus: Avast (VPS 191102-0, 11/02/2019), Outbound message
+x-antivirus-status: Clean
+x-originating-ip: [176.216.208.109]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 85faa4dd-57d1-473c-3dc7-08d760e5e271
+x-ms-traffictypediagnostic: SYAPR01MB2303:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <SYAPR01MB23032348CFDDCEE9EF90896AAB7F0@SYAPR01MB2303.ausprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-forefront-prvs: 0211965D06
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(136003)(346002)(39860400002)(396003)(366004)(199004)(189003)(786003)(22416003)(81156014)(6862004)(14454004)(8676002)(8796002)(8936002)(52536014)(5003540100004)(305945005)(71190400001)(81166006)(71200400001)(43066004)(7696005)(52116002)(66946007)(66476007)(66556008)(476003)(966005)(64756008)(66446008)(486006)(33656002)(569274001)(26005)(6436002)(186003)(316002)(102836004)(6506007)(386003)(3846002)(6116002)(2171002)(74316002)(7736002)(7116003)(25786009)(99286004)(88552002)(2906002)(478600001)(4743002)(66066001)(3480700005)(5660300002)(66806009)(2860700004)(6306002)(55016002)(7416002)(6636002)(9686003)(558084003)(256004)(553104002)(81742002);DIR:OUT;SFP:1501;SCL:1;SRVR:SYAPR01MB2303;H:SYAPR01MB3022.ausprd01.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:0;MX:1;
+received-spf: None (protection.outlook.com: student.uts.edu.au does not
+ designate permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 73ywA9XPokmsEEuWysD4v6jG0SokXRj1rgiDUO/03JpVFUGCD9hKuhvmLimxmxELAb+id5VX33i6X7xF8AdJ65ZuQrron/y44+nEFnZiV68uhcyO4HF6k0ie1NFrpsfrVCF7OtKVrNT1UDGd2lHV/9FC3DRPDa5zZ2K8VD/oT0x0sbWWm54n1IUnl2yyF0Fhpy1o1QL6tQdTPbjtfZnRAlBgr9k+Gpvd8L/Lepeb6E+owQth8bIWa3ecF7/A2C2o6tX0+PNHwq4JYPEPe6GOPsHUsJcToZYvl2BpzZPpx7uhvcReY956BdmQ9QESaHaN6bW45NRg7iicfooDCodyRqiHt9EeeR0Q1Y5176NDSMC50FryF5chAtwY46qjOZNRjANBERC8OpGedFyXjLvdUEGKoqSKrwRoAsU+zVYEGbiHCM4Gih+RNeZgwNM32XZn
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <D921E6EE791195408F32C85675E771EB@ausprd01.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/y928O4Z.I7HqST5oCUO3V22"
+X-OriginatorOrg: student.uts.edu.au
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85faa4dd-57d1-473c-3dc7-08d760e5e271
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Nov 2019 05:14:35.9943
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e8911c26-cf9f-4a9c-878e-527807be8791
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dE1wQSwQOYqP90bwtWC0/jRdNAf8ZQXfghIkF96pgxH2mqJfqFDy7Nv1hEG3/byaTB7GCHlb9sILj8j1dOCali7qt3ZU0a4lOCsKYmz4d0A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYAPR01MB2303
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---MP_/y928O4Z.I7HqST5oCUO3V22
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Attention ...
 
-On Fri, 1 Nov 2019 10:22:38 -0700, Jakub Kicinski wrote:
-> > > +		msg->sg.copybreak =3D 0;
-> > > +	} else if (sk_msg_iter_dist(msg->sg.start, msg->sg.curr) >
-> > > +		   sk_msg_iter_dist(msg->sg.end, msg->sg.curr)) {
-> > > +		sk_msg_iter_var_prev(i);   =20
-> >=20
-> > I suspect with small update to dist logic the special case could also
-> > be dropped here. But I have a preference for my example above at the
-> > moment. Just getting coffee now so will think on it though. =20
->=20
-> Oka, I like the dist thing, I thought that's where you were going in
-> your first email :)
->=20
-> I need to do some more admin, and then I'll probably write a unit test
-> for this code (use space version).. So we can test either patch with it.
 
-Attaching my "unit test", you should be able to just replace
-sk_msg_trim() with yours and re-run. That said my understanding of the
-expected geometry of the buffer may not be correct :)
+I have decided to donate as part of my promises to charity project in honor=
+ of my deceased wife, who died of cancer.  for a donation, contact for more=
+ information
 
-The patch I posted yesterday, with the small adjustment to set curr to
-start on empty message passes that test, here it is again:
+Mrs.=20
 
------>8-----
+Mavis Wanczyk
 
-=46rom 953df5bc0992e31a2c7863ea8b8e490ba7a07356 Mon Sep 17 00:00:00 2001
-From: Jakub Kicinski <jakub.kicinski@netronome.com>
-Date: Tue, 29 Oct 2019 20:20:49 -0700
-Subject: [PATCH net] net/tls: fix sk_msg trim on fallback to copy mode
-
-sk_msg_trim() tries to only update curr pointer if it falls into
-the trimmed region. The logic, however, does not take into the
-account pointer wrapping that sk_msg_iter_var_prev() does nor
-(as John points out) the fact that msg->sg is a ring buffer.
-
-This means that when the message was trimmed completely, the new
-curr pointer would have the value of MAX_MSG_FRAGS - 1, which is
-neither smaller than any other value, nor would it actually be
-correct.
-
-Special case the trimming to 0 length a little bit and rework
-the comparison between curr and end to take into account wrapping.
-
-This bug caused the TLS code to not copy all of the message, if
-zero copy filled in fewer sg entries than memcopy would need.
-
-Big thanks to Alexander Potapenko for the non-KMSAN reproducer.
-
-v2:
- - take into account that msg->sg is a ring buffer (John).
-
-Fixes: d829e9c4112b ("tls: convert to generic sk_msg interface")
-Suggested-by: John Fastabend <john.fastabend@gmail.com>
-Reported-by: syzbot+f8495bff23a879a6d0bd@syzkaller.appspotmail.com
-Reported-by: syzbot+6f50c99e8f6194bf363f@syzkaller.appspotmail.com
-Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
----
- include/linux/skmsg.h |  9 ++++++---
- net/core/skmsg.c      | 20 +++++++++++++++-----
- 2 files changed, 21 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index e4b3fb4bb77c..ce7055259877 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -139,6 +139,11 @@ static inline void sk_msg_apply_bytes(struct sk_psock =
-*psock, u32 bytes)
- 	}
- }
-=20
-+static inline u32 sk_msg_iter_dist(u32 start, u32 end)
-+{
-+	return end >=3D start ? end - start : end + (MAX_MSG_FRAGS - start);
-+}
-+
- #define sk_msg_iter_var_prev(var)			\
- 	do {						\
- 		if (var =3D=3D 0)				\
-@@ -198,9 +203,7 @@ static inline u32 sk_msg_elem_used(const struct sk_msg =
-*msg)
- 	if (sk_msg_full(msg))
- 		return MAX_MSG_FRAGS;
-=20
--	return msg->sg.end >=3D msg->sg.start ?
--		msg->sg.end - msg->sg.start :
--		msg->sg.end + (MAX_MSG_FRAGS - msg->sg.start);
-+	return sk_msg_iter_dist(msg->sg.start, msg->sg.end);
- }
-=20
- static inline struct scatterlist *sk_msg_elem(struct sk_msg *msg, int whic=
-h)
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index cf390e0aa73d..f87fde3a846c 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -270,18 +270,28 @@ void sk_msg_trim(struct sock *sk, struct sk_msg *msg,=
- int len)
-=20
- 	msg->sg.data[i].length -=3D trim;
- 	sk_mem_uncharge(sk, trim);
-+	/* Adjust copybreak if it falls into the trimmed part of last buf */
-+	if (msg->sg.curr =3D=3D i && msg->sg.copybreak > msg->sg.data[i].length)
-+		msg->sg.copybreak =3D msg->sg.data[i].length;
- out:
--	/* If we trim data before curr pointer update copybreak and current
--	 * so that any future copy operations start at new copy location.
-+	sk_msg_iter_var_next(i);
-+	msg->sg.end =3D i;
-+
-+	/* If we trim data a full sg elem before curr pointer update
-+	 * copybreak and current so that any future copy operations
-+	 * start at new copy location.
- 	 * However trimed data that has not yet been used in a copy op
- 	 * does not require an update.
- 	 */
--	if (msg->sg.curr >=3D i) {
-+	if (!msg->sg.size) {
-+		msg->sg.curr =3D msg->sg.start;
-+		msg->sg.copybreak =3D 0;
-+	} else if (sk_msg_iter_dist(msg->sg.start, msg->sg.curr) >
-+		   sk_msg_iter_dist(msg->sg.end, msg->sg.curr)) {
-+		sk_msg_iter_var_prev(i);
- 		msg->sg.curr =3D i;
- 		msg->sg.copybreak =3D msg->sg.data[i].length;
- 	}
--	sk_msg_iter_var_next(i);
--	msg->sg.end =3D i;
- }
- EXPORT_SYMBOL_GPL(sk_msg_trim);
-=20
 --=20
-2.23.0
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
 
-
---MP_/y928O4Z.I7HqST5oCUO3V22
-Content-Type: text/x-c++src
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=ut.c
-
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-typedef unsigned int u32;
-
-struct sock;
-
-#define MAX_MSG_FRAGS 5
-
-#define WARN_ON(cond)	fprintf(stderr, "WARNING %s:%d\n", __func__, __LINE__)
-
-#define sk_msg_iter_var_prev(var)			\
-	do {						\
-		if (var == 0)				\
-			var = MAX_MSG_FRAGS - 1;	\
-		else					\
-			var--;				\
-	} while (0)
-
-#define sk_msg_iter_var_next(var)			\
-	do {						\
-		var++;					\
-		if (var == MAX_MSG_FRAGS)		\
-			var = 0;			\
-	} while (0)
-
-struct scatterlist {
-	u32				length;
-};
-
-struct sk_msg_sg {
-	u32				start;
-	u32				curr;
-	u32				end;
-	u32				size;
-	u32				copybreak;
-	/* The extra element is used for chaining the front and sections when
-	 * the list becomes partitioned (e.g. end < start). The crypto APIs
-	 * require the chaining.
-	 */
-	struct scatterlist		data[MAX_MSG_FRAGS + 1];
-};
-
-struct sk_msg {
-	struct sk_msg_sg		sg;
-};
-
-static void sk_msg_free_elem(struct sock *sk, struct sk_msg *msg, int i, bool a)
-{
-	msg->sg.data[i].length = 0;
-}
-
-static inline void sk_mem_uncharge() {}
-
-static inline u32 sk_msg_iter_dist(u32 start, u32 end)
-{
-	return end >= start ? end - start : end + (MAX_MSG_FRAGS - start);
-}
-
-void sk_msg_trim(struct sock *sk, struct sk_msg *msg, int len)
-{
-	int trim = msg->sg.size - len;
-	u32 i = msg->sg.end;
-
-	if (trim <= 0) {
-		WARN_ON(trim < 0);
-		return;
-	}
-
-	sk_msg_iter_var_prev(i);
-	msg->sg.size = len;
-	while (msg->sg.data[i].length &&
-	       trim >= msg->sg.data[i].length) {
-		trim -= msg->sg.data[i].length;
-		sk_msg_free_elem(sk, msg, i, true);
-		sk_msg_iter_var_prev(i);
-		if (!trim)
-			goto out;
-	}
-
-	msg->sg.data[i].length -= trim;
-	sk_mem_uncharge(sk, trim);
-	/* Adjust copy break if it falls into the trimmed part of last buf */
-	if (msg->sg.curr == i && msg->sg.copybreak > msg->sg.data[i].length)
-		msg->sg.copybreak = msg->sg.data[i].length;
-out:
-	sk_msg_iter_var_next(i);
-	msg->sg.end = i;
-
-	/* If we trim data a full sg elem before curr pointer update
-	 * copybreak and current so that any future copy operations
-	 * start at new copy location.
-	 * However trimed data that has not yet been used in a copy op
-	 * does not require an update.
-	 */
-	if (!msg->sg.size) {
-		msg->sg.curr = msg->sg.start;
-		msg->sg.copybreak = 0;
-	} else if (sk_msg_iter_dist(msg->sg.start, msg->sg.curr) >
-		   sk_msg_iter_dist(msg->sg.end, msg->sg.curr)) {
-		sk_msg_iter_var_prev(i);
-		msg->sg.curr = i;
-		msg->sg.copybreak = msg->sg.data[i].length;
-	}
-}
-
-#define NOPAREN(...) __VA_ARGS__
-
-static void dump_msg(const char *str, struct sk_msg *msg, const char *end)
-{
-	int i;
-
-	fprintf(stderr, "%s start:%u curr:%u end:%u cb:%3u size:%4u   ",
-		str, msg->sg.start, msg->sg.curr, msg->sg.end,
-		msg->sg.copybreak, msg->sg.size);
-	for (i = 0; i < MAX_MSG_FRAGS; i++)
-		fprintf(stderr, " %3u", msg->sg.data[i].length);
-	fprintf(stderr, "%s", end);
-}
-
-#define test_one(_as, _ac, _acb, _len, _bc, _bcb, _be, _ad...)		\
-	do {								\
-		struct sk_msg msg = {					\
-			.sg = {						\
-				.start		= (_as),		\
-				.curr		= (_ac),		\
-				.end		= 0,			\
-				.copybreak	= (_acb),		\
-			},						\
-		};							\
-		int in_lens[] = { _ad };				\
-		struct sk_msg omsg = {					\
-			.sg = {						\
-				.start		= (_as),		\
-				.curr		= (_bc),		\
-				.end		= (_be),		\
-				.copybreak	= (_bcb),		\
-			},						\
-		};							\
-		int i;							\
-									\
-		for (i = 0; i < sizeof(in_lens)/sizeof(in_lens[0]); i++) { \
-			int var = (i + msg.sg.start) % MAX_MSG_FRAGS;	\
-									\
-			msg.sg.data[var].length = in_lens[i];		\
-			msg.sg.size += in_lens[i];			\
-		}							\
-		msg.sg.end = (msg.sg.start + i) % MAX_MSG_FRAGS;	\
-									\
-		for (i = 0; i < sizeof(in_lens)/sizeof(in_lens[0]); i++) { \
-			int var = (i + msg.sg.start) % MAX_MSG_FRAGS;	\
-			int len = in_lens[i];				\
-									\
-			if ((_len) < omsg.sg.size + len)		\
-				len = (_len) - omsg.sg.size;		\
-			omsg.sg.data[var].length = len;			\
-			omsg.sg.size += len;				\
-		}							\
-									\
-		fprintf(stderr, "test #%2u ", test_ID);			\
-		dump_msg("", &msg, "");					\
-		sk_msg_trim(NULL, &msg, (_len));			\
-									\
-		if (memcmp(&msg, &omsg, sizeof(msg))) {			\
-			fprintf(stderr, "\tfailed\n");			\
-			dump_msg("  result", &msg, "\n");		\
-			dump_msg("  expect", &omsg, "\n");		\
-		} else {						\
-			fprintf(stderr, "\tOKAY\n");			\
-		}							\
-		test_ID++;						\
-} while (0)
-
-static unsigned int test_ID;
-
-int main()
-{
-	test_one(/* start */ 0, /* curr */ 0, /* copybreak */ 200,
-		 /* trim */ 100,
-		 /* curr */ 0, /* copybreak */ 100, /* end */ 1,
-		 /* data */ 200);
-
-	test_one(/* start */ 1, /* curr */ 1, /* copybreak */ 200,
-		 /* trim */ 100,
-		 /* curr */ 1, /* copybreak */ 100, /* end */ 2,
-		 /* data */ 200);
-
-	test_one(/* start */ 1, /* curr */ 1, /* copybreak */ 200,
-		 /* trim */ 300,
-		 /* curr */ 1, /* copybreak */ 200, /* end */ 3,
-		 /* data */ 200, 200);
-
-	test_one(/* start */ 1, /* curr */ 2, /* copybreak */ 200,
-		 /* trim */ 200,
-		 /* curr */ 1, /* copybreak */ 200, /* end */ 2,
-		 /* data */ 200, 200, 200);
-
-	test_one(/* start */ 1, /* curr */ 3, /* copybreak */ 200,
-		 /* trim */ 200,
-		 /* curr */ 1, /* copybreak */ 200, /* end */ 2,
-		 /* data */ 200, 200, 200);
-
-	test_one(/* start */ 1, /* curr */ 2, /* copybreak */ 200,
-		 /* trim */ 0,
-		 /* curr */ 1, /* copybreak */ 0, /* end */ 1,
-		 /* data */ 200, 200, 200);
-
-	test_one(/* start */ 1, /* curr */ 1, /* copybreak */ 200,
-		 /* trim */ 0,
-		 /* curr */ 1, /* copybreak */ 0, /* end */ 1,
-		 /* data */ 200, 200, 200, 200, 200);
-
-	test_one(/* start */ 1, /* curr */ 3, /* copybreak */ 100,
-		 /* trim */ 0,
-		 /* curr */ 1, /* copybreak */ 0, /* end */ 1,
-		 /* data */ 200, 200, 200, 200, 200);
-
-	test_one(/* start */ 1, /* curr */ 0, /* copybreak */ 200,
-		 /* trim */ 0,
-		 /* curr */ 1, /* copybreak */ 0, /* end */ 1,
-		 /* data */ 200, 200, 200, 200, 200);
-
-	test_one(/* start */ 1, /* curr */ 0, /* copybreak */ 200,
-		 /* trim */ 900,
-		 /* curr */ 0, /* copybreak */ 100, /* end */ 1,
-		 /* data */ 200, 200, 200, 200, 200);
-
-	test_one(/* start */ 1, /* curr */ 0, /* copybreak */ 200,
-		 /* trim */ 900,
-		 /* curr */ 0, /* copybreak */ 100, /* end */ 1,
-		 /* data */ 200, 200, 200, 200, 200);
-
-	test_one(/* start */ 0, /* curr */ 1, /* copybreak */ 0,
-		 /* trim */ 100,
-		 /* curr */ 0, /* copybreak */ 100, /* end */ 1,
-		 /* data */ 200);
-
-	test_one(/* start */ 1, /* curr */ 2, /* copybreak */ 0,
-		 /* trim */ 100,
-		 /* curr */ 1, /* copybreak */ 100, /* end */ 2,
-		 /* data */ 200);
-
-	return 0;
-}
-
---MP_/y928O4Z.I7HqST5oCUO3V22--
