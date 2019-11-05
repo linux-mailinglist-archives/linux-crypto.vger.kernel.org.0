@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB422F00E6
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Nov 2019 16:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 942E7F00F2
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Nov 2019 16:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389174AbfKEPOA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 Nov 2019 10:14:00 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:39364 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389081AbfKEPOA (ORCPT
+        id S2389735AbfKEPOB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Nov 2019 10:14:01 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:34522 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389083AbfKEPOA (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Tue, 5 Nov 2019 10:14:00 -0500
-Received: by mail-pl1-f193.google.com with SMTP id o9so2897419plk.6;
-        Tue, 05 Nov 2019 07:13:58 -0800 (PST)
+Received: by mail-pg1-f196.google.com with SMTP id e4so14440142pgs.1;
+        Tue, 05 Nov 2019 07:14:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ueZjgo8+zOkBauD4syvKmnkDBEqPzkBVA/a+VdiSjDw=;
-        b=kuNZZTJcNLgaWQTve3cK09G/lqOeyYrYJtHRrQ3800fNtTWOiIdaz0idiGPul69EUO
-         RuFDZY5FDw4Di7RLTDQR1u6ZYOpIJAwDcoQfy9VlX9Ll1ODjmnF5gCVA0aoPw7t/Km1q
-         w88PKwQc9PBNT+NGEtALv58QjefQFFX+TMwnkXzuC4zpVeGOOvfFkQYQeA1iQYJRvCau
-         vjo2Vvq96GG5Q92xEAb9dIZFX0ngDwL3yMP5NwqZmf1AhFZ0iFIzhFXB09X5gYfGr9Vz
-         X5eO45OzF/XFte/FZq5ZILN6hA/S3ef/VKQGmulQH5rt9H8i3PyzFUOpikGrUC641uZD
-         GrYg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lnPUSmMzWebvtTdv486q9Snfl/2WFziST54BYduBh3o=;
+        b=XG/QQBNPKGJ6gv50UbSrqlzKdX2itOiPE7VJKl/R74saG/ERAsDfNQhdeffdo/6a4n
+         Xc02khRc7A/768W7qVD7LF1YOons3Z7g54+D0qBObKNGu1brcnmrhLZDSzGrgQScGXyR
+         r0m3VP0af4HIV9M+jZg+nrWcqKiQmnSrCMxrzATT5/quiKrTHoBSQjNth3mGHGAceWzF
+         RMA0EtztdrN2Q28Q8yBnTuXMNxO+AvsxkZVSHlDCPbjXsg2B7mx8eszlhylJddSXGLBJ
+         sL4om6upy5VtHL12p4wS4bpQ3Yz7V9vEyO+60/p1SdIhcQ1um9ZEpcbZx3nOqqZExm/9
+         c+VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ueZjgo8+zOkBauD4syvKmnkDBEqPzkBVA/a+VdiSjDw=;
-        b=gR1tDLtBW5MOo6JImDLHiKa3VmZcL9NhSMPvlvI6m5D8oWERos9OGzCMWRdt0Q+CgM
-         HpvxpCRbmw6ge6kHgNWl4Vlbtj/W+rhkTQZxonhu1hlmrCn1K9WQxVxlfgszVj7pd5YS
-         Om4jB9MrZbA0sh84ll1/wef7SebjYvBIraWoL34OKC5k+GDqidTzgfvYgLP9F3irPxrd
-         SiJ4oytuiVU/uBtrEWs25z2vCZCFxjcl5XnvuEkNRrEpvMYiyyOPpO8o5rYVWMo650FY
-         LeI6r1CrtmueTi03xZ524md70ZwKpUWrCfkbxxkiPz+W9BQXDD7iquHcMpjEpb8DshGB
-         l2jw==
-X-Gm-Message-State: APjAAAXra/3gMH7og+db6z9BUjQ4isc3iGOAx4FSsPTAhi+Idw6oHqXg
-        NjlcabBJW//zBQqHD6FMKT3WMKOd
-X-Google-Smtp-Source: APXvYqwcpniO4fZCapUOY4bl/qECba5DWb8wN8JNSRCjGZBIixg3iI1rt8hvWkEkQ0vXDcwnJNUjqg==
-X-Received: by 2002:a17:902:a584:: with SMTP id az4mr32907766plb.74.1572966837627;
-        Tue, 05 Nov 2019 07:13:57 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lnPUSmMzWebvtTdv486q9Snfl/2WFziST54BYduBh3o=;
+        b=KV1jzXhJQMclQJSwkmdcAKPj8x7H5MHRwGWZVGtCo2KtmLiIY3ln2HZmXAkRvdLgXY
+         uvJf60NabRnqP2/kG9tqjX9n9gIbXSNe//bKOS3/EjyB1SMUcdjP5nrWQU6Y15JqKY5D
+         Xdp5kOwiwpFx1YLwmB9T1kvvtHMffZmHgJNtGCEbLnKHFEWgHnreb+q6MV68pPxb62Wo
+         3s+aAj9t0kq65Ep6G8WYP+PUd1VecUTXcKpKwfnLG2zanmD2GzNLqbU0koMd5r51YuPR
+         wtUNXB0BlI9XRsl0iKW0vW5o9pAk0zeeHVKM4GUG/Ilhmtr4L+QnQkzn04wT+rGTskii
+         9yZQ==
+X-Gm-Message-State: APjAAAW79Ira/7vY+IUo/YJoG2cQF2rbRv0yp+pd7BmfQq2igDs0gZZf
+        GW25c/z/pj1tr/0O1fwIX6/GEdt7
+X-Google-Smtp-Source: APXvYqy3BgvociuYQXBbyQoeEhwiYaS8nl6e5wkwxc+83EmsEul+bIOl5i2BY1J5KudjTSNxY6bplg==
+X-Received: by 2002:a63:1c10:: with SMTP id c16mr36036600pgc.183.1572966839471;
+        Tue, 05 Nov 2019 07:13:59 -0800 (PST)
 Received: from localhost.lan (c-67-185-54-80.hsd1.wa.comcast.net. [67.185.54.80])
-        by smtp.gmail.com with ESMTPSA id f7sm23120691pfa.150.2019.11.05.07.13.56
+        by smtp.gmail.com with ESMTPSA id f7sm23120691pfa.150.2019.11.05.07.13.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Nov 2019 07:13:56 -0800 (PST)
+        Tue, 05 Nov 2019 07:13:58 -0800 (PST)
 From:   Andrey Smirnov <andrew.smirnov@gmail.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
@@ -54,10 +54,12 @@ Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Iuliana Prodan <iuliana.prodan@nxp.com>, linux-imx@nxp.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/5] CAAM JR lifecycle
-Date:   Tue,  5 Nov 2019 07:13:48 -0800
-Message-Id: <20191105151353.6522-1-andrew.smirnov@gmail.com>
+Subject: [PATCH 1/5] crypto: caam - use static initialization
+Date:   Tue,  5 Nov 2019 07:13:49 -0800
+Message-Id: <20191105151353.6522-2-andrew.smirnov@gmail.com>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20191105151353.6522-1-andrew.smirnov@gmail.com>
+References: <20191105151353.6522-1-andrew.smirnov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -66,43 +68,46 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Everyone:
+Use static initialization for global variables.
 
-This series is a different approach to addressing the issues brought
-up in [discussion]. This time the proposition is to get away from
-creating per-JR platfrom device, move all of the underlying code into
-caam.ko and disable manual binding/unbinding of the CAAM device via
-sysfs. Note that this series is a rough cut intented to gauge if this
-approach could be acceptable for upstreaming.
+Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc: Chris Healy <cphealy@gmail.com>
+Cc: Lucas Stach <l.stach@pengutronix.de>
+Cc: Horia Geantă <horia.geanta@nxp.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
+Cc: linux-imx@nxp.com
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/crypto/caam/jr.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Thanks,
-Andrey Smirnov
-
-[discussion] lore.kernel.org/lkml/20190904023515.7107-13-andrew.smirnov@gmail.com
-
-Andrey Smirnov (5):
-  crypto: caam - use static initialization
-  crypto: caam - introduce caam_jr_cbk
-  crypto: caam - convert JR API to use struct caam_drv_private_jr
-  crypto: caam - do not create a platform devices for JRs
-  crypto: caam - disable CAAM's bind/unbind attributes
-
- drivers/crypto/caam/Kconfig      |   5 +-
- drivers/crypto/caam/Makefile     |  15 +--
- drivers/crypto/caam/caamalg.c    | 114 ++++++++++----------
- drivers/crypto/caam/caamalg_qi.c |  12 +--
- drivers/crypto/caam/caamhash.c   | 117 +++++++++++----------
- drivers/crypto/caam/caampkc.c    |  67 ++++++------
- drivers/crypto/caam/caampkc.h    |   2 +-
- drivers/crypto/caam/caamrng.c    |  41 ++++----
- drivers/crypto/caam/ctrl.c       |  16 ++-
- drivers/crypto/caam/intern.h     |   3 +-
- drivers/crypto/caam/jr.c         | 173 ++++++++-----------------------
- drivers/crypto/caam/jr.h         |  14 ++-
- drivers/crypto/caam/key_gen.c    |  11 +-
- drivers/crypto/caam/key_gen.h    |   5 +-
- 14 files changed, 275 insertions(+), 320 deletions(-)
-
+diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
+index fc97cde27059..49c98a7f6723 100644
+--- a/drivers/crypto/caam/jr.c
++++ b/drivers/crypto/caam/jr.c
+@@ -23,7 +23,10 @@ struct jr_driver_data {
+ 	spinlock_t		jr_alloc_lock;	/* jr_list lock */
+ } ____cacheline_aligned;
+ 
+-static struct jr_driver_data driver_data;
++static struct jr_driver_data driver_data = {
++	.jr_list = LIST_HEAD_INIT(driver_data.jr_list),
++	.jr_alloc_lock = __SPIN_LOCK_UNLOCKED(driver_data.jr_alloc_lock),
++};
+ static DEFINE_MUTEX(algs_lock);
+ static unsigned int active_devs;
+ 
+@@ -589,8 +592,6 @@ static struct platform_driver caam_jr_driver = {
+ 
+ static int __init jr_driver_init(void)
+ {
+-	spin_lock_init(&driver_data.jr_alloc_lock);
+-	INIT_LIST_HEAD(&driver_data.jr_list);
+ 	return platform_driver_register(&caam_jr_driver);
+ }
+ 
 -- 
 2.21.0
 
