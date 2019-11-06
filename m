@@ -2,77 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E948CF0BE6
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Nov 2019 03:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B84F0D83
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Nov 2019 05:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730571AbfKFCIb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 Nov 2019 21:08:31 -0500
-Received: from shards.monkeyblade.net ([23.128.96.9]:42068 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727252AbfKFCIb (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 5 Nov 2019 21:08:31 -0500
-Received: from localhost (unknown [IPv6:2601:601:9f00:1e2::d71])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 419F81510370C;
-        Tue,  5 Nov 2019 18:08:30 -0800 (PST)
-Date:   Tue, 05 Nov 2019 18:08:29 -0800 (PST)
-Message-Id: <20191105.180829.228337395055155315.davem@davemloft.net>
-To:     jakub.kicinski@netronome.com
-Cc:     netdev@vger.kernel.org, oss-drivers@netronome.com,
-        borisp@mellanox.com, aviadye@mellanox.com,
-        john.fastabend@gmail.com, daniel@iogearbox.net,
-        syzbot+f8495bff23a879a6d0bd@syzkaller.appspotmail.com,
-        syzbot+6f50c99e8f6194bf363f@syzkaller.appspotmail.com,
-        ebiggers@kernel.org, herbert@gondor.apana.org.au,
-        glider@google.com, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH net v2] net/tls: fix sk_msg trim on fallback to copy
- mode
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20191104233657.21054-1-jakub.kicinski@netronome.com>
-References: <20191104233657.21054-1-jakub.kicinski@netronome.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 05 Nov 2019 18:08:30 -0800 (PST)
+        id S1731006AbfKFEDp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Nov 2019 23:03:45 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:37602 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725768AbfKFEDp (ORCPT <rfc822;linux-crypto@vger.kernel.orG>);
+        Tue, 5 Nov 2019 23:03:45 -0500
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1iSCXn-00064F-Uy; Wed, 06 Nov 2019 12:03:44 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1iSCXj-0004XI-Rf; Wed, 06 Nov 2019 12:03:39 +0800
+Date:   Wed, 6 Nov 2019 12:03:39 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 28/29] crypto: remove deprecated and unused ablkcipher
+ support
+Message-ID: <20191106040339.mclk3vyjv3wawmhx@gondor.apana.org.au>
+References: <20191105132826.1838-1-ardb@kernel.org>
+ <20191105132826.1838-29-ardb@kernel.org>
+ <20191105175206.GD757@sol.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191105175206.GD757@sol.localdomain>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Jakub Kicinski <jakub.kicinski@netronome.com>
-Date: Mon,  4 Nov 2019 15:36:57 -0800
+On Tue, Nov 05, 2019 at 09:52:06AM -0800, Eric Biggers wrote:
+>
+> Now that these helpers are trivial, they could be removed and we could just
+> dereference the struct skcipher_alg directly.
 
-> sk_msg_trim() tries to only update curr pointer if it falls into
-> the trimmed region. The logic, however, does not take into the
-> account pointer wrapping that sk_msg_iter_var_prev() does nor
-> (as John points out) the fact that msg->sg is a ring buffer.
-> 
-> This means that when the message was trimmed completely, the new
-> curr pointer would have the value of MAX_MSG_FRAGS - 1, which is
-> neither smaller than any other value, nor would it actually be
-> correct.
-> 
-> Special case the trimming to 0 length a little bit and rework
-> the comparison between curr and end to take into account wrapping.
-> 
-> This bug caused the TLS code to not copy all of the message, if
-> zero copy filled in fewer sg entries than memcopy would need.
-> 
-> Big thanks to Alexander Potapenko for the non-KMSAN reproducer.
-> 
-> v2:
->  - take into account that msg->sg is a ring buffer (John).
-> 
-> Link: https://lore.kernel.org/netdev/20191030160542.30295-1-jakub.kicinski@netronome.com/ (v1)
-> 
-> Fixes: d829e9c4112b ("tls: convert to generic sk_msg interface")
-> Reported-by: syzbot+f8495bff23a879a6d0bd@syzkaller.appspotmail.com
-> Reported-by: syzbot+6f50c99e8f6194bf363f@syzkaller.appspotmail.com
-> Co-developed-by: John Fastabend <john.fastabend@gmail.com>
-> Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+We probably should just keep them to avoid churn.  New code can
+certainly start using them directly.
 
-Applied and queued up for -stable, thanks Jakub.
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
