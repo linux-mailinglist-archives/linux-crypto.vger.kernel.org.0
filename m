@@ -2,222 +2,149 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BC8F1228
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Nov 2019 10:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34D6F1553
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Nov 2019 12:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727220AbfKFJaz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 6 Nov 2019 04:30:55 -0500
-Received: from mail-eopbgr70123.outbound.protection.outlook.com ([40.107.7.123]:42606
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        id S1726402AbfKFLlL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 6 Nov 2019 06:41:11 -0500
+Received: from mail-eopbgr720068.outbound.protection.outlook.com ([40.107.72.68]:63488
+        "EHLO NAM05-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726969AbfKFJaz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 6 Nov 2019 04:30:55 -0500
+        id S1731035AbfKFLlL (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 6 Nov 2019 06:41:11 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LCafYu+20QvPLjLIyYwPlrKBglGht8e4GOF/plcFrx5nBg1SMHKUxXXnhhCAwUJ1cgU5RYsRcP/wizPJLaYZTmQjiFq/jxT0Br3z2XZ1YdAVDz4JSdFboSeMln2E+ZiKNC9tCeKssQB3zjlxifNo3QHLIhpUTg0gzdKdElPGf6dbB2G2P69wHMAYf+Jt/cUm0g+huuzw6EaM/1NdPr7pirSz8lVk77V+eZ1xBjIoTYmH4qSrq7GoBDuIO4Fz7QOsCDh6Njxnwrpqp6sjtwn4wPxG3d9vF9r6YNKsNq9Oz8B5UeTNv31Jc5rQKS23kAl98l8eoWXTqw0HDywypor7Ow==
+ b=ZHAzMb5BbpR+1QRcAe7+rgL329WHcVAQYGZZmXf0Txjcr8BrMZD17mZd0BgVWxhK74ga2tQ+dP/1BEVLiZ/UH0nlXcoj8mDyn14ewTD4wk8JXIJdRih74AX1sw+CcVqifHv4yDMSHL0NwtH5c8Hs5kDI93+qUYHxOnP4KVHLhOchjRELL8IsQTGTqtCtutW3v6KZVTE2J2gNd0GDBnp0Faar0BoVlhiB6ej53HVOTbUQIQBfmzOk1kgqaNpd/ROFkhiLzC4aYAFcJpJS33yPl7Ndgq2nwW4rEt4112KXtfvI4s6vByvTN7V3GCZFwnkYDkfR6eVMUdjBlCCK2oft+w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2nyXs5dyqIgeDM4giU1He8XQNXenqZuVRFE9b1KYmKc=;
- b=A4moI60TkdFukCiI9HKlZtTsJFx8sx6bnd2bGQuzPlJrQdbUPq1zqGqDkQasM90bUFQaNYtyOwarbwqDEllMTZPCEpgMXOymsezDq1ZeELnPYQ+p70ptfB7IyeSkSApRN/iZYE8b2i9Tpf9XXVzmTY7ygd+/9O8GQBjIrYAc50onYRCGG6/JsOcNdOtEJjtpzybyUM8f8o+w334Pka2RFej9OvPMm36FDYkFZ5l+xjWv9L7te6B63ykOlNFrftaqAt5uZs4ySY0Gy6F0OTLudMLQTy8cyiKnhtnj/diSBMlxDh1XpKeA/QrzGlU+t0wRFY6W0su8evihNy4HntHYQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
+ bh=UxexEvfRJvzGJkvTX2fqmfvQNu7V446qEZ9qWQ1rU9g=;
+ b=Gd5iPONQKT9IH7y4kAJPd+R9Uj7FGWckX+bczcK+u8iTPB44yAMX+2WorNIuqxpIZ9K+lH9bVkAeQOkdEGIrwZw1cuQlCXCuoA8hP15g1QKswkFjgVdHbp/0VZNQqDW2rYm6mFBtoHoT9pmCV8Bn36niE8jdk55R8Up7ALVh8o00RNlUHledMy1vwA7D9y8YbY4R/pwVlf9RUevJ7tWUKJVv3Fn2VXBufY1oZ2Ee9/aH4n4rrLHN96TRzAgyqUQE45WBik7z+nOHmgN8BtdQzxLRmerhHxeFO3DxqD/UrBPv2K5+l09ChD67S6ATWPWBmFGOsHTZsmyYP39iitNhHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2nyXs5dyqIgeDM4giU1He8XQNXenqZuVRFE9b1KYmKc=;
- b=RxLA8So9xr3BzhbCbHtVwgvFTkVDCdivq01Y5gqlWNrK/E8DUb9SHV6kDs6/R1ITCq7eupFOA8135YDRAOD1e77uwqEDmBR90NWGBpr976UDyx3vJlBZebKxIgmDu7kRk0TIuE5Zpw+TQcMKL6RSAPyuy/1XbQlk6OZWHzLJZJE=
-Received: from VI1PR07MB5040.eurprd07.prod.outlook.com (20.177.203.20) by
- VI1PR07MB5373.eurprd07.prod.outlook.com (20.178.14.144) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2430.16; Wed, 6 Nov 2019 09:30:49 +0000
-Received: from VI1PR07MB5040.eurprd07.prod.outlook.com
- ([fe80::ec3b:5048:b5f7:2826]) by VI1PR07MB5040.eurprd07.prod.outlook.com
- ([fe80::ec3b:5048:b5f7:2826%5]) with mapi id 15.20.2430.020; Wed, 6 Nov 2019
- 09:30:49 +0000
-From:   "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-To:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-CC:     "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vitaly Andrianov <vitalya@ti.com>
-Subject: [PATCH] hwrng: ks-sa: Add minimum sleep time before ready-polling
-Thread-Topic: [PATCH] hwrng: ks-sa: Add minimum sleep time before
- ready-polling
-Thread-Index: AQHVlITg0NE8JAzt00OCpvrM5iYilQ==
-Date:   Wed, 6 Nov 2019 09:30:49 +0000
-Message-ID: <20191106093019.117233-1-alexander.sverdlin@nokia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [131.228.32.181]
-x-mailer: git-send-email 2.23.0
-x-clientproxiedby: HE1PR05CA0384.eurprd05.prod.outlook.com
- (2603:10a6:7:94::43) To VI1PR07MB5040.eurprd07.prod.outlook.com
- (2603:10a6:803:9c::20)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=alexander.sverdlin@nokia.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 4d1b35ef-0ba8-49de-ff1a-08d7629c026e
-x-ms-traffictypediagnostic: VI1PR07MB5373:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR07MB537311D5B9A1C2D1F5B3D65288790@VI1PR07MB5373.eurprd07.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
-x-forefront-prvs: 02135EB356
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(376002)(366004)(396003)(39860400002)(136003)(199004)(189003)(54906003)(14454004)(4326008)(486006)(476003)(2616005)(478600001)(2351001)(66066001)(6512007)(66946007)(5660300002)(66476007)(64756008)(66556008)(66446008)(25786009)(3846002)(6916009)(7736002)(305945005)(6116002)(6436002)(5640700003)(6486002)(1076003)(36756003)(2501003)(256004)(316002)(2906002)(102836004)(81166006)(8676002)(81156014)(26005)(52116002)(71200400001)(6506007)(386003)(99286004)(71190400001)(186003)(8936002)(86362001)(50226002);DIR:OUT;SFP:1102;SCL:1;SRVR:VI1PR07MB5373;H:VI1PR07MB5040.eurprd07.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: nokia.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UMNilg0pmFrJJqgtgqn/pjJVyTrtuGB8On7lvvCbmmxWrcVvE+ExXKVRzMS0HdDKeAqUI1I3mXw2zgEw1317dZO+XGldcTkJrVJlVLV6W8k6wPvXs92xPhfr3ykCWl2lOO6CnifnjnaT3h2xarmdq9wLjs/tNJKZrttHp51z2PiuxiRUPc0zPJN3wlq4W2KMPQA+VEygiPh2aIcPnhXzM/0YetgZY/eWRwf6QSOZAt/5QTiVC4/Ji+ZU/rqvms66ZQWY1OmGh13lvbUMYYjVQLtzp+/Tg75mELH87IyiypiXiKPVXM4yMt6yUNsYD9q0RlOLnHJIlrijxfZQDZ3o+4HB1wCs6MWbrofiw+g1LHAueA3dn/BfkY0BvoGXSxl60qII9mpEDg3f5lsVDe9xlg/x0LN3cwusQHVMKnF6qEzPDhtJoTwxcco9aUpOQVE2
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ bh=UxexEvfRJvzGJkvTX2fqmfvQNu7V446qEZ9qWQ1rU9g=;
+ b=ixvk4ce+HSTd9UfEMY5LS5M1Ag4rNicpSABVYoVhi2r/rmY57SvmDaJpAQGGCSfgeC31j+l1mBigvY+5eUvVnWN1rmWriPx11HfBJZ1m9SDwAPWahyHxFrAow2uD+TasVe7f+qMlS8IGdp3S3BKoobfM72j4B66Y2HcaLVCuW4E=
+Received: from BN7PR02CA0015.namprd02.prod.outlook.com (2603:10b6:408:20::28)
+ by DM5PR02MB3179.namprd02.prod.outlook.com (2603:10b6:4:66::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2408.24; Wed, 6 Nov
+ 2019 11:40:49 +0000
+Received: from CY1NAM02FT046.eop-nam02.prod.protection.outlook.com
+ (2a01:111:f400:7e45::205) by BN7PR02CA0015.outlook.office365.com
+ (2603:10b6:408:20::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2430.20 via Frontend
+ Transport; Wed, 6 Nov 2019 11:40:49 +0000
+Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ CY1NAM02FT046.mail.protection.outlook.com (10.152.74.232) with Microsoft SMTP
+ Server (version=TLS1_0, cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.20.2387.20
+ via Frontend Transport; Wed, 6 Nov 2019 11:40:48 +0000
+Received: from unknown-38-66.xilinx.com ([149.199.38.66] helo=xsj-pvapsmtp01)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.63)
+        (envelope-from <kalyani.akula@xilinx.com>)
+        id 1iSJg8-0003DM-AE; Wed, 06 Nov 2019 03:40:48 -0800
+Received: from [127.0.0.1] (helo=localhost)
+        by xsj-pvapsmtp01 with smtp (Exim 4.63)
+        (envelope-from <kalyani.akula@xilinx.com>)
+        id 1iSJg3-0005wm-6F; Wed, 06 Nov 2019 03:40:43 -0800
+Received: from [172.23.155.44] (helo=xhdengvm155044.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <kalyania@xilinx.com>)
+        id 1iSJfz-0005wF-JE; Wed, 06 Nov 2019 03:40:39 -0800
+Received: by xhdengvm155044.xilinx.com (Postfix, from userid 23151)
+        id CCFD480396; Wed,  6 Nov 2019 17:10:38 +0530 (IST)
+From:   Kalyani Akula <kalyani.akula@xilinx.com>
+To:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Kalyani Akula <kalyania@xilinx.com>,
+        Harsh Jain <harshj@xilinx.com>,
+        Sarat Chand Savitala <saratcha@xilinx.com>,
+        Mohan Marutirao Dhanawade <mohan.dhanawade@xilinx.com>,
+        Kalyani Akula <kalyani.akula@xilinx.com>
+Subject: [PATCH V3 0/4] Add Xilinx's ZynqMP AES driver support
+Date:   Wed,  6 Nov 2019 17:10:31 +0530
+Message-Id: <1573040435-6932-1-git-send-email-kalyani.akula@xilinx.com>
+X-Mailer: git-send-email 1.9.5
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:149.199.60.83;IPV:NLI;CTRY:US;EFV:NLI;SFV:NSPM;SFS:(10009020)(979002)(4636009)(376002)(39860400002)(136003)(396003)(346002)(199004)(189003)(16586007)(103686004)(126002)(107886003)(2616005)(70206006)(70586007)(2906002)(426003)(54906003)(106002)(486006)(336012)(44832011)(478600001)(5660300002)(356004)(6666004)(305945005)(50466002)(48376002)(4326008)(6266002)(47776003)(8676002)(476003)(36756003)(14444005)(8936002)(26005)(36386004)(81166006)(186003)(50226002)(81156014)(51416003)(42186006)(316002)(450100002)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1101;SCL:1;SRVR:DM5PR02MB3179;H:xsj-pvapsmtpgw01;FPR:;SPF:Pass;LANG:en;PTR:unknown-60-83.xilinx.com;A:1;MX:1;
 MIME-Version: 1.0
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d1b35ef-0ba8-49de-ff1a-08d7629c026e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2019 09:30:49.2732
+Content-Type: text/plain
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2943bb40-8d24-40cd-4f75-08d762ae2b76
+X-MS-TrafficTypeDiagnostic: DM5PR02MB3179:
+X-Microsoft-Antispam-PRVS: <DM5PR02MB3179082882C50808EB7E7E8EAF790@DM5PR02MB3179.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Forefront-PRVS: 02135EB356
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CEmd6tE+ryCcczNJTCwLOPStHp75NNNefSEu8O8tesUUrKE9GpUiy2f43nonpqU2nREEia6FC1v7YX98SiLnxc0zFyh8kCil7uC6mcFIcw8GtFnQBv/JRhXwbibqIJ20kAh34LQ9Nkp5Xmge3YizUwAmk+BSE+sC/x8/fckilCNeV7gEt5qDipE0RI4isA7tTH1fHo2Werq3cD4pEorVeSQrxov4GeEZRPZJDCRDncBqyOALbXnB85WQ62NOfYocnOpTeiIUmEIVLwnOWvftFavSHAyL/0TdWv9XtQ7KzBGsASxptxUBkxLb0J5zeMNScWgWniehEDMX/fOLUFHb2JAvDGP7XZoaL4Wv3GadUeTgb2NBPwJorTYgiGfwUy65/Uzw0uk6Dn0xEYPjhs9zmOyKTyj+vYx4NqFIKpnzOBY011r5cKMTxdNAOOwItZOk
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2019 11:40:48.7828
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Mrcmct90cRdYxyZO1EWAdW+XXBpxgQ7b2hVDvQAonFcFVX58xTMbLtHE5xzoLSZ52ZrfHQp0fZfRcuhJV2ZPocqLct2MRaGe/FYcW+A760A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR07MB5373
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2943bb40-8d24-40cd-4f75-08d762ae2b76
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR02MB3179
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+This patch set adds support for
+- dt-binding docs for Xilinx ZynqMP AES driver
+- Adds device tree node for ZynqMP AES driver
+- Adds communication layer support for aes in zynqmp.c
+- Adds Xilinx ZynqMP driver for AES Algorithm
 
-Current polling timeout is 25 us. The hardware is currently configured to
-harvest the entropy for 81920 us. This leads to timeouts even during
-blocking read (wait=3D1).
+V3 Changes :
+- Added software fallback in cases where HW doesnt have 
+ the capability to handle the request.
+- Removed use of global variable for storing the driver data.
+- Enabled CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y and executed all
+ the kernel selftests. Also covered tests with tcrypt module.
 
-Log snippet:
-[    5.727589] [<c040ffcc>] (ks_sa_rng_probe) from [<c04181e8>] (platform_d=
-rv_probe+0x58/0xb4)
-...
-[    5.727805] hwrng: no data available
-...
-[   13.157016] random: systemd: uninitialized urandom read (16 bytes read)
-[   13.157033] systemd[1]: Initializing machine ID from random generator.
-...
-[   15.848770] random: fast init done
-...
-[   15.848807] random: crng init done
+V2 Changes :
+- Converted RFC PATCH to PATCH
+- Removed ALG_SET_KEY_TYPE that was added to support keytype
+  attribute. Taken using setkey interface.
+- Removed deprecated BLKCIPHER in Kconfig
+- Erased Key/IV from the buffer.
+- Renamed zynqmp-aes driver to zynqmp-aes-gcm.
+- Addressed few other review comments
 
-After the patch:
-[    6.223534] random: systemd: uninitialized urandom read (16 bytes read)
-[    6.223551] systemd[1]: Initializing machine ID from random generator.
-...
-[    6.876075] random: fast init done
-...
-[    6.954200] random: systemd: uninitialized urandom read (16 bytes read)
-[    6.955244] random: systemd: uninitialized urandom read (16 bytes read)
-...
-[    7.121948] random: crng init done
+Kalyani Akula (4):
+  dt-bindings: crypto: Add bindings for ZynqMP AES driver
+  ARM64: zynqmp: Add Xilinix AES node.
+  firmware: xilinx: Add ZynqMP aes API for AES functionality
+  crypto: Add Xilinx AES driver
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
----
- drivers/char/hw_random/ks-sa-rng.c | 38 ++++++++++++++++++++++++++++++++++=
-++++
- 1 file changed, 38 insertions(+)
+ .../devicetree/bindings/crypto/xlnx,zynqmp-aes.txt |  12 +
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi             |   5 +
+ drivers/crypto/Kconfig                             |  11 +
+ drivers/crypto/Makefile                            |   2 +
+ drivers/crypto/xilinx/Makefile                     |   3 +
+ drivers/crypto/xilinx/zynqmp-aes-gcm.c             | 457 +++++++++++++++++++++
+ drivers/firmware/xilinx/zynqmp.c                   |  23 ++
+ include/linux/firmware/xlnx-zynqmp.h               |   2 +
+ 8 files changed, 515 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/crypto/xlnx,zynqmp-aes.txt
+ create mode 100644 drivers/crypto/xilinx/Makefile
+ create mode 100644 drivers/crypto/xilinx/zynqmp-aes-gcm.c
 
-diff --git a/drivers/char/hw_random/ks-sa-rng.c b/drivers/char/hw_random/ks=
--sa-rng.c
-index a674300..4b223cb 100644
---- a/drivers/char/hw_random/ks-sa-rng.c
-+++ b/drivers/char/hw_random/ks-sa-rng.c
-@@ -21,6 +21,7 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/delay.h>
-+#include <linux/timekeeping.h>
-=20
- #define SA_CMD_STATUS_OFS			0x8
-=20
-@@ -85,13 +86,36 @@ struct ks_sa_rng {
- 	struct clk	*clk;
- 	struct regmap	*regmap_cfg;
- 	struct trng_regs *reg_rng;
-+	u64 ready_ts;
-+	unsigned int refill_delay_ns;
- };
-=20
-+static unsigned int cycles_to_ns(unsigned long clk_rate, unsigned int cycl=
-es)
-+{
-+	return DIV_ROUND_UP_ULL((TRNG_DEF_CLK_DIV_CYCLES + 1) * 1000000000ull *
-+				cycles, clk_rate);
-+}
-+
-+static unsigned int startup_delay_ns(unsigned long clk_rate)
-+{
-+	if (!TRNG_DEF_STARTUP_CYCLES)
-+		return cycles_to_ns(clk_rate, BIT(24));
-+	return cycles_to_ns(clk_rate, 256 * TRNG_DEF_STARTUP_CYCLES);
-+}
-+
-+static unsigned int refill_delay_ns(unsigned long clk_rate)
-+{
-+	if (!TRNG_DEF_MAX_REFILL_CYCLES)
-+		return cycles_to_ns(clk_rate, BIT(24));
-+	return cycles_to_ns(clk_rate, 256 * TRNG_DEF_MAX_REFILL_CYCLES);
-+}
-+
- static int ks_sa_rng_init(struct hwrng *rng)
- {
- 	u32 value;
- 	struct device *dev =3D (struct device *)rng->priv;
- 	struct ks_sa_rng *ks_sa_rng =3D dev_get_drvdata(dev);
-+	unsigned long clk_rate =3D clk_get_rate(ks_sa_rng->clk);
-=20
- 	/* Enable RNG module */
- 	regmap_write_bits(ks_sa_rng->regmap_cfg, SA_CMD_STATUS_OFS,
-@@ -120,6 +144,10 @@ static int ks_sa_rng_init(struct hwrng *rng)
- 	value |=3D TRNG_CNTL_REG_TRNG_ENABLE;
- 	writel(value, &ks_sa_rng->reg_rng->control);
-=20
-+	ks_sa_rng->refill_delay_ns =3D refill_delay_ns(clk_rate);
-+	ks_sa_rng->ready_ts =3D ktime_get_ns() +
-+			      startup_delay_ns(clk_rate);
-+
- 	return 0;
- }
-=20
-@@ -144,6 +172,7 @@ static int ks_sa_rng_data_read(struct hwrng *rng, u32 *=
-data)
- 	data[1] =3D readl(&ks_sa_rng->reg_rng->output_h);
-=20
- 	writel(TRNG_INTACK_REG_READY, &ks_sa_rng->reg_rng->intack);
-+	ks_sa_rng->ready_ts =3D ktime_get_ns() + ks_sa_rng->refill_delay_ns;
-=20
- 	return sizeof(u32) * 2;
- }
-@@ -152,10 +181,19 @@ static int ks_sa_rng_data_present(struct hwrng *rng, =
-int wait)
- {
- 	struct device *dev =3D (struct device *)rng->priv;
- 	struct ks_sa_rng *ks_sa_rng =3D dev_get_drvdata(dev);
-+	u64 now =3D ktime_get_ns();
-=20
- 	u32	ready;
- 	int	j;
-=20
-+	if (wait && now < ks_sa_rng->ready_ts) {
-+		/* Max delay expected here is 81920000 ns */
-+		unsigned long min_delay =3D
-+			DIV_ROUND_UP((u32)(ks_sa_rng->ready_ts - now), 1000);
-+
-+		usleep_range(min_delay, min_delay + SA_RNG_DATA_RETRY_DELAY);
-+	}
-+
- 	for (j =3D 0; j < SA_MAX_RNG_DATA_RETRIES; j++) {
- 		ready =3D readl(&ks_sa_rng->reg_rng->status);
- 		ready &=3D TRNG_STATUS_REG_READY;
---=20
-2.4.6
+-- 
+1.9.5
 
