@@ -2,109 +2,102 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA338F1820
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Nov 2019 15:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED270F184F
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Nov 2019 15:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731911AbfKFOOB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 6 Nov 2019 09:14:01 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:55491 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731922AbfKFONl (ORCPT
+        id S1727128AbfKFOUJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 6 Nov 2019 09:20:09 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:44070 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727112AbfKFOUI (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 6 Nov 2019 09:13:41 -0500
-Received: by mail-wm1-f68.google.com with SMTP id b11so678438wmb.5
-        for <linux-crypto@vger.kernel.org>; Wed, 06 Nov 2019 06:13:40 -0800 (PST)
+        Wed, 6 Nov 2019 09:20:08 -0500
+Received: by mail-wr1-f66.google.com with SMTP id f2so17100130wrs.11
+        for <linux-crypto@vger.kernel.org>; Wed, 06 Nov 2019 06:20:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=EtW7c5+Vxuw361NPgarxEa4pkxF91xrS2XEr4qnN4jI=;
-        b=e5nNk39VJ5IOgRqdcXf58JkLAmLsag2O4+U458JjYo5P0PSEMekSFRL7LZc2d3m3VJ
-         URQyFUvE8jMn4eVvMtPS4S4bwU+o51HOhtfgwYme4dhoLAOHd8OHl1q5buqF/oxhumhw
-         +z3jc1g7Ck1yBgoUiT30MrVfaQcI9SAZcV6//J2C/MjC41OM02IYNasElc3UDquPybqb
-         baWyh7WRSDEfEhipTjcqjxsGo/IM/qSUCmUCE5UrGsB4dj0txgaPvPHy4E6e/8b6xTks
-         +7wsbS1O4VTbwJoSISfsP2WPk3MvEuhRHnX4Tq6FkCgrC9KgWh7M7bDPmgQZAuRo+xGE
-         Q0vg==
+        h=from:to:cc:subject:date:message-id;
+        bh=8BtBfv1f64XM22OKVAWg9tny4DrS6nBkaS+49knlZDw=;
+        b=E49WR0tTA98/K0BeZ6M0oSIbi9GQHW7rjF+kMCUVzHyozP3/lL7cYzcwBrpA9XyEN7
+         Za8ZNFOuagrVowQJcxkXIb174OEEKzGEMlYh1vAU6ZQpP9WFv4ipin+8kjFmkoI9OtlN
+         L8HWJ/fMxM2iqV68MOxGBgy2o36VGLuQNZ7SFboNd4lvUkF2k+7R3nBBhJwNcEUUpWu0
+         qPwioeoDTWgZ27bIvd0MGoAhtZywFrEamwWtLJX2/0IlPNOKwfZM3+uMDAqpwkCH+DKM
+         DhoNDWHLWzCoaGjQ6DNr5rJ1NZc602EiYesaOGDIrgNSGKw59hykiNkbrPCBZpc5jrGN
+         VHyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=EtW7c5+Vxuw361NPgarxEa4pkxF91xrS2XEr4qnN4jI=;
-        b=qQ/givsx4rWI/O/LzWuJMThUdRXVKIb3d0w92T9jOHmABoSwhjAeELejhmZSpLdBus
-         wA8ylk4B5Zd2Z/IwuwmSl3JgvpqTxzHjmgLiCLmKnWjHmNtKA0T+6kSwwbMO+syNnPRA
-         2fnh82stszzLR6Nnww4hlNCC09C6LNHmYjWQXZ2A1ySbr3zKC4onPxTNllBiIfvi8Wbf
-         sZB4FhPLSn3aY1mKmDmB1tK2UNHuu0QLk/6SmNMwTo6wRiNzmnwR2x6D075PNmH7Xxel
-         PUASLzVbE5oUtWB1r8b0aa6AlTxhSNX/4IjzFoW1/ZHQeKWInBqOoltFT4UN2GJLj2O0
-         qhUQ==
-X-Gm-Message-State: APjAAAXUCnBI9YJ/AXokXPE8h2Uf1ma2on1d4td4teRXwpXSZ/zkIvJx
-        CqFI3wpP8UzESrJpnGkJ7ObDp5FAUQD5Yw==
-X-Google-Smtp-Source: APXvYqwQkS3HkPb4xqO71j4GDBQsJDOPu6hiWKUGgF3l2gy8AO8EiMAAlXbkknCw6t0pwT+ISh1RMQ==
-X-Received: by 2002:a7b:c776:: with SMTP id x22mr2609658wmk.144.1573049619319;
-        Wed, 06 Nov 2019 06:13:39 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8BtBfv1f64XM22OKVAWg9tny4DrS6nBkaS+49knlZDw=;
+        b=EY4GeJUIwEmlfQtpJZeY5wrreaOcv4eIvZlckeH5V5uhjY76YXix7DngXzDp2bXuyu
+         ViDsXMmv3T81gjw+zpdOPY+S9jKgt5wxM2B/qyBWbVuFFozk5syoWDSJa0qPcawxWTTF
+         Fs6MYrghS/qDptr/PxnU9QqgAjI9ftpdj6U8yNejfbvygpdEWiJgSIv/hzrjMbbVOEL0
+         46Y7uSgcazxrKNLhlwZvdzuRHo1XUKYGechOBRfwqFWt459lv+4TWmaIAeMWv+4mRgQj
+         u6lWYYuyrxTuCG2sgTxoBVvnkCbETW2B2aelJCzup7yvugp4Kjot+bmntX6gxKUG1Qvo
+         +eTw==
+X-Gm-Message-State: APjAAAW5uD0lZOcpLxyZitQG+7yPT7J0uzg6yZJFoxdJrcQhd1XXrdrr
+        HzCzyYqCeCjHmKnSlmx5p45hQg==
+X-Google-Smtp-Source: APXvYqy6u8LC596fT4iTndVF5NRGlUkwmHxUF4f04mY1HYJ5KLMJh128KkcuYc/QCTLryNllGrpiYQ==
+X-Received: by 2002:a5d:4803:: with SMTP id l3mr2913835wrq.381.1573050006556;
+        Wed, 06 Nov 2019 06:20:06 -0800 (PST)
 Received: from localhost.localdomain (31.red-176-87-122.dynamicip.rima-tde.net. [176.87.122.31])
-        by smtp.gmail.com with ESMTPSA id b3sm2837556wma.13.2019.11.06.06.13.37
+        by smtp.gmail.com with ESMTPSA id f13sm24004818wrq.96.2019.11.06.06.20.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Nov 2019 06:13:38 -0800 (PST)
+        Wed, 06 Nov 2019 06:20:06 -0800 (PST)
 From:   Richard Henderson <richard.henderson@linaro.org>
 X-Google-Original-From: Richard Henderson <rth@twiddle.net>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, linux-arch@vger.kernel.org,
-        x86@kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 10/10] s390x: Mark archrandom.h functions __must_check
-Date:   Wed,  6 Nov 2019 15:13:08 +0100
-Message-Id: <20191106141308.30535-11-rth@twiddle.net>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-crypto@vger.kernel.org, mark.rutland@arm.com,
+        ard.biesheuvel@linaro.org
+Subject: [PATCH v4 0/1] arm64: Implement archrandom.h for ARMv8.5-RNG
+Date:   Wed,  6 Nov 2019 15:19:53 +0100
+Message-Id: <20191106141954.30657-1-rth@twiddle.net>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191106141308.30535-1-rth@twiddle.net>
-References: <20191106141308.30535-1-rth@twiddle.net>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-We must not use the pointer output without validating the
-success of the random read.
+The ARMv8.5-RNG extension adds a hardware random number generator.
+The plumbing for this is already present in the kernel; we just
+have to take advantage of that.
 
-Reviewed-by: Harald Freudenberger <freude@linux.ibm.com>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Richard Henderson <rth@twiddle.net>
----
- arch/s390/include/asm/archrandom.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Changes since v2:
+  * Keep arch_get_random{,_seed}_long in sync.
+  * Use __cpus_have_const_cap before falling back to this_cpu_has_cap.
 
-diff --git a/arch/s390/include/asm/archrandom.h b/arch/s390/include/asm/archrandom.h
-index 9a6835137a16..de61ce562052 100644
---- a/arch/s390/include/asm/archrandom.h
-+++ b/arch/s390/include/asm/archrandom.h
-@@ -21,17 +21,17 @@ extern atomic64_t s390_arch_random_counter;
- 
- bool s390_arch_random_generate(u8 *buf, unsigned int nbytes);
- 
--static inline bool arch_get_random_long(unsigned long *v)
-+static inline bool __must_check arch_get_random_long(unsigned long *v)
- {
- 	return false;
- }
- 
--static inline bool arch_get_random_int(unsigned int *v)
-+static inline bool __must_check arch_get_random_int(unsigned int *v)
- {
- 	return false;
- }
- 
--static inline bool arch_get_random_seed_long(unsigned long *v)
-+static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
- {
- 	if (static_branch_likely(&s390_arch_random_available)) {
- 		return s390_arch_random_generate((u8 *)v, sizeof(*v));
-@@ -39,7 +39,7 @@ static inline bool arch_get_random_seed_long(unsigned long *v)
- 	return false;
- }
- 
--static inline bool arch_get_random_seed_int(unsigned int *v)
-+static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
- {
- 	if (static_branch_likely(&s390_arch_random_available)) {
- 		return s390_arch_random_generate((u8 *)v, sizeof(*v));
+Changes since v1:
+  * Use __mrs_s and fix missing cc clobber (Mark),
+  * Log rng failures with pr_warn (Mark),
+  * Use __must_check; put RNDR in arch_get_random_long and RNDRRS
+    in arch_get_random_seed_long (Ard),
+  * Use ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE, and check this_cpu_has_cap
+    when reading random data.
+  * Move everything out of line, now that there are 5 other function
+    calls involved, and to unify the rate limiting on the pr_warn.
+
+Tested with QEMU.  What's not tested is hot plugging cpus with differing
+capabilities; QEMU would need some extension to allow that sort of thing.
+
+
+r~
+
+
+Richard Henderson (1):
+  arm64: Implement archrandom.h for ARMv8.5-RNG
+
+ Documentation/arm64/cpu-feature-registers.rst |  2 +
+ arch/arm64/include/asm/archrandom.h           | 35 ++++++++
+ arch/arm64/include/asm/cpucaps.h              |  3 +-
+ arch/arm64/include/asm/sysreg.h               |  4 +
+ arch/arm64/kernel/cpufeature.c                | 13 +++
+ arch/arm64/kernel/random.c                    | 79 +++++++++++++++++++
+ arch/arm64/Kconfig                            | 12 +++
+ arch/arm64/kernel/Makefile                    |  1 +
+ drivers/char/Kconfig                          |  4 +-
+ 9 files changed, 150 insertions(+), 3 deletions(-)
+ create mode 100644 arch/arm64/include/asm/archrandom.h
+ create mode 100644 arch/arm64/kernel/random.c
+
 -- 
 2.17.1
 
