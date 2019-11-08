@@ -2,185 +2,97 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B72F4C1B
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 Nov 2019 13:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD90F4C8A
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 Nov 2019 14:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbfKHMxU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 8 Nov 2019 07:53:20 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:13472 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726335AbfKHMxU (ORCPT
+        id S1727233AbfKHND4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 8 Nov 2019 08:03:56 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:55656 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727065AbfKHNDz (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 8 Nov 2019 07:53:20 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx08-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xA8Cq5Kk024045;
-        Fri, 8 Nov 2019 13:52:50 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=U42CzDCTjvGgKHPDdujEizpP/MuGbL64x7aocKvP598=;
- b=mwDBKYuDjJj4/kG3Ia92rMuR1ojDDvT0Q/HagfYo0vu92FbgZpMc4b+0j9PnLlM4Dj2m
- ofeR0UXVkCROk2BB9ZcmcEqV2T68xXwo07mGPubntHwsAIsThWESPvKlVa8TrBmyF/Zr
- EYCLZHITplwcDmEzXNv1TJRMPezkHmJeDWkRCehV90C4we5ZAUhRWGX2ikyXgbvpsr9f
- blV2b7kOMbRfSOhkEDbHV4w0doWBPdyUmmVTaHUmLHXOtQMWfsOmDfUlkBtMQHx5SZgn
- /t4XjicIsnp7RXnz8Dz8AuaVrOt9RmBBIUXlXXL1ae7nVm2XUh/UV8aEcMmmuNSYTjUU qQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx08-00178001.pphosted.com with ESMTP id 2w41vmuntd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Nov 2019 13:52:50 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 50D1510002A;
-        Fri,  8 Nov 2019 13:52:50 +0100 (CET)
-Received: from Webmail-eu.st.com (Safex1hubcas22.st.com [10.75.90.92])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 442D42B6A0D;
-        Fri,  8 Nov 2019 13:52:50 +0100 (CET)
-Received: from SAFEX1HUBCAS24.st.com (10.75.90.95) by Safex1hubcas22.st.com
- (10.75.90.92) with Microsoft SMTP Server (TLS) id 14.3.439.0; Fri, 8 Nov 2019
- 13:52:50 +0100
-Received: from localhost (10.201.20.122) by webmail-ga.st.com (10.75.90.48)
- with Microsoft SMTP Server (TLS) id 14.3.439.0; Fri, 8 Nov 2019 13:52:49
- +0100
-From:   Benjamin Gaignard <benjamin.gaignard@st.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <robh+dt@kernel.org>, <mark.rutland@arm.com>,
-        <alexandre.torgue@st.com>, <lionel.debieve@st.com>
-CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Benjamin Gaignard <benjamin.gaignard@st.com>
-Subject: [PATCH] dt-bindings: crypto: Convert stm32 HASH bindings to json-schema
-Date:   Fri, 8 Nov 2019 13:52:44 +0100
-Message-ID: <20191108125244.23001-3-benjamin.gaignard@st.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <20191108125244.23001-1-benjamin.gaignard@st.com>
-References: <20191108125244.23001-1-benjamin.gaignard@st.com>
+        Fri, 8 Nov 2019 08:03:55 -0500
+Received: by mail-wm1-f65.google.com with SMTP id b11so6095287wmb.5
+        for <linux-crypto@vger.kernel.org>; Fri, 08 Nov 2019 05:03:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RD3rCfuQNE2f6lJThi4WImY0CO33DjtVpBFoOhDzKvA=;
+        b=bRgco/j6fJMrPrbhgZZvBs1Cx7s60pHxKUupeQ9oSiAO+j59MSXWl5ZycYmUdl4N+n
+         LBzf56vqaExjhUDzR7jxVXOldV7wJbk+AuIiSZSLxp5JfP32Cd1DbPVl3V7S4GUEJEnP
+         13G+dqk59eT7kGI4uHyXESl+fEq/UyX9sD45Z8DvOazsg5sJBGbhUjeDkqWA+gvOmpFG
+         RYRfaoSjM93UVhHNudlSXaYwMW4I5+ICRg+hPm9efN2S4a7lbMEVD+lDu2JbOk8pIprH
+         rt0r4IXHPz/l4pDogHC2pDCaN4phRztbjYx/BvT3ecuoATtLB3lw1yFgaBFPT8d6fv4h
+         1tzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RD3rCfuQNE2f6lJThi4WImY0CO33DjtVpBFoOhDzKvA=;
+        b=h5SHtwaCZ4ZGuMYI6PfUUynFh1APuP2q4v3SXt6lrY7SkZTrrCopBNsP4rOBcKXDkm
+         cnwyjByMFn6RuUJXpPUPkg7DExdYErQcbiwzRE75/e0gRxkr7TSUc28cwX9eYOOCo8Jp
+         fjLxgTPBNWJqj5cdgcCSiVxlxPght1xQkjiXPW0jcrx4/G97jCq3yVQqo6YSbCDj8yOh
+         L371vsfdRq6R1PjMlnEIALd2MNHNFTa1ZdZIsFhNVrcDGZTsKO2pwArIfbMzzY+6M4p6
+         ttwqVS3t+w3hFGwFTvPsFWjnMj7h/ixBwEMCtQ/8xe6WAQ0Mmovhz2m0lay3hfCDdOIb
+         ryUA==
+X-Gm-Message-State: APjAAAVGnhGb16TQ4u6MZfmWCS6h8ngh2mB0HygYFjrKUXRfrWeGAmqu
+        Fvgux9ZJRk5aWR+zAs/LcQNpqroDuQpPsHpqMGPLLg==
+X-Google-Smtp-Source: APXvYqwVxXQ7j7sjMh42No+5ULXztDWEexSCaMNrkoPLsNQPovd1PYbjQHTIWgODnj/ocS5b09k5EQx7FekbMjHu+v4=
+X-Received: by 2002:a1c:64d6:: with SMTP id y205mr7605417wmb.136.1573218233883;
+ Fri, 08 Nov 2019 05:03:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.201.20.122]
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-08_03:2019-11-08,2019-11-08 signatures=0
+References: <20191106141954.30657-1-rth@twiddle.net> <20191106141954.30657-2-rth@twiddle.net>
+ <CAKv+Gu8pb5pBFBg0wGoORmaS6yzmoX7L45LLnhuZhqw4JX7d+w@mail.gmail.com> <23ce309b-1561-ed95-7ce7-463a991bd19b@linaro.org>
+In-Reply-To: <23ce309b-1561-ed95-7ce7-463a991bd19b@linaro.org>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Fri, 8 Nov 2019 14:03:42 +0100
+Message-ID: <CAKv+Gu-03HLED79e+V2D5BtSjRwHH7=rnUWyqZ7dBBD-s7RowQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/1] arm64: Implement archrandom.h for ARMv8.5-RNG
+To:     Richard Henderson <richard.henderson@linaro.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Convert the STM32 HASH binding to DT schema format using json-schema
+On Fri, 8 Nov 2019 at 12:10, Richard Henderson
+<richard.henderson@linaro.org> wrote:
+>
+> On 11/6/19 10:30 PM, Ard Biesheuvel wrote:
+> > On Wed, 6 Nov 2019 at 15:20, Richard Henderson
+> > <richard.henderson@linaro.org> wrote:
+> >> +static inline bool has_random(void)
+> >> +{
+> >> +       /*
+> >> +        * We "have" RNG if either
+> >> +        * (1) every cpu in the system has RNG, or
+> >> +        * (2) in a non-preemptable context, current cpu has RNG.
+> >> +        * Case 1 is the expected case when RNG is deployed, but
+> >> +        * case 2 is present as a backup in case some big/little
+> >> +        * system only has RNG on big cpus, we can still add entropy
+> >> +        * from the interrupt handler of the big cpus.
+> >
+> > I don't understand the reference to the interrupt handler here.
+>
+> To add_interrupt_randomness(), invoked by handle_irq_event_percpu().
+> Better if I reword the above to include the function name?
+>
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
----
- .../devicetree/bindings/crypto/st,stm32-hash.txt   | 30 ----------
- .../devicetree/bindings/crypto/st,stm32-hash.yaml  | 64 ++++++++++++++++++++++
- 2 files changed, 64 insertions(+), 30 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/crypto/st,stm32-hash.txt
- create mode 100644 Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+This is one of the several places where arch_random_get_seed_long() is
+called, so if you are going to single it out like that, it does make
+sense to clarify that.
 
-diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-hash.txt b/Documentation/devicetree/bindings/crypto/st,stm32-hash.txt
-deleted file mode 100644
-index 04fc246f02f7..000000000000
---- a/Documentation/devicetree/bindings/crypto/st,stm32-hash.txt
-+++ /dev/null
-@@ -1,30 +0,0 @@
--* STMicroelectronics STM32 HASH
--
--Required properties:
--- compatible: Should contain entries for this and backward compatible
--  HASH versions:
--  - "st,stm32f456-hash" for stm32 F456.
--  - "st,stm32f756-hash" for stm32 F756.
--- reg: The address and length of the peripheral registers space
--- interrupts: the interrupt specifier for the HASH
--- clocks: The input clock of the HASH instance
--
--Optional properties:
--- resets: The input reset of the HASH instance
--- dmas: DMA specifiers for the HASH. See the DMA client binding,
--	 Documentation/devicetree/bindings/dma/dma.txt
--- dma-names: DMA request name. Should be "in" if a dma is present.
--- dma-maxburst: Set number of maximum dma burst supported
--
--Example:
--
--hash1: hash@50060400 {
--	compatible = "st,stm32f756-hash";
--	reg = <0x50060400 0x400>;
--	interrupts = <80>;
--	clocks = <&rcc 0 STM32F7_AHB2_CLOCK(HASH)>;
--	resets = <&rcc STM32F7_AHB2_RESET(HASH)>;
--	dmas = <&dma2 7 2 0x400 0x0>;
--	dma-names = "in";
--	dma-maxburst = <0>;
--};
-diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
-new file mode 100644
-index 000000000000..3c09c9899021
---- /dev/null
-+++ b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
-@@ -0,0 +1,64 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/crypto/st,stm32-hash.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: STMicroelectronics STM32 HASH bindings
-+
-+maintainers:
-+  - Lionel Debieve <lionel.debieve@st.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - st,stm32f456-hash
-+      - st,stm32f756-hash
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+  dmas:
-+    maxItems: 1
-+
-+  dma-names:
-+    items:
-+      - const: in
-+
-+  dma-maxburst:
-+    description: Set number of maximum dma burst supported
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/stm32mp1-clks.h>
-+    #include <dt-bindings/reset/stm32mp1-resets.h>
-+    hash@54002000 {
-+      compatible = "st,stm32f756-hash";
-+      reg = <0x54002000 0x400>;
-+      interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
-+      clocks = <&rcc HASH1>;
-+      resets = <&rcc HASH1_R>;
-+      dmas = <&mdma1 31 0x10 0x1000A02 0x0 0x0>;
-+      dma-names = "in";
-+      dma-maxburst = <2>;
-+    };
-+
-+...
--- 
-2.15.0
-
+> > It is
+> > worth mentioning though that this arrangement permits
+> > rand_initialize() to use the instructions regardless of whether they
+> > are implemented only by the boot CPU or by all of them.
+>
+> Yes, I'll include that.
+>
+>
+> r~
