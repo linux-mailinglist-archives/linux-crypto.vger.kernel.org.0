@@ -2,137 +2,96 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A86F4175
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 Nov 2019 08:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F704F4187
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 Nov 2019 08:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbfKHHlQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 8 Nov 2019 02:41:16 -0500
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:50328 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726672AbfKHHlQ (ORCPT
+        id S1725886AbfKHHtP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 8 Nov 2019 02:49:15 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:34688 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbfKHHtO (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 8 Nov 2019 02:41:16 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id xA87f1JB064030;
-        Fri, 8 Nov 2019 01:41:01 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1573198862;
-        bh=8p57qwOk81qIZzYrBvDYBp3MiSplInyVjuIvJT9EzBE=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=QLHM/T7QV4DXcb4rvpTw7NQ42f4gHZ+sWcPZbWGEAJ36Yb9fE54BOkuE6OfZScEmG
-         qNbRELdBFtcas80D5rWZr5rsu3EIgTqGZU95YmeCU8aQ/CjxXaNSk0ZRi5MmKL2O+v
-         OeGPn2K+u5Bh/z4dI+oL2m5LQ7BTSeCWf4nfeSrc=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id xA87f1Cf001150;
-        Fri, 8 Nov 2019 01:41:01 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 8 Nov
- 2019 01:40:45 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Fri, 8 Nov 2019 01:40:45 -0600
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id xA87evV2090261;
-        Fri, 8 Nov 2019 01:40:58 -0600
-Subject: Re: [PATCH 09/10] crypto: add timeout to crypto_wait_req
-To:     Gilad Ben-Yossef <gilad@benyossef.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Miller <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        <linux-omap@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <20191017122549.4634-1-t-kristo@ti.com>
- <20191017122549.4634-10-t-kristo@ti.com>
- <CAOtvUMeBXjDBhSVgMOW=hshEx_AkNPg-Zk2c2jCDzY8vyXWW5g@mail.gmail.com>
- <076f0bc6-ad04-9543-db02-d7c7060db036@ti.com>
- <CAOtvUMc7pbtPAPUbEmz_MTHmB9LboQVdgG-t9tHCr=biEbFuUQ@mail.gmail.com>
- <20191108022759.GB1140@sol.localdomain>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <d55c0182-5fb0-2ef9-f056-54b396fb0026@ti.com>
-Date:   Fri, 8 Nov 2019 09:40:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20191108022759.GB1140@sol.localdomain>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Fri, 8 Nov 2019 02:49:14 -0500
+Received: by mail-wm1-f66.google.com with SMTP id v3so6676131wmh.1
+        for <linux-crypto@vger.kernel.org>; Thu, 07 Nov 2019 23:49:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=UIMGPvrsHWgPTPgSVN47FIgG2nJKkp25lHvqnAXp7Nc=;
+        b=EX43zm+Krdbh/puR44JBj1WxYV9xZEcM+I1oOLVQuEfhE0cnt5cZD3fgboZpl+ju+v
+         DQkEyP2yeIrHMkn135CYhkE6VTpBN0u+Gdb6lpVQ1oOoT5SHFoODumpP4jWtcdR4ye9K
+         Gge2T2jA7aqcXVCZnCYLHEx6qIg5S58oUBaGKkwOExH3kJIohD/bV4zFMqiet59qm6X+
+         YykKVocs9PQLPmK4cDI4ATdiUFJgyDXv3Ai6Hng6ub0WLfhc1GjrE8T3I6SD+izKwKZg
+         Y/pXUb/FOi7y7vuuB7AfqBBtCfD2uJ1iAUBLpCQ8hcm1SrG5BaqlFhF+byYV64T+OY96
+         YqCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=UIMGPvrsHWgPTPgSVN47FIgG2nJKkp25lHvqnAXp7Nc=;
+        b=OqDc95nDBaaD+9DZEJvE4061q2340Dfs9k3pOCwFGMf3cfEhG2r6wPl0UYowvdVUK4
+         Qukp2ucreqC28UedIc94LkYCUHdiSdLIM8BFepfQygOfJNEGHOdQOuJcZeMMcq5XWQ87
+         OgSL10KMPsdYWjHmWyq8oIUr9za8kW8LBlkuGkDyr1awqvj1V7WO74vgrLh8qPUlpgr/
+         wOa43r6kZxrcCrWBXeM81Y3rhQa4IpG9lJnlzS8+tEl7oODBe72fP9RhHTyLs0ztvC7x
+         fg7WI6C3cCt1fbVdjMQ/BgwRe+SqEDjMyKUCRQXwOM64m13EfTxIAaFPsKhHtmWycdBD
+         s1RQ==
+X-Gm-Message-State: APjAAAUcgxN/LgE2X5zEK3h5DLBxCFyW8lRrN2vSRrdFqjkajTUJazEK
+        0IYe8aaKoqX000hwN6b1mjojJocl
+X-Google-Smtp-Source: APXvYqxuhzh10XgG0KYfdgnvk/7eGBpXxfyg38cf12Jg7fc5D9cKNgH08cBm41X5iLVnZ39fiaxNTA==
+X-Received: by 2002:a1c:6641:: with SMTP id a62mr6677554wmc.54.1573199352098;
+        Thu, 07 Nov 2019 23:49:12 -0800 (PST)
+Received: from localhost.localdomain.com ([188.204.2.113])
+        by smtp.gmail.com with ESMTPSA id x7sm10273231wrg.63.2019.11.07.23.49.10
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 Nov 2019 23:49:10 -0800 (PST)
+From:   Pascal van Leeuwen <pascalvanl@gmail.com>
+X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+To:     linux-crypto@vger.kernel.org
+Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net,
+        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+Subject: [PATCH] crypto: inside-secure - Fixed authenc w/ (3)DES fails on Macchiatobin
+Date:   Fri,  8 Nov 2019 08:46:05 +0100
+Message-Id: <1573199165-8279-1-git-send-email-pvanleeuwen@verimatrix.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 08/11/2019 04:27, Eric Biggers wrote:
-> On Wed, Nov 06, 2019 at 09:33:20AM +0200, Gilad Ben-Yossef wrote:
->> On Wed, Nov 6, 2019 at 9:25 AM Tero Kristo <t-kristo@ti.com> wrote:
->>>
->>> On 06/11/2019 08:39, Gilad Ben-Yossef wrote:
->>>> Hi,
->>>>
->>>>
->>>> On Thu, Oct 17, 2019 at 3:26 PM Tero Kristo <t-kristo@ti.com> wrote:
->>>>>
->>>>> Currently crypto_wait_req waits indefinitely for an async crypto request
->>>>> to complete. This is bad as it can cause for example the crypto test
->>>>> manager to hang without any notification as to why it has happened.
->>>>> Instead of waiting indefinitely, add a 1 second timeout to the call,
->>>>> and provide a warning print if a timeout happens.
->>>>
->>>> While the incentive is clear and positive, this suggested solution
->>>> creates problems of its own.
->>>> In many (most?) cases where we are waiting here, we are waiting for a
->>>> DMA operation to finish from hardware.
->>>> Exiting while this pending DMA operation is not finished, even with a
->>>> proper error return value, is dangerous because
->>>> unless the calling code takes great care to not release the memory the
->>>> DMA is being done from/to, this can have disastrous effects.
->>>>
->>>> As Eric has already mentioned, one second might seem like a long time,
->>>> but we don't really know if it is enough.
->>>>
->>>> How about adding a second API (ig. crypto_wait_req_timeout) which
->>>> supports a calee specified timeout where
->>>> the calle knows how to correctly deal with timeout and port the
->>>> relevant call sites to use this?
->>>
->>> Yeah, that would work for me. I guess we could just swap the testmgr to
->>> use this timeout API, as it is quite clear it should timeout rather than
->>> wait indefinitely, and afaics, the data buffers it uses are limited
->>> size. It doesn't really matter for it whether the timeout is 1 second or
->>> 10 seconds, as long as it eventually times out.
->>
->>
->> As long as you avoid releasing the memory used on timeout, that should
->> work well, I think.
->>
-> 
-> The memory is always going to be freed eventually, though.  Although the crypto
-> tests currently reuse the input/output buffers and the request structure from
-> one test to the next, they're freed at the end of the tests.  Also, it's unsafe
-> for one request structure to be used for multiple requests concurrently anyway.
-> 
-> I think crypto_wait_req_timeout() would just be fundamentally unsafe.
-> 
-> Couldn't you just use CONFIG_DETECT_HUNG_TASK=y instead?  It should report if
-> any thread is blocked for too long.
+Fixed 2 copy-paste mistakes made during commit 13a1bb93f7b1c9 ("crypto:
+inside-secure - Fixed warnings on inconsistent byte order handling")
+that caused authenc w/ (3)DES to consistently fail on Macchiatobin (but
+strangely work fine on x86+FPGA??).
+Now fully tested on both platforms.
 
-The problem is not detecting a hung task, the problem is determining 
-what caused the hang. Personally I don't care if the system dies if a 
-crypto accelerator self test has failed, as long as I get reported about 
-the exact nature of the failure. The failures are expected to happen 
-only in development phase of a crypto driver.
+Signed-off-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+---
+ drivers/crypto/inside-secure/safexcel_cipher.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-With the timeout patch in place, I get reported what exact crypto test 
-case failed and I can focus my debug efforts on that one.
+diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers/crypto/inside-secure/safexcel_cipher.c
+index 98f9fc6..c029956 100644
+--- a/drivers/crypto/inside-secure/safexcel_cipher.c
++++ b/drivers/crypto/inside-secure/safexcel_cipher.c
+@@ -405,7 +405,8 @@ static int safexcel_aead_setkey(struct crypto_aead *ctfm, const u8 *key,
+ 
+ 	if (priv->flags & EIP197_TRC_CACHE && ctx->base.ctxr_dma) {
+ 		for (i = 0; i < keys.enckeylen / sizeof(u32); i++) {
+-			if (le32_to_cpu(ctx->key[i]) != aes.key_enc[i]) {
++			if (le32_to_cpu(ctx->key[i]) !=
++			    ((u32 *)keys.enckey)[i]) {
+ 				ctx->base.needs_inv = true;
+ 				break;
+ 			}
+@@ -459,7 +460,7 @@ static int safexcel_aead_setkey(struct crypto_aead *ctfm, const u8 *key,
+ 
+ 	/* Now copy the keys into the context */
+ 	for (i = 0; i < keys.enckeylen / sizeof(u32); i++)
+-		ctx->key[i] = cpu_to_le32(aes.key_enc[i]);
++		ctx->key[i] = cpu_to_le32(((u32 *)keys.enckey)[i]);
+ 	ctx->key_len = keys.enckeylen;
+ 
+ 	memcpy(ctx->ipad, &istate.state, ctx->state_sz);
+-- 
+1.8.3.1
 
-Anyways, as said this is just a nice to have patch, and can be dropped 
-no issues there. I was just thinking some other people might find it 
-useful also.
-
--Tero
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
