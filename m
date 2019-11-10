@@ -2,87 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC32FF6498
-	for <lists+linux-crypto@lfdr.de>; Sun, 10 Nov 2019 04:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1373F6934
+	for <lists+linux-crypto@lfdr.de>; Sun, 10 Nov 2019 14:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729603AbfKJDBG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 9 Nov 2019 22:01:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47210 "EHLO mail.kernel.org"
+        id S1726402AbfKJN4D (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 10 Nov 2019 08:56:03 -0500
+Received: from vps-vb.mhejs.net ([37.28.154.113]:51690 "EHLO vps-vb.mhejs.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729185AbfKJC4q (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 9 Nov 2019 21:56:46 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B2E7224B8;
-        Sun, 10 Nov 2019 02:48:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573354091;
-        bh=BIKvivTgbhJmyqsY0AFtQ/h+1Vep9bWqDEIZO2zDLAM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cTnzitFwU+qsS41Ld/cmBtE38VYB55bLroDHW5U3lFO/tJhuh6aLieiZUc9luE92P
-         YxUaNvfTU3yZBih5Esdz1jpopET1HiqabhYxWp+i5u94RV/5GlFNXnVA/EpT0ssu8p
-         gdzfheQQGluTfQBJmqV+4nybuKfXbguNPCio+Zjo=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christoph Manszewski <c.manszewski@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kamil Konieczny <k.konieczny@partner.samsung.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 086/109] crypto: s5p-sss: Fix Fix argument list alignment
-Date:   Sat,  9 Nov 2019 21:45:18 -0500
-Message-Id: <20191110024541.31567-86-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191110024541.31567-1-sashal@kernel.org>
-References: <20191110024541.31567-1-sashal@kernel.org>
+        id S1726390AbfKJN4D (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 10 Nov 2019 08:56:03 -0500
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1iTngz-0000Y5-23; Sun, 10 Nov 2019 14:55:49 +0100
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Keerthy <j-keerthy@ti.com>, Stephen Boyd <swboyd@chromium.org>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] random: Don't freeze in add_hwgenerator_randomness() if stopping kthread
+Date:   Sun, 10 Nov 2019 14:55:42 +0100
+Message-Id: <20191110135543.3476097-1-mail@maciej.szmigiero.name>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Christoph Manszewski <c.manszewski@samsung.com>
+Since commit 59b569480dc8
+("random: Use wait_event_freezable() in add_hwgenerator_randomness()")
+there is a race in add_hwgenerator_randomness() between freezing and
+stopping the calling kthread.
 
-[ Upstream commit 6c12b6ba45490eeb820fdceccf5a53f42a26799c ]
+This commit changed wait_event_interruptible() call with
+kthread_freezable_should_stop() as a condition into wait_event_freezable()
+with just kthread_should_stop() as a condition to fix a warning that
+kthread_freezable_should_stop() might sleep inside the wait.
 
-Fix misalignment of continued argument list.
+wait_event_freezable() ultimately calls __refrigerator() with its
+check_kthr_stop argument set to false, which causes it to keep the kthread
+frozen even if somebody calls kthread_stop() on it.
 
-Signed-off-by: Christoph Manszewski <c.manszewski@samsung.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Kamil Konieczny <k.konieczny@partner.samsung.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Calling wait_event_freezable() with kthread_should_stop() as a condition
+is racy because it doesn't take into account the situation where this
+condition becomes true on a kthread marked for freezing only after this
+condition has already been checked.
+
+Calling freezing() should avoid the issue that the commit 59b569480dc8 has
+fixed, as it is only a checking function, it doesn't actually do the
+freezing.
+
+add_hwgenerator_randomness() has two post-boot users: in khwrng the
+kthread will be frozen anyway by call to kthread_freezable_should_stop()
+in its main loop, while its second user (ath9k-hwrng) is not freezable at
+all.
+
+This change allows a VM with virtio-rng loaded to write s2disk image
+successfully.
+
+Fixes: 59b569480dc8 ("random: Use wait_event_freezable() in add_hwgenerator_randomness()")
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 ---
- drivers/crypto/s5p-sss.c | 4 ++--
+ drivers/char/random.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/s5p-sss.c b/drivers/crypto/s5p-sss.c
-index aec66159566dd..9a5213cbcbe18 100644
---- a/drivers/crypto/s5p-sss.c
-+++ b/drivers/crypto/s5p-sss.c
-@@ -323,7 +323,7 @@ static void s5p_unset_indata(struct s5p_aes_dev *dev)
- }
- 
- static int s5p_make_sg_cpy(struct s5p_aes_dev *dev, struct scatterlist *src,
--			    struct scatterlist **dst)
-+			   struct scatterlist **dst)
- {
- 	void *pages;
- 	int len;
-@@ -569,7 +569,7 @@ static int s5p_set_indata_start(struct s5p_aes_dev *dev,
- }
- 
- static int s5p_set_outdata_start(struct s5p_aes_dev *dev,
--				struct ablkcipher_request *req)
-+				 struct ablkcipher_request *req)
- {
- 	struct scatterlist *sg;
- 	int err;
--- 
-2.20.1
-
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index de434feb873a..2f87910dd498 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -2500,8 +2500,8 @@ void add_hwgenerator_randomness(const char *buffer, size_t count,
+ 	 * We'll be woken up again once below random_write_wakeup_thresh,
+ 	 * or when the calling thread is about to terminate.
+ 	 */
+-	wait_event_freezable(random_write_wait,
+-			kthread_should_stop() ||
++	wait_event_interruptible(random_write_wait,
++			kthread_should_stop() || freezing(current) ||
+ 			ENTROPY_BITS(&input_pool) <= random_write_wakeup_bits);
+ 	mix_pool_bytes(poolp, buffer, count);
+ 	credit_entropy_bits(poolp, entropy);
