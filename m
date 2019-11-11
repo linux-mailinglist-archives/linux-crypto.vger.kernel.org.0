@@ -2,55 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 965DDF6D36
-	for <lists+linux-crypto@lfdr.de>; Mon, 11 Nov 2019 04:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DC9F6E2A
+	for <lists+linux-crypto@lfdr.de>; Mon, 11 Nov 2019 06:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbfKKDPE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 10 Nov 2019 22:15:04 -0500
-Received: from static-dsl-170.87-197-152.telecom.sk ([87.197.152.170]:37866
-        "EHLO sldom.sldom" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726756AbfKKDPE (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 10 Nov 2019 22:15:04 -0500
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        by sldom.sldom (Postfix) with SMTP id 16F941D59F5;
-        Fri,  8 Nov 2019 11:53:36 +0100 (CET)
-Received: from (HELO n3fw4b) [199.120.235.171] by 127.0.0.1 with ESMTP id 8EDBA7935EF; Fri, 08 Nov 2019 07:46:50 -0300
-Message-ID: <j8-y5$8-1t3u$6$n9e7e9zz3f0s-7@p7v.6l.vug78>
-From:   "Simon Oliver" <olivia_simon@lihat.dds-akaun.com>
-Reply-To: "Simon Oliver" <olivia_simon@lihat.dds-akaun.com>
-To:     yonghong_gao@hotmail.com
-Subject: Seeking Investment Opportunities
-Date:   Fri, 08 Nov 19 07:46:50 GMT
-X-Mailer: Microsoft Outlook Express 5.50.4522.1200
+        id S1726205AbfKKFhX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 11 Nov 2019 00:37:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726167AbfKKFhX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 11 Nov 2019 00:37:23 -0500
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E45C22084F;
+        Mon, 11 Nov 2019 05:37:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573450642;
+        bh=wsUljRMUBfz5EAXT623IjRMCinJdV4isrljFPUs0d9s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SyyfprUmBPunezqCbRFR3nekHRq4I4QoDBILVSvlqLDce2p1qrFqq/H9DRpf7G8ED
+         /hGCZ9eAio7U29bYpNPEN5vdjM/j2b9kaxjorCYWtSbEXVVzBmqyVTLjZBmoMqGWG0
+         46Kiu0z5xBXCyB00GD9lujRES+uo5/7Rtp0aHN9o=
+Date:   Sun, 10 Nov 2019 21:37:20 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Xu Zaibo <xuzaibo@huawei.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, jonathan.cameron@huawei.com,
+        wangzhou1@hisilicon.com, linuxarm@huawei.com, fanghao11@huawei.com,
+        yekai13@huawei.com, zhangwei375@huawei.com,
+        forest.zhouchang@huawei.com
+Subject: Re: [PATCH v2 0/5] crypto: hisilicon - add HiSilicon SEC V2 support
+Message-ID: <20191111053720.GA18665@sol.localdomain>
+Mail-Followup-To: Xu Zaibo <xuzaibo@huawei.com>,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, jonathan.cameron@huawei.com,
+        wangzhou1@hisilicon.com, linuxarm@huawei.com, fanghao11@huawei.com,
+        yekai13@huawei.com, zhangwei375@huawei.com,
+        forest.zhouchang@huawei.com
+References: <1573264917-14588-1-git-send-email-xuzaibo@huawei.com>
+ <20191109021650.GA9739@sol.localdomain>
+ <d75fc607-524c-a68a-bafe-28e793bced93@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="_FB8_.D.A20D..20."
-X-Priority: 3
-X-MSMail-Priority: Normal
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d75fc607-524c-a68a-bafe-28e793bced93@huawei.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On Mon, Nov 11, 2019 at 10:21:39AM +0800, Xu Zaibo wrote:
+> Hi,
+> 
+> On 2019/11/9 10:16, Eric Biggers wrote:
+> > On Sat, Nov 09, 2019 at 10:01:52AM +0800, Zaibo Xu wrote:
+> > > This series adds HiSilicon Security Engine (SEC) version 2 controller
+> > > driver in Crypto subsystem. It includes PCIe enabling, Skcipher, DebugFS
+> > > and SRIOV support of SEC.
+> > > 
+> > > This patchset rebases on:
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git
+> > > 
+> > > This patchset is based on:
+> > > https://www.spinics.net/lists/linux-crypto/msg43520.html
+> > > 
+> > > Changes:
+> > >   - delete checking return value of debugfs_create_xxx functions.
+> > > 
+> > > Change log:
+> > > v2:    - remove checking return value of debugfs_create_xxx functions.
+> > > 
+> > Does this driver pass all the crypto self-tests, including with
+> > CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y?
+> > 
+> Not including extra testing now, only CONFIG_CRYPTO_TEST is passed.
+> 
 
---_FB8_.D.A20D..20.
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+Can you please ensure that all the extra tests are passing too?  I.e., boot a
+kernel with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y and check dmesg for failures.
 
-I consider it very important to introduce to you my client who is interest=
-ed to invest $250 million to $500 million dollars in a reputable project  =
-investment, She is well known in her country holding a political office .
-
-She deserve a secret investment outside her country without direct involve=
-ment.  she needs an experience individual or company that can profitably i=
-nvestment and manage the above funds for the period of 15 years or more.
-
-Forward your details to me for further discussion (e.g)  Your name, Teleph=
-one number and Occupation.
-
-Thank you
-Oliver Simon
-
---_FB8_.D.A20D..20.--
-
+- Eric
