@@ -2,78 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF9BF8C98
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 Nov 2019 11:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 202DBF8CAD
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 Nov 2019 11:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726910AbfKLKQq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 12 Nov 2019 05:16:46 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:33128 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725853AbfKLKQq (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 12 Nov 2019 05:16:46 -0500
-Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1iUTE0-0007dM-KT; Tue, 12 Nov 2019 11:16:40 +0100
-Date:   Tue, 12 Nov 2019 11:16:39 +0100 (CET)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     =?UTF-8?Q?Stephan_M=C3=BCller?= <smueller@chronox.de>
-cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Nicolai Stange <nstange@suse.de>,
-        "Peter, Matthias" <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Roman Drahtmueller <draht@schaltsekun.de>,
-        Neil Horman <nhorman@redhat.com>
-Subject: Re: [PATCH v24 01/12] Linux Random Number Generator
-In-Reply-To: <9370249.4lZBqg7Imc@positron.chronox.de>
-Message-ID: <alpine.DEB.2.21.1911121116130.1833@nanos.tec.linutronix.de>
-References: <6157374.ptSnyUpaCn@positron.chronox.de> <2369119.jSEA3qhmGI@positron.chronox.de> <alpine.DEB.2.21.1911120041060.1833@nanos.tec.linutronix.de> <9370249.4lZBqg7Imc@positron.chronox.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1727185AbfKLKUd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 12 Nov 2019 05:20:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56680 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726212AbfKLKUc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 12 Nov 2019 05:20:32 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 61789B40A;
+        Tue, 12 Nov 2019 10:20:31 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A1FD1DA7AF; Tue, 12 Nov 2019 11:20:35 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-crypto@vger.kernel.org
+Cc:     ebiggers@kernel.org, David Sterba <dsterba@suse.com>
+Subject: [PATCH v2 0/7] BLAKE2b cleanups
+Date:   Tue, 12 Nov 2019 11:20:23 +0100
+Message-Id: <cover.1573553665.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1459376004-1573553800=:1833"
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi,
 
---8323329-1459376004-1573553800=:1833
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+the patchset implements cleanups suggested by Eric in
+https://lore.kernel.org/linux-crypto/20191025051550.GA103313@sol.localdomain/
 
-On Tue, 12 Nov 2019, Stephan Müller wrote:
-> Am Dienstag, 12. November 2019, 00:54:16 CET schrieb Thomas Gleixner:
-> > Can you please get rid of those?
-> 
-> Absolutely. I have removed that boiler plate disclaimer from all files.
+The diff is almost the same, split into pieces with some additional
+comments where it would help understand the simplifications. This is
+based on v7 of the BLAKE2b patchset.
 
-Appreciated.
+The self-tests have been run for each patch on x86_64.
 
-> Though I hope it is acceptable to wait for further comments before a 
-> resubmission.
+V2:
+- rename digest_setkey to blake2b_setkey, this is in patch 7 that also
+  does a rename, to avoid a too-trivial separate patch
+- minor withespace fix in patch 6
 
-Of course!
---8323329-1459376004-1573553800=:1833--
+David Sterba (7):
+  crypto: blake2b: merge _final implementation to callback
+  crypto: blake2b: merge blake2 init to api callback
+  crypto: blake2b: simplify key init
+  crypto: blake2b: delete unused structs or members
+  crypto: blake2b: open code set last block helper
+  crypto: blake2b: merge _update to api callback
+  crypto: blake2b: rename tfm context and _setkey callback
+
+ crypto/blake2b_generic.c | 279 ++++++++++++---------------------------
+ 1 file changed, 82 insertions(+), 197 deletions(-)
+
+-- 
+2.23.0
+
