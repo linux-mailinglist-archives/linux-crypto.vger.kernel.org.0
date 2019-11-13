@@ -2,39 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20928FA3C1
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 Nov 2019 03:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F785FA2F2
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 Nov 2019 03:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727568AbfKMCMO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 12 Nov 2019 21:12:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52226 "EHLO mail.kernel.org"
+        id S1730572AbfKMCAr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 12 Nov 2019 21:00:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730014AbfKMB61 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 12 Nov 2019 20:58:27 -0500
+        id S1730566AbfKMCAq (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 12 Nov 2019 21:00:46 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A3092245A;
-        Wed, 13 Nov 2019 01:58:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB9D2222C9;
+        Wed, 13 Nov 2019 02:00:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573610306;
-        bh=Px8LDoTDnzsd2k6eVGs/JHCeZgoJhRDfbj1HwYsvyKw=;
+        s=default; t=1573610445;
+        bh=2J1mxRa+UGmjHyj449D+d+vcyB70N18KWkkpwLISlyE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RuGhxfZtCRzJ2vkUO4GRQJqnWCKW33lzqBjPXxL+T2w8YEhcpfkq9T53FXeCM8+sx
-         SfB7hXo9bJt1HmYuVRRoF3Zo+Z0/PJZoQ9sP+ufz+t2A5EjWlrO7JFDXtdyn3NTzgH
-         MqdhWhUwr7+4wK7SSzfO8RDTQxz2QEE6gygZXHkE=
+        b=qlKXqjvG1Tr0jwmLV+4Vg22t6gHxYLHONjF7LVI2eEDL6mJ6p8mR7pxqmsl9AXYxK
+         gWUq+FlkpBPJO74VIvXt9B1qb0/oM8kzhz0Fk8MUL+wiYrLG+qmp5p5luhrXiDzRj1
+         km9Mr3qXdmzgat/8V4ZpSNxO7/4SldXn+l/XXzo0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Radu Solea <radu.solea@nxp.com>,
         Leonard Crestez <leonard.crestez@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 075/115] crypto: mxs-dcp - Fix SHA null hashes and output length
-Date:   Tue, 12 Nov 2019 20:55:42 -0500
-Message-Id: <20191113015622.11592-75-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 42/68] crypto: mxs-dcp - Fix SHA null hashes and output length
+Date:   Tue, 12 Nov 2019 20:59:06 -0500
+Message-Id: <20191113015932.12655-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191113015622.11592-1-sashal@kernel.org>
-References: <20191113015622.11592-1-sashal@kernel.org>
+In-Reply-To: <20191113015932.12655-1-sashal@kernel.org>
+References: <20191113015932.12655-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -63,7 +63,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 37 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/crypto/mxs-dcp.c b/drivers/crypto/mxs-dcp.c
-index a98a25733a222..4615dbee22d0a 100644
+index decaed448ebbb..7483adf120084 100644
 --- a/drivers/crypto/mxs-dcp.c
 +++ b/drivers/crypto/mxs-dcp.c
 @@ -28,9 +28,24 @@
