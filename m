@@ -2,173 +2,167 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B4FFC92C
-	for <lists+linux-crypto@lfdr.de>; Thu, 14 Nov 2019 15:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2763FFCCD9
+	for <lists+linux-crypto@lfdr.de>; Thu, 14 Nov 2019 19:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbfKNOsi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 14 Nov 2019 09:48:38 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:55346 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726852AbfKNOsh (ORCPT
+        id S1726549AbfKNSLg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 14 Nov 2019 13:11:36 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:42587 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbfKNSLg (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 14 Nov 2019 09:48:37 -0500
-Received: by mail-wm1-f65.google.com with SMTP id b11so5954810wmb.5;
-        Thu, 14 Nov 2019 06:48:35 -0800 (PST)
+        Thu, 14 Nov 2019 13:11:36 -0500
+Received: by mail-wr1-f67.google.com with SMTP id a15so7558255wrf.9
+        for <linux-crypto@vger.kernel.org>; Thu, 14 Nov 2019 10:11:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=osQPobpkOPnRC9LXPzS0ICaLsSaTgnPD7uH0HuL7bsg=;
-        b=gFm9i5+Q4erupPrQYD6hQx0NKLe5zgJP0SlHfMTD5BEfvWIDz3mr2NfUsaFysX/mnR
-         Oc4VITBDZYrIqiwZ34l3GoJ/SqxuSi+xhAK8kgFJmXlsxxGL3QiVtJhpK45COXk1LvRm
-         2KyIpi8iT9VNeB0r6mhX9TLucAi1QK5L0nS2KlhrhL6b8xNI59NenZqwa07IsRxULGW/
-         x7PSuPd6cU3YImqIKoFRnSEw9S9DsPhMdM5VhNqkw+GATxDqeY5X9fYIwCS+uFBWA1ir
-         W7eJGT/xmmMTWz/j3hv0t/Hs8b3/UWpk2/K29up+DWHC2flGpj+wXH/UNnWQ8csAAm6q
-         jnKQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:openpgp:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=W9hUaXgEGH0+McOgDXrLDEjLrUK2r0StMQnMwauTTsQ=;
+        b=CyyKj65d3q76Cyufn/oxPwKRA8/5C0/cfs8gPXJCpdGSCVXQTllUNi9wo5/sid0JOQ
+         owxhP7W/YmcYeMuUG/r+kNiTpUWsBu7t8MSvcmrmqC0orlLqMsaC2fx9nUcyb7LuirBC
+         k9czaYldxpybdZLxmjNKsBYOXwO5KJxfQRPUq+46dOAx0R0S8KZOuEBbWi1TGwsGNLVt
+         /INEEg1hT1CHosXtYNPQZsdmFzOF4j70Wt8mNbgcSPIvQuJIauqDwpdzBuKvGTUX0v96
+         DgJ0A0CZTfl1TW8/6FQr/uoWdpB5EW5DpG05WLTnQCmLVK7LJwD3DXUXeb+3HdX98xgd
+         v0RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=osQPobpkOPnRC9LXPzS0ICaLsSaTgnPD7uH0HuL7bsg=;
-        b=nXhGpzfppKAs31As9HgYo8GThiUdvamGQmp9ZaklR7vh7ZrE19HxY+XjAnjJhJanEb
-         n4T9Quql8UaY70Xkdj82QeOSvkco/BGDdbkk72Q0z2ZcZFRKeuymvpurX+xsEZcyCFAh
-         q0npBWO9+fgR1aWELkC75bN/6nn2T9Vw4fwOp679smX9Hibfm8y0QSUzMY3ji8Qoy0fP
-         BAb0wV8SrVU3pAUJ0/5CKNl1cvm9NcnO7hUOFWf2KO9nf6RhQVu8uah/7ECkW9flLRnv
-         Bnzz0Ca9tiQ4XJcnkKx/9OpaT6ntgxA05K0VSAVyWvq01YUt3A7zco90aSjp8m3PYhC6
-         imfA==
-X-Gm-Message-State: APjAAAWH0YqRZKVzxYG+LyFoTv8Az96Mwp4X5A/Cqosy3CotTGIsKjFZ
-        xp1UVgqyr12LsKYACdbJJyQ=
-X-Google-Smtp-Source: APXvYqy6S2n65N2oW3nP74LsGjZD7yPbedKs0jyxo0652I/j5zyvyuAQz5KODGEsdg2mDL2R1jlh+Q==
-X-Received: by 2002:a7b:ce08:: with SMTP id m8mr8188339wmc.68.1573742914630;
-        Thu, 14 Nov 2019 06:48:34 -0800 (PST)
-Received: from Red.localdomain ([2a01:cb1d:147:7200:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id v9sm7153223wrs.95.2019.11.14.06.48.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Nov 2019 06:48:34 -0800 (PST)
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        mark.rutland@arm.com, mripard@kernel.org, robh+dt@kernel.org,
-        wens@csie.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH 3/3] crypto: sun4i-ss: add the A33 variant of SecuritySystem
-Date:   Thu, 14 Nov 2019 15:48:12 +0100
-Message-Id: <20191114144812.22747-4-clabbe.montjoie@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191114144812.22747-1-clabbe.montjoie@gmail.com>
-References: <20191114144812.22747-1-clabbe.montjoie@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=W9hUaXgEGH0+McOgDXrLDEjLrUK2r0StMQnMwauTTsQ=;
+        b=VqVy/BC0mwXEQAbnoXyu3KCBN2ifPrAIZXNw5VqPlk/NpjjDphIpsBFoFasZTmFsqF
+         XjF+fy5X7yiZNYOUrTOblIrFduJqUvwZE80CSYDPsParuTCDjll2QZnPJ/1FRhMVcCtA
+         IK2OyF8zZSWduQKMvsDgyODdwf2K9KawAJkI8p93ZgPYaeQLnXqJ2RlH+MWUyn+f06O7
+         EAkOqKtLQx0g3gjz6e7RhyttMlIV78uwKzfZqCHX5mPvlhZoMhvQ9H8RoNGyfHkL5O9V
+         jIaik1bpPdUxgn9zval6rirJyX5jTrNKrkgOijmBa2ivr5G/FSFSW9DCMl5DBGhSQ60+
+         L7xQ==
+X-Gm-Message-State: APjAAAUcQk8nBJoqa1qi5ZhvrWltUEALTXc92WfjSdVK5+8J9j04Fh+A
+        OA7DoclRxJsG+joqcWk8AXHnv7MtkSNnkQ==
+X-Google-Smtp-Source: APXvYqyI2DoHw0eYUJOx5qaYUiXc1+Eu5UTWtu40d2zYY1WLbbcQhe4FbzwZBzOKL4r2eLRZ7cIQXw==
+X-Received: by 2002:adf:f744:: with SMTP id z4mr9688382wrp.205.1573755092513;
+        Thu, 14 Nov 2019 10:11:32 -0800 (PST)
+Received: from [192.168.8.102] (184.red-37-158-56.dynamicip.rima-tde.net. [37.158.56.184])
+        by smtp.gmail.com with ESMTPSA id j14sm7792698wrp.16.2019.11.14.10.11.31
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 Nov 2019 10:11:31 -0800 (PST)
+Subject: Re: [PATCH v7] arm64: Implement archrandom.h for ARMv8.5-RNG
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, ard.biesheuvel@linaro.org,
+        linux-crypto@vger.kernel.org
+References: <20191114113932.26186-1-richard.henderson@linaro.org>
+ <20191114142512.GC37865@lakrids.cambridge.arm.com>
+From:   Richard Henderson <richard.henderson@linaro.org>
+Openpgp: preference=signencrypt
+Message-ID: <3b1d5f2a-5a8d-0c33-176a-f1c35b8356de@linaro.org>
+Date:   Thu, 14 Nov 2019 19:11:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191114142512.GC37865@lakrids.cambridge.arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The A33 SecuritySystem has a difference with all other SS, it give SHA1 digest
-directly in BE.
-So this patch adds variant support in sun4i-ss.
+On 11/14/19 3:25 PM, Mark Rutland wrote:
+> On Thu, Nov 14, 2019 at 12:39:32PM +0100, richard.henderson@linaro.org wrote:
+>> +bool arch_get_random_seed_long(unsigned long *v)
+>> +{
+>> +	bool ok;
+>> +
+>> +	if (static_branch_likely(&arm64_const_caps_ready)) {
+>> +		if (__cpus_have_const_cap(ARM64_HAS_RNG))
+>> +			return arm64_rndr(v);
+>> +		return false;
+>> +	}
+>> +
+>> +	/*
+>> +	 * Before const_caps_ready, check the current cpu.
+>> +	 * This will generally be the boot cpu for rand_initialize().
+>> +	 */
+>> +	preempt_disable_notrace();
+>> +	ok = this_cpu_has_cap(ARM64_HAS_RNG) && arm64_rndr(v);
+>> +	preempt_enable_notrace();
+>> +
+>> +	return ok;
+>> +}
+> 
+> As I asked previously, please separate the common case and the boot-cpu
+> init-time case into separate functions.
 
-Fixes: 6298e948215f ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- .../crypto/allwinner/sun4i-ss/sun4i-ss-core.c | 22 ++++++++++++++++++-
- .../crypto/allwinner/sun4i-ss/sun4i-ss-hash.c |  5 ++++-
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h  |  9 ++++++++
- 3 files changed, 34 insertions(+), 2 deletions(-)
+Ok, beyond just making arch_get_random_seed_long be a function pointer, how?
 
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-index 814cd12149a9..d35a05843c22 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-@@ -13,6 +13,7 @@
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <crypto/scatterwalk.h>
- #include <linux/scatterlist.h>
-@@ -22,6 +23,14 @@
- 
- #include "sun4i-ss.h"
- 
-+static const struct ss_variant ss_a10_variant = {
-+	.sha1_in_be = false,
-+};
-+
-+static const struct ss_variant ss_a33_variant = {
-+	.sha1_in_be = true,
-+};
-+
- static struct sun4i_ss_alg_template ss_algs[] = {
- {       .type = CRYPTO_ALG_TYPE_AHASH,
- 	.mode = SS_OP_MD5,
-@@ -323,6 +332,12 @@ static int sun4i_ss_probe(struct platform_device *pdev)
- 		return PTR_ERR(ss->base);
- 	}
- 
-+	ss->variant = of_device_get_match_data(&pdev->dev);
-+	if (!ss->variant) {
-+		dev_err(&pdev->dev, "Missing Security System variant\n");
-+		return -EINVAL;
-+	}
-+
- 	ss->ssclk = devm_clk_get(&pdev->dev, "mod");
- 	if (IS_ERR(ss->ssclk)) {
- 		err = PTR_ERR(ss->ssclk);
-@@ -484,7 +499,12 @@ static int sun4i_ss_remove(struct platform_device *pdev)
- }
- 
- static const struct of_device_id a20ss_crypto_of_match_table[] = {
--	{ .compatible = "allwinner,sun4i-a10-crypto" },
-+	{ .compatible = "allwinner,sun4i-a10-crypto",
-+	  .data = &ss_a10_variant
-+	},
-+	{ .compatible = "allwinner,sun8i-a33-crypto",
-+	  .data = &ss_a33_variant
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, a20ss_crypto_of_match_table);
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-index 91cf58db3845..c791d6935c65 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-@@ -478,7 +478,10 @@ static int sun4i_hash(struct ahash_request *areq)
- 	/* Get the hash from the device */
- 	if (op->mode == SS_OP_SHA1) {
- 		for (i = 0; i < 5; i++) {
--			v = cpu_to_be32(readl(ss->base + SS_MD0 + i * 4));
-+			if (ss->variant->sha1_in_be)
-+				v = cpu_to_le32(readl(ss->base + SS_MD0 + i * 4));
-+			else
-+				v = cpu_to_be32(readl(ss->base + SS_MD0 + i * 4));
- 			memcpy(areq->result + i * 4, &v, 4);
- 		}
- 	} else {
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
-index 60425ac75d90..2b4c6333eb67 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
-@@ -131,7 +131,16 @@
- #define SS_SEED_LEN 192
- #define SS_DATA_LEN 160
- 
-+/*
-+ * struct ss_variant - Describe SS hardware variant
-+ * @sha1_in_be:		The SHA1 digest is given by SS in BE, and so need to be inverted.
-+ */
-+struct ss_variant {
-+	bool sha1_in_be;
-+};
-+
- struct sun4i_ss_ctx {
-+	const struct ss_variant *variant;
- 	void __iomem *base;
- 	int irq;
- 	struct clk *busclk;
--- 
-2.23.0
+I honestly don't understand how what you want is different from what's here.
 
+
+> The runtime function should just check the RNG cap before using the
+> instruction, without any preemption check or explicit check of
+> arm64_const_caps_ready. i.e.
+> 
+> static bool arm64_rndr(unsigned long *v)
+> {
+> 	bool ok;
+> 
+> 	if (!cpus_have_const_cap(ARM64_HAS_RNG))
+> 		return false;
+> 
+> 	/*
+> 	 * Reads of RNDR set PSTATE.NZCV to 0b0000 on success,
+> 	 * and set PSTATE.NZCV to 0b0100 otherwise.
+> 	 */
+> 	asm volatile(
+> 		__mrs_s("%0", SYS_RNDR_EL0) "\n"
+> 	"       cset %w1, ne\n"
+> 	: "=r" (*v), "=r" (ok)
+> 	:
+> 	: "cc");
+> 
+> 	return ok;
+
+This is exactly what I have above, in arch_get_random_seed_long(), in the
+arm64_const_caps_ready case.
+
+BTW, you can't stick the cpus_have_const_cap check in arm64_rndr(), or it isn't
+usable before setup_cpu_features().  The embedded cpus_have_cap() check will
+not pass for the boot cpu alone, unless we use
+ARM64_CPUCAP_STRICT_BOOT_CPU_FEATURE, which does not have the semantics that
+you have requested in previous review rounds.
+
+Which is *why* I wrote the test exactly as I did, so that when
+!arm64_const_caps_ready, I can use a different test than cpus_have_cap().
+
+> Any boot-time seeding should be in a separate function that external
+> callers cannot invoke at runtime. Either have an arch function that the
+> common random code calls at init time on the boot CPU, or have some
+> arch_add_foo_entropy() function that the arm64 code can call somewhere
+> around setup_arch().
+
+What "external callers" are you talking about?
+
+My boot-time code above can only be reached until arm64_const_caps_ready, at
+which point the branch is patched out.  So after boot-time, "external callers"
+only get
+
+	if (__cpus_have_const_cap(ARM64_HAS_RNG))
+		return arm64_rndr(v);
+	return false;
+
+Which to my mind satisfies your "cannot invoke" clause.
+
+Anyway, the preempt_disable is present on my boot path because preempt *is*
+enabled during rand_initialize().  If I do not disable it, I do trigger the
+warning within this_cpu_has_cap()
+
+As for arch_add_boot_entropy() or whatnot... you're now you're asking for
+non-trivial changes to the common drivers/char/random.c code.  I'm not keen on
+designing such a thing when I really don't know what the requirements are.  In
+particular, how it would differ from what I have.
+
+Color me confused.
+
+
+r~
