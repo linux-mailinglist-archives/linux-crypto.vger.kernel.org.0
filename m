@@ -2,87 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0ADEFE1F0
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 Nov 2019 16:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B95C2FE45A
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 Nov 2019 18:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727684AbfKOPtn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 15 Nov 2019 10:49:43 -0500
-Received: from mail-io1-f65.google.com ([209.85.166.65]:35118 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727557AbfKOPtm (ORCPT
+        id S1726786AbfKORv0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 15 Nov 2019 12:51:26 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:34815 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726599AbfKORvZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 15 Nov 2019 10:49:42 -0500
-Received: by mail-io1-f65.google.com with SMTP id x21so10946993ior.2
-        for <linux-crypto@vger.kernel.org>; Fri, 15 Nov 2019 07:49:42 -0800 (PST)
+        Fri, 15 Nov 2019 12:51:25 -0500
+Received: by mail-pg1-f196.google.com with SMTP id z188so6357833pgb.1
+        for <linux-crypto@vger.kernel.org>; Fri, 15 Nov 2019 09:51:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=X5NAAOrJ3bS32ihsXavVCESX6DNfXdWEE7aVqtLVIHM=;
-        b=T96mBsWswYjsm0w7ecYkWpV509ib/ulk9bHbI0Xwo0rzkePegh7rSfOcmzGbyf8vTc
-         lns/HOXyf4/6jOYDVIgZ/CZyIfN2m2y88qVdmXSABhNsP0MXDIRsHGSOOd7wWkwuGiQx
-         ehcoBpFXp6INIFq3jwmveina1L3fsWjpzHRhMvlhwo8OJ8Dy4xuFXwCrYZiL/Ja/dmiU
-         sEvBblBcC09ww5H/W1Li3rJXBc1TYjMn46kjeboNwYGUiqFeNnjz46iJxarBlBzUTpau
-         7EU4w1MkRxjhgPFrJ2/ipVqnuE4IawmENFYcW1JVUg9OFLrEKZvfb77T8+3XayPV4Zd+
-         KrHA==
+        d=chromium.org; s=google;
+        h=message-id:mime-version:content-transfer-encoding:in-reply-to
+         :references:to:subject:from:user-agent:date;
+        bh=dLhYkfUvuM3MR/JcrrR7Nokdc6ORsY2H2jUYzk/2iMw=;
+        b=EorYr20iszXneZR3cFgWw+iMhIgDDQXoL2/uXYakczV+sXoukhMfHWMbzspvnCFdxg
+         kAwA6q3qrOE3B5BWKlVn0ruxtti1+d5w6tOTNC+cIbDCekuAZbgvcjjKh4duLjDGWiip
+         JtuFNGj/xEp7OOMwY3CiHkt/F0ypAKegBWMU0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=X5NAAOrJ3bS32ihsXavVCESX6DNfXdWEE7aVqtLVIHM=;
-        b=RjqsNY6nTp28asABtfxIXOQmiJuyfnU0pXQSjXkl9HUzgE9eyHHKdQ+8RkUok0L2Su
-         VRxZBLs1zYp+WdjWMfJmyA8f8My2yYcOGXUICTuV5A9L7vSO1gpK5uXe3AHwMsrLVV03
-         cn+JvbUEB73gZ95Ttw/CcLP25L9YMeZkALhthQk63xC+RQAf0CDyMzcBp3zE2AJTmbv6
-         jHfivikgs7inWIyICkRcWinuAM/D12Kixz+NTUPUWZQ0qgDgV/YkqFtz53LDsmz8iMK2
-         eTaa2arLYXWnS0mvX+x9Y5uPTOsfyCUGWiG6pbxB/Es4r162Lj/ex/kx3wU0mRLqxm/a
-         Cb/A==
-X-Gm-Message-State: APjAAAVk+BUDyKixdBfqSp4FyoG/E26e6A+kQ4XW1zFn9ND8BAOrMi9m
-        H1bQRswsCcJiNO6A5+vaAYyDFMkmSo7g0QfdgQ==
-X-Google-Smtp-Source: APXvYqxEj1beLI6zhjihT/lmX2Dk324PGcIr8veC5c+0F/PFQKT7AeNYgljOGh72OwNqCMMZvqGkvMbSAqCkDjgGkjg=
-X-Received: by 2002:a5e:8e02:: with SMTP id a2mr1343031ion.269.1573832982053;
- Fri, 15 Nov 2019 07:49:42 -0800 (PST)
+        h=x-gm-message-state:message-id:mime-version
+         :content-transfer-encoding:in-reply-to:references:to:subject:from
+         :user-agent:date;
+        bh=dLhYkfUvuM3MR/JcrrR7Nokdc6ORsY2H2jUYzk/2iMw=;
+        b=CZ7AbRmk27L6z+JIABwR+IF81JUVtJ8KVBaTfpW4uA9qAgxDy2ZtSiirqyrRAK3H0f
+         OAzhTbh77gR2tic/GFRpZm7u1sOn9TXuY8DGBk3NpBYA+UHOyRx6KJhyzUdHH5hrUE0y
+         hd5ysbgEq0E2+Xp1ESmZ2t9+H7KYXWgLBZZbG8RhYLekBXsxhZ4/q1z92Eu1db+552vz
+         PbFtq2yDwj93dMgvfcDa7xckJ+yM4Q/KRBdUEb2fnbyCMpdhwLmVV+09qojr4LUEOi1z
+         GMZ5W8Qugqyz0oiU6T3x1+PvqCXpsvWCKN/2OWXArezk+IaH8Xg8ROjBh2W+/JQrBI5O
+         COxA==
+X-Gm-Message-State: APjAAAWjEyTUzLwtRLAYTdZ98nT0UA5Y7Si2CQnp11Av8CbeKsz03RUE
+        CIdWBp88AYTGSqNHs+n685OIsg==
+X-Google-Smtp-Source: APXvYqwcLOBA5BoQIkVOeY36QAMv4CCxUyLegLofHm0JXeFtgI1ujTzkBTIiWgzH4iVDJ99l3Wkk2g==
+X-Received: by 2002:a63:1d0a:: with SMTP id d10mr2492394pgd.242.1573840282995;
+        Fri, 15 Nov 2019 09:51:22 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id v10sm10079543pgr.37.2019.11.15.09.51.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Nov 2019 09:51:22 -0800 (PST)
+Message-ID: <5dcee59a.1c69fb81.188d.e4b9@mx.google.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Received: by 2002:a02:7749:0:0:0:0:0 with HTTP; Fri, 15 Nov 2019 07:49:41
- -0800 (PST)
-Reply-To: moneygram.1820@outlook.fr
-From:   "Ms.Mary Coster" <info.zennitbankplcnigerian@gmail.com>
-Date:   Fri, 15 Nov 2019 16:49:41 +0100
-Message-ID: <CABHzvrkUQbbmg0Gr7foD3OjAJiY7Fd37=SW3mU=fnOPOcOyNdQ@mail.gmail.com>
-Subject: Goodnews, I have deposited your transfer total amount US$4.8million
- Dollars with Money Gram this morning. we agreed you will be receiving it
- $5000.00 daily.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <000000000000cdaa560596acbc4e@google.com>
+References: <000000000000cdaa560596acbc4e@google.com>
+To:     alexandre.belloni@bootlin.com, andreyknvl@google.com,
+        arnd@arndb.de, b.zolnierkie@samsung.com,
+        gregkh@linuxfoundation.org, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, lvivier@redhat.com,
+        mchehab+samsung@kernel.org, mpm@selenic.com,
+        syzbot <syzbot+f41c4f7c6d8b0b778780@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: INFO: task hung in chaoskey_disconnect
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.8.1
+Date:   Fri, 15 Nov 2019 09:51:21 -0800
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Attn, Dear
-Goodnews, I have deposited your transfer total amount US$4.8million
-Dollars with Money Gram this morning. we agreed you will be receiving
-it $5000.00 daily.
-Contact Mr. John Dave Director, Money Gram to pick up your first Money
-Gram payment $5000.00 today.
-Contact Person; Mr. John Dave Director, Money Gram,International
-Remittance-Benin
-Email; moneygram.1820@outlook.fr
-Telephone; +229 62619517
-Please re-confirm your address to him once again such as listed below.
-1.Your Full Name..............................
-2.Address.........................
-3.Country....................
-4.Sex.........................................
-5.Your telephone numbers..........................
-6. Copy of your ID...........................
-This is to avoid sending your funds to wrong person, He is waiting to
-hear from you urgent today.
-Let me know once you pick up your transfer $5000.00 today.
-Finally, Note I have paid for the service fees, but only money will
-send to him is $90.00 transfer fee before you can pick up the transfer
-today.
-Ask, Mr. John Dave Director, Money Gram to give you direction where to
-send your transfer fee $90.00 only to Him Immediately so that you can
-pick up $5000.00 us dollars today.
-Thanks for undrstanding.
-Mary Coster
-m.coster@aol.com
+Quoting syzbot (2019-11-06 04:32:09)
+> Hello,
+>=20
+> syzbot found the following crash on:
+>=20
+> HEAD commit:    b1aa9d83 usb: raw: add raw-gadget interface
+> git tree:       https://github.com/google/kasan.git usb-fuzzer
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D16ae2adce00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D79de80330003b=
+5f7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Df41c4f7c6d8b0b7=
+78780
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D10248158e00=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D16afbf7ce00000
+>=20
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+f41c4f7c6d8b0b778780@syzkaller.appspotmail.com
+
+I suspect this is because of the kthread getting stuck problem reported
+by Maciej. Maybe try the commit that Herbert picked up.
+
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6=
+.git linus
+
