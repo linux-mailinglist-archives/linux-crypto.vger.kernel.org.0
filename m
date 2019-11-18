@@ -2,64 +2,92 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A981002C9
-	for <lists+linux-crypto@lfdr.de>; Mon, 18 Nov 2019 11:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215A7100394
+	for <lists+linux-crypto@lfdr.de>; Mon, 18 Nov 2019 12:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726511AbfKRKqp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 18 Nov 2019 05:46:45 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:40600 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726460AbfKRKqp (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 18 Nov 2019 05:46:45 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 39A2E5FFD6C589ED04F9;
-        Mon, 18 Nov 2019 18:46:43 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.439.0; Mon, 18 Nov 2019
- 18:46:32 +0800
-From:   zhengbin <zhengbin13@huawei.com>
-To:     <antoine.tenart@bootlin.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>, <linux-crypto@vger.kernel.org>
-CC:     <zhengbin13@huawei.com>
-Subject: [PATCH -next] crypto: inside-secure: Use PTR_ERR_OR_ZERO() to simplify code
-Date:   Mon, 18 Nov 2019 18:53:56 +0800
-Message-ID: <1574074436-32134-1-git-send-email-zhengbin13@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726600AbfKRLLs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 18 Nov 2019 06:11:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726595AbfKRLLr (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 18 Nov 2019 06:11:47 -0500
+Received: from localhost (lfbn-1-10718-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C790E2075E;
+        Mon, 18 Nov 2019 11:11:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574075506;
+        bh=8iL77Cbod2Ldiv/Kdt/qOxk6iOq/uRTCIjFxHr20nBg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qq3QIkHDLBpbwRJOsBbMchPRtT1Ua8NRpKp1o1BQyYFmK0/Wxh9Vq0GZUOG6H8xxs
+         r44ljL0TDHb4sJ1TjYcMvn3e3Gv13Vwx4bZo2OwJwjwDS0jOFxpyOb/fhIvk/H+c0p
+         wurFPXM4pgNllY2K6gNcSo1iaEZpBsXU3edAjdTk=
+Date:   Mon, 18 Nov 2019 12:11:43 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mark.rutland@arm.com, robh+dt@kernel.org, wens@csie.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 2/3] ARM: dts: sun8i: a33: add the new SecuritySystem
+ compatible
+Message-ID: <20191118111143.GF4345@gilmour.lan>
+References: <20191114144812.22747-1-clabbe.montjoie@gmail.com>
+ <20191114144812.22747-3-clabbe.montjoie@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="p76r+0aZ/vhNbw2t"
+Content-Disposition: inline
+In-Reply-To: <20191114144812.22747-3-clabbe.montjoie@gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Fixes coccicheck warning:
 
-drivers/crypto/inside-secure/safexcel_cipher.c:2534:1-3: WARNING: PTR_ERR_OR_ZERO can be used
+--p76r+0aZ/vhNbw2t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: zhengbin <zhengbin13@huawei.com>
----
- drivers/crypto/inside-secure/safexcel_cipher.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Hi,
 
-diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers/crypto/inside-secure/safexcel_cipher.c
-index c029956..08cb495 100644
---- a/drivers/crypto/inside-secure/safexcel_cipher.c
-+++ b/drivers/crypto/inside-secure/safexcel_cipher.c
-@@ -2532,10 +2532,7 @@ static int safexcel_aead_gcm_cra_init(struct crypto_tfm *tfm)
- 	ctx->mode = CONTEXT_CONTROL_CRYPTO_MODE_XCM; /* override default */
+On Thu, Nov 14, 2019 at 03:48:11PM +0100, Corentin Labbe wrote:
+> Add the new A33 SecuritySystem compatible to the crypto node.
+>
+> Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> ---
+>  arch/arm/boot/dts/sun8i-a33.dtsi | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm/boot/dts/sun8i-a33.dtsi b/arch/arm/boot/dts/sun8i-a33.dtsi
+> index 1532a0e59af4..5680fa1de102 100644
+> --- a/arch/arm/boot/dts/sun8i-a33.dtsi
+> +++ b/arch/arm/boot/dts/sun8i-a33.dtsi
+> @@ -215,7 +215,8 @@
+>  		};
+>
+>  		crypto: crypto-engine@1c15000 {
+> -			compatible = "allwinner,sun4i-a10-crypto";
+> +			compatible = "allwinner,sun8i-a33-crypto",
+> +				     "allwinner,sun4i-a10-crypto";
 
- 	ctx->hkaes = crypto_alloc_cipher("aes", 0, 0);
--	if (IS_ERR(ctx->hkaes))
--		return PTR_ERR(ctx->hkaes);
--
--	return 0;
-+	return PTR_ERR_OR_ZERO(ctx->hkaes);
- }
+If some algorithms aren't working properly, we can't really fall back
+to it, we should just use the a33 compatible.
 
- static void safexcel_aead_gcm_cra_exit(struct crypto_tfm *tfm)
---
-2.7.4
+Maxime
 
+--p76r+0aZ/vhNbw2t
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXdJ8bwAKCRDj7w1vZxhR
+xWSsAQDfuOb7pAGVgHQzg3LHHlN6b2U6D/Lbo36ifRgHXwR4yQEA0GMSVqz5xwZy
+x+K+EU4sfN71BXTin4nzbE/XEZXdQgc=
+=hnch
+-----END PGP SIGNATURE-----
+
+--p76r+0aZ/vhNbw2t--
