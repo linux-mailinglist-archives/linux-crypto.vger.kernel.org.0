@@ -2,129 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 500EEFFF7E
-	for <lists+linux-crypto@lfdr.de>; Mon, 18 Nov 2019 08:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F126CFFFEB
+	for <lists+linux-crypto@lfdr.de>; Mon, 18 Nov 2019 08:59:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726423AbfKRH1C (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 18 Nov 2019 02:27:02 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:43941 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726321AbfKRH1C (ORCPT
+        id S1726314AbfKRH7V (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 18 Nov 2019 02:59:21 -0500
+Received: from sender4-of-o54.zoho.com ([136.143.188.54]:21401 "EHLO
+        sender4-of-o54.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726283AbfKRH7V (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 18 Nov 2019 02:27:02 -0500
-Received: by mail-wr1-f67.google.com with SMTP id n1so18072452wra.10
-        for <linux-crypto@vger.kernel.org>; Sun, 17 Nov 2019 23:26:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1PfRV59VdJePfpGbxWVys6e1lRpwcemANsdtiEh5XqM=;
-        b=TueI4y8mXTuw0QlK79jadIyxwjrdWQof9XHZc+G9OcnLNGSxqQx8wZ3KFE+cAHDjuI
-         YduAjWIhlIKnJ3SIP3RE1vvuEKnbPgiiRVWmVSVCCglzyloqFan++Fjdd8nLVbBKKBHZ
-         4t8HiU0REg7Yhg3YsKU8ESvADOrVhaUXJ399g7WYBg3JqGxYE9dFPz5YcsNyD03kVTID
-         11YgUL+UggiXLVJLqVBNAqSTsslUiH2XBNwnHkVqWQQUMDuokInFlegi1KhJ1pqd+MGc
-         7zHT+TXaKfrk3rNAcQqOkBHmYVX3rU+unMCAQ5wj9T4EQ64vyMTs3dqJVupozyKKZwbk
-         6Bjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1PfRV59VdJePfpGbxWVys6e1lRpwcemANsdtiEh5XqM=;
-        b=evZqGL7MRDxkKTRjkUd6TyOnQMacairWIGI4nQx5qoudo9jb0Fw64a4hiK4qMItIWk
-         rGAGr40z8ZK3yEjtKAroNmzVHnYRZobm6hJOtta3R1m96Zvxti3RasxvImoYN5vvYYZG
-         OOaKL4dLrT1YPB8VJbBCkRQln9OQrNhDU8FAd8pdwRHVvLWOp1HO+FjSMg5Z0oAQrwMO
-         xq9/UMcQWp9paAA9cmGSeFLIaOuNbIdafVcB0S1qbAvDmmy15cyXqYKWluHk7Q6cDKnG
-         G0IyUllc7idMW0yiBxmcR8uL5i2IG/DFR3gLYtUOfMguX4ng9i1IvmhYsemH+NCwcTqz
-         MjdA==
-X-Gm-Message-State: APjAAAW4wLzKz7lpRyLgYwg3OhlQjJOxJPr7rpPILmhQpTxco6ncwMtT
-        u1K+pncClMZ7hwIKMz2s7eGADrRPiXCLhRA9WsMQiYzkXMki+LW6
-X-Google-Smtp-Source: APXvYqxIQKdq0Q7dOpPhreSQhm5IFi+BHLFWo3jxpKXGwsmQX1mj5cCktt+VDu5Hwe6blGvxrnKit8xVl+Q9ELCkkOs=
-X-Received: by 2002:adf:ec42:: with SMTP id w2mr15172306wrn.32.1574062018558;
- Sun, 17 Nov 2019 23:26:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20191118072129.467514-1-ebiggers@kernel.org>
-In-Reply-To: <20191118072129.467514-1-ebiggers@kernel.org>
-From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Mon, 18 Nov 2019 08:26:46 +0100
-Message-ID: <CAKv+Gu-J9exRp+_eCcc-24Bx9ifmDMDAnuZE9QP6jNY=ngsMhQ@mail.gmail.com>
-Subject: Re: [PATCH] crypto: chacha_generic - remove unnecessary setkey() functions
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
+        Mon, 18 Nov 2019 02:59:21 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1574063909; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=Rc/20lkRyjUTL1pXtxaJuUuGL6Qy5iJf9domOrYQzp0dV7kTzUIId9MgtxymtHz8eW9RxfivYILm4WAx5Jvckm1YzecjcOeIHzE6SdnH6/okt9b/VJImBA0kry/OiihPLM1rSa6P8/slgkqAQkAO9rQmx2/fjQEeMmkoysH9gQ4=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1574063909; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=cfu4tgSh/ZEFa8HY5V7AvfFEMPP8yuNAhIRi2KmoYKY=; 
+        b=BATyhYXAZYAvgFtIi7Dds4pzApisEa2g0tbZSqJYoVJ9brOEazPmFpws7HMzPPzMZbDN2I/HSjycg1Uhv3rTVIoE64o9Cnr/qb946pR80D8WUsSEjaXNu3ir98oDNqNoruFkZfetGNHNMO0o0qOQUF05shLaPF9sFv5EOkuQb5o=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=brennan.io;
+        spf=pass  smtp.mailfrom=stephen@brennan.io;
+        dmarc=pass header.from=<stephen@brennan.io> header.from=<stephen@brennan.io>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1574063909;
+        s=selector01; d=brennan.io; i=stephen@brennan.io;
+        h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        l=881; bh=cfu4tgSh/ZEFa8HY5V7AvfFEMPP8yuNAhIRi2KmoYKY=;
+        b=a33RF1a+B9CYq7VVkL5/b8DhfRPEp5pkdGOtbev4kuka5D2uuM2xocwxcS961KUD
+        SO3U4qTgJ3+23IuCXVYkAgSx2xpVaMwiF0QYGMXPGNRVC5wqg1rg9xzDJGod4d7T8E8
+        B+AoMbzrEPmEHnJk17ZEa3ioxzfoLDe74N8WQfHo=
+Received: from localhost (195.173.24.136.in-addr.arpa [136.24.173.195]) by mx.zohomail.com
+        with SMTPS id 1574063908686965.880928958745; Sun, 17 Nov 2019 23:58:28 -0800 (PST)
+From:   Stephen Brennan <stephen@brennan.io>
+To:     stephen@brennan.io
+Cc:     Matt Mackall <mpm@selenic.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Eric Anholt <eric@anholt.net>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org
+Message-ID: <20191118075807.165126-2-stephen@brennan.io>
+Subject: [PATCH 1/3] dt-bindings: rng: add BCM2711 RNG compatible
+Date:   Sun, 17 Nov 2019 23:58:05 -0800
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20191118075807.165126-1-stephen@brennan.io>
+References: <20191118075807.165126-1-stephen@brennan.io>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-ZohoMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, 18 Nov 2019 at 08:21, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> From: Eric Biggers <ebiggers@google.com>
->
-> Use chacha20_setkey() and chacha12_setkey() from
-> <crypto/internal/chacha.h> instead of defining them again in
-> chacha_generic.c.
->
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+From: Stefan Wahren <wahrenst@gmx.net>
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+The BCM2711 has a RNG200 block, so document its compatible string.
 
-> ---
->  crypto/chacha_generic.c | 18 +++---------------
->  1 file changed, 3 insertions(+), 15 deletions(-)
->
-> diff --git a/crypto/chacha_generic.c b/crypto/chacha_generic.c
-> index c1b147318393..8beea79ab117 100644
-> --- a/crypto/chacha_generic.c
-> +++ b/crypto/chacha_generic.c
-> @@ -37,18 +37,6 @@ static int chacha_stream_xor(struct skcipher_request *req,
->         return err;
->  }
->
-> -static int crypto_chacha20_setkey(struct crypto_skcipher *tfm, const u8 *key,
-> -                                 unsigned int keysize)
-> -{
-> -       return chacha_setkey(tfm, key, keysize, 20);
-> -}
-> -
-> -static int crypto_chacha12_setkey(struct crypto_skcipher *tfm, const u8 *key,
-> -                                unsigned int keysize)
-> -{
-> -       return chacha_setkey(tfm, key, keysize, 12);
-> -}
-> -
->  static int crypto_chacha_crypt(struct skcipher_request *req)
->  {
->         struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-> @@ -91,7 +79,7 @@ static struct skcipher_alg algs[] = {
->                 .max_keysize            = CHACHA_KEY_SIZE,
->                 .ivsize                 = CHACHA_IV_SIZE,
->                 .chunksize              = CHACHA_BLOCK_SIZE,
-> -               .setkey                 = crypto_chacha20_setkey,
-> +               .setkey                 = chacha20_setkey,
->                 .encrypt                = crypto_chacha_crypt,
->                 .decrypt                = crypto_chacha_crypt,
->         }, {
-> @@ -106,7 +94,7 @@ static struct skcipher_alg algs[] = {
->                 .max_keysize            = CHACHA_KEY_SIZE,
->                 .ivsize                 = XCHACHA_IV_SIZE,
->                 .chunksize              = CHACHA_BLOCK_SIZE,
-> -               .setkey                 = crypto_chacha20_setkey,
-> +               .setkey                 = chacha20_setkey,
->                 .encrypt                = crypto_xchacha_crypt,
->                 .decrypt                = crypto_xchacha_crypt,
->         }, {
-> @@ -121,7 +109,7 @@ static struct skcipher_alg algs[] = {
->                 .max_keysize            = CHACHA_KEY_SIZE,
->                 .ivsize                 = XCHACHA_IV_SIZE,
->                 .chunksize              = CHACHA_BLOCK_SIZE,
-> -               .setkey                 = crypto_chacha12_setkey,
-> +               .setkey                 = chacha12_setkey,
->                 .encrypt                = crypto_xchacha_crypt,
->                 .decrypt                = crypto_xchacha_crypt,
->         }
-> --
-> 2.24.0
->
+Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
+Signed-off-by: Stephen Brennan <stephen@brennan.io>
+---
+ Documentation/devicetree/bindings/rng/brcm,iproc-rng200.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/rng/brcm,iproc-rng200.txt b/=
+Documentation/devicetree/bindings/rng/brcm,iproc-rng200.txt
+index c223e54452da..802523196ee5 100644
+--- a/Documentation/devicetree/bindings/rng/brcm,iproc-rng200.txt
++++ b/Documentation/devicetree/bindings/rng/brcm,iproc-rng200.txt
+@@ -2,6 +2,7 @@ HWRNG support for the iproc-rng200 driver
+=20
+ Required properties:
+ - compatible : Must be one of:
++=09       "brcm,bcm2711-rng200"
+ =09       "brcm,bcm7211-rng200"
+ =09       "brcm,bcm7278-rng200"
+ =09       "brcm,iproc-rng200"
+--=20
+2.24.0
+
+
+
