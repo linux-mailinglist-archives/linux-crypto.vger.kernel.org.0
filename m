@@ -2,90 +2,194 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 389C210001C
-	for <lists+linux-crypto@lfdr.de>; Mon, 18 Nov 2019 09:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8616B1001AE
+	for <lists+linux-crypto@lfdr.de>; Mon, 18 Nov 2019 10:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbfKRIMd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 18 Nov 2019 03:12:33 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:52035 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726875AbfKRIMa (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 18 Nov 2019 03:12:30 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 47GhWt6MCHz9sR8;
-        Mon, 18 Nov 2019 19:12:26 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1574064747;
-        bh=Ylcv/kAcskiEgYIYi4TminUt71+ufYVaNqcwaor7E8c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DHIf2G7ZB+cL+eBkxIPvCu1EjLMZWxzzns94iTyTeLzbfBPA61/Tqsnu+09y7azC0
-         T1XAp2boKqnROXrHLsvArwOxw9RH3/DCdHXd+MpENTLVppLBb+bqHZEeYjowBiCHz6
-         5dWvkduh+e1HkqImBBas7dBU5lpnjxEafRvswr7BY4FIjNmRBF0RwLvCVpz/Xi9SOL
-         RhIuKlWpXGYF601KiV3jhvogxKQei9mq2GVcYr/cin3ujGqoNbBLOBTzsDtoVLhpJ2
-         AtafywVaatEd8+uhHZwOqgtozNlOfRFaLCtDRg4DKKazzUZ9wV7E9PZ3IQD9zkboQR
-         Qlg67yn9dUqpg==
-Date:   Mon, 18 Nov 2019 19:12:23 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto List <linux-crypto@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the crypto tree
-Message-ID: <20191118191223.1b7c11a9@canb.auug.org.au>
-In-Reply-To: <MN2PR20MB2973E1EAD50B58826FCEC763CA4D0@MN2PR20MB2973.namprd20.prod.outlook.com>
-References: <20191116101954.33672f2d@canb.auug.org.au>
-        <MN2PR20MB2973E1EAD50B58826FCEC763CA4D0@MN2PR20MB2973.namprd20.prod.outlook.com>
+        id S1726568AbfKRJtq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 18 Nov 2019 04:49:46 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:34313 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726488AbfKRJtq (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 18 Nov 2019 04:49:46 -0500
+Received: by mail-wr1-f68.google.com with SMTP id e6so18631389wrw.1;
+        Mon, 18 Nov 2019 01:49:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to;
+        bh=t9rW3xazlhVCaoGmTPjVJwPHQBKcd3ozdYqgzIwnr/8=;
+        b=DCN1ocCVTucIGj7KNmA2jUUfOU1x+6+1OewOqvAlVaP/zCB/ceRh5LVZoWlr7SB3mB
+         kQeKosxVk+pggXUDU0hNnRrjlPrkQMwoqLhjOfJlvETQG865wBV2v6FUJudcK+vbi4bf
+         VS5Y1rHolM2B3pLEPZ7X/rwcx4bXO3GusFLdBl53La1rucJdiajDvoht6cN6AbC3k/z+
+         CbkGA9vcjMeMMFC3NlyptWDn9CJ1iA3nuquiU22y5OgjeAvmHDITSUp4KP7pzQdJRLfG
+         IlzxxBDWKkAeD6aOqJt2GQRETQYQnlXt0s/L/jVGbEZb1WpZUKym9EsxniTgcTL4bpI8
+         /XXA==
+X-Gm-Message-State: APjAAAWKIr+rNivbjw/mQ5p2WaQ1wWkDFEnM9MmLmQcFGElISj9oQNPH
+        2BaiauCeVGc8Oyj0kveI6fo=
+X-Google-Smtp-Source: APXvYqzZwdF7H+g/R9MVcbwaNmBPQesu+OjiQ1yhCJs+I7NnfCqwpleeYzJzDkvNeRvUnnxjzkPSyg==
+X-Received: by 2002:a5d:4608:: with SMTP id t8mr29980233wrq.91.1574070583608;
+        Mon, 18 Nov 2019 01:49:43 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id f188sm18478495wmf.3.2019.11.18.01.49.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Nov 2019 01:49:42 -0800 (PST)
+Subject: Re: linux-next: build failure after merge of the tip tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Samuel Neves <sneves@dei.uc.pt>,
+        Ard Biesheuvel <ardb@kernel.org>, Borislav Petkov <bp@suse.de>
+References: <20191118141110.7f971194@canb.auug.org.au>
+From:   Jiri Slaby <jslaby@suse.cz>
+Autocrypt: addr=jslaby@suse.cz; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <4d2f41b1-9a8f-1528-0cc0-2730ea8e5910@suse.cz>
+Date:   Mon, 18 Nov 2019 10:49:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/t+UzsCG2yRIu++9O0gVcY2h";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20191118141110.7f971194@canb.auug.org.au>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="uw1gbWEREqHpoXFcHJQJeSB3SoaOJAsEV"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---Sig_/t+UzsCG2yRIu++9O0gVcY2h
-Content-Type: text/plain; charset=US-ASCII
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--uw1gbWEREqHpoXFcHJQJeSB3SoaOJAsEV
+Content-Type: multipart/mixed; boundary="gqiFj2hYAJy8MN2QAsNKEkKp6ID1wrVMu"
+
+--gqiFj2hYAJy8MN2QAsNKEkKp6ID1wrVMu
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-Hi Pascal,
-
-On Mon, 18 Nov 2019 07:58:42 +0000 Pascal Van Leeuwen <pvanleeuwen@verimatr=
-ix.com> wrote:
->
-> My bad, I didn't know the Fixes tag should not be broken over
-> lines (and that rather conflicted with the 75 characters per
-> line rule here, which is why I did break it up).
+On 18. 11. 19, 4:11, Stephen Rothwell wrote:
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 18 Nov 2019 14:00:40 +1100
+> Subject: [PATCH] fix up for "x86/asm: Change all ENTRY+ENDPROC to SYM_F=
+UNC_*"
 >=20
-> I'm willing to fix that - except that I don't know how to create
-> a patch that _only_ fixes the commit description of something=20
-> already pulled into the cryptodev tree?
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  arch/x86/crypto/blake2s-core.S | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/arch/x86/crypto/blake2s-core.S b/arch/x86/crypto/blake2s-c=
+ore.S
+> index 8591938eee26..24910b766bdd 100644
+> --- a/arch/x86/crypto/blake2s-core.S
+> +++ b/arch/x86/crypto/blake2s-core.S
+> @@ -47,7 +47,7 @@ SIGMA2:
+> =20
+>  .text
+>  #ifdef CONFIG_AS_SSSE3
+> -ENTRY(blake2s_compress_ssse3)
+> +SYM_FUNC_START(blake2s_compress_ssse3)
+>  	testq		%rdx,%rdx
+>  	je		.Lendofloop
+>  	movdqu		(%rdi),%xmm0
+> @@ -173,11 +173,11 @@ ENTRY(blake2s_compress_ssse3)
+>  	movdqu		%xmm14,0x20(%rdi)
+>  .Lendofloop:
+>  	ret
+> -ENDPROC(blake2s_compress_ssse3)
+> +SYM_FUNC_END(blake2s_compress_ssse3)
+>  #endif /* CONFIG_AS_SSSE3 */
+> =20
+>  #ifdef CONFIG_AS_AVX512
+> -ENTRY(blake2s_compress_avx512)
+> +SYM_FUNC_START(blake2s_compress_avx512)
+>  	vmovdqu		(%rdi),%xmm0
+>  	vmovdqu		0x10(%rdi),%xmm1
+>  	vmovdqu		0x20(%rdi),%xmm4
+> @@ -254,5 +254,5 @@ ENTRY(blake2s_compress_avx512)
+>  	vmovdqu		%xmm4,0x20(%rdi)
+>  	vzeroupper
+>  	retq
+> -ENDPROC(blake2s_compress_avx512)
+> +SYM_FUNC_END(blake2s_compress_avx512)
+>  #endif /* CONFIG_AS_AVX512 */
 
-Unless Herbert wants to rebase the crypto tree (and I think this is not
-a good reason to do that), you should just consider this a learning
-experience. :-)
+Hi, FWIW LGTM.
 
+thanks,
 --=20
-Cheers,
-Stephen Rothwell
+js
+suse labs
 
---Sig_/t+UzsCG2yRIu++9O0gVcY2h
-Content-Type: application/pgp-signature
+
+--gqiFj2hYAJy8MN2QAsNKEkKp6ID1wrVMu--
+
+--uw1gbWEREqHpoXFcHJQJeSB3SoaOJAsEV
+Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl3SUmcACgkQAVBC80lX
-0GwDlAf8ClZ7n/HmuTyieT433MqwtF26pB9zw9iswQ709v1gNpWzMT5xdfba2JKr
-Vnvci9i0a02Op4c5gX0rQiB3a2k0FFb+jNA+Y68qk5iRvGE1EjD9u4V38xsErH9s
-v0penDIX9T8t83KRpdSNQHWbL2ZU0VOoKz5kRYBWe/XU2aW0DdMk74XrBeVIVhLD
-BwAK8LHOTdgQwlZoRIfGAjMeTJuagvUUC5RGPX72WXxn3WzUcJIH3IK0Y5/IaHqH
-pbAdAEYyEk1RYr4FveBhnDT0CcFkXTMlbU0LsXAD9dY1eaZ3efK7o2ZSPxpWKo8e
-iIRE73ISn4nGzBdtnlyQBttgX6Fxrg==
-=gpYR
+iQIzBAEBCAAdFiEE1pWBVg1LlveO4uo2vSWxBAa0cEkFAl3SaTEACgkQvSWxBAa0
+cEmq4xAAh+65kv4YO7CsHet1k8twziFh9OTGwSLT3hJgXheuJMVvJ6YgZsbRfmbv
+Nkc5+RgThtzfQSvFmgdzUEexWd64Nm0m3/0+KjFNo03+D2MssJ/cpTg76CDdRaIP
+MRN+0K7UsUv+28YdSJDgabJZqowghZUXXhsKizVZyxlqAeRJG1fS1kwnxGo7EYdB
+L81YGU8kP5tCzD3JRsplWyj7NVS/ERqbwGQO2uWGHF9eMdWn0RFWR8jFaiRwUg0o
+lBFJk76QK8tq2H35ulc1CVzd5aRQtfebEjOxiNyQUiYZHkkjClPohxpHOPMWiFIY
+M5zi0T0a1/SGZal/O/h3qQFHycBYKreYrW8vluo+XeZLe34B/eklfnYFSWrYeLJd
+fwrImxVcDuTFYeGiFZEef6rq/V9rmiid035um7fds0vjmuGcz/tSi6CGjaP6hAvt
+FxNe0HSNdXl+GS0NZ3GvLs7m3SkBlCaxSfD8eu1c/fMyJlFRYQkaXoGahtASI/y1
+owKHr736XQG9A9Ws3oN1lrg6vvXg2qjrolMBJZMdqJ7P4oteAJpcrtcqViC8SzOH
+73OGyBpOUb/8BSqa6HQsT4B+TkGA5BJygxZFm5pCO/BY/GdmUWAcsvVsrTjpBA4R
+8LKq4vS94phxFSMA0YALYIQ6qWhCqv/+rJTtWTb79sdG0Yy9kGA=
+=O84y
 -----END PGP SIGNATURE-----
 
---Sig_/t+UzsCG2yRIu++9O0gVcY2h--
+--uw1gbWEREqHpoXFcHJQJeSB3SoaOJAsEV--
