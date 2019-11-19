@@ -2,162 +2,89 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DF71012E5
-	for <lists+linux-crypto@lfdr.de>; Tue, 19 Nov 2019 06:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 325E91016AE
+	for <lists+linux-crypto@lfdr.de>; Tue, 19 Nov 2019 06:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbfKSFRj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 19 Nov 2019 00:17:39 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:43000 "EHLO deadmen.hmeau.com"
+        id S1732232AbfKSFzJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 19 Nov 2019 00:55:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725280AbfKSFRj (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 19 Nov 2019 00:17:39 -0500
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1iWvtO-0001DZ-0X; Tue, 19 Nov 2019 13:17:34 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1iWvtL-0007MY-A3; Tue, 19 Nov 2019 13:17:31 +0800
-Date:   Tue, 19 Nov 2019 13:17:31 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] padata: Remove broken queue flushing
-Message-ID: <20191119051731.yev6dcsp2znjaagz@gondor.apana.org.au>
+        id S1731923AbfKSFzJ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 19 Nov 2019 00:55:09 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56081218BA;
+        Tue, 19 Nov 2019 05:55:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574142908;
+        bh=yNy5f3Bw3KkD7wJrL+SQzTMJT5C/90GVEYL0GQQQ3zg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=LfTy4Nym9DwORzED7uuOIHREOeQMUSDuY1lU7sFC0PDeSUXybmiL8EHbYZeGndnEr
+         05WswyEckWBdzjfmcVODurGxqN6yJ1NRrsLEDQNAjWDH5RgDyNfFFCFoWq19tSz5/G
+         KL6Wpx7sMKsY2S6w8XNO2iZ0yvrG5jkDE5QH5h9w=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Dan Aloni <dan@kernelim.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 216/239] crypto: fix a memory leak in rsa-kcs1pads encryption mode
+Date:   Tue, 19 Nov 2019 06:20:16 +0100
+Message-Id: <20191119051339.185883486@linuxfoundation.org>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20191119051255.850204959@linuxfoundation.org>
+References: <20191119051255.850204959@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The function padata_flush_queues is fundamentally broken because
-it cannot force padata users to complete the request that is
-underway.  IOW padata has to passively wait for the completion
-of any outstanding work.
+From: Dan Aloni <dan@kernelim.com>
 
-As it stands flushing is used in two places.  Its use in padata_stop
-is simply unnecessary because nothing depends on the queues to
-be flushed afterwards.
+[ Upstream commit 3944f139d5592790b70bc64f197162e643a8512b ]
 
-The other use in padata_replace is more substantial as we depend
-on it to free the old pd structure.  This patch instead uses the
-pd->refcnt to dynamically free the pd structure once all requests
-are complete.
+The encryption mode of pkcs1pad never uses out_sg and out_buf, so
+there's no need to allocate the buffer, which presently is not even
+being freed.
 
-Fixes: 2b73b07ab8a4 ("padata: Flush the padata queues actively")
-Cc: <stable@vger.kernel.org>
+CC: Herbert Xu <herbert@gondor.apana.org.au>
+CC: linux-crypto@vger.kernel.org
+CC: "David S. Miller" <davem@davemloft.net>
+Signed-off-by: Dan Aloni <dan@kernelim.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ crypto/rsa-pkcs1pad.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/kernel/padata.c b/kernel/padata.c
-index c3fec1413295..da56a235a255 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -35,6 +35,8 @@
+diff --git a/crypto/rsa-pkcs1pad.c b/crypto/rsa-pkcs1pad.c
+index 407c64bdcdd9a..3279b457c4ede 100644
+--- a/crypto/rsa-pkcs1pad.c
++++ b/crypto/rsa-pkcs1pad.c
+@@ -261,15 +261,6 @@ static int pkcs1pad_encrypt(struct akcipher_request *req)
+ 	pkcs1pad_sg_set_buf(req_ctx->in_sg, req_ctx->in_buf,
+ 			ctx->key_size - 1 - req->src_len, req->src);
  
- #define MAX_OBJ_NUM 1000
- 
-+static void padata_free_pd(struct parallel_data *pd);
-+
- static int padata_index_to_cpu(struct parallel_data *pd, int cpu_index)
- {
- 	int cpu, target_cpu;
-@@ -283,6 +285,7 @@ static void padata_serial_worker(struct work_struct *serial_work)
- 	struct padata_serial_queue *squeue;
- 	struct parallel_data *pd;
- 	LIST_HEAD(local_list);
-+	int cnt;
- 
- 	local_bh_disable();
- 	squeue = container_of(serial_work, struct padata_serial_queue, work);
-@@ -292,6 +295,8 @@ static void padata_serial_worker(struct work_struct *serial_work)
- 	list_replace_init(&squeue->serial.list, &local_list);
- 	spin_unlock(&squeue->serial.lock);
- 
-+	cnt = 0;
-+
- 	while (!list_empty(&local_list)) {
- 		struct padata_priv *padata;
- 
-@@ -301,9 +306,12 @@ static void padata_serial_worker(struct work_struct *serial_work)
- 		list_del_init(&padata->list);
- 
- 		padata->serial(padata);
--		atomic_dec(&pd->refcnt);
-+		cnt++;
- 	}
- 	local_bh_enable();
-+
-+	if (atomic_sub_and_test(cnt, &pd->refcnt))
-+		padata_free_pd(pd);
- }
- 
- /**
-@@ -440,7 +448,7 @@ static struct parallel_data *padata_alloc_pd(struct padata_instance *pinst,
- 	padata_init_squeues(pd);
- 	atomic_set(&pd->seq_nr, -1);
- 	atomic_set(&pd->reorder_objects, 0);
--	atomic_set(&pd->refcnt, 0);
-+	atomic_set(&pd->refcnt, 1);
- 	spin_lock_init(&pd->lock);
- 	pd->cpu = cpumask_first(pd->cpumask.pcpu);
- 	INIT_WORK(&pd->reorder_work, invoke_padata_reorder);
-@@ -466,29 +474,6 @@ static void padata_free_pd(struct parallel_data *pd)
- 	kfree(pd);
- }
- 
--/* Flush all objects out of the padata queues. */
--static void padata_flush_queues(struct parallel_data *pd)
--{
--	int cpu;
--	struct padata_parallel_queue *pqueue;
--	struct padata_serial_queue *squeue;
--
--	for_each_cpu(cpu, pd->cpumask.pcpu) {
--		pqueue = per_cpu_ptr(pd->pqueue, cpu);
--		flush_work(&pqueue->work);
+-	req_ctx->out_buf = kmalloc(ctx->key_size, GFP_KERNEL);
+-	if (!req_ctx->out_buf) {
+-		kfree(req_ctx->in_buf);
+-		return -ENOMEM;
 -	}
 -
--	if (atomic_read(&pd->reorder_objects))
--		padata_reorder(pd);
+-	pkcs1pad_sg_set_buf(req_ctx->out_sg, req_ctx->out_buf,
+-			ctx->key_size, NULL);
 -
--	for_each_cpu(cpu, pd->cpumask.cbcpu) {
--		squeue = per_cpu_ptr(pd->squeue, cpu);
--		flush_work(&squeue->work);
--	}
--
--	BUG_ON(atomic_read(&pd->refcnt) != 0);
--}
--
- static void __padata_start(struct padata_instance *pinst)
- {
- 	pinst->flags |= PADATA_INIT;
-@@ -502,10 +487,6 @@ static void __padata_stop(struct padata_instance *pinst)
- 	pinst->flags &= ~PADATA_INIT;
- 
- 	synchronize_rcu();
--
--	get_online_cpus();
--	padata_flush_queues(pinst->pd);
--	put_online_cpus();
- }
- 
- /* Replace the internal control structure with a new one. */
-@@ -526,8 +507,8 @@ static void padata_replace(struct padata_instance *pinst,
- 	if (!cpumask_equal(pd_old->cpumask.cbcpu, pd_new->cpumask.cbcpu))
- 		notification_mask |= PADATA_CPU_SERIAL;
- 
--	padata_flush_queues(pd_old);
--	padata_free_pd(pd_old);
-+	if (atomic_dec_and_test(&pd_old->refcnt))
-+		padata_free_pd(pd_old);
- 
- 	if (notification_mask)
- 		blocking_notifier_call_chain(&pinst->cpumask_change_notifier,
+ 	akcipher_request_set_tfm(&req_ctx->child_req, ctx->child);
+ 	akcipher_request_set_callback(&req_ctx->child_req, req->base.flags,
+ 			pkcs1pad_encrypt_sign_complete_cb, req);
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.20.1
+
+
+
