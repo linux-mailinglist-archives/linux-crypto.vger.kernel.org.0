@@ -2,173 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9EE103E6B
-	for <lists+linux-crypto@lfdr.de>; Wed, 20 Nov 2019 16:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA131104089
+	for <lists+linux-crypto@lfdr.de>; Wed, 20 Nov 2019 17:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729439AbfKTP2n (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 20 Nov 2019 10:28:43 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:32834 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731187AbfKTP2n (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 20 Nov 2019 10:28:43 -0500
-Received: by mail-wr1-f67.google.com with SMTP id w9so330952wrr.0;
-        Wed, 20 Nov 2019 07:28:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VocVwERuj9CPUxI4LlG88AIMpkiR3wTIlIVCNMEfFWI=;
-        b=XGKqvA+ftxeRIcTzRVR4iuKmoi0AoZftMzZznXbgI5lelIgfWtxFTXOkD40mmkJ0Yf
-         3F22LKumE86iAiZTdZP9sXgCKJowSPQEsszkhBRjtK2jKvfNZs3OcEhztgLYz9fCFYp7
-         FnRHXFhQTryMUWMHjF0jTxnuAMZ2bstdrHVNWQ3W5lOFj9A9vvJaoqPze3uXdJv0ZmY2
-         mVwxXHdA1kLLCy3FUnm+bNMrbOJ1Y8j0zdYzuYaQfcsoEF6V9j30lKqT3qf7x386q9pE
-         uxwFmMwjNZKgba0UBhp6ZUEYCnk6EbEO2y9/cY8a//79YUOfCNXm2QqjQ3wj+jqWzPZt
-         Q58g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VocVwERuj9CPUxI4LlG88AIMpkiR3wTIlIVCNMEfFWI=;
-        b=lVU6/Gh4mAzBdN5p24+cARWJIpUG0mv25m7hwt6z86dKiTDhD7YvRSdQxPZeKn+Hae
-         TSoxf6NI0elbnh/Q/CiyVRyySnidjFGVrooqn8qwRL7b8OdQuYUhgNtjHbZpyjUNugoF
-         +V/5X3j891RlWoRBSydWAUQ8fOjtCJ6Nc7CFJ6DSnYv46EsyIZVNAVh3n3bcetWtJPTJ
-         5QGUpg+id9SHlv0Dglz0vKYpyIansPHqadO6se67dJzJPz0MWcUnoZEr3cqzN6LWm4yZ
-         NTf9Vvmx9H27GCcSHLxGaE8GIadjQldqL6wZRiDbbgV5cO74gVded2uHgbnlQglNoGFD
-         AcEQ==
-X-Gm-Message-State: APjAAAW8yVTTQhs7Fsb7BdFRVquXNtPWlJlkkieC6omI9NfruJfzBIX6
-        hPaHHjOP6Ub18/wpYoGKvnM5FTft
-X-Google-Smtp-Source: APXvYqyySvjdRhchHXN5/IN4KTYqciseN5uBnZ6+Gn1VQiy/uYXcvn0MKoLOS06DLlVVycRu9E0ZYw==
-X-Received: by 2002:a5d:4b82:: with SMTP id b2mr4032387wrt.335.1574263721112;
-        Wed, 20 Nov 2019 07:28:41 -0800 (PST)
-Received: from Red.localdomain ([2a01:cb1d:147:7200:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id w4sm31797881wrs.1.2019.11.20.07.28.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Nov 2019 07:28:40 -0800 (PST)
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        mark.rutland@arm.com, mripard@kernel.org, robh+dt@kernel.org,
-        wens@csie.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH v2 3/3] crypto: sun4i-ss: add the A33 variant of SS
-Date:   Wed, 20 Nov 2019 16:28:33 +0100
-Message-Id: <20191120152833.20443-4-clabbe.montjoie@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191120152833.20443-1-clabbe.montjoie@gmail.com>
-References: <20191120152833.20443-1-clabbe.montjoie@gmail.com>
+        id S1729436AbfKTQRP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 20 Nov 2019 11:17:15 -0500
+Received: from mout.gmx.net ([212.227.15.19]:56695 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729397AbfKTQRP (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 20 Nov 2019 11:17:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1574266609;
+        bh=RI4Q4Ucrk+rlZ3lrnsF6lENBGO63UxXhYlY8pNz55u0=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=JZhc2sETppPeNxuagIr8jg0GNhX5QOvzodBK8qzSBAqsY3hSGqGHqp5zfmSfhQYfM
+         QOtSuRtkxMtXYQeWvs6d6GUxAiBWh3A+khv2Pj0fLVvByrtiBGZNg9/L2FrkbepjGB
+         /HR8jwsH1mJCnhFPJKHxm+axfWGnIPS2rVhrIOcU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.1.176] ([37.4.249.139]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MDhlV-1ifObe2TmZ-00Anrf; Wed, 20
+ Nov 2019 17:16:49 +0100
+Subject: Re: [PATCH v3 0/4] Raspberry Pi 4 HWRNG Support
+To:     Stephen Brennan <stephen@brennan.io>
+Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Scott Branden <sbranden@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, Ray Jui <rjui@broadcom.com>,
+        linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Stefan Wahren <wahrenst@gmx.net>,
+        Matt Mackall <mpm@selenic.com>, Arnd Bergmann <arnd@arndb.de>,
+        linux-crypto@vger.kernel.org
+References: <20191120031622.88949-1-stephen@brennan.io>
+From:   Stefan Wahren <wahrenst@gmx.net>
+Message-ID: <99554159-6abb-6ea5-aebb-57a148a59b78@gmx.net>
+Date:   Wed, 20 Nov 2019 17:16:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191120031622.88949-1-stephen@brennan.io>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Provags-ID: V03:K1:Z9dBjSZwZ2+O3WL2mwvh7agX4F2+npux6rP0HzJz7C0nP+tDAMC
+ KQzPq0eTXEAk9jVgOlqT8vP2wmxww6+SUCR9j1HBLAIgFW3b28LVkdn2TThDIbufs4MFABI
+ PMatIzczHcXblJkesfLPKedLAo8DOnWNpg9EkujbzNGC3T5LEsVijcyJMCB6r7amPqxqaRG
+ uLGpUk3EeLHzdfwOP9now==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5jm9EYJO6bY=:myZF3slHJKl7WcF+aZXrdv
+ MgzqvkteRURkYoUDmr+zhXM8Cfd8ghxg9jmh9hyLzE9+8Q9KavSc1UG0QJ8hxjle5WGnUKVHK
+ fKWCm6Ka4PZUDypiw3/YmkJUWhwRsbigBECPDSQuzqJMXNoGMRU62rju/vmAlfCg6Y1KiGzH4
+ es3vDusm6E59LFb05pmgjzDxRujv2M7xhtluZL4YX0DlslM95u8ZYRE7OsiGrM2UCL0RqNzlT
+ M8ifb2Ol9A8emo7KVEsOUUc8b9Uqm0+JsveriLwGxachpE8h9nNB7UgMFwKiUmcrwhDFscfXs
+ GmmC/VpQwr3a5pTX96NLWmuMXs94/vv19fcYsYSoy6BnWTf4ltERN7trSWpv27SlICn5jdVXJ
+ k2bBlP8AJ3VITdGXEU2avbDAo23Cj7Gq4OUI3nsoN8XyIrdMSd08eQq/SnknmfI70QaPeKvLH
+ rb2bA/tyy/SEy5UFTtkdXwcn8Rpw5kHbiiKiHPSbGvvedGZNomEVvUX/huJva/BdjY/tHSp0H
+ EYERBhEXtg7rJIwpho2iba2QK6/+yjQJtm9oeMs2pBYBoYxME8weJrkeluI6LEYzRXdnG+qAM
+ Zs2i+kBP3soYllo1WO3rnAywiD4+rLV8f+Oee5tAGOVprH7VURS4EluS6RBXPRzY2mmEcUUDH
+ 6vYBbBPu+ImtteiqKFs8rnvDnLVCba4X3PWLw7yjPc4RYEPkekKrvNuPinzW7vZFTlP0TSTZ1
+ 2urMBcgpk3RMiMAfXCIv1xVZYqiNF+cXCxEeUDR+LHCBsxBJRej0sYGt38L3ag3h1CSfPiuku
+ gFzNGnoRfmOF8ktdn9KttnqLOqdDWUEYic/zmq3KGBVbgSm4AQgbDIky94lLUHuOIb3yo62Di
+ lQnZievyT6r8Ku917SF3uaIL+70xnPlDNHV3if6OU8pFGDRqDWO5idKbvk280eEzuSDt+suQC
+ g8i52ah/wHqPLXN6PDOFzI3ibwPDNPw7Oi/OLEWQ30KzmOpLzCIIQ5qPm0RojztSaYL2tePij
+ GpF2lpg/RoNv+Ye83qNHQ557QuhEdCSsQ0XoQ5gTcrQXVtIhscclS989HwsnPkIiTxri0kxGs
+ aXSc/f8jrfXCSkO5yq0iRJuOuLMIJSinfmQwjBZ7+LL+QcSx8VK8TH2pK34W9jBeIOou/q912
+ UqALb5FoZBqGP6VAUMg6Hj+hPa8vXI3cs9XDTc5aOO5/ZKpfEganNQjC3hYdE/XkpGgWBsKOK
+ VyKzPak831kNwWM8s/4oVjFofoAopFNktmQv9KHR4qWWwFAJBNPC+6Yltf6g=
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The A33 SS has a difference with all other SS, it give SHA1 digest
-directly in BE.
-So this patch adds variant support in sun4i-ss.
+Hi Stephen,
 
-Fixes: 6298e948215f ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- .../crypto/allwinner/sun4i-ss/sun4i-ss-core.c | 22 ++++++++++++++++++-
- .../crypto/allwinner/sun4i-ss/sun4i-ss-hash.c |  5 ++++-
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h  |  9 ++++++++
- 3 files changed, 34 insertions(+), 2 deletions(-)
+Am 20.11.19 um 04:16 schrieb Stephen Brennan:
+> This patch series enables support for the HWRNG included on the Raspberry
+> Pi 4.  It is simply a rebase of Stefan's branch [1]. I went ahead and
+> tested this out on a Pi 4.  Prior to this patch series, attempting to use
+> the hwrng gives:
+>
+>     $ head -c 2 /dev/hwrng
+>     head: /dev/hwrng: Input/output error
+>
+> After this series, the same command gives two random bytes.
 
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-index 814cd12149a9..d35a05843c22 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-@@ -13,6 +13,7 @@
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <crypto/scatterwalk.h>
- #include <linux/scatterlist.h>
-@@ -22,6 +23,14 @@
- 
- #include "sun4i-ss.h"
- 
-+static const struct ss_variant ss_a10_variant = {
-+	.sha1_in_be = false,
-+};
-+
-+static const struct ss_variant ss_a33_variant = {
-+	.sha1_in_be = true,
-+};
-+
- static struct sun4i_ss_alg_template ss_algs[] = {
- {       .type = CRYPTO_ALG_TYPE_AHASH,
- 	.mode = SS_OP_MD5,
-@@ -323,6 +332,12 @@ static int sun4i_ss_probe(struct platform_device *pdev)
- 		return PTR_ERR(ss->base);
- 	}
- 
-+	ss->variant = of_device_get_match_data(&pdev->dev);
-+	if (!ss->variant) {
-+		dev_err(&pdev->dev, "Missing Security System variant\n");
-+		return -EINVAL;
-+	}
-+
- 	ss->ssclk = devm_clk_get(&pdev->dev, "mod");
- 	if (IS_ERR(ss->ssclk)) {
- 		err = PTR_ERR(ss->ssclk);
-@@ -484,7 +499,12 @@ static int sun4i_ss_remove(struct platform_device *pdev)
- }
- 
- static const struct of_device_id a20ss_crypto_of_match_table[] = {
--	{ .compatible = "allwinner,sun4i-a10-crypto" },
-+	{ .compatible = "allwinner,sun4i-a10-crypto",
-+	  .data = &ss_a10_variant
-+	},
-+	{ .compatible = "allwinner,sun8i-a33-crypto",
-+	  .data = &ss_a33_variant
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, a20ss_crypto_of_match_table);
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-index 91cf58db3845..c791d6935c65 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-@@ -478,7 +478,10 @@ static int sun4i_hash(struct ahash_request *areq)
- 	/* Get the hash from the device */
- 	if (op->mode == SS_OP_SHA1) {
- 		for (i = 0; i < 5; i++) {
--			v = cpu_to_be32(readl(ss->base + SS_MD0 + i * 4));
-+			if (ss->variant->sha1_in_be)
-+				v = cpu_to_le32(readl(ss->base + SS_MD0 + i * 4));
-+			else
-+				v = cpu_to_be32(readl(ss->base + SS_MD0 + i * 4));
- 			memcpy(areq->result + i * 4, &v, 4);
- 		}
- 	} else {
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
-index 60425ac75d90..2b4c6333eb67 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
-@@ -131,7 +131,16 @@
- #define SS_SEED_LEN 192
- #define SS_DATA_LEN 160
- 
-+/*
-+ * struct ss_variant - Describe SS hardware variant
-+ * @sha1_in_be:		The SHA1 digest is given by SS in BE, and so need to be inverted.
-+ */
-+struct ss_variant {
-+	bool sha1_in_be;
-+};
-+
- struct sun4i_ss_ctx {
-+	const struct ss_variant *variant;
- 	void __iomem *base;
- 	int irq;
- 	struct clk *busclk;
--- 
-2.23.0
+just a note: a more expressive test would be running rngtest (package
+rng-tools) on this device.
+
+Regards
+Stefan
+
 
