@@ -2,77 +2,106 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 013BF1042C3
-	for <lists+linux-crypto@lfdr.de>; Wed, 20 Nov 2019 19:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 801431043BC
+	for <lists+linux-crypto@lfdr.de>; Wed, 20 Nov 2019 19:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727468AbfKTSBJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 20 Nov 2019 13:01:09 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:33620 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726999AbfKTSBJ (ORCPT
+        id S1726685AbfKTS4p (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 20 Nov 2019 13:56:45 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:53708 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727172AbfKTS4o (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 20 Nov 2019 13:01:09 -0500
-Received: by mail-ot1-f67.google.com with SMTP id u13so422922ote.0;
-        Wed, 20 Nov 2019 10:01:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UtnezaPuJR3DtOQdYq4UX6HRJep5yiFrHSjeRzh0lw8=;
-        b=sx93LySF7PsnLg5lJPQ16VdQPGk2fJpz7sjNg+Ruu9Bt9h+6nRb0BXO7C6B9CYYXPq
-         cqko1uJKgNqGpYXZt+Zs7x4wT9xO5c1BcSH9qn1ConfnVWb/FMm4+hlLfvQMADgi2ZJc
-         RaybJSA2qHp/e/7kWxHySjUr6Pk0zSVa5+YGxSvOi/N8XkKsx3OueDmd6UyAdLjycrVR
-         Op5jSb68TEgapN9g3BrzweqdI6T9xeQopnX5woeWAOzwfvmuI241F1qTxk/3hls5NlZO
-         sGmBT6/g71SqpaTXbLj69TsSH+k5sEg8tvDcv9qzLsxLZQQ3NfiqbSVeuRHNsylaj4Q5
-         7cPQ==
-X-Gm-Message-State: APjAAAUc4xtXN+c2c5hBn7Qxk2Nt0pGQdBFUpE2utlYf69aeblATraMN
-        cXu7ZdTJYVM8UvvbnlMPAg==
-X-Google-Smtp-Source: APXvYqynzcOYtJD1o3rqHfApKvPoyf3FBMEtPkZFYjA48wZ6n/YuiuIZDoHhntnj4J8//Fy+4USHdA==
-X-Received: by 2002:a9d:70d0:: with SMTP id w16mr3098883otj.239.1574272867110;
-        Wed, 20 Nov 2019 10:01:07 -0800 (PST)
-Received: from localhost (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w25sm8731323otj.45.2019.11.20.10.01.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Nov 2019 10:01:06 -0800 (PST)
-Date:   Wed, 20 Nov 2019 12:01:05 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Benjamin Gaignard <benjamin.gaignard@st.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        robh+dt@kernel.org, mark.rutland@arm.com, alexandre.torgue@st.com,
-        lionel.debieve@st.com, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Benjamin Gaignard <benjamin.gaignard@st.com>
-Subject: Re: [PATCH v2] dt-bindings: crypto: Convert stm32 HASH bindings to
- json-schema
-Message-ID: <20191120180105.GA11465@bogus>
-References: <20191115102427.31224-1-benjamin.gaignard@st.com>
+        Wed, 20 Nov 2019 13:56:44 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAKIs5X8015693;
+        Wed, 20 Nov 2019 18:56:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2019-08-05; bh=61wJRANyMuTZKvHLQag+hVNYJ6+7P82yKFAegw51pcc=;
+ b=O/hAMQTq7aq4XlwUoNFzDQnuoA+gyT7m5p6i5NqKnRnMROV3D8Oni6UTGfYg4hHYn6Vf
+ yLsjsiKuTee9Rsm4JTHwX2UaWap5oF4kfafZ1JCcTYRiz+NMyqZ4vH7tUtOOrOH+8FPD
+ l5n+JeIGkYaEIFmTThKDszGu68vcJYJp2KRIBQUbgeTd7e90GQO/JCPthsB5ezZ04hFo
+ CmXGiFgoYRfUcwzFFc/ivRrAY4xOKLV+YRjLoIpu1PcGm+oG2NipqOpqFGLRaK+0Hpsl
+ Xx+uno6mEZep/HWBQY5HuJaklQ/I4t7/Fqdq4ZTEeWPfVouYIl5vifZjkWOmKPccSa0W Kw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 2wa92pyh3a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Nov 2019 18:56:36 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAKIqtts119562;
+        Wed, 20 Nov 2019 18:56:36 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 2wcemhajh3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Nov 2019 18:56:36 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAKIuYJ6006488;
+        Wed, 20 Nov 2019 18:56:34 GMT
+Received: from zissou.us.oracle.com (/10.152.34.58)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 20 Nov 2019 10:56:34 -0800
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: [PATCH 0/4] padata lockdep, cpumask, and doc fixes
+Date:   Wed, 20 Nov 2019 13:54:08 -0500
+Message-Id: <20191120185412.302-1-daniel.m.jordan@oracle.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191115102427.31224-1-benjamin.gaignard@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9447 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=846
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1911200156
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9447 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=908 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1911200156
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, 15 Nov 2019 11:24:27 +0100, Benjamin Gaignard wrote:
-> Convert the STM32 HASH binding to DT schema format using json-schema
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
-> ---
-> version 2:
-> - add type ref, min, max and default values for dma-maxburst property
-> 
->  .../devicetree/bindings/crypto/st,stm32-hash.txt   | 30 ----------
->  .../devicetree/bindings/crypto/st,stm32-hash.yaml  | 69 ++++++++++++++++++++++
->  2 files changed, 69 insertions(+), 30 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/crypto/st,stm32-hash.txt
->  create mode 100644 Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
-> 
+These are on top of v5.4-rc8 plus Herbert's recent padata changes:
 
-Applied, thanks.
+  [PATCH] padata: Remove broken queue flushing
+  https://lore.kernel.org/linux-crypto/20191119051731.yev6dcsp2znjaagz@gondor.apana.org.au/
 
-Rob
+  [PATCH] crypto: pcrypt - Fix user-after-free on module unload
+  https://lore.kernel.org/linux-crypto/20191119094131.x7gkxdi5clyxk3zd@gondor.apana.org.au/
+
+  [v2 PATCH] crypto: pcrypt - Avoid deadlock by using per-instance padata queues
+  https://lore.kernel.org/linux-crypto/20191119185827.nerskpvddkcsih25@gondor.apana.org.au/
+
+  [PATCH] padata: Remove unused padata_remove_cpu
+  https://lore.kernel.org/linux-crypto/20191119223250.jaefneeatsa52nhh@gondor.apana.org.au/
+
+I can rebase to something else if that's easier.  Thanks.
+
+Daniel Jordan (4):
+  padata: update documentation
+  padata: remove reorder_objects
+  padata: always acquire cpu_hotplug_lock before pinst->lock
+  padata: remove cpumask change notifier
+
+ Documentation/padata.txt | 74 ++++++++++++++--------------------------
+ crypto/pcrypt.c          |  1 -
+ include/linux/padata.h   | 12 -------
+ kernel/padata.c          | 60 +++-----------------------------
+ 4 files changed, 31 insertions(+), 116 deletions(-)
+
+
+base-commit: af42d3466bdc8f39806b26f593604fdc54140bcb
+prerequisite-patch-id: e31e7b28eb12a2c7e1e04261f4e890f83a57bd19
+prerequisite-patch-id: 00f7ca687bd9df6281e9ced0925a865b2fa7b297
+prerequisite-patch-id: 0478fe82b9102aeae08f602b170eacc5cf6334de
+prerequisite-patch-id: f575fef550bb0cbf5418d3ccd15724d8b4b30858
+-- 
+2.23.0
+
