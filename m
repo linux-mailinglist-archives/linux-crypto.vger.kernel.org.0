@@ -2,103 +2,90 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 821F5103D46
-	for <lists+linux-crypto@lfdr.de>; Wed, 20 Nov 2019 15:30:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FA8103E74
+	for <lists+linux-crypto@lfdr.de>; Wed, 20 Nov 2019 16:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729591AbfKTOaf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 20 Nov 2019 09:30:35 -0500
-Received: from mail-eopbgr150085.outbound.protection.outlook.com ([40.107.15.85]:28224
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729157AbfKTOaf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 20 Nov 2019 09:30:35 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BaS/VmU3rKOh0JqdNvxNRuVqkon8pg43W8ta3ONRMLMpR5f9l9nb8kn6t9XkqdBBTv3C4tgVycTWMCQm8iqL5gzrAnVeAfCDAf1aEKCQGWEJesHQch7SHCogQ1AXbna5TiNLRCw7vGInToVbeLe4TP7kjv93jHXsazjd4CcJDc3PHgVvbm668yxxOlFY7rm5aCykmMfeHnPiNjrBnlCloCRD8OYYdOF2S7q2XsyJUtTLziKyvfpawBNZfQ7G9wynEGxNbo0bYlqjENO3xxh8xdH4HfSOhl7KDMYlBji8huGdJCRxm891aZ/9wyxIh+VuH+LGLc+1cELSpzr4AeAXTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R6fbpwxcECZPnKh2clpW3kRFVgUf4g0hAqWqBZG2Oz4=;
- b=l0nV7InMv5UyVUjbyWCxuX/AwccFvFNUSZYdouH1WOOoi2fuVdHHj7RKmeg47PbPYzmHe5exhzBg9Rhc1Vb3/zHa/0a8bbRoMAU8ImW8TGV1ussPuiGbe+GWQJWm2LzXoB3TfvMeJsIVIsEgvU9wrDim8Dv0grT2gvhLlUkCOjIOg1H2yBJwgqhPHZCglq3+l8pzV7g6hJjoRKQ74dwA1dBxOalXBPpA4pStkXv/UlbreiKhfttrAcE/B1YU9t99C8QYE0Jl0d4Ke0UFKmZJgGN8/mAM7Z9b3kbHvnMQzPjAh6GZqrPdfnH6bSdFFwWRvtTKbeyPAfwL2bSPzSVvvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R6fbpwxcECZPnKh2clpW3kRFVgUf4g0hAqWqBZG2Oz4=;
- b=aULmRl+/uNJyPgxO69XePj3iYwZ9b4WR4wI3YClQgb68JJcnskUFQKyv+nGm0MVa2V/j+os6GccW72vg6X08ylEXRQ6e1ntJVS2J6JvrD2Xocn3hhfy1rzEUvKoY2EsITVK9+bmdLZqRluzN/HMS2n1331GX1CZ2mQRyPbKNyQQ=
-Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com (52.134.3.153) by
- VI1PR0402MB3344.eurprd04.prod.outlook.com (52.134.8.16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2451.22; Wed, 20 Nov 2019 14:30:29 +0000
-Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com
- ([fe80::89e1:552e:a24d:e72]) by VI1PR0402MB3485.eurprd04.prod.outlook.com
- ([fe80::89e1:552e:a24d:e72%3]) with mapi id 15.20.2474.018; Wed, 20 Nov 2019
- 14:30:29 +0000
-From:   Horia Geanta <horia.geanta@nxp.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Atul Gupta <atul.gupta@chelsio.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] crypto: Fix Kconfig indentation
-Thread-Topic: [PATCH] crypto: Fix Kconfig indentation
-Thread-Index: AQHVn6haznq8vw1WjUKSyFyRA7fljA==
-Date:   Wed, 20 Nov 2019 14:30:29 +0000
-Message-ID: <VI1PR0402MB3485BE88F8060AF214FE56CD984F0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
-References: <20191120134221.15774-1-krzk@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=horia.geanta@nxp.com; 
-x-originating-ip: [212.146.100.6]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 87407e04-47f6-49bd-bf1b-08d76dc6313b
-x-ms-traffictypediagnostic: VI1PR0402MB3344:|VI1PR0402MB3344:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR0402MB33443C0EF64296BBEA26CA0F984F0@VI1PR0402MB3344.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2887;
-x-forefront-prvs: 02272225C5
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(136003)(366004)(346002)(376002)(39860400002)(199004)(189003)(2906002)(14454004)(476003)(53546011)(8936002)(305945005)(74316002)(7736002)(76176011)(91956017)(66946007)(25786009)(66066001)(6436002)(558084003)(6116002)(54906003)(81166006)(66446008)(64756008)(66556008)(66476007)(110136005)(3846002)(316002)(8676002)(86362001)(81156014)(52536014)(99286004)(7416002)(33656002)(2501003)(76116006)(6506007)(478600001)(7696005)(6246003)(446003)(71190400001)(71200400001)(102836004)(26005)(256004)(186003)(9686003)(55016002)(44832011)(486006)(4326008)(5660300002)(229853002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0402MB3344;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IYJI/cbKZhmJLD2KkzEqUAYtAlCXOdeeT5CfNlKgGgc6ogKalUxg/zmDu3tMw7ZABz3//x9vXdJvJbcD2zOrl5Yqbqas4uIOE3Wbx85XlmYbwXviF39bXygkeqYrWigBMzCL8DkitpNCX00BD0Q+WL5nWUIOJa552T6tctjPQ3R9ZQaHMtLC86sGUm+v2zoWG68d/6kmp43PzPMgCkHTwOO/gXc/SAgiyTi/kvPtXy7u48hIl2wnmbX2pZGDJjS6wOtiTrvCkYUg0LGVo48JoDMWDyNEV62fy63zp7xTq9CgTSFPSnbQ+6P8ScOD0l40g2MaYfKwVhbrCjKzYy8nTELwuuR/OjZf+rBYWJEg0dZwHJloDYuuPCqsmWXha9v3olJOumYmmromytal40CPVxMIO4z9MubUGlOd73N0uHF/6nuxCvSWTC6C0UigEj2x
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+        id S1727911AbfKTP24 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 20 Nov 2019 10:28:56 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43504 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730487AbfKTP2j (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 20 Nov 2019 10:28:39 -0500
+Received: by mail-wr1-f65.google.com with SMTP id n1so243095wra.10;
+        Wed, 20 Nov 2019 07:28:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DtyaiQZ8irKf16rmVxB3fmQ2TpmbrTyyFiQO6JUw5+o=;
+        b=J+PYXrifIbFmzJD2YaGWqKDy4QL5/H44uzIhHRoNCHjqbjqh8+KI7fQQcDn0/3ZWXe
+         TQuEkk4zRoznzfRwwFfViPXBbetRmVRz/+29JbND54mJIsTdrngr5SJ5QNNlaodGMcbb
+         JtGzynOWqr3F+mKJ2N3gF/8N4ycKu91eJFb7DKHiKBHn/qrdHoTnl9NUbzhG+S9vaMSC
+         QzoH7so7+Ybb67t/54HeLgepoPTfEiXMHFz/dZNWIWsUMcxQHGOT46jk1fO1EcrCQnxx
+         hCut8hHXAhqcdHlaodE63ousJtSYac17WkrdLxGPQxjDYe2m6BiaQ50FStIokPE2Ggym
+         tYsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DtyaiQZ8irKf16rmVxB3fmQ2TpmbrTyyFiQO6JUw5+o=;
+        b=JSRIo8HWhdx+7KEdIBLjCfRd5lI1Yt5brMdnr67odkcnucCj4nbDUjL+tzxQWFvvFd
+         mq/Uv5HTC5Ox3bfGJav5oyvBUk/66pAVHMStfhQxQZLm9sjD5AdakfUfY1Zxa3ZzlCQe
+         pfZ3ZiUD8uBPTrZRv2gachQI1oxWVabh8vMNMX9zdO0bJY9HHRNk9NRrFPKMbS6UdAbP
+         3YxPudYAC7yTKGPYvq/nyF8cgGxPyMRMVQDQEwFPDcAzJ2nDvo9Lmp8GWIOpY6Qp+ex1
+         CKEWsXvsJBhbiQBQvytJdI2TSIAGr8k0iNkufFURdBIjae95zMBpIhApIq3xa22y+c3Z
+         nYFw==
+X-Gm-Message-State: APjAAAWGI/YGIvPvW/VBJqxHQN4mcbjr2pQvp4LHTZnN5SK4RcFP92E7
+        8qRroZihDggL8CH4AaTsZ+8=
+X-Google-Smtp-Source: APXvYqy8eB9w+wZZJo55+z14tlTOn1lf95zCLE3trwsy02lQ5kbg9t7377ZRZ81/CbuOutHBkGCqTA==
+X-Received: by 2002:adf:a119:: with SMTP id o25mr4361024wro.74.1574263717216;
+        Wed, 20 Nov 2019 07:28:37 -0800 (PST)
+Received: from Red.localdomain ([2a01:cb1d:147:7200:2e56:dcff:fed2:c6d6])
+        by smtp.googlemail.com with ESMTPSA id w4sm31797881wrs.1.2019.11.20.07.28.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Nov 2019 07:28:36 -0800 (PST)
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mark.rutland@arm.com, mripard@kernel.org, robh+dt@kernel.org,
+        wens@csie.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com,
+        Corentin Labbe <clabbe.montjoie@gmail.com>
+Subject: [PATCH v2 0/3] crypto: sun4i-ss: fix SHA1 on A33 SecuritySystem
+Date:   Wed, 20 Nov 2019 16:28:30 +0100
+Message-Id: <20191120152833.20443-1-clabbe.montjoie@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87407e04-47f6-49bd-bf1b-08d76dc6313b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2019 14:30:29.2026
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pzc5eUsN7Mov9hzlv6L3SQRge0EMpabbM0dpHvc9EAJDRIXypUsAU84YltoHsHTLujRo+apmkDTTgkRhFXaQwg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3344
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 11/20/2019 3:42 PM, Krzysztof Kozlowski wrote:=0A=
-> Adjust indentation from spaces to tab (+optional two spaces) as in=0A=
-> coding style with command like:=0A=
-> 	$ sed -e 's/^        /\t/' -i */Kconfig=0A=
-> =0A=
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>=0A=
-Reviewed-by: Horia Geant=E3 <horia.geanta@nxp.com>=0A=
-=0A=
-Thanks,=0A=
-Horia=0A=
+Thanks to Igor Pecovnik, I have now in my kernelCI lab, a sun8i-a33-olinuxino.
+Strange behavour, crypto selftests was failling but only for SHA1 on
+this A33 SoC.
+
+This is due to the A33 SS having a difference with all other SS, it give SHA1 digest directly in BE.
+This serie handle this difference.
+
+Changes since v1:
+- removed compatible fallback
+
+Corentin Labbe (3):
+  dt-bindings: crypto: add new compatible for A33 SS
+  ARM: dts: sun8i: a33: add the new SS compatible
+  crypto: sun4i-ss: add the A33 variant of SS
+
+ .../crypto/allwinner,sun4i-a10-crypto.yaml    |  2 ++
+ arch/arm/boot/dts/sun8i-a33.dtsi              |  2 +-
+ .../crypto/allwinner/sun4i-ss/sun4i-ss-core.c | 22 ++++++++++++++++++-
+ .../crypto/allwinner/sun4i-ss/sun4i-ss-hash.c |  5 ++++-
+ drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h  |  9 ++++++++
+ 5 files changed, 37 insertions(+), 3 deletions(-)
+
+-- 
+2.23.0
+
