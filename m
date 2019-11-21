@@ -2,220 +2,62 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6891105531
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Nov 2019 16:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1550C105592
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Nov 2019 16:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbfKUPT3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Nov 2019 10:19:29 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.84]:25890 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726546AbfKUPT3 (ORCPT
+        id S1726379AbfKUP3a (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Nov 2019 10:29:30 -0500
+Received: from stargate.chelsio.com ([12.32.117.8]:32885 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbfKUP3a (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Nov 2019 10:19:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1574349566;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=2RiF8MQSa3XBV1fR1xKat6hykVT+ebuvV4G+mKmn2PA=;
-        b=Nvqxc6vJkD4JxsRYaRyKivNQMKYiFdkybhgiuRLsD0kz8LBhAqZQ9WXx6yFkVUhn2K
-        zm1gJqAbgNyUfx12CRiDw+eMFLMX8A2W0+80vxa20P1FUpC1LPOb2ce65Q/M6JaFB8ai
-        sTXHzS8wGsgfZZNnhgD55FDi7EwZSfy0Zw6lOFtAVQu6+LRM5d+oUyi3Y+s2QDqsoO/S
-        L+LQjv8fi7L9n61oVHnOJb/VPn443u2Vwom8IFgOqFolT3q8cbIeA/tkIRkrkSjIF68S
-        7rHqn+Dw6rR+9T7IFqKssn7VlE316gxGUx5rPyT3s+HCxGg+Zl9aspIFGwcbxp6v8iU8
-        N1Dg==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzHHXPSIvSWlTs="
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-        by smtp.strato.de (RZmta 44.29.0 DYNA|AUTH)
-        with ESMTPSA id N09a57vALFIJsIY
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve secp521r1 with 521 ECDH bits, eq. 15360 bits RSA))
-        (Client did not present a certificate);
-        Thu, 21 Nov 2019 16:18:19 +0100 (CET)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Nicolai Stange <nstange@suse.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        "Peter, Matthias" <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Roman Drahtmueller <draht@schaltsekun.de>,
-        Neil Horman <nhorman@redhat.com>
-Subject: Re: [PATCH v25 12/12] LRNG - add interface for gathering of raw entropy
-Date:   Thu, 21 Nov 2019 16:18:18 +0100
-Message-ID: <23500762.5LfuSYdpsK@positron.chronox.de>
-In-Reply-To: <87a78pl8xp.fsf@suse.de>
-References: <6157374.ptSnyUpaCn@positron.chronox.de> <3610406.x8mDjznOIz@positron.chronox.de> <87a78pl8xp.fsf@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+        Thu, 21 Nov 2019 10:29:30 -0500
+Received: from localhost (scalar.blr.asicdesigners.com [10.193.185.94])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id xALFTHVl009018;
+        Thu, 21 Nov 2019 07:29:18 -0800
+From:   Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+To:     netdev@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        nirranjan@chelsio.com, atul.gupta@chelsio.com, vishal@chelsio.com,
+        dt@chelsio.com
+Subject: [PATCH net-next 0/3] cxgb4: add UDP Segmentation Offload support
+Date:   Thu, 21 Nov 2019 20:50:46 +0530
+Message-Id: <cover.1574347161.git.rahul.lakkireddy@chelsio.com>
+X-Mailer: git-send-email 2.5.3
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Am Donnerstag, 21. November 2019, 13:18:10 CET schrieb Nicolai Stange:
+This series of patches add UDP Segmentation Offload (USO) supported
+by Chelsio T5/T6 NICs.
 
-Hi Nicolai,
+Patch 1 updates the current Scatter Gather List (SGL) DMA unmap logic
+for USO requests.
 
-> Hi Stephan,
->=20
-> two general remarks on debugfs usage below
->=20
-> Stephan M=FCller <smueller@chronox.de> writes:
-> > diff --git a/drivers/char/lrng/lrng_testing.c
-> > b/drivers/char/lrng/lrng_testing.c new file mode 100644
-> > index 000000000000..5c33d3bd2172
-> > --- /dev/null
-> > +++ b/drivers/char/lrng/lrng_testing.c
->=20
-> <snip>
->=20
-> > +/*
-> > + * This data structure holds the dentry's of the debugfs files
-> > establishing + * the interface to user space.
-> > + */
-> > +struct lrng_raw_debugfs {
-> > +	struct dentry *lrng_raw_debugfs_root; /* root dentry */
-> > +	struct dentry *lrng_raw_debugfs_lrng_raw; /* .../lrng_raw */
-> > +};
-> > +
-> > +static struct lrng_raw_debugfs lrng_raw_debugfs;
-> > +
-> > +/* DebugFS operations and definition of the debugfs files */
-> > +static ssize_t lrng_raw_read(struct file *file, char __user *to,
-> > +			     size_t count, loff_t *ppos)
-> > +{
-> > +	loff_t pos =3D *ppos;
-> > +	int ret;
-> > +
-> > +	if (!count)
-> > +		return 0;
-> > +	lrng_raw_entropy_init();
-> > +	ret =3D lrng_raw_extract_user(to, count);
-> > +	lrng_raw_entropy_fini();
-> > +	if (ret < 0)
-> > +		return ret;
-> > +	count -=3D ret;
-> > +	*ppos =3D pos + count;
-> > +	return ret;
-> > +}
-> > +
-> > +/* Module init: allocate memory, register the debugfs files */
-> > +static int lrng_raw_debugfs_init(void)
-> > +{
-> > +	lrng_raw_debugfs.lrng_raw_debugfs_root =3D
-> > +		debugfs_create_dir(KBUILD_MODNAME, NULL);
-> > +	if (IS_ERR(lrng_raw_debugfs.lrng_raw_debugfs_root)) {
-> > +		lrng_raw_debugfs.lrng_raw_debugfs_root =3D NULL;
-> > +		return PTR_ERR(lrng_raw_debugfs.lrng_raw_debugfs_root);
-> > +	}
->=20
-> I think pointers returned by the debugfs API are not supposed to get
-> checked for NULL/IS_ERR(), c.f commit ff9fb72bc077 ("debugfs: return
-> error values, not NULL") or the the output from
->=20
->   git log --pretty=3Doneline | grep 'no need to check return value of
-> debugfs_create'
->=20
-> (Also the above code is dubious: you're effectively returning
->  PTR_ERR(NULL)).
+Patch 2 adds USO support for NIC and MQPRIO QoS offload Tx path.
 
-Removed the check compliant to the mentioned patches.
->=20
-> > +	return 0;
-> > +}
-> > +
-> > +static struct file_operations lrng_raw_name_fops =3D {
-> > +	.owner =3D THIS_MODULE,
-> > +	.read =3D lrng_raw_read,
-> > +};
-> > +
-> > +static int lrng_raw_debugfs_init_name(void)
-> > +{
-> > +	lrng_raw_debugfs.lrng_raw_debugfs_lrng_raw =3D
-> > +		debugfs_create_file("lrng_raw", 0400,
-> > +				    lrng_raw_debugfs.lrng_raw_debugfs_root,
-> > +				    NULL, &lrng_raw_name_fops);q
->=20
-> CONFIG_LRNG_TESTING is a bool and thus, this debugfs file can't ever get
-> removed. Even if it could, this inode hasn't got any data associated
-> with it and so file removal would not be a problem for lrng_raw_read().
+Patch 3 adds missing stats for MQPRIO QoS offload Tx path.
 
-Correct.
->=20
-> Please consider using debugfs_create_file_unsafe() instead to save
-> debugfs from kmalloc()ing a proxy file_operations protecting your fops
-> against concurrent file removal.
-
-Yes, you are correct. Changed.
->=20
-> > +	if (IS_ERR(lrng_raw_debugfs.lrng_raw_debugfs_lrng_raw)) {
-> > +		lrng_raw_debugfs.lrng_raw_debugfs_lrng_raw =3D NULL;
-> > +		return PTR_ERR(lrng_raw_debugfs.lrng_raw_debugfs_lrng_raw);
-> > +	}
->=20
-> Same comment regarding return value checking applies here.
-
-Same here: I removed the check.
-
-With that, I also removed the static variable to maintain the two dentries=
-=20
-following the examples seen in other kernel code. Also, the __exit function=
- is=20
-removed as we do not need it as you pointed out.
-
-Thanks a lot.
->=20
-> Thanks,
->=20
-> Nicolai
->=20
-> > +	return 0;
-> > +}
-> > +
-> > +static int __init lrng_raw_init(void)
-> > +{
-> > +	int ret =3D lrng_raw_debugfs_init();
-> > +
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	ret =3D lrng_raw_debugfs_init_name();
-> > +	if (ret < 0)
-> > +		debugfs_remove_recursive(
-> > +					lrng_raw_debugfs.lrng_raw_debugfs_root);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static void __exit lrng_raw_exit(void)
-> > +{
-> > +	debugfs_remove_recursive(lrng_raw_debugfs.lrng_raw_debugfs_root);
-> > +}
-> > +
-> > +module_init(lrng_raw_init);
-> > +module_exit(lrng_raw_exit);
-> > +
-> > +MODULE_LICENSE("Dual BSD/GPL");
-> > +MODULE_AUTHOR("Stephan Mueller <smueller@chronox.de>");
-> > +MODULE_DESCRIPTION("Kernel module for gathering raw entropy");
+Thanks,
+Rahul
 
 
-Ciao
-Stephan
+Rahul Lakkireddy (3):
+  cxgb4/chcr: update SGL DMA unmap for USO
+  cxgb4: add UDP segmentation offload support
+  cxgb4: add stats for MQPRIO QoS offload Tx path
 
+ drivers/crypto/chelsio/chcr_ipsec.c           |  27 +-
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4.h    |  21 +-
+ .../ethernet/chelsio/cxgb4/cxgb4_debugfs.c    |   2 +
+ .../ethernet/chelsio/cxgb4/cxgb4_ethtool.c    |  16 +-
+ .../net/ethernet/chelsio/cxgb4/cxgb4_main.c   |  11 +-
+ .../ethernet/chelsio/cxgb4/cxgb4_tc_mqprio.c  |   2 +-
+ drivers/net/ethernet/chelsio/cxgb4/sge.c      | 290 ++++++++++--------
+ drivers/net/ethernet/chelsio/cxgb4/t4fw_api.h |  14 +-
+ 8 files changed, 218 insertions(+), 165 deletions(-)
+
+-- 
+2.24.0
 
