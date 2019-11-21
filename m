@@ -2,341 +2,151 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEC7105631
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Nov 2019 16:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29478105758
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Nov 2019 17:46:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbfKUP4X (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Nov 2019 10:56:23 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:33193 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727230AbfKUP4U (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Nov 2019 10:56:20 -0500
-Received: by mail-pf1-f196.google.com with SMTP id c184so1910782pfb.0;
-        Thu, 21 Nov 2019 07:56:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Kgvwy5N8EIe/FLFbpaYrMP29uuj5Aw/0h/dKmwUXhDo=;
-        b=ATKbuptcqlFlLRRdhLvkYFrZV9f7PfOieKQDBBzgI1LI7e3N9PTH7HVQTKSxRcSrv2
-         Q5AQ8bOxCx3CNCa845IZAPfCHL3EWXQoa7q4KPEtPlaxo/Gh6QTSsoPhR9PLzZTFKmTR
-         EYyLRZw7oDDtWThQunlkcaeV9dpr9REGoZW/TApzBZdOEMIIMUNxcAM+t8Vja6pS9A45
-         N2VdulziJFuSXFbWDrCHaI83TO4V/pKZEEG/23dtfnSW+9msO+mF0d8rM3PWdeA4WMHu
-         pFN20cwYOdYlll3Aei7vXf04guHkmlTB5JeNhi1gPkUNagdDI4fwOMbMwVykiYdw2+ny
-         eXoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Kgvwy5N8EIe/FLFbpaYrMP29uuj5Aw/0h/dKmwUXhDo=;
-        b=inU3w1OyjIT8uAvRoj18VOypf3M4Y3Dl01byB7nxP68MZnklBxlGnGiKcZwzDtyN4S
-         RAKf1Eh4GZWzG/OJ7HHd9ykvqknAJk3yQJCdsSycS8cZxXm/uFBwcuf6bTUk1ifE1e4u
-         F1+AggkTCcHi9sfpdx7347/qwH5mJ2u2f8epikZXu6cSzsON3bQi7BT5U5NhxOsHfYnK
-         zsXg7GxINi9RQSy+B81an8h35aELJ4pawiyIJD5+Z5OqWO1Ivff8rRwVKeXA9MTCAE/7
-         3l9yT2hEk2pNp9DDpg1TvmfcDu8TRJub6hE6tPXSTajji7M2DAYi28sWWize47q5Iwds
-         U0Cw==
-X-Gm-Message-State: APjAAAV9p5UGT8dJ5yP0rjbR7fpQdNeaBW4+xZQr1PPq40Qp6c/E8jws
-        EMDsUj11Zc1O1qq9fHNUExxqydwv
-X-Google-Smtp-Source: APXvYqyUKZzhitaSdQmM7BxO/0uwXU1eo9n5M1RWyRGAEq3PJhF0ijYXiYd2wHxR9e0s0ad79v3tKw==
-X-Received: by 2002:a63:f94e:: with SMTP id q14mr10290286pgk.411.1574351777931;
-        Thu, 21 Nov 2019 07:56:17 -0800 (PST)
-Received: from localhost.hsd1.wa.comcast.net ([2601:602:847f:811f:babe:8e8d:b27e:e6d7])
-        by smtp.gmail.com with ESMTPSA id e8sm3709212pga.17.2019.11.21.07.56.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Nov 2019 07:56:16 -0800 (PST)
-From:   Andrey Smirnov <andrew.smirnov@gmail.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Chris Healy <cphealy@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        id S1726554AbfKUQqH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Nov 2019 11:46:07 -0500
+Received: from mail-eopbgr00041.outbound.protection.outlook.com ([40.107.0.41]:51908
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726379AbfKUQqG (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 21 Nov 2019 11:46:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h56pdZDzQcvMN2RmSmurgqOuxpNaJg1xWXpQmDCPYp4h2jG79TMY3ld5E2Xxp2MCwgh27tDsuFpCU/yjjjL75SQCTVwOSRICTVCaHyeVejCxgQf4NR7SRQnf9oSzzI5n8Ih9GuIv5YQpexrhNr5ph4IbtQ6NPMmUwXr0CmIRyGTD0N4/BSPF8EKAzUgbFgm2+n/ZYg52D2VSKD+97TNZ07n2x6l0OMODu4yhrMoU/E7hy0n29rZqjUJUfQweY3yfl68B7Yss7EX36Kz5n9EatoOwlxG9t0k68AHFmPLSKI87Lq85AUjWGah+ceJSI8FoTCl+6QGIw1gBmJ2axMcFjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8xHxrU5fYyVtTolyV7nPmm6s6RdE1DJ4v5fxZKYxCVE=;
+ b=jAxScznjYPe7hRoml3JKyXkhG03KT6fMLCSNy5eAiRD4y3ZihCR7aurHRk0ih7B/vYvPyOmyl09PP6plhFOhEx1YlIIDYk6ajJ+ZuNTYhcEltmWUTogvycJQc5IyM+KqXBqw+RYthFmbChjyZU3biNKlzKlNln3U1juvh/Da0oXnH6+ARf5B45KLGRjVqDKxk1KFQXETab5AmQF1YMNbECPFah0m/7k5esNsGDdR7zB0OGZJhhTB7E+ePDO8cFDYx6rwA80l2Eno9gy/jyE+5JNgJcfHi7u97KSuNgi2Bxf3T5tMUptEOrW2n8GwOZwoxE1gG3ciGiJPSIITstDIoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8xHxrU5fYyVtTolyV7nPmm6s6RdE1DJ4v5fxZKYxCVE=;
+ b=eif0I6XfLbO/1Fh4JsbbNg0RoYwM22tDNwcD5VvV523pu7shNFh6RsZzqRMoFtFn3UFpNx864YhWDyw4sV+JFMUgiqktNBwf6CEgXB/ZDwgqQ49G06KrQubuXENeDFGHZQxqwmHXTmUX0WKwqNMLqAc9oyNcs9FjIzYVumLnCg4=
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com (52.134.3.153) by
+ VI1PR0402MB2944.eurprd04.prod.outlook.com (10.172.255.22) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2474.19; Thu, 21 Nov 2019 16:46:02 +0000
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::89e1:552e:a24d:e72]) by VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::89e1:552e:a24d:e72%3]) with mapi id 15.20.2474.018; Thu, 21 Nov 2019
+ 16:46:02 +0000
+From:   Horia Geanta <horia.geanta@nxp.com>
+To:     Iuliana Prodan <iuliana.prodan@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 6/6] crypto: caam - expose SEC4 DRNG via crypto RNG API
-Date:   Thu, 21 Nov 2019 07:55:54 -0800
-Message-Id: <20191121155554.1227-7-andrew.smirnov@gmail.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191121155554.1227-1-andrew.smirnov@gmail.com>
-References: <20191121155554.1227-1-andrew.smirnov@gmail.com>
+        Aymen Sghaier <aymen.sghaier@nxp.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Gary Hook <gary.hook@amd.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH 10/12] crypto: caam - add crypto_engine support for AEAD
+ algorithms
+Thread-Topic: [PATCH 10/12] crypto: caam - add crypto_engine support for AEAD
+ algorithms
+Thread-Index: AQHVnZa1FyZOwAzxGE6ZWqnis9ksHA==
+Date:   Thu, 21 Nov 2019 16:46:02 +0000
+Message-ID: <VI1PR0402MB3485587572B8720F372F4ED5984E0@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+References: <1574029845-22796-1-git-send-email-iuliana.prodan@nxp.com>
+ <1574029845-22796-11-git-send-email-iuliana.prodan@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=horia.geanta@nxp.com; 
+x-originating-ip: [212.146.100.6]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: bbc3181a-6384-43b4-79b6-08d76ea24b94
+x-ms-traffictypediagnostic: VI1PR0402MB2944:|VI1PR0402MB2944:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR0402MB29446156897FA47345327F77984E0@VI1PR0402MB2944.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:525;
+x-forefront-prvs: 0228DDDDD7
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(136003)(376002)(346002)(396003)(366004)(199004)(189003)(256004)(2906002)(99286004)(110136005)(54906003)(8676002)(316002)(8936002)(3846002)(6116002)(81156014)(81166006)(33656002)(71200400001)(71190400001)(6436002)(229853002)(6246003)(4326008)(66066001)(9686003)(55016002)(86362001)(44832011)(6636002)(14454004)(5660300002)(6506007)(53546011)(186003)(26005)(102836004)(446003)(76176011)(25786009)(66476007)(66556008)(64756008)(66446008)(305945005)(91956017)(76116006)(74316002)(66946007)(52536014)(478600001)(7736002)(7696005)(14444005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0402MB2944;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /2X8gl8e9GkqMtA98cPI8hkxs10AxcJgHoSmWArhn2LgbkgaC0R3x1F8xlE1SFz/jjSC9Kp3COVHI4gzus5P4xWoHC1BTy2I8GR+LlUw65qvb87lO+BKjKRt4mWehkeWHXQbK4cvlXewKR7t5rFDBCT8snEmYCiCfM5073uZwFGLGB5tEEFSKJ90qWsZWoLOwrf85eYmr5Tg2Uj7/pKejbD4EO3ZloFWRhTnGP/1NesJlFLyn7ZrsiTMgta6bV2jzugadlLsICHEtaWIRuiN7WaJCev74evfamD0ylgImdN9ymUuMkt8oV4XyxSh0nja+qqbHf14qQjtNOPSR82Q5KPnzN8Kj/5FiTBotyZLuQ7JQdhEKpzYl3gT7pL8UMG3EMjICWA5GlSxtp9tKlRDT+kOMvbjyGNQ1IhRj9k6C15X4pdEhS3nKmb0NZjxZ82t
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbc3181a-6384-43b4-79b6-08d76ea24b94
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2019 16:46:02.7064
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EK+ElHOIXMwqF4qLesKC2CyDxMYveuxrv2h8JCnUK1kk2QC9GFlfUZJs6ZwhrWhnL3HfWVffecmdTNKU5jtX5w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2944
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Expose SEC4 DRNG IP block using crypto RNG API so it could be used
-both by kernel and userspace code.
-
-Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
-Cc: Chris Healy <cphealy@gmail.com>
-Cc: Lucas Stach <l.stach@pengutronix.de>
-Cc: Horia Geantă <horia.geanta@nxp.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
-Cc: linux-imx@nxp.com
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- drivers/crypto/caam/Kconfig  |   8 ++
- drivers/crypto/caam/Makefile |   1 +
- drivers/crypto/caam/drng.c   | 175 +++++++++++++++++++++++++++++++++++
- drivers/crypto/caam/intern.h |  13 +++
- drivers/crypto/caam/jr.c     |   1 +
- 5 files changed, 198 insertions(+)
- create mode 100644 drivers/crypto/caam/drng.c
-
-diff --git a/drivers/crypto/caam/Kconfig b/drivers/crypto/caam/Kconfig
-index 22116a8e2ff3..11a8f9c02448 100644
---- a/drivers/crypto/caam/Kconfig
-+++ b/drivers/crypto/caam/Kconfig
-@@ -146,6 +146,14 @@ config CRYPTO_DEV_FSL_CAAM_PKC_API
-           Supported cryptographic primitives: encryption, decryption,
-           signature and verification.
- 
-+config CRYPTO_DEV_FSL_CAAM_DRNG_API
-+	bool "Register caam device for hwrng API"
-+	default y
-+	select CRYPTO_RNG
-+	help
-+	  Selecting this will register the SEC4 DRNG to
-+	  the crypto RNG API.
-+
- endif # CRYPTO_DEV_FSL_CAAM_JR
- 
- endif # CRYPTO_DEV_FSL_CAAM
-diff --git a/drivers/crypto/caam/Makefile b/drivers/crypto/caam/Makefile
-index 04884fc087f9..02b7ed8823ce 100644
---- a/drivers/crypto/caam/Makefile
-+++ b/drivers/crypto/caam/Makefile
-@@ -20,6 +20,7 @@ caam_jr-y := jr.o key_gen.o
- caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API) += caamalg.o
- caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API_QI) += caamalg_qi.o
- caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_AHASH_API) += caamhash.o
-+caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_DRNG_API) += drng.o
- caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_PKC_API) += caampkc.o pkc_desc.o
- 
- caam-$(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API_QI) += qi.o
-diff --git a/drivers/crypto/caam/drng.c b/drivers/crypto/caam/drng.c
-new file mode 100644
-index 000000000000..9b2ff2fe7581
---- /dev/null
-+++ b/drivers/crypto/caam/drng.c
-@@ -0,0 +1,175 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Driver to expose SEC4 DRNG via crypto RNG API
-+ *
-+ * Copyright 2019 Zodiac Inflight Innovations
-+ *
-+ * Based on CAAM SEC4 hw_random driver
-+ *
-+ * Copyright 2011 Freescale Semiconductor, Inc.
-+ * Copyright 2018-2019 NXP
-+ *
-+ * Based on caamalg.c crypto API driver.
-+ *
-+ */
-+
-+#include <linux/completion.h>
-+#include <linux/atomic.h>
-+
-+#include <crypto/internal/rng.h>
-+
-+#include "compat.h"
-+
-+#include "regs.h"
-+#include "intern.h"
-+#include "desc_constr.h"
-+#include "jr.h"
-+#include "error.h"
-+
-+#define CAAM_DRNG_MAX_FIFO_STORE_SIZE	((unsigned int)U16_MAX)
-+
-+/* rng per-device context */
-+struct caam_drng_ctx {
-+	struct device *jrdev;
-+	struct completion done;
-+};
-+
-+static void rng_done(struct device *jrdev, u32 *desc, u32 err, void *context)
-+{
-+	struct caam_drng_ctx *ctx = context;
-+
-+	if (err)
-+		caam_jr_strstatus(jrdev, err);
-+
-+	complete(&ctx->done);
-+}
-+
-+static int caam_drng_generate(struct crypto_rng *tfm,
-+			     const u8 *src, unsigned int slen,
-+			     u8 *dst, unsigned int dlen)
-+{
-+	struct caam_drng_ctx *ctx = crypto_rng_ctx(tfm);
-+	struct device *jrdev = ctx->jrdev;
-+	unsigned int residue = dlen;
-+	dma_addr_t dst_dma, cur_dma;
-+	u32 *desc;
-+	int ret;
-+
-+	desc = kzalloc(5 * CAAM_CMD_SZ + CAAM_PTR_SZ_MAX,
-+		       GFP_KERNEL | GFP_DMA);
-+	if (!desc)
-+		return -ENOMEM;
-+
-+	cur_dma = dst_dma = dma_map_single(jrdev, dst, dlen, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(jrdev, dst_dma)) {
-+		dev_err(jrdev, "unable to map destination memory\n");
-+		ret = -ENOMEM;
-+		goto free_mem;
-+	}
-+
-+	do {
-+		const unsigned int chunk = min(residue,
-+					       CAAM_DRNG_MAX_FIFO_STORE_SIZE);
-+
-+		init_job_desc(desc, 0);	/* 1 word */
-+		/* Generate random bytes */
-+		append_operation(desc, OP_ALG_ALGSEL_RNG | OP_TYPE_CLASS1_ALG |
-+				 OP_ALG_PR_ON); /* 1 word */
-+		/* Store bytes */
-+		append_seq_out_ptr_intlen(desc, cur_dma, chunk, 0);
-+		append_seq_fifo_store(desc, chunk, FIFOST_TYPE_RNGSTORE);
-+
-+		print_hex_dump_debug("rng job desc@: ", DUMP_PREFIX_ADDRESS,
-+				     16, 4, desc, desc_bytes(desc), 1);
-+
-+		init_completion(&ctx->done);
-+		ret = caam_jr_enqueue(jrdev, desc, rng_done, ctx);
-+		if (ret)
-+			break;
-+
-+		wait_for_completion(&ctx->done);
-+
-+		cur_dma += chunk;
-+		residue -= chunk;
-+	} while (residue);
-+
-+	dma_unmap_single(jrdev, dst_dma, dlen, DMA_FROM_DEVICE);
-+free_mem:
-+	kfree(desc);
-+	return ret;
-+}
-+
-+static int caam_drng_init(struct crypto_tfm *tfm)
-+{
-+	struct caam_drng_ctx *ctx = crypto_tfm_ctx(tfm);
-+	int ret;
-+
-+	ctx->jrdev = caam_jr_alloc();
-+	ret = PTR_ERR_OR_ZERO(ctx->jrdev);
-+	if (ret) {
-+		pr_err("Job Ring Device allocation for transform failed\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void caam_drng_exit(struct crypto_tfm *tfm)
-+{
-+	struct caam_drng_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	caam_jr_free(ctx->jrdev);
-+}
-+
-+static int caam_drng_seed(struct crypto_rng *tfm,
-+			 const u8 *seed, unsigned int slen)
-+{
-+	return 0;
-+}
-+
-+static struct rng_alg caam_drng_alg = {
-+	.generate = caam_drng_generate,
-+	.seed = caam_drng_seed,
-+	.seedsize = 0,
-+	.base = {
-+		.cra_name = "stdrng",
-+		.cra_driver_name = "drng-caam",
-+		.cra_priority = 300,
-+		.cra_ctxsize = sizeof(struct caam_drng_ctx),
-+		.cra_module = THIS_MODULE,
-+		.cra_init = caam_drng_init,
-+		.cra_exit = caam_drng_exit,
-+	},
-+};
-+
-+static void caam_drng_unregister(void *data)
-+{
-+	crypto_unregister_rng(&caam_drng_alg);
-+}
-+
-+int caam_drng_register(struct device *ctrldev)
-+{
-+	struct caam_drv_private *priv = dev_get_drvdata(ctrldev);
-+
-+	if (caam_has_rng(priv)) {
-+		int ret;
-+
-+		ret = crypto_register_rng(&caam_drng_alg);
-+		if (ret) {
-+			dev_err(ctrldev,
-+				"couldn't register rng crypto alg: %d\n",
-+				ret);
-+			return ret;
-+		}
-+
-+		ret = devm_add_action_or_reset(ctrldev, caam_drng_unregister,
-+					       NULL);
-+		if (ret)
-+			return ret;
-+
-+		dev_info(ctrldev,
-+			 "registering %s\n", caam_drng_alg.base.cra_name);
-+	}
-+
-+	return 0;
-+}
-diff --git a/drivers/crypto/caam/intern.h b/drivers/crypto/caam/intern.h
-index 54bb04aa86bd..0c81eefd13a9 100644
---- a/drivers/crypto/caam/intern.h
-+++ b/drivers/crypto/caam/intern.h
-@@ -185,6 +185,19 @@ static inline int caam_trng_register(struct device *dev)
- 
- #endif /* CONFIG_CRYPTO_DEV_FSL_CAAM_RNG_API */
- 
-+#ifdef CONFIG_CRYPTO_DEV_FSL_CAAM_DRNG_API
-+
-+int caam_drng_register(struct device *dev);
-+
-+#else
-+
-+static inline int caam_drng_register(struct device *dev)
-+{
-+	return 0;
-+}
-+
-+#endif /* CONFIG_CRYPTO_DEV_FSL_CAAM_DRNG_API */
-+
- #ifdef CONFIG_CAAM_QI
- 
- int caam_qi_algapi_init(struct device *dev);
-diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
-index c745b7044fe6..e68ba0606e3f 100644
---- a/drivers/crypto/caam/jr.c
-+++ b/drivers/crypto/caam/jr.c
-@@ -38,6 +38,7 @@ static void register_algs(struct device *dev)
- 	caam_algapi_hash_init(dev);
- 	caam_pkc_init(dev);
- 	caam_qi_algapi_init(dev);
-+	caam_drng_register(dev);
- 
- algs_unlock:
- 	mutex_unlock(&algs_lock);
--- 
-2.21.0
-
+On 11/18/2019 12:31 AM, Iuliana Prodan wrote:=0A=
+> @@ -1465,7 +1484,6 @@ static inline int aead_crypt(struct aead_request *r=
+eq, bool encrypt)=0A=
+>  	struct aead_edesc *edesc;=0A=
+>  	struct crypto_aead *aead =3D crypto_aead_reqtfm(req);=0A=
+>  	struct caam_ctx *ctx =3D crypto_aead_ctx(aead);=0A=
+> -	struct caam_jr_request_entry *jrentry;=0A=
+>  	struct device *jrdev =3D ctx->jrdev;=0A=
+>  	bool all_contig;=0A=
+>  	u32 *desc;=0A=
+> @@ -1479,16 +1497,14 @@ static inline int aead_crypt(struct aead_request =
+*req, bool encrypt)=0A=
+>  =0A=
+>  	/* Create and submit job descriptor */=0A=
+>  	init_authenc_job(req, edesc, all_contig, encrypt);=0A=
+> +	desc =3D edesc->hw_desc;=0A=
+>  =0A=
+This change is unrelated.=0A=
+=0A=
+>  	print_hex_dump_debug("aead jobdesc@"__stringify(__LINE__)": ",=0A=
+> -			     DUMP_PREFIX_ADDRESS, 16, 4, edesc->hw_desc,=0A=
+> -			     desc_bytes(edesc->hw_desc), 1);=0A=
+> -=0A=
+> -	desc =3D edesc->hw_desc;=0A=
+> -	jrentry =3D &edesc->jrentry;=0A=
+> +			     DUMP_PREFIX_ADDRESS, 16, 4, desc,=0A=
+> +			     desc_bytes(desc), 1);=0A=
+>  =0A=
+[...]=0A=
+>  static inline int gcm_crypt(struct aead_request *req, bool encrypt)=0A=
+>  {=0A=
+>  	struct aead_edesc *edesc;=0A=
+>  	struct crypto_aead *aead =3D crypto_aead_reqtfm(req);=0A=
+>  	struct caam_ctx *ctx =3D crypto_aead_ctx(aead);=0A=
+>  	struct device *jrdev =3D ctx->jrdev;=0A=
+> -	struct caam_jr_request_entry *jrentry;=0A=
+>  	bool all_contig;=0A=
+>  	u32 *desc;=0A=
+>  	int ret =3D 0;=0A=
+> @@ -1525,16 +1565,14 @@ static inline int gcm_crypt(struct aead_request *=
+req, bool encrypt)=0A=
+>  =0A=
+>  	/* Create and submit job descriptor */=0A=
+>  	init_gcm_job(req, edesc, all_contig, encrypt);=0A=
+> +	desc =3D edesc->hw_desc;=0A=
+>  =0A=
+Same here.=0A=
+=0A=
+>  	print_hex_dump_debug("aead jobdesc@"__stringify(__LINE__)": ",=0A=
+> -			     DUMP_PREFIX_ADDRESS, 16, 4, edesc->hw_desc,=0A=
+> -			     desc_bytes(edesc->hw_desc), 1);=0A=
+> -=0A=
+> -	desc =3D edesc->hw_desc;=0A=
+> -	jrentry =3D &edesc->jrentry;=0A=
+> +			     DUMP_PREFIX_ADDRESS, 16, 4, desc,=0A=
+> +			     desc_bytes(desc), 1);=0A=
+>  =0A=
+=0A=
+Horia=0A=
