@@ -2,137 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D84FC105598
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Nov 2019 16:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A071610557C
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Nov 2019 16:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbfKUP3p (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Nov 2019 10:29:45 -0500
-Received: from stargate.chelsio.com ([12.32.117.8]:3802 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726279AbfKUP3p (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Nov 2019 10:29:45 -0500
-Received: from localhost (scalar.blr.asicdesigners.com [10.193.185.94])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id xALFTXPc009027;
-        Thu, 21 Nov 2019 07:29:34 -0800
-From:   Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-To:     netdev@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        nirranjan@chelsio.com, atul.gupta@chelsio.com, vishal@chelsio.com,
-        dt@chelsio.com
-Subject: [PATCH net-next 3/3] cxgb4: add stats for MQPRIO QoS offload Tx path
-Date:   Thu, 21 Nov 2019 20:50:49 +0530
-Message-Id: <9898b911b3d8b71496894340d400339be3a14eb5.1574347161.git.rahul.lakkireddy@chelsio.com>
-X-Mailer: git-send-email 2.5.3
-In-Reply-To: <cover.1574347161.git.rahul.lakkireddy@chelsio.com>
-References: <cover.1574347161.git.rahul.lakkireddy@chelsio.com>
-In-Reply-To: <cover.1574347161.git.rahul.lakkireddy@chelsio.com>
-References: <cover.1574347161.git.rahul.lakkireddy@chelsio.com>
+        id S1726634AbfKUP0q (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Nov 2019 10:26:46 -0500
+Received: from frisell.zx2c4.com ([192.95.5.64]:53357 "EHLO frisell.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726574AbfKUP0q (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 21 Nov 2019 10:26:46 -0500
+Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 8153aecb;
+        Thu, 21 Nov 2019 14:33:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=9rO4z5sa5cW/KppMdFyBM7L655M=; b=TjKXwA
+        JIypICoKtVIfvC1uTqy8daQ00OJ9H5PiBR9zcuuFSG7u1kR4cBCEXHyvUbKDwgGw
+        s5iHyQv+/ADmqU5NKFV60z2ABEHhm83h4WRRQh1hA7sm7mM8MFpKvs3KIC/Vt3Ei
+        MG+YkSv5KlM8aBPUFZuExYEfpn+MMViw76ygzsanGv7u2BpoF2HSTArnbY/vo5rA
+        NT8JHTBDZss46jcH+/Br3nnFpK5MTAr2FkVVsw27ZJngF6DZpEP3lBU+9CYHk40i
+        dhhIQt9P3dA5BbpYP1kUSC8a/PgURS61I9xGk2eX7HyjB8Mqu446q0c1zSfi0MOW
+        C4MSMadnTHtLu2fQ==
+Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id bf8a06f6 (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO);
+        Thu, 21 Nov 2019 14:33:38 +0000 (UTC)
+Received: by mail-ot1-f51.google.com with SMTP id r24so3215243otk.12;
+        Thu, 21 Nov 2019 07:26:43 -0800 (PST)
+X-Gm-Message-State: APjAAAUR72CHIfOJFQO73Rg4tLzvxUlOseJo/bxeKgtCCQLNWc7DsSqp
+        B4k+j0J6LDQcl5ZReZhRhNITHEDvQcNMwDg83Rw=
+X-Google-Smtp-Source: APXvYqy+OOPTbY4wI1lR6UWfKKpza4kME2TCJyAP6+JIFH/G2GBY8787MbunIO+puAfzydaD9ym9gJwPeXC9rAw7Oaw=
+X-Received: by 2002:a9d:4788:: with SMTP id b8mr6990169otf.120.1574350002882;
+ Thu, 21 Nov 2019 07:26:42 -0800 (PST)
+MIME-Version: 1.0
+References: <20191120203538.199367-1-Jason@zx2c4.com> <877e3t8qv7.fsf@toke.dk>
+ <CAHmME9rmFw7xGKNMURBUSiezbsBEikOPiJxtEu=i2Quzf+JNDg@mail.gmail.com> <CANiq72mGPmMVBCmOMc_xJbKuOvbmmPAotGx67nSVQrYmXd2x3A@mail.gmail.com>
+In-Reply-To: <CANiq72mGPmMVBCmOMc_xJbKuOvbmmPAotGx67nSVQrYmXd2x3A@mail.gmail.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Thu, 21 Nov 2019 16:26:31 +0100
+X-Gmail-Original-Message-ID: <CAHmME9q6UHweyNBmAOanJB=BBSyjydwurJin2eJd9R+nAe2YYQ@mail.gmail.com>
+Message-ID: <CAHmME9q6UHweyNBmAOanJB=BBSyjydwurJin2eJd9R+nAe2YYQ@mail.gmail.com>
+Subject: Re: [PATCH RFC net-next] net: WireGuard secure network tunnel
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <thoiland@redhat.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Export necessary stats for traffic flowing through MQPRIO QoS offload
-Tx path.
+On Thu, Nov 21, 2019 at 3:44 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+> Any reason for the .clang-format in drivers/? If yes, it would be nice
+> to state it in the comment of the file.
 
-Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
----
- drivers/net/ethernet/chelsio/cxgb4/cxgb4.h         |  1 +
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c |  1 +
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c | 13 ++++++++++++-
- drivers/net/ethernet/chelsio/cxgb4/sge.c           | 14 ++++++++++++++
- 4 files changed, 28 insertions(+), 1 deletion(-)
+It's a total accident in porting my scripts from the older Zinc-based
+patchset to this newer Frankenzinc-based one. It won't be there in the
+next submission and is already gone from
+https://git.kernel.org/pub/scm/linux/kernel/git/zx2c4/linux.git/commit/?h=wireguard
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h b/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h
-index 04cb8909feeb..a70ac2097892 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h
-@@ -850,6 +850,7 @@ struct sge_eohw_txq {
- 	struct sge_txq q; /* HW Txq */
- 	struct adapter *adap; /* Backpointer to adapter */
- 	unsigned long tso; /* # of TSO requests */
-+	unsigned long uso; /* # of USO requests */
- 	unsigned long tx_cso; /* # of Tx checksum offloads */
- 	unsigned long vlan_ins; /* # of Tx VLAN insertions */
- 	unsigned long mapping_err; /* # of I/O MMU packet mapping errors */
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-index fa229d0f1016..93868dca186a 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-@@ -2797,6 +2797,7 @@ do { \
- 		RL("RxAN", stats.an);
- 		RL("RxNoMem", stats.nomem);
- 		TL("TSO:", tso);
-+		TL("USO:", uso);
- 		TL("TxCSO:", tx_cso);
- 		TL("VLANins:", vlan_ins);
- 		TL("TxQFull:", q.stops);
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c
-index f57457453561..20ab3b6285a2 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c
-@@ -242,9 +242,10 @@ static void collect_sge_port_stats(const struct adapter *adap,
- 				   const struct port_info *p,
- 				   struct queue_port_stats *s)
- {
--	int i;
- 	const struct sge_eth_txq *tx = &adap->sge.ethtxq[p->first_qset];
- 	const struct sge_eth_rxq *rx = &adap->sge.ethrxq[p->first_qset];
-+	struct sge_eohw_txq *eohw_tx;
-+	unsigned int i;
- 
- 	memset(s, 0, sizeof(*s));
- 	for (i = 0; i < p->nqsets; i++, rx++, tx++) {
-@@ -257,6 +258,16 @@ static void collect_sge_port_stats(const struct adapter *adap,
- 		s->gro_pkts += rx->stats.lro_pkts;
- 		s->gro_merged += rx->stats.lro_merged;
- 	}
-+
-+	if (adap->sge.eohw_txq) {
-+		eohw_tx = &adap->sge.eohw_txq[p->first_qset];
-+		for (i = 0; i < p->nqsets; i++, eohw_tx++) {
-+			s->tso += eohw_tx->tso;
-+			s->uso += eohw_tx->uso;
-+			s->tx_csum += eohw_tx->tx_cso;
-+			s->vlan_ins += eohw_tx->vlan_ins;
-+		}
-+	}
- }
- 
- static void collect_adapter_stats(struct adapter *adap, struct adapter_stats *s)
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-index 308e54d7c5e3..f9441e803d6b 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-@@ -2262,6 +2262,19 @@ static void ethofld_hard_xmit(struct net_device *dev,
- 				d->addr);
- 	}
- 
-+	if (skb_shinfo(skb)->gso_size) {
-+		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
-+			eohw_txq->uso++;
-+		else
-+			eohw_txq->tso++;
-+		eohw_txq->tx_cso += skb_shinfo(skb)->gso_segs;
-+	} else if (skb->ip_summed == CHECKSUM_PARTIAL) {
-+		eohw_txq->tx_cso++;
-+	}
-+
-+	if (skb_vlan_tag_present(skb))
-+		eohw_txq->vlan_ins++;
-+
- 	txq_advance(&eohw_txq->q, ndesc);
- 	cxgb4_ring_tx_db(adap, &eohw_txq->q, ndesc);
- 	eosw_txq_advance_index(&eosw_txq->last_pidx, 1, eosw_txq->ndesc);
-@@ -4546,6 +4559,7 @@ int t4_sge_alloc_ethofld_txq(struct adapter *adap, struct sge_eohw_txq *txq,
- 	spin_lock_init(&txq->lock);
- 	txq->adap = adap;
- 	txq->tso = 0;
-+	txq->uso = 0;
- 	txq->tx_cso = 0;
- 	txq->vlan_ins = 0;
- 	txq->mapping_err = 0;
--- 
-2.24.0
-
+Jason
