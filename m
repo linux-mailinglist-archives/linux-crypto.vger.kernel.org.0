@@ -2,89 +2,69 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C432010704E
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2019 12:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6341E10712C
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2019 12:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729402AbfKVKpB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 22 Nov 2019 05:45:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51126 "EHLO mail.kernel.org"
+        id S1726939AbfKVKdS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 22 Nov 2019 05:33:18 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:51288 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728502AbfKVKpA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 22 Nov 2019 05:45:00 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 976EE20717;
-        Fri, 22 Nov 2019 10:44:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574419500;
-        bh=SbUN0yYZmzZAvFPcXi0mVND1v/e7vZHcGEaSQBWDqX8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WKjJSAd48nX/bgfbgk+cWIq0unBGnlOy6djpGYpMEE9m7ozRo/fiFz407F93hixoz
-         GZQWLm6SlagSdbHD9b9j7Z3Ll4OzeNd3aaz5pN7gr4wkwcfMoED1Ssve8dJ0Tzyit5
-         056QQAAhkuQNQ3cVhhta0iOjBA05KtaGuBhz7JHY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org,
+        id S1726686AbfKVKdO (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 22 Nov 2019 05:33:14 -0500
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1iY6FT-0001nK-UT; Fri, 22 Nov 2019 18:33:11 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1iY6FR-000578-8W; Fri, 22 Nov 2019 18:33:09 +0800
+Date:   Fri, 22 Nov 2019 18:33:09 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Iuliana Prodan <iuliana.prodan@nxp.com>
+Cc:     Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Dan Aloni <dan@kernelim.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 133/222] crypto: fix a memory leak in rsa-kcs1pads encryption mode
-Date:   Fri, 22 Nov 2019 11:27:53 +0100
-Message-Id: <20191122100912.541742992@linuxfoundation.org>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191122100830.874290814@linuxfoundation.org>
-References: <20191122100830.874290814@linuxfoundation.org>
-User-Agent: quilt/0.66
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Gary Hook <gary.hook@amd.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH 08/12] crypto: caam - support crypto_engine framework for
+ SKCIPHER algorithms
+Message-ID: <20191122103309.wf2hg7km45ugzzhr@gondor.apana.org.au>
+References: <1574029845-22796-1-git-send-email-iuliana.prodan@nxp.com>
+ <1574029845-22796-9-git-send-email-iuliana.prodan@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1574029845-22796-9-git-send-email-iuliana.prodan@nxp.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Dan Aloni <dan@kernelim.com>
+On Mon, Nov 18, 2019 at 12:30:41AM +0200, Iuliana Prodan wrote:
+>
+> +static int transfer_request_to_engine(struct crypto_engine *engine,
+> +				      struct crypto_async_request *req)
+> +{
+> +	switch (crypto_tfm_alg_type(req->tfm)) {
+> +	case CRYPTO_ALG_TYPE_SKCIPHER:
+> +		return crypto_transfer_skcipher_request_to_engine(engine,
+> +								  skcipher_request_cast(req));
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
 
-[ Upstream commit 3944f139d5592790b70bc64f197162e643a8512b ]
+Please don't do this.  As you can see the crypto engine interface
+wants to you to use the correct type for the request object.  That's
+what you should do to.
 
-The encryption mode of pkcs1pad never uses out_sg and out_buf, so
-there's no need to allocate the buffer, which presently is not even
-being freed.
+In fact I don't understand why you're only using the crypto engine
+for the backlog case.  Wouldn't it be much simpler if you used the
+engine unconditionally?
 
-CC: Herbert Xu <herbert@gondor.apana.org.au>
-CC: linux-crypto@vger.kernel.org
-CC: "David S. Miller" <davem@davemloft.net>
-Signed-off-by: Dan Aloni <dan@kernelim.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- crypto/rsa-pkcs1pad.c | 9 ---------
- 1 file changed, 9 deletions(-)
-
-diff --git a/crypto/rsa-pkcs1pad.c b/crypto/rsa-pkcs1pad.c
-index 7830d304dff6f..d58224d808675 100644
---- a/crypto/rsa-pkcs1pad.c
-+++ b/crypto/rsa-pkcs1pad.c
-@@ -267,15 +267,6 @@ static int pkcs1pad_encrypt(struct akcipher_request *req)
- 	pkcs1pad_sg_set_buf(req_ctx->in_sg, req_ctx->in_buf,
- 			ctx->key_size - 1 - req->src_len, req->src);
- 
--	req_ctx->out_buf = kmalloc(ctx->key_size, GFP_KERNEL);
--	if (!req_ctx->out_buf) {
--		kfree(req_ctx->in_buf);
--		return -ENOMEM;
--	}
--
--	pkcs1pad_sg_set_buf(req_ctx->out_sg, req_ctx->out_buf,
--			ctx->key_size, NULL);
--
- 	akcipher_request_set_tfm(&req_ctx->child_req, ctx->child);
- 	akcipher_request_set_callback(&req_ctx->child_req, req->base.flags,
- 			pkcs1pad_encrypt_sign_complete_cb, req);
+Cheers,
 -- 
-2.20.1
-
-
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
