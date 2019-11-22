@@ -2,65 +2,89 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FAE106B49
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2019 11:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C432010704E
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2019 12:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729178AbfKVKnD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 22 Nov 2019 05:43:03 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:51570 "EHLO deadmen.hmeau.com"
+        id S1729402AbfKVKpB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 22 Nov 2019 05:45:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729172AbfKVKnC (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 22 Nov 2019 05:43:02 -0500
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1iY6Oz-0002gj-Oq; Fri, 22 Nov 2019 18:43:01 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1iY6Ox-0005Bf-UX; Fri, 22 Nov 2019 18:42:59 +0800
-Date:   Fri, 22 Nov 2019 18:42:59 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Harald Freudenberger <freude@linux.ibm.com>
-Cc:     linux-crypto@vger.kernel.org, ebiggers@kernel.org,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH 2/3] s390/crypto: Rework on paes implementation
-Message-ID: <20191122104259.ofodwadrgszdxuto@gondor.apana.org.au>
-References: <20191113105523.8007-1-freude@linux.ibm.com>
- <20191113105523.8007-3-freude@linux.ibm.com>
- <20191122081338.6bdjevtyttpdzzwl@gondor.apana.org.au>
- <87e9dbee-4024-602c-7717-051df3ac644d@linux.ibm.com>
+        id S1728502AbfKVKpA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 22 Nov 2019 05:45:00 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 976EE20717;
+        Fri, 22 Nov 2019 10:44:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574419500;
+        bh=SbUN0yYZmzZAvFPcXi0mVND1v/e7vZHcGEaSQBWDqX8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WKjJSAd48nX/bgfbgk+cWIq0unBGnlOy6djpGYpMEE9m7ozRo/fiFz407F93hixoz
+         GZQWLm6SlagSdbHD9b9j7Z3Ll4OzeNd3aaz5pN7gr4wkwcfMoED1Ssve8dJ0Tzyit5
+         056QQAAhkuQNQ3cVhhta0iOjBA05KtaGuBhz7JHY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Dan Aloni <dan@kernelim.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 133/222] crypto: fix a memory leak in rsa-kcs1pads encryption mode
+Date:   Fri, 22 Nov 2019 11:27:53 +0100
+Message-Id: <20191122100912.541742992@linuxfoundation.org>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20191122100830.874290814@linuxfoundation.org>
+References: <20191122100830.874290814@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87e9dbee-4024-602c-7717-051df3ac644d@linux.ibm.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Nov 22, 2019 at 10:54:50AM +0100, Harald Freudenberger wrote:
-> The setkey() sets the base key material (usually a secure key) to an
-> tfm instance. From this key a 'protected key' (pkey) is derived which
-> may get invalid at any time and may need to get re-derived from the
-> base key material.
-> An tfm instance may be shared, so the context where the pkey is
-> stored into is also shared. So when a pkey gets invalid there is a need
-> to update the pkey value within the context struct. This update needs
-> to be done atomic as another thread may concurrently use this pkey
-> value. That's all what this spinlock does. Make sure read and write
-> operations on the pkey within the context are atomic.
-> It is still possible that two threads copy the pkey, try to use it, find out
-> that it is invalid and needs refresh, re-derive and both update the pkey
-> memory serialized by the spinlock. But this is no issue. The spinlock
-> makes sure the stored pkey is always a consistent pkey (which may
-> be valid or invalid but not corrupted).
+From: Dan Aloni <dan@kernelim.com>
 
-OK.  Can you give me a bit more background info on how often
-this is likely to happen? I mean it happened every time you
-might as well not store the protected key in the tfm at all.
+[ Upstream commit 3944f139d5592790b70bc64f197162e643a8512b ]
 
-Thanks,
+The encryption mode of pkcs1pad never uses out_sg and out_buf, so
+there's no need to allocate the buffer, which presently is not even
+being freed.
+
+CC: Herbert Xu <herbert@gondor.apana.org.au>
+CC: linux-crypto@vger.kernel.org
+CC: "David S. Miller" <davem@davemloft.net>
+Signed-off-by: Dan Aloni <dan@kernelim.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ crypto/rsa-pkcs1pad.c | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/crypto/rsa-pkcs1pad.c b/crypto/rsa-pkcs1pad.c
+index 7830d304dff6f..d58224d808675 100644
+--- a/crypto/rsa-pkcs1pad.c
++++ b/crypto/rsa-pkcs1pad.c
+@@ -267,15 +267,6 @@ static int pkcs1pad_encrypt(struct akcipher_request *req)
+ 	pkcs1pad_sg_set_buf(req_ctx->in_sg, req_ctx->in_buf,
+ 			ctx->key_size - 1 - req->src_len, req->src);
+ 
+-	req_ctx->out_buf = kmalloc(ctx->key_size, GFP_KERNEL);
+-	if (!req_ctx->out_buf) {
+-		kfree(req_ctx->in_buf);
+-		return -ENOMEM;
+-	}
+-
+-	pkcs1pad_sg_set_buf(req_ctx->out_sg, req_ctx->out_buf,
+-			ctx->key_size, NULL);
+-
+ 	akcipher_request_set_tfm(&req_ctx->child_req, ctx->child);
+ 	akcipher_request_set_callback(&req_ctx->child_req, req->base.flags,
+ 			pkcs1pad_encrypt_sign_complete_cb, req);
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.20.1
+
+
+
