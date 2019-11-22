@@ -2,140 +2,137 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0579105E0F
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2019 02:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C630105DFB
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2019 02:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbfKVBIw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Nov 2019 20:08:52 -0500
-Received: from stargate.chelsio.com ([12.32.117.8]:16792 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbfKVBIv (ORCPT
+        id S1726975AbfKVBER (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Nov 2019 20:04:17 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:43932 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726655AbfKVBDo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Nov 2019 20:08:51 -0500
-Received: from localhost (scalar.blr.asicdesigners.com [10.193.185.94])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id xAM18jhG011887;
-        Thu, 21 Nov 2019 17:08:46 -0800
-From:   Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-To:     netdev@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        nirranjan@chelsio.com, atul.gupta@chelsio.com, vishal@chelsio.com,
-        dt@chelsio.com
-Subject: [PATCH net-next v2 3/3] cxgb4: add stats for MQPRIO QoS offload Tx path
-Date:   Fri, 22 Nov 2019 06:30:03 +0530
-Message-Id: <28488132436a491f5fd8fa7da8e84694e70ef9d5.1574383652.git.rahul.lakkireddy@chelsio.com>
-X-Mailer: git-send-email 2.5.3
-In-Reply-To: <cover.1574383652.git.rahul.lakkireddy@chelsio.com>
-References: <cover.1574383652.git.rahul.lakkireddy@chelsio.com>
-In-Reply-To: <cover.1574383652.git.rahul.lakkireddy@chelsio.com>
-References: <cover.1574383652.git.rahul.lakkireddy@chelsio.com>
+        Thu, 21 Nov 2019 20:03:44 -0500
+Received: by mail-pg1-f193.google.com with SMTP id b1so2501622pgq.10
+        for <linux-crypto@vger.kernel.org>; Thu, 21 Nov 2019 17:03:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yLXiD3mid8KH+vzWk5eeV9cjY9C1Tzvqr7ZpCV412RY=;
+        b=hLEhYIK9flS41tAVD9Y1bn4Jt1UMYp7abrfy7AKnCXRyYLediN4w0OgzUjMgs0WAYW
+         rzprgJVKdgJxLcSWW6iAsj72BUpuEc3wX6C78lTdcb6JdJgZL51SVGpEs6Ai7XrsXt+y
+         5MF2Lwf3FHcIrCf8H9/NtYF9ZkNBOYzfwh3jk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yLXiD3mid8KH+vzWk5eeV9cjY9C1Tzvqr7ZpCV412RY=;
+        b=s0beJ/TU6uCCDEGVluWR0bzZH4dOB+mIqvS6W7/F+qp0cBZNcZkvdXUo4t+bCsCGvq
+         JeR4M0heo6qOULymHaKxF8A8NfPoscwORe51/sJrHjaqdOL7JCRKQe1D7akhd+cILcmi
+         /K6Tp+RxKnvflEDcxYH/w+EytIOoMibXEYLTYSwb5PR8/I0C/OXlH6cCGXcOPojg4UMu
+         wkNs+L+8w/6G5F1WXWhlYxovxRxvQBu2nHgVwa29oitdeH0e7H3qIKlywUJFPhYH9+Mf
+         XqO9kRtdeQAnVCIEUdyitR+DqyohKORGExDCP4N6m3NLVjFw6d48Rodr3L47shJZh+MD
+         eybg==
+X-Gm-Message-State: APjAAAXeqD7LaqUv/WauXL2+kpoj3xTZqbPXeKoOuQzjnEDD77rH2I13
+        JPj84DiM/SeyiuTnIb31v3aTMQ==
+X-Google-Smtp-Source: APXvYqz/gdanKWHRL5lO19w7tDA97M8iQ7EDdo45/bL9HF9nQFFMvAJl5aGHe6J3GPDcKfidzkpnhw==
+X-Received: by 2002:a63:4705:: with SMTP id u5mr12607717pga.7.1574384623397;
+        Thu, 21 Nov 2019 17:03:43 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q34sm699235pjb.15.2019.11.21.17.03.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Nov 2019 17:03:38 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Kees Cook <keescook@chromium.org>,
+        =?UTF-8?q?Jo=C3=A3o=20Moreira?= <joao.moreira@intel.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Stephan Mueller <smueller@chronox.de>, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: [PATCH v6 0/8] crypto: x86: Fix indirect function call casts
+Date:   Thu, 21 Nov 2019 17:03:26 -0800
+Message-Id: <20191122010334.12081-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Export necessary stats for traffic flowing through MQPRIO QoS offload
-Tx path.
+v6:
+- minimize need for various internal casts (ebiggers)
+- clarify comments (ebiggers)
+- switch all context pointers to const (ebiggers)
+v5: https://lore.kernel.org/lkml/20191113182516.13545-1-keescook@chromium.org
+v4: https://lore.kernel.org/lkml/20191111214552.36717-1-keescook@chromium.org
+v3: https://lore.kernel.org/lkml/20190507161321.34611-1-keescook@chromium.org
 
-v2:
-- No change.
+Hi,
 
-Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
----
- drivers/net/ethernet/chelsio/cxgb4/cxgb4.h         |  1 +
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c |  1 +
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c | 13 ++++++++++++-
- drivers/net/ethernet/chelsio/cxgb4/sge.c           | 14 ++++++++++++++
- 4 files changed, 28 insertions(+), 1 deletion(-)
+Now that Clang's CFI has been fixed to do the right thing with extern
+asm functions, this patch series is much simplified. Repeating patch
+1's commit log here:
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h b/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h
-index 04cb8909feeb..a70ac2097892 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h
-@@ -850,6 +850,7 @@ struct sge_eohw_txq {
- 	struct sge_txq q; /* HW Txq */
- 	struct adapter *adap; /* Backpointer to adapter */
- 	unsigned long tso; /* # of TSO requests */
-+	unsigned long uso; /* # of USO requests */
- 	unsigned long tx_cso; /* # of Tx checksum offloads */
- 	unsigned long vlan_ins; /* # of Tx VLAN insertions */
- 	unsigned long mapping_err; /* # of I/O MMU packet mapping errors */
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-index fa229d0f1016..93868dca186a 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-@@ -2797,6 +2797,7 @@ do { \
- 		RL("RxAN", stats.an);
- 		RL("RxNoMem", stats.nomem);
- 		TL("TSO:", tso);
-+		TL("USO:", uso);
- 		TL("TxCSO:", tx_cso);
- 		TL("VLANins:", vlan_ins);
- 		TL("TxQFull:", q.stops);
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c
-index f57457453561..20ab3b6285a2 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c
-@@ -242,9 +242,10 @@ static void collect_sge_port_stats(const struct adapter *adap,
- 				   const struct port_info *p,
- 				   struct queue_port_stats *s)
- {
--	int i;
- 	const struct sge_eth_txq *tx = &adap->sge.ethtxq[p->first_qset];
- 	const struct sge_eth_rxq *rx = &adap->sge.ethrxq[p->first_qset];
-+	struct sge_eohw_txq *eohw_tx;
-+	unsigned int i;
- 
- 	memset(s, 0, sizeof(*s));
- 	for (i = 0; i < p->nqsets; i++, rx++, tx++) {
-@@ -257,6 +258,16 @@ static void collect_sge_port_stats(const struct adapter *adap,
- 		s->gro_pkts += rx->stats.lro_pkts;
- 		s->gro_merged += rx->stats.lro_merged;
- 	}
-+
-+	if (adap->sge.eohw_txq) {
-+		eohw_tx = &adap->sge.eohw_txq[p->first_qset];
-+		for (i = 0; i < p->nqsets; i++, eohw_tx++) {
-+			s->tso += eohw_tx->tso;
-+			s->uso += eohw_tx->uso;
-+			s->tx_csum += eohw_tx->tx_cso;
-+			s->vlan_ins += eohw_tx->vlan_ins;
-+		}
-+	}
- }
- 
- static void collect_adapter_stats(struct adapter *adap, struct adapter_stats *s)
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-index 53f9a821c29f..97cda501e7e8 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-@@ -2262,6 +2262,19 @@ static void ethofld_hard_xmit(struct net_device *dev,
- 				d->addr);
- 	}
- 
-+	if (skb_shinfo(skb)->gso_size) {
-+		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
-+			eohw_txq->uso++;
-+		else
-+			eohw_txq->tso++;
-+		eohw_txq->tx_cso += skb_shinfo(skb)->gso_segs;
-+	} else if (skb->ip_summed == CHECKSUM_PARTIAL) {
-+		eohw_txq->tx_cso++;
-+	}
-+
-+	if (skb_vlan_tag_present(skb))
-+		eohw_txq->vlan_ins++;
-+
- 	txq_advance(&eohw_txq->q, ndesc);
- 	cxgb4_ring_tx_db(adap, &eohw_txq->q, ndesc);
- 	eosw_txq_advance_index(&eosw_txq->last_pidx, 1, eosw_txq->ndesc);
-@@ -4546,6 +4559,7 @@ int t4_sge_alloc_ethofld_txq(struct adapter *adap, struct sge_eohw_txq *txq,
- 	spin_lock_init(&txq->lock);
- 	txq->adap = adap;
- 	txq->tso = 0;
-+	txq->uso = 0;
- 	txq->tx_cso = 0;
- 	txq->vlan_ins = 0;
- 	txq->mapping_err = 0;
+    The crypto glue performed function prototype casting to make indirect
+    calls to assembly routines. Instead of performing casts at the call
+    sites (which trips Control Flow Integrity prototype checking), switch
+    each prototype to a common standard set of arguments which allows the
+    incremental removal of the existing macros. In order to keep pointer
+    math unchanged, internal casting between u128 pointers and u8 pointers
+    is added.
+
+With this series (and the Clang LTO+CFI series) I am able to boot x86
+with all crytpo selftests enabled without tripping any CFI checks.
+
+Thanks!
+
+-Kees
+
+Kees Cook (8):
+  crypto: x86/glue_helper: Regularize function prototypes
+  crypto: x86/serpent: Remove glue function macros usage
+  crypto: x86/camellia: Remove glue function macro usage
+  crypto: x86/twofish: Remove glue function macro usage
+  crypto: x86/cast6: Remove glue function macro usage
+  crypto: x86/aesni: Remove glue function macro usage
+  crypto: x86/glue_helper: Remove function prototype cast helpers
+  crypto, x86/sha: Eliminate casts on asm implementations
+
+ arch/x86/crypto/aesni-intel_asm.S          |  8 +--
+ arch/x86/crypto/aesni-intel_glue.c         | 45 ++++++-------
+ arch/x86/crypto/camellia_aesni_avx2_glue.c | 74 ++++++++++-----------
+ arch/x86/crypto/camellia_aesni_avx_glue.c  | 72 +++++++++------------
+ arch/x86/crypto/camellia_glue.c            | 45 +++++++------
+ arch/x86/crypto/cast6_avx_glue.c           | 68 +++++++++-----------
+ arch/x86/crypto/glue_helper.c              | 23 ++++---
+ arch/x86/crypto/serpent_avx2_glue.c        | 65 +++++++++----------
+ arch/x86/crypto/serpent_avx_glue.c         | 63 +++++++++---------
+ arch/x86/crypto/serpent_sse2_glue.c        | 30 +++++----
+ arch/x86/crypto/sha1_ssse3_asm.S           | 10 ++-
+ arch/x86/crypto/sha1_ssse3_glue.c          | 64 ++++++++----------
+ arch/x86/crypto/sha256-ssse3-asm.S         |  4 +-
+ arch/x86/crypto/sha256_ssse3_glue.c        | 34 +++++-----
+ arch/x86/crypto/sha512-ssse3-asm.S         |  4 +-
+ arch/x86/crypto/sha512_ssse3_glue.c        | 31 +++++----
+ arch/x86/crypto/twofish_avx_glue.c         | 75 ++++++++++------------
+ arch/x86/crypto/twofish_glue_3way.c        | 37 ++++++-----
+ arch/x86/include/asm/crypto/camellia.h     | 63 +++++++++---------
+ arch/x86/include/asm/crypto/glue_helper.h  | 18 ++----
+ arch/x86/include/asm/crypto/serpent-avx.h  | 20 +++---
+ arch/x86/include/asm/crypto/serpent-sse2.h | 28 ++++----
+ arch/x86/include/asm/crypto/twofish.h      | 19 +++---
+ crypto/cast6_generic.c                     | 18 +++---
+ crypto/serpent_generic.c                   |  6 +-
+ include/crypto/cast6.h                     |  4 +-
+ include/crypto/serpent.h                   |  4 +-
+ include/crypto/xts.h                       |  2 -
+ 28 files changed, 446 insertions(+), 488 deletions(-)
+
 -- 
-2.24.0
+2.17.1
 
