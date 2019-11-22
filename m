@@ -2,69 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDD6106E95
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2019 12:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F085106E9B
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2019 12:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731293AbfKVLCY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 22 Nov 2019 06:02:24 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:53202 "EHLO deadmen.hmeau.com"
+        id S1728313AbfKVLKE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 22 Nov 2019 06:10:04 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:53228 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730223AbfKVLCU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 22 Nov 2019 06:02:20 -0500
+        id S1730998AbfKVLCb (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 22 Nov 2019 06:02:31 -0500
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1iY6hf-0004O4-1a; Fri, 22 Nov 2019 19:02:19 +0800
+        id 1iY6hq-0004Pj-P9; Fri, 22 Nov 2019 19:02:30 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1iY6hc-0002cg-FO; Fri, 22 Nov 2019 19:02:16 +0800
-Date:   Fri, 22 Nov 2019 19:02:16 +0800
+        id 1iY6hp-0002cq-Gh; Fri, 22 Nov 2019 19:02:29 +0800
+Date:   Fri, 22 Nov 2019 19:02:29 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-crypto@vger.kernel.org, ebiggers@kernel.org, dsterba@suse.com
-Subject: Re: [PATCH v2 0/7] BLAKE2b cleanups
-Message-ID: <20191122110216.4quahkxnkd3w67dg@gondor.apana.org.au>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     linux-crypto@vger.kernel.org, Gary Hook <gary.hook@amd.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>
+Subject: Re: [PATCH] crypto: ccp: add SEV command privilege separation
+Message-ID: <20191122110229.dui2iqfys7z5rbwz@gondor.apana.org.au>
+References: <20191112195834.7795-1-brijesh.singh@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1573553665.git.dsterba@suse.com>
-X-Newsgroups: apana.lists.os.linux.cryptoapi
-Organization: Core
+In-Reply-To: <20191112195834.7795-1-brijesh.singh@amd.com>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-David Sterba <dsterba@suse.com> wrote:
-> Hi,
+On Tue, Nov 12, 2019 at 01:58:34PM -0600, Brijesh Singh wrote:
+> Currently, there is no privilege separation of the SEV command; you can
+> run them all or none of them. This is less than ideal because it means
+> that a compromise of the code which launches VMs could make permanent
+> change to the SEV certifcate chain which will affect others.
 > 
-> the patchset implements cleanups suggested by Eric in
-> https://lore.kernel.org/linux-crypto/20191025051550.GA103313@sol.localdomain/
+> These commands are required to attest the VM environment:
+>  - SEV_PDH_CERT_EXPORT
+>  - SEV_PLATFORM_STATUS
+>  - SEV_GET_{ID,ID2}
 > 
-> The diff is almost the same, split into pieces with some additional
-> comments where it would help understand the simplifications. This is
-> based on v7 of the BLAKE2b patchset.
+> These commands manage the SEV certificate chain:
+>  - SEV_PEK_CERR_IMPORT
+>  - SEV_FACTORY_RESET
+>  - SEV_PEK_GEN
+>  - SEV_PEK_CSR
+>  - SEV_PDH_GEN
 > 
-> The self-tests have been run for each patch on x86_64.
+> Lets add the CAP_SYS_ADMIN check for the group of the commands which alters
+> the SEV certificate chain to provide some level of privilege separation.
 > 
-> V2:
-> - rename digest_setkey to blake2b_setkey, this is in patch 7 that also
->  does a rename, to avoid a too-trivial separate patch
-> - minor withespace fix in patch 6
-> 
-> David Sterba (7):
->  crypto: blake2b: merge _final implementation to callback
->  crypto: blake2b: merge blake2 init to api callback
->  crypto: blake2b: simplify key init
->  crypto: blake2b: delete unused structs or members
->  crypto: blake2b: open code set last block helper
->  crypto: blake2b: merge _update to api callback
->  crypto: blake2b: rename tfm context and _setkey callback
-> 
-> crypto/blake2b_generic.c | 279 ++++++++++++---------------------------
-> 1 file changed, 82 insertions(+), 197 deletions(-)
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: Gary Hook <gary.hook@amd.com>
+> Cc: Erdem Aktas <erdemaktas@google.com>
+> Cc: Tom Lendacky <Thomas.Lendacky@amd.com>
+> Tested-by: David Rientjes <rientjes@google.com>
+> Co-developed-by: David Rientjes <rientjes@google.com>
+> Signed-off-by: David Rientjes <rientjes@google.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  drivers/crypto/ccp/psp-dev.c | 29 ++++++++++++++++++++++-------
+>  drivers/crypto/ccp/psp-dev.h |  1 +
+>  2 files changed, 23 insertions(+), 7 deletions(-)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
