@@ -2,49 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E689D106EAF
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2019 12:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F58106EE1
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2019 12:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730865AbfKVLKs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 22 Nov 2019 06:10:48 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:54038 "EHLO deadmen.hmeau.com"
+        id S1729169AbfKVLLe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 22 Nov 2019 06:11:34 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:54084 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728843AbfKVLKs (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 22 Nov 2019 06:10:48 -0500
+        id S1729410AbfKVLLc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 22 Nov 2019 06:11:32 -0500
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1iY6pq-0005PY-Mv; Fri, 22 Nov 2019 19:10:46 +0800
+        id 1iY6qZ-0005XE-QA; Fri, 22 Nov 2019 19:11:31 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1iY6pq-0002lN-Ix; Fri, 22 Nov 2019 19:10:46 +0800
-Date:   Fri, 22 Nov 2019 19:10:46 +0800
+        id 1iY6qY-0002m8-1L; Fri, 22 Nov 2019 19:11:30 +0800
+Date:   Fri, 22 Nov 2019 19:11:30 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-crypto@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH] crypto: lib/chacha20poly1305 - use chacha20_crypt()
-Message-ID: <20191122111046.wpawzcnso67kp23h@gondor.apana.org.au>
-References: <20191118072216.467693-1-ebiggers@kernel.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-crypto@vger.kernel.org, linuxppc-dev@ozlabs.org,
+        yamada.masahiro@socionext.com
+Subject: Re: [PATCH] crypto: vmx - Avoid weird build failures
+Message-ID: <20191122111129.nu5lr5nfxilsjsy5@gondor.apana.org.au>
+References: <20191120112738.7031-1-mpe@ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191118072216.467693-1-ebiggers@kernel.org>
+In-Reply-To: <20191120112738.7031-1-mpe@ellerman.id.au>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sun, Nov 17, 2019 at 11:22:16PM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Wed, Nov 20, 2019 at 10:27:38PM +1100, Michael Ellerman wrote:
+> In the vmx crypto Makefile we assign to a variable called TARGET and
+> pass that to the aesp8-ppc.pl and ghashp8-ppc.pl scripts.
 > 
-> Use chacha20_crypt() instead of chacha_crypt(), since it's not really
-> appropriate for users of the ChaCha library API to be passing the number
-> of rounds as an argument.
+> The variable is meant to describe what flavour of powerpc we're
+> building for, eg. either 32 or 64-bit, and big or little endian.
 > 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Unfortunately TARGET is a fairly common name for a make variable, and
+> if it happens that TARGET is specified as a command line parameter to
+> make, the value specified on the command line will override our value.
+> 
+> In particular this can happen if the kernel Makefile is driven by an
+> external Makefile that uses TARGET for something.
+> 
+> This leads to weird build failures, eg:
+>   nonsense  at /build/linux/drivers/crypto/vmx/ghashp8-ppc.pl line 45.
+>   /linux/drivers/crypto/vmx/Makefile:20: recipe for target 'drivers/crypto/vmx/ghashp8-ppc.S' failed
+> 
+> Which shows that we passed an empty value for $(TARGET) to the perl
+> script, confirmed with make V=1:
+> 
+>   perl /linux/drivers/crypto/vmx/ghashp8-ppc.pl  > drivers/crypto/vmx/ghashp8-ppc.S
+> 
+> We can avoid this confusion by using override, to tell make that we
+> don't want anything to override our variable, even a value specified
+> on the command line. We can also use a less common name, given the
+> script calls it "flavour", let's use that.
+> 
+> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
 > ---
->  lib/crypto/chacha20poly1305.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+>  drivers/crypto/vmx/Makefile | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
 Patch applied.  Thanks.
 -- 
