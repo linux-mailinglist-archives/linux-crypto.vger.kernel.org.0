@@ -2,140 +2,66 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F74E105D12
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2019 00:14:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 136BA105E09
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2019 02:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbfKUXOW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Nov 2019 18:14:22 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:45724 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725956AbfKUXOW (ORCPT
+        id S1726454AbfKVBIi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Nov 2019 20:08:38 -0500
+Received: from stargate.chelsio.com ([12.32.117.8]:61600 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726408AbfKVBIi (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Nov 2019 18:14:22 -0500
-Received: by mail-pl1-f194.google.com with SMTP id w7so2263642plz.12
-        for <linux-crypto@vger.kernel.org>; Thu, 21 Nov 2019 15:14:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2veRivAEh/Lpdr/ITAgILE86AAw5jcwe/4mpzH2NlJY=;
-        b=ePy4Igu7gMSF9I7sxcFxsVtHYtvJJ2SEnYiHowKoYYz0JdW1fbVLxfCsr5NiQNFD96
-         S75Onl+RseVnFfQwCk0TEvq7bo+71LX5nid4yXpkidBnjdfT7azrp8iUcU0eXKuqqqAj
-         Z8aCyx+1mc7qCC6QTIDXBUcAMy2pYNzJnxWQo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2veRivAEh/Lpdr/ITAgILE86AAw5jcwe/4mpzH2NlJY=;
-        b=jOYISjDOardSCdMK61AJwMfCAazumTjSBohSx3XVbUzJb8NyLq4I9KTFF4nWUgTzlE
-         Ko9OD8K0dsv9FUs/VX+QOPLTbmGcsUPrNGMqylS/63fp3bi39t/EiHTYo9+KxVkKtGZP
-         G5iIDIOJdH31JIE65rgeoLbeaKUMlDeIu4RMOm/bRrb2zpG6x9YavO0giRwQQSVTgbcL
-         fb7h7lLlAXGYaUJmn+mI+e5nl/5QlmeNUbNLk0kyIRUKNl2nbkcihDokIokcaZxfZHQP
-         HoRV+LffQI7oFviZ9JWw4M2keDmGXNjpXLN1Y0sEfzNfv9g4JKGkIYFFKoJqEPiRKcco
-         WenA==
-X-Gm-Message-State: APjAAAWZ9cuYWVSfzsT/j0sHVnP5Z9UA8QQJ+3tFYPKl/v9myX6+Gn+j
-        hkkLCA7ztjE2OhAezoBvOIjSkg==
-X-Google-Smtp-Source: APXvYqx10aUfkseuuvvIiZfCFrVLk2ANnIMrVihwB9ZsfC8ppUGV0nab1w1NRyDgV1ToQf1VrNj46Q==
-X-Received: by 2002:a17:90a:c082:: with SMTP id o2mr14857916pjs.94.1574378061504;
-        Thu, 21 Nov 2019 15:14:21 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x25sm4665058pfq.73.2019.11.21.15.14.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Nov 2019 15:14:20 -0800 (PST)
-Date:   Thu, 21 Nov 2019 15:14:19 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        =?iso-8859-1?Q?Jo=E3o?= Moreira <joao.moreira@intel.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Stephan Mueller <smueller@chronox.de>, x86@kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v5 8/8] crypto, x86/sha: Eliminate casts on asm
- implementations
-Message-ID: <201911211512.6A86399@keescook>
-References: <20191113182516.13545-1-keescook@chromium.org>
- <20191113182516.13545-9-keescook@chromium.org>
- <20191113195529.GD221701@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191113195529.GD221701@gmail.com>
+        Thu, 21 Nov 2019 20:08:38 -0500
+Received: from localhost (scalar.blr.asicdesigners.com [10.193.185.94])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id xAM18Uav011878;
+        Thu, 21 Nov 2019 17:08:31 -0800
+From:   Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+To:     netdev@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        nirranjan@chelsio.com, atul.gupta@chelsio.com, vishal@chelsio.com,
+        dt@chelsio.com
+Subject: [PATCH net-next v2 0/3] cxgb4: add UDP Segmentation Offload support
+Date:   Fri, 22 Nov 2019 06:30:00 +0530
+Message-Id: <cover.1574383652.git.rahul.lakkireddy@chelsio.com>
+X-Mailer: git-send-email 2.5.3
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Nov 13, 2019 at 11:55:30AM -0800, Eric Biggers wrote:
-> On Wed, Nov 13, 2019 at 10:25:16AM -0800, Kees Cook wrote:
-> > In order to avoid CFI function prototype mismatches, this removes the
-> > casts on assembly implementations of sha1/256/512 accelerators. The
-> > safety checks from BUILD_BUG_ON() remain.
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  arch/x86/crypto/sha1_ssse3_glue.c   | 61 ++++++++++++-----------------
-> >  arch/x86/crypto/sha256_ssse3_glue.c | 31 +++++++--------
-> >  arch/x86/crypto/sha512_ssse3_glue.c | 28 ++++++-------
-> >  3 files changed, 50 insertions(+), 70 deletions(-)
-> > 
-> > diff --git a/arch/x86/crypto/sha1_ssse3_glue.c b/arch/x86/crypto/sha1_ssse3_glue.c
-> > index 639d4c2fd6a8..a151d899f37a 100644
-> > --- a/arch/x86/crypto/sha1_ssse3_glue.c
-> > +++ b/arch/x86/crypto/sha1_ssse3_glue.c
-> > @@ -27,11 +27,8 @@
-> >  #include <crypto/sha1_base.h>
-> >  #include <asm/simd.h>
-> >  
-> > -typedef void (sha1_transform_fn)(u32 *digest, const char *data,
-> > -				unsigned int rounds);
-> > -
-> >  static int sha1_update(struct shash_desc *desc, const u8 *data,
-> > -			     unsigned int len, sha1_transform_fn *sha1_xform)
-> > +			     unsigned int len, sha1_block_fn *sha1_xform)
-> >  {
-> >  	struct sha1_state *sctx = shash_desc_ctx(desc);
-> >  
-> > @@ -39,48 +36,44 @@ static int sha1_update(struct shash_desc *desc, const u8 *data,
-> >  	    (sctx->count % SHA1_BLOCK_SIZE) + len < SHA1_BLOCK_SIZE)
-> >  		return crypto_sha1_update(desc, data, len);
-> >  
-> > -	/* make sure casting to sha1_block_fn() is safe */
-> > +	/* make sure sha1_block_fn() use in generic routines is safe */
-> >  	BUILD_BUG_ON(offsetof(struct sha1_state, state) != 0);
-> 
-> This update to the comment makes no sense, since sha1_block_fn() is obviously
-> safe in the helpers, and this says nothing about the assembly functions.
-> Instead this should say something like:
-> 
-> 	/*
-> 	 * Make sure that struct sha1_state begins directly with the 160-bit
-> 	 * SHA1 internal state, as this is what the assembly functions expect.
-> 	 */
-> 
-> Likewise for SHA-256 and SHA-512, except for those it would be a 256-bit and
-> 512-bit internal state respectively.
+This series of patches add UDP Segmentation Offload (USO) supported
+by Chelsio T5/T6 NICs.
 
-Thanks! Agreed, that is much clearer.
+Patch 1 updates the current Scatter Gather List (SGL) DMA unmap logic
+for USO requests.
 
-> > -asmlinkage void sha1_transform_ssse3(u32 *digest, const char *data,
-> > -				     unsigned int rounds);
-> > +asmlinkage void sha1_transform_ssse3(struct sha1_state *digest,
-> > +				     u8 const *data, int rounds);
-> 
-> 'u8 const' is unconventional.  Please use 'const u8' instead.
+Patch 2 adds USO support for NIC and MQPRIO QoS offload Tx path.
 
-Yeah, I noticed that but decided to disrupt less. Fixed now.
+Patch 3 adds missing stats for MQPRIO QoS offload Tx path.
 
-> Also, this function prototype is also given in a comment in the corresponding
-> assembly file.  Can you please update that too, and also leave a comment in the
-> assembly file like "struct sha1_state is assumed to begin with u32 state[5]."?
-> 
-> Likewise for all the other SHA-1, and SHA-256, and SHA-512 assembly functions,
-> except it would be u32 state[8] for SHA-256 and u64 state[8] for SHA-512.
+Thanks,
+Rahul
 
-I love how each uses an entirely different comment style. :) Updated!
+v2:
+- Remove inline keyword from write_eo_udp_wr() in sge.c in patch 2.
+  Let the compiler decide.
+
+
+Rahul Lakkireddy (3):
+  cxgb4/chcr: update SGL DMA unmap for USO
+  cxgb4: add UDP segmentation offload support
+  cxgb4: add stats for MQPRIO QoS offload Tx path
+
+ drivers/crypto/chelsio/chcr_ipsec.c           |  27 +-
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4.h    |  21 +-
+ .../ethernet/chelsio/cxgb4/cxgb4_debugfs.c    |   2 +
+ .../ethernet/chelsio/cxgb4/cxgb4_ethtool.c    |  16 +-
+ .../net/ethernet/chelsio/cxgb4/cxgb4_main.c   |  11 +-
+ .../ethernet/chelsio/cxgb4/cxgb4_tc_mqprio.c  |   2 +-
+ drivers/net/ethernet/chelsio/cxgb4/sge.c      | 290 ++++++++++--------
+ drivers/net/ethernet/chelsio/cxgb4/t4fw_api.h |  14 +-
+ 8 files changed, 218 insertions(+), 165 deletions(-)
 
 -- 
-Kees Cook
+2.24.0
+
