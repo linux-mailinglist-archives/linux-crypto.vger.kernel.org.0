@@ -2,138 +2,240 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8056B10B121
-	for <lists+linux-crypto@lfdr.de>; Wed, 27 Nov 2019 15:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B0C10B1CA
+	for <lists+linux-crypto@lfdr.de>; Wed, 27 Nov 2019 16:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727197AbfK0OXV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 27 Nov 2019 09:23:21 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:15498 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727118AbfK0OXT (ORCPT
+        id S1726957AbfK0PDi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 27 Nov 2019 10:03:38 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:45194 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726673AbfK0PDi (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 27 Nov 2019 09:23:19 -0500
-X-UUID: f8ae20a4f1ad42c1ba79108682bc28a7-20191127
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=WFphvlMRaDKdtjVxAem+AWZT/bf0cnW1dQzo9Dpt9Co=;
-        b=BAVmAcettnKIN1LE0bkG5QTvcqrXyT6Lq4JIDlH38hYhfJ8FTOlxN3QoH1xjhx1wWhwxunCIiuk/H10ksaFLNX9EmECaOLGB0dOp2Gq5OUwYBI76/NEVoOh6EpOkq9vVtUI/U3c8mH5lnHnhQTvLPen0WfOhLgbefYONPOT/2Dw=;
-X-UUID: f8ae20a4f1ad42c1ba79108682bc28a7-20191127
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <neal.liu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 433868931; Wed, 27 Nov 2019 22:23:10 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Wed, 27 Nov 2019 22:23:05 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Wed, 27 Nov 2019 22:23:03 +0800
-From:   Neal Liu <neal.liu@mediatek.com>
-To:     Matt Mackall <mpm@selenic.com>,
+        Wed, 27 Nov 2019 10:03:38 -0500
+Received: by mail-wr1-f67.google.com with SMTP id j42so1212801wrj.12
+        for <linux-crypto@vger.kernel.org>; Wed, 27 Nov 2019 07:03:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TPSdYWPsxVaZZs7XMbf85yoh9+QLbbbAn0Y9s5Tq39Q=;
+        b=dzr5XA0LFhxUEA80Hf1lH8eKQRxhAaPKRfQiWhNn8VfXmjd1dKLvUcRAjfxqg15rXo
+         J/kLBjqWfKAj8mI8unG/clL1JPoxxNDp3NjZ+IfZlSZh9Pzv255gzi6juBMbZg4wl6za
+         WMODD+imnxnqCL7Hw+GbNSTbuvaiW1jt8f0hiLtMnQXlBa1eT9Q+ZQBBw2oRHYGtWSOn
+         WXA6jRvj2WeRX8kLUlQ4Amb9K0l+VuYdBsCDRgHm39fdFdmcc56MneivQbubnfKZf/6Z
+         ZwaxVz51Prja2DpSAF81nSIPyfl4T1I6vLIqtaZ8AMxxA/a2OUmbxTru94LfV9P6Iyow
+         1sbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TPSdYWPsxVaZZs7XMbf85yoh9+QLbbbAn0Y9s5Tq39Q=;
+        b=foFX4hd2rveHjpw5nv03hmIfEhk9uAJWtvrGZa2KnHxbKWVkOA/qFr+ELkAijVrIEH
+         lPLy8g5YEGmSsnEBDu3b72OpTtjR/GEpUzm2i//aMD6pF7yKXHfSX7ahFtyAaC35sqet
+         ovswaRAbXzivYJJwJWdboAQ36EbeR/VjsXv9Yh1x4mTfRzyiyZ27+NEDv5xhyxGebUJi
+         2/QQBuoNwiBOHpHW+MaxMhvwh0Pr3B4bXbHQZxDrqZSwfWT0ljTC/COAto1fT1eIIHhH
+         1pu0ZhTtGPekKgCDfsc580ODOGYMfvDb2FGnMF9SW3rSuZGgsbVYPzJF3JA7KE/0yO3a
+         FJ+A==
+X-Gm-Message-State: APjAAAVShy/Hymrc9a0YhtoztLaCnTNnAmvUBoKUeo1Ks6ieLih6mSWl
+        /8Kb2tWsq6EonufG9NTixozDs/9RrzvYpIMxQVc+hw==
+X-Google-Smtp-Source: APXvYqxIKLa2LPH2JUMg8rKd9cLtzDfM0oUfFtHHu1JmdjPCxQB1qigIXkCD7VJIQ76ZLrSxC6WbuHL3ePcRzmrpqUY=
+X-Received: by 2002:a5d:6652:: with SMTP id f18mr1250887wrw.246.1574867015749;
+ Wed, 27 Nov 2019 07:03:35 -0800 (PST)
+MIME-Version: 1.0
+References: <1574864578-467-1-git-send-email-neal.liu@mediatek.com> <1574864578-467-4-git-send-email-neal.liu@mediatek.com>
+In-Reply-To: <1574864578-467-4-git-send-email-neal.liu@mediatek.com>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Wed, 27 Nov 2019 16:03:24 +0100
+Message-ID: <CAKv+Gu_VicmyCGa8sQOwj_iRBf7Sf-iXpVa_3SQyB2Xjru=rmg@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] hwrng: add mtk-sec-rng driver
+To:     Neal Liu <neal.liu@mediatek.com>
+Cc:     Matt Mackall <mpm@selenic.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>
-CC:     Neal Liu <neal.liu@mediatek.com>,
+        Sean Wang <sean.wang@kernel.org>,
         Crystal Guo <Crystal.Guo@mediatek.com>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
         <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
-Subject: [PATCH v5 3/3] hwrng: add mtk-sec-rng driver
-Date:   Wed, 27 Nov 2019 22:22:58 +0800
-Message-ID: <1574864578-467-4-git-send-email-neal.liu@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1574864578-467-1-git-send-email-neal.liu@mediatek.com>
-References: <1574864578-467-1-git-send-email-neal.liu@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        wsd_upstream@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Rm9yIE1lZGlhVGVrIFNvQ3Mgb24gQVJNdjggd2l0aCBUcnVzdFpvbmUgZW5hYmxlZCwgcGVyaXBo
-ZXJhbHMgbGlrZQ0KZW50cm9weSBzb3VyY2VzIGlzIG5vdCBhY2Nlc3NpYmxlIGZyb20gbm9ybWFs
-IHdvcmxkIChsaW51eCkgYW5kDQpyYXRoZXIgYWNjZXNzaWJsZSBmcm9tIHNlY3VyZSB3b3JsZCAo
-QVRGL1RFRSkgb25seS4gVGhpcyBkcml2ZXIgYWltcw0KdG8gcHJvdmlkZSBhIGdlbmVyaWMgaW50
-ZXJmYWNlIHRvIEFURiBybmcgc2VydmljZS4NCg0KU2lnbmVkLW9mZi1ieTogTmVhbCBMaXUgPG5l
-YWwubGl1QG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMvY2hhci9od19yYW5kb20vS2NvbmZp
-ZyAgICAgICB8ICAgMTYgKysrKysrDQogZHJpdmVycy9jaGFyL2h3X3JhbmRvbS9NYWtlZmlsZSAg
-ICAgIHwgICAgMSArDQogZHJpdmVycy9jaGFyL2h3X3JhbmRvbS9tdGstc2VjLXJuZy5jIHwgIDEw
-MyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQogMyBmaWxlcyBjaGFuZ2VkLCAx
-MjAgaW5zZXJ0aW9ucygrKQ0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2NoYXIvaHdfcmFu
-ZG9tL210ay1zZWMtcm5nLmMNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2hhci9od19yYW5kb20v
-S2NvbmZpZyBiL2RyaXZlcnMvY2hhci9od19yYW5kb20vS2NvbmZpZw0KaW5kZXggMjVhN2Q4Zi4u
-ZjA4Yzg1MiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvY2hhci9od19yYW5kb20vS2NvbmZpZw0KKysr
-IGIvZHJpdmVycy9jaGFyL2h3X3JhbmRvbS9LY29uZmlnDQpAQCAtMzk4LDYgKzM5OCwyMiBAQCBj
-b25maWcgSFdfUkFORE9NX01USw0KIA0KIAkgIElmIHVuc3VyZSwgc2F5IFkuDQogDQorY29uZmln
-IEhXX1JBTkRPTV9NVEtfU0VDDQorCXRyaXN0YXRlICJNZWRpYVRlayBTZWN1cml0eSBSYW5kb20g
-TnVtYmVyIEdlbmVyYXRvciBzdXBwb3J0Ig0KKwlkZXBlbmRzIG9uIEhXX1JBTkRPTQ0KKwlkZXBl
-bmRzIG9uIEFSQ0hfTUVESUFURUsgfHwgQ09NUElMRV9URVNUDQorCWRlZmF1bHQgSFdfUkFORE9N
-DQorCSAgaGVscA0KKwkgIFRoaXMgZHJpdmVyIHByb3ZpZGVzIGtlcm5lbC1zaWRlIHN1cHBvcnQg
-Zm9yIHRoZSBSYW5kb20gTnVtYmVyDQorCSAgR2VuZXJhdG9yIGhhcmR3YXJlIGZvdW5kIG9uIE1l
-ZGlhVGVrIFNvQ3MuIFRoZSBkaWZmZXJlbmNlIHdpdGgNCisJICBtdGstcm5nIGlzIHRoZSBSYW5k
-b20gTnVtYmVyIEdlbmVyYXRvciBoYXJkd2FyZSBpcyBzZWN1cmUNCisJICBhY2Nlc3Mgb25seS4N
-CisNCisJICBUbyBjb21waWxlIHRoaXMgZHJpdmVyIGFzIGEgbW9kdWxlLCBjaG9vc2UgTSBoZXJl
-LiB0aGUNCisJICBtb2R1bGUgd2lsbCBiZSBjYWxsZWQgbXRrLXNlYy1ybmcuDQorDQorCSAgSWYg
-dW5zdXJlLCBzYXkgWS4NCisNCiBjb25maWcgSFdfUkFORE9NX1MzOTANCiAJdHJpc3RhdGUgIlMz
-OTAgVHJ1ZSBSYW5kb20gTnVtYmVyIEdlbmVyYXRvciBzdXBwb3J0Ig0KIAlkZXBlbmRzIG9uIFMz
-OTANCmRpZmYgLS1naXQgYS9kcml2ZXJzL2NoYXIvaHdfcmFuZG9tL01ha2VmaWxlIGIvZHJpdmVy
-cy9jaGFyL2h3X3JhbmRvbS9NYWtlZmlsZQ0KaW5kZXggN2M5ZWY0YS4uYmVlNTQxMiAxMDA2NDQN
-Ci0tLSBhL2RyaXZlcnMvY2hhci9od19yYW5kb20vTWFrZWZpbGUNCisrKyBiL2RyaXZlcnMvY2hh
-ci9od19yYW5kb20vTWFrZWZpbGUNCkBAIC0zNiw2ICszNiw3IEBAIG9iai0kKENPTkZJR19IV19S
-QU5ET01fUElDMzIpICs9IHBpYzMyLXJuZy5vDQogb2JqLSQoQ09ORklHX0hXX1JBTkRPTV9NRVNP
-TikgKz0gbWVzb24tcm5nLm8NCiBvYmotJChDT05GSUdfSFdfUkFORE9NX0NBVklVTSkgKz0gY2F2
-aXVtLXJuZy5vIGNhdml1bS1ybmctdmYubw0KIG9iai0kKENPTkZJR19IV19SQU5ET01fTVRLKQkr
-PSBtdGstcm5nLm8NCitvYmotJChDT05GSUdfSFdfUkFORE9NX01US19TRUMpCSs9IG10ay1zZWMt
-cm5nLm8NCiBvYmotJChDT05GSUdfSFdfUkFORE9NX1MzOTApICs9IHMzOTAtdHJuZy5vDQogb2Jq
-LSQoQ09ORklHX0hXX1JBTkRPTV9LRVlTVE9ORSkgKz0ga3Mtc2Etcm5nLm8NCiBvYmotJChDT05G
-SUdfSFdfUkFORE9NX09QVEVFKSArPSBvcHRlZS1ybmcubw0KZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-Y2hhci9od19yYW5kb20vbXRrLXNlYy1ybmcuYyBiL2RyaXZlcnMvY2hhci9od19yYW5kb20vbXRr
-LXNlYy1ybmcuYw0KbmV3IGZpbGUgbW9kZSAxMDA2NDQNCmluZGV4IDAwMDAwMDAuLjY5ZGRlY2EN
-Ci0tLSAvZGV2L251bGwNCisrKyBiL2RyaXZlcnMvY2hhci9od19yYW5kb20vbXRrLXNlYy1ybmcu
-Yw0KQEAgLTAsMCArMSwxMDMgQEANCisvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIu
-MA0KKy8qDQorICogQ29weXJpZ2h0IChDKSAyMDE5IE1lZGlhVGVrIEluYy4NCisgKi8NCisNCisj
-aW5jbHVkZSA8bGludXgvYXJtLXNtY2NjLmg+DQorI2luY2x1ZGUgPGxpbnV4L2h3X3JhbmRvbS5o
-Pg0KKyNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCisjaW5jbHVkZSA8bGludXgvb2YuaD4NCisj
-aW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+DQorI2luY2x1ZGUgPGxpbnV4L3NvYy9t
-ZWRpYXRlay9tdGtfc2lwX3N2Yy5oPg0KKw0KKyNkZWZpbmUgTVRLX1NFQ19STkdfTUFHSUMJMHg3
-NDcyNmU2Nw0KKyNkZWZpbmUgU01DX1JFVF9OVU0JCTQNCisjZGVmaW5lIE1US19TRUNfUk5EX1NJ
-WkUJKHNpemVvZih1MzIpICogU01DX1JFVF9OVU0pDQorDQorc3RhdGljIHZvaWQgbXRrX3NlY19n
-ZXRfcm5kKHVpbnQzMl90ICp2YWwpDQorew0KKwlzdHJ1Y3QgYXJtX3NtY2NjX3JlcyByZXM7DQor
-DQorCWFybV9zbWNjY19zbWMoTVRLX1NJUF9LRVJORUxfR0VUX1JORCwNCisJCSAgICAgIE1US19T
-RUNfUk5HX01BR0lDLCAwLCAwLCAwLCAwLCAwLCAwLCAmcmVzKTsNCisNCisJdmFsWzBdID0gcmVz
-LmEwOw0KKwl2YWxbMV0gPSByZXMuYTE7DQorCXZhbFsyXSA9IHJlcy5hMjsNCisJdmFsWzNdID0g
-cmVzLmEzOw0KK30NCisNCitzdGF0aWMgaW50IG10a19zZWNfcm5nX3JlYWQoc3RydWN0IGh3cm5n
-ICpybmcsIHZvaWQgKmJ1Ziwgc2l6ZV90IG1heCwgYm9vbCB3YWl0KQ0KK3sNCisJdTMyIHZhbFs0
-XSA9IHswfTsNCisJaW50IHJldHZhbCA9IDA7DQorCWludCBpOw0KKw0KKwl3aGlsZSAobWF4ID49
-IE1US19TRUNfUk5EX1NJWkUpIHsNCisJCW10a19zZWNfZ2V0X3JuZCh2YWwpOw0KKw0KKwkJZm9y
-IChpID0gMDsgaSA8IFNNQ19SRVRfTlVNOyBpKyspIHsNCisJCQkqKHUzMiAqKWJ1ZiA9IHZhbFtp
-XTsNCisJCQlidWYgKz0gc2l6ZW9mKHUzMik7DQorCQl9DQorDQorCQlyZXR2YWwgKz0gTVRLX1NF
-Q19STkRfU0laRTsNCisJCW1heCAtPSBNVEtfU0VDX1JORF9TSVpFOw0KKwl9DQorDQorCXJldHVy
-biByZXR2YWw7DQorfQ0KKw0KK3N0YXRpYyBzdHJ1Y3QgaHdybmcgbXRrX3NlY19ybmcgPSB7DQor
-CS5uYW1lID0gIm10a19zZWNfcm5nIiwNCisJLnJlYWQgPSBtdGtfc2VjX3JuZ19yZWFkLA0KKwku
-cXVhbGl0eSA9IDkwMCwNCit9Ow0KKw0KK3N0YXRpYyBpbnQgbXRrX3NlY19ybmdfcHJvYmUodm9p
-ZCkNCit7DQorCWludCByZXQ7DQorDQorCXJldCA9IGh3cm5nX3JlZ2lzdGVyKCZtdGtfc2VjX3Ju
-Zyk7DQorCWlmIChyZXQpIHsNCisJCXByX2VycigiRmFpbGVkIHRvIHJlZ2lzdGVyIHJuZyBkZXZp
-Y2U6ICVkXG4iLCByZXQpOw0KKwkJcmV0dXJuIHJldDsNCisJfQ0KKw0KKwlyZXR1cm4gMDsNCit9
-DQorDQorc3RhdGljIGludCBfX2luaXQgbXRrX3NlY19ybmdfZHJpdmVyX2luaXQodm9pZCkNCit7
-DQorCXN0cnVjdCBkZXZpY2Vfbm9kZSAqZndfbnA7DQorCXN0cnVjdCBkZXZpY2Vfbm9kZSAqbnA7
-DQorCWNvbnN0IGNoYXIgKm1ldGhvZDsNCisNCisJZndfbnAgPSBvZl9maW5kX25vZGVfYnlfbmFt
-ZShOVUxMLCAiZmlybXdhcmUiKTsNCisJaWYgKCFmd19ucCkNCisJCXJldHVybiAtRU5PREVWOw0K
-Kw0KKwlucCA9IG9mX2ZpbmRfY29tcGF0aWJsZV9ub2RlKGZ3X25wLCBOVUxMLCAibWVkaWF0ZWss
-bXRrLXNlYy1ybmciKTsNCisJaWYgKCFucCkNCisJCXJldHVybiAtRU5PREVWOw0KKw0KKwlpZiAo
-b2ZfcHJvcGVydHlfcmVhZF9zdHJpbmcobnAsICJtZXRob2QiLCAmbWV0aG9kKSkNCisJCXJldHVy
-biAtRU5YSU87DQorDQorCWlmIChzdHJuY21wKCJzbWMiLCBtZXRob2QsIHN0cmxlbigic21jIikp
-KQ0KKwkJcmV0dXJuIC1FSU5WQUw7DQorDQorCXJldHVybiBtdGtfc2VjX3JuZ19wcm9iZSgpOw0K
-K30NCisNCitzdGF0aWMgdm9pZCBfX2V4aXQgbXRrX3NlY19ybmdfZHJpdmVyX2V4aXQodm9pZCkN
-Cit7DQorCWh3cm5nX3VucmVnaXN0ZXIoJm10a19zZWNfcm5nKTsNCit9DQorDQorbW9kdWxlX2lu
-aXQobXRrX3NlY19ybmdfZHJpdmVyX2luaXQpOw0KK21vZHVsZV9leGl0KG10a19zZWNfcm5nX2Ry
-aXZlcl9leGl0KTsNCisNCitNT0RVTEVfREVTQ1JJUFRJT04oIk1lZGlhVGVrIFNlY3VyaXR5IFJh
-bmRvbSBOdW1iZXIgR2VuZXJhdG9yIERyaXZlciIpOw0KK01PRFVMRV9BVVRIT1IoIk5lYWwgTGl1
-IDxuZWFsLmxpdUBtZWRpYXRlay5jb20+Iik7DQorTU9EVUxFX0xJQ0VOU0UoIkdQTCIpOw0KLS0g
-DQoxLjcuOS41DQo=
+On Wed, 27 Nov 2019 at 15:23, Neal Liu <neal.liu@mediatek.com> wrote:
+>
+> For MediaTek SoCs on ARMv8 with TrustZone enabled, peripherals like
+> entropy sources is not accessible from normal world (linux) and
+> rather accessible from secure world (ATF/TEE) only. This driver aims
+> to provide a generic interface to ATF rng service.
+>
+> Signed-off-by: Neal Liu <neal.liu@mediatek.com>
+> ---
+>  drivers/char/hw_random/Kconfig       |   16 ++++++
+>  drivers/char/hw_random/Makefile      |    1 +
+>  drivers/char/hw_random/mtk-sec-rng.c |  103 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 120 insertions(+)
+>  create mode 100644 drivers/char/hw_random/mtk-sec-rng.c
+>
+> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+> index 25a7d8f..f08c852 100644
+> --- a/drivers/char/hw_random/Kconfig
+> +++ b/drivers/char/hw_random/Kconfig
+> @@ -398,6 +398,22 @@ config HW_RANDOM_MTK
+>
+>           If unsure, say Y.
+>
+> +config HW_RANDOM_MTK_SEC
+> +       tristate "MediaTek Security Random Number Generator support"
+> +       depends on HW_RANDOM
+> +       depends on ARCH_MEDIATEK || COMPILE_TEST
+> +       default HW_RANDOM
+> +         help
+> +         This driver provides kernel-side support for the Random Number
+> +         Generator hardware found on MediaTek SoCs. The difference with
+> +         mtk-rng is the Random Number Generator hardware is secure
+> +         access only.
+> +
+> +         To compile this driver as a module, choose M here. the
+> +         module will be called mtk-sec-rng.
+> +
+> +         If unsure, say Y.
+> +
+>  config HW_RANDOM_S390
+>         tristate "S390 True Random Number Generator support"
+>         depends on S390
+> diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
+> index 7c9ef4a..bee5412 100644
+> --- a/drivers/char/hw_random/Makefile
+> +++ b/drivers/char/hw_random/Makefile
+> @@ -36,6 +36,7 @@ obj-$(CONFIG_HW_RANDOM_PIC32) += pic32-rng.o
+>  obj-$(CONFIG_HW_RANDOM_MESON) += meson-rng.o
+>  obj-$(CONFIG_HW_RANDOM_CAVIUM) += cavium-rng.o cavium-rng-vf.o
+>  obj-$(CONFIG_HW_RANDOM_MTK)    += mtk-rng.o
+> +obj-$(CONFIG_HW_RANDOM_MTK_SEC)        += mtk-sec-rng.o
+>  obj-$(CONFIG_HW_RANDOM_S390) += s390-trng.o
+>  obj-$(CONFIG_HW_RANDOM_KEYSTONE) += ks-sa-rng.o
+>  obj-$(CONFIG_HW_RANDOM_OPTEE) += optee-rng.o
+> diff --git a/drivers/char/hw_random/mtk-sec-rng.c b/drivers/char/hw_random/mtk-sec-rng.c
+> new file mode 100644
+> index 0000000..69ddeca
+> --- /dev/null
+> +++ b/drivers/char/hw_random/mtk-sec-rng.c
+> @@ -0,0 +1,103 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2019 MediaTek Inc.
+> + */
+> +
+> +#include <linux/arm-smccc.h>
+> +#include <linux/hw_random.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/soc/mediatek/mtk_sip_svc.h>
+> +
+> +#define MTK_SEC_RNG_MAGIC      0x74726e67
+> +#define SMC_RET_NUM            4
+> +#define MTK_SEC_RND_SIZE       (sizeof(u32) * SMC_RET_NUM)
+> +
+> +static void mtk_sec_get_rnd(uint32_t *val)
+> +{
+> +       struct arm_smccc_res res;
+> +
+> +       arm_smccc_smc(MTK_SIP_KERNEL_GET_RND,
+> +                     MTK_SEC_RNG_MAGIC, 0, 0, 0, 0, 0, 0, &res);
+> +
 
+Can this call never fail? How does the firmware signal that something
+is wrong with the underlying hardware?
+
+> +       val[0] = res.a0;
+> +       val[1] = res.a1;
+> +       val[2] = res.a2;
+> +       val[3] = res.a3;
+> +}
+> +
+> +static int mtk_sec_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+> +{
+> +       u32 val[4] = {0};
+> +       int retval = 0;
+> +       int i;
+> +
+> +       while (max >= MTK_SEC_RND_SIZE) {
+> +               mtk_sec_get_rnd(val);
+> +
+> +               for (i = 0; i < SMC_RET_NUM; i++) {
+> +                       *(u32 *)buf = val[i];
+> +                       buf += sizeof(u32);
+> +               }
+> +
+> +               retval += MTK_SEC_RND_SIZE;
+> +               max -= MTK_SEC_RND_SIZE;
+> +       }
+> +
+> +       return retval;
+> +}
+> +
+> +static struct hwrng mtk_sec_rng = {
+> +       .name = "mtk_sec_rng",
+> +       .read = mtk_sec_rng_read,
+> +       .quality = 900,
+> +};
+> +
+> +static int mtk_sec_rng_probe(void)
+> +{
+> +       int ret;
+> +
+> +       ret = hwrng_register(&mtk_sec_rng);
+> +       if (ret) {
+> +               pr_err("Failed to register rng device: %d\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int __init mtk_sec_rng_driver_init(void)
+> +{
+> +       struct device_node *fw_np;
+> +       struct device_node *np;
+> +       const char *method;
+> +
+> +       fw_np = of_find_node_by_name(NULL, "firmware");
+> +       if (!fw_np)
+> +               return -ENODEV;
+> +
+> +       np = of_find_compatible_node(fw_np, NULL, "mediatek,mtk-sec-rng");
+> +       if (!np)
+> +               return -ENODEV;
+> +
+> +       if (of_property_read_string(np, "method", &method))
+> +               return -ENXIO;
+> +
+> +       if (strncmp("smc", method, strlen("smc")))
+> +               return -EINVAL;
+> +
+> +       return mtk_sec_rng_probe();
+> +}
+> +
+> +static void __exit mtk_sec_rng_driver_exit(void)
+> +{
+> +       hwrng_unregister(&mtk_sec_rng);
+> +}
+> +
+> +module_init(mtk_sec_rng_driver_init);
+> +module_exit(mtk_sec_rng_driver_exit);
+> +
+> +MODULE_DESCRIPTION("MediaTek Security Random Number Generator Driver");
+> +MODULE_AUTHOR("Neal Liu <neal.liu@mediatek.com>");
+> +MODULE_LICENSE("GPL");
+> --
+> 1.7.9.5
