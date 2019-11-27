@@ -2,55 +2,35 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4B010AB1B
-	for <lists+linux-crypto@lfdr.de>; Wed, 27 Nov 2019 08:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E6C10AC23
+	for <lists+linux-crypto@lfdr.de>; Wed, 27 Nov 2019 09:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbfK0HXZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 27 Nov 2019 02:23:25 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:36414 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726133AbfK0HXZ (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 27 Nov 2019 02:23:25 -0500
-Received: by mail-pf1-f196.google.com with SMTP id b19so10535354pfd.3;
-        Tue, 26 Nov 2019 23:23:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:cc:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=+dIEa+jclTmXr02IdnKWGZL7TW+4WBFOQZr27PMe7Hc=;
-        b=LUVyaSWC8ur/hYdxkd01ssliYl8hgfyWz8MGHZr/pgpnMxFKjZpDYmTiv5Xbg35YPw
-         T7bstW0FN20orFDv24ZfFaJmwxuZnbyCm54i/lY2fVlxZbGc+I9mpTj4zMKF9Ao6ITw2
-         Pqnh/fqvQvU3kNZJNw/psAiDHpbFzjG3kozmrkJ8QM9ZMm6dGbruFw1jJA7yYEEGQdc1
-         tRj7XHGlxPWtJGHXutDg9aXe2QGMH7qZl3vERWQ2qifuLNk6n3KUgSvN+sVc3O5zlV55
-         Ku58NI1qssmv0EJdTyunl9MYkZI8Yro68/kLXxZNDAz/+hbcbrJn1ibZystLXwOv6OOY
-         Djrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:cc:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=+dIEa+jclTmXr02IdnKWGZL7TW+4WBFOQZr27PMe7Hc=;
-        b=EfnypMnCH7Jbfw/qBdSWtUoPPEypwm4ywGbAzIEZ3QdK+oS1KNkji2PZgDPMDWKIZo
-         +D+P1L8ra94nIVxbqHRYtngHeZPYnIzRqd0nSnIB9tK0eamAAhXm2k8ZLMVjNFZiz5VC
-         2EsNftTsn0Xg2w6w/Q4RXXSeCZPQ8YyN0a0gkMu4CAokD9s4Y7Olzj3g/xGn23anJqGr
-         l/+//tdjIuOnHdZPNjEhwl0EqGQ//weaUI/6zUeamY+PfCUyb4mNSEMYSPZ2XTinDDcv
-         suaPa73lHJa4bDmLdURaLceRF9ELSN2hzBywUFAhNqTLrdeuMehJE8EG20M75uzElX8c
-         8xYw==
-X-Gm-Message-State: APjAAAUtvVeXW33jJtnmZBisMSpHjQ8kwjlzT8B+Wi9l5+JvBVr5fYIs
-        ImGxWVZAhdS5A0XtghuIoQ==
-X-Google-Smtp-Source: APXvYqzS17o0cTwSBMikvDtpI2vJkGXunqmsk69ZCLz76soXE2RAFfo2u+HPnSMvKaOmoDyyDIMEnw==
-X-Received: by 2002:a63:ea09:: with SMTP id c9mr3283058pgi.232.1574839404727;
-        Tue, 26 Nov 2019 23:23:24 -0800 (PST)
-Received: from [127.0.0.1] ([203.205.141.52])
-        by smtp.gmail.com with ESMTPSA id g7sm14609829pgr.52.2019.11.26.23.23.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Nov 2019 23:23:24 -0800 (PST)
-To:     "x86@kernel.org" <x86@kernel.org>, kvm@vger.kernel.org,
+        id S1726510AbfK0IrJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 27 Nov 2019 03:47:09 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2091 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726092AbfK0IrJ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 27 Nov 2019 03:47:09 -0500
+Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.57])
+        by Forcepoint Email with ESMTP id 62DF1EFFDFA9A6E46914;
+        Wed, 27 Nov 2019 16:47:06 +0800 (CST)
+Received: from dggeme765-chm.china.huawei.com (10.3.19.111) by
+ DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Wed, 27 Nov 2019 16:47:06 +0800
+Received: from dggeme763-chm.china.huawei.com (10.3.19.109) by
+ dggeme765-chm.china.huawei.com (10.3.19.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1713.5; Wed, 27 Nov 2019 16:47:05 +0800
+Received: from dggeme763-chm.china.huawei.com ([10.6.66.36]) by
+ dggeme763-chm.china.huawei.com ([10.6.66.36]) with mapi id 15.01.1713.004;
+ Wed, 27 Nov 2019 16:47:05 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     Haiwei Li <lihaiwei.kernel@gmail.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-crypto@vger.kernel.org
-From:   Haiwei Li <lihaiwei.kernel@gmail.com>
-Subject: [PATCH v2] KVM: SVM: Fix "error" isn't initialized
-Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+CC:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
         "rkrcmar@redhat.com" <rkrcmar@redhat.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         "vkuznets@redhat.com" <vkuznets@redhat.com>,
@@ -60,62 +40,38 @@ Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
         "tglx@linutronix.de" <tglx@linutronix.de>,
         "mingo@redhat.com" <mingo@redhat.com>,
         "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        thomas.lendacky@amd.com, gary.hook@amd.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net
-Message-ID: <2967bd12-21bf-3223-e90b-96b4eaa8c4c2@gmail.com>
-Date:   Wed, 27 Nov 2019 15:23:09 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.2.2
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "gary.hook@amd.com" <gary.hook@amd.com>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>
+Subject: Re: [PATCH v2] KVM: SVM: Fix "error" isn't initialized
+Thread-Topic: [PATCH v2] KVM: SVM: Fix "error" isn't initialized
+Thread-Index: AdWk9Gm4M611HFaZTlSzM0B9cT25RQ==
+Date:   Wed, 27 Nov 2019 08:47:05 +0000
+Message-ID: <a5d0e94ba8cc4926a1ef27e6efcee594@huawei.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.184.189.20]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
- From e7f9c786e43ef4f890b8a01f15f8f00786f4b14a Mon Sep 17 00:00:00 2001
-From: Haiwei Li <lihaiwei@tencent.com>
-Date: Wed, 27 Nov 2019 15:00:49 +0800
-Subject: [PATCH v2] fix: 'error' is not initialized
-
-There are a bunch of error paths were "error" isn't initialized.
-
-Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-  arch/x86/kvm/svm.c           | 3 ++-
-  drivers/crypto/ccp/psp-dev.c | 2 ++
-  2 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
-index 362e874..9eef6fc 100644
---- a/arch/x86/kvm/svm.c
-+++ b/arch/x86/kvm/svm.c
-@@ -6308,7 +6308,8 @@ static int sev_flush_asids(void)
-  	up_write(&sev_deactivate_lock);
-
-  	if (ret)
--		pr_err("SEV: DF_FLUSH failed, ret=%d, error=%#x\n", ret, error);
-+		pr_err("SEV: DF_FLUSH failed, ret=%d. PSP returned error=%#x\n",
-+		       ret, error);
-
-  	return ret;
-  }
-diff --git a/drivers/crypto/ccp/psp-dev.c b/drivers/crypto/ccp/psp-dev.c
-index 39fdd06..c486c24 100644
---- a/drivers/crypto/ccp/psp-dev.c
-+++ b/drivers/crypto/ccp/psp-dev.c
-@@ -155,6 +155,8 @@ static int __sev_do_cmd_locked(int cmd, void *data, 
-int *psp_ret)
-  	unsigned int phys_lsb, phys_msb;
-  	unsigned int reg, ret = 0;
-
-+	*psp_ret = -1;
-+
-  	if (!psp)
-  		return -ENODEV;
-
---
-1.8.3.1
+PiBGcm9tIGU3ZjljNzg2ZTQzZWY0Zjg5MGI4YTAxZjE1ZjhmMDA3ODZmNGIxNGEgTW9uIFNlcCAx
+NyAwMDowMDowMCAyMDAxDQo+IEZyb206IEhhaXdlaSBMaSA8bGloYWl3ZWlAdGVuY2VudC5jb20+
+DQo+IERhdGU6IFdlZCwgMjcgTm92IDIwMTkgMTU6MDA6NDkgKzA4MDANCj4gU3ViamVjdDogW1BB
+VENIIHYyXSBmaXg6ICdlcnJvcicgaXMgbm90IGluaXRpYWxpemVkDQo+DQo+IFRoZXJlIGFyZSBh
+IGJ1bmNoIG9mIGVycm9yIHBhdGhzIHdlcmUgImVycm9yIiBpc24ndCBpbml0aWFsaXplZC4NCj4g
+QEAgLTE1NSw2ICsxNTUsOCBAQCBzdGF0aWMgaW50IF9fc2V2X2RvX2NtZF9sb2NrZWQoaW50IGNt
+ZCwgdm9pZCAqZGF0YSwgaW50ICpwc3BfcmV0KQ0KPiAgIAl1bnNpZ25lZCBpbnQgcGh5c19sc2Is
+IHBoeXNfbXNiOw0KPiAgIAl1bnNpZ25lZCBpbnQgcmVnLCByZXQgPSAwOw0KPg0KPiArCSpwc3Bf
+cmV0ID0gLTE7DQo+ICsNCj4gICAJaWYgKCFwc3ApDQo+ICAgCQlyZXR1cm4gLUVOT0RFVjsNCj4N
+Cg0KVGhlIGFyZyBwc3BfcmV0IG1heSBiZSBOVUxMIGluIHNvbWUgcGF0aCBzdWNoIGFzIHNldl9n
+dWVzdF9kZl9mbHVzaChOVUxMKS4NClNvIHlvdSBoYXZlIHRvIGNoZWNrIGl0IGFnYWluc3QgTlVM
+TC4NClRoYW5rcy4NCg==
