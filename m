@@ -2,71 +2,51 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 982D110A9D8
-	for <lists+linux-crypto@lfdr.de>; Wed, 27 Nov 2019 06:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A392D10A9D9
+	for <lists+linux-crypto@lfdr.de>; Wed, 27 Nov 2019 06:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbfK0FM1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 27 Nov 2019 00:12:27 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:42028 "EHLO deadmen.hmeau.com"
+        id S1726136AbfK0FMn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 27 Nov 2019 00:12:43 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:42046 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725827AbfK0FM1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 27 Nov 2019 00:12:27 -0500
+        id S1725827AbfK0FMn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 27 Nov 2019 00:12:43 -0500
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1iZpco-0002xs-5F; Wed, 27 Nov 2019 13:12:26 +0800
+        id 1iZpcx-0002y0-KE; Wed, 27 Nov 2019 13:12:35 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1iZpcm-0001lz-6H; Wed, 27 Nov 2019 13:12:24 +0800
-Date:   Wed, 27 Nov 2019 13:12:24 +0800
+        id 1iZpct-0001mD-Oc; Wed, 27 Nov 2019 13:12:31 +0800
+Date:   Wed, 27 Nov 2019 13:12:31 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     linux-crypto@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v4] crypto: conditionalize crypto api in arch glue for
- lib code
-Message-ID: <20191127051224.2rvpxen4enlxdgcz@gondor.apana.org.au>
-References: <CAKv+Gu8C77SavEUfTbwVzSsCqn63k=wxUVoDUyrz0uJH62h3oQ@mail.gmail.com>
- <20191125103112.71638-1-Jason@zx2c4.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Zaibo Xu <xuzaibo@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Longfang Liu <liulongfang@huawei.com>,
+        linux-crypto@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] crypto: hisilicon - fix a NULL vs IS_ERR() bug in
+ sec_create_qp_ctx()
+Message-ID: <20191127051231.a3i34iawq666rbwc@gondor.apana.org.au>
+References: <20191126122120.vnf6mxmvf25ppyeo@kili.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191125103112.71638-1-Jason@zx2c4.com>
+In-Reply-To: <20191126122120.vnf6mxmvf25ppyeo@kili.mountain>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Nov 25, 2019 at 11:31:12AM +0100, Jason A. Donenfeld wrote:
-> For glue code that's used by Zinc, the actual Crypto API functions might
-> not necessarily exist, and don't need to exist either. Before this
-> patch, there are valid build configurations that lead to a unbuildable
-> kernel. This fixes it to conditionalize those symbols on the existence
-> of the proper config entry.
+On Tue, Nov 26, 2019 at 03:21:20PM +0300, Dan Carpenter wrote:
+> The hisi_acc_create_sgl_pool() function returns error pointers, it never
+> returns NULL pointers.
 > 
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> Acked-by: Ard Biesheuvel <ardb@kernel.org>
+> Fixes: 416d82204df4 ("crypto: hisilicon - add HiSilicon SEC V2 driver")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > ---
-> Changes v3->v4:
->   - Rebased on cryptodev-2.6.git to make merging smoother.
-> Changes v2->v3:
->   - v2 was a dud, with a find and replace operation gone wild. v3 is
->     what v2 should have been.
-> Changes v1->v2:
->   - Discussing with Ard on IRC, we concluded that IS_REACHABLE makes
->     more sense than IS_ENABLED.
-> 
->  arch/arm/crypto/chacha-glue.c        | 26 ++++++++++++++++----------
->  arch/arm/crypto/curve25519-glue.c    |  5 +++--
->  arch/arm/crypto/poly1305-glue.c      |  9 ++++++---
->  arch/arm64/crypto/chacha-neon-glue.c |  5 +++--
->  arch/arm64/crypto/poly1305-glue.c    |  5 +++--
->  arch/mips/crypto/chacha-glue.c       |  6 ++++--
->  arch/mips/crypto/poly1305-glue.c     |  6 ++++--
->  arch/x86/crypto/blake2s-glue.c       |  6 ++++--
->  arch/x86/crypto/chacha_glue.c        |  5 +++--
->  arch/x86/crypto/curve25519-x86_64.c  |  7 ++++---
->  arch/x86/crypto/poly1305_glue.c      |  5 +++--
->  11 files changed, 53 insertions(+), 32 deletions(-)
+>  drivers/crypto/hisilicon/sec2/sec_crypto.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
 Patch applied.  Thanks.
 -- 
