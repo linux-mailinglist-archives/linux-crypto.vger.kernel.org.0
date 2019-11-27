@@ -2,70 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5AC10A780
-	for <lists+linux-crypto@lfdr.de>; Wed, 27 Nov 2019 01:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982D110A9D8
+	for <lists+linux-crypto@lfdr.de>; Wed, 27 Nov 2019 06:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbfK0A2f (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 26 Nov 2019 19:28:35 -0500
-Received: from mail.ciens.ucv.ve ([190.169.94.200]:32948 "EHLO
-        mail.ciens.ucv.ve" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbfK0A2f (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 26 Nov 2019 19:28:35 -0500
-X-Greylist: delayed 380 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 Nov 2019 19:28:34 EST
-Received: from mail.ciencias.ucv.ve (localhost [127.0.0.1])
-        by mail.ciens.ucv.ve (Postfix) with ESMTP id C6E7EC778F
-        for <linux-crypto@vger.kernel.org>; Tue, 26 Nov 2019 20:20:38 -0400 (-04)
-Authentication-Results: mail.ciencias.ucv.ve (amavisd-new);
-        dkim=pass (1024-bit key) reason="pass (just generated, assumed good)"
-        header.d=ciens.ucv.ve
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ciens.ucv.ve; h=
-        user-agent:message-id:reply-to:organization:subject:subject:to
-        :from:from:date:date:content-transfer-encoding:content-type
-        :content-type:mime-version; s=dkim; t=1574814038; x=1575678039;
-         bh=woW4KpvDfs00Zn/1DkX+VAh8oBKQXT1bM/a81PabfcI=; b=Vv56pzxZLvIO
-        ovYv4qLcbZf3Q7Q5l2Aor6Zre0i8X+xQhRnEq9IbbPDlY8tKWGIQYEkQihUIPT7r
-        lP09TqjSGYepFoRMTy9pl8VXelgIucQ2XbXdSe+WCosKPvGWCPF2FQ+UEHdcbJxC
-        ZO9weQX3aoZBNZUOfYRK2/etM/sYLBE=
-X-Virus-Scanned: Debian amavisd-new at mail.ciencias.ucv.ve
-X-Spam-Flag: NO
-X-Spam-Score: 3.194
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.194 tagged_above=2 required=6.31
-        tests=[ADVANCE_FEE_2_NEW_MONEY=1.999, ALL_TRUSTED=-1, BAYES_00=-1.9,
-        FREEMAIL_FORGED_REPLYTO=2.095, HK_SCAM=1.999, LOTS_OF_MONEY=0.001]
-        autolearn=no autolearn_force=no
-Received: from mail.ciens.ucv.ve ([127.0.0.1])
-        by mail.ciencias.ucv.ve (mail.ciencias.ucv.ve [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 9fShb-PT-V3A for <linux-crypto@vger.kernel.org>;
-        Tue, 26 Nov 2019 20:20:38 -0400 (-04)
-Received: from _ (localhost [127.0.0.1])
-        by mail.ciens.ucv.ve (Postfix) with ESMTPSA id A4AF6C642E;
-        Tue, 26 Nov 2019 20:20:11 -0400 (-04)
+        id S1726078AbfK0FM1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 27 Nov 2019 00:12:27 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:42028 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725827AbfK0FM1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 27 Nov 2019 00:12:27 -0500
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1iZpco-0002xs-5F; Wed, 27 Nov 2019 13:12:26 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1iZpcm-0001lz-6H; Wed, 27 Nov 2019 13:12:24 +0800
+Date:   Wed, 27 Nov 2019 13:12:24 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-crypto@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH v4] crypto: conditionalize crypto api in arch glue for
+ lib code
+Message-ID: <20191127051224.2rvpxen4enlxdgcz@gondor.apana.org.au>
+References: <CAKv+Gu8C77SavEUfTbwVzSsCqn63k=wxUVoDUyrz0uJH62h3oQ@mail.gmail.com>
+ <20191125103112.71638-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 26 Nov 2019 16:20:11 -0800
-From:   Alfred Chow <elisabetta.tome@ciens.ucv.ve>
-To:     undisclosed-recipients:;
-Subject: Business - Offer
-Organization: Alfred Chow
-Reply-To: alfredchow@mail-me.com
-Mail-Reply-To: alfredchow@mail-me.com
-Message-ID: <f8fd2839d94c59467b43149a61003fe5@ciens.ucv.ve>
-X-Sender: elisabetta.tome@ciens.ucv.ve
-User-Agent: Roundcube Webmail
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191125103112.71638-1-Jason@zx2c4.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On Mon, Nov 25, 2019 at 11:31:12AM +0100, Jason A. Donenfeld wrote:
+> For glue code that's used by Zinc, the actual Crypto API functions might
+> not necessarily exist, and don't need to exist either. Before this
+> patch, there are valid build configurations that lead to a unbuildable
+> kernel. This fixes it to conditionalize those symbols on the existence
+> of the proper config entry.
+> 
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> Acked-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+> Changes v3->v4:
+>   - Rebased on cryptodev-2.6.git to make merging smoother.
+> Changes v2->v3:
+>   - v2 was a dud, with a find and replace operation gone wild. v3 is
+>     what v2 should have been.
+> Changes v1->v2:
+>   - Discussing with Ard on IRC, we concluded that IS_REACHABLE makes
+>     more sense than IS_ENABLED.
+> 
+>  arch/arm/crypto/chacha-glue.c        | 26 ++++++++++++++++----------
+>  arch/arm/crypto/curve25519-glue.c    |  5 +++--
+>  arch/arm/crypto/poly1305-glue.c      |  9 ++++++---
+>  arch/arm64/crypto/chacha-neon-glue.c |  5 +++--
+>  arch/arm64/crypto/poly1305-glue.c    |  5 +++--
+>  arch/mips/crypto/chacha-glue.c       |  6 ++++--
+>  arch/mips/crypto/poly1305-glue.c     |  6 ++++--
+>  arch/x86/crypto/blake2s-glue.c       |  6 ++++--
+>  arch/x86/crypto/chacha_glue.c        |  5 +++--
+>  arch/x86/crypto/curve25519-x86_64.c  |  7 ++++---
+>  arch/x86/crypto/poly1305_glue.c      |  5 +++--
+>  11 files changed, 53 insertions(+), 32 deletions(-)
 
-
+Patch applied.  Thanks.
 -- 
-I have a business proposal of $38,980,369.00 only for you to transact 
-with me from my bank to your country. Reply back more details if 
-interested.
-
-Alfred.
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
