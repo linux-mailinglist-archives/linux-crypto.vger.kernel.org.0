@@ -2,114 +2,94 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 557B310E23B
-	for <lists+linux-crypto@lfdr.de>; Sun,  1 Dec 2019 15:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F9410E2CC
+	for <lists+linux-crypto@lfdr.de>; Sun,  1 Dec 2019 18:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbfLAOoU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 1 Dec 2019 09:44:20 -0500
-Received: from mta04.svc.cra.dublin.eircom.net ([159.134.118.171]:56155 "HELO
-        mta04.svc.cra.dublin.eircom.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1727028AbfLAOoU (ORCPT
+        id S1727072AbfLAR6m (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 1 Dec 2019 12:58:42 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:9521 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbfLAR6m (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 1 Dec 2019 09:44:20 -0500
-X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Sun, 01 Dec 2019 09:44:18 EST
-Received: (qmail 4537 messnum 4076823 invoked from network[213.94.190.12/avas01.vendorsvc.cra.dublin.eircom.net]); 1 Dec 2019 14:37:36 -0000
-Received: from avas01.vendorsvc.cra.dublin.eircom.net (HELO avas01) (213.94.190.12)
-  by mta04.svc.cra.dublin.eircom.net (qp 4537) with SMTP; 1 Dec 2019 14:37:36 -0000
-Received: from vzmbx43.eircom.net ([86.43.60.56])
-        by Cloudmark Gateway with SMTP
-        id bQKxirsVKvSCGbQKxiKfS0; Sun, 01 Dec 2019 14:36:36 +0000
-X-Spam-Flag: NO
-X-CNFS-Analysis: v=2.2 cv=Vs1TO6+n c=1 sm=1 tr=0
- a=pgi/oO0IPhCgn3FzazVCEw==:117 a=9cW_t1CCXrUA:10 a=FKkrIqjQGGEA:10
- a=p94CGIwvSaIA:10 a=jeM8b-Vrk40A:10 a=IkcTkHD0fZMA:10 a=x7bEGLp0ZPQA:10
- a=lQWrZL7Q7ZgA:10 a=ADsKrdVn5_oA:10 a=ZZnuYtJkoWoA:10
- a=u-cqGMF9Mb8qadtxIEAA:9 a=tp77xZrL5w-9LVuu:21 a=P6e4BrMchbnZWgjd:21
- a=QEXdDO2ut3YA:10
-Date:   Sun, 1 Dec 2019 14:36:35 +0000 (GMT)
-From:   Mrs Nisha <d2r0e2@eircom.net>
-Reply-To: mosh.tan7.6@googlemail.com
-Message-ID: <334953900.113867.1575210995548.JavaMail.zimbra@eircom.net>
-Subject: Hello Dear,
+        Sun, 1 Dec 2019 12:58:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1575223117;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=uuWwMAnIY+jWgt+AzE4WAcb/LRiPfvPqr7K1tcaJXxQ=;
+        b=U88j2J0dwHaoN//WGjXIrc/lOjfYS3ivltNxCMaWt2J4sxEkl7Ana+YPMhmyqzSSbF
+        jQvOXZIZMWpuWKQrA8DIcozOdAsB+TniGGvkInpgRL8OG9sGyUbiZNvJ0nI+h5/TLYAW
+        MLNODPldSCg9ITsM9aZgVnl25gO4Pg8ku/jizdsRnsqisdK4QJ4N5nOHc0lA0MzwT0h8
+        +e5Ik8wc/zHzEM4NtlHgHUS25Jeob7WylG65TsSK48/eDkqMPHv4cXu0WHZmUmGnxsBl
+        XAkp8hTJfu0PD4T+xsYpSkq4/zPCzFfDXhVs4e3fHUIoepgQLa0I2o50tDLbblkg3kz/
+        5Ouw==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXvcOe6ZPA=="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+        by smtp.strato.de (RZmta 45.0.2 DYNA|AUTH)
+        with ESMTPSA id m074f2vB1HwIUg1
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sun, 1 Dec 2019 18:58:18 +0100 (CET)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     syzbot 
+        <syzbot+56c7151cad94eec37c521f0e47d2eee53f9361c4@syzkaller.appspotmail.com>
+Cc:     davem@davemloft.net, dvyukov@google.com, ebiggers3@gmail.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, steffen.klassert@secunet.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: INFO: task hung in aead_recvmsg
+Date:   Sun, 01 Dec 2019 18:58:17 +0100
+Message-ID: <2842590.QEqkPaeV8v@positron.chronox.de>
+In-Reply-To: <00000000000065e61505989fd2c3@google.com>
+References: <00000000000065e61505989fd2c3@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [31.41.44.231]
-X-Mailer: Zimbra 8.6.0_GA_1242 (zclient/8.6.0_GA_1242)
-Thread-Topic: Hello Dear,
-Thread-Index: DM1H6XB9wE11N/oEO4vWyXtcMBITFg==
-X-CMAE-Envelope: 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
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Am Sonntag, 1. Dezember 2019, 08:58:00 CET schrieb syzbot:
 
+Hi,
 
+> syzbot has bisected this bug to:
+> 
+> commit 0c1e16cd1ec41987cc6671a2bff46ac958c41eb5
+> Author: Stephan Mueller <smueller@chronox.de>
+> Date:   Mon Dec 5 14:26:19 2016 +0000
+> 
+>      crypto: algif_aead - fix AEAD tag memory handling
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12d6d0a6e00000
+> start commit:   618d919c Merge tag 'libnvdimm-fixes-5.1-rc6' of git://git...
+> git tree:       upstream
+> final crash:    https://syzkaller.appspot.com/x/report.txt?x=11d6d0a6e00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16d6d0a6e00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=856fc6d0fbbeede9
+> dashboard link:
+> https://syzkaller.appspot.com/bug?extid=56c7151cad94eec37c521f0e47d2eee53f93
+> 61c4 syz repro:     
+> https://syzkaller.appspot.com/x/repro.syz?x=11ef592d200000 C reproducer:  
+> https://syzkaller.appspot.com/x/repro.c?x=16b865fd200000
+> 
+> Reported-by:
+> syzbot+56c7151cad94eec37c521f0e47d2eee53f9361c4@syzkaller.appspotmail.com
+> Fixes: 0c1e16cd1ec4 ("crypto: algif_aead - fix AEAD tag memory handling")
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-HELLO FRIEND
+This issue seems to be triggered when using pcrypt. Pcrypt received a number 
+of fixes recently.
 
-I AM MRS DHAWAN NISHA PRADEEP, I HAVE BEEN SUFFERING FROM CANCER DISEASE AND THE DOCTOR SAID THAT I HAVE JUST FEW DAYS TO LIVE. I AM FROM ULHASNAGAR, INDIA BUT BASED IN AFRICA BURKINA FASO FOR EIGHT YEARS AS A BUSINESS WOMAN DEALING WITH GOLD EXPORTATION.
+Did the test include all of those fixes?
 
-I HAVE 4.5 MILLION EURO AT CENTRAL BANK OF WEST AFRICAN STATE (CBOA) HERE IN BURKINA FASO AND I INSTRUCTED THE BANK TO TRANSFER THE FUND TO YOU AS FOREIGNER THAT WILL APPLY TO THE BANK AFTER I HAVE GONE, THAT THEY SHOULD RELEASE THE FUND TO YOU, BUT YOU WILL ASSURE ME THAT YOU WILL TAKE 50% OF THE FUND AND GIVE 50% TO THE ORPHANAGES HOME IN YOUR COUNTRY FOR MY HEART TO REST.
+Thanks a lot for the testing!
 
-RESPOND TO ME IMMEDIATELY FOR FURTHER DETAILS SINCE I HAVE JUST FEW DAYS TO END MY LIFE DUE TO THE CANCER DISEASE, PLEASE I WANT YOU TO SEND YOUR DETAILS AS LISTED BELOW SO THAT I WILL FORWARD IT TO THE BANK AS REQUESTED FOR THE PROCESSING OF THE TRANSFER OF THE FUND INTO YOUR BANK ACCOUNT.
-
-YOUR COMPLETE NAME
-ADDRESS (HOME/OFFICE)
-YOUR MOBILE NUMBER
-YOUR AGE
-OCCUPATION
-A COPY OF YOUR ID
-
-GOD BLESS YOU AS I WAIT PATIENTLY FOR YOUR QUICK REPLY.
-
-YOURS SINCERELY
-MRS DHAWAN NISHA PRADEEP.
+Ciao
+Stephan
 
 
