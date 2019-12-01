@@ -2,97 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 230E310E34E
-	for <lists+linux-crypto@lfdr.de>; Sun,  1 Dec 2019 20:22:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F0010E3B2
+	for <lists+linux-crypto@lfdr.de>; Sun,  1 Dec 2019 22:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727167AbfLATWZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 1 Dec 2019 14:22:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39790 "EHLO mail.kernel.org"
+        id S1727282AbfLAVyU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 1 Dec 2019 16:54:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726965AbfLATWZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 1 Dec 2019 14:22:25 -0500
+        id S1727167AbfLAVyU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 1 Dec 2019 16:54:20 -0500
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25BE220833;
-        Sun,  1 Dec 2019 19:22:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2DCC20865
+        for <linux-crypto@vger.kernel.org>; Sun,  1 Dec 2019 21:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575228144;
-        bh=LqSjHZ1ACIJwh8P9lzwhU6FweZm1EuAFTDpQ9wW+Ot4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SqUh8YbI75T/BSHVNZ3JXg5O+Sts7rgLFZ46DZhYC71PQDIP1brgTFTFlgYnbNiqQ
-         k+MsQu2VHJaoJN/OmUI3S5+SEgv+7sRsoMGoWM1cD+gQJOwJIFPj8vuFLtpG92fTdq
-         cNfpYuVjVg2g8VGJQvYj/NzFE1l0u+0RJBb2lHcM=
-Date:   Sun, 1 Dec 2019 11:22:22 -0800
+        s=default; t=1575237259;
+        bh=DGD+bXIVq1MquOwPGTAe9KKmMpZyatPBZimtqWwXnzo=;
+        h=From:To:Subject:Date:From;
+        b=L9QCoTeOeSpFCHBCJLXlpo6dYZh15ZldeXZqPwyyfykjmiHjTZPO/KvmvKuzCZ7dU
+         sJniEBgBOUTHRMtQGuxPWhGiRUi8JeEcr3AKudBO3jKY6hsyEbVQV4BO+/0RRAuNy7
+         HkxbKl6ZNQu/nprPgje+/dT9pwJ+BabAugmguEm0=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
-Cc:     syzbot 
-        <syzbot+56c7151cad94eec37c521f0e47d2eee53f9361c4@syzkaller.appspotmail.com>,
-        davem@davemloft.net, dvyukov@google.com,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, steffen.klassert@secunet.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: INFO: task hung in aead_recvmsg
-Message-ID: <20191201192222.GA1186@sol.localdomain>
-References: <00000000000065e61505989fd2c3@google.com>
- <2842590.QEqkPaeV8v@positron.chronox.de>
+To:     linux-crypto@vger.kernel.org
+Subject: [PATCH 0/7] crypto: more self-test improvements
+Date:   Sun,  1 Dec 2019 13:53:23 -0800
+Message-Id: <20191201215330.171990-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2842590.QEqkPaeV8v@positron.chronox.de>
-User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sun, Dec 01, 2019 at 06:58:17PM +0100, Stephan Müller wrote:
-> Am Sonntag, 1. Dezember 2019, 08:58:00 CET schrieb syzbot:
-> 
-> Hi,
-> 
-> > syzbot has bisected this bug to:
-> > 
-> > commit 0c1e16cd1ec41987cc6671a2bff46ac958c41eb5
-> > Author: Stephan Mueller <smueller@chronox.de>
-> > Date:   Mon Dec 5 14:26:19 2016 +0000
-> > 
-> >      crypto: algif_aead - fix AEAD tag memory handling
-> > 
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12d6d0a6e00000
-> > start commit:   618d919c Merge tag 'libnvdimm-fixes-5.1-rc6' of git://git...
-> > git tree:       upstream
-> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=11d6d0a6e00000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=16d6d0a6e00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=856fc6d0fbbeede9
-> > dashboard link:
-> > https://syzkaller.appspot.com/bug?extid=56c7151cad94eec37c521f0e47d2eee53f93
-> > 61c4 syz repro:     
-> > https://syzkaller.appspot.com/x/repro.syz?x=11ef592d200000 C reproducer:  
-> > https://syzkaller.appspot.com/x/repro.c?x=16b865fd200000
-> > 
-> > Reported-by:
-> > syzbot+56c7151cad94eec37c521f0e47d2eee53f9361c4@syzkaller.appspotmail.com
-> > Fixes: 0c1e16cd1ec4 ("crypto: algif_aead - fix AEAD tag memory handling")
-> > 
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> 
-> This issue seems to be triggered when using pcrypt. Pcrypt received a number 
-> of fixes recently.
-> 
-> Did the test include all of those fixes?
-> 
-> Thanks a lot for the testing!
-> 
+This series makes some more improvements to the crypto self-tests, the
+largest of which is making the AEAD fuzz tests test inauthentic inputs,
+i.e. cases where decryption is expected to fail due to the (ciphertext,
+AAD) pair not being the correct result of an encryption with the key.
 
-No, the pcrypt fixes haven't been applied yet.  One of Herbert's patches has:
+It also updates the self-tests to test passing misaligned buffers to the
+various setkey() functions, and to check that skciphers have the same
+min_keysize as the corresponding generic implementation.
 
-	Reported-by: syzbot+56c7151cad94eec37c521f0e47d2eee53f9361c4@syzkaller.appspotmail.com
+I haven't seen any test failures from this on x86_64, arm64, or arm32.
+But as usual I haven't tested drivers for crypto accelerators.
 
-... so syzbot will close this bug report once this patch is applied and reaches
-upstream or linux-next.  It's just a coincidence that syzbot happened to report
-a bisection result now.
+For this series to apply this cleanly, my other series
+"crypto: skcipher - simplifications due to {,a}blkcipher removal"
+needs to be applied first, due to a conflict in skcipher.h.
 
-- Eric
+This can also be retrieved from git at 
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
+tag "crypto-self-tests_2019-12-01".
+
+Eric Biggers (7):
+  crypto: aead - move crypto_aead_maxauthsize() to <crypto/aead.h>
+  crypto: skcipher - add crypto_skcipher_min_keysize()
+  crypto: testmgr - don't try to decrypt uninitialized buffers
+  crypto: testmgr - check skcipher min_keysize
+  crypto: testmgr - test setting misaligned keys
+  crypto: testmgr - create struct aead_extra_tests_ctx
+  crypto: testmgr - generate inauthentic AEAD test vectors
+
+ crypto/testmgr.c               | 574 +++++++++++++++++++++++++--------
+ crypto/testmgr.h               |  14 +-
+ include/crypto/aead.h          |  10 +
+ include/crypto/internal/aead.h |  10 -
+ include/crypto/skcipher.h      |   6 +
+ 5 files changed, 461 insertions(+), 153 deletions(-)
+
+-- 
+2.24.0
+
