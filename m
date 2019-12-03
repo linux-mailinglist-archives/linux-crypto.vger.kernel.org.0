@@ -2,173 +2,117 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1D811043A
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2019 19:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC57110536
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2019 20:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbfLCS3V (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Dec 2019 13:29:21 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:38031 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726486AbfLCS3V (ORCPT
+        id S1727487AbfLCTbq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Dec 2019 14:31:46 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:35986 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727433AbfLCTbp (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Dec 2019 13:29:21 -0500
-Received: by mail-wr1-f68.google.com with SMTP id y17so4978819wrh.5
-        for <linux-crypto@vger.kernel.org>; Tue, 03 Dec 2019 10:29:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernelci-org.20150623.gappssmtp.com; s=20150623;
-        h=message-id:date:mime-version:content-transfer-encoding:subject:to
-         :from:cc;
-        bh=izaN34JmJS+n1M1NHqECtRm+b+Hrz3/REW2P27r0Cl8=;
-        b=zvi8re4d8FbzaLTO3YznPaNKAX/6rORnmDge6mrSzuGlcTIeyU1K/wythjB00aUxhw
-         U+KVimceYJk0k9SjhJBkGvkqqhxgWOA8vZzsRVG9vKrqNBJdbnEoNKu0R3washCACfdp
-         LZ8FfmKzwo5/feZJxIxJyualgj9mNQb+cdrEk33NH+5jl63yFcbmmEcq2MqBnYfI0Dmq
-         buE8+n1H+mAWw210NwrOj2hjBYOWw3ywS4TlRRy3b3dL6kXg1Ivv+A6FwR+tn0y37n5q
-         NMr0uzpNl5dXtHLMYey6unlLwsLTA9dlt6pgraAed2Bsj9swoyoHBsfSFbbD1V3HXQMm
-         GM7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version
-         :content-transfer-encoding:subject:to:from:cc;
-        bh=izaN34JmJS+n1M1NHqECtRm+b+Hrz3/REW2P27r0Cl8=;
-        b=alNq3VKL6yiaUT4ehwH6QEXA6fjYwKozQ+dir0HuA0/DhnaIDiFfiEeXymoEJqAU+P
-         FhDw4sHBl9PFIwdpxXuSZyCkNKOaeomJCVFjdKtZbSSe2gwGbZDB6FyeL0upPzCXmkcI
-         EnXOY+jJcN17VSHO2Qqlr1/ZWvuhd0ihWc7zoS65+idnJCTHyf6LdBK5Eo1EVGxxh8SO
-         Vq8E8gDjAC+pPlboHhP1jMMpYPiP/IQOsd4PmEbUJ9FROmw7xEwFUKIcA/44npKfG7C7
-         f4osiHWYY4LrRLaHEQlbTIoaSnzu8M1YwUvqFw4wyfYLCUuBdM/Yzir6AwtxwgN9NlIU
-         ocTg==
-X-Gm-Message-State: APjAAAXocaHt2B/9lGhEdA/GHFTZegKQ6jvNSp4O/6nXryPP7Ba2uRpm
-        qpm1BmwS8Hm11p9ROMEFkFFo2A==
-X-Google-Smtp-Source: APXvYqzBc3aTfWdtvsffqAHGFcl8oQT1EAbnBqIfbH6wvtlUeG3D5PvilkdWueBAbSdKRoHh+JKvtA==
-X-Received: by 2002:a5d:6901:: with SMTP id t1mr6351011wru.94.1575397758768;
-        Tue, 03 Dec 2019 10:29:18 -0800 (PST)
-Received: from [148.251.42.114] ([2a01:4f8:201:9271::2])
-        by smtp.gmail.com with ESMTPSA id z7sm3711973wma.46.2019.12.03.10.29.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Dec 2019 10:29:18 -0800 (PST)
-Message-ID: <5de6a97e.1c69fb81.21c1a.34e9@mx.google.com>
-Date:   Tue, 03 Dec 2019 10:29:18 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 3 Dec 2019 14:31:45 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB3JOcB9165372;
+        Tue, 3 Dec 2019 19:31:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2019-08-05; bh=qEl+pOhRr3g+RbA74TF3EJsh7AdX920CBSilgxsTtEA=;
+ b=TyhNG6phCS4TQJ7F8PPU0jytfzaRchoWR6IbfN7EznnBQ/F0L+jvwdG88mZ1u5+kgpLZ
+ 6BEjm/u8DxAD7qZI9poq6jroazrTa9BNAxhYM69DmOYZUbgPdQmY/v181yS9PZ6BRHAe
+ dVgcPbpj1uBaxy1L8FZEJX2WJ1QZcyt5mwJH/+AeDtnFjhhnLpifjoic1/NHm8BF1BzP
+ n2A3L5DnkRiFSDZ/18BPHf0h9mIJXhhup5SwnS/RqYcjjGY+YpewUOJACi52ZrSpIfS2
+ rEBf2OHZwpAj/ui+N+1Bzw+xcxwwOnOvBPuVku/rNgOToZFrLVf5oW0Bl+e82BcctOSd Sg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2wkgcq9x9c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Dec 2019 19:31:35 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB3JEcmg133392;
+        Tue, 3 Dec 2019 19:31:35 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 2wn7pqmm1x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Dec 2019 19:31:34 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xB3JVT6O009168;
+        Tue, 3 Dec 2019 19:31:30 GMT
+Received: from localhost.localdomain (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 03 Dec 2019 11:31:29 -0800
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-crypto@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: [PATCH v2 0/5] padata lockdep, cpumask, and doc fixes
+Date:   Tue,  3 Dec 2019 14:31:09 -0500
+Message-Id: <20191203193114.238912-1-daniel.m.jordan@oracle.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Kernelci-Report-Type: bisect
-X-Kernelci-Kernel: v5.4-9340-g0fbf7aea0d8b
-X-Kernelci-Tree: ardb
-X-Kernelci-Branch: for-kernelci
-X-Kernelci-Lab-Name: lab-collabora
-Subject: ardb/for-kernelci bisection: boot on bcm2836-rpi-2-b
-To:     broonie@kernel.org, khilman@baylibre.com,
-        guillaume.tucker@collabora.com, tomeu.vizoso@collabora.com,
-        mgalka@collabora.com, enric.balletbo@collabora.com,
-        Ard Biesheuvel <ardb@kernel.org>
-From:   "kernelci.org bot" <bot@kernelci.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9460 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=984
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1912030143
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9460 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1912030143
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-* This automated bisection report was sent to you on the basis  *
-* that you may be involved with the breaking commit it has      *
-* found.  No manual investigation has been done to verify it,   *
-* and the root cause of the problem may be somewhere else.      *
-*                                                               *
-* If you do send a fix, please include this trailer:            *
-*   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
-*                                                               *
-* Hope this helps!                                              *
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+This series depends on all of Herbert's recent padata fixes to reduce
+merge conflicts on his end:
 
-ardb/for-kernelci bisection: boot on bcm2836-rpi-2-b
+  crypto: pcrypt - Do not clear MAY_SLEEP flag in original request
+  padata: Remove unused padata_remove_cpu
+  [v3] crypto: pcrypt - Avoid deadlock by using per-instance padata queues
+  crypto: pcrypt - Fix user-after-free on module unload
+  padata: Remove broken queue flushing 
 
-Summary:
-  Start:      0fbf7aea0d8b enable extra tests by default
-  Details:    https://kernelci.org/boot/id/5de6679c1d38df5638960f64
-  Plain log:  https://storage.kernelci.org//ardb/for-kernelci/v5.4-9340-g0f=
-bf7aea0d8b/arm/bcm2835_defconfig/gcc-8/lab-collabora/boot-bcm2836-rpi-2-b.t=
-xt
-  HTML log:   https://storage.kernelci.org//ardb/for-kernelci/v5.4-9340-g0f=
-bf7aea0d8b/arm/bcm2835_defconfig/gcc-8/lab-collabora/boot-bcm2836-rpi-2-b.h=
-tml
-  Result:     0fbf7aea0d8b enable extra tests by default
+If this should be based on something else, please let me know.
 
-Checks:
-  revert:     PASS
-  verify:     PASS
+Thanks,
+Daniel
 
-Parameters:
-  Tree:       ardb
-  URL:        git://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git
-  Branch:     for-kernelci
-  Target:     bcm2836-rpi-2-b
-  CPU arch:   arm
-  Lab:        lab-collabora
-  Compiler:   gcc-8
-  Config:     bcm2835_defconfig
-  Test suite: boot
+v2:
+ - documentation patch RST-ized according to Jon's comments
+ - "validate cpumask" patch added
+ - rebased onto v5.4 and updated since Herbert's fixes have changed
 
-Breaking commit found:
+Daniel Jordan (5):
+  padata: validate cpumask without removed CPU during offline
+  padata: always acquire cpu_hotplug_lock before pinst->lock
+  padata: remove cpumask change notifier
+  padata: remove reorder_objects
+  padata: update documentation
 
----------------------------------------------------------------------------=
-----
-commit 0fbf7aea0d8bccba3d00706f46c89716fa982f9c
-Author: Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue Dec 3 12:29:31 2019 +0000
-
-    enable extra tests by default
-
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 5575d48473bd..36af840aa820 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -140,7 +140,6 @@ if CRYPTO_MANAGER2
- =
-
- config CRYPTO_MANAGER_DISABLE_TESTS
- 	bool "Disable run-time self tests"
--	default y
- 	help
- 	  Disable run-time self tests that normally take place at
- 	  algorithm registration.
-@@ -148,6 +147,7 @@ config CRYPTO_MANAGER_DISABLE_TESTS
- config CRYPTO_MANAGER_EXTRA_TESTS
- 	bool "Enable extra run-time crypto self tests"
- 	depends on DEBUG_KERNEL && !CRYPTO_MANAGER_DISABLE_TESTS
-+	default y
- 	help
- 	  Enable extra run-time self tests of registered crypto algorithms,
- 	  including randomized fuzz tests.
----------------------------------------------------------------------------=
-----
+ Documentation/core-api/index.rst  |   1 +
+ Documentation/core-api/padata.rst | 169 ++++++++++++++++++++++++++++++
+ Documentation/padata.txt          | 163 ----------------------------
+ crypto/pcrypt.c                   |   1 -
+ include/linux/cpuhotplug.h        |   1 +
+ include/linux/padata.h            |  28 ++---
+ kernel/padata.c                   | 124 ++++++++--------------
+ 7 files changed, 220 insertions(+), 267 deletions(-)
+ create mode 100644 Documentation/core-api/padata.rst
+ delete mode 100644 Documentation/padata.txt
 
 
-Git bisection log:
+base-commit: 219d54332a09e8d8741c1e1982f5eae56099de85
+prerequisite-patch-id: e31e7b28eb12a2c7e1e04261f4e890f83a57bd19
+prerequisite-patch-id: 00f7ca687bd9df6281e9ced0925a865b2fa7b297
+prerequisite-patch-id: 9f3bb985b34d29ff30e44b8829545736de02186f
+prerequisite-patch-id: fe09ee84131ee649b90ee291fbbeda32e90c42fe
+prerequisite-patch-id: f2e5a29f78e2403677ad50d870d90022932bc2b6
+-- 
+2.24.0
 
----------------------------------------------------------------------------=
-----
-git bisect start
-# good: [b94ae8ad9fe79da61231999f347f79645b909bda] Merge tag 'seccomp-v5.5-=
-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux
-git bisect good b94ae8ad9fe79da61231999f347f79645b909bda
-# bad: [0fbf7aea0d8bccba3d00706f46c89716fa982f9c] enable extra tests by def=
-ault
-git bisect bad 0fbf7aea0d8bccba3d00706f46c89716fa982f9c
-# good: [25cbf24a7eec7c3dee4113b2e98b572e128009b7] crypto: aead - move cryp=
-to_aead_maxauthsize() to <crypto/aead.h>
-git bisect good 25cbf24a7eec7c3dee4113b2e98b572e128009b7
-# good: [7b19c7a82950ed034645fa92adce29cd6163ed3e] crypto: testmgr - check =
-skcipher min_keysize
-git bisect good 7b19c7a82950ed034645fa92adce29cd6163ed3e
-# good: [062752a354aaf03b46b86cba5fdaa2fd5c932860] crypto: testmgr - create=
- struct aead_extra_tests_ctx
-git bisect good 062752a354aaf03b46b86cba5fdaa2fd5c932860
-# good: [2cd56a00fff8584e342164c65e6b55da61f79c4a] crypto: testmgr - genera=
-te inauthentic AEAD test vectors
-git bisect good 2cd56a00fff8584e342164c65e6b55da61f79c4a
-# first bad commit: [0fbf7aea0d8bccba3d00706f46c89716fa982f9c] enable extra=
- tests by default
----------------------------------------------------------------------------=
-----
