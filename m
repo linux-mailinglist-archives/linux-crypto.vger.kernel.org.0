@@ -2,65 +2,70 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC57110536
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2019 20:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF6D11052B
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2019 20:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727487AbfLCTbq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Dec 2019 14:31:46 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:35986 "EHLO
+        id S1727525AbfLCTby (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Dec 2019 14:31:54 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:36102 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727433AbfLCTbp (ORCPT
+        with ESMTP id S1726932AbfLCTbx (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Dec 2019 14:31:45 -0500
+        Tue, 3 Dec 2019 14:31:53 -0500
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB3JOcB9165372;
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB3JOrQb165836;
         Tue, 3 Dec 2019 19:31:36 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2019-08-05; bh=qEl+pOhRr3g+RbA74TF3EJsh7AdX920CBSilgxsTtEA=;
- b=TyhNG6phCS4TQJ7F8PPU0jytfzaRchoWR6IbfN7EznnBQ/F0L+jvwdG88mZ1u5+kgpLZ
- 6BEjm/u8DxAD7qZI9poq6jroazrTa9BNAxhYM69DmOYZUbgPdQmY/v181yS9PZ6BRHAe
- dVgcPbpj1uBaxy1L8FZEJX2WJ1QZcyt5mwJH/+AeDtnFjhhnLpifjoic1/NHm8BF1BzP
- n2A3L5DnkRiFSDZ/18BPHf0h9mIJXhhup5SwnS/RqYcjjGY+YpewUOJACi52ZrSpIfS2
- rEBf2OHZwpAj/ui+N+1Bzw+xcxwwOnOvBPuVku/rNgOToZFrLVf5oW0Bl+e82BcctOSd Sg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2wkgcq9x9c-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2019-08-05;
+ bh=Sg0ZcnYuLZIWWZKNRdulqDnyvpenlzlbPcAAEpcxRMM=;
+ b=mtgRPhCGUIihlGQXWgGV9aQ1Dt0VNbIFNBJix/qPIHQqs5Uehz+C29SaZFTOIpzLrt6X
+ o8QzUfxzns0ZTz1/q8cC27RwkXMm4vpcaN4HL4LjMGVeVG40OfckdgLb5g27Zmh4Xar4
+ cg3AIPiODek8D+VLc72splREE5AAUXa4Yfo3k2pH4qW1AsJp4V7dZUNGd4vuu0WgtskH
+ c1nwy1m/GpBI+aXY8A4gE6rUNLRV1MSJ9fYT0j1dSFNx4oHQBFJr+kH4WDQSQUoSu5Nl
+ 2cvkCLLuYTfzr8iLQy7jejyzMhmVeAzJBa2sZmzMMdSyueZTZZYF3Hb7NN0tR5jsci/l dA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 2wkgcq9x9g-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Dec 2019 19:31:35 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB3JEcmg133392;
+        Tue, 03 Dec 2019 19:31:36 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB3JEiDe116693;
         Tue, 3 Dec 2019 19:31:35 GMT
 Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2wn7pqmm1x-1
+        by aserp3020.oracle.com with ESMTP id 2wnb8102fp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Dec 2019 19:31:34 +0000
+        Tue, 03 Dec 2019 19:31:35 +0000
 Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xB3JVT6O009168;
-        Tue, 3 Dec 2019 19:31:30 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xB3JVVLw009200;
+        Tue, 3 Dec 2019 19:31:31 GMT
 Received: from localhost.localdomain (/98.229.125.203)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 03 Dec 2019 11:31:29 -0800
+        with ESMTP ; Tue, 03 Dec 2019 11:31:30 -0800
 From:   Daniel Jordan <daniel.m.jordan@oracle.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         Steffen Klassert <steffen.klassert@secunet.com>
 Cc:     Eric Biggers <ebiggers@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>, linux-crypto@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: [PATCH v2 0/5] padata lockdep, cpumask, and doc fixes
-Date:   Tue,  3 Dec 2019 14:31:09 -0500
-Message-Id: <20191203193114.238912-1-daniel.m.jordan@oracle.com>
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH v2 1/5] padata: validate cpumask without removed CPU during offline
+Date:   Tue,  3 Dec 2019 14:31:10 -0500
+Message-Id: <20191203193114.238912-2-daniel.m.jordan@oracle.com>
 X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20191203193114.238912-1-daniel.m.jordan@oracle.com>
+References: <20191203193114.238912-1-daniel.m.jordan@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9460 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=984
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.0.1-1911140001 definitions=main-1912030143
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9460 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
  definitions=main-1912030143
@@ -69,50 +74,179 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This series depends on all of Herbert's recent padata fixes to reduce
-merge conflicts on his end:
+Configuring an instance's parallel mask without any online CPUs...
 
-  crypto: pcrypt - Do not clear MAY_SLEEP flag in original request
-  padata: Remove unused padata_remove_cpu
-  [v3] crypto: pcrypt - Avoid deadlock by using per-instance padata queues
-  crypto: pcrypt - Fix user-after-free on module unload
-  padata: Remove broken queue flushing 
+  echo 2 > /sys/kernel/pcrypt/pencrypt/parallel_cpumask
+  echo 0 > /sys/devices/system/cpu/cpu1/online
 
-If this should be based on something else, please let me know.
+...makes tcrypt mode=215 crash like this:
 
-Thanks,
-Daniel
+  divide error: 0000 [#1] SMP PTI
+  CPU: 4 PID: 283 Comm: modprobe Not tainted 5.4.0-rc8-padata-doc-v2+ #2
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20191013_105130-anatol 04/01/2014
+  RIP: 0010:padata_do_parallel+0x114/0x300
+  Call Trace:
+   pcrypt_aead_encrypt+0xc0/0xd0 [pcrypt]
+   crypto_aead_encrypt+0x1f/0x30
+   do_mult_aead_op+0x4e/0xdf [tcrypt]
+   test_mb_aead_speed.constprop.0.cold+0x226/0x564 [tcrypt]
+   do_test+0x28c2/0x4d49 [tcrypt]
+   tcrypt_mod_init+0x55/0x1000 [tcrypt]
+   ...
 
-v2:
- - documentation patch RST-ized according to Jon's comments
- - "validate cpumask" patch added
- - rebased onto v5.4 and updated since Herbert's fixes have changed
+cpumask_weight() in padata_cpu_hash() returns 0 because the mask has no
+CPUs.  The problem is __padata_remove_cpu() checks for valid masks too
+early and so doesn't mark the instance PADATA_INVALID as expected, which
+would have made padata_do_parallel() return error before doing the
+division.
 
-Daniel Jordan (5):
-  padata: validate cpumask without removed CPU during offline
-  padata: always acquire cpu_hotplug_lock before pinst->lock
-  padata: remove cpumask change notifier
-  padata: remove reorder_objects
-  padata: update documentation
+Fix by introducing a second padata CPU hotplug state before
+CPUHP_BRINGUP_CPU so that __padata_remove_cpu() sees the online mask
+without @cpu.  No need for the second argument to padata_replace() since
+@cpu is now already missing from the online mask.
 
- Documentation/core-api/index.rst  |   1 +
- Documentation/core-api/padata.rst | 169 ++++++++++++++++++++++++++++++
- Documentation/padata.txt          | 163 ----------------------------
- crypto/pcrypt.c                   |   1 -
- include/linux/cpuhotplug.h        |   1 +
- include/linux/padata.h            |  28 ++---
- kernel/padata.c                   | 124 ++++++++--------------
- 7 files changed, 220 insertions(+), 267 deletions(-)
- create mode 100644 Documentation/core-api/padata.rst
- delete mode 100644 Documentation/padata.txt
+Fixes: 33e54450683c ("padata: Handle empty padata cpumasks")
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ include/linux/cpuhotplug.h |  1 +
+ kernel/padata.c            | 30 ++++++++++++++++++------------
+ 2 files changed, 19 insertions(+), 12 deletions(-)
 
-
-base-commit: 219d54332a09e8d8741c1e1982f5eae56099de85
-prerequisite-patch-id: e31e7b28eb12a2c7e1e04261f4e890f83a57bd19
-prerequisite-patch-id: 00f7ca687bd9df6281e9ced0925a865b2fa7b297
-prerequisite-patch-id: 9f3bb985b34d29ff30e44b8829545736de02186f
-prerequisite-patch-id: fe09ee84131ee649b90ee291fbbeda32e90c42fe
-prerequisite-patch-id: f2e5a29f78e2403677ad50d870d90022932bc2b6
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index 068793a619ca..2d55cee638fc 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -59,6 +59,7 @@ enum cpuhp_state {
+ 	CPUHP_IOMMU_INTEL_DEAD,
+ 	CPUHP_LUSTRE_CFS_DEAD,
+ 	CPUHP_AP_ARM_CACHE_B15_RAC_DEAD,
++	CPUHP_PADATA_DEAD,
+ 	CPUHP_WORKQUEUE_PREP,
+ 	CPUHP_POWER_NUMA_PREPARE,
+ 	CPUHP_HRTIMERS_PREPARE,
+diff --git a/kernel/padata.c b/kernel/padata.c
+index 9e3c4df75907..a2fa6223e1a0 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -512,7 +512,7 @@ static int padata_replace_one(struct padata_shell *ps)
+ 	return 0;
+ }
+ 
+-static int padata_replace(struct padata_instance *pinst, int cpu)
++static int padata_replace(struct padata_instance *pinst)
+ {
+ 	int notification_mask = 0;
+ 	struct padata_shell *ps;
+@@ -523,16 +523,12 @@ static int padata_replace(struct padata_instance *pinst, int cpu)
+ 	cpumask_copy(pinst->omask, pinst->rcpumask.pcpu);
+ 	cpumask_and(pinst->rcpumask.pcpu, pinst->cpumask.pcpu,
+ 		    cpu_online_mask);
+-	if (cpu >= 0)
+-		cpumask_clear_cpu(cpu, pinst->rcpumask.pcpu);
+ 	if (!cpumask_equal(pinst->omask, pinst->rcpumask.pcpu))
+ 		notification_mask |= PADATA_CPU_PARALLEL;
+ 
+ 	cpumask_copy(pinst->omask, pinst->rcpumask.cbcpu);
+ 	cpumask_and(pinst->rcpumask.cbcpu, pinst->cpumask.cbcpu,
+ 		    cpu_online_mask);
+-	if (cpu >= 0)
+-		cpumask_clear_cpu(cpu, pinst->rcpumask.cbcpu);
+ 	if (!cpumask_equal(pinst->omask, pinst->rcpumask.cbcpu))
+ 		notification_mask |= PADATA_CPU_SERIAL;
+ 
+@@ -624,7 +620,7 @@ static int __padata_set_cpumasks(struct padata_instance *pinst,
+ 	cpumask_copy(pinst->cpumask.pcpu, pcpumask);
+ 	cpumask_copy(pinst->cpumask.cbcpu, cbcpumask);
+ 
+-	err = padata_setup_cpumasks(pinst) ?: padata_replace(pinst, -1);
++	err = padata_setup_cpumasks(pinst) ?: padata_replace(pinst);
+ 
+ 	if (valid)
+ 		__padata_start(pinst);
+@@ -715,7 +711,7 @@ static int __padata_add_cpu(struct padata_instance *pinst, int cpu)
+ 	int err = 0;
+ 
+ 	if (cpumask_test_cpu(cpu, cpu_online_mask)) {
+-		err = padata_replace(pinst, -1);
++		err = padata_replace(pinst);
+ 
+ 		if (padata_validate_cpumask(pinst, pinst->cpumask.pcpu) &&
+ 		    padata_validate_cpumask(pinst, pinst->cpumask.cbcpu))
+@@ -729,12 +725,12 @@ static int __padata_remove_cpu(struct padata_instance *pinst, int cpu)
+ {
+ 	int err = 0;
+ 
+-	if (cpumask_test_cpu(cpu, cpu_online_mask)) {
++	if (!cpumask_test_cpu(cpu, cpu_online_mask)) {
+ 		if (!padata_validate_cpumask(pinst, pinst->cpumask.pcpu) ||
+ 		    !padata_validate_cpumask(pinst, pinst->cpumask.cbcpu))
+ 			__padata_stop(pinst);
+ 
+-		err = padata_replace(pinst, cpu);
++		err = padata_replace(pinst);
+ 	}
+ 
+ 	return err;
+@@ -761,7 +757,7 @@ static int padata_cpu_online(unsigned int cpu, struct hlist_node *node)
+ 	return ret;
+ }
+ 
+-static int padata_cpu_prep_down(unsigned int cpu, struct hlist_node *node)
++static int padata_cpu_dead(unsigned int cpu, struct hlist_node *node)
+ {
+ 	struct padata_instance *pinst;
+ 	int ret;
+@@ -782,6 +778,7 @@ static enum cpuhp_state hp_online;
+ static void __padata_free(struct padata_instance *pinst)
+ {
+ #ifdef CONFIG_HOTPLUG_CPU
++	cpuhp_state_remove_instance_nocalls(CPUHP_PADATA_DEAD, &pinst->node);
+ 	cpuhp_state_remove_instance_nocalls(hp_online, &pinst->node);
+ #endif
+ 
+@@ -989,6 +986,8 @@ static struct padata_instance *padata_alloc(const char *name,
+ 
+ #ifdef CONFIG_HOTPLUG_CPU
+ 	cpuhp_state_add_instance_nocalls_cpuslocked(hp_online, &pinst->node);
++	cpuhp_state_add_instance_nocalls_cpuslocked(CPUHP_PADATA_DEAD,
++						    &pinst->node);
+ #endif
+ 
+ 	put_online_cpus();
+@@ -1101,17 +1100,24 @@ static __init int padata_driver_init(void)
+ 	int ret;
+ 
+ 	ret = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, "padata:online",
+-				      padata_cpu_online,
+-				      padata_cpu_prep_down);
++				      padata_cpu_online, NULL);
+ 	if (ret < 0)
+ 		return ret;
+ 	hp_online = ret;
++
++	ret = cpuhp_setup_state_multi(CPUHP_PADATA_DEAD, "padata:dead",
++				      NULL, padata_cpu_dead);
++	if (ret < 0) {
++		cpuhp_remove_multi_state(hp_online);
++		return ret;
++	}
+ 	return 0;
+ }
+ module_init(padata_driver_init);
+ 
+ static __exit void padata_driver_exit(void)
+ {
++	cpuhp_remove_multi_state(CPUHP_PADATA_DEAD);
+ 	cpuhp_remove_multi_state(hp_online);
+ }
+ module_exit(padata_driver_exit);
 -- 
 2.24.0
 
