@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5503911021E
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2019 17:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 522B4110217
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2019 17:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbfLCQYQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Dec 2019 11:24:16 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:44126 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbfLCQYP (ORCPT
+        id S1726847AbfLCQYR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Dec 2019 11:24:17 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:44127 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726819AbfLCQYR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Dec 2019 11:24:15 -0500
-Received: by mail-pl1-f194.google.com with SMTP id az9so1875482plb.11;
-        Tue, 03 Dec 2019 08:24:15 -0800 (PST)
+        Tue, 3 Dec 2019 11:24:17 -0500
+Received: by mail-pl1-f193.google.com with SMTP id az9so1875504plb.11;
+        Tue, 03 Dec 2019 08:24:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ye7dpKDp7c5nhDFHYrYwoNCltp5b0VIIhD0V9njG2jg=;
-        b=p2xayIVDR8VXD4oMykwZwyNU0XuQ/9vir9vzE4D8504bMMkWh/l1EChrdFGXcs/Sxd
-         yeJFFA13DMP5/p5BTEILcVR+zI02rmB49GjPBBIoRj9/eyLec8WDR4HABZAuiSp+nBrL
-         bu+tnhfMJV1s3dUMaLF9dloe+uMVb3mdWwnfSTdji2DR8WFBjZIqAvNa7eMTa1XYOqPm
-         Bipt37yGSvzoocJNXGFWaxWahd0H4C1K3M7OFNDnOYqjZ5WSGMj5AQdKUPhzCB8tcGmO
-         1lLBFMcDjPC/CiTRTFi2vV1HE4AcdTYCr1MmmuJMxlgly8AwVMLIu+/+QvVlKDs5jYgq
-         yNBg==
+        bh=wle6ftF3vYNvjHLW0AC3BqyDRZsOSFp+4C26kE+oXNI=;
+        b=f+Fvu++wmpRb0OtIKu4TzxwMLkmSILc1DiDSdgGDk48Ot4XGTYCXafU7MfCcH0Vy/N
+         DVyj0k2o4vNaLWbWgrvAZwlZpMFNcv15ruC8dv5aKo6NTtKFSH6KXYhjPYY5Qw3CMFLh
+         Uo82AJ6xqFNOQMWz5rKtKE21d6014fipPIgrBsJYik+VzKEKckAG8sKx487h2KeUphYE
+         0snEjYDNK4DbCVIDjUuXKa6vyCg9XT+dgqHHWPE0nai9blD4I+7OSil5mEopoEPCDbxy
+         OqXI7377J8F+Bs38y4FJ0veYcWKLCRglzfY7GHT6P1bJXCmJRHTJ9p9rQzBsW1wTrTuZ
+         f/AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ye7dpKDp7c5nhDFHYrYwoNCltp5b0VIIhD0V9njG2jg=;
-        b=CTo9QAocOQ38ri6ZxcCjQVRLh4eVoSZ3dIfshOMhlNDh8HucG0L3Tqq4Br8quB8H5V
-         1YkGMpsL01GJqjOOwS6UBtjQQzHh8GnoEwiL6fa7oceyUFcDOPdMF1wXyZmgePXdaaQt
-         p0klQqvk2BL22YXHFPO5EE3J/m3zIc1+nNaIbTxQWdFdykxhFiXpttj+sZ1k9EeRFVUe
-         /xF5/hDAF7CyOQTv+EucSY+DYD0RP0yWmjUdRCiIGl7gVsJJpiakRWzd76ZPT3TaWISy
-         aIa/POPXGFLK1uwZSGwybYBTjs/2Knn98iOA7uIQ7k7psupzdCzrWn0UZzhM0kILl3w/
-         5AAQ==
-X-Gm-Message-State: APjAAAW4QLtyv69yO0v/Hq7Gz4kKOA/E/iV7RF9yVNUS6Y+3Y8kg9Wu0
-        fXBDvienfApAosQYUO4+ISE98QL+vJA=
-X-Google-Smtp-Source: APXvYqwTj83DAV20Cji+JQUkWRyCXDZoGWLweGGhVGTbm44zBN9PipFeMIjv7a9AL5tnffdXi+o5mw==
-X-Received: by 2002:a17:902:24e:: with SMTP id 72mr5649202plc.287.1575390254329;
-        Tue, 03 Dec 2019 08:24:14 -0800 (PST)
+        bh=wle6ftF3vYNvjHLW0AC3BqyDRZsOSFp+4C26kE+oXNI=;
+        b=T3PemRssC3mJEvxEDWcdqucOwe1Ca0d3Dj/fDhssYuLqZEbeluAeGw8LDFGwxiakr2
+         4JejplGQzIwSzgxl0SoazPkLZNgtpVNpb/LAyaHjjUcnoMPRWdgW0TcgIE28qPvTmAA+
+         u4u8q3S42ua4WTNDrfSu6vO7s1IyEH3PP4Y5TZ8oYyuhXaWND9JRPH2fFfZUHm2mwb1L
+         gDsCY1fwhGVmdbBCbuJkBjhVDMzvfI+ltXGozOfXmaVJbwucG6Vp82kF1BTb93ZkUDRS
+         IZRdWBFJrDWhtQ3fbiYJF/R3E7nqNtDoeEg016m1hXOEWnuZey6M86jR/qq7Z3+dw+a8
+         fACg==
+X-Gm-Message-State: APjAAAWpE8reFqsV/pIROGo9sXTdUx2etZF9voQEM4IjEUR0X8toZld6
+        oC0dpkSbl9kF5RURP/+ENlF/2ze24iU=
+X-Google-Smtp-Source: APXvYqz0voxn/f3QufWYlPo5x9SpuLTf4/1zYc2Olt0wOPfvGEAJCgc4QIhTRCEqksSSsNnbXxvWEQ==
+X-Received: by 2002:a17:90a:1aa3:: with SMTP id p32mr6529505pjp.8.1575390256037;
+        Tue, 03 Dec 2019 08:24:16 -0800 (PST)
 Received: from localhost.hsd1.wa.comcast.net ([2601:602:847f:811f:babe:8e8d:b27e:e6d7])
-        by smtp.gmail.com with ESMTPSA id g10sm4052093pgh.35.2019.12.03.08.24.12
+        by smtp.gmail.com with ESMTPSA id g10sm4052093pgh.35.2019.12.03.08.24.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Dec 2019 08:24:13 -0800 (PST)
+        Tue, 03 Dec 2019 08:24:15 -0800 (PST)
 From:   Andrey Smirnov <andrew.smirnov@gmail.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
@@ -54,9 +54,9 @@ Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Iuliana Prodan <iuliana.prodan@nxp.com>, linux-imx@nxp.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 1/4] crypto: caam - allocate RNG instantiation descriptor with GFP_DMA
-Date:   Tue,  3 Dec 2019 08:23:54 -0800
-Message-Id: <20191203162357.21942-2-andrew.smirnov@gmail.com>
+Subject: [PATCH v5 2/4] crypto: caam - move RNG presence check into a shared function
+Date:   Tue,  3 Dec 2019 08:23:55 -0800
+Message-Id: <20191203162357.21942-3-andrew.smirnov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191203162357.21942-1-andrew.smirnov@gmail.com>
 References: <20191203162357.21942-1-andrew.smirnov@gmail.com>
@@ -68,8 +68,8 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Be consistent with the rest of the codebase and use GFP_DMA when
-allocating memory for a CAAM JR descriptor.
+Move the code to check if RNG block is instantiated into a shared
+function. This will be used by commits that follow.
 
 Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
 Tested-by: Chris Healy <cphealy@gmail.com>
@@ -82,31 +82,60 @@ Cc: linux-imx@nxp.com
 Cc: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
- drivers/crypto/caam/ctrl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/caam/caamrng.c | 10 +---------
+ drivers/crypto/caam/intern.h  | 14 ++++++++++++++
+ 2 files changed, 15 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
-index d7c3c3805693..c99a6a3b22de 100644
---- a/drivers/crypto/caam/ctrl.c
-+++ b/drivers/crypto/caam/ctrl.c
-@@ -193,7 +193,7 @@ static int deinstantiate_rng(struct device *ctrldev, int state_handle_mask)
- 	u32 *desc, status;
- 	int sh_idx, ret = 0;
+diff --git a/drivers/crypto/caam/caamrng.c b/drivers/crypto/caam/caamrng.c
+index e8baacaabe07..041fbd015691 100644
+--- a/drivers/crypto/caam/caamrng.c
++++ b/drivers/crypto/caam/caamrng.c
+@@ -313,19 +313,11 @@ void caam_rng_exit(void)
+ int caam_rng_init(struct device *ctrldev)
+ {
+ 	struct device *dev;
+-	u32 rng_inst;
+ 	struct caam_drv_private *priv = dev_get_drvdata(ctrldev);
+ 	int err;
+ 	init_done = false;
  
--	desc = kmalloc(CAAM_CMD_SZ * 3, GFP_KERNEL);
-+	desc = kmalloc(CAAM_CMD_SZ * 3, GFP_KERNEL | GFP_DMA);
- 	if (!desc)
- 		return -ENOMEM;
+-	/* Check for an instantiated RNG before registration */
+-	if (priv->era < 10)
+-		rng_inst = (rd_reg32(&priv->ctrl->perfmon.cha_num_ls) &
+-			    CHA_ID_LS_RNG_MASK) >> CHA_ID_LS_RNG_SHIFT;
+-	else
+-		rng_inst = rd_reg32(&priv->ctrl->vreg.rng) & CHA_VER_NUM_MASK;
+-
+-	if (!rng_inst)
++	if (!caam_has_rng(priv))
+ 		return 0;
  
-@@ -270,7 +270,7 @@ static int instantiate_rng(struct device *ctrldev, int state_handle_mask,
- 	int ret = 0, sh_idx;
+ 	dev = caam_jr_alloc();
+diff --git a/drivers/crypto/caam/intern.h b/drivers/crypto/caam/intern.h
+index c7c10c90464b..f815e1ad4608 100644
+--- a/drivers/crypto/caam/intern.h
++++ b/drivers/crypto/caam/intern.h
+@@ -104,6 +104,20 @@ struct caam_drv_private {
+ #endif
+ };
  
- 	ctrl = (struct caam_ctrl __iomem *)ctrlpriv->ctrl;
--	desc = kmalloc(CAAM_CMD_SZ * 7, GFP_KERNEL);
-+	desc = kmalloc(CAAM_CMD_SZ * 7, GFP_KERNEL | GFP_DMA);
- 	if (!desc)
- 		return -ENOMEM;
++static inline bool caam_has_rng(struct caam_drv_private *priv)
++{
++	u32 rng_inst;
++
++	/* Check for an instantiated RNG before registration */
++	if (priv->era < 10)
++		rng_inst = (rd_reg32(&priv->ctrl->perfmon.cha_num_ls) &
++			    CHA_ID_LS_RNG_MASK) >> CHA_ID_LS_RNG_SHIFT;
++	else
++		rng_inst = rd_reg32(&priv->ctrl->vreg.rng) & CHA_VER_NUM_MASK;
++
++	return rng_inst;
++}
++
+ #ifdef CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API
  
+ int caam_algapi_init(struct device *dev);
 -- 
 2.21.0
 
