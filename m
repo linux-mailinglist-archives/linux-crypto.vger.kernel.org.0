@@ -2,601 +2,214 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 123A611052F
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2019 20:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3341120EB
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Dec 2019 02:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbfLCTb6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Dec 2019 14:31:58 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:35996 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727476AbfLCTbr (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Dec 2019 14:31:47 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB3JOO27165045;
-        Tue, 3 Dec 2019 19:31:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2019-08-05;
- bh=lCSLHYSU4Y0Z6DmpOIPxgEep26mKHSiVXHQRmZGb4RQ=;
- b=dHVQRaRvmldPAbJ0tkwVYDl9wpEdZIJUyWrd+o8nmemGtycdAxhIexssbCEYRdGXMy5+
- aMrGqE1ae5ki0gCji+5RenrxSC5IAVImCYG+KRJ8c7yvl7M8xQ/1BFqPXEN8dzclN1kQ
- mo+J/w9kCI9EIy+XRZ3zPONNpNTFFh4xMtMhXnQR0qYhSEKRqMYl72KVc3QVx7SFrO0I
- ZfMPlZ5E00XX6Ot4E9C/BZnGvpHcPf0m8bQ0NhD1RnIhvFlBTlU2lWDAgkurXkEEzbwO
- Cpyw6H+Bww+i6ilMXjl/ZLJLEcFJvegWPMbshiO++3JJTLz9dxUn9ZYNcLfrIiTvEokp 2Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2wkgcq9x9k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Dec 2019 19:31:38 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB3JEeXP188258;
-        Tue, 3 Dec 2019 19:31:37 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 2wnvqwvu9p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Dec 2019 19:31:37 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xB3JVakM010089;
-        Tue, 3 Dec 2019 19:31:36 GMT
-Received: from localhost.localdomain (/98.229.125.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 03 Dec 2019 11:31:35 -0800
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-crypto@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: [PATCH v2 5/5] padata: update documentation
-Date:   Tue,  3 Dec 2019 14:31:14 -0500
-Message-Id: <20191203193114.238912-6-daniel.m.jordan@oracle.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191203193114.238912-1-daniel.m.jordan@oracle.com>
-References: <20191203193114.238912-1-daniel.m.jordan@oracle.com>
+        id S1726060AbfLDBKn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Dec 2019 20:10:43 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6743 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726008AbfLDBKn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 3 Dec 2019 20:10:43 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id BF9586C4C0B7FB096718;
+        Wed,  4 Dec 2019 09:10:36 +0800 (CST)
+Received: from [127.0.0.1] (10.67.101.242) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0; Wed, 4 Dec 2019
+ 09:10:24 +0800
+Subject: Re: [PATCH v3 1/5] crypto: hisilicon - add HiSilicon SEC V2 driver
+To:     Marco Elver <elver@google.com>
+References: <1573643468-1812-1-git-send-email-xuzaibo@huawei.com>
+ <1573643468-1812-2-git-send-email-xuzaibo@huawei.com>
+ <20191203120148.GA68157@google.com>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <linux-crypto@vger.kernel.org>, <jonathan.cameron@huawei.com>,
+        <wangzhou1@hisilicon.com>, <linuxarm@huawei.com>,
+        <fanghao11@huawei.com>, <yekai13@huawei.com>,
+        <zhangwei375@huawei.com>, <forest.zhouchang@huawei.com>
+From:   Xu Zaibo <xuzaibo@huawei.com>
+Message-ID: <4c45461f-7c72-8f3c-4785-3a119383df0b@huawei.com>
+Date:   Wed, 4 Dec 2019 09:10:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9460 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912030143
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9460 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912030143
+In-Reply-To: <20191203120148.GA68157@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.101.242]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Remove references to unused functions, standardize language, update to
-reflect new functionality, migrate to rst format, and fix all kernel-doc
-warnings.
+Hi,
 
-Fixes: 815613da6a67 ("kernel/padata.c: removed unused code")
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- Documentation/core-api/index.rst  |   1 +
- Documentation/core-api/padata.rst | 169 ++++++++++++++++++++++++++++++
- Documentation/padata.txt          | 139 ------------------------
- include/linux/padata.h            |  15 ++-
- kernel/padata.c                   |  35 ++++---
- 5 files changed, 198 insertions(+), 161 deletions(-)
- create mode 100644 Documentation/core-api/padata.rst
- delete mode 100644 Documentation/padata.txt
+On 2019/12/3 20:01, Marco Elver wrote:
+> Avoid using __sync builtins and instead prefer the kernel's own
+> facilities:
+>
+> See comments below for suggestions, preserving the assumed memory
+> ordering requirements (but please double-check). By using atomic_t
+> instead of __sync, you'd also avoid any data races due to plain
+> concurrent accesses.
+>
+> Reported in: https://lore.kernel.org/linux-crypto/CANpmjNM2b26Oo6k-4EqfrJf1sBj3WoFf-NQnwsLr3EW9B=G8kw@mail.gmail.com/
+Okay, I will check, and send out a patch to fixed them, thanks.
 
-diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
-index ab0eae1c153a..ab0b9ec85506 100644
---- a/Documentation/core-api/index.rst
-+++ b/Documentation/core-api/index.rst
-@@ -39,6 +39,7 @@ Core utilities
-    ../RCU/index
-    gcc-plugins
-    symbol-namespaces
-+   padata
- 
- 
- Interfaces for kernel debugging
-diff --git a/Documentation/core-api/padata.rst b/Documentation/core-api/padata.rst
-new file mode 100644
-index 000000000000..9a24c111781d
---- /dev/null
-+++ b/Documentation/core-api/padata.rst
-@@ -0,0 +1,169 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=======================================
-+The padata parallel execution mechanism
-+=======================================
-+
-+:Date: December 2019
-+
-+Padata is a mechanism by which the kernel can farm jobs out to be done in
-+parallel on multiple CPUs while retaining their ordering.  It was developed for
-+use with the IPsec code, which needs to be able to perform encryption and
-+decryption on large numbers of packets without reordering those packets.  The
-+crypto developers made a point of writing padata in a sufficiently general
-+fashion that it could be put to other uses as well.
-+
-+Usage
-+=====
-+
-+Initializing
-+------------
-+
-+The first step in using padata is to set up a padata_instance structure for
-+overall control of how jobs are to be run::
-+
-+    #include <linux/padata.h>
-+
-+    struct padata_instance *padata_alloc_possible(const char *name);
-+
-+'name' simply identifies the instance.
-+
-+There are functions for enabling and disabling the instance::
-+
-+    int padata_start(struct padata_instance *pinst);
-+    void padata_stop(struct padata_instance *pinst);
-+
-+These functions are setting or clearing the "PADATA_INIT" flag; if that flag is
-+not set, other functions will refuse to work.  padata_start() returns zero on
-+success (flag set) or -EINVAL if the padata cpumask contains no active CPU
-+(flag not set).  padata_stop() clears the flag and blocks until the padata
-+instance is unused.
-+
-+Finally, complete padata initialization by allocating a padata_shell::
-+
-+   struct padata_shell *padata_alloc_shell(struct padata_instance *pinst);
-+
-+A padata_shell is used to submit a job to padata and allows a series of such
-+jobs to be serialized independently.  A padata_instance may have one or more
-+padata_shells associated with it, each allowing a separate series of jobs.
-+
-+Modifying cpumasks
-+------------------
-+
-+The CPUs used to run jobs can be changed in two ways, programatically with
-+padata_set_cpumask() or via sysfs.  The former is defined::
-+
-+    int padata_set_cpumask(struct padata_instance *pinst, int cpumask_type,
-+			   cpumask_var_t cpumask);
-+
-+Here cpumask_type is one of PADATA_CPU_PARALLEL or PADATA_CPU_SERIAL, where a
-+parallel cpumask describes which processors will be used to execute jobs
-+submitted to this instance in parallel and a serial cpumask defines which
-+processors are allowed to be used as the serialization callback processor.
-+cpumask specifies the new cpumask to use.
-+
-+There may be sysfs files for an instance's cpumasks.  For example, pcrypt's
-+live in /sys/kernel/pcrypt/<instance-name>.  Within an instance's directory
-+there are two files, parallel_cpumask and serial_cpumask, and either cpumask
-+may be changed by echoing a bitmask into the file, for example::
-+
-+    echo f > /sys/kernel/pcrypt/pencrypt/parallel_cpumask
-+
-+Reading one of these files shows the user-supplied cpumask, which may be
-+different from the 'usable' cpumask.
-+
-+Padata maintains two pairs of cpumasks internally, the user-supplied cpumasks
-+and the 'usable' cpumasks.  (Each pair consists of a parallel and a serial
-+cpumask.)  The user-supplied cpumasks default to all possible CPUs on instance
-+allocation and may be changed as above.  The usable cpumasks are always a
-+subset of the user-supplied cpumasks and contain only the online CPUs in the
-+user-supplied masks; these are the cpumasks padata actually uses.  So it is
-+legal to supply a cpumask to padata that contains offline CPUs.  Once an
-+offline CPU in the user-supplied cpumask comes online, padata is going to use
-+it.
-+
-+Changing the CPU masks are expensive operations, so it should not be done with
-+great frequency.
-+
-+Running A Job
-+-------------
-+
-+Actually submitting work to the padata instance requires the creation of a
-+padata_priv structure, which represents one job::
-+
-+    struct padata_priv {
-+        /* Other stuff here... */
-+	void                    (*parallel)(struct padata_priv *padata);
-+	void                    (*serial)(struct padata_priv *padata);
-+    };
-+
-+This structure will almost certainly be embedded within some larger
-+structure specific to the work to be done.  Most of its fields are private to
-+padata, but the structure should be zeroed at initialisation time, and the
-+parallel() and serial() functions should be provided.  Those functions will
-+be called in the process of getting the work done as we will see
-+momentarily.
-+
-+The submission of the job is done with::
-+
-+    int padata_do_parallel(struct padata_shell *ps,
-+		           struct padata_priv *padata, int *cb_cpu);
-+
-+The ps and padata structures must be set up as described above; cb_cpu
-+points to the preferred CPU to be used for the final callback when the job is
-+done; it must be in the current instance's CPU mask (if not the cb_cpu pointer
-+is updated to point to the CPU actually chosen).  The return value from
-+padata_do_parallel() is zero on success, indicating that the job is in
-+progress. -EBUSY means that somebody, somewhere else is messing with the
-+instance's CPU mask, while -EINVAL is a complaint about cb_cpu not being in the
-+serial cpumask, no online CPUs in the parallel or serial cpumasks, or a stopped
-+instance.
-+
-+Each job submitted to padata_do_parallel() will, in turn, be passed to
-+exactly one call to the above-mentioned parallel() function, on one CPU, so
-+true parallelism is achieved by submitting multiple jobs.  parallel() runs with
-+software interrupts disabled and thus cannot sleep.  The parallel()
-+function gets the padata_priv structure pointer as its lone parameter;
-+information about the actual work to be done is probably obtained by using
-+container_of() to find the enclosing structure.
-+
-+Note that parallel() has no return value; the padata subsystem assumes that
-+parallel() will take responsibility for the job from this point.  The job
-+need not be completed during this call, but, if parallel() leaves work
-+outstanding, it should be prepared to be called again with a new job before
-+the previous one completes.
-+
-+Serializing Jobs
-+----------------
-+
-+When a job does complete, parallel() (or whatever function actually finishes
-+the work) should inform padata of the fact with a call to::
-+
-+    void padata_do_serial(struct padata_priv *padata);
-+
-+At some point in the future, padata_do_serial() will trigger a call to the
-+serial() function in the padata_priv structure.  That call will happen on
-+the CPU requested in the initial call to padata_do_parallel(); it, too, is
-+run with local software interrupts disabled.
-+Note that this call may be deferred for a while since the padata code takes
-+pains to ensure that jobs are completed in the order in which they were
-+submitted.
-+
-+Destroying
-+----------
-+
-+Cleaning up a padata instance predictably involves calling the three free
-+functions that correspond to the allocation in reverse::
-+
-+    void padata_free_shell(struct padata_shell *ps);
-+    void padata_stop(struct padata_instance *pinst);
-+    void padata_free(struct padata_instance *pinst);
-+
-+It is the user's responsibility to ensure all outstanding jobs are complete
-+before any of the above are called.
-+
-+Interface
-+=========
-+
-+.. kernel-doc:: include/linux/padata.h
-+.. kernel-doc:: kernel/padata.c
-diff --git a/Documentation/padata.txt b/Documentation/padata.txt
-deleted file mode 100644
-index b45df9c6547b..000000000000
---- a/Documentation/padata.txt
-+++ /dev/null
-@@ -1,139 +0,0 @@
--=======================================
--The padata parallel execution mechanism
--=======================================
--
--:Last updated: for 2.6.36
--
--Padata is a mechanism by which the kernel can farm work out to be done in
--parallel on multiple CPUs while retaining the ordering of tasks.  It was
--developed for use with the IPsec code, which needs to be able to perform
--encryption and decryption on large numbers of packets without reordering
--those packets.  The crypto developers made a point of writing padata in a
--sufficiently general fashion that it could be put to other uses as well.
--
--The first step in using padata is to set up a padata_instance structure for
--overall control of how tasks are to be run::
--
--    #include <linux/padata.h>
--
--    struct padata_instance *padata_alloc(const char *name,
--					 const struct cpumask *pcpumask,
--					 const struct cpumask *cbcpumask);
--
--'name' simply identifies the instance.
--
--The pcpumask describes which processors will be used to execute work
--submitted to this instance in parallel. The cbcpumask defines which
--processors are allowed to be used as the serialization callback processor.
--The workqueue wq is where the work will actually be done; it should be
--a multithreaded queue, naturally.
--
--To allocate a padata instance with the cpu_possible_mask for both
--cpumasks this helper function can be used::
--
--    struct padata_instance *padata_alloc_possible(struct workqueue_struct *wq);
--
--Note: Padata maintains two kinds of cpumasks internally. The user supplied
--cpumasks, submitted by padata_alloc/padata_alloc_possible and the 'usable'
--cpumasks. The usable cpumasks are always a subset of active CPUs in the
--user supplied cpumasks; these are the cpumasks padata actually uses. So
--it is legal to supply a cpumask to padata that contains offline CPUs.
--Once an offline CPU in the user supplied cpumask comes online, padata
--is going to use it.
--
--There are functions for enabling and disabling the instance::
--
--    int padata_start(struct padata_instance *pinst);
--    void padata_stop(struct padata_instance *pinst);
--
--These functions are setting or clearing the "PADATA_INIT" flag;
--if that flag is not set, other functions will refuse to work.
--padata_start returns zero on success (flag set) or -EINVAL if the
--padata cpumask contains no active CPU (flag not set).
--padata_stop clears the flag and blocks until the padata instance
--is unused.
--
--The list of CPUs to be used can be adjusted with these functions::
--
--    int padata_set_cpumasks(struct padata_instance *pinst,
--			    cpumask_var_t pcpumask,
--			    cpumask_var_t cbcpumask);
--    int padata_set_cpumask(struct padata_instance *pinst, int cpumask_type,
--			   cpumask_var_t cpumask);
--    int padata_add_cpu(struct padata_instance *pinst, int cpu, int mask);
--    int padata_remove_cpu(struct padata_instance *pinst, int cpu, int mask);
--
--Changing the CPU masks are expensive operations, though, so it should not be
--done with great frequency.
--
--It's possible to change both cpumasks of a padata instance with
--padata_set_cpumasks by specifying the cpumasks for parallel execution (pcpumask)
--and for the serial callback function (cbcpumask). padata_set_cpumask is used to
--change just one of the cpumasks. Here cpumask_type is one of PADATA_CPU_SERIAL,
--PADATA_CPU_PARALLEL and cpumask specifies the new cpumask to use.
--To simply add or remove one CPU from a certain cpumask the functions
--padata_add_cpu/padata_remove_cpu are used. cpu specifies the CPU to add or
--remove and mask is one of PADATA_CPU_SERIAL, PADATA_CPU_PARALLEL.
--
--Actually submitting work to the padata instance requires the creation of a
--padata_priv structure::
--
--    struct padata_priv {
--        /* Other stuff here... */
--	void                    (*parallel)(struct padata_priv *padata);
--	void                    (*serial)(struct padata_priv *padata);
--    };
--
--This structure will almost certainly be embedded within some larger
--structure specific to the work to be done.  Most of its fields are private to
--padata, but the structure should be zeroed at initialisation time, and the
--parallel() and serial() functions should be provided.  Those functions will
--be called in the process of getting the work done as we will see
--momentarily.
--
--The submission of work is done with::
--
--    int padata_do_parallel(struct padata_instance *pinst,
--		           struct padata_priv *padata, int cb_cpu);
--
--The pinst and padata structures must be set up as described above; cb_cpu
--specifies which CPU will be used for the final callback when the work is
--done; it must be in the current instance's CPU mask.  The return value from
--padata_do_parallel() is zero on success, indicating that the work is in
--progress. -EBUSY means that somebody, somewhere else is messing with the
--instance's CPU mask, while -EINVAL is a complaint about cb_cpu not being
--in that CPU mask or about a not running instance.
--
--Each task submitted to padata_do_parallel() will, in turn, be passed to
--exactly one call to the above-mentioned parallel() function, on one CPU, so
--true parallelism is achieved by submitting multiple tasks.  parallel() runs with
--software interrupts disabled and thus cannot sleep.  The parallel()
--function gets the padata_priv structure pointer as its lone parameter;
--information about the actual work to be done is probably obtained by using
--container_of() to find the enclosing structure.
--
--Note that parallel() has no return value; the padata subsystem assumes that
--parallel() will take responsibility for the task from this point.  The work
--need not be completed during this call, but, if parallel() leaves work
--outstanding, it should be prepared to be called again with a new job before
--the previous one completes.  When a task does complete, parallel() (or
--whatever function actually finishes the job) should inform padata of the
--fact with a call to::
--
--    void padata_do_serial(struct padata_priv *padata);
--
--At some point in the future, padata_do_serial() will trigger a call to the
--serial() function in the padata_priv structure.  That call will happen on
--the CPU requested in the initial call to padata_do_parallel(); it, too, is
--run with local software interrupts disabled.
--Note that this call may be deferred for a while since the padata code takes
--pains to ensure that tasks are completed in the order in which they were
--submitted.
--
--The one remaining function in the padata API should be called to clean up
--when a padata instance is no longer needed::
--
--    void padata_free(struct padata_instance *pinst);
--
--This function will busy-wait while any remaining tasks are completed, so it
--might be best not to call it while there is work outstanding.
-diff --git a/include/linux/padata.h b/include/linux/padata.h
-index faa2e36832f8..a0d8b41850b2 100644
---- a/include/linux/padata.h
-+++ b/include/linux/padata.h
-@@ -19,7 +19,7 @@
- #define PADATA_CPU_PARALLEL 0x02
- 
- /**
-- * struct padata_priv -  Embedded to the users data structure.
-+ * struct padata_priv - Represents one job
-  *
-  * @list: List entry, to attach to the padata lists.
-  * @pd: Pointer to the internal control structure.
-@@ -42,7 +42,7 @@ struct padata_priv {
- };
- 
- /**
-- * struct padata_list
-+ * struct padata_list - one per work type per CPU
-  *
-  * @list: List head.
-  * @lock: List lock.
-@@ -70,9 +70,6 @@ struct padata_serial_queue {
-  *
-  * @parallel: List to wait for parallelization.
-  * @reorder: List to wait for reordering after parallel processing.
-- * @serial: List to wait for serialization after reordering.
-- * @pwork: work struct for parallelization.
-- * @swork: work struct for serialization.
-  * @work: work struct for parallelization.
-  * @num_obj: Number of objects that are processed by this cpu.
-  */
-@@ -98,11 +95,11 @@ struct padata_cpumask {
-  * struct parallel_data - Internal control structure, covers everything
-  * that depends on the cpumask in use.
-  *
-- * @sh: padata_shell object.
-+ * @ps: padata_shell object.
-  * @pqueue: percpu padata queues used for parallelization.
-  * @squeue: percpu padata queues used for serialuzation.
-  * @refcnt: Number of objects holding a reference on this parallel_data.
-- * @max_seq_nr:  Maximal used sequence number.
-+ * @seq_nr: Sequence number of the parallelized data object.
-  * @processed: Number of already processed objects.
-  * @cpu: Next CPU to be processed.
-  * @cpumask: The cpumasks in use for parallel and serial workers.
-@@ -119,7 +116,7 @@ struct parallel_data {
- 	int				cpu;
- 	struct padata_cpumask		cpumask;
- 	struct work_struct		reorder_work;
--	spinlock_t                      lock ____cacheline_aligned;
-+	spinlock_t                      ____cacheline_aligned lock;
- };
- 
- /**
-@@ -142,7 +139,7 @@ struct padata_shell {
- /**
-  * struct padata_instance - The overall control structure.
-  *
-- * @cpu_notifier: cpu hotplug notifier.
-+ * @node: Used by CPU hotplug.
-  * @parallel_wq: The workqueue used for parallel work.
-  * @serial_wq: The workqueue used for serial work.
-  * @pslist: List of padata_shell objects attached to this instance.
-diff --git a/kernel/padata.c b/kernel/padata.c
-index 2aaf677db85c..376e5d8d1c5c 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -2,7 +2,7 @@
- /*
-  * padata.c - generic interface to process data streams in parallel
-  *
-- * See Documentation/padata.txt for an api documentation.
-+ * See Documentation/core-api/padata.rst for more information.
-  *
-  * Copyright (C) 2008, 2009 secunet Security Networks AG
-  * Copyright (C) 2008, 2009 Steffen Klassert <steffen.klassert@secunet.com>
-@@ -99,6 +99,8 @@ static void padata_parallel_worker(struct work_struct *parallel_work)
-  * The parallelization callback function will run with BHs off.
-  * Note: Every object which is parallelized by padata_do_parallel
-  * must be seen by padata_do_serial.
-+ *
-+ * Return: 0 on success or else negative error code.
-  */
- int padata_do_parallel(struct padata_shell *ps,
- 		       struct padata_priv *padata, int *cb_cpu)
-@@ -163,14 +165,12 @@ EXPORT_SYMBOL(padata_do_parallel);
- /*
-  * padata_find_next - Find the next object that needs serialization.
-  *
-- * Return values are:
-- *
-- * A pointer to the control struct of the next object that needs
-- * serialization, if present in one of the percpu reorder queues.
-- *
-- * NULL, if the next object that needs serialization will
-- *  be parallel processed by another cpu and is not yet present in
-- *  the cpu's reorder queue.
-+ * Return:
-+ * * A pointer to the control struct of the next object that needs
-+ *   serialization, if present in one of the percpu reorder queues.
-+ * * NULL, if the next object that needs serialization will
-+ *   be parallel processed by another cpu and is not yet present in
-+ *   the cpu's reorder queue.
-  */
- static struct padata_priv *padata_find_next(struct parallel_data *pd,
- 					    bool remove_object)
-@@ -582,13 +582,14 @@ static int __padata_set_cpumasks(struct padata_instance *pinst,
- }
- 
- /**
-- * padata_set_cpumask: Sets specified by @cpumask_type cpumask to the value
-- *                     equivalent to @cpumask.
-- *
-+ * padata_set_cpumask - Sets specified by @cpumask_type cpumask to the value
-+ *                      equivalent to @cpumask.
-  * @pinst: padata instance
-  * @cpumask_type: PADATA_CPU_SERIAL or PADATA_CPU_PARALLEL corresponding
-  *                to parallel and serial cpumasks respectively.
-  * @cpumask: the cpumask to use
-+ *
-+ * Return: 0 on success or negative error code
-  */
- int padata_set_cpumask(struct padata_instance *pinst, int cpumask_type,
- 		       cpumask_var_t cpumask)
-@@ -626,6 +627,8 @@ EXPORT_SYMBOL(padata_set_cpumask);
-  * padata_start - start the parallel processing
-  *
-  * @pinst: padata instance to start
-+ *
-+ * Return: 0 on success or negative error code
-  */
- int padata_start(struct padata_instance *pinst)
- {
-@@ -880,6 +883,8 @@ static struct kobj_type padata_attr_type = {
-  * @name: used to identify the instance
-  * @pcpumask: cpumask that will be used for padata parallelization
-  * @cbcpumask: cpumask that will be used for padata serialization
-+ *
-+ * Return: new instance on success, NULL on error
-  */
- static struct padata_instance *padata_alloc(const char *name,
- 					    const struct cpumask *pcpumask,
-@@ -967,6 +972,8 @@ static struct padata_instance *padata_alloc(const char *name,
-  *                         parallel workers.
-  *
-  * @name: used to identify the instance
-+ *
-+ * Return: new instance on success, NULL on error
-  */
- struct padata_instance *padata_alloc_possible(const char *name)
- {
-@@ -977,7 +984,7 @@ EXPORT_SYMBOL(padata_alloc_possible);
- /**
-  * padata_free - free a padata instance
-  *
-- * @padata_inst: padata instance to free
-+ * @pinst: padata instance to free
-  */
- void padata_free(struct padata_instance *pinst)
- {
-@@ -989,6 +996,8 @@ EXPORT_SYMBOL(padata_free);
-  * padata_alloc_shell - Allocate and initialize padata shell.
-  *
-  * @pinst: Parent padata_instance object.
-+ *
-+ * Return: new shell on success, NULL on error
-  */
- struct padata_shell *padata_alloc_shell(struct padata_instance *pinst)
- {
--- 
-2.24.0
+>
+> On Wed, 13 Nov 2019, Zaibo Xu wrote:
+>
+>> SEC driver provides PCIe hardware device initiation with
+>> AES, SM4, and 3DES skcipher algorithms registered to Crypto.
+>> It uses Hisilicon QM as interface to CPU.
+>>
+>> Signed-off-by: Zaibo Xu <xuzaibo@huawei.com>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>> ---
+>>   drivers/crypto/hisilicon/Kconfig           |  16 +
+>>   drivers/crypto/hisilicon/Makefile          |   1 +
+>>   drivers/crypto/hisilicon/sec2/Makefile     |   2 +
+>>   drivers/crypto/hisilicon/sec2/sec.h        | 132 +++++
+>>   drivers/crypto/hisilicon/sec2/sec_crypto.c | 886 +++++++++++++++++++++++++++++
+>>   drivers/crypto/hisilicon/sec2/sec_crypto.h | 198 +++++++
+>>   drivers/crypto/hisilicon/sec2/sec_main.c   | 640 +++++++++++++++++++++
+>>   7 files changed, 1875 insertions(+)
+>>   create mode 100644 drivers/crypto/hisilicon/sec2/Makefile
+>>   create mode 100644 drivers/crypto/hisilicon/sec2/sec.h
+>>   create mode 100644 drivers/crypto/hisilicon/sec2/sec_crypto.c
+>>   create mode 100644 drivers/crypto/hisilicon/sec2/sec_crypto.h
+>>   create mode 100644 drivers/crypto/hisilicon/sec2/sec_main.c
+> [...]
+>> diff --git a/drivers/crypto/hisilicon/sec2/sec.h b/drivers/crypto/hisilicon/sec2/sec.h
+>> new file mode 100644
+>> index 0000000..443b6c5
+>> --- /dev/null
+>> +++ b/drivers/crypto/hisilicon/sec2/sec.h
+>> @@ -0,0 +1,132 @@
+> [...]
+>> +
+>> +/* SEC request of Crypto */
+>> +struct sec_req {
+>> +	struct sec_sqe sec_sqe;
+>> +	struct sec_ctx *ctx;
+>> +	struct sec_qp_ctx *qp_ctx;
+>> +
+>> +	/* Cipher supported only at present */
+>> +	struct sec_cipher_req c_req;
+>> +	int err_type;
+>> +	int req_id;
+>> +
+>> +	/* Status of the SEC request */
+>> +	int fake_busy;
+> This could be
+>
+> 	atomic_t fake_busy;
+Yes, atomic_t is better.
+>
+>> +};
+>> +
+> [...]
+>> diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+>> new file mode 100644
+>> index 0000000..23092a9
+>> --- /dev/null
+>> +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+>> @@ -0,0 +1,886 @@
+> Add
+>
+> 	#include <linux/atomic.h>
+Okay.
+>
+> [...]
+>> +static int sec_bd_send(struct sec_ctx *ctx, struct sec_req *req)
+>> +{
+>> +	struct sec_qp_ctx *qp_ctx = req->qp_ctx;
+>> +	int ret;
+>> +
+>> +	mutex_lock(&qp_ctx->req_lock);
+>> +	ret = hisi_qp_send(qp_ctx->qp, &req->sec_sqe);
+>> +	mutex_unlock(&qp_ctx->req_lock);
+>> +
+>> +	if (ret == -EBUSY)
+>> +		return -ENOBUFS;
+>> +
+>> +	if (!ret) {
+>> +		if (req->fake_busy)
+> This could be:
+>
+> 	atomic_read(&req->fake_busy)
+yes.
+>
+>> +			ret = -EBUSY;
+>> +		else
+>> +			ret = -EINPROGRESS;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+> [...]
+>> +static void sec_skcipher_callback(struct sec_ctx *ctx, struct sec_req *req)
+>> +{
+>> +	struct skcipher_request *sk_req = req->c_req.sk_req;
+>> +	struct sec_qp_ctx *qp_ctx = req->qp_ctx;
+>> +
+>> +	atomic_dec(&qp_ctx->pending_reqs);
+>> +	sec_free_req_id(req);
+>> +
+>> +	/* IV output at encrypto of CBC mode */
+>> +	if (ctx->c_ctx.c_mode == SEC_CMODE_CBC && req->c_req.encrypt)
+>> +		sec_update_iv(req);
+>> +
+>> +	if (__sync_bool_compare_and_swap(&req->fake_busy, 1, 0))
+> This could be:
+>
+> 	int expect_val = 1;
+> 	...
+> 	if (atomic_try_cmpxchg_relaxed(&req->fake_busy, &expect_val, 0))
+okay
+>
+>> +		sk_req->base.complete(&sk_req->base, -EINPROGRESS);
+>> +
+>> +	sk_req->base.complete(&sk_req->base, req->err_type);
+>> +}
+>> +
+>> +static void sec_request_uninit(struct sec_ctx *ctx, struct sec_req *req)
+>> +{
+>> +	struct sec_qp_ctx *qp_ctx = req->qp_ctx;
+>> +
+>> +	atomic_dec(&qp_ctx->pending_reqs);
+>> +	sec_free_req_id(req);
+>> +	sec_put_queue_id(ctx, req);
+>> +}
+>> +
+>> +static int sec_request_init(struct sec_ctx *ctx, struct sec_req *req)
+>> +{
+>> +	struct sec_qp_ctx *qp_ctx;
+>> +	int issue_id, ret;
+>> +
+>> +	/* To load balance */
+>> +	issue_id = sec_get_queue_id(ctx, req);
+>> +	qp_ctx = &ctx->qp_ctx[issue_id];
+>> +
+>> +	req->req_id = sec_alloc_req_id(req, qp_ctx);
+>> +	if (req->req_id < 0) {
+>> +		sec_put_queue_id(ctx, req);
+>> +		return req->req_id;
+>> +	}
+>> +
+>> +	if (ctx->fake_req_limit <= atomic_inc_return(&qp_ctx->pending_reqs))
+>> +		req->fake_busy = 1;
+>> +	else
+>> +		req->fake_busy = 0;
+> These could be:
+>
+> 	atomic_set(&req->fake_busy, ...)
+Yes, thanks.
+
+cheers,
+Zaibo
+.
+>
+
 
