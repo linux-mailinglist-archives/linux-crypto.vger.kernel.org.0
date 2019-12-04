@@ -2,111 +2,116 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6D3112BCA
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Dec 2019 13:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 431ED112DA6
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Dec 2019 15:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbfLDMnM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 4 Dec 2019 07:43:12 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:36390 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726832AbfLDMm6 (ORCPT
+        id S1727880AbfLDOnE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 4 Dec 2019 09:43:04 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:56249 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727850AbfLDOnE (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 4 Dec 2019 07:42:58 -0500
-Received: by mail-qt1-f194.google.com with SMTP id k11so7585792qtm.3
-        for <linux-crypto@vger.kernel.org>; Wed, 04 Dec 2019 04:42:58 -0800 (PST)
+        Wed, 4 Dec 2019 09:43:04 -0500
+Received: by mail-wm1-f65.google.com with SMTP id q9so6186528wmj.5
+        for <linux-crypto@vger.kernel.org>; Wed, 04 Dec 2019 06:43:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=SWzs3svZdfoJNhQZue5B0UPApGf3QNVhTsPQAsjB3v0=;
-        b=AkbuvF8WWOeGkFuNbpEiUPeHs0D9XYCrvYJnn3sJBPk0l/N+bAJ+lU7by52a8c0/XL
-         X5y/+uJVi5SRPzgKpD7LZp2RSO63H/dWhNB+Sgv8CnTmnW6HnNvEkrD3pvFKiHue+ji0
-         Cyct4Vs7hozR5hYKDh8cJJMkT72K9aPHj93bK1Ew++bIIM698i5hGwNXpwVN8RyOlTlg
-         ekVZP06isuUhwZwFxkLwU0Sye3HMnEDkq9yUmWZzxA1JTm8RzibEufZxYTJilauyHwzc
-         pKJFDkaXtzzvkeOyU7ajhljX9QykaA8Ur2FHYJunK1Sxosbxld4ODKAYs9j7AB06Aipc
-         jW5w==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=71DDqTK7SGG12Z0MAUYKioVk43X0P548ZzvubPDcpes=;
+        b=xfGLXTgYxFM84Pj6WXIKpkTBhgV8oH+4gBdq1RyvnYhawSBF8J2cwk5zOUkm2AkwBB
+         UXLF/UO/MgqC6imITb42Yz650P37738iiPggY/7Tp9sGnRo0mx1LhxkuZcWsaiQtr3Yi
+         FkP6cGyRHUH8nI8pLz4H6U0yOjZr1l/4yAUdSdFuoQ7OpX3R+glAHgOtA2W1zIjlhoCT
+         WztW2OPjojfkR3LiY03h5r9yKgoOER6NRh/swNhwjJKKOb6pY1/tF/QM0rG1OBONBiCC
+         b0xlMYBLBHrOvUh/6gDA5zhdfxwQ86cniJAOZtvVIEgww/uAIJVkOWV3wouQNDgaTQDW
+         DH0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=SWzs3svZdfoJNhQZue5B0UPApGf3QNVhTsPQAsjB3v0=;
-        b=qLJIAu0Kd+uHOHa/PAHz1oqA2NrCqzsVCNg0pZtZOn15J48/+JmF2N3ippUxxIXX7S
-         ifJORxbIjkan6GT6Vm9QJYJtOu/HZUdm2feJ2f7ttzE8aUAw57q5HfJnHAuPvoGNu9Fl
-         5+3nlPxoKOHZ8ekExALQ+1/IiIxIkklF/g9F/c/Cc0FPWwfeLM/tlJe2Xs0zmSUyDeNV
-         U8OInVRmpL5JuBchz4YOZksWXp1vkrgGWPeVatcGgkRji9GJV0OyXO1jn3e1+zX4esUe
-         VOZmYh/hHk+U5knimEptvX0Akjgee0KNFfNU87qEAvuavs0fGaql13KE3N9vNRfqdUDO
-         oa+w==
-X-Gm-Message-State: APjAAAWDuFn4+2iDNcBOMD7jL/p1jmYVGZ+tCivoqRD8LvI+FLND3Lk+
-        zlqEexEGK+/SSpi3gHTyRH9lsU9VtRb4JXIeRDs=
-X-Google-Smtp-Source: APXvYqzw3gCG5cnmI6368TWfhjS/+LLSHd6b95oZCOsPTpsAjIN23auDStB1pQ1PTnMah1qk6gl8uYsnTPaZ7k01uH0=
-X-Received: by 2002:ac8:4a81:: with SMTP id l1mr2434940qtq.357.1575463377714;
- Wed, 04 Dec 2019 04:42:57 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=71DDqTK7SGG12Z0MAUYKioVk43X0P548ZzvubPDcpes=;
+        b=TgfZt9jSJ8c6w6mh6B6aCCpu5r40IuJfvMWHFy3ohjPM/Vzeql8rMqLpAMcjokpYKb
+         vdZ7x1/66WVCqGLY4Dz26BVWtQEsKeL2BS8zfvQVZDm+7g6KOYItDYPRL3UeUtwbBiXJ
+         g3Rlczqh+rMnL/0gT+F0arPLrpI0Uxyk0hJrRe97PMIQJbpL6icZvwBXv4upDufSaDxY
+         lgTvI3E022ndb0vHw6m+ZR02ndDygEPbUo6BiN9mdybJiQ0m1HDugT4+EjVclEeDHCR3
+         PgOKbrbf+0ibzI7kq7OFNYyXtTjdJOJgP4rBwKT7zoFJ34CTfNZ79TSTgwJjYiyfO5xf
+         NGeQ==
+X-Gm-Message-State: APjAAAWFt7yuzZJNsLEJdrAy7vtRDGnWCLqQsMN/cZMAyWlB4LdDerMS
+        0fLIyLBb7MzVYlDzPnR8YwKpWq6e33/3ljGd6sCGOmoWVHE9s/wu
+X-Google-Smtp-Source: APXvYqzBzPANQwZqpR4nb5lE+2+ez0DhI/ckjjRRwPhzDCwyB7+Q2eUdDSUNtFtrfiTPS2+MHgWhzJemLpmKh64hA2I=
+X-Received: by 2002:a7b:c778:: with SMTP id x24mr25114169wmk.119.1575470581747;
+ Wed, 04 Dec 2019 06:43:01 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:ac8:2f0c:0:0:0:0:0 with HTTP; Wed, 4 Dec 2019 04:42:57 -0800 (PST)
-Reply-To: moneygram.1820@outlook.fr
-From:   "Rev.Dr Emmanuel Okoye CEO Ecobank-benin" 
-        <westernunion.benin982@gmail.com>
-Date:   Wed, 4 Dec 2019 13:42:57 +0100
-Message-ID: <CAP=nHBJXiPmPL21x=_0BHWRk_3N3Yax+tTxcFi=t=AhN7g==1Q@mail.gmail.com>
-Subject: God has remembered your prayers I have already sent you Money Gram
- payment of $5000.00 today, MG 1029-8096
-To:     undisclosed-recipients:;
+References: <20191201215330.171990-1-ebiggers@kernel.org> <CAKv+Gu_5pcDeXxLnG_5_jMPc0VDBT3CFr5Hnpb-e4irPLu8JDg@mail.gmail.com>
+In-Reply-To: <CAKv+Gu_5pcDeXxLnG_5_jMPc0VDBT3CFr5Hnpb-e4irPLu8JDg@mail.gmail.com>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Wed, 4 Dec 2019 14:42:58 +0000
+Message-ID: <CAKv+Gu9fQV4-KFz=wnBkNEHa3F8cWMuX9CG=a67qhVgFkZ=cPw@mail.gmail.com>
+Subject: Re: [PATCH 0/7] crypto: more self-test improvements
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Attn, dear Beneficiary.
+On Tue, 3 Dec 2019 at 12:39, Ard Biesheuvel <ard.biesheuvel@linaro.org> wrote:
+>
+> On Sun, 1 Dec 2019 at 21:54, Eric Biggers <ebiggers@kernel.org> wrote:
+> >
+> > This series makes some more improvements to the crypto self-tests, the
+> > largest of which is making the AEAD fuzz tests test inauthentic inputs,
+> > i.e. cases where decryption is expected to fail due to the (ciphertext,
+> > AAD) pair not being the correct result of an encryption with the key.
+> >
+> > It also updates the self-tests to test passing misaligned buffers to the
+> > various setkey() functions, and to check that skciphers have the same
+> > min_keysize as the corresponding generic implementation.
+> >
+> > I haven't seen any test failures from this on x86_64, arm64, or arm32.
+> > But as usual I haven't tested drivers for crypto accelerators.
+> >
+> > For this series to apply this cleanly, my other series
+> > "crypto: skcipher - simplifications due to {,a}blkcipher removal"
+> > needs to be applied first, due to a conflict in skcipher.h.
+> >
+> > This can also be retrieved from git at
+> > https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
+> > tag "crypto-self-tests_2019-12-01".
+> >
+> > Eric Biggers (7):
+> >   crypto: aead - move crypto_aead_maxauthsize() to <crypto/aead.h>
+> >   crypto: skcipher - add crypto_skcipher_min_keysize()
+> >   crypto: testmgr - don't try to decrypt uninitialized buffers
+> >   crypto: testmgr - check skcipher min_keysize
+> >   crypto: testmgr - test setting misaligned keys
+> >   crypto: testmgr - create struct aead_extra_tests_ctx
+> >   crypto: testmgr - generate inauthentic AEAD test vectors
+> >
+>
+> I've dropped this into kernelci again, let's see if anything turns out
+> to be broken.
+>
+> For this series,
+>
+> Acked-by: Ard Biesheuvel <ardb@kernel.org>
+>
 
-God has remembered your prayers
-I have already sent you Money Gram payment of $5000.00 today, MG 1029-8096
-This is because we have finally concluded to effect your transfer
-funds of $4.8,000.000usd
-through MONEY GRAM International Fund transfer Service
-Each payment will be sending to you by $5000.00 daily until the
-($4.8,000.000usd) is completely transferred
-we have this morning sent  MONEY GRAM payment of $5,000.00 in your name today
-So contact the MONEY GRAM Agent to pick up this first payment of $5000 now
+Results here:
+https://kernelci.org/boot/all/job/ardb/branch/for-kernelci/kernel/v5.4-9340-g16839329da69/
 
-Contact person Mrs. Alan Ude
-Dir. MONEY GRAM Service,Benin
-Phone number: +229 98856728
-E-mail: moneygram.1820@outlook.fr
+Only the usual suspects failed (rk3288)
 
-Ask him to give you the complete mtcn, sender name, question and
-answer to enable you
-pick up the $5000.00 sent today,
-Also you are instructed to re-confirm your information's
-to Mrs.Alan Ude as listed below to avoid wrong transactions.
 
-(1Your Full name:............................................
-(2 Phone number.....................................................
-(3 Contact address:.....................................
-(4 Age:..................................................................
-(5 Country..............................................
-(6) Sex .................................................................
-(7) your occupation...........................................
-
-(8)Passport/By Attach or Drivers License Number:
-Contact Mrs. Alan Ude for your MONEY GRAM payment of $4.8,000.000usd
-Note please: I have paid service fees for you but the only money you
-are required
-to send to Mrs. Alan Ude is $90.00 only Transfer fee before you can
-pick up your transfer today.
-
-Send it to via Money Gram
-Receiver's Name-----Alan Ude
-Country----------Benin
-Address-----------Cotonou
-Quest--------Honest
-Ans-----------Trust
-
-I done all my best for you to receive your transfer now ok.
-We need your urgent reply
-Best Regards
-Rev.Dr Emmanuel Okoye
-CEO Ecobank-benin
-
-If we did not receive it urgent from you today,
-I will go ahead and release you funds to Mrs. Lyndia Ppaulson as your
-representative.
+> >  crypto/testmgr.c               | 574 +++++++++++++++++++++++++--------
+> >  crypto/testmgr.h               |  14 +-
+> >  include/crypto/aead.h          |  10 +
+> >  include/crypto/internal/aead.h |  10 -
+> >  include/crypto/skcipher.h      |   6 +
+> >  5 files changed, 461 insertions(+), 153 deletions(-)
+> >
+> > --
+> > 2.24.0
+> >
