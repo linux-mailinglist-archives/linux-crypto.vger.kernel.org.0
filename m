@@ -2,20 +2,20 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A258113EBB
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Dec 2019 10:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B32113EA4
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Dec 2019 10:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729356AbfLEJx6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 5 Dec 2019 04:53:58 -0500
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:51688 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729339AbfLEJx6 (ORCPT
+        id S1729329AbfLEJx4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 5 Dec 2019 04:53:56 -0500
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:1122 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729314AbfLEJxy (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 5 Dec 2019 04:53:58 -0500
-Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
+        Thu, 5 Dec 2019 04:53:54 -0500
+Received-SPF: Pass (esa6.microchip.iphmx.com: domain of
   Tudor.Ambarus@microchip.com designates 198.175.253.82 as
   permitted sender) identity=mailfrom;
-  client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
+  client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
   envelope-from="Tudor.Ambarus@microchip.com";
   x-sender="Tudor.Ambarus@microchip.com";
   x-conformance=spf_only; x-record-type="v=spf1";
@@ -23,38 +23,38 @@ Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
   a:smtpout.microchip.com -exists:%{i}.spf.microchip.iphmx.com
   include:servers.mcsv.net include:mktomail.com
   include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa4.microchip.iphmx.com: no sender
+Received-SPF: None (esa6.microchip.iphmx.com: no sender
   authenticity information available from domain of
   postmaster@email.microchip.com) identity=helo;
-  client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
+  client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
   envelope-from="Tudor.Ambarus@microchip.com";
   x-sender="postmaster@email.microchip.com";
   x-conformance=spf_only
-Authentication-Results: esa4.microchip.iphmx.com; spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com; spf=None smtp.helo=postmaster@email.microchip.com; dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com; dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: mvrC3xOwnAcgryn910WMshypjFqmoH6Pr7vQ6aek52q2oO+RvzByEDKljyFxtDKYP95Plkdkg9
- kN62HxHZ1LwrpGSLJmnOLDGmYb5FSuAj+AePUNbBYrT/yNcBrIbYKg+3jLFsySw0sRAoYDrh1R
- V+Wtpkg4RasHgV3BO4q0hlj9hV1bruf0J/UvP5SAK4WS6nZ9qazx7siftWbERRyuWJLpISja+Q
- IG7P6NvWdEFWraKrjIOnMYByeB/eFuwY3KGWrt6IzHLGQfQZnTKhksZYMr695Qnh3LTDRv22NM
- X6w=
+Authentication-Results: esa6.microchip.iphmx.com; spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com; spf=None smtp.helo=postmaster@email.microchip.com; dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com; dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: nAraF8Z1WJnLPSx/pW5Jf+syvA05dKgfPX8hNNy8rwni+B2oVlY8H1lVrtHoHE7Lwc7ye6doVW
+ hCjpAN6k+eLycYeX5KlBCkJiGbh+dsypXVrm10D8hUeZYtnh5Thz1f5R/efqTsgvUg1qV7KgWq
+ GAObcB6lzqbx8Fh02pM1th1RK6blUcR3Gmg8feHaa+4qJ0QuTjthEMvplB23Nejg1AkRjc6K/N
+ Z9je2did8cQH44r1Ms1p1Dpa6qA9iNerMxoKGBa73O1Y1oElfVZ+clHDjIp3bEsZ174bFFIfx4
+ ZP0=
 X-IronPort-AV: E=Sophos;i="5.69,281,1571727600"; 
-   d="scan'208";a="57544835"
+   d="scan'208";a="56727487"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Dec 2019 02:53:56 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Dec 2019 02:53:53 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 5 Dec 2019 02:53:52 -0700
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ 15.1.1713.5; Thu, 5 Dec 2019 02:53:53 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 5 Dec 2019 02:53:51 -0700
+ via Frontend Transport; Thu, 5 Dec 2019 02:53:53 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ayJZbXF59jqlORHEK7GxEeRbV8EitzLEATdd0zkDAFVd9YCakEQlkTlELLcioQIe+8BIs7RwmpS7ACo9FSbR5WMVdISSVey2slf/D/UKzk9UU2bYJZFv+UqQj8atJB0xoBtIDM5/qIYUjopRgs7SKkZg782CqNusppOVcjiKsTpq0uSswbvCF+7Q/95AlBk5JKARWEuGHqiwUWradwzV76njbLR8eD7vHGGDMVGOeSRslUbx/QrMJbhprAACQ3R/X49Kr3u+BP0H4YeMPjS2f0wEJr+/iZdOtZXPR+f8yZUHEtDAoNprbiSMewikIzbtAuPeKv4Bjg9owD7Tmbrf9A==
+ b=Ys+NhBOJZTcaO+wKQzKxWp79OIGuZz9232uuHPK5Cb9ze9VCMrjoO2fjmyZSzS3/3el2Nylgr2g0z/Fb+6RI3jT2Z6FMv0ODZb0qExuv8RWv3kgMQKwz8/jtNGjtbZH+AkSi81uT1DQVfjosukkfFFOfDRx/8CqCbquVoJz6pTe+xmcHE8MmmxcgFdDDKzi3fAW4mTlFCKhKwMKWNkZ0PnTGocYXEK3BVbATM3a4s3dc2fxuNr2+2AvoBtLO1SVPajsfZXsmMmogpt7dVQAVzzY6GTlx718UhahDfyJ8z+SQ/uYQvNX3XvSnddkInuXv/YHSV2Dd4IYe/rV8tpgKsA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mvSrvoS5dVkNU+oGN2yTf3DQHoV59G2i2Qo6vcY+f9M=;
- b=TgpmPneSWdIUhwWnLA2VJj4KQDWefGnr06A5GSxmBfGBYfbZagdYADmN5SSFzZ5icWURLMp9VPbwCqJSMmp4AYUzAOs6X/P4pYRAA1bWAGDwErgnGzrH37mGeTvYmDVv+fKVmbxbAQoGm8mmDs9Xt/G4Zn8sbMfyvl+4xsebjoJ9rRgmPTnJIl54Xn8Dpw5dg81Wfr9F25Gid6AWv9vigEdubfZ10p6MmWOQZU0BxJvZcwIm3KvPpubAiiu9KH+sqA5sGs0lBJ25Fx9us6xphxUzhPbNQLCvYVRju2abftzPZAOlQ3fslTJiRz4iPoq8eWnu4btfGgx/e4GqogdQjQ==
+ bh=Cr4SYo9OxlgO2sVpVu17o/n2cbERIBgvQtBwUP2ML98=;
+ b=c5wOkIzXdq19+GOMQGa+/Ag/q6Mih6FnEeOKVmVhKyM4G+rsDR++473ucKbVG4mH9o2VDURwFNNTgaaIOFonDhChuczWwWbgIdpWz8g4bOqiwyWNeOsaSmDO9+DXnQe6W1/UP6BjtgelolsN/Jdi0UskyR6pH06litFkOt+Dq7hbiQwYusEKdLmkyfTTg8a2ffrtwiRoiet53M0pzhbxudsLQkYzY5uiCFSX1reOpSw/U+I/vyf7GUs/XeiK5vuoPIn4/NuXTQNmIvyx3QmFeU7FzHRJGe098Vo6ZoyFwnnHPrscrGoIKSVHLH7kthm3DZFFY07ShHxLZ3pucNPTIA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microchip.com; dmarc=pass action=none
  header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
@@ -62,29 +62,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mvSrvoS5dVkNU+oGN2yTf3DQHoV59G2i2Qo6vcY+f9M=;
- b=uW4XbtAvZ6utytbEWvjWxKLgJmZurVwG6d07FSN+rjPGVYu78BTCfb9BViFtq5EF8o3y3N6jnIBN0AljPKSvfn488wzVjPgqDVSk+MrhW0MKqGQSxqhzykVy+zb4p/dVdtK9PjUo2q2e0ULfua7TKN84UkUlwZ3A0BxYkH6accA=
+ bh=Cr4SYo9OxlgO2sVpVu17o/n2cbERIBgvQtBwUP2ML98=;
+ b=Zr9IAIg0QlfkHm+dNY5zUyv1ULlcHL/tWYkUnYabXTXfaWOjxyihOt+BQUY0a2hTObg3tJTkQoo6/fhw/jZpyfwoBp1EMmJ1f5Et6bSo8dzsKJC+qbM+8IBv0Qo3rjrFS4S/KWGhi29mmgQI9XsNxE6uUeWVc3gscUxlsWg9k3Y=
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
- MN2PR11MB4288.namprd11.prod.outlook.com (52.135.37.206) with Microsoft SMTP
+ MN2PR11MB3677.namprd11.prod.outlook.com (20.178.253.145) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2495.20; Thu, 5 Dec 2019 09:53:50 +0000
+ 15.20.2516.13; Thu, 5 Dec 2019 09:53:52 +0000
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::84c:6e75:22df:cbc9]) by MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::84c:6e75:22df:cbc9%5]) with mapi id 15.20.2495.026; Thu, 5 Dec 2019
- 09:53:50 +0000
+ 09:53:52 +0000
 From:   <Tudor.Ambarus@microchip.com>
 To:     <herbert@gondor.apana.org.au>
 CC:     <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
         <Ludovic.Desroches@microchip.com>, <linux-crypto@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <Tudor.Ambarus@microchip.com>
-Subject: [PATCH 04/16] crypto: atmel-{sha,tdes} - Propagate error from
- _hw_version_init()
-Thread-Topic: [PATCH 04/16] crypto: atmel-{sha,tdes} - Propagate error from
- _hw_version_init()
-Thread-Index: AQHVq1HlIYTa3qx/o0e+5eYjgTGE8g==
-Date:   Thu, 5 Dec 2019 09:53:50 +0000
-Message-ID: <20191205095326.5094-5-tudor.ambarus@microchip.com>
+Subject: [PATCH 05/16] crypto: atmel-{aes,sha,tdes} - Drop superfluous error
+ message in probe()
+Thread-Topic: [PATCH 05/16] crypto: atmel-{aes,sha,tdes} - Drop superfluous
+ error message in probe()
+Thread-Index: AQHVq1HmlpXgnPH4V0KtO9/Hzu9rWg==
+Date:   Thu, 5 Dec 2019 09:53:51 +0000
+Message-ID: <20191205095326.5094-6-tudor.ambarus@microchip.com>
 References: <20191205095326.5094-1-tudor.ambarus@microchip.com>
 In-Reply-To: <20191205095326.5094-1-tudor.ambarus@microchip.com>
 Accept-Language: en-US
@@ -98,29 +98,29 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-mailer: git-send-email 2.14.5
 x-originating-ip: [94.177.32.156]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 949bd7b1-98eb-4ce4-2129-08d77969076a
-x-ms-traffictypediagnostic: MN2PR11MB4288:
+x-ms-office365-filtering-correlation-id: dc2e9a7f-f10e-4706-0002-08d779690887
+x-ms-traffictypediagnostic: MN2PR11MB3677:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR11MB4288113427DE25F7EABD9800F05C0@MN2PR11MB4288.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1169;
+x-microsoft-antispam-prvs: <MN2PR11MB3677318FA4953D5E87982E3EF05C0@MN2PR11MB3677.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:281;
 x-forefront-prvs: 02426D11FE
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(376002)(136003)(39860400002)(396003)(366004)(189003)(199004)(6506007)(1076003)(305945005)(4326008)(2616005)(86362001)(478600001)(11346002)(102836004)(107886003)(2906002)(50226002)(5660300002)(66446008)(66946007)(66476007)(66556008)(14454004)(1730700003)(64756008)(76176011)(8936002)(52116002)(81166006)(186003)(5640700003)(81156014)(36756003)(71200400001)(71190400001)(54906003)(6512007)(316002)(6486002)(25786009)(8676002)(26005)(6916009)(99286004)(142933001);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR11MB4288;H:MN2PR11MB4448.namprd11.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(136003)(39860400002)(376002)(346002)(396003)(189003)(199004)(2616005)(66556008)(305945005)(66476007)(66446008)(102836004)(64756008)(11346002)(5660300002)(52116002)(76176011)(99286004)(36756003)(66946007)(2906002)(54906003)(26005)(6916009)(6506007)(1076003)(8676002)(6486002)(15650500001)(4326008)(50226002)(1730700003)(8936002)(14454004)(81156014)(186003)(86362001)(81166006)(5640700003)(478600001)(6512007)(71200400001)(25786009)(316002)(71190400001)(107886003)(142933001);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR11MB3677;H:MN2PR11MB4448.namprd11.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: microchip.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZJOB9lrb2Iv2qFCBxPkbf61byBKWRIeHHEo96dc9cNt1aCbMmzimWswZD81VJkDenLYJLnz4TQFH9R64zewZ6Nm/jUdce3qOheHxyJvzJJKElqbDvkcGgMTj0fN1v6c1e7UBFc+A5qNbIHuq6WFC+4SQaSELaflSDuNbmt3W1XpAkJdnAPHil8vNS6XBDJDTdO0eZVu4EI0ESeDWOcUMHEwO6MjOW50uBUDujWSiD0Eqd5aM1tNFbhIw8fNe1KbgzPXO2cmu/3m2uYnEghKRSPBGMnXuoULZTN7bHKYxA9YESikMULs1wppvEYqWpP6VLPLPSr266iaav7MzHPNjlhfZUZay3T79OwbNy0uMl6aNRzQNbZzbhMwDO/DxxLww6Lk6sOE8G7ZbgN8Eq82TPjXVXFpZN7lOgnr713FHvGJxmiAP1UXjEgjsumAse+8CfDboQ4j6KaiLosp2dC5U+VkwR5fJw1DX6bfmuIqDre7OKUQvoOc0wMzGcmKDUg/x
+x-microsoft-antispam-message-info: w2WENlLinklQ6R9IfvN8aoA1Z6iHRKZEywiVcC97W9J2KydnBB1Bewq0HS9UMFvP6vBV9skwLgZ7r28cCnm2lm/o0MreWV5Q0vU6bw4Z95jW4qFq5rAe35Z49+dsdvHiF86P0A2R8AlY8RL2OX+eZRvMKlRGjDd4b9teKsiNfcj7/DkT6ZgPW3G2f0xEVkLK/WiDUDS1R+oZMcD28KsJlrC7lNtTl4FTvp8gy024Zktx5HWpKKIS+rMXFDDi00Q7qXU6cn9dNU8llIazyE7wyBwHFixdGosIBNywo7QezxoaKORugNcBEWGh2INrxWXanmXmYKpFhoZPEG+pZOqYpAf0xdj6vUOgigierDAgHm9D1FLRgp7kM3i6c3kvSxUs1MXEMIqYdMZ3bItYCkvnHxD45b7p3y6t18B0yMIKlE3XoetbPQDkOy+75daHmb5VAqLJjHiD+U2CCE9y+zua7w8OXH7yBaaJX86eXYZB7DTYzvntQlKtfDRz//ZQXYCw
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 949bd7b1-98eb-4ce4-2129-08d77969076a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2019 09:53:50.0956
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc2e9a7f-f10e-4706-0002-08d779690887
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2019 09:53:51.9125
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6/PXqWM6g911pFXIwoyebhNfmJris6bkwgJWOLJyXxgZx9DqI9miDuTN2NAAeVEPNnjmXurbD0gMnBivfrLWyvr69z6Lno8MYgo5KUHOyxc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4288
+X-MS-Exchange-CrossTenant-userprincipalname: U8jXK9J5EHSwmyq9nmYPO9Shu50YV9K+KpLcdg2tAXkwN3RfuigD3WDXeQdV3jNTh+A+cMBzkTEHKnIDBhNj5IouGf3l6YupGzu8936UXm4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3677
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
@@ -128,102 +128,118 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-atmel_{sha,tdes}_hw_version_init() calls atmel_{sha,tdes}_hw_init(),
-which may fail. Check the return code of atmel_{sha,tdes}_hw_init()
-and propagate the error if needed.
+In case the probe fails, the device/driver core takes care of printing
+the driver name, device name and error code. Drop superfluous error message
+at probe.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/crypto/atmel-sha.c  | 14 +++++++++++---
- drivers/crypto/atmel-tdes.c | 14 +++++++++++---
- 2 files changed, 22 insertions(+), 6 deletions(-)
+ drivers/crypto/atmel-aes.c  | 21 ++++++---------------
+ drivers/crypto/atmel-sha.c  |  8 ++------
+ drivers/crypto/atmel-tdes.c |  8 ++------
+ 3 files changed, 10 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/crypto/atmel-sha.c b/drivers/crypto/atmel-sha.c
-index 3bbec58bf2cd..bf53b8aa8bfc 100644
---- a/drivers/crypto/atmel-sha.c
-+++ b/drivers/crypto/atmel-sha.c
-@@ -1038,9 +1038,13 @@ static inline unsigned int atmel_sha_get_version(str=
-uct atmel_sha_dev *dd)
- 	return atmel_sha_read(dd, SHA_HW_VERSION) & 0x00000fff;
- }
-=20
--static void atmel_sha_hw_version_init(struct atmel_sha_dev *dd)
-+static int atmel_sha_hw_version_init(struct atmel_sha_dev *dd)
- {
--	atmel_sha_hw_init(dd);
-+	int err;
-+
-+	err =3D atmel_sha_hw_init(dd);
-+	if (err)
-+		return err;
-=20
- 	dd->hw_version =3D atmel_sha_get_version(dd);
-=20
-@@ -1048,6 +1052,8 @@ static void atmel_sha_hw_version_init(struct atmel_sh=
-a_dev *dd)
- 			"version: 0x%x\n", dd->hw_version);
-=20
- 	clk_disable(dd->iclk);
-+
-+	return 0;
- }
-=20
- static int atmel_sha_handle_queue(struct atmel_sha_dev *dd,
-@@ -2811,7 +2817,9 @@ static int atmel_sha_probe(struct platform_device *pd=
-ev)
- 	if (err)
- 		goto res_err;
-=20
--	atmel_sha_hw_version_init(sha_dd);
-+	err =3D atmel_sha_hw_version_init(sha_dd);
-+	if (err)
-+		goto iclk_unprepare;
-=20
- 	atmel_sha_get_cap(sha_dd);
-=20
-diff --git a/drivers/crypto/atmel-tdes.c b/drivers/crypto/atmel-tdes.c
-index 1b1767ca9444..c47ceb593fa4 100644
---- a/drivers/crypto/atmel-tdes.c
-+++ b/drivers/crypto/atmel-tdes.c
-@@ -236,9 +236,13 @@ static inline unsigned int atmel_tdes_get_version(stru=
-ct atmel_tdes_dev *dd)
- 	return atmel_tdes_read(dd, TDES_HW_VERSION) & 0x00000fff;
- }
-=20
--static void atmel_tdes_hw_version_init(struct atmel_tdes_dev *dd)
-+static int atmel_tdes_hw_version_init(struct atmel_tdes_dev *dd)
- {
--	atmel_tdes_hw_init(dd);
-+	int err;
-+
-+	err =3D atmel_tdes_hw_init(dd);
-+	if (err)
-+		return err;
-=20
- 	dd->hw_version =3D atmel_tdes_get_version(dd);
-=20
-@@ -246,6 +250,8 @@ static void atmel_tdes_hw_version_init(struct atmel_tde=
-s_dev *dd)
- 			"version: 0x%x\n", dd->hw_version);
-=20
- 	clk_disable_unprepare(dd->iclk);
-+
-+	return 0;
- }
-=20
- static void atmel_tdes_dma_callback(void *data)
-@@ -1309,7 +1315,9 @@ static int atmel_tdes_probe(struct platform_device *p=
-dev)
- 		goto res_err;
+diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
+index 91092504bc96..1cb5564e73f4 100644
+--- a/drivers/crypto/atmel-aes.c
++++ b/drivers/crypto/atmel-aes.c
+@@ -2620,22 +2620,16 @@ static int atmel_aes_probe(struct platform_device *=
+pdev)
+ 	pdata =3D pdev->dev.platform_data;
+ 	if (!pdata) {
+ 		pdata =3D atmel_aes_of_init(pdev);
+-		if (IS_ERR(pdata)) {
+-			err =3D PTR_ERR(pdata);
+-			goto aes_dd_err;
+-		}
++		if (IS_ERR(pdata))
++			return PTR_ERR(pdata);
  	}
 =20
--	atmel_tdes_hw_version_init(tdes_dd);
-+	err =3D atmel_tdes_hw_version_init(tdes_dd);
-+	if (err)
-+		goto res_err;
+-	if (!pdata->dma_slave) {
+-		err =3D -ENXIO;
+-		goto aes_dd_err;
+-	}
++	if (!pdata->dma_slave)
++		return -ENXIO;
 =20
- 	atmel_tdes_get_cap(tdes_dd);
+ 	aes_dd =3D devm_kzalloc(&pdev->dev, sizeof(*aes_dd), GFP_KERNEL);
+-	if (aes_dd =3D=3D NULL) {
+-		err =3D -ENOMEM;
+-		goto aes_dd_err;
+-	}
++	if (!aes_dd)
++		return -ENOMEM;
 =20
+ 	aes_dd->dev =3D dev;
+=20
+@@ -2741,9 +2735,6 @@ static int atmel_aes_probe(struct platform_device *pd=
+ev)
+ res_err:
+ 	tasklet_kill(&aes_dd->done_task);
+ 	tasklet_kill(&aes_dd->queue_task);
+-aes_dd_err:
+-	if (err !=3D -EPROBE_DEFER)
+-		dev_err(dev, "initialization failed.\n");
+=20
+ 	return err;
+ }
+diff --git a/drivers/crypto/atmel-sha.c b/drivers/crypto/atmel-sha.c
+index bf53b8aa8bfc..e85fa48e3d10 100644
+--- a/drivers/crypto/atmel-sha.c
++++ b/drivers/crypto/atmel-sha.c
+@@ -2756,10 +2756,8 @@ static int atmel_sha_probe(struct platform_device *p=
+dev)
+ 	int err;
+=20
+ 	sha_dd =3D devm_kzalloc(&pdev->dev, sizeof(*sha_dd), GFP_KERNEL);
+-	if (sha_dd =3D=3D NULL) {
+-		err =3D -ENOMEM;
+-		goto sha_dd_err;
+-	}
++	if (!sha_dd)
++		return -ENOMEM;
+=20
+ 	sha_dd->dev =3D dev;
+=20
+@@ -2871,8 +2869,6 @@ static int atmel_sha_probe(struct platform_device *pd=
+ev)
+ res_err:
+ 	tasklet_kill(&sha_dd->queue_task);
+ 	tasklet_kill(&sha_dd->done_task);
+-sha_dd_err:
+-	dev_err(dev, "initialization failed.\n");
+=20
+ 	return err;
+ }
+diff --git a/drivers/crypto/atmel-tdes.c b/drivers/crypto/atmel-tdes.c
+index c47ceb593fa4..9baae2065474 100644
+--- a/drivers/crypto/atmel-tdes.c
++++ b/drivers/crypto/atmel-tdes.c
+@@ -1258,10 +1258,8 @@ static int atmel_tdes_probe(struct platform_device *=
+pdev)
+ 	int err;
+=20
+ 	tdes_dd =3D devm_kmalloc(&pdev->dev, sizeof(*tdes_dd), GFP_KERNEL);
+-	if (tdes_dd =3D=3D NULL) {
+-		err =3D -ENOMEM;
+-		goto tdes_dd_err;
+-	}
++	if (!tdes_dd)
++		return -ENOMEM;
+=20
+ 	tdes_dd->dev =3D dev;
+=20
+@@ -1373,8 +1371,6 @@ static int atmel_tdes_probe(struct platform_device *p=
+dev)
+ res_err:
+ 	tasklet_kill(&tdes_dd->done_task);
+ 	tasklet_kill(&tdes_dd->queue_task);
+-tdes_dd_err:
+-	dev_err(dev, "initialization failed.\n");
+=20
+ 	return err;
+ }
 --=20
 2.14.5
 
