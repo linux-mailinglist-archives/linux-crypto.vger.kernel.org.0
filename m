@@ -2,62 +2,122 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A41B115A2D
-	for <lists+linux-crypto@lfdr.de>; Sat,  7 Dec 2019 01:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E59115AD7
+	for <lists+linux-crypto@lfdr.de>; Sat,  7 Dec 2019 04:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbfLGA3c (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 6 Dec 2019 19:29:32 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:51140 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbfLGA3b (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 6 Dec 2019 19:29:31 -0500
-Received: by mail-wm1-f68.google.com with SMTP id p9so9617706wmg.0
-        for <linux-crypto@vger.kernel.org>; Fri, 06 Dec 2019 16:29:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=S7m9By4/eRnSy0vxdfJ6TocT5eJ8gcKLceyHvlHTn3o=;
-        b=UAczeQ0cY+yX9guoET55ezclAqEIwgyAMzPt2ZKBWIbIEt/pMnh3AM4wfp6V+VJf5N
-         /t6chYtkaELTCMsYIAwEqK7Ua++MAsqMO7EBu71mj4Fnlls+x4upb8tVoG2CKNwhblXl
-         GZWv+vxa+pk1bnKGno8f6HZ0ZmxLsefDKEHUp1ThC1gheUMLLO9GE4KYBuoyxwVDBQHN
-         +TWbv9hzxOJ/nyPcm2o6z2SaO7Kv5KPSrhGMjlDOWxjvXF61G6B8vS09UDIp3Kqr/FVJ
-         bo7yk/PV6MjG5BE7V9e+BVzlMyDYxzemK0FCoiLj7UmqPUvOwHSq+EWh2p0uz94KzjFK
-         8hKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=S7m9By4/eRnSy0vxdfJ6TocT5eJ8gcKLceyHvlHTn3o=;
-        b=S5VWLy9guVAqMmIeFIIhfND2dwUKwzaDSmTyAPuJTjqk6bnKUhdfcnvnrrJdBdHXMz
-         0SMOwlM3Cr8VfdL5td5xmOInxteslR+QubZZM0waTzNqgnPmXixbfJggiS4S8dDiTM3o
-         tTHZ853VbAEd/7XGpP3WKQQyqe/H1s0yWKAY1qKcwxw9I8h31NquX3RXvFckYLdLFGuF
-         /7yoEGFQYDnPaFIO7t2EbUEF4EYfwx8SOfn7nUVQviEXIBFFZLfWLxMn811gNRDqG/A+
-         VDJZna+xRLLNkF19YjdOASFhABos/OlrU0VFRmSxVlywHGbhm0hOhVO0jTpNV/y2lv9t
-         dUpQ==
-X-Gm-Message-State: APjAAAXj0jXvBTfyqCwEgwOv8BQzjrN2/17xoYMVku0oll7jd268cNhr
-        a0KWNuhWz7x/+/OU3VzuICdbK+qpoCJBu8fhYm4=
-X-Google-Smtp-Source: APXvYqyph35gV3V54gW4I7K644Z0gktlmZ+TXi6PJ8di3vm3dUTlaeyqr+FE+GZusDLWVMAtrDQhs4P9pROrLOxshFQ=
-X-Received: by 2002:a1c:96c4:: with SMTP id y187mr13234108wmd.112.1575678569910;
- Fri, 06 Dec 2019 16:29:29 -0800 (PST)
+        id S1726395AbfLGDbD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 6 Dec 2019 22:31:03 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:43934 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726371AbfLGDbC (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 6 Dec 2019 22:31:02 -0500
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1idQo9-0002JE-GY; Sat, 07 Dec 2019 11:31:01 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1idQo7-00076w-TE; Sat, 07 Dec 2019 11:31:00 +0800
+Date:   Sat, 7 Dec 2019 11:30:59 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH 2/4] crypto: aead - Retain alg refcount in
+ crypto_grab_aead
+Message-ID: <20191207033059.h6kgx7j7jtnqotuy@gondor.apana.org.au>
+References: <20191206063812.ueudgjfwzri5ekpr@gondor.apana.org.au>
+ <E1id7G9-00051G-5w@gondobar>
+ <20191206224155.GE246840@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a5d:678e:0:0:0:0:0 with HTTP; Fri, 6 Dec 2019 16:29:29 -0800 (PST)
-Reply-To: mrs.aalia.ahmed@gmail.com
-From:   "Mrs.Aalia.Ahmed" <adamhana1907@gmail.com>
-Date:   Sat, 7 Dec 2019 00:29:29 +0000
-Message-ID: <CAOGreOkqZQY02Qc7dHVxdRFWYrTLKw3DvePG3mBc3_8d8rdvmw@mail.gmail.com>
-Subject: OK
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191206224155.GE246840@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Greetings My Dearest One.
+On Fri, Dec 06, 2019 at 02:41:55PM -0800, Eric Biggers wrote:
+>
+> This approach seems too error-prone, since the prototype of crypto_grab_aead()
+> doesn't give any indication that it takes a reference to the algorithm which the
+> caller *must* drop.
 
-My name is Mrs.Aalia.Ahmed, i saw your profile and became interested
-in you, please contact me through my email address
-(mrs.aalia.ahmed@gmail.com) to know each other and i have something
-very important to tell you, i wait for your response to my email ID.
-(mrs.aalia.ahmed@gmail.com
+Fair point.
+
+> How about returning the alg pointer in the last argument, similar to
+> skcipher_alloc_instance_simple()?  I know you sent a patch to remove that
+> argument, but I think it's better to have it...
+
+You probably guessed that I don't really like returning two objects
+from the same function :)
+
+So how about this: we let the Crypto API manage the refcount and
+hide it from all the users.  Something like this patch:
+
+diff --git a/crypto/algapi.c b/crypto/algapi.c
+index adb516380be9..34473ab992f2 100644
+--- a/crypto/algapi.c
++++ b/crypto/algapi.c
+@@ -563,6 +563,7 @@ int crypto_register_instance(struct crypto_template *tmpl,
+ 			     struct crypto_instance *inst)
+ {
+ 	struct crypto_larval *larval;
++	struct crypto_spawn *spawn;
+ 	int err;
+ 
+ 	err = crypto_check_alg(&inst->alg);
+@@ -588,6 +589,9 @@ int crypto_register_instance(struct crypto_template *tmpl,
+ 	if (IS_ERR(larval))
+ 		goto err;
+ 
++	hlist_for_each_entry(spawn, &inst->spawn_list, spawn_list)
++		crypto_mod_put(spawn->alg);
++
+ 	crypto_wait_for_test(larval);
+ 	err = 0;
+ 
+@@ -623,6 +627,7 @@ int crypto_init_spawn(struct crypto_spawn *spawn, struct crypto_alg *alg,
+ 
+ 	spawn->inst = inst;
+ 	spawn->mask = mask;
++	hlist_add_head(&spawn->spawn_list, &inst->spawn_list);
+ 
+ 	down_write(&crypto_alg_sem);
+ 	if (!crypto_is_moribund(alg)) {
+@@ -674,6 +679,9 @@ void crypto_drop_spawn(struct crypto_spawn *spawn)
+ 	if (!spawn->dead)
+ 		list_del(&spawn->list);
+ 	up_write(&crypto_alg_sem);
++
++	if (hlist_unhashed(&spawn->inst->list))
++		crypto_mod_put(spawn->alg);
+ }
+ EXPORT_SYMBOL_GPL(crypto_drop_spawn);
+ 
+diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
+index 771a295ac755..284e96f2eda2 100644
+--- a/include/crypto/algapi.h
++++ b/include/crypto/algapi.h
+@@ -48,6 +48,7 @@ struct crypto_instance {
+ 
+ 	struct crypto_template *tmpl;
+ 	struct hlist_node list;
++	struct hlist_head spawn_list;
+ 
+ 	void *__ctx[] CRYPTO_MINALIGN_ATTR;
+ };
+@@ -66,6 +67,7 @@ struct crypto_template {
+ 
+ struct crypto_spawn {
+ 	struct list_head list;
++	struct hlist_node spawn_list;
+ 	struct crypto_alg *alg;
+ 	struct crypto_instance *inst;
+ 	const struct crypto_type *frontend;
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
