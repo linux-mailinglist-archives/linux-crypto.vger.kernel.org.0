@@ -2,108 +2,122 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DCE11714B
-	for <lists+linux-crypto@lfdr.de>; Mon,  9 Dec 2019 17:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 513F111716B
+	for <lists+linux-crypto@lfdr.de>; Mon,  9 Dec 2019 17:21:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbfLIQPU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 9 Dec 2019 11:15:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:37174 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725904AbfLIQPU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 9 Dec 2019 11:15:20 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ABD781FB;
-        Mon,  9 Dec 2019 08:15:19 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 23FCE3F718;
-        Mon,  9 Dec 2019 08:15:18 -0800 (PST)
-Date:   Mon, 9 Dec 2019 16:15:17 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Henderson <richard.henderson@linaro.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, ard.biesheuvel@linaro.org
-Subject: Re: [PATCH v7] arm64: Implement archrandom.h for ARMv8.5-RNG
-Message-ID: <20191209161517.GB5483@sirena.org.uk>
-References: <20191114113932.26186-1-richard.henderson@linaro.org>
- <20191114142512.GC37865@lakrids.cambridge.arm.com>
- <3b1d5f2a-5a8d-0c33-176a-f1c35b8356de@linaro.org>
+        id S1726230AbfLIQVz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 9 Dec 2019 11:21:55 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:46061 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726080AbfLIQVz (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 9 Dec 2019 11:21:55 -0500
+Received: by mail-pf1-f194.google.com with SMTP id 2so7464095pfg.12;
+        Mon, 09 Dec 2019 08:21:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=70oqW20/DJHzjlf28vSOcRGe1yLG+Cg2RK6l9FagL/c=;
+        b=OBnrp6ldO9XdylaMgI5/cr9oWs8jDGq/zWcPAWIaikmOEPJNw2qdUzxC+/YcmlCw0V
+         Y7KjpfRCnIiqe4G9IETiAXRW4MdRb6JSDi2Y54sI7QlifOqE9qZMcdFJa5WvGx4BxAMl
+         9GHwbSrvo3NucwGJMFvAO6p1185lyaPrLhYyp4RTkczwBUxwiEsMtcPaqEthZcF8WJcY
+         5h2ymoCBeGF0lgkNF+t49yVm9wv85bei0UJcbmN0704g+/lar2QVoYbNoGWs5VrbIKRj
+         Vqvmx3WAqPB7xEdOQkDYggvY72KwgxBMFuMu68zFaDcz93Vi2h71iTgjGulOyAhXNg0Z
+         wbpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=70oqW20/DJHzjlf28vSOcRGe1yLG+Cg2RK6l9FagL/c=;
+        b=rqG0VOnYpLIjDWJmCz1YynEnEK3vFHafAFUz+UdfGqU9BoVtbVNOIXA4chVCxNEjmA
+         ihsqHBJjcOsVrjadviwwXe3YtHS2CHr8/MofWNWRt+vc8j3ASZh0qwFs753qasNp9CjM
+         91Okt9OZWnqzgHhLOM8C3DuyuZqHWFdm7ft0QdQeOQMufjCChtNb2j5HiQkDjD4cIeCR
+         6GOEhEx4axPghrSK7KKiIhxomogZ1y0iGHwo85Pym5nFAiFnf+O+fTPilpD6aKEO3wBO
+         rdOR8NH/TAcLYWT+ac62klz1DpCMFBSR7DvhYX2XUBLTlRyYjuYRLp3uGTxcLGLi0NJw
+         VnJw==
+X-Gm-Message-State: APjAAAUtX+r2zC2MjYwxUTESwh4XdUbltZ6KFOjgE5rAGTP1nDSPX9++
+        xZJg/QnWtzzcvm4RGA+tQN8=
+X-Google-Smtp-Source: APXvYqwo9qI45m5jDokO8HihKyUyIE6CPbZT1X7EJ7Eh7j/3O3eilTlx22kkYK4520v5d9URHJbPxg==
+X-Received: by 2002:a62:ac15:: with SMTP id v21mr30819253pfe.48.1575908514461;
+        Mon, 09 Dec 2019 08:21:54 -0800 (PST)
+Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
+        by smtp.gmail.com with ESMTPSA id o8sm202614pjo.7.2019.12.09.08.21.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Dec 2019 08:21:53 -0800 (PST)
+From:   Chuhong Yuan <hslester96@gmail.com>
+Cc:     Jamie Iles <jamie@jamieiles.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>
+Subject: [PATCH v4 resend] crypto: picoxcell: adjust the position of tasklet_init and fix missed tasklet_kill
+Date:   Tue, 10 Dec 2019 00:21:44 +0800
+Message-Id: <20191209162144.14877-1-hslester96@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="K8nIJk4ghYZn606h"
-Content-Disposition: inline
-In-Reply-To: <3b1d5f2a-5a8d-0c33-176a-f1c35b8356de@linaro.org>
-X-Cookie: We read to say that we have read.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Since tasklet is needed to be initialized before registering IRQ
+handler, adjust the position of tasklet_init to fix the wrong order.
 
---K8nIJk4ghYZn606h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Besides, to fix the missed tasklet_kill, this patch adds a helper
+function and uses devm_add_action to kill the tasklet automatically.
 
-On Thu, Nov 14, 2019 at 07:11:29PM +0100, Richard Henderson wrote:
-> On 11/14/19 3:25 PM, Mark Rutland wrote:
+Fixes: ce92136843cb ("crypto: picoxcell - add support for the picoxcell crypto engines")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+---
+Changes in v4:
+  - Use devm_add_action instead of devm_add_action_or_reset.
 
-> > As I asked previously, please separate the common case and the boot-cpu
-> > init-time case into separate functions.
+ drivers/crypto/picoxcell_crypto.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-> Ok, beyond just making arch_get_random_seed_long be a function pointer, how?
+diff --git a/drivers/crypto/picoxcell_crypto.c b/drivers/crypto/picoxcell_crypto.c
+index 29da449b3e9e..d187312b9864 100644
+--- a/drivers/crypto/picoxcell_crypto.c
++++ b/drivers/crypto/picoxcell_crypto.c
+@@ -1595,6 +1595,11 @@ static const struct of_device_id spacc_of_id_table[] = {
+ MODULE_DEVICE_TABLE(of, spacc_of_id_table);
+ #endif /* CONFIG_OF */
+ 
++static void spacc_tasklet_kill(void *data)
++{
++	tasklet_kill(data);
++}
++
+ static int spacc_probe(struct platform_device *pdev)
+ {
+ 	int i, err, ret;
+@@ -1637,6 +1642,14 @@ static int spacc_probe(struct platform_device *pdev)
+ 		return -ENXIO;
+ 	}
+ 
++	tasklet_init(&engine->complete, spacc_spacc_complete,
++		     (unsigned long)engine);
++
++	ret = devm_add_action(&pdev->dev, spacc_tasklet_kill,
++			      &engine->complete);
++	if (ret)
++		return ret;
++
+ 	if (devm_request_irq(&pdev->dev, irq->start, spacc_spacc_irq, 0,
+ 			     engine->name, engine)) {
+ 		dev_err(engine->dev, "failed to request IRQ\n");
+@@ -1694,8 +1707,6 @@ static int spacc_probe(struct platform_device *pdev)
+ 	INIT_LIST_HEAD(&engine->completed);
+ 	INIT_LIST_HEAD(&engine->in_progress);
+ 	engine->in_flight = 0;
+-	tasklet_init(&engine->complete, spacc_spacc_complete,
+-		     (unsigned long)engine);
+ 
+ 	platform_set_drvdata(pdev, engine);
+ 
+-- 
+2.24.0
 
-> I honestly don't understand how what you want is different from what's here.
-
-I believe that what Mark is saying when he says you should change the
-arch hooks is that you should change the interface between the core code
-and the architecture code to separate the runtime and early init
-interfaces with the goal of making it clear the separation between the
-two.
-
-> > Any boot-time seeding should be in a separate function that external
-> > callers cannot invoke at runtime. Either have an arch function that the
-> > common random code calls at init time on the boot CPU, or have some
-> > arch_add_foo_entropy() function that the arm64 code can call somewhere
-> > around setup_arch().
-
-> What "external callers" are you talking about?
-
-Again Mark can correct me if I'm wrong here but anything that isn't
-the arch code or the core random code.
-
-> As for arch_add_boot_entropy() or whatnot... you're now you're asking for
-> non-trivial changes to the common drivers/char/random.c code.  I'm not keen on
-> designing such a thing when I really don't know what the requirements are.  In
-> particular, how it would differ from what I have.
-
-The biggest issue here is one of reviewability and maintainability
-around early use of the capabilities code.  Without being really up to
-speed on those interfaces it can be hard to tell what conditions are
-true when and what interfaces are safe to use at any given point in boot
-which makes things harder to work with.  This is especially true when we
-start to mix in things like preemption disables which also need a lot of
-attention.  Avoiding mixing code that needs to run in both init and
-normal runtime contexts in the same function makes things easier to
-understand.
-
-Looking briefly at the random code you may find that the existing
-add_device_randomness() is already close to the arch_add_foo_entropy()
-suggested by Mark if not actually good enough, data injected with that
-is not going to be credited as entropy but it will feed into the pool.
-
---K8nIJk4ghYZn606h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3ucxQACgkQJNaLcl1U
-h9Abygf49pMSCQEuwmazZxHMTjuxhxEpfwh8KxNQDPNroTdxIPUxHHL+ifeGMh1y
-StafJtieoAWSeUWc/G+A44wB6BITr+nNVu9NlU2/l0wLULpOznjn+X51InqQKKdq
-mLNtHpMDE0TsPwNCX+vk78eYCI2FO4Vje5n0MghcQLuYFCsdkgmQ/jQJLsdku3/f
-zLbC0Hs3/yhTRW386Ypk9jXOBNkSFAUuL0nKXBFBUn7CTrNRzHM6Zeo4RJHBq2Bq
-bG4IjYTJattDDOWf17DiiiTRYP0vPu+DtBYsETZzaTm2VRotPOKn0OP98kDfdHlk
-ONtKIWf8ArfiV69l7ix4sd5DTRzW
-=Lyx1
------END PGP SIGNATURE-----
-
---K8nIJk4ghYZn606h--
