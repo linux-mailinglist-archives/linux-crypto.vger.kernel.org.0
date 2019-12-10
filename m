@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AD311945C
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Dec 2019 22:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57160119A46
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Dec 2019 22:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbfLJVPV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 10 Dec 2019 16:15:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40168 "EHLO mail.kernel.org"
+        id S1727904AbfLJVvS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 10 Dec 2019 16:51:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729307AbfLJVNh (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:13:37 -0500
+        id S1727773AbfLJVIF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 10 Dec 2019 16:08:05 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 812B222464;
-        Tue, 10 Dec 2019 21:13:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85A8320836;
+        Tue, 10 Dec 2019 21:08:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576012417;
-        bh=pEEjz3Ac7oHki0v/6nYWxfjSb4k9VlXfoHypBWSLk2w=;
+        s=default; t=1576012084;
+        bh=aGsXyfqPX3236EgvbBto0JuppW0QLi8BbTUtHJ12EMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yUJXmGHq2Ue/EwC8f+oDfg9JckVdrDUJDOGeGQKtMufjCXS4qktCofR04MBmHXwHd
-         s6KAm1VZ+YztltygrMrE6Af1VeczM7euMehXPTA7V1HgejYvrrpZqtsz+bXW34h5zW
-         lCpdkyRkIoQdcrgTv9Q6W1pY/GYSJOqVP4WiZXNM=
+        b=dV4vJDoP2MK/IT0MiVmDxJvpbD7VnPVuS1MHAsWgzFHGWOeCWmWzUrVEM8oxrE85u
+         YQCigmBZYhrf/MDTJ6HrRR8NC1ZwrRgQyK+N4gvLbPbTXlW7ZxeadLSk90kC0Gymea
+         6gLFsFTCdMvRH7DgdFDts06kWN914bhElEXSlSHo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.4 333/350] crypto: vmx - Avoid weird build failures
-Date:   Tue, 10 Dec 2019 16:07:18 -0500
-Message-Id: <20191210210735.9077-294-sashal@kernel.org>
+        clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 5.4 062/350] crypto: aegis128-neon - use Clang compatible cflags for ARM
+Date:   Tue, 10 Dec 2019 16:02:47 -0500
+Message-Id: <20191210210735.9077-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
 References: <20191210210735.9077-1-sashal@kernel.org>
@@ -44,65 +44,47 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-[ Upstream commit 4ee812f6143d78d8ba1399671d78c8d78bf2817c ]
+[ Upstream commit 2eb2d198bd6cd0083a5363ce66272fb34a19928f ]
 
-In the vmx crypto Makefile we assign to a variable called TARGET and
-pass that to the aesp8-ppc.pl and ghashp8-ppc.pl scripts.
+The next version of Clang will start policing compiler command line
+options, and will reject combinations of -march and -mfpu that it
+thinks are incompatible.
 
-The variable is meant to describe what flavour of powerpc we're
-building for, eg. either 32 or 64-bit, and big or little endian.
+This results in errors like
 
-Unfortunately TARGET is a fairly common name for a make variable, and
-if it happens that TARGET is specified as a command line parameter to
-make, the value specified on the command line will override our value.
+  clang-10: warning: ignoring extension 'crypto' because the 'armv7-a'
+  architecture does not support it [-Winvalid-command-line-argument]
+  /tmp/aegis128-neon-inner-5ee428.s: Assembler messages:
+            /tmp/aegis128-neon-inner-5ee428.s:73: Error: selected
+  processor does not support `aese.8 q2,q14' in ARM mode
 
-In particular this can happen if the kernel Makefile is driven by an
-external Makefile that uses TARGET for something.
+when buiding the SIMD aegis128 code for 32-bit ARM, given that the
+'armv7-a' -march argument is considered to be compatible with the
+ARM crypto extensions. Instead, we should use armv8-a, which does
+allow the crypto extensions to be enabled.
 
-This leads to weird build failures, eg:
-  nonsense  at /build/linux/drivers/crypto/vmx/ghashp8-ppc.pl line 45.
-  /linux/drivers/crypto/vmx/Makefile:20: recipe for target 'drivers/crypto/vmx/ghashp8-ppc.S' failed
-
-Which shows that we passed an empty value for $(TARGET) to the perl
-script, confirmed with make V=1:
-
-  perl /linux/drivers/crypto/vmx/ghashp8-ppc.pl  > drivers/crypto/vmx/ghashp8-ppc.S
-
-We can avoid this confusion by using override, to tell make that we
-don't want anything to override our variable, even a value specified
-on the command line. We can also use a less common name, given the
-script calls it "flavour", let's use that.
-
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/vmx/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ crypto/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/vmx/Makefile b/drivers/crypto/vmx/Makefile
-index cab32cfec9c45..709670d2b553a 100644
---- a/drivers/crypto/vmx/Makefile
-+++ b/drivers/crypto/vmx/Makefile
-@@ -3,13 +3,13 @@ obj-$(CONFIG_CRYPTO_DEV_VMX_ENCRYPT) += vmx-crypto.o
- vmx-crypto-objs := vmx.o aesp8-ppc.o ghashp8-ppc.o aes.o aes_cbc.o aes_ctr.o aes_xts.o ghash.o
+diff --git a/crypto/Makefile b/crypto/Makefile
+index fcb1ee6797822..aa740c8492b9d 100644
+--- a/crypto/Makefile
++++ b/crypto/Makefile
+@@ -93,7 +93,7 @@ obj-$(CONFIG_CRYPTO_AEGIS128) += aegis128.o
+ aegis128-y := aegis128-core.o
  
- ifeq ($(CONFIG_CPU_LITTLE_ENDIAN),y)
--TARGET := linux-ppc64le
-+override flavour := linux-ppc64le
- else
--TARGET := linux-ppc64
-+override flavour := linux-ppc64
+ ifeq ($(ARCH),arm)
+-CFLAGS_aegis128-neon-inner.o += -ffreestanding -march=armv7-a -mfloat-abi=softfp
++CFLAGS_aegis128-neon-inner.o += -ffreestanding -march=armv8-a -mfloat-abi=softfp
+ CFLAGS_aegis128-neon-inner.o += -mfpu=crypto-neon-fp-armv8
+ aegis128-$(CONFIG_CRYPTO_AEGIS128_SIMD) += aegis128-neon.o aegis128-neon-inner.o
  endif
- 
- quiet_cmd_perl = PERL $@
--      cmd_perl = $(PERL) $(<) $(TARGET) > $(@)
-+      cmd_perl = $(PERL) $(<) $(flavour) > $(@)
- 
- targets += aesp8-ppc.S ghashp8-ppc.S
- 
 -- 
 2.20.1
 
