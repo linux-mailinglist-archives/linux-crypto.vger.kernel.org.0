@@ -2,39 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA05119B1F
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Dec 2019 23:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F565119B31
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Dec 2019 23:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729485AbfLJWFR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 10 Dec 2019 17:05:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36682 "EHLO mail.kernel.org"
+        id S1729704AbfLJWF3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 10 Dec 2019 17:05:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727307AbfLJWFR (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 10 Dec 2019 17:05:17 -0500
+        id S1729661AbfLJWF2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 10 Dec 2019 17:05:28 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 915422073B;
-        Tue, 10 Dec 2019 22:05:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F20320637;
+        Tue, 10 Dec 2019 22:05:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576015516;
-        bh=8zyNla2jXgqDmHpILGytgenyNG3o9448eWYRUveLcKE=;
+        s=default; t=1576015527;
+        bh=UpZ6MNb/Yjt/rtvFNQG0xygwu3D/RzjBw3c7jSbs0vs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lce5y2VJXAerrMsuoSQEksOD0zSPI54x4sAtME5LU9bCp9NWQqJxeNMi+dzzchiYW
-         WiB7zsvE85cIgc1RGr8nok5gyVlb04p2WfRzlGbgU7nK9aN8N1xQE8c3l48zCOtRMW
-         Xob8Hw2JjXJAfvH5BKbOGTnydoO9Fp5fdsomn1wc=
+        b=fnejex6U8Hedkb6pNjDsu7hOI/d/jNga1NS14t0SvTg++aFhyapYhRjDoQj3c+Umb
+         TKEs9Q7FHK7NnopKgtch8MsHCbSpYkZjUPwdRLowkLIhAMLFSO7dsf9bzs4v2NSpxT
+         ONgdxDDdd7JmV3yK9MnG1rP6iSEaQhYhDnZIpMCc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Gonglei <arei.gonglei@huawei.com>,
-        virtualization@lists.linux-foundation.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 113/130] crypto: virtio - deal with unsupported input sizes
-Date:   Tue, 10 Dec 2019 17:02:44 -0500
-Message-Id: <20191210220301.13262-113-sashal@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.14 122/130] crypto: sun4i-ss - Fix 64-bit size_t warnings
+Date:   Tue, 10 Dec 2019 17:02:53 -0500
+Message-Id: <20191210220301.13262-122-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210220301.13262-1-sashal@kernel.org>
 References: <20191210220301.13262-1-sashal@kernel.org>
@@ -47,65 +44,100 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-[ Upstream commit 19c5da7d4a2662e85ea67d2d81df57e038fde3ab ]
+[ Upstream commit d6e9da21ee8246b5e556b3b153401ab045adb986 ]
 
-Return -EINVAL for input sizes that are not a multiple of the AES
-block size, since they are not supported by our CBC chaining mode.
+If you try to compile this driver on a 64-bit platform then you
+will get warnings because it mixes size_t with unsigned int which
+only works on 32-bit.
 
-While at it, remove the pr_err() that reports unsupported key sizes
-being used: we shouldn't spam the kernel log with that.
+This patch fixes all of the warnings.
 
-Fixes: dbaf0624ffa5 ("crypto: add virtio-crypto driver")
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: Gonglei <arei.gonglei@huawei.com>
-Cc: virtualization@lists.linux-foundation.org
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/virtio/virtio_crypto_algs.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/crypto/sunxi-ss/sun4i-ss-cipher.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/crypto/virtio/virtio_crypto_algs.c b/drivers/crypto/virtio/virtio_crypto_algs.c
-index 5035b0dc1e40c..e2231a1a05a12 100644
---- a/drivers/crypto/virtio/virtio_crypto_algs.c
-+++ b/drivers/crypto/virtio/virtio_crypto_algs.c
-@@ -110,8 +110,6 @@ virtio_crypto_alg_validate_key(int key_len, uint32_t *alg)
- 		*alg = VIRTIO_CRYPTO_CIPHER_AES_CBC;
- 		break;
- 	default:
--		pr_err("virtio_crypto: Unsupported key length: %d\n",
--			key_len);
- 		return -EINVAL;
- 	}
- 	return 0;
-@@ -485,6 +483,11 @@ static int virtio_crypto_ablkcipher_encrypt(struct ablkcipher_request *req)
- 	/* Use the first data virtqueue as default */
- 	struct data_queue *data_vq = &vcrypto->data_vq[0];
+diff --git a/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c b/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
+index 5cf64746731a3..22e4918579254 100644
+--- a/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
++++ b/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
+@@ -81,7 +81,8 @@ static int sun4i_ss_opti_poll(struct skcipher_request *areq)
+ 	oi = 0;
+ 	oo = 0;
+ 	do {
+-		todo = min3(rx_cnt, ileft, (mi.length - oi) / 4);
++		todo = min(rx_cnt, ileft);
++		todo = min_t(size_t, todo, (mi.length - oi) / 4);
+ 		if (todo) {
+ 			ileft -= todo;
+ 			writesl(ss->base + SS_RXFIFO, mi.addr + oi, todo);
+@@ -96,7 +97,8 @@ static int sun4i_ss_opti_poll(struct skcipher_request *areq)
+ 		rx_cnt = SS_RXFIFO_SPACES(spaces);
+ 		tx_cnt = SS_TXFIFO_SPACES(spaces);
  
-+	if (!req->nbytes)
-+		return 0;
-+	if (req->nbytes % AES_BLOCK_SIZE)
-+		return -EINVAL;
-+
- 	vc_req->dataq = data_vq;
- 	vc_req->alg_cb = virtio_crypto_dataq_sym_callback;
- 	vc_sym_req->ablkcipher_ctx = ctx;
-@@ -505,6 +508,11 @@ static int virtio_crypto_ablkcipher_decrypt(struct ablkcipher_request *req)
- 	/* Use the first data virtqueue as default */
- 	struct data_queue *data_vq = &vcrypto->data_vq[0];
- 
-+	if (!req->nbytes)
-+		return 0;
-+	if (req->nbytes % AES_BLOCK_SIZE)
-+		return -EINVAL;
-+
- 	vc_req->dataq = data_vq;
- 	vc_req->alg_cb = virtio_crypto_dataq_sym_callback;
- 	vc_sym_req->ablkcipher_ctx = ctx;
+-		todo = min3(tx_cnt, oleft, (mo.length - oo) / 4);
++		todo = min(tx_cnt, oleft);
++		todo = min_t(size_t, todo, (mo.length - oo) / 4);
+ 		if (todo) {
+ 			oleft -= todo;
+ 			readsl(ss->base + SS_TXFIFO, mo.addr + oo, todo);
+@@ -220,7 +222,8 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 			 * todo is the number of consecutive 4byte word that we
+ 			 * can read from current SG
+ 			 */
+-			todo = min3(rx_cnt, ileft / 4, (mi.length - oi) / 4);
++			todo = min(rx_cnt, ileft / 4);
++			todo = min_t(size_t, todo, (mi.length - oi) / 4);
+ 			if (todo && !ob) {
+ 				writesl(ss->base + SS_RXFIFO, mi.addr + oi,
+ 					todo);
+@@ -234,8 +237,8 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 				 * we need to be able to write all buf in one
+ 				 * pass, so it is why we min() with rx_cnt
+ 				 */
+-				todo = min3(rx_cnt * 4 - ob, ileft,
+-					    mi.length - oi);
++				todo = min(rx_cnt * 4 - ob, ileft);
++				todo = min_t(size_t, todo, mi.length - oi);
+ 				memcpy(buf + ob, mi.addr + oi, todo);
+ 				ileft -= todo;
+ 				oi += todo;
+@@ -255,7 +258,8 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 		spaces = readl(ss->base + SS_FCSR);
+ 		rx_cnt = SS_RXFIFO_SPACES(spaces);
+ 		tx_cnt = SS_TXFIFO_SPACES(spaces);
+-		dev_dbg(ss->dev, "%x %u/%u %u/%u cnt=%u %u/%u %u/%u cnt=%u %u\n",
++		dev_dbg(ss->dev,
++			"%x %u/%zu %u/%u cnt=%u %u/%zu %u/%u cnt=%u %u\n",
+ 			mode,
+ 			oi, mi.length, ileft, areq->cryptlen, rx_cnt,
+ 			oo, mo.length, oleft, areq->cryptlen, tx_cnt, ob);
+@@ -263,7 +267,8 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 		if (!tx_cnt)
+ 			continue;
+ 		/* todo in 4bytes word */
+-		todo = min3(tx_cnt, oleft / 4, (mo.length - oo) / 4);
++		todo = min(tx_cnt, oleft / 4);
++		todo = min_t(size_t, todo, (mo.length - oo) / 4);
+ 		if (todo) {
+ 			readsl(ss->base + SS_TXFIFO, mo.addr + oo, todo);
+ 			oleft -= todo * 4;
+@@ -287,7 +292,8 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 				 * no more than remaining buffer
+ 				 * no need to test against oleft
+ 				 */
+-				todo = min(mo.length - oo, obl - obo);
++				todo = min_t(size_t,
++					     mo.length - oo, obl - obo);
+ 				memcpy(mo.addr + oo, bufo + obo, todo);
+ 				oleft -= todo;
+ 				obo += todo;
 -- 
 2.20.1
 
