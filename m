@@ -2,40 +2,45 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB72119A13
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Dec 2019 22:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2810119953
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Dec 2019 22:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728055AbfLJVte (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 10 Dec 2019 16:49:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55982 "EHLO mail.kernel.org"
+        id S1727427AbfLJVpg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 10 Dec 2019 16:45:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727883AbfLJVId (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:08:33 -0500
+        id S1729578AbfLJVc5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 10 Dec 2019 16:32:57 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E832B24697;
-        Tue, 10 Dec 2019 21:08:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04E30208C3;
+        Tue, 10 Dec 2019 21:32:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576012112;
-        bh=SgKtEPnqVxF0Va4TfbyUSL22ciLWUHPlgxeLtNInAOI=;
+        s=default; t=1576013577;
+        bh=9+7vMeFtIEPS1Idj+/h7jbMupoSfm4ZM6sFEDLJEMGs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cXXOdRPHesjrbZfaNi6F4K/Qesf06jsmUIbbfaO+mgxct6hSBumKQb5tIr1iONFhT
-         0yLV5EgFHLPMsGT/+iKxgNL1Eaj/AFmwU8xhFQ6JzPqeZsT/brDxn7CUAjBWBdsAT0
-         RULAOodqTIxxOr7G3y81MuG1/hJlV8RBM1DiNcro=
+        b=A2XdUNncGubdqTZ7e3TxBBAXwg02kynpf4b1I1fIL7ojnr8JsnKfeQZVn2FHZLin3
+         Wub4eYnoYHHf71bh8rf0E6JdbotJPQlUI/f2c4+n45seYaYZ0huLiAHE+9vuBMXi16
+         1Waz6S77wPFx4iMNdjJG5BhYCFJHqC6/Cq6TXv/w=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Pascal van Leeuwen <pvanleeuwen@verimatrix.com>,
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Adam Ford <aford173@gmail.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Tero Kristo <t-kristo@ti.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 085/350] crypto: inside-secure - Fix a maybe-uninitialized warning
-Date:   Tue, 10 Dec 2019 16:03:10 -0500
-Message-Id: <20191210210735.9077-46-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 029/177] hwrng: omap3-rom - Call clk_disable_unprepare() on exit only if not idled
+Date:   Tue, 10 Dec 2019 16:29:53 -0500
+Message-Id: <20191210213221.11921-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
-References: <20191210210735.9077-1-sashal@kernel.org>
+In-Reply-To: <20191210213221.11921-1-sashal@kernel.org>
+References: <20191210213221.11921-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,42 +49,44 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 74e6bd472b6d9e80ec9972989d8991736fe46c51 ]
+[ Upstream commit eaecce12f5f0d2c35d278e41e1bc4522393861ab ]
 
-A previous fixup avoided an unused variable warning but replaced
-it with a slightly scarier warning:
+When unloading omap3-rom-rng, we'll get the following:
 
-drivers/crypto/inside-secure/safexcel.c:1100:6: error: variable 'irq' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+WARNING: CPU: 0 PID: 100 at drivers/clk/clk.c:948 clk_core_disable
 
-This is harmless as it is impossible to get into this case, but
-the compiler has no way of knowing that. Add an explicit error
-handling case to make it obvious to both compilers and humans
-reading the source.
+This is because the clock may be already disabled by omap3_rom_rng_idle().
+Let's fix the issue by checking for rng_idle on exit.
 
-Fixes: 212ef6f29e5b ("crypto: inside-secure - Fix unused variable warning when CONFIG_PCI=n")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Pascal van Leeuwen <pvanleeuwen@verimatrix.com>
+Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Adam Ford <aford173@gmail.com>
+Cc: Pali Rohár <pali.rohar@gmail.com>
+Cc: Sebastian Reichel <sre@kernel.org>
+Cc: Tero Kristo <t-kristo@ti.com>
+Fixes: 1c6b7c2108bd ("hwrng: OMAP3 ROM Random Number Generator support")
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/inside-secure/safexcel.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/char/hw_random/omap3-rom-rng.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/inside-secure/safexcel.c
-index 294debd435b6b..991a4425f006a 100644
---- a/drivers/crypto/inside-secure/safexcel.c
-+++ b/drivers/crypto/inside-secure/safexcel.c
-@@ -1120,6 +1120,8 @@ static int safexcel_request_ring_irq(void *pdev, int irqid,
- 				irq_name, irq);
- 			return irq;
- 		}
-+	} else {
-+		return -ENXIO;
- 	}
+diff --git a/drivers/char/hw_random/omap3-rom-rng.c b/drivers/char/hw_random/omap3-rom-rng.c
+index 38b719017186e..648e39ce6bd95 100644
+--- a/drivers/char/hw_random/omap3-rom-rng.c
++++ b/drivers/char/hw_random/omap3-rom-rng.c
+@@ -121,7 +121,8 @@ static int omap3_rom_rng_remove(struct platform_device *pdev)
+ {
+ 	cancel_delayed_work_sync(&idle_work);
+ 	hwrng_unregister(&omap3_rom_rng_ops);
+-	clk_disable_unprepare(rng_clk);
++	if (!rng_idle)
++		clk_disable_unprepare(rng_clk);
+ 	return 0;
+ }
  
- 	ret = devm_request_threaded_irq(dev, irq, handler,
 -- 
 2.20.1
 
