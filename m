@@ -2,126 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8848611B8EF
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Dec 2019 17:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2C811B917
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Dec 2019 17:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729522AbfLKQgB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Dec 2019 11:36:01 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:38202 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729260AbfLKQgB (ORCPT
+        id S1730545AbfLKQqG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Dec 2019 11:46:06 -0500
+Received: from us-smtp-delivery-148.mimecast.com ([216.205.24.148]:20976 "EHLO
+        us-smtp-delivery-148.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730276AbfLKQqG (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Dec 2019 11:36:01 -0500
-Received: by mail-wm1-f66.google.com with SMTP id p17so7663981wmi.3
-        for <linux-crypto@vger.kernel.org>; Wed, 11 Dec 2019 08:35:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=P/yUfamX8cAKoRPLBpUB3gU7OGBsxgEVu/US14BXdDQ=;
-        b=qZoivr6Y6jABFYLUom62m6R46PtcWDKbcLnnMJ0gs2MWsH3JCh2+I7ByOfOnKhYmSi
-         vwNgfDCGscUbGbqHFHUcVoWqhEFIrubBb/n4HMoDNlYAAqpcjckvDGYP87R+F1etRsWV
-         K40GYcWKcqg5KdMu0gdOFWoVpVXLwQBjK/QXaw92kYU6WXOo6Mpn9Fwt7tltcfPHz/Rh
-         tjTOy1lQ4zJYHA14yuP8ImlqOuZK6sVa7sLv65BNXE/1sE4VL28sRy5QGmPkAQ/eY+QV
-         OhW/bWP4Lx+uKVvl+g2WLRID5B+7efQ2cahzTMso7+d8Hz1nR+2ddZxrpcO73fYslnVk
-         wbpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=P/yUfamX8cAKoRPLBpUB3gU7OGBsxgEVu/US14BXdDQ=;
-        b=rxiEnoidBrBDDFerQ7uNEZ7A80ZbQp5QtoQ3ZHbG11u1IsGJKRGzuIGf4kqlR9o69n
-         6tn1sJ5t1UyB03vNOu+Yu1d085ipc3jp/nlUI/kKi0FxINMS59Rr/2gAIykaU26kpVws
-         Eu0ygjhIqtn8TYT0l7N06qNt+SKgk4Y/j2Uy9VcxIq78ojObYfg6uwYuyqU+8Aic5BBW
-         ZPz7GIfuoZxPmEUnJbnLuRisD3ckvDdwUSCDtao5mJAKxk/YrJLEoooa5cIuialNht+z
-         e5sv2qOoM8bhCRDtuLE9d5zOnd/titUXlj4QM5SnsgAMlqddZ4pVkxLZVHqiabu/4jur
-         5Qmw==
-X-Gm-Message-State: APjAAAUgLio1XkZ7ZTHgq6PfiiHajNqrMIcJv6x4K0DWWkbMmnbae0xb
-        XeU7VNWh5dlxn69bZd1Vq//W1XEPRI9jFQ==
-X-Google-Smtp-Source: APXvYqy2AnfcvD1LUssfkk+uPmqJMWkG2YAwPhoeEMljPZcCXQNijuf6mXYJfHpes3+zhisHi3dTtg==
-X-Received: by 2002:a05:600c:2218:: with SMTP id z24mr790421wml.50.1576082158598;
-        Wed, 11 Dec 2019 08:35:58 -0800 (PST)
-Received: from localhost.localdomain.com ([31.149.181.161])
-        by smtp.gmail.com with ESMTPSA id o19sm2162405wmc.18.2019.12.11.08.35.58
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 11 Dec 2019 08:35:58 -0800 (PST)
-From:   Pascal van Leeuwen <pascalvanl@gmail.com>
-X-Google-Original-From: Pascal van Leeuwen <pvanleeuwen@rambus.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     antoine.tenart@bootlin.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, Pascal van Leeuwen <pvanleeuwen@rambus.com>
-Subject: [PATCH 3/3] crypto: inside-secure - Fix hang case on EIP97 with basic DES/3DES ops
-Date:   Wed, 11 Dec 2019 17:32:37 +0100
-Message-Id: <1576081957-5971-4-git-send-email-pvanleeuwen@rambus.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1576081957-5971-1-git-send-email-pvanleeuwen@rambus.com>
-References: <1576081957-5971-1-git-send-email-pvanleeuwen@rambus.com>
+        Wed, 11 Dec 2019 11:46:06 -0500
+X-Greylist: delayed 369 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Dec 2019 11:46:05 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rambus.com;
+        s=mimecast20161209; t=1576082765;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zCqSf8XbppFmIybArOwRKLDPGxmtewhuibNQR4FsSGg=;
+        b=Ya3WjC1PODSPI9aC+B/7QHVsx3QDmDcb8ngyQFNk1DQ5U2pQMDaoFqV8LXYD4R0ttAokz8
+        KeKykgLk++3ONJ/R6tAOYIBcdjC8FQajUl8tbk33AbHn5dmM3pUqnN9MyL8n6plkfNtull
+        mHgCzXrSQccLJiZmapy45GAVN6KK8P0=
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-2RYLyOs-NhyGUaqDYrPhvw-1; Wed, 11 Dec 2019 11:39:52 -0500
+Received: from CY4PR0401MB3652.namprd04.prod.outlook.com (52.132.97.155) by
+ CY4PR0401MB3665.namprd04.prod.outlook.com (52.132.102.148) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2538.15; Wed, 11 Dec 2019 16:39:50 +0000
+Received: from CY4PR0401MB3652.namprd04.prod.outlook.com
+ ([fe80::612b:9fda:ab11:2787]) by CY4PR0401MB3652.namprd04.prod.outlook.com
+ ([fe80::612b:9fda:ab11:2787%4]) with mapi id 15.20.2516.018; Wed, 11 Dec 2019
+ 16:39:50 +0000
+From:   "Van Leeuwen, Pascal" <pvanleeuwen@rambus.com>
+To:     'linux-crypto' <linux-crypto@vger.kernel.org>
+Date:   Wed, 11 Dec 2019 11:39:50 -0500
+Subject: duplicate [PATCH x/3] crypto: inside-secure - Made driver work on
+ EIP97
+Thread-Topic: duplicate [PATCH x/3] crypto: inside-secure - Made driver work
+ on EIP97
+Thread-Index: AdWwQbwxFkBsUfgITf+jEL1QZK40lg==
+Message-ID: <CY4PR0401MB36521A1DC1770173458D15A8C35A0@CY4PR0401MB3652.namprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+acceptlanguage: en-US
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=pvanleeuwen@rambus.com;
+x-originating-ip: [31.149.181.161]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f546e35e-e0eb-4ab9-14bc-08d77e58bdf9
+x-ms-traffictypediagnostic: CY4PR0401MB3665:
+x-microsoft-antispam-prvs: <CY4PR0401MB3665AEEFDB74C5C039DC9EA4C35A0@CY4PR0401MB3665.namprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 024847EE92
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(376002)(39850400004)(396003)(346002)(136003)(199004)(189003)(7696005)(186003)(26005)(6916009)(6506007)(52536014)(2906002)(966005)(316002)(478600001)(5660300002)(55016002)(9686003)(33656002)(66556008)(86362001)(66446008)(8676002)(8936002)(81156014)(81166006)(4744005)(71200400001)(66946007)(76116006)(64756008)(66476007);DIR:OUT;SFP:1101;SCL:1;SRVR:CY4PR0401MB3665;H:CY4PR0401MB3652.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: q4lS/x+K70Mf6Xb5qEOG6eTkYZ1RjIVWYSkuKCCQVbBBQIelKu7dL969kTt87j+XYIgGQ/qWZo7pFIFIzxmP/5plcnUemsNeRpFGG1YoZKq2T2GEy03zecdlasU+++4A5dwI3vwMGzND2wf/tGkT5ickop9iawboWbccrBLXWxR54jiNhJiDMTDJ06/ySSBuymwnf9fQ+XEx5KAmp36z1nOSfzMrvRRvXHfb7JIFVXnNmj4f84svDeQ3mCOHQiirZKaSRd68LOKtejqiv+Xq5Fv7uQkG9h7HsFxhDXy+6eicG1I4TTEsCLqsf+eEEVWgBXdRdB1VqVZ0DcV2UrQvojmgC1wwi7N94gdocv9R89zhYni7pR6bmVahs1gbFWmu/G6SpT8NUSB19SuUfIZMWfdsXUpOdK/gQlzNXW1XHFSY7Y8SNiTeRZYBkNPlIjNOruyVfh0pr3hiwKwFxfkuIsRvg5DhpxGOII1lQLdX46c=
+x-ms-exchange-transport-forked: True
+x-originatororg: rambus.com
+x-ms-exchange-crosstenant-network-message-id: f546e35e-e0eb-4ab9-14bc-08d77e58bdf9
+x-ms-exchange-crosstenant-originalarrivaltime: 11 Dec 2019 16:39:50.5354
+ (UTC)
+x-ms-exchange-crosstenant-fromentityheader: Hosted
+x-ms-exchange-crosstenant-id: bd0ba799-c2b9-413c-9c56-5d1731c4827c
+x-ms-exchange-crosstenant-mailboxtype: HOSTED
+x-ms-exchange-crosstenant-userprincipalname: kKkoFZNa69989G2ahcKxHX1DgQ6L9XYR+VcK4Hu8zsf7Geo3yyjxcKv5oSB6TDCN5BZ46y0inxsWIdvI/tnOxA==
+x-ms-exchange-transport-crosstenantheadersstamped: CY4PR0401MB3665
+x-mc-unique: 2RYLyOs-NhyGUaqDYrPhvw-1
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch fixes another hang case on the EIP97 caused by sending
-invalidation tokens to the hardware when doing basic (3)DES ECB/CBC
-operations. Invalidation tokens are an EIP197 feature and needed nor
-supported by the EIP97. So they should not be sent for that device.
+Due to some e-mail authentication issues, this patchset accidentally got se=
+nt out twice. Please ignore the duplicate.
 
-Signed-off-by: Pascal van Leeuwen <pvanleeuwen@rambus.com>
----
- drivers/crypto/inside-secure/safexcel_cipher.c | 6 ++++--
- drivers/crypto/inside-secure/safexcel_hash.c   | 3 ++-
- 2 files changed, 6 insertions(+), 3 deletions(-)
+Thanks,
+Pascal van Leeuwen
+Silicon IP Architect, Multi-Protocol Engines
+Rambus Inc.
+http://www.rambus.com
 
-diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers/crypto/inside-secure/safexcel_cipher.c
-index db26166..6353901 100644
---- a/drivers/crypto/inside-secure/safexcel_cipher.c
-+++ b/drivers/crypto/inside-secure/safexcel_cipher.c
-@@ -1509,6 +1509,7 @@ static int safexcel_des_setkey(struct crypto_skcipher *ctfm, const u8 *key,
- 			       unsigned int len)
- {
- 	struct safexcel_cipher_ctx *ctx = crypto_skcipher_ctx(ctfm);
-+	struct safexcel_crypto_priv *priv = ctx->priv;
- 	int ret;
+Note: The Inside Secure/Verimatrix Silicon IP team was recently acquired by=
+ Rambus.
+Please be so kind to update your e-mail address book with my new e-mail add=
+ress.
 
- 	ret = verify_skcipher_des_key(ctfm, key);
-@@ -1516,7 +1517,7 @@ static int safexcel_des_setkey(struct crypto_skcipher *ctfm, const u8 *key,
- 		return ret;
 
- 	/* if context exits and key changed, need to invalidate it */
--	if (ctx->base.ctxr_dma)
-+	if (priv->flags & EIP197_TRC_CACHE && ctx->base.ctxr_dma)
- 		if (memcmp(ctx->key, key, len))
- 			ctx->base.needs_inv = true;
+** This message and any attachments are for the sole use of the intended re=
+cipient(s). It may contain information that is confidential and privileged.=
+ If you are not the intended recipient of this message, you are prohibited =
+from printing, copying, forwarding or saving it. Please delete the message =
+and attachments and notify the sender immediately. **
 
-@@ -1605,6 +1606,7 @@ static int safexcel_des3_ede_setkey(struct crypto_skcipher *ctfm,
- 				   const u8 *key, unsigned int len)
- {
- 	struct safexcel_cipher_ctx *ctx = crypto_skcipher_ctx(ctfm);
-+	struct safexcel_crypto_priv *priv = ctx->priv;
- 	int err;
+Rambus Inc.<http://www.rambus.com>
 
- 	err = verify_skcipher_des3_key(ctfm, key);
-@@ -1612,7 +1614,7 @@ static int safexcel_des3_ede_setkey(struct crypto_skcipher *ctfm,
- 		return err;
-
- 	/* if context exits and key changed, need to invalidate it */
--	if (ctx->base.ctxr_dma)
-+	if (priv->flags & EIP197_TRC_CACHE && ctx->base.ctxr_dma)
- 		if (memcmp(ctx->key, key, len))
- 			ctx->base.needs_inv = true;
-
-diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
-index ef3a489..25e49d1 100644
---- a/drivers/crypto/inside-secure/safexcel_hash.c
-+++ b/drivers/crypto/inside-secure/safexcel_hash.c
-@@ -282,7 +282,8 @@ static int safexcel_handle_req_result(struct safexcel_crypto_priv *priv,
- 			sreq->processed = sreq->block_sz;
- 			sreq->hmac = 0;
-
--			ctx->base.needs_inv = true;
-+			if (priv->flags & EIP197_TRC_CACHE)
-+				ctx->base.needs_inv = true;
- 			areq->nbytes = 0;
- 			safexcel_ahash_enqueue(areq);
-
---
-1.8.3.1
