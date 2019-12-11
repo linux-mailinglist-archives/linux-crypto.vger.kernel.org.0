@@ -2,65 +2,89 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A94A011A773
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Dec 2019 10:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D3211A77E
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Dec 2019 10:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727851AbfLKJiY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Dec 2019 04:38:24 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:54320 "EHLO deadmen.hmeau.com"
+        id S1728447AbfLKJjN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Dec 2019 04:39:13 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:54434 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727318AbfLKJiU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Dec 2019 04:38:20 -0500
+        id S1727318AbfLKJjN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 11 Dec 2019 04:39:13 -0500
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1ieyRn-00006H-Iu; Wed, 11 Dec 2019 17:38:19 +0800
+        id 1ieySK-00008Q-PN; Wed, 11 Dec 2019 17:38:52 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1ieyRm-00050Y-Bl; Wed, 11 Dec 2019 17:38:18 +0800
-Date:   Wed, 11 Dec 2019 17:38:18 +0800
+        id 1ieySC-0005TH-9x; Wed, 11 Dec 2019 17:38:44 +0800
+Date:   Wed, 11 Dec 2019 17:38:44 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Iuliana Prodan <iuliana.prodan@nxp.com>
-Cc:     Horia Geanta <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Alison Wang <alison.wang@nxp.com>,
+To:     Kees Cook <keescook@chromium.org>
+Cc:     =?iso-8859-1?Q?Jo=E3o?= Moreira <joao.moreira@intel.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Stephan Mueller <smueller@chronox.de>, x86@kernel.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH v3] crypto: caam - do not reset pointer size from MCFGR
- register
-Message-ID: <20191211093818.tny64ctuqqxlznxq@gondor.apana.org.au>
-References: <1574808866-16764-1-git-send-email-iuliana.prodan@nxp.com>
+        kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH v7] crypto: x86: Regularize glue function prototypes
+Message-ID: <20191211093844.vwguh6yjgab5hza5@gondor.apana.org.au>
+References: <201911262205.FD985935F@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1574808866-16764-1-git-send-email-iuliana.prodan@nxp.com>
+In-Reply-To: <201911262205.FD985935F@keescook>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Nov 27, 2019 at 12:54:26AM +0200, Iuliana Prodan wrote:
-> In commit 'a1cf573ee95 ("crypto: caam - select DMA address size at runtime")'
-> CAAM pointer size (caam_ptr_size) is changed from
-> sizeof(dma_addr_t) to runtime value computed from MCFGR register.
-> Therefore, do not reset MCFGR[PS].
+On Tue, Nov 26, 2019 at 10:08:02PM -0800, Kees Cook wrote:
+> The crypto glue performed function prototype casting via macros to make
+> indirect calls to assembly routines. Instead of performing casts at the
+> call sites (which trips Control Flow Integrity prototype checking), switch
+> each prototype to a common standard set of arguments which allows the
+> removal of the existing macros. In order to keep pointer math unchanged,
+> internal casting between u128 pointers and u8 pointers is added.
 > 
-> Fixes: a1cf573ee95 ("crypto: caam - select DMA address size at runtime")
-> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
-> Cc: <stable@vger.kernel.org>
-> Cc: Andrey Smirnov <andrew.smirnov@gmail.com>
-> Cc: Alison Wang <alison.wang@nxp.com>
-> Reviewed-by: Horia GeantÄƒ <horia.geanta@nxp.com>
+> Co-developed-by: João Moreira <joao.moreira@intel.com>
+> Signed-off-by: João Moreira <joao.moreira@intel.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
-> Changes since v2:
-> - update description so the referred commit is not split on 2 lines;
-> - added Reviewed-by.
-> 
->  drivers/crypto/caam/ctrl.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+> v7:
+> - added João's SoB (ebiggers)
+> - corrected aesni .S prototype comments (ebiggers)
+> - collapsed glue series into a single patch (ebiggers)
+> v6: https://lore.kernel.org/lkml/20191122010334.12081-1-keescook@chromium.org
+> v5: https://lore.kernel.org/lkml/20191113182516.13545-1-keescook@chromium.org
+> v4: https://lore.kernel.org/lkml/20191111214552.36717-1-keescook@chromium.org
+> v3: https://lore.kernel.org/lkml/20190507161321.34611-1-keescook@chromium.org
+> ---
+>  arch/x86/crypto/aesni-intel_asm.S          |  8 +--
+>  arch/x86/crypto/aesni-intel_glue.c         | 45 ++++++-------
+>  arch/x86/crypto/camellia_aesni_avx2_glue.c | 74 ++++++++++-----------
+>  arch/x86/crypto/camellia_aesni_avx_glue.c  | 72 +++++++++------------
+>  arch/x86/crypto/camellia_glue.c            | 45 +++++++------
+>  arch/x86/crypto/cast6_avx_glue.c           | 68 +++++++++-----------
+>  arch/x86/crypto/glue_helper.c              | 23 ++++---
+>  arch/x86/crypto/serpent_avx2_glue.c        | 65 +++++++++----------
+>  arch/x86/crypto/serpent_avx_glue.c         | 63 +++++++++---------
+>  arch/x86/crypto/serpent_sse2_glue.c        | 30 +++++----
+>  arch/x86/crypto/twofish_avx_glue.c         | 75 ++++++++++------------
+>  arch/x86/crypto/twofish_glue_3way.c        | 37 ++++++-----
+>  arch/x86/include/asm/crypto/camellia.h     | 63 +++++++++---------
+>  arch/x86/include/asm/crypto/glue_helper.h  | 18 ++----
+>  arch/x86/include/asm/crypto/serpent-avx.h  | 20 +++---
+>  arch/x86/include/asm/crypto/serpent-sse2.h | 28 ++++----
+>  arch/x86/include/asm/crypto/twofish.h      | 19 +++---
+>  crypto/cast6_generic.c                     | 18 +++---
+>  crypto/serpent_generic.c                   |  6 +-
+>  include/crypto/cast6.h                     |  4 +-
+>  include/crypto/serpent.h                   |  4 +-
+>  include/crypto/xts.h                       |  2 -
+>  22 files changed, 374 insertions(+), 413 deletions(-)
 
 Patch applied.  Thanks.
 -- 
