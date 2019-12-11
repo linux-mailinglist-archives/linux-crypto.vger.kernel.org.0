@@ -2,91 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D3211A77E
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Dec 2019 10:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A5E11A77B
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Dec 2019 10:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728447AbfLKJjN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Dec 2019 04:39:13 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:54434 "EHLO deadmen.hmeau.com"
+        id S1728398AbfLKJjA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Dec 2019 04:39:00 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:54414 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727318AbfLKJjN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Dec 2019 04:39:13 -0500
+        id S1727318AbfLKJi7 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 11 Dec 2019 04:38:59 -0500
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1ieySK-00008Q-PN; Wed, 11 Dec 2019 17:38:52 +0800
+        id 1ieySN-00008V-7g; Wed, 11 Dec 2019 17:38:55 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1ieySC-0005TH-9x; Wed, 11 Dec 2019 17:38:44 +0800
-Date:   Wed, 11 Dec 2019 17:38:44 +0800
+        id 1ieySL-0005dj-0a; Wed, 11 Dec 2019 17:38:53 +0800
+Date:   Wed, 11 Dec 2019 17:38:52 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     =?iso-8859-1?Q?Jo=E3o?= Moreira <joao.moreira@intel.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Stephan Mueller <smueller@chronox.de>, x86@kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v7] crypto: x86: Regularize glue function prototypes
-Message-ID: <20191211093844.vwguh6yjgab5hza5@gondor.apana.org.au>
-References: <201911262205.FD985935F@keescook>
+To:     Gilad Ben-Yossef <gilad@benyossef.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Ofir Drang <ofir.drang@arm.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] crypto: ccree: fixes
+Message-ID: <20191211093852.h47k5gk3lnclgmip@gondor.apana.org.au>
+References: <20191127084909.14472-1-gilad@benyossef.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <201911262205.FD985935F@keescook>
+In-Reply-To: <20191127084909.14472-1-gilad@benyossef.com>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Nov 26, 2019 at 10:08:02PM -0800, Kees Cook wrote:
-> The crypto glue performed function prototype casting via macros to make
-> indirect calls to assembly routines. Instead of performing casts at the
-> call sites (which trips Control Flow Integrity prototype checking), switch
-> each prototype to a common standard set of arguments which allows the
-> removal of the existing macros. In order to keep pointer math unchanged,
-> internal casting between u128 pointers and u8 pointers is added.
+On Wed, Nov 27, 2019 at 10:49:04AM +0200, Gilad Ben-Yossef wrote:
+> Assorted fixes for the ccree driver
 > 
-> Co-developed-by: João Moreira <joao.moreira@intel.com>
-> Signed-off-by: João Moreira <joao.moreira@intel.com>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> v7:
-> - added João's SoB (ebiggers)
-> - corrected aesni .S prototype comments (ebiggers)
-> - collapsed glue series into a single patch (ebiggers)
-> v6: https://lore.kernel.org/lkml/20191122010334.12081-1-keescook@chromium.org
-> v5: https://lore.kernel.org/lkml/20191113182516.13545-1-keescook@chromium.org
-> v4: https://lore.kernel.org/lkml/20191111214552.36717-1-keescook@chromium.org
-> v3: https://lore.kernel.org/lkml/20190507161321.34611-1-keescook@chromium.org
-> ---
->  arch/x86/crypto/aesni-intel_asm.S          |  8 +--
->  arch/x86/crypto/aesni-intel_glue.c         | 45 ++++++-------
->  arch/x86/crypto/camellia_aesni_avx2_glue.c | 74 ++++++++++-----------
->  arch/x86/crypto/camellia_aesni_avx_glue.c  | 72 +++++++++------------
->  arch/x86/crypto/camellia_glue.c            | 45 +++++++------
->  arch/x86/crypto/cast6_avx_glue.c           | 68 +++++++++-----------
->  arch/x86/crypto/glue_helper.c              | 23 ++++---
->  arch/x86/crypto/serpent_avx2_glue.c        | 65 +++++++++----------
->  arch/x86/crypto/serpent_avx_glue.c         | 63 +++++++++---------
->  arch/x86/crypto/serpent_sse2_glue.c        | 30 +++++----
->  arch/x86/crypto/twofish_avx_glue.c         | 75 ++++++++++------------
->  arch/x86/crypto/twofish_glue_3way.c        | 37 ++++++-----
->  arch/x86/include/asm/crypto/camellia.h     | 63 +++++++++---------
->  arch/x86/include/asm/crypto/glue_helper.h  | 18 ++----
->  arch/x86/include/asm/crypto/serpent-avx.h  | 20 +++---
->  arch/x86/include/asm/crypto/serpent-sse2.h | 28 ++++----
->  arch/x86/include/asm/crypto/twofish.h      | 19 +++---
->  crypto/cast6_generic.c                     | 18 +++---
->  crypto/serpent_generic.c                   |  6 +-
->  include/crypto/cast6.h                     |  4 +-
->  include/crypto/serpent.h                   |  4 +-
->  include/crypto/xts.h                       |  2 -
->  22 files changed, 374 insertions(+), 413 deletions(-)
+> Gilad Ben-Yossef (2):
+>   crypto: ccree: remove useless define
+>   crypto: ccree: fix backlog memory leak
+> 
+> Hadar Gat (2):
+>   crypto: ccree: fix typos in comments
+>   crypto: ccree: fix typos in error msgs
+> 
+>  drivers/crypto/ccree/cc_driver.c      |  8 ++++----
+>  drivers/crypto/ccree/cc_driver.h      |  1 -
+>  drivers/crypto/ccree/cc_fips.c        |  2 +-
+>  drivers/crypto/ccree/cc_hash.c        |  2 --
+>  drivers/crypto/ccree/cc_pm.c          |  2 +-
+>  drivers/crypto/ccree/cc_request_mgr.c | 13 +++++++------
+>  6 files changed, 13 insertions(+), 15 deletions(-)
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
