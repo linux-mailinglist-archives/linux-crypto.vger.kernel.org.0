@@ -2,92 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FCB11BCF1
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Dec 2019 20:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A9611BE08
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Dec 2019 21:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728542AbfLKT2S (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Dec 2019 14:28:18 -0500
-Received: from mail-pf1-f201.google.com ([209.85.210.201]:35604 "EHLO
-        mail-pf1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729618AbfLKT2S (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Dec 2019 14:28:18 -0500
-Received: by mail-pf1-f201.google.com with SMTP id r2so2718400pfl.2
-        for <linux-crypto@vger.kernel.org>; Wed, 11 Dec 2019 11:28:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=+AvX3U8tZ4b8BiNANQzx7evp/O/27ZLdKyQrn0pJXbo=;
-        b=DtM9qYehCfFNg/2rDxI9xbbVLYFNzd7QNXDoduc3ewRCMVgsIBSrgdNK5ptL+U4f+2
-         r67/3YrnkoLP7Kqiaz+JAnGYBbYp91kDvxX0ElG4278lRGtqmi82fxSlS+/E0HJKlCJ2
-         Pxf8r+Wx2vW2j1NVRovGNlQ6d9dl9a+90t/5GtKZELnNvodiQsb9QM9G4+kICCGyWT34
-         BikGd90MK2nF5sFfrxHGijgzYzgkkuRp93o8jjSmRsAr4wlMv9uTK1Col8Wpaoq82MTI
-         uxNScY05gmd/DRSdPfpQ9UdSWG4SUXok6uU6aqu5cBqV2PCE4FKZHWP0rt3hpdxJsCFA
-         xi5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=+AvX3U8tZ4b8BiNANQzx7evp/O/27ZLdKyQrn0pJXbo=;
-        b=A7ops8xMZdwKLaYQXWsHAns6/lSk82KDiG2fKVewgAkd1892nu1/itThfTPWztYNFL
-         SpU50+gaG5sbpMaEd67lBMVpXSsXdQ27zQ7vCdaGG2OdHJov2IkrLd3genkw7ZbAa+0X
-         afV7olWc9DAYCSAhr0yGHZYNYjsC/JQ0B4zqRowg2PTpYhuxtN3wkXsWwlsGpDIIt16n
-         G56RufkdyRGLxz9f9Et3CoB8yZBryvtkQpr+eIOksPqMaYDY6PAvvVxvcKei6/DXZksM
-         o9N+4Qwa8cdLIefEgkVMDr+gYxVXMSYp3oTLKGTNZ8h199P4zH7/dpQBfSTEt0GMCpwl
-         mA5g==
-X-Gm-Message-State: APjAAAUH3ATS/koscKVpO8Cj4z6/F9kx4sJIZy6bGgMUbMSL88n2MsQU
-        1+MjSqp1HH+oZ3u67o/SAYmQhbkq3bxNBVq/xDjIoA==
-X-Google-Smtp-Source: APXvYqzo2ljEGvchzRcyIbUEZT9wdgSNT2CgcXIYDlIj+7NoyR/2724Q+hSDkumLb2AjZxDXvEVS1q4vfz+to4FDTj4n7g==
-X-Received: by 2002:a63:d642:: with SMTP id d2mr5757128pgj.205.1576092497512;
- Wed, 11 Dec 2019 11:28:17 -0800 (PST)
-Date:   Wed, 11 Dec 2019 11:27:40 -0800
-In-Reply-To: <20191211192742.95699-1-brendanhiggins@google.com>
-Message-Id: <20191211192742.95699-6-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20191211192742.95699-1-brendanhiggins@google.com>
-X-Mailer: git-send-email 2.24.0.525.g8f36a354ae-goog
-Subject: [PATCH v1 5/7] crypto: amlogic: add unspecified HAS_IOMEM dependency
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        davidgow@google.com, Brendan Higgins <brendanhiggins@google.com>,
-        linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1727780AbfLKUiB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Dec 2019 15:38:01 -0500
+Received: from ozlabs.org ([203.11.71.1]:34943 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726242AbfLKUiB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 11 Dec 2019 15:38:01 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 47Y7zV6Cfbz9sR7;
+        Thu, 12 Dec 2019 07:37:58 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1576096679;
+        bh=TqGBa9RdBOyz6xcAX/wv4TSVKSa+idsg3abp07UvJLk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qD1PQgWRLTvewnvTCIT5SUEQezIMQynjhMSmcBWOq83b4V3/cFgKZbRK9iUuP1pya
+         bAawTvI228Q1fNzP4kRuqoj278xzOfzesC3umyO6vfer8ILlstLRto0t9L27Qja9hA
+         5OtKiXi+nUxMYt3Yvpyx8v4uc8JR4xBtmDKtHqurm4dbfIWHTfxOjJyHA1bvP4856R
+         bRPN4wlDtc/aQLTUBCkUJP2y3WFtsiRu+opY+DgpHqXfmuAUHaAcV4Wq8lbT7HiMAm
+         f8YNsJ+oEO7c1sRWup5Xs9LOQXBv3a+Gz6gOPSmFjbC9dkb4Fo4h9Z+Z673bLSuVD7
+         u+B2Iq0sWlhwQ==
+Date:   Thu, 12 Dec 2019 07:37:50 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+Subject: linux-next: Fixes tag needs some work in the crypto tree
+Message-ID: <20191212073750.62a974dd@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/YThANIE2iXQVlG+Kq.23wPW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Currently CONFIG_CRYPTO_DEV_AMLOGIC_GXL=y implicitly depends on
-CONFIG_HAS_IOMEM=y; consequently, on architectures without IOMEM we get
-the following build error:
+--Sig_/YThANIE2iXQVlG+Kq.23wPW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-ld: drivers/crypto/amlogic/amlogic-gxl-core.o: in function `meson_crypto_probe':
-drivers/crypto/amlogic/amlogic-gxl-core.c:240: undefined reference to `devm_platform_ioremap_resource'
+Hi all,
 
-Fix the build error by adding the unspecified dependency.
+In commit
 
-Reported-by: Brendan Higgins <brendanhiggins@google.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- drivers/crypto/amlogic/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+  7278fa25aa0e ("crypto: caam - do not reset pointer size from MCFGR regist=
+er")
 
-diff --git a/drivers/crypto/amlogic/Kconfig b/drivers/crypto/amlogic/Kconfig
-index b90850d18965f..cf95476026708 100644
---- a/drivers/crypto/amlogic/Kconfig
-+++ b/drivers/crypto/amlogic/Kconfig
-@@ -1,5 +1,6 @@
- config CRYPTO_DEV_AMLOGIC_GXL
- 	tristate "Support for amlogic cryptographic offloader"
-+	depends on HAS_IOMEM
- 	default y if ARCH_MESON
- 	select CRYPTO_SKCIPHER
- 	select CRYPTO_ENGINE
--- 
-2.24.0.525.g8f36a354ae-goog
+Fixes tag
 
+  Fixes: a1cf573ee95 ("crypto: caam - select DMA address size at runtime")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/YThANIE2iXQVlG+Kq.23wPW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl3xU54ACgkQAVBC80lX
+0GwWrQgAnRRG1FHbQHrQCQ2UrHc9f8sBoAOaENCMuiw+GZwFN48SC5wlm4bWui+r
+AOJ+B90RFl9tbGX7cUbvTwfQO6LKx18dqP3AdWcCtSRO7/FteXJnT6Ry0k/oz5dU
+voAHWjwYDCmg9LWRlDGoMHhRemUEmRj7HMVM5+5zAxumoNMI84olB/DwhICGUDLU
+n3CIDxgptPGerGQ8w1luxuA8Un9IeuyIrrhqqAMFGGkyiVyT3PXwp8PwSyT3uGa7
+0HF584uS0yY4pntbsebAa0WYOzJo7eq8my8vIIDH8R4OlcmX6sfWs1HPgeaD2hXU
+Tz0L2mW178H5rReqsliwiR9iUMiybg==
+=l8JG
+-----END PGP SIGNATURE-----
+
+--Sig_/YThANIE2iXQVlG+Kq.23wPW--
