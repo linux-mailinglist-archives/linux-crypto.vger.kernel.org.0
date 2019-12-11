@@ -2,61 +2,107 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A5E11A77B
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Dec 2019 10:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD2911A779
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Dec 2019 10:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728398AbfLKJjA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Dec 2019 04:39:00 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:54414 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727318AbfLKJi7 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Dec 2019 04:38:59 -0500
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1ieySN-00008V-7g; Wed, 11 Dec 2019 17:38:55 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1ieySL-0005dj-0a; Wed, 11 Dec 2019 17:38:53 +0800
-Date:   Wed, 11 Dec 2019 17:38:52 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Ofir Drang <ofir.drang@arm.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] crypto: ccree: fixes
-Message-ID: <20191211093852.h47k5gk3lnclgmip@gondor.apana.org.au>
-References: <20191127084909.14472-1-gilad@benyossef.com>
+        id S1728619AbfLKJi6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Dec 2019 04:38:58 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41186 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728527AbfLKJi6 (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 11 Dec 2019 04:38:58 -0500
+Received: by mail-wr1-f66.google.com with SMTP id c9so23250461wrw.8
+        for <linux-crypto@vger.kernel.org>; Wed, 11 Dec 2019 01:38:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vpAB2VunJi/hr5WJdoV5Gbgby6kk23SzTl+e0ymIH3E=;
+        b=PGeyFwB2stSmWA6Y07SK58oUwxsuOdFywJjIQOqKUtnN/Vgv26e5IJt3bLoso0HWAl
+         umL3nzIIcaCU3opZL0eacrNCQVS557vvz6S98jpxkp8k9Z97a4rjzLpuTZ2rnCXaoAuX
+         1krLvgrF1UFYXT6XpcrwcJXi7bDBwaPvAtsarvKYxc8YLV/tVicv9Wxsp/Rcsl9RYnMn
+         wdCg+wBrSfVU1o9dRhXb0kDBm9VJwATzO9KwGewATTyZDaBsTzVzpQAfIN4cgNjb558c
+         4Be2mIqIest13/lbhIEbYh2b3ca8dQJeqoiAuViGyuCj/kYIxCASXw8QQijYiLT/C+F9
+         d4Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vpAB2VunJi/hr5WJdoV5Gbgby6kk23SzTl+e0ymIH3E=;
+        b=XlqiTpS5rsiRNss9+D1XgNR3SiiN+0ZOkUKuQX/KVdbDqs3lgiRkDT0z4UyVj8noGW
+         IG3VGS7zTP5JCF/J42MDG3EuxMAbIK8rLeYtlz35b9h2wiK4VI7rQRt0V7mw6TVkGgLF
+         pmBL0BUfKGeEKLarM3BI2dMahJn9pzspY79p3cmY91zqt2edsjAc0NA4/1yqGlF2fNTH
+         +6vFaXVFtfGv00XN8pGHuQ+Hjw2OArzcRU2QUu2V675gbll4UXcOzYl7RBvX257On5pt
+         jZMpDg/xnRFSramb2xTJsBd3HRAP9yvYvJptKBqVoX5MZQUB5gmozGJl9ZBBM5wVLboJ
+         0hAw==
+X-Gm-Message-State: APjAAAXpC9IsqdbPcu6k1UQidlD1sRJC2mOi6d+lA+9WvqbPmg2ulk6D
+        Zc8gfV3OY1L56067baK+qJSRS1NCLZ1aiOc0ngHpkQ==
+X-Google-Smtp-Source: APXvYqzS9NV895DIXOWDSxsk8Dt5Yb3kvVGBjEhZUimO4Ao8HcRX1tAJFyvLkxzffrJ9VDtoRG82u/OcFftgIXiBkLs=
+X-Received: by 2002:a5d:6652:: with SMTP id f18mr2765986wrw.246.1576057136102;
+ Wed, 11 Dec 2019 01:38:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191127084909.14472-1-gilad@benyossef.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+References: <20191211102455.7b55218e@canb.auug.org.au> <20191211092640.107621-1-Jason@zx2c4.com>
+In-Reply-To: <20191211092640.107621-1-Jason@zx2c4.com>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Wed, 11 Dec 2019 09:38:54 +0000
+Message-ID: <CAKv+Gu80vONMAuv=2OpSOuZHvVv22quRxeNtbxnSkFBz_DvfbQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] crypto: arm/curve25519 - add arch-specific key
+ generation function
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Nov 27, 2019 at 10:49:04AM +0200, Gilad Ben-Yossef wrote:
-> Assorted fixes for the ccree driver
-> 
-> Gilad Ben-Yossef (2):
->   crypto: ccree: remove useless define
->   crypto: ccree: fix backlog memory leak
-> 
-> Hadar Gat (2):
->   crypto: ccree: fix typos in comments
->   crypto: ccree: fix typos in error msgs
-> 
->  drivers/crypto/ccree/cc_driver.c      |  8 ++++----
->  drivers/crypto/ccree/cc_driver.h      |  1 -
->  drivers/crypto/ccree/cc_fips.c        |  2 +-
->  drivers/crypto/ccree/cc_hash.c        |  2 --
->  drivers/crypto/ccree/cc_pm.c          |  2 +-
->  drivers/crypto/ccree/cc_request_mgr.c | 13 +++++++------
->  6 files changed, 13 insertions(+), 15 deletions(-)
+On Wed, 11 Dec 2019 at 10:27, Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+>
+> Somehow this was forgotten when Zinc was being split into oddly shaped
+> pieces, resulting in linker errors.
 
-All applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Zinc has no historical significance here, so it doesn't make sense to
+keep referring to it in the commit logs.
+
+> The x86_64 glue has a specific key
+> generation implementation, but the Arm one does not. However, it can
+> still receive the NEON speedups by calling the ordinary DH function
+> using the base point.
+>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+
+With the first sentence dropped,
+
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+> ---
+>  arch/arm/crypto/curve25519-glue.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/arch/arm/crypto/curve25519-glue.c b/arch/arm/crypto/curve25519-glue.c
+> index f3f42cf3b893..776ae07e0469 100644
+> --- a/arch/arm/crypto/curve25519-glue.c
+> +++ b/arch/arm/crypto/curve25519-glue.c
+> @@ -38,6 +38,13 @@ void curve25519_arch(u8 out[CURVE25519_KEY_SIZE],
+>  }
+>  EXPORT_SYMBOL(curve25519_arch);
+>
+> +void curve25519_base_arch(u8 pub[CURVE25519_KEY_SIZE],
+> +                         const u8 secret[CURVE25519_KEY_SIZE])
+> +{
+> +       return curve25519_arch(pub, secret, curve25519_base_point);
+> +}
+> +EXPORT_SYMBOL(curve25519_base_arch);
+> +
+>  static int curve25519_set_secret(struct crypto_kpp *tfm, const void *buf,
+>                                  unsigned int len)
+>  {
+> --
+> 2.24.0
+>
