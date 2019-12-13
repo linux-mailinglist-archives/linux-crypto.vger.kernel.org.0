@@ -2,16 +2,16 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F404A11E135
+	by mail.lfdr.de (Postfix) with ESMTP id 6112211E134
 	for <lists+linux-crypto@lfdr.de>; Fri, 13 Dec 2019 10:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725793AbfLMJyw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 13 Dec 2019 04:54:52 -0500
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:43925 "EHLO
+        id S1725818AbfLMJyv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 13 Dec 2019 04:54:51 -0500
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:43918 "EHLO
         esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbfLMJyw (ORCPT
+        with ESMTP id S1725747AbfLMJyv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 13 Dec 2019 04:54:52 -0500
+        Fri, 13 Dec 2019 04:54:51 -0500
 Received-SPF: Pass (esa6.microchip.iphmx.com: domain of
   Tudor.Ambarus@microchip.com designates 198.175.253.82 as
   permitted sender) identity=mailfrom;
@@ -31,30 +31,30 @@ Received-SPF: None (esa6.microchip.iphmx.com: no sender
   x-sender="postmaster@email.microchip.com";
   x-conformance=spf_only
 Authentication-Results: esa6.microchip.iphmx.com; spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com; spf=None smtp.helo=postmaster@email.microchip.com; dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com; dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: bViNsiJ3DQeCiZKKvkIIL7zaEXM1OPf9+i3sBHEvmI1PS5OGz8z84mj5fFTRhd7p2MKsy2JNR/
- IYbXysvdM0ukbkEfYKazkRCuW1Lk4VEWwRNYUeWiVunmKb4oZNsaqyDPtFRo7Nr3KvxmiXtJAa
- ddBl79MmvOgxOh+QiQSGioaR/6jIU8hjSmU2JRmICUJkSSA5uDKh/sltMZ+Frlca+HYqpJvBAr
- VMlDuGJLyiL+otSN48wJ4FD1BbScZA2q6LpAnOE4JIuBXi29r2TPbdgLBm17CgwFNmqep2MW63
- YkE=
+IronPort-SDR: Wxc1BHQu0Ft7Vbod7NyRM3QAGynH88OulwHc/OzbHDOVOzyfLInMj0V4jzA+xeylAXnO8qRjkn
+ sdL+6zAd5BFufsSPWemqcze6326oMlaIwxgtuK1DQAOBrI0BWb+B41du4qml1Afsjql+5RAhfR
+ 7TmFMy8NsIS2YW7LENGGVvdZJjSwWfQXcuecNq1pl2ScF3HDOZFEiutPG1bky01bdw9akqdeuK
+ rROm26FaBbKV8e5w2i9FaNsk+Gzy4wpB6miTI9Y4NlsdTgEkrQlL72/ThZdG1q/0LkvsBee+rz
+ 0hQ=
 X-IronPort-AV: E=Sophos;i="5.69,309,1571727600"; 
-   d="scan'208";a="57649458"
+   d="scan'208";a="57649452"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Dec 2019 02:54:50 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Dec 2019 02:54:49 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 13 Dec 2019 02:54:44 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Fri, 13 Dec 2019 02:54:44 -0700
+ 15.1.1713.5; Fri, 13 Dec 2019 02:54:49 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Fri, 13 Dec 2019 02:54:50 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bSd01B7JW5zphuj6BMXYLZKz1vF7HF9TxfVvuJlIXutoSnlwPa29e7t/cHBV5gLn09vdnmOcBNU8Zo+hhZGKLRl/hR5Xk5PCQPtv87SNQnWNMFZprt6KjazyL8/pX2hUHpTpJ/byFDFyZmbEYqcEYDbb5pRMOpvC/aC82GF8PtGzD2Bk1u6WfkX9LetWxp28kDjLhnLD/pFhnvUe8bX4/k2mw31XkXgr9iXx4sHu1YmPM78hC25EJYPbrszbKAIKGg1UPO2LC7jE3jTw/IJW5sciGympRyMqLpvWB7bhKjDcY37K9gdEauQyfZwwadO8My3jnZ9YF+KWtVFPCNQitg==
+ b=JAZv96/oVjhy0TywBkSEm7i4soEA9IiAMBMMYiRiTKRbpvEEa5A01H2IZyV+kkL8lU+rlp7I2QyNoalu82yXJBDO3bqdv4S9f9YHPYLWp42hXZaXmzeye8ApvVwH4EKrLj79A2XKHrgl4Zz4U5MggkLvg43EDiOq6cjd//v5fh/Wif852kYEiozCfxWJzJdxq9DVb7S5RAcrnK4gbSCeVzVnZjU67mFf6W7S7Loxs75PcWWV/T43jPrOxViRv9iOeSYhucpBET9LmVF/mLqW0JPh2joszzJEIi9c/dnnLMaOhcHGCz0d+iLiBgxHvYnUMEj/9YRJlDBgOCUw3ILJEA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oSU3hhunHsne2rZGzBHQ2zhp1GWPr0QuAbAo0sEba3A=;
- b=FLQVsvJ1tA7ldAYGkLruQY7/YLb668sIMerh9tysGN9GIPxNtmLdWvWNUC7Be8J4aqKjHk6i2dWL7UA4oQFilPhRI05rijxYlIgFZ0pJ/RqXk9o70Bxw/g3r6ccUOpmcc0BeTp783Nb1wBMO71/00MHchL91oXroAYPvWy0719E+3S4s/ttvwAmk0XB/y2AkJsAZ1aJAhgRRVX/eF7PMIvHSI4TsBpRmqJOXfGPG40fLEieYqpi4E6b6GKJiyYiDNfL1ZAbGw2BOISjRzqeANNyAZ450q4aHnX65XSuwmsE4teTdX/kIMOzFmWEFxYTAu5GYa+cLqOH0vAjCuCiRjQ==
+ bh=4NeDqx7LrQMA08AVT50hCJsEFCoejkUetk+9QxD5C1U=;
+ b=ErJ6of+E7zlpc4KITDHQVgmjRfiVCXhFFKp2qDggf7DK9ULvr64PtKaLbHdyODaerETTrAmcA9GJdTxMqUAASsbMtTuDCk55KsAj4r+DNOMEx3+J9KIhwcwBpreCrwdRd7DMXqJmHncag9YjCgnqeHKtBalvc1ECCGQsLnOzqJp2bRZHAg5drl+ORTWiR5zaF7V3UtaKZyPsXYt9JfVCC6RaFYtcH25SVQMMCjjVkvlgc3F3N3ofeGlSeKOQLZW0dt5BYX7fjmjEdBP5WDJAJUIU8xv3U21lyID/LgA733MHlRqZSYPh3FsLTq9XK+7zOY4hxj7hta0k0onhM+BkSw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microchip.com; dmarc=pass action=none
  header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
@@ -62,29 +62,31 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oSU3hhunHsne2rZGzBHQ2zhp1GWPr0QuAbAo0sEba3A=;
- b=Jantg6rY17u6Jj8RAE96B2sSlwK+5o7FVhYRf0T3UCS0R/rlmenEvTpO5u8WIAWaYz0Tquyd/yYd+DfO4FbmpLoc2gEI7BU9Q709tlX/rP4MoasAh8qfsV+reXAHKrhhrRQ7pSo2gpYxSu64O3iXkLMReEC7YIhA+nUZVeWDJOo=
+ bh=4NeDqx7LrQMA08AVT50hCJsEFCoejkUetk+9QxD5C1U=;
+ b=utfwM0TM+MhWbJkhV6BrO5ZbUYdDZ8OWapruG9NpAbY6FWuAYSrlR8KLDgCFhkF/SQg1jObeJei8XUnnFolaQ+panmIetUNsfd6lGtkXmYcfySZXYWlZUzwopvUcN+lBR1E5c0zW8lbk9MJNIzyYZjkpwVv5Zmp/MiRNeaiRA5s=
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
- MN2PR11MB4029.namprd11.prod.outlook.com (10.255.181.143) with Microsoft SMTP
+ MN2PR11MB3935.namprd11.prod.outlook.com (10.255.180.93) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2538.17; Fri, 13 Dec 2019 09:54:42 +0000
+ 15.20.2538.17; Fri, 13 Dec 2019 09:54:47 +0000
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::84c:6e75:22df:cbc9]) by MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::84c:6e75:22df:cbc9%5]) with mapi id 15.20.2538.017; Fri, 13 Dec 2019
- 09:54:42 +0000
+ 09:54:47 +0000
 From:   <Tudor.Ambarus@microchip.com>
 To:     <herbert@gondor.apana.org.au>
 CC:     <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
         <Ludovic.Desroches@microchip.com>, <linux-crypto@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <Tudor.Ambarus@microchip.com>
-Subject: [PATCH 1/5] crypto: atmel-{aes,sha} - Fix incorrect use of
- dmaengine_terminate_all()
-Thread-Topic: [PATCH 1/5] crypto: atmel-{aes,sha} - Fix incorrect use of
- dmaengine_terminate_all()
-Thread-Index: AQHVsZtXl3FLQBYVpUWR9FcsoWA+VA==
-Date:   Fri, 13 Dec 2019 09:54:42 +0000
-Message-ID: <20191213095423.6687-1-tudor.ambarus@microchip.com>
+Subject: [PATCH 2/5] crypto: atmel-{aes,sha,tdes} - Drop duplicate init of
+ dma_slave_config.direction
+Thread-Topic: [PATCH 2/5] crypto: atmel-{aes,sha,tdes} - Drop duplicate init
+ of dma_slave_config.direction
+Thread-Index: AQHVsZta6SvbcgatykCqmhrO1amI4Q==
+Date:   Fri, 13 Dec 2019 09:54:46 +0000
+Message-ID: <20191213095423.6687-2-tudor.ambarus@microchip.com>
+References: <20191213095423.6687-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20191213095423.6687-1-tudor.ambarus@microchip.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -96,29 +98,29 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-mailer: git-send-email 2.20.1
 x-originating-ip: [86.122.210.80]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 85fe602a-fc97-464e-cfff-08d77fb279e3
-x-ms-traffictypediagnostic: MN2PR11MB4029:
+x-ms-office365-filtering-correlation-id: 489a8edc-f158-4a83-9cba-08d77fb27ca3
+x-ms-traffictypediagnostic: MN2PR11MB3935:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR11MB4029E12915250B75E2C2757BF0540@MN2PR11MB4029.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-microsoft-antispam-prvs: <MN2PR11MB3935B5A50FD57DA29756DF8AF0540@MN2PR11MB3935.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
 x-forefront-prvs: 0250B840C1
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(346002)(39860400002)(396003)(366004)(136003)(189003)(199004)(2616005)(2906002)(186003)(71200400001)(6916009)(6512007)(86362001)(6486002)(478600001)(52116002)(26005)(66556008)(5660300002)(1076003)(36756003)(81156014)(64756008)(107886003)(81166006)(54906003)(8676002)(316002)(6506007)(66946007)(66476007)(4326008)(8936002)(66446008)(142933001);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR11MB4029;H:MN2PR11MB4448.namprd11.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(346002)(39860400002)(396003)(366004)(136003)(199004)(189003)(2616005)(2906002)(6486002)(6916009)(71200400001)(6512007)(86362001)(186003)(26005)(478600001)(52116002)(64756008)(66446008)(81156014)(1076003)(5660300002)(81166006)(54906003)(107886003)(8936002)(36756003)(316002)(66556008)(66476007)(66946007)(6506007)(4326008)(8676002)(142933001);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR11MB3935;H:MN2PR11MB4448.namprd11.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: microchip.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 15Q4QUEuYyLGKjdS3uo/5ciFvwFZIbg82OfZRSSgz4VukqrQSdp5XIh17O2bKW6PptkTf1AGkVgX5cirlQg1drEZQCttQF/0zbI263zO1le274WQFVyqH4xUhuYtQG3Jefu9DFD1dTHmf93hNPQBk8TKxnfF4LWzJtFFTFbp5dX61UoWunVNiY0Fu+aUnXyG5fA12WyECKPZnkuzQ2c7aqW0qK9rPjS+fb0JXjfm18+Bh0kTH3I1edr/yBsz/IpUVofmgWgpDEb95jPS8XiQfUDffryxgzrHjBjqw6d5xmCpULvjdCXj/vH6zJDwMg2VwgvVvt66A3DC8ZHobYqXq/U3JsoNNKNNmcrJK/l/0jP04/HfnZ36U+/EG9YRDPCMlQuj74NEHdETAY41Nz9tn01Rj0gADsCSx8FYhA5/ZNK7djznBsnt2wa5xLRf1ks8w3MgZXFFlgfGhr5RTXZ+7tWLUmE5CWBsTNPKH2AztK45grCjHfxz6vTFyXDxrWOF
+x-microsoft-antispam-message-info: av3zv3dJ38E3DTZRebKgenpfp6Y+gyGx1mDOnpUDLblKsAf4ATwF8xQieqbQDciNjho22Q7SD2ZpR6gkCJVodvKBdCCLs0tR8IIsLHxEJKAQxYOYJtlehWZ1rj85+GJqyeMeqCuT+ijYYUX4pMq6Tu6JYBBccdjYTDd6E5GqyH41jBy/ajue+5dpq8C0uRq93A8t1PGB7+vg5PSsuHYUYFqRcH9ZbVnZCmCMGTeFLEZwbtLzjNTtwZeIO41aCLdFO7mg/LECGAO5vl70S6VepQ+a/TevSS88LFtfYpKoapZc0NExXuuZt81qC10DNMbBm4+QBFibUg7nOwm/jsvFdgFUKcZebCo6fSCrgjHdbhkcOPwRjI165t/9bDaTjCHfkpTJ2XKDol6+o0Hc3OoGUjFmi+umNZnN1D+7/IKujfvHrAeZHeynqgqMIIWmyc9fTUacT6RGZi1rqBJ6dQQldrLP1hu2aWrxuGjhDhCyUnTq2IyeX+JhYvRhItW8/Pc9
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85fe602a-fc97-464e-cfff-08d77fb279e3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Dec 2019 09:54:42.4442
+X-MS-Exchange-CrossTenant-Network-Message-Id: 489a8edc-f158-4a83-9cba-08d77fb27ca3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Dec 2019 09:54:46.9947
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4lE4oAYFGEeu1r1pHuPHIzDAXcxeAo3X9W1m/qMqANc8Jvl+RYiE5AhqyArakGJFCTgKAWMELaOtCXMmzyLu2k5hrUgpIlULl3k0nHAgVVo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4029
+X-MS-Exchange-CrossTenant-userprincipalname: emSCxbgYZo2dhNWivkyxxsLvezPZE7X60Q4r6I64A+FY11s9B62KLOSnivfTw8uer1E7WPn+l8BDGNgk7tZc2G6dmLECT+trrQMihiee8BQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3935
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
@@ -126,100 +128,64 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-device_terminate_all() is used to abort all the pending and
-ongoing transfers on the channel, it should be used just in the
-error path.
-
-Also, dmaengine_terminate_all() is deprecated and one should use
-dmaengine_terminate_async() or dmaengine_terminate_sync(). The method
-is not used in atomic context, use dmaengine_terminate_sync().
-
-A secondary aspect of this patch is that it luckily avoids a deadlock
-between atmel_aes and at_hdmac.c. While in tasklet with the lock held,
-the dma controller invokes the client callback (dmaengine_terminate_all),
-which tries to get the same lock. The at_hdmac fix would be to drop the
-lock before invoking the client callback, a fix on at_hdmac will follow.
+The 'direction' member of the dma_slave_config will be going away
+as it duplicates the direction given in the prepare call.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/crypto/atmel-aes.c | 32 ++------------------------------
- drivers/crypto/atmel-sha.c |  1 -
- 2 files changed, 2 insertions(+), 31 deletions(-)
+ drivers/crypto/atmel-aes.c  | 1 -
+ drivers/crypto/atmel-sha.c  | 1 -
+ drivers/crypto/atmel-tdes.c | 2 --
+ 3 files changed, 4 deletions(-)
 
 diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
-index 47b20df3adfc..c3f0e99d24b0 100644
+index c3f0e99d24b0..d5a116693010 100644
 --- a/drivers/crypto/atmel-aes.c
 +++ b/drivers/crypto/atmel-aes.c
-@@ -857,27 +857,6 @@ static int atmel_aes_dma_transfer_start(struct atmel_a=
-es_dev *dd,
- 	return 0;
- }
+@@ -817,7 +817,6 @@ static int atmel_aes_dma_transfer_start(struct atmel_ae=
+s_dev *dd,
+ 	int err;
 =20
--static void atmel_aes_dma_transfer_stop(struct atmel_aes_dev *dd,
--					enum dma_transfer_direction dir)
--{
--	struct atmel_aes_dma *dma;
--
--	switch (dir) {
--	case DMA_MEM_TO_DEV:
--		dma =3D &dd->src;
--		break;
--
--	case DMA_DEV_TO_MEM:
--		dma =3D &dd->dst;
--		break;
--
--	default:
--		return;
--	}
--
--	dmaengine_terminate_all(dma->chan);
--}
--
- static int atmel_aes_dma_start(struct atmel_aes_dev *dd,
- 			       struct scatterlist *src,
- 			       struct scatterlist *dst,
-@@ -936,25 +915,18 @@ static int atmel_aes_dma_start(struct atmel_aes_dev *=
-dd,
- 	return -EINPROGRESS;
-=20
- output_transfer_stop:
--	atmel_aes_dma_transfer_stop(dd, DMA_DEV_TO_MEM);
-+	dmaengine_terminate_sync(dd->dst.chan);
- unmap:
- 	atmel_aes_unmap(dd);
- exit:
- 	return atmel_aes_complete(dd, err);
- }
-=20
--static void atmel_aes_dma_stop(struct atmel_aes_dev *dd)
--{
--	atmel_aes_dma_transfer_stop(dd, DMA_MEM_TO_DEV);
--	atmel_aes_dma_transfer_stop(dd, DMA_DEV_TO_MEM);
--	atmel_aes_unmap(dd);
--}
--
- static void atmel_aes_dma_callback(void *data)
- {
- 	struct atmel_aes_dev *dd =3D data;
-=20
--	atmel_aes_dma_stop(dd);
-+	atmel_aes_unmap(dd);
- 	dd->is_async =3D true;
- 	(void)dd->resume(dd);
- }
+ 	memset(&config, 0, sizeof(config));
+-	config.direction =3D dir;
+ 	config.src_addr_width =3D addr_width;
+ 	config.dst_addr_width =3D addr_width;
+ 	config.src_maxburst =3D maxburst;
 diff --git a/drivers/crypto/atmel-sha.c b/drivers/crypto/atmel-sha.c
-index ebf500153700..7cf4ec9ed93a 100644
+index 7cf4ec9ed93a..21fcc04f6688 100644
 --- a/drivers/crypto/atmel-sha.c
 +++ b/drivers/crypto/atmel-sha.c
-@@ -1429,7 +1429,6 @@ static void atmel_sha_dma_callback2(void *data)
- 	struct scatterlist *sg;
- 	int nents;
+@@ -2493,7 +2493,6 @@ static int atmel_sha_dma_init(struct atmel_sha_dev *d=
+d,
+ 		return ret;
+ 	}
 =20
--	dmaengine_terminate_all(dma->chan);
- 	dma_unmap_sg(dd->dev, dma->sg, dma->nents, DMA_TO_DEVICE);
+-	dd->dma_lch_in.dma_conf.direction =3D DMA_MEM_TO_DEV;
+ 	dd->dma_lch_in.dma_conf.dst_addr =3D dd->phys_base +
+ 		SHA_REG_DIN(0);
+ 	dd->dma_lch_in.dma_conf.src_maxburst =3D 1;
+diff --git a/drivers/crypto/atmel-tdes.c b/drivers/crypto/atmel-tdes.c
+index 12268b549596..51b332527efd 100644
+--- a/drivers/crypto/atmel-tdes.c
++++ b/drivers/crypto/atmel-tdes.c
+@@ -753,7 +753,6 @@ static int atmel_tdes_dma_init(struct atmel_tdes_dev *d=
+d,
+ 		goto err_dma_in;
+ 	}
 =20
- 	sg =3D dma->sg;
+-	dd->dma_lch_in.dma_conf.direction =3D DMA_MEM_TO_DEV;
+ 	dd->dma_lch_in.dma_conf.dst_addr =3D dd->phys_base +
+ 		TDES_IDATA1R;
+ 	dd->dma_lch_in.dma_conf.src_maxburst =3D 1;
+@@ -770,7 +769,6 @@ static int atmel_tdes_dma_init(struct atmel_tdes_dev *d=
+d,
+ 		goto err_dma_out;
+ 	}
+=20
+-	dd->dma_lch_out.dma_conf.direction =3D DMA_DEV_TO_MEM;
+ 	dd->dma_lch_out.dma_conf.src_addr =3D dd->phys_base +
+ 		TDES_ODATA1R;
+ 	dd->dma_lch_out.dma_conf.src_maxburst =3D 1;
 --=20
 2.20.1
 
