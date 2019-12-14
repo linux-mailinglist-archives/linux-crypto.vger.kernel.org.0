@@ -2,209 +2,247 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6554311E7EC
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 Dec 2019 17:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A29BB11F094
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Dec 2019 07:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbfLMQRL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 13 Dec 2019 11:17:11 -0500
-Received: from frisell.zx2c4.com ([192.95.5.64]:36999 "EHLO frisell.zx2c4.com"
+        id S1725802AbfLNGoG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 14 Dec 2019 01:44:06 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:60394 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727984AbfLMQRL (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 13 Dec 2019 11:17:11 -0500
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 7458ec03;
-        Fri, 13 Dec 2019 15:21:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
-        :subject:date:message-id:in-reply-to:references:mime-version
-        :content-type:content-transfer-encoding; s=mail; bh=IJGLjR/jsXq9
-        nFZgtA6xSnrurPA=; b=KUaliRGmqUBsuP7jNXVftcdf7W96lgCn+x9o+vziEFIi
-        jRoTeA6pxal/EmewurGOwp1Om/fUoCwUAZsO7fi4emS8nflX3twM4COmCeNhOjZU
-        WKtUxoOG6y9sIr4cmBzp0XqzCgRyUovx1ZXiVTtnRP8aLmJuntQ11c6gYSh8nad8
-        O/TMsJCNLqUJoHsz8lWtqC6+Uz7jaj0/tm8j/KRCIQcX0kueowyHT4KRQJCZCivC
-        hbozaV5TGf8tOl/Sl5UG9esbW2xZY4IJ77PYP4lUhdG7435BMRe1mpxRdwKFgtVO
-        kZLWi/UTXK6LMB7RpfM4EIztGaLG8juY7Fz6e1LekA==
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id f7e17686 (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO);
-        Fri, 13 Dec 2019 15:21:05 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH crypto-next v4 3/3] crypto: arm/arm64/mips/poly1305 - remove redundant non-reduction from emit
-Date:   Fri, 13 Dec 2019 17:16:53 +0100
-Message-Id: <20191213161653.843683-3-Jason@zx2c4.com>
-In-Reply-To: <20191213161653.843683-1-Jason@zx2c4.com>
-References: <20191213161653.843683-1-Jason@zx2c4.com>
+        id S1725730AbfLNGoG (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 14 Dec 2019 01:44:06 -0500
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1ig19p-0002ze-8z; Sat, 14 Dec 2019 14:44:05 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1ig19o-0005jg-S4; Sat, 14 Dec 2019 14:44:04 +0800
+Date:   Sat, 14 Dec 2019 14:44:04 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [v2 PATCH] crypto: api - Retain alg refcount in crypto_grab_spawn
+Message-ID: <20191214064404.qlxgabr3k47473uh@gondor.apana.org.au>
+References: <20191206063812.ueudgjfwzri5ekpr@gondor.apana.org.au>
+ <E1id7G9-00051G-5w@gondobar>
+ <20191206224155.GE246840@gmail.com>
+ <20191207033059.h6kgx7j7jtnqotuy@gondor.apana.org.au>
+ <20191207045234.GA5948@sol.localdomain>
+ <20191207145504.gcwc75enxhqfqhxe@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191207145504.gcwc75enxhqfqhxe@gondor.apana.org.au>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This appears to be some kind of copy and paste error, and is actually
-dead code.
+This patch changes crypto_grab_spawn to retain the reference count
+on the algorithm.  This is because the caller needs to access the
+algorithm parameters and without the reference count the algorithm
+can be freed at any time.
 
-Pre: f = 0 ⇒ (f >> 32) = 0
-    f = (f >> 32) + le32_to_cpu(digest[0]);
-Post: 0 ≤ f < 2³²
-    put_unaligned_le32(f, dst);
+The reference count will be subsequently dropped by the crypto API
+once the instance has been registered.  The helper crypto_drop_spawn
+will also conditionally drop the reference count depending on whether
+it has been registered.
 
-Pre: 0 ≤ f < 2³² ⇒ (f >> 32) = 0
-    f = (f >> 32) + le32_to_cpu(digest[1]);
-Post: 0 ≤ f < 2³²
-    put_unaligned_le32(f, dst + 4);
+Note that the code is actually added to crypto_init_spawn.  However,
+unless the caller activates this by setting spawn->dropref beforehand
+then nothing happens.  The only caller that sets dropref is currently
+crypto_grab_spawn.
 
-Pre: 0 ≤ f < 2³² ⇒ (f >> 32) = 0
-    f = (f >> 32) + le32_to_cpu(digest[2]);
-Post: 0 ≤ f < 2³²
-    put_unaligned_le32(f, dst + 8);
+Once all legacy users of crypto_init_spawn disappear, then we can
+kill the dropref flag.
 
-Pre: 0 ≤ f < 2³² ⇒ (f >> 32) = 0
-    f = (f >> 32) + le32_to_cpu(digest[3]);
-Post: 0 ≤ f < 2³²
-    put_unaligned_le32(f, dst + 12);
+Internally each instance will maintain a list of its spawns prior
+to registration.  This memory used by this list is shared with
+other fields that are only used after registration.  In order for
+this to work a new flag spawn->registered is added to indicate
+whether spawn->inst can be used.
 
-Therefore this sequence is redundant. And Andy's code appears to handle
-misalignment acceptably.
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Tested-by: Ard Biesheuvel <ardb@kernel.org>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/arm/crypto/poly1305-glue.c   | 18 ++----------------
- arch/arm64/crypto/poly1305-glue.c | 18 ++----------------
- arch/mips/crypto/poly1305-glue.c  | 18 ++----------------
- 3 files changed, 6 insertions(+), 48 deletions(-)
-
-diff --git a/arch/arm/crypto/poly1305-glue.c b/arch/arm/crypto/poly1305-glue.c
-index abe3f2d587dc..ceec04ec2f40 100644
---- a/arch/arm/crypto/poly1305-glue.c
-+++ b/arch/arm/crypto/poly1305-glue.c
-@@ -20,7 +20,7 @@
+diff --git a/crypto/algapi.c b/crypto/algapi.c
+index cd643e294664..0d34d519a72e 100644
+--- a/crypto/algapi.c
++++ b/crypto/algapi.c
+@@ -124,8 +124,6 @@ static void crypto_remove_instance(struct crypto_instance *inst,
+ 		return;
  
- void poly1305_init_arm(void *state, const u8 *key);
- void poly1305_blocks_arm(void *state, const u8 *src, u32 len, u32 hibit);
--void poly1305_emit_arm(void *state, __le32 *digest, const u32 *nonce);
-+void poly1305_emit_arm(void *state, u8 *digest, const u32 *nonce);
+ 	inst->alg.cra_flags |= CRYPTO_ALG_DEAD;
+-	if (hlist_unhashed(&inst->list))
+-		return;
  
- void __weak poly1305_blocks_neon(void *state, const u8 *src, u32 len, u32 hibit)
- {
-@@ -179,9 +179,6 @@ EXPORT_SYMBOL(poly1305_update_arch);
+ 	if (!tmpl || !crypto_tmpl_get(tmpl))
+ 		return;
+@@ -173,29 +171,32 @@ void crypto_remove_spawns(struct crypto_alg *alg, struct list_head *list,
  
- void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- {
--	__le32 digest[4];
--	u64 f = 0;
+ 			spawn = list_first_entry(spawns, struct crypto_spawn,
+ 						 list);
+-			inst = spawn->inst;
 -
- 	if (unlikely(dctx->buflen)) {
- 		dctx->buf[dctx->buflen++] = 1;
- 		memset(dctx->buf + dctx->buflen, 0,
-@@ -189,18 +186,7 @@ void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- 		poly1305_blocks_arm(&dctx->h, dctx->buf, POLY1305_BLOCK_SIZE, 0);
+-			BUG_ON(&inst->alg == alg);
+-
+ 			list_move(&spawn->list, &stack);
+-
+-			if (&inst->alg == nalg)
+-				break;
+-
+ 			spawn->dead = true;
+-			spawns = &inst->alg.cra_users;
+ 
+ 			/*
+-			 * We may encounter an unregistered instance here, since
+-			 * an instance's spawns are set up prior to the instance
+-			 * being registered.  An unregistered instance will have
+-			 * NULL ->cra_users.next, since ->cra_users isn't
+-			 * properly initialized until registration.  But an
+-			 * unregistered instance cannot have any users, so treat
+-			 * it the same as ->cra_users being empty.
++			 * We may encounter an unregistered instance
++			 * here, since an instance's spawns are set
++			 * up prior to the instance being registered.
++			 * An unregistered instance cannot have any
++			 * users, so treat it the same as ->cra_users
++			 * being empty.
+ 			 */
+-			if (spawns->next == NULL)
++			if (!spawn->registered)
+ 				break;
++
++			inst = spawn->inst;
++
++			BUG_ON(&inst->alg == alg);
++
++			spawns = &inst->alg.cra_users;
++
++			if (&inst->alg != nalg)
++				continue;
++
++			/* Don't kill the newly registered algorithm. */
++			spawn->dead = false;
++			break;
+ 		}
+ 	} while ((spawns = crypto_more_spawns(alg, &stack, &top,
+ 					      &secondary_spawns)));
+@@ -208,7 +209,7 @@ void crypto_remove_spawns(struct crypto_alg *alg, struct list_head *list,
+ 	list_for_each_entry_safe(spawn, n, &secondary_spawns, list) {
+ 		if (!spawn->dead)
+ 			list_move(&spawn->list, &spawn->alg->cra_users);
+-		else
++		else if (spawn->registered)
+ 			crypto_remove_instance(spawn->inst, list);
  	}
- 
--	poly1305_emit_arm(&dctx->h, digest, dctx->s);
--
--	/* mac = (h + s) % (2^128) */
--	f = (f >> 32) + le32_to_cpu(digest[0]);
--	put_unaligned_le32(f, dst);
--	f = (f >> 32) + le32_to_cpu(digest[1]);
--	put_unaligned_le32(f, dst + 4);
--	f = (f >> 32) + le32_to_cpu(digest[2]);
--	put_unaligned_le32(f, dst + 8);
--	f = (f >> 32) + le32_to_cpu(digest[3]);
--	put_unaligned_le32(f, dst + 12);
--
-+	poly1305_emit_arm(&dctx->h, dst, dctx->s);
- 	*dctx = (struct poly1305_desc_ctx){};
  }
- EXPORT_SYMBOL(poly1305_final_arch);
-diff --git a/arch/arm64/crypto/poly1305-glue.c b/arch/arm64/crypto/poly1305-glue.c
-index 83a2338a8826..e97b092f56b8 100644
---- a/arch/arm64/crypto/poly1305-glue.c
-+++ b/arch/arm64/crypto/poly1305-glue.c
-@@ -21,7 +21,7 @@
- asmlinkage void poly1305_init_arm64(void *state, const u8 *key);
- asmlinkage void poly1305_blocks(void *state, const u8 *src, u32 len, u32 hibit);
- asmlinkage void poly1305_blocks_neon(void *state, const u8 *src, u32 len, u32 hibit);
--asmlinkage void poly1305_emit(void *state, __le32 *digest, const u32 *nonce);
-+asmlinkage void poly1305_emit(void *state, u8 *digest, const u32 *nonce);
- 
- static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_neon);
- 
-@@ -162,9 +162,6 @@ EXPORT_SYMBOL(poly1305_update_arch);
- 
- void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
+@@ -588,6 +589,7 @@ int crypto_register_instance(struct crypto_template *tmpl,
+ 			     struct crypto_instance *inst)
  {
--	__le32 digest[4];
--	u64 f = 0;
--
- 	if (unlikely(dctx->buflen)) {
- 		dctx->buf[dctx->buflen++] = 1;
- 		memset(dctx->buf + dctx->buflen, 0,
-@@ -172,18 +169,7 @@ void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- 		poly1305_blocks(&dctx->h, dctx->buf, POLY1305_BLOCK_SIZE, 0);
- 	}
+ 	struct crypto_larval *larval;
++	struct crypto_spawn *spawn;
+ 	int err;
  
--	poly1305_emit(&dctx->h, digest, dctx->s);
--
--	/* mac = (h + s) % (2^128) */
--	f = (f >> 32) + le32_to_cpu(digest[0]);
--	put_unaligned_le32(f, dst);
--	f = (f >> 32) + le32_to_cpu(digest[1]);
--	put_unaligned_le32(f, dst + 4);
--	f = (f >> 32) + le32_to_cpu(digest[2]);
--	put_unaligned_le32(f, dst + 8);
--	f = (f >> 32) + le32_to_cpu(digest[3]);
--	put_unaligned_le32(f, dst + 12);
--
-+	poly1305_emit(&dctx->h, dst, dctx->s);
- 	*dctx = (struct poly1305_desc_ctx){};
+ 	err = crypto_check_alg(&inst->alg);
+@@ -599,6 +601,23 @@ int crypto_register_instance(struct crypto_template *tmpl,
+ 
+ 	down_write(&crypto_alg_sem);
+ 
++	larval = ERR_PTR(-EAGAIN);
++	for (spawn = inst->spawns; spawn;) {
++		struct crypto_spawn *next;
++
++		if (spawn->dead)
++			goto unlock;
++
++		next = spawn->next;
++		spawn->inst = inst;
++		spawn->registered = true;
++
++		if (spawn->dropref)
++			crypto_mod_put(spawn->alg);
++
++		spawn = next;
++	}
++
+ 	larval = __crypto_register_alg(&inst->alg);
+ 	if (IS_ERR(larval))
+ 		goto unlock;
+@@ -646,7 +665,9 @@ int crypto_init_spawn(struct crypto_spawn *spawn, struct crypto_alg *alg,
+ 	if (WARN_ON_ONCE(inst == NULL))
+ 		return -EINVAL;
+ 
+-	spawn->inst = inst;
++	spawn->next = inst->spawns;
++	inst->spawns = spawn;
++
+ 	spawn->mask = mask;
+ 
+ 	down_write(&crypto_alg_sem);
+@@ -688,8 +709,10 @@ int crypto_grab_spawn(struct crypto_spawn *spawn, const char *name,
+ 	if (IS_ERR(alg))
+ 		return PTR_ERR(alg);
+ 
++	spawn->dropref = true;
+ 	err = crypto_init_spawn(spawn, alg, spawn->inst, mask);
+-	crypto_mod_put(alg);
++	if (err)
++		crypto_mod_put(alg);
+ 	return err;
  }
- EXPORT_SYMBOL(poly1305_final_arch);
-diff --git a/arch/mips/crypto/poly1305-glue.c b/arch/mips/crypto/poly1305-glue.c
-index b37d29cf5d0a..fc881b46d911 100644
---- a/arch/mips/crypto/poly1305-glue.c
-+++ b/arch/mips/crypto/poly1305-glue.c
-@@ -15,7 +15,7 @@
- 
- asmlinkage void poly1305_init_mips(void *state, const u8 *key);
- asmlinkage void poly1305_blocks_mips(void *state, const u8 *src, u32 len, u32 hibit);
--asmlinkage void poly1305_emit_mips(void *state, __le32 *digest, const u32 *nonce);
-+asmlinkage void poly1305_emit_mips(void *state, u8 *digest, const u32 *nonce);
- 
- void poly1305_init_arch(struct poly1305_desc_ctx *dctx, const u8 *key)
- {
-@@ -134,9 +134,6 @@ EXPORT_SYMBOL(poly1305_update_arch);
- 
- void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- {
--	__le32 digest[4];
--	u64 f = 0;
--
- 	if (unlikely(dctx->buflen)) {
- 		dctx->buf[dctx->buflen++] = 1;
- 		memset(dctx->buf + dctx->buflen, 0,
-@@ -144,18 +141,7 @@ void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- 		poly1305_blocks_mips(&dctx->h, dctx->buf, POLY1305_BLOCK_SIZE, 0);
- 	}
- 
--	poly1305_emit_mips(&dctx->h, digest, dctx->s);
--
--	/* mac = (h + s) % (2^128) */
--	f = (f >> 32) + le32_to_cpu(digest[0]);
--	put_unaligned_le32(f, dst);
--	f = (f >> 32) + le32_to_cpu(digest[1]);
--	put_unaligned_le32(f, dst + 4);
--	f = (f >> 32) + le32_to_cpu(digest[2]);
--	put_unaligned_le32(f, dst + 8);
--	f = (f >> 32) + le32_to_cpu(digest[3]);
--	put_unaligned_le32(f, dst + 12);
--
-+	poly1305_emit_mips(&dctx->h, dst, dctx->s);
- 	*dctx = (struct poly1305_desc_ctx){};
+ EXPORT_SYMBOL_GPL(crypto_grab_spawn);
+@@ -700,6 +723,11 @@ void crypto_drop_spawn(struct crypto_spawn *spawn)
+ 	if (!spawn->dead)
+ 		list_del(&spawn->list);
+ 	up_write(&crypto_alg_sem);
++
++	if (!spawn->dropref || spawn->registered)
++		return;
++
++	crypto_mod_put(spawn->alg);
  }
- EXPORT_SYMBOL(poly1305_final_arch);
+ EXPORT_SYMBOL_GPL(crypto_drop_spawn);
+ 
+diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
+index 771a295ac755..29202b8f12fa 100644
+--- a/include/crypto/algapi.h
++++ b/include/crypto/algapi.h
+@@ -47,7 +47,13 @@ struct crypto_instance {
+ 	struct crypto_alg alg;
+ 
+ 	struct crypto_template *tmpl;
+-	struct hlist_node list;
++
++	union {
++		/* List of instances after registration. */
++		struct hlist_node list;
++		/* List of attached spawns before registration. */
++		struct crypto_spawn *spawns;
++	};
+ 
+ 	void *__ctx[] CRYPTO_MINALIGN_ATTR;
+ };
+@@ -67,10 +73,17 @@ struct crypto_template {
+ struct crypto_spawn {
+ 	struct list_head list;
+ 	struct crypto_alg *alg;
+-	struct crypto_instance *inst;
++	union {
++		/* Back pointer to instance after registration.*/
++		struct crypto_instance *inst;
++		/* Spawn list pointer prior to registration. */
++		struct crypto_spawn *next;
++	};
+ 	const struct crypto_type *frontend;
+ 	u32 mask;
+ 	bool dead;
++	bool dropref;
++	bool registered;
+ };
+ 
+ struct crypto_queue {
 -- 
-2.24.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
