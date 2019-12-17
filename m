@@ -2,209 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFCE1233D5
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Dec 2019 18:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E821234C2
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Dec 2019 19:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbfLQRpj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 17 Dec 2019 12:45:39 -0500
-Received: from frisell.zx2c4.com ([192.95.5.64]:58961 "EHLO frisell.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726874AbfLQRpj (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 17 Dec 2019 12:45:39 -0500
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTP id dae4f39a;
-        Tue, 17 Dec 2019 16:49:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
-        :subject:date:message-id:in-reply-to:references:mime-version
-        :content-type:content-transfer-encoding; s=mail; bh=IJGLjR/jsXq9
-        nFZgtA6xSnrurPA=; b=rUckaK9dHoqojBHIcVA2REjvl8YcLww7boQduP7GHEw5
-        KLTHIyLGAUPTF8oSa4e7QB5BjPH+LNymL/UaLLbYcawACgDTR7CnFzDb1hW6bf8R
-        hpFzgNGbMeFRqQ/veuXqjD53Dj34ZFMY8CYstV2LtjTf+qgjOLE6xPfm7ykbssDr
-        A6KxAgmfp5qH2KTUorflIOpqkPX9Gg6cRLOiyynHm7DeWdPIswgEUkSI62Eno6Pn
-        WGrZlux4criIUCe58CfwaS3gKnoC1Xz2U1Nin8K8C7nmcA79En/S/6DP7XE7n84j
-        eIlYdklkEwm1RuBI8RNbLqrThYKjNyVOXtQNijdAPA==
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 1e83d1e5 (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO);
-        Tue, 17 Dec 2019 16:49:08 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH crypto-next v6 3/3] crypto: arm/arm64/mips/poly1305 - remove redundant non-reduction from emit
-Date:   Tue, 17 Dec 2019 18:44:45 +0100
-Message-Id: <20191217174445.188216-4-Jason@zx2c4.com>
-In-Reply-To: <20191217174445.188216-1-Jason@zx2c4.com>
-References: <20191217174445.188216-1-Jason@zx2c4.com>
+        id S1728001AbfLQSZM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 17 Dec 2019 13:25:12 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:47096 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726813AbfLQSZM (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 17 Dec 2019 13:25:12 -0500
+Received: by mail-lj1-f194.google.com with SMTP id z17so12024163ljk.13;
+        Tue, 17 Dec 2019 10:25:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jo3/k6HeLWByk3JzqbzlDt3Xg6ep2UUq9K6e/8xjHQg=;
+        b=nuCpdps6sZn78SQU9DzoRiw3IkjpyX3fMC68SuUg1v8a4/ryJ7bFCfXkRH1s7Acdd7
+         CnJ9S8UWiu5pXovzcoDEVWKANwWy4+QDo8DGKSMuAHP+t1i5A7Ky/u9lzXlq3tkV2Psc
+         SJ0ptyxgT8lfa9ilAFG1ucc1muLf3QzTFrvVlUtPalcJSYToEB2jV+P7nfDAG/1p75Ug
+         4RlvmQ4srs+k2wfj0AXgsPm8+bAbQY8gcO7NRwZ3x1sjJ5yTBw6LwHeyJ7zf2+RpxnCT
+         234STMIOJNdnX1Nb5tW1QQMSg9Ve0mp+AXT+TqPUShwZS/mr5eic1Y18meRO9drwnmBU
+         eM8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jo3/k6HeLWByk3JzqbzlDt3Xg6ep2UUq9K6e/8xjHQg=;
+        b=IDMVw/svVyYe/L6tQGa1SmLEvZP5LAsVfuZ3cN1pp4MUp6nQQbksmVT7bJHZJ97gdm
+         88H/85nSZmVCed8TGwasXrHKQOq8EhPQ2D9yZN1fnVXKM0LjQCbyud0pyN3Ry+dWuoQV
+         0dVRrZ5N6tnNQNcaeHvmnDPOAtINtaEgF//Fn+SEvoXjDHbRHT1MruqUquyliuv6VsBo
+         Vu3mzp8tzPa+N8hDdwI9EqKgsnK7eTZrttHION1aSxt3wPHS5smIXEBvepic/zuPXjMp
+         qGp5hBAaXpqHcmrBgT1oSNE43+F9iGoQ53Zg5Huvw3JZsyeHhqFM+um9sSq8VAxkmQO5
+         Y9kQ==
+X-Gm-Message-State: APjAAAVwtpwFSCHN5+tEWEHjd8QGVTYJcHLDdAXtGAhi1piutgLGCWr0
+        hfE1U3Li20aQ4CW/kEGwpOTRYHpJfSEVBScdzUUMU0nn0kQ=
+X-Google-Smtp-Source: APXvYqzW1YksSJ6QtiK3LM0rolkvX9vCpmJdwLz7NfDCGnoVddPs0R2yuhQXciocVIc/pbFL+gJfSbYSUFtAqLX4HOs=
+X-Received: by 2002:a2e:b5ac:: with SMTP id f12mr4472796ljn.0.1576607110175;
+ Tue, 17 Dec 2019 10:25:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20191213153910.11235-1-aford173@gmail.com> <20191213153910.11235-3-aford173@gmail.com>
+ <VI1PR0402MB3485AB1908AD6B6617CFC08C98500@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+ <CAHCN7xLrX0R7Uag2vc1qMp4z=1r3haCWrcp4qJT0H0eC3RiA4Q@mail.gmail.com>
+In-Reply-To: <CAHCN7xLrX0R7Uag2vc1qMp4z=1r3haCWrcp4qJT0H0eC3RiA4Q@mail.gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 17 Dec 2019 15:25:04 -0300
+Message-ID: <CAOMZO5B_CCEf_cdAWs_FDC1c6t0RG1KjRjGidoDPmPmgxY=ebg@mail.gmail.com>
+Subject: Re: [PATCH V2 3/3] arm64: defconfig: Enable CRYPTO_DEV_FSL_CAAM
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Horia Geanta <horia.geanta@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This appears to be some kind of copy and paste error, and is actually
-dead code.
+Hi Adam,
 
-Pre: f = 0 ⇒ (f >> 32) = 0
-    f = (f >> 32) + le32_to_cpu(digest[0]);
-Post: 0 ≤ f < 2³²
-    put_unaligned_le32(f, dst);
+On Tue, Dec 17, 2019 at 10:07 AM Adam Ford <aford173@gmail.com> wrote:
 
-Pre: 0 ≤ f < 2³² ⇒ (f >> 32) = 0
-    f = (f >> 32) + le32_to_cpu(digest[1]);
-Post: 0 ≤ f < 2³²
-    put_unaligned_le32(f, dst + 4);
+> Out of curiosity, what is the rule for when things are 'm' vs 'y'?
+>
+> In the Code Aurora repo, it is set to 'y' and the mainline kernel for
+> the i.MX6/7, the imx_v6_v7_defconfig is also set to 'y' which is why I
+> used 'y' here.
+>
+> I can do a V3 to address the other items you noted, but I want to
+> understand the rules about the defconfig so I don't make the same
+> mistake again.
 
-Pre: 0 ≤ f < 2³² ⇒ (f >> 32) = 0
-    f = (f >> 32) + le32_to_cpu(digest[2]);
-Post: 0 ≤ f < 2³²
-    put_unaligned_le32(f, dst + 8);
+In arch/arm64/configs/defconfig we try to select modules whenever possible.
 
-Pre: 0 ≤ f < 2³² ⇒ (f >> 32) = 0
-    f = (f >> 32) + le32_to_cpu(digest[3]);
-Post: 0 ≤ f < 2³²
-    put_unaligned_le32(f, dst + 12);
+The exceptions are drivers that are vital for boot such as PMIC,
+pinctrl, clks, etc.
 
-Therefore this sequence is redundant. And Andy's code appears to handle
-misalignment acceptably.
+The CAAM driver does not fall into this category, so selecting it as
+module is preferred here.
 
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Tested-by: Ard Biesheuvel <ardb@kernel.org>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/arm/crypto/poly1305-glue.c   | 18 ++----------------
- arch/arm64/crypto/poly1305-glue.c | 18 ++----------------
- arch/mips/crypto/poly1305-glue.c  | 18 ++----------------
- 3 files changed, 6 insertions(+), 48 deletions(-)
-
-diff --git a/arch/arm/crypto/poly1305-glue.c b/arch/arm/crypto/poly1305-glue.c
-index abe3f2d587dc..ceec04ec2f40 100644
---- a/arch/arm/crypto/poly1305-glue.c
-+++ b/arch/arm/crypto/poly1305-glue.c
-@@ -20,7 +20,7 @@
- 
- void poly1305_init_arm(void *state, const u8 *key);
- void poly1305_blocks_arm(void *state, const u8 *src, u32 len, u32 hibit);
--void poly1305_emit_arm(void *state, __le32 *digest, const u32 *nonce);
-+void poly1305_emit_arm(void *state, u8 *digest, const u32 *nonce);
- 
- void __weak poly1305_blocks_neon(void *state, const u8 *src, u32 len, u32 hibit)
- {
-@@ -179,9 +179,6 @@ EXPORT_SYMBOL(poly1305_update_arch);
- 
- void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- {
--	__le32 digest[4];
--	u64 f = 0;
--
- 	if (unlikely(dctx->buflen)) {
- 		dctx->buf[dctx->buflen++] = 1;
- 		memset(dctx->buf + dctx->buflen, 0,
-@@ -189,18 +186,7 @@ void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- 		poly1305_blocks_arm(&dctx->h, dctx->buf, POLY1305_BLOCK_SIZE, 0);
- 	}
- 
--	poly1305_emit_arm(&dctx->h, digest, dctx->s);
--
--	/* mac = (h + s) % (2^128) */
--	f = (f >> 32) + le32_to_cpu(digest[0]);
--	put_unaligned_le32(f, dst);
--	f = (f >> 32) + le32_to_cpu(digest[1]);
--	put_unaligned_le32(f, dst + 4);
--	f = (f >> 32) + le32_to_cpu(digest[2]);
--	put_unaligned_le32(f, dst + 8);
--	f = (f >> 32) + le32_to_cpu(digest[3]);
--	put_unaligned_le32(f, dst + 12);
--
-+	poly1305_emit_arm(&dctx->h, dst, dctx->s);
- 	*dctx = (struct poly1305_desc_ctx){};
- }
- EXPORT_SYMBOL(poly1305_final_arch);
-diff --git a/arch/arm64/crypto/poly1305-glue.c b/arch/arm64/crypto/poly1305-glue.c
-index 83a2338a8826..e97b092f56b8 100644
---- a/arch/arm64/crypto/poly1305-glue.c
-+++ b/arch/arm64/crypto/poly1305-glue.c
-@@ -21,7 +21,7 @@
- asmlinkage void poly1305_init_arm64(void *state, const u8 *key);
- asmlinkage void poly1305_blocks(void *state, const u8 *src, u32 len, u32 hibit);
- asmlinkage void poly1305_blocks_neon(void *state, const u8 *src, u32 len, u32 hibit);
--asmlinkage void poly1305_emit(void *state, __le32 *digest, const u32 *nonce);
-+asmlinkage void poly1305_emit(void *state, u8 *digest, const u32 *nonce);
- 
- static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_neon);
- 
-@@ -162,9 +162,6 @@ EXPORT_SYMBOL(poly1305_update_arch);
- 
- void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- {
--	__le32 digest[4];
--	u64 f = 0;
--
- 	if (unlikely(dctx->buflen)) {
- 		dctx->buf[dctx->buflen++] = 1;
- 		memset(dctx->buf + dctx->buflen, 0,
-@@ -172,18 +169,7 @@ void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- 		poly1305_blocks(&dctx->h, dctx->buf, POLY1305_BLOCK_SIZE, 0);
- 	}
- 
--	poly1305_emit(&dctx->h, digest, dctx->s);
--
--	/* mac = (h + s) % (2^128) */
--	f = (f >> 32) + le32_to_cpu(digest[0]);
--	put_unaligned_le32(f, dst);
--	f = (f >> 32) + le32_to_cpu(digest[1]);
--	put_unaligned_le32(f, dst + 4);
--	f = (f >> 32) + le32_to_cpu(digest[2]);
--	put_unaligned_le32(f, dst + 8);
--	f = (f >> 32) + le32_to_cpu(digest[3]);
--	put_unaligned_le32(f, dst + 12);
--
-+	poly1305_emit(&dctx->h, dst, dctx->s);
- 	*dctx = (struct poly1305_desc_ctx){};
- }
- EXPORT_SYMBOL(poly1305_final_arch);
-diff --git a/arch/mips/crypto/poly1305-glue.c b/arch/mips/crypto/poly1305-glue.c
-index b37d29cf5d0a..fc881b46d911 100644
---- a/arch/mips/crypto/poly1305-glue.c
-+++ b/arch/mips/crypto/poly1305-glue.c
-@@ -15,7 +15,7 @@
- 
- asmlinkage void poly1305_init_mips(void *state, const u8 *key);
- asmlinkage void poly1305_blocks_mips(void *state, const u8 *src, u32 len, u32 hibit);
--asmlinkage void poly1305_emit_mips(void *state, __le32 *digest, const u32 *nonce);
-+asmlinkage void poly1305_emit_mips(void *state, u8 *digest, const u32 *nonce);
- 
- void poly1305_init_arch(struct poly1305_desc_ctx *dctx, const u8 *key)
- {
-@@ -134,9 +134,6 @@ EXPORT_SYMBOL(poly1305_update_arch);
- 
- void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- {
--	__le32 digest[4];
--	u64 f = 0;
--
- 	if (unlikely(dctx->buflen)) {
- 		dctx->buf[dctx->buflen++] = 1;
- 		memset(dctx->buf + dctx->buflen, 0,
-@@ -144,18 +141,7 @@ void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- 		poly1305_blocks_mips(&dctx->h, dctx->buf, POLY1305_BLOCK_SIZE, 0);
- 	}
- 
--	poly1305_emit_mips(&dctx->h, digest, dctx->s);
--
--	/* mac = (h + s) % (2^128) */
--	f = (f >> 32) + le32_to_cpu(digest[0]);
--	put_unaligned_le32(f, dst);
--	f = (f >> 32) + le32_to_cpu(digest[1]);
--	put_unaligned_le32(f, dst + 4);
--	f = (f >> 32) + le32_to_cpu(digest[2]);
--	put_unaligned_le32(f, dst + 8);
--	f = (f >> 32) + le32_to_cpu(digest[3]);
--	put_unaligned_le32(f, dst + 12);
--
-+	poly1305_emit_mips(&dctx->h, dst, dctx->s);
- 	*dctx = (struct poly1305_desc_ctx){};
- }
- EXPORT_SYMBOL(poly1305_final_arch);
--- 
-2.24.1
-
+Thanks
