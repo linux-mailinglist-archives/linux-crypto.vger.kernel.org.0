@@ -2,94 +2,99 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBD5124B07
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Dec 2019 16:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2015D124DE1
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Dec 2019 17:35:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727289AbfLRPNy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 18 Dec 2019 10:13:54 -0500
-Received: from mail-il1-f194.google.com ([209.85.166.194]:44772 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727183AbfLRPNx (ORCPT
+        id S1726980AbfLRQfu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 18 Dec 2019 11:35:50 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:40964 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727185AbfLRQfs (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 18 Dec 2019 10:13:53 -0500
-Received: by mail-il1-f194.google.com with SMTP id z12so1958853iln.11
-        for <linux-crypto@vger.kernel.org>; Wed, 18 Dec 2019 07:13:53 -0800 (PST)
+        Wed, 18 Dec 2019 11:35:48 -0500
+Received: by mail-ed1-f67.google.com with SMTP id c26so2160150eds.8
+        for <linux-crypto@vger.kernel.org>; Wed, 18 Dec 2019 08:35:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=R9l9mbjTMtC+3agOxuj88vgGSGUSi1shzIvbtHPQHDA=;
-        b=Q3vp2fJ40VWpq9rX2ikiWTUrhuiQJXzCeUu43e1oIIOk8rzGCPMljco+W3g3Sdt7mK
-         0zMp27lNXT81ott0dYeyE6wCdI4c1wfi5qCqRmoGIMvdtgle/6NMWI0GJrkD30CBojRq
-         hZbdgtbn9F/6uhvfSLkMdN7NhUpQoMVScRn9uDFKZJxofy0MWDF6kZw53YXeVt8sjWjA
-         Dd9TBzj4Ogplv/txGap2r0I252pQP7l7XSY4YOVhZ7qL539zlqhtO9W4mad505PIZ9Xp
-         yYy+XyL34oyC2pvEIWTDP8EMj+Gj6Cu0eHyc7GTPTD7Enq1rjLHU3JyAyX8LQzaLW/WP
-         +a+A==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FMqMKRVCOcjZgE/EV3cPuX6L8AH27Rm+Sh8f62ETxcQ=;
+        b=eFouNkPT+BVqLskLEk9g7X/YCueGVws1Y4L7OAdK67iYfuw5Q3JA28QRS8d/LWFrDG
+         1PI0GaIys/kiZnyYwXJr83Bv5EsUHu3bADQCvrKc+yqTejvNWp7QIJtShLaEEWXU6HZS
+         gtG2/bpkanXeXAJmHX5+l8j7bSOHLYl8HcMu0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=R9l9mbjTMtC+3agOxuj88vgGSGUSi1shzIvbtHPQHDA=;
-        b=fmcm3F8XZt1+k4or9KfFZ2rAQPH76FwEIP7nGWxj/YYQ017cGOUaZu/cMnCXhskK+P
-         ZnOWSTfYiqQkmf2Ikg09Yl1IeMMYh5/EcS+KLl0hbaClgQ2cXQfi2yveO33IPLtrDYFM
-         AiDeKqchDjb50TnffeAK5D5DxhMMypPzFgcyCjy64i8xxYJD/KFvVZZrp8JDbCEFfTDU
-         dmR6WpMDE9rSFMYru0HyVLp0sVdaLalM4xG7CHJxMdOp7eAdCMGF8L9E6QY/j9A+XBxa
-         Wr9+GJWMlSLYF3u51dJosbGeAO+4p1Jgrw/bbPbJQNPwHP3QJ39+ENZ91eARDIO1cDsq
-         xQrQ==
-X-Gm-Message-State: APjAAAX6VtpQNDIJuHgIq3WHRA/eSv0tYsJ71WcJ1hNDXHqtLfGo7Gi7
-        jts1XMRHbvuH1wNZnMGmv5Qgo14gFA2g77GDjA==
-X-Google-Smtp-Source: APXvYqzpDMY1kfzvQTGFYFDuSf5Wkv4RFsY3uCP+mpqq6wLn7kqjCTzLCYufYBbbmMCBsVo5PHwr9dpQEEDI7K8RY00=
-X-Received: by 2002:a92:cc90:: with SMTP id x16mr2363556ilo.269.1576682033220;
- Wed, 18 Dec 2019 07:13:53 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FMqMKRVCOcjZgE/EV3cPuX6L8AH27Rm+Sh8f62ETxcQ=;
+        b=KVaWuvpU38rjnS3iOr2wVtvQrsNz3NLnWshDq0nBCXm3tGBLDka2Y3/iC6WrDty2wf
+         VRnmh40j2b38q7gwn/XzENQ2jXsbFcWKJOnJRJSmsFgZnsoac2acPaU3YLny6+Mw3kwE
+         gbn8psiqR0DacD8EIHa8GECvEnSONCp2g2Rhhi3b+NDcIvxKAhAml6O2WGC5y3Jx1k4Y
+         qn75u6uaTSlCKIOIFxQTjZ4iUjyPN2M7Ud1BjncrSawC9B3jdj6aYfqxfg3bf8oeq5oK
+         kE+0CxdJRGP769SAvCLbW0YExZwTgd5fQLVnytstHPo25nycMc7PZNrfVqavwRPlPD3B
+         0ElQ==
+X-Gm-Message-State: APjAAAUXpqKv5kkKJX0/PI5WJjyma7XRyxInbPS+e3ZKo/poNAucA5Wg
+        jxKiGhz09rvBImJxC2GeUrzolb8MaEc=
+X-Google-Smtp-Source: APXvYqymshP/pKeippfkwklt0k1e9FMGJoTKjDfIrzJdy7Mwwym6VYO5HedIRAVeB2LUldcsTrcSfA==
+X-Received: by 2002:a17:906:a394:: with SMTP id k20mr3609354ejz.216.1576686945988;
+        Wed, 18 Dec 2019 08:35:45 -0800 (PST)
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com. [209.85.221.48])
+        by smtp.gmail.com with ESMTPSA id m5sm49324ede.10.2019.12.18.08.35.43
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Dec 2019 08:35:44 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id w15so3008209wru.4
+        for <linux-crypto@vger.kernel.org>; Wed, 18 Dec 2019 08:35:43 -0800 (PST)
+X-Received: by 2002:a5d:51cc:: with SMTP id n12mr3908491wrv.177.1576686943371;
+ Wed, 18 Dec 2019 08:35:43 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a02:6603:0:0:0:0:0 with HTTP; Wed, 18 Dec 2019 07:13:52
- -0800 (PST)
-Reply-To: dhl.expresscourier102156@outlook.fr
-From:   "MS. MARYANNA B. THOMASON" <info.zennitbankplcnigerian@gmail.com>
-Date:   Wed, 18 Dec 2019 16:13:52 +0100
-Message-ID: <CABHzvrnY8Lhdw4Y2q97jvAVrRpM9CVLFkw=Ved7y1GhGqHiAdw@mail.gmail.com>
-Subject: I WANT TO YOU TO TREAT THIS EMAIL VERY URGENT
-To:     undisclosed-recipients:;
+References: <20191205000957.112719-1-thgarnie@chromium.org>
+ <20191205000957.112719-2-thgarnie@chromium.org> <20191218124604.GE24886@zn.tnic>
+In-Reply-To: <20191218124604.GE24886@zn.tnic>
+From:   Thomas Garnier <thgarnie@chromium.org>
+Date:   Wed, 18 Dec 2019 08:35:32 -0800
+X-Gmail-Original-Message-ID: <CAJcbSZE56E_JqWpxvpHd194SAVn0fGJRiJWmLy=zfOyTthsGCg@mail.gmail.com>
+Message-ID: <CAJcbSZE56E_JqWpxvpHd194SAVn0fGJRiJWmLy=zfOyTthsGCg@mail.gmail.com>
+Subject: Re: [PATCH v10 01/11] x86/crypto: Adapt assembly for PIE support
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Kristen Carlson Accardi <kristen@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Attn Dear.
+On Wed, Dec 18, 2019 at 4:46 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Wed, Dec 04, 2019 at 04:09:38PM -0800, Thomas Garnier wrote:
+> > Change the assembly code to use only relative references of symbols for the
+> > kernel to be PIE compatible.
+> >
+> > Position Independent Executable (PIE) support will allow to extend the
+> > KASLR randomization range below 0xffffffff80000000.
+>
+> FFS, how many times do we have to talk about this auto-sprinkled
+> sentence?!
+>
+> https://lkml.kernel.org/r/20190805163202.GD18785@zn.tnic
 
-Urgent delivery Notification of your ATM MASTER CARD, Dhl-Benin is
-ready for delivery of your ATM Master card worth $15.800=E2=80=99000=E2=80=
-=9900, as
-approved this morning, Date, 18/12/2019. Through the Intruction from
-INTERNATIONAL MONETARY FUNDS, I.M.F official Directors.
+In the last discussion, we mentioned Ingo (and other people) asked us
+to include more information for context. I don't care about having it
+or not, just want to ensure people understand why the change is made.
 
-REGISTRATION NO :EG58945
-PARCEL NUMBER: 140479
-Delivery Schuleded now,
-Finally all we required from you is your ATM Card Proccessing Delivery
-fees $19.00 only which you must send to this DHL service to enable us
-dispatch the parcel to your destination today.
-
-Here is our receiving payment details.
-You are advised to send it Via Money Gram Service.
-
-Receiver's Name--------Alan Ude
-Country-------Benin Republic.
-City/ Address--------Cotonou
-Test Question--------In God
-Answer-------We Trust
-Amount------------$US19.00 only
-Mtcn-------------
-Sender's Name-------
-
-Your delivery  ATM card worth $15.800=E2=80=99000=E2=80=9900,
-Is Due for delivery to your address today upon confirmation of
-required fee from you asap.
-
-Call us on this phone number for any inquiry. +229 62819378
-Awaiting your urgent response.
-
-MS. MARYANNA B. THOMASON, Shipment director, DHL Express
-Courier Company-Benin
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
