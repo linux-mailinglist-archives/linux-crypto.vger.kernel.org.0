@@ -2,61 +2,106 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC41126DAA
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 Dec 2019 20:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F5A126EF9
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 Dec 2019 21:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbfLSSi6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 19 Dec 2019 13:38:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56996 "EHLO mail.kernel.org"
+        id S1727179AbfLSUeC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 19 Dec 2019 15:34:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727262AbfLSSi5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 19 Dec 2019 13:38:57 -0500
+        id S1727141AbfLSUeC (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 19 Dec 2019 15:34:02 -0500
 Received: from gmail.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D38DE24679;
-        Thu, 19 Dec 2019 18:38:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89C9E21D7D;
+        Thu, 19 Dec 2019 20:34:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576780737;
-        bh=BWLeO1fdKRdQ+v3HbRCyNs5cudQrIbteuiI5tEQRpic=;
+        s=default; t=1576787641;
+        bh=5BJIA4TZawyxfy3MC3GPUXe62EsLf6lRjIPw121cFLM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a2O6vdy8N9yK49XNdWSDm72qrQpiUNBCNoc4Eh8Al5w+kNEDrbnW+5ik1mQt/YdLd
-         9YhZK441tounFZWVFobf8mg3MFKRHCEvhbudJ5cRCROr6fBG96jUuvcqmihDrdzUp+
-         w90LSpfgz2dn7TXT0+FFy2ZBRgsuxrYVQF0kO72I=
-Date:   Thu, 19 Dec 2019 10:38:55 -0800
+        b=WKwjhRdEj7onYsJZfBIr19NfG3BQ09lzqN34MCs5wuLRKf4sCh4qwPPvuxpk88ZKs
+         lIKUUV/5ZBWDIyoGA3SZ4l9B7O5M2oox6qUiEByGSMIZuC4lks76JF8XWN8ijxcxSn
+         7PAt9EavLjJcKT5q6zMENJMX/vCZr5Wqu5UZHydc=
+Date:   Thu, 19 Dec 2019 12:34:00 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Michal Suchanek <msuchanek@suse.de>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: testmgr: allow building a copy as loadable
- module for testing.
-Message-ID: <20191219183854.GA54076@gmail.com>
-References: <20191219160636.26316-1-msuchanek@suse.de>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [v2 PATCH] crypto: skcipher - Add skcipher_ialg_simple helper
+Message-ID: <20191219203359.GB54076@gmail.com>
+References: <20191206055704.g2g5y2e5dakxj7za@gondor.apana.org.au>
+ <20191218080733.2ckqf4e5qmgnnrjd@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191219160636.26316-1-msuchanek@suse.de>
+In-Reply-To: <20191218080733.2ckqf4e5qmgnnrjd@gondor.apana.org.au>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 05:06:36PM +0100, Michal Suchanek wrote:
-> There is no way to just run the tests built into testmgr. Also it is
-> rarely possible to build testmgr modular due to KConfig dependencies.
-> 
-> Add a module that does not provide infrastructure, just runs testmgr
-> tests.
-> 
-> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+On Wed, Dec 18, 2019 at 04:07:33PM +0800, Herbert Xu wrote:
+> This patch introduces the skcipher_ialg_simple helper which fetches
+> the crypto_alg structure from a simple skcpiher instance's spawn.
 
-Why does this need to be a kernel module?  Since the self-tests are already run
-at algorithm registration time, it's already possible to use AF_ALG or
-crypto_user to allocate all algorithms which have self-tests.
+Typo: skcpiher => skcipher
+
+> diff --git a/crypto/ecb.c b/crypto/ecb.c
+> index 9d6981ca7d5d..249aca75b7dc 100644
+> --- a/crypto/ecb.c
+> +++ b/crypto/ecb.c
+> @@ -64,10 +64,12 @@ static int crypto_ecb_create(struct crypto_template *tmpl, struct rtattr **tb)
+>  	struct crypto_alg *alg;
+>  	int err;
+>  
+> -	inst = skcipher_alloc_instance_simple(tmpl, tb, &alg);
+> +	inst = skcipher_alloc_instance_simple(tmpl, tb);
+>  	if (IS_ERR(inst))
+>  		return PTR_ERR(inst);
+>  
+> +	alg = skcipher_ialg_simple(inst);
+> +
+>  	inst->alg.ivsize = 0; /* ECB mode doesn't take an IV */
+>  
+>  	inst->alg.encrypt = crypto_ecb_encrypt;
+> @@ -76,7 +78,7 @@ static int crypto_ecb_create(struct crypto_template *tmpl, struct rtattr **tb)
+>  	err = skcipher_register_instance(tmpl, inst);
+>  	if (err)
+>  		inst->free(inst);
+> -	crypto_mod_put(alg);
+> +
+>  	return err;
+>  }
+
+For ecb, 'alg' isn't used anymore, so it should just be removed.
+
+> diff --git a/crypto/pcbc.c b/crypto/pcbc.c
+> index 862cdb8d8b6c..5c5245647208 100644
+> --- a/crypto/pcbc.c
+> +++ b/crypto/pcbc.c
+> @@ -156,17 +156,19 @@ static int crypto_pcbc_create(struct crypto_template *tmpl, struct rtattr **tb)
+>  	struct crypto_alg *alg;
+>  	int err;
+>  
+> -	inst = skcipher_alloc_instance_simple(tmpl, tb, &alg);
+> +	inst = skcipher_alloc_instance_simple(tmpl, tb);
+>  	if (IS_ERR(inst))
+>  		return PTR_ERR(inst);
+>  
+> +	alg = skcipher_ialg_simple(inst);
+> +
+>  	inst->alg.encrypt = crypto_pcbc_encrypt;
+>  	inst->alg.decrypt = crypto_pcbc_decrypt;
+>  
+>  	err = skcipher_register_instance(tmpl, inst);
+>  	if (err)
+>  		inst->free(inst);
+> -	crypto_mod_put(alg);
+> +
+>  	return err;
+>  }
+
+Same for pcbc.
 
 - Eric
