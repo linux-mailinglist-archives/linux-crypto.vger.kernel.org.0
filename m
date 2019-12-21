@@ -2,491 +2,73 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B58C9128290
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Dec 2019 20:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 967521288E9
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Dec 2019 12:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727422AbfLTTDQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 20 Dec 2019 14:03:16 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:39711 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727390AbfLTTDP (ORCPT
+        id S1726593AbfLULzh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 21 Dec 2019 06:55:37 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:45001 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbfLULzh (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 20 Dec 2019 14:03:15 -0500
-Received: by mail-pf1-f196.google.com with SMTP id q10so5708400pfs.6
-        for <linux-crypto@vger.kernel.org>; Fri, 20 Dec 2019 11:03:15 -0800 (PST)
+        Sat, 21 Dec 2019 06:55:37 -0500
+Received: by mail-ot1-f68.google.com with SMTP id h9so12915173otj.11
+        for <linux-crypto@vger.kernel.org>; Sat, 21 Dec 2019 03:55:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/ciyFGskHG1SVOrUGpNjo4zQNHcUJjfbyh0aLUktQAw=;
-        b=n+/iXGZ4sP6q1qDCr0Gwoo69dsEa0uUX/hHwzace9UuAJtlSxHxI09fHFM1YQTed7v
-         yjzv46o/PPE2a3iBo2+lUCdy6x2ZHP9tviCkbKAZ7Te1ByBHV6vXm6guum1xl6uXwF08
-         bcnvPEYhZtNlJQgMirIl6U/oKA/Zm4UIK3CP80hFHyrYiiYDwhLT42N0bKbnlWsyR2F1
-         01J1VOR8cZmZSekEkILvgf7wTSQyCIIuCO+7izRsNuvooQFRNUeF+m1T6a1Q/vt8J6gx
-         cMbgeP+Zi3m65ZmPbm97h92IpbdmDCWLZffxu3YxDexrfi7VOTI3ADQNb9lUXsOcfMku
-         G+yg==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=jfNAXQwhZfEavSvS00CAkiq7q52D2V3MiZ0EO57BKJY=;
+        b=apib9gpAdBRMo5VQm39Rth+06s1IFL1rrLvmCctXmnmDIc2qUMioUkhhLm2TTIu3LC
+         hE5375O5Hf+k0JzRQwdifCNu5rlIG/6U5egiB9l7HkKXZlqlogHJEbYRsPkIytq0AaGV
+         Bmlc1jt0d5RQyYpabhi+JjeCpMIDZaNTcuFeiiG5jRjRJqJP4rOEhpaHvwmNk3pFMxZo
+         6lmvtSfcISqceE8hViCPRgDySazeY5SkrzPPhEbQchKXNURNoFx8P/BHleM++mpJMsYD
+         RgU6lNYoC+/ndhCojL9z3ZVxSNR5zeqjAOVdPwHD/TB0ReAwKXyqAIWxExivuNDo9dlJ
+         Woxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/ciyFGskHG1SVOrUGpNjo4zQNHcUJjfbyh0aLUktQAw=;
-        b=n+4CF8DClrGsmqW35gSARLQWz3p07BW/KN3l0OyzXU8C/V+jiOTIbMTDe3GVtRUC66
-         LQzgCaCLd1+ThQEWFREidWcomMmR4jOMdT4QnZTyxvRHOv5bxAADOFZb4pMiPKFgB+Q/
-         g/VGi9sfknHTbbaN+Bx+t9hY/w2Ko633i8jxCWLVKFPwiZ8a4xzWysoivPm+Z0o6BNiO
-         CrIdeWnlUDaOiE9r+wTzEezNssv80mc5NgymFa4alulEypxuFPfLHVVH8WyT5X6hWAGE
-         1upRrG/9tIaa0WT+njeF8kcxPRiqY4S1zi3y9DjIuptx4E1deGPunM02KBP2MgheRHkB
-         e6HA==
-X-Gm-Message-State: APjAAAW9vcXbjQOLWFWcFTRq2e7ugSB1jcLaOAjK/314VPhLLUgBIsQC
-        ndAY24bXY434KOq4rKuNlGI=
-X-Google-Smtp-Source: APXvYqy+QXK5x/06IasSUpWjwnbH7zXd2M7JVraxzIaEDjSCTRkIolMa4OhsjoQpXtJiIVe2VMp0fQ==
-X-Received: by 2002:a63:504c:: with SMTP id q12mr16435236pgl.117.1576868594662;
-        Fri, 20 Dec 2019 11:03:14 -0800 (PST)
-Received: from gateway.troianet.com.br (ipv6.troianet.com.br. [2804:688:21:4::2])
-        by smtp.gmail.com with ESMTPSA id i4sm10833612pjw.28.2019.12.20.11.03.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Dec 2019 11:03:14 -0800 (PST)
-From:   Eneas U de Queiroz <cotequeiroz@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Cc:     Eneas U de Queiroz <cotequeiroz@gmail.com>
-Subject: [PATCH 6/6] crypto: qce - allow building only hashes/ciphers
-Date:   Fri, 20 Dec 2019 16:02:18 -0300
-Message-Id: <20191220190218.28884-7-cotequeiroz@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191220190218.28884-1-cotequeiroz@gmail.com>
-References: <20191220190218.28884-1-cotequeiroz@gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=jfNAXQwhZfEavSvS00CAkiq7q52D2V3MiZ0EO57BKJY=;
+        b=KLK+h9ceur8OfVxOKvaaM1W1dSpv2btuAgs7+lHLgJI9wxvHqkc3OotNI3v+3Nnqk6
+         /jIS0g/zyU2GzojGLMO/rNp0E4YM85SImrmqEIsH3WmvEVlbJsa/Yrh1K7KpwXuzsKlp
+         7Gl5KwTmXBBZ/qYYtcggIWeFlFJmfp6CvVvyHOt3FW2EZUQIUW114ho+AJSx2ZEp77M3
+         ejcoobWE6l3OR7t7Jcf1qemGECVvwM0MDXGOmL4nKRyFt2r33PC1rDlCDs7C1kEB1Uz3
+         uc5Yd2ggeQ1WiraFJb+rmNEXVYh1TibHsFxKzYefSqSBH59BRM4oj8LykyvF9TjsEN3j
+         XlLw==
+X-Gm-Message-State: APjAAAXDBhywybLMhk2RBoI5g/N/AQPHYbq5346UrMglAggw7nSNVM4I
+        Vhtok/wFuLY8dTgN1b4qfnKnF3F5RVA/ZX680Ww=
+X-Google-Smtp-Source: APXvYqzaO/1jL12IhY+TNn2R2oqjcv531xTWOW3fVUZnnncNpgwK7LK6OS+QRk1Q1BR/HMZb2eMp9nPwA9PcDXPJ9X4=
+X-Received: by 2002:a05:6830:1d7a:: with SMTP id l26mr19684860oti.138.1576929336465;
+ Sat, 21 Dec 2019 03:55:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ac9:7808:0:0:0:0:0 with HTTP; Sat, 21 Dec 2019 03:55:36
+ -0800 (PST)
+Reply-To: miss.aminaibrahim@gmail.com
+From:   "miss.amina" <paul.titus11111@gmail.com>
+Date:   Sat, 21 Dec 2019 11:55:36 +0000
+Message-ID: <CAH60xqvYsydoKz3zqaQDdb7U3GsQkJ9h6z5EdtX5AMJuYT=WRw@mail.gmail.com>
+Subject: My Name is Miss Amina Ibrahim from Libya,I am 22 years old
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Allow the user to choose whether to build support for all algorithms
-(default), hashes-only, or skciphers-only.
+My Name is Miss Amina Ibrahim from Libya, I am 22 years old, I am in
+St.Christopher's Parish for refugee in Burkina Faso under United
+Nations High commission for Refugee ,I lost my parents in the recent
+war in  Libya, right now am in Burkina Faso, please save my life i am
+in danger need your help in transferring my inheritance my father left
+behind for me in a Bank in Burkina Faso here,i have every document for
+the transfer, all i need is a foreigner who will stand as the foreign
+partner to my father and beneficiary of the fund. The money deposited
+in the Bank is US10.5 MILLION UNITED STATES DOLLAR) I just need this
+fund to be transfer to your account so that I will come over to your
+country and complete my education as you know that my country have
+been in deep crisis due to the war .and I cannot go back there again
+because I have nobody again all of my family were killed in the war.
+If you are interested to save me and help me receive my inheritance
+fund Please get back to me
 
-The QCE engine does not appear to scale as well as the CPU to handle
-multiple crypto requests.  While the ipq40xx chips have 4-core CPUs, the
-QCE handles only 2 requests in parallel.
-
-Ipsec throughput seems to improve when disabling either family of
-algorithms, sharing the load with the CPU.  Enabling skciphers-only
-appears to work best.
-
-Signed-off-by: Eneas U de Queiroz <cotequeiroz@gmail.com>
----
- drivers/crypto/Kconfig      |  63 +++++++++-
- drivers/crypto/qce/Makefile |   7 +-
- drivers/crypto/qce/common.c | 244 +++++++++++++++++++-----------------
- drivers/crypto/qce/core.c   |   4 +
- 4 files changed, 193 insertions(+), 125 deletions(-)
-
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index d02e79ac81c0..73a80232e69e 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -618,6 +618,14 @@ config CRYPTO_DEV_QCE
- 	tristate "Qualcomm crypto engine accelerator"
- 	depends on ARCH_QCOM || COMPILE_TEST
- 	depends on HAS_IOMEM
-+	help
-+	  This driver supports Qualcomm crypto engine accelerator
-+	  hardware. To compile this driver as a module, choose M here. The
-+	  module will be called qcrypto.
-+
-+config CRYPTO_DEV_QCE_SKCIPHER
-+	bool
-+	depends on CRYPTO_DEV_QCE
- 	select CRYPTO_AES
- 	select CRYPTO_LIB_DES
- 	select CRYPTO_ECB
-@@ -625,10 +633,57 @@ config CRYPTO_DEV_QCE
- 	select CRYPTO_XTS
- 	select CRYPTO_CTR
- 	select CRYPTO_SKCIPHER
--	help
--	  This driver supports Qualcomm crypto engine accelerator
--	  hardware. To compile this driver as a module, choose M here. The
--	  module will be called qcrypto.
-+
-+config CRYPTO_DEV_QCE_SHA
-+	bool
-+	depends on CRYPTO_DEV_QCE
-+
-+choice
-+	prompt "Algorithms enabled for QCE acceleration"
-+	default CRYPTO_DEV_QCE_ENABLE_ALL
-+	depends on CRYPTO_DEV_QCE
-+	help
-+	  This option allows to choose whether to build support for all algorihtms
-+	  (default), hashes-only, or skciphers-only.
-+
-+	  The QCE engine does not appear to scale as well as the CPU to handle
-+	  multiple crypto requests.  While the ipq40xx chips have 4-core CPUs, the
-+	  QCE handles only 2 requests in parallel.
-+
-+	  Ipsec throughput seems to improve when disabling either family of
-+	  algorithms, sharing the load with the CPU.  Enabling skciphers-only
-+	  appears to work best.
-+
-+	config CRYPTO_DEV_QCE_ENABLE_ALL
-+		bool "All supported algorithms"
-+		select CRYPTO_DEV_QCE_SKCIPHER
-+		select CRYPTO_DEV_QCE_SHA
-+		help
-+		  Enable all supported algorithms:
-+			- AES (CBC, CTR, ECB, XTS)
-+			- 3DES (CBC, ECB)
-+			- DES (CBC, ECB)
-+			- SHA1, HMAC-SHA1
-+			- SHA256, HMAC-SHA256
-+
-+	config CRYPTO_DEV_QCE_ENABLE_SKCIPHER
-+		bool "Symmetric-key ciphers only"
-+		select CRYPTO_DEV_QCE_SKCIPHER
-+		help
-+		  Enable symmetric-key ciphers only:
-+			- AES (CBC, CTR, ECB, XTS)
-+			- 3DES (ECB, CBC)
-+			- DES (ECB, CBC)
-+
-+	config CRYPTO_DEV_QCE_ENABLE_SHA
-+		bool "Hash/HMAC only"
-+		select CRYPTO_DEV_QCE_SHA
-+		help
-+		  Enable hashes/HMAC algorithms only:
-+			- SHA1, HMAC-SHA1
-+			- SHA256, HMAC-SHA256
-+
-+endchoice
- 
- config CRYPTO_DEV_QCOM_RNG
- 	tristate "Qualcomm Random Number Generator Driver"
-diff --git a/drivers/crypto/qce/Makefile b/drivers/crypto/qce/Makefile
-index 8caa04e1ec43..14ade8a7d664 100644
---- a/drivers/crypto/qce/Makefile
-+++ b/drivers/crypto/qce/Makefile
-@@ -2,6 +2,7 @@
- obj-$(CONFIG_CRYPTO_DEV_QCE) += qcrypto.o
- qcrypto-objs := core.o \
- 		common.o \
--		dma.o \
--		sha.o \
--		skcipher.o
-+		dma.o
-+
-+qcrypto-$(CONFIG_CRYPTO_DEV_QCE_SHA) += sha.o
-+qcrypto-$(CONFIG_CRYPTO_DEV_QCE_SKCIPHER) += skcipher.o
-diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
-index da1188abc9ba..629e7f34dc09 100644
---- a/drivers/crypto/qce/common.c
-+++ b/drivers/crypto/qce/common.c
-@@ -45,52 +45,56 @@ qce_clear_array(struct qce_device *qce, u32 offset, unsigned int len)
- 		qce_write(qce, offset + i * sizeof(u32), 0);
- }
- 
--static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
-+static u32 qce_config_reg(struct qce_device *qce, int little)
- {
--	u32 cfg = 0;
-+	u32 beats = (qce->burst_size >> 3) - 1;
-+	u32 pipe_pair = qce->pipe_pair_id;
-+	u32 config;
- 
--	if (IS_AES(flags)) {
--		if (aes_key_size == AES_KEYSIZE_128)
--			cfg |= ENCR_KEY_SZ_AES128 << ENCR_KEY_SZ_SHIFT;
--		else if (aes_key_size == AES_KEYSIZE_256)
--			cfg |= ENCR_KEY_SZ_AES256 << ENCR_KEY_SZ_SHIFT;
--	}
-+	config = (beats << REQ_SIZE_SHIFT) & REQ_SIZE_MASK;
-+	config |= BIT(MASK_DOUT_INTR_SHIFT) | BIT(MASK_DIN_INTR_SHIFT) |
-+		  BIT(MASK_OP_DONE_INTR_SHIFT) | BIT(MASK_ERR_INTR_SHIFT);
-+	config |= (pipe_pair << PIPE_SET_SELECT_SHIFT) & PIPE_SET_SELECT_MASK;
-+	config &= ~HIGH_SPD_EN_N_SHIFT;
- 
--	if (IS_AES(flags))
--		cfg |= ENCR_ALG_AES << ENCR_ALG_SHIFT;
--	else if (IS_DES(flags) || IS_3DES(flags))
--		cfg |= ENCR_ALG_DES << ENCR_ALG_SHIFT;
-+	if (little)
-+		config |= BIT(LITTLE_ENDIAN_MODE_SHIFT);
- 
--	if (IS_DES(flags))
--		cfg |= ENCR_KEY_SZ_DES << ENCR_KEY_SZ_SHIFT;
-+	return config;
-+}
- 
--	if (IS_3DES(flags))
--		cfg |= ENCR_KEY_SZ_3DES << ENCR_KEY_SZ_SHIFT;
-+void qce_cpu_to_be32p_array(__be32 *dst, const u8 *src, unsigned int len)
-+{
-+	__be32 *d = dst;
-+	const u8 *s = src;
-+	unsigned int n;
- 
--	switch (flags & QCE_MODE_MASK) {
--	case QCE_MODE_ECB:
--		cfg |= ENCR_MODE_ECB << ENCR_MODE_SHIFT;
--		break;
--	case QCE_MODE_CBC:
--		cfg |= ENCR_MODE_CBC << ENCR_MODE_SHIFT;
--		break;
--	case QCE_MODE_CTR:
--		cfg |= ENCR_MODE_CTR << ENCR_MODE_SHIFT;
--		break;
--	case QCE_MODE_XTS:
--		cfg |= ENCR_MODE_XTS << ENCR_MODE_SHIFT;
--		break;
--	case QCE_MODE_CCM:
--		cfg |= ENCR_MODE_CCM << ENCR_MODE_SHIFT;
--		cfg |= LAST_CCM_XFR << LAST_CCM_SHIFT;
--		break;
--	default:
--		return ~0;
-+	n = len / sizeof(u32);
-+	for (; n > 0; n--) {
-+		*d = cpu_to_be32p((const __u32 *) s);
-+		s += sizeof(__u32);
-+		d++;
- 	}
-+}
- 
--	return cfg;
-+static void qce_setup_config(struct qce_device *qce)
-+{
-+	u32 config;
-+
-+	/* get big endianness */
-+	config = qce_config_reg(qce, 0);
-+
-+	/* clear status */
-+	qce_write(qce, REG_STATUS, 0);
-+	qce_write(qce, REG_CONFIG, config);
-+}
-+
-+static inline void qce_crypto_go(struct qce_device *qce)
-+{
-+	qce_write(qce, REG_GOPROC, BIT(GO_SHIFT) | BIT(RESULTS_DUMP_SHIFT));
- }
- 
-+#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
- static u32 qce_auth_cfg(unsigned long flags, u32 key_size)
- {
- 	u32 cfg = 0;
-@@ -137,88 +141,6 @@ static u32 qce_auth_cfg(unsigned long flags, u32 key_size)
- 	return cfg;
- }
- 
--static u32 qce_config_reg(struct qce_device *qce, int little)
--{
--	u32 beats = (qce->burst_size >> 3) - 1;
--	u32 pipe_pair = qce->pipe_pair_id;
--	u32 config;
--
--	config = (beats << REQ_SIZE_SHIFT) & REQ_SIZE_MASK;
--	config |= BIT(MASK_DOUT_INTR_SHIFT) | BIT(MASK_DIN_INTR_SHIFT) |
--		  BIT(MASK_OP_DONE_INTR_SHIFT) | BIT(MASK_ERR_INTR_SHIFT);
--	config |= (pipe_pair << PIPE_SET_SELECT_SHIFT) & PIPE_SET_SELECT_MASK;
--	config &= ~HIGH_SPD_EN_N_SHIFT;
--
--	if (little)
--		config |= BIT(LITTLE_ENDIAN_MODE_SHIFT);
--
--	return config;
--}
--
--void qce_cpu_to_be32p_array(__be32 *dst, const u8 *src, unsigned int len)
--{
--	__be32 *d = dst;
--	const u8 *s = src;
--	unsigned int n;
--
--	n = len / sizeof(u32);
--	for (; n > 0; n--) {
--		*d = cpu_to_be32p((const __u32 *) s);
--		s += sizeof(__u32);
--		d++;
--	}
--}
--
--static void qce_xts_swapiv(__be32 *dst, const u8 *src, unsigned int ivsize)
--{
--	u8 swap[QCE_AES_IV_LENGTH];
--	u32 i, j;
--
--	if (ivsize > QCE_AES_IV_LENGTH)
--		return;
--
--	memset(swap, 0, QCE_AES_IV_LENGTH);
--
--	for (i = (QCE_AES_IV_LENGTH - ivsize), j = ivsize - 1;
--	     i < QCE_AES_IV_LENGTH; i++, j--)
--		swap[i] = src[j];
--
--	qce_cpu_to_be32p_array(dst, swap, QCE_AES_IV_LENGTH);
--}
--
--static void qce_xtskey(struct qce_device *qce, const u8 *enckey,
--		       unsigned int enckeylen, unsigned int cryptlen)
--{
--	u32 xtskey[QCE_MAX_CIPHER_KEY_SIZE / sizeof(u32)] = {0};
--	unsigned int xtsklen = enckeylen / (2 * sizeof(u32));
--	unsigned int xtsdusize;
--
--	qce_cpu_to_be32p_array((__be32 *)xtskey, enckey + enckeylen / 2,
--			       enckeylen / 2);
--	qce_write_array(qce, REG_ENCR_XTS_KEY0, xtskey, xtsklen);
--
--	/* xts du size 512B */
--	xtsdusize = min_t(u32, QCE_SECTOR_SIZE, cryptlen);
--	qce_write(qce, REG_ENCR_XTS_DU_SIZE, xtsdusize);
--}
--
--static void qce_setup_config(struct qce_device *qce)
--{
--	u32 config;
--
--	/* get big endianness */
--	config = qce_config_reg(qce, 0);
--
--	/* clear status */
--	qce_write(qce, REG_STATUS, 0);
--	qce_write(qce, REG_CONFIG, config);
--}
--
--static inline void qce_crypto_go(struct qce_device *qce)
--{
--	qce_write(qce, REG_GOPROC, BIT(GO_SHIFT) | BIT(RESULTS_DUMP_SHIFT));
--}
--
- static int qce_setup_regs_ahash(struct crypto_async_request *async_req,
- 				u32 totallen, u32 offset)
- {
-@@ -303,6 +225,87 @@ static int qce_setup_regs_ahash(struct crypto_async_request *async_req,
- 
- 	return 0;
- }
-+#endif
-+
-+#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
-+static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
-+{
-+	u32 cfg = 0;
-+
-+	if (IS_AES(flags)) {
-+		if (aes_key_size == AES_KEYSIZE_128)
-+			cfg |= ENCR_KEY_SZ_AES128 << ENCR_KEY_SZ_SHIFT;
-+		else if (aes_key_size == AES_KEYSIZE_256)
-+			cfg |= ENCR_KEY_SZ_AES256 << ENCR_KEY_SZ_SHIFT;
-+	}
-+
-+	if (IS_AES(flags))
-+		cfg |= ENCR_ALG_AES << ENCR_ALG_SHIFT;
-+	else if (IS_DES(flags) || IS_3DES(flags))
-+		cfg |= ENCR_ALG_DES << ENCR_ALG_SHIFT;
-+
-+	if (IS_DES(flags))
-+		cfg |= ENCR_KEY_SZ_DES << ENCR_KEY_SZ_SHIFT;
-+
-+	if (IS_3DES(flags))
-+		cfg |= ENCR_KEY_SZ_3DES << ENCR_KEY_SZ_SHIFT;
-+
-+	switch (flags & QCE_MODE_MASK) {
-+	case QCE_MODE_ECB:
-+		cfg |= ENCR_MODE_ECB << ENCR_MODE_SHIFT;
-+		break;
-+	case QCE_MODE_CBC:
-+		cfg |= ENCR_MODE_CBC << ENCR_MODE_SHIFT;
-+		break;
-+	case QCE_MODE_CTR:
-+		cfg |= ENCR_MODE_CTR << ENCR_MODE_SHIFT;
-+		break;
-+	case QCE_MODE_XTS:
-+		cfg |= ENCR_MODE_XTS << ENCR_MODE_SHIFT;
-+		break;
-+	case QCE_MODE_CCM:
-+		cfg |= ENCR_MODE_CCM << ENCR_MODE_SHIFT;
-+		cfg |= LAST_CCM_XFR << LAST_CCM_SHIFT;
-+		break;
-+	default:
-+		return ~0;
-+	}
-+
-+	return cfg;
-+}
-+
-+static void qce_xts_swapiv(__be32 *dst, const u8 *src, unsigned int ivsize)
-+{
-+	u8 swap[QCE_AES_IV_LENGTH];
-+	u32 i, j;
-+
-+	if (ivsize > QCE_AES_IV_LENGTH)
-+		return;
-+
-+	memset(swap, 0, QCE_AES_IV_LENGTH);
-+
-+	for (i = (QCE_AES_IV_LENGTH - ivsize), j = ivsize - 1;
-+	     i < QCE_AES_IV_LENGTH; i++, j--)
-+		swap[i] = src[j];
-+
-+	qce_cpu_to_be32p_array(dst, swap, QCE_AES_IV_LENGTH);
-+}
-+
-+static void qce_xtskey(struct qce_device *qce, const u8 *enckey,
-+		       unsigned int enckeylen, unsigned int cryptlen)
-+{
-+	u32 xtskey[QCE_MAX_CIPHER_KEY_SIZE / sizeof(u32)] = {0};
-+	unsigned int xtsklen = enckeylen / (2 * sizeof(u32));
-+	unsigned int xtsdusize;
-+
-+	qce_cpu_to_be32p_array((__be32 *)xtskey, enckey + enckeylen / 2,
-+			       enckeylen / 2);
-+	qce_write_array(qce, REG_ENCR_XTS_KEY0, xtskey, xtsklen);
-+
-+	/* xts du size 512B */
-+	xtsdusize = min_t(u32, QCE_SECTOR_SIZE, cryptlen);
-+	qce_write(qce, REG_ENCR_XTS_DU_SIZE, xtsdusize);
-+}
- 
- static int qce_setup_regs_skcipher(struct crypto_async_request *async_req,
- 				     u32 totallen, u32 offset)
-@@ -384,15 +387,20 @@ static int qce_setup_regs_skcipher(struct crypto_async_request *async_req,
- 
- 	return 0;
- }
-+#endif
- 
- int qce_start(struct crypto_async_request *async_req, u32 type, u32 totallen,
- 	      u32 offset)
- {
- 	switch (type) {
-+#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
- 	case CRYPTO_ALG_TYPE_SKCIPHER:
- 		return qce_setup_regs_skcipher(async_req, totallen, offset);
-+#endif
-+#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
- 	case CRYPTO_ALG_TYPE_AHASH:
- 		return qce_setup_regs_ahash(async_req, totallen, offset);
-+#endif
- 	default:
- 		return -EINVAL;
- 	}
-diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-index 0a44a6eeacf5..cb6d61eb7302 100644
---- a/drivers/crypto/qce/core.c
-+++ b/drivers/crypto/qce/core.c
-@@ -22,8 +22,12 @@
- #define QCE_QUEUE_LENGTH	1
- 
- static const struct qce_algo_ops *qce_ops[] = {
-+#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
- 	&skcipher_ops,
-+#endif
-+#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
- 	&ahash_ops,
-+#endif
- };
- 
- static void qce_unregister_algs(struct qce_device *qce)
+Miss Amina IBRAHIM.
