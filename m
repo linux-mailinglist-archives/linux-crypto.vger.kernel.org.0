@@ -2,73 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 967521288E9
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Dec 2019 12:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE315129344
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Dec 2019 09:48:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbfLULzh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 21 Dec 2019 06:55:37 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:45001 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbfLULzh (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 21 Dec 2019 06:55:37 -0500
-Received: by mail-ot1-f68.google.com with SMTP id h9so12915173otj.11
-        for <linux-crypto@vger.kernel.org>; Sat, 21 Dec 2019 03:55:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=jfNAXQwhZfEavSvS00CAkiq7q52D2V3MiZ0EO57BKJY=;
-        b=apib9gpAdBRMo5VQm39Rth+06s1IFL1rrLvmCctXmnmDIc2qUMioUkhhLm2TTIu3LC
-         hE5375O5Hf+k0JzRQwdifCNu5rlIG/6U5egiB9l7HkKXZlqlogHJEbYRsPkIytq0AaGV
-         Bmlc1jt0d5RQyYpabhi+JjeCpMIDZaNTcuFeiiG5jRjRJqJP4rOEhpaHvwmNk3pFMxZo
-         6lmvtSfcISqceE8hViCPRgDySazeY5SkrzPPhEbQchKXNURNoFx8P/BHleM++mpJMsYD
-         RgU6lNYoC+/ndhCojL9z3ZVxSNR5zeqjAOVdPwHD/TB0ReAwKXyqAIWxExivuNDo9dlJ
-         Woxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=jfNAXQwhZfEavSvS00CAkiq7q52D2V3MiZ0EO57BKJY=;
-        b=KLK+h9ceur8OfVxOKvaaM1W1dSpv2btuAgs7+lHLgJI9wxvHqkc3OotNI3v+3Nnqk6
-         /jIS0g/zyU2GzojGLMO/rNp0E4YM85SImrmqEIsH3WmvEVlbJsa/Yrh1K7KpwXuzsKlp
-         7Gl5KwTmXBBZ/qYYtcggIWeFlFJmfp6CvVvyHOt3FW2EZUQIUW114ho+AJSx2ZEp77M3
-         ejcoobWE6l3OR7t7Jcf1qemGECVvwM0MDXGOmL4nKRyFt2r33PC1rDlCDs7C1kEB1Uz3
-         uc5Yd2ggeQ1WiraFJb+rmNEXVYh1TibHsFxKzYefSqSBH59BRM4oj8LykyvF9TjsEN3j
-         XlLw==
-X-Gm-Message-State: APjAAAXDBhywybLMhk2RBoI5g/N/AQPHYbq5346UrMglAggw7nSNVM4I
-        Vhtok/wFuLY8dTgN1b4qfnKnF3F5RVA/ZX680Ww=
-X-Google-Smtp-Source: APXvYqzaO/1jL12IhY+TNn2R2oqjcv531xTWOW3fVUZnnncNpgwK7LK6OS+QRk1Q1BR/HMZb2eMp9nPwA9PcDXPJ9X4=
-X-Received: by 2002:a05:6830:1d7a:: with SMTP id l26mr19684860oti.138.1576929336465;
- Sat, 21 Dec 2019 03:55:36 -0800 (PST)
+        id S1725959AbfLWIsi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 23 Dec 2019 03:48:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725905AbfLWIsi (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 23 Dec 2019 03:48:38 -0500
+Received: from dragon (98.142.130.235.16clouds.com [98.142.130.235])
+        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D646B206B7;
+        Mon, 23 Dec 2019 08:48:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577090917;
+        bh=maq4XvFtmO8+dOb8fi20iKVg4RvaZlE9zzoHO189vc0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LVAgmKHzVEIZAD+rA5FOaWnfhl3Nu8LbN0n4IBSb+jIUPNmkdsMeqlGdv7FGKY2jN
+         fiD5TLN50S1afqMLqCHccZSiMIhKwzLyOni/TP45Q62ZcA931Zn4SO2f0hLNYLeIc5
+         2jqCPfkjObVGBJTx+AzEBaZOPKKKTnKgntMuB21E=
+Date:   Mon, 23 Dec 2019 16:48:13 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: Re: [PATCH V3 2/3] arm64: dts: imx8mm: Add Crypto CAAM support
+Message-ID: <20191223084812.GV11523@dragon>
+References: <20191218130616.13860-1-aford173@gmail.com>
+ <20191218130616.13860-2-aford173@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:ac9:7808:0:0:0:0:0 with HTTP; Sat, 21 Dec 2019 03:55:36
- -0800 (PST)
-Reply-To: miss.aminaibrahim@gmail.com
-From:   "miss.amina" <paul.titus11111@gmail.com>
-Date:   Sat, 21 Dec 2019 11:55:36 +0000
-Message-ID: <CAH60xqvYsydoKz3zqaQDdb7U3GsQkJ9h6z5EdtX5AMJuYT=WRw@mail.gmail.com>
-Subject: My Name is Miss Amina Ibrahim from Libya,I am 22 years old
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191218130616.13860-2-aford173@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-My Name is Miss Amina Ibrahim from Libya, I am 22 years old, I am in
-St.Christopher's Parish for refugee in Burkina Faso under United
-Nations High commission for Refugee ,I lost my parents in the recent
-war in  Libya, right now am in Burkina Faso, please save my life i am
-in danger need your help in transferring my inheritance my father left
-behind for me in a Bank in Burkina Faso here,i have every document for
-the transfer, all i need is a foreigner who will stand as the foreign
-partner to my father and beneficiary of the fund. The money deposited
-in the Bank is US10.5 MILLION UNITED STATES DOLLAR) I just need this
-fund to be transfer to your account so that I will come over to your
-country and complete my education as you know that my country have
-been in deep crisis due to the war .and I cannot go back there again
-because I have nobody again all of my family were killed in the war.
-If you are interested to save me and help me receive my inheritance
-fund Please get back to me
+On Wed, Dec 18, 2019 at 07:06:15AM -0600, Adam Ford wrote:
+> The i.MX8M Mini supports the same crypto engine as what is in
+> the i.MX8MQ, but it is not currently present in the device tree.
+> 
+> This patch places it into the device tree.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
 
-Miss Amina IBRAHIM.
+Applied, thanks.
