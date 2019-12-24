@@ -2,124 +2,59 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73256129699
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Dec 2019 14:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3231129F4E
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Dec 2019 09:46:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbfLWNnB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 23 Dec 2019 08:43:01 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:46030 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbfLWNnB (ORCPT
+        id S1726174AbfLXIqA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 24 Dec 2019 03:46:00 -0500
+Received: from mail-io1-f68.google.com ([209.85.166.68]:42875 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbfLXIp7 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 23 Dec 2019 08:43:01 -0500
-Received: by mail-pf1-f196.google.com with SMTP id 2so9198881pfg.12
-        for <linux-crypto@vger.kernel.org>; Mon, 23 Dec 2019 05:43:01 -0800 (PST)
+        Tue, 24 Dec 2019 03:45:59 -0500
+Received: by mail-io1-f68.google.com with SMTP id n11so11835884iom.9
+        for <linux-crypto@vger.kernel.org>; Tue, 24 Dec 2019 00:45:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=wVTAxAkLybU/XzL/opvLLffdVLtU7bgXnpcg4bd91o4=;
-        b=Y6kMDUZyIpXUhY/6S6BGldJrLa3Be3lQw1aP1BG6W+6jpQs0H94u4738rszDgOEhev
-         yj1YEU5Dhi+0a5z+R8dlTKCFEuU7NWGPTiCqZMIE80senDFfhVqi6pcyZbipej4nkQ1d
-         V6tESjmrSWYreiBea6tmcV267sBT5fNb09WlZ1BUoaTGrqGyrgi8V+t4P7pGb2ZnYemn
-         JQiamP8GzVdx2hTRs/mV/QNsjP6r2E86kVtm2jS0pSsqEyoL0hwlTM8OUhoWzQLioUq1
-         qo3tKYhZjjwuv5Wwu/PXS8Oo+fqbuCWVUjnmzjEaSEIUUYY3m7TB7K6FLeQseWDqYeP9
-         DSyA==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=LcGU1mt+nAQIi3eKcWZpiy7DqrkNG23tK1MNYV9CB+M=;
+        b=oSNTlT55S3VMpFl+4fySqC3u4YoAoztGfoVSP3wFAPYFWsXQI1giXiHsJxeVgA8wKV
+         hwULOTryEx3lBfxk63gUH81C2gQlAZlpm+aJQe+/8QTFExYby4VXgAHOExxmkLh2JtdG
+         TiTDoeJwiEsRsob2+npOsu1HTE5l3KD8qzz/VgAKRx1Duv9MQ59SrgwEmUHNA+ZhhElO
+         FLyTrc29L41ygHkbyLYW+d4tggvOE/k3tBa1QgwGaKmT05FNAOOQsBLQoIO1VpMQ67Vd
+         aruBW7fco12liiTMGrdJ76u//KWiZN1ELjv5lB+Lg5aB3LosSk3HmcjI9v9Dl0cnEnaF
+         MVfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=wVTAxAkLybU/XzL/opvLLffdVLtU7bgXnpcg4bd91o4=;
-        b=dJBRgFmPzNKVoph8/SdwLXXZWOo9AldQVOhVoUXBHSqDCbtqfWIrtKJoe4TU4gHbfy
-         0IGsvOP1qoKoieqbnozNsRClt+LClX6euRbuIJqDiHBt0KQJppSdOJnMzpnlayZLP0Tb
-         f34q6bxhcGT8Maw3KeiTfuRHVfxaMNv8d3TDR8gtGnV8UtlzopOYwFCBDLUt6CEpcI73
-         f853ynG4MpigB7Xq3sodloaAcsiqtpik3xsTAjMkkpfPYVyJr1EYfP2bf6jdcbDSrkPh
-         DY5qEWZ+05rx1OGQUZys9AHZBv8g7VbjveuSSgmBmsecJRlCYTb9YkqzlOy+cDJkjDcu
-         q4LA==
-X-Gm-Message-State: APjAAAUo7pgru4L5YvM46jhMPV7qh7wzPeQlGxGoPqWvrYPtz5Fjxut7
-        9B3qjz4u5oaoNgRUFOeqXyG/fg==
-X-Google-Smtp-Source: APXvYqwmupBlYBUO32XRngGKnjqX9G8UnI7c7rx2T5XTS3rPO/gmjyWX42Do7N5EQcg90Wl/OdkwDQ==
-X-Received: by 2002:a63:89c2:: with SMTP id v185mr30692540pgd.135.1577108580760;
-        Mon, 23 Dec 2019 05:43:00 -0800 (PST)
-Received: from [192.168.11.202] (li1566-229.members.linode.com. [139.162.86.229])
-        by smtp.gmail.com with ESMTPSA id z4sm21121512pjn.29.2019.12.23.05.42.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 23 Dec 2019 05:43:00 -0800 (PST)
-Subject: Re: [PATCH v10 0/4] Add uacce module for Accelerator
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        jonathan.cameron@huawei.com, grant.likely@arm.com,
-        jean-philippe <jean-philippe@linaro.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        ilias.apalodimas@linaro.org, francois.ozog@linaro.org,
-        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
-        "haojian . zhuang" <haojian.zhuang@linaro.org>,
-        guodong.xu@linaro.org
-Cc:     linux-accelerators@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, iommu@lists.linux-foundation.org
-References: <1576465697-27946-1-git-send-email-zhangfei.gao@linaro.org>
-From:   zhangfei <zhangfei.gao@linaro.org>
-Message-ID: <0e7f16b7-938b-402a-e3e3-2a0bed6fb708@linaro.org>
-Date:   Mon, 23 Dec 2019 21:41:31 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=LcGU1mt+nAQIi3eKcWZpiy7DqrkNG23tK1MNYV9CB+M=;
+        b=WveokEIExZQ1AI42QfrT6cVi0QkrRiSs1f9YlO5cCEz0aosUZDEYCoeKWbpVFAXQEU
+         /PETvYR1yzWPgfsokWT/M1yrOrwyaG6CU8uuGg4yZSuXzdUNZXAVR8eapkQ/Tsatl+fw
+         LDXPFpCfAxQf7uSUtYUMaMa+wnCEctNB0ewJSAgg2PJaqT6fJZXCrYfvxLLLCHJHoSJd
+         Hp5XN4NBBs4YO2jej5sDyUDF5VuOSCrhk3+Yd13LNGmdsLJy9FEzhkZtzG2IpMqc/Ugr
+         BjudmPCW3w1D7Wbid0rOs34QrDBTl47Bc08T32UfSzZnOXCVHrxp8mW/XrCkqBmVwinB
+         E9oQ==
+X-Gm-Message-State: APjAAAXInOTmR7PPL+qLHoxmvHq+aPBeGB1wLLhB2YIlTLcx0cdtdYj1
+        jfuIwdkMiNcRsjCm+S6nz3OOGdAZi6Z7FwCBPaE=
+X-Google-Smtp-Source: APXvYqzDXPiusXd90IvAVlyEbeO6jCMdOyb5CPbz+Z0EDnXal3aG8RcvJ2u/hlIr8XoTCaRoauJNJKQwlLXTh0fOni4=
+X-Received: by 2002:a5d:9158:: with SMTP id y24mr4336955ioq.298.1577177159339;
+ Tue, 24 Dec 2019 00:45:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1576465697-27946-1-git-send-email-zhangfei.gao@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Received: by 2002:ac0:f302:0:0:0:0:0 with HTTP; Tue, 24 Dec 2019 00:45:58
+ -0800 (PST)
+Reply-To: bethnatividad9@gmail.com
+From:   Beth Nat <clementidibia1960@gmail.com>
+Date:   Tue, 24 Dec 2019 08:45:58 +0000
+Message-ID: <CAEG=icH-SN5dpsQRSZpGxr6Zs1qfbZ=LtCEFq=gRxqcGeKyiKw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi, Greg
-
-On 2019/12/16 上午11:08, Zhangfei Gao wrote:
-> Uacce (Unified/User-space-access-intended Accelerator Framework) targets to
-> provide Shared Virtual Addressing (SVA) between accelerators and processes.
-> So accelerator can access any data structure of the main cpu.
-> This differs from the data sharing between cpu and io device, which share
-> data content rather than address.
-> Because of unified address, hardware and user space of process can share
-> the same virtual address in the communication.
->
-> Uacce is intended to be used with Jean Philippe Brucker's SVA
-> patchset[1], which enables IO side page fault and PASID support.
-> We have keep verifying with Jean's sva patchset [2]
-> We also keep verifying with Eric's SMMUv3 Nested Stage patches [3]
->
-> This series and related zip & qm driver
-> https://github.com/Linaro/linux-kernel-warpdrive/tree/v5.5-rc1-uacce-v10
->
-> The library and user application:
-> https://github.com/Linaro/warpdrive/tree/wdprd-upstream-v10
->
-> References:
-> [1] http://jpbrucker.net/sva/
-> [2] http://jpbrucker.net/git/linux/log/?h=sva/zip-devel
-> [3] https://github.com/eauger/linux/tree/v5.3.0-rc0-2stage-v9
->
-> Change History:
-> v10:
-> Modify the include header to fix kbuild test erorr in other arch.
->
->
-> Kenneth Lee (2):
->    uacce: Add documents for uacce
->    uacce: add uacce driver
->
-> Zhangfei Gao (2):
->    crypto: hisilicon - Remove module_param uacce_mode
->    crypto: hisilicon - register zip engine to uacce
->
->
-
-Would you mind take a look at the patch set?
-
-The patches are also used for verifying the sva feature.
-https://lore.kernel.org/linux-iommu/20191219163033.2608177-1-jean-philippe@linaro.org/
-
-Thanks
+How are you today my dear? i saw your profile and it interests me, i
+am a Military nurse from USA. Can we be friend? I want to know more
+about you.
