@@ -2,97 +2,158 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A2912B0C6
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Dec 2019 03:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A13E12B1B2
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Dec 2019 07:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726804AbfL0C6G (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 26 Dec 2019 21:58:06 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:51286 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726115AbfL0C6G (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 26 Dec 2019 21:58:06 -0500
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1ikfow-0002uK-HV; Fri, 27 Dec 2019 10:57:46 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1ikfor-0003Np-HV; Fri, 27 Dec 2019 10:57:41 +0800
-Date:   Fri, 27 Dec 2019 10:57:41 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     atul.gupta@chelsio.com, davem@davemloft.net, tglx@linutronix.de,
-        allison@lohutok.net, arjun@chelsio.com,
-        kstewart@linuxfoundation.org, edumazet@google.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: chelsio: chtls: fix possible
- sleep-in-atomic-context bugs in abort_syn_rcv()
-Message-ID: <20191227025741.lg3iudfo2lktrqvj@gondor.apana.org.au>
-References: <20191218033422.18672-1-baijiaju1990@gmail.com>
+        id S1726495AbfL0GUB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 27 Dec 2019 01:20:01 -0500
+Received: from mail-mw2nam12on2040.outbound.protection.outlook.com ([40.107.244.40]:35118
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725904AbfL0GUA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 27 Dec 2019 01:20:00 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b/8ds/7porKPlDANNPewiD0Q2vRv+hZY+3vvFO3iIwVZF6zN9wPhtMMQUJW/9mTnm1O7hH3I4fqvKU8VkxkUPoicCs60qrrH6klqN/vTInCqeshSNFz4skEoL6LwQ0F1ugbuCGlWVr6WMIboZMy55QNf1bNjkXbm9OMyj+wsIDEZinLtnRFTx/CPrYeCBJymymFBuuw9427gutY5cRwMYkyBT22JJDKiBuPWuxcFL/VeCaxGDPmYQ0jeoDoGbxv/u4u2SSkMECoaiWWhxHol8iFePYf8An14qgzsu1F2CbhQlGBsczfxJuVO6AUfkXHH8B4l61bDw5A4vn5vLfunTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n+B8J45YslOQPoE43m6M2aiHKuxqBYtbNYkdUp/M3ns=;
+ b=FEGHblghqHjXxm5kKY6SdcUsC8IG7OZzi9l09aNb0G5dVLNNYxgrqWFBSLJCPLCAckvV61wbE/2bldxv0ryUdTMLP7u7Cv0Huv15Kg3aUx0GTTq4FO7+a4GUMzSjUH+YL7ZuhGoNCdHtD3VEB0IQAj7qP2hlQ4t+Rk3gxZY6aU/fIR3UXPQPqo8p1rPYEOM/aWSC2//tZVdBFz+9vQxGULAUQSXzL6NeS2/cJZLSDmbwSEsBVxulW7hMg9q4gjuVoN+i3jX2H1ARka7OWdu8J2JByLsv07aIua7LedTDkmJqBpwmJ3NtnqYJEYcE+UO3Ir9jqVsn009giqI5g3iuIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n+B8J45YslOQPoE43m6M2aiHKuxqBYtbNYkdUp/M3ns=;
+ b=4XBpeG9JlXDfe+a4q7lOt+4XyIk6Do42rZCrjzpb1vSNqFA0dc66yXFro2Fcx+2A+FRcZSnX/ha7pHNxODxMSmSKU110HBq3Hg88Fg+ivx1Ykq03EjArUmaD+kb89O7Wriz25MJtlnHWOp9KwEPrRxp3HEs5XZUt0wA66mpol6g=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Rijo-john.Thomas@amd.com; 
+Received: from CY4PR12MB1925.namprd12.prod.outlook.com (10.175.62.7) by
+ CY4PR12MB1366.namprd12.prod.outlook.com (10.168.168.141) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2581.12; Fri, 27 Dec 2019 06:19:51 +0000
+Received: from CY4PR12MB1925.namprd12.prod.outlook.com
+ ([fe80::9be:baba:170f:3e2]) by CY4PR12MB1925.namprd12.prod.outlook.com
+ ([fe80::9be:baba:170f:3e2%3]) with mapi id 15.20.2581.007; Fri, 27 Dec 2019
+ 06:19:51 +0000
+From:   Rijo Thomas <Rijo-john.Thomas@amd.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        tee-dev@lists.linaro.org
+Cc:     Rijo Thomas <Rijo-john.Thomas@amd.com>,
+        Nimesh Easow <Nimesh.Easow@amd.com>,
+        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Gary Hook <gary.hook@amd.com>
+Subject: [PATCH 0/4] TEE driver for AMD APUs
+Date:   Fri, 27 Dec 2019 10:53:59 +0530
+Message-Id: <cover.1577423898.git.Rijo-john.Thomas@amd.com>
+X-Mailer: git-send-email 1.9.1
+Content-Type: text/plain
+X-ClientProxiedBy: MA1PR0101CA0022.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:21::32) To CY4PR12MB1925.namprd12.prod.outlook.com
+ (2603:10b6:903:120::7)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191218033422.18672-1-baijiaju1990@gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Received: from andbang1.amd.com (165.204.156.251) by MA1PR0101CA0022.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:21::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2581.11 via Frontend Transport; Fri, 27 Dec 2019 06:19:47 +0000
+X-Mailer: git-send-email 1.9.1
+X-Originating-IP: [165.204.156.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: f69ea735-daf5-4bb3-503e-08d78a94c7dc
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1366:|CY4PR12MB1366:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR12MB13664F52A2BFCD5CF629253CCF2A0@CY4PR12MB1366.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0264FEA5C3
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(366004)(39860400002)(396003)(346002)(376002)(189003)(199004)(81166006)(110136005)(316002)(8676002)(66556008)(478600001)(6486002)(66946007)(5660300002)(186003)(26005)(8936002)(2906002)(81156014)(966005)(54906003)(66476007)(956004)(4326008)(86362001)(2616005)(6666004)(52116002)(16526019)(7696005)(36756003);DIR:OUT;SFP:1101;SCL:1;SRVR:CY4PR12MB1366;H:CY4PR12MB1925.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UqNmycvFc8lffPhH+ZU5HE2VRQIoHqK4g0uB4tQjXgfIBGP0VCPqrmdfm7arnUPaEZOl2pK6egTHhQckC6/HJHGIuB8yMGF13xx7ffu3U6XA36dR0890pdxxG61R3yBINoCaEoW5J6CFIg1ez7y58uUaOhlpkqze1fi2KJ5KErq0QepRWWm6CJpy0UWJqzVy6gM9jk9mn8zZd+Z7nQRiOk0zCVdKGJsm9eWqljbNICwXJ535mOUNP+RsL/RHDt3aovYoryrALHxpAukiZ0/GgHqxhlTgzNxU3EkJhs6AvLpMGlHn5xnZ5LcfmXeV0y8CdNYXpzgDKXO7ts01cDmszvNXacyILJxxTMdId/StSmuW61y9U7zjinGbhFpELlxr9P6NjdkXzeXf6uMM5IiSJneog8JOkqbHzyQw3KruQUQnKT2pvCh7qa02sfrs84Ukm+pISrfsoiXz878hLhjc5biUNIhvsLHFAgQsBkbuilM=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f69ea735-daf5-4bb3-503e-08d78a94c7dc
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2019 06:19:51.4199
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L/0g0NEbCwXXZ8pwe/qKfkUGC1J6mJnKJQlrWE6WqiZoG58yTDsU+KGOzSo1nPX4mJHo3UOR9PQNtkbu9r2iYg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1366
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 11:34:22AM +0800, Jia-Ju Bai wrote:
-> The driver may sleep while holding a spinlock.
-> The function call path (from bottom to top) in Linux 4.19 is:
-> 
-> drivers/crypto/chelsio/chtls/chtls_cm.c, 1806: 
-> 	alloc_skb(GFP_KERNEL) in send_abort_rpl
-> drivers/crypto/chelsio/chtls/chtls_cm.c, 1925: 
-> 	send_abort_rpl in abort_syn_rcv
-> drivers/crypto/chelsio/chtls/chtls_cm.c, 1920: 
-> 	spin_lock in abort_syn_rcv
-> 
-> drivers/crypto/chelsio/chtls/chtls_cm.c, 1787: 
-> 	alloc_skb(GFP_KERNEL) in send_defer_abort_rpl
-> drivers/crypto/chelsio/chtls/chtls_cm.c, 1811: 
-> 	send_defer_abort_rpl in send_abort_rpl
-> drivers/crypto/chelsio/chtls/chtls_cm.c, 1925: 
->     send_abort_rpl in abort_syn_rcv
-> drivers/crypto/chelsio/chtls/chtls_cm.c, 1920: 
->     spin_lock in abort_syn_rcv
-> 
-> alloc_skb(GFP_KERNEL) can sleep at runtime.
-> 
-> To fix these possible bugs, GFP_KERNEL is replaced with GFP_ATOMIC.
-> Besides, in send_defer_abort_rpl(), error handling code is added to 
-> handle the failure of alloc_skb().
-> 
-> These bugs are found by a static analysis tool STCheck written by myself.
-> 
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-> ---
->  drivers/crypto/chelsio/chtls/chtls_cm.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/crypto/chelsio/chtls/chtls_cm.c b/drivers/crypto/chelsio/chtls/chtls_cm.c
-> index aca75237bbcf..e6e4c3ddc368 100644
-> --- a/drivers/crypto/chelsio/chtls/chtls_cm.c
-> +++ b/drivers/crypto/chelsio/chtls/chtls_cm.c
-> @@ -1805,8 +1805,11 @@ static void send_defer_abort_rpl(struct chtls_dev *cdev, struct sk_buff *skb)
->  	struct cpl_abort_req_rss *req = cplhdr(skb);
->  	struct sk_buff *reply_skb;
->  
-> -	reply_skb = alloc_skb(sizeof(struct cpl_abort_rpl),
-> -			      GFP_KERNEL | __GFP_NOFAIL);
-> +	reply_skb = alloc_skb(sizeof(struct cpl_abort_rpl), GFP_ATOMIC);
-> +	if (!reply_skb) {
-> +		kfree_skb(skb);
-> +		return;
-> +	}
+This patch series introduces Trusted Execution Environment (TEE) driver
+for AMD APU enabled systems. The TEE is a secure area of a processor which
+ensures that sensitive data is stored, processed and protected in an
+isolated and trusted environment. The AMD Secure Processor is a dedicated
+processor which provides TEE to enable HW platform security. It offers
+protection against software attacks generated in Rich Operating
+System (Rich OS) such as Linux running on x86. The AMD-TEE Trusted OS
+running on AMD Secure Processor allows loading and execution of security
+sensitive applications called Trusted Applications (TAs). An example of
+a TA would be a DRM (Digital Rights Management) TA written to enforce
+content protection.
 
-This code now makes no sense because it's just trying the same
-kmalloc twice.  Perhaps it really needs to be deferred as its
-name suggests?
+Linux already provides a tee subsystem, which is described in [1]. The tee
+subsystem provides a generic TEE ioctl interface which can be used by user
+space to talk to a TEE driver. AMD-TEE driver registers with tee subsystem
+and implements tee function callbacks in an AMD platform specific manner.
 
-Thanks,
+The following TEE commands are recognized by AMD-TEE Trusted OS:
+1. TEE_CMD_ID_LOAD_TA : Load Trusted Application (TA) binary into TEE
+   environment
+2. TEE_CMD_ID_UNLOAD_TA : Unload TA binary from TEE environment
+3. TEE_CMD_ID_OPEN_SESSION : Open session with loaded TA
+4. TEE_CMD_ID_CLOSE_SESSION : Close session with loaded TA
+5. TEE_CMD_ID_INVOKE_CMD : Invoke a command with loaded TA
+6. TEE_CMD_ID_MAP_SHARED_MEM : Map shared memory
+7. TEE_CMD_ID_UNMAP_SHARED_MEM : Unmap shared memory
+
+Each command has its own payload format. The AMD-TEE driver creates a
+command buffer payload for submission to AMD-TEE Trusted OS. The driver
+uses the services of AMD Secure Processor driver to submit commands
+to the Trusted OS. Further details can be found in [1].
+
+This patch series is based on cryptodev-2.6 tree with base commit
+c6d633a92749 (crypto: algapi - make unregistration functions return void).
+
+[1] https://www.kernel.org/doc/Documentation/tee.txt
+
+Rijo Thomas (4):
+  tee: allow compilation of tee subsystem for AMD CPUs
+  tee: add AMD-TEE driver
+  tee: amdtee: check TEE status during driver initialization
+  Documentation: tee: add AMD-TEE driver details
+
+ Documentation/tee.txt               |  81 ++++++
+ drivers/crypto/ccp/tee-dev.c        |  11 +
+ drivers/tee/Kconfig                 |   4 +-
+ drivers/tee/Makefile                |   1 +
+ drivers/tee/amdtee/Kconfig          |   8 +
+ drivers/tee/amdtee/Makefile         |   5 +
+ drivers/tee/amdtee/amdtee_if.h      | 183 +++++++++++++
+ drivers/tee/amdtee/amdtee_private.h | 159 +++++++++++
+ drivers/tee/amdtee/call.c           | 373 ++++++++++++++++++++++++++
+ drivers/tee/amdtee/core.c           | 516 ++++++++++++++++++++++++++++++++++++
+ drivers/tee/amdtee/shm_pool.c       |  93 +++++++
+ include/linux/psp-tee.h             |  18 ++
+ include/uapi/linux/tee.h            |   1 +
+ 13 files changed, 1451 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/tee/amdtee/Kconfig
+ create mode 100644 drivers/tee/amdtee/Makefile
+ create mode 100644 drivers/tee/amdtee/amdtee_if.h
+ create mode 100644 drivers/tee/amdtee/amdtee_private.h
+ create mode 100644 drivers/tee/amdtee/call.c
+ create mode 100644 drivers/tee/amdtee/core.c
+ create mode 100644 drivers/tee/amdtee/shm_pool.c
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+1.9.1
+
