@@ -2,208 +2,135 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1312F12BAAD
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Dec 2019 19:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D8F12C00B
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727162AbfL0SiH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 27 Dec 2019 13:38:07 -0500
-Received: from mail-dm6nam11on2048.outbound.protection.outlook.com ([40.107.223.48]:62561
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726495AbfL0SiH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 27 Dec 2019 13:38:07 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e3Si+lbV4fMmmQKP2gLIm36MVJmcUNVKwEASebfIawofnbyvujCdyNI4hAMj1la4pi/G3OR00AVX80sfZPtRahX++MNeeU1a2cTwV0HOe4FEomHPTyqOJlMfGJ4n22N3ocNMNOUZg/549J3DDldSYfJHNfyuu1VamwMvi4LF+RBlVdVUBCJJdl4zCz6LiKu+23XgU+wHpcHix1UAJNGcXeRl8JEkrC/HS2+tiBp0ludf9LjKrLzQgHIgwfi0QSyvymDG64d0lSDND0wc7HZkjDLN/PPHPGvIWMm0UwzJinsPrBBvRDMxxCA0+/KzGy0iiK0UhmsEP90RYG45r3+xUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GppsT9s5zEVPgj8GZb9XWb5nwKOJlYeRtDABGY0DUcU=;
- b=RrMT2p44I235jRZ9cgOsHS6FAbjB5VVHiJEZkUgB6+F6Hn7kln+IJAptCrkSsce9kt/Pm1WItx7bmk7PH9LhRfjcwAsibsFQZDYuGKw575yW2aOTXQUpijseKZkxMAbExw8d8/UqPiQn4mRnvbcHH/zro2XIc+sEkkQw/bgwSXkGH7TniViq+O2HOn5LBAuFyW5UFcsNzzG6szSgohibkBvU5vUhRRsdoNDEsF/es4mKwNpq9NDerpY+F/XuJ5Q/rAjLytY1UgGTcetxhfO/4nIB3GsXCVRkBpPPc64+do4Vb4Fuof7nZzav+tuVRc46PDk+WA0grV1NwKp7wrWXNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GppsT9s5zEVPgj8GZb9XWb5nwKOJlYeRtDABGY0DUcU=;
- b=2sOiBmv3fsMHi6HEdk3BwcOazh7Bym5Vx1m9ykg79/ekIEl5EKQeEl9UOuz9yvh0zVJUO68QQZY6sHo+IpzYrVqskUiaUXEiA4e6AOJE4s3WnYqRzNq4uBGUztw1uNL5ipR1gx3NR4NrYEJR84Nyxb2sLQM3MmuNwZYZk7/7iDE=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=Gary.Hook@amd.com; 
-Received: from BN8PR12MB2916.namprd12.prod.outlook.com (20.179.66.155) by
- BN8PR12MB3217.namprd12.prod.outlook.com (20.179.67.158) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2581.12; Fri, 27 Dec 2019 18:38:04 +0000
-Received: from BN8PR12MB2916.namprd12.prod.outlook.com
- ([fe80::45d0:ec5c:7480:8029]) by BN8PR12MB2916.namprd12.prod.outlook.com
- ([fe80::45d0:ec5c:7480:8029%5]) with mapi id 15.20.2559.017; Fri, 27 Dec 2019
- 18:38:04 +0000
-Subject: Re: [PATCH 4/4] Documentation: tee: add AMD-TEE driver details
-To:     Rijo Thomas <Rijo-john.Thomas@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        tee-dev@lists.linaro.org
-Cc:     Nimesh Easow <Nimesh.Easow@amd.com>,
-        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Gary Hook <gary.hook@amd.com>
-References: <cover.1577423898.git.Rijo-john.Thomas@amd.com>
- <25ce91ed381479fd0003d2b9670093b8c5cbf638.1577423898.git.Rijo-john.Thomas@amd.com>
-From:   Gary R Hook <ghook@amd.com>
-Message-ID: <91d1e931-40bf-7988-a413-3a93fc12dfb7@amd.com>
-Date:   Fri, 27 Dec 2019 12:38:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <25ce91ed381479fd0003d2b9670093b8c5cbf638.1577423898.git.Rijo-john.Thomas@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0701CA0018.namprd07.prod.outlook.com
- (2603:10b6:803:28::28) To BN8PR12MB2916.namprd12.prod.outlook.com
- (2603:10b6:408:6a::27)
+        id S1726293AbfL2C6D (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 28 Dec 2019 21:58:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726187AbfL2C6D (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 28 Dec 2019 21:58:03 -0500
+Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CBC8206F4
+        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577588282;
+        bh=vJKdqwj8dIJy+k+3iEw5Y7RPZYJm3Sq2o+jPmuAdqQQ=;
+        h=From:To:Subject:Date:From;
+        b=Nix40WXOtZVjcOZqEylQ2fw8UckhiDJ9L33xg5/1LVMp0oYrEVsV3RvrZKRYtT8U9
+         rLOPhyHdiJDrKTU8kxm/P5WBMIV0Sz/g7OgKfxzLoF/0nY64KWh1khn7SMwvtpGIp7
+         yRdWuUBoWyMPmiQGnA8Bv8qjFXlipGLsYG5tDmdc=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-crypto@vger.kernel.org
+Subject: [PATCH 00/28] crypto: template instantiation cleanup
+Date:   Sat, 28 Dec 2019 20:56:46 -0600
+Message-Id: <20191229025714.544159-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Received: from [4.3.2.105] (47.220.193.178) by SN4PR0701CA0018.namprd07.prod.outlook.com (2603:10b6:803:28::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2581.11 via Frontend Transport; Fri, 27 Dec 2019 18:38:03 +0000
-X-Originating-IP: [47.220.193.178]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: edfa5c3b-92e7-477f-73a9-08d78afbe8a9
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3217:|BN8PR12MB3217:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN8PR12MB32170F5242E00F2ABEE658C8FD2A0@BN8PR12MB3217.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-Forefront-PRVS: 0264FEA5C3
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(346002)(396003)(39860400002)(376002)(136003)(189003)(199004)(66946007)(66556008)(66476007)(110136005)(16576012)(54906003)(956004)(6706004)(6486002)(478600001)(966005)(4326008)(52116002)(186003)(2616005)(31696002)(5660300002)(8936002)(2906002)(81166006)(36756003)(8676002)(81156014)(316002)(26005)(53546011)(31686004)(16526019)(78286006)(84106002);DIR:OUT;SFP:1101;SCL:1;SRVR:BN8PR12MB3217;H:BN8PR12MB2916.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IZuVOviELy8RQUjlHGFoY9iV780zorloinAkPSJSoHjVXpkhrazAPLfufK4sETIEPR1RbPnXh9egwMfBaoZ2RH4xJTJJhkP5PAumwGNxRnrMHuw6mtd8ydQkJdF7X12DQgmdeomgRIVOoy5gbCQva11piBoYPGMB3sg/roJU1Vp2DrUMKTzbBhrMPhV7V/O1xZ2Pf8qx2H2TPtjQhTa4qcdcH118UpZhf2f0m6aobNDfaBVYkDFGJrI46/HTt67fd259Oin9+g57KngG1HC78BfOxkNHlTGDNxDHLeDAFHrrGy7saJVX2OqnUQRvwSA6vuBLBaDm8Q5Kjx4q87cPHv49HGxeZ5XnI4DX6er2Sy7kEwdoXZb4g+XjNVQ9SsTd77MBrrBNqg5zVpoq2d45hDISo0b3lZUzchZDG8nlxCFCGlgVHN0LatXBGHc2YJqOsOMaVjzLJNRA1drMKKOGZ0ccThJDeAxbFaCFSnhvcoXeIQITudY7Z28/byhfEk5zhzohyswoXNkZF0F7Ag7vhRyCO4Dh0OQ5sOT+3DueNL7UHi0O/QoCGthz2JLAyVMT
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: edfa5c3b-92e7-477f-73a9-08d78afbe8a9
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2019 18:38:04.3406
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2deQbjokdFr6ImqpXncQdbJ6yjQRTrZIxbKlndqBaJcNfVc+TiuN8BUjJbp8LRtt
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3217
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 12/26/19 11:24 PM, Rijo Thomas wrote:
-> Update tee.txt with AMD-TEE driver details. The driver is written
-> to communicate with AMD's TEE.
-> 
-> Acked-by: Jens Wiklander <jens.wiklander@linaro.org>
-> Co-developed-by: Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>
-> Signed-off-by: Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>
-> Signed-off-by: Rijo Thomas <Rijo-john.Thomas@amd.com>
+Hello,
 
-Reviewed-by: Gary R Hook <gary.hook@amd.com>
+This series makes all crypto templates initialize their spawns (i.e.
+their "inner algorithms") in a consistent way, using a consistent set of
+crypto_grab_*() helper functions.  skcipher, aead, and akcipher spawns
+already used this approach, but shash, ahash, and cipher spawns were
+being initialized differently -- causing confusion and unnecessary code.
 
-> ---
->   Documentation/tee.txt | 81 +++++++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 81 insertions(+)
-> 
-> diff --git a/Documentation/tee.txt b/Documentation/tee.txt
-> index afacdf2..c8fad81 100644
-> --- a/Documentation/tee.txt
-> +++ b/Documentation/tee.txt
-> @@ -112,6 +112,83 @@ kernel are handled by the kernel driver. Other RPC messages will be forwarded to
->   tee-supplicant without further involvement of the driver, except switching
->   shared memory buffer representation.
->   
-> +AMD-TEE driver
-> +==============
-> +
-> +The AMD-TEE driver handles the communication with AMD's TEE environment. The
-> +TEE environment is provided by AMD Secure Processor.
-> +
-> +The AMD Secure Processor (formerly called Platform Security Processor or PSP)
-> +is a dedicated processor that features ARM TrustZone technology, along with a
-> +software-based Trusted Execution Environment (TEE) designed to enable
-> +third-party Trusted Applications. This feature is currently enabled only for
-> +APUs.
-> +
-> +The following picture shows a high level overview of AMD-TEE::
-> +
-> +                                             |
-> +    x86                                      |
-> +                                             |
-> + User space            (Kernel space)        |    AMD Secure Processor (PSP)
-> + ~~~~~~~~~~            ~~~~~~~~~~~~~~        |    ~~~~~~~~~~~~~~~~~~~~~~~~~~
-> +                                             |
-> + +--------+                                  |       +-------------+
-> + | Client |                                  |       | Trusted     |
-> + +--------+                                  |       | Application |
-> +     /\                                      |       +-------------+
-> +     ||                                      |             /\
-> +     ||                                      |             ||
-> +     ||                                      |             \/
-> +     ||                                      |         +----------+
-> +     ||                                      |         |   TEE    |
-> +     ||                                      |         | Internal |
-> +     \/                                      |         |   API    |
-> + +---------+           +-----------+---------+         +----------+
-> + | TEE     |           | TEE       | AMD-TEE |         | AMD-TEE  |
-> + | Client  |           | subsystem | driver  |         | Trusted  |
-> + | API     |           |           |         |         |   OS     |
-> + +---------+-----------+----+------+---------+---------+----------+
-> + |   Generic TEE API        |      | ASP     |      Mailbox       |
-> + |   IOCTL (TEE_IOC_*)      |      | driver  | Register Protocol  |
-> + +--------------------------+      +---------+--------------------+
-> +
-> +At the lowest level (in x86), the AMD Secure Processor (ASP) driver uses the
-> +CPU to PSP mailbox regsister to submit commands to the PSP. The format of the
-> +command buffer is opaque to the ASP driver. It's role is to submit commands to
-> +the secure processor and return results to AMD-TEE driver. The interface
-> +between AMD-TEE driver and AMD Secure Processor driver can be found in [6].
-> +
-> +The AMD-TEE driver packages the command buffer payload for processing in TEE.
-> +The command buffer format for the different TEE commands can be found in [7].
-> +
-> +The TEE commands supported by AMD-TEE Trusted OS are:
-> +* TEE_CMD_ID_LOAD_TA          - loads a Trusted Application (TA) binary into
-> +                                TEE environment.
-> +* TEE_CMD_ID_UNLOAD_TA        - unloads TA binary from TEE environment.
-> +* TEE_CMD_ID_OPEN_SESSION     - opens a session with a loaded TA.
-> +* TEE_CMD_ID_CLOSE_SESSION    - closes session with loaded TA
-> +* TEE_CMD_ID_INVOKE_CMD       - invokes a command with loaded TA
-> +* TEE_CMD_ID_MAP_SHARED_MEM   - maps shared memory
-> +* TEE_CMD_ID_UNMAP_SHARED_MEM - unmaps shared memory
-> +
-> +AMD-TEE Trusted OS is the firmware running on AMD Secure Processor.
-> +
-> +The AMD-TEE driver registers itself with TEE subsystem and implements the
-> +following driver function callbacks:
-> +
-> +* get_version - returns the driver implementation id and capability.
-> +* open - sets up the driver context data structure.
-> +* release - frees up driver resources.
-> +* open_session - loads the TA binary and opens session with loaded TA.
-> +* close_session -  closes session with loaded TA and unloads it.
-> +* invoke_func - invokes a command with loaded TA.
-> +
-> +cancel_req driver callback is not supported by AMD-TEE.
-> +
-> +The GlobalPlatform TEE Client API [5] can be used by the user space (client) to
-> +talk to AMD's TEE. AMD's TEE provides a secure environment for loading, opening
-> +a session, invoking commands and clossing session with TA.
-> +
->   References
->   ==========
->   
-> @@ -125,3 +202,7 @@ References
->   
->   [5] http://www.globalplatform.org/specificationsdevice.asp look for
->       "TEE Client API Specification v1.0" and click download.
-> +
-> +[6] include/linux/psp-tee.h
-> +
-> +[7] drivers/tee/amdtee/amdtee_if.h
-> 
+As long as it's introducing new crypto_grab_*() functions, this series
+also takes the opportunity to first improve the existing ones to take
+the instance pointer as a parameter, so that all callers don't have to
+store it temporarily to crypto_spawn::inst.
+
+Finally, this series also makes two changes that allow simplifying the
+error handling in template ->create() functions: (1) crypto_drop_spawn()
+is made a no-op on uninitialized instances, and (2) crypto_grab_spawn()
+is made to handle an ERR_PTR() name.
+
+Taking advantage of these two changes, this series also simplifies the
+error handling in the template ->create() functions which were being
+updated anyway to use a new crypto_grab_*() function.  But to keep this
+series manageable, simplifying error handling in the remaining templates
+is left for later.
+
+This series is an internal cleanup only; there are no changes for users
+of the crypto API.  I've tested that all the templates still get
+instantiated correctly and that errors seem to be handled properly.
+
+Eric Biggers (28):
+  crypto: algapi - make crypto_drop_spawn() a no-op on uninitialized
+    spawns
+  crypto: algapi - make crypto_grab_spawn() handle an ERR_PTR() name
+  crypto: shash - make struct shash_instance be the full size
+  crypto: ahash - make struct ahash_instance be the full size
+  crypto: skcipher - pass instance to crypto_grab_skcipher()
+  crypto: aead - pass instance to crypto_grab_aead()
+  crypto: akcipher - pass instance to crypto_grab_akcipher()
+  crypto: algapi - pass instance to crypto_grab_spawn()
+  crypto: shash - introduce crypto_grab_shash()
+  crypto: ahash - introduce crypto_grab_ahash()
+  crypto: cipher - introduce crypto_cipher_spawn and
+    crypto_grab_cipher()
+  crypto: adiantum - use crypto_grab_{cipher,shash} and simplify error
+    paths
+  crypto: cryptd - use crypto_grab_shash() and simplify error paths
+  crypto: hmac - use crypto_grab_shash() and simplify error paths
+  crypto: authenc - use crypto_grab_ahash() and simplify error paths
+  crypto: authencesn - use crypto_grab_ahash() and simplify error paths
+  crypto: gcm - use crypto_grab_ahash() and simplify error paths
+  crypto: ccm - use crypto_grab_ahash() and simplify error paths
+  crypto: chacha20poly1305 - use crypto_grab_ahash() and simplify error
+    paths
+  crypto: skcipher - use crypto_grab_cipher() and simplify error paths
+  crypto: cbcmac - use crypto_grab_cipher() and simplify error paths
+  crypto: cmac - use crypto_grab_cipher() and simplify error paths
+  crypto: vmac - use crypto_grab_cipher() and simplify error paths
+  crypto: xcbc - use crypto_grab_cipher() and simplify error paths
+  crypto: cipher - make crypto_spawn_cipher() take a crypto_cipher_spawn
+  crypto: algapi - remove obsoleted instance creation helpers
+  crypto: ahash - unexport crypto_ahash_type
+  crypto: algapi - fold crypto_init_spawn() into crypto_grab_spawn()
+
+ crypto/adiantum.c                  |  87 +++++++----------------
+ crypto/aead.c                      |   7 +-
+ crypto/ahash.c                     |  39 ++++-------
+ crypto/akcipher.c                  |   7 +-
+ crypto/algapi.c                    |  99 +++++---------------------
+ crypto/authenc.c                   |  57 +++++----------
+ crypto/authencesn.c                |  57 +++++----------
+ crypto/ccm.c                       | 107 +++++++++++------------------
+ crypto/chacha20poly1305.c          |  88 ++++++++----------------
+ crypto/cipher.c                    |  11 +++
+ crypto/cmac.c                      |  38 +++++-----
+ crypto/cryptd.c                    |  76 ++++++--------------
+ crypto/ctr.c                       |   4 +-
+ crypto/cts.c                       |   9 +--
+ crypto/essiv.c                     |  16 ++---
+ crypto/gcm.c                       |  76 ++++++++------------
+ crypto/geniv.c                     |   4 +-
+ crypto/hmac.c                      |  36 +++++-----
+ crypto/lrw.c                       |  15 ++--
+ crypto/pcrypt.c                    |   5 +-
+ crypto/rsa-pkcs1pad.c              |   8 ++-
+ crypto/shash.c                     |  28 +++-----
+ crypto/skcipher.c                  |  41 +++++------
+ crypto/vmac.c                      |  38 +++++-----
+ crypto/xcbc.c                      |  43 +++++-------
+ crypto/xts.c                       |   9 +--
+ include/crypto/algapi.h            |  58 +++++++---------
+ include/crypto/internal/aead.h     |  11 +--
+ include/crypto/internal/akcipher.h |  12 +---
+ include/crypto/internal/hash.h     |  70 +++++++++----------
+ include/crypto/internal/skcipher.h |  11 +--
+ 31 files changed, 423 insertions(+), 744 deletions(-)
+
+-- 
+2.24.1
 
