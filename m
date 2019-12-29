@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D02D712C00A
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C8612C00C
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbfL2C6D (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1726343AbfL2C6D (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Sat, 28 Dec 2019 21:58:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44380 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:44382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726248AbfL2C6D (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726187AbfL2C6D (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Sat, 28 Dec 2019 21:58:03 -0500
 Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F36621744
+        by mail.kernel.org (Postfix) with ESMTPSA id 06F542176D
         for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577588282;
-        bh=0Jmn6rgHyxICeqesUsUiqMF+viPCeJM7M1LgfU0aapQ=;
+        s=default; t=1577588283;
+        bh=Xh56S2p/u7dijE7JzTBgalq9BKRLTICE05G86pxpQcw=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=XdNMfdghrFEezDNdNxwKcPs9/XPme69D9QDF3XoXGXHZWqNY21jkn87fPkyuc1Upk
-         uryJtHbvQIftidsPDTjGS6FWBFlbguqm45hVvPxiog7P+rc2apE//fuOMeGmyB9jHr
-         uhFmJ9oOT3xZG4PECrnrS1ECW5p73HeIDIodSty8=
+        b=fHAcXXc2glJ3R4qSWb8mq3ev0Ukc7O6hpCCRHRThdyJRvVFJtDL3AzURNqhhQL5CU
+         IsScmqmoteFOy4XaypqY3NjdmD2y3dQhx4YXvQGQyWcXH0y5iWiAhTRgQKx8S4c05S
+         WJQA9O4KCkq+sVZ3pzs7eNK8XSMl8U9JMbACk9lY=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 01/28] crypto: algapi - make crypto_drop_spawn() a no-op on uninitialized spawns
-Date:   Sat, 28 Dec 2019 20:56:47 -0600
-Message-Id: <20191229025714.544159-2-ebiggers@kernel.org>
+Subject: [PATCH 02/28] crypto: algapi - make crypto_grab_spawn() handle an ERR_PTR() name
+Date:   Sat, 28 Dec 2019 20:56:48 -0600
+Message-Id: <20191229025714.544159-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191229025714.544159-1-ebiggers@kernel.org>
 References: <20191229025714.544159-1-ebiggers@kernel.org>
@@ -40,36 +40,35 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Make crypto_drop_spawn() do nothing when the spawn hasn't been
-initialized with an algorithm yet.  This will allow simplifying error
-handling in all the template ->create() functions, since on error they
-will be able to just call their usual "free instance" function, rather
-than having to handle dropping just the spawns that have been
-initialized so far.
+To allow further simplifying template ->create() functions, make
+crypto_grab_spawn() handle an ERR_PTR() name by passing back the error.
 
-This does assume the spawn starts out zero-filled, but that's always the
-case since instances are allocated with kzalloc().  And some other code
-already assumes this anyway.
+For most templates, this will allow the result of crypto_attr_alg_name()
+to be passed directly to crypto_grab_*(), rather than first having to
+assign it to a variable [where it can then potentially be misused, as it
+was in the rfc7539 template prior to commit 5e27f38f1f3f ("crypto:
+chacha20poly1305 - set cra_name correctly")] and check it for error.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/algapi.c | 3 +++
- 1 file changed, 3 insertions(+)
+ crypto/algapi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/crypto/algapi.c b/crypto/algapi.c
-index 363849983941..4c761f48110d 100644
+index 4c761f48110d..a5223c5f2275 100644
 --- a/crypto/algapi.c
 +++ b/crypto/algapi.c
-@@ -734,6 +734,9 @@ EXPORT_SYMBOL_GPL(crypto_grab_spawn);
+@@ -720,6 +720,10 @@ int crypto_grab_spawn(struct crypto_spawn *spawn, const char *name,
+ 	struct crypto_alg *alg;
+ 	int err;
  
- void crypto_drop_spawn(struct crypto_spawn *spawn)
- {
-+	if (!spawn->alg) /* not yet initialized? */
-+		return;
++	/* Allow the result of crypto_attr_alg_name() to be passed directly */
++	if (IS_ERR(name))
++		return PTR_ERR(name);
 +
- 	down_write(&crypto_alg_sem);
- 	if (!spawn->dead)
- 		list_del(&spawn->list);
+ 	alg = crypto_find_alg(name, spawn->frontend, type, mask);
+ 	if (IS_ERR(alg))
+ 		return PTR_ERR(alg);
 -- 
 2.24.1
 
