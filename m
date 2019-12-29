@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5240612C00D
+	by mail.lfdr.de (Postfix) with ESMTP id D07B312C00F
 	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbfL2C6E (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1726248AbfL2C6E (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Sat, 28 Dec 2019 21:58:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44384 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:44394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726248AbfL2C6E (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726187AbfL2C6E (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Sat, 28 Dec 2019 21:58:04 -0500
 Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B125206F4
+        by mail.kernel.org (Postfix) with ESMTPSA id C9C0221744
         for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577588283;
-        bh=za0h9SO7Ok2opAq2WuG0SE2eh0YyqvISRvGT64IrBR8=;
+        s=default; t=1577588284;
+        bh=+9Xnas3uoUxlpPskJipaxSFlWbLDFA4vpAqy8OR6gNc=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=PNi9tOEXqNXp9S/mzmycYlAG6s6OkXBKaYMtTsb3m15kKwxJS7vvaFLlnMVaHbnDp
-         zIT3qVBn1sQh3TgizEv75hdtZV5POL4bIdp11H+ct4N+zxAFPOv2y4qOEFN6TxFP3H
-         TjsUyHm005JnQMDqzPo0pOT8b1ijN0VPfQ9N/XgU=
+        b=UShBbjL/KtsKkK/pYAcTn5IF7LVkS1W7DTiTF06+79SbrQRUpB2t5VfrBI/mJg/L4
+         uLp5vAKSeOUdVNK1ZDfdER3eZCtLG/o5K0kvoOMsttDM9uaxn4iqR8c/ZfANZCNm9l
+         Y7Faur0uJcRmhL9U77zjsss/eLt9AhksuVqHXZPQ=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 03/28] crypto: shash - make struct shash_instance be the full size
-Date:   Sat, 28 Dec 2019 20:56:49 -0600
-Message-Id: <20191229025714.544159-4-ebiggers@kernel.org>
+Subject: [PATCH 04/28] crypto: ahash - make struct ahash_instance be the full size
+Date:   Sat, 28 Dec 2019 20:56:50 -0600
+Message-Id: <20191229025714.544159-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191229025714.544159-1-ebiggers@kernel.org>
 References: <20191229025714.544159-1-ebiggers@kernel.org>
@@ -40,61 +40,60 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Define struct shash_instance in a way analogous to struct
+Define struct ahash_instance in a way analogous to struct
 skcipher_instance, struct aead_instance, and struct akcipher_instance,
 where the struct is defined to include both the algorithm structure at
 the beginning and the additional crypto_instance fields at the end.
 
-This is needed to allow allocating shash instances directly using
+This is needed to allow allocating ahash instances directly using
 kzalloc(sizeof(*inst) + sizeof(*ictx), ...) in the same way as skcipher,
 aead, and akcipher instances.  In turn, that's needed to make spawns be
 initialized in a consistent way everywhere.
 
 Also take advantage of the addition of the base instance to struct
-shash_instance by simplifying the shash_crypto_instance() and
-shash_instance() functions.
+ahash_instance by simplifying the ahash_crypto_instance() and
+ahash_instance() functions.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/crypto/internal/hash.h | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ include/crypto/internal/hash.h | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/include/crypto/internal/hash.h b/include/crypto/internal/hash.h
-index d4b1be519590..7f25eff69d36 100644
+index 7f25eff69d36..3b426b09bd32 100644
 --- a/include/crypto/internal/hash.h
 +++ b/include/crypto/internal/hash.h
-@@ -34,7 +34,13 @@ struct ahash_instance {
+@@ -30,7 +30,13 @@ struct crypto_hash_walk {
  };
  
- struct shash_instance {
--	struct shash_alg alg;
+ struct ahash_instance {
+-	struct ahash_alg alg;
 +	union {
 +		struct {
-+			char head[offsetof(struct shash_alg, base)];
++			char head[offsetof(struct ahash_alg, halg.base)];
 +			struct crypto_instance base;
 +		} s;
-+		struct shash_alg alg;
++		struct ahash_alg alg;
 +	};
  };
  
- struct crypto_ahash_spawn {
-@@ -210,14 +216,13 @@ static inline void *crypto_shash_ctx(struct crypto_shash *tfm)
- static inline struct crypto_instance *shash_crypto_instance(
- 	struct shash_instance *inst)
+ struct shash_instance {
+@@ -155,13 +161,13 @@ static inline void crypto_ahash_set_reqsize(struct crypto_ahash *tfm,
+ static inline struct crypto_instance *ahash_crypto_instance(
+ 	struct ahash_instance *inst)
  {
--	return container_of(&inst->alg.base, struct crypto_instance, alg);
+-	return container_of(&inst->alg.halg.base, struct crypto_instance, alg);
 +	return &inst->s.base;
  }
  
- static inline struct shash_instance *shash_instance(
+ static inline struct ahash_instance *ahash_instance(
  	struct crypto_instance *inst)
  {
--	return container_of(__crypto_shash_alg(&inst->alg),
--			    struct shash_instance, alg);
-+	return container_of(inst, struct shash_instance, s.base);
+-	return container_of(&inst->alg, struct ahash_instance, alg.halg.base);
++	return container_of(inst, struct ahash_instance, s.base);
  }
  
- static inline struct shash_instance *shash_alg_instance(
+ static inline void *ahash_instance_ctx(struct ahash_instance *inst)
 -- 
 2.24.1
 
