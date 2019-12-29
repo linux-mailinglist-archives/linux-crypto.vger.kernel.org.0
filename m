@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5FC12C01A
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DFC12C026
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbfL2C6L (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 28 Dec 2019 21:58:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44434 "EHLO mail.kernel.org"
+        id S1726479AbfL2C6R (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 28 Dec 2019 21:58:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726455AbfL2C6L (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726425AbfL2C6L (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Sat, 28 Dec 2019 21:58:11 -0500
 Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BB5C21775
+        by mail.kernel.org (Postfix) with ESMTPSA id 00CFF218AC
         for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577588290;
-        bh=FToCZsBhc8K9zHvO5TL3b4cQO2c3AJyhSaZQqRg5qVQ=;
+        s=default; t=1577588291;
+        bh=35uGRs8Mw+Egw214ZqfsVQH9wmDMPthoDPJBCg2YkzY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=rxsRDAjIU6YAuuLJ9BNlBOK+j4ZIOVZW3Z3UG5gSSrp0nVa1njWYX2/8SqNehLNm4
-         htGl8/SqmFnO8gOyIA7Lo7OVSu0vf9hc26P0Z1JVXs+lpsD8cFojtDa0TFNSDkzPN9
-         t0H9zB8cWes3ytP2+zySUKRJ466ZuKpW+lEuVsCY=
+        b=pDDOwjMM7io9V+JsVVEu1o9WOkoRWpK2fWkeQZBW6MS3DipyUbYzCltAzGOvhQpcC
+         AXG/p0EDuwlweA2XeL3UUkTL2Z72asP4VxWneCnKJr8vW4C0T5ciNSIf6O3ZgQxOrp
+         vKIHlWwPAcHn7IsRklXblIXOv/bbx97/enT3H9mU=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 19/28] crypto: chacha20poly1305 - use crypto_grab_ahash() and simplify error paths
-Date:   Sat, 28 Dec 2019 20:57:05 -0600
-Message-Id: <20191229025714.544159-20-ebiggers@kernel.org>
+Subject: [PATCH 20/28] crypto: skcipher - use crypto_grab_cipher() and simplify error paths
+Date:   Sat, 28 Dec 2019 20:57:06 -0600
+Message-Id: <20191229025714.544159-21-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191229025714.544159-1-ebiggers@kernel.org>
 References: <20191229025714.544159-1-ebiggers@kernel.org>
@@ -40,8 +40,8 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Make the rfc7539 and rfc7539esp templates use the new function
-crypto_grab_ahash() to initialize their ahash spawn.
+Make skcipher_alloc_instance_simple() use the new function
+crypto_grab_cipher() to initialize its cipher spawn.
 
 This is needed to make all spawns be initialized in a consistent way.
 
@@ -51,149 +51,84 @@ by taking advantage of crypto_grab_*() now handling ERR_PTR() names.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/chacha20poly1305.c | 81 ++++++++++++---------------------------
- 1 file changed, 25 insertions(+), 56 deletions(-)
+ crypto/skcipher.c | 34 +++++++++++++---------------------
+ 1 file changed, 13 insertions(+), 21 deletions(-)
 
-diff --git a/crypto/chacha20poly1305.c b/crypto/chacha20poly1305.c
-index fcb8ec4ba083..714532041dab 100644
---- a/crypto/chacha20poly1305.c
-+++ b/crypto/chacha20poly1305.c
-@@ -16,8 +16,6 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
+diff --git a/crypto/skcipher.c b/crypto/skcipher.c
+index a9418a7e80a9..0615fead1529 100644
+--- a/crypto/skcipher.c
++++ b/crypto/skcipher.c
+@@ -923,7 +923,7 @@ static void skcipher_exit_tfm_simple(struct crypto_skcipher *tfm)
  
--#include "internal.h"
--
- struct chachapoly_instance_ctx {
- 	struct crypto_skcipher_spawn chacha;
- 	struct crypto_ahash_spawn poly;
-@@ -565,11 +563,9 @@ static int chachapoly_create(struct crypto_template *tmpl, struct rtattr **tb,
- 	struct crypto_attr_type *algt;
- 	u32 mask;
- 	struct aead_instance *inst;
--	struct skcipher_alg *chacha;
--	struct crypto_alg *poly;
--	struct hash_alg_common *poly_hash;
- 	struct chachapoly_instance_ctx *ctx;
--	const char *chacha_name, *poly_name;
-+	struct skcipher_alg *chacha;
-+	struct hash_alg_common *poly;
- 	int err;
- 
- 	if (ivsize > CHACHAPOLY_IV_SIZE)
-@@ -584,68 +580,51 @@ static int chachapoly_create(struct crypto_template *tmpl, struct rtattr **tb,
- 
- 	mask = crypto_requires_sync(algt->type, algt->mask);
- 
--	chacha_name = crypto_attr_alg_name(tb[1]);
--	if (IS_ERR(chacha_name))
--		return PTR_ERR(chacha_name);
--	poly_name = crypto_attr_alg_name(tb[2]);
--	if (IS_ERR(poly_name))
--		return PTR_ERR(poly_name);
--
--	poly = crypto_find_alg(poly_name, &crypto_ahash_type,
--			       CRYPTO_ALG_TYPE_HASH,
--			       CRYPTO_ALG_TYPE_AHASH_MASK | mask);
--	if (IS_ERR(poly))
--		return PTR_ERR(poly);
--	poly_hash = __crypto_hash_alg_common(poly);
--
--	err = -EINVAL;
--	if (poly_hash->digestsize != POLY1305_DIGEST_SIZE)
--		goto out_put_poly;
--
--	err = -ENOMEM;
- 	inst = kzalloc(sizeof(*inst) + sizeof(*ctx), GFP_KERNEL);
- 	if (!inst)
--		goto out_put_poly;
--
-+		return -ENOMEM;
- 	ctx = aead_instance_ctx(inst);
- 	ctx->saltlen = CHACHAPOLY_IV_SIZE - ivsize;
--	err = crypto_init_ahash_spawn(&ctx->poly, poly_hash,
--				      aead_crypto_instance(inst));
--	if (err)
--		goto err_free_inst;
- 
- 	err = crypto_grab_skcipher(&ctx->chacha, aead_crypto_instance(inst),
--				   chacha_name, 0, mask);
-+				   crypto_attr_alg_name(tb[1]), 0, mask);
- 	if (err)
--		goto err_drop_poly;
--
-+		goto out;
- 	chacha = crypto_spawn_skcipher_alg(&ctx->chacha);
- 
-+	err = crypto_grab_ahash(&ctx->poly, aead_crypto_instance(inst),
-+				crypto_attr_alg_name(tb[2]), 0, mask);
-+	if (err)
-+		goto out;
-+	poly = crypto_spawn_ahash_alg(&ctx->poly);
-+
- 	err = -EINVAL;
-+	if (poly->digestsize != POLY1305_DIGEST_SIZE)
-+		goto out;
- 	/* Need 16-byte IV size, including Initial Block Counter value */
- 	if (crypto_skcipher_alg_ivsize(chacha) != CHACHA_IV_SIZE)
--		goto out_drop_chacha;
-+		goto out;
- 	/* Not a stream cipher? */
- 	if (chacha->base.cra_blocksize != 1)
--		goto out_drop_chacha;
-+		goto out;
- 
- 	err = -ENAMETOOLONG;
- 	if (snprintf(inst->alg.base.cra_name, CRYPTO_MAX_ALG_NAME,
- 		     "%s(%s,%s)", name, chacha->base.cra_name,
--		     poly->cra_name) >= CRYPTO_MAX_ALG_NAME)
--		goto out_drop_chacha;
-+		     poly->base.cra_name) >= CRYPTO_MAX_ALG_NAME)
-+		goto out;
- 	if (snprintf(inst->alg.base.cra_driver_name, CRYPTO_MAX_ALG_NAME,
- 		     "%s(%s,%s)", name, chacha->base.cra_driver_name,
--		     poly->cra_driver_name) >= CRYPTO_MAX_ALG_NAME)
--		goto out_drop_chacha;
-+		     poly->base.cra_driver_name) >= CRYPTO_MAX_ALG_NAME)
-+		goto out;
- 
--	inst->alg.base.cra_flags = (chacha->base.cra_flags | poly->cra_flags) &
--				   CRYPTO_ALG_ASYNC;
-+	inst->alg.base.cra_flags = (chacha->base.cra_flags |
-+				    poly->base.cra_flags) & CRYPTO_ALG_ASYNC;
- 	inst->alg.base.cra_priority = (chacha->base.cra_priority +
--				       poly->cra_priority) / 2;
-+				       poly->base.cra_priority) / 2;
- 	inst->alg.base.cra_blocksize = 1;
- 	inst->alg.base.cra_alignmask = chacha->base.cra_alignmask |
--				       poly->cra_alignmask;
-+				       poly->base.cra_alignmask;
- 	inst->alg.base.cra_ctxsize = sizeof(struct chachapoly_ctx) +
- 				     ctx->saltlen;
- 	inst->alg.ivsize = ivsize;
-@@ -661,20 +640,10 @@ static int chachapoly_create(struct crypto_template *tmpl, struct rtattr **tb,
- 	inst->free = chachapoly_free;
- 
- 	err = aead_register_instance(tmpl, inst);
-+out:
- 	if (err)
--		goto out_drop_chacha;
--
--out_put_poly:
--	crypto_mod_put(poly);
-+		chachapoly_free(inst);
- 	return err;
--
--out_drop_chacha:
--	crypto_drop_skcipher(&ctx->chacha);
--err_drop_poly:
--	crypto_drop_ahash(&ctx->poly);
--err_free_inst:
--	kfree(inst);
--	goto out_put_poly;
+ static void skcipher_free_instance_simple(struct skcipher_instance *inst)
+ {
+-	crypto_drop_spawn(skcipher_instance_ctx(inst));
++	crypto_drop_cipher(skcipher_instance_ctx(inst));
+ 	kfree(inst);
  }
  
- static int rfc7539_create(struct crypto_template *tmpl, struct rtattr **tb)
+@@ -947,10 +947,10 @@ struct skcipher_instance *skcipher_alloc_instance_simple(
+ 	struct crypto_template *tmpl, struct rtattr **tb)
+ {
+ 	struct crypto_attr_type *algt;
+-	struct crypto_alg *cipher_alg;
+-	struct skcipher_instance *inst;
+-	struct crypto_spawn *spawn;
+ 	u32 mask;
++	struct skcipher_instance *inst;
++	struct crypto_cipher_spawn *spawn;
++	struct crypto_alg *cipher_alg;
+ 	int err;
+ 
+ 	algt = crypto_get_attr_type(tb);
+@@ -964,28 +964,22 @@ struct skcipher_instance *skcipher_alloc_instance_simple(
+ 		crypto_requires_off(algt->type, algt->mask,
+ 				    CRYPTO_ALG_NEED_FALLBACK);
+ 
+-	cipher_alg = crypto_get_attr_alg(tb, CRYPTO_ALG_TYPE_CIPHER, mask);
+-	if (IS_ERR(cipher_alg))
+-		return ERR_CAST(cipher_alg);
+-
+ 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
+-	if (!inst) {
+-		err = -ENOMEM;
+-		goto err_put_cipher_alg;
+-	}
++	if (!inst)
++		return ERR_PTR(-ENOMEM);
+ 	spawn = skcipher_instance_ctx(inst);
+ 
+-	err = crypto_inst_setname(skcipher_crypto_instance(inst), tmpl->name,
+-				  cipher_alg);
++	err = crypto_grab_cipher(spawn, skcipher_crypto_instance(inst),
++				 crypto_attr_alg_name(tb[1]), 0, mask);
+ 	if (err)
+ 		goto err_free_inst;
++	cipher_alg = crypto_spawn_cipher_alg(spawn);
+ 
+-	spawn->dropref = true;
+-	err = crypto_init_spawn(spawn, cipher_alg,
+-				skcipher_crypto_instance(inst),
+-				CRYPTO_ALG_TYPE_MASK);
++	err = crypto_inst_setname(skcipher_crypto_instance(inst), tmpl->name,
++				  cipher_alg);
+ 	if (err)
+ 		goto err_free_inst;
++
+ 	inst->free = skcipher_free_instance_simple;
+ 
+ 	/* Default algorithm properties, can be overridden */
+@@ -1005,9 +999,7 @@ struct skcipher_instance *skcipher_alloc_instance_simple(
+ 	return inst;
+ 
+ err_free_inst:
+-	kfree(inst);
+-err_put_cipher_alg:
+-	crypto_mod_put(cipher_alg);
++	skcipher_free_instance_simple(inst);
+ 	return ERR_PTR(err);
+ }
+ EXPORT_SYMBOL_GPL(skcipher_alloc_instance_simple);
 -- 
 2.24.1
 
