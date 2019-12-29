@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C260C12CAFF
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 22:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AE112CB01
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 22:50:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbfL2VuF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1726460AbfL2VuF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Sun, 29 Dec 2019 16:50:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55490 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:55496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726413AbfL2VuF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726416AbfL2VuF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Sun, 29 Dec 2019 16:50:05 -0500
 Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFF5D20748
-        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 21:50:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A173207FD
+        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 21:50:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577656203;
-        bh=o4OzcvqIdyJ6YIW9hU9gmpOjoV0BHrX/rhFquRitSjY=;
+        s=default; t=1577656204;
+        bh=CG0VvO0tf9L0WTD6lTGljzfh/+VIu6IlaUwE/ooGNiU=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=W/4QAoazyzaYF2oFD3gzi7dU1HUZ3ggkSJ3uURHGvpngJ85Tk+3dgnvvX3v2Ff6Ux
-         XNj3tW5rs5z4nE3QsSXD9/9Y0Jvx24SRtx3QpDr/GAQCiRQ6MKWpBZgrg8vn9RE4X3
-         GC7Oo5t76W78HYUvCtCOOZOOYouSK7SKWvl+BKJw=
+        b=FJaeOYfxTuB2diaXvwHOL+OqK/sTFwBOGTCsf8zS8nnjBi9pO2XqQgj/iMGmejRhD
+         Z5NYBzSxbIWydS9dHWzmeL5T7f1b4RvnXW+QFpsYgQ2vQvCO12i06twCbtpvjN3QNV
+         lsyBvdYOs5lM4LK3azaf6BC15xqUX3Va7yC9zUgo=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 1/6] crypto: hash - add support for new way of freeing instances
-Date:   Sun, 29 Dec 2019 15:48:25 -0600
-Message-Id: <20191229214830.260965-2-ebiggers@kernel.org>
+Subject: [PATCH 2/6] crypto: geniv - convert to new way of freeing instances
+Date:   Sun, 29 Dec 2019 15:48:26 -0600
+Message-Id: <20191229214830.260965-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191229214830.260965-1-ebiggers@kernel.org>
 References: <20191229214830.260965-1-ebiggers@kernel.org>
@@ -40,102 +40,165 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add support to shash and ahash for the new way of freeing instances
-(already used for skcipher, aead, and akcipher) where a ->free() method
-is installed to the instance struct itself.  These methods are more
-strongly-typed than crypto_template::free(), which they replace.
+Convert the "seqiv" template to the new way of freeing instances where a
+->free() method is installed to the instance struct itself.  Also remove
+the unused implementation of the old way of freeing instances from the
+"echainiv" template, since it's already using the new way too.
+
+In doing this, also simplify the code by making the helper function
+aead_geniv_alloc() install the ->free() method, instead of making seqiv
+and echainiv do this themselves.  This is analogous to how
+skcipher_alloc_instance_simple() works.
 
 This will allow removing support for the old way of freeing instances.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/ahash.c                 | 13 +++++++++++++
- crypto/shash.c                 | 13 +++++++++++++
- include/crypto/internal/hash.h |  2 ++
- 3 files changed, 28 insertions(+)
+ crypto/echainiv.c               | 20 ++++----------------
+ crypto/geniv.c                  | 15 ++++++++-------
+ crypto/seqiv.c                  | 20 ++++----------------
+ include/crypto/internal/geniv.h |  1 -
+ 4 files changed, 16 insertions(+), 40 deletions(-)
 
-diff --git a/crypto/ahash.c b/crypto/ahash.c
-index c77717fcea8e..61e374d76b04 100644
---- a/crypto/ahash.c
-+++ b/crypto/ahash.c
-@@ -511,6 +511,18 @@ static unsigned int crypto_ahash_extsize(struct crypto_alg *alg)
- 	return crypto_alg_extsize(alg);
+diff --git a/crypto/echainiv.c b/crypto/echainiv.c
+index a49cbf7b0929..4a2f02baba14 100644
+--- a/crypto/echainiv.c
++++ b/crypto/echainiv.c
+@@ -133,29 +133,17 @@ static int echainiv_aead_create(struct crypto_template *tmpl,
+ 	inst->alg.base.cra_ctxsize = sizeof(struct aead_geniv_ctx);
+ 	inst->alg.base.cra_ctxsize += inst->alg.ivsize;
+ 
+-	inst->free = aead_geniv_free;
+-
+ 	err = aead_register_instance(tmpl, inst);
+-	if (err)
+-		goto free_inst;
+-
+-out:
+-	return err;
+-
++	if (err) {
+ free_inst:
+-	aead_geniv_free(inst);
+-	goto out;
+-}
+-
+-static void echainiv_free(struct crypto_instance *inst)
+-{
+-	aead_geniv_free(aead_instance(inst));
++		inst->free(inst);
++	}
++	return err;
  }
  
-+static void crypto_ahash_free_instance(struct crypto_instance *inst)
-+{
-+	struct ahash_instance *ahash = ahash_instance(inst);
-+
-+	if (!ahash->free) {
-+		inst->tmpl->free(inst);
-+		return;
-+	}
-+
-+	ahash->free(ahash);
-+}
-+
- #ifdef CONFIG_NET
- static int crypto_ahash_report(struct sk_buff *skb, struct crypto_alg *alg)
- {
-@@ -547,6 +559,7 @@ static void crypto_ahash_show(struct seq_file *m, struct crypto_alg *alg)
- static const struct crypto_type crypto_ahash_type = {
- 	.extsize = crypto_ahash_extsize,
- 	.init_tfm = crypto_ahash_init_tfm,
-+	.free = crypto_ahash_free_instance,
- #ifdef CONFIG_PROC_FS
- 	.show = crypto_ahash_show,
- #endif
-diff --git a/crypto/shash.c b/crypto/shash.c
-index 4d6ccb59e126..2f6adb49727b 100644
---- a/crypto/shash.c
-+++ b/crypto/shash.c
-@@ -423,6 +423,18 @@ static int crypto_shash_init_tfm(struct crypto_tfm *tfm)
- 	return 0;
+ static struct crypto_template echainiv_tmpl = {
+ 	.name = "echainiv",
+ 	.create = echainiv_aead_create,
+-	.free = echainiv_free,
+ 	.module = THIS_MODULE,
+ };
+ 
+diff --git a/crypto/geniv.c b/crypto/geniv.c
+index 7afa48414f3a..dbcc640274cd 100644
+--- a/crypto/geniv.c
++++ b/crypto/geniv.c
+@@ -32,6 +32,12 @@ static int aead_geniv_setauthsize(struct crypto_aead *tfm,
+ 	return crypto_aead_setauthsize(ctx->child, authsize);
  }
  
-+static void crypto_shash_free_instance(struct crypto_instance *inst)
++static void aead_geniv_free(struct aead_instance *inst)
 +{
-+	struct shash_instance *shash = shash_instance(inst);
-+
-+	if (!shash->free) {
-+		inst->tmpl->free(inst);
-+		return;
-+	}
-+
-+	shash->free(shash);
++	crypto_drop_aead(aead_instance_ctx(inst));
++	kfree(inst);
 +}
 +
- #ifdef CONFIG_NET
- static int crypto_shash_report(struct sk_buff *skb, struct crypto_alg *alg)
+ struct aead_instance *aead_geniv_alloc(struct crypto_template *tmpl,
+ 				       struct rtattr **tb, u32 type, u32 mask)
  {
-@@ -459,6 +471,7 @@ static void crypto_shash_show(struct seq_file *m, struct crypto_alg *alg)
- static const struct crypto_type crypto_shash_type = {
- 	.extsize = crypto_alg_extsize,
- 	.init_tfm = crypto_shash_init_tfm,
-+	.free = crypto_shash_free_instance,
- #ifdef CONFIG_PROC_FS
- 	.show = crypto_shash_show,
- #endif
-diff --git a/include/crypto/internal/hash.h b/include/crypto/internal/hash.h
-index c84b7cb29887..c550386221bb 100644
---- a/include/crypto/internal/hash.h
-+++ b/include/crypto/internal/hash.h
-@@ -30,6 +30,7 @@ struct crypto_hash_walk {
+@@ -100,6 +106,8 @@ struct aead_instance *aead_geniv_alloc(struct crypto_template *tmpl,
+ 	inst->alg.ivsize = ivsize;
+ 	inst->alg.maxauthsize = maxauthsize;
+ 
++	inst->free = aead_geniv_free;
++
+ out:
+ 	return inst;
+ 
+@@ -112,13 +120,6 @@ struct aead_instance *aead_geniv_alloc(struct crypto_template *tmpl,
+ }
+ EXPORT_SYMBOL_GPL(aead_geniv_alloc);
+ 
+-void aead_geniv_free(struct aead_instance *inst)
+-{
+-	crypto_drop_aead(aead_instance_ctx(inst));
+-	kfree(inst);
+-}
+-EXPORT_SYMBOL_GPL(aead_geniv_free);
+-
+ int aead_init_geniv(struct crypto_aead *aead)
+ {
+ 	struct aead_geniv_ctx *ctx = crypto_aead_ctx(aead);
+diff --git a/crypto/seqiv.c b/crypto/seqiv.c
+index 96d222c32acc..f124b9b54e15 100644
+--- a/crypto/seqiv.c
++++ b/crypto/seqiv.c
+@@ -18,8 +18,6 @@
+ #include <linux/slab.h>
+ #include <linux/string.h>
+ 
+-static void seqiv_free(struct crypto_instance *inst);
+-
+ static void seqiv_aead_encrypt_complete2(struct aead_request *req, int err)
+ {
+ 	struct aead_request *subreq = aead_request_ctx(req);
+@@ -159,15 +157,11 @@ static int seqiv_aead_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	inst->alg.base.cra_ctxsize += inst->alg.ivsize;
+ 
+ 	err = aead_register_instance(tmpl, inst);
+-	if (err)
+-		goto free_inst;
+-
+-out:
+-	return err;
+-
++	if (err) {
+ free_inst:
+-	aead_geniv_free(inst);
+-	goto out;
++		inst->free(inst);
++	}
++	return err;
+ }
+ 
+ static int seqiv_create(struct crypto_template *tmpl, struct rtattr **tb)
+@@ -184,15 +178,9 @@ static int seqiv_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	return seqiv_aead_create(tmpl, tb);
+ }
+ 
+-static void seqiv_free(struct crypto_instance *inst)
+-{
+-	aead_geniv_free(aead_instance(inst));
+-}
+-
+ static struct crypto_template seqiv_tmpl = {
+ 	.name = "seqiv",
+ 	.create = seqiv_create,
+-	.free = seqiv_free,
+ 	.module = THIS_MODULE,
  };
  
- struct ahash_instance {
-+	void (*free)(struct ahash_instance *inst);
- 	union {
- 		struct {
- 			char head[offsetof(struct ahash_alg, halg.base)];
-@@ -40,6 +41,7 @@ struct ahash_instance {
- };
+diff --git a/include/crypto/internal/geniv.h b/include/crypto/internal/geniv.h
+index 0108c0c7b2ed..229d37681a9d 100644
+--- a/include/crypto/internal/geniv.h
++++ b/include/crypto/internal/geniv.h
+@@ -21,7 +21,6 @@ struct aead_geniv_ctx {
  
- struct shash_instance {
-+	void (*free)(struct shash_instance *inst);
- 	union {
- 		struct {
- 			char head[offsetof(struct shash_alg, base)];
+ struct aead_instance *aead_geniv_alloc(struct crypto_template *tmpl,
+ 				       struct rtattr **tb, u32 type, u32 mask);
+-void aead_geniv_free(struct aead_instance *inst);
+ int aead_init_geniv(struct crypto_aead *tfm);
+ void aead_exit_geniv(struct crypto_aead *tfm);
+ 
 -- 
 2.24.1
 
