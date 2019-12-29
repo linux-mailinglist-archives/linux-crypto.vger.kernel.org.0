@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D1C12C01F
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DD512C022
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbfL2C6O (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 28 Dec 2019 21:58:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44462 "EHLO mail.kernel.org"
+        id S1726509AbfL2C6P (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 28 Dec 2019 21:58:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726490AbfL2C6N (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726502AbfL2C6N (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Sat, 28 Dec 2019 21:58:13 -0500
 Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2873921775
+        by mail.kernel.org (Postfix) with ESMTPSA id 875A9206F4
         for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1577588292;
-        bh=gTbhIl5PjfxmdhlHHYKAnBJNIRB/c/J3X2CVX7xElY4=;
+        bh=Qs2dYAj/sXgNg5l1ILPXCRPSWHfwwh5/pBgokTDp/Ck=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=0xDc36CzsJxQL8o67rYzJLLGq29NGiNfm3oU5TYRq2kMQx5Bbw/JxxI4H9v6VywiR
-         lrL1eTo3fRK6FICGJr+2KtVGmbz6T33uyfkyBt8RAaFGrlWdALJ438587urXTIK0j1
-         5bZTgbq9Iawm5NnXLUBOxT4ifuOKu13I8KlHdYo0=
+        b=ol7eNiDb7onjikAMqElaAwsRNYqLPagiQmfsIA/ob1Xh7jeJcUQYAL2VneWNkE9Gg
+         48okPhrAsH8INUsUHDC/Yty3A22dZWRs7Qk9ChHBDZzZjSLo6U4FebV0Bel4g8Lj1Y
+         09Cgzs3i5yWfde+flCBahkk3mEvmYbDhHlcwNxdA=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 23/28] crypto: vmac - use crypto_grab_cipher() and simplify error paths
-Date:   Sat, 28 Dec 2019 20:57:09 -0600
-Message-Id: <20191229025714.544159-24-ebiggers@kernel.org>
+Subject: [PATCH 24/28] crypto: xcbc - use crypto_grab_cipher() and simplify error paths
+Date:   Sat, 28 Dec 2019 20:57:10 -0600
+Message-Id: <20191229025714.544159-25-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191229025714.544159-1-ebiggers@kernel.org>
 References: <20191229025714.544159-1-ebiggers@kernel.org>
@@ -40,12 +40,12 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Make the vmac64 template use the new function crypto_grab_cipher() to
+Make the xcbc template use the new function crypto_grab_cipher() to
 initialize its cipher spawn.
 
 This is needed to make all spawns be initialized in a consistent way.
 
-This required making vmac_create() allocate the instance directly rather
+This required making xcbc_create() allocate the instance directly rather
 than use shash_alloc_instance().
 
 Also simplify the error handling by taking advantage of crypto_drop_*()
@@ -54,62 +54,66 @@ by taking advantage of crypto_grab_*() now handling ERR_PTR() names.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/vmac.c | 36 ++++++++++++++++--------------------
- 1 file changed, 16 insertions(+), 20 deletions(-)
+ crypto/xcbc.c | 41 +++++++++++++++++------------------------
+ 1 file changed, 17 insertions(+), 24 deletions(-)
 
-diff --git a/crypto/vmac.c b/crypto/vmac.c
-index f50a85060b39..73538224f9ab 100644
---- a/crypto/vmac.c
-+++ b/crypto/vmac.c
-@@ -620,6 +620,7 @@ static void vmac_exit_tfm(struct crypto_tfm *tfm)
- static int vmac_create(struct crypto_template *tmpl, struct rtattr **tb)
+diff --git a/crypto/xcbc.c b/crypto/xcbc.c
+index 0bb26e8f6f5a..e35b2346cfb8 100644
+--- a/crypto/xcbc.c
++++ b/crypto/xcbc.c
+@@ -188,6 +188,7 @@ static void xcbc_exit_tfm(struct crypto_tfm *tfm)
+ static int xcbc_create(struct crypto_template *tmpl, struct rtattr **tb)
  {
  	struct shash_instance *inst;
 +	struct crypto_cipher_spawn *spawn;
  	struct crypto_alg *alg;
+ 	unsigned long alignmask;
  	int err;
- 
-@@ -627,25 +628,24 @@ static int vmac_create(struct crypto_template *tmpl, struct rtattr **tb)
+@@ -196,28 +197,24 @@ static int xcbc_create(struct crypto_template *tmpl, struct rtattr **tb)
  	if (err)
  		return err;
  
 -	alg = crypto_get_attr_alg(tb, CRYPTO_ALG_TYPE_CIPHER,
--			CRYPTO_ALG_TYPE_MASK);
+-				  CRYPTO_ALG_TYPE_MASK);
 -	if (IS_ERR(alg))
 -		return PTR_ERR(alg);
 +	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
 +	if (!inst)
 +		return -ENOMEM;
 +	spawn = shash_instance_ctx(inst);
-+
+ 
+-	switch(alg->cra_blocksize) {
+-	case XCBC_BLOCKSIZE:
+-		break;
+-	default:
+-		goto out_put_alg;
+-	}
 +	err = crypto_grab_cipher(spawn, shash_crypto_instance(inst),
 +				 crypto_attr_alg_name(tb[1]), 0, 0);
 +	if (err)
 +		goto out;
 +	alg = crypto_spawn_cipher_alg(spawn);
  
- 	err = -EINVAL;
- 	if (alg->cra_blocksize != VMAC_NONCEBYTES)
--		goto out_put_alg;
--
--	inst = shash_alloc_instance(tmpl->name, alg);
+-	inst = shash_alloc_instance("xcbc", alg);
 -	err = PTR_ERR(inst);
 -	if (IS_ERR(inst))
 -		goto out_put_alg;
++	err = -EINVAL;
++	if (alg->cra_blocksize != XCBC_BLOCKSIZE)
 +		goto out;
  
 -	err = crypto_init_spawn(shash_instance_ctx(inst), alg,
--			shash_crypto_instance(inst),
--			CRYPTO_ALG_TYPE_MASK);
+-				shash_crypto_instance(inst),
+-				CRYPTO_ALG_TYPE_MASK);
 +	err = crypto_inst_setname(shash_crypto_instance(inst), tmpl->name, alg);
  	if (err)
 -		goto out_free_inst;
 +		goto out;
  
- 	inst->alg.base.cra_priority = alg->cra_priority;
- 	inst->alg.base.cra_blocksize = alg->cra_blocksize;
-@@ -663,13 +663,9 @@ static int vmac_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	inst->alg.setkey = vmac_setkey;
+ 	alignmask = alg->cra_alignmask | 3;
+ 	inst->alg.base.cra_alignmask = alignmask;
+@@ -243,13 +240,9 @@ static int xcbc_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	inst->alg.setkey = crypto_xcbc_digest_setkey;
  
  	err = shash_register_instance(tmpl, inst);
 -	if (err) {
