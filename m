@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DFC12C026
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAFC12C01E
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbfL2C6R (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 28 Dec 2019 21:58:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44492 "EHLO mail.kernel.org"
+        id S1726535AbfL2C6O (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 28 Dec 2019 21:58:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726425AbfL2C6L (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726460AbfL2C6L (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Sat, 28 Dec 2019 21:58:11 -0500
 Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00CFF218AC
-        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60A0D2176D
+        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1577588291;
-        bh=35uGRs8Mw+Egw214ZqfsVQH9wmDMPthoDPJBCg2YkzY=;
+        bh=3yBk4PkrmWcKUwtCUfB+4a5IbcPF+VoajgYXI1ZFhkY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=pDDOwjMM7io9V+JsVVEu1o9WOkoRWpK2fWkeQZBW6MS3DipyUbYzCltAzGOvhQpcC
-         AXG/p0EDuwlweA2XeL3UUkTL2Z72asP4VxWneCnKJr8vW4C0T5ciNSIf6O3ZgQxOrp
-         vKIHlWwPAcHn7IsRklXblIXOv/bbx97/enT3H9mU=
+        b=iUxJ9v1THvR+maj6zxE6wZpJ2ZCnQC/je4NJeFKBjgwnsZQDPQgwNAIioLYiZwywT
+         Ucy9uOSkiafZ5HIERdZdoBGLYfkR3T3PlbdGR81Zp/dFYd5fuOfCJzcsvVLxU64U1h
+         IfTPe6MXY2Dflrm/LvJ8NwHDysG8t+70ZBetu5Bk=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 20/28] crypto: skcipher - use crypto_grab_cipher() and simplify error paths
-Date:   Sat, 28 Dec 2019 20:57:06 -0600
-Message-Id: <20191229025714.544159-21-ebiggers@kernel.org>
+Subject: [PATCH 21/28] crypto: cbcmac - use crypto_grab_cipher() and simplify error paths
+Date:   Sat, 28 Dec 2019 20:57:07 -0600
+Message-Id: <20191229025714.544159-22-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191229025714.544159-1-ebiggers@kernel.org>
 References: <20191229025714.544159-1-ebiggers@kernel.org>
@@ -40,10 +40,13 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Make skcipher_alloc_instance_simple() use the new function
-crypto_grab_cipher() to initialize its cipher spawn.
+Make the cbcmac template use the new function crypto_grab_cipher() to
+initialize its cipher spawn.
 
 This is needed to make all spawns be initialized in a consistent way.
+
+This required making cbcmac_create() allocate the instance directly
+rather than use shash_alloc_instance().
 
 Also simplify the error handling by taking advantage of crypto_drop_*()
 now accepting (as a no-op) spawns that haven't been initialized yet, and
@@ -51,84 +54,69 @@ by taking advantage of crypto_grab_*() now handling ERR_PTR() names.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/skcipher.c | 34 +++++++++++++---------------------
- 1 file changed, 13 insertions(+), 21 deletions(-)
+ crypto/ccm.c | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
-diff --git a/crypto/skcipher.c b/crypto/skcipher.c
-index a9418a7e80a9..0615fead1529 100644
---- a/crypto/skcipher.c
-+++ b/crypto/skcipher.c
-@@ -923,7 +923,7 @@ static void skcipher_exit_tfm_simple(struct crypto_skcipher *tfm)
- 
- static void skcipher_free_instance_simple(struct skcipher_instance *inst)
+diff --git a/crypto/ccm.c b/crypto/ccm.c
+index f430f3650b52..7deb533c7486 100644
+--- a/crypto/ccm.c
++++ b/crypto/ccm.c
+@@ -898,6 +898,7 @@ static void cbcmac_exit_tfm(struct crypto_tfm *tfm)
+ static int cbcmac_create(struct crypto_template *tmpl, struct rtattr **tb)
  {
--	crypto_drop_spawn(skcipher_instance_ctx(inst));
-+	crypto_drop_cipher(skcipher_instance_ctx(inst));
- 	kfree(inst);
- }
- 
-@@ -947,10 +947,10 @@ struct skcipher_instance *skcipher_alloc_instance_simple(
- 	struct crypto_template *tmpl, struct rtattr **tb)
- {
- 	struct crypto_attr_type *algt;
--	struct crypto_alg *cipher_alg;
--	struct skcipher_instance *inst;
--	struct crypto_spawn *spawn;
- 	u32 mask;
-+	struct skcipher_instance *inst;
+ 	struct shash_instance *inst;
 +	struct crypto_cipher_spawn *spawn;
-+	struct crypto_alg *cipher_alg;
+ 	struct crypto_alg *alg;
  	int err;
  
- 	algt = crypto_get_attr_type(tb);
-@@ -964,28 +964,22 @@ struct skcipher_instance *skcipher_alloc_instance_simple(
- 		crypto_requires_off(algt->type, algt->mask,
- 				    CRYPTO_ALG_NEED_FALLBACK);
+@@ -905,21 +906,20 @@ static int cbcmac_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	if (err)
+ 		return err;
  
--	cipher_alg = crypto_get_attr_alg(tb, CRYPTO_ALG_TYPE_CIPHER, mask);
--	if (IS_ERR(cipher_alg))
--		return ERR_CAST(cipher_alg);
--
- 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
--	if (!inst) {
--		err = -ENOMEM;
--		goto err_put_cipher_alg;
--	}
+-	alg = crypto_get_attr_alg(tb, CRYPTO_ALG_TYPE_CIPHER,
+-				  CRYPTO_ALG_TYPE_MASK);
+-	if (IS_ERR(alg))
+-		return PTR_ERR(alg);
++	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
 +	if (!inst)
-+		return ERR_PTR(-ENOMEM);
- 	spawn = skcipher_instance_ctx(inst);
++		return -ENOMEM;
++	spawn = shash_instance_ctx(inst);
  
--	err = crypto_inst_setname(skcipher_crypto_instance(inst), tmpl->name,
--				  cipher_alg);
-+	err = crypto_grab_cipher(spawn, skcipher_crypto_instance(inst),
-+				 crypto_attr_alg_name(tb[1]), 0, mask);
- 	if (err)
- 		goto err_free_inst;
-+	cipher_alg = crypto_spawn_cipher_alg(spawn);
+-	inst = shash_alloc_instance("cbcmac", alg);
+-	err = PTR_ERR(inst);
+-	if (IS_ERR(inst))
+-		goto out_put_alg;
++	err = crypto_grab_cipher(spawn, shash_crypto_instance(inst),
++				 crypto_attr_alg_name(tb[1]), 0, 0);
++	if (err)
++		goto out;
++	alg = crypto_spawn_cipher_alg(spawn);
  
--	spawn->dropref = true;
--	err = crypto_init_spawn(spawn, cipher_alg,
--				skcipher_crypto_instance(inst),
+-	err = crypto_init_spawn(shash_instance_ctx(inst), alg,
+-				shash_crypto_instance(inst),
 -				CRYPTO_ALG_TYPE_MASK);
-+	err = crypto_inst_setname(skcipher_crypto_instance(inst), tmpl->name,
-+				  cipher_alg);
++	err = crypto_inst_setname(shash_crypto_instance(inst), tmpl->name, alg);
  	if (err)
- 		goto err_free_inst;
-+
- 	inst->free = skcipher_free_instance_simple;
+-		goto out_free_inst;
++		goto out;
  
- 	/* Default algorithm properties, can be overridden */
-@@ -1005,9 +999,7 @@ struct skcipher_instance *skcipher_alloc_instance_simple(
- 	return inst;
+ 	inst->alg.base.cra_priority = alg->cra_priority;
+ 	inst->alg.base.cra_blocksize = 1;
+@@ -939,13 +939,9 @@ static int cbcmac_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	inst->alg.setkey = crypto_cbcmac_digest_setkey;
  
- err_free_inst:
--	kfree(inst);
--err_put_cipher_alg:
--	crypto_mod_put(cipher_alg);
-+	skcipher_free_instance_simple(inst);
- 	return ERR_PTR(err);
+ 	err = shash_register_instance(tmpl, inst);
+-
+-out_free_inst:
++out:
+ 	if (err)
+ 		shash_free_instance(shash_crypto_instance(inst));
+-
+-out_put_alg:
+-	crypto_mod_put(alg);
+ 	return err;
  }
- EXPORT_SYMBOL_GPL(skcipher_alloc_instance_simple);
+ 
 -- 
 2.24.1
 
