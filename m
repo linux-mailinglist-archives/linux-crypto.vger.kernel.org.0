@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C50012C020
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 437AB12C024
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbfL2C6P (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 28 Dec 2019 21:58:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44586 "EHLO mail.kernel.org"
+        id S1726395AbfL2C6R (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 28 Dec 2019 21:58:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726509AbfL2C6O (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 28 Dec 2019 21:58:14 -0500
+        id S1726538AbfL2C6P (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 28 Dec 2019 21:58:15 -0500
 Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E012D222C2
-        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 493A1222C3
+        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1577588294;
-        bh=hy8jBH2alNRHIec3TjwuxiCmcfNcCFSjUlmYkWL4T/E=;
+        bh=4EgodjKffwZD+RjFTUi+sJYwVwpVsSsMj/M5hIGc4xs=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=UMFkirSIRgcauosq5vbORfbY4wECVDAGzPj1pTJ0iZGzYOsUNUTzeXY1sYLq+8gu7
-         KhHkUWt4ReLE9Y/IE6M+flQppyT36GcHoDxaKfGpI/Y8ozJKv6l6L19iV9ID6jAJf7
-         8D8s7Zf+c4BTPvX6HzAkR9ODbLtW1lpO9csDlaK4=
+        b=ifIruu1RHMk+CaXYwLkwB27EL3vajrdM3IJvu+Yd0o3RkkvCz3vHjTd0kW0ixiEoN
+         v76gZ9V17/lu/cVDoXzEPw7DHYmS2Z7BQXpmKchMZgPou8c7J7SLY9nHH3Lu/dqpcX
+         yCKwvREEA3wuw9URMVnxIklasIE4+eT4xFjKUpew=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 27/28] crypto: ahash - unexport crypto_ahash_type
-Date:   Sat, 28 Dec 2019 20:57:13 -0600
-Message-Id: <20191229025714.544159-28-ebiggers@kernel.org>
+Subject: [PATCH 28/28] crypto: algapi - fold crypto_init_spawn() into crypto_grab_spawn()
+Date:   Sat, 28 Dec 2019 20:57:14 -0600
+Message-Id: <20191229025714.544159-29-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191229025714.544159-1-ebiggers@kernel.org>
 References: <20191229025714.544159-1-ebiggers@kernel.org>
@@ -40,59 +40,123 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Now that all the templates that need ahash spawns have been converted to
-use crypto_grab_ahash() rather than look up the algorithm directly,
-crypto_ahash_type is no longer used outside of ahash.c.  Make it static.
+Now that crypto_init_spawn() is only called by crypto_grab_spawn(),
+simplify things by moving its functionality into crypto_grab_spawn().
+
+In the process of doing this, also be more consistent about when the
+spawn and instance are updated, and remove the crypto_spawn::dropref
+flag since now it's always set.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/ahash.c                 | 5 +++--
- include/crypto/internal/hash.h | 2 --
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ crypto/algapi.c         | 43 ++++++++++++++---------------------------
+ include/crypto/algapi.h |  3 ---
+ 2 files changed, 14 insertions(+), 32 deletions(-)
 
-diff --git a/crypto/ahash.c b/crypto/ahash.c
-index 2b8449fdb93c..c77717fcea8e 100644
---- a/crypto/ahash.c
-+++ b/crypto/ahash.c
-@@ -23,6 +23,8 @@
+diff --git a/crypto/algapi.c b/crypto/algapi.c
+index f66a4ff57e6e..72592795c7e7 100644
+--- a/crypto/algapi.c
++++ b/crypto/algapi.c
+@@ -629,8 +629,7 @@ int crypto_register_instance(struct crypto_template *tmpl,
+ 		spawn->inst = inst;
+ 		spawn->registered = true;
  
- #include "internal.h"
+-		if (spawn->dropref)
+-			crypto_mod_put(spawn->alg);
++		crypto_mod_put(spawn->alg);
  
-+static const struct crypto_type crypto_ahash_type;
-+
- struct ahash_request_priv {
- 	crypto_completion_t complete;
- 	void *data;
-@@ -542,7 +544,7 @@ static void crypto_ahash_show(struct seq_file *m, struct crypto_alg *alg)
- 		   __crypto_hash_alg_common(alg)->digestsize);
+ 		spawn = next;
+ 	}
+@@ -672,47 +671,33 @@ void crypto_unregister_instance(struct crypto_instance *inst)
  }
+ EXPORT_SYMBOL_GPL(crypto_unregister_instance);
  
--const struct crypto_type crypto_ahash_type = {
-+static const struct crypto_type crypto_ahash_type = {
- 	.extsize = crypto_ahash_extsize,
- 	.init_tfm = crypto_ahash_init_tfm,
- #ifdef CONFIG_PROC_FS
-@@ -554,7 +556,6 @@ const struct crypto_type crypto_ahash_type = {
- 	.type = CRYPTO_ALG_TYPE_AHASH,
- 	.tfmsize = offsetof(struct crypto_ahash, base),
- };
--EXPORT_SYMBOL_GPL(crypto_ahash_type);
+-int crypto_init_spawn(struct crypto_spawn *spawn, struct crypto_alg *alg,
+-		      struct crypto_instance *inst, u32 mask)
++int crypto_grab_spawn(struct crypto_spawn *spawn, struct crypto_instance *inst,
++		      const char *name, u32 type, u32 mask)
+ {
++	struct crypto_alg *alg;
+ 	int err = -EAGAIN;
  
- int crypto_grab_ahash(struct crypto_ahash_spawn *spawn,
- 		      struct crypto_instance *inst,
-diff --git a/include/crypto/internal/hash.h b/include/crypto/internal/hash.h
-index 79e561abef61..c84b7cb29887 100644
---- a/include/crypto/internal/hash.h
-+++ b/include/crypto/internal/hash.h
-@@ -57,8 +57,6 @@ struct crypto_shash_spawn {
- 	struct crypto_spawn base;
- };
+ 	if (WARN_ON_ONCE(inst == NULL))
+ 		return -EINVAL;
  
--extern const struct crypto_type crypto_ahash_type;
+-	spawn->next = inst->spawns;
+-	inst->spawns = spawn;
++	/* Allow the result of crypto_attr_alg_name() to be passed directly */
++	if (IS_ERR(name))
++		return PTR_ERR(name);
+ 
+-	spawn->mask = mask;
++	alg = crypto_find_alg(name, spawn->frontend, type, mask);
++	if (IS_ERR(alg))
++		return PTR_ERR(alg);
+ 
+ 	down_write(&crypto_alg_sem);
+ 	if (!crypto_is_moribund(alg)) {
+ 		list_add(&spawn->list, &alg->cra_users);
+ 		spawn->alg = alg;
++		spawn->mask = mask;
++		spawn->next = inst->spawns;
++		inst->spawns = spawn;
+ 		err = 0;
+ 	}
+ 	up_write(&crypto_alg_sem);
 -
- int crypto_hash_walk_done(struct crypto_hash_walk *walk, int err);
- int crypto_hash_walk_first(struct ahash_request *req,
- 			   struct crypto_hash_walk *walk);
+-	return err;
+-}
+-EXPORT_SYMBOL_GPL(crypto_init_spawn);
+-
+-int crypto_grab_spawn(struct crypto_spawn *spawn, struct crypto_instance *inst,
+-		      const char *name, u32 type, u32 mask)
+-{
+-	struct crypto_alg *alg;
+-	int err;
+-
+-	/* Allow the result of crypto_attr_alg_name() to be passed directly */
+-	if (IS_ERR(name))
+-		return PTR_ERR(name);
+-
+-	alg = crypto_find_alg(name, spawn->frontend, type, mask);
+-	if (IS_ERR(alg))
+-		return PTR_ERR(alg);
+-
+-	spawn->dropref = true;
+-	err = crypto_init_spawn(spawn, alg, inst, mask);
+ 	if (err)
+ 		crypto_mod_put(alg);
+ 	return err;
+@@ -729,7 +714,7 @@ void crypto_drop_spawn(struct crypto_spawn *spawn)
+ 		list_del(&spawn->list);
+ 	up_write(&crypto_alg_sem);
+ 
+-	if (spawn->dropref && !spawn->registered)
++	if (!spawn->registered)
+ 		crypto_mod_put(spawn->alg);
+ }
+ EXPORT_SYMBOL_GPL(crypto_drop_spawn);
+diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
+index 8a43c55a1979..be6a99a63fcd 100644
+--- a/include/crypto/algapi.h
++++ b/include/crypto/algapi.h
+@@ -82,7 +82,6 @@ struct crypto_spawn {
+ 	const struct crypto_type *frontend;
+ 	u32 mask;
+ 	bool dead;
+-	bool dropref;
+ 	bool registered;
+ };
+ 
+@@ -111,8 +110,6 @@ int crypto_register_instance(struct crypto_template *tmpl,
+ 			     struct crypto_instance *inst);
+ void crypto_unregister_instance(struct crypto_instance *inst);
+ 
+-int crypto_init_spawn(struct crypto_spawn *spawn, struct crypto_alg *alg,
+-		      struct crypto_instance *inst, u32 mask);
+ int crypto_grab_spawn(struct crypto_spawn *spawn, struct crypto_instance *inst,
+ 		      const char *name, u32 type, u32 mask);
+ void crypto_drop_spawn(struct crypto_spawn *spawn);
 -- 
 2.24.1
 
