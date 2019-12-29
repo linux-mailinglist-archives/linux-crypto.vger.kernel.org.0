@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D0B12C013
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5FB12C01D
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbfL2C6J (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 28 Dec 2019 21:58:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44484 "EHLO mail.kernel.org"
+        id S1726410AbfL2C6N (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 28 Dec 2019 21:58:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726406AbfL2C6J (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726407AbfL2C6J (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Sat, 28 Dec 2019 21:58:09 -0500
 Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4FCA7222C3
+        by mail.kernel.org (Postfix) with ESMTPSA id ECD7121927
         for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577588288;
-        bh=0vNHIZX9OwAd9DVxrmZBP86/gccnDaja2AgRLONIP5Q=;
+        s=default; t=1577588289;
+        bh=ZBdcV9MfU4GKG53RFtgMte2bkXBSg2J0wCjvKMTVHR0=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=ZTXEcNe7rdBXcLP4utvJ8DAukSLbw5tOPWG7hOr44vNIHg334ZAUHtW5eTx57e6cW
-         xh6ScuA6P8nadIKrlOmmzxwnyLiEQqvvP2vXyqc6wTlDEk0osOxvcM/F3CgtVLtYUL
-         oF4rpVq2vPACvyY1s7VWbn18BwYeQpo4VOCn9Rkg=
+        b=pGpl/juQIWsdPpWD+DeV71FF/xlB9Wky5zAi0zIpIyXQXn7/X2au8LW8gvV0jCFiS
+         58n3fcz2Mxh8LCVyUGTk8yS0Dgm4klUU2gDalHbwpt4Kfb8g0S029wVOdRYly+2/J1
+         0FWpJJYm4LNdjSpdzYCmt8iqqAxlLcyyxkrM6O0A=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 14/28] crypto: hmac - use crypto_grab_shash() and simplify error paths
-Date:   Sat, 28 Dec 2019 20:57:00 -0600
-Message-Id: <20191229025714.544159-15-ebiggers@kernel.org>
+Subject: [PATCH 15/28] crypto: authenc - use crypto_grab_ahash() and simplify error paths
+Date:   Sat, 28 Dec 2019 20:57:01 -0600
+Message-Id: <20191229025714.544159-16-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191229025714.544159-1-ebiggers@kernel.org>
 References: <20191229025714.544159-1-ebiggers@kernel.org>
@@ -40,13 +40,10 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Make the hmac template use the new function crypto_grab_shash() to
-initialize its shash spawn.
+Make the authenc template use the new function crypto_grab_ahash() to
+initialize its ahash spawn.
 
 This is needed to make all spawns be initialized in a consistent way.
-
-This required making hmac_create() allocate the instance directly rather
-than use shash_alloc_instance().
 
 Also simplify the error handling by taking advantage of crypto_drop_*()
 now accepting (as a no-op) spawns that haven't been initialized yet, and
@@ -54,83 +51,109 @@ by taking advantage of crypto_grab_*() now handling ERR_PTR() names.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/hmac.c | 36 +++++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 19 deletions(-)
+ crypto/authenc.c | 51 ++++++++++++------------------------------------
+ 1 file changed, 13 insertions(+), 38 deletions(-)
 
-diff --git a/crypto/hmac.c b/crypto/hmac.c
-index 685e49953605..1e6b175ce361 100644
---- a/crypto/hmac.c
-+++ b/crypto/hmac.c
-@@ -165,6 +165,7 @@ static void hmac_exit_tfm(struct crypto_shash *parent)
- static int hmac_create(struct crypto_template *tmpl, struct rtattr **tb)
- {
- 	struct shash_instance *inst;
-+	struct crypto_shash_spawn *spawn;
- 	struct crypto_alg *alg;
- 	struct shash_alg *salg;
+diff --git a/crypto/authenc.c b/crypto/authenc.c
+index aef04792702a..f3f49fc022f2 100644
+--- a/crypto/authenc.c
++++ b/crypto/authenc.c
+@@ -385,11 +385,10 @@ static int crypto_authenc_create(struct crypto_template *tmpl,
+ 	struct crypto_attr_type *algt;
+ 	u32 mask;
+ 	struct aead_instance *inst;
++	struct authenc_instance_ctx *ctx;
+ 	struct hash_alg_common *auth;
+ 	struct crypto_alg *auth_base;
+ 	struct skcipher_alg *enc;
+-	struct authenc_instance_ctx *ctx;
+-	const char *enc_name;
  	int err;
-@@ -175,31 +176,32 @@ static int hmac_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	if (err)
- 		return err;
  
--	salg = shash_attr_alg(tb[1], 0, 0);
--	if (IS_ERR(salg))
--		return PTR_ERR(salg);
-+	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
-+	if (!inst)
+ 	algt = crypto_get_attr_type(tb);
+@@ -401,35 +400,22 @@ static int crypto_authenc_create(struct crypto_template *tmpl,
+ 
+ 	mask = crypto_requires_sync(algt->type, algt->mask);
+ 
+-	auth = ahash_attr_alg(tb[1], CRYPTO_ALG_TYPE_HASH,
+-			      CRYPTO_ALG_TYPE_AHASH_MASK | mask);
+-	if (IS_ERR(auth))
+-		return PTR_ERR(auth);
+-
+-	auth_base = &auth->base;
+-
+-	enc_name = crypto_attr_alg_name(tb[2]);
+-	err = PTR_ERR(enc_name);
+-	if (IS_ERR(enc_name))
+-		goto out_put_auth;
+-
+ 	inst = kzalloc(sizeof(*inst) + sizeof(*ctx), GFP_KERNEL);
+-	err = -ENOMEM;
+ 	if (!inst)
+-		goto out_put_auth;
+-
 +		return -ENOMEM;
-+	spawn = shash_instance_ctx(inst);
-+
-+	err = crypto_grab_shash(spawn, shash_crypto_instance(inst),
-+				crypto_attr_alg_name(tb[1]), 0, 0);
-+	if (err)
-+		goto out;
-+	salg = crypto_spawn_shash_alg(spawn);
- 	alg = &salg->base;
+ 	ctx = aead_instance_ctx(inst);
  
- 	/* The underlying hash algorithm must not require a key */
- 	err = -EINVAL;
- 	if (crypto_shash_alg_needs_key(salg))
--		goto out_put_alg;
-+		goto out;
- 
- 	ds = salg->digestsize;
- 	ss = salg->statesize;
- 	if (ds > alg->cra_blocksize ||
- 	    ss < alg->cra_blocksize)
--		goto out_put_alg;
--
--	inst = shash_alloc_instance("hmac", alg);
--	err = PTR_ERR(inst);
--	if (IS_ERR(inst))
--		goto out_put_alg;
-+		goto out;
- 
--	err = crypto_init_shash_spawn(shash_instance_ctx(inst), salg,
--				      shash_crypto_instance(inst));
-+	err = crypto_inst_setname(shash_crypto_instance(inst), tmpl->name, alg);
+-	err = crypto_init_ahash_spawn(&ctx->auth, auth,
+-				      aead_crypto_instance(inst));
++	err = crypto_grab_ahash(&ctx->auth, aead_crypto_instance(inst),
++				crypto_attr_alg_name(tb[1]), 0, mask);
  	if (err)
--		goto out_free_inst;
+-		goto err_free_inst;
++		goto out;
++	auth = crypto_spawn_ahash_alg(&ctx->auth);
++	auth_base = &auth->base;
+ 
+ 	err = crypto_grab_skcipher(&ctx->enc, aead_crypto_instance(inst),
+-				   enc_name, 0, mask);
++				   crypto_attr_alg_name(tb[2]), 0, mask);
+ 	if (err)
+-		goto err_drop_auth;
+-
++		goto out;
+ 	enc = crypto_spawn_skcipher_alg(&ctx->enc);
+ 
+ 	ctx->reqoff = ALIGN(2 * auth->digestsize + auth_base->cra_alignmask,
+@@ -440,12 +426,12 @@ static int crypto_authenc_create(struct crypto_template *tmpl,
+ 		     "authenc(%s,%s)", auth_base->cra_name,
+ 		     enc->base.cra_name) >=
+ 	    CRYPTO_MAX_ALG_NAME)
+-		goto err_drop_enc;
 +		goto out;
  
- 	inst->alg.base.cra_priority = alg->cra_priority;
- 	inst->alg.base.cra_blocksize = alg->cra_blocksize;
-@@ -223,13 +225,9 @@ static int hmac_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	inst->alg.exit_tfm = hmac_exit_tfm;
+ 	if (snprintf(inst->alg.base.cra_driver_name, CRYPTO_MAX_ALG_NAME,
+ 		     "authenc(%s,%s)", auth_base->cra_driver_name,
+ 		     enc->base.cra_driver_name) >= CRYPTO_MAX_ALG_NAME)
+-		goto err_drop_enc;
++		goto out;
  
- 	err = shash_register_instance(tmpl, inst);
--	if (err) {
--out_free_inst:
-+out:
-+	if (err)
- 		shash_free_instance(shash_crypto_instance(inst));
--	}
+ 	inst->alg.base.cra_flags = (auth_base->cra_flags |
+ 				    enc->base.cra_flags) & CRYPTO_ALG_ASYNC;
+@@ -470,21 +456,10 @@ static int crypto_authenc_create(struct crypto_template *tmpl,
+ 	inst->free = crypto_authenc_free;
+ 
+ 	err = aead_register_instance(tmpl, inst);
+-	if (err)
+-		goto err_drop_enc;
 -
--out_put_alg:
--	crypto_mod_put(alg);
+ out:
+-	crypto_mod_put(auth_base);
++	if (err)
++		crypto_authenc_free(inst);
  	return err;
+-
+-err_drop_enc:
+-	crypto_drop_skcipher(&ctx->enc);
+-err_drop_auth:
+-	crypto_drop_ahash(&ctx->auth);
+-err_free_inst:
+-	kfree(inst);
+-out_put_auth:
+-	goto out;
  }
  
+ static struct crypto_template crypto_authenc_tmpl = {
 -- 
 2.24.1
 
