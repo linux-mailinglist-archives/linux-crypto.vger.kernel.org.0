@@ -2,129 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C935F12C224
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 10:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF3112CAFE
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 22:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbfL2JsI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 29 Dec 2019 04:48:08 -0500
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:38065 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726586AbfL2JsI (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 29 Dec 2019 04:48:08 -0500
-Received: by mail-ed1-f68.google.com with SMTP id i16so29422275edr.5
-        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 01:48:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=caZHEETAKMstGFK2FP8M+oVhxbx01uuGNn3bGrODfEk=;
-        b=sbxia1+jR2W9Zd8GKnsubfLs/Qn0chnyB+IeRcidJFSQzTVKfGWk9rDVyrqSj9QbDO
-         e5WHv8qN8JKfhV5fkonl7HVnX4yYbwahTXwqhDnF4rlmC2h5Rn3VCUh0Fk6RIvMauy25
-         RfKAs4iJ469/GMEsY4B29TYAeZgG52dEzv0LMWERcKezXAveEOwkdljDmtimSEP4VjJC
-         lVSksjPgW9Scp/Ak+IMyoNHSaQ5SDOyYx9vncuKzRURCnp1aFFh7tR9cll6p32XuI3zi
-         1SKYpB5VR0XhSWWZPJi3KvhfiW1r9AzjgUO2KjI1nl/aPVYhw7yrEmlP+loTJdwdNQYx
-         4Clg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=caZHEETAKMstGFK2FP8M+oVhxbx01uuGNn3bGrODfEk=;
-        b=qpCxADmdhpatpN6fgZNVoNtuzdgGrG5uNfBqSUF0EfhVGMtCo7ODInIlo7vJsHJUa6
-         uyiixPma+xnMA9QEseb+shPARHoizr+UA8YY3n1nYtEzvrCHJksiQk45QunU1gDNsfPQ
-         iQ2HeQryzMhj2MxT0q/7nUYRtZQcZkfxKuC+oHZLjt77/Y38en6Pd2rR38XCwLKNM67R
-         gYYM3/I+AHCUzSAUlGe3qe6bOiyiPCE7RMk91KWY5JGUrS50lRlFF1PuWC4r3o6wkQNH
-         yrFGHwCAm+VzNcutddMl5A9fejg+XqIEOaMYBXZFU9tBtyCHESJTFabPOQPzKHZabuUP
-         qucw==
-X-Gm-Message-State: APjAAAXsrUgl5G2zAvByaEqcf7Sl2Ixpnv3OgipkDDZ4ZutQ75dUCOIX
-        tQ1AfEW8ldDITT00oE9Fti4QQg2REiN6BFyiDhU=
-X-Google-Smtp-Source: APXvYqxXIqmimBEtRed8vq8ZviMQGY4GX/CdjbffC8SDuUTj2sr7UKqmbwn0ncEnHZXxzOzkUXup1AEHZkPZt0sEamw=
-X-Received: by 2002:aa7:d415:: with SMTP id z21mr65189520edq.264.1577612885710;
- Sun, 29 Dec 2019 01:48:05 -0800 (PST)
+        id S1726417AbfL2VuE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 29 Dec 2019 16:50:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726407AbfL2VuE (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 29 Dec 2019 16:50:04 -0500
+Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50678206A4
+        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 21:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577656203;
+        bh=7cCdW4Es32M3VWtm4dSdymCTWxuaGQtfVJz1UcrT3eM=;
+        h=From:To:Subject:Date:From;
+        b=hXzsd6p+ptW9OeR+BSWojxh/1s4C1NSxeiCvF4GzTj7uK+DiH0TxChPtCUOBTCK1H
+         0YbBtN04pKdUa4RhuNRkUau7/kbxNIFZsxew0/uqskcATuUWY9TZafN58iW9yAoGno
+         00vRAxHNyM5Db2Z89TopIv6mZ5RPsdtH8rSQSBeI=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-crypto@vger.kernel.org
+Subject: [PATCH 0/6] crypto: remove old way of allocating and freeing instances
+Date:   Sun, 29 Dec 2019 15:48:24 -0600
+Message-Id: <20191229214830.260965-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Received: by 2002:a17:906:4545:0:0:0:0 with HTTP; Sun, 29 Dec 2019 01:48:05
- -0800 (PST)
-Reply-To: kantesulaman@gmail.com
-From:   sulaman Kante <stphnberne@gmail.com>
-Date:   Sun, 29 Dec 2019 01:48:05 -0800
-Message-ID: <CAF2vY26DB-rgnpf349DNmgOFADxiuFZ68AkCFicVSUxWEazxGw@mail.gmail.com>
-Subject: Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Greetings My Dear Friend,
+This series makes all crypto templates use the new way of freeing
+instances where a ->free() method is installed to the instance struct
+itself.  This replaces the weakly-typed method crypto_template::free().
 
-Before I introduce myself, I wish to inform you that this letter is
-not a hoax mail and I urge you to treat it serious.This letter must
-come to you as a big surprise, but I believe it is only a day that
-people meet and become great friends and business partners. Please I
-want you to read this letter very carefully and I must apologize for
-barging this message into your mail box without any formal
-introduction due to the urgency and confidentiality of this business
-and I know that this message will come to you as a surprise. Please
-this is not a joke and I will not like you to joke with it ok,With due
-respect to your person and much sincerity of purpose, I make this
-contact with you as I believe that you can be of great assistance to
-me. My name is Mr.sulaman Kante, from Burkina Faso, West Africa. I
-work with BIB BANK (BIB BANK) as telex manager, please see this as a
-confidential message and do not reveal it to another person and let me
-know whether you can be of assistance regarding my proposal below
-because it is top secret.
+skcipher and akcipher were already using the new way, while aead was
+mostly but not always using the new way.  shash and ahash were using the
+old way.  This series eliminates this inconsistency (and the redundant
+code associated with it) by making everyone use the new way.
 
-I am about to retire from active Banking service to start a new life
-but I am skeptical to reveal this particular secret to a stranger. You
-must assure me that everything will be handled confidentially because
-we are not going to suffer again in life. It has been 10 years now
-that most of the greedy African Politicians used our bank to launder
-money overseas through the help of their Political advisers. Most of
-the funds which they transferred out of the shores of Africa were gold
-and oil money that was supposed to have been used to develop the
-continent. Their Political advisers always inflated the amounts before
-transferring to foreign accounts, so I also used the opportunity to
-divert part of the funds hence I am aware that there is no official
-trace of how much was transferred as all the accounts used for such
-transfers were being closed after transfer. I acted as the Bank
-Officer to most of the politicians and when I discovered that they
-were using me to succeed in their greedy act; I also cleaned some of
-their banking records from the Bank files and no one cared to ask me
-because the money was too much for them to control. They laundered
-over $5billion Dollars during the process.
+The last patch adds registration-time checks which verify that all
+instances really have a ->free() method.
 
-Before I send this message to you, I have already diverted
-($10.6million Dollars) to an escrow account belonging to no one in the
-bank. The bank is anxious now to know who the beneficiary to the funds
-is because they have made a lot of profits with the funds. It is more
-than Eight years now and most of the politicians are no longer using
-our bank to transfer funds overseas. The ($10.6million Dollars) has
-been laying waste in our bank and I don=E2=80=99t want to retire from the b=
-ank
-without transferring the funds to a foreign account to enable me share
-the proceeds with the receiver (a foreigner). The money will be shared
-60% for me and 40% for you. There is no one coming to ask you about
-the funds because I secured everything. I only want you to assist me
-by providing a reliable bank account where the funds can be
-transferred.
+This series is an internal cleanup only; there are no changes for users
+of the crypto API.
 
-You are not to face any difficulties or legal implications as I am
-going to handle the transfer personally. If you are capable of
-receiving the funds, do let me know immediately to enable me give you
-a detailed information on what to do. For me, I have not stolen the
-money from anyone because the other people that took the whole money
-did not face any problems. This is my chance to grab my own life
-opportunity but you must keep the details of the funds secret to avoid
-any leakages as no one in the bank knows about my plans.Please get
-back to me if you are interested and capable to handle this project, I
-shall intimate you on what to do when I hear from your confirmation
-and acceptance.If you are capable of being my trusted associate, do
-declare your consent to me I am looking forward to hear from you
-immediately for further information
-Thanks with my best regards.
-Mr.sulaman Kante,
-Telex Manager
-(BIB BANK)
-Burkina Faso.
+This series is based on top of my other series
+"[PATCH 00/28] crypto: template instantiation cleanup".
+
+Eric Biggers (6):
+  crypto: hash - add support for new way of freeing instances
+  crypto: geniv - convert to new way of freeing instances
+  crypto: cryptd - convert to new way of freeing instances
+  crypto: shash - convert shash_free_instance() to new style
+  crypto: algapi - remove crypto_template::{alloc,free}()
+  crypto: algapi - enforce that all instances have a ->free() method
+
+ crypto/aead.c                   |  8 +++----
+ crypto/ahash.c                  | 11 +++++++++
+ crypto/akcipher.c               |  2 ++
+ crypto/algapi.c                 |  5 ----
+ crypto/algboss.c                | 12 +---------
+ crypto/ccm.c                    |  5 ++--
+ crypto/cmac.c                   |  5 ++--
+ crypto/cryptd.c                 | 42 ++++++++++++++++-----------------
+ crypto/echainiv.c               | 20 ++++------------
+ crypto/geniv.c                  | 15 ++++++------
+ crypto/hmac.c                   |  5 ++--
+ crypto/seqiv.c                  | 20 ++++------------
+ crypto/shash.c                  | 19 +++++++++++----
+ crypto/skcipher.c               |  3 +++
+ crypto/vmac.c                   |  5 ++--
+ crypto/xcbc.c                   |  5 ++--
+ include/crypto/algapi.h         |  2 --
+ include/crypto/internal/geniv.h |  1 -
+ include/crypto/internal/hash.h  |  4 +++-
+ 19 files changed, 89 insertions(+), 100 deletions(-)
+
+-- 
+2.24.1
+
