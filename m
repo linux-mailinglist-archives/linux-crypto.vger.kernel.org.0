@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FAFC12C01E
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6ABE12C025
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbfL2C6O (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 28 Dec 2019 21:58:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44484 "EHLO mail.kernel.org"
+        id S1726465AbfL2C6R (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 28 Dec 2019 21:58:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726460AbfL2C6L (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 28 Dec 2019 21:58:11 -0500
+        id S1726479AbfL2C6M (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 28 Dec 2019 21:58:12 -0500
 Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60A0D2176D
+        by mail.kernel.org (Postfix) with ESMTPSA id BD90221744
         for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1577588291;
-        bh=3yBk4PkrmWcKUwtCUfB+4a5IbcPF+VoajgYXI1ZFhkY=;
+        bh=/tDzWVblgdkGT9ABLhJVn0LjA7ozyyw2gh7yHUcBp+M=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=iUxJ9v1THvR+maj6zxE6wZpJ2ZCnQC/je4NJeFKBjgwnsZQDPQgwNAIioLYiZwywT
-         Ucy9uOSkiafZ5HIERdZdoBGLYfkR3T3PlbdGR81Zp/dFYd5fuOfCJzcsvVLxU64U1h
-         IfTPe6MXY2Dflrm/LvJ8NwHDysG8t+70ZBetu5Bk=
+        b=0nZiHER1ecEg3j67CXEw4lBarj8QS+wWO5vCnWctdWWcFr2lAnqcYlOxI8x6UhjB8
+         qgfkZPWRmXJHeyfMgDuDI7gayC7JqoEJbPo/mEGmB02uU5pgW2FbdNq6n5ZmyMnMY1
+         YOcppNO1YZ8RQe5lqpGCB3oyr0QLzKtRASrZwHjk=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 21/28] crypto: cbcmac - use crypto_grab_cipher() and simplify error paths
-Date:   Sat, 28 Dec 2019 20:57:07 -0600
-Message-Id: <20191229025714.544159-22-ebiggers@kernel.org>
+Subject: [PATCH 22/28] crypto: cmac - use crypto_grab_cipher() and simplify error paths
+Date:   Sat, 28 Dec 2019 20:57:08 -0600
+Message-Id: <20191229025714.544159-23-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191229025714.544159-1-ebiggers@kernel.org>
 References: <20191229025714.544159-1-ebiggers@kernel.org>
@@ -40,13 +40,13 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Make the cbcmac template use the new function crypto_grab_cipher() to
+Make the cmac template use the new function crypto_grab_cipher() to
 initialize its cipher spawn.
 
 This is needed to make all spawns be initialized in a consistent way.
 
-This required making cbcmac_create() allocate the instance directly
-rather than use shash_alloc_instance().
+This required making cmac_create() allocate the instance directly rather
+than use shash_alloc_instance().
 
 Also simplify the error handling by taking advantage of crypto_drop_*()
 now accepting (as a no-op) spawns that haven't been initialized yet, and
@@ -54,22 +54,22 @@ by taking advantage of crypto_grab_*() now handling ERR_PTR() names.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/ccm.c | 30 +++++++++++++-----------------
- 1 file changed, 13 insertions(+), 17 deletions(-)
+ crypto/cmac.c | 36 ++++++++++++++++--------------------
+ 1 file changed, 16 insertions(+), 20 deletions(-)
 
-diff --git a/crypto/ccm.c b/crypto/ccm.c
-index f430f3650b52..7deb533c7486 100644
---- a/crypto/ccm.c
-+++ b/crypto/ccm.c
-@@ -898,6 +898,7 @@ static void cbcmac_exit_tfm(struct crypto_tfm *tfm)
- static int cbcmac_create(struct crypto_template *tmpl, struct rtattr **tb)
+diff --git a/crypto/cmac.c b/crypto/cmac.c
+index 0928aebc6205..cb41aab2fe58 100644
+--- a/crypto/cmac.c
++++ b/crypto/cmac.c
+@@ -222,6 +222,7 @@ static void cmac_exit_tfm(struct crypto_tfm *tfm)
+ static int cmac_create(struct crypto_template *tmpl, struct rtattr **tb)
  {
  	struct shash_instance *inst;
 +	struct crypto_cipher_spawn *spawn;
  	struct crypto_alg *alg;
+ 	unsigned long alignmask;
  	int err;
- 
-@@ -905,21 +906,20 @@ static int cbcmac_create(struct crypto_template *tmpl, struct rtattr **tb)
+@@ -230,10 +231,16 @@ static int cmac_create(struct crypto_template *tmpl, struct rtattr **tb)
  	if (err)
  		return err;
  
@@ -81,17 +81,28 @@ index f430f3650b52..7deb533c7486 100644
 +	if (!inst)
 +		return -ENOMEM;
 +	spawn = shash_instance_ctx(inst);
- 
--	inst = shash_alloc_instance("cbcmac", alg);
--	err = PTR_ERR(inst);
--	if (IS_ERR(inst))
--		goto out_put_alg;
++
 +	err = crypto_grab_cipher(spawn, shash_crypto_instance(inst),
 +				 crypto_attr_alg_name(tb[1]), 0, 0);
 +	if (err)
 +		goto out;
 +	alg = crypto_spawn_cipher_alg(spawn);
  
+ 	switch (alg->cra_blocksize) {
+ 	case 16:
+@@ -241,19 +248,12 @@ static int cmac_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 		break;
+ 	default:
+ 		err = -EINVAL;
+-		goto out_put_alg;
++		goto out;
+ 	}
+ 
+-	inst = shash_alloc_instance("cmac", alg);
+-	err = PTR_ERR(inst);
+-	if (IS_ERR(inst))
+-		goto out_put_alg;
+-
 -	err = crypto_init_spawn(shash_instance_ctx(inst), alg,
 -				shash_crypto_instance(inst),
 -				CRYPTO_ALG_TYPE_MASK);
@@ -100,17 +111,18 @@ index f430f3650b52..7deb533c7486 100644
 -		goto out_free_inst;
 +		goto out;
  
- 	inst->alg.base.cra_priority = alg->cra_priority;
- 	inst->alg.base.cra_blocksize = 1;
-@@ -939,13 +939,9 @@ static int cbcmac_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	inst->alg.setkey = crypto_cbcmac_digest_setkey;
+ 	alignmask = alg->cra_alignmask;
+ 	inst->alg.base.cra_alignmask = alignmask;
+@@ -281,13 +281,9 @@ static int cmac_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	inst->alg.setkey = crypto_cmac_digest_setkey;
  
  	err = shash_register_instance(tmpl, inst);
--
+-	if (err) {
 -out_free_inst:
 +out:
- 	if (err)
++	if (err)
  		shash_free_instance(shash_crypto_instance(inst));
+-	}
 -
 -out_put_alg:
 -	crypto_mod_put(alg);
