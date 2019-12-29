@@ -2,161 +2,129 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 437AB12C024
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DCF12C227
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 10:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbfL2C6R (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 28 Dec 2019 21:58:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726538AbfL2C6P (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 28 Dec 2019 21:58:15 -0500
-Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 493A1222C3
-        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577588294;
-        bh=4EgodjKffwZD+RjFTUi+sJYwVwpVsSsMj/M5hIGc4xs=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=ifIruu1RHMk+CaXYwLkwB27EL3vajrdM3IJvu+Yd0o3RkkvCz3vHjTd0kW0ixiEoN
-         v76gZ9V17/lu/cVDoXzEPw7DHYmS2Z7BQXpmKchMZgPou8c7J7SLY9nHH3Lu/dqpcX
-         yCKwvREEA3wuw9URMVnxIklasIE4+eT4xFjKUpew=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 28/28] crypto: algapi - fold crypto_init_spawn() into crypto_grab_spawn()
-Date:   Sat, 28 Dec 2019 20:57:14 -0600
-Message-Id: <20191229025714.544159-29-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20191229025714.544159-1-ebiggers@kernel.org>
-References: <20191229025714.544159-1-ebiggers@kernel.org>
+        id S1726378AbfL2JsO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 29 Dec 2019 04:48:14 -0500
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:34067 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726479AbfL2JsI (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 29 Dec 2019 04:48:08 -0500
+Received: by mail-ed1-f68.google.com with SMTP id l8so29437594edw.1
+        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 01:48:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=caZHEETAKMstGFK2FP8M+oVhxbx01uuGNn3bGrODfEk=;
+        b=KU5CuzD42n6B9veCjjaT89cvAzU5uxrZehlkayoI4h4koBPqHviLSvsdJBihZ6Dmx4
+         zNKWI2XYjXICfwUKulodJxTCv7Um+mBM0hT0rvkiS8IYXjjBGO8LNDHKeRmH+F+Y3jQ9
+         dAMDY8eR87jobUV6jclaB8biuCnIjB8iga+CqTFqi4V6pHURw44tg6tZEySQkapQmCD8
+         yHItpF44AszCjuzDUc+d1Eu3eER1myqnYuXg6sTy/eZmhMdWiy0qevS+Z6SIOnuMt804
+         R0+6RqAKQBW+q5PhK7HiYhXipamX8ZiXQZ4Vk0OK5HDPdtKC/a5923IWrtJqb7yQsYmi
+         A0GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=caZHEETAKMstGFK2FP8M+oVhxbx01uuGNn3bGrODfEk=;
+        b=S9zBWW29ZEfucHsKipNvMOAhI9qcQvAc82DC1BhLFq4sxIwP9wlHgRF4niR450bzE3
+         ZCmpaZ55d7kWg76AtCq7K/LEY5jGpWEzGopUZ0hFXrp9kAIbxD5CJGunSzp+AH0zMVn/
+         hgPjkTwsg/OqjFtglMwunAZHyX89SgdGcbjSJtLoZZ1ESFxtn47o4ojKdqAkF0IPCq4b
+         +Ypa5VQElLDPogCsj52rqrlzZH1r/+RwZ5xfPMSYZejrka5jsN8hT/28/wz2OOfapeni
+         1A7Fq11XcM126Lg+nqeQOMg9mVVjGlC+a4buJCURzhU/sVwxqqH8/q22ZHxiXpvq5RZS
+         6yng==
+X-Gm-Message-State: APjAAAVHpoL507Sp3dLxAscUWjqqBDC9BvBPtEh8KqYkcIn0dKHIb+Tk
+        UxguDLQujRKdc7JIAyq2hkEdWv2K09Hui1CM1gA=
+X-Google-Smtp-Source: APXvYqy+AhuSeLYfACWevqNG0AruPPcDbF6lodNexCk4w+3pDcp8QpBi8Wx/d1PzylyVYSrofFIJcYgNIUlcBQ+0kkg=
+X-Received: by 2002:a17:906:1117:: with SMTP id h23mr63710152eja.88.1577612885661;
+ Sun, 29 Dec 2019 01:48:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a17:906:4545:0:0:0:0 with HTTP; Sun, 29 Dec 2019 01:48:04
+ -0800 (PST)
+Reply-To: kantesulaman@gmail.com
+From:   sulaman Kante <stphnberne@gmail.com>
+Date:   Sun, 29 Dec 2019 01:48:04 -0800
+Message-ID: <CAF2vY24m+jUiou03BozMUo5fEAseXSeoGAJuMKZqTqB+QKeGAg@mail.gmail.com>
+Subject: Greetings
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Greetings My Dear Friend,
 
-Now that crypto_init_spawn() is only called by crypto_grab_spawn(),
-simplify things by moving its functionality into crypto_grab_spawn().
+Before I introduce myself, I wish to inform you that this letter is
+not a hoax mail and I urge you to treat it serious.This letter must
+come to you as a big surprise, but I believe it is only a day that
+people meet and become great friends and business partners. Please I
+want you to read this letter very carefully and I must apologize for
+barging this message into your mail box without any formal
+introduction due to the urgency and confidentiality of this business
+and I know that this message will come to you as a surprise. Please
+this is not a joke and I will not like you to joke with it ok,With due
+respect to your person and much sincerity of purpose, I make this
+contact with you as I believe that you can be of great assistance to
+me. My name is Mr.sulaman Kante, from Burkina Faso, West Africa. I
+work with BIB BANK (BIB BANK) as telex manager, please see this as a
+confidential message and do not reveal it to another person and let me
+know whether you can be of assistance regarding my proposal below
+because it is top secret.
 
-In the process of doing this, also be more consistent about when the
-spawn and instance are updated, and remove the crypto_spawn::dropref
-flag since now it's always set.
+I am about to retire from active Banking service to start a new life
+but I am skeptical to reveal this particular secret to a stranger. You
+must assure me that everything will be handled confidentially because
+we are not going to suffer again in life. It has been 10 years now
+that most of the greedy African Politicians used our bank to launder
+money overseas through the help of their Political advisers. Most of
+the funds which they transferred out of the shores of Africa were gold
+and oil money that was supposed to have been used to develop the
+continent. Their Political advisers always inflated the amounts before
+transferring to foreign accounts, so I also used the opportunity to
+divert part of the funds hence I am aware that there is no official
+trace of how much was transferred as all the accounts used for such
+transfers were being closed after transfer. I acted as the Bank
+Officer to most of the politicians and when I discovered that they
+were using me to succeed in their greedy act; I also cleaned some of
+their banking records from the Bank files and no one cared to ask me
+because the money was too much for them to control. They laundered
+over $5billion Dollars during the process.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- crypto/algapi.c         | 43 ++++++++++++++---------------------------
- include/crypto/algapi.h |  3 ---
- 2 files changed, 14 insertions(+), 32 deletions(-)
+Before I send this message to you, I have already diverted
+($10.6million Dollars) to an escrow account belonging to no one in the
+bank. The bank is anxious now to know who the beneficiary to the funds
+is because they have made a lot of profits with the funds. It is more
+than Eight years now and most of the politicians are no longer using
+our bank to transfer funds overseas. The ($10.6million Dollars) has
+been laying waste in our bank and I don=E2=80=99t want to retire from the b=
+ank
+without transferring the funds to a foreign account to enable me share
+the proceeds with the receiver (a foreigner). The money will be shared
+60% for me and 40% for you. There is no one coming to ask you about
+the funds because I secured everything. I only want you to assist me
+by providing a reliable bank account where the funds can be
+transferred.
 
-diff --git a/crypto/algapi.c b/crypto/algapi.c
-index f66a4ff57e6e..72592795c7e7 100644
---- a/crypto/algapi.c
-+++ b/crypto/algapi.c
-@@ -629,8 +629,7 @@ int crypto_register_instance(struct crypto_template *tmpl,
- 		spawn->inst = inst;
- 		spawn->registered = true;
- 
--		if (spawn->dropref)
--			crypto_mod_put(spawn->alg);
-+		crypto_mod_put(spawn->alg);
- 
- 		spawn = next;
- 	}
-@@ -672,47 +671,33 @@ void crypto_unregister_instance(struct crypto_instance *inst)
- }
- EXPORT_SYMBOL_GPL(crypto_unregister_instance);
- 
--int crypto_init_spawn(struct crypto_spawn *spawn, struct crypto_alg *alg,
--		      struct crypto_instance *inst, u32 mask)
-+int crypto_grab_spawn(struct crypto_spawn *spawn, struct crypto_instance *inst,
-+		      const char *name, u32 type, u32 mask)
- {
-+	struct crypto_alg *alg;
- 	int err = -EAGAIN;
- 
- 	if (WARN_ON_ONCE(inst == NULL))
- 		return -EINVAL;
- 
--	spawn->next = inst->spawns;
--	inst->spawns = spawn;
-+	/* Allow the result of crypto_attr_alg_name() to be passed directly */
-+	if (IS_ERR(name))
-+		return PTR_ERR(name);
- 
--	spawn->mask = mask;
-+	alg = crypto_find_alg(name, spawn->frontend, type, mask);
-+	if (IS_ERR(alg))
-+		return PTR_ERR(alg);
- 
- 	down_write(&crypto_alg_sem);
- 	if (!crypto_is_moribund(alg)) {
- 		list_add(&spawn->list, &alg->cra_users);
- 		spawn->alg = alg;
-+		spawn->mask = mask;
-+		spawn->next = inst->spawns;
-+		inst->spawns = spawn;
- 		err = 0;
- 	}
- 	up_write(&crypto_alg_sem);
--
--	return err;
--}
--EXPORT_SYMBOL_GPL(crypto_init_spawn);
--
--int crypto_grab_spawn(struct crypto_spawn *spawn, struct crypto_instance *inst,
--		      const char *name, u32 type, u32 mask)
--{
--	struct crypto_alg *alg;
--	int err;
--
--	/* Allow the result of crypto_attr_alg_name() to be passed directly */
--	if (IS_ERR(name))
--		return PTR_ERR(name);
--
--	alg = crypto_find_alg(name, spawn->frontend, type, mask);
--	if (IS_ERR(alg))
--		return PTR_ERR(alg);
--
--	spawn->dropref = true;
--	err = crypto_init_spawn(spawn, alg, inst, mask);
- 	if (err)
- 		crypto_mod_put(alg);
- 	return err;
-@@ -729,7 +714,7 @@ void crypto_drop_spawn(struct crypto_spawn *spawn)
- 		list_del(&spawn->list);
- 	up_write(&crypto_alg_sem);
- 
--	if (spawn->dropref && !spawn->registered)
-+	if (!spawn->registered)
- 		crypto_mod_put(spawn->alg);
- }
- EXPORT_SYMBOL_GPL(crypto_drop_spawn);
-diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
-index 8a43c55a1979..be6a99a63fcd 100644
---- a/include/crypto/algapi.h
-+++ b/include/crypto/algapi.h
-@@ -82,7 +82,6 @@ struct crypto_spawn {
- 	const struct crypto_type *frontend;
- 	u32 mask;
- 	bool dead;
--	bool dropref;
- 	bool registered;
- };
- 
-@@ -111,8 +110,6 @@ int crypto_register_instance(struct crypto_template *tmpl,
- 			     struct crypto_instance *inst);
- void crypto_unregister_instance(struct crypto_instance *inst);
- 
--int crypto_init_spawn(struct crypto_spawn *spawn, struct crypto_alg *alg,
--		      struct crypto_instance *inst, u32 mask);
- int crypto_grab_spawn(struct crypto_spawn *spawn, struct crypto_instance *inst,
- 		      const char *name, u32 type, u32 mask);
- void crypto_drop_spawn(struct crypto_spawn *spawn);
--- 
-2.24.1
-
+You are not to face any difficulties or legal implications as I am
+going to handle the transfer personally. If you are capable of
+receiving the funds, do let me know immediately to enable me give you
+a detailed information on what to do. For me, I have not stolen the
+money from anyone because the other people that took the whole money
+did not face any problems. This is my chance to grab my own life
+opportunity but you must keep the details of the funds secret to avoid
+any leakages as no one in the bank knows about my plans.Please get
+back to me if you are interested and capable to handle this project, I
+shall intimate you on what to do when I hear from your confirmation
+and acceptance.If you are capable of being my trusted associate, do
+declare your consent to me I am looking forward to hear from you
+immediately for further information
+Thanks with my best regards.
+Mr.sulaman Kante,
+Telex Manager
+(BIB BANK)
+Burkina Faso.
