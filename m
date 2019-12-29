@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB5512C021
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDD212C023
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Dec 2019 03:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbfL2C6O (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 28 Dec 2019 21:58:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44570 "EHLO mail.kernel.org"
+        id S1726508AbfL2C6P (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 28 Dec 2019 21:58:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726508AbfL2C6O (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726407AbfL2C6O (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Sat, 28 Dec 2019 21:58:14 -0500
 Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6BCD21D7E
-        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55AA221927
+        for <linux-crypto@vger.kernel.org>; Sun, 29 Dec 2019 02:58:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1577588293;
-        bh=eS+BTgN11eJFPRwcXS3QOWwUZTcoi0pAmCDolLQ2xew=;
+        bh=Bp1nngZyJNiSDK1c0ywUkk9ketNZhgaPJMtIp7bq338=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=xHteLm81gZY7MIYyC4j+ngI4yzOuEfyPDljStLAW3y9BgVHCc8oPYIOWVGQo8VT5Q
-         6RG1n5hlLDU5rXLCw7vNCfrlMPYt/fBZfdA/D1TW+mQE52rCokqXagmJYy+q/1zelg
-         2hZwofLTU5nzIbQpsvHhTCJH9GBBqCZjp3BHnkgs=
+        b=Gy1jvR5qhdW4ELDSw+vh7AM2MJbXzkHfJhdjl+NXIAX0veNFe2W/sBIrZhSbgQgyW
+         7wiDCWvVWKqf+oo6LjaCWL9mNJCXaNZQ1pc9SLmTkD/0sDt0coqKIwiLDXotXD67MO
+         RG4dGI129+fmkCCN4oh7ElAriPGRhBfNZJD+uqy8=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 25/28] crypto: cipher - make crypto_spawn_cipher() take a crypto_cipher_spawn
-Date:   Sat, 28 Dec 2019 20:57:11 -0600
-Message-Id: <20191229025714.544159-26-ebiggers@kernel.org>
+Subject: [PATCH 26/28] crypto: algapi - remove obsoleted instance creation helpers
+Date:   Sat, 28 Dec 2019 20:57:12 -0600
+Message-Id: <20191229025714.544159-27-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191229025714.544159-1-ebiggers@kernel.org>
 References: <20191229025714.544159-1-ebiggers@kernel.org>
@@ -40,119 +40,312 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Now that all users of single-block cipher spawns have been converted to
-use 'struct crypto_cipher_spawn' rather than the less specifically typed
-'struct crypto_spawn', make crypto_spawn_cipher() take a pointer to a
-'struct crypto_cipher_spawn' rather than a 'struct crypto_spawn'.
+Remove lots of helper functions that were previously used for
+instantiating crypto templates, but are now unused:
+
+- crypto_get_attr_alg() and similar functions looked up an inner
+  algorithm directly from a template parameter.  These were replaced
+  with getting the algorithm's name, then calling crypto_grab_*().
+
+- crypto_init_spawn() and similar functions initialized a spawn, given
+  an algorithm.  Similarly, these were replaced with crypto_grab_*().
+
+- crypto_alloc_instance() and similar functions allocated an instance
+  with a single spawn, given the inner algorithm.  These aren't useful
+  anymore since crypto_grab_*() need the instance allocated first.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/adiantum.c       | 2 +-
- crypto/ccm.c            | 2 +-
- crypto/cmac.c           | 2 +-
- crypto/skcipher.c       | 2 +-
- crypto/vmac.c           | 2 +-
- crypto/xcbc.c           | 2 +-
- include/crypto/algapi.h | 4 ++--
- 7 files changed, 8 insertions(+), 8 deletions(-)
+ crypto/ahash.c                 | 25 ---------------
+ crypto/algapi.c                | 57 ----------------------------------
+ crypto/shash.c                 | 19 ------------
+ include/crypto/algapi.h        | 22 -------------
+ include/crypto/internal/hash.h | 31 ------------------
+ 5 files changed, 154 deletions(-)
 
-diff --git a/crypto/adiantum.c b/crypto/adiantum.c
-index 41cace1d0cb6..177b1bfbd330 100644
---- a/crypto/adiantum.c
-+++ b/crypto/adiantum.c
-@@ -416,7 +416,7 @@ static int adiantum_init_tfm(struct crypto_skcipher *tfm)
- 	if (IS_ERR(streamcipher))
- 		return PTR_ERR(streamcipher);
+diff --git a/crypto/ahash.c b/crypto/ahash.c
+index e98a1398ed7f..2b8449fdb93c 100644
+--- a/crypto/ahash.c
++++ b/crypto/ahash.c
+@@ -655,31 +655,6 @@ int ahash_register_instance(struct crypto_template *tmpl,
+ }
+ EXPORT_SYMBOL_GPL(ahash_register_instance);
  
--	blockcipher = crypto_spawn_cipher(&ictx->blockcipher_spawn.base);
-+	blockcipher = crypto_spawn_cipher(&ictx->blockcipher_spawn);
- 	if (IS_ERR(blockcipher)) {
- 		err = PTR_ERR(blockcipher);
- 		goto err_free_streamcipher;
-diff --git a/crypto/ccm.c b/crypto/ccm.c
-index 7deb533c7486..987c4d69948a 100644
---- a/crypto/ccm.c
-+++ b/crypto/ccm.c
-@@ -877,7 +877,7 @@ static int cbcmac_init_tfm(struct crypto_tfm *tfm)
+-void ahash_free_instance(struct crypto_instance *inst)
+-{
+-	crypto_drop_spawn(crypto_instance_ctx(inst));
+-	kfree(ahash_instance(inst));
+-}
+-EXPORT_SYMBOL_GPL(ahash_free_instance);
+-
+-int crypto_init_ahash_spawn(struct crypto_ahash_spawn *spawn,
+-			    struct hash_alg_common *alg,
+-			    struct crypto_instance *inst)
+-{
+-	return crypto_init_spawn2(&spawn->base, &alg->base, inst,
+-				  &crypto_ahash_type);
+-}
+-EXPORT_SYMBOL_GPL(crypto_init_ahash_spawn);
+-
+-struct hash_alg_common *ahash_attr_alg(struct rtattr *rta, u32 type, u32 mask)
+-{
+-	struct crypto_alg *alg;
+-
+-	alg = crypto_attr_alg2(rta, &crypto_ahash_type, type, mask);
+-	return IS_ERR(alg) ? ERR_CAST(alg) : __crypto_hash_alg_common(alg);
+-}
+-EXPORT_SYMBOL_GPL(ahash_attr_alg);
+-
+ bool crypto_hash_alg_has_setkey(struct hash_alg_common *halg)
  {
- 	struct crypto_cipher *cipher;
- 	struct crypto_instance *inst = (void *)tfm->__crt_alg;
--	struct crypto_spawn *spawn = crypto_instance_ctx(inst);
-+	struct crypto_cipher_spawn *spawn = crypto_instance_ctx(inst);
- 	struct cbcmac_tfm_ctx *ctx = crypto_tfm_ctx(tfm);
+ 	struct crypto_alg *alg = &halg->base;
+diff --git a/crypto/algapi.c b/crypto/algapi.c
+index a25ce02918f8..f66a4ff57e6e 100644
+--- a/crypto/algapi.c
++++ b/crypto/algapi.c
+@@ -697,23 +697,6 @@ int crypto_init_spawn(struct crypto_spawn *spawn, struct crypto_alg *alg,
+ }
+ EXPORT_SYMBOL_GPL(crypto_init_spawn);
  
- 	cipher = crypto_spawn_cipher(spawn);
-diff --git a/crypto/cmac.c b/crypto/cmac.c
-index cb41aab2fe58..cc4f46e2c46f 100644
---- a/crypto/cmac.c
-+++ b/crypto/cmac.c
-@@ -201,7 +201,7 @@ static int cmac_init_tfm(struct crypto_tfm *tfm)
+-int crypto_init_spawn2(struct crypto_spawn *spawn, struct crypto_alg *alg,
+-		       struct crypto_instance *inst,
+-		       const struct crypto_type *frontend)
+-{
+-	int err = -EINVAL;
+-
+-	if ((alg->cra_flags ^ frontend->type) & frontend->maskset)
+-		goto out;
+-
+-	spawn->frontend = frontend;
+-	err = crypto_init_spawn(spawn, alg, inst, frontend->maskset);
+-
+-out:
+-	return err;
+-}
+-EXPORT_SYMBOL_GPL(crypto_init_spawn2);
+-
+ int crypto_grab_spawn(struct crypto_spawn *spawn, struct crypto_instance *inst,
+ 		      const char *name, u32 type, u32 mask)
  {
- 	struct crypto_cipher *cipher;
- 	struct crypto_instance *inst = (void *)tfm->__crt_alg;
--	struct crypto_spawn *spawn = crypto_instance_ctx(inst);
-+	struct crypto_cipher_spawn *spawn = crypto_instance_ctx(inst);
- 	struct cmac_tfm_ctx *ctx = crypto_tfm_ctx(tfm);
+@@ -876,20 +859,6 @@ const char *crypto_attr_alg_name(struct rtattr *rta)
+ }
+ EXPORT_SYMBOL_GPL(crypto_attr_alg_name);
  
- 	cipher = crypto_spawn_cipher(spawn);
-diff --git a/crypto/skcipher.c b/crypto/skcipher.c
-index 0615fead1529..a1a3f47c98e1 100644
---- a/crypto/skcipher.c
-+++ b/crypto/skcipher.c
-@@ -902,7 +902,7 @@ static int skcipher_setkey_simple(struct crypto_skcipher *tfm, const u8 *key,
- static int skcipher_init_tfm_simple(struct crypto_skcipher *tfm)
+-struct crypto_alg *crypto_attr_alg2(struct rtattr *rta,
+-				    const struct crypto_type *frontend,
+-				    u32 type, u32 mask)
+-{
+-	const char *name;
+-
+-	name = crypto_attr_alg_name(rta);
+-	if (IS_ERR(name))
+-		return ERR_CAST(name);
+-
+-	return crypto_find_alg(name, frontend, type, mask);
+-}
+-EXPORT_SYMBOL_GPL(crypto_attr_alg2);
+-
+ int crypto_attr_u32(struct rtattr *rta, u32 *num)
  {
- 	struct skcipher_instance *inst = skcipher_alg_instance(tfm);
--	struct crypto_spawn *spawn = skcipher_instance_ctx(inst);
-+	struct crypto_cipher_spawn *spawn = skcipher_instance_ctx(inst);
- 	struct skcipher_ctx_simple *ctx = crypto_skcipher_ctx(tfm);
- 	struct crypto_cipher *cipher;
+ 	struct crypto_attr_u32 *nu32;
+@@ -923,32 +892,6 @@ int crypto_inst_setname(struct crypto_instance *inst, const char *name,
+ }
+ EXPORT_SYMBOL_GPL(crypto_inst_setname);
  
-diff --git a/crypto/vmac.c b/crypto/vmac.c
-index 73538224f9ab..5241b183f8df 100644
---- a/crypto/vmac.c
-+++ b/crypto/vmac.c
-@@ -598,7 +598,7 @@ static int vmac_final(struct shash_desc *desc, u8 *out)
- static int vmac_init_tfm(struct crypto_tfm *tfm)
+-void *crypto_alloc_instance(const char *name, struct crypto_alg *alg,
+-			    unsigned int head)
+-{
+-	struct crypto_instance *inst;
+-	char *p;
+-	int err;
+-
+-	p = kzalloc(head + sizeof(*inst) + sizeof(struct crypto_spawn),
+-		    GFP_KERNEL);
+-	if (!p)
+-		return ERR_PTR(-ENOMEM);
+-
+-	inst = (void *)(p + head);
+-
+-	err = crypto_inst_setname(inst, name, alg);
+-	if (err)
+-		goto err_free_inst;
+-
+-	return p;
+-
+-err_free_inst:
+-	kfree(p);
+-	return ERR_PTR(err);
+-}
+-EXPORT_SYMBOL_GPL(crypto_alloc_instance);
+-
+ void crypto_init_queue(struct crypto_queue *queue, unsigned int max_qlen)
  {
- 	struct crypto_instance *inst = crypto_tfm_alg_instance(tfm);
--	struct crypto_spawn *spawn = crypto_instance_ctx(inst);
-+	struct crypto_cipher_spawn *spawn = crypto_instance_ctx(inst);
- 	struct vmac_tfm_ctx *tctx = crypto_tfm_ctx(tfm);
- 	struct crypto_cipher *cipher;
+ 	INIT_LIST_HEAD(&queue->list);
+diff --git a/crypto/shash.c b/crypto/shash.c
+index e0872ac2729a..4d6ccb59e126 100644
+--- a/crypto/shash.c
++++ b/crypto/shash.c
+@@ -584,24 +584,5 @@ void shash_free_instance(struct crypto_instance *inst)
+ }
+ EXPORT_SYMBOL_GPL(shash_free_instance);
  
-diff --git a/crypto/xcbc.c b/crypto/xcbc.c
-index e35b2346cfb8..5fa700ab4387 100644
---- a/crypto/xcbc.c
-+++ b/crypto/xcbc.c
-@@ -167,7 +167,7 @@ static int xcbc_init_tfm(struct crypto_tfm *tfm)
- {
- 	struct crypto_cipher *cipher;
- 	struct crypto_instance *inst = (void *)tfm->__crt_alg;
--	struct crypto_spawn *spawn = crypto_instance_ctx(inst);
-+	struct crypto_cipher_spawn *spawn = crypto_instance_ctx(inst);
- 	struct xcbc_tfm_ctx *ctx = crypto_tfm_ctx(tfm);
- 
- 	cipher = crypto_spawn_cipher(spawn);
+-int crypto_init_shash_spawn(struct crypto_shash_spawn *spawn,
+-			    struct shash_alg *alg,
+-			    struct crypto_instance *inst)
+-{
+-	return crypto_init_spawn2(&spawn->base, &alg->base, inst,
+-				  &crypto_shash_type);
+-}
+-EXPORT_SYMBOL_GPL(crypto_init_shash_spawn);
+-
+-struct shash_alg *shash_attr_alg(struct rtattr *rta, u32 type, u32 mask)
+-{
+-	struct crypto_alg *alg;
+-
+-	alg = crypto_attr_alg2(rta, &crypto_shash_type, type, mask);
+-	return IS_ERR(alg) ? ERR_CAST(alg) :
+-	       container_of(alg, struct shash_alg, base);
+-}
+-EXPORT_SYMBOL_GPL(shash_attr_alg);
+-
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Synchronous cryptographic hash type");
 diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
-index aad3348f60d1..c7c028472e91 100644
+index c7c028472e91..8a43c55a1979 100644
 --- a/include/crypto/algapi.h
 +++ b/include/crypto/algapi.h
-@@ -228,12 +228,12 @@ static inline struct crypto_alg *crypto_spawn_cipher_alg(
+@@ -113,12 +113,8 @@ void crypto_unregister_instance(struct crypto_instance *inst);
+ 
+ int crypto_init_spawn(struct crypto_spawn *spawn, struct crypto_alg *alg,
+ 		      struct crypto_instance *inst, u32 mask);
+-int crypto_init_spawn2(struct crypto_spawn *spawn, struct crypto_alg *alg,
+-		       struct crypto_instance *inst,
+-		       const struct crypto_type *frontend);
+ int crypto_grab_spawn(struct crypto_spawn *spawn, struct crypto_instance *inst,
+ 		      const char *name, u32 type, u32 mask);
+-
+ void crypto_drop_spawn(struct crypto_spawn *spawn);
+ struct crypto_tfm *crypto_spawn_tfm(struct crypto_spawn *spawn, u32 type,
+ 				    u32 mask);
+@@ -127,21 +123,9 @@ void *crypto_spawn_tfm2(struct crypto_spawn *spawn);
+ struct crypto_attr_type *crypto_get_attr_type(struct rtattr **tb);
+ int crypto_check_attr_type(struct rtattr **tb, u32 type);
+ const char *crypto_attr_alg_name(struct rtattr *rta);
+-struct crypto_alg *crypto_attr_alg2(struct rtattr *rta,
+-				    const struct crypto_type *frontend,
+-				    u32 type, u32 mask);
+-
+-static inline struct crypto_alg *crypto_attr_alg(struct rtattr *rta,
+-						 u32 type, u32 mask)
+-{
+-	return crypto_attr_alg2(rta, NULL, type, mask);
+-}
+-
+ int crypto_attr_u32(struct rtattr *rta, u32 *num);
+ int crypto_inst_setname(struct crypto_instance *inst, const char *name,
+ 			struct crypto_alg *alg);
+-void *crypto_alloc_instance(const char *name, struct crypto_alg *alg,
+-			    unsigned int head);
+ 
+ void crypto_init_queue(struct crypto_queue *queue, unsigned int max_qlen);
+ int crypto_enqueue_request(struct crypto_queue *queue,
+@@ -248,12 +232,6 @@ static inline struct crypto_async_request *crypto_get_backlog(
+ 	       container_of(queue->backlog, struct crypto_async_request, list);
  }
  
- static inline struct crypto_cipher *crypto_spawn_cipher(
--	struct crypto_spawn *spawn)
-+	struct crypto_cipher_spawn *spawn)
+-static inline struct crypto_alg *crypto_get_attr_alg(struct rtattr **tb,
+-						     u32 type, u32 mask)
+-{
+-	return crypto_attr_alg(tb[1], type, mask);
+-}
+-
+ static inline int crypto_requires_off(u32 type, u32 mask, u32 off)
  {
- 	u32 type = CRYPTO_ALG_TYPE_CIPHER;
- 	u32 mask = CRYPTO_ALG_TYPE_MASK;
+ 	return (type ^ off) & mask & off;
+diff --git a/include/crypto/internal/hash.h b/include/crypto/internal/hash.h
+index e1024fa0032f..79e561abef61 100644
+--- a/include/crypto/internal/hash.h
++++ b/include/crypto/internal/hash.h
+@@ -87,7 +87,6 @@ int crypto_register_ahashes(struct ahash_alg *algs, int count);
+ void crypto_unregister_ahashes(struct ahash_alg *algs, int count);
+ int ahash_register_instance(struct crypto_template *tmpl,
+ 			    struct ahash_instance *inst);
+-void ahash_free_instance(struct crypto_instance *inst);
  
--	return __crypto_cipher_cast(crypto_spawn_tfm(spawn, type, mask));
-+	return __crypto_cipher_cast(crypto_spawn_tfm(&spawn->base, type, mask));
+ int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
+ 		    unsigned int keylen);
+@@ -105,10 +104,6 @@ static inline bool crypto_shash_alg_needs_key(struct shash_alg *alg)
+ 
+ bool crypto_hash_alg_has_setkey(struct hash_alg_common *halg);
+ 
+-int crypto_init_ahash_spawn(struct crypto_ahash_spawn *spawn,
+-			    struct hash_alg_common *alg,
+-			    struct crypto_instance *inst);
+-
+ int crypto_grab_ahash(struct crypto_ahash_spawn *spawn,
+ 		      struct crypto_instance *inst,
+ 		      const char *name, u32 type, u32 mask);
+@@ -124,8 +119,6 @@ static inline struct hash_alg_common *crypto_spawn_ahash_alg(
+ 	return __crypto_hash_alg_common(spawn->base.alg);
  }
  
- static inline struct cipher_alg *crypto_cipher_alg(struct crypto_cipher *tfm)
+-struct hash_alg_common *ahash_attr_alg(struct rtattr *rta, u32 type, u32 mask);
+-
+ int crypto_register_shash(struct shash_alg *alg);
+ void crypto_unregister_shash(struct shash_alg *alg);
+ int crypto_register_shashes(struct shash_alg *algs, int count);
+@@ -134,10 +127,6 @@ int shash_register_instance(struct crypto_template *tmpl,
+ 			    struct shash_instance *inst);
+ void shash_free_instance(struct crypto_instance *inst);
+ 
+-int crypto_init_shash_spawn(struct crypto_shash_spawn *spawn,
+-			    struct shash_alg *alg,
+-			    struct crypto_instance *inst);
+-
+ int crypto_grab_shash(struct crypto_shash_spawn *spawn,
+ 		      struct crypto_instance *inst,
+ 		      const char *name, u32 type, u32 mask);
+@@ -153,8 +142,6 @@ static inline struct shash_alg *crypto_spawn_shash_alg(
+ 	return __crypto_shash_alg(spawn->base.alg);
+ }
+ 
+-struct shash_alg *shash_attr_alg(struct rtattr *rta, u32 type, u32 mask);
+-
+ int shash_ahash_update(struct ahash_request *req, struct shash_desc *desc);
+ int shash_ahash_finup(struct ahash_request *req, struct shash_desc *desc);
+ int shash_ahash_digest(struct ahash_request *req, struct shash_desc *desc);
+@@ -195,17 +182,6 @@ static inline void *ahash_instance_ctx(struct ahash_instance *inst)
+ 	return crypto_instance_ctx(ahash_crypto_instance(inst));
+ }
+ 
+-static inline unsigned int ahash_instance_headroom(void)
+-{
+-	return sizeof(struct ahash_alg) - sizeof(struct crypto_alg);
+-}
+-
+-static inline struct ahash_instance *ahash_alloc_instance(
+-	const char *name, struct crypto_alg *alg)
+-{
+-	return crypto_alloc_instance(name, alg, ahash_instance_headroom());
+-}
+-
+ static inline void ahash_request_complete(struct ahash_request *req, int err)
+ {
+ 	req->base.complete(&req->base, err);
+@@ -262,13 +238,6 @@ static inline void *shash_instance_ctx(struct shash_instance *inst)
+ 	return crypto_instance_ctx(shash_crypto_instance(inst));
+ }
+ 
+-static inline struct shash_instance *shash_alloc_instance(
+-	const char *name, struct crypto_alg *alg)
+-{
+-	return crypto_alloc_instance(name, alg,
+-				     sizeof(struct shash_alg) - sizeof(*alg));
+-}
+-
+ static inline struct crypto_shash *crypto_spawn_shash(
+ 	struct crypto_shash_spawn *spawn)
+ {
 -- 
 2.24.1
 
