@@ -2,69 +2,179 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D429C12D5D3
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Dec 2019 03:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6AF612D5F1
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Dec 2019 04:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbfLaCn4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 30 Dec 2019 21:43:56 -0500
-Received: from sonic312-22.consmr.mail.bf2.yahoo.com ([74.6.128.84]:35531 "EHLO
-        sonic312-22.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725536AbfLaCn4 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 30 Dec 2019 21:43:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cs.com; s=a2048; t=1577760235; bh=nQBtscLoJHJZhW0nTrR2SuBCaRU/woc+YjXqdQWUO1o=; h=Subject:From:To:Date:References:From:Subject; b=sflk30V2kEGO73JwlghTeOrCRhF9aDbs9ffN+PDqVbCKHRH1mTwL09RtS+vkHujWtZ0a0RDrQmSyX7zr6bE+c9TdQVS8b6hEKLdfCa1O6Qkhlj2spG5z12vdpp22bswOCIA+JwadufeCVDTwwLdOlXmMqF4jSxHG1XdvaCRU4BtYu7VptjbglpYPpUMdRr2uFykoExS/7A3/P3QW1qET7FuxXl/278uoYdOkbKaA5ozV1ft9bZP7f5iG+X2fmyc8W1wiWyA6u9sClxPOY+QCT1gBo/62X0RW2OONeGzZpys7AWW0JKdfKUYbw8QV+jY5vu6MWDRn849xb0iiLBQXbQ==
-X-YMail-OSG: 9zNbt3cVM1krfDvsnNkJEe_45zHiYnRjCmWhQojyvivZ.TQ3J1_z8SDSI_1Uf3y
- biTU4gTKWn06K1u3Bm4C1IdTxedSk_IH0Euf2uxATHKTPlav2oUo.DAwKG3cP3NrF5s89JN4P9si
- EcRr0nqs63o2AlEKco_FexRA2smA5B52TNirlTQrpCOHUYo2PBJbe6oPkzonViGXig5LOmnh0ztY
- J4UiPiy9E.9cP0xVJ7FdLmOaZdOHfsYP1eRQBWR1aZ.WNmCkQtlSNEAKlK4kUVJ_1pCvnMAPXwv2
- 7cJCnT.CKzXpSL_i_osIBboJsd0Q3GjiWSI0dGMRxppBcqTzSnycpYhxrfD69m4OnnP7OsB63VLA
- Usng2p9TznhqkuzGMnj_oks6hUfaZG07EJ1LjfHhLVvl2o7TwU6bVjtXh76OB1IHD1czXcrKGo.F
- RM48FIlWRAdUfG5dmeeT2kTMhJvUWDRlfstl0Mte4hKQEboUSi4ooG9Kg.BIzRZwmxaqPtlBDtvl
- koazhLXE7EL_38eIjFSaqcuCISDLUmlO4KXJ725vsF2fbXn0.tivMpgwMn.e43PsZrC4zXUJid92
- bXdd8.R.uJ.FCRG0nLCg95Kj0LQEG4kLuVj3Nnhmr._MqUONVZtFQRCjLCEKdZtgz64Ab7q.sn_3
- 7M8ljSEpLMULZ8ALnbdaNgTeBz2mlPsWUcFgnhWZv2JjRaVMiMauCO_q2yZgghQQXqx0heAWoszh
- fRFGsDuRZW7nR6b1bir_BNFAv_usFvqm6bAArHcQOGO_M55GdM22wKrNBq59YEdoPq.cjlBMD214
- NUTutAnUxNu9UZ7OrhuZM7fr3OjqTCZRqO.1tmGhMGi0WrXWt1jSO2OqfjNknH2t_YomQYdidU4y
- 0SrStamwBw.3GzVu53Om_kgM3C4GkKDHxr15FA1pBaPst1n7qUzUwqEb7bNeSp2f.Cu3VanVxLzM
- MD98fMtAifJHk2BasfzLVspEPjyq6r6d5RjbSl1VUqJ81yUr2Y1JxDI64QG94quO2M3f_iFsJkZP
- g2EFwQXjBqHakxsPh2nVVacSmIqRyWNiDbw.Il3jzFTCGAPBiWVPdHNX8KbE3aKcUL_nWQJ1M3oh
- XwG7k.yEz_TxXNo_Wtyen7OHPriUZD25DAasxwnvxUiRcbIw_eVusWlIcDMAGBxXrlwziSD52uwI
- PnQXrlIG8EOLgO05EG7lIGiGR7I82fAebXbrU4wQJSnoLMWkwF8RS1RKkvzX3G7fyv58iCgApq6s
- M6YK_zffLo9L2RHI3Ojm0HsiFB_287a5U4Cvoe_cH2CftvNn5eIdK6bFZbooJ8S3VOJ53PLZN5i5
- pd3CEfQ1yROCxCcQzxmjCsMkSsaTVNcfigEyz9zc-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Tue, 31 Dec 2019 02:43:55 +0000
-Received: by smtp431.mail.gq1.yahoo.com (Oath Hermes SMTP Server) with ESMTPA ID de1393e8dd90e2abe4ad7ff02cd5c5f5;
-          Tue, 31 Dec 2019 02:43:52 +0000 (UTC)
-Message-ID: <2345369f0bf4169a1ec792545df7d409dd7fecd1.camel@cs.com>
-Subject: Hardware ANSI X9.31 PRNG, handling multiple context?
-From:   Richard van Schagen <vschagen@cs.com>
+        id S1726119AbfLaDUz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 Dec 2019 22:20:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725536AbfLaDUy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 30 Dec 2019 22:20:54 -0500
+Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CF5D2071E
+        for <linux-crypto@vger.kernel.org>; Tue, 31 Dec 2019 03:20:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577762453;
+        bh=hT4ZxWyjIBHp/Lyzd3mBCy2ed7TIVIiPlYkuIgE9F5I=;
+        h=From:To:Subject:Date:From;
+        b=XvKokCt12yKr8CB7Q9ZF/k30f3DGaaLmbrTrEDRXX2JDwO16ez82xbkePuPlwhwsM
+         9vWZSWDa6q5coaTNMOyfCGoKl2Ipz0sY5cHP+RkOTxEej+XLojSTeX5b97ak22F20N
+         Nv92hlJ4Gqm12NuoHwDwD34HYDYCOXG2oYsxIX9k=
+From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Date:   Tue, 31 Dec 2019 10:43:45 +0800
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+Subject: [PATCH 0/8] crypto: remove the CRYPTO_TFM_RES_* flags
+Date:   Mon, 30 Dec 2019 21:19:30 -0600
+Message-Id: <20191231031938.241705-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-References: <2345369f0bf4169a1ec792545df7d409dd7fecd1.camel.ref@cs.com>
-X-Mailer: WebService/1.1.14873 hermes Apache-HttpAsyncClient/4.1.4 (Java/1.8.0_181)
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-As part of my EIP93 crypto module I would like to implement the PRNG.
-This is intented to be used to automaticly insert an IV for IPSEC /
-full ESP processing, but can be used "just as PRNG" and its full ANSI
-X9.31 compliant.
+The CRYPTO_TFM_RES_* flags are pointless since they are never checked
+anywhere.  And it's not really possible for anyone to start using them
+without a lot of work, since many drivers aren't setting them or are
+setting them when they shouldn't.
 
-Looking over the code in "ansi_cprng.c" I can implement the none "FIPS"
-part since it doesnt require a reseed everytime. For full FIPS it needs
-to be seeded by the user which means if I do this in Hardware I can not
-"switch" seeds or reseed with another one from another context becasue
-that would not give the expected results.
+Also, if we ever actually need to start distinguishing ->setkey() errors
+better (which is somewhat unlikely, as it's been a long time with no one
+caring), we'd probably be much better off just using different return
+values, like -EINVAL if the key is invalid for the algorithm vs.
+-EKEYREJECTED if the key was rejected by a policy like "no weak keys".
+That would be much simpler, less error-prone, and easier to test.
 
-Is it acceptable to only implement "none-fips" and/or return an error
-(-EBUSY ?) when more than 1 call occurs to "cra_init" before the
-previous user called "cra_exit" ?
+So let's just remove these flags for now.  This gets rid of a lot of
+pointless boilerplate code.
 
-Richard
+Patches 6 and 8 are a bit large since they touch so many drivers, though
+the changes are straightforward and it would seem overkill to do this as
+a series of 70 separate patches.  But let me know if it's needed.
+
+Eric Biggers (8):
+  crypto: chelsio - fix writing tfm flags to wrong place
+  crypto: artpec6 - return correct error code for failed setkey()
+  crypto: atmel-sha - fix error handling when setting hmac key
+  crypto: remove unused tfm result flags
+  crypto: remove CRYPTO_TFM_RES_BAD_BLOCK_LEN
+  crypto: remove CRYPTO_TFM_RES_BAD_KEY_LEN
+  crypto: remove CRYPTO_TFM_RES_WEAK_KEY
+  crypto: remove propagation of CRYPTO_TFM_RES_* flags
+
+ arch/arm/crypto/aes-ce-glue.c                 | 14 +-----
+ arch/arm/crypto/crc32-ce-glue.c               |  4 +-
+ arch/arm/crypto/ghash-ce-glue.c               | 11 +---
+ arch/arm64/crypto/aes-ce-ccm-glue.c           |  8 +--
+ arch/arm64/crypto/aes-ce-glue.c               |  8 +--
+ arch/arm64/crypto/aes-glue.c                  | 31 ++----------
+ arch/arm64/crypto/ghash-ce-glue.c             |  8 +--
+ arch/mips/crypto/crc32-mips.c                 |  4 +-
+ arch/powerpc/crypto/aes-spe-glue.c            | 18 ++-----
+ arch/powerpc/crypto/crc32c-vpmsum_glue.c      |  4 +-
+ arch/s390/crypto/aes_s390.c                   | 27 ++--------
+ arch/s390/crypto/crc32-vx.c                   |  8 +--
+ arch/s390/crypto/ghash_s390.c                 |  4 +-
+ arch/s390/crypto/paes_s390.c                  | 25 +++-------
+ arch/sparc/crypto/aes_glue.c                  |  2 -
+ arch/sparc/crypto/camellia_glue.c             |  5 +-
+ arch/sparc/crypto/crc32c_glue.c               |  4 +-
+ arch/x86/crypto/aegis128-aesni-glue.c         |  4 +-
+ arch/x86/crypto/aesni-intel_glue.c            | 10 ++--
+ arch/x86/crypto/blake2s-glue.c                |  4 +-
+ arch/x86/crypto/camellia_aesni_avx2_glue.c    |  3 +-
+ arch/x86/crypto/camellia_aesni_avx_glue.c     |  9 ++--
+ arch/x86/crypto/camellia_glue.c               |  9 ++--
+ arch/x86/crypto/cast6_avx_glue.c              |  6 +--
+ arch/x86/crypto/crc32-pclmul_glue.c           |  4 +-
+ arch/x86/crypto/crc32c-intel_glue.c           |  4 +-
+ arch/x86/crypto/ghash-clmulni-intel_glue.c    | 11 +---
+ arch/x86/crypto/twofish_avx_glue.c            |  6 +--
+ arch/x86/include/asm/crypto/camellia.h        |  2 +-
+ crypto/adiantum.c                             |  8 ---
+ crypto/aegis128-core.c                        |  4 +-
+ crypto/aes_generic.c                          | 18 +++----
+ crypto/anubis.c                               |  2 -
+ crypto/authenc.c                              | 12 +----
+ crypto/authencesn.c                           | 12 +----
+ crypto/blake2b_generic.c                      |  4 +-
+ crypto/blake2s_generic.c                      |  4 +-
+ crypto/camellia_generic.c                     |  5 +-
+ crypto/cast6_generic.c                        | 10 ++--
+ crypto/ccm.c                                  | 20 ++------
+ crypto/chacha20poly1305.c                     |  7 +--
+ crypto/cipher.c                               |  5 +-
+ crypto/crc32_generic.c                        |  4 +-
+ crypto/crc32c_generic.c                       |  4 +-
+ crypto/cryptd.c                               | 13 +----
+ crypto/ctr.c                                  |  7 +--
+ crypto/cts.c                                  |  6 +--
+ crypto/des_generic.c                          | 10 +---
+ crypto/essiv.c                                | 26 ++--------
+ crypto/gcm.c                                  | 19 +------
+ crypto/ghash-generic.c                        |  4 +-
+ crypto/lrw.c                                  |  2 -
+ crypto/michael_mic.c                          |  4 +-
+ crypto/simd.c                                 | 12 +----
+ crypto/skcipher.c                             | 10 +---
+ crypto/sm4_generic.c                          | 16 ++----
+ crypto/twofish_common.c                       |  8 +--
+ crypto/vmac.c                                 |  4 +-
+ crypto/xts.c                                  |  8 +--
+ crypto/xxhash_generic.c                       |  4 +-
+ .../allwinner/sun4i-ss/sun4i-ss-cipher.c      |  1 -
+ .../allwinner/sun8i-ce/sun8i-ce-cipher.c      |  1 -
+ .../allwinner/sun8i-ss/sun8i-ss-cipher.c      |  2 -
+ drivers/crypto/amcc/crypto4xx_alg.c           | 31 ++----------
+ drivers/crypto/amlogic/amlogic-gxl-cipher.c   |  1 -
+ drivers/crypto/atmel-aes.c                    | 14 ++----
+ drivers/crypto/atmel-authenc.h                |  3 +-
+ drivers/crypto/atmel-sha.c                    | 18 ++-----
+ drivers/crypto/axis/artpec6_crypto.c          | 10 +---
+ drivers/crypto/bcm/cipher.c                   | 17 +------
+ drivers/crypto/caam/caamalg.c                 | 33 +++---------
+ drivers/crypto/caam/caamalg_qi.c              | 44 ++++------------
+ drivers/crypto/caam/caamalg_qi2.c             | 47 ++++-------------
+ drivers/crypto/caam/caamhash.c                |  9 +---
+ drivers/crypto/cavium/cpt/cptvf_algs.c        |  2 -
+ drivers/crypto/cavium/nitrox/nitrox_aead.c    |  4 +-
+ .../crypto/cavium/nitrox/nitrox_skcipher.c    | 12 ++---
+ drivers/crypto/ccp/ccp-crypto-aes-cmac.c      |  1 -
+ drivers/crypto/ccp/ccp-crypto-aes-galois.c    |  1 -
+ drivers/crypto/ccp/ccp-crypto-aes.c           |  1 -
+ drivers/crypto/ccp/ccp-crypto-sha.c           |  4 +-
+ drivers/crypto/ccree/cc_aead.c                | 21 +++-----
+ drivers/crypto/ccree/cc_cipher.c              |  4 --
+ drivers/crypto/ccree/cc_hash.c                |  6 ---
+ drivers/crypto/chelsio/chcr_algo.c            | 50 ++-----------------
+ drivers/crypto/geode-aes.c                    | 24 ++-------
+ .../crypto/inside-secure/safexcel_cipher.c    | 43 ++++------------
+ drivers/crypto/inside-secure/safexcel_hash.c  | 22 ++------
+ drivers/crypto/ixp4xx_crypto.c                | 31 ++----------
+ drivers/crypto/marvell/cipher.c               |  4 +-
+ drivers/crypto/mediatek/mtk-aes.c             |  4 --
+ drivers/crypto/mxs-dcp.c                      | 12 +----
+ drivers/crypto/n2_core.c                      |  1 -
+ drivers/crypto/padlock-aes.c                  |  9 +---
+ drivers/crypto/picoxcell_crypto.c             | 15 +-----
+ drivers/crypto/qat/qat_common/qat_algs.c      |  6 +--
+ drivers/crypto/qce/sha.c                      |  2 -
+ .../crypto/rockchip/rk3288_crypto_skcipher.c  |  4 +-
+ drivers/crypto/sahara.c                       |  9 +---
+ drivers/crypto/stm32/stm32-crc32.c            |  4 +-
+ drivers/crypto/talitos.c                      | 15 ++----
+ drivers/crypto/ux500/cryp/cryp_core.c         |  2 -
+ drivers/crypto/virtio/virtio_crypto_algs.c    |  8 +--
+ include/crypto/cast6.h                        |  3 +-
+ include/crypto/internal/des.h                 | 23 ++-------
+ include/crypto/twofish.h                      |  2 +-
+ include/crypto/xts.h                          | 19 ++-----
+ include/linux/crypto.h                        |  7 ---
+ 108 files changed, 218 insertions(+), 917 deletions(-)
+
+-- 
+2.24.1
 
