@@ -2,33 +2,35 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AF612D5F1
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Dec 2019 04:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFBA12D5EF
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Dec 2019 04:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726119AbfLaDUz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 30 Dec 2019 22:20:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59154 "EHLO mail.kernel.org"
+        id S1726302AbfLaDUy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 Dec 2019 22:20:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbfLaDUy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1725813AbfLaDUy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 30 Dec 2019 22:20:54 -0500
 Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CF5D2071E
+        by mail.kernel.org (Postfix) with ESMTPSA id 9ED7720722
         for <linux-crypto@vger.kernel.org>; Tue, 31 Dec 2019 03:20:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1577762453;
-        bh=hT4ZxWyjIBHp/Lyzd3mBCy2ed7TIVIiPlYkuIgE9F5I=;
-        h=From:To:Subject:Date:From;
-        b=XvKokCt12yKr8CB7Q9ZF/k30f3DGaaLmbrTrEDRXX2JDwO16ez82xbkePuPlwhwsM
-         9vWZSWDa6q5coaTNMOyfCGoKl2Ipz0sY5cHP+RkOTxEej+XLojSTeX5b97ak22F20N
-         Nv92hlJ4Gqm12NuoHwDwD34HYDYCOXG2oYsxIX9k=
+        bh=uaXBP7mExZ7SBeZdWOjWrbs+yabYfi8TrplvLc4ha8A=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=RNGtZzhPJvE30J3PuRLrXl92JHSFcCFLtuwDGX0F6dolxb9ULQaAsVBGlR1fI5WAE
+         tVp+IkZ8DJ2YJA5qvm+ZBhTQ2kF0MzVcbe1U/+l0iMWuthkmrzy6atU5Lk7Zt4E8GS
+         ka1KvyBYdvGwfazLuIhuzaR+saGD+QUaqiSa8HYM=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 0/8] crypto: remove the CRYPTO_TFM_RES_* flags
-Date:   Mon, 30 Dec 2019 21:19:30 -0600
-Message-Id: <20191231031938.241705-1-ebiggers@kernel.org>
+Subject: [PATCH 1/8] crypto: chelsio - fix writing tfm flags to wrong place
+Date:   Mon, 30 Dec 2019 21:19:31 -0600
+Message-Id: <20191231031938.241705-2-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20191231031938.241705-1-ebiggers@kernel.org>
+References: <20191231031938.241705-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
@@ -36,145 +38,90 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The CRYPTO_TFM_RES_* flags are pointless since they are never checked
-anywhere.  And it's not really possible for anyone to start using them
-without a lot of work, since many drivers aren't setting them or are
-setting them when they shouldn't.
+From: Eric Biggers <ebiggers@google.com>
 
-Also, if we ever actually need to start distinguishing ->setkey() errors
-better (which is somewhat unlikely, as it's been a long time with no one
-caring), we'd probably be much better off just using different return
-values, like -EINVAL if the key is invalid for the algorithm vs.
--EKEYREJECTED if the key was rejected by a policy like "no weak keys".
-That would be much simpler, less error-prone, and easier to test.
+The chelsio crypto driver is casting 'struct crypto_aead' directly to
+'struct crypto_tfm', which is incorrect because the crypto_tfm isn't the
+first field of 'struct crypto_aead'.  Consequently, the calls to
+crypto_tfm_set_flags() are modifying some other field in the struct.
 
-So let's just remove these flags for now.  This gets rid of a lot of
-pointless boilerplate code.
+Also, the driver is setting CRYPTO_TFM_RES_BAD_KEY_LEN in
+->setauthsize(), not just in ->setkey().  This is incorrect since this
+flag is for bad key lengths, not for bad authentication tag lengths.
 
-Patches 6 and 8 are a bit large since they touch so many drivers, though
-the changes are straightforward and it would seem overkill to do this as
-a series of 70 separate patches.  But let me know if it's needed.
+Fix these bugs by removing the broken crypto_tfm_set_flags() calls from
+->setauthsize() and by fixing them in ->setkey().
 
-Eric Biggers (8):
-  crypto: chelsio - fix writing tfm flags to wrong place
-  crypto: artpec6 - return correct error code for failed setkey()
-  crypto: atmel-sha - fix error handling when setting hmac key
-  crypto: remove unused tfm result flags
-  crypto: remove CRYPTO_TFM_RES_BAD_BLOCK_LEN
-  crypto: remove CRYPTO_TFM_RES_BAD_KEY_LEN
-  crypto: remove CRYPTO_TFM_RES_WEAK_KEY
-  crypto: remove propagation of CRYPTO_TFM_RES_* flags
+Fixes: 324429d74127 ("chcr: Support for Chelsio's Crypto Hardware")
+Cc: <stable@vger.kernel.org> # v4.9+
+Cc: Atul Gupta <atul.gupta@chelsio.com>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ drivers/crypto/chelsio/chcr_algo.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
- arch/arm/crypto/aes-ce-glue.c                 | 14 +-----
- arch/arm/crypto/crc32-ce-glue.c               |  4 +-
- arch/arm/crypto/ghash-ce-glue.c               | 11 +---
- arch/arm64/crypto/aes-ce-ccm-glue.c           |  8 +--
- arch/arm64/crypto/aes-ce-glue.c               |  8 +--
- arch/arm64/crypto/aes-glue.c                  | 31 ++----------
- arch/arm64/crypto/ghash-ce-glue.c             |  8 +--
- arch/mips/crypto/crc32-mips.c                 |  4 +-
- arch/powerpc/crypto/aes-spe-glue.c            | 18 ++-----
- arch/powerpc/crypto/crc32c-vpmsum_glue.c      |  4 +-
- arch/s390/crypto/aes_s390.c                   | 27 ++--------
- arch/s390/crypto/crc32-vx.c                   |  8 +--
- arch/s390/crypto/ghash_s390.c                 |  4 +-
- arch/s390/crypto/paes_s390.c                  | 25 +++-------
- arch/sparc/crypto/aes_glue.c                  |  2 -
- arch/sparc/crypto/camellia_glue.c             |  5 +-
- arch/sparc/crypto/crc32c_glue.c               |  4 +-
- arch/x86/crypto/aegis128-aesni-glue.c         |  4 +-
- arch/x86/crypto/aesni-intel_glue.c            | 10 ++--
- arch/x86/crypto/blake2s-glue.c                |  4 +-
- arch/x86/crypto/camellia_aesni_avx2_glue.c    |  3 +-
- arch/x86/crypto/camellia_aesni_avx_glue.c     |  9 ++--
- arch/x86/crypto/camellia_glue.c               |  9 ++--
- arch/x86/crypto/cast6_avx_glue.c              |  6 +--
- arch/x86/crypto/crc32-pclmul_glue.c           |  4 +-
- arch/x86/crypto/crc32c-intel_glue.c           |  4 +-
- arch/x86/crypto/ghash-clmulni-intel_glue.c    | 11 +---
- arch/x86/crypto/twofish_avx_glue.c            |  6 +--
- arch/x86/include/asm/crypto/camellia.h        |  2 +-
- crypto/adiantum.c                             |  8 ---
- crypto/aegis128-core.c                        |  4 +-
- crypto/aes_generic.c                          | 18 +++----
- crypto/anubis.c                               |  2 -
- crypto/authenc.c                              | 12 +----
- crypto/authencesn.c                           | 12 +----
- crypto/blake2b_generic.c                      |  4 +-
- crypto/blake2s_generic.c                      |  4 +-
- crypto/camellia_generic.c                     |  5 +-
- crypto/cast6_generic.c                        | 10 ++--
- crypto/ccm.c                                  | 20 ++------
- crypto/chacha20poly1305.c                     |  7 +--
- crypto/cipher.c                               |  5 +-
- crypto/crc32_generic.c                        |  4 +-
- crypto/crc32c_generic.c                       |  4 +-
- crypto/cryptd.c                               | 13 +----
- crypto/ctr.c                                  |  7 +--
- crypto/cts.c                                  |  6 +--
- crypto/des_generic.c                          | 10 +---
- crypto/essiv.c                                | 26 ++--------
- crypto/gcm.c                                  | 19 +------
- crypto/ghash-generic.c                        |  4 +-
- crypto/lrw.c                                  |  2 -
- crypto/michael_mic.c                          |  4 +-
- crypto/simd.c                                 | 12 +----
- crypto/skcipher.c                             | 10 +---
- crypto/sm4_generic.c                          | 16 ++----
- crypto/twofish_common.c                       |  8 +--
- crypto/vmac.c                                 |  4 +-
- crypto/xts.c                                  |  8 +--
- crypto/xxhash_generic.c                       |  4 +-
- .../allwinner/sun4i-ss/sun4i-ss-cipher.c      |  1 -
- .../allwinner/sun8i-ce/sun8i-ce-cipher.c      |  1 -
- .../allwinner/sun8i-ss/sun8i-ss-cipher.c      |  2 -
- drivers/crypto/amcc/crypto4xx_alg.c           | 31 ++----------
- drivers/crypto/amlogic/amlogic-gxl-cipher.c   |  1 -
- drivers/crypto/atmel-aes.c                    | 14 ++----
- drivers/crypto/atmel-authenc.h                |  3 +-
- drivers/crypto/atmel-sha.c                    | 18 ++-----
- drivers/crypto/axis/artpec6_crypto.c          | 10 +---
- drivers/crypto/bcm/cipher.c                   | 17 +------
- drivers/crypto/caam/caamalg.c                 | 33 +++---------
- drivers/crypto/caam/caamalg_qi.c              | 44 ++++------------
- drivers/crypto/caam/caamalg_qi2.c             | 47 ++++-------------
- drivers/crypto/caam/caamhash.c                |  9 +---
- drivers/crypto/cavium/cpt/cptvf_algs.c        |  2 -
- drivers/crypto/cavium/nitrox/nitrox_aead.c    |  4 +-
- .../crypto/cavium/nitrox/nitrox_skcipher.c    | 12 ++---
- drivers/crypto/ccp/ccp-crypto-aes-cmac.c      |  1 -
- drivers/crypto/ccp/ccp-crypto-aes-galois.c    |  1 -
- drivers/crypto/ccp/ccp-crypto-aes.c           |  1 -
- drivers/crypto/ccp/ccp-crypto-sha.c           |  4 +-
- drivers/crypto/ccree/cc_aead.c                | 21 +++-----
- drivers/crypto/ccree/cc_cipher.c              |  4 --
- drivers/crypto/ccree/cc_hash.c                |  6 ---
- drivers/crypto/chelsio/chcr_algo.c            | 50 ++-----------------
- drivers/crypto/geode-aes.c                    | 24 ++-------
- .../crypto/inside-secure/safexcel_cipher.c    | 43 ++++------------
- drivers/crypto/inside-secure/safexcel_hash.c  | 22 ++------
- drivers/crypto/ixp4xx_crypto.c                | 31 ++----------
- drivers/crypto/marvell/cipher.c               |  4 +-
- drivers/crypto/mediatek/mtk-aes.c             |  4 --
- drivers/crypto/mxs-dcp.c                      | 12 +----
- drivers/crypto/n2_core.c                      |  1 -
- drivers/crypto/padlock-aes.c                  |  9 +---
- drivers/crypto/picoxcell_crypto.c             | 15 +-----
- drivers/crypto/qat/qat_common/qat_algs.c      |  6 +--
- drivers/crypto/qce/sha.c                      |  2 -
- .../crypto/rockchip/rk3288_crypto_skcipher.c  |  4 +-
- drivers/crypto/sahara.c                       |  9 +---
- drivers/crypto/stm32/stm32-crc32.c            |  4 +-
- drivers/crypto/talitos.c                      | 15 ++----
- drivers/crypto/ux500/cryp/cryp_core.c         |  2 -
- drivers/crypto/virtio/virtio_crypto_algs.c    |  8 +--
- include/crypto/cast6.h                        |  3 +-
- include/crypto/internal/des.h                 | 23 ++-------
- include/crypto/twofish.h                      |  2 +-
- include/crypto/xts.h                          | 19 ++-----
- include/linux/crypto.h                        |  7 ---
- 108 files changed, 218 insertions(+), 917 deletions(-)
-
+diff --git a/drivers/crypto/chelsio/chcr_algo.c b/drivers/crypto/chelsio/chcr_algo.c
+index 586dbc69d0cd..5b7dbe7cdb17 100644
+--- a/drivers/crypto/chelsio/chcr_algo.c
++++ b/drivers/crypto/chelsio/chcr_algo.c
+@@ -3196,9 +3196,6 @@ static int chcr_gcm_setauthsize(struct crypto_aead *tfm, unsigned int authsize)
+ 		aeadctx->mayverify = VERIFY_SW;
+ 		break;
+ 	default:
+-
+-		  crypto_tfm_set_flags((struct crypto_tfm *) tfm,
+-			CRYPTO_TFM_RES_BAD_KEY_LEN);
+ 		return -EINVAL;
+ 	}
+ 	return crypto_aead_setauthsize(aeadctx->sw_cipher, authsize);
+@@ -3223,8 +3220,6 @@ static int chcr_4106_4309_setauthsize(struct crypto_aead *tfm,
+ 		aeadctx->mayverify = VERIFY_HW;
+ 		break;
+ 	default:
+-		crypto_tfm_set_flags((struct crypto_tfm *)tfm,
+-				     CRYPTO_TFM_RES_BAD_KEY_LEN);
+ 		return -EINVAL;
+ 	}
+ 	return crypto_aead_setauthsize(aeadctx->sw_cipher, authsize);
+@@ -3265,8 +3260,6 @@ static int chcr_ccm_setauthsize(struct crypto_aead *tfm,
+ 		aeadctx->mayverify = VERIFY_HW;
+ 		break;
+ 	default:
+-		crypto_tfm_set_flags((struct crypto_tfm *)tfm,
+-				     CRYPTO_TFM_RES_BAD_KEY_LEN);
+ 		return -EINVAL;
+ 	}
+ 	return crypto_aead_setauthsize(aeadctx->sw_cipher, authsize);
+@@ -3291,8 +3284,7 @@ static int chcr_ccm_common_setkey(struct crypto_aead *aead,
+ 		ck_size = CHCR_KEYCTX_CIPHER_KEY_SIZE_256;
+ 		mk_size = CHCR_KEYCTX_MAC_KEY_SIZE_256;
+ 	} else {
+-		crypto_tfm_set_flags((struct crypto_tfm *)aead,
+-				     CRYPTO_TFM_RES_BAD_KEY_LEN);
++		crypto_aead_set_flags(aead, CRYPTO_TFM_RES_BAD_KEY_LEN);
+ 		aeadctx->enckey_len = 0;
+ 		return	-EINVAL;
+ 	}
+@@ -3330,8 +3322,7 @@ static int chcr_aead_rfc4309_setkey(struct crypto_aead *aead, const u8 *key,
+ 	int error;
+ 
+ 	if (keylen < 3) {
+-		crypto_tfm_set_flags((struct crypto_tfm *)aead,
+-				     CRYPTO_TFM_RES_BAD_KEY_LEN);
++		crypto_aead_set_flags(aead, CRYPTO_TFM_RES_BAD_KEY_LEN);
+ 		aeadctx->enckey_len = 0;
+ 		return	-EINVAL;
+ 	}
+@@ -3381,8 +3372,7 @@ static int chcr_gcm_setkey(struct crypto_aead *aead, const u8 *key,
+ 	} else if (keylen == AES_KEYSIZE_256) {
+ 		ck_size = CHCR_KEYCTX_CIPHER_KEY_SIZE_256;
+ 	} else {
+-		crypto_tfm_set_flags((struct crypto_tfm *)aead,
+-				     CRYPTO_TFM_RES_BAD_KEY_LEN);
++		crypto_aead_set_flags(aead, CRYPTO_TFM_RES_BAD_KEY_LEN);
+ 		pr_err("GCM: Invalid key length %d\n", keylen);
+ 		ret = -EINVAL;
+ 		goto out;
 -- 
 2.24.1
 
