@@ -2,111 +2,158 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6A412DFCD
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jan 2020 18:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F91D12E0CF
+	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jan 2020 23:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727234AbgAARuR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 1 Jan 2020 12:50:17 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:44473 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727259AbgAARuP (ORCPT
+        id S1727386AbgAAW1I (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 1 Jan 2020 17:27:08 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:36017 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727354AbgAAW1G (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 1 Jan 2020 12:50:15 -0500
-Received: by mail-wr1-f68.google.com with SMTP id q10so37371051wrm.11
-        for <linux-crypto@vger.kernel.org>; Wed, 01 Jan 2020 09:50:14 -0800 (PST)
+        Wed, 1 Jan 2020 17:27:06 -0500
+Received: by mail-wm1-f68.google.com with SMTP id p17so4288713wma.1
+        for <linux-crypto@vger.kernel.org>; Wed, 01 Jan 2020 14:27:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=No6+pF/29hbexfyxLIzSLoDPs3T39QBZzwsgULMLjzI=;
-        b=NXurigMwYAQN2BXM6VE1oNj59pJfcDf/GmwRuLupHEIrV3Fb9IKI1Jibo7AC/IN0xt
-         gLz5S7HZCZxFNpxkwx/W19965ayR3mAbUXbXkTC0QY5RjSM56QyQpbb2zXbRMf1BLE9h
-         7lOkj89n6yrb1g7sYGMj3hO6FhJt8SCllSEmk=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jprVQvXZ+BpbUQdZ3A28S+PaCcv4bL/lHMm7bf3Dozg=;
+        b=iE/VxUdzUhYcmD+7wG8899EJ3NSiQEbDt+Z2kbUNaiHxXl8EGvCrVBxVUuxfUbtc5T
+         sQ0KYB+QY49poylgdtwGg7qfDhle9WmUNpO82hxBwq+7SIKPMgIN3iq5UbHCYvqEqbi2
+         pBhuwOqkFntcxo5GCzwvGUned1BMT3WpAJatgWOb0y15cdRVNCpcA3/Rtz26KPep9/L5
+         eEgWUqfU9jzAwSt/jZsg/BZhjqsswd5Apl0LpTXz3jNzWPlcSbDBl/LR9cgYqwmMKGp0
+         5Tx+fe1NzsNMUaV2i3U+ix7u+wGaEmblCA5Pws1kkUIr9PZwM4QSY8QQ36sRqC7Aabt4
+         OS5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=No6+pF/29hbexfyxLIzSLoDPs3T39QBZzwsgULMLjzI=;
-        b=Ba9CJvzW48cVpRoytKFOA3yWa+jOrDyiK5bTEmkiaMMNBeRy+4N7HGTdvZ6KvJL3gL
-         0f3oDlfBfVVgLUq9TTKF70dBwQ7aOEhhw4UgPEfGfWEj7/cOLh0n4mnSnnFKqtWoL408
-         23x5KYWT87dMifj46jMPrLMvwKQB3GnP/B+SxjA+xR/826jGGA9PXx4QWV1fhyWAEydD
-         I9IRkv5x0PKKrdEONzjaicANcX7Gy4OFHBliPmGYfZkYQmZdz1io3jiBe7YKReQ8EwjL
-         iLmmLKquBlfTj1uaw32BKSICB+kjUaBpIk+Eza4HtzBZnUnfG1J2iiNdZ51xYF9GJrL1
-         3xEw==
-X-Gm-Message-State: APjAAAUKlHDo+VqZGU7gIalPyaVRyt0kZ494xFqsLqyp90O1daxRxMrs
-        +6AIzSbUwKfNqg+N0rWOGSUmXQ==
-X-Google-Smtp-Source: APXvYqyHk5wszacOXxFJy13iANAkqZjsEnRI8ddi99VniJ5LfU8EKyJIi6TsS/cwaTsfA3cedckmEw==
-X-Received: by 2002:a5d:480b:: with SMTP id l11mr36319687wrq.129.1577901014081;
-        Wed, 01 Jan 2020 09:50:14 -0800 (PST)
-Received: from panicking.lan (93-46-124-24.ip107.fastwebnet.it. [93.46.124.24])
-        by smtp.gmail.com with ESMTPSA id r15sm6025085wmh.21.2020.01.01.09.50.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jprVQvXZ+BpbUQdZ3A28S+PaCcv4bL/lHMm7bf3Dozg=;
+        b=RFDuO9exu9bwK4PZqtO8c0eDX94Bclm2i0b+UCeQ5GkgkHh6Iwe3pLvQ5pPFhKnfjA
+         RwjoH+8UzUMPUuY2yOpx0wOYpeWaDC32RFMBCE5TGch74cHgDLzZb71noRmuwzuT+DNw
+         vzKxdFOKw/FFL0/DhSf84tiktUtAXbT7jqwwhJ0V+sZN1fiR/+HjzY9vTEwxjJ83OVCI
+         eF35zioQt5JtbidneefZwltCuMQndkdDmtvqNO6cwy/TkQnck1EmVWkPLJjE9Noyedmd
+         w7rtKoB38OHwx075YA4PEBHJOYoVzANpTWdfvJo+bDw7JLV5mfXXTHzNdSPrDajrhwv3
+         jL7Q==
+X-Gm-Message-State: APjAAAUc9+zu39wTEGOTtVKNFTt/juexiGptAu/EVlilSnIqlWUO6Jf0
+        /P/vqiwomBnfC7AzeKvDHZSccPtF
+X-Google-Smtp-Source: APXvYqyQ7Zy0v5TFEi65vpIxdF2u833Cg3A1U1nVzkgMII6ACIHSsXmzUTzK0/uqsPqCr3eVbAJpLQ==
+X-Received: by 2002:a05:600c:118a:: with SMTP id i10mr10606383wmf.142.1577917624407;
+        Wed, 01 Jan 2020 14:27:04 -0800 (PST)
+Received: from debian64.daheim (pD9E29458.dip0.t-ipconnect.de. [217.226.148.88])
+        by smtp.gmail.com with ESMTPSA id e18sm53718406wrr.95.2020.01.01.14.27.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jan 2020 09:50:13 -0800 (PST)
-From:   Michael Trimarchi <michael@amarulasolutions.com>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-amarula@amarulasolutions.com,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH 2/2] crypto: caam - add clock entry for i.MX8MM
-Date:   Wed,  1 Jan 2020 18:50:11 +0100
-Message-Id: <20200101175011.1875-2-michael@amarulasolutions.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200101175011.1875-1-michael@amarulasolutions.com>
-References: <20200101175011.1875-1-michael@amarulasolutions.com>
+        Wed, 01 Jan 2020 14:27:03 -0800 (PST)
+Received: from chuck by debian64.daheim with local (Exim 4.93)
+        (envelope-from <chunkeey@gmail.com>)
+        id 1immSE-002BvY-Jn; Wed, 01 Jan 2020 23:27:02 +0100
+From:   Christian Lamparter <chunkeey@gmail.com>
+To:     linux-crypto@vger.kernel.org
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 1/2] crypto: crypto4xx - reduce memory fragmentation
+Date:   Wed,  1 Jan 2020 23:27:01 +0100
+Message-Id: <3913dbe4b3256ead342572f7aba726a60ab5fd43.1577917078.git.chunkeey@gmail.com>
+X-Mailer: git-send-email 2.25.0.rc0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add clock entry needed to support i.MX8MM.
+With recent kernels (>5.2), the driver fails to probe, as the
+allocation of the driver's scatter buffer fails with -ENOMEM.
 
-[    1.040682] caam 30900000.crypto: Entropy delay = 3200
-[    1.045935] caam 30900000.crypto: Entropy delay = 3600
-[    1.118813] caam 30900000.crypto: Instantiated RNG4 SH0
-[    1.186476] caam 30900000.crypto: Instantiated RNG4 SH1
-[    1.191726] caam 30900000.crypto: device ID = 0x0a16040100000000 (Era 9)
-[    1.198434] caam 30900000.crypto: job rings = 3, qi = 0
-[    1.222717] caam algorithms registered in /proc/crypto
-[    1.231297] caam 30900000.crypto: caam pkc algorithms registered in /proc/crypto
+This happens in crypto4xx_build_sdr(). Where the driver tries
+to get 512KiB (=PPC4XX_SD_BUFFER_SIZE * PPC4XX_NUM_SD) of
+continuous memory. This big chunk is by design, since the driver
+uses this circumstance in the crypto4xx_copy_pkt_to_dst() to
+its advantage:
+"all scatter-buffers are all neatly organized in one big
+continuous ringbuffer; So scatterwalk_map_and_copy() can be
+instructed to copy a range of buffers in one go."
 
-Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+The PowerPC arch does not have support for DMA_CMA. Hence,
+this patch reorganizes the order in which the memory
+allocations are done. Since the driver itself is responsible
+for some of the issues.
+
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
 ---
- drivers/crypto/caam/ctrl.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/crypto/amcc/crypto4xx_core.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
-index d7c3c3805693..ab8df3b550a7 100644
---- a/drivers/crypto/caam/ctrl.c
-+++ b/drivers/crypto/caam/ctrl.c
-@@ -99,10 +99,11 @@ static inline int run_descriptor_deco0(struct device *ctrldev, u32 *desc,
+diff --git a/drivers/crypto/amcc/crypto4xx_core.c b/drivers/crypto/amcc/crypto4xx_core.c
+index 7d6b695c4ab3..3ce5f0a24cbc 100644
+--- a/drivers/crypto/amcc/crypto4xx_core.c
++++ b/drivers/crypto/amcc/crypto4xx_core.c
+@@ -286,7 +286,8 @@ static u32 crypto4xx_build_gdr(struct crypto4xx_device *dev)
  
- 	if (ctrlpriv->virt_en == 1 ||
- 	    /*
--	     * Apparently on i.MX8MQ it doesn't matter if virt_en == 1
-+	     * Apparently on i.MX8MQ and i.MX8MM it doesn't matter if virt_en == 1
- 	     * and the following steps should be performed regardless
- 	     */
--	    of_machine_is_compatible("fsl,imx8mq")) {
-+	    of_machine_is_compatible("fsl,imx8mq") ||
-+	    of_machine_is_compatible("fsl,imx8mm")) {
- 		clrsetbits_32(&ctrl->deco_rsr, 0, DECORSR_JR0);
+ static inline void crypto4xx_destroy_gdr(struct crypto4xx_device *dev)
+ {
+-	dma_free_coherent(dev->core_dev->device,
++	if (dev->gdr)
++		dma_free_coherent(dev->core_dev->device,
+ 			  sizeof(struct ce_gd) * PPC4XX_NUM_GD,
+ 			  dev->gdr, dev->gdr_pa);
+ }
+@@ -354,13 +355,6 @@ static u32 crypto4xx_build_sdr(struct crypto4xx_device *dev)
+ {
+ 	int i;
  
- 		while (!(rd_reg32(&ctrl->deco_rsr) & DECORSR_VALID) &&
-@@ -509,6 +510,7 @@ static const struct soc_device_attribute caam_imx_soc_table[] = {
- 	{ .soc_id = "i.MX6*",  .data = &caam_imx6_data },
- 	{ .soc_id = "i.MX7*",  .data = &caam_imx7_data },
- 	{ .soc_id = "i.MX8MQ", .data = &caam_imx7_data },
-+	{ .soc_id = "i.MX8MM", .data = &caam_imx7_data },
- 	{ .family = "Freescale i.MX" },
- 	{ /* sentinel */ }
- };
+-	/* alloc memory for scatter descriptor ring */
+-	dev->sdr = dma_alloc_coherent(dev->core_dev->device,
+-				      sizeof(struct ce_sd) * PPC4XX_NUM_SD,
+-				      &dev->sdr_pa, GFP_ATOMIC);
+-	if (!dev->sdr)
+-		return -ENOMEM;
+-
+ 	dev->scatter_buffer_va =
+ 		dma_alloc_coherent(dev->core_dev->device,
+ 			PPC4XX_SD_BUFFER_SIZE * PPC4XX_NUM_SD,
+@@ -368,6 +362,13 @@ static u32 crypto4xx_build_sdr(struct crypto4xx_device *dev)
+ 	if (!dev->scatter_buffer_va)
+ 		return -ENOMEM;
+ 
++	/* alloc memory for scatter descriptor ring */
++	dev->sdr = dma_alloc_coherent(dev->core_dev->device,
++				      sizeof(struct ce_sd) * PPC4XX_NUM_SD,
++				      &dev->sdr_pa, GFP_ATOMIC);
++	if (!dev->sdr)
++		return -ENOMEM;
++
+ 	for (i = 0; i < PPC4XX_NUM_SD; i++) {
+ 		dev->sdr[i].ptr = dev->scatter_buffer_pa +
+ 				  PPC4XX_SD_BUFFER_SIZE * i;
+@@ -1439,15 +1440,14 @@ static int crypto4xx_probe(struct platform_device *ofdev)
+ 	spin_lock_init(&core_dev->lock);
+ 	INIT_LIST_HEAD(&core_dev->dev->alg_list);
+ 	ratelimit_default_init(&core_dev->dev->aead_ratelimit);
++	rc = crypto4xx_build_sdr(core_dev->dev);
++	if (rc)
++		goto err_build_sdr;
+ 	rc = crypto4xx_build_pdr(core_dev->dev);
+ 	if (rc)
+-		goto err_build_pdr;
++		goto err_build_sdr;
+ 
+ 	rc = crypto4xx_build_gdr(core_dev->dev);
+-	if (rc)
+-		goto err_build_pdr;
+-
+-	rc = crypto4xx_build_sdr(core_dev->dev);
+ 	if (rc)
+ 		goto err_build_sdr;
+ 
+@@ -1493,7 +1493,6 @@ static int crypto4xx_probe(struct platform_device *ofdev)
+ err_build_sdr:
+ 	crypto4xx_destroy_sdr(core_dev->dev);
+ 	crypto4xx_destroy_gdr(core_dev->dev);
+-err_build_pdr:
+ 	crypto4xx_destroy_pdr(core_dev->dev);
+ 	kfree(core_dev->dev);
+ err_alloc_dev:
 -- 
-2.17.1
+2.25.0.rc0
 
