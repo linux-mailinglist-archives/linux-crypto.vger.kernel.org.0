@@ -2,132 +2,136 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD1A12E0CE
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jan 2020 23:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 465FE12E0D5
+	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jan 2020 23:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727290AbgAAW1H (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 1 Jan 2020 17:27:07 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:35706 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727386AbgAAW1G (ORCPT
+        id S1727397AbgAAWli (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 1 Jan 2020 17:41:38 -0500
+Received: from mail-io1-f66.google.com ([209.85.166.66]:39585 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727312AbgAAWli (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 1 Jan 2020 17:27:06 -0500
-Received: by mail-wr1-f67.google.com with SMTP id g17so37722576wro.2
-        for <linux-crypto@vger.kernel.org>; Wed, 01 Jan 2020 14:27:05 -0800 (PST)
+        Wed, 1 Jan 2020 17:41:38 -0500
+Received: by mail-io1-f66.google.com with SMTP id c16so6968185ioh.6;
+        Wed, 01 Jan 2020 14:41:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=V1GBEWPALyPtkudgT7c9kG+j18MpNg7++otpEJyv+Jo=;
-        b=iVniOg00mjx0HNZQhza/dTTt4tpoXNH7CD/VKzEvBHudXOuV+SHLRLDYHfZ2wU+XAF
-         jEGDxxyMS4cgQcTOxhGiIwhKqg4cDhIMMfd/GSSCHLHYO2v1zKYLPG9q+HHpH6+2cwQJ
-         5qgjZwQOrydiY/pJfSSgCN+x2EznRpbH3+W3wRfQDSO4kkVOb/N84/+xImIhuATec+qC
-         lfikg6rzS6TCEOplx25WrQybImeZFYr7Ps3eWPnGojtTY5vMNCjlybhSiK7Ea9bqpxMb
-         0n7Ay8U52uapAwN49DS1X15nU6De3OAOl0LyQ4cIiEgz+TQJWt+7RzKigz0BPIVKfmSo
-         t9kw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=onn2kaRu8qHeOZCfu0hDViiisLBTz+9+t6L3wfr8DUc=;
+        b=WLwZN7rfzNDtuKGgQ50YNh1Ptb/5IhKEp1Ugg02orWYHliwrTp4i/WpQ84fPfF/xd6
+         HM28dUtBsh3qdRrHED54HHve30uwQRjzAe9yPyuiHswRNxuaLNasjUrBpVs9tk9EBfwp
+         JGNrtrxVQC0xnUYd7rfBigqkyE8j8CPivvX8tvU4R1Q3l0SXHqq8rBRqTEYWYfeLHDyW
+         Hf2wsq6S6sqTNlIQXmmRKJHkdJ4ohYqwcB57i8ZBIBpVkOPQGsqazsTeMuGysznyc6wf
+         +I03Lm49PgF63eQ1zzwAsRR2WSYiFbASOunR6KjsX90hy2xzTBNpBqFNcqUvahQS9Z5P
+         9gjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=V1GBEWPALyPtkudgT7c9kG+j18MpNg7++otpEJyv+Jo=;
-        b=rGJhVCa6G03LDDxUHPIaC1bEPPSbXvPknV0OzpN20XvLcItdHQGNEGRtfIbJT4ccuJ
-         wEjOZbLfLHk1cVp5UtjVT9z3orokGr+m/mgVUJM87jyqqJ5osrrY1Gnhb0sUKaZckjOQ
-         gLr152kg4Uxivq5GGkT07xtr559K5JQCH6D0zhLSsG7eo8IusOimMenvr7U0fK9CoytJ
-         E6FyaoEmHK1bGS+GDIsZ+zK0LqxlN6rtmzjiBGvmKTEPc1cQrxMxZdgzmcjBSAoZnn4U
-         4Rm/UF3P1l9GEwA/VAmfgSDL/ibGbRgG9sLNnFa5D1Gd3toSxb/gZhng3JttFW+1d04n
-         MT4g==
-X-Gm-Message-State: APjAAAXiMljdhXMXjBSo/yTK278aJHaGOPWijCV8M/pyLz0++HjccUOi
-        Xpuw+lUn2degLlV68ylooAd488bK
-X-Google-Smtp-Source: APXvYqyki1xVblkwyG2FZyW+JXgHxkan47vJWJ1zbILdUlxsgi2LbCMovBIKwDUFVpqxSYUUZytCug==
-X-Received: by 2002:adf:e6c6:: with SMTP id y6mr79281192wrm.284.1577917624711;
-        Wed, 01 Jan 2020 14:27:04 -0800 (PST)
-Received: from debian64.daheim (pD9E29458.dip0.t-ipconnect.de. [217.226.148.88])
-        by smtp.gmail.com with ESMTPSA id r68sm6198895wmr.43.2020.01.01.14.27.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jan 2020 14:27:03 -0800 (PST)
-Received: from chuck by debian64.daheim with local (Exim 4.93)
-        (envelope-from <chunkeey@gmail.com>)
-        id 1immSE-002Bvb-KZ; Wed, 01 Jan 2020 23:27:02 +0100
-From:   Christian Lamparter <chunkeey@gmail.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 2/2] crypto: crypto4xx - use GFP_KERNEL for big allocations
-Date:   Wed,  1 Jan 2020 23:27:02 +0100
-Message-Id: <5bacaaea8a228bc46f402595b1694ef9128f3599.1577917078.git.chunkeey@gmail.com>
-X-Mailer: git-send-email 2.25.0.rc0
-In-Reply-To: <3913dbe4b3256ead342572f7aba726a60ab5fd43.1577917078.git.chunkeey@gmail.com>
-References: <3913dbe4b3256ead342572f7aba726a60ab5fd43.1577917078.git.chunkeey@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=onn2kaRu8qHeOZCfu0hDViiisLBTz+9+t6L3wfr8DUc=;
+        b=Ad+0QPYJoeYTV5IR16k4+4oByaCBbUDjml06KWVQqXYcllfG6cC3XzNSfIUybq3vCn
+         rgfwnEbx+bTzRV9p6tVcgw5dUj/7Uok547+hz2wm8i2k1Y8QLdPO8TYkhaMnla1ar4cR
+         C87qgkcrZbM+u+r77EJBi6KcffXNYDNb9suq2wo7ZZqYma3KH65PgL4DZp5UWUVfSck9
+         nOA1ROuOHbU+qiYSwK44RYwVwu7Qlgh85o4j2XPaYdTuylqcO8fzJB0DV78Glmf9U2pV
+         dmspYJSYtwcHeLtxF6lCH1oln4zYTp7oJP5pHy6ILWaSfsmR4HyVkGkypEUIl391Wcdu
+         3aDQ==
+X-Gm-Message-State: APjAAAXFj8/hRjPWvxL+Ul07EnSB0xwWfClmHDfM/tO13mfmHsw5haH5
+        mq3/jOiupxdtZppnkzWPT972OjUEDH98V6F3V5g=
+X-Google-Smtp-Source: APXvYqx6ei8sTZU+VpaBvdE5BPvS2Lf8otC9ORUm8LAyhktY0sGrmucBFvIIqydp9NRNLgqtuEW+yjYVaTvUmJLD5gc=
+X-Received: by 2002:a5e:8505:: with SMTP id i5mr49776442ioj.158.1577918497545;
+ Wed, 01 Jan 2020 14:41:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200101175011.1875-1-michael@amarulasolutions.com>
+In-Reply-To: <20200101175011.1875-1-michael@amarulasolutions.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Wed, 1 Jan 2020 16:41:26 -0600
+Message-ID: <CAHCN7xL_jAT4PYtkMXZbBy=VCUyzRqYaCbKs0oi6p297CCiOdg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: dts: imx8mm: Add CAAM node
+To:     Michael Trimarchi <michael@amarulasolutions.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-amarula@amarulasolutions.com,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-crypto@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The driver should use GFP_KERNEL for the bigger allocation
-during the driver's crypto4xx_probe() and not GFP_ATOMIC in
-my opinion.
+On Wed, Jan 1, 2020 at 11:50 AM Michael Trimarchi
+<michael@amarulasolutions.com> wrote:
+>
+> Add node for CAAM - Cryptographic Acceleration and Assurance Module.
+>
 
-Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
----
- drivers/crypto/amcc/crypto4xx_core.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+I believe a series similar to this was already done and applied:
 
-diff --git a/drivers/crypto/amcc/crypto4xx_core.c b/drivers/crypto/amcc/crypto4xx_core.c
-index 3ce5f0a24cbc..981de43ea5e2 100644
---- a/drivers/crypto/amcc/crypto4xx_core.c
-+++ b/drivers/crypto/amcc/crypto4xx_core.c
-@@ -169,7 +169,7 @@ static u32 crypto4xx_build_pdr(struct crypto4xx_device *dev)
- 	int i;
- 	dev->pdr = dma_alloc_coherent(dev->core_dev->device,
- 				      sizeof(struct ce_pd) * PPC4XX_NUM_PD,
--				      &dev->pdr_pa, GFP_ATOMIC);
-+				      &dev->pdr_pa, GFP_KERNEL);
- 	if (!dev->pdr)
- 		return -ENOMEM;
- 
-@@ -185,13 +185,13 @@ static u32 crypto4xx_build_pdr(struct crypto4xx_device *dev)
- 	dev->shadow_sa_pool = dma_alloc_coherent(dev->core_dev->device,
- 				   sizeof(union shadow_sa_buf) * PPC4XX_NUM_PD,
- 				   &dev->shadow_sa_pool_pa,
--				   GFP_ATOMIC);
-+				   GFP_KERNEL);
- 	if (!dev->shadow_sa_pool)
- 		return -ENOMEM;
- 
- 	dev->shadow_sr_pool = dma_alloc_coherent(dev->core_dev->device,
- 			 sizeof(struct sa_state_record) * PPC4XX_NUM_PD,
--			 &dev->shadow_sr_pool_pa, GFP_ATOMIC);
-+			 &dev->shadow_sr_pool_pa, GFP_KERNEL);
- 	if (!dev->shadow_sr_pool)
- 		return -ENOMEM;
- 	for (i = 0; i < PPC4XX_NUM_PD; i++) {
-@@ -277,7 +277,7 @@ static u32 crypto4xx_build_gdr(struct crypto4xx_device *dev)
- {
- 	dev->gdr = dma_alloc_coherent(dev->core_dev->device,
- 				      sizeof(struct ce_gd) * PPC4XX_NUM_GD,
--				      &dev->gdr_pa, GFP_ATOMIC);
-+				      &dev->gdr_pa, GFP_KERNEL);
- 	if (!dev->gdr)
- 		return -ENOMEM;
- 
-@@ -358,14 +358,14 @@ static u32 crypto4xx_build_sdr(struct crypto4xx_device *dev)
- 	dev->scatter_buffer_va =
- 		dma_alloc_coherent(dev->core_dev->device,
- 			PPC4XX_SD_BUFFER_SIZE * PPC4XX_NUM_SD,
--			&dev->scatter_buffer_pa, GFP_ATOMIC);
-+			&dev->scatter_buffer_pa, GFP_KERNEL);
- 	if (!dev->scatter_buffer_va)
- 		return -ENOMEM;
- 
- 	/* alloc memory for scatter descriptor ring */
- 	dev->sdr = dma_alloc_coherent(dev->core_dev->device,
- 				      sizeof(struct ce_sd) * PPC4XX_NUM_SD,
--				      &dev->sdr_pa, GFP_ATOMIC);
-+				      &dev->sdr_pa, GFP_KERNEL);
- 	if (!dev->sdr)
- 		return -ENOMEM;
- 
--- 
-2.25.0.rc0
+https://patchwork.kernel.org/patch/11300663/
 
+adam
+
+> Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 31 +++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> index 7360dc0685eb..428a8b43086e 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> @@ -667,6 +667,37 @@
+>                                 status = "disabled";
+>                         };
+>
+> +                       crypto: crypto@30900000 {
+> +                               compatible = "fsl,sec-v4.0";
+> +                               #address-cells = <1>;
+> +                               #size-cells = <1>;
+> +                               reg = <0x30900000 0x40000>;
+> +                               ranges = <0 0x30900000 0x40000>;
+> +                               interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>;
+> +                               clocks = <&clk IMX8MM_CLK_AHB>,
+> +                                        <&clk IMX8MM_CLK_IPG_ROOT>;
+> +                               clock-names = "aclk", "ipg";
+> +                               status = "disabled";
+> +
+> +                               sec_jr0: jr0@1000 {
+> +                                        compatible = "fsl,sec-v4.0-job-ring";
+> +                                        reg = <0x1000 0x1000>;
+> +                                        interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
+> +                               };
+> +
+> +                               sec_jr1: jr1@2000 {
+> +                                        compatible = "fsl,sec-v4.0-job-ring";
+> +                                        reg = <0x2000 0x1000>;
+> +                                        interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
+> +                               };
+> +
+> +                               sec_jr2: jr2@3000 {
+> +                                        compatible = "fsl,sec-v4.0-job-ring";
+> +                                        reg = <0x3000 0x1000>;
+> +                                        interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
+> +                               };
+> +                       };
+> +
+>                         i2c1: i2c@30a20000 {
+>                                 compatible = "fsl,imx8mm-i2c", "fsl,imx21-i2c";
+>                                 #address-cells = <1>;
+> --
+> 2.17.1
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
