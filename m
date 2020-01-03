@@ -2,71 +2,120 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E670112F4F7
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jan 2020 08:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CD212F93C
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jan 2020 15:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727336AbgACHiA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 3 Jan 2020 02:38:00 -0500
-Received: from sonic301-30.consmr.mail.ne1.yahoo.com ([66.163.184.199]:35152
-        "EHLO sonic301-30.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727227AbgACHh7 (ORCPT
+        id S1727631AbgACOds (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 3 Jan 2020 09:33:48 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:34655 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727598AbgACOds (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 3 Jan 2020 02:37:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1578037079; bh=MJdpASvZnpj3gXKZxrNskiGAl+hYYwdjGUMDZ9fMpsI=; h=Date:From:Reply-To:Subject:References:From:Subject; b=QSzh+FyK+PQqbNd1K5cuBfArUFqLiHiJAQkXv9ezOJqgEXC8QGQMQgZAHUyU4Q0YcLWtuY4D2Sr0/dr6OjadKmrFpRakTwV7xCp1Dw9f3Q8q2/NkQ+4lnuwCSU6ZzF+/SD5BmTiB2snpNWbd/vjroSKHRXVe13Ijb3DEHq61gm+41ZOBxaPDbGxUDpkZ8SREJ0VaTp1sKxjjUlqQ71XhzeDKepMbeP55ACCKICPw3k8vC84jh5JeEVKUf4+ADYt70sDmqegTPKmZMC9QOWyFjc5PX3rjn6/D10NDWKEFrjS7h/8J9Y+dKohuMDQAzRvoNR6eF6qw7FzJN6TwUm1t6Q==
-X-YMail-OSG: yXnmVBcVM1nFNSolob2gHkbHPZ3yfZSyZjIbiwo.24pXbh3OORIC9CiEzjjKfH6
- 8rSqYYnETRF7LhGLdUPzfYxNL6Gya8Ka3CCZWTtjqUbND6M5a2wBG3Y7vYCztdFqeu78uLMNZC5m
- b7EeHWZ4xaoadYgjjjfuitcXMc36jsOezDOKkecQ9TRe6DtHyC5EvQqVsYwapO8tlf4JYG6EG.FO
- fpu2auCbIRLs2MMA4vMibGMiLjZrSyX1kCZbgDexAdD_u8b6KDCrEjd.8YF8F5qs3Fs_VGdMsOR0
- jZsb6E8Efoq_Si6fVJggXbZQTFHf8MpBVXhO5euMma_ZBUlsoQi2o0U1Odi4aNmPfRfOEgmR90h.
- jdRum8_.6VtYtI_pOGkH2YCHRtFFd476aeEECdrF.AFtyXeOxs2o7H749gRc9BNV6sXxBwgMOj2E
- ShP09eiehvu.hKrhwu6x6yrDIIpsTqX7LCK0nHuyzZs1uvNd2EfdAbHabW7zBrJJLPT5PaIY4ovG
- p0Szss.hm_6Pz4O9p5anMdPoK43XMHT03yxf6swDbirj_O98EUYSPd9C6B1LXMD0iWHjuSl4tu4z
- GIkIvc5lErAM8tTr24dgvhNxDUiJjvDKO8aA9jRuhSAko29MJ2iRVxJezRLqhuWEeVdzlkskH9EI
- ZD_4G3.v4_qxcPOSs4ITL4lFHkQ3bJ1Y3Sy7rM5os5jjdtpUycMyD5TDpD__0Zyv.rpIlc3Kp6oq
- ina.QJE1E6rtxYYhIcDId1NSX8jEd6EvQxUOBktCleihXRVNPm2g0PWI_eEw1eFFFD7gOcvtR7WD
- BH75SicEpJ4UxtblvYRCgbF4nBbu07TsJlDBqpoYhXjSllQlGGLt66pzu0itIp62Il08vY2UkuvB
- 47aUc1oLbRxxjU.ZjgJiYHzj6rspZAMCHXwdber4wpv4kbkhO7B1ErJ9czk266z92WRVUmIXubFy
- xoCO4fNiGxGSeULLlJXDzuatxKFNeZOshtAHHZsIYIpy8hqudstdD960GzqSzolnSothWFrZ9lPk
- fdpDXQjhh_Bhq4AyRjbclegvE0E2Q6oVs48sZAx4e9.9jOD53UK9T51iW.8Qg4gQ7WDyjiFU097R
- zRDteTFA2hFNqSihVhw0S70tRmOJUBWFF02lceT0zzN5czDm.R0ujSijrvskZZ8FRh6voapbwD2b
- 2ZlGVZU0NAjdPxBL5xsAIPzLSSlYf_w7Z.xyZ7MCtzl.LRHZTR7.FX2iNvzladPYgxttJZOgLMCI
- m7qk3S8Vtp3MqstvSjUF8K5e9axmV8qc4Htq4lQZhpUQ8zddeP2QVwyQbhsfIP2LKdUbWexqI
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.ne1.yahoo.com with HTTP; Fri, 3 Jan 2020 07:37:59 +0000
-Date:   Fri, 3 Jan 2020 07:37:55 +0000 (UTC)
-From:   Brian Gilvary <1brian.gilvary@gmail.com>
-Reply-To: gilvarybrian@aol.com
-Message-ID: <466166173.6197256.1578037075711@mail.yahoo.com>
-Subject: Happy New Year For Our Mutual Benefits
+        Fri, 3 Jan 2020 09:33:48 -0500
+Received: by mail-wm1-f65.google.com with SMTP id c127so7076068wme.1
+        for <linux-crypto@vger.kernel.org>; Fri, 03 Jan 2020 06:33:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ifraCwegUS/YivrX8FO5mIlbsVExhwEeZ5ejvcnHh4s=;
+        b=zAwEgWPw4pO0DCHgDxwW1alXNOnJdhvkMmGWwa4F2qVRueh+4ee3ZVMcsPLX0aTmQO
+         Uj7cc057zj1I3A6YNXgdGAguam4Mw5u5aRjun4z9EvhDvX84EO4uqsgpz/YDvRIIwgfh
+         QIl4O+rcCf69b12V++lHu85ivalDffEqxOseu5ng+n4U+DbsGkGGrv7QKqeagR8BTma1
+         p03NAL/DTcGNJ/0F43Z6iVzsGy2BkJHEhPvlERGOHkhKUyHdQTt8F0hkvoCejLXzboyn
+         yWMviFSgaE8Kyy+RvRkzEP0M20lKX4i4e/OemeUK594XJNQT+jxZJFL1etBxmEvF8rUH
+         P2eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ifraCwegUS/YivrX8FO5mIlbsVExhwEeZ5ejvcnHh4s=;
+        b=albKHbBve9PUwuN1EBGXyPsrYSSbEDXie04zUcYOaylE7PdsgIQG6+T9i5uJMupFmM
+         B5HBtABia+MVKljHo7uSvipNkUocfYIsc68zzr3AIZulU7LcdPcDPeJiwueCJm1hjU2h
+         fiMcl+EFN2C1Bj9A94aVMfgAWv+Bg/rZYYMCENiCS8wtj/Cms/OGm+k9uSpYBPI7swwK
+         At+MifUWbm3eXC1XhDn55vsVG4O0/zoT3jv7doy++gnTpbS0enTlfxmyxPTvAHQUFIUG
+         2Z8RN/Be6j/cB85kb+swXz4O3EVu+ps1PQU4WyJPWaY1ESJTJQmGvtknh3+avWtGWJkO
+         QAjg==
+X-Gm-Message-State: APjAAAVXc9wuSEVU4PWQ72/sc3kBxIWc6iPyAjVxugro47rqeqxmVxp2
+        Kc6yPS0fIPK6NzZpMMg+4yWcqcJzPt95aNaijCtVAEErvbpZ3w==
+X-Google-Smtp-Source: APXvYqzUP2mvsDuZqtvCmzry9jciG3/MabElqkQDGDpMlZNWMOTqRuQ2gxDBzYDdmzdji1vYCPRa+ZAVYWEJD502I1A=
+X-Received: by 2002:a1c:3dc3:: with SMTP id k186mr19338410wma.95.1578062026229;
+ Fri, 03 Jan 2020 06:33:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <466166173.6197256.1578037075711.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.14873 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0
-To:     unlisted-recipients:; (no To-header on input)
+References: <20191220190218.28884-1-cotequeiroz@gmail.com> <CAKv+Gu9ZXCK41xOavw+2KEhhsZq9BFH6mxXKPNomzB6q+DP_FQ@mail.gmail.com>
+ <CAPxccB2LGANG8DcmF4nwUDOzDzf2RHX4S-4w9z6TcO9csu4xSw@mail.gmail.com>
+In-Reply-To: <CAPxccB2LGANG8DcmF4nwUDOzDzf2RHX4S-4w9z6TcO9csu4xSw@mail.gmail.com>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Fri, 3 Jan 2020 15:33:35 +0100
+Message-ID: <CAKv+Gu9fUs_xOZgUw5smrJf7+jrovkPL+1fF4fRcNhRieYSwhA@mail.gmail.com>
+Subject: Re: QCE hw-crypto DMA issues
+To:     Eneas Queiroz <cotequeiroz@gmail.com>
+Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi
+On Thu, 2 Jan 2020 at 22:09, Eneas Queiroz <cotequeiroz@gmail.com> wrote:
+>
+> I'm changing the subject title, as the original series has been merged.
+>
+> On Mon, Dec 23, 2019 at 6:46 AM Ard Biesheuvel <ard.biesheuvel@linaro.org> wrote:
+>>
+>> On Fri, 20 Dec 2019 at 20:02, Eneas U de Queiroz <cotequeiroz@gmail.com> wrote:
+>> >
+>> > I've been trying to make the Qualcomm Crypto Engine work with GCM-mode
+>> > AES.  I fixed some bugs, and added an option to build only hashes or
+>> > skciphers, as the VPN performance increases if you leave some of that to
+>> > the CPU.
+>> >
+>> > A discussion about this can be found here:
+>> > https://github.com/openwrt/openwrt/pull/2518
+>> >
+>> > I'm using openwrt to test this, and there's no support for kernel 5.x
+>> > yet.  So I have backported the recent skcipher updates, and tested this
+>> > with 4.19. I don't have the hardware with me, but I have run-tested
+>> > everything, working remotely.
+>> >
+>> > All of the skciphers directly implemented by the driver work.  They pass
+>> > the tcrypt tests, and also some tests from userspace using AF_ALG:
+>> > https://github.com/cotequeiroz/afalg_tests
+>> >
+>> > However, I can't get gcm(aes) to work.  When setting the gcm-mode key,
+>> > it sets the ctr(aes) key, then encrypt a block of zeroes, and uses that
+>> > as the ghash key.  The driver fails to perform that encryption.  I've
+>> > dumped the input and output data, and they apparently are not touched by
+>> > the QCE.  The IV, which written to a buffer appended to the results sg
+>> > list gets updated, but the results themselves are not.  I'm not sure
+>> > what goes wrong, if it is a DMA/cache problem, memory alignment, or
+>> > whatever.
+>> >
+>>
+>> This does sound like a DMA problem. I assume the accelerator is not
+>> cache coherent?
+>>
+>> In any case, it is dubious whether the round trip to the accelerator
+>> is worth it when encrypting the GHASH key. Just call aes_encrypt()
+>> instead, and do it in software.
+>
+>
+> ipsec still fails, even if I use software for every single-block operation. I can perhaps leave that as an optimization, but it won't fix the main issue.
+>
+>> > If I take 'be128 hash' out of the 'data' struct, and kzalloc them
+>> > separately in crypto_gcm_setkey (crypto/gcm.c), it encrypts the data
+>> > just fine--perhaps the payload and the request struct can't be in the
+>> > same page?
+>> >
+>>
+>> Non-cache coherent DMA involves cache invalidation on inbound data. So
+>> if both the device and the CPU write to the same cacheline while the
+>> buffer is mapped for DMA from device to memory, one of the updates
+>> gets lost.
+>
+>
+>  Can you give me any pointers/examples of how I can make this work?
+>
 
-As the Chief Financial Officer, British Petroleum Company plc (BP), I am in=
- a position to facilitate immediate transfer of =C2=A3 48,000,000.00 (Forty=
- Eight Million British Pounds Sterling), to any of your nominated Bank Acco=
-unt.
-
-Source of Funds: An over-invoiced payment from a past project executed in m=
-y department. I cannot successfully achieve this transaction without presen=
-ting you as foreign contractor who will provide the bank account to receive=
- the funds. Every documentation for the claim of the funds will be legally =
-processed and documented, so I will need your full co-operation for our mut=
-ual benefits.
-
-We will discuss details if you are interested to work with me to secure thi=
-s funds, as I said for our mutual benefits. I will be looking forward to yo=
-ur prompt response.
-
-Best regards
-Brian Gilvary
-Chief financial officer
-BP, Plc.
+You could have a look at commit ed527b13d800dd515a9e6c582f0a73eca65b2e1b
