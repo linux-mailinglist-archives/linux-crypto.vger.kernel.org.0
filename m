@@ -2,127 +2,82 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3731012F3C5
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jan 2020 05:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C778812F3F1
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jan 2020 05:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgACEFI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 2 Jan 2020 23:05:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727210AbgACEFH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 2 Jan 2020 23:05:07 -0500
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED17B222C3
-        for <linux-crypto@vger.kernel.org>; Fri,  3 Jan 2020 04:05:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578024307;
-        bh=krCjoqWYb9JakE/BHd/58VVe+cWrL8n1ELLyCYUkXN0=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=PcpiB5czGK71LceH5siTCzRnVYPXjSchrBLKTNvccI4ehIp1p31xcaBukgOrnEqut
-         C1+Z0cHDti/gD+r4hPpuvigb/2XVtHIoUVGfnMxUZTZWKBfBi4QIo9W+WmUx7j1osB
-         SYIStjuy4Kw4LG63/Pz7DC6CxCQ6AfinD5LnKgu8=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Subject: [PATCH v2 6/6] crypto: algapi - enforce that all instances have a ->free() method
-Date:   Thu,  2 Jan 2020 20:04:40 -0800
-Message-Id: <20200103040440.12375-7-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200103040440.12375-1-ebiggers@kernel.org>
-References: <20200103040440.12375-1-ebiggers@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726481AbgACE5p (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 2 Jan 2020 23:57:45 -0500
+Received: from stargate.chelsio.com ([12.32.117.8]:30523 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbgACE5p (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 2 Jan 2020 23:57:45 -0500
+Received: from chumthang.blr.asicdesigners.com (chumthang.blr.asicdesigners.com [10.193.186.96])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 0034vXaX002388;
+        Thu, 2 Jan 2020 20:57:34 -0800
+From:   Ayush Sawal <ayush.sawal@chelsio.com>
+To:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org
+Cc:     Ayush Sawal <ayush.sawal@chelsio.com>
+Subject: [Crypto/chcr] Resetting crypto counters during the driver unregister
+Date:   Fri,  3 Jan 2020 10:26:51 +0530
+Message-Id: <1578027411-32239-1-git-send-email-ayush.sawal@chelsio.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
-
-All instances need to have a ->free() method, but people could forget to
-set it and then not notice if the instance is never unregistered.  To
-help detect this bug earlier, don't allow an instance without a ->free()
-method to be registered, and complain loudly if someone tries to do it.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
 ---
- crypto/aead.c     | 3 +++
- crypto/ahash.c    | 3 +++
- crypto/akcipher.c | 2 ++
- crypto/shash.c    | 3 +++
- crypto/skcipher.c | 3 +++
- 5 files changed, 14 insertions(+)
+ drivers/crypto/chelsio/chcr_core.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/crypto/aead.c b/crypto/aead.c
-index 7707d3223101..16991095270d 100644
---- a/crypto/aead.c
-+++ b/crypto/aead.c
-@@ -288,6 +288,9 @@ int aead_register_instance(struct crypto_template *tmpl,
- {
- 	int err;
+diff --git a/drivers/crypto/chelsio/chcr_core.c b/drivers/crypto/chelsio/chcr_core.c
+index 029a735..533c37d 100644
+--- a/drivers/crypto/chelsio/chcr_core.c
++++ b/drivers/crypto/chelsio/chcr_core.c
+@@ -132,8 +132,6 @@ static void chcr_dev_init(struct uld_ctx *u_ctx)
  
-+	if (WARN_ON(!inst->free))
-+		return -EINVAL;
-+
- 	err = aead_prepare_alg(&inst->alg);
- 	if (err)
- 		return err;
-diff --git a/crypto/ahash.c b/crypto/ahash.c
-index cd5d9847d513..68a0f0cb75c4 100644
---- a/crypto/ahash.c
-+++ b/crypto/ahash.c
-@@ -656,6 +656,9 @@ int ahash_register_instance(struct crypto_template *tmpl,
+ static int chcr_dev_move(struct uld_ctx *u_ctx)
  {
- 	int err;
+-	struct adapter *adap;
+-
+ 	 mutex_lock(&drv_data.drv_mutex);
+ 	if (drv_data.last_dev == u_ctx) {
+ 		if (list_is_last(&drv_data.last_dev->entry, &drv_data.act_dev))
+@@ -146,8 +144,6 @@ static int chcr_dev_move(struct uld_ctx *u_ctx)
+ 	list_move(&u_ctx->entry, &drv_data.inact_dev);
+ 	if (list_empty(&drv_data.act_dev))
+ 		drv_data.last_dev = NULL;
+-	adap = padap(&u_ctx->dev);
+-	memset(&adap->chcr_stats, 0, sizeof(adap->chcr_stats));
+ 	atomic_dec(&drv_data.dev_count);
+ 	mutex_unlock(&drv_data.drv_mutex);
  
-+	if (WARN_ON(!inst->free))
-+		return -EINVAL;
-+
- 	err = ahash_prepare_alg(&inst->alg);
- 	if (err)
- 		return err;
-diff --git a/crypto/akcipher.c b/crypto/akcipher.c
-index eeed6c151d2f..f866085c8a4a 100644
---- a/crypto/akcipher.c
-+++ b/crypto/akcipher.c
-@@ -147,6 +147,8 @@ EXPORT_SYMBOL_GPL(crypto_unregister_akcipher);
- int akcipher_register_instance(struct crypto_template *tmpl,
- 			       struct akcipher_instance *inst)
+@@ -299,17 +295,21 @@ static int __init chcr_crypto_init(void)
+ static void __exit chcr_crypto_exit(void)
  {
-+	if (WARN_ON(!inst->free))
-+		return -EINVAL;
- 	akcipher_prepare_alg(&inst->alg);
- 	return crypto_register_instance(tmpl, akcipher_crypto_instance(inst));
- }
-diff --git a/crypto/shash.c b/crypto/shash.c
-index 70faf28b2d14..c075b26c2a1d 100644
---- a/crypto/shash.c
-+++ b/crypto/shash.c
-@@ -577,6 +577,9 @@ int shash_register_instance(struct crypto_template *tmpl,
- {
- 	int err;
- 
-+	if (WARN_ON(!inst->free))
-+		return -EINVAL;
-+
- 	err = shash_prepare_alg(&inst->alg);
- 	if (err)
- 		return err;
-diff --git a/crypto/skcipher.c b/crypto/skcipher.c
-index 8c37243307aa..ba41f81fac0b 100644
---- a/crypto/skcipher.c
-+++ b/crypto/skcipher.c
-@@ -876,6 +876,9 @@ int skcipher_register_instance(struct crypto_template *tmpl,
- {
- 	int err;
- 
-+	if (WARN_ON(!inst->free))
-+		return -EINVAL;
-+
- 	err = skcipher_prepare_alg(&inst->alg);
- 	if (err)
- 		return err;
+ 	struct uld_ctx *u_ctx, *tmp;
+-
++	struct adapter *adap;
++	
+ 	stop_crypto();
+-
+ 	cxgb4_unregister_uld(CXGB4_ULD_CRYPTO);
+ 	/* Remove all devices from list */
+ 	mutex_lock(&drv_data.drv_mutex);
+ 	list_for_each_entry_safe(u_ctx, tmp, &drv_data.act_dev, entry) {
++		adap = padap(&u_ctx->dev);
++		memset(&adap->chcr_stats, 0, sizeof(adap->chcr_stats));
+ 		list_del(&u_ctx->entry);
+ 		kfree(u_ctx);
+ 	}
+ 	list_for_each_entry_safe(u_ctx, tmp, &drv_data.inact_dev, entry) {
++		adap = padap(&u_ctx->dev);
++		memset(&adap->chcr_stats, 0, sizeof(adap->chcr_stats));
+ 		list_del(&u_ctx->entry);
+ 		kfree(u_ctx);
+ 	}
 -- 
-2.24.1
+1.8.3.1
 
