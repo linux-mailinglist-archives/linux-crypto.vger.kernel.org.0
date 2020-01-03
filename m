@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EBB12F3A9
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jan 2020 05:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8750912F3A7
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jan 2020 05:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727166AbgACEB0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1727163AbgACEB0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Thu, 2 Jan 2020 23:01:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33528 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:33508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726504AbgACEB0 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726792AbgACEB0 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 2 Jan 2020 23:01:26 -0500
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47FD7222C3
+        by mail.kernel.org (Postfix) with ESMTPSA id 775C822314
         for <linux-crypto@vger.kernel.org>; Fri,  3 Jan 2020 04:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1578024085;
-        bh=IrycCQJGoY/hKQPN/6Xc7K5Y4Kl9hDwAeLMhBZ6Zb10=;
+        bh=hZFeqYAzEsmlkEGrVH+RMJl1s1c118MVu3XWCo3kdLY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=QfTPLwcHHHXAz0bEBr1AcD23kYEDbhyPPEbPcojkNEC7MWdSD0RtojC/3RcF9fng/
-         Wi68wTd0xD/g6H9yvM11+9CsRvLkorfpS+xS1Z1hC9/Tk1Rs3KlkFHWtyW+XyX+ZIl
-         WL8hB0AIqM/7k/txv99fa4QENxYPx9KwXL0OmzCs=
+        b=pHnb8Gt25df9fCc8Np1J48BYikvAS/0ujnFEVW/9c6u+Bg5Xpo1f1IgzvOYCGHF7v
+         hmcOKoPhGJ22dTaCdrv6f7VAXCP8LJxAU6fyFLDLZyMU+G/h/K1Cx6aSG/OOGNEfoV
+         vv3xGW0c6VE6EAKRPKtByvNkUC56NWbEPDfLelOk=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH v2 06/28] crypto: aead - pass instance to crypto_grab_aead()
-Date:   Thu,  2 Jan 2020 19:58:46 -0800
-Message-Id: <20200103035908.12048-7-ebiggers@kernel.org>
+Subject: [PATCH v2 07/28] crypto: akcipher - pass instance to crypto_grab_akcipher()
+Date:   Thu,  2 Jan 2020 19:58:47 -0800
+Message-Id: <20200103035908.12048-8-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200103035908.12048-1-ebiggers@kernel.org>
 References: <20200103035908.12048-1-ebiggers@kernel.org>
@@ -40,228 +40,101 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Initializing a crypto_aead_spawn currently requires:
+Initializing a crypto_akcipher_spawn currently requires:
 
 1. Set spawn->base.inst to point to the instance.
-2. Call crypto_grab_aead().
+2. Call crypto_grab_akcipher().
 
 But there's no reason for these steps to be separate, and in fact this
 unneeded complication has caused at least one bug, the one fixed by
 commit 6db43410179b ("crypto: adiantum - initialize crypto_spawn::inst")
 
-So just make crypto_grab_aead() take the instance as an argument.
+So just make crypto_grab_akcipher() take the instance as an argument.
 
-To keep the function calls from getting too unwieldy due to this extra
-argument, also introduce a 'mask' variable into the affected places
-which weren't already using one.
+To keep the function call from getting too unwieldy due to this extra
+argument, also introduce a 'mask' variable into pkcs1pad_create().
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/aead.c                  |  6 ++++--
- crypto/ccm.c                   |  8 +++++---
- crypto/cryptd.c                |  4 ++--
- crypto/essiv.c                 |  3 +--
- crypto/gcm.c                   | 16 ++++++++++------
- crypto/geniv.c                 |  4 ++--
- crypto/pcrypt.c                |  5 ++---
- include/crypto/internal/aead.h | 11 +++--------
- 8 files changed, 29 insertions(+), 28 deletions(-)
+ crypto/akcipher.c                  |  6 ++++--
+ crypto/rsa-pkcs1pad.c              |  8 +++++---
+ include/crypto/internal/akcipher.h | 12 +++---------
+ 3 files changed, 12 insertions(+), 14 deletions(-)
 
-diff --git a/crypto/aead.c b/crypto/aead.c
-index 47f16d139e8e..c7135e00b8ea 100644
---- a/crypto/aead.c
-+++ b/crypto/aead.c
-@@ -207,9 +207,11 @@ static const struct crypto_type crypto_aead_type = {
- 	.tfmsize = offsetof(struct crypto_aead, base),
+diff --git a/crypto/akcipher.c b/crypto/akcipher.c
+index 7d5cf4939423..84ccf9b02bbe 100644
+--- a/crypto/akcipher.c
++++ b/crypto/akcipher.c
+@@ -90,9 +90,11 @@ static const struct crypto_type crypto_akcipher_type = {
+ 	.tfmsize = offsetof(struct crypto_akcipher, base),
  };
  
--int crypto_grab_aead(struct crypto_aead_spawn *spawn, const char *name,
--		     u32 type, u32 mask)
-+int crypto_grab_aead(struct crypto_aead_spawn *spawn,
-+		     struct crypto_instance *inst,
-+		     const char *name, u32 type, u32 mask)
+-int crypto_grab_akcipher(struct crypto_akcipher_spawn *spawn, const char *name,
+-			 u32 type, u32 mask)
++int crypto_grab_akcipher(struct crypto_akcipher_spawn *spawn,
++			 struct crypto_instance *inst,
++			 const char *name, u32 type, u32 mask)
  {
 +	spawn->base.inst = inst;
- 	spawn->base.frontend = &crypto_aead_type;
+ 	spawn->base.frontend = &crypto_akcipher_type;
  	return crypto_grab_spawn(&spawn->base, name, type, mask);
  }
-diff --git a/crypto/ccm.c b/crypto/ccm.c
-index d2279dc5b970..9c377976581d 100644
---- a/crypto/ccm.c
-+++ b/crypto/ccm.c
-@@ -746,6 +746,7 @@ static int crypto_rfc4309_create(struct crypto_template *tmpl,
- 				 struct rtattr **tb)
+diff --git a/crypto/rsa-pkcs1pad.c b/crypto/rsa-pkcs1pad.c
+index 0aa489711ec4..176b63afec8d 100644
+--- a/crypto/rsa-pkcs1pad.c
++++ b/crypto/rsa-pkcs1pad.c
+@@ -598,6 +598,7 @@ static int pkcs1pad_create(struct crypto_template *tmpl, struct rtattr **tb)
  {
+ 	const struct rsa_asn1_template *digest_info;
  	struct crypto_attr_type *algt;
 +	u32 mask;
- 	struct aead_instance *inst;
- 	struct crypto_aead_spawn *spawn;
- 	struct aead_alg *alg;
-@@ -759,6 +760,8 @@ static int crypto_rfc4309_create(struct crypto_template *tmpl,
- 	if ((algt->type ^ CRYPTO_ALG_TYPE_AEAD) & algt->mask)
+ 	struct akcipher_instance *inst;
+ 	struct pkcs1pad_inst_ctx *ctx;
+ 	struct crypto_akcipher_spawn *spawn;
+@@ -613,6 +614,8 @@ static int pkcs1pad_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	if ((algt->type ^ CRYPTO_ALG_TYPE_AKCIPHER) & algt->mask)
  		return -EINVAL;
  
 +	mask = crypto_requires_sync(algt->type, algt->mask);
 +
- 	ccm_name = crypto_attr_alg_name(tb[1]);
- 	if (IS_ERR(ccm_name))
- 		return PTR_ERR(ccm_name);
-@@ -768,9 +771,8 @@ static int crypto_rfc4309_create(struct crypto_template *tmpl,
- 		return -ENOMEM;
+ 	rsa_alg_name = crypto_attr_alg_name(tb[1]);
+ 	if (IS_ERR(rsa_alg_name))
+ 		return PTR_ERR(rsa_alg_name);
+@@ -636,9 +639,8 @@ static int pkcs1pad_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	spawn = &ctx->spawn;
+ 	ctx->digest_info = digest_info;
  
- 	spawn = aead_instance_ctx(inst);
--	crypto_set_aead_spawn(spawn, aead_crypto_instance(inst));
--	err = crypto_grab_aead(spawn, ccm_name, 0,
--			       crypto_requires_sync(algt->type, algt->mask));
-+	err = crypto_grab_aead(spawn, aead_crypto_instance(inst),
-+			       ccm_name, 0, mask);
+-	crypto_set_spawn(&spawn->base, akcipher_crypto_instance(inst));
+-	err = crypto_grab_akcipher(spawn, rsa_alg_name, 0,
+-			crypto_requires_sync(algt->type, algt->mask));
++	err = crypto_grab_akcipher(spawn, akcipher_crypto_instance(inst),
++				   rsa_alg_name, 0, mask);
  	if (err)
  		goto out_free_inst;
  
-diff --git a/crypto/cryptd.c b/crypto/cryptd.c
-index 01a1f6aa30ac..5aea6d6c49a0 100644
---- a/crypto/cryptd.c
-+++ b/crypto/cryptd.c
-@@ -874,8 +874,8 @@ static int cryptd_create_aead(struct crypto_template *tmpl,
- 	ctx = aead_instance_ctx(inst);
- 	ctx->queue = queue;
- 
--	crypto_set_aead_spawn(&ctx->aead_spawn, aead_crypto_instance(inst));
--	err = crypto_grab_aead(&ctx->aead_spawn, name, type, mask);
-+	err = crypto_grab_aead(&ctx->aead_spawn, aead_crypto_instance(inst),
-+			       name, type, mask);
- 	if (err)
- 		goto out_free_inst;
- 
-diff --git a/crypto/essiv.c b/crypto/essiv.c
-index 2019250da08e..388cceb8c1a0 100644
---- a/crypto/essiv.c
-+++ b/crypto/essiv.c
-@@ -516,8 +516,7 @@ static int essiv_create(struct crypto_template *tmpl, struct rtattr **tb)
- 		ictx = crypto_instance_ctx(inst);
- 
- 		/* AEAD cipher, e.g., "authenc(hmac(sha256),cbc(aes))" */
--		crypto_set_aead_spawn(&ictx->u.aead_spawn, inst);
--		err = crypto_grab_aead(&ictx->u.aead_spawn,
-+		err = crypto_grab_aead(&ictx->u.aead_spawn, inst,
- 				       inner_cipher_name, 0, mask);
- 		if (err)
- 			goto out_free_inst;
-diff --git a/crypto/gcm.c b/crypto/gcm.c
-index 5a01b2b956f6..4241264ff93a 100644
---- a/crypto/gcm.c
-+++ b/crypto/gcm.c
-@@ -866,6 +866,7 @@ static int crypto_rfc4106_create(struct crypto_template *tmpl,
- 				 struct rtattr **tb)
- {
- 	struct crypto_attr_type *algt;
-+	u32 mask;
- 	struct aead_instance *inst;
- 	struct crypto_aead_spawn *spawn;
- 	struct aead_alg *alg;
-@@ -879,6 +880,8 @@ static int crypto_rfc4106_create(struct crypto_template *tmpl,
- 	if ((algt->type ^ CRYPTO_ALG_TYPE_AEAD) & algt->mask)
- 		return -EINVAL;
- 
-+	mask = crypto_requires_sync(algt->type, algt->mask);
-+
- 	ccm_name = crypto_attr_alg_name(tb[1]);
- 	if (IS_ERR(ccm_name))
- 		return PTR_ERR(ccm_name);
-@@ -888,9 +891,8 @@ static int crypto_rfc4106_create(struct crypto_template *tmpl,
- 		return -ENOMEM;
- 
- 	spawn = aead_instance_ctx(inst);
--	crypto_set_aead_spawn(spawn, aead_crypto_instance(inst));
--	err = crypto_grab_aead(spawn, ccm_name, 0,
--			       crypto_requires_sync(algt->type, algt->mask));
-+	err = crypto_grab_aead(spawn, aead_crypto_instance(inst),
-+			       ccm_name, 0, mask);
- 	if (err)
- 		goto out_free_inst;
- 
-@@ -1102,6 +1104,7 @@ static int crypto_rfc4543_create(struct crypto_template *tmpl,
- 				struct rtattr **tb)
- {
- 	struct crypto_attr_type *algt;
-+	u32 mask;
- 	struct aead_instance *inst;
- 	struct crypto_aead_spawn *spawn;
- 	struct aead_alg *alg;
-@@ -1116,6 +1119,8 @@ static int crypto_rfc4543_create(struct crypto_template *tmpl,
- 	if ((algt->type ^ CRYPTO_ALG_TYPE_AEAD) & algt->mask)
- 		return -EINVAL;
- 
-+	mask = crypto_requires_sync(algt->type, algt->mask);
-+
- 	ccm_name = crypto_attr_alg_name(tb[1]);
- 	if (IS_ERR(ccm_name))
- 		return PTR_ERR(ccm_name);
-@@ -1126,9 +1131,8 @@ static int crypto_rfc4543_create(struct crypto_template *tmpl,
- 
- 	ctx = aead_instance_ctx(inst);
- 	spawn = &ctx->aead;
--	crypto_set_aead_spawn(spawn, aead_crypto_instance(inst));
--	err = crypto_grab_aead(spawn, ccm_name, 0,
--			       crypto_requires_sync(algt->type, algt->mask));
-+	err = crypto_grab_aead(spawn, aead_crypto_instance(inst),
-+			       ccm_name, 0, mask);
- 	if (err)
- 		goto out_free_inst;
- 
-diff --git a/crypto/geniv.c b/crypto/geniv.c
-index b9e45a2a98b5..7afa48414f3a 100644
---- a/crypto/geniv.c
-+++ b/crypto/geniv.c
-@@ -64,8 +64,8 @@ struct aead_instance *aead_geniv_alloc(struct crypto_template *tmpl,
- 	/* Ignore async algorithms if necessary. */
- 	mask |= crypto_requires_sync(algt->type, algt->mask);
- 
--	crypto_set_aead_spawn(spawn, aead_crypto_instance(inst));
--	err = crypto_grab_aead(spawn, name, type, mask);
-+	err = crypto_grab_aead(spawn, aead_crypto_instance(inst),
-+			       name, type, mask);
- 	if (err)
- 		goto err_free_inst;
- 
-diff --git a/crypto/pcrypt.c b/crypto/pcrypt.c
-index d6696e217128..1b632139a8c1 100644
---- a/crypto/pcrypt.c
-+++ b/crypto/pcrypt.c
-@@ -258,9 +258,8 @@ static int pcrypt_create_aead(struct crypto_template *tmpl, struct rtattr **tb,
- 	if (!ctx->psdec)
- 		goto out_free_psenc;
- 
--	crypto_set_aead_spawn(&ctx->spawn, aead_crypto_instance(inst));
--
--	err = crypto_grab_aead(&ctx->spawn, name, 0, 0);
-+	err = crypto_grab_aead(&ctx->spawn, aead_crypto_instance(inst),
-+			       name, 0, 0);
- 	if (err)
- 		goto out_free_psdec;
- 
-diff --git a/include/crypto/internal/aead.h b/include/crypto/internal/aead.h
-index 374185a7567f..27b7b0224ea6 100644
---- a/include/crypto/internal/aead.h
-+++ b/include/crypto/internal/aead.h
-@@ -81,14 +81,9 @@ static inline struct aead_request *aead_request_cast(
- 	return container_of(req, struct aead_request, base);
+diff --git a/include/crypto/internal/akcipher.h b/include/crypto/internal/akcipher.h
+index d6c8a42789ad..8d3220c9ab77 100644
+--- a/include/crypto/internal/akcipher.h
++++ b/include/crypto/internal/akcipher.h
+@@ -78,15 +78,9 @@ static inline void *akcipher_instance_ctx(struct akcipher_instance *inst)
+ 	return crypto_instance_ctx(akcipher_crypto_instance(inst));
  }
  
--static inline void crypto_set_aead_spawn(
--	struct crypto_aead_spawn *spawn, struct crypto_instance *inst)
+-static inline void crypto_set_akcipher_spawn(
+-		struct crypto_akcipher_spawn *spawn,
+-		struct crypto_instance *inst)
 -{
 -	crypto_set_spawn(&spawn->base, inst);
 -}
 -
--int crypto_grab_aead(struct crypto_aead_spawn *spawn, const char *name,
--		     u32 type, u32 mask);
-+int crypto_grab_aead(struct crypto_aead_spawn *spawn,
-+		     struct crypto_instance *inst,
-+		     const char *name, u32 type, u32 mask);
+-int crypto_grab_akcipher(struct crypto_akcipher_spawn *spawn, const char *name,
+-		u32 type, u32 mask);
++int crypto_grab_akcipher(struct crypto_akcipher_spawn *spawn,
++			 struct crypto_instance *inst,
++			 const char *name, u32 type, u32 mask);
  
- static inline void crypto_drop_aead(struct crypto_aead_spawn *spawn)
- {
+ static inline struct crypto_akcipher *crypto_spawn_akcipher(
+ 		struct crypto_akcipher_spawn *spawn)
 -- 
 2.24.1
 
