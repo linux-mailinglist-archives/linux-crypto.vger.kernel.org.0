@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DBF12F3B5
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jan 2020 05:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5581F12F3AC
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jan 2020 05:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727186AbgACEBb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 2 Jan 2020 23:01:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33528 "EHLO mail.kernel.org"
+        id S1727210AbgACEBa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 2 Jan 2020 23:01:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727183AbgACEB2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1727186AbgACEB2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 2 Jan 2020 23:01:28 -0500
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E02722525
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FB9B227BF
         for <linux-crypto@vger.kernel.org>; Fri,  3 Jan 2020 04:01:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1578024087;
-        bh=Sa6BlByOCaXdGV1JFlq85N8cnQd+GJ++0WOjPxkXZL8=;
+        bh=VJsUI3nZQBs1+NtInId6C4UnPbvxMWpEAX+GXI/7fVw=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=p1f87zdYx+P2/QBUXzfGmYZq4F9fdPOz5XGV5LzpnrjdNOP2bDVd53hbQFVz/UGoJ
-         iEGkhohHem6GjNqpIrvDc+/31PmYuMn2bVOTYS021Bb112nw02pyYfAzPbe9YaJUB8
-         PH6oc4pNxTATlLGHRSztdJ4vy7j/Gc7C5uhCZL7Y=
+        b=psxp+Wv4eZ8vgXKqcEf3LNGh4fR4GeARw7aF83SnyVDYq0GVzpS27BHJ++p6phqnC
+         oZPIpk8h/0HzlfOliyMUILRExCnMscgWlKlJTN5+WItGNGCqLlr2gc1tkmXR4lGHaV
+         Lv09nwk81wKIaLz2VrjpmhiqYxPd0hsPRa3W/CgA=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH v2 15/28] crypto: authenc - use crypto_grab_ahash() and simplify error paths
-Date:   Thu,  2 Jan 2020 19:58:55 -0800
-Message-Id: <20200103035908.12048-16-ebiggers@kernel.org>
+Subject: [PATCH v2 16/28] crypto: authencesn - use crypto_grab_ahash() and simplify error paths
+Date:   Thu,  2 Jan 2020 19:58:56 -0800
+Message-Id: <20200103035908.12048-17-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200103035908.12048-1-ebiggers@kernel.org>
 References: <20200103035908.12048-1-ebiggers@kernel.org>
@@ -40,7 +40,7 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Make the authenc template use the new function crypto_grab_ahash() to
+Make the authencesn template use the new function crypto_grab_ahash() to
 initialize its ahash spawn.
 
 This is needed to make all spawns be initialized in a consistent way.
@@ -51,27 +51,27 @@ by taking advantage of crypto_grab_*() now handling ERR_PTR() names.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/authenc.c | 52 +++++++++++++-----------------------------------
+ crypto/authencesn.c | 52 ++++++++++++---------------------------------
  1 file changed, 14 insertions(+), 38 deletions(-)
 
-diff --git a/crypto/authenc.c b/crypto/authenc.c
-index aef04792702a..87133bfd48b9 100644
---- a/crypto/authenc.c
-+++ b/crypto/authenc.c
-@@ -385,11 +385,10 @@ static int crypto_authenc_create(struct crypto_template *tmpl,
+diff --git a/crypto/authencesn.c b/crypto/authencesn.c
+index 48582c3741dc..030cbcd2fe39 100644
+--- a/crypto/authencesn.c
++++ b/crypto/authencesn.c
+@@ -403,11 +403,10 @@ static int crypto_authenc_esn_create(struct crypto_template *tmpl,
  	struct crypto_attr_type *algt;
  	u32 mask;
  	struct aead_instance *inst;
-+	struct authenc_instance_ctx *ctx;
++	struct authenc_esn_instance_ctx *ctx;
  	struct hash_alg_common *auth;
  	struct crypto_alg *auth_base;
  	struct skcipher_alg *enc;
--	struct authenc_instance_ctx *ctx;
+-	struct authenc_esn_instance_ctx *ctx;
 -	const char *enc_name;
  	int err;
  
  	algt = crypto_get_attr_type(tb);
-@@ -401,35 +400,22 @@ static int crypto_authenc_create(struct crypto_template *tmpl,
+@@ -419,47 +418,34 @@ static int crypto_authenc_esn_create(struct crypto_template *tmpl,
  
  	mask = crypto_requires_sync(algt->type, algt->mask);
  
@@ -113,24 +113,23 @@ index aef04792702a..87133bfd48b9 100644
 +		goto err_free_inst;
  	enc = crypto_spawn_skcipher_alg(&ctx->enc);
  
- 	ctx->reqoff = ALIGN(2 * auth->digestsize + auth_base->cra_alignmask,
-@@ -440,12 +426,12 @@ static int crypto_authenc_create(struct crypto_template *tmpl,
- 		     "authenc(%s,%s)", auth_base->cra_name,
- 		     enc->base.cra_name) >=
- 	    CRYPTO_MAX_ALG_NAME)
+ 	err = -ENAMETOOLONG;
+ 	if (snprintf(inst->alg.base.cra_name, CRYPTO_MAX_ALG_NAME,
+ 		     "authencesn(%s,%s)", auth_base->cra_name,
+ 		     enc->base.cra_name) >= CRYPTO_MAX_ALG_NAME)
 -		goto err_drop_enc;
 +		goto err_free_inst;
  
  	if (snprintf(inst->alg.base.cra_driver_name, CRYPTO_MAX_ALG_NAME,
- 		     "authenc(%s,%s)", auth_base->cra_driver_name,
+ 		     "authencesn(%s,%s)", auth_base->cra_driver_name,
  		     enc->base.cra_driver_name) >= CRYPTO_MAX_ALG_NAME)
 -		goto err_drop_enc;
 +		goto err_free_inst;
  
  	inst->alg.base.cra_flags = (auth_base->cra_flags |
  				    enc->base.cra_flags) & CRYPTO_ALG_ASYNC;
-@@ -470,21 +456,11 @@ static int crypto_authenc_create(struct crypto_template *tmpl,
- 	inst->free = crypto_authenc_free;
+@@ -485,21 +471,11 @@ static int crypto_authenc_esn_create(struct crypto_template *tmpl,
+ 	inst->free = crypto_authenc_esn_free,
  
  	err = aead_register_instance(tmpl, inst);
 -	if (err)
@@ -149,12 +148,12 @@ index aef04792702a..87133bfd48b9 100644
 -	kfree(inst);
 -out_put_auth:
 -	goto out;
-+		crypto_authenc_free(inst);
++		crypto_authenc_esn_free(inst);
 +	}
 +	return err;
  }
  
- static struct crypto_template crypto_authenc_tmpl = {
+ static struct crypto_template crypto_authenc_esn_tmpl = {
 -- 
 2.24.1
 
