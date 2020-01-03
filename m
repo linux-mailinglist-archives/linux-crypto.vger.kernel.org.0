@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F8B12F3C3
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jan 2020 05:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3731012F3C5
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jan 2020 05:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgACEFI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1726292AbgACEFI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Thu, 2 Jan 2020 23:05:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39554 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:39560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726292AbgACEFH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1727210AbgACEFH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 2 Jan 2020 23:05:07 -0500
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD1BE21D7D
+        by mail.kernel.org (Postfix) with ESMTPSA id ED17B222C3
         for <linux-crypto@vger.kernel.org>; Fri,  3 Jan 2020 04:05:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578024306;
-        bh=liCio2QV74JVGVp2/G1te0xWk+zuq3FW4EFkuMrqVxw=;
+        s=default; t=1578024307;
+        bh=krCjoqWYb9JakE/BHd/58VVe+cWrL8n1ELLyCYUkXN0=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Pxq6ze28detlqZvSRB/iVggt2tqt3JfBIWpvqPbTon8bYfrhiSukO55At+gN2lv+h
-         3zpgz3smfhCkKM864CbmeGKv8I3/qW/98nqFPbyqIg8OngMH4wZPB3aPvZf7iKZ2pF
-         U7O7v9SdEYa7gq5t48eH8UCWMcIDHgdC9o6ihFAc=
+        b=PcpiB5czGK71LceH5siTCzRnVYPXjSchrBLKTNvccI4ehIp1p31xcaBukgOrnEqut
+         C1+Z0cHDti/gD+r4hPpuvigb/2XVtHIoUVGfnMxUZTZWKBfBi4QIo9W+WmUx7j1osB
+         SYIStjuy4Kw4LG63/Pz7DC6CxCQ6AfinD5LnKgu8=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH v2 5/6] crypto: algapi - remove crypto_template::{alloc,free}()
-Date:   Thu,  2 Jan 2020 20:04:39 -0800
-Message-Id: <20200103040440.12375-6-ebiggers@kernel.org>
+Subject: [PATCH v2 6/6] crypto: algapi - enforce that all instances have a ->free() method
+Date:   Thu,  2 Jan 2020 20:04:40 -0800
+Message-Id: <20200103040440.12375-7-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200103040440.12375-1-ebiggers@kernel.org>
 References: <20200103040440.12375-1-ebiggers@kernel.org>
@@ -40,128 +40,89 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Now that all templates provide a ->create() method which creates an
-instance, installs a strongly-typed ->free() method directly to it, and
-registers it, the older ->alloc() and ->free() methods in
-'struct crypto_template' are no longer used.  Remove them.
+All instances need to have a ->free() method, but people could forget to
+set it and then not notice if the instance is never unregistered.  To
+help detect this bug earlier, don't allow an instance without a ->free()
+method to be registered, and complain loudly if someone tries to do it.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/aead.c           |  5 -----
- crypto/ahash.c          |  5 -----
- crypto/algapi.c         |  5 -----
- crypto/algboss.c        | 12 +-----------
- crypto/shash.c          |  5 -----
- include/crypto/algapi.h |  2 --
- 6 files changed, 1 insertion(+), 33 deletions(-)
+ crypto/aead.c     | 3 +++
+ crypto/ahash.c    | 3 +++
+ crypto/akcipher.c | 2 ++
+ crypto/shash.c    | 3 +++
+ crypto/skcipher.c | 3 +++
+ 5 files changed, 14 insertions(+)
 
 diff --git a/crypto/aead.c b/crypto/aead.c
-index 02a0db076d7e..7707d3223101 100644
+index 7707d3223101..16991095270d 100644
 --- a/crypto/aead.c
 +++ b/crypto/aead.c
-@@ -185,11 +185,6 @@ static void crypto_aead_free_instance(struct crypto_instance *inst)
+@@ -288,6 +288,9 @@ int aead_register_instance(struct crypto_template *tmpl,
  {
- 	struct aead_instance *aead = aead_instance(inst);
- 
--	if (!aead->free) {
--		inst->tmpl->free(inst);
--		return;
--	}
--
- 	aead->free(aead);
- }
- 
-diff --git a/crypto/ahash.c b/crypto/ahash.c
-index 61e374d76b04..cd5d9847d513 100644
---- a/crypto/ahash.c
-+++ b/crypto/ahash.c
-@@ -515,11 +515,6 @@ static void crypto_ahash_free_instance(struct crypto_instance *inst)
- {
- 	struct ahash_instance *ahash = ahash_instance(inst);
- 
--	if (!ahash->free) {
--		inst->tmpl->free(inst);
--		return;
--	}
--
- 	ahash->free(ahash);
- }
- 
-diff --git a/crypto/algapi.c b/crypto/algapi.c
-index 72592795c7e7..69605e21af92 100644
---- a/crypto/algapi.c
-+++ b/crypto/algapi.c
-@@ -65,11 +65,6 @@ static int crypto_check_alg(struct crypto_alg *alg)
- 
- static void crypto_free_instance(struct crypto_instance *inst)
- {
--	if (!inst->alg.cra_type->free) {
--		inst->tmpl->free(inst);
--		return;
--	}
--
- 	inst->alg.cra_type->free(inst);
- }
- 
-diff --git a/crypto/algboss.c b/crypto/algboss.c
-index a62149d6c839..535f1f87e6c1 100644
---- a/crypto/algboss.c
-+++ b/crypto/algboss.c
-@@ -58,7 +58,6 @@ static int cryptomgr_probe(void *data)
- {
- 	struct cryptomgr_param *param = data;
- 	struct crypto_template *tmpl;
--	struct crypto_instance *inst;
  	int err;
  
- 	tmpl = crypto_lookup_template(param->template);
-@@ -66,16 +65,7 @@ static int cryptomgr_probe(void *data)
- 		goto out;
++	if (WARN_ON(!inst->free))
++		return -EINVAL;
++
+ 	err = aead_prepare_alg(&inst->alg);
+ 	if (err)
+ 		return err;
+diff --git a/crypto/ahash.c b/crypto/ahash.c
+index cd5d9847d513..68a0f0cb75c4 100644
+--- a/crypto/ahash.c
++++ b/crypto/ahash.c
+@@ -656,6 +656,9 @@ int ahash_register_instance(struct crypto_template *tmpl,
+ {
+ 	int err;
  
- 	do {
--		if (tmpl->create) {
--			err = tmpl->create(tmpl, param->tb);
--			continue;
--		}
--
--		inst = tmpl->alloc(param->tb);
--		if (IS_ERR(inst))
--			err = PTR_ERR(inst);
--		else if ((err = crypto_register_instance(tmpl, inst)))
--			tmpl->free(inst);
-+		err = tmpl->create(tmpl, param->tb);
- 	} while (err == -EAGAIN && !signal_pending(current));
- 
- 	crypto_tmpl_put(tmpl);
++	if (WARN_ON(!inst->free))
++		return -EINVAL;
++
+ 	err = ahash_prepare_alg(&inst->alg);
+ 	if (err)
+ 		return err;
+diff --git a/crypto/akcipher.c b/crypto/akcipher.c
+index eeed6c151d2f..f866085c8a4a 100644
+--- a/crypto/akcipher.c
++++ b/crypto/akcipher.c
+@@ -147,6 +147,8 @@ EXPORT_SYMBOL_GPL(crypto_unregister_akcipher);
+ int akcipher_register_instance(struct crypto_template *tmpl,
+ 			       struct akcipher_instance *inst)
+ {
++	if (WARN_ON(!inst->free))
++		return -EINVAL;
+ 	akcipher_prepare_alg(&inst->alg);
+ 	return crypto_register_instance(tmpl, akcipher_crypto_instance(inst));
+ }
 diff --git a/crypto/shash.c b/crypto/shash.c
-index e05e75b0f402..70faf28b2d14 100644
+index 70faf28b2d14..c075b26c2a1d 100644
 --- a/crypto/shash.c
 +++ b/crypto/shash.c
-@@ -427,11 +427,6 @@ static void crypto_shash_free_instance(struct crypto_instance *inst)
+@@ -577,6 +577,9 @@ int shash_register_instance(struct crypto_template *tmpl,
  {
- 	struct shash_instance *shash = shash_instance(inst);
+ 	int err;
  
--	if (!shash->free) {
--		inst->tmpl->free(inst);
--		return;
--	}
--
- 	shash->free(shash);
- }
++	if (WARN_ON(!inst->free))
++		return -EINVAL;
++
+ 	err = shash_prepare_alg(&inst->alg);
+ 	if (err)
+ 		return err;
+diff --git a/crypto/skcipher.c b/crypto/skcipher.c
+index 8c37243307aa..ba41f81fac0b 100644
+--- a/crypto/skcipher.c
++++ b/crypto/skcipher.c
+@@ -876,6 +876,9 @@ int skcipher_register_instance(struct crypto_template *tmpl,
+ {
+ 	int err;
  
-diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
-index c16c50f8dac1..e115f9215ed5 100644
---- a/include/crypto/algapi.h
-+++ b/include/crypto/algapi.h
-@@ -63,8 +63,6 @@ struct crypto_template {
- 	struct hlist_head instances;
- 	struct module *module;
- 
--	struct crypto_instance *(*alloc)(struct rtattr **tb);
--	void (*free)(struct crypto_instance *inst);
- 	int (*create)(struct crypto_template *tmpl, struct rtattr **tb);
- 
- 	char name[CRYPTO_MAX_ALG_NAME];
++	if (WARN_ON(!inst->free))
++		return -EINVAL;
++
+ 	err = skcipher_prepare_alg(&inst->alg);
+ 	if (err)
+ 		return err;
 -- 
 2.24.1
 
