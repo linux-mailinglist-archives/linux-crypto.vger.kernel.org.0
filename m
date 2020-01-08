@@ -2,124 +2,147 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1D1134677
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jan 2020 16:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B665A1346A7
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jan 2020 16:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729051AbgAHPmI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 8 Jan 2020 10:42:08 -0500
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:52291 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729045AbgAHPmH (ORCPT
+        id S1726757AbgAHPu0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 8 Jan 2020 10:50:26 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:45844 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726186AbgAHPu0 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 8 Jan 2020 10:42:07 -0500
-Received: by mail-pj1-f67.google.com with SMTP id a6so1236778pjh.2;
-        Wed, 08 Jan 2020 07:42:07 -0800 (PST)
+        Wed, 8 Jan 2020 10:50:26 -0500
+Received: by mail-wr1-f67.google.com with SMTP id j42so3841922wrj.12;
+        Wed, 08 Jan 2020 07:50:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NqcNgcBIdsIjxgPBGKJAVyvsIKyRH4Nc8ZAOSc+D0fE=;
-        b=X695sjDZ3I4ZjRLo6I24zQ/zy2+HMnhKMYzkrip6EpfcvthHq8Ax+KZkMQsZxEeUUU
-         wYJvnt0YXY/nrHPafYHkVWd3Upn3aFRB4M3ZqLt16ZC5jtWFU1b922rTKr3Zp7sFnSU/
-         XP/vOOnJ13BHHu9QXBXe2w3HKY+QbtdcXqtFZiXmYuKsYt84Wd96oZ/98gX4lrZfqzBz
-         P4WyVoM+o+lAN7Az6Ck9gNUiO4X1lzN2RQ5T3Tbh9KQj4NUq9d0C3ZFwZbKTtWWmgAgB
-         oJTzakpiEr1vCInId1dZ1l709PXO/UG7uEJXgGn2WRxilb4D3HmAAnQb70HdqSiYViZi
-         DpBQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0N3N55mKu7D6d7h9hmn6IsvaDLGUWysqQq54G06xnmc=;
+        b=uEShmPzw5xgcVfK3GcKJ1pcAbUUKIEsRASYH9i+gdlGVyVcjN/bjZt8ucd4xpTahK6
+         glwEk3CBwPVEP34eMIfafPiylQFDJd7Ee75Er8GaCG0KEfZpuynSACF69GFFom7n499C
+         uQslmQ7fcLEVWISoJY2nFAJNc/282zr360qcqlhazBJBXjVoawMpqJW6jC0zOLV9MDXa
+         EPuF3iAtAPF2sCwRpZEdnFbml75XX3/6YdRh2iSR+mdI/WXQKIkTUj4BrMocvw6GmbsX
+         8plbDRm4oHg/3sCv9OkAsPM/6HY18h0R28eeMwKk5ty2UYPaXCcJj7MvTj03fR6BP4HK
+         Zh/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NqcNgcBIdsIjxgPBGKJAVyvsIKyRH4Nc8ZAOSc+D0fE=;
-        b=iOWbrqtV3gMXLeRGH+iq+3AvCwWIAtOY1p19vdLIqk0j0SPzLUeQq2WG2kiC1R678t
-         ze3Dnzxda78rkTtg8uh9+qCMR9zswAPp3hjVv7wyGuT8jvHTw2OGDZySNt33I7VJL5im
-         xr9v40K7Jhd68jxs6bB8rubjeQebtJqW+LInKk0YUNj4yr7G15dz/c9Z1l9WWhF9lQ1U
-         JZxdKY9I8RJjOjUtehambq3rvSRRbs7etLEWRJ1oSmYeRyb9zM2MA+ETgI3PyS5/nakg
-         QFRV91CtPNK+p8qtRgUWg1OzohZbiW44NdxR2m0v8/qxNsMjPASX3QzA0u6eClsBQKmm
-         3TZw==
-X-Gm-Message-State: APjAAAUBEGOsI/A++eVaDT011snrgGa5KnOKyfF3+b83dBKZ2g229rLS
-        4lngOTjtwDAQiFAhA74Q6PpK4yzt
-X-Google-Smtp-Source: APXvYqza+Ai3sj9qXmjB+8LuxnlqvhRuDxggGyIJVthk929D3XxHkipgLVT+kgJlJhcVp0zhz0eDrA==
-X-Received: by 2002:a17:902:7203:: with SMTP id ba3mr5794754plb.249.1578498126366;
-        Wed, 08 Jan 2020 07:42:06 -0800 (PST)
-Received: from localhost.localdomain (c-67-165-113-11.hsd1.wa.comcast.net. [67.165.113.11])
-        by smtp.gmail.com with ESMTPSA id e1sm4286640pfl.98.2020.01.08.07.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jan 2020 07:42:05 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0N3N55mKu7D6d7h9hmn6IsvaDLGUWysqQq54G06xnmc=;
+        b=gYpO2GtInG8wYMJwWMQZam20NhqumYmtwjxrQ40UUkbLqfbLUHd56pkLWbKh1F4o6z
+         kc6McJiSrxYyEAWOvKxjW86Y8mEnIAUdWPNXLZ/LWqB9yJ/SVPIpijgQF+cz4SChDwXm
+         4XtgVgW+1zzci3YU+sOpDPuhJ0n0D1Ccq0PHUJqOfVDuYVGI+dL2RZAdCF2MPaYpD1j/
+         wVuEJhC70ljvbEMGsT4/54t3kd7aHVwTVTXfTmGAGC9XwCKOdOxAmMZ0dqwLq9kD8Wiv
+         g13iLej5R5rJJjjD5ibTWb9kUM/IEgut+0vkSqls3e+b8r7iTDQcdFH8f/Q2fRdNMtR3
+         UNeg==
+X-Gm-Message-State: APjAAAWmxCphBSRdbuADFplYmylcLDvkMcFEBbWFLio37+r0Hc3BWIwZ
+        yyKffDSRYvtEn+j87U8ZUUIqvS7nxcSVKUurFXQ=
+X-Google-Smtp-Source: APXvYqxPEibow2/dOPHBHRrXKbKanMI8VD5bNxb9vyWi016tP8DINM//hzIULp8SZLVtL0ef1MxEO7LiWO1kexZKxMk=
+X-Received: by 2002:adf:e78b:: with SMTP id n11mr5355464wrm.10.1578498624011;
+ Wed, 08 Jan 2020 07:50:24 -0800 (PST)
+MIME-Version: 1.0
+References: <20191105151353.6522-1-andrew.smirnov@gmail.com>
+ <DB7PR04MB4620E3087C59A26B865DEE988B790@DB7PR04MB4620.eurprd04.prod.outlook.com>
+ <CAHQ1cqH5hstMwbO1vqOkZ3GVe-j5a+c3TX-yosq-TvuFFxPkHQ@mail.gmail.com>
+ <VI1PR0402MB34851C1681F8A18341A8971098760@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+ <CAHQ1cqFPmJ7AR3ftTyCy4DiE0YQgspPBnp+EQLPOwxXo6tTcYg@mail.gmail.com> <CAHQ1cqE2PGKUPfc8SUAw2TkuDXRbFtnyux=bWyOny21KK8dhjA@mail.gmail.com>
+In-Reply-To: <CAHQ1cqE2PGKUPfc8SUAw2TkuDXRbFtnyux=bWyOny21KK8dhjA@mail.gmail.com>
 From:   Andrey Smirnov <andrew.smirnov@gmail.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
+Date:   Wed, 8 Jan 2020 07:50:12 -0800
+Message-ID: <CAHQ1cqFR4ztK7zToN3OeTDYEXaGMkLa8uY3ka+Sgmf3dwxJsFg@mail.gmail.com>
+Subject: Re: [PATCH 0/5] CAAM JR lifecycle
+To:     Horia Geanta <horia.geanta@nxp.com>
+Cc:     Vakul Garg <vakul.garg@nxp.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
         Chris Healy <cphealy@gmail.com>,
         Lucas Stach <l.stach@pengutronix.de>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Iuliana Prodan <iuliana.prodan@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: [PATCH v6 7/7] crypto: caam - limit single JD RNG output to maximum of 16 bytes
-Date:   Wed,  8 Jan 2020 07:40:47 -0800
-Message-Id: <20200108154047.12526-8-andrew.smirnov@gmail.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200108154047.12526-1-andrew.smirnov@gmail.com>
-References: <20200108154047.12526-1-andrew.smirnov@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-In order to follow recommendation in SP800-90C (section "9.4 The
-Oversampling-NRBG Construction") limit the output of "generate" JD
-submitted to CAAM. See
-https://lore.kernel.org/linux-crypto/VI1PR0402MB3485EF10976A4A69F90E5B0F98580@VI1PR0402MB3485.eurprd04.prod.outlook.com/
-for more details.
+On Sat, Nov 16, 2019 at 10:15 PM Andrey Smirnov
+<andrew.smirnov@gmail.com> wrote:
+>
+> On Wed, Nov 13, 2019 at 11:25 AM Andrey Smirnov
+> <andrew.smirnov@gmail.com> wrote:
+> >
+> > On Wed, Nov 13, 2019 at 10:57 AM Horia Geanta <horia.geanta@nxp.com> wrote:
+> > >
+> > > On 11/6/2019 5:19 PM, Andrey Smirnov wrote:
+> > > > On Tue, Nov 5, 2019 at 11:27 PM Vakul Garg <vakul.garg@nxp.com> wrote:
+> > > >>
+> > > >>
+> > > >>
+> > > >>> -----Original Message-----
+> > > >>> From: linux-crypto-owner@vger.kernel.org <linux-crypto-
+> > > >>> owner@vger.kernel.org> On Behalf Of Andrey Smirnov
+> > > >>> Sent: Tuesday, November 5, 2019 8:44 PM
+> > > >>> To: linux-crypto@vger.kernel.org
+> > > >>> Cc: Andrey Smirnov <andrew.smirnov@gmail.com>; Chris Healy
+> > > >>> <cphealy@gmail.com>; Lucas Stach <l.stach@pengutronix.de>; Horia Geanta
+> > > >>> <horia.geanta@nxp.com>; Herbert Xu <herbert@gondor.apana.org.au>;
+> > > >>> Iuliana Prodan <iuliana.prodan@nxp.com>; dl-linux-imx <linux-
+> > > >>> imx@nxp.com>; linux-kernel@vger.kernel.org
+> > > >>> Subject: [PATCH 0/5] CAAM JR lifecycle
+> > > >>>
+> > > >>> Everyone:
+> > > >>>
+> > > >>> This series is a different approach to addressing the issues brought up in
+> > > >>> [discussion]. This time the proposition is to get away from creating per-JR
+> > > >>> platfrom device, move all of the underlying code into caam.ko and disable
+> > > >>> manual binding/unbinding of the CAAM device via sysfs. Note that this series
+> > > >>> is a rough cut intented to gauge if this approach could be acceptable for
+> > > >>> upstreaming.
+> > > >>>
+> > > >>> Thanks,
+> > > >>> Andrey Smirnov
+> > > >>>
+> > > >>> [discussion] lore.kernel.org/lkml/20190904023515.7107-13-
+> > > >>> andrew.smirnov@gmail.com
+> > > >>>
+> > > >>> Andrey Smirnov (5):
+> > > >>>   crypto: caam - use static initialization
+> > > >>>   crypto: caam - introduce caam_jr_cbk
+> > > >>>   crypto: caam - convert JR API to use struct caam_drv_private_jr
+> > > >>>   crypto: caam - do not create a platform devices for JRs
+> > > >>>   crypto: caam - disable CAAM's bind/unbind attributes
+> > > >>>
+> > > >>
+> > > >> To access caam jobrings from DPDK (user space drivers), we unbind job-ring's platform device from the kernel.
+> > > >> What would be the alternate way to enable job ring drivers in user space?
+> > > >>
+> > > >
+> > > > Wouldn't either building your kernel with
+> > > > CONFIG_CRYPTO_DEV_FSL_CAAM_JR=n (this series doesn't handle that right
+> > > > currently due to being a rough cut) or disabling specific/all JRs via
+> > > > DT accomplish the same goal?
+> > > >
+> > > It's not a 1:1 match, the ability to move a ring to user space / VM etc.
+> > > *dynamically* goes away.
+> > >
+> >
+> > Wouldn't it be possible to do that dynamically using DT overlays? That
+> > is "modprobe -r caam; <apply overlay>; modprobe caam"?
+> >
+>
+> Or, alternatively, could adding a module parameter, say "jr_mask", to
+> limit JRs controlled by the driver cover dynamic use case?
+>
 
-This change should make CAAM's hwrng driver good enough to have 999
-quality rating.
+Horia, could you please comment on the above? I think getting rid of
+struct device for JRs is the best approach to dealing with described
+corner case problems + it will allows us to get rid of this custom JR
+users lifecycle management
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/crypto/caam/jr.c?h=v5.4.8#n26
+since it can be just done as a part for caam_probe(), so I'd like to
+either move forward on this series or close this discussion.
 
-Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
-Cc: Chris Healy <cphealy@gmail.com>
-Cc: Lucas Stach <l.stach@pengutronix.de>
-Cc: Horia Geantă <horia.geanta@nxp.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-imx@nxp.com
----
- drivers/crypto/caam/caamrng.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/crypto/caam/caamrng.c b/drivers/crypto/caam/caamrng.c
-index 91ccde0240fe..2b75ffffcac9 100644
---- a/drivers/crypto/caam/caamrng.c
-+++ b/drivers/crypto/caam/caamrng.c
-@@ -23,7 +23,7 @@
- #include "error.h"
- 
- /* length of descriptors */
--#define CAAM_RNG_MAX_FIFO_STORE_SIZE	U16_MAX
-+#define CAAM_RNG_MAX_FIFO_STORE_SIZE	16
- 
- #define CAAM_RNG_FIFO_LEN		SZ_32K /* Must be a multiple of 2 */
- 
-@@ -134,7 +134,7 @@ static void caam_rng_fill_async(struct caam_rng_ctx *ctx)
- 
- 	sg_init_table(sg, ARRAY_SIZE(sg));
- 	nents = kfifo_dma_in_prepare(&ctx->fifo, sg, ARRAY_SIZE(sg),
--				     CAAM_RNG_FIFO_LEN);
-+				     CAAM_RNG_MAX_FIFO_STORE_SIZE);
- 	if (!nents)
- 		return;
- 
-@@ -241,6 +241,7 @@ int caam_rng_init(struct device *ctrldev)
- 	ctx->rng.init    = caam_init;
- 	ctx->rng.cleanup = caam_cleanup;
- 	ctx->rng.read    = caam_read;
-+	ctx->rng.quality = 999;
- 
- 	dev_info(ctrldev, "registering rng-caam\n");
- 
--- 
-2.21.0
-
+Thanks,
+Andrey Smirnov
