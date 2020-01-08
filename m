@@ -2,61 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 567D0134675
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jan 2020 16:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4FB134681
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jan 2020 16:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729040AbgAHPmG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 8 Jan 2020 10:42:06 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:33595 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726363AbgAHPmC (ORCPT
+        id S1726290AbgAHPoI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 8 Jan 2020 10:44:08 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:43018 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726900AbgAHPmE (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 8 Jan 2020 10:42:02 -0500
-Received: by mail-pf1-f193.google.com with SMTP id z16so1830490pfk.0;
-        Wed, 08 Jan 2020 07:42:02 -0800 (PST)
+        Wed, 8 Jan 2020 10:42:04 -0500
+Received: by mail-pf1-f196.google.com with SMTP id x6so1804105pfo.10;
+        Wed, 08 Jan 2020 07:42:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=e1VydrddQQ2iYB1DThmBo5L3jMtREdgLznIozdRQZ6Q=;
-        b=YsQN8sZDCsVBLyqVqglFYQX3ipzdNfpAUgQ8dxBhxSuL45z81+BFcKCb3k8LSqqBIy
-         8yjy0b2ow+l/gtoaQcoU+C7T/8s1DL5R6evI3b6cwef3mYlKGvO6gJkO6FnrblnbiEnh
-         e/h96a3ANkKUIaP1TLQBCH05aR7CvW7/zKAl5z7Cp4xBFeJzwDFKNcuFvJtaAXuVg+Qj
-         zxjfuONcUpwegTVDC2p8PvEr/kCvYuVK1LS8nGnAuQb9NPWx8xHvLDpQj0ATfs0itati
-         nUYljY6+1MAWRv+zoIlZq963wyGuJ234s910bSQ+LuovSBGGQiyM2Pqo0eIJFFAtrhp5
-         N+Bg==
+        bh=CzFFEei+JwG2EZuAl0ehAfcwGBgiwRJjuVINpXuZnf8=;
+        b=KVEziDG5F7/xs1cRyrwrrAtV0AMGoout0aH231tCyCdZx40Nj3RlcgF+KpzPWkvGAQ
+         UkYG9gSgmEi1q4A1563uJwVy3L/M7EwJBcN+BX3aLWU2XFA3j4v/BjKZId1lZR1wD00D
+         EtEwtVD6lkSe9KjuDhJBhV/VT4voOFCbTWoNusW6+S0d2utwR+RphjiC1xg5JZbiadCp
+         IR8sn3t5ibt47otmhn94/JdcLQFYnkkeBLqN7iXtFlDY41l2+WRI6R54nAkfULufB4DM
+         FE6qZTVMqZTT4AdwcLwiZfjpEFOZ6la9kR0EoD9YaogBwNxDwYFNG6z0Z51vJHrlV5td
+         5XBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=e1VydrddQQ2iYB1DThmBo5L3jMtREdgLznIozdRQZ6Q=;
-        b=U+CsERhGGY+BPZGK3MQIc0kjE+JtXJolijv5pXy//XRXoZTASxH2Yz1O17VDNY1tPI
-         snH53SNFCUvgwCmbMRvHJ5DgNO5NQ2IOO/P3DVkqUK6vwzTuM6b2jFy7EH3egvqog4mW
-         4zbYQ7ZLb5hBeqW4jMlfW4T+HCP2YqzbB79MCEkf5l3jA4wyKR+HkO0LI1qNIJRjomY8
-         Zpkd0I69lwihWOxPGPdVx/voCpOXnVvSnp1v3onL1d9BL048qUB4ifpA40cipK7T4zAU
-         B8yrJer+nFMnYjmkQ7pp4V7vZeHXzeT5BoWg4WyQsgTm7SZlL46DTyYslscpnezuaHVb
-         dgTg==
-X-Gm-Message-State: APjAAAU2I8ejS+6Wkei8RRHhT1wjGMh50LIhaiyllTGJLKaGqQYnyiOA
-        qD390nQyuA8tevj07eC38pdD4D9I
-X-Google-Smtp-Source: APXvYqx3dfQwyBq6j3FDwObhn/gSdqmirlOoClvmjzVDteEIveTxU2sklT6ftL0+rbntMCSOsgYZ9Q==
-X-Received: by 2002:a62:1d87:: with SMTP id d129mr5551144pfd.87.1578498121397;
-        Wed, 08 Jan 2020 07:42:01 -0800 (PST)
+        bh=CzFFEei+JwG2EZuAl0ehAfcwGBgiwRJjuVINpXuZnf8=;
+        b=awhIHQlXS82M89Ya2PQtOzfO2s8ctWMPY9J76tAnpHky+y/uGrg35f54rUmGfm1fLD
+         3rEBRdp+eQy96/XEK6Qse2ZujWe/rhsO0+VdCB5H4J0hmxp6Nch4v59Ezc7oAUsrm7ac
+         Z+mGBbl6O8IiKcd+WC3x4f/6fOBAcHGHCgftfsDohkgU0DdMgzUg8HVdPSgTg2bmwcJ+
+         pg/z3zrpuefjtscYhB1yQi88X6zQ21qNgfh7YVJ36nPNnuNBM7r7MkPLm0Zd6h3JCB9o
+         pIQgIUGiQdaxTqfgp407vM8TbB1w9pKQChlJNxwc2fKtfLbHqNZ9ypFWem8JDzAXdCiB
+         +D7g==
+X-Gm-Message-State: APjAAAW0H3GVfUngrdVEEeDPLIMYV/SPR87n1R9BPCU4cYBlZe+FRjg1
+        wxjQPJ5dfI5MnPwgm1qr/YIiYGot
+X-Google-Smtp-Source: APXvYqyw7/Tfbz/3km4S6vfphbbp3vGQJ4bGCeD8bUUwGESsP7pEwvYkiyKosoafMjrhlNfLVsytXA==
+X-Received: by 2002:a62:2cc1:: with SMTP id s184mr5807578pfs.111.1578498123143;
+        Wed, 08 Jan 2020 07:42:03 -0800 (PST)
 Received: from localhost.localdomain (c-67-165-113-11.hsd1.wa.comcast.net. [67.165.113.11])
-        by smtp.gmail.com with ESMTPSA id e1sm4286640pfl.98.2020.01.08.07.41.59
+        by smtp.gmail.com with ESMTPSA id e1sm4286640pfl.98.2020.01.08.07.42.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jan 2020 07:42:00 -0800 (PST)
+        Wed, 08 Jan 2020 07:42:02 -0800 (PST)
 From:   Andrey Smirnov <andrew.smirnov@gmail.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Vipul Kumar <vipul_kumar@mentor.com>,
         Chris Healy <cphealy@gmail.com>,
         Lucas Stach <l.stach@pengutronix.de>,
         =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Iuliana Prodan <iuliana.prodan@nxp.com>,
         linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: [PATCH v6 4/7] crypto: caam - check if RNG job failed
-Date:   Wed,  8 Jan 2020 07:40:44 -0800
-Message-Id: <20200108154047.12526-5-andrew.smirnov@gmail.com>
+Subject: [PATCH v6 5/7] crypto: caam - invalidate entropy register during RNG initialization
+Date:   Wed,  8 Jan 2020 07:40:45 -0800
+Message-Id: <20200108154047.12526-6-andrew.smirnov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200108154047.12526-1-andrew.smirnov@gmail.com>
 References: <20200108154047.12526-1-andrew.smirnov@gmail.com>
@@ -68,9 +70,12 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-We shouldn't stay silent if RNG job fails. Add appropriate code to
-check for that case and propagate error code up appropriately.
+In order to make sure that we always use non-stale entropy data, change
+the code to invalidate entropy register during RNG initialization.
 
+Signed-off-by: Aymen Sghaier <aymen.sghaier@nxp.com>
+Signed-off-by: Vipul Kumar <vipul_kumar@mentor.com>
+[andrew.smirnov@gmail.com ported to upstream kernel, rewrote commit msg]
 Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
 Cc: Chris Healy <cphealy@gmail.com>
 Cc: Lucas Stach <l.stach@pengutronix.de>
@@ -81,61 +86,53 @@ Cc: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: linux-imx@nxp.com
 ---
- drivers/crypto/caam/caamrng.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ drivers/crypto/caam/ctrl.c | 11 ++++++++---
+ drivers/crypto/caam/regs.h |  3 ++-
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/caam/caamrng.c b/drivers/crypto/caam/caamrng.c
-index 3960f5c81c97..554aafbd4d11 100644
---- a/drivers/crypto/caam/caamrng.c
-+++ b/drivers/crypto/caam/caamrng.c
-@@ -52,6 +52,11 @@ struct caam_rng_ctx {
- 	struct kfifo fifo;
- };
+diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+index c99a6a3b22de..22d8676dd610 100644
+--- a/drivers/crypto/caam/ctrl.c
++++ b/drivers/crypto/caam/ctrl.c
+@@ -338,8 +338,12 @@ static void kick_trng(struct platform_device *pdev, int ent_delay)
+ 	ctrl = (struct caam_ctrl __iomem *)ctrlpriv->ctrl;
+ 	r4tst = &ctrl->r4tst[0];
  
-+struct caam_rng_job_ctx {
-+	struct completion *done;
-+	int *err;
-+};
-+
- static struct caam_rng_ctx *to_caam_rng_ctx(struct hwrng *r)
- {
- 	return container_of(r, struct caam_rng_ctx, rng);
-@@ -60,12 +65,12 @@ static struct caam_rng_ctx *to_caam_rng_ctx(struct hwrng *r)
- static void caam_rng_done(struct device *jrdev, u32 *desc, u32 err,
- 			  void *context)
- {
--	struct completion *done = context;
-+	struct caam_rng_job_ctx *jctx = context;
+-	/* put RNG4 into program mode */
+-	clrsetbits_32(&r4tst->rtmctl, 0, RTMCTL_PRGM);
++	/*
++	 * Setting both RTMCTL:PRGM and RTMCTL:TRNG_ACC causes TRNG to
++	 * properly invalidate the entropy in the entropy register and
++	 * force re-generation.
++	 */
++	clrsetbits_32(&r4tst->rtmctl, 0, RTMCTL_PRGM | RTMCTL_ACC);
  
- 	if (err)
--		caam_jr_strstatus(jrdev, err);
-+		*jctx->err = caam_jr_strstatus(jrdev, err);
- 
--	complete(done);
-+	complete(jctx->done);
+ 	/*
+ 	 * Performance-wise, it does not make sense to
+@@ -369,7 +373,8 @@ static void kick_trng(struct platform_device *pdev, int ent_delay)
+ 	 * select raw sampling in both entropy shifter
+ 	 * and statistical checker; ; put RNG4 into run mode
+ 	 */
+-	clrsetbits_32(&r4tst->rtmctl, RTMCTL_PRGM, RTMCTL_SAMP_MODE_RAW_ES_SC);
++	clrsetbits_32(&r4tst->rtmctl, RTMCTL_PRGM | RTMCTL_ACC,
++		      RTMCTL_SAMP_MODE_RAW_ES_SC);
  }
  
- static u32 *caam_init_desc(u32 *desc, dma_addr_t dst_dma, int len)
-@@ -89,6 +94,10 @@ static int caam_rng_read_one(struct device *jrdev,
- {
- 	dma_addr_t dst_dma;
- 	int err;
-+	struct caam_rng_job_ctx jctx = {
-+		.done = done,
-+		.err  = &err,
-+	};
+ static int caam_get_era_from_hw(struct caam_ctrl __iomem *ctrl)
+diff --git a/drivers/crypto/caam/regs.h b/drivers/crypto/caam/regs.h
+index 05127b70527d..c191e8fd0fa7 100644
+--- a/drivers/crypto/caam/regs.h
++++ b/drivers/crypto/caam/regs.h
+@@ -487,7 +487,8 @@ struct rngtst {
  
- 	len = min_t(int, len, CAAM_RNG_MAX_FIFO_STORE_SIZE);
- 
-@@ -101,7 +110,7 @@ static int caam_rng_read_one(struct device *jrdev,
- 	init_completion(done);
- 	err = caam_jr_enqueue(jrdev,
- 			      caam_init_desc(desc, dst_dma, len),
--			      caam_rng_done, done);
-+			      caam_rng_done, &jctx);
- 	if (!err)
- 		wait_for_completion(done);
- 
+ /* RNG4 TRNG test registers */
+ struct rng4tst {
+-#define RTMCTL_PRGM	0x00010000	/* 1 -> program mode, 0 -> run mode */
++#define RTMCTL_ACC  BIT(5)  /* TRNG access mode */
++#define RTMCTL_PRGM BIT(16) /* 1 -> program mode, 0 -> run mode */
+ #define RTMCTL_SAMP_MODE_VON_NEUMANN_ES_SC	0 /* use von Neumann data in
+ 						     both entropy shifter and
+ 						     statistical checker */
 -- 
 2.21.0
 
