@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9F9136890
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2020 08:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 904B313688D
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2020 08:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgAJHx5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 10 Jan 2020 02:53:57 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:42540 "EHLO huawei.com"
+        id S1726508AbgAJHxy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 10 Jan 2020 02:53:54 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:42450 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726549AbgAJHxz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 10 Jan 2020 02:53:55 -0500
+        id S1726549AbgAJHxy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 10 Jan 2020 02:53:54 -0500
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 20C8C25F27279EA81904;
+        by Forcepoint Email with ESMTP id 052519177596D5606EBF;
         Fri, 10 Jan 2020 15:53:52 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
@@ -25,9 +25,9 @@ CC:     <linux-crypto@vger.kernel.org>, <linuxarm@huawei.com>,
         <liulongfang@huawei.com>, <qianweili@huawei.com>,
         <zhangwei375@huawei.com>, <fanghao11@huawei.com>,
         <forest.zhouchang@huawei.com>
-Subject: [PATCH 7/9] crypto: hisilicon - Add branch prediction macro
-Date:   Fri, 10 Jan 2020 15:49:56 +0800
-Message-ID: <1578642598-8584-8-git-send-email-xuzaibo@huawei.com>
+Subject: [PATCH 8/9] crypto: hisilicon - redefine skcipher initiation
+Date:   Fri, 10 Jan 2020 15:49:57 +0800
+Message-ID: <1578642598-8584-9-git-send-email-xuzaibo@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1578642598-8584-1-git-send-email-xuzaibo@huawei.com>
 References: <1578642598-8584-1-git-send-email-xuzaibo@huawei.com>
@@ -40,134 +40,158 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-After adding branch prediction for skcipher hot path,
-a little bit income of performance is gotten.
+1.Define base initiation of QP for context which can be reused.
+2.Define cipher initiation for other algorithms.
 
 Signed-off-by: Zaibo Xu <xuzaibo@huawei.com>
 ---
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ drivers/crypto/hisilicon/sec2/sec_crypto.c | 96 +++++++++++++++++++-----------
+ 1 file changed, 61 insertions(+), 35 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 568c174..521bab8 100644
+index 521bab8..f919dea 100644
 --- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
 +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -69,7 +69,7 @@ static int sec_alloc_req_id(struct sec_req *req, struct sec_qp_ctx *qp_ctx)
- 	req_id = idr_alloc_cyclic(&qp_ctx->req_idr, NULL,
- 				  0, QM_Q_DEPTH, GFP_ATOMIC);
- 	mutex_unlock(&qp_ctx->req_lock);
--	if (req_id < 0) {
-+	if (unlikely(req_id < 0)) {
- 		dev_err(SEC_CTX_DEV(req->ctx), "alloc req id fail!\n");
- 		return req_id;
- 	}
-@@ -84,7 +84,7 @@ static void sec_free_req_id(struct sec_req *req)
- 	struct sec_qp_ctx *qp_ctx = req->qp_ctx;
- 	int req_id = req->req_id;
- 
--	if (req_id < 0 || req_id >= QM_Q_DEPTH) {
-+	if (unlikely(req_id < 0 || req_id >= QM_Q_DEPTH)) {
- 		dev_err(SEC_CTX_DEV(req->ctx), "free request id invalid!\n");
- 		return;
- 	}
-@@ -108,7 +108,7 @@ static void sec_req_cb(struct hisi_qp *qp, void *resp)
- 	u8 type;
- 
- 	type = bd->type_cipher_auth & SEC_TYPE_MASK;
--	if (type != SEC_BD_TYPE2) {
-+	if (unlikely(type != SEC_BD_TYPE2)) {
- 		pr_err("err bd type [%d]\n", type);
- 		return;
- 	}
-@@ -144,7 +144,7 @@ static int sec_bd_send(struct sec_ctx *ctx, struct sec_req *req)
- 	mutex_unlock(&qp_ctx->req_lock);
- 	atomic64_inc(&ctx->sec->debug.dfx.send_cnt);
- 
--	if (ret == -EBUSY)
-+	if (unlikely(ret == -EBUSY))
- 		return -ENOBUFS;
- 
- 	if (!ret) {
-@@ -526,13 +526,13 @@ static int sec_request_transfer(struct sec_ctx *ctx, struct sec_req *req)
- 	int ret;
- 
- 	ret = ctx->req_op->buf_map(ctx, req);
--	if (ret)
-+	if (unlikely(ret))
- 		return ret;
- 
- 	ctx->req_op->do_transfer(ctx, req);
- 
- 	ret = ctx->req_op->bd_fill(ctx, req);
--	if (ret)
-+	if (unlikely(ret))
- 		goto unmap_req_buf;
- 
- 	return ret;
-@@ -617,7 +617,7 @@ static void sec_update_iv(struct sec_req *req)
- 
- 	sz = sg_pcopy_to_buffer(sgl, sg_nents(sgl), sk_req->iv,
- 				iv_size, sk_req->cryptlen - iv_size);
--	if (sz != iv_size)
-+	if (unlikely(sz != iv_size))
- 		dev_err(SEC_CTX_DEV(req->ctx), "copy output iv error!\n");
+@@ -273,25 +273,17 @@ static void sec_release_qp_ctx(struct sec_ctx *ctx,
+ 	hisi_qm_release_qp(qp_ctx->qp);
  }
  
-@@ -659,7 +659,7 @@ static int sec_request_init(struct sec_ctx *ctx, struct sec_req *req)
- 	qp_ctx = &ctx->qp_ctx[queue_id];
+-static int sec_skcipher_init(struct crypto_skcipher *tfm)
++static int sec_ctx_base_init(struct sec_ctx *ctx)
+ {
+-	struct sec_ctx *ctx = crypto_skcipher_ctx(tfm);
+-	struct sec_cipher_ctx *c_ctx;
+ 	struct sec_dev *sec;
+-	struct device *dev;
+-	struct hisi_qm *qm;
+ 	int i, ret;
  
- 	req->req_id = sec_alloc_req_id(req, qp_ctx);
--	if (req->req_id < 0) {
-+	if (unlikely(req->req_id < 0)) {
- 		sec_free_queue_id(ctx, req);
- 		return req->req_id;
+-	crypto_skcipher_set_reqsize(tfm, sizeof(struct sec_req));
+-
+ 	sec = sec_find_device(cpu_to_node(smp_processor_id()));
+ 	if (!sec) {
+ 		pr_err("Can not find proper Hisilicon SEC device!\n");
+ 		return -ENODEV;
  	}
-@@ -677,11 +677,11 @@ static int sec_process(struct sec_ctx *ctx, struct sec_req *req)
- 	int ret;
+ 	ctx->sec = sec;
+-	qm = &sec->qm;
+-	dev = &qm->pdev->dev;
+ 	ctx->hlf_q_num = sec->ctx_q_num >> 1;
  
- 	ret = sec_request_init(ctx, req);
--	if (ret)
-+	if (unlikely(ret))
- 		return ret;
+ 	/* Half of queue depth is taken as fake requests limit in the queue. */
+@@ -302,27 +294,12 @@ static int sec_skcipher_init(struct crypto_skcipher *tfm)
+ 		return -ENOMEM;
  
- 	ret = sec_request_transfer(ctx, req);
--	if (ret)
-+	if (unlikely(ret))
- 		goto err_uninit_req;
- 
- 	/* Output IV as decrypto */
-@@ -689,7 +689,7 @@ static int sec_process(struct sec_ctx *ctx, struct sec_req *req)
- 		sec_update_iv(req);
- 
- 	ret = ctx->req_op->bd_send(ctx, req);
--	if (ret != -EBUSY && ret != -EINPROGRESS) {
-+	if (unlikely(ret != -EBUSY && ret != -EINPROGRESS)) {
- 		dev_err_ratelimited(SEC_CTX_DEV(ctx), "send sec request failed!\n");
- 		goto err_send_req;
+ 	for (i = 0; i < sec->ctx_q_num; i++) {
+-		ret = sec_create_qp_ctx(qm, ctx, i, 0);
++		ret = sec_create_qp_ctx(&sec->qm, ctx, i, 0);
+ 		if (ret)
+ 			goto err_sec_release_qp_ctx;
  	}
-@@ -740,19 +740,19 @@ static int sec_skcipher_param_check(struct sec_ctx *ctx, struct sec_req *sreq)
- 	struct device *dev = SEC_CTX_DEV(ctx);
- 	u8 c_alg = ctx->c_ctx.c_alg;
  
--	if (!sk_req->src || !sk_req->dst) {
-+	if (unlikely(!sk_req->src || !sk_req->dst)) {
- 		dev_err(dev, "skcipher input param error!\n");
- 		return -EINVAL;
- 	}
- 	sreq->c_req.c_len = sk_req->cryptlen;
- 	if (c_alg == SEC_CALG_3DES) {
--		if (sk_req->cryptlen & (DES3_EDE_BLOCK_SIZE - 1)) {
-+		if (unlikely(sk_req->cryptlen & (DES3_EDE_BLOCK_SIZE - 1))) {
- 			dev_err(dev, "skcipher 3des input length error!\n");
- 			return -EINVAL;
- 		}
- 		return 0;
- 	} else if (c_alg == SEC_CALG_AES || c_alg == SEC_CALG_SM4) {
--		if (sk_req->cryptlen & (AES_BLOCK_SIZE - 1)) {
-+		if (unlikely(sk_req->cryptlen & (AES_BLOCK_SIZE - 1))) {
- 			dev_err(dev, "skcipher aes input length error!\n");
- 			return -EINVAL;
- 		}
+-	c_ctx = &ctx->c_ctx;
+-	c_ctx->ivsize = crypto_skcipher_ivsize(tfm);
+-	if (c_ctx->ivsize > SEC_IV_SIZE) {
+-		dev_err(dev, "get error iv size!\n");
+-		ret = -EINVAL;
+-		goto err_sec_release_qp_ctx;
+-	}
+-	c_ctx->c_key = dma_alloc_coherent(dev, SEC_MAX_KEY_SIZE,
+-					  &c_ctx->c_key_dma, GFP_KERNEL);
+-	if (!c_ctx->c_key) {
+-		ret = -ENOMEM;
+-		goto err_sec_release_qp_ctx;
+-	}
+-
+ 	return 0;
+-
+ err_sec_release_qp_ctx:
+ 	for (i = i - 1; i >= 0; i--)
+ 		sec_release_qp_ctx(ctx, &ctx->qp_ctx[i]);
+@@ -331,17 +308,9 @@ static int sec_skcipher_init(struct crypto_skcipher *tfm)
+ 	return ret;
+ }
+ 
+-static void sec_skcipher_uninit(struct crypto_skcipher *tfm)
++static void sec_ctx_base_uninit(struct sec_ctx *ctx)
+ {
+-	struct sec_ctx *ctx = crypto_skcipher_ctx(tfm);
+-	struct sec_cipher_ctx *c_ctx = &ctx->c_ctx;
+-	int i = 0;
+-
+-	if (c_ctx->c_key) {
+-		dma_free_coherent(SEC_CTX_DEV(ctx), SEC_MAX_KEY_SIZE,
+-				  c_ctx->c_key, c_ctx->c_key_dma);
+-		c_ctx->c_key = NULL;
+-	}
++	int i;
+ 
+ 	for (i = 0; i < ctx->sec->ctx_q_num; i++)
+ 		sec_release_qp_ctx(ctx, &ctx->qp_ctx[i]);
+@@ -349,6 +318,63 @@ static void sec_skcipher_uninit(struct crypto_skcipher *tfm)
+ 	kfree(ctx->qp_ctx);
+ }
+ 
++static int sec_cipher_init(struct sec_ctx *ctx)
++{
++	struct sec_cipher_ctx *c_ctx = &ctx->c_ctx;
++
++	c_ctx->c_key = dma_alloc_coherent(SEC_CTX_DEV(ctx), SEC_MAX_KEY_SIZE,
++					  &c_ctx->c_key_dma, GFP_KERNEL);
++	if (!c_ctx->c_key)
++		return -ENOMEM;
++
++	return 0;
++}
++
++static void sec_cipher_uninit(struct sec_ctx *ctx)
++{
++	struct sec_cipher_ctx *c_ctx = &ctx->c_ctx;
++
++	memzero_explicit(c_ctx->c_key, SEC_MAX_KEY_SIZE);
++	dma_free_coherent(SEC_CTX_DEV(ctx), SEC_MAX_KEY_SIZE,
++			  c_ctx->c_key, c_ctx->c_key_dma);
++}
++
++static int sec_skcipher_init(struct crypto_skcipher *tfm)
++{
++	struct sec_ctx *ctx = crypto_skcipher_ctx(tfm);
++	int ret;
++
++	ctx = crypto_skcipher_ctx(tfm);
++	crypto_skcipher_set_reqsize(tfm, sizeof(struct sec_req));
++	ctx->c_ctx.ivsize = crypto_skcipher_ivsize(tfm);
++	if (ctx->c_ctx.ivsize > SEC_IV_SIZE) {
++		dev_err(SEC_CTX_DEV(ctx), "get error skcipher iv size!\n");
++		return -EINVAL;
++	}
++
++	ret = sec_ctx_base_init(ctx);
++	if (ret)
++		return ret;
++
++	ret = sec_cipher_init(ctx);
++	if (ret)
++		goto err_cipher_init;
++
++	return 0;
++err_cipher_init:
++	sec_ctx_base_uninit(ctx);
++
++	return ret;
++}
++
++static void sec_skcipher_uninit(struct crypto_skcipher *tfm)
++{
++	struct sec_ctx *ctx = crypto_skcipher_ctx(tfm);
++
++	sec_cipher_uninit(ctx);
++	sec_ctx_base_uninit(ctx);
++}
++
+ static int sec_skcipher_3des_setkey(struct sec_cipher_ctx *c_ctx,
+ 				    const u32 keylen,
+ 				    const enum sec_cmode c_mode)
 -- 
 2.8.1
 
