@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A78A8137B26
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jan 2020 03:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5859D137B2C
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jan 2020 03:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728200AbgAKCpv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 10 Jan 2020 21:45:51 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:45380 "EHLO huawei.com"
+        id S1728207AbgAKCpy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 10 Jan 2020 21:45:54 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:45372 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728195AbgAKCpv (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 10 Jan 2020 21:45:51 -0500
+        id S1728187AbgAKCpw (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 10 Jan 2020 21:45:52 -0500
 Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 56A80761319FBECDECC4;
+        by Forcepoint Email with ESMTP id 52C9365E8DE33757C1FD;
         Sat, 11 Jan 2020 10:45:49 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
@@ -25,9 +25,9 @@ CC:     <linux-crypto@vger.kernel.org>, <linuxarm@huawei.com>,
         <liulongfang@huawei.com>, <qianweili@huawei.com>,
         <zhangwei375@huawei.com>, <fanghao11@huawei.com>,
         <forest.zhouchang@huawei.com>
-Subject: [PATCH v2 1/9] crypto: hisilicon - Update debugfs usage of SEC V2
-Date:   Sat, 11 Jan 2020 10:41:48 +0800
-Message-ID: <1578710516-40535-2-git-send-email-xuzaibo@huawei.com>
+Subject: [PATCH v2 2/9] crypto: hisilicon - fix print/comment of SEC V2
+Date:   Sat, 11 Jan 2020 10:41:49 +0800
+Message-ID: <1578710516-40535-3-git-send-email-xuzaibo@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1578710516-40535-1-git-send-email-xuzaibo@huawei.com>
 References: <1578710516-40535-1-git-send-email-xuzaibo@huawei.com>
@@ -40,104 +40,62 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Applied some advices of Marco Elver on atomic usage of Debugfs,
-which is carried out by basing on Arnd Bergmann's fixing patch.
+Fixed some print, coding style and comments of HiSilicon SEC V2.
 
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Reported-by: Marco Elver <elver@google.com>
 Signed-off-by: Zaibo Xu <xuzaibo@huawei.com>
 ---
- drivers/crypto/hisilicon/sec2/sec.h        |  2 +-
- drivers/crypto/hisilicon/sec2/sec_crypto.c |  8 ++++----
- drivers/crypto/hisilicon/sec2/sec_main.c   | 18 +++++++++---------
- 3 files changed, 14 insertions(+), 14 deletions(-)
+ drivers/crypto/hisilicon/sec2/sec_crypto.c | 8 ++++----
+ drivers/crypto/hisilicon/sec2/sec_crypto.h | 4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec.h b/drivers/crypto/hisilicon/sec2/sec.h
-index b846d73..841f4c5 100644
---- a/drivers/crypto/hisilicon/sec2/sec.h
-+++ b/drivers/crypto/hisilicon/sec2/sec.h
-@@ -40,7 +40,7 @@ struct sec_req {
- 	int req_id;
- 
- 	/* Status of the SEC request */
--	atomic_t fake_busy;
-+	bool fake_busy;
- };
- 
- /**
 diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 0a5391f..2475aaf 100644
+index 2475aaf..9dca958 100644
 --- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
 +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -141,7 +141,7 @@ static int sec_bd_send(struct sec_ctx *ctx, struct sec_req *req)
- 		return -ENOBUFS;
+@@ -245,16 +245,16 @@ static int sec_skcipher_init(struct crypto_skcipher *tfm)
  
- 	if (!ret) {
--		if (atomic_read(&req->fake_busy))
-+		if (req->fake_busy)
- 			ret = -EBUSY;
- 		else
- 			ret = -EINPROGRESS;
-@@ -641,7 +641,7 @@ static void sec_skcipher_callback(struct sec_ctx *ctx, struct sec_req *req)
- 	if (ctx->c_ctx.c_mode == SEC_CMODE_CBC && req->c_req.encrypt)
- 		sec_update_iv(req);
+ 	sec = sec_find_device(cpu_to_node(smp_processor_id()));
+ 	if (!sec) {
+-		pr_err("find no Hisilicon SEC device!\n");
++		pr_err("Can not find proper Hisilicon SEC device!\n");
+ 		return -ENODEV;
+ 	}
+ 	ctx->sec = sec;
+ 	qm = &sec->qm;
+ 	dev = &qm->pdev->dev;
+-	ctx->hlf_q_num = sec->ctx_q_num >> 0x1;
++	ctx->hlf_q_num = sec->ctx_q_num >> 1;
  
--	if (atomic_cmpxchg(&req->fake_busy, 1, 0) != 1)
-+	if (req->fake_busy)
- 		sk_req->base.complete(&sk_req->base, -EINPROGRESS);
+ 	/* Half of queue depth is taken as fake requests limit in the queue. */
+-	ctx->fake_req_limit = QM_Q_DEPTH >> 0x1;
++	ctx->fake_req_limit = QM_Q_DEPTH >> 1;
+ 	ctx->qp_ctx = kcalloc(sec->ctx_q_num, sizeof(struct sec_qp_ctx),
+ 			      GFP_KERNEL);
+ 	if (!ctx->qp_ctx)
+@@ -704,7 +704,7 @@ static int sec_process(struct sec_ctx *ctx, struct sec_req *req)
  
- 	sk_req->base.complete(&sk_req->base, req->err_type);
-@@ -672,9 +672,9 @@ static int sec_request_init(struct sec_ctx *ctx, struct sec_req *req)
+ 	ret = ctx->req_op->bd_send(ctx, req);
+ 	if (ret != -EBUSY && ret != -EINPROGRESS) {
+-		dev_err(SEC_CTX_DEV(ctx), "send sec request failed!\n");
++		dev_err_ratelimited(SEC_CTX_DEV(ctx), "send sec request failed!\n");
+ 		goto err_send_req;
  	}
  
- 	if (ctx->fake_req_limit <= atomic_inc_return(&qp_ctx->pending_reqs))
--		atomic_set(&req->fake_busy, 1);
-+		req->fake_busy = true;
- 	else
--		atomic_set(&req->fake_busy, 0);
-+		req->fake_busy = false;
+diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.h b/drivers/crypto/hisilicon/sec2/sec_crypto.h
+index 097dce8..46b3a35 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_crypto.h
++++ b/drivers/crypto/hisilicon/sec2/sec_crypto.h
+@@ -48,8 +48,8 @@ enum sec_addr_type {
+ struct sec_sqe_type2 {
  
- 	ret = ctx->req_op->get_res(ctx, req);
- 	if (ret) {
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index ab742df..d40e2da 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -608,13 +608,13 @@ static const struct file_operations sec_dbg_fops = {
- 	.write = sec_debug_write,
- };
- 
--static int debugfs_atomic64_t_get(void *data, u64 *val)
-+static int sec_debugfs_atomic64_get(void *data, u64 *val)
- {
--        *val = atomic64_read((atomic64_t *)data);
--        return 0;
-+	*val = atomic64_read((atomic64_t *)data);
-+	return 0;
- }
--DEFINE_DEBUGFS_ATTRIBUTE(fops_atomic64_t_ro, debugfs_atomic64_t_get, NULL,
--                        "%lld\n");
-+DEFINE_DEBUGFS_ATTRIBUTE(sec_atomic64_ops, sec_debugfs_atomic64_get,
-+			 NULL, "%lld\n");
- 
- static int sec_core_debug_init(struct sec_dev *sec)
- {
-@@ -636,11 +636,11 @@ static int sec_core_debug_init(struct sec_dev *sec)
- 
- 	debugfs_create_regset32("regs", 0444, tmp_d, regset);
- 
--	debugfs_create_file("send_cnt", 0444, tmp_d, &dfx->send_cnt,
--			    &fops_atomic64_t_ro);
-+	debugfs_create_file("send_cnt", 0444, tmp_d,
-+			    &dfx->send_cnt, &sec_atomic64_ops);
- 
--	debugfs_create_file("recv_cnt", 0444, tmp_d, &dfx->recv_cnt,
--			    &fops_atomic64_t_ro);
-+	debugfs_create_file("recv_cnt", 0444, tmp_d,
-+			    &dfx->recv_cnt, &sec_atomic64_ops);
- 
- 	return 0;
- }
+ 	/*
+-	 * mac_len: 0~5 bits
+-	 * a_key_len: 6~10 bits
++	 * mac_len: 0~4 bits
++	 * a_key_len: 5~10 bits
+ 	 * a_alg: 11~16 bits
+ 	 */
+ 	__le32 mac_key_alg;
 -- 
 2.8.1
 
