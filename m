@@ -2,226 +2,95 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 183DF137C7C
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jan 2020 10:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C3813836B
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jan 2020 21:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgAKJCO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 11 Jan 2020 04:02:14 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8694 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728346AbgAKJCN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 11 Jan 2020 04:02:13 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id DA5FF426E62474ECB505;
-        Sat, 11 Jan 2020 17:02:11 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.439.0; Sat, 11 Jan 2020 17:02:04 +0800
-From:   Zaibo Xu <xuzaibo@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <linuxarm@huawei.com>,
-        <jonathan.cameron@huawei.com>, <wangzhou1@hisilicon.com>,
-        <tanghui20@huawei.com>, <yekai13@huawei.com>,
-        <liulongfang@huawei.com>, <qianweili@huawei.com>,
-        <fanghao11@huawei.com>, <forest.zhouchang@huawei.com>
-Subject: [PATCH 4/4] crypto: hisilicon - add branch prediction macro
-Date:   Sat, 11 Jan 2020 16:58:18 +0800
-Message-ID: <1578733098-13863-5-git-send-email-xuzaibo@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1578733098-13863-1-git-send-email-xuzaibo@huawei.com>
-References: <1578733098-13863-1-git-send-email-xuzaibo@huawei.com>
+        id S1731085AbgAKUCD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 11 Jan 2020 15:02:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731083AbgAKUCD (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 11 Jan 2020 15:02:03 -0500
+Received: from localhost (unknown [62.119.166.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3066A20866;
+        Sat, 11 Jan 2020 20:02:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1578772922;
+        bh=4bxlJS8vU/MMH+Ybyi3LMPzmFH6dAF8uh/1PGTdl3xA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S9eCIiQmHgrpL7kJjjR0uW8UKxu9gv1wYz0w8LRH6KFUekcDJf56aMKwU1jPaU3x3
+         YuK6X5QP/6MiL3LOSO8uSOf5djvapdHtKotypUbvoPY8c1xKgmrCuuSd2I2WMrCDxV
+         tia3Y7mfUL6e33emaKXl/gAS4XhRzh32P3AhDuKs=
+Date:   Sat, 11 Jan 2020 20:40:06 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Zhangfei Gao <zhangfei.gao@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        jonathan.cameron@huawei.com, dave.jiang@intel.com,
+        grant.likely@arm.com, jean-philippe <jean-philippe@linaro.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        ilias.apalodimas@linaro.org, francois.ozog@linaro.org,
+        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
+        "haojian . zhuang" <haojian.zhuang@linaro.org>,
+        guodong.xu@linaro.org, linux-accelerators@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        iommu@lists.linux-foundation.org,
+        Kenneth Lee <liguozhu@hisilicon.com>,
+        Zaibo Xu <xuzaibo@huawei.com>
+Subject: Re: [PATCH v11 2/4] uacce: add uacce driver
+Message-ID: <20200111194006.GD435222@kroah.com>
+References: <1578710919-12141-1-git-send-email-zhangfei.gao@linaro.org>
+ <1578710919-12141-3-git-send-email-zhangfei.gao@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1578710919-12141-3-git-send-email-zhangfei.gao@linaro.org>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This branch prediction macro on the hot path can improve
-small performance(about 2%) according to the test.
+On Sat, Jan 11, 2020 at 10:48:37AM +0800, Zhangfei Gao wrote:
+> +static int uacce_fops_open(struct inode *inode, struct file *filep)
+> +{
+> +	struct uacce_mm *uacce_mm = NULL;
+> +	struct uacce_device *uacce;
+> +	struct uacce_queue *q;
+> +	int ret = 0;
+> +
+> +	uacce = xa_load(&uacce_xa, iminor(inode));
+> +	if (!uacce)
+> +		return -ENODEV;
+> +
+> +	if (!try_module_get(uacce->parent->driver->owner))
+> +		return -ENODEV;
 
-Signed-off-by: Zaibo Xu <xuzaibo@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 44 ++++++++++++++---------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+Why are you trying to grab the module reference of the parent device?
+Why is that needed and what is that going to help with here?
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index 954134d..5d400d6 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -123,7 +123,7 @@ static int hpre_add_req_to_ctx(struct hpre_asym_request *hpre_req)
- 
- 	ctx = hpre_req->ctx;
- 	id = hpre_alloc_req_id(ctx);
--	if (id < 0)
-+	if (unlikely(id < 0))
- 		return -EINVAL;
- 
- 	ctx->req_list[id] = hpre_req;
-@@ -190,7 +190,7 @@ static int hpre_get_data_dma_addr(struct hpre_asym_request *hpre_req,
- 	}
- 	*tmp = dma_map_single(dev, sg_virt(data),
- 			      len, dma_dir);
--	if (dma_mapping_error(dev, *tmp)) {
-+	if (unlikely(dma_mapping_error(dev, *tmp))) {
- 		dev_err(dev, "dma map data err!\n");
- 		return -ENOMEM;
- 	}
-@@ -208,11 +208,11 @@ static int hpre_prepare_dma_buf(struct hpre_asym_request *hpre_req,
- 	int shift;
- 
- 	shift = ctx->key_sz - len;
--	if (shift < 0)
-+	if (unlikely(shift < 0))
- 		return -EINVAL;
- 
- 	ptr = dma_alloc_coherent(dev, ctx->key_sz, tmp, GFP_KERNEL);
--	if (!ptr)
-+	if (unlikely(!ptr))
- 		return -ENOMEM;
- 
- 	if (is_src) {
-@@ -241,7 +241,7 @@ static int hpre_hw_data_init(struct hpre_asym_request *hpre_req,
- 	else
- 		ret = hpre_prepare_dma_buf(hpre_req, data, len,
- 					  is_src, &tmp);
--	if (ret)
-+	if (unlikely(ret))
- 		return ret;
- 
- 	if (is_src)
-@@ -262,7 +262,7 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
- 	dma_addr_t tmp;
- 
- 	tmp = le64_to_cpu(sqe->in);
--	if (!tmp)
-+	if (unlikely(!tmp))
- 		return;
- 
- 	if (src) {
-@@ -275,7 +275,7 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
- 	}
- 
- 	tmp = le64_to_cpu(sqe->out);
--	if (!tmp)
-+	if (unlikely(!tmp))
- 		return;
- 
- 	if (req->dst) {
-@@ -309,7 +309,7 @@ static int hpre_alg_res_post_hf(struct hpre_ctx *ctx, struct hpre_sqe *sqe,
- 	done = (le32_to_cpu(sqe->dw0) >> HPRE_SQE_DONE_SHIFT) &
- 		HREE_SQE_DONE_MASK;
- 
--	if (err == HPRE_NO_HW_ERR &&  done == HPRE_HW_TASK_DONE)
-+	if (likely(err == HPRE_NO_HW_ERR && done == HPRE_HW_TASK_DONE))
- 		return  0;
- 
- 	return -EINVAL;
-@@ -456,17 +456,17 @@ static int hpre_dh_compute_value(struct kpp_request *req)
- 	int ret;
- 
- 	ret = hpre_msg_request_set(ctx, req, false);
--	if (ret)
-+	if (unlikely(ret))
- 		return ret;
- 
- 	if (req->src) {
- 		ret = hpre_hw_data_init(hpre_req, req->src, req->src_len, 1, 1);
--		if (ret)
-+		if (unlikely(ret))
- 			goto clear_all;
- 	}
- 
- 	ret = hpre_hw_data_init(hpre_req, req->dst, req->dst_len, 0, 1);
--	if (ret)
-+	if (unlikely(ret))
- 		goto clear_all;
- 
- 	if (ctx->crt_g2_mode && !req->src)
-@@ -478,7 +478,7 @@ static int hpre_dh_compute_value(struct kpp_request *req)
- 	} while (ret == -EBUSY && ctr++ < HPRE_TRY_SEND_TIMES);
- 
- 	/* success */
--	if (!ret)
-+	if (likely(!ret))
- 		return -EINPROGRESS;
- 
- clear_all:
-@@ -667,22 +667,22 @@ static int hpre_rsa_enc(struct akcipher_request *req)
- 		return ret;
- 	}
- 
--	if (!ctx->rsa.pubkey)
-+	if (unlikely(!ctx->rsa.pubkey))
- 		return -EINVAL;
- 
- 	ret = hpre_msg_request_set(ctx, req, true);
--	if (ret)
-+	if (unlikely(ret))
- 		return ret;
- 
- 	msg->dw0 |= cpu_to_le32(HPRE_ALG_NC_NCRT);
- 	msg->key = cpu_to_le64((u64)ctx->rsa.dma_pubkey);
- 
- 	ret = hpre_hw_data_init(hpre_req, req->src, req->src_len, 1, 0);
--	if (ret)
-+	if (unlikely(ret))
- 		goto clear_all;
- 
- 	ret = hpre_hw_data_init(hpre_req, req->dst, req->dst_len, 0, 0);
--	if (ret)
-+	if (unlikely(ret))
- 		goto clear_all;
- 
- 	do {
-@@ -690,7 +690,7 @@ static int hpre_rsa_enc(struct akcipher_request *req)
- 	} while (ret == -EBUSY && ctr++ < HPRE_TRY_SEND_TIMES);
- 
- 	/* success */
--	if (!ret)
-+	if (likely(!ret))
- 		return -EINPROGRESS;
- 
- clear_all:
-@@ -719,11 +719,11 @@ static int hpre_rsa_dec(struct akcipher_request *req)
- 		return ret;
- 	}
- 
--	if (!ctx->rsa.prikey)
-+	if (unlikely(!ctx->rsa.prikey))
- 		return -EINVAL;
- 
- 	ret = hpre_msg_request_set(ctx, req, true);
--	if (ret)
-+	if (unlikely(ret))
- 		return ret;
- 
- 	if (ctx->crt_g2_mode) {
-@@ -737,11 +737,11 @@ static int hpre_rsa_dec(struct akcipher_request *req)
- 	}
- 
- 	ret = hpre_hw_data_init(hpre_req, req->src, req->src_len, 1, 0);
--	if (ret)
-+	if (unlikely(ret))
- 		goto clear_all;
- 
- 	ret = hpre_hw_data_init(hpre_req, req->dst, req->dst_len, 0, 0);
--	if (ret)
-+	if (unlikely(ret))
- 		goto clear_all;
- 
- 	do {
-@@ -749,7 +749,7 @@ static int hpre_rsa_dec(struct akcipher_request *req)
- 	} while (ret == -EBUSY && ctr++ < HPRE_TRY_SEND_TIMES);
- 
- 	/* success */
--	if (!ret)
-+	if (likely(!ret))
- 		return -EINPROGRESS;
- 
- clear_all:
--- 
-2.8.1
+This shouldn't be needed as the module reference of the owner of the
+fileops for this module is incremented, and the "parent" module depends
+on this module, so how could it be unloaded without this code being
+unloaded?
 
+Yes, if you build this code into the kernel and the "parent" driver is a
+module, then you will not have a reference, but when you remove that
+parent driver the device will be removed as it has to be unregistered
+before that parent driver can be removed from the system, right?
+
+Or what am I missing here?
+
+> +static void uacce_release(struct device *dev)
+> +{
+> +	struct uacce_device *uacce = to_uacce_device(dev);
+> +
+> +	kfree(uacce);
+> +	uacce = NULL;
+
+That line didn't do anything :)
+
+thanks,
+
+greg k-h
