@@ -2,73 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C86138B6E
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jan 2020 06:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 397A8138D40
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jan 2020 09:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387640AbgAMFws (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 13 Jan 2020 00:52:48 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:38305 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730987AbgAMFw0 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 13 Jan 2020 00:52:26 -0500
-Received: by mail-oi1-f194.google.com with SMTP id l9so7197810oii.5
-        for <linux-crypto@vger.kernel.org>; Sun, 12 Jan 2020 21:52:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
-        b=El5YZgtDEXJCHEtZrRB1ujEJT5GnrR9nqQvx3oNXkD1KXWKAy5lE4fahagwXmNRBuY
-         Z373bCStdjZZAvrcMmyjZhqXNYKD7qS8gpQ1uKt4Zm/CJYofbOmd6y2KCfdaIf8lu4gx
-         e04Qq2Wd5k0QzXhgODgXLh9+BTAbr7mIJG1kvrHD2cB5892G2QaMtoQjZ8YbwAsn/v/R
-         qN1ulSwy8kLJzDOOwwvDkEa6g0paOaNUUW6lO8NcaOsOsQMTh2eV34LXY/bnRxfyDcL+
-         OFIAYoYpyWTxvo4nB11oXa8J2BNLiFXnr18VfN4DCPOmpXqWPT8f/9GzmZX8VWLxs4VK
-         s+8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
-        b=cBUiRZFFsI0yknHIbDnpF+MTA/ENJlZjCNXKtrS/+4+FrabEf6oXYKRHYa9NUBynFT
-         DoosReQ+tM4EQuOoS3bwDL1bD56z7eGtmA2ptOTMp/igRvCugxVnt1ro3tuu+sgDnmNh
-         Ej9bzp42Pu5/s3Th0ySaTcgx+hCtUbA0LIAQHmAKOqjc6gEmhY+TZl07DZik94vit2Jh
-         Lj3E57g29eM5BXKUB3GcOvKFfZdT6K+lzlsw/6Gwi+S1Voj61PWCYSmz45iII7NcDx0T
-         afitX1fhRzMdjAexM5A8GQj/5jhc6yqIoERSKCmbzbD98qMj9hJJpXUD+sQMc61NTMZr
-         NG+A==
-X-Gm-Message-State: APjAAAUCRNrM+JPiA1wR7KHTVBo+VcBS8vLPOBs8u00qZnUIxpLm9Ztl
-        0o/8DYGvNtPcXBknqFaPG/rUOMtGXiOiaolX/5w=
-X-Google-Smtp-Source: APXvYqy7JhGBt0ZjJ/1t4CT74GIhTuvbOMnCynReBbsGRcTAfZPwoiLBCe9XiPA9xaK1JAPmy14eucUMWI9DLkbKsUo=
-X-Received: by 2002:a54:4713:: with SMTP id k19mr11513430oik.113.1578894745174;
- Sun, 12 Jan 2020 21:52:25 -0800 (PST)
+        id S1727465AbgAMIyt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 13 Jan 2020 03:54:49 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:43128 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727325AbgAMIyt (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 13 Jan 2020 03:54:49 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5F4831A161F;
+        Mon, 13 Jan 2020 09:54:47 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5309F1A042D;
+        Mon, 13 Jan 2020 09:54:47 +0100 (CET)
+Received: from fsr-ub1864-014.ea.freescale.net (fsr-ub1864-014.ea.freescale.net [10.171.95.219])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 02E5D204D3;
+        Mon, 13 Jan 2020 09:54:46 +0100 (CET)
+From:   =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH] crypto: caam/qi2 - fix typo in algorithm's driver name
+Date:   Mon, 13 Jan 2020 10:54:35 +0200
+Message-Id: <20200113085435.30723-1-horia.geanta@nxp.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Received: by 2002:a4a:41cb:0:0:0:0:0 with HTTP; Sun, 12 Jan 2020 21:52:24
- -0800 (PST)
-Reply-To: rickschaech@gmail.com
-From:   Rick Schaech <cathben72@gmail.com>
-Date:   Mon, 13 Jan 2020 01:52:24 -0400
-Message-ID: <CAEcBxO=TAnFn5LzizHa22hUC0Db5FuiZJF28m=yX3_9m--jRqg@mail.gmail.com>
-Subject: I wait for your swift response,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear, I'm Mr Rick Schaech, I am the General Account Auditor, Though i
-know we have not meet each other before but sometimes in life God have
-a reason of bringing two people from two different countries together
-as business partners or life partners.
+Fixes: 8d818c105501 ("crypto: caam/qi2 - add DPAA2-CAAM driver")
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+---
+ drivers/crypto/caam/caamalg_qi2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-My dear friend, I have the sum of 15.7 Million USD i wish to put in
-your name due to the death of my late client who died several years
-ago as his next of kin column still remain blank. Though the internet
-medium is highly abuse these days but am assuring you that this
-transaction is legitimate and I am contacting you that we may have a
-deal, note for your cooperation and collaboration 40% of the sum will
-be for you while the other 60% will be for me as well. I wait for your
-swift response for more details. please forward your response to my
-personal E-mail: rickschaech@gmail.com
+diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
+index fe2a628e8905..28669cbecf77 100644
+--- a/drivers/crypto/caam/caamalg_qi2.c
++++ b/drivers/crypto/caam/caamalg_qi2.c
+@@ -2455,7 +2455,7 @@ static struct caam_aead_alg driver_aeads[] = {
+ 				.cra_name = "echainiv(authenc(hmac(sha256),"
+ 					    "cbc(des)))",
+ 				.cra_driver_name = "echainiv-authenc-"
+-						   "hmac-sha256-cbc-desi-"
++						   "hmac-sha256-cbc-des-"
+ 						   "caam-qi2",
+ 				.cra_blocksize = DES_BLOCK_SIZE,
+ 			},
+-- 
+2.17.1
 
-Yours sincerely,
-Rick Schaech.
