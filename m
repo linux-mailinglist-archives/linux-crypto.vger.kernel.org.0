@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7CC13ABB0
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jan 2020 15:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A1013ABB9
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jan 2020 15:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729014AbgANOAD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 14 Jan 2020 09:00:03 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:39330 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728975AbgANOAC (ORCPT
+        id S1729049AbgANOAQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 14 Jan 2020 09:00:16 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:54620 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728831AbgANOAE (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 Jan 2020 09:00:02 -0500
-Received: by mail-wm1-f67.google.com with SMTP id 20so13832894wmj.4;
-        Tue, 14 Jan 2020 06:00:01 -0800 (PST)
+        Tue, 14 Jan 2020 09:00:04 -0500
+Received: by mail-wm1-f65.google.com with SMTP id b19so13872648wmj.4;
+        Tue, 14 Jan 2020 06:00:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+qS8cmFG129sXx7XLwvT27GqZEqHpjOOs5rdHnFSHiU=;
-        b=IZGzjrkKewPPH+1qPChWS+BhLPaglsstZcFbIFMqVrWlnEyYo4D//EwlO073t5dWRt
-         wsEUkhhhPmT8ar86gm41TZiFZdKhJ2hH3xwEbn3ADew+ZParRG4n8k5o10jGL1LVRUU2
-         BrBFsb3E1LCR5wy9kjfteNYmsmUS3a6zFMW85ywB2QE/McqEpFsR6LhS7Q4jCZc/iMUv
-         PlIJAqPajK75h7F0rRdhNWoe63r2OhG9YYn/0wMxi/hX/wkIBchGVH/aHmOKmpMenkfJ
-         zmjXb4+u1GtLTbLFq3gs2YUvR/hG+0pZd1Z57g5j0ZHtScUCIuDBo32GjFTElntjiR5m
-         nDvw==
+        bh=AaGocOWYYqqxxVSnuFJaes6fIuVCOqjGVL46fuoWceA=;
+        b=b9ZF2ddhd9zGkBUQfYFINe52pfdd1cQRB5F71PoXqYhsv0I8C5zSpPdxZldg1b50IX
+         rRbXf0DOHBwabaizpHXOVgrzXx5h1pybWotTD745Mh2HMmCt3jeVIpDjfrBOLPWRn2hw
+         sdpmhM8LJLIUpPTw60uqNDGVdrNhK5EgVjV/Sva1mfNFlROzQfwcX7Gkj9tTwPCLXPlI
+         RZ5xfscNXx+zApX/Fy0SGHwyPKv7Vwcl/HsdZ1P4zFADNJyFc6Xuwpp6gatMrFaf15bK
+         MlKgfS22UUABgUklrYWfOLgo9eaCJJ7QX/eXvzzcsumnQhuGTe7TfacEeL6CGr/7pTqK
+         E8uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+qS8cmFG129sXx7XLwvT27GqZEqHpjOOs5rdHnFSHiU=;
-        b=q11OWSEesovI4m+PrmHb30wvYAYC7nz1KzpRnOcRUZF9W1C9JDl+iXyHmW0WHxIwGu
-         FXz0+2x4dJS6vAXqQ5aKfwaxO48MTKFw5fUceINWEHp0zX9/dZlopz/AorZLIPzAsGVY
-         108kCqdTt7S9jlFfDXkbikTpxHyDV4vCCi3avci8wEzWFyHVLrWR4UWNpMNlA9UWUcB8
-         N2kJmXTDqxNeiOQB41sAPtI6yeniLrjCZ4loK0N5IFtBRF1jV+De9Gc/vGAJOz4U1RJY
-         eqnm6/DBmwwlwN645flm4wJKgspUtwyY4IPtRFgVGWZZQkjQ07AEg8XLWPDwBSBFOh8p
-         NBtw==
-X-Gm-Message-State: APjAAAVFM5pMxiuHUGsiE8nOu/TQe7i+oMDmXnAqOCpPbr8+UK6dTw7j
-        25pQMgIwqsM6fgJJWpfOq4E=
-X-Google-Smtp-Source: APXvYqww13Rw2lNgkQnVrqZqhVvYRprXFy6sm0G6g1K6ZSDEAxdwdk/Iiwdc3bXXKo2jLD2F6nJdKg==
-X-Received: by 2002:a1c:a702:: with SMTP id q2mr27788126wme.6.1579010400417;
-        Tue, 14 Jan 2020 06:00:00 -0800 (PST)
+        bh=AaGocOWYYqqxxVSnuFJaes6fIuVCOqjGVL46fuoWceA=;
+        b=mzx2uIVQntkHBvtKtFDdMkOsFngNjmPiaXG+wP8vo5bBuu2Ry88074LF6XK5YyBNT0
+         DvzsUEF7MogSeN5D3GPgqc3xRzYgF6t7NWpsgHe9rqbf57JGDkeTC0/lYa1/XhLl+Qdt
+         64tys/h+55dQ6HMUUWEh+qtkbnKR5kPAR1erF47LBFFm9iLbuYgw50wjAON6Zi5ILPah
+         QV2d+IljGk/KmxLzpQgzfKDjR2k2Ovy/ptC0kha8Urb1rlKXf6chrcNkCDqyHCiHM/gQ
+         K2LdGIQVjFV8h1O8pli2A2qY/UVsWYB6NPOvby6G1ex27eJkbnbQ8In3MNeD8gMkewAM
+         0+PA==
+X-Gm-Message-State: APjAAAVakV5MyfL8D5f9uRGBLm10f1eTGB/bm+h28l4YBkFxYW2ORuwT
+        cJnC1Subfn7i1CzGg/kRh0A=
+X-Google-Smtp-Source: APXvYqx+OxKcWRqq8m9tk4fmOp55+mC1hDkwaWDzxu8S8kxilLu0l5ArdfWrRaXSdKdve/5st6FN/Q==
+X-Received: by 2002:a05:600c:2383:: with SMTP id m3mr28610665wma.32.1579010402204;
+        Tue, 14 Jan 2020 06:00:02 -0800 (PST)
 Received: from Red.localdomain ([2a01:cb1d:147:7200:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id 4sm17854448wmg.22.2020.01.14.05.59.59
+        by smtp.googlemail.com with ESMTPSA id 4sm17854448wmg.22.2020.01.14.06.00.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2020 05:59:59 -0800 (PST)
+        Tue, 14 Jan 2020 06:00:01 -0800 (PST)
 From:   Corentin Labbe <clabbe.montjoie@gmail.com>
 To:     alexandre.torgue@st.com, davem@davemloft.net,
         herbert@gondor.apana.org.au, mcoquelin.stm32@gmail.com,
@@ -55,9 +55,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-sunxi@googlegroups.com,
         Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH RFC 07/10] crypto: sun8i-ce: handle slot > 0
-Date:   Tue, 14 Jan 2020 14:59:33 +0100
-Message-Id: <20200114135936.32422-8-clabbe.montjoie@gmail.com>
+Subject: [PATCH RFC 08/10] crypto: engine: add slot parameter
+Date:   Tue, 14 Jan 2020 14:59:34 +0100
+Message-Id: <20200114135936.32422-9-clabbe.montjoie@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200114135936.32422-1-clabbe.montjoie@gmail.com>
 References: <20200114135936.32422-1-clabbe.montjoie@gmail.com>
@@ -68,57 +68,216 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Handle the fact a slot could be different than 0.
-This imply:
-- linking two task via next
-- set interrupt flag just before running the batch in the last task.
+prepare/unprepare functions should be able to know which slot in a batch
+should be used for preparing a request.
 
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c | 8 +++++++-
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c   | 2 ++
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ crypto/crypto_engine.c                              | 4 ++--
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c | 6 ++----
+ drivers/crypto/omap-aes-gcm.c                       | 2 +-
+ drivers/crypto/omap-aes.c                           | 4 ++--
+ drivers/crypto/omap-des.c                           | 4 ++--
+ drivers/crypto/stm32/stm32-cryp.c                   | 8 ++++----
+ drivers/crypto/stm32/stm32-hash.c                   | 4 ++--
+ include/crypto/engine.h                             | 4 ++--
+ 8 files changed, 17 insertions(+), 19 deletions(-)
 
+diff --git a/crypto/crypto_engine.c b/crypto/crypto_engine.c
+index 591dea5ddeec..e23a398ba330 100644
+--- a/crypto/crypto_engine.c
++++ b/crypto/crypto_engine.c
+@@ -40,7 +40,7 @@ static void crypto_finalize_request(struct crypto_engine *engine,
+ 			enginectx = crypto_tfm_ctx(engine->cur_reqs[i].req->tfm);
+ 			if (engine->cur_reqs[i].prepared &&
+ 			    enginectx->op.unprepare_request) {
+-				ret = enginectx->op.unprepare_request(engine, engine->cur_reqs[i].req);
++				ret = enginectx->op.unprepare_request(engine, engine->cur_reqs[i].req, i);
+ 				if (ret)
+ 					dev_err(engine->dev, "failed to unprepare request\n");
+ 			}
+@@ -143,7 +143,7 @@ static void crypto_pump_requests(struct crypto_engine *engine,
+ 	enginectx = crypto_tfm_ctx(async_req->tfm);
+ 
+ 	if (enginectx->op.prepare_request) {
+-		ret = enginectx->op.prepare_request(engine, async_req);
++		ret = enginectx->op.prepare_request(engine, async_req, engine->ct);
+ 		if (ret) {
+ 			dev_err(engine->dev, "failed to prepare request: %d\n",
+ 				ret);
 diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-index 9c1f6c9eaaf9..d56c992fbf93 100644
+index d56c992fbf93..41d18c18d1d1 100644
 --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
 +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-@@ -99,6 +99,9 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
- 	int slot = 0;
+@@ -78,7 +78,7 @@ static int sun8i_ce_cipher_fallback(struct skcipher_request *areq)
+ 	return err;
+ }
+ 
+-static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req)
++static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req, int slot)
+ {
+ 	struct skcipher_request *areq = container_of(async_req, struct skcipher_request, base);
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(areq);
+@@ -96,7 +96,6 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
+ 	int flow, i;
+ 	int nr_sgs = 0;
+ 	int nr_sgd = 0;
+-	int slot = 0;
  	int err = 0;
  
-+	if (slot < 0 || slot >= MAXTASK)
-+		return -EINVAL;
-+
- 	algt = container_of(alg, struct sun8i_ce_alg_template, alg.skcipher);
+ 	if (slot < 0 || slot >= MAXTASK)
+@@ -296,7 +295,7 @@ int sun8i_ce_cipher_run(struct crypto_engine *engine, void *areq)
+ 	return 0;
+ }
  
- 	dev_dbg(ce->dev, "%s %s %u %x IV(%p %u) key=%u\n", __func__,
-@@ -120,8 +123,11 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
+-static int sun8i_ce_cipher_unprepare(struct crypto_engine *engine, void *async_req)
++static int sun8i_ce_cipher_unprepare(struct crypto_engine *engine, void *async_req, int slot)
+ {
+ 	struct skcipher_request *areq = container_of(async_req, struct skcipher_request, base);
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(areq);
+@@ -308,7 +307,6 @@ static int sun8i_ce_cipher_unprepare(struct crypto_engine *engine, void *async_r
+ 	unsigned int ivsize, offset;
+ 	int nr_sgs = rctx->nr_sgs;
+ 	int nr_sgd = rctx->nr_sgd;
+-	int slot = 0;
+ 	int flow;
  
- 	cet->t_id = cpu_to_le32(flow);
- 	common = ce->variant->alg_cipher[algt->ce_algo_id];
--	common |= rctx->op_dir | CE_COMM_INT;
-+	common |= rctx->op_dir;
- 	cet->t_common_ctl = cpu_to_le32(common);
-+	if (slot > 0)
-+		chan->tl[slot - 1].next = cpu_to_le32(chan->t_phy + 176 * slot);
-+
- 	/* CTS and recent CE (H6) need length in bytes, in word otherwise */
- 	if (ce->variant->has_t_dlen_in_bytes)
- 		cet->t_dlen = cpu_to_le32(areq->cryptlen);
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-index bd355f4b95f3..39bf684c0ff5 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-@@ -106,6 +106,8 @@ int sun8i_ce_run_task(struct sun8i_ce_dev *ce, int flow, const char *name)
- #ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_DEBUG
- 	ce->chanlist[flow].stat_req++;
- #endif
-+	/* mark last one */
-+	ce->chanlist[flow].tl[ce->chanlist[flow].engine->ct - 1].t_common_ctl |= cpu_to_le32(CE_COMM_INT);
+ 	flow = rctx->flow;
+diff --git a/drivers/crypto/omap-aes-gcm.c b/drivers/crypto/omap-aes-gcm.c
+index 32dc00dc570b..0fea3dd40378 100644
+--- a/drivers/crypto/omap-aes-gcm.c
++++ b/drivers/crypto/omap-aes-gcm.c
+@@ -213,7 +213,7 @@ static int omap_aes_gcm_handle_queue(struct omap_aes_dev *dd,
+ 	return 0;
+ }
  
- 	mutex_lock(&ce->mlock);
+-static int omap_aes_gcm_prepare_req(struct crypto_engine *engine, void *areq)
++static int omap_aes_gcm_prepare_req(struct crypto_engine *engine, void *areq, int slot)
+ {
+ 	struct aead_request *req = container_of(areq, struct aead_request,
+ 						base);
+diff --git a/drivers/crypto/omap-aes.c b/drivers/crypto/omap-aes.c
+index 824ddf2a66ff..4d9caa7ce8da 100644
+--- a/drivers/crypto/omap-aes.c
++++ b/drivers/crypto/omap-aes.c
+@@ -427,7 +427,7 @@ static int omap_aes_handle_queue(struct omap_aes_dev *dd,
+ }
  
+ static int omap_aes_prepare_req(struct crypto_engine *engine,
+-				void *areq)
++				void *areq, int slot)
+ {
+ 	struct skcipher_request *req = container_of(areq, struct skcipher_request, base);
+ 	struct omap_aes_ctx *ctx = crypto_skcipher_ctx(
+@@ -632,7 +632,7 @@ static int omap_aes_ctr_decrypt(struct skcipher_request *req)
+ }
+ 
+ static int omap_aes_prepare_req(struct crypto_engine *engine,
+-				void *req);
++				void *req, int slot);
+ static int omap_aes_crypt_req(struct crypto_engine *engine,
+ 			      void *req);
+ 
+diff --git a/drivers/crypto/omap-des.c b/drivers/crypto/omap-des.c
+index 8eda43319204..92c5fb1d4b83 100644
+--- a/drivers/crypto/omap-des.c
++++ b/drivers/crypto/omap-des.c
+@@ -524,7 +524,7 @@ static int omap_des_handle_queue(struct omap_des_dev *dd,
+ }
+ 
+ static int omap_des_prepare_req(struct crypto_engine *engine,
+-				void *areq)
++				void *areq, int slot)
+ {
+ 	struct skcipher_request *req = container_of(areq, struct skcipher_request, base);
+ 	struct omap_des_ctx *ctx = crypto_skcipher_ctx(
+@@ -711,7 +711,7 @@ static int omap_des_cbc_decrypt(struct skcipher_request *req)
+ }
+ 
+ static int omap_des_prepare_req(struct crypto_engine *engine,
+-				void *areq);
++				void *areq, int slot);
+ static int omap_des_crypt_req(struct crypto_engine *engine,
+ 			      void *areq);
+ 
+diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
+index d347a1d6e351..7c65b526d20e 100644
+--- a/drivers/crypto/stm32/stm32-cryp.c
++++ b/drivers/crypto/stm32/stm32-cryp.c
+@@ -684,7 +684,7 @@ static int stm32_cryp_cpu_start(struct stm32_cryp *cryp)
+ 
+ static int stm32_cryp_cipher_one_req(struct crypto_engine *engine, void *areq);
+ static int stm32_cryp_prepare_cipher_req(struct crypto_engine *engine,
+-					 void *areq);
++					 void *areq, int slot);
+ 
+ static int stm32_cryp_init_tfm(struct crypto_skcipher *tfm)
+ {
+@@ -700,7 +700,7 @@ static int stm32_cryp_init_tfm(struct crypto_skcipher *tfm)
+ 
+ static int stm32_cryp_aead_one_req(struct crypto_engine *engine, void *areq);
+ static int stm32_cryp_prepare_aead_req(struct crypto_engine *engine,
+-				       void *areq);
++				       void *areq, int slot);
+ 
+ static int stm32_cryp_aes_aead_init(struct crypto_aead *tfm)
+ {
+@@ -1015,7 +1015,7 @@ static int stm32_cryp_prepare_req(struct skcipher_request *req,
+ }
+ 
+ static int stm32_cryp_prepare_cipher_req(struct crypto_engine *engine,
+-					 void *areq)
++					 void *areq, int slot)
+ {
+ 	struct skcipher_request *req = container_of(areq,
+ 						      struct skcipher_request,
+@@ -1039,7 +1039,7 @@ static int stm32_cryp_cipher_one_req(struct crypto_engine *engine, void *areq)
+ 	return stm32_cryp_cpu_start(cryp);
+ }
+ 
+-static int stm32_cryp_prepare_aead_req(struct crypto_engine *engine, void *areq)
++static int stm32_cryp_prepare_aead_req(struct crypto_engine *engine, void *areq, int slot)
+ {
+ 	struct aead_request *req = container_of(areq, struct aead_request,
+ 						base);
+diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
+index 167b80eec437..4a696c48126c 100644
+--- a/drivers/crypto/stm32/stm32-hash.c
++++ b/drivers/crypto/stm32/stm32-hash.c
+@@ -824,7 +824,7 @@ static int stm32_hash_hw_init(struct stm32_hash_dev *hdev,
+ }
+ 
+ static int stm32_hash_one_request(struct crypto_engine *engine, void *areq);
+-static int stm32_hash_prepare_req(struct crypto_engine *engine, void *areq);
++static int stm32_hash_prepare_req(struct crypto_engine *engine, void *areq, int slot);
+ 
+ static int stm32_hash_handle_queue(struct stm32_hash_dev *hdev,
+ 				   struct ahash_request *req)
+@@ -832,7 +832,7 @@ static int stm32_hash_handle_queue(struct stm32_hash_dev *hdev,
+ 	return crypto_transfer_hash_request_to_engine(hdev->engine, req);
+ }
+ 
+-static int stm32_hash_prepare_req(struct crypto_engine *engine, void *areq)
++static int stm32_hash_prepare_req(struct crypto_engine *engine, void *areq, int slot)
+ {
+ 	struct ahash_request *req = container_of(areq, struct ahash_request,
+ 						 base);
+diff --git a/include/crypto/engine.h b/include/crypto/engine.h
+index 021136a47b93..55d3dbc2498c 100644
+--- a/include/crypto/engine.h
++++ b/include/crypto/engine.h
+@@ -85,9 +85,9 @@ struct crypto_engine {
+  */
+ struct crypto_engine_op {
+ 	int (*prepare_request)(struct crypto_engine *engine,
+-			       void *areq);
++			       void *areq, int slot);
+ 	int (*unprepare_request)(struct crypto_engine *engine,
+-				 void *areq);
++				 void *areq, int slot);
+ 	int (*do_one_request)(struct crypto_engine *engine,
+ 			      void *areq);
+ };
 -- 
 2.24.1
 
