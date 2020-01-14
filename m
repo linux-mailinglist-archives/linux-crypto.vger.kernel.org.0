@@ -2,170 +2,121 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DF213ABB7
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jan 2020 15:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D74D13ACCE
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jan 2020 15:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727289AbgANOAM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 14 Jan 2020 09:00:12 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:54628 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729040AbgANOAH (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 Jan 2020 09:00:07 -0500
-Received: by mail-wm1-f65.google.com with SMTP id b19so13872899wmj.4;
-        Tue, 14 Jan 2020 06:00:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mmCo0cmcYxTYUl0HTh9b5uPHQjBF+Ornrl4fpC6nIuw=;
-        b=YwKwklKFwVrhQTbq9+emPqf95apR1314k05ofi1R4X4ecmLMYVeTbhUyQp8rc6JOOE
-         1OtSdz22N7qTe1XPnouOPYwL70jWyR9WzmlK2ZXg2p4vGpwHbn4BMRc+jo0MBgwO6T0l
-         kwj1Qo0YWV0mSI6WuIA9JmgmgulgXFJC/X0mzv2VstuVM/XkmTbkjnaL13iIDmY92It8
-         5oNt9CMr3GzgOVZqxWqargG03QKjOuUSUMJbmcmPXGbcmT0gddtiaVxm7R4gWVDD353H
-         OJ5ZNctjqERrdhzXqK1zFZdA3CDKpvZ79XSCt2HQ6upbF63gIHwk+/f4B7j0TroYbesC
-         L5Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mmCo0cmcYxTYUl0HTh9b5uPHQjBF+Ornrl4fpC6nIuw=;
-        b=rcIHleI73aIPMfFTkCUOdiB4s/Di6/J114pp92+lkbFvqF7JcYF2ekbKFO7xnLsp2l
-         uywubl83JiupnTTu/BnxsB7UgGHEU//5PfYw1QMWiQTbEBauMABOI6HYz2VGb603VbKh
-         1EugfIiCNkzXwvxv6GQXSSLQCwU0PkOMslPkUPzl5LqDDJJzLXZed0ATVdqyNOAQcT0a
-         pPwFNv27r/KUPXWLpY3xG54AhdoM3g364wYQIAbFrShC+LQ9Gph0N+E4emAa78p3oEyk
-         NjD7LUZgEQJLGUebYh1rXIVtadh72+CE77MSzcuQMkB70j9iQ+RsqDufs/nTMlZZ0yTt
-         TNMQ==
-X-Gm-Message-State: APjAAAV5xiXdxrUJsuCQg8SN5CD1Un/n4EUs+dp661ZOcabNI9lJoUqY
-        GrINbq9f0mK6BIV8DHWuRNg=
-X-Google-Smtp-Source: APXvYqxIi99Bpxvcwct69pL122PlCYsc6pFqFmQLsPv1kKKkDRC+0KM4vq6kSF3tJBiUx5oECNcNKw==
-X-Received: by 2002:a7b:c389:: with SMTP id s9mr27249334wmj.7.1579010405396;
-        Tue, 14 Jan 2020 06:00:05 -0800 (PST)
-Received: from Red.localdomain ([2a01:cb1d:147:7200:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id 4sm17854448wmg.22.2020.01.14.06.00.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2020 06:00:04 -0800 (PST)
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     alexandre.torgue@st.com, davem@davemloft.net,
-        herbert@gondor.apana.org.au, mcoquelin.stm32@gmail.com,
-        mripard@kernel.org, wens@csie.org, iuliana.prodan@nxp.com,
-        horia.geanta@nxp.com, aymen.sghaier@nxp.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-sunxi@googlegroups.com,
-        Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH RFC 10/10] crypto: sun8i-ce: use the new batch mechanism
-Date:   Tue, 14 Jan 2020 14:59:36 +0100
-Message-Id: <20200114135936.32422-11-clabbe.montjoie@gmail.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200114135936.32422-1-clabbe.montjoie@gmail.com>
-References: <20200114135936.32422-1-clabbe.montjoie@gmail.com>
+        id S1726450AbgANO7j (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 14 Jan 2020 09:59:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725904AbgANO7j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 14 Jan 2020 09:59:39 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35DDA222C4;
+        Tue, 14 Jan 2020 14:59:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579013977;
+        bh=JsWfRq3X3gD6BI5Jjp77gShsE9xbLIe4k4ACCqlIDUs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jUh8clVtpbFL6PQgYE4wIm+2XEKpZn2NscpzUMxJZsQAdvIISnx5yHyocs6hXUN9C
+         GGVkxtTHDzTHhgMuycAWt+4/A9wOFUGhZxM+JkceSC3lzD1GJovA1TP3c0IB6YMRP2
+         dd736FW18wIbuSp2jizlxsiVLT0vY2P1Aq5uAsE0=
+Date:   Tue, 14 Jan 2020 15:59:34 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     zhangfei <zhangfei.gao@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        jonathan.cameron@huawei.com, dave.jiang@intel.com,
+        grant.likely@arm.com, jean-philippe <jean-philippe@linaro.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        ilias.apalodimas@linaro.org, francois.ozog@linaro.org,
+        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
+        "haojian . zhuang" <haojian.zhuang@linaro.org>,
+        guodong.xu@linaro.org, linux-accelerators@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        iommu@lists.linux-foundation.org,
+        Kenneth Lee <liguozhu@hisilicon.com>,
+        Zaibo Xu <xuzaibo@huawei.com>
+Subject: Re: [PATCH v11 2/4] uacce: add uacce driver
+Message-ID: <20200114145934.GA1960403@kroah.com>
+References: <1578710919-12141-1-git-send-email-zhangfei.gao@linaro.org>
+ <1578710919-12141-3-git-send-email-zhangfei.gao@linaro.org>
+ <20200111194006.GD435222@kroah.com>
+ <053ccd05-4f11-5be6-47c2-eee5c2f1fdc4@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <053ccd05-4f11-5be6-47c2-eee5c2f1fdc4@linaro.org>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Now all infrastructure to batch request are in place, it is time to use
-it.
-Introduce some debug for it also.
+On Mon, Jan 13, 2020 at 11:34:55AM +0800, zhangfei wrote:
+> Hi, Greg
+> 
+> Thanks for the review.
+> 
+> On 2020/1/12 上午3:40, Greg Kroah-Hartman wrote:
+> > On Sat, Jan 11, 2020 at 10:48:37AM +0800, Zhangfei Gao wrote:
+> > > +static int uacce_fops_open(struct inode *inode, struct file *filep)
+> > > +{
+> > > +	struct uacce_mm *uacce_mm = NULL;
+> > > +	struct uacce_device *uacce;
+> > > +	struct uacce_queue *q;
+> > > +	int ret = 0;
+> > > +
+> > > +	uacce = xa_load(&uacce_xa, iminor(inode));
+> > > +	if (!uacce)
+> > > +		return -ENODEV;
+> > > +
+> > > +	if (!try_module_get(uacce->parent->driver->owner))
+> > > +		return -ENODEV;
+> > Why are you trying to grab the module reference of the parent device?
+> > Why is that needed and what is that going to help with here?
+> > 
+> > This shouldn't be needed as the module reference of the owner of the
+> > fileops for this module is incremented, and the "parent" module depends
+> > on this module, so how could it be unloaded without this code being
+> > unloaded?
+> > 
+> > Yes, if you build this code into the kernel and the "parent" driver is a
+> > module, then you will not have a reference, but when you remove that
+> > parent driver the device will be removed as it has to be unregistered
+> > before that parent driver can be removed from the system, right?
+> > 
+> > Or what am I missing here?
+> The refcount here is preventing rmmod "parent" module after fd is opened,
+> since user driver has mmap kernel memory to user space, like mmio, which may
+> still in-use.
+> 
+> With the refcount protection, rmmod "parent" module will fail until
+> application free the fd.
+> log like: rmmod: ERROR: Module hisi_zip is in use
 
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- .../crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c    | 14 ++++++++------
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c  |  9 ++++++---
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h       |  2 ++
- 3 files changed, 16 insertions(+), 9 deletions(-)
+But if the "parent" module is to be unloaded, it has to unregister the
+"child" device and that will call the destructor in here and then you
+will tear everything down and all should be good.
 
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-index 41d18c18d1d1..fe5374788304 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-@@ -103,20 +103,22 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
- 
- 	algt = container_of(alg, struct sun8i_ce_alg_template, alg.skcipher);
- 
--	dev_dbg(ce->dev, "%s %s %u %x IV(%p %u) key=%u\n", __func__,
-+	dev_dbg(ce->dev, "%s %s %u %x IV(%p %u) key=%u slot=%d\n", __func__,
- 		crypto_tfm_alg_name(areq->base.tfm),
- 		areq->cryptlen,
- 		rctx->op_dir, areq->iv, crypto_skcipher_ivsize(tfm),
--		op->keylen);
--
--#ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_DEBUG
--	algt->stat_req++;
--#endif
-+		op->keylen, slot);
- 
- 	flow = rctx->flow;
- 
- 	chan = &ce->chanlist[flow];
- 
-+#ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_DEBUG
-+	algt->stat_req++;
-+	if (chan->engine->ct + 1 > chan->tmax)
-+		chan->tmax = chan->engine->ct + 1;
-+#endif
-+
- 	cet = &chan->tl[slot];
- 	memset(cet, 0, sizeof(struct ce_task));
- 
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-index 39bf684c0ff5..7cd98c227357 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-@@ -104,7 +104,7 @@ int sun8i_ce_run_task(struct sun8i_ce_dev *ce, int flow, const char *name)
- 	int err = 0;
- 
- #ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_DEBUG
--	ce->chanlist[flow].stat_req++;
-+	ce->chanlist[flow].stat_req += ce->chanlist[flow].engine->ct;
- #endif
- 	/* mark last one */
- 	ce->chanlist[flow].tl[ce->chanlist[flow].engine->ct - 1].t_common_ctl |= cpu_to_le32(CE_COMM_INT);
-@@ -287,7 +287,10 @@ static int sun8i_ce_dbgfs_read(struct seq_file *seq, void *v)
- 	int i;
- 
- 	for (i = 0; i < MAXFLOW; i++)
--		seq_printf(seq, "Channel %d: nreq %lu\n", i, ce->chanlist[i].stat_req);
-+		seq_printf(seq, "Channel %d: nreq %lu tmax %d eqlen=%d/%d\n", i,
-+			   ce->chanlist[i].stat_req, ce->chanlist[i].tmax,
-+			   ce->chanlist[i].engine->queue.qlen,
-+			   ce->chanlist[i].engine->queue.max_qlen);
- 
- 	for (i = 0; i < ARRAY_SIZE(ce_algs); i++) {
- 		if (!ce_algs[i].ce)
-@@ -345,7 +348,7 @@ static int sun8i_ce_allocate_chanlist(struct sun8i_ce_dev *ce)
- 	for (i = 0; i < MAXFLOW; i++) {
- 		init_completion(&ce->chanlist[i].complete);
- 
--		ce->chanlist[i].engine = crypto_engine_alloc_init(ce->dev, true);
-+		ce->chanlist[i].engine = crypto_engine_alloc_init2(ce->dev, true, MAXTASK, MAXTASK * 2);
- 		if (!ce->chanlist[i].engine) {
- 			dev_err(ce->dev, "Cannot allocate engine\n");
- 			i--;
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-index 2d3325a13bf1..22bb15fea476 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-@@ -135,6 +135,7 @@ struct ce_task {
-  * @t_phy:	Physical address of task
-  * @tl:		pointer to the current ce_task for this flow
-  * @stat_req:	number of request done by this flow
-+ * @tmax:	The maximum number of tasks done in one batch
-  */
- struct sun8i_ce_flow {
- 	struct crypto_engine *engine;
-@@ -145,6 +146,7 @@ struct sun8i_ce_flow {
- 	struct ce_task *tl;
- #ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_DEBUG
- 	unsigned long stat_req;
-+	int tmax;
- #endif
- };
- 
--- 
-2.24.1
+There's no need to "forbid" a module from being unloaded, even if it is
+being used.  Look at all networking drivers, they work that way, right?
 
+> > > +static void uacce_release(struct device *dev)
+> > > +{
+> > > +	struct uacce_device *uacce = to_uacce_device(dev);
+> > > +
+> > > +	kfree(uacce);
+> > > +	uacce = NULL;
+> > That line didn't do anything :)
+> Yes, this is a mistake.
+> It is up to caller to set to NULL to prevent release multi times.
+
+Release function is called by the driver core which will not touch the
+value again.
+
+thanks,
+
+greg k-h
