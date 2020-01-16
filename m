@@ -2,39 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E5A13F3DF
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Jan 2020 19:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC1213F28D
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Jan 2020 19:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733212AbgAPSqF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 16 Jan 2020 13:46:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48606 "EHLO mail.kernel.org"
+        id S2391640AbgAPRYM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 16 Jan 2020 12:24:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389937AbgAPRK0 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:10:26 -0500
+        id S2391682AbgAPRYK (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:24:10 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D87024685;
-        Thu, 16 Jan 2020 17:10:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46F1124688;
+        Thu, 16 Jan 2020 17:24:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194626;
-        bh=cCRaRvBuPhcQPa9+/4rPGVxmyznYiXD4RfIyjgTKUb0=;
+        s=default; t=1579195450;
+        bh=tdZMzdbq4gVQ5twnlrKuGhiga9ypKlA/c7vC+XIRG1s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lcdfoAGtXESZDa7KJbinyTKb7R7QzEvHwrMvq3255bu0Bfe60jQP/1CImlgADuO0h
-         /muKMGnB2giK9eA8JpzfpOkxVA5NVz+64W0kw71Ps6m8HcdQ5I1AO4M8HzLMxrJjGC
-         AbCeXf4aFtjdVk2DwKIw/OHEJk2fE/CKSfFFGCBs=
+        b=F+4fsOLzYRPeRL2inLGArit2Tlhsrgjp5dCj1R+81zlOj2iV+2y/4/GN73OQWW0Wk
+         R+8O3xX/AT56SvjznkAMczOKOK5/YnopW1IyVxHz9EuDOQtaSll0rM1OEuEguHtPl+
+         1+Qguq4Gwg+c3QAOzm6cF4e3MQ3IGHQQPcVEqlq8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Horia Geanta <horia.geanta@nxp.com>,
+Cc:     Eric Biggers <ebiggers@google.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 486/671] crypto: caam - free resources in case caam_rng registration failed
-Date:   Thu, 16 Jan 2020 12:02:04 -0500
-Message-Id: <20200116170509.12787-223-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 061/371] crypto: tgr192 - fix unaligned memory access
+Date:   Thu, 16 Jan 2020 12:18:53 -0500
+Message-Id: <20200116172403.18149-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
-References: <20200116170509.12787-1-sashal@kernel.org>
+In-Reply-To: <20200116172403.18149-1-sashal@kernel.org>
+References: <20200116172403.18149-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,38 +43,48 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Iuliana Prodan <iuliana.prodan@nxp.com>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit c59a1d41672a89b5cac49db1a472ff889e35a2d2 ]
+[ Upstream commit f990f7fb58ac8ac9a43316f09a48cff1a49dda42 ]
 
-Check the return value of the hardware registration for caam_rng and free
-resources in case of failure.
+Fix an unaligned memory access in tgr192_transform() by using the
+unaligned access helpers.
 
-Fixes: e24f7c9e87d4 ("crypto: caam - hwrng support")
-Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
-Reviewed-by: Horia Geanta <horia.geanta@nxp.com>
+Fixes: 06ace7a9bafe ("[CRYPTO] Use standard byte order macros wherever possible")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/caam/caamrng.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ crypto/tgr192.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/caam/caamrng.c b/drivers/crypto/caam/caamrng.c
-index fde07d4ff019..ff6718a11e9e 100644
---- a/drivers/crypto/caam/caamrng.c
-+++ b/drivers/crypto/caam/caamrng.c
-@@ -353,7 +353,10 @@ static int __init caam_rng_init(void)
- 		goto free_rng_ctx;
+diff --git a/crypto/tgr192.c b/crypto/tgr192.c
+index 321bc6ff2a9d..904c8444aa0a 100644
+--- a/crypto/tgr192.c
++++ b/crypto/tgr192.c
+@@ -25,8 +25,9 @@
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/mm.h>
+-#include <asm/byteorder.h>
+ #include <linux/types.h>
++#include <asm/byteorder.h>
++#include <asm/unaligned.h>
  
- 	dev_info(dev, "registering rng-caam\n");
--	return hwrng_register(&caam_rng);
-+
-+	err = hwrng_register(&caam_rng);
-+	if (!err)
-+		return err;
+ #define TGR192_DIGEST_SIZE 24
+ #define TGR160_DIGEST_SIZE 20
+@@ -468,10 +469,9 @@ static void tgr192_transform(struct tgr192_ctx *tctx, const u8 * data)
+ 	u64 a, b, c, aa, bb, cc;
+ 	u64 x[8];
+ 	int i;
+-	const __le64 *ptr = (const __le64 *)data;
  
- free_rng_ctx:
- 	kfree(rng_ctx);
+ 	for (i = 0; i < 8; i++)
+-		x[i] = le64_to_cpu(ptr[i]);
++		x[i] = get_unaligned_le64(data + i * sizeof(__le64));
+ 
+ 	/* save */
+ 	a = aa = tctx->a;
 -- 
 2.20.1
 
