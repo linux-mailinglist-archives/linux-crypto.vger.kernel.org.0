@@ -2,36 +2,35 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B7413ECEA
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Jan 2020 18:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8396A13EA53
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Jan 2020 18:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394757AbgAPR7d (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 16 Jan 2020 12:59:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32890 "EHLO mail.kernel.org"
+        id S2393958AbgAPRnh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 16 Jan 2020 12:43:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393839AbgAPRnA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:43:00 -0500
+        id S2393949AbgAPRng (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:43:36 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43413246A4;
-        Thu, 16 Jan 2020 17:42:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2EAA324722;
+        Thu, 16 Jan 2020 17:43:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579196580;
-        bh=6Fd7Q3BMWeJNBGk0kKO5Sfece9B848AW7wMsA8jHAYA=;
+        s=default; t=1579196615;
+        bh=tdZMzdbq4gVQ5twnlrKuGhiga9ypKlA/c7vC+XIRG1s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h6SwAh7BMjEfwnLFVtp6bSRuA9QjJs43UKSaNj+XHT0ez1h2s83sd9eNmaLaLhAMb
-         4k1yeSA4x17g9Jd5KRBBrePQdtWSKhtmi+pt4Rf/VHesuPnswMoeoiAAr4/s0PPmvL
-         prZr81RyxPKbgyxGwnwsc0H2j8Q+oQJ+xpshKfGM=
+        b=vaznJzfKPNM88nl3lC2edBAsTeUyKeoNErq233uo1SC6cg0CCDShHGfcYaPg5d9/c
+         R2IufyJutW4kwqdohAKQBhivpPaaQI4wYPfAA2P3C2GB1recjOETDMLfPvNC0HarEl
+         aQh/HsnLsvh4BC+UUf56eUokhjZHyBZmSXFY9hdE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Colin Ian King <colin.king@canonical.com>,
+Cc:     Eric Biggers <ebiggers@google.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 4.4 006/174] pcrypt: use format specifier in kobject_add
-Date:   Thu, 16 Jan 2020 12:40:03 -0500
-Message-Id: <20200116174251.24326-6-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 033/174] crypto: tgr192 - fix unaligned memory access
+Date:   Thu, 16 Jan 2020 12:40:30 -0500
+Message-Id: <20200116174251.24326-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116174251.24326-1-sashal@kernel.org>
 References: <20200116174251.24326-1-sashal@kernel.org>
@@ -44,41 +43,48 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit b1e3874c75ab15288f573b3532e507c37e8e7656 ]
+[ Upstream commit f990f7fb58ac8ac9a43316f09a48cff1a49dda42 ]
 
-Passing string 'name' as the format specifier is potentially hazardous
-because name could (although very unlikely to) have a format specifier
-embedded in it causing issues when parsing the non-existent arguments
-to these.  Follow best practice by using the "%s" format string for
-the string 'name'.
+Fix an unaligned memory access in tgr192_transform() by using the
+unaligned access helpers.
 
-Cleans up clang warning:
-crypto/pcrypt.c:397:40: warning: format string is not a string literal
-(potentially insecure) [-Wformat-security]
-
-Fixes: a3fb1e330dd2 ("pcrypt: Added sysfs interface to pcrypt")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 06ace7a9bafe ("[CRYPTO] Use standard byte order macros wherever possible")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/pcrypt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ crypto/tgr192.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/crypto/pcrypt.c b/crypto/pcrypt.c
-index f8ec3d4ba4a8..a5718c0a3dc4 100644
---- a/crypto/pcrypt.c
-+++ b/crypto/pcrypt.c
-@@ -394,7 +394,7 @@ static int pcrypt_sysfs_add(struct padata_instance *pinst, const char *name)
- 	int ret;
+diff --git a/crypto/tgr192.c b/crypto/tgr192.c
+index 321bc6ff2a9d..904c8444aa0a 100644
+--- a/crypto/tgr192.c
++++ b/crypto/tgr192.c
+@@ -25,8 +25,9 @@
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/mm.h>
+-#include <asm/byteorder.h>
+ #include <linux/types.h>
++#include <asm/byteorder.h>
++#include <asm/unaligned.h>
  
- 	pinst->kobj.kset = pcrypt_kset;
--	ret = kobject_add(&pinst->kobj, NULL, name);
-+	ret = kobject_add(&pinst->kobj, NULL, "%s", name);
- 	if (!ret)
- 		kobject_uevent(&pinst->kobj, KOBJ_ADD);
+ #define TGR192_DIGEST_SIZE 24
+ #define TGR160_DIGEST_SIZE 20
+@@ -468,10 +469,9 @@ static void tgr192_transform(struct tgr192_ctx *tctx, const u8 * data)
+ 	u64 a, b, c, aa, bb, cc;
+ 	u64 x[8];
+ 	int i;
+-	const __le64 *ptr = (const __le64 *)data;
  
+ 	for (i = 0; i < 8; i++)
+-		x[i] = le64_to_cpu(ptr[i]);
++		x[i] = get_unaligned_le64(data + i * sizeof(__le64));
+ 
+ 	/* save */
+ 	a = aa = tctx->a;
 -- 
 2.20.1
 
