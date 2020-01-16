@@ -2,35 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EB113F751
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Jan 2020 20:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D9213F676
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Jan 2020 20:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387896AbgAPTLG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 16 Jan 2020 14:11:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49878 "EHLO mail.kernel.org"
+        id S2389782AbgAPTEL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 16 Jan 2020 14:04:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387730AbgAPRAV (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:00:21 -0500
+        id S2387934AbgAPRCW (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:02:22 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A97622467E;
-        Thu, 16 Jan 2020 17:00:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BAA720730;
+        Thu, 16 Jan 2020 17:02:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194020;
-        bh=iXlGhkD+iPp8vh7EEoCYUfHQYjiFUHCq17Z2sMpPylM=;
+        s=default; t=1579194141;
+        bh=Arr1726Id5mEVcSp5PE/MtW4ooJu4KwJFMqCkc++vG4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cCF82wdt6b+OfEXw9/4Zt9fETmnNEVLEbB07hJugw20CnWLDVKqff07lhJyUvuYGs
-         e1M0ghpfTAgj21BP7FfvJPPG9bFzSiuhUUjxCQDk5//kZTYfFnYIbQDWL06G+tLPFa
-         r3SYcOyB5Koeaz+vrEZjqCAc6CSevSPNGWCmOPJA=
+        b=TBA4yWuW2SPxELObiTIT9AOZ2+XzAAwuGz3AHJP7VVH9r2IwVDGFjzm9MkMUah01g
+         CMFuI41pt4osmvHshFtv2C1aoyymgELT85AN7PQz8uFnVvkytQYwBfPdef1iUIxSn7
+         r9dgI1qUR80yNRaFVo88iguEBxhXtmAbbQy8yju4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Corentin Labbe <clabbe@baylibre.com>,
+Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 141/671] crypto: crypto4xx - Fix wrong ppc4xx_trng_probe()/ppc4xx_trng_remove() arguments
-Date:   Thu, 16 Jan 2020 11:50:50 -0500
-Message-Id: <20200116165940.10720-24-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.19 228/671] hwrng: bcm2835 - fix probe as platform device
+Date:   Thu, 16 Jan 2020 11:52:17 -0500
+Message-Id: <20200116165940.10720-111-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116165940.10720-1-sashal@kernel.org>
 References: <20200116165940.10720-1-sashal@kernel.org>
@@ -43,46 +47,56 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Corentin Labbe <clabbe@baylibre.com>
+From: Jonas Gorski <jonas.gorski@gmail.com>
 
-[ Upstream commit 6e88098ca43a3d80ae86908f7badba683c8a0d84 ]
+[ Upstream commit 984798de671a927ac73da31096a150df42e6aaf3 ]
 
-When building without CONFIG_HW_RANDOM_PPC4XX, I hit the following build failure:
-drivers/crypto/amcc/crypto4xx_core.c: In function 'crypto4xx_probe':
-drivers/crypto/amcc/crypto4xx_core.c:1407:20: error: passing argument 1 of 'ppc4xx_trng_probe' from incompatible pointer type [-Werror=incompatible-pointer-types]
-In file included from drivers/crypto/amcc/crypto4xx_core.c:50:0:
-drivers/crypto/amcc/crypto4xx_trng.h:28:20: note: expected 'struct crypto4xx_device *' but argument is of type 'struct crypto4xx_core_device *'
-drivers/crypto/amcc/crypto4xx_core.c: In function 'crypto4xx_remove':
-drivers/crypto/amcc/crypto4xx_core.c:1434:21: error: passing argument 1 of 'ppc4xx_trng_remove' from incompatible pointer type [-Werror=incompatible-pointer-types]
-In file included from drivers/crypto/amcc/crypto4xx_core.c:50:0:
-drivers/crypto/amcc/crypto4xx_trng.h:30:20: note: expected 'struct crypto4xx_device *' but argument is of type 'struct crypto4xx_core_device *'
+BCM63XX (MIPS) does not use device tree, so there cannot be any
+of_device_id, causing the driver to fail on probe:
 
-This patch fix the needed argument of ppc4xx_trng_probe()/ppc4xx_trng_remove() in that case.
+[    0.904564] bcm2835-rng: probe of bcm63xx-rng failed with error -22
 
-Fixes: 5343e674f32f ("crypto4xx: integrate ppc4xx-rng into crypto4xx")
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Fix this by checking for match data only if we are probing from device
+tree.
+
+Fixes: 8705f24f7b57 ("hwrng: bcm2835 - Enable BCM2835 RNG to work on BCM63xx platforms")
+Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/amcc/crypto4xx_trng.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/char/hw_random/bcm2835-rng.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/crypto/amcc/crypto4xx_trng.h b/drivers/crypto/amcc/crypto4xx_trng.h
-index 931d22531f51..7bbda51b7337 100644
---- a/drivers/crypto/amcc/crypto4xx_trng.h
-+++ b/drivers/crypto/amcc/crypto4xx_trng.h
-@@ -26,9 +26,9 @@ void ppc4xx_trng_probe(struct crypto4xx_core_device *core_dev);
- void ppc4xx_trng_remove(struct crypto4xx_core_device *core_dev);
- #else
- static inline void ppc4xx_trng_probe(
--	struct crypto4xx_device *dev __maybe_unused) { }
-+	struct crypto4xx_core_device *dev __maybe_unused) { }
- static inline void ppc4xx_trng_remove(
--	struct crypto4xx_device *dev __maybe_unused) { }
-+	struct crypto4xx_core_device *dev __maybe_unused) { }
- #endif
+diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
+index 6767d965c36c..19bde680aee1 100644
+--- a/drivers/char/hw_random/bcm2835-rng.c
++++ b/drivers/char/hw_random/bcm2835-rng.c
+@@ -171,14 +171,16 @@ static int bcm2835_rng_probe(struct platform_device *pdev)
+ 	priv->rng.read = bcm2835_rng_read;
+ 	priv->rng.cleanup = bcm2835_rng_cleanup;
  
- #endif
+-	rng_id = of_match_node(bcm2835_rng_of_match, np);
+-	if (!rng_id)
+-		return -EINVAL;
+-
+-	/* Check for rng init function, execute it */
+-	of_data = rng_id->data;
+-	if (of_data)
+-		priv->mask_interrupts = of_data->mask_interrupts;
++	if (dev_of_node(dev)) {
++		rng_id = of_match_node(bcm2835_rng_of_match, np);
++		if (!rng_id)
++			return -EINVAL;
++
++		/* Check for rng init function, execute it */
++		of_data = rng_id->data;
++		if (of_data)
++			priv->mask_interrupts = of_data->mask_interrupts;
++	}
+ 
+ 	/* register driver */
+ 	err = devm_hwrng_register(dev, &priv->rng);
 -- 
 2.20.1
 
