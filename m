@@ -2,95 +2,331 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F62314324C
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Jan 2020 20:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F35143477
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jan 2020 00:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727531AbgATTcB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 20 Jan 2020 14:32:01 -0500
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:33317 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727117AbgATTcA (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 20 Jan 2020 14:32:00 -0500
-Received: by mail-ed1-f67.google.com with SMTP id r21so639558edq.0
-        for <linux-crypto@vger.kernel.org>; Mon, 20 Jan 2020 11:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=z7I/Kq2V0EnXiuoACdRbnwoAql3KZ080nwyXVjlruyU=;
-        b=kLfnsSTIjE2YEe6HI6GtqXd6cMnhTRLMcstoRngEtLrpsW8Des52P9cJGak3H8TgGi
-         7pI7x0ReUsZVA5020Qw65cEVulbgAqf7PV7Yj5z98jIQHYXuhdjNseji1wTJmoRk9owd
-         jH0nw85bxKb6JNDbbMZz77rTtrhB/lrp1T9+1Yzp1e0fAmiYnPF2y/wqE3N2vxlEpqDg
-         Q62+v45VGQo8fprIjkXGYdl8n0+0lt4RTeTWLmEirmHeh05e1zsbOQ1RyEmjVmqN0eJc
-         PRg9w7tG3wGqyiL8Rgrtjody799fKx6nbHvtMQHhCmcCncWFfzoetJS1edNfQP320vCH
-         Vilg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=z7I/Kq2V0EnXiuoACdRbnwoAql3KZ080nwyXVjlruyU=;
-        b=AmfiTVYzf9g2Qav4Gg4/h5EQUIIn1Smkvqq+QHJmG2aORf1dz18XnfcleoTxsfqsHy
-         yo8tsCmu0Vs7yDDm0DVt/BpWpXilidKaT4A+yhyXjGKqo2sGlhoaANMyZVNkoz+TyGUF
-         nX+hffL1BTC0QajO4sjZMgd90SQMPAHUkPPjpmlr5b12OdjF/LMTImqkNtT6BhFd/DuF
-         1DMd/da0CcdmMX1pDxtdhkE3ZD3lQycOl1tfr7dPw3jWnDxJMaZ9ETksqI4VgA4EcxFL
-         pgXZZK4HoTiI38NcfbuNtuX7W5amrbELJ0g5w5It4vMNZYK550T0oXKcA7LP0n6EvASm
-         CJ8Q==
-X-Gm-Message-State: APjAAAUr2C7W1xGR0XEuZRC2mciRk/WYOQorBXEPCRLBe2N6BRFLgmxb
-        dPGIdVgvyFQPJeYsv6W74JmWIy4hAv2HuU3heeE=
-X-Google-Smtp-Source: APXvYqwPh6D8ihOXjaVWGs/0GLulEekGPU0xOOyxhr7PagnLX+E8xWeQy/UQ09ZNp2jZFCCt0xVGiodDu+D5No4niKg=
-X-Received: by 2002:a05:6402:505:: with SMTP id m5mr609398edv.15.1579548719077;
- Mon, 20 Jan 2020 11:31:59 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a05:6402:22dc:0:0:0:0 with HTTP; Mon, 20 Jan 2020 11:31:57
- -0800 (PST)
-Reply-To: mcclainejohn.13@gmail.com
-From:   "Prof, William Roberts" <eco.bank1204@gmail.com>
-Date:   Mon, 20 Jan 2020 20:31:57 +0100
-Message-ID: <CAOE+jAB9Cv76tHqc-hO92yWjVshCsALoX=zT1ruNmX+0-Bjyxw@mail.gmail.com>
-Subject: Contact Diplomatic Agent, Mr. Mcclaine John to receive your ATM CARD
- valued the sum of $12.8Million United States Dollars
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        id S1726874AbgATXc7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 20 Jan 2020 18:32:59 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:51010 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726843AbgATXc6 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 20 Jan 2020 18:32:58 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D1BEB200AE1;
+        Tue, 21 Jan 2020 00:32:55 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C343C200ADB;
+        Tue, 21 Jan 2020 00:32:55 +0100 (CET)
+Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 214CD2056E;
+        Tue, 21 Jan 2020 00:32:55 +0100 (CET)
+From:   Iuliana Prodan <iuliana.prodan@nxp.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx <linux-imx@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+Subject: [RFC PATCH] Crypto-engine support for parallel requests
+Date:   Tue, 21 Jan 2020 01:32:29 +0200
+Message-Id: <1579563149-3678-1-git-send-email-iuliana.prodan@nxp.com>
+X-Mailer: git-send-email 2.1.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Attn: Dear Beneficiary,
+Added support for executing multiple requests, in parallel,
+for crypto engine.
+A no_reqs is initialized and set in the new
+crypto_engine_alloc_init_and_set function.
+Here, is also set the maximum size for crypto-engine software
+queue (not hardcoded anymore).
+On crypto_pump_requests the no_reqs is increased, until the
+max_no_reqs is reached, and decreased on crypto_finalize_request,
+or on error path (in case a prepare_request or do_one_request
+operation was unsuccessful).
 
-I wish to inform you that the diplomatic agent conveying your ATM CARD
-valued the sum of $12.8Million United States Dollars has misplaced
-your address and he is currently stranded at (George Bush
-International Airport) Houston Texas USA now
-We required you to reconfirm the following information's below to him
-so that he can deliver your Payment CARD to you today or tomorrow
-morning as information provided with open communications via email and
-telephone for security reasons.
-HERE IS THE DETAILS  HE NEED FROM YOU URGENT
-YOUR FULL NAME:========
-ADDRESS:========
-MOBILE NO:========
-NAME OF YOUR NEAREST AIRPORT:========
-A COPY OF YOUR IDENTIFICATION :========
+Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+---
+ crypto/crypto_engine.c  | 112 +++++++++++++++++++++++++++++++++---------------
+ include/crypto/engine.h |  11 +++--
+ 2 files changed, 84 insertions(+), 39 deletions(-)
 
-Note; do contact the diplomatic agent immediately through the
-information's listed below
-Contact Person: Diplomatic Agent, Mr. Mcclaine John
-EMAIL: mcclainejohn.13@gmail.com
-Tel:(223) 777-7518
+diff --git a/crypto/crypto_engine.c b/crypto/crypto_engine.c
+index eb029ff..5219141 100644
+--- a/crypto/crypto_engine.c
++++ b/crypto/crypto_engine.c
+@@ -14,6 +14,7 @@
+ #include "internal.h"
+ 
+ #define CRYPTO_ENGINE_MAX_QLEN 10
++#define CRYPTO_ENGINE_MAX_CONCURRENT_REQS 1
+ 
+ /**
+  * crypto_finalize_request - finalize one request if the request is done
+@@ -22,32 +23,27 @@
+  * @err: error number
+  */
+ static void crypto_finalize_request(struct crypto_engine *engine,
+-			     struct crypto_async_request *req, int err)
++				    struct crypto_async_request *req, int err)
+ {
+ 	unsigned long flags;
+-	bool finalize_cur_req = false;
++	bool finalize_req = false;
+ 	int ret;
+ 	struct crypto_engine_ctx *enginectx;
+ 
+ 	spin_lock_irqsave(&engine->queue_lock, flags);
+-	if (engine->cur_req == req)
+-		finalize_cur_req = true;
++	if (engine->no_reqs > 0) {
++		finalize_req = true;
++		engine->no_reqs--;
++	}
+ 	spin_unlock_irqrestore(&engine->queue_lock, flags);
+ 
+-	if (finalize_cur_req) {
+-		enginectx = crypto_tfm_ctx(req->tfm);
+-		if (engine->cur_req_prepared &&
+-		    enginectx->op.unprepare_request) {
+-			ret = enginectx->op.unprepare_request(engine, req);
+-			if (ret)
+-				dev_err(engine->dev, "failed to unprepare request\n");
+-		}
+-		spin_lock_irqsave(&engine->queue_lock, flags);
+-		engine->cur_req = NULL;
+-		engine->cur_req_prepared = false;
+-		spin_unlock_irqrestore(&engine->queue_lock, flags);
++	enginectx = crypto_tfm_ctx(req->tfm);
++	if (finalize_req && enginectx->op.prepare_request &&
++	    enginectx->op.unprepare_request) {
++		ret = enginectx->op.unprepare_request(engine, req);
++		if (ret)
++			dev_err(engine->dev, "failed to unprepare request\n");
+ 	}
+-
+ 	req->complete(req, err);
+ 
+ 	kthread_queue_work(engine->kworker, &engine->pump_requests);
+@@ -73,8 +69,8 @@ static void crypto_pump_requests(struct crypto_engine *engine,
+ 
+ 	spin_lock_irqsave(&engine->queue_lock, flags);
+ 
+-	/* Make sure we are not already running a request */
+-	if (engine->cur_req)
++	/* Make sure we have space, for more requests to run */
++	if (engine->no_reqs >= engine->max_no_reqs)
+ 		goto out;
+ 
+ 	/* If another context is idling then defer */
+@@ -108,13 +104,16 @@ static void crypto_pump_requests(struct crypto_engine *engine,
+ 		goto out;
+ 	}
+ 
++retry:
+ 	/* Get the fist request from the engine queue to handle */
+ 	backlog = crypto_get_backlog(&engine->queue);
+ 	async_req = crypto_dequeue_request(&engine->queue);
+ 	if (!async_req)
+ 		goto out;
+ 
+-	engine->cur_req = async_req;
++	/* Increase the number of concurrent requests that are in execution */
++	engine->no_reqs++;
++
+ 	if (backlog)
+ 		backlog->complete(backlog, -EINPROGRESS);
+ 
+@@ -130,7 +129,7 @@ static void crypto_pump_requests(struct crypto_engine *engine,
+ 		ret = engine->prepare_crypt_hardware(engine);
+ 		if (ret) {
+ 			dev_err(engine->dev, "failed to prepare crypt hardware\n");
+-			goto req_err;
++			goto req_err_2;
+ 		}
+ 	}
+ 
+@@ -141,26 +140,45 @@ static void crypto_pump_requests(struct crypto_engine *engine,
+ 		if (ret) {
+ 			dev_err(engine->dev, "failed to prepare request: %d\n",
+ 				ret);
+-			goto req_err;
++			goto req_err_2;
+ 		}
+-		engine->cur_req_prepared = true;
+ 	}
+ 	if (!enginectx->op.do_one_request) {
+ 		dev_err(engine->dev, "failed to do request\n");
+ 		ret = -EINVAL;
+-		goto req_err;
++		goto req_err_1;
+ 	}
++
+ 	ret = enginectx->op.do_one_request(engine, async_req);
+ 	if (ret) {
+ 		dev_err(engine->dev, "Failed to do one request from queue: %d\n", ret);
+-		goto req_err;
++		goto req_err_1;
+ 	}
+-	return;
+-
+-req_err:
+-	crypto_finalize_request(engine, async_req, ret);
+-	return;
+ 
++	/*
++	 * If there is still space for concurrent requests,
++	 * try and send a new one
++	 */
++	spin_lock_irqsave(&engine->queue_lock, flags);
++	if (engine->no_reqs < engine->max_no_reqs)
++		goto retry;
++	goto out;
++
++req_err_1:
++	if (enginectx->op.unprepare_request) {
++		ret = enginectx->op.unprepare_request(engine, async_req);
++		if (ret)
++			dev_err(engine->dev, "failed to unprepare request\n");
++	}
++req_err_2:
++	async_req->complete(async_req, ret);
++	spin_lock_irqsave(&engine->queue_lock, flags);
++	/*
++	 * If unable to prepare or execute the request,
++	 * decrease the number of concurrent requests
++	 */
++	engine->no_reqs--;
++	goto retry;
+ out:
+ 	spin_unlock_irqrestore(&engine->queue_lock, flags);
+ }
+@@ -386,15 +404,21 @@ int crypto_engine_stop(struct crypto_engine *engine)
+ EXPORT_SYMBOL_GPL(crypto_engine_stop);
+ 
+ /**
+- * crypto_engine_alloc_init - allocate crypto hardware engine structure and
+- * initialize it.
++ * crypto_engine_alloc_init_and_set - allocate crypto hardware engine structure
++ * and initialize it by setting the maximum number of entries in the software
++ * crypto-engine queue and the maximum number of concurrent requests that can
++ * be executed at once.
+  * @dev: the device attached with one hardware engine
+  * @rt: whether this queue is set to run as a realtime task
++ * @max_no_reqs: maximum number of request that can be executed in parallel
++ * @qlen: maximum size of the crypto-engine queue
+  *
+  * This must be called from context that can sleep.
+  * Return: the crypto engine structure on success, else NULL.
+  */
+-struct crypto_engine *crypto_engine_alloc_init(struct device *dev, bool rt)
++struct crypto_engine *crypto_engine_alloc_init_and_set(struct device *dev,
++						       bool rt, int max_no_reqs,
++						       int qlen)
+ {
+ 	struct sched_param param = { .sched_priority = MAX_RT_PRIO / 2 };
+ 	struct crypto_engine *engine;
+@@ -411,12 +435,13 @@ struct crypto_engine *crypto_engine_alloc_init(struct device *dev, bool rt)
+ 	engine->running = false;
+ 	engine->busy = false;
+ 	engine->idling = false;
+-	engine->cur_req_prepared = false;
+ 	engine->priv_data = dev;
+ 	snprintf(engine->name, sizeof(engine->name),
+ 		 "%s-engine", dev_name(dev));
++	engine->max_no_reqs = max_no_reqs;
++	engine->no_reqs = 0;
+ 
+-	crypto_init_queue(&engine->queue, CRYPTO_ENGINE_MAX_QLEN);
++	crypto_init_queue(&engine->queue, qlen);
+ 	spin_lock_init(&engine->queue_lock);
+ 
+ 	engine->kworker = kthread_create_worker(0, "%s", engine->name);
+@@ -433,6 +458,23 @@ struct crypto_engine *crypto_engine_alloc_init(struct device *dev, bool rt)
+ 
+ 	return engine;
+ }
++EXPORT_SYMBOL_GPL(crypto_engine_alloc_init_and_set);
++
++/**
++ * crypto_engine_alloc_init - allocate crypto hardware engine structure and
++ * initialize it.
++ * @dev: the device attached with one hardware engine
++ * @rt: whether this queue is set to run as a realtime task
++ *
++ * This must be called from context that can sleep.
++ * Return: the crypto engine structure on success, else NULL.
++ */
++struct crypto_engine *crypto_engine_alloc_init(struct device *dev, bool rt)
++{
++	return crypto_engine_alloc_init_and_set(dev, rt,
++						CRYPTO_ENGINE_MAX_CONCURRENT_REQS,
++						CRYPTO_ENGINE_MAX_QLEN);
++}
+ EXPORT_SYMBOL_GPL(crypto_engine_alloc_init);
+ 
+ /**
+diff --git a/include/crypto/engine.h b/include/crypto/engine.h
+index e29cd67..5f9a6df 100644
+--- a/include/crypto/engine.h
++++ b/include/crypto/engine.h
+@@ -24,7 +24,6 @@
+  * @idling: the engine is entering idle state
+  * @busy: request pump is busy
+  * @running: the engine is on working
+- * @cur_req_prepared: current request is prepared
+  * @list: link with the global crypto engine list
+  * @queue_lock: spinlock to syncronise access to request queue
+  * @queue: the crypto queue of the engine
+@@ -38,14 +37,14 @@
+  * @kworker: kthread worker struct for request pump
+  * @pump_requests: work struct for scheduling work to the request pump
+  * @priv_data: the engine private data
+- * @cur_req: the current request which is on processing
++ * @max_no_reqs: maximum number of request which can be processed in parallel
++ * @no_reqs: current number of request which are processed in parallel
+  */
+ struct crypto_engine {
+ 	char			name[ENGINE_NAME_LEN];
+ 	bool			idling;
+ 	bool			busy;
+ 	bool			running;
+-	bool			cur_req_prepared;
+ 
+ 	struct list_head	list;
+ 	spinlock_t		queue_lock;
+@@ -61,7 +60,8 @@ struct crypto_engine {
+ 	struct kthread_work             pump_requests;
+ 
+ 	void				*priv_data;
+-	struct crypto_async_request	*cur_req;
++	int			max_no_reqs;
++	int			no_reqs;
+ };
+ 
+ /*
+@@ -102,6 +102,9 @@ void crypto_finalize_skcipher_request(struct crypto_engine *engine,
+ int crypto_engine_start(struct crypto_engine *engine);
+ int crypto_engine_stop(struct crypto_engine *engine);
+ struct crypto_engine *crypto_engine_alloc_init(struct device *dev, bool rt);
++struct crypto_engine *crypto_engine_alloc_init_and_set(struct device *dev,
++						       bool rt, int max_no_reqs,
++						       int qlen);
+ int crypto_engine_exit(struct crypto_engine *engine);
+ 
+ #endif /* _CRYPTO_ENGINE_H */
+-- 
+2.1.0
 
-Contact the diplomatic agent immediately
-because he is waiting to hear from you today with the needed information's.
-
-NOTE: The Diplomatic agent does not know that the content of the
-consignment box is $12.800,000,00 Million United States Dollars and on
-no circumstances should you let him know the content. The consignment
-was moved from here as family treasures, so never allow him to open
-the box. Please I have paid delivery fees for you but the only money
-you must send to Mcclaine John is your ATM CARD delivery fee $25.00
-only. text Him as you contact Him Immediately
-
-Thanks,
-with Regards.
-Prof, William Roberts
-Director DHL COURIER SERVICES-Benin
