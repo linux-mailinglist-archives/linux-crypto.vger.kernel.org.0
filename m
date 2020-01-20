@@ -2,123 +2,55 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC9714243E
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Jan 2020 08:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A929F14248C
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Jan 2020 08:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgATHaY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 20 Jan 2020 02:30:24 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:43072 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726089AbgATHaY (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 20 Jan 2020 02:30:24 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id C58CA76E02C39FD2C868;
-        Mon, 20 Jan 2020 15:30:22 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.439.0; Mon, 20 Jan 2020 15:30:12 +0800
-From:   Shukun Tan <tanshukun1@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH 4/4] crypto: hisilicon: Fix duplicate print when qm occur multiple errors
-Date:   Mon, 20 Jan 2020 15:30:09 +0800
-Message-ID: <1579505409-3776-5-git-send-email-tanshukun1@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1579505409-3776-1-git-send-email-tanshukun1@huawei.com>
-References: <1579505409-3776-1-git-send-email-tanshukun1@huawei.com>
+        id S1726125AbgATH4E (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 20 Jan 2020 02:56:04 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:56254 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725872AbgATH4E (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 20 Jan 2020 02:56:04 -0500
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
+        id 1itRul-0005qD-1j; Mon, 20 Jan 2020 15:56:03 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1itRuh-0004iZ-W1; Mon, 20 Jan 2020 15:56:00 +0800
+Date:   Mon, 20 Jan 2020 15:55:59 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Kalyani Akula <kalyania@xilinx.com>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>, Harsh Jain <harshj@xilinx.com>,
+        Sarat Chand Savitala <saratcha@xilinx.com>,
+        Mohan Marutirao Dhanawade <mohand@xilinx.com>
+Subject: Re: [PATCH V4 0/4] Add Xilinx's ZynqMP AES-GCM driver support
+Message-ID: <20200120075559.kra4dqdphbbnid5h@gondor.apana.org.au>
+References: <1574235842-7930-1-git-send-email-kalyani.akula@xilinx.com>
+ <BN7PR02MB51241CCD25BD1269B4394D9AAF320@BN7PR02MB5124.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN7PR02MB51241CCD25BD1269B4394D9AAF320@BN7PR02MB5124.namprd02.prod.outlook.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-If all possible errors occurs at the same time, the error_status will be
-all 1s. The doorbell timeout error and FIFO overflow error will be print
-in each cycle, which should be print just once.
+On Mon, Jan 20, 2020 at 06:59:22AM +0000, Kalyani Akula wrote:
+> Hi Herbert,
+> 
+> Any review comments on below patch set.
 
-Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
----
- drivers/crypto/hisilicon/qm.c | 59 ++++++++++++++++++++-----------------------
- 1 file changed, 28 insertions(+), 31 deletions(-)
+Please resubmit your patch series once you have acks for the
+non-crypto bits ready.  Please also state how you want it to
+be merged, i.e., whether only the crypto patch is meant  for
+the crypto tree or whether it needs to go in as a whole.
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 2c0e22f..79f84dc6 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -1019,41 +1019,38 @@ static void qm_hw_error_uninit_v2(struct hisi_qm *qm)
- 
- static void qm_log_hw_error(struct hisi_qm *qm, u32 error_status)
- {
--	const struct hisi_qm_hw_error *err = qm_hw_error;
-+	const struct hisi_qm_hw_error *err;
- 	struct device *dev = &qm->pdev->dev;
- 	u32 reg_val, type, vf_num;
-+	int i;
- 
--	while (err->msg) {
--		if (err->int_msk & error_status) {
--			dev_err(dev, "%s [error status=0x%x] found\n",
--				err->msg, err->int_msk);
--
--			if (error_status & QM_DB_TIMEOUT) {
--				reg_val = readl(qm->io_base +
--						QM_ABNORMAL_INF01);
--				type = (reg_val & QM_DB_TIMEOUT_TYPE) >>
--				       QM_DB_TIMEOUT_TYPE_SHIFT;
--				vf_num = reg_val & QM_DB_TIMEOUT_VF;
--				dev_err(dev, "qm %s doorbell timeout in function %u\n",
--					qm_db_timeout[type], vf_num);
--			}
--
--			if (error_status & QM_OF_FIFO_OF) {
--				reg_val = readl(qm->io_base +
--						QM_ABNORMAL_INF00);
--				type = (reg_val & QM_FIFO_OVERFLOW_TYPE) >>
--				       QM_FIFO_OVERFLOW_TYPE_SHIFT;
--				vf_num = reg_val & QM_FIFO_OVERFLOW_VF;
--
--				if (type < ARRAY_SIZE(qm_fifo_overflow))
--					dev_err(dev, "qm %s fifo overflow in function %u\n",
--						qm_fifo_overflow[type],
--						vf_num);
--				else
--					dev_err(dev, "unknown error type\n");
--			}
-+	for (i = 0; i < ARRAY_SIZE(qm_hw_error); i++) {
-+		err = &qm_hw_error[i];
-+		if (!(err->int_msk & error_status))
-+			continue;
-+
-+		dev_err(dev, "%s [error status=0x%x] found\n",
-+			err->msg, err->int_msk);
-+
-+		if (err->int_msk & QM_DB_TIMEOUT) {
-+			reg_val = readl(qm->io_base + QM_ABNORMAL_INF01);
-+			type = (reg_val & QM_DB_TIMEOUT_TYPE) >>
-+			       QM_DB_TIMEOUT_TYPE_SHIFT;
-+			vf_num = reg_val & QM_DB_TIMEOUT_VF;
-+			dev_err(dev, "qm %s doorbell timeout in function %u\n",
-+				qm_db_timeout[type], vf_num);
-+		} else if (err->int_msk & QM_OF_FIFO_OF) {
-+			reg_val = readl(qm->io_base + QM_ABNORMAL_INF00);
-+			type = (reg_val & QM_FIFO_OVERFLOW_TYPE) >>
-+			       QM_FIFO_OVERFLOW_TYPE_SHIFT;
-+			vf_num = reg_val & QM_FIFO_OVERFLOW_VF;
-+
-+			if (type < ARRAY_SIZE(qm_fifo_overflow))
-+				dev_err(dev, "qm %s fifo overflow in function %u\n",
-+					qm_fifo_overflow[type], vf_num);
-+			else
-+				dev_err(dev, "unknown error type\n");
- 		}
--		err++;
- 	}
- }
- 
+Thanks,
 -- 
-2.7.4
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
