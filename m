@@ -2,67 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F38A214392F
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jan 2020 10:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0381D14396D
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jan 2020 10:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728890AbgAUJLT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 Jan 2020 04:11:19 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:37564 "EHLO deadmen.hmeau.com"
+        id S1728741AbgAUJZZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 Jan 2020 04:25:25 -0500
+Received: from mxs2.seznam.cz ([77.75.76.125]:16145 "EHLO mxs2.seznam.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728456AbgAUJLT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 Jan 2020 04:11:19 -0500
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtps (Exim 4.89 #2 (Debian))
-        id 1itpYy-0006iC-Rf; Tue, 21 Jan 2020 17:11:08 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1itpYt-0001Tc-1v; Tue, 21 Jan 2020 17:11:03 +0800
-Date:   Tue, 21 Jan 2020 17:11:03 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Iuliana Prodan <iuliana.prodan@nxp.com>
-Cc:     Baolin Wang <baolin.wang@linaro.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx <linux-imx@nxp.com>
-Subject: Re: [RFC PATCH] Crypto-engine support for parallel requests
-Message-ID: <20200121091102.magzogr7tnj6joqm@gondor.apana.org.au>
-References: <1579563149-3678-1-git-send-email-iuliana.prodan@nxp.com>
+        id S1727360AbgAUJZY (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 21 Jan 2020 04:25:24 -0500
+Received: from email.seznam.cz
+        by email-smtpc6a.ng.seznam.cz (email-smtpc6a.ng.seznam.cz [10.23.10.165])
+        id 1147b704a41cd616114e52d7;
+        Tue, 21 Jan 2020 10:25:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seznam.cz; s=beta;
+        t=1579598722; bh=PvU0cFOvUsfloxGX8SrbXYl4hNSdH8LczMmuSRYmOzQ=;
+        h=Received:Reply-To:Subject:To:Cc:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=VTlcersm2c8UBlMiK5tTjrAuaMLmUcEKHr5i3aMOmTiWNrRy16xzU/3BVvLGZKSOG
+         RSJaheeEjrls896p6N03x1U484y7Qez9B9D3VW0UrXEjJyD6rh0uR4ZuKYlF3SY7UL
+         XL/H2tvcsxIC5JXKi7ekxGWb5PwVwtbDrHgwjEpc=
+Received: from [77.75.76.48] (unknown-62-130.xilinx.com [149.199.62.130])
+        by email-relay9.ng.seznam.cz (Seznam SMTPD 1.3.108) with ESMTP;
+        Tue, 21 Jan 2020 10:11:57 +0100 (CET)  
+Reply-To: monstr@monstr.eu
+Subject: Re: [PATCH V4 1/4] dt-bindings: crypto: Add bindings for ZynqMP AES
+ driver
+To:     Kalyani Akula <kalyani.akula@xilinx.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     git <git@xilinx.com>, Harsh Jain <harshj@xilinx.com>,
+        Sarat Chand Savitala <saratcha@xilinx.com>,
+        Mohan <mohand@xilinx.com>, Kalyani Akul <kalyania@xilinx.com>
+References: <1574235842-7930-1-git-send-email-kalyani.akula@xilinx.com>
+ <1574235842-7930-2-git-send-email-kalyani.akula@xilinx.com>
+From:   Michal Simek <monstr@seznam.cz>
+Message-ID: <b5696361-3b62-deb4-61d6-a9b64bb6f9c3@seznam.cz>
+Date:   Tue, 21 Jan 2020 10:11:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1579563149-3678-1-git-send-email-iuliana.prodan@nxp.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <1574235842-7930-2-git-send-email-kalyani.akula@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jan 21, 2020 at 01:32:29AM +0200, Iuliana Prodan wrote:
->
-> +	if (engine->no_reqs < engine->max_no_reqs)
-> +		goto retry;
+On 20. 11. 19 8:43, Kalyani Akula wrote:
+> Add documentation to describe Xilinx ZynqMP AES driver bindings.
+> 
+> Signed-off-by: Kalyani Akula <kalyani.akula@xilinx.com>
+> ---
+>  Documentation/devicetree/bindings/crypto/xlnx,zynqmp-aes.txt | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/crypto/xlnx,zynqmp-aes.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/xlnx,zynqmp-aes.txt b/Documentation/devicetree/bindings/crypto/xlnx,zynqmp-aes.txt
+> new file mode 100644
+> index 0000000..226bfb9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/crypto/xlnx,zynqmp-aes.txt
+> @@ -0,0 +1,12 @@
+> +Xilinx ZynqMP AES hw acceleration support
+> +
+> +The ZynqMP PS-AES hw accelerator is used to encrypt/decrypt
+> +the given user data.
+> +
+> +Required properties:
+> +- compatible: should contain "xlnx,zynqmp-aes"
+> +
+> +Example:
+> +	zynqmp_aes {
+> +		compatible = "xlnx,zynqmp-aes";
+> +	};
+> 
 
-We should not hard-code this number into the engine.  Instead,
-we should just let the driver tell us when it is ready to accept
-more requests.
+Ok. This should be converted to yaml and it should be placed to
+zynqmp_firmware node as is done for clk, pcap, nvmem, power, reset and
+genpd.
 
-Perhaps we should add a new function for drivers that wish to
-support this that would accept a list of requests instead of
-a single one.  It would then process as many requests as it
-can from that list and only return either when the list is
-exhausted or when it can't process any more requests.
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Thanks,
+Michal
