@@ -2,79 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B86F8143976
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jan 2020 10:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 968E9143A16
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jan 2020 10:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728689AbgAUJ1k (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 Jan 2020 04:27:40 -0500
-Received: from mxs2.seznam.cz ([77.75.76.125]:24951 "EHLO mxs2.seznam.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727360AbgAUJ1k (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 Jan 2020 04:27:40 -0500
-Received: from email.seznam.cz
-        by email-smtpc4a.ng.seznam.cz (email-smtpc4a.ng.seznam.cz [10.23.10.105])
-        id 7f9a8daecac1ecbc7f93687d;
-        Tue, 21 Jan 2020 10:26:27 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seznam.cz; s=beta;
-        t=1579598787; bh=B98H5CD1TrItHXF6OHCM5qRVUqCXcpTVW1s6/kNp8NM=;
-        h=Received:Reply-To:Subject:To:Cc:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=EeUMomcUvbdia5xMiMgS/ckb35431lCh8nixHcvjBtTu+akWDIIHtfpjIIqkdPWfO
-         mHb+mXIlplyVziMXDJTSotOecBLgAZQm8Bm+UXXuO7eqSsOTiYpsbTe2k1WfGVsqPR
-         f8b46TlZPtw0yCtNlo3bz7D7ITrE4H8W0THlTpVw=
-Received: from [77.75.76.48] (unknown-62-130.xilinx.com [149.199.62.130])
-        by email-relay18.ng.seznam.cz (Seznam SMTPD 1.3.108) with ESMTP;
-        Tue, 21 Jan 2020 10:26:14 +0100 (CET)  
-Reply-To: monstr@monstr.eu
-Subject: Re: [PATCH V4 0/4] Add Xilinx's ZynqMP AES-GCM driver support
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Kalyani Akula <kalyania@xilinx.com>
-Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        git <git@xilinx.com>, Harsh Jain <harshj@xilinx.com>,
-        Sarat Chand Savitala <saratcha@xilinx.com>,
-        Mohan Marutirao Dhanawade <mohand@xilinx.com>
-References: <1574235842-7930-1-git-send-email-kalyani.akula@xilinx.com>
- <BN7PR02MB51241CCD25BD1269B4394D9AAF320@BN7PR02MB5124.namprd02.prod.outlook.com>
- <20200120075559.kra4dqdphbbnid5h@gondor.apana.org.au>
-From:   Michal Simek <monstr@seznam.cz>
-Message-ID: <1abdf222-9517-976e-b3d3-bfc1c92c4663@seznam.cz>
-Date:   Tue, 21 Jan 2020 10:26:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200120075559.kra4dqdphbbnid5h@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728797AbgAUJ5d (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 Jan 2020 04:57:33 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:48737 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728682AbgAUJ5c (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 21 Jan 2020 04:57:32 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0ToHgJlF_1579600649;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0ToHgJlF_1579600649)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 21 Jan 2020 17:57:30 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Introduce OSCCA SM2 asymmetric cipher algorithm 
+Date:   Tue, 21 Jan 2020 17:57:12 +0800
+Message-Id: <20200121095718.52404-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Herbert,
+Hello,
 
-On 20. 01. 20 8:55, Herbert Xu wrote:
-> On Mon, Jan 20, 2020 at 06:59:22AM +0000, Kalyani Akula wrote:
->> Hi Herbert,
->>
->> Any review comments on below patch set.
-> 
-> Please resubmit your patch series once you have acks for the
-> non-crypto bits ready.  Please also state how you want it to
-> be merged, i.e., whether only the crypto patch is meant  for
-> the crypto tree or whether it needs to go in as a whole.
+This new module implement the SM2 public key algorithm. It was
+published by State Encryption Management Bureau, China.
+List of specifications for SM2 elliptic curve public key cryptography:
 
-All these drivers which requires firmware interface extension can be
-added via your tree or I can take them via arm-soc tree with your ack.
+* GM/T 0003.1-2012
+* GM/T 0003.2-2012
+* GM/T 0003.3-2012
+* GM/T 0003.4-2012
+* GM/T 0003.5-2012
 
-It is really up to you. I am happy to just ack patches out of crypto and
-feel free to take them via your tree.
-Or please let me know when you are done with review and I will take them.
+IETF: https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
+oscca: http://www.oscca.gov.cn/sca/xxgk/2010-12/17/content_1002386.shtml
+scctc: http://www.gmbz.org.cn/main/bzlb.html
 
-Kalyani: Please fix that stuff I have reported and we are waiting for v5.
+The sm2 algorithm is based on libgcrypt's mpi implementation, and has
+made some additions to the kernel's original mpi library, and added the
+implementation of ec to better support elliptic curve-like algorithms.
+
+sm2 has good support in both openssl and gnupg projects, and sm3 and sm4
+of the OSCCA algorithm family have also been implemented in the kernel.
+
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
 Thanks,
-Michal
+Tianjia
+
 
