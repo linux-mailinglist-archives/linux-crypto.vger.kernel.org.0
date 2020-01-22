@@ -2,303 +2,218 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DA21452F5
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Jan 2020 11:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E686014545F
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Jan 2020 13:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729878AbgAVKqZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 22 Jan 2020 05:46:25 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:34979 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729624AbgAVKqY (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 22 Jan 2020 05:46:24 -0500
-Received: by mail-wr1-f67.google.com with SMTP id g17so6743192wro.2;
-        Wed, 22 Jan 2020 02:46:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HlVN3+Fqo4CnAsTqD0OmkrdM8WtTRqDQDULyBnPtHug=;
-        b=pHjQAKV6qoTnYiEUG8pxraj4nOM5bni+aQ67wNb2KUb2//W/kbVd+97/KkvsiDvFhU
-         KXfqLc/ykSk0I6tQToqBW5aydEU2S7a5z/ZaqJl4Roqxe9AiFIkwvl5713T/SMxDCs89
-         zHicB6uVbaRr0/qRVxYiZ4eAl2VabxBEfnuFZow7BlAD5/g8MbRObrb0MYdOm6903zc+
-         kwYTXGhCbJy/61a+nCJUYJtjXvJFwSNmXt/FpRo7Lb4t7ZpidDNG17axWiCba3nFw3md
-         /P/HBlOYKl5oYmNfqf3u019vsC7R9mbUrN3uRG0Upg7XDFPuVAFOPizJTj5ljKukwAFP
-         6xkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HlVN3+Fqo4CnAsTqD0OmkrdM8WtTRqDQDULyBnPtHug=;
-        b=tP5hQcVCsC85SMQQwmkwDu8qYDfzlJg6trgUPg9KBBEQSpAbJVfQXapYKR5vVYj7nn
-         B19oWiQ16Gz9cEX5Std7R071oYMC7KCT7GRhib0tiQU2e66tEKRBudNYNBKW2gsucoGo
-         xZvtsut8H0sMPMoiVwhC2FufMSpmMvoLBh/QprnzALTCfOUgJvA3VDiKWuKiwu14uDkD
-         vwu+M8k9/by1KESoysARV+d/KZBofd1FQcO3TkfPodAGgPfr8V49xSujgyvldgJ6Mcex
-         /9Ni7I3v6/MeoOR2Ol+j7B3U8zhpwnNs9V7nYnpGdPBIp+VLhcmdrm0KRuTE83VfclXq
-         wRbw==
-X-Gm-Message-State: APjAAAUGkSZr1N0hFDu6iQfBX3ArqlVi0v4MizNrXn1zFKcjoxy1jCcs
-        +UpLoKfkMUBT98lgTJpMQ2Y=
-X-Google-Smtp-Source: APXvYqxtNeNC1yK6GUuYbu+60bk+pxY4Zl+3F/5+yXvy3VXeniYyMGDE6MOXVSGfQdIi4qEjFVGD7w==
-X-Received: by 2002:a5d:534d:: with SMTP id t13mr10929059wrv.77.1579689981975;
-        Wed, 22 Jan 2020 02:46:21 -0800 (PST)
-Received: from Red.localdomain ([2a01:cb1d:3d5:a100:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id n3sm3443953wmc.27.2020.01.22.02.46.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jan 2020 02:46:21 -0800 (PST)
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        mripard@kernel.org, wens@csie.org, iuliana.prodan@nxp.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        id S1728900AbgAVM33 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 22 Jan 2020 07:29:29 -0500
+Received: from mail-eopbgr80042.outbound.protection.outlook.com ([40.107.8.42]:1790
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726204AbgAVM33 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 22 Jan 2020 07:29:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ceOmVHfaWdpoet6um2Bc6Rp+ManfpCnUjBn1TCVMxB59DPUsjRtZQP/jv5OOglIvLSNwStrJwKBtbiQ2cHRcZeqS5NLTr+LH8BEBCz1QNjXTUooorc6/zCpHMXWPkyThZmkkLtJ0guWXKlTHiRl7AIbpgt0UdVVmqCieyFCLtaGH/tAFGxvbHa9lQdc6ENqWgYKA1mwvNzJJusONixIS1dUgpsjFBoFwt8yWwD+DaraPxrTsn9x3DJMKnxopCVRzw9k5owDNvaqVABjzuqgynE1ZZYnnhjBg79dr6FVJOKmvHkG4l5GXeJJgQlptghUSd70+mt0pvdQfil0fpUMEeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ima0gc7kM5uSLGKNJyiFgHXs/rYus8KLTtH9RAgOl98=;
+ b=X+TMTtjsZ4r7GyAhDpVb8JBLon/nZjPywE8ec/5jwH5ES4aw4M9UFZkNgTl77nX1jRFqBvkZTn4tBcw9M8oV5iYfpM6BEU1M1WL3WwVy5Bi+8waxWj7DcF9ahl4inuz7d+8x17Wj5ZKFwU0IPn2/xKYyaMsbjxZQ8TpEhB0WKVH7+aD9ci0kHrymiq2l9t0O+STC/UMODhyrUOKfx95jogEnuTFh3t4u/78AjYxazBEvHd9sw4oF35E0WFwGPrLOhLyiE6zNqpDKnQCctyPhhT7+7cSJb1UYdwolrZjKlr4Q4K0ga/8caKyZ90BA/rYG4mY2xGE63Zg+lieffvIErw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ima0gc7kM5uSLGKNJyiFgHXs/rYus8KLTtH9RAgOl98=;
+ b=Rxth38U4bFNJ1pjODsAfU1GPfA/8MgVi56USOtKdOqevRyu2ATvYHYDiBzLlNTrJJyfEYXljkUx+IRoAT0agOnTFSnAvCO2JJkWBqEHlHbW3lnwejDhOSvE+lxkwk9mEl7ZngO1/NcnHW7DSD1F6VPp/oLzpQ/wZpJ4HxCoRCZM=
+Received: from VI1PR04MB4445.eurprd04.prod.outlook.com (20.177.55.161) by
+ VI1PR04MB4829.eurprd04.prod.outlook.com (20.177.51.217) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2644.23; Wed, 22 Jan 2020 12:29:22 +0000
+Received: from VI1PR04MB4445.eurprd04.prod.outlook.com
+ ([fe80::304d:b7d8:1233:2ae0]) by VI1PR04MB4445.eurprd04.prod.outlook.com
+ ([fe80::304d:b7d8:1233:2ae0%6]) with mapi id 15.20.2644.027; Wed, 22 Jan 2020
+ 12:29:22 +0000
+From:   Iuliana Prodan <iuliana.prodan@nxp.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Baolin Wang <baolin.wang@linaro.org>,
         Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH 9/9] crypto: sun8i-ce: permit to batch requests
-Date:   Wed, 22 Jan 2020 11:45:28 +0100
-Message-Id: <20200122104528.30084-10-clabbe.montjoie@gmail.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200122104528.30084-1-clabbe.montjoie@gmail.com>
-References: <20200122104528.30084-1-clabbe.montjoie@gmail.com>
+CC:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [RFC PATCH] Crypto-engine support for parallel requests
+Thread-Topic: [RFC PATCH] Crypto-engine support for parallel requests
+Thread-Index: AQHVz+nyH19jpegvq0OzoQlSx1aIPw==
+Date:   Wed, 22 Jan 2020 12:29:22 +0000
+Message-ID: <VI1PR04MB44455343230CBA7400D21C998C0C0@VI1PR04MB4445.eurprd04.prod.outlook.com>
+References: <1579563149-3678-1-git-send-email-iuliana.prodan@nxp.com>
+ <20200121100053.GA14095@Red>
+ <VI1PR04MB44454A0468073981FDA603B38C0D0@VI1PR04MB4445.eurprd04.prod.outlook.com>
+ <20200122104134.GA13173@Red>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=iuliana.prodan@nxp.com; 
+x-originating-ip: [212.146.100.6]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: de00cc46-5d81-463b-7384-08d79f36b601
+x-ms-traffictypediagnostic: VI1PR04MB4829:|VI1PR04MB4829:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB4829A180CBF3C01FF683B5E48C0C0@VI1PR04MB4829.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 029097202E
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(396003)(136003)(39860400002)(376002)(366004)(199004)(189003)(2906002)(7416002)(86362001)(8936002)(81166006)(81156014)(33656002)(8676002)(7696005)(6506007)(110136005)(44832011)(186003)(54906003)(316002)(71200400001)(26005)(55016002)(52536014)(478600001)(66556008)(64756008)(53546011)(4326008)(91956017)(76116006)(9686003)(5660300002)(66946007)(66446008)(66476007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR04MB4829;H:VI1PR04MB4445.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KtaiAuQ40qRNu7iKByIFhjg+8//mig0adsdjTZWh2iQzVvo6yzR0kqME/SrJ0q0kIVAXz5NUS7KPFr70MUt4mwuYG4kH7ADtrfnzZkJUU/yBTWy3Zhi6OyfohcjQeC2KgW2E68RFyxvCI43kf4SZ/mhBS+a8EXCieKxh5blor1OomUmwfKRv+/jB/uq6I15BS96YPOJgiofhS/jKD/ni0KJY9EAfZdnLiEVeJmGXfnUzfQ43vvnjo4kqN37K0jLrIY1hPsJ4nSvf0RQcNNJuoYXXbp+o+oOgghFZZsDe5HtzRNFI2RWLelY7RwRE4EfNf7MFIgj9B6BfFKBFYE46epFV+rmB5iwX8QRWUusC/wKJeuu0JMqw9OJdHLq/OhWNkWtxJ5JahZwnPtdmFQJZjWNdUATqcesugTaDWt7fTZWlNbwr5gWgCoITaQGInjrb
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de00cc46-5d81-463b-7384-08d79f36b601
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2020 12:29:22.5865
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TthnQpUSexdizyn6g0zDVs5cUD7Y2QOHi935Df+e0Nqu/sLj6r8RBUN5kZoDcy/bJBZvizH/xKjcOI1UUkbTRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4829
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch permit to batch request.
-This imply:
-- linking two task via next
-- set interrupt flag just before running the batch in the last task.
-- storing all requests for finalizing them later
-
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- .../allwinner/sun8i-ce/sun8i-ce-cipher.c      | 60 +++++++++++++++----
- .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 15 +++--
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h  |  6 ++
- 3 files changed, 66 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-index fc0a2299c701..832fb4a51da9 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-@@ -96,31 +96,38 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
- 	int flow, i;
- 	int nr_sgs = 0;
- 	int nr_sgd = 0;
-+	int slot = 0;
- 	int err = 0;
- 
- 	algt = container_of(alg, struct sun8i_ce_alg_template, alg.skcipher);
- 
--	dev_dbg(ce->dev, "%s %s %u %x IV(%p %u) key=%u\n", __func__,
-+	dev_dbg(ce->dev, "%s %s %u %x IV(%p %u) key=%u slot=%d\n", __func__,
- 		crypto_tfm_alg_name(areq->base.tfm),
- 		areq->cryptlen,
- 		rctx->op_dir, areq->iv, crypto_skcipher_ivsize(tfm),
--		op->keylen);
--
--#ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_DEBUG
--	algt->stat_req++;
--#endif
-+		op->keylen, slot);
- 
- 	flow = rctx->flow;
- 
- 	chan = &ce->chanlist[flow];
-+	slot = chan->ct;
-+
-+#ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_DEBUG
-+	algt->stat_req++;
-+	if (chan->ct + 1 > chan->tmax)
-+		chan->tmax = chan->ct + 1;
-+#endif
- 
--	cet = chan->tl;
-+	cet = &chan->tl[slot];
- 	memset(cet, 0, sizeof(struct ce_task));
- 
- 	cet->t_id = cpu_to_le32(flow);
- 	common = ce->variant->alg_cipher[algt->ce_algo_id];
--	common |= rctx->op_dir | CE_COMM_INT;
-+	common |= rctx->op_dir;
- 	cet->t_common_ctl = cpu_to_le32(common);
-+	if (slot > 0)
-+		chan->tl[slot - 1].next = cpu_to_le32(chan->t_phy + 176 * slot);
-+
- 	/* CTS and recent CE (H6) need length in bytes, in word otherwise */
- 	if (ce->variant->has_t_dlen_in_bytes)
- 		cet->t_dlen = cpu_to_le32(areq->cryptlen);
-@@ -240,6 +247,9 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
- 	chan->timeout = areq->cryptlen;
- 	rctx->nr_sgs = nr_sgs;
- 	rctx->nr_sgd = nr_sgd;
-+	rctx->slot = slot;
-+	chan->lreq[chan->ct] = &areq->base;
-+	chan->ct++;
- 	return 0;
- 
- theend_sgs:
-@@ -281,14 +291,41 @@ int sun8i_ce_cipher_run(struct crypto_engine *engine, void *areq)
- 	struct sun8i_cipher_tfm_ctx *op = crypto_skcipher_ctx(tfm);
- 	struct sun8i_ce_dev *ce = op->ce;
- 	struct sun8i_cipher_req_ctx *rctx = skcipher_request_ctx(breq);
-+	struct sun8i_ce_flow *chan;
- 	int flow, err;
-+	int i;
- 
- 	flow = rctx->flow;
-+	chan = &ce->chanlist[flow];
- 	err = sun8i_ce_run_task(ce, flow, crypto_tfm_alg_name(breq->base.tfm));
--	crypto_finalize_skcipher_request(engine, breq, err);
-+	for (i = 0; i < chan->ct; i++) {
-+		if (!chan->lreq[i]) {
-+			dev_err(ce->dev, "Missing request at slot %d\n", i);
-+			continue;
-+		}
-+		breq = container_of(chan->lreq[i], struct skcipher_request, base);
-+		crypto_finalize_skcipher_request(engine, breq, err);
-+		chan->lreq[i] = NULL;
-+	}
-+	chan->ct = 0;
- 	return 0;
- }
- 
-+static int sun8i_ce_qmore(struct crypto_engine *engine, void *async_req)
-+{
-+	struct skcipher_request *areq = container_of(async_req, struct skcipher_request, base);
-+	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(areq);
-+	struct sun8i_cipher_tfm_ctx *op = crypto_skcipher_ctx(tfm);
-+	struct sun8i_ce_dev *ce = op->ce;
-+	struct sun8i_cipher_req_ctx *rctx = skcipher_request_ctx(areq);
-+	struct sun8i_ce_flow *chan;
-+	int flow;
-+
-+	flow = rctx->flow;
-+	chan = &ce->chanlist[flow];
-+	return MAXTASK - chan->ct;
-+}
-+
- static int sun8i_ce_cipher_unprepare(struct crypto_engine *engine, void *async_req)
- {
- 	struct skcipher_request *areq = container_of(async_req, struct skcipher_request, base);
-@@ -301,11 +338,13 @@ static int sun8i_ce_cipher_unprepare(struct crypto_engine *engine, void *async_r
- 	unsigned int ivsize, offset;
- 	int nr_sgs = rctx->nr_sgs;
- 	int nr_sgd = rctx->nr_sgd;
-+	int slot = rctx->slot;
- 	int flow;
- 
- 	flow = rctx->flow;
- 	chan = &ce->chanlist[flow];
--	cet = chan->tl;
-+
-+	cet = &chan->tl[slot];
- 	ivsize = crypto_skcipher_ivsize(tfm);
- 
- 	if (areq->src == areq->dst) {
-@@ -404,6 +443,7 @@ int sun8i_ce_cipher_init(struct crypto_tfm *tfm)
- 	op->enginectx.op.do_one_request = sun8i_ce_cipher_run;
- 	op->enginectx.op.prepare_request = sun8i_ce_cipher_prepare;
- 	op->enginectx.op.unprepare_request = sun8i_ce_cipher_unprepare;
-+	op->enginectx.op.can_queue_more = sun8i_ce_qmore;
- 
- 	err = pm_runtime_get_sync(op->ce->dev);
- 	if (err < 0)
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-index e8bf7bf31061..348d3927344b 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-@@ -104,8 +104,10 @@ int sun8i_ce_run_task(struct sun8i_ce_dev *ce, int flow, const char *name)
- 	int err = 0;
- 
- #ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_DEBUG
--	ce->chanlist[flow].stat_req++;
-+	ce->chanlist[flow].stat_req += ce->chanlist[flow].ct;
- #endif
-+	/* mark last one */
-+	ce->chanlist[flow].tl[ce->chanlist[flow].ct - 1].t_common_ctl |= cpu_to_le32(CE_COMM_INT);
- 
- 	mutex_lock(&ce->mlock);
- 
-@@ -120,7 +122,7 @@ int sun8i_ce_run_task(struct sun8i_ce_dev *ce, int flow, const char *name)
- 	/* Be sure all data is written before enabling the task */
- 	wmb();
- 
--	v = 1 | (ce->chanlist[flow].tl->t_common_ctl & 0x7F) << 8;
-+	v = 1 | (ce->chanlist[flow].tl[0].t_common_ctl & 0x7F) << 8;
- 	writel(v, ce->base + CE_TLR);
- 	mutex_unlock(&ce->mlock);
- 
-@@ -128,7 +130,7 @@ int sun8i_ce_run_task(struct sun8i_ce_dev *ce, int flow, const char *name)
- 			msecs_to_jiffies(ce->chanlist[flow].timeout));
- 
- 	if (ce->chanlist[flow].status == 0) {
--		dev_err(ce->dev, "DMA timeout for %s\n", name);
-+		dev_err(ce->dev, "DMA timeout for %s on flow %d (batch=%d)\n", name, flow, ce->chanlist[flow].ct);
- 		err = -EFAULT;
- 	}
- 	/* No need to lock for this read, the channel is locked so
-@@ -285,7 +287,10 @@ static int sun8i_ce_dbgfs_read(struct seq_file *seq, void *v)
- 	int i;
- 
- 	for (i = 0; i < MAXFLOW; i++)
--		seq_printf(seq, "Channel %d: nreq %lu\n", i, ce->chanlist[i].stat_req);
-+		seq_printf(seq, "Channel %d: nreq %lu tmax %d eqlen=%d/%d\n", i,
-+			   ce->chanlist[i].stat_req, ce->chanlist[i].tmax,
-+			   ce->chanlist[i].engine->queue.qlen,
-+			   ce->chanlist[i].engine->queue.max_qlen);
- 
- 	for (i = 0; i < ARRAY_SIZE(ce_algs); i++) {
- 		if (!ce_algs[i].ce)
-@@ -343,7 +348,7 @@ static int sun8i_ce_allocate_chanlist(struct sun8i_ce_dev *ce)
- 	for (i = 0; i < MAXFLOW; i++) {
- 		init_completion(&ce->chanlist[i].complete);
- 
--		ce->chanlist[i].engine = crypto_engine_alloc_init(ce->dev, true);
-+		ce->chanlist[i].engine = crypto_engine_alloc_init2(ce->dev, true, MAXTASK * 2);
- 		if (!ce->chanlist[i].engine) {
- 			dev_err(ce->dev, "Cannot allocate engine\n");
- 			i--;
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-index 2d3325a13bf1..59e9985fc6c8 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-@@ -135,6 +135,7 @@ struct ce_task {
-  * @t_phy:	Physical address of task
-  * @tl:		pointer to the current ce_task for this flow
-  * @stat_req:	number of request done by this flow
-+ * @tmax:	The maximum number of tasks done in one batch
-  */
- struct sun8i_ce_flow {
- 	struct crypto_engine *engine;
-@@ -143,8 +144,11 @@ struct sun8i_ce_flow {
- 	dma_addr_t t_phy;
- 	int timeout;
- 	struct ce_task *tl;
-+	struct crypto_async_request     *lreq[MAXTASK];
-+	int ct;
- #ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_DEBUG
- 	unsigned long stat_req;
-+	int tmax;
- #endif
- };
- 
-@@ -185,6 +189,7 @@ struct sun8i_ce_dev {
-  * @ivlen:	size of bounce_iv
-  * @nr_sgs:	The number of source SG (as given by dma_map_sg())
-  * @nr_sgd:	The number of destination SG (as given by dma_map_sg())
-+ * @slot:	The slot in the tasklist used for this requests
-  */
- struct sun8i_cipher_req_ctx {
- 	u32 op_dir;
-@@ -194,6 +199,7 @@ struct sun8i_cipher_req_ctx {
- 	unsigned int ivlen;
- 	int nr_sgs;
- 	int nr_sgd;
-+	int slot;
- };
- 
- /*
--- 
-2.24.1
-
+On 1/22/2020 12:41 PM, Corentin Labbe wrote:=0A=
+> On Tue, Jan 21, 2020 at 02:20:27PM +0000, Iuliana Prodan wrote:=0A=
+>> On 1/21/2020 12:00 PM, Corentin Labbe wrote:=0A=
+>>> On Tue, Jan 21, 2020 at 01:32:29AM +0200, Iuliana Prodan wrote:=0A=
+>>>> Added support for executing multiple requests, in parallel,=0A=
+>>>> for crypto engine.=0A=
+>>>> A no_reqs is initialized and set in the new=0A=
+>>>> crypto_engine_alloc_init_and_set function.=0A=
+>>>> =0A=
+>>>>=0A=
+>>>=0A=
+>>> Hello=0A=
+>>>=0A=
+>>> In your model, who is running finalize_request() ?=0A=
+>> finalize_request() in CAAM, and in other drivers, is called on the _done=
+=0A=
+>> callback (stm32, virtio and omap).=0A=
+>>=0A=
+>>> In caam it seems that you have a taskqueue dedicated for that but you c=
+annot assume that all drivers will have this.=0A=
+>>> I think the crypto_engine should be sufficient by itself and does not n=
+eed external thread/taskqueue.=0A=
+>>>=0A=
+>>> But in your case, it seems that you dont have the choice, since do_one_=
+request does not "do" but simply enqueue the request in the "jobring".=0A=
+>>>=0A=
+>> But, do_one_request it shouldn't, necessary,  execute the request. Is ok=
+=0A=
+>> to enqueue it, since we have asynchronous requests. do_one_request is=0A=
+>> not blocking.=0A=
+>>=0A=
+>>> What about adding along prepare/do_one_request/unprepare a new enqueue(=
+)/can_do_more() function ?=0A=
+>>>=0A=
+>>> The stream will be:=0A=
+>>> retry:=0A=
+>>> optionnal prepare=0A=
+>>> optionnal enqueue=0A=
+>>> optionnal can_do_more() (goto retry)=0A=
+>>> optionnal do_one_request=0A=
+>>>=0A=
+>>> then=0A=
+>>> finalize()=0A=
+>>> optionnal unprepare=0A=
+>>>=0A=
+>>=0A=
+>> I'm planning to improve crypto-engine incrementally, so I'm taking one=
+=0A=
+>> step at a time :)=0A=
+>> But I'm not sure if adding an enqueue operation is a good idea, since,=
+=0A=
+>> my understanding, is that do_one_request is a non-blocking operation and=
+=0A=
+>> it shouldn't execute the request.=0A=
+> =0A=
+> do_one_request is a blocking operation on amlogic/sun8i-ce/sun8i-ss and t=
+he "documentation" is clear "@do_one_request: do encryption for current req=
+uest".=0A=
+> But I agree that is a bit small for a documentation.=0A=
+> =0A=
+=0A=
+Herbert, Baolin,=0A=
+=0A=
+What do you think about do_one_requet operation: is blocking or not?=0A=
+=0A=
+There are several drivers (stm32, omap, virtio, caam) that include =0A=
+crypto-engine, and uses do_one_request as non-blocking, only the ones =0A=
+mentioned and implemented by Corentin use do_one_request as blocking.=0A=
+=0A=
+>>=0A=
+>> IMO, the crypto-engine flow should be kept simple:=0A=
+>> 1. a request comes to hw -> this is doing transfer_request_to_engine;=0A=
+>> 2. CE enqueue the requests=0A=
+>> 3. on pump_requests:=0A=
+>> 	3. a) optional prepare operation=0A=
+>> 	3. b) sends the reqs to hw, by do_one_request operation. To wait for=0A=
+>> completion here it contradicts the asynchronous crypto API.=0A=
+> =0A=
+> There are no contradiction, the call is asynchronous for the user of the =
+API.=0A=
+> =0A=
+>> do_one_request operation has a crypto_async_request type as argument.=0A=
+>> Note: Step 3. b) can be done several times, depending on size of hw queu=
+e.=0A=
+>> 4. in driver, when req is done:=0A=
+>> 	4. a) optional unprepare operation=0A=
+>> 	4. b) crypto_finalize_request is called=0A=
+>> 	=0A=
+> =0A=
+> Since Herbert say the same thing than me:=0A=
+> "Instead, we should just let the driver tell us when it is ready to accep=
+t more requests."=0A=
+> Let me insist on my proposal, I have updated my serie, and it should hand=
+le your case and mine.=0A=
+> I will send it within minutes.=0A=
+> =0A=
+=0A=
+Corentin,=0A=
+=0A=
+In your new proposal, a few patches include my modifications. The others =
+=0A=
+include a solution that fits your drivers very well, but implies =0A=
+modifications in all the other 4 drivers. It's not backwards compatible.=0A=
+I believe it can be done better, so we won't need to modify, _at all_, =0A=
+the other drivers.=0A=
+=0A=
+I'm working on a new version for my RFC, that has the can_enqueue_more, =0A=
+as Herbert suggested, but I would really want to know how =0A=
+crypto-engine's do_one_request was thought: blocking or non-blocking?=0A=
+=0A=
+Just your driver(s) use it as blocking, the other examples use it to =0A=
+enqueue (don't block in waiting for request to finish).=0A=
+=0A=
+Thanks,=0A=
+Iulia=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
