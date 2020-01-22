@@ -2,71 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B58F6144E7F
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Jan 2020 10:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FE6145166
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Jan 2020 10:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728931AbgAVJRl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 22 Jan 2020 04:17:41 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:60720 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726049AbgAVJRl (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 22 Jan 2020 04:17:41 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id AEB42BAE94895711F33B;
-        Wed, 22 Jan 2020 17:17:39 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.439.0; Wed, 22 Jan 2020 17:17:32 +0800
-From:   Hongbo Yao <yaohongbo@huawei.com>
-To:     <jens.wiklander@linaro.org>, <Rijo-john.Thomas@amd.com>
-CC:     <yaohongbo@huawei.com>, <chenzhou10@huawei.com>,
-        <tee-dev@lists.linaro.org>, <linux-kernel@vger.kernel.org>,
-        <Devaraj.Rangasamy@amd.com>, <herbert@gondor.apana.org.au>,
-        <linux-crypto@vger.kernel.org>
-Subject: [PATCH RESEND -next] tee: amdtee: amdtee depends on CRYPTO_DEV_CCP_DD
-Date:   Wed, 22 Jan 2020 17:12:38 +0800
-Message-ID: <20200122091238.65484-1-yaohongbo@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1730134AbgAVJef (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 22 Jan 2020 04:34:35 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:42101 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730923AbgAVJee (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 22 Jan 2020 04:34:34 -0500
+Received: by mail-oi1-f194.google.com with SMTP id 18so5457030oin.9
+        for <linux-crypto@vger.kernel.org>; Wed, 22 Jan 2020 01:34:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ynAECvucuhMvbP8cwS6QYymonzK/uMzxWqNsu6RxVOQ=;
+        b=zDMOYEs9suLo1wloXAuvTs9YuKNSsBp5Hh/My3IXvDI6pIh0N2z5UqrziYJxv+bYpB
+         l50xJH65RISb7s2LXKuIi/E7S9p056wetT4ckJ4EMLpqz4XK9oULN60ECDbtiqxoQdSX
+         +GzjIx8Y4IuBR1HS2aQGWRlscUJXE6WEueyP7X2B83ydNU9jzKEIk4xz9xds8p+yd4pU
+         VaOQr8TdMNrp/PtAhkXAF8yr/DOaO6CX5qFTzirH7j7WXFn8E/P4d7ncmuNOKz2IaUe3
+         Bu9s/PMnIIuYfwZV/Nem2ypzDq9hT9n+hhZdnhfwK2wwXuU3hIEjMRqwHUHKzsQBESJU
+         x+qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ynAECvucuhMvbP8cwS6QYymonzK/uMzxWqNsu6RxVOQ=;
+        b=EiENb7pi4ED6JhvbvAU90VcgIDTiYYfWhYIYm7tZhHUkl0YqnPKB2fs1jprOqDhuz6
+         sr8wU1GsQCAkNTP27prPVXy6avCpy9Yj3fnIMZPN7bfSqbT+Rqtias+S7UzjTU+aQy1U
+         Mc3L63bgCNvfGruhGL596cYPxTgUSM6tFFOLmbP+3uDK602k0cXuLsB9uyf62PqDSlPH
+         tRmJgEQZY0SI0a2haoAadBZORFXBKfIOI2a4Vx09ziGlfRrO+rs3EJ0GsJhe/mlZfCSS
+         gkbBf+UttpEBgLET67bCGVgf1dPsIZxU/c3QqX6c+SZbgFTry50rhr+IHSED8V1xUxju
+         89bA==
+X-Gm-Message-State: APjAAAUhOv4GgFnbzoBsP9izUuekNt3+D92NLi3gjoCYlFAIWgYsyXNA
+        vx+qOyirX+jVs4/DiBKl+vtu3qFhDySCZM5JdN17Yg==
+X-Google-Smtp-Source: APXvYqwbzDz1LV33C9eQRfMQ66DgycbUpabSvDxrpEo286vM48FZGUaJUsNg4Vuy0HVPZJ0WcR6p/x4MsZDxM7YGMsc=
+X-Received: by 2002:a54:4f14:: with SMTP id e20mr6057794oiy.84.1579685673521;
+ Wed, 22 Jan 2020 01:34:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+References: <20200122091238.65484-1-yaohongbo@huawei.com>
+In-Reply-To: <20200122091238.65484-1-yaohongbo@huawei.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Wed, 22 Jan 2020 10:34:22 +0100
+Message-ID: <CAHUa44FMK8WC_1H5QKz706qZyM4215vX9MQYCkPno1M40-MX0g@mail.gmail.com>
+Subject: Re: [PATCH RESEND -next] tee: amdtee: amdtee depends on CRYPTO_DEV_CCP_DD
+To:     Hongbo Yao <yaohongbo@huawei.com>
+Cc:     "Thomas, Rijo-john" <Rijo-john.Thomas@amd.com>,
+        chenzhou10@huawei.com,
+        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rangasamy, Devaraj" <Devaraj.Rangasamy@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-If CRYPTO_DEV_CCP_DD=m and AMDTEE=y, the following error is seen
-while building call.c or core.c
+On Wed, Jan 22, 2020 at 10:17 AM Hongbo Yao <yaohongbo@huawei.com> wrote:
+>
+> If CRYPTO_DEV_CCP_DD=m and AMDTEE=y, the following error is seen
+> while building call.c or core.c
+>
+> drivers/tee/amdtee/call.o: In function `handle_unload_ta':
+> call.c:(.text+0x35f): undefined reference to `psp_tee_process_cmd'
+> drivers/tee/amdtee/core.o: In function `amdtee_driver_init':
+> core.c:(.init.text+0xf): undefined reference to `psp_check_tee_status
+>
+> Fix the config dependency for AMDTEE here.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: 757cc3e9ff ("tee: add AMD-TEE driver")
+> Signed-off-by: Hongbo Yao <yaohongbo@huawei.com>
+> Reviewed-by: Rijo Thomas <Rijo-john.Thomas@amd.com>
+> ---
+>  drivers/tee/amdtee/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-drivers/tee/amdtee/call.o: In function `handle_unload_ta':
-call.c:(.text+0x35f): undefined reference to `psp_tee_process_cmd'
-drivers/tee/amdtee/core.o: In function `amdtee_driver_init':
-core.c:(.init.text+0xf): undefined reference to `psp_check_tee_status
+Acked-by: Jens Wiklander <jens.wiklander@linaro.org>
 
-Fix the config dependency for AMDTEE here.
+Thanks,
+Jens
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 757cc3e9ff ("tee: add AMD-TEE driver")
-Signed-off-by: Hongbo Yao <yaohongbo@huawei.com>
-Reviewed-by: Rijo Thomas <Rijo-john.Thomas@amd.com>
----
- drivers/tee/amdtee/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/tee/amdtee/Kconfig b/drivers/tee/amdtee/Kconfig
-index 4e32b6413b41..191f9715fa9a 100644
---- a/drivers/tee/amdtee/Kconfig
-+++ b/drivers/tee/amdtee/Kconfig
-@@ -3,6 +3,6 @@
- config AMDTEE
- 	tristate "AMD-TEE"
- 	default m
--	depends on CRYPTO_DEV_SP_PSP
-+	depends on CRYPTO_DEV_SP_PSP && CRYPTO_DEV_CCP_DD
- 	help
- 	  This implements AMD's Trusted Execution Environment (TEE) driver.
--- 
-2.20.1
-
+>
+> diff --git a/drivers/tee/amdtee/Kconfig b/drivers/tee/amdtee/Kconfig
+> index 4e32b6413b41..191f9715fa9a 100644
+> --- a/drivers/tee/amdtee/Kconfig
+> +++ b/drivers/tee/amdtee/Kconfig
+> @@ -3,6 +3,6 @@
+>  config AMDTEE
+>         tristate "AMD-TEE"
+>         default m
+> -       depends on CRYPTO_DEV_SP_PSP
+> +       depends on CRYPTO_DEV_SP_PSP && CRYPTO_DEV_CCP_DD
+>         help
+>           This implements AMD's Trusted Execution Environment (TEE) driver.
+> --
+> 2.20.1
+>
