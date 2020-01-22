@@ -2,105 +2,82 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FE6145166
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Jan 2020 10:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3747145154
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Jan 2020 10:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730134AbgAVJef (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 22 Jan 2020 04:34:35 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:42101 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730923AbgAVJee (ORCPT
+        id S1731187AbgAVJxb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 22 Jan 2020 04:53:31 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:46193 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731278AbgAVJxa (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 22 Jan 2020 04:34:34 -0500
-Received: by mail-oi1-f194.google.com with SMTP id 18so5457030oin.9
-        for <linux-crypto@vger.kernel.org>; Wed, 22 Jan 2020 01:34:33 -0800 (PST)
+        Wed, 22 Jan 2020 04:53:30 -0500
+Received: by mail-qk1-f194.google.com with SMTP id r14so5736813qke.13
+        for <linux-crypto@vger.kernel.org>; Wed, 22 Jan 2020 01:53:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ynAECvucuhMvbP8cwS6QYymonzK/uMzxWqNsu6RxVOQ=;
-        b=zDMOYEs9suLo1wloXAuvTs9YuKNSsBp5Hh/My3IXvDI6pIh0N2z5UqrziYJxv+bYpB
-         l50xJH65RISb7s2LXKuIi/E7S9p056wetT4ckJ4EMLpqz4XK9oULN60ECDbtiqxoQdSX
-         +GzjIx8Y4IuBR1HS2aQGWRlscUJXE6WEueyP7X2B83ydNU9jzKEIk4xz9xds8p+yd4pU
-         VaOQr8TdMNrp/PtAhkXAF8yr/DOaO6CX5qFTzirH7j7WXFn8E/P4d7ncmuNOKz2IaUe3
-         Bu9s/PMnIIuYfwZV/Nem2ypzDq9hT9n+hhZdnhfwK2wwXuU3hIEjMRqwHUHKzsQBESJU
-         x+qw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=1OTCzRuZLXKgKtG0YjZ5OtZ6bjyEuVtHenJ+Tqkqok8=;
+        b=Vvcyg9ajPsGRqCg5vdCGGcjfjAwjtzP/XrC9OXM+74J+BGbkz5db2jdC1DSBy4VrkK
+         d6bI/BfgJcluwR/H6IW/7ALxNhTimaWCWEsHeD6ZtJ+Wko5tT9l3CLI8hA2pYvSFocBw
+         uVswg+yB2qWezZxvzu5aBt3/RNuIvwlumYnSad1U5NtUeIo6qKFcLNUHoc6af4lz0iIa
+         PiANNRayTWL+/K5Jd9cPBoT4T6cTbf4Zx1Z6UyHi7/s5/trmcXSv/aC8xtyVpwh1bEjN
+         s4Zsb8X5P98sldXGefPzLnOZKbdIPgtdYsUc8wRcuMe07Ot5kQ6q1D1I5Cbu0pxraH+m
+         elCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ynAECvucuhMvbP8cwS6QYymonzK/uMzxWqNsu6RxVOQ=;
-        b=EiENb7pi4ED6JhvbvAU90VcgIDTiYYfWhYIYm7tZhHUkl0YqnPKB2fs1jprOqDhuz6
-         sr8wU1GsQCAkNTP27prPVXy6avCpy9Yj3fnIMZPN7bfSqbT+Rqtias+S7UzjTU+aQy1U
-         Mc3L63bgCNvfGruhGL596cYPxTgUSM6tFFOLmbP+3uDK602k0cXuLsB9uyf62PqDSlPH
-         tRmJgEQZY0SI0a2haoAadBZORFXBKfIOI2a4Vx09ziGlfRrO+rs3EJ0GsJhe/mlZfCSS
-         gkbBf+UttpEBgLET67bCGVgf1dPsIZxU/c3QqX6c+SZbgFTry50rhr+IHSED8V1xUxju
-         89bA==
-X-Gm-Message-State: APjAAAUhOv4GgFnbzoBsP9izUuekNt3+D92NLi3gjoCYlFAIWgYsyXNA
-        vx+qOyirX+jVs4/DiBKl+vtu3qFhDySCZM5JdN17Yg==
-X-Google-Smtp-Source: APXvYqwbzDz1LV33C9eQRfMQ66DgycbUpabSvDxrpEo286vM48FZGUaJUsNg4Vuy0HVPZJ0WcR6p/x4MsZDxM7YGMsc=
-X-Received: by 2002:a54:4f14:: with SMTP id e20mr6057794oiy.84.1579685673521;
- Wed, 22 Jan 2020 01:34:33 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=1OTCzRuZLXKgKtG0YjZ5OtZ6bjyEuVtHenJ+Tqkqok8=;
+        b=mA19Rz3j3+tnCBOWeW/Vcp9PhSHl80epbyXF2Io9DjCqiRepM6etGvogE4lxqI4kH4
+         AbDZnPyjB8CVZIj2flw0edIuiPOc1YAbbb+VMnQoQTmtZOIgN08vlsw5Uxz44oVYvQ1r
+         OtI9S6/gcyN5guABlyr66EDqVM6v6JUp3124sIZSdBwRi9BvouOb7ECUEYg7BICSuKgO
+         NvJ5bilwYe4Ia9EpYU9JJCQJtjAexWJ7UTBfCnOpiyEKuUum0hx7WURx3JpfbdZbi4RP
+         o63Tl8FdCXmbjF1+YfVW5ihE4TjdIPwzlFJtKbwbdcs/TNgfiGXABRWF5QSrw3leL7cW
+         6HbQ==
+X-Gm-Message-State: APjAAAVNB6ctlUctN7mFmAn5RVLmGSij8logfKvSe+pqkEsCcfjxQfZY
+        l7zUPcRkpOo9yA5FelV/dr0evpAndbcAlhMhtgA=
+X-Google-Smtp-Source: APXvYqwNDvhQB6R3RyAHJkaIl8lcJVqzOVU+RM3Yh9hSZxSTO491gCBMCBZCctxDAuu0EUQ4Y9p+wvrzFrikeGOOxCE=
+X-Received: by 2002:ae9:e206:: with SMTP id c6mr9276479qkc.105.1579686809756;
+ Wed, 22 Jan 2020 01:53:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20200122091238.65484-1-yaohongbo@huawei.com>
-In-Reply-To: <20200122091238.65484-1-yaohongbo@huawei.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Wed, 22 Jan 2020 10:34:22 +0100
-Message-ID: <CAHUa44FMK8WC_1H5QKz706qZyM4215vX9MQYCkPno1M40-MX0g@mail.gmail.com>
-Subject: Re: [PATCH RESEND -next] tee: amdtee: amdtee depends on CRYPTO_DEV_CCP_DD
-To:     Hongbo Yao <yaohongbo@huawei.com>
-Cc:     "Thomas, Rijo-john" <Rijo-john.Thomas@amd.com>,
-        chenzhou10@huawei.com,
-        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rangasamy, Devaraj" <Devaraj.Rangasamy@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>
+Received: by 2002:a0c:c382:0:0:0:0:0 with HTTP; Wed, 22 Jan 2020 01:53:29
+ -0800 (PST)
+Reply-To: aishagaddafi969@aol.com
+From:   AISHA GADDAFI <aishagddafi680@gmail.com>
+Date:   Wed, 22 Jan 2020 01:53:29 -0800
+Message-ID: <CAO3JireTMvH=8kSkqY9LojM84G76PBn1iQi6X9jrra4-i740vw@mail.gmail.com>
+Subject: Dear Friend (Assalamu Alaikum),
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jan 22, 2020 at 10:17 AM Hongbo Yao <yaohongbo@huawei.com> wrote:
->
-> If CRYPTO_DEV_CCP_DD=m and AMDTEE=y, the following error is seen
-> while building call.c or core.c
->
-> drivers/tee/amdtee/call.o: In function `handle_unload_ta':
-> call.c:(.text+0x35f): undefined reference to `psp_tee_process_cmd'
-> drivers/tee/amdtee/core.o: In function `amdtee_driver_init':
-> core.c:(.init.text+0xf): undefined reference to `psp_check_tee_status
->
-> Fix the config dependency for AMDTEE here.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Fixes: 757cc3e9ff ("tee: add AMD-TEE driver")
-> Signed-off-by: Hongbo Yao <yaohongbo@huawei.com>
-> Reviewed-by: Rijo Thomas <Rijo-john.Thomas@amd.com>
-> ---
->  drivers/tee/amdtee/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+-- 
+Dear Friend (Assalamu Alaikum),
 
-Acked-by: Jens Wiklander <jens.wiklander@linaro.org>
+I came across your e-mail contact prior a private search while in need of
+your assistance. My name is Aisha  Al-Qaddafi a single Mother and a Widow
+with three Children. I am the only biological Daughter of late Libyan
+President (Late Colonel Muammar Gaddafi).
 
-Thanks,
-Jens
+I have investment funds worth Twenty Seven Million Five Hundred Thousand
+United State Dollar ($27.500.000.00 ) and i need a trusted investment
+Manager/Partner because of my current refugee status, however, I am
+interested in you for investment project assistance in your country, may be
+from there, we can build business relationship in the nearest future.
 
->
-> diff --git a/drivers/tee/amdtee/Kconfig b/drivers/tee/amdtee/Kconfig
-> index 4e32b6413b41..191f9715fa9a 100644
-> --- a/drivers/tee/amdtee/Kconfig
-> +++ b/drivers/tee/amdtee/Kconfig
-> @@ -3,6 +3,6 @@
->  config AMDTEE
->         tristate "AMD-TEE"
->         default m
-> -       depends on CRYPTO_DEV_SP_PSP
-> +       depends on CRYPTO_DEV_SP_PSP && CRYPTO_DEV_CCP_DD
->         help
->           This implements AMD's Trusted Execution Environment (TEE) driver.
-> --
-> 2.20.1
->
+I am willing to negotiate investment/business profit sharing ratio with you
+base on the future investment earning profits.
+
+If you are willing to handle this project on my behalf kindly reply urgent
+to enable me provide you more information about the investment funds.
+
+Your Urgent Reply Will Be Appreciated. write me at this email address(
+aishagaddafi969@aol.com ) for further discussion.
+
+Best Regards
+Mrs Aisha Al-Qaddafi
+Reply to: aishagaddafi969@aol.com
