@@ -2,26 +2,26 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A7614862F
-	for <lists+linux-crypto@lfdr.de>; Fri, 24 Jan 2020 14:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D11AD148626
+	for <lists+linux-crypto@lfdr.de>; Fri, 24 Jan 2020 14:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389752AbgAXNaa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 24 Jan 2020 08:30:30 -0500
-Received: from andre.telenet-ops.be ([195.130.132.53]:42544 "EHLO
-        andre.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387464AbgAXNaT (ORCPT
+        id S2389683AbgAXNaV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 24 Jan 2020 08:30:21 -0500
+Received: from michel.telenet-ops.be ([195.130.137.88]:37542 "EHLO
+        michel.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389641AbgAXNaU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 24 Jan 2020 08:30:19 -0500
+        Fri, 24 Jan 2020 08:30:20 -0500
 Received: from ramsan ([84.195.182.253])
-        by andre.telenet-ops.be with bizsmtp
-        id uDW42100T5USYZQ01DW4BW; Fri, 24 Jan 2020 14:30:17 +0100
+        by michel.telenet-ops.be with bizsmtp
+        id uDW42100L5USYZQ06DW4cs; Fri, 24 Jan 2020 14:30:18 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan with esmtp (Exim 4.90_1)
         (envelope-from <geert@linux-m68k.org>)
-        id 1iuz2C-0007bG-Cp; Fri, 24 Jan 2020 14:30:04 +0100
+        id 1iuz2C-0007bK-ED; Fri, 24 Jan 2020 14:30:04 +0100
 Received: from geert by rox.of.borg with local (Exim 4.90_1)
         (envelope-from <geert@linux-m68k.org>)
-        id 1iuz2C-00047A-AH; Fri, 24 Jan 2020 14:30:04 +0100
+        id 1iuz2C-00047E-CN; Fri, 24 Jan 2020 14:30:04 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Gilad Ben-Yossef <gilad@benyossef.com>,
@@ -40,71 +40,76 @@ Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
         linux-pm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 0/2] Fix debugfs register access while suspended
-Date:   Fri, 24 Jan 2020 14:29:55 +0100
-Message-Id: <20200124132957.15769-1-geert+renesas@glider.be>
+Subject: [PATCH 2/2] crypto: ccree - fix debugfs register access while suspended
+Date:   Fri, 24 Jan 2020 14:29:57 +0100
+Message-Id: <20200124132957.15769-3-geert+renesas@glider.be>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200124132957.15769-1-geert+renesas@glider.be>
+References: <20200124132957.15769-1-geert+renesas@glider.be>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-	Hi all,
+Reading the debugfs files under /sys/kernel/debug/ccree/ can be done by
+the user at any time.  On R-Car SoCs, the CCREE device is power-managed
+using a moduile clock, and if this clock is not running, bogus register
+values may be read.
 
-While comparing register values read from debugfs files under
-/sys/kernel/debug/ccree/, I noticed some oddities.
-Apparently there is no guarantee these registers are read from the
-device while it is resumed.  This may lead to bogus values, or crashes
-and lock-ups.
+Fix this by filling in the debugfs_regset32.dev field, so debugfs will
+make sure the device is resumed while its registers are being read.
 
-This patch series:
-  1. Allows debugfs_create_regset32() to be used for devices whose
-     registers must be accessed when resumed,
-  2. Fixes the CCREE driver to make use of this.
+This fixes the bogus values (0x00000260) in the register dumps on R-Car
+H3 ES1.0:
 
-I have identified several other drivers that may be affected (i.e.
-using debugfs_create_regset32() and pm_runtime_*()):
-  - drivers/gpu/drm/msm/disp/dpu1
-  - drivers/usb/dwc3
-  - drivers/usb/host/ehci-omap.c
-  - drivers/usb/host/ehci-tegra.c
-  - drivers/usb/host/ohci-platform.c
-  - drivers/usb/host/xhci.c
-  - drivers/usb/host/xhci-dbgcap.c
-  - drivers/usb/host/xhci-histb.c
-  - drivers/usb/host/xhci-hub.c
-  - drivers/usb/host/xhci-mtk.c
-  - drivers/usb/host/xhci-pci.c
-  - drivers/usb/host/xhci-plat.c
-  - drivers/usb/host/xhci-tegra.c
-  - drivers/usb/mtu3
-  - drivers/usb/musb
+    -e6601000.crypto/regs:HOST_IRR = 0x00000260
+    -e6601000.crypto/regs:HOST_POWER_DOWN_EN = 0x00000260
+    +e6601000.crypto/regs:HOST_IRR = 0x00000038
+    +e6601000.crypto/regs:HOST_POWER_DOWN_EN = 0x00000038
+     e6601000.crypto/regs:AXIM_MON_ERR = 0x00000000
+     e6601000.crypto/regs:DSCRPTR_QUEUE_CONTENT = 0x000002aa
+    -e6601000.crypto/regs:HOST_IMR = 0x00000260
+    +e6601000.crypto/regs:HOST_IMR = 0x017ffeff
+     e6601000.crypto/regs:AXIM_CFG = 0x001f0007
+     e6601000.crypto/regs:AXIM_CACHE_PARAMS = 0x00000000
+    -e6601000.crypto/regs:GPR_HOST = 0x00000260
+    +e6601000.crypto/regs:GPR_HOST = 0x017ffeff
+     e6601000.crypto/regs:AXIM_MON_COMP = 0x00000000
+    -e6601000.crypto/version:SIGNATURE = 0x00000260
+    -e6601000.crypto/version:VERSION = 0x00000260
+    +e6601000.crypto/version:SIGNATURE = 0xdcc63000
+    +e6601000.crypto/version:VERSION = 0xaf400001
 
-Some of these call pm_runtime_forbid(), but given the comment "users
-should enable runtime pm using power/control in sysfs", this can be
-overridden from userspace, so these are unsafe, too?
+Note that this behavior is system-dependent, and the issue does not show
+up on all R-Car Gen3 SoCs and boards.  Even when the device is
+suspended, the module clock may be left enabled, if configured by the
+firmware for Secure Mode, or when controlled by the Real-Time Core.
 
-Thanks for your comments!
-
-Geert Uytterhoeven (2):
-  debugfs: regset32: Add Runtime PM support
-  crypto: ccree - fix debugfs register access while suspended
-
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
  drivers/crypto/ccree/cc_debugfs.c | 2 ++
- fs/debugfs/file.c                 | 8 ++++++++
- include/linux/debugfs.h           | 1 +
- 3 files changed, 11 insertions(+)
+ 1 file changed, 2 insertions(+)
 
+diff --git a/drivers/crypto/ccree/cc_debugfs.c b/drivers/crypto/ccree/cc_debugfs.c
+index 5669997386988055..35f3a2137502bd96 100644
+--- a/drivers/crypto/ccree/cc_debugfs.c
++++ b/drivers/crypto/ccree/cc_debugfs.c
+@@ -81,6 +81,7 @@ int cc_debugfs_init(struct cc_drvdata *drvdata)
+ 	regset->regs = debug_regs;
+ 	regset->nregs = ARRAY_SIZE(debug_regs);
+ 	regset->base = drvdata->cc_base;
++	regset->dev = dev;
+ 
+ 	ctx->dir = debugfs_create_dir(drvdata->plat_dev->name, cc_debugfs_dir);
+ 
+@@ -102,6 +103,7 @@ int cc_debugfs_init(struct cc_drvdata *drvdata)
+ 		verset->nregs = ARRAY_SIZE(pid_cid_regs);
+ 	}
+ 	verset->base = drvdata->cc_base;
++	verset->dev = dev;
+ 
+ 	debugfs_create_regset32("version", 0400, ctx->dir, verset);
+ 
 -- 
 2.17.1
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
