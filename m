@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD6314A868
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Jan 2020 17:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 040AF14A876
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Jan 2020 17:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726240AbgA0Q5G (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 27 Jan 2020 11:57:06 -0500
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:43907 "EHLO
+        id S1726360AbgA0Q5I (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 27 Jan 2020 11:57:08 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:35700 "EHLO
         mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgA0Q5G (ORCPT
+        with ESMTP id S1725845AbgA0Q5H (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 27 Jan 2020 11:57:06 -0500
-Received: by mail-pf1-f194.google.com with SMTP id s1so4566663pfh.10;
-        Mon, 27 Jan 2020 08:57:05 -0800 (PST)
+        Mon, 27 Jan 2020 11:57:07 -0500
+Received: by mail-pf1-f194.google.com with SMTP id i23so5180010pfo.2;
+        Mon, 27 Jan 2020 08:57:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bv9qjL9p/yTO8gI2IwvUm3d5y0oyhFWSWAgOHXsx4wg=;
-        b=idxvBz2w+aDPboH83G0TRCoZR93M3a2oRwDAmVMg1dLJzwz3N4Gz6UO/P3zpwkJguc
-         df25uXyjtvEgHVSz/1zgE3ApQoCjgbFPxwublu9lT7bjTeQM01xOhE/5b++tQC2pFnwg
-         tsQoG8HgK5eYDV80f1Yr5oGvE5XMoPr8uLId9pWNyAbls3JUcTo8TFO6ZhpFS9nOU8Rp
-         zVQBmJqpKq7fnlYpqwoDO0oGq4xmkRqqD/FUsoBwFM/rptFa81G1cw4f5uwPtN/seKEO
-         Nv9vdsIHPDB//SNwZS/EADC8AoJuP8P16Ak73jJxRQyfcNFWPwNCrUVd9Is0EbR0cFGQ
-         Krxw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=PRvyPinTl56WwRZm2jsRHtlpDEBNkMeEQKYla1GuCIw=;
+        b=b/0JK8rLW0meh5MIeuVFHvWBBpCn1O29dxZ03qSEmxyll1+Gc6RA5Me90MYDUBFVsc
+         VbETHo0zOMkTQzUUI22zwbKXZiXcAcZ0vsao/8V98Ykai6kvARj/JsS3DXgIKRXQH9ic
+         YjHPPkk1Ga6FKSq0bJI2jIqQkXifeoG32YQjLrRmEzmy3XCElhKbTk3monR/QRQr+KdY
+         IB9dqWNadIYPxFQ3KCmPEIGs+W+NQJezHgDeUeyOLcOsIh/oDDNJJLdYKbmY6dF8lkQs
+         /6obPj6nAREV1wkRCf0mRQble+phLko1xBy5t2O4qzPwHxImIuEKUjxCRPgpXkVdiv0N
+         dVUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bv9qjL9p/yTO8gI2IwvUm3d5y0oyhFWSWAgOHXsx4wg=;
-        b=bAi5eI4oNy4V2ZpGVZvDRehhNST5e1hGm6D6oB7TkW0Va3didNYtUWYBlMyfSTZB42
-         HMJPST7HKhHyhOKXrEdbKjGCTw+McAgVD7GmhLkYj/Sub73N8lEOJRgVxiUo5MhTh1vm
-         DiIH7Vl06moRJMeDW3xrBhZrkfQWx5AIe536oYFjUjKpbUCics5B/RT+0bjsEHMxUyPJ
-         KfohdzxzTIsaR5x6ZK59xZTg7FKntQ+wW3spTd/1S7BXvtrjspRTWlUGzrn/nEyY5gU5
-         WIxI2PHtoc2r1WND1B3o+1u1T917Uzkk/5CAUbBUkZiw6cCqlaJ000r1RrK/PzymMlug
-         kMtg==
-X-Gm-Message-State: APjAAAW21bwvYf7zhZDaUy9NHu/3mfNZSKedUknYwaOIoCCxo5qcujxI
-        ZtriSfgFnwZfZ/9wTKZnKFKsR1vM
-X-Google-Smtp-Source: APXvYqx3i4UK2TRjRn6wDnlzBZRK6VspL+auphc16edtcsB/OENNnTGMJ8MeaR8r+W+gKdTyE+tX+A==
-X-Received: by 2002:a62:5213:: with SMTP id g19mr12705647pfb.188.1580144224832;
-        Mon, 27 Jan 2020 08:57:04 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PRvyPinTl56WwRZm2jsRHtlpDEBNkMeEQKYla1GuCIw=;
+        b=AbjqNJrzx+iKkIH90TM1Y/Al5DVyLhqkx8kkp29+WoWomDEaQTJ5/8CHE5ZPUw2NDj
+         CDo+MyXouX5mdJscz0UhMfk/oO7mv0UcWuqzKpN/OKIjv7pKrB0RyLMSgJkTvQxHicE8
+         otExeLie9IeAsKKF5EL+sr9iYK/iBPCDPZJqlb4kGV5slre41340G2Zsvs1RWHCrr3Aa
+         ApdJ8luUxmxyuRL7NWQygfHI43XxSCDLIlsgLLicFHsAA4QhdY+mJgQwCTKaD4unQYpP
+         1ashDhAX25MtQFqTV76M8qxPFcpEtt1fCp2jfFmIi3qM3cMnkNye/ORLX4OV9OBw6keg
+         wP/w==
+X-Gm-Message-State: APjAAAVwV5aiIYDTPOn7ybZrw6XVzpR8y3r8+FwrPy+5tkDoRkWbTYKq
+        Hl7dLV5IQY7OjZipHyIleoXc3rPm
+X-Google-Smtp-Source: APXvYqyXsf4V2K/sgqhMu7zKf/lgK1gLTBOUt2bvgQzvui+PFHJq4tiRWQR+BilWnYd0eETdexVbew==
+X-Received: by 2002:a63:3487:: with SMTP id b129mr20431160pga.320.1580144226195;
+        Mon, 27 Jan 2020 08:57:06 -0800 (PST)
 Received: from localhost.localdomain (c-67-165-113-11.hsd1.wa.comcast.net. [67.165.113.11])
-        by smtp.gmail.com with ESMTPSA id u23sm16368642pfm.29.2020.01.27.08.57.03
+        by smtp.gmail.com with ESMTPSA id u23sm16368642pfm.29.2020.01.27.08.57.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jan 2020 08:57:03 -0800 (PST)
+        Mon, 27 Jan 2020 08:57:05 -0800 (PST)
 From:   Andrey Smirnov <andrew.smirnov@gmail.com>
 To:     linux-crypto@vger.kernel.org
 Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
@@ -52,12 +52,14 @@ Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
         Lucas Stach <l.stach@pengutronix.de>,
         =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: [PATCH v7 0/9] enable CAAM's HWRNG as default
-Date:   Mon, 27 Jan 2020 08:56:37 -0800
-Message-Id: <20200127165646.19806-1-andrew.smirnov@gmail.com>
+        Iuliana Prodan <iuliana.prodan@nxp.com>, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v7 1/9] crypto: caam - allocate RNG instantiation descriptor with GFP_DMA
+Date:   Mon, 27 Jan 2020 08:56:38 -0800
+Message-Id: <20200127165646.19806-2-andrew.smirnov@gmail.com>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200127165646.19806-1-andrew.smirnov@gmail.com>
+References: <20200127165646.19806-1-andrew.smirnov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -66,102 +68,44 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Everyone:
+Be consistent with the rest of the codebase and use GFP_DMA when
+allocating memory for a CAAM JR descriptor.
 
-This series is a continuation of original [discussion]. I don't know
-if what's in the series is enough to use CAAMs HWRNG system wide, but
-I am hoping that with enough iterations and feedback it will be.
+Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc: Chris Healy <cphealy@gmail.com>
+Cc: Lucas Stach <l.stach@pengutronix.de>
+Cc: Horia Geantă <horia.geanta@nxp.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
+Cc: linux-imx@nxp.com
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/crypto/caam/ctrl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Changes since [v1]:
-
-    - Original hw_random replaced with the one using output of TRNG directly
-
-    - SEC4 DRNG IP block exposed via crypto API
-
-    - Small fix regarding use of GFP_DMA added to the series
-
-Chagnes since [v2]:
-
-    - msleep in polling loop to avoid wasting CPU cycles
-
-    - caam_trng_read() bails out early if 'wait' is set to 'false'
-
-    - fixed typo in ZII's name
-
-Changes since [v3]:
-
-    - DRNG's .cra_name is now "stdrng"
-
-    - collected Reviewd-by tag from Lucas
-
-    - typo fixes in commit messages of the series
-
-Changes since [v4]:
-
-    - Dropped "crypto: caam - RNG4 TRNG errata" and "crypto: caam -
-      enable prediction resistance in HRWNG" to limit the scope of the
-      series. Those two patches are not yet ready and can be submitted
-      separately later.
-
-    - Collected Tested-by from Chris
-
-Changes since [v5]:
-
-    - Series is converted back to implementing HWRNG using a job ring
-      as per feedback from Horia.
-
-Changes since [v6]:
-
-    - "crypto: caam - drop global context pointer and init_done"
-      changed to use devres group to allow freeing HWRNG resource
-      independently of the parent device lifecycle. Code to deal with
-      circular deallocation dependency is added as well
-
-    - Removed worker self-scheduling in "crypto: caam - simplify RNG
-      implementation". It didn't bring much value, but meant that
-      simple cleanup with just a call to flush_work() wasn't good
-      enough.
-
-    - Added a simple function with a FIXME item for MC firmware check in
-      "crypto: caam - enable prediction resistance in HRWNG"
-
-    - "crypto: caam - limit single JD RNG output to maximum of 16
-      bytes" now shrinks async FIFO size from 32K to 64 bytes, since
-      having a buffer that big doesn't seem to do any good given that
-      througput of TRNG
-
-Feedback is welcome!
-
-Thanks,
-Andrey Smirnov
-
-[discussion] https://patchwork.kernel.org/patch/9850669/
-[v1] https://lore.kernel.org/lkml/20191029162916.26579-1-andrew.smirnov@gmail.com
-[v2] https://lore.kernel.org/lkml/20191118153843.28136-1-andrew.smirnov@gmail.com
-[v3] https://lore.kernel.org/lkml/20191120165341.32669-1-andrew.smirnov@gmail.com
-[v4] https://lore.kernel.org/lkml/20191121155554.1227-1-andrew.smirnov@gmail.com
-[v5] https://lore.kernel.org/lkml/20191203162357.21942-1-andrew.smirnov@gmail.com
-[v6] https://lore.kernel.org/lkml/20200108154047.12526-1-andrew.smirnov@gmail.com
-
-
-Andrey Smirnov (9):
-  crypto: caam - allocate RNG instantiation descriptor with GFP_DMA
-  crypto: caam - use struct hwrng's .init for initialization
-  crypto: caam - use devm_kzalloc to allocate JR data
-  crypto: caam - drop global context pointer and init_done
-  crypto: caam - simplify RNG implementation
-  crypto: caam - check if RNG job failed
-  crypto: caam - invalidate entropy register during RNG initialization
-  crypto: caam - enable prediction resistance in HRWNG
-  crypto: caam - limit single JD RNG output to maximum of 16 bytes
-
- drivers/crypto/caam/caamrng.c | 395 +++++++++++++---------------------
- drivers/crypto/caam/ctrl.c    |  56 +++--
- drivers/crypto/caam/desc.h    |   2 +
- drivers/crypto/caam/intern.h  |   7 +-
- drivers/crypto/caam/jr.c      |  13 +-
- drivers/crypto/caam/regs.h    |   7 +-
- 6 files changed, 209 insertions(+), 271 deletions(-)
-
---
+diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+index 6659c8d9672e..a11c13a89ef8 100644
+--- a/drivers/crypto/caam/ctrl.c
++++ b/drivers/crypto/caam/ctrl.c
+@@ -194,7 +194,7 @@ static int deinstantiate_rng(struct device *ctrldev, int state_handle_mask)
+ 	u32 *desc, status;
+ 	int sh_idx, ret = 0;
+ 
+-	desc = kmalloc(CAAM_CMD_SZ * 3, GFP_KERNEL);
++	desc = kmalloc(CAAM_CMD_SZ * 3, GFP_KERNEL | GFP_DMA);
+ 	if (!desc)
+ 		return -ENOMEM;
+ 
+@@ -271,7 +271,7 @@ static int instantiate_rng(struct device *ctrldev, int state_handle_mask,
+ 	int ret = 0, sh_idx;
+ 
+ 	ctrl = (struct caam_ctrl __iomem *)ctrlpriv->ctrl;
+-	desc = kmalloc(CAAM_CMD_SZ * 7, GFP_KERNEL);
++	desc = kmalloc(CAAM_CMD_SZ * 7, GFP_KERNEL | GFP_DMA);
+ 	if (!desc)
+ 		return -ENOMEM;
+ 
+-- 
 2.21.0
+
