@@ -2,96 +2,78 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4281514A6F5
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Jan 2020 16:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACE614A71B
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Jan 2020 16:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729147AbgA0PKE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 27 Jan 2020 10:10:04 -0500
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:40646 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727453AbgA0PKE (ORCPT
+        id S1729335AbgA0PXG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 27 Jan 2020 10:23:06 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:33210 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729321AbgA0PXG (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 27 Jan 2020 10:10:04 -0500
-Received: by mail-vs1-f66.google.com with SMTP id g23so5817865vsr.7
-        for <linux-crypto@vger.kernel.org>; Mon, 27 Jan 2020 07:10:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NkoAUVzWFZjHMMtEdPmvHpOHaSeOlTobo/dhUR4U2mI=;
-        b=gB8aH9bXLODaT5xi6+YHilW7T0QWwBAAdJXLkkbJnINh/xj60xu3s2hA6DzCwXv+DS
-         3aQFGUF9eIk05QAu4EhBap3BxPNU4qG6au51QwFeTW6qPx1AckH1AbWL8k1K0WsC5wu5
-         vHie2JLP6hSf9W+59v383Hpr35ojnQNblt8gf+ozgUyd/GQzPax1JGQbCOCSA1sbpmxe
-         x2bjcvOhEjsaSKEZ25/CkFgazKBSIvHnyz1d+6VQBFH8EKS4Kj7vHhlyZAZJPYd2084W
-         UeUtrhvCVukGhxtzatJIyWhVYMlrdc0lzhy8m5b9p8BUVYRi/aH2dGrsABVOrOYg3PeH
-         dilA==
+        Mon, 27 Jan 2020 10:23:06 -0500
+Received: by mail-oi1-f195.google.com with SMTP id q81so7020387oig.0;
+        Mon, 27 Jan 2020 07:23:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NkoAUVzWFZjHMMtEdPmvHpOHaSeOlTobo/dhUR4U2mI=;
-        b=F3RVd3uN06a0hecdnPLgXicp+ope9Ad5UyxZNLltcnvvkBi6ynCF4Blo8cDjfsU0G0
-         91nclcmX6DvTdlsGh1sXLlL/aae32cQly5ZcPv3PlmFCFmIJ4fmec/wAxh4NTIv5khvW
-         3hG2Mgsv+1i9TzDGzHfdRYRaOB+PSL+dWRC2bKomAoX4vs3fPA0jN5+uKiSIoJuTLZHo
-         Iuwe1AHOlDeJsPllQrqKUqA7kNKrb7ET0OyeamXpkaKD5uO+iiY5NqM6v9DIHei7AtPu
-         XRctV7itRMEOjRahaV8o9iSQPHazsljb01la1PqGuSnq/2uoNFLG5ujkrRDjvIOtqTfp
-         vIHQ==
-X-Gm-Message-State: APjAAAUUsJxt1FTpg4ep2IbsISvYiRnXa9JUyoY6syhimYlXjOVUI/6O
-        aSlPDNVhoQ02wCpY7UjTG5jfstqDSMVpHqd21CoJ1y4CSdM=
-X-Google-Smtp-Source: APXvYqwXtEK+nyeYN+ImrtWqCwzLW1sUUPSn17lF3dhK2jYXgmqlEoxWUYBw5LsFIOvXnu7JeeiZnw8mTYQ34xHNQug=
-X-Received: by 2002:a67:fb14:: with SMTP id d20mr9765471vsr.136.1580137803056;
- Mon, 27 Jan 2020 07:10:03 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=QjMETMAiTJJTMebxmvIOpTK7NVSsq+l6+TUBDAz7YBI=;
+        b=l+mgQm9Ck7Wa4k0wcJBjI5Tbt1OmwKNIoGXfNYNgSHQHc9YnvbN3UwGH3Pvkar+l5f
+         Itj72vMZ4AC9qn1ySoXfBoyCDiCtkzREeRRBiJ7wOZ8fNA9E+8i6GMB3mShBDmGehgT1
+         l+TnkQBmmmUkDuROcIxkaNZAOLaiu/6V1A9BYupGZCEG6HrzN18R3ttqvMRpW5NGneCL
+         bhtfOiHKGCtxFt32P4QXT23ak2zCnS93gg6Y2rOX6GoCaHyq+ecQrjbsx0Gmm+QlhSE0
+         WX/zFnBRA6uIV51oDS7hwjgdZ3rfUcdHv1SMBWDvA4LhjHwB3/ifF+bA4yYlxqJmXChk
+         ozew==
+X-Gm-Message-State: APjAAAVjm2nBmhm0HL5PTAtBnJWg48nZbx7tBDZsUDoJBH9BDU9QbZwh
+        mgj/LSU2JTXW13I4vUgm6OatvMHxoKC7WwOprs0=
+X-Google-Smtp-Source: APXvYqyW430rZeoGKx0G2SJ+AsecepsCGqYv+wt0UG2cgxYfnOE26nbnPWxdzrg6jFL8pApJnjrjGGpLXYgKKHKH6pw=
+X-Received: by 2002:aca:5905:: with SMTP id n5mr7883509oib.54.1580138585003;
+ Mon, 27 Jan 2020 07:23:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20200127122939.6952-1-gilad@benyossef.com> <CAMuHMdVrQh-1cEncfWoAjhd6SjJRHZPg9Qt7yVyw5Qrdo+-nrQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdVrQh-1cEncfWoAjhd6SjJRHZPg9Qt7yVyw5Qrdo+-nrQ@mail.gmail.com>
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-Date:   Mon, 27 Jan 2020 17:09:51 +0200
-Message-ID: <CAOtvUMcmw_W-WVMGusCnkKBg71540c8Bo7LCMhz+t+dOsPUG3Q@mail.gmail.com>
-Subject: Re: [RFC] crypto: ccree - protect against short scatterlists
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20200127150822.12126-1-gilad@benyossef.com>
+In-Reply-To: <20200127150822.12126-1-gilad@benyossef.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 27 Jan 2020 16:22:53 +0100
+Message-ID: <CAMuHMdVFcsS9K=7+LfT_Tmmpz4LMS69=+EO+8_BkJoXCOfPzPA@mail.gmail.com>
+Subject: Re: [RFC v3] crypto: ccree - protect against short scatterlists
+To:     Gilad Ben-Yossef <gilad@benyossef.com>
 Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
         Ofir Drang <ofir.drang@arm.com>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jan 27, 2020 at 2:52 PM Geert Uytterhoeven <geert@linux-m68k.org> w=
-rote:
+Hi Gilad,
+
+On Mon, Jan 27, 2020 at 4:08 PM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
+> Deal gracefully with the event of being handed a scatterlist
+> which is shorter than expected.
 >
-> Hi Gilad,
+> This mitigates a crash in some cases due to
+> attempt to map empty (but not NULL) scatterlists with none
+> zero lengths.
 >
-> On Mon, Jan 27, 2020 at 1:29 PM Gilad Ben-Yossef <gilad@benyossef.com> wr=
-ote:
-> > Deal gracefully with the event of being handed a scatterlist
-> > which is shorter than expected.
-> >
-> > This mitigates a crash in some cases of Crypto API calls due with
-> > scatterlists with a NULL first buffer, despite the aead.h
-> > forbidding doing so.
-> >
-> > Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-> > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> Thanks for your patch!
->
-> Unable to handle kernel paging request at virtual address fffeffffc000000=
-0
+> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-OK, this is a progress of a sort.
-We now crash during unmap, not map.
+Thank you, boots fine on Salvator-XS with R-Car H3ES2.0, and
+CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=y.
 
-Sent another go. If this doesn't work I'll wait till I reunite with the boa=
-rd.
-Blind debugging is hard...
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Thanks again!
-Gilad
+Gr{oetje,eeting}s,
 
+                        Geert
 
-values of =CE=B2 will give rise to dom!
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
