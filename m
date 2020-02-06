@@ -2,87 +2,107 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B729154667
-	for <lists+linux-crypto@lfdr.de>; Thu,  6 Feb 2020 15:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4B815475D
+	for <lists+linux-crypto@lfdr.de>; Thu,  6 Feb 2020 16:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727178AbgBFOpN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 6 Feb 2020 09:45:13 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:33310 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgBFOpM (ORCPT
+        id S1727806AbgBFPLt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 6 Feb 2020 10:11:49 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:37572 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727590AbgBFPLn (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 6 Feb 2020 09:45:12 -0500
-Received: by mail-ot1-f66.google.com with SMTP id b18so5708010otp.0;
-        Thu, 06 Feb 2020 06:45:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xYD6Qn+f8O19n6jnbN4GmWDjU8MnxsjL6RmYBktzX6A=;
-        b=XroesZcVBYWRUVanRb6CT3oiXt1PVz4u/55Iae1H7IBjCLRwgiY91Ha5bt1TCL6swk
-         Lm39dxXchE0eTzcFeNwQ4qNnFjVf8ecbP6km6URHIdVnRptG6LpSIjvlB/+N9DolgeJu
-         nwwcFFJRZgechdj9Xn03/vAQra2MRbrBpLInhMyA9usZHtH/fFBqU/7lrauh5s1T5eJf
-         qasb146HczZZUUiMOlBKfJIGps5bJtpEtkpNxOfjv9WZAemXyE+yRIrB8zY+0PxvFPvj
-         IZ52fjcbGwlSmC90pT5f1dM/Rhgm91bBqfGcvuLxh0YhiCQtRGJoUDBNrBNzAtLiZIzP
-         N4gA==
-X-Gm-Message-State: APjAAAWchglkdfrJG+wqaYWYfj1CR3h+Fc8U/Rv0qrcrFQgJITkm0Htb
-        w5bCIITQ431kIKr9gTM3j2Ff8xCnsxzVNwUX1U4=
-X-Google-Smtp-Source: APXvYqyBBc29/Ijg8aP7euisquvo66G+D60N9QvVlXsbMPCrQqHLz5pKWCMv7f1iVeOMhJHx9xjsFMRcmhcR3vTsNq8=
-X-Received: by 2002:a05:6830:1d55:: with SMTP id p21mr30533670oth.145.1581000311584;
- Thu, 06 Feb 2020 06:45:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20200202161914.9551-1-gilad@benyossef.com>
-In-Reply-To: <20200202161914.9551-1-gilad@benyossef.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 6 Feb 2020 15:45:00 +0100
-Message-ID: <CAMuHMdVgxBx2x7=nTK0HtvufMNBGLruUD6Y1a0pSnX+CDsvCDA@mail.gmail.com>
-Subject: Re: [PATCH] crypto: ccree - dec auth tag size from cryptlen map
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Thu, 6 Feb 2020 10:11:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=bJ6PILGfUOQthYtbZN3ove/bOTHIs1fSUTSyIzy3I3s=; b=Sef8CK/oc5vfowAvrz0puPQxZS
+        3pQTIUt14KlxR/ipQqYeok30cNc070WFIlyNjf7QPepexT9TtKJyhAr7vi+jUOzdSLNwVOOFYiW3W
+        0Ux486wUblaP4/DyDEqsvG5fnhzIrUe6h4Uvvj9FmIoRJXTzqWxb22F+YmvZfAI3NMGovBXDPW/H2
+        SbMtEk1qWe0qufiTx1oOJ5GKvQmdNeCP3ioiSvUs7Iry8RGyRASwZNW5BdmeEa1NaYaw0xqzZJpz+
+        Lsh3zeo56Hc1hm9TdZauCL6VJSKwjrUreM5Qtt6Fzq2nOq4s83fAUIEjikevO1CqUyCSgiItFSWH4
+        cCEPbHMw==;
+Received: from [179.95.15.160] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1izioc-000434-UW; Thu, 06 Feb 2020 15:11:42 +0000
+Received: from mchehab by bombadil.infradead.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@bombadil.infradead.org>)
+        id 1izioV-002oMj-Lo; Thu, 06 Feb 2020 16:11:31 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Ofir Drang <ofir.drang@arm.com>,
-        stable <stable@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-doc@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-pm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        keyrings@vger.kernel.org
+Subject: [PATCH 00/11] Manually convert  thermal, crypto and misc-devices to ReST
+Date:   Thu,  6 Feb 2020 16:11:19 +0100
+Message-Id: <cover.1581001737.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Gilad,
+Manually convert some files from thermal, crypto and misc-devices
+to ReST format.
 
-On Sun, Feb 2, 2020 at 5:19 PM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
-> Remove the auth tag size from cryptlen before mapping the destination
-> in out-of-place AEAD decryption thus resolving a crash with
-> extended testmgr tests.
->
-> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: stable@vger.kernel.org # v4.19+
+This patch is against linux-next 20200204 tag.
 
-Thanks, this fixes the crash seen on R-Car H3 ES2.0 with renesas_defconfig,
-CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=n, and CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y
+Mauro Carvalho Chehab (11):
+  docs: thermal: convert cpu-idle-cooling.rst to ReST
+  docs: crypto: convert asymmetric-keys.txt to ReST
+  docs: crypto: convert api-intro.txt to ReST format
+  docs: crypto: convert async-tx-api.txt to ReST format
+  docs: crypto: descore-readme.txt: convert to ReST format
+  docs: misc-devices/spear-pcie-gadget.txt: convert to ReST
+  docs: misc-devices/pci-endpoint-test.txt: convert to ReST
+  docs: misc-devices/pci-endpoint-test.txt: convert to ReST
+  docs: misc-devices/c2port.txt: convert to ReST format
+  docs: misc-devices/bh1770glc.txt: convert to ReST
+  docs: misc-devices/apds990x.txt: convert to ReST format
 
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Remaining issues reported during boot:
-  1. alg: skcipher: blocksize for xts-aes-ccree (1) doesn't match
-generic impl (16)
-  2. alg: aead: rfc4543-gcm-aes-ccree decryption unexpectedly
-succeeded on test vector "random: alen=16 plen=39 authsize=16 klen=20
-novrfy=1"; expected_error=-EBADMSG or -22, cfg="random: may_sleep
-use_digest src_divs=[4.47%@+3553, 30.80%@+4065, 12.0%@+11,
-6.22%@+2999, 46.51%@alignmask+3468]"
-
-Gr{oetje,eeting}s,
-
-                        Geert
+ .../crypto/{api-intro.txt => api-intro.rst}   | 186 +++++++------
+ ...symmetric-keys.txt => asymmetric-keys.rst} |  91 +++----
+ .../{async-tx-api.txt => async-tx-api.rst}    | 253 +++++++++++-------
+ ...{descore-readme.txt => descore-readme.rst} | 152 +++++++----
+ Documentation/crypto/index.rst                |   5 +
+ .../driver-api/thermal/cpu-idle-cooling.rst   |  18 +-
+ Documentation/driver-api/thermal/index.rst    |   1 +
+ .../{ad525x_dpot.txt => ad525x_dpot.rst}      |  24 +-
+ .../{apds990x.txt => apds990x.rst}            |  31 ++-
+ .../{bh1770glc.txt => bh1770glc.rst}          |  45 +++-
+ .../misc-devices/{c2port.txt => c2port.rst}   |  58 ++--
+ Documentation/misc-devices/index.rst          |   6 +
+ .../misc-devices/pci-endpoint-test.rst        |  56 ++++
+ .../misc-devices/pci-endpoint-test.txt        |  41 ---
+ .../misc-devices/spear-pcie-gadget.rst        | 170 ++++++++++++
+ .../misc-devices/spear-pcie-gadget.txt        | 130 ---------
+ 16 files changed, 747 insertions(+), 520 deletions(-)
+ rename Documentation/crypto/{api-intro.txt => api-intro.rst} (70%)
+ rename Documentation/crypto/{asymmetric-keys.txt => asymmetric-keys.rst} (91%)
+ rename Documentation/crypto/{async-tx-api.txt => async-tx-api.rst} (55%)
+ rename Documentation/crypto/{descore-readme.txt => descore-readme.rst} (81%)
+ rename Documentation/misc-devices/{ad525x_dpot.txt => ad525x_dpot.rst} (85%)
+ rename Documentation/misc-devices/{apds990x.txt => apds990x.rst} (86%)
+ rename Documentation/misc-devices/{bh1770glc.txt => bh1770glc.rst} (83%)
+ rename Documentation/misc-devices/{c2port.txt => c2port.rst} (59%)
+ create mode 100644 Documentation/misc-devices/pci-endpoint-test.rst
+ delete mode 100644 Documentation/misc-devices/pci-endpoint-test.txt
+ create mode 100644 Documentation/misc-devices/spear-pcie-gadget.rst
+ delete mode 100644 Documentation/misc-devices/spear-pcie-gadget.txt
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.24.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
