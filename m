@@ -2,72 +2,73 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8AF155FBC
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Feb 2020 21:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 965CB156023
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Feb 2020 21:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbgBGUkW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 7 Feb 2020 15:40:22 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:33910 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727117AbgBGUkW (ORCPT
+        id S1727031AbgBGUsv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 7 Feb 2020 15:48:51 -0500
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:55954 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726947AbgBGUsv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 7 Feb 2020 15:40:22 -0500
-Received: by mail-oi1-f193.google.com with SMTP id l136so3315575oig.1
-        for <linux-crypto@vger.kernel.org>; Fri, 07 Feb 2020 12:40:21 -0800 (PST)
+        Fri, 7 Feb 2020 15:48:51 -0500
+Received: by mail-wm1-f45.google.com with SMTP id q9so3867525wmj.5;
+        Fri, 07 Feb 2020 12:48:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=8cDRXBFOpE9J1p6S5H+HXSQg9q3m7pUJ3iUuQ5MPcDc=;
-        b=G3vURSQOvSfym6GqL5qCR0Eef9YA9bo0RtU0UNSHZ0P154liq6nj0pP6gcjlFqJJPA
-         pKRQnkScBgv932UZHHNblcbuEqzuQEzPM4yp7Nm998F2nvPItHJ3Ww86OtAhmrCQq+nI
-         pKIm6N7lKoBlralx8ETPINJ1E+AnXPlOwJdNOgmWsgIaWAQBcgIsfne+6cMtPhGZTouS
-         KhX63qJv3f3PpVpkavcRkfRhDEkZgWtVbogMANo4KNIi2bptCtgkKE6QGBA7TGY3eShL
-         Az3jTVCoxKK0zJncfJ0H2PBVgz1Pz/iWQoEx1CaAejuBuCcK+rZ/kN/STxyjt5y3quR3
-         S7Lw==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=Vo3y/3LI/9xS6ovXLyiIY19qZ4rNDgl5cjTrH5DGm4I=;
+        b=HIcSkZzdBvgR0WPcV6MG53XbfktoeIflCnUKVByWe0jBVHEfCzzei6rSL0pCM7RKDY
+         wOvMog9dnWZEgWH2WvNPvv9oxFMCMI2ePH54mtU+k/JkksURgPOxbzsjjvLKSiQMLu3u
+         Coi36nEJkRtD5bOrgG7lxQKGTGbp1O4j9GjUUn4D8JZW8fujXkvnsykngs5jlBCpQhsf
+         WK87zaQPNiICgy5PpkE2HvhNwcZKHZmd0BtOJFD61Om+Nq7nihY5yrvaUJ3r1wFYvS3F
+         W36Qkw7vvt6+d+Vqz1rPdcd2MpVRA1dVA2bnCfzw1TsAoogFmSk2vLlP9K4/9XGaJRQY
+         swUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=8cDRXBFOpE9J1p6S5H+HXSQg9q3m7pUJ3iUuQ5MPcDc=;
-        b=ECD5QK+iDoIgPUSEO+Y7dqHBV/Ogy4vfxLu012n0CoEOGgVcs85ugvv7vM0oFdh4hh
-         ztHAm6k7WQcGInP+I/wJQMTQl3YgdpRwDh5XlxkVTK2S27TvLN0iPu1tNrkl573hgXmx
-         Mqqb0/rVArd9z97HIiGFUP3MDRc/lY5gL2VgQ5oIvdqUtqkRSbhGbCGx2sj73R5BrBez
-         HSU7eZ6NbEn8cf2wTmCisBq4IAAZ9tWXaOYwxID5+9XCgFeYUvisZ5uRDQVmjGD+5223
-         t5yfPYtPb2d8ie+A8NZv381lz1bHX2RE0Tb6dTTHC2cCqXhFavGZJjmpokb0bF4UvTfz
-         e2Sg==
-X-Gm-Message-State: APjAAAWn4EWmQMFuSP7t86uOvaCoOVDzOxU1TSdcPxhVTfFDpbPb6HFz
-        6gfuiSdb9UlA8Y0gLbTHgKr649kpIeDrRVPFvC8=
-X-Google-Smtp-Source: APXvYqzN7ajbuLnyLYQwurekLKD61VAgl70puXn2VR1xZnNL2UAjutIg/nsSAZ38o1qV0L9IzzdWg9SxMg/UJXSMP94=
-X-Received: by 2002:aca:c691:: with SMTP id w139mr3358062oif.17.1581108021108;
- Fri, 07 Feb 2020 12:40:21 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=Vo3y/3LI/9xS6ovXLyiIY19qZ4rNDgl5cjTrH5DGm4I=;
+        b=r+ulk18HLk+qNKmhTbe0/3VSJYflviNNiFQQzTqsxaaqJS0gcFT+yVrkfMIR3ZO4+J
+         qoU2XIlVl/kEamTXzQbu7m4X7zcJA5q7S4HXme2H+34qd9f3RJoNP5u6WMvP3xl399Pb
+         9DopYd5Jyxv2KZowWsrp0MbDClHKe/5D9bqbBW5k62p+8nBIAI8hvJQafJziaPoBrdCb
+         1ivLIaz8I15R3y5hyRUALQM+m5rK/32RvoFbS1KnlTPRwaTeDexxEsu83LJoswJrPleG
+         IOXu/suvPDJ75s1pXYbH3LFG3qRIYKz3K7ZQOv5gsCyY13qb0+BaLOYFuvQHDgDoCS6Y
+         JLQg==
+X-Gm-Message-State: APjAAAWp+P0YQoL/m/MVG37veeLbAbIW7GO2Zio5oZQxdNTmNb1YAM3b
+        2wTWt5Fc/a/gD9ohGmLo8GV1h2C8
+X-Google-Smtp-Source: APXvYqww2HjjQMNwdkQTkIkLEammO08yj4O42JmLPef87CvM4J1Vq8Ec3LZwBSGk+vtbq6vnsV4cfA==
+X-Received: by 2002:a1c:4b0f:: with SMTP id y15mr116024wma.87.1581108528197;
+        Fri, 07 Feb 2020 12:48:48 -0800 (PST)
+Received: from Red ([2a01:cb1d:3d5:a100:2e56:dcff:fed2:c6d6])
+        by smtp.googlemail.com with ESMTPSA id g128sm4518742wme.47.2020.02.07.12.48.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Feb 2020 12:48:47 -0800 (PST)
+Date:   Fri, 7 Feb 2020 21:48:45 +0100
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net, heiko@sntech.de,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [BUG] crypto: rk3288: ecb-aes-rk encryption failed
+Message-ID: <20200207204845.GA15221@Red>
 MIME-Version: 1.0
-Received: by 2002:a4a:d508:0:0:0:0:0 with HTTP; Fri, 7 Feb 2020 12:40:20 -0800 (PST)
-Reply-To: auch197722@gmail.com
-From:   "Mr. Theophilus Odadudu" <cristinamedina0010@gmail.com>
-Date:   Fri, 7 Feb 2020 15:40:20 -0500
-Message-ID: <CAPNvSTib=Bg9sRNNHErSAmBj=QFzRMn8DZQEN5XBwkcVkSHcMw@mail.gmail.com>
-Subject: LETTER OF INQUIRY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Good Day,
+Hello
 
-I work as a clerk in a Bank here in Nigeria, I have a very
-confidential Business Proposition for you. There is a said amount of
-money floating in the bank unclaimed, belonging to the bank Foreign
-customer who die with his family in the Ethiopian Airline crash of
-March 11, 2019.
+When running next-20200207 on a rk3288-miqi, I get
+alg: skcipher: ecb-aes-rk encryption failed on test vector \"random: len=0 klen=32\"; expected_error=0, actual_error=-22, cfg=\"random: use_final nosimd src_divs=[<flush>54.11%@+27, 29.21%@+0, <flush>0.9%@+3586, 16.59%@+3971] dst_divs=[100.0%@+20] key_offset=63\"
 
-I seek your good collaboration to move the fund for our benefit. we
-have agreed that 40% be yours once you help claim.
-
-Do get back to with 1) Your Full Name: (2) Residential Address: (3)
-Phone, Mobile  (4) Scan Copy of Your ID. to apply for claims of the
-funds.
+Loading tcrypt later give me:
+udevd[117]: worker [125] /devices/platform/ff8a0000.cypto-controller is taking a long time
+udevd[117]: worker [125] /devices/platform/ff8a0000.cypto-controller timeout; kill it
 
 Regards
-Theophilus Odadudu
