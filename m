@@ -2,104 +2,89 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10AF8159871
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 Feb 2020 19:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 830541598B0
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Feb 2020 19:32:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729004AbgBKSXc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 11 Feb 2020 13:23:32 -0500
-Received: from mail-eopbgr20051.outbound.protection.outlook.com ([40.107.2.51]:5443
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729169AbgBKSXc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 11 Feb 2020 13:23:32 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cS76Go5dIgSaOXXvrINr9EhlRYZuPXR/jgHwNMh8GwtBvMuz4ruXMgDgMRQSyvEgfjYqRArPyeCTuh6w8TCH+4hBzOT2HSSCz4jD9VCa3XTVQL1ysw0hApPs0jUmtuPzaSeqn2YSAVh5jzqm0w6tAznhDBy2YDBgqFyLUk8LNMBfSvCJ4FVGGQrATCtBGlxOIB842dFjV0r9JvRsO37p9RV6uu43qrMT+QpbkhgHHBNX6fqEL6NHLRCFWHWjJg6V4+2hToDM4kS+s+7+MxH6Nfj5pftCA4gdBwLQDPaxo0g9o0exen8ThKsq9S7DVf2y90UkDd3l5t6b96TqaNXLNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1xs20VpbpUL9XF2WJlkF6Mvu7881/xB2hjEaPx0vvgk=;
- b=edsYjrM+MNv9OCrpOSIuh6a0AtK8VHC4r1tRPFGHytCoHH7Wr6Lewt75lMJJLKcNt7eIHpgtDEc1ZI+sbj5Z6Eahz1Ef7ek95b3vm7PwILd/DTB4qsCR0BlCGSbRC91n5LzikWhtzOuMbVWggX850en6DmxWCmAeplhr2X1qh/UjBmGLc2D2xA0+xFuxFIaYxHNUF55xL717m5c9KjV2H3gYGwZC0UjUhKqZ6ogfl+cykloDgIbnPllHVsRkbNWfHjy2NLFJhW46KpAQTIT+smk0NKkthRaUH0wcWa/pvpaG03l6SrarWJ5zGEAOJedv8aYZxB/uE7+LJvXG7lxdbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1xs20VpbpUL9XF2WJlkF6Mvu7881/xB2hjEaPx0vvgk=;
- b=qaogSs3m6U3sFq5rRUlvprleAfDPCxFc0SfISWu68FnnucfpbWcDx/aKQp1PNatspxOkKOt40U2NQ0lzgxFoNz6ZFl7T0Oiis3mcuu0t5GDKTNbZIehxODigKyCnsODID3ZbJ3kDYC274IM9jTYqstOYmuw8AG4Jm02rqLTkeY8=
-Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com (52.134.3.153) by
- VI1PR0402MB3901.eurprd04.prod.outlook.com (52.134.12.16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2707.21; Tue, 11 Feb 2020 18:23:28 +0000
-Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com
- ([fe80::85e9:f844:f8b0:27d]) by VI1PR0402MB3485.eurprd04.prod.outlook.com
- ([fe80::85e9:f844:f8b0:27d%7]) with mapi id 15.20.2707.030; Tue, 11 Feb 2020
- 18:23:28 +0000
-From:   Horia Geanta <horia.geanta@nxp.com>
-To:     Andrey Smirnov <andrew.smirnov@gmail.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-CC:     Chris Healy <cphealy@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH v7 3/9] crypto: caam - use devm_kzalloc to allocate JR
- data
-Thread-Topic: [PATCH v7 3/9] crypto: caam - use devm_kzalloc to allocate JR
- data
-Thread-Index: AQHV1TLRWesVqHI1ZkCUMB3X/8VqBg==
-Date:   Tue, 11 Feb 2020 18:23:28 +0000
-Message-ID: <VI1PR0402MB348585D73873E2DFE6B8751698180@VI1PR0402MB3485.eurprd04.prod.outlook.com>
-References: <20200127165646.19806-1-andrew.smirnov@gmail.com>
- <20200127165646.19806-4-andrew.smirnov@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=horia.geanta@nxp.com; 
-x-originating-ip: [84.117.251.185]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: bb5e2784-d242-49a6-ffa5-08d7af1f7dd4
-x-ms-traffictypediagnostic: VI1PR0402MB3901:|VI1PR0402MB3901:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR0402MB39019ABD5D16F0EE32A3C2B098180@VI1PR0402MB3901.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:612;
-x-forefront-prvs: 0310C78181
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(39860400002)(376002)(346002)(366004)(136003)(189003)(199004)(54906003)(4744005)(26005)(110136005)(186003)(91956017)(8676002)(44832011)(8936002)(81166006)(81156014)(66476007)(66446008)(66946007)(66556008)(64756008)(478600001)(76116006)(71200400001)(2906002)(6506007)(53546011)(33656002)(316002)(86362001)(7696005)(52536014)(9686003)(5660300002)(55016002)(4326008);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0402MB3901;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: u0Dw3+qX+03Ct2DGvoiNqVhc28RI7+51BySRc3YR8rKe8YUzigI4HEPG/4boC1PuOuwcsn1dUzZNSQBzteUZE1eaugMvB+PDerbf3C9sQvxJNkAmzqEfqt34aeSC3Xr56yIWuCNtuJ9Vxcwbyr+x4eBRowxk5E1Suwe0w9wXHDtAkMCk01zoqT9z+tnyNTKgvGsC7C3QZJk8jqaoUPKhviPu7wYtTC8K4inVYGCHA+a0Ai6E49PMkK+gMXooT+gGWkz+0Mo1Xlj6illEG2pNUXwktHrqn9OXxD59ns6qXxQlzYQabGfxMlfqG7KBML4pGBVlJJC1tfzsjCf1pkdhtXpRK2MQsxlRrY+EyordR7G8yVJjWox8FKezrBt4zuI7FWRl5cgbLEtvicxdAlfz0K0jfnjdu6SSwOMOzQaPd93SZTXapgocMzCBG0Vra2DC
-x-ms-exchange-antispam-messagedata: SYhgYwUlHsdf744tksmOJzF7Gri2tspLbZLVc4S1dmAPcCJNXsQGWcgYD1dcd8YMXRrCVOQ2uJXDM3uPqyXCbqr0bZ5WNlMSIMai6uJmmkzvw3KSboO86PD5P55XdYbAckjvynFk/o4X18W+gy5zcQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1730492AbgBKScc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 11 Feb 2020 13:32:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730447AbgBKScb (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 11 Feb 2020 13:32:31 -0500
+Received: from localhost (unknown [104.133.9.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9EE78206D6;
+        Tue, 11 Feb 2020 18:32:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581445950;
+        bh=l9B+V0tjpsUXumO8m1fXx8yAwXOYw55xHJWpqlZZu64=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AljyERKVtVZzKWL/35kIi13azAOhEClGA0qIBfrqRNHizL+bxD4i8TJRDkRr3K/ft
+         hHk8rib5cwIff+tzmovuP09YVBlREmmcnpoDgkjn6NGkzmel0nhx3kXjTkbXhu7vSQ
+         bppECNBYnPWY2F7QTqkErI0ga8CUb9sK8z7SLLWE=
+Date:   Tue, 11 Feb 2020 10:32:29 -0800
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH] treewide: Replace zero-length arrays with flexible-array
+ member
+Message-ID: <20200211183229.GA1938663@kroah.com>
+References: <20200211174126.GA29960@embeddedor>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb5e2784-d242-49a6-ffa5-08d7af1f7dd4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Feb 2020 18:23:28.4473
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4d5bVzWf6XJFS8hIyI/S104yeHKmBHq8OX0Kadp0mlpqHJBzM2HuWtjYRQU3no6EG/jkAtcYlQlAMSzfR2RlqQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3901
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200211174126.GA29960@embeddedor>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 1/27/2020 6:57 PM, Andrey Smirnov wrote:=0A=
-> Use devm_kzalloc() to allocate JR data in order to make sure that it=0A=
-> is initialized consistently every time.=0A=
-> =0A=
-The commit message is a bit vague.=0A=
-=0A=
-I assume this is needed in patch 4/9, which adds a new member (hwrng)=0A=
-in caam_drv_private_jr structure.=0A=
-=0A=
-If so, it's probably better to have the change merged into patch 4/9.=0A=
-=0A=
-Horia=0A=
+On Tue, Feb 11, 2020 at 11:41:26AM -0600, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> unadvertenly introduced[3] to the codebase from now on.
+> 
+> All these instances of code were found with the help of the following
+> Coccinelle script:
+> 
+> @@
+> identifier S, member, array;
+> type T1, T2;
+> @@
+> 
+> struct S {
+>   ...
+>   T1 member;
+>   T2 array[
+> - 0
+>   ];
+> };
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> NOTE: I'll carry this in my -next tree for the v5.6 merge window.
+
+Why not carve this up into per-subsystem patches so that we can apply
+them to our 5.7-rc1 trees and then you submit the "remaining" that don't
+somehow get merged at that timeframe for 5.7-rc2?
+
+thanks,
+
+greg k-h
