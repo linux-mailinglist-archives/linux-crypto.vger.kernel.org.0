@@ -2,71 +2,122 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F08215BEDE
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 Feb 2020 14:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E92C015C092
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 Feb 2020 15:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729674AbgBMNBB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 13 Feb 2020 08:01:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729673AbgBMNBB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 13 Feb 2020 08:01:01 -0500
-Received: from localhost (unknown [209.37.97.194])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 756A22168B;
-        Thu, 13 Feb 2020 13:00:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581598859;
-        bh=twEumPvnyw2Pl8YhKty+VCE7JIjeaqEqyiFe8s6/Jiw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rdaYpEblbV5tf4L5crHu8c9hTW6RG99Pj+wh/ptP2xU3F5rsjtOaLgHAkzCOD3elZ
-         wVOieW3iowVEUn4ShEkxHTU/BkwBokzRkVY8HJOvjcvmMm40xSUpiZVVBKck0Cupsi
-         aOQpXMPk0690MiFckldJ7NjYe7UEVf7uLnYcNjRU=
-Date:   Thu, 13 Feb 2020 05:00:59 -0800
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, jonathan.cameron@huawei.com,
-        dave.jiang@intel.com, grant.likely@arm.com,
-        jean-philippe <jean-philippe@linaro.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        ilias.apalodimas@linaro.org, francois.ozog@linaro.org,
-        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
-        "haojian . zhuang" <haojian.zhuang@linaro.org>,
-        guodong.xu@linaro.org, linux-accelerators@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        Kenneth Lee <liguozhu@hisilicon.com>,
-        Zaibo Xu <xuzaibo@huawei.com>
-Subject: Re: [PATCH v12 2/4] uacce: add uacce driver
-Message-ID: <20200213130059.GA3361459@kroah.com>
-References: <1579097568-17542-1-git-send-email-zhangfei.gao@linaro.org>
- <1579097568-17542-3-git-send-email-zhangfei.gao@linaro.org>
- <20200210233711.GA1787983@kroah.com>
- <20200213091509.v7ebvtot6rvlpfjt@gondor.apana.org.au>
+        id S1727433AbgBMOpd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 13 Feb 2020 09:45:33 -0500
+Received: from os.inf.tu-dresden.de ([141.76.48.99]:42832 "EHLO
+        os.inf.tu-dresden.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727347AbgBMOpd (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 13 Feb 2020 09:45:33 -0500
+X-Greylist: delayed 1583 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Feb 2020 09:45:32 EST
+Received: from [2002:8d4c:3001:48::120:84] (helo=jupiter)
+        by os.inf.tu-dresden.de with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256) (Exim 4.93.0.3)
+        id 1j2FKe-0000pY-M0; Thu, 13 Feb 2020 15:19:08 +0100
+From:   Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
+To:     mplaneta@os.inf.tu-dresden.de, Zhou Wang <wangzhou1@hisilicon.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Song Liu <song@kernel.org>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org
+Subject: [PATCH] Remove WQ_CPU_INTENSIVE flag from unbound wq's
+Date:   Thu, 13 Feb 2020 15:18:23 +0100
+Message-Id: <20200213141823.2174236-1-mplaneta@os.inf.tu-dresden.de>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200213091509.v7ebvtot6rvlpfjt@gondor.apana.org.au>
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Feb 13, 2020 at 05:15:10PM +0800, Herbert Xu wrote:
-> On Mon, Feb 10, 2020 at 03:37:11PM -0800, Greg Kroah-Hartman wrote:
-> >
-> > Looks much saner now, thanks for all of the work on this:
-> > 
-> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > 
-> > Or am I supposed to take this in my tree?  If so, I can, but I need an
-> > ack for the crypto parts.
-> 
-> I can take this series through the crypto tree if that's fine with
-> you.
+The documentation [1] says that WQ_CPU_INTENSIVE is "meaningless" for
+unbound wq. I remove this flag from places where unbound queue is
+allocated. This is supposed to improve code readability.
 
-Please do, thanks!
+1. https://www.kernel.org/doc/html/latest/core-api/workqueue.html#flags
 
-greg k-h
+Signed-off-by: Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
+---
+ drivers/crypto/hisilicon/qm.c | 3 +--
+ drivers/md/dm-crypt.c         | 2 +-
+ drivers/md/dm-verity-target.c | 2 +-
+ drivers/md/raid5.c            | 2 +-
+ fs/erofs/zdata.c              | 2 +-
+ 5 files changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+index b57da5ef8b5b..4a39cb2c6a0b 100644
+--- a/drivers/crypto/hisilicon/qm.c
++++ b/drivers/crypto/hisilicon/qm.c
+@@ -1148,8 +1148,7 @@ struct hisi_qp *hisi_qm_create_qp(struct hisi_qm *qm, u8 alg_type)
+ 	qp->qp_id = qp_id;
+ 	qp->alg_type = alg_type;
+ 	INIT_WORK(&qp->work, qm_qp_work_func);
+-	qp->wq = alloc_workqueue("hisi_qm", WQ_UNBOUND | WQ_HIGHPRI |
+-				 WQ_CPU_INTENSIVE | WQ_MEM_RECLAIM, 0);
++	qp->wq = alloc_workqueue("hisi_qm", WQ_UNBOUND | WQ_HIGHPRI | WQ_MEM_RECLAIM, 0);
+ 	if (!qp->wq) {
+ 		ret = -EFAULT;
+ 		goto err_free_qp_mem;
+diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+index c6a529873d0f..44d56325fa27 100644
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -3032,7 +3032,7 @@ static int crypt_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+ 						  1, devname);
+ 	else
+ 		cc->crypt_queue = alloc_workqueue("kcryptd/%s",
+-						  WQ_CPU_INTENSIVE | WQ_MEM_RECLAIM | WQ_UNBOUND,
++						  WQ_MEM_RECLAIM | WQ_UNBOUND,
+ 						  num_online_cpus(), devname);
+ 	if (!cc->crypt_queue) {
+ 		ti->error = "Couldn't create kcryptd queue";
+diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
+index 0d61e9c67986..20f92c7ea07e 100644
+--- a/drivers/md/dm-verity-target.c
++++ b/drivers/md/dm-verity-target.c
+@@ -1190,7 +1190,7 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
+ 	}
+ 
+ 	/* WQ_UNBOUND greatly improves performance when running on ramdisk */
+-	v->verify_wq = alloc_workqueue("kverityd", WQ_CPU_INTENSIVE | WQ_MEM_RECLAIM | WQ_UNBOUND, num_online_cpus());
++	v->verify_wq = alloc_workqueue("kverityd", WQ_MEM_RECLAIM | WQ_UNBOUND, num_online_cpus());
+ 	if (!v->verify_wq) {
+ 		ti->error = "Cannot allocate workqueue";
+ 		r = -ENOMEM;
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index ba00e9877f02..cd93a1731b82 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -8481,7 +8481,7 @@ static int __init raid5_init(void)
+ 	int ret;
+ 
+ 	raid5_wq = alloc_workqueue("raid5wq",
+-		WQ_UNBOUND|WQ_MEM_RECLAIM|WQ_CPU_INTENSIVE|WQ_SYSFS, 0);
++		WQ_UNBOUND|WQ_MEM_RECLAIM|WQ_SYSFS, 0);
+ 	if (!raid5_wq)
+ 		return -ENOMEM;
+ 
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index 80e47f07d946..b2a679f720e9 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -43,7 +43,7 @@ void z_erofs_exit_zip_subsystem(void)
+ static inline int z_erofs_init_workqueue(void)
+ {
+ 	const unsigned int onlinecpus = num_possible_cpus();
+-	const unsigned int flags = WQ_UNBOUND | WQ_HIGHPRI | WQ_CPU_INTENSIVE;
++	const unsigned int flags = WQ_UNBOUND | WQ_HIGHPRI;
+ 
+ 	/*
+ 	 * no need to spawn too many threads, limiting threads could minimum
+-- 
+2.24.1
+
