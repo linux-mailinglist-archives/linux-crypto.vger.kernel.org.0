@@ -2,125 +2,59 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8317215C9AB
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 Feb 2020 18:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FF715CE36
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 Feb 2020 23:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgBMRnh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 13 Feb 2020 12:43:37 -0500
-Received: from gateway22.websitewelcome.com ([192.185.47.65]:19190 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726282AbgBMRnh (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 13 Feb 2020 12:43:37 -0500
-X-Greylist: delayed 1477 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Feb 2020 12:43:36 EST
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id 1DA175C4F
-        for <linux-crypto@vger.kernel.org>; Thu, 13 Feb 2020 11:18:59 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id 2I8gjOGg2vBMd2I8gjMkTU; Thu, 13 Feb 2020 11:18:59 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
-        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=a+bd2IXpJ5Ra94RkqkEqLoja0urUQM03kkJdxZlm35M=; b=MugzU50q1YrajeIJNwpHGNKkNO
-        norc0Oeuoia4hBploFYnqjCnLgx0uOKvOo8YvLYjdqp/kOyJb5R+YV9FbfraK1d4s71qa35EuXCd8
-        3PInB3TByUO0ZDMGmP7NTChWl9II38WVPXuo6tqDEOyxG/j9XDvwbGM2T62ZI7iMlkVc380qH3NAH
-        4k/6IPouF7FHf7R7yGgeGCDH0SU83VhglBPCLr7ViiCxT/2mkMfse6GaCBWEy2ocWeo2bBhKcXBEc
-        JEXzx9jCh3SAOLHCjyHcJ2xQHX+A3zSvrSV/DYaAFdxR6meAETmZKQ22dEIOdjxJp6V2BtO85seCd
-        nZQfuv7w==;
-Received: from [200.68.140.15] (port=11781 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1j2I8d-004GVi-MW; Thu, 13 Feb 2020 11:18:57 -0600
-Date:   Thu, 13 Feb 2020 11:21:30 -0600
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Kamil Konieczny <k.konieczny@samsung.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-crypto@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] crypto: s5p-sss - Replace zero-length array with
- flexible-array member
-Message-ID: <20200213172130.GA13395@embeddedor>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 200.68.140.15
-X-Source-L: No
-X-Exim-ID: 1j2I8d-004GVi-MW
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [200.68.140.15]:11781
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+        id S1727652AbgBMWkW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 13 Feb 2020 17:40:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726780AbgBMWkW (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 13 Feb 2020 17:40:22 -0500
+Subject: Re: [GIT PULL] Crypto Fixes for 5.6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581633621;
+        bh=m3e4lM+CV/lHzecXSlRVzwKPpUS2FGSatK1iyKTRGow=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=zWXDuQwleMzsYKNIzQ6drz96vylviZal7T1maIADzAfHLngoZgCWD6eI9/fcWLCoK
+         QvmTLoOfzQ64BI5eqiyUwQk3NW23+6/Tlp1E7UTKMthhEMYbNTEaaopiPbz+hBCbnF
+         +kKXT5FiEQeNz/FJnwBjdhDXt5K+DJi7rRhU9oRk=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
+References: <20190916084901.GA20338@gondor.apana.org.au>
+ <20190923050515.GA6980@gondor.apana.org.au>
+ <20191202062017.ge4rz72ki3vczhgb@gondor.apana.org.au>
+ <20191214084749.jt5ekav5o5pd2dcp@gondor.apana.org.au>
+ <20200115150812.mo2eycc53lbsgvue@gondor.apana.org.au>
+ <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+X-PR-Tracked-Commit-Id: 2343d1529aff8b552589f622c23932035ed7a05d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 64ae1342f8980d05c3df414a022b8123aa76c56b
+Message-Id: <158163362160.23424.17873755953815720551.pr-tracker-bot@kernel.org>
+Date:   Thu, 13 Feb 2020 22:40:21 +0000
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+The pull request you sent on Thu, 13 Feb 2020 11:32:31 +0800:
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/64ae1342f8980d05c3df414a022b8123aa76c56b
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
+Thank you!
 
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- drivers/crypto/s5p-sss.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/s5p-sss.c b/drivers/crypto/s5p-sss.c
-index d66e20a2f54c..2a16800d2579 100644
---- a/drivers/crypto/s5p-sss.c
-+++ b/drivers/crypto/s5p-sss.c
-@@ -369,7 +369,7 @@ struct s5p_hash_reqctx {
- 	bool			error;
- 
- 	u32			bufcnt;
--	u8			buffer[0];
-+	u8			buffer[];
- };
- 
- /**
 -- 
-2.25.0
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
