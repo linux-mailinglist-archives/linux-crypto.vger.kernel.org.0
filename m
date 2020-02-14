@@ -2,38 +2,42 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E9F15F0D2
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Feb 2020 18:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 066A715EDD8
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Feb 2020 18:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388134AbgBNP5H (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 14 Feb 2020 10:57:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39552 "EHLO mail.kernel.org"
+        id S1730853AbgBNRgb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 14 Feb 2020 12:36:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388128AbgBNP5H (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:57:07 -0500
+        id S2390178AbgBNQFb (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:05:31 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF19524681;
-        Fri, 14 Feb 2020 15:57:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEABF24686;
+        Fri, 14 Feb 2020 16:05:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695826;
-        bh=qkr6acl5AOx9HxzNSn2Ffkl5YYxSy9LryyRo9RewjuA=;
+        s=default; t=1581696330;
+        bh=r3IjydITxU+qbJOGrGu3haR6q6CTNp58y6svp+RLu4k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hiG64iMqHOgzDFW9fkKFp6vIxfSbtI13upZ41yVKv63NZdsh2FStgFUO3+cF16lYy
-         gFfgOyJJQ2ZHNIXVAMiwtae15kZO8pTsaj8Z1WNo7A3eslPHI74eCdjzEWedK3PV5Z
-         MHaG81kr9FevP3ian4TsRTjIyXhPrAd+2EutWD0o=
+        b=D6rPX31TBPxblYzSS64wYy9RtxyA94kl4ifZ0uMEcmM4kSrIpd3q2oNLDfzzv7F+D
+         Zkaeta13U8Km/BmkzLFjs9a4Pmqj9FMKWekhk3eM2CT4FF/5dsn0eocrWoasTC3tsq
+         f/LAia7JedITNJdGIGXDk8Oxx0p/U1dV6abnB6xA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Eric Biggers <ebiggers@kernel.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 380/542] crypto: essiv - fix AEAD capitalization and preposition use in help text
-Date:   Fri, 14 Feb 2020 10:46:12 -0500
-Message-Id: <20200214154854.6746-380-sashal@kernel.org>
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-crypto@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 168/459] padata: validate cpumask without removed CPU during offline
+Date:   Fri, 14 Feb 2020 10:56:58 -0500
+Message-Id: <20200214160149.11681-168-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
-References: <20200214154854.6746-1-sashal@kernel.org>
+In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
+References: <20200214160149.11681-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,38 +47,185 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-[ Upstream commit ab3d436bf3e9d05f58ceaa85ff7475bfcd6e45af ]
+[ Upstream commit 894c9ef9780c5cf2f143415e867ee39a33ecb75d ]
 
-"AEAD" is capitalized everywhere else.
-Use "an" when followed by a written or spoken vowel.
+Configuring an instance's parallel mask without any online CPUs...
 
-Fixes: be1eb7f78aa8fbe3 ("crypto: essiv - create wrapper template for ESSIV generation")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+  echo 2 > /sys/kernel/pcrypt/pencrypt/parallel_cpumask
+  echo 0 > /sys/devices/system/cpu/cpu1/online
+
+...makes tcrypt mode=215 crash like this:
+
+  divide error: 0000 [#1] SMP PTI
+  CPU: 4 PID: 283 Comm: modprobe Not tainted 5.4.0-rc8-padata-doc-v2+ #2
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20191013_105130-anatol 04/01/2014
+  RIP: 0010:padata_do_parallel+0x114/0x300
+  Call Trace:
+   pcrypt_aead_encrypt+0xc0/0xd0 [pcrypt]
+   crypto_aead_encrypt+0x1f/0x30
+   do_mult_aead_op+0x4e/0xdf [tcrypt]
+   test_mb_aead_speed.constprop.0.cold+0x226/0x564 [tcrypt]
+   do_test+0x28c2/0x4d49 [tcrypt]
+   tcrypt_mod_init+0x55/0x1000 [tcrypt]
+   ...
+
+cpumask_weight() in padata_cpu_hash() returns 0 because the mask has no
+CPUs.  The problem is __padata_remove_cpu() checks for valid masks too
+early and so doesn't mark the instance PADATA_INVALID as expected, which
+would have made padata_do_parallel() return error before doing the
+division.
+
+Fix by introducing a second padata CPU hotplug state before
+CPUHP_BRINGUP_CPU so that __padata_remove_cpu() sees the online mask
+without @cpu.  No need for the second argument to padata_replace() since
+@cpu is now already missing from the online mask.
+
+Fixes: 33e54450683c ("padata: Handle empty padata cpumasks")
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/cpuhotplug.h |  1 +
+ kernel/padata.c            | 30 ++++++++++++++++++------------
+ 2 files changed, 19 insertions(+), 12 deletions(-)
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 5575d48473bd4..cdb51d4272d0c 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -511,10 +511,10 @@ config CRYPTO_ESSIV
- 	  encryption.
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index 068793a619ca8..2d55cee638fc6 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -59,6 +59,7 @@ enum cpuhp_state {
+ 	CPUHP_IOMMU_INTEL_DEAD,
+ 	CPUHP_LUSTRE_CFS_DEAD,
+ 	CPUHP_AP_ARM_CACHE_B15_RAC_DEAD,
++	CPUHP_PADATA_DEAD,
+ 	CPUHP_WORKQUEUE_PREP,
+ 	CPUHP_POWER_NUMA_PREPARE,
+ 	CPUHP_HRTIMERS_PREPARE,
+diff --git a/kernel/padata.c b/kernel/padata.c
+index 9c82ee4a97323..fda7a7039422d 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -512,7 +512,7 @@ static int padata_replace_one(struct padata_shell *ps)
+ 	return 0;
+ }
  
- 	  This driver implements a crypto API template that can be
--	  instantiated either as a skcipher or as a aead (depending on the
-+	  instantiated either as an skcipher or as an AEAD (depending on the
- 	  type of the first template argument), and which defers encryption
- 	  and decryption requests to the encapsulated cipher after applying
--	  ESSIV to the input IV. Note that in the aead case, it is assumed
-+	  ESSIV to the input IV. Note that in the AEAD case, it is assumed
- 	  that the keys are presented in the same format used by the authenc
- 	  template, and that the IV appears at the end of the authenticated
- 	  associated data (AAD) region (which is how dm-crypt uses it.)
+-static int padata_replace(struct padata_instance *pinst, int cpu)
++static int padata_replace(struct padata_instance *pinst)
+ {
+ 	int notification_mask = 0;
+ 	struct padata_shell *ps;
+@@ -523,16 +523,12 @@ static int padata_replace(struct padata_instance *pinst, int cpu)
+ 	cpumask_copy(pinst->omask, pinst->rcpumask.pcpu);
+ 	cpumask_and(pinst->rcpumask.pcpu, pinst->cpumask.pcpu,
+ 		    cpu_online_mask);
+-	if (cpu >= 0)
+-		cpumask_clear_cpu(cpu, pinst->rcpumask.pcpu);
+ 	if (!cpumask_equal(pinst->omask, pinst->rcpumask.pcpu))
+ 		notification_mask |= PADATA_CPU_PARALLEL;
+ 
+ 	cpumask_copy(pinst->omask, pinst->rcpumask.cbcpu);
+ 	cpumask_and(pinst->rcpumask.cbcpu, pinst->cpumask.cbcpu,
+ 		    cpu_online_mask);
+-	if (cpu >= 0)
+-		cpumask_clear_cpu(cpu, pinst->rcpumask.cbcpu);
+ 	if (!cpumask_equal(pinst->omask, pinst->rcpumask.cbcpu))
+ 		notification_mask |= PADATA_CPU_SERIAL;
+ 
+@@ -624,7 +620,7 @@ static int __padata_set_cpumasks(struct padata_instance *pinst,
+ 	cpumask_copy(pinst->cpumask.pcpu, pcpumask);
+ 	cpumask_copy(pinst->cpumask.cbcpu, cbcpumask);
+ 
+-	err = padata_setup_cpumasks(pinst) ?: padata_replace(pinst, -1);
++	err = padata_setup_cpumasks(pinst) ?: padata_replace(pinst);
+ 
+ 	if (valid)
+ 		__padata_start(pinst);
+@@ -715,7 +711,7 @@ static int __padata_add_cpu(struct padata_instance *pinst, int cpu)
+ 	int err = 0;
+ 
+ 	if (cpumask_test_cpu(cpu, cpu_online_mask)) {
+-		err = padata_replace(pinst, -1);
++		err = padata_replace(pinst);
+ 
+ 		if (padata_validate_cpumask(pinst, pinst->cpumask.pcpu) &&
+ 		    padata_validate_cpumask(pinst, pinst->cpumask.cbcpu))
+@@ -729,12 +725,12 @@ static int __padata_remove_cpu(struct padata_instance *pinst, int cpu)
+ {
+ 	int err = 0;
+ 
+-	if (cpumask_test_cpu(cpu, cpu_online_mask)) {
++	if (!cpumask_test_cpu(cpu, cpu_online_mask)) {
+ 		if (!padata_validate_cpumask(pinst, pinst->cpumask.pcpu) ||
+ 		    !padata_validate_cpumask(pinst, pinst->cpumask.cbcpu))
+ 			__padata_stop(pinst);
+ 
+-		err = padata_replace(pinst, cpu);
++		err = padata_replace(pinst);
+ 	}
+ 
+ 	return err;
+@@ -796,7 +792,7 @@ static int padata_cpu_online(unsigned int cpu, struct hlist_node *node)
+ 	return ret;
+ }
+ 
+-static int padata_cpu_prep_down(unsigned int cpu, struct hlist_node *node)
++static int padata_cpu_dead(unsigned int cpu, struct hlist_node *node)
+ {
+ 	struct padata_instance *pinst;
+ 	int ret;
+@@ -817,6 +813,7 @@ static enum cpuhp_state hp_online;
+ static void __padata_free(struct padata_instance *pinst)
+ {
+ #ifdef CONFIG_HOTPLUG_CPU
++	cpuhp_state_remove_instance_nocalls(CPUHP_PADATA_DEAD, &pinst->node);
+ 	cpuhp_state_remove_instance_nocalls(hp_online, &pinst->node);
+ #endif
+ 
+@@ -1024,6 +1021,8 @@ static struct padata_instance *padata_alloc(const char *name,
+ 
+ #ifdef CONFIG_HOTPLUG_CPU
+ 	cpuhp_state_add_instance_nocalls_cpuslocked(hp_online, &pinst->node);
++	cpuhp_state_add_instance_nocalls_cpuslocked(CPUHP_PADATA_DEAD,
++						    &pinst->node);
+ #endif
+ 
+ 	put_online_cpus();
+@@ -1136,17 +1135,24 @@ static __init int padata_driver_init(void)
+ 	int ret;
+ 
+ 	ret = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, "padata:online",
+-				      padata_cpu_online,
+-				      padata_cpu_prep_down);
++				      padata_cpu_online, NULL);
+ 	if (ret < 0)
+ 		return ret;
+ 	hp_online = ret;
++
++	ret = cpuhp_setup_state_multi(CPUHP_PADATA_DEAD, "padata:dead",
++				      NULL, padata_cpu_dead);
++	if (ret < 0) {
++		cpuhp_remove_multi_state(hp_online);
++		return ret;
++	}
+ 	return 0;
+ }
+ module_init(padata_driver_init);
+ 
+ static __exit void padata_driver_exit(void)
+ {
++	cpuhp_remove_multi_state(CPUHP_PADATA_DEAD);
+ 	cpuhp_remove_multi_state(hp_online);
+ }
+ module_exit(padata_driver_exit);
 -- 
 2.20.1
 
