@@ -2,91 +2,77 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 99ED116030F
-	for <lists+linux-crypto@lfdr.de>; Sun, 16 Feb 2020 10:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8655A16034E
+	for <lists+linux-crypto@lfdr.de>; Sun, 16 Feb 2020 11:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725993AbgBPJCr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 16 Feb 2020 04:02:47 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:64423 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725926AbgBPJCr (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 16 Feb 2020 04:02:47 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Tq4ZmiE_1581843754;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0Tq4ZmiE_1581843754)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 16 Feb 2020 17:02:34 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        ebiggers@kernel.org, pvanleeuwen@rambus.com, zohar@linux.ibm.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: sm3 - export crypto_sm3_final function
-Date:   Sun, 16 Feb 2020 17:02:33 +0800
-Message-Id: <20200216090233.109416-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726140AbgBPKEf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 16 Feb 2020 05:04:35 -0500
+Received: from foss.arm.com ([217.140.110.172]:52964 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726020AbgBPKEf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 16 Feb 2020 05:04:35 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E78030E;
+        Sun, 16 Feb 2020 02:04:34 -0800 (PST)
+Received: from ssg-dev-vb.kfn.arm.com (unknown [10.50.4.137])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 559553F68F;
+        Sun, 16 Feb 2020 02:04:30 -0800 (PST)
+From:   Hadar Gat <hadar.gat@arm.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Zaibo Xu <xuzaibo@huawei.com>,
+        Weili Qian <qianweili@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ofir Drang <ofir.drang@arm.com>, Hadar Gat <hadar.gat@arm.com>
+Subject: [PATCH v4 0/3] hw_random: introduce Arm CryptoCell TRNG driver
+Date:   Sun, 16 Feb 2020 12:04:07 +0200
+Message-Id: <1581847450-22924-1-git-send-email-hadar.gat@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Both crypto_sm3_update and crypto_sm3_finup have been
-exported, exporting crypto_sm3_final, to avoid having to
-use crypto_sm3_finup(desc, NULL, 0, dgst) to calculate
-the hash in some cases.
+The Arm CryptoCell is a hardware security engine.
+This patch introduces driver for its TRNG (True Random Number Generator)
+engine.
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- crypto/sm3_generic.c | 7 ++++---
- include/crypto/sm3.h | 2 ++
- 2 files changed, 6 insertions(+), 3 deletions(-)
+v4 changes: update arm-cctrng.yaml to conform with json-schema standard.
 
-diff --git a/crypto/sm3_generic.c b/crypto/sm3_generic.c
-index 3468975215ca..193c4584bd00 100644
---- a/crypto/sm3_generic.c
-+++ b/crypto/sm3_generic.c
-@@ -149,17 +149,18 @@ int crypto_sm3_update(struct shash_desc *desc, const u8 *data,
- }
- EXPORT_SYMBOL(crypto_sm3_update);
- 
--static int sm3_final(struct shash_desc *desc, u8 *out)
-+int crypto_sm3_final(struct shash_desc *desc, u8 *out)
- {
- 	sm3_base_do_finalize(desc, sm3_generic_block_fn);
- 	return sm3_base_finish(desc, out);
- }
-+EXPORT_SYMBOL(crypto_sm3_final);
- 
- int crypto_sm3_finup(struct shash_desc *desc, const u8 *data,
- 			unsigned int len, u8 *hash)
- {
- 	sm3_base_do_update(desc, data, len, sm3_generic_block_fn);
--	return sm3_final(desc, hash);
-+	return crypto_sm3_final(desc, hash);
- }
- EXPORT_SYMBOL(crypto_sm3_finup);
- 
-@@ -167,7 +168,7 @@ static struct shash_alg sm3_alg = {
- 	.digestsize	=	SM3_DIGEST_SIZE,
- 	.init		=	sm3_base_init,
- 	.update		=	crypto_sm3_update,
--	.final		=	sm3_final,
-+	.final		=	crypto_sm3_final,
- 	.finup		=	crypto_sm3_finup,
- 	.descsize	=	sizeof(struct sm3_state),
- 	.base		=	{
-diff --git a/include/crypto/sm3.h b/include/crypto/sm3.h
-index 1438942dc773..42ea21289ba9 100644
---- a/include/crypto/sm3.h
-+++ b/include/crypto/sm3.h
-@@ -35,6 +35,8 @@ struct shash_desc;
- extern int crypto_sm3_update(struct shash_desc *desc, const u8 *data,
- 			      unsigned int len);
- 
-+extern int crypto_sm3_final(struct shash_desc *desc, u8 *out);
-+
- extern int crypto_sm3_finup(struct shash_desc *desc, const u8 *data,
- 			     unsigned int len, u8 *hash);
- #endif
+v3 change: removed few unneeded "#ifdef CONFIG_PM" from the code.
+
+v2 changes: fixed 'make dt_bnding_check' errors.
+
+Hadar Gat (3):
+  dt-bindings: add device tree binding for Arm CryptoCell trng engine
+  hw_random: cctrng: introduce Arm CryptoCell driver
+  MAINTAINERS: add HG as cctrng maintainer
+
+ .../devicetree/bindings/rng/arm-cctrng.yaml        |  50 ++
+ MAINTAINERS                                        |   9 +
+ drivers/char/hw_random/Kconfig                     |  12 +
+ drivers/char/hw_random/Makefile                    |   1 +
+ drivers/char/hw_random/cctrng.c                    | 767 +++++++++++++++++++++
+ drivers/char/hw_random/cctrng.h                    |  69 ++
+ 6 files changed, 908 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rng/arm-cctrng.yaml
+ create mode 100644 drivers/char/hw_random/cctrng.c
+ create mode 100644 drivers/char/hw_random/cctrng.h
+
 -- 
-2.17.1
+2.7.4
 
