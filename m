@@ -2,83 +2,66 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8407515FF77
-	for <lists+linux-crypto@lfdr.de>; Sat, 15 Feb 2020 18:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C03F2160307
+	for <lists+linux-crypto@lfdr.de>; Sun, 16 Feb 2020 10:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgBORQ2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 15 Feb 2020 12:16:28 -0500
-Received: from viti.kaiser.cx ([85.214.81.225]:52716 "EHLO viti.kaiser.cx"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726143AbgBORQ2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 15 Feb 2020 12:16:28 -0500
-Received: from dslb-088-068-092-168.088.068.pools.vodafone-ip.de ([88.68.92.168] helo=martin-debian-2)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <postmaster@kaiser.cx>)
-        id 1j313J-0005jM-8R; Sat, 15 Feb 2020 18:16:25 +0100
-Received: from martin by martin-debian-2 with local (Exim 4.92)
-        (envelope-from <martin@martin-debian-2>)
-        id 1j313I-0003zr-Mn; Sat, 15 Feb 2020 18:16:24 +0100
-Date:   Sat, 15 Feb 2020 18:16:24 +0100
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] hwrng: imx-rngc: improve dependencies
-Message-ID: <20200215171616.GA15321@martin-debian-1.paytec.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726203AbgBPJAG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 16 Feb 2020 04:00:06 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:43888 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726140AbgBPJAF (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 16 Feb 2020 04:00:05 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R891e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Tq4XVIS_1581843589;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0Tq4XVIS_1581843589)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 16 Feb 2020 16:59:50 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@kernel.org, pvanleeuwen@rambus.com, zohar@linux.ibm.com
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Introduce OSCCA certificate and SM2 asymmetric algorithm
+Date:   Sun, 16 Feb 2020 16:59:21 +0800
+Message-Id: <20200216085928.108838-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Thus wrote Uwe Kleine-König (u.kleine-koenigpengutronix!de):
+Hello all,
 
-> On Wed, Feb 12, 2020 at 07:51:46PM +0000, Horia Geanta wrote:
-> > On 2/5/2020 4:00 PM, Uwe Kleine-König wrote:
-> > > The imx-rngc driver binds to devices that are compatible to
-> > > "fsl,imx25-rngb". Grepping through the device tree sources suggests this
-> > > only exists on i.MX25. So restrict dependencies to configs that have
-> > The driver could also be used by some i.MX6 SoCs (SL, SLL),
-> > that have a compatible rngb.
+This new module implement the OSCCA certificate and SM2 public key
+algorithm. It was published by State Encryption Management Bureau, China.
+List of specifications for OSCCA certificate and SM2 elliptic curve
+public key cryptography:
 
-> > Actually i.MX6SL has a rngb node in the DT, but unfortunately it lacks
-> > a compatible string.
+* GM/T 0003.1-2012
+* GM/T 0003.2-2012
+* GM/T 0003.3-2012
+* GM/T 0003.4-2012
+* GM/T 0003.5-2012
+* GM/T 0015-2012
+* GM/T 0009-2012 
 
-> Also the i.MX6ULL might have a compatible device?
+IETF: https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
+oscca: http://www.oscca.gov.cn/sca/xxgk/2010-12/17/content_1002386.shtml
+scctc: http://www.gmbz.org.cn/main/bzlb.html
 
-AFAICS imx35 chips have an rngc which is compatible to this driver as
-well. I don't have any hardware to test this, though.
+These patchs add the OID object identifier defined by OSCCA. The
+x509 certificate supports sm2-with-sm3 type certificate parsing
+and verification.
 
-> > I am planning to address this short term.
+The sm2 algorithm is based on libgcrypt's mpi implementation, and has
+made some additions to the kernel's original mpi library, and added the
+implementation of ec to better support elliptic curve-like algorithms.
 
-> > > this SoC enabled, but allow compile testing. For the latter additional
-> > > dependencies for clk and readl/writel are necessary.
-> > > > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > > ---
-> > >  drivers/char/hw_random/Kconfig | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+sm2 has good support in both openssl and gnupg projects, and sm3 and sm4
+of the OSCCA algorithm family have also been implemented in the kernel.
 
-> > > diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-> > > index 8486c29d8324..17fe954fccde 100644
-> > > --- a/drivers/char/hw_random/Kconfig
-> > > +++ b/drivers/char/hw_random/Kconfig
-> > > @@ -244,7 +244,8 @@ config HW_RANDOM_MXC_RNGA
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-> > >  config HW_RANDOM_IMX_RNGC
-> > >  	tristate "Freescale i.MX RNGC Random Number Generator"
-> > > -	depends on ARCH_MXC
-> > > +	depends on HAS_IOMEM && HAVE_CLK
-> > > +	depends on SOC_IMX25 || COMPILE_TEST
-> > I guess SOC_IMX6SL and SOC_IMX6SLL will have to be added.
-> > Does this sound good?
+Thanks,
+Tianjia
 
-> I'd say currently the patch is right and once the device trees for the
-> imx6 variants were expanded to include these, the list here can be
-> expanded.
 
-Makes sense to me.
-
-Reviewed-by: Martin Kaiser <martin@kaiser.cx>
