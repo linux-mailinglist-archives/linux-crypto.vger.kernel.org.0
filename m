@@ -2,148 +2,122 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55336161002
-	for <lists+linux-crypto@lfdr.de>; Mon, 17 Feb 2020 11:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BCF161348
+	for <lists+linux-crypto@lfdr.de>; Mon, 17 Feb 2020 14:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729395AbgBQK1y (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 17 Feb 2020 05:27:54 -0500
-Received: from mail-bn7nam10on2085.outbound.protection.outlook.com ([40.107.92.85]:25727
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729381AbgBQK1x (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 17 Feb 2020 05:27:53 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KNGbo3kYzVq5K5ueg0ZomnN6kggkARw/yHVbJTOFEEKWeWxWqmbDoORZsAsxtgNbGhj5i0oqjybb3VDsqwYFpE59XsxoMqWPPswqcu8hUhJIjLTecUXUruqXLWEsG8uYXdTXCAl9qnh0pH9JW8Y4wG49NvwL7NPVMqJR625oWfg4tvO6rcQarzGG35lHydbwLm3eLv6JZzMYsj+I1qZFXFb+K0JtRW+Ygj8lNApbHKDs+GltFhdcbOaWRfL4pyA7BZLftQptODZSuEqrV5Cv5NHUaQ7jGUxVwMkUDQogAD0Va8SJeIQhUkGOuoxSxNK04AEpVvPlf56GD5dZkbvqtg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tHCfGC/h+co6K42dAvgN40+/3m0ac0bqAT9iyNUvTFs=;
- b=CR31ZlPkbBiRU6GS9Fh6286q6g+oQhL0W8XW+TRMwUKTe/PirmV3fiL7br8TexlA3BLzMRHtDEFMJYwdiLS6OLUyjiUA0t8k5vizBP4b24KhtOaIROc6ZKyMl2ASEU6qr4/v4MIo1VN4t//eXTN35i6UQhFMxAecXzYDuDlZy1sPziIZbsa+INuyLPq59p7kJWcY99wpy+9x0dBVkoniok7o+uZ07Dyv5qGQ4cIpqA4IQJ2cfMTOK4TvA7VoBwzWv5958gHPFzS+/vYW/O0JNjfE4s2tAjrZ7+y1K61jLWoUEsSOyZaOXYhZfv24G5qq+Fg4Pi3H48el+Nxt6+OmXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tHCfGC/h+co6K42dAvgN40+/3m0ac0bqAT9iyNUvTFs=;
- b=hduf3fJ2zxfSyJuTDGkQKCI6a603HHjgIRekh/FA+MLILBxyPAQ8k5oEazSlDcktVfwwCZvl5GfuHg5cFhmzBvibkdgoCe5ZhY1b87dAbmJXh2GYY7vwq9EzjZn1x92Suab9OQ7heIi3O3B+LMEeHnCaCohwP7JsayWtkFm8b/s=
-Received: from SN4PR0201CA0070.namprd02.prod.outlook.com
- (2603:10b6:803:20::32) by MWHPR02MB3357.namprd02.prod.outlook.com
- (2603:10b6:301:61::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2729.31; Mon, 17 Feb
- 2020 10:27:50 +0000
-Received: from SN1NAM02FT052.eop-nam02.prod.protection.outlook.com
- (2a01:111:f400:7e44::204) by SN4PR0201CA0070.outlook.office365.com
- (2603:10b6:803:20::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2729.25 via Frontend
- Transport; Mon, 17 Feb 2020 10:27:50 +0000
-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- SN1NAM02FT052.mail.protection.outlook.com (10.152.72.146) with Microsoft SMTP
- Server (version=TLS1_0, cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.20.2729.22
- via Frontend Transport; Mon, 17 Feb 2020 10:27:50 +0000
-Received: from unknown-38-66.xilinx.com ([149.199.38.66] helo=xsj-pvapsmtp01)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.63)
-        (envelope-from <kalyani.akula@xilinx.com>)
-        id 1j3dcz-0007ny-MZ; Mon, 17 Feb 2020 02:27:49 -0800
-Received: from [127.0.0.1] (helo=localhost)
-        by xsj-pvapsmtp01 with smtp (Exim 4.63)
-        (envelope-from <kalyani.akula@xilinx.com>)
-        id 1j3dcu-00034b-JN; Mon, 17 Feb 2020 02:27:44 -0800
-Received: from xsj-pvapsmtp01 (mail.xilinx.com [149.199.38.66] (may be forged))
-        by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 01HARdDh000804;
-        Mon, 17 Feb 2020 02:27:39 -0800
-Received: from [172.23.155.80] (helo=xhdengvm155080.xilinx.com)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <kalyania@xilinx.com>)
-        id 1j3dcp-00034H-Bv; Mon, 17 Feb 2020 02:27:39 -0800
-Received: by xhdengvm155080.xilinx.com (Postfix, from userid 23151)
-        id 23D3681415; Mon, 17 Feb 2020 15:56:46 +0530 (IST)
-From:   Kalyani Akula <kalyani.akula@xilinx.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net, monstr@seznam.cz,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Kalyani Akula <kalyania@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        git-dev@xilinx.com,
-        Mohan Marutirao Dhanawade <mohan.dhanawade@xilinx.com>,
-        Sarat Chand Savitala <saratcha@xilinx.com>,
-        Harsh Jain <harshj@xilinx.com>,
-        Michal Simek <michals@xilinx.com>,
-        Kalyani Akula <kalyani.akula@xilinx.com>
-Subject: [PATCH V7 4/4] arm64: zynqmp: Add Xilinx AES node.
-Date:   Mon, 17 Feb 2020 15:56:44 +0530
-Message-Id: <1581935204-25673-5-git-send-email-kalyani.akula@xilinx.com>
-X-Mailer: git-send-email 1.9.5
-In-Reply-To: <1581935204-25673-1-git-send-email-kalyani.akula@xilinx.com>
-References: <1581935204-25673-1-git-send-email-kalyani.akula@xilinx.com>
-X-RCIS-Action: ALLOW
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:149.199.60.83;IPV:;CTRY:US;EFV:NLI;SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(136003)(396003)(376002)(346002)(199004)(189003)(8936002)(107886003)(70206006)(4326008)(81166006)(70586007)(2616005)(81156014)(2906002)(6266002)(8676002)(36756003)(478600001)(356004)(426003)(186003)(44832011)(336012)(54906003)(42186006)(5660300002)(26005)(4744005)(316002)(42866002);DIR:OUT;SFP:1101;SCL:1;SRVR:MWHPR02MB3357;H:xsj-pvapsmtpgw01;FPR:;SPF:Pass;LANG:en;PTR:unknown-60-83.xilinx.com;A:1;MX:1;
+        id S1728326AbgBQN1M (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 17 Feb 2020 08:27:12 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:56633 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728297AbgBQN1L (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 17 Feb 2020 08:27:11 -0500
+Received: by mail-il1-f198.google.com with SMTP id p67so14195272ili.23
+        for <linux-crypto@vger.kernel.org>; Mon, 17 Feb 2020 05:27:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=//Eikc+TfQoOfK+iblsjNCYJ0p+m9TlXlSpof67YNNw=;
+        b=lWUca11PtxuUuujy6ghLOBUPIhumWYAZ+rCwgVArAG2B6wt2I5T1xtDMoXCkhGvT/N
+         a588dLZ8pS3I423bx/HoerzoV9t3VlUQI+a/oUt0Un6KKlox5QIStVm5fQJo12+5++C8
+         Zo8XNTyBeDp2+YFUktO+wrEslQUrRf/G1MU3aFSH/82IzEzkcdeoygL7DQWmWJwjyhxq
+         23eCz+sr9yctLodNWUSvOu/oDK0X+IH2U5Sm1TDboOlcva9yClXAVYBftDy2msN4QN6r
+         Sd0t1rLV7PM0GLFD+MdHLIRzaZlcNtUESiCCkduh+5HDHt0H++3mkIA+pynqcm8iiKsd
+         TZcw==
+X-Gm-Message-State: APjAAAUZfAgZ59KgTaBSduISg8oL39AC/mT0DgmeLyjRZ8Jg+m4LZzdy
+        xz1uzypi6jDSHwE0/RpmB6d/9ZWL+WBbhLw8povffiuxvZY0
+X-Google-Smtp-Source: APXvYqwnpjMrbSljtR7Lav4RkYaw8FsWyzE9gfZXhRW3Att0YLAj9mEoaKfcS1mD94s1f6BhP1S5aoN629SA2yLXv0hdqcUHaRSp
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7db1332a-1876-4f5a-8c42-08d7b3940a15
-X-MS-TrafficTypeDiagnostic: MWHPR02MB3357:
-X-Microsoft-Antispam-PRVS: <MWHPR02MB33579584133804E9041A7749AF160@MWHPR02MB3357.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-Forefront-PRVS: 0316567485
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GrWQC6zJgYCnPX25G4byOS5V+H+QxoQVC4gXU9OYi0jeiLGw/TvOXSjuR6v9CQlhQdcJusdUCUJrX6NWW6yfAzu+aF7Aa8jXqo/9HLvHJUjtTwzgKy2TxqdRYSlgmfiELA40KYkCLM1zSY6+AXd6t9ZZiUdppShMgLek3a1jv9FA5W+ahXhgdHmUWIUqgo5FB2K2zhEk2zt6E0+zQWtscrL3YZO1yol4ujERvBM1ppB6zWhM+19+LaFEWkTadVQx5tlBNeFT+ft0zm06An9ttlElBGcfZmoF4pocdZbKFXp7RjsrSPCv50obEWqpAQzDi39Qk1y91nUYbsaxPTBYspinepdnQC9HP1FcJ+/Qy/YaWbd8+uu/RzKWecwKAQakjv3aqMw0A5hYV/gZLLKGx+vSg731C9u2PtzPWDWjDkkI2ZnnP5rVS5voZJDl0bN6LQdvCE0zKi97c4k0b0ciVmet9hvvLpbRKP5ogCNdLLTmDBhrtJN8GhRPA8xfmatr
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2020 10:27:50.0799
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7db1332a-1876-4f5a-8c42-08d7b3940a15
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR02MB3357
+X-Received: by 2002:a92:1a12:: with SMTP id a18mr14351032ila.10.1581946031115;
+ Mon, 17 Feb 2020 05:27:11 -0800 (PST)
+Date:   Mon, 17 Feb 2020 05:27:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003d1365059ec583c5@google.com>
+Subject: WARNING in chaoskey_disconnect
+From:   syzbot <syzbot+a07cc2ec8430d5980aa1@syzkaller.appspotmail.com>
+To:     alexandre.belloni@bootlin.com, andreyknvl@google.com,
+        arnd@arndb.de, gregkh@linuxfoundation.org,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        lvivier@redhat.com, mchehab+samsung@kernel.org, mpm@selenic.com,
+        swboyd@chromium.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds a AES DT node for Xilinx ZynqMP SoC.
+Hello,
 
-Signed-off-by: Kalyani Akula <kalyani.akula@xilinx.com>
-Acked-by: Michal Simek <michal.simek@xilinx.com>
+syzbot found the following crash on:
+
+HEAD commit:    7f0cd6c7 usb: gadget: add raw-gadget interface
+git tree:       https://github.com/google/kasan.git usb-fuzzer
+console output: https://syzkaller.appspot.com/x/log.txt?x=12445311e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f10b12ae04e03319
+dashboard link: https://syzkaller.appspot.com/bug?extid=a07cc2ec8430d5980aa1
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+a07cc2ec8430d5980aa1@syzkaller.appspotmail.com
+
+usb 6-1: USB disconnect, device number 67
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 4799 at kernel/kthread.c:75 to_kthread kernel/kthread.c:75 [inline]
+WARNING: CPU: 1 PID: 4799 at kernel/kthread.c:75 kthread_stop+0x5f8/0x780 kernel/kthread.c:555
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 4799 Comm: kworker/1:8 Not tainted 5.6.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xef/0x16e lib/dump_stack.c:118
+ panic+0x2aa/0x6e1 kernel/panic.c:221
+ __warn.cold+0x2f/0x30 kernel/panic.c:582
+ report_bug+0x27b/0x2f0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:174 [inline]
+ fixup_bug arch/x86/kernel/traps.c:169 [inline]
+ do_error_trap+0x12b/0x1e0 arch/x86/kernel/traps.c:267
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:to_kthread kernel/kthread.c:75 [inline]
+RIP: 0010:kthread_stop+0x5f8/0x780 kernel/kthread.c:555
+Code: 00 4c 89 e7 e8 79 4b cb 00 e9 f9 fa ff ff e8 5f 03 23 00 be 03 00 00 00 4c 89 e7 e8 62 4b cb 00 e9 0e fc ff ff e8 48 03 23 00 <0f> 0b e9 23 fb ff ff e8 3c 03 23 00 be 02 00 00 00 4c 89 e7 e8 3f
+RSP: 0018:ffff8881cc3677f0 EFLAGS: 00010216
+RAX: 0000000000040000 RBX: 0000000000000000 RCX: ffffc9000d782000
+RDX: 00000000000040df RSI: ffffffff811c5ed8 RDI: 0000000000000005
+RBP: ffff8881d4b50000 R08: ffff8881cbb54980 R09: ffffed103a96a005
+R10: ffffed103a96a004 R11: ffff8881d4b50023 R12: ffff8881d4b50020
+R13: ffff8881c8a1a930 R14: ffff8881c8a1a978 R15: ffffffff873764e0
+ hwrng_unregister+0x24f/0x330 drivers/char/hw_random/core.c:556
+ chaoskey_disconnect+0x216/0x290 drivers/usb/misc/chaoskey.c:232
+ usb_unbind_interface+0x1bd/0x8a0 drivers/usb/core/driver.c:423
+ __device_release_driver drivers/base/dd.c:1137 [inline]
+ device_release_driver_internal+0x42f/0x500 drivers/base/dd.c:1168
+ bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
+ device_del+0x481/0xd30 drivers/base/core.c:2664
+ usb_disable_device+0x23d/0x790 drivers/usb/core/message.c:1237
+ usb_disconnect+0x293/0x900 drivers/usb/core/hub.c:2201
+ hub_port_connect drivers/usb/core/hub.c:5036 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5325 [inline]
+ port_event drivers/usb/core/hub.c:5471 [inline]
+ hub_event+0x1a1d/0x4300 drivers/usb/core/hub.c:5553
+ process_one_work+0x94b/0x1620 kernel/workqueue.c:2264
+ process_scheduled_works kernel/workqueue.c:2326 [inline]
+ worker_thread+0x7ab/0xe20 kernel/workqueue.c:2412
+ kthread+0x318/0x420 kernel/kthread.c:255
+ ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
 ---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-V5 Changes:
-- Moved arm64: zynqmp: Add Xilinx AES node patch from 2/4 to 4/4
-- Corrected typo in the subject.
-- Updated zynqmp-aes node to correct location.
-
-
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index 26d926e..de4c694 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -158,6 +158,10 @@
- 			zynqmp_pcap: pcap {
- 				compatible = "xlnx,zynqmp-pcap-fpga";
- 			};
-+
-+			xlnx_aes: zynqmp-aes {
-+				compatible = "xlnx,zynqmp-aes";
-+			};
- 		};
- 	};
- 
--- 
-1.9.5
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
