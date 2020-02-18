@@ -2,21 +2,21 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA68A163283
-	for <lists+linux-crypto@lfdr.de>; Tue, 18 Feb 2020 21:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3080163148
+	for <lists+linux-crypto@lfdr.de>; Tue, 18 Feb 2020 21:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbgBRUHT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 18 Feb 2020 15:07:19 -0500
-Received: from foss.arm.com ([217.140.110.172]:60524 "EHLO foss.arm.com"
+        id S1728375AbgBRT7K (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 18 Feb 2020 14:59:10 -0500
+Received: from foss.arm.com ([217.140.110.172]:60542 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728011AbgBRT7H (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 18 Feb 2020 14:59:07 -0500
+        id S1726723AbgBRT7J (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 18 Feb 2020 14:59:09 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B5C5FEC;
-        Tue, 18 Feb 2020 11:59:07 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 819B131B;
+        Tue, 18 Feb 2020 11:59:09 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C1D9C3F68F;
-        Tue, 18 Feb 2020 11:59:06 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 05B5B3F68F;
+        Tue, 18 Feb 2020 11:59:08 -0800 (PST)
 From:   Mark Brown <broonie@kernel.org>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
@@ -27,9 +27,9 @@ To:     Herbert Xu <herbert@gondor.apana.org.au>,
         Suzuki K Poulose <suzuki.poulose@arm.com>
 Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-crypto@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 06/18] arm64: entry-ftrace.S: Convert to modern annotations for assembly functions
-Date:   Tue, 18 Feb 2020 19:58:30 +0000
-Message-Id: <20200218195842.34156-7-broonie@kernel.org>
+Subject: [PATCH 07/18] arm64: ftrace: Correct annotation of ftrace_caller assembly
+Date:   Tue, 18 Feb 2020 19:58:31 +0000
+Message-Id: <20200218195842.34156-8-broonie@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200218195842.34156-1-broonie@kernel.org>
 References: <20200218195842.34156-1-broonie@kernel.org>
@@ -40,119 +40,68 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-In an effort to clarify and simplify the annotation of assembly functions
-in the kernel new macros have been introduced. These replace ENTRY and
-ENDPROC and also add a new annotation for static functions which previously
-had no ENTRY equivalent. Update the annotations in the core kernel code to
-the new macros.
+In an effort to clarify and simplify the annotation of assembly
+functions new macros have been introduced. These replace ENTRY and
+ENDPROC with two different annotations for normal functions and those
+with unusual calling conventions.
+
+The patchable function entry versions of ftrace_*_caller don't follow the
+usual AAPCS rules, pushing things onto the stack which they don't clean up,
+and therefore should be annotated as code rather than functions.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- arch/arm64/kernel/entry-ftrace.S | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ arch/arm64/kernel/entry-ftrace.S | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/arch/arm64/kernel/entry-ftrace.S b/arch/arm64/kernel/entry-ftrace.S
-index 7d02f9966d34..3d32b6d325d7 100644
+index 3d32b6d325d7..baf5a20a5566 100644
 --- a/arch/arm64/kernel/entry-ftrace.S
 +++ b/arch/arm64/kernel/entry-ftrace.S
-@@ -91,11 +91,11 @@ ENTRY(ftrace_common)
- 	ldr_l	x2, function_trace_op		// op
- 	mov	x3, sp				// regs
+@@ -75,17 +75,17 @@
+ 	add	x29, sp, #S_STACKFRAME
+ 	.endm
  
--GLOBAL(ftrace_call)
-+SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
- 	bl	ftrace_stub
+-ENTRY(ftrace_regs_caller)
++SYM_CODE_START(ftrace_regs_caller)
+ 	ftrace_regs_entry	1
+ 	b	ftrace_common
+-ENDPROC(ftrace_regs_caller)
++SYM_CODE_END(ftrace_regs_caller)
  
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
--GLOBAL(ftrace_graph_call)		// ftrace_graph_caller();
-+SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL) // ftrace_graph_caller();
- 	nop				// If enabled, this will be replaced
- 					// "b ftrace_graph_caller"
- #endif
-@@ -218,7 +218,7 @@ ENDPROC(ftrace_graph_caller)
-  *     - tracer function to probe instrumented function's entry,
-  *     - ftrace_graph_caller to set up an exit hook
-  */
--ENTRY(_mcount)
-+SYM_FUNC_START(_mcount)
- 	mcount_enter
- 
- 	ldr_l	x2, ftrace_trace_function
-@@ -242,7 +242,7 @@ skip_ftrace_call:			// }
- 	b.ne	ftrace_graph_caller	//     ftrace_graph_caller();
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
- 	mcount_exit
--ENDPROC(_mcount)
-+SYM_FUNC_END(_mcount)
- EXPORT_SYMBOL(_mcount)
- NOKPROBE(_mcount)
- 
-@@ -253,9 +253,9 @@ NOKPROBE(_mcount)
-  * and later on, NOP to branch to ftrace_caller() when enabled or branch to
-  * NOP when disabled per-function base.
-  */
--ENTRY(_mcount)
-+SYM_FUNC_START(_mcount)
- 	ret
--ENDPROC(_mcount)
-+SYM_FUNC_END(_mcount)
- EXPORT_SYMBOL(_mcount)
- NOKPROBE(_mcount)
- 
-@@ -268,24 +268,24 @@ NOKPROBE(_mcount)
-  *     - tracer function to probe instrumented function's entry,
-  *     - ftrace_graph_caller to set up an exit hook
-  */
 -ENTRY(ftrace_caller)
-+SYM_FUNC_START(ftrace_caller)
- 	mcount_enter
++SYM_CODE_START(ftrace_caller)
+ 	ftrace_regs_entry	0
+ 	b	ftrace_common
+-ENDPROC(ftrace_caller)
++SYM_CODE_END(ftrace_caller)
  
- 	mcount_get_pc0	x0		//     function's pc
- 	mcount_get_lr	x1		//     function's lr
+-ENTRY(ftrace_common)
++SYM_CODE_START(ftrace_common)
+ 	sub	x0, x30, #AARCH64_INSN_SIZE	// ip (callsite's BL insn)
+ 	mov	x1, x9				// parent_ip (callsite's LR)
+ 	ldr_l	x2, function_trace_op		// op
+@@ -122,17 +122,17 @@ ftrace_common_return:
+ 	add	sp, sp, #S_FRAME_SIZE + 16
  
--GLOBAL(ftrace_call)			// tracer(pc, lr);
-+SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)	// tracer(pc, lr);
- 	nop				// This will be replaced with "bl xxx"
- 					// where xxx can be any kind of tracer.
+ 	ret	x9
+-ENDPROC(ftrace_common)
++SYM_CODE_END(ftrace_common)
  
  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
--GLOBAL(ftrace_graph_call)		// ftrace_graph_caller();
-+SYM_INNER_LABEL(ftrace_graph_call)		// ftrace_graph_caller();
- 	nop				// If enabled, this will be replaced
- 					// "b ftrace_graph_caller"
+-ENTRY(ftrace_graph_caller)
++SYM_CODE_START(ftrace_graph_caller)
+ 	ldr	x0, [sp, #S_PC]
+ 	sub	x0, x0, #AARCH64_INSN_SIZE	// ip (callsite's BL insn)
+ 	add	x1, sp, #S_LR			// parent_ip (callsite's LR)
+ 	ldr	x2, [sp, #S_FRAME_SIZE]	   	// parent fp (callsite's FP)
+ 	bl	prepare_ftrace_return
+ 	b	ftrace_common_return
+-ENDPROC(ftrace_graph_caller)
++SYM_CODE_END(ftrace_graph_caller)
  #endif
  
- 	mcount_exit
--ENDPROC(ftrace_caller)
-+SYM_FUNC_END(ftrace_caller)
- #endif /* CONFIG_DYNAMIC_FTRACE */
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-@@ -298,20 +298,20 @@ ENDPROC(ftrace_caller)
-  * the call stack in order to intercept instrumented function's return path
-  * and run return_to_handler() later on its exit.
-  */
--ENTRY(ftrace_graph_caller)
-+SYM_FUNC_START(ftrace_graph_caller)
- 	mcount_get_pc		  x0	//     function's pc
- 	mcount_get_lr_addr	  x1	//     pointer to function's saved lr
- 	mcount_get_parent_fp	  x2	//     parent's fp
- 	bl	prepare_ftrace_return	// prepare_ftrace_return(pc, &lr, fp)
- 
- 	mcount_exit
--ENDPROC(ftrace_graph_caller)
-+SYM_FUNC_END(ftrace_graph_caller)
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
- #endif /* CONFIG_DYNAMIC_FTRACE_WITH_REGS */
- 
--ENTRY(ftrace_stub)
-+SYM_FUNC_START(ftrace_stub)
- 	ret
--ENDPROC(ftrace_stub)
-+SYM_FUNC_END(ftrace_stub)
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- /*
+ #else /* CONFIG_DYNAMIC_FTRACE_WITH_REGS */
 -- 
 2.20.1
 
