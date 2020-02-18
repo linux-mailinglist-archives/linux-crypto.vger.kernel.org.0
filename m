@@ -2,111 +2,101 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5BF162814
-	for <lists+linux-crypto@lfdr.de>; Tue, 18 Feb 2020 15:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708D616328D
+	for <lists+linux-crypto@lfdr.de>; Tue, 18 Feb 2020 21:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgBROZE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 18 Feb 2020 09:25:04 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51672 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726442AbgBROZE (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 18 Feb 2020 09:25:04 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01IENmRV041497
-        for <linux-crypto@vger.kernel.org>; Tue, 18 Feb 2020 09:25:03 -0500
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2y89aahtkx-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-crypto@vger.kernel.org>; Tue, 18 Feb 2020 09:25:00 -0500
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-crypto@vger.kernel.org> from <zohar@linux.ibm.com>;
-        Tue, 18 Feb 2020 14:24:50 -0000
-Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 18 Feb 2020 14:24:46 -0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 01IEOjkQ40108542
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Feb 2020 14:24:45 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5A24611C058;
-        Tue, 18 Feb 2020 14:24:45 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CBCC411C052;
-        Tue, 18 Feb 2020 14:24:43 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.142.171])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 18 Feb 2020 14:24:43 +0000 (GMT)
-Subject: Re: [PATCH v2 1/2] crypto: fix mismatched hash algorithm name
- sm3-256 to sm3
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        jarkko.sakkinen@linux.intel.com, ebiggers@kernel.org,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 18 Feb 2020 09:24:43 -0500
-In-Reply-To: <f26b221c-f2e1-a14b-46cb-cae03f1357aa@linux.alibaba.com>
-References: <20200217093649.97938-1-tianjia.zhang@linux.alibaba.com>
-         <20200217093649.97938-2-tianjia.zhang@linux.alibaba.com>
-         <1581989598.8515.233.camel@linux.ibm.com>
-         <f26b221c-f2e1-a14b-46cb-cae03f1357aa@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
+        id S1727161AbgBRUHl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 18 Feb 2020 15:07:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:60410 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727224AbgBRT6y (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 18 Feb 2020 14:58:54 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF38631B;
+        Tue, 18 Feb 2020 11:58:53 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 60BA93F68F;
+        Tue, 18 Feb 2020 11:58:53 -0800 (PST)
+From:   Mark Brown <broonie@kernel.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-crypto@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 00/18] arm64: Modernize assembly annotations
+Date:   Tue, 18 Feb 2020 19:58:24 +0000
+Message-Id: <20200218195842.34156-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 20021814-0016-0000-0000-000002E7FAD5
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20021814-0017-0000-0000-0000334B0F1B
-Message-Id: <1582035883.4576.8.camel@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-18_02:2020-02-17,2020-02-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- suspectscore=0 mlxlogscore=999 adultscore=0 impostorscore=0 clxscore=1015
- mlxscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002180112
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, 2020-02-18 at 10:34 +0800, Tianjia Zhang wrote:
-> On 2020/2/18 9:33, Mimi Zohar wrote:
-> > On Mon, 2020-02-17 at 17:36 +0800, Tianjia Zhang wrote:
-> >> The name sm3-256 is defined in hash_algo_name in hash_info, but the
-> >> algorithm name implemented in sm3_generic.c is sm3, which will cause
-> >> the sm3-256 algorithm to be not found in some application scenarios of
-> >> the hash algorithm, and an ENOENT error will occur. For example,
-> >> IMA, keys, and other subsystems that reference hash_algo_name all use
-> >> the hash algorithm of sm3.
-> >>
-> >> According to https://tools.ietf.org/id/draft-oscca-cfrg-sm3-01.html,
-> >> SM3 always produces a 256-bit hash value and there are no plans for
-> >> other length development, so there is no ambiguity in the name of sm3.
-> >>
-> >> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> >> Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > The previous version of this patch set is queued in the next-
-> > integrity-testing branch.  That version of this patch didn't
-> > change TPM_ALG_SM3_256.  Unless the TPM standard was modified, the TPM
-> > spec refers to it as TPM_ALG_SM3_256.  Has that changed?
-> >
-> > Mimi
-> 
-> The definition in the TPM specification is still TPM_ALG_SM3_256, please
-> ignore the modification to the TPM definition in this patch.
+In an effort to clarify and simplify the annotation of assembly functions
+in the kernel new macros have been introduced. These replace ENTRY and
+ENDPROC and also add a new annotation for static functions which previously
+had no ENTRY equivalent.
 
-Ok.  Just confirming that I should ignore v2 of this patch set.
- Upstreaming the original version, as queued in next-integrity-
-testing, is fine.
+This series collects together all the currently pending patches relating
+updating the arm64 architecture code to use the modern macros.
 
-thanks,
+Mark Brown (18):
+  arm64: crypto: Modernize some extra assembly annotations
+  arm64: crypto: Modernize names for AES function macros
+  arm64: entry: Annotate vector table and handlers as code
+  arm64: entry: Annotate ret_from_fork as code
+  arm64: entry: Additional annotation conversions for entry.S
+  arm64: entry-ftrace.S: Convert to modern annotations for assembly
+    functions
+  arm64: ftrace: Correct annotation of ftrace_caller assembly
+  arm64: ftrace: Modernise annotation of return_to_handler
+  arm64: head.S: Convert to modern annotations for assembly functions
+  arm64: head: Annotate stext and preserve_boot_args as code
+  arm64: kernel: Convert to modern annotations for assembly data
+  arm64: kernel: Convert to modern annotations for assembly functions
+  arm64: kvm: Annotate assembly using modern annoations
+  arm64: kvm: Modernize annotation for __bp_harden_hyp_vecs
+  arm64: kvm: Modernize __smccc_workaround_1_smc_start annotations
+  arm64: sdei: Annotate SDEI entry points using new style annotations
+  arm64: vdso: Convert to modern assembler annotations
+  arm64: vdso32: Convert to modern assembler annotations
 
-Mimi
+ arch/arm64/crypto/aes-ce.S                    |   4 +-
+ arch/arm64/crypto/aes-modes.S                 |  48 ++++----
+ arch/arm64/crypto/aes-neon.S                  |   4 +-
+ arch/arm64/crypto/ghash-ce-core.S             |  16 +--
+ arch/arm64/include/asm/kvm_asm.h              |   4 +
+ arch/arm64/include/asm/kvm_mmu.h              |   9 +-
+ arch/arm64/include/asm/mmu.h                  |   4 +-
+ arch/arm64/kernel/cpu-reset.S                 |   4 +-
+ arch/arm64/kernel/cpu_errata.c                |  16 ++-
+ arch/arm64/kernel/efi-entry.S                 |   4 +-
+ arch/arm64/kernel/efi-rt-wrapper.S            |   4 +-
+ arch/arm64/kernel/entry-fpsimd.S              |  20 +--
+ arch/arm64/kernel/entry-ftrace.S              |  48 ++++----
+ arch/arm64/kernel/entry.S                     | 115 +++++++++---------
+ arch/arm64/kernel/head.S                      |  73 +++++------
+ arch/arm64/kernel/hibernate-asm.S             |  16 +--
+ arch/arm64/kernel/hyp-stub.S                  |  20 +--
+ arch/arm64/kernel/probes/kprobes_trampoline.S |   4 +-
+ arch/arm64/kernel/reloc_test_syms.S           |  44 +++----
+ arch/arm64/kernel/relocate_kernel.S           |   4 +-
+ arch/arm64/kernel/sleep.S                     |  12 +-
+ arch/arm64/kernel/smccc-call.S                |   8 +-
+ arch/arm64/kernel/vdso/sigreturn.S            |   4 +-
+ arch/arm64/kernel/vdso32/sigreturn.S          |  23 ++--
+ arch/arm64/kvm/hyp-init.S                     |   8 +-
+ arch/arm64/kvm/hyp.S                          |   4 +-
+ arch/arm64/kvm/hyp/fpsimd.S                   |   8 +-
+ arch/arm64/kvm/hyp/hyp-entry.S                |  27 ++--
+ 28 files changed, 280 insertions(+), 275 deletions(-)
+
+-- 
+2.20.1
 
