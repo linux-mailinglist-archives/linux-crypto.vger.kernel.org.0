@@ -2,21 +2,21 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3080163148
-	for <lists+linux-crypto@lfdr.de>; Tue, 18 Feb 2020 21:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCB9163272
+	for <lists+linux-crypto@lfdr.de>; Tue, 18 Feb 2020 21:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbgBRT7K (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 18 Feb 2020 14:59:10 -0500
-Received: from foss.arm.com ([217.140.110.172]:60542 "EHLO foss.arm.com"
+        id S1728382AbgBRT7N (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 18 Feb 2020 14:59:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:60558 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726723AbgBRT7J (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 18 Feb 2020 14:59:09 -0500
+        id S1728032AbgBRT7M (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 18 Feb 2020 14:59:12 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 819B131B;
-        Tue, 18 Feb 2020 11:59:09 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B99B6101E;
+        Tue, 18 Feb 2020 11:59:11 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 05B5B3F68F;
-        Tue, 18 Feb 2020 11:59:08 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3BBAC3F68F;
+        Tue, 18 Feb 2020 11:59:11 -0800 (PST)
 From:   Mark Brown <broonie@kernel.org>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
@@ -27,9 +27,9 @@ To:     Herbert Xu <herbert@gondor.apana.org.au>,
         Suzuki K Poulose <suzuki.poulose@arm.com>
 Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-crypto@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 07/18] arm64: ftrace: Correct annotation of ftrace_caller assembly
-Date:   Tue, 18 Feb 2020 19:58:31 +0000
-Message-Id: <20200218195842.34156-8-broonie@kernel.org>
+Subject: [PATCH 08/18] arm64: ftrace: Modernise annotation of return_to_handler
+Date:   Tue, 18 Feb 2020 19:58:32 +0000
+Message-Id: <20200218195842.34156-9-broonie@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200218195842.34156-1-broonie@kernel.org>
 References: <20200218195842.34156-1-broonie@kernel.org>
@@ -45,63 +45,35 @@ functions new macros have been introduced. These replace ENTRY and
 ENDPROC with two different annotations for normal functions and those
 with unusual calling conventions.
 
-The patchable function entry versions of ftrace_*_caller don't follow the
-usual AAPCS rules, pushing things onto the stack which they don't clean up,
-and therefore should be annotated as code rather than functions.
+return_to_handler does entertaining things with LR so doesn't follow the
+usual C conventions and should therefore be annotated as code rather than
+a function.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- arch/arm64/kernel/entry-ftrace.S | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ arch/arm64/kernel/entry-ftrace.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/kernel/entry-ftrace.S b/arch/arm64/kernel/entry-ftrace.S
-index 3d32b6d325d7..baf5a20a5566 100644
+index baf5a20a5566..820101821ac4 100644
 --- a/arch/arm64/kernel/entry-ftrace.S
 +++ b/arch/arm64/kernel/entry-ftrace.S
-@@ -75,17 +75,17 @@
- 	add	x29, sp, #S_STACKFRAME
- 	.endm
+@@ -320,7 +320,7 @@ SYM_FUNC_END(ftrace_stub)
+  * Run ftrace_return_to_handler() before going back to parent.
+  * @fp is checked against the value passed by ftrace_graph_caller().
+  */
+-ENTRY(return_to_handler)
++SYM_CODE_START(return_to_handler)
+ 	/* save return value regs */
+ 	sub sp, sp, #64
+ 	stp x0, x1, [sp]
+@@ -340,5 +340,5 @@ ENTRY(return_to_handler)
+ 	add sp, sp, #64
  
--ENTRY(ftrace_regs_caller)
-+SYM_CODE_START(ftrace_regs_caller)
- 	ftrace_regs_entry	1
- 	b	ftrace_common
--ENDPROC(ftrace_regs_caller)
-+SYM_CODE_END(ftrace_regs_caller)
- 
--ENTRY(ftrace_caller)
-+SYM_CODE_START(ftrace_caller)
- 	ftrace_regs_entry	0
- 	b	ftrace_common
--ENDPROC(ftrace_caller)
-+SYM_CODE_END(ftrace_caller)
- 
--ENTRY(ftrace_common)
-+SYM_CODE_START(ftrace_common)
- 	sub	x0, x30, #AARCH64_INSN_SIZE	// ip (callsite's BL insn)
- 	mov	x1, x9				// parent_ip (callsite's LR)
- 	ldr_l	x2, function_trace_op		// op
-@@ -122,17 +122,17 @@ ftrace_common_return:
- 	add	sp, sp, #S_FRAME_SIZE + 16
- 
- 	ret	x9
--ENDPROC(ftrace_common)
-+SYM_CODE_END(ftrace_common)
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
--ENTRY(ftrace_graph_caller)
-+SYM_CODE_START(ftrace_graph_caller)
- 	ldr	x0, [sp, #S_PC]
- 	sub	x0, x0, #AARCH64_INSN_SIZE	// ip (callsite's BL insn)
- 	add	x1, sp, #S_LR			// parent_ip (callsite's LR)
- 	ldr	x2, [sp, #S_FRAME_SIZE]	   	// parent fp (callsite's FP)
- 	bl	prepare_ftrace_return
- 	b	ftrace_common_return
--ENDPROC(ftrace_graph_caller)
-+SYM_CODE_END(ftrace_graph_caller)
- #endif
- 
- #else /* CONFIG_DYNAMIC_FTRACE_WITH_REGS */
+ 	ret
+-END(return_to_handler)
++SYM_CODE_END(return_to_handler)
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
 -- 
 2.20.1
 
