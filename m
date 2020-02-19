@@ -2,86 +2,96 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 253771632FB
-	for <lists+linux-crypto@lfdr.de>; Tue, 18 Feb 2020 21:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F93816439A
+	for <lists+linux-crypto@lfdr.de>; Wed, 19 Feb 2020 12:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgBRUWb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 18 Feb 2020 15:22:31 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34817 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726403AbgBRUWb (ORCPT
+        id S1726551AbgBSLop (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 19 Feb 2020 06:44:45 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:38455 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726491AbgBSLop (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 18 Feb 2020 15:22:31 -0500
-Received: by mail-ot1-f65.google.com with SMTP id r16so20874678otd.2;
-        Tue, 18 Feb 2020 12:22:30 -0800 (PST)
+        Wed, 19 Feb 2020 06:44:45 -0500
+Received: by mail-lj1-f195.google.com with SMTP id w1so30811ljh.5
+        for <linux-crypto@vger.kernel.org>; Wed, 19 Feb 2020 03:44:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=MBYdY7YmJFAze+FI1YzaTjLSxr777+pClRagLHMOXDJovCzP4zvUljmkRcXrTyNxIN
+         zOTKxAm0qeBoFkKlwoJwSHFRWBNxYSPs6+BX4fXI53vazzK11SOc5bgvfb+akWU2hzck
+         wIwZaaG1TRBogMM3W+KAyQGr7YEmxCXTfBY9kwgqA1Ucu5jYQvPb1WicWdIqhfOLG+ut
+         wx3aCnsElDCP6nyCuv+j4jSKNbfDYwvUT1lkPNTpvr7vvlPV411arXWRbaki+KVzMAq0
+         cPTqaMugjwpt9jc0iz71wQSo/x7NK6ESwUF8fTmvrmmNGKhCCfcsYw6Qie/zvLo4YNDk
+         p4aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=daaBBUCEuUnfQegTP2Av5TymJI2QUIcyEiCvs2F4N30=;
-        b=lx98B+BkRjgqJDDTJml3z4YVlRtdJI9dN1U8tq6pHudHOTr3WGtVSFRE/HFhYxq5bf
-         2fjv065hsCQbBr8gscE4sIDejoWiqw3FaZO4AjVXGKomvopPNEiMP8q5qt9QQKV9GDJt
-         MadQC7e/SpEktCZf9OGQKtG1HT1srz9QEFSIuqJYgRFWtiVWvr3R+hetzTaU/ATKiYvU
-         ZBcs9rgUt906VKWFnG4u34q7sxcytN6t1QVI3Kafb8Y3GOX5eqbqTrP+AS6ilTKgks3I
-         cRSmjPqRgZD6BuHN3KZzS7Ost0HeVPBj0sngxajpxXWz4GTVtrT0NlRahRx8+7KEu/Wc
-         GC4Q==
-X-Gm-Message-State: APjAAAV7Om6yvDQ30cNOJr9QQBolBwqhbZMq7QarsCAru049JtrTfrb0
-        3ABf9kEnAiqBNFNIItwmqw==
-X-Google-Smtp-Source: APXvYqwqwigdE85PJLju+tigx//D3sGJaqkmcCThEM1Iof93GR5UE9/jRUX02608MzMqd9pP9mjWEA==
-X-Received: by 2002:a05:6830:160c:: with SMTP id g12mr12807531otr.82.1582057350380;
-        Tue, 18 Feb 2020 12:22:30 -0800 (PST)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b145sm1537508oii.31.2020.02.18.12.22.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Feb 2020 12:22:29 -0800 (PST)
-Received: (nullmailer pid 3281 invoked by uid 1000);
-        Tue, 18 Feb 2020 20:22:29 -0000
-Date:   Tue, 18 Feb 2020 14:22:29 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Hadar Gat <hadar.gat@arm.com>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ofir Drang <ofir.drang@arm.com>, Hadar Gat <hadar.gat@arm.com>
-Subject: Re: [PATCH v4 1/3] dt-bindings: add device tree binding for Arm
- CryptoCell trng engine
-Message-ID: <20200218202229.GA2533@bogus>
-References: <1581847450-22924-1-git-send-email-hadar.gat@arm.com>
- <1581847450-22924-2-git-send-email-hadar.gat@arm.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=PZopBiBiuMCppoHBaqrp6UAHchnKSSlr6v9f8qrem5dxD98XOedZGDTTsdDWD6kr/4
+         k+dcLNb+uJTNIqGmHxjS12UXjNdLXiguDLaDmgvJpFhn5okLXNyZKCUYJH7XK7FV7v2s
+         4lVD608AOdxejxH3LwXekrPBwXUZ9TqZOGclzVzEa9gZJ1h15wzBOtMKPzlDq5jBX9Nk
+         2yKcGic/Z6QOETkjeq6P18Sg3Ovd3p9PsbhJ+Ad4e9VXWUDk7uNseJtBfv1+bW3rl2r3
+         Wrib0yW3ECYUPNSiipZplSFHQQJWaFmzncxPF/vgXArpiSosEPudeRNXKXbTxWjmcNqG
+         mbjw==
+X-Gm-Message-State: APjAAAUSlQvpjxwrPAUVmVmwNRcIIciYa9z2z/s9brS7zTt2b2O7xhNm
+        ALn2c6lVqJWMM6MuP49IE7aXVNtE8qlXCDSCArM=
+X-Google-Smtp-Source: APXvYqwWJL+KorR71B19Ob3K8zexrT5D7RrteOzwWgNpdff2hG+Afz16cWgUBBbEtGu2khRKBv3kd9+V7Lcjhgu/ZLU=
+X-Received: by 2002:a2e:9218:: with SMTP id k24mr15240954ljg.262.1582112683726;
+ Wed, 19 Feb 2020 03:44:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1581847450-22924-2-git-send-email-hadar.gat@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:ab3:4281:0:0:0:0:0 with HTTP; Wed, 19 Feb 2020 03:44:43
+ -0800 (PST)
+Reply-To: ayishagddafio@mail.ru
+From:   AISHA GADDAFI <mahasaliou4444@gmail.com>
+Date:   Wed, 19 Feb 2020 03:44:43 -0800
+Message-ID: <CAKHB8qdA5-UXcog27z=iSOhdJkBWO6NQE1ijAUU2uxof=pW7rQ@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sun, 16 Feb 2020 12:04:08 +0200, Hadar Gat wrote:
-> The Arm CryptoCell is a hardware security engine. This patch adds DT
-> bindings for its TRNG (True Random Number Generator) engine.
-> 
-> Signed-off-by: Hadar Gat <hadar.gat@arm.com>
-> ---
->  .../devicetree/bindings/rng/arm-cctrng.yaml        | 50 ++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/rng/arm-cctrng.yaml
-> 
+--=20
+Lieber Freund (Assalamu Alaikum),
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/rng/arm-cctrng.yaml: properties:arm,rosc-ratio: {'allOf': [{'$ref': '/schemas/types.yaml#/definitions/uint32-array'}], 'maxItems': 4} is not valid under any of the given schemas (Possible causes of the failure):
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/rng/arm-cctrng.yaml: properties:arm,rosc-ratio: 'description' is a required property
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
 
-Documentation/devicetree/bindings/Makefile:12: recipe for target 'Documentation/devicetree/bindings/rng/arm-cctrng.example.dts' failed
-make[1]: *** [Documentation/devicetree/bindings/rng/arm-cctrng.example.dts] Error 1
-Makefile:1263: recipe for target 'dt_binding_check' failed
-make: *** [dt_binding_check] Error 2
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
 
-See https://patchwork.ozlabs.org/patch/1238733
-Please check and re-submit.
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
+
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
+
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
