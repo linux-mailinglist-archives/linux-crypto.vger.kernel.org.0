@@ -2,96 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F93816439A
-	for <lists+linux-crypto@lfdr.de>; Wed, 19 Feb 2020 12:44:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2541643A6
+	for <lists+linux-crypto@lfdr.de>; Wed, 19 Feb 2020 12:48:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgBSLop (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 19 Feb 2020 06:44:45 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:38455 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbgBSLop (ORCPT
+        id S1726497AbgBSLsF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 19 Feb 2020 06:48:05 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:45180 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726491AbgBSLsE (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 19 Feb 2020 06:44:45 -0500
-Received: by mail-lj1-f195.google.com with SMTP id w1so30811ljh.5
-        for <linux-crypto@vger.kernel.org>; Wed, 19 Feb 2020 03:44:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=MBYdY7YmJFAze+FI1YzaTjLSxr777+pClRagLHMOXDJovCzP4zvUljmkRcXrTyNxIN
-         zOTKxAm0qeBoFkKlwoJwSHFRWBNxYSPs6+BX4fXI53vazzK11SOc5bgvfb+akWU2hzck
-         wIwZaaG1TRBogMM3W+KAyQGr7YEmxCXTfBY9kwgqA1Ucu5jYQvPb1WicWdIqhfOLG+ut
-         wx3aCnsElDCP6nyCuv+j4jSKNbfDYwvUT1lkPNTpvr7vvlPV411arXWRbaki+KVzMAq0
-         cPTqaMugjwpt9jc0iz71wQSo/x7NK6ESwUF8fTmvrmmNGKhCCfcsYw6Qie/zvLo4YNDk
-         p4aA==
+        Wed, 19 Feb 2020 06:48:04 -0500
+Received: by mail-il1-f199.google.com with SMTP id w6so19622016ill.12
+        for <linux-crypto@vger.kernel.org>; Wed, 19 Feb 2020 03:48:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=PZopBiBiuMCppoHBaqrp6UAHchnKSSlr6v9f8qrem5dxD98XOedZGDTTsdDWD6kr/4
-         k+dcLNb+uJTNIqGmHxjS12UXjNdLXiguDLaDmgvJpFhn5okLXNyZKCUYJH7XK7FV7v2s
-         4lVD608AOdxejxH3LwXekrPBwXUZ9TqZOGclzVzEa9gZJ1h15wzBOtMKPzlDq5jBX9Nk
-         2yKcGic/Z6QOETkjeq6P18Sg3Ovd3p9PsbhJ+Ad4e9VXWUDk7uNseJtBfv1+bW3rl2r3
-         Wrib0yW3ECYUPNSiipZplSFHQQJWaFmzncxPF/vgXArpiSosEPudeRNXKXbTxWjmcNqG
-         mbjw==
-X-Gm-Message-State: APjAAAUSlQvpjxwrPAUVmVmwNRcIIciYa9z2z/s9brS7zTt2b2O7xhNm
-        ALn2c6lVqJWMM6MuP49IE7aXVNtE8qlXCDSCArM=
-X-Google-Smtp-Source: APXvYqwWJL+KorR71B19Ob3K8zexrT5D7RrteOzwWgNpdff2hG+Afz16cWgUBBbEtGu2khRKBv3kd9+V7Lcjhgu/ZLU=
-X-Received: by 2002:a2e:9218:: with SMTP id k24mr15240954ljg.262.1582112683726;
- Wed, 19 Feb 2020 03:44:43 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=iFEJQOMtOjLaubYnrYBmTyyXPvifqApU2+AIOGRL/ps=;
+        b=UyC88HcGlnzLedMTm3zaEv5o3kMTnGpqEucaaOpJjiXHSVvr1dBhrPnXk0dBVfL9MP
+         AF3Czw1qfT9d0Oi7jaO/zhuzpY6gPMpZnNsXCgjmEmzutTJHAwriIG/GEpv0D7L9TeFe
+         peaAbqd13bEeNsTB6dDiCBfDTD8laXd2YviQzsE8P5+AUMQjSOGjA9T1tB9bTWx1/28N
+         npVmwHL5Ptn1bN/wC0JDCv0Q0OyAOorHNt2X0eO38ThWZaRDj2Ot6R673Z9upPj8QsGT
+         o21O9498Vdib+EWxcD5CUf22gRBwfvAxK1BlXWDzeg1ZDWxs0zOInGGwJiLxL+OLPSXs
+         wVxg==
+X-Gm-Message-State: APjAAAXp6tUN4vXcMrznw74cyTA5bfiP9OEb26uzMhQVlbR/qcwHEZAg
+        WCqPWv9Vk6DAv0daEXU0DqocXHBz1SwlylHrv9+4DuCBnzNv
+X-Google-Smtp-Source: APXvYqxh7CarR15T4+m7VXrE/hcg2w1fTkfp5+A8SYllXe1zZAmarJXWxG7Hr5Ioc75rV2X82K/lHy+Ydq55ycG0YTdRd8Xlj6tD
 MIME-Version: 1.0
-Received: by 2002:ab3:4281:0:0:0:0:0 with HTTP; Wed, 19 Feb 2020 03:44:43
- -0800 (PST)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <mahasaliou4444@gmail.com>
-Date:   Wed, 19 Feb 2020 03:44:43 -0800
-Message-ID: <CAKHB8qdA5-UXcog27z=iSOhdJkBWO6NQE1ijAUU2uxof=pW7rQ@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),?
-To:     undisclosed-recipients:;
+X-Received: by 2002:a92:601:: with SMTP id x1mr21808045ilg.35.1582112883122;
+ Wed, 19 Feb 2020 03:48:03 -0800 (PST)
+Date:   Wed, 19 Feb 2020 03:48:03 -0800
+In-Reply-To: <000000000000ca89a80598db0ae5@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000064ab40059eec5c3e@google.com>
+Subject: Re: general protection fault in gcmaes_crypt_by_sg (2)
+From:   syzbot <syzbot+675c45cea768b3819803@syzkaller.appspotmail.com>
+To:     bp@alien8.de, davem@davemloft.net, herbert@gondor.apana.org.au,
+        hpa@zytor.com, jakub.kicinski@netronome.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, netdev@vger.kernel.org,
+        simon.horman@netronome.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
+syzbot suspects this bug was fixed by commit:
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+commit db885e66d268884dc72967279b7e84f522556abc
+Author: Jakub Kicinski <jakub.kicinski@netronome.com>
+Date:   Fri Jan 10 12:38:32 2020 +0000
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+    net/tls: fix async operation
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16871de9e00000
+start commit:   07c4b9e9 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=79f79de2a27d3e3d
+dashboard link: https://syzkaller.appspot.com/bug?extid=675c45cea768b3819803
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16cb0056e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1374f5dee00000
 
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
+If the result looks correct, please mark the bug fixed by replying with:
 
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
+#syz fix: net/tls: fix async operation
 
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
