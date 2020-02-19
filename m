@@ -2,53 +2,62 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B414164523
-	for <lists+linux-crypto@lfdr.de>; Wed, 19 Feb 2020 14:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9220F1645B2
+	for <lists+linux-crypto@lfdr.de>; Wed, 19 Feb 2020 14:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgBSNRq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 19 Feb 2020 08:17:46 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:23011 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727589AbgBSNRq (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 19 Feb 2020 08:17:46 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0TqNBlJ8_1582118252;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TqNBlJ8_1582118252)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 19 Feb 2020 21:17:32 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        ebiggers@kernel.org, pvanleeuwen@rambus.com, zohar@linux.ibm.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] X.509: fix debugging information without newline tag
-Date:   Wed, 19 Feb 2020 21:17:31 +0800
-Message-Id: <20200219131731.46087-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727756AbgBSNh6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Wed, 19 Feb 2020 08:37:58 -0500
+Received: from scm.imp.edu.mx ([132.247.16.103]:21930 "EHLO scm.imp.edu.mx"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726723AbgBSNh6 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 19 Feb 2020 08:37:58 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by scm.imp.edu.mx (Postfix) with ESMTP id 2105618ACD5;
+        Wed, 19 Feb 2020 06:11:28 -0600 (CST)
+X-Virus-Scanned: by SpamTitan at imp.edu.mx
+Received: from scm.imp.edu.mx (localhost [127.0.0.1])
+        by scm.imp.edu.mx (Postfix) with ESMTP id 2798B18D9F0;
+        Wed, 19 Feb 2020 04:51:47 -0600 (CST)
+Authentication-Results: scm.imp.edu.mx; none
+Received: from imp.edu.mx (unknown [10.249.93.105])
+        by scm.imp.edu.mx (Postfix) with ESMTP id 304AF18D9D5;
+        Wed, 19 Feb 2020 04:51:43 -0600 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by imp.edu.mx (Postfix) with ESMTP id 142C6180635F4C;
+        Wed, 19 Feb 2020 04:51:44 -0600 (CST)
+Received: from imp.edu.mx ([127.0.0.1])
+        by localhost (imp.edu.mx [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id drikqDSaXNZ7; Wed, 19 Feb 2020 04:51:44 -0600 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by imp.edu.mx (Postfix) with ESMTP id E9078180635F42;
+        Wed, 19 Feb 2020 04:51:43 -0600 (CST)
+X-Virus-Scanned: amavisd-new at imp.edu.mx
+Received: from imp.edu.mx ([127.0.0.1])
+        by localhost (imp.edu.mx [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id nlvgsIzZRblX; Wed, 19 Feb 2020 04:51:43 -0600 (CST)
+Received: from [45.147.4.119] (unknown [45.147.4.119])
+        by imp.edu.mx (Postfix) with ESMTPSA id 27589180635F4C;
+        Wed, 19 Feb 2020 04:51:42 -0600 (CST)
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: 19-02-2020
+To:     Recipients <mucios@imp.edu.mx>
+From:   "urs portmann" <mucios@imp.edu.mx>
+Date:   Wed, 19 Feb 2020 21:51:40 +1100
+Reply-To: onube@qq.com
+Message-Id: <20200219105142.27589180635F4C@imp.edu.mx>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Added missing newline tag to this line of pr_devel debug information.
+Guten Morgen,
+                                          19-02-2020
+Wir haben versucht, Sie zu erreichen und haben noch nichts von Ihnen gehört. Haben Sie unsere letzte E-Mail über Ihre S.p.e.n.d.e erhalten? Wenn nicht, melden Sie sich bitte bei uns, um weitere Informationen zu erhalten.
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- crypto/asymmetric_keys/x509_public_key.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Wir warten darauf, von Ihnen zu hören, sobald Sie diese Nachricht erhalten, die Sie bei der weiteren Vorgehensweise unterstützt.
 
-diff --git a/crypto/asymmetric_keys/x509_public_key.c b/crypto/asymmetric_keys/x509_public_key.c
-index feccec08b244..4553619ea01d 100644
---- a/crypto/asymmetric_keys/x509_public_key.c
-+++ b/crypto/asymmetric_keys/x509_public_key.c
-@@ -140,7 +140,7 @@ int x509_check_for_self_signed(struct x509_certificate *cert)
- 		goto out;
- 	}
- 
--	pr_devel("Cert Self-signature verified");
-+	pr_devel("Cert Self-signature verified\n");
- 	cert->self_signed = true;
- 
- out:
--- 
-2.17.1
-
+Mfg
+urs portmann
