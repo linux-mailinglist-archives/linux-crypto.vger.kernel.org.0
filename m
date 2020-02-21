@@ -2,63 +2,37 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31175168F50
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Feb 2020 15:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019041690F0
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Feb 2020 18:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727714AbgBVOYW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 22 Feb 2020 09:24:22 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:54623 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727584AbgBVOYW (ORCPT
+        id S1726813AbgBVRtj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 22 Feb 2020 12:49:39 -0500
+Received: from [167.172.150.84] ([167.172.150.84]:36150 "EHLO
+        centos-s-1vcpu-2gb-nyc1-01.localdomain" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726707AbgBVRti (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 22 Feb 2020 09:24:22 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1j5VhS-0002wG-2x; Sat, 22 Feb 2020 14:24:10 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Zaibo Xu <xuzaibo@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: hisilicon: remove redundant assignment of pointer ctx
-Date:   Sat, 22 Feb 2020 14:24:09 +0000
-Message-Id: <20200222142409.141057-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.25.0
+        Sat, 22 Feb 2020 12:49:38 -0500
+Received: from localhost (centos-s-1vcpu-2gb-nyc1-01 [127.0.0.1])
+        by centos-s-1vcpu-2gb-nyc1-01.localdomain (Postfix) with SMTP id 81F0017732;
+        Fri, 21 Feb 2020 16:50:47 +0000 (UTC)
+Received: from [51.7.194.114] by localhost with ESMTP id 61145412 for <linda_278@centurytel.net>; Fri, 21 Feb 2020 21:47:38 +0500
+Message-ID: <qo$48v09x4c2--5-$f9@r5u1c0kgq>
+From:   "RECEIVE AND SECURE THIS MONEY FOR ME" <fta447447@gmail.com>
+Reply-To: "RECEIVE AND SECURE THIS MONEY FOR ME" <fta447447@gmail.com>
+To:     linda_278@centurytel.net
+Subject: RECEIVE MONEY IN BANK ACCOUNT REPLY TO fta447447@gmail.com
+Date:   Fri, 21 Feb 20 21:47:38 GMT
+X-Mailer: AOL 7.0 for Windows US sub 118
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+        boundary="A..C8.._3321CEA_"
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-Pointer ctx is being re-assigned with the same value as it
-was initialized with. The second assignment is redundant and
-can be removed.
-
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index a2cfcc9ccd94..acd15507eb8a 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -447,7 +447,6 @@ static int sec_skcipher_init(struct crypto_skcipher *tfm)
- 	struct sec_ctx *ctx = crypto_skcipher_ctx(tfm);
- 	int ret;
- 
--	ctx = crypto_skcipher_ctx(tfm);
- 	ctx->alg_type = SEC_SKCIPHER;
- 	crypto_skcipher_set_reqsize(tfm, sizeof(struct sec_req));
- 	ctx->c_ctx.ivsize = crypto_skcipher_ivsize(tfm);
--- 
-2.25.0
+--A..C8.._3321CEA_--
 
