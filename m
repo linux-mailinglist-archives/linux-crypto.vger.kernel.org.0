@@ -2,102 +2,103 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7C116F4EA
-	for <lists+linux-crypto@lfdr.de>; Wed, 26 Feb 2020 02:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6E916F4FF
+	for <lists+linux-crypto@lfdr.de>; Wed, 26 Feb 2020 02:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729346AbgBZBQp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 25 Feb 2020 20:16:45 -0500
-Received: from mga03.intel.com ([134.134.136.65]:24629 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729170AbgBZBQo (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 25 Feb 2020 20:16:44 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Feb 2020 17:16:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,486,1574150400"; 
-   d="scan'208";a="226547626"
-Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
-  by orsmga007.jf.intel.com with ESMTP; 25 Feb 2020 17:16:38 -0800
-Subject: Re: [PATCH] MAINTAINERS: add maintainers for uacce
-To:     zhangfei <zhangfei.gao@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S1729566AbgBZB3B (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 25 Feb 2020 20:29:01 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:43757 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729395AbgBZB3B (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 25 Feb 2020 20:29:01 -0500
+Received: by mail-pf1-f193.google.com with SMTP id s1so530867pfh.10
+        for <linux-crypto@vger.kernel.org>; Tue, 25 Feb 2020 17:28:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=vHnoiE2Lvw7hwJiHoxNVUEj7j+4ABzT2vnGBT++TeTk=;
+        b=eSRfJrrbKwAkCJ/OfjPbB07snFeA90jhWtm3D1d/Ao4a8YWY5b/butwclrugMtQyto
+         YUBnjKdnkb/m4/PV0VlWgwZVMENu91ZfRJQD4h9ez7V68ZunetMSLyhRCo8QCnFeTBAu
+         3AeMMOOGQdycc11Tsvka8XDTeif5lp7H5oneJs1a+o+hFsafhWOXzMrMLf+N01NSzxDA
+         manhXFzq0Gs/cLY8UO7k5q5LuPRSKBV1JTSuu+5L0hWMYk/2CeEkIvjGuRwFdUEHNx6Z
+         TKD0Wd/29fJQexSTPplm65QkreJV7c+Tr7NZQEVC4ctA4Rov2zX6Y7hKVXbufTeQkbQg
+         VE7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vHnoiE2Lvw7hwJiHoxNVUEj7j+4ABzT2vnGBT++TeTk=;
+        b=aHpJX9y5hJPSpeFxTxuv46th4rW/hbSJRF3/iJYdLD05ofI7wq4IC7XGri++M88A4E
+         gCoY/J7pvR7JdWh+RxedbfUoZdRWtght5j8Y2Igj7V3eqS56N6GnfxkINA+Y/qAd3VM8
+         1PB/dTtNQqZTlCtMuQoLfs9SK1o3Zfx8s2fQd9K31paMs5kMSgCD/eohfyVxBznWCEen
+         hz8DiI4IwFLkzz4IBRRKpkoYrpBvVUbPFRJ9tB5NvYcXXBGUnbAL7CbK/4Opvw5WJ01B
+         7dELmxwpckzzM+dOP1lA7xwyuwKDWrymxOi7k1HzyWaVSItpBqoRlDCX/SosjKQolLDP
+         mBDg==
+X-Gm-Message-State: APjAAAVBrz2d57g1Orhw6qa93QAJRX9Z8nYG3E74z4EV/rrH9a3qCVxM
+        bHlmnFvegohjaE0gy3rKXkJV0g==
+X-Google-Smtp-Source: APXvYqwUNwVRv+swWTZ2eRfOm2MCq483DsIDj+WOD8rH3A5r3EhuhbWBu8Nj/QxikFbvKlieVP4Edw==
+X-Received: by 2002:a63:214e:: with SMTP id s14mr1264455pgm.428.1582680538680;
+        Tue, 25 Feb 2020 17:28:58 -0800 (PST)
+Received: from localhost.localdomain ([240e:362:4c3:8800:a057:bb7f:18d7:2e])
+        by smtp.gmail.com with ESMTPSA id q11sm326994pff.111.2020.02.25.17.28.44
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Tue, 25 Feb 2020 17:28:58 -0800 (PST)
+From:   Zhangfei Gao <zhangfei.gao@linaro.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        jonathan.cameron@huawei.com, grant.likely@arm.com,
-        jean-philippe <jean-philippe@linaro.org>,
+        jonathan.cameron@huawei.com, dave.jiang@intel.com,
+        grant.likely@arm.com, jean-philippe <jean-philippe@linaro.org>,
         Jerome Glisse <jglisse@redhat.com>,
         ilias.apalodimas@linaro.org, francois.ozog@linaro.org,
         kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
         "haojian . zhuang" <haojian.zhuang@linaro.org>,
         guodong.xu@linaro.org
 Cc:     linux-accelerators@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, iommu@lists.linux-foundation.org
-References: <1582611475-32691-1-git-send-email-zhangfei.gao@linaro.org>
- <b424d911-7293-0048-3270-0f7c1502c928@intel.com>
- <0ed68faa-63f1-2bcb-6044-11629a610b9b@linaro.org>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <1cd21ae1-f318-e15c-a155-c34483d9ff56@intel.com>
-Date:   Tue, 25 Feb 2020 18:16:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <0ed68faa-63f1-2bcb-6044-11629a610b9b@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        linux-crypto@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Zhangfei Gao <zhangfei.gao@linaro.org>
+Subject: [PATCH v2] MAINTAINERS: add maintainers for uacce
+Date:   Wed, 26 Feb 2020 09:28:28 +0800
+Message-Id: <1582680508-596-1-git-send-email-zhangfei.gao@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Add Zhangfei Gao and Zhou Wang as maintainers for uacce
 
+Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
+---
+Add list, suggested by Dave
 
-On 2/25/20 6:11 PM, zhangfei wrote:
-> 
-> 
-> On 2020/2/26 上午12:02, Dave Jiang wrote:
->>
->>
->> On 2/24/20 11:17 PM, Zhangfei Gao wrote:
->>> Add Zhangfei Gao and Zhou Wang as maintainers for uacce
->>>
->>> Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
->>> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
->>> ---
->>>   MAINTAINERS | 10 ++++++++++
->>>   1 file changed, 10 insertions(+)
->>>
->>> diff --git a/MAINTAINERS b/MAINTAINERS
->>> index 38fe2f3..22e647f 100644
->>> --- a/MAINTAINERS
->>> +++ b/MAINTAINERS
->>> @@ -17039,6 +17039,16 @@ W:    http://linuxtv.org
->>>   S:    Maintained
->>>   F:    drivers/media/pci/tw686x/
->>>   +UACCE ACCELERATOR FRAMEWORK
->>> +M:    Zhangfei Gao <zhangfei.gao@linaro.org>
->>> +M:    Zhou Wang <wangzhou1@hisilicon.com>
->>> +S:    Maintained
->>> +F:    Documentation/ABI/testing/sysfs-driver-uacce
->>> +F:    Documentation/misc-devices/uacce.rst
->>> +F:    drivers/misc/uacce/
->>> +F:    include/linux/uacce.h
->>> +F:    include/uapi/misc/uacce/
->>
->> Mailing list for patch submission?
->> +L: linux-accelerators@lists.ozlabs.org ?
-> 
-> Thanks Dave
-> 
-> How about adding both
-> linux-accelerators@lists.ozlabs.org
-> linux-kernel@vger.kernel.org
-> Since the patches will go to misc tree.
+MAINTAINERS | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-That is entirely up to you. But having guidance on somewhere to submit 
-patches will be good.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 38fe2f3..b5bdef8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17039,6 +17039,18 @@ W:	http://linuxtv.org
+ S:	Maintained
+ F:	drivers/media/pci/tw686x/
+ 
++UACCE ACCELERATOR FRAMEWORK
++M:	Zhangfei Gao <zhangfei.gao@linaro.org>
++M:	Zhou Wang <wangzhou1@hisilicon.com>
++L:	linux-accelerators@lists.ozlabs.org
++L:	linux-kernel@vger.kernel.org
++S:	Maintained
++F:	Documentation/ABI/testing/sysfs-driver-uacce
++F:	Documentation/misc-devices/uacce.rst
++F:	drivers/misc/uacce/
++F:	include/linux/uacce.h
++F:	include/uapi/misc/uacce/
++
+ UBI FILE SYSTEM (UBIFS)
+ M:	Richard Weinberger <richard@nod.at>
+ L:	linux-mtd@lists.infradead.org
+-- 
+2.7.4
 
-> 
-> Thanks
