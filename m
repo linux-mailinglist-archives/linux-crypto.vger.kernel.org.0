@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A33A16F6B3
-	for <lists+linux-crypto@lfdr.de>; Wed, 26 Feb 2020 06:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5D416F6B9
+	for <lists+linux-crypto@lfdr.de>; Wed, 26 Feb 2020 06:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbgBZFBC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 26 Feb 2020 00:01:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50558 "EHLO mail.kernel.org"
+        id S1726527AbgBZFBE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 26 Feb 2020 00:01:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725916AbgBZFBB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1725876AbgBZFBB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Wed, 26 Feb 2020 00:01:01 -0500
 Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CBCF222C2
+        by mail.kernel.org (Postfix) with ESMTPSA id AAADA20658
         for <linux-crypto@vger.kernel.org>; Wed, 26 Feb 2020 05:01:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1582693260;
-        bh=PttdxIj3lqzreG0Wccf68PsarfLwS7UolPyxX7OQSjw=;
+        bh=JWiL5EYFqROT3KU3uMX3K7+vkn9rT8D0FcCaVmsk4ZI=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=F2gBKORdDf9eEmiGMG51XBIlc6U2IfGSVx6uv9E0PTwlZW5TH/lRpdQbORYRj3tkI
-         zTm4XLcgH1eipH5mratPnATl3uj7DxTkj1bdIU0RpZInYG1b00KZ9PAMPnvQG45nH2
-         3OlTX+CuAtWoAw6jAA769fNmExfQ4KK6KBty6SMg=
+        b=PTzBpKYMHXenFEpjDokFpIV/SzkRw5TrhfIxVQ6tPIjnOpBXqhqV6UAGOcTSPn7wd
+         NDXYoaTsObtooCOuQgoolJIXgntGJDasxKuTKj835lM/QVtnnXxRprpEv132+GfwFT
+         dsyEE34f93uf+zTG5GHLg93XEcYupjncXsip4Rco=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 04/12] crypto: ctr - simplify error handling in crypto_rfc3686_create()
-Date:   Tue, 25 Feb 2020 20:59:16 -0800
-Message-Id: <20200226045924.97053-5-ebiggers@kernel.org>
+Subject: [PATCH 05/12] crypto: cts - simplify error handling in crypto_cts_create()
+Date:   Tue, 25 Feb 2020 20:59:17 -0800
+Message-Id: <20200226045924.97053-6-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200226045924.97053-1-ebiggers@kernel.org>
 References: <20200226045924.97053-1-ebiggers@kernel.org>
@@ -40,31 +40,31 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Simplify the error handling in crypto_rfc3686_create() by taking
-advantage of crypto_grab_skcipher() now handling an ERR_PTR() name and
-by taking advantage of crypto_drop_skcipher() now accepting (as a no-op)
-a spawn that hasn't been grabbed yet.
+Simplify the error handling in crypto_cts_create() by taking advantage
+of crypto_grab_skcipher() now handling an ERR_PTR() name and by taking
+advantage of crypto_drop_skcipher() now accepting (as a no-op) a spawn
+that hasn't been grabbed yet.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/ctr.c | 29 +++++++++--------------------
- 1 file changed, 9 insertions(+), 20 deletions(-)
+ crypto/cts.c | 27 ++++++++-------------------
+ 1 file changed, 8 insertions(+), 19 deletions(-)
 
-diff --git a/crypto/ctr.c b/crypto/ctr.c
-index a8feab621c6c1..31ac4ae598e17 100644
---- a/crypto/ctr.c
-+++ b/crypto/ctr.c
-@@ -260,7 +260,6 @@ static int crypto_rfc3686_create(struct crypto_template *tmpl,
+diff --git a/crypto/cts.c b/crypto/cts.c
+index 48188adc8e91c..5e005c4f02215 100644
+--- a/crypto/cts.c
++++ b/crypto/cts.c
+@@ -327,7 +327,6 @@ static int crypto_cts_create(struct crypto_template *tmpl, struct rtattr **tb)
  	struct skcipher_instance *inst;
+ 	struct crypto_attr_type *algt;
  	struct skcipher_alg *alg;
- 	struct crypto_skcipher_spawn *spawn;
 -	const char *cipher_name;
  	u32 mask;
- 
  	int err;
-@@ -272,10 +271,6 @@ static int crypto_rfc3686_create(struct crypto_template *tmpl,
- 	if ((algt->type ^ CRYPTO_ALG_TYPE_SKCIPHER) & algt->mask)
- 		return -EINVAL;
+ 
+@@ -340,10 +339,6 @@ static int crypto_cts_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 
+ 	mask = crypto_requires_sync(algt->type, algt->mask);
  
 -	cipher_name = crypto_attr_alg_name(tb[1]);
 -	if (IS_ERR(cipher_name))
@@ -73,7 +73,7 @@ index a8feab621c6c1..31ac4ae598e17 100644
  	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
  	if (!inst)
  		return -ENOMEM;
-@@ -287,7 +282,7 @@ static int crypto_rfc3686_create(struct crypto_template *tmpl,
+@@ -351,7 +346,7 @@ static int crypto_cts_create(struct crypto_template *tmpl, struct rtattr **tb)
  	spawn = skcipher_instance_ctx(inst);
  
  	err = crypto_grab_skcipher(spawn, skcipher_crypto_instance(inst),
@@ -82,33 +82,27 @@ index a8feab621c6c1..31ac4ae598e17 100644
  	if (err)
  		goto err_free_inst;
  
-@@ -296,20 +291,20 @@ static int crypto_rfc3686_create(struct crypto_template *tmpl,
- 	/* We only support 16-byte blocks. */
+@@ -359,15 +354,15 @@ static int crypto_cts_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 
  	err = -EINVAL;
- 	if (crypto_skcipher_alg_ivsize(alg) != CTR_RFC3686_BLOCK_SIZE)
+ 	if (crypto_skcipher_alg_ivsize(alg) != alg->base.cra_blocksize)
 -		goto err_drop_spawn;
 +		goto err_free_inst;
  
- 	/* Not a stream cipher? */
- 	if (alg->base.cra_blocksize != 1)
+ 	if (strncmp(alg->base.cra_name, "cbc(", 4))
 -		goto err_drop_spawn;
 +		goto err_free_inst;
  
- 	err = -ENAMETOOLONG;
- 	if (snprintf(inst->alg.base.cra_name, CRYPTO_MAX_ALG_NAME,
- 		     "rfc3686(%s)", alg->base.cra_name) >= CRYPTO_MAX_ALG_NAME)
--		goto err_drop_spawn;
-+		goto err_free_inst;
- 	if (snprintf(inst->alg.base.cra_driver_name, CRYPTO_MAX_ALG_NAME,
- 		     "rfc3686(%s)", alg->base.cra_driver_name) >=
- 	    CRYPTO_MAX_ALG_NAME)
+ 	err = crypto_inst_setname(skcipher_crypto_instance(inst), "cts",
+ 				  &alg->base);
+ 	if (err)
 -		goto err_drop_spawn;
 +		goto err_free_inst;
  
+ 	inst->alg.base.cra_flags = alg->base.cra_flags & CRYPTO_ALG_ASYNC;
  	inst->alg.base.cra_priority = alg->base.cra_priority;
- 	inst->alg.base.cra_blocksize = 1;
-@@ -336,17 +331,11 @@ static int crypto_rfc3686_create(struct crypto_template *tmpl,
- 	inst->free = crypto_rfc3686_free;
+@@ -391,17 +386,11 @@ static int crypto_cts_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	inst->free = crypto_cts_free;
  
  	err = skcipher_register_instance(tmpl, inst);
 -	if (err)
@@ -123,12 +117,12 @@ index a8feab621c6c1..31ac4ae598e17 100644
  err_free_inst:
 -	kfree(inst);
 -	goto out;
-+		crypto_rfc3686_free(inst);
++		crypto_cts_free(inst);
 +	}
 +	return err;
  }
  
- static struct crypto_template crypto_ctr_tmpls[] = {
+ static struct crypto_template crypto_cts_tmpl = {
 -- 
 2.25.1
 
