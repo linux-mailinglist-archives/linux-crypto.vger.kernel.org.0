@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AED16F6B1
-	for <lists+linux-crypto@lfdr.de>; Wed, 26 Feb 2020 06:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A32816F6BA
+	for <lists+linux-crypto@lfdr.de>; Wed, 26 Feb 2020 06:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgBZFBC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1726473AbgBZFBC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Wed, 26 Feb 2020 00:01:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50562 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:50572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726396AbgBZFBB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726407AbgBZFBB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Wed, 26 Feb 2020 00:01:01 -0500
 Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7A5D2067C
-        for <linux-crypto@vger.kernel.org>; Wed, 26 Feb 2020 05:01:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1180820726
+        for <linux-crypto@vger.kernel.org>; Wed, 26 Feb 2020 05:01:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582693260;
-        bh=KfFvl/ZJimplfsFodEPZPfe9IZCZGa+FKliVD41RI4I=;
+        s=default; t=1582693261;
+        bh=APCpCZ7hSn7B1jgf9/ybXYkfluvNjA0o648Pw0wRYsI=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=B2+jJpIFwsuem3kBPds2mXusU8EO741/JsIAP7R4xvj8Onkig2pCQmeCYxTxHQQGi
-         X8gQTmgZyGjkdS/kbM0vOb5MitXSiySZl1TfC/yfhAqsOnFKX71tmDAF22dPKZjCME
-         SbInnRgSrb90Dv0X75CXfB9eVoVP2K+hVKqvbZgQ=
+        b=ZfH28Ljh0B6h+7y8kzGvSZM2bTxEo4Yyznwaqr3xa+z/+B1m5Fh+jKMNZA5jjZVkA
+         21qzufjXhpEfNDHKoKXaGkyB4R4RFrEDY/ODQmoat44RDLnxqKK7cE4CVYxof6de8u
+         4+4vekOLVN0wnjCenwLB6WUz9gaMhXOqh0BHB7V8=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 06/12] crypto: gcm - simplify error handling in crypto_rfc4106_create()
-Date:   Tue, 25 Feb 2020 20:59:18 -0800
-Message-Id: <20200226045924.97053-7-ebiggers@kernel.org>
+Subject: [PATCH 07/12] crypto: gcm - simplify error handling in crypto_rfc4543_create()
+Date:   Tue, 25 Feb 2020 20:59:19 -0800
+Message-Id: <20200226045924.97053-8-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200226045924.97053-1-ebiggers@kernel.org>
 References: <20200226045924.97053-1-ebiggers@kernel.org>
@@ -40,7 +40,7 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Simplify the error handling in crypto_rfc4106_create() by taking
+Simplify the error handling in crypto_rfc4543_create() by taking
 advantage of crypto_grab_aead() now handling an ERR_PTR() name and by
 taking advantage of crypto_drop_aead() now accepting (as a no-op) a
 spawn that hasn't been grabbed yet.
@@ -48,24 +48,31 @@ spawn that hasn't been grabbed yet.
 Conveniently, this eliminates the 'ccm_name' variable which was
 incorrectly named (it should have been 'gcm_name').
 
+Also fix a weird case where a line was terminated by a comma rather than
+a semicolon, causing the statement to be continued on the next line.
+Fortunately the code still behaved as intended, though.
+
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/gcm.c | 29 +++++++++--------------------
- 1 file changed, 9 insertions(+), 20 deletions(-)
+ crypto/gcm.c | 37 ++++++++++++-------------------------
+ 1 file changed, 12 insertions(+), 25 deletions(-)
 
 diff --git a/crypto/gcm.c b/crypto/gcm.c
-index 8e5c0ac656611..5560341e28105 100644
+index 5560341e28105..0103d28c541eb 100644
 --- a/crypto/gcm.c
 +++ b/crypto/gcm.c
-@@ -840,7 +840,6 @@ static int crypto_rfc4106_create(struct crypto_template *tmpl,
+@@ -1060,10 +1060,8 @@ static int crypto_rfc4543_create(struct crypto_template *tmpl,
+ 	struct crypto_attr_type *algt;
+ 	u32 mask;
  	struct aead_instance *inst;
- 	struct crypto_aead_spawn *spawn;
+-	struct crypto_aead_spawn *spawn;
  	struct aead_alg *alg;
+ 	struct crypto_rfc4543_instance_ctx *ctx;
 -	const char *ccm_name;
  	int err;
  
  	algt = crypto_get_attr_type(tb);
-@@ -852,19 +851,15 @@ static int crypto_rfc4106_create(struct crypto_template *tmpl,
+@@ -1075,32 +1073,27 @@ static int crypto_rfc4543_create(struct crypto_template *tmpl,
  
  	mask = crypto_requires_sync(algt->type, algt->mask);
  
@@ -73,21 +80,24 @@ index 8e5c0ac656611..5560341e28105 100644
 -	if (IS_ERR(ccm_name))
 -		return PTR_ERR(ccm_name);
 -
- 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
+ 	inst = kzalloc(sizeof(*inst) + sizeof(*ctx), GFP_KERNEL);
  	if (!inst)
  		return -ENOMEM;
  
- 	spawn = aead_instance_ctx(inst);
- 	err = crypto_grab_aead(spawn, aead_crypto_instance(inst),
+ 	ctx = aead_instance_ctx(inst);
+-	spawn = &ctx->aead;
+-	err = crypto_grab_aead(spawn, aead_crypto_instance(inst),
 -			       ccm_name, 0, mask);
++	err = crypto_grab_aead(&ctx->aead, aead_crypto_instance(inst),
 +			       crypto_attr_alg_name(tb[1]), 0, mask);
  	if (err)
 -		goto out_free_inst;
 +		goto err_free_inst;
  
- 	alg = crypto_spawn_aead_alg(spawn);
+-	alg = crypto_spawn_aead_alg(spawn);
++	alg = crypto_spawn_aead_alg(&ctx->aead);
  
-@@ -872,11 +867,11 @@ static int crypto_rfc4106_create(struct crypto_template *tmpl,
+ 	err = -EINVAL;
  
  	/* Underlying IV size must be 12. */
  	if (crypto_aead_alg_ivsize(alg) != GCM_AES_IV_SIZE)
@@ -101,17 +111,21 @@ index 8e5c0ac656611..5560341e28105 100644
  
  	err = -ENAMETOOLONG;
  	if (snprintf(inst->alg.base.cra_name, CRYPTO_MAX_ALG_NAME,
-@@ -885,7 +880,7 @@ static int crypto_rfc4106_create(struct crypto_template *tmpl,
+@@ -1109,7 +1102,7 @@ static int crypto_rfc4543_create(struct crypto_template *tmpl,
  	    snprintf(inst->alg.base.cra_driver_name, CRYPTO_MAX_ALG_NAME,
- 		     "rfc4106(%s)", alg->base.cra_driver_name) >=
+ 		     "rfc4543(%s)", alg->base.cra_driver_name) >=
  	    CRYPTO_MAX_ALG_NAME)
 -		goto out_drop_alg;
 +		goto err_free_inst;
  
  	inst->alg.base.cra_flags = alg->base.cra_flags & CRYPTO_ALG_ASYNC;
  	inst->alg.base.cra_priority = alg->base.cra_priority;
-@@ -909,17 +904,11 @@ static int crypto_rfc4106_create(struct crypto_template *tmpl,
- 	inst->free = crypto_rfc4106_free;
+@@ -1130,20 +1123,14 @@ static int crypto_rfc4543_create(struct crypto_template *tmpl,
+ 	inst->alg.encrypt = crypto_rfc4543_encrypt;
+ 	inst->alg.decrypt = crypto_rfc4543_decrypt;
+ 
+-	inst->free = crypto_rfc4543_free,
++	inst->free = crypto_rfc4543_free;
  
  	err = aead_register_instance(tmpl, inst);
 -	if (err)
@@ -120,7 +134,7 @@ index 8e5c0ac656611..5560341e28105 100644
 -out:
 +	if (err) {
 +err_free_inst:
-+		crypto_rfc4106_free(inst);
++		crypto_rfc4543_free(inst);
 +	}
  	return err;
 -
@@ -131,7 +145,7 @@ index 8e5c0ac656611..5560341e28105 100644
 -	goto out;
  }
  
- static int crypto_rfc4543_setkey(struct crypto_aead *parent, const u8 *key,
+ static struct crypto_template crypto_gcm_tmpls[] = {
 -- 
 2.25.1
 
