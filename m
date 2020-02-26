@@ -2,114 +2,80 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C2816F5AA
-	for <lists+linux-crypto@lfdr.de>; Wed, 26 Feb 2020 03:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D47A16F6B0
+	for <lists+linux-crypto@lfdr.de>; Wed, 26 Feb 2020 06:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729395AbgBZCcx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 25 Feb 2020 21:32:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49436 "EHLO mail.kernel.org"
+        id S1726046AbgBZFBA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 26 Feb 2020 00:01:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729045AbgBZCcx (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 25 Feb 2020 21:32:53 -0500
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725876AbgBZFBA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 26 Feb 2020 00:01:00 -0500
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1830721D7E;
-        Wed, 26 Feb 2020 02:32:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B53B720658
+        for <linux-crypto@vger.kernel.org>; Wed, 26 Feb 2020 05:00:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582684372;
-        bh=02ouW81DUsPHAJzxSAPTvGoxzGwv4BggF6TdJk2BivY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZLKokWUTzTs0OqW+20nt+1D3cwx7Q4MkCz3mWJn/pl5n9lI1dHWx15PSutwErtEg/
-         gF/1rcGRKMcbixPFtR+T+DS8KCGAad/4MTP1YByuB0HD6F/f4X6DMe2srFf9pejKnl
-         HOIkEaKtNr+FgUDBVQGxmV3Q5MqK/odSzAC+I0UM=
-Date:   Tue, 25 Feb 2020 18:32:50 -0800
+        s=default; t=1582693259;
+        bh=Henn+sHuWVjQ9GkI2AA64J82QXOt7xA9/yA+pFP61VM=;
+        h=From:To:Subject:Date:From;
+        b=RBFf4RzKU0SVW/qPPlTzeT9CFEvP18N/FwOJIE3KckxZrgqau18Q4MxBkU6fa1tba
+         N/cv1h2qlYVTEdJ1sAXZmXbplpZuflHq6AjgEGZersVbTatyUY/sw7f7cGU8kgZ1gZ
+         40aTWOmp8E/tWUe/e/ssVVekzF3GpY3NYYF9FZ8M=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ofir Drang <ofir.drang@arm.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] crypto: testmgr - use generic algs making test vecs
-Message-ID: <20200226023250.GA1053@sol.localdomain>
-References: <20200225154834.25108-1-gilad@benyossef.com>
- <20200225154834.25108-2-gilad@benyossef.com>
- <20200225194551.GA114977@gmail.com>
+To:     linux-crypto@vger.kernel.org
+Subject: [PATCH 00/12] crypto: more template instantiation cleanups
+Date:   Tue, 25 Feb 2020 20:59:12 -0800
+Message-Id: <20200226045924.97053-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200225194551.GA114977@gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Feb 25, 2020 at 11:45:51AM -0800, Eric Biggers wrote:
-> On Tue, Feb 25, 2020 at 05:48:33PM +0200, Gilad Ben-Yossef wrote:
-> > Use generic algs to produce inauthentic AEAD messages,
-> > otherwise we are running the risk of using an untested
-> > code to produce the test messages.
-> > 
-> > As this code is only used in developer only extended tests
-> > any cycles/runtime costs are negligible.
-> > 
-> > Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-> > Cc: Eric Biggers <ebiggers@kernel.org>
-> 
-> It's intentional to use the same implementation to generate the inauthentic AEAD
-> messages, because it allows the inauthentic AEAD input tests to run even if the
-> generic implementation is unavailable.
-> 
-> > @@ -2337,8 +2338,42 @@ static int test_aead_inauthentic_inputs(struct aead_extra_tests_ctx *ctx)
-> >  {
-> >  	unsigned int i;
-> >  	int err;
-> > +	struct crypto_aead *tfm = ctx->tfm;
-> > +	const char *algname = crypto_aead_alg(tfm)->base.cra_name;
-> > +	const char *driver = ctx->driver;
-> > +	const char *generic_driver = ctx->test_desc->generic_driver;
-> > +	char _generic_driver[CRYPTO_MAX_ALG_NAME];
-> > +	struct crypto_aead *generic_tfm = NULL;
-> > +	struct aead_request *generic_req = NULL;
-> > +
-> > +	if (!generic_driver) {
-> > +		err = build_generic_driver_name(algname, _generic_driver);
-> > +		if (err)
-> > +			return err;
-> > +		generic_driver = _generic_driver;
-> > +	}
-> > +
-> > +	if (!strcmp(generic_driver, driver) == 0) {
-> > +		/* Already the generic impl? */
-> > +
-> > +		generic_tfm = crypto_alloc_aead(generic_driver, 0, 0);
-> 
-> I think you meant the condition to be 'if (strcmp(generic_driver, driver) != 0)'
-> and for the comment to be "Not already the generic impl?".
-> 
-> > +		if (IS_ERR(generic_tfm)) {
-> > +			err = PTR_ERR(generic_tfm);
-> > +			pr_err("alg: aead: error allocating %s (generic impl of %s): %d\n",
-> > +			generic_driver, algname, err);
-> > +			return err;
-> > +		}
-> 
-> This means the test won't run if the generic implementation is unavailable.
-> Is there any particular reason to impose that requirement?
-> 
-> You mentioned a concern about the implementation being "untested", but it
-> actually already passed test_aead() before getting to test_aead_extra().
-> 
-> We could also just move test_aead_inauthentic_inputs() to below
-> test_aead_vs_generic_impl() so that it runs last.
-> 
+This series simplifies error handling in the remaining crypto templates,
+taking advantage of the changes I made last release that made
+crypto_grab_*() accept ERR_PTR() names and crypto_drop_*() accept
+spawns that haven't been grabbed yet:
+https://lore.kernel.org/r/20200103035908.12048-1-ebiggers@kernel.org
 
-Also: if we did make the inauthentic input tests use the generic implementation,
-then it would be better to move them into test_aead_vs_generic_impl() so that we
-don't duplicate the code that allocates a tfm and request for the generic
-implementation.
+Many templates were already converted to the new style by that series.
+This series just handles the remainder.
 
-But to me it makes more sense to keep them separate, since a generic
-implementation is not needed to run the inauthentic input tests.
+This series is an internal cleanup only; there are no changes for users
+of the crypto API.  Net change is 124 lines of code removed.
 
-- Eric
+Eric Biggers (12):
+  crypto: authencesn - fix weird comma-terminated line
+  crypto: ccm - simplify error handling in crypto_rfc4309_create()
+  crypto: cryptd - simplify error handling in cryptd_create_*()
+  crypto: ctr - simplify error handling in crypto_rfc3686_create()
+  crypto: cts - simplify error handling in crypto_cts_create()
+  crypto: gcm - simplify error handling in crypto_rfc4106_create()
+  crypto: gcm - simplify error handling in crypto_rfc4543_create()
+  crypto: geniv - simply error handling in aead_geniv_alloc()
+  crypto: lrw - simplify error handling in create()
+  crypto: pcrypt - simplify error handling in pcrypt_create_aead()
+  crypto: rsa-pkcs1pad - simplify error handling in pkcs1pad_create()
+  crypto: xts - simplify error handling in ->create()
+
+ crypto/authencesn.c   |  2 +-
+ crypto/ccm.c          | 29 ++++++-------------
+ crypto/cryptd.c       | 37 ++++++++----------------
+ crypto/ctr.c          | 29 ++++++-------------
+ crypto/cts.c          | 27 ++++++------------
+ crypto/gcm.c          | 66 ++++++++++++++-----------------------------
+ crypto/geniv.c        | 17 ++++-------
+ crypto/lrw.c          | 28 ++++++++----------
+ crypto/pcrypt.c       | 33 ++++++----------------
+ crypto/rsa-pkcs1pad.c | 59 +++++++++++++-------------------------
+ crypto/xts.c          | 28 ++++++++----------
+ kernel/padata.c       |  7 +++--
+ 12 files changed, 119 insertions(+), 243 deletions(-)
+
+-- 
+2.25.1
+
