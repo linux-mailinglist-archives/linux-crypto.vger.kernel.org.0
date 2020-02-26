@@ -2,104 +2,94 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD53170B58
-	for <lists+linux-crypto@lfdr.de>; Wed, 26 Feb 2020 23:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDA1170B7B
+	for <lists+linux-crypto@lfdr.de>; Wed, 26 Feb 2020 23:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727742AbgBZWRo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 26 Feb 2020 17:17:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727715AbgBZWRo (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 26 Feb 2020 17:17:44 -0500
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC7702072D;
-        Wed, 26 Feb 2020 22:17:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582755463;
-        bh=cs+KD5MTlL+9h4Tj3lAJWI9MH0tgnD0DmNQnuZrw/9c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DAebMMviU1D71LPXnPss901gxpWeddvg5oFWeaWscNgSXKScZnKkl2Dw9x39ynyOG
-         QmpkTRir9i88Bu7uB45IQ0SkYdFKHAzxqgQy4R6/Mi0MFma4i1a/cj2K591KSfyOgG
-         mCSzF8p+g5KzQHhHWKmt7G6rV/26BKVg8kbF6Tk8=
-Date:   Wed, 26 Feb 2020 14:17:42 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ofir Drang <ofir.drang@arm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] crypto: testmgr - use generic algs making test vecs
-Message-ID: <20200226221742.GA135806@gmail.com>
-References: <20200225154834.25108-1-gilad@benyossef.com>
- <20200225154834.25108-2-gilad@benyossef.com>
- <20200225194551.GA114977@gmail.com>
- <CAOtvUMeWB=MiYfzkrPjOctOufKJ8Q81E3m6bq8GJY-enbG6Qjg@mail.gmail.com>
+        id S1727763AbgBZWYt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 26 Feb 2020 17:24:49 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:35826 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727709AbgBZWYs (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 26 Feb 2020 17:24:48 -0500
+Received: by mail-ot1-f65.google.com with SMTP id r16so1054452otd.2;
+        Wed, 26 Feb 2020 14:24:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=7Tc2pp6tfwt+3v34tpbOx19kPSdtNqYuqm/8GY/cfw4=;
+        b=ui0X/+wq3tOeJAS9wzI/U+gx79VRj7YYPEZB9pXU3E1IMe++89jfGJLvgCwt1uRSYl
+         Wb4l5zd1n6luzHCZaQUvJb/8iMZMQ19lKpPWCdEBBJKkz627ubPau2/0XOfYExWAzqoj
+         l8u4oUXQKOMejEaEAy6xHXuo5jcAa/GeJCPndUdom9WBHWbc9PYO6jdpG/1rdndmYoVq
+         yfaIc9Ac+GrdXDqcoLWZcemoXWl8NZt4zonSmz02av66wOd7rsi01/WRF9y6ZRxl8V5T
+         EW6WIiTp27Grg5xPxQR25TMogd9+xtglKIAfIcirKM4s0eoZMU+Sr3H/AS5BuW+QC286
+         T6qQ==
+X-Gm-Message-State: APjAAAVcJFzAdrh7B2GA3mfqpiZKnNhD6ZKHRyQKtAWdXxeKD39Dwdat
+        FwISw6eW0DR3GfahB/t1zw==
+X-Google-Smtp-Source: APXvYqxl4VG5brncJNWe6fMfCvBfkuDhRp8hGrhJHHYhzyTZwH2sy+iDxqHEY0c1dykRMxt3Vt/Phw==
+X-Received: by 2002:a05:6830:13da:: with SMTP id e26mr781681otq.97.1582755887742;
+        Wed, 26 Feb 2020 14:24:47 -0800 (PST)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id b4sm1250798oie.55.2020.02.26.14.24.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Feb 2020 14:24:47 -0800 (PST)
+Received: (nullmailer pid 11405 invoked by uid 1000);
+        Wed, 26 Feb 2020 22:24:46 -0000
+Date:   Wed, 26 Feb 2020 16:24:46 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
+        <nfraprado@protonmail.com>
+Cc:     devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        lkcamp@lists.libreplanetbr.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Scott Branden <sbranden@broadcom.com>,
+        linux-arm-kernel@lists.infradead.org, Ray Jui <rjui@broadcom.com>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-crypto@vger.kernel.org, Matt Mackall <mpm@selenic.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] dt-bindings: rng: Convert BCM2835 to DT schema
+Message-ID: <20200226222446.GA11350@bogus>
+References: <20200222200037.3203931-1-nfraprado@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAOtvUMeWB=MiYfzkrPjOctOufKJ8Q81E3m6bq8GJY-enbG6Qjg@mail.gmail.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200222200037.3203931-1-nfraprado@protonmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 04:42:45PM +0200, Gilad Ben-Yossef wrote:
+On Sat, 22 Feb 2020 20:00:59 +0000, =?UTF-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= wrote:
+> Convert BCM2835/6368 Random number generator bindings to DT schema.
 > 
-> The impetus to write this patch came from my experience debugging a
-> test failure with the ccree driver.
-> At some point while tweaking around I got into a situation where the
-> test was succeeding (that is, declaring the message inauthentic) not
-> because the mutation was being detected but because the generation of
-> the origin was producing a bogus ICV.
-
-That's being fixed by your patch 2/2 though, right?
-
-> At that point it seemed to me that it would be safer to "isolate" the
-> original AEAD messages generation from the code that was being teste.
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@protonmail.com>
+> ---
 > 
-> > We could also just move test_aead_inauthentic_inputs() to below
-> > test_aead_vs_generic_impl() so that it runs last.
+> Changes in v2:
+> - Remove description for common properties
+> - Drop label from example
 > 
-> This would probably be better, although I think that this stage also
-> generates inauthentic messages from time to time, no?
+> This patch was tested with:
+> make ARCH=arm dt_binding_check
+> make ARCH=arm DT_SCHEMA_FILES=Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml dtbs_check
+> 
+> Thanks,
+> Nícolas
+> 
+>  .../devicetree/bindings/rng/brcm,bcm2835.txt  | 40 -------------
+>  .../devicetree/bindings/rng/brcm,bcm2835.yaml | 59 +++++++++++++++++++
+>  2 files changed, 59 insertions(+), 40 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/rng/brcm,bcm2835.txt
+>  create mode 100644 Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+> 
 
-That's correct, but in test_aead_vs_generic_impl() the generic implementation is
-used to generate the test vectors.
+Applied, thanks.
 
-> At any rate, I don't have strong feelings about it either way. I defer
-> to your judgment whether it is worth it to add a fallback to use the
-> same implementation and fix what needs fixing or drop the patch
-> altogether if you think this isn't worth the trouble - just let me
-> know.
-
-I just want to avoid adding complexity that isn't worthwhile.
-Beyond your patch 2, how about we just do:
-
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 79b431545249a9..2ab48d4d317250 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -2564,11 +2564,11 @@ static int test_aead_extra(const char *driver,
- 		goto out;
- 	}
- 
--	err = test_aead_inauthentic_inputs(ctx);
-+	err = test_aead_vs_generic_impl(ctx);
- 	if (err)
- 		goto out;
- 
--	err = test_aead_vs_generic_impl(ctx);
-+	err = test_aead_inauthentic_inputs(ctx);
- out:
- 	kfree(ctx->vec.key);
- 	kfree(ctx->vec.iv);
-
-
-Then the dedicated tests for inauthentic inputs wouldn't be run until the fuzz
-tests vs. generic have already passed.
-
-- Eric
+Rob
