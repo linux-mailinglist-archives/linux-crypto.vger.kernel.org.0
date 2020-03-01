@@ -2,61 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3169A175126
-	for <lists+linux-crypto@lfdr.de>; Mon,  2 Mar 2020 00:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8A8175104
+	for <lists+linux-crypto@lfdr.de>; Mon,  2 Mar 2020 00:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgCAX6m (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 1 Mar 2020 18:58:42 -0500
-Received: from mail.dsns.gov.ua ([194.0.148.101]:33748 "EHLO mail.dsns.gov.ua"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726525AbgCAX6m (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 1 Mar 2020 18:58:42 -0500
-X-Greylist: delayed 1539 seconds by postgrey-1.27 at vger.kernel.org; Sun, 01 Mar 2020 18:58:37 EST
-Received: from localhost (localhost [127.0.0.1])
-        by mail.dsns.gov.ua (Postfix) with ESMTP id 36BBB1FC430B;
-        Sun,  1 Mar 2020 22:20:40 +0200 (EET)
-Received: from mail.dsns.gov.ua ([127.0.0.1])
-        by localhost (mail.dsns.gov.ua [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id W8EYmZFFqJKN; Sun,  1 Mar 2020 22:20:40 +0200 (EET)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.dsns.gov.ua (Postfix) with ESMTP id 7E4E51FA35DE;
-        Sun,  1 Mar 2020 22:05:46 +0200 (EET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.dsns.gov.ua 7E4E51FA35DE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dsns.gov.ua;
-        s=1E60DAC0-2607-11E9-81E6-7A77C2B36653; t=1583093146;
-        bh=njlCkWFc0hcw8eBX6ul4CN7Q0eDgIqGtksJn7ge99kc=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=PAZ0aGNxgR5KBJsjGRjkjs61eIoKXHaTznuRUeLarojkjmXg//pRgDArBm6BcyViL
-         GifqU0GWxOOr3GY0HZaBFV1ryIjqaOpMxrPzCRJaovAHm3ec7AUBmYps1+EKtPR0RJ
-         1EXOsbD6o7VcYIgyQ5tAa45M0jsEDmGB7ILSAXkPmz3GpBmE2eH3epKMWSqUHbETz8
-         RvVDrzezu2IrXd5JHT9fq2GCjkKFqPBDztmFeeJtneyp4s/N7RBS7oD2bq/38zRwh6
-         IR5QQBWgPGRHKSyXLOZKW/njkmoYuBLX5FMj4QLQMq/DacH5QKgs88nemByivE5qmy
-         VHTDmrGRWFPqA==
-X-Virus-Scanned: amavisd-new at dsns.gov.ua
-Received: from mail.dsns.gov.ua ([127.0.0.1])
-        by localhost (mail.dsns.gov.ua [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id zTXU5xJfITb2; Sun,  1 Mar 2020 22:05:46 +0200 (EET)
-Received: from mail.dsns.gov.ua (localhost [127.0.0.1])
-        by mail.dsns.gov.ua (Postfix) with ESMTP id B0F9B1FC4E95;
-        Sun,  1 Mar 2020 21:59:48 +0200 (EET)
-Date:   Sun, 1 Mar 2020 21:59:48 +0200 (EET)
-From:   Peter Wong <sport08@dsns.gov.ua>
-Reply-To: petrwong@hotmail.com
-Message-ID: <1314446558.3674585.1583092788690.JavaMail.zimbra@dsns.gov.ua>
-Subject: Hello
+        id S1726614AbgCAXhU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 1 Mar 2020 18:37:20 -0500
+Received: from mail.kmu-office.ch ([178.209.48.109]:51666 "EHLO
+        mail.kmu-office.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726592AbgCAXhU (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 1 Mar 2020 18:37:20 -0500
+Received: from zyt.lan (unknown [IPv6:2a02:169:3df5::564])
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id 17AB65C3CEF;
+        Mon,  2 Mar 2020 00:37:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+        t=1583105838;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=uEXP2A+ZFevJutYapB5Olb+X7MOi5DcNCS5e20uoEP8=;
+        b=KYU+jEIvnTWc3/fWFLC+Vly+OrhuCyPaGadSfgb23VeMF7Y7XySy8A2q0Q6WIINgwNXoja
+        +FdmYKg6spUdRBgV+sSk/eT5fxH+33lsOih/Wsx1M/TjdAs9AOplfU8ixGuf57A0EeyCJl
+        jtuUzSDDzBg6wcTv5yR0lQtVZASr8VI=
+From:   Stefan Agner <stefan@agner.ch>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux@armlinux.org.uk, manojgupta@google.com, jiancai@google.com,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Stefan Agner <stefan@agner.ch>
+Subject: [PATCH] crypto: arm/ghash-ce - define fpu before fpu registers are referenced
+Date:   Mon,  2 Mar 2020 00:37:14 +0100
+Message-Id: <c41cc67321d0b366e356440e6dbc9eceb1babfe4.1583105749.git.stefan@agner.ch>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [5.154.174.49, 172.68.102.151]
-X-Mailer: Zimbra 8.8.15_GA_3899 (zclient/8.8.15_GA_3899)
-Thread-Index: QDiGNMxb89tOxY1vOzGfXokne4cQUg==
-Thread-Topic: Hello
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Building ARMv7 with Clang's integrated assembler leads to errors such
+as:
+arch/arm/crypto/ghash-ce-core.S:34:11: error: register name expected
+ t3l .req d16
+          ^
 
+Since no FPU has selected yet Clang considers d16 not a valid register.
+Moving the FPU directive on-top allows Clang to parse the registers and
+allows to successfully build this file with Clang's integrated assembler.
 
-Can we talk now?
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ arch/arm/crypto/ghash-ce-core.S | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/crypto/ghash-ce-core.S b/arch/arm/crypto/ghash-ce-core.S
+index 534c9647726d..9f51e3fa4526 100644
+--- a/arch/arm/crypto/ghash-ce-core.S
++++ b/arch/arm/crypto/ghash-ce-core.S
+@@ -8,6 +8,9 @@
+ #include <linux/linkage.h>
+ #include <asm/assembler.h>
+ 
++	.arch		armv8-a
++	.fpu		crypto-neon-fp-armv8
++
+ 	SHASH		.req	q0
+ 	T1		.req	q1
+ 	XL		.req	q2
+@@ -88,8 +91,6 @@
+ 	T3_H		.req	d17
+ 
+ 	.text
+-	.arch		armv8-a
+-	.fpu		crypto-neon-fp-armv8
+ 
+ 	.macro		__pmull_p64, rd, rn, rm, b1, b2, b3, b4
+ 	vmull.p64	\rd, \rn, \rm
+-- 
+2.25.1
+
