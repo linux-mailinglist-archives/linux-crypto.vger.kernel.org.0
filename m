@@ -2,18 +2,18 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E42AB17539A
-	for <lists+linux-crypto@lfdr.de>; Mon,  2 Mar 2020 07:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6603B17539F
+	for <lists+linux-crypto@lfdr.de>; Mon,  2 Mar 2020 07:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgCBGTA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 2 Mar 2020 01:19:00 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:35920 "EHLO huawei.com"
+        id S1726282AbgCBGTO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 2 Mar 2020 01:19:14 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11126 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726030AbgCBGTA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 2 Mar 2020 01:19:00 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 60F6B93CB52BECD51BF3;
-        Mon,  2 Mar 2020 14:18:57 +0800 (CST)
+        id S1726052AbgCBGTO (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 2 Mar 2020 01:19:14 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 81E684C487EA6BF1ACB0;
+        Mon,  2 Mar 2020 14:19:02 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
  14.3.439.0; Mon, 2 Mar 2020 14:18:51 +0800
@@ -24,9 +24,9 @@ CC:     <linux-crypto@vger.kernel.org>, <linuxarm@huawei.com>,
         <yekai13@huawei.com>, <liulongfang@huawei.com>,
         <qianweili@huawei.com>, <zhangwei375@huawei.com>,
         <fanghao11@huawei.com>, <forest.zhouchang@huawei.com>
-Subject: [PATCH v2 2/5] crypto: hisilicon/sec2 - Add workqueue for SEC driver.
-Date:   Mon, 2 Mar 2020 14:15:13 +0800
-Message-ID: <1583129716-28382-3-git-send-email-xuzaibo@huawei.com>
+Subject: [PATCH v2 3/5] crypto: hisilicon/sec2 - Add iommu status check
+Date:   Mon, 2 Mar 2020 14:15:14 +0800
+Message-ID: <1583129716-28382-4-git-send-email-xuzaibo@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1583129716-28382-1-git-send-email-xuzaibo@huawei.com>
 References: <1583129716-28382-1-git-send-email-xuzaibo@huawei.com>
@@ -39,78 +39,75 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: yekai13 <yekai13@huawei.com>
+From: liulongfang <liulongfang@huawei.com>
 
-Allocate one workqueue for each QM instead of one for all QMs,
-we found the throughput of SEC engine can be increased to
-the hardware limit throughput during testing sec2 performance.
-so we added this scheme.
+In order to improve performance of small packets (<512Bytes)
+in SMMU translation scenario,We need to identify the type of IOMMU
+in the SEC probe to process small packets by a different method.
 
-Signed-off-by: yekai13 <yekai13@huawei.com>
 Signed-off-by: liulongfang <liulongfang@huawei.com>
+Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
 ---
- drivers/crypto/hisilicon/sec2/sec_main.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
+ drivers/crypto/hisilicon/sec2/sec.h      |  1 +
+ drivers/crypto/hisilicon/sec2/sec_main.c | 19 +++++++++++++++++++
+ 2 files changed, 20 insertions(+)
 
+diff --git a/drivers/crypto/hisilicon/sec2/sec.h b/drivers/crypto/hisilicon/sec2/sec.h
+index 13e2d8d..eab0d22 100644
+--- a/drivers/crypto/hisilicon/sec2/sec.h
++++ b/drivers/crypto/hisilicon/sec2/sec.h
+@@ -165,6 +165,7 @@ struct sec_dev {
+ 	struct list_head list;
+ 	struct sec_debug debug;
+ 	u32 ctx_q_num;
++	bool iommu_used;
+ 	u32 num_vfs;
+ 	unsigned long status;
+ };
 diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 3767fdb..ebafc1c 100644
+index ebafc1c..6466d90 100644
 --- a/drivers/crypto/hisilicon/sec2/sec_main.c
 +++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -774,12 +774,24 @@ static void sec_qm_uninit(struct hisi_qm *qm)
+@@ -7,6 +7,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
++#include <linux/iommu.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
+@@ -826,6 +827,23 @@ static void sec_probe_uninit(struct hisi_qm *qm)
+ 	destroy_workqueue(qm->wq);
+ }
  
- static int sec_probe_init(struct hisi_qm *qm, struct sec_dev *sec)
- {
-+	int ret;
++static void sec_iommu_used_check(struct sec_dev *sec)
++{
++	struct iommu_domain *domain;
++	struct device *dev = &sec->qm.pdev->dev;
 +
-+	qm->wq = alloc_workqueue("%s", WQ_HIGHPRI | WQ_CPU_INTENSIVE |
-+		WQ_MEM_RECLAIM | WQ_UNBOUND, num_online_cpus(),
-+		pci_name(qm->pdev));
-+	if (!qm->wq) {
-+		pci_err(qm->pdev, "fail to alloc workqueue\n");
-+		return -ENOMEM;
++	domain = iommu_get_domain_for_dev(dev);
++
++	/* Check if iommu is used */
++	sec->iommu_used = false;
++	if (domain) {
++		if (domain->type & __IOMMU_DOMAIN_PAGING)
++			sec->iommu_used = true;
++		dev_info(dev, "SMMU Opened, the iommu type = %u\n",
++			domain->type);
 +	}
++}
 +
- 	if (qm->fun_type == QM_HW_PF) {
- 		qm->qp_base = SEC_PF_DEF_Q_BASE;
- 		qm->qp_num = pf_q_num;
- 		qm->debug.curr_qm_qp_num = pf_q_num;
- 
--		return sec_pf_probe_init(sec);
-+		ret = sec_pf_probe_init(sec);
-+		if (ret)
-+			goto err_probe_uninit;
- 	} else if (qm->fun_type == QM_HW_VF) {
- 		/*
- 		 * have no way to get qm configure in VM in v1 hardware,
-@@ -792,18 +804,26 @@ static int sec_probe_init(struct hisi_qm *qm, struct sec_dev *sec)
- 			qm->qp_num = SEC_QUEUE_NUM_V1 - SEC_PF_DEF_Q_NUM;
- 		} else if (qm->ver == QM_HW_V2) {
- 			/* v2 starts to support get vft by mailbox */
--			return hisi_qm_get_vft(qm, &qm->qp_base, &qm->qp_num);
-+			ret = hisi_qm_get_vft(qm, &qm->qp_base, &qm->qp_num);
-+			if (ret)
-+				goto err_probe_uninit;
- 		}
- 	} else {
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto err_probe_uninit;
- 	}
- 
- 	return 0;
-+err_probe_uninit:
-+	destroy_workqueue(qm->wq);
-+	return ret;
- }
- 
- static void sec_probe_uninit(struct hisi_qm *qm)
- {
- 	hisi_qm_dev_err_uninit(qm);
-+
-+	destroy_workqueue(qm->wq);
- }
- 
  static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ {
+ 	struct sec_dev *sec;
+@@ -839,6 +857,7 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	pci_set_drvdata(pdev, sec);
+ 
+ 	sec->ctx_q_num = ctx_q_num;
++	sec_iommu_used_check(sec);
+ 
+ 	qm = &sec->qm;
+ 
 -- 
 2.8.1
 
