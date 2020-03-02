@@ -2,84 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8A8175104
-	for <lists+linux-crypto@lfdr.de>; Mon,  2 Mar 2020 00:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2DC17539C
+	for <lists+linux-crypto@lfdr.de>; Mon,  2 Mar 2020 07:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgCAXhU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 1 Mar 2020 18:37:20 -0500
-Received: from mail.kmu-office.ch ([178.209.48.109]:51666 "EHLO
-        mail.kmu-office.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726592AbgCAXhU (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 1 Mar 2020 18:37:20 -0500
-Received: from zyt.lan (unknown [IPv6:2a02:169:3df5::564])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 17AB65C3CEF;
-        Mon,  2 Mar 2020 00:37:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1583105838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=uEXP2A+ZFevJutYapB5Olb+X7MOi5DcNCS5e20uoEP8=;
-        b=KYU+jEIvnTWc3/fWFLC+Vly+OrhuCyPaGadSfgb23VeMF7Y7XySy8A2q0Q6WIINgwNXoja
-        +FdmYKg6spUdRBgV+sSk/eT5fxH+33lsOih/Wsx1M/TjdAs9AOplfU8ixGuf57A0EeyCJl
-        jtuUzSDDzBg6wcTv5yR0lQtVZASr8VI=
-From:   Stefan Agner <stefan@agner.ch>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net
-Cc:     linux@armlinux.org.uk, manojgupta@google.com, jiancai@google.com,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Stefan Agner <stefan@agner.ch>
-Subject: [PATCH] crypto: arm/ghash-ce - define fpu before fpu registers are referenced
-Date:   Mon,  2 Mar 2020 00:37:14 +0100
-Message-Id: <c41cc67321d0b366e356440e6dbc9eceb1babfe4.1583105749.git.stefan@agner.ch>
-X-Mailer: git-send-email 2.25.1
+        id S1726300AbgCBGTG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 2 Mar 2020 01:19:06 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:35924 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726052AbgCBGTG (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 2 Mar 2020 01:19:06 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 69CFF2287A6DDC4D844B;
+        Mon,  2 Mar 2020 14:18:57 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.439.0; Mon, 2 Mar 2020 14:18:50 +0800
+From:   Zaibo Xu <xuzaibo@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <linuxarm@huawei.com>,
+        <wangzhou1@hisilicon.com>, <tanghui20@huawei.com>,
+        <yekai13@huawei.com>, <liulongfang@huawei.com>,
+        <qianweili@huawei.com>, <zhangwei375@huawei.com>,
+        <fanghao11@huawei.com>, <forest.zhouchang@huawei.com>
+Subject: [PATCH v2 0/5] crypto: hisilicon - Improve SEC performance
+Date:   Mon, 2 Mar 2020 14:15:11 +0800
+Message-ID: <1583129716-28382-1-git-send-email-xuzaibo@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Building ARMv7 with Clang's integrated assembler leads to errors such
-as:
-arch/arm/crypto/ghash-ce-core.S:34:11: error: register name expected
- t3l .req d16
-          ^
+From: liulongfang <liulongfang@huawei.com>
 
-Since no FPU has selected yet Clang considers d16 not a valid register.
-Moving the FPU directive on-top allows Clang to parse the registers and
-allows to successfully build this file with Clang's integrated assembler.
+Improve SEC throughput by allocating a workqueue for each device
+instead of one workqueue for all SEC devices. What's more,
+when IOMMU translation is turned on, the plat buffer (pbuffer)
+will be reserved for small packets (<512Bytes) to
+which small packets are copied. This can avoid DMA mapping on
+user small packets and improve performance.
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- arch/arm/crypto/ghash-ce-core.S | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+This series is based on:
+git://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git
 
-diff --git a/arch/arm/crypto/ghash-ce-core.S b/arch/arm/crypto/ghash-ce-core.S
-index 534c9647726d..9f51e3fa4526 100644
---- a/arch/arm/crypto/ghash-ce-core.S
-+++ b/arch/arm/crypto/ghash-ce-core.S
-@@ -8,6 +8,9 @@
- #include <linux/linkage.h>
- #include <asm/assembler.h>
- 
-+	.arch		armv8-a
-+	.fpu		crypto-neon-fp-armv8
-+
- 	SHASH		.req	q0
- 	T1		.req	q1
- 	XL		.req	q2
-@@ -88,8 +91,6 @@
- 	T3_H		.req	d17
- 
- 	.text
--	.arch		armv8-a
--	.fpu		crypto-neon-fp-armv8
- 
- 	.macro		__pmull_p64, rd, rn, rm, b1, b2, b3, b4
- 	vmull.p64	\rd, \rn, \rm
+Changes v1 -> v2:
+	- Split pbuf patch into two patches.
+	- Move 'use_pbuf' from 'qp_ctx' to TFM request.
+	- Misc fixes on coding style.
+
+Shukun Tan (1):
+  crypto: hisilicon - Use one workqueue per qm instead of per qp
+
+liulongfang (3):
+  crypto: hisilicon/sec2 - Add iommu status check
+  crypto: hisilicon/sec2 - Update IV and MAC operation
+  crypto: hisilicon/sec2 - Add pbuffer mode for SEC driver
+
+yekai13 (1):
+  crypto: hisilicon/sec2 - Add workqueue for SEC driver.
+
+ drivers/crypto/hisilicon/qm.c              |  38 ++---
+ drivers/crypto/hisilicon/qm.h              |   5 +-
+ drivers/crypto/hisilicon/sec2/sec.h        |   7 +
+ drivers/crypto/hisilicon/sec2/sec_crypto.c | 242 ++++++++++++++++++++++++-----
+ drivers/crypto/hisilicon/sec2/sec_main.c   |  45 +++++-
+ 5 files changed, 274 insertions(+), 63 deletions(-)
+
 -- 
-2.25.1
+2.8.1
 
