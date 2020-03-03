@@ -2,152 +2,141 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7241784C5
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Mar 2020 22:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5EDE1784EC
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Mar 2020 22:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732550AbgCCVT1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Mar 2020 16:19:27 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:55703 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732176AbgCCVT0 (ORCPT
+        id S1732673AbgCCVcM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Mar 2020 16:32:12 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:39388 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732667AbgCCVcM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Mar 2020 16:19:26 -0500
-Received: by mail-pj1-f68.google.com with SMTP id a18so1912074pjs.5
-        for <linux-crypto@vger.kernel.org>; Tue, 03 Mar 2020 13:19:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2qU0zyTDNzYtyDUGa9/iXos9xa7ov/2wTakWPxGP1ks=;
-        b=WqGcGMvMn5GluxOGODQRPNpbzgvWO+OkNu8cZEiK4m3NjrW/mP/9I8Ma2MOO/Ww+Rh
-         AXpTLggSqb4nT/DNHZ4zPLZBLfPgo7r9MZEl//d92/3cJAZoUlA/0t9tIJIOzPiz4Vo8
-         qCIuwYIq9DuCng1+aDxogCJeRnZ7hUGxeizAE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2qU0zyTDNzYtyDUGa9/iXos9xa7ov/2wTakWPxGP1ks=;
-        b=mJVRO14MvwBkIEseNnthhGSPs0O18+Eg1N+VUaYH0tkSIncsdoAXCx9PBKSPoJHC43
-         mSv+LZECiQs1Hu8evHebaXHuVrOmk7tRQWCgAAv72kUEjN3eFXopo/guQiEDgyL50BHE
-         bMNd/gNJPbqhQolCfEO4dsm8IXuIr+EYiYHUWHviOoFG7cecPApS/wotE+dua22iKYPI
-         1rx08yXiXi/bCcrRM6lwTec+CUiEh3vqugx6zZw8YD/IgYANIVidm5rLnHYCZCcPibT9
-         57ff1qVW+b3SFKvQn8npOBriYPHOBhJmllEc76/7FB/9nrWfTu+3QnsJMnEQpcePd8oI
-         d2/w==
-X-Gm-Message-State: ANhLgQ2N6BsMxky8PfItpvm2tP7zs0Zb0GgDmX/Q1nVo+tHJY6NWCDwA
-        VPzrtTfLqQ1dVhwh+UesS2s8PA==
-X-Google-Smtp-Source: ADFU+vsH9zwFogphrokiom6kP9jpc0/EfWWpx0kYNByJFBy78L6FRZ6b+5u0kGb51gx765tnnhfbdw==
-X-Received: by 2002:a17:902:8d8a:: with SMTP id v10mr5883926plo.90.1583270363955;
-        Tue, 03 Mar 2020 13:19:23 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k20sm3338375pfk.123.2020.03.03.13.19.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Mar 2020 13:19:23 -0800 (PST)
-Date:   Tue, 3 Mar 2020 13:19:22 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Kristen Carlson Accardi <kristen@linux.intel.com>
-Cc:     Thomas Garnier <thgarnie@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Cao jin <caoj.fnst@cn.fujitsu.com>,
-        Allison Randal <allison@lohutok.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux PM list <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v11 00/11] x86: PIE support to extend KASLR randomization
-Message-ID: <202003031314.1AFFC0E@keescook>
-References: <20200228000105.165012-1-thgarnie@chromium.org>
- <202003022100.54CEEE60F@keescook>
- <20200303095514.GA2596@hirez.programming.kicks-ass.net>
- <CAJcbSZH1oON2VC2U8HjfC-6=M-xn5eU+JxHG2575iMpVoheKdA@mail.gmail.com>
- <6e7e4191612460ba96567c16b4171f2d2f91b296.camel@linux.intel.com>
+        Tue, 3 Mar 2020 16:32:12 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 023LS1go036975;
+        Tue, 3 Mar 2020 21:32:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=AnKlCnsZKbhYJBc8etzmr5N2OwYTT8txAPj6KkeXERo=;
+ b=j9nk4PVPkIxtzadAwWsgGAlZZsgIQ2sAqZ5uHhR0VG1IQwEC1X4uKIA9uQ+4O6fEcTIs
+ sKVg2X39iXVBjuZwfcgcLNOe+zYmZlf+IOAIo67cqSLxq8LymK0C7ydoHfKojkV5NMB2
+ EK6b2TAVx0x7OWodpUqGvuOOSQUJg7rDMW9AK4/lPxpFeePhNOGzHkyRL8JrQTlKtXH6
+ OE4FX6l591SgfU741aeBHwwXkO0Itjl8EqTP/bOezR74EMlMKGwIrSW5jt3ug/pEGyyp
+ 9YevRnnIjb17MByx1Eyea6QrXSkHWlsEMetg9bGv2+3kZOfgdX5+ObvwE9KyT4oyik05 RQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2yffcuj7c9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Mar 2020 21:32:02 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 023LQaoT008213;
+        Tue, 3 Mar 2020 21:30:02 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 2yg1emtngg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Mar 2020 21:30:01 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 023LU0BL019460;
+        Tue, 3 Mar 2020 21:30:00 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 03 Mar 2020 13:30:00 -0800
+Date:   Tue, 3 Mar 2020 16:30:17 -0500
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        mark.rutland@arm.com, jiangshanlai@gmail.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        tj@kernel.org, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: WARNING: at kernel/workqueue.c:1473 __queue_work+0x3b8/0x3d0
+Message-ID: <20200303213017.tanczhqd3nhpeeak@ca-dmjordan1.us.oracle.com>
+References: <20200217204803.GA13479@Red>
+ <20200218163504.y5ofvaejleuf5tbh@ca-dmjordan1.us.oracle.com>
+ <20200220090350.GA19858@Red>
+ <20200221174223.r3y6tugavp3k5jdl@ca-dmjordan1.us.oracle.com>
+ <20200228123311.GE3275@willie-the-truck>
+ <20200228153331.uimy62rat2tdxxod@ca-dmjordan1.us.oracle.com>
+ <20200301175351.GA11684@Red>
+ <20200302172510.fspofleipqjcdxak@ca-dmjordan1.us.oracle.com>
+ <e7c92da2-42c0-a97d-7427-6fdc769b41b9@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6e7e4191612460ba96567c16b4171f2d2f91b296.camel@linux.intel.com>
+In-Reply-To: <e7c92da2-42c0-a97d-7427-6fdc769b41b9@arm.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9549 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=2 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003030136
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9549 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 bulkscore=0
+ adultscore=0 suspectscore=2 spamscore=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 lowpriorityscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003030136
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Mar 03, 2020 at 01:01:26PM -0800, Kristen Carlson Accardi wrote:
-> On Tue, 2020-03-03 at 07:43 -0800, Thomas Garnier wrote:
-> > On Tue, Mar 3, 2020 at 1:55 AM Peter Zijlstra <peterz@infradead.org>
-> > wrote:
-> > > On Mon, Mar 02, 2020 at 09:02:15PM -0800, Kees Cook wrote:
-> > > > On Thu, Feb 27, 2020 at 04:00:45PM -0800, Thomas Garnier wrote:
-> > > > > Minor changes based on feedback and rebase from v10.
-> > > > > 
-> > > > > Splitting the previous serie in two. This part contains
-> > > > > assembly code
-> > > > > changes required for PIE but without any direct dependencies
-> > > > > with the
-> > > > > rest of the patchset.
-> > > > > 
-> > > > > Note: Using objtool to detect non-compliant PIE relocations is
-> > > > > not yet
-> > > > > possible as this patchset only includes the simplest PIE
-> > > > > changes.
-> > > > > Additional changes are needed in kvm, xen and percpu code.
-> > > > > 
-> > > > > Changes:
-> > > > >  - patch v11 (assembly);
-> > > > >    - Fix comments on x86/entry/64.
-> > > > >    - Remove KASLR PIE explanation on all commits.
-> > > > >    - Add note on objtool not being possible at this stage of
-> > > > > the patchset.
-> > > > 
-> > > > This moves us closer to PIE in a clean first step. I think these
-> > > > patches
-> > > > look good to go, and unblock the work in kvm, xen, and percpu
-> > > > code. Can
-> > > > one of the x86 maintainers pick this series up?
-> > > 
-> > > But,... do we still need this in the light of that fine-grained
-> > > kaslr
-> > > stuff?
-> > > 
-> > > What is the actual value of this PIE crud in the face of that?
-> > 
-> > If I remember well, it makes it easier/better but I haven't seen a
-> > recent update on that. Is that accurate Kees?
+On Mon, Mar 02, 2020 at 06:00:10PM +0000, Robin Murphy wrote:
+> On 02/03/2020 5:25 pm, Daniel Jordan wrote:
+> Something smelled familiar about this discussion, and sure enough that merge
+> contains c4741b230597 ("crypto: run initcalls for generic implementations
+> earlier"), which has raised its head before[1].
+
+Yep, that looks suspicious.
+
+The bisect didn't point to that specific commit, even though my version of git
+tries commits in the merge.  I'm probably missing something.
+
+> > Does this fix it?  I can't verify but figure it's worth trying the simplest
+> > explanation first, which is that the work isn't initialized by the time it's
+> > queued.
 > 
-> I believe this patchset is valuable if people are trying to brute force
-> guess the kernel location, but not so awesome in the event of
-> infoleaks. In the case of the current fgkaslr implementation, we only
-> randomize within the existing text segment memory area - so with PIE
-> the text segment base can move around more, but within that it wouldn't
-> strengthen anything. So, if you have an infoleak, you learn the base
-> instantly, and are just left with the same extra protection you get
-> without PIE.
+> The relative initcall levels would appear to explain the symptom - I guess
+> the question is whether this represents a bug in a particular test/algorithm
+> (as with the unaligned accesses) or a fundamental problem in the
+> infrastructure now being able to poke the module loader too early.
 
-Right -- PIE improves both non- and fg- KASLR similarly, in the sense
-that the possible entropy for base offset is expanded. It also opens the
-door to doing even more crazy things. (e.g. why keep the kernel text all
-in one contiguous chunk?)
+I'm not familiar with the crypto code.  Could it be that the commit moved some
+request_module() calls before modules_wq_init()?
 
-And generally speaking, it seems a nice improvement to me, as it gives
-the kernel greater addressing flexibility.
+And, is it "too early" or just "earlier"?  When is it too early for modprobe?
 
--- 
-Kees Cook
+Barring other ideas, Corentin, would you be willing to boot with
+
+    trace_event=initcall:*,module:* trace_options=stacktrace
+
+and
+
+diff --git a/kernel/module.c b/kernel/module.c
+index 33569a01d6e1..393be6979a27 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -3604,8 +3604,11 @@ static noinline int do_init_module(struct module *mod)
+ 	 * be cleaned up needs to sync with the queued work - ie
+ 	 * rcu_barrier()
+ 	 */
+-	if (llist_add(&freeinit->node, &init_free_list))
++	if (llist_add(&freeinit->node, &init_free_list)) {
++		pr_warn("%s: schedule_work for mod=%s\n", __func__, mod->name);
++		dump_stack();
+ 		schedule_work(&init_free_wq);
++	}
+ 
+ 	mutex_unlock(&module_mutex);
+ 	wake_up_all(&module_wq);
+
+but not my earlier fix and share the dmesg and ftrace output to see if the
+theory holds?
+
+Also, could you attach your config?  Curious now what your crypto options look
+like after fiddling with some of them today while trying and failing to see
+this on x86.
+
+thanks,
+Daniel
