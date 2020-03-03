@@ -2,56 +2,111 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 880EF177AF2
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Mar 2020 16:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E292F177FA3
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Mar 2020 19:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729452AbgCCPsd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Mar 2020 10:48:33 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:60421 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728291AbgCCPsd (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Mar 2020 10:48:33 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0TrZE6tq_1583250489;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TrZE6tq_1583250489)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 03 Mar 2020 23:48:10 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     giovanni.cabiddu@intel.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, ebiggers@kernel.org, pvanleeuwen@rambus.com,
-        zohar@linux.ibm.com
-Cc:     qat-linux@intel.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: qat - simplify the qat_crypto function
-Date:   Tue,  3 Mar 2020 23:48:09 +0800
-Message-Id: <20200303154809.81817-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
+        id S1732092AbgCCRwD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Mar 2020 12:52:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732089AbgCCRwD (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 3 Mar 2020 12:52:03 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B0C62146E;
+        Tue,  3 Mar 2020 17:52:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583257922;
+        bh=nekBzOBwg7MSUfjgB1WlnAg8CmwfUXUhpErEo3+ryck=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ikp/tQyoM4kVk08ULZcNSKyJkkQ2OSbuF6m2/LnjUj04SBJlUFsUjh5UgRhTLUhDZ
+         tUuBp/P/dz/SyqMoH2DZhoaCfQOxmyYMFZgw6U91V8+b/shuyC5bn8O4V/ZLibEGGZ
+         GTlDDLeeRukFwXNq81nZq2ju+cN4EwXhCTdSdDqQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH 5.5 169/176] padata: always acquire cpu_hotplug_lock before pinst->lock
+Date:   Tue,  3 Mar 2020 18:43:53 +0100
+Message-Id: <20200303174323.557292375@linuxfoundation.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200303174304.593872177@linuxfoundation.org>
+References: <20200303174304.593872177@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-simplify code to remove unnecessary constant string copies.
+From: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+commit 38228e8848cd7dd86ccb90406af32de0cad24be3 upstream.
+
+lockdep complains when padata's paths to update cpumasks via CPU hotplug
+and sysfs are both taken:
+
+  # echo 0 > /sys/devices/system/cpu/cpu1/online
+  # echo ff > /sys/kernel/pcrypt/pencrypt/parallel_cpumask
+
+  ======================================================
+  WARNING: possible circular locking dependency detected
+  5.4.0-rc8-padata-cpuhp-v3+ #1 Not tainted
+  ------------------------------------------------------
+  bash/205 is trying to acquire lock:
+  ffffffff8286bcd0 (cpu_hotplug_lock.rw_sem){++++}, at: padata_set_cpumask+0x2b/0x120
+
+  but task is already holding lock:
+  ffff8880001abfa0 (&pinst->lock){+.+.}, at: padata_set_cpumask+0x26/0x120
+
+  which lock already depends on the new lock.
+
+padata doesn't take cpu_hotplug_lock and pinst->lock in a consistent
+order.  Which should be first?  CPU hotplug calls into padata with
+cpu_hotplug_lock already held, so it should have priority.
+
+Fixes: 6751fb3c0e0c ("padata: Use get_online_cpus/put_online_cpus")
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/crypto/qat/qat_common/qat_crypto.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/padata.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/qat/qat_common/qat_crypto.c b/drivers/crypto/qat/qat_common/qat_crypto.c
-index 3852d31ce0a4..fb504cee0305 100644
---- a/drivers/crypto/qat/qat_common/qat_crypto.c
-+++ b/drivers/crypto/qat/qat_common/qat_crypto.c
-@@ -250,8 +250,7 @@ static int qat_crypto_create_instances(struct adf_accel_dev *accel_dev)
- 	char val[ADF_CFG_MAX_VAL_LEN_IN_BYTES];
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -643,8 +643,8 @@ int padata_set_cpumask(struct padata_ins
+ 	struct cpumask *serial_mask, *parallel_mask;
+ 	int err = -EINVAL;
  
- 	INIT_LIST_HEAD(&accel_dev->crypto_list);
--	strlcpy(key, ADF_NUM_CY, sizeof(key));
--	if (adf_cfg_get_param_value(accel_dev, SEC, key, val))
-+	if (adf_cfg_get_param_value(accel_dev, SEC, ADF_NUM_CY, val))
- 		return -EFAULT;
+-	mutex_lock(&pinst->lock);
+ 	get_online_cpus();
++	mutex_lock(&pinst->lock);
  
- 	if (kstrtoul(val, 0, &num_inst))
--- 
-2.17.1
+ 	switch (cpumask_type) {
+ 	case PADATA_CPU_PARALLEL:
+@@ -662,8 +662,8 @@ int padata_set_cpumask(struct padata_ins
+ 	err =  __padata_set_cpumasks(pinst, parallel_mask, serial_mask);
+ 
+ out:
+-	put_online_cpus();
+ 	mutex_unlock(&pinst->lock);
++	put_online_cpus();
+ 
+ 	return err;
+ }
+
 
