@@ -2,111 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF68178163
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Mar 2020 20:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7407D1781B2
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Mar 2020 20:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388155AbgCCSCK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Mar 2020 13:02:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387746AbgCCSCK (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Mar 2020 13:02:10 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A91B2072D;
-        Tue,  3 Mar 2020 18:02:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583258530;
-        bh=nBp8M//Wwkue4wWaCuCCtoO0nyJNfejoIKWOMt6EWGA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NiKNuv5cmtMdbpALga2Xv0WeDOwIM3worO9FQaRQIRWBS0zZWk/4p5TiaWZ603tra
-         +KeB0Q263WL3VD9mo95QBqPgyGimzOCH8hkZ6mKFa9IE+fARkhukM+Z9laU4H8EoZd
-         ch+voi5YuTc5lsFDH/w81ZmJT13l/yJxohR8aG3c=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH 4.19 85/87] padata: always acquire cpu_hotplug_lock before pinst->lock
-Date:   Tue,  3 Mar 2020 18:44:16 +0100
-Message-Id: <20200303174357.941131711@linuxfoundation.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200303174349.075101355@linuxfoundation.org>
-References: <20200303174349.075101355@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2388186AbgCCSF1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Mar 2020 13:05:27 -0500
+Received: from mail-il1-f195.google.com ([209.85.166.195]:33773 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733293AbgCCSF1 (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 3 Mar 2020 13:05:27 -0500
+Received: by mail-il1-f195.google.com with SMTP id r4so3614241iln.0
+        for <linux-crypto@vger.kernel.org>; Tue, 03 Mar 2020 10:05:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=42VRx4KA+cD1ZZnhz/34yl/kjJSKnU+ahvHX6e7S6BM=;
+        b=d57E+TjYnXBS5utFthqgjCzs5gzf2YK9WH5NGkJridOgtqp3wVAUPcyEBFtGiCER54
+         6WxsYg6g2KxpFGatddSsjazp+hKl/oyJ5OKJ2uC9KJtcATRNo83GGTHGVPilGREyURxn
+         Z1AWyRZRo/ls3PYs/eXVbfhGle8wc+vQa7nE8xliAofU32+n8Bxn9AxGOega5QSRynXM
+         n+wqCsJmmPzJF44r5ZkDoUidFxTZjorvsWAVZOXOixMNlr7ypx7VaGK/zals4SMfkjZx
+         EJ/HJ18Xw2Sxnr6D7Xe4VCnARhfWRa8yWu1eyAm8GayQVmhlaVfsPmlIK6SzOSEAMnfJ
+         gSBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=42VRx4KA+cD1ZZnhz/34yl/kjJSKnU+ahvHX6e7S6BM=;
+        b=cuc1cj9emoU2ca73y86lcGge3m8SOr4GSv0cHBmqSbNrZj4rjSNj3ihNQOnBOpyrE0
+         HCneag2N5ereGTB8KY61MJ+fpZut9te41pJr8dR2U52PalCdSihcWV85sIbbBCEqaMjZ
+         dtLPwMeRuzKfPW+qSyInkgR23UFz2JpMtFvGOfgCkSwJy85YyILB6txKHO7yJLEIaAIu
+         jaTtSuRZxkBi+LBr7RkLQxdYQF3JUp+9WpyCaitQBuwKGlZaa1pGTbSILqt181Z1iFvi
+         nw+WttBNnUCFie21cA+lk4NcND7st8FRzbcdBHmT9ycwKZYdQCEmD8fVd6GXiqfufkDB
+         kvhQ==
+X-Gm-Message-State: ANhLgQ2LcboZfMVvcF7VtrMGqoOpOm2D5aRa1zybiMEbV6P2/eCw68MS
+        zPjXKc7yzL8Rjk1s6bk35MRWvSl1bI8UWb4eTVI=
+X-Google-Smtp-Source: ADFU+vtyrSYL7z1VjGtve+7Jvf5g505V9ftsCJZgfM7HFZ1owQBkqegEuKlaj0Ww/sjlhpmjswSK17r3U09Gjdqh6DY=
+X-Received: by 2002:a92:d2c5:: with SMTP id w5mr256087ilg.196.1583258726270;
+ Tue, 03 Mar 2020 10:05:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a02:9f04:0:0:0:0:0 with HTTP; Tue, 3 Mar 2020 10:05:25 -0800 (PST)
+Reply-To: dr.challynoah@gmail.com
+From:   DR CHALLY NOAH <mayorabrahamedge404@gmail.com>
+Date:   Tue, 3 Mar 2020 19:05:25 +0100
+Message-ID: <CALqVJWdXs9icUMy7WWz15chUBSHbuLgeF4vj_6SPuetvkiJYVw@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Daniel Jordan <daniel.m.jordan@oracle.com>
-
-commit 38228e8848cd7dd86ccb90406af32de0cad24be3 upstream.
-
-lockdep complains when padata's paths to update cpumasks via CPU hotplug
-and sysfs are both taken:
-
-  # echo 0 > /sys/devices/system/cpu/cpu1/online
-  # echo ff > /sys/kernel/pcrypt/pencrypt/parallel_cpumask
-
-  ======================================================
-  WARNING: possible circular locking dependency detected
-  5.4.0-rc8-padata-cpuhp-v3+ #1 Not tainted
-  ------------------------------------------------------
-  bash/205 is trying to acquire lock:
-  ffffffff8286bcd0 (cpu_hotplug_lock.rw_sem){++++}, at: padata_set_cpumask+0x2b/0x120
-
-  but task is already holding lock:
-  ffff8880001abfa0 (&pinst->lock){+.+.}, at: padata_set_cpumask+0x26/0x120
-
-  which lock already depends on the new lock.
-
-padata doesn't take cpu_hotplug_lock and pinst->lock in a consistent
-order.  Which should be first?  CPU hotplug calls into padata with
-cpu_hotplug_lock already held, so it should have priority.
-
-Fixes: 6751fb3c0e0c ("padata: Use get_online_cpus/put_online_cpus")
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- kernel/padata.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -671,8 +671,8 @@ int padata_set_cpumask(struct padata_ins
- 	struct cpumask *serial_mask, *parallel_mask;
- 	int err = -EINVAL;
- 
--	mutex_lock(&pinst->lock);
- 	get_online_cpus();
-+	mutex_lock(&pinst->lock);
- 
- 	switch (cpumask_type) {
- 	case PADATA_CPU_PARALLEL:
-@@ -690,8 +690,8 @@ int padata_set_cpumask(struct padata_ins
- 	err =  __padata_set_cpumasks(pinst, parallel_mask, serial_mask);
- 
- out:
--	put_online_cpus();
- 	mutex_unlock(&pinst->lock);
-+	put_online_cpus();
- 
- 	return err;
- }
-
-
+Hello Dear,
+What Have Kept You Waiting To Claim Your $600,000.00 USD Compensation Award?
+This said fund was issued out by the UNITED NATIONS To compensate
+you.Please If You Have Not Claim Your Fund (Award),Kindly contact me
+at   DR.CHALLYNOAH@GMAIL.COM   for further details on how to proceed your
+fund (award)release to you or better still reply back Immediately You
+Receive This Information For An Urgent Confirmation And Release Of Your
+Fund To You Without Delays, as your email was listed among those to be
+compensated this year.Congratulations..
+Best Regards,
+Dr Chally Noah.
+Minister Of Finance On Foreign Remittance:
