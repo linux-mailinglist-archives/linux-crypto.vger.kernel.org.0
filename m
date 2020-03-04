@@ -2,47 +2,41 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AD9178D4D
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Mar 2020 10:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE39178DA6
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Mar 2020 10:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387664AbgCDJWT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 4 Mar 2020 04:22:19 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:52224 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387644AbgCDJWT (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 4 Mar 2020 04:22:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Xz1gqS8mHQf0FeXfh5Zn6ODmAjqLlTi3e7QpQPXzA9Q=; b=LDG8TcPSz6KerDK5RXGKXHL0+s
-        nd+daixZ03zWZPBsZex2W0SE2BU+bLdvHBFIbasjYsjLE9O6AcvIE4aklaE3c2rh36+IES5zOiJKo
-        CZHk/ZIgcOCzatmD7F0LvmIA2106SZonTNmKrjs8DuOvT6kzu3GSWHE0zWKaxMKARsPaQGewBXixa
-        ItobUKdK8g+0ymqN8mZ30rSgQf5HEI0PdCrTHBXpOW9woanZqUxWXgFDIr91oXYH//OaNr2XpNsGu
-        Foq59USFJcUjcKrB2RUG0sl7wBvbaaaFVwnCCFfz9rz8IvgRMTSRUVdUbDAj+EcyeoS8xmPTFub7+
-        KssVL8pg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j9QDl-0008ML-Jr; Wed, 04 Mar 2020 09:21:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CDE6B30066E;
-        Wed,  4 Mar 2020 10:19:37 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 407052011CA98; Wed,  4 Mar 2020 10:21:36 +0100 (CET)
-Date:   Wed, 4 Mar 2020 10:21:36 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Kristen Carlson Accardi <kristen@linux.intel.com>,
-        Thomas Garnier <thgarnie@chromium.org>,
+        id S1729144AbgCDJl5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Wed, 4 Mar 2020 04:41:57 -0500
+Received: from terminus.zytor.com ([198.137.202.136]:57959 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729126AbgCDJl5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 4 Mar 2020 04:41:57 -0500
+Received: from [IPv6:2601:646:8600:3281:d841:929b:f37:3a31] ([IPv6:2601:646:8600:3281:d841:929b:f37:3a31])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 0249eM5n306088
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Wed, 4 Mar 2020 01:40:22 -0800
+Authentication-Results: mail.zytor.com; dkim=permerror (bad message/signature format)
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-Id: <202003040940.0249eM5n306088@mail.zytor.com>
+Date:   Wed, 04 Mar 2020 01:40:15 -0800
+User-Agent: K-9 Mail for Android
+In-Reply-To: <202003031314.1AFFC0E@keescook>
+References: <20200228000105.165012-1-thgarnie@chromium.org> <202003022100.54CEEE60F@keescook> <20200303095514.GA2596@hirez.programming.kicks-ass.net> <CAJcbSZH1oON2VC2U8HjfC-6=M-xn5eU+JxHG2575iMpVoheKdA@mail.gmail.com> <6e7e4191612460ba96567c16b4171f2d2f91b296.camel@linux.intel.com> <202003031314.1AFFC0E@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Subject: Re: [PATCH v11 00/11] x86: PIE support to extend KASLR randomization
+To:     Kees Cook <keescook@chromium.org>,
+        Kristen Carlson Accardi <kristen@linux.intel.com>
+CC:     Thomas Garnier <thgarnie@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Kernel Hardening <kernel-hardening@lists.openwall.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        "H. Peter Anvin" <hpa@zytor.com>,
         the arch/x86 maintainers <x86@kernel.org>,
         Andy Lutomirski <luto@kernel.org>,
         Juergen Gross <jgross@suse.com>,
@@ -59,76 +53,92 @@ Cc:     Kristen Carlson Accardi <kristen@linux.intel.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Cao jin <caoj.fnst@cn.fujitsu.com>,
-        Allison Randal <allison@lohutok.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux PM list <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v11 00/11] x86: PIE support to extend KASLR randomization
-Message-ID: <20200304092136.GI2596@hirez.programming.kicks-ass.net>
-References: <20200228000105.165012-1-thgarnie@chromium.org>
- <202003022100.54CEEE60F@keescook>
- <20200303095514.GA2596@hirez.programming.kicks-ass.net>
- <CAJcbSZH1oON2VC2U8HjfC-6=M-xn5eU+JxHG2575iMpVoheKdA@mail.gmail.com>
- <6e7e4191612460ba96567c16b4171f2d2f91b296.camel@linux.intel.com>
- <202003031314.1AFFC0E@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202003031314.1AFFC0E@keescook>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Allison Randal <allison@lohutok.net>, Linux.Crypto@zytor.com
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Mar 03, 2020 at 01:19:22PM -0800, Kees Cook wrote:
-> On Tue, Mar 03, 2020 at 01:01:26PM -0800, Kristen Carlson Accardi wrote:
-> > On Tue, 2020-03-03 at 07:43 -0800, Thomas Garnier wrote:
-> > > On Tue, Mar 3, 2020 at 1:55 AM Peter Zijlstra <peterz@infradead.org>
+Mailing List <linux-crypto@vger.kernel.org>,LKML <linux-kernel@vger.kernel.org>,virtualization@lists.linux-foundation.org,Linux PM list <linux-pm@vger.kernel.org>
+From: hpa@zytor.com
+Message-ID: <F35C8DBD-9AC3-46F2-9043-6CB9A4FDDDC9@zytor.com>
 
-> > > > But,... do we still need this in the light of that fine-grained
-> > > > kaslr
-> > > > stuff?
-> > > > 
-> > > > What is the actual value of this PIE crud in the face of that?
-> > > 
-> > > If I remember well, it makes it easier/better but I haven't seen a
-> > > recent update on that. Is that accurate Kees?
-> > 
-> > I believe this patchset is valuable if people are trying to brute force
-> > guess the kernel location, but not so awesome in the event of
-> > infoleaks. In the case of the current fgkaslr implementation, we only
-> > randomize within the existing text segment memory area - so with PIE
-> > the text segment base can move around more, but within that it wouldn't
-> > strengthen anything. So, if you have an infoleak, you learn the base
-> > instantly, and are just left with the same extra protection you get
-> > without PIE.
-> 
-> Right -- PIE improves both non- and fg- KASLR similarly, in the sense
-> that the possible entropy for base offset is expanded. It also opens the
-> door to doing even more crazy things. 
+On March 3, 2020 1:19:22 PM PST, Kees Cook <keescook@chromium.org> wrote:
+>On Tue, Mar 03, 2020 at 01:01:26PM -0800, Kristen Carlson Accardi
+>wrote:
+>> On Tue, 2020-03-03 at 07:43 -0800, Thomas Garnier wrote:
+>> > On Tue, Mar 3, 2020 at 1:55 AM Peter Zijlstra
+><peterz@infradead.org>
+>> > wrote:
+>> > > On Mon, Mar 02, 2020 at 09:02:15PM -0800, Kees Cook wrote:
+>> > > > On Thu, Feb 27, 2020 at 04:00:45PM -0800, Thomas Garnier wrote:
+>> > > > > Minor changes based on feedback and rebase from v10.
+>> > > > > 
+>> > > > > Splitting the previous serie in two. This part contains
+>> > > > > assembly code
+>> > > > > changes required for PIE but without any direct dependencies
+>> > > > > with the
+>> > > > > rest of the patchset.
+>> > > > > 
+>> > > > > Note: Using objtool to detect non-compliant PIE relocations
+>is
+>> > > > > not yet
+>> > > > > possible as this patchset only includes the simplest PIE
+>> > > > > changes.
+>> > > > > Additional changes are needed in kvm, xen and percpu code.
+>> > > > > 
+>> > > > > Changes:
+>> > > > >  - patch v11 (assembly);
+>> > > > >    - Fix comments on x86/entry/64.
+>> > > > >    - Remove KASLR PIE explanation on all commits.
+>> > > > >    - Add note on objtool not being possible at this stage of
+>> > > > > the patchset.
+>> > > > 
+>> > > > This moves us closer to PIE in a clean first step. I think
+>these
+>> > > > patches
+>> > > > look good to go, and unblock the work in kvm, xen, and percpu
+>> > > > code. Can
+>> > > > one of the x86 maintainers pick this series up?
+>> > > 
+>> > > But,... do we still need this in the light of that fine-grained
+>> > > kaslr
+>> > > stuff?
+>> > > 
+>> > > What is the actual value of this PIE crud in the face of that?
+>> > 
+>> > If I remember well, it makes it easier/better but I haven't seen a
+>> > recent update on that. Is that accurate Kees?
+>> 
+>> I believe this patchset is valuable if people are trying to brute
+>force
+>> guess the kernel location, but not so awesome in the event of
+>> infoleaks. In the case of the current fgkaslr implementation, we only
+>> randomize within the existing text segment memory area - so with PIE
+>> the text segment base can move around more, but within that it
+>wouldn't
+>> strengthen anything. So, if you have an infoleak, you learn the base
+>> instantly, and are just left with the same extra protection you get
+>> without PIE.
+>
+>Right -- PIE improves both non- and fg- KASLR similarly, in the sense
+>that the possible entropy for base offset is expanded. It also opens
+>the
+>door to doing even more crazy things. (e.g. why keep the kernel text
+>all
+>in one contiguous chunk?)
+>
+>And generally speaking, it seems a nice improvement to me, as it gives
+>the kernel greater addressing flexibility.
 
-So I'm really confused. I see it increases the aslr range, but I'm still
-not sure why we care in the face of fgkaslr. Current kaslr is completely
-broken because the hardware leaks more bits than we currently have, even
-without the kernel itself leaking an address.
+The difference in entropy between fgkaslr and extending the kernel to the PIC memory model (which is the real thing this is doing) is immense:
 
-But leaking a single address is not a problem with fgkaslr.
+The current kASLR has maybe 9 bits of entropy. PIC-model could extend that by at most 16 bits at considerable cost in performance and complexity. Fgkaslr would provide many kilobits worth of entropy; the limiting factor would be the random number source used! With a valid RNG, no two boots across all the computers in the world across all time would have an infinitesimal probability of ever being the same; never mind the infoleak issue.
 
-> (e.g. why keep the kernel text all
-> in one contiguous chunk?)
+In addition to the combinatorics, fgkaslr pushes randomization right as well as left, so even for the address of any one individual function you get a gain of 15-17 bits.
 
-Dear gawd, please no. Also, we're limited to 2G text, that's just not a
-lot of room. I'm really going to object when people propose we introduce
-direct PLT for x86.
+"More is better" is a truism, but so is Amdahl's Law.
 
-> And generally speaking, it seems a nice improvement to me, as it gives
-> the kernel greater addressing flexibility.
 
-But at what cost; it does unspeakable ugly to the asm. And didn't a
-kernel compiled with the extended PIE range produce a measurably slower
-kernel due to all the ugly?
-
-So maybe I'm slow, but please spell out the benefit, because I'm not
-seeing it.
+-- 
+Sent from my Android device with K-9 Mail. Please excuse my brevity.
