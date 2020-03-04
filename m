@@ -2,98 +2,111 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E98E41798EA
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Mar 2020 20:23:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E553179964
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Mar 2020 20:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387740AbgCDTXD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 4 Mar 2020 14:23:03 -0500
-Received: from terminus.zytor.com ([198.137.202.136]:54875 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387711AbgCDTXD (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 4 Mar 2020 14:23:03 -0500
-Received: from hanvin-mobl2.amr.corp.intel.com ([192.55.55.45])
-        (authenticated bits=0)
-        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 024JM4WA436200
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Wed, 4 Mar 2020 11:22:05 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 024JM4WA436200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2020022001; t=1583349727;
-        bh=g6Mtry4glpDMxH5UiOpY16heGYyer5fR7lVfPBWaveE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ar6nn8Ge/T+692bP42wyhN6/gA6zy1dzCiGF74CRXJXFqjrk6VwRkFpBhRP3+cZ6P
-         aoecjqhhdSeSkR9EesGi+ThpGixJViS9m59hDZE5MkhJCppsl9CGI+XaXJHL6N9PSz
-         N15YsSpDSe2BGbMQ73a5iqbaYgTLZGuuCk9xtQ+bYyE3yGCxvvNHQZ7Xw/jQnA8xUa
-         jCODCawM3hNRUyrc1PnA5eoR37ZT81R1OELgMwfxsZpMMFvL9tLT1LJphQQCaZE+6J
-         TgBBCCGkC2zFLRAajE3d9FAm6PTlGUqxGMq/StoWIgr6Tz8ZPVJwmUM93IFzinAgT+
-         QzoETf31D45JA==
-Subject: Re: [PATCH v11 00/11] x86: PIE support to extend KASLR randomization
-To:     Thomas Garnier <thgarnie@chromium.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kristen Carlson Accardi <kristen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        id S1729008AbgCDT64 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 4 Mar 2020 14:58:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728665AbgCDT64 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 4 Mar 2020 14:58:56 -0500
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DB7B21556;
+        Wed,  4 Mar 2020 19:58:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583351935;
+        bh=KpWyyTa4QUWn4Sv9w00wWJszehOXETZlcXXiDJFXdEw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b/hUefZv6HPded/GJr4NJQF470NkRyMxIfwu9wKwQRVkgb/kNj67tMlpBpQVJ4EM7
+         tjwbUSJkJWIMRMxtXFoJlSDMqlWMb6MKb35+V9UwrKBSFiOf0empjE9I9xQGEmFCjQ
+         Lrfak6gCVQ1v3s9p+Rzrxk8nyx/036tPVhnqaK68=
+Date:   Wed, 4 Mar 2020 11:58:53 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gilad Ben-Yossef <gilad@benyossef.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Cao jin <caoj.fnst@cn.fujitsu.com>,
-        Allison Randal <allison@lohutok.net>,
+        Ofir Drang <ofir.drang@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux PM list <linux-pm@vger.kernel.org>
-References: <20200228000105.165012-1-thgarnie@chromium.org>
- <202003022100.54CEEE60F@keescook>
- <20200303095514.GA2596@hirez.programming.kicks-ass.net>
- <CAJcbSZH1oON2VC2U8HjfC-6=M-xn5eU+JxHG2575iMpVoheKdA@mail.gmail.com>
- <6e7e4191612460ba96567c16b4171f2d2f91b296.camel@linux.intel.com>
- <202003031314.1AFFC0E@keescook>
- <20200304092136.GI2596@hirez.programming.kicks-ass.net>
- <202003041019.C6386B2F7@keescook>
- <e60876d0-4f7d-9523-bcec-6d002f717623@zytor.com>
- <CAJcbSZHBB1u2Vq0jZKsmd0UcRj=aichxTtbGvbWgf8-g8WPa7w@mail.gmail.com>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <627fe5d2-e6c3-4eff-1a58-14e17dc04ac5@zytor.com>
-Date:   Wed, 4 Mar 2020 11:22:04 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] crypto: testmgr - sync both RFC4106 IV copies
+Message-ID: <20200304195853.GA1005@sol.localdomain>
+References: <20200303120925.12067-1-gilad@benyossef.com>
+ <20200304000606.GB89804@sol.localdomain>
+ <CAOtvUMd6Ak3n-ABO1h440BoDASJUvh+-9PwEGFi-WzA=g84kLg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJcbSZHBB1u2Vq0jZKsmd0UcRj=aichxTtbGvbWgf8-g8WPa7w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOtvUMd6Ak3n-ABO1h440BoDASJUvh+-9PwEGFi-WzA=g84kLg@mail.gmail.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 2020-03-04 11:19, Thomas Garnier wrote:
->>
->> The huge memory model, required for arbitrary placement, has a very
->> significant performance impact.
+On Wed, Mar 04, 2020 at 03:48:47PM +0200, Gilad Ben-Yossef wrote:
 > 
-> I assume you mean mcmodel=large, it doesn't use it. It uses -fPIE and
-> removes -mcmodel=kernel. It favors relative references whenever
-> possible.
+> >
+> > > +     const unsigned int aad_tail_size = suite->skip_aad_iv ? aad_ivsize : 0;
+> > >       const unsigned int authsize = vec->clen - vec->plen;
+> > >
+> > >       if (prandom_u32() % 2 == 0 && vec->alen > aad_tail_size) {
+> > >                /* Mutate the AAD */
+> > >               flip_random_bit((u8 *)vec->assoc, vec->alen - aad_tail_size);
+> > > +             if (suite->auth_aad_iv)
+> > > +                     memcpy((u8 *)vec->iv,
+> > > +                            (vec->assoc + vec->alen - aad_ivsize),
+> > > +                            aad_ivsize);
+> >
+> > Why sync the IV copies here?  When 'auth_aad_iv', we assume the copy of the IV
+> > in the AAD (which was just corrupted) is authenticated.  So we already know that
+> > decryption should fail, regardless of the other IV copy.
 > 
+> Nope. We know there needs to be a copy of the IV in the AAD and we know the IV
+> should be included in calculating in the authentication tag. We don't know which
+> copy of the IV will be used by the implementation.
+> 
+> Case in point - the ccree driver actually currently uses the copy of
+> the IV passed via
+> req->iv for calculating the IV contribution to the authentication tag,
+> not the one in the AAD.
+> 
+> And what happens then if you don't do this copy than is that you get
+> an unexpected
+> decryption success where the test expects failure, because the driver
+> fed the HW the
+> none mutated copy of the IV from req->iv and not the mutated copy
+> found in the AAD.
 
-I know... this was in reference to a comment of Kees'.
+Okay, well in that case I don't see any difference between the two flags.  This
+is because changing the IV *must* affect the authentication tag for *any* AEAD
+algorithm, otherwise it's not actually authenticated encryption.
 
-	-hpa
+So why don't we just use a single flag 'aad_iv' that's set on rfc4106, rfc4309,
+rfc4543, and rfc7539esp?  This flag would mean that the last bytes of the AAD
+buffer must contain another copy of the IV for the behavior to be well-defined.
 
+> > > @@ -2208,6 +2220,10 @@ static void generate_aead_message(struct aead_request *req,
+> > >       /* Generate the AAD. */
+> > >       generate_random_bytes((u8 *)vec->assoc, vec->alen);
+> > >
+> > > +     if (suite->auth_aad_iv && (vec->alen > ivsize))
+> > > +             memcpy(((u8 *)vec->assoc + vec->alen - ivsize), vec->iv,
+> > > +                    ivsize);
+> >
+> > Shouldn't this be >= ivsize, not > ivsize?
+> Indeed.
+> 
+> > And doesn't the IV need to be synced
+> > in both the skip_aad_iv and auth_aad_iv cases?
+> 
+> Nope, because in the skip_aad_iv case we never mutate the IV, so no
+> point in copying.
+
+But even if the IV isn't mutated, both copies still need to be the same, right?
+We seem to have concluded that the behavior should be implementation-defined
+when they're different, so that's the logical consequence...
+
+- Eric
