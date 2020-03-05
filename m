@@ -2,89 +2,107 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5263C17A6EE
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2020 15:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBEE17A8C4
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2020 16:22:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgCEN7q (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 5 Mar 2020 08:59:46 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:49482 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726579AbgCEN7p (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 5 Mar 2020 08:59:45 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BBAAE200713;
-        Thu,  5 Mar 2020 14:59:43 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AF47520070F;
-        Thu,  5 Mar 2020 14:59:43 +0100 (CET)
-Received: from fsr-ub1864-014.ea.freescale.net (fsr-ub1864-014.ea.freescale.net [10.171.95.219])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 1FCB42059D;
-        Thu,  5 Mar 2020 14:59:43 +0100 (CET)
-From:   =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>
-To:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] arm64: dts: imx8mn: align name for crypto child nodes
-Date:   Thu,  5 Mar 2020 15:59:09 +0200
-Message-Id: <20200305135909.8180-6-horia.geanta@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200305135909.8180-1-horia.geanta@nxp.com>
-References: <20200305135909.8180-1-horia.geanta@nxp.com>
+        id S1726579AbgCEPW5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 5 Mar 2020 10:22:57 -0500
+Received: from mail-eopbgr40088.outbound.protection.outlook.com ([40.107.4.88]:54658
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726413AbgCEPW5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 5 Mar 2020 10:22:57 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ls9VXZVCxfrDfK1IaddF1YUeaup22dHN7YoVZqfYUnvNUQHYTLAtg0eSY5wyQMXBsOleY18QRAB+57OPo4LOlTx5P5BebX78QeF/o+W4BHfStvij+g5jtNSpav6ot5PsE1P49TeTwp1fUJCN/joLBteBVlOx4MbrQkt8TtTSjl/Yli9HP/pCyySwoK4M49bYLMbuGFO1eXklj2+7QT/BW9VSwgGUymLxAQA0ksICAru4PWQ9F4yZsM0jOLZNFZqgglt7VKjbNYPk9atXvhbawCRdf6p/ba/Xmnugod4WDgo2zfBsIkTthdqeNzMHArrqeHgoJAKR0dbpllbOg/rv5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zYqGmPT1brv6ph8EjqOto7COR4sIhDwT8GZ9MipF6x8=;
+ b=KQMGES6ChDZt8mM7Ls8Jv3LKwOK9TQiKG3Fg+9LykxvwFClTb/1BRIAwrjzuzOtR+SOgs3vtTwOvA2oyikIR18ygkLY9XGgbOjQ4od2LR7U8C+bXIo0QVvNiJpSv4K2JATj2siPc6GU2EfRRvD835uNEDYL8E9ujflS9w0sGDVTqJNC3MZeca9JI/6I68rnZD+rCmXuxaxzCdcvUHmsVMXWi3IIrifIRqf2KhVciI6ckdIe6CzYlbr6wtfG8JfWX/UTpraNBtmzytRRTz+8FsWpZ/msP5wJWazw7a/4Q8I6Y31XgCUVqRMjJu2Q3BM8usQeAQdYXMtySyIpfsmOFlw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zYqGmPT1brv6ph8EjqOto7COR4sIhDwT8GZ9MipF6x8=;
+ b=ph1gntAsLId/MS/6VrHcLBEh/99tA1lnngl0RX/Ml1ztRlQ52GseGj1mGTKEYJmDC7jlyr/9JatqM6RFUXx6G5gdbSefRKvgXxcD9I/jMfl0wF8gc0961upKuD5gLv0ZRaaDSEp1bNmn7+XYvRY/fGFTDcJmGXGP1y78k5+fupo=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=horia.geanta@nxp.com; 
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com (52.134.3.153) by
+ VI1PR0402MB3391.eurprd04.prod.outlook.com (52.134.1.151) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2772.15; Thu, 5 Mar 2020 15:22:54 +0000
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::751e:7e8d:ed4:ef5f]) by VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::751e:7e8d:ed4:ef5f%7]) with mapi id 15.20.2772.019; Thu, 5 Mar 2020
+ 15:22:54 +0000
+Subject: Re: [RFC] crypto: xts - limit accepted key length
+To:     "Van Leeuwen, Pascal" <pvanleeuwen@rambus.com>,
+        "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+References: <b8c0cbbf0cb94e389bae5ae3da77596d@DM6PR20MB2762.namprd20.prod.outlook.com>
+ <CY4PR0401MB3652818432E5A28BC5089E15C3E70@CY4PR0401MB3652.namprd04.prod.outlook.com>
+ <c69cebf0d6cb48ff93389d73dea6ba3e@DM6PR20MB2762.namprd20.prod.outlook.com>
+ <CY4PR0401MB3652485437D698D9F9FD1603C3E40@CY4PR0401MB3652.namprd04.prod.outlook.com>
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+Message-ID: <7264f497-8fee-04ac-5ed0-819ab7dd5b9e@nxp.com>
+Date:   Thu, 5 Mar 2020 17:22:48 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+In-Reply-To: <CY4PR0401MB3652485437D698D9F9FD1603C3E40@CY4PR0401MB3652.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM4PR0701CA0023.eurprd07.prod.outlook.com
+ (2603:10a6:200:42::33) To VI1PR0402MB3485.eurprd04.prod.outlook.com
+ (2603:10a6:803:7::25)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.171.74.188] (212.146.100.6) by AM4PR0701CA0023.eurprd07.prod.outlook.com (2603:10a6:200:42::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.11 via Frontend Transport; Thu, 5 Mar 2020 15:22:50 +0000
+X-Originating-IP: [212.146.100.6]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e5238907-1a0f-4b32-95e5-08d7c11911cd
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3391:|VI1PR0402MB3391:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB33912AA9E6D58CE6E3087DB698E20@VI1PR0402MB3391.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 03333C607F
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(136003)(376002)(346002)(39860400002)(396003)(189003)(199004)(110136005)(54906003)(16576012)(4326008)(316002)(16526019)(186003)(86362001)(26005)(6486002)(52116002)(31696002)(478600001)(31686004)(53546011)(8676002)(66946007)(66556008)(36756003)(81156014)(5660300002)(8936002)(66476007)(81166006)(956004)(2616005)(2906002)(4744005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0402MB3391;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+Received-SPF: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aTQmmj8iB0WCr5MpQeDvKCeKHbDN6zHnaFVLmy/bWFyRijqQSW6C5BBgt/pwsU2RaBrLtkVxI1OvPuSlkyYX4sdfC/8JRaNeCW0YXuhx215u4SJiPL36X/QCs0/bvcip3HtlPZhRWwRfOctEwvaCXecdKaOSXqLlS8aU8YQXX6D4yLFyCisaSQhkNTujRega8Gj3oxVL0kT8mGq7AQjUKoHtEZ+N0DSiK/S4P0Pn4KPaDt9B2O3rdCJydi6aPBwtGCL08pzJN03sp2KuPf26iRA9zunTYyDlPiZG9+hEp2/EnzzwTbwp3tdOGeEynzhCCCtkzi4sMdVB2E9Li/z14q0OFiui58EhKBcwEKFCT+4Q82cx8RafqSQrReCCvdYeQvjEHBoRtgI8Y29IZCQuxXWtsQBrdLaVlhFtXmE2KSovb0IcH5ud+gc5k0xNvF6s
+X-MS-Exchange-AntiSpam-MessageData: Q4Uwa8IlC71tm8K2VvvwS10j0cFpjL0MA2x4hkaXNcLKlbvcTiXCjTsXheabxdAENoRZXMDUUojthZ7oDCy9jz4ijyR8D1i55o19CEoVOXNyu6Wwzrh2GHERUYYxOAnOboRn+faZS24qL8ah9egawA==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5238907-1a0f-4b32-95e5-08d7c11911cd
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2020 15:22:54.1577
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xLiJb0v5YYOnaqe8iDb7jGuQ3PXICgKVDKHxNyF7ayhbYevSRhYam0ptpDvLu+o1j1HNGrEvul/7KZsaInugHQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3391
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Silvano di Ninno <silvano.dininno@nxp.com>
+On 3/3/2020 3:09 PM, Van Leeuwen, Pascal wrote:
+> What is wrong with software fallback for the 192 bit keys in your driver?
+More code to maintain.
 
-crypto child nodes should use the "jr" name (without an index),
-as indicated in the DT binding.
+AES-XTS-192 should be:
+-either rejected (since there's a standard in place) or
+-at most made optional (allowing for implementations to *optionally* support
+more key sizes), meaning crypto fuzz testing shouldn't fail.
 
-Signed-off-by: Silvano di Ninno <silvano.dininno@nxp.com>
-Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8mn.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Suggestions on how to do this?
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index f2775724377f..ff9c1ea38130 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -554,19 +554,19 @@
- 					 <&clk IMX8MN_CLK_IPG_ROOT>;
- 				clock-names = "aclk", "ipg";
- 
--				sec_jr0: jr0@1000 {
-+				sec_jr0: jr@1000 {
- 					 compatible = "fsl,sec-v4.0-job-ring";
- 					 reg = <0x1000 0x1000>;
- 					 interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
- 				};
- 
--				sec_jr1: jr1@2000 {
-+				sec_jr1: jr@2000 {
- 					 compatible = "fsl,sec-v4.0-job-ring";
- 					 reg = <0x2000 0x1000>;
- 					 interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
- 				};
- 
--				sec_jr2: jr2@3000 {
-+				sec_jr2: jr@3000 {
- 					 compatible = "fsl,sec-v4.0-job-ring";
- 					 reg = <0x3000 0x1000>;
- 					 interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
--- 
-2.17.1
-
+Thanks,
+Horia
