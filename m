@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F1A179DB1
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2020 03:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E15179DB6
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2020 03:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726049AbgCECKM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 4 Mar 2020 21:10:12 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10726 "EHLO huawei.com"
+        id S1726007AbgCECKP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 4 Mar 2020 21:10:15 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11163 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726007AbgCECKM (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 4 Mar 2020 21:10:12 -0500
+        id S1725777AbgCECKN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 4 Mar 2020 21:10:13 -0500
 Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 146B3B2B70745AD3F838;
+        by Forcepoint Email with ESMTP id 1BB5237181449ABE785D;
         Thu,  5 Mar 2020 10:10:10 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
@@ -25,9 +25,9 @@ CC:     <linux-crypto@vger.kernel.org>, <linuxarm@huawei.com>,
         <liulongfang@huawei.com>, <qianweili@huawei.com>,
         <zhangwei375@huawei.com>, <fanghao11@huawei.com>,
         <forest.zhouchang@huawei.com>
-Subject: [PATCH v3 1/5] crypto: hisilicon - Use one workqueue per qm instead of per qp
-Date:   Thu, 5 Mar 2020 10:06:21 +0800
-Message-ID: <1583373985-718-2-git-send-email-xuzaibo@huawei.com>
+Subject: [PATCH v3 2/5] crypto: hisilicon/sec2 - Add workqueue for SEC driver.
+Date:   Thu, 5 Mar 2020 10:06:22 +0800
+Message-ID: <1583373985-718-3-git-send-email-xuzaibo@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1583373985-718-1-git-send-email-xuzaibo@huawei.com>
 References: <1583373985-718-1-git-send-email-xuzaibo@huawei.com>
@@ -40,132 +40,86 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Shukun Tan <tanshukun1@huawei.com>
+From: Ye Kai <yekai13@huawei.com>
 
-Since SEC need not so many workqueues as our test, we just use
-one workqueue created by the device driver of QM if necessary,
-which will also reduce CPU waste without any throughput decreasing.
+Allocate one workqueue for each QM instead of one for all QMs,
+we found the throughput of SEC engine can be increased to
+the hardware limit throughput during testing sec2 performance.
+so we added this scheme.
 
-Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
+Signed-off-by: Ye Kai <yekai13@huawei.com>
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
 Signed-off-by: Zaibo Xu <xuzaibo@huawei.com>
 Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
- drivers/crypto/hisilicon/qm.c | 39 ++++++++++++++++-----------------------
- drivers/crypto/hisilicon/qm.h |  5 +++--
- 2 files changed, 19 insertions(+), 25 deletions(-)
+ drivers/crypto/hisilicon/sec2/sec_main.c | 32 +++++++++++++++++++++++++++++---
+ 1 file changed, 29 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index ad7146a..2fa1d1a 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -494,17 +494,9 @@ static void qm_poll_qp(struct hisi_qp *qp, struct hisi_qm *qm)
- 	}
- }
+diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+index 3767fdb..1fe2558 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_main.c
++++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -774,12 +774,30 @@ static void sec_qm_uninit(struct hisi_qm *qm)
  
--static void qm_qp_work_func(struct work_struct *work)
-+static void qm_work_process(struct work_struct *work)
+ static int sec_probe_init(struct hisi_qm *qm, struct sec_dev *sec)
  {
--	struct hisi_qp *qp;
--
--	qp = container_of(work, struct hisi_qp, work);
--	qm_poll_qp(qp, qp->qm);
--}
--
--static irqreturn_t qm_irq_handler(int irq, void *data)
--{
--	struct hisi_qm *qm = data;
-+	struct hisi_qm *qm = container_of(work, struct hisi_qm, work);
- 	struct qm_eqe *eqe = qm->eqe + qm->status.eq_head;
- 	struct hisi_qp *qp;
- 	int eqe_num = 0;
-@@ -513,7 +505,7 @@ static irqreturn_t qm_irq_handler(int irq, void *data)
- 		eqe_num++;
- 		qp = qm_to_hisi_qp(qm, eqe);
- 		if (qp)
--			queue_work(qp->wq, &qp->work);
-+			qm_poll_qp(qp, qm);
++	int ret;
++
++	/*
++	 * WQ_HIGHPRI: SEC request must be low delayed,
++	 * so need a high priority workqueue.
++	 * WQ_UNBOUND: SEC task is likely with long
++	 * running CPU intensive workloads.
++	 */
++	qm->wq = alloc_workqueue("%s", WQ_HIGHPRI |
++		WQ_MEM_RECLAIM | WQ_UNBOUND, num_online_cpus(),
++		pci_name(qm->pdev));
++	if (!qm->wq) {
++		pci_err(qm->pdev, "fail to alloc workqueue\n");
++		return -ENOMEM;
++	}
++
+ 	if (qm->fun_type == QM_HW_PF) {
+ 		qm->qp_base = SEC_PF_DEF_Q_BASE;
+ 		qm->qp_num = pf_q_num;
+ 		qm->debug.curr_qm_qp_num = pf_q_num;
  
- 		if (qm->status.eq_head == QM_Q_DEPTH - 1) {
- 			qm->status.eqc_phase = !qm->status.eqc_phase;
-@@ -531,6 +523,17 @@ static irqreturn_t qm_irq_handler(int irq, void *data)
+-		return sec_pf_probe_init(sec);
++		ret = sec_pf_probe_init(sec);
++		if (ret)
++			goto err_probe_uninit;
+ 	} else if (qm->fun_type == QM_HW_VF) {
+ 		/*
+ 		 * have no way to get qm configure in VM in v1 hardware,
+@@ -792,18 +810,26 @@ static int sec_probe_init(struct hisi_qm *qm, struct sec_dev *sec)
+ 			qm->qp_num = SEC_QUEUE_NUM_V1 - SEC_PF_DEF_Q_NUM;
+ 		} else if (qm->ver == QM_HW_V2) {
+ 			/* v2 starts to support get vft by mailbox */
+-			return hisi_qm_get_vft(qm, &qm->qp_base, &qm->qp_num);
++			ret = hisi_qm_get_vft(qm, &qm->qp_base, &qm->qp_num);
++			if (ret)
++				goto err_probe_uninit;
+ 		}
+ 	} else {
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto err_probe_uninit;
  	}
  
- 	qm_db(qm, 0, QM_DOORBELL_CMD_EQ, qm->status.eq_head, 0);
-+}
-+
-+static irqreturn_t do_qm_irq(int irq, void *data)
-+{
-+	struct hisi_qm *qm = (struct hisi_qm *)data;
-+
-+	/* the workqueue created by device driver of QM */
-+	if (qm->wq)
-+		queue_work(qm->wq, &qm->work);
-+	else
-+		schedule_work(&qm->work);
- 
- 	return IRQ_HANDLED;
+ 	return 0;
++err_probe_uninit:
++	destroy_workqueue(qm->wq);
++	return ret;
  }
-@@ -540,7 +543,7 @@ static irqreturn_t qm_irq(int irq, void *data)
- 	struct hisi_qm *qm = data;
  
- 	if (readl(qm->io_base + QM_VF_EQ_INT_SOURCE))
--		return qm_irq_handler(irq, data);
-+		return do_qm_irq(irq, data);
- 
- 	dev_err(&qm->pdev->dev, "invalid int source\n");
- 	qm_db(qm, 0, QM_DOORBELL_CMD_EQ, qm->status.eq_head, 0);
-@@ -1159,20 +1162,9 @@ struct hisi_qp *hisi_qm_create_qp(struct hisi_qm *qm, u8 alg_type)
- 
- 	qp->qp_id = qp_id;
- 	qp->alg_type = alg_type;
--	INIT_WORK(&qp->work, qm_qp_work_func);
--	qp->wq = alloc_workqueue("hisi_qm", WQ_UNBOUND | WQ_HIGHPRI |
--				 WQ_CPU_INTENSIVE | WQ_MEM_RECLAIM, 0);
--	if (!qp->wq) {
--		ret = -EFAULT;
--		goto err_free_qp_mem;
--	}
- 
- 	return qp;
- 
--err_free_qp_mem:
--	if (qm->use_dma_api)
--		dma_free_coherent(dev, qp->qdma.size, qp->qdma.va,
--				  qp->qdma.dma);
- err_clear_bit:
- 	write_lock(&qm->qps_lock);
- 	qm->qp_array[qp_id] = NULL;
-@@ -1704,6 +1696,7 @@ int hisi_qm_init(struct hisi_qm *qm)
- 	qm->qp_in_used = 0;
- 	mutex_init(&qm->mailbox_lock);
- 	rwlock_init(&qm->qps_lock);
-+	INIT_WORK(&qm->work, qm_work_process);
- 
- 	dev_dbg(dev, "init qm %s with %s\n", pdev->is_physfn ? "pf" : "vf",
- 		qm->use_dma_api ? "dma api" : "iommu api");
-diff --git a/drivers/crypto/hisilicon/qm.h b/drivers/crypto/hisilicon/qm.h
-index 1a4f208..c72c2e6 100644
---- a/drivers/crypto/hisilicon/qm.h
-+++ b/drivers/crypto/hisilicon/qm.h
-@@ -183,6 +183,9 @@ struct hisi_qm {
- 	u32 error_mask;
- 	u32 msi_mask;
- 
-+	struct workqueue_struct *wq;
-+	struct work_struct work;
+ static void sec_probe_uninit(struct hisi_qm *qm)
+ {
+ 	hisi_qm_dev_err_uninit(qm);
 +
- 	const char *algs;
- 	bool use_dma_api;
- 	bool use_sva;
-@@ -219,8 +222,6 @@ struct hisi_qp {
- 	void *qp_ctx;
- 	void (*req_cb)(struct hisi_qp *qp, void *data);
- 	void (*event_cb)(struct hisi_qp *qp);
--	struct work_struct work;
--	struct workqueue_struct *wq;
++	destroy_workqueue(qm->wq);
+ }
  
- 	struct hisi_qm *qm;
- 	u16 pasid;
+ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 -- 
 2.8.1
 
