@@ -2,29 +2,29 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C4B17B028
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2020 21:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B35917B02A
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2020 21:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726111AbgCEU73 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 5 Mar 2020 15:59:29 -0500
-Received: from viti.kaiser.cx ([85.214.81.225]:43332 "EHLO viti.kaiser.cx"
+        id S1726317AbgCEU7a (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 5 Mar 2020 15:59:30 -0500
+Received: from viti.kaiser.cx ([85.214.81.225]:43330 "EHLO viti.kaiser.cx"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726220AbgCEU73 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726211AbgCEU73 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 5 Mar 2020 15:59:29 -0500
 Received: from 250.57.4.146.static.wline.lns.sme.cust.swisscom.ch ([146.4.57.250] helo=martin-debian-2.paytec.ch)
         by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.89)
         (envelope-from <martin@kaiser.cx>)
-        id 1j9xaW-0000e9-Av; Thu, 05 Mar 2020 21:59:24 +0100
+        id 1j9xaX-0000e9-W5; Thu, 05 Mar 2020 21:59:26 +0100
 From:   Martin Kaiser <martin@kaiser.cx>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>
 Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v2 3/5] hwrng: imx-rngc - (trivial) simplify error prints
-Date:   Thu,  5 Mar 2020 21:58:22 +0100
-Message-Id: <20200305205824.4371-4-martin@kaiser.cx>
+Subject: [PATCH v2 4/5] hwrng: imx-rngc - check the rng type
+Date:   Thu,  5 Mar 2020 21:58:23 +0100
+Message-Id: <20200305205824.4371-5-martin@kaiser.cx>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200305205824.4371-1-martin@kaiser.cx>
 References: <20200128110102.11522-1-martin@kaiser.cx>
@@ -36,38 +36,84 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Remove the device name, it is added by the dev_...() routines.
+Read the rng type and hardware revision during probe. Fail the probe
+operation if the type is not one of rngc or rngb.
+(There's also an rnga type, which needs a different driver.)
 
-Drop the error code as well. It will be shown by the driver core when
-the probe operation failed.
+Display the type and revision in a debug print if probe was successful.
 
 Reviewed-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
 Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 ---
- drivers/char/hw_random/imx-rngc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/char/hw_random/imx-rngc.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
-index 903894518c8d..92e93abcc9cc 100644
+index 92e93abcc9cc..50a8923d829a 100644
 --- a/drivers/char/hw_random/imx-rngc.c
 +++ b/drivers/char/hw_random/imx-rngc.c
-@@ -258,14 +258,14 @@ static int imx_rngc_probe(struct platform_device *pdev)
- 	if (self_test) {
- 		ret = imx_rngc_self_test(rngc);
- 		if (ret) {
--			dev_err(rngc->dev, "FSL RNGC self test failed.\n");
-+			dev_err(rngc->dev, "self test failed\n");
- 			goto err;
- 		}
- 	}
+@@ -18,12 +18,22 @@
+ #include <linux/completion.h>
+ #include <linux/io.h>
  
- 	ret = hwrng_register(&rngc->rng);
++#define RNGC_VER_ID			0x0000
+ #define RNGC_COMMAND			0x0004
+ #define RNGC_CONTROL			0x0008
+ #define RNGC_STATUS			0x000C
+ #define RNGC_ERROR			0x0010
+ #define RNGC_FIFO			0x0014
+ 
++/* the fields in the ver id register */
++#define RNGC_TYPE_SHIFT		28
++#define RNGC_VER_MAJ_SHIFT		8
++
++/* the rng_type field */
++#define RNGC_TYPE_RNGB			0x1
++#define RNGC_TYPE_RNGC			0x2
++
++
+ #define RNGC_CMD_CLR_ERR		0x00000020
+ #define RNGC_CMD_CLR_INT		0x00000010
+ #define RNGC_CMD_SEED			0x00000002
+@@ -212,6 +222,8 @@ static int imx_rngc_probe(struct platform_device *pdev)
+ 	struct imx_rngc *rngc;
+ 	int ret;
+ 	int irq;
++	u32 ver_id;
++	u8  rng_type;
+ 
+ 	rngc = devm_kzalloc(&pdev->dev, sizeof(*rngc), GFP_KERNEL);
+ 	if (!rngc)
+@@ -237,6 +249,17 @@ static int imx_rngc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	ver_id = readl(rngc->base + RNGC_VER_ID);
++	rng_type = ver_id >> RNGC_TYPE_SHIFT;
++	/*
++	 * This driver supports only RNGC and RNGB. (There's a different
++	 * driver for RNGA.)
++	 */
++	if (rng_type != RNGC_TYPE_RNGC && rng_type != RNGC_TYPE_RNGB) {
++		ret = -ENODEV;
++		goto err;
++	}
++
+ 	ret = devm_request_irq(&pdev->dev,
+ 			irq, imx_rngc_irq, 0, pdev->name, (void *)rngc);
  	if (ret) {
--		dev_err(&pdev->dev, "FSL RNGC registering failed (%d)\n", ret);
-+		dev_err(&pdev->dev, "hwrng registration failed\n");
+@@ -269,7 +292,10 @@ static int imx_rngc_probe(struct platform_device *pdev)
  		goto err;
  	}
  
+-	dev_info(&pdev->dev, "Freescale RNGC registered.\n");
++	dev_info(&pdev->dev,
++		"Freescale RNG%c registered (HW revision %d.%02d)\n",
++		rng_type == RNGC_TYPE_RNGB ? 'B' : 'C',
++		(ver_id >> RNGC_VER_MAJ_SHIFT) & 0xff, ver_id & 0xff);
+ 	return 0;
+ 
+ err:
 -- 
 2.20.1
 
