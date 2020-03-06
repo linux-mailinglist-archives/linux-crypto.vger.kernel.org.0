@@ -2,62 +2,61 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F43517B3FF
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Mar 2020 02:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B38917B403
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Mar 2020 02:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgCFBvw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 5 Mar 2020 20:51:52 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:46144 "EHLO fornost.hmeau.com"
+        id S1726317AbgCFBwS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 5 Mar 2020 20:52:18 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:46164 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726846AbgCFBvw (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 5 Mar 2020 20:51:52 -0500
+        id S1726243AbgCFBwS (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 5 Mar 2020 20:52:18 -0500
 Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jA29V-0005ta-FA; Fri, 06 Mar 2020 12:51:50 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 06 Mar 2020 12:51:49 +1100
-Date:   Fri, 6 Mar 2020 12:51:49 +1100
+        id 1jA29p-0005uw-Cd; Fri, 06 Mar 2020 12:52:10 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 06 Mar 2020 12:52:09 +1100
+Date:   Fri, 6 Mar 2020 12:52:09 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+To:     Andrei Botila <andrei.botila@oss.nxp.com>
+Cc:     Horia Geanta <horia.geanta@nxp.com>,
         Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Valentin Ciocoi Radulescu <valentin.ciocoi@nxp.com>,
-        linux-crypto@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>
-Subject: Re: [PATCH v2] crypto: caam/qi2 - fix chacha20 data size error
-Message-ID: <20200306015149.GK30653@gondor.apana.org.au>
-References: <20200228065123.13216-1-horia.geanta@nxp.com>
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrei Botila <andrei.botila@nxp.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] crypto: caam - update xts sector size for large input
+ length
+Message-ID: <20200306015209.GL30653@gondor.apana.org.au>
+References: <20200228104648.18898-1-andrei.botila@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200228065123.13216-1-horia.geanta@nxp.com>
+In-Reply-To: <20200228104648.18898-1-andrei.botila@oss.nxp.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Feb 28, 2020 at 08:51:23AM +0200, Horia Geantă wrote:
-> HW generates a Data Size error for chacha20 requests that are not
-> a multiple of 64B, since algorithm state (AS) does not have
-> the FINAL bit set.
+On Fri, Feb 28, 2020 at 12:46:48PM +0200, Andrei Botila wrote:
+> From: Andrei Botila <andrei.botila@nxp.com>
 > 
-> Since updating req->iv (for chaining) is not required,
-> modify skcipher descriptors to set the FINAL bit for chacha20.
+> Since in the software implementation of XTS-AES there is
+> no notion of sector every input length is processed the same way.
+> CAAM implementation has the notion of sector which causes different
+> results between the software implementation and the one in CAAM
+> for input lengths bigger than 512 bytes.
+> Increase sector size to maximum value on 16 bits.
 > 
-> [Note that for skcipher decryption we know that ctx1_iv_off is 0,
-> which allows for an optimization by not checking algorithm type,
-> since append_dec_op1() sets FINAL bit for all algorithms except AES.]
-> 
-> Also drop the descriptor operations that save the IV.
-> However, in order to keep code logic simple, things like
-> S/G tables generation etc. are not touched.
-> 
-> Cc: <stable@vger.kernel.org> # v5.3+
-> Fixes: 334d37c9e263 ("crypto: caam - update IV using HW support")
-> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+> Fixes: c6415a6016bf ("crypto: caam - add support for acipher xts(aes)")
+> Cc: <stable@vger.kernel.org> # v4.12+
+> Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
 > ---
->  drivers/crypto/caam/caamalg_desc.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
+> This patch needs to be applied from v4.12+ because dm-crypt has added support
+> for 4K sector size at that version. The commit was
+> 8f0009a225171 ("dm-crypt: optionally support larger encryption sector size").
+> 
+>  drivers/crypto/caam/caamalg_desc.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
 
 Patch applied.  Thanks.
 -- 
