@@ -2,42 +2,35 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A5317D7C0
-	for <lists+linux-crypto@lfdr.de>; Mon,  9 Mar 2020 02:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E02017DC0C
+	for <lists+linux-crypto@lfdr.de>; Mon,  9 Mar 2020 10:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgCIB1W (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 8 Mar 2020 21:27:22 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11196 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726346AbgCIB1W (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 8 Mar 2020 21:27:22 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2FF858AC65D73D0815BD;
-        Mon,  9 Mar 2020 09:27:19 +0800 (CST)
-Received: from [127.0.0.1] (10.133.210.141) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Mon, 9 Mar 2020
- 09:27:17 +0800
-Subject: Re: [PATCH 4.4.y v2] crypto: algif_skcipher - use ZERO_OR_NULL_PTR in
- skcipher_recvmsg_async
-To:     Sasha Levin <sashal@kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <herbert@gondor.apana.org.au>,
-        <stable@vger.kernel.org>, <linux-crypto@vger.kernel.org>
-References: <20200305085755.22730-1-yangerkun@huawei.com>
- <20200306133941.GQ21491@sasha-vm>
- <8bb5b0d7-4232-14cb-49c7-a3cc348645ae@huawei.com>
- <20200308001945.GT21491@sasha-vm>
-From:   yangerkun <yangerkun@huawei.com>
-Message-ID: <f7baf844-f171-adcc-6ad9-70d631cb5f4b@huawei.com>
-Date:   Mon, 9 Mar 2020 09:27:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726379AbgCIJBt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 9 Mar 2020 05:01:49 -0400
+Received: from paleo.ru ([195.178.204.132]:48697 "EHLO mail.paleo.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726027AbgCIJBs (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 9 Mar 2020 05:01:48 -0400
+X-Greylist: delayed 661 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Mar 2020 05:01:46 EDT
+Received: from mail.paleo.ru (paleo.ru [195.178.204.132])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.paleo.ru (Postfix) with ESMTPSA id 7D9011E9F55;
+        Mon,  9 Mar 2020 08:43:33 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20200308001945.GT21491@sasha-vm>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.133.210.141]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 09 Mar 2020 10:43:33 +0200
+From:   "Michael J. Weirsky" <mikhailov@paleo.ru>
+To:     undisclosed-recipients:;
+Reply-To: micjsky@aol.com
+Mail-Reply-To: micjsky@aol.com
+Message-ID: <b49abeef61f9247d0a0f1b2f9bde1d81@paleo.ru>
+X-Sender: mikhailov@paleo.ru
+User-Agent: Roundcube Webmail/1.3.9
+X-Spam: Yes
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
@@ -45,75 +38,9 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 
 
-On 2020/3/8 8:19, Sasha Levin wrote:
-> On Sat, Mar 07, 2020 at 09:49:25AM +0800, yangerkun wrote:
->>
->>
->> On 2020/3/6 21:39, Sasha Levin wrote:
->>> On Thu, Mar 05, 2020 at 04:57:55PM +0800, yangerkun wrote:
->>>> Nowdays, we trigger a oops:
->>>> ...
->>>> kasan: GPF could be caused by NULL-ptr deref or user memory 
->>>> accessgeneral protection fault: 0000 [#1] SMP KASAN
->>>> ...
->>>> Call Trace:
->>>> [<ffffffff81a26fb1>] skcipher_recvmsg_async+0x3f1/0x1400 
->>>> x86/../crypto/algif_skcipher.c:543
->>>> [<ffffffff81a28053>] skcipher_recvmsg+0x93/0x7f0 
->>>> x86/../crypto/algif_skcipher.c:723
->>>> [<ffffffff823e43a4>] sock_recvmsg_nosec x86/../net/socket.c:702 
->>>> [inline]
->>>> [<ffffffff823e43a4>] sock_recvmsg x86/../net/socket.c:710 [inline]
->>>> [<ffffffff823e43a4>] sock_recvmsg+0x94/0xc0 x86/../net/socket.c:705
->>>> [<ffffffff823e464b>] sock_read_iter+0x27b/0x3a0 x86/../net/socket.c:787
->>>> [<ffffffff817f479b>] aio_run_iocb+0x21b/0x7a0 x86/../fs/aio.c:1520
->>>> [<ffffffff817f57c9>] io_submit_one x86/../fs/aio.c:1630 [inline]
->>>> [<ffffffff817f57c9>] do_io_submit+0x6b9/0x10b0 x86/../fs/aio.c:1688
->>>> [<ffffffff817f902d>] SYSC_io_submit x86/../fs/aio.c:1713 [inline]
->>>> [<ffffffff817f902d>] SyS_io_submit+0x2d/0x40 x86/../fs/aio.c:1710
->>>> [<ffffffff828b33c3>] tracesys_phase2+0x90/0x95
->>>>
->>>> In skcipher_recvmsg_async, we use '!sreq->tsg' to determine does we
->>>> calloc fail. However, kcalloc may return ZERO_SIZE_PTR, and with this,
->>>> the latter sg_init_table will trigger the bug. Fix it be use 
->>>> ZERO_OF_NULL_PTR.
->>>>
->>>> This function was introduced with ' commit a596999b7ddf ("crypto:
->>>> algif - change algif_skcipher to be asynchronous")', and has been 
->>>> removed
->>>> with 'commit e870456d8e7c ("crypto: algif_skcipher - overhaul memory
->>>> management")'.
->>>>
->>>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>>> Signed-off-by: yangerkun <yangerkun@huawei.com>
->>>> ---
->>>> crypto/algif_skcipher.c | 2 +-
->>>> 1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> v1->v2:
->>>> update the commit message
->>>>
->>>> diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
->>>> index d12782dc9683..9bd4691cc5c5 100644
->>>> --- a/crypto/algif_skcipher.c
->>>> +++ b/crypto/algif_skcipher.c
->>>> @@ -538,7 +538,7 @@ static int skcipher_recvmsg_async(struct socket 
->>>> *sock, struct msghdr *msg,
->>>>     lock_sock(sk);
->>>>     tx_nents = skcipher_all_sg_nents(ctx);
->>>>     sreq->tsg = kcalloc(tx_nents, sizeof(*sg), GFP_KERNEL);
->>>> -    if (unlikely(!sreq->tsg))
->>>> +    if (unlikely(ZERO_OR_NULL_PTR(sreq->tsg)))
->>>
->>> I'm a bit confused: kcalloc() will return ZERO_SIZE_PTR for allocations
->>> that ask for 0 bytes, but here we ask for "sizeof(*sg)" bytes, which is
->>> guaranteed to be more than 0, no?
->>
->> Actually, the size need to calloc is (tx_nents * sizeof(*sg)), and 
->> tx_nents is 0.
-> 
-> Makes sense. This is also needed on 4.9, right?
-
-Yes! Thanks for checking it!
-> 
-
+-- 
+My name is Michael J. Weirsky, I'm an unemployed Handy man , winner of 
+$273million Jackpot in March 8, 2019. I donate $1.000.000,00 to you. 
+Contact me via email: micjsky@aol.com for info / claim.
+Continue reading: 
+https://abcnews.go.com/WNT/video/jersey-handyman-forward-273m-lottery-winner-61544244
