@@ -2,296 +2,187 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1DC17F22D
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2020 09:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDCF17F6F9
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2020 13:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgCJInf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 10 Mar 2020 04:43:35 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11201 "EHLO huawei.com"
+        id S1726258AbgCJMAj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 10 Mar 2020 08:00:39 -0400
+Received: from mail-vi1eur05on2077.outbound.protection.outlook.com ([40.107.21.77]:45409
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726605AbgCJInf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 10 Mar 2020 04:43:35 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 376AB93A6E238E0CE9B3;
-        Tue, 10 Mar 2020 16:43:30 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 10 Mar 2020 16:43:22 +0800
-From:   Shukun Tan <tanshukun1@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <wangzhou1@hisilicon.com>,
-        <xuzaibo@huawei.com>
-Subject: [PATCH v2 4/4] crypto: hisilicon/sec2 - Add new create qp process
-Date:   Tue, 10 Mar 2020 16:42:52 +0800
-Message-ID: <1583829772-53372-5-git-send-email-tanshukun1@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1583829772-53372-1-git-send-email-tanshukun1@huawei.com>
-References: <1583829772-53372-1-git-send-email-tanshukun1@huawei.com>
+        id S1726252AbgCJMAj (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 10 Mar 2020 08:00:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MiGTv0S9GSE+GDnonuMUoqHP/bnnVTK83erg0AXW0l4kOM/zCAbaaZk+bY5i+pwv2gJOa+PJCKX6X+9tPooj6nXd3wtUz1wlLDBiXdaYAChwcqTC/S3IptGqvRH+UI+3OKv+Dbmq6fxUMQ3Y+AkEOVEMplPSgQVPnDvX/nMmhA9ATWS37IC0YczS/RQao2pBLTlLX9HVSAPTZsPoMXol5yk0Sx6zHuHmS/Y9Roc1d0LSUV9mwOzKkhaWRF5Y1w7pkMgL2EC2IQLRLEdWEm66KjwooZMigdkhZxbXllJek3byXYe00s4egiBZ1gJ93/mbSsw8GUTgBBV8MQ962yC6hQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4F9ZszTpaLI7LPCpVex2EXqRuc39RGdFCMe+2LzY1+w=;
+ b=Od6itFBw0lYDlSS+coKXbHx90/+cST9lKpINAiufpG2SqDcJtt0s6Z0YqlgMwASVDNkGd7kauuhb6W1rHQGtc2yiNuoOb57wNbUoHN1QUPnin2Wk+mnsH7l+lM6nTE3sRXl09SWp/czAY8J31UOejfu9qP2AYAeZE+j20ZSMCHlrJR7DLi9fuJlFyVRuwfjEPVPuLeltXJDxU3/ajYhOnK/HCjK4u0TdALpy+6ZCQuE6j8COfTHcbhDQsOhVpObJ2pLs/j7L4C2GGrdHZxrwwTBj37E2LF8JkOx8FSxAzTMgTz1dDSo4cmBmrG2/7/mynGT6tFl7/YyeDPDu3Iz4Ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4F9ZszTpaLI7LPCpVex2EXqRuc39RGdFCMe+2LzY1+w=;
+ b=dAjegQPahbqWzDyXQzt2c85WpaR5je+TGEV7G+GeAfiJ7On3SzSOgu8PZANIdIOlsqWiI2eaSCwLGJIol+NDyYT8Re21iTBU7rWt37lG98nA0HId2veflEykdJJOcy0Pd24SxnJSKrxnl5thM/7Xu/5nJpYFlctMtssHlLi/pxw=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=horia.geanta@nxp.com; 
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com (52.134.3.153) by
+ VI1PR0402MB2925.eurprd04.prod.outlook.com (10.175.24.15) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2793.16; Tue, 10 Mar 2020 12:00:35 +0000
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::751e:7e8d:ed4:ef5f]) by VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::751e:7e8d:ed4:ef5f%7]) with mapi id 15.20.2793.013; Tue, 10 Mar 2020
+ 12:00:35 +0000
+Subject: Re: [PATCH] crypto: caam - select DMA address size at runtime
+To:     Greg Ungerer <gerg@kernel.org>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+References: <e19cec7b-0721-391f-f43e-437062a7eab3@kernel.org>
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+Message-ID: <fafc165f-2bc7-73d6-b8e0-d40ed5786af3@nxp.com>
+Date:   Tue, 10 Mar 2020 14:00:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+In-Reply-To: <e19cec7b-0721-391f-f43e-437062a7eab3@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM0P190CA0006.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:208:190::16) To VI1PR0402MB3485.eurprd04.prod.outlook.com
+ (2603:10a6:803:7::25)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.171.74.188] (212.146.100.6) by AM0P190CA0006.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:190::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.16 via Frontend Transport; Tue, 10 Mar 2020 12:00:34 +0000
+X-Originating-IP: [212.146.100.6]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 90324d9d-282e-4ac7-88ac-08d7c4eaa3df
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB2925:|VI1PR0402MB2925:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB29250C447C2BB3C9710337E998FF0@VI1PR0402MB2925.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:308;
+X-Forefront-PRVS: 033857D0BD
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(136003)(376002)(39860400002)(366004)(396003)(189003)(199004)(4326008)(66556008)(66476007)(66946007)(36756003)(31696002)(53546011)(478600001)(26005)(45080400002)(2906002)(16526019)(186003)(956004)(6486002)(2616005)(31686004)(5660300002)(52116002)(54906003)(8676002)(110136005)(16576012)(316002)(81156014)(81166006)(8936002)(86362001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0402MB2925;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+Received-SPF: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mjTw4w1ITexzRfIBXxg1svTxvN1JflYL+fM8c6websxnFbL6QkZf0t5bg6fJCsQy+33ZsYhUyOHj/Gdo5PLAgp2v6MzPCm+jcAoaBc8hCt4oew8o1ETL26XdrJDeRFU+KsDxaDlz9dw+0cQoHKW1ycgjhqAT1cJjSXTDd3WnN3QGqN54/GXbm6epZ9PCN9fbVF+mZtNsOeCvDlD2NgXGf0J66DeG6oFKJAIjgTVkliRdQlVm8ptTazotTN2QZEINmIoFTMnG1MIZYjsXZ5f4HvYL1qPVWtUVi2uHpRVf8nLWs26wPINGIFStMycz1ElVa4nL4eHA2HBC8V5mLkEIDNKKHmJZ0QkvBq/4f/ZMwJQf3y0DwdHU/Ldd6oGT5WNF7a3YpqnfxzdajwDnbT9Hwx4l/7v9kp7DlRFamM7PlL788O+G8G9aRXUiaHRYPEy7
+X-MS-Exchange-AntiSpam-MessageData: kMQQ/nnF5guJcI5JAQD65kMyTuLo4ZdonM1CkrctvTSVzNaGCvCvGrqGJkpJq6NfhBfQsYLKgyeKesmFpkOtn6FnA18+KlFYNkk6hSuP93eOx0Bq1+JbLwjOy3qYLT0IKLgnG48X2UBP48YhJIn6UQ==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 90324d9d-282e-4ac7-88ac-08d7c4eaa3df
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2020 12:00:34.9590
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 55WKHCoI3WcBce5a+xWQbNL1LsXNklhZi0uTMN69teClSHsMhwVF5l8AZwwmo3wMoZhfd879InVTyZGY9HWixQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2925
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Kai Ye <yekai13@huawei.com>
+On 3/10/2020 8:43 AM, Greg Ungerer wrote:
+> Hi Andrey,
+> 
+> I am tracking down a caam driver problem, where it is dumping on startup
+> on a Layerscape 1046 based hardware platform. The dump typically looks
+> something like this:
+> 
+> ------------[ cut here ]------------
+> kernel BUG at drivers/crypto/caam/jr.c:218!
+> Internal error: Oops - BUG: 0 [#1] SMP
+> Modules linked in:
+> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.5.0-ac0 #1
+> Hardware name: Digi AnywhereUSB-8 (DT)
+> pstate: 40000005 (nZcv daif -PAN -UAO)
+> pc : caam_jr_dequeue+0x3f8/0x420
+> lr : tasklet_action_common.isra.17+0x144/0x180
+> sp : ffffffc010003df0
+> x29: ffffffc010003df0 x28: 0000000000000001
+> x27: 0000000000000000 x26: 0000000000000000
+> x25: ffffff8020aeba80 x24: 0000000000000000
+> x23: 0000000000000000 x22: ffffffc010ab4e51
+> x21: 0000000000000001 x20: ffffffc010ab4000
+> x19: ffffff8020a2ec10 x18: 0000000000000004
+> x17: 0000000000000001 x16: 6800f1f100000000
+> x15: ffffffc010de5000 x14: 0000000000000000
+> x13: ffffffc010de5000 x12: ffffffc010de5000
+> x11: 0000000000000000 x10: ffffff8073018080
+> x9 : 0000000000000028 x8 : 0000000000000000
+> x7 : 0000000000000000 x6 : ffffffc010a11140
+> x5 : ffffffc06b070000 x4 : 0000000000000008
+> x3 : ffffff8073018080 x2 : 0000000000000000
+> x1 : 0000000000000001 x0 : 0000000000000000
+> 
+> Call trace:
+>   caam_jr_dequeue+0x3f8/0x420
+>   tasklet_action_common.isra.17+0x144/0x180
+>   tasklet_action+0x24/0x30
+>   _stext+0x114/0x228
+>   irq_exit+0x64/0x70
+>   __handle_domain_irq+0x64/0xb8
+>   gic_handle_irq+0x50/0xa0
+>   el1_irq+0xb8/0x140
+>   arch_cpu_idle+0x10/0x18
+>   do_idle+0xf0/0x118
+>   cpu_startup_entry+0x24/0x60
+>   rest_init+0xb0/0xbc
+>   arch_call_rest_init+0xc/0x14
+>   start_kernel+0x3d0/0x3fc
+> Code: d3607c21 2a020002 aa010041 17ffff4d (d4210000)
+> ---[ end trace ce2c4c37d2c89a99 ]---
+> 
+> 
+> Git bisecting this lead me to commit a1cf573ee95d ("crypto: caam -
+> select DMA address size at runtime") as the culprit.
+> 
+> I came across commit by Iuliana, 7278fa25aa0e ("crypto: caam -
+> do not reset pointer size from MCFGR register"). However that
+> doesn't fix this dumping problem for me (it does seem to occur
+> less often though). [NOTE: dump above generated with this
+> change applied].
+> 
+> I initially hit this dump on a linux-5.4, and it also occurs on
+> linux-5.5 for me.
+> 
+> Any thoughts?
+> 
+Could you try the following patch?
+It worked on my side.
 
-Combine found device and created qp into one operation instead of found
-device and create qp both are independent operations. when execute
-multiple tasks, the different threads may find same device at the same
-time, but the number of queues is insufficient on the device. causing
-one of threads fail to create a qp. Now fix this, First find device then
-create qp, if result failure. the current thread will find next device.
+Unfortunately I don't think it fixes the root cause,
+the device should work fine (though slower) without the property.
+DMA API violations (e.g. cacheline sharing) are a good candidate.
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
-Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
-Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
+--- >8 ---
+
+Subject: [PATCH] arm64: dts: ls1046a: mark crypto engine dma coherent
+
+Crypto engine (CAAM) on LS1046A platform has support for HW coherency,
+mark accordingly the DT node.
+
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
 ---
- drivers/crypto/hisilicon/sec2/sec.h        |  5 +-
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 17 +++----
- drivers/crypto/hisilicon/sec2/sec_main.c   | 81 ++++++++++++------------------
- 3 files changed, 42 insertions(+), 61 deletions(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec.h b/drivers/crypto/hisilicon/sec2/sec.h
-index a73d82c..3598fa1 100644
---- a/drivers/crypto/hisilicon/sec2/sec.h
-+++ b/drivers/crypto/hisilicon/sec2/sec.h
-@@ -119,6 +119,7 @@ struct sec_ctx {
- 	struct sec_qp_ctx *qp_ctx;
- 	struct sec_dev *sec;
- 	const struct sec_req_op *req_op;
-+	struct hisi_qp **qps;
- 
- 	/* Half queues for encipher, and half for decipher */
- 	u32 hlf_q_num;
-@@ -168,7 +169,6 @@ struct sec_debug {
- 
- struct sec_dev {
- 	struct hisi_qm qm;
--	struct list_head list;
- 	struct sec_debug debug;
- 	u32 ctx_q_num;
- 	bool iommu_used;
-@@ -176,7 +176,8 @@ struct sec_dev {
- 	unsigned long status;
- };
- 
--struct sec_dev *sec_find_device(int node);
-+void sec_destroy_qps(struct hisi_qp **qps, int qp_num);
-+struct hisi_qp **sec_create_qps(void);
- int sec_register_to_crypto(void);
- void sec_unregister_from_crypto(void);
- #endif
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index b2557431..7f1c6a3 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -355,11 +355,8 @@ static int sec_create_qp_ctx(struct hisi_qm *qm, struct sec_ctx *ctx,
- 	struct hisi_qp *qp;
- 	int ret = -ENOMEM;
- 
--	qp = hisi_qm_create_qp(qm, alg_type);
--	if (IS_ERR(qp))
--		return PTR_ERR(qp);
--
- 	qp_ctx = &ctx->qp_ctx[qp_ctx_id];
-+	qp = ctx->qps[qp_ctx_id];
- 	qp->req_type = 0;
- 	qp->qp_ctx = qp_ctx;
- 	qp->req_cb = sec_req_cb;
-@@ -402,7 +399,6 @@ static int sec_create_qp_ctx(struct hisi_qm *qm, struct sec_ctx *ctx,
- 	hisi_acc_free_sgl_pool(dev, qp_ctx->c_in_pool);
- err_destroy_idr:
- 	idr_destroy(&qp_ctx->req_idr);
--	hisi_qm_release_qp(qp);
- 
- 	return ret;
- }
-@@ -419,7 +415,6 @@ static void sec_release_qp_ctx(struct sec_ctx *ctx,
- 	hisi_acc_free_sgl_pool(dev, qp_ctx->c_in_pool);
- 
- 	idr_destroy(&qp_ctx->req_idr);
--	hisi_qm_release_qp(qp_ctx->qp);
- }
- 
- static int sec_ctx_base_init(struct sec_ctx *ctx)
-@@ -427,11 +422,13 @@ static int sec_ctx_base_init(struct sec_ctx *ctx)
- 	struct sec_dev *sec;
- 	int i, ret;
- 
--	sec = sec_find_device(cpu_to_node(smp_processor_id()));
--	if (!sec) {
--		pr_err("Can not find proper Hisilicon SEC device!\n");
-+	ctx->qps = sec_create_qps();
-+	if (!ctx->qps) {
-+		pr_err("Can not create sec qps!\n");
- 		return -ENODEV;
- 	}
-+
-+	sec = container_of(ctx->qps[0]->qm, struct sec_dev, qm);
- 	ctx->sec = sec;
- 	ctx->hlf_q_num = sec->ctx_q_num >> 1;
- 
-@@ -455,6 +452,7 @@ static int sec_ctx_base_init(struct sec_ctx *ctx)
- 	for (i = i - 1; i >= 0; i--)
- 		sec_release_qp_ctx(ctx, &ctx->qp_ctx[i]);
- 
-+	sec_destroy_qps(ctx->qps, sec->ctx_q_num);
- 	kfree(ctx->qp_ctx);
- 	return ret;
- }
-@@ -466,6 +464,7 @@ static void sec_ctx_base_uninit(struct sec_ctx *ctx)
- 	for (i = 0; i < ctx->sec->ctx_q_num; i++)
- 		sec_release_qp_ctx(ctx, &ctx->qp_ctx[i]);
- 
-+	sec_destroy_qps(ctx->qps, ctx->sec->ctx_q_num);
- 	kfree(ctx->qp_ctx);
- }
- 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 4f354d7..1f54ebe 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -90,8 +90,7 @@ struct sec_hw_error {
- 
- static const char sec_name[] = "hisi_sec2";
- static struct dentry *sec_debugfs_root;
--static LIST_HEAD(sec_list);
--static DEFINE_MUTEX(sec_list_lock);
-+static struct hisi_qm_list sec_devices;
- 
- static const struct sec_hw_error sec_hw_errors[] = {
- 	{.int_msk = BIT(0), .msg = "sec_axi_rresp_err_rint"},
-@@ -106,37 +105,6 @@ static const struct sec_hw_error sec_hw_errors[] = {
- 	{ /* sentinel */ }
- };
- 
--struct sec_dev *sec_find_device(int node)
--{
--#define SEC_NUMA_MAX_DISTANCE	100
--	int min_distance = SEC_NUMA_MAX_DISTANCE;
--	int dev_node = 0, free_qp_num = 0;
--	struct sec_dev *sec, *ret = NULL;
--	struct hisi_qm *qm;
--	struct device *dev;
--
--	mutex_lock(&sec_list_lock);
--	list_for_each_entry(sec, &sec_list, list) {
--		qm = &sec->qm;
--		dev = &qm->pdev->dev;
--#ifdef CONFIG_NUMA
--		dev_node = dev->numa_node;
--		if (dev_node < 0)
--			dev_node = 0;
--#endif
--		if (node_distance(dev_node, node) < min_distance) {
--			free_qp_num = hisi_qm_get_free_qp_num(qm);
--			if (free_qp_num >= sec->ctx_q_num) {
--				ret = sec;
--				min_distance = node_distance(dev_node, node);
--			}
--		}
--	}
--	mutex_unlock(&sec_list_lock);
--
--	return ret;
--}
--
- static const char * const sec_dbg_file_name[] = {
- 	[SEC_CURRENT_QM] = "current_qm",
- 	[SEC_CLEAR_ENABLE] = "clear_enable",
-@@ -239,6 +207,32 @@ static u32 ctx_q_num = SEC_CTX_Q_NUM_DEF;
- module_param_cb(ctx_q_num, &sec_ctx_q_num_ops, &ctx_q_num, 0444);
- MODULE_PARM_DESC(ctx_q_num, "Queue num in ctx (24 default, 2, 4, ..., 32)");
- 
-+void sec_destroy_qps(struct hisi_qp **qps, int qp_num)
-+{
-+	hisi_qm_free_qps(qps, qp_num);
-+	kfree(qps);
-+}
-+
-+struct hisi_qp **sec_create_qps(void)
-+{
-+	int node = cpu_to_node(smp_processor_id());
-+	u32 ctx_num = ctx_q_num;
-+	struct hisi_qp **qps;
-+	int ret;
-+
-+	qps = kcalloc(ctx_num, sizeof(struct hisi_qp *), GFP_KERNEL);
-+	if (!qps)
-+		return NULL;
-+
-+	ret = hisi_qm_alloc_qps_node(&sec_devices, ctx_num, 0, node, qps);
-+	if (!ret)
-+		return qps;
-+
-+	kfree(qps);
-+	return NULL;
-+}
-+
-+
- static const struct pci_device_id sec_dev_ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, SEC_PF_PCI_DEVICE_ID) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, SEC_VF_PCI_DEVICE_ID) },
-@@ -246,20 +240,6 @@ static const struct pci_device_id sec_dev_ids[] = {
- };
- MODULE_DEVICE_TABLE(pci, sec_dev_ids);
- 
--static inline void sec_add_to_list(struct sec_dev *sec)
--{
--	mutex_lock(&sec_list_lock);
--	list_add_tail(&sec->list, &sec_list);
--	mutex_unlock(&sec_list_lock);
--}
--
--static inline void sec_remove_from_list(struct sec_dev *sec)
--{
--	mutex_lock(&sec_list_lock);
--	list_del(&sec->list);
--	mutex_unlock(&sec_list_lock);
--}
--
- static u8 sec_get_endian(struct sec_dev *sec)
- {
- 	struct hisi_qm *qm = &sec->qm;
-@@ -889,7 +869,7 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (ret)
- 		pci_warn(pdev, "Failed to init debugfs!\n");
- 
--	sec_add_to_list(sec);
-+	hisi_qm_add_to_list(qm, &sec_devices);
- 
- 	ret = sec_register_to_crypto();
- 	if (ret < 0) {
-@@ -900,7 +880,7 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	return 0;
- 
- err_remove_from_list:
--	sec_remove_from_list(sec);
-+	hisi_qm_del_from_list(qm, &sec_devices);
- 	sec_debugfs_exit(sec);
- 	hisi_qm_stop(qm);
- 
-@@ -1024,7 +1004,7 @@ static void sec_remove(struct pci_dev *pdev)
- 
- 	sec_unregister_from_crypto();
- 
--	sec_remove_from_list(sec);
-+	hisi_qm_del_from_list(qm, &sec_devices);
- 
- 	if (qm->fun_type == QM_HW_PF && sec->num_vfs)
- 		(void)sec_sriov_disable(pdev);
-@@ -1071,6 +1051,7 @@ static int __init sec_init(void)
- {
- 	int ret;
- 
-+	hisi_qm_init_list(&sec_devices);
- 	sec_register_debugfs();
- 
- 	ret = pci_register_driver(&sec_pci_driver);
--- 
-2.7.4
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+index d4c1da3d4bde..9e8147ef1748 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+@@ -244,6 +244,7 @@
+                        ranges = <0x0 0x00 0x1700000 0x100000>;
+                        reg = <0x00 0x1700000 0x0 0x100000>;
+                        interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
++                       dma-coherent;
 
+                        sec_jr0: jr@10000 {
+                                compatible = "fsl,sec-v5.4-job-ring",
+--
+2.17.1
