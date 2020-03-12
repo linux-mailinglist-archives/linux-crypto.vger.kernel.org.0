@@ -2,62 +2,122 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B061835EB
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2020 17:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FD3183656
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2020 17:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgCLQOV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 12 Mar 2020 12:14:21 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:45912 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727270AbgCLQOV (ORCPT
+        id S1725268AbgCLQlQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 12 Mar 2020 12:41:16 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:35410 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726099AbgCLQlQ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 12 Mar 2020 12:14:21 -0400
-Received: by mail-io1-f66.google.com with SMTP id w9so6234383iob.12
-        for <linux-crypto@vger.kernel.org>; Thu, 12 Mar 2020 09:14:21 -0700 (PDT)
+        Thu, 12 Mar 2020 12:41:16 -0400
+Received: by mail-lf1-f66.google.com with SMTP id v8so4465306lfe.2
+        for <linux-crypto@vger.kernel.org>; Thu, 12 Mar 2020 09:41:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=UpxhWkpBCrzS4IiDHieZ2DOYOhwHCIm2gxPNpiXmddk=;
-        b=BPdjir9+y6PnNGzPlGp6DfRGjLmSNw8TGMiZun/yIkd150wXNtk7SaZ9OTmZW15P/e
-         fVMNY5zXv8nTVNiFR94yZwGcWU8m/c56vsvhrIp8OjNXMhMPiK3DsnDz3Ecprut8kQuQ
-         42CX15gxofSiy+81+bslibVErv/Qv2IT4hYs5pCW8fPy9lxx01ZFUv8yWMWoI6F38+MX
-         ZJ0PQrxE22wpLCxDZ820mA7chusuWqCRcYTKc758+db2xZfaltwCDwI2gqsln0eLKS/Y
-         QcpoHx8l8W8PqhVhjBxjnkB141S0Kn/XrehfE5gIdVRBCPt5FemGknFI2hzXQERAArpH
-         Lc4g==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i2sz196/Cs27wxtfRE//dxsR1M4xyc6FsBDBBJltAxs=;
+        b=cdQC2dv3JAgsVAdL4pkokh+yfj9tt9IkD9gkf373P1CN2QgninELU3Wvy4TJQIySWw
+         hTxFfX7IX/VgILNHfG6vUbqBRg9TgBnfBG+bamXLeynfrIGZ2sAn4gmDJacfJ+zjzBjt
+         PDw9j5myuoeR7hRy4P/P91cTtE9LDJ+lt3pvU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=UpxhWkpBCrzS4IiDHieZ2DOYOhwHCIm2gxPNpiXmddk=;
-        b=V1oUJrfnSbYk8V6IQn6peOqqUhYFdonaJsBJWwTKQDA1oWfO2mv9uifr70Rvt16X4S
-         aD+HLSqK7KorOeHVt7s+1oSp9uf6U7ecPQ4qrSX8HBnaiVxhJtT4f3eo5mY2pfej6onL
-         Omix8bu2fyL3uhs5HaTfdF037DeH5TNefb79p+SU5fLjfrMeofL0CPhdSR6I3PuN5wXN
-         lPo5SthKHtuaPAQSMfiQTrNX0z9vCeL3z8kzxFqdgQdZiQs5m/XZTU2Zt5GjDbO1BDxl
-         u0d63prgnyRFlHjYtpGfnHijTbQUWLkWRfjzwCyQoGJJyJ14xY6hntn+8FoN/miPwmqm
-         ofMQ==
-X-Gm-Message-State: ANhLgQ0KHZyKRppPK2gbIxP1ozBU563m4BPJVvyJaxLxUhqAvuwoNIKf
-        +/GVcd8gbdufdcESoYinOTxBNe/WF5iXz6wU4Rg=
-X-Google-Smtp-Source: ADFU+vtLU+3hQMSBIDNI4CofHnylYnazr8Aj3/75W1jJkRfkW+0iRsmIrSMqVZMEO72KTo0HQEYik1pq9dEDfeEEC0c=
-X-Received: by 2002:a02:7b13:: with SMTP id q19mr8537791jac.73.1584029660824;
- Thu, 12 Mar 2020 09:14:20 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i2sz196/Cs27wxtfRE//dxsR1M4xyc6FsBDBBJltAxs=;
+        b=GZwbzpZ5WGYCrWbdX7T/AR+OZbh9pCWomrzo0maiylY4+rA0xhMDjaCJ82vSt1/3CK
+         i7tpPbsUz8jZzH9AyQogxl6+xzE/cxVNmtYHk4QTZGwqI+9PCMLEyc0ZHOPg+xju4mZ3
+         t8CyXQ9CVaEyjC3RlJ+DDRKtHH7F6LH4I2VFDfbtitjBjM0dBENo9VcyQULdLa5rPTQi
+         smAWaE/ieB2BTAAmzSAK7DNjbUaQ2c+YwJNw0t2L4Gl4Z3bofRmJ/BMQGWdX0y9iDwnZ
+         k0gTup8TJycfM+10HxP021V2jfRzT4/2A2Hji6+083yBXMwDfjv8EmDemt3V5kTuxvXz
+         8VJg==
+X-Gm-Message-State: ANhLgQ0Tu0T/IX8tTxu2B1mLgSns/Vswe09su+qqyCOFgPDft10NLrdu
+        6mlV4sonmIFH1uWrdNCUVHnizWhfE6I=
+X-Google-Smtp-Source: ADFU+vsRCECKko9/gztCde1YouLbK0nlbBp+W5veVEFLvDbh+Ez2d4sZvzrAnB9tY3OT/DolyPjG2Q==
+X-Received: by 2002:ac2:51c7:: with SMTP id u7mr5745647lfm.195.1584031272118;
+        Thu, 12 Mar 2020 09:41:12 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id k4sm25003559ljk.12.2020.03.12.09.41.10
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Mar 2020 09:41:11 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id r7so7187100ljp.10
+        for <linux-crypto@vger.kernel.org>; Thu, 12 Mar 2020 09:41:10 -0700 (PDT)
+X-Received: by 2002:a05:651c:230:: with SMTP id z16mr5760125ljn.201.1584031269966;
+ Thu, 12 Mar 2020 09:41:09 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a6b:dd13:0:0:0:0:0 with HTTP; Thu, 12 Mar 2020 09:14:20
- -0700 (PDT)
-From:   Ade Danis <barradeolachambers@gmail.com>
-Date:   Thu, 12 Mar 2020 09:14:20 -0700
-Message-ID: <CAOMUSba3WOYObU8=jUwmn64dYSLmh6EpEd+oBwgVGM5N8KW2Og@mail.gmail.com>
-Subject: =?UTF-8?B?576O5aW955qE5LiA5aSp?=
-To:     undisclosed-recipients:;
+References: <20190916084901.GA20338@gondor.apana.org.au> <20190923050515.GA6980@gondor.apana.org.au>
+ <20191202062017.ge4rz72ki3vczhgb@gondor.apana.org.au> <20191214084749.jt5ekav5o5pd2dcp@gondor.apana.org.au>
+ <20200115150812.mo2eycc53lbsgvue@gondor.apana.org.au> <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
+ <20200224060042.GA26184@gondor.apana.org.au> <20200312115714.GA21470@gondor.apana.org.au>
+In-Reply-To: <20200312115714.GA21470@gondor.apana.org.au>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 12 Mar 2020 09:40:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjbTF2iw3EbKgfiRRq_keb4fHwLO8xJyRXbfK3Q7cscuQ@mail.gmail.com>
+Message-ID: <CAHk-=wjbTF2iw3EbKgfiRRq_keb4fHwLO8xJyRXbfK3Q7cscuQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Crypto Fixes for 5.6
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-576O5aW955qE5LiA5aSpDQoNCuaIkemcgOimgeaCqOeahOWQiOS9nOWSjOaCqOeahOeQhuino++8
-jOaJjeiDveS4juaCqOS9nOS4uuWkluWbveS8meS8tOaIluS6suaImuS4gOi1t+WwhjEsNDMw5LiH
-576O5YWD6L2s5YWl5oKo55qE5biQ5oi344CCIOaIkemcgOimgeaCqOeahOeri+WNs+etlOWkje+8
-jOS7peS+v+aIkeWwhui1hOmHkeeahOaJgOacieivpue7huS/oeaBr+WPkemAgee7meaCqA0KDQrm
-gqjnmoTpl67lgJnvvIwNCuS4ueWwvOaWr8K35aiB5bCU6YCKDQo=
+On Thu, Mar 12, 2020 at 4:57 AM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> This push fixes a build problem with x86/curve25519.
+
+Pulled.
+
+I do have a comment, though: this fix matches the existing pattern of
+checking for assembler support, but that existing pattern is
+absolutely horrible.
+
+Would some enterprising individual please look at making the
+CONFIG_AS_xyz flags use the _real_ config subsystem rather than ad-hoc
+Makefile rules?
+
+IOW, instead of having
+
+  adx_instr := $(call as-instr,adox %r10$(comma)%r10,-DCONFIG_AS_ADX=1)
+  ..
+  adx_supported := $(call as-instr,adox %r10$(comma)%r10,yes,no)
+
+in the makefiles, and silently changing how the Kconfig variables work
+depending on those flags, make that DCONFIG_AS_ADX be a real config
+variable:
+
+   config AS_ADX
+           def_bool $(success,$(srctree)/scripts/as-instr.sh "adox %r10,%r10")
+
+or something like that?
+
+And then we can make that CRYPTO_CURVE25519_X86 config variable simply have a
+
+        depends on AS_ADX
+
+in it, and the Kconfig system just takes care of these dependencies on its own.
+
+Anyway, the crypto change isn't _wrong_, but it does point out an ugly
+little horror in how the crypto layer silently basically changes the
+configuration depending on other things.
+
+For an example of why this is problematic: it means that if somebody
+sends you their config file, the actual configuration you get may be
+*completely* different from what they actually had, depending on
+tools.
+
+Added Masahiro to the cc, since he's used to the 'def_bool' model, and
+also is familiar with our existing 'as-instr' Makefile macro.
+
+So this is basically me throwing out a "I wish somebody would look at
+this". Not meant as a criticism of the commit in question.
+
+            Linus
