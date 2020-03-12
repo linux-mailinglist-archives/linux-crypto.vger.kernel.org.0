@@ -2,64 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A91C183079
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2020 13:39:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A05AD18307D
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2020 13:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgCLMj2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 12 Mar 2020 08:39:28 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:59984 "EHLO fornost.hmeau.com"
+        id S1727148AbgCLMkD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 12 Mar 2020 08:40:03 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:60006 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725978AbgCLMj2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 12 Mar 2020 08:39:28 -0400
+        id S1725978AbgCLMkD (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 12 Mar 2020 08:40:03 -0400
 Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jCN7Q-00022c-Gk; Thu, 12 Mar 2020 23:39:21 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 12 Mar 2020 23:39:20 +1100
-Date:   Thu, 12 Mar 2020 23:39:20 +1100
+        id 1jCN7p-00023v-0l; Thu, 12 Mar 2020 23:39:46 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 12 Mar 2020 23:39:44 +1100
+Date:   Thu, 12 Mar 2020 23:39:44 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Vitaly Andrianov <vitalya@ti.com>,
-        Tero Kristo <t-kristo@ti.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Matt Mackall <mpm@selenic.com>
-Subject: Re: [PATCH] hw_random: move TI Keystone driver into the config menu
- structure
-Message-ID: <20200312123920.GE28885@gondor.apana.org.au>
-References: <06417e19-57fe-c090-c493-d4c481dfee00@infradead.org>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/5] imx-rngc - several small fixes
+Message-ID: <20200312123944.GF28885@gondor.apana.org.au>
+References: <20200128110102.11522-1-martin@kaiser.cx>
+ <20200305205824.4371-1-martin@kaiser.cx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <06417e19-57fe-c090-c493-d4c481dfee00@infradead.org>
+In-Reply-To: <20200305205824.4371-1-martin@kaiser.cx>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Mar 04, 2020 at 10:21:48PM -0800, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
+On Thu, Mar 05, 2020 at 09:58:19PM +0100, Martin Kaiser wrote:
+> This is a set of small fixes for the imx-rngc driver.
 > 
-> Move the TI Keystone hardware random number generator into the
-> same menu as all of the other hardware random number generators.
+> I tried to clarify the approach for masking/unmasking the interrupt from
+> the rngc.
 > 
-> This makes the driver config be listed in the correct place in
-> the kconfig tools.
+> The rngc should be set to auto-seed mode, where it creates a new seed
+> when required.
 > 
-> Fixes: eb428ee0e3ca ("hwrng: ks-sa - add hw_random driver")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Vitaly Andrianov <vitalya@ti.com>
-> Cc: Tero Kristo <t-kristo@ti.com>
-> Cc: Murali Karicheri <m-karicheri2@ti.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: Matt Mackall <mpm@selenic.com>
-> Cc: linux-crypto@vger.kernel.org
-> ---
->  drivers/char/hw_random/Kconfig |   14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+> In the probe function, we should check that the rng type is supported by
+> this driver.
+> 
+> Thanks for reviewing the patches,
+> 
+>    Martin
+> 
+> changes in v2:
+> - remove the contentious devres patch
+> - add PrasannaKumar's tags
+> 
+> Martin Kaiser (5):
+>   hwrng: imx-rngc - fix an error path
+>   hwrng: imx-rngc - use automatic seeding
+>   hwrng: imx-rngc - (trivial) simplify error prints
+>   hwrng: imx-rngc - check the rng type
+>   hwrng: imx-rngc - simplify interrupt mask/unmask
+> 
+>  drivers/char/hw_random/imx-rngc.c | 85 +++++++++++++++++++++++++------
+>  1 file changed, 69 insertions(+), 16 deletions(-)
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
