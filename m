@@ -2,67 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E6A1813B9
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Mar 2020 09:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E394182768
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2020 04:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbgCKIyH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Mar 2020 04:54:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38218 "EHLO mail.kernel.org"
+        id S1730931AbgCLD0O (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Mar 2020 23:26:14 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:56914 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728195AbgCKIyH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Mar 2020 04:54:07 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2825020873;
-        Wed, 11 Mar 2020 08:54:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583916847;
-        bh=q9pX7RdIeHC12gIE7AwUqz4c8Oq1C8zcrGUI6VQx08k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j9tEh9CKAQvhblCfQ79VtTz2ZvM7u9zbEuZryIvvvwfaV/cQRcvprPihaPFOiqyQE
-         KiouaIwbxFCoz9RdF9cBGIzKA149ljubVMfa2WzhlC8Z4mxlVdOEF/h5GxAe02urT6
-         JpuyGXmzqN3xI1mKT/9xZspk9pOKGm5kmqLBkFIg=
-Date:   Wed, 11 Mar 2020 16:53:58 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        id S1730913AbgCLD0O (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 11 Mar 2020 23:26:14 -0400
+Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
+        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
+        id 1jCETp-0001y0-P7; Thu, 12 Mar 2020 14:25:54 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 12 Mar 2020 14:25:53 +1100
+Date:   Thu, 12 Mar 2020 14:25:53 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Iuliana Prodan <iuliana.prodan@nxp.com>
+Cc:     Baolin Wang <baolin.wang@linaro.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
         Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] ARM: dts: imx: use generic name for crypto node
-Message-ID: <20200311085357.GG29269@dragon>
-References: <20200305135909.8180-1-horia.geanta@nxp.com>
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH v4 1/2] crypto: engine - support for parallel requests
+Message-ID: <20200312032553.GB19920@gondor.apana.org.au>
+References: <1583707893-23699-1-git-send-email-iuliana.prodan@nxp.com>
+ <1583707893-23699-2-git-send-email-iuliana.prodan@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200305135909.8180-1-horia.geanta@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1583707893-23699-2-git-send-email-iuliana.prodan@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Mar 05, 2020 at 03:59:04PM +0200, Horia Geantă wrote:
-> This patch set aligns / fixes the naming of the crypto node
-> (and its child nodes) for sahara, dcp and caam crypto engines
-> used in i.MX SoCs.
-> 
-> Horia Geantă (4):
->   dt-bindings: crypto: sahara: use generic node name
->   dt-bindings: crypto: dcp: use generic node name
->   dt-bindings: crypto: caam: use generic node name
->   ARM: dts: imx: align name for crypto node and child nodes
-> 
-> Silvano di Ninno (1):
->   arm64: dts: imx8mn: align name for crypto child nodes
+On Mon, Mar 09, 2020 at 12:51:32AM +0200, Iuliana Prodan wrote:
+>
+>  	ret = enginectx->op.do_one_request(engine, async_req);
+> -	if (ret) {
+> -		dev_err(engine->dev, "Failed to do one request from queue: %d\n", ret);
+> -		goto req_err;
+> +	can_enq_more = ret;
+> +	if (can_enq_more < 0) {
+> +		dev_err(engine->dev, "Failed to do one request from queue: %d\n",
+> +			ret);
+> +		goto req_err_1;
+> +	}
 
-Applied all, thanks.
+So this now includes the case of the hardware queue being full
+and the request needs to be queued until space opens up again.
+In this case, we should not do dev_err.  So you need to be able
+to distinguish between the hardware queue being full vs. a real
+fatal error on the request (e.g., out-of-memory or some hardware
+failure).
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
