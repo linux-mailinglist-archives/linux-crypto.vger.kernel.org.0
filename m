@@ -2,70 +2,70 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D1A185773
-	for <lists+linux-crypto@lfdr.de>; Sun, 15 Mar 2020 02:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB7D185870
+	for <lists+linux-crypto@lfdr.de>; Sun, 15 Mar 2020 03:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgCOBjF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 14 Mar 2020 21:39:05 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:42878 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726579AbgCOBjE (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 14 Mar 2020 21:39:04 -0400
-Received: by mail-il1-f195.google.com with SMTP id p2so5232102ile.9
-        for <linux-crypto@vger.kernel.org>; Sat, 14 Mar 2020 18:39:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=rySLrb6e8pdxDloLytBEUWmIP8HvBNLPxIuJLcg1j9c=;
-        b=sYgn5elmUDO5uZ/fMSAUxFVaeywOMqToMYdBcHXQ3NTKeAzVJhXLXyOaF3BrSD4BqO
-         5UV6XMxjKOVNmfFsZDzzTj9qa6YW2BQ7mV/12OjB8jG9aPVyLNqi21Ab9AEUit+HRCno
-         9Ra4JTgZO05D8FmR1caDZV9nUhftgeWd9Z4h3MJ08MRvl680DqDVDgx8t37S4oKUAstp
-         2FOQ7rwpz1ScpcJ7aZVjNv+lJjSPov3S9ibEgJ5aX9P3eGCWe82b/YGbWaYTuHGWnQqx
-         h4Eo+UeFwBRrklnWrrTVpK++m8SrqZSs9PjgG0/YNYThUoKGoxi5J1cZtbANuxrqPROv
-         If9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=rySLrb6e8pdxDloLytBEUWmIP8HvBNLPxIuJLcg1j9c=;
-        b=qqjRag4r2FAVzSmSYVLqajBzNfePX4+FlDqC72aZ4OKVkBeArvtX8NAI0nb8QzzyH0
-         X5vlQqj/SmkeiZp/p1AooE1gnk+FUj1MiLBuhkz9cUqnQC73iS2zg8FLa7EUpsFEtHEj
-         SjJ8KOK7WfF4Jk7gFefsB8ou/JohTcHJWX7Fz/QN9U1CBTUpxYI3p23W2o512Wz8Iwgw
-         E3aXI8LopUV5toxhgMuQYNnSFZhLW0GXB4oXYJNu3UU/sgCdZpXoOh0LQuf577JZuCFN
-         Edv62qqy0mIHywXeaHPy2OZ0YCJX+Iaa5hnkrwgI4jOM933WRVbY/FIftqXEMAB/qsYi
-         URRw==
-X-Gm-Message-State: ANhLgQ2Kl+L8Kic+tm5nvU/YudkwDC3IH+zyexXwUq2kzSn8O88H7MYq
-        urjKev3Jn0uxpIM6tKSevxHTrIaq+kfTM2gHsP6B+vwT
-X-Google-Smtp-Source: ADFU+vvQjbMqpyd1i6FWi+Ntfw7OW0UHKja3v2unEsJC4od3bFsv/vTqTsIhbP/8XYLwoAJH1uwnvJRLYgGlP6tuDqk=
-X-Received: by 2002:a92:d842:: with SMTP id h2mr17949783ilq.34.1584206428751;
- Sat, 14 Mar 2020 10:20:28 -0700 (PDT)
+        id S1727360AbgCOCHr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 14 Mar 2020 22:07:47 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11694 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727566AbgCOCHq (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 14 Mar 2020 22:07:46 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 742152EC80E17046A055;
+        Sat, 14 Mar 2020 18:19:44 +0800 (CST)
+Received: from localhost (10.173.223.234) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Sat, 14 Mar 2020
+ 18:19:36 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <ayush.sawal@chelsio.com>, <vinay.yadav@chelsio.com>,
+        <rohitm@chelsio.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] chcr: remove set but not used variable 'status'
+Date:   Sat, 14 Mar 2020 18:19:15 +0800
+Message-ID: <20200314101915.25008-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Received: by 2002:a02:63c1:0:0:0:0:0 with HTTP; Sat, 14 Mar 2020 10:20:28
- -0700 (PDT)
-From:   Omar Ousman <omarousman25@gmail.com>
-Date:   Sat, 14 Mar 2020 18:20:28 +0100
-X-Google-Sender-Auth: VNfZ5GidMpY66VRDRhna379s7FA
-Message-ID: <CAOdk3H=iqtzP9LMZSea9eyACfmkiPiG9wKD-_H9R1g2DpwKnkg@mail.gmail.com>
-Subject: You received my last mail,,,,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.173.223.234]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-I am Mr.Omar Ousman, a regional managing director (CORIS BANK
-INTERNATIONAL) Ouagadougou Burkina Faso, in my department we have
-US$9,500.0000 million united state dollars, to transfer into your
-account as a dormant fund.If you are interested to use this fund to
-help the orphans around the world contact and send me your personal
-information for more details to my email omarousman25@gmail.com
+drivers/crypto/chelsio/chcr_ktls.c: In function chcr_ktls_cpl_set_tcb_rpl:
+drivers/crypto/chelsio/chcr_ktls.c:662:11: warning:
+ variable status set but not used [-Wunused-but-set-variable]
 
-Your full names..........
-Your country of origin..........
-Your occupation..........
-Your Age..........
-Your Mobile Number..........
+commit 8a30923e1598 ("cxgb4/chcr: Save tx keys and handle HW response")
+involved this unused variable, remove it.
 
-Best Regards,
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/crypto/chelsio/chcr_ktls.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/crypto/chelsio/chcr_ktls.c b/drivers/crypto/chelsio/chcr_ktls.c
+index f0c3834eda4f..00099e793e63 100644
+--- a/drivers/crypto/chelsio/chcr_ktls.c
++++ b/drivers/crypto/chelsio/chcr_ktls.c
+@@ -659,10 +659,9 @@ int chcr_ktls_cpl_set_tcb_rpl(struct adapter *adap, unsigned char *input)
+ 	const struct cpl_set_tcb_rpl *p = (void *)input;
+ 	struct chcr_ktls_info *tx_info = NULL;
+ 	struct tid_info *t;
+-	u32 tid, status;
++	u32 tid;
+ 
+ 	tid = GET_TID(p);
+-	status = p->status;
+ 
+ 	t = &adap->tids;
+ 	tx_info = lookup_tid(t, tid);
+-- 
+2.20.1
+
+
