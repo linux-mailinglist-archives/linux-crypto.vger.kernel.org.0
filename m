@@ -2,95 +2,180 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B62186C95
-	for <lists+linux-crypto@lfdr.de>; Mon, 16 Mar 2020 14:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2D7186E04
+	for <lists+linux-crypto@lfdr.de>; Mon, 16 Mar 2020 16:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731368AbgCPNxX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 16 Mar 2020 09:53:23 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:46743 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731331AbgCPNxW (ORCPT
+        id S1731556AbgCPPBE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 16 Mar 2020 11:01:04 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:38633 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731629AbgCPPBD (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 16 Mar 2020 09:53:22 -0400
-Received: by mail-wr1-f65.google.com with SMTP id w16so4911165wrv.13;
-        Mon, 16 Mar 2020 06:53:21 -0700 (PDT)
+        Mon, 16 Mar 2020 11:01:03 -0400
+Received: by mail-pj1-f66.google.com with SMTP id m15so8151800pje.3;
+        Mon, 16 Mar 2020 08:01:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zz+VUSWNCDs2sQPAELxMFVMHL5mAksbtoTViuL2HD+g=;
-        b=OccARGXrypOX9pQ0w3HKRvuuWLqJ++L0Dv2Tvn9pEsWij0cX2i3W+HKTs/fF5OC/KW
-         9sdXw+ZZqcTzq0eRCgb5RuIJjx6foLgVQTSarHfGTPawCDfVHCG3UPCELr8yrZXOF/Nt
-         YzK30be1UuTwUggKivog1qW4bCcOOAr0zP6qjBmFrSmtJcdgvDAjRmdBJfXLmqsyJLZl
-         fWFzH3Z6x+9/SwdzHV2aESQr2DUXNNyMEYqzVECq4OSS7BVgpbYt6y/QaVdHMgT55kKL
-         4F1arAIUc/zqHPJ6JzrlMZ6XDfII8rMNwhzrhlaE3LdNDmicC7FrmuRTnHKKT4oOl0T2
-         6tbg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YmKRCv/D9RMADh2OrMpzXDg0WtSJ2/WTNutUXLsM7sc=;
+        b=lLkRFYskCWOoR/OHcVEFlIECbKeWjzqxW11DFESSK1DPOqo4txD1V05hUIX8bzO5cB
+         O/WnGj7yiaMur4OoAMxKHdszmhEbnN/yHktEehFmtYv31xXHlFhm8bDwGd+Ou0LfdP/w
+         xEb/roqYMPqrq2YinERi7RD+Q3hS697T6FUtIXgW5ri5pN+ByZd7M+GfGeV259CQ/pwI
+         UBGMVj6BkuYGynat6V7Qwrl2x7RfGsECXKulAdxYO4xjcaqf7NoOJXgtUubExOOmwT6/
+         Sm+zG6FGmaI4igMk78yGGAtS/12+cR5/fG0Fu1g7FRsvH9nHz8aC/p9tq9eyAXVa28Ih
+         ftnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zz+VUSWNCDs2sQPAELxMFVMHL5mAksbtoTViuL2HD+g=;
-        b=MoOEuXXw9m/8lJxyFGR5X+tCyR1J/YbBejfjD5uyG91O1WpK14FdoCcNOyfK8xxu9V
-         La5/EEydrm8dtom4mHI1aFllCyZKAyAXp5CTF+3meRRzVr3bKGo2ZO4QCGiix0NsordL
-         Ea2z5kAuJqUGJIP9e3MPan+CMF1yKj9QlbfbPmRIr+54KUU62YbXh0s5GiRvrKEkeV+7
-         EfgsXeSBhtqncJjQX0hwrZalJt1z+DdgtPg92Ujlhta650ex2Fd5/FyFjfgZC49jgcfb
-         aMLZJfkKE5NemFU1DC4TbLUxeNVmeHZ/oXABV3URvv6e3fJqFPny/O3KQewJbkCfEum2
-         UIQg==
-X-Gm-Message-State: ANhLgQ2e8NcOg7QK6cfMm2YWsWYSWAj4Vga5dOe+zz4FeiVc7dtAoDcC
-        /fTIg4rGXPU4ASYYidlqp2q0402I
-X-Google-Smtp-Source: ADFU+vvwLSvB6JlHnivEFRq8ttan08vIgV77aIBH8Bz7u8qpc5GznHQ1xr/G5WW8OuWzwVqD4NbxHQ==
-X-Received: by 2002:adf:8023:: with SMTP id 32mr26014359wrk.189.1584366800438;
-        Mon, 16 Mar 2020 06:53:20 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id z6sm24277216wrp.95.2020.03.16.06.53.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YmKRCv/D9RMADh2OrMpzXDg0WtSJ2/WTNutUXLsM7sc=;
+        b=FHgaP/Zq5sElbX22KfouBbVygraFuO2EfUJ5hqym6XAE1CRQPNK+6NUfokO36OF/27
+         HfQFT8peu6/kgZnHZiakfX1xo7viuUbyqGSP5tg1LDZRWNZ4EWrtHKZrKKsxAqv9P7br
+         FieUE+O80CYmps79VXHow5UYg7K2ROqw2vDO15lhpHt+cw79HPq3AVdGwtt/UjHfX3eO
+         B01U4/Mkd2Ze0djzZ54HtwJuF0wjczNJ+x/O8GEGwrt7jsamjL4KDsBYpmOtXLwQOD8r
+         ZZciRaTx4rtc7lQDEX9WFBfD2NH+FDPs8JjxPVnt40zsBBiadlZI9c8JxMWrO43THFiB
+         dWAw==
+X-Gm-Message-State: ANhLgQ3CnTgmPBhhgBzsGFST/dnyXKQHHpfBqVtjCf3tywyeet9fRaTM
+        ZCkthx7SUAvmXfCTKjumoYJKgKQs
+X-Google-Smtp-Source: ADFU+vt2NywATHTn29ojvKEu8wm49lxwkJJ3BhTHNaxNw70o1gVtl8aHebjl9NMWZVplnXNEQ58SLA==
+X-Received: by 2002:a17:90a:a60c:: with SMTP id c12mr26661171pjq.28.1584370860033;
+        Mon, 16 Mar 2020 08:01:00 -0700 (PDT)
+Received: from localhost.localdomain (c-67-165-113-11.hsd1.wa.comcast.net. [67.165.113.11])
+        by smtp.gmail.com with ESMTPSA id o128sm256354pfg.5.2020.03.16.08.00.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Mar 2020 06:53:19 -0700 (PDT)
-Date:   Mon, 16 Mar 2020 14:53:18 +0100
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     peterz@infradead.org, herbert@gondor.apana.org.au,
-        viro@zeniv.linux.org.uk, mingo@redhat.com, dvhart@infradead.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: BUG: cryptsetup benchmark stuck
-Message-ID: <20200316135318.GA29789@Red>
-References: <20200315145214.GA9576@Red>
- <877dzkem9z.fsf@nanos.tec.linutronix.de>
+        Mon, 16 Mar 2020 08:00:58 -0700 (PDT)
+From:   Andrey Smirnov <andrew.smirnov@gmail.com>
+To:     linux-crypto@vger.kernel.org
+Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
+        Chris Healy <cphealy@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com
+Subject: [PATCH v8 0/8] enable CAAM's HWRNG as default
+Date:   Mon, 16 Mar 2020 08:00:39 -0700
+Message-Id: <20200316150047.30828-1-andrew.smirnov@gmail.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dzkem9z.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Mar 16, 2020 at 09:28:40AM +0100, Thomas Gleixner wrote:
-> Corentin,
-> 
-> Corentin Labbe <clabbe.montjoie@gmail.com> writes:
-> > On next-20200313, running cryptsetup benchmark is stuck.
-> > I have bisected this problem twice and the result is the same:
-> >
-> > git bisect bad 8019ad13ef7f64be44d4f892af9c840179009254
-> > # first bad commit: [8019ad13ef7f64be44d4f892af9c840179009254] futex: Fix inode life-time issue
-> >
-> > Since the two bisect lead to the same commit, I think it should be
-> > right one even if I dont find anything related to my problem.
-> 
-> I'm as puzzled as you.
-> 
-> > But reverting this patch is impossible, so I cannot test to try
-> > without it.
-> 
-> You need to revert two:
-> 
-> 8d67743653dc ("futex: Unbreak futex hashing")
-> 8019ad13ef7f ("futex: Fix inode life-time issue")
-> 
+Everyone:
 
-On next-20200313, there are no "futex: Unbreak futex hashing".
-And it seems to fix my issue, I have updated to next-20200316 (which have it) and the issue is not present anymore.
+This series is a continuation of original [discussion]. I don't know
+if what's in the series is enough to use CAAMs HWRNG system wide, but
+I am hoping that with enough iterations and feedback it will be.
 
-Thanks
-Regards
+Changes since [v1]:
+
+    - Original hw_random replaced with the one using output of TRNG directly
+
+    - SEC4 DRNG IP block exposed via crypto API
+
+    - Small fix regarding use of GFP_DMA added to the series
+
+Chagnes since [v2]:
+
+    - msleep in polling loop to avoid wasting CPU cycles
+
+    - caam_trng_read() bails out early if 'wait' is set to 'false'
+
+    - fixed typo in ZII's name
+
+Changes since [v3]:
+
+    - DRNG's .cra_name is now "stdrng"
+
+    - collected Reviewd-by tag from Lucas
+
+    - typo fixes in commit messages of the series
+
+Changes since [v4]:
+
+    - Dropped "crypto: caam - RNG4 TRNG errata" and "crypto: caam -
+      enable prediction resistance in HRWNG" to limit the scope of the
+      series. Those two patches are not yet ready and can be submitted
+      separately later.
+
+    - Collected Tested-by from Chris
+
+Changes since [v5]:
+
+    - Series is converted back to implementing HWRNG using a job ring
+      as per feedback from Horia.
+
+Changes since [v6]:
+
+    - "crypto: caam - drop global context pointer and init_done"
+      changed to use devres group to allow freeing HWRNG resource
+      independently of the parent device lifecycle. Code to deal with
+      circular deallocation dependency is added as well
+
+    - Removed worker self-scheduling in "crypto: caam - simplify RNG
+      implementation". It didn't bring much value, but meant that
+      simple cleanup with just a call to flush_work() wasn't good
+      enough.
+
+    - Added a simple function with a FIXME item for MC firmware check in
+      "crypto: caam - enable prediction resistance in HRWNG"
+
+    - "crypto: caam - limit single JD RNG output to maximum of 16
+      bytes" now shrinks async FIFO size from 32K to 64 bytes, since
+      having a buffer that big doesn't seem to do any good given that
+      througput of TRNG
+
+Changes since [v7]:
+
+    - Collected Reviewd-bys from Horia
+
+    - updated "crypto: caam - simplify RNG implementation" to drop
+      custom type and fix comments
+
+    - updated "crypto: caam - enable prediction resistance in HRWNG"
+      to integrate code from Andrei Botila
+
+    - updated "crypto: caam - drop global context pointer and
+      init_done" to use .priv instead of container_of for private data
+      pointer
+
+Feedback is welcome!
+
+Thanks,
+Andrey Smirnov
+
+[discussion] https://patchwork.kernel.org/patch/9850669/
+[v1] https://lore.kernel.org/lkml/20191029162916.26579-1-andrew.smirnov@gmail.com
+[v2] https://lore.kernel.org/lkml/20191118153843.28136-1-andrew.smirnov@gmail.com
+[v3] https://lore.kernel.org/lkml/20191120165341.32669-1-andrew.smirnov@gmail.com
+[v4] https://lore.kernel.org/lkml/20191121155554.1227-1-andrew.smirnov@gmail.com
+[v5] https://lore.kernel.org/lkml/20191203162357.21942-1-andrew.smirnov@gmail.com
+[v6] https://lore.kernel.org/lkml/20200108154047.12526-1-andrew.smirnov@gmail.com
+[v7] https://lore.kernel.org/lkml/20200127165646.19806-1-andrew.smirnov@gmail.com
+
+Andrey Smirnov (8):
+  crypto: caam - allocate RNG instantiation descriptor with GFP_DMA
+  crypto: caam - use struct hwrng's .init for initialization
+  crypto: caam - drop global context pointer and init_done
+  crypto: caam - simplify RNG implementation
+  crypto: caam - check if RNG job failed
+  crypto: caam - invalidate entropy register during RNG initialization
+  crypto: caam - enable prediction resistance in HRWNG
+  crypto: caam - limit single JD RNG output to maximum of 16 bytes
+
+ drivers/crypto/caam/Kconfig   |   1 +
+ drivers/crypto/caam/caamrng.c | 405 +++++++++++++---------------------
+ drivers/crypto/caam/ctrl.c    |  88 ++++++--
+ drivers/crypto/caam/desc.h    |   2 +
+ drivers/crypto/caam/intern.h  |   7 +-
+ drivers/crypto/caam/jr.c      |  13 +-
+ drivers/crypto/caam/regs.h    |   7 +-
+ 7 files changed, 243 insertions(+), 280 deletions(-)
+
+--
+2.21.0
