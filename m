@@ -2,107 +2,62 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 359CD188129
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2020 12:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73365188353
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2020 13:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgCQLQK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 17 Mar 2020 07:16:10 -0400
-Received: from mail-am6eur05on2086.outbound.protection.outlook.com ([40.107.22.86]:14145
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727972AbgCQLQJ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 17 Mar 2020 07:16:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W1cRa+d3TORftexyCHyPPzRQKgOxSBT3WNJFjAnwV9+dPbL8zurcyHKTupsPf6SKjf107XOxCJHJKXxCgW+ZKpMdrP5zj+BdGmxMhHOuq5UJ73yM5wzOY7e5xNhP7k6o52lp+MJtLaq0w/eKVRNsZeqpgJqB3Wn9sc8OFNr+RHq1xpf+OJE7WslL9Uxlv/aBOH8VLPmphfEH+7tuRlN2zfF7PPum5azB7PyhNLM0vJ3IkRKXHf53vcqL/WLgUiPJw+9ctcCBRRf6JBvfH+PvmTg+W56A1dGY0j61b4kv736kw5klEr3w9lOugWAbnQOzwMFY0lYjEd4UOE+S8c+5Hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NmeRkQuCq9+A+TIda6mzShgBGTQl68Lo/ND2lXY/xhg=;
- b=Imeav3lkBiFQxXl91Sn0S8UK5NPycL9KLKPjAHUP75rVEr0U6qrv0g3DoPoDA80iKU4HtPPT7+xhe/AmEwiU5bAmUMjEz3u4ATqPSZ9wDUvGt9nfExRkuZq7yXvkpSsdlVXbdkEO9cAgeCj/4Lb6vCZuESUAO35cV0Lw5JfD38mmFWTpFEYyJnJ/nNTUhPTUoyXVPO1kVUCm4tBf2uKDrK1LejcWZ5LJikAZ4gJAKqwK3Oyu8cS7sff0tMic1XMkXeWBUegw7blX5MnlrcqUCbRjUHxTfhEDaCPoJwNdJ3zLCfaZ0QkMkfiJPB/ew4OlE97uW/qAJrjPOTGsTKKWvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NmeRkQuCq9+A+TIda6mzShgBGTQl68Lo/ND2lXY/xhg=;
- b=Qh461vG+YsxPUH0CxSnr5gXHN+4LZWBgAEYb3OZ+C80QrXJCm1dNa6sg1H9+WIB3+KEbe+4/WEbrlrz1RXgIbUaoe8ASoDomAHemXrCwY7bDS1eLp9qlNzc9ElMU6JyrUQXjEEUS4s4QQA/LEGI9FWdVMES9JHgG0Vb1n6HuKKg=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=horia.geanta@nxp.com; 
-Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com (52.134.3.153) by
- VI1PR0402MB3373.eurprd04.prod.outlook.com (52.134.5.17) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2814.22; Tue, 17 Mar 2020 11:16:05 +0000
-Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com
- ([fe80::751e:7e8d:ed4:ef5f]) by VI1PR0402MB3485.eurprd04.prod.outlook.com
- ([fe80::751e:7e8d:ed4:ef5f%7]) with mapi id 15.20.2814.021; Tue, 17 Mar 2020
- 11:16:04 +0000
-Subject: Re: [PATCH v8 0/8] enable CAAM's HWRNG as default
-To:     Andrey Smirnov <andrew.smirnov@gmail.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-Cc:     Chris Healy <cphealy@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-References: <20200316150047.30828-1-andrew.smirnov@gmail.com>
-From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
-Message-ID: <1a416e7c-3175-6e42-5034-1228e99b283f@nxp.com>
-Date:   Tue, 17 Mar 2020 13:16:01 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-In-Reply-To: <20200316150047.30828-1-andrew.smirnov@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR10CA0006.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:17c::16) To VI1PR0402MB3485.eurprd04.prod.outlook.com
- (2603:10a6:803:7::25)
+        id S1726856AbgCQMLq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 17 Mar 2020 08:11:46 -0400
+Received: from sonic307-2.consmr.mail.ne1.yahoo.com ([66.163.190.121]:33101
+        "EHLO sonic307-2.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726272AbgCQMLq (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 17 Mar 2020 08:11:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1584447105; bh=kcevCRoll2+Bsa3FDERpIV72LVcB1A4YV1b5N2AWYBk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Mm+amEABuqOJSxEgMJ/+nsPA/ert+WBMiBEAweTDEsx0N036ol3lmnkGKYWfx1C2elo7X2MRdIotA+1oIY3R33KgQYVWZPOomU9AK+h0oYREGlTeqU6XgPE8Hm4IMzgjKLifqesthHoal8PP8ZNv5J/Rs4JtryuX+7H6/zqwwNqpCB8gMjj1IOA11oJY10PxvQ8kq2gzmJYi8JFmaIovHksWCkDP2+khyElBjOAwmHHqoEgc3O6qHrU8EA5jJvBTCWL180Y1bbtqpD4D3F6cMF0bErwQBIDmrVVWDIWiJYdSEfKS2QbzeAXQJJg3unqJTzWmN7nkDdLYNJLh27eZ9g==
+X-YMail-OSG: meabeLkVM1kj4Qo1UjIKZPmYD57gR7gOgoKWAJhAgndzEP8FpYomA0vodT2zgoo
+ 7sGgK.kVySqbLaFz.W_wkblfN0jMp5w9BAW3QXr902Dv_G_zrhaCZzbV5wPqfES1rrrtb6SPZI2E
+ pznk8b9RjhucMPpNVS8_iBj4VWaQIr2RxGjq9ZKK4xgUkbNwEwq6EtwDvQHBuiYmue13bfoywmx2
+ ClCujEeJt7CoC_GmYMMhTuOo.QP8U6.RI222je7MxVK7SrULUS6l_osTHUuteMP78NY7l.PDTFqI
+ glY09FeQ0qMvYADM6VZ3OClo8hcWXRW3GaWATtORTGYFet9mMRuAwZWM5u_26HoYyw1zYKFGoPIC
+ XB5nswWjghnuoqXAeGtZEsjRUJG9LhgJyQDkc6cL00qYKir_uCXfE1Yf7R1cImjyWjTnPgQeTSVw
+ hOECgCxqGfQYp5I2rVed9WhPiBiRwnoZFuW3cafYUeDVyV4didE8dS2uk8cXhBKMqLOnTpkdGG6O
+ a2oeCSGv49CgeOKgZLD3f7bm.eabxtUAqIOV__b9udeCc0lIGeXVuaWknhwAPPHX.aOJJS7Wo0mT
+ Cb_15kkvpBs00Oq6cyHwGkrUG71QGXQ.kzSe708iYcSGZ4IFFBQZq3U78tQBVT6zmKdemUY7Qsx9
+ mg6El.vRbjJzEP74i_gaHx.6dKnENZZvFNvnNuIcb8zklHvgwZS01Df.tDJBa01xGoq_DEwEm_O3
+ N48x7AVSyU1OVZEI2EvOyGtTY6NeRsSPSKMSO5RcC_22Sj0aClWQOt.0IMou5DfrakujXXz3I4ov
+ h4LGzvx5Sm45iKCZS79a84ZEerqaaENotu.40RYrtsD8TmX2QsMijpduFznz3YG_I08.c1tT4Rel
+ 9BbD_vtcKKmNYLyyDqT6z.yEN0Icq51wncO4XK.oa9Uw8AzfLGRRigifle87lSIMPipCGDhig3IQ
+ Vh.oMt8wiWk0gz0XNhVvu3GUxmyHRYPNHd6KpvsHfcXHPIfg4FgodNhyKAn1VC33D5DHi3fQI0I3
+ NFDezcnyxTcoaUPJFtPpGiD8TUuWg_hI2QjLiIy8SgfpB4WLyhya2F3EBGQFwyc9Guxnw4..ROt7
+ Wtq27ankkDbapMf80Xq0xAN762_4GTU2kJD6CNytnpBfJmiTPXjn.ZWmg3kbg5_Xm5D3Tv05X4uy
+ M_OA4zS72HdEIFhqlBXy0zJaQye7Sje767SEvPxEr7kvrF7SD0GZzLXAGOxQO8xrD21jWAdDZiX4
+ R3kAEKZk7kjrfXPZ1akGXosn4j4uYPL4Ou1rjpKlhq76S8vU4JOiZ_tK872l7DM84Qy965IpeihH
+ P8YIG.GJzM0xKyipjV76O7oiBQWA-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Tue, 17 Mar 2020 12:11:45 +0000
+Date:   Tue, 17 Mar 2020 12:09:44 +0000 (UTC)
+From:   Stephen Li <stenn6@gabg.net>
+Reply-To: stephli947701@gmail.com
+Message-ID: <2047002212.1846736.1584446984727@mail.yahoo.com>
+Subject: REF
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.129] (84.117.251.185) by AM0PR10CA0006.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:17c::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.18 via Frontend Transport; Tue, 17 Mar 2020 11:16:03 +0000
-X-Originating-IP: [84.117.251.185]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 3ebe45fb-bdcd-463e-9803-08d7ca649523
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3373:|VI1PR0402MB3373:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB337332CE74DDE6520D8F587498F60@VI1PR0402MB3373.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-Forefront-PRVS: 0345CFD558
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(39860400002)(136003)(366004)(396003)(376002)(199004)(26005)(186003)(8936002)(16526019)(8676002)(81156014)(45080400002)(2906002)(81166006)(66476007)(5660300002)(31686004)(66946007)(66556008)(4744005)(6486002)(31696002)(53546011)(52116002)(966005)(478600001)(86362001)(316002)(54906003)(2616005)(4326008)(16576012)(956004)(36756003)(110136005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0402MB3373;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
-Received-SPF: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vl0jT9wTDgfQd00hOnZwoZ2qr6rmm2dKDcwUssiWvpre000Hxd3pjjxbSvFhVXC1XYWMA2wSIsZXj+G3rVpCS6sj6bhTB0scfwhDoS/Lr/1G/VGblhv0AqmYYgxk3siA9MNJmFlBZnlc1SswwMmI86A2I0ESSBBNj1BdNDGNxL4mFWEjB06M1rOJVFAYWIl9GIMYc8Lz1S8SqTKClT4MkoehCgmqALzVV95A9YaTUtwmkIBv5Ep8wUkX3XldtsQtnxYA6Slss7UhpkX1gXyZaSdiqV9EY+sPdiMpV+aj3ZLRS5a2OLnY4JjM5pnpKjIZLCcFt15ay7X9qPMg7Fr7H5TKJzKasfpa/5T45JUIEvxXHj2mQd+iHyCrHqYceeTIIppvpQBiOssr+WBbbQl+x5sUyQKb9P1bbxmlhZd4tX5uMFGFLVtgPpP6neAKP1pg19kY/tx/HdXbPCvGK1CXDoLa8wq6qC4rIg4IwGrEAV1jbVd1XLer5sYcwo+JGRIiQRz8bsMvnFe7uNwbDd0i6g==
-X-MS-Exchange-AntiSpam-MessageData: AE6QyhJXZ6c+iizLrosSSlXpVq+AKSWPtBt97LlQJK29g5Nq4nuwLGyITdxMfXCwhsyXiEFy3rMLQbN7JcfwKFOPT3XxyWv++XNrAoAD3GeR2D6Eh3T4cyxM4o+//1+BvIXnrsSCBn0yzPM5b2+1GA==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ebe45fb-bdcd-463e-9803-08d7ca649523
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2020 11:16:04.7510
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qmyH0yxwAFvAjlhudT/U5PAp2CQbxCXbEsOH0EhM7bCrE9oOA7i+8vdCRi74vRpLtQLjSzBfEmDPca/Nm1RVUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3373
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <2047002212.1846736.1584446984727.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15342 YMailNodin Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 3/16/2020 5:01 PM, Andrey Smirnov wrote:
-> Feedback is welcome!
-> 
-The patch set does not compile.
 
-Patch "bus: fsl-mc: add api to retrieve mc version"
-https://patchwork.kernel.org/patch/11352493/
-was not applied, the plan being to merge it via cryptodev-2.6 tree,
-see my comment here:
-https://lore.kernel.org/linux-arm-kernel/VI1PR0402MB3485DB40CE1C1631D920EE7598040@VI1PR0402MB3485.eurprd04.prod.outlook.com/
 
-I think it needs to be formally included in the patch set.
-
-Thanks,
-Horia
+Greetings,
+I was searching through a local business directory when I found your
+profile. I am Soliciting On-Behalf of my private client who is
+interested in having a serious business investment in your country. If
+you have a valid business, investment or project he can invest
+back to me for more details. Your swift response is highly needed.
+Sincerely
+Stephen Li
+Please response back to me with is my private email below for more details
+stephli947701@gmail.com
