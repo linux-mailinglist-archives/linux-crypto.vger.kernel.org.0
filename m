@@ -2,74 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F4818768B
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2020 01:11:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CA218781F
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2020 04:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733046AbgCQALn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 16 Mar 2020 20:11:43 -0400
-Received: from mail.uic.edu.hk ([61.143.62.86]:48979 "EHLO umgp.uic.edu.hk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1733047AbgCQALn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 16 Mar 2020 20:11:43 -0400
-X-IronPort-AV: E=Sophos;i="5.43,368,1503331200"; 
-   d="scan'208";a="17243176"
-Received: from unknown (HELO zpmail.uic.edu.hk) ([192.168.111.249])
-  by umgp.uic.edu.hk with ESMTP; 17 Mar 2020 08:11:35 +0800
-Received: from zpmail.uic.edu.hk (localhost [127.0.0.1])
-        by zpmail.uic.edu.hk (Postfix) with ESMTPS id D96D941C05A3;
-        Tue, 17 Mar 2020 08:11:32 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by zpmail.uic.edu.hk (Postfix) with ESMTP id D554341C0957;
-        Tue, 17 Mar 2020 08:11:31 +0800 (CST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 zpmail.uic.edu.hk D554341C0957
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uic.edu.hk;
-        s=6465647E-9D7B-11E8-B17B-42130C7FA3B9; t=1584403892;
-        bh=Wn2BcVyAdGxyDvB/5AnVfCr/iJTzisyuX4dwKssec6E=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=N1pNhkd2l8zz69kDtEsPH5n7SDL70Ak/Rgb/NYqC0+ZCBZFg/G0QkldxXmMRPmztz
-         HwkJ6HHAibMur3rytYhnqKeG349hpGDQCbhvoJdZWkvkFCa93STWbitRqMynzR+Wj5
-         wLEdN7i9CyVDDhspocQMykx6lSGq645dTckJSCrsFHg+uR95rTW6kz2/3F5tST7+Uo
-         ELvvW8oTRw+C3DdE82L8ao85KfwNAx6BRhhB+sNBssPbo3CqQ69/PO1/J9gy3aGO+s
-         FwDrxpCEm2RIo68N7oaYrAjY/FUGCbKk/MsqrV+VDqizldOqfTDFamlvQc82rVkjYy
-         rx6v80NBgwdtg==
-Received: from zpmail.uic.edu.hk ([127.0.0.1])
-        by localhost (zpmail.uic.edu.hk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id gCmMIXxwS0HE; Tue, 17 Mar 2020 08:11:31 +0800 (CST)
-Received: from zpmail.uic.edu.hk (zpmail.uic.edu.hk [192.168.111.249])
-        by zpmail.uic.edu.hk (Postfix) with ESMTP id 1549641C058D;
-        Tue, 17 Mar 2020 08:11:27 +0800 (CST)
-Date:   Tue, 17 Mar 2020 08:11:26 +0800 (CST)
-From:   David Ibe <ylawrence@uic.edu.hk>
-Reply-To: David Ibe <davidibe718@gmail.com>
-Message-ID: <2065446646.63699156.1584403886963.JavaMail.zimbra@uic.edu.hk>
-Subject: 
+        id S1726962AbgCQDXH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 16 Mar 2020 23:23:07 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:38864 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726823AbgCQDXH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 16 Mar 2020 23:23:07 -0400
+Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
+        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
+        id 1jE2oW-0007Oi-Rq; Tue, 17 Mar 2020 14:22:45 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 17 Mar 2020 14:22:44 +1100
+Date:   Tue, 17 Mar 2020 14:22:44 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
+Cc:     Iuliana Prodan <iuliana.prodan@nxp.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH v4 1/2] crypto: engine - support for parallel requests
+Message-ID: <20200317032244.GA18743@gondor.apana.org.au>
+References: <1583707893-23699-1-git-send-email-iuliana.prodan@nxp.com>
+ <1583707893-23699-2-git-send-email-iuliana.prodan@nxp.com>
+ <20200312032553.GB19920@gondor.apana.org.au>
+ <61c28d90-af55-25a1-3729-90a622f2a7b2@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.111.160]
-X-Mailer: Zimbra 8.8.15_GA_3829 (ZimbraWebClient - GC80 (Win)/8.8.15_GA_3829)
-Thread-Index: 8IMjdxPQWBZshE+F+QJEttpRaFVxcQ==
-Thread-Topic: 
-To:     unlisted-recipients:; (no To-header on input)
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <61c28d90-af55-25a1-3729-90a622f2a7b2@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On Thu, Mar 12, 2020 at 01:05:32PM +0200, Horia Geantă wrote:
+> On 3/12/2020 5:26 AM, Herbert Xu wrote:
+> > On Mon, Mar 09, 2020 at 12:51:32AM +0200, Iuliana Prodan wrote:
+> >>
+> >>  	ret = enginectx->op.do_one_request(engine, async_req);
+> >> -	if (ret) {
+> >> -		dev_err(engine->dev, "Failed to do one request from queue: %d\n", ret);
+> >> -		goto req_err;
+> >> +	can_enq_more = ret;
+> >> +	if (can_enq_more < 0) {
+> >> +		dev_err(engine->dev, "Failed to do one request from queue: %d\n",
+> >> +			ret);
+> >> +		goto req_err_1;
+> >> +	}
+> > 
+> > So this now includes the case of the hardware queue being full
+> > and the request needs to be queued until space opens up again.
+> I see no difference when compared with existing implementation:
+> in both cases failing the transfer from SW queue to HW queue means
+> losing the request irrespective of the error code returned by .do_one_request.
+> 
+> This doesn't mean it shouldn't be fixed.
 
+I don't think they are the same though.  With the existing code,
+you only ever have one outstanding request so a new one is only
+given over to the hardware after the previous one has completed.
+That means that the only errors you expect to get from the driver
+are fatal ones that you cannot recover from.
 
-Good Day,                
+With parallel requests, you will be giving as many requests to
+the driver as it can take.  In fact the error condition is now
+used to tell the engine to stop giving more requests.  This is
+in no way the same as a fatal error from before.
 
-I am Mr. David Ibe, I work with the International Standards on Auditing, I have seen on records, that several times people has divert your funds into their own personal accounts.
+We should not print out an error in this case and we should ensure
+that the request is put back on the queue and reprocessed when the
+driver comes back for more.
 
-Now I am writing to you in respect of the amount which I have been able to send to you through our International United Nations accredited and approved Diplomat, who has arrived Africa, I want you to know that the diplomat would deliver the funds which I have packaged as a diplomatic compensation to you and the amount in the consignment is  $10,000,000.00 United State Dollars.
-
-I did not disclose the contents to the diplomat, but I told him that it is your compensation from the Auditing Corporate Governance and Stewardship, Auditing and Assurance Standards Board. I want you to know that these funds would help with your financial status as I have seen in records that you have spent a lot trying to receive these funds and I am not demanding so much from you but only 30% for my stress and logistics.
-
-I would like you to get back to me with your personal contact details, so that I can give you the contact information's of the diplomat who has arrived Africa and has been waiting to get your details so that he can proceed with the delivery to you.
-
-Yours Sincerely,
-Kindly forward your details to: mrdavidibe966@gmail.com
-Mr. David Ibe
-International Auditor,
-Corporate Governance and Stewardship
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
