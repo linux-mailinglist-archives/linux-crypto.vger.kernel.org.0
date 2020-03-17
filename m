@@ -2,193 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE2E187636
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2020 00:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F4818768B
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2020 01:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732855AbgCPXcR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 16 Mar 2020 19:32:17 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37274 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732842AbgCPXcR (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 16 Mar 2020 19:32:17 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02GNL9S5073560;
-        Mon, 16 Mar 2020 19:32:02 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2yrtwu94kx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Mar 2020 19:32:02 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 02GNLFNL074028;
-        Mon, 16 Mar 2020 19:32:01 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2yrtwu94kh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Mar 2020 19:32:01 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 02GNUQYO014878;
-        Mon, 16 Mar 2020 23:32:01 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma04dal.us.ibm.com with ESMTP id 2yrpw68pe6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Mar 2020 23:32:01 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 02GNVxGF27853172
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Mar 2020 23:31:59 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 905756A051;
-        Mon, 16 Mar 2020 23:31:59 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 191DE6A047;
-        Mon, 16 Mar 2020 23:31:59 +0000 (GMT)
-Received: from [9.70.82.143] (unknown [9.70.82.143])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 16 Mar 2020 23:31:58 +0000 (GMT)
-Subject: Re: [PATCH v3 0/9] crypto/nx: Enable GZIP engine and provide
- userpace API
-From:   Haren Myneni <haren@linux.ibm.com>
-To:     Daniel Axtens <dja@axtens.net>
-Cc:     herbert@gondor.apana.org.au, mpe@ellerman.id.au, mikey@neuling.org,
-        sukadev@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-crypto@vger.kernel.org, npiggin@gmail.com
-In-Reply-To: <87y2s0o3i5.fsf@dja-thinkpad.axtens.net>
-References: <1583540877.9256.24.camel@hbabu-laptop>
-         <87y2s0o3i5.fsf@dja-thinkpad.axtens.net>
-Content-Type: text/plain; charset="UTF-8"
-Date:   Mon, 16 Mar 2020 16:31:39 -0700
-Message-ID: <1584401499.9256.14460.camel@hbabu-laptop>
-Mime-Version: 1.0
-X-Mailer: Evolution 2.28.3 
+        id S1733046AbgCQALn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 16 Mar 2020 20:11:43 -0400
+Received: from mail.uic.edu.hk ([61.143.62.86]:48979 "EHLO umgp.uic.edu.hk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1733047AbgCQALn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 16 Mar 2020 20:11:43 -0400
+X-IronPort-AV: E=Sophos;i="5.43,368,1503331200"; 
+   d="scan'208";a="17243176"
+Received: from unknown (HELO zpmail.uic.edu.hk) ([192.168.111.249])
+  by umgp.uic.edu.hk with ESMTP; 17 Mar 2020 08:11:35 +0800
+Received: from zpmail.uic.edu.hk (localhost [127.0.0.1])
+        by zpmail.uic.edu.hk (Postfix) with ESMTPS id D96D941C05A3;
+        Tue, 17 Mar 2020 08:11:32 +0800 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by zpmail.uic.edu.hk (Postfix) with ESMTP id D554341C0957;
+        Tue, 17 Mar 2020 08:11:31 +0800 (CST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 zpmail.uic.edu.hk D554341C0957
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uic.edu.hk;
+        s=6465647E-9D7B-11E8-B17B-42130C7FA3B9; t=1584403892;
+        bh=Wn2BcVyAdGxyDvB/5AnVfCr/iJTzisyuX4dwKssec6E=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=N1pNhkd2l8zz69kDtEsPH5n7SDL70Ak/Rgb/NYqC0+ZCBZFg/G0QkldxXmMRPmztz
+         HwkJ6HHAibMur3rytYhnqKeG349hpGDQCbhvoJdZWkvkFCa93STWbitRqMynzR+Wj5
+         wLEdN7i9CyVDDhspocQMykx6lSGq645dTckJSCrsFHg+uR95rTW6kz2/3F5tST7+Uo
+         ELvvW8oTRw+C3DdE82L8ao85KfwNAx6BRhhB+sNBssPbo3CqQ69/PO1/J9gy3aGO+s
+         FwDrxpCEm2RIo68N7oaYrAjY/FUGCbKk/MsqrV+VDqizldOqfTDFamlvQc82rVkjYy
+         rx6v80NBgwdtg==
+Received: from zpmail.uic.edu.hk ([127.0.0.1])
+        by localhost (zpmail.uic.edu.hk [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id gCmMIXxwS0HE; Tue, 17 Mar 2020 08:11:31 +0800 (CST)
+Received: from zpmail.uic.edu.hk (zpmail.uic.edu.hk [192.168.111.249])
+        by zpmail.uic.edu.hk (Postfix) with ESMTP id 1549641C058D;
+        Tue, 17 Mar 2020 08:11:27 +0800 (CST)
+Date:   Tue, 17 Mar 2020 08:11:26 +0800 (CST)
+From:   David Ibe <ylawrence@uic.edu.hk>
+Reply-To: David Ibe <davidibe718@gmail.com>
+Message-ID: <2065446646.63699156.1584403886963.JavaMail.zimbra@uic.edu.hk>
+Subject: 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
- definitions=2020-03-16_10:2020-03-12,2020-03-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 adultscore=0 bulkscore=0 mlxscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 phishscore=0 suspectscore=0
- priorityscore=1501 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2003160094
+X-Originating-IP: [192.168.111.160]
+X-Mailer: Zimbra 8.8.15_GA_3829 (ZimbraWebClient - GC80 (Win)/8.8.15_GA_3829)
+Thread-Index: 8IMjdxPQWBZshE+F+QJEttpRaFVxcQ==
+Thread-Topic: 
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, 2020-03-17 at 00:04 +1100, Daniel Axtens wrote:
-> Hi Haren,
-> 
-> If I understand correctly, to test these, I need to apply both this
-> series and your VAS userspace page fault handling series - is that
-> right?
-
-Daniel, 
-
-Yes, This patch series enables GZIP engine and provides user space API.
-Whereas VAS fault handling series process faults if NX sees fault on
-request buffer.  
-
-selftest -
-https://lists.ozlabs.org/pipermail/linuxppc-dev/2020-March/206035.html
-
-or https://github.com/abalib/power-gzip/tree/develop/selftest
-
-More tests are available - https://github.com/abalib/power-gzip
-
-libnxz - https://github.com/libnxz/power-gzip  
-
-Thanks
-Haren
-
-> 
-> Kind regards,
-> Daniel
-> 
-> > Power9 processor supports Virtual Accelerator Switchboard (VAS) which
-> > allows kernel and userspace to send compression requests to Nest
-> > Accelerator (NX) directly. The NX unit comprises of 2 842 compression
-> > engines and 1 GZIP engine. Linux kernel already has 842 compression
-> > support on kernel. This patch series adds GZIP compression support
-> > from user space. The GZIP Compression engine implements the ZLIB and
-> > GZIP compression algorithms. No plans of adding NX-GZIP compression
-> > support in kernel right now.
-> >
-> > Applications can send requests to NX directly with COPY/PASTE
-> > instructions. But kernel has to establish channel / window on NX-GZIP
-> > device for the userspace. So userspace access to the GZIP engine is
-> > provided through /dev/crypto/nx-gzip device with several operations.
-> >
-> > An application must open the this device to obtain a file descriptor (fd).
-> > Using the fd, application should issue the VAS_TX_WIN_OPEN ioctl to
-> > establish a connection to the engine. Once window is opened, should use
-> > mmap() system call to map the hardware address of engine's request queue
-> > into the application's virtual address space. Then user space forms the
-> > request as co-processor Request Block (CRB) and paste this CRB on the
-> > mapped HW address using COPY/PASTE instructions. Application can poll
-> > on status flags (part of CRB) with timeout for request completion.
-> >
-> > For VAS_TX_WIN_OPEN ioctl, if user space passes vas_id = -1 (struct
-> > vas_tx_win_open_attr), kernel determines the VAS instance on the
-> > corresponding chip based on the CPU on which the process is executing.
-> > Otherwise, the specified VAS instance is used if application passes the
-> > proper VAS instance (vas_id listed in /proc/device-tree/vas@*/ibm,vas_id).
-> >
-> > Process can open multiple windows with different FDs or can send several
-> > requests to NX on the same window at the same time.
-> >
-> > A userspace library libnxz is available:
-> >         https://github.com/abalib/power-gzip
-> >
-> > Applications that use inflate/deflate calls can link with libNXz and use
-> > NX GZIP compression without any modification.
-> >
-> > Tested the available 842 compression on power8 and power9 system to make
-> > sure no regression and tested GZIP compression on power9 with tests
-> > available in the above link.
-> >
-> > Thanks to Bulent Abali for nxz library and tests development.
-> >
-> > Changelog:
-> > V2:
-> >   - Move user space API code to powerpc as suggested. Also this API
-> >     can be extended to any other coprocessor type that VAS can support
-> >     in future. Example: Fast thread wakeup feature from VAS
-> >   - Rebased to 5.6-rc3
-> >
-> > V3:
-> >   - Fix sparse warnings (patches 3&6)
-> >
-> > Haren Myneni (9):
-> >   powerpc/vas: Initialize window attributes for GZIP coprocessor type
-> >   powerpc/vas: Define VAS_TX_WIN_OPEN ioctl API
-> >   powerpc/vas: Add VAS user space API
-> >   crypto/nx: Initialize coproc entry with kzalloc
-> >   crypto/nx: Rename nx-842-powernv file name to nx-common-powernv
-> >   crypto/NX: Make enable code generic to add new GZIP compression type
-> >   crypto/nx: Enable and setup GZIP compresstion type
-> >   crypto/nx: Remove 'pid' in vas_tx_win_attr struct
-> >   Documentation/powerpc: VAS API
-> >
-> >  Documentation/powerpc/index.rst                    |    1 +
-> >  Documentation/powerpc/vas-api.rst                  |  246 +++++
-> >  Documentation/userspace-api/ioctl/ioctl-number.rst |    1 +
-> >  arch/powerpc/include/asm/vas.h                     |   12 +-
-> >  arch/powerpc/include/uapi/asm/vas-api.h            |   22 +
-> >  arch/powerpc/platforms/powernv/Makefile            |    2 +-
-> >  arch/powerpc/platforms/powernv/vas-api.c           |  290 +++++
-> >  arch/powerpc/platforms/powernv/vas-window.c        |   23 +-
-> >  arch/powerpc/platforms/powernv/vas.h               |    2 +
-> >  drivers/crypto/nx/Makefile                         |    2 +-
-> >  drivers/crypto/nx/nx-842-powernv.c                 | 1062 ------------------
-> >  drivers/crypto/nx/nx-common-powernv.c              | 1133 ++++++++++++++++++++
-> >  12 files changed, 1723 insertions(+), 1073 deletions(-)
-> >  create mode 100644 Documentation/powerpc/vas-api.rst
-> >  create mode 100644 arch/powerpc/include/uapi/asm/vas-api.h
-> >  create mode 100644 arch/powerpc/platforms/powernv/vas-api.c
-> >  delete mode 100644 drivers/crypto/nx/nx-842-powernv.c
-> >  create mode 100644 drivers/crypto/nx/nx-common-powernv.c
-> >
-> > -- 
-> > 1.8.3.1
 
 
+Good Day,                
+
+I am Mr. David Ibe, I work with the International Standards on Auditing, I have seen on records, that several times people has divert your funds into their own personal accounts.
+
+Now I am writing to you in respect of the amount which I have been able to send to you through our International United Nations accredited and approved Diplomat, who has arrived Africa, I want you to know that the diplomat would deliver the funds which I have packaged as a diplomatic compensation to you and the amount in the consignment is  $10,000,000.00 United State Dollars.
+
+I did not disclose the contents to the diplomat, but I told him that it is your compensation from the Auditing Corporate Governance and Stewardship, Auditing and Assurance Standards Board. I want you to know that these funds would help with your financial status as I have seen in records that you have spent a lot trying to receive these funds and I am not demanding so much from you but only 30% for my stress and logistics.
+
+I would like you to get back to me with your personal contact details, so that I can give you the contact information's of the diplomat who has arrived Africa and has been waiting to get your details so that he can proceed with the delivery to you.
+
+Yours Sincerely,
+Kindly forward your details to: mrdavidibe966@gmail.com
+Mr. David Ibe
+International Auditor,
+Corporate Governance and Stewardship
