@@ -2,182 +2,73 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CF018BC22
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 Mar 2020 17:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B85418BEDA
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 Mar 2020 19:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728401AbgCSQNQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 19 Mar 2020 12:13:16 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:35945 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728451AbgCSQNP (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 19 Mar 2020 12:13:15 -0400
-Received: by mail-pl1-f194.google.com with SMTP id g2so1260669plo.3;
-        Thu, 19 Mar 2020 09:13:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JqqHZc4mDxy3aXLOeDIjzEXKU4xYTgoxmYnKR8gehFo=;
-        b=HjM+U9z/XZTlYhdv3Sk+x3hZJ6CpC/cdHsB3IK2QTz6jfjPtDIXz0ab4FAVKVT9Wyr
-         3CiF5xRdQKogS/l6wsdAiysCwl7WImUBvRM4Uh8FnhgIxIfdd77NzfYVIWs0uH5txoKH
-         f88ABy/7kIomD0XBZMCfGfxKTmLI+kFMZgLzG/PFDgZIX93J8nJGEn64AtE1m0yIkINl
-         uaAx/nt3pGichXQm6rHsAszPiT7rOA4LJ4E97cuZvi9ZXqcMEbJIeTkxncLdLVKhqZ0J
-         5KSBYarfHTXkWd8bJY1U9zQqtbHaNcf463uTh/47OkVCZc2rg2796wrg1I9GD0XZpC7Z
-         WLMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JqqHZc4mDxy3aXLOeDIjzEXKU4xYTgoxmYnKR8gehFo=;
-        b=QEOr9nNbJMKZsB8mqhWyn3pxF69D+g8ptqRondKVaHayPEzioi5Ofh/iAfbcCYmNR9
-         Lp51AQdhrHrA/OVRGCviVamsxdrh1d9098CjhAhKG7o3Hj7o2eFTvTbsfm9VAQjk3Jee
-         d1ikwyEbaq34qVC7wepO1Xb85BAJ5fEQrem15CuAYwqkEblBzZpaGA5QHNd1RI58jeDK
-         2zwy2RBrRi03VfrJZHsaH4NjHiHwJSg63ngjD8rDbemLP+7sCgENGpIEnAMeMwg+Vi2P
-         nHoJyKf7teMLi22IW96CgmUpFcbq0SWMIHsitCIQOG+PaHcWs+mgUQn658lL1w3CFCjH
-         wTew==
-X-Gm-Message-State: ANhLgQ0gQqXalqSgLUTt54llPrRr0cuN+htR2LO0pDFYsXybo6/fXz+j
-        B7YCiK52GuO2W00jGK78h5+wz43l
-X-Google-Smtp-Source: ADFU+vtD+ZU1UZxrL6uW3d0LIHHlr0wSfkXr7nmblPWYrzoL4s8Y2yHIN7DrjMMkkRLLEPfXbNyYFQ==
-X-Received: by 2002:a17:90a:8403:: with SMTP id j3mr4685474pjn.8.1584634393466;
-        Thu, 19 Mar 2020 09:13:13 -0700 (PDT)
-Received: from localhost.localdomain (c-67-165-113-11.hsd1.wa.comcast.net. [67.165.113.11])
-        by smtp.gmail.com with ESMTPSA id x189sm3000078pfb.1.2020.03.19.09.13.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Mar 2020 09:13:12 -0700 (PDT)
-From:   Andrey Smirnov <andrew.smirnov@gmail.com>
+        id S1726936AbgCSSB0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 19 Mar 2020 14:01:26 -0400
+Received: from frisell.zx2c4.com ([192.95.5.64]:43285 "EHLO frisell.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726934AbgCSSBZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 19 Mar 2020 14:01:25 -0400
+Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 65755e04;
+        Thu, 19 Mar 2020 17:54:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
+        :subject:date:message-id:mime-version:content-transfer-encoding;
+         s=mail; bh=r5YCFkjH5K/WHH6A+nClokGcoZE=; b=BUS46J51EbO/nxA0siD7
+        HgEy2JvQmC9Ikysv/V1kPut9M7HKV5X3wKTtUoX7uikwpIMLYkuCeaeUSKqSsXMH
+        DNumxUXL90uKXfRi0DRKnMuRoqFfcibcuO489jFBl2vIg8z4QhmSSOIn35+FWzrU
+        KvAhjov67IXkvStWATNtFxOljGZS6hKClssgr3s4Ce7IJQXBoXuERGckMJvsDJvy
+        ZZLN7Zwa/TV2FJxbcMn3omn6n8Dj/7JPPD3kyYO08yL3I5PSW55hdw0uSLBGG9QF
+        2ShSj9ae8kmIXeU/sLiyx82ekp2G27ibfeDfmApOEuxyljLlmS6B/xvznirxaQqM
+        bg==
+Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id c84480ef (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO);
+        Thu, 19 Mar 2020 17:54:53 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
 To:     linux-crypto@vger.kernel.org
-Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Chris Healy <cphealy@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: [PATCH v9 9/9] crypto: caam - limit single JD RNG output to maximum of 16 bytes
-Date:   Thu, 19 Mar 2020 09:12:33 -0700
-Message-Id: <20200319161233.8134-10-andrew.smirnov@gmail.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200319161233.8134-1-andrew.smirnov@gmail.com>
-References: <20200319161233.8134-1-andrew.smirnov@gmail.com>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH crypto] crypto: arm[64]/poly1305 - add artifact to .gitignore files
+Date:   Thu, 19 Mar 2020 12:01:14 -0600
+Message-Id: <20200319180114.6437-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-In order to follow recommendation in SP800-90C (section "9.4 The
-Oversampling-NRBG Construction") limit the output of "generate" JD
-submitted to CAAM. See
-https://lore.kernel.org/linux-crypto/VI1PR0402MB3485EF10976A4A69F90E5B0F98580@VI1PR0402MB3485.eurprd04.prod.outlook.com/
-for more details.
+The .S_shipped yields a .S, and the pattern in these directories is to
+add that to .gitignore so that git-status doesn't raise a fuss.
 
-This change should make CAAM's hwrng driver good enough to have 1024
-quality rating.
-
-Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
-Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
-Cc: Chris Healy <cphealy@gmail.com>
-Cc: Lucas Stach <l.stach@pengutronix.de>
-Cc: Horia Geantă <horia.geanta@nxp.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-imx@nxp.com
+Fixes: a6b803b3ddc7 ("crypto: arm/poly1305 - incorporate OpenSSL/CRYPTOGAMS NEON implementation")
+Fixes: f569ca164751 ("crypto: arm64/poly1305 - incorporate OpenSSL/CRYPTOGAMS NEON implementation")
+Reported-by: Emil Renner Berthing <kernel@esmil.dk>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- drivers/crypto/caam/caamrng.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ arch/arm/crypto/.gitignore   | 1 +
+ arch/arm64/crypto/.gitignore | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/crypto/caam/caamrng.c b/drivers/crypto/caam/caamrng.c
-index 988bfddbadc6..77d048dfe5d0 100644
---- a/drivers/crypto/caam/caamrng.c
-+++ b/drivers/crypto/caam/caamrng.c
-@@ -22,9 +22,7 @@
- #include "jr.h"
- #include "error.h"
- 
--#define CAAM_RNG_MAX_FIFO_STORE_SIZE	U16_MAX
--
--#define CAAM_RNG_FIFO_LEN		SZ_32K /* Must be a multiple of 2 */
-+#define CAAM_RNG_MAX_FIFO_STORE_SIZE	16
- 
- /*
-  * Length of used descriptors, see caam_init_desc()
-@@ -65,14 +63,15 @@ static void caam_rng_done(struct device *jrdev, u32 *desc, u32 err,
- 	complete(jctx->done);
- }
- 
--static u32 *caam_init_desc(u32 *desc, dma_addr_t dst_dma, int len)
-+static u32 *caam_init_desc(u32 *desc, dma_addr_t dst_dma)
- {
- 	init_job_desc(desc, 0);	/* + 1 cmd_sz */
- 	/* Generate random bytes: + 1 cmd_sz */
- 	append_operation(desc, OP_ALG_ALGSEL_RNG | OP_TYPE_CLASS1_ALG |
- 			 OP_ALG_PR_ON);
- 	/* Store bytes: + 1 cmd_sz + caam_ptr_sz  */
--	append_fifo_store(desc, dst_dma, len, FIFOST_TYPE_RNGSTORE);
-+	append_fifo_store(desc, dst_dma,
-+			  CAAM_RNG_MAX_FIFO_STORE_SIZE, FIFOST_TYPE_RNGSTORE);
- 
- 	print_hex_dump_debug("rng job desc@: ", DUMP_PREFIX_ADDRESS,
- 			     16, 4, desc, desc_bytes(desc), 1);
-@@ -92,7 +91,7 @@ static int caam_rng_read_one(struct device *jrdev,
- 		.err  = &ret,
- 	};
- 
--	len = min_t(int, len, CAAM_RNG_MAX_FIFO_STORE_SIZE);
-+	len = CAAM_RNG_MAX_FIFO_STORE_SIZE;
- 
- 	dst_dma = dma_map_single(jrdev, dst, len, DMA_FROM_DEVICE);
- 	if (dma_mapping_error(jrdev, dst_dma)) {
-@@ -102,7 +101,7 @@ static int caam_rng_read_one(struct device *jrdev,
- 
- 	init_completion(done);
- 	err = caam_jr_enqueue(jrdev,
--			      caam_init_desc(desc, dst_dma, len),
-+			      caam_init_desc(desc, dst_dma),
- 			      caam_rng_done, &jctx);
- 	if (err == -EINPROGRESS) {
- 		wait_for_completion(done);
-@@ -122,7 +121,7 @@ static void caam_rng_fill_async(struct caam_rng_ctx *ctx)
- 
- 	sg_init_table(sg, ARRAY_SIZE(sg));
- 	nents = kfifo_dma_in_prepare(&ctx->fifo, sg, ARRAY_SIZE(sg),
--				     CAAM_RNG_FIFO_LEN);
-+				     CAAM_RNG_MAX_FIFO_STORE_SIZE);
- 	if (!nents)
- 		return;
- 
-@@ -156,7 +155,7 @@ static int caam_read(struct hwrng *rng, void *dst, size_t max, bool wait)
- 	}
- 
- 	out = kfifo_out(&ctx->fifo, dst, max);
--	if (kfifo_len(&ctx->fifo) <= CAAM_RNG_FIFO_LEN / 2)
-+	if (kfifo_is_empty(&ctx->fifo))
- 		schedule_work(&ctx->worker);
- 
- 	return out;
-@@ -186,7 +185,8 @@ static int caam_init(struct hwrng *rng)
- 	if (!ctx->desc_async)
- 		return -ENOMEM;
- 
--	if (kfifo_alloc(&ctx->fifo, CAAM_RNG_FIFO_LEN, GFP_DMA | GFP_KERNEL))
-+	if (kfifo_alloc(&ctx->fifo, CAAM_RNG_MAX_FIFO_STORE_SIZE,
-+			GFP_DMA | GFP_KERNEL))
- 		return -ENOMEM;
- 
- 	INIT_WORK(&ctx->worker, caam_rng_worker);
-@@ -246,6 +246,7 @@ int caam_rng_init(struct device *ctrldev)
- 	ctx->rng.cleanup = caam_cleanup;
- 	ctx->rng.read    = caam_read;
- 	ctx->rng.priv    = (unsigned long)ctx;
-+	ctx->rng.quality = 1024;
- 
- 	dev_info(ctrldev, "registering rng-caam\n");
- 
+diff --git a/arch/arm/crypto/.gitignore b/arch/arm/crypto/.gitignore
+index 31e1f538df7d..a3c7ad52a469 100644
+--- a/arch/arm/crypto/.gitignore
++++ b/arch/arm/crypto/.gitignore
+@@ -1,3 +1,4 @@
+ aesbs-core.S
+ sha256-core.S
+ sha512-core.S
++poly1305-core.S
+diff --git a/arch/arm64/crypto/.gitignore b/arch/arm64/crypto/.gitignore
+index 879df8781ed5..e403b1343328 100644
+--- a/arch/arm64/crypto/.gitignore
++++ b/arch/arm64/crypto/.gitignore
+@@ -1,2 +1,3 @@
+ sha256-core.S
+ sha512-core.S
++poly1305-core.S
 -- 
-2.21.0
+2.25.1
 
