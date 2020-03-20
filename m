@@ -2,50 +2,112 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBD618C61B
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2020 04:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4193918C619
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2020 04:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgCTDv3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 19 Mar 2020 23:51:29 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:33918 "EHLO fornost.hmeau.com"
+        id S1726986AbgCTDvU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 19 Mar 2020 23:51:20 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:33904 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726847AbgCTDv3 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 19 Mar 2020 23:51:29 -0400
+        id S1726847AbgCTDvU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 19 Mar 2020 23:51:20 -0400
 Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jF8gW-0001WX-Vp; Fri, 20 Mar 2020 14:51:02 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 20 Mar 2020 14:51:00 +1100
-Date:   Fri, 20 Mar 2020 14:51:00 +1100
+        id 1jF8gj-0001XP-OB; Fri, 20 Mar 2020 14:51:14 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 20 Mar 2020 14:51:13 +1100
+Date:   Fri, 20 Mar 2020 14:51:13 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Torsten Duwe <duwe@lst.de>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch][Fix] crypto: arm{,64} neon: memzero_explicit aes-cbc key
-Message-ID: <20200320035100.GE27372@gondor.apana.org.au>
-References: <20200313110258.94A0668C4E@verein.lst.de>
+To:     Srujana Challa <schalla@marvell.com>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        pathreya@marvell.com, schandran@marvell.com, arno@natisbad.org,
+        bbrezillon@kernel.org
+Subject: Re: [PATCH v2 0/4] Add Support for Marvell OcteonTX Cryptographic
+Message-ID: <20200320035113.GF27372@gondor.apana.org.au>
+References: <1584100028-21279-1-git-send-email-schalla@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200313110258.94A0668C4E@verein.lst.de>
+In-Reply-To: <1584100028-21279-1-git-send-email-schalla@marvell.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 12:02:58PM +0100, Torsten Duwe wrote:
-> From: Torsten Duwe <duwe@suse.de>
+On Fri, Mar 13, 2020 at 05:17:04PM +0530, Srujana Challa wrote:
+> The following series adds support for Marvell Cryptographic Accelerarion
+> Unit (CPT) on OcteonTX CN83XX SoC.
 > 
-> At function exit, do not leave the expanded key in the rk struct
-> which got allocated on the stack.
+> Changes since v1:
+> * Replaced CRYPTO_BLKCIPHER with CRYPTO_SKCIPHER in Kconfig.
 > 
-> Signed-off-by: Torsten Duwe <duwe@suse.de>
+> Srujana Challa (4):
+>   drivers: crypto: create common Kconfig and Makefile for Marvell
+>   drivers: crypto: add support for OCTEON TX CPT engine
+>   drivers: crypto: add the Virtual Function driver for CPT
+>   crypto: marvell: enable OcteonTX cpt options for build
+> 
+>  MAINTAINERS                                        |    1 +
+>  drivers/crypto/Kconfig                             |   15 +-
+>  drivers/crypto/Makefile                            |    2 +-
+>  drivers/crypto/marvell/Kconfig                     |   37 +
+>  drivers/crypto/marvell/Makefile                    |    7 +-
+>  drivers/crypto/marvell/cesa.c                      |  615 -------
+>  drivers/crypto/marvell/cesa.h                      |  880 ----------
+>  drivers/crypto/marvell/cesa/Makefile               |    3 +
+>  drivers/crypto/marvell/cesa/cesa.c                 |  615 +++++++
+>  drivers/crypto/marvell/cesa/cesa.h                 |  881 ++++++++++
+>  drivers/crypto/marvell/cesa/cipher.c               |  801 +++++++++
+>  drivers/crypto/marvell/cesa/hash.c                 | 1448 ++++++++++++++++
+>  drivers/crypto/marvell/cesa/tdma.c                 |  352 ++++
+>  drivers/crypto/marvell/cipher.c                    |  798 ---------
+>  drivers/crypto/marvell/hash.c                      | 1442 ----------------
+>  drivers/crypto/marvell/octeontx/Makefile           |    6 +
+>  drivers/crypto/marvell/octeontx/otx_cpt_common.h   |   51 +
+>  drivers/crypto/marvell/octeontx/otx_cpt_hw_types.h |  824 +++++++++
+>  drivers/crypto/marvell/octeontx/otx_cptpf.h        |   34 +
+>  drivers/crypto/marvell/octeontx/otx_cptpf_main.c   |  307 ++++
+>  drivers/crypto/marvell/octeontx/otx_cptpf_mbox.c   |  253 +++
+>  drivers/crypto/marvell/octeontx/otx_cptpf_ucode.c  | 1686 +++++++++++++++++++
+>  drivers/crypto/marvell/octeontx/otx_cptpf_ucode.h  |  180 ++
+>  drivers/crypto/marvell/octeontx/otx_cptvf.h        |  104 ++
+>  drivers/crypto/marvell/octeontx/otx_cptvf_algs.c   | 1744 ++++++++++++++++++++
+>  drivers/crypto/marvell/octeontx/otx_cptvf_algs.h   |  188 +++
+>  drivers/crypto/marvell/octeontx/otx_cptvf_main.c   |  985 +++++++++++
+>  drivers/crypto/marvell/octeontx/otx_cptvf_mbox.c   |  247 +++
+>  drivers/crypto/marvell/octeontx/otx_cptvf_reqmgr.c |  612 +++++++
+>  drivers/crypto/marvell/octeontx/otx_cptvf_reqmgr.h |  227 +++
+>  drivers/crypto/marvell/tdma.c                      |  350 ----
+>  31 files changed, 11592 insertions(+), 4103 deletions(-)
+>  create mode 100644 drivers/crypto/marvell/Kconfig
+>  delete mode 100644 drivers/crypto/marvell/cesa.c
+>  delete mode 100644 drivers/crypto/marvell/cesa.h
+>  create mode 100644 drivers/crypto/marvell/cesa/Makefile
+>  create mode 100644 drivers/crypto/marvell/cesa/cesa.c
+>  create mode 100644 drivers/crypto/marvell/cesa/cesa.h
+>  create mode 100644 drivers/crypto/marvell/cesa/cipher.c
+>  create mode 100644 drivers/crypto/marvell/cesa/hash.c
+>  create mode 100644 drivers/crypto/marvell/cesa/tdma.c
+>  delete mode 100644 drivers/crypto/marvell/cipher.c
+>  delete mode 100644 drivers/crypto/marvell/hash.c
+>  create mode 100644 drivers/crypto/marvell/octeontx/Makefile
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cpt_common.h
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cpt_hw_types.h
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cptpf.h
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cptpf_main.c
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cptpf_mbox.c
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cptpf_ucode.c
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cptpf_ucode.h
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cptvf.h
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cptvf_algs.c
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cptvf_algs.h
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cptvf_main.c
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cptvf_mbox.c
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cptvf_reqmgr.c
+>  create mode 100644 drivers/crypto/marvell/octeontx/otx_cptvf_reqmgr.h
+>  delete mode 100644 drivers/crypto/marvell/tdma.c
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
