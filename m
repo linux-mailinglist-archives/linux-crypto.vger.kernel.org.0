@@ -2,79 +2,137 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD6218CCBE
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2020 12:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0DD18CD25
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2020 12:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727129AbgCTLWT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 20 Mar 2020 07:22:19 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:45565 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726953AbgCTLWT (ORCPT
+        id S1726820AbgCTLjM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 20 Mar 2020 07:39:12 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:54513 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726806AbgCTLjM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 20 Mar 2020 07:22:19 -0400
-Received: by mail-ot1-f65.google.com with SMTP id e9so5544798otr.12
-        for <linux-crypto@vger.kernel.org>; Fri, 20 Mar 2020 04:22:19 -0700 (PDT)
+        Fri, 20 Mar 2020 07:39:12 -0400
+Received: by mail-wm1-f68.google.com with SMTP id f130so4943979wmf.4
+        for <linux-crypto@vger.kernel.org>; Fri, 20 Mar 2020 04:39:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=6w+aFSJ+2vZ3lBtg9xVXLOFVqSNoMPd625E7FNYobb8=;
-        b=Pf/weUAfOIiJrSxirpBihZi6rDPdhyQPdqV31VjwvFYCZrXzvBkOQEdBeDD+fX+N79
-         qt9tmCm3FjbnRdoqGWpCa20Uk5e1bhGZ/0wJS+wlw72uJad71tcUBjcoeSwEUuruvXcA
-         84tRSqCB2Tph2tBoxOjpJV1x/Ea/J8W5HzqXPv65IQxNfJKY1At/wswC5dSURMa29aoD
-         8zo4+xruOlzLz3L4vwtTRqRx9ghKaKGisLI9y4mD1Sh4zDOfgU90m4NEBHVFFDUWfnA4
-         NQH6UOJvtwAQlpwMApniIE8f8/D2Yc9OrACifoz9y0lKr31XZXe0ZPRAGdpIASeffTj+
-         mh1g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YRigaEfZOb6sT9ALedVfWUUmpkTz74jGAgVfZWfCTyQ=;
+        b=Fob+sYuOpvGpBI97uCwMjVGbGMOmrvt3Y/dC7S4RCtDMD5T0xSRSIIHqxocScmurq5
+         yRIJb5W02subbYSs7Ww3eH0zJeZ8GFQTeVqPUTW9Z7+r/qt1r+o0E22d/1qht2+NuOYU
+         LcHhfUFkPU6QD90TEK7INwEnGCRihFkNYL9fmbbn+SsFNSAVOM5ZZN5jdvRbRHaqOaf/
+         qShOrBn74lsa5IWT7t5Ncb58bei9s2QnyvsgCihSi2fiex11IQCujaP3NAi6YRVAzBGS
+         wa6/v9oeE+ULGAhBJcytnxo43Oyy3VKSZsRSfROhLBcAgXE+jxv+fCD9DJ8R+ET/rqEK
+         u05w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=6w+aFSJ+2vZ3lBtg9xVXLOFVqSNoMPd625E7FNYobb8=;
-        b=X9cGGXYYYhGAZOaPVbO7Dsz5QHZ1XHnkzn8N0RvZ8eD/Rndqk7P5XnhYklICoZ9p5Y
-         YXsZ7gmB0Qs3uM+Bwzh8/dV7ZFdiYBKti5WBUmiaaZyUiCNl8TQ/H6ZYNhPYwyuQi02+
-         8sX1DslRSc06Kkr707axp/aRM7wkXqkAccS89HqXAcJgZafN7u2bD68D8baoVOGn0zPP
-         8QxRbx4nsCQM5OkobqnBOrn8XGyA5hTYFzryVerqslXRq28A81wKfX+nJu8lwpt8PBLR
-         6+7dvNvvOTrRlt6byD7W12pu0FHWlnhcIgf+KHWYxtH5cITjN6jK4LOluUrzqyinpPnn
-         jmGg==
-X-Gm-Message-State: ANhLgQ1OkrdMhlMk48/MjEK+DXsJXGP9zwVGmNABq/p9fx6B+l+57dcd
-        Ho9iW1gEZnO9cl1+kXVHnDgNqL0axC/8RLkG7Zk=
-X-Google-Smtp-Source: ADFU+vsduRj3hrCf9DhK2bNvKDpHo5/uVyU9cffULt+Uh+xPEULP1CtCYadaVmwGXRoaldTKMt0qeMlG0eCXLSlrUpo=
-X-Received: by 2002:a05:6830:3151:: with SMTP id c17mr6555852ots.310.1584703339020;
- Fri, 20 Mar 2020 04:22:19 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YRigaEfZOb6sT9ALedVfWUUmpkTz74jGAgVfZWfCTyQ=;
+        b=GUO6Kqe7GjasNu4O9Xtbd6b7Cjy6t2MnqdFgAJMcXLq1hsxYL0GN/NyqrQpj6vsGnH
+         ix9QfCbzAzP5gq+xYNCXtzmDtVF0NaPsxfbOou7CYTe1mt9pNDRNeZINjkTl0sYcVFK1
+         zw9CoDvmridXp7No6y17nFDeeHdg3FG2A4oubHY+oXKAs//jyOn2qzKlVyFbXW67hCN/
+         fqnM8wObtT8GYX5HBJXzP3VRdDUzrLMunCCxvD4dOAcjtvPp0p7QwsLj/sS/Yq1Qc/ig
+         tPDFAiTmSaJB3SMBmb9hXaKAKc7ifJnRZKjBgJzEyh7ewmJRG0vrOGrkIbMIopl58uft
+         uInQ==
+X-Gm-Message-State: ANhLgQ3HhD0KJnnI1Sm5mo5q5NG2JQr0Xd3dJ5OSyXcgwtIm4x4sOblW
+        R0NC4WKstC36PqHku/XTSCo=
+X-Google-Smtp-Source: ADFU+vuoZwN2FsLhNxRUmKehGqfKNCVWkZpA0JxjubTvOr2xowpZidJgE3lhQI0738wmxlqb9M6Kew==
+X-Received: by 2002:a1c:a552:: with SMTP id o79mr2312257wme.87.1584704348381;
+        Fri, 20 Mar 2020 04:39:08 -0700 (PDT)
+Received: from 344f61f41c50.v.cablecom.net ([195.181.175.111])
+        by smtp.gmail.com with ESMTPSA id l12sm7669841wrt.73.2020.03.20.04.39.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Mar 2020 04:39:07 -0700 (PDT)
+From:   Lothar Rubusch <l.rubusch@gmail.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, l.rubusch@gmail.com
+Subject: [PATCH v2] crypto: bool type cosmetics
+Date:   Fri, 20 Mar 2020 11:36:31 +0000
+Message-Id: <20200320113631.2470-1-l.rubusch@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Received: by 2002:a05:6838:40c6:0:0:0:0 with HTTP; Fri, 20 Mar 2020 04:22:18
- -0700 (PDT)
-From:   ECOWAS COMMITEE <ecowasmonitoringcommitteeabj@gmail.com>
-Date:   Fri, 20 Mar 2020 11:22:18 +0000
-Message-ID: <CAHHubrYe0Tme3z6y4=35rwkeKtHK_aNvGc957sh9eWYyPOf1Vg@mail.gmail.com>
-Subject: HAPPY SURVIVAL OF CORONAVIRUS
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear Sir/Madam
+When working with bool values the true and false definitions should be used
+instead of 1 and 0.
 
-HAPPY SURVIVAL OF CORONAVIRUS
+Hopefully I fixed my mailer and apologize for that.
 
-We the West African Monitoring Committee of the West African Economic
-Community(ECOWAS)are contacting you for a business transaction which
-we feel will be of great interest to you.
+Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
+---
+ crypto/af_alg.c     | 10 +++++-----
+ crypto/algif_hash.c |  6 +++---
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-Our duty is to see to the coming in and out of funds into this sub
-region.There is a fund which we confiscated worth of $12.5 million
-dollars.We will like you to receive this fund on your name in your
-account and as well helping us in the investment.
+diff --git a/crypto/af_alg.c b/crypto/af_alg.c
+index 439367a8e95c..b1cd3535c525 100644
+--- a/crypto/af_alg.c
++++ b/crypto/af_alg.c
+@@ -821,8 +821,8 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	struct af_alg_tsgl *sgl;
+ 	struct af_alg_control con = {};
+ 	long copied = 0;
+-	bool enc = 0;
+-	bool init = 0;
++	bool enc = false;
++	bool init = false;
+ 	int err = 0;
+ 
+ 	if (msg->msg_controllen) {
+@@ -830,13 +830,13 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 		if (err)
+ 			return err;
+ 
+-		init = 1;
++		init = true;
+ 		switch (con.op) {
+ 		case ALG_OP_ENCRYPT:
+-			enc = 1;
++			enc = true;
+ 			break;
+ 		case ALG_OP_DECRYPT:
+-			enc = 0;
++			enc = false;
+ 			break;
+ 		default:
+ 			return -EINVAL;
+diff --git a/crypto/algif_hash.c b/crypto/algif_hash.c
+index 178f4cd75ef1..da1ffa4f7f8d 100644
+--- a/crypto/algif_hash.c
++++ b/crypto/algif_hash.c
+@@ -83,7 +83,7 @@ static int hash_sendmsg(struct socket *sock, struct msghdr *msg,
+ 			goto unlock;
+ 	}
+ 
+-	ctx->more = 0;
++	ctx->more = false;
+ 
+ 	while (msg_data_left(msg)) {
+ 		int len = msg_data_left(msg);
+@@ -211,7 +211,7 @@ static int hash_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+ 	}
+ 
+ 	if (!result || ctx->more) {
+-		ctx->more = 0;
++		ctx->more = false;
+ 		err = crypto_wait_req(crypto_ahash_final(&ctx->req),
+ 				      &ctx->wait);
+ 		if (err)
+@@ -436,7 +436,7 @@ static int hash_accept_parent_nokey(void *private, struct sock *sk)
+ 
+ 	ctx->result = NULL;
+ 	ctx->len = len;
+-	ctx->more = 0;
++	ctx->more = false;
+ 	crypto_init_wait(&ctx->wait);
+ 
+ 	ask->private = ctx;
+-- 
+2.20.1
 
-You are advised to contact us as soon as you get this message for
-details of the transaction if you find it interesting.
-
-Best Regards,
-
-Mr John Aka
-
-Chairman
-ECOWAS
-West African Monitoring Committee
-Tel 00225 6716 6756
-Abidjan Cote D'Ivoire
