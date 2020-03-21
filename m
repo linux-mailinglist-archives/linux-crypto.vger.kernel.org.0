@@ -2,84 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D211718DCD2
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2020 01:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D24F818E12F
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2020 13:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbgCUAuM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 20 Mar 2020 20:50:12 -0400
-Received: from frisell.zx2c4.com ([192.95.5.64]:35097 "EHLO frisell.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727905AbgCUAuK (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 20 Mar 2020 20:50:10 -0400
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 4ec599b1;
-        Sat, 21 Mar 2020 00:43:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
-        :subject:date:message-id:in-reply-to:references:mime-version
-        :content-transfer-encoding; s=mail; bh=97eU/t7S2TVZqtyF+efQnC3Hd
-        b4=; b=zYVv9BcZEG8F5tUUPNJVQvNAznHvnZXc5RQdIS//V9Dlv0WeU08QFw+Se
-        PYahdM2LHgitwZoTYsFpw4w4RM+/U28ZNHXcUE6ZJ7p/+MmDL0lHB7EPvRuovUbR
-        NE4b4xHAkOYCJedLByFgDPZ9THmbgs5fvoH0tA6L9a1YEjKPZPDniQi7iGs29qkt
-        M1l+PxWs5stDsX+I83OWqoVVrY2P13KRRE73dzx21nNaLpwEb+M9CRO6+AB3Pm3n
-        DkAOIpIa0m67XGux++B33RzbOz4o5ukrU8tbFajObMYO/nv9SuxL/ypckax2NKmy
-        lQqb08Yopkx9KgXtUYU4ekXcPfw+g==
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 26ab3b27 (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO);
-        Sat, 21 Mar 2020 00:43:28 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        x86@kernel.org, linux-crypto@vger.kernel.org
-Subject: [PATCH RFC 3/3] crypto: curve25519 - do not pollute dispatcher based on assembler
-Date:   Fri, 20 Mar 2020 18:49:45 -0600
-Message-Id: <20200321004945.451497-4-Jason@zx2c4.com>
-In-Reply-To: <20200321004945.451497-1-Jason@zx2c4.com>
-References: <CAHk-=wjbTF2iw3EbKgfiRRq_keb4fHwLO8xJyRXbfK3Q7cscuQ@mail.gmail.com>
- <20200321004945.451497-1-Jason@zx2c4.com>
+        id S1726592AbgCUMbQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 21 Mar 2020 08:31:16 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:40695 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726192AbgCUMbQ (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 21 Mar 2020 08:31:16 -0400
+Received: by mail-wr1-f65.google.com with SMTP id f3so10682407wrw.7
+        for <linux-crypto@vger.kernel.org>; Sat, 21 Mar 2020 05:31:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xbtZjQMNQb/y6oMWok2fmAogGJpkRY2dtwNS/rxXLDc=;
+        b=FxDkBn0LxGmSnyk9fCZRGcAZoSiwCEUWg5a+nQtSOerjHcNFAPd8MxcVIsbNJjw0Ar
+         BvAJLCCFpzmATGIhszxfVTlBLKSkQSBPdfgEiwc9Sn4DP2Sg7SRLTsMPq71QYTw9rpfv
+         kuGWIXDXQWKTOceK7yTz5SR0pLl9yPwi8NfLt+5o4tf43LjDw9MD3a86F69izQBHB4Ti
+         XeglQa7A5myDDg1rhjjnkcHV2Hly+B1YBERtDJcwNMFomBLBkwu3qKz0oDae+foQsGQX
+         VpZgxpsvQ2O8fynd0z+yLH4usaFL6mywftTEbttOt9JQGJ6sIIHRuexFbsRZUkdQCx93
+         6GKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xbtZjQMNQb/y6oMWok2fmAogGJpkRY2dtwNS/rxXLDc=;
+        b=LfTyQcvPPGJ1rcNMlomjDKfVODbCVXxmDZ0AwsVKc8A35eO6CyGqLus+P6Y6NXkPuD
+         1g2OpfiUzT3gXv2XX60LRDMHNq4gC7gvHWnMFmySj7ipXgTcobRp2jktQQ/+PRPUOfNZ
+         MTwXEgYLng0FT3Gg7K5gveBF/ff8mtLZdE+Oj9fyNRPI80Fw9Fwfy0UoLqyNsyZ2r1GP
+         g89BewkGqy2GlRkDAj9OrrpaL7iKWO+fkYxNat+a2weMifAHQQVDyysiIhTJQCvIKu77
+         OfS6gNqPrLv+JMvGWOR1gnUJ2h36UNsIF1yRiPFJLLILlQJLpyeFqNcOo+vxgR6AWvDz
+         zJPg==
+X-Gm-Message-State: ANhLgQ1zbFEgP0P13cK7GKKm5QUZWpkajjSf1taz8cNlNQLvHfie/R6m
+        wCDAhviJnCAcdTk9Q74RiVs3driev784nHce9nBdyA==
+X-Google-Smtp-Source: ADFU+vv+k2p23kBpnyhIU03BQrf4V8Z6Thh0ZM8qQPeMtggKwiJSuJ2mPPLgUoUUT3CWXdoqiSZtF6fjViVsdvJ0FoM=
+X-Received: by 2002:a5d:4fcf:: with SMTP id h15mr11133455wrw.262.1584793874444;
+ Sat, 21 Mar 2020 05:31:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1584100028-21279-1-git-send-email-schalla@marvell.com>
+ <20200320053149.GC1315@sol.localdomain> <DM5PR18MB231111CEBDCDF734FA8C670BA0F50@DM5PR18MB2311.namprd18.prod.outlook.com>
+In-Reply-To: <DM5PR18MB231111CEBDCDF734FA8C670BA0F50@DM5PR18MB2311.namprd18.prod.outlook.com>
+From:   Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Sat, 21 Mar 2020 08:31:02 -0400
+Message-ID: <CAKv+Gu_G4=Dn+6chjk1dQFMXm1aGU8QQZMmy94L5LicmR3itKQ@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH v2 0/4] Add Support for Marvell OcteonTX Cryptographic
+To:     Srujana Challa <schalla@marvell.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Narayana Prasad Raju Athreya <pathreya@marvell.com>,
+        Suheil Chandran <schandran@marvell.com>,
+        "arno@natisbad.org" <arno@natisbad.org>,
+        "bbrezillon@kernel.org" <bbrezillon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Since we're doing a static inline dispatch here, we normally branch
-based on whether or not there's an arch implementation. That would have
-been fine in general, except the crypto Makefile prior used to turn
-things off -- despite the Kconfig -- resulting in us needing to also
-hard code various assembler things into the dispatcher too. The horror!
-Now that the assembler config options are done by Kconfig, we can get
-rid of the inconsistency.
+On Fri, 20 Mar 2020 at 06:47, Srujana Challa <schalla@marvell.com> wrote:
+>
+> > On Fri, Mar 13, 2020 at 05:17:04PM +0530, Srujana Challa wrote:
+> > > The following series adds support for Marvell Cryptographic Accelerarion
+> > > Unit (CPT) on OcteonTX CN83XX SoC.
+> > >
+> > > Changes since v1:
+> > > * Replaced CRYPTO_BLKCIPHER with CRYPTO_SKCIPHER in Kconfig.
+> > >
+> > > Srujana Challa (4):
+> > >   drivers: crypto: create common Kconfig and Makefile for Marvell
+> > >   drivers: crypto: add support for OCTEON TX CPT engine
+> > >   drivers: crypto: add the Virtual Function driver for CPT
+> > >   crypto: marvell: enable OcteonTX cpt options for build
+> >
+> > There's no mention of testing.  Did you try
+> > CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y?
+> >
+> Yes, the crypto self-tests are passed.
 
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- include/crypto/curve25519.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/include/crypto/curve25519.h b/include/crypto/curve25519.h
-index 9ecb3c1f0f15..4e6dc840b159 100644
---- a/include/crypto/curve25519.h
-+++ b/include/crypto/curve25519.h
-@@ -33,8 +33,7 @@ bool __must_check curve25519(u8 mypublic[CURVE25519_KEY_SIZE],
- 			     const u8 secret[CURVE25519_KEY_SIZE],
- 			     const u8 basepoint[CURVE25519_KEY_SIZE])
- {
--	if (IS_ENABLED(CONFIG_CRYPTO_ARCH_HAVE_LIB_CURVE25519) &&
--	    (!IS_ENABLED(CONFIG_CRYPTO_CURVE25519_X86) || IS_ENABLED(CONFIG_AS_ADX)))
-+	if (IS_ENABLED(CONFIG_CRYPTO_ARCH_HAVE_LIB_CURVE25519))
- 		curve25519_arch(mypublic, secret, basepoint);
- 	else
- 		curve25519_generic(mypublic, secret, basepoint);
-@@ -50,8 +49,7 @@ __must_check curve25519_generate_public(u8 pub[CURVE25519_KEY_SIZE],
- 				    CURVE25519_KEY_SIZE)))
- 		return false;
- 
--	if (IS_ENABLED(CONFIG_CRYPTO_ARCH_HAVE_LIB_CURVE25519) &&
--	    (!IS_ENABLED(CONFIG_CRYPTO_CURVE25519_X86) || IS_ENABLED(CONFIG_AS_ADX)))
-+	if (IS_ENABLED(CONFIG_CRYPTO_ARCH_HAVE_LIB_CURVE25519))
- 		curve25519_base_arch(pub, secret);
- 	else
- 		curve25519_generic(pub, secret, curve25519_base_point);
--- 
-2.25.1
-
+*which* selftests are passed? Please confirm that they all passed with
+that kconfig option set
