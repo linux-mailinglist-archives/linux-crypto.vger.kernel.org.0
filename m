@@ -2,49 +2,47 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 908FA1900D9
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Mar 2020 23:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8532F1900EF
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Mar 2020 23:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbgCWWEb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 23 Mar 2020 18:04:31 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:45673 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725897AbgCWWEb (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 23 Mar 2020 18:04:31 -0400
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 02NM4RO3022840;
-        Tue, 24 Mar 2020 07:04:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 02NM4RO3022840
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1585001067;
-        bh=h6nm2Hiq/kZPXDtve+y+JyahA5CoO2EzrLNaMh8pB0U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=0NvQzc9vpf3i4w59OBql2bUA3fFv02GNg4qxwWwcd9IH33rrIsUo08Z3wwnqVWojs
-         qTM2YaSHnKx5QmVLvDHW7wHshy511sa2W37eg8hjTC+XH/mA6Nnw8Ab//L20qZX7kv
-         Is0J5qix6D04C7G6B5Fp46SjOrayLGPZW9qNtAfWhSQ1Nhjz5ukCtsEB21lY1spOrq
-         bgcoKo0AB9CY9jXfZwVhqAchWtqq67aGINp+lg0IsRdbByJnGosJZkStVrmIBRuiNe
-         cfsjbzUZDvNRw3D9UPLnSlNxD2CbDAYoOv4WlrYzV6OcxSjuxWq+h1iksn2oeaPqfk
-         UHaI+ssapgr2w==
-X-Nifty-SrcIP: [209.85.217.41]
-Received: by mail-vs1-f41.google.com with SMTP id o3so9897821vsd.4;
-        Mon, 23 Mar 2020 15:04:27 -0700 (PDT)
-X-Gm-Message-State: ANhLgQ3VVysrzTdO4zJlR1dX2vFmRsl7kjBL85RNgPVwrYKm4tTs3IbY
-        QGOrY5ncEXFhoYgsGM6H0fXVjZnvNrJoFxlh+Vk=
-X-Google-Smtp-Source: ADFU+vtPNIJCULsC2ckgQesaum0yAU1a8tkGRLL3Tmcwq7vScG0ATcz09kWyiVeYSrqPbj0n0fZXgJPCEyMKTqIqwsg=
-X-Received: by 2002:a67:3201:: with SMTP id y1mr17991619vsy.54.1585001066297;
- Mon, 23 Mar 2020 15:04:26 -0700 (PDT)
+        id S1726955AbgCWWLE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 23 Mar 2020 18:11:04 -0400
+Received: from frisell.zx2c4.com ([192.95.5.64]:48721 "EHLO frisell.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726643AbgCWWLE (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 23 Mar 2020 18:11:04 -0400
+Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 9c3939ec;
+        Mon, 23 Mar 2020 22:04:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=du1Xi2cJwvyAEA0LnnfUIYXiBFE=; b=Bn4ZMd
+        B1myZuRZfOPybIza1CaPghEjwXkG/Vq+8+3muxbgDuMvoQbKwb0QMxkCnmLO2aKG
+        6QmvTgmlJ9vt1WI4odD9mueaXwe5aGGKPwmgNF7pA5CMQq1Yrrdxuv77KutE4nu4
+        2D6C5i5ntwp2kJCfWyx8sRcB49zDs8dMEBecVtSh/AyMiUTNz79GgbJ9RugIUJoM
+        dcgkHuH5oZ74lXY5ZmvtJQYL7Ry0KkMkOKnambR7tKUQ4wx3WyWV2Ui+wDhv3nLe
+        LGw6CYXp2grS9dQdVfMeJwWi8TI8ZHA1vPJd/z7UPBw2AhYlQAtjnAGyyB4GCqjd
+        KTyR7Ec14x4WSkLg==
+Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 97ca2ba1 (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO);
+        Mon, 23 Mar 2020 22:03:59 +0000 (UTC)
+Received: by mail-il1-f176.google.com with SMTP id f16so5509154ilj.9;
+        Mon, 23 Mar 2020 15:11:01 -0700 (PDT)
+X-Gm-Message-State: ANhLgQ3VAf8AngCaPI44pBgJZTf+G6+QfuH3yiqx8bjnZtwck8PmIs6t
+        iZr1xCUnJrTETnv6Y1enL1UgmSX+70arG+QcFPE=
+X-Google-Smtp-Source: ADFU+vtKxW8+wIo2evA9dEZmdKot1mmMyNY7t0WeeWDY74vjHLbsz9Exe56Jz1LOd3H5thx7nTAdiENmTb5nMZ15f38=
+X-Received: by 2002:a92:cd4e:: with SMTP id v14mr24213070ilq.231.1585001460661;
+ Mon, 23 Mar 2020 15:11:00 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200323020844.17064-1-masahiroy@kernel.org> <CAHmME9p=ECJ15uyPH79bF0tuzEksdxoUsjGQSyz74FfdEJxTpQ@mail.gmail.com>
  <CAHmME9q4egN7_KeYB-ZHCFPfXs-virgTv4iz9jW2SVOM7dTnLw@mail.gmail.com>
- <CAK7LNAR07vZFzh1Bbpq4CoJ4zmsc+p5rxpkO1Zv8QVfqhfvr2w@mail.gmail.com> <CAHmME9qCjo4kOQM3Dw6PDjEebmb6rvXajqhK-m-=vKcHWqNhAw@mail.gmail.com>
-In-Reply-To: <CAHmME9qCjo4kOQM3Dw6PDjEebmb6rvXajqhK-m-=vKcHWqNhAw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 24 Mar 2020 07:03:50 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQgKgKgOpQ2bgHrB5h=LTffs2khbYRrBhrxFM44gS88KQ@mail.gmail.com>
-Message-ID: <CAK7LNAQgKgKgOpQ2bgHrB5h=LTffs2khbYRrBhrxFM44gS88KQ@mail.gmail.com>
+ <CAK7LNAR07vZFzh1Bbpq4CoJ4zmsc+p5rxpkO1Zv8QVfqhfvr2w@mail.gmail.com>
+ <CAHmME9qCjo4kOQM3Dw6PDjEebmb6rvXajqhK-m-=vKcHWqNhAw@mail.gmail.com> <CAK7LNAQgKgKgOpQ2bgHrB5h=LTffs2khbYRrBhrxFM44gS88KQ@mail.gmail.com>
+In-Reply-To: <CAK7LNAQgKgKgOpQ2bgHrB5h=LTffs2khbYRrBhrxFM44gS88KQ@mail.gmail.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Mon, 23 Mar 2020 16:10:49 -0600
+X-Gmail-Original-Message-ID: <CAHmME9rgNB5L_x9rRcW4RDHJnPuAZMUtJ+7HNK3302nwb9Y0OQ@mail.gmail.com>
+Message-ID: <CAHmME9rgNB5L_x9rRcW4RDHJnPuAZMUtJ+7HNK3302nwb9Y0OQ@mail.gmail.com>
 Subject: Re: [PATCH 0/7] x86: remove always-defined CONFIG_AS_* options
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
 Cc:     X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Borislav Petkov <bp@alien8.de>,
@@ -67,66 +65,78 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Jason,
-
-On Mon, Mar 23, 2020 at 3:53 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+On Mon, Mar 23, 2020 at 4:04 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> On Mon, Mar 23, 2020 at 12:36 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > Hi Jason,
-> >
-> > On Mon, Mar 23, 2020 at 1:28 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> > >
-> > > Hi again,
-> > >
-> > > I've consolidated your patches and rebased mine on top, and
-> > > incorporated your useful binutils comments. The result lives here:
-> > >
-> > > https://git.zx2c4.com/linux-dev/log/?h=jd/kconfig-assembler-support
-> > >
-> > > I can submit all of those to the list, if you want, or maybe you can
-> > > just pull them out of there, include them in your v2, and put them in
-> > > your tree for 5.7? However you want is fine with me.
-> >
-> >
-> > Your series does not work correctly.
-> >
-> > I will comment why later.
+> Hi Jason,
 >
-> Bummer, okay. Looking forward to learning what's up. Also, if some
-> parts of it are useful (like the resorting and organizing of
-> arch/x86/crypto/Makefile), feel free to cannibalize it, keeping what's
-> useful and discarding what's not.
+> On Mon, Mar 23, 2020 at 3:53 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> >
+> > On Mon, Mar 23, 2020 at 12:36 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > >
+> > > Hi Jason,
+> > >
+> > > On Mon, Mar 23, 2020 at 1:28 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> > > >
+> > > > Hi again,
+> > > >
+> > > > I've consolidated your patches and rebased mine on top, and
+> > > > incorporated your useful binutils comments. The result lives here:
+> > > >
+> > > > https://git.zx2c4.com/linux-dev/log/?h=jd/kconfig-assembler-support
+> > > >
+> > > > I can submit all of those to the list, if you want, or maybe you can
+> > > > just pull them out of there, include them in your v2, and put them in
+> > > > your tree for 5.7? However you want is fine with me.
+> > >
+> > >
+> > > Your series does not work correctly.
+> > >
+> > > I will comment why later.
+> >
+> > Bummer, okay. Looking forward to learning what's up. Also, if some
+> > parts of it are useful (like the resorting and organizing of
+> > arch/x86/crypto/Makefile), feel free to cannibalize it, keeping what's
+> > useful and discarding what's not.
+> >
 >
+>
+> The answer is mostly in my previous reply to Linus:
+> https://lkml.org/lkml/2020/3/13/27
+>
+>
+> I think this problem would happen
+> for CONFIG_AS_CFI and CONFIG_AS_ADX
+> since the register in instruction code
+> is machine-bit dependent.
+>
+> The former is OK wince we are planning to
+> remove it.
+>
+> We need to handle -m64 for the latter.
+> Otherwise, a problem like commit
+> 3a7c733165a4799fa1 would happen.
+>
+>
+> So, I think we should merge this
+> https://lore.kernel.org/patchwork/patch/1214332/
+> then, fix-up CONFIG_AS_ADX on top of it.
+>
+> (Or, if we do not need to rush,
+> we can delete CONFIG_AS_ADX entirely after
+> we bump the binutils version to 2.23)
 
+Oh, gotcha. The easiest thing to do for that case would actually be
+passing 32-bit registers to adox, which are valid. I'll fix that up in
+my tree.
 
-The answer is mostly in my previous reply to Linus:
-https://lkml.org/lkml/2020/3/13/27
+And then indeed it looks like the binutils bump is coming anyway for 5.7.
 
+Your flags patch looks fine and potentially useful for other things
+down the line though. I suppose you had in mind something like:
 
-I think this problem would happen
-for CONFIG_AS_CFI and CONFIG_AS_ADX
-since the register in instruction code
-is machine-bit dependent.
+def_bool $(as-instr,...,-m64) if 64BIT
+def_bool $(as-instr,...,-m32) if !64BIT
 
-The former is OK wince we are planning to
-remove it.
+Anyway, I'll fix up the ADX code to be biarch like the AVX test code.
 
-We need to handle -m64 for the latter.
-Otherwise, a problem like commit
-3a7c733165a4799fa1 would happen.
-
-
-So, I think we should merge this
-https://lore.kernel.org/patchwork/patch/1214332/
-then, fix-up CONFIG_AS_ADX on top of it.
-
-(Or, if we do not need to rush,
-we can delete CONFIG_AS_ADX entirely after
-we bump the binutils version to 2.23)
-
-Thanks.
-
--- 
-Best Regards
-Masahiro Yamada
+Jason
