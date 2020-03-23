@@ -2,75 +2,55 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0281B18EEDF
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Mar 2020 05:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D3A18EFD1
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Mar 2020 07:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725810AbgCWE2W (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 23 Mar 2020 00:28:22 -0400
-Received: from frisell.zx2c4.com ([192.95.5.64]:35081 "EHLO frisell.zx2c4.com"
+        id S1725930AbgCWGbU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 23 Mar 2020 02:31:20 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:56950 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgCWE2V (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 23 Mar 2020 00:28:21 -0400
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 8be5a25f;
-        Mon, 23 Mar 2020 04:21:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=rPcJKtmVmgC2yVAkJsVpmVlhlVE=; b=O5cmhu
-        B3qaC6X36Tz3r3UfL8jvz0kuXAsrueNt1JVuQOxY1KPmNLiCxwoTf6jvBpjI+ARb
-        sSckkRtvMFhUh9O0TkNesQGppxzi5XQpj0OXzwIczPSkg9QCupLVpLfiFG9qocVT
-        XSo2VoTUGVQY8SwqUTQKmdWSIqE250JUfDIzMOjhVwhtRr/Z8HbSMCV1UPd3Fw53
-        ZJlkKrJmpuBt8FBZoeTKOg7zrNRZgXiaMXVw+1t+yq7x6R15cpn1Wtzf75awLjZL
-        8G+lsgfXwc8CszycBdPTYExheIdvBr0C2kVP8pXCNvQK60D2X202NbUlR1q7edJh
-        ijkkaLXp6sFp8Xkg==
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 9464c482 (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO);
-        Mon, 23 Mar 2020 04:21:21 +0000 (UTC)
-Received: by mail-io1-f53.google.com with SMTP id c19so12772691ioo.6;
-        Sun, 22 Mar 2020 21:28:18 -0700 (PDT)
-X-Gm-Message-State: ANhLgQ3B7nb/u9z8S7suA73Tg1QjORtEGwgTYWT3xjyqf+ViD5Rw1swO
-        irt5m0Puch09KKdMYgUg8i+YgA/kVQhxb49CiXE=
-X-Google-Smtp-Source: ADFU+vvpUXvu/rKVGq2dH+x983lMWOfilzM5Msb6ti3npc9A1Ta3Erhx9TQ3udPp8SFJeKboX0RRMXBJ1HzMKdvrooQ=
-X-Received: by 2002:a02:cbd0:: with SMTP id u16mr17792844jaq.36.1584937696838;
- Sun, 22 Mar 2020 21:28:16 -0700 (PDT)
+        id S1726059AbgCWGbU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 23 Mar 2020 02:31:20 -0400
+Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
+        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
+        id 1jGGbv-0004YR-OH; Mon, 23 Mar 2020 17:30:56 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 23 Mar 2020 17:30:55 +1100
+Date:   Mon, 23 Mar 2020 17:30:55 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Haren Myneni <haren@linux.ibm.com>
+Cc:     mpe@ellerman.id.au, dja@axtens.net, mikey@neuling.org,
+        sukadev@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-crypto@vger.kernel.org, npiggin@gmail.com
+Subject: Re: [PATCH v4 4/9] crypto/nx: Initialize coproc entry with kzalloc
+Message-ID: <20200323063055.GA5932@gondor.apana.org.au>
+References: <1584934879.9256.15321.camel@hbabu-laptop>
+ <1584936180.9256.15326.camel@hbabu-laptop>
 MIME-Version: 1.0
-References: <20200323020844.17064-1-masahiroy@kernel.org> <CAHmME9p=ECJ15uyPH79bF0tuzEksdxoUsjGQSyz74FfdEJxTpQ@mail.gmail.com>
-In-Reply-To: <CAHmME9p=ECJ15uyPH79bF0tuzEksdxoUsjGQSyz74FfdEJxTpQ@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Sun, 22 Mar 2020 22:28:06 -0600
-X-Gmail-Original-Message-ID: <CAHmME9q4egN7_KeYB-ZHCFPfXs-virgTv4iz9jW2SVOM7dTnLw@mail.gmail.com>
-Message-ID: <CAHmME9q4egN7_KeYB-ZHCFPfXs-virgTv4iz9jW2SVOM7dTnLw@mail.gmail.com>
-Subject: Re: [PATCH 0/7] x86: remove always-defined CONFIG_AS_* options
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Allison Randal <allison@lohutok.net>,
-        Armijn Hemel <armijn@tjaldur.nl>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Ingo Molnar <mingo@redhat.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Song Liu <songliubraving@fb.com>,
-        Zhengyuan Liu <liuzhengyuan@kylinos.cn>,
-        clang-built-linux@googlegroups.com,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1584936180.9256.15326.camel@hbabu-laptop>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi again,
+On Sun, Mar 22, 2020 at 09:03:00PM -0700, Haren Myneni wrote:
+> 
+> coproc entry is initialized during NX probe on power9, but not on P8.
+> nx842_delete_coprocs() is used for both and frees receive window if it
+> is allocated. Getting crash for rmmod on P8 since coproc->vas.rxwin
+> is not initialized.
+> 
+> This patch replaces kmalloc with kzalloc in nx842_powernv_probe()
+> 
+> Signed-off-by: Haren Myneni <haren@linux.ibm.com>
+> ---
+>  drivers/crypto/nx/nx-842-powernv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I've consolidated your patches and rebased mine on top, and
-incorporated your useful binutils comments. The result lives here:
-
-https://git.zx2c4.com/linux-dev/log/?h=jd/kconfig-assembler-support
-
-I can submit all of those to the list, if you want, or maybe you can
-just pull them out of there, include them in your v2, and put them in
-your tree for 5.7? However you want is fine with me.
-
-Jason
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
