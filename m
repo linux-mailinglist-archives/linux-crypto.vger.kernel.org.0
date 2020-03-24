@@ -2,62 +2,111 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EA519017F
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2020 00:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA121902AC
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2020 01:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbgCWXFI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 23 Mar 2020 19:05:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725897AbgCWXFI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 23 Mar 2020 19:05:08 -0400
-Subject: Re: [GIT PULL] Crypto Fixes for 5.6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585004707;
-        bh=8Kbx+YuPM/kjl/gzSlFEWqeDnOrd7rW3lT6qNKD2TGE=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=gh9N4QYcxURA1vuQFp9X/9vN6jCysP/P03cueNfUJCEfemtKsTLS1covr9hYe6r7h
-         NQfwsSX792qAPbQquM/9UWdEVfXyco3VcCYWdSsmmdBPiS4dZBE9ajciSYACkz9zE/
-         NZNbOftpssAWUHRnxNxqsyOIMfrL9H1cw9BrvonA=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200323225403.GA10100@gondor.apana.org.au>
-References: <20190916084901.GA20338@gondor.apana.org.au>
- <20190923050515.GA6980@gondor.apana.org.au>
- <20191202062017.ge4rz72ki3vczhgb@gondor.apana.org.au>
- <20191214084749.jt5ekav5o5pd2dcp@gondor.apana.org.au>
- <20200115150812.mo2eycc53lbsgvue@gondor.apana.org.au>
- <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
- <20200224060042.GA26184@gondor.apana.org.au>
- <20200312115714.GA21470@gondor.apana.org.au>
- <20200323225403.GA10100@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200323225403.GA10100@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
-X-PR-Tracked-Commit-Id: c8cfcb78c65877313cda7bcbace624d3dbd1f3b3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 979e52ca0469fb38646bc51d26a0263a740c9f03
-Message-Id: <158500470751.3923.15723237667884136785.pr-tracker-bot@kernel.org>
-Date:   Mon, 23 Mar 2020 23:05:07 +0000
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        id S1727636AbgCXAQR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 23 Mar 2020 20:16:17 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:30520 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727464AbgCXAQR (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 23 Mar 2020 20:16:17 -0400
+Received: from grover.flets-west.jp (softbank126093102113.bbtec.net [126.93.102.113]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 02O0EHnn026701;
+        Tue, 24 Mar 2020 09:14:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 02O0EHnn026701
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1585008859;
+        bh=AK5ED2xHmoH0oAFvRY1nFJ+Uo32DkkXlg/b7H5WM2LE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tMsQDW5QY1p/zxjGYXdrSK43/KLEAWGHV5zzBXogS9Fmukv+UITuDSA/nctKFlbV7
+         eB/37RLi+SMClEqCwtyy12NtEmPVD9osWTvnRYurU2Iy2IqKj9hSJhUOTxs2Nr8dmJ
+         JQ6gHtET3+9iKbwgxdnVkc7pf1twgrVvmqIpMYx0udk27w9oob5PgTVXwifhNVHNFZ
+         0D/KzY+2DGK5FEfo/BWNclI1PkFVrHHFjSDC6la6OQ3Y3X/ggKR4hGpiILy16hBDOn
+         XgfXXFtYp8BVTb/lkjPMGxKxPQXjYqW+gN7vps1tGxcFj/grMo6WjbWSYjtCq6CCVR
+         wjp61iiKaeqCA==
+X-Nifty-SrcIP: [126.93.102.113]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-crypto@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jim Kukunas <james.t.kukunas@linux.intel.com>,
+        NeilBrown <neilb@suse.de>,
+        Yuanhan Liu <yuanhan.liu@linux.intel.com>,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH v2 0/9] x86: remove always-defined CONFIG_AS_* options
+Date:   Tue, 24 Mar 2020 09:13:49 +0900
+Message-Id: <20200324001358.4520-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The pull request you sent on Tue, 24 Mar 2020 09:54:03 +1100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+arch/x86/Makefile tests instruction code by $(call as-instr, ...)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/979e52ca0469fb38646bc51d26a0263a740c9f03
+Some of them are very old.
+For example, the check for CONFIG_AS_CFI dates back to 2006.
 
-Thank you!
+We raise GCC versions from time to time, and we clean old code away.
+The same policy applied to binutils.
+
+The current minimal supported version of binutils is 2.21
+
+This is new enough to recognize the instruction in most of
+as-instr calls.
+
+If this series looks good, how to merge it?
+Via x86 tree or maybe crypto ?
+
+
+Changes in v2:
+  - New patch
+  - Remove CFI_SIGNAL_FRAME entirely (per Nick)
+  - add ifdef CONFIG_X86 to fix build errors on non-x86 arches
+
+Masahiro Yamada (9):
+  lib/raid6/test: fix build on distros whose /bin/sh is not bash
+  x86: remove unneeded defined(__ASSEMBLY__) check from asm/dwarf2.h
+  x86: remove always-defined CONFIG_AS_CFI
+  x86: remove unneeded (CONFIG_AS_)CFI_SIGNAL_FRAME
+  x86: remove always-defined CONFIG_AS_CFI_SECTIONS
+  x86: remove always-defined CONFIG_AS_SSSE3
+  x86: remove always-defined CONFIG_AS_AVX
+  x86: add comments about the binutils version to support code in
+    as-instr
+  x86: replace arch macros from compiler with CONFIG_X86_{32,64}
+
+ arch/x86/Makefile                             | 21 +++------
+ arch/x86/crypto/Makefile                      | 32 +++++---------
+ arch/x86/crypto/aesni-intel_avx-x86_64.S      |  3 --
+ arch/x86/crypto/aesni-intel_glue.c            | 14 +-----
+ arch/x86/crypto/blake2s-core.S                |  2 -
+ arch/x86/crypto/poly1305-x86_64-cryptogams.pl |  8 ----
+ arch/x86/crypto/poly1305_glue.c               |  6 +--
+ arch/x86/crypto/sha1_ssse3_asm.S              |  4 --
+ arch/x86/crypto/sha1_ssse3_glue.c             |  9 +---
+ arch/x86/crypto/sha256-avx-asm.S              |  3 --
+ arch/x86/crypto/sha256_ssse3_glue.c           |  8 +---
+ arch/x86/crypto/sha512-avx-asm.S              |  2 -
+ arch/x86/crypto/sha512_ssse3_glue.c           |  7 +--
+ arch/x86/include/asm/dwarf2.h                 | 44 -------------------
+ arch/x86/include/asm/xor_avx.h                |  9 ----
+ kernel/signal.c                               |  2 +-
+ lib/raid6/algos.c                             |  6 +--
+ lib/raid6/recov_ssse3.c                       |  6 ---
+ lib/raid6/test/Makefile                       |  8 ++--
+ 19 files changed, 33 insertions(+), 161 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+2.17.1
+
