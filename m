@@ -2,30 +2,30 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D82319029D
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2020 01:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68594190299
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2020 01:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727499AbgCXAPr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 23 Mar 2020 20:15:47 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:29697 "EHLO
+        id S1727402AbgCXAPo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 23 Mar 2020 20:15:44 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:29608 "EHLO
         conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727395AbgCXAPr (ORCPT
+        with ESMTP id S1727395AbgCXAPo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 23 Mar 2020 20:15:47 -0400
+        Mon, 23 Mar 2020 20:15:44 -0400
 Received: from grover.flets-west.jp (softbank126093102113.bbtec.net [126.93.102.113]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 02O0EHnv026701;
-        Tue, 24 Mar 2020 09:14:26 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 02O0EHnv026701
+        by conuserg-09.nifty.com with ESMTP id 02O0EHnw026701;
+        Tue, 24 Mar 2020 09:14:27 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 02O0EHnw026701
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1585008866;
-        bh=kQokSOGafKM9qlMy9Knp7M7g8No8/5Dc4IXiyrgHWNQ=;
+        s=dec2015msa; t=1585008867;
+        bh=eQUmDsxcuakkVwkNBx9dyHAfCNiv3XqyWmjW773HKZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kKLMYgiC0h8xGXZ+vkn32yE2vMwKGCmJDFBEK0pcJQYejUEkp8oA7wrQfhVfyoBv6
-         xsqRdj3hJhEyPw0iKcAolxDhBsxQ3Fif3ZtfbqMf0OLP7MVN3SvmkWaGLeys7mwBpx
-         hr7rmt3hkP8O/wEt4UW0kesGPQZsf97budesAb3tsIfASyS7TMn10G2sQldtEz3plu
-         UIzzg7lOQ6ykVt4blr/uVxZWQSH6iHT1O8+J/xdErOSNiAX+UZbnjxrsnRBX3B6zup
-         rh4qu13PclcrfOg/esoEXrxkOmL7RTFTjyPPmFrHRuiyJO5sL5mNdZaLuNmoCkqFPw
-         86qFI+k9csL4A==
+        b=KbYcN4ltycVuHSGlbZhSF02txyBiFZVaz8eVguMOcep4QSh8A03F2G1b05ffHSpZA
+         YqaLDRnQuQdI7sHagJb1nGRkEurleUcDVuPc1Qxgk1YNuvYWwCE/ftHPTrRW4NALzN
+         d+tGEJPRyZv6w+0Cs2jUI9URPe+CObQzjRBe6W+eKxxeB6zE8kS/fR/d3cZVgQGOPg
+         cBo8rogLmZn21vXUgH47JdRGXAZoITD+vcqLerWYdmVLFQrtlJitiIdIBC7fDPZ/jV
+         G2Y4LpH6OwZscN9zc6kKkqxocKkPOIegkYrdBbKw2OigB5JwSbjJV20+48kRgOTVuj
+         dJbEilZlPiwLg==
 X-Nifty-SrcIP: [126.93.102.113]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
@@ -34,12 +34,10 @@ To:     x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
         "H . Peter Anvin" <hpa@zytor.com>, linux-crypto@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH v2 8/9] x86: add comments about the binutils version to support code in as-instr
-Date:   Tue, 24 Mar 2020 09:13:57 +0900
-Message-Id: <20200324001358.4520-9-masahiroy@kernel.org>
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v2 9/9] x86: replace arch macros from compiler with CONFIG_X86_{32,64}
+Date:   Tue, 24 Mar 2020 09:13:58 +0900
+Message-Id: <20200324001358.4520-10-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200324001358.4520-1-masahiroy@kernel.org>
 References: <20200324001358.4520-1-masahiroy@kernel.org>
@@ -48,48 +46,60 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-We raise the minimal supported binutils version from time to time.
-The last bump was commit 1fb12b35e5ff ("kbuild: Raise the minimum
-required binutils version to 2.21").
+If the intention is to check i386/x86_64 excluding UML,
+checking CONFIG_X86_{32,64} is simpler.
 
-We need to keep these as-instr checks because binutils 2.21 does not
-support them.
+The reason for checking __i386__ / __x86_64__ was perhaps because
+lib/raid6/algos.c is built not only for the kernel but also for
+testing the library code from userspace.
 
-I hope this will be a good hint which one can be dropped when we
-bump the minimal binutils version next time.
-
-As for the Clang/LLVM builds, we require very new LLVM version,
-so the LLVM integrated assembler supports all of them.
+However, lib/raid6/test/Makefile passes -DCONFIG_X86_{32,64} for
+this case. So, I do not see a reason to not use CONFIG option here.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
 
 Changes in v2: None
 
- arch/x86/Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/signal.c   | 2 +-
+ lib/raid6/algos.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index f32ef7b8d5ca..4c57cb3018fb 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -178,10 +178,15 @@ ifeq ($(ACCUMULATE_OUTGOING_ARGS), 1)
- endif
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 5b2396350dd1..db557e1629e5 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1246,7 +1246,7 @@ static void print_fatal_signal(int signr)
+ 	struct pt_regs *regs = signal_pt_regs();
+ 	pr_info("potentially unexpected fatal signal %d.\n", signr);
  
- # does binutils support specific instructions?
-+# binutils >= 2.22
- avx2_instr :=$(call as-instr,vpbroadcastb %xmm0$(comma)%ymm1,-DCONFIG_AS_AVX2=1)
-+# binutils >= 2.25
- avx512_instr :=$(call as-instr,vpmovm2b %k1$(comma)%zmm5,-DCONFIG_AS_AVX512=1)
-+# binutils >= 2.24
- sha1_ni_instr :=$(call as-instr,sha1msg1 %xmm0$(comma)%xmm1,-DCONFIG_AS_SHA1_NI=1)
-+# binutils >= 2.24
- sha256_ni_instr :=$(call as-instr,sha256msg1 %xmm0$(comma)%xmm1,-DCONFIG_AS_SHA256_NI=1)
-+# binutils >= 2.23
- adx_instr := $(call as-instr,adox %r10$(comma)%r10,-DCONFIG_AS_ADX=1)
+-#if defined(__i386__) && !defined(__arch_um__)
++#ifdef CONFIG_X86_32
+ 	pr_info("code at %08lx: ", regs->ip);
+ 	{
+ 		int i;
+diff --git a/lib/raid6/algos.c b/lib/raid6/algos.c
+index df08664d3432..b5a02326cfb7 100644
+--- a/lib/raid6/algos.c
++++ b/lib/raid6/algos.c
+@@ -29,7 +29,7 @@ struct raid6_calls raid6_call;
+ EXPORT_SYMBOL_GPL(raid6_call);
  
- KBUILD_AFLAGS += $(avx2_instr) $(avx512_instr) $(sha1_ni_instr) $(sha256_ni_instr) $(adx_instr)
+ const struct raid6_calls * const raid6_algos[] = {
+-#if defined(__i386__) && !defined(__arch_um__)
++#ifdef CONFIG_X86_32
+ #ifdef CONFIG_AS_AVX512
+ 	&raid6_avx512x2,
+ 	&raid6_avx512x1,
+@@ -45,7 +45,7 @@ const struct raid6_calls * const raid6_algos[] = {
+ 	&raid6_mmxx2,
+ 	&raid6_mmxx1,
+ #endif
+-#if defined(__x86_64__) && !defined(__arch_um__)
++#ifdef CONFIG_X86_64
+ #ifdef CONFIG_AS_AVX512
+ 	&raid6_avx512x4,
+ 	&raid6_avx512x2,
 -- 
 2.17.1
 
