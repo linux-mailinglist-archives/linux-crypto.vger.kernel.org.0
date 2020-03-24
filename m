@@ -2,68 +2,85 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C32571916B4
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2020 17:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8AD191713
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2020 17:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727341AbgCXQnj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 24 Mar 2020 12:43:39 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:46588 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726988AbgCXQnj (ORCPT
+        id S1727304AbgCXQ6i (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 24 Mar 2020 12:58:38 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:46894 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgCXQ6i (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 24 Mar 2020 12:43:39 -0400
-Received: by mail-pg1-f193.google.com with SMTP id k191so8145755pgc.13
-        for <linux-crypto@vger.kernel.org>; Tue, 24 Mar 2020 09:43:38 -0700 (PDT)
+        Tue, 24 Mar 2020 12:58:38 -0400
+Received: by mail-lf1-f66.google.com with SMTP id q5so1972487lfb.13
+        for <linux-crypto@vger.kernel.org>; Tue, 24 Mar 2020 09:58:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0ckbAFa8zCaMccZFo+Gs27f6PIvd3NdOwxh/HtsnAf4=;
-        b=PdrJdf/5ys6G3EkHhtXeLqfbI+F9R/JtXgfxhdtfi7xtfWtwBLpicCmJD0uQPiayuy
-         KILQctVB/KRsDuF/iAO4i2lDkvrLBE361kCvNgGZzuoGNOwlS3Hos+htfICMB8QgcuM0
-         8Zf6o6oIEWs+jLE656I8sssd65dAtKsBVPGpL5EZQtxQ7wncHCIzUUHcZZ76h20mAVy7
-         Ybwt4nRtTUceiL5jelbX+fketk0uQvSKIWbV8D6CBucW9drzAfu9FgDMMUxIK+AV/clX
-         6ABIVm85WrKDWOdv5G8YreS7FpcX0IDYwIAGpPYgH/Ii+2xwB5d2LHV1KX3APugdazIt
-         f3Dw==
+        bh=WsR634IM9mmhNsoHiRslx4q1ur3OKG9sqLOfW3mTlvE=;
+        b=Z4pJJsNRptNjfG3P3MoBuNrYlnzenPIYlkT2d80DcIZW7UeaJ7NzLHI1ja4yIjcDoc
+         /iKfJJvm1iYP31UYLTqjCrBqL5Uar8necO8dCIgcOuI51Nj7AidT3P8YaYaCV6jUFzMJ
+         fsKqZJnyfGhT7+0lEb4rByJaviH4S/tML+mT4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0ckbAFa8zCaMccZFo+Gs27f6PIvd3NdOwxh/HtsnAf4=;
-        b=CeyLXUkVlJVOFK6tXrP5q5zAaysnWNvdNZnDKwpYZzkLb0zc3WpDXln9ch0XJ9jWKl
-         5CeFcZKOgHmL+UXxUUgUmaidLTavuvG5Ca+qyX7f60Q7kjK177V4orYnUAcQxJ7F3Jdt
-         kBPg7JwGOxIR6CJr/at36AWWHOvU8ffwwCuLfJ3m+LLm1V0i0VFvJLYWaceaaAG7HPKL
-         0ei07F2aa/ypf31xgaLAiKsNi4wfCVQNx4yA3JIzbfAeQHVeV+QhpxegQfDp0/PoxbUB
-         QYFYn5p8tTkdk+AWx9D2h3wMzBJSUx26/urVeo2MUa9SRvSsJ9D/Tri9fveHzS7tRdxZ
-         A7hw==
-X-Gm-Message-State: ANhLgQ1nMvHMchsnkoEKlkmhLM20z9n1Lr/woTeXcpKyotyLo5tDL1IT
-        F0ZwE+CcI9boe4ZxKL7gibizde+KUzAZMPCwPOYwXA==
-X-Google-Smtp-Source: ADFU+vsYLJpgvdYUU6R2yZeo2upmrFukYJCYvpMGWGdaxSJf6OvZ3OIxFLbqDmEhy/067UwZ716Po3aVR6VwoqLuFIA=
-X-Received: by 2002:a63:a34d:: with SMTP id v13mr7028614pgn.10.1585068217691;
- Tue, 24 Mar 2020 09:43:37 -0700 (PDT)
+        bh=WsR634IM9mmhNsoHiRslx4q1ur3OKG9sqLOfW3mTlvE=;
+        b=cFHJJjY+dluOGvYpSuT3IpSzU/vwe28AkswnyZS5anZfnBN4caSEiMbUSryXhC9i1T
+         J+XHVOZ8mMrAcZPv8uylzSle+6dlwT2BZuLGo7/ghkeZSibOC7fFp6ZpvWV5o05zkYaq
+         QE7+DTC+0UOsRYwIrwETHBvClmQjujnmtWDLsNapATaB9gs2dMWoQNhbyfWEOprH2M/P
+         oM2cQ/r2EZzTEGbCJ5kVqyX2/yoY1mTEVVfIfY0/EL7ujPEXuZx9OPayMjrEL2XUZjoy
+         /JYCR3qZVZOU+NrwGOf095UnoRz94nwTf64bF7/zCWNa3WvCOwmvdWJ1UuMywU5Wmk/e
+         /XXg==
+X-Gm-Message-State: ANhLgQ27mtevqix6+wiOAfRCVSJrwkqQykpe/y1QTh5Rqha9t7a9NVV0
+        tuZM08zhWBx6nFGFjcOptqBXf9eCbcs=
+X-Google-Smtp-Source: ADFU+vupcu9+qvWPx345vBsAWLLYNK+SuekBn4Pl8iGKX+nWgo4hZG/oUbXg+H7qyqV+R+CxGmgflw==
+X-Received: by 2002:a05:6512:1085:: with SMTP id j5mr17049590lfg.183.1585069115852;
+        Tue, 24 Mar 2020 09:58:35 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id b8sm6064209lfb.6.2020.03.24.09.58.35
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Mar 2020 09:58:35 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id r24so19449505ljd.4
+        for <linux-crypto@vger.kernel.org>; Tue, 24 Mar 2020 09:58:35 -0700 (PDT)
+X-Received: by 2002:a05:6512:10cf:: with SMTP id k15mr17550349lfg.142.1585068727556;
+ Tue, 24 Mar 2020 09:52:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200324084821.29944-1-masahiroy@kernel.org> <20200324084821.29944-3-masahiroy@kernel.org>
-In-Reply-To: <20200324084821.29944-3-masahiroy@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 24 Mar 2020 09:43:26 -0700
-Message-ID: <CAKwvOdk6aUuAH_o+P8b+WneQ96yhTPGAXqgzH+FJ5DHB9AqYYA@mail.gmail.com>
-Subject: Re: [PATCH 02/16] x86: remove unneeded defined(__ASSEMBLY__) check
- from asm/dwarf2.h
+References: <20200324084821.29944-1-masahiroy@kernel.org>
+In-Reply-To: <20200324084821.29944-1-masahiroy@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 24 Mar 2020 09:51:51 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjEi4VoT8qkBhrBtdZ27shyrPwo0ETpuOdxk5anHtQqhQ@mail.gmail.com>
+Message-ID: <CAHk-=wjEi4VoT8qkBhrBtdZ27shyrPwo0ETpuOdxk5anHtQqhQ@mail.gmail.com>
+Subject: Re: [PATCH 00/16] x86, crypto: remove always-defined CONFIG_AS_* and
+ cosolidate Kconfig/Makefiles
 To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
         Kees Cook <keescook@chromium.org>,
         clang-built-linux <clang-built-linux@googlegroups.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Borislav Petkov <bp@alien8.de>,
         Peter Zijlstra <peterz@infradead.org>,
         "H . Peter Anvin" <hpa@zytor.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Jim Kukunas <james.t.kukunas@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        NeilBrown <neilb@suse.de>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Yuanhan Liu <yuanhan.liu@linux.intel.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        intel-gfx@lists.freedesktop.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
@@ -72,47 +89,12 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 On Tue, Mar 24, 2020 at 1:49 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> This header file has the following check at the top:
->
->   #ifndef __ASSEMBLY__
->   #warning "asm/dwarf2.h should be only included in pure assembly files"
->   #endif
->
-> So, we expect defined(__ASSEMBLY__) is always true.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> If it is OK to queue this up to Kbuild tree,
+> I will send a pull request to Linus.
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Looks fine to me, assuming we didn't now get some confusion due to
+duplicate patches (I think Jason got his tree added to -next already).
 
-> ---
->
->  arch/x86/include/asm/dwarf2.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/include/asm/dwarf2.h b/arch/x86/include/asm/dwarf2.h
-> index ae391f609840..5a0502212bc5 100644
-> --- a/arch/x86/include/asm/dwarf2.h
-> +++ b/arch/x86/include/asm/dwarf2.h
-> @@ -36,7 +36,7 @@
->  #define CFI_SIGNAL_FRAME
->  #endif
->
-> -#if defined(CONFIG_AS_CFI_SECTIONS) && defined(__ASSEMBLY__)
-> +#if defined(CONFIG_AS_CFI_SECTIONS)
->  #ifndef BUILD_VDSO
->         /*
->          * Emit CFI data in .debug_frame sections, not .eh_frame sections.
-> --
-> 2.17.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200324084821.29944-3-masahiroy%40kernel.org.
+And yeah, that end result looks much better.
 
-
-
--- 
-Thanks,
-~Nick Desaulniers
+             Linus
