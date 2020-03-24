@@ -2,114 +2,154 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 983011907F5
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2020 09:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1EF190836
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2020 09:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbgCXIqm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 24 Mar 2020 04:46:42 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:51766 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgCXIqm (ORCPT
+        id S1727111AbgCXIvc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 24 Mar 2020 04:51:32 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:17862 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727458AbgCXIvb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 24 Mar 2020 04:46:42 -0400
-Received: by mail-wm1-f67.google.com with SMTP id c187so2251533wme.1;
-        Tue, 24 Mar 2020 01:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=vqE7J9avKRSB75CS08tA1XMoBisXuxlVqJUICDm2RMc=;
-        b=iB9wbzaXPETI8Jb4Po7UfmfNXF6g7zdHRjpkGrdg+WTzOJRbBAx2+GP7gcOQS/Vzs5
-         +C+Pi9XP8VtWYdqYg/gHoDei+hXFTHyCSbL6eII5G6A0LIpmETLm/pG87ekJ+EINYE/E
-         zrA73dd/jf7HTdinDv4q3tlxozFIwRNicWm0FXioCDqu3YW3mMjfJWvdJex1KIZR6qMI
-         kI3MToyfz87GWNGZh4U8kB2iw5xIcV/A+UJBA2c0mCbvQvW0krQqvMwjkdSDvNaoQZF7
-         UtBwA1IiMoQOjNUx3EA1ajUgOr6Pnnzk0A0Fic8eL2OYmtc7y0mFCxEkRbvvr78mYnyq
-         m8lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=vqE7J9avKRSB75CS08tA1XMoBisXuxlVqJUICDm2RMc=;
-        b=PO4Rp3vDhsPNw2QoujVgXZc63iRF/2LPh4ENh9nERtiqAahtuK1O1LHAg+K3lpIQud
-         tBNJDMabDCTooRq6wEzFzu6BSUX3RMrIO6keXpYr4QxDRnIp59jYf+ggAbWDkc5Y+TBp
-         7jZl5sMx12RuIo72PlwXNxYvOK7Idoj0XrN6ppHrslA/PaSHBzO8kNuyB2204Bf0886x
-         f/B3BIYA1wvmKf5cZ13y77p8VYs3vLpe2/oLe6q+Jk7e64O9dxvmWOtNJV+2DCIQd0Xc
-         xQL9TRWpYCF4KrS7oqN5T8PrATj48I36wFDe8dPMv0cBR45LIrHHg6qxO1te+kO6tbJt
-         +w/g==
-X-Gm-Message-State: ANhLgQ02cnskAVs7lWCMOslMEf7r1sJH3fkeSC/aMLfZHTKg6IFRgv6K
-        MUt0Ifry0fkZf9Uf1pzSUgt64wsMqidBhP5fuWKo8CVWgHI=
-X-Google-Smtp-Source: ADFU+vu3SGbdVgIeiQ031Be5sYxOpTkuy1gw7+8uJLrstgU/URuYpZnDw+A4NvU7i0GqhuMsIPrA0BEnrww0jHe9CBY=
-X-Received: by 2002:a1c:41d6:: with SMTP id o205mr4183235wma.122.1585039600829;
- Tue, 24 Mar 2020 01:46:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200323020844.17064-1-masahiroy@kernel.org> <CAHmME9p=ECJ15uyPH79bF0tuzEksdxoUsjGQSyz74FfdEJxTpQ@mail.gmail.com>
- <CAHmME9q4egN7_KeYB-ZHCFPfXs-virgTv4iz9jW2SVOM7dTnLw@mail.gmail.com>
- <CAK7LNAR07vZFzh1Bbpq4CoJ4zmsc+p5rxpkO1Zv8QVfqhfvr2w@mail.gmail.com>
- <CAHmME9qCjo4kOQM3Dw6PDjEebmb6rvXajqhK-m-=vKcHWqNhAw@mail.gmail.com>
- <CA+icZUUjP7e2zgrVCFenO_YJfpcOQWV++kuU5UWGKN_5udZXSw@mail.gmail.com> <CAHmME9quSMLwLacntdhvLKVDVtg6QVGhOQxADzz_4kVZYOJxNA@mail.gmail.com>
-In-Reply-To: <CAHmME9quSMLwLacntdhvLKVDVtg6QVGhOQxADzz_4kVZYOJxNA@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 24 Mar 2020 09:46:29 +0100
-Message-ID: <CA+icZUVCftYBYzxe+YJkN1WRGX+nQkHVaFxvW-S64k6WtdB64g@mail.gmail.com>
-Subject: Re: [PATCH 0/7] x86: remove always-defined CONFIG_AS_* options
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>, X86 ML <x86@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
+        Tue, 24 Mar 2020 04:51:31 -0400
+Received: from pug.e01.socionext.com (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp [153.142.97.92]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 02O8mgsX011219;
+        Tue, 24 Mar 2020 17:48:42 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 02O8mgsX011219
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1585039724;
+        bh=jHh3bC0B7EFxldpRV9Bvb2uWBZf2Z0xQXY60ZYUAXx0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=1o9+mpHFkS4x2Y0HZGvJs1ONHqBTcDMWc7Nery2mXY+kapd34XF+IE5uh5GmdgK2b
+         YD4YFFD/szqOC+vo7Uf1l4ZaCTT1UvZ9Xmi4tPoabnc/r1fMr+gi+U5u+bzow+akIF
+         mQqikeUO69C9p0JysCAuHcqff1GyfsJhRRKdbqYlIcICFhDd5iQ2oQqZY+bf/K2jST
+         1YAO6qxPQXcT9dJjVah9rfbJAOUCVd9hR1b0qdUjjbSiD0JUIOth4HT8cjXI4faEub
+         4EGjTEYzllKv6+ShI9tQbGpGYqTd4UmNSYUeuCCoBcfTEqVnPy9gndnm0c/S/O6Gi/
+         iDFBgnDjfPmVQ==
+X-Nifty-SrcIP: [153.142.97.92]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux@googlegroups.com,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Allison Randal <allison@lohutok.net>,
-        Armijn Hemel <armijn@tjaldur.nl>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Ingo Molnar <mingo@redhat.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Song Liu <songliubraving@fb.com>,
-        Zhengyuan Liu <liuzhengyuan@kylinos.cn>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Jim Kukunas <james.t.kukunas@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        NeilBrown <neilb@suse.de>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Yuanhan Liu <yuanhan.liu@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH 00/16] x86, crypto: remove always-defined CONFIG_AS_* and cosolidate Kconfig/Makefiles
+Date:   Tue, 24 Mar 2020 17:48:05 +0900
+Message-Id: <20200324084821.29944-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Mar 23, 2020 at 8:50 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+This series of cleanups was prompted by Linus:
+https://lkml.org/lkml/2020/3/12/726
 
-> > I would have expected your arch/x86/Kconfig.assembler file as
-> > arch/x86/crypto/Kconfig (source include needs to be adapted in
-> > arch/x86/Kconfig).
->
-> CONFIG_AS_* is required for more than just the crypto.
->
+First, this series drop always-on CONFIG_AS_* options.
+Some of those options were introduced in old days.
+For example, the check for CONFIG_AS_CFI dates back to 2006.
 
-OK. I was not aware of this.
+We raise the minimal tool versions from time to time.
+Currently, we require binutils 2.21
+(and we plan to bump it to 2.23 for v5.7-rc1).
 
-> > What about a commit subject like "x86: crypto: Probe assembler options
-> > via Kconfig instead of makefile"?
->
-> Thanks. Will fix silly verbiage and update branch.
->
+After cleaning away the old checks,
+as-instr calls are moved to Kconfig from Makefiles.
+(patch 11)
 
-Just looked to what I see new in [0].
+This allows more Kconfig / Makefile cleanups.
+Patch 12 is complex, but I double-checked it does the equivalent.
 
-Would you mind to add the patch
+Patch 14 bumps the binutils version to 2.23,
+and patch 15 removes more CONFIG_AS_* options.
 
-   "Documentation/changes: Raise minimum supported binutils version to 2.23"
+I folded all relevanet patches into this series,
+as suggested by Jason A. Donenfeld.
 
-from [1] to your series, please?
+If x86 maintainers take care of this series, that's good.
 
-For the meantime and clarification - you can drop it later (with
-adding Link-tag to [1]) when it landed in tip Git [2] where I am not
-seeing it.
+If it is OK to queue this up to Kbuild tree,
+I will send a pull request to Linus.
 
-Thanks for taking care to you an Masah*e*ro :-).
+Thank you.
 
-- Sedat -
 
-[0] https://git.zx2c4.com/linux-dev/log/?h=jd/kconfig-assembler-support
-[1] https://lore.kernel.org/lkml/20200316160259.GN26126@zn.tnic/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/
+
+Borislav Petkov (1):
+  Documentation/changes: Raise minimum supported binutils version to
+    2.23
+
+Jason A. Donenfeld (4):
+  x86: probe assembler capabilities via kconfig instead of makefile
+  crypto: x86 - rework configuration based on Kconfig
+  crypto: curve25519 - do not pollute dispatcher based on assembler
+  x86: update AS_* macros to binutils >=2.23, supporting ADX and AVX2
+
+Masahiro Yamada (11):
+  lib/raid6/test: fix build on distros whose /bin/sh is not bash
+  x86: remove unneeded defined(__ASSEMBLY__) check from asm/dwarf2.h
+  x86: remove always-defined CONFIG_AS_CFI
+  x86: remove unneeded (CONFIG_AS_)CFI_SIGNAL_FRAME
+  x86: remove always-defined CONFIG_AS_CFI_SECTIONS
+  x86: remove always-defined CONFIG_AS_SSSE3
+  x86: remove always-defined CONFIG_AS_AVX
+  x86: add comments about the binutils version to support code in
+    as-instr
+  x86: replace arch macros from compiler with CONFIG_X86_{32,64}
+  drm/i915: remove always-defined CONFIG_AS_MOVNTDQA
+  crypto: x86 - clean up poly1305-x86_64-cryptogams.S by 'make clean'
+
+ Documentation/process/changes.rst             |   4 +-
+ arch/x86/Kconfig                              |   2 +
+ arch/x86/Kconfig.assembler                    |  14 ++
+ arch/x86/Makefile                             |  22 ---
+ arch/x86/crypto/Makefile                      | 162 +++++++-----------
+ arch/x86/crypto/aesni-intel_avx-x86_64.S      |   6 -
+ arch/x86/crypto/aesni-intel_glue.c            |  21 +--
+ arch/x86/crypto/blake2s-core.S                |   2 -
+ arch/x86/crypto/chacha_glue.c                 |   6 +-
+ arch/x86/crypto/poly1305-x86_64-cryptogams.pl |  16 --
+ arch/x86/crypto/poly1305_glue.c               |  11 +-
+ arch/x86/crypto/sha1_ssse3_asm.S              |   4 -
+ arch/x86/crypto/sha1_ssse3_glue.c             |  13 --
+ arch/x86/crypto/sha256-avx-asm.S              |   3 -
+ arch/x86/crypto/sha256-avx2-asm.S             |   3 -
+ arch/x86/crypto/sha256_ssse3_glue.c           |  12 --
+ arch/x86/crypto/sha512-avx-asm.S              |   2 -
+ arch/x86/crypto/sha512-avx2-asm.S             |   3 -
+ arch/x86/crypto/sha512_ssse3_glue.c           |  10 --
+ arch/x86/include/asm/dwarf2.h                 |  44 -----
+ arch/x86/include/asm/xor_avx.h                |   9 -
+ drivers/gpu/drm/i915/Makefile                 |   3 -
+ drivers/gpu/drm/i915/i915_memcpy.c            |   5 -
+ include/crypto/curve25519.h                   |   6 +-
+ kernel/signal.c                               |   2 +-
+ lib/raid6/algos.c                             |  12 +-
+ lib/raid6/avx2.c                              |   4 -
+ lib/raid6/recov_avx2.c                        |   6 -
+ lib/raid6/recov_ssse3.c                       |   6 -
+ lib/raid6/test/Makefile                       |   9 +-
+ 30 files changed, 98 insertions(+), 324 deletions(-)
+ create mode 100644 arch/x86/Kconfig.assembler
+
+-- 
+2.17.1
+
