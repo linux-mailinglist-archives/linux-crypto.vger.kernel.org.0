@@ -2,30 +2,30 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46AE31902A1
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2020 01:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9B21902A8
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2020 01:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727395AbgCXAPv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 23 Mar 2020 20:15:51 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:29770 "EHLO
+        id S1727639AbgCXAQK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 23 Mar 2020 20:16:10 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:30312 "EHLO
         conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727510AbgCXAPu (ORCPT
+        with ESMTP id S1727518AbgCXAQK (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 23 Mar 2020 20:15:50 -0400
+        Mon, 23 Mar 2020 20:16:10 -0400
 Received: from grover.flets-west.jp (softbank126093102113.bbtec.net [126.93.102.113]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 02O0EHns026701;
-        Tue, 24 Mar 2020 09:14:23 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 02O0EHns026701
+        by conuserg-09.nifty.com with ESMTP id 02O0EHnt026701;
+        Tue, 24 Mar 2020 09:14:24 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 02O0EHnt026701
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1585008863;
-        bh=PXf90zEL0PBjxAqiIelC9lPpjynKaO7oTN5qSukZw9U=;
+        s=dec2015msa; t=1585008864;
+        bh=R0STIziFjPNP3E34qfzmQ6u1ZNlYmWgDS8/ChcGBd/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vNHVDqn0n6+005Ynu+20MgPJrYvvF8RyIWdmGr6LWGtvMoFJyxw6Mws0aBx7XjTAH
-         biGuW+2/odEx5og6G+EwC35JJcGLegJBQs0qXM+xP1RqxSdCL2rBVhgpSWm5gR3WP1
-         Ns8WY4pfBnR/qQ2Hhu29fANWa2hqQa8E7+ppFkQuNL2Qy9/2hYFHp3RCyNfaAt2c0T
-         VQweCj511vsWrKqxYRqhhpRdpj26L6cOnTHgylfc+07TOs3LSZNEbQiiCfx+R5jjC/
-         ElnXBRqNpfZKOnwYqLp5NTY1kDAO1+1IIpSLZMPrTwr70afxxC5Ix0auF9nBeDIJTH
-         pKkm+vhVSoorA==
+        b=hpHQGA+nZfdPtj8G28GbRdvidfq5s2iIfLA0qB3v6lkhLGJ5/UpJKa0hDNawptDiI
+         35m6TF68KRZ66hcbFhbykObdb2I+BjXji9sE+e6fYLbKA2Grn1OJ7vqLkPnDEAWDeP
+         bu77UxPrdatwSNjKUhNnj6eZ4zZpBYuIauZ/MpF/dlOR6Gl+pcXPm1ODp4hzVLIwGK
+         1BGbRCH/QtYv/YFyLHAH552H6e4PVjx+8HzWFWZLFGrHuZHlyMCHYpHbPjF/ytmM/q
+         X2zAtRe9jnDrwLPfVel2dIE7zhwAxncOqvGdwG8ayj0DNB8UI8iroJ1BxsAeoERna/
+         6wpRTLa7qHA/w==
 X-Nifty-SrcIP: [126.93.102.113]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
@@ -35,11 +35,13 @@ To:     x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
 Cc:     linux-kernel@vger.kernel.org,
         "Jason A . Donenfeld" <Jason@zx2c4.com>,
         Masahiro Yamada <masahiroy@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Ingo Molnar <mingo@redhat.com>,
         clang-built-linux@googlegroups.com
-Subject: [PATCH v2 5/9] x86: remove always-defined CONFIG_AS_CFI_SECTIONS
-Date:   Tue, 24 Mar 2020 09:13:54 +0900
-Message-Id: <20200324001358.4520-6-masahiroy@kernel.org>
+Subject: [PATCH v2 6/9] x86: remove always-defined CONFIG_AS_SSSE3
+Date:   Tue, 24 Mar 2020 09:13:55 +0900
+Message-Id: <20200324001358.4520-7-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200324001358.4520-1-masahiroy@kernel.org>
 References: <20200324001358.4520-1-masahiroy@kernel.org>
@@ -48,8 +50,8 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-CONFIG_AS_CFI_SECTIONS was introduced by commit 9e565292270a ("x86:
-Use .cfi_sections for assembly code").
+CONFIG_AS_SSSE3 was introduced by commit 75aaf4c3e6a4 ("x86/raid6:
+correctly check for assembler capabilities").
 
 We raise the minimal supported binutils version from time to time.
 The last bump was commit 1fb12b35e5ff ("kbuild: Raise the minimum
@@ -58,62 +60,127 @@ required binutils version to 2.21").
 I confirmed the code in $(call as-instr,...) can be assembled by the
 binutils 2.21 assembler and also by LLVM integrated assembler.
 
-Remove CONFIG_AS_CFI_SECTIONS, which is always defined.
+Remove CONFIG_AS_SSSE3, which is always defined.
+
+I added ifdef CONFIG_X86 to lib/raid6/algos.c to avoid link errors
+on non-x86 architectures.
+
+lib/raid6/algos.c is built not only for the kernel but also for
+testing the library code from userspace. I added -DCONFIG_X86 to
+lib/raid6/test/Makefile to cator to this usecase.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
 
-Changes in v2: None
+Changes in v2:
+  - add ifdef CONFIG_X86 to fix build errors on non-x86 arches
 
- arch/x86/Makefile             | 6 ++----
- arch/x86/include/asm/dwarf2.h | 2 --
- 2 files changed, 2 insertions(+), 6 deletions(-)
+ arch/x86/Makefile              | 5 ++---
+ arch/x86/crypto/blake2s-core.S | 2 --
+ lib/raid6/algos.c              | 2 +-
+ lib/raid6/recov_ssse3.c        | 6 ------
+ lib/raid6/test/Makefile        | 4 +---
+ 5 files changed, 4 insertions(+), 15 deletions(-)
 
 diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index dd275008fc59..e4a062313bb0 100644
+index e4a062313bb0..94f89612e024 100644
 --- a/arch/x86/Makefile
 +++ b/arch/x86/Makefile
-@@ -177,8 +177,6 @@ ifeq ($(ACCUMULATE_OUTGOING_ARGS), 1)
- 	KBUILD_CFLAGS += $(call cc-option,-maccumulate-outgoing-args,)
+@@ -178,7 +178,6 @@ ifeq ($(ACCUMULATE_OUTGOING_ARGS), 1)
  endif
  
--cfi-sections := $(call as-instr,.cfi_sections .debug_frame,-DCONFIG_AS_CFI_SECTIONS=1)
--
  # does binutils support specific instructions?
- asinstr += $(call as-instr,pshufb %xmm0$(comma)%xmm0,-DCONFIG_AS_SSSE3=1)
+-asinstr += $(call as-instr,pshufb %xmm0$(comma)%xmm0,-DCONFIG_AS_SSSE3=1)
  avx_instr := $(call as-instr,vxorps %ymm0$(comma)%ymm1$(comma)%ymm2,-DCONFIG_AS_AVX=1)
-@@ -188,8 +186,8 @@ sha1_ni_instr :=$(call as-instr,sha1msg1 %xmm0$(comma)%xmm1,-DCONFIG_AS_SHA1_NI=
+ avx2_instr :=$(call as-instr,vpbroadcastb %xmm0$(comma)%ymm1,-DCONFIG_AS_AVX2=1)
+ avx512_instr :=$(call as-instr,vpmovm2b %k1$(comma)%zmm5,-DCONFIG_AS_AVX512=1)
+@@ -186,8 +185,8 @@ sha1_ni_instr :=$(call as-instr,sha1msg1 %xmm0$(comma)%xmm1,-DCONFIG_AS_SHA1_NI=
  sha256_ni_instr :=$(call as-instr,sha256msg1 %xmm0$(comma)%xmm1,-DCONFIG_AS_SHA256_NI=1)
  adx_instr := $(call as-instr,adox %r10$(comma)%r10,-DCONFIG_AS_ADX=1)
  
--KBUILD_AFLAGS += $(cfi-sections) $(asinstr) $(avx_instr) $(avx2_instr) $(avx512_instr) $(sha1_ni_instr) $(sha256_ni_instr) $(adx_instr)
--KBUILD_CFLAGS += $(cfi-sections) $(asinstr) $(avx_instr) $(avx2_instr) $(avx512_instr) $(sha1_ni_instr) $(sha256_ni_instr) $(adx_instr)
-+KBUILD_AFLAGS += $(asinstr) $(avx_instr) $(avx2_instr) $(avx512_instr) $(sha1_ni_instr) $(sha256_ni_instr) $(adx_instr)
-+KBUILD_CFLAGS += $(asinstr) $(avx_instr) $(avx2_instr) $(avx512_instr) $(sha1_ni_instr) $(sha256_ni_instr) $(adx_instr)
+-KBUILD_AFLAGS += $(asinstr) $(avx_instr) $(avx2_instr) $(avx512_instr) $(sha1_ni_instr) $(sha256_ni_instr) $(adx_instr)
+-KBUILD_CFLAGS += $(asinstr) $(avx_instr) $(avx2_instr) $(avx512_instr) $(sha1_ni_instr) $(sha256_ni_instr) $(adx_instr)
++KBUILD_AFLAGS += $(avx_instr) $(avx2_instr) $(avx512_instr) $(sha1_ni_instr) $(sha256_ni_instr) $(adx_instr)
++KBUILD_CFLAGS += $(avx_instr) $(avx2_instr) $(avx512_instr) $(sha1_ni_instr) $(sha256_ni_instr) $(adx_instr)
  
  KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
  
-diff --git a/arch/x86/include/asm/dwarf2.h b/arch/x86/include/asm/dwarf2.h
-index f440790f09f9..c1e0c315a622 100644
---- a/arch/x86/include/asm/dwarf2.h
-+++ b/arch/x86/include/asm/dwarf2.h
-@@ -21,7 +21,6 @@
- #define CFI_UNDEFINED		.cfi_undefined
- #define CFI_ESCAPE		.cfi_escape
+diff --git a/arch/x86/crypto/blake2s-core.S b/arch/x86/crypto/blake2s-core.S
+index 24910b766bdd..2ca79974f819 100644
+--- a/arch/x86/crypto/blake2s-core.S
++++ b/arch/x86/crypto/blake2s-core.S
+@@ -46,7 +46,6 @@ SIGMA2:
+ #endif /* CONFIG_AS_AVX512 */
  
--#if defined(CONFIG_AS_CFI_SECTIONS)
- #ifndef BUILD_VDSO
- 	/*
- 	 * Emit CFI data in .debug_frame sections, not .eh_frame sections.
-@@ -38,6 +37,5 @@
- 	  */
- 	.cfi_sections .eh_frame, .debug_frame
+ .text
+-#ifdef CONFIG_AS_SSSE3
+ SYM_FUNC_START(blake2s_compress_ssse3)
+ 	testq		%rdx,%rdx
+ 	je		.Lendofloop
+@@ -174,7 +173,6 @@ SYM_FUNC_START(blake2s_compress_ssse3)
+ .Lendofloop:
+ 	ret
+ SYM_FUNC_END(blake2s_compress_ssse3)
+-#endif /* CONFIG_AS_SSSE3 */
+ 
+ #ifdef CONFIG_AS_AVX512
+ SYM_FUNC_START(blake2s_compress_avx512)
+diff --git a/lib/raid6/algos.c b/lib/raid6/algos.c
+index bf1b4765c8f6..df08664d3432 100644
+--- a/lib/raid6/algos.c
++++ b/lib/raid6/algos.c
+@@ -97,13 +97,13 @@ void (*raid6_datap_recov)(int, size_t, int, void **);
+ EXPORT_SYMBOL_GPL(raid6_datap_recov);
+ 
+ const struct raid6_recov_calls *const raid6_recov_algos[] = {
++#ifdef CONFIG_X86
+ #ifdef CONFIG_AS_AVX512
+ 	&raid6_recov_avx512,
  #endif
--#endif
+ #ifdef CONFIG_AS_AVX2
+ 	&raid6_recov_avx2,
+ #endif
+-#ifdef CONFIG_AS_SSSE3
+ 	&raid6_recov_ssse3,
+ #endif
+ #ifdef CONFIG_S390
+diff --git a/lib/raid6/recov_ssse3.c b/lib/raid6/recov_ssse3.c
+index 1de97d2405d0..4bfa3c6b60de 100644
+--- a/lib/raid6/recov_ssse3.c
++++ b/lib/raid6/recov_ssse3.c
+@@ -3,8 +3,6 @@
+  * Copyright (C) 2012 Intel Corporation
+  */
  
- #endif /* _ASM_X86_DWARF2_H */
+-#ifdef CONFIG_AS_SSSE3
+-
+ #include <linux/raid/pq.h>
+ #include "x86.h"
+ 
+@@ -328,7 +326,3 @@ const struct raid6_recov_calls raid6_recov_ssse3 = {
+ #endif
+ 	.priority = 1,
+ };
+-
+-#else
+-#warning "your version of binutils lacks SSSE3 support"
+-#endif
+diff --git a/lib/raid6/test/Makefile b/lib/raid6/test/Makefile
+index b9e6c3648be1..60021319ac78 100644
+--- a/lib/raid6/test/Makefile
++++ b/lib/raid6/test/Makefile
+@@ -34,9 +34,7 @@ endif
+ 
+ ifeq ($(IS_X86),yes)
+         OBJS   += mmx.o sse1.o sse2.o avx2.o recov_ssse3.o recov_avx2.o avx512.o recov_avx512.o
+-        CFLAGS += $(shell echo "pshufb %xmm0, %xmm0" |		\
+-                    gcc -c -x assembler - >/dev/null 2>&1 &&	\
+-                    rm ./-.o && echo -DCONFIG_AS_SSSE3=1)
++        CFLAGS += -DCONFIG_X86
+         CFLAGS += $(shell echo "vpbroadcastb %xmm0, %ymm1" |	\
+                     gcc -c -x assembler - >/dev/null 2>&1 &&	\
+                     rm ./-.o && echo -DCONFIG_AS_AVX2=1)
 -- 
 2.17.1
 
