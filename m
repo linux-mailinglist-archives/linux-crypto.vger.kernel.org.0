@@ -2,85 +2,125 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4411919EB
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2020 20:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA968191FD5
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2020 04:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgCXTbt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 24 Mar 2020 15:31:49 -0400
-Received: from mga14.intel.com ([192.55.52.115]:28777 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725934AbgCXTbs (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 24 Mar 2020 15:31:48 -0400
-IronPort-SDR: SWAUlNmxPqaC/IYu6LoO96NdmH/12TO+OZ/Hzyjxpe7vdW+ly/YNvt3TJksHPFI6luqoVC4YNb
- yN7UXgm1Qrqg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2020 12:31:47 -0700
-IronPort-SDR: 8/VWxHUZ8NY4RmIqej7yewcPHcwLNpP4scEJKK1G8flVXsWoOafuGEnpmA/GWWQR4A85a5Q5RF
- SBwJJ7+F7kKw==
-X-IronPort-AV: E=Sophos;i="5.72,301,1580803200"; 
-   d="scan'208";a="420008785"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2020 12:31:46 -0700
-Date:   Tue, 24 Mar 2020 12:31:44 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        linux-edac@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-pm@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Subject: Re: [patch 10/22] EDAC: Convert to new X86 CPU match macros
-Message-ID: <20200324193144.GA4104@agluck-desk2.amr.corp.intel.com>
-References: <20200320131345.635023594@linutronix.de>
- <20200320131509.673579000@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200320131509.673579000@linutronix.de>
+        id S1727297AbgCYDtP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 24 Mar 2020 23:49:15 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41972 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727259AbgCYDtO (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 24 Mar 2020 23:49:14 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02P3XqOJ101823;
+        Tue, 24 Mar 2020 23:49:00 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ywf0pr2wh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Mar 2020 23:48:59 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 02P3jm0Y030763;
+        Tue, 24 Mar 2020 23:48:59 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ywf0pr2wb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Mar 2020 23:48:59 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 02P3kl8d007174;
+        Wed, 25 Mar 2020 03:48:58 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma04dal.us.ibm.com with ESMTP id 2ywawfwt9k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Mar 2020 03:48:58 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 02P3mvSB40239406
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Mar 2020 03:48:57 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 292496A051;
+        Wed, 25 Mar 2020 03:48:57 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9B1616A04D;
+        Wed, 25 Mar 2020 03:48:56 +0000 (GMT)
+Received: from [9.70.82.143] (unknown [9.70.82.143])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 25 Mar 2020 03:48:56 +0000 (GMT)
+Subject: Re: [PATCH v4 3/9] powerpc/vas: Add VAS user space API
+From:   Haren Myneni <haren@linux.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Daniel Axtens <dja@axtens.net>, herbert@gondor.apana.org.au,
+        mikey@neuling.org, sukadev@linux.vnet.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-crypto@vger.kernel.org,
+        npiggin@gmail.com
+In-Reply-To: <87zhc6xvuk.fsf@mpe.ellerman.id.au>
+References: <1584934879.9256.15321.camel@hbabu-laptop>
+         <1584936142.9256.15325.camel@hbabu-laptop>
+         <878sjrwm72.fsf@dja-thinkpad.axtens.net>
+         <878sjrclmz.fsf@mpe.ellerman.id.au>
+         <875zevw61j.fsf@dja-thinkpad.axtens.net>
+         <87zhc6xvuk.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
+Date:   Tue, 24 Mar 2020 20:48:23 -0700
+Message-ID: <1585108103.10664.391.camel@hbabu-laptop>
+Mime-Version: 1.0
+X-Mailer: Evolution 2.28.3 
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
+ definitions=2020-03-24_10:2020-03-23,2020-03-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 impostorscore=0 malwarescore=0 mlxlogscore=772 spamscore=0
+ clxscore=1015 lowpriorityscore=0 adultscore=0 suspectscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2003250030
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 02:13:55PM +0100, Thomas Gleixner wrote:
-> The new macro set has a consistent namespace and uses C99 initializers
-> instead of the grufty C89 ones.
-                 ^^^^^^
-
-grufty? Did you mean crufty?
-
-Though I suppose grufty may work as well here:
-
-	gruft. Noun. (uncountable) (dialect) the particles of soil
-	that are spattered up onto grass by the rain.
+On Tue, 2020-03-24 at 14:41 +1100, Michael Ellerman wrote:
+> Daniel Axtens <dja@axtens.net> writes:
+> > Michael Ellerman <mpe@ellerman.id.au> writes:
+> >> Daniel Axtens <dja@axtens.net> writes:
+> >>> Haren Myneni <haren@linux.ibm.com> writes:
+> >>>> diff --git a/arch/powerpc/platforms/powernv/vas-api.c b/arch/powerpc/platforms/powernv/vas-api.c
+> >>>> new file mode 100644
+> >>>> index 0000000..7d049af
+> >>>> --- /dev/null
+> >>>> +++ b/arch/powerpc/platforms/powernv/vas-api.c
+> >>>> @@ -0,0 +1,257 @@
+> >> ...
+> >>>> +
+> >>>> +static int coproc_mmap(struct file *fp, struct vm_area_struct *vma)
+> >>>> +{
+> >>>> +	struct vas_window *txwin = fp->private_data;
+> >>>> +	unsigned long pfn;
+> >>>> +	u64 paste_addr;
+> >>>> +	pgprot_t prot;
+> >>>> +	int rc;
+> >>>> +
+> >>>> +	if ((vma->vm_end - vma->vm_start) > PAGE_SIZE) {
+> >>>
+> >>> I think you said this should be 4096 rather than 64k, regardless of what
+> >>> PAGE_SIZE you are compiled with?
+> >>
+> >> You can't mmap less than a page, a page is PAGE_SIZE bytes.
+> >>
+> >> So if that checked for 4K explicitly it would prevent mmap on 64K
+> >> kernels always, which seems like not what you want?
+> >
+> > Ah. My bad. Carry on then :)
 > 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Well you were just quoting something from Haren, so I think it's over to
+> him.
 
-Tested the Broadwell EDAC driver. The other changes look
-good too.
+Sorry my mistake. 
 
-Acked-by: Tony Luck <tony.luck@intel.com>
+I should change in documentation. vas_win_paste_addr() always returns 1
+page. Restriction should be PAGE_SIZE. 
+
+> 
+> cheers
+
+
