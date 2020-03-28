@@ -2,138 +2,129 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C508C195D5F
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2020 19:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE3F196360
+	for <lists+linux-crypto@lfdr.de>; Sat, 28 Mar 2020 04:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbgC0SQt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 27 Mar 2020 14:16:49 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62486 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727354AbgC0SQt (ORCPT
+        id S1726781AbgC1Dnh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 27 Mar 2020 23:43:37 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:46937 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726225AbgC1Dnh (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 27 Mar 2020 14:16:49 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02RI4rav061062;
-        Fri, 27 Mar 2020 14:16:36 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 300jevkrgr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Mar 2020 14:16:35 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 02RIAWS4004766;
-        Fri, 27 Mar 2020 18:16:33 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma05wdc.us.ibm.com with ESMTP id 2ywawg46jr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Mar 2020 18:16:33 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 02RIGXio44368220
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Mar 2020 18:16:33 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B629AC05F;
-        Fri, 27 Mar 2020 18:16:33 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C065AAC05E;
-        Fri, 27 Mar 2020 18:16:32 +0000 (GMT)
-Received: from localhost (unknown [9.85.130.3])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 27 Mar 2020 18:16:32 +0000 (GMT)
-From:   Raphael Moreira Zinsly <rzinsly@linux.ibm.com>
-To:     linuxppc-dev@lists.ozlabs.org, linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, mpe@ellerman.id.au,
-        haren@linux.ibm.com, abali@us.ibm.com, dja@axtens.net,
-        Raphael Moreira Zinsly <rzinsly@linux.ibm.com>
-Subject: [PATCH V2 5/5] selftests/powerpc: Add README for GZIP engine tests
-Date:   Fri, 27 Mar 2020 15:16:11 -0300
-Message-Id: <20200327181610.13762-6-rzinsly@linux.ibm.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200327181610.13762-1-rzinsly@linux.ibm.com>
-References: <20200327181610.13762-1-rzinsly@linux.ibm.com>
+        Fri, 27 Mar 2020 23:43:37 -0400
+Received: by mail-il1-f195.google.com with SMTP id i75so3469647ild.13;
+        Fri, 27 Mar 2020 20:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UVK15i028mkx0jMpDy93kqL7jNl1F+KutZZLwGaGO80=;
+        b=YK5ZxzEo6HEEiK1jDNDS80yDjdrmaTfHno66iowxJhYWqC0NRswO5iVrywDnKCJsh6
+         KeuIkxgEW5X8Ct/nVCwy2pEdUvyrlVNk8o0cid9q4ON1b6sNEAl3ixsrPyWa9CLfcbmM
+         t80TVvuLimGb794UdrWiOy7mzoYijdA1/RV5uVItkeGDa7TKUAhP1ZPsBYu0dE6Uc5RI
+         wloO5fqvW1+8lx8050cqx/gpJuURq2W49w04ra0Nbc9SLaAlYsgU66vEdUlyzn3kvrDl
+         Eh9Fcj60DWW3b9jI3Y1qSdt2lb0zggNPaeH+koVPY8C/PVaKx6AIOu4u8Ve6g40Pp1+U
+         5OTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UVK15i028mkx0jMpDy93kqL7jNl1F+KutZZLwGaGO80=;
+        b=fkoltFwCVx+dw+nJFEcejCdKLfZ9lSZyMmdRfIJfmjiKUOoLFiJmplFQv4K5jalZ9M
+         XKkeLyzSVLFLlju6dwkKL3mYXahomXMQsGyhoKl2RP6s6Ev8WPhyjK4CvLggGjeVzIFd
+         OaZZSOwbp3UGT9zKKPNfHgQHNtj6QvprtSXobEs+VjVUiZ2hQIEcQrhckgfY3gSJrKH8
+         WNjq5Xaqwoye7F+2g7jHH5+rfLuwHb+2NJxmEvhuc0HcOOu0ldT+bpehKA7hEhCSvrLc
+         iiYrhVK9L4zvqnsrJUI8G1w5x1cT6kDF4HNYoVx/5qwoTLhFTMrvDYP70Vxbh19oQbQr
+         qzCQ==
+X-Gm-Message-State: ANhLgQ2fDDMauAhePvoncmdy+tK7oQrVPSrGS2Kn2fTC+BmKEs0I+RaP
+        aBsDqFSo2FECy9LJiTQhYwqJ8zB1Md48ISGnvFez41Ju
+X-Google-Smtp-Source: ADFU+vvrTjRJAhD7aKWKIBES9XdTRJeSXRCB+0DdH2aQVrMCxPqgOw/bsGRDKE8GVKnrhAQIwquJP/XPFaeajb5G488=
+X-Received: by 2002:a92:96c6:: with SMTP id g189mr2199320ilh.276.1585367015881;
+ Fri, 27 Mar 2020 20:43:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
- definitions=2020-03-27_06:2020-03-27,2020-03-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- adultscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 spamscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003270152
+References: <20200225161201.1975-1-git@andred.net> <20200225161201.1975-6-git@andred.net>
+ <VI1PR0402MB3485A743C94442533B6840F298E70@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+In-Reply-To: <VI1PR0402MB3485A743C94442533B6840F298E70@VI1PR0402MB3485.eurprd04.prod.outlook.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Fri, 27 Mar 2020 22:43:24 -0500
+Message-ID: <CAHCN7x+NJLaKF9SfHw9sDpw6zDUGs_TuD_co7USjQ5hgFDeaHg@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] Input: snvs_pwrkey - only IRQ_HANDLED for our own events
+To:     Horia Geanta <horia.geanta@nxp.com>
+Cc:     =?UTF-8?Q?Andr=C3=A9_Draszik?= <git@andred.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Anson Huang <anson.huang@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Robin Gong <yibin.gong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Include a README file with the instructions to use the
-testcases at selftests/powerpc/nx-gzip.
+On Mon, Mar 2, 2020 at 3:22 AM Horia Geanta <horia.geanta@nxp.com> wrote:
+>
+> On 2/25/2020 6:12 PM, Andr=C3=A9 Draszik wrote:
+> > The snvs_pwrkey shares the SNVS LPSR status register with the snvs_rtc.
+> >
+> > This driver here should only return IRQ_HANDLED if the status register
+> > indicates that the event we're handling in the irq handler was genuinel=
+y
+> > intended for this driver. Otheriwse the interrupt subsystem will
+> > assume the interrupt was handled successfully even though it wasn't
+> > at all.
+> >
+> > Signed-off-by: Andr=C3=A9 Draszik <git@andred.net>
+> > Cc: "Horia Geant=C4=83" <horia.geanta@nxp.com>
+> > Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
+> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Shawn Guo <shawnguo@kernel.org>
+> > Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> > Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+> > Cc: Fabio Estevam <festevam@gmail.com>
+> > Cc: NXP Linux Team <linux-imx@nxp.com>
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Cc: Anson Huang <Anson.Huang@nxp.com>
+> > Cc: Robin Gong <yibin.gong@nxp.com>
+> > Cc: linux-crypto@vger.kernel.org
+> > Cc: devicetree@vger.kernel.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-input@vger.kernel.org
+> For patches 2-6:
+> Reviewed-by: Horia Geant=C4=83 <horia.geanta@nxp.com>
+>
+> Also imx8mn.dtsi and imx8mp.dtsi will have to be updated.
 
-Signed-off-by: Bulent Abali <abali@us.ibm.com>
-Signed-off-by: Raphael Moreira Zinsly <rzinsly@linux.ibm.com>
----
- .../powerpc/nx-gzip/99-nx-gzip.rules          |  1 +
- .../testing/selftests/powerpc/nx-gzip/README  | 44 +++++++++++++++++++
- 2 files changed, 45 insertions(+)
- create mode 100644 tools/testing/selftests/powerpc/nx-gzip/99-nx-gzip.rules
- create mode 100644 tools/testing/selftests/powerpc/nx-gzip/README
+Is there an update coming for the 8mn family?  I am seeing it not wake
+from the power key, and I was hoping to resolve that before i make a
+push to submit a new 8MN board for review.
 
-diff --git a/tools/testing/selftests/powerpc/nx-gzip/99-nx-gzip.rules b/tools/testing/selftests/powerpc/nx-gzip/99-nx-gzip.rules
-new file mode 100644
-index 000000000000..5a7118495cb3
---- /dev/null
-+++ b/tools/testing/selftests/powerpc/nx-gzip/99-nx-gzip.rules
-@@ -0,0 +1 @@
-+SUBSYSTEM=="nxgzip", KERNEL=="nx-gzip", MODE="0666"
-diff --git a/tools/testing/selftests/powerpc/nx-gzip/README b/tools/testing/selftests/powerpc/nx-gzip/README
-new file mode 100644
-index 000000000000..a80c289f1d2c
---- /dev/null
-+++ b/tools/testing/selftests/powerpc/nx-gzip/README
-@@ -0,0 +1,44 @@
-+Test the nx-gzip function:
-+=========================
-+
-+Verify that following device exists:
-+  /dev/crypto/nx-gzip
-+If you get a permission error run as sudo or set the device permissions:
-+   sudo chmod go+rw /dev/crypto/nx-gzip
-+However, chmod may not survive across boots. You may create a udev file such
-+as:
-+   /etc/udev/rules.d/99-nx-gzip.rules
-+
-+
-+Then make and run:
-+$ make
-+gcc -O3 -I./inc -o gzfht_test gzfht_test.c gzip_vas.c
-+gcc -O3 -I./inc -o gunz_test gunz_test.c gzip_vas.c
-+
-+
-+Compress any file using Fixed Huffman mode. Output will have a .nx.gz suffix:
-+$ ./gzfht_test gzip_vas.c
-+file gzip_vas.c read, 5218 bytes
-+compressed 5218 to 2545 bytes total, crc32 checksum = 817543a3
-+
-+
-+Uncompress the previous output. Output will have a .nx.gunzip suffix:
-+./gunz_test gzip_vas.c.nx.gz
-+gzHeader FLG 0
-+00 00 00 00 04 03
-+gzHeader MTIME, XFL, OS ignored
-+computed checksum 817543a3 isize 00001462
-+stored   checksum 817543a3 isize 00001462
-+decomp is complete: fclose
-+
-+
-+Compare two files:
-+$ sha1sum gzip_vas.c.nx.gz.nx.gunzip gzip_vas.c
-+4e87536f3ee9e771ef30fb0fb27572032ca44ef8  gzip_vas.c.nx.gz.nx.gunzip
-+4e87536f3ee9e771ef30fb0fb27572032ca44ef8  gzip_vas.c
-+
-+
-+Note that the code here are intended for testing the nx-gzip hardware function.
-+They are not intended for demonstrating performance or compression ratio.
-+For more information and source code consider using:
-+https://github.com/libnxz/power-gzip
--- 
-2.21.0
+thanks
 
+adam
+>
+> Thanks,
+> Horia
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
