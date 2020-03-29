@@ -2,73 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 228E819676E
-	for <lists+linux-crypto@lfdr.de>; Sat, 28 Mar 2020 17:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63AD8196BD6
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Mar 2020 10:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727549AbgC1QnX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 28 Mar 2020 12:43:23 -0400
-Received: from mx.sdf.org ([205.166.94.20]:50208 "EHLO mx.sdf.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727401AbgC1QnU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 28 Mar 2020 12:43:20 -0400
-Received: from sdf.org (IDENT:lkml@sdf.lonestar.org [205.166.94.16])
-        by mx.sdf.org (8.15.2/8.14.5) with ESMTPS id 02SGhC9q026662
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits) verified NO);
-        Sat, 28 Mar 2020 16:43:12 GMT
-Received: (from lkml@localhost)
-        by sdf.org (8.15.2/8.12.8/Submit) id 02SGhCt7025631;
-        Sat, 28 Mar 2020 16:43:12 GMT
-Message-Id: <202003281643.02SGhCt7025631@sdf.org>
-From:   George Spelvin <lkml@sdf.org>
-Date:   Fri, 29 Nov 2019 15:24:22 -0500
-Subject: [RFC PATCH v1 14/50] crypto/testmgr.c: use prandom_u32_max() &
- prandom_bytes()
-To:     linux-kernel@vger.kernel.org, lkml@sdf.org
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org
+        id S1727801AbgC2IHn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 29 Mar 2020 04:07:43 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:33440 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727639AbgC2IHm (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 29 Mar 2020 04:07:42 -0400
+Received: by mail-lj1-f194.google.com with SMTP id f20so14574130ljm.0
+        for <linux-crypto@vger.kernel.org>; Sun, 29 Mar 2020 01:07:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=YVHX5PKqSDUWjZo7pAAllCqbBgWo3T2DCSi2qcXEgH8=;
+        b=lLj0UTmi6tAI9KDZNvoHiRwjXJHlRvEWMXc/ZyPSSu0aOPGOsa/G6nYMyDoU0k+3gE
+         +njhaZWg/foGZSh8q3kthIxxfXvobiK8oDSufqwZbfm2k2TwBhIn6Fa9DKzTIwW3hE4p
+         o4uatwXSslHD+diVHmU/ooWdOVkSgxBpc5u1Y/YdEB7d4N+Vdk7fMYFesnYbtgO9KJkZ
+         c+a7hWjhJZKGPT4i9rusRNOzZ4Jn7hLQCwavqlMljZ68dOZXmW7rEY3nGCJfXNJlGvjt
+         5+w4grqS1qdncRgC4uvUEKO55VoLvR1wi8Gbjd3BLZC9CPneoOPdHT1n2nUXSjx02s4l
+         9fUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=YVHX5PKqSDUWjZo7pAAllCqbBgWo3T2DCSi2qcXEgH8=;
+        b=A8eTAp42BvaKP9gF9/eGmlVPzzrRbQMEsy9NMYJSJIxYIWuWV7xL+dSdlXtSIid/7j
+         IZQSk6shbSbVrUdWfire1X+yzSBHO1esKECrnSOpDfRFRxNMFBL/ZrG+PfSBy+RRAi9G
+         1VBrb+VnPT5YD+BkEz3yAtPjN9PL/XCNSZIV7abkGBYFYZoqnLN1gEm1c+frlFE4ltmf
+         4gbkkI2fdE5e/JUsmRL5AGSuRLb3AdB54qmpcCiAQUEnzZ+R9LMtQ3QmUZcNgdK2b8S3
+         cNMVcMNo5iVa+7Yse/OcY5zuKhqL+RumVbkDX5o83qHgdbt9cKUW2+BQ97bdNw2eT1F/
+         INyg==
+X-Gm-Message-State: AGi0PubCMeBVccLCaWX8Jmv8CO6g+1KeqOqhrQVr+9UiXilQD97RnpEQ
+        cfFkhTO8vA+Cou39fZINif5JxlsOJOJkdN1h0To=
+X-Google-Smtp-Source: APiQypLBCmf0z9f5mB3Kcwc3uEqLtTfiTZ1q6zCBzOOR0r4s46vwRZoek4mb6Ipspoz/tcARA/bFR3rF5aJcU4vYzVU=
+X-Received: by 2002:a2e:94c8:: with SMTP id r8mr4118326ljh.28.1585469259687;
+ Sun, 29 Mar 2020 01:07:39 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a2e:5843:0:0:0:0:0 with HTTP; Sun, 29 Mar 2020 01:07:39
+ -0700 (PDT)
+Reply-To: mrsjaneyzachary4@gmail.com
+From:   "Mrs.Janey Zachary" <mrs.shirleysisme@gmail.com>
+Date:   Sun, 29 Mar 2020 08:07:39 +0000
+Message-ID: <CACwG4eSTgUW+cToOUOLuFx_Os5m1Ep7Lqe50Q2y50cEc5bqANw@mail.gmail.com>
+Subject: HI
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-...in a couple of places where they're appropriate.
+--=20
+Dear Beloved,
 
-There are many other places where successive code blocks make calls
-like prandom_u32() % 2 followed immediately by prandom_u32() % 4.
-This could be easily written to use three bits of one call, but
-at some cost in clarity and obvious-correctness, which is more
-important that efficiency in self-test code.
+I=E2=80=99m MRS.JANEY ZACHARY, 69years old affected with breast cancer, the
+wife of late Gabriella Kennedy,  the Director of High River Gold Mines
+Ltd Burkina Faso West Africa. I am contacting you because of my health
+condition,i need a reliable person, who will handle this project
+accordingly, accomplish my heart desire and utilize this fund. I have
+decided to donate the sum Twenty-Five Million Two Hundred Thousand
+United State Dollars Only ($25,200,000.00) to Charity Organizations or
+to support the Orphans, Motherless Babies,Less privileged and free
+Medical & Medicine Poor People's around the World since I don t have
+any child and do not want the bank take over the fund. I don't really
+know if i am going to survive this stage, therefore if you ready to
+handle this project, kindly response so that i will instruct the bank
+to transfer the fund to your account.
 
-Signed-off-by: George Spelvin <lkml@sdf.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: linux-crypto@vger.kernel.org
----
- crypto/testmgr.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Contact my private email only if you are interested (mrsjaneyzachary4@gmail=
+.com)
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index e8f21f7348a48..bc9252768bdba 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -770,7 +770,7 @@ static void mutate_buffer(u8 *buf, size_t count)
- 	if (prandom_u32() % 4 == 0) {
- 		num_flips = min_t(size_t, 1 << (prandom_u32() % 8), count * 8);
- 		for (i = 0; i < num_flips; i++) {
--			pos = prandom_u32() % (count * 8);
-+			pos = prandom_u32_max(count * 8);
- 			buf[pos / 8] ^= 1 << (pos % 8);
- 		}
- 	}
-@@ -821,8 +821,7 @@ static void generate_random_bytes(u8 *buf, size_t count)
- 		break;
- 	default:
- 		/* Fully random bytes */
--		for (i = 0; i < count; i++)
--			buf[i] = (u8)prandom_u32();
-+		prandom_bytes(buf, count);
- 	}
- }
- 
--- 
-2.26.0
+Remain blessed in the name of the Lord.
 
+
+Regards
+
+Mrs.Janey Zachary
