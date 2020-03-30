@@ -2,58 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36008197A41
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2020 13:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB14197D0C
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2020 15:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729690AbgC3LBM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 30 Mar 2020 07:01:12 -0400
-Received: from mail.11d01.mspz7.gob.ec ([190.152.145.91]:53550 "EHLO
-        mail.11d01.mspz7.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729530AbgC3LBL (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 30 Mar 2020 07:01:11 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.11d01.mspz7.gob.ec (Postfix) with ESMTP id F04902F6F59C;
-        Mon, 30 Mar 2020 04:16:31 -0500 (-05)
-Received: from mail.11d01.mspz7.gob.ec ([127.0.0.1])
-        by localhost (mail.11d01.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id KYzVDYxOkeRp; Mon, 30 Mar 2020 04:16:31 -0500 (-05)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.11d01.mspz7.gob.ec (Postfix) with ESMTP id 6F5432F6F5D2;
-        Mon, 30 Mar 2020 04:16:31 -0500 (-05)
-DKIM-Filter: OpenDKIM Filter v2.9.2 mail.11d01.mspz7.gob.ec 6F5432F6F5D2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=11d01.mspz7.gob.ec;
-        s=50CBC7E4-8BED-11E9-AF6C-F1A741A224D3; t=1585559791;
-        bh=cLQbOHa1aY+/FyDjaDQOZOnnnlZDxMu+rBX/cg5yps8=;
-        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:To:
-         From:Date:Reply-To:Message-Id;
-        b=c6cVpGCnFuh1p0lcTISFpZuPAcbcWcVrHj5tlFIRrWyc0zqMRJ8bQE02BB1cKjZXU
-         0Bjy3SS4QinooF6wMYE6xHeYitkEaTgC7WRcJFaWehGg7sjULhddfBQN9eo2Bx5Wer
-         BEdLzKUnvB82EMiDb73Pgtbco8it4owpm41SnXfI=
-X-Virus-Scanned: amavisd-new at 11d01.mspz7.gob.ec
-Received: from mail.11d01.mspz7.gob.ec ([127.0.0.1])
-        by localhost (mail.11d01.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id VJc5DLTcJdTq; Mon, 30 Mar 2020 04:16:31 -0500 (-05)
-Received: from [10.121.152.251] (unknown [105.12.0.10])
-        by mail.11d01.mspz7.gob.ec (Postfix) with ESMTPSA id D35E72F6F59E;
-        Mon, 30 Mar 2020 04:16:20 -0500 (-05)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1727820AbgC3Ngg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 Mar 2020 09:36:36 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:52526 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726497AbgC3Ngg (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 30 Mar 2020 09:36:36 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 4EA718E6AE31056C26F6;
+        Mon, 30 Mar 2020 21:36:19 +0800 (CST)
+Received: from [127.0.0.1] (10.63.139.185) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Mon, 30 Mar 2020
+ 21:36:10 +0800
+Subject: Re: [PATCH -next] crypto: hisilicon - Fix build error
+To:     YueHaibing <yuehaibing@huawei.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>, <Jonathan.Cameron@huawei.com>,
+        <xuzaibo@huawei.com>, <shiju.jose@huawei.com>,
+        <ebiggers@google.com>, <yaohongbo@huawei.com>,
+        <maowenan@huawei.com>, <arnd@arndb.de>
+References: <20200330083643.28824-1-yuehaibing@huawei.com>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   Zhou Wang <wangzhou1@hisilicon.com>
+Message-ID: <5E81F5CA.9040808@hisilicon.com>
+Date:   Mon, 30 Mar 2020 21:36:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: spende von 2.000.000,00 Euro
-To:     Recipients <luis.sanchez@11d01.mspz7.gob.ec>
-From:   "Manuel Franco" <luis.sanchez@11d01.mspz7.gob.ec>
-Date:   Mon, 30 Mar 2020 11:47:34 +0200
-Reply-To: manuelfrancospende11@gmail.com
-Message-Id: <20200330091620.D35E72F6F59E@mail.11d01.mspz7.gob.ec>
+In-Reply-To: <20200330083643.28824-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.63.139.185]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Ich bin Manuel Franco, ich spende Ihnen 2.000.000,00 Euro. Kontaktieren Sie=
- mich jetzt, damit wir fortfahren k=F6nnen.
+On 2020/3/30 16:36, YueHaibing wrote:
+> When UACCE is m, CRYPTO_DEV_HISI_QM cannot be built-in.
+> But CRYPTO_DEV_HISI_QM is selected by CRYPTO_DEV_HISI_SEC2
+> and CRYPTO_DEV_HISI_HPRE unconditionally, which may leads this:
+> 
+> drivers/crypto/hisilicon/qm.o: In function 'qm_alloc_uacce':
+> drivers/crypto/hisilicon/qm.c:1579: undefined reference to 'uacce_alloc'
+> 
+> Add Kconfig dependency to enforce usable configurations.
+> 
+> Fixes: 47c16b449921 ("crypto: hisilicon - qm depends on UACCE")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-I am Manuel Franco, I donate to you 2,000,000.00 euros. Contact me now so w=
-e can proceed.
+Forgot to do the same thing like ZIP. Thanks for fixing this :)
+so Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
+
+Best,
+Zhou
+
+> ---
+>  drivers/crypto/hisilicon/Kconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
+> index 095850d01dcc..f09c6cf7823e 100644
+> --- a/drivers/crypto/hisilicon/Kconfig
+> +++ b/drivers/crypto/hisilicon/Kconfig
+> @@ -27,6 +27,7 @@ config CRYPTO_DEV_HISI_SEC2
+>  	select CRYPTO_SHA256
+>  	select CRYPTO_SHA512
+>  	depends on PCI && PCI_MSI
+> +	depends on UACCE || UACCE=n
+>  	depends on ARM64 || (COMPILE_TEST && 64BIT)
+>  	help
+>  	  Support for HiSilicon SEC Engine of version 2 in crypto subsystem.
+> @@ -58,6 +59,7 @@ config CRYPTO_DEV_HISI_ZIP
+>  config CRYPTO_DEV_HISI_HPRE
+>  	tristate "Support for HISI HPRE accelerator"
+>  	depends on PCI && PCI_MSI
+> +	depends on UACCE || UACCE=n
+>  	depends on ARM64 || (COMPILE_TEST && 64BIT)
+>  	select CRYPTO_DEV_HISI_QM
+>  	select CRYPTO_DH
+> 
+
