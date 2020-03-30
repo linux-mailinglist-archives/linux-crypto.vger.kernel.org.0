@@ -2,74 +2,43 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F137F197182
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2020 02:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D4019763E
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2020 10:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727751AbgC3Atn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 29 Mar 2020 20:49:43 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:48608 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727742AbgC3Atn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 29 Mar 2020 20:49:43 -0400
-Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
-        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jIicD-0007Fo-Kh; Mon, 30 Mar 2020 11:49:22 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 30 Mar 2020 11:49:21 +1100
-Date:   Mon, 30 Mar 2020 11:49:21 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Crypto List <linux-crypto@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        Ayush Sawal <ayush.sawal@chelsio.com>
-Subject: Re: linux-next: manual merge of the crypto tree with the net-next
- tree
-Message-ID: <20200330004921.GA30111@gondor.apana.org.au>
-References: <20200330114209.1c7d5d11@canb.auug.org.au>
+        id S1729586AbgC3IPI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 Mar 2020 04:15:08 -0400
+Received: from host201-96-61-217.static.arubacloud.com ([217.61.96.201]:53746
+        "EHLO mail.undorthemoure.gq" rhost-flags-OK-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S1729580AbgC3IPI (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 30 Mar 2020 04:15:08 -0400
+Received: by mail.undorthemoure.gq (Postfix, from userid 48)
+        id 20CB7A6802; Mon, 30 Mar 2020 00:09:52 -0400 (EDT)
+To:     linux-crypto@vger.kernel.org
+Subject: Request for catalog and price list
+X-PHP-Originating-Script: 0:dageds.php
+From:   Julian Smith <juliansmith2014@mail.ru>
+Reply-To: juliansmith2014@outlook.com
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200330114209.1c7d5d11@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Message-Id: <20200330040952.20CB7A6802@mail.undorthemoure.gq>
+Date:   Mon, 30 Mar 2020 00:09:52 -0400 (EDT)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Mar 30, 2020 at 11:42:09AM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the crypto tree got a conflict in:
-> 
->   drivers/crypto/chelsio/chcr_core.c
-> 
-> between commit:
-> 
->   34aba2c45024 ("cxgb4/chcr : Register to tls add and del callback")
-> 
-> from the net-next tree and commit:
-> 
->   53351bb96b6b ("crypto: chelsio/chcr - Fixes a deadlock between rtnl_lock and uld_mutex")
-> 
-> from the crypto tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+Hello friend,
 
-Thanks for the heads up Stephen.
+This is Julian Smith and i am purchasing manager from Sinara Group Co.,LTD in Russia.
+We are glad to know about your company from the web and we are interested in your products.
+Could you kindly send us your Latest catalog and price list for our trial order.
 
-Ayush, I'm going to drop the two chelsio patches.  Going forward,
-please send all chelsio patches via netdev.
+Thanks and Best Regards,
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Ms. Julian Smith
+Purchasing Manager
+Sinara Group Co.,LTD
+
+
