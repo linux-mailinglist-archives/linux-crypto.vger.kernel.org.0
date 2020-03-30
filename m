@@ -2,115 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C2719776B
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2020 11:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512E61979B6
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2020 12:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729863AbgC3JEK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 30 Mar 2020 05:04:10 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:60073 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729834AbgC3JEJ (ORCPT
+        id S1729469AbgC3Kwb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 Mar 2020 06:52:31 -0400
+Received: from mail-vk1-f195.google.com ([209.85.221.195]:44368 "EHLO
+        mail-vk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729204AbgC3Kw0 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 30 Mar 2020 05:04:09 -0400
-Received: from mail-qt1-f174.google.com ([209.85.160.174]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1N7hrw-1jEs7m0zOk-014hGU; Mon, 30 Mar 2020 11:04:08 +0200
-Received: by mail-qt1-f174.google.com with SMTP id i3so14383748qtv.8;
-        Mon, 30 Mar 2020 02:04:07 -0700 (PDT)
-X-Gm-Message-State: ANhLgQ1ZfmrLeo7mXOS6ML5HdbVESq9t83mmZf8dPWTGzNuZZtoCaCGP
-        lmLv+ll/zvF10LN3f9SVmla5sz8mJ4c2D1c/na8=
-X-Google-Smtp-Source: ADFU+vvF6z0qsmRemaK4uJsmFwsYBMd2e+M1G6Z9k97e3bDi+XT2BPv6JkE4QiR9NycOEetI9qUmn3RN/5VoUaWoUEk=
-X-Received: by 2002:aed:3b4c:: with SMTP id q12mr10572345qte.18.1585559047035;
- Mon, 30 Mar 2020 02:04:07 -0700 (PDT)
+        Mon, 30 Mar 2020 06:52:26 -0400
+Received: by mail-vk1-f195.google.com with SMTP id s194so4518276vkb.11
+        for <linux-crypto@vger.kernel.org>; Mon, 30 Mar 2020 03:52:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=82B0OONv9gwbZlPp43NzThDz2fRV+KRFwafOQ16joDw=;
+        b=W/pqz5d7jRz2XhuR0NPXi/HrPrA1EYS2PHHQ1FpsLUolfOVyK7H009Wnc0lrOJx6Hi
+         8vUUF/pk3PeclHcAYXDWVsOIJGvMQpXmWA9vT3q5H+Fq3bPr7slBRNCq5ggPLqTXWSUN
+         WeDqQdBB3Fj9UYma7K77X5d+kEKTp6fOD5VReaWt0mRVZHR6HEobypypOg452dQIxRuj
+         xU65Ut9jAR+y63swe5g9KvSFt96uljniqy4kiAqd2Y/ynJzIziUhlZ91pwoD0sDfF2kV
+         2p+fbv2x6QZq8+EhnWOm9VRs7gRyumQNwl/HLY+Ct1f3AZKCEqIBhRL3NUkC6PiM1Er/
+         am5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=82B0OONv9gwbZlPp43NzThDz2fRV+KRFwafOQ16joDw=;
+        b=L6bEfGqIvHqHLeGtMmxHwI6tGrhdKQrJxFJfT9OeVp4WF7EyJCKKCUNhkG5qk3+KMT
+         Y9kwq48pBOWsCugKFGvMi3SqHmumluNorfbDOZKIo7fnkKBQ7hKWcgkdFJ/TtqO/Yuxx
+         1ySjvAP/L2bY2sXTw7Bdim5hqW92slH/72G+y+fH7v7e9Fsn1JKxDb6Q+UbKF+jhrlMk
+         gtF79C94Cv7dSgUrx4bPwc+sUL1d5p6rBgYGCIQ2JpmPcJkxfSqQTujTXz/YuT+yr4ih
+         BiPcYTTxAXgDRx7kjgHMrd+XmT5W5gy57IeH4Or1ja5ah+BsN6Pjb8PNqxjJWol5pHNp
+         Wtpg==
+X-Gm-Message-State: AGi0PuZnlRRP8Nwo7roHJ6dFKyKsB++YBbZYkw+I8237dyu97ce3I9dp
+        85XMw9xgDZVR3/Za7akNehdBgVvwEEXQ58u4KlY=
+X-Google-Smtp-Source: APiQypKDRP4A2GOOhX29xPbS6X6J2bOe+cEnGPGhkRlrf/LV9QYV7GSVV1iViigrqjvUPzJfpKV+0f/QlvWFf/q+m5k=
+X-Received: by 2002:a1f:2c4b:: with SMTP id s72mr7433998vks.93.1585565545391;
+ Mon, 30 Mar 2020 03:52:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200330083643.28824-1-yuehaibing@huawei.com>
-In-Reply-To: <20200330083643.28824-1-yuehaibing@huawei.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 30 Mar 2020 11:03:51 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2DTx7Pjj8DLkwrnHxvB8YQC=999_EaefbT0X09Lktdjg@mail.gmail.com>
-Message-ID: <CAK8P3a2DTx7Pjj8DLkwrnHxvB8YQC=999_EaefbT0X09Lktdjg@mail.gmail.com>
-Subject: Re: [PATCH -next] crypto: hisilicon - Fix build error
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        David Miller <davem@davemloft.net>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Shiju Jose <shiju.jose@huawei.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Hongbo Yao <yaohongbo@huawei.com>,
-        Mao Wenan <maowenan@huawei.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Received: by 2002:a67:c005:0:0:0:0:0 with HTTP; Mon, 30 Mar 2020 03:52:24
+ -0700 (PDT)
+Reply-To: maryalice00.12@postribe.com
+From:   Maryalice Williams <maryalicewilliams730@gmail.com>
+Date:   Mon, 30 Mar 2020 08:52:24 -0200
+Message-ID: <CAKwdjspKQpXNN-muj712Ym+s=yC75k8CUdb6ULnvzKHxbYXvwA@mail.gmail.com>
+Subject: Reply For More Details.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:StBv4DeS8j4pJVubvPn/STK8Ixjh7AI0ftdSsdb1Q2QanMGYjo1
- tpdqiSWpqG5OIrqogupHCc6RaMSlwNuLP4AmOggmR5E0vdccySNhKFdDs4d6/qYtuFlU3hq
- E/4KaHTSFcnnY2kEaHrYGZQZ1D8mQwI9q8WUofGoste8O6/6Zxk9gXV3uQkkgtzeMX2M/Rc
- foQL/E8pDBX7mcp05q6bw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tWytsc1cTjY=:CLVlteC1nwWlR7iRKOjmMP
- 52eT4/u//aH3djSujPacNBq/dtLltAp5bGCSOi/e0+lsGADeMxl0McHy2qPUePyfPhPkBJqBx
- CMQ1/5lIbL/h42gkwiCJDrkox59jSApDJ0TW5Euw4O2Z9YvBAds9q7cXTyl4izW4Qa6AMSM1H
- w3EjbBhULFNG6N51e59JH1yUtMKy8v6iWK3gSlTqLmYMs/RTCwrk2L3/sFlK1lHaoeH1mCQLS
- 3omnSlOqkPB2nivUzg1/w0f8RRlPpHeZ1Rx2z8WKT8vETv5EXv6eLAIBNovLqhhBi0brvF2tJ
- ho9N2MSBD7jy+qkj8IsqzZXgr8S8X3Ot8m5FXvS0h2PKydf53NCRsIPfkpBP7l/SKVYDnnn0U
- Ito4vP3JrP/vnkQ0bRZzy1PD80oiqxbg4Rtc+g2//uIdjn6YSHhFHdDeJt8khgQkl7juOepzG
- QcQIPQmcjezrAHcQB5PAmEzc4m0gnic5UnR3S7sEJbvLr68HJeZcn1CWcTZAm2PnuQyDWPmwn
- 3NTYttIk5ZcNK0BF1niql4umynRq6hYJAcuQbyEq+IwVJIbcGpXRZy/GDTg6IPYJwlMyq0DIi
- sPjWFz7UabKgESKqrlG8LO91fJLkTuRvgNjkklc24er/gIDeSA+DcunJdK8orr7UTkVA5qt4W
- WWUVFtooNamp6Yp4TEPgGCpalNqj6YQTN8uV23VuBzKGcn2YZEzZKom790n3SoGj6Ap3GQusX
- ZBVCzxyLAb/w9py0XCYe4bLN0Uuu8UKZQWb35AuNzVDWOqvSb1cOET+DfujLkk7kGqYY+dHqd
- dIlMCfzN0GoY1xOF/dKazbNpoKiK/W2GzTKArtvuuwPoZxIxfU=
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Mar 30, 2020 at 10:39 AM YueHaibing <yuehaibing@huawei.com> wrote:
->
-> When UACCE is m, CRYPTO_DEV_HISI_QM cannot be built-in.
-> But CRYPTO_DEV_HISI_QM is selected by CRYPTO_DEV_HISI_SEC2
-> and CRYPTO_DEV_HISI_HPRE unconditionally, which may leads this:
->
-> drivers/crypto/hisilicon/qm.o: In function 'qm_alloc_uacce':
-> drivers/crypto/hisilicon/qm.c:1579: undefined reference to 'uacce_alloc'
->
-> Add Kconfig dependency to enforce usable configurations.
->
-> Fixes: 47c16b449921 ("crypto: hisilicon - qm depends on UACCE")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+-- 
+My dear,
 
-Looks correct to me (based on having fixed many similar issues is other
-places, not because of specific knowledge on this driver).
+I am Mrs Maryalice Williams, I want to send you donation of two
+million seven hundred thousand Dollars ($2.7M) for volunteer projects
+in your country due to my ill health that could not permit me. Kindly
+reply for more details, and also send me the following details, as per
+below, your full Name ..........,  Address...........,
+Age...............,  Occupation ...............
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-
-> ---
->  drivers/crypto/hisilicon/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
-> index 095850d01dcc..f09c6cf7823e 100644
-> --- a/drivers/crypto/hisilicon/Kconfig
-> +++ b/drivers/crypto/hisilicon/Kconfig
-> @@ -27,6 +27,7 @@ config CRYPTO_DEV_HISI_SEC2
->         select CRYPTO_SHA256
->         select CRYPTO_SHA512
->         depends on PCI && PCI_MSI
-> +       depends on UACCE || UACCE=n
->         depends on ARM64 || (COMPILE_TEST && 64BIT)
->         help
->           Support for HiSilicon SEC Engine of version 2 in crypto subsystem.
-> @@ -58,6 +59,7 @@ config CRYPTO_DEV_HISI_ZIP
->  config CRYPTO_DEV_HISI_HPRE
->         tristate "Support for HISI HPRE accelerator"
->         depends on PCI && PCI_MSI
-> +       depends on UACCE || UACCE=n
->         depends on ARM64 || (COMPILE_TEST && 64BIT)
->         select CRYPTO_DEV_HISI_QM
->         select CRYPTO_DH
-> --
-> 2.17.1
->
->
+Remain blessed,
+Mrs. Maryalice Williams.
