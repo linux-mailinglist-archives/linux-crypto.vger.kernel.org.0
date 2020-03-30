@@ -2,84 +2,135 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AD8196BD6
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Mar 2020 10:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693F819717C
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2020 02:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727801AbgC2IHn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 29 Mar 2020 04:07:43 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:33440 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727639AbgC2IHm (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 29 Mar 2020 04:07:42 -0400
-Received: by mail-lj1-f194.google.com with SMTP id f20so14574130ljm.0
-        for <linux-crypto@vger.kernel.org>; Sun, 29 Mar 2020 01:07:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=YVHX5PKqSDUWjZo7pAAllCqbBgWo3T2DCSi2qcXEgH8=;
-        b=lLj0UTmi6tAI9KDZNvoHiRwjXJHlRvEWMXc/ZyPSSu0aOPGOsa/G6nYMyDoU0k+3gE
-         +njhaZWg/foGZSh8q3kthIxxfXvobiK8oDSufqwZbfm2k2TwBhIn6Fa9DKzTIwW3hE4p
-         o4uatwXSslHD+diVHmU/ooWdOVkSgxBpc5u1Y/YdEB7d4N+Vdk7fMYFesnYbtgO9KJkZ
-         c+a7hWjhJZKGPT4i9rusRNOzZ4Jn7hLQCwavqlMljZ68dOZXmW7rEY3nGCJfXNJlGvjt
-         5+w4grqS1qdncRgC4uvUEKO55VoLvR1wi8Gbjd3BLZC9CPneoOPdHT1n2nUXSjx02s4l
-         9fUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=YVHX5PKqSDUWjZo7pAAllCqbBgWo3T2DCSi2qcXEgH8=;
-        b=A8eTAp42BvaKP9gF9/eGmlVPzzrRbQMEsy9NMYJSJIxYIWuWV7xL+dSdlXtSIid/7j
-         IZQSk6shbSbVrUdWfire1X+yzSBHO1esKECrnSOpDfRFRxNMFBL/ZrG+PfSBy+RRAi9G
-         1VBrb+VnPT5YD+BkEz3yAtPjN9PL/XCNSZIV7abkGBYFYZoqnLN1gEm1c+frlFE4ltmf
-         4gbkkI2fdE5e/JUsmRL5AGSuRLb3AdB54qmpcCiAQUEnzZ+R9LMtQ3QmUZcNgdK2b8S3
-         cNMVcMNo5iVa+7Yse/OcY5zuKhqL+RumVbkDX5o83qHgdbt9cKUW2+BQ97bdNw2eT1F/
-         INyg==
-X-Gm-Message-State: AGi0PubCMeBVccLCaWX8Jmv8CO6g+1KeqOqhrQVr+9UiXilQD97RnpEQ
-        cfFkhTO8vA+Cou39fZINif5JxlsOJOJkdN1h0To=
-X-Google-Smtp-Source: APiQypLBCmf0z9f5mB3Kcwc3uEqLtTfiTZ1q6zCBzOOR0r4s46vwRZoek4mb6Ipspoz/tcARA/bFR3rF5aJcU4vYzVU=
-X-Received: by 2002:a2e:94c8:: with SMTP id r8mr4118326ljh.28.1585469259687;
- Sun, 29 Mar 2020 01:07:39 -0700 (PDT)
+        id S1727755AbgC3AmQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 29 Mar 2020 20:42:16 -0400
+Received: from ozlabs.org ([203.11.71.1]:36583 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727612AbgC3AmP (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 29 Mar 2020 20:42:15 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 48rDDz6MhVz9sPR;
+        Mon, 30 Mar 2020 11:42:11 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1585528933;
+        bh=B8g4PRJs5T7Ukzd8/GATXCt5GgL5C9WTKDYNobskixI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FWuUrmSwHX8w33pVQE9Y7fCySl2ycaPHMXPTPSvXApgtRJY+gZ8NAYSy2FLeD6v+R
+         qiSRX6HB4u8bjYj/XDyj1MXHVco03AsqT9C/SQNPiE4n12wnUUu7kdfnPfV2tRtOa4
+         b+lBTzSLhwYdiCTKLIJ//ZIWrW9ZD+v4JHwlRj9vnMPRliFNCc9uJNaeHD8bmiNdA/
+         SjhKe5rx2B9FkXCpvLvIYzwaa6LC7Jf4D2H9xGMUOw3VB+6FhkA+mlXjvDgM1RDqLJ
+         tJ1yutxNGupoD+F9xe4soswNhcOb+ZB0GccMSyEUVxY0AVBva3Mss6xb24zS8n9WvU
+         CfA+L6bbFygQQ==
+Date:   Mon, 30 Mar 2020 11:42:09 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        Ayush Sawal <ayush.sawal@chelsio.com>
+Subject: linux-next: manual merge of the crypto tree with the net-next tree
+Message-ID: <20200330114209.1c7d5d11@canb.auug.org.au>
 MIME-Version: 1.0
-Received: by 2002:a2e:5843:0:0:0:0:0 with HTTP; Sun, 29 Mar 2020 01:07:39
- -0700 (PDT)
-Reply-To: mrsjaneyzachary4@gmail.com
-From:   "Mrs.Janey Zachary" <mrs.shirleysisme@gmail.com>
-Date:   Sun, 29 Mar 2020 08:07:39 +0000
-Message-ID: <CACwG4eSTgUW+cToOUOLuFx_Os5m1Ep7Lqe50Q2y50cEc5bqANw@mail.gmail.com>
-Subject: HI
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/qU/dK2yDyZMdgSQ7Jl4PJ7B";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+--Sig_/qU/dK2yDyZMdgSQ7Jl4PJ7B
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+Today's linux-next merge of the crypto tree got a conflict in:
+
+  drivers/crypto/chelsio/chcr_core.c
+
+between commit:
+
+  34aba2c45024 ("cxgb4/chcr : Register to tls add and del callback")
+
+from the net-next tree and commit:
+
+  53351bb96b6b ("crypto: chelsio/chcr - Fixes a deadlock between rtnl_lock =
+and uld_mutex")
+
+from the crypto tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
 --=20
-Dear Beloved,
+Cheers,
+Stephen Rothwell
 
-I=E2=80=99m MRS.JANEY ZACHARY, 69years old affected with breast cancer, the
-wife of late Gabriella Kennedy,  the Director of High River Gold Mines
-Ltd Burkina Faso West Africa. I am contacting you because of my health
-condition,i need a reliable person, who will handle this project
-accordingly, accomplish my heart desire and utilize this fund. I have
-decided to donate the sum Twenty-Five Million Two Hundred Thousand
-United State Dollars Only ($25,200,000.00) to Charity Organizations or
-to support the Orphans, Motherless Babies,Less privileged and free
-Medical & Medicine Poor People's around the World since I don t have
-any child and do not want the bank take over the fund. I don't really
-know if i am going to survive this stage, therefore if you ready to
-handle this project, kindly response so that i will instruct the bank
-to transfer the fund to your account.
+diff --cc drivers/crypto/chelsio/chcr_core.c
+index 0015810214a9,7e24c4881c34..000000000000
+--- a/drivers/crypto/chelsio/chcr_core.c
++++ b/drivers/crypto/chelsio/chcr_core.c
+@@@ -35,12 -35,12 +35,16 @@@ static int chcr_uld_state_change(void *
+ =20
+  static chcr_handler_func work_handlers[NUM_CPL_CMDS] =3D {
+  	[CPL_FW6_PLD] =3D cpl_fw6_pld_handler,
+ +#ifdef CONFIG_CHELSIO_TLS_DEVICE
+ +	[CPL_ACT_OPEN_RPL] =3D chcr_ktls_cpl_act_open_rpl,
+ +	[CPL_SET_TCB_RPL] =3D chcr_ktls_cpl_set_tcb_rpl,
+ +#endif
+  };
+ =20
++ #ifdef CONFIG_CHELSIO_IPSEC_INLINE
++ static void update_netdev_features(void);
++ #endif /* CONFIG_CHELSIO_IPSEC_INLINE */
++=20
+  static struct cxgb4_uld_info chcr_uld_info =3D {
+  	.name =3D DRV_MODULE_NAME,
+  	.nrxq =3D MAX_ULD_QSETS,
+@@@ -204,15 -204,6 +207,11 @@@ static void *chcr_uld_add(const struct=20
+  	}
+  	u_ctx->lldi =3D *lld;
+  	chcr_dev_init(u_ctx);
+- #ifdef CONFIG_CHELSIO_IPSEC_INLINE
+- 	if (lld->crypto & ULP_CRYPTO_IPSEC_INLINE)
+- 		chcr_add_xfrmops(lld);
+- #endif /* CONFIG_CHELSIO_IPSEC_INLINE */
+ +
+ +#ifdef CONFIG_CHELSIO_TLS_DEVICE
+ +	if (lld->ulp_crypto & ULP_CRYPTO_KTLS_INLINE)
+ +		chcr_enable_ktls(padap(&u_ctx->dev));
+ +#endif
+  out:
+  	return u_ctx;
+  }
 
-Contact my private email only if you are interested (mrsjaneyzachary4@gmail=
-.com)
+--Sig_/qU/dK2yDyZMdgSQ7Jl4PJ7B
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Remain blessed in the name of the Lord.
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6BQGEACgkQAVBC80lX
+0Gy00Af7B/b3nw/o6e9EgWEMNQxR9lOCdBNHvqWAAJNvrfmCBzVywCrYNm+uhPav
+6n0SU54O7MdSkvL5pJZKjCMQmAYqZw54qzEwMo0JDddvTd5kvrIF/wIK8GFA0zBF
+5aVe7R+IIeRSALpt65TMCptq6h+mRruorPhii7ugeOvRLcwLeSoLis/3BgsqrJ7x
+S/9dDG9rivrKDudiXqLmkTvklRvhH+KcJM8TmtDXzN+b7bQzksa1SA2YcEv6rUNN
+fDUThDqFBQ/yxF9IeD90SiQlnr9cF8Ux0iP1oKyp0dNNNAUF+Pwfc6mOkemZrev1
+Pl8TJbuZl7IeIpSX/ftIgvUvqFVkcQ==
+=J2Dh
+-----END PGP SIGNATURE-----
 
-Regards
-
-Mrs.Janey Zachary
+--Sig_/qU/dK2yDyZMdgSQ7Jl4PJ7B--
