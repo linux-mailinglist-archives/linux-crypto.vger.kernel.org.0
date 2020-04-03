@@ -2,68 +2,62 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A61D19D026
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2020 08:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E20FF19D0B9
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2020 09:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732411AbgDCGTn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 3 Apr 2020 02:19:43 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:52068 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730889AbgDCGTn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 3 Apr 2020 02:19:43 -0400
-Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
-        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jKFfi-0008Jn-Lx; Fri, 03 Apr 2020 17:19:19 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 03 Apr 2020 17:19:18 +1100
-Date:   Fri, 3 Apr 2020 17:19:18 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Iuliana Prodan <iuliana.prodan@nxp.com>
-Cc:     Baolin Wang <baolin.wang@linaro.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH v4 1/2] crypto: engine - support for parallel requests
-Message-ID: <20200403061918.GA26691@gondor.apana.org.au>
-References: <1583707893-23699-1-git-send-email-iuliana.prodan@nxp.com>
- <1583707893-23699-2-git-send-email-iuliana.prodan@nxp.com>
- <20200312032553.GB19920@gondor.apana.org.au>
- <AM0PR04MB71710B3535153286D9F31F8B8CFD0@AM0PR04MB7171.eurprd04.prod.outlook.com>
- <20200317032924.GB18743@gondor.apana.org.au>
- <VI1PR0402MB3712DC09FC02FBE215006C5B8CF60@VI1PR0402MB3712.eurprd04.prod.outlook.com>
- <20200327044404.GA12318@gondor.apana.org.au>
- <AM6PR0402MB370147736BEAD099AAF061558CCC0@AM6PR0402MB3701.eurprd04.prod.outlook.com>
+        id S2388608AbgDCHD0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Fri, 3 Apr 2020 03:03:26 -0400
+Received: from pmg.slemankab.go.id ([103.71.191.178]:51206 "EHLO
+        pmg.slemankab.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730550AbgDCHD0 (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 3 Apr 2020 03:03:26 -0400
+Received: from pmg.slemankab.go.id (localhost.localdomain [127.0.0.1])
+        by pmg.slemankab.go.id (Proxmox) with ESMTP id 8AD51343B93;
+        Fri,  3 Apr 2020 13:29:32 +0700 (WIB)
+Received: from mailserver.slemankab.go.id (unknown [192.168.90.92])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by pmg.slemankab.go.id (Proxmox) with ESMTPS id 725F1343B91;
+        Fri,  3 Apr 2020 13:29:17 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mailserver.slemankab.go.id (Postfix) with ESMTP id 634AA3443F3;
+        Fri,  3 Apr 2020 13:29:12 +0700 (WIB)
+Received: from mailserver.slemankab.go.id ([127.0.0.1])
+        by localhost (mailserver.slemankab.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 0-GcojS8CbXG; Fri,  3 Apr 2020 13:29:12 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mailserver.slemankab.go.id (Postfix) with ESMTP id 22B483443EA;
+        Fri,  3 Apr 2020 13:29:12 +0700 (WIB)
+X-Virus-Scanned: amavisd-new at mailserver.slemankab.go.id
+Received: from mailserver.slemankab.go.id ([127.0.0.1])
+        by localhost (mailserver.slemankab.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id PJxD2vFyr9Sp; Fri,  3 Apr 2020 13:29:12 +0700 (WIB)
+Received: from [100.92.181.183] (unknown [223.180.202.82])
+        by mailserver.slemankab.go.id (Postfix) with ESMTPSA id 2C9AD344346;
+        Fri,  3 Apr 2020 13:29:04 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM6PR0402MB370147736BEAD099AAF061558CCC0@AM6PR0402MB3701.eurprd04.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Att
+To:     Recipients <admin@astutelighting.co.uk>
+From:   admin@astutelighting.co.uk
+Date:   Fri, 03 Apr 2020 11:58:51 +0530
+Reply-To: emmaamelia964@gmail.com
+Message-Id: <20200403062904.2C9AD344346@mailserver.slemankab.go.id>
+X-SPAM-LEVEL: Spam detection results:  2
+        ALL_TRUSTED                -1 Passed through trusted hosts only via SMTP
+        AWL                    -0.278 Adjusted score from AWL reputation of From: address
+        BAYES_50                  0.8 Bayes spam probability is 40 to 60%
+        FREEMAIL_FORGED_REPLYTO  2.095 Freemail in Reply-To, but not From
+        FREEMAIL_REPLYTO_END_DIGIT   0.25 Reply-To freemail username ends in digit
+        KAM_COUK                 0.85 Scoring .co.uk emails higher due to poor registry security.
+        KAM_DMARC_STATUS         0.01 Test Rule for DKIM or SPF Failure with Strict Alignment
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 10:44:02AM +0000, Iuliana Prodan wrote:
->
-> This cannot happen right now.
-> For non-crypto API requests (like split key or rng) I cannot pass them 
-> through crypto-engine which only supports aead, skcipher, hash and 
-> akcipher requests.
+I need your help?
 
-I don't see why crypto-engine can't be extended to cover that
-too, right?
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
