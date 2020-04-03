@@ -2,100 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D624319DECD
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2020 21:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9832919E0A7
+	for <lists+linux-crypto@lfdr.de>; Sat,  4 Apr 2020 00:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728164AbgDCTu4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 3 Apr 2020 15:50:56 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:54152 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728111AbgDCTuz (ORCPT
+        id S1727867AbgDCWGs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 3 Apr 2020 18:06:48 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:3381 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727829AbgDCWGs (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 3 Apr 2020 15:50:55 -0400
-Received: by mail-wm1-f65.google.com with SMTP id d77so8374820wmd.3
-        for <linux-crypto@vger.kernel.org>; Fri, 03 Apr 2020 12:50:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DUwfWiW0UJxalwoOZqAt5RYAz8XQErLckHV7vR83OWY=;
-        b=pirqFxhtHNPHRAEdKqSTs4Euef6KGq6HZwRdcmT4t4aLwZMfvlhm7hlrjmVzTdRxpl
-         eFo9dW0UBEptLeS9GP9lAySK33wFSJBQqw42epc7Nu3ycqFuIMEpb1YyARdOSnQPhxFU
-         Wlo2JpiSRrQpWc6DS4QNsKZbC8SCuIPzI3J6tZ87ccf5wHcLzCkFt9hULvgPnqRxQ8By
-         9CBmjph2lVCBrzXF3VxhiT+ySEDwV/Jd1cF+YBimg3snUdVsY0DIlvHNBuZTnHMQR4Dz
-         atH8ar4NRKj2bagsgPCfxiNbRZNZj65BxFSphFJOj1QNvspMV36m6ij9Z6+ClozPVGGq
-         u96g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=DUwfWiW0UJxalwoOZqAt5RYAz8XQErLckHV7vR83OWY=;
-        b=GWYGb/tGx5KJg2Tkzx/1ZrTelo+GSWLMahax2Nueg1NcOa9Ongscs0gOjpsMqdeCJK
-         KmJSemymN1NQEqxMSLJSl9hR5DJWsmKTHKy7+awY6L2pzbKzOdvGQY+C+cHZErxwpDV3
-         IRgFyw/s8+pc9buhsjm7ROrcQetq21fpoqtBwgd5DPUH9MnKuoVmLkd/t5wOGWCzUmvf
-         GhVasE37tRJEL6MfNWQ0K0d89nLz+0LHPwXOrPGFD7cUZ+UsN4QRRV3IWeUg49T+nfkl
-         LKDF/iKG3jt7xl2Z0TIpmU6plCPEEdfPerW3sSP58GY9boD9ej6RmpdxaNUd08xF+AkS
-         aw4Q==
-X-Gm-Message-State: AGi0PuZMEHArbXEEkq3kmJVbRLK/gn+lmH9jMAXDHGtWMKYP7q2YmPaP
-        0rOgYOeL61sH4Z/onunoT2zbEg==
-X-Google-Smtp-Source: APiQypKOyL9ads/3hMVSff7qNmS6J5YYs0teENKpVn9t8B1IfnPqaGI7AiHQNnoMwQBYFwAvtKTTvQ==
-X-Received: by 2002:a1c:7308:: with SMTP id d8mr10713890wmb.31.1585943454150;
-        Fri, 03 Apr 2020 12:50:54 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id c17sm8102448wrp.28.2020.04.03.12.50.53
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Fri, 03 Apr 2020 12:50:53 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        mripard@kernel.org, wens@csie.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH 7/7] crypto: sun8i-ss: better debug printing
-Date:   Fri,  3 Apr 2020 19:50:38 +0000
-Message-Id: <1585943438-862-8-git-send-email-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1585943438-862-1-git-send-email-clabbe@baylibre.com>
-References: <1585943438-862-1-git-send-email-clabbe@baylibre.com>
+        Fri, 3 Apr 2020 18:06:48 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.7]) by rmmx-syy-dmz-app02-12002 (RichMail) with SMTP id 2ee25e87b3617b4-7d944; Sat, 04 Apr 2020 06:06:25 +0800 (CST)
+X-RM-TRANSID: 2ee25e87b3617b4-7d944
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.3.208.73])
+        by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee45e87b35f24a-49938;
+        Sat, 04 Apr 2020 06:06:25 +0800 (CST)
+X-RM-TRANSID: 2ee45e87b35f24a-49938
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     narmstrong@baylibre.com, clabbe@baylibre.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH v6]crypto: amlogic - Delete duplicate dev_err in meson_crypto_probe()
+Date:   Sat,  4 Apr 2020 06:07:54 +0800
+Message-Id: <20200403220754.7856-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch reworks the way debug info are printed.
-Instead of printing raw numbers, let's add a bit of context.
+When something goes wrong, platform_get_irq() will print an error message,
+so in order to avoid the situation of repeat output，we should remove
+dev_err here.
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Changes from v5
+ - modify the commit message.
 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-index d7832e2eb39c..cbeaf1962c05 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-@@ -420,19 +420,19 @@ static int sun8i_ss_dbgfs_read(struct seq_file *seq, void *v)
- 			continue;
- 		switch (ss_algs[i].type) {
- 		case CRYPTO_ALG_TYPE_SKCIPHER:
--			seq_printf(seq, "%s %s %lu %lu\n",
-+			seq_printf(seq, "%s %s reqs=%lu fallback=%lu\n",
- 				   ss_algs[i].alg.skcipher.base.cra_driver_name,
- 				   ss_algs[i].alg.skcipher.base.cra_name,
- 				   ss_algs[i].stat_req, ss_algs[i].stat_fb);
- 			break;
- 		case CRYPTO_ALG_TYPE_RNG:
--			seq_printf(seq, "%s %s %lu %lu\n",
-+			seq_printf(seq, "%s %s reqs=%lu tsize=%lu\n",
- 				   ss_algs[i].alg.rng.base.cra_driver_name,
- 				   ss_algs[i].alg.rng.base.cra_name,
- 				   ss_algs[i].stat_req, ss_algs[i].stat_bytes);
- 			break;
- 		case CRYPTO_ALG_TYPE_AHASH:
--			seq_printf(seq, "%s %s %lu %lu\n",
-+			seq_printf(seq, "%s %s reqs=%lu fallback=%lu\n",
- 				   ss_algs[i].alg.hash.halg.base.cra_driver_name,
- 				   ss_algs[i].alg.hash.halg.base.cra_name,
- 				   ss_algs[i].stat_req, ss_algs[i].stat_fb);
+Changes from v4:
+ - rewrite the code, because the code in v4 is wrong, sorry.
+
+Changes form v3:
+ - fix the theme writing error.
+
+Changes from v2:
+ - modify the theme format and content description.
+ - reformat the patch, it's the wrong way to resubmit a new patch that
+   should be modified on top of the original. The original piece is:
+   https://lore.kernel.org/patchwork/patch/1219611/
+
+Changes from v1:
+ - the title has changed, because the description is not very detailed.
+ - the code has been modified, because it needs to match the theme.
+
+ drivers/crypto/amlogic/amlogic-gxl-core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/crypto/amlogic/amlogic-gxl-core.c
+index 9d4ead2f7..411857fad 100644
+--- a/drivers/crypto/amlogic/amlogic-gxl-core.c
++++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
+@@ -253,10 +253,8 @@ static int meson_crypto_probe(struct platform_device *pdev)
+ 	mc->irqs = devm_kcalloc(mc->dev, MAXFLOW, sizeof(int), GFP_KERNEL);
+ 	for (i = 0; i < MAXFLOW; i++) {
+ 		mc->irqs[i] = platform_get_irq(pdev, i);
+-		if (mc->irqs[i] < 0) {
+-			dev_err(mc->dev, "Cannot get IRQ for flow %d\n", i);
++		if (mc->irqs[i] < 0)
+ 			return mc->irqs[i];
+-		}
+ 
+ 		err = devm_request_irq(&pdev->dev, mc->irqs[i], meson_irq_handler, 0,
+ 				       "gxl-crypto", mc);
 -- 
-2.24.1
+2.20.1.windows.1
+
+
 
