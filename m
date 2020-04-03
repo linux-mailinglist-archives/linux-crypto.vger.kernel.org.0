@@ -2,28 +2,28 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 634F319D1FD
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2020 10:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA19419D1FA
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2020 10:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390296AbgDCISI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 3 Apr 2020 04:18:08 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12677 "EHLO huawei.com"
+        id S2390511AbgDCIR4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 3 Apr 2020 04:17:56 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12678 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390467AbgDCISI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 3 Apr 2020 04:18:08 -0400
+        id S2390508AbgDCIRz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 3 Apr 2020 04:17:55 -0400
 Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 03D6624E6752FE023323;
+        by Forcepoint Email with ESMTP id 0CF5C5C2BAA737A13302;
         Fri,  3 Apr 2020 16:17:50 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 3 Apr 2020 16:17:39 +0800
+ 14.3.487.0; Fri, 3 Apr 2020 16:17:40 +0800
 From:   Shukun Tan <tanshukun1@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, Hui Tang <tanghui20@huawei.com>,
+CC:     <linux-crypto@vger.kernel.org>, Yang Shen <shenyang39@huawei.com>,
         "Shukun Tan" <tanshukun1@huawei.com>
-Subject: [PATCH 3/5] crypto: hisilicon/hpre - add controller reset support for HPRE
-Date:   Fri, 3 Apr 2020 16:16:40 +0800
-Message-ID: <1585901802-48945-4-git-send-email-tanshukun1@huawei.com>
+Subject: [PATCH 4/5] crypto: hisilicon/sec2 - add controller reset support for SEC2
+Date:   Fri, 3 Apr 2020 16:16:41 +0800
+Message-ID: <1585901802-48945-5-git-send-email-tanshukun1@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1585901802-48945-1-git-send-email-tanshukun1@huawei.com>
 References: <1585901802-48945-1-git-send-email-tanshukun1@huawei.com>
@@ -36,138 +36,146 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Hui Tang <tanghui20@huawei.com>
+From: Yang Shen <shenyang39@huawei.com>
 
-Add support for the controller reset in HPRE driver.
+Add support for controller reset in SEC driver.
 
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
+Signed-off-by: Yang Shen <shenyang39@huawei.com>
 Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
 Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
 Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_main.c | 46 +++++++++++++++++++++++++------
- 1 file changed, 37 insertions(+), 9 deletions(-)
+ drivers/crypto/hisilicon/sec2/sec_main.c | 40 ++++++++++++++++++++++----------
+ 1 file changed, 28 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 9cff5c1..0d63666 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -59,10 +59,6 @@
- #define HPRE_HAC_ECC2_CNT		0x301a08
- #define HPRE_HAC_INT_STATUS		0x301800
- #define HPRE_HAC_SOURCE_INT		0x301600
--#define MASTER_GLOBAL_CTRL_SHUTDOWN	1
--#define MASTER_TRANS_RETURN_RW		3
--#define HPRE_MASTER_TRANS_RETURN	0x300150
--#define HPRE_MASTER_GLOBAL_CTRL		0x300000
- #define HPRE_CLSTR_ADDR_INTRVL		0x1000
- #define HPRE_CLUSTER_INQURY		0x100
- #define HPRE_CLSTR_ADDR_INQRY_RSLT	0x104
-@@ -80,6 +76,13 @@
- #define HPRE_BD_USR_MASK		0x3
- #define HPRE_CLUSTER_CORE_MASK		0xf
+diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+index c76c49e..07a5f4e 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_main.c
++++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -249,9 +249,8 @@ static const struct pci_device_id sec_dev_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(pci, sec_dev_ids);
  
-+#define HPRE_AM_OOO_SHUTDOWN_ENB	0x301044
-+#define HPRE_AM_OOO_SHUTDOWN_ENABLE	BIT(0)
-+#define HPRE_WR_MSI_PORT		BIT(2)
-+
-+#define HPRE_CORE_ECC_2BIT_ERR		BIT(1)
-+#define HPRE_OOO_ECC_2BIT_ERR		BIT(5)
-+
- #define HPRE_VIA_MSI_DSM		1
+-static u8 sec_get_endian(struct sec_dev *sec)
++static u8 sec_get_endian(struct hisi_qm *qm)
+ {
+-	struct hisi_qm *qm = &sec->qm;
+ 	u32 reg;
  
- static struct hisi_qm_list hpre_devices;
-@@ -241,9 +244,8 @@ static int hpre_cfg_by_dsm(struct hisi_qm *qm)
+ 	/*
+@@ -279,9 +278,8 @@ static u8 sec_get_endian(struct sec_dev *sec)
+ 		return SEC_64BE;
+ }
+ 
+-static int sec_engine_init(struct sec_dev *sec)
++static int sec_engine_init(struct hisi_qm *qm)
+ {
+-	struct hisi_qm *qm = &sec->qm;
+ 	int ret;
+ 	u32 reg;
+ 
+@@ -324,7 +322,7 @@ static int sec_engine_init(struct sec_dev *sec)
+ 
+ 	/* config endian */
+ 	reg = readl_relaxed(SEC_ADDR(qm, SEC_CONTROL_REG));
+-	reg |= sec_get_endian(sec);
++	reg |= sec_get_endian(qm);
+ 	writel_relaxed(reg, SEC_ADDR(qm, SEC_CONTROL_REG));
+ 
+ 	/* Enable sm4 xts mode multiple iv */
+@@ -334,10 +332,8 @@ static int sec_engine_init(struct sec_dev *sec)
  	return 0;
  }
  
--static int hpre_set_user_domain_and_cache(struct hpre *hpre)
-+static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
+-static int sec_set_user_domain_and_cache(struct sec_dev *sec)
++static int sec_set_user_domain_and_cache(struct hisi_qm *qm)
  {
--	struct hisi_qm *qm = &hpre->qm;
- 	struct device *dev = &qm->pdev->dev;
- 	unsigned long offset;
- 	int ret, i;
-@@ -339,6 +341,9 @@ static void hpre_hw_error_disable(struct hisi_qm *qm)
+-	struct hisi_qm *qm = &sec->qm;
+-
+ 	/* qm user domain */
+ 	writel(AXUSER_BASE, qm->io_base + QM_ARUSER_M_CFG_1);
+ 	writel(ARUSER_M_CFG_ENABLE, qm->io_base + QM_ARUSER_M_CFG_ENABLE);
+@@ -358,7 +354,7 @@ static int sec_set_user_domain_and_cache(struct sec_dev *sec)
+ 	       CQC_CACHE_WB_ENABLE | FIELD_PREP(SQC_CACHE_WB_THRD, 1) |
+ 	       FIELD_PREP(CQC_CACHE_WB_THRD, 1), qm->io_base + QM_CACHE_CTL);
  
- static void hpre_hw_error_enable(struct hisi_qm *qm)
- {
-+	/* clear HPRE hw error source if having */
-+	writel(HPRE_CORE_INT_DISABLE, qm->io_base + HPRE_HAC_SOURCE_INT);
-+
- 	/* enable hpre hw error interrupts */
- 	writel(HPRE_CORE_INT_ENABLE, qm->io_base + HPRE_INT_MASK);
- 	writel(HPRE_HAC_RAS_CE_ENABLE, qm->io_base + HPRE_RAS_CE_ENB);
-@@ -700,8 +705,6 @@ static void hpre_log_hw_error(struct hisi_qm *qm, u32 err_sts)
- 				 err->msg, err->int_msk);
- 		err++;
+-	return sec_engine_init(sec);
++	return sec_engine_init(qm);
+ }
+ 
+ /* sec_debug_regs_clear() - clear the sec debug regs */
+@@ -683,8 +679,6 @@ static void sec_log_hw_error(struct hisi_qm *qm, u32 err_sts)
+ 		}
+ 		errs++;
  	}
 -
--	writel(err_sts, qm->io_base + HPRE_HAC_SOURCE_INT);
+-	writel(err_sts, qm->io_base + SEC_CORE_INT_SOURCE);
  }
  
- static u32 hpre_get_hw_err_status(struct hisi_qm *qm)
-@@ -709,16 +712,39 @@ static u32 hpre_get_hw_err_status(struct hisi_qm *qm)
- 	return readl(qm->io_base + HPRE_HAC_INT_STATUS);
+ static u32 sec_get_hw_err_status(struct hisi_qm *qm)
+@@ -692,17 +686,37 @@ static u32 sec_get_hw_err_status(struct hisi_qm *qm)
+ 	return readl(qm->io_base + SEC_CORE_INT_STATUS);
  }
  
-+static void hpre_clear_hw_err_status(struct hisi_qm *qm, u32 err_sts)
++static void sec_clear_hw_err_status(struct hisi_qm *qm, u32 err_sts)
 +{
-+	writel(err_sts, qm->io_base + HPRE_HAC_SOURCE_INT);
++	writel(err_sts, qm->io_base + SEC_CORE_INT_SOURCE);
 +}
 +
-+static void hpre_open_axi_master_ooo(struct hisi_qm *qm)
++static void sec_open_axi_master_ooo(struct hisi_qm *qm)
 +{
-+	u32 value;
++	u32 val;
 +
-+	value = readl(qm->io_base + HPRE_AM_OOO_SHUTDOWN_ENB);
-+	writel(value & ~HPRE_AM_OOO_SHUTDOWN_ENABLE,
-+	       HPRE_ADDR(qm, HPRE_AM_OOO_SHUTDOWN_ENB));
-+	writel(value | HPRE_AM_OOO_SHUTDOWN_ENABLE,
-+	       HPRE_ADDR(qm, HPRE_AM_OOO_SHUTDOWN_ENB));
++	val = readl(SEC_ADDR(qm, SEC_CONTROL_REG));
++	writel(val & SEC_AXI_SHUTDOWN_DISABLE, SEC_ADDR(qm, SEC_CONTROL_REG));
++	writel(val | SEC_AXI_SHUTDOWN_ENABLE, SEC_ADDR(qm, SEC_CONTROL_REG));
 +}
 +
- static const struct hisi_qm_err_ini hpre_err_ini = {
-+	.hw_init		= hpre_set_user_domain_and_cache,
- 	.hw_err_enable		= hpre_hw_error_enable,
- 	.hw_err_disable		= hpre_hw_error_disable,
- 	.get_dev_hw_err_status	= hpre_get_hw_err_status,
-+	.clear_dev_hw_err_status = hpre_clear_hw_err_status,
- 	.log_dev_hw_err		= hpre_log_hw_error,
-+	.open_axi_master_ooo	= hpre_open_axi_master_ooo,
+ static const struct hisi_qm_err_ini sec_err_ini = {
++	.hw_init		= sec_set_user_domain_and_cache,
+ 	.hw_err_enable		= sec_hw_error_enable,
+ 	.hw_err_disable		= sec_hw_error_disable,
+ 	.get_dev_hw_err_status	= sec_get_hw_err_status,
++	.clear_dev_hw_err_status = sec_clear_hw_err_status,
+ 	.log_dev_hw_err		= sec_log_hw_error,
++	.open_axi_master_ooo	= sec_open_axi_master_ooo,
  	.err_info		= {
  		.ce			= QM_BASE_CE,
- 		.nfe			= QM_BASE_NFE | QM_ACC_DO_TASK_TIMEOUT,
+ 		.nfe			= QM_BASE_NFE | QM_ACC_DO_TASK_TIMEOUT |
+ 					  QM_ACC_WB_NOT_READY_TIMEOUT,
  		.fe			= 0,
  		.msi			= QM_DB_RANDOM_INVALID,
-+		.ecc_2bits_mask		= HPRE_CORE_ECC_2BIT_ERR |
-+					  HPRE_OOO_ECC_2BIT_ERR,
-+		.msi_wr_port		= HPRE_WR_MSI_PORT,
-+		.acpi_rst		= "HRST",
++		.ecc_2bits_mask		= SEC_CORE_INT_STATUS_M_ECC,
++		.msi_wr_port		= BIT(0),
++		.acpi_rst		= "SRST",
  	}
  };
  
-@@ -729,10 +755,11 @@ static int hpre_pf_probe_init(struct hpre *hpre)
+@@ -726,7 +740,7 @@ static int sec_pf_probe_init(struct sec_dev *sec)
  
- 	qm->ctrl_qp_num = HPRE_QUEUE_NUM_V2;
+ 	qm->err_ini = &sec_err_ini;
  
--	ret = hpre_set_user_domain_and_cache(hpre);
-+	ret = hpre_set_user_domain_and_cache(qm);
+-	ret = sec_set_user_domain_and_cache(sec);
++	ret = sec_set_user_domain_and_cache(qm);
  	if (ret)
  		return ret;
  
-+	qm->qm_list = &hpre_devices;
- 	qm->err_ini = &hpre_err_ini;
- 	hisi_qm_dev_err_init(qm);
+@@ -783,6 +797,7 @@ static int sec_probe_init(struct hisi_qm *qm, struct sec_dev *sec)
+ 		qm->qp_base = SEC_PF_DEF_Q_BASE;
+ 		qm->qp_num = pf_q_num;
+ 		qm->debug.curr_qm_qp_num = pf_q_num;
++		qm->qm_list = &sec_devices;
  
-@@ -840,6 +867,7 @@ static void hpre_remove(struct pci_dev *pdev)
+ 		ret = sec_pf_probe_init(sec);
+ 		if (ret)
+@@ -936,6 +951,7 @@ static void sec_remove(struct pci_dev *pdev)
  
- static const struct pci_error_handlers hpre_err_handler = {
- 	.error_detected		= hisi_qm_dev_err_detected,
-+	.slot_reset		= hisi_qm_dev_slot_reset,
+ static const struct pci_error_handlers sec_err_handler = {
+ 	.error_detected = hisi_qm_dev_err_detected,
++	.slot_reset =  hisi_qm_dev_slot_reset,
  };
  
- static struct pci_driver hpre_pci_driver = {
+ static struct pci_driver sec_pci_driver = {
 -- 
 2.7.4
 
