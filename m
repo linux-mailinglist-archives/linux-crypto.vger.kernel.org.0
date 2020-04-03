@@ -2,222 +2,142 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECEA19D1F9
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2020 10:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308EA19D28C
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2020 10:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390504AbgDCIRy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 3 Apr 2020 04:17:54 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12676 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390511AbgDCIRy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 3 Apr 2020 04:17:54 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 08737D83D20A21844FFA;
-        Fri,  3 Apr 2020 16:17:50 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 3 Apr 2020 16:17:41 +0800
-From:   Shukun Tan <tanshukun1@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, Yang Shen <shenyang39@huawei.com>,
-        "Shukun Tan" <tanshukun1@huawei.com>
-Subject: [PATCH 5/5] crypto: hisilicon/qm - stop qp by judging sq and cq tail
-Date:   Fri, 3 Apr 2020 16:16:42 +0800
-Message-ID: <1585901802-48945-6-git-send-email-tanshukun1@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1585901802-48945-1-git-send-email-tanshukun1@huawei.com>
-References: <1585901802-48945-1-git-send-email-tanshukun1@huawei.com>
+        id S2390471AbgDCIqX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 3 Apr 2020 04:46:23 -0400
+Received: from mout.web.de ([212.227.17.11]:48329 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727876AbgDCIqX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 3 Apr 2020 04:46:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1585903527;
+        bh=Vpz6XPOiR0eFsWz4pmEGbilzDuLBi/PkgsMquA3H+w0=;
+        h=X-UI-Sender-Class:Cc:Subject:To:From:Date;
+        b=hf9DrYahRNJTRCUbNMGTWJ5DZGZHDI0nDE8vCJnEVzHiaEg7vRYoCZJlQaHUwiX4Y
+         DOzz1YIwQ5PTjbLBp4xla2hvNSHx6pnmwM+pU6m6crc9hUjCyzmIBtdkvNSjn3Dfmv
+         U3cbVWOTSfFeQuOrAD5YhC6wApc87omT5qhkrj7I=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([93.135.25.116]) by smtp.web.de (mrweb102
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0MS290-1jmExR1xtq-00TDjC; Fri, 03
+ Apr 2020 10:45:27 +0200
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Corentin Labbe <clabbe@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH] crypto: amlogic - Delete duplicate dev_err in
+ meson_crypto_probe()
+To:     Tang Bin <tangbin@cmss.chinamobile.com>,
+        linux-amlogic@lists.infradead.org, linux-crypto@vger.kernel.org
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <e1916128-6554-ea57-49ef-e4ad7b0d7229@web.de>
+Date:   Fri, 3 Apr 2020 10:45:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:MSu6HIVdeTHd2XyP5jXiajKNJGqrJGBmMR9QwzjWrokVW3SDI0d
+ //KW+9njLxsG7E4F+xSe3adwMVsxeP1uwoHkGaNEeBhh6oXt0Sx6BqZ51Q1pausQgQWO173
+ tfsjgCHuyd8NOxY+PMzxsDWyvNQ+eaJgnteiTlvoNRI+IWF/EpFl1mVZsLAakKsfnhCzD/7
+ SRfylTPckJwaILkP8SZfw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jix0vBawNm8=:6RYvzk3+EjPdl28Y7TcoGf
+ H68cR5Aih0J5sXr0BgkSE3zjlixchXXTsFWFSdKvZHCTLh9YdAkByHu8VI1qewhN6nw4Vtcis
+ y+q/tOqXZIvY0lfjQxNRmPU2BTpMU1RsVIP7IOK9aGnaLpOlIefxwx8NtuMVAj7kG5r/W2WIl
+ F7U7me4WC29CTT28jCF0/PGrOR9wYj1p76kRJmAZdbwMBMU9Jg9AL813C/gwzN9gqjp5zOMkA
+ gXda9kfz3kCoCPGgwQFMHqC3WSW+uXVTqPseibl1WA+QQmFn5OFVmJdoBeiebbOFPkRTL/Y2D
+ wSRDJssIn5qJrTWl7An2iiNlJfp2x93gt51x3fJ9CUK7UACbU6l730wLP+S7JbI5+rAnoAsWp
+ rK2ckbmzmYOyWYT1UtCUPyP/Wi721iBF3j6ycV0bjm8oVDlCkvZUNmv+6vE4mJ6uRZvsvl3sL
+ EBWAggx22c20zABttCVMrlLanQ1hDlfx9i5MiWAEpodkonQBDU5MzZUA9fd3Wfsb74ZAbCuPG
+ QVYYa/2ClSM9/4nM8IVdThLKlEBMQSy0eQJyb4c9VeM12lrZV37QFYe6o27JKfcvd05CqHmpr
+ 1C/V1JfrUIl8a2MknwulLbIHifg3e+B1ohCJjtRBfxovIeDoPatVJaG/cB6OflFmqNpbwFVHX
+ uuqDYRM596DrKwbys7jgdiKzRECtM1rEDi8iNu5nTznrMcANNcxEY1MPA4HlvoQm19FD7vwFP
+ 9WStSEHKjP6OIJ+SZpXniexLvyFmBAG9lXWLaEktB2++2/k9nK0HxK4Vhj38AWVBKlKyRwVc+
+ tuLjjEQWYIjbVVO82nGqMlSRSAnxjjqT6PLf8njL87McIKSZfm3r28gPuddHzDXkZa8IOZ3P8
+ qUjhT9moNWC0iPcukvYXQtf44nexk+FkBBqCaES+vAqVkHqW9rws89QofmVOQCkATHy7D6bPm
+ 0kRzK+opcWE6TgQV3KOHyInXdmhehaO8RKiIPi8Xj8aLZ1Jpv2eEwy2f9INEp905N3cZtRqJY
+ sunjZPQeWkmSqdTMNdx+p6TKGdZyRKCAIMuBiTkyiXEjX9nY2+UKx2EKN2e2jwS/SAZT6b6GP
+ Po9GvlcLxp3GS8h3YcV57zISO5uQOoDzILvkiwL/vMiZ3t3D10koclmJDxf+A8SjfKfOIKWUE
+ A2UGNLxP9+XagfcKwgpplxHZXTu8mohH/e+FJ0xQzwn6G/dHScpYCLrJv5Z+gbgk9bhS6XAJO
+ ww/1GWOfW4J/LEwfB
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Yang Shen <shenyang39@huawei.com>
+> In this place,
 
-It is not working well to determine whether the queue is empty based on
-whether the used count is 0. It is more stable to get if the queue is
-stopping by checking if the tail pointer of the send queue and the
-completion queue are equal.
+I suggest to omit such a wording from the change description.
 
-Signed-off-by: Yang Shen <shenyang39@huawei.com>
-Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
-Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 123 ++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 114 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 2a44ccb..88cdf0d 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -55,6 +55,7 @@
- #define QM_SQ_TYPE_SHIFT		8
- 
- #define QM_SQ_TYPE_MASK			GENMASK(3, 0)
-+#define QM_SQ_TAIL_IDX(sqc)		((le16_to_cpu((sqc)->w11) >> 6) & 0x1)
- 
- /* cqc shift */
- #define QM_CQ_HOP_NUM_SHIFT		0
-@@ -66,6 +67,7 @@
- 
- #define QM_CQE_PHASE(cqe)		(le16_to_cpu((cqe)->w7) & 0x1)
- #define QM_QC_CQE_SIZE			4
-+#define QM_CQ_TAIL_IDX(cqc)		((le16_to_cpu((cqc)->w11) >> 6) & 0x1)
- 
- /* eqc shift */
- #define QM_EQE_AEQE_SIZE		(2UL << 12)
-@@ -162,6 +164,8 @@
- 
- #define POLL_PERIOD			10
- #define POLL_TIMEOUT			1000
-+#define WAIT_PERIOD_US_MAX		200
-+#define WAIT_PERIOD_US_MIN		100
- #define MAX_WAIT_COUNTS			1000
- #define QM_CACHE_WB_START		0x204
- #define QM_CACHE_WB_DONE		0x208
-@@ -1362,6 +1366,107 @@ int hisi_qm_start_qp(struct hisi_qp *qp, unsigned long arg)
- }
- EXPORT_SYMBOL_GPL(hisi_qm_start_qp);
- 
-+static void *qm_ctx_alloc(struct hisi_qm *qm, size_t ctx_size,
-+			  dma_addr_t *dma_addr)
-+{
-+	struct device *dev = &qm->pdev->dev;
-+	void *ctx_addr;
-+
-+	ctx_addr = kzalloc(ctx_size, GFP_KERNEL);
-+	if (!ctx_addr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	*dma_addr = dma_map_single(dev, ctx_addr, ctx_size, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(dev, *dma_addr)) {
-+		dev_err(dev, "DMA mapping error!\n");
-+		kfree(ctx_addr);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	return ctx_addr;
-+}
-+
-+static void qm_ctx_free(struct hisi_qm *qm, size_t ctx_size,
-+			const void *ctx_addr, dma_addr_t *dma_addr)
-+{
-+	struct device *dev = &qm->pdev->dev;
-+
-+	dma_unmap_single(dev, *dma_addr, ctx_size, DMA_FROM_DEVICE);
-+	kfree(ctx_addr);
-+}
-+
-+static int qm_dump_sqc_raw(struct hisi_qm *qm, dma_addr_t dma_addr, u16 qp_id)
-+{
-+	return qm_mb(qm, QM_MB_CMD_SQC, dma_addr, qp_id, 1);
-+}
-+
-+static int qm_dump_cqc_raw(struct hisi_qm *qm, dma_addr_t dma_addr, u16 qp_id)
-+{
-+	return qm_mb(qm, QM_MB_CMD_CQC, dma_addr, qp_id, 1);
-+}
-+
-+/**
-+ * Determine whether the queue is cleared by judging the tail pointers of
-+ * sq and cq.
-+ */
-+static int qm_drain_qp(struct hisi_qp *qp)
-+{
-+	size_t size = sizeof(struct qm_sqc) + sizeof(struct qm_cqc);
-+	struct hisi_qm *qm = qp->qm;
-+	struct device *dev = &qm->pdev->dev;
-+	struct qm_sqc *sqc;
-+	struct qm_cqc *cqc;
-+	dma_addr_t dma_addr;
-+	int ret = 0, i = 0;
-+	void *addr;
-+
-+	/*
-+	 * No need to judge if ECC multi-bit error occurs because the
-+	 * master OOO will be blocked.
-+	 */
-+	if (qm->err_status.is_qm_ecc_mbit || qm->err_status.is_dev_ecc_mbit)
-+		return 0;
-+
-+	addr = qm_ctx_alloc(qm, size, &dma_addr);
-+	if (IS_ERR(addr)) {
-+		dev_err(dev, "Failed to alloc ctx for sqc and cqc!\n");
-+		return -ENOMEM;
-+	}
-+
-+	while (++i) {
-+		ret = qm_dump_sqc_raw(qm, dma_addr, qp->qp_id);
-+		if (ret) {
-+			dev_err_ratelimited(dev, "Failed to dump sqc!\n");
-+			break;
-+		}
-+		sqc = addr;
-+
-+		ret = qm_dump_cqc_raw(qm, (dma_addr + sizeof(struct qm_sqc)),
-+				      qp->qp_id);
-+		if (ret) {
-+			dev_err_ratelimited(dev, "Failed to dump cqc!\n");
-+			break;
-+		}
-+		cqc = addr + sizeof(struct qm_sqc);
-+
-+		if ((sqc->tail == cqc->tail) &&
-+		    (QM_SQ_TAIL_IDX(sqc) == QM_CQ_TAIL_IDX(cqc)))
-+			break;
-+
-+		if (i == MAX_WAIT_COUNTS) {
-+			dev_err(dev, "Fail to empty queue %u!\n", qp->qp_id);
-+			ret = -EBUSY;
-+			break;
-+		}
-+
-+		usleep_range(WAIT_PERIOD_US_MIN, WAIT_PERIOD_US_MAX);
-+	}
-+
-+	qm_ctx_free(qm, size, addr, &dma_addr);
-+
-+	return ret;
-+}
-+
- /**
-  * hisi_qm_stop_qp() - Stop a qp in qm.
-  * @qp: The qp we want to stop.
-@@ -1371,20 +1476,20 @@ EXPORT_SYMBOL_GPL(hisi_qm_start_qp);
- int hisi_qm_stop_qp(struct hisi_qp *qp)
- {
- 	struct device *dev = &qp->qm->pdev->dev;
--	int i = 0;
-+	int ret;
- 
- 	/* it is stopped */
- 	if (test_bit(QP_STOP, &qp->qp_status.flags))
- 		return 0;
- 
--	while (atomic_read(&qp->qp_status.used)) {
--		i++;
--		msleep(20);
--		if (i == 10) {
--			dev_err(dev, "Cannot drain out data for stopping, Force to stop!\n");
--			return 0;
--		}
--	}
-+	ret = qm_drain_qp(qp);
-+	if (ret)
-+		dev_err(dev, "Failed to drain out data for stopping!\n");
-+
-+	if (qp->qm->wq)
-+		flush_workqueue(qp->qm->wq);
-+	else
-+		flush_work(&qp->qm->work);
- 
- 	set_bit(QP_STOP, &qp->qp_status.flags);
- 
--- 
-2.7.4
+> when something goes wrong, platform_get_irq() will
+> print an error message,
 
+This information is helpful here.
+
+
+> so in order to avoid the situation of repeat output=EF=BC=8C
+
+Possible adjustments:
+* Separate sentences
+
+* =E2=80=9Crepeated output=E2=80=9D
+
+
+> we should remove dev_err here.
+
+Thus remove a redundant function call.
+
+
+How do you think about to change any more source files in a systematic way=
+?
+
+Regards,
+Markus
