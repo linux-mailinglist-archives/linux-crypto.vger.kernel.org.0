@@ -2,81 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0DB1A063E
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Apr 2020 07:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2741A067A
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Apr 2020 07:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgDGFMm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 7 Apr 2020 01:12:42 -0400
-Received: from mail-ua1-f66.google.com ([209.85.222.66]:39200 "EHLO
-        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726831AbgDGFMl (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 7 Apr 2020 01:12:41 -0400
-Received: by mail-ua1-f66.google.com with SMTP id i22so839102uak.6
-        for <linux-crypto@vger.kernel.org>; Mon, 06 Apr 2020 22:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=38NlpNEbzNFWb7RFQtfvRASB+B576yw7dNc7pozf3pc=;
-        b=m9m/DCsFRus/zRmIuphflM5sHyenmkMN/TOEnECOGthbLJHVg8u2+iqtFZpNbyb2/k
-         2tLF//qwyXGtNVJKRleGUy+KbEtVjN+06Aw6FbGL98d5M/QEqB9c9SHaIsBPFlQYoUCh
-         Lj+P9EPUGdvyQRip4KeH3oSvDVhqDTV0IJcbcI66BzYP/b9Y/1y4LF++1q0teLhPl3GM
-         v15gBTxOBB8qvH4CNaCnwdm2sugBL+St8qIlm7SqBWweWj6hdsos1F0mjeWO8qJt64R9
-         xl3tya8AfljNAFdSOkZ4tC7INitomO8JQPFHHcp+JAODUsaup01At9KIYDntXEoTQZb0
-         DmdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=38NlpNEbzNFWb7RFQtfvRASB+B576yw7dNc7pozf3pc=;
-        b=dxFihJFV79VKDNPfaIc2+rKXeU1PT5F7JkZzyd0HvDhDVY8KoH90IN47FlxUtlDHaC
-         gNc3FmSlWCBKstWtdJzmNeqb9xhW5RcelAvKa5rRiMQVlAYpPy+6IeHXnww6aIKtH7lN
-         sONsEUF0CyXevTlJ9Xq07+v42ei/VFHHdZERaPTywpPA6KCVQ1kmZxSUz7U5CIQRStUX
-         h/WtuOEX/C6ZJiQKYIMTsiSEC9NekMHz+0FdiTUR4ADMFPwOVeAXdAcCd59RhNFc00Io
-         unwDU/6Lfw1F0KzjL6+OljcvTZmVZAAUajpE7qyezEExoZD0HJfji19CoKA41BB44gfu
-         L8gw==
-X-Gm-Message-State: AGi0PuYCqh9G5SkRSav+pUit3yWhow5M91iy/OKAdkV5uxrjNCQu1bVx
-        ISYkWYUGRExg6z4/HBphtOXF4wtIeyYk7ieeHKA=
-X-Google-Smtp-Source: APiQypIYXniGQUHEpASwiGNjKth4Cu9ElCz4yjrJ2uXbYBYunhfz0887D/TRydUbTstl7MwaeVftG8QxF1P80ST3qos=
-X-Received: by 2002:ab0:a9:: with SMTP id 38mr504317uaj.61.1586236361040; Mon,
- 06 Apr 2020 22:12:41 -0700 (PDT)
+        id S1726657AbgDGFRr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 7 Apr 2020 01:17:47 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:53450 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726399AbgDGFRr (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 7 Apr 2020 01:17:47 -0400
+Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
+        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
+        id 1jLgcK-0001xa-Kc; Tue, 07 Apr 2020 15:17:45 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 07 Apr 2020 15:17:44 +1000
+Date:   Tue, 7 Apr 2020 15:17:44 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: crypto: algboss - Avoid spurious modprobe on LOADED
+Message-ID: <20200407051744.GA13037@gondor.apana.org.au>
+References: <20200407030003.GA12687@gondor.apana.org.au>
+ <20200407045835.GA102437@sol.localdomain>
 MIME-Version: 1.0
-Received: by 2002:ab0:4929:0:0:0:0:0 with HTTP; Mon, 6 Apr 2020 22:12:40 -0700 (PDT)
-From:   SANDRA DEWI <dewisandra154@gmail.com>
-Date:   Tue, 7 Apr 2020 05:12:40 +0000
-Message-ID: <CABRVPWys0xe4CWBkaU0ZXQW+4d=tjDOjyo8cKohc5-VFkWPkcA@mail.gmail.com>
-Subject: whether this is your correct email address or not
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407045835.GA102437@sol.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear ,Pastor
+On Mon, Apr 06, 2020 at 09:58:35PM -0700, Eric Biggers wrote:
+>
+> Needs a Fixes tag?
+> 
+> Fixes: dd8b083f9a5e ("crypto: api - Introduce notifier for new crypto algorithms")
+> Cc: <stable@vger.kernel.org> # v4.20+
 
+Ah thanks, I had thought this was an ancient bug and therefore
+the fixes wouldn't have been that useful.  The fact that it is
+a recent introduction means that we definitely should have the
+tags.
 
+> > diff --git a/crypto/algboss.c b/crypto/algboss.c
+> > index 527b44d0af21..01feb8234053 100644
+> > --- a/crypto/algboss.c
+> > +++ b/crypto/algboss.c
+> > @@ -275,7 +275,7 @@ static int cryptomgr_notify(struct notifier_block *this, unsigned long msg,
+> >  	case CRYPTO_MSG_ALG_REGISTER:
+> >  		return cryptomgr_schedule_test(data);
+> >  	case CRYPTO_MSG_ALG_LOADED:
+> > -		break;
+> > +		return NOTIFY_OK;
+> >  	}
+> >  
+> >  	return NOTIFY_DONE;
+> 
+> It's hard to remember the difference between NOTIFY_OK and NOTIFY_DONE.  Isn't
+> it wrong to call request_module() in the first place for a message that
+> "cryptomgr" doesn't care about?  Wouldn't the following make more sense?:
 
-I have a client who is an oil business man and he made a fixed deposit
-of $26 million USD in my bank, where I am the director of the branch,
-My client died with his entire family in Jordanian
+Good point.  Yes we can and should do that here.  Can you post
+a patch for this please?
 
-50% of the fund will be for the church  for the work of God,the
-balance 50% we share it in the ratio of 50/50. Meaning 50% to you and
-50% for me
-
-intervention in the Syrian Civil War 2014 leaving behind no next of
-kin. I Propose to present you as next of kin to claim the funds, if
-interested reply me for full details and how we are to
-
-
-
-proceed to close this deal.
-
-
-
-
-Mrs. Sandra Dewi
-
-
-
-Email  mrsdewi@gmx.com
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
