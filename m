@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 681681A0BCF
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Apr 2020 12:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C041A0BA9
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Apr 2020 12:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728562AbgDGKXs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 7 Apr 2020 06:23:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33698 "EHLO mail.kernel.org"
+        id S1728635AbgDGKZm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 7 Apr 2020 06:25:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728091AbgDGKXr (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:23:47 -0400
+        id S1728992AbgDGKZk (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:25:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B2C62082F;
-        Tue,  7 Apr 2020 10:23:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 214AB2078A;
+        Tue,  7 Apr 2020 10:25:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255026;
+        s=default; t=1586255139;
         bh=nekBzOBwg7MSUfjgB1WlnAg8CmwfUXUhpErEo3+ryck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DNVFq+XqU5cx6eFcob+kdPCLbvsXjkIZIJLhvE1WsGVRKesou87Y3dJPkrlVo1inW
-         MdKz7qi69noGvjSTBWQtZGs9s9gkEK7WmKT3W+VDWu4WHJzApoLTQJSWudsN4vWWni
-         JnZhR3VzC4EY80/AyebIMbosG6szOf2QgG7+8I5A=
+        b=Yc6fNzoWI3kHBDrte4ztLgPpcUjpQZYD6BgKlDxhcEywLOQZiNNDYxX2fl7BotNy2
+         rJtx92mQnTDJ8yG9edRJjUWdUFRDfMREZ7Je5UiDyeXPViWaPi2i9t7BWzitQqpPzk
+         TscHrYgpkBRlcy1kGdU4+lUpBZqemTe164Ol8BAE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,12 +31,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Steffen Klassert <steffen.klassert@secunet.com>,
         linux-crypto@vger.kernel.org
-Subject: [PATCH 5.4 36/36] padata: always acquire cpu_hotplug_lock before pinst->lock
-Date:   Tue,  7 Apr 2020 12:22:09 +0200
-Message-Id: <20200407101458.815698923@linuxfoundation.org>
+Subject: [PATCH 5.5 46/46] padata: always acquire cpu_hotplug_lock before pinst->lock
+Date:   Tue,  7 Apr 2020 12:22:17 +0200
+Message-Id: <20200407101504.206060352@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101454.281052964@linuxfoundation.org>
-References: <20200407101454.281052964@linuxfoundation.org>
+In-Reply-To: <20200407101459.502593074@linuxfoundation.org>
+References: <20200407101459.502593074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
