@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EFF1A0BD2
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Apr 2020 12:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4E11A0BC5
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Apr 2020 12:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728589AbgDGKXy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 7 Apr 2020 06:23:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33882 "EHLO mail.kernel.org"
+        id S1728734AbgDGKYc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 7 Apr 2020 06:24:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728585AbgDGKXx (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:23:53 -0400
+        id S1728727AbgDGKY2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:24:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFE4420644;
-        Tue,  7 Apr 2020 10:23:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BED82074F;
+        Tue,  7 Apr 2020 10:24:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255033;
+        s=default; t=1586255067;
         bh=kbZl1uDjGDqe9P85bbeC5tlO3WXKxc6I56W8sgaOY54=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C8B8bevqcdGusAgVCN8q3YFS56P8XJ8fmuRW4uGU/TQraEKurKYqnsVBczPR+aQIX
-         mqbbJ6nXkweNDrQ074AOaGB65h0k/nY8zVNnRT4/se+gnnupy84fPQCAkAnrl3093B
-         mVjALNsYG2t6dQ4kO0wpwjS1vgcIYaNeA4JBbrQ4=
+        b=C7ZA8P+F1wM/Zwvg3hVVuKJm40PLWedTkOn6Gb9bM4HiFDN58BDqdmr03vuIvc6/+
+         p25bSMeLcnhimWz25nMI5dTdw4azOVTI7tgVlhofr4J/PmYWjizdD028qsS1uozYyu
+         LwleJr5i1bEA3hHpEKE8vWbsr5BPqk3qq1s0zS/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,12 +31,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Steffen Klassert <steffen.klassert@secunet.com>,
         linux-crypto@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 13/36] padata: fix uninitialized return value in padata_replace()
-Date:   Tue,  7 Apr 2020 12:21:46 +0200
-Message-Id: <20200407101456.064759735@linuxfoundation.org>
+Subject: [PATCH 5.5 17/46] padata: fix uninitialized return value in padata_replace()
+Date:   Tue,  7 Apr 2020 12:21:48 +0200
+Message-Id: <20200407101501.345016605@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101454.281052964@linuxfoundation.org>
-References: <20200407101454.281052964@linuxfoundation.org>
+In-Reply-To: <20200407101459.502593074@linuxfoundation.org>
+References: <20200407101459.502593074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
