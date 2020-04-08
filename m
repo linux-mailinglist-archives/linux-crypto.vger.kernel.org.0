@@ -2,242 +2,91 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 565621A2606
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Apr 2020 17:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F237D1A2683
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Apr 2020 17:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729695AbgDHPqd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 8 Apr 2020 11:46:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729589AbgDHPqc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:46:32 -0400
-Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1778E20784;
-        Wed,  8 Apr 2020 15:46:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586360791;
-        bh=p4BaOts5XwS9tdFV4i/p0/J5e6kWOeDWMFxv85StaUU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NZ21Vyx8+OMKYPn8CBKZzq75zGPoZ3DMDP8oLRTpkpecR8WAQ2+J8Fj2VAHTR5wk0
-         xDKmG5vsShl4z0Z80aO1JRL4hEypnfFvWF9tZ0gMaqVYbs4QpvzGLBsWeiPEMeQdvH
-         pR/0VVfHJVOJNvrIxlVOVb9eI6+9VNUE+/BRTi8E=
-Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jMCuL-000cAZ-6H; Wed, 08 Apr 2020 17:46:29 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 04/35] docs: fix broken references for ReST files that moved around
-Date:   Wed,  8 Apr 2020 17:45:56 +0200
-Message-Id: <5beb8d40ae78e179ea5bafb38f0988c5f1a5fd18.1586359676.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <cover.1586359676.git.mchehab+huawei@kernel.org>
-References: <cover.1586359676.git.mchehab+huawei@kernel.org>
+        id S1729707AbgDHP4J (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 8 Apr 2020 11:56:09 -0400
+Received: from sonic315-13.consmr.mail.bf2.yahoo.com ([74.6.134.123]:43057
+        "EHLO sonic315-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729804AbgDHP4J (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 8 Apr 2020 11:56:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1586361367; bh=4lq1pI7+GIBy0FlIfk7AdjyT+HFsTWpCQ4liJABsm/c=; h=Date:From:Reply-To:Subject:References:From:Subject; b=btIsBdYGeiQOhdtTO3CpV20kvmRsR6ptP6lXRhQvdE/R/J9mCOEEe6cIzp1rRKinHYYiqYkkQYN5SdOUU0XXwdahKSHuGKVyTRO1ANHTjKACsvKPBXnbd9s+9hDfIzCOd8m5LBDOZgpJSuOBQ6tQvv2cH30chyioQXqufiW6VlOT1unjEde70n60c5kO/DiIoExNynyKNDu1GBkeRs0oEAjfe7R7+UH9uMDn47pvfIWHHm2l7udEq18pWy4jIJa1ypWjSqfim1n2t8k/lZ7v0Ko2GHDT1Swqj5mfcOjAqKN/nnbSe/9H7TTEfr5FZxl9UF8DkPxiPO6ieMNKOAa9ow==
+X-YMail-OSG: ySFYItwVM1mGHMbhQAgkQnmOGKaPFOmByIyVSOuD1IQyP4ymshoXoh.x3D7fQ_k
+ lrS8rALE4d_PO30thkz8vE..9zAFenana5LAFeFdw0m7K5CZsRUX7_Afu7hfPzYjq3LY0Y6vvOAX
+ 52WVnmKULJgVjTwl.1grTK9qPJ.ECgMAqfpCerd4maLFroo4pFn1cy6qfLIgtc2yR9jbbSqUnLEb
+ 9PK3W7c72pQZ8tHBEZI03mUR1yALWUwjI7cHwW5S6FLw4OQgiHhLLw7Z_on0.qAOyKl34IYmPFyo
+ PvncHDIHUYEhidtEtcPrQv1jmBijjimvwrJea857TLyiAKyviktKCJpFa3XlVtCFU0DYkQGIGCbx
+ 0I73i0n5RzeAvfUzrYpcbgwCavIttemMLvKHHF414fQu2Volmigmk8ETLvrdJOeMsWWvMqHRcZsd
+ 9Mcv57UTXpGNApWBz6xdtBLm0BiULhzkjmbt3aA.KhRJBMYKNnXxOjkGykYo.wRdFLO7tNxN95eh
+ 3N9unmbRrsoIBeXiY3FitNghDhygrqn.R1x0eDv9tKBAP.vGW4ITtcDGXemPOgzgumbtd1fms2mr
+ OptRCeAnKz9FOpQX75.KW1rH85BicZ1u2re3_3YEWpCuED3QlX3upu3rIdw.PbFmzWG.SdzaCz2v
+ cad.gmoW3WY3bWVicCFHz2mg2odZyK18O3d.zEbPusN2VCCpKvDWveoiHyped4oo90YYhjfl0XgY
+ cA_XOhqdYIpr5ZZildV4iFmhnr8QRCIYY69iRqwYDQO.zGevNJc6BbvBgUF_XKMS7PTgGwhXhgEV
+ inSGclcf6F7PNxIyZXVpSGp.29HlOqvDwjgrSNE__POdGFSPj7YpXzvTpMGd6i15szDbmWgYJfbU
+ Qg6dtP.ryr5Br0jKnZdepfg.mlxN3W0mHnNZmj.8LVZR187rZVldYXZTPWwxFBxJMNBcKsG1q7Ld
+ e8RRQDg3mpaxLCSa2I3W4Pnzwi5mvr68oXhtPr_IdlqCUtMOIvWjffDJB.xuo64ZWkME1muxKi3V
+ AdTmOR9NXgipwbUoYgRMbRiF7FVs9FddRLl7Qp6NVvHoFjNoD3HllZMkhQ4aNlmbAskyW8ZimOJC
+ B3p_TJB.8uOJ4lTKV4FLO.GL2_qM7lrVrn2uezH8PxOu4XUjpN1ovcAccYMt64YAkG03hTwyyPKO
+ GSlYpfsoc.rh7J6LYTxfbI1me7EDpFCiMv3_G4kIsjPbMkyqse8fIMseX3lDI9S_cSw5WLP_T0PO
+ gBASbUI2Qt1t4sPpMTwqOMxAEb8X2xd.TvbM2d2obB9a7qxB84qbsUvmYIByFY0xlj2FYxkLBV54
+ QdGuS
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.bf2.yahoo.com with HTTP; Wed, 8 Apr 2020 15:56:07 +0000
+Date:   Wed, 8 Apr 2020 15:56:06 +0000 (UTC)
+From:   Theresa Han <serena@lantermo.it>
+Reply-To: han.theresa2017@gmail.com
+Message-ID: <921108282.1676228.1586361366977@mail.yahoo.com>
+Subject: =?UTF-8?Q?Pozdrawiam_was_w_imi=C4=99_Pana?=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <921108282.1676228.1586361366977.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15620 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Some broken references happened due to shifting files around
-and ReST renames. Those can't be auto-fixed by the script,
-so let's fix them manually.
+Drogi Beloverd
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/doc-guide/maintainer-profile.rst      | 2 +-
- Documentation/virt/kvm/mmu.rst                      | 2 +-
- Documentation/virt/kvm/review-checklist.rst         | 2 +-
- arch/x86/kvm/mmu/mmu.c                              | 2 +-
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c | 2 +-
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c   | 2 +-
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c | 2 +-
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c   | 2 +-
- drivers/media/v4l2-core/v4l2-fwnode.c               | 2 +-
- include/uapi/linux/kvm.h                            | 4 ++--
- tools/include/uapi/linux/kvm.h                      | 4 ++--
- 11 files changed, 13 insertions(+), 13 deletions(-)
+Pozdrawiam was w imi=C4=99 Pana
 
-diff --git a/Documentation/doc-guide/maintainer-profile.rst b/Documentation/doc-guide/maintainer-profile.rst
-index 5afc0ddba40a..755d39f0d407 100644
---- a/Documentation/doc-guide/maintainer-profile.rst
-+++ b/Documentation/doc-guide/maintainer-profile.rst
-@@ -6,7 +6,7 @@ Documentation subsystem maintainer entry profile
- The documentation "subsystem" is the central coordinating point for the
- kernel's documentation and associated infrastructure.  It covers the
- hierarchy under Documentation/ (with the exception of
--Documentation/device-tree), various utilities under scripts/ and, at least
-+Documentation/devicetree), various utilities under scripts/ and, at least
- some of the time, LICENSES/.
- 
- It's worth noting, though, that the boundaries of this subsystem are rather
-diff --git a/Documentation/virt/kvm/mmu.rst b/Documentation/virt/kvm/mmu.rst
-index 60981887d20b..46126ecc70f7 100644
---- a/Documentation/virt/kvm/mmu.rst
-+++ b/Documentation/virt/kvm/mmu.rst
-@@ -319,7 +319,7 @@ Handling a page fault is performed as follows:
- 
-  - If both P bit and R/W bit of error code are set, this could possibly
-    be handled as a "fast page fault" (fixed without taking the MMU lock).  See
--   the description in Documentation/virt/kvm/locking.txt.
-+   the description in Documentation/virt/kvm/locking.rst.
- 
-  - if needed, walk the guest page tables to determine the guest translation
-    (gva->gpa or ngpa->gpa)
-diff --git a/Documentation/virt/kvm/review-checklist.rst b/Documentation/virt/kvm/review-checklist.rst
-index 1f86a9d3f705..dc01aea4057b 100644
---- a/Documentation/virt/kvm/review-checklist.rst
-+++ b/Documentation/virt/kvm/review-checklist.rst
-@@ -10,7 +10,7 @@ Review checklist for kvm patches
- 2.  Patches should be against kvm.git master branch.
- 
- 3.  If the patch introduces or modifies a new userspace API:
--    - the API must be documented in Documentation/virt/kvm/api.txt
-+    - the API must be documented in Documentation/virt/kvm/api.rst
-     - the API must be discoverable using KVM_CHECK_EXTENSION
- 
- 4.  New state must include support for save/restore.
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 8071952e9cf2..fd59fee84631 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3586,7 +3586,7 @@ static bool fast_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
- 		/*
- 		 * Currently, fast page fault only works for direct mapping
- 		 * since the gfn is not stable for indirect shadow page. See
--		 * Documentation/virt/kvm/locking.txt to get more detail.
-+		 * Documentation/virt/kvm/locking.rst to get more detail.
- 		 */
- 		fault_handled = fast_pf_fix_direct_spte(vcpu, sp,
- 							iterator.sptep, spte,
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-index a5fd8975f3d3..a6abb701bfc6 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-@@ -8,7 +8,7 @@
-  * This file add support for AES cipher with 128,192,256 bits keysize in
-  * CBC and ECB mode.
-  *
-- * You could find a link for the datasheet in Documentation/arm/sunxi/README
-+ * You could find a link for the datasheet in Documentation/arm/sunxi.rst
-  */
- 
- #include <linux/crypto.h>
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-index 3e4e4bbda34c..b957061424a1 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-@@ -7,7 +7,7 @@
-  *
-  * Core file which registers crypto algorithms supported by the CryptoEngine.
-  *
-- * You could find a link for the datasheet in Documentation/arm/sunxi/README
-+ * You could find a link for the datasheet in Documentation/arm/sunxi.rst
-  */
- #include <linux/clk.h>
- #include <linux/crypto.h>
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-index 84d52fc3a2da..c89cb2ee2496 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-@@ -8,7 +8,7 @@
-  * This file add support for AES cipher with 128,192,256 bits keysize in
-  * CBC and ECB mode.
-  *
-- * You could find a link for the datasheet in Documentation/arm/sunxi/README
-+ * You could find a link for the datasheet in Documentation/arm/sunxi.rst
-  */
- 
- #include <linux/crypto.h>
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-index 6b301afffd11..8ba4f9c81dac 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-@@ -7,7 +7,7 @@
-  *
-  * Core file which registers crypto algorithms supported by the SecuritySystem
-  *
-- * You could find a link for the datasheet in Documentation/arm/sunxi/README
-+ * You could find a link for the datasheet in Documentation/arm/sunxi.rst
-  */
- #include <linux/clk.h>
- #include <linux/crypto.h>
-diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
-index 97f0f8b23b5d..8a1e1b95b379 100644
---- a/drivers/media/v4l2-core/v4l2-fwnode.c
-+++ b/drivers/media/v4l2-core/v4l2-fwnode.c
-@@ -980,7 +980,7 @@ static int v4l2_fwnode_reference_parse(struct device *dev,
-  *
-  * THIS EXAMPLE EXISTS MERELY TO DOCUMENT THIS FUNCTION. DO NOT USE IT AS A
-  * REFERENCE IN HOW ACPI TABLES SHOULD BE WRITTEN!! See documentation under
-- * Documentation/acpi/dsd instead and especially graph.txt,
-+ * Documentation/firmware-guide/acpi/dsd/ instead and especially graph.txt,
-  * data-node-references.txt and leds.txt .
-  *
-  *	Scope (\_SB.PCI0.I2C2)
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index 428c7dde6b4b..fdd632c833b4 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -116,7 +116,7 @@ struct kvm_irq_level {
- 	 * ACPI gsi notion of irq.
- 	 * For IA-64 (APIC model) IOAPIC0: irq 0-23; IOAPIC1: irq 24-47..
- 	 * For X86 (standard AT mode) PIC0/1: irq 0-15. IOAPIC0: 0-23..
--	 * For ARM: See Documentation/virt/kvm/api.txt
-+	 * For ARM: See Documentation/virt/kvm/api.rst
- 	 */
- 	union {
- 		__u32 irq;
-@@ -1107,7 +1107,7 @@ struct kvm_xen_hvm_config {
-  *
-  * KVM_IRQFD_FLAG_RESAMPLE indicates resamplefd is valid and specifies
-  * the irqfd to operate in resampling mode for level triggered interrupt
-- * emulation.  See Documentation/virt/kvm/api.txt.
-+ * emulation.  See Documentation/virt/kvm/api.rst.
-  */
- #define KVM_IRQFD_FLAG_RESAMPLE (1 << 1)
- 
-diff --git a/tools/include/uapi/linux/kvm.h b/tools/include/uapi/linux/kvm.h
-index 4b95f9a31a2f..e5f32fcec68f 100644
---- a/tools/include/uapi/linux/kvm.h
-+++ b/tools/include/uapi/linux/kvm.h
-@@ -116,7 +116,7 @@ struct kvm_irq_level {
- 	 * ACPI gsi notion of irq.
- 	 * For IA-64 (APIC model) IOAPIC0: irq 0-23; IOAPIC1: irq 24-47..
- 	 * For X86 (standard AT mode) PIC0/1: irq 0-15. IOAPIC0: 0-23..
--	 * For ARM: See Documentation/virt/kvm/api.txt
-+	 * For ARM: See Documentation/virt/kvm/api.rst
- 	 */
- 	union {
- 		__u32 irq;
-@@ -1100,7 +1100,7 @@ struct kvm_xen_hvm_config {
-  *
-  * KVM_IRQFD_FLAG_RESAMPLE indicates resamplefd is valid and specifies
-  * the irqfd to operate in resampling mode for level triggered interrupt
-- * emulation.  See Documentation/virt/kvm/api.txt.
-+ * emulation.  See Documentation/virt/kvm/api.rst.
-  */
- #define KVM_IRQFD_FLAG_RESAMPLE (1 << 1)
- 
--- 
-2.25.2
+Nie mog=C4=99 sobie wyobrazi=C4=87, jak si=C4=99 poczujesz, otrzymuj=C4=85c=
+ nag=C5=82y list z odleg=C5=82ego kraju na dalekim Wybrze=C5=BCu Ko=C5=9Bci=
+ S=C5=82oniowej i prawdopodobnie od osoby, z kt=C3=B3r=C4=85 nie jeste=C5=
+=9B zbyt blisko spokrewniony. Apeluj=C4=99 do was o odrobin=C4=99 cierpliwo=
+=C5=9Bci i przeczytanie mojego listu dotycz=C4=85cego was w tej wa=C5=BCnej=
+ transakcji
 
+Jestem pani Theresa Han, 65 lat z Wybrze=C5=BCa Ko=C5=9Bci S=C5=82oniowej, =
+cierpi=C4=99 na choroby nowotworowe. O=C5=BCeni=C5=82em si=C4=99 z panem Jo=
+hnson Han, kt=C3=B3ry by=C5=82 wykonawc=C4=85 w rz=C4=85dzie Wybrze=C5=BCa =
+Ko=C5=9Bci S=C5=82oniowej, zanim zmar=C5=82 w szpitalu po kilku dniach.
+
+M=C3=B3j zmar=C5=82y m=C4=85=C5=BC zdeponowa=C5=82 w banku na Wybrze=C5=BCu=
+ Ko=C5=9Bci S=C5=82oniowej kwot=C4=99 2,5 miliona USD (dwa miliony i pi=C4=
+=99=C4=87set tysi=C4=99cy dolar=C3=B3w). Cierpia=C5=82em na raka, niedawno =
+m=C3=B3j lekarz powiedzia=C5=82 mi, =C5=BCe mam ograniczone dni =C5=BCycia =
+z powodu problem=C3=B3w z rakiem, na kt=C3=B3re cierpi=C4=99. Chc=C4=99 wie=
+dzie=C4=87, czy mog=C4=99 ufa=C4=87, =C5=BCe wykorzystasz te fundusze na ce=
+le charytatywne / sieroty, a 20 procent b=C4=99dzie dla ciebie jako rekompe=
+nsata.
+
+Podj=C4=85=C5=82em t=C4=99 decyzj=C4=99, poniewa=C5=BC nie mam dzieci, kt=
+=C3=B3re odziedzicz=C4=85 te pieni=C4=85dze, a krewni mojego m=C4=99=C5=BCa=
+ s=C4=85 bardzo zamo=C5=BCnymi lud=C5=BAmi i nie chc=C4=99, aby m=C3=B3j m=
+=C4=85=C5=BC ci=C4=99=C5=BCko zarabia=C5=82 na niew=C5=82a=C5=9Bciwe wykorz=
+ystanie pieni=C4=99dzy.
+
+Prosz=C4=99 o kontakt, abym m=C3=B3g=C5=82 poda=C4=87 wi=C4=99cej szczeg=C3=
+=B3=C5=82=C3=B3w, a wszelkie op=C3=B3=C5=BAnienia w odpowiedzi dadz=C4=85 m=
+i miejsce na pozyskanie innej dobrej osoby do tego samego celu.
+
+Oczekiwanie na twoj=C4=85 piln=C4=85 odpowied=C5=BA U Boga wszystko jest mo=
+=C5=BCliwe.
+
+Wasza siostra w Chrystusie
+
+Pani Theresa Han
