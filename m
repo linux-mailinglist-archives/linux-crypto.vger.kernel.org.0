@@ -2,91 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D601A31C3
-	for <lists+linux-crypto@lfdr.de>; Thu,  9 Apr 2020 11:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADF61A325B
+	for <lists+linux-crypto@lfdr.de>; Thu,  9 Apr 2020 12:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725997AbgDIJaj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 9 Apr 2020 05:30:39 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:42561 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgDIJaj (ORCPT
+        id S1725970AbgDIKPt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 9 Apr 2020 06:15:49 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:35145 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725783AbgDIKPt (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:30:39 -0400
-Received: from mail-qt1-f177.google.com ([209.85.160.177]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1Mi2eP-1irpap1Lwv-00e4zx; Thu, 09 Apr 2020 11:30:38 +0200
-Received: by mail-qt1-f177.google.com with SMTP id 14so2252573qtp.1;
-        Thu, 09 Apr 2020 02:30:38 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZ2b5Pb7xTzUT4FnAA6YSZFxp7FzTFlMgLv4RorS8vIQCwortg4
-        +e/Bb3u+WTEoBCcCAn3EKGODOqRqXJ9WfSXNpgI=
-X-Google-Smtp-Source: APiQypLeWInEsRV0WKrdMUsAMwL5UXK2NYRqfW/x4jIjhbwpXqQB+5nF1GJW4mtRdXGTaGysVemV3g16soBD0GqaIYQ=
-X-Received: by 2002:aed:3b4c:: with SMTP id q12mr10945684qte.18.1586424637129;
- Thu, 09 Apr 2020 02:30:37 -0700 (PDT)
+        Thu, 9 Apr 2020 06:15:49 -0400
+Received: by mail-ot1-f67.google.com with SMTP id v2so9946484oto.2
+        for <linux-crypto@vger.kernel.org>; Thu, 09 Apr 2020 03:15:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=mrjbcYIstFUYdIKT7W4vXIKRiqhKmb5C1fAHjTQNfVo=;
+        b=sGukrq7MMWzsdj2HJYJcdhK/ZRpwdBjPbAMidW3rGrmcYxAnCgqyWoBhtUTUusozej
+         GzPIR7NZZnESg9IEOdXN5KnKQ2nR4LglBMsGKZuWhVF8kV1M6wi3d/Ma5rcLyS+D+bk0
+         v+l1nuZ/nVI7+h8s8Q+WjOtzz8arcMwbMra+JW6KNEYQEaBiwXP4LhvvoaD8yJnssDnI
+         vwt4JYnB+Bk1groDg1b2F7hThdSmQjFCyPN7gC9Bu+qXeH+O4BRjYJoeL+Az8nQE3jCV
+         ASwVYVjpRrfVe2Cw8kVe7YS0oKwQ6cTsN/oTwNObcDs5fWYHVNzsjwa5p9lGLFp9DQ5g
+         psCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=mrjbcYIstFUYdIKT7W4vXIKRiqhKmb5C1fAHjTQNfVo=;
+        b=TExBmHljNEperS+s+16s3ICjHdxOssT9oRxyKDikzd2uXMHP1RliXCnvn48vEAano0
+         NG04211YLfv+YixW/9jZeh0mGJ63tKTMjsmblMUnZwOrL2+1oT0AURZ6Y4OcyvjesHmP
+         5wpu6gG8Sxrda7DqSALS+IyyA3Lc/PzVcsQ2VMpSycf8z0jJF1Odmbak/U9DqOEZ9/UD
+         bvnMycIsbkFrPxPokgx5NKAI1S09bB4h4+X7c9Qzi777e1ExJuu3onyxl88rQEZVy36X
+         T7CBBZhMT0/VEvpeb+l9VdrDajUnL+p7sYUwzVAQNG7dtk3IVv3L76FEir1J6LXEqYMN
+         4iUw==
+X-Gm-Message-State: AGi0PuaneQHf5uImdG5ePZCR+eb5cH4l93fhkCARUix7KKP4GRtT1oQu
+        bU15UuhHA+20ukaFM6SsnyuDdVoLxmLvfxK8eTU=
+X-Google-Smtp-Source: APiQypKdm9XdCuZiFnXvyQQPf72eEskyXKSy22DFZYBfsXTTAywc8nhTackHV4C5IuQnot7BgG0mcfeTUHyHIIvPHfg=
+X-Received: by 2002:a9d:926:: with SMTP id 35mr3190437otp.319.1586427349220;
+ Thu, 09 Apr 2020 03:15:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200408162718.4004527-1-arnd@arndb.de> <5E8E7E0D.4090702@hisilicon.com>
-In-Reply-To: <5E8E7E0D.4090702@hisilicon.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 9 Apr 2020 11:30:21 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2U-fiDD34kKUVx-KCV3Vq9TtrA6nDkFc1tS_yVnMKa7Q@mail.gmail.com>
-Message-ID: <CAK8P3a2U-fiDD34kKUVx-KCV3Vq9TtrA6nDkFc1tS_yVnMKa7Q@mail.gmail.com>
-Subject: Re: [PATCH] crypto: hisilicon: add more dependencies
-To:     Zhou Wang <wangzhou1@hisilicon.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hongbo Yao <yaohongbo@huawei.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Zaibo Xu <xuzaibo@huawei.com>, Hao Fang <fanghao11@huawei.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Mao Wenan <maowenan@huawei.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Received: by 2002:a05:6830:19d1:0:0:0:0 with HTTP; Thu, 9 Apr 2020 03:15:48
+ -0700 (PDT)
+Reply-To: msjilmike101@gmail.com
+From:   Jillrita Mike <chigoziemagic2017@gmail.com>
+Date:   Thu, 9 Apr 2020 12:15:48 +0200
+Message-ID: <CAHz45cno3FrH63Ey_8spNQWHbTZ253FK_6_Auy64RMUPG=Z8pg@mail.gmail.com>
+Subject: Dear Friend.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:ipoSbm2snF0HZUjDUsz1P2IdKQmaRjdB024Ocb/rGc9PdWCpxSn
- DY5ofMqGhWn+jGdAhTZ2ljzOE0ar/JiP0xOqq8KUNsMtsPOl9f1tZ9narkDRYOS/KxGbKi1
- Xjr1JjikPGZ8C9xc5Qd/+bA7MZRty9Vd1qUGnPmbhuM0NkeAu1oi2ItJauKiN/+Kt2ZJBmV
- Y7hsJfegNEVWvob7OJEsw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3XunXxijaSg=:Nq7s6FrVrWhZ+/i09uiiqn
- 2PhFFHbwPb73ARUSRxckjXSCxYNs1rI81Ez2Xylxoath6D79mvPROFjpjXKqMn5gEoiCh34Uj
- 10qUoKY40SxfjLOOlp97MYdc9l0+ZHYi0z06LZ/ZDEd+9ICJRqJ0MhxM+tomTWTNHxNmY6ky5
- rSYEKrYo54LrsDo63gDoKcKpFEfrZ79wFTB0b5KmfEzA3/GMG+wpiwVoRGysINlXSbHXczglb
- GL/vg/nESedypEeusS0ME+KHQbGwddFHyMrBsWk0VxyTUoVOVPe24fpncca26qpv47Hd8be0S
- aZlcMXUxMTCdkxhe+3fgLRIwMVyTC7+mGMEE+cfMHCHFRz1HZc9rJVReh2Qe7puh6Q5wi76VS
- wciUBm6FxiHGvpUF5PQkk0QRMYjsSLI8RpYP7K6OHVerAG5KLaPKjDR+sWU9PdoN3SiNnB7GQ
- uU2+KQq0KG6Xf02ULdu0Ch5Erc6YyFyNGcD0kC9TSd8ixlYRsjb2lgAevfvuRHIkEW/5bvhGw
- XJam54XQKxhQawRkP6l3FCeSQjFbS+RQTj+SIOA1zweur/Fed2+5ybHgx84KSNF2GT3h4DbcD
- z2Ei3HaEHw6eXkhItan7trxwpa+8An+5GthYWyCec3mRwW7BDqYKkvZrN24fB7E/oQJPTqYPD
- 0RS2Te/caxIz/mrSG5AstQ2KRWJaUqxkM4f0RyfuVrk9mjHg8KgZ3RtL3NtEl7LQhy5tM8NKH
- oab/BN+QQ3cGnewHupi0VB9SYZrc5raElYsOWcRWStmr415+JPBSP505iukXnNuOGGoDQgff4
- epNzbjPXSIfpH23cr7JInrfFI3XxcFzKiysUH7CHybmMEr3AbI=
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Apr 9, 2020 at 3:45 AM Zhou Wang <wangzhou1@hisilicon.com> wrote:
->
-> On 2020/4/9 0:27, Arnd Bergmann wrote:
-> > The added dependencies must be applied recursively to
-> > other modules that select CRYPTO_DEV_HISI_QM, to avoid
-> > running into the same problem again:
-> >
-> > WARNING: unmet direct dependencies detected for CRYPTO_DEV_HISI_QM
-> >   Depends on [m]: CRYPTO [=y] && CRYPTO_HW [=y] && (ARM64 [=y] || COMPILE_TEST [=y]) && PCI [=y] && PCI_MSI [=y] && (UACCE [=m] || UACCE [=m]=n)
-> >   Selected by [y]:
-> >   - CRYPTO_DEV_HISI_SEC2 [=y] && CRYPTO [=y] && CRYPTO_HW [=y] && PCI [=y] && PCI_MSI [=y] && (ARM64 [=y] || COMPILE_TEST [=y] && 64BIT [=y])
-> >   - CRYPTO_DEV_HISI_HPRE [=y] && CRYPTO [=y] && CRYPTO_HW [=y] && PCI [=y] && PCI_MSI [=y] && (ARM64 [=y] || COMPILE_TEST [=y] && 64BIT [=y])
-> > ld: drivers/crypto/hisilicon/qm.o: in function `hisi_qm_uninit': qm.c:(.text+0x23b8): undefined reference to `uacce_remove'
-> >
-> > Fixes: 47c16b449921 ("crypto: hisilicon - qm depends on UACCE")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
->
-> Seems we already have a fix: https://lkml.org/lkml/2020/3/30/173 with your reviewed-by :)
+Dear Friend.
 
-Ah, of course. I even remembered that patch when I saw the problem in mainline,
-but for some reason assumed it was yet another instance of the same bug, rather
-than a patch that had I was just missing in my tree.
+ My  name is Jillrita Mike Riddering,  I am sending this brief letter
+to solicit your support and partnership to transfer $5.5 million US
+Dollars. This money belongs to my late father Mike Riddering,my father
+and my mother were among those that were killed on 2016 terrorist
+attack at Splendid Hotel Ouagadougou Burkina Faso, my mother did not
+die instantly but she later gave up at the hospital. we are from USA
+but
+reside in Burkina Faso, my father is An American missionary,
+before my father died with my mother at Splendid hotel,
 
-      Arnd
+Check out the web; (https://www.bbc.com/news/world-africa-35332792)
+for more understanding, I shall send you more information and
+the bank details  when I receive positive response from you to follow up.
+contact my E-mail;
+msjilmike101@gmail.com
+Thanks
+Jillrita Mike
