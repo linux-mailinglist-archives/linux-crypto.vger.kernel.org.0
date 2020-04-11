@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B561A5206
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Apr 2020 14:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D0E1A51ED
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Apr 2020 14:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgDKM3K (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 11 Apr 2020 08:29:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43478 "EHLO mail.kernel.org"
+        id S1727084AbgDKML4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 11 Apr 2020 08:11:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726945AbgDKMLZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:11:25 -0400
+        id S1727081AbgDKMLy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:11:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 033AA214D8;
-        Sat, 11 Apr 2020 12:11:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F2CE20787;
+        Sat, 11 Apr 2020 12:11:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607085;
-        bh=TPs/zfXxgu5n1ahCUyC/YvqGIa4uQRBW16J8baoC9fM=;
+        s=default; t=1586607114;
+        bh=N6vnlwzfy981sr4ZKV+FhqXf2JGvNBnllb4Y0XzO7jE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RX/2iTbL6PzCNVjAcGHwARTN5Rr218HkQmOLh3FE6jan2h7j8IKpZYJqDtb/A+SQE
-         xQ21c01+yGKIBO6g9TEpU7mKc+a2lgrgE+jpib6h9qpwXbRfo5bG0OD+TlcHQ107PN
-         IT5dFzE+bLpJ8evKLL1dLBchTXl2atbbcNiLBJN0=
+        b=Th7b7lFbhYMGZjRVsWY70uxIHpzKQ8DDo3SyHZG/KV+jV4aCOMWA5vvgX4TOEfMMJ
+         VdJjqTRL/8dcEZm/JbTCV0nHe6M+QG0x9Jo333n6LIeHHnZ1bMDprHzm2MnkwFqmL1
+         /DGjMFMVVWV4zO2aEGQtwAO47QA0BLZtKHf03Ddo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,12 +31,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Steffen Klassert <steffen.klassert@secunet.com>,
         linux-crypto@vger.kernel.org
-Subject: [PATCH 4.4 15/29] padata: always acquire cpu_hotplug_lock before pinst->lock
-Date:   Sat, 11 Apr 2020 14:08:45 +0200
-Message-Id: <20200411115410.319586680@linuxfoundation.org>
+Subject: [PATCH 4.9 13/32] padata: always acquire cpu_hotplug_lock before pinst->lock
+Date:   Sat, 11 Apr 2020 14:08:52 +0200
+Message-Id: <20200411115420.038161644@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115407.651296755@linuxfoundation.org>
-References: <20200411115407.651296755@linuxfoundation.org>
+In-Reply-To: <20200411115418.455500023@linuxfoundation.org>
+References: <20200411115418.455500023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -88,7 +88,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/kernel/padata.c
 +++ b/kernel/padata.c
-@@ -640,8 +640,8 @@ int padata_set_cpumask(struct padata_ins
+@@ -614,8 +614,8 @@ int padata_set_cpumask(struct padata_ins
  	struct cpumask *serial_mask, *parallel_mask;
  	int err = -EINVAL;
  
@@ -98,7 +98,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	switch (cpumask_type) {
  	case PADATA_CPU_PARALLEL:
-@@ -659,8 +659,8 @@ int padata_set_cpumask(struct padata_ins
+@@ -633,8 +633,8 @@ int padata_set_cpumask(struct padata_ins
  	err =  __padata_set_cpumasks(pinst, parallel_mask, serial_mask);
  
  out:
