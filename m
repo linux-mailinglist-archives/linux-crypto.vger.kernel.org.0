@@ -2,38 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF621A5930
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Apr 2020 01:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F003C1A5549
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Apr 2020 01:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729118AbgDKXfL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 11 Apr 2020 19:35:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46596 "EHLO mail.kernel.org"
+        id S1727930AbgDKXKZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 11 Apr 2020 19:10:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729099AbgDKXJF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:09:05 -0400
+        id S1729546AbgDKXKZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:10:25 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4524120787;
-        Sat, 11 Apr 2020 23:09:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C490F2192A;
+        Sat, 11 Apr 2020 23:10:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646544;
-        bh=hHPZfCy20/ddSIEcwbHJISx27Bkvb5pkwUltPXI+ee0=;
+        s=default; t=1586646624;
+        bh=q8EPPLSEVbvjnptnecss4LENEF77lwuNgER2TlSMdBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RjPTgigZWuBMwVoBQfu+lRxOFT6ZXcc9aQsL3wHonW5Z/fdndWK3pye3UN/xLe0Jz
-         a/hc2vIWoOFubxbT55j5y1lbcsPP6bSACKaJ8PA9+S66eLc657LKqmYTnGogT/SVjO
-         5jU6X+oHSZSqudJWBolmE6Nf5iZisURu9UXZwnv0=
+        b=gDemGGUf3ixyg80FLyYwHPN3b6Q2yk9YfuleeYmhxCJ+1+AeLoPd/LFqHSobLz/tJ
+         ylk4T+pR4Lsp9VrGpOUkhR+X8M1lkiKW+OCon4SKZu3g6MsPAvY4B0FHcbviQnJnCo
+         wlkKya8jGLD7R2w+TyPO1bvLXAlco5DzdkylPcFM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S . Miller" <davem@davemloft.net>,
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 096/121] crypto/chtls: Fix chtls crash in connection cleanup
-Date:   Sat, 11 Apr 2020 19:06:41 -0400
-Message-Id: <20200411230706.23855-96-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 033/108] crypto: chelsio - Endianess bug in create_authenc_wr
+Date:   Sat, 11 Apr 2020 19:08:28 -0400
+Message-Id: <20200411230943.24951-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200411230706.23855-1-sashal@kernel.org>
-References: <20200411230706.23855-1-sashal@kernel.org>
+In-Reply-To: <20200411230943.24951-1-sashal@kernel.org>
+References: <20200411230943.24951-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,140 +43,70 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Rohit Maheshwari <rohitm@chelsio.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-[ Upstream commit 3a0a978389234995b64a8b8fbe343115bffb1551 ]
+[ Upstream commit ff462ddfd95b915345c3c7c037c3bfafdc58bae7 ]
 
-There is a possibility that cdev is removed before CPL_ABORT_REQ_RSS
-is fully processed, so it's better to save it in skb.
+kctx_len = (ntohl(KEY_CONTEXT_CTX_LEN_V(aeadctx->key_ctx_hdr)) << 4)
+                - sizeof(chcr_req->key_ctx);
+can't possibly be endian-safe.  Look: ->key_ctx_hdr is __be32.  And
+KEY_CONTEXT_CTX_LEN_V is "shift up by 24 bits".  On little-endian hosts it
+sees
+	b0 b1 b2 b3
+in memory, inteprets that into b0 + (b1 << 8) + (b2 << 16) + (b3 << 24),
+shifts up by 24, resulting in b0 << 24, does ntohl (byteswap on l-e),
+gets b0 and shifts that up by 4.  So we get b0 * 16 - sizeof(...).
 
-Added checks in handling the flow correctly, which suggests connection reset
-request is sent to HW, wait for HW to respond.
+Sounds reasonable, but on b-e we get
+b3 + (b2 << 8) + (b1 << 16) + (b0 << 24), shift up by 24,
+yielding b3 << 24, do ntohl (no-op on b-e) and then shift up by 4.
+Resulting in b3 << 28 - sizeof(...), i.e. slightly under b3 * 256M.
 
-Signed-off-by: Rohit Maheshwari <rohitm@chelsio.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Then we increase it some more and pass to alloc_skb() as size.
+Somehow I doubt that we really want a quarter-gigabyte skb allocation
+here...
+
+Note that when you are building those values in
+#define  FILL_KEY_CTX_HDR(ck_size, mk_size, d_ck, opad, ctx_len) \
+                htonl(KEY_CONTEXT_VALID_V(1) | \
+                      KEY_CONTEXT_CK_SIZE_V((ck_size)) | \
+                      KEY_CONTEXT_MK_SIZE_V(mk_size) | \
+                      KEY_CONTEXT_DUAL_CK_V((d_ck)) | \
+                      KEY_CONTEXT_OPAD_PRESENT_V((opad)) | \
+                      KEY_CONTEXT_SALT_PRESENT_V(1) | \
+                      KEY_CONTEXT_CTX_LEN_V((ctx_len)))
+ctx_len ends up in the first octet (i.e. b0 in the above), which
+matches the current behaviour on l-e.  If that's the intent, this
+thing should've been
+        kctx_len = (KEY_CONTEXT_CTX_LEN_G(ntohl(aeadctx->key_ctx_hdr)) << 4)
+                - sizeof(chcr_req->key_ctx);
+instead - fetch after ntohl() we get (b0 << 24) + (b1 << 16) + (b2 << 8) + b3,
+shift it down by 24 (b0), resuling in b0 * 16 - sizeof(...) both on l-e and
+on b-e.
+
+PS: when sparse warns you about endianness problems, it might be worth checking
+if there really is something wrong.  And I don't mean "slap __force cast on it"...
+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/chelsio/chtls/chtls_cm.c | 29 +++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
+ drivers/crypto/chelsio/chcr_algo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/chelsio/chtls/chtls_cm.c b/drivers/crypto/chelsio/chtls/chtls_cm.c
-index dffa2aa855fdd..bcfe3a71a88b7 100644
---- a/drivers/crypto/chelsio/chtls/chtls_cm.c
-+++ b/drivers/crypto/chelsio/chtls/chtls_cm.c
-@@ -445,6 +445,7 @@ void chtls_destroy_sock(struct sock *sk)
- 	chtls_purge_write_queue(sk);
- 	free_tls_keyid(sk);
- 	kref_put(&csk->kref, chtls_sock_release);
-+	csk->cdev = NULL;
- 	sk->sk_prot = &tcp_prot;
- 	sk->sk_prot->destroy(sk);
- }
-@@ -759,8 +760,10 @@ static void chtls_release_resources(struct sock *sk)
- 		csk->l2t_entry = NULL;
- 	}
- 
--	cxgb4_remove_tid(tids, csk->port_id, tid, sk->sk_family);
--	sock_put(sk);
-+	if (sk->sk_state != TCP_SYN_SENT) {
-+		cxgb4_remove_tid(tids, csk->port_id, tid, sk->sk_family);
-+		sock_put(sk);
-+	}
- }
- 
- static void chtls_conn_done(struct sock *sk)
-@@ -1716,6 +1719,9 @@ static void chtls_peer_close(struct sock *sk, struct sk_buff *skb)
- {
- 	struct chtls_sock *csk = rcu_dereference_sk_user_data(sk);
- 
-+	if (csk_flag_nochk(csk, CSK_ABORT_RPL_PENDING))
-+		goto out;
-+
- 	sk->sk_shutdown |= RCV_SHUTDOWN;
- 	sock_set_flag(sk, SOCK_DONE);
- 
-@@ -1748,6 +1754,7 @@ static void chtls_peer_close(struct sock *sk, struct sk_buff *skb)
- 		else
- 			sk_wake_async(sk, SOCK_WAKE_WAITD, POLL_IN);
- 	}
-+out:
- 	kfree_skb(skb);
- }
- 
-@@ -1758,6 +1765,10 @@ static void chtls_close_con_rpl(struct sock *sk, struct sk_buff *skb)
- 	struct tcp_sock *tp;
- 
- 	csk = rcu_dereference_sk_user_data(sk);
-+
-+	if (csk_flag_nochk(csk, CSK_ABORT_RPL_PENDING))
-+		goto out;
-+
- 	tp = tcp_sk(sk);
- 
- 	tp->snd_una = ntohl(rpl->snd_nxt) - 1;  /* exclude FIN */
-@@ -1787,6 +1798,7 @@ static void chtls_close_con_rpl(struct sock *sk, struct sk_buff *skb)
- 	default:
- 		pr_info("close_con_rpl in bad state %d\n", sk->sk_state);
- 	}
-+out:
- 	kfree_skb(skb);
- }
- 
-@@ -1896,6 +1908,7 @@ static void chtls_send_abort_rpl(struct sock *sk, struct sk_buff *skb,
- 	}
- 
- 	set_abort_rpl_wr(reply_skb, tid, status);
-+	kfree_skb(skb);
- 	set_wr_txq(reply_skb, CPL_PRIORITY_DATA, queue);
- 	if (csk_conn_inline(csk)) {
- 		struct l2t_entry *e = csk->l2t_entry;
-@@ -1906,7 +1919,6 @@ static void chtls_send_abort_rpl(struct sock *sk, struct sk_buff *skb,
- 		}
- 	}
- 	cxgb4_ofld_send(cdev->lldi->ports[0], reply_skb);
--	kfree_skb(skb);
- }
- 
- /*
-@@ -2008,7 +2020,8 @@ static void chtls_abort_req_rss(struct sock *sk, struct sk_buff *skb)
- 		chtls_conn_done(sk);
- 	}
- 
--	chtls_send_abort_rpl(sk, skb, csk->cdev, rst_status, queue);
-+	chtls_send_abort_rpl(sk, skb, BLOG_SKB_CB(skb)->cdev,
-+			     rst_status, queue);
- }
- 
- static void chtls_abort_rpl_rss(struct sock *sk, struct sk_buff *skb)
-@@ -2042,6 +2055,7 @@ static int chtls_conn_cpl(struct chtls_dev *cdev, struct sk_buff *skb)
- 	struct cpl_peer_close *req = cplhdr(skb) + RSS_HDR;
- 	void (*fn)(struct sock *sk, struct sk_buff *skb);
- 	unsigned int hwtid = GET_TID(req);
-+	struct chtls_sock *csk;
- 	struct sock *sk;
- 	u8 opcode;
- 
-@@ -2051,6 +2065,8 @@ static int chtls_conn_cpl(struct chtls_dev *cdev, struct sk_buff *skb)
- 	if (!sk)
- 		goto rel_skb;
- 
-+	csk = sk->sk_user_data;
-+
- 	switch (opcode) {
- 	case CPL_PEER_CLOSE:
- 		fn = chtls_peer_close;
-@@ -2059,6 +2075,11 @@ static int chtls_conn_cpl(struct chtls_dev *cdev, struct sk_buff *skb)
- 		fn = chtls_close_con_rpl;
- 		break;
- 	case CPL_ABORT_REQ_RSS:
-+		/*
-+		 * Save the offload device in the skb, we may process this
-+		 * message after the socket has closed.
-+		 */
-+		BLOG_SKB_CB(skb)->cdev = csk->cdev;
- 		fn = chtls_abort_req_rss;
- 		break;
- 	case CPL_ABORT_RPL_RSS:
+diff --git a/drivers/crypto/chelsio/chcr_algo.c b/drivers/crypto/chelsio/chcr_algo.c
+index 01dd418bdadc5..44423a3be3094 100644
+--- a/drivers/crypto/chelsio/chcr_algo.c
++++ b/drivers/crypto/chelsio/chcr_algo.c
+@@ -2360,7 +2360,7 @@ static struct sk_buff *create_authenc_wr(struct aead_request *req,
+ 	snents = sg_nents_xlen(req->src, req->assoclen + req->cryptlen,
+ 			       CHCR_SRC_SG_SIZE, 0);
+ 	dst_size = get_space_for_phys_dsgl(dnents);
+-	kctx_len = (ntohl(KEY_CONTEXT_CTX_LEN_V(aeadctx->key_ctx_hdr)) << 4)
++	kctx_len = (KEY_CONTEXT_CTX_LEN_G(ntohl(aeadctx->key_ctx_hdr)) << 4)
+ 		- sizeof(chcr_req->key_ctx);
+ 	transhdr_len = CIPHER_TRANSHDR_SIZE(kctx_len, dst_size);
+ 	reqctx->imm = (transhdr_len + req->assoclen + req->cryptlen) <
 -- 
 2.20.1
 
