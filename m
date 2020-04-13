@@ -2,140 +2,187 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EF11A6952
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Apr 2020 18:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE371A6CDA
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Apr 2020 21:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731190AbgDMQAI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 13 Apr 2020 12:00:08 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:65120 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731187AbgDMQAE (ORCPT
+        id S2388144AbgDMTwA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 13 Apr 2020 15:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388140AbgDMTv7 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 13 Apr 2020 12:00:04 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03DFYCpg025857;
-        Mon, 13 Apr 2020 11:59:49 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30b96t2cd6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Apr 2020 11:59:49 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03DFuUSB025323;
-        Mon, 13 Apr 2020 15:59:48 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma02wdc.us.ibm.com with ESMTP id 30b5h61ems-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Apr 2020 15:59:48 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03DFxlxd49545650
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Apr 2020 15:59:47 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4A89BC6059;
-        Mon, 13 Apr 2020 15:59:47 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C6EA4C6055;
-        Mon, 13 Apr 2020 15:59:46 +0000 (GMT)
-Received: from localhost (unknown [9.85.151.130])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 13 Apr 2020 15:59:46 +0000 (GMT)
-From:   Raphael Moreira Zinsly <rzinsly@linux.ibm.com>
-To:     linuxppc-dev@lists.ozlabs.org, linux-crypto@vger.kernel.org,
-        dja@axtens.net
-Cc:     rzinsly@linux.ibm.com, herbert@gondor.apana.org.au,
-        mpe@ellerman.id.au, haren@linux.ibm.com, abali@us.ibm.com
-Subject: [PATCH V3 5/5] selftests/powerpc: Add README for GZIP engine tests
-Date:   Mon, 13 Apr 2020 12:59:16 -0300
-Message-Id: <20200413155916.16900-6-rzinsly@linux.ibm.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200413155916.16900-1-rzinsly@linux.ibm.com>
-References: <20200413155916.16900-1-rzinsly@linux.ibm.com>
+        Mon, 13 Apr 2020 15:51:59 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF090C0A3BDC;
+        Mon, 13 Apr 2020 12:51:57 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id l21so4782850otd.9;
+        Mon, 13 Apr 2020 12:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9/SNyg00K2RwmSQDXWhtQELp/kcSR3KGW1LXJbdnOpQ=;
+        b=Q0dRq4ely6RLAhSX1StR+9Jf6tB4Yl0Ok6oR0atbLDcb1iA2l0vmDteomZyJ+dSL/Y
+         XN7LVUBsBQc2bT7C+rsDXdoB4vcCqbmZe0gOV/JqE8EXsdzLcrWi2PPQoA+pfMpKqy3c
+         iQufiEA8rCbCz11dbUWli0jZiyDSBAjzSA7irsk4EqXsKrl+PaifM+/YbhXw8zf/OLwM
+         TFLvOP0UtL1VOuHsn6PRo52Jg2slpcEYsrli+mIajGYDQZoVryZXRUCH8lsi1H6g6bJs
+         m6voCiHeABFVW+ZjC6xogpek8bqMjnmhiUTuvFHqW3lf+Z0hVUi0a+OOsgkKv66Q9MNs
+         ZSNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9/SNyg00K2RwmSQDXWhtQELp/kcSR3KGW1LXJbdnOpQ=;
+        b=A9I3w5NZmyzbZmM5U9GpSd4qIiNgKFkAeE06nxHb01ApJ1Y9aFc2QpB3Z+M7/5nNLF
+         osDoyAow7Mg9yWKDOdxnDQzwEViW8iBJto58WPBakkfQ7E0+GX+YC5QFFRev1JFBlhT7
+         jwcwIpWn0YrOc0XJCfPmDNktldUQI304vgUE9TCdp4Dr+vvOh9V/7+C8LfhtoMuewAtu
+         QuqC8TjwsaVpo5F9h9pZKABt2Dcp0ndW6xoL1pwVG11DImInSVzKdfm1uf4Ek0SIMOJ/
+         wk2slJ2Fp40f1XJkSI44xfb5qxo8ab5P7Pni2xNhQHvNqMj4HZSR89yx+AfnsL2mYvg1
+         3xXA==
+X-Gm-Message-State: AGi0PuYm19YcOtIktcnxNDz4YMvIbZqXMWZsibQpZ9lGTL0m1QWUfzUQ
+        r7xTdu4U/nF5mxx69K+zdGs=
+X-Google-Smtp-Source: APiQypKcyBXUAjalJbfVVO3djNnYHVDw1NxMcM9ZBwADCdMrg+lhgj5MBPG1RZm/TdnV09v9osC1lQ==
+X-Received: by 2002:a4a:95ee:: with SMTP id p43mr15297173ooi.24.1586807517032;
+        Mon, 13 Apr 2020 12:51:57 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::3])
+        by smtp.gmail.com with ESMTPSA id t193sm5062852oif.34.2020.04.13.12.51.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 12:51:56 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: [PATCH] lib/mpi: Fix building for powerpc with clang
+Date:   Mon, 13 Apr 2020 12:50:42 -0700
+Message-Id: <20200413195041.24064-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-13_07:2020-04-13,2020-04-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
- suspectscore=0 phishscore=0 priorityscore=1501 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 bulkscore=0 impostorscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004130118
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Include a README file with the instructions to use the
-testcases at selftests/powerpc/nx-gzip.
+0day reports over and over on an powerpc randconfig with clang:
 
-Signed-off-by: Bulent Abali <abali@us.ibm.com>
-Signed-off-by: Raphael Moreira Zinsly <rzinsly@linux.ibm.com>
+lib/mpi/generic_mpih-mul1.c:37:13: error: invalid use of a cast in a
+inline asm context requiring an l-value: remove the cast or build with
+-fheinous-gnu-extensions
+
+Remove the superfluous casts, which have been done previously for x86
+and arm32 in commit dea632cadd12 ("lib/mpi: fix build with clang") and
+commit 7b7c1df2883d ("lib/mpi/longlong.h: fix building with 32-bit
+x86").
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/991
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
- .../powerpc/nx-gzip/99-nx-gzip.rules          |  1 +
- .../testing/selftests/powerpc/nx-gzip/README  | 46 +++++++++++++++++++
- 2 files changed, 47 insertions(+)
- create mode 100644 tools/testing/selftests/powerpc/nx-gzip/99-nx-gzip.rules
- create mode 100644 tools/testing/selftests/powerpc/nx-gzip/README
 
-diff --git a/tools/testing/selftests/powerpc/nx-gzip/99-nx-gzip.rules b/tools/testing/selftests/powerpc/nx-gzip/99-nx-gzip.rules
-new file mode 100644
-index 000000000000..5a7118495cb3
---- /dev/null
-+++ b/tools/testing/selftests/powerpc/nx-gzip/99-nx-gzip.rules
-@@ -0,0 +1 @@
-+SUBSYSTEM=="nxgzip", KERNEL=="nx-gzip", MODE="0666"
-diff --git a/tools/testing/selftests/powerpc/nx-gzip/README b/tools/testing/selftests/powerpc/nx-gzip/README
-new file mode 100644
-index 000000000000..9a491daaef4d
---- /dev/null
-+++ b/tools/testing/selftests/powerpc/nx-gzip/README
-@@ -0,0 +1,46 @@
-+Test the nx-gzip function:
-+=========================
-+
-+Verify that following device exists:
-+  /dev/crypto/nx-gzip
-+If you get a permission error run as sudo or set the device permissions:
-+   sudo chmod go+rw /dev/crypto/nx-gzip
-+However, chmod may not survive across boots. You may create a udev file such
-+as:
-+   /etc/udev/rules.d/99-nx-gzip.rules
-+
-+
-+Then make and run:
-+$ make
-+gcc -O3 -I./inc -o gzfht_test gzfht_test.c gzip_vas.c
-+gcc -O3 -I./inc -o gunz_test gunz_test.c gzip_vas.c
-+
-+
-+Compress any file using Fixed Huffman mode. Output will have a .nx.gz suffix:
-+$ ./gzfht_test gzip_vas.c
-+file gzip_vas.c read, 6418 bytes
-+compressed 6418 to 3131 bytes total, crc32 checksum = 96b9717d
-+
-+
-+Uncompress the previous output. Output will have a .nx.gunzip suffix:
-+./gunz_test gzip_vas.c.nx.gz
-+gzHeader FLG 0
-+00 00 00 00 04 03
-+gzHeader MTIME, XFL, OS ignored
-+computed checksum 96b9717d isize 00001912
-+stored   checksum 96b9717d isize 00001912
-+decomp is complete: fclose
-+
-+
-+Compare two files:
-+$ sha1sum gzip_vas.c.nx.gz.nx.gunzip gzip_vas.c
-+4c0b494f657c0c89a7d9f87dd3da8597be9a887a  gzip_vas.c.nx.gz.nx.gunzip
-+4c0b494f657c0c89a7d9f87dd3da8597be9a887a  gzip_vas.c
-+
-+
-+Note that the code here are intended for testing the nx-gzip hardware function.
-+They are not intended for demonstrating performance or compression ratio.
-+By being simplistic these selftests expect to allocate the entire set of source
-+and target pages in the memory so it needs enough memory to work.
-+For more information and source code consider using:
-+https://github.com/libnxz/power-gzip
+Herbet seems to take lib/mpi patches but there does not seem to be a
+formal maintainer so Michael could take it since it is just a powerpc
+thing.
+
+ lib/mpi/longlong.h | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
+
+diff --git a/lib/mpi/longlong.h b/lib/mpi/longlong.h
+index 2dceaca27489..891e1c3549c4 100644
+--- a/lib/mpi/longlong.h
++++ b/lib/mpi/longlong.h
+@@ -722,22 +722,22 @@ do {									\
+ do { \
+ 	if (__builtin_constant_p(bh) && (bh) == 0) \
+ 		__asm__ ("{a%I4|add%I4c} %1,%3,%4\n\t{aze|addze} %0,%2" \
+-		: "=r" ((USItype)(sh)), \
+-		"=&r" ((USItype)(sl)) \
++		: "=r" (sh), \
++		"=&r" (sl) \
+ 		: "%r" ((USItype)(ah)), \
+ 		"%r" ((USItype)(al)), \
+ 		"rI" ((USItype)(bl))); \
+ 	else if (__builtin_constant_p(bh) && (bh) == ~(USItype) 0) \
+ 		__asm__ ("{a%I4|add%I4c} %1,%3,%4\n\t{ame|addme} %0,%2" \
+-		: "=r" ((USItype)(sh)), \
+-		"=&r" ((USItype)(sl)) \
++		: "=r" (sh), \
++		"=&r" (sl) \
+ 		: "%r" ((USItype)(ah)), \
+ 		"%r" ((USItype)(al)), \
+ 		"rI" ((USItype)(bl))); \
+ 	else \
+ 		__asm__ ("{a%I5|add%I5c} %1,%4,%5\n\t{ae|adde} %0,%2,%3" \
+-		: "=r" ((USItype)(sh)), \
+-		"=&r" ((USItype)(sl)) \
++		: "=r" (sh), \
++		"=&r" (sl) \
+ 		: "%r" ((USItype)(ah)), \
+ 		"r" ((USItype)(bh)), \
+ 		"%r" ((USItype)(al)), \
+@@ -747,36 +747,36 @@ do { \
+ do { \
+ 	if (__builtin_constant_p(ah) && (ah) == 0) \
+ 		__asm__ ("{sf%I3|subf%I3c} %1,%4,%3\n\t{sfze|subfze} %0,%2" \
+-		: "=r" ((USItype)(sh)), \
+-		"=&r" ((USItype)(sl)) \
++		: "=r" (sh), \
++		"=&r" (sl) \
+ 		: "r" ((USItype)(bh)), \
+ 		"rI" ((USItype)(al)), \
+ 		"r" ((USItype)(bl))); \
+ 	else if (__builtin_constant_p(ah) && (ah) == ~(USItype) 0) \
+ 		__asm__ ("{sf%I3|subf%I3c} %1,%4,%3\n\t{sfme|subfme} %0,%2" \
+-		: "=r" ((USItype)(sh)), \
+-		"=&r" ((USItype)(sl)) \
++		: "=r" (sh), \
++		"=&r" (sl) \
+ 		: "r" ((USItype)(bh)), \
+ 		"rI" ((USItype)(al)), \
+ 		"r" ((USItype)(bl))); \
+ 	else if (__builtin_constant_p(bh) && (bh) == 0) \
+ 		__asm__ ("{sf%I3|subf%I3c} %1,%4,%3\n\t{ame|addme} %0,%2" \
+-		: "=r" ((USItype)(sh)), \
+-		"=&r" ((USItype)(sl)) \
++		: "=r" (sh), \
++		"=&r" (sl) \
+ 		: "r" ((USItype)(ah)), \
+ 		"rI" ((USItype)(al)), \
+ 		"r" ((USItype)(bl))); \
+ 	else if (__builtin_constant_p(bh) && (bh) == ~(USItype) 0) \
+ 		__asm__ ("{sf%I3|subf%I3c} %1,%4,%3\n\t{aze|addze} %0,%2" \
+-		: "=r" ((USItype)(sh)), \
+-		"=&r" ((USItype)(sl)) \
++		: "=r" (sh), \
++		"=&r" (sl) \
+ 		: "r" ((USItype)(ah)), \
+ 		"rI" ((USItype)(al)), \
+ 		"r" ((USItype)(bl))); \
+ 	else \
+ 		__asm__ ("{sf%I4|subf%I4c} %1,%5,%4\n\t{sfe|subfe} %0,%3,%2" \
+-		: "=r" ((USItype)(sh)), \
+-		"=&r" ((USItype)(sl)) \
++		: "=r" (sh), \
++		"=&r" (sl) \
+ 		: "r" ((USItype)(ah)), \
+ 		"r" ((USItype)(bh)), \
+ 		"rI" ((USItype)(al)), \
+@@ -787,7 +787,7 @@ do { \
+ do { \
+ 	USItype __m0 = (m0), __m1 = (m1); \
+ 	__asm__ ("mulhwu %0,%1,%2" \
+-	: "=r" ((USItype) ph) \
++	: "=r" (ph) \
+ 	: "%r" (__m0), \
+ 	"r" (__m1)); \
+ 	(pl) = __m0 * __m1; \
+
+base-commit: 8f3d9f354286745c751374f5f1fcafee6b3f3136
 -- 
-2.21.0
+2.26.0
 
