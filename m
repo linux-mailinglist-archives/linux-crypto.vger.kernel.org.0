@@ -1,69 +1,104 @@
 Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E351A5E23
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Apr 2020 12:57:12 +0200 (CEST)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0511A64E9
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Apr 2020 12:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgDLK5J convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Sun, 12 Apr 2020 06:57:09 -0400
-Received: from mail.lintas.net.id ([103.242.106.93]:38332 "EHLO
-        mail.lintas.net.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgDLK5J (ORCPT
+        id S1728188AbgDMKEo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 13 Apr 2020 06:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728131AbgDMKEl (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 12 Apr 2020 06:57:09 -0400
-X-Greylist: delayed 1219 seconds by postgrey-1.27 at vger.kernel.org; Sun, 12 Apr 2020 06:57:06 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.lintas.net.id (Postfix) with ESMTP id 7511530599B66;
-        Sun, 12 Apr 2020 17:34:13 +0700 (WIB)
-Received: from mail.lintas.net.id ([127.0.0.1])
-        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 2c5Y4A-LHVja; Sun, 12 Apr 2020 17:34:12 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.lintas.net.id (Postfix) with ESMTP id 91AE930565B74;
-        Sun, 12 Apr 2020 17:34:12 +0700 (WIB)
-X-Virus-Scanned: amavisd-new at lintas.net.id
-Received: from mail.lintas.net.id ([127.0.0.1])
-        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id yo1wP-9uoIfC; Sun, 12 Apr 2020 17:34:12 +0700 (WIB)
-Received: from mail.lintas.net.id (mail.lintas.net.id [103.242.106.93])
-        by mail.lintas.net.id (Postfix) with ESMTP id A2BB23059AB01;
-        Sun, 12 Apr 2020 17:34:11 +0700 (WIB)
-Date:   Sun, 12 Apr 2020 17:34:11 +0700 (WIB)
-From:   =?utf-8?B?0KHQuNGB0YLQtdC80L3Ri9C5INCw0LTQvNC40L3QuNGB0YLRgNCw0YLQvtGA?= 
-        <ricky@lintas.net.id>
-Reply-To: mailsss@mail2world.com
-Message-ID: <1436105409.24276.1586687651609.JavaMail.zimbra@lintas.net.id>
-Subject: 
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-X-Originating-IP: [103.242.106.93]
-X-Mailer: Zimbra 8.8.15_GA_3888 (zclient/8.8.15_GA_3888)
-Thread-Index: pu96ZTRMa+3UnuH9nFxOe5WEAO4RzA==
-Thread-Topic: 
-Content-Transfer-Encoding: 8BIT
-To:     unlisted-recipients:; (no To-header on input)
+        Mon, 13 Apr 2020 06:04:41 -0400
+X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 06:04:41 EDT
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC84C008748
+        for <linux-crypto@vger.kernel.org>; Mon, 13 Apr 2020 02:58:18 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id x4so8844466wmj.1
+        for <linux-crypto@vger.kernel.org>; Mon, 13 Apr 2020 02:58:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=KmcsA4T+S+WWzjH6BirzHHu1f070Cb4n75Vt4bzQ7mw=;
+        b=TVnoFVdP7i6NzzFLwMjWxM3xlqFbcIBq1o9J7E/bTBQ0uzOW8+UegM9N09q07Gb8Pt
+         MtHvv7jPmDm/EdqTc8LOg/VtKYICEGws/lMAkblH+kM813ZU0JoJaasghx3IwTGcKd0E
+         42OvmNEcHZQ5VCaiHTIO84mRy6CrDZH8EYAeCVp6AgaElvoo718tEt+wJ/84V0XUhhxN
+         f4duhfvRg/ia9fT3MeUk6BGznNj5Tixq/bRylfXGr/Iior1h1ImD3+qM5aYCgzxIx0Zi
+         yW2DdRaVcQZ3x6NikAgM+x5H/bYYq4FjWTKQPFlyunUiyUqYCPVn2Bmk98TFUkVTHkTB
+         0DAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KmcsA4T+S+WWzjH6BirzHHu1f070Cb4n75Vt4bzQ7mw=;
+        b=X9MTEAkEFJz8HQ2oF19RETsXuLC5q7S87z/ADSBojUo/g+kn+LMtBhRq4TqoiT51h2
+         EM51CkbkRHdPsiuK71PjSPHpE1Cam1kQLb40GQbf3DmmqQl9/i78f0zdVyew9m+uguXI
+         +yAZ6fRpAX/On+GBby5p83znzbDEgMbAAhFjvHi6hrqYZ3ZafxsFX5DC9MPbbazCqB3N
+         1URl79KU8wzG6BxNZzHIgY8rAYASfvXXraWFWd/drFcGI9MyemTb5i9wMiXjl0nM/T01
+         kiA0HxsXf1ZP2/uJMVaG2uTbqLhfscXn6ncjObE8EC3YvjGYSe8C90Eq+tI1ySFdzPxS
+         LRmw==
+X-Gm-Message-State: AGi0Pua3Wqdj2Qf2fV6W33ET97gq53fkYVcjYBz2JSlHjB47fPy7wQV5
+        p+Wpd2LDYdpjD6D4GXqTGqFErw==
+X-Google-Smtp-Source: APiQypJWhZgB3lIgt3ffPi7fAbvHp4h7OWcPtzktkowmrfegct/r94XOEfrUl2q5rZ1a2eCTjGu2EA==
+X-Received: by 2002:a1c:7d15:: with SMTP id y21mr17172416wmc.57.1586771896214;
+        Mon, 13 Apr 2020 02:58:16 -0700 (PDT)
+Received: from localhost.localdomain ([51.15.160.169])
+        by smtp.googlemail.com with ESMTPSA id v21sm13594491wmj.8.2020.04.13.02.58.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 13 Apr 2020 02:58:15 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mripard@kernel.org, wens@csie.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH 0/9] crypto: sun8i-ce: support TRNG, PRNG and hashes
+Date:   Mon, 13 Apr 2020 09:58:00 +0000
+Message-Id: <1586771889-3299-1-git-send-email-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-ВНИМАНИЕ;
+Hello
 
-В вашем почтовом ящике превышен лимит хранилища, который составляет 5 ГБ, как определено администратором, который в настоящее время работает на 10,9 ГБ. Возможно, вы не сможете отправлять или получать новую почту, пока вы не подтвердите свою почту. Чтобы подтвердить свой почтовый ящик, отправьте следующую информацию ниже:
+The main goal of this serie is to add support for TRNG, PRNG and hashes
+to the sun8i-ce.
+The whole serie is tested with CRYPTO_EXTRA_TESTS enabled and loading
+tcrypt.
+The PRNG and TRNG are tested with rngtest.
 
-название:
-Имя пользователя: 
-пароль:
-Подтвердите Пароль: 
-Эл. адрес:
-Телефон: 
+Note that the first patch is common with the recent sun8i-ss PRNG+hashes serie.
 
-Если вы не сможете подтвердить свой почтовый ящик, ваш почтовый ящик будет отключен!
+Regards
 
-Приносим извинения за неудобства.
-Код подтверждения: en: 006,524.RU
-Техническая поддержка почты © 2020
+Corentin Labbe (9):
+  crypto: rng - add missing __crypto_rng_cast to the rng header
+  crypto: sun8i-ce: move iv data to request context
+  crypto: sun8i-ce: split into prepare/run/unprepare
+  crypto: sun8i-ce: handle different error registers
+  crypto: sun8i-ce: rename has_t_dlen_in_bytes to cipher_t_dlen_in_bytes
+  crypto: sun8i-ce: support hash algorithms
+  crypto: sun8i-ce: Add stat_bytes debugfs
+  crypto: sun8i-ce: Add support for the PRNG
+  crypto: sun8i-ce: Add support for the TRNG
 
-благодарю вас
-Системный администратор
+ drivers/crypto/allwinner/Kconfig              |  26 ++
+ drivers/crypto/allwinner/sun8i-ce/Makefile    |   3 +
+ .../allwinner/sun8i-ce/sun8i-ce-cipher.c      |  99 ++++-
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 365 ++++++++++++++-
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 415 ++++++++++++++++++
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 191 ++++++++
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-trng.c | 123 ++++++
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h  | 135 +++++-
+ include/crypto/rng.h                          |   5 +
+ 9 files changed, 1323 insertions(+), 39 deletions(-)
+ create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
+
+-- 
+2.24.1
+
