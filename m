@@ -2,88 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7551AB8A9
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2020 08:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0DF1AB891
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2020 08:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436968AbgDPGwS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 16 Apr 2020 02:52:18 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:41448 "EHLO fornost.hmeau.com"
+        id S2408592AbgDPGvc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 16 Apr 2020 02:51:32 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:41390 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436898AbgDPGwN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:52:13 -0400
+        id S2436560AbgDPGvb (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 16 Apr 2020 02:51:31 -0400
 Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jOyMh-0005IU-H1; Thu, 16 Apr 2020 16:51:12 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Apr 2020 16:51:11 +1000
-Date:   Thu, 16 Apr 2020 16:51:11 +1000
+        id 1jOyMv-0005IZ-FF; Thu, 16 Apr 2020 16:51:26 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Apr 2020 16:51:25 +1000
+Date:   Thu, 16 Apr 2020 16:51:25 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Hadar Gat <hadar.gat@arm.com>
-Cc:     Matt Mackall <mpm@selenic.com>, Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ofir Drang <ofir.drang@arm.com>
-Subject: Re: [PATCH v7 0/3] hw_random: introduce Arm CryptoCell TRNG driver
-Message-ID: <20200416065111.GC7901@gondor.apana.org.au>
-References: <1585289423-18440-1-git-send-email-hadar.gat@arm.com>
+To:     Shukun Tan <tanshukun1@huawei.com>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        xuzaibo@huawei.com, wangzhou1@hisilicon.com, fanghao11@huawei.com
+Subject: Re: [PATCH 0/3] crypto: hisilicon - refactor vfs_num related codes
+Message-ID: <20200416065125.GD7901@gondor.apana.org.au>
+References: <1585810383-49392-1-git-send-email-tanshukun1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1585289423-18440-1-git-send-email-hadar.gat@arm.com>
+In-Reply-To: <1585810383-49392-1-git-send-email-tanshukun1@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 09:10:20AM +0300, Hadar Gat wrote:
-> The Arm CryptoCell is a hardware security engine.
-> This patch introduces driver for its TRNG (True Random Number Generator)
-> engine.
+On Thu, Apr 02, 2020 at 02:53:00PM +0800, Shukun Tan wrote:
+> This series clean the vfs_num related redundant code in this series,
+> move all into QM.
 > 
-> v7 change: in arm-cctrng.yaml, removed unneeded 'minitems'
+> Hao Fang (1):
+>   crypto: hisilicon - add vfs_num module parameter for hpre/sec
 > 
-> v6 change: add missing initialization of hwrng quality.
+> Shukun Tan (2):
+>   crypto: hisilicon - put vfs_num into struct hisi_qm
+>   crypto: hisilicon - unify SR-IOV related codes into QM
 > 
-> v5 changes:
-> 	1. in arm-cctrng.yaml, fixed error in 'make dt_binding_check'
-> 	2. in cctrng.c, clean up cctrng clock handling
-> 
-> v4 changes: update arm-cctrng.yaml to conform with json-schema standard.
-> 
-> v3 change: removed few unneeded "#ifdef CONFIG_PM" from the code.
-> 
-> v2 changes: fixed 'make dt_bnding_check' errors.
-> 
-> Hadar Gat (3):
->   dt-bindings: add device tree binding for Arm CryptoCell trng engine
->   hw_random: cctrng: introduce Arm CryptoCell driver
->   MAINTAINERS: add HG as cctrng maintainer
-> 
->  .../devicetree/bindings/rng/arm-cctrng.yaml        |  54 ++
->  MAINTAINERS                                        |   9 +
->  drivers/char/hw_random/Kconfig                     |  12 +
->  drivers/char/hw_random/Makefile                    |   1 +
->  drivers/char/hw_random/cctrng.c                    | 736 +++++++++++++++++++++
->  drivers/char/hw_random/cctrng.h                    |  72 ++
->  6 files changed, 884 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/rng/arm-cctrng.yaml
->  create mode 100644 drivers/char/hw_random/cctrng.c
->  create mode 100644 drivers/char/hw_random/cctrng.h
+>  drivers/crypto/hisilicon/hpre/hpre.h      |   1 -
+>  drivers/crypto/hisilicon/hpre/hpre_main.c | 130 +++++-----------------------
+>  drivers/crypto/hisilicon/qm.c             | 136 +++++++++++++++++++++++++++--
+>  drivers/crypto/hisilicon/qm.h             |  25 +++++-
+>  drivers/crypto/hisilicon/sec2/sec.h       |   1 -
+>  drivers/crypto/hisilicon/sec2/sec_main.c  | 137 ++++++------------------------
+>  drivers/crypto/hisilicon/zip/zip_main.c   | 131 ++++------------------------
+>  7 files changed, 215 insertions(+), 346 deletions(-)
 
 All applied.  Thanks.
 -- 
