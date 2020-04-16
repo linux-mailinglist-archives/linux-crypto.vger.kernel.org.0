@@ -2,126 +2,90 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7441AB87C
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2020 08:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7551AB8A9
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2020 08:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408163AbgDPGu7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 16 Apr 2020 02:50:59 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:41376 "EHLO fornost.hmeau.com"
+        id S2436968AbgDPGwS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 16 Apr 2020 02:52:18 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:41448 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408551AbgDPGu4 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:50:56 -0400
+        id S2436898AbgDPGwN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 16 Apr 2020 02:52:13 -0400
 Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jOyMK-0005H0-Cw; Thu, 16 Apr 2020 16:50:49 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Apr 2020 16:50:48 +1000
-Date:   Thu, 16 Apr 2020 16:50:48 +1000
+        id 1jOyMh-0005IU-H1; Thu, 16 Apr 2020 16:51:12 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Apr 2020 16:51:11 +1000
+Date:   Thu, 16 Apr 2020 16:51:11 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Iuliana Prodan <iuliana.prodan@nxp.com>
-Cc:     Horia Geanta <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
+To:     Hadar Gat <hadar.gat@arm.com>
+Cc:     Matt Mackall <mpm@selenic.com>, Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Zaibo Xu <xuzaibo@huawei.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH] crypto: caam - fix the address of the last entry of S/G
-Message-ID: <20200416065048.GB7901@gondor.apana.org.au>
-References: <1586275125-20571-1-git-send-email-iuliana.prodan@nxp.com>
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ofir Drang <ofir.drang@arm.com>
+Subject: Re: [PATCH v7 0/3] hw_random: introduce Arm CryptoCell TRNG driver
+Message-ID: <20200416065111.GC7901@gondor.apana.org.au>
+References: <1585289423-18440-1-git-send-email-hadar.gat@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1586275125-20571-1-git-send-email-iuliana.prodan@nxp.com>
+In-Reply-To: <1585289423-18440-1-git-send-email-hadar.gat@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 06:58:45PM +0300, Iuliana Prodan wrote:
-> For skcipher algorithms, the input, output HW S/G tables
-> look like this: [IV, src][dst, IV]
-> Now, we can have 2 conditions here:
-> - there is no IV;
-> - src and dst are equal (in-place encryption) and scattered
-> and the error is an "off-by-one" in the HW S/G table.
+On Fri, Mar 27, 2020 at 09:10:20AM +0300, Hadar Gat wrote:
+> The Arm CryptoCell is a hardware security engine.
+> This patch introduces driver for its TRNG (True Random Number Generator)
+> engine.
 > 
-> This issue was seen with KASAN:
-> BUG: KASAN: slab-out-of-bounds in skcipher_edesc_alloc+0x95c/0x1018
+> v7 change: in arm-cctrng.yaml, removed unneeded 'minitems'
 > 
-> Read of size 4 at addr ffff000022a02958 by task cryptomgr_test/321
+> v6 change: add missing initialization of hwrng quality.
 > 
-> CPU: 2 PID: 321 Comm: cryptomgr_test Not tainted
-> 5.6.0-rc1-00165-ge4ef8383-dirty #4
-> Hardware name: LS1046A RDB Board (DT)
-> Call trace:
->  dump_backtrace+0x0/0x260
->  show_stack+0x14/0x20
->  dump_stack+0xe8/0x144
->  print_address_description.isra.11+0x64/0x348
->  __kasan_report+0x11c/0x230
->  kasan_report+0xc/0x18
->  __asan_load4+0x90/0xb0
->  skcipher_edesc_alloc+0x95c/0x1018
->  skcipher_encrypt+0x84/0x150
->  crypto_skcipher_encrypt+0x50/0x68
->  test_skcipher_vec_cfg+0x4d4/0xc10
->  test_skcipher_vec+0x178/0x1d8
->  alg_test_skcipher+0xec/0x230
->  alg_test.part.44+0x114/0x4a0
->  alg_test+0x1c/0x60
->  cryptomgr_test+0x34/0x58
->  kthread+0x1b8/0x1c0
->  ret_from_fork+0x10/0x18
+> v5 changes:
+> 	1. in arm-cctrng.yaml, fixed error in 'make dt_binding_check'
+> 	2. in cctrng.c, clean up cctrng clock handling
 > 
-> Allocated by task 321:
->  save_stack+0x24/0xb0
->  __kasan_kmalloc.isra.10+0xc4/0xe0
->  kasan_kmalloc+0xc/0x18
->  __kmalloc+0x178/0x2b8
->  skcipher_edesc_alloc+0x21c/0x1018
->  skcipher_encrypt+0x84/0x150
->  crypto_skcipher_encrypt+0x50/0x68
->  test_skcipher_vec_cfg+0x4d4/0xc10
->  test_skcipher_vec+0x178/0x1d8
->  alg_test_skcipher+0xec/0x230
->  alg_test.part.44+0x114/0x4a0
->  alg_test+0x1c/0x60
->  cryptomgr_test+0x34/0x58
->  kthread+0x1b8/0x1c0
->  ret_from_fork+0x10/0x18
+> v4 changes: update arm-cctrng.yaml to conform with json-schema standard.
 > 
-> Freed by task 0:
-> (stack is not available)
+> v3 change: removed few unneeded "#ifdef CONFIG_PM" from the code.
 > 
-> The buggy address belongs to the object at ffff000022a02800
->  which belongs to the cache dma-kmalloc-512 of size 512
-> The buggy address is located 344 bytes inside of
->  512-byte region [ffff000022a02800, ffff000022a02a00)
-> The buggy address belongs to the page:
-> page:fffffe00006a8000 refcount:1 mapcount:0 mapping:ffff00093200c400
-> index:0x0 compound_mapcount: 0
-> flags: 0xffff00000010200(slab|head)
-> raw: 0ffff00000010200 dead000000000100 dead000000000122 ffff00093200c400
-> raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
+> v2 changes: fixed 'make dt_bnding_check' errors.
 > 
-> Memory state around the buggy address:
->  ffff000022a02800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->  ffff000022a02880: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> >ffff000022a02900: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
->                                                     ^
->  ffff000022a02980: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->  ffff000022a02a00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> Hadar Gat (3):
+>   dt-bindings: add device tree binding for Arm CryptoCell trng engine
+>   hw_random: cctrng: introduce Arm CryptoCell driver
+>   MAINTAINERS: add HG as cctrng maintainer
 > 
-> Fixes: 334d37c9e263 ("crypto: caam - update IV using HW support")
-> Cc: <stable@vger.kernel.org> # v5.3+
-> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
-> ---
->  drivers/crypto/caam/caamalg.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../devicetree/bindings/rng/arm-cctrng.yaml        |  54 ++
+>  MAINTAINERS                                        |   9 +
+>  drivers/char/hw_random/Kconfig                     |  12 +
+>  drivers/char/hw_random/Makefile                    |   1 +
+>  drivers/char/hw_random/cctrng.c                    | 736 +++++++++++++++++++++
+>  drivers/char/hw_random/cctrng.h                    |  72 ++
+>  6 files changed, 884 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rng/arm-cctrng.yaml
+>  create mode 100644 drivers/char/hw_random/cctrng.c
+>  create mode 100644 drivers/char/hw_random/cctrng.h
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
