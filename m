@@ -2,63 +2,70 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAA51AB88D
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2020 08:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5001AB8A6
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2020 08:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408565AbgDPGvm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 16 Apr 2020 02:51:42 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:41406 "EHLO fornost.hmeau.com"
+        id S2436959AbgDPGwQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 16 Apr 2020 02:52:16 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:41436 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408627AbgDPGvj (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:51:39 -0400
+        id S2436852AbgDPGwI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 16 Apr 2020 02:52:08 -0400
 Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jOyN3-0005Il-6Z; Thu, 16 Apr 2020 16:51:34 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Apr 2020 16:51:33 +1000
-Date:   Thu, 16 Apr 2020 16:51:33 +1000
+        id 1jOyNE-0005Ji-AF; Thu, 16 Apr 2020 16:51:45 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Apr 2020 16:51:44 +1000
+Date:   Thu, 16 Apr 2020 16:51:44 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Shukun Tan <tanshukun1@huawei.com>
-Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH 0/5] crypto: hisilicon - add controller reset support
-Message-ID: <20200416065133.GE7901@gondor.apana.org.au>
-References: <1585901802-48945-1-git-send-email-tanshukun1@huawei.com>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     narmstrong@baylibre.com, clabbe@baylibre.com, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6]crypto: amlogic - Delete duplicate dev_err in
+ meson_crypto_probe()
+Message-ID: <20200416065144.GF7901@gondor.apana.org.au>
+References: <20200403220754.7856-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1585901802-48945-1-git-send-email-tanshukun1@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200403220754.7856-1-tangbin@cmss.chinamobile.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 04:16:37PM +0800, Shukun Tan wrote:
-> Add support controller reset for ZIP/HPRE/SEC drivers, put the main
-> implementation into QM. Meanwhile modified the logic of the queue
-> stop judgment.
+On Sat, Apr 04, 2020 at 06:07:54AM +0800, Tang Bin wrote:
+> When something goes wrong, platform_get_irq() will print an error message,
+> so in order to avoid the situation of repeat output，we should remove
+> dev_err here.
 > 
-> This series depends upon:
-> https://patchwork.kernel.org/cover/11470171/ 
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> ---
+> Changes from v5
+>  - modify the commit message.
 > 
-> Hui Tang (1):
->   crypto: hisilicon/hpre - add controller reset support for HPRE
+> Changes from v4:
+>  - rewrite the code, because the code in v4 is wrong, sorry.
 > 
-> Shukun Tan (2):
->   crypto: hisilicon/qm - add controller reset interface
->   crypto: hisilicon/zip - add controller reset support for zip
+> Changes form v3:
+>  - fix the theme writing error.
 > 
-> Yang Shen (2):
->   crypto: hisilicon/sec2 - add controller reset support for SEC2
->   crypto: hisilicon/qm - stop qp by judging sq and cq tail
+> Changes from v2:
+>  - modify the theme format and content description.
+>  - reformat the patch, it's the wrong way to resubmit a new patch that
+>    should be modified on top of the original. The original piece is:
+>    https://lore.kernel.org/patchwork/patch/1219611/
 > 
->  drivers/crypto/hisilicon/hpre/hpre_main.c |  46 ++-
->  drivers/crypto/hisilicon/qm.c             | 667 +++++++++++++++++++++++++++++-
->  drivers/crypto/hisilicon/qm.h             |  16 +
->  drivers/crypto/hisilicon/sec2/sec_main.c  |  40 +-
->  drivers/crypto/hisilicon/zip/zip_main.c   |  57 ++-
->  5 files changed, 790 insertions(+), 36 deletions(-)
+> Changes from v1:
+>  - the title has changed, because the description is not very detailed.
+>  - the code has been modified, because it needs to match the theme.
+> 
+>  drivers/crypto/amlogic/amlogic-gxl-core.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
