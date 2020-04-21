@@ -2,122 +2,152 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DA41B1F66
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2020 09:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14571B201B
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2020 09:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgDUHC3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 Apr 2020 03:02:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725926AbgDUHC3 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:02:29 -0400
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 518F22087E;
-        Tue, 21 Apr 2020 07:02:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587452548;
-        bh=yvErlf1ujCEjMuZ1HZhQNIJgQdLtBuEUCgoQdnqZWIc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Y0ypIU01zjeTlzT53B8egS3zgE+CoGdF87n9WorvBDR9TlY51Nnqz5sevwJSayFWQ
-         VAM6zmWgjEbe5QWMAgg5I0qToX2KyMmlIQgFDTszV1NpT4s+lkqG8dPcLP+20AAOUw
-         WHp8QwbOG7cfkhHP3wXHd6wt+qi+dZIahIfrK2J8=
-Received: by mail-io1-f51.google.com with SMTP id n10so13915387iom.3;
-        Tue, 21 Apr 2020 00:02:28 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZlU27pKRX19Wy7aHiQ9KeKvJX3RNPSSNZWRJeC/sI6btFXzDQD
-        8l8tn7uK7IFoUc3PO2rH2ELHOHZHhqKbDVUFAaM=
-X-Google-Smtp-Source: APiQypJ7U9stCkpY+B3uQDUazOYm7Gv5hkpH/DE6YibToZivYDs+sA9EjIN2vouOcJjK6KTOFzro6D3C6jpn/y7lRBQ=
-X-Received: by 2002:a02:8247:: with SMTP id q7mr17940310jag.68.1587452547702;
- Tue, 21 Apr 2020 00:02:27 -0700 (PDT)
+        id S1727786AbgDUHmF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 Apr 2020 03:42:05 -0400
+Received: from conuserg-08.nifty.com ([210.131.2.75]:31854 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725992AbgDUHmF (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 21 Apr 2020 03:42:05 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 03L7dstT022941;
+        Tue, 21 Apr 2020 16:39:55 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 03L7dstT022941
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587454796;
+        bh=Zv91K2NSW1zIQUpi6lT8xcoiatIzC59/CNYR7v9KfnQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Wym/VORynZ20qd8805OsjPiCKCp2lfUp/3sN0Q4KmKUws9o7Yl4rm+TpMd/7+dRRn
+         v2rugZ3q0v2SLwUYMBhH41UDZdMqpf1815hSaHzp5bWRkvanoA5O7GeFVg8BPuqWiB
+         CDd0uvDaJOihngQDK2hcA5W9DRHYtW7lkY9LtYSIrReTryePAKAFXdDlAjSdnoenhJ
+         Gqvxf8fwlOyJywJxrqqvCbFVkcLzsxaxLJmupiQWS0gncVYDsBxwhgZYM/Z/OVHEmx
+         MlIgCvtCjSP6mg4EkrgzfUHs32pWpHmjhi18gvPEQ55RvUwcrlxBBiGXHsR8daN6C3
+         +2OlWPwvcDQLQ==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Cc:     "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        linux-crypto@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+Subject: [PATCH 1/2] x86: check CONFIG options instead of __arch_um__
+Date:   Tue, 21 Apr 2020 16:39:46 +0900
+Message-Id: <20200421073947.586662-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200420075711.2385190-1-Jason@zx2c4.com> <2cdb57f2cdbd49e9bb1034d01d054bb7@AcuMS.aculab.com>
- <CAHmME9pq2Kdrp5C1+90PQyXsaG8xfdRwG-xGNs5U0ykVORrMbw@mail.gmail.com>
-In-Reply-To: <CAHmME9pq2Kdrp5C1+90PQyXsaG8xfdRwG-xGNs5U0ykVORrMbw@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 21 Apr 2020 09:02:16 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEdWu1v0tGT2Co0oMqWDJS_FNx97qZJmp3GPrrj8MrnrQ@mail.gmail.com>
-Message-ID: <CAMj1kXEdWu1v0tGT2Co0oMqWDJS_FNx97qZJmp3GPrrj8MrnrQ@mail.gmail.com>
-Subject: Re: FPU register granularity [Was: Re: [PATCH crypto-stable] crypto:
- arch/lib - limit simd usage to PAGE_SIZE chunks]
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ebiggers@google.com" <ebiggers@google.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, 21 Apr 2020 at 06:15, Jason A. Donenfeld <Jason@zx2c4.com> wrote:
->
-> Hi David,
->
-> On Mon, Apr 20, 2020 at 2:32 AM David Laight <David.Laight@aculab.com> wrote:
-> > Maybe kernel_fp_begin() should be passed the address of somewhere
-> > the address of an fpu save area buffer can be written to.
-> > Then the pre-emption code can allocate the buffer and save the
-> > state into it.
->
-> Interesting idea. It looks like `struct xregs_state` is only 576
-> bytes. That's not exactly small, but it's not insanely huge either,
-> and maybe we could justifiably stick that on the stack, or even
-> reserve part of the stack allocation for that that the function would
-> know about, without needing to specify any address.
->
-> > kernel_fpu_begin() ought also be passed a parameter saying which
-> > fpu features are required, and return which are allocated.
-> > On x86 this could be used to check for AVX512 (etc) which may be
-> > available in an ISR unless it interrupted inside a kernel_fpu_begin()
-> > section (etc).
-> > It would also allow optimisations if only 1 or 2 fpu registers are
-> > needed (eg for some of the crypto functions) rather than the whole
-> > fpu register set.
->
-> For AVX512 this probably makes sense, I suppose. But I'm not sure if
-> there are too many bits of crypto code that only use a few registers.
-> There are those accelerated memcpy routines in i915 though -- ever see
-> drivers/gpu/drm/i915/i915_memcpy.c? sort of wild. But if we did go
-> this way, I wonder if it'd make sense to totally overengineer it and
-> write a gcc/as plugin to create the register mask for us. Or, maybe
-> some checker inside of objtool could help here.
->
-> Actually, though, the thing I've been wondering about is actually
-> moving in the complete opposite direction: is there some
-> efficient-enough way that we could allow FPU registers in all contexts
-> always, without the need for kernel_fpu_begin/end? I was reversing
-> ntoskrnl.exe and was kind of impressed (maybe not the right word?) by
-> their judicious use of vectorisation everywhere. I assume a lot of
-> that is being generated by their compiler, which of course gcc could
-> do for us if we let it. Is that an interesting avenue to consider? Or
-> are you pretty certain that it'd be a huge mistake, with an
-> irreversible speed hit?
->
+If the intention is to check i386/x86_64 excluding UML, we can use
+CONFIG options instead.
 
-When I added support for kernel mode SIMD to arm64 originally, there
-was a kernel_neon_begin_partial() that took an int to specify how many
-registers were being used, the reason being that NEON preserve/store
-was fully eager at this point, and arm64 has 32 SIMD registers, many
-of which weren't really used, e.g., in the basic implementation of AES
-based on special instructions.
+There are only some users of __arch_um__. This commit replaces them,
+then removes the __arch_um__ definition.
 
-With the introduction of lazy restore, and SVE handling for userspace,
-we decided to remove this because it didn't really help anymore, and
-made the code more difficult to manage.
+The original reason for checking __i386__ / __x86_64__ was perhaps
+because lib/raid6/algos.c is built not only for the kernel but also
+for the user-space test program.
 
-However, I think it would make sense to have something like this in
-the general case. I.e., NEON registers 0-3 are always preserved when
-an exception or interrupt (or syscall) is taken, and so they can be
-used anywhere in the kernel. If you want the whole set, you will have
-to use begin/end as before. This would already unlock a few
-interesting case, like memcpy, xor, and sequences that can easily be
-implemented with only a few registers such as instructio based AES.
+However, lib/raid6/test/Makefile passes -DCONFIG_X86, -DCONFIG_X86_32,
+and -DCONFIG_X86_64 for this case. So, I do not see a good reason to
+not use CONFIG options here.
 
-Unfortunately, the compiler needs to be taught about this to be
-completely useful, which means lots of prototyping and benchmarking
-upfront, as the contract will be set in stone once the compilers get
-on board.
+What is confusing is, CONFIG_X86_{32,64} is defined not only in
+arch/x86/Kconfig, but also in arch/x86/um/Kconfig. To exlucde UML,
+we need to check CONFIG_X86 too.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Acked-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+---
+
+ arch/um/Makefile  | 2 +-
+ kernel/signal.c   | 2 +-
+ lib/raid6/algos.c | 6 ++++--
+ lib/raid6/x86.h   | 2 +-
+ 4 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index d2daa206872d..064fbed7a4e9 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -62,7 +62,7 @@ KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/um
+ #
+ # These apply to USER_CFLAGS to.
+ 
+-KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
++KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) \
+ 	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
+ 	-Dlongjmp=kernel_longjmp -Dsetjmp=kernel_setjmp \
+ 	-Din6addr_loopback=kernel_in6addr_loopback \
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 713104884414..1af3ad707b02 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1246,7 +1246,7 @@ static void print_fatal_signal(int signr)
+ 	struct pt_regs *regs = signal_pt_regs();
+ 	pr_info("potentially unexpected fatal signal %d.\n", signr);
+ 
+-#if defined(__i386__) && !defined(__arch_um__)
++#if defined(CONFIG_X86) && defined(CONFIG_X86_32)
+ 	pr_info("code at %08lx: ", regs->ip);
+ 	{
+ 		int i;
+diff --git a/lib/raid6/algos.c b/lib/raid6/algos.c
+index 6d5e5000fdd7..978fa19efbbf 100644
+--- a/lib/raid6/algos.c
++++ b/lib/raid6/algos.c
+@@ -29,7 +29,8 @@ struct raid6_calls raid6_call;
+ EXPORT_SYMBOL_GPL(raid6_call);
+ 
+ const struct raid6_calls * const raid6_algos[] = {
+-#if defined(__i386__) && !defined(__arch_um__)
++#ifdef CONFIG_X86
++#if defined(CONFIG_X86_32)
+ #ifdef CONFIG_AS_AVX512
+ 	&raid6_avx512x2,
+ 	&raid6_avx512x1,
+@@ -43,7 +44,7 @@ const struct raid6_calls * const raid6_algos[] = {
+ 	&raid6_mmxx2,
+ 	&raid6_mmxx1,
+ #endif
+-#if defined(__x86_64__) && !defined(__arch_um__)
++#if defined(CONFIG_X86_64)
+ #ifdef CONFIG_AS_AVX512
+ 	&raid6_avx512x4,
+ 	&raid6_avx512x2,
+@@ -56,6 +57,7 @@ const struct raid6_calls * const raid6_algos[] = {
+ 	&raid6_sse2x2,
+ 	&raid6_sse2x1,
+ #endif
++#endif /* CONFIG_X86 */
+ #ifdef CONFIG_ALTIVEC
+ 	&raid6_vpermxor8,
+ 	&raid6_vpermxor4,
+diff --git a/lib/raid6/x86.h b/lib/raid6/x86.h
+index 9a6ff37115e7..0436b32f7709 100644
+--- a/lib/raid6/x86.h
++++ b/lib/raid6/x86.h
+@@ -14,7 +14,7 @@
+ #ifndef LINUX_RAID_RAID6X86_H
+ #define LINUX_RAID_RAID6X86_H
+ 
+-#if (defined(__i386__) || defined(__x86_64__)) && !defined(__arch_um__)
++#ifdef CONFIG_X86
+ 
+ #ifdef __KERNEL__ /* Real code */
+ 
+-- 
+2.25.1
+
