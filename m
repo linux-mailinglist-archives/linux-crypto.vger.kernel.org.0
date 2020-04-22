@@ -2,128 +2,99 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031C41B35E5
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Apr 2020 06:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DB21B369D
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Apr 2020 06:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725808AbgDVEES (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 22 Apr 2020 00:04:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725786AbgDVEES (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 22 Apr 2020 00:04:18 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 626AF206EC;
-        Wed, 22 Apr 2020 04:04:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587528257;
-        bh=R50vllRGiQsBJ4Aew3sRKSSCruehTtz3DQqv/n93hNM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oLnolN4n3W0qfa33jBbew2yBYuAnakUYs7omwV98FryoaPMJV7me5S/It2jiD/eod
-         VneXTzDyJl1rkZ4eRKvebq4EwhkN0QceSOCed0MRqQ2FcUpDXFvcc6C8Qz92n+Gwox
-         nFX6Tk0k8zatHLfutLngG+aNV9NaJclM54FwYUbo=
-Date:   Tue, 21 Apr 2020 21:04:15 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ardb@kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH crypto-stable] crypto: arch/lib - limit simd usage to
- PAGE_SIZE chunks
-Message-ID: <20200422040415.GA2881@sol.localdomain>
-References: <20200420075711.2385190-1-Jason@zx2c4.com>
+        id S1726398AbgDVEwA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 22 Apr 2020 00:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726396AbgDVEv6 (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 22 Apr 2020 00:51:58 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163C7C061BD3
+        for <linux-crypto@vger.kernel.org>; Tue, 21 Apr 2020 21:51:57 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id u127so758626wmg.1
+        for <linux-crypto@vger.kernel.org>; Tue, 21 Apr 2020 21:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=rbRuIjvtduoe5rDmx04RZeGHXBKwqWRmrOmSv68i/zh0G7dxA9cd5BhZoNzJ9N6B2q
+         5eB51NESGTz0lJfH+OoJDDpVTo+qxXxhbnSi124B4kpTazwydRIeem0V0Rn2Gpx5AgR0
+         91NEqcfa3WVqIpxag75NoGWW8q+uGkZGsCXD6y7KSAZw3zwUWhfcRtU5JwJdpyeFBvpu
+         I/eS/Go/9Ngzu8uFpI6/iAFe+GNKuK94+IhnnbCYE3ObU/zUMmMxc5hbM6bTP89gbhB1
+         2q5YYLgiH1QtRPLQDAJanaf5afhK9Zv47Sl7DZd7niBJkxSc7pNbN0D3ID5H+5HRDiKJ
+         B/CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=pA1eXNV4PqDqr+kdgbB1JswvFa1lh9h50FGm6XC7dMn34TufoKRAawJHbK19fEtunG
+         R1pml/lrfB1dPWWn9kG2VKGLxdCsDT0qrO4PmqxgaK1gVUQFTH2JH0wYMLucA7b9fLzr
+         +MUunQetkhQMpZm9Mu0Q+pyOv1Xoe1u9WrHr9qyB7KS49qsjTqC7ZhEVK1e0hqh/2H3Y
+         EwQknr01m0xoNzfiTSpl9MI5CkS6c+Yv3HK1ZMs/X5SFAX3QpJ5XJboRPTAbpajwQv2b
+         6hmGZmygCFgdhuOh0AlerZmfh3KUQyBdzH1Anq34zkU2sF6+rABUTrolXwx2Rn9AiQst
+         Z1LQ==
+X-Gm-Message-State: AGi0PuabW4S5mPqXMYKsaPaFY5ibH5rigAXF01FpUo3KXT3m3KsIX7dp
+        MeQw+DXddNkKt7rSGGVUhTCAsEgYm2wnytb5YXo=
+X-Google-Smtp-Source: APiQypL/2Y40sQ9V2EzHiDRLKrhgwszpYu1a0Q6bQA5MqdrYj1kOd9PP/XC5k6D0HMy42i7zfiwBpsCi7b09DZy6BRw=
+X-Received: by 2002:a1c:8106:: with SMTP id c6mr8259513wmd.88.1587531115600;
+ Tue, 21 Apr 2020 21:51:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420075711.2385190-1-Jason@zx2c4.com>
+Received: by 2002:a5d:4f89:0:0:0:0:0 with HTTP; Tue, 21 Apr 2020 21:51:55
+ -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   AISHA GADDAFI <ayishagadafi1@gmail.com>
+Date:   Tue, 21 Apr 2020 21:51:55 -0700
+Message-ID: <CAKmdXwuFimH8EYAQwUEKONYSYPzAwag3nAxBnPDHNjfMK3VCwg@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 01:57:11AM -0600, Jason A. Donenfeld wrote:
-> The initial Zinc patchset, after some mailing list discussion, contained
-> code to ensure that kernel_fpu_enable would not be kept on for more than
-> a PAGE_SIZE chunk, since it disables preemption. The choice of PAGE_SIZE
-> isn't totally scientific, but it's not a bad guess either, and it's
-> what's used in both the x86 poly1305 and blake2s library code already.
-> Unfortunately it appears to have been left out of the final patchset
-> that actually added the glue code. So, this commit adds back the
-> PAGE_SIZE chunking.
-> 
-> Fixes: 84e03fa39fbe ("crypto: x86/chacha - expose SIMD ChaCha routine as library function")
-> Fixes: b3aad5bad26a ("crypto: arm64/chacha - expose arm64 ChaCha routine as library function")
-> Fixes: a44a3430d71b ("crypto: arm/chacha - expose ARM ChaCha routine as library function")
-> Fixes: f569ca164751 ("crypto: arm64/poly1305 - incorporate OpenSSL/CRYPTOGAMS NEON implementation")
-> Fixes: a6b803b3ddc7 ("crypto: arm/poly1305 - incorporate OpenSSL/CRYPTOGAMS NEON implementation")
-> Cc: Eric Biggers <ebiggers@google.com>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> ---
-> Eric, Ard - I'm wondering if this was in fact just an oversight in Ard's
-> patches, or if there was actually some later discussion in which we
-> concluded that the PAGE_SIZE chunking wasn't required, perhaps because
-> of FPU changes. If that's the case, please do let me know, in which case
-> I'll submit a _different_ patch that removes the chunking from x86 poly
-> and blake. I can't find any emails that would indicate that, but I might
-> be mistaken.
-> 
->  arch/arm/crypto/chacha-glue.c        | 16 +++++++++++++---
->  arch/arm/crypto/poly1305-glue.c      | 17 +++++++++++++----
->  arch/arm64/crypto/chacha-neon-glue.c | 16 +++++++++++++---
->  arch/arm64/crypto/poly1305-glue.c    | 17 +++++++++++++----
->  arch/x86/crypto/chacha_glue.c        | 16 +++++++++++++---
->  5 files changed, 65 insertions(+), 17 deletions(-)
+--=20
+Lieber Freund (Assalamu Alaikum),
 
-I don't think you're missing anything.  On x86, kernel_fpu_begin() and
-kernel_fpu_end() did get optimized in v5.2.  But they still disable preemption,
-which is the concern here.
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
-> 
-> diff --git a/arch/arm/crypto/chacha-glue.c b/arch/arm/crypto/chacha-glue.c
-> index 6fdb0ac62b3d..0e29ebac95fd 100644
-> --- a/arch/arm/crypto/chacha-glue.c
-> +++ b/arch/arm/crypto/chacha-glue.c
-> @@ -91,9 +91,19 @@ void chacha_crypt_arch(u32 *state, u8 *dst, const u8 *src, unsigned int bytes,
->  		return;
->  	}
->  
-> -	kernel_neon_begin();
-> -	chacha_doneon(state, dst, src, bytes, nrounds);
-> -	kernel_neon_end();
-> +	for (;;) {
-> +		unsigned int todo = min_t(unsigned int, PAGE_SIZE, bytes);
-> +
-> +		kernel_neon_begin();
-> +		chacha_doneon(state, dst, src, todo, nrounds);
-> +		kernel_neon_end();
-> +
-> +		bytes -= todo;
-> +		if (!bytes)
-> +			break;
-> +		src += todo;
-> +		dst += todo;
-> +	}
->  }
->  EXPORT_SYMBOL(chacha_crypt_arch);
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
 
-Seems this should just be a 'while' loop?
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
 
-	while (bytes) {
-		unsigned int todo = min_t(unsigned int, PAGE_SIZE, bytes);
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
 
-		kernel_neon_begin();
-		chacha_doneon(state, dst, src, todo, nrounds);
-		kernel_neon_end();
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
 
-		bytes -= todo;
-		src += todo;
-		dst += todo;
-	}
-
-Likewise elsewhere in this patch.  (For Poly1305, len >= POLY1305_BLOCK_SIZE at
-the beginning, so that could use a 'do' loop.)
-
-- Eric
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
