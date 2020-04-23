@@ -2,100 +2,92 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CC01B6112
-	for <lists+linux-crypto@lfdr.de>; Thu, 23 Apr 2020 18:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195971B63A5
+	for <lists+linux-crypto@lfdr.de>; Thu, 23 Apr 2020 20:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729509AbgDWQgF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 23 Apr 2020 12:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729407AbgDWQgF (ORCPT
+        id S1730293AbgDWS1i (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 23 Apr 2020 14:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730272AbgDWS0w (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 23 Apr 2020 12:36:05 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37561C09B041;
-        Thu, 23 Apr 2020 09:36:05 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id j26so7157433ots.0;
-        Thu, 23 Apr 2020 09:36:05 -0700 (PDT)
+        Thu, 23 Apr 2020 14:26:52 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CBFC09B055
+        for <linux-crypto@vger.kernel.org>; Thu, 23 Apr 2020 11:26:51 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id f19so7523830iog.5
+        for <linux-crypto@vger.kernel.org>; Thu, 23 Apr 2020 11:26:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZD5R6FmUjPmeYL4MRpYo2rDAvGPliTwTgGLA+RltUqk=;
-        b=mrzi5atRRI2q3lMqAA6n6OfEcnerfPoNonIqtPU1b5IDS8I6RB9CnvWYjRv1+FNgQ+
-         1hQAvaydH0SIwTKWkrXj0QXhUfIK7hJCMjAWxzcrsLndr1hHEojvwqlL9RE+KQf41Ohw
-         C54/gWvcQ7WhARr0DpWrTGZf+WKCLWpHAtHfJYQtCSO90ZL8EyJHMWx/MXBKVpftxaos
-         cwYgQwfkrRlpKd9+NJJoijx7ki+uV2tKrs1W3OBSTKJwxyzxREaiRBOWIiV2NdB25J7n
-         FR1p6b7X6MfsupFfkyZngdbfHyxhf9Q9zT22p4VrdGFWefKKNostT25EZM/L95tn/vFa
-         NFDw==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=DHzQtr3OkXyFWXbvXEU307GvVJtF7cl8Gt7nfdQPyE8=;
+        b=g40sBMuaO0eKdotmx6qgQBl63DKBmrekz5bvyEQHA4wVZtcqrxc+aFVgh/QD84O9VQ
+         7GeGJGwCstc5CQBYUut5JFB/SR9hiHRBoNucBdQ5+M/xcZE7LYnQNVriX94nlJDQQ53M
+         WWNnGuPMmJMtuCxOc6M3BOG48McWyi9pwkfv1qCbwmDhh95byI3UmcGK9ZJ59xQm/kqA
+         giNgZwxUHu+XTIAoqn/uu1orK63Ur+6hMBQW2TB101zb0oJ5HpVThkCq6id/TjpQtg27
+         HPMb1DcYsj7bM6wQaeV1UkPK6mgUhECRFNV10F5zDhvx1RXP4ikb8uuEIGMKOSNWVb51
+         vLew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZD5R6FmUjPmeYL4MRpYo2rDAvGPliTwTgGLA+RltUqk=;
-        b=XWwVU5kDNLDOp5b4AZ3iJHQNUquw168w/IhIE2Zltryw7yVceTCHYgbAhFFhdGcLNp
-         iabTr4mokGM0Z4WfpoQlpjijHi0JfYJP806TTKte7WC4jQKOIUVFIsi8YUkTkq/m2bjR
-         l68i9wzKZP9HAVZXaucerXQSfiDLbtbWxcXbvMafoUAIUpzUSnePAEZT/y2m+HWZp7AA
-         yHpXsvjnqkdzePDfJf7rWuK/ZSzPfcLL5yVmUwUjFkEcQxElIqgZvNgzQFa+TdDm9IKy
-         qoo/2Moy6lSpkTmTSdxgK7MxU09eGHJywxt/H8vMUMkWJTgkCTD5SkCSeBMdmj3Rdumm
-         5DlQ==
-X-Gm-Message-State: AGi0PuamYAD8UsUEQYf88ljQuStzjxj/awg81XXc5NKZ0eC57U7HIdab
-        wzbQUSXuKApcGrERL/4R2H7bSNktixQ=
-X-Google-Smtp-Source: APiQypJHtf6Ck2oO+M4egmth4Lj3DPdzF5M8EvzupgTfw7XGpdJcG37znh+DX6bhvgIOm+iyOdEuew==
-X-Received: by 2002:aca:f254:: with SMTP id q81mr3723853oih.12.1587659764320;
-        Thu, 23 Apr 2020 09:36:04 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id b19sm791382oii.1.2020.04.23.09.36.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 Apr 2020 09:36:03 -0700 (PDT)
-Date:   Thu, 23 Apr 2020 09:36:02 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH] lib/mpi: Fix building for powerpc with clang
-Message-ID: <20200423163602.GA18872@ubuntu-s3-xlarge-x86>
-References: <20200413195041.24064-1-natechancellor@gmail.com>
- <20200414135731.GA8766@gondor.apana.org.au>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=DHzQtr3OkXyFWXbvXEU307GvVJtF7cl8Gt7nfdQPyE8=;
+        b=lp3jdvT30p9xt1HM2rNte2SKC/Zp++z0AUi4x2gFEbq7vT+sXhNtA4DIqB3sRw4vzS
+         SiLUy0U7NfF/Neo4FQvc3XbwIZRrEqyB+jLgN3jSUcBuMB4FonhsBnQ2+cBxx1gqb50P
+         xaUvCYS6Il/6JSMH5alv2AwkkhaWMX51GRjE2CWC9dpzMu8aAU+BZG28gn01ZTxeWeNi
+         hJBGrcHBTQJH/Ik7t7JrqFMVIqrSzg+SqjcLE62Z7As/l4UEi7jGIN/t3DvRVnHML2in
+         4sEYDOyiKQRFFA05tfq24KJm1O9NX9fUeAqPMhPuB0Z75WkMtnNIjKBtc3DyCx60qR5B
+         h8pw==
+X-Gm-Message-State: AGi0PuYn96EahskGGZISS6Bu065UODUnqNHfmfere7nEpDBLan0Wl8I2
+        kqK2weemI4Yu+qHntb8b20xbE4JBKPF6dqjIdQ==
+X-Google-Smtp-Source: APiQypKZ88CB7WlyCjo0k9+cU4PX0VcggKkKtzSKgRJHkcPGizF0yZXAjzEMBgo6XH4xzBXv0KAOMjPM9p1sgpp6/70=
+X-Received: by 2002:a5e:9416:: with SMTP id q22mr2547966ioj.93.1587666410194;
+ Thu, 23 Apr 2020 11:26:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414135731.GA8766@gondor.apana.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Received: by 2002:a02:c845:0:0:0:0:0 with HTTP; Thu, 23 Apr 2020 11:26:49
+ -0700 (PDT)
+Reply-To: boa.benin107@yahoo.com
+From:   "Mrs. Angella Michelle" <info.zennitbankplcnigerian@gmail.com>
+Date:   Thu, 23 Apr 2020 20:26:49 +0200
+Message-ID: <CABHzvr=N78snvtMHePMOa+RLFdcZEjXLPkuhkojt4VoZGNzBsQ@mail.gmail.com>
+Subject: Contact Bank of Africa-Benin to receive your payment funds transfer
+ amount of $12.800.000,00 Million USD,approved this morning by IMF.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 11:57:31PM +1000, Herbert Xu wrote:
-> On Mon, Apr 13, 2020 at 12:50:42PM -0700, Nathan Chancellor wrote:
-> > 0day reports over and over on an powerpc randconfig with clang:
-> > 
-> > lib/mpi/generic_mpih-mul1.c:37:13: error: invalid use of a cast in a
-> > inline asm context requiring an l-value: remove the cast or build with
-> > -fheinous-gnu-extensions
-> > 
-> > Remove the superfluous casts, which have been done previously for x86
-> > and arm32 in commit dea632cadd12 ("lib/mpi: fix build with clang") and
-> > commit 7b7c1df2883d ("lib/mpi/longlong.h: fix building with 32-bit
-> > x86").
-> > 
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/991
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> 
-> Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
-> -- 
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
-
-Might be better for you to take this instead. 0day just tripped over
-this again.
-
-Cheers,
-Nathan
+Attn Dear.
+Contact Bank of Africa-Benin to receive your payment funds transfer amount =
+of
+$12.800.000,00 Million USD,approved this morning by IMF.
+Happy to inform you, we have finally deposited your payment funds
+$12.8 million us dollars with the Paying Bank of Africa-Benin
+to transfer the payment amount of $12.800,000,00 Million Us Dollars to you
+Contact the bank immediately you receive this email now.
+Director Bank of Africa-Benin: Dr. Festus Obiara
+Email id:  boa.benin107@yahoo.com
+Tel/mobile, (229) 62819378
+BOA-BENIN | GROUPE BANK OF AFRICA, boa-benin
+Avenue Jean-Paul II - 08 BP 0879 - Cotonou - B=C3=A9nin
+Phone:(229) 62819378.
+2020 GROUPE BANK OF AFRICA
+Be advised to re-confirm your bank details to this bank as listed.
+Your account Holder's name----------------
+Bank Name----------------------------------------------------------
+Bank address----------------------------------------------
+Account Numbers---------------------------------------
+Rounting-----------------------------------------------------------------
+Your direct Phone Numbers----------------------------------------------
+Note,I have paid the deposit and insurance fees for you
+But the only money you are to send to this bank is $150.00 us dollars
+Been for the wire transfer fees of your funds
+Contact Him now to receive your transfer deposited this morning
+I wait for your reply upon confirmation
+Mrs. Angella Michelle
+Editor, Zenith Bank- Companies Benin
+mrsa9389@gmail.com
