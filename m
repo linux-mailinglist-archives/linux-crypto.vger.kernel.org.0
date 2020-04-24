@@ -2,101 +2,114 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FF11B7727
-	for <lists+linux-crypto@lfdr.de>; Fri, 24 Apr 2020 15:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A0E1B77BF
+	for <lists+linux-crypto@lfdr.de>; Fri, 24 Apr 2020 16:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgDXNlG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 24 Apr 2020 09:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
+        id S1727059AbgDXOCZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 24 Apr 2020 10:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727082AbgDXNk7 (ORCPT
+        by vger.kernel.org with ESMTP id S1726717AbgDXOCY (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 24 Apr 2020 09:40:59 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560CBC09B045
-        for <linux-crypto@vger.kernel.org>; Fri, 24 Apr 2020 06:40:59 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id g13so10848707wrb.8
-        for <linux-crypto@vger.kernel.org>; Fri, 24 Apr 2020 06:40:59 -0700 (PDT)
+        Fri, 24 Apr 2020 10:02:24 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5C1C09B045
+        for <linux-crypto@vger.kernel.org>; Fri, 24 Apr 2020 07:02:24 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id j1so10967561wrt.1
+        for <linux-crypto@vger.kernel.org>; Fri, 24 Apr 2020 07:02:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=O3kXCksVkplPGu3RGgTbI+iq8pciZUYI4GkLsC8wbL8=;
-        b=G81Ll6c5opzW5zFc63Alaqh/e+btp5X6IQl1HpHHDi6dl0xRO4wvNA9qi3J59TOz+o
-         SvXiRP6tetznCFSbdETva7YcrKJmDPcBMJKNIJZJXgO4RpYRS0sWAgEILBButaqg8W80
-         TW5Uls5hswSlnuMz0fv//No+aoD9XjRGTWb1ulgHJ7j1xVCLGjNzXQ0Mh/oGWgTND94d
-         pgQZhaaJ3DvAWxn1eKeoZpZcc7JEp3EX/WsQO7pD6nvwBYGG5Lcj3dlk38mwmXMFmzT4
-         gFSb4lLr6W+VJpwRLk296Jzz3kTCeajnhE4WJLkLXLhFvqPqegy7ZGijF5hEV1mPB7uk
-         /OoA==
+        h=from:to:cc:subject:date:message-id;
+        bh=7ZczxD3IWu8/fwlBlJGiVi7Lo8lRg9T/jE4rdraMVHA=;
+        b=M/YU1V3r+a/4U52L4urd8LZmQAjraZmMFffJo/cvoynAvedsZpr+HGLFo5pARAE9na
+         aNeIvVge/RB983yam/OB4Dstz4W/2DpFAh7aAlIbbtNrVhpsWWQN38K2JhtgEYZF6qel
+         6nVp8RnxVrK0SyRbHWDyAeGu19yJmMqGc3wu65ExvQPi76vWrRYLkhfaclE6k3fmu3X4
+         +TQ1dVRTEka/4ssVjBPKTTvrV2Zewt1b9l0AuV7smmkflPuKcwC0gAX2jV1AqwevOFZ9
+         Yq/iZZptWBnlysoFCKRzNWYIrYrcar5GNpBXxvniX+/rnV/84xJvYluscPYl+/GRJ/Th
+         t/SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=O3kXCksVkplPGu3RGgTbI+iq8pciZUYI4GkLsC8wbL8=;
-        b=pV+JGD4ecIcsdrYo9v4IPkuOhTYKLELtQ9fxrtErwT7UZuI+lE3ILLUfSp7d2b6WEm
-         xxliWPrAudNKNrYYksPwBA4otDG2SvlKKmaXwMMII1CK55eCAfzop4KAYva0lRDctkig
-         xLH6CnBeHV910McVGGf472cV1UODkcAlTmRdqOuTw8e9u9se8guVVo3YDVE9mkWkBeP0
-         Cc6mMHuHzxNqT5pMalztaZ/EEIR0rEgzVTQyERODP7Nx2T55wEba6cgZjr+oicREOM1N
-         yk49tMVT09m/KWSvqbFPvd3ZVKUhkz7ZmzduugOyoOhrAImCWumJU2OjhG/aPCvt5wvW
-         Fl9Q==
-X-Gm-Message-State: AGi0PuZ+Q0zuqRVEnPTzncIzDgZjir67E42p1xFecZszX+q/Fz9ck2GU
-        azOlaLZRo8gKQAYH0vSFDAyXwA==
-X-Google-Smtp-Source: APiQypKnTfqip7b5mE8+3UKvsXuGNUavHQ6pIWXq2hDs60y/tQb8fIgLHxsyOKmb1F51FZBX1GVKNg==
-X-Received: by 2002:adf:d091:: with SMTP id y17mr10891464wrh.418.1587735658098;
-        Fri, 24 Apr 2020 06:40:58 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=7ZczxD3IWu8/fwlBlJGiVi7Lo8lRg9T/jE4rdraMVHA=;
+        b=rpxCN6rnGEv3t5odVyxJX2LKK0r42cnrNRrqMJUIfze3TX76hkOri1IYw0FawO9xXH
+         JKQmmHo9FkunEXBwTZ6Fh/vh1nAERsBLn3A0tYdPGPjL7kk2tAR54kRm6kWEXg/EPNdf
+         lGHsKl/ptrZUPzvtkprDUzckH/oO7r5r7v3Xzqq87NWYfLhTIJMzuRAxpAr3OSJj4/Ys
+         duDLbp3/AaihNlSAecD4ApVZsj1CnxuGqjMkCYJ5ZIhByTZM5MMqRJH1LXl7MFopyn3Q
+         PdgC0E9Xgx2YCJl3VE5Q18Wnawqjo8BbWNAeabohBRsDEJwQaU1hv2tqHE6+X4jsdoaK
+         I+dg==
+X-Gm-Message-State: AGi0PuZRYcXjuB4c11AQx2ANHZTPBVC+agA+dM/w9+wx1JS4cF6fqau2
+        BOOoGQJa4GkleYNhvdRySkoFEQ==
+X-Google-Smtp-Source: APiQypKaNGGMpvmyVINuIht/92jMND+x+I0jOdoShhcOzF62gR5+c4rD4idckshS2G+eaaNLoMu3DQ==
+X-Received: by 2002:adf:bb0d:: with SMTP id r13mr11991980wrg.251.1587736943098;
+        Fri, 24 Apr 2020 07:02:23 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id 185sm3408958wmc.32.2020.04.24.06.40.57
+        by smtp.googlemail.com with ESMTPSA id v131sm3061051wmb.19.2020.04.24.07.02.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Apr 2020 06:40:57 -0700 (PDT)
+        Fri, 24 Apr 2020 07:02:22 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mripard@kernel.org, wens@csie.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
         Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v3 3/3] crypto: drbg: DRBG_CTR should select CTR
-Date:   Fri, 24 Apr 2020 13:40:47 +0000
-Message-Id: <1587735647-17718-4-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH v2 00/14] crypto: allwinner: add xRNG and hashes
+Date:   Fri, 24 Apr 2020 14:02:00 +0000
+Message-Id: <1587736934-22801-1-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587735647-17718-1-git-send-email-clabbe@baylibre.com>
-References: <1587735647-17718-1-git-send-email-clabbe@baylibre.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-if CRYPTO_DRBG_CTR is builtin and CTR is module, allocating such algo
-will fail.
-DRBG: could not allocate CTR cipher TFM handle: ctr(aes)
-alg: drbg: Failed to reset rng
-alg: drbg: Test 0 failed for drbg_pr_ctr_aes128
-DRBG: could not allocate CTR cipher TFM handle: ctr(aes)
-alg: drbg: Failed to reset rng
-alg: drbg: Test 0 failed for drbg_nopr_ctr_aes128
-DRBG: could not allocate CTR cipher TFM handle: ctr(aes)
-alg: drbg: Failed to reset rng
-alg: drbg: Test 0 failed for drbg_nopr_ctr_aes192
-DRBG: could not allocate CTR cipher TFM handle: ctr(aes)
-alg: drbg: Failed to reset rng
-alg: drbg: Test 0 failed for drbg_nopr_ctr_aes256
+Hello
 
-So let's select CTR instead of just depend on it.
+The main goal of this serie is to add support for TRNG, PRNG and hashes
+to the sun8i-ss/sun8i-ce.
+The whole serie is tested with CRYPTO_EXTRA_TESTS enabled and loading
+tcrypt.
+The PRNG and TRNG are tested with rngtest.
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- crypto/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Regards
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index a5936e967fe2..7c2c09a76173 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1821,7 +1821,7 @@ config CRYPTO_DRBG_HASH
- config CRYPTO_DRBG_CTR
- 	bool "Enable CTR DRBG"
- 	select CRYPTO_AES
--	depends on CRYPTO_CTR
-+	select CRYPTO_CTR
- 	help
- 	  Enable the CTR DRBG variant as defined in NIST SP800-90A.
- 
+Change since v1:
+- removed _crypto_rng_cast patch
+
+Corentin Labbe (14):
+  crypto: sun8i-ss: Add SS_START define
+  crypto: sun8i-ss: Add support for the PRNG
+  crypto: sun8i-ss: support hash algorithms
+  crypto: sun8i-ss: fix a trivial typo
+  crypto: sun8i-ss: Add more comment on some structures
+  crypto: sun8i-ss: better debug printing
+  crypto: sun8i-ce: move iv data to request context
+  crypto: sun8i-ce: split into prepare/run/unprepare
+  crypto: sun8i-ce: handle different error registers
+  crypto: sun8i-ce: rename has_t_dlen_in_bytes to cipher_t_dlen_in_bytes
+  crypto: sun8i-ce: support hash algorithms
+  crypto: sun8i-ce: Add stat_bytes debugfs
+  crypto: sun8i-ce: Add support for the PRNG
+  crypto: sun8i-ce: Add support for the TRNG
+
+ drivers/crypto/allwinner/Kconfig              |  43 ++
+ drivers/crypto/allwinner/sun8i-ce/Makefile    |   3 +
+ .../allwinner/sun8i-ce/sun8i-ce-cipher.c      |  99 +++-
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 365 +++++++++++++-
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 415 ++++++++++++++++
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 189 ++++++++
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-trng.c | 123 +++++
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h  | 135 +++++-
+ drivers/crypto/allwinner/sun8i-ss/Makefile    |   2 +
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 198 +++++++-
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-hash.c | 446 ++++++++++++++++++
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-prng.c | 167 +++++++
+ drivers/crypto/allwinner/sun8i-ss/sun8i-ss.h  |  93 +++-
+ 13 files changed, 2236 insertions(+), 42 deletions(-)
+ create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
+
 -- 
 2.26.2
 
