@@ -2,58 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806311B7729
-	for <lists+linux-crypto@lfdr.de>; Fri, 24 Apr 2020 15:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6411B7726
+	for <lists+linux-crypto@lfdr.de>; Fri, 24 Apr 2020 15:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgDXNk7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 24 Apr 2020 09:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34808 "EHLO
+        id S1727034AbgDXNlF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 24 Apr 2020 09:41:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727034AbgDXNk5 (ORCPT
+        by vger.kernel.org with ESMTP id S1727089AbgDXNlA (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 24 Apr 2020 09:40:57 -0400
+        Fri, 24 Apr 2020 09:41:00 -0400
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F86DC09B046
-        for <linux-crypto@vger.kernel.org>; Fri, 24 Apr 2020 06:40:57 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id b11so10851429wrs.6
-        for <linux-crypto@vger.kernel.org>; Fri, 24 Apr 2020 06:40:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59342C09B047
+        for <linux-crypto@vger.kernel.org>; Fri, 24 Apr 2020 06:40:58 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id g13so10848639wrb.8
+        for <linux-crypto@vger.kernel.org>; Fri, 24 Apr 2020 06:40:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=lZIpuSXPWLsZ3Ntzn02RaqZNB9d6vv/shxve5+NZrVw=;
-        b=PbpA/M6vlDjGx2msHfbPEgx/0Gh27wx83HRlNWMItDypNd1lm61IKglY2gTJqgHinR
-         pAI2vwQKyWYpC2JofIrkmK4L/w5JRW9VVwabZuxF2F/EAI6fyRdtTwlFwDnJzwHavsGj
-         eYkmVQCHT7SKlFeCGqLmQvVvfOC1wBlohUFmISLz858FmCRTkQxCstXuIUjjd4hz3J8l
-         iYe30ZIP7XCSCzCu/Zg6EBfg2nssXmH0tNxPu5gPFmnmzwpIE8sKgzXC+yqF2EqCUwOs
-         CO1u5xmMHTLIISY16OX4YAbl95NyLc04RJR967aJqJNt0Q7WM/Xcw+hslecFOvRf1d7S
-         ReNQ==
+        bh=Ndmpq96aa384Sl37ToPJaNdgDlf/x8LYEzQhHaZaot8=;
+        b=ADkPnr9yiaJF6N83Qi1UawN9bUOTC2Lz/MtEbZn5OOZx/E5srl3KrUk2E27M/S2X4r
+         U1eeGYQLhrcy++Mk8dVDU98gGWuwX0FrxKaeRuzRQYoexv3d2HB1sScZ3lMTK8k+uxR7
+         SnkeUasvRakQ1tu2bREUrO8DV6761/6cnQYh5vTiQ+QrZ57zSXb+rwbzqS2tnRORzxI3
+         EJGcPmAcEl/wDCAeDX+1PSnhr2yPh/U8tLNgst4aOKqOpfHU5fpuNOtFjZsSIIAuzVy7
+         56vs+RbGY7D0CMMyXQmAJSoPpYhpNXhGPea3ipagCNecPElxA5TMVfb1f+7AzTn7m1GH
+         ijaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=lZIpuSXPWLsZ3Ntzn02RaqZNB9d6vv/shxve5+NZrVw=;
-        b=PHgVXjUiOzr+C9sOTTc0nTJ/gaGoGVEE29V4C+GAFVkDO8yz1qUNzYjUDZwIeT/aCb
-         lF32A89PB2XD6RhTaZul4yOUHNi3WMMBoFNCGHRnysFvUuSTlCgEkQvFkA/oVYxtCYZv
-         SAuHwvxMith6AIu9eUKPAakF2614Aor3on7x467R0QiG5NhWo9EBrI1Z9UheVZomw9nK
-         hma9hcSr7Uugvu3mI9ZEuhTc46l+DW4oQtDiIyScN2HgSusqASfFk1N4RwYVTKWbeHUg
-         FcuOcYrcsh1OojZ5BTeele1H9kYPnDDTJ7pUwRGboE48wY3mkgeXzXIPrFPLpP2cNTZs
-         1qZg==
-X-Gm-Message-State: AGi0PuZgen9eAVO13dmF08fml4tYtWSg1EfQTB36iLKM4b5tVOIXti1s
-        j4nmoV38AipBNoHBT487Ae+dXSIyaAk=
-X-Google-Smtp-Source: APiQypL35SBMMUsY5m5WKFj4P1hk4bx3+QgIbAuAEuKOPI7TwoKFQzAuisIx7hpc0X/gdYCoGiqr1Q==
-X-Received: by 2002:adf:fe87:: with SMTP id l7mr11890198wrr.360.1587735656113;
-        Fri, 24 Apr 2020 06:40:56 -0700 (PDT)
+        bh=Ndmpq96aa384Sl37ToPJaNdgDlf/x8LYEzQhHaZaot8=;
+        b=MMeKNuMk24Hwd2Ej4boOQMjmeqqK5x4OZlBxQQXTmxrwlDnecyVjU7oFp9mSeLeBQu
+         WT3qPtjRD8SLABB6rxJRl2t0hAR0FreK9PAO+iP7RTw9qClsjVSqYoPjmYUhzVKPmao9
+         XfhkEzAP4Rsapydg+oaEBVPDxtAJRwrsRxPEdlkrJrwc4LDM9hmjO+MYvIzIWGsUlGic
+         b1hG2q7AuGNhy8TQGjAF73bOdk/pt4VcUxXdjC9whY5j0WHaWR9CTMUKwdACgxdNLnG2
+         8ZWZhXNqlKTGjs4aidcb7SmS0J6KoY3BlAfaWAHAeuXAw4Ap0+zySEixtvmLXv01XXK7
+         aKsA==
+X-Gm-Message-State: AGi0PuZNQA3EXASXZ5226SHtGguWIDT/jSkQ+7iZbfAXfqtOkjOuFdsF
+        WFSQCIrQ8k3XaXwDpJJU3qkKncv6S1U=
+X-Google-Smtp-Source: APiQypIM3oR2zdqBn4FAYYq15nUy0OKbqAG2Qu+Xz4Qva4HgoEXlu8D3GkIfWKWMwxq1IUmnin2vMQ==
+X-Received: by 2002:adf:83c2:: with SMTP id 60mr11023887wre.169.1587735657134;
+        Fri, 24 Apr 2020 06:40:57 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id 185sm3408958wmc.32.2020.04.24.06.40.55
+        by smtp.googlemail.com with ESMTPSA id 185sm3408958wmc.32.2020.04.24.06.40.56
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Apr 2020 06:40:55 -0700 (PDT)
+        Fri, 24 Apr 2020 06:40:56 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     davem@davemloft.net, herbert@gondor.apana.org.au
 Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v3 1/3] crypto: drbg: DRBG should select SHA512
-Date:   Fri, 24 Apr 2020 13:40:45 +0000
-Message-Id: <1587735647-17718-2-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH v3 2/3] crypto: CRYPTO_CTR no longer need CRYPTO_SEQIV
+Date:   Fri, 24 Apr 2020 13:40:46 +0000
+Message-Id: <1587735647-17718-3-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1587735647-17718-1-git-send-email-clabbe@baylibre.com>
 References: <1587735647-17718-1-git-send-email-clabbe@baylibre.com>
@@ -62,30 +62,28 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Since DRBG could use SHA384/SHA512, it should select it.
+As comment of the v2, Herbert said: "The SEQIV select from CTR is historical
+and no longer necessary."
+
+So let's get rid of it.
 
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- crypto/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ crypto/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/crypto/Kconfig b/crypto/Kconfig
-index c24a47406f8f..6d27fc6a7bf5 100644
+index 6d27fc6a7bf5..a5936e967fe2 100644
 --- a/crypto/Kconfig
 +++ b/crypto/Kconfig
-@@ -1810,10 +1810,12 @@ config CRYPTO_DRBG_HMAC
- 	default y
- 	select CRYPTO_HMAC
- 	select CRYPTO_SHA256
-+	select CRYPTO_SHA512
- 
- config CRYPTO_DRBG_HASH
- 	bool "Enable Hash DRBG"
- 	select CRYPTO_SHA256
-+	select CRYPTO_SHA512
+@@ -370,7 +370,6 @@ config CRYPTO_CFB
+ config CRYPTO_CTR
+ 	tristate "CTR support"
+ 	select CRYPTO_SKCIPHER
+-	select CRYPTO_SEQIV
+ 	select CRYPTO_MANAGER
  	help
- 	  Enable the Hash DRBG variant as defined in NIST SP800-90A.
- 
+ 	  CTR: Counter mode
 -- 
 2.26.2
 
