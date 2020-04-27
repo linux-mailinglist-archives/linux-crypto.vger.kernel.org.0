@@ -2,94 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97051B979F
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2020 08:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DA31B97D2
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2020 08:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgD0GnX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 27 Apr 2020 02:43:23 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:1593 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726496AbgD0GnU (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 27 Apr 2020 02:43:20 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03R6cO6G024040;
-        Mon, 27 Apr 2020 08:42:59 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=lh1kBYgL+JLuoCQaaOo5FYMEjoKA0Zs0ybVKkeHad0s=;
- b=eci8SxyS83Z1lVviB+tuVkqLFpMh+zwi0AEZGatqH2sQ9FAqxu2M7g+2A6oSgZ3Gm4GN
- mTJUhpBAUVh/xf1WX0VSTowK/ONKfTj2aWFjwVf/1Q1DuLoMM3/rU1sJ9Q7yRmW6hun7
- Bqmx2Luc07UgcJ1sbHHs5AmXmB193dQiBR8bIHm1lMpNd7x3yPStqKKdm/g/Q+TpcrRG
- 2XzHOLf979Fqk77FjP560ci6aMT5pyfcZx7wVj8/IZodcD1j/mVs6XcdPfPzs9pmtq98
- E1DPmXG6+kZqHtI7hxL3GrB70hHWvvQU+acbS3IjpA0p1bY3y3a7vXHn5//klolzavCi LQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30mhq5r2h8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Apr 2020 08:42:59 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CB560100038;
-        Mon, 27 Apr 2020 08:42:58 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag7node2.st.com [10.75.127.20])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B92AB21F679;
-        Mon, 27 Apr 2020 08:42:58 +0200 (CEST)
-Received: from localhost (10.75.127.46) by SFHDAG7NODE2.st.com (10.75.127.20)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 27 Apr 2020 08:42:58
- +0200
-From:   Lionel Debieve <lionel.debieve@st.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        <linux-crypto@vger.kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: [PATCH 3/3] crypto: stm32/hash - don't print error on probe deferral
-Date:   Mon, 27 Apr 2020 08:42:26 +0200
-Message-ID: <20200427064226.6991-4-lionel.debieve@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200427064226.6991-1-lionel.debieve@st.com>
-References: <20200427064226.6991-1-lionel.debieve@st.com>
+        id S1726611AbgD0G6b (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 27 Apr 2020 02:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726539AbgD0G6b (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 27 Apr 2020 02:58:31 -0400
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 722B4217BA;
+        Mon, 27 Apr 2020 06:58:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587970710;
+        bh=BH25q4ox23BW3FKdKWlrgv6GNAblqqJelLmOgAaRXfE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KN3VthEga1Dlobi7MKNVeKkx35ynJB0XYaV7ISXyuLI7xev2jzkE2PiTAcOJGKck8
+         OOapEHynwz0QiOh8knh0pEywgvwIONTP/7CRxHObodn/D/mrxr/e11D3m/xeZkdVuK
+         C3yX5JmdxcTrrl+JMESOX9Rwuvmzhz6CXcfaWkH4=
+Received: by mail-il1-f173.google.com with SMTP id m5so7443407ilj.10;
+        Sun, 26 Apr 2020 23:58:30 -0700 (PDT)
+X-Gm-Message-State: AGi0PualtMOTlEN/xSs0HyD04ua9Epzti94pBSOZzristTOqjHTG0Cb4
+        ysoZHaDO4+Ca2O0/lxcQlCpEO5xoLN8/mdju/Vs=
+X-Google-Smtp-Source: APiQypLYJKvvsGMLuuLQKHPaoSK2vexjk9mfhROlFt2OzJZ+PerIxGaNFu2HXVpq6ZZKwTR5ejj64dtjHoSK8bQQZCk=
+X-Received: by 2002:a92:607:: with SMTP id x7mr18076185ilg.218.1587970709786;
+ Sun, 26 Apr 2020 23:58:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG7NODE2.st.com
- (10.75.127.20)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-27_03:2020-04-24,2020-04-27 signatures=0
+References: <1587966099-28139-1-git-send-email-hadar.gat@arm.com> <1587966099-28139-2-git-send-email-hadar.gat@arm.com>
+In-Reply-To: <1587966099-28139-2-git-send-email-hadar.gat@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 27 Apr 2020 08:58:18 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHN1qzoP9YNmrFcTJRncJE88Jyp_MS_9XrdAiY9v6DAyw@mail.gmail.com>
+Message-ID: <CAMj1kXHN1qzoP9YNmrFcTJRncJE88Jyp_MS_9XrdAiY9v6DAyw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] hwrng: cctrng - Add dependency on OF
+To:     Hadar Gat <hadar.gat@arm.com>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        Zaibo Xu <xuzaibo@huawei.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ofir Drang <ofir.drang@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Change driver to not print an error message when the device
-probe is deferred for a clock resource.
+On Mon, 27 Apr 2020 at 07:42, Hadar Gat <hadar.gat@arm.com> wrote:
+>
+> The cctrng is unusable on non-DT systems so we should depend
+> on it.
+>
+> Signed-off-by: Hadar Gat <hadar.gat@arm.com>
+> ---
+>  drivers/char/hw_random/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+> index 0c99735..df2d001 100644
+> --- a/drivers/char/hw_random/Kconfig
+> +++ b/drivers/char/hw_random/Kconfig
+> @@ -476,7 +476,7 @@ config HW_RANDOM_KEYSTONE
+>
+>  config HW_RANDOM_CCTRNG
+>         tristate "Arm CryptoCell True Random Number Generator support"
+> -       depends on HAS_IOMEM
+> +       depends on HAS_IOMEM & OF
 
-Signed-off-by: Lionel Debieve <lionel.debieve@st.com>
----
- drivers/crypto/stm32/stm32-hash.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Does your driver in fact depend on CONFIG_HAS_IOMEM ?
 
-diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
-index 0d592f55a271..03c5e6683805 100644
---- a/drivers/crypto/stm32/stm32-hash.c
-+++ b/drivers/crypto/stm32/stm32-hash.c
-@@ -1464,8 +1464,11 @@ static int stm32_hash_probe(struct platform_device *pdev)
- 
- 	hdev->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(hdev->clk)) {
--		dev_err(dev, "failed to get clock for hash (%lu)\n",
--			PTR_ERR(hdev->clk));
-+		if (PTR_ERR(hdev->clk) != -EPROBE_DEFER) {
-+			dev_err(dev, "failed to get clock for hash (%lu)\n",
-+				PTR_ERR(hdev->clk));
-+		}
-+
- 		return PTR_ERR(hdev->clk);
- 	}
- 
--- 
-2.17.1
-
+>         default HW_RANDOM
+>         help
+>           This driver provides support for the True Random Number
+> --
+> 2.7.4
+>
