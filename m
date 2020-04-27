@@ -2,40 +2,40 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D641B979B
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2020 08:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1BD1B97A0
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2020 08:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbgD0GnW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1726657AbgD0GnW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Mon, 27 Apr 2020 02:43:22 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:35966 "EHLO
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:1735 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726537AbgD0GnV (ORCPT
+        by vger.kernel.org with ESMTP id S1726604AbgD0GnV (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 27 Apr 2020 02:43:21 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03R6cFpq024199;
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03R6cO6E024040;
         Mon, 27 Apr 2020 08:42:58 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-type; s=STMicroelectronics;
- bh=tCfxJ7AYA01s98UE4V0m7JDke4Id5IZKext6NMmW5s4=;
- b=kIGb4VL+fyuhhQWMEYWLDDOnc4kVtN9LNk+6HKks+iQb5vaDh1XQhetQ0NkZZVRzzQiS
- HdkxMrvx+iFBO1Z93KBwZXFRf9cmlfNja7NaaMTlvuiUmMnBIiXwjuG5yGIAIhRw5WaU
- 4ItH9on/vWyzuhF8eTD4nwTe3F3fkQbep9DEMKg9rp9MXjHwI5CBKTd52T2E2StxZGhV
- NsGM4SsVdQDyRK7xtMy4X2mRUK/xfv6zDvjyq409TidiDLoS1hxhloZMNmEO2yJGv12b
- jxK9oRDsfpxM0dRwqzrHv2jlJ743O9Y9gFkJ4F4q2bg9jDYrtQkjEFPTrrVIujmvcCWd lQ== 
+ bh=qTrXLMk8kkMPS+GB6wCw5fDokR6i+JUeBx7KNCnu20M=;
+ b=JVZbmY8YF3kq5dC1pmWwppQKYL0W48nwqEgXn5vsvIbeHhEc+A0W+68/Iw7C9bKgryM+
+ VRPjL2cVSvkuQso/VoTVX/jGsDMbWMTzC5d7oCRlzHwmHYnkEnZvXwoTDJJcj+ryLAcj
+ mor5PXc40TgpjAr5K6XIB9Uux4PMFo6yE1eGG6nzCq9zsAB5Uy6NSGDug4E2BgYiFH4K
+ Ns7gy5M2cR/h0SsBslll6Z9Dg0Kt1ZMzpxgwOVnEmnio0O4Rk3Iqo052ZfWAETTAW5gj
+ rDb4ov6ldGUJ04MUSwfEBc9tlkk17X7eR5MZvRI/PRmbRG6VkYAgFYE8bdI6ifykuE5M 3Q== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30mhjwg3gr-1
+        by mx07-00178001.pphosted.com with ESMTP id 30mhq5r2h6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Mon, 27 Apr 2020 08:42:58 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 47134100038;
-        Mon, 27 Apr 2020 08:42:56 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6E980100039;
+        Mon, 27 Apr 2020 08:42:57 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag7node2.st.com [10.75.127.20])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 34F5921F67A;
-        Mon, 27 Apr 2020 08:42:56 +0200 (CEST)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5F18521F67B;
+        Mon, 27 Apr 2020 08:42:57 +0200 (CEST)
 Received: from localhost (10.75.127.45) by SFHDAG7NODE2.st.com (10.75.127.20)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 27 Apr 2020 08:42:55
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 27 Apr 2020 08:42:56
  +0200
 From:   Lionel Debieve <lionel.debieve@st.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
@@ -46,16 +46,16 @@ To:     Herbert Xu <herbert@gondor.apana.org.au>,
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>
-Subject: [PATCH 1/3] crypto: stm32/hash - defer probe for reset controller
-Date:   Mon, 27 Apr 2020 08:42:24 +0200
-Message-ID: <20200427064226.6991-2-lionel.debieve@st.com>
+Subject: [PATCH 2/3] crypto: stm32/hash - defer probe for dma device
+Date:   Mon, 27 Apr 2020 08:42:25 +0200
+Message-ID: <20200427064226.6991-3-lionel.debieve@st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200427064226.6991-1-lionel.debieve@st.com>
 References: <20200427064226.6991-1-lionel.debieve@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG7NODE2.st.com
+X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG7NODE2.st.com
  (10.75.127.20)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-04-27_03:2020-04-24,2020-04-27 signatures=0
@@ -67,41 +67,69 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 From: Etienne Carriere <etienne.carriere@st.com>
 
 Change stm32 HASH driver to defer its probe operation when
-reset controller device is registered but has not been probed yet.
+DMA channel device is registered but has not been probed yet.
 
 Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
 Reviewed-by: Lionel DEBIEVE <lionel.debieve@st.com>
 ---
- drivers/crypto/stm32/stm32-hash.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/crypto/stm32/stm32-hash.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
-index 167b80eec437..fad6190be088 100644
+index fad6190be088..0d592f55a271 100644
 --- a/drivers/crypto/stm32/stm32-hash.c
 +++ b/drivers/crypto/stm32/stm32-hash.c
-@@ -1482,7 +1482,12 @@ static int stm32_hash_probe(struct platform_device *pdev)
- 	pm_runtime_enable(dev);
+@@ -507,6 +507,7 @@ static int stm32_hash_hmac_dma_send(struct stm32_hash_dev *hdev)
+ static int stm32_hash_dma_init(struct stm32_hash_dev *hdev)
+ {
+ 	struct dma_slave_config dma_conf;
++	struct dma_chan *chan;
+ 	int err;
  
- 	hdev->rst = devm_reset_control_get(&pdev->dev, NULL);
--	if (!IS_ERR(hdev->rst)) {
-+	if (IS_ERR(hdev->rst)) {
-+		if (PTR_ERR(hdev->rst) == -EPROBE_DEFER) {
-+			ret = -EPROBE_DEFER;
-+			goto err_reset;
-+		}
-+	} else {
- 		reset_control_assert(hdev->rst);
- 		udelay(2);
- 		reset_control_deassert(hdev->rst);
-@@ -1535,7 +1540,7 @@ static int stm32_hash_probe(struct platform_device *pdev)
+ 	memset(&dma_conf, 0, sizeof(dma_conf));
+@@ -518,11 +519,11 @@ static int stm32_hash_dma_init(struct stm32_hash_dev *hdev)
+ 	dma_conf.dst_maxburst = hdev->dma_maxburst;
+ 	dma_conf.device_fc = false;
  
+-	hdev->dma_lch = dma_request_chan(hdev->dev, "in");
+-	if (IS_ERR(hdev->dma_lch)) {
+-		dev_err(hdev->dev, "Couldn't acquire a slave DMA channel.\n");
+-		return PTR_ERR(hdev->dma_lch);
+-	}
++	chan = dma_request_chan(hdev->dev, "in");
++	if (IS_ERR(chan))
++		return PTR_ERR(chan);
++
++	hdev->dma_lch = chan;
+ 
+ 	err = dmaengine_slave_config(hdev->dma_lch, &dma_conf);
+ 	if (err) {
+@@ -1498,8 +1499,15 @@ static int stm32_hash_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, hdev);
+ 
+ 	ret = stm32_hash_dma_init(hdev);
+-	if (ret)
++	switch (ret) {
++	case 0:
++		break;
++	case -ENOENT:
+ 		dev_dbg(dev, "DMA mode not available\n");
++		break;
++	default:
++		goto err_dma;
++	}
+ 
+ 	spin_lock(&stm32_hash.lock);
+ 	list_add_tail(&hdev->list, &stm32_hash.dev_list);
+@@ -1537,7 +1545,7 @@ static int stm32_hash_probe(struct platform_device *pdev)
+ 	spin_lock(&stm32_hash.lock);
+ 	list_del(&hdev->list);
+ 	spin_unlock(&stm32_hash.lock);
+-
++err_dma:
  	if (hdev->dma_lch)
  		dma_release_channel(hdev->dma_lch);
--
-+err_reset:
- 	pm_runtime_disable(dev);
- 	pm_runtime_put_noidle(dev);
- 
+ err_reset:
 -- 
 2.17.1
 
