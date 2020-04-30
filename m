@@ -2,164 +2,172 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7804A1C0782
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 Apr 2020 22:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16AF31C0968
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 Apr 2020 23:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgD3UMZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 30 Apr 2020 16:12:25 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:53714 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgD3UMY (ORCPT
+        id S1727975AbgD3Vda (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 30 Apr 2020 17:33:30 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:45197 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726909AbgD3Vd3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 30 Apr 2020 16:12:24 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UK9RpK005992;
-        Thu, 30 Apr 2020 20:11:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=+I5DK1bpDxPp17bxmkq3TLU7ktjAi9yJhHWfSrepooM=;
- b=fUyqySXDeLDsctdyoiziddJfcj8mcTOQxSfQWSYjilj7uE73/HfZauZY2u5i3Uvnv5tG
- KAp31PWGtBoS4N9epLF82hU53mniZOA/7lEKUmGjH9KQ+H8nH1Cv4EpFkW6aOiLQYMoX
- C+k0eWTaXn4nJZt4GHwStEs5HC9LqEeghzxIIbxp3ejHUWBFXbT7/tq5dR1lXdmCGGJ1
- l+UQocYxc5AJd89VOHMDkMnZiIFb1tj2e3zzxxVqrjAbyCo4wTz8IntLONqd/e7Dypen
- biFbKfiOp/Jdby2w/mf18RluKSLiAmDV3u+b0FlU7mTnkhhI8TC+riHLkuTMqfVSGna9 QQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 30p2p0k2ps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 20:11:48 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UK7Qbg096026;
-        Thu, 30 Apr 2020 20:11:48 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 30qtjy23v9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 20:11:48 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03UKBlCt024136;
-        Thu, 30 Apr 2020 20:11:47 GMT
-Received: from localhost.localdomain (/98.229.125.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 30 Apr 2020 13:11:45 -0700
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
+        Thu, 30 Apr 2020 17:33:29 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MmlCY-1imznH36yU-00jrwf; Thu, 30 Apr 2020 23:31:17 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
-        linux-crypto@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: [PATCH 7/7] padata: document multithreaded jobs
-Date:   Thu, 30 Apr 2020 16:11:25 -0400
-Message-Id: <20200430201125.532129-8-daniel.m.jordan@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
-References: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        James Smart <james.smart@broadcom.com>,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        Bob Copeland <me@bobcopeland.com>, Jan Kara <jack@suse.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        linux-crypto@vger.kernel.org, linux-media@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org,
+        linux-karma-devel@lists.sourceforge.net, bpf@vger.kernel.org,
+        linux-usb@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org
+Subject: [PATCH 00/15] gcc-10 warning fixes
+Date:   Thu, 30 Apr 2020 23:30:42 +0200
+Message-Id: <20200430213101.135134-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- malwarescore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300150
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1015
- bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004300150
+X-Provags-ID: V03:K1:d0r1T0atJ0fP6VC0lsoU2Nb50uVHm7+C7HFBKxo5Oh9FT7cjF4F
+ 56LFacsuF89qNSNIhAKt16YSLWAlWssvN8MtPe8NN45LaPwc/cCelzxDkHr4+0tFL6+Sa9G
+ a57V34rwqixwafD6sE/njElSMiK55+3n3WBVw4f5PpMdpEy2CNFI8yBkDaQox92MxOq478P
+ ATheht8WQuHpTQRLL5ZEQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qtjOffXScL0=:Yde/YTTIyDLV71HcVFV/g8
+ 5aCgJ4X4xNzxI3sDnVHzb+4x1iuaUyj/FDU6axm1cC5dNjOHg+8xAyvhGoryNPJJFdXCQ9E8u
+ /vBjaVgpQi6NvTWJp+z0wFIoWkqjlRGR2wCLBCvG5ImhRZo6H4jl5uiqg/TUea1BRC5KOAUug
+ NLH3+1SoQ96QZaVVmYPbql6nsHgFb4uZYdjCp8JTVI2L30Rp4+0Uw3uwnSsZJuLBGqAnsFaeh
+ k7gAnZ02jIaJcsH2V+TwomCcLBG4OX9P3yetdeZWPtDSychl7RC+/gMGRpPt2beTcJXb7Sr4/
+ wgqf3CYR6/N2vUz2MhXS9Sl+HtdkF3gKvKsNTp2mw9draDW6IVxA+E16ianBs3s2/Jj86Cp4d
+ ehuoj5P2KJYrz+9tZ+et7SchBa5i/iGqThgNGHpUmVXaAI8nZHkjO7rEce0Ctm42WVr0HLTd4
+ o1jt4fwG8tpZvziYdVKKK9x4WQWsYAq2xx0LoedsVxg8abX+ql1c1UVSezkM6FJvLsBYSOqLC
+ Wl2wmpwXK3rQEhxxX4Sh0+p7vR68f1MiX8v4GGJjHzQvAfDgNp//3vXmnFa9OfQMY1+J5Oamt
+ RKC21TWUo81CDfLbGJUutjWh36LNJfa+N4p4bSAvqbx+J8urAAoBgP4lL7BwvnjawPWVT3bQ7
+ nx782MGIljH805ldEh/1deDsyPsEUVqES3Wx9pJakt2RNm+5lKUyzj8TLjsuKM9bM+MwiaVGP
+ y3sVYv2Jji3wkCZuDo3KR4124HQta8GSeSFOnIEeWuWxcaFbOJf9loaB0IyqLaH/bv1s0C1At
+ ctEvneGxLk11FkM6cOL//qiBQ4ws+UB1hR0Fmjp4sHdhGtlvK4=
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add Documentation for multithreaded jobs.
+Here are a couple of fixes for warnings introduced with gcc-10.
+If you wish to reproduce these, you can find the compiler I used
+at [1].
 
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
----
- Documentation/core-api/padata.rst | 41 +++++++++++++++++++++++--------
- 1 file changed, 31 insertions(+), 10 deletions(-)
+If you like the fixes, please apply them directly into maintainer
+trees. I expect that we will also need them to be backported
+into stable kernels later.
 
-diff --git a/Documentation/core-api/padata.rst b/Documentation/core-api/padata.rst
-index 9a24c111781d9..b7e047af993e8 100644
---- a/Documentation/core-api/padata.rst
-+++ b/Documentation/core-api/padata.rst
-@@ -4,23 +4,26 @@
- The padata parallel execution mechanism
- =======================================
- 
--:Date: December 2019
-+:Date: April 2020
- 
- Padata is a mechanism by which the kernel can farm jobs out to be done in
--parallel on multiple CPUs while retaining their ordering.  It was developed for
--use with the IPsec code, which needs to be able to perform encryption and
--decryption on large numbers of packets without reordering those packets.  The
--crypto developers made a point of writing padata in a sufficiently general
--fashion that it could be put to other uses as well.
-+parallel on multiple CPUs while optionally retaining their ordering.
- 
--Usage
--=====
-+It was originally developed for IPsec, which needs to perform encryption and
-+decryption on large numbers of packets without reordering those packets.  This
-+is currently the sole consumer of padata's serialized job support.
-+
-+Padata also supports multithreaded jobs, splitting up the job evenly while load
-+balancing and coordinating between threads.
-+
-+Running Serialized Jobs
-+=======================
- 
- Initializing
- ------------
- 
--The first step in using padata is to set up a padata_instance structure for
--overall control of how jobs are to be run::
-+The first step in using padata to run parallel jobs is to set up a
-+padata_instance structure for overall control of how jobs are to be run::
- 
-     #include <linux/padata.h>
- 
-@@ -162,6 +165,24 @@ functions that correspond to the allocation in reverse::
- It is the user's responsibility to ensure all outstanding jobs are complete
- before any of the above are called.
- 
-+Running Multithreaded Jobs
-+==========================
-+
-+A multithreaded job has a main thread and zero or more helper threads, with the
-+main thread participating in the job and then waiting until all helpers have
-+finished.  padata splits the job into units called chunks, where a chunk is a
-+piece of the job that one thread completes in one call to the thread function.
-+
-+A user has to do three things to run a multithreaded job.  First, describe the
-+job by defining a padata_mt_job structure, which is explained in the Interface
-+section.  This includes a pointer to the thread function, which padata will
-+call each time it assigns a job chunk to a thread.  Then, define the thread
-+function, which accepts three arguments, ``start``, ``end``, and ``arg``, where
-+the first two delimit the range that the thread operates on and the last is a
-+pointer to the job's shared state, if any.  Prepare the shared state, which is
-+typically a stack-allocated structure that wraps the required data.  Last, call
-+padata_do_multithreaded(), which will return once the job is finished.
-+
- Interface
- =========
- 
+I disabled -Wrestrict on gcc in my local test tree, but with
+the patches from this series and the ones I have already sent,
+I see no gcc-10 specific warnings in linux-next when doing
+many randconfig builds for arm/arm64/x86.
+
+      Arnd
+
+Arnd Bergmann (15):
+  crypto - Avoid free() namespace collision
+  iwlwifi: mvm: fix gcc-10 zero-length-bounds warning
+  mwifiex: avoid -Wstringop-overflow warning
+  ath10k: fix gcc-10 zero-length-bounds warnings
+  bpf: avoid gcc-10 stringop-overflow warning
+  netfilter: conntrack: avoid gcc-10 zero-length-bounds warning
+  drop_monitor: work around gcc-10 stringop-overflow warning
+  usb: ehci: avoid gcc-10 zero-length-bounds warning
+  udf: avoid gcc-10 zero-length-bounds warnings
+  hpfs: avoid gcc-10 zero-length-bounds warning
+  omfs: avoid gcc-10 stringop-overflow warning
+  media: s5k5baf: avoid gcc-10 zero-length-bounds warning
+  scsi: sas: avoid gcc-10 zero-length-bounds warning
+  isci: avoid gcc-10 zero-length-bounds warning
+  nvme: avoid gcc-10 zero-length-bounds warning
+
+ crypto/lrw.c                                  |  6 +--
+ crypto/xts.c                                  |  6 +--
+ drivers/media/i2c/s5k5baf.c                   |  4 +-
+ drivers/net/wireless/ath/ath10k/htt.h         |  4 +-
+ .../net/wireless/intel/iwlwifi/fw/api/tx.h    | 14 +++----
+ .../net/wireless/marvell/mwifiex/sta_cmd.c    | 39 ++++++++-----------
+ drivers/nvme/host/fc.c                        |  2 +-
+ drivers/scsi/aic94xx/aic94xx_tmf.c            |  4 +-
+ drivers/scsi/isci/task.h                      |  7 ++--
+ drivers/scsi/libsas/sas_task.c                |  3 +-
+ fs/hpfs/anode.c                               |  7 +++-
+ fs/omfs/file.c                                | 12 +++---
+ fs/omfs/omfs_fs.h                             |  2 +-
+ fs/udf/ecma_167.h                             |  2 +-
+ fs/udf/super.c                                |  2 +-
+ include/linux/filter.h                        |  6 +--
+ include/linux/usb/ehci_def.h                  | 12 ++++--
+ include/net/netfilter/nf_conntrack.h          |  2 +-
+ net/core/drop_monitor.c                       | 11 ++++--
+ net/netfilter/nf_conntrack_core.c             |  4 +-
+ 20 files changed, 76 insertions(+), 73 deletions(-)
+
+[1] https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/10.0.20200413/
+
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: Johannes Berg <johannes.berg@intel.com>
+Cc: Intel Linux Wireless <linuxwifi@intel.com>
+Cc: Amitkumar Karwar <amitkarwar@gmail.com>
+Cc: James Smart <james.smart@broadcom.com>
+Cc: Jens Axboe <axboe@fb.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Cc: Bob Copeland <me@bobcopeland.com>
+Cc: Jan Kara <jack@suse.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-nvme@lists.infradead.org
+Cc: linux-scsi@vger.kernel.org
+Cc: linux-karma-devel@lists.sourceforge.net
+Cc: bpf@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org
+Cc: coreteam@netfilter.org
+
+
+
 -- 
-2.26.2
+2.26.0
 
