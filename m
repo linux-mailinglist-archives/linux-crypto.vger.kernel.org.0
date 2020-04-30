@@ -2,79 +2,46 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352421BEFAC
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 Apr 2020 07:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF45B1BEFB4
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 Apr 2020 07:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgD3Fae (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 30 Apr 2020 01:30:34 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:60322 "EHLO fornost.hmeau.com"
+        id S1726391AbgD3FbO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 30 Apr 2020 01:31:14 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:60350 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726404AbgD3Fae (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 30 Apr 2020 01:30:34 -0400
+        id S1726378AbgD3FbO (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 30 Apr 2020 01:31:14 -0400
 Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jU1l1-0005JC-1O; Thu, 30 Apr 2020 15:29:12 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 30 Apr 2020 15:30:04 +1000
-Date:   Thu, 30 Apr 2020 15:30:04 +1000
+        id 1jU1lE-0005JI-5g; Thu, 30 Apr 2020 15:29:25 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 30 Apr 2020 15:30:17 +1000
+Date:   Thu, 30 Apr 2020 15:30:17 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Dmitry Golovin <dima@golovin.in>
-Subject: Re: [PATCH] lib/mpi: Fix 64-bit MIPS build with Clang
-Message-ID: <20200430053004.GC11738@gondor.apana.org.au>
-References: <20200421214703.47883-1-natechancellor@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Sumit Garg <sumit.garg@linaro.org>, tee-dev@lists.linaro.org,
+        Matt Mackall <mpm@selenic.com>, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v1] hwrng: Use UUID API for exporting the UUID
+Message-ID: <20200430053017.GD11738@gondor.apana.org.au>
+References: <20200422125808.38278-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200421214703.47883-1-natechancellor@gmail.com>
+In-Reply-To: <20200422125808.38278-1-andriy.shevchenko@linux.intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 02:47:04PM -0700, Nathan Chancellor wrote:
-> When building 64r6_defconfig with CONFIG_MIPS32_O32 disabled and
-> CONFIG_CRYPTO_RSA enabled:
+On Wed, Apr 22, 2020 at 03:58:08PM +0300, Andy Shevchenko wrote:
+> There is export_uuid() function which exports uuid_t to the u8 array.
+> Use it instead of open coding variant.
 > 
-> lib/mpi/generic_mpih-mul1.c:37:24: error: invalid use of a cast in a
-> inline asm context requiring an l-value: remove the cast
-> or build with -fheinous-gnu-extensions
->                 umul_ppmm(prod_high, prod_low, s1_ptr[j], s2_limb);
->                 ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> lib/mpi/longlong.h:664:22: note: expanded from macro 'umul_ppmm'
->                  : "=d" ((UDItype)(w0))
->                          ~~~~~~~~~~^~~
-> lib/mpi/generic_mpih-mul1.c:37:13: error: invalid use of a cast in a
-> inline asm context requiring an l-value: remove the cast
-> or build with -fheinous-gnu-extensions
->                 umul_ppmm(prod_high, prod_low, s1_ptr[j], s2_limb);
->                 ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> lib/mpi/longlong.h:668:22: note: expanded from macro 'umul_ppmm'
->                  : "=d" ((UDItype)(w1))
->                          ~~~~~~~~~~^~~
-> 2 errors generated.
+> This allows to hide the uuid_t internals.
 > 
-> This special case for umul_ppmm for MIPS64r6 was added in
-> commit bbc25bee37d2b ("lib/mpi: Fix umul_ppmm() for MIPS64r6"), due to
-> GCC being inefficient and emitting a __multi3 intrinsic.
-> 
-> There is no such issue with clang; with this patch applied, I can build
-> this configuration without any problems and there are no link errors
-> like mentioned in the commit above (which I can still reproduce with
-> GCC 9.3.0 when that commit is reverted). Only use this definition when
-> GCC is being used.
-> 
-> This really should have been caught by commit b0c091ae04f67 ("lib/mpi:
-> Eliminate unused umul_ppmm definitions for MIPS") when I was messing
-> around in this area but I was not testing 64-bit MIPS at the time.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/885
-> Reported-by: Dmitry Golovin <dima@golovin.in>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  lib/mpi/longlong.h | 2 +-
+>  drivers/char/hw_random/optee-rng.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Patch applied.  Thanks.
