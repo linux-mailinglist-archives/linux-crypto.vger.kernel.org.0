@@ -2,67 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C14C1BEF61
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 Apr 2020 06:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9A91BEF98
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 Apr 2020 07:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgD3EoN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 30 Apr 2020 00:44:13 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:59908 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbgD3EoN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 30 Apr 2020 00:44:13 -0400
-Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
-        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jU11s-0004jj-Fi; Thu, 30 Apr 2020 14:42:33 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 30 Apr 2020 14:43:24 +1000
-Date:   Thu, 30 Apr 2020 14:43:24 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Corentin Labbe <clabbe@baylibre.com>
-Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] crypto: drbg: DRBG should select SHA512
-Message-ID: <20200430044324.GA13460@gondor.apana.org.au>
-References: <1587735647-17718-1-git-send-email-clabbe@baylibre.com>
- <1587735647-17718-2-git-send-email-clabbe@baylibre.com>
+        id S1726180AbgD3FLB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 30 Apr 2020 01:11:01 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3346 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726040AbgD3FLB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 30 Apr 2020 01:11:01 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id AA2E48E90DCB2FABEFC0;
+        Thu, 30 Apr 2020 13:10:59 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.201.159) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 30 Apr 2020 13:10:50 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <linuxarm@huawei.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH v2] crypto: acomp - search acomp with scomp backend in crypto_has_acomp
+Date:   Thu, 30 Apr 2020 17:10:18 +1200
+Message-ID: <20200430051018.24220-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587735647-17718-2-git-send-email-clabbe@baylibre.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.201.159]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 01:40:45PM +0000, Corentin Labbe wrote:
-> Since DRBG could use SHA384/SHA512, it should select it.
-> 
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-> ---
->  crypto/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/crypto/Kconfig b/crypto/Kconfig
-> index c24a47406f8f..6d27fc6a7bf5 100644
-> --- a/crypto/Kconfig
-> +++ b/crypto/Kconfig
-> @@ -1810,10 +1810,12 @@ config CRYPTO_DRBG_HMAC
->  	default y
->  	select CRYPTO_HMAC
->  	select CRYPTO_SHA256
-> +	select CRYPTO_SHA512
->  
->  config CRYPTO_DRBG_HASH
->  	bool "Enable Hash DRBG"
->  	select CRYPTO_SHA256
-> +	select CRYPTO_SHA512
->  	help
->  	  Enable the Hash DRBG variant as defined in NIST SP800-90A.
+users may call crypto_has_acomp to confirm the existence of acomp before using
+crypto_acomp APIs. Right now, many acomp have scomp backend, for example, lz4,
+lzo, deflate etc. crypto_has_acomp will return false for them even though they
+support acomp APIs.
 
-The default hash drbg is sha256, the others are only optional.
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ -v2: fixed the mask according to herbert's feedback
 
-Cheers,
+ include/crypto/acompress.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
+index d873f999b334..2b4d2b06ccbd 100644
+--- a/include/crypto/acompress.h
++++ b/include/crypto/acompress.h
+@@ -157,7 +157,7 @@ static inline int crypto_has_acomp(const char *alg_name, u32 type, u32 mask)
+ {
+ 	type &= ~CRYPTO_ALG_TYPE_MASK;
+ 	type |= CRYPTO_ALG_TYPE_ACOMPRESS;
+-	mask |= CRYPTO_ALG_TYPE_MASK;
++	mask |= CRYPTO_ALG_TYPE_ACOMPRESS_MASK;
+ 
+ 	return crypto_has_alg(alg_name, type, mask);
+ }
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.23.0
+
+
