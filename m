@@ -2,45 +2,45 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D4E1C07A4
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 Apr 2020 22:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AC11C077D
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 Apr 2020 22:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgD3UOR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 30 Apr 2020 16:14:17 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:42902 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727869AbgD3UOM (ORCPT
+        id S1726930AbgD3UMZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 30 Apr 2020 16:12:25 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:59106 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726783AbgD3UMY (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 30 Apr 2020 16:14:12 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UKD04K087856;
-        Thu, 30 Apr 2020 20:13:40 GMT
+        Thu, 30 Apr 2020 16:12:24 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UK9LwW022271;
+        Thu, 30 Apr 2020 20:11:40 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=YSH968m2chokijP0CuyV65vxstwMSwaqbt+J6W/LPzI=;
- b=VRTPDgb0IFZuQzrky+2E54YeGLLLnR1f4e9GyhB9JqdAf7twWjttXYbbeyY4flRfQpC4
- u4q3RxVxuD+rX051J800fVwQ94csDIGGmC1wxQLHPeONDPRQzdaWyRTTSuhMIS8NFkzR
- pBCmDiTOP3+NTNuPd1jpXkN26darea6/KV2P5d9zJ5ZycXk0L5S5QHQe/AC8GQyJaiOC
- JvSXtWOsEGKrtc52JBg1qCI2XZozheAyfyuTexSs+45iJAK4Nwy11amhFs1oADwFV6o6
- 1fj/Stn3srd4dk0qSWRHvffjTJf/hZCh6J4jJdwWk5rrhlZ75dBWLFNZkMxsyEdEENKS Dg== 
+ bh=BK9ctXRrIpRgGO6ZKhxMQ6dCR5vDweThxUdS7159PCM=;
+ b=jpQ5KXL7fHt/Y5npAsmAs/QsQ+pjs4ePHIf/dZrXUuCAui+XQSMhvn8iHskTMt4CCVIh
+ EtEY5b+bLXik8SQ6sbK1t1R6nEqRSOxjNt1WaB1s+idAtx7iWLLifU2FnX47a/ySMunb
+ PZ/BeOZd5UjTZ3qHnOQsCpw9j8RpOF2u4f6ngFeyMbAQvjKBC/d6camCMcTNAzYjD2eV
+ KU6Vk6TSix5hAu9wsw6xCb4hLXaEl3l+34NDB8pT00gp/lfTCURkqFaGIU6IfUoCJ42I
+ RsGbY/W5gwxJuh28ppKkjDFRuMs3WlDL68KGmBLFshrcK1PcypS/wOQWIFMmjpiqaCWL Jw== 
 Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 30nucgdkwt-1
+        by userp2130.oracle.com with ESMTP id 30p01p45a9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 20:13:39 +0000
+        Thu, 30 Apr 2020 20:11:40 +0000
 Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UK7RZQ096205;
-        Thu, 30 Apr 2020 20:11:39 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 30qtjy23km-1
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UK7PdW095893;
+        Thu, 30 Apr 2020 20:11:40 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 30qtjy23ky-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 20:11:39 +0000
+        Thu, 30 Apr 2020 20:11:40 +0000
 Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03UKBXrf002202;
-        Thu, 30 Apr 2020 20:11:33 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03UKBZBd024024;
+        Thu, 30 Apr 2020 20:11:35 GMT
 Received: from localhost.localdomain (/98.229.125.203)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 30 Apr 2020 13:11:33 -0700
+        with ESMTP ; Thu, 30 Apr 2020 13:11:35 -0700
 From:   Daniel Jordan <daniel.m.jordan@oracle.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
@@ -63,9 +63,9 @@ Cc:     Alex Williamson <alex.williamson@redhat.com>,
         linux-crypto@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: [PATCH 1/7] padata: remove exit routine
-Date:   Thu, 30 Apr 2020 16:11:19 -0400
-Message-Id: <20200430201125.532129-2-daniel.m.jordan@oracle.com>
+Subject: [PATCH 2/7] padata: initialize earlier
+Date:   Thu, 30 Apr 2020 16:11:20 -0400
+Message-Id: <20200430201125.532129-3-daniel.m.jordan@oracle.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
 References: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
@@ -77,42 +77,113 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 susp
  spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2003020000 definitions=main-2004300150
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 impostorscore=0 suspectscore=2 malwarescore=0
- lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300151
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 clxscore=1015
+ phishscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=2 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004300150
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-padata_driver_exit() is unnecessary because padata isn't built as a
-module and doesn't exit.
+padata will soon initialize the system's struct pages in parallel, so it
+needs to be ready by page_alloc_init_late().
 
-padata's init routine will soon allocate memory, so getting rid of the
-exit function now avoids pointless code to free it.
+The error return from padata_driver_init() triggers an initcall warning,
+so add a warning to padata_init() to avoid silent failure.
 
 Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
 ---
- kernel/padata.c | 6 ------
- 1 file changed, 6 deletions(-)
+ include/linux/padata.h |  6 ++++++
+ init/main.c            |  2 ++
+ kernel/padata.c        | 17 ++++++++---------
+ 3 files changed, 16 insertions(+), 9 deletions(-)
 
+diff --git a/include/linux/padata.h b/include/linux/padata.h
+index a0d8b41850b25..476ecfa41f363 100644
+--- a/include/linux/padata.h
++++ b/include/linux/padata.h
+@@ -164,6 +164,12 @@ struct padata_instance {
+ #define	PADATA_INVALID	4
+ };
+ 
++#ifdef CONFIG_PADATA
++extern void __init padata_init(void);
++#else
++static inline void __init padata_init(void) {}
++#endif
++
+ extern struct padata_instance *padata_alloc_possible(const char *name);
+ extern void padata_free(struct padata_instance *pinst);
+ extern struct padata_shell *padata_alloc_shell(struct padata_instance *pinst);
+diff --git a/init/main.c b/init/main.c
+index ee4947af823f3..5451a80e43016 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -94,6 +94,7 @@
+ #include <linux/rodata_test.h>
+ #include <linux/jump_label.h>
+ #include <linux/mem_encrypt.h>
++#include <linux/padata.h>
+ 
+ #include <asm/io.h>
+ #include <asm/bugs.h>
+@@ -1438,6 +1439,7 @@ static noinline void __init kernel_init_freeable(void)
+ 	smp_init();
+ 	sched_init_smp();
+ 
++	padata_init();
+ 	page_alloc_init_late();
+ 	/* Initialize page ext after all struct pages are initialized. */
+ 	page_ext_init();
 diff --git a/kernel/padata.c b/kernel/padata.c
-index 72777c10bb9cb..36a8e98741bb3 100644
+index 36a8e98741bb3..b05cd30f8905b 100644
 --- a/kernel/padata.c
 +++ b/kernel/padata.c
-@@ -1071,10 +1071,4 @@ static __init int padata_driver_init(void)
- }
- module_init(padata_driver_init);
+@@ -31,7 +31,6 @@
+ #include <linux/slab.h>
+ #include <linux/sysfs.h>
+ #include <linux/rcupdate.h>
+-#include <linux/module.h>
  
--static __exit void padata_driver_exit(void)
--{
--	cpuhp_remove_multi_state(CPUHP_PADATA_DEAD);
--	cpuhp_remove_multi_state(hp_online);
+ #define MAX_OBJ_NUM 1000
+ 
+@@ -1049,26 +1048,26 @@ void padata_free_shell(struct padata_shell *ps)
+ }
+ EXPORT_SYMBOL(padata_free_shell);
+ 
+-#ifdef CONFIG_HOTPLUG_CPU
+-
+-static __init int padata_driver_init(void)
++void __init padata_init(void)
+ {
++#ifdef CONFIG_HOTPLUG_CPU
+ 	int ret;
+ 
+ 	ret = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, "padata:online",
+ 				      padata_cpu_online, NULL);
+ 	if (ret < 0)
+-		return ret;
++		goto err;
+ 	hp_online = ret;
+ 
+ 	ret = cpuhp_setup_state_multi(CPUHP_PADATA_DEAD, "padata:dead",
+ 				      NULL, padata_cpu_dead);
+ 	if (ret < 0) {
+ 		cpuhp_remove_multi_state(hp_online);
+-		return ret;
++		goto err;
+ 	}
+-	return 0;
 -}
--module_exit(padata_driver_exit);
+-module_init(padata_driver_init);
+ 
++	return;
++err:
++	pr_warn("padata: initialization failed\n");
  #endif
++}
 -- 
 2.26.2
 
