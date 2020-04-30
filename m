@@ -2,44 +2,45 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524FE1C077C
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 Apr 2020 22:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D4E1C07A4
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 Apr 2020 22:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgD3UMZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 30 Apr 2020 16:12:25 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:41466 "EHLO
+        id S1726861AbgD3UOR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 30 Apr 2020 16:14:17 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:42902 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726524AbgD3UMY (ORCPT
+        with ESMTP id S1727869AbgD3UOM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 30 Apr 2020 16:12:24 -0400
+        Thu, 30 Apr 2020 16:14:12 -0400
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UK8uKo084446;
-        Thu, 30 Apr 2020 20:11:40 GMT
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UKD04K087856;
+        Thu, 30 Apr 2020 20:13:40 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=Tj/Vywbax7ksJzdV9zU97xcEcZuvaW8/vJFBwr0+2HY=;
- b=J6emRK3n6GSyEW/Ez+VBqaZB2kI73fz1NgKjCoMTaNu+sd634ykdV3UamEznaT/VMELp
- JLDp4Rn44RpioaFNFHQAilUalaiCVAaP/FjTFd4hztLBmvRI1/DgiR2t37Y5TXothwrm
- xFlWD5yhjYkyocd82HEIRN/EdOu/uwrk70ZNL15UjmOok7/v1voc2/DMW7LGkx0j7aAT
- 7XTjm7OcKjDKNtE+j98NWYoyEO4mOlahmE+SS9KduMyNzA6QNqP1EdAKdz/5naQHdil0
- 9kSW5GZM7yI56BQDIHvIcGLu0pjQ/gl903ozdlpZY6vzOtZyyGf2BqFYCPDh82sSxt21 qw== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=YSH968m2chokijP0CuyV65vxstwMSwaqbt+J6W/LPzI=;
+ b=VRTPDgb0IFZuQzrky+2E54YeGLLLnR1f4e9GyhB9JqdAf7twWjttXYbbeyY4flRfQpC4
+ u4q3RxVxuD+rX051J800fVwQ94csDIGGmC1wxQLHPeONDPRQzdaWyRTTSuhMIS8NFkzR
+ pBCmDiTOP3+NTNuPd1jpXkN26darea6/KV2P5d9zJ5ZycXk0L5S5QHQe/AC8GQyJaiOC
+ JvSXtWOsEGKrtc52JBg1qCI2XZozheAyfyuTexSs+45iJAK4Nwy11amhFs1oADwFV6o6
+ 1fj/Stn3srd4dk0qSWRHvffjTJf/hZCh6J4jJdwWk5rrhlZ75dBWLFNZkMxsyEdEENKS Dg== 
 Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 30nucgdkpj-1
+        by aserp2120.oracle.com with ESMTP id 30nucgdkwt-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 20:11:40 +0000
+        Thu, 30 Apr 2020 20:13:39 +0000
 Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UK7Oma095747;
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UK7RZQ096205;
         Thu, 30 Apr 2020 20:11:39 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 30qtjy23kn-1
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 30qtjy23km-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 30 Apr 2020 20:11:39 +0000
 Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03UKBV5O026651;
-        Thu, 30 Apr 2020 20:11:31 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03UKBXrf002202;
+        Thu, 30 Apr 2020 20:11:33 GMT
 Received: from localhost.localdomain (/98.229.125.203)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 30 Apr 2020 13:11:31 -0700
+        with ESMTP ; Thu, 30 Apr 2020 13:11:33 -0700
 From:   Daniel Jordan <daniel.m.jordan@oracle.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
@@ -62,110 +63,56 @@ Cc:     Alex Williamson <alex.williamson@redhat.com>,
         linux-crypto@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: [PATCH 0/7] padata: parallelize deferred page init
-Date:   Thu, 30 Apr 2020 16:11:18 -0400
-Message-Id: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
+Subject: [PATCH 1/7] padata: remove exit routine
+Date:   Thu, 30 Apr 2020 16:11:19 -0400
+Message-Id: <20200430201125.532129-2-daniel.m.jordan@oracle.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
+References: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=2
  malwarescore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
  spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2003020000 definitions=main-2004300150
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 priorityscore=1501
- mlxlogscore=999 impostorscore=0 suspectscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
+ mlxlogscore=999 impostorscore=0 suspectscore=2 malwarescore=0
  lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
  bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300150
+ engine=8.12.0-2003020000 definitions=main-2004300151
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Sometimes the kernel doesn't take full advantage of system memory
-bandwidth, leading to a single CPU spending excessive time in
-initialization paths where the data scales with memory size.
+padata_driver_exit() is unnecessary because padata isn't built as a
+module and doesn't exit.
 
-Multithreading naturally addresses this problem, and this series is the
-first step.
+padata's init routine will soon allocate memory, so getting rid of the
+exit function now avoids pointless code to free it.
 
-It extends padata, a framework that handles many parallel singlethreaded
-jobs, to handle multithreaded jobs as well by adding support for
-splitting up the work evenly, specifying a minimum amount of work that's
-appropriate for one helper thread to do, load balancing between helpers,
-and coordinating them.  More documentation in patches 4 and 7.
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+---
+ kernel/padata.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-The first user is deferred struct page init, a large bottleneck in
-kernel boot--actually the largest for us and likely others too.  This
-path doesn't require concurrency limits, resource control, or priority
-adjustments like future users will (vfio, hugetlb fallocate, munmap)
-because it happens during boot when the system is otherwise idle and
-waiting on page init to finish.
-
-This has been tested on a variety of x86 systems and speeds up kernel
-boot by 6% to 49% by making deferred init 63% to 91% faster.  Patch 6
-has detailed numbers.  Test results from other systems appreciated.
-
-This series is based on v5.6 plus these three from mmotm:
-
-  mm-call-touch_nmi_watchdog-on-max-order-boundaries-in-deferred-init.patch
-  mm-initialize-deferred-pages-with-interrupts-enabled.patch
-  mm-call-cond_resched-from-deferred_init_memmap.patch
-
-All of the above can be found in this branch:
-
-  git://oss.oracle.com/git/linux-dmjordan.git padata-mt-definit-v1
-  https://oss.oracle.com/git/gitweb.cgi?p=linux-dmjordan.git;a=shortlog;h=refs/heads/padata-mt-definit-v1
-
-The future users and related features are available as work-in-progress
-here:
-
-  git://oss.oracle.com/git/linux-dmjordan.git padata-mt-wip-v0.3
-  https://oss.oracle.com/git/gitweb.cgi?p=linux-dmjordan.git;a=shortlog;h=refs/heads/padata-mt-wip-v0.3
-
-Thanks to everyone who commented on the last version of this[0],
-including Alex Williamson, Jason Gunthorpe, Jonathan Corbet, Michal
-Hocko, Pavel Machek, Peter Zijlstra, Randy Dunlap, Robert Elliott, Tejun
-Heo, and Zi Yan.
-
-RFC v4 -> padata v1:
- - merged with padata (Peter)
- - got rid of the 'task' nomenclature (Peter, Jon)
-
-future work branch:
- - made lockdep-aware (Jason, Peter)
- - adjust workqueue worker priority with renice_or_cancel() (Tejun)
- - fixed undo problem in VFIO (Alex)
-
-The remaining feedback, mainly resource control awareness (cgroup etc),
-is TODO for later series.
-
-[0] https://lore.kernel.org/linux-mm/20181105165558.11698-1-daniel.m.jordan@oracle.com/
-
-Daniel Jordan (7):
-  padata: remove exit routine
-  padata: initialize earlier
-  padata: allocate work structures for parallel jobs from a pool
-  padata: add basic support for multithreaded jobs
-  mm: move zone iterator outside of deferred_init_maxorder()
-  mm: parallelize deferred_init_memmap()
-  padata: document multithreaded jobs
-
- Documentation/core-api/padata.rst |  41 +++--
- include/linux/padata.h            |  43 ++++-
- init/main.c                       |   2 +
- kernel/padata.c                   | 277 ++++++++++++++++++++++++------
- mm/Kconfig                        |   6 +-
- mm/page_alloc.c                   | 118 ++++++-------
- 6 files changed, 355 insertions(+), 132 deletions(-)
-
-
-base-commit: 7111951b8d4973bda27ff663f2cf18b663d15b48
-prerequisite-patch-id: 4ad522141e1119a325a9799dad2bd982fbac8b7c
-prerequisite-patch-id: 169273327e56f5461101a71dfbd6b4cfd4570cf0
-prerequisite-patch-id: 0f34692c8a9673d4c4f6a3545cf8ec3a2abf8620
+diff --git a/kernel/padata.c b/kernel/padata.c
+index 72777c10bb9cb..36a8e98741bb3 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -1071,10 +1071,4 @@ static __init int padata_driver_init(void)
+ }
+ module_init(padata_driver_init);
+ 
+-static __exit void padata_driver_exit(void)
+-{
+-	cpuhp_remove_multi_state(CPUHP_PADATA_DEAD);
+-	cpuhp_remove_multi_state(hp_online);
+-}
+-module_exit(padata_driver_exit);
+ #endif
 -- 
 2.26.2
 
