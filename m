@@ -2,36 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE27C1C2791
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 May 2020 20:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDECD1C27A2
+	for <lists+linux-crypto@lfdr.de>; Sat,  2 May 2020 20:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728419AbgEBS2I (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 2 May 2020 14:28:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54608 "EHLO mail.kernel.org"
+        id S1728421AbgEBS2c (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 2 May 2020 14:28:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728415AbgEBS2I (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1728418AbgEBS2I (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Sat, 2 May 2020 14:28:08 -0400
 Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9DEBB20757;
+        by mail.kernel.org (Postfix) with ESMTPSA id 010742075B;
         Sat,  2 May 2020 18:28:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588444087;
-        bh=cCmn2mCi34UzXJr2dq7JnXx4lYXQMsRd9Knm/QvGdQE=;
+        s=default; t=1588444088;
+        bh=DIRRWMKKG6PuEZe/jxmnBQSb7EtQNzSmtDxFdL5Rd74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N3ixzjM7pKpsC+3fxs/xq6sFiJoJ+QN3bIzuUU8aTYcvqONZhBlRY9jiCYBW61Zb9
-         8LK9f3dhwzHlGceUj3qRvIKuDZOwGr4EupJXe9ZUG3xiYdGYxg8KV0bebrM7NKFU0L
-         cjKE09fnzlGvcQ1fOsRdM7Zkbpd91PFj4vyGLmZ8=
+        b=PWqPGct5HDq0OUWPrgUsx7rK3tDbG+8sNdu4jJJYWt/+/yQ17tK0BnhXBcie2PqXc
+         /px/lgw4jBC+9RANyujawdCzcMFCPhOtJ4Mpyc2v0BWrapwq5Dh/7u3Sbtzr22AUEA
+         iEOcpPSkn9LnwYA0kldJJj4wxarmeqTpFW1Tmd7U=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Theodore Ts'o <tytso@mit.edu>, Paolo Abeni <pabeni@redhat.com>,
-        mptcp@lists.01.org
-Subject: [PATCH 1/7] mptcp: use SHA256_BLOCK_SIZE, not SHA_MESSAGE_BYTES
-Date:   Sat,  2 May 2020 11:24:21 -0700
-Message-Id: <20200502182427.104383-2-ebiggers@kernel.org>
+        Theodore Ts'o <tytso@mit.edu>, linuxppc-dev@lists.ozlabs.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Subject: [PATCH 2/7] crypto: powerpc/sha1 - remove unused temporary workspace
+Date:   Sat,  2 May 2020 11:24:22 -0700
+Message-Id: <20200502182427.104383-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200502182427.104383-1-ebiggers@kernel.org>
 References: <20200502182427.104383-1-ebiggers@kernel.org>
@@ -44,41 +46,82 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-In preparation for naming the SHA-1 stuff in <linux/cryptohash.h>
-properly and moving it to a more appropriate header, fix the HMAC-SHA256
-code in mptcp_crypto_hmac_sha() to use SHA256_BLOCK_SIZE instead of
-"SHA_MESSAGE_BYTES" which is actually the SHA-1 block size.
-(Fortunately these are both 64 bytes, so this wasn't a "real" bug...)
+The PowerPC implementation of SHA-1 doesn't actually use the 16-word
+temporary array that's passed to the assembly code.  This was probably
+meant to correspond to the 'W' array that lib/sha1.c uses.  However, in
+sha1-powerpc-asm.S these values are actually stored in GPRs 16-31.
 
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: mptcp@lists.01.org
+Referencing SHA_WORKSPACE_WORDS from this code also isn't appropriate,
+since it's an implementation detail of lib/sha1.c.
+
+Therefore, just remove this unneeded array.
+
+Tested with:
+
+	export ARCH=powerpc CROSS_COMPILE=powerpc-linux-gnu-
+	make mpc85xx_defconfig
+	cat >> .config << EOF
+	# CONFIG_MODULES is not set
+	# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
+	CONFIG_DEBUG_KERNEL=y
+	CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y
+	CONFIG_CRYPTO_SHA1_PPC=y
+	EOF
+	make olddefconfig
+	make -j32
+	qemu-system-ppc -M mpc8544ds -cpu e500 -nographic \
+		-kernel arch/powerpc/boot/zImage \
+		-append "cryptomgr.fuzz_iterations=1000 cryptomgr.panic_on_fail=1"
+
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Mackerras <paulus@samba.org>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- net/mptcp/crypto.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/powerpc/crypto/sha1.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/net/mptcp/crypto.c b/net/mptcp/crypto.c
-index c151628bd4161a..81b06d875f9249 100644
---- a/net/mptcp/crypto.c
-+++ b/net/mptcp/crypto.c
-@@ -61,7 +61,7 @@ void mptcp_crypto_hmac_sha(u64 key1, u64 key2, u8 *msg, int len, void *hmac)
- 	put_unaligned_be64(key2, key2be);
+diff --git a/arch/powerpc/crypto/sha1.c b/arch/powerpc/crypto/sha1.c
+index 7b43fc352089b1..db46b6130a9642 100644
+--- a/arch/powerpc/crypto/sha1.c
++++ b/arch/powerpc/crypto/sha1.c
+@@ -16,12 +16,11 @@
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/mm.h>
+-#include <linux/cryptohash.h>
+ #include <linux/types.h>
+ #include <crypto/sha.h>
+ #include <asm/byteorder.h>
  
- 	/* Generate key xored with ipad */
--	memset(input, 0x36, SHA_MESSAGE_BYTES);
-+	memset(input, 0x36, SHA256_BLOCK_SIZE);
- 	for (i = 0; i < 8; i++)
- 		input[i] ^= key1be[i];
- 	for (i = 0; i < 8; i++)
-@@ -78,7 +78,7 @@ void mptcp_crypto_hmac_sha(u64 key1, u64 key2, u8 *msg, int len, void *hmac)
- 	sha256_final(&state, &input[SHA256_BLOCK_SIZE]);
+-extern void powerpc_sha_transform(u32 *state, const u8 *src, u32 *temp);
++void powerpc_sha_transform(u32 *state, const u8 *src);
  
- 	/* Prepare second part of hmac */
--	memset(input, 0x5C, SHA_MESSAGE_BYTES);
-+	memset(input, 0x5C, SHA256_BLOCK_SIZE);
- 	for (i = 0; i < 8; i++)
- 		input[i] ^= key1be[i];
- 	for (i = 0; i < 8; i++)
+ static int sha1_init(struct shash_desc *desc)
+ {
+@@ -47,7 +46,6 @@ static int sha1_update(struct shash_desc *desc, const u8 *data,
+ 	src = data;
+ 
+ 	if ((partial + len) > 63) {
+-		u32 temp[SHA_WORKSPACE_WORDS];
+ 
+ 		if (partial) {
+ 			done = -partial;
+@@ -56,12 +54,11 @@ static int sha1_update(struct shash_desc *desc, const u8 *data,
+ 		}
+ 
+ 		do {
+-			powerpc_sha_transform(sctx->state, src, temp);
++			powerpc_sha_transform(sctx->state, src);
+ 			done += 64;
+ 			src = data + done;
+ 		} while (done + 63 < len);
+ 
+-		memzero_explicit(temp, sizeof(temp));
+ 		partial = 0;
+ 	}
+ 	memcpy(sctx->buffer + partial, src, len - done);
 -- 
 2.26.2
 
