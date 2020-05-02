@@ -2,205 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7936E1C23F8
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 May 2020 10:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6170B1C2597
+	for <lists+linux-crypto@lfdr.de>; Sat,  2 May 2020 15:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgEBIBk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 2 May 2020 04:01:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50878 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726741AbgEBIBj (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 2 May 2020 04:01:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D9065AC5F;
-        Sat,  2 May 2020 08:01:37 +0000 (UTC)
-Subject: Re: [PATCH] lib/xxhash: make xxh{32,64}_update() return void
-To:     Eric Biggers <ebiggers@kernel.org>, linux-crypto@vger.kernel.org
-References: <20200502063423.1052614-1-ebiggers@kernel.org>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <367527ae-0471-e6be-eab2-c575e7b70564@suse.com>
-Date:   Sat, 2 May 2020 11:01:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727983AbgEBNQC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 2 May 2020 09:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727963AbgEBNQB (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 2 May 2020 09:16:01 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C35C061A0E
+        for <linux-crypto@vger.kernel.org>; Sat,  2 May 2020 06:16:01 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id 19so2333501oiy.8
+        for <linux-crypto@vger.kernel.org>; Sat, 02 May 2020 06:16:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=S3RbHQf/lz16sGIFdkG5ro7r7VnQo1GE/iR1VoyCwlzMbnjCXA3bBRnvmwXNT3qjuU
+         DiQV/mmOGdbxRFED3q9fuupI9nLlCRIVwfMMsCd5B2E5+mh82V8HrpRtFbicmcKA5Gb6
+         lASk1wJLV1DrTLrVU+4/EV6P2rRPZuUDBDqHBQ7V1jp+EtwEIWj1Hv2OTTdR9D5zCQRl
+         WZi7C7Nht1B3mM5f7EOhEtBgxoXs+/BfGy0taOvvrVc6AdswYmZLcDop8VlZv94k0T14
+         9s16HegjycN/gGzUILZ7sKXjAYX1YwVGD82DWa9+2gwGoBkI+HmkthuJW4Dwoyk6OXjA
+         EKtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=ltofdWyxL3YvJPaNbMwquh1xR9qvqD6wU/LC1iHyRdkoQOPxf5g8fEjs4M4U9TnBA5
+         Q61+/1B+cvYQ3YqPIpQ1tgmgJyur8y3oW2+GupCmtIv3ST5JVkIulRCXCUlhA4RvP7Ye
+         KB06MnvXo2e0fx/Gml/CuX39IKZ2elz65cfuhG2pgvWoWXs2kdBUEQOFHadk3Ap1ATDl
+         q+MiiKrFbHY9fNZtu90jt8CVjztL3DcteqHn8Lg40FMnF9jQONhQjzNYqYiRUnwAhtHR
+         LU5518yUnu0PLHZ3reVNdp78ZDGJcB1vwTtE1/a7ZeJZZ+gmOPAkpfQFVsHp8TswG5o+
+         sKKg==
+X-Gm-Message-State: AGi0PuaYZ6jUeJ/9/C+0CXkZj0g+evQ+QMF1j631q1vTlqZAaxp84SGP
+        cKopdHkVvdth028/tM/GuBS6uWgpCzDdejF6+pQ=
+X-Google-Smtp-Source: APiQypLWMPcUf10pMnydJEDKjV3hYgO/l0Pd65TU8LeNoRd9Rc3r56jfP3Gb1j3p5wLYCKScBG5gYNkHLxfzKuxnjHs=
+X-Received: by 2002:aca:31ce:: with SMTP id x197mr3091059oix.157.1588425360610;
+ Sat, 02 May 2020 06:16:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200502063423.1052614-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ac9:5e4c:0:0:0:0:0 with HTTP; Sat, 2 May 2020 06:16:00 -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   AISHA GADDAFI <evangelicalurtheranchurch@gmail.com>
+Date:   Sat, 2 May 2020 06:16:00 -0700
+Message-ID: <CAB+rQNy0qThGAi8FPY680HqDSN+fOpwJS=-BTP+_Jv1XtRVeuQ@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+--=20
+Lieber Freund (Assalamu Alaikum),
 
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
-On 2.05.20 г. 9:34 ч., Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> The return value of xxh64_update() is pointless and confusing, since an
-> error is only returned for input==NULL.  But the callers must ignore
-> this error because they might pass input=NULL, length=0.
-> 
-> Likewise for xxh32_update().
-> 
-> Just make these functions return void.
-> 
-> Cc: Nikolay Borisov <nborisov@suse.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> 
-> lib/xxhash.c doesn't actually have a maintainer, but probably it makes
-> sense to take this through the crypto tree, alongside the other patch I
-> sent to return void in lib/crypto/sha256.c.
-> 
->  include/linux/xxhash.h |  8 ++------
->  lib/xxhash.c           | 20 ++++++--------------
->  2 files changed, 8 insertions(+), 20 deletions(-)
-> 
-> diff --git a/include/linux/xxhash.h b/include/linux/xxhash.h
-> index 52b073fea17fe4..e1c469802ebdba 100644
-> --- a/include/linux/xxhash.h
-> +++ b/include/linux/xxhash.h
-> @@ -185,10 +185,8 @@ void xxh32_reset(struct xxh32_state *state, uint32_t seed);
->   * @length: The length of the data to hash.
->   *
->   * After calling xxh32_reset() call xxh32_update() as many times as necessary.
-> - *
-> - * Return:  Zero on success, otherwise an error code.
->   */
-> -int xxh32_update(struct xxh32_state *state, const void *input, size_t length);
-> +void xxh32_update(struct xxh32_state *state, const void *input, size_t length);
->  
->  /**
->   * xxh32_digest() - produce the current xxh32 hash
-> @@ -218,10 +216,8 @@ void xxh64_reset(struct xxh64_state *state, uint64_t seed);
->   * @length: The length of the data to hash.
->   *
->   * After calling xxh64_reset() call xxh64_update() as many times as necessary.
-> - *
-> - * Return:  Zero on success, otherwise an error code.
->   */
-> -int xxh64_update(struct xxh64_state *state, const void *input, size_t length);
-> +void xxh64_update(struct xxh64_state *state, const void *input, size_t length);
->  
->  /**
->   * xxh64_digest() - produce the current xxh64 hash
-> diff --git a/lib/xxhash.c b/lib/xxhash.c
-> index aa61e2a3802f0a..64bb68a9621ed1 100644
-> --- a/lib/xxhash.c
-> +++ b/lib/xxhash.c
-> @@ -267,21 +267,19 @@ void xxh64_reset(struct xxh64_state *statePtr, const uint64_t seed)
->  }
->  EXPORT_SYMBOL(xxh64_reset);
->  
-> -int xxh32_update(struct xxh32_state *state, const void *input, const size_t len)
-> +void xxh32_update(struct xxh32_state *state, const void *input,
-> +		  const size_t len)
->  {
->  	const uint8_t *p = (const uint8_t *)input;
->  	const uint8_t *const b_end = p + len;
->  
-> -	if (input == NULL)
-> -		return -EINVAL;
-> -
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
 
-Values calculated based on input are dereferenced further down, wouldn't
-that cause crashes in case input is null ?
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
 
->  	state->total_len_32 += (uint32_t)len;
->  	state->large_len |= (len >= 16) | (state->total_len_32 >= 16);
->  
->  	if (state->memsize + len < 16) { /* fill in tmp buffer */
->  		memcpy((uint8_t *)(state->mem32) + state->memsize, input, len);
->  		state->memsize += (uint32_t)len;
-> -		return 0;
-> +		return;
->  	}
->  
->  	if (state->memsize) { /* some data left from previous update */
-> @@ -331,8 +329,6 @@ int xxh32_update(struct xxh32_state *state, const void *input, const size_t len)
->  		memcpy(state->mem32, p, (size_t)(b_end-p));
->  		state->memsize = (uint32_t)(b_end-p);
->  	}
-> -
-> -	return 0;
->  }
->  EXPORT_SYMBOL(xxh32_update);
->  
-> @@ -374,20 +370,18 @@ uint32_t xxh32_digest(const struct xxh32_state *state)
->  }
->  EXPORT_SYMBOL(xxh32_digest);
->  
-> -int xxh64_update(struct xxh64_state *state, const void *input, const size_t len)
-> +void xxh64_update(struct xxh64_state *state, const void *input,
-> +		  const size_t len)
->  {
->  	const uint8_t *p = (const uint8_t *)input;
->  	const uint8_t *const b_end = p + len;
->  
-> -	if (input == NULL)
-> -		return -EINVAL;
-> -
->  	state->total_len += len;
->  
->  	if (state->memsize + len < 32) { /* fill in tmp buffer */
->  		memcpy(((uint8_t *)state->mem64) + state->memsize, input, len);
->  		state->memsize += (uint32_t)len;
-> -		return 0;
-> +		return;
->  	}
->  
->  	if (state->memsize) { /* tmp buffer is full */
-> @@ -436,8 +430,6 @@ int xxh64_update(struct xxh64_state *state, const void *input, const size_t len)
->  		memcpy(state->mem64, p, (size_t)(b_end-p));
->  		state->memsize = (uint32_t)(b_end - p);
->  	}
-> -
-> -	return 0;
->  }
->  EXPORT_SYMBOL(xxh64_update);
->  
-> 
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
+
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
+
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
