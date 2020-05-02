@@ -2,33 +2,33 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD43B1C2355
+	by mail.lfdr.de (Postfix) with ESMTP id 887361C2354
 	for <lists+linux-crypto@lfdr.de>; Sat,  2 May 2020 07:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgEBFdr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 2 May 2020 01:33:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39230 "EHLO mail.kernel.org"
+        id S1727835AbgEBFdt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 2 May 2020 01:33:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727829AbgEBFdq (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1727832AbgEBFdq (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Sat, 2 May 2020 01:33:46 -0400
 Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD4E52071E;
-        Sat,  2 May 2020 05:33:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2451C2495B;
+        Sat,  2 May 2020 05:33:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1588397626;
-        bh=DNH8HL7hR1z4xDcsrk0vwGxoghDmgXVHhKNAUdwhCMU=;
+        bh=m9tJRaC/xdkq2x9xEKERQDzme5WlAEgGO8kez0ERpKg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ioPw0U6l6P5ers4ni090dUqsLG8mEYUwGrMBCkQbXNyCcm+gedmvM9881pYACQla+
-         rpcv3YLfWJYN7wmTj+UPkHKCsTPa15qpS5mwMtCS6n1nOQoSW8lC4nt+jTingAGfDX
-         rvM0jjIRXCRHlS+EmS/yhY6Fc/8H+KS2KCSX5FQ0=
+        b=SElL3uHFWuIiPX2XYV1j5cAPwHYTomeoDZNdTWNxvO1T6CViwnDRIzlHoC8yYzrKo
+         9vTCU8q8hXm55jXssqRx3kGe3C557tQ6glI3+mdiHo7/f+SYT+yNj5rfM8n+knD9qE
+         F2U+IrJH3LqLvKMPwfctO6NrzAGdULBWAaXsY69s=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Cc:     linux-sctp@vger.kernel.org
-Subject: [PATCH 18/20] sctp: use crypto_shash_tfm_digest()
-Date:   Fri,  1 May 2020 22:31:20 -0700
-Message-Id: <20200502053122.995648-19-ebiggers@kernel.org>
+Cc:     keyrings@vger.kernel.org
+Subject: [PATCH 19/20] KEYS: encrypted: use crypto_shash_tfm_digest()
+Date:   Fri,  1 May 2020 22:31:21 -0700
+Message-Id: <20200502053122.995648-20-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200502053122.995648-1-ebiggers@kernel.org>
 References: <20200502053122.995648-1-ebiggers@kernel.org>
@@ -45,82 +45,55 @@ Instead of manually allocating a 'struct shash_desc' on the stack and
 calling crypto_shash_digest(), switch to using the new helper function
 crypto_shash_tfm_digest() which does this for us.
 
-Cc: linux-sctp@vger.kernel.org
+Cc: keyrings@vger.kernel.org
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- net/sctp/auth.c          | 10 ++--------
- net/sctp/sm_make_chunk.c | 23 ++++++++---------------
- 2 files changed, 10 insertions(+), 23 deletions(-)
+ security/keys/encrypted-keys/encrypted.c | 18 +++---------------
+ 1 file changed, 3 insertions(+), 15 deletions(-)
 
-diff --git a/net/sctp/auth.c b/net/sctp/auth.c
-index 4278764d82b827..83e97e8892e05a 100644
---- a/net/sctp/auth.c
-+++ b/net/sctp/auth.c
-@@ -741,14 +741,8 @@ void sctp_auth_calculate_hmac(const struct sctp_association *asoc,
- 	if (crypto_shash_setkey(tfm, &asoc_key->data[0], asoc_key->len))
- 		goto free;
+diff --git a/security/keys/encrypted-keys/encrypted.c b/security/keys/encrypted-keys/encrypted.c
+index f6797ba44bf716..14cf81d1a30b14 100644
+--- a/security/keys/encrypted-keys/encrypted.c
++++ b/security/keys/encrypted-keys/encrypted.c
+@@ -323,19 +323,6 @@ static struct key *request_user_key(const char *master_desc, const u8 **master_k
+ 	return ukey;
+ }
  
--	{
--		SHASH_DESC_ON_STACK(desc, tfm);
+-static int calc_hash(struct crypto_shash *tfm, u8 *digest,
+-		     const u8 *buf, unsigned int buflen)
+-{
+-	SHASH_DESC_ON_STACK(desc, tfm);
+-	int err;
 -
--		desc->tfm = tfm;
--		crypto_shash_digest(desc, (u8 *)auth,
--				    end - (unsigned char *)auth, digest);
--		shash_desc_zero(desc);
--	}
-+	crypto_shash_tfm_digest(tfm, (u8 *)auth, end - (unsigned char *)auth,
-+				digest);
- 
- free:
- 	if (free_key)
-diff --git a/net/sctp/sm_make_chunk.c b/net/sctp/sm_make_chunk.c
-index 09050c1d5517e7..c786215ba69a54 100644
---- a/net/sctp/sm_make_chunk.c
-+++ b/net/sctp/sm_make_chunk.c
-@@ -1666,17 +1666,14 @@ static struct sctp_cookie_param *sctp_pack_cookie(
- 	       ntohs(init_chunk->chunk_hdr->length), raw_addrs, addrs_len);
- 
- 	if (sctp_sk(ep->base.sk)->hmac) {
--		SHASH_DESC_ON_STACK(desc, sctp_sk(ep->base.sk)->hmac);
-+		struct crypto_shash *tfm = sctp_sk(ep->base.sk)->hmac;
- 		int err;
- 
- 		/* Sign the message.  */
--		desc->tfm = sctp_sk(ep->base.sk)->hmac;
+-	desc->tfm = tfm;
 -
--		err = crypto_shash_setkey(desc->tfm, ep->secret_key,
-+		err = crypto_shash_setkey(tfm, ep->secret_key,
- 					  sizeof(ep->secret_key)) ?:
--		      crypto_shash_digest(desc, (u8 *)&cookie->c, bodysize,
--					  cookie->signature);
--		shash_desc_zero(desc);
-+		      crypto_shash_tfm_digest(tfm, (u8 *)&cookie->c, bodysize,
-+					      cookie->signature);
- 		if (err)
- 			goto free_cookie;
- 	}
-@@ -1737,17 +1734,13 @@ struct sctp_association *sctp_unpack_cookie(
- 
- 	/* Check the signature.  */
- 	{
--		SHASH_DESC_ON_STACK(desc, sctp_sk(ep->base.sk)->hmac);
-+		struct crypto_shash *tfm = sctp_sk(ep->base.sk)->hmac;
- 		int err;
- 
--		desc->tfm = sctp_sk(ep->base.sk)->hmac;
+-	err = crypto_shash_digest(desc, buf, buflen, digest);
+-	shash_desc_zero(desc);
+-	return err;
+-}
 -
--		err = crypto_shash_setkey(desc->tfm, ep->secret_key,
-+		err = crypto_shash_setkey(tfm, ep->secret_key,
- 					  sizeof(ep->secret_key)) ?:
--		      crypto_shash_digest(desc, (u8 *)bear_cookie, bodysize,
--					  digest);
--		shash_desc_zero(desc);
--
-+		      crypto_shash_tfm_digest(tfm, (u8 *)bear_cookie, bodysize,
-+					      digest);
- 		if (err) {
- 			*error = -SCTP_IERROR_NOMEM;
- 			goto fail;
+ static int calc_hmac(u8 *digest, const u8 *key, unsigned int keylen,
+ 		     const u8 *buf, unsigned int buflen)
+ {
+@@ -351,7 +338,7 @@ static int calc_hmac(u8 *digest, const u8 *key, unsigned int keylen,
+ 
+ 	err = crypto_shash_setkey(tfm, key, keylen);
+ 	if (!err)
+-		err = calc_hash(tfm, digest, buf, buflen);
++		err = crypto_shash_tfm_digest(tfm, buf, buflen, digest);
+ 	crypto_free_shash(tfm);
+ 	return err;
+ }
+@@ -381,7 +368,8 @@ static int get_derived_key(u8 *derived_key, enum derived_key_type key_type,
+ 
+ 	memcpy(derived_buf + strlen(derived_buf) + 1, master_key,
+ 	       master_keylen);
+-	ret = calc_hash(hash_tfm, derived_key, derived_buf, derived_buf_len);
++	ret = crypto_shash_tfm_digest(hash_tfm, derived_buf, derived_buf_len,
++				      derived_key);
+ 	kzfree(derived_buf);
+ 	return ret;
+ }
 -- 
 2.26.2
 
