@@ -2,58 +2,113 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA8F1C2A6D
-	for <lists+linux-crypto@lfdr.de>; Sun,  3 May 2020 08:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D1D1C2CEC
+	for <lists+linux-crypto@lfdr.de>; Sun,  3 May 2020 16:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727086AbgECGw3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 3 May 2020 02:52:29 -0400
-Received: from sonic308-19.consmr.mail.ir2.yahoo.com ([77.238.178.147]:38758
-        "EHLO sonic308-19.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727085AbgECGw3 (ORCPT
+        id S1728522AbgECOCM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 3 May 2020 10:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728239AbgECOCM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 3 May 2020 02:52:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1588488747; bh=HCBdmXO5/l665w/MwYeTKYgprR4CxrsZjPuQNxf8ZBg=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Vv2+uM6nj7NBa97+9iZ6RXO1cBFs3xJP+HRgPl7HgBjtac8RCvfVQ08EkPf9wvtd6a7EGGj+65Am/zblOQf2tenQRtvyQrTaIkxXi0EaPIuJpe67rZ3l/Rac9nowsccpN05nO4XwQN1Bl83IiVkZk+PCXz4hbCrHPwUB6SNu4jITnKKUTZdEoCMXqdjT4jWOrO6TpESSIhocxcAqZV9WUJwckZ7TyfJpbzXfKEyxRwuYv169weQ6N8jT98xSqTqVPhxkXoCz3tisDKt2N+pi35Ju6EaQ4WourUcWXTOyEgg9GxvXOyEOmjFjs70KkR4wBaRIEKMcEDlXV8WNGuidjA==
-X-YMail-OSG: oiMm6S0VM1lm7JxgEsjb6A.UbPyn83nGg7OaotgBSllRQUIyNXVcxaO7lANcZMU
- aHnkUmO3iHTwTH2Mh2L3sU4DIvkvWYYQkxuxnWwUUS1JVXyVchvVojh1INFmb.R7DeZGRDiS9I2c
- XXKAv588Awk2rTYAX7bSoqQsoh7Nys2yX891FS5Zd4GaTmY2brNX_G6qPothhB5UNnDvLBGNw_QE
- 7mdSKynpbGjLpJOeXiSeJjprLNCFxzn9v1CaliBs9O0Pv_79LB875TTdcQU6SUO7_wkx8jqix7Rj
- 5azy63OZ0mFXBIORIYyYUh8wcgVYoLMC7NFChvuGd54aHClywbKsU2r_5CkyO66ck5MI21NOHvIG
- i614CwvPjlRhbymGtF968AJ3n9l2FanPXnfoU8NseEIT.6Rq6a1xo3e3e7bXIe6s0p.XPE_ttZch
- wJPufl5gS36qYWe0Uc5KP1YHtE.ZiiGIr2pJl.XMnBwR_EXsYbfXCtQpVgzwy1YYk6PLIKU9Kmo1
- 29ebFRjkmXNNEEIYH0ZWnjLp9ceL6Cwyu0j7EAc6uF2DfWm16A5ScpXBtUi7elYdGQt6kW5kMUHx
- XuuqCnSuslenjvgqmLhiRxwrY5Ia34HiYzAziX_CRPe6uI6BYfqPdRIjvta7Zl69U7Y1iiTpdiZO
- ha4VKfbUaCqBpR.WgbLLybVcTNWeMZmbJCz_6sm5fl.Q6FzNNLJsq7sX1rv4wNzXCTPrdA8NlWmu
- vJYLG28PIY6.bHeWmSc3WB6nH75QDi629guHNtjDQBLfvEXdpuXzXHwezEnWEEUP7hejcFZ.Bokp
- bxRMWISZhb29Ijt3CqTLd5LAhKoyBsB0.il4dznwP6xpomhTxbS9LYNSYCCDONk_gNlmkSAgwLgn
- KgU1rd29XERkdeBTv3CxzAbtoNJCQZGksbuNqtMh7WOINDDvcNT87CWTTPtw7sjXLSkg_X7VhHQF
- pHgXNaJ6qq5ztcoZ0rRbHh7M3nU_qf4v8QZmnVVrYgAu12uFUbT5gztDZ0hde2W.7e9nLr1CDekM
- oxJiXBIOmqBy_Dn6qm1N9p0eMg6gBGTWW1OqTqRme3uM87ddfPximYkTty6AK_Fo0tcptM6dqQ4D
- ul7nHg2UlwhF8XhoaQnWljb9f8R5Kjs_XvIoguNyhLtDC9dhtjOdX2niFKDstUZSEGtBK.4J.I51
- FjPl_Ht7VmocFuXXt8KgN1fXkseNMoLN4Um2qnYmrR9FO5n8firFT1zY3_MQ.uuY0CyL_2gAdNT6
- dOjVTCauGElamXzGprJneoYzJOMOoPCUZ.ItPCDBpMUboLac_VEnYzinMKXX1_UvF2EoII_pRqw-
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ir2.yahoo.com with HTTP; Sun, 3 May 2020 06:52:27 +0000
-Date:   Sun, 3 May 2020 06:52:26 +0000 (UTC)
-From:   Miss Pamela Render <pamelarender45@gmail.com>
-Reply-To: pamelarender45@gmail.com
-Message-ID: <1137921726.642686.1588488746422@mail.yahoo.com>
-Subject: Greetings From Miss Pamela Render Please I Need Your Urgent Reply!
+        Sun, 3 May 2020 10:02:12 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4B2C061A0E
+        for <linux-crypto@vger.kernel.org>; Sun,  3 May 2020 07:02:11 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id u203so3936738vkb.11
+        for <linux-crypto@vger.kernel.org>; Sun, 03 May 2020 07:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9RvjLqM4GX3NRQ8lbi4uMCC4ITiyZWS4YVBknGPLOfQ=;
+        b=lEkmCnyCQS6yho8pHyOVj8AaMr2yuDfPMuZ4gNovPiCt0QX1iZgac/5P6hbR2PemyV
+         3ErtHs9s65XIXgY1egIV+rtkjUd+UgD+56OBk//Kcy5GggWJY1YHzJQnTwP1zI8RpqQh
+         hseUvDrwaELhk6JSTVNDJODPAdbSzGgmHMZ4azOd+LAoBJjiin+acT5GCtx3TfpdO4Im
+         xH27rKTNcPoa09T61EM/Ft7wXE1ROKWRoBk+3B1eZR/YBykpOx0Tw41ykKIl4TM3ucB0
+         uNQS62PumvayikRnb+GAnss4lXYrs+Vs1HI2rq4P4LLmyD4CKzefTFeJxEjB0qOhxtyI
+         Qiuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9RvjLqM4GX3NRQ8lbi4uMCC4ITiyZWS4YVBknGPLOfQ=;
+        b=iCQBkIQbFMjKPtF7gxkjB8lTyfxA71Aoc2NN1W55pQVZGelrn8gYCIDBFJ87L7Tchn
+         gWFUVIoqHx+fk2zEqZi5hqGWUU7OHd9A6wBk5YZPQGaPrTyyPPp4Mk0ijptOz+3wbWd7
+         y3gihPVs2HVM5SfihqdLAyyoy8mDxlos9hVDfrtFvSjU7CQ1bhJMSUsB5DWXqFyU1kFp
+         a/1XLMy9glPw1T9T9ph4VJWNM2L9Bf5JTw/yeYETygpBUggFsxMs9zGqdzzFhAKoxStx
+         /9KGmeh6Y0PLF2018hRUOWHGprOWlEHp8XpmOTY2je32KTnIgJ2xdXtavddGDFgrgESA
+         olYw==
+X-Gm-Message-State: AGi0PuYEOEHF+lsahHLd/+ior8urPgqfKKddrA0GVfvfO+IOICgjakZv
+        z7WcJTdQlKcJwilhQBUT7in1mtGJAmlcoEV9SDQ9h4rK/Ec=
+X-Google-Smtp-Source: APiQypLDJpnWc18Dq+FkU4DW1kWsd/4MQgOCNhtPZVa2Ayc0JX5ISktE+WsBQ7iKf2PiDpbX4s7vTphPXpjxT9o9p6s=
+X-Received: by 2002:a1f:c1:: with SMTP id 184mr7797378vka.62.1588514530283;
+ Sun, 03 May 2020 07:02:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1137921726.642686.1588488746422.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15756 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:75.0) Gecko/20100101 Firefox/75.0
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200502053122.995648-1-ebiggers@kernel.org> <20200502053122.995648-7-ebiggers@kernel.org>
+In-Reply-To: <20200502053122.995648-7-ebiggers@kernel.org>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Sun, 3 May 2020 17:01:59 +0300
+Message-ID: <CAOtvUMemET3bkh0-sL-o=pSEEWYEs2ZVD1pGYW7RCpC=TR1i6g@mail.gmail.com>
+Subject: Re: [PATCH 06/20] crypto: ccree - use crypto_shash_tfm_digest()
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On Sat, May 2, 2020 at 8:33 AM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> From: Eric Biggers <ebiggers@google.com>
+>
+> Instead of manually allocating a 'struct shash_desc' on the stack and
+> calling crypto_shash_digest(), switch to using the new helper function
+> crypto_shash_tfm_digest() which does this for us.
+>
+> Cc: Gilad Ben-Yossef <gilad@benyossef.com>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  drivers/crypto/ccree/cc_cipher.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/crypto/ccree/cc_cipher.c b/drivers/crypto/ccree/cc_c=
+ipher.c
+> index a84335328f371c..872ea3ff1c6ba7 100644
+> --- a/drivers/crypto/ccree/cc_cipher.c
+> +++ b/drivers/crypto/ccree/cc_cipher.c
+> @@ -427,12 +427,9 @@ static int cc_cipher_setkey(struct crypto_skcipher *=
+sktfm, const u8 *key,
+>                 int key_len =3D keylen >> 1;
+>                 int err;
+>
+> -               SHASH_DESC_ON_STACK(desc, ctx_p->shash_tfm);
+> -
+> -               desc->tfm =3D ctx_p->shash_tfm;
+> -
+> -               err =3D crypto_shash_digest(desc, ctx_p->user.key, key_le=
+n,
+> -                                         ctx_p->user.key + key_len);
+> +               err =3D crypto_shash_tfm_digest(ctx_p->shash_tfm,
+> +                                             ctx_p->user.key, key_len,
+> +                                             ctx_p->user.key + key_len);
+>                 if (err) {
+>                         dev_err(dev, "Failed to hash ESSIV key.\n");
+>                         return err;
+> --
+> 2.26.2
+>
+
+Acked-by: Gilad Ben-Yossef <gilad@benyossef.com>
+
+Thanks,
+Gilad
 
 
-Greetings From Miss Pamela Render Please I Need Your Urgent Reply!
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
 
-I'm Pamela Render, from USA. I am a highly motivated and willing to learn, I'm also hard working lady, very relaible. I really want to establish mutual friendship with you, I will introduce myself better as soon as i receive your email response.
-
-Kind regards
-Miss Pamela Render
+values of =CE=B2 will give rise to dom!
