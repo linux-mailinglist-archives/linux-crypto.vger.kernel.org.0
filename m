@@ -2,71 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956DB1C6409
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 May 2020 00:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A221C645A
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 May 2020 01:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728642AbgEEWhz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 May 2020 18:37:55 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:33133 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728076AbgEEWhz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 5 May 2020 18:37:55 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 4b5e7785;
-        Tue, 5 May 2020 22:25:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=Xmrp5mSypaMdXoDD21AWMvUQLus=; b=fc+sEK
-        //aogbYTSnnJAa80R+/LMD8vukObNf9opqJQXd2VaPOoMoRsTeakuZvT0o9+D5Tu
-        UD4jB5fJVHwIAHoxMTenKkJxjPiW/0k+P4oKIooUldnok21aj7L+qGunOg687ddE
-        TVbdzT/8e48NqQ+hTIA/wJ9kWI3QDW4GdPVOKs+giK+rfJNeeGX8JEDZv9ff2Zky
-        0KLKIoyUT1kXlfXzuCMjCLLJovE2jqvNhgGZnLMIFftqvzdKuyY/18tRkThV1bcm
-        j2uyWJdlgNW8yDMmAxXX18HaNWxLbvpDJfQqohwkbZISVO1/2W0c2uMc5nmMt4vh
-        ikvqLkY4fLHi/fag==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 0f08cdc9 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Tue, 5 May 2020 22:25:14 +0000 (UTC)
-Received: by mail-io1-f51.google.com with SMTP id f3so225622ioj.1;
-        Tue, 05 May 2020 15:37:49 -0700 (PDT)
-X-Gm-Message-State: AGi0PubvjxrCIApRoy6usn/dZmjZ0nX5wN6heE9AMYBqRHFIgNkL2uPV
-        Ne6kEirxVEhd/g6gh1KXaEBdr4cXHJUnI9CF6r4=
-X-Google-Smtp-Source: APiQypIMXHaVA0r53/yu3ohly0KqV9mHBNiR3J+yG56KaFKXdRY80P72wnCldnOEX/2Yawf4pZEuzWOZ1K7cea8YJO8=
-X-Received: by 2002:a02:b88e:: with SMTP id p14mr5651739jam.36.1588718269082;
- Tue, 05 May 2020 15:37:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHmME9oMcfY4nwkknwN9c4rB-O7xD4GCAOFPoZCbdnq=034=Vw@mail.gmail.com>
- <20200505215503.691205-1-Jason@zx2c4.com> <CAKwvOdk32cDowvrqRPKDRpf2ZiXh=jVnBTmhM-NWD=Ownq9v3w@mail.gmail.com>
- <20200505222540.GA230458@ubuntu-s3-xlarge-x86>
-In-Reply-To: <20200505222540.GA230458@ubuntu-s3-xlarge-x86>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 5 May 2020 16:37:38 -0600
-X-Gmail-Original-Message-ID: <CAHmME9qs0iavoBqd_z_7Xibyz7oxY+FRt+sHyy+sBa1wQc66ww@mail.gmail.com>
-Message-ID: <CAHmME9qs0iavoBqd_z_7Xibyz7oxY+FRt+sHyy+sBa1wQc66ww@mail.gmail.com>
-Subject: Re: [PATCH] Kbuild: disable FORTIFY_SOURCE on clang-10
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        id S1729447AbgEEXTH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 May 2020 19:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727989AbgEEXTG (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 5 May 2020 19:19:06 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82961C061A10
+        for <linux-crypto@vger.kernel.org>; Tue,  5 May 2020 16:19:04 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id a5so22770pjh.2
+        for <linux-crypto@vger.kernel.org>; Tue, 05 May 2020 16:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=owNe/yVivLu8lnuA6nUAqNW2cBSryrNQc9w98UalwzM=;
+        b=jwmVKyJdB6MEacSVwnKayMATUTmyNqGbKRMm+bb3btHQia+1GSAwm2KFtny0e4Av3a
+         wAJHyV835gzEJSNw6NgOeYBkp0Z5ZAlDAwfmiZLl/pUsBJb1wVbRGf46bQn8veiL/pLL
+         J84hSCM1nzAMdTR1hMlDvhhKicZuVPeaNoC7Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=owNe/yVivLu8lnuA6nUAqNW2cBSryrNQc9w98UalwzM=;
+        b=gTaPh9kC/OqN8rwr4IPnl2bakl0DZxRRkGcHfFnPCfilRMa/ECip0pykVBWXFlb9fv
+         VRIVHxyt+r7LvL+AqOQrn0ckE9jrXKOKiFW2tPBRu8Q28Nj6UtW4/VgpUSUSb0/H99Zj
+         ZcJHVqOFrR6Cj+3H+DT9LVyoVj3mry9yrfBMb6VUT+E9X3IGb18nY65bGIOviixmEUPf
+         uMGklOSQmT8UCOrfLuVUwtbIue/aXIhimXeiVJfiB3iC5JP4IE9bg5TEJV9HxxuW2DlH
+         5ck1M0RCOkE8z2McQyrGVfmIr+y+ZKe5NZyE6jauFyrlLgIuqYl68w0FVmSr62oBJRyE
+         tU+g==
+X-Gm-Message-State: AGi0Pua0WAftPG1vy0nNrMhcyYbcacEri4Tk0gTtN75JW1pUL29RZI5E
+        W+XBApzZBjOKtPPFe3sDw1PJDw==
+X-Google-Smtp-Source: APiQypL1qkYOsLAPE3Ba+P8oJQLR8egLJ8j4FyEfyDo/yQDKyAA2OO5jf92DgLNtlCJnXKDn6CuGkg==
+X-Received: by 2002:a17:90a:a484:: with SMTP id z4mr5672933pjp.40.1588720743964;
+        Tue, 05 May 2020 16:19:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s123sm71340pfs.170.2020.05.05.16.19.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 16:19:03 -0700 (PDT)
+Date:   Tue, 5 May 2020 16:19:02 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
         <linux-crypto@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        George Burgess <gbiv@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Arnd Bergmann <arnd@arndb.de>, George Burgess <gbiv@google.com>
+Subject: Re: [PATCH] Kbuild: disable FORTIFY_SOURCE on clang-10
+Message-ID: <202005051617.F9B32B5526@keescook>
+References: <CAHmME9oMcfY4nwkknwN9c4rB-O7xD4GCAOFPoZCbdnq=034=Vw@mail.gmail.com>
+ <20200505215503.691205-1-Jason@zx2c4.com>
+ <CAKwvOdk32cDowvrqRPKDRpf2ZiXh=jVnBTmhM-NWD=Ownq9v3w@mail.gmail.com>
+ <20200505222540.GA230458@ubuntu-s3-xlarge-x86>
+ <CAHmME9qs0iavoBqd_z_7Xibyz7oxY+FRt+sHyy+sBa1wQc66ww@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHmME9qs0iavoBqd_z_7Xibyz7oxY+FRt+sHyy+sBa1wQc66ww@mail.gmail.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, May 5, 2020 at 4:25 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
-> I believe these issues are one in the same. I did a reverse bisect with
-> Arnd's test case and converged on George's first patch:
->
-> https://github.com/llvm/llvm-project/commit/2dd17ff08165e6118e70f00e22b2c36d2d4e0a9a
->
-> I think that in lieu of this patch, we should have that patch and its
-> follow-up fix merged into 10.0.1.
+On Tue, May 05, 2020 at 04:37:38PM -0600, Jason A. Donenfeld wrote:
+> On Tue, May 5, 2020 at 4:25 PM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> > I believe these issues are one in the same. I did a reverse bisect with
+> > Arnd's test case and converged on George's first patch:
+> >
+> > https://github.com/llvm/llvm-project/commit/2dd17ff08165e6118e70f00e22b2c36d2d4e0a9a
+> >
+> > I think that in lieu of this patch, we should have that patch and its
+> > follow-up fix merged into 10.0.1.
+> 
+> If this is fixed in 10.0.1, do we even need to patch the kernel at
+> all? Or can we just leave it be, considering most organizations using
+> clang know what they're getting into? I'd personally prefer the
+> latter, so that we don't clutter things.
 
-If this is fixed in 10.0.1, do we even need to patch the kernel at
-all? Or can we just leave it be, considering most organizations using
-clang know what they're getting into? I'd personally prefer the
-latter, so that we don't clutter things.
+I agree: I'd rather this was fixed in 10.0.1 (but if we do want a
+kernel-side work-around for 10.0.0, I would suggest doing the version
+check in the Kconfig for FORTIFY_SOURCE instead of in the Makefile,
+as that's where these things are supposed to live these days).
+
+(Though as was mentioned, it's likely that FORTIFY_SOURCE isn't working
+_at all_ under Clang, so I may still send a patch to depend on !clang
+just to avoid surprises until it's fixed, but I haven't had time to
+chase down a solution yet.)
+
+-- 
+Kees Cook
