@@ -2,28 +2,28 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DC71CA4A2
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 May 2020 08:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1162E1CA4A5
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 May 2020 08:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgEHG7E (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1726770AbgEHG7E (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Fri, 8 May 2020 02:59:04 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:42636 "EHLO huawei.com"
+Received: from szxga06-in.huawei.com ([45.249.212.32]:42608 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726756AbgEHG7D (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726767AbgEHG7D (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Fri, 8 May 2020 02:59:03 -0400
 Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 02C17736B0BC3AAF5AC0;
-        Fri,  8 May 2020 14:59:00 +0800 (CST)
+        by Forcepoint Email with ESMTP id EE0E64678534578F6ED2;
+        Fri,  8 May 2020 14:58:59 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 8 May 2020 14:58:51 +0800
+ 14.3.487.0; Fri, 8 May 2020 14:58:52 +0800
 From:   Shukun Tan <tanshukun1@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
         <wangzhou1@hisilicon.com>
-Subject: [PATCH 01/13] crypto: hisilicon/sec2 - modify the SEC probe process
-Date:   Fri, 8 May 2020 14:57:36 +0800
-Message-ID: <1588921068-20739-2-git-send-email-tanshukun1@huawei.com>
+Subject: [PATCH 02/13] crypto: hisilicon/hpre - modify the HPRE probe process
+Date:   Fri, 8 May 2020 14:57:37 +0800
+Message-ID: <1588921068-20739-3-git-send-email-tanshukun1@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1588921068-20739-1-git-send-email-tanshukun1@huawei.com>
 References: <1588921068-20739-1-git-send-email-tanshukun1@huawei.com>
@@ -38,127 +38,99 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Longfang Liu <liulongfang@huawei.com>
 
-Adjust the position of SMMU status check and
-SEC queue initialization in SEC probe
+Misc fixes on coding style:
+1.Merge pre-initialization and initialization of QM
+2.Package the initialization of QM's PF and VF into a function
 
 Signed-off-by: Longfang Liu <liulongfang@huawei.com>
 Signed-off-by: Zaibo Xu <xuzaibo@huawei.com>
 Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
 ---
- drivers/crypto/hisilicon/sec2/sec_main.c | 67 ++++++++++++++------------------
- 1 file changed, 30 insertions(+), 37 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_main.c | 42 ++++++++++++++++++-------------
+ 1 file changed, 25 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 07a5f4e..ea029e3 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -765,6 +765,21 @@ static int sec_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
- 	qm->dev_name = sec_name;
- 	qm->fun_type = (pdev->device == SEC_PF_PCI_DEVICE_ID) ?
- 			QM_HW_PF : QM_HW_VF;
-+	if (qm->fun_type == QM_HW_PF) {
-+		qm->qp_base = SEC_PF_DEF_Q_BASE;
-+		qm->qp_num = pf_q_num;
-+		qm->debug.curr_qm_qp_num = pf_q_num;
-+		qm->qm_list = &sec_devices;
-+	} else if (qm->fun_type == QM_HW_VF && qm->ver == QM_HW_V1) {
-+		/*
-+		 * have no way to get qm configure in VM in v1 hardware,
-+		 * so currently force PF to uses SEC_PF_DEF_Q_NUM, and force
-+		 * to trigger only one VF in v1 hardware.
-+		 * v2 hardware has no such problem.
-+		 */
-+		qm->qp_base = SEC_PF_DEF_Q_NUM;
-+		qm->qp_num = SEC_QUEUE_NUM_V1 - SEC_PF_DEF_Q_NUM;
-+	}
- 	qm->use_dma_api = true;
- 
- 	return hisi_qm_init(qm);
-@@ -775,8 +790,9 @@ static void sec_qm_uninit(struct hisi_qm *qm)
- 	hisi_qm_uninit(qm);
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+index 0d63666..f3859de 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_main.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+@@ -666,7 +666,7 @@ static void hpre_debugfs_exit(struct hpre *hpre)
+ 	debugfs_remove_recursive(qm->debug.debug_root);
  }
  
--static int sec_probe_init(struct hisi_qm *qm, struct sec_dev *sec)
-+static int sec_probe_init(struct sec_dev *sec)
+-static int hpre_qm_pre_init(struct hisi_qm *qm, struct pci_dev *pdev)
++static int hpre_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
  {
-+	struct hisi_qm *qm = &sec->qm;
- 	int ret;
+ 	enum qm_hw_ver rev_id;
  
- 	/*
-@@ -793,40 +809,18 @@ static int sec_probe_init(struct hisi_qm *qm, struct sec_dev *sec)
- 		return -ENOMEM;
+@@ -685,13 +685,14 @@ static int hpre_qm_pre_init(struct hisi_qm *qm, struct pci_dev *pdev)
+ 	qm->dev_name = hpre_name;
+ 	qm->fun_type = (pdev->device == HPRE_PCI_DEVICE_ID) ?
+ 		       QM_HW_PF : QM_HW_VF;
++
+ 	if (pdev->is_physfn) {
+ 		qm->qp_base = HPRE_PF_DEF_Q_BASE;
+ 		qm->qp_num = hpre_pf_q_num;
  	}
+ 	qm->use_dma_api = true;
  
--	if (qm->fun_type == QM_HW_PF) {
--		qm->qp_base = SEC_PF_DEF_Q_BASE;
--		qm->qp_num = pf_q_num;
--		qm->debug.curr_qm_qp_num = pf_q_num;
--		qm->qm_list = &sec_devices;
--
+-	return 0;
++	return hisi_qm_init(qm);
+ }
+ 
+ static void hpre_log_hw_error(struct hisi_qm *qm, u32 err_sts)
+@@ -766,6 +767,20 @@ static int hpre_pf_probe_init(struct hpre *hpre)
+ 	return 0;
+ }
+ 
++static int hpre_probe_init(struct hpre *hpre)
++{
++	struct hisi_qm *qm = &hpre->qm;
++	int ret = -ENODEV;
++
 +	if (qm->fun_type == QM_HW_PF)
- 		ret = sec_pf_probe_init(sec);
--		if (ret)
--			goto err_probe_uninit;
--	} else if (qm->fun_type == QM_HW_VF) {
--		/*
--		 * have no way to get qm configure in VM in v1 hardware,
--		 * so currently force PF to uses SEC_PF_DEF_Q_NUM, and force
--		 * to trigger only one VF in v1 hardware.
--		 * v2 hardware has no such problem.
--		 */
--		if (qm->ver == QM_HW_V1) {
--			qm->qp_base = SEC_PF_DEF_Q_NUM;
--			qm->qp_num = SEC_QUEUE_NUM_V1 - SEC_PF_DEF_Q_NUM;
--		} else if (qm->ver == QM_HW_V2) {
--			/* v2 starts to support get vft by mailbox */
--			ret = hisi_qm_get_vft(qm, &qm->qp_base, &qm->qp_num);
--			if (ret)
--				goto err_probe_uninit;
--		}
--	} else {
--		ret = -ENODEV;
--		goto err_probe_uninit;
++		ret = hpre_pf_probe_init(hpre);
 +	else if (qm->fun_type == QM_HW_VF && qm->ver == QM_HW_V2)
 +		/* v2 starts to support get vft by mailbox */
 +		ret = hisi_qm_get_vft(qm, &qm->qp_base, &qm->qp_num);
 +
-+	if (ret) {
-+		destroy_workqueue(qm->wq);
-+		return ret;
- 	}
- 
- 	return 0;
--err_probe_uninit:
--	destroy_workqueue(qm->wq);
--	return ret;
- }
- 
- static void sec_probe_uninit(struct hisi_qm *qm)
-@@ -865,18 +859,17 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- 	pci_set_drvdata(pdev, sec);
- 
--	sec->ctx_q_num = ctx_q_num;
--	sec_iommu_used_check(sec);
--
- 	qm = &sec->qm;
--
- 	ret = sec_qm_init(qm, pdev);
- 	if (ret) {
--		pci_err(pdev, "Failed to pre init qm!\n");
-+		pci_err(pdev, "Failed to init SEC QM (%d)!\n", ret);
- 		return ret;
- 	}
- 
--	ret = sec_probe_init(qm, sec);
-+	sec->ctx_q_num = ctx_q_num;
-+	sec_iommu_used_check(sec);
++	return ret;
++}
 +
-+	ret = sec_probe_init(sec);
- 	if (ret) {
- 		pci_err(pdev, "Failed to probe!\n");
- 		goto err_qm_uninit;
+ static int hpre_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ {
+ 	struct hisi_qm *qm;
+@@ -779,23 +794,16 @@ static int hpre_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	pci_set_drvdata(pdev, hpre);
+ 
+ 	qm = &hpre->qm;
+-	ret = hpre_qm_pre_init(qm, pdev);
+-	if (ret)
+-		return ret;
+-
+-	ret = hisi_qm_init(qm);
+-	if (ret)
++	ret = hpre_qm_init(qm, pdev);
++	if (ret) {
++		pci_err(pdev, "Failed to init HPRE QM (%d)!\n", ret);
+ 		return ret;
++	}
+ 
+-	if (pdev->is_physfn) {
+-		ret = hpre_pf_probe_init(hpre);
+-		if (ret)
+-			goto err_with_qm_init;
+-	} else if (qm->fun_type == QM_HW_VF && qm->ver == QM_HW_V2) {
+-		/* v2 starts to support get vft by mailbox */
+-		ret = hisi_qm_get_vft(qm, &qm->qp_base, &qm->qp_num);
+-		if (ret)
+-			goto err_with_qm_init;
++	ret = hpre_probe_init(hpre);
++	if (ret) {
++		pci_err(pdev, "Failed to probe (%d)!\n", ret);
++		goto err_with_qm_init;
+ 	}
+ 
+ 	ret = hisi_qm_start(qm);
 -- 
 2.7.4
 
