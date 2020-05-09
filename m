@@ -2,101 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCF31CBACB
-	for <lists+linux-crypto@lfdr.de>; Sat,  9 May 2020 00:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5211CBC28
+	for <lists+linux-crypto@lfdr.de>; Sat,  9 May 2020 03:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgEHWfU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 8 May 2020 18:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726843AbgEHWfT (ORCPT
+        id S1728165AbgEIBne (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 8 May 2020 21:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727828AbgEIBnd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 8 May 2020 18:35:19 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14ADDC05BD43;
-        Fri,  8 May 2020 15:35:19 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id y4so3325520ljn.7;
-        Fri, 08 May 2020 15:35:18 -0700 (PDT)
+        Fri, 8 May 2020 21:43:33 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1289C061A0C;
+        Fri,  8 May 2020 18:43:33 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id g14so3009420otg.10;
+        Fri, 08 May 2020 18:43:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vNe+ECH+KI0KXYB/C0t3dikvQ9vGDkFhqEvtseTrJKE=;
-        b=a6m+W2qicvjohyLDg4yrn+aFqEvR5GuBblUd4qw7xMZe5y8aHLMoYuZr6TwdMwpuEL
-         LPAQv57wWv5/tfbmYwZjKVBGb6jbqjYqVp+zR7WtUtiK5tUThkYwa/MJddekkWLI8EY4
-         fmp/BGqkyafNOocUquP1BttEm+SY7Lh3qU3OB3DE8t47HGvpeLb7okaImFUwA4/qh3QN
-         cn7k0AjUa8l0hu0UDmNMbX/JV4DzkYsa5skC7NiLh5NkFrVJf7MRPOgPwjFgisLFIvgZ
-         pKCHFjYec3t32AcRxwn7aK3O8w2+JG6tYseSEF1gtsK98JIc+hQvtFv/4hk9MK6zC8oS
-         5oNQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Qj2NsxxrxGvcjEmd9rf19lFO4hTM6QQZYMW5MhboOoc=;
+        b=j23Gv3WcZSw7Qh3HqAqBbX1Mjk+cbqhd9vHrrnXwvLJ+/WbnkeES+9R3aTfdo7Xod0
+         veU/ADpIIVaM3mEWusgjTYeUedB1SAiW7/OTmuN+Kf66JKJglBnJ7NMOY/IwffbCSf+J
+         yA8TMfaM7qK291QvNYtzeQ63u3+8+skbCZQCJysxiZdUK/qVvXMeGQJOS2TPt0lKCtQQ
+         R8V6JWYl48H29SrxpqW9cnmh52gWvviuVKZRanP58AkO9P6/3mkHE7c9AoWuMGF2Ofe2
+         1N0UaPocX4LawQ/PhW6WbgOrQa+rByGoFOIRwk2xHgCfCKCqs763HRE6pmlATn4Ttl24
+         AnWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vNe+ECH+KI0KXYB/C0t3dikvQ9vGDkFhqEvtseTrJKE=;
-        b=RDUAjz0UUcxuLHRKur1gDQSTKlkcHp7US1EXNKX//uNjcZ/OFfE5dvL5dvvzxKQNk8
-         gpsvJ/ius9hReKTfwPX2cjB4Y7YYNXiK6hSQG6uIOH5kpFaUtS9UBt+AjoznJq8KAlVX
-         G8wA6d4JlCYrJ6UGgZWmExqqtGYfn6o1X/jxJwvp2uW2OQ/ZH91Y/q6oKRiONjq7d3Ev
-         OY3JIqrRwpvezt35X7TA6xd0OALe4sKSKe9NTFyi803bgejvkFuIGTyNbQCQ8JBDiLBG
-         IYLwmxrcbbRNMv8tBZV8pMYPaNENbyHLltzjfTlPPrEwQmE0tTl5TKYY8yH98jkincHg
-         iEnw==
-X-Gm-Message-State: AOAM530Ctjn0n3lMEMUtgT+d8rByR/PrMs9SQTjwqNCVQIjSFicYegG5
-        xusgLpRgOfIge5DFv7kOsx8=
-X-Google-Smtp-Source: ABdhPJy9MbVNIXefpIUqxyYCkjcCwKzx6XB/qWbzjPyNrRHY4uBf7aymrgleAmkATmbX8wEPP0RwVg==
-X-Received: by 2002:a05:651c:326:: with SMTP id b6mr3028310ljp.259.1588977317588;
-        Fri, 08 May 2020 15:35:17 -0700 (PDT)
-Received: from localhost.localdomain (h-158-174-22-22.NA.cust.bahnhof.se. [158.174.22.22])
-        by smtp.gmail.com with ESMTPSA id s11sm2316501lfo.86.2020.05.08.15.35.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Qj2NsxxrxGvcjEmd9rf19lFO4hTM6QQZYMW5MhboOoc=;
+        b=YbE/brrbiTtbYIJPw3IvGNaYwM8xB+gGuEofqlHNqgS9HayXPq7OmLmVkOLGlsuN9U
+         /q9yzST/fY9IHgNx2dsqtvcxQ3f1BChRUv7e3/yIgRPoLa6Wu1NIH22NTwIZj/FG9dSF
+         y5vRj3Fwl6nPjNaotXI2OvobHh4xhxp5OQuT+vKFa7Un3ylFtTxxeHy2KTrAeKyMLxux
+         7yrRlkXLLQKENFhl/2lFa/0Zp9B3G5zWJY/btqMOE0XrWT1OnAErJe8UdO3PRNkXtMqz
+         qagvsYLPySVWn6DJONYYJw9T/4Receiv4twgw4JVwvG4p7eHTnvkxL6zmEGBFmt+THiP
+         p/sg==
+X-Gm-Message-State: AGi0PubSSfR3XbkhP1sExA/hjZD1xE9kdsjbTLTSAtEO5IV8c6HUZKoa
+        POBZWgjVwhFDmjakCQMi7pM=
+X-Google-Smtp-Source: APiQypLdyi3Jv6TN6mCs4307DPP++qwr5Ww4nk3D7QYpmTgWtl6SDsKHTSCmkKfLPXG3SELlAs5kIQ==
+X-Received: by 2002:a9d:6c09:: with SMTP id f9mr4566004otq.94.1588988612824;
+        Fri, 08 May 2020 18:43:32 -0700 (PDT)
+Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id t15sm940863oov.32.2020.05.08.18.43.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 15:35:17 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Zaibo Xu <xuzaibo@huawei.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 4/4] crypto: hisilicon/sec2 - constify sec_dfx_regs
-Date:   Sat,  9 May 2020 00:35:02 +0200
-Message-Id: <20200508223502.7258-5-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508223502.7258-1-rikard.falkeborn@gmail.com>
-References: <20200508223502.7258-1-rikard.falkeborn@gmail.com>
+        Fri, 08 May 2020 18:43:32 -0700 (PDT)
+Date:   Fri, 8 May 2020 18:43:30 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Sterba <dsterba@suse.com>,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Eric Biggers <ebiggers@google.com>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] crypto: blake2b - Fix clang optimization for ARMv7-M
+Message-ID: <20200509014330.GA2153306@ubuntu-s3-xlarge-x86>
+References: <20200505135402.29356-1-arnd@arndb.de>
+ <20200506051200.GA831492@ubuntu-s3-xlarge-x86>
+ <CAK8P3a2LAgEG7epWFtUZrcgk9OwpVJd+ji9Ru_rq4L-Qk_dYbg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2LAgEG7epWFtUZrcgk9OwpVJd+ji9Ru_rq4L-Qk_dYbg@mail.gmail.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-sec_dfx_regs is never changed and can therefore be made const.
+On Fri, May 08, 2020 at 11:31:07PM +0200, Arnd Bergmann wrote:
+> On Wed, May 6, 2020 at 7:12 AM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> > > -
+> > > +#ifdef CONFIG_CC_IS_CLANG
+> >
+> > Given your comment in the bug:
+> >
+> > "The code is written to assume no loops are unrolled"
+> >
+> > Does it make sense to make this unconditional and take compiler
+> > heuristics out of it?
+> >
+> > > +#pragma nounroll /* https://bugs.llvm.org/show_bug.cgi?id=45803 */
+> > > +#endif
+> > >       for (i = 0; i < 8; ++i)
+> > >               S->h[i] = S->h[i] ^ v[i] ^ v[i + 8];
+> 
+> No, that would not work, as gcc does not support this pragma.
+> 
+>         Arnd
 
-This allows the compiler to put it in the text section instead of the
-data section.
+Ah fair enough.
 
-Before:
-   text    data     bss     dec     hex filename
-  17982    7312     480   25774    64ae drivers/crypto/hisilicon/sec2/sec_main.o
-
-After:
-   text    data     bss     dec     hex filename
-  18366    6928     480   25774    64ae drivers/crypto/hisilicon/sec2/sec_main.o
-
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/crypto/hisilicon/sec2/sec_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 07a5f4eb96ff..6f577b34098f 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -110,7 +110,7 @@ static const char * const sec_dbg_file_name[] = {
- 	[SEC_CLEAR_ENABLE] = "clear_enable",
- };
- 
--static struct debugfs_reg32 sec_dfx_regs[] = {
-+static const struct debugfs_reg32 sec_dfx_regs[] = {
- 	{"SEC_PF_ABNORMAL_INT_SOURCE    ",  0x301010},
- 	{"SEC_SAA_EN                    ",  0x301270},
- 	{"SEC_BD_LATENCY_MIN            ",  0x301600},
--- 
-2.26.2
-
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
