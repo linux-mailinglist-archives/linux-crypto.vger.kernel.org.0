@@ -2,131 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C42E1CBF45
-	for <lists+linux-crypto@lfdr.de>; Sat,  9 May 2020 10:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC061CC016
+	for <lists+linux-crypto@lfdr.de>; Sat,  9 May 2020 11:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgEIImm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Sat, 9 May 2020 04:42:42 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2501 "EHLO huawei.com"
+        id S1728172AbgEIJpZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 9 May 2020 05:45:25 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:58118 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725930AbgEIIml (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 9 May 2020 04:42:41 -0400
-Received: from dggemi403-hub.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 9F5EEA5F07300B0ECC05;
-        Sat,  9 May 2020 16:42:35 +0800 (CST)
-Received: from DGGEMI423-HUB.china.huawei.com (10.1.199.152) by
- dggemi403-hub.china.huawei.com (10.3.17.136) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Sat, 9 May 2020 16:42:35 +0800
-Received: from DGGEMI525-MBS.china.huawei.com ([169.254.6.251]) by
- dggemi423-hub.china.huawei.com ([10.1.199.152]) with mapi id 14.03.0487.000;
- Sat, 9 May 2020 16:42:27 +0800
-From:   Song Bao Hua <song.bao.hua@hisilicon.com>
-To:     "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        "tanshukun (A)" <tanshukun1@huawei.com>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>
-CC:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Xu Zaibo <xuzaibo@huawei.com>
-Subject: RE: [PATCH 12/13] crypto: hisilicon/zip - Use temporary sqe when
- doing work
-Thread-Topic: [PATCH 12/13] crypto: hisilicon/zip - Use temporary sqe when
- doing work
-Thread-Index: AQHWJQZAcAZApu4+hkePZFWlj8fJQ6ifGvTA//+wygCAAKPTMA==
-Date:   Sat, 9 May 2020 08:42:26 +0000
-Message-ID: <B926444035E5E2439431908E3842AFD249C9E0@DGGEMI525-MBS.china.huawei.com>
-References: <1588921068-20739-1-git-send-email-tanshukun1@huawei.com>
- <1588921068-20739-13-git-send-email-tanshukun1@huawei.com>
- <B926444035E5E2439431908E3842AFD249C8F3@DGGEMI525-MBS.china.huawei.com>
- <5EB6526A.20804@hisilicon.com>
-In-Reply-To: <5EB6526A.20804@hisilicon.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.87]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728190AbgEIJpX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 9 May 2020 05:45:23 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 636F61FCF1C5B9EC1DB2;
+        Sat,  9 May 2020 17:45:19 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 9 May 2020 17:45:09 +0800
+From:   Shukun Tan <tanshukun1@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>
+Subject: [PATCH v2 00/12] crypto: hisilicon - misc cleanup and optimizations
+Date:   Sat, 9 May 2020 17:43:53 +0800
+Message-ID: <1589017445-15514-1-git-send-email-tanshukun1@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
 X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-> > 
-> >> From: Zhou Wang <wangzhou1@hisilicon.com>
-> > 
-> >> Currently zip sqe is stored in hisi_zip_qp_ctx, which will bring corruption with multiple parallel users of the crypto tfm.
-> > 
-> >> This patch removes the zip_sqe in hisi_zip_qp_ctx and uses a temporary sqe instead.
-> > 
-> > This looks like a quite correct fix as in the old code, the 2nd request will overwrite the zip_sqe of the 1st request if we send the 2nd request before the 1st one is completed.
-> > So this will lead to the mistakes of both request1 and request2.
+This patchset includes some misc updates.
+patch 1-3: modify the accelerator probe process.
+patch 4: refactor module parameter pf_q_num.
+patch 5-6: add state machine and FLR support.
+patch 7: remove use_dma_api related useless codes.
+patch 8-9: QM initialization process and memory management optimization.
+patch 10-11: add device error report through abnormal irq.
+patch 12: tiny change of zip driver.
 
-> Yes.
+Longfang Liu (3):
+  crypto: hisilicon/sec2 - modify the SEC probe process
+  crypto: hisilicon/hpre - modify the HPRE probe process
+  crypto: hisilicon/zip - modify the ZIP probe process
 
-> > 
-> > unfortunately, it seems the hang issue can still be reproduced with this patch applied if we ask multi-threads running on multi-cores to send requests in parallel. Maybe something more needs fix?
+Shukun Tan (5):
+  crypto: hisilicon - refactor module parameter pf_q_num related code
+  crypto: hisilicon - add FLR support
+  crypto: hisilicon - remove use_dma_api related codes
+  crypto: hisilicon - remove codes of directly report device errors
+    through MSI
+  crypto: hisilicon - add device error report through abnormal irq
 
-> Currently we do not support multi-threads using one crypto_acomp in this driver.
-> If you tested like this, it may go wrong, as we do not protect queue which is in zip ctx.
+Weili Qian (2):
+  crypto: hisilicon - unify initial value assignment into QM
+  crypto: hisilicon - QM memory management optimization
 
-Zhou, Thanks for clarification. I'm ok with this patch as it is definitely going to the right direction and removing some race conditions. 
-Maybe we need a follow-up patch to address the parallel problem later.
+Zhou Wang (2):
+  crypto: hisilicon/qm - add state machine for QM
+  crypto: hisilicon/zip - Use temporary sqe when doing work
 
-> Best,
-> Zhou
+ drivers/crypto/hisilicon/hpre/hpre_main.c |  107 ++-
+ drivers/crypto/hisilicon/qm.c             | 1101 +++++++++++++++++++----------
+ drivers/crypto/hisilicon/qm.h             |   75 +-
+ drivers/crypto/hisilicon/sec2/sec_main.c  |  134 ++--
+ drivers/crypto/hisilicon/zip/zip_crypto.c |   11 +-
+ drivers/crypto/hisilicon/zip/zip_main.c   |  128 ++--
+ 6 files changed, 950 insertions(+), 606 deletions(-)
 
-Barry
+-- 
+2.7.4
 
-> > 
-> >> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
-> >> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> >> Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
-> >> ---
-> >>  drivers/crypto/hisilicon/zip/zip_crypto.c | 11 +++++------
-> >>  1 file changed, 5 insertions(+), 6 deletions(-)
-> > 
-> >> diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c 
-> >> b/drivers/crypto/hisilicon/zip/zip_crypto.c
-> >> index 369ec32..5fb9d4b 100644
-> >> --- a/drivers/crypto/hisilicon/zip/zip_crypto.c
-> >> +++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
-> >> @@ -64,7 +64,6 @@ struct hisi_zip_req_q {
-> >>  
-> >>  struct hisi_zip_qp_ctx {
-> >>  	struct hisi_qp *qp;
-> >> -	struct hisi_zip_sqe zip_sqe;
-> >>  	struct hisi_zip_req_q req_q;
-> >>  	struct hisi_acc_sgl_pool *sgl_pool;
-> >>  	struct hisi_zip *zip_dev;
-> >> @@ -484,11 +483,11 @@ static struct hisi_zip_req *hisi_zip_create_req(struct acomp_req *req,  static int hisi_zip_do_work(struct hisi_zip_req *req,
-> >>  			    struct hisi_zip_qp_ctx *qp_ctx)  {
-> >> -	struct hisi_zip_sqe *zip_sqe = &qp_ctx->zip_sqe;
-> >>  	struct acomp_req *a_req = req->req;
-> >>  	struct hisi_qp *qp = qp_ctx->qp;
-> >>  	struct device *dev = &qp->qm->pdev->dev;
-> >>  	struct hisi_acc_sgl_pool *pool = qp_ctx->sgl_pool;
-> >> +	struct hisi_zip_sqe zip_sqe;
-> >>  	dma_addr_t input;
-> >>  	dma_addr_t output;
-> >>  	int ret;
-> >> @@ -511,13 +510,13 @@ static int hisi_zip_do_work(struct hisi_zip_req *req,
-> >>  	}
-> >>  	req->dma_dst = output;
-> >>  
-> >> -	hisi_zip_fill_sqe(zip_sqe, qp->req_type, input, output, a_req->slen,
-> >> +	hisi_zip_fill_sqe(&zip_sqe, qp->req_type, input, output, 
-> >> +a_req->slen,
-> >>  			  a_req->dlen, req->sskip, req->dskip);
-> >> -	hisi_zip_config_buf_type(zip_sqe, HZIP_SGL);
-> >> -	hisi_zip_config_tag(zip_sqe, req->req_id);
-> >> +	hisi_zip_config_buf_type(&zip_sqe, HZIP_SGL);
-> >> +	hisi_zip_config_tag(&zip_sqe, req->req_id);
-> >>  
-> >>  	/* send command to start a task */
-> >> -	ret = hisi_qp_send(qp, zip_sqe);
-> >> +	ret = hisi_qp_send(qp, &zip_sqe);
-> >>  	if (ret < 0)
-> >>  		goto err_unmap_output;
-> >>  
