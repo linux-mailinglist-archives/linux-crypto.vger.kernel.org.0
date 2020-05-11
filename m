@@ -2,48 +2,48 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE5E1CD785
-	for <lists+linux-crypto@lfdr.de>; Mon, 11 May 2020 13:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816E11CD78F
+	for <lists+linux-crypto@lfdr.de>; Mon, 11 May 2020 13:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729131AbgEKLTi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 11 May 2020 07:19:38 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:52250 "EHLO
+        id S1729232AbgEKLTn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 11 May 2020 07:19:43 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:52252 "EHLO
         lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726438AbgEKLTh (ORCPT
+        with ESMTP id S1725993AbgEKLTk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 11 May 2020 07:19:37 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04BBJOXN099223;
-        Mon, 11 May 2020 06:19:24 -0500
+        Mon, 11 May 2020 07:19:40 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04BBJP3A099228;
+        Mon, 11 May 2020 06:19:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589195964;
-        bh=r/Z289ziuLekskSoAOTc4KuAcsPT8zHSmf/vDtvcIms=;
+        s=ti-com-17Q1; t=1589195965;
+        bh=gNPn50pxUfawldLhCux6x7Fp2+dqpJBz1HTS7H4u3SU=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=mHsWzWs7Lk5GIGNMwXZ5PH7M5+jB7PLtYLpnf1nld2OKxJt1HfivDE1xKHUrodikk
-         WzgkTXdNhTXP4rinHohAN7KKPV5YVbMi0JG5lD8Yq8oXdO+bkE6GxBRRjoaJov85K5
-         R+2sabiR5cQenorn4PFkL3UZdL8fVsJZ2z5JV9Ck=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04BBJOOZ061628
+        b=YJrE4/65VS8f4xJfDQ2sX4XH4upmI8WHMr3R6xALu7ndmBGk7QUUm3FrnbWdWfZws
+         q7bYNJ8lC/IG0VIuOeexAQLLYr0TGKjRlv2vOWB+lrwg+A4yxCiCXTJmVf6618ORPu
+         qG+PSFWgmbItCVl0g0/jjHXBAnif+FJa9P93DV+M=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04BBJPAr053840
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 May 2020 06:19:24 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 11 May 2020 06:19:25 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 11
- May 2020 06:19:23 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ May 2020 06:19:25 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 11 May 2020 06:19:23 -0500
+ Frontend Transport; Mon, 11 May 2020 06:19:25 -0500
 Received: from sokoban.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04BBJKOV004306;
-        Mon, 11 May 2020 06:19:22 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04BBJKOW004306;
+        Mon, 11 May 2020 06:19:24 -0500
 From:   Tero Kristo <t-kristo@ti.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
         <linux-crypto@vger.kernel.org>
 CC:     <linux-omap@vger.kernel.org>
-Subject: [PATCHv2 1/7] crypto: omap-aes: avoid spamming console with self tests
-Date:   Mon, 11 May 2020 14:19:07 +0300
-Message-ID: <20200511111913.26541-2-t-kristo@ti.com>
+Subject: [PATCHv2 2/7] crypto: omap-sham: force kernel driver usage for sha algos
+Date:   Mon, 11 May 2020 14:19:08 +0300
+Message-ID: <20200511111913.26541-3-t-kristo@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200511111913.26541-1-t-kristo@ti.com>
 References: <20200511111913.26541-1-t-kristo@ti.com>
@@ -55,29 +55,100 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Running the self test suite for omap-aes with extra tests enabled causes
-huge spam with the tag message wrong indicators. With self tests, this
-is fine as there are some tests that purposedly pass bad data to the
-driver. Also, returning -EBADMSG from the driver is enough, so remove the
-dev_err message completely.
+As the hardware acceleration for the omap-sham algos is not available
+from userspace, force kernel driver usage. Without this flag in place,
+openssl 1.1 implementation thinks it can accelerate sha algorithms on
+omap devices directly from userspace.
 
 Signed-off-by: Tero Kristo <t-kristo@ti.com>
 ---
- drivers/crypto/omap-aes-gcm.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/crypto/omap-sham.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/crypto/omap-aes-gcm.c b/drivers/crypto/omap-aes-gcm.c
-index 32dc00dc570b..9f937bdc53a7 100644
---- a/drivers/crypto/omap-aes-gcm.c
-+++ b/drivers/crypto/omap-aes-gcm.c
-@@ -77,7 +77,6 @@ static void omap_aes_gcm_done_task(struct omap_aes_dev *dd)
- 		tag = (u8 *)rctx->auth_tag;
- 		for (i = 0; i < dd->authsize; i++) {
- 			if (tag[i]) {
--				dev_err(dd->dev, "GCM decryption: Tag Message is wrong\n");
- 				ret = -EBADMSG;
- 			}
- 		}
+diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
+index e4072cd38585..0c837bbd8f0c 100644
+--- a/drivers/crypto/omap-sham.c
++++ b/drivers/crypto/omap-sham.c
+@@ -1584,7 +1584,8 @@ static struct ahash_alg algs_sha224_sha256[] = {
+ 		.cra_name		= "sha224",
+ 		.cra_driver_name	= "omap-sha224",
+ 		.cra_priority		= 400,
+-		.cra_flags		= CRYPTO_ALG_ASYNC |
++		.cra_flags		= CRYPTO_ALG_KERN_DRIVER_ONLY |
++						CRYPTO_ALG_ASYNC |
+ 						CRYPTO_ALG_NEED_FALLBACK,
+ 		.cra_blocksize		= SHA224_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct omap_sham_ctx),
+@@ -1605,7 +1606,8 @@ static struct ahash_alg algs_sha224_sha256[] = {
+ 		.cra_name		= "sha256",
+ 		.cra_driver_name	= "omap-sha256",
+ 		.cra_priority		= 400,
+-		.cra_flags		= CRYPTO_ALG_ASYNC |
++		.cra_flags		= CRYPTO_ALG_KERN_DRIVER_ONLY |
++						CRYPTO_ALG_ASYNC |
+ 						CRYPTO_ALG_NEED_FALLBACK,
+ 		.cra_blocksize		= SHA256_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct omap_sham_ctx),
+@@ -1627,7 +1629,8 @@ static struct ahash_alg algs_sha224_sha256[] = {
+ 		.cra_name		= "hmac(sha224)",
+ 		.cra_driver_name	= "omap-hmac-sha224",
+ 		.cra_priority		= 400,
+-		.cra_flags		= CRYPTO_ALG_ASYNC |
++		.cra_flags		= CRYPTO_ALG_KERN_DRIVER_ONLY |
++						CRYPTO_ALG_ASYNC |
+ 						CRYPTO_ALG_NEED_FALLBACK,
+ 		.cra_blocksize		= SHA224_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct omap_sham_ctx) +
+@@ -1650,7 +1653,8 @@ static struct ahash_alg algs_sha224_sha256[] = {
+ 		.cra_name		= "hmac(sha256)",
+ 		.cra_driver_name	= "omap-hmac-sha256",
+ 		.cra_priority		= 400,
+-		.cra_flags		= CRYPTO_ALG_ASYNC |
++		.cra_flags		= CRYPTO_ALG_KERN_DRIVER_ONLY |
++						CRYPTO_ALG_ASYNC |
+ 						CRYPTO_ALG_NEED_FALLBACK,
+ 		.cra_blocksize		= SHA256_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct omap_sham_ctx) +
+@@ -1675,7 +1679,8 @@ static struct ahash_alg algs_sha384_sha512[] = {
+ 		.cra_name		= "sha384",
+ 		.cra_driver_name	= "omap-sha384",
+ 		.cra_priority		= 400,
+-		.cra_flags		= CRYPTO_ALG_ASYNC |
++		.cra_flags		= CRYPTO_ALG_KERN_DRIVER_ONLY |
++						CRYPTO_ALG_ASYNC |
+ 						CRYPTO_ALG_NEED_FALLBACK,
+ 		.cra_blocksize		= SHA384_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct omap_sham_ctx),
+@@ -1696,7 +1701,8 @@ static struct ahash_alg algs_sha384_sha512[] = {
+ 		.cra_name		= "sha512",
+ 		.cra_driver_name	= "omap-sha512",
+ 		.cra_priority		= 400,
+-		.cra_flags		= CRYPTO_ALG_ASYNC |
++		.cra_flags		= CRYPTO_ALG_KERN_DRIVER_ONLY |
++						CRYPTO_ALG_ASYNC |
+ 						CRYPTO_ALG_NEED_FALLBACK,
+ 		.cra_blocksize		= SHA512_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct omap_sham_ctx),
+@@ -1718,7 +1724,8 @@ static struct ahash_alg algs_sha384_sha512[] = {
+ 		.cra_name		= "hmac(sha384)",
+ 		.cra_driver_name	= "omap-hmac-sha384",
+ 		.cra_priority		= 400,
+-		.cra_flags		= CRYPTO_ALG_ASYNC |
++		.cra_flags		= CRYPTO_ALG_KERN_DRIVER_ONLY |
++						CRYPTO_ALG_ASYNC |
+ 						CRYPTO_ALG_NEED_FALLBACK,
+ 		.cra_blocksize		= SHA384_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct omap_sham_ctx) +
+@@ -1741,7 +1748,8 @@ static struct ahash_alg algs_sha384_sha512[] = {
+ 		.cra_name		= "hmac(sha512)",
+ 		.cra_driver_name	= "omap-hmac-sha512",
+ 		.cra_priority		= 400,
+-		.cra_flags		= CRYPTO_ALG_ASYNC |
++		.cra_flags		= CRYPTO_ALG_KERN_DRIVER_ONLY |
++						CRYPTO_ALG_ASYNC |
+ 						CRYPTO_ALG_NEED_FALLBACK,
+ 		.cra_blocksize		= SHA512_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct omap_sham_ctx) +
 -- 
 2.17.1
 
