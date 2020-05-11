@@ -2,98 +2,95 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD101CC011
-	for <lists+linux-crypto@lfdr.de>; Sat,  9 May 2020 11:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6271CD05C
+	for <lists+linux-crypto@lfdr.de>; Mon, 11 May 2020 05:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgEIJpY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 9 May 2020 05:45:24 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:58018 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728172AbgEIJpW (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 9 May 2020 05:45:22 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 403CB63452CDB3DB2E73;
-        Sat,  9 May 2020 17:45:19 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 9 May 2020 17:45:12 +0800
-From:   Shukun Tan <tanshukun1@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>
-Subject: [PATCH v2 12/12] crypto: hisilicon/zip - Use temporary sqe when doing work
-Date:   Sat, 9 May 2020 17:44:05 +0800
-Message-ID: <1589017445-15514-13-git-send-email-tanshukun1@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589017445-15514-1-git-send-email-tanshukun1@huawei.com>
-References: <1589017445-15514-1-git-send-email-tanshukun1@huawei.com>
+        id S1726661AbgEKDXY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 10 May 2020 23:23:24 -0400
+Received: from ozlabs.org ([203.11.71.1]:49193 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725830AbgEKDXY (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 10 May 2020 23:23:24 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49L5qZ28x0z9sPF;
+        Mon, 11 May 2020 13:23:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1589167402;
+        bh=ei+7VrtRtIWjZ6v1Y0Tjx02DowX18VkOoZ08mt7TJzY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LOVr45y6NbvfCyJz4PnG2KQFJDtVzNUYF/ATJGU7kx/U+yOEW1zLsWWub7DyWZGvA
+         4UuticK1bQd07/vc1SD3ud0vQ6kEYtQAqLvM8Nswbb6MAc5bwQWrKW72m+j4tjpshj
+         97uYHPTCRcYPhlu63pggcsy9/GYH0II0y4W3jJacjE5PrgeGROzcWUtCNshwGFU78p
+         cxrQk9ta9gvhtoLllMfek10CtbVbGfoFMVzAJkH55cdNMScs7NXqgPKzYFXUut6Iet
+         sUR6LuN+8G9ToatZ+63G0ACK/hOvuqxuijQsKFEykF0HBIdc7iO9qIgG9vpoB+4Ge/
+         4uptuhQK1zF9w==
+Date:   Mon, 11 May 2020 13:23:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: linux-next: manual merge of the crypto tree with Linus' tree
+Message-ID: <20200511132319.2d39781b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/YU9ipyUeRpaMQcaUOwyWSNw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Zhou Wang <wangzhou1@hisilicon.com>
+--Sig_/YU9ipyUeRpaMQcaUOwyWSNw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Currently zip sqe is stored in hisi_zip_qp_ctx, which will bring corruption
-with multiple parallel users of the crypto tfm.
+Hi all,
 
-This patch removes the zip_sqe in hisi_zip_qp_ctx and uses a temporary sqe
-instead.
+Today's linux-next merge of the crypto tree got conflicts in:
 
-Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
----
- drivers/crypto/hisilicon/zip/zip_crypto.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+  crypto/lrw.c
+  crypto/xts.c
 
-diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
-index 369ec32..5fb9d4b 100644
---- a/drivers/crypto/hisilicon/zip/zip_crypto.c
-+++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
-@@ -64,7 +64,6 @@ struct hisi_zip_req_q {
- 
- struct hisi_zip_qp_ctx {
- 	struct hisi_qp *qp;
--	struct hisi_zip_sqe zip_sqe;
- 	struct hisi_zip_req_q req_q;
- 	struct hisi_acc_sgl_pool *sgl_pool;
- 	struct hisi_zip *zip_dev;
-@@ -484,11 +483,11 @@ static struct hisi_zip_req *hisi_zip_create_req(struct acomp_req *req,
- static int hisi_zip_do_work(struct hisi_zip_req *req,
- 			    struct hisi_zip_qp_ctx *qp_ctx)
- {
--	struct hisi_zip_sqe *zip_sqe = &qp_ctx->zip_sqe;
- 	struct acomp_req *a_req = req->req;
- 	struct hisi_qp *qp = qp_ctx->qp;
- 	struct device *dev = &qp->qm->pdev->dev;
- 	struct hisi_acc_sgl_pool *pool = qp_ctx->sgl_pool;
-+	struct hisi_zip_sqe zip_sqe;
- 	dma_addr_t input;
- 	dma_addr_t output;
- 	int ret;
-@@ -511,13 +510,13 @@ static int hisi_zip_do_work(struct hisi_zip_req *req,
- 	}
- 	req->dma_dst = output;
- 
--	hisi_zip_fill_sqe(zip_sqe, qp->req_type, input, output, a_req->slen,
-+	hisi_zip_fill_sqe(&zip_sqe, qp->req_type, input, output, a_req->slen,
- 			  a_req->dlen, req->sskip, req->dskip);
--	hisi_zip_config_buf_type(zip_sqe, HZIP_SGL);
--	hisi_zip_config_tag(zip_sqe, req->req_id);
-+	hisi_zip_config_buf_type(&zip_sqe, HZIP_SGL);
-+	hisi_zip_config_tag(&zip_sqe, req->req_id);
- 
- 	/* send command to start a task */
--	ret = hisi_qp_send(qp, zip_sqe);
-+	ret = hisi_qp_send(qp, &zip_sqe);
- 	if (ret < 0)
- 		goto err_unmap_output;
- 
--- 
-2.7.4
+between commit:
 
+  1a263ae60b04 ("gcc-10: avoid shadowing standard library 'free()' in crypt=
+o")
+
+from Linus' tree and commit:
+
+  d099ea6e6fde ("crypto - Avoid free() namespace collision")
+
+from the crypto tree.
+
+I fixed it up (I just used the versions from the crypto tree) and can
+carry the fix as necessary. This is now fixed as far as linux-next is
+concerned, but any non trivial conflicts should be mentioned to your
+upstream maintainer when your tree is submitted for merging.  You may
+also want to consider cooperating with the maintainer of the conflicting
+tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/YU9ipyUeRpaMQcaUOwyWSNw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl64xScACgkQAVBC80lX
+0Gz7Twf/ZGQ5W1CsG3jk612T0kjSvC82Qn6Izn3RE2aW8pMdFqcBf2chnipHdy06
+9oY7qGH7U9mNF6J7kmeFQ0/HeZPlHjYnhxqJ9bSZgzTfz/CChUu//Baz55X9usVC
+R7qvicU/gnTkACBWn0yA2WHbBDaMm9EhupUjgxddpbMhant4xjLz7MZuEfzepbYb
+whYKnuPfOjVQJWaWqmzZlHcDfYS9CFyjYsBflGP81aqg6k66cC+kwIGRitGG6fYd
+8r91mblPlB360aoY7IRKUs0R/QOI3SO4tUZv7ayuXWC9LGpEo3REvoFf1jQQFFqJ
+Y/BfuWUjCKMszXkJS6MUfbrfdxYw3Q==
+=3CX3
+-----END PGP SIGNATURE-----
+
+--Sig_/YU9ipyUeRpaMQcaUOwyWSNw--
