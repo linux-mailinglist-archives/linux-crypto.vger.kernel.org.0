@@ -2,216 +2,176 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44461CD792
-	for <lists+linux-crypto@lfdr.de>; Mon, 11 May 2020 13:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386041CE7C2
+	for <lists+linux-crypto@lfdr.de>; Mon, 11 May 2020 23:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729369AbgEKLTr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 11 May 2020 07:19:47 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34780 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729333AbgEKLTp (ORCPT
+        id S1725904AbgEKVx7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 11 May 2020 17:53:59 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:39870 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgEKVx7 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 11 May 2020 07:19:45 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04BBJXb3039243;
-        Mon, 11 May 2020 06:19:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589195973;
-        bh=DmuTt/oLL9bLxYzTZA57/askvQvzJwvHmWkkULIzNXk=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=EDxwPPYJNjz2kfVxwGA9jZ/2Wa2LfWYXXknYGxxwBBtPgOh3l+9anre/0WWeK3CwF
-         bSPLcuUv/LM5af3RS62hPwS85pLEeL/DNvyHOwpAn4Kbw4V2paEp6lcoz3lBUOPGRG
-         yeERgCejDKIsBxm8DS5X4/Xq9rIdp5NqtstORs9s=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04BBJX3E061692
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 May 2020 06:19:33 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 11
- May 2020 06:19:32 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 11 May 2020 06:19:32 -0500
-Received: from sokoban.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04BBJKOb004306;
-        Mon, 11 May 2020 06:19:31 -0500
-From:   Tero Kristo <t-kristo@ti.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>
-CC:     <linux-omap@vger.kernel.org>
-Subject: [PATCHv2 7/7] crypto: omap-sham: add proper load balancing support for multicore
-Date:   Mon, 11 May 2020 14:19:13 +0300
-Message-ID: <20200511111913.26541-8-t-kristo@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200511111913.26541-1-t-kristo@ti.com>
-References: <20200511111913.26541-1-t-kristo@ti.com>
+        Mon, 11 May 2020 17:53:59 -0400
+Received: by mail-oi1-f193.google.com with SMTP id b18so16488172oic.6;
+        Mon, 11 May 2020 14:53:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0ubMO0r62e5onOySJqGesT8p9B144ksRv5675Ou87bY=;
+        b=Sdy9+dPhsO7BIn7P1zUyAGHyjZ5QSUXQktOC0zFz/w1xcqXp65LqzEIVmBT1qTRe3k
+         pjYC8A4czZXbZeGjNkLyAwvv9D7/XTjAbb9LxbaCz6hzv3R55fsSfZsAbyj8BaJfn6lB
+         IfPP6VzGMm15QddsG5ruWE2gygUk/8p4jkm+AFQufpouwPRIXiZHpURUHAgWXwYW5/81
+         /x/KGGL0KOi2Xwc65MyrIAg4SwL28O/9S2pfaWB2VDHY29d9nxfJ4iUn0vcQvbSmUmRb
+         +FurjC49yPAhl2e2rf5Cc/qX/koC3ZCkR2LjHpEUJx/oJ6CZ+WIIx3A6ZV8eKy+M7bU4
+         +BGA==
+X-Gm-Message-State: AGi0PuYXo9yXXC5VYBjQV219dycFObJGqApJaX3O0y+qone1aDmwKaLi
+        bQ+GfQSdipgRQKx4Cc8k7A==
+X-Google-Smtp-Source: APiQypKTWYog9AvtQJGmnBIzegGaPpE9c3rLxOtAgfNAuYpid5nsuXMu9KfWZd9qeFqn0mDIYG0vlg==
+X-Received: by 2002:aca:d585:: with SMTP id m127mr21345315oig.27.1589234038378;
+        Mon, 11 May 2020 14:53:58 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s69sm2974728otb.4.2020.05.11.14.53.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 14:53:45 -0700 (PDT)
+Received: (nullmailer pid 13339 invoked by uid 1000);
+        Mon, 11 May 2020 21:53:43 -0000
+Date:   Mon, 11 May 2020 16:53:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Tero Kristo <t-kristo@ti.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, Keerthy <j-keerthy@ti.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCHv2 1/7] dt-bindings: crypto: Add TI SA2UL crypto
+ accelerator documentation
+Message-ID: <20200511215343.GA10123@bogus>
+References: <20200424164430.3288-1-t-kristo@ti.com>
+ <20200424164430.3288-2-t-kristo@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424164430.3288-2-t-kristo@ti.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The current implementation of the multiple accelerator core support for
-OMAP SHA does not work properly. It always picks up the first probed
-accelerator core if this is available, and rest of the book keeping also
-gets confused if there are two cores available. Add proper load
-balancing support for SHA, and also fix any bugs related to the
-multicore support while doing it.
+On Fri, Apr 24, 2020 at 07:44:24PM +0300, Tero Kristo wrote:
+> From: Keerthy <j-keerthy@ti.com>
+> 
+> The Security Accelerator Ultra Lite (SA2UL) subsystem provides hardware
+> cryptographic acceleration for the following use cases:
+> 
+> * Encryption and authentication for secure boot
+> * Encryption and authentication of content in applications
+>   requiring DRM (digital rights management) and
+>   content/asset protection
+> 
+> SA2UL provides support for number of different cryptographic algorithms
+> including SHA1, SHA256, SHA512, AES, 3DES, and various combinations of
+> the previous for AEAD use.
+> 
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Keerthy <j-keerthy@ti.com>
+> [t-kristo@ti.com: converted documentation to yaml]
+> Signed-off-by: Tero Kristo <t-kristo@ti.com>
+> ---
+>  .../devicetree/bindings/crypto/ti,sa2ul.yaml  | 76 +++++++++++++++++++
+>  1 file changed, 76 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml b/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
+> new file mode 100644
+> index 000000000000..27bb3a7e2b87
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
+> @@ -0,0 +1,76 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/crypto/ti,sa2ul.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: K3 SoC SA2UL crypto module
+> +
+> +maintainers:
+> +  - Tero Kristo <t-kristo@ti.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,j721e-sa2ul
+> +      - ti,am654-sa2ul
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  dmas:
+> +    items:
+> +      - description: TX DMA Channel
+> +      - description: RX DMA Channel #1
+> +      - description: RX DMA Channel #2
+> +
+> +  dma-names:
+> +    items:
+> +      - const: tx
+> +      - const: rx1
+> +      - const: rx2
+> +
+> +  dma-coherent: true
+> +
+> +  "#address-cells":
+> +    const: 2
+> +
+> +  "#size-cells":
+> +    const: 2
+> +
+> +  ranges:
+> +    description:
+> +      Address translation for the possible RNG child node for SA2UL
+> +
+> +patternProperties:
+> +  "^rng@[a-lf0-9]+$":
 
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
----
- drivers/crypto/omap-sham.c | 64 ++++++++++++++++++--------------------
- 1 file changed, 31 insertions(+), 33 deletions(-)
+a-l?
 
-diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
-index 86949f1ac6a7..0651604161ea 100644
---- a/drivers/crypto/omap-sham.c
-+++ b/drivers/crypto/omap-sham.c
-@@ -169,8 +169,6 @@ struct omap_sham_hmac_ctx {
- };
- 
- struct omap_sham_ctx {
--	struct omap_sham_dev	*dd;
--
- 	unsigned long		flags;
- 
- 	/* fallback stuff */
-@@ -935,27 +933,35 @@ static int omap_sham_update_dma_stop(struct omap_sham_dev *dd)
- 	return 0;
- }
- 
-+struct omap_sham_dev *omap_sham_find_dev(struct omap_sham_reqctx *ctx)
-+{
-+	struct omap_sham_dev *dd;
-+
-+	if (ctx->dd)
-+		return ctx->dd;
-+
-+	spin_lock_bh(&sham.lock);
-+	dd = list_first_entry(&sham.dev_list, struct omap_sham_dev, list);
-+	list_move_tail(&dd->list, &sham.dev_list);
-+	ctx->dd = dd;
-+	spin_unlock_bh(&sham.lock);
-+
-+	return dd;
-+}
-+
- static int omap_sham_init(struct ahash_request *req)
- {
- 	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
- 	struct omap_sham_ctx *tctx = crypto_ahash_ctx(tfm);
- 	struct omap_sham_reqctx *ctx = ahash_request_ctx(req);
--	struct omap_sham_dev *dd = NULL, *tmp;
-+	struct omap_sham_dev *dd;
- 	int bs = 0;
- 
--	spin_lock_bh(&sham.lock);
--	if (!tctx->dd) {
--		list_for_each_entry(tmp, &sham.dev_list, list) {
--			dd = tmp;
--			break;
--		}
--		tctx->dd = dd;
--	} else {
--		dd = tctx->dd;
--	}
--	spin_unlock_bh(&sham.lock);
-+	ctx->dd = NULL;
- 
--	ctx->dd = dd;
-+	dd = omap_sham_find_dev(ctx);
-+	if (!dd)
-+		return -ENODEV;
- 
- 	ctx->flags = 0;
- 
-@@ -1225,8 +1231,7 @@ static int omap_sham_handle_queue(struct omap_sham_dev *dd,
- static int omap_sham_enqueue(struct ahash_request *req, unsigned int op)
- {
- 	struct omap_sham_reqctx *ctx = ahash_request_ctx(req);
--	struct omap_sham_ctx *tctx = crypto_tfm_ctx(req->base.tfm);
--	struct omap_sham_dev *dd = tctx->dd;
-+	struct omap_sham_dev *dd = ctx->dd;
- 
- 	ctx->op = op;
- 
-@@ -1236,7 +1241,7 @@ static int omap_sham_enqueue(struct ahash_request *req, unsigned int op)
- static int omap_sham_update(struct ahash_request *req)
- {
- 	struct omap_sham_reqctx *ctx = ahash_request_ctx(req);
--	struct omap_sham_dev *dd = ctx->dd;
-+	struct omap_sham_dev *dd = omap_sham_find_dev(ctx);
- 
- 	if (!req->nbytes)
- 		return 0;
-@@ -1340,21 +1345,8 @@ static int omap_sham_setkey(struct crypto_ahash *tfm, const u8 *key,
- 	struct omap_sham_hmac_ctx *bctx = tctx->base;
- 	int bs = crypto_shash_blocksize(bctx->shash);
- 	int ds = crypto_shash_digestsize(bctx->shash);
--	struct omap_sham_dev *dd = NULL, *tmp;
- 	int err, i;
- 
--	spin_lock_bh(&sham.lock);
--	if (!tctx->dd) {
--		list_for_each_entry(tmp, &sham.dev_list, list) {
--			dd = tmp;
--			break;
--		}
--		tctx->dd = dd;
--	} else {
--		dd = tctx->dd;
--	}
--	spin_unlock_bh(&sham.lock);
--
- 	err = crypto_shash_setkey(tctx->fallback, key, keylen);
- 	if (err)
- 		return err;
-@@ -1372,7 +1364,7 @@ static int omap_sham_setkey(struct crypto_ahash *tfm, const u8 *key,
- 
- 	memset(bctx->ipad + keylen, 0, bs - keylen);
- 
--	if (!test_bit(FLAGS_AUTO_XOR, &dd->flags)) {
-+	if (!test_bit(FLAGS_AUTO_XOR, &sham.flags)) {
- 		memcpy(bctx->opad, bctx->ipad, bs);
- 
- 		for (i = 0; i < bs; i++) {
-@@ -2184,6 +2176,7 @@ static int omap_sham_probe(struct platform_device *pdev)
- 	}
- 
- 	dd->flags |= dd->pdata->flags;
-+	sham.flags |= dd->pdata->flags;
- 
- 	pm_runtime_use_autosuspend(dev);
- 	pm_runtime_set_autosuspend_delay(dev, DEFAULT_AUTOSUSPEND_DELAY);
-@@ -2211,6 +2204,9 @@ static int omap_sham_probe(struct platform_device *pdev)
- 	spin_unlock(&sham.lock);
- 
- 	for (i = 0; i < dd->pdata->algs_info_size; i++) {
-+		if (dd->pdata->algs_info[i].registered)
-+			break;
-+
- 		for (j = 0; j < dd->pdata->algs_info[i].size; j++) {
- 			struct ahash_alg *alg;
- 
-@@ -2262,9 +2258,11 @@ static int omap_sham_remove(struct platform_device *pdev)
- 	list_del(&dd->list);
- 	spin_unlock(&sham.lock);
- 	for (i = dd->pdata->algs_info_size - 1; i >= 0; i--)
--		for (j = dd->pdata->algs_info[i].registered - 1; j >= 0; j--)
-+		for (j = dd->pdata->algs_info[i].registered - 1; j >= 0; j--) {
- 			crypto_unregister_ahash(
- 					&dd->pdata->algs_info[i].algs_list[j]);
-+			dd->pdata->algs_info[i].registered--;
-+		}
- 	tasklet_kill(&dd->done_task);
- 	pm_runtime_disable(&pdev->dev);
- 
--- 
-2.17.1
+> +    type: object
+> +    description:
+> +      Child RNG node for SA2UL
 
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Does this child node have a binding?
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - power-domains
+> +  - dmas
+> +  - dma-names
+> +  - dma-coherent
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
+> +
+> +    main_crypto: crypto@4e00000 {
+> +        compatible = "ti,j721-sa2ul";
+> +        reg = <0x0 0x4e00000 0x0 0x1200>;
+> +        power-domains = <&k3_pds 264 TI_SCI_PD_EXCLUSIVE>;
+> +        dmas = <&main_udmap 0xc000>, <&main_udmap 0x4000>,
+> +               <&main_udmap 0x4001>;
+> +        dma-names = "tx", "rx1", "rx2";
+> +        dma-coherent;
+> +    };
+> -- 
+> 2.17.1
+> 
+> --
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
