@@ -2,95 +2,69 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6271CD05C
-	for <lists+linux-crypto@lfdr.de>; Mon, 11 May 2020 05:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B26EA1CD789
+	for <lists+linux-crypto@lfdr.de>; Mon, 11 May 2020 13:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgEKDXY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 10 May 2020 23:23:24 -0400
-Received: from ozlabs.org ([203.11.71.1]:49193 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbgEKDXY (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 10 May 2020 23:23:24 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49L5qZ28x0z9sPF;
-        Mon, 11 May 2020 13:23:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1589167402;
-        bh=ei+7VrtRtIWjZ6v1Y0Tjx02DowX18VkOoZ08mt7TJzY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LOVr45y6NbvfCyJz4PnG2KQFJDtVzNUYF/ATJGU7kx/U+yOEW1zLsWWub7DyWZGvA
-         4UuticK1bQd07/vc1SD3ud0vQ6kEYtQAqLvM8Nswbb6MAc5bwQWrKW72m+j4tjpshj
-         97uYHPTCRcYPhlu63pggcsy9/GYH0II0y4W3jJacjE5PrgeGROzcWUtCNshwGFU78p
-         cxrQk9ta9gvhtoLllMfek10CtbVbGfoFMVzAJkH55cdNMScs7NXqgPKzYFXUut6Iet
-         sUR6LuN+8G9ToatZ+63G0ACK/hOvuqxuijQsKFEykF0HBIdc7iO9qIgG9vpoB+4Ge/
-         4uptuhQK1zF9w==
-Date:   Mon, 11 May 2020 13:23:19 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto List <linux-crypto@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: linux-next: manual merge of the crypto tree with Linus' tree
-Message-ID: <20200511132319.2d39781b@canb.auug.org.au>
+        id S1728808AbgEKLTm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 11 May 2020 07:19:42 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:52256 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729264AbgEKLTk (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 11 May 2020 07:19:40 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04BBJMsq099218;
+        Mon, 11 May 2020 06:19:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589195962;
+        bh=8Yqex108W/YEVd8v7+4W/b3nDUCqYAUv+6/1luZSKk8=;
+        h=From:To:CC:Subject:Date;
+        b=MKYHEgW5xnw/5yCYhettgxacMp+ySeGPYCn8WV+IoTSi5ZbbdynIAW3bunH6ORme0
+         5lLj5xAVHlPDEXqOLKacmotQRBXRRSkTxRkvxyXhVhVY4yYvihcxQ26lnf2vYipF8K
+         TYqaqseqqhjrndv+aUx2gAoqCxJzRig4AX60/mJc=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04BBJMRb061614
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 May 2020 06:19:22 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 11
+ May 2020 06:19:22 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 11 May 2020 06:19:22 -0500
+Received: from sokoban.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04BBJKOU004306;
+        Mon, 11 May 2020 06:19:21 -0500
+From:   Tero Kristo <t-kristo@ti.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <linux-crypto@vger.kernel.org>
+CC:     <linux-omap@vger.kernel.org>
+Subject: [PATCHv2 0/7] crypto: omap: sha/aes fixes
+Date:   Mon, 11 May 2020 14:19:06 +0300
+Message-ID: <20200511111913.26541-1-t-kristo@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/YU9ipyUeRpaMQcaUOwyWSNw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---Sig_/YU9ipyUeRpaMQcaUOwyWSNw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+Compared to v1 [1], added dcache flush handling in patch #3, and added a
+new patch #7 which fixes SHA multi-accelerator core support. It doubles
+the performance of raw SHA acceleration on devices where two cores are
+available (like DRA7.) Will follow with platform code fixes once the
+driver change is accepted.
 
-Today's linux-next merge of the crypto tree got conflicts in:
+-Tero
 
-  crypto/lrw.c
-  crypto/xts.c
+[1] https://www.spinics.net/lists/linux-crypto/msg47372.html
 
-between commit:
 
-  1a263ae60b04 ("gcc-10: avoid shadowing standard library 'free()' in crypt=
-o")
-
-from Linus' tree and commit:
-
-  d099ea6e6fde ("crypto - Avoid free() namespace collision")
-
-from the crypto tree.
-
-I fixed it up (I just used the versions from the crypto tree) and can
-carry the fix as necessary. This is now fixed as far as linux-next is
-concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/YU9ipyUeRpaMQcaUOwyWSNw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl64xScACgkQAVBC80lX
-0Gz7Twf/ZGQ5W1CsG3jk612T0kjSvC82Qn6Izn3RE2aW8pMdFqcBf2chnipHdy06
-9oY7qGH7U9mNF6J7kmeFQ0/HeZPlHjYnhxqJ9bSZgzTfz/CChUu//Baz55X9usVC
-R7qvicU/gnTkACBWn0yA2WHbBDaMm9EhupUjgxddpbMhant4xjLz7MZuEfzepbYb
-whYKnuPfOjVQJWaWqmzZlHcDfYS9CFyjYsBflGP81aqg6k66cC+kwIGRitGG6fYd
-8r91mblPlB360aoY7IRKUs0R/QOI3SO4tUZv7ayuXWC9LGpEo3REvoFf1jQQFFqJ
-Y/BfuWUjCKMszXkJS6MUfbrfdxYw3Q==
-=3CX3
------END PGP SIGNATURE-----
-
---Sig_/YU9ipyUeRpaMQcaUOwyWSNw--
+--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
