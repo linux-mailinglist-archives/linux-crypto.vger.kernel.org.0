@@ -2,79 +2,94 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31031D45C3
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2020 08:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521001D4838
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2020 10:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgEOGVZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 15 May 2020 02:21:25 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:34334 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726252AbgEOGVZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 15 May 2020 02:21:25 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jZTik-0007V6-Bg; Fri, 15 May 2020 16:21:23 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 15 May 2020 16:21:22 +1000
-Date:   Fri, 15 May 2020 16:21:22 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Shukun Tan <tanshukun1@huawei.com>
-Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
-        xuzaibo@huawei.com, wangzhou1@hisilicon.com
-Subject: Re: [PATCH v2 00/12] crypto: hisilicon - misc cleanup and
- optimizations
-Message-ID: <20200515062122.GC22330@gondor.apana.org.au>
-References: <1589017445-15514-1-git-send-email-tanshukun1@huawei.com>
+        id S1727910AbgEOIco (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 15 May 2020 04:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726730AbgEOIcl (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 15 May 2020 04:32:41 -0400
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5301::5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1734C061A0C;
+        Fri, 15 May 2020 01:32:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1589531557;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=cHEQOWUyIIldwmU2G5ztyzURhkG246vmV36B4A8PLNg=;
+        b=IuicEsZLQ+IWZvn46fqIzv8mnRi9bsTzIalpbDAxiCGMZ3VRLcZucrP+fUsRXR/r0s
+        rts+19tHz3YACk3hQ0NZFZcEqGDXU2Qhp3jLlxe1GBd/LjkVIWEFBRS+9zq9kn3hPJE+
+        GWQ+WRzdFsrbxPBkaNLK+ViY6ALoWoO5gYMTT3dNsql48FlcIQ13ryBBxL31s5JsbkyW
+        KFU5LjhqKOAcZ1YVwKXRI7SQc3OTdjHRCo1oIY2pbMqbJ5CIlwr7I54d9RD0hiyAfyiy
+        szxrx0rtEHXHIohi/hzIn+qLRJcLpF7r0n1hR100/BM6Ze7y+/nu0e2YuJ3gVbtzGGKt
+        lcMw==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaJfSc9C1S"
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+        by smtp.strato.de (RZmta 46.6.2 DYNA|AUTH)
+        with ESMTPSA id u08bf3w4F8WN0ZL
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Fri, 15 May 2020 10:32:23 +0200 (CEST)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Stefan Wahren <wahrenst@gmx.net>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH 1/2] hwrng: iproc-rng200 - Set the quality value
+Date:   Fri, 15 May 2020 10:32:22 +0200
+Message-ID: <2080864.23lDWg4Bvs@tauon.chronox.de>
+In-Reply-To: <dleftjtv0i88ji.fsf%l.stelmach@samsung.com>
+References: <4493123.C11H8YMYNy@tauon.chronox.de> <CGME20200514221852eucas1p2bea169d0b4467b0ec9e195c6ac58a08a@eucas1p2.samsung.com> <dleftjtv0i88ji.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589017445-15514-1-git-send-email-tanshukun1@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, May 09, 2020 at 05:43:53PM +0800, Shukun Tan wrote:
-> This patchset includes some misc updates.
-> patch 1-3: modify the accelerator probe process.
-> patch 4: refactor module parameter pf_q_num.
-> patch 5-6: add state machine and FLR support.
-> patch 7: remove use_dma_api related useless codes.
-> patch 8-9: QM initialization process and memory management optimization.
-> patch 10-11: add device error report through abnormal irq.
-> patch 12: tiny change of zip driver.
-> 
-> Longfang Liu (3):
->   crypto: hisilicon/sec2 - modify the SEC probe process
->   crypto: hisilicon/hpre - modify the HPRE probe process
->   crypto: hisilicon/zip - modify the ZIP probe process
-> 
-> Shukun Tan (5):
->   crypto: hisilicon - refactor module parameter pf_q_num related code
->   crypto: hisilicon - add FLR support
->   crypto: hisilicon - remove use_dma_api related codes
->   crypto: hisilicon - remove codes of directly report device errors
->     through MSI
->   crypto: hisilicon - add device error report through abnormal irq
-> 
-> Weili Qian (2):
->   crypto: hisilicon - unify initial value assignment into QM
->   crypto: hisilicon - QM memory management optimization
-> 
-> Zhou Wang (2):
->   crypto: hisilicon/qm - add state machine for QM
->   crypto: hisilicon/zip - Use temporary sqe when doing work
-> 
->  drivers/crypto/hisilicon/hpre/hpre_main.c |  107 ++-
->  drivers/crypto/hisilicon/qm.c             | 1101 +++++++++++++++++++----------
->  drivers/crypto/hisilicon/qm.h             |   75 +-
->  drivers/crypto/hisilicon/sec2/sec_main.c  |  134 ++--
->  drivers/crypto/hisilicon/zip/zip_crypto.c |   11 +-
->  drivers/crypto/hisilicon/zip/zip_main.c   |  128 ++--
->  6 files changed, 950 insertions(+), 606 deletions(-)
+Am Freitag, 15. Mai 2020, 00:18:41 CEST schrieb Lukasz Stelmach:
 
-All applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Hi Lukasz,
+> 
+> I am running tests using SP800-90B tools and the first issue I can see
+> is the warning that samples contain less than 1e6 bytes of data. I know
+> little about maths behind random number generators, but I have noticed
+> that the bigger chunk of data from an RNG I feed into either ent or ea_iid
+> the higher entropy they report. That is why I divided the data into 1024
+> bit chunks in the first place. To get worse results. With ea_iid they
+> get even worse (128 bytes of random data)
+
+I read that you seem to just take the output data from the RNG. If this is 
+correct, I think we can stop right here. The output of an RNG is usually after 
+post-processing commonly provided by a cryptographic function.
+
+Thus, when processing the output of the RNG all what we measure here is the 
+quality of the cryptographic post-processing and not the entropy that may be 
+present in the data.
+
+What we need is to access the noise source and analyze this with the given 
+tool set. And yes, the analysis may require adjusting the data to a format 
+that can be consumed and analyzed by the statistical tests.
+
+Ciao
+Stephan
+
+
