@@ -2,58 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3344A1D45AF
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2020 08:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8747B1D45C2
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2020 08:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgEOGQZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 15 May 2020 02:16:25 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:34308 "EHLO fornost.hmeau.com"
+        id S1726301AbgEOGVY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 15 May 2020 02:21:24 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:34332 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726137AbgEOGQZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 15 May 2020 02:16:25 -0400
+        id S1726252AbgEOGVY (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 15 May 2020 02:21:24 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jZTdV-0007KG-6Z; Fri, 15 May 2020 16:15:58 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 15 May 2020 16:15:57 +1000
-Date:   Fri, 15 May 2020 16:15:57 +1000
+        id 1jZTiL-0007Ua-GG; Fri, 15 May 2020 16:20:58 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 15 May 2020 16:20:57 +1000
+Date:   Fri, 15 May 2020 16:20:57 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     michal.simek@xilinx.com, gregkh@linuxfoundation.org,
-        rajan.vaja@xilinx.com, kalyani.akula@xilinx.com,
-        jolly.shah@xilinx.com, yuehaibing@huawei.com,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-janitors@vger.kernel.org, hulkci@huawei.com
-Subject: Re: [PATCH -next] crypto: xilinx - Remove set but not used variable
- 'drv_ctx'
-Message-ID: <20200515061557.GA11092@gondor.apana.org.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        David Sterba <dsterba@suse.com>,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Eric Biggers <ebiggers@google.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] crypto: blake2b - Fix clang optimization for ARMv7-M
+Message-ID: <20200515062057.GA22330@gondor.apana.org.au>
+References: <20200505135402.29356-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200505101200.195184-1-yuehaibing@huawei.com>
-X-Newsgroups: apana.lists.os.linux.cryptoapi
+In-Reply-To: <20200505135402.29356-1-arnd@arndb.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-YueHaibing <yuehaibing@huawei.com> wrote:
-> Fixes gcc '-Wunused-but-set-variable' warning:
+On Tue, May 05, 2020 at 03:53:45PM +0200, Arnd Bergmann wrote:
+> When building for ARMv7-M, clang-9 or higher tries to unroll some loops,
+> which ends up confusing the register allocator to the point of generating
+> rather bad code and using more than the warning limit for stack frames:
 > 
-> drivers/crypto/xilinx/zynqmp-aes-gcm.c: In function 'zynqmp_aes_aead_cipher':
-> drivers/crypto/xilinx/zynqmp-aes-gcm.c:83:30: warning:
-> variable 'drv_ctx' set but not used [-Wunused-but-set-variable]
+> warning: stack frame size of 1200 bytes in function 'blake2b_compress' [-Wframe-larger-than=]
 > 
-> commit bc86f9c54616 ("firmware: xilinx: Remove eemi ops for aes engine") left
-> behind this, remove it.
+> Forcing it to not unroll the final loop avoids this problem.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Fixes: 91d689337fe8 ("crypto: blake2b - add blake2b generic implementation")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
-> drivers/crypto/xilinx/zynqmp-aes-gcm.c | 4 ----
-> 1 file changed, 4 deletions(-)
+>  crypto/blake2b_generic.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-This patch doesn't apply to the current cryptodev tree.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
