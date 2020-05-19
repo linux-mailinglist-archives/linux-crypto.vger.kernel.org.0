@@ -2,63 +2,97 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315951D9B35
-	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2020 17:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02B31D9B47
+	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2020 17:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729275AbgESPai (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 19 May 2020 11:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38000 "EHLO
+        id S1729020AbgESPbo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 19 May 2020 11:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729272AbgESPaf (ORCPT
+        with ESMTP id S1728725AbgESPbn (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 19 May 2020 11:30:35 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5AACC08C5C1
-        for <linux-crypto@vger.kernel.org>; Tue, 19 May 2020 08:30:34 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id z6so122532ljm.13
-        for <linux-crypto@vger.kernel.org>; Tue, 19 May 2020 08:30:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=mpiaLnw0RJeNOjFTYaG95WOSq2RfDVB3PxcxDByvQuk=;
-        b=Ms4FJs70xUh9Lmn/qwQpK8lJ7mO0warmeZ3Uh0HNatbgfbRXFY5s3yug8JJ4r9EdZG
-         +M31ArAvpiPTt6MZKHtw0qcyi/aPt2ByHuCbYR3x/WtRQlpgcbALdap8g5MHfX0Zja0H
-         EObOUYBX4jypWtxNMM+tPK++zkCI5oO/dBBZLZIWW9hIIyGSUEZbgMy7DYis/qGA75V2
-         8LU0TmoN6GHI6ZFRFduENdWPWyUYbIpLohPEYpXNNYKAzvo15pFKHWvIPO7fOweVoMSb
-         FUJgTfPV13WxqFCZt1YH/Q8WwKU8g4SxLa17KtoWRSVZfh5tF9DMGb7sPPch1D3aJNWL
-         K8KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=mpiaLnw0RJeNOjFTYaG95WOSq2RfDVB3PxcxDByvQuk=;
-        b=ZU4odwnSqeGyY/6JhAKbX1aMp6+xqIi/EEZZHMEWE/hnBPW7ADcKDeEnjY7hQbrY3v
-         Yw61OXZTby9tne1uw2RuTsx/Mxgux4/XNuzyVIFmSSdrll9ZsWXJHVr7EW6erWOJ8rh7
-         Br95Kgw35w+HylcQXoJWfBN3l3Mu2aD/VWLptJadj2dzYQdkCK4ORMB0B8loGrRDtlyG
-         VV4X0Zdv5Xhx8ubLnI8hpYDhlIRJ9ewdx/gVOKo/b9gJRxhU26sAs5kz+00PMDXglcnv
-         YInvv9OrHWOdGe2oF+CNUUziDjdYsGCql+tIQ6aiU0Hqbhy5LRVXcsBlWydnf3HbJKtn
-         9ytg==
-X-Gm-Message-State: AOAM530v2GHAUw4CAmSXg6uijhwLj7CVPoVJCejZnpLrU41T14+mkG2v
-        lpxp4DBXnIfrFSOhrW2qN8lLyopSmqURUeFsJOU=
-X-Google-Smtp-Source: ABdhPJwxdP77AZWBrveYKAD1PbpedflMZ0xvrwUBME+XyuU1DUFDeWMBECYlGW+qyPSfFMkeyimGvoK4zXO2Uyx9KAk=
-X-Received: by 2002:a2e:6c08:: with SMTP id h8mr22730ljc.48.1589902233338;
- Tue, 19 May 2020 08:30:33 -0700 (PDT)
+        Tue, 19 May 2020 11:31:43 -0400
+Received: from mo6-p00-ob.smtp.rzone.de (mo6-p00-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5300::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC5EC08C5C0
+        for <linux-crypto@vger.kernel.org>; Tue, 19 May 2020 08:31:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1589902301;
+        s=strato-dkim-0002; d=chronox.de;
+        h=Message-ID:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+        Subject:Sender;
+        bh=ucRXuMNPg1y+q2yEinn9r7vZjs+gASLXv9qV2kb3ESg=;
+        b=MaSBA8jdc5NoXAuXMg59WQKyXBBKXRvxrd20UYFD7jZtDPdCxnb5/6EFShkbcs574j
+        CcfJjjmH212zWBY+Ofemh01CUZbSq4tbuENkX7ZEDU4Tu6TR23uc5nS9W1nDPSfe0x4z
+        la+1Z7aaJ50XwRv8afK//h8iXuYYwzRhhGXTpyW6qmjUqUPHzrCVUWzbPLSlTZiOARFC
+        B/S4+SwJMaqOs/OAwsTkEr+IqX7QF3PM3nKJ7tW26bRSv0VWm8zN33vpugWBCxde5qZ1
+        2scWZWNI0rQrVMMrBGWm6PtK4EzjUikBjXg4X7FlEYBEL1ZbPmk5TqXgXbsXVgvUzzin
+        DUYw==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbI/Sc5g=="
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+        by smtp.strato.de (RZmta 46.7.0 DYNA|AUTH)
+        with ESMTPSA id k09005w4JFVf0Wk
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Tue, 19 May 2020 17:31:41 +0200 (CEST)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     ard.biesheuvel@linaro.org
+Cc:     linux-crypto@vger.kernel.org
+Subject: ARM CE: CTS IV handling
+Date:   Tue, 19 May 2020 17:31:41 +0200
+Message-ID: <4311723.JCXmkh6OgN@tauon.chronox.de>
 MIME-Version: 1.0
-Received: by 2002:ab3:6584:0:0:0:0:0 with HTTP; Tue, 19 May 2020 08:30:33
- -0700 (PDT)
-Reply-To: michellegoodman45@gmail.com
-From:   Michelle Goodman <sarahtage24@gmail.com>
-Date:   Tue, 19 May 2020 15:30:33 +0000
-Message-ID: <CAK7Gz5xe5RobpKK0PrEk5Rk9yvZPpe56xe0yahz0vrCRmbfOqQ@mail.gmail.com>
-Subject: From Michelle
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-TWVyaGFiYSwgdW1hcsSxbSBtZXNhasSxbcSxIGFsbcSxxZ9zxLFuZMSxci4NCkjEsXpsxLEgcmVh
-a3NpeW9ubGFyYSBpaHRpeWFjxLFtIHZhcg0KVGXFn2Vra8O8ciBlZGVyaW0NCk1pY2hlbGxlDQo=
+Hi Ard,
+
+The following report applies to kernel 5.3 as I am currently unable to test 
+the latest upstream version.
+
+The CTS IV handling for cts-cbc-aes-ce and cts-cbc-aes-neon is not consistent 
+with the C implementation for CTS such as cts(cbc-aes-ce) and cts(cbc-aes-
+neon).
+
+For example, assume encryption operation with the following data:
+
+iv "6CDD928D19C56A2255D1EC16CAA2CCCB"
+pt 
+"2D6BFE335F45EED1C3C404CAA5CA4D41FF2B8C6DE94C706B10F1D207972DE6599C92E117E3CBF61F"
+key "930E9D4E65DB121E05F11A16E408AE82"
+
+When you perform one encryption operation, all 4 ciphes return:
+
+022edfa38975b09b295e1958efde2104be1e8e70c81340adfbdf431d5c80e77b89df5997aa96af72
+
+Now, when you leave the TFM untouched (i.e. retain the IV state) and simply 
+set the following new pt: 
+
+6cdd928d19c56a2255d1ec16caa2cccb022edfa38975b09b295e1958efde2104be1e8e70c81340ad
+
+the C CTS implementations return
+
+35d54eb425afe7438c5e96b61b061f04df85a322942210568c20a5e78856c79c0af021f3e0650863
+
+But the cts-cbc-aes-ce and cts-cbc-aes-neon return
+
+a62f57efbe9d815aaf1b6c62f78a31da8ef46e5d401eaf48c261bcf889e6910abbc65c2bf26add9f
+
+
+My hunch is that the internal IV handling is different. I am aware that CTS 
+does not exactly specify how the IV should look like after the encryption 
+operation, but using the NIST reference implementation of ACVP, the C CTS 
+implementation is considered to be OK whereas the ARM CE assembler 
+implementation is considered to be not OK.
+
+Bottom line, feeding plaintext in chunks into the ARM CE assembler 
+implementation will yield a different output than the C implementation.
+
+Ciao
+Stephan
+
+
+
