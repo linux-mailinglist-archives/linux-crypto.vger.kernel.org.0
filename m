@@ -2,74 +2,83 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDFB1DAB9A
-	for <lists+linux-crypto@lfdr.de>; Wed, 20 May 2020 09:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69B11DAD0F
+	for <lists+linux-crypto@lfdr.de>; Wed, 20 May 2020 10:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgETHJ4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 20 May 2020 03:09:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725998AbgETHJ4 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 20 May 2020 03:09:56 -0400
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BCEC206BE
-        for <linux-crypto@vger.kernel.org>; Wed, 20 May 2020 07:09:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589958595;
-        bh=4sY4q9CroctrXjv/UwpUkw02mR25DQOr6OzfqIelbjE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RJO6YFoh2r5xPKUS6+X6N3myoxI8Wb9pyEgiYSYFMZF8Rp6LabwukwbmDBcQofqA1
-         c9JyndZq0tRfuaoGNGRYAkvPltuf4oeg5/BA9O4tA3yILprA1eofYt718Ob2Shbe6h
-         9sC95/7QYTZgKKPwqpNa2CwHm3f1k4WZ1EKysEAw=
-Received: by mail-io1-f41.google.com with SMTP id x5so2033756ioh.6
-        for <linux-crypto@vger.kernel.org>; Wed, 20 May 2020 00:09:55 -0700 (PDT)
-X-Gm-Message-State: AOAM530QjXg2IxE2Cq+uSor5vGBYK/y31u2gPdCehbskImiOsJjCMBhM
-        pVM7YjuvEFd8WelGNPBqpL4JU1QVIkiK7kkl/Aw=
-X-Google-Smtp-Source: ABdhPJyOXjsFOkYhmYHT7iFdcXVegTXxIRAIBTriQ0zKyf5yT8sidmor3hf/bZlBjVkaEA/C8+qtSjXgUCVFcgWgCcE=
-X-Received: by 2002:a05:6638:41b:: with SMTP id q27mr2996869jap.68.1589958594942;
- Wed, 20 May 2020 00:09:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200519190211.76855-1-ardb@kernel.org> <16394356.0UTfFWEGjO@tauon.chronox.de>
- <CAMj1kXF=Duh1AsAQy+aLWMcJPQ4RFL5p9-Mnmn-XAiCkzyGFbg@mail.gmail.com> <2010567.jSmZeKYv2B@tauon.chronox.de>
-In-Reply-To: <2010567.jSmZeKYv2B@tauon.chronox.de>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 20 May 2020 09:09:44 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGNqo=d-hgK=0zBZCoJYgSxxhhm=Jdk2gAGXPo1-KSCgA@mail.gmail.com>
-Message-ID: <CAMj1kXGNqo=d-hgK=0zBZCoJYgSxxhhm=Jdk2gAGXPo1-KSCgA@mail.gmail.com>
-Subject: Re: [RFC/RFT PATCH 0/2] crypto: add CTS output IVs for arm64 and testmgr
-To:     Stephan Mueller <smueller@chronox.de>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Eric Biggers <ebiggers@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726425AbgETIPT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 20 May 2020 04:15:19 -0400
+Received: from aliyun-cloud.icoremail.net ([47.90.73.12]:22615 "HELO
+        aliyun-sdnproxy-4.icoremail.net" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with SMTP id S1726403AbgETIPS (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 20 May 2020 04:15:18 -0400
+X-Greylist: delayed 716 seconds by postgrey-1.27 at vger.kernel.org; Wed, 20 May 2020 04:15:16 EDT
+Received: from localhost.localdomain (unknown [222.205.77.158])
+        by mail-app2 (Coremail) with SMTP id by_KCgAH75Fh4sRezsiKAQ--.42332S4;
+        Wed, 20 May 2020 15:55:17 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Chen Zhou <chenzhou10@huawei.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: sun8i-ce - fix runtime pm imbalance on error
+Date:   Wed, 20 May 2020 15:54:49 +0800
+Message-Id: <20200520075456.21670-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgAH75Fh4sRezsiKAQ--.42332S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKrW5ZF15Jr17CrWrKFy7trb_yoWfKrX_Cw
+        10qr4xJrWYqrWDXryDZay5Zry0qr95W34kG3WvvFyfJa4j93Z8WF97Wrn3u34xJw4Uur1q
+        y39Fgr9rZ3409jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb-kFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWU
+        AwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE
+        14v_GF4l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026x
+        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
+        JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
+        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_
+        Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
+        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbQzVUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, 20 May 2020 at 09:01, Stephan Mueller <smueller@chronox.de> wrote:
->
-> Am Mittwoch, 20. Mai 2020, 08:54:10 CEST schrieb Ard Biesheuvel:
->
-> Hi Ard,
->
-> > On Wed, 20 May 2020 at 08:47, Stephan Mueller <smueller@chronox.de> wrote:
-...
-> > > The state of all block chaining modes we currently have is defined with
-> > > the
-> > > IV. That is the reason why I mentioned it can be implemented stateless
-> > > when I am able to get the IV output from the previous operation.
-> >
-> > But it is simply the same as the penultimate block of ciphertext. So
-> > you can simply capture it after encrypt, or before decrypt. There is
-> > really no need to rely on the CTS transformation to pass it back to
-> > you via the buffer that is only specified to provide an input to the
-> > CTS transform.
->
-> Let me recheck that as I am not fully sure on that one. But if it can be
-> handled that way, it would make life easier.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
-Please refer to patch 2. The .iv_out test vectors were all simply
-copied from the appropriate offset into the associated .ctext member.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+index 3e4e4bbda34c..18f0f251204c 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+@@ -598,8 +598,10 @@ static int sun8i_ce_probe(struct platform_device *pdev)
+ 		goto error_alg;
+ 
+ 	err = pm_runtime_get_sync(ce->dev);
+-	if (err < 0)
++	if (err < 0) {
++		pm_runtime_put_sync(ce->dev);
+ 		goto error_alg;
++	}
+ 
+ 	v = readl(ce->base + CE_CTR);
+ 	v >>= CE_DIE_ID_SHIFT;
+-- 
+2.17.1
+
