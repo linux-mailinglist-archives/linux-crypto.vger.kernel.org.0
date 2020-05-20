@@ -2,167 +2,161 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1A71DBCDE
-	for <lists+linux-crypto@lfdr.de>; Wed, 20 May 2020 20:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF7D1DBEE9
+	for <lists+linux-crypto@lfdr.de>; Wed, 20 May 2020 21:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgETS2J (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 20 May 2020 14:28:09 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:58586 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726576AbgETS2J (ORCPT
+        id S1728469AbgETT5R (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 20 May 2020 15:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728408AbgETT5E (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 20 May 2020 14:28:09 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04KIHSQi000794;
-        Wed, 20 May 2020 18:27:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=+I5DK1bpDxPp17bxmkq3TLU7ktjAi9yJhHWfSrepooM=;
- b=P3/+t99sOI/cJLLQGLPGcYunKHfgTXLhGsWaI52GKYtr7wyKIO64OoVtL9IMpVjD74uS
- r8CzhtQuf1c1Jitqjbj9kH5cupw6vHmbuWRRgEHEQH8ZJbs/tLe6xx+nXDL1BwAvlD+F
- R8R3Xyx8Gex8EBS0uet5gInYKJlSgBY6zWUTNHfldY+mT6Dw5c9Ka5098MbyD8WMf03L
- /NJHzNYzKCc3WLNcSBYOArsURzvhCgY67wjBxEMWNQzJS7WpLdmCbw7EOK31zOgdiR92
- ml56VbjMyyzFqVbE3KSAyqwxek3U/YkOCY6ZY3BUAFQTuKQdK9He5gQ9z+lw066FZ3b8 5Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 31501rb8a9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 May 2020 18:27:11 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04KIDD4p076208;
-        Wed, 20 May 2020 18:27:11 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 315020rdjx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 May 2020 18:27:10 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04KIR8V3008161;
-        Wed, 20 May 2020 18:27:08 GMT
-Received: from localhost.localdomain (/98.229.125.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 20 May 2020 11:27:08 -0700
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Robert Elliott <elliott@hpe.com>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Steven Sistare <steven.sistare@oracle.com>,
-        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
-        linux-crypto@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: [PATCH v2 7/7] padata: document multithreaded jobs
-Date:   Wed, 20 May 2020 14:26:45 -0400
-Message-Id: <20200520182645.1658949-8-daniel.m.jordan@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200520182645.1658949-1-daniel.m.jordan@oracle.com>
-References: <20200520182645.1658949-1-daniel.m.jordan@oracle.com>
+        Wed, 20 May 2020 15:57:04 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3734BC061A0E;
+        Wed, 20 May 2020 12:57:04 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id e10so2573618vsp.12;
+        Wed, 20 May 2020 12:57:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GxUaUN6vf454eItYUVZAvSrj24SmWPAgZaZXKMh5Yug=;
+        b=NkuQMa3+qk+cwSKLMQHjDUMihNnfu8ASd4srzMFcz5fqGDfPRTQJUa2Zn1ugKnEZxU
+         4AzfewKWyjsNvvXedLrAYUPoOOsIViuodHsZy7CqXBqR84jh2LHN1tH9ioY5oFQ6HABI
+         f2NYUmC18J9NXQLJzum5m6pKOM61ONrOPNKWuUC/jYBQ3PpAHwFRLFYSO+C86QF08WmN
+         dG1IScdNzix/57AJNwkfUCfgLZWecCAoE1po9d2vZB5ziCkKW5gxOIwl2cLf96mTh0s4
+         X5/NfYNQlAbObwv1ld9ERjOQ04Ssidxz1yGeiSA+kNZ0zxomGcL2Fu42B9tcBfApb3Q4
+         JIgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GxUaUN6vf454eItYUVZAvSrj24SmWPAgZaZXKMh5Yug=;
+        b=MPco5b+pnNurwz9hEICcPLk+xySws20tUsNTvauCUJF4t5tBXcbxHoSUI4BG1YyYrE
+         sMkVU2an5G1TpA9PG7FZ+RESFRPBQYu7JJ2QzSbw6FN9nJxYHErFp50VXGgRkK6UcJoj
+         LcEfcEUojn0hPxgTFdL1XBKUT0rpojwxuM75gTh4wANH4dDoyhUaRb9njT1qhWz3sDIr
+         uAKuq9QQkhAQZYOmr8hULiYR+c6HLjb8PujFpbMKAGq7cGaQqKtdrskfi6f75bsvrGai
+         WU1/4RpEen+9TJecW6Qx2AyEf0qyrgiaUhYSe6LUoW0E4DJqgcjwgxYpIOfEFBlYBCwz
+         zE/w==
+X-Gm-Message-State: AOAM532ZEeRmUw3QvfEWeZvFZEawrZVntT7+3/guAyhkOYJ+Q/KNvZJN
+        tezXV9jdXOhDUfyx095+V1Hfg5AgwRFDk8hrE3o=
+X-Google-Smtp-Source: ABdhPJzp5CiaN6eGlE+TLMUT0TPhfpKr6Th8x2kCTQ10fToEbrGM0DUM2rRlex+18RhqrR9+garadSSMFvH8arbCtjQ=
+X-Received: by 2002:a67:1903:: with SMTP id 3mr4552339vsz.22.1590004623277;
+ Wed, 20 May 2020 12:57:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9627 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 suspectscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005200148
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9627 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
- mlxlogscore=999 clxscore=1015 priorityscore=1501 cotscore=-2147483648
- impostorscore=0 bulkscore=0 adultscore=0 malwarescore=0 phishscore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005200148
+References: <1589732796-22839-1-git-send-email-pooja.trivedi@stackpath.com>
+ <20200518155016.75be3663@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAOrEds=Mo4YHm1CPrgVmPhsJagUAQ0PzyDPk9Cq3URq-7vfCWA@mail.gmail.com> <20200519144255.3a7416c4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200519144255.3a7416c4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Pooja Trivedi <poojatrivedi@gmail.com>
+Date:   Wed, 20 May 2020 15:56:56 -0400
+Message-ID: <CAOrEds=e62EnDiB5b-5Btukp83OASVaVgBG28GkxSBw1F8sLSQ@mail.gmail.com>
+Subject: Re: [PATCH net] net/tls(TLS_SW): Fix integrity issue with
+ non-blocking sw KTLS request
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     borisp@mellanox.com, aviadye@mellanox.com,
+        john.fastabend@gmail.com, daniel@iogearbox.net,
+        davem@davemloft.net, vakul.garg@nxp.com, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        mallesham.jatharkonda@oneconvergence.com, josh.tway@stackpath.com,
+        Pooja Trivedi <pooja.trivedi@stackpath.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add Documentation for multithreaded jobs.
+On Tue, May 19, 2020 at 5:43 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Tue, 19 May 2020 13:21:56 -0400 Pooja Trivedi wrote:
+> > On Mon, May 18, 2020 at 6:50 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> > > On Sun, 17 May 2020 16:26:36 +0000 Pooja Trivedi wrote:
+> > > > In pure sw ktls(AES-NI), -EAGAIN from tcp layer (do_tcp_sendpages for
+> > > > encrypted record) gets treated as error, subtracts the offset, and
+> > > > returns to application. Because of this, application sends data from
+> > > > subtracted offset, which leads to data integrity issue. Since record is
+> > > > already encrypted, ktls module marks it as partially sent and pushes the
+> > > > packet to tcp layer in the following iterations (either from bottom half
+> > > > or when pushing next chunk). So returning success in case of EAGAIN
+> > > > will fix the issue.
+> > > >
+> > > > Fixes: a42055e8d2c3 ("net/tls: Add support for async encryption")
+> > > > Signed-off-by: Pooja Trivedi <pooja.trivedi@stackpath.com>
+> > > > Reviewed-by: Mallesham Jatharkonda <mallesham.jatharkonda@oneconvergence.com>
+> > > > Reviewed-by: Josh Tway <josh.tway@stackpath.com>
+> > >
+> > > This looks reasonable, I think. Next time user space calls if no new
+> > > buffer space was made available it will get a -EAGAIN, right?
+> >
+> > Yes, this fix should only affect encrypted record. Plain text calls from
+> > user space should be unaffected.
+>
+> AFAICS if TCP layer is full next call from user space should hit
+> sk_stream_wait_memory() immediately and if it has MSG_DONTWAIT set
+> exit with EAGAIN. Which I believe to be correct behavior.
+>
 
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
----
- Documentation/core-api/padata.rst | 41 +++++++++++++++++++++++--------
- 1 file changed, 31 insertions(+), 10 deletions(-)
+The flow is tls_sw_sendmsg/tls_sw_do_sendpage --> bpf_exec_tx_verdict -->
+tls_push_record --> tls_tx_records --> tls_push_sg --> do_tcp_sendpages
 
-diff --git a/Documentation/core-api/padata.rst b/Documentation/core-api/padata.rst
-index 9a24c111781d9..b7e047af993e8 100644
---- a/Documentation/core-api/padata.rst
-+++ b/Documentation/core-api/padata.rst
-@@ -4,23 +4,26 @@
- The padata parallel execution mechanism
- =======================================
- 
--:Date: December 2019
-+:Date: April 2020
- 
- Padata is a mechanism by which the kernel can farm jobs out to be done in
--parallel on multiple CPUs while retaining their ordering.  It was developed for
--use with the IPsec code, which needs to be able to perform encryption and
--decryption on large numbers of packets without reordering those packets.  The
--crypto developers made a point of writing padata in a sufficiently general
--fashion that it could be put to other uses as well.
-+parallel on multiple CPUs while optionally retaining their ordering.
- 
--Usage
--=====
-+It was originally developed for IPsec, which needs to perform encryption and
-+decryption on large numbers of packets without reordering those packets.  This
-+is currently the sole consumer of padata's serialized job support.
-+
-+Padata also supports multithreaded jobs, splitting up the job evenly while load
-+balancing and coordinating between threads.
-+
-+Running Serialized Jobs
-+=======================
- 
- Initializing
- ------------
- 
--The first step in using padata is to set up a padata_instance structure for
--overall control of how jobs are to be run::
-+The first step in using padata to run parallel jobs is to set up a
-+padata_instance structure for overall control of how jobs are to be run::
- 
-     #include <linux/padata.h>
- 
-@@ -162,6 +165,24 @@ functions that correspond to the allocation in reverse::
- It is the user's responsibility to ensure all outstanding jobs are complete
- before any of the above are called.
- 
-+Running Multithreaded Jobs
-+==========================
-+
-+A multithreaded job has a main thread and zero or more helper threads, with the
-+main thread participating in the job and then waiting until all helpers have
-+finished.  padata splits the job into units called chunks, where a chunk is a
-+piece of the job that one thread completes in one call to the thread function.
-+
-+A user has to do three things to run a multithreaded job.  First, describe the
-+job by defining a padata_mt_job structure, which is explained in the Interface
-+section.  This includes a pointer to the thread function, which padata will
-+call each time it assigns a job chunk to a thread.  Then, define the thread
-+function, which accepts three arguments, ``start``, ``end``, and ``arg``, where
-+the first two delimit the range that the thread operates on and the last is a
-+pointer to the job's shared state, if any.  Prepare the shared state, which is
-+typically a stack-allocated structure that wraps the required data.  Last, call
-+padata_do_multithreaded(), which will return once the job is finished.
-+
- Interface
- =========
- 
--- 
-2.26.2
+do_tcp_sendpages() sends partial record, 'retry:' label is exercised wherein
+do_tcp_sendpages gets called again and returns -EAGAIN.
+tls_push_sg sets partially_sent_record/partially_sent_offset and
+returns -EAGAIN. -EAGAIN bubbles up to bpf_exec_tx_verdict.
+In bpf_exec_tx_verdict, the following code causes 'copied' variable to
+get updated to a negative value and returns -EAGAIN.
 
+                err = tls_push_record(sk, flags, record_type);
+                if (err && err != -EINPROGRESS) {
+                        *copied -= sk_msg_free(sk, msg);
+                        tls_free_open_rec(sk);
+                }
+                return err;
+
+-EAGAIN returned by bpf_exec_tx_verdict causes
+tls_sw_sendmsg/tls_sw_do_sendpage to 'continue' in the while loop and
+call sk_stream_wait_memory(). sk_stream_wait_memory returns -EAGAIN
+also and control reaches the 'send_end:' label. The following return
+statement causes a negative 'copied' variable value to be returned to the
+user space.
+
+        return copied ? copied : ret;
+
+User space applies this negative value as offset for the next send, causing
+part of the record that was already sent to be pushed again.
+
+Hope this clarifies it.
+
+
+>
+> > > Two questions - is there any particular application or use case that
+> > > runs into this?
+> >
+> > We are running into this case when we hit our kTLS-enabled homegrown
+> > webserver with a 'pipeline' test tool, also homegrown. The issue basically
+> > happens whenever the send buffer on the server gets full and TCP layer
+> > returns EAGAIN when attempting to TX the encrypted record. In fact, we
+> > are also able to reproduce the issue by using a simple wget with a large
+> > file, if/when sndbuf fills up.
+>
+> I see just a coincidence, then, no worries.
+>
+> > > Seems a bit surprising to see a patch from Vadim and
+> > > you guys come at the same time.
+> >
+> > Not familiar with Vadim or her/his patch. Could you please point me to it?
+>
+> http://patchwork.ozlabs.org/project/netdev/patch/20200517014451.954F05026DE@novek.ru/
+>
+
+Ah, looks like Vadim ran into the exact issue!
+
+>
+> > > Could you also add test for this bug?
+> > > In tools/testing/selftests/net/tls.c
+> > >
+> >
+> > Sure, yes. Let me look into this.
+>
+> Thanks!
