@@ -2,77 +2,69 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7AB1DE7CC
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 May 2020 15:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827A81DE88C
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 May 2020 16:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729838AbgEVNNL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 22 May 2020 09:13:11 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:39262 "EHLO fornost.hmeau.com"
+        id S1729789AbgEVONr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 22 May 2020 10:13:47 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:39538 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729334AbgEVNNL (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 22 May 2020 09:13:11 -0400
+        id S1729399AbgEVONq (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 22 May 2020 10:13:46 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jc7Tj-0007Pz-B1; Fri, 22 May 2020 23:12:48 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 22 May 2020 23:12:47 +1000
-Date:   Fri, 22 May 2020 23:12:47 +1000
+        id 1jc8QD-0008Fn-G8; Sat, 23 May 2020 00:13:14 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Sat, 23 May 2020 00:13:13 +1000
+Date:   Sat, 23 May 2020 00:13:13 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Tero Kristo <t-kristo@ti.com>
-Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-omap@vger.kernel.org, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCHv2 3/7] crypto: omap-crypto: fix userspace copied buffer
- access
-Message-ID: <20200522131247.GA27255@gondor.apana.org.au>
-References: <20200511111913.26541-1-t-kristo@ti.com>
- <20200511111913.26541-4-t-kristo@ti.com>
+To:     Nicolas Toromanoff <nicolas.toromanoff@st.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-crypto@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] STM32 CRC update
+Message-ID: <20200522141313.GA859@gondor.apana.org.au>
+References: <20200512141113.18972-1-nicolas.toromanoff@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200511111913.26541-4-t-kristo@ti.com>
+In-Reply-To: <20200512141113.18972-1-nicolas.toromanoff@st.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, May 11, 2020 at 02:19:09PM +0300, Tero Kristo wrote:
-> In case buffers are copied from userspace, directly accessing the page
-> will most likely fail because it hasn't been mapped into the kernel
-> memory space. Fix the issue by forcing a kmap / kunmap within the
-> cleanup functionality.
+On Tue, May 12, 2020 at 04:11:08PM +0200, Nicolas Toromanoff wrote:
+> This set of patches update the STM32 CRC driver.
+> It contains bug fix.
 > 
-> Signed-off-by: Tero Kristo <t-kristo@ti.com>
-> ---
->  drivers/crypto/omap-crypto.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
+> First fixes issue if we enable STM32 CRC32 hardware accelerator with
+> ext4 (with metadata-chksum enable) and other fs that use same direct
+> access to update crc32 API without previous init.
+> Second fixes some issues raise by the extra self-test.
+> Third fixes wrong hw usage if there is multiple IP on the SOC.
+> Forth fixes "sleep while atomic" in tcrypt test, and some other places
+> (ext4)
+> Last fixes concurrent accesses. As state is saved in the hardware cell
+> and not in stack as other CRC32 drivers, we need to create atomic
+> section to protect concurrent CRC32 calculus.
 > 
-> diff --git a/drivers/crypto/omap-crypto.c b/drivers/crypto/omap-crypto.c
-> index cc88b7362bc2..31bdb1d76d11 100644
-> --- a/drivers/crypto/omap-crypto.c
-> +++ b/drivers/crypto/omap-crypto.c
-> @@ -178,11 +178,16 @@ static void omap_crypto_copy_data(struct scatterlist *src,
->  		amt = min(src->length - srco, dst->length - dsto);
->  		amt = min(len, amt);
->  
-> -		srcb = sg_virt(src) + srco;
-> -		dstb = sg_virt(dst) + dsto;
-> +		srcb = kmap_atomic(sg_page(src)) + srco + src->offset;
-> +		dstb = kmap_atomic(sg_page(dst)) + dsto + dst->offset;
->  
->  		memcpy(dstb, srcb, amt);
->  
-> +		flush_dcache_page(sg_page(dst));
+> This patch series applies to cryptodev/master.
+> 
+> Nicolas Toromanoff (5):
+>   crypto: stm32/crc: fix ext4 chksum BUG_ON()
+>   crypto: stm32/crc: fix run-time self test issue.
+>   crypto: stm32/crc: fix multi-instance
+>   crypto: stm32/crc: don't sleep in runtime pm
+>   crypto: stm32/crc: protect from concurrent accesses
+> 
+>  drivers/crypto/stm32/stm32-crc32.c | 230 ++++++++++++++++++++---------
+>  1 file changed, 161 insertions(+), 69 deletions(-)
 
-You need to check !PageSlab as it's illegal to call it on a kernel
-page.  Also you should be using flush_kernel_dcache_page.  scatterwalk
-uses flush_dcache_page only because when it was created the other
-function didn't exist.
-
-Would it be possible to use the sg_miter interface to do the copy?
-In fact your function could possibly be added to lib/scatterlist.c
-as it seems to be quite generic.
-
-Thanks,
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
