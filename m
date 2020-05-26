@@ -2,44 +2,44 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532671E1C16
-	for <lists+linux-crypto@lfdr.de>; Tue, 26 May 2020 09:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91941E1C5E
+	for <lists+linux-crypto@lfdr.de>; Tue, 26 May 2020 09:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgEZHVS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 26 May 2020 03:21:18 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5282 "EHLO huawei.com"
+        id S1728284AbgEZHjF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 26 May 2020 03:39:05 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5283 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726768AbgEZHVR (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 26 May 2020 03:21:17 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2A7C01AD7E6CF8F5A02A;
-        Tue, 26 May 2020 15:21:16 +0800 (CST)
+        id S1726736AbgEZHjF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 26 May 2020 03:39:05 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 01741EAB2AD22967CF57;
+        Tue, 26 May 2020 15:39:02 +0800 (CST)
 Received: from [10.174.151.115] (10.174.151.115) by smtp.huawei.com
- (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 26 May
- 2020 15:21:06 +0800
-Subject: Re: [PATCH v2 1/2] crypto: virtio: Fix src/dst scatterlist
- calculation in __virtio_crypto_skcipher_do_req()
+ (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 26 May
+ 2020 15:38:53 +0800
+Subject: Re: [PATCH v2 2/2] crypto: virtio: Fix use-after-free in
+ virtio_crypto_skcipher_finalize_req()
 To:     Markus Elfring <Markus.Elfring@web.de>,
         <linux-crypto@vger.kernel.org>,
         <virtualization@lists.linux-foundation.org>
 CC:     Corentin Labbe <clabbe@baylibre.com>,
+        Gonglei <arei.gonglei@huawei.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "Michael S. Tsirkin" <mst@redhat.com>,
-        "Jason Wang" <jasowang@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Gonglei <arei.gonglei@huawei.com>,
         <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
 References: <20200526031956.1897-1-longpeng2@huawei.com>
- <20200526031956.1897-2-longpeng2@huawei.com>
- <d58a046a-e559-55be-16ba-64db43a06568@web.de>
+ <20200526031956.1897-3-longpeng2@huawei.com>
+ <0248e0f6-7648-f08d-afa2-170ad2e724b7@web.de>
 From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
         <longpeng2@huawei.com>
-Message-ID: <e1864c6d-6380-831f-9c2f-85611a78779b@huawei.com>
-Date:   Tue, 26 May 2020 15:21:05 +0800
+Message-ID: <03d3387f-c886-4fb9-e6f2-9ff8dc6bb80a@huawei.com>
+Date:   Tue, 26 May 2020 15:38:52 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <d58a046a-e559-55be-16ba-64db43a06568@web.de>
+In-Reply-To: <0248e0f6-7648-f08d-afa2-170ad2e724b7@web.de>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -52,47 +52,58 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 Hi Markus,
 
-On 2020/5/26 15:03, Markus Elfring wrote:
->> Fix it by sg_next() on calculation of src/dst scatterlist.
+On 2020/5/26 15:19, Markus Elfring wrote:
+>> The system'll crash when the users insmod crypto/tcrypto.ko with mode=155
+>> ( testing "authenc(hmac(sha1),cbc(aes))" ). It's caused by reuse the memory
+>> of request structure.
 > 
-> Wording adjustment:
-> … by calling the function “sg_next” …
+> Wording adjustments:
+> * … system will crash …
+> * … It is caused by reusing the …
 > 
-OK, thanks.
+> 
+>> when these memory will be used again.
+> 
+> when this memory …
+> 
+OK.
 
 > 
-> …
->> +++ b/drivers/crypto/virtio/virtio_crypto_algs.c
->> @@ -350,13 +350,18 @@ __virtio_crypto_skcipher_do_req(struct virtio_crypto_sym_request *vc_sym_req,
-> …
->>  	src_nents = sg_nents_for_len(req->src, req->cryptlen);
->> +	if (src_nents < 0) {
->> +		pr_err("Invalid number of src SG.\n");
->> +		return src_nents;
->> +	}
->> +
->>  	dst_nents = sg_nents(req->dst);
-> …
+>> … Thus release specific resources before
 > 
-> I suggest to move the addition of such input parameter validation
-> to a separate update step.
+> Is there a need to improve also this information another bit?
 > 
-Um...The 'src_nents' will be used as a loop condition, so validate it here is
-needed ?
+You mean the last two paragraph is redundant ?
+'''
+When the virtio_crypto driver finish skcipher req, it'll call ->complete
+callback(in crypto_finalize_skcipher_request) and then free its
+resources whose pointers are recorded in 'skcipher parts'.
 
+However, the ->complete is 'crypto_authenc_encrypt_done' in this case,
+it will use the 'ahash part' of the request and change its content,
+so virtio_crypto driver will get the wrong pointer after ->complete
+finish and mistakenly free some other's memory. So the system will crash
+when these memory will be used again.
+
+The resources which need to be cleaned up are not used any more. But the
+pointers of these resources may be changed in the function
+"crypto_finalize_skcipher_request". Thus release specific resources before
+calling this function.
 '''
- 	/* Source data */
--	for (i = 0; i < src_nents; i++)
--		sgs[num_out++] = &req->src[i];
-+	for (sg = req->src; src_nents; sg = sg_next(sg), src_nents--)
-+		sgs[num_out++] = sg;
+
+How about:
 '''
+When the virtio_crypto driver finish the skcipher request, it will call the
+function "crypto_finalize_skcipher_request()" and then free the resources whose
+pointers are stored in the 'skcipher parts', but the pointers of these resources
+ may be changed in that function. Thus fix it by releasing these resources
+befored calling the function "crypto_finalize_skcipher_request()".
+'''
+
 
 > Regards,
 > Markus
 > 
-
--- 
 ---
 Regards,
 Longpeng(Mike)
