@@ -2,83 +2,66 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995FC1E5863
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2020 09:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E1D1E58B2
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2020 09:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725859AbgE1HVn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 28 May 2020 03:21:43 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:24114 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725601AbgE1HVn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 28 May 2020 03:21:43 -0400
-Received: from localhost.localdomain (unknown [222.205.60.151])
-        by mail-app4 (Coremail) with SMTP id cS_KCgAnL1NiZs9eDQk2AA--.41902S4;
-        Thu, 28 May 2020 15:21:10 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        id S1726446AbgE1Hdu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 28 May 2020 03:33:50 -0400
+Received: from 8bytes.org ([81.169.241.247]:45176 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725882AbgE1Hdu (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 28 May 2020 03:33:50 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id B776F327; Thu, 28 May 2020 09:33:45 +0200 (CEST)
+Date:   Thu, 28 May 2020 09:33:44 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Arnd Bergmann <arnd@arndb.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        jean-philippe <jean-philippe@linaro.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] hwrng: ks-sa - Fix runtime PM imbalance on error
-Date:   Thu, 28 May 2020 15:21:04 +0800
-Message-Id: <20200528072106.5191-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgAnL1NiZs9eDQk2AA--.41902S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKrWrZF15CFyUGr4xXF1UKFg_yoWfZwc_ur
-        17ZF4I9r1Sga9rXw47Zw15ZryFqFZ8WF4vgFs2v3W3K3yIvFWqgryDZrnYyw13ur4kXrnr
-        tayaqFyfAryqkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb-kFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWU
-        XwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE
-        14v_GF4l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026x
-        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
-        JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
-        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_
-        Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
-        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU10tC7UUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0OBlZdtOWM2QAAsI
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 0/2] Introduce PCI_FIXUP_IOMMU
+Message-ID: <20200528073344.GO5221@8bytes.org>
+References: <1590493749-13823-1-git-send-email-zhangfei.gao@linaro.org>
+ <20200527181842.GA256680@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527181842.GA256680@bjorn-Precision-5520>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-the call returns an error code. Thus a pairing decrement is needed
-on the error handling path to keep the counter balanced.
+On Wed, May 27, 2020 at 01:18:42PM -0500, Bjorn Helgaas wrote:
+> Is this slowdown significant?  We already iterate over every device
+> when applying PCI_FIXUP_FINAL quirks, so if we used the existing
+> PCI_FIXUP_FINAL, we wouldn't be adding a new loop.  We would only be
+> adding two more iterations to the loop in pci_do_fixups() that tries
+> to match quirks against the current device.  I doubt that would be a
+> measurable slowdown.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+I don't know how significant it is, but I remember people complaining
+about adding new PCI quirks because it takes too long for them to run
+them all. That was in the discussion about the quirk disabling ATS on
+AMD Stoney systems.
 
-Changelog:
+So it probably depends on how many PCI devices are in the system whether
+it causes any measureable slowdown.
 
-v2: - Use pm_runtime_put_noidle() instead of pm_runtime_put_sync().
----
- drivers/char/hw_random/ks-sa-rng.c | 1 +
- 1 file changed, 1 insertion(+)
+Regards,
 
-diff --git a/drivers/char/hw_random/ks-sa-rng.c b/drivers/char/hw_random/ks-sa-rng.c
-index e2330e757f1f..001617033d6a 100644
---- a/drivers/char/hw_random/ks-sa-rng.c
-+++ b/drivers/char/hw_random/ks-sa-rng.c
-@@ -244,6 +244,7 @@ static int ks_sa_rng_probe(struct platform_device *pdev)
- 	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0) {
- 		dev_err(dev, "Failed to enable SA power-domain\n");
-+		pm_runtime_put_noidle(dev);
- 		pm_runtime_disable(dev);
- 		return ret;
- 	}
--- 
-2.17.1
+	Joerg
 
