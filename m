@@ -2,57 +2,62 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96941E7288
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2020 04:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EBD1E7524
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2020 06:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390781AbgE2CUP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 28 May 2020 22:20:15 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:39476 "EHLO fornost.hmeau.com"
+        id S1725681AbgE2Eyt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 29 May 2020 00:54:49 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:39650 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390679AbgE2CUO (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 28 May 2020 22:20:14 -0400
+        id S1725601AbgE2Eyt (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 29 May 2020 00:54:49 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jeUcz-0001zP-2z; Fri, 29 May 2020 12:20:10 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 May 2020 12:20:09 +1000
-Date:   Fri, 29 May 2020 12:20:09 +1000
+        id 1jeX2Z-0004Nr-GN; Fri, 29 May 2020 14:54:44 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 May 2020 14:54:43 +1000
+Date:   Fri, 29 May 2020 14:54:43 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     sbuisson.ddn@gmail.com
-Cc:     linux-crypto@vger.kernel.org, davem@davemloft.net,
-        Sebastien Buisson <sbuisson@whamcloud.com>
-Subject: Re: [PATCH] crypto: add adler32 to CryptoAPI
-Message-ID: <20200529022009.GA26969@gondor.apana.org.au>
-References: <20200528170051.7361-1-sbuisson@whamcloud.com>
+To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Stephan Mueller <smueller@chronox.de>
+Subject: [PATCH] crypto: algif_skcipher - Cap recv SG list at ctx->used
+Message-ID: <20200529045443.GA475@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200528170051.7361-1-sbuisson@whamcloud.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, May 28, 2020 at 07:00:51PM +0200, sbuisson.ddn@gmail.com wrote:
-> From: Sebastien Buisson <sbuisson@whamcloud.com>
-> 
-> Add adler32 to CryptoAPI so that it can be used with the normal kernel
-> API, and potentially accelerated if architecture-specific
-> optimizations are available.
-> 
-> Signed-off-by: Sebastien Buisson <sbuisson@whamcloud.com>
-> ---
->  crypto/Kconfig        |   7 +
->  crypto/Makefile       |   1 +
->  crypto/adler32_zlib.c | 117 ++++++++++++++++
->  crypto/testmgr.c      |   7 +
->  crypto/testmgr.h      | 362 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  5 files changed, 494 insertions(+)
->  create mode 100644 crypto/adler32_zlib.c
+Somewhere along the line the cap on the SG list length for receive
+was lost.  This patch restores it and removes the subsequent test
+which is now redundant.
 
-Who is going to use this inside the kernel?
+Fixes: 2d97591ef43d ("crypto: af_alg - consolidation of...")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-Thanks,
+diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
+index e2c8ab408bed..4c3bdffe0c3a 100644
+--- a/crypto/algif_skcipher.c
++++ b/crypto/algif_skcipher.c
+@@ -74,14 +74,10 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
+ 		return PTR_ERR(areq);
+ 
+ 	/* convert iovecs of output buffers into RX SGL */
+-	err = af_alg_get_rsgl(sk, msg, flags, areq, -1, &len);
++	err = af_alg_get_rsgl(sk, msg, flags, areq, ctx->used, &len);
+ 	if (err)
+ 		goto free;
+ 
+-	/* Process only as much RX buffers for which we have TX data */
+-	if (len > ctx->used)
+-		len = ctx->used;
+-
+ 	/*
+ 	 * If more buffers are to be expected to be processed, process only
+ 	 * full block size buffers.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
