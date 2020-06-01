@@ -2,93 +2,81 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815921EA79C
-	for <lists+linux-crypto@lfdr.de>; Mon,  1 Jun 2020 18:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD7D1EA87A
+	for <lists+linux-crypto@lfdr.de>; Mon,  1 Jun 2020 19:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726555AbgFAQMu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 1 Jun 2020 12:12:50 -0400
-Received: from smtp02.tmcz.cz ([93.153.104.113]:36072 "EHLO smtp02.tmcz.cz"
+        id S1727056AbgFARlH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 1 Jun 2020 13:41:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726287AbgFAQMt (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 1 Jun 2020 12:12:49 -0400
-Received: from smtp02.tmcz.cz (localhost [127.0.0.1])
-        by sagator.hkvnode045 (Postfix) with ESMTP id 1872694D525;
-        Mon,  1 Jun 2020 18:04:24 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on hkvnode046.tmo.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=0.4 required=8.0 tests=KHOP_HELO_FCRDNS
-        autolearn=disabled version=3.3.1
-X-Sagator-Scanner: 1.3.1-1 at hkvnode046;
-        log(status(custom_action(quarantine(clamd()))),
-        status(custom_action(quarantine(SpamAssassinD()))))
-X-Sagator-ID: 20200601-180424-0001-83035-TqdWZJ@hkvnode046
-Received: from leontynka.twibright.com (109-183-129-149.customers.tmcz.cz [109.183.129.149])
-        by smtp02.tmcz.cz (Postfix) with ESMTPS;
-        Mon,  1 Jun 2020 18:04:24 +0200 (CEST)
-Received: from debian-a64.vm ([192.168.208.2])
-        by leontynka.twibright.com with smtp (Exim 4.92)
-        (envelope-from <mpatocka@redhat.com>)
-        id 1jfmvG-0001W2-Ob; Mon, 01 Jun 2020 18:04:23 +0200
-Received: by debian-a64.vm (sSMTP sendmail emulation); Mon, 01 Jun 2020 18:04:22 +0200
-Message-Id: <20200601160421.912555280@debian-a64.vm>
-User-Agent: quilt/0.65
-Date:   Mon, 01 Jun 2020 18:03:36 +0200
-From:   Mikulas Patocka <mpatocka@redhat.com>
-To:     Mike Snitzer <msnitzer@redhat.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        id S1726017AbgFARlH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:41:07 -0400
+Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48FEF206A4;
+        Mon,  1 Jun 2020 17:41:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591033266;
+        bh=egFH6RgQ4a+4kLCfGrEDkjv5v4bJblqDQOjodPikqEM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=PBS/XvI5mPBJhMQPW3QR/267YghZh8VBNHFVIA3y76nvmv7wSAOnIG8ZofBmrwL3W
+         hjX/e/kbh6hI/0SHMT/KsCJ3IYwK/78zwY6ZY8W6ZDDtNYI4kfbVVgq5NF84Mj/Dz5
+         u9OiYWmcq6uvLgae6Udy20G6q8HsslAkBraLQcZo=
+Date:   Mon, 1 Jun 2020 12:41:04 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        jean-philippe <jean-philippe@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Milan Broz <mbroz@redhat.com>, djeffery@redhat.com
-Cc:     dm-devel@redhat.com, qat-linux@intel.com,
-        linux-crypto@vger.kernel.org, guazhang@redhat.com,
-        jpittman@redhat.com, Mikulas Patocka <mpatocka@redhat.com>
-Subject: [PATCH 4/4] dm-crypt: sleep and retry on allocation errors
+        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 0/2] Introduce PCI_FIXUP_IOMMU
+Message-ID: <20200601174104.GA734973@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline; filename=crypt-enomem.patch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528073344.GO5221@8bytes.org>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Some hardware crypto drivers use GFP_ATOMIC allocations in the request
-routine. These allocations can randomly fail - for example, they fail if
-too many network packets are received.
+On Thu, May 28, 2020 at 09:33:44AM +0200, Joerg Roedel wrote:
+> On Wed, May 27, 2020 at 01:18:42PM -0500, Bjorn Helgaas wrote:
+> > Is this slowdown significant?  We already iterate over every device
+> > when applying PCI_FIXUP_FINAL quirks, so if we used the existing
+> > PCI_FIXUP_FINAL, we wouldn't be adding a new loop.  We would only be
+> > adding two more iterations to the loop in pci_do_fixups() that tries
+> > to match quirks against the current device.  I doubt that would be a
+> > measurable slowdown.
+> 
+> I don't know how significant it is, but I remember people complaining
+> about adding new PCI quirks because it takes too long for them to run
+> them all. That was in the discussion about the quirk disabling ATS on
+> AMD Stoney systems.
+> 
+> So it probably depends on how many PCI devices are in the system whether
+> it causes any measureable slowdown.
 
-If we propagated the failure up to the I/O stack, it would cause I/O
-errors and data corruption. So, we sleep and retry.
+I found this [1] from Paul Menzel, which was a slowdown caused by
+quirk_usb_early_handoff().  I think the real problem is individual
+quirks that take a long time.
 
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Cc: stable@vger.kernel.org
+The PCI_FIXUP_IOMMU things we're talking about should be fast, and of
+course, they're only run for matching devices anyway.  So I'd rather
+keep them as PCI_FIXUP_FINAL than add a whole new phase.
 
-Index: linux-2.6/drivers/md/dm-crypt.c
-===================================================================
---- linux-2.6.orig/drivers/md/dm-crypt.c
-+++ linux-2.6/drivers/md/dm-crypt.c
-@@ -1534,6 +1534,7 @@ static blk_status_t crypt_convert(struct
- 		crypt_alloc_req(cc, ctx);
- 		atomic_inc(&ctx->cc_pending);
- 
-+again:
- 		if (crypt_integrity_aead(cc))
- 			r = crypt_convert_block_aead(cc, ctx, ctx->r.req_aead, tag_offset);
- 		else
-@@ -1541,6 +1542,17 @@ static blk_status_t crypt_convert(struct
- 
- 		switch (r) {
- 		/*
-+		 * Some hardware crypto drivers use GFP_ATOMIC allocations in
-+		 * the request routine. These allocations can randomly fail. If
-+		 * we propagated the failure up to the I/O stack, it would cause
-+		 * I/O errors and data corruption.
-+		 *
-+		 * So, we sleep and retry.
-+		 */
-+		case -ENOMEM:
-+			msleep(1);
-+			goto again;
-+		/*
- 		 * The request was queued by a crypto driver
- 		 * but the driver request queue is full, let's wait.
- 		 */
+Bjorn
 
+[1] https://lore.kernel.org/linux-pci/b1533fd5-1fae-7256-9597-36d3d5de9d2a@molgen.mpg.de/
