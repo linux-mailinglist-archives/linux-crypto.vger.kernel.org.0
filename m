@@ -2,85 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329E91ED71C
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Jun 2020 21:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B7C1ED906
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Jun 2020 01:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725939AbgFCTyS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 3 Jun 2020 15:54:18 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:29510 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725821AbgFCTyS (ORCPT
+        id S1726013AbgFCXWX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 3 Jun 2020 19:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725863AbgFCXWW (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 3 Jun 2020 15:54:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591214056;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UmrhG4IpG9XYrvMtWBeioylGxVeUfvM852WdA4iW0x8=;
-        b=TkN2FzRtGdI6OnJU5KU8Ks+KjTnVUJlEApSLz2exHEJ/zCqCjhD1bZYlUVhp3+I5yL0Tl2
-        SHp9SHsJhWrQHp1J/UH89RHysQdrO87+rB5+gbii/oUYAg+ncm+H/sgJydfrq9b6WMySZU
-        4Ow10eMq4EdUEH5xOBbVe1P9LZxPDXM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-36-f9A2ahqWOSu050C_7RR1FQ-1; Wed, 03 Jun 2020 15:54:15 -0400
-X-MC-Unique: f9A2ahqWOSu050C_7RR1FQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C8ED9107ACCD;
-        Wed,  3 Jun 2020 19:54:13 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A022419C58;
-        Wed,  3 Jun 2020 19:54:10 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 053JsAO2014032;
-        Wed, 3 Jun 2020 15:54:10 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 053Js9Us014024;
-        Wed, 3 Jun 2020 15:54:09 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Wed, 3 Jun 2020 15:54:09 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-cc:     Mike Snitzer <msnitzer@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Milan Broz <mbroz@redhat.com>, djeffery@redhat.com,
-        dm-devel@redhat.com, qat-linux@intel.com,
-        linux-crypto@vger.kernel.org, guazhang@redhat.com,
-        jpittman@redhat.com, ahsan.atta@intel.com
-Subject: Re: [PATCH 1/4] qat: fix misunderstood -EBUSY return code
-In-Reply-To: <20200603165526.GA94360@silpixa00400314>
-Message-ID: <alpine.LRH.2.02.2006031553170.9890@file01.intranet.prod.int.rdu2.redhat.com>
-References: <20200601160418.171851200@debian-a64.vm> <20200602220516.GA20880@silpixa00400314> <alpine.LRH.2.02.2006030409520.15292@file01.intranet.prod.int.rdu2.redhat.com> <20200603165526.GA94360@silpixa00400314>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        Wed, 3 Jun 2020 19:22:22 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9405FC08C5C0
+        for <linux-crypto@vger.kernel.org>; Wed,  3 Jun 2020 16:22:22 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id er17so2045275qvb.8
+        for <linux-crypto@vger.kernel.org>; Wed, 03 Jun 2020 16:22:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=Xs1c6/A8GmpgdbMBrIroEWmoFbf3qfcFFbhS2ULR81Q=;
+        b=kzeDpVKvTaxqv1Hw9U1YcCf1w9AveZoMQlfBBSMn15TfEhKT+ObTIIutqSQzt1tUqP
+         7iiKufIUI5yECjau+nlm3Gjdk5C1ENqeL78c6vAifsGgeiJloFVBeguB2xjdd2KRRrs1
+         +01NPlsb4Wu11fhFqOvPkPsTHw1f+RaHsiivfv5aPllCJP9lAihXqibTc2Zfc10IcfBt
+         vD7S7+8kkUt1CrwxELDEx0M/v5vvTV8cY18smM/38JiieagAeBYf+w/gCrppaI6nuBQi
+         Oc/fc3owYzpm+gT8IoUY2+BiYEiQND73TdmSwc//cRLnsPK8fOs4kTONbDwFVg7RbOal
+         E4MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=Xs1c6/A8GmpgdbMBrIroEWmoFbf3qfcFFbhS2ULR81Q=;
+        b=r1NHYifyZXZXhf+l2OY7DaAoxibVg6D94Xix/H/nyf0LDCMdPSED/T3W3RK+jJqjEP
+         4xwvMxNmx07xSYCPCSfTGlwMajkqv1MVtljtVrT/gqC3Lv/UdYCJkX4H/xiYB8unmW8s
+         rix6ZT7AaSNeYdJOqLLptkau4gYAC+x3MZwvMyn4OuuszxmYs4k5ZxoCA7ckF3hKt0RF
+         xfMycDOAXDP8qUK7jZ09EtiMkNLZenYQ5+748sKwfgDiu2rlrKCrMcNBwi3/5+fDYUfQ
+         RRYJr3VjfpDn/m4eVR/syW8gauhwB4MVfCEpFFvxAw0aU2Z3tnc8h7bhEkOEaSwK35h7
+         YRTA==
+X-Gm-Message-State: AOAM531fa0cSGWRtTpzOnzYDQdfdyGh/Bn/l566vGpgGFJOsNj/8ajgD
+        k+z7kOVc6VIg2AKULLOZmpWn9vHPUDV8qX+SYz4=
+X-Google-Smtp-Source: ABdhPJx0fiJOCT59iWG77WB7levxMaxsZvnmXrcjOESgBLMnIJ3viupdsVDDJkFYsU4QDtimbWZKpWHD/C1S9et7OsM=
+X-Received: by 2002:ad4:43cc:: with SMTP id o12mr2265835qvs.62.1591226541815;
+ Wed, 03 Jun 2020 16:22:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Reply-To: mrahmedmuzashah@gmail.com
+Received: by 2002:a05:6214:412:0:0:0:0 with HTTP; Wed, 3 Jun 2020 16:22:20
+ -0700 (PDT)
+From:   "Mr.Ahmed Muzashah" <ahmedmuzashah@gmail.com>
+Date:   Thu, 4 Jun 2020 00:22:20 +0100
+X-Google-Sender-Auth: flg2ccOBLRjhSS469XxddBfmD1k
+Message-ID: <CAMYmOn72BsDGj-E2jXruN7HxMXsttYQ4A3zgM4DxjzcF77pJgA@mail.gmail.com>
+Subject: From: Mr.Ahmed Muzashah.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Good Day,
 
+Please accept my apologies for writing you a surprise letter.I am Mr.
+Ahmed Muzashah, account Manager with an investment bank here in
+Burkina Faso.I have a very important business I want to discuss with
+you.There is a draft account opened in my firm by a long-time client
+of our bank.I have the opportunity of transferring the left over fund
+(15.8 Million UsDollars)Fiftheen Million Eight Hundred Thousand United
+States of American Dollars of one of my Bank clients who died at the
+collapsing of the world trade center at the United States on September
+11th 2001.
 
-On Wed, 3 Jun 2020, Giovanni Cabiddu wrote:
+I want to invest this funds and introduce you to our bank for this
+deal.All I require is your honest co-operation and I guarantee you
+that this will be executed under a legitimate arrangement that will
+protect us from any breach of the law.I agree that 40% of this money
+will be for you as my foreign partner,50% for me while 10% is for
+establishing of foundation for the less privilleges in your country.If
+you are really interested in my proposal further details of the
+Transfer will be forwarded unto you as soon as I receive your
+willingness mail for a successful transfer.
 
-> > > > +bool adf_should_back_off(struct adf_etr_ring_data *ring)
-> > > > +{
-> > > > +	return atomic_read(ring->inflights) > ADF_MAX_INFLIGHTS(ring->ring_size, ring->msg_size) * 15 / 16;
-> > > How did you came up with 15/16?
-> > 
-> > I want the sender to back off before the queue is full, to avoid 
-> > busy-waiting. There may be more concurrent senders, so we want to back off 
-> > at some point before the queue is full.
-> Yes, I understood this. My question was about the actual number.
-> 93% of the depth of the queue.
-
-I just guessed the value. If you have some benchmark, you can try 
-different values, to test if they perform better.
-
-Mikulas
-
+Yours Sincerely,
+Mr.Ahmed Muzashah,
