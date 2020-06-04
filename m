@@ -2,84 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B7C1ED906
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Jun 2020 01:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FD11EDB46
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Jun 2020 04:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgFCXWX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 3 Jun 2020 19:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725863AbgFCXWW (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 3 Jun 2020 19:22:22 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9405FC08C5C0
-        for <linux-crypto@vger.kernel.org>; Wed,  3 Jun 2020 16:22:22 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id er17so2045275qvb.8
-        for <linux-crypto@vger.kernel.org>; Wed, 03 Jun 2020 16:22:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=Xs1c6/A8GmpgdbMBrIroEWmoFbf3qfcFFbhS2ULR81Q=;
-        b=kzeDpVKvTaxqv1Hw9U1YcCf1w9AveZoMQlfBBSMn15TfEhKT+ObTIIutqSQzt1tUqP
-         7iiKufIUI5yECjau+nlm3Gjdk5C1ENqeL78c6vAifsGgeiJloFVBeguB2xjdd2KRRrs1
-         +01NPlsb4Wu11fhFqOvPkPsTHw1f+RaHsiivfv5aPllCJP9lAihXqibTc2Zfc10IcfBt
-         vD7S7+8kkUt1CrwxELDEx0M/v5vvTV8cY18smM/38JiieagAeBYf+w/gCrppaI6nuBQi
-         Oc/fc3owYzpm+gT8IoUY2+BiYEiQND73TdmSwc//cRLnsPK8fOs4kTONbDwFVg7RbOal
-         E4MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=Xs1c6/A8GmpgdbMBrIroEWmoFbf3qfcFFbhS2ULR81Q=;
-        b=r1NHYifyZXZXhf+l2OY7DaAoxibVg6D94Xix/H/nyf0LDCMdPSED/T3W3RK+jJqjEP
-         4xwvMxNmx07xSYCPCSfTGlwMajkqv1MVtljtVrT/gqC3Lv/UdYCJkX4H/xiYB8unmW8s
-         rix6ZT7AaSNeYdJOqLLptkau4gYAC+x3MZwvMyn4OuuszxmYs4k5ZxoCA7ckF3hKt0RF
-         xfMycDOAXDP8qUK7jZ09EtiMkNLZenYQ5+748sKwfgDiu2rlrKCrMcNBwi3/5+fDYUfQ
-         RRYJr3VjfpDn/m4eVR/syW8gauhwB4MVfCEpFFvxAw0aU2Z3tnc8h7bhEkOEaSwK35h7
-         YRTA==
-X-Gm-Message-State: AOAM531fa0cSGWRtTpzOnzYDQdfdyGh/Bn/l566vGpgGFJOsNj/8ajgD
-        k+z7kOVc6VIg2AKULLOZmpWn9vHPUDV8qX+SYz4=
-X-Google-Smtp-Source: ABdhPJx0fiJOCT59iWG77WB7levxMaxsZvnmXrcjOESgBLMnIJ3viupdsVDDJkFYsU4QDtimbWZKpWHD/C1S9et7OsM=
-X-Received: by 2002:ad4:43cc:: with SMTP id o12mr2265835qvs.62.1591226541815;
- Wed, 03 Jun 2020 16:22:21 -0700 (PDT)
+        id S1726328AbgFDClF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 3 Jun 2020 22:41:05 -0400
+Received: from mout.gmx.net ([212.227.17.20]:59599 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726047AbgFDClF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 3 Jun 2020 22:41:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1591238420;
+        bh=rBeNnWCkETjnvDe3kdb6C2KAvfLQEEfKNU9wifTgN0k=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=ZoGIw5n1NnxzuVY9OEPuIxnqoKo2Oq3xIwtsoprjWAwJDw38Q0zSBAg9aNtoYHwoC
+         M/9PsarM1tnVyr4QGfUWkjV3P/czxC0SI5jrWVUyI8UaKXyu5G9DQRWr7vY90QK0vJ
+         GZUgPGlcxsFo2fczRnyuzCBVGpzotFtUXZl05rLE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from LT02.fritz.box ([88.152.145.75]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWzjt-1jRUL72wZd-00XKM4; Thu, 04
+ Jun 2020 04:40:20 +0200
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+To:     =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: [PATCH 1/1] crypto: caam - fix typo
+Date:   Thu,  4 Jun 2020 04:40:13 +0200
+Message-Id: <20200604024013.5669-1-xypron.glpk@gmx.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Reply-To: mrahmedmuzashah@gmail.com
-Received: by 2002:a05:6214:412:0:0:0:0 with HTTP; Wed, 3 Jun 2020 16:22:20
- -0700 (PDT)
-From:   "Mr.Ahmed Muzashah" <ahmedmuzashah@gmail.com>
-Date:   Thu, 4 Jun 2020 00:22:20 +0100
-X-Google-Sender-Auth: flg2ccOBLRjhSS469XxddBfmD1k
-Message-ID: <CAMYmOn72BsDGj-E2jXruN7HxMXsttYQ4A3zgM4DxjzcF77pJgA@mail.gmail.com>
-Subject: From: Mr.Ahmed Muzashah.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Jv9qzEZHPwAEEDZp5lJdXCBS3tYyk3aBIbv2/Enk6Bx3K0gG1Co
+ QOEs6nj/Msh7f7SSIY0VYdyanyHWF8iQTGzFrTsl0pVD4nxwNuDesFgqTNcdGd8vrGxqJWr
+ f0YIj/EuWgC3mSRRsg7ogmjgaT7wc75WXu8AR4r/eMtY1qrJ17rqiXtSFkAZbU/vGJbHz4M
+ XOa01NXQ8HtkEIH4KXDiQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0Tw0YKok6IY=:pnp0uOOJgLNhUNhzFHp/bX
+ GBZqcUdrURimf8IGTnMcdlRSci3lPvUEfhdlYe4chHNhRnUROAnxMMS3NShgfYXBgHA7lPX2Y
+ n9Q9tk0s9KasV5q6uOTsNGBYXRUgtT7f4LLwTAzccZyaY6WgkqDOgPcMCLsQ8UOc9LDI9LImn
+ p61Yl/r1tbK5uLCPJm3JQxonLNh3NlyqmAn6y9MwBM1SV4wVzDAS7rd+HHWaulfuUEKC3KL1X
+ kI8Nx8AbH9t+/hOaFHd3Pb4QL6+yTbeVAcbApPhp4zAK52SEA7iMYLDC3bc+zNSS6/y2sMd/s
+ 35W2WIEMuJ9B1zSVpyMpaZXfecWZ3VE3keoKpYsYF3diwtBbREaKhvbECYIY4Hl769FhOjh/0
+ AjeEgFhHUU5yxRPsUVjJBhwxjl//kDR1Uy1wvuBxqspZQifbcFqpENlrKwAoZtWLsQ+ctrSvV
+ 9yLzlDP7H29LZd7RwFyGhJc/ZPmxM20k4H26jyZmcPHFp60w4/zFTlcUOFYWcYQbbknslgSfI
+ Yj02Qksvmm6tMf5ggfvU1S7O1e3BeP/pUSeUFTM5oRsUQjDUARID0A9QDfuL9ZGfwd/4l5KUc
+ 8m50sADD2OAMEGS+AC/Lqv2k1OtBsK8QCGNC7slPUGJfVFGL8BaGhqle+nC4U+B69pou14BZ8
+ PILVRFg/IxFsqVe4x2Fzy35h/ONKskYtXHuWLbpSHLguWJk+TaVIVPAM9MgogHZ+q6NoU3SOd
+ /zK3VwobtVe/pg3JkUq4iDwDky9RwfCVN06zMl/vmqRcwY9y5mw/bIDc5GKC3bTHfahKKeZUm
+ 6qHMt4ZMW4GJYM+9NMldL/FX/Rll1hUfb9q4JMHWW1f0a831m2HH0SnkX6KL/MI+Avs6l25td
+ YfbceVw+iCQMRajDRV4NmO1+kE0b3deCsK96U4Pk8ocRryg1oHJHiEpWD8ZrVwtt7jG7NVVfY
+ cUrwJ8aObM4xpIDEL+WAOmHtLiscj+KrBXmkCGGmwsaY2DJVcvWj8jX8h9uMqGE6T/5e2S10Z
+ 02wT6TFXv91NGFVHJjrv8fe0gd44HGtIg2meGRTcS5EwYys72Zgikd3L4QlViiBWST3Wo2bLW
+ QmaEaw94vDmop78a/VI9ez3cz1kx0asmz4hjcdsaOZ2DmMa5sTLuHQeXhhzTaXHF855Zg2bkV
+ sn5z2pH6wU00Pt4zUWoCUryf8XJrx55e+GUwkhhglO12IanO+OoqysD6D4SNa+97U1oBFO8xw
+ j0kC6Y4gyqlhW0kt/
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Good Day,
+%s/suppying/supplying/
 
-Please accept my apologies for writing you a surprise letter.I am Mr.
-Ahmed Muzashah, account Manager with an investment bank here in
-Burkina Faso.I have a very important business I want to discuss with
-you.There is a draft account opened in my firm by a long-time client
-of our bank.I have the opportunity of transferring the left over fund
-(15.8 Million UsDollars)Fiftheen Million Eight Hundred Thousand United
-States of American Dollars of one of my Bank clients who died at the
-collapsing of the world trade center at the United States on September
-11th 2001.
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+=2D--
+ drivers/crypto/caam/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I want to invest this funds and introduce you to our bank for this
-deal.All I require is your honest co-operation and I guarantee you
-that this will be executed under a legitimate arrangement that will
-protect us from any breach of the law.I agree that 40% of this money
-will be for you as my foreign partner,50% for me while 10% is for
-establishing of foundation for the less privilleges in your country.If
-you are really interested in my proposal further details of the
-Transfer will be forwarded unto you as soon as I receive your
-willingness mail for a successful transfer.
+diff --git a/drivers/crypto/caam/Kconfig b/drivers/crypto/caam/Kconfig
+index a62f228be6da..bc35aa0ec07a 100644
+=2D-- a/drivers/crypto/caam/Kconfig
++++ b/drivers/crypto/caam/Kconfig
+@@ -147,7 +147,7 @@ config CRYPTO_DEV_FSL_CAAM_RNG_API
+ 	select HW_RANDOM
+ 	help
+ 	  Selecting this will register the SEC4 hardware rng to
+-	  the hw_random API for suppying the kernel entropy pool.
++	  the hw_random API for supplying the kernel entropy pool.
 
-Yours Sincerely,
-Mr.Ahmed Muzashah,
+ endif # CRYPTO_DEV_FSL_CAAM_JR
+
+=2D-
+2.26.2
+
