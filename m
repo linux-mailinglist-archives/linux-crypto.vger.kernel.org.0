@@ -2,83 +2,109 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361691EFA15
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Jun 2020 16:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3004F1EFC74
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Jun 2020 17:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgFEOK5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 5 Jun 2020 10:10:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728025AbgFEOKw (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:10:52 -0400
-Received: from localhost (unknown [137.135.114.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAE3D207D8;
-        Fri,  5 Jun 2020 14:10:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591366251;
-        bh=6CAvZuBjeBM0ZEQzjCvTEjempo7YDRIo6woMgR5VCTc=;
-        h=Date:From:To:To:To:CC:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Subject:
-         In-Reply-To:From;
-        b=fho5hoZlTyKUsdCwJCGiQwIPyo9Gh8DAvxPiSiLTEPMwovO2eb4MQJuVdQ/nnwY6V
-         duSjOxxv77vhW972j5zek6sE2ow+C2tR7BE4bMCHwGhl2W9y5BdyusDXcVZcXbRAjj
-         BICurL4ZW38BM5gDWohKVnSN8egvpb8q40c8dX/g=
-Date:   Fri, 05 Jun 2020 14:10:51 +0000
-From:   Sasha Levin <sashal@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-To:     "Longpeng(Mike)" <longpeng2@huawei.com>
-To:     <linux-crypto@vger.kernel.org>
-CC:     "Longpeng(Mike)" <longpeng2@huawei.com>
-Cc:     Gonglei <arei.gonglei@huawei.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>
-Cc:     "David S. Miller" <davem@davemloft.net>
-Cc:     virtualization@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] crypto: virtio: Fix use-after-free in virtio_crypto_skcipher_finalize_req()
-In-Reply-To: <20200602070501.2023-3-longpeng2@huawei.com>
-Message-Id: <20200605141051.BAE3D207D8@mail.kernel.org>
+        id S1727850AbgFEP0l (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 5 Jun 2020 11:26:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726539AbgFEP0k (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 5 Jun 2020 11:26:40 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4058C08C5C2
+        for <linux-crypto@vger.kernel.org>; Fri,  5 Jun 2020 08:26:40 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id u5so5278742pgn.5
+        for <linux-crypto@vger.kernel.org>; Fri, 05 Jun 2020 08:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=AqjUdAV0eSeVgzmdoBhAtl0I2tJh0EYeJ8Lxk1njxlE=;
+        b=Hb1FEGJcGKGXT6cLEc5+mKoFByGI75v/JS3V5JnikKJzHQfGRL5LNFK/kRVwPeymzn
+         KLM6YgOaeQE1m6PhzzmrTyyrAyS6WLwbbfCVeFHF+ZmJIsx/7IaWhORJ+fGcarvE+Pwz
+         FC64vYpIXt58BXX+h27dWOxjbSiAPbfJBW4OQEAxOB8Tbx7oJY40zWDwQpsA0bBYk1nn
+         rT8VvP9eaV83x6AYoNPwr7pom9jUbFBi7yFKiTZPvCQmawfR1rSd/JLpKQwCf3fy3ElS
+         wwHMz/JFa1OGLr53eTVb1c6QyBtqfw9NSI79OqnQqtR0VdkZlH/gKUGVXJyVrjn9SqDY
+         qdRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=AqjUdAV0eSeVgzmdoBhAtl0I2tJh0EYeJ8Lxk1njxlE=;
+        b=QcYKVne5u4N4r0B6HC52MD5nesXZlt+dtyDchSiePtMMHF3lM/GWWznHxGY8zmhzmC
+         WXlfJeNE/KnsLY1af7hHv39x1/iDmtjTl+GoZZhOHJ1lfAXtGBhCWTcUC0BopCkQz3jp
+         JyBjRfoVhINL89xBCdYHvv34wjnuq0RszEyCqvhMiI42GQ4iEmqo4wRU7SLlPK1Vvg/p
+         Wmmh0pgP2+7XlOlq88At3JsYCfSgfE1OsKObsgi80yp3B46p743I6A2MAaCuBY5OCHvX
+         56TBwtXgAjkfrDASrX6XJLQ3MlKEfleDY1tGk0dqw7rQ029l5lXxA+N/EW/rMfTPTfKh
+         Yp9A==
+X-Gm-Message-State: AOAM530Pe7nLjLzABskB5Erpt8apHmq5ksnzdh2OBCidll91CjSR7PmK
+        Z95+l/N42CSN1dyW2p3XlLEZNw==
+X-Google-Smtp-Source: ABdhPJyobG69F9I2fWtiHr9xUh0TsIYXcAcsxJ2A10JAWpRfQlUUMqaD6EgpE9W1LELyCy7x6htK7Q==
+X-Received: by 2002:a65:6810:: with SMTP id l16mr9525777pgt.390.1591370800353;
+        Fri, 05 Jun 2020 08:26:40 -0700 (PDT)
+Received: from [10.110.1.78] ([45.135.186.59])
+        by smtp.gmail.com with ESMTPSA id s197sm8002426pfc.188.2020.06.05.08.26.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Jun 2020 08:26:39 -0700 (PDT)
+Subject: Re: [PATCH] crypto: hisilicon - fix strncpy warning with strlcpy
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        wangzhou1 <wangzhou1@hisilicon.com>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        kbuild-all@lists.01.org
+References: <202006032110.BEbKqovX%lkp@intel.com>
+ <1591241524-6452-1-git-send-email-zhangfei.gao@linaro.org>
+ <20200604033918.GA2286@gondor.apana.org.au>
+ <b6ad8af2-1cb7-faac-0446-5e09e97f3616@linaro.org>
+ <20200604061811.GA28759@gondor.apana.org.au>
+ <b23433f8-d95d-8142-c830-fb92e5ccd4a1@linaro.org>
+ <20200604065009.GA29822@gondor.apana.org.au>
+ <f8dceec5-6835-c064-bb43-fd12668c2dbb@linaro.org>
+ <20200605121703.GA3792@gondor.apana.org.au>
+From:   Zhangfei Gao <zhangfei.gao@linaro.org>
+Message-ID: <47b747d2-3b27-4f39-85c9-204c2b8a92e1@linaro.org>
+Date:   Fri, 5 Jun 2020 23:26:20 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200605121703.GA3792@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-<20200123101000.GB24255@Red>
-References: <20200602070501.2023-3-longpeng2@huawei.com>
-<20200123101000.GB24255@Red>
-
-Hi
-
-[This is an automated email]
-
-This commit has been processed because it contains a "Fixes:" tag
-fixing commit: dbaf0624ffa5 ("crypto: add virtio-crypto driver").
-
-The bot has tested the following trees: v5.6.15, v5.4.43, v4.19.125, v4.14.182.
-
-v5.6.15: Build OK!
-v5.4.43: Failed to apply! Possible dependencies:
-    eee1d6fca0a0 ("crypto: virtio - switch to skcipher API")
-
-v4.19.125: Failed to apply! Possible dependencies:
-    eee1d6fca0a0 ("crypto: virtio - switch to skcipher API")
-
-v4.14.182: Failed to apply! Possible dependencies:
-    500e6807ce93 ("crypto: virtio - implement missing support for output IVs")
-    67189375bb3a ("crypto: virtio - convert to new crypto engine API")
-    d0d859bb87ac ("crypto: virtio - Register an algo only if it's supported")
-    e02b8b43f55a ("crypto: virtio - pr_err() strings should end with newlines")
-    eee1d6fca0a0 ("crypto: virtio - switch to skcipher API")
 
 
-NOTE: The patch will not be queued to stable trees until it is upstream.
+On 2020/6/5 下午8:17, Herbert Xu wrote:
+> On Fri, Jun 05, 2020 at 05:34:32PM +0800, Zhangfei Gao wrote:
+>> Will add a check after the copy.
+>>
+>>          strlcpy(interface.name, pdev->driver->name, sizeof(interface.name));
+>>          if (strlen(pdev->driver->name) != strlen(interface.name))
+>>                  return -EINVAL;
+> You don't need to do strlen.  The function strlcpy returns the
+> length of the source string.
+>
+> Better yet use strscpy which will even return an error for you.
+>
+>
+Yes, good idea, we can use strscpy.
 
-How should we proceed with this patch?
++       int ret;
 
--- 
-Thanks
-Sasha
+-       strncpy(interface.name, pdev->driver->name, sizeof(interface.name));
++       ret = strscpy(interface.name, pdev->driver->name, 
+sizeof(interface.name));
++       if (ret < 0)
++               return ret;
+
+Will resend later, thanks Herbert.
+
+
