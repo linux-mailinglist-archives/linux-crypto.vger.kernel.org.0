@@ -2,37 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48EB1F2500
-	for <lists+linux-crypto@lfdr.de>; Tue,  9 Jun 2020 01:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BA21F28BD
+	for <lists+linux-crypto@lfdr.de>; Tue,  9 Jun 2020 01:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730434AbgFHXYb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 8 Jun 2020 19:24:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50504 "EHLO mail.kernel.org"
+        id S1731557AbgFHXzp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 8 Jun 2020 19:55:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730955AbgFHXY3 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:24:29 -0400
+        id S1731550AbgFHXXy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:23:54 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D05EC2087E;
-        Mon,  8 Jun 2020 23:24:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A77A2072F;
+        Mon,  8 Jun 2020 23:23:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658668;
-        bh=JSyUSw4bTz9KQOzqWW/fuVJIcakQ6IBfFtwiMOHZIDU=;
+        s=default; t=1591658634;
+        bh=WI3HQ8lMCRznQ3o12AJnapm9JrQWYpgFcNojPlKXQAQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MgF/oicMaWpL/CHCCLe7hn8asIQsu79aRP1QCNcn6t2vci7O5faJ16vtjHsygXFET
-         jQghewutg6A4rs5K5YlsxoUuSaslia2LF8v3Dm6Zz8DELMKyvrlN8I12x+EqYV7jjw
-         FaELqVdpA1Pmo3UpN3sp7j3UObqNnHY/lCmfiPc0=
+        b=S9QWUKkwZAAdhSy/kzu10zdmKQ87UMJrlDkQ94Pvjq4/XSK9MiVNibpfjasOzKRiF
+         Ajz61oQMXp46gHNDi1Z35UF1TVNUuEv2tVA4pGN8raobm1uBUYGzDzvCIzD+zLwH0T
+         4fk9HKViClDfKI9ekzBu2zqKZrP5/vgktcQzmyak=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nicolas Toromanoff <nicolas.toromanoff@st.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 083/106] crypto: stm32/crc32 - fix multi-instance
-Date:   Mon,  8 Jun 2020 19:22:15 -0400
-Message-Id: <20200608232238.3368589-83-sashal@kernel.org>
+Cc:     Devulapally Shiva Krishna <shiva@chelsio.com>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 057/106] Crypto/chcr: fix for ccm(aes) failed test
+Date:   Mon,  8 Jun 2020 19:21:49 -0400
+Message-Id: <20200608232238.3368589-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608232238.3368589-1-sashal@kernel.org>
 References: <20200608232238.3368589-1-sashal@kernel.org>
@@ -45,120 +44,37 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Nicolas Toromanoff <nicolas.toromanoff@st.com>
+From: Devulapally Shiva Krishna <shiva@chelsio.com>
 
-[ Upstream commit 10b89c43a64eb0d236903b79a3bc9d8f6cbfd9c7 ]
+[ Upstream commit 10b0c75d7bc19606fa9a62c8ab9180e95c0e0385 ]
 
-Ensure CRC algorithm is registered only once in crypto framework when
-there are several instances of CRC devices.
+The ccm(aes) test fails when req->assoclen > ~240bytes.
 
-Update the CRC device list management to avoid that only the first CRC
-instance is used.
+The problem is the value assigned to auth_offset is wrong.
+As auth_offset is unsigned char, it can take max value as 255.
+So fix it by making it unsigned int.
 
-Fixes: b51dbe90912a ("crypto: stm32 - Support for STM32 CRC32 crypto module")
-
-Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
+Signed-off-by: Devulapally Shiva Krishna <shiva@chelsio.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/stm32/stm32_crc32.c | 48 ++++++++++++++++++++++--------
- 1 file changed, 36 insertions(+), 12 deletions(-)
+ drivers/crypto/chelsio/chcr_algo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/stm32/stm32_crc32.c b/drivers/crypto/stm32/stm32_crc32.c
-index c5ad83ad2f72..47d31335c2d4 100644
---- a/drivers/crypto/stm32/stm32_crc32.c
-+++ b/drivers/crypto/stm32/stm32_crc32.c
-@@ -93,16 +93,29 @@ static int stm32_crc_setkey(struct crypto_shash *tfm, const u8 *key,
- 	return 0;
- }
+diff --git a/drivers/crypto/chelsio/chcr_algo.c b/drivers/crypto/chelsio/chcr_algo.c
+index c435f89f34e3..9b3c259f081d 100644
+--- a/drivers/crypto/chelsio/chcr_algo.c
++++ b/drivers/crypto/chelsio/chcr_algo.c
+@@ -2764,7 +2764,7 @@ static void fill_sec_cpl_for_aead(struct cpl_tx_sec_pdu *sec_cpl,
+ 	unsigned int mac_mode = CHCR_SCMD_AUTH_MODE_CBCMAC;
+ 	unsigned int c_id = a_ctx(tfm)->dev->rx_channel_id;
+ 	unsigned int ccm_xtra;
+-	unsigned char tag_offset = 0, auth_offset = 0;
++	unsigned int tag_offset = 0, auth_offset = 0;
+ 	unsigned int assoclen;
  
--static int stm32_crc_init(struct shash_desc *desc)
-+static struct stm32_crc *stm32_crc_get_next_crc(void)
- {
--	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
--	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
- 	struct stm32_crc *crc;
- 
- 	spin_lock_bh(&crc_list.lock);
- 	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
-+	if (crc)
-+		list_move_tail(&crc->list, &crc_list.dev_list);
- 	spin_unlock_bh(&crc_list.lock);
- 
-+	return crc;
-+}
-+
-+static int stm32_crc_init(struct shash_desc *desc)
-+{
-+	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
-+	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
-+	struct stm32_crc *crc;
-+
-+	crc = stm32_crc_get_next_crc();
-+	if (!crc)
-+		return -ENODEV;
-+
- 	pm_runtime_get_sync(crc->dev);
- 
- 	/* Reset, set key, poly and configure in bit reverse mode */
-@@ -127,9 +140,9 @@ static int stm32_crc_update(struct shash_desc *desc, const u8 *d8,
- 	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
- 	struct stm32_crc *crc;
- 
--	spin_lock_bh(&crc_list.lock);
--	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
--	spin_unlock_bh(&crc_list.lock);
-+	crc = stm32_crc_get_next_crc();
-+	if (!crc)
-+		return -ENODEV;
- 
- 	pm_runtime_get_sync(crc->dev);
- 
-@@ -202,6 +215,8 @@ static int stm32_crc_digest(struct shash_desc *desc, const u8 *data,
- 	return stm32_crc_init(desc) ?: stm32_crc_finup(desc, data, length, out);
- }
- 
-+static unsigned int refcnt;
-+static DEFINE_MUTEX(refcnt_lock);
- static struct shash_alg algs[] = {
- 	/* CRC-32 */
- 	{
-@@ -294,12 +309,18 @@ static int stm32_crc_probe(struct platform_device *pdev)
- 	list_add(&crc->list, &crc_list.dev_list);
- 	spin_unlock(&crc_list.lock);
- 
--	ret = crypto_register_shashes(algs, ARRAY_SIZE(algs));
--	if (ret) {
--		dev_err(dev, "Failed to register\n");
--		clk_disable_unprepare(crc->clk);
--		return ret;
-+	mutex_lock(&refcnt_lock);
-+	if (!refcnt) {
-+		ret = crypto_register_shashes(algs, ARRAY_SIZE(algs));
-+		if (ret) {
-+			mutex_unlock(&refcnt_lock);
-+			dev_err(dev, "Failed to register\n");
-+			clk_disable_unprepare(crc->clk);
-+			return ret;
-+		}
- 	}
-+	refcnt++;
-+	mutex_unlock(&refcnt_lock);
- 
- 	dev_info(dev, "Initialized\n");
- 
-@@ -320,7 +341,10 @@ static int stm32_crc_remove(struct platform_device *pdev)
- 	list_del(&crc->list);
- 	spin_unlock(&crc_list.lock);
- 
--	crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
-+	mutex_lock(&refcnt_lock);
-+	if (!--refcnt)
-+		crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
-+	mutex_unlock(&refcnt_lock);
- 
- 	pm_runtime_disable(crc->dev);
- 	pm_runtime_put_noidle(crc->dev);
+ 	if (get_aead_subtype(tfm) == CRYPTO_ALG_SUB_TYPE_AEAD_RFC4309)
 -- 
 2.25.1
 
