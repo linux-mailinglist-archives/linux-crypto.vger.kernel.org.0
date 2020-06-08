@@ -2,40 +2,40 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D649C1F2E7B
-	for <lists+linux-crypto@lfdr.de>; Tue,  9 Jun 2020 02:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D101F2FB9
+	for <lists+linux-crypto@lfdr.de>; Tue,  9 Jun 2020 02:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731251AbgFIAmJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 8 Jun 2020 20:42:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60110 "EHLO mail.kernel.org"
+        id S1728207AbgFHXJr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 8 Jun 2020 19:09:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729137AbgFHXMc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:12:32 -0400
+        id S1728505AbgFHXJp (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:09:45 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81E4A208C3;
-        Mon,  8 Jun 2020 23:12:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57F7C208E4;
+        Mon,  8 Jun 2020 23:09:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657952;
-        bh=0f6+8/gWP04A7gXm4h6LYSgsObNR/CCROKDlx9F8Tbc=;
+        s=default; t=1591657785;
+        bh=yZWkXOfP2kad7R2XBI+KQjjxoy8Pk3WC5roLHhgPHOo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VyLJbuPf++DX0toDS2huR7jnyUpXSb52GKzTsDsUx4mvgI7DgMz8Df/SnjX9P326q
-         9MbXSG0hFf5fzB0s75okBfNjWdT1ekCezOb9JSf+PtWUS1ZxVdzZofs6HEra+9PuXa
-         IoJ+MoF9OHDvNAR8jifAodV6BU4BlxtoXFzLVx+o=
+        b=NIyxaxaV4IoJYtGq0y6Rafp1RHn9pEn2rt0I8JTg5d2vhg1RQaAN4MkVk+iHXX1Ak
+         Te4/EQosFmojntURVFlAczUjQPuTqBwfHv+ap2HtnO4/6BRxXAXzAkRhCM67izIOcd
+         uCy2VupxIzdjT0+6RGihuXxXs2I3xP8/hXBiY/6c=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 017/606] gcc-10: avoid shadowing standard library 'free()' in crypto
-Date:   Mon,  8 Jun 2020 19:02:22 -0400
-Message-Id: <20200608231211.3363633-17-sashal@kernel.org>
+Cc:     Devulapally Shiva Krishna <shiva@chelsio.com>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 166/274] Crypto/chcr: fix ctr, cbc, xts and rfc3686-ctr failed tests
+Date:   Mon,  8 Jun 2020 19:04:19 -0400
+Message-Id: <20200608230607.3361041-166-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,88 +44,177 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Devulapally Shiva Krishna <shiva@chelsio.com>
 
-commit 1a263ae60b04de959d9ce9caea4889385eefcc7b upstream.
+[ Upstream commit 6b363a286cd01961423f5dcd648b265088ec56d0 ]
 
-gcc-10 has started warning about conflicting types for a few new
-built-in functions, particularly 'free()'.
+This solves the following issues observed during self test when
+CONFIG_CRYPTO_MANAGER_EXTRA_TESTS is enabled.
 
-This results in warnings like:
+1. Added fallback for cbc, ctr and rfc3686 if req->nbytes is zero
+and for xts added a fallback case if req->nbytes is not multiple of 16.
 
-   crypto/xts.c:325:13: warning: conflicting types for built-in function ‘free’; expected ‘void(void *)’ [-Wbuiltin-declaration-mismatch]
+2. In case of cbc-aes, solved wrong iv update. When
+chcr_cipher_fallback() is called, used req->info pointer instead of
+reqctx->iv.
 
-because the crypto layer had its local freeing functions called
-'free()'.
+3. In cbc-aes decryption there was a wrong result. This occurs when
+chcr_cipher_fallback() is called from chcr_handle_cipher_resp().
+In the fallback function iv(req->info) used is wrongly updated.
+So use the initial iv for this case.
 
-Gcc-10 is in the wrong here, since that function is marked 'static', and
-thus there is no chance of confusion with any standard library function
-namespace.
+4)In case of ctr-aes encryption observed wrong result. In adjust_ctr_overflow()
+there is condition which checks if ((bytes / AES_BLOCK_SIZE) > c),
+where c is the number of blocks which can be processed without iv overflow,
+but for the above bytes (req->nbytes < 32 , not a multiple of 16) this
+condition fails and the 2nd block is corrupted as it requires the rollover iv.
+So added a '=' condition in this to take care of this.
 
-But the simplest thing to do is to just use a different name here, and
-avoid this gcc mis-feature.
+5)In rfc3686-ctr there was wrong result observed. This occurs when
+chcr_cipher_fallback() is called from chcr_handle_cipher_resp().
+Here also copying initial_iv in init_iv pointer for handling the fallback
+case correctly.
 
-[ Side note: gcc knowing about 'free()' is in itself not the
-  mis-feature: the semantics of 'free()' are special enough that a
-  compiler can validly do special things when seeing it.
-
-  So the mis-feature here is that gcc thinks that 'free()' is some
-  restricted name, and you can't shadow it as a local static function.
-
-  Making the special 'free()' semantics be a function attribute rather
-  than tied to the name would be the much better model ]
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
+Signed-off-by: Devulapally Shiva Krishna <shiva@chelsio.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/lrw.c | 4 ++--
- crypto/xts.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/crypto/chelsio/chcr_algo.c   | 42 ++++++++++++++++++----------
+ drivers/crypto/chelsio/chcr_crypto.h |  1 +
+ 2 files changed, 29 insertions(+), 14 deletions(-)
 
-diff --git a/crypto/lrw.c b/crypto/lrw.c
-index 63c485c0d8a6..9b20fc4b2efb 100644
---- a/crypto/lrw.c
-+++ b/crypto/lrw.c
-@@ -287,7 +287,7 @@ static void exit_tfm(struct crypto_skcipher *tfm)
- 	crypto_free_skcipher(ctx->child);
+diff --git a/drivers/crypto/chelsio/chcr_algo.c b/drivers/crypto/chelsio/chcr_algo.c
+index 5a2d9ee9348d..446fb896ee6d 100644
+--- a/drivers/crypto/chelsio/chcr_algo.c
++++ b/drivers/crypto/chelsio/chcr_algo.c
+@@ -1054,8 +1054,8 @@ static unsigned int adjust_ctr_overflow(u8 *iv, u32 bytes)
+ 	u32 temp = be32_to_cpu(*--b);
+ 
+ 	temp = ~temp;
+-	c = (u64)temp +  1; // No of block can processed withou overflow
+-	if ((bytes / AES_BLOCK_SIZE) > c)
++	c = (u64)temp +  1; // No of block can processed without overflow
++	if ((bytes / AES_BLOCK_SIZE) >= c)
+ 		bytes = c * AES_BLOCK_SIZE;
+ 	return bytes;
  }
- 
--static void free(struct skcipher_instance *inst)
-+static void free_inst(struct skcipher_instance *inst)
+@@ -1158,15 +1158,16 @@ static int chcr_final_cipher_iv(struct skcipher_request *req,
+ static int chcr_handle_cipher_resp(struct skcipher_request *req,
+ 				   unsigned char *input, int err)
  {
- 	crypto_drop_skcipher(skcipher_instance_ctx(inst));
- 	kfree(inst);
-@@ -400,7 +400,7 @@ static int create(struct crypto_template *tmpl, struct rtattr **tb)
- 	inst->alg.encrypt = encrypt;
- 	inst->alg.decrypt = decrypt;
++	struct chcr_skcipher_req_ctx *reqctx = skcipher_request_ctx(req);
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+-	struct chcr_context *ctx = c_ctx(tfm);
+-	struct uld_ctx *u_ctx = ULD_CTX(c_ctx(tfm));
+-	struct ablk_ctx *ablkctx = ABLK_CTX(c_ctx(tfm));
+-	struct sk_buff *skb;
+ 	struct cpl_fw6_pld *fw6_pld = (struct cpl_fw6_pld *)input;
+-	struct chcr_skcipher_req_ctx *reqctx = skcipher_request_ctx(req);
+-	struct cipher_wr_param wrparam;
++	struct ablk_ctx *ablkctx = ABLK_CTX(c_ctx(tfm));
++	struct uld_ctx *u_ctx = ULD_CTX(c_ctx(tfm));
+ 	struct chcr_dev *dev = c_ctx(tfm)->dev;
++	struct chcr_context *ctx = c_ctx(tfm);
++	struct adapter *adap = padap(ctx->dev);
++	struct cipher_wr_param wrparam;
++	struct sk_buff *skb;
+ 	int bytes;
  
--	inst->free = free;
-+	inst->free = free_inst;
- 
- 	err = skcipher_register_instance(tmpl, inst);
  	if (err)
-diff --git a/crypto/xts.c b/crypto/xts.c
-index 29efa15f1495..983dae2bb2db 100644
---- a/crypto/xts.c
-+++ b/crypto/xts.c
-@@ -322,7 +322,7 @@ static void exit_tfm(struct crypto_skcipher *tfm)
- 	crypto_free_cipher(ctx->tweak);
- }
- 
--static void free(struct skcipher_instance *inst)
-+static void free_inst(struct skcipher_instance *inst)
+@@ -1197,6 +1198,8 @@ static int chcr_handle_cipher_resp(struct skcipher_request *req,
+ 	if (unlikely(bytes == 0)) {
+ 		chcr_cipher_dma_unmap(&ULD_CTX(c_ctx(tfm))->lldi.pdev->dev,
+ 				      req);
++		memcpy(req->iv, reqctx->init_iv, IV);
++		atomic_inc(&adap->chcr_stats.fallback);
+ 		err = chcr_cipher_fallback(ablkctx->sw_cipher,
+ 				     req->base.flags,
+ 				     req->src,
+@@ -1248,20 +1251,28 @@ static int process_cipher(struct skcipher_request *req,
+ 				  struct sk_buff **skb,
+ 				  unsigned short op_type)
  {
- 	crypto_drop_skcipher(skcipher_instance_ctx(inst));
- 	kfree(inst);
-@@ -434,7 +434,7 @@ static int create(struct crypto_template *tmpl, struct rtattr **tb)
- 	inst->alg.encrypt = encrypt;
- 	inst->alg.decrypt = decrypt;
++	struct chcr_skcipher_req_ctx *reqctx = skcipher_request_ctx(req);
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+ 	unsigned int ivsize = crypto_skcipher_ivsize(tfm);
+-	struct chcr_skcipher_req_ctx *reqctx = skcipher_request_ctx(req);
+ 	struct ablk_ctx *ablkctx = ABLK_CTX(c_ctx(tfm));
++	struct adapter *adap = padap(c_ctx(tfm)->dev);
+ 	struct	cipher_wr_param wrparam;
+ 	int bytes, err = -EINVAL;
++	int subtype;
  
--	inst->free = free;
-+	inst->free = free_inst;
+ 	reqctx->processed = 0;
+ 	reqctx->partial_req = 0;
+ 	if (!req->iv)
+ 		goto error;
++	subtype = get_cryptoalg_subtype(tfm);
+ 	if ((ablkctx->enckey_len == 0) || (ivsize > AES_BLOCK_SIZE) ||
+ 	    (req->cryptlen == 0) ||
+ 	    (req->cryptlen % crypto_skcipher_blocksize(tfm))) {
++		if (req->cryptlen == 0 && subtype != CRYPTO_ALG_SUB_TYPE_XTS)
++			goto fallback;
++		else if (req->cryptlen % crypto_skcipher_blocksize(tfm) &&
++			 subtype == CRYPTO_ALG_SUB_TYPE_XTS)
++			goto fallback;
+ 		pr_err("AES: Invalid value of Key Len %d nbytes %d IV Len %d\n",
+ 		       ablkctx->enckey_len, req->cryptlen, ivsize);
+ 		goto error;
+@@ -1302,12 +1313,10 @@ static int process_cipher(struct skcipher_request *req,
+ 	} else {
+ 		bytes = req->cryptlen;
+ 	}
+-	if (get_cryptoalg_subtype(tfm) ==
+-	    CRYPTO_ALG_SUB_TYPE_CTR) {
++	if (subtype == CRYPTO_ALG_SUB_TYPE_CTR) {
+ 		bytes = adjust_ctr_overflow(req->iv, bytes);
+ 	}
+-	if (get_cryptoalg_subtype(tfm) ==
+-	    CRYPTO_ALG_SUB_TYPE_CTR_RFC3686) {
++	if (subtype == CRYPTO_ALG_SUB_TYPE_CTR_RFC3686) {
+ 		memcpy(reqctx->iv, ablkctx->nonce, CTR_RFC3686_NONCE_SIZE);
+ 		memcpy(reqctx->iv + CTR_RFC3686_NONCE_SIZE, req->iv,
+ 				CTR_RFC3686_IV_SIZE);
+@@ -1315,20 +1324,25 @@ static int process_cipher(struct skcipher_request *req,
+ 		/* initialize counter portion of counter block */
+ 		*(__be32 *)(reqctx->iv + CTR_RFC3686_NONCE_SIZE +
+ 			CTR_RFC3686_IV_SIZE) = cpu_to_be32(1);
++		memcpy(reqctx->init_iv, reqctx->iv, IV);
  
- 	err = skcipher_register_instance(tmpl, inst);
- 	if (err)
+ 	} else {
+ 
+ 		memcpy(reqctx->iv, req->iv, IV);
++		memcpy(reqctx->init_iv, req->iv, IV);
+ 	}
+ 	if (unlikely(bytes == 0)) {
+ 		chcr_cipher_dma_unmap(&ULD_CTX(c_ctx(tfm))->lldi.pdev->dev,
+ 				      req);
++fallback:       atomic_inc(&adap->chcr_stats.fallback);
+ 		err = chcr_cipher_fallback(ablkctx->sw_cipher,
+ 					   req->base.flags,
+ 					   req->src,
+ 					   req->dst,
+ 					   req->cryptlen,
+-					   reqctx->iv,
++					   subtype ==
++					   CRYPTO_ALG_SUB_TYPE_CTR_RFC3686 ?
++					   reqctx->iv : req->iv,
+ 					   op_type);
+ 		goto error;
+ 	}
+diff --git a/drivers/crypto/chelsio/chcr_crypto.h b/drivers/crypto/chelsio/chcr_crypto.h
+index 542bebae001f..b3fdbdc25acb 100644
+--- a/drivers/crypto/chelsio/chcr_crypto.h
++++ b/drivers/crypto/chelsio/chcr_crypto.h
+@@ -302,6 +302,7 @@ struct chcr_skcipher_req_ctx {
+ 	unsigned int op;
+ 	u16 imm;
+ 	u8 iv[CHCR_MAX_CRYPTO_IV_LEN];
++	u8 init_iv[CHCR_MAX_CRYPTO_IV_LEN];
+ 	u16 txqidx;
+ 	u16 rxqidx;
+ };
 -- 
 2.25.1
 
