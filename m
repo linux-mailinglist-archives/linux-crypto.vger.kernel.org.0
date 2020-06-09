@@ -2,83 +2,91 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3781F30B9
-	for <lists+linux-crypto@lfdr.de>; Tue,  9 Jun 2020 03:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C971F3200
+	for <lists+linux-crypto@lfdr.de>; Tue,  9 Jun 2020 03:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728100AbgFIBCC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 8 Jun 2020 21:02:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728063AbgFHXH6 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:07:58 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1C772085B;
-        Mon,  8 Jun 2020 23:07:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657677;
-        bh=QgvaHlKB1yX190WbTK1ySP3MSiCF87c2YD+6T1vhHIM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cp6Q9xApoEf5JFdqgX3tW7DN6ZdtY06pnyRem5nYEWBZfODztn0gKxEF1uS8cKc9u
-         6X2axHSeK5N/ZKYbvOnTmZn+XH26ncp8C5m+OT3QxPrv9VEaXVrUkBiZ1A7MQydjSe
-         MJEg0j8XNGdLusAHZYnwSd7nQ0raHvyA8ZzEJJBc=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 085/274] Crypto/chcr: Fixes a coccinile check error
-Date:   Mon,  8 Jun 2020 19:02:58 -0400
-Message-Id: <20200608230607.3361041-85-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
-References: <20200608230607.3361041-1-sashal@kernel.org>
+        id S1726953AbgFIB2m (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 8 Jun 2020 21:28:42 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:58160 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726860AbgFIB2l (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 8 Jun 2020 21:28:41 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0591QZuj129594;
+        Tue, 9 Jun 2020 01:28:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=6CG+NZiljIKnCImKVj+Ku6NjV6OAFTrVxrGb4aTwcWQ=;
+ b=WkK1kROffoKTpIURAGgaeYYfQ9OnvmrqKRWFe1EtEvyQN4oxoyhx7TFtD3cBTnyBJCYk
+ jxFppewhB8Rw2QWcj4PgBGBqvnBp2Iuf3G38b5SQ3vaaSg+6GS0wHCEl/jUYpuVOozBF
+ 4kahkIwTmtAvdp6AH9qW0baWbLzlfb+BFKjeuZ/LI24bkpE+c+A2zRUBNpgQYAWMKBIq
+ vdqTkyRGiOCTAUud8vzTml+PzSkHm9flnVaUz0IYya7+E4eA7gkHONeHeukm25/xwQSs
+ gnxGwI/5LyaL7MYvvHKoBQvOw6liqSU4g1SLaQgnAPB3QI2PkGLc450peaIcDl8NFgpc KA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 31g2jr1w2x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 09 Jun 2020 01:28:32 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0591SLMr189024;
+        Tue, 9 Jun 2020 01:28:32 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 31gmwqnxyn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 09 Jun 2020 01:28:31 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0591SUKi000491;
+        Tue, 9 Jun 2020 01:28:31 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 08 Jun 2020 18:28:30 -0700
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [v2 PATCH] crc-t10dif: Fix potential crypto notify dead-lock
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1sgf5rpta.fsf@ca-mkp.ca.oracle.com>
+References: <20200604063324.GA28813@gondor.apana.org.au>
+        <20200605065918.GA813@gondor.apana.org.au>
+Date:   Mon, 08 Jun 2020 21:28:27 -0400
+In-Reply-To: <20200605065918.GA813@gondor.apana.org.au> (Herbert Xu's message
+        of "Fri, 5 Jun 2020 16:59:18 +1000")
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9646 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 spamscore=0 adultscore=0
+ mlxscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006090008
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9646 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ cotscore=-2147483648 priorityscore=1501 spamscore=0 suspectscore=1
+ lowpriorityscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0
+ phishscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006090008
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Ayush Sawal <ayush.sawal@chelsio.com>
 
-[ Upstream commit 055be6865dea6743b090d1c55c8d21a5e01df201 ]
+Herbert,
 
-This fixes an error observed after running coccinile check.
-drivers/crypto/chelsio/chcr_algo.c:1462:5-8: Unneeded variable:
-"err". Return "0" on line 1480
+> The crypto notify call occurs with a read mutex held so you must not
+> do any substantial work directly.  In particular, you cannot call
+> crypto_alloc_* as they may trigger further notifications which may
+> dead-lock in the presence of another writer.
+>
+> This patch fixes this by postponing the work into a work queue and
+> taking the same lock in the module init function.
 
-This line is missed in the commit 567be3a5d227 ("crypto:
-chelsio - Use multiple txq/rxq per tfm to process the requests").
+No particular objections to this approach from me.
 
-Fixes: 567be3a5d227 ("crypto:
-chelsio - Use multiple txq/rxq per tfm to process the requests").
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 
-V1->V2
--Modified subject.
-
-Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/crypto/chelsio/chcr_algo.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/crypto/chelsio/chcr_algo.c b/drivers/crypto/chelsio/chcr_algo.c
-index c29b80dd30d8..5a2d9ee9348d 100644
---- a/drivers/crypto/chelsio/chcr_algo.c
-+++ b/drivers/crypto/chelsio/chcr_algo.c
-@@ -1443,6 +1443,7 @@ static int chcr_device_init(struct chcr_context *ctx)
- 	if (!ctx->dev) {
- 		u_ctx = assign_chcr_device();
- 		if (!u_ctx) {
-+			err = -ENXIO;
- 			pr_err("chcr device assignment fails\n");
- 			goto out;
- 		}
 -- 
-2.25.1
-
+Martin K. Petersen	Oracle Linux Engineering
