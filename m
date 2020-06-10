@@ -2,188 +2,96 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8CF1F58D9
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2020 18:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 083961F58D2
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2020 18:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbgFJQPT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 10 Jun 2020 12:15:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728157AbgFJQPP (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 10 Jun 2020 12:15:15 -0400
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85B1D2067B;
-        Wed, 10 Jun 2020 16:15:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591805714;
-        bh=JTVkSgWkJihPLtCWKweEsxhbQ0qYru0uoNX3rx2Wcfg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SKWjbGw9Xo6m4O5FhhQcLX76zvNI0xt6kW1FIWGrKtCFvES9MMkTDcOuYoKu0syW9
-         H2LIIarUyaAPG4/ifEZmxXKKQlz9ivD9yVcWVVwqVNyvreUli63Szo2oCfBdY03g82
-         HUT5Ho5Hc7+p5pQ+Oy0BJI0PREe2i+W/G5riHoYU=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     linux-crypto@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH net v4 3/3] esp, ah: modernize the crypto algorithm selections
-Date:   Wed, 10 Jun 2020 09:14:37 -0700
-Message-Id: <20200610161437.4290-4-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200610161437.4290-1-ebiggers@kernel.org>
-References: <20200610161437.4290-1-ebiggers@kernel.org>
+        id S1727970AbgFJQOp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 10 Jun 2020 12:14:45 -0400
+Received: from sonic303-2.consmr.mail.bf2.yahoo.com ([74.6.131.41]:36447 "EHLO
+        sonic303-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727948AbgFJQOo (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 10 Jun 2020 12:14:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591805682; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=TNWjcv7C7KEz0MkGAWu6QC+YdnrTRykP4RDIlidGdONRf4iDAqpbUp1tBP5YyZ/YwQS+nrKyV/Z86AfdhuOkoCyKUD1WC4a+NRBo9oi43b7zoYZgUoGVs3CAlg0K8+/BNAMnry7u4a3QaccGLU3s6nq/uOQ9U7DJB3E5tfVjkI1Y/nf8CYpfdY81MlkHDIIXMPNnkSrdcWjj31DXPvw2Q0Lxf9q4WOpQMAp1ewlzNt30xU7Kk/Ljf7orTYgW1wNZwG7arJ7cgUU/FXYgo+hz+z3un7iKr8HZHuwswjnqpYTbaG7LHkGiN/qd9l+NoRnC7APFEpwEOq2Q7ZwCQbur3w==
+X-YMail-OSG: tfIaHOgVM1n5muWHqH.9_jYistyMCWrxnxlnQuGL42SSe0FMETfe3p14bVlqbkU
+ uxS5T66zUilzhcUayx23LPfPtY..Sd7q6HLYy0Mjrvyuu9zBMs7BhYn0TWbbzHl3bvmf2X1cXRfi
+ zmlrlY49_4QdlROvYb4kbLrHvjQppNkqzHK9m1xSGtdB8zluStHuY2hOCS2rxjjKGHZhszJ5i3Sw
+ me9uycqZVl27yJa8hCWnE1gmJRK7b_gscSvXsvLq_YNwhJoCue21KOBG9Dm3T1Rp5nqBFunq4P23
+ fpiRRblwusSbekme1q50Uy2jqOU.pWjtf8NIjgmhIr198kUnjmX0pw_R9p0wpTSBRgXrCDdlOesK
+ FVPDVIT0ZhQv_ic..3RqfQGmOmZptBF3u.zNoE81O8f7u5oMVM0akLNbCPWUr3j9dPHerrvaQIuU
+ QwSiHyubk4Zo7WgwkWZ.pL3fjHxZikgluK2M4RK9Uxg.JXH0wemI_TboJwSRCzcbn5xCEuBxiVwU
+ zHUKaa6OI8pWN6Q76mbpX8kNzmEKlvbgcfForQtZ5b7Rjo_8ATnhUebld2XW2td_0OVXHyCXLL7t
+ a8IyDcvBxvqhAnfS.mBAGVtB8PVqfTxIlLffm_L6SaChRXv42Jn4t0tC9EAAghCqBrZ9tkzpgsF6
+ tDUmbPCI1zw8ItntiSgmxBoAGQzVKU_7Vm1dss_P1nLpQtp0dsP.OXCtvorwWVJ0CffbfvdZpob7
+ 2u_a4LtRGMYCJVA0BL0kf9VLG537aJI6OfsSfdvHxuyGCCJpUftV1bjE.frhT.FtZg7Zh2L8s.QK
+ 8pe0699Kc3jgPMvUlLlQL20sxP3As9bXIqILrTauk6ncu12odLi3sADa1u32sHVHgShI2lVh8BS8
+ LvTDubHUjwTYXvR2Vp1dXMeFpR1DnQdexGL8jAAzjW6bahLs7ehAcuBO2646oqUIM2Z6pk0opGb4
+ 3OjUlZ2Ze4iOjNoTX6_1lpQKHIYiEedIN.HsKNeVZLSWzI99eBObWcI111pwEmT3jrzs15Jj.Vji
+ TMDEquh93mc70jhjw5P6wWTreBEdhTi59lMjmkDaLnsd2O8hDW6HKLUAqRHZ4tXULwoNAjMQHT95
+ ux1wdaElIE_lkrCJfEZm8kwTMSMDHDaanApQ3jjRrP7koo6XmgtwAgH.uRjwbY0jsJ7sNAauJAZn
+ vqlT_HNMXlGsAiG_ArWA4yxywNMJtbl6jJpYKv38LL_yA7gLYMAMCG7scZdQql62Wb4UJy3pHr9X
+ 9PGPQa.ICiJD1eTR1fuVg_o0GnK1RVsqDx_zkSNWFopQeROJHMMJwEm9vMe8bc_JZ8t60RNSojw-
+ -
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.bf2.yahoo.com with HTTP; Wed, 10 Jun 2020 16:14:42 +0000
+Date:   Wed, 10 Jun 2020 16:14:38 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <brunelminaa@gmail.com>
+Reply-To: mrsminaabrunel63@gmail.com
+Message-ID: <1845544144.1573631.1591805678398@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1845544144.1573631.1591805678398.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16072 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
 
-The crypto algorithms selected by the ESP and AH kconfig options are
-out-of-date with the guidance of RFC 8221, which lists the legacy
-algorithms MD5 and DES as "MUST NOT" be implemented, and some more
-modern algorithms like AES-GCM and HMAC-SHA256 as "MUST" be implemented.
-But the options select the legacy algorithms, not the modern ones.
 
-Therefore, modify these options to select the MUST algorithms --
-and *only* the MUST algorithms.
+My Dear in the lord
 
-Also improve the help text.
 
-Note that other algorithms may still be explicitly enabled in the
-kconfig, and the choice of which to actually use is still controlled by
-userspace.  This change only modifies the list of algorithms for which
-kernel support is guaranteed to be present.
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
+ gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
+ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
+on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
+u the capital city of of Burkina in West Africa. The money was from the sal=
+e of his company and death benefits payment and entitlements of my deceased=
+ husband by his company.
 
-Suggested-by: Herbert Xu <herbert@gondor.apana.org.au>
-Suggested-by: Steffen Klassert <steffen.klassert@secunet.com>
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Corentin Labbe <clabbe@baylibre.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- net/ipv4/Kconfig | 18 ++++++++++++++++--
- net/ipv6/Kconfig | 18 ++++++++++++++++--
- net/xfrm/Kconfig | 15 +++++++++------
- 3 files changed, 41 insertions(+), 10 deletions(-)
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
 
-diff --git a/net/ipv4/Kconfig b/net/ipv4/Kconfig
-index 39a7a21744dc03..dc9dfaef77e5a4 100644
---- a/net/ipv4/Kconfig
-+++ b/net/ipv4/Kconfig
-@@ -342,7 +342,14 @@ config INET_AH
- 	tristate "IP: AH transformation"
- 	select XFRM_AH
- 	---help---
--	  Support for IPsec AH.
-+	  Support for IPsec AH (Authentication Header).
-+
-+	  AH can be used with various authentication algorithms.  Besides
-+	  enabling AH support itself, this option enables the generic
-+	  implementations of the algorithms that RFC 8221 lists as MUST be
-+	  implemented.  If you need any other algorithms, you'll need to enable
-+	  them in the crypto API.  You should also enable accelerated
-+	  implementations of any needed algorithms when available.
- 
- 	  If unsure, say Y.
- 
-@@ -350,7 +357,14 @@ config INET_ESP
- 	tristate "IP: ESP transformation"
- 	select XFRM_ESP
- 	---help---
--	  Support for IPsec ESP.
-+	  Support for IPsec ESP (Encapsulating Security Payload).
-+
-+	  ESP can be used with various encryption and authentication algorithms.
-+	  Besides enabling ESP support itself, this option enables the generic
-+	  implementations of the algorithms that RFC 8221 lists as MUST be
-+	  implemented.  If you need any other algorithms, you'll need to enable
-+	  them in the crypto API.  You should also enable accelerated
-+	  implementations of any needed algorithms when available.
- 
- 	  If unsure, say Y.
- 
-diff --git a/net/ipv6/Kconfig b/net/ipv6/Kconfig
-index 70313f16319dd2..414a68b16869ec 100644
---- a/net/ipv6/Kconfig
-+++ b/net/ipv6/Kconfig
-@@ -51,7 +51,14 @@ config INET6_AH
- 	tristate "IPv6: AH transformation"
- 	select XFRM_AH
- 	---help---
--	  Support for IPsec AH.
-+	  Support for IPsec AH (Authentication Header).
-+
-+	  AH can be used with various authentication algorithms.  Besides
-+	  enabling AH support itself, this option enables the generic
-+	  implementations of the algorithms that RFC 8221 lists as MUST be
-+	  implemented.  If you need any other algorithms, you'll need to enable
-+	  them in the crypto API.  You should also enable accelerated
-+	  implementations of any needed algorithms when available.
- 
- 	  If unsure, say Y.
- 
-@@ -59,7 +66,14 @@ config INET6_ESP
- 	tristate "IPv6: ESP transformation"
- 	select XFRM_ESP
- 	---help---
--	  Support for IPsec ESP.
-+	  Support for IPsec ESP (Encapsulating Security Payload).
-+
-+	  ESP can be used with various encryption and authentication algorithms.
-+	  Besides enabling ESP support itself, this option enables the generic
-+	  implementations of the algorithms that RFC 8221 lists as MUST be
-+	  implemented.  If you need any other algorithms, you'll need to enable
-+	  them in the crypto API.  You should also enable accelerated
-+	  implementations of any needed algorithms when available.
- 
- 	  If unsure, say Y.
- 
-diff --git a/net/xfrm/Kconfig b/net/xfrm/Kconfig
-index b2ff8df2c836ef..e77ba529229cf5 100644
---- a/net/xfrm/Kconfig
-+++ b/net/xfrm/Kconfig
-@@ -67,26 +67,29 @@ config XFRM_STATISTICS
- 
- 	  If unsure, say N.
- 
-+# This option selects XFRM_ALGO along with the AH authentication algorithms that
-+# RFC 8221 lists as MUST be implemented.
- config XFRM_AH
- 	tristate
- 	select XFRM_ALGO
- 	select CRYPTO
- 	select CRYPTO_HMAC
--	select CRYPTO_MD5
--	select CRYPTO_SHA1
-+	select CRYPTO_SHA256
- 
-+# This option selects XFRM_ALGO along with the ESP encryption and authentication
-+# algorithms that RFC 8221 lists as MUST be implemented.
- config XFRM_ESP
- 	tristate
- 	select XFRM_ALGO
- 	select CRYPTO
-+	select CRYPTO_AES
- 	select CRYPTO_AUTHENC
--	select CRYPTO_HMAC
--	select CRYPTO_MD5
- 	select CRYPTO_CBC
--	select CRYPTO_SHA1
--	select CRYPTO_DES
- 	select CRYPTO_ECHAINIV
-+	select CRYPTO_GCM
-+	select CRYPTO_HMAC
- 	select CRYPTO_SEQIV
-+	select CRYPTO_SHA256
- 
- config XFRM_IPCOMP
- 	tristate
--- 
-2.26.2
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
 
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
