@@ -2,73 +2,125 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315121F668C
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2020 13:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F193F1F6732
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2020 13:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727904AbgFKLXV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 11 Jun 2020 07:23:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728032AbgFKLXT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 11 Jun 2020 07:23:19 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E43B2078D;
-        Thu, 11 Jun 2020 11:23:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591874598;
-        bh=yiSKRpPE0yOcjH3qcZl0yl+bP6wtHGpz5GoZ0ATi6Q0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YDnHAsjrr+xzEZPsAyVakm0PBtlUURtCNF1YKUQn/DFT6p2oaVucuMJl8bG2tt5p9
-         rmNhLHDKHpjOHsAVhHpqhB8qhh4VaAfrHJb3UIqdnr8HCWbkE7NmI8GTdqyfR1fhKy
-         SLYBbfW0xX4SCz2Vy+8YLZwQxmTz8JQOmJiSIAv0=
-Date:   Thu, 11 Jun 2020 13:23:12 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Su Kang Yin <cantona@cantona.net>, linux-crypto@vger.kernel.org,
+        id S1727869AbgFKLvl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 11 Jun 2020 07:51:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727031AbgFKLvk (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 11 Jun 2020 07:51:40 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C61C08C5C2
+        for <linux-crypto@vger.kernel.org>; Thu, 11 Jun 2020 04:51:40 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d66so2574263pfd.6
+        for <linux-crypto@vger.kernel.org>; Thu, 11 Jun 2020 04:51:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cantona-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=d9Q/bNkudx/YR8T/B5Qf2u+kTeExsliJmsxeBA26Blw=;
+        b=JKGaHrcf2jc9qy+g5pQeMoevubkdV/zG02pyqPwKWK4rz/OUqyT2TOpF6FwZfNIpCe
+         pHOm5C4qToDAzCmIyC8AhTRiJ4j63/UNOQ0KHMj1ZKZvOwoU2kyhiojEXcBrx/V9tWqV
+         9+3SFthgS3XB98Ut8JWVVA9g9all0AXqyZd7Ny5n4cTyFEe/ONXF9RVCHLMgJCXAtmla
+         HHVVbOpeWibgfQXq/ggZBDGO5vDss7N7IFok7Nt8c9VRCnpBRJ3BVoR2c6deicaoL5gq
+         KbjF5ImxoCd8jf+P911IhCPmXNKFxcEb71las8aY/UPEfsQmm8112xoYw+k9ov9CqZ98
+         KL9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=d9Q/bNkudx/YR8T/B5Qf2u+kTeExsliJmsxeBA26Blw=;
+        b=KmwIjPu2GkqebW1YV7TeaTW/Nmz8+tW+egaGighd9eG2NuvZro7C8tt0LBOG9TRUJK
+         Vlwi4MfVMZrz3Q0PqF866qg9akVH1XPSvYi6sys9nhYa96zppH2jAium+FiV9/KHx2Ne
+         pCD51QoxzKlqB4u2Pz+NoJ5vvUrGiV3xV0Lfgrtk3iZYt6F0bYyfAYZP/LPQiZ5nbMby
+         NNgNdRz3GEFDKTPF89m6mH8uGcxfrzbJ9p9ymWhF6zLbk6B/ZceG8C/4Rqnim7GVKMUp
+         ofEEC5FNu2IbYuVrM3qSBOfUr91oP+9r6t3vKW24V3IqkvVGFagx2CEzpFh6K+TfZruq
+         V3zA==
+X-Gm-Message-State: AOAM533zRp//fKahdbMcVKcDV/ylzqtCJ207jOtdnwzP8LUGZgcQdpAO
+        7Y3JiHzfqEl8zSNMfGyEeCGGOQ==
+X-Google-Smtp-Source: ABdhPJz00MVpj1U5fsaTtfPOKDam7osjU7/Rl6iXaxC3mlR38BMRaavOXsHXIuqaNDWewtELx2LZCQ==
+X-Received: by 2002:a62:6385:: with SMTP id x127mr6790482pfb.49.1591876299934;
+        Thu, 11 Jun 2020 04:51:39 -0700 (PDT)
+Received: from localhost.localdomain (059148043022.ctinets.com. [59.148.43.22])
+        by smtp.googlemail.com with ESMTPSA id t186sm1511342pfc.39.2020.06.11.04.51.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jun 2020 04:51:39 -0700 (PDT)
+From:   Su Kang Yin <cantona@cantona.net>
+To:     gregkh@linuxfoundation.org, linux-crypto@vger.kernel.org,
+        christophe.leroy@c-s.fr, stable@vger.kernel.org
+Cc:     Su Kang Yin <cantona@cantona.net>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: talitos - fix ECB and CBC algs ivsize
-Message-ID: <20200611112312.GB342390@kroah.com>
+Subject: [PATCH V2] crypto: talitos - fix ECB and CBC algs ivsize
+Date:   Thu, 11 Jun 2020 19:50:47 +0800
+Message-Id: <20200611115048.21677-1-cantona@cantona.net>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <cantona@cantona.net>
 References: <cantona@cantona.net>
- <20200611100745.6513-1-cantona@cantona.net>
- <718354b4-d284-8e47-4085-f45101f9ca36@csgroup.eu>
- <20200611110350.GA3954279@kroah.com>
- <24a06073-1765-985e-029b-80a78ad02b89@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <24a06073-1765-985e-029b-80a78ad02b89@csgroup.eu>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 01:09:38PM +0200, Christophe Leroy wrote:
-> 
-> 
-> Le 11/06/2020 à 13:03, Greg KH a écrit :
-> > On Thu, Jun 11, 2020 at 12:50:24PM +0200, Christophe Leroy wrote:
-> > > Hi,
-> > > 
-> > > Le 11/06/2020 à 12:07, Su Kang Yin a écrit :
-> > > > Patch for 4.9 upstream:
-> > > > 
-> > > > commit e1de42fdfc6a ("crypto: talitos - fix ECB algs ivsize")
-> > > > wrongly modified CBC algs ivsize instead of ECB aggs ivsize.
-> > > 
-> > > To make it clear and avoid this problem to happen again, please generate
-> > > your patch with option -U8
-> > 
-> > No need, this patch should be fine as-is.
-> > 
-> 
-> Still, this patch includes more than the original patch as far as I can see
-> (scroll down and see other comments in that answer)
+commit e1de42fdfc6a ("crypto: talitos - fix ECB algs ivsize")
+wrongly modified CBC algs ivsize instead of ECB aggs ivsize.
 
-Ah, good catch, I'll go drop this now, thanks!
+This restore the CBC algs original ivsize of removes ECB's ones.
 
-greg k-h
+Fixes: e1de42fdfc6a ("crypto: talitos - fix ECB algs ivsize")
+Signed-off-by: Su Kang Yin <cantona@cantona.net>
+---
+Patch for 4.9 upstream.
+---
+ drivers/crypto/talitos.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
+index 8b383d3d21c2..059c2d4ad18f 100644
+--- a/drivers/crypto/talitos.c
++++ b/drivers/crypto/talitos.c
+@@ -2631,17 +2631,16 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.cra_name = "ecb(aes)",
+ 			.cra_driver_name = "ecb-aes-talitos",
+ 			.cra_blocksize = AES_BLOCK_SIZE,
+ 			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+ 				     CRYPTO_ALG_ASYNC,
+ 			.cra_ablkcipher = {
+ 				.min_keysize = AES_MIN_KEY_SIZE,
+ 				.max_keysize = AES_MAX_KEY_SIZE,
+-				.ivsize = AES_BLOCK_SIZE,
+ 			}
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_COMMON_NONSNOOP_NO_AFEU |
+ 				     DESC_HDR_SEL0_AESU,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_ABLKCIPHER,
+ 		.alg.crypto = {
+ 			.cra_name = "cbc(aes)",
+@@ -2665,16 +2664,17 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.cra_name = "ctr(aes)",
+ 			.cra_driver_name = "ctr-aes-talitos",
+ 			.cra_blocksize = 1,
+ 			.cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+ 				     CRYPTO_ALG_ASYNC,
+ 			.cra_ablkcipher = {
+ 				.min_keysize = AES_MIN_KEY_SIZE,
+ 				.max_keysize = AES_MAX_KEY_SIZE,
++				.ivsize = AES_BLOCK_SIZE,
+ 				.setkey = ablkcipher_aes_setkey,
+ 			}
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_AESU_CTR_NONSNOOP |
+ 				     DESC_HDR_SEL0_AESU |
+ 				     DESC_HDR_MODE0_AESU_CTR,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_ABLKCIPHER,
+-- 
+2.21.0
+
