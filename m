@@ -2,46 +2,55 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8DA1F7275
-	for <lists+linux-crypto@lfdr.de>; Fri, 12 Jun 2020 05:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651A31F73A7
+	for <lists+linux-crypto@lfdr.de>; Fri, 12 Jun 2020 08:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgFLD2s (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 11 Jun 2020 23:28:48 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:38338 "EHLO fornost.hmeau.com"
+        id S1726300AbgFLGA1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 12 Jun 2020 02:00:27 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:38746 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbgFLD2s (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 11 Jun 2020 23:28:48 -0400
+        id S1726290AbgFLGA1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 12 Jun 2020 02:00:27 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jjaN0-00073c-Gz; Fri, 12 Jun 2020 13:28:43 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 12 Jun 2020 13:28:42 +1000
-Date:   Fri, 12 Jun 2020 13:28:42 +1000
+        id 1jjcjn-0000GF-Jw; Fri, 12 Jun 2020 16:00:24 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 12 Jun 2020 16:00:23 +1000
+Date:   Fri, 12 Jun 2020 16:00:23 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Cc:     linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: qat - fix parameter check in aead encryption
-Message-ID: <20200612032842.GA29394@gondor.apana.org.au>
-References: <20200527221852.4942-1-giovanni.cabiddu@intel.com>
+To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>,
+        Radu Solea <radu.solea@nxp.com>,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
+Subject: crypto: caam - Fix argument type in handle_imx6_err005766
+Message-ID: <20200612060023.GA943@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200527221852.4942-1-giovanni.cabiddu@intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, May 27, 2020 at 11:18:52PM +0100, Giovanni Cabiddu wrote:
-> Return -EINVAL if the input digest size and/or cipher
-> length is zero or the cipher length is not multiple of a block.
-> These additional parameter checks prevent an undefined device behaviour.
+The function handle_imx6_err005766 needs to take an __iomem argument
+as otherwise sparse will generate two warnings.
 
-But a zero-length encryption is valid for AEAD.  If this triggers
-an issue in the hardware, then you must fallback to software rather
-than rejecting it.
+Fixes: 33d69455e402 ("crypto: caam - limit AXI pipeline to a...")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-Cheers,
+diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+index f3d20b7645e0..8ecfa97c3188 100644
+--- a/drivers/crypto/caam/ctrl.c
++++ b/drivers/crypto/caam/ctrl.c
+@@ -469,7 +469,7 @@ static int caam_get_era(struct caam_ctrl __iomem *ctrl)
+  * pipeline to a depth of 1 (from it's default of 4) to preclude this situation
+  * from occurring.
+  */
+-static void handle_imx6_err005766(u32 *mcr)
++static void handle_imx6_err005766(u32 __iomem *mcr)
+ {
+ 	if (of_machine_is_compatible("fsl,imx6q") ||
+ 	    of_machine_is_compatible("fsl,imx6dl") ||
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
