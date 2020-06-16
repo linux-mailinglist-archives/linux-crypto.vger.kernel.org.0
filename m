@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4A21FBB65
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Jun 2020 18:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92491FB93B
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Jun 2020 18:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730055AbgFPPgs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 16 Jun 2020 11:36:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47750 "EHLO mail.kernel.org"
+        id S1732210AbgFPQCS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 16 Jun 2020 12:02:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730027AbgFPPgr (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:36:47 -0400
+        id S1732675AbgFPPvc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:51:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9CA7220E65;
-        Tue, 16 Jun 2020 15:36:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A4BF208D5;
+        Tue, 16 Jun 2020 15:51:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321806;
-        bh=nlJdig9ZgoQ+1epDga6Pnedfd5LFOzlP0peHjt3qs3c=;
+        s=default; t=1592322691;
+        bh=L76k6lpG4J3TwlEea5e1sll8MrwfcXXQlPvtKlzCZ7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SBIdnB2BJOTRKy547WtHybe+ZWYDojnbycnoLtHdKWMybOgf2ikAyaMNu8Ivpg7hu
-         iCQyyyPtqizRWciJDwJavGjiBIV3eUQcN+bDjnhku09vgzDWJMV8n5o0n9LU437XMf
-         /wPax7EFoNCweItY7Zr22fYMzLZYlRU5ECEPGJqc=
+        b=frz5NOtZbLs2nbRRwKooRzT3x9OFLBIc7bTwNhvYup/5OAb0e4V5kgC3liRktEYAP
+         UT+MKm2f3v7v2R8yQJs1WJKAMr1IgmpUn+OPwzeXmbCWqwQbDPtjfAtw4RYBZGM1E/
+         1MeVtnoabSA56ChuOXYnofmwc9G9zb/tanTaySSc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Steffen Klassert <steffen.klassert@secunet.com>,
         linux-crypto@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 023/134] padata: add separate cpuhp node for CPUHP_PADATA_DEAD
-Date:   Tue, 16 Jun 2020 17:33:27 +0200
-Message-Id: <20200616153101.847913241@linuxfoundation.org>
+Subject: [PATCH 5.6 036/161] padata: add separate cpuhp node for CPUHP_PADATA_DEAD
+Date:   Tue, 16 Jun 2020 17:33:46 +0200
+Message-Id: <20200616153108.101239616@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -89,20 +89,20 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 12 insertions(+), 8 deletions(-)
 
 diff --git a/include/linux/padata.h b/include/linux/padata.h
-index cccab7a59787..fa35dcfbd13f 100644
+index a0d8b41850b2..693cae9bfe66 100644
 --- a/include/linux/padata.h
 +++ b/include/linux/padata.h
-@@ -145,7 +145,8 @@ struct padata_shell {
+@@ -139,7 +139,8 @@ struct padata_shell {
  /**
   * struct padata_instance - The overall control structure.
   *
-- * @cpu_notifier: cpu hotplug notifier.
+- * @node: Used by CPU hotplug.
 + * @cpu_online_node: Linkage for CPU online callback.
 + * @cpu_dead_node: Linkage for CPU offline callback.
   * @parallel_wq: The workqueue used for parallel work.
   * @serial_wq: The workqueue used for serial work.
   * @pslist: List of padata_shell objects attached to this instance.
-@@ -160,7 +161,8 @@ struct padata_shell {
+@@ -150,7 +151,8 @@ struct padata_shell {
   * @flags: padata flags.
   */
  struct padata_instance {
@@ -113,10 +113,10 @@ index cccab7a59787..fa35dcfbd13f 100644
  	struct workqueue_struct		*serial_wq;
  	struct list_head		pslist;
 diff --git a/kernel/padata.c b/kernel/padata.c
-index c4b774331e46..92a4867e8adc 100644
+index 62082597d4a2..fee14ae90d96 100644
 --- a/kernel/padata.c
 +++ b/kernel/padata.c
-@@ -782,7 +782,7 @@ static int padata_cpu_online(unsigned int cpu, struct hlist_node *node)
+@@ -703,7 +703,7 @@ static int padata_cpu_online(unsigned int cpu, struct hlist_node *node)
  	struct padata_instance *pinst;
  	int ret;
  
@@ -125,7 +125,7 @@ index c4b774331e46..92a4867e8adc 100644
  	if (!pinst_has_cpu(pinst, cpu))
  		return 0;
  
-@@ -797,7 +797,7 @@ static int padata_cpu_dead(unsigned int cpu, struct hlist_node *node)
+@@ -718,7 +718,7 @@ static int padata_cpu_dead(unsigned int cpu, struct hlist_node *node)
  	struct padata_instance *pinst;
  	int ret;
  
@@ -134,7 +134,7 @@ index c4b774331e46..92a4867e8adc 100644
  	if (!pinst_has_cpu(pinst, cpu))
  		return 0;
  
-@@ -813,8 +813,9 @@ static enum cpuhp_state hp_online;
+@@ -734,8 +734,9 @@ static enum cpuhp_state hp_online;
  static void __padata_free(struct padata_instance *pinst)
  {
  #ifdef CONFIG_HOTPLUG_CPU
@@ -146,7 +146,7 @@ index c4b774331e46..92a4867e8adc 100644
  #endif
  
  	WARN_ON(!list_empty(&pinst->pslist));
-@@ -1020,9 +1021,10 @@ static struct padata_instance *padata_alloc(const char *name,
+@@ -939,9 +940,10 @@ static struct padata_instance *padata_alloc(const char *name,
  	mutex_init(&pinst->lock);
  
  #ifdef CONFIG_HOTPLUG_CPU
