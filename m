@@ -2,115 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B531FB9D7
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Jun 2020 18:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BE51FBC1E
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Jun 2020 18:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731965AbgFPPrG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 16 Jun 2020 11:47:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44750 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732260AbgFPPrD (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:47:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592322422;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=djkgmBs6vxKrnF2svfHTCwO6iJZv0MD8YpKSjFl2MGs=;
-        b=anxZyJvaFpuLChSMwUR/a7qLSGGcT0Nzy4aiSkqCpI/xVk6zVIcE9J7iV1341dFYQpdAwe
-        QNobub7hXN4Ms1OW18fOfvph9zqDj6d3Es9xcqmAm7V7WWOGLDbJFRK2rhytEAPFfTLrAb
-        z8prG6hZN2mOJEmSXgQ9/SksTn2gcSw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218-nWeeH7oNN9eY6skcHYs3nQ-1; Tue, 16 Jun 2020 11:46:56 -0400
-X-MC-Unique: nWeeH7oNN9eY6skcHYs3nQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1730135AbgFPQvo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 16 Jun 2020 12:51:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730107AbgFPQvn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 16 Jun 2020 12:51:43 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B3678DEEE2;
-        Tue, 16 Jun 2020 15:46:51 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-114-66.rdu2.redhat.com [10.10.114.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3EC3B60C05;
-        Tue, 16 Jun 2020 15:46:41 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <56c2304c-73cc-8f48-d8d0-5dd6c39f33f3@redhat.com>
-References: <56c2304c-73cc-8f48-d8d0-5dd6c39f33f3@redhat.com> <20200616015718.7812-1-longman@redhat.com> <20200616015718.7812-2-longman@redhat.com> <20200616033035.GB902@sol.localdomain>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, ebiggers@kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joe Perches <joe@perches.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Sterba <dsterba@suse.cz>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
-        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] mm/slab: Use memzero_explicit() in kzfree()
+        by mail.kernel.org (Postfix) with ESMTPSA id 5664E208B8;
+        Tue, 16 Jun 2020 16:51:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592326303;
+        bh=bcTWOAf7zPCXSBV37uZcFWSbRMGaPbOWaRO9c4SVFRc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BNa+go6Lc/R3sWbALlAYLKI3cUCz1oh6tfMTxaepZAQ0sWFyCQJiR+xqDIBgmz/bu
+         nBtkywDQBIqt7Ou0mazk75eDjq0TfaBkwIoA9UR9r4dwql8CmZq/ghISAmUkgwPGdO
+         m6AXu2KdTT/4Jk/F75AfzbSyTBcAA6swAjdFp65w=
+Date:   Tue, 16 Jun 2020 09:51:41 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: Re: [PATCH net v5 0/3] esp, ah: improve crypto algorithm selections
+Message-ID: <20200616165141.GA40729@gmail.com>
+References: <20200615221318.149558-1-ebiggers@kernel.org>
+ <20200616060257.GT19286@gauss3.secunet.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <879078.1592322400.1@warthog.procyon.org.uk>
-Date:   Tue, 16 Jun 2020 16:46:40 +0100
-Message-ID: <879079.1592322400@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200616060257.GT19286@gauss3.secunet.de>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Waiman Long <longman@redhat.com> wrote:
+On Tue, Jun 16, 2020 at 08:02:58AM +0200, Steffen Klassert wrote:
+> On Mon, Jun 15, 2020 at 03:13:15PM -0700, Eric Biggers wrote:
+> > This series consolidates and modernizes the lists of crypto algorithms
+> > that are selected by the IPsec kconfig options, and adds CRYPTO_SEQIV
+> > since it no longer gets selected automatically by other things.
+> > 
+> > See previous discussion at
+> > https://lkml.kernel.org/netdev/20200604192322.22142-1-ebiggers@kernel.org/T/#u
+> > 
+> > Changed v4 => v5:
+> >   - Rebased onto latest net/master to resolve conflict with
+> >     "treewide: replace '---help---' in Kconfig files with 'help'"
+> 
+> The target trees for IPsec patches is the ipsec and ipsec-next tree.
+> I have the v4 patchset already in the testing branch of the ipsec tree
+> and plan to merge it to master. This conflict has to be resolved
+> when the ipsec tree is merged into the net tree.
+> 
 
-> The kzfree() function is normally used to clear some sensitive
-> information, like encryption keys, in the buffer before freeing it back
-> to the pool. Memset()
+Okay, great!  I didn't know about the ipsec tree or that you had already applied
+the patches.
 
-"memset()" is all lowercase.
-
-> is currently used for buffer clearing. However unlikely, there is still a
-> non-zero probability
-
-I'd say "a possibility".
-
-> that
-
-and I'd move "in [the] future" here.
-
-> the compiler may choose to optimize away the
-> memory clearing especially if LTO is being used in the future. To make sure
-> that this optimization will never happen
-
-"in these cases"
-
-> , memzero_explicit(), which is introduced in v3.18, is now used in
-
-"instead of"?
-
-> kzfree() to future-proof it.
-
-Davod
-
+- Eric
