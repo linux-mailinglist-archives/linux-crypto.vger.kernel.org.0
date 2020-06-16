@@ -2,151 +2,213 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694601FA4C9
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Jun 2020 01:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E24F21FA607
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Jun 2020 03:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726313AbgFOXwU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Jun 2020 19:52:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725960AbgFOXwU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Jun 2020 19:52:20 -0400
-Received: from localhost (mobile-166-170-222-206.mycingular.net [166.170.222.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726599AbgFPB6Z (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Jun 2020 21:58:25 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:32234 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726044AbgFPB6C (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 15 Jun 2020 21:58:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592272679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=MZUCLAMZdmO5EM+jCfqRymLIPQ+NHghkczuzn6RqHtY=;
+        b=IsnhpT3GAFxi0CPqBqlOuYfu9Px29KnkfJxyu5VNPZwmFu9a0Pz9kbVaTc1Opqa2QRXHF3
+        CefxBghphbhq4I5zadaqeef1/+HYq5GY0RBbJgNWZL3EylqVYCZv2rKUZJD1oa1mjiKNCV
+        SCzIPtnFyv2i6Twz5IR7u1ilCSxcsgo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-kG50-M7xPwedRKQDZzJkIQ-1; Mon, 15 Jun 2020 21:57:57 -0400
+X-MC-Unique: kG50-M7xPwedRKQDZzJkIQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6A7B2068E;
-        Mon, 15 Jun 2020 23:52:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592265139;
-        bh=LAqX2guWt3SaWaTtIVptXEHktenJg7iaeDhOq75EGOc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=g2QUd2ngXMfEz2LsTipBItohXSvpmTBaOTiRrZKoSwAIbpdN01pkaTau0u7EATsXD
-         1j1XCGLhCbt/rateSDFiTc7BcQViqtV3HMRlLm5J3nOOqe69N1HGAm870H7wKJjki0
-         S+aXFOYX7SF+nnBPJxZUEPmc9FAaD8Y6tEO8/hiU=
-Date:   Mon, 15 Jun 2020 18:52:17 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Zhangfei Gao <zhangfei.gao@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        jean-philippe <jean-philippe@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Thanu Rangarajan <Thanu.Rangarajan@arm.com>,
-        Souvik Chakravarty <Souvik.Chakravarty@arm.com>
-Subject: Re: [PATCH 0/2] Introduce PCI_FIXUP_IOMMU
-Message-ID: <20200615235217.GA1921846@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8f9f6a77-4a65-afeb-0af9-e4868b52d7ce@linaro.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 182E77BB2;
+        Tue, 16 Jun 2020 01:57:52 +0000 (UTC)
+Received: from llong.com (ovpn-117-41.rdu2.redhat.com [10.10.117.41])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 96E15768AE;
+        Tue, 16 Jun 2020 01:57:43 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Sterba <dsterba@suse.cz>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH v4 0/3] mm, treewide: Rename kzfree() to kfree_sensitive()
+Date:   Mon, 15 Jun 2020 21:57:15 -0400
+Message-Id: <20200616015718.7812-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Jun 13, 2020 at 10:30:56PM +0800, Zhangfei Gao wrote:
-> On 2020/6/11 下午9:44, Bjorn Helgaas wrote:
-> > +++ b/drivers/iommu/iommu.c
-> > > > > > > > > > @@ -2418,6 +2418,10 @@ int iommu_fwspec_init(struct device *dev, struct
-> > > > > > > > > > fwnode_handle *iommu_fwnode,
-> > > > > > > > > >             fwspec->iommu_fwnode = iommu_fwnode;
-> > > > > > > > > >             fwspec->ops = ops;
-> > > > > > > > > >             dev_iommu_fwspec_set(dev, fwspec);
-> > > > > > > > > > +
-> > > > > > > > > > +       if (dev_is_pci(dev))
-> > > > > > > > > > +               pci_fixup_device(pci_fixup_final, to_pci_dev(dev));
-> > > > > > > > > > +
-> > > > > > > > > > 
-> > > > > > > > > > Then pci_fixup_final will be called twice, the first in pci_bus_add_device.
-> > > > > > > > > > Here in iommu_fwspec_init is the second time, specifically for iommu_fwspec.
-> > > > > > > > > > Will send this when 5.8-rc1 is open.
-> > > > > > > > > Wait, this whole fixup approach seems wrong to me.  No matter how you
-> > > > > > > > > do the fixup, it's still a fixup, which means it requires ongoing
-> > > > > > > > > maintenance.  Surely we don't want to have to add the Vendor/Device ID
-> > > > > > > > > for every new AMBA device that comes along, do we?
-> > > > > > > > > 
-> > > > > > > > Here the fake pci device has standard PCI cfg space, but physical
-> > > > > > > > implementation is base on AMBA
-> > > > > > > > They can provide pasid feature.
-> > > > > > > > However,
-> > > > > > > > 1, does not support tlp since they are not real pci devices.
-> > > > > > > > 2. does not support pri, instead support stall (provided by smmu)
-> > > > > > > > And stall is not a pci feature, so it is not described in struct pci_dev,
-> > > > > > > > but in struct iommu_fwspec.
-> > > > > > > > So we use this fixup to tell pci system that the devices can support stall,
-> > > > > > > > and hereby support pasid.
-> > > > > > > This did not answer my question.  Are you proposing that we update a
-> > > > > > > quirk every time a new AMBA device is released?  I don't think that
-> > > > > > > would be a good model.
-> > > > > > Yes, you are right, but we do not have any better idea yet.
-> > > > > > Currently we have three fake pci devices, which support stall and pasid.
-> > > > > > We have to let pci system know the device can support pasid, because of
-> > > > > > stall feature, though not support pri.
-> > > > > > Do you have any other ideas?
-> > > > > It sounds like the best way would be to allocate a PCI capability for it, so
-> > > > > detection can be done through config space, at least in future devices,
-> > > > > or possibly after a firmware update if the config space in your system
-> > > > > is controlled by firmware somewhere.  Once there is a proper mechanism
-> > > > > to do this, using fixups to detect the early devices that don't use that
-> > > > > should be uncontroversial. I have no idea what the process or timeline
-> > > > > is to add new capabilities into the PCIe specification, or if this one
-> > > > > would be acceptable to the PCI SIG at all.
-> > > > That sounds like a possibility.  The spec already defines a
-> > > > Vendor-Specific Extended Capability (PCIe r5.0, sec 7.9.5) that might
-> > > > be a candidate.
-> > > Will investigate this, thanks Bjorn
-> > FWIW, there's also a Vendor-Specific Capability that can appear in the
-> > first 256 bytes of config space (the Vendor-Specific Extended
-> > Capability must appear in the "Extended Configuration Space" from
-> > 0x100-0xfff).
-> Unfortunately our silicon does not have either Vendor-Specific Capability or
-> Vendor-Specific Extended Capability.
-> 
-> Studied commit 8531e283bee66050734fb0e89d53e85fd5ce24a4
-> Looks this method requires adding member (like can_stall) to struct pci_dev,
-> looks difficult.
+ v4:
+  - Break out the memzero_explicit() change as suggested by Dan Carpenter
+    so that it can be backported to stable.
+  - Drop the "crypto: Remove unnecessary memzero_explicit()" patch for
+    now as there can be a bit more discussion on what is best. It will be
+    introduced as a separate patch later on after this one is merged.
 
-The problem is that we don't want to add device IDs every time a new
-chip comes out.  Adding one or two device IDs for silicon that's
-already released is not a problem as long as you have a strategy for
-*future* devices so they don't require a quirk.
+This patchset makes a global rename of the kzfree() to kfree_sensitive()
+to highlight the fact buffer clearing is only needed if the data objects
+contain sensitive information like encrpytion key. The fact that kzfree()
+uses memset() to do the clearing isn't totally safe either as compiler
+may compile out the clearing in their optimizer especially if LTO is
+used. Instead, the new kfree_sensitive() uses memzero_explicit() which
+won't get compiled out.
 
-> > > > > If detection cannot be done through PCI config space, the next best
-> > > > > alternative is to pass auxiliary data through firmware. On DT based
-> > > > > machines, you can list non-hotpluggable PCIe devices and add custom
-> > > > > properties that could be read during device enumeration. I assume
-> > > > > ACPI has something similar, but I have not done that.
-> > > Yes, thanks Arnd
-> > > > ACPI has _DSM (ACPI v6.3, sec 9.1.1), which might be a candidate.  I
-> > > > like this better than a PCI capability because the property you need
-> > > > to expose is not a PCI property.
-> > > _DSM may not workable, since it is working in runtime.
-> > > We need stall information in init stage, neither too early (after allocation
-> > > of iommu_fwspec)
-> > > nor too late (before arm_smmu_add_device ).
-> > I'm not aware of a restriction on when _DSM can be evaluated.  I'm
-> > looking at ACPI v6.3, sec 9.1.1.  Are you seeing something different?
-> DSM method seems requires vendor specific guid, and code would be vendor
-> specific.
+Waiman Long (3):
+  mm/slab: Use memzero_explicit() in kzfree()
+  mm, treewide: Rename kzfree() to kfree_sensitive()
+  btrfs: Use kfree() in btrfs_ioctl_get_subvol_info()
 
-_DSM indeed requires a vendor-specific UUID, precisely *because*
-vendors are free to define their own functionality without requiring
-changes to the ACPI spec.  From the spec (ACPI v6.3, sec 9.1.1):
+ arch/s390/crypto/prng.c                       |  4 +--
+ arch/x86/power/hibernate.c                    |  2 +-
+ crypto/adiantum.c                             |  2 +-
+ crypto/ahash.c                                |  4 +--
+ crypto/api.c                                  |  2 +-
+ crypto/asymmetric_keys/verify_pefile.c        |  4 +--
+ crypto/deflate.c                              |  2 +-
+ crypto/drbg.c                                 | 10 +++---
+ crypto/ecc.c                                  |  8 ++---
+ crypto/ecdh.c                                 |  2 +-
+ crypto/gcm.c                                  |  2 +-
+ crypto/gf128mul.c                             |  4 +--
+ crypto/jitterentropy-kcapi.c                  |  2 +-
+ crypto/rng.c                                  |  2 +-
+ crypto/rsa-pkcs1pad.c                         |  6 ++--
+ crypto/seqiv.c                                |  2 +-
+ crypto/shash.c                                |  2 +-
+ crypto/skcipher.c                             |  2 +-
+ crypto/testmgr.c                              |  6 ++--
+ crypto/zstd.c                                 |  2 +-
+ .../allwinner/sun8i-ce/sun8i-ce-cipher.c      |  2 +-
+ .../allwinner/sun8i-ss/sun8i-ss-cipher.c      |  2 +-
+ drivers/crypto/amlogic/amlogic-gxl-cipher.c   |  4 +--
+ drivers/crypto/atmel-ecc.c                    |  2 +-
+ drivers/crypto/caam/caampkc.c                 | 28 +++++++--------
+ drivers/crypto/cavium/cpt/cptvf_main.c        |  6 ++--
+ drivers/crypto/cavium/cpt/cptvf_reqmanager.c  | 12 +++----
+ drivers/crypto/cavium/nitrox/nitrox_lib.c     |  4 +--
+ drivers/crypto/cavium/zip/zip_crypto.c        |  6 ++--
+ drivers/crypto/ccp/ccp-crypto-rsa.c           |  6 ++--
+ drivers/crypto/ccree/cc_aead.c                |  4 +--
+ drivers/crypto/ccree/cc_buffer_mgr.c          |  4 +--
+ drivers/crypto/ccree/cc_cipher.c              |  6 ++--
+ drivers/crypto/ccree/cc_hash.c                |  8 ++---
+ drivers/crypto/ccree/cc_request_mgr.c         |  2 +-
+ drivers/crypto/marvell/cesa/hash.c            |  2 +-
+ .../crypto/marvell/octeontx/otx_cptvf_main.c  |  6 ++--
+ .../marvell/octeontx/otx_cptvf_reqmgr.h       |  2 +-
+ drivers/crypto/mediatek/mtk-aes.c             |  2 +-
+ drivers/crypto/nx/nx.c                        |  4 +--
+ drivers/crypto/virtio/virtio_crypto_algs.c    | 12 +++----
+ drivers/crypto/virtio/virtio_crypto_core.c    |  2 +-
+ drivers/md/dm-crypt.c                         | 32 ++++++++---------
+ drivers/md/dm-integrity.c                     |  6 ++--
+ drivers/misc/ibmvmc.c                         |  6 ++--
+ .../hisilicon/hns3/hns3pf/hclge_mbx.c         |  2 +-
+ .../net/ethernet/intel/ixgbe/ixgbe_ipsec.c    |  6 ++--
+ drivers/net/ppp/ppp_mppe.c                    |  6 ++--
+ drivers/net/wireguard/noise.c                 |  4 +--
+ drivers/net/wireguard/peer.c                  |  2 +-
+ drivers/net/wireless/intel/iwlwifi/pcie/rx.c  |  2 +-
+ .../net/wireless/intel/iwlwifi/pcie/tx-gen2.c |  6 ++--
+ drivers/net/wireless/intel/iwlwifi/pcie/tx.c  |  6 ++--
+ drivers/net/wireless/intersil/orinoco/wext.c  |  4 +--
+ drivers/s390/crypto/ap_bus.h                  |  4 +--
+ drivers/staging/ks7010/ks_hostif.c            |  2 +-
+ drivers/staging/rtl8723bs/core/rtw_security.c |  2 +-
+ drivers/staging/wlan-ng/p80211netdev.c        |  2 +-
+ drivers/target/iscsi/iscsi_target_auth.c      |  2 +-
+ fs/btrfs/ioctl.c                              |  2 +-
+ fs/cifs/cifsencrypt.c                         |  2 +-
+ fs/cifs/connect.c                             | 10 +++---
+ fs/cifs/dfs_cache.c                           |  2 +-
+ fs/cifs/misc.c                                |  8 ++---
+ fs/crypto/keyring.c                           |  6 ++--
+ fs/crypto/keysetup_v1.c                       |  4 +--
+ fs/ecryptfs/keystore.c                        |  4 +--
+ fs/ecryptfs/messaging.c                       |  2 +-
+ include/crypto/aead.h                         |  2 +-
+ include/crypto/akcipher.h                     |  2 +-
+ include/crypto/gf128mul.h                     |  2 +-
+ include/crypto/hash.h                         |  2 +-
+ include/crypto/internal/acompress.h           |  2 +-
+ include/crypto/kpp.h                          |  2 +-
+ include/crypto/skcipher.h                     |  2 +-
+ include/linux/slab.h                          |  2 +-
+ lib/mpi/mpiutil.c                             |  6 ++--
+ lib/test_kasan.c                              |  6 ++--
+ mm/slab_common.c                              | 10 +++---
+ net/atm/mpoa_caches.c                         |  4 +--
+ net/bluetooth/ecdh_helper.c                   |  6 ++--
+ net/bluetooth/smp.c                           | 24 ++++++-------
+ net/core/sock.c                               |  2 +-
+ net/ipv4/tcp_fastopen.c                       |  2 +-
+ net/mac80211/aead_api.c                       |  4 +--
+ net/mac80211/aes_gmac.c                       |  2 +-
+ net/mac80211/key.c                            |  2 +-
+ net/mac802154/llsec.c                         | 20 +++++------
+ net/sctp/auth.c                               |  2 +-
+ net/sctp/socket.c                             |  2 +-
+ net/sunrpc/auth_gss/gss_krb5_crypto.c         |  4 +--
+ net/sunrpc/auth_gss/gss_krb5_keys.c           |  6 ++--
+ net/sunrpc/auth_gss/gss_krb5_mech.c           |  2 +-
+ net/tipc/crypto.c                             | 10 +++---
+ net/wireless/core.c                           |  2 +-
+ net/wireless/ibss.c                           |  4 +--
+ net/wireless/lib80211_crypt_tkip.c            |  2 +-
+ net/wireless/lib80211_crypt_wep.c             |  2 +-
+ net/wireless/nl80211.c                        | 24 ++++++-------
+ net/wireless/sme.c                            |  6 ++--
+ net/wireless/util.c                           |  2 +-
+ net/wireless/wext-sme.c                       |  2 +-
+ scripts/coccinelle/free/devm_free.cocci       |  4 +--
+ scripts/coccinelle/free/ifnullfree.cocci      |  4 +--
+ scripts/coccinelle/free/kfree.cocci           |  6 ++--
+ scripts/coccinelle/free/kfreeaddr.cocci       |  2 +-
+ security/apparmor/domain.c                    |  4 +--
+ security/apparmor/include/file.h              |  2 +-
+ security/apparmor/policy.c                    | 24 ++++++-------
+ security/apparmor/policy_ns.c                 |  6 ++--
+ security/apparmor/policy_unpack.c             | 14 ++++----
+ security/keys/big_key.c                       |  6 ++--
+ security/keys/dh.c                            | 14 ++++----
+ security/keys/encrypted-keys/encrypted.c      | 14 ++++----
+ security/keys/trusted-keys/trusted_tpm1.c     | 34 +++++++++----------
+ security/keys/user_defined.c                  |  6 ++--
+ 116 files changed, 322 insertions(+), 322 deletions(-)
 
-  New UUIDs may also be created by OEMs and IHVs for custom devices
-  and other interface or device governing bodies (e.g. the PCI SIG),
-  as long as the UUID is different from other published UUIDs.
+-- 
+2.18.1
+
