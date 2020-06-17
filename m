@@ -2,91 +2,99 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5181FC3F1
-	for <lists+linux-crypto@lfdr.de>; Wed, 17 Jun 2020 04:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EE51FC588
+	for <lists+linux-crypto@lfdr.de>; Wed, 17 Jun 2020 07:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgFQCBP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 16 Jun 2020 22:01:15 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6271 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726253AbgFQCBP (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 16 Jun 2020 22:01:15 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 01EE01E22C717AAE5C78;
-        Wed, 17 Jun 2020 10:01:14 +0800 (CST)
-Received: from [127.0.0.1] (10.67.102.118) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Wed, 17 Jun 2020
- 10:01:04 +0800
-Subject: Re: [PATCH] crypto: hisilicon - update SEC driver module parameter
-From:   liulongfang <liulongfang@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <kong.kongxinwei@hisilicon.com>,
-        <ike.pan@canonical.com>
-References: <1591624871-49173-1-git-send-email-liulongfang@huawei.com>
-Message-ID: <2cf1904c-0c66-e962-6b07-466a6c80451f@huawei.com>
-Date:   Wed, 17 Jun 2020 10:01:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726728AbgFQFFh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 17 Jun 2020 01:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgFQFFg (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 17 Jun 2020 01:05:36 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238D9C061573
+        for <linux-crypto@vger.kernel.org>; Tue, 16 Jun 2020 22:05:36 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id o15so600850vsp.12
+        for <linux-crypto@vger.kernel.org>; Tue, 16 Jun 2020 22:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=qLCJ4hAwI+ZPm+mWZVhU/VYIdbcvrJ6z1bSQoVA5eG0=;
+        b=Ept1a4ScDtvEp4ZbssII2/OOIok2e972mJ0mqVj1II8yOjZTy2vn2TgwBDVnOBaR9j
+         gWJqhF+LLH0beonMe+j+uVmrhA8j39xn2cft/cOTA8TJa/pyuoSC5MTqQ/twp4gMbGQx
+         B7zWuMU3ytilxl2WXj9K5/tkYpDGem9GvMFhPsU3ikOJI3gsG/tmvVtuvI4LFoSGIOKS
+         DNWSVU/mS57J1xS68FwbZ8TYYOXjbkbaVA0ZUUh1Ptblcii+l79dQZVbhZOvaKr63H+o
+         uVvyV+mhos/DPBqWRKqUdvER9cBrWy6sVBewVj6ZySjx4EwF790Bwc1bSZR8VasLkRE3
+         4QKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=qLCJ4hAwI+ZPm+mWZVhU/VYIdbcvrJ6z1bSQoVA5eG0=;
+        b=YwaA9sA50ovzBAvFS4SP/pGSJS+uAIa1IZ1TIbtfcXHp2pmic9WY+8RUMrrcYMMj3T
+         LwCOJGLGXr/KTjj0AcMcVfbsrMNw4pIbkVRg8TrtbjmSrttdg2hzOch6IYWHz4hlw4oz
+         6K/tlqHRq1piB0p1S1syGxuykgBsa9ArpzCiSmmPSRYviQJfDRXAQe/fqpTBeBZ4KziT
+         DUTlQr/bv0/oFkwt/U/3sSAgAw34NHTBnXF2eXfO++nJZ0LIctCplfL7rcVL3C2Ii130
+         +oNHkyRX7OGfaipQIwW+XtLoA/gT9htpnwiPSc40Nl1RZpiA6RoKvKjuJ866QBZgIWA+
+         63qg==
+X-Gm-Message-State: AOAM533FggpRhKZLdMboLIE6lgDWiQU8oT/wh/i2d0u9I8TCUovidrj2
+        aDuCJsJ5LEUBaFmkYAfM7EXNl15hDNv0+ecm3NU=
+X-Google-Smtp-Source: ABdhPJzbk/yPypjU8M/Nv+vlpSvtdAiIwqBEczF6LSxn+BEunOyxdxkiRfREWSMPoZMwRUKjrWt5F9BuMSVCAtOtiqo=
+X-Received: by 2002:a67:7914:: with SMTP id u20mr4165199vsc.102.1592370335350;
+ Tue, 16 Jun 2020 22:05:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1591624871-49173-1-git-send-email-liulongfang@huawei.com>
+Reply-To: mrsnicolemarois94@gmail.com
+Received: by 2002:a67:6a82:0:0:0:0:0 with HTTP; Tue, 16 Jun 2020 22:05:34
+ -0700 (PDT)
+From:   Mrs Nicole Marois <fridayot00@gmail.com>
+Date:   Tue, 16 Jun 2020 22:05:34 -0700
+X-Google-Sender-Auth: Vq0NedWSVlwz1h4ApHjXGv8B6rk
+Message-ID: <CAAjb__yw9rHgOFoNNATHyosTZDuCZ+ii0HSkObVXsHCs15dV0Q@mail.gmail.com>
+Subject: Greetings
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.102.118]
-X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 2020/6/8 22:01, Longfang Liu Wrote:
-> As stress-ng running SEC engine on the Ubuntu OS,
-> we found that SEC only supports two threads each with one TFM
-> based on the default module parameter 'ctx_q_num'.
-> If running more threads, stress-ng will fail since it cannot
-> get more TFMs.
->
-> In order to fix this, we adjusted the default values
-> of the module parameters to support more TFMs.
->
-> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> Signed-off-by: Zaibo Xu <xuzaibo@huawei.com>
-> ---
->  drivers/crypto/hisilicon/sec2/sec_main.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-> index a4cb58b..57de51f 100644
-> --- a/drivers/crypto/hisilicon/sec2/sec_main.c
-> +++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-> @@ -30,9 +30,9 @@
->  
->  #define SEC_SQE_SIZE			128
->  #define SEC_SQ_SIZE			(SEC_SQE_SIZE * QM_Q_DEPTH)
-> -#define SEC_PF_DEF_Q_NUM		64
-> +#define SEC_PF_DEF_Q_NUM		256
->  #define SEC_PF_DEF_Q_BASE		0
-> -#define SEC_CTX_Q_NUM_DEF		24
-> +#define SEC_CTX_Q_NUM_DEF		2
->  #define SEC_CTX_Q_NUM_MAX		32
->  
->  #define SEC_CTRL_CNT_CLR_CE		0x301120
-> @@ -191,7 +191,7 @@ static const struct kernel_param_ops sec_ctx_q_num_ops = {
->  };
->  static u32 ctx_q_num = SEC_CTX_Q_NUM_DEF;
->  module_param_cb(ctx_q_num, &sec_ctx_q_num_ops, &ctx_q_num, 0444);
-> -MODULE_PARM_DESC(ctx_q_num, "Queue num in ctx (24 default, 2, 4, ..., 32)");
-> +MODULE_PARM_DESC(ctx_q_num, "Queue num in ctx (2 default, 2, 4, ..., 32)");
->  
->  static const struct kernel_param_ops vfs_num_ops = {
->  	.set = vfs_num_set,
+-- 
+Hello Dear,
 
-Hi ALL,
+Please forgive me for stressing you with my predicaments as I know
+that this letter may come to you as big surprise. Actually, I came
+across your E-mail from my personal search afterward I decided to
+email you directly believing that you will be honest to fulfill my
+final wish before i die.
 
- I'd appreciate any comments on this patch
-from crypto related people.
+Meanwhile, I am Mrs.  Nicole Marois 62 years old, from France, and I
+am suffering from a long time cancer and from all indication my
+condition is really deteriorating as my doctors have confirmed and
+courageously advised me that I may not live beyond two months from now
+for the reason that my tumor has reached a critical stage which has
+defiled all forms of medical treatment. As a matter of fact,
+registered nurse by profession while my husband was dealing on Gold
+Dust and Gold Dory Bars till his sudden death the year 2016 then I
+took over his business till date.
 
-Thanks,
+In fact, at this moment I have a deposit sum of four million five
+hundred thousand US dollars ($4,500,000.00) with one bank but
+unfortunately I cannot visit the bank since I m critically sick and
+powerless to do anything myself but my bank account officer advised me
+to assign any of my trustworthy relative, friends or partner with
+authorization letter to stand as the recipient of my money but
+sorrowfully I dont have any reliable relative and no child.
 
-Longfang
+Therefore, I want you to receive the money and take 50% to take care
+of yourself and family while 50% should be use basically on
+humanitarian purposes mostly to orphanages home, Motherless babies
+home, less privileged and disable citizens and widows around the
+world. and as soon as I receive your I shall send you my pictures,
+banking records and with full contacts of my banking institution to
+communicate them on the matter. Please contact me with these email
+address.(mrsnicolemarois94@gmail.com)
 
-
+Hope to hear from you soon.
+Yours Faithfully,
+Mrs.  Nicole Marois
