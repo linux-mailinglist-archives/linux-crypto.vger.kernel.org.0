@@ -2,240 +2,107 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FDE1FCF28
-	for <lists+linux-crypto@lfdr.de>; Wed, 17 Jun 2020 16:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0C91FCF91
+	for <lists+linux-crypto@lfdr.de>; Wed, 17 Jun 2020 16:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726857AbgFQOMU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 17 Jun 2020 10:12:20 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2321 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726328AbgFQOMT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:12:19 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 2FBCE2BDB4AF638D855F;
-        Wed, 17 Jun 2020 15:12:18 +0100 (IST)
-Received: from localhost (10.52.121.100) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Wed, 17 Jun
- 2020 15:12:17 +0100
-Date:   Wed, 17 Jun 2020 15:11:29 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-CC:     Eric Biggers <ebiggers@kernel.org>,
-        George Cherian <gcherian@marvell.com>,
-        Wei Xu <xuwei5@hisilicon.com>, Zaibo Xu <xuzaibo@huawei.com>,
-        Mike Snitzer <msnitzer@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        <linux-kernel@vger.kernel.org>, <dm-devel@redhat.com>,
-        <linux-crypto@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Milan Broz <mbroz@redhat.com>
-Subject: Re: [dm-devel] [PATCH 2/2] hisilicon-crypto: don't sleep of
- CRYPTO_TFM_REQ_MAY_SLEEP was not specified
-Message-ID: <20200617151129.0000195f@Huawei.com>
-In-Reply-To: <alpine.LRH.2.02.2006170949010.18714@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2006091259250.30590@file01.intranet.prod.int.rdu2.redhat.com>
-        <20200610010450.GA6449@gondor.apana.org.au>
-        <alpine.LRH.2.02.2006100756270.27811@file01.intranet.prod.int.rdu2.redhat.com>
-        <20200610121106.GA23137@gondor.apana.org.au>
-        <alpine.LRH.2.02.2006161052540.28052@file01.intranet.prod.int.rdu2.redhat.com>
-        <alpine.LRH.2.02.2006161102250.28052@file01.intranet.prod.int.rdu2.redhat.com>
-        <20200616175022.GD207319@gmail.com>
-        <alpine.LRH.2.02.2006161416510.12390@file01.intranet.prod.int.rdu2.redhat.com>
-        <20200616182327.GE207319@gmail.com>
-        <alpine.LRH.2.02.2006170940510.18714@file01.intranet.prod.int.rdu2.redhat.com>
-        <alpine.LRH.2.02.2006170949010.18714@file01.intranet.prod.int.rdu2.redhat.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726931AbgFQOaw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 17 Jun 2020 10:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726879AbgFQOaw (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 17 Jun 2020 10:30:52 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF74DC06174E
+        for <linux-crypto@vger.kernel.org>; Wed, 17 Jun 2020 07:30:51 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id g7so1733121oti.13
+        for <linux-crypto@vger.kernel.org>; Wed, 17 Jun 2020 07:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=kaiczH+ep67s7CtIpBFGYirMf9KguSJE+rWfPnhvRaM=;
+        b=XIhc9aCSEC3LK6/vra/Gmn82LCsYo7+VPkybr/vunRYkEifdamHdxBjuV2MICvwU3v
+         bmXyVM64jtYc3MrDZ/rgraB8Uy1nEUNUodcPD20wmfyCxC737bCk/XASbuDvcgpKATC6
+         +Xb7rjjho3WsJfDTQ/W4ek7AKe32uxXyy0nGTuRpDL7QxWEYroeeez2hJHZG4dUCzCDn
+         TueTPZ2CG5XBNO457PMRcTA4aSjquclSS0D8szXKLivcL42MKSys1QcPK+Q3Qsllc3vD
+         elhxwJtP/5zIhNpx+r0JV64P/Zz7vWgXb4Ju0T4Zun0/tyXhUhtRF6agQHdCmoDYjejJ
+         rVEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=kaiczH+ep67s7CtIpBFGYirMf9KguSJE+rWfPnhvRaM=;
+        b=aCmiIabUE2BN1LAqW1aUbNLuKAzWNGY3SRkr4NtRhvXwG+m306yFwSdfXsqWX4z/1A
+         tQ73+vmCZqkGuhbqQniPyTiTfetfj/hnJFGsBg887oYGOAAasEp9pbVKhc4Syuex74/x
+         GwOGSszN0kRpm6HR1JFpB0aPCewUGueq81qziI8/4D3sfVymoKei05tS6bQYbyVQNW4U
+         68izqptqd5YaG0H/Kp+JhK4ecyMCmzuT7qzKAdHntLMtTiXXy8I0qWBPF2qZDhB8Yqhl
+         QzeGTxiNOACquY0/K6u2IdhqpjbYVcuozJjlCqHxuiEwHVPsesFiTGX9fhrEpAab0dl5
+         gIVg==
+X-Gm-Message-State: AOAM531jm+1kVvBwuappmDlgDcolg+Z929yoBLkCXmBFelYD1/ScBvEy
+        eqvyTLqfE/76HEEyK223r198Qh0K8I7Las2MGDU=
+X-Google-Smtp-Source: ABdhPJzuWlPNnsbS/FadUxlH8mM+QJUqgs6p/EOSin6DTVvLqNXyzwWAyOyFGA62LKUqWGl43YBr+BigFtMYEfyllqY=
+X-Received: by 2002:a05:6830:1613:: with SMTP id g19mr1820459otr.199.1592404251139;
+ Wed, 17 Jun 2020 07:30:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.100]
-X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Received: by 2002:a05:6838:20ce:0:0:0:0 with HTTP; Wed, 17 Jun 2020 07:30:50
+ -0700 (PDT)
+Reply-To: mgaddafi034@gmail.com
+From:   Aisha Gaddafi <asani4006@gmail.com>
+Date:   Wed, 17 Jun 2020 07:30:50 -0700
+Message-ID: <CADM5EyFddLWjuLkqCHuA8ivi_WimQ1tg2e3ws3z2Z_8hKaoqHQ@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, 17 Jun 2020 09:49:52 -0400
-Mikulas Patocka <mpatocka@redhat.com> wrote:
+Assalamu Alaikum Wa Rahmatullahi Wa Barakatuh,
 
-> There is this call chain:
-> sec_alg_skcipher_encrypt -> sec_alg_skcipher_crypto ->
-> sec_alg_alloc_and_calc_split_sizes -> kcalloc
-> where we call sleeping allocator function even if CRYPTO_TFM_REQ_MAY_SLEEP
-> was not specified.
-> 
-> Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-> Cc: stable@vger.kernel.org	# v4.19+
-> Fixes: 915e4e8413da ("crypto: hisilicon - SEC security accelerator driver")
+Hello Dear
 
-I don't have a board to hand today to check this, but doesn't seem like it
-will cause any problems.
+How are you doing today,I came across your e-mail contact prior a
+private search while in need of your assistance.
+ I hope my mail meet you in good condition of health? Dear I have
+decided to contact you after much thought considering the fact that we
+have not meet before, but because of some circumstance obliged me, I
+decided to contact you due to the urgency of my present situation here
+in the refugee camp for your rescue and also for a business
+venture/project which I need your assistant in this business
+establishment in your country as my foreign partner as well as my
+legal appointed trustee.
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+I am Aisha Muammar Gaddafi, the only daughter of the embattled
+president of Libya, Hon. Muammar Gaddafi. Am a single Mother and a
+Widow with three Children.
+ I am currently residing in Burkina Faso unfortunately as a refugee. I
+am writing this mail with tears and sorrow from my heart asking for
+your urgent help. I have passed through pains and sorrowful moment
+since the death of my late father.
 
-> 
-> ---
->  drivers/crypto/hisilicon/sec/sec_algs.c |   34 ++++++++++++++++----------------
->  1 file changed, 18 insertions(+), 16 deletions(-)
-> 
-> Index: linux-2.6/drivers/crypto/hisilicon/sec/sec_algs.c
-> ===================================================================
-> --- linux-2.6.orig/drivers/crypto/hisilicon/sec/sec_algs.c
-> +++ linux-2.6/drivers/crypto/hisilicon/sec/sec_algs.c
-> @@ -175,7 +175,8 @@ static int sec_alloc_and_fill_hw_sgl(str
->  				     dma_addr_t *psec_sgl,
->  				     struct scatterlist *sgl,
->  				     int count,
-> -				     struct sec_dev_info *info)
-> +				     struct sec_dev_info *info,
-> +				     gfp_t gfp)
->  {
->  	struct sec_hw_sgl *sgl_current = NULL;
->  	struct sec_hw_sgl *sgl_next;
-> @@ -190,7 +191,7 @@ static int sec_alloc_and_fill_hw_sgl(str
->  		sge_index = i % SEC_MAX_SGE_NUM;
->  		if (sge_index == 0) {
->  			sgl_next = dma_pool_zalloc(info->hw_sgl_pool,
-> -						   GFP_KERNEL, &sgl_next_dma);
-> +						   gfp, &sgl_next_dma);
->  			if (!sgl_next) {
->  				ret = -ENOMEM;
->  				goto err_free_hw_sgls;
-> @@ -545,14 +546,14 @@ void sec_alg_callback(struct sec_bd_info
->  }
->  
->  static int sec_alg_alloc_and_calc_split_sizes(int length, size_t **split_sizes,
-> -					      int *steps)
-> +					      int *steps, gfp_t gfp)
->  {
->  	size_t *sizes;
->  	int i;
->  
->  	/* Split into suitable sized blocks */
->  	*steps = roundup(length, SEC_REQ_LIMIT) / SEC_REQ_LIMIT;
-> -	sizes = kcalloc(*steps, sizeof(*sizes), GFP_KERNEL);
-> +	sizes = kcalloc(*steps, sizeof(*sizes), gfp);
->  	if (!sizes)
->  		return -ENOMEM;
->  
-> @@ -568,7 +569,7 @@ static int sec_map_and_split_sg(struct s
->  				int steps, struct scatterlist ***splits,
->  				int **splits_nents,
->  				int sgl_len_in,
-> -				struct device *dev)
-> +				struct device *dev, gfp_t gfp)
->  {
->  	int ret, count;
->  
-> @@ -576,12 +577,12 @@ static int sec_map_and_split_sg(struct s
->  	if (!count)
->  		return -EINVAL;
->  
-> -	*splits = kcalloc(steps, sizeof(struct scatterlist *), GFP_KERNEL);
-> +	*splits = kcalloc(steps, sizeof(struct scatterlist *), gfp);
->  	if (!*splits) {
->  		ret = -ENOMEM;
->  		goto err_unmap_sg;
->  	}
-> -	*splits_nents = kcalloc(steps, sizeof(int), GFP_KERNEL);
-> +	*splits_nents = kcalloc(steps, sizeof(int), gfp);
->  	if (!*splits_nents) {
->  		ret = -ENOMEM;
->  		goto err_free_splits;
-> @@ -589,7 +590,7 @@ static int sec_map_and_split_sg(struct s
->  
->  	/* output the scatter list before and after this */
->  	ret = sg_split(sgl, count, 0, steps, split_sizes,
-> -		       *splits, *splits_nents, GFP_KERNEL);
-> +		       *splits, *splits_nents, gfp);
->  	if (ret) {
->  		ret = -ENOMEM;
->  		goto err_free_splits_nents;
-> @@ -630,13 +631,13 @@ static struct sec_request_el
->  			   int el_size, bool different_dest,
->  			   struct scatterlist *sgl_in, int n_ents_in,
->  			   struct scatterlist *sgl_out, int n_ents_out,
-> -			   struct sec_dev_info *info)
-> +			   struct sec_dev_info *info, gfp_t gfp)
->  {
->  	struct sec_request_el *el;
->  	struct sec_bd_info *req;
->  	int ret;
->  
-> -	el = kzalloc(sizeof(*el), GFP_KERNEL);
-> +	el = kzalloc(sizeof(*el), gfp);
->  	if (!el)
->  		return ERR_PTR(-ENOMEM);
->  	el->el_length = el_size;
-> @@ -668,7 +669,7 @@ static struct sec_request_el
->  	el->sgl_in = sgl_in;
->  
->  	ret = sec_alloc_and_fill_hw_sgl(&el->in, &el->dma_in, el->sgl_in,
-> -					n_ents_in, info);
-> +					n_ents_in, info, gfp);
->  	if (ret)
->  		goto err_free_el;
->  
-> @@ -679,7 +680,7 @@ static struct sec_request_el
->  		el->sgl_out = sgl_out;
->  		ret = sec_alloc_and_fill_hw_sgl(&el->out, &el->dma_out,
->  						el->sgl_out,
-> -						n_ents_out, info);
-> +						n_ents_out, info, gfp);
->  		if (ret)
->  			goto err_free_hw_sgl_in;
->  
-> @@ -720,6 +721,7 @@ static int sec_alg_skcipher_crypto(struc
->  	int *splits_out_nents = NULL;
->  	struct sec_request_el *el, *temp;
->  	bool split = skreq->src != skreq->dst;
-> +	gfp_t gfp = skreq->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP ? GFP_KERNEL : GFP_ATOMIC;
->  
->  	mutex_init(&sec_req->lock);
->  	sec_req->req_base = &skreq->base;
-> @@ -728,13 +730,13 @@ static int sec_alg_skcipher_crypto(struc
->  	sec_req->len_in = sg_nents(skreq->src);
->  
->  	ret = sec_alg_alloc_and_calc_split_sizes(skreq->cryptlen, &split_sizes,
-> -						 &steps);
-> +						 &steps, gfp);
->  	if (ret)
->  		return ret;
->  	sec_req->num_elements = steps;
->  	ret = sec_map_and_split_sg(skreq->src, split_sizes, steps, &splits_in,
->  				   &splits_in_nents, sec_req->len_in,
-> -				   info->dev);
-> +				   info->dev, gfp);
->  	if (ret)
->  		goto err_free_split_sizes;
->  
-> @@ -742,7 +744,7 @@ static int sec_alg_skcipher_crypto(struc
->  		sec_req->len_out = sg_nents(skreq->dst);
->  		ret = sec_map_and_split_sg(skreq->dst, split_sizes, steps,
->  					   &splits_out, &splits_out_nents,
-> -					   sec_req->len_out, info->dev);
-> +					   sec_req->len_out, info->dev, gfp);
->  		if (ret)
->  			goto err_unmap_in_sg;
->  	}
-> @@ -775,7 +777,7 @@ static int sec_alg_skcipher_crypto(struc
->  					       splits_in[i], splits_in_nents[i],
->  					       split ? splits_out[i] : NULL,
->  					       split ? splits_out_nents[i] : 0,
-> -					       info);
-> +					       info, gfp);
->  		if (IS_ERR(el)) {
->  			ret = PTR_ERR(el);
->  			goto err_free_elements;
-> 
-> --
-> dm-devel mailing list
-> dm-devel@redhat.com
-> https://www.redhat.com/mailman/listinfo/dm-devel
-> 
+At the meantime, my family is the target of Western nations led by
+Nato who wants to destroy my father at all costs. Our investments and
+bank accounts in several countries are their targets to freeze. My
+Father of blessed memory deposited the sum of Twenty Seven Million,
+Five Hundred Thousand, Dollars ($27.500.000.000) in Bank Of Africa
+Burkina Faso which he used my name as the next of kin. I have been
+commissioned by the Bank to present an interested foreign
+investor/partner who can stand as my trustee and receive the fund in
+his account for a possible investment in his country due to my refugee
+status here in Burkina Faso.
 
+I am in search of an honest and reliable person who will help me and
+stand as my trustee so that I will present him to the Bank for the
+transfer of the fund to his bank account overseas. I have chosen to
+contact you after my prayers and I believe that you will not betray my
+trust. But rather take me as your own sister or daughter. I am willing
+to negotiate investment/business profit sharing ratio with you base on
+the future investment earning profits.
+Apologetic for my pictures I will enclose it in my next mail and more
+about me when I hear from you okay. Please I want you to contact me
+here (mgaddafi034@gmail.com) for more details.
 
+best regard
+Yours Sincerely.
+Aisha Gaddafi
