@@ -2,54 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381021FECFE
-	for <lists+linux-crypto@lfdr.de>; Thu, 18 Jun 2020 09:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B478D1FED05
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Jun 2020 09:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728324AbgFRH4m (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 18 Jun 2020 03:56:42 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:60422 "EHLO fornost.hmeau.com"
+        id S1728231AbgFRH5J (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 18 Jun 2020 03:57:09 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:60448 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727964AbgFRH4l (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 18 Jun 2020 03:56:41 -0400
+        id S1727964AbgFRH5J (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 18 Jun 2020 03:57:09 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jlpPa-00023O-Bl; Thu, 18 Jun 2020 17:56:39 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 18 Jun 2020 17:56:38 +1000
-Date:   Thu, 18 Jun 2020 17:56:38 +1000
+        id 1jlpPq-00023Z-G8; Thu, 18 Jun 2020 17:56:55 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 18 Jun 2020 17:56:54 +1000
+Date:   Thu, 18 Jun 2020 17:56:54 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Andrey Smirnov <andrew.smirnov@gmail.com>
-Cc:     linux-crypto@vger.kernel.org, Chris Healy <cphealy@gmail.com>,
-        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: caam - add clock info for VFxxx SoCs
-Message-ID: <20200618075638.GC10091@gondor.apana.org.au>
-References: <20200601230726.32328-1-andrew.smirnov@gmail.com>
+To:     b6da310b-e633-9f74-f7af-7791d803aaf5@huawei.com
+Cc:     Zhou Wang <wangzhou1@hisilicon.com>,
+        Shukun Tan <tanshukun1@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v2] crypto: hisilicon - allow smaller reads in debugfs
+Message-ID: <20200618075654.GD10091@gondor.apana.org.au>
+References: <20200602135409.GA59808@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200601230726.32328-1-andrew.smirnov@gmail.com>
+In-Reply-To: <20200602135409.GA59808@mwanda>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 04:07:26PM -0700, Andrey Smirnov wrote:
-> Add a small bit of plumbing necessary to use CAAM on VFxxx SoCs.
+On Tue, Jun 02, 2020 at 04:54:09PM +0300, Dan Carpenter wrote:
+> Originally this code rejected any read less than 256 bytes.  There
+> is no need for this artificial limit.  We should just use the normal
+> helper functions to read a string from the kernel.
 > 
-> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
-> Cc: Chris Healy <cphealy@gmail.com>
-> Cc: Horia Geantă <horia.geanta@nxp.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: Fabio Estevam <festevam@gmail.com>
-> Cc: linux-imx@nxp.com
-> Cc: linux-crypto@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > ---
->  drivers/crypto/caam/ctrl.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> v2: Use simple_read_from_buffer().  The v1 was slightly half arsed
+> because I left the original check for:
+> 
+> 	if (*pos)
+> 		return 0;
+> 
+> So it could result in partial reads.  The new code means that if you
+> want to read the buffer one byte at a time, that's fine or if you want
+> to read it in one 256 byte chunk that's also fine.  Plus it deletes 21
+> lines of code and is a lot cleaner.
+> 
+>  drivers/crypto/hisilicon/qm.c | 33 ++++++---------------------------
+>  1 file changed, 6 insertions(+), 27 deletions(-)
 
 Patch applied.  Thanks.
 -- 
