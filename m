@@ -2,93 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5699D1FECFC
-	for <lists+linux-crypto@lfdr.de>; Thu, 18 Jun 2020 09:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7AA1FED00
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Jun 2020 09:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgFRH4j (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 18 Jun 2020 03:56:39 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:51330 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727964AbgFRH4h (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 18 Jun 2020 03:56:37 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05I7uPxA010571;
-        Thu, 18 Jun 2020 02:56:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592466985;
-        bh=M0bCT/qWUY9IWB71xhqkuPr0Ty4pb5FnPGC8OkiUvPE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=DgKxgnHMR6VUt/fkCayrfIotoEpku2Z6H7YkGCt0Sb7EwPV9Y4/pSvAaOoToMQ2cE
-         cl/bVG3kbU8L4o7V3734J9FkRZijWAXsGkpUFKaJWNuhzCIHlx3UNctf/ph3VO1gVX
-         zhqu9UFTxU93uY20dDxyqOY4qYCgj1nrIGL4btbg=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05I7uPxY129059
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 18 Jun 2020 02:56:25 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 18
- Jun 2020 02:56:24 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 18 Jun 2020 02:56:24 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05I7uLg8056860;
-        Thu, 18 Jun 2020 02:56:22 -0500
-Subject: Re: [PATCH] crypto: sa2ul: fix odd_ptr_err.cocci warnings
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Julia Lawall <julia.lawall@inria.fr>
-CC:     Keerthy <j-keerthy@ti.com>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kbuild-all@lists.01.org>
-References: <alpine.DEB.2.22.394.2006122320210.8158@hadrien>
- <20200618072838.GA5000@gondor.apana.org.au>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <9041a082-b1e4-caa0-d93a-5bd4dbc997d6@ti.com>
-Date:   Thu, 18 Jun 2020 10:56:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728341AbgFRH4t (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 18 Jun 2020 03:56:49 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:60432 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728340AbgFRH4t (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 18 Jun 2020 03:56:49 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jlpPQ-00023D-Nn; Thu, 18 Jun 2020 17:56:29 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 18 Jun 2020 17:56:28 +1000
+Date:   Thu, 18 Jun 2020 17:56:28 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Olivier Sobrie <olivier.sobrie@silexinsight.com>
+Cc:     Matt Mackall <mpm@selenic.com>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Waleed Ziad <waleed94ziad@gmail.com>,
+        sebastien.rabou@silexinsight.com
+Subject: Re: [PATCH v2 0/2] hwrng: add support for Silex Insight BA431
+Message-ID: <20200618075628.GB10091@gondor.apana.org.au>
+References: <20200601142740.443548-1-olivier.sobrie@silexinsight.com>
 MIME-Version: 1.0
-In-Reply-To: <20200618072838.GA5000@gondor.apana.org.au>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200601142740.443548-1-olivier.sobrie@silexinsight.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 18/06/2020 10:28, Herbert Xu wrote:
-> On Fri, Jun 12, 2020 at 11:22:02PM +0200, Julia Lawall wrote:
->> From: kernel test robot <lkp@intel.com>
->>
->> PTR_ERR should normally access the value just tested by IS_ERR
->>
->> Generated by: scripts/coccinelle/tests/odd_ptr_err.cocci
->>
->> Fixes: 5b8516f3bedb ("crypto: sa2ul: Add crypto driver")
->> CC: Keerthy <j-keerthy@ti.com>
->> Signed-off-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
->> ---
->>
->> tree:   git://git.ti.com/ti-linux-kernel/ti-linux-kernel.git ti-linux-5.4.y
->> head:   134a1b1f8814115e2dd115b67082321bf9e63cc1
->> commit: 5b8516f3bedb3e1c273e7747b6e4a85c6e47907a [2369/7050] crypto: sa2ul: Add crypto driver
->> :::::: branch date: 3 hours ago
->> :::::: commit date: 5 months ago
->>
->>   sa2ul.c |    4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
+On Mon, Jun 01, 2020 at 04:27:38PM +0200, Olivier Sobrie wrote:
+> Hello all,
 > 
-> This driver does not exist in the cryptodev tree.
+> This set of patches aims at introducing a linux hwrng driver for the
+> Silex Insight BA431 IP which is available for various FPGA.
+> This hardware is for instance present in Silex Insight Viper OEM boards.
+> 
+> The first patch documents the device tree bindings.
+> The second one contains the BA431 hwrng driver.
+> 
+> Olivier Sobrie (2):
+>   dt-bindings: rng: document Silex Insight BA431 hwrng
+>   hwrng: ba431-rng: add support for BA431 hwrng
+> 
+>  .../bindings/rng/silex-insight,ba431-rng.yaml |  36 +++
+>  drivers/char/hw_random/Kconfig                |  12 +
+>  drivers/char/hw_random/Makefile               |   1 +
+>  drivers/char/hw_random/ba431-rng.c            | 234 ++++++++++++++++++
+>  4 files changed, 283 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rng/silex-insight,ba431-rng.yaml
+>  create mode 100644 drivers/char/hw_random/ba431-rng.c
+> 
+> Changes in v2:
+>   - Dropped the first patch that has been applied by Rob.
+>   - Added Rob's review tag in the first patch.
+>   - Fixed copyright header.
+>   - Added missing endpoint and "If unsure, say Y" in the Kconfig like it is
+>     done for the other rng drivers.
+>   - Replaced the udelay() loop by readx_poll_timeout() in the driver.
+>   - Added Arnd's ack in the second patch.
 
-Yeah, this is old codebase which only exist in TI internal tree at the 
-moment, the driver posted upstream has seen considerable evolution (and 
-is under review atm.)
-
--Tero
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+All applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
