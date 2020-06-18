@@ -2,52 +2,59 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6811FED09
-	for <lists+linux-crypto@lfdr.de>; Thu, 18 Jun 2020 09:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B03F1FED0A
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Jun 2020 09:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728243AbgFRH5a (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 18 Jun 2020 03:57:30 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:60468 "EHLO fornost.hmeau.com"
+        id S1728269AbgFRH5s (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 18 Jun 2020 03:57:48 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:60480 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727964AbgFRH53 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 18 Jun 2020 03:57:29 -0400
+        id S1728218AbgFRH5r (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 18 Jun 2020 03:57:47 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jlpQN-00029w-0s; Thu, 18 Jun 2020 17:57:28 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 18 Jun 2020 17:57:26 +1000
-Date:   Thu, 18 Jun 2020 17:57:26 +1000
+        id 1jlpQV-0002BA-26; Thu, 18 Jun 2020 17:57:36 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 18 Jun 2020 17:57:35 +1000
+Date:   Thu, 18 Jun 2020 17:57:35 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Longfang Liu <liulongfang@huawei.com>
-Cc:     linux-crypto@vger.kernel.org, linuxarm@huawei.com,
-        kong.kongxinwei@hisilicon.com, ike.pan@canonical.com
-Subject: Re: [PATCH] crypto: hisilicon - update SEC driver module parameter
-Message-ID: <20200618075726.GG10091@gondor.apana.org.au>
-References: <1591624871-49173-1-git-send-email-liulongfang@huawei.com>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] padata: upgrade smp_mb__after_atomic to smp_mb in
+ padata_do_serial
+Message-ID: <20200618075734.GH10091@gondor.apana.org.au>
+References: <20200608212652.3469814-1-daniel.m.jordan@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1591624871-49173-1-git-send-email-liulongfang@huawei.com>
+In-Reply-To: <20200608212652.3469814-1-daniel.m.jordan@oracle.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 10:01:11PM +0800, Longfang Liu wrote:
-> As stress-ng running SEC engine on the Ubuntu OS,
-> we found that SEC only supports two threads each with one TFM
-> based on the default module parameter 'ctx_q_num'.
-> If running more threads, stress-ng will fail since it cannot
-> get more TFMs.
+On Mon, Jun 08, 2020 at 05:26:52PM -0400, Daniel Jordan wrote:
+> A 5.7 kernel hangs during a tcrypt test of padata that waits for an AEAD
+> request to finish.  This is only seen on large machines running many
+> concurrent requests.
 > 
-> In order to fix this, we adjusted the default values
-> of the module parameters to support more TFMs.
+> The issue is that padata never serializes the request.  The removal of
+> the reorder_objects atomic missed that the memory barrier in
+> padata_do_serial() depends on it.
 > 
-> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> Signed-off-by: Zaibo Xu <xuzaibo@huawei.com>
+> Upgrade the barrier from smp_mb__after_atomic to smp_mb to get correct
+> ordering again.
+> 
+> Fixes: 3facced7aeed1 ("padata: remove reorder_objects")
+> Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: Steffen Klassert <steffen.klassert@secunet.com>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
 > ---
->  drivers/crypto/hisilicon/sec2/sec_main.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  kernel/padata.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
 Patch applied.  Thanks.
 -- 
