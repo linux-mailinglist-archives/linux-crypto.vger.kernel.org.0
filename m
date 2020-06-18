@@ -2,60 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B478D1FED05
-	for <lists+linux-crypto@lfdr.de>; Thu, 18 Jun 2020 09:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC591FED06
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Jun 2020 09:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728231AbgFRH5J (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 18 Jun 2020 03:57:09 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:60448 "EHLO fornost.hmeau.com"
+        id S1728374AbgFRH5L (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 18 Jun 2020 03:57:11 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:60454 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727964AbgFRH5J (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 18 Jun 2020 03:57:09 -0400
+        id S1727964AbgFRH5L (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 18 Jun 2020 03:57:11 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jlpPq-00023Z-G8; Thu, 18 Jun 2020 17:56:55 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 18 Jun 2020 17:56:54 +1000
-Date:   Thu, 18 Jun 2020 17:56:54 +1000
+        id 1jlpPy-00023e-QP; Thu, 18 Jun 2020 17:57:04 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 18 Jun 2020 17:57:02 +1000
+Date:   Thu, 18 Jun 2020 17:57:02 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     b6da310b-e633-9f74-f7af-7791d803aaf5@huawei.com
-Cc:     Zhou Wang <wangzhou1@hisilicon.com>,
-        Shukun Tan <tanshukun1@huawei.com>,
+To:     Andrei Botila <andrei.botila@oss.nxp.com>
+Cc:     Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v2] crypto: hisilicon - allow smaller reads in debugfs
-Message-ID: <20200618075654.GD10091@gondor.apana.org.au>
-References: <20200602135409.GA59808@mwanda>
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] crypto: caam/qi2 - add support for dpseci_reset()
+Message-ID: <20200618075702.GE10091@gondor.apana.org.au>
+References: <20200603084704.5895-1-andrei.botila@oss.nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200602135409.GA59808@mwanda>
+In-Reply-To: <20200603084704.5895-1-andrei.botila@oss.nxp.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 04:54:09PM +0300, Dan Carpenter wrote:
-> Originally this code rejected any read less than 256 bytes.  There
-> is no need for this artificial limit.  We should just use the normal
-> helper functions to read a string from the kernel.
+On Wed, Jun 03, 2020 at 11:47:04AM +0300, Andrei Botila wrote:
+> From: Andrei Botila <andrei.botila@nxp.com>
 > 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Add support for dpseci_reset() command for DPSECI objects.
+> For DPSECI DPAA2 objects with version lower than v5.4 reset command
+> was broken in MC f/w.
+> 
+> Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
 > ---
-> v2: Use simple_read_from_buffer().  The v1 was slightly half arsed
-> because I left the original check for:
+> Changes since V1:
+> - added, in dpaa2_dpseci_free function an error message in case dpseci_reset() fails.
 > 
-> 	if (*pos)
-> 		return 0;
-> 
-> So it could result in partial reads.  The new code means that if you
-> want to read the buffer one byte at a time, that's fine or if you want
-> to read it in one 256 byte chunk that's also fine.  Plus it deletes 21
-> lines of code and is a lot cleaner.
-> 
->  drivers/crypto/hisilicon/qm.c | 33 ++++++---------------------------
->  1 file changed, 6 insertions(+), 27 deletions(-)
+>  drivers/crypto/caam/caamalg_qi2.c | 15 +++++++++++++++
+>  drivers/crypto/caam/dpseci.c      | 18 ++++++++++++++++++
+>  drivers/crypto/caam/dpseci.h      |  2 ++
+>  drivers/crypto/caam/dpseci_cmd.h  |  1 +
+>  4 files changed, 36 insertions(+)
 
 Patch applied.  Thanks.
 -- 
