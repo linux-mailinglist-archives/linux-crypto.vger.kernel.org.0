@@ -2,89 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA50201D4D
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 Jun 2020 23:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F76201FC1
+	for <lists+linux-crypto@lfdr.de>; Sat, 20 Jun 2020 04:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgFSVtS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 19 Jun 2020 17:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
+        id S1731850AbgFTCZK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 19 Jun 2020 22:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728105AbgFSVtS (ORCPT
+        with ESMTP id S1731826AbgFTCZG (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 19 Jun 2020 17:49:18 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE076C06174E;
-        Fri, 19 Jun 2020 14:49:17 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id t74so6405494lff.2;
-        Fri, 19 Jun 2020 14:49:17 -0700 (PDT)
+        Fri, 19 Jun 2020 22:25:06 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF057C061794
+        for <linux-crypto@vger.kernel.org>; Fri, 19 Jun 2020 19:25:05 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id 18so2278968ooy.3
+        for <linux-crypto@vger.kernel.org>; Fri, 19 Jun 2020 19:25:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rUldccX6Mfa9EMv3MM8tGDpY7SpqEJv/NYMh4QXIOk8=;
-        b=U71qK9qRs9YwthJ53aVntPqRMlPaNywRknMLo8EtTj+B/Ee8ILj6wUezKcV9BFPL7O
-         Ffc4rwSFPnUEsf86ajqakOlcQcfEolAxCenI4j+1IIf4Wrkn+X7Vfslw8FNpRf0EIDgT
-         VZEjelw78lota5yVve8A+IdhtQ4TMNG5LxRkJfGLbMeKNyXHSr3YlndziPZlyC3PQ9Pk
-         8colLodWvKLm1R5ZF9Jbgjfdfwhx+bU+BM8uS2NIq/SZls+FSmSilWjs3Muc2vM5F/65
-         rUvlsvGhf3Zq10MseIOekggz3+gpNwTMV1FIoLnLhSvect/iyJksxGrU5SewrUPuGesC
-         PHig==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Z7qZkCC78niGrQpOK/h//rZ5fVXVPMkzzzEIQT+ASg4=;
+        b=NBahMNEoLov06X/O7/g04X4PinFr7MHfu2LdLnZnWclM4aHfyYYZhwIxdGHklOuM5j
+         LlzO2hyri34gSFPYxNuvU29UhXPJIZd6P46RQpg+2CooADh2cKEszY2hUU+sO4QxhJMS
+         DlJXI8sIw2QK4jcR+6FOPkN82KmRY0PnGcnHHxk35yYFSbk7PtO75aU8MKFEWEw9XjWT
+         N1JmkQQ12MnK6gGLC/hiDk/KhizhrBYpGcjj/AlkaSu7rVSF+tHM86TA8JvzpR9oqFSL
+         UuoHdXMpC+1MQfvHFQiAdHbgxHf/AU985I5iJAwLGkmvJhT0agE8u/kDvWHXPaSwzI91
+         4Pmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rUldccX6Mfa9EMv3MM8tGDpY7SpqEJv/NYMh4QXIOk8=;
-        b=O5akO4z29jkSVbml0ItwHYgiyx39Vw5CigAv89tC1AHEkc/UVVTfWPojWF8QgmfXqv
-         wwXroVHwiZ+mGm8Ek5v0QlUNEfs+ApiPENYFvtXI6VnczmFZs7sh4XJHOP0uq03wDMts
-         UxZoLQDsZ/E1HwXWooxJJfpAgL/wwlo4f2Yl0lGuk7/XSPuYTsOfjavtoRe3kI1mv8rn
-         toV2kSzQFgvXUZ8Vk1A/yxCG0Y8RFimMUEkJP7oJ6OD5Ouj55ObzEMuaUU369g5LuGYm
-         KIFd+J51UkdpX6ifXgmei+wllCV8tu2FF4MkQxWsv8VypIJIxbVLM7lagGCSaa0C/0B+
-         ZQiQ==
-X-Gm-Message-State: AOAM530yFb5zAzwELzc5tLMBPL3MN7pj6DvkS52ykwPhyAyYlSvljdZX
-        w4n+8dyMP5qWzTVjeWXdw/FoJMXqdvb7Bkjv1Dw=
-X-Google-Smtp-Source: ABdhPJw+Jc8EiJtExsyj4224wBwNJN1umFBvQuNWb1X2EsFDH23OpL2io4VgdLKMMa+UZpyq54LsilgUzSo+ZKU7rZQ=
-X-Received: by 2002:a19:d06:: with SMTP id 6mr2993995lfn.214.1592603356058;
- Fri, 19 Jun 2020 14:49:16 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Z7qZkCC78niGrQpOK/h//rZ5fVXVPMkzzzEIQT+ASg4=;
+        b=QMqSncL3jMcndwun6jwSCJ7NNVg3cKDMsaezHn11wF5WLMa6hnoqSDTcePHIB+Pc4J
+         5h6enbYUV4jtdPO/tBikqbAmARGMdXIsqh2LFGk2yxpp8sBi0BD0uOcUCmNlwoFXBG/n
+         1fYzX36YOYXZqrAk9zlperAcTkjjV3Yviy59nUsKTXjp/3gyQ9QMdF0jsUjjcq9rTqC0
+         3witUfjl2JpQZ3t9EEWLSS6evy0lpzn60nDrEtWzxwZ9nun1GgC0p3+MgzkxK31n+zmq
+         2u1IW78yoII/a8nbSJW6EX8VfcOnA17XE14sEalD23EfPGCDcynAP9Vo/BRJ97+pWnWn
+         pNYw==
+X-Gm-Message-State: AOAM531rG3SxupMZGFP3vLxgWjeQQSdtbyYyMcjq1gph2Ph27NsOrIBQ
+        p/5eI9tEDSq+ECrdnfRQ3zkGLbAQQp1WSNf65VY=
+X-Google-Smtp-Source: ABdhPJyrcCtEQOoaJMVPzrsoW9XRBgrws3eDP92vV3LCY/5KlOM0lPBpyg8yQ2GO935u1UsgGDt9qkUFbBfyHGCms/0=
+X-Received: by 2002:a4a:e658:: with SMTP id q24mr5731087oot.87.1592619904890;
+ Fri, 19 Jun 2020 19:25:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200619213347.27826-1-horia.geanta@nxp.com> <20200619213347.27826-5-horia.geanta@nxp.com>
- <CAOMZO5AZLUxXhX-Maop8iQc0Qan5YqH2QFXaDpYq0hL+BP-L+w@mail.gmail.com>
-In-Reply-To: <CAOMZO5AZLUxXhX-Maop8iQc0Qan5YqH2QFXaDpYq0hL+BP-L+w@mail.gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Fri, 19 Jun 2020 18:49:04 -0300
-Message-ID: <CAOMZO5BMS2RgRm2t7qDZnhiFBWE3pPZmHW7-kn-0KOq5NVYKfg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] hwrng: imx-rngc: enable driver for i.MX6
-To:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+Received: by 2002:a05:6830:1bc5:0:0:0:0 with HTTP; Fri, 19 Jun 2020 19:25:04
+ -0700 (PDT)
+Reply-To: tofilbaman@gmail.com
+From:   Tofil Bama <aliftomarn6@gmail.com>
+Date:   Fri, 19 Jun 2020 19:25:04 -0700
+Message-ID: <CACwWz1r4EGCuyF59ZDh2RNrQqSmNym-HVD9PP3vcZn7wN8xT=w@mail.gmail.com>
+Subject: KINDEST MESSAGE.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 6:46 PM Fabio Estevam <festevam@gmail.com> wrote:
+Dear,
 
-> If in the future more SoCs will use this IP, then we will need to keep
-> extending this list over and over again.
->
-> Maybe you could use:
->
-> depends on MACH_IMX || COMPILE_TEST
+My name is Mr Alif Tomar, I am the Bill and Exchange (assistant)
+Manager of Bank of Africa Ouagadougou, Burkina Faso. In my department
+I discovered an abandoned sum of eighteen million three hundred
+thousand United State of American dollars (18.3MILLION USA DOLLARS) in
+an account that belongs to one of our foreign customer who died in
+airline that crashed on 4th October 2001.
 
-MACH_MXC is what I meant ;-)
+Since I got information about his death I have been expecting his next
+of kin to come over and claim his money because we can not release it
+unless somebody applies for it as the next of kin or relation to the
+deceased as indicated in our banking guidelines, but unfortunately we
+learnt that all his supposed next of kin or relation died alongside
+with him in the plane crash leaving nobody behind for the claim. It is
+therefore upon this discovery that I decided to make this business
+proposal to you and release the money to you as next of kin or
+relation to the deceased for safety and subsequent disbursement since
+nobody is coming for it and I don't want the money to go into the bank
+treasury as unclaimed bill.
+
+You will be entitled with 40% of the total sum while 60% will be for
+me after which I will visit your Country to invest my own share when
+the fund is successfully transferred into your account, Please I would
+like you to keep this transaction confidential and as a top secret as
+you may wish to know that I am a bank official.
+
+Yours sincerely,
+Mr Alif Tomar.
