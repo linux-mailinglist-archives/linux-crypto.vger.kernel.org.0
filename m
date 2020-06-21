@@ -2,96 +2,118 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8566202BFD
-	for <lists+linux-crypto@lfdr.de>; Sun, 21 Jun 2020 20:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD64202C3D
+	for <lists+linux-crypto@lfdr.de>; Sun, 21 Jun 2020 21:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbgFUSWe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 21 Jun 2020 14:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
+        id S1730187AbgFUTbP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 21 Jun 2020 15:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727103AbgFUSWe (ORCPT
+        with ESMTP id S1730181AbgFUTbP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 21 Jun 2020 14:22:34 -0400
-X-Greylist: delayed 2609 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 21 Jun 2020 11:22:33 PDT
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EFFC061794;
-        Sun, 21 Jun 2020 11:22:33 -0700 (PDT)
-Received: from martin by viti.kaiser.cx with local (Exim 4.89)
-        (envelope-from <martin@viti.kaiser.cx>)
-        id 1jn3vf-0007dG-R4; Sun, 21 Jun 2020 19:38:51 +0200
-Date:   Sun, 21 Jun 2020 19:38:51 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] hwrng: imx-rngc: enable driver for i.MX6
-Message-ID: <20200621173851.w6wkknjbzuyfxx7v@viti.kaiser.cx>
-References: <20200621145658.12528-1-horia.geanta@nxp.com>
- <20200621145658.12528-6-horia.geanta@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200621145658.12528-6-horia.geanta@nxp.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+        Sun, 21 Jun 2020 15:31:15 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE180C061795
+        for <linux-crypto@vger.kernel.org>; Sun, 21 Jun 2020 12:31:14 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id q2so12130120wrv.8
+        for <linux-crypto@vger.kernel.org>; Sun, 21 Jun 2020 12:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=SSp6eYkhH7nIe6GZ0CH+PAT8S+lUDrmSmlrZ00QGZhI=;
+        b=CrkoAMpQZyTvDrBQreA4J8deSuYc2MRoU8l2mRFV6Zo+/kEbB8QPiHQFPYmA0oxlvW
+         3dWXgzAivYUsGmLt4dCrCO/MSusoWA7jnV3AYqbLidpf+0A7n1iQ7nRX9O+oMY02hALM
+         GnXrA29QQ8uqqfv32+o/uvT7x08p9q7Wlinjd/EM+68i708sfgQWjffKxmz12qNcTze3
+         DFUooSZgrcQcID0qZ2De+yuBdjVvnRyWjXnDOUxSm3/Q8zMYLJVi/nsJf1o4J7RcxFdP
+         OpOXr/62cGP3D8EvS71ImvscSaMUNkdGAQhYfzA0rox4MZkqqFr2x+ciIBSml2UYERCI
+         Ku7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SSp6eYkhH7nIe6GZ0CH+PAT8S+lUDrmSmlrZ00QGZhI=;
+        b=cA3J/EyP982/B9mhgc4Fakmsy13MxG2Iptj6O5+LaYwRUKTSYe/U1qPYdE8PeDMqy4
+         7b6TPPRWp+eVDY4onB4Owvikdyza+CvMrI1IdVqPMfYh8LP/3h3hMft21qv4ev+TmSzv
+         /PZTbb5YNvUCVkM9uaYOUVeOTP+45LNNuxo8qYsC9XZ83Pkxbrgcq2tdyWfkE7hk82mr
+         BB6Lc+hc51LolL2tAvThTm0Rur2oY5Av3Qo2GDXBzxXUOLpDiUvJF3xIvEhWillKIZFt
+         spfL+80OJWhlw/LfOzc4DvWyXZAyiayjhEO+uDvbMcyKwsQgkSZPfl2jAKUNZqIQFpBN
+         OhMA==
+X-Gm-Message-State: AOAM531eOYN89BwaXSUmXLPuZZe9uBC6jJQZXRYgjyZyJhqTrIjgjuDT
+        Nav2DLJuWiDUhwbu98FKLnWMJQ==
+X-Google-Smtp-Source: ABdhPJySKt8KwHn2tuueN63yW6ek6RNTeV41xqUJUIoshj4GCl+EmBd9UWCACnRDUh05ZMK2W005XA==
+X-Received: by 2002:a5d:4c87:: with SMTP id z7mr15249567wrs.100.1592767873502;
+        Sun, 21 Jun 2020 12:31:13 -0700 (PDT)
+Received: from localhost.localdomain ([51.15.160.169])
+        by smtp.googlemail.com with ESMTPSA id e3sm16086924wrj.17.2020.06.21.12.31.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 21 Jun 2020 12:31:12 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mripard@kernel.org, wens@csie.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH v3 00/14] crypto: allwinner: add xRNG and hashes
+Date:   Sun, 21 Jun 2020 19:30:53 +0000
+Message-Id: <1592767867-35982-1-git-send-email-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Thus wrote Horia Geantă (horia.geanta@nxp.com):
+Hello
 
-> i.MX6 SL, SLL, ULL, ULZ SoCs have an RNGB block.
+The main goal of this serie is to add support for TRNG, PRNG and hashes
+to the sun8i-ss/sun8i-ce.
+The whole serie is tested with CRYPTO_EXTRA_TESTS enabled and loading
+tcrypt.
+The PRNG and TRNG are tested with rngtest.
 
-> Since imx-rngc driver supports also rngb,
-> let's enable it for these SoCs too.
+Regards
 
-> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
-> ---
->  drivers/char/hw_random/Kconfig    | 2 +-
->  drivers/char/hw_random/imx-rngc.c | 3 +++
->  2 files changed, 4 insertions(+), 1 deletion(-)
+Change since v1:
+- removed _crypto_rng_cast patch
 
-> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-> index 0ad17efc96df..53f6a7e4392f 100644
-> --- a/drivers/char/hw_random/Kconfig
-> +++ b/drivers/char/hw_random/Kconfig
-> @@ -245,7 +245,7 @@ config HW_RANDOM_MXC_RNGA
->  config HW_RANDOM_IMX_RNGC
->  	tristate "Freescale i.MX RNGC Random Number Generator"
->  	depends on HAS_IOMEM && HAVE_CLK
-> -	depends on SOC_IMX25 || COMPILE_TEST
-> +	depends on SOC_IMX25 || SOC_IMX6SL || SOC_IMX6SLL || SOC_IMX6UL || COMPILE_TEST
->  	default HW_RANDOM
->  	help
->  	  This driver provides kernel-side support for the Random Number
-> diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
-> index 9c47e431ce90..84576d2fbf8c 100644
-> --- a/drivers/char/hw_random/imx-rngc.c
-> +++ b/drivers/char/hw_random/imx-rngc.c
-> @@ -350,6 +350,9 @@ static SIMPLE_DEV_PM_OPS(imx_rngc_pm_ops, imx_rngc_suspend, imx_rngc_resume);
+Change since v2:
+- cleaned unused variables from sun8i-ce-prng
+- added some missing memzero_explicit
 
->  static const struct of_device_id imx_rngc_dt_ids[] = {
->  	{ .compatible = "fsl,imx25-rngb", .data = NULL, },
-> +	{ .compatible = "fsl,imx6sl-rngb", .data = NULL, },
-> +	{ .compatible = "fsl,imx6sll-rngb", .data = NULL, },
-> +	{ .compatible = "fsl,imx6ull-rngb", .data = NULL, },
->  	{ /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, imx_rngc_dt_ids);
-> -- 
-> 2.17.1
+Corentin Labbe (14):
+  crypto: sun8i-ss: Add SS_START define
+  crypto: sun8i-ss: Add support for the PRNG
+  crypto: sun8i-ss: support hash algorithms
+  crypto: sun8i-ss: fix a trivial typo
+  crypto: sun8i-ss: Add more comment on some structures
+  crypto: sun8i-ss: better debug printing
+  crypto: sun8i-ce: move iv data to request context
+  crypto: sun8i-ce: split into prepare/run/unprepare
+  crypto: sun8i-ce: handle different error registers
+  crypto: sun8i-ce: rename has_t_dlen_in_bytes to cipher_t_dlen_in_bytes
+  crypto: sun8i-ce: support hash algorithms
+  crypto: sun8i-ce: Add stat_bytes debugfs
+  crypto: sun8i-ce: Add support for the PRNG
+  crypto: sun8i-ce: Add support for the TRNG
 
-Reviewed-by: Martin Kaiser <martin@kaiser.cx>
+ drivers/crypto/allwinner/Kconfig              |  43 ++
+ drivers/crypto/allwinner/sun8i-ce/Makefile    |   3 +
+ .../allwinner/sun8i-ce/sun8i-ce-cipher.c      |  99 +++-
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 369 ++++++++++++++-
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 415 ++++++++++++++++
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 161 +++++++
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-trng.c | 124 +++++
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h  | 135 +++++-
+ drivers/crypto/allwinner/sun8i-ss/Makefile    |   2 +
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 198 +++++++-
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-hash.c | 446 ++++++++++++++++++
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-prng.c | 170 +++++++
+ drivers/crypto/allwinner/sun8i-ss/sun8i-ss.h  |  93 +++-
+ 13 files changed, 2216 insertions(+), 42 deletions(-)
+ create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
+
+-- 
+2.26.2
+
