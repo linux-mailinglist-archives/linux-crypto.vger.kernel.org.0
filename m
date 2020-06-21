@@ -2,93 +2,62 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA976202B33
-	for <lists+linux-crypto@lfdr.de>; Sun, 21 Jun 2020 16:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC7D202BB3
+	for <lists+linux-crypto@lfdr.de>; Sun, 21 Jun 2020 19:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730327AbgFUO5X (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 21 Jun 2020 10:57:23 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:49210 "EHLO inva021.nxp.com"
+        id S1730453AbgFURKX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 21 Jun 2020 13:10:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730257AbgFUO5W (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 21 Jun 2020 10:57:22 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E0F642015E5;
-        Sun, 21 Jun 2020 16:57:19 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D340E2004E6;
-        Sun, 21 Jun 2020 16:57:19 +0200 (CEST)
-Received: from fsr-ub1864-014.ea.freescale.net (fsr-ub1864-014.ea.freescale.net [10.171.95.219])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 2B35F203C2;
-        Sun, 21 Jun 2020 16:57:19 +0200 (CEST)
-From:   =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] hwrng: imx-rngc: enable driver for i.MX6
-Date:   Sun, 21 Jun 2020 17:56:58 +0300
-Message-Id: <20200621145658.12528-6-horia.geanta@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200621145658.12528-1-horia.geanta@nxp.com>
-References: <20200621145658.12528-1-horia.geanta@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1730420AbgFURKX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 21 Jun 2020 13:10:23 -0400
+Subject: Re: [GIT PULL] Crypto Fixes for 5.8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592759422;
+        bh=ocy2CBb8YSNngwrC+UysoFLpnTC1EMjS+5CRmk0QH5I=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=wFvgpIu8fls5HIRTydgWsHhKblrvur6nGd5BR3SL72xIUf7Re7rmt++uiUc4xmgeP
+         jpivWUc4gpu9prCM789ZBjWuoVJDqznmilgo+v38dT2wAntGwn6SHR12A67W8gmnzV
+         xDSCnl3/8ioMbZNOAR9wifkE+uCuPwWI4Xkerqhg=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200621082303.GA30729@gondor.apana.org.au>
+References: <20190916084901.GA20338@gondor.apana.org.au>
+ <20190923050515.GA6980@gondor.apana.org.au>
+ <20191202062017.ge4rz72ki3vczhgb@gondor.apana.org.au>
+ <20191214084749.jt5ekav5o5pd2dcp@gondor.apana.org.au>
+ <20200115150812.mo2eycc53lbsgvue@gondor.apana.org.au>
+ <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
+ <20200408061513.GA23636@gondor.apana.org.au>
+ <20200611040544.GA27603@gondor.apana.org.au>
+ <20200621082303.GA30729@gondor.apana.org.au>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200621082303.GA30729@gondor.apana.org.au>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+X-PR-Tracked-Commit-Id: 819966c06b759022e9932f328284314d9272b9f3
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 93bbca271a715e2730b6f4ae0be42056cdab6561
+Message-Id: <159275942265.6032.2639454929805852776.pr-tracker-bot@kernel.org>
+Date:   Sun, 21 Jun 2020 17:10:22 +0000
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-i.MX6 SL, SLL, ULL, ULZ SoCs have an RNGB block.
+The pull request you sent on Sun, 21 Jun 2020 18:23:03 +1000:
 
-Since imx-rngc driver supports also rngb,
-let's enable it for these SoCs too.
+> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
 
-Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
----
- drivers/char/hw_random/Kconfig    | 2 +-
- drivers/char/hw_random/imx-rngc.c | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/93bbca271a715e2730b6f4ae0be42056cdab6561
 
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 0ad17efc96df..53f6a7e4392f 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -245,7 +245,7 @@ config HW_RANDOM_MXC_RNGA
- config HW_RANDOM_IMX_RNGC
- 	tristate "Freescale i.MX RNGC Random Number Generator"
- 	depends on HAS_IOMEM && HAVE_CLK
--	depends on SOC_IMX25 || COMPILE_TEST
-+	depends on SOC_IMX25 || SOC_IMX6SL || SOC_IMX6SLL || SOC_IMX6UL || COMPILE_TEST
- 	default HW_RANDOM
- 	help
- 	  This driver provides kernel-side support for the Random Number
-diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
-index 9c47e431ce90..84576d2fbf8c 100644
---- a/drivers/char/hw_random/imx-rngc.c
-+++ b/drivers/char/hw_random/imx-rngc.c
-@@ -350,6 +350,9 @@ static SIMPLE_DEV_PM_OPS(imx_rngc_pm_ops, imx_rngc_suspend, imx_rngc_resume);
- 
- static const struct of_device_id imx_rngc_dt_ids[] = {
- 	{ .compatible = "fsl,imx25-rngb", .data = NULL, },
-+	{ .compatible = "fsl,imx6sl-rngb", .data = NULL, },
-+	{ .compatible = "fsl,imx6sll-rngb", .data = NULL, },
-+	{ .compatible = "fsl,imx6ull-rngb", .data = NULL, },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, imx_rngc_dt_ids);
+Thank you!
+
 -- 
-2.17.1
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
