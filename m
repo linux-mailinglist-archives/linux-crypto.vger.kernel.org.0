@@ -2,59 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8CA203BCC
-	for <lists+linux-crypto@lfdr.de>; Mon, 22 Jun 2020 18:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B261203D20
+	for <lists+linux-crypto@lfdr.de>; Mon, 22 Jun 2020 18:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729797AbgFVQC2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 22 Jun 2020 12:02:28 -0400
-Received: from sonic302-21.consmr.mail.ne1.yahoo.com ([66.163.186.147]:43621
-        "EHLO sonic302-21.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729761AbgFVQCX (ORCPT
+        id S1729866AbgFVQwc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 22 Jun 2020 12:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729533AbgFVQwb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 22 Jun 2020 12:02:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1592841741; bh=cK2qy9Lv5SAgMg9nAvfVmkJPj46H3ss3vOVyjpHm6Nk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=imnMzKvnrwdEkzevY9v55JCHWrS7mFcRp2xLflBpdsWBX5v32iTt1Jwj292Sqyxc6zTWfVf6UW3RltjDxv8H8ZAxxFg96tpPBoXA2f/GRkfTuiNcUr3yDzOGiHeT9IqR//B+9C8c9YoGDJPnAeuuKcQvLl1HS8J+STK4/r0WZ3jbtWFF0MKDjydg+AbeXShoRDHqwsqAaAi7D9jDq8wNDWBIR81puaAh7APGDPK32RqjpFS85hxXrbmotW59Gm/gC9SoLB52q4udtwMI++FS4HYmIHt+kUh9tNcMAsNUvFYo0HWMN59EiLf7lYGm/4AR40adfmghUfkmt4dYpTZmZQ==
-X-YMail-OSG: AhKkJLAVM1lDQ3XPPTTJWpEw.A_YPk4v7tBrtMEv9XTYrBN0vKxPyUyPokZyCLH
- 0NPJEnbM.Ixt5u0eXkMwZesEBqS.rCtCLJgnod2Yg.I9TXOm0suNzcmJ92mBaA3mHgRFUusjI.6E
- 3Gu4LEq019.le8uhDgpgUZ.YgtmiKAQJK6Bd4WPLqozbdEc8urSPipLpvwJTvKec65xmptWyRiVv
- 5wejfhjut7ltVV2EWvbGnxpPsKrHXW63gZY0z7W.qC8yTTTM6xXIAPM6OYdYDYNn.6t5yJFWlC1P
- OIdbZEYbWLsjaYGAZ3nhw68imywZs7JgVqTzxfR4ZQQxpuo3K8t9CM9O0hpOCt10FP__XXwyrmrD
- TCoCE7B_Edu3G.zjOUn_rksR4jYB.m1Rp.1vZ_bLxnQwCiAul5Wqfj8PNdUGzT.zvxnBCUVqWq9J
- 8hXM6oMyn8gklCF.R8KCTVo6NRJRq4thjGWIexrpJEGu0QolvkJTIALFEd6_slAReLmAOEup3xKy
- .77XY9y0L2WZlQcf1QY4ryEv90HkLK9R59Zd1MxuC8qefRgY6y6xUFmVBWO8SDJCCjnQpB48PRDP
- pRTSfD8hEjxrcMoyLQRR8ik6SRBEuL1N.zoJ2juJT7TtdJItukcqyaFlw7VOC6cm49vWb13NtnZ0
- gQ2bWEWTG5v0uAlc54_ulltpKs.Fgm6hkagBtyzunEJ52PGAuturV.LPWyLoBYPiB1KC1HlV8gI8
- yJqtTplsyPL2eALndgi_xv5WXRslUdVun50zfx9iDK5v_kT1lyZrnl7BpPa5N7roHYs5FCR3fGlt
- 00HJ7sf.lnan3Im8PEbT96k38NwI6o6wqQk3XTx1x0TOib38VwKLgaWNY916uiRI1upzFCMVqmW6
- hKW.i_z2qDWeeQaZVyBhDmfLTpSCKpEZXqJt.HWEa0uB7F6lyRoT1rQEzhMY_zbISz6YbRmtNDlq
- VLlEzjYA6uILpMVD7EkmwXGP0XOJgDIix93HShigByDXDbmOlbnVPelpKvxPRFg3gnhpf.0Rc47i
- 08Ic.liUMCD9zHGFCga9cXgoGaM8kFbRyDB3CB8uLHuuV8rIwOstkm24RLt0t3H1wtfuP85AC7r8
- v042NbRsPX1Mj80LTxFt.KStV8ND4Dc1.IiPBslhVUpEA9f2YrGnkjCHG4.U4j0M0U489djAouYX
- y9F8lECiGIH30pwUi5p9NUzViYBtaTM7ID67rbGjIKdkEdFs14rCm3KSzct0U2izLUB1NerwsRiF
- IQWasnNhp61WOxqpf4zyo6bEJMCV1B8QkTG.8HvHCcJtAwYQhWHkE5SwAzxSGopkwGBC4.Xf9
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Mon, 22 Jun 2020 16:02:21 +0000
-Date:   Mon, 22 Jun 2020 16:02:19 +0000 (UTC)
-From:   Karim Zakari <kariim1960z@gmail.com>
-Reply-To: kzakari04@gmail.com
-Message-ID: <1507214802.1850985.1592841739314@mail.yahoo.com>
-Subject: URGENT REPLY.
+        Mon, 22 Jun 2020 12:52:31 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D58C061573;
+        Mon, 22 Jun 2020 09:52:31 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id p5so16566762ile.6;
+        Mon, 22 Jun 2020 09:52:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=ml4K+H93SeXCIMnxVi3/6PCWqKGjDCE1p4VhTbgYGy0=;
+        b=NZt31C1ubnTF4OHvh/tYbT9DAEszGbXCpPS27shTbFzq/9UjRbQBgm/geZnGY6uywq
+         K6UUDNAWwo0inGf8MSPYWkmP7rsvs8noBfCvWHbeg62HHX/i6eMoBcrvP8BkkziZ7BQA
+         hzqMPDR8+03CVLvIB2JtweMn/UeoUkE6rq+IjJszEhSrOxPrVDqtW+E0vPQ0MSYVgYEF
+         kzy7ooi2q4prVEombNb/sFWlHttwFB3fT/ad3WP6BBboOB+Bs27PpVIbnOcEY8L7Ji6s
+         0ZXDf4fdEh9SpXYrSNalArM6JT9Rb+jn+JeVoUMsqimnRNqPZoCtLpRyhoy/xrayx122
+         IZnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=ml4K+H93SeXCIMnxVi3/6PCWqKGjDCE1p4VhTbgYGy0=;
+        b=gS0ERg3CCIF2ncr26ngzn00TGTt833BhJWA8v4S081rSH5rJ/PrHiwPC/k7QOAbeek
+         olCP8ZvfXWNPSU6tNIGpvsjQQC/n9YHX69wj2097rmhtowpeDGBezJqe6z73St+dEfhg
+         XhfpiAIMoSmt1+SAZAfLBNXpeiJ4nIOr/szoliKMcxH84j60KJAjFLl8/OOb9LIp/Mhp
+         av8sjXQd6hkbgc2VhMoeN+s7mGO0KUS0Tkx85Eibi3YFZ5Ju+ARbWXyYHR9UgLPhyze3
+         GA9iktEHGF8KOTIXdxtHUB/MNNiUsJ6l9zYwDgvqlymQLoLcvCugsNzzDQobuGv0kvs3
+         /Wbg==
+X-Gm-Message-State: AOAM530J5E/Y76Zmr9lXelwO73NVf2/AUCLnVRhQlLKLe6I0TSRci4eR
+        EBv890ObDs3FI0t12O3cHTan6k/rpqG6+sHJ5jc=
+X-Google-Smtp-Source: ABdhPJwdjC49IgldtmuqtkC47LHpTDI7DHSNwH7tRMpaXAH1EPNzfRXpd2NbYWgbRKaMkFq0rEYvZ7JsWdVpGKaobTY=
+X-Received: by 2002:a92:c0c8:: with SMTP id t8mr19085670ilf.176.1592844750896;
+ Mon, 22 Jun 2020 09:52:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1507214802.1850985.1592841739314.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16138 YMailNodin Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200622155018.6043-1-sedat.dilek@gmail.com>
+In-Reply-To: <20200622155018.6043-1-sedat.dilek@gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 22 Jun 2020 18:52:23 +0200
+Message-ID: <CA+icZUVGve+zN59_OOsW-G732uXmBGHha-+3dwE13OK338tH7g@mail.gmail.com>
+Subject: Re: [PATCH 5.7] x86/crypto: aesni: Fix build with LLVM_IAS=1
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Cc:     Craig Topper <craig.topper@intel.com>,
+        Craig Topper <craig.topper@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On Mon, Jun 22, 2020 at 5:50 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 
+> Craig Topper suggested me in ClangBuiltLinux issue #1050:
+>
+> > I think the "too many positional arguments" is because the parser isn't able
+> > to handle the trailing commas.
+> >
+> > The "unknown use of instruction mnemonic" is because the macro was named
+> > GHASH_4_ENCRYPT_4_PARALLEL_DEC but its being instantiated with
+> > GHASH_4_ENCRYPT_4_PARALLEL_dec I guess gas ignores case on the
+> > macro instantiation, but llvm doesn't.
+>
 
-Good-Day Friend,
+> Cc: Craig Topper <craig.topper@intel.com>
+> Cc: Craig Topper <craig.topper@gmail.com>
 
- Hope you are doing great Today. I have a proposed business deal worthy (US$16.5 Million Dollars) that will benefit both parties. This is legitimate' legal and your personality will not be compromised.
+That should be a s/Cc/Suggested-by/.
 
-Waiting for your response for more details, As you are willing to execute this business opportunity with me.
-
-Sincerely Yours,
-Mr. Karim Zakari.
+- Sedat -
