@@ -2,76 +2,54 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C1F202E87
-	for <lists+linux-crypto@lfdr.de>; Mon, 22 Jun 2020 04:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9AD202FA0
+	for <lists+linux-crypto@lfdr.de>; Mon, 22 Jun 2020 08:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731082AbgFVCvC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 21 Jun 2020 22:51:02 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:55942 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726699AbgFVCvC (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 21 Jun 2020 22:51:02 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 50DD9814332985B8E437;
-        Mon, 22 Jun 2020 10:51:00 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.201.106) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 22 Jun 2020 10:50:50 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <wangzhou1@hisilicon.com>, <akpm@linux-foundation.org>,
-        <linux-crypto@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        "Dan Streetman" <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>
-Subject: [PATCH 3/3] mm/zswap: specify the NUMA node of acomp to use local compressors
-Date:   Mon, 22 Jun 2020 14:49:01 +1200
-Message-ID: <20200622024901.12632-4-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20200622024901.12632-1-song.bao.hua@hisilicon.com>
-References: <20200622024901.12632-1-song.bao.hua@hisilicon.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.201.106]
-X-CFilter-Loop: Reflected
+        id S1731220AbgFVGPR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 22 Jun 2020 02:15:17 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:48805 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731167AbgFVGPQ (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 22 Jun 2020 02:15:16 -0400
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 21 Jun 2020 23:15:16 -0700
+Received: from sivaprak-linux.qualcomm.com ([10.201.3.202])
+  by ironmsg02-sd.qualcomm.com with ESMTP; 21 Jun 2020 23:15:13 -0700
+Received: by sivaprak-linux.qualcomm.com (Postfix, from userid 459349)
+        id BA113218BA; Mon, 22 Jun 2020 11:45:11 +0530 (IST)
+From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        stanimir.varbanov@linaro.org, ardb@kernel.org,
+        sivaprak@codeaurora.org, cotequeiroz@gmail.com,
+        ebiggers@google.com, horia.geanta@nxp.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] qce crypto fixes for tcrypto failures
+Date:   Mon, 22 Jun 2020 11:45:03 +0530
+Message-Id: <1592806506-23978-1-git-send-email-sivaprak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-zswap_cpu_comp_prepare() is called on a different CPU with the CPU which
-will really send acomp_req. In order to use the right local compressors,
-this patch specifies the NUMA node to which the CPU sending acomp_req
-belongs.
+while running tcrypto test cases on qce crypto engine few failures are
+noticed, this is mainly because of the updates on tcrypto driver and
+not testing qce reqgularly with mainline tcrypto driver.
 
-Cc: Seth Jennings <sjenning@redhat.com>
-Cc: Dan Streetman <ddstreet@ieee.org>
-Cc: Vitaly Wool <vitaly.wool@konsulko.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: David S. Miller" <davem@davemloft.net>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- mm/zswap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This series tries to address few of the errors while running tcrypto on
+qce.
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 0d914ba6b4a0..9b1aa477022e 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -437,7 +437,7 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
- 		pr_err("Could not initialize acomp_ctx\n");
- 		return -ENOMEM;
- 	}
--	acomp = crypto_alloc_acomp(pool->tfm_name, 0, 0);
-+	acomp = crypto_alloc_acomp_node(pool->tfm_name, 0, 0, cpu_to_node(cpu));
- 	if (IS_ERR_OR_NULL(acomp)) {
- 		pr_err("could not alloc crypto acomp %s : %ld\n",
- 				pool->tfm_name, PTR_ERR(acomp));
+Sivaprakash Murugesan (3):
+  crypto: qce: support zero length test vectors
+  crypto: qce: re-initialize context on import
+  crypto: qce: sha: Do not modify scatterlist passed along with request
+
+ drivers/crypto/Kconfig      |  2 ++
+ drivers/crypto/qce/common.h |  2 ++
+ drivers/crypto/qce/sha.c    | 36 +++++++++++++++++++++++++++++-------
+ 3 files changed, 33 insertions(+), 7 deletions(-)
+
 -- 
-2.27.0
-
+2.7.4
 
