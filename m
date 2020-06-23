@@ -2,123 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D96204B94
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2020 09:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191D720506A
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2020 13:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731522AbgFWHsu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 23 Jun 2020 03:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        id S1732512AbgFWLQk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 23 Jun 2020 07:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731588AbgFWHst (ORCPT
+        with ESMTP id S1732227AbgFWLQj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 23 Jun 2020 03:48:49 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC29C061796
-        for <linux-crypto@vger.kernel.org>; Tue, 23 Jun 2020 00:48:49 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id b5so9479830pgm.8
-        for <linux-crypto@vger.kernel.org>; Tue, 23 Jun 2020 00:48:49 -0700 (PDT)
+        Tue, 23 Jun 2020 07:16:39 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459C3C061798
+        for <linux-crypto@vger.kernel.org>; Tue, 23 Jun 2020 04:16:38 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id g18so11043195wrm.2
+        for <linux-crypto@vger.kernel.org>; Tue, 23 Jun 2020 04:16:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=iXMHLbguntKcuTgr1nAq0fpxZctLmOVLPocRZ01HV1s=;
-        b=Dvb9jWrWxYf0cUS7+mre8Ce7N6LCPCbgM4TfzIgO9x/j/Sz44QbFtHYcBvV6YcHykC
-         /UOjUDAlRBaipXGhgPtfj5VOhd0MjmoLTxYmHS14ROKFa4k7B6adT6mjHgV2lQZYAb2L
-         9lBtnjHKiulqZ7h6mF5QFFytTHA5SEJIAChcsfvKC0+xwvXLEhh4oJ/sXC4FDnOEad0q
-         wFvAaXsf3se/vnfb3bW1sYXvPN+QVKdtP6yU8qG9ZHjQx6589ayIzIweyVGj7eNLSCdB
-         qISGLxSJaNs+JUUvbM8FXzy2OTirEzU1whLCBwbJsuBLePOiMyrCufoYlY4bb/bJX8TB
-         Kruw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
+        b=Svs3YjwLlCHH1hpBFaBvYFdbmx2H1H8oWdDssHLarhnYCQEKxMAocbGwaj4/AwqNFE
+         EDy3xmivyOrpMLbbqrHqjTRvM/3WmnWRZcXNDumD5jv+w7a9D1pOs81Qkw+NnZxoTv2Z
+         +DF5VDxaClsSnvuDOkKoJmszM7hgB2ruywgI732+tH30+NsinBVRwuOJAHR6zOYRcCQW
+         psOtqAy/6uHii5iszKOKFbh8oVjR0h1XM7/POzafX0W+j26PIC7IX299MzlDA+KTRvn9
+         7wS3XcQvIAejL5KHcdWDPalzCdtt+D48oSHCopJlNbT212Efr11VqwzRCtejAEKx71Xk
+         VEFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=iXMHLbguntKcuTgr1nAq0fpxZctLmOVLPocRZ01HV1s=;
-        b=bGVswk8V9vhIE2g62iRYeeLzhJBZgrs2ouacEH+gkfm/3fT3ZJpNppuKMYYeYZ6o3m
-         naM0UXF1nRKiqpQhR/9NONCUj8lKuk9TGQto8T1ZczeI9quUzBcw9v3UZQl0MfqWwcl8
-         vets8nCfk8F5sJ9lpl0x2/jPRr3atNURTzGL7ApoLfgo7WheVMCWPitz/DlvANUzFuJn
-         r0HMkGvnXHIARGg3PcXRphV7LSijBM3Uyw5W5g1uYPvICQ7YcOvwYkYwD35v9N3YkS9v
-         BypQE1PcsnvcrNe+OvQ9ezFxWOyVfvPnzOyH+zhYkgrMmc50FlTa30yRKAoSEDsMjWv7
-         VdBQ==
-X-Gm-Message-State: AOAM530mg27VAZLYmZcdK2mOZzaxsMOSnL9oQ9Peo+gqySlXenb3D+NX
-        PhX5c8HqQYwq6f1UBr1UJQS5Ww==
-X-Google-Smtp-Source: ABdhPJxwJ+AW8uQAXY8Win57SIEKcys5G+XsLikqbv6KNfk0Z4v0oLWW7NunPD5K78dMacn0DXTtuQ==
-X-Received: by 2002:a62:f201:: with SMTP id m1mr25533751pfh.198.1592898529334;
-        Tue, 23 Jun 2020 00:48:49 -0700 (PDT)
-Received: from [10.37.1.30] ([45.135.186.125])
-        by smtp.gmail.com with ESMTPSA id u6sm16409369pfc.83.2020.06.23.00.48.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jun 2020 00:48:48 -0700 (PDT)
-Subject: Re: [PATCH 0/2] Introduce PCI_FIXUP_IOMMU
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        jean-philippe <jean-philippe@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
-References: <20200601174104.GA734973@bjorn-Precision-5520>
- <779f4044-cf6a-b0d3-916f-0274450c07d3@linaro.org>
- <20200622115536.GH3701@8bytes.org>
-From:   Zhangfei Gao <zhangfei.gao@linaro.org>
-Message-ID: <d007cbea-85c0-6c75-fc4a-e2872ff59ea4@linaro.org>
-Date:   Tue, 23 Jun 2020 15:48:25 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
+        b=ieg34qB4PCPgCbJOVPBZrI1LMAj9K9jEZ/N2GI3+CTbRbWS0PDP7f3HKS2V9ZQRQc/
+         1JR6oJQeZQxc5BRtC7jEtDNXmHhFhjH7wyvypn/EEQB/vwLHnBln4v5ct1z65zqbPWmV
+         KLZacjdvKJqm5DDhdxS6oDS5kOJSX1ltVqoiaQfjqyKzDAV+BwmZp2Ex4uLmNpQ4MCZ7
+         EO8ZkooTT2kX0CFbNt9l2TjCK1pWHp2iPlj9jw7B+w39XTpJOXj888cJd4eGhMKEbTUk
+         sHZ3mWEkAJGwdUuzFM9jkehOzHZayyVtpnW9JIeGgsnPF4HY0q8PoW11BqoNO70zQ/aJ
+         keyg==
+X-Gm-Message-State: AOAM5307MFweqEb1cNjVcxwLjEYH0/myOoFsU6iXzLtXAIV7xbrSfdg6
+        OHUFtyTiMSK6x6/xnUMQdRJz27YACIY8NJykVQ0=
+X-Google-Smtp-Source: ABdhPJyALlyuF+HHNurDBPycXJdQGdinuoT9+1vAMtidu4iIc/fc5+hhmYgV+3SQ9QAFIrD2bzrgfjCcDSzEOrVFHJU=
+X-Received: by 2002:a5d:55c2:: with SMTP id i2mr24783684wrw.225.1592910996942;
+ Tue, 23 Jun 2020 04:16:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200622115536.GH3701@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Received: by 2002:a1c:f002:0:0:0:0:0 with HTTP; Tue, 23 Jun 2020 04:16:36
+ -0700 (PDT)
+Reply-To: sarahkoffi389@yahoo.co.jp
+From:   Sarah Koffi <paulwiliam782@gmail.com>
+Date:   Tue, 23 Jun 2020 12:16:36 +0100
+Message-ID: <CAHqcnY1H2iupBAz=FJNyXEV5G9HGjx-S86dp5pfwpHq27rjDWw@mail.gmail.com>
+Subject: Greetings From Mrs. Sarah Koffi
+To:     sarahkoffi389@yahoo.co.jp
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi, Joerg
+Greetings From Mrs. Sarah Koffi
 
-On 2020/6/22 下午7:55, Joerg Roedel wrote:
-> On Thu, Jun 04, 2020 at 09:33:07PM +0800, Zhangfei Gao wrote:
->> +++ b/drivers/iommu/iommu.c
->> @@ -2418,6 +2418,10 @@ int iommu_fwspec_init(struct device *dev, struct
->> fwnode_handle *iommu_fwnode,
->>          fwspec->iommu_fwnode = iommu_fwnode;
->>          fwspec->ops = ops;
->>          dev_iommu_fwspec_set(dev, fwspec);
->> +
->> +       if (dev_is_pci(dev))
->> +               pci_fixup_device(pci_fixup_final, to_pci_dev(dev));
->> +
-> That's not going to fly, I don't think we should run the fixups twice,
-> and they should not be run from IOMMU code. Is the only reason for this
-> second pass that iommu_fwspec is not yet allocated when it runs the
-> first time? I ask because it might be easier to just allocate the struct
-> earlier then.
-Thanks for looking this.
+I'm contacting you based on your good profiles I read and for a good
+reasons, I am in search of a property to buy in your country as I
+intended to come over to your
+country for investment, Though I have not meet with you before but I
+believe that one has to risk confiding in someone to succeed sometimes
+in life.
 
-Yes, it is the only reason calling fixup secondly after iommu_fwspec is 
-allocated.
+My name is Mrs. Sarah Koffi. My late husband deals on Crude Oil with
+Federal Government of Sudan and he has a personal Oil firm in Bentiu
+Oil zone town and Upper
+Nile city. What I have experience physically, I don't wish to
+experience it again in my life due to the recent civil Ethnic war
+cause by our President Mr. Salva Kiir
+and the rebel leader Mr Riek Machar, I have been Under United Nation
+refuge camp in chad to save my life and that of my little daughter.
 
-The first time fixup final is very early in pci_bus_add_device.
-If allocating iommu_fwspec earlier, it maybe in pci_alloc_dev.
-And assigning ops still in iommu_fwspec_init.
-Have tested it works.
-Not sure is it acceptable?
+Though, I do not know how you will feel to my proposal, but the truth
+is that I sneaked into Chad our neighboring country where I am living
+now as a refugee.
+I escaped with my little daughter when the rebels bust into our house
+and killed my husband as one of the big oil dealers in the country,
+ever since then, I have being on the run.
 
-Alternatively, adding can_stall to struct pci_dev is simple but ugly too,
-since pci does not know stall now.
+I left my country and move to Chad our neighboring country with the
+little ceasefire we had, due to the face to face peace meeting accord
+coordinated by the US Secretary of State, Mr John Kerry and United
+Nations in Ethiopia (Addis Ababa) between our President Mr Salva Kiir
+and the rebel leader Mr Riek Machar to stop this war.
 
+I want to solicit for your partnership with trust to invest the $8
+million dollars deposited by my late husband in Bank because my life
+is no longer safe in our country, since the rebels are looking for the
+families of all the oil business men in the country to kill, saying
+that they are they one that is milking the country dry.
 
-Thanks
+I will offer you 20% of the total fund for your help while I will
+partner with you for the investment in your country.
+If I get your reply.
 
+I will wait to hear from you so as to give you details.With love from
 
+ i need you to contact me here sarahkoffi389@yahoo.co.jp
 
+Mrs. Sarah Koffi
