@@ -2,137 +2,54 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC6620AED6
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2020 11:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF05B20AFC0
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2020 12:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbgFZJQg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 26 Jun 2020 05:16:36 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:42284 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725820AbgFZJQf (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 26 Jun 2020 05:16:35 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05Q9FkLI001185;
-        Fri, 26 Jun 2020 04:15:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1593162946;
-        bh=2NIvKg6o9HQpxqVdkiZ19PgyBblsdU+mdkzmqdMlpKM=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=vGAa71h90Bq6lyBT88zwPXrBkDjwjGkf4Z3rFGn9/6m2rQiOr5LFuJPG84MN+9R5j
-         1ca35m/q+q3AAhV6fyh9+771vDbbM3A+2AIY4Eart+PqXIMBAiq5kJDBYLvVzx0AkI
-         /G4TcSwfn8x/c1M11CZ8gKFJIuxOWCxSLJFfdyy0=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05Q9FkaF085758
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 26 Jun 2020 04:15:46 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 26
- Jun 2020 04:15:46 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 26 Jun 2020 04:15:46 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05Q9Fhl6058791;
-        Fri, 26 Jun 2020 04:15:45 -0500
-Subject: Re: [PATCHv4 3/7] crypto: sa2ul: add sha1/sha256/sha512 support
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <j-keerthy@ti.com>
-References: <20200615071452.25141-1-t-kristo@ti.com>
- <20200615071452.25141-4-t-kristo@ti.com>
- <20200626043155.GA2683@gondor.apana.org.au>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <2a89ea86-3b9e-06b5-fa8e-9dc6e5ad9aeb@ti.com>
-Date:   Fri, 26 Jun 2020 12:15:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726671AbgFZKcr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 26 Jun 2020 06:32:47 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6318 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727899AbgFZKcq (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 26 Jun 2020 06:32:46 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B4928AA2F1376BAD268F
+        for <linux-crypto@vger.kernel.org>; Fri, 26 Jun 2020 18:32:43 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 26 Jun 2020
+ 18:32:38 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>
+Subject: [PATCH 0/5] crypto: hisilicon/sec2 - fix SEC bugs and coding styles
+Date:   Fri, 26 Jun 2020 18:32:04 +0800
+Message-ID: <1593167529-22463-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <20200626043155.GA2683@gondor.apana.org.au>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 26/06/2020 07:31, Herbert Xu wrote:
-> On Mon, Jun 15, 2020 at 10:14:48AM +0300, Tero Kristo wrote:
->>
->> +static int sa_sha_update(struct ahash_request *req)
->> +{
->> +	struct sa_sha_req_ctx *rctx = ahash_request_ctx(req);
->> +	struct scatterlist *sg;
->> +	void *buf;
->> +	int pages;
->> +	struct page *pg;
->> +
->> +	if (!req->nbytes)
->> +		return 0;
->> +
->> +	if (rctx->buf_free >= req->nbytes) {
->> +		pg = sg_page(rctx->sg_next);
->> +		buf = kmap_atomic(pg);
->> +		scatterwalk_map_and_copy(buf + rctx->offset, req->src, 0,
->> +					 req->nbytes, 0);
->> +		kunmap_atomic(buf);
->> +		rctx->buf_free -= req->nbytes;
->> +		rctx->sg_next->length += req->nbytes;
->> +		rctx->offset += req->nbytes;
->> +	} else {
->> +		pages = get_order(req->nbytes);
->> +		buf = (void *)__get_free_pages(GFP_ATOMIC, pages);
->> +		if (!buf)
->> +			return -ENOMEM;
->> +
->> +		sg = kzalloc(sizeof(*sg) * 2, GFP_KERNEL);
->> +		if (!sg)
->> +			return -ENOMEM;
->> +
->> +		sg_init_table(sg, 1);
->> +		sg_set_buf(sg, buf, req->nbytes);
->> +		scatterwalk_map_and_copy(buf, req->src, 0, req->nbytes, 0);
->> +
->> +		rctx->buf_free = (PAGE_SIZE << pages) - req->nbytes;
->> +
->> +		if (rctx->sg_next) {
->> +			sg_unmark_end(rctx->sg_next);
->> +			sg_chain(rctx->sg_next, 2, sg);
->> +		} else {
->> +			rctx->src = sg;
->> +		}
->> +
->> +		rctx->sg_next = sg;
->> +		rctx->src_nents++;
->> +
->> +		rctx->offset = req->nbytes;
->> +	}
->> +
->> +	rctx->len += req->nbytes;
->> +
->> +	return 0;
->> +}
-> 
-> This is not how it's supposed to work.  To support the partial
-> hashing interface, you must actually hash the data and not just
-> save it in your context.  Otherwise your export is completely
-> meaningless.
+Fix some SEC driver bugs and modify some coding styles
 
-I have been experimenting with an alternate approach, where I have a 
-small buffer within the context, this would be more like the way other 
-drivers do this. If the buffer is closed before running out of space, I 
-can push this to be processed by HW, otherwise I must fallback to SW. 
-Does this sound like a better approach?
+Kai Ye (2):
+  crypto: hisilicon/sec2 - clear SEC debug regs
+  crypto:hisilicon/sec2 - update busy processing logic
 
-> If your hardware cannot export partially hashed state, then you
-> should use a software fallback for everything but digest.
+Longfang Liu (3):
+  crypto: hisilicon/sec2 - update SEC initialization and reset
+  crypto: hisilicon/sec2 - update debugfs interface parameters
+  crypto: hisilicon/sec2 - fix some coding styles
 
-Yea, HW can't support partial hashes.
+ drivers/crypto/hisilicon/qm.h              |   1 +
+ drivers/crypto/hisilicon/sec2/sec.h        |   3 +
+ drivers/crypto/hisilicon/sec2/sec_crypto.c |  81 +++++++++++++------
+ drivers/crypto/hisilicon/sec2/sec_main.c   | 126 +++++++++++++++--------------
+ 4 files changed, 128 insertions(+), 83 deletions(-)
 
--Tero
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+-- 
+2.8.1
+
