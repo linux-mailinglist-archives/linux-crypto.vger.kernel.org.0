@@ -2,83 +2,55 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AD320A65B
-	for <lists+linux-crypto@lfdr.de>; Thu, 25 Jun 2020 22:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097BA20AA35
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2020 03:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389067AbgFYUIA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 25 Jun 2020 16:08:00 -0400
-Received: from mga05.intel.com ([192.55.52.43]:54738 "EHLO mga05.intel.com"
+        id S1727892AbgFZBmR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 25 Jun 2020 21:42:17 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:51306 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388615AbgFYUIA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 25 Jun 2020 16:08:00 -0400
-IronPort-SDR: 0VN1LJtzruAPpsdE8O9WKcMKhbUVeWcmapEiCmWnubpAVgyM/1BiAdCzLwL+Q4PCys02pHCoD3
- FksDE4DQEaLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="229784477"
-X-IronPort-AV: E=Sophos;i="5.75,280,1589266800"; 
-   d="scan'208";a="229784477"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 13:07:59 -0700
-IronPort-SDR: lzNMNoJWbxcej9iBMgBrJXFgOShF63/ya54FTSlorKvuZ+B38c+n7KoUpNO3JxSp2Mw2oy8D+M
- 6YTetnVty84A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,280,1589266800"; 
-   d="scan'208";a="312107905"
-Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
-  by fmsmga002.fm.intel.com with ESMTP; 25 Jun 2020 13:07:59 -0700
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     "Zhou Wang" <wangzhou1@hisilicon.com>,
-        "Tony Luck" <tony.luck@intel.com>,
-        "Ashok Raj" <ashok.raj@intel.com>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ravi V Shankar" <ravi.v.shankar@intel.com>
-Cc:     linux-crypto@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH] crypto: hisilicon/qm: Change type of pasid to u32
-Date:   Thu, 25 Jun 2020 13:07:12 -0700
-Message-Id: <1593115632-31417-1-git-send-email-fenghua.yu@intel.com>
-X-Mailer: git-send-email 2.5.0
+        id S1727876AbgFZBmR (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 25 Jun 2020 21:42:17 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jodNd-0001zz-4M; Fri, 26 Jun 2020 11:42:14 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Jun 2020 11:42:13 +1000
+Date:   Fri, 26 Jun 2020 11:42:13 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com
+Subject: Re: [PATCH 4/4] crypto: qat - fallback for xts with 192 bit keys
+Message-ID: <20200626014213.GA2234@gondor.apana.org.au>
+References: <20200625125904.142840-1-giovanni.cabiddu@intel.com>
+ <20200625125904.142840-5-giovanni.cabiddu@intel.com>
+ <20200625195649.GA151942@silpixa00400314>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200625195649.GA151942@silpixa00400314>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-PASID is defined as "int" although it's a 20-bit value and shouldn't be
-negative int. To be consistent with PASID type in iommu, define PASID
-as "u32".
+On Thu, Jun 25, 2020 at 08:56:49PM +0100, Giovanni Cabiddu wrote:
+> On Thu, Jun 25, 2020 at 01:59:04PM +0100, Giovanni Cabiddu wrote:
+> > +	ctx->ftfm = crypto_alloc_skcipher("xts(aes)", 0, CRYPTO_ALG_ASYNC);
+> > +	if (IS_ERR(ctx->ftfm))
+> > +		return(PTR_ERR(ctx->ftfm));
+> I just realized I added an extra pair of parenthesis around PTR_ERR.
+> Below is a new version with this changed.
+> 
+> ----8<----
+> Subject: [PATCH] crypto: qat - fallback for xts with 192 bit keys
 
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
----
-PASID type will be changed consistently as u32:
-https://lore.kernel.org/patchwork/patch/1257770/
+Sorry but this doesn't work with patchwork as your new patch just
+shows up as a comment on the old one.  Please repost the whole
+series.
 
- drivers/crypto/hisilicon/qm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 9bb263cec6c3..8697dacf926d 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -1741,7 +1741,7 @@ void hisi_qm_release_qp(struct hisi_qp *qp)
- }
- EXPORT_SYMBOL_GPL(hisi_qm_release_qp);
- 
--static int qm_qp_ctx_cfg(struct hisi_qp *qp, int qp_id, int pasid)
-+static int qm_qp_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
- {
- 	struct hisi_qm *qm = qp->qm;
- 	struct device *dev = &qm->pdev->dev;
-@@ -1813,7 +1813,7 @@ static int qm_start_qp_nolock(struct hisi_qp *qp, unsigned long arg)
- 	struct hisi_qm *qm = qp->qm;
- 	struct device *dev = &qm->pdev->dev;
- 	int qp_id = qp->qp_id;
--	int pasid = arg;
-+	u32 pasid = arg;
- 	int ret;
- 
- 	if (!qm_qp_avail_state(qm, qp, QP_START))
+Thanks,
 -- 
-2.19.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
