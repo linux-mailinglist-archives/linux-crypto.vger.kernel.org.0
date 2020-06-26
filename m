@@ -2,94 +2,114 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5C820AFC2
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2020 12:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0060120B452
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2020 17:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgFZKcs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 26 Jun 2020 06:32:48 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6829 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727925AbgFZKcs (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 26 Jun 2020 06:32:48 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 7DF68A5A2842CC6A5899
-        for <linux-crypto@vger.kernel.org>; Fri, 26 Jun 2020 18:32:43 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 26 Jun 2020
- 18:32:40 +0800
-From:   Longfang Liu <liulongfang@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>
-Subject: [PATCH 5/5] crypto: hisilicon/sec2 - fix some coding styles
-Date:   Fri, 26 Jun 2020 18:32:09 +0800
-Message-ID: <1593167529-22463-6-git-send-email-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1593167529-22463-1-git-send-email-liulongfang@huawei.com>
-References: <1593167529-22463-1-git-send-email-liulongfang@huawei.com>
+        id S1729393AbgFZPSN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 26 Jun 2020 11:18:13 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:52988 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726878AbgFZPSM (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 26 Jun 2020 11:18:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593184691;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KhyzVywFi03LMkGFE6YU3ix+rjL9u5JtHjzF89C3iwg=;
+        b=QHSRrY0dIfJbA3UqF3cyR6vr1rgEMinv/gy5UCNg4gF7UcTdP1mGsCnFhHBgIZWODI5dn5
+        OLzjRSlmhAszCVjrvFDd3Y88pkfPoN7jaq3h+FshycLfOBEYkyfVZ0Z/bqG4IZxvGQXFtv
+        IHAhH4c78Wiee9tvkhPpvWujX7c5zxc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-BpksQRLTM9a38lmnoLB9TQ-1; Fri, 26 Jun 2020 11:18:04 -0400
+X-MC-Unique: BpksQRLTM9a38lmnoLB9TQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9775418FE866;
+        Fri, 26 Jun 2020 15:18:02 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 814FC5C557;
+        Fri, 26 Jun 2020 15:17:58 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 05QFHwaF013492;
+        Fri, 26 Jun 2020 11:17:58 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 05QFHuir013488;
+        Fri, 26 Jun 2020 11:17:56 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Fri, 26 Jun 2020 11:17:56 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+cc:     Eric Biggers <ebiggers@kernel.org>,
+        Mike Snitzer <msnitzer@redhat.com>,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com,
+        linux-crypto@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Milan Broz <mbroz@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        George Cherian <gcherian@marvell.com>,
+        Wei Xu <xuwei5@hisilicon.com>, Zaibo Xu <xuzaibo@Huawei.com>
+Subject: Re: [PATCH 1/3] crypto: pass the flag CRYPTO_ALG_ALLOCATES_MEMORY
+In-Reply-To: <20200626044534.GA2870@gondor.apana.org.au>
+Message-ID: <alpine.LRH.2.02.2006261109520.11899@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2006091259250.30590@file01.intranet.prod.int.rdu2.redhat.com> <20200610010450.GA6449@gondor.apana.org.au> <alpine.LRH.2.02.2006100756270.27811@file01.intranet.prod.int.rdu2.redhat.com> <20200610121106.GA23137@gondor.apana.org.au>
+ <alpine.LRH.2.02.2006161052540.28052@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2006161101080.28052@file01.intranet.prod.int.rdu2.redhat.com> <20200616173620.GA207319@gmail.com> <alpine.LRH.2.02.2006171107220.18714@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2006171108440.18714@file01.intranet.prod.int.rdu2.redhat.com> <20200626044534.GA2870@gondor.apana.org.au>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Modify some log output interfaces and
-update author information
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec_main.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 5bef3d8..90cd6b5 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -282,7 +282,7 @@ static int sec_engine_init(struct hisi_qm *qm)
- 					 reg, reg & 0x1, SEC_DELAY_10_US,
- 					 SEC_POLL_TIMEOUT_US);
- 	if (ret) {
--		dev_err(&qm->pdev->dev, "fail to init sec mem\n");
-+		pci_err(qm->pdev, "fail to init sec mem\n");
- 		return ret;
- 	}
- 
-@@ -371,7 +371,7 @@ static void sec_hw_error_enable(struct hisi_qm *qm)
- 
- 	if (qm->ver == QM_HW_V1) {
- 		writel(SEC_CORE_INT_DISABLE, qm->io_base + SEC_CORE_INT_MASK);
--		dev_info(&qm->pdev->dev, "V1 not support hw error handle\n");
-+		pci_info(qm->pdev, "V1 not support hw error handle\n");
- 		return;
- 	}
- 
-@@ -599,7 +599,7 @@ static int sec_core_debug_init(struct hisi_qm *qm)
- 
- 	regset = devm_kzalloc(dev, sizeof(*regset), GFP_KERNEL);
- 	if (!regset)
--		return -ENOENT;
-+		return -ENOMEM;
- 
- 	regset->regs = sec_dfx_regs;
- 	regset->nregs = ARRAY_SIZE(sec_dfx_regs);
-@@ -686,8 +686,6 @@ static void sec_log_hw_error(struct hisi_qm *qm, u32 err_sts)
- 						SEC_CORE_SRAM_ECC_ERR_INFO);
- 				dev_err(dev, "multi ecc sram num=0x%x\n",
- 					SEC_ECC_NUM(err_val));
--				dev_err(dev, "multi ecc sram addr=0x%x\n",
--					SEC_ECC_ADDR(err_val));
- 			}
- 		}
- 		errs++;
-@@ -996,5 +994,6 @@ module_exit(sec_exit);
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Zaibo Xu <xuzaibo@huawei.com>");
- MODULE_AUTHOR("Longfang Liu <liulongfang@huawei.com>");
-+MODULE_AUTHOR("Kai Ye <yekai13@huawei.com>");
- MODULE_AUTHOR("Wei Zhang <zhangwei375@huawei.com>");
- MODULE_DESCRIPTION("Driver for HiSilicon SEC accelerator");
--- 
-2.8.1
+On Fri, 26 Jun 2020, Herbert Xu wrote:
+
+> On Wed, Jun 17, 2020 at 11:09:28AM -0400, Mikulas Patocka wrote:
+> >
+> > Index: linux-2.6/include/linux/crypto.h
+> > ===================================================================
+> > --- linux-2.6.orig/include/linux/crypto.h
+> > +++ linux-2.6/include/linux/crypto.h
+> > @@ -97,9 +97,18 @@
+> >  #define CRYPTO_ALG_OPTIONAL_KEY		0x00004000
+> >  
+> >  /*
+> > + * The driver may allocate memory during request processing, so it shouldn't be
+> > + * used in cases where memory allocation failures aren't acceptable, such as
+> > + * during block device encryption.
+> > + */
+> > +#define CRYPTO_ALG_ALLOCATES_MEMORY	0x00008000
+> > +
+> > +/*
+> >   * Don't trigger module loading
+> >   */
+> > -#define CRYPTO_NOLOAD			0x00008000
+> > +#define CRYPTO_NOLOAD			0x00010000
+> > +
+> > +#define CRYPTO_ALG_INHERITED_FLAGS	(CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY)
+> 
+> Any reason why you need to renumber NOLOAD? If not please keep
+> the existing values.
+
+There is no hard reason for that. CRYPTO_NOLOAD is a "virtual" flag that 
+could be only present in crypto algorithm requests and I thought that the 
+intention was that the virtual flags go after real flags. If you don't 
+want to change existing flags, there is no problem with that.
+
+Mikulas
+
+> Thanks,
+> -- 
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> 
 
