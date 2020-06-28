@@ -2,96 +2,174 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BC620C772
-	for <lists+linux-crypto@lfdr.de>; Sun, 28 Jun 2020 12:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837F220C9C4
+	for <lists+linux-crypto@lfdr.de>; Sun, 28 Jun 2020 21:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbgF1Kzn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 28 Jun 2020 06:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726225AbgF1Kzm (ORCPT
+        id S1726654AbgF1TEk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 28 Jun 2020 15:04:40 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31304 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726635AbgF1TEj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 28 Jun 2020 06:55:42 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A94C061794
-        for <linux-crypto@vger.kernel.org>; Sun, 28 Jun 2020 03:55:42 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id x9so12120350ila.3
-        for <linux-crypto@vger.kernel.org>; Sun, 28 Jun 2020 03:55:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=h+4AIEJZ98rMpFOZrfpCpucJSKf0Ce+9JGs/IvjujJ0=;
-        b=aqE0Sx7PW4vS2SLu5eeEKor2N92QQ/cAoZoqKPL5FR6fqbBIZWmWbL05KiFIJ5jswT
-         UblNiMC4Pda+VlY6OgrxFkxDMgWhAEZm+n+j+b13/lEH7p7PVpom0xfukuk4QiA/IE7w
-         nVyARVi+DU4g8KiEy8ozFxRT2tkSlEHiKBSiCkj7PPjjS/7ycTkxzao2WO9Ngd7eVezQ
-         90nTh2AY7DcRo4pSU1Y2mLuJDnt/7iLpqv3HkcmmIKjT3xgwBLKPJfVmQn6/Gi/WVY1Y
-         3XHr40DAznTso1Guu4CxqYjikTx5i8OrqVieWnUWnI5TKdJJObQtVa/1lfiAB5kYZLqR
-         QqZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=h+4AIEJZ98rMpFOZrfpCpucJSKf0Ce+9JGs/IvjujJ0=;
-        b=SaO3k+ifIZIqSreDSkkwf6+Ws04IQBC/snUH892p7ZnsdVWBSWmP5s6nQ2ZjwDxExJ
-         AhdlzbfWJ3xYodeEiHYvSq4271hhFancEWDA8WJCyJhr33Glhts0U142uZNupWNuRogh
-         9i60p61uEbIlUKsWnTHBOLwq8tVGxwepq5s/p5Vd+bd5xg7cI1i4q8fRQbc3+JUlOjlp
-         V6bWiXfKQe6BvD5bz1y25wJ4OvmSVo1vcP+S8oH3avHQOjmRslLXP7g5Pwttl4yRPHmv
-         hb+gr+5jHWxX+lb1L60436tRe82vx3NTow7dYjvLd4Vea1HXuS5esVLK+BnVQm+FtSHH
-         Xvug==
-X-Gm-Message-State: AOAM5323sy2Ly/+zTf8uCfLwgGyUMT1Dlw72qNP+Bjn/O6oy95lC6w7Y
-        XBa+NDjHHTjo+nI84lsXRHJGsStyDgnN4vlIhOw=
-X-Google-Smtp-Source: ABdhPJxlW7pyFC2ERe6od8HkU92dQC1f7XEtpNM/00BVmxrndU9H27/5LFv1FzvzzPUGFiOn35HGZCOIhv6lX7Df64Q=
-X-Received: by 2002:a92:5a94:: with SMTP id b20mr10929060ilg.90.1593341741972;
- Sun, 28 Jun 2020 03:55:41 -0700 (PDT)
+        Sun, 28 Jun 2020 15:04:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593371077;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qdgR0RgpHkxJCEWnlf/pJrRhdiwOUw/TUdJvr42dJW0=;
+        b=DqNG5xJc9bKE9vBJ/CQPQf/rh5oPBK+e5rK0j/Ov9R3SHp0p1eZfvaqkV01bjBix+wCYjH
+        vnaKFt1cBxOH17NMLY0c5hRdM0fH5QUKQvRdaBVIOmKN+7bYki5C55O9X62npwGtfhNib8
+        uaddQHZR/i3VMZCbSlvEC+AJ72ZxmUw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-t_7acUYtP1WmQtIZ867Pvw-1; Sun, 28 Jun 2020 15:04:33 -0400
+X-MC-Unique: t_7acUYtP1WmQtIZ867Pvw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9CDA802ED4;
+        Sun, 28 Jun 2020 19:04:31 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E0E5B96B62;
+        Sun, 28 Jun 2020 19:04:24 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 05SJ4OPC003566;
+        Sun, 28 Jun 2020 15:04:24 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 05SJ4M56003562;
+        Sun, 28 Jun 2020 15:04:22 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Sun, 28 Jun 2020 15:04:22 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Eric Biggers <ebiggers@kernel.org>
+cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Mike Snitzer <msnitzer@redhat.com>,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com,
+        linux-crypto@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Milan Broz <mbroz@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        George Cherian <gcherian@marvell.com>,
+        Wei Xu <xuwei5@hisilicon.com>, Zaibo Xu <xuzaibo@Huawei.com>
+Subject: Re: [PATCH 1/3 v2] crypto: introduce the flag
+ CRYPTO_ALG_ALLOCATES_MEMORY
+In-Reply-To: <20200626164617.GA211634@gmail.com>
+Message-ID: <alpine.LRH.2.02.2006281501230.347@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2006100756270.27811@file01.intranet.prod.int.rdu2.redhat.com> <20200610121106.GA23137@gondor.apana.org.au> <alpine.LRH.2.02.2006161052540.28052@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2006161101080.28052@file01.intranet.prod.int.rdu2.redhat.com>
+ <20200616173620.GA207319@gmail.com> <alpine.LRH.2.02.2006171107220.18714@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2006171108440.18714@file01.intranet.prod.int.rdu2.redhat.com> <20200626044534.GA2870@gondor.apana.org.au>
+ <alpine.LRH.2.02.2006261109520.11899@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2006261215480.13882@file01.intranet.prod.int.rdu2.redhat.com> <20200626164617.GA211634@gmail.com>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Received: by 2002:a92:8409:0:0:0:0:0 with HTTP; Sun, 28 Jun 2020 03:55:41
- -0700 (PDT)
-From:   Ududonka Ahmed <ududonka.ahmed5@gmail.com>
-Date:   Sun, 28 Jun 2020 10:55:41 +0000
-Message-ID: <CAA6fRiFzeJk_KX_HcsBJvwJ1sspB2nnTJYSLp-B2Xm=nZTVMfQ@mail.gmail.com>
-Subject: Thanks you very much
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear,
 
-I was shocked you stopped communicating me, I really can't understand
-your reason for doing so, but I am very happy now to inform you about
-my success in getting the fund out of the bank with the help of a
-staff working in the remittance office and also with the special
-assistance of a French business woman that catered for other
-logistics.
 
-However, I left the sum of $800,000 (Eight Hundred Thousand U.S
-Dollars Only) in an ATM cash withdrawal Card. This $800,000 is for you
-and it is purposely for your compensation for your little effort in
-this transaction. The ATM Card is a global payment card which is
-acceptable, workable and usable worldwide in making daily withdrawal
-of money from any ATM location.  So you can be able to make
-withdrawals of money in any countries on daily basis.
+On Fri, 26 Jun 2020, Eric Biggers wrote:
 
-I would have sent the ATM card to your address by myself, but I lack
-the time to do that now because I have to urgently meet up with my
-business colleagues in Russia. I will be heading to the airport as
-soon as I send you this email because I will be traveling out of my
-country to Russia where I shall continue with a petroleum business
-engagements.
+> On Fri, Jun 26, 2020 at 12:16:33PM -0400, Mikulas Patocka wrote:
+> > +/*
+> > + * Pass these flags down through the crypto API.
+> > + */
+> > +#define CRYPTO_ALG_INHERITED_FLAGS	(CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY)
+> 
+> This comment is useless.  How about:
+> 
+> /*
+>  * When an algorithm uses another algorithm (e.g., if it's an instance of a
+>  * template), these are the flags that always get set on the "outer" algorithm
+>  * if any "inner" algorithm has them set.  In some cases other flags are
+>  * inherited too; these are just the flags that are *always* inherited.
+>  */
+> #define CRYPTO_ALG_INHERITED_FLAGS	(CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY)
+> 
+> Also I wonder about the case where the inner algorithm is a fallback rather than
+> part of a template instance.  This patch only handles templates, not fallbacks.
+> Is that intentional?  Isn't that technically a bug?
 
-For your good, I left the ATM card with one Mrss.Sumon, now go on and
-contact him through his email address so that he can dispatch to you
-the ATM card at your contact address.  Simply contact Mrss.Sumon
-immediately so that he can send the ATM card to you. Below is the
-contact of Mrss.Sumon;
+I'm not an expert in crypto internals, so I don't know. I'll send version 
+3 of this patch and I'd like to ask you or Herbert to fix it.
 
-E-Mail:  mrsceline.sumon002@hotmail.com
+> > +
+> > +/*
+> >   * Transform masks and values (for crt_flags).
+> >   */
+> >  #define CRYPTO_TFM_NEED_KEY		0x00000001
+> > Index: linux-2.6/crypto/authenc.c
+> > ===================================================================
+> > --- linux-2.6.orig/crypto/authenc.c	2020-06-26 17:24:03.566417000 +0200
+> > +++ linux-2.6/crypto/authenc.c	2020-06-26 17:24:03.566417000 +0200
+> > @@ -388,7 +388,8 @@ static int crypto_authenc_create(struct
+> >  	if ((algt->type ^ CRYPTO_ALG_TYPE_AEAD) & algt->mask)
+> >  		return -EINVAL;
+> >  
+> > -	mask = crypto_requires_sync(algt->type, algt->mask);
+> > +	mask = crypto_requires_sync(algt->type, algt->mask) |
+> > +	       crypto_requires_nomem(algt->type, algt->mask);
+> 
+> As I suggested earlier, shouldn't there be a function that returns the mask for
+> all inherited flags, rather than handling each flag individually?
 
-Name:    Mrss Celine Sumon
+Yes - I've created crypto_requires_inherited for this purpose.
 
-I will no longer be able to email you again.
+> >  
+> >  	inst = kzalloc(sizeof(*inst) + sizeof(*ctx), GFP_KERNEL);
+> >  	if (!inst)
+> > @@ -424,7 +425,7 @@ static int crypto_authenc_create(struct
+> >  		goto err_free_inst;
+> >  
+> >  	inst->alg.base.cra_flags = (auth_base->cra_flags |
+> > -				    enc->base.cra_flags) & CRYPTO_ALG_ASYNC;
+> > +			enc->base.cra_flags) & CRYPTO_ALG_INHERITED_FLAGS;
+> 
+> Strange indentation here.  Likewise in most of the other files.
 
-Bye and best regards,
+I was told that the code should be 80-characters wide.
 
-Mr Ududonka Ahmed.
+> > Index: linux-2.6/crypto/xts.c
+> > ===================================================================
+> > --- linux-2.6.orig/crypto/xts.c	2020-06-26 17:24:03.566417000 +0200
+> > +++ linux-2.6/crypto/xts.c	2020-06-26 17:24:03.566417000 +0200
+> > @@ -415,7 +415,7 @@ static int create(struct crypto_template
+> >  	} else
+> >  		goto err_free_inst;
+> >  
+> > -	inst->alg.base.cra_flags = alg->base.cra_flags & CRYPTO_ALG_ASYNC;
+> > +	inst->alg.base.cra_flags = alg->base.cra_flags & CRYPTO_ALG_INHERITED_FLAGS;
+> >  	inst->alg.base.cra_priority = alg->base.cra_priority;
+> >  	inst->alg.base.cra_blocksize = XTS_BLOCK_SIZE;
+> >  	inst->alg.base.cra_alignmask = alg->base.cra_alignmask |
+> 
+> Need to set the mask correctly in this file.
+
+I don't know what do you mean.
+
+> > Index: linux-2.6/crypto/adiantum.c
+> > ===================================================================
+> > --- linux-2.6.orig/crypto/adiantum.c	2020-06-26 17:24:03.566417000 +0200
+> > +++ linux-2.6/crypto/adiantum.c	2020-06-26 17:24:03.566417000 +0200
+> > @@ -507,7 +507,8 @@ static int adiantum_create(struct crypto
+> >  	if ((algt->type ^ CRYPTO_ALG_TYPE_SKCIPHER) & algt->mask)
+> >  		return -EINVAL;
+> >  
+> > -	mask = crypto_requires_sync(algt->type, algt->mask);
+> > +	mask = crypto_requires_sync(algt->type, algt->mask) |
+> > +	       crypto_requires_nomem(algt->type, algt->mask);
+> >  
+> >  	inst = kzalloc(sizeof(*inst) + sizeof(*ictx), GFP_KERNEL);
+> >  	if (!inst)
+> 
+> Need to use CRYPTO_ALG_INHERITED_FLAGS in this file.
+
+OK.
+
+> - Eric
+
+Mikulas
+
