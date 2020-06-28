@@ -2,90 +2,96 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BE220C47F
-	for <lists+linux-crypto@lfdr.de>; Sun, 28 Jun 2020 00:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BC620C772
+	for <lists+linux-crypto@lfdr.de>; Sun, 28 Jun 2020 12:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725912AbgF0WCa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 27 Jun 2020 18:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
+        id S1726229AbgF1Kzn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 28 Jun 2020 06:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725907AbgF0WCa (ORCPT
+        with ESMTP id S1726225AbgF1Kzm (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 27 Jun 2020 18:02:30 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8938CC061794
-        for <linux-crypto@vger.kernel.org>; Sat, 27 Jun 2020 15:02:30 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id m2so11985927otr.12
-        for <linux-crypto@vger.kernel.org>; Sat, 27 Jun 2020 15:02:30 -0700 (PDT)
+        Sun, 28 Jun 2020 06:55:42 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A94C061794
+        for <linux-crypto@vger.kernel.org>; Sun, 28 Jun 2020 03:55:42 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id x9so12120350ila.3
+        for <linux-crypto@vger.kernel.org>; Sun, 28 Jun 2020 03:55:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=hDm0J70xfMLbVvceQHwxPddZCp69UMTk2d0jtKg2a8s=;
-        b=uvaWEz0dd8Ac3CT35qBSqfznpY4sgxsz7Od3pFBzZIuQcY/8TViLhlHXQU9leeTEpY
-         AGovLfmyzd6U3Cq2lgZLwHP1J5YFMSD+Pyz17XxyLzQnjVOPPz8Ik+J+fYFM18bC4Fqc
-         JhO+jF294xtXRRnL3TKWvGE6eKydOzo9lI+qnLW3YVbUSLfu7Gq0pi7M8z5WpDddMN8M
-         WWaoRGs8g5M97omhRASDLgcJhl5wyTXcCK3cENHMncLoSakV7dWBQ+2v4jCXqV+88itT
-         y9KXfYDXgC/gw5+BqchOAKmUvgcqp5Y71+LwruoBL/ShzO8C2ON+xs5RLFzJg/awZL11
-         9lUw==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=h+4AIEJZ98rMpFOZrfpCpucJSKf0Ce+9JGs/IvjujJ0=;
+        b=aqE0Sx7PW4vS2SLu5eeEKor2N92QQ/cAoZoqKPL5FR6fqbBIZWmWbL05KiFIJ5jswT
+         UblNiMC4Pda+VlY6OgrxFkxDMgWhAEZm+n+j+b13/lEH7p7PVpom0xfukuk4QiA/IE7w
+         nVyARVi+DU4g8KiEy8ozFxRT2tkSlEHiKBSiCkj7PPjjS/7ycTkxzao2WO9Ngd7eVezQ
+         90nTh2AY7DcRo4pSU1Y2mLuJDnt/7iLpqv3HkcmmIKjT3xgwBLKPJfVmQn6/Gi/WVY1Y
+         3XHr40DAznTso1Guu4CxqYjikTx5i8OrqVieWnUWnI5TKdJJObQtVa/1lfiAB5kYZLqR
+         QqZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=hDm0J70xfMLbVvceQHwxPddZCp69UMTk2d0jtKg2a8s=;
-        b=DNhczIv36Iaek0Se+3NzUOHtVbNbcL1Q7d6UHxtmfDhYchWbVu5Lhee3qudazFrVJY
-         SJsJgNSu1PkSkfc+u7yp1ofdQz4LUoJ9FZY3urzy2taDRF0m1beSv0LMbDd0jkGpUil6
-         3XDgCwQlK/Sw+Iv1Hzu5onIsEMl3uL1ZpbBDWc/m7Na9i0xPZVcxQoiJBDDaRgsBW8tY
-         Um3WjOmT9LsdNWpai77wtKWiY/HVVjWljsWmATO6KBkYDfNwl5XU7TyFrLHcFglqQN4m
-         /Nb1NHSrel9o44LY7zub3HVWbt9GJkOfvCK+gfGa6wl/69/vH9eUEi8TAvt1Vk8131Xt
-         7b3g==
-X-Gm-Message-State: AOAM530CZkPBUXz5LP/sePJIUrumAr9cahqtBHBwuaLxTnextCkEPQBi
-        VF4imgiqvlsJwrMRZ9s1zaXJhTPFfV4eiDvcv4hGnRNLAuw=
-X-Google-Smtp-Source: ABdhPJynf4CV3u/z+wvqAxCFESu7ee7lLWI0u2+Rd2bRIf462RpI7Q5/OgPmYRkZuywkeS9iG1gTukKnSolbNLelkro=
-X-Received: by 2002:a05:6830:1dba:: with SMTP id z26mr8074641oti.180.1593294943879;
- Sat, 27 Jun 2020 14:55:43 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=h+4AIEJZ98rMpFOZrfpCpucJSKf0Ce+9JGs/IvjujJ0=;
+        b=SaO3k+ifIZIqSreDSkkwf6+Ws04IQBC/snUH892p7ZnsdVWBSWmP5s6nQ2ZjwDxExJ
+         AhdlzbfWJ3xYodeEiHYvSq4271hhFancEWDA8WJCyJhr33Glhts0U142uZNupWNuRogh
+         9i60p61uEbIlUKsWnTHBOLwq8tVGxwepq5s/p5Vd+bd5xg7cI1i4q8fRQbc3+JUlOjlp
+         V6bWiXfKQe6BvD5bz1y25wJ4OvmSVo1vcP+S8oH3avHQOjmRslLXP7g5Pwttl4yRPHmv
+         hb+gr+5jHWxX+lb1L60436tRe82vx3NTow7dYjvLd4Vea1HXuS5esVLK+BnVQm+FtSHH
+         Xvug==
+X-Gm-Message-State: AOAM5323sy2Ly/+zTf8uCfLwgGyUMT1Dlw72qNP+Bjn/O6oy95lC6w7Y
+        XBa+NDjHHTjo+nI84lsXRHJGsStyDgnN4vlIhOw=
+X-Google-Smtp-Source: ABdhPJxlW7pyFC2ERe6od8HkU92dQC1f7XEtpNM/00BVmxrndU9H27/5LFv1FzvzzPUGFiOn35HGZCOIhv6lX7Df64Q=
+X-Received: by 2002:a92:5a94:: with SMTP id b20mr10929060ilg.90.1593341741972;
+ Sun, 28 Jun 2020 03:55:41 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a9d:12d3:0:0:0:0:0 with HTTP; Sat, 27 Jun 2020 14:55:43
+Received: by 2002:a92:8409:0:0:0:0:0 with HTTP; Sun, 28 Jun 2020 03:55:41
  -0700 (PDT)
-Reply-To: un.org@i.ua
-From:   helen <taxofficebenin@gmail.com>
-Date:   Sat, 27 Jun 2020 22:55:43 +0100
-Message-ID: <CAK9MGy3D5UBf06OY16UW=c+Cybm67x+0kH_OWJkX7ywdQD9CNA@mail.gmail.com>
-Subject: 
+From:   Ududonka Ahmed <ududonka.ahmed5@gmail.com>
+Date:   Sun, 28 Jun 2020 10:55:41 +0000
+Message-ID: <CAA6fRiFzeJk_KX_HcsBJvwJ1sspB2nnTJYSLp-B2Xm=nZTVMfQ@mail.gmail.com>
+Subject: Thanks you very much
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-MONEY-GRAM TRANSFERRED PAYMENT INFO:
+Dear,
 
-Below is the sender=E2=80=99s information
+I was shocked you stopped communicating me, I really can't understand
+your reason for doing so, but I am very happy now to inform you about
+my success in getting the fund out of the bank with the help of a
+staff working in the remittance office and also with the special
+assistance of a French business woman that catered for other
+logistics.
 
+However, I left the sum of $800,000 (Eight Hundred Thousand U.S
+Dollars Only) in an ATM cash withdrawal Card. This $800,000 is for you
+and it is purposely for your compensation for your little effort in
+this transaction. The ATM Card is a global payment card which is
+acceptable, workable and usable worldwide in making daily withdrawal
+of money from any ATM location.  So you can be able to make
+withdrawals of money in any countries on daily basis.
 
+I would have sent the ATM card to your address by myself, but I lack
+the time to do that now because I have to urgently meet up with my
+business colleagues in Russia. I will be heading to the airport as
+soon as I send you this email because I will be traveling out of my
+country to Russia where I shall continue with a petroleum business
+engagements.
 
-1. MG. REFERENCE NO#: 36360857
+For your good, I left the ATM card with one Mrss.Sumon, now go on and
+contact him through his email address so that he can dispatch to you
+the ATM card at your contact address.  Simply contact Mrss.Sumon
+immediately so that he can send the ATM card to you. Below is the
+contact of Mrss.Sumon;
 
-2. SENDER'S NAME: Johnson Williams
+E-Mail:  mrsceline.sumon002@hotmail.com
 
-3. AMOUNT TO PICKUP: US$10,000
+Name:    Mrss Celine Sumon
 
+I will no longer be able to email you again.
 
+Bye and best regards,
 
-Go to any Money Gram office near you and pick up the payment Track the
-
-Reference Number by visiting and click the link below
-
-(https://secure.moneygram.com/embed/track) and enter the Reference
-
-Number: 36360857 and the Last Name: Williams, you will find the payment
-
-available for pickup instantly.
-
-Yours Sincerely,
-
-Mrs. Helen Marvis
-United Nations Liaison Office
-Directorate for International Payments
+Mr Ududonka Ahmed.
