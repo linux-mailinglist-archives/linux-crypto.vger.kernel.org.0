@@ -2,195 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B3B20E334
-	for <lists+linux-crypto@lfdr.de>; Tue, 30 Jun 2020 00:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE76E20E664
+	for <lists+linux-crypto@lfdr.de>; Tue, 30 Jun 2020 00:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388493AbgF2VMd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 29 Jun 2020 17:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730150AbgF2S5o (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:57:44 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3205DC00F813
-        for <linux-crypto@vger.kernel.org>; Mon, 29 Jun 2020 05:30:17 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j4so13902362wrp.10
-        for <linux-crypto@vger.kernel.org>; Mon, 29 Jun 2020 05:30:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PJzVhpJJAv65Qazp2aPfqaE5/RwoX3RLz4Z8bcbSMRY=;
-        b=pRKyjljsaQEzYd/ZTriBGti7UFYvW3HNq59C0GxU7Os8zRMWbFWUMRj3M06J5MzDlV
-         vIaE8Ml1b3R2geKPTQuPHi0k8gxdJWzU/+9zRgsvtmmmql0m5TZgeU4zDB0+yx/AWOAJ
-         0AjDk8p6eJ9DH+NvXRrUP7M2kRklGw7lArXXNQhUPumIZYQQudDavWKt0u4DFSBrRT3m
-         pUhLKJwwToAo+RwJXhWKcWkk1OI119FZRjaPRJlZ9TC/zhhiTlHGsy8t33DnoHDR0qfk
-         4dXuRgRa1sUvhPZkzCVhHCY+k4jL3cExflco1rek0UXuoZA2huIC6wGPNqZKL04EAIKn
-         wBgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PJzVhpJJAv65Qazp2aPfqaE5/RwoX3RLz4Z8bcbSMRY=;
-        b=B59ApV0x28V4owm+RTuVo+NuVzubDtugxClC8KyHKOwtt00MquGswGGjybgk8yiwCK
-         vt4fRtxfQOd5g5QTaZlRJKzsCEwjHHj/ZHO6npyYiWAdlb398fbbxRvcKuU5SvqI7mSM
-         WPBlQLdZSMtwOFw2pooUvreLQCqKWUPAKNsX6RfP0D3v8AOpHwF5SMA9nlrgeiT7zNrw
-         YcjrR6DPki6A4wRWQ9PVBaG5uwUCEoon2XJfDOko5JDX0uCrCPN/pVLy3mFEq1ww6wlO
-         Dt1tYFFkR2kLVPfrhirjM/UhWM/7KOrS9c1Mkz7/seXGycqk2l3+0G6AiK44ktVu8NcU
-         2XGw==
-X-Gm-Message-State: AOAM532SXVu7hYbEKybbIOCZz6UEw4zGwKPztWgeVVGiC9eRGSztxx/b
-        VL4YlOpX2YsqyJ8wAGKo/T4N9g==
-X-Google-Smtp-Source: ABdhPJyJCgqEzM0dRcjMBFFJyWUUkmlGDMG9BE8MzW+qrGWD2FeLjOf3tbRfUrqURp7S6UzoC8eBqg==
-X-Received: by 2002:adf:8b18:: with SMTP id n24mr17862490wra.372.1593433815872;
-        Mon, 29 Jun 2020 05:30:15 -0700 (PDT)
-Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id g144sm32676472wme.2.2020.06.29.05.30.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:30:15 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH 1/1] crypto: ux500: hash: Add namespacing to hash_init()
-Date:   Mon, 29 Jun 2020 13:30:03 +0100
-Message-Id: <20200629123003.1014387-1-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1732058AbgF2VrI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 29 Jun 2020 17:47:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726741AbgF2Sfo (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:44 -0400
+Subject: Re: [GIT PULL] Crypto Fixes for 5.8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593450914;
+        bh=Sf3fgStsrUyF1JZW9gNQ9fUsCF7HtLMfWRNqJtTJmaA=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=V6P5V5YEAio5SN5KUVGZa+DAnvllREp7oNvQPH+NCFl8fgTZHq9LjCdp9YiA9rgcK
+         K+JZJ7tuMWbBYZ0i3RJQXGcpc3W2Aj7wysKN/qhphDV15heN1wmAE+geGzQog6127H
+         8KLNggj2diWH5zUqPHjx4Ak6UWofeG9kp9fYBD5s=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200629021627.GA13792@gondor.apana.org.au>
+References: <20190916084901.GA20338@gondor.apana.org.au>
+ <20190923050515.GA6980@gondor.apana.org.au>
+ <20191202062017.ge4rz72ki3vczhgb@gondor.apana.org.au>
+ <20191214084749.jt5ekav5o5pd2dcp@gondor.apana.org.au>
+ <20200115150812.mo2eycc53lbsgvue@gondor.apana.org.au>
+ <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
+ <20200408061513.GA23636@gondor.apana.org.au>
+ <20200611040544.GA27603@gondor.apana.org.au>
+ <20200621082303.GA30729@gondor.apana.org.au>
+ <20200629021627.GA13792@gondor.apana.org.au>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200629021627.GA13792@gondor.apana.org.au>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+X-PR-Tracked-Commit-Id: e04ec0de61c1eb9693179093e83ab8ca68a30d08
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2cfa46dadd203eef88cc70131df7a81ebc34b8ff
+Message-Id: <159345091425.2382.6853137988813099953.pr-tracker-bot@kernel.org>
+Date:   Mon, 29 Jun 2020 17:15:14 +0000
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-A recent change to the Regulator consumer API (which this driver
-utilises) add prototypes for the some suspend functions.  These
-functions require including header file include/linux/suspend.h.
+The pull request you sent on Mon, 29 Jun 2020 12:16:27 +1000:
 
-The following tree of includes affecting this driver will be
-present:
+> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
 
-   In file included from include/linux/elevator.h:6,
-                    from include/linux/blkdev.h:288,
-                    from include/linux/blk-cgroup.h:23,
-                    from include/linux/writeback.h:14,
-                    from include/linux/memcontrol.h:22,
-                    from include/linux/swap.h:9,
-                    from include/linux/suspend.h:5,
-                    from include/linux/regulator/consumer.h:35,
-                    from drivers/crypto/ux500/hash/hash_core.c:28:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2cfa46dadd203eef88cc70131df7a81ebc34b8ff
 
-include/linux/elevator.h pulls in include/linux/hashtable.h which
-contains its own version of hash_init().  This confuses the build
-system and results in the following error (amongst others):
+Thank you!
 
- drivers/crypto/ux500/hash/hash_core.c:1362:19: error: passing argument 1 of '__hash_init' from incompatible pointer type [-Werror=incompatible-pointer-types]
- 1362 |  return hash_init(req);
-
-Fix this by namespacing the local hash_init() such that the
-source of confusion is removed.
-
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
-
-Ideally this should go into v5.8's -rcs else it runs the risk of
-breaking when Linus pulls everything in for v5.9-rc1.
-
- drivers/crypto/ux500/hash/hash_core.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/crypto/ux500/hash/hash_core.c b/drivers/crypto/ux500/hash/hash_core.c
-index c24f2db8d5e83..a5ee8c2fb4e0b 100644
---- a/drivers/crypto/ux500/hash/hash_core.c
-+++ b/drivers/crypto/ux500/hash/hash_core.c
-@@ -545,7 +545,7 @@ static bool hash_dma_valid_data(struct scatterlist *sg, int datasize)
-  *
-  * Initialize structures.
-  */
--static int hash_init(struct ahash_request *req)
-+static int ux500_hash_init(struct ahash_request *req)
- {
- 	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
- 	struct hash_ctx *ctx = crypto_ahash_ctx(tfm);
-@@ -1359,7 +1359,7 @@ static int ahash_sha1_init(struct ahash_request *req)
- 	ctx->config.oper_mode = HASH_OPER_MODE_HASH;
- 	ctx->digestsize = SHA1_DIGEST_SIZE;
- 
--	return hash_init(req);
-+	return ux500_hash_init(req);
- }
- 
- static int ahash_sha256_init(struct ahash_request *req)
-@@ -1372,7 +1372,7 @@ static int ahash_sha256_init(struct ahash_request *req)
- 	ctx->config.oper_mode = HASH_OPER_MODE_HASH;
- 	ctx->digestsize = SHA256_DIGEST_SIZE;
- 
--	return hash_init(req);
-+	return ux500_hash_init(req);
- }
- 
- static int ahash_sha1_digest(struct ahash_request *req)
-@@ -1425,7 +1425,7 @@ static int hmac_sha1_init(struct ahash_request *req)
- 	ctx->config.oper_mode	= HASH_OPER_MODE_HMAC;
- 	ctx->digestsize		= SHA1_DIGEST_SIZE;
- 
--	return hash_init(req);
-+	return ux500_hash_init(req);
- }
- 
- static int hmac_sha256_init(struct ahash_request *req)
-@@ -1438,7 +1438,7 @@ static int hmac_sha256_init(struct ahash_request *req)
- 	ctx->config.oper_mode	= HASH_OPER_MODE_HMAC;
- 	ctx->digestsize		= SHA256_DIGEST_SIZE;
- 
--	return hash_init(req);
-+	return ux500_hash_init(req);
- }
- 
- static int hmac_sha1_digest(struct ahash_request *req)
-@@ -1515,7 +1515,7 @@ static struct hash_algo_template hash_algs[] = {
- 		.conf.algorithm = HASH_ALGO_SHA1,
- 		.conf.oper_mode = HASH_OPER_MODE_HASH,
- 		.hash = {
--			.init = hash_init,
-+			.init = ux500_hash_init,
- 			.update = ahash_update,
- 			.final = ahash_final,
- 			.digest = ahash_sha1_digest,
-@@ -1538,7 +1538,7 @@ static struct hash_algo_template hash_algs[] = {
- 		.conf.algorithm	= HASH_ALGO_SHA256,
- 		.conf.oper_mode	= HASH_OPER_MODE_HASH,
- 		.hash = {
--			.init = hash_init,
-+			.init = ux500_hash_init,
- 			.update	= ahash_update,
- 			.final = ahash_final,
- 			.digest = ahash_sha256_digest,
-@@ -1561,7 +1561,7 @@ static struct hash_algo_template hash_algs[] = {
- 		.conf.algorithm = HASH_ALGO_SHA1,
- 		.conf.oper_mode = HASH_OPER_MODE_HMAC,
- 			.hash = {
--			.init = hash_init,
-+			.init = ux500_hash_init,
- 			.update = ahash_update,
- 			.final = ahash_final,
- 			.digest = hmac_sha1_digest,
-@@ -1585,7 +1585,7 @@ static struct hash_algo_template hash_algs[] = {
- 		.conf.algorithm = HASH_ALGO_SHA256,
- 		.conf.oper_mode = HASH_OPER_MODE_HMAC,
- 		.hash = {
--			.init = hash_init,
-+			.init = ux500_hash_init,
- 			.update = ahash_update,
- 			.final = ahash_final,
- 			.digest = hmac_sha256_digest,
 -- 
-2.25.1
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
