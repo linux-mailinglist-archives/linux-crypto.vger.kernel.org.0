@@ -2,80 +2,104 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE4E20CBB4
-	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2020 04:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A329D20D242
+	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2020 20:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726209AbgF2CQm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 28 Jun 2020 22:16:42 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:58328 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726204AbgF2CQm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 28 Jun 2020 22:16:42 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jpjLP-0001Kz-SD; Mon, 29 Jun 2020 12:16:28 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 29 Jun 2020 12:16:27 +1000
-Date:   Mon, 29 Jun 2020 12:16:27 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [GIT PULL] Crypto Fixes for 5.8
-Message-ID: <20200629021627.GA13792@gondor.apana.org.au>
-References: <20190916084901.GA20338@gondor.apana.org.au>
- <20190923050515.GA6980@gondor.apana.org.au>
- <20191202062017.ge4rz72ki3vczhgb@gondor.apana.org.au>
- <20191214084749.jt5ekav5o5pd2dcp@gondor.apana.org.au>
- <20200115150812.mo2eycc53lbsgvue@gondor.apana.org.au>
- <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
- <20200408061513.GA23636@gondor.apana.org.au>
- <20200611040544.GA27603@gondor.apana.org.au>
- <20200621082303.GA30729@gondor.apana.org.au>
+        id S1727061AbgF2Sr6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 29 Jun 2020 14:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729355AbgF2Srp (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:47:45 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1898FC02E2C1
+        for <linux-crypto@vger.kernel.org>; Mon, 29 Jun 2020 06:58:15 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id 9so18127438ljc.8
+        for <linux-crypto@vger.kernel.org>; Mon, 29 Jun 2020 06:58:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uCQ8gnTNmCbw3Jp4/ShmxDGjAQ3pvSFd1R7iQkCtV0o=;
+        b=bEMO9AAnWp5LTsNLVdXW9Oe7mzKQhGXAj0e5OEmfEtAkG1cNaFNZSh2Qdo5mWbPuMY
+         9DiqUdT+MsXYwleFvjrGxmVJqwyvuKXhxlQUK3rtF7VdMnvX7cTOhwoxwrJJLOVzNu5i
+         2XK9FlT9eHx+sLquBViH/xZ5rB5rAhbPqcP9GuagM0OXFUt9wlcNzUKNy1aLnFdNwo+V
+         8Ruz/vdEgYh0uNq8BnFoCh6EqK2N49EfB0DJU88m7ryxOsAPu8lNbY+iq10lCSBY9Mui
+         ZPg6x5swpeRbq9anXoM2U2j46UxRzipSI496ZyBwvvY+KYVNwgj+Iwoz/AD7OkkAul0p
+         isLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uCQ8gnTNmCbw3Jp4/ShmxDGjAQ3pvSFd1R7iQkCtV0o=;
+        b=KbngNQuqzJ6EM4P1ZxMGrBcPkMMGt6wVYD/yEps9rQdKh/IZUAmC2OYK5Id8cpkS1i
+         0BkUrWxmWD1DBKiUTv2U7tw1ngKfl1dJcPxR56hK5foXPGe7V2BJ3pJY85N9G7nDjrH0
+         Zq2G7xzz0owM3wj7hhqWXh2RPG/g9OilYgu7O3zqgTstcp5DoE1T55A6/HoYXrIyVyNp
+         DOTsU4Yp/F8YVR1PbWkequQAWhUUxT1Ji04ROzd5CCanWRl00jIg8uqDR7zk8tJJyeP2
+         eaAMUsoBDsM05irWOe00wmNPLJt9HPp1GiD149kMvvVaXuFGtwdbZD0YPu6gNFYv7vuw
+         Ce4Q==
+X-Gm-Message-State: AOAM531vbglecf8QD3fQvOYS6p+taU7mHRLCv082YGdwV0Am6RkxVZX6
+        NQnrTPKqqav0ksSWNtXalXMSEbiSs+qKtmzsakvtd/HRtN0=
+X-Google-Smtp-Source: ABdhPJyszh+KKJKX6JxEpQEiu36tPTXZ+lFvnrC92R82eADyKCIBV3+TFvVd2yAYiyqz2uUbOeMX15KpV7G5lmjJkoI=
+X-Received: by 2002:a2e:3504:: with SMTP id z4mr8452019ljz.283.1593439093501;
+ Mon, 29 Jun 2020 06:58:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200621082303.GA30729@gondor.apana.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200629123003.1014387-1-lee.jones@linaro.org>
+In-Reply-To: <20200629123003.1014387-1-lee.jones@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 29 Jun 2020 15:58:02 +0200
+Message-ID: <CACRpkdYxRsCmK+3Zu9ywMZD=Y1c4N-27gj-w4eTwpRGGd2=-hw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] crypto: ux500: hash: Add namespacing to hash_init()
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Linus:
+On Mon, Jun 29, 2020 at 2:30 PM Lee Jones <lee.jones@linaro.org> wrote:
 
-This push fixes two race conditions, one in padata and one in
-af_alg.
+> A recent change to the Regulator consumer API (which this driver
+> utilises) add prototypes for the some suspend functions.  These
+> functions require including header file include/linux/suspend.h.
+>
+> The following tree of includes affecting this driver will be
+> present:
+>
+>    In file included from include/linux/elevator.h:6,
+>                     from include/linux/blkdev.h:288,
+>                     from include/linux/blk-cgroup.h:23,
+>                     from include/linux/writeback.h:14,
+>                     from include/linux/memcontrol.h:22,
+>                     from include/linux/swap.h:9,
+>                     from include/linux/suspend.h:5,
+>                     from include/linux/regulator/consumer.h:35,
+>                     from drivers/crypto/ux500/hash/hash_core.c:28:
+>
+> include/linux/elevator.h pulls in include/linux/hashtable.h which
+> contains its own version of hash_init().  This confuses the build
+> system and results in the following error (amongst others):
+>
+>  drivers/crypto/ux500/hash/hash_core.c:1362:19: error: passing argument 1 of '__hash_init' from incompatible pointer type [-Werror=incompatible-pointer-types]
+>  1362 |  return hash_init(req);
+>
+> Fix this by namespacing the local hash_init() such that the
+> source of confusion is removed.
+>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: linux-crypto@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-The following changes since commit 819966c06b759022e9932f328284314d9272b9f3:
+This looks reasonable.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-  crypto: drbg - always try to free Jitter RNG instance (2020-06-15 17:38:54 +1000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus 
-
-for you to fetch changes up to e04ec0de61c1eb9693179093e83ab8ca68a30d08:
-
-  padata: upgrade smp_mb__after_atomic to smp_mb in padata_do_serial (2020-06-18 17:09:54 +1000)
-
-----------------------------------------------------------------
-Daniel Jordan (1):
-      padata: upgrade smp_mb__after_atomic to smp_mb in padata_do_serial
-
-Herbert Xu (1):
-      crypto: af_alg - fix use-after-free in af_alg_accept() due to bh_lock_sock()
-
- crypto/af_alg.c         | 26 +++++++++++---------------
- crypto/algif_aead.c     |  9 +++------
- crypto/algif_hash.c     |  9 +++------
- crypto/algif_skcipher.c |  9 +++------
- include/crypto/if_alg.h |  4 ++--
- kernel/padata.c         |  4 ++--
- 6 files changed, 24 insertions(+), 37 deletions(-)
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Yours,
+Linus Walleij
