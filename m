@@ -2,79 +2,80 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8E520CA45
-	for <lists+linux-crypto@lfdr.de>; Sun, 28 Jun 2020 22:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE4E20CBB4
+	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2020 04:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgF1UAY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 28 Jun 2020 16:00:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50946 "EHLO mail.kernel.org"
+        id S1726209AbgF2CQm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 28 Jun 2020 22:16:42 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:58328 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726675AbgF1UAY (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 28 Jun 2020 16:00:24 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7C85206C3;
-        Sun, 28 Jun 2020 20:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593374424;
-        bh=VVxMX2lDV09g2mF+EVY4UZ5ddjynnYgTOdUT9eAi10I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QUMvF0tURaxVQa9M353t/xbidOoVXPl6CjgsU6D5iLImfp0x89UQmOYQzZ0Zgstl0
-         H9URve8x7WBzNjbVCz1wqWMWKAkNbX2HzaQgJ60pni/5OabVf+Wb12gNf3EGAeBRnT
-         YAAO6JSCqEW9HqrHYt/f4zZTRZxE5x+7yuwrPuPk=
-Date:   Sun, 28 Jun 2020 13:00:22 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Mike Snitzer <msnitzer@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Zaibo Xu <xuzaibo@huawei.com>, linux-kernel@vger.kernel.org,
-        Wei Xu <xuwei5@hisilicon.com>, dm-devel@redhat.com,
-        George Cherian <gcherian@marvell.com>,
-        linux-crypto@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        id S1726204AbgF2CQm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 28 Jun 2020 22:16:42 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jpjLP-0001Kz-SD; Mon, 29 Jun 2020 12:16:28 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 29 Jun 2020 12:16:27 +1000
+Date:   Mon, 29 Jun 2020 12:16:27 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Milan Broz <mbroz@redhat.com>
-Subject: Re: [dm-devel] [PATCH 1/3 v2] crypto: introduce the flag
- CRYPTO_ALG_ALLOCATES_MEMORY
-Message-ID: <20200628200022.GE11197@sol.localdomain>
-References: <alpine.LRH.2.02.2006161101080.28052@file01.intranet.prod.int.rdu2.redhat.com>
- <20200616173620.GA207319@gmail.com>
- <alpine.LRH.2.02.2006171107220.18714@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2006171108440.18714@file01.intranet.prod.int.rdu2.redhat.com>
- <20200626044534.GA2870@gondor.apana.org.au>
- <alpine.LRH.2.02.2006261109520.11899@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2006261215480.13882@file01.intranet.prod.int.rdu2.redhat.com>
- <20200626164617.GA211634@gmail.com>
- <20200626170039.GB211634@gmail.com>
- <alpine.LRH.2.02.2006281505530.347@file01.intranet.prod.int.rdu2.redhat.com>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [GIT PULL] Crypto Fixes for 5.8
+Message-ID: <20200629021627.GA13792@gondor.apana.org.au>
+References: <20190916084901.GA20338@gondor.apana.org.au>
+ <20190923050515.GA6980@gondor.apana.org.au>
+ <20191202062017.ge4rz72ki3vczhgb@gondor.apana.org.au>
+ <20191214084749.jt5ekav5o5pd2dcp@gondor.apana.org.au>
+ <20200115150812.mo2eycc53lbsgvue@gondor.apana.org.au>
+ <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
+ <20200408061513.GA23636@gondor.apana.org.au>
+ <20200611040544.GA27603@gondor.apana.org.au>
+ <20200621082303.GA30729@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.02.2006281505530.347@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <20200621082303.GA30729@gondor.apana.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sun, Jun 28, 2020 at 03:07:49PM -0400, Mikulas Patocka wrote:
-> > 
-> > cryptd_create_skcipher(), cryptd_create_hash(), cryptd_create_aead(), and
-> > crypto_rfc4309_create() are also missing setting the mask.
-> > 
-> > pcrypt_create_aead() is missing both setting the mask and inheriting the flags.
-> 
-> I added CRYPTO_ALG_ALLOCATES_MEMORY there.
+Hi Linus:
 
-I don't see where the cryptd request processing functions allocate memory.
+This push fixes two race conditions, one in padata and one in
+af_alg.
 
-It seems that cryptd should just inherit the flag, like most other templates.
+The following changes since commit 819966c06b759022e9932f328284314d9272b9f3:
 
-Likewise for pcrypt.
+  crypto: drbg - always try to free Jitter RNG instance (2020-06-15 17:38:54 +1000)
 
-And also likewise for rfc4309.
+are available in the Git repository at:
 
-Where are you seeing the memory allocations that would require
-CRYPTO_ALG_ALLOCATES_MEMORY to always be enabled for these?
+  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus 
 
-- Eric
+for you to fetch changes up to e04ec0de61c1eb9693179093e83ab8ca68a30d08:
+
+  padata: upgrade smp_mb__after_atomic to smp_mb in padata_do_serial (2020-06-18 17:09:54 +1000)
+
+----------------------------------------------------------------
+Daniel Jordan (1):
+      padata: upgrade smp_mb__after_atomic to smp_mb in padata_do_serial
+
+Herbert Xu (1):
+      crypto: af_alg - fix use-after-free in af_alg_accept() due to bh_lock_sock()
+
+ crypto/af_alg.c         | 26 +++++++++++---------------
+ crypto/algif_aead.c     |  9 +++------
+ crypto/algif_hash.c     |  9 +++------
+ crypto/algif_skcipher.c |  9 +++------
+ include/crypto/if_alg.h |  4 ++--
+ kernel/padata.c         |  4 ++--
+ 6 files changed, 24 insertions(+), 37 deletions(-)
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
