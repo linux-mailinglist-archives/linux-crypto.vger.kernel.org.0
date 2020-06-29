@@ -2,73 +2,108 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5D020D5F7
-	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2020 22:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3043820E0D3
+	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2020 23:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgF2TQs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 29 Jun 2020 15:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
+        id S1731476AbgF2UuD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 29 Jun 2020 16:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731885AbgF2TQD (ORCPT
+        with ESMTP id S1731475AbgF2TNi (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:16:03 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02CEC08C5EE
-        for <linux-crypto@vger.kernel.org>; Mon, 29 Jun 2020 12:16:01 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id q8so18393432iow.7
-        for <linux-crypto@vger.kernel.org>; Mon, 29 Jun 2020 12:16:01 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:38 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F70AC008761
+        for <linux-crypto@vger.kernel.org>; Mon, 29 Jun 2020 01:53:15 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id 9so17106661ljv.5
+        for <linux-crypto@vger.kernel.org>; Mon, 29 Jun 2020 01:53:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=XdfoRVGuOCD2JOxmLnJxyvoO2f5zjf1xh4i//8cGLHs=;
-        b=E57soH+fAZU9oM/uuDn4bCNx2wALmvA7rwFsDeo/VdmyR4hSt+vRDMPW0qpAcJ9V/h
-         UbYJ9fIR9BUAZrS+1TfrEzBoFSxbLFUBB/IIzj7rfy4Y1SyxPmM/cs9fEremwVWV5m5u
-         b9v38myIgTBJNjasjLIOUO/K2CJS7vPJsURIlWBEC7RA0ax+vZbkexDjvFbqaAUgNm/w
-         yj4NkgHNxXLdKOO4AZsIv5vnXx8YMl4s3e1fTXh2Hp6rhwVI9k4nzVvvlc/OSvXrfpbl
-         +6DOlsrKa8IKCRxKxdcbetpm2uz+ZUKJBnziwlMhGJ11qW6bGQPIDGjYXF06+gry04Zz
-         3NGQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G4N3NxnIHOlrbNxccCBL6Rnaa4Jaah/lF3KoyD4lJEU=;
+        b=Y5a00ORenb6fp3CAxkO2RdJhoSHYbhVhEF70f/Bopch+KginR0LyR2AYL2cW7YtzgE
+         4IBv/FjDw/X3ITMn7zE1q91GX2itg9qJ9m1DAIGJ86/5nVIvAESpGJNbQXrsq5JVOY8Q
+         E02Bdpx76U4cBBUxa7dA3EhR/bJGYosrKez06N2Q11o/6BTmZ2nXQj9qA1UoQ07YuyQr
+         ZMQ9sNVxKVhUWhtR+8oz6o4ZpoXBu+EE8pARkgtqi8O3gLxn7g4K5ldEY4iH6/+z7nqg
+         CXwAu2lLH9//ry9zSvJFNwpPG3zUVVSA+8mEmzkmKQxRlv5HRIrcnw1SNTabSrO8WFfd
+         aMjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=XdfoRVGuOCD2JOxmLnJxyvoO2f5zjf1xh4i//8cGLHs=;
-        b=l4cdQR1zO9IGKRUcUtMfEM7dfv3xrERA6AV94eoINf8HErn3hIy5uLdPa1mWXP85JT
-         CPmjG1AF3WWlqnDSqnMGuAuAWOJzHQDVaQPwFPoCcTuNfuOPTBuNJ6J5rUo0Na3sUZjq
-         WQppCkS7PtAo0Sgru3QWttlux7SbqtYu986SptpXA00FmA260ed2nkr2kMN4NtZVJ/YX
-         ZuXmuf1gg8M5Gwl2TIqvn6wMrXiwQhnZpEyPlYFlOmvmsls0tkCLBSTZ/JzhFV/OoQgd
-         SdaGYY6UBsEVLfL9N2DZ+57hegdQpHyFIyCRIMRL5yNc2akoQkFEURaGRcti3JgkLIbk
-         euMA==
-X-Gm-Message-State: AOAM5308sALM7oWl3b6T+yRbyds6zVwXvqYAjCj+jXbndIqlC/zIgjzd
-        +DpYZxeB26lkJvaj4teXuZEzTX2qtWzBijAbXhE=
-X-Google-Smtp-Source: ABdhPJyNR5zXZ8o09DSJzsSA3OSccnAxM/c9AxKQjYYOZlXvOMCiHs1YW/1gQi1Sa70TQ2VOPtabshfviWRkV7+ICnM=
-X-Received: by 2002:a6b:db17:: with SMTP id t23mr18236117ioc.4.1593458159284;
- Mon, 29 Jun 2020 12:15:59 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G4N3NxnIHOlrbNxccCBL6Rnaa4Jaah/lF3KoyD4lJEU=;
+        b=XWgtJgxCEKFgL8vEF75pHT/wUTNCxKfR7gTLZFechwe4l+Phrl8woXYT/eaanv3eRF
+         cdhak7gymVFnLDsl4Ps2WieBy595mlg1Tsg0T9HmS9hu4u16NE9UvL1PlA8LiPFjjGLt
+         VfkrQ5zhqBRbGyHgh3NWHs39+D0PqEIg8KJvGTyS069wIUX4lywHVL8T9rBdKov2takA
+         Iu9G+ercMwQ9wqWD8jwQJmXf0spRjwca3TTZ2AzTSMBBaM2KZur6OrHtgP6WavTbk2/X
+         75KBKjjH19xw6gA531BJBy4vUUOQTdKm5Lp8OcbO8ikYULObKRsDidJ3LW3YwJY2mNFL
+         GUDA==
+X-Gm-Message-State: AOAM533y/GJLYXvgJu8sDSuZkizejI9tGDTVxJlGqB8jQle3ioDImTI9
+        PJcuKEyeJVRQJJdN/NKeI+WTo4xEifvoNGqmNoW7jg==
+X-Google-Smtp-Source: ABdhPJy1rQQ5J/jylQniMmYImqn4+s/8Ebp+FCxmpDIQBCBP4TtEoH93hKJjC0A/2GKgXMfoOCLC5zfzCmLvoKP0M2c=
+X-Received: by 2002:a2e:b054:: with SMTP id d20mr7114033ljl.55.1593420793493;
+ Mon, 29 Jun 2020 01:53:13 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6602:1588:0:0:0:0 with HTTP; Mon, 29 Jun 2020 12:15:58
- -0700 (PDT)
-Reply-To: mrs.victoria.alexander2@gmail.com
-From:   "mrs.victoria alexander" <markalexandermilley321@gmail.com>
-Date:   Mon, 29 Jun 2020 12:15:58 -0700
-Message-ID: <CAP7XNCwEGQ+-Q==u4yk4yvJdk1X+gsfSU6pUV_hROjmF=p-DHw@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
+References: <CA+G9fYvHFs5Yx8TnT6VavtfjMN8QLPuXg6us-dXVJqUUt68adA@mail.gmail.com>
+ <20200622224920.GA4332@42.do-not-panic.com> <CA+G9fYsXDZUspc5OyfqrGZn=k=2uRiGzWY_aPePK2C_kZ+dYGQ@mail.gmail.com>
+ <20200623064056.GA8121@gondor.apana.org.au> <20200623170217.GB150582@gmail.com>
+ <20200626062948.GA25285@gondor.apana.org.au> <20200627083147.GA9365@gondor.apana.org.au>
+In-Reply-To: <20200627083147.GA9365@gondor.apana.org.au>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 29 Jun 2020 14:23:02 +0530
+Message-ID: <CA+G9fYszuzVq5P+10OA1biMQHQ-4tTDtqoOBHHdVMQXrwnWFJQ@mail.gmail.com>
+Subject: Re: [LKP] Re: [PATCH] crypto: af_alg - Fix regression on empty requests
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        LTP List <ltp@lists.linux.it>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear friend,
+On Sat, 27 Jun 2020 at 14:02, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Fri, Jun 26, 2020 at 04:29:48PM +1000, Herbert Xu wrote:
+> >
+> > Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > Fixes: f3c802a1f300 ("crypto: algif_aead - Only wake up when...")
+> > Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+>
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
+I have applied your patch and tested on Linux-next on arm, x86_64 and i386.
+All LTP crypto tests got passed.
 
-I have a business container transaction what that some of( $13million dollars)
+---
+patch -p1 <  crypto-af_alg---Fix-regression-on-empty-requests.diff
+patching file crypto/af_alg.c
+patching file crypto/algif_aead.c
+patching file crypto/algif_skcipher.c
+patching file include/crypto/if_alg.h
 
- I would like to discuss with you. If you are interested, please
-contact my email
+Test output:
+af_alg02.c:33: PASS: Successfully \"encrypted\" an empty message
+af_alg05.c:40: PASS: read() expectedly failed with EINVAL
 
-address (mrs.victoria.alexander2@gmail.com)
+Test results summary:
+af_alg01: pass
+af_alg02: pass
+af_alg03: pass
+af_alg04: pass
+af_alg05: pass
+af_alg06: pass
 
-My WhatsApp number but only message (+19293737780)
+ref:
+https://lkft.validation.linaro.org/scheduler/job/1532020#L1413
+https://lkft.validation.linaro.org/scheduler/job/1532019#L1516
+https://lkft.validation.linaro.org/scheduler/job/1532026#L935
 
-Please do not reply if you are not ready
-Thanks
+-- 
+Linaro LKFT
+https://lkft.linaro.org
