@@ -2,84 +2,64 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EB620D29A
-	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2020 20:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6301320D33F
+	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2020 21:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726084AbgF2Sur (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 29 Jun 2020 14:50:47 -0400
-Received: from mga06.intel.com ([134.134.136.31]:64953 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727090AbgF2Sun (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:50:43 -0400
-IronPort-SDR: CFxEYzUkIsoBPxzdsuvs811fhSwNNLa9MEYduw6iqsyIOKMlO+/SqjjqodwXIT6sfAowcWaAB9
- 0lv9522/WMRA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="207516131"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="207516131"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 10:04:58 -0700
-IronPort-SDR: PSh9N3OOgk5Ln16DxKMg1w0XnsqVf7kVnK+ig5FbcTBfFoCFsIx4VngYEZk+mug0y6+6IJ0MJJ
- h4rwNEPgLHww==
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="303138586"
-Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314) ([10.237.222.51])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 10:04:56 -0700
-Date:   Mon, 29 Jun 2020 18:04:50 +0100
-From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        qat-linux@intel.com
-Subject: Re: [PATCH v2 4/4] crypto: qat - fallback for xts with 192 bit keys
-Message-ID: <20200629170353.GA2750@silpixa00400314>
-References: <20200626080429.155450-1-giovanni.cabiddu@intel.com>
- <20200626080429.155450-5-giovanni.cabiddu@intel.com>
- <CAMj1kXGu4_Fp=0i9FUJuRUknsUrf0Ci=r9gMb5+Zf+hVXN4-rw@mail.gmail.com>
+        id S1729470AbgF2S5I (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 29 Jun 2020 14:57:08 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:59520 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729810AbgF2S5E (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:57:04 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 2EF2D262C820835CE9CE;
+        Mon, 29 Jun 2020 19:10:58 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 29 Jun 2020 19:10:44 +0800
+From:   Yang Shen <shenyang39@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>
+Subject: [PATCH 2/9] crypto: hisilicon/qm - clear used reference count when start qp
+Date:   Mon, 29 Jun 2020 19:09:01 +0800
+Message-ID: <1593428948-64634-3-git-send-email-shenyang39@huawei.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1593428948-64634-1-git-send-email-shenyang39@huawei.com>
+References: <1593428948-64634-1-git-send-email-shenyang39@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXGu4_Fp=0i9FUJuRUknsUrf0Ci=r9gMb5+Zf+hVXN4-rw@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Thanks for your feedback Ard.
+From: Shukun Tan <tanshukun1@huawei.com>
 
-On Fri, Jun 26, 2020 at 08:15:16PM +0200, Ard Biesheuvel wrote:
-> On Fri, 26 Jun 2020 at 10:04, Giovanni Cabiddu
-> <giovanni.cabiddu@intel.com> wrote:
-> >
-> > +static int qat_alg_skcipher_init_xts_tfm(struct crypto_skcipher *tfm)
-> > +{
-> > +       struct qat_alg_skcipher_ctx *ctx = crypto_skcipher_ctx(tfm);
-> > +       int reqsize;
-> > +
-> > +       ctx->ftfm = crypto_alloc_skcipher("xts(aes)", 0, CRYPTO_ALG_ASYNC);
-> 
-> Why are you only permitting synchronous fallbacks? If the logic above
-> is sound, and copies the base.complete and base.data fields as well,
-> the fallback can complete asynchronously without problems.
-> Note that SIMD s/w implementations of XTS(AES) are asynchronous as
-> well, as they use the crypto_simd helper which queues requests for
-> asynchronous completion if the context from which the request was
-> issued does not permit access to the SIMD register file (e.g., softirq
-> context on some architectures, if the interrupted context is also
-> using SIMD)
-I did it this way since I though I didn't have a way to test it with an
-asynchronous sw implementation.
-I changed this line to avoid masking the asynchronous implementations
-and test it by forcing simd.c to use always cryptd (don't know if there
-is a simpler way to do it).
+The used reference count is used for counting the number of 'sqe' which
+is under processing. This reference count should be cleared as starting 'qp',
+otherwise the 'used' will be messy when allocating this 'qp' again.
 
-Also, I added to the mask CRYPTO_ALG_NEED_FALLBACK so I don't get another
-implementation that requires a fallback.
+Fixes: 5308f6600a39("crypto: hisilicon - QM memory management...")
+Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
+---
+ drivers/crypto/hisilicon/qm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I'm going to send a v3.
-
-Regards,
-
+diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+index ad0adcc..79d17a0 100644
+--- a/drivers/crypto/hisilicon/qm.c
++++ b/drivers/crypto/hisilicon/qm.c
+@@ -755,6 +755,7 @@ static void qm_init_qp_status(struct hisi_qp *qp)
+ 	qp_status->cq_head = 0;
+ 	qp_status->cqc_phase = true;
+ 	atomic_set(&qp_status->flags, 0);
++	atomic_set(&qp_status->used, 0);
+ }
+ 
+ static void qm_vft_data_cfg(struct hisi_qm *qm, enum vft_type type, u32 base,
 -- 
-Giovanni
+2.7.4
+
