@@ -2,180 +2,85 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFB62109F7
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jul 2020 13:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1843210A57
+	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jul 2020 13:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730241AbgGALDt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 1 Jul 2020 07:03:49 -0400
-Received: from mga17.intel.com ([192.55.52.151]:29889 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730224AbgGALDs (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 1 Jul 2020 07:03:48 -0400
-IronPort-SDR: asJaAkLjyOSEEz6u1GWVTssiUyFivVVLoggQjXUXv4YlkhURPTnOXMIyF0G7ZfxGMFYWoWgjSn
- Io7voRAnFVhw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="126632458"
-X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
-   d="scan'208";a="126632458"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 04:03:47 -0700
-IronPort-SDR: ClRWOQP56fgcGEJMfeS8FwppZy345xzH8yP7pfKIZcTyVoj4r65AK8jgMzCDYMWzbCICK3uesi
- 1w4gROiAKq6Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
-   d="scan'208";a="425557294"
-Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314.ger.corp.intel.com) ([10.237.222.51])
-  by orsmga004.jf.intel.com with ESMTP; 01 Jul 2020 04:03:44 -0700
-From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To:     alex.williamson@redhat.com, herbert@gondor.apana.org.au
-Cc:     cohuck@redhat.com, nhorman@redhat.com, vdronov@redhat.com,
-        bhelgaas@google.com, mark.a.chambers@intel.com,
-        gordon.mcfadden@intel.com, ahsan.atta@intel.com,
-        qat-linux@intel.com, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [PATCH 5/5] crypto: qat - use PCI_VDEVICE
-Date:   Wed,  1 Jul 2020 12:03:02 +0100
-Message-Id: <20200701110302.75199-6-giovanni.cabiddu@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200701110302.75199-1-giovanni.cabiddu@intel.com>
-References: <20200701110302.75199-1-giovanni.cabiddu@intel.com>
+        id S1730237AbgGALgW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 1 Jul 2020 07:36:22 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7328 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730196AbgGALgW (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 1 Jul 2020 07:36:22 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 1D11C33996FA9CB4829A
+        for <linux-crypto@vger.kernel.org>; Wed,  1 Jul 2020 19:36:19 +0800 (CST)
+Received: from [10.63.139.185] (10.63.139.185) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 1 Jul 2020 19:36:15 +0800
+Subject: Re: [PATCH] crypto: hisilicon/qm: Change type of pasid to u32
+To:     Fenghua Yu <fenghua.yu@intel.com>, Tony Luck <tony.luck@intel.com>,
+        "Ashok Raj" <ashok.raj@intel.com>, Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>
+References: <1593115632-31417-1-git-send-email-fenghua.yu@intel.com>
+CC:     <linux-crypto@vger.kernel.org>
+From:   Zhou Wang <wangzhou1@hisilicon.com>
+Message-ID: <5EFC752E.6020507@hisilicon.com>
+Date:   Wed, 1 Jul 2020 19:36:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1593115632-31417-1-git-send-email-fenghua.yu@intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.63.139.185]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Build pci_device_id structure using the PCI_VDEVICE macro.
-This removes any references to the ADF_SYSTEM_DEVICE macro.
+On 2020/6/26 4:07, Fenghua Yu wrote:
+> PASID is defined as "int" although it's a 20-bit value and shouldn't be
+> negative int. To be consistent with PASID type in iommu, define PASID
+> as "u32".
+> 
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
 
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
----
- drivers/crypto/qat/qat_c3xxx/adf_drv.c      | 7 ++-----
- drivers/crypto/qat/qat_c3xxxvf/adf_drv.c    | 7 ++-----
- drivers/crypto/qat/qat_c62x/adf_drv.c       | 7 ++-----
- drivers/crypto/qat/qat_c62xvf/adf_drv.c     | 7 ++-----
- drivers/crypto/qat/qat_dh895xcc/adf_drv.c   | 7 ++-----
- drivers/crypto/qat/qat_dh895xccvf/adf_drv.c | 7 ++-----
- 6 files changed, 12 insertions(+), 30 deletions(-)
+Hi Fenghua,
 
-diff --git a/drivers/crypto/qat/qat_c3xxx/adf_drv.c b/drivers/crypto/qat/qat_c3xxx/adf_drv.c
-index bba0f142f7f6..43929d70c41d 100644
---- a/drivers/crypto/qat/qat_c3xxx/adf_drv.c
-+++ b/drivers/crypto/qat/qat_c3xxx/adf_drv.c
-@@ -18,12 +18,9 @@
- #include <adf_cfg.h>
- #include "adf_c3xxx_hw_data.h"
- 
--#define ADF_SYSTEM_DEVICE(device_id) \
--	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, device_id)}
--
- static const struct pci_device_id adf_pci_tbl[] = {
--	ADF_SYSTEM_DEVICE(PCI_DEVICE_ID_INTEL_QAT_C3XXX),
--	{0,}
-+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_QAT_C3XXX), },
-+	{ }
- };
- MODULE_DEVICE_TABLE(pci, adf_pci_tbl);
- 
-diff --git a/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c b/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
-index b77a58886599..dca52de22e8d 100644
---- a/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
-+++ b/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
-@@ -18,12 +18,9 @@
- #include <adf_cfg.h>
- #include "adf_c3xxxvf_hw_data.h"
- 
--#define ADF_SYSTEM_DEVICE(device_id) \
--	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, device_id)}
--
- static const struct pci_device_id adf_pci_tbl[] = {
--	ADF_SYSTEM_DEVICE(PCI_DEVICE_ID_INTEL_QAT_C3XXX_VF),
--	{0,}
-+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_QAT_C3XXX_VF), },
-+	{ }
- };
- MODULE_DEVICE_TABLE(pci, adf_pci_tbl);
- 
-diff --git a/drivers/crypto/qat/qat_c62x/adf_drv.c b/drivers/crypto/qat/qat_c62x/adf_drv.c
-index 722838ff03be..f104c9d1195d 100644
---- a/drivers/crypto/qat/qat_c62x/adf_drv.c
-+++ b/drivers/crypto/qat/qat_c62x/adf_drv.c
-@@ -18,12 +18,9 @@
- #include <adf_cfg.h>
- #include "adf_c62x_hw_data.h"
- 
--#define ADF_SYSTEM_DEVICE(device_id) \
--	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, device_id)}
--
- static const struct pci_device_id adf_pci_tbl[] = {
--	ADF_SYSTEM_DEVICE(PCI_DEVICE_ID_INTEL_QAT_C62X),
--	{0,}
-+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_QAT_C62X), },
-+	{ }
- };
- MODULE_DEVICE_TABLE(pci, adf_pci_tbl);
- 
-diff --git a/drivers/crypto/qat/qat_c62xvf/adf_drv.c b/drivers/crypto/qat/qat_c62xvf/adf_drv.c
-index a766cc18aae9..e0b909e70712 100644
---- a/drivers/crypto/qat/qat_c62xvf/adf_drv.c
-+++ b/drivers/crypto/qat/qat_c62xvf/adf_drv.c
-@@ -18,12 +18,9 @@
- #include <adf_cfg.h>
- #include "adf_c62xvf_hw_data.h"
- 
--#define ADF_SYSTEM_DEVICE(device_id) \
--	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, device_id)}
--
- static const struct pci_device_id adf_pci_tbl[] = {
--	ADF_SYSTEM_DEVICE(PCI_DEVICE_ID_INTEL_QAT_C62X_VF),
--	{0,}
-+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_QAT_C62X_VF), },
-+	{ }
- };
- MODULE_DEVICE_TABLE(pci, adf_pci_tbl);
- 
-diff --git a/drivers/crypto/qat/qat_dh895xcc/adf_drv.c b/drivers/crypto/qat/qat_dh895xcc/adf_drv.c
-index 4c3aea07f444..857aa4c8595f 100644
---- a/drivers/crypto/qat/qat_dh895xcc/adf_drv.c
-+++ b/drivers/crypto/qat/qat_dh895xcc/adf_drv.c
-@@ -18,12 +18,9 @@
- #include <adf_cfg.h>
- #include "adf_dh895xcc_hw_data.h"
- 
--#define ADF_SYSTEM_DEVICE(device_id) \
--	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, device_id)}
--
- static const struct pci_device_id adf_pci_tbl[] = {
--	ADF_SYSTEM_DEVICE(PCI_DEVICE_ID_INTEL_QAT_DH895XCC),
--	{0,}
-+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_QAT_DH895XCC), },
-+	{ }
- };
- MODULE_DEVICE_TABLE(pci, adf_pci_tbl);
- 
-diff --git a/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c b/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
-index 673348ca5dea..2987855a70dc 100644
---- a/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
-+++ b/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
-@@ -18,12 +18,9 @@
- #include <adf_cfg.h>
- #include "adf_dh895xccvf_hw_data.h"
- 
--#define ADF_SYSTEM_DEVICE(device_id) \
--	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, device_id)}
--
- static const struct pci_device_id adf_pci_tbl[] = {
--	ADF_SYSTEM_DEVICE(PCI_DEVICE_ID_INTEL_QAT_DH895XCC_VF),
--	{0,}
-+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_QAT_DH895XCC_VF), },
-+	{ }
- };
- MODULE_DEVICE_TABLE(pci, adf_pci_tbl);
- 
--- 
-2.26.2
+Looks good to me, thanks for fixing this.
 
+Zhou
+
+> ---
+> PASID type will be changed consistently as u32:
+> https://lore.kernel.org/patchwork/patch/1257770/
+> 
+>  drivers/crypto/hisilicon/qm.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+> index 9bb263cec6c3..8697dacf926d 100644
+> --- a/drivers/crypto/hisilicon/qm.c
+> +++ b/drivers/crypto/hisilicon/qm.c
+> @@ -1741,7 +1741,7 @@ void hisi_qm_release_qp(struct hisi_qp *qp)
+>  }
+>  EXPORT_SYMBOL_GPL(hisi_qm_release_qp);
+>  
+> -static int qm_qp_ctx_cfg(struct hisi_qp *qp, int qp_id, int pasid)
+> +static int qm_qp_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
+>  {
+>  	struct hisi_qm *qm = qp->qm;
+>  	struct device *dev = &qm->pdev->dev;
+> @@ -1813,7 +1813,7 @@ static int qm_start_qp_nolock(struct hisi_qp *qp, unsigned long arg)
+>  	struct hisi_qm *qm = qp->qm;
+>  	struct device *dev = &qm->pdev->dev;
+>  	int qp_id = qp->qp_id;
+> -	int pasid = arg;
+> +	u32 pasid = arg;
+>  	int ret;
+>  
+>  	if (!qm_qp_avail_state(qm, qp, QP_START))
+> 
