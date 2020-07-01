@@ -2,48 +2,48 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B47E2105D1
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jul 2020 10:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9BC2105DA
+	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jul 2020 10:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728560AbgGAIGO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 1 Jul 2020 04:06:14 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:47378 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728593AbgGAIGN (ORCPT
+        id S1728481AbgGAIGe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 1 Jul 2020 04:06:34 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:44274 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728812AbgGAIGP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 1 Jul 2020 04:06:13 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 061869Fn050747;
-        Wed, 1 Jul 2020 03:06:09 -0500
+        Wed, 1 Jul 2020 04:06:15 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06186AjD081356;
+        Wed, 1 Jul 2020 03:06:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1593590769;
-        bh=qss1T0kR8Yhb6TuZ9w3U+BLn6FFmNM3CzQg7mdrYzlk=;
+        s=ti-com-17Q1; t=1593590770;
+        bh=urWL+xGplHTB4efaGJSK4KzijW6kDqyDz5lf+3XyQyg=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=L1jatucPogf/8rTK3dCVdJNT6H1OI3P1A9THV6C103cat40b8Y7jHsZjySiY2a7Jm
-         tPzRT1E5QfiDi6aDcaCsiE/b5ruDyJbwGn+9ciCgeIoiLEokKCz8F2MIOm0Oqguc5J
-         XdzKF2Ec0/zdJQVwYqLmLMRAVuxDIcQanizNwFHo=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 061869Sd089858
+        b=Sn78cx/4JlqOurI8S9/afkSISt9sgKo2Am4h0Z890GpM9JvXVW8jKfPs46ywAIHet
+         WpVsfhtRTkUqR4ploWaIXxpykdUr11X3rMmrQCCrBSA1HZXFppXZVaPuXqoZtOoNmp
+         09ZgER0U9ACfHcBoNdQwEuu4Ymd1SVSe989BCKzY=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06186AVR003591
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 1 Jul 2020 03:06:09 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 1 Jul 2020 03:06:10 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 1 Jul
- 2020 03:06:08 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 03:06:10 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 1 Jul 2020 03:06:08 -0500
+ Frontend Transport; Wed, 1 Jul 2020 03:06:10 -0500
 Received: from sokoban.bb.dnainternet.fi (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06185wUh078048;
-        Wed, 1 Jul 2020 03:06:07 -0500
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06185wUi078048;
+        Wed, 1 Jul 2020 03:06:09 -0500
 From:   Tero Kristo <t-kristo@ti.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
         <linux-crypto@vger.kernel.org>
 CC:     <j-keerthy@ti.com>
-Subject: [PATCHv5 5/7] crypto: sa2ul: add device links to child devices
-Date:   Wed, 1 Jul 2020 11:05:51 +0300
-Message-ID: <20200701080553.22604-6-t-kristo@ti.com>
+Subject: [PATCHv5 6/7] arm64: dts: ti: k3-am6: Add crypto accelarator node
+Date:   Wed, 1 Jul 2020 11:05:52 +0300
+Message-ID: <20200701080553.22604-7-t-kristo@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200701080553.22604-1-t-kristo@ti.com>
 References: <20200701080553.22604-1-t-kristo@ti.com>
@@ -55,44 +55,51 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The child devices for sa2ul (like the RNG) have hard dependency towards
-the parent, they can't function without the parent enabled. Add device
-link for this purpose so that the dependencies are taken care of properly.
+From: Keerthy <j-keerthy@ti.com>
 
+Add crypto accelarator node for supporting hardware crypto algorithms,
+including SHA1, SHA256, SHA512, AES, 3DES, and AEAD suites.
+
+Signed-off-by: Keerthy <j-keerthy@ti.com>
+[t-kristo@ti.com: Modifications based on introduction of yaml binding]
 Signed-off-by: Tero Kristo <t-kristo@ti.com>
 ---
- drivers/crypto/sa2ul.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
-index 6fc57d10e04a..aa080c65389e 100644
---- a/drivers/crypto/sa2ul.c
-+++ b/drivers/crypto/sa2ul.c
-@@ -2303,6 +2303,15 @@ static int sa_dma_init(struct sa_crypto_data *dd)
- 	return ret;
- }
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+index 61815228e230..4615f2009a35 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+@@ -112,6 +112,28 @@
+ 		power-domains = <&k3_pds 148 TI_SCI_PD_EXCLUSIVE>;
+ 	};
  
-+static int sa_link_child(struct device *dev, void *data)
-+{
-+	struct device *parent = data;
++	crypto: crypto@4E00000 {
++		compatible = "ti,am654-sa2ul";
++		reg = <0x0 0x4E00000 0x0 0x1200>;
++		power-domains = <&k3_pds 136 TI_SCI_PD_EXCLUSIVE>;
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges = <0x0 0x04E00000 0x00 0x04E00000 0x0 0x30000>;
++		status = "okay";
 +
-+	device_link_add(dev, parent, DL_FLAG_AUTOPROBE_CONSUMER);
++		dmas = <&main_udmap 0xc000>, <&main_udmap 0x4000>,
++				<&main_udmap 0x4001>;
++		dma-names = "tx", "rx1", "rx2";
++		dma-coherent;
 +
-+	return 0;
-+}
++		rng: rng@4e10000 {
++			compatible = "inside-secure,safexcel-eip76";
++			reg = <0x0 0x4e10000 0x0 0x7d>;
++			interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&k3_clks 136 1>;
++		};
++	};
 +
- static int sa_ul_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -2353,6 +2362,8 @@ static int sa_ul_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto release_dma;
- 
-+	device_for_each_child(&pdev->dev, &pdev->dev, sa_link_child);
-+
- 	return 0;
- 
- release_dma:
+ 	main_pmx0: pinmux@11c000 {
+ 		compatible = "pinctrl-single";
+ 		reg = <0x0 0x11c000 0x0 0x2e4>;
 -- 
 2.17.1
 
