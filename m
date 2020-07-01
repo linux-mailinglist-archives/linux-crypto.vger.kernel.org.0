@@ -2,72 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54030211551
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jul 2020 23:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C9E211554
+	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jul 2020 23:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgGAVsF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 1 Jul 2020 17:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
+        id S1727014AbgGAVsI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 1 Jul 2020 17:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgGAVsF (ORCPT
+        with ESMTP id S1726114AbgGAVsH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 1 Jul 2020 17:48:05 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9997C08C5C1;
-        Wed,  1 Jul 2020 14:48:04 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id s1so29053640ljo.0;
-        Wed, 01 Jul 2020 14:48:04 -0700 (PDT)
+        Wed, 1 Jul 2020 17:48:07 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10905C08C5C1;
+        Wed,  1 Jul 2020 14:48:07 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id m26so14590309lfo.13;
+        Wed, 01 Jul 2020 14:48:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oBWOW26zKSzSMAadEmPIB83fwLL5OeyWmw0Mib1tIJw=;
-        b=esIr4j65x6TPHvJ0te3aNtvSM4bhwpj5SGiQxOTw8nsdx+jXRUa323W+IJfGSfR51b
-         WPTGhdseD9f0DZC1PQIE0U+CjbIy+iGQ7nqKiAHRE7ChXdm4VhA95zX4/85sF/zkxnBU
-         h5v/NDt5MgyLTPKcuRuD1m/+ppkfx2lx6BrThXfanhgyCfUbusJcuTmIszEyokM9MGWc
-         3JqVzdC8a09eCWv7lbdyOHhc+L/8RC9Q9YmnAm68JYXACX9Dml5cwgKkMqXMCPNaMlG/
-         lSl8BbgBESrj3V+Ad4R1Y3XEyJ6tI5GbSyJBkSPfLt+3jR7Cau/ga8IlLnNz6EcQHuuK
-         e/5g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VIrf36LHUGhDoMCxDA0a8b1GW5wPUKeQuj2rQuLiuEc=;
+        b=cHVLargtKOSuIVSQy/EoW0f7ezdcsv5A6YxDnv+0g14JvkY9lbcoZo3SaV3nYObVen
+         PVAvRou9QHdEtLwmWraMDwRAt/gai7M2Y/tqtqHRp+L5MXyvjCbeUP8grDjJ/mmMqjhL
+         rlYSc9Q7tm9tmg7L7dW0lcHXX2srCCav8bCm2c99dGCsJtl8NzMMtufZg8keqZq+o8or
+         iX524GSokG+N4cvWy96bFNETeDuTJD9gMd6I/AwvCpd54fATmlH5Dfs4KkemrtWCb4WC
+         qEY4i7xLcP7xw7tndEKiaorgFZK/64UaEGAv8L4gpoDDsvGnwN7Q6vXwwLYRALqqF3o4
+         +dcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oBWOW26zKSzSMAadEmPIB83fwLL5OeyWmw0Mib1tIJw=;
-        b=TNodiZfeTyXDvPfZ7jGZsVjxh8y0/jMCcvAVpYRYBPK1Qhsls90nZJnSqa1KPi/TVB
-         h3U360suSoEa++QMIlGUjk457fdVxdVu02SuaOvT2mqPJa8hTA3P79S1aqN6SSiejXER
-         2+YOZ15Y7TODMKxCF5CJTLklZeSh3uCQJJK9eUv02vVEJqqFj4arQzGSo8p2TO83OBIr
-         FQzLIXtPMlXqI0OH/TQUE615Le9bXBfwdhTpUbApu9fdv3SgrLqh6OTrxrQIcSB/bwlu
-         pOcMcaA5Y2tSgrSsOcY5+yyjqI/A5MOT+cUPPFLwDkdQubSG90GhJzQ/hGmi/UDbE49F
-         A/+A==
-X-Gm-Message-State: AOAM531lyy348ejxEUIOhxmXc1YLoqYF4zd/3nz6MPPK9tbO7OudMrYI
-        6d5nHY+u/e9fA7wjbB9Va64=
-X-Google-Smtp-Source: ABdhPJyAwCiKG3xVRz7NbECuI22WwQqU8OQmxLbMTzJr4YdV50UfbAYTmgi4HV4uPJV8a06uivEdTQ==
-X-Received: by 2002:a2e:968b:: with SMTP id q11mr13444603lji.300.1593640083414;
-        Wed, 01 Jul 2020 14:48:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VIrf36LHUGhDoMCxDA0a8b1GW5wPUKeQuj2rQuLiuEc=;
+        b=oobL7b/lo0XKYz5yBB/CJfqJBtjTN397lRRfY7Uo39+/z2aysToWuYr3sly9iBWuWB
+         vUoqqwK7IkwcfQPr6Fs1FLvCWg3twGliH6th2jz8GfmYIsV9Lk6kh/bcLwN14W09MUdI
+         or1URUWdjpnuFun0XWXEKCBpKOyW8WvBkm6oF42Jmx7C0OYgeyifaRZESBg4jIBVoODe
+         NPu25nUpQUeK3fhg1fhVCsJXPw8rKiEoYusZOUGaLTeJmgKWDITyLeodbQQIi21A2XRD
+         4mG3q6xHQrDWhcncgymrz6SEYeF9lyvgyiowWOAXY5BJEj5oM7b2s025OI6gIg2WMk9F
+         Og+Q==
+X-Gm-Message-State: AOAM533WH1Qog397YQOW/IKEHxjiNGwYU01NizxtXmZKBZvHJfEdUaBQ
+        5niVe2EgQ+CGzCfhNH4SyA9clF10fTg=
+X-Google-Smtp-Source: ABdhPJzexXT6w7XOuAgwFHpQ0Aqq9iajCASf7I+zO/gKC7SKjv13LxECN/Alr8ZgKv7kCHsaCwb3NA==
+X-Received: by 2002:a19:48d3:: with SMTP id v202mr16627841lfa.202.1593640084785;
+        Wed, 01 Jul 2020 14:48:04 -0700 (PDT)
 Received: from localhost.localdomain (h-98-128-181-241.NA.cust.bahnhof.se. [98.128.181.241])
-        by smtp.gmail.com with ESMTPSA id d3sm2476812lfe.93.2020.07.01.14.48.01
+        by smtp.gmail.com with ESMTPSA id d3sm2476812lfe.93.2020.07.01.14.48.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 14:48:02 -0700 (PDT)
+        Wed, 01 Jul 2020 14:48:04 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Arnd Bergmann <arnd@arndb.de>
 Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Amit Shah <amit@kernel.org>, Matt Mackall <mpm@selenic.com>,
+        linux-kernel@vger.kernel.org, Matt Mackall <mpm@selenic.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Ray Jui <rjui@broadcom.com>,
         Scott Branden <sbranden@broadcom.com>,
-        Corey Minyard <minyard@acm.org>,
-        virtualization@lists.linux-foundation.org,
-        openipmi-developer@lists.sourceforge.net,
         bcm-kernel-feedback-list@broadcom.com,
         linux-crypto@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/5] drivers/char: Constify static variables
-Date:   Wed,  1 Jul 2020 22:09:45 +0200
-Message-Id: <20200701200950.30314-1-rikard.falkeborn@gmail.com>
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 1/5] hwrng: bcm2835 - Constify bcm2835_rng_devtype[]
+Date:   Wed,  1 Jul 2020 22:09:46 +0200
+Message-Id: <20200701200950.30314-2-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200701200950.30314-1-rikard.falkeborn@gmail.com>
+References: <20200701200950.30314-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
@@ -75,22 +74,35 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Constify some static variables (mostly structs) that are not modified.
+bcm2835_rng_devtype[] is not modified and can be made const to allow the
+compiler to put it in read-only memory.
 
-Rikard Falkeborn (5):
-  hwrng: bcm2835 - Constify bcm2835_rng_devtype[]
-  hwrng: nomadik - Constify nmk_rng_ids[]
-  hwrng: virtio - Constify id_table[]
-  ipmi: watchdog: Constify ident
-  virtio_console: Constify some static variables
+Before:
+   text    data     bss     dec     hex filename
+   2392     176       0    2568     a08 drivers/char/hw_random/bcm2835-rng.o
 
+After:
+   text    data     bss     dec     hex filename
+   2464     104       0    2568     a08 drivers/char/hw_random/bcm2835-rng.o
+
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
  drivers/char/hw_random/bcm2835-rng.c | 2 +-
- drivers/char/hw_random/nomadik-rng.c | 2 +-
- drivers/char/hw_random/virtio-rng.c  | 2 +-
- drivers/char/ipmi/ipmi_watchdog.c    | 2 +-
- drivers/char/virtio_console.c        | 8 ++++----
- 5 files changed, 8 insertions(+), 8 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
+index cbf5eaea662c..0839236a6d19 100644
+--- a/drivers/char/hw_random/bcm2835-rng.c
++++ b/drivers/char/hw_random/bcm2835-rng.c
+@@ -188,7 +188,7 @@ static int bcm2835_rng_probe(struct platform_device *pdev)
+ 
+ MODULE_DEVICE_TABLE(of, bcm2835_rng_of_match);
+ 
+-static struct platform_device_id bcm2835_rng_devtype[] = {
++static const struct platform_device_id bcm2835_rng_devtype[] = {
+ 	{ .name = "bcm2835-rng" },
+ 	{ .name = "bcm63xx-rng" },
+ 	{ /* sentinel */ }
 -- 
 2.27.0
 
