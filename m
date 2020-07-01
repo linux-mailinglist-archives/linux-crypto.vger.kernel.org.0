@@ -2,117 +2,96 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2CA210321
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jul 2020 06:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B60F210466
+	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jul 2020 09:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726053AbgGAEwc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 1 Jul 2020 00:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725875AbgGAEwb (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 1 Jul 2020 00:52:31 -0400
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F152207CD;
-        Wed,  1 Jul 2020 04:52:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593579150;
-        bh=ZfGuUxZZz6RO0lR3A8MY930nkonafEsFNdUgcMffvf4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tR3Y9tddZ89baGPAYWgM/wgnJeXaZ5rpVq47z9gGuF/w72VEUlwEgmKvHsUxuVd0s
-         Cdp+EN3EcVOzepkAywbvhtJrgnxO6L+/FMLWhHnhGypmuflHx/wVEYFHyWFhI1YdCc
-         1SF9650CTpKD5HcBGBXcKaj2wb8l/IQsntKqk8uQ=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Mikulas Patocka <mpatocka@redhat.com>, linux-crypto@vger.kernel.org
-Cc:     dm-devel@redhat.com
-Subject: [PATCH 6/6] dm-crypt: don't use drivers that have CRYPTO_ALG_ALLOCATES_MEMORY
-Date:   Tue, 30 Jun 2020 21:52:17 -0700
-Message-Id: <20200701045217.121126-7-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200701045217.121126-1-ebiggers@kernel.org>
-References: <20200701045217.121126-1-ebiggers@kernel.org>
+        id S1727997AbgGAHBS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 1 Jul 2020 03:01:18 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7323 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727981AbgGAHBR (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 1 Jul 2020 03:01:17 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 7CD06EEF3B31F218F357;
+        Wed,  1 Jul 2020 15:01:15 +0800 (CST)
+Received: from [127.0.0.1] (10.74.173.29) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Wed, 1 Jul 2020
+ 15:01:09 +0800
+Subject: Re: [PATCH 1/9] crypto: hisilicon/qm - fix wrong release after using
+ strsep
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+References: <1593428948-64634-1-git-send-email-shenyang39@huawei.com>
+ <1593428948-64634-2-git-send-email-shenyang39@huawei.com>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>
+From:   "shenyang (M)" <shenyang39@huawei.com>
+Message-ID: <5e8e524a-7670-549a-e551-7f4260f3794c@huawei.com>
+Date:   Wed, 1 Jul 2020 15:01:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1593428948-64634-2-git-send-email-shenyang39@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.173.29]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
 
-Don't use crypto drivers that have the flag CRYPTO_ALG_ALLOCATES_MEMORY
-set. These drivers allocate memory and thus they are unsuitable for block
-I/O processing.
 
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
----
- drivers/md/dm-crypt.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+On 2020/6/29 19:09, Yang Shen wrote:
+> From: Sihang Chen <chensihang1@hisilicon.com>
+>
+> Save the string address before pass to strsep, release it at end.
+> Because strsep will update the string address to point after the
+> token.
+>
+> Fixes: c31dc9fe165d("crypto: hisilicon/qm - add DebugFS for xQC and...")
+> Signed-off-by: Sihang Chen <chensihang1@huawei.com>
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 000ddfab5ba0..7268faacbdf3 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -421,7 +421,8 @@ static int crypt_iv_lmk_ctr(struct crypt_config *cc, struct dm_target *ti,
- 		return -EINVAL;
- 	}
- 
--	lmk->hash_tfm = crypto_alloc_shash("md5", 0, 0);
-+	lmk->hash_tfm = crypto_alloc_shash("md5", 0,
-+					   CRYPTO_ALG_ALLOCATES_MEMORY);
- 	if (IS_ERR(lmk->hash_tfm)) {
- 		ti->error = "Error initializing LMK hash";
- 		return PTR_ERR(lmk->hash_tfm);
-@@ -583,7 +584,8 @@ static int crypt_iv_tcw_ctr(struct crypt_config *cc, struct dm_target *ti,
- 		return -EINVAL;
- 	}
- 
--	tcw->crc32_tfm = crypto_alloc_shash("crc32", 0, 0);
-+	tcw->crc32_tfm = crypto_alloc_shash("crc32", 0,
-+					    CRYPTO_ALG_ALLOCATES_MEMORY);
- 	if (IS_ERR(tcw->crc32_tfm)) {
- 		ti->error = "Error initializing CRC32 in TCW";
- 		return PTR_ERR(tcw->crc32_tfm);
-@@ -770,7 +772,8 @@ static int crypt_iv_elephant_ctr(struct crypt_config *cc, struct dm_target *ti,
- 	struct iv_elephant_private *elephant = &cc->iv_gen_private.elephant;
- 	int r;
- 
--	elephant->tfm = crypto_alloc_skcipher("ecb(aes)", 0, 0);
-+	elephant->tfm = crypto_alloc_skcipher("ecb(aes)", 0,
-+					      CRYPTO_ALG_ALLOCATES_MEMORY);
- 	if (IS_ERR(elephant->tfm)) {
- 		r = PTR_ERR(elephant->tfm);
- 		elephant->tfm = NULL;
-@@ -2090,7 +2093,8 @@ static int crypt_alloc_tfms_skcipher(struct crypt_config *cc, char *ciphermode)
- 		return -ENOMEM;
- 
- 	for (i = 0; i < cc->tfms_count; i++) {
--		cc->cipher_tfm.tfms[i] = crypto_alloc_skcipher(ciphermode, 0, 0);
-+		cc->cipher_tfm.tfms[i] = crypto_alloc_skcipher(ciphermode, 0,
-+						CRYPTO_ALG_ALLOCATES_MEMORY);
- 		if (IS_ERR(cc->cipher_tfm.tfms[i])) {
- 			err = PTR_ERR(cc->cipher_tfm.tfms[i]);
- 			crypt_free_tfms(cc);
-@@ -2116,7 +2120,8 @@ static int crypt_alloc_tfms_aead(struct crypt_config *cc, char *ciphermode)
- 	if (!cc->cipher_tfm.tfms)
- 		return -ENOMEM;
- 
--	cc->cipher_tfm.tfms_aead[0] = crypto_alloc_aead(ciphermode, 0, 0);
-+	cc->cipher_tfm.tfms_aead[0] = crypto_alloc_aead(ciphermode, 0,
-+						CRYPTO_ALG_ALLOCATES_MEMORY);
- 	if (IS_ERR(cc->cipher_tfm.tfms_aead[0])) {
- 		err = PTR_ERR(cc->cipher_tfm.tfms_aead[0]);
- 		crypt_free_tfms(cc);
-@@ -2603,7 +2608,7 @@ static int crypt_ctr_auth_cipher(struct crypt_config *cc, char *cipher_api)
- 		return -ENOMEM;
- 	strncpy(mac_alg, start, end - start);
- 
--	mac = crypto_alloc_ahash(mac_alg, 0, 0);
-+	mac = crypto_alloc_ahash(mac_alg, 0, CRYPTO_ALG_ALLOCATES_MEMORY);
- 	kfree(mac_alg);
- 
- 	if (IS_ERR(mac))
--- 
-2.27.0
+I'm sorry I made mistake here of the email address.
+Soon I will fix this on v2.
+
+> Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
+> ---
+>  drivers/crypto/hisilicon/qm.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+> index 9bb263c..ad0adcc 100644
+> --- a/drivers/crypto/hisilicon/qm.c
+> +++ b/drivers/crypto/hisilicon/qm.c
+> @@ -1429,16 +1429,17 @@ static int qm_dbg_help(struct hisi_qm *qm, char *s)
+>  static int qm_cmd_write_dump(struct hisi_qm *qm, const char *cmd_buf)
+>  {
+>  	struct device *dev = &qm->pdev->dev;
+> -	char *presult, *s;
+> +	char *presult, *s, *s_tmp;
+>  	int ret;
+>
+>  	s = kstrdup(cmd_buf, GFP_KERNEL);
+>  	if (!s)
+>  		return -ENOMEM;
+>
+> +	s_tmp = s;
+>  	presult = strsep(&s, " ");
+>  	if (!presult) {
+> -		kfree(s);
+> +		kfree(s_tmp);
+>  		return -EINVAL;
+>  	}
+>
+> @@ -1468,7 +1469,7 @@ static int qm_cmd_write_dump(struct hisi_qm *qm, const char *cmd_buf)
+>  	if (ret)
+>  		dev_info(dev, "Please echo help\n");
+>
+> -	kfree(s);
+> +	kfree(s_tmp);
+>
+>  	return ret;
+>  }
+>
 
