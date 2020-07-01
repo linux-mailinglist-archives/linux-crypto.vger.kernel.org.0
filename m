@@ -2,138 +2,172 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2B32104D8
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jul 2020 09:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFD3210599
+	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jul 2020 09:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbgGAHVu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 1 Jul 2020 03:21:50 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:57378 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728124AbgGAHVt (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 1 Jul 2020 03:21:49 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DECD181D3BA442524445;
-        Wed,  1 Jul 2020 15:21:41 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 1 Jul 2020 15:21:33 +0800
-From:   Yang Shen <shenyang39@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>
-Subject: [Patch v2 9/9] crypto: hisilicon/qm - register callback function to 'pci_driver.shutdown'
-Date:   Wed, 1 Jul 2020 15:19:55 +0800
-Message-ID: <1593587995-7391-10-git-send-email-shenyang39@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593587995-7391-1-git-send-email-shenyang39@huawei.com>
-References: <1593587995-7391-1-git-send-email-shenyang39@huawei.com>
+        id S1728421AbgGAH70 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 1 Jul 2020 03:59:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41681 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728258AbgGAH7Z (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 1 Jul 2020 03:59:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593590364;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=B5pRfIE0TJddEU8okfRuCqnvaPUs1Aby2RxCBUbJPQ0=;
+        b=SoetjvYp6w0GJBWIsNJ7Po+cLInAwea63L5Cc2j5ejKziFxzFQS87g2c00yQyc5NkFA/l4
+        V1MoypD6sw4JuDgeKPWiTlDZWU6lBmp2XSVLOlRZ6lxhh0AiIUHKgwhDNP//VryeAfGiKC
+        4UftbdzBrabvyUL0ICU9SVNbU9I0gU0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-3rTwnnxMNoyvvpXdRMNhQA-1; Wed, 01 Jul 2020 03:59:21 -0400
+X-MC-Unique: 3rTwnnxMNoyvvpXdRMNhQA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9800D81EE2E;
+        Wed,  1 Jul 2020 07:59:11 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 496281084183;
+        Wed,  1 Jul 2020 07:59:11 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 0617xAeH006741;
+        Wed, 1 Jul 2020 03:59:10 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 0617xAZM006738;
+        Wed, 1 Jul 2020 03:59:10 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Wed, 1 Jul 2020 03:59:10 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Eric Biggers <ebiggers@kernel.org>
+cc:     linux-crypto@vger.kernel.org, dm-devel@redhat.com
+Subject: Re: [PATCH 0/6] crypto: add CRYPTO_ALG_ALLOCATES_MEMORY
+In-Reply-To: <20200701045217.121126-1-ebiggers@kernel.org>
+Message-ID: <alpine.LRH.2.02.2007010358390.6597@file01.intranet.prod.int.rdu2.redhat.com>
+References: <20200701045217.121126-1-ebiggers@kernel.org>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Since the drivers such as HPRE/SEC/ZIP do not implement
-'pci_driver.shutdow', a RAS will be triggered at OS rebooting or shutting
-down as the hardware device is processing request.
-The log looks like this:
-    NOTICE:  [NimbusSecNodeType1]:[2372L]This is sec, Base = 0x141800000
-    NOTICE:  [NimbusSecHandle]:[2319L] SecIntSt = 0x3
-    NOTICE:  [NimbusSecHandle]:[2320L] SecQmIntStatus = 0x2
-    NOTICE:  [PrintSecurityType]:[344L] SecurityType is RECOVERABLE!
+Thanks for cleaning this up.
 
-This patch offers a new API in qm to shutdown devices, and add shutdown
-callbacks in ACC driver based on this new API.
+Mikulas
 
-So the running devices will be stopped when the OS reboot or shutdown.
 
-Signed-off-by: Yang Shen <shenyang39@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
----
- drivers/crypto/hisilicon/hpre/hpre_main.c |  1 +
- drivers/crypto/hisilicon/qm.c             | 17 +++++++++++++++++
- drivers/crypto/hisilicon/qm.h             |  1 +
- drivers/crypto/hisilicon/sec2/sec_main.c  |  1 +
- drivers/crypto/hisilicon/zip/zip_main.c   |  1 +
- 5 files changed, 21 insertions(+)
+On Tue, 30 Jun 2020, Eric Biggers wrote:
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index aff2839..1a39442 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -927,6 +927,7 @@ static struct pci_driver hpre_pci_driver = {
- 	.remove			= hpre_remove,
- 	.sriov_configure	= hisi_qm_sriov_configure,
- 	.err_handler		= &hpre_err_handler,
-+	.shutdown		= hisi_qm_dev_shutdown,
- };
- 
- static void hpre_register_debugfs(void)
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 8327365..0920d77 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -3853,6 +3853,23 @@ static int qm_irq_register(struct hisi_qm *qm)
- 	return ret;
- }
- 
-+/**
-+ * hisi_qm_dev_shutdown() - Shutdown device.
-+ * @pdev: The device will be shutdown.
-+ *
-+ * This function will stop qm when OS shutdown or rebooting.
-+ */
-+void hisi_qm_dev_shutdown(struct pci_dev *pdev)
-+{
-+	struct hisi_qm *qm = pci_get_drvdata(pdev);
-+	int ret;
-+
-+	ret = hisi_qm_stop(qm, QM_NORMAL);
-+	if (ret)
-+		dev_err(&pdev->dev, "Fail to stop qm in shutdown!\n");
-+}
-+EXPORT_SYMBOL_GPL(hisi_qm_dev_shutdown);
-+
- static void hisi_qm_controller_reset(struct work_struct *rst_work)
- {
- 	struct hisi_qm *qm = container_of(rst_work, struct hisi_qm, rst_work);
-diff --git a/drivers/crypto/hisilicon/qm.h b/drivers/crypto/hisilicon/qm.h
-index bd00897..233ed09e 100644
---- a/drivers/crypto/hisilicon/qm.h
-+++ b/drivers/crypto/hisilicon/qm.h
-@@ -378,4 +378,5 @@ int hisi_qm_alloc_qps_node(struct hisi_qm_list *qm_list, int qp_num,
- void hisi_qm_free_qps(struct hisi_qp **qps, int qp_num);
- int hisi_qm_alg_register(struct hisi_qm *qm, struct hisi_qm_list *qm_list);
- void hisi_qm_alg_unregister(struct hisi_qm *qm, struct hisi_qm_list *qm_list);
-+void hisi_qm_dev_shutdown(struct pci_dev *pdev);
- #endif
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index d9c162d2..a146095 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -949,6 +949,7 @@ static struct pci_driver sec_pci_driver = {
- 	.remove = sec_remove,
- 	.err_handler = &sec_err_handler,
- 	.sriov_configure = hisi_qm_sriov_configure,
-+	.shutdown = hisi_qm_dev_shutdown,
- };
- 
- static void sec_register_debugfs(void)
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index 72e2cc0..beeb20e 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -879,6 +879,7 @@ static struct pci_driver hisi_zip_pci_driver = {
- 	.sriov_configure	= IS_ENABLED(CONFIG_PCI_IOV) ?
- 					hisi_qm_sriov_configure : NULL,
- 	.err_handler		= &hisi_zip_err_handler,
-+	.shutdown		= hisi_qm_dev_shutdown,
- };
- 
- static void hisi_zip_register_debugfs(void)
--- 
-2.7.4
+> This series introduces a flag that algorithms can set to indicate that
+> they allocate memory during processing of typical inputs, and thus
+> shouldn't be used in cases like dm-crypt where memory allocation
+> failures aren't acceptable.
+> 
+> Compared to Mikulas's patches, I've made the following improvements:
+> 
+> - Tried to clearly document the semantics of
+>   CRYPTO_ALG_ALLOCATES_MEMORY.  This includes documenting the usage
+>   constraints, since there are actually lots of cases that were
+>   overlooked where algorithms can still allocate memory in some edge
+>   cases where inputs are misaligned, fragemented, etc.  E.g. see
+>   crypto/skcipher.c and crypto/ahash.c.  Mikulas, please let me know if
+>   there are any concerns for dm-crypt.
+> 
+> - Moved the common mechanism for inheriting flags to its own patch.
+> 
+> - crypto_grab_spawn() now handles propagating CRYPTO_ALG_INHERITED_FLAGS
+>   to the new template instance.
+> 
+> - Inherit the flags in various places that were missed.
+> 
+> - Other cleanups.
+> 
+> Note: Mikulas's patch "crypto: set the flag CRYPTO_ALG_ALLOCATES_MEMORY"
+> still needs to be checked for cases where the flag no longer needs to be
+> set due to the usage constraints I documented.
+> 
+> Eric Biggers (4):
+>   crypto: geniv - remove unneeded arguments from aead_geniv_alloc()
+>   crypto: algapi - use common mechanism for inheriting flags
+>   crypto: algapi - introduce the flag CRYPTO_ALG_ALLOCATES_MEMORY
+>   crypto: algapi - remove crypto_check_attr_type()
+> 
+> Mikulas Patocka (2):
+>   crypto: set the flag CRYPTO_ALG_ALLOCATES_MEMORY
+>   dm-crypt: don't use drivers that have CRYPTO_ALG_ALLOCATES_MEMORY
+> 
+>  crypto/adiantum.c                             |   4 +-
+>  crypto/algapi.c                               |  17 +--
+>  crypto/authenc.c                              |   4 +-
+>  crypto/authencesn.c                           |   4 +-
+>  crypto/ccm.c                                  |  23 ++--
+>  crypto/chacha20poly1305.c                     |   4 +-
+>  crypto/cmac.c                                 |  15 ++-
+>  crypto/cryptd.c                               |  59 ++++-----
+>  crypto/ctr.c                                  |   8 +-
+>  crypto/cts.c                                  |   3 +-
+>  crypto/echainiv.c                             |   2 +-
+>  crypto/essiv.c                                |  11 +-
+>  crypto/gcm.c                                  |  10 +-
+>  crypto/geniv.c                                |   9 +-
+>  crypto/hmac.c                                 |  15 ++-
+>  crypto/lrw.c                                  |   3 +-
+>  crypto/pcrypt.c                               |  14 +--
+>  crypto/rsa-pkcs1pad.c                         |   3 +-
+>  crypto/seqiv.c                                |   2 +-
+>  crypto/simd.c                                 |   6 +-
+>  crypto/skcipher.c                             |   3 +-
+>  crypto/vmac.c                                 |  15 ++-
+>  crypto/xcbc.c                                 |  15 ++-
+>  crypto/xts.c                                  |   3 +-
+>  .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c |  12 +-
+>  .../crypto/allwinner/sun8i-ss/sun8i-ss-core.c |  12 +-
+>  drivers/crypto/amlogic/amlogic-gxl-core.c     |   6 +-
+>  drivers/crypto/axis/artpec6_crypto.c          |  20 ++-
+>  drivers/crypto/bcm/cipher.c                   |  72 ++++++++---
+>  drivers/crypto/caam/caamalg.c                 |   6 +-
+>  drivers/crypto/caam/caamalg_qi.c              |   6 +-
+>  drivers/crypto/caam/caamalg_qi2.c             |   8 +-
+>  drivers/crypto/caam/caamhash.c                |   2 +-
+>  drivers/crypto/cavium/cpt/cptvf_algs.c        |  18 ++-
+>  drivers/crypto/cavium/nitrox/nitrox_aead.c    |   4 +-
+>  .../crypto/cavium/nitrox/nitrox_skcipher.c    |  16 +--
+>  drivers/crypto/ccp/ccp-crypto-aes-cmac.c      |   1 +
+>  drivers/crypto/ccp/ccp-crypto-aes-galois.c    |   1 +
+>  drivers/crypto/ccp/ccp-crypto-aes-xts.c       |   1 +
+>  drivers/crypto/ccp/ccp-crypto-aes.c           |   2 +
+>  drivers/crypto/ccp/ccp-crypto-des3.c          |   1 +
+>  drivers/crypto/ccp/ccp-crypto-sha.c           |   1 +
+>  drivers/crypto/chelsio/chcr_algo.c            |   7 +-
+>  drivers/crypto/hisilicon/sec/sec_algs.c       |  24 ++--
+>  drivers/crypto/hisilicon/sec2/sec_crypto.c    |   4 +-
+>  .../crypto/inside-secure/safexcel_cipher.c    |  47 +++++++
+>  drivers/crypto/inside-secure/safexcel_hash.c  |  18 +++
+>  drivers/crypto/ixp4xx_crypto.c                |   6 +-
+>  drivers/crypto/marvell/cesa/cipher.c          |  18 ++-
+>  drivers/crypto/marvell/cesa/hash.c            |   6 +
+>  .../crypto/marvell/octeontx/otx_cptvf_algs.c  |  30 ++---
+>  drivers/crypto/n2_core.c                      |   3 +-
+>  drivers/crypto/picoxcell_crypto.c             |  17 ++-
+>  drivers/crypto/qat/qat_common/qat_algs.c      |  12 +-
+>  drivers/crypto/qce/skcipher.c                 |   1 +
+>  drivers/crypto/talitos.c                      | 117 ++++++++++++------
+>  drivers/crypto/virtio/virtio_crypto_algs.c    |   3 +-
+>  drivers/crypto/xilinx/zynqmp-aes-gcm.c        |   1 +
+>  drivers/md/dm-crypt.c                         |  17 ++-
+>  include/crypto/algapi.h                       |  23 +++-
+>  include/crypto/internal/geniv.h               |   2 +-
+>  include/linux/crypto.h                        |  32 +++++
+>  62 files changed, 550 insertions(+), 279 deletions(-)
+> 
+> -- 
+> 2.27.0
+> 
 
