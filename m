@@ -2,64 +2,83 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816352104B3
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jul 2020 09:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CDA2104F3
+	for <lists+linux-crypto@lfdr.de>; Wed,  1 Jul 2020 09:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgGAHNY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 1 Jul 2020 03:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728131AbgGAHNX (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 1 Jul 2020 03:13:23 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E39CC03E979
-        for <linux-crypto@vger.kernel.org>; Wed,  1 Jul 2020 00:13:23 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id m16so11469137ybf.4
-        for <linux-crypto@vger.kernel.org>; Wed, 01 Jul 2020 00:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=8LAzAiQJxImzDJ0y6vnsDTSb4b/uaAsNN5wGkmBPsdE=;
-        b=BGebLNexUcRWwOpTjPM365E55EqHi97kTbjBRKKwEEcAegXNKt3JZFHA5sWN7VMUYz
-         SFHQckViKybnNtNKCL1OKXhY8Dpx1Zu2xyykFhkt1tGGVzsxWhCCV05B67tUIcUOO+fA
-         26GDGBtcZ/jPpc9HrtL2mbqAAGjxD5vmvvgw7fBOp72ZYNRHBXX3N8w8ysUV0il5Vydp
-         k6GICTCmEeAJCBImoh1krDDDZzMw24sRJZ2Ee8GTmKs/zRCl0Xf54+70r0noJvZAqUFH
-         ODdgc+DoxxiyINZp8LR3c6hNmzu5HbM187y+LSbSCNdb0QFNTO2uMQadcdIFnvhkVW3t
-         Dd9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=8LAzAiQJxImzDJ0y6vnsDTSb4b/uaAsNN5wGkmBPsdE=;
-        b=DSQQobgVQacWGoZpMq+Kp5KHqgEnfWIobVa61wAZw5UdfsYhJ6mJJQXIzu2NjdE8xL
-         85VsM0NYJ32hFHx2OJjHawOvJ811FhHm7krlLmsH8qUFg0mGRtuMoSmddPjAMIwOKIkD
-         t8b1ijJ08zjPpn8nM3CifhrBoZBsVOZ9M5W6EfkEKfvpnA1yJ/o3QfxTVJsb1rGe0O8f
-         nWZgmpMYhGJX9gpXQK9zkrow43NNJKybDChAv0zTBKRRLFo1U3bSQUaDX3EfAskMpFNL
-         SnYfaDJ5bUi2rqpY1K8EJqDUb8+f7exhaplWVSCuWXvlSaAcYNvj1jht2o4BKLvpVAEr
-         7VDQ==
-X-Gm-Message-State: AOAM533uA5BjqW7sK+WqIZfxaurJ+vst+hyDPqwkt+Bu7m/wVBM+RQHm
-        fQpmi9HDkhTWehT1h7Pg24CYdNUurDVWu3GgdJ4=
-X-Google-Smtp-Source: ABdhPJwzn/XoCJi5dMTDmE+4cSuf13IYH4afMCZVZQv+XhgJDskA8tfdypvqpt7VwD/0dp+iwFvjB0CgJ08sVr2XUD8=
-X-Received: by 2002:a25:4903:: with SMTP id w3mr17538893yba.384.1593587602941;
- Wed, 01 Jul 2020 00:13:22 -0700 (PDT)
+        id S1727836AbgGAHYa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 1 Jul 2020 03:24:30 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7325 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728112AbgGAHYa (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 1 Jul 2020 03:24:30 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id C25F88BB24E256D4BA10;
+        Wed,  1 Jul 2020 15:21:36 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 1 Jul 2020 15:21:30 +0800
+From:   Yang Shen <shenyang39@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>
+Subject: [Patch v2 0/9] crypto: hisilicon/qm - misc fixes
+Date:   Wed, 1 Jul 2020 15:19:46 +0800
+Message-ID: <1593587995-7391-1-git-send-email-shenyang39@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Received: by 2002:a25:c050:0:0:0:0:0 with HTTP; Wed, 1 Jul 2020 00:13:22 -0700 (PDT)
-Reply-To: peterjoe2002@hotmail.com
-From:   Peter Joe <peterjoe1102@gmail.com>
-Date:   Wed, 1 Jul 2020 09:13:22 +0200
-Message-ID: <CAHnmTzR-HRo3uU=RiiiVxOU4vkV0YAmWKh11a91FRXpCJrNAOg@mail.gmail.com>
-Subject: Regards
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear,
+This patchset fix some qm bugs:
+patch 1: store the string address before pass to 'strsep'
+patch 2: clear 'qp_status->used' when init the 'qp'
+patch 3: use 'dev_info_ratelimited' to avoid printk flooding.
+patch 4: fix the judgement of queue is full
+patch 7: save the vf configuration space to make sure it is available
+ after the 'PF' 'FLR'
+patch 8: move the process of register alg to crypto in driver 'hisi_zip'
+patch 9: register callback to 'pci_driver.shutdown'
 
-Did you receive the message i sent to you?
+This patchset depends on:
+https://patchwork.kernel.org/cover/1162709/
 
-Regards,
-Peter Joe
+v2:
+- fix the wrong email address on patch 1
+
+Hui Tang (1):
+  crypto: hisilicon/qm - fix judgement of queue is full
+
+Shukun Tan (3):
+  crypto: hisilicon/qm - clear used reference count when start qp
+  crypto: hisilicon/qm - fix event queue depth to 2048
+  crypto: hisilicon/qm - fix VF not available after PF FLR
+
+Sihang Chen (1):
+  crypto: hisilicon/qm - fix wrong release after using strsep
+
+Yang Shen (4):
+  crypto: hisilicon/qm - fix print frequence in hisi_qp_send
+  crypto: hisilicon/qm - fix no stop reason when use hisi_qm_stop
+  crypto: hisilicon/qm - fix the process of register algorithms to
+    crypto
+  crypto: hisilicon/qm - register callback function to
+    'pci_driver.shutdown'
+
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c |  36 +++-----
+ drivers/crypto/hisilicon/hpre/hpre_main.c   |  26 +++---
+ drivers/crypto/hisilicon/qm.c               | 126 +++++++++++++++++++++++-----
+ drivers/crypto/hisilicon/qm.h               |  23 ++---
+ drivers/crypto/hisilicon/sec2/sec_crypto.c  |  35 +++-----
+ drivers/crypto/hisilicon/sec2/sec_main.c    |  30 +++----
+ drivers/crypto/hisilicon/zip/zip_crypto.c   |   2 +-
+ drivers/crypto/hisilicon/zip/zip_main.c     |  44 +++++-----
+ 8 files changed, 189 insertions(+), 133 deletions(-)
+
+--
+2.7.4
+
