@@ -2,114 +2,122 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F92D211A2C
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 Jul 2020 04:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E458F211AA4
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 Jul 2020 05:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728177AbgGBCcH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 1 Jul 2020 22:32:07 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7340 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728159AbgGBCcG (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 1 Jul 2020 22:32:06 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DEC43EEBFC70642ABB3D;
-        Thu,  2 Jul 2020 10:32:03 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 2 Jul 2020 10:31:53 +0800
-From:   Meng Yu <yumeng18@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 6/6] crypto: hisilicon/hpre - disable FLR triggered by hardware
-Date:   Thu, 2 Jul 2020 10:31:19 +0800
-Message-ID: <1593657079-31990-7-git-send-email-yumeng18@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1593657079-31990-1-git-send-email-yumeng18@huawei.com>
-References: <1593657079-31990-1-git-send-email-yumeng18@huawei.com>
+        id S1726187AbgGBDdj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 1 Jul 2020 23:33:39 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:37150 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725857AbgGBDdi (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 1 Jul 2020 23:33:38 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jqpxV-0008AS-FA; Thu, 02 Jul 2020 13:32:22 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 02 Jul 2020 13:32:21 +1000
+Date:   Thu, 2 Jul 2020 13:32:21 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        LTP List <ltp@lists.linux.it>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        lkft-triage@lists.linaro.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Jan Stancek <jstancek@redhat.com>, chrubis <chrubis@suse.cz>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux- stable <stable@vger.kernel.org>
+Subject: [v2 PATCH] crypto: af_alg - Fix regression on empty requests
+Message-ID: <20200702033221.GA19367@gondor.apana.org.au>
+References: <CA+G9fYvHFs5Yx8TnT6VavtfjMN8QLPuXg6us-dXVJqUUt68adA@mail.gmail.com>
+ <20200622224920.GA4332@42.do-not-panic.com>
+ <CA+G9fYsXDZUspc5OyfqrGZn=k=2uRiGzWY_aPePK2C_kZ+dYGQ@mail.gmail.com>
+ <20200623064056.GA8121@gondor.apana.org.au>
+ <20200623170217.GB150582@gmail.com>
+ <20200626062948.GA25285@gondor.apana.org.au>
+ <CA+G9fYutuU55iL_6Qrk3oG3iq-37PaxvtA4KnEQHuLH9YpH-QA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYutuU55iL_6Qrk3oG3iq-37PaxvtA4KnEQHuLH9YpH-QA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Hui Tang <tanghui20@huawei.com>
+On Tue, Jun 30, 2020 at 02:18:11PM +0530, Naresh Kamboju wrote:
+> 
+> Since we are on this subject,
+> LTP af_alg02  test case fails on stable 4.9 and stable 4.4
+> This is not a regression because the test case has been failing from
+> the beginning.
+> 
+> Is this test case expected to fail on stable 4.9 and 4.4 ?
+> or any chance to fix this on these older branches ?
+> 
+> Test output:
+> af_alg02.c:52: BROK: Timed out while reading from request socket.
+> 
+> ref:
+> https://qa-reports.linaro.org/lkft/linux-stable-rc-4.9-oe/build/v4.9.228-191-g082e807235d7/testrun/2884917/suite/ltp-crypto-tests/test/af_alg02/history/
+> https://qa-reports.linaro.org/lkft/linux-stable-rc-4.9-oe/build/v4.9.228-191-g082e807235d7/testrun/2884606/suite/ltp-crypto-tests/test/af_alg02/log
 
-for Hi1620 hardware, we should disable these hardware flr:
-1. BME_FLR - bit 7,
-2. PM_FLR - bit 11,
-3. SRIOV_FLR - bit 12,
-Or HPRE may goto D3 state, when we bind and unbind HPRE quickly,
-as it does FLR triggered by BME/PM/SRIOV.
+Actually this test really is broken.  Even though empty requests
+are legal, they should never be done with no write(2) at all.
+Because this fundamentally breaks the use of a blocking read(2)
+to wait for more data.
 
-Fixes: c8b4b477079d("crypto: hisilicon - add HiSilicon HPRE accelerator")
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
-Signed-off-by: Meng Yu <yumeng18@huawei.com>
-Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_main.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+Granted this has been broken since 2017 but I'm not going to
+reintroduce this just because of a broken test case.
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 6f7a453..6d8a110 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -82,6 +82,10 @@
- #define HPRE_CORE_ECC_2BIT_ERR		BIT(1)
- #define HPRE_OOO_ECC_2BIT_ERR		BIT(5)
+So please either remove af_alg02 or fix it by adding a control
+message through sendmsg(2).
+
+Thanks,
+
+---8<---
+Some user-space programs rely on crypto requests that have no
+control metadata.  This broke when a check was added to require
+the presence of control metadata with the ctx->init flag.
+
+This patch fixes the regression by setting ctx->init as long as
+one sendmsg(2) has been made, with or without a control message.
+
+Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Fixes: f3c802a1f300 ("crypto: algif_aead - Only wake up when...")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/crypto/af_alg.c b/crypto/af_alg.c
+index 9fcb91ea10c41..5882ed46f1adb 100644
+--- a/crypto/af_alg.c
++++ b/crypto/af_alg.c
+@@ -851,6 +851,7 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 		err = -EINVAL;
+ 		goto unlock;
+ 	}
++	ctx->init = true;
  
-+#define HPRE_QM_BME_FLR			BIT(7)
-+#define HPRE_QM_PM_FLR			BIT(11)
-+#define HPRE_QM_SRIOV_FLR		BIT(12)
-+
- #define HPRE_VIA_MSI_DSM		1
- #define HPRE_SQE_MASK_OFFSET		8
- #define HPRE_SQE_MASK_LEN		24
-@@ -234,6 +238,21 @@ static int hpre_cfg_by_dsm(struct hisi_qm *qm)
- 	return 0;
- }
+ 	if (init) {
+ 		ctx->enc = enc;
+@@ -858,7 +859,6 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 			memcpy(ctx->iv, con.iv->iv, ivsize);
  
-+/* for Hi1620, we shoul disable FLR triggered by hardware (BME/PM/SRIOV).
-+ * Or it may stay in D3 state when we bind and unbind hpre quickly,
-+ * as it does FLR triggered by hardware.
-+ */
-+static void disable_flr_of_bme(struct hisi_qm *qm)
-+{
-+	u32 val;
-+
-+	val = readl(HPRE_ADDR(qm, QM_PEH_AXUSER_CFG));
-+	val &= ~(HPRE_QM_BME_FLR | HPRE_QM_SRIOV_FLR);
-+	val |= HPRE_QM_PM_FLR;
-+	writel(val, HPRE_ADDR(qm, QM_PEH_AXUSER_CFG));
-+	writel(PEH_AXUSER_CFG_ENABLE, HPRE_ADDR(qm, QM_PEH_AXUSER_CFG_ENABLE));
-+}
-+
- static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
- {
- 	struct device *dev = &qm->pdev->dev;
-@@ -245,10 +264,6 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
- 	writel(HPRE_QM_USR_CFG_MASK, HPRE_ADDR(qm, QM_AWUSER_M_CFG_ENABLE));
- 	writel_relaxed(HPRE_QM_AXI_CFG_MASK, HPRE_ADDR(qm, QM_AXI_M_CFG));
+ 		ctx->aead_assoclen = con.aead_assoclen;
+-		ctx->init = true;
+ 	}
  
--	/* disable FLR triggered by BME(bus master enable) */
--	writel(PEH_AXUSER_CFG, HPRE_ADDR(qm, QM_PEH_AXUSER_CFG));
--	writel(PEH_AXUSER_CFG_ENABLE, HPRE_ADDR(qm, QM_PEH_AXUSER_CFG_ENABLE));
--
- 	/* HPRE need more time, we close this interrupt */
- 	val = readl_relaxed(HPRE_ADDR(qm, HPRE_QM_ABNML_INT_MASK));
- 	val |= BIT(HPRE_TIMEOUT_ABNML_BIT);
-@@ -299,6 +314,8 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
- 	if (ret)
- 		dev_err(dev, "acpi_evaluate_dsm err.\n");
- 
-+	disable_flr_of_bme(qm);
-+
- 	return ret;
- }
- 
+ 	while (size) {
 -- 
-2.8.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
