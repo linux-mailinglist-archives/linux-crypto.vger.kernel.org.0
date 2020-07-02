@@ -2,92 +2,54 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA55211D2C
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 Jul 2020 09:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A894A211D32
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 Jul 2020 09:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgGBHky (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 2 Jul 2020 03:40:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34446 "EHLO mail.kernel.org"
+        id S1728019AbgGBHmA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 2 Jul 2020 03:42:00 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:38012 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726362AbgGBHky (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 2 Jul 2020 03:40:54 -0400
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 220932089D
-        for <linux-crypto@vger.kernel.org>; Thu,  2 Jul 2020 07:40:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593675654;
-        bh=EveHe0K8xBsqaktkRTE0lxpkMd0h173FAJjJwFEAPpM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=v3EyZlSPUI4MTlYXse+pkjXBUsiMqL7fYL79+iQxNcnJG/brcxBm22hMxWXB4NQi5
-         EKChaqFzbYmgNPhMAvFexehX3Vr4iKlzll2b3MLcb9EUprgDKM5THcu2ODLYT+8iO+
-         Cb+yLogdw2Cff56N3xaXrdt3ma0KLrBmfxyOVcqE=
-Received: by mail-ot1-f48.google.com with SMTP id 18so23437178otv.6
-        for <linux-crypto@vger.kernel.org>; Thu, 02 Jul 2020 00:40:54 -0700 (PDT)
-X-Gm-Message-State: AOAM532IDOYO9IFkQxIlx5Am92hqVsI5yOcvuzxvNtjPVbyKLsYJ3asS
-        VAGvbdeVchPGvT2oIJ7xG7CgmPRv7++I/sNJO50=
-X-Google-Smtp-Source: ABdhPJxz3CUHaKN2saMXFzJE8hUV+gGqIcew3DzksMoeQBxxDbWS+rRXuHJOw3VzDfdg4wScVyM69eEdQWAvyjWUXaE=
-X-Received: by 2002:a9d:4a8f:: with SMTP id i15mr27349887otf.77.1593675653489;
- Thu, 02 Jul 2020 00:40:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200702043648.GA21823@gondor.apana.org.au> <CAMj1kXFKkCSf06d4eKRZvdPzxCsVsYhOjRk221XpmLxvrrdKMw@mail.gmail.com>
- <CAMj1kXGEvumaCaQivdZjTFBMMctePWuvoEupENaUbjbdiqmr8Q@mail.gmail.com>
-In-Reply-To: <CAMj1kXGEvumaCaQivdZjTFBMMctePWuvoEupENaUbjbdiqmr8Q@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 2 Jul 2020 09:40:42 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGvMe_A_iQ43Pmygg9xaAM-RLy=_M=v+eg--8xNmv9P+w@mail.gmail.com>
-Message-ID: <CAMj1kXGvMe_A_iQ43Pmygg9xaAM-RLy=_M=v+eg--8xNmv9P+w@mail.gmail.com>
-Subject: Re: [PATCH] crypto: caam - Remove broken arc4 support
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        id S1726362AbgGBHmA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 2 Jul 2020 03:42:00 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jqtr3-0002cw-Pu; Thu, 02 Jul 2020 17:41:58 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 02 Jul 2020 17:41:57 +1000
+Date:   Thu, 2 Jul 2020 17:41:57 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
         Aymen Sghaier <aymen.sghaier@nxp.com>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Iuliana Prodan <iuliana.prodan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] crypto: caam - Remove broken arc4 support
+Message-ID: <20200702074157.GB4253@gondor.apana.org.au>
+References: <20200702043648.GA21823@gondor.apana.org.au>
+ <CAMj1kXFKkCSf06d4eKRZvdPzxCsVsYhOjRk221XpmLxvrrdKMw@mail.gmail.com>
+ <CAMj1kXGEvumaCaQivdZjTFBMMctePWuvoEupENaUbjbdiqmr8Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXGEvumaCaQivdZjTFBMMctePWuvoEupENaUbjbdiqmr8Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, 2 Jul 2020 at 09:32, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Thu, 2 Jul 2020 at 09:27, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Thu, 2 Jul 2020 at 06:36, Herbert Xu <herbert@gondor.apana.org.au> wrote:
-> > >
-> > > The arc4 algorithm requires storing state in the request context
-> > > in order to allow more than one encrypt/decrypt operation.  As this
-> > > driver does not seem to do that, it means that using it for more
-> > > than one operation is broken.
-> > >
-> > > Fixes: eaed71a44ad9 ("crypto: caam - add ecb(*) support")
-> > > Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> > >
-> >
-> > Acked-by: Ard Biesheuvel <ardb@kernel.org>
-> >
-> > All internal users of ecb(arc4) use sync skciphers, so this should
-> > only affect user space.
-> >
-> > I do wonder if the others are doing any better - n2 and bcm iproc also
-> > appear to keep the state in the TFM object, while I'd expect the
-> > setkey() to be a simple memcpy(), and the initial state derivation to
-> > be part of the encrypt flow, right?
-> >
-> > Maybe we should add a test for this to tcrypt, i.e., do setkey() once
-> > and do two encryptions of the same input, and check whether we get
-> > back the original data.
-> >
+On Thu, Jul 02, 2020 at 09:32:32AM +0200, Ard Biesheuvel wrote:
 >
 > Actually, it seems the generic ecb(arc4) is broken as well in this regard.
 
-This may be strictly true, but perhaps reusing the key is not such a
-great idea to begin with, given the lack of an IV, so the fact that
-skcipher::setkey() operates on the TFM and not the request simply does
-not match the ARC4 model.
+Not in the same way.  The generic arc4 stores the state in the
+tfm so it works until you have two requests that share the same
+tfm.
 
-I suppose you are looking into this for chaining algif_skipcher
-requests, right? So in that case, the ARC4 state should really be
-treated as an IV, which is owned by the caller, and not stored in
-either the TFM or the skcipher request object.
+Since we only have two users right now we can fix this by moving
+the state into the request and I'm working on it.
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
