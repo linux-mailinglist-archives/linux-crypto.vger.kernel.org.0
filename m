@@ -2,98 +2,229 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C332160FA
-	for <lists+linux-crypto@lfdr.de>; Mon,  6 Jul 2020 23:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6812161A4
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2020 00:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgGFVeb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 6 Jul 2020 17:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726727AbgGFVeb (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 6 Jul 2020 17:34:31 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D2AC061755
-        for <linux-crypto@vger.kernel.org>; Mon,  6 Jul 2020 14:34:31 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id k27so2901357pgm.2
-        for <linux-crypto@vger.kernel.org>; Mon, 06 Jul 2020 14:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=nb2b5E8jozASb6qKQS31YncmreGQOkYkl7FIjerURPg=;
-        b=VKc2yiKmsKiUyGXyyk/gMwF2tP6NaaLQjqZiuMZkc6dptE83hdFJW2SjkhjCF1jw+g
-         2qvImudQ1WCmdDcPsBNxBS4y/hysHw+JLmUeLrCaz2PBgCV8Gj51ciW5ziGcCYd0WMhy
-         5p3BJvcvkVAGi/O5raIFNqcvwd5R52HyXEdkzU62Pcq7eEMTvYoREuo7ngKqd2w5VdmF
-         ZMs7dOiKITGYH6JC29xImHb5G4QK+neYbzKNpFP0NsHhHAH9sdcs/y9CWoqLEMeqFeRK
-         wpfSILH7zk9ysmJMeOy68SsETeukpIBp/CXbaqv1iaNcbz3OgiZ/eHBwG7qyjZPjlJi5
-         8mTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=nb2b5E8jozASb6qKQS31YncmreGQOkYkl7FIjerURPg=;
-        b=N4m2AOYCAmVkE5D7aL7392zpoVsFKOYzKqYAcZ/mYRFHtC+Y+7FNt+f94thqX5iXJy
-         1Uyet/RoYENEu4vvfhvctt6C7/DqKF1J3D3dxxCtS162RetUYEGpnzyYZrhw0vf2igH7
-         gZBUZ3K48plxmT0O7pORss9sg7ZjbHsaGurByKlE/6IC5r7E6QTfv5+ZzMviAc/2otlz
-         SfKtLGFxPDK4CHLV2OwwiYgO5VQf7kBLx6NPi6tmU+P7lveJcaLAeuDNcq9dqqxHHr+I
-         +9Z1bWRTFCieQai/dBFfSGjFeVCDqAv1sNpId7AqBNGUUfjrkpgrFEf371Jhd61pfMVz
-         YM5g==
-X-Gm-Message-State: AOAM530bPq7OsUtiMoVkYg2dwM3IIXwENS2a9HxBfxWFs4nBzTZTb9DB
-        zXjDQqOzY+W8Dox46X5bXlvwxNqKkupDRhbr/tI=
-X-Google-Smtp-Source: ABdhPJwLNr6ut/klp8L45pPeVxHkwTvUSCoSowcJolpmMysCe535vKX/TbzgrVj2rLhJ7jp+3m2/sqAhbRFFli49UQQ=
-X-Received: by 2002:aa7:9e89:: with SMTP id p9mr48206429pfq.110.1594071268872;
- Mon, 06 Jul 2020 14:34:28 -0700 (PDT)
+        id S1726817AbgGFWhU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 6 Jul 2020 18:37:20 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:55098 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726681AbgGFWhT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 6 Jul 2020 18:37:19 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jsZjg-0006vt-VW; Tue, 07 Jul 2020 08:37:18 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 07 Jul 2020 08:37:16 +1000
+Date:   Tue, 7 Jul 2020 08:37:16 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [v2 PATCH] crypto: chacha - Add DEFINE_CHACHA_STATE macro
+Message-ID: <20200706223716.GA10958@gondor.apana.org.au>
+References: <20200706133733.GA6479@gondor.apana.org.au>
+ <20200706190717.GB736284@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a17:90b:943:0:0:0:0 with HTTP; Mon, 6 Jul 2020 14:34:28
- -0700 (PDT)
-Reply-To: sctnld11170@tlen.pl
-From:   "Mr. Scott Donald" <lhame7124@gmail.com>
-Date:   Mon, 6 Jul 2020 14:34:28 -0700
-Message-ID: <CAL699QR80--xK46OPXBhXqVJNJYO_8adi7E-wXSraR2-=aXrBA@mail.gmail.com>
-Subject: Hello, Please
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200706190717.GB736284@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---=20
-Dear Friend,
+On Mon, Jul 06, 2020 at 12:07:17PM -0700, Eric Biggers wrote:
+>
+> This changes chacha_state to be a pointer, which breaks clearing the state
+> because that uses sizeof(chacha_state):
+> 
+> 	memzero_explicit(chacha_state, sizeof(chacha_state));
+> 
+> It would need to be changed to use CHACHA_BLOCK_SIZE.
 
-I'm Mr. Scott Donald a Successful business Man dealing with
-Exportation, I got your mail contact through search to let you know my
-Ugly Situation Am a dying Man here in Los Angeles California Hospital
-Bed in (USA), I Lost my Wife and my only Daughter for Covid-19 I'm
-dying with same symptoms and more. my Doctor open-up to me that he is
-Afraid to tell me my Condition and inside me, I already know that I'm
-not going to survive and I can't live alone without my Family on
-Earth,
+Good catch.  Thanks! Here's an update:
 
-I have a project that I am about to hand over to you. and I already
-instructed the Bank to transfer my fund sum of =C2=A33,7M GBP to you as to
-enable you to give 50% to Charitable Home and take 50% don't think
-otherwise and why would anybody send someone you barely know to help
-you deliver a message, help me do this for the happiness of my soul
-and for God to mercy me and my Family and give Us a good place.
+---8<---
+As it stands the chacha state array is made 12 bytes bigger on
+x86 in order for it to be 16-byte aligned.  However, the array
+is not actually aligned until it hits the x86 code.
 
+This patch moves the alignment to where the state array is defined.
+To do so a macro DEFINE_CHACHA_STATE has been added which takes
+care of all the work to ensure that it is actually aligned on the
+stack.
 
-please, do as I said there was someone from your State that I deeply
-love so very very much and I miss her so bad I have no means to reach
-any Charitable Home there. that is why I go for a personal search of
-the Country and State and I got your mail contact through search to
-let you know my Bitterness and please, help me is getting Dark I ask
-my Doctor to help me keep you notice failure for me to reach you in
-person Your urgent Response, here is my Doctor Whats-app Number for
-urgent notice +13019692737
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-Hope To Hear From You. I'm sending this email to you for the second
-time yet no response from you. I operate Two Foreign banks, I bank
-with Barclays bank of London (BBL) & Bankia S.A. Madrid, Spain(BSA)
-
-My Regards.
-
-Mr. Scott Donald
-CEO
+diff --git a/arch/x86/crypto/chacha_glue.c b/arch/x86/crypto/chacha_glue.c
+index 22250091cdbec..20d0252f11aa5 100644
+--- a/arch/x86/crypto/chacha_glue.c
++++ b/arch/x86/crypto/chacha_glue.c
+@@ -14,8 +14,6 @@
+ #include <linux/module.h>
+ #include <asm/simd.h>
+ 
+-#define CHACHA_STATE_ALIGN 16
+-
+ asmlinkage void chacha_block_xor_ssse3(u32 *state, u8 *dst, const u8 *src,
+ 				       unsigned int len, int nrounds);
+ asmlinkage void chacha_4block_xor_ssse3(u32 *state, u8 *dst, const u8 *src,
+@@ -124,8 +122,6 @@ static void chacha_dosimd(u32 *state, u8 *dst, const u8 *src,
+ 
+ void hchacha_block_arch(const u32 *state, u32 *stream, int nrounds)
+ {
+-	state = PTR_ALIGN(state, CHACHA_STATE_ALIGN);
+-
+ 	if (!static_branch_likely(&chacha_use_simd) || !crypto_simd_usable()) {
+ 		hchacha_block_generic(state, stream, nrounds);
+ 	} else {
+@@ -138,8 +134,6 @@ EXPORT_SYMBOL(hchacha_block_arch);
+ 
+ void chacha_init_arch(u32 *state, const u32 *key, const u8 *iv)
+ {
+-	state = PTR_ALIGN(state, CHACHA_STATE_ALIGN);
+-
+ 	chacha_init_generic(state, key, iv);
+ }
+ EXPORT_SYMBOL(chacha_init_arch);
+@@ -147,8 +141,6 @@ EXPORT_SYMBOL(chacha_init_arch);
+ void chacha_crypt_arch(u32 *state, u8 *dst, const u8 *src, unsigned int bytes,
+ 		       int nrounds)
+ {
+-	state = PTR_ALIGN(state, CHACHA_STATE_ALIGN);
+-
+ 	if (!static_branch_likely(&chacha_use_simd) || !crypto_simd_usable() ||
+ 	    bytes <= CHACHA_BLOCK_SIZE)
+ 		return chacha_crypt_generic(state, dst, src, bytes, nrounds);
+@@ -170,15 +162,12 @@ EXPORT_SYMBOL(chacha_crypt_arch);
+ static int chacha_simd_stream_xor(struct skcipher_request *req,
+ 				  const struct chacha_ctx *ctx, const u8 *iv)
+ {
+-	u32 *state, state_buf[16 + 2] __aligned(8);
++	DEFINE_CHACHA_STATE(state);
+ 	struct skcipher_walk walk;
+ 	int err;
+ 
+ 	err = skcipher_walk_virt(&walk, req, false);
+ 
+-	BUILD_BUG_ON(CHACHA_STATE_ALIGN != 16);
+-	state = PTR_ALIGN(state_buf + 0, CHACHA_STATE_ALIGN);
+-
+ 	chacha_init_generic(state, ctx->key, iv);
+ 
+ 	while (walk.nbytes > 0) {
+@@ -217,12 +206,10 @@ static int xchacha_simd(struct skcipher_request *req)
+ {
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+ 	struct chacha_ctx *ctx = crypto_skcipher_ctx(tfm);
+-	u32 *state, state_buf[16 + 2] __aligned(8);
++	DEFINE_CHACHA_STATE(state);
+ 	struct chacha_ctx subctx;
+ 	u8 real_iv[16];
+ 
+-	BUILD_BUG_ON(CHACHA_STATE_ALIGN != 16);
+-	state = PTR_ALIGN(state_buf + 0, CHACHA_STATE_ALIGN);
+ 	chacha_init_generic(state, ctx->key, req->iv);
+ 
+ 	if (req->cryptlen > CHACHA_BLOCK_SIZE && crypto_simd_usable()) {
+diff --git a/include/crypto/chacha.h b/include/crypto/chacha.h
+index 2676f4fbd4c16..dcc8cfe2debb9 100644
+--- a/include/crypto/chacha.h
++++ b/include/crypto/chacha.h
+@@ -16,7 +16,7 @@
+ #define _CRYPTO_CHACHA_H
+ 
+ #include <asm/unaligned.h>
+-#include <linux/types.h>
++#include <linux/kernel.h>
+ 
+ /* 32-bit stream position, then 96-bit nonce (RFC7539 convention) */
+ #define CHACHA_IV_SIZE		16
+@@ -25,10 +25,14 @@
+ #define CHACHA_BLOCK_SIZE	64
+ #define CHACHAPOLY_IV_SIZE	12
+ 
++#define CHACHA_STATE_WORDS	(CHACHA_BLOCK_SIZE / sizeof(u32))
++
+ #ifdef CONFIG_X86_64
+-#define CHACHA_STATE_WORDS	((CHACHA_BLOCK_SIZE + 12) / sizeof(u32))
++#define DEFINE_CHACHA_STATE(name) \
++	u32 __##name##_buf[CHACHA_STATE_WORDS + 2] __aligned(8); \
++	u32 *name = PTR_ALIGN((u32 *)__##name##_buf, 16)
+ #else
+-#define CHACHA_STATE_WORDS	(CHACHA_BLOCK_SIZE / sizeof(u32))
++#define DEFINE_CHACHA_STATE(name) u32 name[CHACHA_STATE_WORDS]
+ #endif
+ 
+ /* 192-bit nonce, then 64-bit stream position */
+diff --git a/lib/crypto/chacha20poly1305.c b/lib/crypto/chacha20poly1305.c
+index ad0699ce702f9..4172484a4b887 100644
+--- a/lib/crypto/chacha20poly1305.c
++++ b/lib/crypto/chacha20poly1305.c
+@@ -94,7 +94,7 @@ void chacha20poly1305_encrypt(u8 *dst, const u8 *src, const size_t src_len,
+ 			      const u64 nonce,
+ 			      const u8 key[CHACHA20POLY1305_KEY_SIZE])
+ {
+-	u32 chacha_state[CHACHA_STATE_WORDS];
++	DEFINE_CHACHA_STATE(chacha_state);
+ 	u32 k[CHACHA_KEY_WORDS];
+ 	__le64 iv[2];
+ 
+@@ -116,7 +116,7 @@ void xchacha20poly1305_encrypt(u8 *dst, const u8 *src, const size_t src_len,
+ 			       const u8 nonce[XCHACHA20POLY1305_NONCE_SIZE],
+ 			       const u8 key[CHACHA20POLY1305_KEY_SIZE])
+ {
+-	u32 chacha_state[CHACHA_STATE_WORDS];
++	DEFINE_CHACHA_STATE(chacha_state);
+ 
+ 	xchacha_init(chacha_state, key, nonce);
+ 	__chacha20poly1305_encrypt(dst, src, src_len, ad, ad_len, chacha_state);
+@@ -172,7 +172,7 @@ bool chacha20poly1305_decrypt(u8 *dst, const u8 *src, const size_t src_len,
+ 			      const u64 nonce,
+ 			      const u8 key[CHACHA20POLY1305_KEY_SIZE])
+ {
+-	u32 chacha_state[CHACHA_STATE_WORDS];
++	DEFINE_CHACHA_STATE(chacha_state);
+ 	u32 k[CHACHA_KEY_WORDS];
+ 	__le64 iv[2];
+ 	bool ret;
+@@ -186,7 +186,7 @@ bool chacha20poly1305_decrypt(u8 *dst, const u8 *src, const size_t src_len,
+ 	ret = __chacha20poly1305_decrypt(dst, src, src_len, ad, ad_len,
+ 					 chacha_state);
+ 
+-	memzero_explicit(chacha_state, sizeof(chacha_state));
++	memzero_explicit(chacha_state, CHACHA_BLOCK_SIZE);
+ 	memzero_explicit(iv, sizeof(iv));
+ 	memzero_explicit(k, sizeof(k));
+ 	return ret;
+@@ -198,7 +198,7 @@ bool xchacha20poly1305_decrypt(u8 *dst, const u8 *src, const size_t src_len,
+ 			       const u8 nonce[XCHACHA20POLY1305_NONCE_SIZE],
+ 			       const u8 key[CHACHA20POLY1305_KEY_SIZE])
+ {
+-	u32 chacha_state[CHACHA_STATE_WORDS];
++	DEFINE_CHACHA_STATE(chacha_state);
+ 
+ 	xchacha_init(chacha_state, key, nonce);
+ 	return __chacha20poly1305_decrypt(dst, src, src_len, ad, ad_len,
+@@ -216,7 +216,7 @@ bool chacha20poly1305_crypt_sg_inplace(struct scatterlist *src,
+ {
+ 	const u8 *pad0 = page_address(ZERO_PAGE(0));
+ 	struct poly1305_desc_ctx poly1305_state;
+-	u32 chacha_state[CHACHA_STATE_WORDS];
++	DEFINE_CHACHA_STATE(chacha_state);
+ 	struct sg_mapping_iter miter;
+ 	size_t partial = 0;
+ 	unsigned int flags;
+@@ -328,7 +328,7 @@ bool chacha20poly1305_crypt_sg_inplace(struct scatterlist *src,
+ 		      !crypto_memneq(b.mac[0], b.mac[1], POLY1305_DIGEST_SIZE);
+ 	}
+ 
+-	memzero_explicit(chacha_state, sizeof(chacha_state));
++	memzero_explicit(chacha_state, CHACHA_BLOCK_SIZE);
+ 	memzero_explicit(&b, sizeof(b));
+ 
+ 	return ret;
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
