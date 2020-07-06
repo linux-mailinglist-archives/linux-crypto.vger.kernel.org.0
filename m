@@ -2,125 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB35216071
-	for <lists+linux-crypto@lfdr.de>; Mon,  6 Jul 2020 22:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C332160FA
+	for <lists+linux-crypto@lfdr.de>; Mon,  6 Jul 2020 23:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgGFUmj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 6 Jul 2020 16:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
+        id S1726779AbgGFVeb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 6 Jul 2020 17:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbgGFUmj (ORCPT
+        with ESMTP id S1726727AbgGFVeb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 6 Jul 2020 16:42:39 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C720C061755
-        for <linux-crypto@vger.kernel.org>; Mon,  6 Jul 2020 13:42:39 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id g75so40625429wme.5
-        for <linux-crypto@vger.kernel.org>; Mon, 06 Jul 2020 13:42:39 -0700 (PDT)
+        Mon, 6 Jul 2020 17:34:31 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D2AC061755
+        for <linux-crypto@vger.kernel.org>; Mon,  6 Jul 2020 14:34:31 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id k27so2901357pgm.2
+        for <linux-crypto@vger.kernel.org>; Mon, 06 Jul 2020 14:34:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fvIgccMvXabmUtTKPNt+brvNtU3IWZlaL8TG8XofFmc=;
-        b=FQPoW/q6yh/Quk/H/EP84/3m3YG88Y/36oJwgVldNFRdLewmIGKP9Xj5KnXGQGtPgu
-         SFJpDaF2WGKCw+beknFa+9gwODjF0X+hKVuqV11cPaHC3zeR/4F7yOBXYMis3mX3QfnF
-         rN29XPcaGsjwh5xoYynYLYqD+P6Fx1lUrii7IVerj0rqGeSxnTIaT09iexaTIi1sBK6q
-         rKmNogo99n0ocT6zpWXyXlOJVW6+Key4xNASeF2ASbd6tlitQyy74TM+SCISLddE6mPK
-         5jV+nvXhYhBTJxrCuNgUTPQ3mj2bd4BFeku1CsSjlh1YVv8hoFR3hTXp5s9F6Xip+Z/C
-         XxWw==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=nb2b5E8jozASb6qKQS31YncmreGQOkYkl7FIjerURPg=;
+        b=VKc2yiKmsKiUyGXyyk/gMwF2tP6NaaLQjqZiuMZkc6dptE83hdFJW2SjkhjCF1jw+g
+         2qvImudQ1WCmdDcPsBNxBS4y/hysHw+JLmUeLrCaz2PBgCV8Gj51ciW5ziGcCYd0WMhy
+         5p3BJvcvkVAGi/O5raIFNqcvwd5R52HyXEdkzU62Pcq7eEMTvYoREuo7ngKqd2w5VdmF
+         ZMs7dOiKITGYH6JC29xImHb5G4QK+neYbzKNpFP0NsHhHAH9sdcs/y9CWoqLEMeqFeRK
+         wpfSILH7zk9ysmJMeOy68SsETeukpIBp/CXbaqv1iaNcbz3OgiZ/eHBwG7qyjZPjlJi5
+         8mTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fvIgccMvXabmUtTKPNt+brvNtU3IWZlaL8TG8XofFmc=;
-        b=ogpoefQfh+QF+XlNTJMD+DjdrjJXH1wz5CRvDkczjg6UannkgkiKmJ++1eWbPPfyFL
-         3ECxVnePec6qeYbcOp3RbLH8FA3GrU1xL8OaIQ3XHbjFTD4bt1hv0aYYCR436cR8zn69
-         cb6zEGg4RhNNKV6wsLT8cpsJLpZxxojyKIG4ZgfAkMmLTS5Zh0ouVdTJgVuRTk1CkWBq
-         j5Yq3nMzddsQcIbwZNBHxqqrN5QAdwr+xc64NE140HGg9xDFbHSQDcZujPTqe3If8Jb2
-         wb5a3NxWWQgDaAU4zYfZgSoxRh1U33FcFlF/Xfil1rY4Z3d4orZf9YJCCuPxiTExqjIA
-         W3aw==
-X-Gm-Message-State: AOAM533VKHguOD7Lci3ep5/vHSTaSIrnLjxIIv+DwnHn0wQCuaHjf6aH
-        BepZSLn7cfxtiIJLWxa8RSo=
-X-Google-Smtp-Source: ABdhPJyuPG9W6HepyS6vcgc5LtTWT9S2Q8uSNnXd7rKJ0251ve11aiWH0BYbZchkjDIC7IkAji5gzA==
-X-Received: by 2002:a7b:cc17:: with SMTP id f23mr872463wmh.41.1594068157947;
-        Mon, 06 Jul 2020 13:42:37 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id u186sm734422wmu.10.2020.07.06.13.42.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 13:42:37 -0700 (PDT)
-Date:   Mon, 6 Jul 2020 22:42:35 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Tero Kristo <t-kristo@ti.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: Re: [PATCH v3 05/13] crypto: sun8i-ce - permit asynchronous skcipher
- as fallback
-Message-ID: <20200706204235.GB25432@Red>
-References: <20200630121907.24274-1-ardb@kernel.org>
- <20200630121907.24274-6-ardb@kernel.org>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=nb2b5E8jozASb6qKQS31YncmreGQOkYkl7FIjerURPg=;
+        b=N4m2AOYCAmVkE5D7aL7392zpoVsFKOYzKqYAcZ/mYRFHtC+Y+7FNt+f94thqX5iXJy
+         1Uyet/RoYENEu4vvfhvctt6C7/DqKF1J3D3dxxCtS162RetUYEGpnzyYZrhw0vf2igH7
+         gZBUZ3K48plxmT0O7pORss9sg7ZjbHsaGurByKlE/6IC5r7E6QTfv5+ZzMviAc/2otlz
+         SfKtLGFxPDK4CHLV2OwwiYgO5VQf7kBLx6NPi6tmU+P7lveJcaLAeuDNcq9dqqxHHr+I
+         +9Z1bWRTFCieQai/dBFfSGjFeVCDqAv1sNpId7AqBNGUUfjrkpgrFEf371Jhd61pfMVz
+         YM5g==
+X-Gm-Message-State: AOAM530bPq7OsUtiMoVkYg2dwM3IIXwENS2a9HxBfxWFs4nBzTZTb9DB
+        zXjDQqOzY+W8Dox46X5bXlvwxNqKkupDRhbr/tI=
+X-Google-Smtp-Source: ABdhPJwLNr6ut/klp8L45pPeVxHkwTvUSCoSowcJolpmMysCe535vKX/TbzgrVj2rLhJ7jp+3m2/sqAhbRFFli49UQQ=
+X-Received: by 2002:aa7:9e89:: with SMTP id p9mr48206429pfq.110.1594071268872;
+ Mon, 06 Jul 2020 14:34:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200630121907.24274-6-ardb@kernel.org>
+Received: by 2002:a17:90b:943:0:0:0:0 with HTTP; Mon, 6 Jul 2020 14:34:28
+ -0700 (PDT)
+Reply-To: sctnld11170@tlen.pl
+From:   "Mr. Scott Donald" <lhame7124@gmail.com>
+Date:   Mon, 6 Jul 2020 14:34:28 -0700
+Message-ID: <CAL699QR80--xK46OPXBhXqVJNJYO_8adi7E-wXSraR2-=aXrBA@mail.gmail.com>
+Subject: Hello, Please
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 02:18:59PM +0200, Ard Biesheuvel wrote:
-> Even though the sun8i-ce driver implements asynchronous versions of
-> ecb(aes) and cbc(aes), the fallbacks it allocates are required to be
-> synchronous. Given that SIMD based software implementations are usually
-> asynchronous as well, even though they rarely complete asynchronously
-> (this typically only happens in cases where the request was made from
-> softirq context, while SIMD was already in use in the task context that
-> it interrupted), these implementations are disregarded, and either the
-> generic C version or another table based version implemented in assembler
-> is selected instead.
-> 
-> Since falling back to synchronous AES is not only a performance issue, but
-> potentially a security issue as well (due to the fact that table based AES
-> is not time invariant), let's fix this, by allocating an ordinary skcipher
-> as the fallback, and invoke it with the completion routine that was given
-> to the outer request.
-> 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c | 41 ++++++++++----------
->  drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h        |  3 +-
->  2 files changed, 22 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-> index 0e9eac397e1b..4ac0f91e2800 100644
-> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-> @@ -187,6 +187,7 @@ struct sun8i_ce_dev {
->  struct sun8i_cipher_req_ctx {
->  	u32 op_dir;
->  	int flow;
-> +	struct skcipher_request fallback_req;   // keep at the end
->  };
->  
->  /*
+--=20
+Dear Friend,
 
-Hello
+I'm Mr. Scott Donald a Successful business Man dealing with
+Exportation, I got your mail contact through search to let you know my
+Ugly Situation Am a dying Man here in Los Angeles California Hospital
+Bed in (USA), I Lost my Wife and my only Daughter for Covid-19 I'm
+dying with same symptoms and more. my Doctor open-up to me that he is
+Afraid to tell me my Condition and inside me, I already know that I'm
+not going to survive and I can't live alone without my Family on
+Earth,
 
-Same as sun8i-ss, it miss the kerneldoc
-otherwise
-Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+I have a project that I am about to hand over to you. and I already
+instructed the Bank to transfer my fund sum of =C2=A33,7M GBP to you as to
+enable you to give 50% to Charitable Home and take 50% don't think
+otherwise and why would anybody send someone you barely know to help
+you deliver a message, help me do this for the happiness of my soul
+and for God to mercy me and my Family and give Us a good place.
+
+
+please, do as I said there was someone from your State that I deeply
+love so very very much and I miss her so bad I have no means to reach
+any Charitable Home there. that is why I go for a personal search of
+the Country and State and I got your mail contact through search to
+let you know my Bitterness and please, help me is getting Dark I ask
+my Doctor to help me keep you notice failure for me to reach you in
+person Your urgent Response, here is my Doctor Whats-app Number for
+urgent notice +13019692737
+
+Hope To Hear From You. I'm sending this email to you for the second
+time yet no response from you. I operate Two Foreign banks, I bank
+with Barclays bank of London (BBL) & Bankia S.A. Madrid, Spain(BSA)
+
+My Regards.
+
+Mr. Scott Donald
+CEO
