@@ -2,94 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9F2216345
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2020 03:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7962164D0
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2020 05:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgGGBQZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 6 Jul 2020 21:16:25 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:36618 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725892AbgGGBQX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 6 Jul 2020 21:16:23 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id BB64AE1014BFA9131842
-        for <linux-crypto@vger.kernel.org>; Tue,  7 Jul 2020 09:16:21 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Tue, 7 Jul 2020
- 09:16:17 +0800
-From:   Longfang Liu <liulongfang@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>
-Subject: [PATCH v2 5/5] crypto: hisilicon/sec2 - fix some coding styles
-Date:   Tue, 7 Jul 2020 09:15:41 +0800
-Message-ID: <1594084541-22177-6-git-send-email-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1594084541-22177-1-git-send-email-liulongfang@huawei.com>
-References: <1594084541-22177-1-git-send-email-liulongfang@huawei.com>
+        id S1727844AbgGGDrT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 6 Jul 2020 23:47:19 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:55904 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727077AbgGGDrT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 6 Jul 2020 23:47:19 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jseZd-0002J2-Ae; Tue, 07 Jul 2020 13:47:14 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 07 Jul 2020 13:47:13 +1000
+Date:   Tue, 7 Jul 2020 13:47:13 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Olivier Sobrie <olivier.sobrie@silexinsight.com>,
+        Waleed Ziad <waleed94ziad@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] hwrng: ba431 - Include kernel.h
+Message-ID: <20200707034713.GA13363@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Modify some log output interfaces and
-update author information
+There are multiple things in this file that requires kernel.h but
+it's only included through other header files indirectly.  This
+patch adds a direct inclusion as those indirect inclusions may go
+away at any point.
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec_main.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 301f042..2297425 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -282,7 +282,7 @@ static int sec_engine_init(struct hisi_qm *qm)
- 					 reg, reg & 0x1, SEC_DELAY_10_US,
- 					 SEC_POLL_TIMEOUT_US);
- 	if (ret) {
--		dev_err(&qm->pdev->dev, "fail to init sec mem\n");
-+		pci_err(qm->pdev, "fail to init sec mem\n");
- 		return ret;
- 	}
- 
-@@ -371,7 +371,7 @@ static void sec_hw_error_enable(struct hisi_qm *qm)
- 
- 	if (qm->ver == QM_HW_V1) {
- 		writel(SEC_CORE_INT_DISABLE, qm->io_base + SEC_CORE_INT_MASK);
--		dev_info(&qm->pdev->dev, "V1 not support hw error handle\n");
-+		pci_info(qm->pdev, "V1 not support hw error handle\n");
- 		return;
- 	}
- 
-@@ -599,7 +599,7 @@ static int sec_core_debug_init(struct hisi_qm *qm)
- 
- 	regset = devm_kzalloc(dev, sizeof(*regset), GFP_KERNEL);
- 	if (!regset)
--		return -ENOENT;
-+		return -ENOMEM;
- 
- 	regset->regs = sec_dfx_regs;
- 	regset->nregs = ARRAY_SIZE(sec_dfx_regs);
-@@ -686,8 +686,6 @@ static void sec_log_hw_error(struct hisi_qm *qm, u32 err_sts)
- 						SEC_CORE_SRAM_ECC_ERR_INFO);
- 				dev_err(dev, "multi ecc sram num=0x%x\n",
- 					SEC_ECC_NUM(err_val));
--				dev_err(dev, "multi ecc sram addr=0x%x\n",
--					SEC_ECC_ADDR(err_val));
- 			}
- 		}
- 		errs++;
-@@ -996,5 +994,6 @@ module_exit(sec_exit);
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Zaibo Xu <xuzaibo@huawei.com>");
- MODULE_AUTHOR("Longfang Liu <liulongfang@huawei.com>");
-+MODULE_AUTHOR("Kai Ye <yekai13@huawei.com>");
- MODULE_AUTHOR("Wei Zhang <zhangwei375@huawei.com>");
- MODULE_DESCRIPTION("Driver for HiSilicon SEC accelerator");
+diff --git a/drivers/char/hw_random/ba431-rng.c b/drivers/char/hw_random/ba431-rng.c
+index a39e3abf50b9..410b50b05e21 100644
+--- a/drivers/char/hw_random/ba431-rng.c
++++ b/drivers/char/hw_random/ba431-rng.c
+@@ -5,6 +5,7 @@
+ #include <linux/hw_random.h>
+ #include <linux/io.h>
+ #include <linux/iopoll.h>
++#include <linux/kernel.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
 -- 
-2.8.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
