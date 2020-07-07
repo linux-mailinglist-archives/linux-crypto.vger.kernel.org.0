@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3866B216343
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2020 03:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1660216342
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2020 03:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbgGGBQU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1727038AbgGGBQU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Mon, 6 Jul 2020 21:16:20 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7259 "EHLO huawei.com"
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7258 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725892AbgGGBQU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726961AbgGGBQU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 6 Jul 2020 21:16:20 -0400
 Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 9AF82321442BA7CBA335
+        by Forcepoint Email with ESMTP id 96AA440B646FA4722004
         for <linux-crypto@vger.kernel.org>; Tue,  7 Jul 2020 09:16:16 +0800 (CST)
 Received: from huawei.com (10.67.165.24) by DGGEMS411-HUB.china.huawei.com
  (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Tue, 7 Jul 2020
@@ -20,10 +20,12 @@ Received: from huawei.com (10.67.165.24) by DGGEMS411-HUB.china.huawei.com
 From:   Longfang Liu <liulongfang@huawei.com>
 To:     <herbert@gondor.apana.org.au>
 CC:     <linux-crypto@vger.kernel.org>
-Subject: [PATCH v2 0/5] crypto: hisilicon/sec2 - fix SEC bugs and coding styles
-Date:   Tue, 7 Jul 2020 09:15:36 +0800
-Message-ID: <1594084541-22177-1-git-send-email-liulongfang@huawei.com>
+Subject: [PATCH v2 1/5] crypto: hisilicon/sec2 - clear SEC debug regs
+Date:   Tue, 7 Jul 2020 09:15:37 +0800
+Message-ID: <1594084541-22177-2-git-send-email-liulongfang@huawei.com>
 X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1594084541-22177-1-git-send-email-liulongfang@huawei.com>
+References: <1594084541-22177-1-git-send-email-liulongfang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.67.165.24]
@@ -33,26 +35,39 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Fix some SEC driver bugs and modify some coding styles
+From: Kai Ye <yekai13@huawei.com>
 
-Changes v1 -> v2:
-	- Apply MAY_BACKLOG.
+SEC debug registers aren't cleared even if its driver is removed,
+so add a clearing operation in driver removing.
 
-Kai Ye (2):
-  crypto: hisilicon/sec2 - clear SEC debug regs
-  crypto:hisilicon/sec2 - update busy processing logic
+Signed-off-by: Kai Ye <yekai13@huawei.com>
+Reviewed-by: Longfang Liu <liulongfang@huawei.com>
+---
+ drivers/crypto/hisilicon/sec2/sec_main.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Longfang Liu (3):
-  crypto: hisilicon/sec2 - update SEC initialization and reset
-  crypto: hisilicon/sec2 - update debugfs interface parameters
-  crypto: hisilicon/sec2 - fix some coding styles
-
- drivers/crypto/hisilicon/qm.h              |   1 +
- drivers/crypto/hisilicon/sec2/sec.h        |   4 +
- drivers/crypto/hisilicon/sec2/sec_crypto.c |  91 +++++++++++++++------
- drivers/crypto/hisilicon/sec2/sec_main.c   | 126 +++++++++++++++--------------
- 4 files changed, 138 insertions(+), 84 deletions(-)
-
+diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+index 57de51f..d5f0589 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_main.c
++++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -346,10 +346,17 @@ static int sec_set_user_domain_and_cache(struct hisi_qm *qm)
+ /* sec_debug_regs_clear() - clear the sec debug regs */
+ static void sec_debug_regs_clear(struct hisi_qm *qm)
+ {
++	int i;
++
+ 	/* clear current_qm */
+ 	writel(0x0, qm->io_base + QM_DFX_MB_CNT_VF);
+ 	writel(0x0, qm->io_base + QM_DFX_DB_CNT_VF);
+ 
++	/* clear sec dfx regs */
++	writel(0x1, qm->io_base + SEC_CTRL_CNT_CLR_CE);
++	for (i = 0; i < ARRAY_SIZE(sec_dfx_regs); i++)
++		readl(qm->io_base + sec_dfx_regs[i].offset);
++
+ 	/* clear rdclr_en */
+ 	writel(0x0, qm->io_base + SEC_CTRL_CNT_CLR_CE);
+ 
 -- 
 2.8.1
 
