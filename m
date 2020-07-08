@@ -2,34 +2,44 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E340218D3D
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jul 2020 18:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C07218D35
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jul 2020 18:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730737AbgGHQkf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 8 Jul 2020 12:40:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54888 "EHLO mail.kernel.org"
+        id S1730740AbgGHQke (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 8 Jul 2020 12:40:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730730AbgGHQkc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 8 Jul 2020 12:40:32 -0400
+        id S1730736AbgGHQkd (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 8 Jul 2020 12:40:33 -0400
 Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E850E207F9;
-        Wed,  8 Jul 2020 16:40:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FC932078D;
+        Wed,  8 Jul 2020 16:40:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1594226432;
-        bh=sUpB5f7/2tTS/Pxep7GYcTBxGpCFVx12p8NvO3zEd2g=;
+        bh=rE+uvyPJsx8rFIs6khWUJUiQ/J5nt2exnTaDySam3F4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VlSikpcU/re8GREdmigMjUF1bRuINgkNxcQVGBsaJ4cG8oLVQ7R6YIW3/Bx4yK8by
-         C1AlgMUKQdhYiv5pjiEyVVQP/ghcfV31ULqPmdzxTvMAj8JGpiHTRrnnO5f7J7t+Q2
-         qjl4d2Jwr5WOSgtm7dFPc0ElIQXOnRpk/SNUrG/o=
+        b=2AdOv2ojkr5ZbL0vrz8iP22badDVJXNqokKsVwP6sOfodzMgiWpzAoAlmr5rO5RZm
+         Prmrsra9KPKdnKtIEc726U5NOchmXKi17+4uSRRoXnAfJcKiU0pEJF50TLhG1xgFJd
+         GYqnMHph6bl0BxWv6K4yr1q0HIsXrYa5cFF0t1b8=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org,
         Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     sparclinux@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: [PATCH v2 1/5] crypto: sparc - rename sha256 to sha256_alg
-Date:   Wed,  8 Jul 2020 09:39:39 -0700
-Message-Id: <20200708163943.52071-2-ebiggers@kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        sparclinux@vger.kernel.org, linux-efi@vger.kernel.org,
+        mptcp@lists.01.org,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        alsa-devel@alsa-project.org,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Tzung-Bi Shih <tzungbi@google.com>
+Subject: [PATCH v2 2/5] crypto: lib/sha256 - add sha256() function
+Date:   Wed,  8 Jul 2020 09:39:40 -0700
+Message-Id: <20200708163943.52071-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200708163943.52071-1-ebiggers@kernel.org>
 References: <20200708163943.52071-1-ebiggers@kernel.org>
@@ -42,67 +52,50 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-To avoid a naming collision when we add a sha256() library function,
-rename the "sha256" static variable in sha256_glue.c to "sha256_alg".
-For consistency, also rename "sha224" to "sha224_alg".
+Add a function sha256() which computes a SHA-256 digest in one step,
+combining sha256_init() + sha256_update() + sha256_final().
 
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: sparclinux@vger.kernel.org
+This is similar to how we also have blake2s().
+
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+Tested-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/sparc/crypto/sha256_glue.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ include/crypto/sha.h |  1 +
+ lib/crypto/sha256.c  | 10 ++++++++++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/arch/sparc/crypto/sha256_glue.c b/arch/sparc/crypto/sha256_glue.c
-index 286bc8ecf15b..ca2547df9652 100644
---- a/arch/sparc/crypto/sha256_glue.c
-+++ b/arch/sparc/crypto/sha256_glue.c
-@@ -156,7 +156,7 @@ static int sha256_sparc64_import(struct shash_desc *desc, const void *in)
- 	return 0;
+diff --git a/include/crypto/sha.h b/include/crypto/sha.h
+index 10753ff71d46..4ff3da816630 100644
+--- a/include/crypto/sha.h
++++ b/include/crypto/sha.h
+@@ -147,6 +147,7 @@ static inline void sha256_init(struct sha256_state *sctx)
  }
+ void sha256_update(struct sha256_state *sctx, const u8 *data, unsigned int len);
+ void sha256_final(struct sha256_state *sctx, u8 *out);
++void sha256(const u8 *data, unsigned int len, u8 *out);
  
--static struct shash_alg sha256 = {
-+static struct shash_alg sha256_alg = {
- 	.digestsize	=	SHA256_DIGEST_SIZE,
- 	.init		=	sha256_sparc64_init,
- 	.update		=	sha256_sparc64_update,
-@@ -174,7 +174,7 @@ static struct shash_alg sha256 = {
- 	}
- };
- 
--static struct shash_alg sha224 = {
-+static struct shash_alg sha224_alg = {
- 	.digestsize	=	SHA224_DIGEST_SIZE,
- 	.init		=	sha224_sparc64_init,
- 	.update		=	sha256_sparc64_update,
-@@ -206,13 +206,13 @@ static bool __init sparc64_has_sha256_opcode(void)
- static int __init sha256_sparc64_mod_init(void)
+ static inline void sha224_init(struct sha256_state *sctx)
  {
- 	if (sparc64_has_sha256_opcode()) {
--		int ret = crypto_register_shash(&sha224);
-+		int ret = crypto_register_shash(&sha224_alg);
- 		if (ret < 0)
- 			return ret;
- 
--		ret = crypto_register_shash(&sha256);
-+		ret = crypto_register_shash(&sha256_alg);
- 		if (ret < 0) {
--			crypto_unregister_shash(&sha224);
-+			crypto_unregister_shash(&sha224_alg);
- 			return ret;
- 		}
- 
-@@ -225,8 +225,8 @@ static int __init sha256_sparc64_mod_init(void)
- 
- static void __exit sha256_sparc64_mod_fini(void)
- {
--	crypto_unregister_shash(&sha224);
--	crypto_unregister_shash(&sha256);
-+	crypto_unregister_shash(&sha224_alg);
-+	crypto_unregister_shash(&sha256_alg);
+diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
+index 2e621697c5c3..2321f6cb322f 100644
+--- a/lib/crypto/sha256.c
++++ b/lib/crypto/sha256.c
+@@ -280,4 +280,14 @@ void sha224_final(struct sha256_state *sctx, u8 *out)
  }
+ EXPORT_SYMBOL(sha224_final);
  
- module_init(sha256_sparc64_mod_init);
++void sha256(const u8 *data, unsigned int len, u8 *out)
++{
++	struct sha256_state sctx;
++
++	sha256_init(&sctx);
++	sha256_update(&sctx, data, len);
++	sha256_final(&sctx, out);
++}
++EXPORT_SYMBOL(sha256);
++
+ MODULE_LICENSE("GPL");
 -- 
 2.27.0
 
