@@ -2,35 +2,37 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0178F218D3C
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jul 2020 18:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DA7218D3B
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jul 2020 18:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730730AbgGHQkf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1730738AbgGHQkf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Wed, 8 Jul 2020 12:40:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54940 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:54960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730729AbgGHQkd (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1730737AbgGHQkd (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Wed, 8 Jul 2020 12:40:33 -0400
 Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1F2620836;
-        Wed,  8 Jul 2020 16:40:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E5E52084C;
+        Wed,  8 Jul 2020 16:40:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1594226433;
-        bh=qcv6XOwJonmyIIS3hjVNF+gYz6JEyXz2OkaZsFvK0+E=;
+        bh=8JzR4eRZslxpBdLmwquT8uQkAQWHlWF8Q5WDgRnjgCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HySN+awD9iBiPt4DP2uFwQXfuhPkMMg7/4nd8JIZ8wj+hRKakcoLISFVjITcfaLkq
-         zJ+HqsMsQeeWUelDfYEPbRW+vGMX/x6IS3vivCe2qiDb/XgXJrvLaxrlVo9zpAFHWh
-         t6FBsrdGgpnaUZBm/2kdmslH53WpA6zHEsQsDha4=
+        b=X9qQvalOLDXxwo6e1EqeOvd9tvBiQElolY6pg+mttuheK6gZmChqeV9kEpTVWzy9j
+         Zc6LwxxpIGjpp73Lcvhlw/tGG8vwtC9DmbflUZ0r6n7mPWqDsAYwgbaFyPgWvHPxlh
+         oaEn9Bgfxj681C1af3nZ2jhOSDJgCduYFDuB2aIQ=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org,
         Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-efi@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 3/5] efi: use sha256() instead of open coding
-Date:   Wed,  8 Jul 2020 09:39:41 -0700
-Message-Id: <20200708163943.52071-4-ebiggers@kernel.org>
+Cc:     mptcp@lists.01.org,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH v2 4/5] mptcp: use sha256() instead of open coding
+Date:   Wed,  8 Jul 2020 09:39:42 -0700
+Message-Id: <20200708163943.52071-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200708163943.52071-1-ebiggers@kernel.org>
 References: <20200708163943.52071-1-ebiggers@kernel.org>
@@ -48,43 +50,66 @@ buffer in one step, use it instead of sha256_init() + sha256_update() +
 sha256_final().
 
 Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-Tested-by: Hans de Goede <hdegoede@redhat.com>
-Cc: linux-efi@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc: mptcp@lists.01.org
+Cc: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Cc: Matthieu Baerts <matthieu.baerts@tessares.net>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- drivers/firmware/efi/embedded-firmware.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ net/mptcp/crypto.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/firmware/efi/embedded-firmware.c b/drivers/firmware/efi/embedded-firmware.c
-index a1b199de9006..e97a9c9d010c 100644
---- a/drivers/firmware/efi/embedded-firmware.c
-+++ b/drivers/firmware/efi/embedded-firmware.c
-@@ -37,9 +37,8 @@ static const struct dmi_system_id * const embedded_fw_table[] = {
- static int __init efi_check_md_for_embedded_firmware(
- 	efi_memory_desc_t *md, const struct efi_embedded_fw_desc *desc)
+diff --git a/net/mptcp/crypto.c b/net/mptcp/crypto.c
+index 3d980713a9e2..82bd2b54d741 100644
+--- a/net/mptcp/crypto.c
++++ b/net/mptcp/crypto.c
+@@ -32,11 +32,8 @@ void mptcp_crypto_key_sha(u64 key, u32 *token, u64 *idsn)
  {
--	struct sha256_state sctx;
- 	struct efi_embedded_fw *fw;
--	u8 sha256[32];
-+	u8 hash[32];
- 	u64 i, size;
- 	u8 *map;
+ 	__be32 mptcp_hashed_key[SHA256_DIGEST_WORDS];
+ 	__be64 input = cpu_to_be64(key);
+-	struct sha256_state state;
  
-@@ -54,10 +53,8 @@ static int __init efi_check_md_for_embedded_firmware(
- 		if (memcmp(map + i, desc->prefix, EFI_EMBEDDED_FW_PREFIX_LEN))
- 			continue;
+-	sha256_init(&state);
+-	sha256_update(&state, (__force u8 *)&input, sizeof(input));
+-	sha256_final(&state, (u8 *)mptcp_hashed_key);
++	sha256((__force u8 *)&input, sizeof(input), (u8 *)mptcp_hashed_key);
  
--		sha256_init(&sctx);
--		sha256_update(&sctx, map + i, desc->length);
--		sha256_final(&sctx, sha256);
--		if (memcmp(sha256, desc->sha256, 32) == 0)
-+		sha256(map + i, desc->length, hash);
-+		if (memcmp(hash, desc->sha256, 32) == 0)
- 			break;
- 	}
- 	if ((i + desc->length) > size) {
+ 	if (token)
+ 		*token = be32_to_cpu(mptcp_hashed_key[0]);
+@@ -47,7 +44,6 @@ void mptcp_crypto_key_sha(u64 key, u32 *token, u64 *idsn)
+ void mptcp_crypto_hmac_sha(u64 key1, u64 key2, u8 *msg, int len, void *hmac)
+ {
+ 	u8 input[SHA256_BLOCK_SIZE + SHA256_DIGEST_SIZE];
+-	struct sha256_state state;
+ 	u8 key1be[8];
+ 	u8 key2be[8];
+ 	int i;
+@@ -67,13 +63,10 @@ void mptcp_crypto_hmac_sha(u64 key1, u64 key2, u8 *msg, int len, void *hmac)
+ 
+ 	memcpy(&input[SHA256_BLOCK_SIZE], msg, len);
+ 
+-	sha256_init(&state);
+-	sha256_update(&state, input, SHA256_BLOCK_SIZE + len);
+-
+ 	/* emit sha256(K1 || msg) on the second input block, so we can
+ 	 * reuse 'input' for the last hashing
+ 	 */
+-	sha256_final(&state, &input[SHA256_BLOCK_SIZE]);
++	sha256(input, SHA256_BLOCK_SIZE + len, &input[SHA256_BLOCK_SIZE]);
+ 
+ 	/* Prepare second part of hmac */
+ 	memset(input, 0x5C, SHA256_BLOCK_SIZE);
+@@ -82,9 +75,7 @@ void mptcp_crypto_hmac_sha(u64 key1, u64 key2, u8 *msg, int len, void *hmac)
+ 	for (i = 0; i < 8; i++)
+ 		input[i + 8] ^= key2be[i];
+ 
+-	sha256_init(&state);
+-	sha256_update(&state, input, SHA256_BLOCK_SIZE + SHA256_DIGEST_SIZE);
+-	sha256_final(&state, (u8 *)hmac);
++	sha256(input, SHA256_BLOCK_SIZE + SHA256_DIGEST_SIZE, hmac);
+ }
+ 
+ #ifdef CONFIG_MPTCP_HMAC_TEST
 -- 
 2.27.0
 
