@@ -2,87 +2,86 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545E7219B2A
-	for <lists+linux-crypto@lfdr.de>; Thu,  9 Jul 2020 10:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47065219B78
+	for <lists+linux-crypto@lfdr.de>; Thu,  9 Jul 2020 10:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgGIIkp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 9 Jul 2020 04:40:45 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34672 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726765AbgGIIko (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 9 Jul 2020 04:40:44 -0400
-Date:   Thu, 9 Jul 2020 10:40:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594284042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ieSBot/weRM1U5QEdd7MCkjc4QsLbq7KhjhwH8iFh8o=;
-        b=g6xv4XrKRyQ3aPVu6RyEH2opLJSzoWIezuhAdkoJQlr6HdURCxra93x8IV8pGbnpn7Wqxp
-        oIX2mNGvsZX4dlbIH33sun9YPonGswuB5r4Jxg0gjLkD8kvALBGsyAg1ClSFbfMOg9G+dp
-        X8a7+NNABkaPl+lURmisc5FOelII2pMzcKsdrHrKbctKJu+dHq+ZKJtvyN8H/HFyEdK6yS
-        YgsTDBTD3UlEaXIj/vq67lwqmn/rnSkTpbB+/Qkx/ngP2l8d5VMHMRE+6kAR9OECszU8z4
-        bEVszu8x+mn+maLRzLN6d/nmsQgYgnQD7CbMcWwwHkAbGTvnsSi6+PfvcUaBTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594284042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ieSBot/weRM1U5QEdd7MCkjc4QsLbq7KhjhwH8iFh8o=;
-        b=TB7jk4iiWHREpoBXtKoUJDi3kx2Hxev64lmh1lDE+9keDrgXurcyq91Z2CSwcV2J38JQcS
-        7bOUrK+lgNH/W2BQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "Luis Claudio R . Goncalves" <lgoncalv@redhat.com>,
-        Mahipal Challa <mahipalreddy2006@gmail.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: Re: [PATCH v4] mm/zswap: move to use crypto_acomp API for hardware
- acceleration
-Message-ID: <20200709084040.cf3jzkndiaefky4r@linutronix.de>
-References: <20200707125210.33256-1-song.bao.hua@hisilicon.com>
- <20200708145934.4w3qk53mgavyyln7@linutronix.de>
- <B926444035E5E2439431908E3842AFD25610B7@DGGEMI525-MBS.china.huawei.com>
- <20200709073905.lgs5kvccnz6eqsyd@linutronix.de>
- <B926444035E5E2439431908E3842AFD2561D4E@DGGEMI525-MBS.china.huawei.com>
+        id S1726245AbgGIIvX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 9 Jul 2020 04:51:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgGIIvX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 9 Jul 2020 04:51:23 -0400
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 76BBB2067D
+        for <linux-crypto@vger.kernel.org>; Thu,  9 Jul 2020 08:51:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594284682;
+        bh=iOQWTCgIGURnZ4pFe02nC8Sn658NBNaRKoP7uXDodPI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aujcqdQC5TrZN0/ICl5aTL0HX8dGjW6mT+1opqhdjKXGuUtClAaCYMHtnHUrvnfP5
+         4PJo/kf/3geBZOySwGy97AZqMUpqHoq8cEQXvFO95SK/eY9QRB/gi8giYZq9c2/7/v
+         xwbNRS53HLQXSMhjV8dlvQt3wtAfv8yLpvHDFsFM=
+Received: by mail-ot1-f44.google.com with SMTP id c25so1170243otf.7
+        for <linux-crypto@vger.kernel.org>; Thu, 09 Jul 2020 01:51:22 -0700 (PDT)
+X-Gm-Message-State: AOAM530ynateq4vqFWsmei7j/iYKzUBJAdiSq7Gw7AArG1Jlo3nzbvVQ
+        84Ktq3jZapkNqsW2GyNUa3QIJtZH61m4bTb7vfA=
+X-Google-Smtp-Source: ABdhPJwE1tsrIzjnVl3zLY+YOFcyr8Hg8pW6XJ36CrTJiqVGfuHwTs5Sp5eUNTWr4y/njShSsaGSF+GkQE2GvwPP0Cs=
+X-Received: by 2002:a9d:6e85:: with SMTP id a5mr12208065otr.90.1594284681780;
+ Thu, 09 Jul 2020 01:51:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <B926444035E5E2439431908E3842AFD2561D4E@DGGEMI525-MBS.china.huawei.com>
+References: <20200629073925.127538-1-ardb@kernel.org> <20200629073925.127538-6-ardb@kernel.org>
+ <20200709082200.GA1892@gondor.apana.org.au>
+In-Reply-To: <20200709082200.GA1892@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 9 Jul 2020 11:51:10 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXE8HELm1j3jx-+mHrK3OjG6Rjp4jtP_QEYorRBnRxA+=w@mail.gmail.com>
+Message-ID: <CAMj1kXE8HELm1j3jx-+mHrK3OjG6Rjp4jtP_QEYorRBnRxA+=w@mail.gmail.com>
+Subject: Re: [PATCH 5/5] crypto: arm/ghash - use variably sized key struct
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 2020-07-09 07:55:22 [+0000], Song Bao Hua (Barry Song) wrote:
-> Hello Sebastian, thanks for your reply and careful review.
-Hi,
+On Thu, 9 Jul 2020 at 11:22, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Mon, Jun 29, 2020 at 09:39:25AM +0200, Ard Biesheuvel wrote:
+> > Of the two versions of GHASH that the ARM driver implements, only one
+> > performs aggregation, and so the other one has no use for the powers
+> > of H to be precomputed, or space to be allocated for them in the key
+> > struct. So make the context size dependent on which version is being
+> > selected, and while at it, use a static key to carry this decision,
+> > and get rid of the function pointer.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  arch/arm/crypto/ghash-ce-glue.c | 51 +++++++++-----------
+> >  1 file changed, 24 insertions(+), 27 deletions(-)
+>
+> This introduces some new sparse warnings:
+>
+> ../arch/arm/crypto/ghash-ce-glue.c:67:65: warning: incorrect type in argument 4 (different modifiers)
+> ../arch/arm/crypto/ghash-ce-glue.c:67:65:    expected unsigned long long const [usertype] ( *h )[2]
+> ../arch/arm/crypto/ghash-ce-glue.c:67:65:    got unsigned long long [usertype] ( * )[2]
+> ../arch/arm/crypto/ghash-ce-glue.c:69:64: warning: incorrect type in argument 4 (different modifiers)
+> ../arch/arm/crypto/ghash-ce-glue.c:69:64:    expected unsigned long long const [usertype] ( *h )[2]
+> ../arch/arm/crypto/ghash-ce-glue.c:69:64:    got unsigned long long [usertype] ( * )[2]
+>
 
-> I don't think we can simply "forward the result to the caller and let him decide".
-> Would you like to present some pseudo code?
 
-I provided just some pseudo code to illustrate an example how the async
-interface should look like (more or less). The essential part is where
-you allow to feed multiple requests without blocking.
-I went up the call-chain and found one potential user which seem to have
-a list of pages which are processed. This looked like a nice example. I
-haven't looked at the details.
+That looks like a sparse bug to me. Since when is it not allowed to
+pass a non-const value as a const parameter?
 
-I have no opinion whether or not it makes sense to switch to the async
-interface in a sync way.
+I.e., you can pass a u64[] to a function that takes a u64 const *,
+giving the caller the guarantee that their u64[] will not be modified
+during the call, even if it is passed by reference.
 
-> Thanks
-> Barry
-
-Sebastian
+Here, we are dealing with u64[][2], but the same reasoning holds. A
+const u64[][2] formal parameter (or u64 const (*)[2] which comes down
+to the same thing) does not require a const argument, it only tells
+the caller that the array will be left untouched. This is why the
+compiler is perfectly happy with this arrangement.
