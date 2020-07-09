@@ -2,86 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6425219FEB
-	for <lists+linux-crypto@lfdr.de>; Thu,  9 Jul 2020 14:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4033B219EB3
+	for <lists+linux-crypto@lfdr.de>; Thu,  9 Jul 2020 13:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgGIMXH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 9 Jul 2020 08:23:07 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:54130 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726327AbgGIMXH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 9 Jul 2020 08:23:07 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 44010BC0EE;
-        Thu,  9 Jul 2020 12:23:02 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     mpm@selenic.com, herbert@gondor.apana.org.au, arnd@arndb.de,
-        gregkh@linuxfoundation.org, alexander.sverdlin@nokia.com,
-        dinghao.liu@zju.edu.cn, yuehaibing@huawei.com,
-        ben.dooks@codethink.co.uk, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] HARDWARE RANDOM NUMBER GENERATOR CORE: Replace HTTP links with HTTPS ones
-Date:   Thu,  9 Jul 2020 12:35:39 +0200
-Message-Id: <20200709103539.24319-1-grandmaster@al2klimov.de>
+        id S1727050AbgGILFY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 9 Jul 2020 07:05:24 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:53724 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726936AbgGILFX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 9 Jul 2020 07:05:23 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A6B6E94268DA562CD4B4;
+        Thu,  9 Jul 2020 19:05:21 +0800 (CST)
+Received: from [127.0.0.1] (10.74.173.29) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Thu, 9 Jul 2020
+ 19:05:11 +0800
+Subject: Re: [Patch v2 8/9] crypto: hisilicon/qm - fix the process of register
+ algorithms to crypto
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+References: <1593587995-7391-1-git-send-email-shenyang39@huawei.com>
+ <1593587995-7391-9-git-send-email-shenyang39@huawei.com>
+ <20200709053619.GA5637@gondor.apana.org.au>
+CC:     <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
+        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
+From:   "shenyang (M)" <shenyang39@huawei.com>
+Message-ID: <4e79b1ce-2b2a-7db3-dc55-380c2229657a@huawei.com>
+Date:   Thu, 9 Jul 2020 19:05:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+In-Reply-To: <20200709053619.GA5637@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.173.29]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
-
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
-
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
 
 
- drivers/char/hw_random/ks-sa-rng.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2020/7/9 13:36, Herbert Xu wrote:
+> On Wed, Jul 01, 2020 at 03:19:54PM +0800, Yang Shen wrote:
+>> When the devices are removed or not existing, the corresponding algorithms
+>> which are registered by 'hisi-zip' driver can't be used.
+>>
+>> Move 'hisi_zip_register_to_crypto' from 'hisi_zip_init' to
+>> 'hisi_zip_probe'. The algorithms will be registered to crypto only when
+>> there is device bind on the driver. And when the devices are removed,
+>> the algorithms will be unregistered.
+>
+> You can't just unregister a live algorithm because if someone
+> holds a reference count on it then the Crypto API will crash.
+>
 
-diff --git a/drivers/char/hw_random/ks-sa-rng.c b/drivers/char/hw_random/ks-sa-rng.c
-index 001617033d6a..8f1d47ff9799 100644
---- a/drivers/char/hw_random/ks-sa-rng.c
-+++ b/drivers/char/hw_random/ks-sa-rng.c
-@@ -2,7 +2,7 @@
- /*
-  * Random Number Generator driver for the Keystone SOC
-  *
-- * Copyright (C) 2016 Texas Instruments Incorporated - http://www.ti.com
-+ * Copyright (C) 2016 Texas Instruments Incorporated - https://www.ti.com
-  *
-  * Authors:	Sandeep Nair
-  *		Vitaly Andrianov
--- 
-2.27.0
+Yes, this patch just fixes the bug for 'hisi_zip'. As for 'hisi_hpre'
+and 'hisi_sec2', this patch doesn't change the logic.
+We have noticed the problem you say, and the patch is prepared. We fix
+this in 'hisi_qm', and you will see it soon.
+
+> Cheers,
+>
+
+Thanks
+Yang
+
+
 
