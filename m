@@ -2,94 +2,150 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9815E21ABEC
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2020 02:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C951721AF52
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2020 08:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgGJAQX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 9 Jul 2020 20:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726272AbgGJAQX (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 9 Jul 2020 20:16:23 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7C3C08C5CE;
-        Thu,  9 Jul 2020 17:16:23 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id dr13so4136181ejc.3;
-        Thu, 09 Jul 2020 17:16:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SeE4mVVnUBNm2sdoUXO/sXXIz4sYexLJOEDokzvwJcE=;
-        b=sAcPdBSbr/CDqjcyynsYyIGAOzfym++0lfmyCkEGJI3khVo2/JKXRYnw6yZNpOTNM8
-         5JdLUvpXMP6mbi8WfFmcwvfgKEBBTh3zCvyaInq+wT+lVSlOPOfM0ujMIDoEWBe4B2LL
-         4GTefctjAIXrVyPoEm16Rvfuwg62S4FYkBUaENEKo3P5cv+RrLj3q/QpIwsdFUKxsdMF
-         7bd8yCprcWO9wiL0W030itN7R37XyCXUU61W/lSHQ/GQvGZ4OYPXvdD+slE5lHjyRwZk
-         XXaHK1L7+LLx+0ppBsubSN5vqugQNnQ4AbEP486ilLPqDsqxMqs9ahjXvSK3ZUdj2CW8
-         tsuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SeE4mVVnUBNm2sdoUXO/sXXIz4sYexLJOEDokzvwJcE=;
-        b=CIPA4lBoVTl9xEFzIxqHrgJ7e13eVBuSh++8R9rz6UGpYfZ1h0U39+ORY79Qw8TssI
-         uNdRtgkOR925slssWCCbpspZ8cDCylt2rXS+wT3YKoD0YahlOui9UxqHIbZ6Wgdok+XN
-         nj+j3BX1XsJYauUbagBKnSjPMn94JC4idiADI7GIcDCP+87K00JO9ht+Xu1kV6nmb39V
-         +Nm492G/NCYZe9qXi08iQkzck8JdQy+VUiay+EokjeqRN0F0quY42MjkXEQ8ru/qnKeb
-         WhFZepk1MRCcpsAvIu4lWBdZ2QpJ9zwCiOdJADv1cICMwoSnLAz9qlWtT5Y7URwKjiNs
-         OnVg==
-X-Gm-Message-State: AOAM530iPXBwC7WHlikXCwAv77/9huKzmZaERUSFqForHDCyF1RK9yXX
-        mYtWhGQCpjq95guOYiKG9fw=
-X-Google-Smtp-Source: ABdhPJwA/umm+AiGyQJ9IjKL40K0uPDdzfujzwjzZTjsnrre5Emtb/1qye3Xl8NBBS6U6V0LBqsqMA==
-X-Received: by 2002:a17:907:20ba:: with SMTP id pw26mr57395987ejb.425.1594340181902;
-        Thu, 09 Jul 2020 17:16:21 -0700 (PDT)
-Received: from ltop.local ([2a02:a03f:b7f9:7600:c80f:e21c:9480:e854])
-        by smtp.gmail.com with ESMTPSA id o6sm3002223edr.94.2020.07.09.17.16.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 17:16:21 -0700 (PDT)
-Date:   Fri, 10 Jul 2020 02:16:20 +0200
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-sparse@vger.kernel.org
-Subject: Re: [PATCH 5/5] crypto: arm/ghash - use variably sized key struct
-Message-ID: <20200710001620.he3twpsil2wnl4vj@ltop.local>
-References: <20200629073925.127538-1-ardb@kernel.org>
- <20200629073925.127538-6-ardb@kernel.org>
- <20200709082200.GA1892@gondor.apana.org.au>
- <CAMj1kXE8HELm1j3jx-+mHrK3OjG6Rjp4jtP_QEYorRBnRxA+=w@mail.gmail.com>
- <20200709120937.GA13332@gondor.apana.org.au>
+        id S1726047AbgGJGVq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 10 Jul 2020 02:21:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725943AbgGJGVq (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 10 Jul 2020 02:21:46 -0400
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE3A22072E;
+        Fri, 10 Jul 2020 06:21:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594362105;
+        bh=5tkYiQlvb6KjO1ssHvhld8saZ31rHdrjvBBdKg4ftf8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=e5rSC6yA4q6aFJJVqzvj0jaAGfsShhL2b7RfRABnw1AepSt2WTs5cnPfsQ4HeeCos
+         CplPbiqaWVhb8JRZeVGEshjapW6KT314Gdbb5JLbE9t38xRUm8DefhwLWCgb1Mn63C
+         aWiM2NOCv0i5DVGAkTdwQzwVSbNzO6rG9YGskW54=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Mikulas Patocka <mpatocka@redhat.com>, linux-crypto@vger.kernel.org
+Cc:     dm-devel@redhat.com
+Subject: [PATCH v2 0/7] crypto: add CRYPTO_ALG_ALLOCATES_MEMORY
+Date:   Thu,  9 Jul 2020 23:20:35 -0700
+Message-Id: <20200710062042.113842-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200709120937.GA13332@gondor.apana.org.au>
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 10:09:37PM +1000, Herbert Xu wrote:
-> On Thu, Jul 09, 2020 at 11:51:10AM +0300, Ard Biesheuvel wrote:
-> >
-> > That looks like a sparse bug to me. Since when is it not allowed to
-> > pass a non-const value as a const parameter?
-> > 
-> > I.e., you can pass a u64[] to a function that takes a u64 const *,
-> > giving the caller the guarantee that their u64[] will not be modified
-> > during the call, even if it is passed by reference.
-> > 
-> > Here, we are dealing with u64[][2], but the same reasoning holds. A
-> > const u64[][2] formal parameter (or u64 const (*)[2] which comes down
-> > to the same thing) does not require a const argument, it only tells
-> > the caller that the array will be left untouched. This is why the
-> > compiler is perfectly happy with this arrangement.
-> 
-> You're right.  Luc, here is the patch that triggers the bogus
-> warning with sparse.
+This series introduces a flag that algorithms can set to indicate that
+they allocate memory during processing of typical inputs, and thus
+shouldn't be used in cases like dm-crypt where memory allocation
+failures aren't acceptable.
 
-Thanks for the analysis and the bug report.
-A fix is under way and should be upstreamed in a few days.
+Compared to Mikulas's patches, I've made the following improvements:
 
--- Luc 
+- Tried to clearly document the semantics of
+  CRYPTO_ALG_ALLOCATES_MEMORY.  This includes documenting the usage
+  constraints, since there are actually lots of cases that were
+  overlooked where algorithms can still allocate memory in some edge
+  cases where inputs are misaligned, fragemented, etc.  E.g. see
+  crypto/skcipher.c and crypto/ahash.c.  Mikulas, please let me know if
+  there are any concerns for dm-crypt.
+
+- Moved the common mechanism for inheriting flags to its own patch.
+
+- crypto_grab_spawn() now handles propagating CRYPTO_ALG_INHERITED_FLAGS
+  to the new template instance.
+
+- Inherit the flags in various places that were missed.
+
+- Other cleanups.
+
+Additional changes v1 => v2:
+
+- Made crypto_check_attr_type() return the mask.
+
+- Added patch that adds NEED_FALLBACK to INHERITED_FLAGS.
+
+- Added patch that removes seqiv_create().
+
+Eric Biggers (5):
+  crypto: geniv - remove unneeded arguments from aead_geniv_alloc()
+  crypto: seqiv - remove seqiv_create()
+  crypto: algapi - use common mechanism for inheriting flags
+  crypto: algapi - add NEED_FALLBACK to INHERITED_FLAGS
+  crypto: algapi - introduce the flag CRYPTO_ALG_ALLOCATES_MEMORY
+
+Mikulas Patocka (2):
+  crypto: drivers - set the flag CRYPTO_ALG_ALLOCATES_MEMORY
+  dm-crypt: don't use drivers that have CRYPTO_ALG_ALLOCATES_MEMORY
+
+ crypto/adiantum.c                             |  14 +--
+ crypto/algapi.c                               |  21 +++-
+ crypto/authenc.c                              |  14 +--
+ crypto/authencesn.c                           |  14 +--
+ crypto/ccm.c                                  |  33 ++---
+ crypto/chacha20poly1305.c                     |  14 +--
+ crypto/cmac.c                                 |   5 +-
+ crypto/cryptd.c                               |  59 ++++-----
+ crypto/ctr.c                                  |  17 +--
+ crypto/cts.c                                  |  13 +-
+ crypto/echainiv.c                             |   2 +-
+ crypto/essiv.c                                |  11 +-
+ crypto/gcm.c                                  |  40 ++----
+ crypto/geniv.c                                |  19 +--
+ crypto/hmac.c                                 |   5 +-
+ crypto/lrw.c                                  |  13 +-
+ crypto/pcrypt.c                               |  14 +--
+ crypto/rsa-pkcs1pad.c                         |  13 +-
+ crypto/seqiv.c                                |  18 +--
+ crypto/simd.c                                 |   6 +-
+ crypto/skcipher.c                             |  13 +-
+ crypto/vmac.c                                 |   5 +-
+ crypto/xcbc.c                                 |   5 +-
+ crypto/xts.c                                  |  15 +--
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c |  12 +-
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-core.c |  12 +-
+ drivers/crypto/amlogic/amlogic-gxl-core.c     |   6 +-
+ drivers/crypto/axis/artpec6_crypto.c          |  20 ++-
+ drivers/crypto/bcm/cipher.c                   |  72 ++++++++---
+ drivers/crypto/caam/caamalg.c                 |   6 +-
+ drivers/crypto/caam/caamalg_qi.c              |   6 +-
+ drivers/crypto/caam/caamalg_qi2.c             |   8 +-
+ drivers/crypto/caam/caamhash.c                |   2 +-
+ drivers/crypto/cavium/cpt/cptvf_algs.c        |  18 ++-
+ drivers/crypto/cavium/nitrox/nitrox_aead.c    |   4 +-
+ .../crypto/cavium/nitrox/nitrox_skcipher.c    |  16 +--
+ drivers/crypto/ccp/ccp-crypto-aes-cmac.c      |   1 +
+ drivers/crypto/ccp/ccp-crypto-aes-galois.c    |   1 +
+ drivers/crypto/ccp/ccp-crypto-aes-xts.c       |   1 +
+ drivers/crypto/ccp/ccp-crypto-aes.c           |   2 +
+ drivers/crypto/ccp/ccp-crypto-des3.c          |   1 +
+ drivers/crypto/ccp/ccp-crypto-sha.c           |   1 +
+ drivers/crypto/chelsio/chcr_algo.c            |   7 +-
+ drivers/crypto/hisilicon/sec/sec_algs.c       |  24 ++--
+ drivers/crypto/hisilicon/sec2/sec_crypto.c    |   4 +-
+ .../crypto/inside-secure/safexcel_cipher.c    |  47 +++++++
+ drivers/crypto/inside-secure/safexcel_hash.c  |  18 +++
+ drivers/crypto/ixp4xx_crypto.c                |   6 +-
+ drivers/crypto/marvell/cesa/cipher.c          |  18 ++-
+ drivers/crypto/marvell/cesa/hash.c            |   6 +
+ .../crypto/marvell/octeontx/otx_cptvf_algs.c  |  30 ++---
+ drivers/crypto/n2_core.c                      |   3 +-
+ drivers/crypto/picoxcell_crypto.c             |  17 ++-
+ drivers/crypto/qat/qat_common/qat_algs.c      |  13 +-
+ drivers/crypto/qce/skcipher.c                 |   1 +
+ drivers/crypto/talitos.c                      | 117 ++++++++++++------
+ drivers/crypto/virtio/virtio_crypto_algs.c    |   3 +-
+ drivers/crypto/xilinx/zynqmp-aes-gcm.c        |   1 +
+ drivers/md/dm-crypt.c                         |  17 ++-
+ include/crypto/algapi.h                       |  25 ++--
+ include/crypto/internal/geniv.h               |   2 +-
+ include/linux/crypto.h                        |  36 +++++-
+ 62 files changed, 562 insertions(+), 405 deletions(-)
+
+
+base-commit: 3d2df84548ed88dc3344392d4e5afb8884d05360
+-- 
+2.27.0
+
