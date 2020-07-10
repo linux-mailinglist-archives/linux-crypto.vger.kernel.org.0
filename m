@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C11A21B056
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2020 09:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D2F21B06E
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2020 09:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727061AbgGJHlh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 10 Jul 2020 03:41:37 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:54810 "EHLO huawei.com"
+        id S1727780AbgGJHmw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 10 Jul 2020 03:42:52 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7289 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726536AbgGJHlf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 10 Jul 2020 03:41:35 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 94FB86D307C94840ADF1;
+        id S1726615AbgGJHlg (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 10 Jul 2020 03:41:36 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id BDDEFE5A13F98D4BEC88;
         Fri, 10 Jul 2020 15:41:32 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Meng Yu <yumeng18@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
         <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 5/6] crypto: hisilicon/hpre - update debugfs interface parameters
-Date:   Fri, 10 Jul 2020 15:40:45 +0800
-Message-ID: <1594366846-1313-6-git-send-email-yumeng18@huawei.com>
+Subject: [PATCH v2 6/6] crypto: hisilicon/hpre - disable FLR triggered by hardware
+Date:   Fri, 10 Jul 2020 15:40:46 +0800
+Message-ID: <1594366846-1313-7-git-send-email-yumeng18@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1594366846-1313-1-git-send-email-yumeng18@huawei.com>
 References: <1594366846-1313-1-git-send-email-yumeng18@huawei.com>
@@ -36,202 +36,81 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Update debugfs interface parameters, and adjust the
-processing logic inside the corresponding function.
+From: Hui Tang <tanghui20@huawei.com>
 
-Fixes: 848974151618("crypto: hisilicon - Add debugfs for HPRE")
+for Hi1620 hardware, we should disable these hardware flr:
+1. BME_FLR - bit 7,
+2. PM_FLR - bit 11,
+3. SRIOV_FLR - bit 12,
+Or HPRE may goto D3 state, when we bind and unbind HPRE quickly,
+as it does FLR triggered by BME/PM/SRIOV.
+
+Fixes: c8b4b477079d("crypto: hisilicon - add HiSilicon HPRE accelerator")
+Signed-off-by: Hui Tang <tanghui20@huawei.com>
 Signed-off-by: Meng Yu <yumeng18@huawei.com>
 Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_main.c | 59 ++++++++++++++-----------------
- 1 file changed, 26 insertions(+), 33 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_main.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 37c2bc5..b69cea3 100644
+index b69cea3..b135c74 100644
 --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
 +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -563,15 +563,17 @@ static int hpre_debugfs_atomic64_set(void *data, u64 val)
- DEFINE_DEBUGFS_ATTRIBUTE(hpre_atomic64_ops, hpre_debugfs_atomic64_get,
- 			 hpre_debugfs_atomic64_set, "%llu\n");
+@@ -82,6 +82,10 @@
+ #define HPRE_CORE_ECC_2BIT_ERR		BIT(1)
+ #define HPRE_OOO_ECC_2BIT_ERR		BIT(5)
  
--static int hpre_create_debugfs_file(struct hpre_debug *dbg, struct dentry *dir,
-+static int hpre_create_debugfs_file(struct hisi_qm *qm, struct dentry *dir,
- 				    enum hpre_ctrl_dbgfs_file type, int indx)
- {
-+	struct hpre *hpre = container_of(qm, struct hpre, qm);
-+	struct hpre_debug *dbg = &hpre->debug;
- 	struct dentry *file_dir;
- 
- 	if (dir)
- 		file_dir = dir;
- 	else
--		file_dir = dbg->debug_root;
-+		file_dir = qm->debug.debug_root;
- 
- 	if (type >= HPRE_DEBUG_FILE_NUM)
- 		return -EINVAL;
-@@ -586,10 +588,8 @@ static int hpre_create_debugfs_file(struct hpre_debug *dbg, struct dentry *dir,
- 	return 0;
- }
- 
--static int hpre_pf_comm_regs_debugfs_init(struct hpre_debug *debug)
-+static int hpre_pf_comm_regs_debugfs_init(struct hisi_qm *qm)
- {
--	struct hpre *hpre = container_of(debug, struct hpre, debug);
--	struct hisi_qm *qm = &hpre->qm;
- 	struct device *dev = &qm->pdev->dev;
- 	struct debugfs_regset32 *regset;
- 
-@@ -601,14 +601,12 @@ static int hpre_pf_comm_regs_debugfs_init(struct hpre_debug *debug)
- 	regset->nregs = ARRAY_SIZE(hpre_com_dfx_regs);
- 	regset->base = qm->io_base;
- 
--	debugfs_create_regset32("regs", 0444,  debug->debug_root, regset);
-+	debugfs_create_regset32("regs", 0444,  qm->debug.debug_root, regset);
- 	return 0;
- }
- 
--static int hpre_cluster_debugfs_init(struct hpre_debug *debug)
-+static int hpre_cluster_debugfs_init(struct hisi_qm *qm)
- {
--	struct hpre *hpre = container_of(debug, struct hpre, debug);
--	struct hisi_qm *qm = &hpre->qm;
- 	struct device *dev = &qm->pdev->dev;
- 	char buf[HPRE_DBGFS_VAL_MAX_LEN];
- 	struct debugfs_regset32 *regset;
-@@ -619,7 +617,7 @@ static int hpre_cluster_debugfs_init(struct hpre_debug *debug)
- 		ret = snprintf(buf, HPRE_DBGFS_VAL_MAX_LEN, "cluster%d", i);
- 		if (ret < 0)
- 			return -EINVAL;
--		tmp_d = debugfs_create_dir(buf, debug->debug_root);
-+		tmp_d = debugfs_create_dir(buf, qm->debug.debug_root);
- 
- 		regset = devm_kzalloc(dev, sizeof(*regset), GFP_KERNEL);
- 		if (!regset)
-@@ -630,7 +628,7 @@ static int hpre_cluster_debugfs_init(struct hpre_debug *debug)
- 		regset->base = qm->io_base + hpre_cluster_offsets[i];
- 
- 		debugfs_create_regset32("regs", 0444, tmp_d, regset);
--		ret = hpre_create_debugfs_file(debug, tmp_d, HPRE_CLUSTER_CTRL,
-+		ret = hpre_create_debugfs_file(qm, tmp_d, HPRE_CLUSTER_CTRL,
- 					       i + HPRE_CLUSTER_CTRL);
- 		if (ret)
- 			return ret;
-@@ -639,32 +637,31 @@ static int hpre_cluster_debugfs_init(struct hpre_debug *debug)
- 	return 0;
- }
- 
--static int hpre_ctrl_debug_init(struct hpre_debug *debug)
-+static int hpre_ctrl_debug_init(struct hisi_qm *qm)
- {
- 	int ret;
- 
--	ret = hpre_create_debugfs_file(debug, NULL, HPRE_CURRENT_QM,
-+	ret = hpre_create_debugfs_file(qm, NULL, HPRE_CURRENT_QM,
- 				       HPRE_CURRENT_QM);
- 	if (ret)
- 		return ret;
- 
--	ret = hpre_create_debugfs_file(debug, NULL, HPRE_CLEAR_ENABLE,
-+	ret = hpre_create_debugfs_file(qm, NULL, HPRE_CLEAR_ENABLE,
- 				       HPRE_CLEAR_ENABLE);
- 	if (ret)
- 		return ret;
- 
--	ret = hpre_pf_comm_regs_debugfs_init(debug);
-+	ret = hpre_pf_comm_regs_debugfs_init(qm);
- 	if (ret)
- 		return ret;
- 
--	return hpre_cluster_debugfs_init(debug);
-+	return hpre_cluster_debugfs_init(qm);
- }
- 
--static void hpre_dfx_debug_init(struct hpre_debug *debug)
-+static void hpre_dfx_debug_init(struct hisi_qm *qm)
- {
--	struct hpre *hpre = container_of(debug, struct hpre, debug);
-+	struct hpre *hpre = container_of(qm, struct hpre, qm);
- 	struct hpre_dfx *dfx = hpre->debug.dfx;
--	struct hisi_qm *qm = &hpre->qm;
- 	struct dentry *parent;
- 	int i;
- 
-@@ -676,30 +673,27 @@ static void hpre_dfx_debug_init(struct hpre_debug *debug)
- 	}
- }
- 
--static int hpre_debugfs_init(struct hpre *hpre)
-+static int hpre_debugfs_init(struct hisi_qm *qm)
- {
--	struct hisi_qm *qm = &hpre->qm;
- 	struct device *dev = &qm->pdev->dev;
--	struct dentry *dir;
- 	int ret;
- 
--	dir = debugfs_create_dir(dev_name(dev), hpre_debugfs_root);
--	qm->debug.debug_root = dir;
-+	qm->debug.debug_root = debugfs_create_dir(dev_name(dev),
-+						  hpre_debugfs_root);
++#define HPRE_QM_BME_FLR			BIT(7)
++#define HPRE_QM_PM_FLR			BIT(11)
++#define HPRE_QM_SRIOV_FLR		BIT(12)
 +
- 	qm->debug.sqe_mask_offset = HPRE_SQE_MASK_OFFSET;
- 	qm->debug.sqe_mask_len = HPRE_SQE_MASK_LEN;
--
- 	ret = hisi_qm_debug_init(qm);
- 	if (ret)
- 		goto failed_to_create;
- 
- 	if (qm->pdev->device == HPRE_PCI_DEVICE_ID) {
--		hpre->debug.debug_root = dir;
--		ret = hpre_ctrl_debug_init(&hpre->debug);
-+		ret = hpre_ctrl_debug_init(qm);
- 		if (ret)
- 			goto failed_to_create;
- 	}
- 
--	hpre_dfx_debug_init(&hpre->debug);
-+	hpre_dfx_debug_init(qm);
- 
+ #define HPRE_VIA_MSI_DSM		1
+ #define HPRE_SQE_MASK_OFFSET		8
+ #define HPRE_SQE_MASK_LEN		24
+@@ -230,6 +234,22 @@ static int hpre_cfg_by_dsm(struct hisi_qm *qm)
  	return 0;
+ }
  
-@@ -708,10 +702,8 @@ static int hpre_debugfs_init(struct hpre *hpre)
++/*
++ * For Hi1620, we shoul disable FLR triggered by hardware (BME/PM/SRIOV).
++ * Or it may stay in D3 state when we bind and unbind hpre quickly,
++ * as it does FLR triggered by hardware.
++ */
++static void disable_flr_of_bme(struct hisi_qm *qm)
++{
++	u32 val;
++
++	val = readl(HPRE_ADDR(qm, QM_PEH_AXUSER_CFG));
++	val &= ~(HPRE_QM_BME_FLR | HPRE_QM_SRIOV_FLR);
++	val |= HPRE_QM_PM_FLR;
++	writel(val, HPRE_ADDR(qm, QM_PEH_AXUSER_CFG));
++	writel(PEH_AXUSER_CFG_ENABLE, HPRE_ADDR(qm, QM_PEH_AXUSER_CFG_ENABLE));
++}
++
+ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
+ {
+ 	struct device *dev = &qm->pdev->dev;
+@@ -241,10 +261,6 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
+ 	writel(HPRE_QM_USR_CFG_MASK, HPRE_ADDR(qm, QM_AWUSER_M_CFG_ENABLE));
+ 	writel_relaxed(HPRE_QM_AXI_CFG_MASK, HPRE_ADDR(qm, QM_AXI_M_CFG));
+ 
+-	/* disable FLR triggered by BME(bus master enable) */
+-	writel(PEH_AXUSER_CFG, HPRE_ADDR(qm, QM_PEH_AXUSER_CFG));
+-	writel(PEH_AXUSER_CFG_ENABLE, HPRE_ADDR(qm, QM_PEH_AXUSER_CFG_ENABLE));
+-
+ 	/* HPRE need more time, we close this interrupt */
+ 	val = readl_relaxed(HPRE_ADDR(qm, HPRE_QM_ABNML_INT_MASK));
+ 	val |= BIT(HPRE_TIMEOUT_ABNML_BIT);
+@@ -295,6 +311,8 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
+ 	if (ret)
+ 		dev_err(dev, "acpi_evaluate_dsm err.\n");
+ 
++	disable_flr_of_bme(qm);
++
  	return ret;
  }
  
--static void hpre_debugfs_exit(struct hpre *hpre)
-+static void hpre_debugfs_exit(struct hisi_qm *qm)
- {
--	struct hisi_qm *qm = &hpre->qm;
--
- 	debugfs_remove_recursive(qm->debug.debug_root);
- }
- 
-@@ -850,7 +842,7 @@ static int hpre_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (ret)
- 		goto err_with_err_init;
- 
--	ret = hpre_debugfs_init(hpre);
-+	ret = hpre_debugfs_init(qm);
- 	if (ret)
- 		dev_warn(&pdev->dev, "init debugfs fail!\n");
- 
-@@ -875,6 +867,7 @@ static int hpre_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- err_with_qm_start:
- 	hisi_qm_del_from_list(qm, &hpre_devices);
-+	hpre_debugfs_exit(qm);
- 	hisi_qm_stop(qm);
- 
- err_with_err_init:
-@@ -906,7 +899,7 @@ static void hpre_remove(struct pci_dev *pdev)
- 		qm->debug.curr_qm_qp_num = 0;
- 	}
- 
--	hpre_debugfs_exit(hpre);
-+	hpre_debugfs_exit(qm);
- 	hisi_qm_stop(qm);
- 	hisi_qm_dev_err_uninit(qm);
- 	hisi_qm_uninit(qm);
 -- 
 2.8.1
 
