@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FAEF21B055
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2020 09:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A64121B059
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2020 09:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726965AbgGJHlg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 10 Jul 2020 03:41:36 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:54838 "EHLO huawei.com"
+        id S1727076AbgGJHll (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 10 Jul 2020 03:41:41 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:54824 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726288AbgGJHlf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 10 Jul 2020 03:41:35 -0400
+        id S1726664AbgGJHlh (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 10 Jul 2020 03:41:37 -0400
 Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id A0EECBBAE6E8D9C94105;
+        by Forcepoint Email with ESMTP id 9BB6A6B7579B1732FD70;
         Fri, 10 Jul 2020 15:41:32 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Meng Yu <yumeng18@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
         <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/6] crypto: hisilicon/hpre - HPRE_OVERTIME_THRHLD can be written by debugfs
-Date:   Fri, 10 Jul 2020 15:40:42 +0800
-Message-ID: <1594366846-1313-3-git-send-email-yumeng18@huawei.com>
+Subject: [PATCH v2 3/6] crypto: hisilicon/hpre - Modify the Macro definition and format
+Date:   Fri, 10 Jul 2020 15:40:43 +0800
+Message-ID: <1594366846-1313-4-git-send-email-yumeng18@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1594366846-1313-1-git-send-email-yumeng18@huawei.com>
 References: <1594366846-1313-1-git-send-email-yumeng18@huawei.com>
@@ -36,44 +36,77 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Hui Tang <tanghui20@huawei.com>
+1. Bit 1 to bit 5 are NFE, not CE.
+2. Macro 'HPRE_VF_NUM' is defined in 'qm.h', so delete it here.
+3. Delete multiple blank lines.
+4. Adjust format alignment.
 
-Registers in "hpre_dfx_files" can only be cleaned to zero but
-HPRE_OVERTIME_THRHLD, which can be written as any number.
-
-Fixes: 64a6301ebee7("crypto: hisilicon/hpre - add debugfs for ...")
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
 Signed-off-by: Meng Yu <yumeng18@huawei.com>
 Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
+Reviewed-by: Longfang Liu <liulongfang@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_main.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_main.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 3131347..23f2e5c 100644
+index 23f2e5c..da17729 100644
 --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
 +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -548,13 +548,15 @@ static int hpre_debugfs_atomic64_get(void *data, u64 *val)
- static int hpre_debugfs_atomic64_set(void *data, u64 val)
- {
- 	struct hpre_dfx *dfx_item = data;
--	struct hpre_dfx *hpre_dfx = dfx_item - HPRE_OVERTIME_THRHLD;
-+	struct hpre_dfx *hpre_dfx = NULL;
+@@ -12,7 +12,6 @@
+ #include <linux/topology.h>
+ #include "hpre.h"
  
--	if (val)
-+	if (dfx_item->type == HPRE_OVERTIME_THRHLD) {
-+		hpre_dfx = dfx_item - HPRE_OVERTIME_THRHLD;
-+		atomic64_set(&hpre_dfx[HPRE_OVER_THRHLD_CNT].value, 0);
-+	} else if (val) {
+-#define HPRE_VF_NUM			63
+ #define HPRE_QUEUE_NUM_V2		1024
+ #define HPRE_QM_ABNML_INT_MASK		0x100004
+ #define HPRE_CTRL_CNT_CLR_CE_BIT	BIT(0)
+@@ -46,9 +45,9 @@
+ #define HPRE_CORE_IS_SCHD_OFFSET	0x90
+ 
+ #define HPRE_RAS_CE_ENB			0x301410
+-#define HPRE_HAC_RAS_CE_ENABLE		0x3f
++#define HPRE_HAC_RAS_CE_ENABLE		0x1
+ #define HPRE_RAS_NFE_ENB		0x301414
+-#define HPRE_HAC_RAS_NFE_ENABLE		0x3fffc0
++#define HPRE_HAC_RAS_NFE_ENABLE		0x3ffffe
+ #define HPRE_RAS_FE_ENB			0x301418
+ #define HPRE_HAC_RAS_FE_ENABLE		0
+ 
+@@ -264,7 +263,7 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
+ 	writel(HPRE_BD_USR_MASK, HPRE_ADDR(qm, HPRE_BD_AWUSR_CFG));
+ 	writel(0x1, HPRE_ADDR(qm, HPRE_RDCHN_INI_CFG));
+ 	ret = readl_relaxed_poll_timeout(HPRE_ADDR(qm, HPRE_RDCHN_INI_ST), val,
+-			val & BIT(0),
++					 val & BIT(0),
+ 			HPRE_REG_RD_INTVRL_US,
+ 			HPRE_REG_RD_TMOUT_US);
+ 	if (ret) {
+@@ -372,7 +371,6 @@ static int hpre_current_qm_write(struct hpre_debugfs_file *file, u32 val)
+ 	u32 num_vfs = qm->vfs_num;
+ 	u32 vfq_num, tmp;
+ 
+-
+ 	if (val > num_vfs)
  		return -EINVAL;
-+	}
  
--	if (dfx_item->type == HPRE_OVERTIME_THRHLD)
--		atomic64_set(&hpre_dfx[HPRE_OVER_THRHLD_CNT].value, 0);
- 	atomic64_set(&dfx_item->value, val);
+@@ -449,7 +447,7 @@ static int hpre_cluster_inqry_write(struct hpre_debugfs_file *file, u32 val)
+ }
  
- 	return 0;
+ static ssize_t hpre_ctrl_debug_read(struct file *filp, char __user *buf,
+-			       size_t count, loff_t *pos)
++				    size_t count, loff_t *pos)
+ {
+ 	struct hpre_debugfs_file *file = filp->private_data;
+ 	char tbuf[HPRE_DBGFS_VAL_MAX_LEN];
+@@ -477,7 +475,7 @@ static ssize_t hpre_ctrl_debug_read(struct file *filp, char __user *buf,
+ }
+ 
+ static ssize_t hpre_ctrl_debug_write(struct file *filp, const char __user *buf,
+-				size_t count, loff_t *pos)
++				     size_t count, loff_t *pos)
+ {
+ 	struct hpre_debugfs_file *file = filp->private_data;
+ 	char tbuf[HPRE_DBGFS_VAL_MAX_LEN];
 -- 
 2.8.1
 
