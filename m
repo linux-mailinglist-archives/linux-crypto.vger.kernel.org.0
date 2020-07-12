@@ -2,44 +2,44 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C8321CA63
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2020 18:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D8E21CA33
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2020 18:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728972AbgGLQoA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 12 Jul 2020 12:44:00 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:20142 "EHLO
+        id S1729149AbgGLQmn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 12 Jul 2020 12:42:43 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:25373 "EHLO
         mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729315AbgGLQn5 (ORCPT
+        with ESMTP id S1729142AbgGLQmm (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 12 Jul 2020 12:43:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1594572236;
+        Sun, 12 Jul 2020 12:42:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1594572159;
         s=strato-dkim-0002; d=chronox.de;
         h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
         X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=pCOEotxTyYYKh8HVpEL4NPVR15O+7ZDcAtK3+/DNMYk=;
-        b=V/yew/gd+uNOX0h3LlSFzwNCaT5OCCnD6zpSGnBZ6rnv+6KZq829gahoYdmB7QWuU8
-        u6bfr213+4GyMfGTPyJzLP/Fl4UrkuZE1QinnqQlz/jkF9RATTfEXIf+O+q/JdohpocI
-        8MYinpvssgNwsJX8WZgXZnnMtlBhSSqW5Qjt+3K8Nxg7pYCDRFYfqbDx6iAj0gdpToN4
-        FBjF+0/qg5oXU677NhH3XK+e9IPgEAv6VnEF83ZBH6/4iQEDgZ2+fEgSx674Te5wUUVD
-        wbn7xxwXSovDCZLLdWOqfqa8MnaEKeYhAu/eMKKvo6bNMOfkTsb9Dj5atyCgXTyKnPMW
-        tMQw==
+        bh=UdqE2yyMuqu8pjiaAGy1WgT6x0xXfxD6YjlMnjBJm3s=;
+        b=DiVl2HuHrkfK9Vi4sUBTbjXvBGMFly4amAMizRNRy7/+bm0Kyv+quM/MUo1wLcC/T1
+        fDmIq7GxSTEyI1vZxJqIZe2hLlmxzdz07nER0r3wXI/fb5bzZaCrxXFeS0fC6ftqy4In
+        uChX2pIFapkMq51tGIHt/apqrzfuueT9Juirb7+xkryuDLzLB0sTHbckHjgpdsrFJNDf
+        Wa0JLOuOWK8oQIXxt2dfzst7U0EgL6NEbfb78GDsv64Gw4MHpgv3RTXuevpBnaDvM7Iu
+        SjvC1WeHKpQIt/U/cggiChhRLMHvcoWcULnb1UasG5XYRPV9JoTOZ9TKqtiUK2xD5aR5
+        uZYA==
 X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIvSfHReW"
 X-RZG-CLASS-ID: mo00
 Received: from positron.chronox.de
         by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
-        with ESMTPSA id y0546bw6CGgMieG
+        with ESMTPSA id y0546bw6CGgLieF
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Sun, 12 Jul 2020 18:42:22 +0200 (CEST)
+        Sun, 12 Jul 2020 18:42:21 +0200 (CEST)
 From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
 To:     herbert@gondor.apana.org.au
 Cc:     linux-crypto@vger.kernel.org,
         Marcelo Cerri <marcelo.cerri@canonical.com>,
         Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
         ard.biesheuvel@linaro.org, nhorman@redhat.com, simo@redhat.com
-Subject: [PATCH v2 2/5] lib/mpi: Add mpi_sub_ui()
-Date:   Sun, 12 Jul 2020 18:39:54 +0200
-Message-ID: <4650810.GXAFRqVoOG@positron.chronox.de>
+Subject: [PATCH v2 3/5] crypto: DH - check validity of Z before export
+Date:   Sun, 12 Jul 2020 18:40:20 +0200
+Message-ID: <2134009.irdbgypaU6@positron.chronox.de>
 In-Reply-To: <5722559.lOV4Wx5bFT@positron.chronox.de>
 References: <2543601.mvXUDI8C0e@positron.chronox.de> <5722559.lOV4Wx5bFT@positron.chronox.de>
 MIME-Version: 1.0
@@ -50,112 +50,62 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add mpi_sub_ui() based on Gnu MP mpz_sub_ui() from mpz/aors_ui.h
-adapting the code to the kernel's structures and coding style and also
-removing the defines used to produce mpz_sub_ui() and mpz_add_ui()
-from the same code.
+SP800-56A rev3 section 5.7.1.1 step 2 mandates that the validity of the
+calculated shared secret is verified before the data is returned to the
+caller. This patch adds the validation check.
 
-Signed-off-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
 Signed-off-by: Stephan Mueller <smueller@chronox.de>
 ---
- include/linux/mpi.h  |  3 +++
- lib/mpi/Makefile     |  1 +
- lib/mpi/mpi-sub-ui.c | 60 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 64 insertions(+)
- create mode 100644 lib/mpi/mpi-sub-ui.c
+ crypto/dh.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/include/linux/mpi.h b/include/linux/mpi.h
-index 7bd6d8af0004..5d906dfbf3ed 100644
---- a/include/linux/mpi.h
-+++ b/include/linux/mpi.h
-@@ -63,6 +63,9 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod);
- int mpi_cmp_ui(MPI u, ulong v);
- int mpi_cmp(MPI u, MPI v);
+diff --git a/crypto/dh.c b/crypto/dh.c
+index 566f624a2de2..f84fd50ec79b 100644
+--- a/crypto/dh.c
++++ b/crypto/dh.c
+@@ -9,6 +9,7 @@
+ #include <crypto/internal/kpp.h>
+ #include <crypto/kpp.h>
+ #include <crypto/dh.h>
++#include <linux/fips.h>
+ #include <linux/mpi.h>
  
-+/*-- mpi-sub-ui.c --*/
-+int mpi_sub_ui(MPI w, MPI u, unsigned long vval);
+ struct dh_ctx {
+@@ -179,6 +180,34 @@ static int dh_compute_value(struct kpp_request *req)
+ 	if (ret)
+ 		goto err_free_base;
+ 
++	/* SP800-56A rev3 5.7.1.1 check: Validation of shared secret */
++	if (fips_enabled && req->src) {
++		MPI pone;
 +
- /*-- mpi-bit.c --*/
- void mpi_normalize(MPI a);
- unsigned mpi_get_nbits(MPI a);
-diff --git a/lib/mpi/Makefile b/lib/mpi/Makefile
-index d5874a7f5ff9..43b8fce14079 100644
---- a/lib/mpi/Makefile
-+++ b/lib/mpi/Makefile
-@@ -16,6 +16,7 @@ mpi-y = \
- 	mpicoder.o			\
- 	mpi-bit.o			\
- 	mpi-cmp.o			\
-+	mpi-sub-ui.o			\
- 	mpih-cmp.o			\
- 	mpih-div.o			\
- 	mpih-mul.o			\
-diff --git a/lib/mpi/mpi-sub-ui.c b/lib/mpi/mpi-sub-ui.c
-new file mode 100644
-index 000000000000..fa6b085bac36
---- /dev/null
-+++ b/lib/mpi/mpi-sub-ui.c
-@@ -0,0 +1,60 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/* mpi-sub-ui.c  -  MPI functions
-+ *      Copyright 1991, 1993, 1994, 1996, 1999-2002, 2004, 2012, 2013, 2015
-+ *      Free Software Foundation, Inc.
-+ *
-+ * This file is part of GnuPG.
-+ *
-+ * Note: This code is heavily based on the GNU MP Library.
-+ *	 Actually it's the same code with only minor changes in the
-+ *	 way the data is stored; this is to support the abstraction
-+ *	 of an optional secure memory allocation which may be used
-+ *	 to avoid revealing of sensitive data due to paging etc.
-+ *	 The GNU MP Library itself is published under the LGPL;
-+ *	 however I decided to publish this code under the plain GPL.
-+ */
-+
-+#include "mpi-internal.h"
-+
-+int mpi_sub_ui(MPI w, MPI u, unsigned long vval)
-+{
-+	if (u->nlimbs == 0) {
-+		if (mpi_resize(w, 1) < 0)
-+			return -ENOMEM;
-+		w->d[0] = vval;
-+		w->nlimbs = (vval != 0);
-+		w->sign = (vval != 0);
-+		return 0;
-+	}
-+
-+	/* If not space for W (and possible carry), increase space. */
-+	if (mpi_resize(w, u->nlimbs + 1))
-+		return -ENOMEM;
-+
-+	if (u->sign) {
-+		mpi_limb_t cy;
-+
-+		cy = mpihelp_add_1(w->d, u->d, u->nlimbs, (mpi_limb_t) vval);
-+		w->d[u->nlimbs] = cy;
-+		w->nlimbs = u->nlimbs + cy;
-+		w->sign = 1;
-+	} else {
-+		/* The signs are different.  Need exact comparison to determine
-+		 * which operand to subtract from which.
-+		 */
-+		if (u->nlimbs == 1 && u->d[0] < vval) {
-+			w->d[0] = vval - u->d[0];
-+			w->nlimbs = 1;
-+			w->sign = 1;
-+		} else {
-+			mpihelp_sub_1(w->d, u->d, u->nlimbs, (mpi_limb_t) vval);
-+			/* Size can decrease with at most one limb. */
-+			w->nlimbs = (u->nlimbs - (w->d[u->nlimbs - 1] == 0));
-+			w->sign = 0;
++		/* z <= 1 */
++		if (mpi_cmp_ui(val, 1) < 1) {
++			ret = -EBADMSG;
++			goto err_free_base;
 +		}
++
++		/* z == p - 1 */
++		pone = mpi_alloc(0);
++
++		if (!pone) {
++			ret = -ENOMEM;
++			goto err_free_base;
++		}
++
++		ret = mpi_sub_ui(pone, ctx->p, 1);
++		if (!ret && !mpi_cmp(pone, val))
++			ret = -EBADMSG;
++
++		mpi_free(pone);
++
++		if (ret)
++			goto err_free_base;
 +	}
 +
-+	mpi_normalize(w);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(mpi_sub_ui);
+ 	ret = mpi_write_to_sgl(val, req->dst, req->dst_len, &sign);
+ 	if (ret)
+ 		goto err_free_base;
 -- 
 2.26.2
 
