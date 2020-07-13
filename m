@@ -2,67 +2,151 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF7421D39F
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2020 12:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A0C21D7C8
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2020 16:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729308AbgGMKQz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 13 Jul 2020 06:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729059AbgGMKQz (ORCPT
+        id S1729703AbgGMOGs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 13 Jul 2020 10:06:48 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:49238 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729523AbgGMOGr (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 13 Jul 2020 06:16:55 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4819C061755
-        for <linux-crypto@vger.kernel.org>; Mon, 13 Jul 2020 03:16:54 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id o2so12615315wmh.2
-        for <linux-crypto@vger.kernel.org>; Mon, 13 Jul 2020 03:16:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=30SOIOpuReOvoHqpanqseEbgCcvD4q+2pctv3mPAQq4=;
-        b=n6EeE3P+UTysbfdTPypmcypHhsHmntUEuAH32wBVrAU28DlGndVZ314+NgMkgPUNVt
-         e0bU1rj/gyBy2hVYRX3tSYp4gm9/85b6aY3ZmGpQQ+K2DtQv4QYppnChnsnWrHxC+5Sq
-         bHECddved1lfrsbm94qShE9TWb0eBA11r9pcBBdDoHD9mnnYg+E4fF06kZylxXw8MlJF
-         CjGH1fqOfGU/IC4TKGeRGk7rX/s64gmwcI7FnFzGSH9a7rRuixgHtteoRFPApoxN5Q+Z
-         /kQnn9p0MVBIi5Wct4U4tC2gIl+b0LPSlNO8dkriVxGh3G0pwSEMlmN0x4uKysi8e2km
-         tqNA==
+        Mon, 13 Jul 2020 10:06:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594649205;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=cVAnTWhIdLYJKO73w7wojsiljd9+XyaexVrW7ZP7+wg=;
+        b=GhgqetfW59uUU9KakIrfnYgQaCPzXIrK+ArUXwMnCjWQcbaHjju+Uj3StNaERXki7Sqwi6
+        QqqDfsWDXa3gSDBiJ19eVVJKEHyTZsJb97TwclLIf/W6uFBbO5XSi0xw3HFCoJc6D2xNMM
+        VuFsiuBfGcCK5akFO0fpM/pn+NIVZ+0=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-274-P3R7TGsMMDWoquXiqKFTrA-1; Mon, 13 Jul 2020 10:06:44 -0400
+X-MC-Unique: P3R7TGsMMDWoquXiqKFTrA-1
+Received: by mail-qt1-f197.google.com with SMTP id a52so10180632qtk.22
+        for <linux-crypto@vger.kernel.org>; Mon, 13 Jul 2020 07:06:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=30SOIOpuReOvoHqpanqseEbgCcvD4q+2pctv3mPAQq4=;
-        b=fJD0SHVvE+ndOv5xM7RG3+Rnhq3G3FMvd3T335jg6mxebT2uShrPZlwXA7t+Gb0Baa
-         i6dYM7S4hR1w/9HqwK5oFYzmL1WWLmkDfHkiatAdF1yfraN73OMIsvtznDfQw9Ebj12z
-         eWrLDVG6DMyOSBtVGw8kj62h94x4JP0cLd2mUdr1C+pE2XjVexT30gKfpKtwt/srLGyJ
-         blFevEb9v2X1Ek/jP2Lz5Eh9P8duEDnX6jq2VDwJPdYq8YyEc4qGfzf9PQVSuFi/+I3O
-         frs6/HbyXWnSbvug2h1BKRSiC94P4XT9RcNW5/zbPGwIcLMHIFiddHk7j36owAFgwJWX
-         On6g==
-X-Gm-Message-State: AOAM532oTNtJ/nk0847xIo9YPOs/PTAT/mk3Us5ZSNyeVyx63NeJ/D5v
-        1KFZtKGJF6ho9zAXV9bxFZvtaKdDH9k=
-X-Google-Smtp-Source: ABdhPJw1mwoXxoMFAhfLvTQDCweEblHNci9Wch8svM6Egj58FW2pLtnMM+it2XakMD8F+O4r3sK3UQ==
-X-Received: by 2002:a1c:a993:: with SMTP id s141mr18982699wme.174.1594635413186;
-        Mon, 13 Jul 2020 03:16:53 -0700 (PDT)
-Received: from ?IPv6:2a02:c7f:4844:8300:38cb:b736:bd54:adb6? ([2a02:c7f:4844:8300:38cb:b736:bd54:adb6])
-        by smtp.gmail.com with ESMTPSA id v5sm21423084wmh.12.2020.07.13.03.16.52
-        for <linux-crypto@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 03:16:52 -0700 (PDT)
-To:     linux-crypto@vger.kernel.org
-From:   Salil Mehta <mehta.salil.lnk@gmail.com>
-Message-ID: <52568242-519e-508d-c45b-9625c80af779@gmail.com>
-Date:   Mon, 13 Jul 2020 11:16:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=cVAnTWhIdLYJKO73w7wojsiljd9+XyaexVrW7ZP7+wg=;
+        b=dLGVqeAU7WBEc6hQpF0bRFSE49f1D/3Oq/9z2FG9KOn0vZ6ciqRnog/oFQykxVwq8f
+         I+JboRzfdJKruJZ+95W8VjFU1RxfaMv2BKJYbA9oCp3/55ikxXGDIJZsLT6+lAOP6v7c
+         6/fomBGkvF+Kgonf5nh8PqEegqy0awxk/OvDB1n85ZMLt9Sco9pfs//uPXrtZpMbBcVN
+         hjApHxtWd5EI60lew3/5ZHAF2QrRE6lg4x312TTIE62LRDv6q0kTK/gVmw6BQUwlMmuL
+         ElO5ayDLOz/BCDttJawzWRLn3mQlpBqFQlthVBeTFbDjxxU0AbL7LZ85n/fDqrgWMHxP
+         Rbtg==
+X-Gm-Message-State: AOAM5318qfOcz0OdObc0u/1K6bx/8LinosPqU+IIoiI3x7PmQ9+GN0mp
+        5PmqWSlx4/D7fFjqb/XRX6rCG33wvnu0BTKuaOaajFVuZ1D1AYAQidolWioX1u8iEgkDVS4nv38
+        +Nl1PUnI5nk4+12Cr0hdwonZl
+X-Received: by 2002:ad4:57c3:: with SMTP id y3mr61518411qvx.38.1594649203768;
+        Mon, 13 Jul 2020 07:06:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzc2v24kRRcIx9iU41389LXjIqZiB59Sm2o0YB8K6V71/qbHAgcbnd4J0M72wpearx39vRRHA==
+X-Received: by 2002:ad4:57c3:: with SMTP id y3mr61518386qvx.38.1594649203525;
+        Mon, 13 Jul 2020 07:06:43 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id m4sm20218627qtf.43.2020.07.13.07.06.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 07:06:42 -0700 (PDT)
+From:   trix@redhat.com
+To:     giovanni.cabiddu@intel.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, wojciech.ziemba@intel.com,
+        karen.xiang@intel.com, bruce.w.allan@intel.com, bo.cui@intel.com,
+        pingchaox.yang@intel.com
+Cc:     qat-linux@intel.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] crypto: qat: fix double free in qat_uclo_create_batch_init_list
+Date:   Mon, 13 Jul 2020 07:06:34 -0700
+Message-Id: <20200713140634.14730-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-unsubscribe linux-crypto
+From: Tom Rix <trix@redhat.com>
+
+clang static analysis flags this error
+
+qat_uclo.c:297:3: warning: Attempt to free released memory
+  [unix.Malloc]
+                kfree(*init_tab_base);
+                ^~~~~~~~~~~~~~~~~~~~~
+
+When input *init_tab_base is null, the function allocates memory for
+the head of the list.  When there is problem allocating other list
+elements the list is unwound and freed.  Then a check is made if the
+list head was allocated and is also freed.
+
+Keeping track of the what may need to be freed is the variable 'tail_old'.
+The unwinding/freeing block is
+
+	while (tail_old) {
+		mem_init = tail_old->next;
+		kfree(tail_old);
+		tail_old = mem_init;
+	}
+
+The problem is that the first element of tail_old is also what was
+allocated for the list head
+
+		init_header = kzalloc(sizeof(*init_header), GFP_KERNEL);
+		...
+		*init_tab_base = init_header;
+		flag = 1;
+	}
+	tail_old = init_header;
+
+So *init_tab_base/init_header are freed twice.
+
+There is another problem.
+When the input *init_tab_base is non null the tail_old is calculated by
+traveling down the list to first non null entry.
+
+	tail_old = init_header;
+	while (tail_old->next)
+		tail_old = tail_old->next;
+
+When the unwinding free happens, the last entry of the input list will
+be freed.
+
+So the freeing needs a general changed.
+If locally allocated the first element of tail_old is freed, else it
+is skipped.  As a bit of cleanup, reset *init_tab_base if it came in
+as null.
+
+Fixes: b4b7e67c917f ("crypto: qat - Intel(R) QAT ucode part of fw loader")
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/crypto/qat/qat_common/qat_uclo.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/crypto/qat/qat_common/qat_uclo.c b/drivers/crypto/qat/qat_common/qat_uclo.c
+index 4cc1f436b075..bff759e2f811 100644
+--- a/drivers/crypto/qat/qat_common/qat_uclo.c
++++ b/drivers/crypto/qat/qat_common/qat_uclo.c
+@@ -288,13 +288,18 @@ static int qat_uclo_create_batch_init_list(struct icp_qat_fw_loader_handle
+ 	}
+ 	return 0;
+ out_err:
++	/* Do not free the list head unless we allocated it. */
++	tail_old = tail_old->next;
++	if (flag) {
++		kfree(*init_tab_base);
++		*init_tab_base = NULL;
++	}
++
+ 	while (tail_old) {
+ 		mem_init = tail_old->next;
+ 		kfree(tail_old);
+ 		tail_old = mem_init;
+ 	}
+-	if (flag)
+-		kfree(*init_tab_base);
+ 	return -ENOMEM;
+ }
+ 
+-- 
+2.18.1
 
