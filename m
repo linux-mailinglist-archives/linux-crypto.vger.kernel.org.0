@@ -2,92 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA16B21D1ED
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2020 10:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF7421D39F
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2020 12:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgGMIkf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 13 Jul 2020 04:40:35 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:39308 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgGMIkf (ORCPT
+        id S1729308AbgGMKQz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 13 Jul 2020 06:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729059AbgGMKQz (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 13 Jul 2020 04:40:35 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06D8eVAG065670;
-        Mon, 13 Jul 2020 03:40:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594629631;
-        bh=661LBLxGonMMwGUmFergDT5VKY4kgMx6uE8FOsaBPYs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=JbkdBmWmNyA1UmXO8icDE8Bi3nboAoGm2SIGytDUBjaG/RXnkirrSDsEu5cLeqKag
-         YvStX/K2O2gc6Ca2QX0yMr/IDG3/1gv4pv6NILkcguic/Vjy2IszTy9EjE9UXSN8k3
-         3Owhg3+7TEjvqhKRC0N5B+RXEVXLa/0IDjg2mC/I=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06D8eVa0049637;
-        Mon, 13 Jul 2020 03:40:31 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 13
- Jul 2020 03:40:31 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 13 Jul 2020 03:40:30 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06D8eTdh042581;
-        Mon, 13 Jul 2020 03:40:29 -0500
-Subject: Re: [PATCHv5 2/7] crypto: sa2ul: Add crypto driver
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
-        <j-keerthy@ti.com>
-References: <20200701080553.22604-1-t-kristo@ti.com>
- <20200701080553.22604-3-t-kristo@ti.com>
- <20200709080301.GA11760@gondor.apana.org.au>
- <20200709080612.GA16409@gondor.apana.org.au>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <c3cc7fcf-c5c4-8329-f669-2f512a44ac44@ti.com>
-Date:   Mon, 13 Jul 2020 11:40:28 +0300
+        Mon, 13 Jul 2020 06:16:55 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4819C061755
+        for <linux-crypto@vger.kernel.org>; Mon, 13 Jul 2020 03:16:54 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id o2so12615315wmh.2
+        for <linux-crypto@vger.kernel.org>; Mon, 13 Jul 2020 03:16:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=30SOIOpuReOvoHqpanqseEbgCcvD4q+2pctv3mPAQq4=;
+        b=n6EeE3P+UTysbfdTPypmcypHhsHmntUEuAH32wBVrAU28DlGndVZ314+NgMkgPUNVt
+         e0bU1rj/gyBy2hVYRX3tSYp4gm9/85b6aY3ZmGpQQ+K2DtQv4QYppnChnsnWrHxC+5Sq
+         bHECddved1lfrsbm94qShE9TWb0eBA11r9pcBBdDoHD9mnnYg+E4fF06kZylxXw8MlJF
+         CjGH1fqOfGU/IC4TKGeRGk7rX/s64gmwcI7FnFzGSH9a7rRuixgHtteoRFPApoxN5Q+Z
+         /kQnn9p0MVBIi5Wct4U4tC2gIl+b0LPSlNO8dkriVxGh3G0pwSEMlmN0x4uKysi8e2km
+         tqNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=30SOIOpuReOvoHqpanqseEbgCcvD4q+2pctv3mPAQq4=;
+        b=fJD0SHVvE+ndOv5xM7RG3+Rnhq3G3FMvd3T335jg6mxebT2uShrPZlwXA7t+Gb0Baa
+         i6dYM7S4hR1w/9HqwK5oFYzmL1WWLmkDfHkiatAdF1yfraN73OMIsvtznDfQw9Ebj12z
+         eWrLDVG6DMyOSBtVGw8kj62h94x4JP0cLd2mUdr1C+pE2XjVexT30gKfpKtwt/srLGyJ
+         blFevEb9v2X1Ek/jP2Lz5Eh9P8duEDnX6jq2VDwJPdYq8YyEc4qGfzf9PQVSuFi/+I3O
+         frs6/HbyXWnSbvug2h1BKRSiC94P4XT9RcNW5/zbPGwIcLMHIFiddHk7j36owAFgwJWX
+         On6g==
+X-Gm-Message-State: AOAM532oTNtJ/nk0847xIo9YPOs/PTAT/mk3Us5ZSNyeVyx63NeJ/D5v
+        1KFZtKGJF6ho9zAXV9bxFZvtaKdDH9k=
+X-Google-Smtp-Source: ABdhPJw1mwoXxoMFAhfLvTQDCweEblHNci9Wch8svM6Egj58FW2pLtnMM+it2XakMD8F+O4r3sK3UQ==
+X-Received: by 2002:a1c:a993:: with SMTP id s141mr18982699wme.174.1594635413186;
+        Mon, 13 Jul 2020 03:16:53 -0700 (PDT)
+Received: from ?IPv6:2a02:c7f:4844:8300:38cb:b736:bd54:adb6? ([2a02:c7f:4844:8300:38cb:b736:bd54:adb6])
+        by smtp.gmail.com with ESMTPSA id v5sm21423084wmh.12.2020.07.13.03.16.52
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Jul 2020 03:16:52 -0700 (PDT)
+To:     linux-crypto@vger.kernel.org
+From:   Salil Mehta <mehta.salil.lnk@gmail.com>
+Message-ID: <52568242-519e-508d-c45b-9625c80af779@gmail.com>
+Date:   Mon, 13 Jul 2020 11:16:52 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200709080612.GA16409@gondor.apana.org.au>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Language: en-US
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 09/07/2020 11:06, Herbert Xu wrote:
-> On Thu, Jul 09, 2020 at 06:03:01PM +1000, Herbert Xu wrote:
->> On Wed, Jul 01, 2020 at 11:05:48AM +0300, Tero Kristo wrote:
->>> From: Keerthy <j-keerthy@ti.com>
->>>
->>> Adds a basic crypto driver and currently supports AES/3DES
->>> in cbc mode for both encryption and decryption.
->>>
->>> Signed-off-by: Keerthy <j-keerthy@ti.com>
->>> [t-kristo@ti.com: major re-work to fix various bugs in the driver and to
->>>   cleanup the code]
->>> Signed-off-by: Tero Kristo <t-kristo@ti.com>
->>> ---
->>>   drivers/crypto/Kconfig  |   14 +
->>>   drivers/crypto/Makefile |    1 +
->>>   drivers/crypto/sa2ul.c  | 1391 +++++++++++++++++++++++++++++++++++++++
->>>   drivers/crypto/sa2ul.h  |  380 +++++++++++
->>>   4 files changed, 1786 insertions(+)
->>>   create mode 100644 drivers/crypto/sa2ul.c
->>>   create mode 100644 drivers/crypto/sa2ul.h
->>
->> I get lots of sparse warnings with this driver.  Please fix them
->> and resubmit.
-> 
-> Please also compile test with W=1.
+unsubscribe linux-crypto
 
-Just fixed all these and posted v6.
-
--Tero
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
