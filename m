@@ -2,169 +2,99 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC0821F63E
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2020 17:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB0721FE53
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2020 22:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgGNPeq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 14 Jul 2020 11:34:46 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.21]:29555 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgGNPep (ORCPT
+        id S1730116AbgGNUOP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 14 Jul 2020 16:14:15 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:35110 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728777AbgGNUOP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 Jul 2020 11:34:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1594740878;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=eDp1c61gODZaduiFEkah+Og1dwDcdB68lu3kdvo4BRg=;
-        b=Xd4LneIaq0VRzbgaTIe2/gkSkFvzieL48sxZ40Je4Pjxsv6TXQYd3JlO+Pc5wyAq0X
-        /JolHbqzTK5wwb+CLAVCcKslNU/mpz/lZYt6IwPaU+vazFL4YgsIl5wdFQFHC5YupFpM
-        OvVTei/HyNuY5mg2ysCR7uRbL0Pua9DeoHv1+775OKt5BTBy0+LXxdHjUXpm84QCG5ED
-        XLYJNxn7TkT92qYlbXwJiut4xtfQ8gE25F3WfzDLwV4btW/tSR3UZMzOIks90siQ/sbz
-        PYgO6qJGzL3pHav/P7Vyi5SYUkgTJfxI4PlFrHVty/PFaB95nkd0NR2bufKbe+MU92rW
-        xh0w==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaI/SfxmJ+"
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
-        with ESMTPSA id y0546bw6EFYZuRC
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Tue, 14 Jul 2020 17:34:35 +0200 (CEST)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Elena Petrova <lenaptr@google.com>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>, Eric Biggers <ebiggers@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH 0/1] crypto: af_alg - add extra parameters for DRBG interface
-Date:   Tue, 14 Jul 2020 17:34:34 +0200
-Message-ID: <3312053.iIbC2pHGDl@tauon.chronox.de>
-In-Reply-To: <CABvBcwauK_JyVzONdwJRGU81ZH5sYuiJSH0F2g+i5qCe363+fQ@mail.gmail.com>
-References: <20200713164857.1031117-1-lenaptr@google.com> <2941213.7s5MMGUR32@tauon.chronox.de> <CABvBcwauK_JyVzONdwJRGU81ZH5sYuiJSH0F2g+i5qCe363+fQ@mail.gmail.com>
+        Tue, 14 Jul 2020 16:14:15 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EKDIxF183199;
+        Tue, 14 Jul 2020 20:14:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=yWBnHTtjwD/kifOL8R9vSVD5OGOOWWX50DnpIXyxMU4=;
+ b=YsHck65TlRa7XfU0yLxxTaYXtOuZENW6/P3QuFKjLePTma//RrS9yk+RcpJrnF69DOBP
+ T1D1jdwiO1VGCgKVZI3CWBLGs6PqXanuU1KoYCaoqKha56bLV/zuP4Lshdo70s+teZXj
+ ss4huLCQi+x8/4fDtbpmznNSEXLfvUyqC4wzVbkDjACbrap7tH2CJwQHzV5xhocp9v0e
+ Ju2Lp+ZG4I1iNkzMwvfSy9uDWGUxy0ML5u6lvb44W5utaxIWjgBs6GjPDmsjZyHi0u9K
+ r5LHhexljn3Ycj1uOIAinIQO1ec1VE5jlNttYyXK45nDZZkPZaKkLaSFQ/HvtkalxY7n wA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 3275cm7mnq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 14 Jul 2020 20:14:01 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EKDb5c025127;
+        Tue, 14 Jul 2020 20:14:01 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 327q0pvn8a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Jul 2020 20:14:01 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06EKE0Wx013769;
+        Tue, 14 Jul 2020 20:14:00 GMT
+Received: from localhost.localdomain (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Jul 2020 13:13:59 -0700
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: [PATCH 0/6] padata cleanups
+Date:   Tue, 14 Jul 2020 16:13:50 -0400
+Message-Id: <20200714201356.889176-1-daniel.m.jordan@oracle.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=1 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007140141
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007140141
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Am Dienstag, 14. Juli 2020, 17:23:05 CEST schrieb Elena Petrova:
+These cleanups save ~5% of the padata text/data and make it a little
+easier to use and develop going forward.
 
-Hi Elena,
+In particular, they pave the way to extend padata's multithreading support to
+VFIO, a work-in-progress version of which can be found here:
 
-> Hi Stephan,
-> 
-> On Tue, 14 Jul 2020 at 06:17, Stephan Mueller <smueller@chronox.de> wrote:
-> > Am Montag, 13. Juli 2020, 18:48:56 CEST schrieb Elena Petrova:
-> > 
-> > Hi Elena,
-> > 
-> > > This patch extends the userspace RNG interface to make it usable for
-> > > CAVS testing. This is achieved by adding ALG_SET_DRBG_ENTROPY
-> > > option to the setsockopt interface for specifying the entropy, and using
-> > > sendmsg syscall for specifying the additional data.
-> > > 
-> > > See libkcapi patch [1] to test the added functionality. The libkcapi
-> > > patch is not intended for merging into libkcapi as is: it is only a
-> > > quick plug to manually verify that the extended AF_ALG RNG interface
-> > > generates the expected output on DRBG800-90A CAVS inputs.
-> > 
-> > As I am responsible for developing such CAVS/ACVP harness as well, I
-> > played
-> > with the idea of going through AF_ALG. I discarded it because I do not see
-> > the benefit why we should add an interface solely for the purpose of
-> > testing. Further, it is a potentially dangerous one because the created
-> > instance of the DRBG is "seeded" from data provided by the caller.
-> > 
-> > Thus, I do not see the benefit from adding that extension, widening a user
-> > space interface solely for the purpose of CAVS testing. I would not see
-> > any
-> > other benefit we have with this extension. In particular, this interface
-> > would then be always there. What I could live with is an interface that
-> > can be enabled at compile time for those who want it.
-> 
-> Thanks for reviewing this patch. I understand your concern about the
-> erroneous use of the entropy input by non-testing applications. This was an
-> approach that I had discussed with Ard. I should have included you, my
-> apologies. I'll  post v2 with the CAVS testing stuff hidden under CONFIG_
-> option with appropriate help text.
-> 
-> With regards to the usefulness, let me elaborate. This effort of extending
-> the drbg interface is driven by Android needs for having the kernel crypto
-> certified. I started from having an out-of-tree chrdev driver for Google
-> Pixel kernels that was exposing the required crypto functionality, and it
-> wasn't ideal in the following ways:
->  * it primarily consisted of copypasted code from testmgr.c
->  * it was hard for me to keep the code up to date because I'm not aware of
->    ongoing changes to crypto
->  * it is hard for other people and/or organisations to re-use it, hense a
-> lot of duplicated effort is going into CAVS: you have a private driver, I
-> have mine, Jaya from HP <jayalakshmi.bhat@hp.com>, who's been asking
-> linux-crypto a few CAVS questions, has to develop theirs...
-> 
-> In general Android is trying to eliminate out-of-tree code. CAVS testing
-> functionality in particular needs to be upstream because we are switching
-> all Android devices to using a Generic Kernel Image (GKI)
-> [https://lwn.net/Articles/771974/] based on the upstream kernel.
+    https://oss.oracle.com/git/gitweb.cgi?p=linux-dmjordan.git;a=shortlog;h=refs/heads/padata-mt-wip-v0.5
 
-Thank you for the explanation.
-> 
-> > Besides, when you want to do CAVS testing, the following ciphers are still
-> > not testable and thus this patch would only be a partial solution to get
-> > the testing covered:
-> > 
-> > - AES KW (you cannot get the final IV out of the kernel - I played with
-> > the
-> > idea to return the IV through AF_ALG, but discarded it because of the
-> > concern above)
-> > 
-> > - OFB/CFB MCT testing (you need the IV from the last round - same issue as
-> > for AES KW)
-> > 
-> > - RSA
-> > 
-> > - DH
-> > 
-> > - ECDH
-> 
-> For Android certification purposes, we only need to test the modules which
-> are actually being used. In our case it's what af_alg already exposes plus
-> DRBG. If, say, HP would need RSA, they could submit their own patch.
-> 
-> As for exposing bits of the internal state for some algorithms, I hope
-> guarding the testing functionality with a CONFIG_ option would solve the
-> security part of the problem.
+Based on v5.8-rc5.  As always, feedback is welcome.
 
-Yes, for all other users.
+Daniel
 
-But if you are planning to enable this option for all Android devices across 
-the board I am not sure here. In this case, wouldn't it make sense to require 
-capable(CAP_SYS_ADMIN) for the DRBG reset operation just as an additional 
-precaution? Note, the issue with the reset is that you loose all previous 
-state (which is good for testing, but bad for security as I guess you agree 
-:-) ).
-> 
-> > With these issues, I would assume you are better off creating your own
-> > kernel module just like I did that externalizes the crypto API to user
-> > space but is only available on your test kernel and will not affect all
-> > other users.
-> I considered publishing my kernel driver on GitHub, but there appears to be
-> a sufficiently large number of users to justify having this functionality
-> upstream.
+Daniel Jordan (6):
+  padata: remove start function
+  padata: remove stop function
+  padata: inline single call of pd_setup_cpumasks()
+  padata: remove effective cpumasks from the instance
+  padata: fold padata_alloc_possible() into padata_alloc()
+  padata: remove padata_parallel_queue
 
-So, I should then dust off my AF_ALG KPP and AF_ALG akcipher patches then? :-D
-> 
-> Hope that addresses your concerns.
-> 
-> > Ciao
-> > Stephan
-> 
-> Thanks,
-> Elena
+ Documentation/core-api/padata.rst |  18 +--
+ crypto/pcrypt.c                   |  17 +--
+ include/linux/padata.h            |  21 +---
+ kernel/padata.c                   | 177 ++++++------------------------
+ 4 files changed, 46 insertions(+), 187 deletions(-)
 
 
-Ciao
-Stephan
-
+base-commit: 11ba468877bb23f28956a35e896356252d63c983
+-- 
+2.27.0
 
