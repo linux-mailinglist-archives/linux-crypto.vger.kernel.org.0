@@ -2,101 +2,95 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574F321E762
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2020 07:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E60D21E85E
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2020 08:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725793AbgGNFRa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 14 Jul 2020 01:17:30 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:11019 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgGNFR2 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 Jul 2020 01:17:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1594703846;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=HZATrvvag4q6gQHDw4QCFWHtrPGHPPXwIKMxcmxUGEs=;
-        b=XhAH/lbZXYZM0bVRHN7jIia1JKUO3hOS9RZJaZXEj9pGfVSKERKlkh9Zyv/YSayxnE
-        SiZ/mmCdvvkx1KOqv3VNldKHHzulLgt0tyEFz7JElr6CqWDaLvfzDTdwW54FxmgFE6dz
-        A9nkGuBjmIDRzIzwPw1MIzlBpO8mB+SD9RHsnP9vIsijXKRGUCfJV7q+81yzwwFI5zxz
-        Vr9RMkKNQGZEsnEVAxTCiH5PEQeTzTxsctFzj+WCUV96PcUGPyop2dvvkizkbk9NgN2N
-        vjIvsnIta8zY58Hq2ylb2CcjgP6nLfPawwIu2YPtWfrauiZL/92dDebVQ1+E5DMo6Cw4
-        4ptA==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaI/SfxmJ+"
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
-        with ESMTPSA id y0546bw6E5HLpia
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Tue, 14 Jul 2020 07:17:21 +0200 (CEST)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     linux-crypto@vger.kernel.org, Elena Petrova <lenaptr@google.com>
-Cc:     Elena Petrova <lenaptr@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH 0/1] crypto: af_alg - add extra parameters for DRBG interface
-Date:   Tue, 14 Jul 2020 07:17:20 +0200
-Message-ID: <2941213.7s5MMGUR32@tauon.chronox.de>
-In-Reply-To: <20200713164857.1031117-1-lenaptr@google.com>
-References: <20200713164857.1031117-1-lenaptr@google.com>
+        id S1725905AbgGNGgm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 14 Jul 2020 02:36:42 -0400
+Received: from mga07.intel.com ([134.134.136.100]:33942 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725306AbgGNGgm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 14 Jul 2020 02:36:42 -0400
+IronPort-SDR: y/WZAvLRwj8hPQ+uwCxcEZnM8nPjeoUjN0QSyUOC0xJVFeLuCni7Mn36Ds8+2DTaG5TYrrPIls
+ Rlfl6sJCaKYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="213632478"
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="213632478"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 23:36:41 -0700
+IronPort-SDR: mzMEla1h7jyhnOmhfJhtbCX9CSn3eWsOlv1WrB9YA3MDDahiUzdA5d9zO3xruCKSGyNDa55twr
+ fDZmejJ2Owcw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="299435523"
+Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314.ger.corp.intel.com) ([10.237.222.51])
+  by orsmga002.jf.intel.com with ESMTP; 13 Jul 2020 23:36:38 -0700
+From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To:     alex.williamson@redhat.com, herbert@gondor.apana.org.au
+Cc:     cohuck@redhat.com, nhorman@redhat.com, vdronov@redhat.com,
+        bhelgaas@google.com, mark.a.chambers@intel.com,
+        gordon.mcfadden@intel.com, ahsan.atta@intel.com,
+        qat-linux@intel.com, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Subject: [PATCH v2 0/5] vfio/pci: add blocklist and disable qat
+Date:   Tue, 14 Jul 2020 07:36:05 +0100
+Message-Id: <20200714063610.849858-1-giovanni.cabiddu@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Am Montag, 13. Juli 2020, 18:48:56 CEST schrieb Elena Petrova:
+This patchset defines a blocklist of devices in the vfio-pci module and adds
+the current generation of Intel(R) QuickAssist devices to it as they are
+not designed to run in an untrusted environment.
 
-Hi Elena,
+By default, if a device is in the blocklist, the probe of vfio-pci fails.
+If a user wants to use a device in the blocklist, he needs to disable the
+full blocklist providing the option disable_blocklist=1 at the load of
+vfio-pci or specifying that parameter in a config file in /etc/modprobe.d.
 
-> This patch extends the userspace RNG interface to make it usable for
-> CAVS testing. This is achieved by adding ALG_SET_DRBG_ENTROPY
-> option to the setsockopt interface for specifying the entropy, and using
-> sendmsg syscall for specifying the additional data.
-> 
-> See libkcapi patch [1] to test the added functionality. The libkcapi
-> patch is not intended for merging into libkcapi as is: it is only a
-> quick plug to manually verify that the extended AF_ALG RNG interface
-> generates the expected output on DRBG800-90A CAVS inputs.
+This series also moves the device ids definitions present in the qat driver
+to linux/pci_ids.h since they will be shared between the vfio-pci and the qat
+drivers and replaces the custom ADF_SYSTEM_DEVICE macro with PCI_VDEVICE.
 
-As I am responsible for developing such CAVS/ACVP harness as well, I played 
-with the idea of going through AF_ALG. I discarded it because I do not see the 
-benefit why we should add an interface solely for the purpose of testing. 
-Further, it is a potentially dangerous one because the created instance of the 
-DRBG is "seeded" from data provided by the caller.
+The series is applicable to Herbert's tree. Patches 1 to 3 apply also to
+Alex's tree. Patches 4 and 5 are optional and can be applied at a later stage.
 
-Thus, I do not see the benefit from adding that extension, widening a user 
-space interface solely for the purpose of CAVS testing. I would not see any 
-other benefit we have with this extension. In particular, this interface would 
-then be always there. What I could live with is an interface that can be 
-enabled at compile time for those who want it.
+Changes from v1:
+ - Reworked commit messages:
+   Patches #1, #2 and #3: capitalized first character after column to comply to
+   subject line convention
+   Patch #3: Capitalized QAT acronym and added link and doc number for
+   document "Intel® QuickAssist Technology (Intel® QAT) Software for Linux"
 
-Besides, when you want to do CAVS testing, the following ciphers are still not 
-testable and thus this patch would only be a partial solution to get the 
-testing covered:
+Giovanni Cabiddu (5):
+  PCI: Add Intel QuickAssist device IDs
+  vfio/pci: Add device blocklist
+  vfio/pci: Add QAT devices to blocklist
+  crypto: qat - replace device ids defines
+  crypto: qat - use PCI_VDEVICE
 
-- AES KW (you cannot get the final IV out of the kernel - I played with the 
-idea to return the IV through AF_ALG, but discarded it because of the concern 
-above)
+ drivers/crypto/qat/qat_c3xxx/adf_drv.c        | 11 ++---
+ drivers/crypto/qat/qat_c3xxxvf/adf_drv.c      | 11 ++---
+ drivers/crypto/qat/qat_c62x/adf_drv.c         | 11 ++---
+ drivers/crypto/qat/qat_c62xvf/adf_drv.c       | 11 ++---
+ .../crypto/qat/qat_common/adf_accel_devices.h |  6 ---
+ drivers/crypto/qat/qat_common/qat_hal.c       |  7 +--
+ drivers/crypto/qat/qat_common/qat_uclo.c      |  9 ++--
+ drivers/crypto/qat/qat_dh895xcc/adf_drv.c     | 11 ++---
+ drivers/crypto/qat/qat_dh895xccvf/adf_drv.c   | 11 ++---
+ drivers/vfio/pci/vfio_pci.c                   | 48 +++++++++++++++++++
+ include/linux/pci_ids.h                       |  6 +++
+ 11 files changed, 87 insertions(+), 55 deletions(-)
 
-- OFB/CFB MCT testing (you need the IV from the last round - same issue as for 
-AES KW)
-
-- RSA
-
-- DH
-
-- ECDH
-
-With these issues, I would assume you are better off creating your own kernel 
-module just like I did that externalizes the crypto API to user space but is 
-only available on your test kernel and will not affect all other users.
-
-Ciao
-Stephan
-
+-- 
+2.26.2
 
