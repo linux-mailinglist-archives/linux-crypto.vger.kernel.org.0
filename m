@@ -2,24 +2,24 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69ED21F184
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2020 14:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D535621F1A4
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2020 14:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgGNMjg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 14 Jul 2020 08:39:36 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:51946 "EHLO inva021.nxp.com"
+        id S1728305AbgGNMjk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 14 Jul 2020 08:39:40 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:51974 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgGNMjg (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:39:36 -0400
+        id S1726914AbgGNMjh (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 14 Jul 2020 08:39:37 -0400
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2492C201000;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E7384200E5F;
         Tue, 14 Jul 2020 14:39:34 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 17CCF201004;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D9E2220018F;
         Tue, 14 Jul 2020 14:39:34 +0200 (CEST)
 Received: from fsr-ub1864-014.ea.freescale.net (fsr-ub1864-014.ea.freescale.net [10.171.95.219])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 5A165205A4;
-        Tue, 14 Jul 2020 14:39:33 +0200 (CEST)
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 288FF205A4;
+        Tue, 14 Jul 2020 14:39:34 +0200 (CEST)
 From:   =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>
 To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -37,10 +37,12 @@ Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
         Iuliana Prodan <iuliana.prodan@nxp.com>,
         Silvano Di Ninno <silvano.dininno@nxp.com>,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/5] hwrng: add support for i.MX6 rngb
-Date:   Tue, 14 Jul 2020 15:39:15 +0300
-Message-Id: <20200714123920.23711-1-horia.geanta@nxp.com>
+Subject: [PATCH v3 1/5] dt-bindings: rng: add RNGB compatibles for i.MX6 SoCs
+Date:   Tue, 14 Jul 2020 15:39:16 +0300
+Message-Id: <20200714123920.23711-2-horia.geanta@nxp.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200714123920.23711-1-horia.geanta@nxp.com>
+References: <20200714123920.23711-1-horia.geanta@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -50,11 +52,8 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add support for RNGB found in some i.MX6 SoCs (6SL, 6SLL, 6ULL, 6ULZ),
-based on RNGC driver (drivers/char/hw_random/imx-rngc.c).
-
-This driver claims support also for RNGB (besides RNGC),
-and is currently used only by i.MX25.
+RNGB block is found in some i.MX6 SoCs - 6SL, 6SLL, 6ULL, 6ULZ.
+Add corresponding compatible strings.
 
 Note:
 
@@ -70,28 +69,25 @@ On the other hand, the i.MX6 SoCs with RNGB have a DCP
 (Data Co-Processor) crypto accelerator and this block and RNGB
 are independent.
 
-Changelog:
-v3
--mention in the DT binding the compatibility with "fsl,imx25-rngb"
--collected Reviewed-by
-v2
--update rngb DT binding with compatible strings for i.MX6 SoCs
-
-Horia Geantă (5):
-  dt-bindings: rng: add RNGB compatibles for i.MX6 SoCs
-  ARM: dts: imx6sl: fix rng node
-  ARM: dts: imx6sll: add rng
-  ARM: dts: imx6ull: add rng
-  hwrng: imx-rngc: enable driver for i.MX6
-
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+---
  Documentation/devicetree/bindings/rng/imx-rng.txt | 3 +++
- arch/arm/boot/dts/imx6sl.dtsi                     | 2 ++
- arch/arm/boot/dts/imx6sll.dtsi                    | 7 +++++++
- arch/arm/boot/dts/imx6ull.dtsi                    | 7 +++++++
- drivers/char/hw_random/Kconfig                    | 2 +-
- drivers/char/hw_random/imx-rngc.c                 | 3 +++
- 6 files changed, 23 insertions(+), 1 deletion(-)
+ 1 file changed, 3 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/rng/imx-rng.txt b/Documentation/devicetree/bindings/rng/imx-rng.txt
+index 405c2b00ccb0..659d4efdd664 100644
+--- a/Documentation/devicetree/bindings/rng/imx-rng.txt
++++ b/Documentation/devicetree/bindings/rng/imx-rng.txt
+@@ -5,6 +5,9 @@ Required properties:
+                "fsl,imx21-rnga"
+                "fsl,imx31-rnga" (backward compatible with "fsl,imx21-rnga")
+                "fsl,imx25-rngb"
++               "fsl,imx6sl-rngb" (backward compatible with "fsl,imx25-rngb")
++               "fsl,imx6sll-rngb" (backward compatible with "fsl,imx25-rngb")
++               "fsl,imx6ull-rngb" (backward compatible with "fsl,imx25-rngb")
+                "fsl,imx35-rngc"
+ - reg : offset and length of the register set of this block
+ - interrupts : the interrupt number for the RNG block
 -- 
 2.17.1
 
