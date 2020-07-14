@@ -2,67 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACE121FE49
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2020 22:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8B621FE60
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2020 22:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729884AbgGNUOK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 14 Jul 2020 16:14:10 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57720 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728777AbgGNUOJ (ORCPT
+        id S1730340AbgGNUQJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 14 Jul 2020 16:16:09 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:57976 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729617AbgGNUQJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 Jul 2020 16:14:09 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EKCvQO124230;
-        Tue, 14 Jul 2020 20:14:03 GMT
+        Tue, 14 Jul 2020 16:16:09 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EKD3UE097781;
+        Tue, 14 Jul 2020 20:16:03 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=ySUbA5rzTLj3gy7j3X7tOY1gfV7BfEaidIIJe3idLBY=;
- b=j7kSLWyrEPk1ulvnKWoAYLlwAIU63uyY9e8796K2fUQJ+KLigyboCUV1DGYYTs5r7BTj
- kY4HIhtkL2vAtxPIPRE5nj1EYd64UNpMJTft13lRDC1z1wQ4jTSYuIjOjK9gneLos1gq
- 6cWXmX8qZfvQlOOz/kz2+r8I6Z/mMs8O0Mlqg3LNGW/pa0f4ephHcEF4FukeNNYDmFL5
- pC4q6XyAKx+Bhqlo+B0qL5iV5XwemHl5yYUvgCJKpQLry66VGU0FVausRP4dVw76Cize
- DF9FAtga5Q7pxaSv81FIgB3Tr8PNxATgLBPk4W5ryPAgbPLDF9ulc/o/Szct6u82CQ0w Yw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 32762nfgc2-1
+ bh=GKZ07ZU8LV5s043fh4pCl0IkufVmPubx2VM55YqZHGI=;
+ b=qG3Xhrwi5Ynd5OuLQOn0tt/qmamPhA9LA+wMU18AaFamb5dNHKdNKRnzPs+qRZ1+PV90
+ EjeQKZtfBc6SGmr3vxABUXoiCrFpTrFQiIaKDeyZUU+LkNKetHPcS1tMYAuWQ0mSY3lg
+ QPh8ALGguQN8OgF5nopXBhSAidqkdJBbEkF1//uo3gSY9qfQ1OtFRz5yiQKkA3XiXrTb
+ Nj/BIK2vryj3oOvvuKpjc7rFF1OvKIk5SzzV+GERckZ2txMX/Bgh+2I2wQqtHbaKuTWs
+ CC2gcwTmf5rl6jlw8EnQ9SONTWKaMjBrQsG6eixvtaHD8m1MdQh55CNBT8o8SPmUaYJ/ aQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3274ur7q68-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 14 Jul 2020 20:14:03 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EKDZ2R129793;
-        Tue, 14 Jul 2020 20:14:02 GMT
+        Tue, 14 Jul 2020 20:16:03 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EKCdNY155108;
+        Tue, 14 Jul 2020 20:14:03 GMT
 Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 327qb54aa4-1
+        by userp3030.oracle.com with ESMTP id 327qbyc6rm-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Jul 2020 20:14:02 +0000
+        Tue, 14 Jul 2020 20:14:03 +0000
 Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06EKE1Hg003954;
-        Tue, 14 Jul 2020 20:14:01 GMT
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06EKE2nE003957;
+        Tue, 14 Jul 2020 20:14:02 GMT
 Received: from localhost.localdomain (/98.229.125.203)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Jul 2020 13:14:01 -0700
+        with ESMTP ; Tue, 14 Jul 2020 13:14:02 -0700
 From:   Daniel Jordan <daniel.m.jordan@oracle.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         Steffen Klassert <steffen.klassert@secunet.com>
 Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: [PATCH 3/6] padata: inline single call of pd_setup_cpumasks()
-Date:   Tue, 14 Jul 2020 16:13:53 -0400
-Message-Id: <20200714201356.889176-4-daniel.m.jordan@oracle.com>
+Subject: [PATCH 4/6] padata: remove effective cpumasks from the instance
+Date:   Tue, 14 Jul 2020 16:13:54 -0400
+Message-Id: <20200714201356.889176-5-daniel.m.jordan@oracle.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714201356.889176-1-daniel.m.jordan@oracle.com>
 References: <20200714201356.889176-1-daniel.m.jordan@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 spamscore=0 phishscore=0 suspectscore=2 bulkscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 spamscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 mlxscore=0 phishscore=0
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006250000 definitions=main-2007140141
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
- clxscore=1015 priorityscore=1501 mlxlogscore=999 lowpriorityscore=0
- bulkscore=0 suspectscore=2 phishscore=0 adultscore=0 impostorscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ suspectscore=2 phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1015
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
  definitions=main-2007140141
 Sender: linux-crypto-owner@vger.kernel.org
@@ -70,8 +70,10 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-pd_setup_cpumasks() has only one caller.  Move its contents inline to
-prepare for the next cleanup.
+A padata instance has effective cpumasks that store the user-supplied
+masks ANDed with the online mask, but this middleman is unnecessary.
+parallel_data keeps the same information around.  Removing this saves
+text and code churn in future changes.
 
 Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
 Cc: Herbert Xu <herbert@gondor.apana.org.au>
@@ -79,67 +81,114 @@ Cc: Steffen Klassert <steffen.klassert@secunet.com>
 Cc: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
- kernel/padata.c | 32 +++++++++-----------------------
- 1 file changed, 9 insertions(+), 23 deletions(-)
+ include/linux/padata.h |  2 --
+ kernel/padata.c        | 30 +++---------------------------
+ 2 files changed, 3 insertions(+), 29 deletions(-)
 
+diff --git a/include/linux/padata.h b/include/linux/padata.h
+index 7d53208b43daa..a941b96b7119e 100644
+--- a/include/linux/padata.h
++++ b/include/linux/padata.h
+@@ -167,7 +167,6 @@ struct padata_mt_job {
+  * @serial_wq: The workqueue used for serial work.
+  * @pslist: List of padata_shell objects attached to this instance.
+  * @cpumask: User supplied cpumasks for parallel and serial works.
+- * @rcpumask: Actual cpumasks based on user cpumask and cpu_online_mask.
+  * @kobj: padata instance kernel object.
+  * @lock: padata instance lock.
+  * @flags: padata flags.
+@@ -179,7 +178,6 @@ struct padata_instance {
+ 	struct workqueue_struct		*serial_wq;
+ 	struct list_head		pslist;
+ 	struct padata_cpumask		cpumask;
+-	struct padata_cpumask		rcpumask;
+ 	struct kobject                   kobj;
+ 	struct mutex			 lock;
+ 	u8				 flags;
 diff --git a/kernel/padata.c b/kernel/padata.c
-index 8f55e717ba50b..27f90a3c4dc6b 100644
+index 27f90a3c4dc6b..4f0a57e5738c9 100644
 --- a/kernel/padata.c
 +++ b/kernel/padata.c
-@@ -441,28 +441,6 @@ static int padata_setup_cpumasks(struct padata_instance *pinst)
- 	return err;
- }
+@@ -571,13 +571,8 @@ static void padata_init_pqueues(struct parallel_data *pd)
+ static struct parallel_data *padata_alloc_pd(struct padata_shell *ps)
+ {
+ 	struct padata_instance *pinst = ps->pinst;
+-	const struct cpumask *cbcpumask;
+-	const struct cpumask *pcpumask;
+ 	struct parallel_data *pd;
  
--static int pd_setup_cpumasks(struct parallel_data *pd,
--			     const struct cpumask *pcpumask,
--			     const struct cpumask *cbcpumask)
--{
--	int err = -ENOMEM;
+-	cbcpumask = pinst->rcpumask.cbcpu;
+-	pcpumask = pinst->rcpumask.pcpu;
 -
--	if (!alloc_cpumask_var(&pd->cpumask.pcpu, GFP_KERNEL))
--		goto out;
--	if (!alloc_cpumask_var(&pd->cpumask.cbcpu, GFP_KERNEL))
--		goto free_pcpu_mask;
--
+ 	pd = kzalloc(sizeof(struct parallel_data), GFP_KERNEL);
+ 	if (!pd)
+ 		goto err;
+@@ -597,8 +592,8 @@ static struct parallel_data *padata_alloc_pd(struct padata_shell *ps)
+ 	if (!alloc_cpumask_var(&pd->cpumask.cbcpu, GFP_KERNEL))
+ 		goto err_free_pcpu;
+ 
 -	cpumask_copy(pd->cpumask.pcpu, pcpumask);
 -	cpumask_copy(pd->cpumask.cbcpu, cbcpumask);
--
--	return 0;
--
--free_pcpu_mask:
--	free_cpumask_var(pd->cpumask.pcpu);
--out:
--	return err;
--}
--
- static void __init padata_mt_helper(struct work_struct *w)
- {
- 	struct padata_work *pw = container_of(w, struct padata_work, pw_work);
-@@ -613,8 +591,14 @@ static struct parallel_data *padata_alloc_pd(struct padata_shell *ps)
- 		goto err_free_pqueue;
- 
- 	pd->ps = ps;
--	if (pd_setup_cpumasks(pd, pcpumask, cbcpumask))
-+
-+	if (!alloc_cpumask_var(&pd->cpumask.pcpu, GFP_KERNEL))
- 		goto err_free_squeue;
-+	if (!alloc_cpumask_var(&pd->cpumask.cbcpu, GFP_KERNEL))
-+		goto err_free_pcpu;
-+
-+	cpumask_copy(pd->cpumask.pcpu, pcpumask);
-+	cpumask_copy(pd->cpumask.cbcpu, cbcpumask);
++	cpumask_and(pd->cpumask.pcpu, pinst->cpumask.pcpu, cpu_online_mask);
++	cpumask_and(pd->cpumask.cbcpu, pinst->cpumask.cbcpu, cpu_online_mask);
  
  	padata_init_pqueues(pd);
  	padata_init_squeues(pd);
-@@ -626,6 +610,8 @@ static struct parallel_data *padata_alloc_pd(struct padata_shell *ps)
+@@ -668,12 +663,6 @@ static int padata_replace(struct padata_instance *pinst)
  
- 	return pd;
+ 	pinst->flags |= PADATA_RESET;
  
-+err_free_pcpu:
-+	free_cpumask_var(pd->cpumask.pcpu);
- err_free_squeue:
- 	free_percpu(pd->squeue);
- err_free_pqueue:
+-	cpumask_and(pinst->rcpumask.pcpu, pinst->cpumask.pcpu,
+-		    cpu_online_mask);
+-
+-	cpumask_and(pinst->rcpumask.cbcpu, pinst->cpumask.cbcpu,
+-		    cpu_online_mask);
+-
+ 	list_for_each_entry(ps, &pinst->pslist, list) {
+ 		err = padata_replace_one(ps);
+ 		if (err)
+@@ -856,8 +845,6 @@ static void __padata_free(struct padata_instance *pinst)
+ 
+ 	WARN_ON(!list_empty(&pinst->pslist));
+ 
+-	free_cpumask_var(pinst->rcpumask.cbcpu);
+-	free_cpumask_var(pinst->rcpumask.pcpu);
+ 	free_cpumask_var(pinst->cpumask.pcpu);
+ 	free_cpumask_var(pinst->cpumask.cbcpu);
+ 	destroy_workqueue(pinst->serial_wq);
+@@ -1033,20 +1020,13 @@ static struct padata_instance *padata_alloc(const char *name,
+ 	    !padata_validate_cpumask(pinst, cbcpumask))
+ 		goto err_free_masks;
+ 
+-	if (!alloc_cpumask_var(&pinst->rcpumask.pcpu, GFP_KERNEL))
+-		goto err_free_masks;
+-	if (!alloc_cpumask_var(&pinst->rcpumask.cbcpu, GFP_KERNEL))
+-		goto err_free_rcpumask_pcpu;
+-
+ 	INIT_LIST_HEAD(&pinst->pslist);
+ 
+ 	cpumask_copy(pinst->cpumask.pcpu, pcpumask);
+ 	cpumask_copy(pinst->cpumask.cbcpu, cbcpumask);
+-	cpumask_and(pinst->rcpumask.pcpu, pcpumask, cpu_online_mask);
+-	cpumask_and(pinst->rcpumask.cbcpu, cbcpumask, cpu_online_mask);
+ 
+ 	if (padata_setup_cpumasks(pinst))
+-		goto err_free_rcpumask_cbcpu;
++		goto err_free_masks;
+ 
+ 	__padata_start(pinst);
+ 
+@@ -1064,10 +1044,6 @@ static struct padata_instance *padata_alloc(const char *name,
+ 
+ 	return pinst;
+ 
+-err_free_rcpumask_cbcpu:
+-	free_cpumask_var(pinst->rcpumask.cbcpu);
+-err_free_rcpumask_pcpu:
+-	free_cpumask_var(pinst->rcpumask.pcpu);
+ err_free_masks:
+ 	free_cpumask_var(pinst->cpumask.pcpu);
+ 	free_cpumask_var(pinst->cpumask.cbcpu);
 -- 
 2.27.0
 
