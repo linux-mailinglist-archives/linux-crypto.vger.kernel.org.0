@@ -2,166 +2,142 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7E3224A6D
-	for <lists+linux-crypto@lfdr.de>; Sat, 18 Jul 2020 11:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A17B224AAE
+	for <lists+linux-crypto@lfdr.de>; Sat, 18 Jul 2020 12:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgGRJo6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 18 Jul 2020 05:44:58 -0400
-Received: from mail-eopbgr80131.outbound.protection.outlook.com ([40.107.8.131]:3148
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726335AbgGRJo5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 18 Jul 2020 05:44:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bf0yYpiNSu0ULloJyKQqpBzod+b8gR/0WXpQkAGPUjcnnCScaCXSZi/cTsfbNicvzrAEcpkVH5rp1WZnFRVSyxRWLpIuybdK8BgG9jRicYpD4EAFQfVclVp2WIUVWteUdfdX0VtWr+OPpBgAZ0ftShyS21z9feYzxHUGRbIkAVyUpACtBoTpIvMgBhSbMysa/gIqowjIXFIOOAlI8+AXjRmR67IAbORyqbPQPms7NeHBiqjx9GW7zvnu8nMJeDowo5MTmKE5AmSptZi/RhGCnAThd/wo5B7S5LSzUKS+BD2u+EHP21JN8n7qiAF3HLa+MeyZl0pAE1ndyCtyMxXRUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O8ZSw/xrM6ZCZZnYf9Edc/M8FdPff33cKpysnhkPFp0=;
- b=DARdxbQ+0anpZAzfYbllh5Ew3cO2+HMjxxgmnNZ35cKotYwroQsNMqGXeoKf5ui0ZnvMqCjC+T6djhs40ef+POMfusDq6qvtRR8nk3sTMyvKo+IWGWlUvI1W5gQdPtDGg4t7noPkO3tktWdBvETAtF5wQed6ULeMX7TcqI2TufieYM/L9IOLurpfqfxlsTcBRPbzUpWdC0rQF16AGoESUCUgk90UDyjBzN/mhJ9Lh4fNf7qXxmNz5/OnvjQgbJc72oJ/ldIMq3jCkyj9lZVyUjxGe9JE2EdVOoWei0cWeyf3/8lO57669sUOLYpkbj5AXdPn1MoxdoN3u/0CT3hIhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=voleatech.de; dmarc=pass action=none header.from=voleatech.de;
- dkim=pass header.d=voleatech.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=voleatech.de;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O8ZSw/xrM6ZCZZnYf9Edc/M8FdPff33cKpysnhkPFp0=;
- b=GG43Kw2yOsDhAvPgDcS7qZSkVnEmncOQli/KAZ3JkDsJAoDvhLGZ/wX23eGDA67aJXtIXU4IoHTDzLVvPDirvDO5s3EaTzYqLg87FngV65Os6wFLYaz8IjnvFjtYnQubfVq6ujCTfWZkZ0IIUbBAUDhL6UL5bfZxNIyZyFdGeQA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=voleatech.de;
-Received: from AM4PR0501MB2785.eurprd05.prod.outlook.com
- (2603:10a6:200:5d::11) by AM4PR05MB3396.eurprd05.prod.outlook.com
- (2603:10a6:205:5::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.23; Sat, 18 Jul
- 2020 09:44:55 +0000
-Received: from AM4PR0501MB2785.eurprd05.prod.outlook.com
- ([fe80::39a1:e237:5fef:6f39]) by AM4PR0501MB2785.eurprd05.prod.outlook.com
- ([fe80::39a1:e237:5fef:6f39%11]) with mapi id 15.20.3174.027; Sat, 18 Jul
- 2020 09:44:55 +0000
-Date:   Sat, 18 Jul 2020 11:44:53 +0200
-From:   Sven Auhagen <Sven.Auhagen@voleatech.de>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au
-Subject: [PATCH 1/1 v2] marvell cesa irq balance
-Message-ID: <20200718094453.72lpwi47jckhg4tv@SvensMacBookAir.sven.lan>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-ClientProxiedBy: AM3PR05CA0086.eurprd05.prod.outlook.com
- (2603:10a6:207:1::12) To AM4PR0501MB2785.eurprd05.prod.outlook.com
- (2603:10a6:200:5d::11)
+        id S1726687AbgGRKkM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 18 Jul 2020 06:40:12 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:39270 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726490AbgGRKkM (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 18 Jul 2020 06:40:12 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 3D570BC064;
+        Sat, 18 Jul 2020 10:40:05 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        corbet@lwn.net, herbert@gondor.apana.org.au, davem@davemloft.net,
+        leitao@debian.org, nayna@linux.ibm.com, pfsmorigo@gmail.com,
+        grandmaster@al2klimov.de, linuxppc-dev@lists.ozlabs.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH] powerpc: Replace HTTP links with HTTPS ones
+Date:   Sat, 18 Jul 2020 12:39:58 +0200
+Message-Id: <20200718103958.5455-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from SvensMacBookAir.sven.lan (109.193.235.168) by AM3PR05CA0086.eurprd05.prod.outlook.com (2603:10a6:207:1::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18 via Frontend Transport; Sat, 18 Jul 2020 09:44:54 +0000
-X-Originating-IP: [109.193.235.168]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 843d7d03-3fbc-46aa-e838-08d82aff39c7
-X-MS-TrafficTypeDiagnostic: AM4PR05MB3396:
-X-Microsoft-Antispam-PRVS: <AM4PR05MB339665DFEDD010F3F176693EEF7D0@AM4PR05MB3396.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:556;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qtn4gK3pjL1OM+j911lZwNcGKzdYmVQNIyrlQD5wkqhnxPHCRvcaVa95RTB92lX2EwtsFqIlsED0Ns27qCThgw+hPs3XLgCJQyDiXeGIjtNjuL3S6OPozl8av183JH+6eAuMd6QsrDYCwhW+S4Oh9zoRqsqqhxvpiXD10AaHj09HmYks27Fg6qhryDlBntpwhTpL/dUEDjZBgwJOWCSH5wbW+vnsY/OkdaYb41S1zXDY2Fax1+kBu1p798utp3LsYKlPiK+mbev2oGGTCv8skeYUv/4qVx1NNC4+g1j32MJJiHEurQY/aqySv1nwHhLTuxTJ21oftOFMxzIKHFlXsw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM4PR0501MB2785.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(376002)(396003)(39830400003)(136003)(316002)(5660300002)(2906002)(6916009)(66556008)(508600001)(83380400001)(8676002)(66476007)(66946007)(8936002)(6506007)(1076003)(956004)(4326008)(7696005)(16526019)(26005)(86362001)(52116002)(186003)(55016002)(9686003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: MdCyegufhrBKlQTUTN+pbv5QacmiYdt27I9vL6qCh8LgOM4VyVuhTD4e9i334jQ6Huzw9irHXwyzHWQ9KBYPQNJ8fEZD4+Rw9LzmsLi5DnzZGwjV/scjNpbj7HVS8RuA9rlUAuGeRpe/upGsMqF9rUgtaDkDx3eijeC/eHRyG1ERFtNf9TBL4flNENeg2atZf8QA5qiSgmK1faSK2fbJX4GQQFkF8J4Zquj0Ox7nuXVgDIkKuzIwyvXtnhIc8VCPOA75M+LewAIsLPKywZyUcp06CH9//NhFS9inJPHM+hKfZD450jE2mG3CNdAzr7Ely3rhro3OeF6Ux+bK3XCfC2s54x7crN1b9+uOpMEWnoCTcUbVHQR3rIEh9A/VVUlAUhXD9gevHQlHWW56JA1BLw37oIsthQ//zBf2y/Y93d/bfVzZq4g2J69TO18sPKhWyIreHGODfsAvXjXlZ9SHR7u0Sjpne0QJOKLZF1iqAQqxzEWGimonfVVNCzQAnkxe
-X-OriginatorOrg: voleatech.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 843d7d03-3fbc-46aa-e838-08d82aff39c7
-X-MS-Exchange-CrossTenant-AuthSource: AM4PR0501MB2785.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2020 09:44:54.9673
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b82a99f6-7981-4a72-9534-4d35298f847b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: npUvLxZU4E/k4dbfPn2DHxl782DwYz3QF75jkLWNU0QZa8rYAS2A+7gwdDHc8Btr/kZG3GpxmG8v+SlVUkSEH7s1dvfNdFDJZhsoYLfywTc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3396
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spamd-Bar: /
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Balance the irqs of the marvell cesa driver over all
-available cpus.
-Currently all interrupts are handled by the first CPU.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-From my testing with IPSec AES 256 SHA256
-on my clearfog base with 2 Cores I get a 2x speed increase:
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-Before the patch: 26.74 Kpps
-With the patch: 56.11 Kpps
-
-Signed-off-by: Sven Auhagen <sven.auhagen@voleatech.de>
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 ---
-v2:
-* use cpumask_local_spread and remove affinity on
-  module remove
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
 
- drivers/crypto/marvell/cesa/cesa.c | 11 ++++++++++-
- drivers/crypto/marvell/cesa/cesa.h |  1 +
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ If there are any URLs to be removed completely
+ or at least not (just) HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
 
-diff --git a/drivers/crypto/marvell/cesa/cesa.c b/drivers/crypto/marvell/cesa/cesa.c
-index 8a5f0b0bdf77..c098587044a1 100644
---- a/drivers/crypto/marvell/cesa/cesa.c
-+++ b/drivers/crypto/marvell/cesa/cesa.c
-@@ -438,7 +438,7 @@ static int mv_cesa_probe(struct platform_device *pdev)
- 	struct mv_cesa_dev *cesa;
- 	struct mv_cesa_engine *engines;
- 	struct resource *res;
--	int irq, ret, i;
-+	int irq, ret, i, cpu;
- 	u32 sram_size;
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+
+ Documentation/powerpc/mpc52xx.rst       | 2 +-
+ arch/powerpc/crypto/crc32-vpmsum_core.S | 2 +-
+ arch/powerpc/include/asm/hydra.h        | 2 +-
+ drivers/crypto/vmx/aesp8-ppc.pl         | 2 +-
+ drivers/crypto/vmx/ghashp8-ppc.pl       | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/powerpc/mpc52xx.rst b/Documentation/powerpc/mpc52xx.rst
+index 8676ac63e077..30260707c3fe 100644
+--- a/Documentation/powerpc/mpc52xx.rst
++++ b/Documentation/powerpc/mpc52xx.rst
+@@ -2,7 +2,7 @@
+ Linux 2.6.x on MPC52xx family
+ =============================
  
- 	if (cesa_dev) {
-@@ -505,6 +505,8 @@ static int mv_cesa_probe(struct platform_device *pdev)
- 			goto err_cleanup;
- 		}
+-For the latest info, go to http://www.246tNt.com/mpc52xx/
++For the latest info, go to https://www.246tNt.com/mpc52xx/
  
-+		engine->irq = irq;
-+
- 		/*
- 		 * Not all platforms can gate the CESA clocks: do not complain
- 		 * if the clock does not exist.
-@@ -548,6 +550,10 @@ static int mv_cesa_probe(struct platform_device *pdev)
- 		if (ret)
- 			goto err_cleanup;
+ To compile/use :
  
-+		// Set affinity
-+		cpu = cpumask_local_spread(engine->id, -1);
-+		irq_set_affinity_hint(irq, get_cpu_mask(cpu));
-+
- 		crypto_init_queue(&engine->queue, CESA_CRYPTO_DEFAULT_MAX_QLEN);
- 		atomic_set(&engine->load, 0);
- 		INIT_LIST_HEAD(&engine->complete_queue);
-@@ -570,6 +576,8 @@ static int mv_cesa_probe(struct platform_device *pdev)
- 		clk_disable_unprepare(cesa->engines[i].zclk);
- 		clk_disable_unprepare(cesa->engines[i].clk);
- 		mv_cesa_put_sram(pdev, i);
-+		if (cesa->engines[i].irq > 0)
-+			irq_set_affinity_hint(cesa->engines[i].irq, NULL);
- 	}
- 
- 	return ret;
-@@ -586,6 +594,7 @@ static int mv_cesa_remove(struct platform_device *pdev)
- 		clk_disable_unprepare(cesa->engines[i].zclk);
- 		clk_disable_unprepare(cesa->engines[i].clk);
- 		mv_cesa_put_sram(pdev, i);
-+		irq_set_affinity_hint(cesa->engines[i].irq, NULL);
- 	}
- 
- 	return 0;
-diff --git a/drivers/crypto/marvell/cesa/cesa.h b/drivers/crypto/marvell/cesa/cesa.h
-index e8632d5f343f..0c9cbb681e49 100644
---- a/drivers/crypto/marvell/cesa/cesa.h
-+++ b/drivers/crypto/marvell/cesa/cesa.h
-@@ -457,6 +457,7 @@ struct mv_cesa_engine {
- 	atomic_t load;
- 	struct mv_cesa_tdma_chain chain;
- 	struct list_head complete_queue;
-+	int irq;
- };
- 
- /**
+diff --git a/arch/powerpc/crypto/crc32-vpmsum_core.S b/arch/powerpc/crypto/crc32-vpmsum_core.S
+index c3524eba4d0d..a16a717c809c 100644
+--- a/arch/powerpc/crypto/crc32-vpmsum_core.S
++++ b/arch/powerpc/crypto/crc32-vpmsum_core.S
+@@ -19,7 +19,7 @@
+  * We then use fixed point Barrett reduction to compute a mod n over GF(2)
+  * for n = CRC using POWER8 instructions. We use x = 32.
+  *
+- * http://en.wikipedia.org/wiki/Barrett_reduction
++ * https://en.wikipedia.org/wiki/Barrett_reduction
+  *
+  * Copyright (C) 2015 Anton Blanchard <anton@au.ibm.com>, IBM
+ */
+diff --git a/arch/powerpc/include/asm/hydra.h b/arch/powerpc/include/asm/hydra.h
+index b3b0f2d020f0..ae02eb53d6ef 100644
+--- a/arch/powerpc/include/asm/hydra.h
++++ b/arch/powerpc/include/asm/hydra.h
+@@ -10,7 +10,7 @@
+  *
+  *	© Copyright 1995 Apple Computer, Inc. All rights reserved.
+  *
+- *  It's available online from http://www.cpu.lu/~mlan/ftp/MacTech.pdf
++ *  It's available online from https://www.cpu.lu/~mlan/ftp/MacTech.pdf
+  *  You can obtain paper copies of this book from computer bookstores or by
+  *  writing Morgan Kaufmann Publishers, Inc., 340 Pine Street, Sixth Floor, San
+  *  Francisco, CA 94104. Reference ISBN 1-55860-393-X.
+diff --git a/drivers/crypto/vmx/aesp8-ppc.pl b/drivers/crypto/vmx/aesp8-ppc.pl
+index db874367b602..50a0a18f35da 100644
+--- a/drivers/crypto/vmx/aesp8-ppc.pl
++++ b/drivers/crypto/vmx/aesp8-ppc.pl
+@@ -50,7 +50,7 @@
+ # Written by Andy Polyakov <appro@openssl.org> for the OpenSSL
+ # project. The module is, however, dual licensed under OpenSSL and
+ # CRYPTOGAMS licenses depending on where you obtain it. For further
+-# details see http://www.openssl.org/~appro/cryptogams/.
++# details see https://www.openssl.org/~appro/cryptogams/.
+ # ====================================================================
+ #
+ # This module implements support for AES instructions as per PowerISA
+diff --git a/drivers/crypto/vmx/ghashp8-ppc.pl b/drivers/crypto/vmx/ghashp8-ppc.pl
+index 38b06503ede0..09bba1852eec 100644
+--- a/drivers/crypto/vmx/ghashp8-ppc.pl
++++ b/drivers/crypto/vmx/ghashp8-ppc.pl
+@@ -13,7 +13,7 @@
+ # Written by Andy Polyakov <appro@openssl.org> for the OpenSSL
+ # project. The module is, however, dual licensed under OpenSSL and
+ # CRYPTOGAMS licenses depending on where you obtain it. For further
+-# details see http://www.openssl.org/~appro/cryptogams/.
++# details see https://www.openssl.org/~appro/cryptogams/.
+ # ====================================================================
+ #
+ # GHASH for for PowerISA v2.07.
 -- 
-2.20.1
+2.27.0
 
