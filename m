@@ -2,74 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B8322781A
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jul 2020 07:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A17227893
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jul 2020 08:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726992AbgGUF3K (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 Jul 2020 01:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgGUF3K (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 Jul 2020 01:29:10 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F002FC061794;
-        Mon, 20 Jul 2020 22:29:09 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxkpB-00H0WY-9x; Tue, 21 Jul 2020 05:28:21 +0000
-Date:   Tue, 21 Jul 2020 06:28:21 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
-        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
-Subject: Re: [PATCH 02/24] bpfilter: fix up a sparse annotation
-Message-ID: <20200721052821.GS2786714@ZenIV.linux.org.uk>
-References: <20200720124737.118617-1-hch@lst.de>
- <20200720124737.118617-3-hch@lst.de>
- <20200721024016.2talwdt5hjqvirr6@ltop.local>
- <20200721052326.GA10071@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721052326.GA10071@lst.de>
+        id S1726022AbgGUGGG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 Jul 2020 02:06:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726003AbgGUGGF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 21 Jul 2020 02:06:05 -0400
+Received: from e123331-lin.nice.arm.com (adsl-199.37.6.218.tellas.gr [37.6.218.199])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A59C920B1F;
+        Tue, 21 Jul 2020 06:06:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595311565;
+        bh=XtTK+cV+VfPCXbD2exTCRA6j8JIzptjXd2OWkYXVZ48=;
+        h=From:To:Cc:Subject:Date:From;
+        b=S7sKq7S3humtFeC2krQ096pF0ybIDlvYJKTyXFrDwdrQQKuQfn4jec2YIYlR5nF6h
+         UG/Ja5osygMGYTv4IjKkL8NR19+Mk0PGdIdC9wk36zoI493+nnBz3j70kkOWi/a0G4
+         xu7L/gdtfFE7wveEUq5Ro60WZLksdcYVM6uJR/PI=
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, colin.king@canonical.com,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH] crypto: xts - Replace memcpy() invocation with simple assignment
+Date:   Tue, 21 Jul 2020 09:05:54 +0300
+Message-Id: <20200721060554.8151-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 07:23:26AM +0200, Christoph Hellwig wrote:
-> On Tue, Jul 21, 2020 at 04:40:16AM +0200, Luc Van Oostenryck wrote:
-> > >  	req.pid = current->pid;
-> > >  	req.cmd = optname;
-> > > -	req.addr = (long __force __user)optval;
-> > > +	req.addr = (__force long)optval;
-> > 
-> > For casts to integers, even '__force' is not needed (since integers
-> > can't be dereferenced, the concept of address-space is meaningless
-> > for them, so it's never useful to warn when it's dropped and
-> > '__force' is thus not needed).
-> 
-> That's what I thought. but if I remove it here I actually do get a
-> warning:
-> 
-> CHECK   net/bpfilter/bpfilter_kern.c
-> net/bpfilter/bpfilter_kern.c:52:21: warning: cast removes address space '__user' of expression
+Colin reports that the memcpy() call in xts_cts_final() trigggers a
+"Overlapping buffer in memory copy" warning in Coverity, which is a
+false postive, given that tail is guaranteed to be smaller than or
+equal to the distance between source and destination.
 
-Cast to unsigned long.  Or to uintptr_t if you want to be fancy.
+However, given that any additional bytes that we copy will be ignored
+anyway, we can simply copy XTS_BLOCK_SIZE unconditionally, which means
+we can use struct assignment of the array members instead, which is
+likely to be more efficient as well.
+
+Addresses-Coverity: ("Overlapping buffer in memory copy")
+Fixes: 8083b1bf8163 ("crypto: xts - add support for ciphertext stealing")
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ crypto/xts.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/crypto/xts.c b/crypto/xts.c
+index 3c3ed02c7663..ad45b009774b 100644
+--- a/crypto/xts.c
++++ b/crypto/xts.c
+@@ -171,7 +171,7 @@ static int xts_cts_final(struct skcipher_request *req,
+ 				      offset - XTS_BLOCK_SIZE);
+ 
+ 	scatterwalk_map_and_copy(b, rctx->tail, 0, XTS_BLOCK_SIZE, 0);
+-	memcpy(b + 1, b, tail);
++	b[1] = b[0];
+ 	scatterwalk_map_and_copy(b, req->src, offset, tail, 0);
+ 
+ 	le128_xor(b, &rctx->t, b);
+-- 
+2.17.1
+
