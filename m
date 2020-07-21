@@ -2,71 +2,95 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A17227893
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jul 2020 08:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD4A227AC9
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jul 2020 10:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgGUGGG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 Jul 2020 02:06:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726003AbgGUGGF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 Jul 2020 02:06:05 -0400
-Received: from e123331-lin.nice.arm.com (adsl-199.37.6.218.tellas.gr [37.6.218.199])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A59C920B1F;
-        Tue, 21 Jul 2020 06:06:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595311565;
-        bh=XtTK+cV+VfPCXbD2exTCRA6j8JIzptjXd2OWkYXVZ48=;
-        h=From:To:Cc:Subject:Date:From;
-        b=S7sKq7S3humtFeC2krQ096pF0ybIDlvYJKTyXFrDwdrQQKuQfn4jec2YIYlR5nF6h
-         UG/Ja5osygMGYTv4IjKkL8NR19+Mk0PGdIdC9wk36zoI493+nnBz3j70kkOWi/a0G4
-         xu7L/gdtfFE7wveEUq5Ro60WZLksdcYVM6uJR/PI=
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, colin.king@canonical.com,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH] crypto: xts - Replace memcpy() invocation with simple assignment
-Date:   Tue, 21 Jul 2020 09:05:54 +0300
-Message-Id: <20200721060554.8151-1-ardb@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1728479AbgGUIhC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Tue, 21 Jul 2020 04:37:02 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:49717 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728178AbgGUIhC (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 21 Jul 2020 04:37:02 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-210-Hj1lpiGkPReD_62cmwnEEw-1; Tue, 21 Jul 2020 09:36:58 +0100
+X-MC-Unique: Hj1lpiGkPReD_62cmwnEEw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 21 Jul 2020 09:36:57 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 21 Jul 2020 09:36:57 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Eric Dumazet <edumazet@google.com>
+CC:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
+        "coreteam@netfilter.org" <coreteam@netfilter.org>,
+        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
+        "linux-hams@vger.kernel.org" <linux-hams@vger.kernel.org>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "dccp@vger.kernel.org" <dccp@vger.kernel.org>,
+        "linux-decnet-user@lists.sourceforge.net" 
+        <linux-decnet-user@lists.sourceforge.net>,
+        "linux-wpan@vger.kernel.org" <linux-wpan@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "mptcp@lists.01.org" <mptcp@lists.01.org>,
+        "lvs-devel@vger.kernel.org" <lvs-devel@vger.kernel.org>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
+        "tipc-discussion@lists.sourceforge.net" 
+        <tipc-discussion@lists.sourceforge.net>,
+        "linux-x25@vger.kernel.org" <linux-x25@vger.kernel.org>
+Subject: RE: [PATCH 12/24] bpfilter: switch bpfilter_ip_set_sockopt to
+ sockptr_t
+Thread-Topic: [PATCH 12/24] bpfilter: switch bpfilter_ip_set_sockopt to
+ sockptr_t
+Thread-Index: AQHWXznUwerjSVAdx0W80SUXvcknn6kRtZIA
+Date:   Tue, 21 Jul 2020 08:36:57 +0000
+Message-ID: <f9493b4c514441b4b51bc7e4e75e8c40@AcuMS.aculab.com>
+References: <20200720124737.118617-1-hch@lst.de>
+ <20200720124737.118617-13-hch@lst.de>
+In-Reply-To: <20200720124737.118617-13-hch@lst.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Colin reports that the memcpy() call in xts_cts_final() trigggers a
-"Overlapping buffer in memory copy" warning in Coverity, which is a
-false postive, given that tail is guaranteed to be smaller than or
-equal to the distance between source and destination.
+From: Christoph Hellwig
+> Sent: 20 July 2020 13:47
+> 
+> This is mostly to prepare for cleaning up the callers, as bpfilter by
+> design can't handle kernel pointers.
+                      ^^^ user ??
 
-However, given that any additional bytes that we copy will be ignored
-anyway, we can simply copy XTS_BLOCK_SIZE unconditionally, which means
-we can use struct assignment of the array members instead, which is
-likely to be more efficient as well.
+	David
 
-Addresses-Coverity: ("Overlapping buffer in memory copy")
-Fixes: 8083b1bf8163 ("crypto: xts - add support for ciphertext stealing")
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- crypto/xts.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/crypto/xts.c b/crypto/xts.c
-index 3c3ed02c7663..ad45b009774b 100644
---- a/crypto/xts.c
-+++ b/crypto/xts.c
-@@ -171,7 +171,7 @@ static int xts_cts_final(struct skcipher_request *req,
- 				      offset - XTS_BLOCK_SIZE);
- 
- 	scatterwalk_map_and_copy(b, rctx->tail, 0, XTS_BLOCK_SIZE, 0);
--	memcpy(b + 1, b, tail);
-+	b[1] = b[0];
- 	scatterwalk_map_and_copy(b, req->src, offset, tail, 0);
- 
- 	le128_xor(b, &rctx->t, b);
--- 
-2.17.1
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
