@@ -2,59 +2,59 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F342288D6
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jul 2020 21:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5DD2288DB
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jul 2020 21:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730422AbgGUTH7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1730409AbgGUTH7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Tue, 21 Jul 2020 15:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730409AbgGUTGv (ORCPT
+        with ESMTP id S1730385AbgGUTGu (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:06:51 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4AAC0619E2
-        for <linux-crypto@vger.kernel.org>; Tue, 21 Jul 2020 12:06:49 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f2so22193879wrp.7
-        for <linux-crypto@vger.kernel.org>; Tue, 21 Jul 2020 12:06:49 -0700 (PDT)
+        Tue, 21 Jul 2020 15:06:50 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94FF2C0619DB
+        for <linux-crypto@vger.kernel.org>; Tue, 21 Jul 2020 12:06:50 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id q15so3868929wmj.2
+        for <linux-crypto@vger.kernel.org>; Tue, 21 Jul 2020 12:06:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=yXxrOq7y/XEqSAypbjoNDxKbsFCR1eLBq/95DK2gDRg=;
-        b=F6j3zpRFRwLd3voWeaAm0+Ovh+KLFZDnR4gK6rXggWeAhmbzSJNwyAkBLadtPTH2GZ
-         w6zsuSPftgiwG1OTv37y0vTJx38A3NqqhF8kIkPYqdCK9KbT06moo3gWs04k8YPkYh5c
-         5/s0iEt0gvPAaa3mQezBlbnbk2LLTr5Rt0yyWaQxGXf3fHzHPHvYpe+mFlIYCxZXHhg0
-         i6hVaJ5s8J2nKPNbuWKNTSlpCDzui+/LxE5a2EfcA7SQag0A5oSN15Q5oU+6mxBFzYl3
-         LFYgOEkTCgnjbFGcHzCtc7BoBx857VGbahZtena4JykDu8sCqA/4FVJDvfdH88gXUuqk
-         oEow==
+        bh=rIUFQhQ64oF2ROvS3z6Ch/i8dVROC3dNchz1WEDXahs=;
+        b=NKluApAHGIDD+9KxKrpCW1o99dpLzC7z7DvSTPywPokDolv8CKQ9ItJP/26q+rF9MG
+         rddpcnLZq2HKvpi1ngPo91+4wJroOW3Q34UxBtJFA/nRg1bQQNC9QjmX94Iwg2PV8uW6
+         yNgqJPsr94CbYM6B7sbv96KqHxOJJYZ2MY411TSEtUIKTGFjG9x5s8cu6+5kwLdG2MSs
+         WODwtcMbMA2477Za9zs+zj/zd9qafj5pkhLqtxvFdeLy/QS9rZ3bN1g36PK9P6FrjvgA
+         szI4/zNDGq5/s81SP+9V4KEYeMkcFnhPcNoX4qOZ6S0IUer304gfPWV0WKY8G4UDLXvx
+         ukFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=yXxrOq7y/XEqSAypbjoNDxKbsFCR1eLBq/95DK2gDRg=;
-        b=qzADFOXR4dLceiVkgFcq5qchS+LCpU8xRyFio4dOZq32+nZi5Az5rwS7z7QMn+igfz
-         Q1azTNzGZp2cXevpQRjm/JbUBNp2cguQnjBFnqIfCqF0u6vLfmbdeWfk1fKx1ixpgRe0
-         MLSJZxo3ggNzPL4qLS+qzP3QiTIFXaHOJeSf4JG/CdkOeD49CxwSJYLL8Be2bnM3rrH3
-         sUmqJXXoDkDEvnq+eJjllyy0im/sUE7LnmJY9d4hqHq3xVIVouHjFaoTc2Z6eKcLObHj
-         NpXDFp5yVoniVzrNGwGHOOkpo6mA1+rEVr4Zh8n+C14FPn6q3hUuDPNopcHHydxSlx2P
-         SvnQ==
-X-Gm-Message-State: AOAM531P5AVlKBbBzid45MQPV7De08UdYstOtBl2o/4i9o8U4Yzn4BWK
-        F3pm77ibJdVhxSL0m/8C3qEzoQ==
-X-Google-Smtp-Source: ABdhPJzDZYwaYL1Q2tq5nD548uq+rJJ8ORknySyeXBGJa8uE43WEF8xXDiqBx6Tw7rHEI9T5RiSmVQ==
-X-Received: by 2002:adf:f18c:: with SMTP id h12mr26735428wro.375.1595358408498;
-        Tue, 21 Jul 2020 12:06:48 -0700 (PDT)
+        bh=rIUFQhQ64oF2ROvS3z6Ch/i8dVROC3dNchz1WEDXahs=;
+        b=UfSqHLePl9MIKh/4jbPbycnSsKpae4hgmflWlEu9Gc1J0HGU67h//8NRa+Ro/o5kbG
+         gDmmbepXnbcFFFz1VU/3fSeAZUJ+riTAJB81k6hzrL8MX8pHJq+MxqIXdw7uBO9KG3fZ
+         6t7hakOotdh6zxusm5Pbo5xnCxjPm1kxaA+jjxG7wjaQX/a6ysF8HY5A+Q13jpDrpmvk
+         kfA2dsiB2q4dJUy/kjadlS4cdsiCkv5mr2Av0XNUYbOoedpcQVbksEdavDfYEARLhfkg
+         qCw3fIt+YKUcFsMJ/r5fhFWoFq2D2MedCbLI3z1ZASleZARr5algSdg/dL38PR09G8v1
+         joPQ==
+X-Gm-Message-State: AOAM5304HpYeuJ6j+MnZKHhhNu7Pxp10684SKDGRUS5OJCRLSwqZOH6i
+        YxnR52vnBmq2gZhoC7YiOJb+8g==
+X-Google-Smtp-Source: ABdhPJw1AsDsazTJox20rbpavAhDEGT6XH2HSuTMU2oYFRfpdtp8B+wR2Foyuwg5X/cUMj9cgLtwtw==
+X-Received: by 2002:a1c:bb44:: with SMTP id l65mr5595191wmf.51.1595358409355;
+        Tue, 21 Jul 2020 12:06:49 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id s14sm25794848wrv.24.2020.07.21.12.06.47
+        by smtp.googlemail.com with ESMTPSA id s14sm25794848wrv.24.2020.07.21.12.06.48
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Jul 2020 12:06:47 -0700 (PDT)
+        Tue, 21 Jul 2020 12:06:48 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     davem@davemloft.net, herbert@gondor.apana.org.au,
         mripard@kernel.org, wens@csie.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v4 07/17] crypto: sun8i-ce: handle endianness of t_common_ctl
-Date:   Tue, 21 Jul 2020 19:06:21 +0000
-Message-Id: <1595358391-34525-8-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH v4 08/17] crypto: sun8i-ce: move iv data to request context
+Date:   Tue, 21 Jul 2020 19:06:22 +0000
+Message-Id: <1595358391-34525-9-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1595358391-34525-1-git-send-email-clabbe@baylibre.com>
 References: <1595358391-34525-1-git-send-email-clabbe@baylibre.com>
@@ -63,31 +63,124 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-t_common_ctl is LE32 so we need to convert its value before using it.
-This value is only used on H6 (ignored on other SoCs) and not handling
-the endianness cause failure on xRNG/hashes operations on H6 when running BE.
+Instead of storing IV data in the channel context, store them in the
+request context.
+Storing them in the channel structure was conceptualy wrong since they
+are per request related.
 
-Fixes: 06f751b61329 ("crypto: allwinner - Add sun8i-ce Crypto Engine")
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ .../allwinner/sun8i-ce/sun8i-ce-cipher.c      | 27 +++++++++----------
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h  | 10 ++++---
+ 2 files changed, 19 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-index 0bf8f29c5ae8..0b47a51e1cfc 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-@@ -120,7 +120,10 @@ int sun8i_ce_run_task(struct sun8i_ce_dev *ce, int flow, const char *name)
- 	/* Be sure all data is written before enabling the task */
- 	wmb();
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
+index b4d5fea27d20..2252604d821b 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
+@@ -88,7 +88,6 @@ static int sun8i_ce_cipher(struct skcipher_request *areq)
+ 	struct scatterlist *sg;
+ 	unsigned int todo, len, offset, ivsize;
+ 	dma_addr_t addr_iv = 0, addr_key = 0;
+-	void *backup_iv = NULL;
+ 	u32 common, sym;
+ 	int flow, i;
+ 	int nr_sgs = 0;
+@@ -151,24 +150,24 @@ static int sun8i_ce_cipher(struct skcipher_request *areq)
  
--	v = 1 | (ce->chanlist[flow].tl->t_common_ctl & 0x7F) << 8;
-+	/* Only H6 needs to write a part of t_common_ctl along with "1", but since it is ignored
-+	 * on older SoCs, we have no reason to complicate things.
-+	 */
-+	v = 1 | ((le32_to_cpu(ce->chanlist[flow].tl->t_common_ctl) & 0x7F) << 8);
- 	writel(v, ce->base + CE_TLR);
- 	mutex_unlock(&ce->mlock);
+ 	ivsize = crypto_skcipher_ivsize(tfm);
+ 	if (areq->iv && crypto_skcipher_ivsize(tfm) > 0) {
+-		chan->ivlen = ivsize;
+-		chan->bounce_iv = kzalloc(ivsize, GFP_KERNEL | GFP_DMA);
+-		if (!chan->bounce_iv) {
++		rctx->ivlen = ivsize;
++		rctx->bounce_iv = kzalloc(ivsize, GFP_KERNEL | GFP_DMA);
++		if (!rctx->bounce_iv) {
+ 			err = -ENOMEM;
+ 			goto theend_key;
+ 		}
+ 		if (rctx->op_dir & CE_DECRYPTION) {
+-			backup_iv = kzalloc(ivsize, GFP_KERNEL);
+-			if (!backup_iv) {
++			rctx->backup_iv = kzalloc(ivsize, GFP_KERNEL);
++			if (!rctx->backup_iv) {
+ 				err = -ENOMEM;
+ 				goto theend_key;
+ 			}
+ 			offset = areq->cryptlen - ivsize;
+-			scatterwalk_map_and_copy(backup_iv, areq->src, offset,
+-						 ivsize, 0);
++			scatterwalk_map_and_copy(rctx->backup_iv, areq->src,
++						 offset, ivsize, 0);
+ 		}
+-		memcpy(chan->bounce_iv, areq->iv, ivsize);
+-		addr_iv = dma_map_single(ce->dev, chan->bounce_iv, chan->ivlen,
++		memcpy(rctx->bounce_iv, areq->iv, ivsize);
++		addr_iv = dma_map_single(ce->dev, rctx->bounce_iv, rctx->ivlen,
+ 					 DMA_TO_DEVICE);
+ 		cet->t_iv = cpu_to_le32(addr_iv);
+ 		if (dma_mapping_error(ce->dev, addr_iv)) {
+@@ -249,17 +248,17 @@ static int sun8i_ce_cipher(struct skcipher_request *areq)
+ theend_iv:
+ 	if (areq->iv && ivsize > 0) {
+ 		if (addr_iv)
+-			dma_unmap_single(ce->dev, addr_iv, chan->ivlen,
++			dma_unmap_single(ce->dev, addr_iv, rctx->ivlen,
+ 					 DMA_TO_DEVICE);
+ 		offset = areq->cryptlen - ivsize;
+ 		if (rctx->op_dir & CE_DECRYPTION) {
+-			memcpy(areq->iv, backup_iv, ivsize);
+-			kfree_sensitive(backup_iv);
++			memcpy(areq->iv, rctx->backup_iv, ivsize);
++			kfree_sensitive(rctx->backup_iv);
+ 		} else {
+ 			scatterwalk_map_and_copy(areq->iv, areq->dst, offset,
+ 						 ivsize, 0);
+ 		}
+-		kfree(chan->bounce_iv);
++		kfree(rctx->bounce_iv);
+ 	}
+ 
+ theend_key:
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
+index 963645fe4adb..f5555c4800e8 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
+@@ -129,8 +129,6 @@ struct ce_task {
+ /*
+  * struct sun8i_ce_flow - Information used by each flow
+  * @engine:	ptr to the crypto_engine for this flow
+- * @bounce_iv:	buffer which contain the IV
+- * @ivlen:	size of bounce_iv
+  * @complete:	completion for the current task on this flow
+  * @status:	set to 1 by interrupt if task is done
+  * @t_phy:	Physical address of task
+@@ -139,8 +137,6 @@ struct ce_task {
+  */
+ struct sun8i_ce_flow {
+ 	struct crypto_engine *engine;
+-	void *bounce_iv;
+-	unsigned int ivlen;
+ 	struct completion complete;
+ 	int status;
+ 	dma_addr_t t_phy;
+@@ -183,11 +179,17 @@ struct sun8i_ce_dev {
+  * struct sun8i_cipher_req_ctx - context for a skcipher request
+  * @op_dir:		direction (encrypt vs decrypt) for this request
+  * @flow:		the flow to use for this request
++ * @backup_iv:		buffer which contain the next IV to store
++ * @bounce_iv:		buffer which contain the IV
++ * @ivlen:		size of bounce_iv
+  * @fallback_req:	request struct for invoking the fallback skcipher TFM
+  */
+ struct sun8i_cipher_req_ctx {
+ 	u32 op_dir;
+ 	int flow;
++	void *backup_iv;
++	void *bounce_iv;
++	unsigned int ivlen;
+ 	struct skcipher_request fallback_req;   // keep at the end
+ };
  
 -- 
 2.26.2
