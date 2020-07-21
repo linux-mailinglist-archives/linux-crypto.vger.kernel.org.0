@@ -2,49 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB5D2288B7
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jul 2020 21:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F342288D6
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jul 2020 21:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730300AbgGUTG4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 Jul 2020 15:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
+        id S1730422AbgGUTH7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 Jul 2020 15:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730324AbgGUTGt (ORCPT
+        with ESMTP id S1730409AbgGUTGv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:06:49 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DCCC0619DD
-        for <linux-crypto@vger.kernel.org>; Tue, 21 Jul 2020 12:06:48 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f2so22193843wrp.7
-        for <linux-crypto@vger.kernel.org>; Tue, 21 Jul 2020 12:06:48 -0700 (PDT)
+        Tue, 21 Jul 2020 15:06:51 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4AAC0619E2
+        for <linux-crypto@vger.kernel.org>; Tue, 21 Jul 2020 12:06:49 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id f2so22193879wrp.7
+        for <linux-crypto@vger.kernel.org>; Tue, 21 Jul 2020 12:06:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=1465M1vFg+DkpfzTSKRwwfPqDEbWJM1n/xiu1TorbUA=;
-        b=VdYA0y1Ei0gkN2fH5Qc4/fLTN1tdv5jaRXoBW8fB8bS7y+8JWBj59dmlgFxZIklSri
-         KlzyT7AVFAOX7+IyHHBd+JYVNIS9vvNS4i5bbK1oUvDW6FsNa9oEMfx/0ZXVOcQKEIWZ
-         y6d/P6l/J5gM4/O3FakMjDIL2jDczigmpGnLgk5QztRyrzS5zgkXt1MX+7I4GaFR9mG9
-         Jx6rjJZnalkxw2okQZ71h0w3F8LFRiaGBQuJTdle7IHH2eQrMEe/lfv7retAwE/vR1zE
-         Thhd9c2xvAKYVlpaqQtDe2DES0AtA6S6Kx8V9VHn/7faVctMUf2KtoJq7pMwSClPmldw
-         hQJg==
+        bh=yXxrOq7y/XEqSAypbjoNDxKbsFCR1eLBq/95DK2gDRg=;
+        b=F6j3zpRFRwLd3voWeaAm0+Ovh+KLFZDnR4gK6rXggWeAhmbzSJNwyAkBLadtPTH2GZ
+         w6zsuSPftgiwG1OTv37y0vTJx38A3NqqhF8kIkPYqdCK9KbT06moo3gWs04k8YPkYh5c
+         5/s0iEt0gvPAaa3mQezBlbnbk2LLTr5Rt0yyWaQxGXf3fHzHPHvYpe+mFlIYCxZXHhg0
+         i6hVaJ5s8J2nKPNbuWKNTSlpCDzui+/LxE5a2EfcA7SQag0A5oSN15Q5oU+6mxBFzYl3
+         LFYgOEkTCgnjbFGcHzCtc7BoBx857VGbahZtena4JykDu8sCqA/4FVJDvfdH88gXUuqk
+         oEow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=1465M1vFg+DkpfzTSKRwwfPqDEbWJM1n/xiu1TorbUA=;
-        b=LeFJSatsL/jWuUQYTcNT0nwYH5LJLt2d1kKYqkbvFB2+goMvET3RtBufglDcveB5Sf
-         dx0HuLTjw7bHA6E5HTh+Jysg0QTvZK6ri1TMjaK1NsAnWnFsxmRMAPF01tgeZXWrE2mp
-         Mn2ySU2D/siBrcgEP+NxuUEjcjQHe4gvQTFpH9CNDe18UmbRtBpVo8S1sDtdexZyiliY
-         pQOruBJd7TCYOh5/HdRimDsltwlvFGPU9jz8QnlgT+1bmN8qUoHwsc+/fZPBRrAqx5vg
-         mtdmp+BpoBCHV3ArwNFlKTnD5Rt2wCINTy8kpRwnVc3yPP+89lR0I1zk0Fh+itgTMGPN
-         dRPQ==
-X-Gm-Message-State: AOAM531aJcaSDh5/Gn6csTdj15PJMJ0AGm6+P8Gfc8Q92rCNmZSuxoG4
-        ipZvyFyYQLnUnasCpmB3zXF5uGAsjz8=
-X-Google-Smtp-Source: ABdhPJww2rOK5JGcPh/ySRPPA16Y9CW/XUyXRggGARtVhNZDO0D0LkeGkihk/Ar/wr+nKq0+UQa9/A==
-X-Received: by 2002:a5d:6907:: with SMTP id t7mr27797401wru.329.1595358407703;
-        Tue, 21 Jul 2020 12:06:47 -0700 (PDT)
+        bh=yXxrOq7y/XEqSAypbjoNDxKbsFCR1eLBq/95DK2gDRg=;
+        b=qzADFOXR4dLceiVkgFcq5qchS+LCpU8xRyFio4dOZq32+nZi5Az5rwS7z7QMn+igfz
+         Q1azTNzGZp2cXevpQRjm/JbUBNp2cguQnjBFnqIfCqF0u6vLfmbdeWfk1fKx1ixpgRe0
+         MLSJZxo3ggNzPL4qLS+qzP3QiTIFXaHOJeSf4JG/CdkOeD49CxwSJYLL8Be2bnM3rrH3
+         sUmqJXXoDkDEvnq+eJjllyy0im/sUE7LnmJY9d4hqHq3xVIVouHjFaoTc2Z6eKcLObHj
+         NpXDFp5yVoniVzrNGwGHOOkpo6mA1+rEVr4Zh8n+C14FPn6q3hUuDPNopcHHydxSlx2P
+         SvnQ==
+X-Gm-Message-State: AOAM531P5AVlKBbBzid45MQPV7De08UdYstOtBl2o/4i9o8U4Yzn4BWK
+        F3pm77ibJdVhxSL0m/8C3qEzoQ==
+X-Google-Smtp-Source: ABdhPJzDZYwaYL1Q2tq5nD548uq+rJJ8ORknySyeXBGJa8uE43WEF8xXDiqBx6Tw7rHEI9T5RiSmVQ==
+X-Received: by 2002:adf:f18c:: with SMTP id h12mr26735428wro.375.1595358408498;
+        Tue, 21 Jul 2020 12:06:48 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id s14sm25794848wrv.24.2020.07.21.12.06.46
+        by smtp.googlemail.com with ESMTPSA id s14sm25794848wrv.24.2020.07.21.12.06.47
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
         Tue, 21 Jul 2020 12:06:47 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
@@ -52,9 +52,9 @@ To:     davem@davemloft.net, herbert@gondor.apana.org.au,
         mripard@kernel.org, wens@csie.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v4 06/17] crypto: sun8i-ss: better debug printing
-Date:   Tue, 21 Jul 2020 19:06:20 +0000
-Message-Id: <1595358391-34525-7-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH v4 07/17] crypto: sun8i-ce: handle endianness of t_common_ctl
+Date:   Tue, 21 Jul 2020 19:06:21 +0000
+Message-Id: <1595358391-34525-8-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1595358391-34525-1-git-send-email-clabbe@baylibre.com>
 References: <1595358391-34525-1-git-send-email-clabbe@baylibre.com>
@@ -63,41 +63,32 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch reworks the way debug info are printed.
-Instead of printing raw numbers, let's add a bit of context.
+t_common_ctl is LE32 so we need to convert its value before using it.
+This value is only used on H6 (ignored on other SoCs) and not handling
+the endianness cause failure on xRNG/hashes operations on H6 when running BE.
 
+Fixes: 06f751b61329 ("crypto: allwinner - Add sun8i-ce Crypto Engine")
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-index 12fa24e0c127..de32107817b3 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-@@ -424,19 +424,19 @@ static int sun8i_ss_dbgfs_read(struct seq_file *seq, void *v)
- 			continue;
- 		switch (ss_algs[i].type) {
- 		case CRYPTO_ALG_TYPE_SKCIPHER:
--			seq_printf(seq, "%s %s %lu %lu\n",
-+			seq_printf(seq, "%s %s reqs=%lu fallback=%lu\n",
- 				   ss_algs[i].alg.skcipher.base.cra_driver_name,
- 				   ss_algs[i].alg.skcipher.base.cra_name,
- 				   ss_algs[i].stat_req, ss_algs[i].stat_fb);
- 			break;
- 		case CRYPTO_ALG_TYPE_RNG:
--			seq_printf(seq, "%s %s %lu %lu\n",
-+			seq_printf(seq, "%s %s reqs=%lu tsize=%lu\n",
- 				   ss_algs[i].alg.rng.base.cra_driver_name,
- 				   ss_algs[i].alg.rng.base.cra_name,
- 				   ss_algs[i].stat_req, ss_algs[i].stat_bytes);
- 			break;
- 		case CRYPTO_ALG_TYPE_AHASH:
--			seq_printf(seq, "%s %s %lu %lu\n",
-+			seq_printf(seq, "%s %s reqs=%lu fallback=%lu\n",
- 				   ss_algs[i].alg.hash.halg.base.cra_driver_name,
- 				   ss_algs[i].alg.hash.halg.base.cra_name,
- 				   ss_algs[i].stat_req, ss_algs[i].stat_fb);
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+index 0bf8f29c5ae8..0b47a51e1cfc 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+@@ -120,7 +120,10 @@ int sun8i_ce_run_task(struct sun8i_ce_dev *ce, int flow, const char *name)
+ 	/* Be sure all data is written before enabling the task */
+ 	wmb();
+ 
+-	v = 1 | (ce->chanlist[flow].tl->t_common_ctl & 0x7F) << 8;
++	/* Only H6 needs to write a part of t_common_ctl along with "1", but since it is ignored
++	 * on older SoCs, we have no reason to complicate things.
++	 */
++	v = 1 | ((le32_to_cpu(ce->chanlist[flow].tl->t_common_ctl) & 0x7F) << 8);
+ 	writel(v, ce->base + CE_TLR);
+ 	mutex_unlock(&ce->mlock);
+ 
 -- 
 2.26.2
 
