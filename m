@@ -2,107 +2,90 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76E72288C8
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jul 2020 21:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8963A228B69
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jul 2020 23:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730650AbgGUTHZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 Jul 2020 15:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730531AbgGUTG6 (ORCPT
+        id S1730300AbgGUVcT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 Jul 2020 17:32:19 -0400
+Received: from smtprelay0196.hostedemail.com ([216.40.44.196]:47834 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726658AbgGUVcT (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:06:58 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7FCC0619E3
-        for <linux-crypto@vger.kernel.org>; Tue, 21 Jul 2020 12:06:58 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id f139so3917840wmf.5
-        for <linux-crypto@vger.kernel.org>; Tue, 21 Jul 2020 12:06:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=laHnxcRjPmQy9VaO/clWypRhfggwpc5qovCSuzLReNY=;
-        b=QAnVtcZkVkETeqRJ7UhjGVUFOq5LUWUoreoJPx0uYX+WcB0QhDa8EQgZpB/x43AnEp
-         se8w81A+aiy28s59yFk5xO9n7rCwJkgCpF4WomL30kcBQyCFpax3jUUrLRtRHjLrGYRI
-         cu6FrITYrJKCbOTavfcv3IeKswJcaEyOIykOl5NFgDpfI6oUp4QZBzzPFhCQmFLgqPZR
-         WuSK/uKV7GAnnCrpJjN+UtfsxnZucm4BqKuhg45DV+Oa9AhUwaskpNfqsFRSSv00UZjN
-         uUVY+0JgX7Ql+ovPkLNOHyObmVc4vac7V9OCi8fVVVneYJfUGa/8JFbLdKC62+Gcd59J
-         PIqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=laHnxcRjPmQy9VaO/clWypRhfggwpc5qovCSuzLReNY=;
-        b=qYSUq7CUcieTCDDVwwz4e3HjzXjj5+rX55ynnBr9WbwtO3zFauoqd9/K6+eQcc4K/t
-         djJzM0yO8R5m6Bk+Ylzfm1y1XgZ0aQvEHX01OrHgl2m1tizSdv92kpsKanI5Q7AV3mQ3
-         JIWpQDTDI/6BcM+4TMCk6aI6SZga1zX+OvtqK88aViNbBeSFIfkJCih3TlB3NnawiLM/
-         Fipf/CipgK7x11p8gE8+UnAS+43g9wJEqXjNxcEHt71Sfn/E3kOudP+UbvkShh9pdNLJ
-         YUOK5ARFxyy31cU1X68ILvpk8xOhA3+bankmPvtPj68aiAmuhUNEnHBiNxkxuOFfBdkL
-         aA9Q==
-X-Gm-Message-State: AOAM530aQFe6GVwCGIc7tDoARjgmtttwcMcIjL7NtnUI5syjI9r49im7
-        QTPl4aA452/sloSo3udpW5GDSQ==
-X-Google-Smtp-Source: ABdhPJxQHbPR+lsd7erqeGgjthIiB3YfPMd4IJcJvoLnUjJ/UZENfZjgWdMlQKNMew+ohFr/pAs3BQ==
-X-Received: by 2002:a1c:2e57:: with SMTP id u84mr5680617wmu.52.1595358417148;
-        Tue, 21 Jul 2020 12:06:57 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id s14sm25794848wrv.24.2020.07.21.12.06.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Jul 2020 12:06:56 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        mripard@kernel.org, wens@csie.org
+        Tue, 21 Jul 2020 17:32:19 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 469E718224D68;
+        Tue, 21 Jul 2020 21:32:18 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3868:4321:5007:10004:10400:10466:10471:10848:11026:11232:11657:11658:11914:12043:12048:12296:12297:12438:12555:12740:12760:12895:13069:13255:13311:13357:13439:13972:14181:14659:14721:21080:21433:21451:21627:30054:30056:30080:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: loaf72_4608e2426f30
+X-Filterd-Recvd-Size: 2717
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 21 Jul 2020 21:32:16 +0000 (UTC)
+Message-ID: <11ac49bc33546ef9ebc4120878206bd882667d8a.camel@perches.com>
+Subject: Re: [PATCH v4 16/17] crypto: sun8i-ce: fix comparison of integer
+ expressions of different signedness
+From:   Joe Perches <joe@perches.com>
+To:     Corentin Labbe <clabbe@baylibre.com>, davem@davemloft.net,
+        herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v4 17/17] crypto: sun8i-ss: fix comparison of integer expressions of different signedness
-Date:   Tue, 21 Jul 2020 19:06:31 +0000
-Message-Id: <1595358391-34525-18-git-send-email-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595358391-34525-1-git-send-email-clabbe@baylibre.com>
+        linux-kernel@vger.kernel.org
+Date:   Tue, 21 Jul 2020 14:32:15 -0700
+In-Reply-To: <1595358391-34525-17-git-send-email-clabbe@baylibre.com>
 References: <1595358391-34525-1-git-send-email-clabbe@baylibre.com>
+         <1595358391-34525-17-git-send-email-clabbe@baylibre.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch fixes the warning:
-warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+On Tue, 2020-07-21 at 19:06 +0000, Corentin Labbe wrote:
+> This patch fixes the warning:
+> warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+I think these do not really need conversion.
+Are these useful compiler warnings ?
 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-index de32107817b3..a17241483b8e 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-@@ -414,7 +414,7 @@ static struct sun8i_ss_alg_template ss_algs[] = {
- static int sun8i_ss_dbgfs_read(struct seq_file *seq, void *v)
- {
- 	struct sun8i_ss_dev *ss = seq->private;
--	int i;
-+	unsigned int i;
- 
- 	for (i = 0; i < MAXFLOW; i++)
- 		seq_printf(seq, "Channel %d: nreq %lu\n", i, ss->flows[i].stat_req);
-@@ -571,7 +571,8 @@ static void sun8i_ss_pm_exit(struct sun8i_ss_dev *ss)
- 
- static int sun8i_ss_register_algs(struct sun8i_ss_dev *ss)
- {
--	int ss_method, err, id, i;
-+	int ss_method, err, id;
-+	unsigned int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(ss_algs); i++) {
- 		ss_algs[i].ss = ss;
-@@ -642,7 +643,7 @@ static int sun8i_ss_register_algs(struct sun8i_ss_dev *ss)
- 
- static void sun8i_ss_unregister_algs(struct sun8i_ss_dev *ss)
- {
--	int i;
-+	unsigned int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(ss_algs); i++) {
- 		if (!ss_algs[i].ss)
--- 
-2.26.2
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> ---
+>  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+> index 3901e3401c6b..7b2a142c9b8d 100644
+> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+> @@ -566,7 +566,7 @@ static struct sun8i_ce_alg_template ce_algs[] = {
+>  static int sun8i_ce_dbgfs_read(struct seq_file *seq, void *v)
+>  {
+>  	struct sun8i_ce_dev *ce = seq->private;
+> -	int i;
+> +	unsigned int i;
+>  
+>  	for (i = 0; i < MAXFLOW; i++)
+>  		seq_printf(seq, "Channel %d: nreq %lu\n", i, ce->chanlist[i].stat_req);
+> @@ -778,7 +778,8 @@ static int sun8i_ce_get_clks(struct sun8i_ce_dev *ce)
+>  
+>  static int sun8i_ce_register_algs(struct sun8i_ce_dev *ce)
+>  {
+> -	int ce_method, err, id, i;
+> +	int ce_method, err, id;
+> +	unsigned int i;
+>  
+>  	for (i = 0; i < ARRAY_SIZE(ce_algs); i++) {
+>  		ce_algs[i].ce = ce;
+> @@ -858,7 +859,7 @@ static int sun8i_ce_register_algs(struct sun8i_ce_dev *ce)
+>  
+>  static void sun8i_ce_unregister_algs(struct sun8i_ce_dev *ce)
+>  {
+> -	int i;
+> +	unsigned int i;
+>  
+>  	for (i = 0; i < ARRAY_SIZE(ce_algs); i++) {
+>  		if (!ce_algs[i].ce)
 
