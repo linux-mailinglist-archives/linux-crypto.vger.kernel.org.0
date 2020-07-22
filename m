@@ -2,90 +2,111 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8963A228B69
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jul 2020 23:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6AD228DEB
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Jul 2020 04:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730300AbgGUVcT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 Jul 2020 17:32:19 -0400
-Received: from smtprelay0196.hostedemail.com ([216.40.44.196]:47834 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726658AbgGUVcT (ORCPT
+        id S1731831AbgGVCNK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 Jul 2020 22:13:10 -0400
+Received: from condef-07.nifty.com ([202.248.20.72]:30785 "EHLO
+        condef-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731621AbgGVCNJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 Jul 2020 17:32:19 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 469E718224D68;
-        Tue, 21 Jul 2020 21:32:18 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3868:4321:5007:10004:10400:10466:10471:10848:11026:11232:11657:11658:11914:12043:12048:12296:12297:12438:12555:12740:12760:12895:13069:13255:13311:13357:13439:13972:14181:14659:14721:21080:21433:21451:21627:30054:30056:30080:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: loaf72_4608e2426f30
-X-Filterd-Recvd-Size: 2717
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf01.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 21 Jul 2020 21:32:16 +0000 (UTC)
-Message-ID: <11ac49bc33546ef9ebc4120878206bd882667d8a.camel@perches.com>
-Subject: Re: [PATCH v4 16/17] crypto: sun8i-ce: fix comparison of integer
- expressions of different signedness
-From:   Joe Perches <joe@perches.com>
-To:     Corentin Labbe <clabbe@baylibre.com>, davem@davemloft.net,
-        herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 21 Jul 2020 14:32:15 -0700
-In-Reply-To: <1595358391-34525-17-git-send-email-clabbe@baylibre.com>
-References: <1595358391-34525-1-git-send-email-clabbe@baylibre.com>
-         <1595358391-34525-17-git-send-email-clabbe@baylibre.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Tue, 21 Jul 2020 22:13:09 -0400
+Received: from conssluserg-01.nifty.com ([10.126.8.80])by condef-07.nifty.com with ESMTP id 06M29rjj003253;
+        Wed, 22 Jul 2020 11:09:53 +0900
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 06M29TuW014750;
+        Wed, 22 Jul 2020 11:09:29 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 06M29TuW014750
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1595383770;
+        bh=06gcJexBF/tpPqvX05Gt/CkE+hULn79ToD587rmdDQs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dSg4gOQ/jjsop05eIvXnSVytHbNKER9gJUCj/xFmRlxYS+uGMyhYC2Jk8d1UBmCVX
+         N1wjZTgmQYzpQCSGv2J5c4KvJ2kjyLKOzJFC5l8gYX1yjdoAtZ7mns1fCfS9MfKUGa
+         feiB1WnrJiEjtgGX1PThQkOVSt0m95ze/qj3NqeLBZOk3KVAJoyBMNQGHxUiE6bUgU
+         S7BpYr/Q3jpf2LPbiVV4KR9pdEwxudC0XZrB2hLCO21kIoIwLsPStojFwuyeXxnb3e
+         +DA66Lbh5i1vksPqHMaAxXTAXudMclMGABTxcYMX8driO5gHjm+9iL6JkpQWAP1/AR
+         VVd88rpFkynxw==
+X-Nifty-SrcIP: [209.85.217.44]
+Received: by mail-vs1-f44.google.com with SMTP id s20so330522vsq.5;
+        Tue, 21 Jul 2020 19:09:29 -0700 (PDT)
+X-Gm-Message-State: AOAM533nsgc4IMlpB454vyz6TB6mt+fAfr7w+7yvTX9jwoDxUQuIjOAS
+        1ZOQry2AGUE6VKL880TXZIx/CvCLACPhDxKUjJI=
+X-Google-Smtp-Source: ABdhPJzHR+EIktThMD2rIpFhI4uTJPOQdJWdMC4eTf5k71hKCt1edF/2edrSgjCexGMNslyvA9SMcKmKrD1IOmpXMxw=
+X-Received: by 2002:a67:de09:: with SMTP id q9mr21900661vsk.179.1595383768506;
+ Tue, 21 Jul 2020 19:09:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200707092117.963394-1-masahiroy@kernel.org> <20200707092117.963394-2-masahiroy@kernel.org>
+ <20200707120212.7010fa4f@oasis.local.home>
+In-Reply-To: <20200707120212.7010fa4f@oasis.local.home>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 22 Jul 2020 11:08:51 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASdytWgqQWux1cyBrGJb_FvS7Ur5UqgHaA2Xf5cwfL85A@mail.gmail.com>
+Message-ID: <CAK7LNASdytWgqQWux1cyBrGJb_FvS7Ur5UqgHaA2Xf5cwfL85A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] kbuild: trace functions in subdirectories of lib/
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Haren Myneni <haren@us.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Tal Gilboa <talgi@mellanox.com>, kunit-dev@googlegroups.com,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, live-patching@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, 2020-07-21 at 19:06 +0000, Corentin Labbe wrote:
-> This patch fixes the warning:
-> warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+On Wed, Jul 8, 2020 at 1:02 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Tue,  7 Jul 2020 18:21:17 +0900
+> Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> >   ccflags-remove-$(CONFIG_FUNCTION_TRACER) += $(CC_FLAGS_FTRACE)
+> >
+> > exists here in sub-directories of lib/ to keep the behavior of
+> > commit 2464a609ded0 ("ftrace: do not trace library functions").
+> >
+> > Since that commit, not only the objects in lib/ but also the ones in
+> > the sub-directories are excluded from ftrace (although the commit
+> > description did not explicitly mention this).
+> >
+> > However, most of library functions in sub-directories are not so hot.
+> > Re-add them to ftrace.
+>
+> I'm OK with this change, but note, it wasn't just the hot path that I
+> disabled ftrace on lib for, but some of these calls are done very early
+> at boot up. It may have been PowerPC that I was stumbling over. The
+> issue is that they would call mcount before the kernel was mapped
+> properly, and the system would crash.
+>
+> My PowerPC box no longer boots so I can't test this anymore. But a lot
+> has changed since 2008, and all this may very well be OK.
+>
+> -- Steve
 
-I think these do not really need conversion.
-Are these useful compiler warnings ?
 
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-> ---
->  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-> index 3901e3401c6b..7b2a142c9b8d 100644
-> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-> @@ -566,7 +566,7 @@ static struct sun8i_ce_alg_template ce_algs[] = {
->  static int sun8i_ce_dbgfs_read(struct seq_file *seq, void *v)
->  {
->  	struct sun8i_ce_dev *ce = seq->private;
-> -	int i;
-> +	unsigned int i;
->  
->  	for (i = 0; i < MAXFLOW; i++)
->  		seq_printf(seq, "Channel %d: nreq %lu\n", i, ce->chanlist[i].stat_req);
-> @@ -778,7 +778,8 @@ static int sun8i_ce_get_clks(struct sun8i_ce_dev *ce)
->  
->  static int sun8i_ce_register_algs(struct sun8i_ce_dev *ce)
->  {
-> -	int ce_method, err, id, i;
-> +	int ce_method, err, id;
-> +	unsigned int i;
->  
->  	for (i = 0; i < ARRAY_SIZE(ce_algs); i++) {
->  		ce_algs[i].ce = ce;
-> @@ -858,7 +859,7 @@ static int sun8i_ce_register_algs(struct sun8i_ce_dev *ce)
->  
->  static void sun8i_ce_unregister_algs(struct sun8i_ce_dev *ce)
->  {
-> -	int i;
-> +	unsigned int i;
->  
->  	for (i = 0; i < ARRAY_SIZE(ce_algs); i++) {
->  		if (!ce_algs[i].ce)
+That's why I split this into two commits
+so that we can do git-bisect and
+revert the second one in case of a regression.
 
+Anyway, we have some more time to test this in linux-next
+(and somebody reports an issue, if any).
+
+
+-- 
+Best Regards
+Masahiro Yamada
