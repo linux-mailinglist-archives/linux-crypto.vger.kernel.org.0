@@ -2,144 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EB522C7DD
-	for <lists+linux-crypto@lfdr.de>; Fri, 24 Jul 2020 16:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292FF22C8FE
+	for <lists+linux-crypto@lfdr.de>; Fri, 24 Jul 2020 17:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgGXOXJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 24 Jul 2020 10:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726503AbgGXOXI (ORCPT
+        id S1726797AbgGXP32 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 24 Jul 2020 11:29:28 -0400
+Received: from [125.140.134.231] ([125.140.134.231]:53505 "EHLO
+        WIN-DAONO245HJF" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726643AbgGXP32 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:23:08 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85097C0619D3
-        for <linux-crypto@vger.kernel.org>; Fri, 24 Jul 2020 07:23:08 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id j18so8115008wmi.3
-        for <linux-crypto@vger.kernel.org>; Fri, 24 Jul 2020 07:23:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries-io.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DfDJT8aMj8+QexuTYXjin9MXJVQvAj2SdRwLGyVwnJY=;
-        b=te8ZOk+rj17Vw6j6a4LQ+3Sm3/VFJ3xcY8mFqfSulGryTbUh9UbJJEY1Nnc0M3yMko
-         kXZ/rnVfnUD2H9LEuoJswc8OyE3ItkcIRPMQCOoCuMmkjEde1QuIJw/0o6nNJE8+jypF
-         fe9nj/nMM4n3fQ8WrMZbfN5anoIomvLoE/0JoNzYabOnIdKIanyEdzC0I68oZmah29lq
-         dmsooZk+iqmlmgE0/SgXzxW61UTLJhZEkpyc/mL4TWchxFZJEEOXKI2lRp7fp5AFExTr
-         y9+S66UxsVlJi5Pddt5O5y3tMj/kkL5KsrOCLPG0ynRSwc6M16rGIYjoFvzna/msZYkc
-         BQnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DfDJT8aMj8+QexuTYXjin9MXJVQvAj2SdRwLGyVwnJY=;
-        b=IMwQCt7wK/gJ0t5z1dNXXS44Y5rlaM3uksiFUOhP0KwFF0yFDqOD72b5E1vpVYeAC6
-         t4d1+RSzXzfmB5fABR590Xpsu7VDBXNgdRjqQ3E9tOaq0qE6ikWU8D77vir4BrlqnCv9
-         RcXNa528KLXYEG0yG9mFua42vJdW2vGT1xFHSsw7QQGpzjQcVtttfHPDYce8MYI3uOso
-         J3/GnuXuxWPAG+9XHv8QC/CYLdDi+TD06nVZfAmoRGsfND0LMib+r80aTIkxltVG2fBm
-         2d7oXPGdI89ixtwtr+5q1yldY2ZOtLTaECgSd93eAHUW8oDBBEKJIf4Y/7hZSnrAvMV9
-         Je8w==
-X-Gm-Message-State: AOAM531OMNik7z8tM6N+4ZWXUXy20FTa7GEAGNZLkMDyPIKofazGeMh5
-        mtHui5T3AUI2/7biZLaNRFGMPA==
-X-Google-Smtp-Source: ABdhPJx8gwWAeG6Nv5miCrI5rzpwQEUt+1LIAdyE6uPfvsPe2Kk7hluobi63TvjUaNOPT9X2VL0+2w==
-X-Received: by 2002:a1c:c345:: with SMTP id t66mr675410wmf.0.1595600587179;
-        Fri, 24 Jul 2020 07:23:07 -0700 (PDT)
-Received: from trex (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
-        by smtp.gmail.com with ESMTPSA id g145sm11515101wmg.23.2020.07.24.07.23.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 Jul 2020 07:23:06 -0700 (PDT)
-From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
-Date:   Fri, 24 Jul 2020 16:23:05 +0200
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jorge Ramirez-Ortiz <jorge@foundries.io>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, ricardo@foundries.io,
-        Michael Scott <mike@foundries.io>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        op-tee@lists.trustedfirmware.org,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv2 2/2] hwrng: optee: fix wait use case
-Message-ID: <20200724142305.GA24164@trex>
-References: <20200723084622.31134-1-jorge@foundries.io>
- <20200723084622.31134-2-jorge@foundries.io>
- <CAFA6WYPQ3GGYostoHU=6qg4c_LqoqOZVbZ8gbQbGkNfyGydQjQ@mail.gmail.com>
+        Fri, 24 Jul 2020 11:29:28 -0400
+Received: from User ([66.154.113.229]) by WIN-DAONO245HJF with Microsoft SMTPSVC(8.5.9600.16384);
+         Sat, 25 Jul 2020 00:23:25 +0900
+Reply-To: <christopherwang36@gmail.com>
+From:   "CHRISTOPHER WANG" <christopherwang36@gmail.com>
+Subject: INVESTMENT
+Date:   Fri, 24 Jul 2020 08:23:43 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFA6WYPQ3GGYostoHU=6qg4c_LqoqOZVbZ8gbQbGkNfyGydQjQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <WIN-DAONO245HJFyTcs008ef901@WIN-DAONO245HJF>
+X-OriginalArrivalTime: 24 Jul 2020 15:23:26.0051 (UTC) FILETIME=[60483330:01D661CE]
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 24/07/20, Sumit Garg wrote:
-> On Thu, 23 Jul 2020 at 14:16, Jorge Ramirez-Ortiz <jorge@foundries.io> wrote:
-> >
-> > The current code waits for data to be available before attempting a
-> > second read. However the second read would not be executed as the
-> > while loop exits.
-> >
-> > This fix does not wait if all data has been read and reads a second
-> > time if only partial data was retrieved on the first read.
-> >
-> > This fix also does not attempt to read if not data is requested.
-> 
-> I am not sure how this is possible, can you elaborate?
-
-currently, if the user sets max 0, get_optee_rng_data will regardless
-issuese a call to the secure world requesting 0 bytes from the RNG
-
-with this patch, this request is avoided.
-
-> 
-> >
-> > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-> > ---
-> >  v2: tidy up the while loop to avoid reading when no data is requested
-> >
-> >  drivers/char/hw_random/optee-rng.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/char/hw_random/optee-rng.c b/drivers/char/hw_random/optee-rng.c
-> > index 5bc4700c4dae..a99d82949981 100644
-> > --- a/drivers/char/hw_random/optee-rng.c
-> > +++ b/drivers/char/hw_random/optee-rng.c
-> > @@ -122,14 +122,14 @@ static int optee_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
-> >         if (max > MAX_ENTROPY_REQ_SZ)
-> >                 max = MAX_ENTROPY_REQ_SZ;
-> >
-> > -       while (read == 0) {
-> > +       while (read < max) {
-> >                 rng_size = get_optee_rng_data(pvt_data, data, (max - read));
-> >
-> >                 data += rng_size;
-> >                 read += rng_size;
-> >
-> >                 if (wait && pvt_data->data_rate) {
-> > -                       if (timeout-- == 0)
-> > +                       if ((timeout-- == 0) || (read == max))
-> 
-> If read == max, would there be any sleep?
-
-no but I see no reason why there should be a wait since we already have
-all the data that we need; the msleep is only required when we need to
-wait for the RNG to generate entropy for the number of bytes we are
-requesting. if we are requesting 0 bytes, the entropy is already
-available. at leat this is what makes sense to me.
 
 
-> 
-> -Sumit
-> 
-> >                                 return read;
-> >                         msleep((1000 * (max - read)) / pvt_data->data_rate);
-> >                 } else {
-> > --
-> > 2.17.1
-> >
+Good day,
+
+You were recommended by a mutual associate. I write you regarding an investment of bearer bonds I made on behalf of a client. 
+
+       The investment was made in 2009 and has been under my management. The said investor is deceased. The window is now available to assign these bonds to any name or company of my choice. I have all the necessary information to achieve this within 10 banking days.
+      
+       The total value of the bond is 100million pounds sterling, in a million pound denominations.
+      
+        If you can handle this, do contact me at your earliest convenience via my email christopherwang36@gmail.com
+So we can discuss the final details Thank you.
+ 
+Mr CHRISTOPHER WANG
