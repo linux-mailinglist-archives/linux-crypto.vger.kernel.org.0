@@ -2,69 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223C422ECB9
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Jul 2020 15:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC9122ECC8
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Jul 2020 15:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgG0NAf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 27 Jul 2020 09:00:35 -0400
-Received: from verein.lst.de ([213.95.11.211]:43383 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728141AbgG0NAf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:00:35 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 8046868C4E; Mon, 27 Jul 2020 15:00:29 +0200 (CEST)
-Date:   Mon, 27 Jul 2020 15:00:29 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
-        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
-Subject: Re: [PATCH 19/26] net/ipv6: switch ipv6_flowlabel_opt to sockptr_t
-Message-ID: <20200727130029.GA26393@lst.de>
-References: <20200723060908.50081-1-hch@lst.de> <20200723060908.50081-20-hch@lst.de> <20200727121505.GA1804864@shredder>
+        id S1728579AbgG0NFW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 27 Jul 2020 09:05:22 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41356 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728576AbgG0NFW (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 27 Jul 2020 09:05:22 -0400
+Received: from mail-wr1-f71.google.com ([209.85.221.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <andrea.righi@canonical.com>)
+        id 1k02oi-0003FI-SB
+        for linux-crypto@vger.kernel.org; Mon, 27 Jul 2020 13:05:20 +0000
+Received: by mail-wr1-f71.google.com with SMTP id t12so3947774wrp.0
+        for <linux-crypto@vger.kernel.org>; Mon, 27 Jul 2020 06:05:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=bzR3LoEEn8WdPuh8casfIRu7IDrLfMDc4V7KUL0jgCY=;
+        b=HCnzj//O/YT0AB/GYBWsUKkolvc7Li5DT0M7LzQCHpdvSawUpJZhnqTNJl+WujdO0H
+         3sqDnClBCEhRrSO1bgWLda+5bP23+hhEBExluiiZRNlAVZMKeynUBUypwdqBzmw834fS
+         +PvzW7gI/6SHzHKdi1+RfBO7DO2+LpGPzlAcdSDnX9gSKXN8z5bJlTl60lCYp953aCx4
+         KaUciS0Dx5rjjIitZYK/g0QzWClnOoL733rDpziL5Xc79RV6HYJel1DS9qrXKnOIuaE2
+         nsaiqf/sadHP9GV/uXiqPhAjaYTcjYL5PIWleubs+V79vYCqvTPgdaNcYeOvIem8pD4J
+         wN8A==
+X-Gm-Message-State: AOAM533akhxNVr+HtM9g1zIDrqPVVDJRYlxQIfKK1LAeEWTFsLhsq4ow
+        iZhSmpZp61Wu7GAitpg3CPBx5Gs++m54zNjZSDPlbi9QA9Vo10q2TN0tSqYyfGphZ3lvcBbwdLW
+        rZPWtKYh1OdGmPz6hVhJeG7h07ItU+Sq6AcAe1mw89Q==
+X-Received: by 2002:a7b:c92b:: with SMTP id h11mr19357067wml.7.1595855120064;
+        Mon, 27 Jul 2020 06:05:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxS8vOBlTBGfZagOx/7xHoe4Q1rRXmLkgmZv9m4Qk0aKPHSDg7YFGtdOTXCeisZv+go7aB/NA==
+X-Received: by 2002:a7b:c92b:: with SMTP id h11mr19357045wml.7.1595855119761;
+        Mon, 27 Jul 2020 06:05:19 -0700 (PDT)
+Received: from localhost (host-87-11-131-192.retail.telecomitalia.it. [87.11.131.192])
+        by smtp.gmail.com with ESMTPSA id h6sm12969636wrv.40.2020.07.27.06.05.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 06:05:19 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 15:05:17 +0200
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: crypto: aegis128: error: incompatible types when initializing type
+ 'unsigned char' using type 'uint8x16_t'
+Message-ID: <20200727130517.GA1222569@xps-13>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200727121505.GA1804864@shredder>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 03:15:05PM +0300, Ido Schimmel wrote:
-> I see a regression with IPv6 flowlabel that I bisected to this patch.
-> When passing '-F 0' to 'ping' the flow label should be random, yet it's
-> the same every time after this patch.
+I'm experiencing this build error on arm64 after updating to gcc 10:
 
-Can you send a reproducer?
+crypto/aegis128-neon-inner.c: In function 'crypto_aegis128_init_neon':
+crypto/aegis128-neon-inner.c:151:3: error: incompatible types when initializing type 'unsigned char' using type 'uint8x16_t'
+  151 |   k ^ vld1q_u8(const0),
+      |   ^
+crypto/aegis128-neon-inner.c:152:3: error: incompatible types when initializing type 'unsigned char' using type 'uint8x16_t'
+  152 |   k ^ vld1q_u8(const1),
+      |   ^
 
-> 
-> It seems that the pointer is never advanced after the call to
-> sockptr_advance() because it is passed by value and not by reference.
-> Even if you were to pass it by reference I think you would later need to
-> call sockptr_decrease() or something similar. Otherwise it is very
-> error-prone.
-> 
-> Maybe adding an offset to copy_to_sockptr() and copy_from_sockptr() is
-> better?
+Anybody knows if there's a fix for this already? Otherwise I'll take a look at it.
 
-We could do that, although I wouldn't add it to the existing functions
-to avoid the churns and instead add copy_to_sockptr_offset or something
-like that.
+Thanks,
+-Andrea
