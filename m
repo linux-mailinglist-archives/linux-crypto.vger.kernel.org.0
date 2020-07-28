@@ -2,189 +2,209 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031762303DC
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Jul 2020 09:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 557C12303DD
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Jul 2020 09:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgG1HT3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 28 Jul 2020 03:19:29 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:54884 "EHLO fornost.hmeau.com"
+        id S1727948AbgG1HTc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 28 Jul 2020 03:19:32 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:54894 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727852AbgG1HT3 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 28 Jul 2020 03:19:29 -0400
+        id S1727852AbgG1HTc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 28 Jul 2020 03:19:32 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1k0JtW-0006St-CN; Tue, 28 Jul 2020 17:19:27 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 28 Jul 2020 17:19:26 +1000
+        id 1k0JtY-0006TY-Ki; Tue, 28 Jul 2020 17:19:29 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 28 Jul 2020 17:19:28 +1000
 From:   "Herbert Xu" <herbert@gondor.apana.org.au>
-Date:   Tue, 28 Jul 2020 17:19:26 +1000
-Subject: [v3 PATCH 21/31] crypto: ccp - Remove rfc3686 implementation
+Date:   Tue, 28 Jul 2020 17:19:28 +1000
+Subject: [v3 PATCH 22/31] crypto: chelsio - Remove rfc3686 implementation
 References: <20200728071746.GA22352@gondor.apana.org.au>
 To:     Ard Biesheuvel <ardb@kernel.org>,
         Stephan Mueller <smueller@chronox.de>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Eric Biggers <ebiggers@kernel.org>
-Message-Id: <E1k0JtW-0006St-CN@fornost.hmeau.com>
+Message-Id: <E1k0JtY-0006TY-Ki@fornost.hmeau.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The rfc3686 implementation in ccp is pretty much the same
+The rfc3686 implementation in chelsio is pretty much the same
 as the generic rfc3686 wrapper.  So it can simply be removed to
 reduce complexity.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
 
- drivers/crypto/ccp/ccp-crypto-aes.c |   99 ------------------------------------
- drivers/crypto/ccp/ccp-crypto.h     |    6 --
- 2 files changed, 105 deletions(-)
+ drivers/crypto/chelsio/chcr_algo.c |  109 +------------------------------------
+ 1 file changed, 4 insertions(+), 105 deletions(-)
 
-diff --git a/drivers/crypto/ccp/ccp-crypto-aes.c b/drivers/crypto/ccp/ccp-crypto-aes.c
-index e6dcd8cedd53e..a45e5c994e381 100644
---- a/drivers/crypto/ccp/ccp-crypto-aes.c
-+++ b/drivers/crypto/ccp/ccp-crypto-aes.c
-@@ -131,78 +131,6 @@ static int ccp_aes_init_tfm(struct crypto_skcipher *tfm)
- 	return 0;
+diff --git a/drivers/crypto/chelsio/chcr_algo.c b/drivers/crypto/chelsio/chcr_algo.c
+index 13b908ea48738..8374be72454db 100644
+--- a/drivers/crypto/chelsio/chcr_algo.c
++++ b/drivers/crypto/chelsio/chcr_algo.c
+@@ -856,9 +856,7 @@ static struct sk_buff *create_cipher_wr(struct cipher_wr_param *wrparam)
+ 	chcr_req->key_ctx.ctx_hdr = ablkctx->key_ctx_hdr;
+ 	if ((reqctx->op == CHCR_DECRYPT_OP) &&
+ 	    (!(get_cryptoalg_subtype(tfm) ==
+-	       CRYPTO_ALG_SUB_TYPE_CTR)) &&
+-	    (!(get_cryptoalg_subtype(tfm) ==
+-	       CRYPTO_ALG_SUB_TYPE_CTR_RFC3686))) {
++	       CRYPTO_ALG_SUB_TYPE_CTR))) {
+ 		generate_copy_rrkey(ablkctx, &chcr_req->key_ctx);
+ 	} else {
+ 		if ((ablkctx->ciph_mode == CHCR_SCMD_CIPHER_MODE_AES_CBC) ||
+@@ -988,42 +986,6 @@ static int chcr_aes_ctr_setkey(struct crypto_skcipher *cipher,
+ 	return err;
  }
  
--static int ccp_aes_rfc3686_complete(struct crypto_async_request *async_req,
--				    int ret)
+-static int chcr_aes_rfc3686_setkey(struct crypto_skcipher *cipher,
+-				   const u8 *key,
+-				   unsigned int keylen)
 -{
--	struct skcipher_request *req = skcipher_request_cast(async_req);
--	struct ccp_aes_req_ctx *rctx = skcipher_request_ctx(req);
+-	struct ablk_ctx *ablkctx = ABLK_CTX(c_ctx(cipher));
+-	unsigned int ck_size, context_size;
+-	u16 alignment = 0;
+-	int err;
 -
--	/* Restore the original pointer */
--	req->iv = rctx->rfc3686_info;
--
--	return ccp_aes_complete(async_req, ret);
--}
--
--static int ccp_aes_rfc3686_setkey(struct crypto_skcipher *tfm, const u8 *key,
--				  unsigned int key_len)
--{
--	struct ccp_ctx *ctx = crypto_skcipher_ctx(tfm);
--
--	if (key_len < CTR_RFC3686_NONCE_SIZE)
+-	if (keylen < CTR_RFC3686_NONCE_SIZE)
 -		return -EINVAL;
+-	memcpy(ablkctx->nonce, key + (keylen - CTR_RFC3686_NONCE_SIZE),
+-	       CTR_RFC3686_NONCE_SIZE);
 -
--	key_len -= CTR_RFC3686_NONCE_SIZE;
--	memcpy(ctx->u.aes.nonce, key + key_len, CTR_RFC3686_NONCE_SIZE);
+-	keylen -= CTR_RFC3686_NONCE_SIZE;
+-	err = chcr_cipher_fallback_setkey(cipher, key, keylen);
+-	if (err)
+-		goto badkey_err;
 -
--	return ccp_aes_setkey(tfm, key, key_len);
--}
+-	ck_size = chcr_keyctx_ck_size(keylen);
+-	alignment = (ck_size == CHCR_KEYCTX_CIPHER_KEY_SIZE_192) ? 8 : 0;
+-	memcpy(ablkctx->key, key, keylen);
+-	ablkctx->enckey_len = keylen;
+-	context_size = (KEY_CONTEXT_HDR_SALT_AND_PAD +
+-			keylen + alignment) >> 4;
 -
--static int ccp_aes_rfc3686_crypt(struct skcipher_request *req, bool encrypt)
--{
--	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
--	struct ccp_ctx *ctx = crypto_skcipher_ctx(tfm);
--	struct ccp_aes_req_ctx *rctx = skcipher_request_ctx(req);
--	u8 *iv;
--
--	/* Initialize the CTR block */
--	iv = rctx->rfc3686_iv;
--	memcpy(iv, ctx->u.aes.nonce, CTR_RFC3686_NONCE_SIZE);
--
--	iv += CTR_RFC3686_NONCE_SIZE;
--	memcpy(iv, req->iv, CTR_RFC3686_IV_SIZE);
--
--	iv += CTR_RFC3686_IV_SIZE;
--	*(__be32 *)iv = cpu_to_be32(1);
--
--	/* Point to the new IV */
--	rctx->rfc3686_info = req->iv;
--	req->iv = rctx->rfc3686_iv;
--
--	return ccp_aes_crypt(req, encrypt);
--}
--
--static int ccp_aes_rfc3686_encrypt(struct skcipher_request *req)
--{
--	return ccp_aes_rfc3686_crypt(req, true);
--}
--
--static int ccp_aes_rfc3686_decrypt(struct skcipher_request *req)
--{
--	return ccp_aes_rfc3686_crypt(req, false);
--}
--
--static int ccp_aes_rfc3686_init_tfm(struct crypto_skcipher *tfm)
--{
--	struct ccp_ctx *ctx = crypto_skcipher_ctx(tfm);
--
--	ctx->complete = ccp_aes_rfc3686_complete;
--	ctx->u.aes.key_len = 0;
--
--	crypto_skcipher_set_reqsize(tfm, sizeof(struct ccp_aes_req_ctx));
+-	ablkctx->key_ctx_hdr = FILL_KEY_CTX_HDR(ck_size, CHCR_KEYCTX_NO_KEY,
+-						0, 0, context_size);
+-	ablkctx->ciph_mode = CHCR_SCMD_CIPHER_MODE_AES_CTR;
 -
 -	return 0;
+-badkey_err:
+-	ablkctx->enckey_len = 0;
+-
+-	return err;
+-}
+ static void ctr_add_iv(u8 *dstiv, u8 *srciv, u32 add)
+ {
+ 	unsigned int size = AES_BLOCK_SIZE;
+@@ -1107,10 +1069,6 @@ static int chcr_update_cipher_iv(struct skcipher_request *req,
+ 	if (subtype == CRYPTO_ALG_SUB_TYPE_CTR)
+ 		ctr_add_iv(iv, req->iv, (reqctx->processed /
+ 			   AES_BLOCK_SIZE));
+-	else if (subtype == CRYPTO_ALG_SUB_TYPE_CTR_RFC3686)
+-		*(__be32 *)(reqctx->iv + CTR_RFC3686_NONCE_SIZE +
+-			CTR_RFC3686_IV_SIZE) = cpu_to_be32((reqctx->processed /
+-						AES_BLOCK_SIZE) + 1);
+ 	else if (subtype == CRYPTO_ALG_SUB_TYPE_XTS)
+ 		ret = chcr_update_tweak(req, iv, 0);
+ 	else if (subtype == CRYPTO_ALG_SUB_TYPE_CBC) {
+@@ -1125,11 +1083,6 @@ static int chcr_update_cipher_iv(struct skcipher_request *req,
+ 
+ }
+ 
+-/* We need separate function for final iv because in rfc3686  Initial counter
+- * starts from 1 and buffer size of iv is 8 byte only which remains constant
+- * for subsequent update requests
+- */
+-
+ static int chcr_final_cipher_iv(struct skcipher_request *req,
+ 				   struct cpl_fw6_pld *fw6_pld, u8 *iv)
+ {
+@@ -1313,30 +1266,16 @@ static int process_cipher(struct skcipher_request *req,
+ 	if (subtype == CRYPTO_ALG_SUB_TYPE_CTR) {
+ 		bytes = adjust_ctr_overflow(req->iv, bytes);
+ 	}
+-	if (subtype == CRYPTO_ALG_SUB_TYPE_CTR_RFC3686) {
+-		memcpy(reqctx->iv, ablkctx->nonce, CTR_RFC3686_NONCE_SIZE);
+-		memcpy(reqctx->iv + CTR_RFC3686_NONCE_SIZE, req->iv,
+-				CTR_RFC3686_IV_SIZE);
+-
+-		/* initialize counter portion of counter block */
+-		*(__be32 *)(reqctx->iv + CTR_RFC3686_NONCE_SIZE +
+-			CTR_RFC3686_IV_SIZE) = cpu_to_be32(1);
+-		memcpy(reqctx->init_iv, reqctx->iv, IV);
+ 
+-	} else {
++	memcpy(reqctx->iv, req->iv, IV);
++	memcpy(reqctx->init_iv, req->iv, IV);
+ 
+-		memcpy(reqctx->iv, req->iv, IV);
+-		memcpy(reqctx->init_iv, req->iv, IV);
+-	}
+ 	if (unlikely(bytes == 0)) {
+ 		chcr_cipher_dma_unmap(&ULD_CTX(c_ctx(tfm))->lldi.pdev->dev,
+ 				      req);
+ fallback:       atomic_inc(&adap->chcr_stats.fallback);
+ 		err = chcr_cipher_fallback(ablkctx->sw_cipher, req,
+-					   subtype ==
+-					   CRYPTO_ALG_SUB_TYPE_CTR_RFC3686 ?
+-					   reqctx->iv : req->iv,
+-					   op_type);
++					   req->iv, op_type);
+ 		goto error;
+ 	}
+ 	reqctx->op = op_type;
+@@ -1486,27 +1425,6 @@ static int chcr_init_tfm(struct crypto_skcipher *tfm)
+ 	return chcr_device_init(ctx);
+ }
+ 
+-static int chcr_rfc3686_init(struct crypto_skcipher *tfm)
+-{
+-	struct skcipher_alg *alg = crypto_skcipher_alg(tfm);
+-	struct chcr_context *ctx = crypto_skcipher_ctx(tfm);
+-	struct ablk_ctx *ablkctx = ABLK_CTX(ctx);
+-
+-	/*RFC3686 initialises IV counter value to 1, rfc3686(ctr(aes))
+-	 * cannot be used as fallback in chcr_handle_cipher_response
+-	 */
+-	ablkctx->sw_cipher = crypto_alloc_skcipher("ctr(aes)", 0,
+-				CRYPTO_ALG_NEED_FALLBACK);
+-	if (IS_ERR(ablkctx->sw_cipher)) {
+-		pr_err("failed to allocate fallback for %s\n", alg->base.cra_name);
+-		return PTR_ERR(ablkctx->sw_cipher);
+-	}
+-	crypto_skcipher_set_reqsize(tfm, sizeof(struct chcr_skcipher_req_ctx) +
+-				    crypto_skcipher_reqsize(ablkctx->sw_cipher));
+-	return chcr_device_init(ctx);
 -}
 -
- static const struct skcipher_alg ccp_aes_defaults = {
- 	.setkey			= ccp_aes_setkey,
- 	.encrypt		= ccp_aes_encrypt,
-@@ -221,24 +149,6 @@ static const struct skcipher_alg ccp_aes_defaults = {
- 	.base.cra_module	= THIS_MODULE,
- };
- 
--static const struct skcipher_alg ccp_aes_rfc3686_defaults = {
--	.setkey			= ccp_aes_rfc3686_setkey,
--	.encrypt		= ccp_aes_rfc3686_encrypt,
--	.decrypt		= ccp_aes_rfc3686_decrypt,
--	.min_keysize		= AES_MIN_KEY_SIZE + CTR_RFC3686_NONCE_SIZE,
--	.max_keysize		= AES_MAX_KEY_SIZE + CTR_RFC3686_NONCE_SIZE,
--	.init			= ccp_aes_rfc3686_init_tfm,
 -
--	.base.cra_flags		= CRYPTO_ALG_ASYNC |
--				  CRYPTO_ALG_ALLOCATES_MEMORY |
--				  CRYPTO_ALG_KERN_DRIVER_ONLY |
--				  CRYPTO_ALG_NEED_FALLBACK,
--	.base.cra_blocksize	= CTR_RFC3686_BLOCK_SIZE,
--	.base.cra_ctxsize	= sizeof(struct ccp_ctx),
--	.base.cra_priority	= CCP_CRA_PRIORITY,
--	.base.cra_module	= THIS_MODULE,
--};
--
- struct ccp_aes_def {
- 	enum ccp_aes_mode mode;
- 	unsigned int version;
-@@ -295,15 +205,6 @@ static struct ccp_aes_def aes_algs[] = {
- 		.ivsize		= AES_BLOCK_SIZE,
- 		.alg_defaults	= &ccp_aes_defaults,
+ static void chcr_exit_tfm(struct crypto_skcipher *tfm)
+ {
+ 	struct chcr_context *ctx = crypto_skcipher_ctx(tfm);
+@@ -3894,25 +3812,6 @@ static struct chcr_alg_template driver_algs[] = {
+ 			.decrypt		= chcr_aes_decrypt,
+ 		}
  	},
 -	{
--		.mode		= CCP_AES_MODE_CTR,
--		.version	= CCP_VERSION(3, 0),
--		.name		= "rfc3686(ctr(aes))",
--		.driver_name	= "rfc3686-ctr-aes-ccp",
--		.blocksize	= 1,
--		.ivsize		= CTR_RFC3686_IV_SIZE,
--		.alg_defaults	= &ccp_aes_rfc3686_defaults,
+-		.type = CRYPTO_ALG_TYPE_SKCIPHER |
+-			CRYPTO_ALG_SUB_TYPE_CTR_RFC3686,
+-		.is_registered = 0,
+-		.alg.skcipher = {
+-			.base.cra_name		= "rfc3686(ctr(aes))",
+-			.base.cra_driver_name	= "rfc3686-ctr-aes-chcr",
+-			.base.cra_blocksize	= 1,
+-
+-			.init			= chcr_rfc3686_init,
+-			.exit			= chcr_exit_tfm,
+-			.min_keysize		= AES_MIN_KEY_SIZE + CTR_RFC3686_NONCE_SIZE,
+-			.max_keysize		= AES_MAX_KEY_SIZE + CTR_RFC3686_NONCE_SIZE,
+-			.ivsize			= CTR_RFC3686_IV_SIZE,
+-			.setkey			= chcr_aes_rfc3686_setkey,
+-			.encrypt		= chcr_aes_encrypt,
+-			.decrypt		= chcr_aes_decrypt,
+-		}
 -	},
- };
- 
- static int ccp_register_aes_alg(struct list_head *head,
-diff --git a/drivers/crypto/ccp/ccp-crypto.h b/drivers/crypto/ccp/ccp-crypto.h
-index aed3d2192d013..a837b2a994d9f 100644
---- a/drivers/crypto/ccp/ccp-crypto.h
-+++ b/drivers/crypto/ccp/ccp-crypto.h
-@@ -99,8 +99,6 @@ struct ccp_aes_ctx {
- 	unsigned int key_len;
- 	u8 key[AES_MAX_KEY_SIZE * 2];
- 
--	u8 nonce[CTR_RFC3686_NONCE_SIZE];
--
- 	/* CMAC key structures */
- 	struct scatterlist k1_sg;
- 	struct scatterlist k2_sg;
-@@ -116,10 +114,6 @@ struct ccp_aes_req_ctx {
- 	struct scatterlist tag_sg;
- 	u8 tag[AES_BLOCK_SIZE];
- 
--	/* Fields used for RFC3686 requests */
--	u8 *rfc3686_info;
--	u8 rfc3686_iv[AES_BLOCK_SIZE];
--
- 	struct ccp_cmd cmd;
- 
- 	struct skcipher_request fallback_req;	// keep at the end
+ 	/* SHA */
+ 	{
+ 		.type = CRYPTO_ALG_TYPE_AHASH,
