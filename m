@@ -2,113 +2,125 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97962303C3
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Jul 2020 09:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978732303C4
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Jul 2020 09:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgG1HSo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 28 Jul 2020 03:18:44 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:54730 "EHLO fornost.hmeau.com"
+        id S1727905AbgG1HSr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 28 Jul 2020 03:18:47 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:54742 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727858AbgG1HSo (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 28 Jul 2020 03:18:44 -0400
+        id S1727858AbgG1HSr (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 28 Jul 2020 03:18:47 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1k0Jsn-0006Hw-QM; Tue, 28 Jul 2020 17:18:42 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 28 Jul 2020 17:18:41 +1000
+        id 1k0Jsq-0006I8-1l; Tue, 28 Jul 2020 17:18:45 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 28 Jul 2020 17:18:44 +1000
 From:   "Herbert Xu" <herbert@gondor.apana.org.au>
-Date:   Tue, 28 Jul 2020 17:18:41 +1000
-Subject: [v3 PATCH 2/31] crypto: algif_skcipher - Add support for final_chunksize
+Date:   Tue, 28 Jul 2020 17:18:44 +1000
+Subject: [v3 PATCH 3/31] crypto: cts - Add support for chaining
 References: <20200728071746.GA22352@gondor.apana.org.au>
 To:     Ard Biesheuvel <ardb@kernel.org>,
         Stephan Mueller <smueller@chronox.de>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Eric Biggers <ebiggers@kernel.org>
-Message-Id: <E1k0Jsn-0006Hw-QM@fornost.hmeau.com>
+Message-Id: <E1k0Jsq-0006I8-1l@fornost.hmeau.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-As it stands algif_skcipher assumes all algorithms support chaining.
-This patch teaches it about the new final_chunksize attribute which
-can be used to disable chaining on a given algorithm.  It can also
-be used to support chaining on algorithms such as cts that cannot
-otherwise do chaining.  For that case algif_skcipher will also now
-set the request flag CRYPTO_TFM_REQ_MORE when needed.
+As it stands cts cannot do chaining.  That is, it always performs
+the cipher-text stealing at the end of a request.  This patch adds
+support for chaining when the CRYPTO_TM_REQ_MORE flag is set.
+
+It also sets final_chunksize so that data can be withheld by the
+caller to enable correct processing at the true end of a request.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
 
- crypto/algif_skcipher.c |   28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
+ crypto/cts.c |   19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
-index a51ba22fef58f..1d50f042dd319 100644
---- a/crypto/algif_skcipher.c
-+++ b/crypto/algif_skcipher.c
-@@ -57,12 +57,15 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
- 	struct af_alg_ctx *ctx = ask->private;
- 	struct crypto_skcipher *tfm = pask->private;
- 	unsigned int bs = crypto_skcipher_chunksize(tfm);
-+	unsigned int rflags = CRYPTO_TFM_REQ_MAY_SLEEP;
-+	int fc = crypto_skcipher_final_chunksize(tfm);
-+	unsigned int min = bs + (fc > 0 ? fc : 0);
- 	struct af_alg_async_req *areq;
- 	int err = 0;
- 	size_t len = 0;
+diff --git a/crypto/cts.c b/crypto/cts.c
+index 3766d47ebcc01..67990146c9b06 100644
+--- a/crypto/cts.c
++++ b/crypto/cts.c
+@@ -100,7 +100,7 @@ static int cts_cbc_encrypt(struct skcipher_request *req)
+ 	struct crypto_cts_reqctx *rctx = skcipher_request_ctx(req);
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+ 	struct skcipher_request *subreq = &rctx->subreq;
+-	int bsize = crypto_skcipher_blocksize(tfm);
++	int bsize = crypto_skcipher_chunksize(tfm);
+ 	u8 d[MAX_CIPHER_BLOCKSIZE * 2] __aligned(__alignof__(u32));
+ 	struct scatterlist *sg;
+ 	unsigned int offset;
+@@ -146,7 +146,7 @@ static int crypto_cts_encrypt(struct skcipher_request *req)
+ 	struct crypto_cts_reqctx *rctx = skcipher_request_ctx(req);
+ 	struct crypto_cts_ctx *ctx = crypto_skcipher_ctx(tfm);
+ 	struct skcipher_request *subreq = &rctx->subreq;
+-	int bsize = crypto_skcipher_blocksize(tfm);
++	int bsize = crypto_skcipher_chunksize(tfm);
+ 	unsigned int nbytes = req->cryptlen;
+ 	unsigned int offset;
  
--	if (!ctx->init || (ctx->more && ctx->used < bs)) {
--		err = af_alg_wait_for_data(sk, flags, bs);
-+	if (!ctx->init || (ctx->more && ctx->used < min)) {
-+		err = af_alg_wait_for_data(sk, flags, min);
- 		if (err)
- 			return err;
- 	}
-@@ -78,13 +81,23 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
- 	if (err)
- 		goto free;
+@@ -155,7 +155,7 @@ static int crypto_cts_encrypt(struct skcipher_request *req)
+ 	if (nbytes < bsize)
+ 		return -EINVAL;
  
-+	err = -EINVAL;
-+
- 	/*
- 	 * If more buffers are to be expected to be processed, process only
--	 * full block size buffers.
-+	 * full block size buffers and withhold data according to the final
-+	 * chunk size.
- 	 */
--	if (ctx->more || len < ctx->used)
-+	if (ctx->more || len < ctx->used) {
-+		if (fc < 0)
-+			goto free;
-+
-+		len -= fc;
- 		len -= len % bs;
+-	if (nbytes == bsize) {
++	if (nbytes == bsize || req->base.flags & CRYPTO_TFM_REQ_MORE) {
+ 		skcipher_request_set_callback(subreq, req->base.flags,
+ 					      req->base.complete,
+ 					      req->base.data);
+@@ -181,7 +181,7 @@ static int cts_cbc_decrypt(struct skcipher_request *req)
+ 	struct crypto_cts_reqctx *rctx = skcipher_request_ctx(req);
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+ 	struct skcipher_request *subreq = &rctx->subreq;
+-	int bsize = crypto_skcipher_blocksize(tfm);
++	int bsize = crypto_skcipher_chunksize(tfm);
+ 	u8 d[MAX_CIPHER_BLOCKSIZE * 2] __aligned(__alignof__(u32));
+ 	struct scatterlist *sg;
+ 	unsigned int offset;
+@@ -240,7 +240,7 @@ static int crypto_cts_decrypt(struct skcipher_request *req)
+ 	struct crypto_cts_reqctx *rctx = skcipher_request_ctx(req);
+ 	struct crypto_cts_ctx *ctx = crypto_skcipher_ctx(tfm);
+ 	struct skcipher_request *subreq = &rctx->subreq;
+-	int bsize = crypto_skcipher_blocksize(tfm);
++	int bsize = crypto_skcipher_chunksize(tfm);
+ 	unsigned int nbytes = req->cryptlen;
+ 	unsigned int offset;
+ 	u8 *space;
+@@ -250,7 +250,7 @@ static int crypto_cts_decrypt(struct skcipher_request *req)
+ 	if (nbytes < bsize)
+ 		return -EINVAL;
  
-+		rflags |= CRYPTO_TFM_REQ_MORE;
-+	}
-+
- 	/*
- 	 * Create a per request TX SGL for this request which tracks the
- 	 * SG entries from the global TX SGL.
-@@ -116,8 +129,7 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
- 		areq->outlen = len;
+-	if (nbytes == bsize) {
++	if (nbytes == bsize || req->base.flags & CRYPTO_TFM_REQ_MORE) {
+ 		skcipher_request_set_callback(subreq, req->base.flags,
+ 					      req->base.complete,
+ 					      req->base.data);
+@@ -297,7 +297,7 @@ static int crypto_cts_init_tfm(struct crypto_skcipher *tfm)
+ 	ctx->child = cipher;
  
- 		skcipher_request_set_callback(&areq->cra_u.skcipher_req,
--					      CRYPTO_TFM_REQ_MAY_SLEEP,
--					      af_alg_async_cb, areq);
-+					      rflags, af_alg_async_cb, areq);
- 		err = ctx->enc ?
- 			crypto_skcipher_encrypt(&areq->cra_u.skcipher_req) :
- 			crypto_skcipher_decrypt(&areq->cra_u.skcipher_req);
-@@ -129,9 +141,9 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
- 		sock_put(sk);
- 	} else {
- 		/* Synchronous operation */
-+		rflags |= CRYPTO_TFM_REQ_MAY_BACKLOG;
- 		skcipher_request_set_callback(&areq->cra_u.skcipher_req,
--					      CRYPTO_TFM_REQ_MAY_SLEEP |
--					      CRYPTO_TFM_REQ_MAY_BACKLOG,
-+					      rflags,
- 					      crypto_req_done, &ctx->wait);
- 		err = crypto_wait_req(ctx->enc ?
- 			crypto_skcipher_encrypt(&areq->cra_u.skcipher_req) :
+ 	align = crypto_skcipher_alignmask(tfm);
+-	bsize = crypto_skcipher_blocksize(cipher);
++	bsize = crypto_skcipher_chunksize(cipher);
+ 	reqsize = ALIGN(sizeof(struct crypto_cts_reqctx) +
+ 			crypto_skcipher_reqsize(cipher),
+ 			crypto_tfm_ctx_alignment()) +
+@@ -359,11 +359,12 @@ static int crypto_cts_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 		goto err_free_inst;
+ 
+ 	inst->alg.base.cra_priority = alg->base.cra_priority;
+-	inst->alg.base.cra_blocksize = alg->base.cra_blocksize;
++	inst->alg.base.cra_blocksize = 1;
+ 	inst->alg.base.cra_alignmask = alg->base.cra_alignmask;
+ 
+ 	inst->alg.ivsize = alg->base.cra_blocksize;
+-	inst->alg.chunksize = crypto_skcipher_alg_chunksize(alg);
++	inst->alg.chunksize = alg->base.cra_blocksize;
++	inst->alg.final_chunksize = inst->alg.chunksize * 2;
+ 	inst->alg.min_keysize = crypto_skcipher_alg_min_keysize(alg);
+ 	inst->alg.max_keysize = crypto_skcipher_alg_max_keysize(alg);
+ 
