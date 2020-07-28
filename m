@@ -2,72 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0908230997
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Jul 2020 14:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99892309D6
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Jul 2020 14:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728842AbgG1MJL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 28 Jul 2020 08:09:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34298 "EHLO mail.kernel.org"
+        id S1729068AbgG1MTu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 28 Jul 2020 08:19:50 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:55560 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728560AbgG1MJK (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:09:10 -0400
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1397206D8
-        for <linux-crypto@vger.kernel.org>; Tue, 28 Jul 2020 12:09:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595938149;
-        bh=AmXXKl/FlIUjItb8aLw3JLhbBR2j2mVy1ozNhmfKOpc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ghs4lFPO10uIycZmZN5kFyKru8GCoBXDca85Eu8ZySzbouli7r0XLILUY9PzxFFuT
-         EyovpYdqL1E0lXSKlCTWwiQ9pSSGOhyv/9i2tfX+OSgnMEJrqwkiDEZ552lpGmSXOA
-         yVjK7OG5r3h1mlzWGwtjlhkwZ3dKNG8dnqpVaq+Q=
-Received: by mail-oi1-f171.google.com with SMTP id k6so17223020oij.11
-        for <linux-crypto@vger.kernel.org>; Tue, 28 Jul 2020 05:09:09 -0700 (PDT)
-X-Gm-Message-State: AOAM532sJbnMRa/OGyH0t++69hz61yybZaxuCzPfZOM1SOWkCNBzSBXs
-        wGGhnhXWeO4/QQOClI6oEE344YVrS0QBas3tjYg=
-X-Google-Smtp-Source: ABdhPJx1JAeRsQBZMgnXLK7nXv2G7LT26C143ZtqvHPFrSnnekkJEMYBMgs0h3CKz4oR6xhj/NNTD2Gv28TnnaY3Vtk=
-X-Received: by 2002:aca:5594:: with SMTP id j142mr3150283oib.33.1595938149210;
- Tue, 28 Jul 2020 05:09:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200728071746.GA22352@gondor.apana.org.au> <E1k0Jsq-0006I8-1l@fornost.hmeau.com>
- <CAMj1kXHoKQhMjHxsGk55xEu+FF87Bu2CGqFWPcp-G6RLUFFAHg@mail.gmail.com>
- <20200728115351.GA30933@gondor.apana.org.au> <CAMj1kXGuOiWmctpCak0beMONGAjbW=QG8tLMi+=9pTxbgX0nWQ@mail.gmail.com>
- <20200728120352.GA31012@gondor.apana.org.au>
-In-Reply-To: <20200728120352.GA31012@gondor.apana.org.au>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 28 Jul 2020 15:08:58 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXE-nZ9R0ObyWgRtkGoNSz7vE=KuT8+0LwYnvPEo9MpO-w@mail.gmail.com>
-Message-ID: <CAMj1kXE-nZ9R0ObyWgRtkGoNSz7vE=KuT8+0LwYnvPEo9MpO-w@mail.gmail.com>
-Subject: Re: [v3 PATCH 3/31] crypto: cts - Add support for chaining
-To:     Herbert Xu <herbert@gondor.apana.org.au>
+        id S1728825AbgG1MTu (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:19:50 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1k0OaA-0003jU-M3; Tue, 28 Jul 2020 22:19:47 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 28 Jul 2020 22:19:46 +1000
+Date:   Tue, 28 Jul 2020 22:19:46 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ard Biesheuvel <ardb@kernel.org>
 Cc:     Stephan Mueller <smueller@chronox.de>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Eric Biggers <ebiggers@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [v3 PATCH 3/31] crypto: cts - Add support for chaining
+Message-ID: <20200728121946.GA31104@gondor.apana.org.au>
+References: <20200728071746.GA22352@gondor.apana.org.au>
+ <E1k0Jsq-0006I8-1l@fornost.hmeau.com>
+ <CAMj1kXHoKQhMjHxsGk55xEu+FF87Bu2CGqFWPcp-G6RLUFFAHg@mail.gmail.com>
+ <20200728115351.GA30933@gondor.apana.org.au>
+ <CAMj1kXGuOiWmctpCak0beMONGAjbW=QG8tLMi+=9pTxbgX0nWQ@mail.gmail.com>
+ <20200728120352.GA31012@gondor.apana.org.au>
+ <CAMj1kXE-nZ9R0ObyWgRtkGoNSz7vE=KuT8+0LwYnvPEo9MpO-w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXE-nZ9R0ObyWgRtkGoNSz7vE=KuT8+0LwYnvPEo9MpO-w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, 28 Jul 2020 at 15:03, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+On Tue, Jul 28, 2020 at 03:08:58PM +0300, Ard Biesheuvel wrote:
 >
-> On Tue, Jul 28, 2020 at 02:59:24PM +0300, Ard Biesheuvel wrote:
-> >
-> > How is it malformed? Between 16 and 31 bytes of input is perfectly
-> > valid for cts(cbc(aes)), and splitting it up after the first chunk
-> > should be as well, no?
->
-> This is the whole point of final_chunksize.  If you're going to
-> do chaining then you must always withhold at least final_chunksize
-> bytes until you're at the final chunk.
->
-> If you disobey that then you get undefined results.
->
+> So the contract is that using CRYPTO_TFM_REQ_MORE is only permitted if
+> you take the final chunksize into account. If you don't use that flag,
+> you can ignore it.
 
-Ah ok, I'm with you now.
+Right.
 
-So the contract is that using CRYPTO_TFM_REQ_MORE is only permitted if
-you take the final chunksize into account. If you don't use that flag,
-you can ignore it.
+I think at least sunrpc could use this right away.  We could extend
+this to algif_aead too but I wouldn't worry about it unless a real
+in-kernel user like sunrpc also showed up.
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
