@@ -2,82 +2,153 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A002303D8
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Jul 2020 09:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7612303D9
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Jul 2020 09:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727940AbgG1HTU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 28 Jul 2020 03:19:20 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:54852 "EHLO fornost.hmeau.com"
+        id S1727941AbgG1HTW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 28 Jul 2020 03:19:22 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:54860 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727852AbgG1HTU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 28 Jul 2020 03:19:20 -0400
+        id S1727852AbgG1HTW (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 28 Jul 2020 03:19:22 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1k0JtN-0006Qt-8G; Tue, 28 Jul 2020 17:19:18 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 28 Jul 2020 17:19:17 +1000
+        id 1k0JtP-0006RQ-GU; Tue, 28 Jul 2020 17:19:20 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 28 Jul 2020 17:19:19 +1000
 From:   "Herbert Xu" <herbert@gondor.apana.org.au>
-Date:   Tue, 28 Jul 2020 17:19:17 +1000
-Subject: [v3 PATCH 17/31] crypto: ctr - Allow rfc3686 to be chained
+Date:   Tue, 28 Jul 2020 17:19:19 +1000
+Subject: [v3 PATCH 18/31] crypto: crypto4xx - Remove rfc3686 implementation
 References: <20200728071746.GA22352@gondor.apana.org.au>
 To:     Ard Biesheuvel <ardb@kernel.org>,
         Stephan Mueller <smueller@chronox.de>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Eric Biggers <ebiggers@kernel.org>
-Message-Id: <E1k0JtN-0006Qt-8G@fornost.hmeau.com>
+Message-Id: <E1k0JtP-0006RQ-GU@fornost.hmeau.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-As it stands rfc3686 cannot do chaining.  That is, it has to handle
-each request as a whole.  This patch adds support for chaining when
-the CRYPTO_TFM_REQ_MORE flag is set.
+The rfc3686 implementation in crypto4xx is pretty much the same
+as the generic rfc3686 wrapper.  So it can simply be removed to
+reduce complexity.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
 
- crypto/ctr.c |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/crypto/amcc/crypto4xx_alg.c  |   47 -----------------------------------
+ drivers/crypto/amcc/crypto4xx_core.c |   20 --------------
+ drivers/crypto/amcc/crypto4xx_core.h |    4 --
+ 3 files changed, 71 deletions(-)
 
-diff --git a/crypto/ctr.c b/crypto/ctr.c
-index c39fcffba27f5..eccfab07f2fbb 100644
---- a/crypto/ctr.c
-+++ b/crypto/ctr.c
-@@ -5,7 +5,6 @@
-  * (C) Copyright IBM Corp. 2007 - Joy Latten <latten@us.ibm.com>
-  */
+diff --git a/drivers/crypto/amcc/crypto4xx_alg.c b/drivers/crypto/amcc/crypto4xx_alg.c
+index f7fc0c4641254..a7c17cdb1deb2 100644
+--- a/drivers/crypto/amcc/crypto4xx_alg.c
++++ b/drivers/crypto/amcc/crypto4xx_alg.c
+@@ -202,53 +202,6 @@ int crypto4xx_setkey_aes_ofb(struct crypto_skcipher *cipher,
+ 				    CRYPTO_FEEDBACK_MODE_64BIT_OFB);
+ }
  
--#include <crypto/algapi.h>
- #include <crypto/ctr.h>
- #include <crypto/internal/skcipher.h>
- #include <linux/err.h>
-@@ -21,7 +20,8 @@ struct crypto_rfc3686_ctx {
- 
- struct crypto_rfc3686_req_ctx {
- 	u8 iv[CTR_RFC3686_BLOCK_SIZE];
--	struct skcipher_request subreq CRYPTO_MINALIGN_ATTR;
-+	bool init;
-+	struct skcipher_request subreq;
- };
- 
- static void crypto_ctr_crypt_final(struct skcipher_walk *walk,
-@@ -197,6 +197,9 @@ static int crypto_rfc3686_crypt(struct skcipher_request *req)
- 	struct skcipher_request *subreq = &rctx->subreq;
- 	u8 *iv = rctx->iv;
- 
-+	if (rctx->init)
-+		goto skip_init;
-+
- 	/* set up counter block */
- 	memcpy(iv, ctx->nonce, CTR_RFC3686_NONCE_SIZE);
- 	memcpy(iv + CTR_RFC3686_NONCE_SIZE, req->iv, CTR_RFC3686_IV_SIZE);
-@@ -205,6 +208,9 @@ static int crypto_rfc3686_crypt(struct skcipher_request *req)
- 	*(__be32 *)(iv + CTR_RFC3686_NONCE_SIZE + CTR_RFC3686_IV_SIZE) =
- 		cpu_to_be32(1);
- 
-+skip_init:
-+	rctx->init = req->base.flags & CRYPTO_TFM_REQ_MORE;
-+
- 	skcipher_request_set_tfm(subreq, child);
- 	skcipher_request_set_callback(subreq, req->base.flags,
- 				      req->base.complete, req->base.data);
+-int crypto4xx_setkey_rfc3686(struct crypto_skcipher *cipher,
+-			     const u8 *key, unsigned int keylen)
+-{
+-	struct crypto4xx_ctx *ctx = crypto_skcipher_ctx(cipher);
+-	int rc;
+-
+-	rc = crypto4xx_setkey_aes(cipher, key, keylen - CTR_RFC3686_NONCE_SIZE,
+-		CRYPTO_MODE_CTR, CRYPTO_FEEDBACK_MODE_NO_FB);
+-	if (rc)
+-		return rc;
+-
+-	ctx->iv_nonce = cpu_to_le32p((u32 *)&key[keylen -
+-						 CTR_RFC3686_NONCE_SIZE]);
+-
+-	return 0;
+-}
+-
+-int crypto4xx_rfc3686_encrypt(struct skcipher_request *req)
+-{
+-	struct crypto_skcipher *cipher = crypto_skcipher_reqtfm(req);
+-	struct crypto4xx_ctx *ctx = crypto_skcipher_ctx(cipher);
+-	__le32 iv[AES_IV_SIZE / 4] = {
+-		ctx->iv_nonce,
+-		cpu_to_le32p((u32 *) req->iv),
+-		cpu_to_le32p((u32 *) (req->iv + 4)),
+-		cpu_to_le32(1) };
+-
+-	return crypto4xx_build_pd(&req->base, ctx, req->src, req->dst,
+-				  req->cryptlen, iv, AES_IV_SIZE,
+-				  ctx->sa_out, ctx->sa_len, 0, NULL);
+-}
+-
+-int crypto4xx_rfc3686_decrypt(struct skcipher_request *req)
+-{
+-	struct crypto_skcipher *cipher = crypto_skcipher_reqtfm(req);
+-	struct crypto4xx_ctx *ctx = crypto_skcipher_ctx(cipher);
+-	__le32 iv[AES_IV_SIZE / 4] = {
+-		ctx->iv_nonce,
+-		cpu_to_le32p((u32 *) req->iv),
+-		cpu_to_le32p((u32 *) (req->iv + 4)),
+-		cpu_to_le32(1) };
+-
+-	return crypto4xx_build_pd(&req->base, ctx, req->src, req->dst,
+-				  req->cryptlen, iv, AES_IV_SIZE,
+-				  ctx->sa_out, ctx->sa_len, 0, NULL);
+-}
+-
+ static int
+ crypto4xx_ctr_crypt(struct skcipher_request *req, bool encrypt)
+ {
+diff --git a/drivers/crypto/amcc/crypto4xx_core.c b/drivers/crypto/amcc/crypto4xx_core.c
+index 981de43ea5e24..2054e216440b5 100644
+--- a/drivers/crypto/amcc/crypto4xx_core.c
++++ b/drivers/crypto/amcc/crypto4xx_core.c
+@@ -1252,26 +1252,6 @@ static struct crypto4xx_alg_common crypto4xx_alg[] = {
+ 		.init = crypto4xx_sk_init,
+ 		.exit = crypto4xx_sk_exit,
+ 	} },
+-	{ .type = CRYPTO_ALG_TYPE_SKCIPHER, .u.cipher = {
+-		.base = {
+-			.cra_name = "rfc3686(ctr(aes))",
+-			.cra_driver_name = "rfc3686-ctr-aes-ppc4xx",
+-			.cra_priority = CRYPTO4XX_CRYPTO_PRIORITY,
+-			.cra_flags = CRYPTO_ALG_ASYNC |
+-				CRYPTO_ALG_KERN_DRIVER_ONLY,
+-			.cra_blocksize = 1,
+-			.cra_ctxsize = sizeof(struct crypto4xx_ctx),
+-			.cra_module = THIS_MODULE,
+-		},
+-		.min_keysize = AES_MIN_KEY_SIZE + CTR_RFC3686_NONCE_SIZE,
+-		.max_keysize = AES_MAX_KEY_SIZE + CTR_RFC3686_NONCE_SIZE,
+-		.ivsize	= CTR_RFC3686_IV_SIZE,
+-		.setkey = crypto4xx_setkey_rfc3686,
+-		.encrypt = crypto4xx_rfc3686_encrypt,
+-		.decrypt = crypto4xx_rfc3686_decrypt,
+-		.init = crypto4xx_sk_init,
+-		.exit = crypto4xx_sk_exit,
+-	} },
+ 	{ .type = CRYPTO_ALG_TYPE_SKCIPHER, .u.cipher = {
+ 		.base = {
+ 			.cra_name = "ecb(aes)",
+diff --git a/drivers/crypto/amcc/crypto4xx_core.h b/drivers/crypto/amcc/crypto4xx_core.h
+index 6b68413591905..97f625fc5e8b1 100644
+--- a/drivers/crypto/amcc/crypto4xx_core.h
++++ b/drivers/crypto/amcc/crypto4xx_core.h
+@@ -169,8 +169,6 @@ int crypto4xx_setkey_aes_ecb(struct crypto_skcipher *cipher,
+ 			     const u8 *key, unsigned int keylen);
+ int crypto4xx_setkey_aes_ofb(struct crypto_skcipher *cipher,
+ 			     const u8 *key, unsigned int keylen);
+-int crypto4xx_setkey_rfc3686(struct crypto_skcipher *cipher,
+-			     const u8 *key, unsigned int keylen);
+ int crypto4xx_encrypt_ctr(struct skcipher_request *req);
+ int crypto4xx_decrypt_ctr(struct skcipher_request *req);
+ int crypto4xx_encrypt_iv_stream(struct skcipher_request *req);
+@@ -179,8 +177,6 @@ int crypto4xx_encrypt_iv_block(struct skcipher_request *req);
+ int crypto4xx_decrypt_iv_block(struct skcipher_request *req);
+ int crypto4xx_encrypt_noiv_block(struct skcipher_request *req);
+ int crypto4xx_decrypt_noiv_block(struct skcipher_request *req);
+-int crypto4xx_rfc3686_encrypt(struct skcipher_request *req);
+-int crypto4xx_rfc3686_decrypt(struct skcipher_request *req);
+ int crypto4xx_sha1_alg_init(struct crypto_tfm *tfm);
+ int crypto4xx_hash_digest(struct ahash_request *req);
+ int crypto4xx_hash_final(struct ahash_request *req);
