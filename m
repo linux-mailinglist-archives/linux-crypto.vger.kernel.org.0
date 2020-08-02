@@ -2,75 +2,103 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE58A235970
-	for <lists+linux-crypto@lfdr.de>; Sun,  2 Aug 2020 19:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E07235972
+	for <lists+linux-crypto@lfdr.de>; Sun,  2 Aug 2020 19:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgHBRKp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 2 Aug 2020 13:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgHBRKo (ORCPT
+        id S1726688AbgHBRM4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 2 Aug 2020 13:12:56 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58080 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725907AbgHBRM4 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 2 Aug 2020 13:10:44 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A2EC06174A
-        for <linux-crypto@vger.kernel.org>; Sun,  2 Aug 2020 10:10:44 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id k13so11774516plk.13
-        for <linux-crypto@vger.kernel.org>; Sun, 02 Aug 2020 10:10:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=MRJYdBEWDkphEZG/UEdwwg3luf4wsGYhc8hRIEMMM04=;
-        b=qIWuIDOUk+rB/WZZ3T9WRKsnZ+8YhIMoQ1CvGv40EKhAhPzDfoT15KP/vsxO0qwTDT
-         mFQIxP+Vsyo8wuJHqJgnRjPq7aOl/aYfwW7o8Yws+mM7UlO3lKgLLRJUSuJF1psus96C
-         Yd4fSNrr9Bts6fAJwEcmSnYalGiGTUt1wXoVfuUWNgrKT3W+kAZunzRSXK3a409a79+F
-         rKAXDnk9QFFB5nNcaH41edgK0NXQeMSkgsnLZ4tkTFW0U2v9wMpexyRoWnG10NDunpX3
-         Gveu3/sv+IYqaYocEa99f2dcqVvWnLzQLdHDShAR+5wwqhk+Ke+D3GWg6Hlhr6om9YiG
-         b6Gg==
+        Sun, 2 Aug 2020 13:12:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596388375;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=cMGJeihf68/SzYvQTtJu1Xd1NxXkQ2OyiZYDKiEiLwg=;
+        b=gbkTXtQMHihK7N01Uirq2DhxG8phfN1uVr8WsTcglUbYXwE8WzWoVmEcH98cae+ykcYbTz
+        fclaH71IyD4hogsbZFeFivKCtkIwFwLA7pY1wTVwYa1mV7o73WnvDUtJAw8V3ZRMNxVP8/
+        2FlqVJ8b5KqfJ6oy37yV/mg74npC8DY=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-Bev7rg2hNIGADy313MhIUA-1; Sun, 02 Aug 2020 13:12:53 -0400
+X-MC-Unique: Bev7rg2hNIGADy313MhIUA-1
+Received: by mail-qk1-f199.google.com with SMTP id v16so24721335qka.18
+        for <linux-crypto@vger.kernel.org>; Sun, 02 Aug 2020 10:12:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=MRJYdBEWDkphEZG/UEdwwg3luf4wsGYhc8hRIEMMM04=;
-        b=ERZVmiSWxPD5MkIxLWYeG0OEcJUTlWoIocG5osKXvcmzIFWhT3M2YVjAQx+sqpw46J
-         TtkJN0J7q308AeWzKS+YsskKAaJaW1unZExP+EIHXc2p2rcBzViZfW+zcbvMRZOJT0ne
-         QlM5QVgZ2Q2iMPNhgKI2sSU8D8NQts+cemG0NlgP9/T0p7m54fWriNmY/q/0EbrSF9OO
-         WIrXluY3RQRvxz5XXW5Qp1UgM8JUEB8p/NV6lU9CP2ndl8+vhwN2LEHf1s+MyrPEAQYv
-         TiKTz0KjwOtv81wWwy/HoKc8eLDWseEE/GXRPw+g6XY23X2NIy0pxAfHpaCx9F3oZRoV
-         kx1w==
-X-Gm-Message-State: AOAM530FWXRnqRMjzZBLDiIu868T/NvjqRdKe99Pk3XXCxfk6f9R4GGQ
-        Na49s3cCWGDo0mTCh/5qUZztQ+gwPAILHmcuA6A=
-X-Google-Smtp-Source: ABdhPJw5mdpn6mXX8gsfgpZSoy+uZfAmK9tcyQUTt+A84v4DZExzb++5KMLYY0nPMdf5NaOSZjRKExQvI2uqhXRUXZU=
-X-Received: by 2002:a17:902:45:: with SMTP id 63mr11519374pla.179.1596388244166;
- Sun, 02 Aug 2020 10:10:44 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a17:90a:1ab0:0:0:0:0 with HTTP; Sun, 2 Aug 2020 10:10:43
- -0700 (PDT)
-Reply-To: jinghualiuyang@gmail.com
-From:   Frau JINGHUA Liu Yang <alicesmartservice@gmail.com>
-Date:   Sun, 2 Aug 2020 19:10:43 +0200
-Message-ID: <CAPgRd=Q+GTHH_UEFM-AoJutcSTaaUzU1nbDVXp17-UPreibEMQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=cMGJeihf68/SzYvQTtJu1Xd1NxXkQ2OyiZYDKiEiLwg=;
+        b=H0xwzfSQCOLfr8hL1PnIqpBiVXsaGggYaZv16jFHauFnLAeQYjBjy84MXDYEPsEVrM
+         xKu8xYLaIV32Ksh0+ALpWkplRPQhm6PNfrc7+po3zRoC0tWsXUY5eN76+df1krQDwmNn
+         Cyw10qfS2ee2DeV/MxU1NE4GGjrvxLP3zyEdEPUl7Vv3AIZnu5UyR8yBbZWZMKwVgr7L
+         /gnS3pgQzXOqqGacSGqclUA8jVhsQ5lorxmLIrWl2uM9JXIoy3jO7tFfA4zKok0aoXmY
+         Es0JUenKtRi9lYvXdUH1TB2yWwKwro0hlA34bgj7261qnXq+lGhBiOgluTyXk3CrvRmI
+         rzPg==
+X-Gm-Message-State: AOAM530k2zwvDZ9spbB36uMtCarnJoXzuE12FrGDP76isEMa3ZnbcqTS
+        QVsLDO8WJQLfugV4M5ggrsDw0n/2qiKK3tDSKQ3QWVmY/DyuW7Y6cEhUKChzVPhtOjIFdQoN5qH
+        82Ei88ZNtUcqsn/3Ji2Chrl7C
+X-Received: by 2002:a37:910:: with SMTP id 16mr12366637qkj.466.1596388372911;
+        Sun, 02 Aug 2020 10:12:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxR7HqMksnZzGBECjPQnqdYT9adQy1oaafRwKuLOrG+gGnBFOCuGBMWoP3NZnzmDuFk4ncaVg==
+X-Received: by 2002:a37:910:: with SMTP id 16mr12366617qkj.466.1596388372629;
+        Sun, 02 Aug 2020 10:12:52 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a3sm16735354qkf.131.2020.08.02.10.12.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Aug 2020 10:12:52 -0700 (PDT)
+From:   trix@redhat.com
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        smueller@chronox.de
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] crypto: drbg: check blocklen is non zero
+Date:   Sun,  2 Aug 2020 10:12:47 -0700
+Message-Id: <20200802171247.16558-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---=20
-Sch=C3=B6nen Tag,
+From: Tom Rix <trix@redhat.com>
 
-       Ich bin Frau JINGHUA Liu Yang f=C3=BCr die CITIBANK OF KOREA hier in
-der Republik KOREA. Ich habe einen Gesch=C3=A4ftsvorgang. Kann ich Ihnen
-vertrauen, dass Sie diesen Betrag von $9.356.669 USD =C3=BCberweisen? Wenn
-Sie bereit sind, mir zu helfen, melden Sie sich bei mir, damit ich Sie
-dar=C3=BCber informieren kann, wie wir diese Transaktion am besten
-perfektionieren k=C3=B6nnen, damit das Geld an Sie in Ihrem Land =C3=BCberw=
-iesen
-wird.
+Clang static analysis reports this error
 
-Sch=C3=B6ne Gr=C3=BC=C3=9Fe..
-Frau JINGHUA Liu Yang
+crypto/drbg.c:441:40: warning: Division by zero
+        padlen = (inputlen + sizeof(L_N) + 1) % (drbg_blocklen(drbg));
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+
+When drbg_bocklen fails it returns 0.
+
+	if (drbg && drbg->core)
+		return drbg->core->blocklen_bytes;
+	return 0;
+
+In many places in drbg_ctr_df drbg_bocklen is assumed to be non zero.
+So turn the assumption into a check.
+
+Fixes: 541af946fe13 ("crypto: drbg - SP800-90A Deterministic Random Bit Generator")
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ crypto/drbg.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/crypto/drbg.c b/crypto/drbg.c
+index e99fe34cfa00..bd9a137e5473 100644
+--- a/crypto/drbg.c
++++ b/crypto/drbg.c
+@@ -420,6 +420,9 @@ static int drbg_ctr_df(struct drbg_state *drbg,
+ 	size_t inputlen = 0;
+ 	struct drbg_string *seed = NULL;
+ 
++	if (!drbg_blocklen(drbg))
++		return -EINVAL;
++
+ 	memset(pad, 0, drbg_blocklen(drbg));
+ 	memset(iv, 0, drbg_blocklen(drbg));
+ 
+-- 
+2.18.1
+
