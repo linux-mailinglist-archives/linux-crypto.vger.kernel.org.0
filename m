@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1056423BB94
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Aug 2020 16:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C721023BB92
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Aug 2020 16:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728813AbgHDOAy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 4 Aug 2020 10:00:54 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:60684 "EHLO huawei.com"
+        id S1728801AbgHDOAw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 4 Aug 2020 10:00:52 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:60698 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728739AbgHDOAl (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1728718AbgHDOAl (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Tue, 4 Aug 2020 10:00:41 -0400
 Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9ABB6F5BE10505B44045;
+        by Forcepoint Email with ESMTP id 9F1067CB2C4B1BD61EAE;
         Tue,  4 Aug 2020 22:00:38 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Yang Shen <shenyang39@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
         <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH v4 05/10] crypto: hisilicon/qm - fix event queue depth to 2048
-Date:   Tue, 4 Aug 2020 21:58:25 +0800
-Message-ID: <1596549510-2373-6-git-send-email-shenyang39@huawei.com>
+Subject: [PATCH v4 06/10] crypto: hisilicon/qm - fix no stop reason when use 'hisi_qm_stop'
+Date:   Tue, 4 Aug 2020 21:58:26 +0800
+Message-ID: <1596549510-2373-7-git-send-email-shenyang39@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1596549510-2373-1-git-send-email-shenyang39@huawei.com>
 References: <1596549510-2373-1-git-send-email-shenyang39@huawei.com>
@@ -36,92 +36,186 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Shukun Tan <tanshukun1@huawei.com>
+Now, there are three reasons of stopping: 'NORMAL', 'SOFT_RESET' and 'FLR'.
+In order to keep this, explicitly pass the stop reason as an input
+parameter of 'hisi_qm_stop' function.
 
-Increasing depth of 'event queue' from 1024 to 2048, which equals to twice
-depth of 'completion queue'. It will fix the easily happened 'event queue
-overflow' as using 1024 queue depth for 'event queue'.
-
-Fixes: 263c9959c937("crypto: hisilicon - add queue management driver...")
+Fixes: b67202e8ed30("crypto: hisilicon/qm - add state machine for QM")
 Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
 Signed-off-by: Yang Shen <shenyang39@huawei.com>
 Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
 ---
- drivers/crypto/hisilicon/qm.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_main.c |  4 ++--
+ drivers/crypto/hisilicon/qm.c             | 20 ++++++++++----------
+ drivers/crypto/hisilicon/qm.h             |  2 +-
+ drivers/crypto/hisilicon/sec2/sec_main.c  |  4 ++--
+ drivers/crypto/hisilicon/zip/zip_main.c   |  4 ++--
+ 5 files changed, 17 insertions(+), 17 deletions(-)
 
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+index b135c74..b9e5214 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_main.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+@@ -886,7 +886,7 @@ static int hpre_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ err_with_qm_start:
+ 	hisi_qm_del_from_list(qm, &hpre_devices);
+ 	hpre_debugfs_exit(qm);
+-	hisi_qm_stop(qm);
++	hisi_qm_stop(qm, QM_NORMAL);
+ 
+ err_with_err_init:
+ 	hisi_qm_dev_err_uninit(qm);
+@@ -918,7 +918,7 @@ static void hpre_remove(struct pci_dev *pdev)
+ 	}
+ 
+ 	hpre_debugfs_exit(qm);
+-	hisi_qm_stop(qm);
++	hisi_qm_stop(qm, QM_NORMAL);
+ 	hisi_qm_dev_err_uninit(qm);
+ 	hisi_qm_uninit(qm);
+ }
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 9a5a114..0f2a48a 100644
+index 0f2a48a..427c3e0 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -181,6 +181,7 @@
- #define QM_PCI_COMMAND_INVALID		~0
+@@ -2642,18 +2642,20 @@ static void qm_clear_queues(struct hisi_qm *qm)
+ /**
+  * hisi_qm_stop() - Stop a qm.
+  * @qm: The qm which will be stopped.
++ * @r: The reason to stop qm.
+  *
+  * This function stops qm and its qps, then qm can not accept request.
+  * Related resources are not released at this state, we can use hisi_qm_start
+  * to let qm start again.
+  */
+-int hisi_qm_stop(struct hisi_qm *qm)
++int hisi_qm_stop(struct hisi_qm *qm, enum qm_stop_reason r)
+ {
+ 	struct device *dev = &qm->pdev->dev;
+ 	int ret = 0;
  
- #define QM_SQE_ADDR_MASK		GENMASK(7, 0)
-+#define QM_EQ_DEPTH			(1024 * 2)
+ 	down_write(&qm->qps_lock);
  
- #define QM_MK_CQC_DW3_V1(hop_num, pg_sz, buf_sz, cqe_sz) \
- 	(((hop_num) << QM_CQ_HOP_NUM_SHIFT)	| \
-@@ -652,7 +653,7 @@ static void qm_work_process(struct work_struct *work)
- 		qp = qm_to_hisi_qp(qm, eqe);
- 		qm_poll_qp(qp, qm);
++	qm->status.stop_reason = r;
+ 	if (!qm_avail_state(qm, QM_STOP)) {
+ 		ret = -EPERM;
+ 		goto err_unlock;
+@@ -3299,10 +3301,10 @@ static int qm_set_msi(struct hisi_qm *qm, bool set)
+ 	return 0;
+ }
  
--		if (qm->status.eq_head == QM_Q_DEPTH - 1) {
-+		if (qm->status.eq_head == QM_EQ_DEPTH - 1) {
- 			qm->status.eqc_phase = !qm->status.eqc_phase;
- 			eqe = qm->eqe;
- 			qm->status.eq_head = 0;
-@@ -661,7 +662,7 @@ static void qm_work_process(struct work_struct *work)
- 			qm->status.eq_head++;
+-static int qm_vf_reset_prepare(struct hisi_qm *qm)
++static int qm_vf_reset_prepare(struct hisi_qm *qm,
++			       enum qm_stop_reason stop_reason)
+ {
+ 	struct hisi_qm_list *qm_list = qm->qm_list;
+-	int stop_reason = qm->status.stop_reason;
+ 	struct pci_dev *pdev = qm->pdev;
+ 	struct pci_dev *virtfn;
+ 	struct hisi_qm *vf_qm;
+@@ -3315,8 +3317,7 @@ static int qm_vf_reset_prepare(struct hisi_qm *qm)
+ 			continue;
+ 
+ 		if (pci_physfn(virtfn) == pdev) {
+-			vf_qm->status.stop_reason = stop_reason;
+-			ret = hisi_qm_stop(vf_qm);
++			ret = hisi_qm_stop(vf_qm, stop_reason);
+ 			if (ret)
+ 				goto stop_fail;
  		}
- 
--		if (eqe_num == QM_Q_DEPTH / 2 - 1) {
-+		if (eqe_num == QM_EQ_DEPTH / 2 - 1) {
- 			eqe_num = 0;
- 			qm_db(qm, 0, QM_DOORBELL_CMD_EQ, qm->status.eq_head, 0);
- 		}
-@@ -1371,7 +1372,13 @@ static int qm_eq_aeq_dump(struct hisi_qm *qm, const char *s,
- 		return -EINVAL;
- 
- 	ret = kstrtou32(s, 0, &xeqe_id);
--	if (ret || xeqe_id >= QM_Q_DEPTH) {
-+	if (ret)
-+		return -EINVAL;
-+
-+	if (!strcmp(name, "EQE") && xeqe_id >= QM_EQ_DEPTH) {
-+		dev_err(dev, "Please input eqe num (0-%d)", QM_EQ_DEPTH - 1);
-+		return -EINVAL;
-+	} else if (!strcmp(name, "AEQE") && xeqe_id >= QM_Q_DEPTH) {
- 		dev_err(dev, "Please input aeqe num (0-%d)", QM_Q_DEPTH - 1);
- 		return -EINVAL;
+@@ -3355,15 +3356,14 @@ static int qm_controller_reset_prepare(struct hisi_qm *qm)
  	}
-@@ -2284,7 +2291,7 @@ static int hisi_qm_memory_init(struct hisi_qm *qm)
- } while (0)
  
- 	idr_init(&qm->qp_idr);
--	qm->qdma.size = QMC_ALIGN(sizeof(struct qm_eqe) * QM_Q_DEPTH) +
-+	qm->qdma.size = QMC_ALIGN(sizeof(struct qm_eqe) * QM_EQ_DEPTH) +
- 			QMC_ALIGN(sizeof(struct qm_aeqe) * QM_Q_DEPTH) +
- 			QMC_ALIGN(sizeof(struct qm_sqc) * qm->qp_num) +
- 			QMC_ALIGN(sizeof(struct qm_cqc) * qm->qp_num);
-@@ -2294,7 +2301,7 @@ static int hisi_qm_memory_init(struct hisi_qm *qm)
- 	if (!qm->qdma.va)
- 		return -ENOMEM;
+ 	if (qm->vfs_num) {
+-		ret = qm_vf_reset_prepare(qm);
++		ret = qm_vf_reset_prepare(qm, QM_SOFT_RESET);
+ 		if (ret) {
+ 			pci_err(pdev, "Fails to stop VFs!\n");
+ 			return ret;
+ 		}
+ 	}
  
--	QM_INIT_BUF(qm, eqe, QM_Q_DEPTH);
-+	QM_INIT_BUF(qm, eqe, QM_EQ_DEPTH);
- 	QM_INIT_BUF(qm, aeqe, QM_Q_DEPTH);
- 	QM_INIT_BUF(qm, sqc, qm->qp_num);
- 	QM_INIT_BUF(qm, cqc, qm->qp_num);
-@@ -2464,7 +2471,7 @@ static int qm_eq_ctx_cfg(struct hisi_qm *qm)
- 	eqc->base_h = cpu_to_le32(upper_32_bits(qm->eqe_dma));
- 	if (qm->ver == QM_HW_V1)
- 		eqc->dw3 = cpu_to_le32(QM_EQE_AEQE_SIZE);
--	eqc->dw6 = cpu_to_le32((QM_Q_DEPTH - 1) | (1 << QM_EQC_PHASE_SHIFT));
-+	eqc->dw6 = cpu_to_le32((QM_EQ_DEPTH - 1) | (1 << QM_EQC_PHASE_SHIFT));
- 	ret = qm_mb(qm, QM_MB_CMD_EQC, eqc_dma, 0, 0);
- 	dma_unmap_single(dev, eqc_dma, sizeof(struct qm_eqc), DMA_TO_DEVICE);
- 	kfree(eqc);
+-	qm->status.stop_reason = QM_SOFT_RESET;
+-	ret = hisi_qm_stop(qm);
++	ret = hisi_qm_stop(qm, QM_SOFT_RESET);
+ 	if (ret) {
+ 		pci_err(pdev, "Fails to stop QM!\n");
+ 		return ret;
+@@ -3704,7 +3704,7 @@ void hisi_qm_reset_prepare(struct pci_dev *pdev)
+ 	}
+ 
+ 	if (qm->vfs_num) {
+-		ret = qm_vf_reset_prepare(qm);
++		ret = qm_vf_reset_prepare(qm, QM_FLR);
+ 		if (ret) {
+ 			pci_err(pdev, "Failed to prepare reset, ret = %d.\n",
+ 				ret);
+@@ -3712,7 +3712,7 @@ void hisi_qm_reset_prepare(struct pci_dev *pdev)
+ 		}
+ 	}
+ 
+-	ret = hisi_qm_stop(qm);
++	ret = hisi_qm_stop(qm, QM_FLR);
+ 	if (ret) {
+ 		pci_err(pdev, "Failed to stop QM, ret = %d.\n", ret);
+ 		return;
+diff --git a/drivers/crypto/hisilicon/qm.h b/drivers/crypto/hisilicon/qm.h
+index 6c1d3c7..9d6cf1d 100644
+--- a/drivers/crypto/hisilicon/qm.h
++++ b/drivers/crypto/hisilicon/qm.h
+@@ -355,7 +355,7 @@ static inline void hisi_qm_del_from_list(struct hisi_qm *qm,
+ int hisi_qm_init(struct hisi_qm *qm);
+ void hisi_qm_uninit(struct hisi_qm *qm);
+ int hisi_qm_start(struct hisi_qm *qm);
+-int hisi_qm_stop(struct hisi_qm *qm);
++int hisi_qm_stop(struct hisi_qm *qm, enum qm_stop_reason r);
+ struct hisi_qp *hisi_qm_create_qp(struct hisi_qm *qm, u8 alg_type);
+ int hisi_qm_start_qp(struct hisi_qp *qp, unsigned long arg);
+ int hisi_qm_stop_qp(struct hisi_qp *qp);
+diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+index 2297425..5f1c870 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_main.c
++++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -901,7 +901,7 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ err_remove_from_list:
+ 	hisi_qm_del_from_list(qm, &sec_devices);
+ 	sec_debugfs_exit(qm);
+-	hisi_qm_stop(qm);
++	hisi_qm_stop(qm, QM_NORMAL);
+ 
+ err_probe_uninit:
+ 	sec_probe_uninit(qm);
+@@ -926,7 +926,7 @@ static void sec_remove(struct pci_dev *pdev)
+ 
+ 	sec_debugfs_exit(qm);
+ 
+-	(void)hisi_qm_stop(qm);
++	(void)hisi_qm_stop(qm, QM_NORMAL);
+ 
+ 	if (qm->fun_type == QM_HW_PF)
+ 		sec_debug_regs_clear(qm);
+diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
+index e2845b2..224041e 100644
+--- a/drivers/crypto/hisilicon/zip/zip_main.c
++++ b/drivers/crypto/hisilicon/zip/zip_main.c
+@@ -828,7 +828,7 @@ static int hisi_zip_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ err_remove_from_list:
+ 	hisi_qm_del_from_list(qm, &zip_devices);
+ 	hisi_zip_debugfs_exit(hisi_zip);
+-	hisi_qm_stop(qm);
++	hisi_qm_stop(qm, QM_NORMAL);
+ err_qm_uninit:
+ 	hisi_qm_uninit(qm);
+ 
+@@ -844,7 +844,7 @@ static void hisi_zip_remove(struct pci_dev *pdev)
+ 		hisi_qm_sriov_disable(pdev);
+ 
+ 	hisi_zip_debugfs_exit(hisi_zip);
+-	hisi_qm_stop(qm);
++	hisi_qm_stop(qm, QM_NORMAL);
+ 
+ 	hisi_qm_dev_err_uninit(qm);
+ 	hisi_qm_uninit(qm);
 -- 
 2.7.4
 
