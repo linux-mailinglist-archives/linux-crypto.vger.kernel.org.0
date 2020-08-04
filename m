@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7F923BB95
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Aug 2020 16:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73F623BBAA
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Aug 2020 16:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbgHDOA4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 4 Aug 2020 10:00:56 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:60922 "EHLO huawei.com"
+        id S1726948AbgHDOFA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 4 Aug 2020 10:05:00 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:60924 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728766AbgHDOAt (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:00:49 -0400
+        id S1728774AbgHDOAu (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 4 Aug 2020 10:00:50 -0400
 Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 9BA712F1DC4162C8526D;
+        by Forcepoint Email with ESMTP id 957443E8E38E39619461;
         Tue,  4 Aug 2020 22:00:43 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Yang Shen <shenyang39@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
         <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH v4 09/10] crypto: hisilicon/qm - fix the call trace when unbind device
-Date:   Tue, 4 Aug 2020 21:58:29 +0800
-Message-ID: <1596549510-2373-10-git-send-email-shenyang39@huawei.com>
+Subject: [PATCH v4 10/10] crypto: hisilicon/qm - fix the process of register algorithms to crypto
+Date:   Tue, 4 Aug 2020 21:58:30 +0800
+Message-ID: <1596549510-2373-11-git-send-email-shenyang39@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1596549510-2373-1-git-send-email-shenyang39@huawei.com>
 References: <1596549510-2373-1-git-send-email-shenyang39@huawei.com>
@@ -36,269 +36,517 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Weili Qian <qianweili@huawei.com>
+When the devices are removed or not existing, the corresponding algorithms
+which are registered by 'hisi-zip' driver can't be used.
 
-Call trace will appear in the Hisilicon crypto driver unbinding or
-disabling SRIOV during task running with TFMs on the corresponding
-function.
-The log looks like this:
-	[  293.908078] Call trace:
-	[  293.908080]  __queue_work+0x494/0x548
-	[  293.908081]  queue_work_on+0x84/0xd8
-	[  293.908092]  qm_irq+0x4c/0xd0 [hisi_qm]
-	[  293.908096]  __handle_irq_event_percpu+0x74/0x2a0
-	[  293.908098]  handle_irq_event_percpu+0x40/0x98
-	[  293.908099]  handle_irq_event+0x4c/0x80
-	[  293.908101]  handle_fasteoi_irq+0xb0/0x170
-	[  293.908102]  generic_handle_irq+0x3c/0x58
-	[  293.908103]  __handle_domain_irq+0x68/0xc0
-	[  293.908104]  gic_handle_irq+0xb4/0x298
-	[  293.908105]  el1_irq+0xcc/0x180
-	[  293.908107]  arch_cpu_idle+0x38/0x228
-	[  293.908110]  default_idle_call+0x20/0x40
-	[  293.908113]  do_idle+0x1cc/0x2b8
-	[  293.908114]  cpu_startup_entry+0x2c/0x30
-	[  293.908115]  rest_init+0xdc/0xe8
-	[  293.908117]  arch_call_rest_init+0x14/0x1c
-	[  293.908117]  start_kernel+0x490/0x4c4
+Move 'hisi_zip_register_to_crypto' from 'hisi_zip_init' to
+'hisi_zip_probe'. The algorithms will be registered to crypto only when
+there is device bind on the driver. And when the devices are removed,
+the algorithms will be unregistered.
 
-This patch adds a waiting logic as user doing the above two
-operations to avoid panic. The two operations will hold on in the driver
-remove function until the tasks release all their relative TFMs.
+In the previous process, the function 'xxx_register_to_crypto' need a lock
+and a static variable to judge if the registration is the first time.
+Move this action into the function 'hisi_qm_alg_register'. Each device
+will call 'hisi_qm_alg_register' to add itself to qm list in probe process
+and registering algs when the qm list is empty.
 
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
-Signed-off-by: Weili Qian <qianweili@huawei.com>
 Signed-off-by: Yang Shen <shenyang39@huawei.com>
 Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_main.c |  3 +-
- drivers/crypto/hisilicon/qm.c             | 95 +++++++++++++++++++++++++++++--
- drivers/crypto/hisilicon/qm.h             |  4 +-
- drivers/crypto/hisilicon/sec2/sec_main.c  |  3 +-
- drivers/crypto/hisilicon/zip/zip_main.c   |  3 +-
- 5 files changed, 99 insertions(+), 9 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 36 ++++++--------------
+ drivers/crypto/hisilicon/hpre/hpre_main.c   | 20 +++++------
+ drivers/crypto/hisilicon/qm.c               | 52 +++++++++++++++++++++++++++++
+ drivers/crypto/hisilicon/qm.h               | 20 +++--------
+ drivers/crypto/hisilicon/sec2/sec_crypto.c  | 35 +++++++------------
+ drivers/crypto/hisilicon/sec2/sec_main.c    | 26 +++++++--------
+ drivers/crypto/hisilicon/zip/zip_crypto.c   |  2 +-
+ drivers/crypto/hisilicon/zip/zip_main.c     | 41 +++++++++++++----------
+ 8 files changed, 125 insertions(+), 107 deletions(-)
 
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+index 7b5cb27..d685992 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+@@ -98,9 +98,6 @@ struct hpre_asym_request {
+ 	struct timespec64 req_time;
+ };
+ 
+-static DEFINE_MUTEX(hpre_alg_lock);
+-static unsigned int hpre_active_devs;
+-
+ static int hpre_alloc_req_id(struct hpre_ctx *ctx)
+ {
+ 	unsigned long flags;
+@@ -1160,36 +1157,25 @@ static struct kpp_alg dh = {
+ 
+ int hpre_algs_register(void)
+ {
+-	int ret = 0;
+-
+-	mutex_lock(&hpre_alg_lock);
+-	if (++hpre_active_devs == 1) {
+-		rsa.base.cra_flags = 0;
+-		ret = crypto_register_akcipher(&rsa);
+-		if (ret)
+-			goto unlock;
++	int ret;
++
++	rsa.base.cra_flags = 0;
++	ret = crypto_register_akcipher(&rsa);
++	if (ret)
++		return ret;
+ #ifdef CONFIG_CRYPTO_DH
+-		ret = crypto_register_kpp(&dh);
+-		if (ret) {
+-			crypto_unregister_akcipher(&rsa);
+-			goto unlock;
+-		}
++	ret = crypto_register_kpp(&dh);
++	if (ret)
++		crypto_unregister_akcipher(&rsa);
+ #endif
+-	}
+ 
+-unlock:
+-	mutex_unlock(&hpre_alg_lock);
+ 	return ret;
+ }
+ 
+ void hpre_algs_unregister(void)
+ {
+-	mutex_lock(&hpre_alg_lock);
+-	if (--hpre_active_devs == 0) {
+-		crypto_unregister_akcipher(&rsa);
++	crypto_unregister_akcipher(&rsa);
+ #ifdef CONFIG_CRYPTO_DH
+-		crypto_unregister_kpp(&dh);
++	crypto_unregister_kpp(&dh);
+ #endif
+-	}
+-	mutex_unlock(&hpre_alg_lock);
+ }
 diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index bbf3efb..fc06770 100644
+index fc06770..45741d2 100644
 --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
 +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -903,10 +903,11 @@ static void hpre_remove(struct pci_dev *pdev)
- 	struct hisi_qm *qm = &hpre->qm;
+@@ -90,7 +90,6 @@
+ #define HPRE_SQE_MASK_OFFSET		8
+ #define HPRE_SQE_MASK_LEN		24
+ 
+-static struct hisi_qm_list hpre_devices;
+ static const char hpre_name[] = "hisi_hpre";
+ static struct dentry *hpre_debugfs_root;
+ static const struct pci_device_id hpre_dev_ids[] = {
+@@ -106,6 +105,11 @@ struct hpre_hw_error {
+ 	const char *msg;
+ };
+ 
++static struct hisi_qm_list hpre_devices = {
++	.register_to_crypto	= hpre_algs_register,
++	.unregister_from_crypto	= hpre_algs_unregister,
++};
++
+ static const char * const hpre_debug_file_name[] = {
+ 	[HPRE_CURRENT_QM]   = "current_qm",
+ 	[HPRE_CLEAR_ENABLE] = "rdclr_en",
+@@ -864,9 +868,7 @@ static int hpre_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (ret)
+ 		dev_warn(&pdev->dev, "init debugfs fail!\n");
+ 
+-	hisi_qm_add_to_list(qm, &hpre_devices);
+-
+-	ret = hpre_algs_register();
++	ret = hisi_qm_alg_register(qm, &hpre_devices);
+ 	if (ret < 0) {
+ 		pci_err(pdev, "fail to register algs to crypto!\n");
+ 		goto err_with_qm_start;
+@@ -875,16 +877,15 @@ static int hpre_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (qm->fun_type == QM_HW_PF && vfs_num) {
+ 		ret = hisi_qm_sriov_enable(pdev, vfs_num);
+ 		if (ret < 0)
+-			goto err_with_crypto_register;
++			goto err_with_alg_register;
+ 	}
+ 
+ 	return 0;
+ 
+-err_with_crypto_register:
+-	hpre_algs_unregister();
++err_with_alg_register:
++	hisi_qm_alg_unregister(qm, &hpre_devices);
+ 
+ err_with_qm_start:
+-	hisi_qm_del_from_list(qm, &hpre_devices);
+ 	hpre_debugfs_exit(qm);
+ 	hisi_qm_stop(qm, QM_NORMAL);
+ 
+@@ -904,8 +905,7 @@ static void hpre_remove(struct pci_dev *pdev)
  	int ret;
-
-+	hisi_qm_wait_task_finish(qm, &hpre_devices);
- 	hpre_algs_unregister();
- 	hisi_qm_del_from_list(qm, &hpre_devices);
+ 
+ 	hisi_qm_wait_task_finish(qm, &hpre_devices);
+-	hpre_algs_unregister();
+-	hisi_qm_del_from_list(qm, &hpre_devices);
++	hisi_qm_alg_unregister(qm, &hpre_devices);
  	if (qm->fun_type == QM_HW_PF && qm->vfs_num) {
--		ret = hisi_qm_sriov_disable(pdev);
-+		ret = hisi_qm_sriov_disable(pdev, qm->is_frozen);
+ 		ret = hisi_qm_sriov_disable(pdev, qm->is_frozen);
  		if (ret) {
- 			pci_err(pdev, "Disable SRIOV fail!\n");
- 			return;
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 03393dd..9ee973a 100644
+index 9ee973a..0724474 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -180,6 +180,8 @@
- #define QM_DBG_TMP_BUF_LEN		22
- #define QM_PCI_COMMAND_INVALID		~0
-
-+#define WAIT_PERIOD			20
-+#define REMOVE_WAIT_DELAY		10
- #define QM_SQE_ADDR_MASK		GENMASK(7, 0)
- #define QM_EQ_DEPTH			(1024 * 2)
-
-@@ -2224,6 +2226,82 @@ static int qm_alloc_uacce(struct hisi_qm *qm)
+@@ -3951,6 +3951,58 @@ static void hisi_qm_controller_reset(struct work_struct *rst_work)
  }
-
+ 
  /**
-+ * qm_frozen() - Try to froze QM to cut continuous queue request. If
-+ * there is user on the QM, return failure without doing anything.
-+ * @qm: The qm needed to be fronzen.
++ * hisi_qm_alg_register() - Register alg to crypto and add qm to qm_list.
++ * @qm: The qm needs add.
++ * @qm_list: The qm list.
 + *
-+ * This function frozes QM, then we can do SRIOV disabling.
++ * This function adds qm to qm list, and will register algorithm to
++ * crypto when the qm list is empty.
 + */
-+static int qm_frozen(struct hisi_qm *qm)
++int hisi_qm_alg_register(struct hisi_qm *qm, struct hisi_qm_list *qm_list)
 +{
-+	down_write(&qm->qps_lock);
-+
-+	if (qm->is_frozen) {
-+		up_write(&qm->qps_lock);
-+		return 0;
-+	}
-+
-+	if (!qm->qp_in_used) {
-+		qm->qp_in_used = qm->qp_num;
-+		qm->is_frozen = true;
-+		up_write(&qm->qps_lock);
-+		return 0;
-+	}
-+
-+	up_write(&qm->qps_lock);
-+
-+	return -EBUSY;
-+}
-+
-+static int qm_try_frozen_vfs(struct pci_dev *pdev,
-+			     struct hisi_qm_list *qm_list)
-+{
-+	struct hisi_qm *qm, *vf_qm;
-+	struct pci_dev *dev;
++	int flag = 0;
 +	int ret = 0;
 +
-+	if (!qm_list || !pdev)
-+		return -EINVAL;
-+
-+	/* Try to frozen all the VFs as disable SRIOV */
 +	mutex_lock(&qm_list->lock);
-+	list_for_each_entry(qm, &qm_list->list, list) {
-+		dev = qm->pdev;
-+		if (dev == pdev)
-+			continue;
-+		if (pci_physfn(dev) == pdev) {
-+			vf_qm = pci_get_drvdata(dev);
-+			ret = qm_frozen(vf_qm);
-+			if (ret)
-+				goto frozen_fail;
++	if (list_empty(&qm_list->list))
++		flag = 1;
++	list_add_tail(&qm->list, &qm_list->list);
++	mutex_unlock(&qm_list->lock);
++
++	if (flag) {
++		ret = qm_list->register_to_crypto();
++		if (ret) {
++			mutex_lock(&qm_list->lock);
++			list_del(&qm->list);
++			mutex_unlock(&qm_list->lock);
 +		}
 +	}
 +
-+frozen_fail:
-+	mutex_unlock(&qm_list->lock);
-+
 +	return ret;
 +}
++EXPORT_SYMBOL_GPL(hisi_qm_alg_register);
 +
 +/**
-+ * hisi_qm_wait_task_finish() - Wait until the task is finished
-+ * when removing the driver.
-+ * @qm: The qm needed to wait for the task to finish.
-+ * @qm_list: The list of all available devices.
++ * hisi_qm_alg_unregister() - Unregister alg from crypto and delete qm from
++ * qm list.
++ * @qm: The qm needs delete.
++ * @qm_list: The qm list.
++ *
++ * This function deletes qm from qm list, and will unregister algorithm
++ * from crypto when the qm list is empty.
 + */
-+void hisi_qm_wait_task_finish(struct hisi_qm *qm, struct hisi_qm_list *qm_list)
++void hisi_qm_alg_unregister(struct hisi_qm *qm, struct hisi_qm_list *qm_list)
 +{
-+	while (qm_frozen(qm) ||
-+	       ((qm->fun_type == QM_HW_PF) &&
-+	       qm_try_frozen_vfs(qm->pdev, qm_list))) {
-+		msleep(WAIT_PERIOD);
-+	}
++	mutex_lock(&qm_list->lock);
++	list_del(&qm->list);
++	mutex_unlock(&qm_list->lock);
 +
-+	udelay(REMOVE_WAIT_DELAY);
++	if (list_empty(&qm_list->list))
++		qm_list->unregister_from_crypto();
 +}
-+EXPORT_SYMBOL_GPL(hisi_qm_wait_task_finish);
++EXPORT_SYMBOL_GPL(hisi_qm_alg_unregister);
 +
 +/**
-  * hisi_qm_get_free_qp_num() - Get free number of qp in qm.
-  * @qm: The qm which want to get free qp.
+  * hisi_qm_init() - Initialize configures about qm.
+  * @qm: The qm needing init.
   *
-@@ -2347,6 +2425,7 @@ static void hisi_qm_pre_init(struct hisi_qm *qm)
- 	mutex_init(&qm->mailbox_lock);
- 	init_rwsem(&qm->qps_lock);
- 	qm->qp_in_used = 0;
-+	qm->is_frozen = false;
- }
-
- /**
-@@ -3092,11 +3171,12 @@ EXPORT_SYMBOL_GPL(hisi_qm_sriov_enable);
-
- /**
-  * hisi_qm_sriov_disable - disable virtual functions
-- * @pdev: the PCI device
-+ * @pdev: the PCI device.
-+ * @is_frozen: true when all the VFs are frozen.
-  *
-- * Return failure if there are VFs assigned already.
-+ * Return failure if there are VFs assigned already or VF is in used.
-  */
--int hisi_qm_sriov_disable(struct pci_dev *pdev)
-+int hisi_qm_sriov_disable(struct pci_dev *pdev, bool is_frozen)
- {
- 	struct hisi_qm *qm = pci_get_drvdata(pdev);
-
-@@ -3105,7 +3185,12 @@ int hisi_qm_sriov_disable(struct pci_dev *pdev)
- 		return -EPERM;
- 	}
-
--	/* remove in hpre_pci_driver will be called to free VF resources */
-+	/* While VF is in used, SRIOV cannot be disabled. */
-+	if (!is_frozen && qm_try_frozen_vfs(pdev, qm->qm_list)) {
-+		pci_err(pdev, "Task is using its VF!\n");
-+		return -EBUSY;
-+	}
-+
- 	pci_disable_sriov(pdev);
- 	return qm_clear_vft_config(qm);
- }
-@@ -3121,7 +3206,7 @@ EXPORT_SYMBOL_GPL(hisi_qm_sriov_disable);
- int hisi_qm_sriov_configure(struct pci_dev *pdev, int num_vfs)
- {
- 	if (num_vfs == 0)
--		return hisi_qm_sriov_disable(pdev);
-+		return hisi_qm_sriov_disable(pdev, 0);
- 	else
- 		return hisi_qm_sriov_enable(pdev, num_vfs);
- }
 diff --git a/drivers/crypto/hisilicon/qm.h b/drivers/crypto/hisilicon/qm.h
-index 5fc44cb..5c07cfe 100644
+index 5c07cfe..6773f44 100644
 --- a/drivers/crypto/hisilicon/qm.h
 +++ b/drivers/crypto/hisilicon/qm.h
-@@ -243,6 +243,7 @@ struct hisi_qm {
-
- 	const char *algs;
- 	bool use_sva;
-+	bool is_frozen;
- 	resource_size_t phys_base;
- 	resource_size_t phys_size;
- 	struct uacce_device *uacce;
-@@ -367,7 +368,7 @@ int hisi_qm_debug_init(struct hisi_qm *qm);
- enum qm_hw_ver hisi_qm_get_hw_version(struct pci_dev *pdev);
- void hisi_qm_debug_regs_clear(struct hisi_qm *qm);
- int hisi_qm_sriov_enable(struct pci_dev *pdev, int max_vfs);
--int hisi_qm_sriov_disable(struct pci_dev *pdev);
-+int hisi_qm_sriov_disable(struct pci_dev *pdev, bool is_frozen);
- int hisi_qm_sriov_configure(struct pci_dev *pdev, int num_vfs);
- void hisi_qm_dev_err_init(struct hisi_qm *qm);
- void hisi_qm_dev_err_uninit(struct hisi_qm *qm);
-@@ -391,4 +392,5 @@ int hisi_qm_alloc_qps_node(struct hisi_qm_list *qm_list, int qp_num,
- 			   u8 alg_type, int node, struct hisi_qp **qps);
+@@ -193,6 +193,8 @@ struct hisi_qm_err_ini {
+ struct hisi_qm_list {
+ 	struct mutex lock;
+ 	struct list_head list;
++	int (*register_to_crypto)(void);
++	void (*unregister_from_crypto)(void);
+ };
+ 
+ struct hisi_qm {
+@@ -337,22 +339,6 @@ static inline void hisi_qm_init_list(struct hisi_qm_list *qm_list)
+ 	mutex_init(&qm_list->lock);
+ }
+ 
+-static inline void hisi_qm_add_to_list(struct hisi_qm *qm,
+-				       struct hisi_qm_list *qm_list)
+-{
+-	mutex_lock(&qm_list->lock);
+-	list_add_tail(&qm->list, &qm_list->list);
+-	mutex_unlock(&qm_list->lock);
+-}
+-
+-static inline void hisi_qm_del_from_list(struct hisi_qm *qm,
+-					 struct hisi_qm_list *qm_list)
+-{
+-	mutex_lock(&qm_list->lock);
+-	list_del(&qm->list);
+-	mutex_unlock(&qm_list->lock);
+-}
+-
+ int hisi_qm_init(struct hisi_qm *qm);
+ void hisi_qm_uninit(struct hisi_qm *qm);
+ int hisi_qm_start(struct hisi_qm *qm);
+@@ -393,4 +379,6 @@ int hisi_qm_alloc_qps_node(struct hisi_qm_list *qm_list, int qp_num,
  void hisi_qm_free_qps(struct hisi_qp **qps, int qp_num);
  void hisi_qm_dev_shutdown(struct pci_dev *pdev);
-+void hisi_qm_wait_task_finish(struct hisi_qm *qm, struct hisi_qm_list *qm_list);
+ void hisi_qm_wait_task_finish(struct hisi_qm *qm, struct hisi_qm_list *qm_list);
++int hisi_qm_alg_register(struct hisi_qm *qm, struct hisi_qm_list *qm_list);
++void hisi_qm_alg_unregister(struct hisi_qm *qm, struct hisi_qm_list *qm_list);
  #endif
+diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+index 497969a..543d9ee 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
++++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+@@ -66,8 +66,6 @@
+ #define SEC_SQE_AEAD_FLAG	3
+ #define SEC_SQE_DONE		0x1
+ 
+-static atomic_t sec_active_devs;
+-
+ /* Get an en/de-cipher queue cyclically to balance load over queues of TFM */
+ static inline int sec_alloc_queue_id(struct sec_ctx *ctx, struct sec_req *req)
+ {
+@@ -1633,33 +1631,24 @@ static struct aead_alg sec_aeads[] = {
+ 
+ int sec_register_to_crypto(void)
+ {
+-	int ret = 0;
++	int ret;
+ 
+ 	/* To avoid repeat register */
+-	if (atomic_add_return(1, &sec_active_devs) == 1) {
+-		ret = crypto_register_skciphers(sec_skciphers,
+-						ARRAY_SIZE(sec_skciphers));
+-		if (ret)
+-			return ret;
+-
+-		ret = crypto_register_aeads(sec_aeads, ARRAY_SIZE(sec_aeads));
+-		if (ret)
+-			goto reg_aead_fail;
+-	}
+-
+-	return ret;
+-
+-reg_aead_fail:
+-	crypto_unregister_skciphers(sec_skciphers, ARRAY_SIZE(sec_skciphers));
++	ret = crypto_register_skciphers(sec_skciphers,
++					ARRAY_SIZE(sec_skciphers));
++	if (ret)
++		return ret;
+ 
++	ret = crypto_register_aeads(sec_aeads, ARRAY_SIZE(sec_aeads));
++	if (ret)
++		crypto_unregister_skciphers(sec_skciphers,
++					    ARRAY_SIZE(sec_skciphers));
+ 	return ret;
+ }
+ 
+ void sec_unregister_from_crypto(void)
+ {
+-	if (atomic_sub_return(1, &sec_active_devs) == 0) {
+-		crypto_unregister_skciphers(sec_skciphers,
+-					    ARRAY_SIZE(sec_skciphers));
+-		crypto_unregister_aeads(sec_aeads, ARRAY_SIZE(sec_aeads));
+-	}
++	crypto_unregister_skciphers(sec_skciphers,
++				    ARRAY_SIZE(sec_skciphers));
++	crypto_unregister_aeads(sec_aeads, ARRAY_SIZE(sec_aeads));
+ }
 diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 8b388c4..629344c 100644
+index 629344c..f912e57 100644
 --- a/drivers/crypto/hisilicon/sec2/sec_main.c
 +++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -917,12 +917,13 @@ static void sec_remove(struct pci_dev *pdev)
- 	struct sec_dev *sec = pci_get_drvdata(pdev);
- 	struct hisi_qm *qm = &sec->qm;
-
-+	hisi_qm_wait_task_finish(qm, &sec_devices);
- 	sec_unregister_from_crypto();
-
- 	hisi_qm_del_from_list(qm, &sec_devices);
-
- 	if (qm->fun_type == QM_HW_PF && qm->vfs_num)
--		hisi_qm_sriov_disable(pdev);
-+		hisi_qm_sriov_disable(pdev, qm->is_frozen);
-
+@@ -99,7 +99,11 @@ struct sec_dfx_item {
+ 
+ static const char sec_name[] = "hisi_sec2";
+ static struct dentry *sec_debugfs_root;
+-static struct hisi_qm_list sec_devices;
++
++static struct hisi_qm_list sec_devices = {
++	.register_to_crypto	= sec_register_to_crypto,
++	.unregister_from_crypto	= sec_unregister_from_crypto,
++};
+ 
+ static const struct sec_hw_error sec_hw_errors[] = {
+ 	{.int_msk = BIT(0), .msg = "sec_axi_rresp_err_rint"},
+@@ -879,27 +883,24 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (ret)
+ 		pci_warn(pdev, "Failed to init debugfs!\n");
+ 
+-	hisi_qm_add_to_list(qm, &sec_devices);
+-
+-	ret = sec_register_to_crypto();
++	ret = hisi_qm_alg_register(qm, &sec_devices);
+ 	if (ret < 0) {
+ 		pr_err("Failed to register driver to crypto.\n");
+-		goto err_remove_from_list;
++		goto err_qm_stop;
+ 	}
+ 
+ 	if (qm->fun_type == QM_HW_PF && vfs_num) {
+ 		ret = hisi_qm_sriov_enable(pdev, vfs_num);
+ 		if (ret < 0)
+-			goto err_crypto_unregister;
++			goto err_alg_unregister;
+ 	}
+ 
+ 	return 0;
+ 
+-err_crypto_unregister:
+-	sec_unregister_from_crypto();
++err_alg_unregister:
++	hisi_qm_alg_unregister(qm, &sec_devices);
+ 
+-err_remove_from_list:
+-	hisi_qm_del_from_list(qm, &sec_devices);
++err_qm_stop:
  	sec_debugfs_exit(qm);
-
+ 	hisi_qm_stop(qm, QM_NORMAL);
+ 
+@@ -918,10 +919,7 @@ static void sec_remove(struct pci_dev *pdev)
+ 	struct hisi_qm *qm = &sec->qm;
+ 
+ 	hisi_qm_wait_task_finish(qm, &sec_devices);
+-	sec_unregister_from_crypto();
+-
+-	hisi_qm_del_from_list(qm, &sec_devices);
+-
++	hisi_qm_alg_unregister(qm, &sec_devices);
+ 	if (qm->fun_type == QM_HW_PF && qm->vfs_num)
+ 		hisi_qm_sriov_disable(pdev, qm->is_frozen);
+ 
+diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
+index 01fd6a7..aba1600 100644
+--- a/drivers/crypto/hisilicon/zip/zip_crypto.c
++++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
+@@ -611,7 +611,7 @@ static struct acomp_alg hisi_zip_acomp_gzip = {
+ 
+ int hisi_zip_register_to_crypto(void)
+ {
+-	int ret = 0;
++	int ret;
+ 
+ 	ret = crypto_register_acomp(&hisi_zip_acomp_zlib);
+ 	if (ret) {
 diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index 10d2108..f13e520 100644
+index f13e520..7e86b0f 100644
 --- a/drivers/crypto/hisilicon/zip/zip_main.c
 +++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -840,8 +840,9 @@ static void hisi_zip_remove(struct pci_dev *pdev)
- 	struct hisi_zip *hisi_zip = pci_get_drvdata(pdev);
- 	struct hisi_qm *qm = &hisi_zip->qm;
-
-+	hisi_qm_wait_task_finish(qm, &zip_devices);
- 	if (qm->fun_type == QM_HW_PF && qm->vfs_num)
--		hisi_qm_sriov_disable(pdev);
-+		hisi_qm_sriov_disable(pdev, qm->is_frozen);
-
+@@ -94,7 +94,6 @@
+ 
+ static const char hisi_zip_name[] = "hisi_zip";
+ static struct dentry *hzip_debugfs_root;
+-static struct hisi_qm_list zip_devices;
+ 
+ struct hisi_zip_hw_error {
+ 	u32 int_msk;
+@@ -106,6 +105,11 @@ struct zip_dfx_item {
+ 	u32 offset;
+ };
+ 
++static struct hisi_qm_list zip_devices = {
++	.register_to_crypto	= hisi_zip_register_to_crypto,
++	.unregister_from_crypto	= hisi_zip_unregister_from_crypto,
++};
++
+ static struct zip_dfx_item zip_dfx_files[] = {
+ 	{"send_cnt", offsetof(struct hisi_zip_dfx, send_cnt)},
+ 	{"recv_cnt", offsetof(struct hisi_zip_dfx, recv_cnt)},
+@@ -803,32 +807,42 @@ static int hisi_zip_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 
+ 	ret = hisi_qm_start(qm);
+ 	if (ret)
+-		goto err_qm_uninit;
++		goto err_dev_err_uninit;
+ 
+ 	ret = hisi_zip_debugfs_init(hisi_zip);
+ 	if (ret)
+ 		dev_err(&pdev->dev, "Failed to init debugfs (%d)!\n", ret);
+ 
+-	hisi_qm_add_to_list(qm, &zip_devices);
++	ret = hisi_qm_alg_register(qm, &zip_devices);
++	if (ret < 0) {
++		pci_err(pdev, "Failed to register driver to crypto.\n");
++		goto err_qm_stop;
++	}
+ 
+ 	if (qm->uacce) {
+ 		ret = uacce_register(qm->uacce);
+ 		if (ret)
+-			goto err_qm_uninit;
++			goto err_qm_alg_unregister;
+ 	}
+ 
+ 	if (qm->fun_type == QM_HW_PF && vfs_num > 0) {
+ 		ret = hisi_qm_sriov_enable(pdev, vfs_num);
+ 		if (ret < 0)
+-			goto err_remove_from_list;
++			goto err_qm_alg_unregister;
+ 	}
+ 
+ 	return 0;
+ 
+-err_remove_from_list:
+-	hisi_qm_del_from_list(qm, &zip_devices);
++err_qm_alg_unregister:
++	hisi_qm_alg_unregister(qm, &zip_devices);
++
++err_qm_stop:
  	hisi_zip_debugfs_exit(hisi_zip);
  	hisi_qm_stop(qm, QM_NORMAL);
---
++
++err_dev_err_uninit:
++	hisi_qm_dev_err_uninit(qm);
++
+ err_qm_uninit:
+ 	hisi_qm_uninit(qm);
+ 
+@@ -841,15 +855,15 @@ static void hisi_zip_remove(struct pci_dev *pdev)
+ 	struct hisi_qm *qm = &hisi_zip->qm;
+ 
+ 	hisi_qm_wait_task_finish(qm, &zip_devices);
++	hisi_qm_alg_unregister(qm, &zip_devices);
++
+ 	if (qm->fun_type == QM_HW_PF && qm->vfs_num)
+ 		hisi_qm_sriov_disable(pdev, qm->is_frozen);
+ 
+ 	hisi_zip_debugfs_exit(hisi_zip);
+ 	hisi_qm_stop(qm, QM_NORMAL);
+-
+ 	hisi_qm_dev_err_uninit(qm);
+ 	hisi_qm_uninit(qm);
+-	hisi_qm_del_from_list(qm, &zip_devices);
+ }
+ 
+ static const struct pci_error_handlers hisi_zip_err_handler = {
+@@ -896,16 +910,8 @@ static int __init hisi_zip_init(void)
+ 		goto err_pci;
+ 	}
+ 
+-	ret = hisi_zip_register_to_crypto();
+-	if (ret < 0) {
+-		pr_err("Failed to register driver to crypto.\n");
+-		goto err_crypto;
+-	}
+-
+ 	return 0;
+ 
+-err_crypto:
+-	pci_unregister_driver(&hisi_zip_pci_driver);
+ err_pci:
+ 	hisi_zip_unregister_debugfs();
+ 
+@@ -914,7 +920,6 @@ static int __init hisi_zip_init(void)
+ 
+ static void __exit hisi_zip_exit(void)
+ {
+-	hisi_zip_unregister_from_crypto();
+ 	pci_unregister_driver(&hisi_zip_pci_driver);
+ 	hisi_zip_unregister_debugfs();
+ }
+-- 
 2.7.4
 
