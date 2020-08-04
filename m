@@ -2,143 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FBB23BB18
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Aug 2020 15:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF7923BB98
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Aug 2020 16:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728409AbgHDNWn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 4 Aug 2020 09:22:43 -0400
-Received: from mail2.candelatech.com ([208.74.158.173]:35106 "EHLO
-        mail3.candelatech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728387AbgHDNWn (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 4 Aug 2020 09:22:43 -0400
-Received: from [192.168.254.5] (unknown [50.34.202.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail3.candelatech.com (Postfix) with ESMTPSA id C985413C2B0;
-        Tue,  4 Aug 2020 06:22:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com C985413C2B0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
-        s=default; t=1596547362;
-        bh=HxHRy1/aUU4jST30w+h9yypNuGUna3zc/o0endUsehI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=j+Yp2tE9X1q6Bg9NPfQtHd+TZDej680yUn/1JijxB2Uc+9mU9A2B0NrlLYYoTfo5o
-         ODfKP7u97xc7quiIbVJE9hO+kBEyrzD2DGI3d/6qclDXvPGDLROE/qLuofUnbQmYtT
-         GAUBojHqq9g6ATtu1Q2qPCWwJaKkdLtnGeJjYv8c=
-Subject: Re: [PATCH] crypto: x86/aesni - implement accelerated CBCMAC, CMAC
- and XCBC shashes
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>
-References: <20200802090616.1328-1-ardb@kernel.org>
- <25776a56-4c6a-3976-f4bc-fa53ba4a1550@candelatech.com>
- <CAMj1kXFAbip567hFaFtoqdevrSEpqFOGQ1+ejL98XrDOaTeggA@mail.gmail.com>
- <9c137bbf-2892-df7a-e6fa-8cce417ecd45@candelatech.com>
- <CAMj1kXFnfYKj1JE4NLsxXtaeKuAOKyBYDbayLr-mHDUYqnV1bA@mail.gmail.com>
-From:   Ben Greear <greearb@candelatech.com>
-Organization: Candela Technologies
-Message-ID: <b13c953c-45ea-d3fb-e17b-9a313af6d19b@candelatech.com>
-Date:   Tue, 4 Aug 2020 06:22:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728834AbgHDOA4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 4 Aug 2020 10:00:56 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:60914 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728777AbgHDOAu (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 4 Aug 2020 10:00:50 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id AEFF6118B2360200DCB5;
+        Tue,  4 Aug 2020 22:00:38 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 4 Aug 2020 22:00:29 +0800
+From:   Yang Shen <shenyang39@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
+Subject: [PATCH v4 00/10] crypto: hisilicon/qm - misc fixes
+Date:   Tue, 4 Aug 2020 21:58:20 +0800
+Message-ID: <1596549510-2373-1-git-send-email-shenyang39@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXFnfYKj1JE4NLsxXtaeKuAOKyBYDbayLr-mHDUYqnV1bA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-MW
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 8/4/20 6:08 AM, Ard Biesheuvel wrote:
-> On Tue, 4 Aug 2020 at 15:01, Ben Greear <greearb@candelatech.com> wrote:
->>
->> On 8/4/20 5:55 AM, Ard Biesheuvel wrote:
->>> On Mon, 3 Aug 2020 at 21:11, Ben Greear <greearb@candelatech.com> wrote:
->>>>
->>>> Hello,
->>>>
->>>> This helps a bit...now download sw-crypt performance is about 150Mbps,
->>>> but still not as good as with my patch on 5.4 kernel, and fpu is still
->>>> high in perf top:
->>>>
->>>>       13.89%  libc-2.29.so   [.] __memset_sse2_unaligned_erms
->>>>         6.62%  [kernel]       [k] kernel_fpu_begin
->>>>         4.14%  [kernel]       [k] _aesni_enc1
->>>>         2.06%  [kernel]       [k] __crypto_xor
->>>>         1.95%  [kernel]       [k] copy_user_generic_string
->>>>         1.93%  libjvm.so      [.] SpinPause
->>>>         1.01%  [kernel]       [k] aesni_encrypt
->>>>         0.98%  [kernel]       [k] crypto_ctr_crypt
->>>>         0.93%  [kernel]       [k] udp_sendmsg
->>>>         0.78%  [kernel]       [k] crypto_inc
->>>>         0.74%  [kernel]       [k] __ip_append_data.isra.53
->>>>         0.65%  [kernel]       [k] aesni_cbc_enc
->>>>         0.64%  [kernel]       [k] __dev_queue_xmit
->>>>         0.62%  [kernel]       [k] ipt_do_table
->>>>         0.62%  [kernel]       [k] igb_xmit_frame_ring
->>>>         0.59%  [kernel]       [k] ip_route_output_key_hash_rcu
->>>>         0.57%  [kernel]       [k] memcpy
->>>>         0.57%  libjvm.so      [.] InstanceKlass::oop_follow_contents
->>>>         0.56%  [kernel]       [k] irq_fpu_usable
->>>>         0.56%  [kernel]       [k] mac_do_update
->>>>
->>>> If you'd like help setting up a test rig and have an ath10k pcie NIC or ath9k pcie NIC,
->>>> then I can help.  Possibly hwsim would also be a good test case, but I have not tried
->>>> that.
->>>>
->>>
->>> I don't think this is likely to be reproducible on other
->>> micro-architectures, so setting up a test rig is unlikely to help.
->>>
->>> I'll send out a v2 which implements a ahash instead of a shash (and
->>> implements some other tweaks) so that kernel_fpu_begin() is only
->>> called twice for each packet on the cbcmac path.
->>>
->>> Do you have any numbers for the old kernel without your patch? This
->>> pathological FPU preserve/restore behavior could be caused be the
->>> optimizations, or by other changes that landed in the meantime, so I
->>> would like to know if kernel_fpu_begin() is as prominent in those
->>> traces as well.
->>>
->>
->> This same patch makes i7 mobile processors able to handle 1Gbps+ software
->> decrypt rates, where without the patch, the rate was badly constrained and CPU
->> load was much higher, so it is definitely noticeable on other processors too.
-> 
-> OK
-> 
->> The weak processor on the current test rig is convenient because the problem
->> is so noticeable even at slower wifi speeds.
->>
->> We can do some tests on 5.4 with our patch reverted.
->>
-> 
-> The issue with your CCM patch is that it keeps the FPU enabled for the
-> entire input, which also means that preemption is disabled, which
-> makes the -rt people grumpy. (Of course, it also uses APIs that no
-> longer exists, but that should be easy to fix)
+This patchset fix some qm bugs:
+patch 1: store the string address before pass to 'strsep'
+patch 2: clear 'qp_status->used' when init the 'qp'
+patch 3: use 'dev_info_ratelimited' to avoid printk flooding.
+patch 4: fix the judgement of queue is full
+patch 7: save the vf configuration space to make sure it is available
+     after the 'PF' 'FLR'
+patch 8: register callback to 'pci_driver.shutdown'
+patch 9: wait for all working function finishs when remove the device
+patch 10: move the process of register alg to crypto in driver 'hisi_zip'
 
-So, if there is no other way to get back the performance, can it be a compile
-or runtime option (disabled by default for -RT type folks) to re-enable the feature
-that helps our CPU usage?
+v4:
+ - exchange the patch 'fix the call trace when unbind device' and
+   'fix the process of register algorithms to crypto' to make sure the
+   driver is stable.
 
-Or, can you do an add-on patch to enable keeping fpu enabled so that I can test
-how that affects our performance?
+v3:
+ - add the patch 10 which is aimed to fix the call trace when remove a
+   working device
 
-> 
-> Do you happen to have any ballpark figures for the packet sizes and
-> the time spent doing encryption?
+v2:
+ - fix the wrong email address on patch 1
 
-This test was using MTU UDP frames I think, and mostly it is just sending
-and receiving frames.  perf top output gives you as much detail as I have about
-what the kernel is spending time doing.
+Hui Tang (1):
+  crypto: hisilicon/qm - fix judgement of queue is full
 
-Thanks,
-Ben
+Shukun Tan (3):
+  crypto: hisilicon/qm - clear used reference count when start qp
+  crypto: hisilicon/qm - fix event queue depth to 2048
+  crypto: hisilicon/qm - fix VF not available after PF FLR
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Sihang Chen (1):
+  crypto: hisilicon/qm - fix wrong release after using strsep
+
+Weili Qian (1):
+  crypto: hisilicon/qm - fix the call trace when unbind device
+
+Yang Shen (4):
+  crypto: hisilicon/qm - fix print frequence in hisi_qp_send
+  crypto: hisilicon/qm - fix no stop reason when use 'hisi_qm_stop'
+  crypto: hisilicon/qm - register callback function to
+    'pci_driver.shutdown'
+  crypto: hisilicon/qm - fix the process of register algorithms to
+    crypto
+
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c |  36 ++---
+ drivers/crypto/hisilicon/hpre/hpre_main.c   |  28 ++--
+ drivers/crypto/hisilicon/qm.c               | 221 ++++++++++++++++++++++++----
+ drivers/crypto/hisilicon/qm.h               |  27 ++--
+ drivers/crypto/hisilicon/sec2/sec_crypto.c  |  35 ++---
+ drivers/crypto/hisilicon/sec2/sec_main.c    |  34 ++---
+ drivers/crypto/hisilicon/zip/zip_crypto.c   |   2 +-
+ drivers/crypto/hisilicon/zip/zip_main.c     |  49 +++---
+ 8 files changed, 288 insertions(+), 144 deletions(-)
+
+--
+2.7.4
+
