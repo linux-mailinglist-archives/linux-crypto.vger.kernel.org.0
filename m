@@ -2,80 +2,131 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37B423C338
-	for <lists+linux-crypto@lfdr.de>; Wed,  5 Aug 2020 03:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728DA23C39F
+	for <lists+linux-crypto@lfdr.de>; Wed,  5 Aug 2020 04:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgHEB6R (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 4 Aug 2020 21:58:17 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:50712 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725981AbgHEB6R (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 4 Aug 2020 21:58:17 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 333DC5996704AFF08E50;
-        Wed,  5 Aug 2020 09:58:10 +0800 (CST)
-Received: from [127.0.0.1] (10.74.173.29) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Wed, 5 Aug 2020
- 09:58:00 +0800
-Subject: Re: [PATCH v4 01/10] crypto: hisilicon/qm - fix wrong release after
- using strsep
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        Sihang Chen <chensihang1@hisilicon.com>,
-        <linux-crypto@vger.kernel.org>
-References: <96ffa633-dda1-7ad1-72da-5563906c1561@web.de>
-CC:     <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>
-From:   "shenyang (M)" <shenyang39@huawei.com>
-Message-ID: <425f4bdd-cf55-6537-28bf-0377564b531b@huawei.com>
-Date:   Wed, 5 Aug 2020 09:58:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
-MIME-Version: 1.0
-In-Reply-To: <96ffa633-dda1-7ad1-72da-5563906c1561@web.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.74.173.29]
-X-CFilter-Loop: Reflected
+        id S1727114AbgHECsP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 4 Aug 2020 22:48:15 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:53210 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725864AbgHECsO (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 4 Aug 2020 22:48:14 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6335B1A04E6;
+        Wed,  5 Aug 2020 04:48:12 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B49B91A1487;
+        Wed,  5 Aug 2020 04:48:06 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 4FDAD402E1;
+        Wed,  5 Aug 2020 04:47:59 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, marex@denx.de,
+        s.trumtrar@pengutronix.de, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH 1/3] dt-bindings: crypto: Convert MXS DCP to json-schema
+Date:   Wed,  5 Aug 2020 10:43:28 +0800
+Message-Id: <1596595410-26921-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Convert the MXS DCP binding to DT schema format using json-schema.
 
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ .../devicetree/bindings/crypto/fsl-dcp.txt         | 18 --------
+ .../devicetree/bindings/crypto/fsl-dcp.yaml        | 49 ++++++++++++++++++++++
+ 2 files changed, 49 insertions(+), 18 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/crypto/fsl-dcp.txt
+ create mode 100644 Documentation/devicetree/bindings/crypto/fsl-dcp.yaml
 
-On 2020/8/5 2:34, Markus Elfring wrote:
-> …
->> +++ b/drivers/crypto/hisilicon/qm.c
->> @@ -1420,16 +1420,17 @@ static int qm_dbg_help(struct hisi_qm *qm, char *s)
-> …
->> +	s_tmp = s;
->>  	presult = strsep(&s, " ");
->>  	if (!presult) {
->> -		kfree(s);
->> +		kfree(s_tmp);
->>  		return -EINVAL;
->>  	}
->
-> -		kfree(s);
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto free_tmp;
->
-> I suggest to add a jump target for the desired exception handling.
->
-> Regards,
-> Markus
->
-> .
->
-
-Thanks for your review. There is only one error branch need to do
-something uninit. So I think the jump is not necessary and will
-affect code reading.:)
-
-Thanks,
-Yang
+diff --git a/Documentation/devicetree/bindings/crypto/fsl-dcp.txt b/Documentation/devicetree/bindings/crypto/fsl-dcp.txt
+deleted file mode 100644
+index 513499f..0000000
+--- a/Documentation/devicetree/bindings/crypto/fsl-dcp.txt
++++ /dev/null
+@@ -1,18 +0,0 @@
+-Freescale DCP (Data Co-Processor) found on i.MX23/i.MX28 .
+-
+-Required properties:
+-- compatible : Should be "fsl,<soc>-dcp"
+-- reg : Should contain MXS DCP registers location and length
+-- interrupts : Should contain MXS DCP interrupt numbers, VMI IRQ and DCP IRQ
+-               must be supplied, optionally Secure IRQ can be present, but
+-	       is currently not implemented and not used.
+-- clocks : Clock reference (only required on some SOCs: 6ull and 6sll).
+-- clock-names : Must be "dcp".
+-
+-Example:
+-
+-dcp: crypto@80028000 {
+-	compatible = "fsl,imx28-dcp", "fsl,imx23-dcp";
+-	reg = <0x80028000 0x2000>;
+-	interrupts = <52 53>;
+-};
+diff --git a/Documentation/devicetree/bindings/crypto/fsl-dcp.yaml b/Documentation/devicetree/bindings/crypto/fsl-dcp.yaml
+new file mode 100644
+index 0000000..1ed86cd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/crypto/fsl-dcp.yaml
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/crypto/fsl-dcp.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale DCP (Data Co-Processor) found on i.MX23/i.MX28
++
++maintainers:
++  - Marek Vasut <marex@denx.de>
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx23-dcp
++      - fsl,imx28-dcp
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    description: Should contain MXS DCP interrupt numbers, VMI IRQ and DCP IRQ
++      must be supplied, optionally Secure IRQ can be present, but is currently
++      not implemented and not used.
++    items:
++      - description: MXS DCP VMI interrupt
++      - description: MXS DCP DCP interrupt
++      - description: MXS DCP secure interrupt
++    minItems: 2
++    maxItems: 3
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: dcp
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++examples:
++  - |
++    crypto@80028000 {
++        compatible = "fsl,imx23-dcp";
++        reg = <0x80028000 0x2000>;
++        interrupts = <53>, <54>;
++    };
+-- 
+2.7.4
 
