@@ -2,152 +2,175 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBD423CD03
-	for <lists+linux-crypto@lfdr.de>; Wed,  5 Aug 2020 19:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E270623D095
+	for <lists+linux-crypto@lfdr.de>; Wed,  5 Aug 2020 21:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728597AbgHERO6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 5 Aug 2020 13:14:58 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54425 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728462AbgHERLO (ORCPT
+        id S1728249AbgHETux (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 5 Aug 2020 15:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728242AbgHEQxB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:11:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647470;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PnsUzUfj/maYqHomtkyX8zOTJsr1HA4XmfpAedp5w54=;
-        b=SiS3asl9/tCJGaOTceK+WwqQ19iOPVSqtLmY60+MV9bQ9/oYg3eYYm+hZELDbGU1pjiRNt
-        C8z7owXNwYPNc1T41B5qhBty4OzA8v7mcu9+z/ZrSDmkpOTL/XVPdH2ac67XyTU8M6jjEy
-        XOakbCIccAFRgnjQAdpnkGFJ4meffHw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-371-a6AtVRg6N3uOB97NBBCr9g-1; Wed, 05 Aug 2020 09:44:46 -0400
-X-MC-Unique: a6AtVRg6N3uOB97NBBCr9g-1
-Received: by mail-wr1-f72.google.com with SMTP id z12so13641426wrl.16
-        for <linux-crypto@vger.kernel.org>; Wed, 05 Aug 2020 06:44:46 -0700 (PDT)
+        Wed, 5 Aug 2020 12:53:01 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB306C06179F;
+        Wed,  5 Aug 2020 03:39:52 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l23so18421245edv.11;
+        Wed, 05 Aug 2020 03:39:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qyFh0B+qFmeaq1ZmytjXM93bJReydW1Q9ZU9edq9NSw=;
+        b=bVFSImkw00AL0eXqqbm3McDE84S5/SUhPXauKRgX+RjQFLzzEOAeh1BxV0FJ3xAAJ8
+         1m9bTe46ht4zUL8tAAqdHoPyHHhXwgxz57qLRYZBkP1rOpXqwVPYcAxOgvpR3o1XZCvd
+         bKQ02Q/qe51m5JtFTL8dGAPE9LdxItd2sC82ekIWLriM37yTWvtT9wqaonMYVBxGcQsw
+         +zI+CvFrLgHWC4r5ucuH1UgeKusLtLEaaKkIAdpnL07hRj4ecHa4FRkTefDBklwy016F
+         SmZCH5u8fNVjpgNpY4T9v0gNPH7uqjlKD/oYpEbSz/QWj6hUWqWda6kBf+oHuX5ddoK0
+         OAgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PnsUzUfj/maYqHomtkyX8zOTJsr1HA4XmfpAedp5w54=;
-        b=lUFXxaHVodC50FIWaHO6D96k4BNbMtUCa4Yr0aC+7oEF2pUnXSwX496DKZIcrtMf8Y
-         4eqg+TdBBJjnZhoNMUq8TliCpw/m2UTxRZSPHgNEADYCSiPkqo/sdVC8rdvzsLie4/TP
-         BzMo9h81a8eAiQoAojydvUpbbjxFEFP0N5x9fPKIKiRsjwlRSAl0BRT3Aqz5k4LhHO7H
-         VYmeOAajmg1zg00qf+q7mUOAFModzRl+td6NGn9AL14zpTQk7IaMTn37EtymR80wUi4q
-         b6N09GKpV7JFrf9GxprLbhQ0o6tiWgdWx7ZIJonTo2i721HUEC8h9YWcxau3iaGuXvyQ
-         hkFg==
-X-Gm-Message-State: AOAM532aTfuetRKCXci7/5c6hSJ159scGKPtLMIMx5xUiXoZ3flPhd4N
-        YW4sxtHNodnc34fZ63BgZPjziKkO+3WHR11mufxIoCcg+nwc6qHsbighNfL0PzRgoGaux9Pc+Ar
-        DYJenOz3S3O7TdHnltLMWsaxC
-X-Received: by 2002:a7b:ce83:: with SMTP id q3mr3330208wmj.5.1596635085325;
-        Wed, 05 Aug 2020 06:44:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxspf2A9DeJp/XDd6wXksBjAJ9F8IN1IMgFckmDgI4O8zQGWyVV23BOfPLRsaeXGpCTmqk5Bg==
-X-Received: by 2002:a7b:ce83:: with SMTP id q3mr3330187wmj.5.1596635085095;
-        Wed, 05 Aug 2020 06:44:45 -0700 (PDT)
-Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
-        by smtp.gmail.com with ESMTPSA id l21sm2648720wmj.25.2020.08.05.06.44.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qyFh0B+qFmeaq1ZmytjXM93bJReydW1Q9ZU9edq9NSw=;
+        b=XBS4pGdKUI13EAWBJI9b4qky93AVJszjKtxtykJrhXF0Y7Am3bzhsftJioSQDO2msx
+         xRA3nCjNpNuo7emfTZM0JKWlKHPInQnTamyXs0kQkmzsUbNpJoxpBdusq3MEVlKUTePr
+         mKTQHxag0JTUtTxvCvCsjVtWCefvSO0+HyFhHCdz1BlQUtBby2UJnBTsQho9GCpNuUCi
+         6BdiGRbkShhNKOscHob/nd8DBJeIT7va5xzmEPKraXLlJE2U31usgs9RYNhY0XrWyJA0
+         HSB1INe+wXze4IPuKnjpLaZ7fmYax0m0NnpIN05c0vRMJnrXk6SEXxs9at/wVve3oCBI
+         Q9cg==
+X-Gm-Message-State: AOAM533Z6iQuredxtrVG37hAGEG/fqtZgqUDj/z3GDz0R5T6IfNkaReH
+        RXMlwOxvtc4OtLTS5tXKmT4/3VAkfYI=
+X-Google-Smtp-Source: ABdhPJy1V19vqtue79NewqfTmzf1nPJGkjGZEOewMpAdzyXd2UkFmYEa3u7VhPr+z0BqzwARa9XAKw==
+X-Received: by 2002:a05:6402:17c2:: with SMTP id s2mr2105104edy.188.1596623990966;
+        Wed, 05 Aug 2020 03:39:50 -0700 (PDT)
+Received: from localhost.localdomain (93-103-18-160.static.t-2.net. [93.103.18.160])
+        by smtp.gmail.com with ESMTPSA id ec20sm1260116ejb.61.2020.08.05.03.39.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:44:44 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:44:42 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Gonglei <arei.gonglei@huawei.com>,
-        Jason Wang <jasowang@redhat.com>,
+        Wed, 05 Aug 2020 03:39:50 -0700 (PDT)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        virtualization@lists.linux-foundation.org,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH v3 32/38] virtio_crypto: convert to LE accessors
-Message-ID: <20200805134226.1106164-33-mst@redhat.com>
-References: <20200805134226.1106164-1-mst@redhat.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] crypto/x86: Use CRC32 mnemonic in crc32c-intel_glue.c
+Date:   Wed,  5 Aug 2020 12:39:32 +0200
+Message-Id: <20200805103932.255524-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805134226.1106164-1-mst@redhat.com>
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Virtio crypto is modern-only. Use LE accessors for config space.
+Current minimum required version of binutils is 2.23,
+which supports CRC32 instruction mnemonic.
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Replace the byte-wise specification of CRC32 with this proper mnemonic.
+The compiler is now able to pass memory operand to the instruction,
+so there is no need for a temporary register anymore.
+
+Some examples of the improvement:
+
+ 12a:	48 8b 08             	mov    (%rax),%rcx
+ 12d:	f2 48 0f 38 f1 f1    	crc32q %rcx,%rsi
+ 133:	48 83 c0 08          	add    $0x8,%rax
+ 137:	48 39 d0             	cmp    %rdx,%rax
+ 13a:	75 ee                	jne    12a <crc32c_intel_update+0x1a>
+
+to:
+
+ 125:	f2 48 0f 38 f1 06    	crc32q (%rsi),%rax
+ 12b:	48 83 c6 08          	add    $0x8,%rsi
+ 12f:	48 39 d6             	cmp    %rdx,%rsi
+ 132:	75 f1                	jne    125 <crc32c_intel_update+0x15>
+
+and:
+
+ 146:	0f b6 08             	movzbl (%rax),%ecx
+ 149:	f2 0f 38 f0 f1       	crc32b %cl,%esi
+ 14e:	48 83 c0 01          	add    $0x1,%rax
+ 152:	48 39 d0             	cmp    %rdx,%rax
+ 155:	75 ef                	jne    146 <crc32c_intel_update+0x36>
+
+to:
+
+ 13b:	f2 0f 38 f0 02       	crc32b (%rdx),%eax
+ 140:	48 83 c2 01          	add    $0x1,%rdx
+ 144:	48 39 ca             	cmp    %rcx,%rdx
+ 147:	75 f2                	jne    13b <crc32c_intel_update+0x2b>
+
+As the compiler has some more freedom w.r.t. register allocation,
+there is also a couple of reg-reg moves removed.
+
+There are no hidden states for CRC32 insn, so there is no need to mark
+assembly as volatile.
+
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+CC: Herbert Xu <herbert@gondor.apana.org.au>
+CC: "David S. Miller" <davem@davemloft.net>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: Ingo Molnar <mingo@redhat.com>
+CC: Borislav Petkov <bp@alien8.de>
+CC: "H. Peter Anvin" <hpa@zytor.com>
 ---
- drivers/crypto/virtio/virtio_crypto_core.c | 46 +++++++++++-----------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+ arch/x86/crypto/crc32c-intel_glue.c | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/crypto/virtio/virtio_crypto_core.c b/drivers/crypto/virtio/virtio_crypto_core.c
-index c8a962c62663..aeecce27fe8f 100644
---- a/drivers/crypto/virtio/virtio_crypto_core.c
-+++ b/drivers/crypto/virtio/virtio_crypto_core.c
-@@ -204,8 +204,8 @@ static int virtcrypto_update_status(struct virtio_crypto *vcrypto)
- 	u32 status;
- 	int err;
+diff --git a/arch/x86/crypto/crc32c-intel_glue.c b/arch/x86/crypto/crc32c-intel_glue.c
+index d2d069bd459b..3a34b2351559 100644
+--- a/arch/x86/crypto/crc32c-intel_glue.c
++++ b/arch/x86/crypto/crc32c-intel_glue.c
+@@ -27,12 +27,6 @@
  
--	virtio_cread(vcrypto->vdev,
--	    struct virtio_crypto_config, status, &status);
-+	virtio_cread_le(vcrypto->vdev,
-+			struct virtio_crypto_config, status, &status);
+ #define SCALE_F	sizeof(unsigned long)
  
- 	/*
- 	 * Unknown status bits would be a host error and the driver
-@@ -323,31 +323,31 @@ static int virtcrypto_probe(struct virtio_device *vdev)
- 	if (!vcrypto)
- 		return -ENOMEM;
+-#ifdef CONFIG_X86_64
+-#define REX_PRE "0x48, "
+-#else
+-#define REX_PRE
+-#endif
+-
+ #ifdef CONFIG_X86_64
+ /*
+  * use carryless multiply version of crc32c when buffer
+@@ -48,11 +42,8 @@ asmlinkage unsigned int crc_pcl(const u8 *buffer, int len,
+ static u32 crc32c_intel_le_hw_byte(u32 crc, unsigned char const *data, size_t length)
+ {
+ 	while (length--) {
+-		__asm__ __volatile__(
+-			".byte 0xf2, 0xf, 0x38, 0xf0, 0xf1"
+-			:"=S"(crc)
+-			:"0"(crc), "c"(*data)
+-		);
++		asm("crc32b %1, %0"
++		    : "+r" (crc) : "rm" (*data));
+ 		data++;
+ 	}
  
--	virtio_cread(vdev, struct virtio_crypto_config,
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
- 			max_dataqueues, &max_data_queues);
- 	if (max_data_queues < 1)
- 		max_data_queues = 1;
+@@ -66,11 +57,12 @@ static u32 __pure crc32c_intel_le_hw(u32 crc, unsigned char const *p, size_t len
+ 	unsigned long *ptmp = (unsigned long *)p;
  
--	virtio_cread(vdev, struct virtio_crypto_config,
--		max_cipher_key_len, &max_cipher_key_len);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		max_auth_key_len, &max_auth_key_len);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		max_size, &max_size);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		crypto_services, &crypto_services);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		cipher_algo_l, &cipher_algo_l);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		cipher_algo_h, &cipher_algo_h);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		hash_algo, &hash_algo);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		mac_algo_l, &mac_algo_l);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		mac_algo_h, &mac_algo_h);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		aead_algo, &aead_algo);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			max_cipher_key_len, &max_cipher_key_len);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			max_auth_key_len, &max_auth_key_len);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			max_size, &max_size);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			crypto_services, &crypto_services);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			cipher_algo_l, &cipher_algo_l);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			cipher_algo_h, &cipher_algo_h);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			hash_algo, &hash_algo);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			mac_algo_l, &mac_algo_l);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			mac_algo_h, &mac_algo_h);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			aead_algo, &aead_algo);
+ 	while (iquotient--) {
+-		__asm__ __volatile__(
+-			".byte 0xf2, " REX_PRE "0xf, 0x38, 0xf1, 0xf1;"
+-			:"=S"(crc)
+-			:"0"(crc), "c"(*ptmp)
+-		);
++#ifdef CONFIG_X86_64
++		asm("crc32q %1, %q0"
++#else
++		asm("crc32l %1, %0"
++#endif
++		    : "+r" (crc) : "rm" (*ptmp));
+ 		ptmp++;
+ 	}
  
- 	/* Add virtio crypto device to global table */
- 	err = virtcrypto_devmgr_add_dev(vcrypto);
 -- 
-MST
+2.26.2
 
