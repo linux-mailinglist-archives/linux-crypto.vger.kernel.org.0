@@ -2,24 +2,24 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728DA23C39F
-	for <lists+linux-crypto@lfdr.de>; Wed,  5 Aug 2020 04:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562CF23C3A1
+	for <lists+linux-crypto@lfdr.de>; Wed,  5 Aug 2020 04:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbgHECsP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 4 Aug 2020 22:48:15 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:53210 "EHLO inva020.nxp.com"
+        id S1727788AbgHECsQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 4 Aug 2020 22:48:16 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:53242 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725864AbgHECsO (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 4 Aug 2020 22:48:14 -0400
+        id S1725999AbgHECsP (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 4 Aug 2020 22:48:15 -0400
 Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6335B1A04E6;
-        Wed,  5 Aug 2020 04:48:12 +0200 (CEST)
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AE71D1A1487;
+        Wed,  5 Aug 2020 04:48:13 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B49B91A1487;
-        Wed,  5 Aug 2020 04:48:06 +0200 (CEST)
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 0E2AE1A04CF;
+        Wed,  5 Aug 2020 04:48:08 +0200 (CEST)
 Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 4FDAD402E1;
-        Wed,  5 Aug 2020 04:47:59 +0200 (CEST)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 99ABF402E5;
+        Wed,  5 Aug 2020 04:48:00 +0200 (CEST)
 From:   Anson Huang <Anson.Huang@nxp.com>
 To:     herbert@gondor.apana.org.au, davem@davemloft.net,
         robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
@@ -28,104 +28,112 @@ To:     herbert@gondor.apana.org.au, davem@davemloft.net,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     Linux-imx@nxp.com
-Subject: [PATCH 1/3] dt-bindings: crypto: Convert MXS DCP to json-schema
-Date:   Wed,  5 Aug 2020 10:43:28 +0800
-Message-Id: <1596595410-26921-1-git-send-email-Anson.Huang@nxp.com>
+Subject: [PATCH 2/3] dt-bindings: crypto: Convert i.MX SCC to json-schema
+Date:   Wed,  5 Aug 2020 10:43:29 +0800
+Message-Id: <1596595410-26921-2-git-send-email-Anson.Huang@nxp.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1596595410-26921-1-git-send-email-Anson.Huang@nxp.com>
+References: <1596595410-26921-1-git-send-email-Anson.Huang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Convert the MXS DCP binding to DT schema format using json-schema.
+Convert the i.MX SCC binding to DT schema format using json-schema.
 
 Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- .../devicetree/bindings/crypto/fsl-dcp.txt         | 18 --------
- .../devicetree/bindings/crypto/fsl-dcp.yaml        | 49 ++++++++++++++++++++++
- 2 files changed, 49 insertions(+), 18 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/crypto/fsl-dcp.txt
- create mode 100644 Documentation/devicetree/bindings/crypto/fsl-dcp.yaml
+ .../devicetree/bindings/crypto/fsl-imx-scc.txt     | 21 ---------
+ .../devicetree/bindings/crypto/fsl-imx-scc.yaml    | 52 ++++++++++++++++++++++
+ 2 files changed, 52 insertions(+), 21 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/crypto/fsl-imx-scc.txt
+ create mode 100644 Documentation/devicetree/bindings/crypto/fsl-imx-scc.yaml
 
-diff --git a/Documentation/devicetree/bindings/crypto/fsl-dcp.txt b/Documentation/devicetree/bindings/crypto/fsl-dcp.txt
+diff --git a/Documentation/devicetree/bindings/crypto/fsl-imx-scc.txt b/Documentation/devicetree/bindings/crypto/fsl-imx-scc.txt
 deleted file mode 100644
-index 513499f..0000000
---- a/Documentation/devicetree/bindings/crypto/fsl-dcp.txt
+index 7aad448..0000000
+--- a/Documentation/devicetree/bindings/crypto/fsl-imx-scc.txt
 +++ /dev/null
-@@ -1,18 +0,0 @@
--Freescale DCP (Data Co-Processor) found on i.MX23/i.MX28 .
+@@ -1,21 +0,0 @@
+-Freescale Security Controller (SCC)
 -
 -Required properties:
--- compatible : Should be "fsl,<soc>-dcp"
--- reg : Should contain MXS DCP registers location and length
--- interrupts : Should contain MXS DCP interrupt numbers, VMI IRQ and DCP IRQ
--               must be supplied, optionally Secure IRQ can be present, but
--	       is currently not implemented and not used.
--- clocks : Clock reference (only required on some SOCs: 6ull and 6sll).
--- clock-names : Must be "dcp".
+-- compatible : Should be "fsl,imx25-scc".
+-- reg : Should contain register location and length.
+-- interrupts : Should contain interrupt numbers for SCM IRQ and SMN IRQ.
+-- interrupt-names : Should specify the names "scm" and "smn" for the
+-		    SCM IRQ and SMN IRQ.
+-- clocks: Should contain the clock driving the SCC core.
+-- clock-names: Should be set to "ipg".
 -
 -Example:
 -
--dcp: crypto@80028000 {
--	compatible = "fsl,imx28-dcp", "fsl,imx23-dcp";
--	reg = <0x80028000 0x2000>;
--	interrupts = <52 53>;
--};
-diff --git a/Documentation/devicetree/bindings/crypto/fsl-dcp.yaml b/Documentation/devicetree/bindings/crypto/fsl-dcp.yaml
+-	scc: crypto@53fac000 {
+-		compatible = "fsl,imx25-scc";
+-		reg = <0x53fac000 0x4000>;
+-		clocks = <&clks 111>;
+-		clock-names = "ipg";
+-		interrupts = <49>, <50>;
+-		interrupt-names = "scm", "smn";
+-	};
+diff --git a/Documentation/devicetree/bindings/crypto/fsl-imx-scc.yaml b/Documentation/devicetree/bindings/crypto/fsl-imx-scc.yaml
 new file mode 100644
-index 0000000..1ed86cd
+index 0000000..b259192
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/crypto/fsl-dcp.yaml
-@@ -0,0 +1,49 @@
++++ b/Documentation/devicetree/bindings/crypto/fsl-imx-scc.yaml
+@@ -0,0 +1,52 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/crypto/fsl-dcp.yaml#
++$id: http://devicetree.org/schemas/crypto/fsl-imx-scc.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Freescale DCP (Data Co-Processor) found on i.MX23/i.MX28
++title: Freescale Security Controller (SCC)
 +
 +maintainers:
-+  - Marek Vasut <marex@denx.de>
++  - Steffen Trumtrar <s.trumtrar@pengutronix.de>
 +
 +properties:
 +  compatible:
-+    enum:
-+      - fsl,imx23-dcp
-+      - fsl,imx28-dcp
++    const: fsl,imx25-scc
 +
 +  reg:
 +    maxItems: 1
 +
 +  interrupts:
-+    description: Should contain MXS DCP interrupt numbers, VMI IRQ and DCP IRQ
-+      must be supplied, optionally Secure IRQ can be present, but is currently
-+      not implemented and not used.
 +    items:
-+      - description: MXS DCP VMI interrupt
-+      - description: MXS DCP DCP interrupt
-+      - description: MXS DCP secure interrupt
-+    minItems: 2
-+    maxItems: 3
++      - description: SCC SCM interrupt
++      - description: SCC SMN interrupt
++
++  interrupt-names:
++    items:
++      - const: scm
++      - const: smn
 +
 +  clocks:
 +    maxItems: 1
 +
 +  clock-names:
-+    const: dcp
++    const: ipg
 +
 +required:
 +  - compatible
 +  - reg
 +  - interrupts
++  - interrupt-names
++  - clocks
++  - clock-names
 +
 +examples:
 +  - |
-+    crypto@80028000 {
-+        compatible = "fsl,imx23-dcp";
-+        reg = <0x80028000 0x2000>;
-+        interrupts = <53>, <54>;
++    crypto@53fac000 {
++        compatible = "fsl,imx25-scc";
++        reg = <0x53fac000 0x4000>;
++        clocks = <&clks 111>;
++        clock-names = "ipg";
++        interrupts = <49>, <50>;
++        interrupt-names = "scm", "smn";
 +    };
 -- 
 2.7.4
