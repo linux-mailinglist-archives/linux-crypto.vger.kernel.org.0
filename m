@@ -2,205 +2,255 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DAB23DC2D
-	for <lists+linux-crypto@lfdr.de>; Thu,  6 Aug 2020 18:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B1423DBEE
+	for <lists+linux-crypto@lfdr.de>; Thu,  6 Aug 2020 18:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729118AbgHFQrD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 6 Aug 2020 12:47:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29030 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729207AbgHFQpP (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:45:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596732313;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=yq06NoGira3XJqUtq4OjZJOaAZeoUPCFVsdiIYhXg5k=;
-        b=QKumoDKSyhlrP3AWcV+Ky64NMseRT+67caqbtGZnqxP/ZNgjxsBmP0VeUSKO6H4czJwwny
-        ri5aMhpVUtN/enEgF3g4nF+qaBifs/yuovp13eZCXYeGBfSdnCp1kY8EPRhQD7erN1ubSI
-        0uiirNnL0MA9Y3DdY2HsNM/lmtgLlUQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-504-07Wt8F2CPnqXy1snbvub0g-1; Thu, 06 Aug 2020 11:28:17 -0400
-X-MC-Unique: 07Wt8F2CPnqXy1snbvub0g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5BFF1005504;
-        Thu,  6 Aug 2020 15:28:16 +0000 (UTC)
-Received: from thinkpad.redhat.com (ovpn-113-9.ams2.redhat.com [10.36.113.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A8D05DA6B;
-        Thu,  6 Aug 2020 15:28:15 +0000 (UTC)
-From:   Laurent Vivier <lvivier@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-crypto@vger.kernel.org,
+        id S1728068AbgHFQif (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 6 Aug 2020 12:38:35 -0400
+Received: from mail-am6eur05on2053.outbound.protection.outlook.com ([40.107.22.53]:9601
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729036AbgHFQhB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:37:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B8/obt20CWh5g1ecCxs/S69a/b50G0jwdGtmhkKE/pOjUdSzLnBEKTPsV6uGR+WjgkVaUJDTKUILXWbcNuPVqb5NRF62ez18NxdQ1TqofdZXAU50PJFc39YUJFwFc/5Rr89oMVQNmKQYMRO9WwfItTfc03GKxuhrdVb4j7qU1wJjGLRLsClsmlIxxH2Cu4dKzFr7eOU61CkwjnLK8rkWnMAcy8+Hd85mNt4M51ewkUSXBEXRLgxc0kwJJc6OgITW8OLPnIVopxCPxRTVssTVUvrIe/6dX/q7jkN7RcwHUi7qeaCEZLyYLK9ViDSDwA2jYPclFvSboeM1TSuyoxX2OQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rUOaFR+51/hMGHZ1OqrVUqDtVfGLQpzNtoWYvUv9n6w=;
+ b=LpQzAtWQdO3zoAlFKRUA6kZzMeW3wZFKPXNKH1PB4kvIhcgMJ6OpmuMGDXccwfT5u84CWEm9Ct6xPD3mj4q66fP2LMJyJWK1lBoXgdlSXxUhNR1gVDsu3H0s8Qwfhd3KxpezV67nAlamIlcgs4qiFLm4N3fcQWl67y0AjBZFexN/xsvMPKBYAiVz2kQOBhXiaFWbV/HofitKqFOwK1g6AG6AQI1SO1VK0/+a8/bO5lOht0TbkC4Gs6/wbz5dfgm6SGaQUJJvTmKkSWoSn1j5aq7b/yDEP8W+jfaj7HzorIsrc8+A1UWtz1HvXS1gh3Li2yoU4XQD+MC0uoIxMt/GJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rUOaFR+51/hMGHZ1OqrVUqDtVfGLQpzNtoWYvUv9n6w=;
+ b=PEqDAAwr7b0HXuI47FTStIxNvFpRrnyvPUq1uVmx9ntF7O+HhHI8siCMTFCQSt2CTvCsj5DWzigF5R3eVBfSmpXypNn/qhj1eVO5a/3yskbELLGGu2C5IogBt/lmApijzEMI9BL68ls0r2JtJmh30NVw8rGR3YFCinleLksf+jw=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VE1PR04MB6608.eurprd04.prod.outlook.com (2603:10a6:803:125::12)
+ by VI1PR04MB4992.eurprd04.prod.outlook.com (2603:10a6:803:51::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16; Thu, 6 Aug
+ 2020 16:36:10 +0000
+Received: from VE1PR04MB6608.eurprd04.prod.outlook.com
+ ([fe80::a856:c104:11c7:258d]) by VE1PR04MB6608.eurprd04.prod.outlook.com
+ ([fe80::a856:c104:11c7:258d%6]) with mapi id 15.20.3261.019; Thu, 6 Aug 2020
+ 16:36:10 +0000
+From:   Andrei Botila <andrei.botila@oss.nxp.com>
+To:     Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Amit Shah <amit@kernel.org>,
-        Laurent Vivier <lvivier@redhat.com>
-Subject: [PATCH] hwrng: core - allocate a one page buffer
-Date:   Thu,  6 Aug 2020 17:28:14 +0200
-Message-Id: <20200806152814.1325776-1-lvivier@redhat.com>
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND 1/9] crypto: caam/jr - add fallback for XTS with more than 8B IV
+Date:   Thu,  6 Aug 2020 19:35:43 +0300
+Message-Id: <20200806163551.14395-2-andrei.botila@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
+References: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
+Content-Type: text/plain
+X-ClientProxiedBy: AM4PR0902CA0015.eurprd09.prod.outlook.com
+ (2603:10a6:200:9b::25) To VE1PR04MB6608.eurprd04.prod.outlook.com
+ (2603:10a6:803:125::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv15007.swis.ro-buh01.nxp.com (83.217.231.2) by AM4PR0902CA0015.eurprd09.prod.outlook.com (2603:10a6:200:9b::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19 via Frontend Transport; Thu, 6 Aug 2020 16:36:09 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [83.217.231.2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ba56a126-2b9d-4643-c115-08d83a26d381
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4992:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4992AE95E6CED5A33C96FCCCB4480@VI1PR04MB4992.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nEn9/B5WclBZ7EN8nhd5jhsq/lCLspOTEj7Jzo/Q/nDQbKN69P9y7JEG5U+Ov+2pYcb8DpmMlu2mbf/dOPzrVa2KUXxceZ2rIfYKECMdEW+WDPBD103NEqZtJNWms06IJi2n/8zFofCW9lpegSeGRX4PCrt8W2aZwHBbwtjP2SzpJ9Oq28bZIZZCuT2l9MuYGdIiG+FKA438BB1kBm2CaMCIfyZx7CZgKJwiaEU6wGfEfravA8Zx0jn0a6o/M3rRoBaoxPmobvLDFa8P96kzvnNYGYClwrRvDzg7q0Ri2CYMem+W+r4DJvYl979dZ5nWDvlYHhsNdo3kFRorxXSqJo23s8YfqdOkL1mtxtjqcNUowM/Dxu+JxaypCLw+73j9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6608.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(366004)(376002)(136003)(346002)(66476007)(86362001)(26005)(6512007)(16526019)(186003)(66556008)(66946007)(1076003)(110136005)(8936002)(316002)(8676002)(478600001)(2906002)(6506007)(4326008)(44832011)(2616005)(956004)(83380400001)(6486002)(6666004)(52116002)(5660300002)(309714004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: YKY3eCy5mEwT8lfHc+Cli9irCmYElX1TBmtUm95BWSjRd5AgyqFOFBWATmb/F0EObJCYpV+3FVRM/UlqpCYXfVYBksfVMltQjethe+DacbFPjvh7IgFCNFL3QS8qf7Qitbt+rScnKTJb46/vMSMCGnCV29r2bxx3D+/Q5IvGQcbzAs8Yug5/jEbVbyUT7ooEpmOfJU10rAJxwWvGSc94bnLKhJHDNJf8CKeMbhywZEG7PkPd1G26jWM2RXjtA4+6YjP9JKeL73A0z1/m+EQRX2ENAGpF4CVoYl1T+MK+WFwLzBDcepCTmWT2nn6VS+XPDZ2LcjrR2etRjdjkvrq0y7Q89Eqtof9YnrNUD5RNr+wolxu42DeBkYB6tudBQXsRmdff904Eu1j9d4biCW1c1MXMiM2IMxrW/WuFpviNdAmXGEXPFkzGHfxBvGS3DWXIs4L38XpZdQ9gvXgLnKNrOUjIh81o/tjSSzqS4lUkZTtwu6DwS1vXIzwgvbHq2QUMyfZ8CEEc6DN3drpZEDbFFrUl3e6j3MxE7wXxPzotUaqTymBH9iExntLVn73dkDzqCS64NSn9i7pQB+Dvlv77lZ6Wv68HDpBHHFsxsZzVWNHrnSPD1SCOneTX0zTj+J7/Q26i+G/eI67rpAiPvS9HBg==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba56a126-2b9d-4643-c115-08d83a26d381
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6608.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2020 16:36:10.5898
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hkRbcUCloYrCLw5VuU85iIxYGdOXViBt601MH/RoDI3ri1RKdFqNXVTO+52NDvyfBXMn9URZc/1sSJdrtiBkLw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4992
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This allows the driver to move bigger data block when the backend allows
-it.
+From: Andrei Botila <andrei.botila@nxp.com>
 
-Add a backend buffer_size for this purpose. For the moment only
-virtio-rng defines it.
+A hardware limitation exists for CAAM until Era 9 which restricts
+the accelerator to IVs with only 8 bytes. When CAAM has a lower era
+a fallback is necessary to process 16 bytes IV.
 
-Using bigger buffer with virtio-rng improves performance from:
-
-  # dd if=/dev/hwrng of=/dev/null bs=1024 count=1024000
-  1048576000 bytes (1.0 GB, 1000 MiB) copied, 674.303 s, 1.6 MB/s
-  # dd if=/dev/hwrng of=/dev/null bs=4096 count=256000
-  1048576000 bytes (1.0 GB, 1000 MiB) copied, 622.394 s, 1.7 MB/s
-
-to
-
-  # dd if=/dev/hwrng of=/dev/null bs=1024 count=1024000
-  1048576000 bytes (1.0 GB, 1000 MiB) copied, 41.0579 s, 25.5 MB/s
-  # dd if=/dev/hwrng of=/dev/null bs=4096 count=256000
-  1048576000 bytes (1.0 GB, 1000 MiB) copied, 14.394 s, 72.8 MB/s
-
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
+Fixes: c6415a6016bf ("crypto: caam - add support for acipher xts(aes)")
+Cc: <stable@vger.kernel.org> # v4.4+
+Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
 ---
- drivers/char/hw_random/core.c       | 37 ++++++++++++++++++++---------
- drivers/char/hw_random/virtio-rng.c |  1 +
- include/linux/hw_random.h           |  2 ++
- 3 files changed, 29 insertions(+), 11 deletions(-)
+ drivers/crypto/caam/caamalg.c | 68 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 64 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/hw_random/core.c b/drivers/char/hw_random/core.c
-index 8c1c47dd9f46..3d8ce3c4d79c 100644
---- a/drivers/char/hw_random/core.c
-+++ b/drivers/char/hw_random/core.c
-@@ -56,15 +56,25 @@ static void start_khwrngd(void);
- static inline int rng_get_data(struct hwrng *rng, u8 *buffer, size_t size,
- 			       int wait);
+diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
+index 91feda5b63f6..ebf4dc87ca2e 100644
+--- a/drivers/crypto/caam/caamalg.c
++++ b/drivers/crypto/caam/caamalg.c
+@@ -57,6 +57,7 @@
+ #include "key_gen.h"
+ #include "caamalg_desc.h"
+ #include <crypto/engine.h>
++#include <asm/unaligned.h>
  
--static size_t rng_buffer_size(void)
-+static size_t rng_min_buffer_size(void)
- {
--	return SMP_CACHE_BYTES < 32 ? 32 : SMP_CACHE_BYTES;
-+	return max_t(size_t, 32, SMP_CACHE_BYTES);
-+}
-+
-+static size_t rng_max_buffer_size(struct hwrng *rng)
-+{
-+	size_t size;
-+
-+	size = max_t(size_t, rng->buffer_size, SMP_CACHE_BYTES);
-+
-+	/* rng_buffer can store up to PAGE_SIZE */
-+	return min(PAGE_SIZE, size);
- }
+ /*
+  * crypto alg
+@@ -114,10 +115,12 @@ struct caam_ctx {
+ 	struct alginfo adata;
+ 	struct alginfo cdata;
+ 	unsigned int authsize;
++	struct crypto_skcipher *fallback;
+ };
  
- static void add_early_randomness(struct hwrng *rng)
- {
- 	int bytes_read;
--	size_t size = min_t(size_t, 16, rng_buffer_size());
-+	size_t size = min_t(size_t, 16, rng_min_buffer_size());
+ struct caam_skcipher_req_ctx {
+ 	struct skcipher_edesc *edesc;
++	struct skcipher_request fallback_req;
+ };
  
- 	mutex_lock(&reading_mutex);
- 	bytes_read = rng_get_data(rng, rng_buffer, size, 0);
-@@ -226,9 +236,14 @@ static ssize_t rng_dev_read(struct file *filp, char __user *buf,
- 			goto out_put;
- 		}
- 		if (!data_avail) {
--			bytes_read = rng_get_data(rng, rng_buffer,
--				rng_buffer_size(),
--				!(filp->f_flags & O_NONBLOCK));
-+			size_t to_read;
-+			/* read at least 32 bytes, up to rng_max_buffer_size()
-+			 * but no more than size
-+			 */
-+			to_read = max_t(size_t, 32,
-+					min(size, rng_max_buffer_size(rng)));
-+			bytes_read = rng_get_data(rng, rng_buffer, to_read,
-+						  !(filp->f_flags & O_NONBLOCK));
- 			if (bytes_read < 0) {
- 				err = bytes_read;
- 				goto out_unlock_reading;
-@@ -440,7 +455,7 @@ static int hwrng_fillfn(void *unused)
- 			break;
- 		mutex_lock(&reading_mutex);
- 		rc = rng_get_data(rng, rng_fillbuf,
--				  rng_buffer_size(), 1);
-+				  rng_min_buffer_size(), 1);
- 		mutex_unlock(&reading_mutex);
- 		put_rng(rng);
- 		if (rc <= 0) {
-@@ -614,11 +629,11 @@ static int __init hwrng_modinit(void)
- 	int ret;
+ struct caam_aead_req_ctx {
+@@ -830,12 +833,17 @@ static int xts_skcipher_setkey(struct crypto_skcipher *skcipher, const u8 *key,
+ 	struct caam_ctx *ctx = crypto_skcipher_ctx(skcipher);
+ 	struct device *jrdev = ctx->jrdev;
+ 	u32 *desc;
++	int err;
  
- 	/* kmalloc makes this safe for virt_to_page() in virtio_rng.c */
--	rng_buffer = kmalloc(rng_buffer_size(), GFP_KERNEL);
-+	rng_buffer = (u8 *)get_zeroed_page(GFP_KERNEL);
- 	if (!rng_buffer)
- 		return -ENOMEM;
- 
--	rng_fillbuf = kmalloc(rng_buffer_size(), GFP_KERNEL);
-+	rng_fillbuf = kmalloc(rng_min_buffer_size(), GFP_KERNEL);
- 	if (!rng_fillbuf) {
- 		kfree(rng_buffer);
- 		return -ENOMEM;
-@@ -627,7 +642,7 @@ static int __init hwrng_modinit(void)
- 	ret = register_miscdev();
- 	if (ret) {
- 		kfree(rng_fillbuf);
--		kfree(rng_buffer);
-+		free_page((unsigned long)rng_buffer);
+ 	if (keylen != 2 * AES_MIN_KEY_SIZE  && keylen != 2 * AES_MAX_KEY_SIZE) {
+ 		dev_dbg(jrdev, "key size mismatch\n");
+ 		return -EINVAL;
  	}
  
++	err = crypto_skcipher_setkey(ctx->fallback, key, keylen);
++	if (err)
++		return err;
++
+ 	ctx->cdata.keylen = keylen;
+ 	ctx->cdata.key_virt = key;
+ 	ctx->cdata.key_inline = true;
+@@ -1755,6 +1763,20 @@ static int skcipher_do_one_req(struct crypto_engine *engine, void *areq)
  	return ret;
-@@ -637,7 +652,7 @@ static void __exit hwrng_modexit(void)
+ }
+ 
++static bool xts_skcipher_ivsize(struct skcipher_request *req)
++{
++	struct crypto_skcipher *skcipher = crypto_skcipher_reqtfm(req);
++	unsigned int ivsize = crypto_skcipher_ivsize(skcipher);
++	u64 size = 0;
++
++	if (IS_ALIGNED((unsigned long)req->iv, __alignof__(u64)))
++		size = *(u64 *)(req->iv + (ivsize / 2));
++	else
++		size = get_unaligned((u64 *)(req->iv + (ivsize / 2)));
++
++	return !!size;
++}
++
+ static inline int skcipher_crypt(struct skcipher_request *req, bool encrypt)
  {
- 	mutex_lock(&rng_mutex);
- 	BUG_ON(current_rng);
--	kfree(rng_buffer);
-+	free_page((unsigned long)rng_buffer);
- 	kfree(rng_fillbuf);
- 	mutex_unlock(&rng_mutex);
+ 	struct skcipher_edesc *edesc;
+@@ -1768,6 +1790,21 @@ static inline int skcipher_crypt(struct skcipher_request *req, bool encrypt)
+ 	if (!req->cryptlen)
+ 		return 0;
  
-diff --git a/drivers/char/hw_random/virtio-rng.c b/drivers/char/hw_random/virtio-rng.c
-index a90001e02bf7..b71c137fcd05 100644
---- a/drivers/char/hw_random/virtio-rng.c
-+++ b/drivers/char/hw_random/virtio-rng.c
-@@ -104,6 +104,7 @@ static int probe_common(struct virtio_device *vdev)
++	if (ctx->fallback && xts_skcipher_ivsize(req)) {
++		struct caam_skcipher_req_ctx *rctx = skcipher_request_ctx(req);
++
++		skcipher_request_set_tfm(&rctx->fallback_req, ctx->fallback);
++		skcipher_request_set_callback(&rctx->fallback_req,
++					      req->base.flags,
++					      req->base.complete,
++					      req->base.data);
++		skcipher_request_set_crypt(&rctx->fallback_req, req->src,
++					   req->dst, req->cryptlen, req->iv);
++
++		return encrypt ? crypto_skcipher_encrypt(&rctx->fallback_req) :
++				  crypto_skcipher_decrypt(&rctx->fallback_req);
++	}
++
+ 	/* allocate extended descriptor */
+ 	edesc = skcipher_edesc_alloc(req, DESC_JOB_IO_LEN * CAAM_CMD_SZ);
+ 	if (IS_ERR(edesc))
+@@ -1905,6 +1942,7 @@ static struct caam_skcipher_alg driver_algs[] = {
+ 			.base = {
+ 				.cra_name = "xts(aes)",
+ 				.cra_driver_name = "xts-aes-caam",
++				.cra_flags = CRYPTO_ALG_NEED_FALLBACK,
+ 				.cra_blocksize = AES_BLOCK_SIZE,
+ 			},
+ 			.setkey = xts_skcipher_setkey,
+@@ -3344,12 +3382,30 @@ static int caam_cra_init(struct crypto_skcipher *tfm)
+ 	struct caam_skcipher_alg *caam_alg =
+ 		container_of(alg, typeof(*caam_alg), skcipher);
+ 	struct caam_ctx *ctx = crypto_skcipher_ctx(tfm);
++	u32 alg_aai = caam_alg->caam.class1_alg_type & OP_ALG_AAI_MASK;
  
- 	vi->hwrng = (struct hwrng) {
- 		.read = virtio_read,
-+		.buffer_size = PAGE_SIZE,
- 		.cleanup = virtio_cleanup,
- 		.priv = (unsigned long)vi,
- 		.name = vi->name,
-diff --git a/include/linux/hw_random.h b/include/linux/hw_random.h
-index 8e6dd908da21..582c8787f808 100644
---- a/include/linux/hw_random.h
-+++ b/include/linux/hw_random.h
-@@ -31,6 +31,7 @@
-  * @read:		New API. drivers can fill up to max bytes of data
-  *			into the buffer. The buffer is aligned for any type
-  *			and max is a multiple of 4 and >= 32 bytes.
-+ * @buffer_size:	Optional. if not 0, optimal buffer size.
-  * @priv:		Private data, for use by the RNG driver.
-  * @quality:		Estimation of true entropy in RNG's bitstream
-  *			(in bits of entropy per 1024 bits of input;
-@@ -43,6 +44,7 @@ struct hwrng {
- 	int (*data_present)(struct hwrng *rng, int wait);
- 	int (*data_read)(struct hwrng *rng, u32 *data);
- 	int (*read)(struct hwrng *rng, void *data, size_t max, bool wait);
-+	size_t buffer_size;
- 	unsigned long priv;
- 	unsigned short quality;
+ 	crypto_skcipher_set_reqsize(tfm, sizeof(struct caam_skcipher_req_ctx));
  
+ 	ctx->enginectx.op.do_one_request = skcipher_do_one_req;
+ 
+-	return caam_init_common(crypto_skcipher_ctx(tfm), &caam_alg->caam,
++	if (alg_aai == OP_ALG_AAI_XTS) {
++		const char *tfm_name = crypto_tfm_alg_name(&tfm->base);
++		struct crypto_skcipher *fallback;
++
++		fallback = crypto_alloc_skcipher(tfm_name, 0,
++						 CRYPTO_ALG_NEED_FALLBACK);
++		if (IS_ERR(fallback)) {
++			pr_err("Failed to allocate %s fallback: %ld\n",
++			       tfm_name, PTR_ERR(fallback));
++			return PTR_ERR(fallback);
++		}
++
++		ctx->fallback = fallback;
++		crypto_skcipher_set_reqsize(tfm, sizeof(struct caam_skcipher_req_ctx) +
++					    crypto_skcipher_reqsize(fallback));
++	}
++
++	return caam_init_common(ctx, &caam_alg->caam,
+ 				false);
+ }
+ 
+@@ -3378,7 +3434,11 @@ static void caam_exit_common(struct caam_ctx *ctx)
+ 
+ static void caam_cra_exit(struct crypto_skcipher *tfm)
+ {
+-	caam_exit_common(crypto_skcipher_ctx(tfm));
++	struct caam_ctx *ctx = crypto_skcipher_ctx(tfm);
++
++	if (ctx->fallback)
++		crypto_free_skcipher(ctx->fallback);
++	caam_exit_common(ctx);
+ }
+ 
+ static void caam_aead_exit(struct crypto_aead *tfm)
+@@ -3412,8 +3472,8 @@ static void caam_skcipher_alg_init(struct caam_skcipher_alg *t_alg)
+ 	alg->base.cra_module = THIS_MODULE;
+ 	alg->base.cra_priority = CAAM_CRA_PRIORITY;
+ 	alg->base.cra_ctxsize = sizeof(struct caam_ctx);
+-	alg->base.cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY |
+-			      CRYPTO_ALG_KERN_DRIVER_ONLY;
++	alg->base.cra_flags |= (CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY |
++			      CRYPTO_ALG_KERN_DRIVER_ONLY);
+ 
+ 	alg->init = caam_cra_init;
+ 	alg->exit = caam_cra_exit;
 -- 
-2.26.2
+2.17.1
 
