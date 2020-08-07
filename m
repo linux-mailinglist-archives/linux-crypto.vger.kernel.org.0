@@ -2,58 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5A823EF8D
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Aug 2020 16:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC21823EFF7
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Aug 2020 17:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgHGOwT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Fri, 7 Aug 2020 10:52:19 -0400
-Received: from mail.furshetcrimea.ru ([193.27.243.220]:51882 "EHLO
-        furshetcrimea.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbgHGOwT (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 7 Aug 2020 10:52:19 -0400
-X-Greylist: delayed 5015 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 10:51:24 EDT
-Received: from [154.118.61.214] (account info@furshetcrimea.ru HELO [192.168.8.100])
-  by furshetcrimea.ru (CommuniGate Pro SMTP 6.1.10)
-  with ESMTPA id 11132968; Fri, 07 Aug 2020 17:58:09 +0300
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726186AbgHGPYk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 7 Aug 2020 11:24:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725893AbgHGPYj (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 7 Aug 2020 11:24:39 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ADB6B21744;
+        Fri,  7 Aug 2020 15:24:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596813879;
+        bh=MYuQqoMFVxzRIi+Ns8NKI4SRbBu+5QOTi8qefsLQM2c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XUlKlHjqjAy1Bn5qyhlXLIOu78vQQO5G+DKLPZ2xiIHpb0RZVoxuq6tHK5WlGpvS0
+         0tlTTUADwC/rIO2Vl/un4bp/ivj/4En8wtmjm/mqCGB8KZlC1hMA+I/EaxH2hPmrfC
+         MYfCCYQnyejk+DMA1NaEbgACCzFt/VuWS9lFLGJg=
+Date:   Fri, 7 Aug 2020 08:24:37 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Srujana Challa <schalla@marvell.com>
+Cc:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <schandran@marvell.com>, <pathreya@marvell.com>,
+        <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>
+Subject: Re: [PATCH v2 2/3] drivers: crypto: add support for OCTEONTX2 CPT
+ engine
+Message-ID: <20200807082437.246a9f1c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1596809360-12597-3-git-send-email-schalla@marvell.com>
+References: <1596809360-12597-1-git-send-email-schalla@marvell.com>
+        <1596809360-12597-3-git-send-email-schalla@marvell.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Bei Interesse antworten.
-To:     Recipients <info@furshetcrimea.ru>
-From:   info@furshetcrimea.ru
-Date:   Fri, 07 Aug 2020 15:45:33 +0100
-Reply-To: mattiassjoborg751@gmail.com
-X-Antivirus: Avast (VPS 200807-2, 08/07/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <auto-000011132968@furshetcrimea.ru>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Schöne Grüße,
+On Fri, 7 Aug 2020 19:39:19 +0530 Srujana Challa wrote:
+> Add support for the cryptographic acceleration unit (CPT) on
+> OcteonTX2 CN96XX SoC.
 
-Mein Name ist MATTIAS SJOBORG, ich bin Schweizer Staatsbürger und (Vorsitzender des Vergütungs- und Nominierungsausschusses) von Tethys Petroleum, einem multinationalen Ölkonzern mit Sitz in London-England, Großbritannien. Ich bitte Sie um Ihre Hilfe, um die Summe von vierzig Millionen Dollar abzurufen, die aus zwei Sendungsboxen besteht.
+Please address the W=1 C=1 build warnings
 
-Dieses Geld wurde von der Firma erworben und von einem Diplomaten begleitet und korrekt in einer Sicherheitsfirma in Amerika hinterlegt. Mein Grund dafür ist, dass ich von der Firma zu lange um meine Ansprüche betrogen wurde, nur weil ich kein bin Britisch. Die Kontaktdaten des Diplomaten erhalten Sie, wenn Sie Ihr Interesse bekunden, mir zu helfen.
-
-Jede der Schachteln enthält 20 Mio. USD. Für Ihre Hilfe bin ich bereit, 40% an Sie freizugeben. Aus Sicherheitsgründen wurde die Sendung als VERTRAULICHE DIPLOMATISCHE DOKUMENTE registriert, und ich kann erklären, warum dies so erklärt wurde. Denken Sie daran, dass der Diplomat den Inhalt der Sendung nicht kennt. Er ist seit einem Monat dort, während ich nach einem zuverlässigen Partner suchen möchte. Ich werde das Land verlassen, sobald die Sendung für Sie an Sie geliefert wird Private Investitionen und ich haben geschworen, niemals nach London zurückzukehren. Bitte, ich brauche Ihre dringende Antwort, bevor meine Pläne, das Unternehmen zu verlassen, entdeckt werden.
-
-www.tethyspetroleum.com/tethys/static/EN_US/au_seniormanagement.html
-
-Im Moment ist die sicherste Form der Korrespondenz meine eigene E-Mail-Adresse. Bitte antworten Sie im Interesse der Vertraulichkeit nur über meine direkte E-Mail-Adresse. Antworten Sie zusammen mit Ihrer direkten Telefon- und Faxnummer, unter der ich Sie alternativ erreichen kann.
-
-Bitte, wenn Sie nicht bereit und interessiert sind, mir zu helfen, löschen Sie bitte diese E-Mail aus Ihrer E-Mail und tun Sie so, als hätten Sie sie nie erhalten.
-
-Freundliche Grüße,
-Mr.Mattias Sjoborg
-(Vorsitzender des Vergütungs- und Nominierungsausschusses)
-Tethys Petroleum.
-London, England
-
--- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
-
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c:475:51: warning: cast removes address space '__iomem' of expression
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_mbox.c:158:39: warning: incorrect type in assignment (different address spaces)
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_mbox.c:158:39:    expected void *lmtline
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_mbox.c:158:39:    got void [noderef] __iomem *
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_mbox.c:161:37: warning: incorrect type in assignment (different address spaces)
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_mbox.c:161:37:    expected void *ioreg
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_mbox.c:161:37:    got void [noderef] __iomem *
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:394:22: warning: cast to restricted __be32
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:394:22: warning: cast to restricted __be32
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:394:22: warning: cast to restricted __be32
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:394:22: warning: cast to restricted __be32
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:394:22: warning: cast to restricted __be32
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:394:22: warning: cast to restricted __be32
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:1025:23: warning: cast to restricted __be32
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:1025:23: warning: cast to restricted __be32
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:1025:23: warning: cast to restricted __be32
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:1025:23: warning: cast to restricted __be32
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:1025:23: warning: cast to restricted __be32
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:1025:23: warning: cast to restricted __be32
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:1887:29: warning: incorrect type in assignment (different base types)
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:1887:29:    expected unsigned short [assigned] [usertype] opcode
+../drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c:1887:29:    got restricted __be16 [usertype]
