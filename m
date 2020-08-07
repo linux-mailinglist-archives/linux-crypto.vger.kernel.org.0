@@ -2,94 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDB823F051
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Aug 2020 17:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB16C23F09B
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Aug 2020 18:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgHGP5f (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 7 Aug 2020 11:57:35 -0400
-Received: from out28-146.mail.aliyun.com ([115.124.28.146]:56296 "EHLO
-        out28-146.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbgHGP5f (ORCPT
+        id S1726699AbgHGQKJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Fri, 7 Aug 2020 12:10:09 -0400
+Received: from mail.furshetcrimea.ru ([193.27.243.220]:40572 "EHLO
+        furshetcrimea.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726750AbgHGQKI (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 7 Aug 2020 11:57:35 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07741829|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0416614-0.0045437-0.953795;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03306;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.IE4F7wY_1596815847;
-Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IE4F7wY_1596815847)
-          by smtp.aliyun-inc.com(10.147.41.231);
-          Fri, 07 Aug 2020 23:57:28 +0800
-Subject: Re: [PATCH] crypto: ingenic - Drop kfree for memory allocated with
- devm_kzalloc
-To:     Wei Yongjun <weiyongjun1@huawei.com>, mpm@selenic.com,
-        herbert@gondor.apana.org.au, arnd@arndb.de,
-        gregkh@linuxfoundation.org, prasannatsmkumar@gmail.com
-Cc:     linux-crypto@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-References: <20200804081153.45342-1-weiyongjun1@huawei.com>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <dc81addf-28db-72ef-1181-5b6425374e3c@wanyeetech.com>
-Date:   Fri, 7 Aug 2020 23:57:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+        Fri, 7 Aug 2020 12:10:08 -0400
+Received: from [154.118.61.214] (account info@furshetcrimea.ru HELO [192.168.8.100])
+  by furshetcrimea.ru (CommuniGate Pro SMTP 6.1.10)
+  with ESMTPA id 11168838; Fri, 07 Aug 2020 19:21:47 +0300
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-In-Reply-To: <20200804081153.45342-1-weiyongjun1@huawei.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Bei Interesse antworten.
+To:     Recipients <info@furshetcrimea.ru>
+From:   info@furshetcrimea.ru
+Date:   Fri, 07 Aug 2020 17:09:10 +0100
+Reply-To: mattiassjoborg751@gmail.com
+X-Antivirus: Avast (VPS 200807-2, 08/07/2020), Outbound message
+X-Antivirus-Status: Clean
+Message-ID: <auto-000011168838@furshetcrimea.ru>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello,
+Sch鰊e Gre,
 
-在 2020/8/4 下午4:11, Wei Yongjun 写道:
-> It's not necessary to free memory allocated with devm_kzalloc
-> and using kfree leads to a double free.
+Mein Name ist MATTIAS SJOBORG, ich bin Schweizer Staatsb黵ger und (Vorsitzender des Verg黷ungs- und Nominierungsausschusses) von Tethys Petroleum, einem multinationalen 謑konzern mit Sitz in London-England, Gro遙ritannien. Ich bitte Sie um Ihre Hilfe, um die Summe von vierzig Millionen Dollar abzurufen, die aus zwei Sendungsboxen besteht.
 
+Dieses Geld wurde von der Firma erworben und von einem Diplomaten begleitet und korrekt in einer Sicherheitsfirma in Amerika hinterlegt. Mein Grund daf黵 ist, dass ich von der Firma zu lange um meine Anspr點he betrogen wurde, nur weil ich kein bin Britisch. Die Kontaktdaten des Diplomaten erhalten Sie, wenn Sie Ihr Interesse bekunden, mir zu helfen.
 
-Thanks for fix it.
+Jede der Schachteln enth鋖t 20 Mio. USD. F黵 Ihre Hilfe bin ich bereit, 40% an Sie freizugeben. Aus Sicherheitsgr黱den wurde die Sendung als VERTRAULICHE DIPLOMATISCHE DOKUMENTE registriert, und ich kann erkl鋜en, warum dies so erkl鋜t wurde. Denken Sie daran, dass der Diplomat den Inhalt der Sendung nicht kennt. Er ist seit einem Monat dort, w鋒rend ich nach einem zuverl鋝sigen Partner suchen m鯿hte. Ich werde das Land verlassen, sobald die Sendung f黵 Sie an Sie geliefert wird Private Investitionen und ich haben geschworen, niemals nach London zur點kzukehren. Bitte, ich brauche Ihre dringende Antwort, bevor meine Pl鋘e, das Unternehmen zu verlassen, entdeckt werden.
 
-Reviewed-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+www.tethyspetroleum.com/tethys/static/EN_US/au_seniormanagement.html
 
->
-> Fixes: 190873a0ea45 ("crypto: ingenic - Add hardware RNG for Ingenic JZ4780 and X1000")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
->   drivers/char/hw_random/ingenic-rng.c | 9 ++-------
->   1 file changed, 2 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/char/hw_random/ingenic-rng.c b/drivers/char/hw_random/ingenic-rng.c
-> index d704cef64b64..055cfe59f519 100644
-> --- a/drivers/char/hw_random/ingenic-rng.c
-> +++ b/drivers/char/hw_random/ingenic-rng.c
-> @@ -92,8 +92,7 @@ static int ingenic_rng_probe(struct platform_device *pdev)
->   	priv->base = devm_platform_ioremap_resource(pdev, 0);
->   	if (IS_ERR(priv->base)) {
->   		pr_err("%s: Failed to map RNG registers\n", __func__);
-> -		ret = PTR_ERR(priv->base);
-> -		goto err_free_rng;
-> +		return PTR_ERR(priv->base);
->   	}
->   
->   	priv->version = (enum ingenic_rng_version)of_device_get_match_data(&pdev->dev);
-> @@ -106,17 +105,13 @@ static int ingenic_rng_probe(struct platform_device *pdev)
->   	ret = hwrng_register(&priv->rng);
->   	if (ret) {
->   		dev_err(&pdev->dev, "Failed to register hwrng\n");
-> -		goto err_free_rng;
-> +		return ret;
->   	}
->   
->   	platform_set_drvdata(pdev, priv);
->   
->   	dev_info(&pdev->dev, "Ingenic RNG driver registered\n");
->   	return 0;
-> -
-> -err_free_rng:
-> -	kfree(priv);
-> -	return ret;
->   }
->   
->   static int ingenic_rng_remove(struct platform_device *pdev)
->
->
+Im Moment ist die sicherste Form der Korrespondenz meine eigene E-Mail-Adresse. Bitte antworten Sie im Interesse der Vertraulichkeit nur 黚er meine direkte E-Mail-Adresse. Antworten Sie zusammen mit Ihrer direkten Telefon- und Faxnummer, unter der ich Sie alternativ erreichen kann.
+
+Bitte, wenn Sie nicht bereit und interessiert sind, mir zu helfen, l鰏chen Sie bitte diese E-Mail aus Ihrer E-Mail und tun Sie so, als h鋞ten Sie sie nie erhalten.
+
+Freundliche Gre,
+Mr.Mattias Sjoborg
+(Vorsitzender des Verg黷ungs- und Nominierungsausschusses)
+Tethys Petroleum.
+London, England
+
+-- 
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
+
