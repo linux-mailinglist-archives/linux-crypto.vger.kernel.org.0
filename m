@@ -2,131 +2,131 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED42623F10E
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Aug 2020 18:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F76E23F135
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Aug 2020 18:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726916AbgHGQWx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 7 Aug 2020 12:22:53 -0400
-Received: from mail-eopbgr140057.outbound.protection.outlook.com ([40.107.14.57]:4231
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726996AbgHGQWf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 7 Aug 2020 12:22:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jh9qgscdqncpn79ITzpR3BoDnDKfl7OAH3J3Rk3SrTwoxEHCDsxYW+Jbx5jvuDMROK/ZINKgKufnmgBZgm0BbZx8xsGyE7ptLeNys57+wMY/RDGDSgt6zOXcN0LlK7JdtsM+zlSoavalr1tunthhgDdr3HCz35KYbEakaLspPU/u7VW0at23/2/H/RzRMQxKaW1IvKHEulDidSqRNK5gXVa2CxCqvrt9MGiNHCFH/WFtVlLA4H9YUdpvKiKlrzpZdFGd7hC6awDu3ZefUmq6IxVYV3ZYJe1C+oMhNh2IUS8ryRKlcV12Dy9FU3WQQJSoB1QgddMZiW85Serobkd8LA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HAYKh++vF4KpuHhTQZhWSaZQIOj6T+WI/Kqium2hgI8=;
- b=M0/aoE85XR/o0obJzKAOx+TV3jVdCjtJ5W6jBMhTnpNvLk5qleIzpY/0fFdXh7Iwnxxa+pfMH42i7BKCHx8Vu1XAu3Q0aPaMXuyYvX+HTCsx8vRCqQ5vtTazyaoEOOVK2gCQJhetR2w7qSPBsjDue0mt3MgYCNYzcWu9aLPl3Vs9wJa3CRMtu8umHZuOjqitC9L7KBOKEGIk1hnQqVQ46nA2AtT1cs8/280EohUOoBNObjtdd/mfxOMoqXI1Ca7XlPCjsDKu4k7LJVFQCxxm/trxV6QXy4fXnlfKUC/zIdkIpcljbZ5OFcNlFlMUrrwwv5kQby2xzzuD/OQqFaAPfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HAYKh++vF4KpuHhTQZhWSaZQIOj6T+WI/Kqium2hgI8=;
- b=TS+e9r5RkchV+RoXdpnpRSfdbMgOhyZ1tPX6/dV/nkowoDemPCvYOF1/gTT5TZog9AfMIBvZiLrkL/p570B5OyssbW0pA7CNXpCZTQKQkXmsKhWr46uH9ayu8CVDkCuCVgY3zjn92dHvCQiQYLFD68Rl/pUGzKu5GniZANIhHOE=
-Authentication-Results: gondor.apana.org.au; dkim=none (message not signed)
- header.d=none;gondor.apana.org.au; dmarc=none action=none
- header.from=oss.nxp.com;
-Received: from VE1PR04MB6608.eurprd04.prod.outlook.com (2603:10a6:803:125::12)
- by VE1PR04MB7359.eurprd04.prod.outlook.com (2603:10a6:800:1a0::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.18; Fri, 7 Aug
- 2020 16:22:26 +0000
-Received: from VE1PR04MB6608.eurprd04.prod.outlook.com
- ([fe80::a856:c104:11c7:258d]) by VE1PR04MB6608.eurprd04.prod.outlook.com
- ([fe80::a856:c104:11c7:258d%6]) with mapi id 15.20.3261.019; Fri, 7 Aug 2020
- 16:22:26 +0000
-From:   Andrei Botila <andrei.botila@oss.nxp.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, x86@kernel.org,
-        linux-arm-kernel@axis.com, Andrei Botila <andrei.botila@nxp.com>,
-        =?UTF-8?q?Breno=20Leit=C3=A3o?= <leitao@debian.org>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 22/22] crypto: vmx - add check for xts input length equal to zero
-Date:   Fri,  7 Aug 2020 19:20:10 +0300
-Message-Id: <20200807162010.18979-23-andrei.botila@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200807162010.18979-1-andrei.botila@oss.nxp.com>
-References: <20200807162010.18979-1-andrei.botila@oss.nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM0PR04CA0075.eurprd04.prod.outlook.com
- (2603:10a6:208:be::16) To VE1PR04MB6608.eurprd04.prod.outlook.com
- (2603:10a6:803:125::12)
+        id S1726094AbgHGQ0u (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 7 Aug 2020 12:26:50 -0400
+Received: from out28-3.mail.aliyun.com ([115.124.28.3]:44450 "EHLO
+        out28-3.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726096AbgHGQ0u (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 7 Aug 2020 12:26:50 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0573539-0.00331743-0.939329;FP=0|0|0|0|0|-1|-1|-1;HT=e01l07447;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.IE4qTTc_1596817601;
+Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IE4qTTc_1596817601)
+          by smtp.aliyun-inc.com(10.147.43.95);
+          Sat, 08 Aug 2020 00:26:42 +0800
+Subject: Re: [crypto:master 164/167]
+ drivers/char/hw_random/ingenic-rng.c:118:1-6: WARNING: invalid free of devm_
+ allocated data (fwd)
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     kbuild-all@lists.01.org, linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+References: <alpine.DEB.2.22.394.2008031525120.35132@hadrien>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <e62b6518-1674-5d4d-25dc-f06f3b7bb46f@wanyeetech.com>
+Date:   Sat, 8 Aug 2020 00:26:41 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv15007.swis.ro-buh01.nxp.com (83.217.231.2) by AM0PR04CA0075.eurprd04.prod.outlook.com (2603:10a6:208:be::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.15 via Frontend Transport; Fri, 7 Aug 2020 16:22:24 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [83.217.231.2]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: db6d582e-f312-4347-9a5e-08d83aee126e
-X-MS-TrafficTypeDiagnostic: VE1PR04MB7359:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB7359471A5569A61EA9CF0A07B4490@VE1PR04MB7359.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SBvn7lOuFex1vjZwY6ydgy4jyzzZtHO/gIs0aX6QgEcPdzCCSf1BTS75NQCyVYdJhxSP0I7YP776icGqlcA72y4redHK7GrbO341CIUxvUqfvn7fG/27E5cEyBKZRZZ7Igs078iuPcSgbSVlRAlHv4tFAq9c0GyjtQHqLUdiSus8AGCNKaXb4PKRDlG7VyyMVa18vMVDqcfnV4O+U9UobRt5T293UwoAyu6KPelqjozk/XjKgdr6k6wqqjSPYVYE1DJRjFyxrnZWgGZCzRceXXiP3QgZxY+5rwYF5GxN/1Idw7fFmLzy++Q7l8axzmdotDZRXaa4U7mYbp0+0EBMhg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6608.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(136003)(346002)(396003)(376002)(44832011)(66556008)(66476007)(110136005)(7416002)(66574015)(54906003)(1076003)(6506007)(4326008)(66946007)(83380400001)(8936002)(316002)(26005)(956004)(186003)(16526019)(478600001)(4744005)(86362001)(5660300002)(6666004)(6512007)(2906002)(8676002)(2616005)(52116002)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: KTItpbhXeOfEP8zVq7C1jZ3rUJg/Axwj1GIaJ6oh6r8O79WA9TeK3NEH3jNgm7iibzK8UrQGc7liMJ0hYADZMa9o8IqZkylaUfMiOi+O0I4p2UMEkD5zZcNIbv7DszcUs9Od5BVL4KHguOzJi+6qV+zbjW36w/mfya7AEMUieWbSs8Tn9ssQ/DAfznckJT5GQ/oGPXPqYvK1HvrtkXzPonErlpUmE+c4Npkyquz9pBAX0wHAKPJ2UbFoPgfCeWB13YgkKF+i6BWg024sPw7XucHGNvRe75lSAz9CoTz3kmCsmSOd7lUqwwXDu+i7IAoV8JgFG+BxNDBQ7lZ+eEul0MIerbT/K/Y21Eu5fTonGTe2hQ9Hh12ztBjt8FVTzdmSvtMgTZW7gIpYcoILTh+TVpjCzO8HduG2n93f47hG8N+1vG5SrxDCuIBFBDeUncLqMI8ZJQz6rqJa0NnDHBYMkcXXdWvpQy4vxwlWSZUeIdtyHmVDdGqU6C0pSfLeehH06/zdLxPiulPavV1/sB2W2Aij77bymNpacXCBcDcQSOtEBeUPZszevu3gVJTNnRCDWQSE9I4K0gSqPypnPpKe6foB3GFKITow3HJ3QevxDhACjjTuP3It9weM/mpqLA7yuOJ9fxINIHEgO8X2Nf/xeA==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: db6d582e-f312-4347-9a5e-08d83aee126e
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6608.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2020 16:22:26.0819
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NL63hu0oDLC6Gd5K5C0q+EsW26/jq1TLUW9PHxLBY/jvSFuqGNyGLihFO0MIN9gakneY2u+S56Wo04AVePo9EA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7359
+In-Reply-To: <alpine.DEB.2.22.394.2008031525120.35132@hadrien>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Andrei Botila <andrei.botila@nxp.com>
+Hello Julia,
 
-Standardize the way input lengths equal to 0 are handled in all skcipher
-algorithms. All the algorithms return 0 for input lengths equal to zero.
+Thanks for report this.
 
-Cc: "Breno Leitão" <leitao@debian.org>
-Cc: Nayna Jain <nayna@linux.ibm.com>
-Cc: Paulo Flabiano Smorigo <pfsmorigo@gmail.com>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
----
- drivers/crypto/vmx/aes_xts.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/crypto/vmx/aes_xts.c b/drivers/crypto/vmx/aes_xts.c
-index 9fee1b1532a4..33107c9e2656 100644
---- a/drivers/crypto/vmx/aes_xts.c
-+++ b/drivers/crypto/vmx/aes_xts.c
-@@ -84,6 +84,9 @@ static int p8_aes_xts_crypt(struct skcipher_request *req, int enc)
- 	u8 tweak[AES_BLOCK_SIZE];
- 	int ret;
- 
-+	if (!req->cryptlen)
-+		return 0;
-+
- 	if (req->cryptlen < AES_BLOCK_SIZE)
- 		return -EINVAL;
- 
--- 
-2.17.1
-
+在 2020/8/3 下午9:26, Julia Lawall 写道:
+> Hello,
+>
+> priv can't be kfreed because it was allocated with a devm function.
+>
+> julia
+>
+> ---------- Forwarded message ----------
+> Date: Mon, 3 Aug 2020 21:16:25 +0800
+> From: kernel test robot <lkp@intel.com>
+> To: kbuild@lists.01.org
+> Cc: lkp@intel.com, Julia Lawall <julia.lawall@lip6.fr>
+> Subject: [crypto:master 164/167] drivers/char/hw_random/ingenic-rng.c:118:1-6:
+>      WARNING: invalid free of devm_ allocated data
+>
+> CC: kbuild-all@lists.01.org
+> CC: linux-crypto@vger.kernel.org
+> TO: "周琰杰 (Zhou Yanjie)" <zhouyanjie@wanyeetech.com>
+> CC: Herbert Xu <herbert@gondor.apana.org.au>
+> CC: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git master
+> head:   3cbfe80737c18ac6e635421ab676716a393d3074
+> commit: 190873a0ea4500433ae818521cad20d37f9ee059 [164/167] crypto: ingenic - Add hardware RNG for Ingenic JZ4780 and X1000
+> :::::: branch date: 3 days ago
+> :::::: commit date: 3 days ago
+> config: mips-randconfig-c003-20200803 (attached as .config)
+> compiler: mipsel-linux-gcc (GCC) 9.3.0
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Julia Lawall <julia.lawall@lip6.fr>
+>
+>
+> coccinelle warnings: (new ones prefixed by >>)
+>
+>>> drivers/char/hw_random/ingenic-rng.c:118:1-6: WARNING: invalid free of devm_ allocated data
+> # https://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git/commit/?id=190873a0ea4500433ae818521cad20d37f9ee059
+> git remote add crypto https://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git
+> git remote update crypto
+> git checkout 190873a0ea4500433ae818521cad20d37f9ee059
+> vim +118 drivers/char/hw_random/ingenic-rng.c
+>
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   82)
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   83) static int ingenic_rng_probe(struct platform_device *pdev)
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   84) {
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   85) 	struct ingenic_rng *priv;
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   86) 	int ret;
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   87)
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   88) 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   89) 	if (!priv)
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   90) 		return -ENOMEM;
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   91)
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   92) 	priv->base = devm_platform_ioremap_resource(pdev, 0);
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   93) 	if (IS_ERR(priv->base)) {
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   94) 		pr_err("%s: Failed to map RNG registers\n", __func__);
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   95) 		ret = PTR_ERR(priv->base);
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   96) 		goto err_free_rng;
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   97) 	}
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   98)
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23   99) 	priv->version = (enum ingenic_rng_version)of_device_get_match_data(&pdev->dev);
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  100)
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  101) 	priv->rng.name = pdev->name;
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  102) 	priv->rng.init = ingenic_rng_init;
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  103) 	priv->rng.cleanup = ingenic_rng_cleanup;
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  104) 	priv->rng.read = ingenic_rng_read;
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  105)
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  106) 	ret = hwrng_register(&priv->rng);
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  107) 	if (ret) {
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  108) 		dev_err(&pdev->dev, "Failed to register hwrng\n");
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  109) 		goto err_free_rng;
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  110) 	}
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  111)
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  112) 	platform_set_drvdata(pdev, priv);
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  113)
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  114) 	dev_info(&pdev->dev, "Ingenic RNG driver registered\n");
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  115) 	return 0;
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  116)
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  117) err_free_rng:
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23 @118) 	kfree(priv);
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  119) 	return ret;
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  120) }
+> 190873a0ea4500 周琰杰 (Zhou Yanjie  2020-07-23  121)
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
