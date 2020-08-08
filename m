@@ -2,55 +2,131 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E9623F567
-	for <lists+linux-crypto@lfdr.de>; Sat,  8 Aug 2020 02:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B3623F779
+	for <lists+linux-crypto@lfdr.de>; Sat,  8 Aug 2020 14:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbgHHARe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 7 Aug 2020 20:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
+        id S1725957AbgHHMLN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 8 Aug 2020 08:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgHHARd (ORCPT
+        with ESMTP id S1726316AbgHHMKx (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 7 Aug 2020 20:17:33 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68ADCC061A2E;
-        Fri,  7 Aug 2020 17:17:32 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 9DC981276B344;
-        Fri,  7 Aug 2020 17:00:41 -0700 (PDT)
-Date:   Fri, 07 Aug 2020 17:17:24 -0700 (PDT)
-Message-Id: <20200807.171724.13170278259787114.davem@davemloft.net>
-To:     schalla@marvell.com
-Cc:     herbert@gondor.apana.org.au, netdev@vger.kernel.org,
-        linux-crypto@vger.kernel.org, schandran@marvell.com,
-        pathreya@marvell.com, sgoutham@marvell.com, lcherian@marvell.com,
-        gakula@marvell.com, jerinj@marvell.com
-Subject: Re: [PATCH v2 0/3] Add Support for Marvell OcteonTX2 Cryptographic
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <1596809360-12597-1-git-send-email-schalla@marvell.com>
-References: <1596809360-12597-1-git-send-email-schalla@marvell.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 07 Aug 2020 17:00:42 -0700 (PDT)
+        Sat, 8 Aug 2020 08:10:53 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26136C061A27
+        for <linux-crypto@vger.kernel.org>; Sat,  8 Aug 2020 05:10:52 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id g33so2386545pgb.4
+        for <linux-crypto@vger.kernel.org>; Sat, 08 Aug 2020 05:10:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EuDMSmp04hSHSVLRHL1PUWBPuYB4U3JnGDB9t2qv6ho=;
+        b=a27s0HjDAgd0N2W+2hyaEb/r9U8rPWgKPcToKVqzsY6g1RHey3lP/n73NLKJYe/Ok9
+         55O55oJSSu9auuHd0IZZMeayaFYrB0XkDdzao+sYMQoIml9w00hFjBH8r/pwdPpew/sz
+         D4U3ycTuRW2hhSyGQ/+vQPPBrkxE9ZKOeqrJhg7L0PM3vPL7tG3pJcxpNVs3aBK4ByJe
+         KCqGQqzLjn/hShsU0zUkoh4exC0lP0KHzK4vtrIfJ3N9ohkhYUxOT1oj/NDw/OG3J1d+
+         9y8hysX2pQorUHhg24RtZ6E+WgR2WN28nXtkQnzysvPpbbsZGt1ljbQWW59Kk3ViJl54
+         tcqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EuDMSmp04hSHSVLRHL1PUWBPuYB4U3JnGDB9t2qv6ho=;
+        b=nx5I/dfRAX7hYi26E1p/o+jOTlVx5aVzZuqOjng72x2Sekpp6/4H1WBOhTftnZuoOa
+         GkjAzEfnLh7L7s44n0QZ03K539hJoe7DEbht+5BJdaJ5oqDuQ7MU3R4TRi88em6XhzZJ
+         d7YH92R09aPlDTOQWWHvGEsgdMN4b01w7pvVUJYWr6RekDGLjvqGJ2I9PaeqWHLhpLGW
+         9BDG8jcTOzUHtd53ogVNjD0qHxcI+3pqppIa/egSqAdbK9Kxm7QMasV3OujV4XakxblO
+         ASU6osoiB9RFSskx/k9yNJ1/MpVR1je1+bbfE4uCIgB+Z8kIkrD0NanPY7paSdpu/7FQ
+         WFiw==
+X-Gm-Message-State: AOAM531IUA31ZNc4gZy44LThKax4NGJbzRXgdyOWyxcg6n6oVoChJZML
+        rNORjiEWJpYV+y80kCgWEMxg3Q0S9vymbpiQxdAaCw==
+X-Google-Smtp-Source: ABdhPJzM1muWFLwLDSvo0MoNAYjZ2t7+UNajWvXxXMkjymrpkaeIPbZuHepCLbtxZZBVSatO1nbVYIIZ+/IHe775HYM=
+X-Received: by 2002:a63:4b44:: with SMTP id k4mr15861573pgl.305.1596888644708;
+ Sat, 08 Aug 2020 05:10:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200807162010.18979-1-andrei.botila@oss.nxp.com> <20200807162010.18979-17-andrei.botila@oss.nxp.com>
+In-Reply-To: <20200807162010.18979-17-andrei.botila@oss.nxp.com>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Sat, 8 Aug 2020 15:10:33 +0300
+Message-ID: <CAOtvUMero-gF5ZE1unnD_wcDnzZX_SL0tQ2yJNqzc3rg5RhuDA@mail.gmail.com>
+Subject: Re: [PATCH 16/22] crypto: ccree - add check for xts input length
+ equal to zero
+To:     Andrei Botila <andrei.botila@oss.nxp.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390@vger.kernel.org, x86@kernel.org,
+        linux-arm-kernel@axis.com, Andrei Botila <andrei.botila@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Srujana Challa <schalla@marvell.com>
-Date: Fri, 7 Aug 2020 19:39:17 +0530
+On Fri, Aug 7, 2020 at 7:22 PM Andrei Botila <andrei.botila@oss.nxp.com> wr=
+ote:
+>
+> From: Andrei Botila <andrei.botila@nxp.com>
+>
+> Standardize the way input lengths equal to 0 are handled in all skcipher
+> algorithms. All the algorithms return 0 for input lengths equal to zero.
+> This change has implications not only for xts(aes) but also for cts(cbc(a=
+es))
+> and cts(cbc(paes)).
+>
+> Cc: Gilad Ben-Yossef <gilad@benyossef.com>
+> Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
+> ---
+>  drivers/crypto/ccree/cc_cipher.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/crypto/ccree/cc_cipher.c b/drivers/crypto/ccree/cc_c=
+ipher.c
+> index 076669dc1035..112bb8b4dce6 100644
+> --- a/drivers/crypto/ccree/cc_cipher.c
+> +++ b/drivers/crypto/ccree/cc_cipher.c
+> @@ -912,17 +912,18 @@ static int cc_cipher_process(struct skcipher_reques=
+t *req,
+>
+>         /* STAT_PHASE_0: Init and sanity checks */
+>
+> -       if (validate_data_size(ctx_p, nbytes)) {
+> -               dev_dbg(dev, "Unsupported data size %d.\n", nbytes);
+> -               rc =3D -EINVAL;
+> -               goto exit_process;
+> -       }
+>         if (nbytes =3D=3D 0) {
+>                 /* No data to process is valid */
+>                 rc =3D 0;
+>                 goto exit_process;
+>         }
+>
+> +       if (validate_data_size(ctx_p, nbytes)) {
+> +               dev_dbg(dev, "Unsupported data size %d.\n", nbytes);
+> +               rc =3D -EINVAL;
+> +               goto exit_process;
+> +       }
+> +
+>         if (ctx_p->fallback_on) {
+>                 struct skcipher_request *subreq =3D skcipher_request_ctx(=
+req);
+>
+> --
+> 2.17.1
+>
 
-> The following series adds support for Marvell Cryptographic Acceleration
-> Unit(CPT) on OcteonTX2 CN96XX SoC.
-> This series is tested with CRYPTO_EXTRA_TESTS enabled and
-> CRYPTO_DISABLE_TESTS disabled.
+Acked-by: Gilad Ben-Yossef <gilad@benyossef.com>
 
-net-next is closed, please do not submit these feature addition changes
-until the net-next tree is open again.
+Thanks,
+Gilad
 
-Thank you.
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
+
+values of =CE=B2 will give rise to dom!
