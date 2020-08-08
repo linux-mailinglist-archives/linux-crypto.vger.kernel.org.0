@@ -2,39 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF54723F9E7
-	for <lists+linux-crypto@lfdr.de>; Sun,  9 Aug 2020 01:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4FB23FA04
+	for <lists+linux-crypto@lfdr.de>; Sun,  9 Aug 2020 01:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728449AbgHHXjB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 8 Aug 2020 19:39:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53464 "EHLO mail.kernel.org"
+        id S1728678AbgHHXjz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 8 Aug 2020 19:39:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726846AbgHHXjA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 8 Aug 2020 19:39:00 -0400
+        id S1728666AbgHHXjy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 8 Aug 2020 19:39:54 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF9F122B49;
-        Sat,  8 Aug 2020 23:38:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C90E208B3;
+        Sat,  8 Aug 2020 23:39:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596929939;
-        bh=NoKBmNF1CPMXkPxFxDReFjhMpjaSUi0JQfGvv1WQiBM=;
+        s=default; t=1596929993;
+        bh=5umpobZfU532MNHExFEMg4AwPASjY4mr8L46crhIfWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tJANconnNCIsW/B+GBKyp/oZ7+Swe0E60pMm+lIvPvi2yge3+UlygFKSNCBUytz02
-         1Tw2r9c4zQ6tyqJKVHB+xbvI1/+dqLEh3Rdxa3S/9lGD8rGcwfCZ6e4LgdwKQXogfF
-         MzldtDcFZ4FyPrWF84/4h0QQjiS/5hERMAMiEkuc=
+        b=dYDwNuyyGg33nwfb0u4W+a7rxA0DENAEd/fT0V61KQE7DuD/V9/6WnJQ5fKwWIdwV
+         yNjTJr5qhUQ6xiRI/ofqJLujQs01kQbHQENYElkXGNy2j8YjUdKwq5xs4c6eV4THIw
+         Bpnyrcgvc14vgRs49Wc+LSEK2H3wDSv2oyodvtiE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Gilad Ben-Yossef <gilad@benyossef.com>,
         Markus Elfring <Markus.Elfring@web.de>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 11/40] crypto: ccree - fix resource leak on error path
-Date:   Sat,  8 Aug 2020 19:38:15 -0400
-Message-Id: <20200808233844.3618823-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 09/21] crypto: ccree - fix resource leak on error path
+Date:   Sat,  8 Aug 2020 19:39:29 -0400
+Message-Id: <20200808233941.3619277-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200808233844.3618823-1-sashal@kernel.org>
-References: <20200808233844.3618823-1-sashal@kernel.org>
+In-Reply-To: <20200808233941.3619277-1-sashal@kernel.org>
+References: <20200808233941.3619277-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -60,10 +60,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 18 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/crypto/ccree/cc_cipher.c b/drivers/crypto/ccree/cc_cipher.c
-index cd9c60268bf8d..9bf0cce578f02 100644
+index 28a5b8b38fa2f..1bcb6f0157b07 100644
 --- a/drivers/crypto/ccree/cc_cipher.c
 +++ b/drivers/crypto/ccree/cc_cipher.c
-@@ -163,7 +163,6 @@ static int cc_cipher_init(struct crypto_tfm *tfm)
+@@ -137,7 +137,6 @@ static int cc_cipher_init(struct crypto_tfm *tfm)
  				     skcipher_alg.base);
  	struct device *dev = drvdata_to_dev(cc_alg->drvdata);
  	unsigned int max_key_buf_size = cc_alg->skcipher_alg.max_keysize;
@@ -71,7 +71,7 @@ index cd9c60268bf8d..9bf0cce578f02 100644
  
  	dev_dbg(dev, "Initializing context @%p for %s\n", ctx_p,
  		crypto_tfm_alg_name(tfm));
-@@ -175,10 +174,19 @@ static int cc_cipher_init(struct crypto_tfm *tfm)
+@@ -149,10 +148,19 @@ static int cc_cipher_init(struct crypto_tfm *tfm)
  	ctx_p->flow_mode = cc_alg->flow_mode;
  	ctx_p->drvdata = cc_alg->drvdata;
  
@@ -92,7 +92,7 @@ index cd9c60268bf8d..9bf0cce578f02 100644
  
  	dev_dbg(dev, "Allocated key buffer in context. key=@%p\n",
  		ctx_p->user.key);
-@@ -190,21 +198,19 @@ static int cc_cipher_init(struct crypto_tfm *tfm)
+@@ -164,21 +172,19 @@ static int cc_cipher_init(struct crypto_tfm *tfm)
  	if (dma_mapping_error(dev, ctx_p->user.key_dma_addr)) {
  		dev_err(dev, "Mapping Key %u B at va=%pK for DMA failed\n",
  			max_key_buf_size, ctx_p->user.key);
