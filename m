@@ -2,81 +2,106 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7783240B8D
-	for <lists+linux-crypto@lfdr.de>; Mon, 10 Aug 2020 19:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE774241071
+	for <lists+linux-crypto@lfdr.de>; Mon, 10 Aug 2020 21:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727094AbgHJRDI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 10 Aug 2020 13:03:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35738 "EHLO mail.kernel.org"
+        id S1728951AbgHJTK1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 10 Aug 2020 15:10:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726910AbgHJRDH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 10 Aug 2020 13:03:07 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728895AbgHJTK0 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:10:26 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97839207DE;
-        Mon, 10 Aug 2020 17:03:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0C7F2224D;
+        Mon, 10 Aug 2020 19:10:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597078987;
-        bh=elsUXe1opDxYoDghIJZEYwZvrCHsszMPQwltM3nsIeg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QxLxVUNJwZ44dXSpRoIUoPC4//0FCrTOzfv/gQ+Ztwn+t6xQrr34/YvroNzHR/Clp
-         hp5i/v/+awZlPt3cj8u960Gg/KGKURjHV6nLJwh7BxzAcAvaQNjTSF+xRa2158DvMP
-         XfdXRi0EAFau/Wwv9Fut2Mvia5B03cVW4V/SnssE=
-Date:   Mon, 10 Aug 2020 10:03:05 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "Van Leeuwen, Pascal" <pvanleeuwen@rambus.com>,
-        "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-arm-kernel@axis.com" <linux-arm-kernel@axis.com>,
-        Andrei Botila <andrei.botila@nxp.com>,
-        Antoine Tenart <antoine.tenart@bootlin.com>
-Subject: Re: [PATCH 19/22] crypto: inside-secure - add check for xts input
- length equal to zero
-Message-ID: <20200810170305.GA3352718@gmail.com>
-References: <20200807162010.18979-1-andrei.botila@oss.nxp.com>
- <20200807162010.18979-20-andrei.botila@oss.nxp.com>
- <CY4PR0401MB36528610C3ABF802F8CBF35FC3440@CY4PR0401MB3652.namprd04.prod.outlook.com>
- <20200810134500.GA22914@gondor.apana.org.au>
- <fd3e5862-3357-7dfc-6c75-30086ab19f82@nxp.com>
+        s=default; t=1597086625;
+        bh=2K2iG1CjBSTPdSLSG5ajTMC50p1FwenSlUrZitpjRWY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=2TPOITXTNJaUhXrVs2LaaU/NlwHdsIB/XYpMETbz47cme8+Z+xCRIg4vsiPhfDVRI
+         67lCfD2jP+onaRAbL94v58qOyWBLTFvoIgjstZHYL7cK6B9OAQWgXmF5+ebhbmib1e
+         Yip2pMQ3KjyOxsMDnakm/NCwtTrEWULbUlO5O2Uo=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 63/64] crypto: caam - silence .setkey in case of bad key length
+Date:   Mon, 10 Aug 2020 15:08:58 -0400
+Message-Id: <20200810190859.3793319-63-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200810190859.3793319-1-sashal@kernel.org>
+References: <20200810190859.3793319-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <fd3e5862-3357-7dfc-6c75-30086ab19f82@nxp.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 05:33:39PM +0300, Horia Geantă wrote:
-> On 8/10/2020 4:45 PM, Herbert Xu wrote:
-> > On Mon, Aug 10, 2020 at 10:20:20AM +0000, Van Leeuwen, Pascal wrote:
-> >>
-> >> With all due respect, but this makes no sense.
-> > 
-> > I agree.  This is a lot of churn for no gain.
-> > 
-> I would say the gain is that all skcipher algorithms would behave the same
-> when input length equals zero - i.e. treat the request as a no-op.
-> 
-> We can't say "no input" has any meaning to the other skcipher algorithms,
-> but the convention is to accept this case and just return 0.
-> I don't see why XTS has to be handled differently.
-> 
+From: Horia Geantă <horia.geanta@nxp.com>
 
-CTS also rejects empty inputs.
+[ Upstream commit da6a66853a381864f4b040832cf11f0dbba0a097 ]
 
-The rule it follows is just that all input lengths >= blocksize are allowed.
-Input lengths < blocksize aren't allowed.
+In case of bad key length, driver emits "key size mismatch" messages,
+but only for xts(aes) algorithms.
 
-- Eric
+Reduce verbosity by making them visible only when debugging.
+This way crypto fuzz testing log cleans up a bit.
+
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/crypto/caam/caamalg.c     | 2 +-
+ drivers/crypto/caam/caamalg_qi.c  | 2 +-
+ drivers/crypto/caam/caamalg_qi2.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
+index b2f9882bc010f..bf90a4fcabd1f 100644
+--- a/drivers/crypto/caam/caamalg.c
++++ b/drivers/crypto/caam/caamalg.c
+@@ -838,7 +838,7 @@ static int xts_skcipher_setkey(struct crypto_skcipher *skcipher, const u8 *key,
+ 	u32 *desc;
+ 
+ 	if (keylen != 2 * AES_MIN_KEY_SIZE  && keylen != 2 * AES_MAX_KEY_SIZE) {
+-		dev_err(jrdev, "key size mismatch\n");
++		dev_dbg(jrdev, "key size mismatch\n");
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/drivers/crypto/caam/caamalg_qi.c b/drivers/crypto/caam/caamalg_qi.c
+index 27e36bdf6163b..315d53499ce85 100644
+--- a/drivers/crypto/caam/caamalg_qi.c
++++ b/drivers/crypto/caam/caamalg_qi.c
+@@ -728,7 +728,7 @@ static int xts_skcipher_setkey(struct crypto_skcipher *skcipher, const u8 *key,
+ 	int ret = 0;
+ 
+ 	if (keylen != 2 * AES_MIN_KEY_SIZE  && keylen != 2 * AES_MAX_KEY_SIZE) {
+-		dev_err(jrdev, "key size mismatch\n");
++		dev_dbg(jrdev, "key size mismatch\n");
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
+index 28669cbecf77c..e1b6bc6ef091b 100644
+--- a/drivers/crypto/caam/caamalg_qi2.c
++++ b/drivers/crypto/caam/caamalg_qi2.c
+@@ -1058,7 +1058,7 @@ static int xts_skcipher_setkey(struct crypto_skcipher *skcipher, const u8 *key,
+ 	u32 *desc;
+ 
+ 	if (keylen != 2 * AES_MIN_KEY_SIZE  && keylen != 2 * AES_MAX_KEY_SIZE) {
+-		dev_err(dev, "key size mismatch\n");
++		dev_dbg(dev, "key size mismatch\n");
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.25.1
+
