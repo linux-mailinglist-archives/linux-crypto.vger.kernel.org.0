@@ -2,83 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F48242A2B
-	for <lists+linux-crypto@lfdr.de>; Wed, 12 Aug 2020 15:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43EF242D6F
+	for <lists+linux-crypto@lfdr.de>; Wed, 12 Aug 2020 18:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727000AbgHLNTX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 Aug 2020 09:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726404AbgHLNTX (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 Aug 2020 09:19:23 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF98DC06174A
-        for <linux-crypto@vger.kernel.org>; Wed, 12 Aug 2020 06:19:22 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id o18so2219305eje.7
-        for <linux-crypto@vger.kernel.org>; Wed, 12 Aug 2020 06:19:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=QdiuredYfA8TZeozzGkUq1UEx7xclYj3PtxsEjg0U5c=;
-        b=DwdjNdKFZXmEJU8y5b2rBtG5t2oZPzMpTX6Oc3r6qy44k6cxXq2WoAIsIzOG5GdecX
-         zAR0EED0j4kvI8s1+sQMr1B8bLXseWOrye1Pruu1eE8HI8gal9RD64HhTRdR4Xkv57hS
-         yorDP4kDXVEN0qtEYPfWDH/zL2DQBpP9QWyhtmSE/pDKk52gzBTVPhnzojaw+IsoWoAc
-         0l0huUV1yCf5wLzKffGpL4pB17XkoRNGMxvUr0rIrrx2opjdo1BJWBilhJHNjhWJVtlw
-         Cu5jzJX/8HCZmTEKJhQlkA3A3+P3nBPzoJRpW1K9OLvxmk5/LaTHTrF2gtkxjEDKWYx3
-         Y1Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=QdiuredYfA8TZeozzGkUq1UEx7xclYj3PtxsEjg0U5c=;
-        b=DkYFHr+tVDt8WkNMlqI3ExKXR9Tal7tXtUAE9ZalaCVzbrkhfHPiusx8UJYT3B3VOP
-         tGAJPSepqaiqDV32Ets4FYjnO4p2gsRrZRB0TFQUsPqL3hVSmEl9E5ZD8dvYupKQ93SD
-         BxtFVEY/ZexaG5ilHxhmlKxoHLn/Qsyiy+roNo4JYYX101HURcr5BSk2xhMrDQh1wmNI
-         VzlrocvYIKmxQikWnF6Ih8OWlE2Hqsu/xuYkq5fa4gx/h7EKVN+ajvvsbKChaxziEveY
-         kvy2sR3SW8Hex2HdFalY2r6n+9w/FF4NzCWVxqSlskUVeMwjJ/DUmSyb+XlXRMIUU+zR
-         0gEQ==
-X-Gm-Message-State: AOAM530045dfyuua0FvTPZiEWZFTi6KS9bgZNj2n8F5Q/uriPh3iBP5X
-        w6QfMlSIMW9lfY90kN6+WJn9cpvgoQiWavNcJ5U=
-X-Google-Smtp-Source: ABdhPJybJNp1DZcrVm1N4nqWvKIYggkOkMimRZTE3+p/A8LGgNpbekDJnBxpatFj2uat0RfegEsrOAoiSkivzmUDb9A=
-X-Received: by 2002:a17:907:41dc:: with SMTP id og20mr6308949ejb.183.1597238361492;
- Wed, 12 Aug 2020 06:19:21 -0700 (PDT)
+        id S1726477AbgHLQiF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 12 Aug 2020 12:38:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:64274 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726394AbgHLQiE (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 12 Aug 2020 12:38:04 -0400
+IronPort-SDR: 6XblZFf3JnuSl4GDovexY3pUSa5iELEWrP4fWQhffo8dp25MT+xJToNGVdEnUjyh/u0Xo9bfXF
+ XIPINRU/An3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="151658785"
+X-IronPort-AV: E=Sophos;i="5.76,304,1592895600"; 
+   d="scan'208";a="151658785"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 09:38:03 -0700
+IronPort-SDR: a390YBMeuM5i7xZAbQQ4UhnPUKERJ52ao3wjAL93JZmEVD0Y3/1HI2hkINV5yYgfYpn2Zk9z+6
+ rEDR8xVfFhQQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,304,1592895600"; 
+   d="scan'208";a="495572232"
+Received: from marshy.an.intel.com (HELO [10.122.105.159]) ([10.122.105.159])
+  by fmsmga005.fm.intel.com with ESMTP; 12 Aug 2020 09:38:02 -0700
+Subject: Re: [PATCHv1 2/2] crypto: add Intel SoCFPGA crypto service driver
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dinguyen@kernel.org, richard.gong@intel.com
+References: <1597154182-26970-1-git-send-email-richard.gong@linux.intel.com>
+ <1597154182-26970-3-git-send-email-richard.gong@linux.intel.com>
+ <20200812003418.GA4166@gondor.apana.org.au>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <7850a3e6-1ac2-c13e-94cb-64adfb6c6898@linux.intel.com>
+Date:   Wed, 12 Aug 2020 11:52:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Received: by 2002:a05:6402:49:0:0:0:0 with HTTP; Wed, 12 Aug 2020 06:19:20
- -0700 (PDT)
-Reply-To: drharunabello4@gmail.com
-From:   DR HARUNA BELLO <katethadel@gmail.com>
-Date:   Wed, 12 Aug 2020 06:19:20 -0700
-Message-ID: <CAHTO51uLmqDdX+rUSxkgGB4ZUzgH70W7BopbVkJYfhRd4fo5FA@mail.gmail.com>
-Subject: Hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200812003418.GA4166@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--- 
-Hello Dear
 
+I will move them to drivers/misc.
 
-Assalamu Alaikum Wa Rahmatullahi Wa Barakatuh
+Regards,
+Richard
 
-
-I NEED AN IMMEDIATE RESPONSE FROM YOU.
-
-Good day Dear
-
-I have a project of $18.5 Million Us Dollars which I will like you to
-support me
-so that the fund will be transfer to your bank account.
-Please if you are capable reply back to me so that i will give you
-more details about this
-project.
-
-Kindly reply me back through this my private email address
-(drharunabello4@gmail.com)
-
-Thank you I amwaiting to hear from you
-
-Dr Bello
+On 8/11/20 7:34 PM, Herbert Xu wrote:
+> On Tue, Aug 11, 2020 at 08:56:22AM -0500, richard.gong@linux.intel.com wrote:
+>> From: Richard Gong <richard.gong@intel.com>
+>>
+>> Add Intel FPGA crypto service (FCS) driver to support new crypto services
+>> on Intel SoCFPGA platforms.
+>>
+>> The crypto services include security certificate, image boot validation,
+>> security key cancellation, get provision data, random number generation,
+>> advance encrtption standard (AES) encryption and decryption services.
+>>
+>> To perform supporting crypto features on Intel SoCFPGA platforms, Linux
+>> user-space application interacts with FPGA crypto service (FCS) driver via
+>> structures defined in include/uapi/linux/intel_fcs-ioctl.h.
+>>
+>> The application allocates spaces for IOCTL structure to hold the contents
+>> or points to the data that FCS driver needs, uses IOCTL calls to passes
+>> data to kernel FCS driver for processing at low level firmware and get
+>> processed data or status back form the low level firmware via FCS driver.
+>>
+>> The user-space application named as fcs_client is at
+>> https://github.com/altera-opensource/fcs_apps/tree/fcs_client.
+>>
+>> Signed-off-by: Richard Gong <richard.gong@intel.com>
+> 
+> Nack.  This driver has nothing to do with the Crypto API.
+> 
