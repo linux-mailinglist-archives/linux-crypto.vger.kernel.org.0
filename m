@@ -2,141 +2,83 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4532429E5
-	for <lists+linux-crypto@lfdr.de>; Wed, 12 Aug 2020 14:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F48242A2B
+	for <lists+linux-crypto@lfdr.de>; Wed, 12 Aug 2020 15:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgHLM6g (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 Aug 2020 08:58:36 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:32564 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726722AbgHLM6f (ORCPT
+        id S1727000AbgHLNTX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 12 Aug 2020 09:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726404AbgHLNTX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 Aug 2020 08:58:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597237113;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=h7/AMcJUVQBnbpy/ngyc4wn2P1evCtQ3gzW1MMHa/3g=;
-        b=gcr9ZOnyU6j9H7vDIEbmIxBffjSC56/bmh7OeJJnB9FL7gU0p+xvyn4WZmD30vHI2R3mSm
-        f8znriEQBrL/PfNvCGvKhJeCRVtloPNPC/g+v+J/HbWPI5OuNkfN0FprEpLYKHVgWXMMXO
-        FPaL91GGeOwcbIqlp61ueC4SqUvM07A=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-535-_LZZE9BeMs-FQ_-5UUVfcg-1; Wed, 12 Aug 2020 08:58:32 -0400
-X-MC-Unique: _LZZE9BeMs-FQ_-5UUVfcg-1
-Received: by mail-wm1-f69.google.com with SMTP id s4so688722wmh.1
-        for <linux-crypto@vger.kernel.org>; Wed, 12 Aug 2020 05:58:31 -0700 (PDT)
+        Wed, 12 Aug 2020 09:19:23 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF98DC06174A
+        for <linux-crypto@vger.kernel.org>; Wed, 12 Aug 2020 06:19:22 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id o18so2219305eje.7
+        for <linux-crypto@vger.kernel.org>; Wed, 12 Aug 2020 06:19:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=QdiuredYfA8TZeozzGkUq1UEx7xclYj3PtxsEjg0U5c=;
+        b=DwdjNdKFZXmEJU8y5b2rBtG5t2oZPzMpTX6Oc3r6qy44k6cxXq2WoAIsIzOG5GdecX
+         zAR0EED0j4kvI8s1+sQMr1B8bLXseWOrye1Pruu1eE8HI8gal9RD64HhTRdR4Xkv57hS
+         yorDP4kDXVEN0qtEYPfWDH/zL2DQBpP9QWyhtmSE/pDKk52gzBTVPhnzojaw+IsoWoAc
+         0l0huUV1yCf5wLzKffGpL4pB17XkoRNGMxvUr0rIrrx2opjdo1BJWBilhJHNjhWJVtlw
+         Cu5jzJX/8HCZmTEKJhQlkA3A3+P3nBPzoJRpW1K9OLvxmk5/LaTHTrF2gtkxjEDKWYx3
+         Y1Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h7/AMcJUVQBnbpy/ngyc4wn2P1evCtQ3gzW1MMHa/3g=;
-        b=n9ull9ocBsmqwIP3I6FyVOEan4qQXgxck97NBZxG4lFyxqIKfX88crjKXYFz4133HE
-         UJy3YhxWOP/mDi63GST4Urvd3W6EnASPykLbjl2hxOVkUJrFpToipp8zybLl5MVcCW7p
-         nNqbvdZC2NBYqRqsZjitUGTIdR7H437YvTHCbHKyj/Wr7qhxJCc3uA5ggJkVPO+hQJnJ
-         VTNnx55318107DVIFt6cmj/UIeUk5rKWw+vbUoWfcwM21/ujY94fX/8dYtXy92fVmHE1
-         xcS1l4Uysj8I4oOMnIWohUDhDp84QOMJmxz4qYSk1nHuhYEJM3wXl2fq8B2tLZe95qv8
-         /4Hg==
-X-Gm-Message-State: AOAM5322PU/NbRsyZYiinn8dj6oLgcr3EZh8i3zrijwYhBz76FZq9Onz
-        +Ra7nZdUcWucMhfV5DZynhDf3n6fMQSVt+Hi63z8JTBL1Y+PxWr2fs7pzRWw4EjFDqVGlgxCbbH
-        1A7MOVzwXZiAJSZHmBZbCVapG
-X-Received: by 2002:a1c:2dcb:: with SMTP id t194mr8161747wmt.94.1597237110447;
-        Wed, 12 Aug 2020 05:58:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwklghVO0f2OesRUcMDgJjKJp/0MsFj9CzTLzBjf+KzeXLTqCNEPcyQ968S+Xkl8PRUmp9fng==
-X-Received: by 2002:a1c:2dcb:: with SMTP id t194mr8161734wmt.94.1597237110136;
-        Wed, 12 Aug 2020 05:58:30 -0700 (PDT)
-Received: from omos.redhat.com ([2a02:8308:b13f:2100:8a6a:ec88:3ed7:44b3])
-        by smtp.gmail.com with ESMTPSA id p14sm4488436wrg.96.2020.08.12.05.58.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Aug 2020 05:58:29 -0700 (PDT)
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Stephan Mueller <smueller@chronox.de>
-Subject: [PATCH v2] crypto: algif_aead - fix uninitialized ctx->init
-Date:   Wed, 12 Aug 2020 14:58:25 +0200
-Message-Id: <20200812125825.436733-1-omosnace@redhat.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=QdiuredYfA8TZeozzGkUq1UEx7xclYj3PtxsEjg0U5c=;
+        b=DkYFHr+tVDt8WkNMlqI3ExKXR9Tal7tXtUAE9ZalaCVzbrkhfHPiusx8UJYT3B3VOP
+         tGAJPSepqaiqDV32Ets4FYjnO4p2gsRrZRB0TFQUsPqL3hVSmEl9E5ZD8dvYupKQ93SD
+         BxtFVEY/ZexaG5ilHxhmlKxoHLn/Qsyiy+roNo4JYYX101HURcr5BSk2xhMrDQh1wmNI
+         VzlrocvYIKmxQikWnF6Ih8OWlE2Hqsu/xuYkq5fa4gx/h7EKVN+ajvvsbKChaxziEveY
+         kvy2sR3SW8Hex2HdFalY2r6n+9w/FF4NzCWVxqSlskUVeMwjJ/DUmSyb+XlXRMIUU+zR
+         0gEQ==
+X-Gm-Message-State: AOAM530045dfyuua0FvTPZiEWZFTi6KS9bgZNj2n8F5Q/uriPh3iBP5X
+        w6QfMlSIMW9lfY90kN6+WJn9cpvgoQiWavNcJ5U=
+X-Google-Smtp-Source: ABdhPJybJNp1DZcrVm1N4nqWvKIYggkOkMimRZTE3+p/A8LGgNpbekDJnBxpatFj2uat0RfegEsrOAoiSkivzmUDb9A=
+X-Received: by 2002:a17:907:41dc:: with SMTP id og20mr6308949ejb.183.1597238361492;
+ Wed, 12 Aug 2020 06:19:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6402:49:0:0:0:0 with HTTP; Wed, 12 Aug 2020 06:19:20
+ -0700 (PDT)
+Reply-To: drharunabello4@gmail.com
+From:   DR HARUNA BELLO <katethadel@gmail.com>
+Date:   Wed, 12 Aug 2020 06:19:20 -0700
+Message-ID: <CAHTO51uLmqDdX+rUSxkgGB4ZUzgH70W7BopbVkJYfhRd4fo5FA@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-In skcipher_accept_parent_nokey() the whole af_alg_ctx structure is
-cleared by memset() after allocation, so add such memset() also to
-aead_accept_parent_nokey() so that the new "init" field is also
-initialized to zero. Without that the initial ctx->init checks might
-randomly return true and cause errors.
-
-While there, also remove the redundant zero assignments in both
-functions.
-
-Found via libkcapi testsuite.
-
-Cc: Stephan Mueller <smueller@chronox.de>
-Fixes: f3c802a1f300 ("crypto: algif_aead - Only wake up when ctx->more is zero")
-Suggested-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
----
-
-v2:
- - intead add missing memset() to algif_aead and remove the redundant
-   zero assignments (suggested by Herbert)
-
- crypto/algif_aead.c     | 6 ------
- crypto/algif_skcipher.c | 7 +------
- 2 files changed, 1 insertion(+), 12 deletions(-)
-
-diff --git a/crypto/algif_aead.c b/crypto/algif_aead.c
-index d48d2156e6210..43c6aa784858b 100644
---- a/crypto/algif_aead.c
-+++ b/crypto/algif_aead.c
-@@ -558,12 +558,6 @@ static int aead_accept_parent_nokey(void *private, struct sock *sk)
- 
- 	INIT_LIST_HEAD(&ctx->tsgl_list);
- 	ctx->len = len;
--	ctx->used = 0;
--	atomic_set(&ctx->rcvused, 0);
--	ctx->more = 0;
--	ctx->merge = 0;
--	ctx->enc = 0;
--	ctx->aead_assoclen = 0;
- 	crypto_init_wait(&ctx->wait);
- 
- 	ask->private = ctx;
-diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
-index a51ba22fef58f..81c4022285a7c 100644
---- a/crypto/algif_skcipher.c
-+++ b/crypto/algif_skcipher.c
-@@ -333,6 +333,7 @@ static int skcipher_accept_parent_nokey(void *private, struct sock *sk)
- 	ctx = sock_kmalloc(sk, len, GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
-+	memset(ctx, 0, len);
- 
- 	ctx->iv = sock_kmalloc(sk, crypto_skcipher_ivsize(tfm),
- 			       GFP_KERNEL);
-@@ -340,16 +341,10 @@ static int skcipher_accept_parent_nokey(void *private, struct sock *sk)
- 		sock_kfree_s(sk, ctx, len);
- 		return -ENOMEM;
- 	}
--
- 	memset(ctx->iv, 0, crypto_skcipher_ivsize(tfm));
- 
- 	INIT_LIST_HEAD(&ctx->tsgl_list);
- 	ctx->len = len;
--	ctx->used = 0;
--	atomic_set(&ctx->rcvused, 0);
--	ctx->more = 0;
--	ctx->merge = 0;
--	ctx->enc = 0;
- 	crypto_init_wait(&ctx->wait);
- 
- 	ask->private = ctx;
 -- 
-2.26.2
+Hello Dear
 
+
+Assalamu Alaikum Wa Rahmatullahi Wa Barakatuh
+
+
+I NEED AN IMMEDIATE RESPONSE FROM YOU.
+
+Good day Dear
+
+I have a project of $18.5 Million Us Dollars which I will like you to
+support me
+so that the fund will be transfer to your bank account.
+Please if you are capable reply back to me so that i will give you
+more details about this
+project.
+
+Kindly reply me back through this my private email address
+(drharunabello4@gmail.com)
+
+Thank you I amwaiting to hear from you
+
+Dr Bello
