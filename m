@@ -2,70 +2,233 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD81243EF8
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 Aug 2020 20:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40D7243F52
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 Aug 2020 21:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgHMSke (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 13 Aug 2020 14:40:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgHMSkd (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 13 Aug 2020 14:40:33 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ECD1C061757
-        for <linux-crypto@vger.kernel.org>; Thu, 13 Aug 2020 11:40:33 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id w17so4935021edt.8
-        for <linux-crypto@vger.kernel.org>; Thu, 13 Aug 2020 11:40:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:mime-version:content-transfer-encoding
-         :content-description:subject:to:from:date:reply-to;
-        bh=eu2CsTs8n12612hGvDE2W+eYjvTPbp0LzamowlK+yX0=;
-        b=oQoLfNyMler5nmLwOKLtNR/MwQI9gi0BX26GVbmPJFzIocL9jHUBOFUf+MTEC8MZWV
-         Pw0en4KuRb62mAWWgqWCAdRLVcPB4QSL1ohMIiDrzW37MlD+y6xaDmG/5OzDrBhD/z/y
-         b3c8Se4BdypoxLtUdFwsqN4jZA4DR3zkJzUw0tZSM5AIbrkg/7Q5liNFmJpccQ6IHgPj
-         ROKAvTTJzi3iJhABSImmWo9qKO5JVGxyo31ggCJ9t0tlWXDT5sV3jCmVUDVjZWCE5lYs
-         c6SCD0+PDaY/yFGiYZ9jqLHcSS5rNBb+FK141i60CH3/y1eJoxnQiB/R/gYojxriwrdx
-         wdgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:mime-version
-         :content-transfer-encoding:content-description:subject:to:from:date
-         :reply-to;
-        bh=eu2CsTs8n12612hGvDE2W+eYjvTPbp0LzamowlK+yX0=;
-        b=exmiSMtL4RK/GT3+yOohY3LDNVIdR7ihU2jeS++Bq1ZGITe5wroUUhYjl5CEOsXDqK
-         T9m7F6KblO72I46vaMVbp/YME1iY7k1r1avLH+cSuFpgD3M4l107RlD8wpJ+3HgCsPLf
-         Cjw4K2KpRETN+wUOsroSOo8UD6ARhSSwxAmEZewdcQe66P4W74HWEHIMi9eRtwNBKDgQ
-         P9W4cCyq7PH3vuy447CJM8q2CZL3lYbLF9Amnbszkj4372u0b4qsrBpgf1jG6rpZhsu5
-         w1MrY3gJClA7s5X0Sd+l7iK9JNmM/qdBupsvL8G0MSith11wBP1yNeafVxDk8uSAcH5E
-         SXlA==
-X-Gm-Message-State: AOAM530LDUjItRYSl+NeZFDicXnrF9mbdUZtdgGS7BEBv4sjA7+0zWex
-        Dt9rCd+1qgV/M4AYBtBFNYQ=
-X-Google-Smtp-Source: ABdhPJyp0WL0/P4XprgVHvH11H4l2Y3ASoTf17IlW5ZebOU+amxP504VfAtX1YRaP6Df3GiVb355ww==
-X-Received: by 2002:a50:a6da:: with SMTP id f26mr209389edc.4.1597344032457;
-        Thu, 13 Aug 2020 11:40:32 -0700 (PDT)
-Received: from [192.168.0.111] ([196.171.18.32])
-        by smtp.gmail.com with ESMTPSA id t3sm5077109eje.82.2020.08.13.11.40.27
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Thu, 13 Aug 2020 11:40:31 -0700 (PDT)
-Message-ID: <5f35891f.1c69fb81.4b26f.c17d@mx.google.com>
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726427AbgHMTcm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 13 Aug 2020 15:32:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726305AbgHMTcm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 13 Aug 2020 15:32:42 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1ED020791;
+        Thu, 13 Aug 2020 19:32:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597347161;
+        bh=ncO0/loO/c3oh5BhhMwIm39kXDttCNxlxMDJJm1l5WE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VRra9OG7qww58DHpfa2HwoP4KJ0NLmXPjRDCWssktWbd8uP9AnbY9plK1LJfAodgq
+         xrZ3jV2VIt0BeUL38Rmw6YrzPZS5Thl8bGJ2SpaWb5G0hkJqD+KF5peEmmYZoWoDq0
+         pYdEO+ns75RqhnV4IfxdvUt+bx8ljNpDWPMA9jow=
+Date:   Thu, 13 Aug 2020 12:32:39 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Elena Petrova <lenaptr@google.com>
+Cc:     linux-crypto@vger.kernel.org,
+        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jeffrey Vander Stoep <jeffv@google.com>
+Subject: Re: [PATCH v5] crypto: af_alg - add extra parameters for DRBG
+ interface
+Message-ID: <20200813193239.GA2470@sol.localdomain>
+References: <CABvBcwYPXvK1_b2hR5THaqfq8nKVwppdBd2aJF6cmS_aCxHxUg@mail.gmail.com>
+ <20200813160811.3568494-1-lenaptr@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Hello
-To:     Recipients <tinnaevan26@gmail.com>
-From:   "Sophia" <tinnaevan26@gmail.com>
-Date:   Thu, 13 Aug 2020 18:40:17 +0000
-Reply-To: sophiawillians00@gmail.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200813160811.3568494-1-lenaptr@google.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello Dear,
+On Thu, Aug 13, 2020 at 05:08:11PM +0100, Elena Petrova wrote:
+> Extend the user-space RNG interface:
+>   1. Add entropy input via ALG_SET_DRBG_ENTROPY setsockopt option;
+>   2. Add additional data input via sendmsg syscall.
+> 
+> This allows DRBG to be tested with test vectors, for example for the
+> purpose of CAVP testing, which otherwise isn't possible.
+> 
+> To prevent erroneous use of entropy input, it is hidden under
+> CRYPTO_USER_API_CAVP_DRBG config option and requires CAP_SYS_ADMIN to
+> succeed.
+> 
+> Signed-off-by: Elena Petrova <lenaptr@google.com>
+> Acked-by: Stephan Müller <smueller@chronox.de>
+> ---
+> 
+> Updates in v5:
+>   1) use __maybe_unused instead of #ifdef;
+>   2) separate code path for a testing mode;
+>   3) only allow Additional Data input in a testing mode.
+> 
+> Updates in v4:
+>   1) setentropy returns 0 or error code (used to return length);
+>   2) bigfixes suggested by Eric.
+> 
+> Updates in v3:
+>   1) More details in commit message;
+>   2) config option name is now CRYPTO_USER_API_CAVP_DRBG;
+>   3) fixed a bug of not releasing socket locks.
+> 
+> Updates in v2:
+>   1) Adding CONFIG_CRYPTO_CAVS_DRBG around setentropy.
+>   2) Requiring CAP_SYS_ADMIN for entropy reset.
+>   3) Locking for send and recv.
+>   4) Length checks added for send and setentropy; send and setentropy now return
+>      number of bytes accepted.
+>   5) Minor code style corrections.
+> 
+> libkcapi patch for testing:
+>   https://github.com/Len0k/libkcapi/commit/6f095d270b982008f419078614c15caa592cb531
+> 
+>  Documentation/crypto/userspace-if.rst |  17 ++-
+>  crypto/Kconfig                        |   9 ++
+>  crypto/af_alg.c                       |   8 ++
+>  crypto/algif_rng.c                    | 172 ++++++++++++++++++++++++--
+>  include/crypto/if_alg.h               |   1 +
+>  include/uapi/linux/if_alg.h           |   1 +
+>  6 files changed, 193 insertions(+), 15 deletions(-)
+> 
+> diff --git a/Documentation/crypto/userspace-if.rst b/Documentation/crypto/userspace-if.rst
+> index ff86befa61e0..ef7132802c2d 100644
+> --- a/Documentation/crypto/userspace-if.rst
+> +++ b/Documentation/crypto/userspace-if.rst
+> @@ -296,15 +296,23 @@ follows:
+>  
+>      struct sockaddr_alg sa = {
+>          .salg_family = AF_ALG,
+> -        .salg_type = "rng", /* this selects the symmetric cipher */
+> -        .salg_name = "drbg_nopr_sha256" /* this is the cipher name */
+> +        .salg_type = "rng", /* this selects the random number generator */
+> +        .salg_name = "drbg_nopr_sha256" /* this is the RNG name */
+>      };
+>  
+>  
+>  Depending on the RNG type, the RNG must be seeded. The seed is provided
+>  using the setsockopt interface to set the key. For example, the
+>  ansi_cprng requires a seed. The DRBGs do not require a seed, but may be
+> -seeded.
+> +seeded. The seed is also known as a *Personalization String* in DRBG800-90A
+> +standard.
 
-How are you doing.
-i am Sophia by name, i will be more glad if we get to know each other more =
-better, thank you.
+Isn't the standard called "NIST SP 800-90A"?
+"DRBG800-90A" doesn't return many hits on Google.
+
+> +For the purpose of CAVP testing, the concatenation of *Entropy* and *Nonce*
+> +can be provided to the RNG via ALG_SET_DRBG_ENTROPY setsockopt interface. This
+> +requires a kernel built with CONFIG_CRYPTO_USER_API_CAVP_DRBG, and
+> +CAP_SYS_ADMIN permission.
+> +
+> +*Additional Data* can be provided using the send()/sendmsg() system calls.
+
+This doesn't make it clear whether the support for "Additional Data" is
+dependent on CONFIG_CRYPTO_USER_API_CAVP_DRBG or not.
+
+> diff --git a/crypto/Kconfig b/crypto/Kconfig
+> index 091c0a0bbf26..7c8736f71681 100644
+> --- a/crypto/Kconfig
+> +++ b/crypto/Kconfig
+> @@ -1896,6 +1896,15 @@ config CRYPTO_STATS
+>  config CRYPTO_HASH_INFO
+>  	bool
+>  
+> +config CRYPTO_USER_API_CAVP_DRBG
+> +	tristate "Enable CAVP testing of DRBG"
+> +	depends on CRYPTO_USER_API_RNG && CRYPTO_DRBG
+> +	help
+> +	  This option enables extra API for CAVP testing via the user-space
+> +	  interface: resetting of DRBG entropy, and providing Additional Data.
+> +	  This should only be enabled for CAVP testing. You should say
+> +	  no unless you know what this is.
+
+Using "tristate" here is incorrect because this option is not a module itself.
+It's an option *for* a module.  So it needs to be "bool" instead.
+
+Also, since this is an option to refine CRYPTO_USER_API_RNG, how about renaming
+it to "CRYPTO_USER_API_RNG_CAVP", and moving it to just below the definition of
+"CRYPTO_USER_API_RNG" so that they show up adjacent to each other?
+
+> +static int rng_test_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+> +			    int flags)
+> +{
+> +	struct sock *sk = sock->sk;
+> +	struct alg_sock *ask = alg_sk(sk);
+> +	struct rng_ctx *ctx = ask->private;
+> +	int err;
+> +
+> +	lock_sock(sock->sk);
+> +	err = _rng_recvmsg(ctx->drng, msg, len, ctx->addtl, ctx->addtl_len);
+> +	rng_reset_addtl(ctx);
+> +	release_sock(sock->sk);
+> +
+> +	return err ? err : len;
+
+Shouldn't this just return the value that _rng_recvmsg() returned?
+
+Also 'err' is conventionally just for 0 or -errno codes.  Use 'ret' if the
+variable can also hold a length.
+
+> +static struct proto_ops __maybe_unused algif_rng_test_ops = {
+> +	.family		=	PF_ALG,
+> +
+> +	.connect	=	sock_no_connect,
+> +	.socketpair	=	sock_no_socketpair,
+> +	.getname	=	sock_no_getname,
+> +	.ioctl		=	sock_no_ioctl,
+> +	.listen		=	sock_no_listen,
+> +	.shutdown	=	sock_no_shutdown,
+> +	.getsockopt	=	sock_no_getsockopt,
+> +	.mmap		=	sock_no_mmap,
+> +	.bind		=	sock_no_bind,
+> +	.accept		=	sock_no_accept,
+> +	.setsockopt	=	sock_no_setsockopt,
+> +	.sendpage	=	sock_no_sendpage,
+> +
+> +	.release	=	af_alg_release,
+> +	.recvmsg	=	rng_test_recvmsg,
+> +	.sendmsg	=	rng_test_sendmsg,
+> +};
+[...]
+>  static const struct af_alg_type algif_type_rng = {
+> @@ -171,7 +314,12 @@ static const struct af_alg_type algif_type_rng = {
+>  	.release	=	rng_release,
+>  	.accept		=	rng_accept_parent,
+>  	.setkey		=	rng_setkey,
+> +#if IS_ENABLED(CONFIG_CRYPTO_USER_API_CAVP_DRBG)
+> +	.setentropy	=	rng_setentropy,
+> +	.ops		=	&algif_rng_test_ops,
+> +#else
+>  	.ops		=	&algif_rng_ops,
+> +#endif
+>  	.name		=	"rng",
+>  	.owner		=	THIS_MODULE
+>  };
+
+I think that switching to the separate proto_ops structs made the patch worse.
+Now there's duplicated code.
+
+Since proto_ops are almost identical, and only one is used in a given kernel
+build, why not just do:
+
+static struct proto_ops algif_rng_ops = {
+	...
+#ifdef CONFIG_CRYPTO_USER_API_RNG_CAVP
+	.sendmsg	= rng_sendmsg,
+#else
+	.sendmsg	= sock_no_sendmsg,
+#endif
+	...
+};
+
+Similarly for .recvmsg(), although I don't understand what's wrong with just
+adding the lock_sock() instead...  The RNG algorithms do locking anyway, so it's
+not like that would regress the ability to recvmsg() in parallel.  Also,
+conditional locking depending on the kernel config makes it more difficult to
+find kernel bugs like deadlocks.
+
+- Eric
