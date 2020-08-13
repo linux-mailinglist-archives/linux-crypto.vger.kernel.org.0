@@ -2,233 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40D7243F52
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 Aug 2020 21:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45BD2442B0
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Aug 2020 03:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbgHMTcm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 13 Aug 2020 15:32:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726305AbgHMTcm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 13 Aug 2020 15:32:42 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1ED020791;
-        Thu, 13 Aug 2020 19:32:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597347161;
-        bh=ncO0/loO/c3oh5BhhMwIm39kXDttCNxlxMDJJm1l5WE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VRra9OG7qww58DHpfa2HwoP4KJ0NLmXPjRDCWssktWbd8uP9AnbY9plK1LJfAodgq
-         xrZ3jV2VIt0BeUL38Rmw6YrzPZS5Thl8bGJ2SpaWb5G0hkJqD+KF5peEmmYZoWoDq0
-         pYdEO+ns75RqhnV4IfxdvUt+bx8ljNpDWPMA9jow=
-Date:   Thu, 13 Aug 2020 12:32:39 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Elena Petrova <lenaptr@google.com>
-Cc:     linux-crypto@vger.kernel.org,
-        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>
-Subject: Re: [PATCH v5] crypto: af_alg - add extra parameters for DRBG
- interface
-Message-ID: <20200813193239.GA2470@sol.localdomain>
-References: <CABvBcwYPXvK1_b2hR5THaqfq8nKVwppdBd2aJF6cmS_aCxHxUg@mail.gmail.com>
- <20200813160811.3568494-1-lenaptr@google.com>
+        id S1726531AbgHNBVT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Thu, 13 Aug 2020 21:21:19 -0400
+Received: from [186.47.21.114] ([186.47.21.114]:59572 "EHLO mail.hmvi.gob.ec"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726522AbgHNBVT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 13 Aug 2020 21:21:19 -0400
+X-Greylist: delayed 15780 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Aug 2020 21:21:18 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.hmvi.gob.ec (Postfix) with ESMTP id 0EB2BC037C1F3;
+        Thu, 13 Aug 2020 13:19:30 -0500 (-05)
+Received: from mail.hmvi.gob.ec ([127.0.0.1])
+        by localhost (mail.hmvi.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id CuoMNFt9OtmK; Thu, 13 Aug 2020 13:19:29 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.hmvi.gob.ec (Postfix) with ESMTP id 9F613C037C66F;
+        Thu, 13 Aug 2020 12:55:33 -0500 (-05)
+X-Virus-Scanned: amavisd-new at hmvi.gob.ec
+Received: from mail.hmvi.gob.ec ([127.0.0.1])
+        by localhost (mail.hmvi.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 04q1WvzqMgYB; Thu, 13 Aug 2020 12:55:32 -0500 (-05)
+Received: from [10.73.80.190] (unknown [105.8.3.183])
+        by mail.hmvi.gob.ec (Postfix) with ESMTPSA id E4E87C02BC8D5;
+        Thu, 13 Aug 2020 12:37:39 -0500 (-05)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200813160811.3568494-1-lenaptr@google.com>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Covid_19_Wohlt=C3=A4tigkeitsfonds?=
+To:     Recipients <danny.puetate@mail.hmvi.gob.ec>
+From:   ''Tayeb Souami'' <danny.puetate@mail.hmvi.gob.ec>
+Date:   Thu, 13 Aug 2020 19:37:18 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20200813173739.E4E87C02BC8D5@mail.hmvi.gob.ec>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 05:08:11PM +0100, Elena Petrova wrote:
-> Extend the user-space RNG interface:
->   1. Add entropy input via ALG_SET_DRBG_ENTROPY setsockopt option;
->   2. Add additional data input via sendmsg syscall.
-> 
-> This allows DRBG to be tested with test vectors, for example for the
-> purpose of CAVP testing, which otherwise isn't possible.
-> 
-> To prevent erroneous use of entropy input, it is hidden under
-> CRYPTO_USER_API_CAVP_DRBG config option and requires CAP_SYS_ADMIN to
-> succeed.
-> 
-> Signed-off-by: Elena Petrova <lenaptr@google.com>
-> Acked-by: Stephan M�ller <smueller@chronox.de>
-> ---
-> 
-> Updates in v5:
->   1) use __maybe_unused instead of #ifdef;
->   2) separate code path for a testing mode;
->   3) only allow Additional Data input in a testing mode.
-> 
-> Updates in v4:
->   1) setentropy returns 0 or error code (used to return length);
->   2) bigfixes suggested by Eric.
-> 
-> Updates in v3:
->   1) More details in commit message;
->   2) config option name is now CRYPTO_USER_API_CAVP_DRBG;
->   3) fixed a bug of not releasing socket locks.
-> 
-> Updates in v2:
->   1) Adding CONFIG_CRYPTO_CAVS_DRBG around setentropy.
->   2) Requiring CAP_SYS_ADMIN for entropy reset.
->   3) Locking for send and recv.
->   4) Length checks added for send and setentropy; send and setentropy now return
->      number of bytes accepted.
->   5) Minor code style corrections.
-> 
-> libkcapi patch for testing:
->   https://github.com/Len0k/libkcapi/commit/6f095d270b982008f419078614c15caa592cb531
-> 
->  Documentation/crypto/userspace-if.rst |  17 ++-
->  crypto/Kconfig                        |   9 ++
->  crypto/af_alg.c                       |   8 ++
->  crypto/algif_rng.c                    | 172 ++++++++++++++++++++++++--
->  include/crypto/if_alg.h               |   1 +
->  include/uapi/linux/if_alg.h           |   1 +
->  6 files changed, 193 insertions(+), 15 deletions(-)
-> 
-> diff --git a/Documentation/crypto/userspace-if.rst b/Documentation/crypto/userspace-if.rst
-> index ff86befa61e0..ef7132802c2d 100644
-> --- a/Documentation/crypto/userspace-if.rst
-> +++ b/Documentation/crypto/userspace-if.rst
-> @@ -296,15 +296,23 @@ follows:
->  
->      struct sockaddr_alg sa = {
->          .salg_family = AF_ALG,
-> -        .salg_type = "rng", /* this selects the symmetric cipher */
-> -        .salg_name = "drbg_nopr_sha256" /* this is the cipher name */
-> +        .salg_type = "rng", /* this selects the random number generator */
-> +        .salg_name = "drbg_nopr_sha256" /* this is the RNG name */
->      };
->  
->  
->  Depending on the RNG type, the RNG must be seeded. The seed is provided
->  using the setsockopt interface to set the key. For example, the
->  ansi_cprng requires a seed. The DRBGs do not require a seed, but may be
-> -seeded.
-> +seeded. The seed is also known as a *Personalization String* in DRBG800-90A
-> +standard.
+Lieber Freund,
 
-Isn't the standard called "NIST SP 800-90A"?
-"DRBG800-90A" doesn't return many hits on Google.
+Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika,
+der Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich
+an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre
+E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines
+Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und
+Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die
+Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden,
+um meine Gewinne zu überprüfen, sehen Sie bitte meine You Tube Seite
+unten.
 
-> +For the purpose of CAVP testing, the concatenation of *Entropy* and *Nonce*
-> +can be provided to the RNG via ALG_SET_DRBG_ENTROPY setsockopt interface. This
-> +requires a kernel built with CONFIG_CRYPTO_USER_API_CAVP_DRBG, and
-> +CAP_SYS_ADMIN permission.
-> +
-> +*Additional Data* can be provided using the send()/sendmsg() system calls.
 
-This doesn't make it clear whether the support for "Additional Data" is
-dependent on CONFIG_CRYPTO_USER_API_CAVP_DRBG or not.
+UHR MICH HIER: https://www.youtube.com/watch?v=Z6ui8ZDQ6Ks
 
-> diff --git a/crypto/Kconfig b/crypto/Kconfig
-> index 091c0a0bbf26..7c8736f71681 100644
-> --- a/crypto/Kconfig
-> +++ b/crypto/Kconfig
-> @@ -1896,6 +1896,15 @@ config CRYPTO_STATS
->  config CRYPTO_HASH_INFO
->  	bool
->  
-> +config CRYPTO_USER_API_CAVP_DRBG
-> +	tristate "Enable CAVP testing of DRBG"
-> +	depends on CRYPTO_USER_API_RNG && CRYPTO_DRBG
-> +	help
-> +	  This option enables extra API for CAVP testing via the user-space
-> +	  interface: resetting of DRBG entropy, and providing Additional Data.
-> +	  This should only be enabled for CAVP testing. You should say
-> +	  no unless you know what this is.
 
-Using "tristate" here is incorrect because this option is not a module itself.
-It's an option *for* a module.  So it needs to be "bool" instead.
+Das ist dein Spendencode: [TS530342018]
 
-Also, since this is an option to refine CRYPTO_USER_API_RNG, how about renaming
-it to "CRYPTO_USER_API_RNG_CAVP", and moving it to just below the definition of
-"CRYPTO_USER_API_RNG" so that they show up adjacent to each other?
 
-> +static int rng_test_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-> +			    int flags)
-> +{
-> +	struct sock *sk = sock->sk;
-> +	struct alg_sock *ask = alg_sk(sk);
-> +	struct rng_ctx *ctx = ask->private;
-> +	int err;
-> +
-> +	lock_sock(sock->sk);
-> +	err = _rng_recvmsg(ctx->drng, msg, len, ctx->addtl, ctx->addtl_len);
-> +	rng_reset_addtl(ctx);
-> +	release_sock(sock->sk);
-> +
-> +	return err ? err : len;
+Antworten Sie mit dem SPENDE-CODE an diese
 
-Shouldn't this just return the value that _rng_recvmsg() returned?
+E-Mail:Tayebsouam.spende@gmail.com
 
-Also 'err' is conventionally just for 0 or -errno codes.  Use 'ret' if the
-variable can also hold a length.
 
-> +static struct proto_ops __maybe_unused algif_rng_test_ops = {
-> +	.family		=	PF_ALG,
-> +
-> +	.connect	=	sock_no_connect,
-> +	.socketpair	=	sock_no_socketpair,
-> +	.getname	=	sock_no_getname,
-> +	.ioctl		=	sock_no_ioctl,
-> +	.listen		=	sock_no_listen,
-> +	.shutdown	=	sock_no_shutdown,
-> +	.getsockopt	=	sock_no_getsockopt,
-> +	.mmap		=	sock_no_mmap,
-> +	.bind		=	sock_no_bind,
-> +	.accept		=	sock_no_accept,
-> +	.setsockopt	=	sock_no_setsockopt,
-> +	.sendpage	=	sock_no_sendpage,
-> +
-> +	.release	=	af_alg_release,
-> +	.recvmsg	=	rng_test_recvmsg,
-> +	.sendmsg	=	rng_test_sendmsg,
-> +};
-[...]
->  static const struct af_alg_type algif_type_rng = {
-> @@ -171,7 +314,12 @@ static const struct af_alg_type algif_type_rng = {
->  	.release	=	rng_release,
->  	.accept		=	rng_accept_parent,
->  	.setkey		=	rng_setkey,
-> +#if IS_ENABLED(CONFIG_CRYPTO_USER_API_CAVP_DRBG)
-> +	.setentropy	=	rng_setentropy,
-> +	.ops		=	&algif_rng_test_ops,
-> +#else
->  	.ops		=	&algif_rng_ops,
-> +#endif
->  	.name		=	"rng",
->  	.owner		=	THIS_MODULE
->  };
+Ich hoffe, Sie und Ihre Familie glücklich zu machen.
 
-I think that switching to the separate proto_ops structs made the patch worse.
-Now there's duplicated code.
 
-Since proto_ops are almost identical, and only one is used in a given kernel
-build, why not just do:
+Grüße
 
-static struct proto_ops algif_rng_ops = {
-	...
-#ifdef CONFIG_CRYPTO_USER_API_RNG_CAVP
-	.sendmsg	= rng_sendmsg,
-#else
-	.sendmsg	= sock_no_sendmsg,
-#endif
-	...
-};
-
-Similarly for .recvmsg(), although I don't understand what's wrong with just
-adding the lock_sock() instead...  The RNG algorithms do locking anyway, so it's
-not like that would regress the ability to recvmsg() in parallel.  Also,
-conditional locking depending on the kernel config makes it more difficult to
-find kernel bugs like deadlocks.
-
-- Eric
+Herr Tayeb Souami
