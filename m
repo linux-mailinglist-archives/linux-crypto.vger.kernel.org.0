@@ -2,60 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6598E24495E
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Aug 2020 14:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F2C244A4E
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Aug 2020 15:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbgHNMHa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Fri, 14 Aug 2020 08:07:30 -0400
-Received: from mail.munisurquillo.gob.pe ([190.187.155.157]:40494 "EHLO
-        mail.munisurquillo.gob.pe" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726185AbgHNMH3 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 14 Aug 2020 08:07:29 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.munisurquillo.gob.pe (Postfix) with ESMTP id 985B640460EED;
-        Fri, 14 Aug 2020 03:05:24 -0500 (-05)
-Received: from mail.munisurquillo.gob.pe ([127.0.0.1])
-        by localhost (mail.munisurquillo.gob.pe [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id vb_jwy_-JSjs; Fri, 14 Aug 2020 03:05:24 -0500 (-05)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.munisurquillo.gob.pe (Postfix) with ESMTP id DDC5040361432;
-        Fri, 14 Aug 2020 02:52:32 -0500 (-05)
-X-Virus-Scanned: amavisd-new at munisurquillo.gob.pe
-Received: from mail.munisurquillo.gob.pe ([127.0.0.1])
-        by localhost (mail.munisurquillo.gob.pe [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EdUSRocItO3C; Fri, 14 Aug 2020 02:52:32 -0500 (-05)
-Received: from [10.54.17.114] (unknown [105.4.7.153])
-        by mail.munisurquillo.gob.pe (Postfix) with ESMTPSA id 21A02404061E5;
-        Fri, 14 Aug 2020 02:44:32 -0500 (-05)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726593AbgHNNSe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 14 Aug 2020 09:18:34 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:59326 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726283AbgHNNSe (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 14 Aug 2020 09:18:34 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1k6Zb8-0000zF-4P; Fri, 14 Aug 2020 23:18:19 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Aug 2020 23:18:18 +1000
+Date:   Fri, 14 Aug 2020 23:18:18 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [GIT PULL] Crypto Fixes for 5.9
+Message-ID: <20200814131817.GA8147@gondor.apana.org.au>
+References: <20190916084901.GA20338@gondor.apana.org.au>
+ <20190923050515.GA6980@gondor.apana.org.au>
+ <20191202062017.ge4rz72ki3vczhgb@gondor.apana.org.au>
+ <20191214084749.jt5ekav5o5pd2dcp@gondor.apana.org.au>
+ <20200115150812.mo2eycc53lbsgvue@gondor.apana.org.au>
+ <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
+ <20200408061513.GA23636@gondor.apana.org.au>
+ <20200611040544.GA27603@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: =?utf-8?q?Covid_19_Wohlt=C3=A4tigkeitsfonds?=
-To:     Recipients <lu.marin@munisurquillo.gob.pe>
-From:   ''charles jackson'' <lu.marin@munisurquillo.gob.pe>
-Date:   Fri, 14 Aug 2020 09:44:18 +0200
-Reply-To: charlesjacksonjr001@gmail.com
-Message-Id: <20200814074433.21A02404061E5@mail.munisurquillo.gob.pe>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200611040544.GA27603@gondor.apana.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hallo
+Hi Linus:
 
-Ich bin Charles W. Jackson aus North Carolina, Vereinigte Staaten von Amerika, und ich bin der Gewinner des Mega-Millionen-Jackpots von 344 Millionen US-Dollar. Ich spende die Summe von 2.000.000 Millionen Euro als Teil der Hilfsgelder für das Corona-Virus.
+This push fixes a regression in af_alg.
 
-Dies ist Ihr Spendencode: [CJ530342019]
+The following changes since commit 3cbfe80737c18ac6e635421ab676716a393d3074:
 
-www.youtube.com/watch?v=BSr8myiLPMQ
+  crypto: sa2ul - Fix inconsistent IS_ERR and PTR_ERR (2020-07-31 18:25:29 +1000)
 
-Bitte antworten Sie auf diese E-Mail mit dem SPENDERCODE:
+are available in the Git repository at:
 
-charlesjacksonjr001@gmail.com
+  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus 
 
-Ich hoffe, dass Sie und Ihre Familie dies durchkommen
+for you to fetch changes up to 21dfbcd1f5cbff9cf2f9e7e43475aed8d072b0dd:
 
+  crypto: algif_aead - fix uninitialized ctx->init (2020-08-13 17:09:32 +1000)
 
-Herr Charles Jackson
+----------------------------------------------------------------
+Ondrej Mosnacek (1):
+      crypto: algif_aead - fix uninitialized ctx->init
+
+ crypto/algif_aead.c     | 6 ------
+ crypto/algif_skcipher.c | 7 +------
+ 2 files changed, 1 insertion(+), 12 deletions(-)
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
