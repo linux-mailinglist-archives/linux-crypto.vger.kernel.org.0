@@ -2,28 +2,28 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2AB24AA0C
-	for <lists+linux-crypto@lfdr.de>; Thu, 20 Aug 2020 01:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB3524AA5D
+	for <lists+linux-crypto@lfdr.de>; Thu, 20 Aug 2020 01:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgHSX43 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 19 Aug 2020 19:56:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53066 "EHLO mail.kernel.org"
+        id S1727101AbgHSX6E (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 19 Aug 2020 19:58:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726435AbgHSX41 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 19 Aug 2020 19:56:27 -0400
+        id S1726766AbgHSX43 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 19 Aug 2020 19:56:29 -0400
 Received: from localhost (unknown [70.37.104.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83318208DB;
-        Wed, 19 Aug 2020 23:56:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4492E20FC3;
+        Wed, 19 Aug 2020 23:56:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597881386;
-        bh=30FnG0R0uTJZppd+GdCN9PaDYguSkAXnvSNc1Izoe7Y=;
+        s=default; t=1597881389;
+        bh=mZ+xjhUT11PTCiS0S8kVh706FaAhXCyVl6jXHHCd8LI=;
         h=Date:From:To:To:To:To:Cc:Cc:Subject:In-Reply-To:References:From;
-        b=oZKUVyqRcJkVFGDX2UvzvDQiJGNaNYhhouEdqWQqTaRqK73uZGXyLG7sUipb1c7h1
-         y38DvGsZm3NDcBbJBptKeUX3yXe+VMUgrW34BU5/uFfL34sDGWjXFIippHa2FK4Ygx
-         PUhuaOUTsst7OSkOkEaVDTmi31bTm+XZPcFayIVE=
-Date:   Wed, 19 Aug 2020 23:56:25 +0000
+        b=dKYJFrsHl6D5x0JvP+cHUFL9MklzSSA4QEQ+kk0g7jC5icP+LCHddK8zfuo+S1ojZ
+         0YZv/ahy77TWzxhXMwdLFUasXkj07ciXhlAjePcn/3RAgo6jqX/t8+BjDqlN7Z/u04
+         lT+QIMQKsftFt80y4sW025UdmKHQsafs5El81gpY=
+Date:   Wed, 19 Aug 2020 23:56:28 +0000
 From:   Sasha Levin <sashal@kernel.org>
 To:     Sasha Levin <sashal@kernel.org>
 To:     Andrei Botila <andrei.botila@oss.nxp.com>
@@ -31,10 +31,10 @@ To:     Andrei Botila <andrei.botila@nxp.com>
 To:     Horia Geanta <horia.geanta@nxp.com>
 Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     stable@vger.kernel.org
-Subject: Re: [PATCH 3/9] crypto: caam/qi2 - add fallback for XTS with more than 8B IV
-In-Reply-To: <20200806114127.8650-4-andrei.botila@oss.nxp.com>
-References: <20200806114127.8650-4-andrei.botila@oss.nxp.com>
-Message-Id: <20200819235626.83318208DB@mail.kernel.org>
+Subject: Re: [PATCH 6/9] crypto: caam/qi2 - add support for more XTS key lengths
+In-Reply-To: <20200806114127.8650-7-andrei.botila@oss.nxp.com>
+References: <20200806114127.8650-7-andrei.botila@oss.nxp.com>
+Message-Id: <20200819235629.4492E20FC3@mail.kernel.org>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
@@ -51,6 +51,7 @@ The bot has tested the following trees: v5.8.1, v5.7.15, v5.4.58.
 
 v5.8.1: Failed to apply! Possible dependencies:
     528f776df67c ("crypto: qat - allow xts requests not multiple of block")
+    93f83eb04603 ("crypto: caam/qi2 - add fallback for XTS with more than 8B IV")
     a85211f36f3d ("crypto: qat - fallback for xts with 192 bit keys")
     b185a68710e0 ("crypto: qat - validate xts key")
     b8aa7dc5c753 ("crypto: drivers - set the flag CRYPTO_ALG_ALLOCATES_MEMORY")
@@ -58,6 +59,7 @@ v5.8.1: Failed to apply! Possible dependencies:
 
 v5.7.15: Failed to apply! Possible dependencies:
     528f776df67c ("crypto: qat - allow xts requests not multiple of block")
+    93f83eb04603 ("crypto: caam/qi2 - add fallback for XTS with more than 8B IV")
     a85211f36f3d ("crypto: qat - fallback for xts with 192 bit keys")
     b185a68710e0 ("crypto: qat - validate xts key")
     b8aa7dc5c753 ("crypto: drivers - set the flag CRYPTO_ALG_ALLOCATES_MEMORY")
@@ -72,6 +74,7 @@ v5.4.58: Failed to apply! Possible dependencies:
     7f725f41f627 ("crypto: powerpc - convert SPE AES algorithms to skcipher API")
     7f9b0880925f ("crypto: blake2s - implement generic shash driver")
     91d689337fe8 ("crypto: blake2b - add blake2b generic implementation")
+    93f83eb04603 ("crypto: caam/qi2 - add fallback for XTS with more than 8B IV")
     b4d0c0aad57a ("crypto: arm - use Kconfig based compiler checks for crypto opcodes")
     b95bba5d0114 ("crypto: skcipher - rename the crypto_blkcipher module and kconfig option")
     d00c06398154 ("crypto: s390/paes - convert to skcipher API")
