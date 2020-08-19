@@ -2,55 +2,78 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E4C24A027
-	for <lists+linux-crypto@lfdr.de>; Wed, 19 Aug 2020 15:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C7F24A541
+	for <lists+linux-crypto@lfdr.de>; Wed, 19 Aug 2020 19:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgHSNgV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 19 Aug 2020 09:36:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49398 "EHLO mail.kernel.org"
+        id S1726612AbgHSRwY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 19 Aug 2020 13:52:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728343AbgHSNgL (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:36:11 -0400
-Received: from dragon (unknown [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726578AbgHSRwU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 19 Aug 2020 13:52:20 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55BD8204EC;
-        Wed, 19 Aug 2020 13:36:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A6CD2067C;
+        Wed, 19 Aug 2020 17:52:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597844170;
-        bh=EYEELYhlPPBI2CBDzAW5l5k0sAMr4X6tY2UG4Gap+ts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R6Rkg5PBAjcQERps7XOwJZdaBUl+/L5XAaDyUdV5kZI4cesQFY6N/JhsKHvCHubWC
-         oF6NtJIe+kaoFd2YPT8wak5+xMSMip02QkvefaWbFUO+YmKDQbr/aWHf8H6d9lsvqW
-         Y6tCqVi1nxk87ZFBQBWpkfOEO/ZAOh0UAe8s/j1s=
-Date:   Wed, 19 Aug 2020 21:35:56 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Olof Johansson <olof@lixom.net>,
+        s=default; t=1597859540;
+        bh=mARbbccibp0w+1VVZDf+WZpyqmdv+vpiA7azcsNO8a8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=K8afYfVtXLEOHFe1BlTb6CxX+sO5OcEaiQB3sUlKQuvzyGK7V8Dcy62weFFktkG4M
+         fudltBQPDaApRwTm9UgHYqmV+MEbm/AwjxbDGIp9whSMKzvtBojX5oQaKL5bbdZwsP
+         J9+TI0SKZSCw4I0m/Ft7aYnONn1IrL52laQfBvVk=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     David Howells <dhowells@redhat.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>
-Subject: Re: [PATCH] ARM: multi_v7_defconfig: enable caam crypto module
-Message-ID: <20200819133555.GC7114@dragon>
-References: <20200727161428.14586-1-horia.geanta@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200727161428.14586-1-horia.geanta@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        "David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [RESEND PATCH] KEYS: asymmetric: Fix kerneldoc
+Date:   Wed, 19 Aug 2020 19:52:12 +0200
+Message-Id: <20200819175212.20583-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 07:14:28PM +0300, Horia Geantă wrote:
-> caam crypto module is included in several ARMv7-based SoCs from
-> i.MX, Layerscape, Vybrid families.
-> 
-> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+Fix W=1 compile warnings (invalid kerneldoc):
 
-Applied, thanks.
+    crypto/asymmetric_keys/asymmetric_type.c:160: warning: Function parameter or member 'kid1' not described in 'asymmetric_key_id_same'
+    crypto/asymmetric_keys/asymmetric_type.c:160: warning: Function parameter or member 'kid2' not described in 'asymmetric_key_id_same'
+    crypto/asymmetric_keys/asymmetric_type.c:160: warning: Excess function parameter 'kid_1' description in 'asymmetric_key_id_same'
+    crypto/asymmetric_keys/asymmetric_type.c:160: warning: Excess function parameter 'kid_2' description in 'asymmetric_key_id_same'
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ crypto/asymmetric_keys/asymmetric_type.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/crypto/asymmetric_keys/asymmetric_type.c b/crypto/asymmetric_keys/asymmetric_type.c
+index 33e77d846caa..ad8af3d70ac0 100644
+--- a/crypto/asymmetric_keys/asymmetric_type.c
++++ b/crypto/asymmetric_keys/asymmetric_type.c
+@@ -152,7 +152,8 @@ EXPORT_SYMBOL_GPL(asymmetric_key_generate_id);
+ 
+ /**
+  * asymmetric_key_id_same - Return true if two asymmetric keys IDs are the same.
+- * @kid_1, @kid_2: The key IDs to compare
++ * @kid1: The key ID to compare
++ * @kid2: The key ID to compare
+  */
+ bool asymmetric_key_id_same(const struct asymmetric_key_id *kid1,
+ 			    const struct asymmetric_key_id *kid2)
+@@ -168,7 +169,8 @@ EXPORT_SYMBOL_GPL(asymmetric_key_id_same);
+ /**
+  * asymmetric_key_id_partial - Return true if two asymmetric keys IDs
+  * partially match
+- * @kid_1, @kid_2: The key IDs to compare
++ * @kid1: The key ID to compare
++ * @kid2: The key ID to compare
+  */
+ bool asymmetric_key_id_partial(const struct asymmetric_key_id *kid1,
+ 			       const struct asymmetric_key_id *kid2)
+-- 
+2.17.1
+
