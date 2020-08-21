@@ -2,222 +2,241 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705CD24D671
-	for <lists+linux-crypto@lfdr.de>; Fri, 21 Aug 2020 15:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE6824D6C6
+	for <lists+linux-crypto@lfdr.de>; Fri, 21 Aug 2020 15:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728971AbgHUNqY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 21 Aug 2020 09:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728882AbgHUNof (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:44:35 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB14C061387
-        for <linux-crypto@vger.kernel.org>; Fri, 21 Aug 2020 06:44:02 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id r15so1953771wrp.13
-        for <linux-crypto@vger.kernel.org>; Fri, 21 Aug 2020 06:44:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=enpDAR+q6vLHcCWoXqxt/APfxOpAFUDPCVJnonleY4M=;
-        b=D+MLA+rAd1G4H5BgYt/u/BmAvzHLvCN1+/+4PHxXfzMi4Ma9mp9yvPzpMSJL5VxKwy
-         SWVI0TuzypjDFxdpk0gORemJnyasicw+C+/PMXEGKImyPTPvVwANtNpaYNfcezmHKVAu
-         JRz7JwrFJS37xupAKUml4yBahTd6b0ZVKPIYEL0dgZxDxjgb0URsS6hiiRjVz2FFdCAT
-         CwpwTLza0ITYtK/E6Y14VpdFA2n3Jya0NEC/Lz6gbI6khTG8N2JLE7lDy7bXCpdhZtOM
-         kGQecTa634qyZ0x0yMH1IJBfYDWkWOiIGDrqeA3PHYkcMHpOLbBs1q8YkVlnDowOEcyY
-         YsIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=enpDAR+q6vLHcCWoXqxt/APfxOpAFUDPCVJnonleY4M=;
-        b=Zk6n2gmN6AGZxGb7UMswp7FhWjEqwrwWeGw20XH/2KsdfpxGLaqldRDg6ZJbCk75DW
-         neU1R7YoFpDjDlLT1qruL9xur+y9CGfPR4s2iYt1u7Kfh3wQtdpYjCNEbG8IufWWJs/I
-         cN9n8Mfl2JcRc2a1RODVFV0bteZ3Fsv4EII83ZBLd3dHUAVFQptZZKzhtqlvLgLnsArJ
-         T7Qgte+W9Tnn6Yql6M1tSHoNkyG9XAi2E7TRIOZacqu8fdkamlCY+5LUiYUCx41FvcH6
-         52Ks6gn3ZS/+XzE9UJ+GGUL4cIZ28fM5yMpmEJWNLmNeo0cqHhgxXWTNbMockHMUU1sS
-         mlWw==
-X-Gm-Message-State: AOAM530eEIZ7UsEznwUklmUF31mtMUpkv80ZYpMetdVA69OreSJENUsF
-        qvksw1pxQ5YVgQ4Oj9nb4t5PaA==
-X-Google-Smtp-Source: ABdhPJyV12W2BMExNB8lxQeBLYW3xGMYKwMMJRJujagwIga42zrvqPJJJcsNX8gLSU7R2pEtsxJD2Q==
-X-Received: by 2002:a5d:48c3:: with SMTP id p3mr1796453wrs.69.1598017441403;
-        Fri, 21 Aug 2020 06:44:01 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id 202sm5971179wmb.10.2020.08.21.06.44.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Aug 2020 06:44:00 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        mripard@kernel.org, wens@csie.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v5 18/18] crypto: sun8i-ce: fix some style issue
-Date:   Fri, 21 Aug 2020 13:43:35 +0000
-Message-Id: <1598017415-39059-19-git-send-email-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598017415-39059-1-git-send-email-clabbe@baylibre.com>
-References: <1598017415-39059-1-git-send-email-clabbe@baylibre.com>
+        id S1728808AbgHUN7S (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 21 Aug 2020 09:59:18 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:50482 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727123AbgHUN7R (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 21 Aug 2020 09:59:17 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1k97ZY-0002R3-3v; Fri, 21 Aug 2020 23:59:13 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 21 Aug 2020 23:59:12 +1000
+Date:   Fri, 21 Aug 2020 23:59:12 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Nicolas Toromanoff <nicolas.toromanoff@st.com>,
+        Lionel Debieve <lionel.debieve@st.com>,
+        Etienne Carriere <etienne.carriere@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [PATCH] crypto: stm32 - Fix sparse warnings
+Message-ID: <20200821135911.GA20179@gondor.apana.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch fix a double empty line issue reported by checkpatch.
-While at it, since now the maximum line length is now 100, reorder some
-wrapped line.
+This patch fixes most of the sparse endianness warnings in stm32.
+The patch itself doesn't change anything apart from markings,
+but there is some questionable code in stm32_cryp_check_ctr_counter.
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- .../allwinner/sun8i-ce/sun8i-ce-cipher.c      | 34 ++++++-------------
- .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c |  9 ++---
- 2 files changed, 14 insertions(+), 29 deletions(-)
+That function operates on the counters as if they're in CPU order,
+however, they're then written out as big-endian.  This looks like
+a genuine bug.  Therefore I've left that warning alone until
+someone can confirm that this really does work as intended on
+little-endian.
 
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-index 2dcf508b0f18..9dae2be26e48 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-@@ -164,12 +164,10 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
- 				goto theend_key;
- 			}
- 			offset = areq->cryptlen - ivsize;
--			scatterwalk_map_and_copy(rctx->backup_iv, areq->src,
--						 offset, ivsize, 0);
-+			scatterwalk_map_and_copy(rctx->backup_iv, areq->src, offset, ivsize, 0);
- 		}
- 		memcpy(rctx->bounce_iv, areq->iv, ivsize);
--		addr_iv = dma_map_single(ce->dev, rctx->bounce_iv, rctx->ivlen,
--					 DMA_TO_DEVICE);
-+		addr_iv = dma_map_single(ce->dev, rctx->bounce_iv, rctx->ivlen, DMA_TO_DEVICE);
- 		cet->t_iv = cpu_to_le32(addr_iv);
- 		if (dma_mapping_error(ce->dev, addr_iv)) {
- 			dev_err(ce->dev, "Cannot DMA MAP IV\n");
-@@ -179,8 +177,7 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
- 	}
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
+index 3ba41148c2a4..8acbe1d45fe6 100644
+--- a/drivers/crypto/stm32/stm32-crc32.c
++++ b/drivers/crypto/stm32/stm32-crc32.c
+@@ -216,9 +216,8 @@ static int stm32_crc_update(struct shash_desc *desc, const u8 *d8,
+ 		return burst_update(desc, d8, length);
  
- 	if (areq->src == areq->dst) {
--		nr_sgs = dma_map_sg(ce->dev, areq->src, sg_nents(areq->src),
--				    DMA_BIDIRECTIONAL);
-+		nr_sgs = dma_map_sg(ce->dev, areq->src, sg_nents(areq->src), DMA_BIDIRECTIONAL);
- 		if (nr_sgs <= 0 || nr_sgs > MAX_SG) {
- 			dev_err(ce->dev, "Invalid sg number %d\n", nr_sgs);
- 			err = -EINVAL;
-@@ -188,15 +185,13 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
- 		}
- 		nr_sgd = nr_sgs;
- 	} else {
--		nr_sgs = dma_map_sg(ce->dev, areq->src, sg_nents(areq->src),
--				    DMA_TO_DEVICE);
-+		nr_sgs = dma_map_sg(ce->dev, areq->src, sg_nents(areq->src), DMA_TO_DEVICE);
- 		if (nr_sgs <= 0 || nr_sgs > MAX_SG) {
- 			dev_err(ce->dev, "Invalid sg number %d\n", nr_sgs);
- 			err = -EINVAL;
- 			goto theend_iv;
- 		}
--		nr_sgd = dma_map_sg(ce->dev, areq->dst, sg_nents(areq->dst),
--				    DMA_FROM_DEVICE);
-+		nr_sgd = dma_map_sg(ce->dev, areq->dst, sg_nents(areq->dst), DMA_FROM_DEVICE);
- 		if (nr_sgd <= 0 || nr_sgd > MAX_SG) {
- 			dev_err(ce->dev, "Invalid sg number %d\n", nr_sgd);
- 			err = -EINVAL;
-@@ -251,15 +246,13 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
- theend_iv:
- 	if (areq->iv && ivsize > 0) {
- 		if (addr_iv)
--			dma_unmap_single(ce->dev, addr_iv, rctx->ivlen,
--					 DMA_TO_DEVICE);
-+			dma_unmap_single(ce->dev, addr_iv, rctx->ivlen, DMA_TO_DEVICE);
- 		offset = areq->cryptlen - ivsize;
- 		if (rctx->op_dir & CE_DECRYPTION) {
- 			memcpy(areq->iv, rctx->backup_iv, ivsize);
- 			kfree_sensitive(rctx->backup_iv);
- 		} else {
--			scatterwalk_map_and_copy(areq->iv, areq->dst, offset,
--						 ivsize, 0);
-+			scatterwalk_map_and_copy(areq->iv, areq->dst, offset, ivsize, 0);
- 		}
- 		kfree(rctx->bounce_iv);
- 	}
-@@ -315,15 +308,13 @@ static int sun8i_ce_cipher_unprepare(struct crypto_engine *engine, void *async_r
+ 	/* Digest first bytes not 32bit aligned at first pass in the loop */
+-	size = min(length,
+-		   burst_sz + (unsigned int)d8 - ALIGN_DOWN((unsigned int)d8,
+-							    sizeof(u32)));
++	size = min_t(size_t, length, burst_sz + (size_t)d8 -
++				     ALIGN_DOWN((size_t)d8, sizeof(u32)));
+ 	for (rem_sz = length, cur = d8; rem_sz;
+ 	     rem_sz -= size, cur += size, size = min(rem_sz, burst_sz)) {
+ 		ret = burst_update(desc, cur, size);
+diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
+index d347a1d6e351..2670c30332fa 100644
+--- a/drivers/crypto/stm32/stm32-cryp.c
++++ b/drivers/crypto/stm32/stm32-cryp.c
+@@ -118,7 +118,7 @@ struct stm32_cryp_ctx {
+ 	struct crypto_engine_ctx enginectx;
+ 	struct stm32_cryp       *cryp;
+ 	int                     keylen;
+-	u32                     key[AES_KEYSIZE_256 / sizeof(u32)];
++	__be32                  key[AES_KEYSIZE_256 / sizeof(u32)];
+ 	unsigned long           flags;
+ };
  
- 	if (areq->iv && ivsize > 0) {
- 		if (cet->t_iv)
--			dma_unmap_single(ce->dev, cet->t_iv, rctx->ivlen,
--					 DMA_TO_DEVICE);
-+			dma_unmap_single(ce->dev, cet->t_iv, rctx->ivlen, DMA_TO_DEVICE);
- 		offset = areq->cryptlen - ivsize;
- 		if (rctx->op_dir & CE_DECRYPTION) {
- 			memcpy(areq->iv, rctx->backup_iv, ivsize);
- 			kfree_sensitive(rctx->backup_iv);
- 		} else {
--			scatterwalk_map_and_copy(areq->iv, areq->dst, offset,
--						 ivsize, 0);
-+			scatterwalk_map_and_copy(areq->iv, areq->dst, offset, ivsize, 0);
- 		}
- 		kfree(rctx->bounce_iv);
- 	}
-@@ -395,7 +386,6 @@ int sun8i_ce_cipher_init(struct crypto_tfm *tfm)
- 	sktfm->reqsize = sizeof(struct sun8i_cipher_req_ctx) +
- 			 crypto_skcipher_reqsize(op->fallback_tfm);
- 
--
- 	dev_info(op->ce->dev, "Fallback for %s is %s\n",
- 		 crypto_tfm_alg_driver_name(&sktfm->base),
- 		 crypto_tfm_alg_driver_name(crypto_skcipher_tfm(op->fallback_tfm)));
-@@ -427,8 +417,7 @@ void sun8i_ce_cipher_exit(struct crypto_tfm *tfm)
- 	pm_runtime_put_sync_suspend(op->ce->dev);
- }
- 
--int sun8i_ce_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
--			unsigned int keylen)
-+int sun8i_ce_aes_setkey(struct crypto_skcipher *tfm, const u8 *key, unsigned int keylen)
- {
- 	struct sun8i_cipher_tfm_ctx *op = crypto_skcipher_ctx(tfm);
- 	struct sun8i_ce_dev *ce = op->ce;
-@@ -459,8 +448,7 @@ int sun8i_ce_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 	return crypto_skcipher_setkey(op->fallback_tfm, key, keylen);
- }
- 
--int sun8i_ce_des3_setkey(struct crypto_skcipher *tfm, const u8 *key,
--			 unsigned int keylen)
-+int sun8i_ce_des3_setkey(struct crypto_skcipher *tfm, const u8 *key, unsigned int keylen)
- {
- 	struct sun8i_cipher_tfm_ctx *op = crypto_skcipher_ctx(tfm);
- 	int err;
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-index cf320898a4b1..1dbbd40ad576 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-@@ -596,8 +596,7 @@ static int sun8i_ce_dbgfs_read(struct seq_file *seq, void *v)
- 		}
- 	}
- #ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_TRNG
--	seq_printf(seq, "HWRNG %lu %lu\n",
--		   ce->hwrng_stat_req, ce->hwrng_stat_bytes);
-+	seq_printf(seq, "HWRNG %lu %lu\n", ce->hwrng_stat_req, ce->hwrng_stat_bytes);
- #endif
+@@ -380,24 +380,24 @@ static int stm32_cryp_copy_sgs(struct stm32_cryp *cryp)
  	return 0;
  }
-@@ -635,8 +634,7 @@ static int sun8i_ce_allocate_chanlist(struct sun8i_ce_dev *ce)
+ 
+-static void stm32_cryp_hw_write_iv(struct stm32_cryp *cryp, u32 *iv)
++static void stm32_cryp_hw_write_iv(struct stm32_cryp *cryp, __be32 *iv)
  {
- 	int i, err;
+ 	if (!iv)
+ 		return;
  
--	ce->chanlist = devm_kcalloc(ce->dev, MAXFLOW,
--				    sizeof(struct sun8i_ce_flow), GFP_KERNEL);
-+	ce->chanlist = devm_kcalloc(ce->dev, MAXFLOW, sizeof(struct sun8i_ce_flow), GFP_KERNEL);
- 	if (!ce->chanlist)
- 		return -ENOMEM;
+-	stm32_cryp_write(cryp, CRYP_IV0LR, cpu_to_be32(*iv++));
+-	stm32_cryp_write(cryp, CRYP_IV0RR, cpu_to_be32(*iv++));
++	stm32_cryp_write(cryp, CRYP_IV0LR, be32_to_cpu(*iv++));
++	stm32_cryp_write(cryp, CRYP_IV0RR, be32_to_cpu(*iv++));
  
-@@ -935,8 +933,7 @@ static int sun8i_ce_probe(struct platform_device *pdev)
- 	if (err)
- 		goto error_pm;
+ 	if (is_aes(cryp)) {
+-		stm32_cryp_write(cryp, CRYP_IV1LR, cpu_to_be32(*iv++));
+-		stm32_cryp_write(cryp, CRYP_IV1RR, cpu_to_be32(*iv++));
++		stm32_cryp_write(cryp, CRYP_IV1LR, be32_to_cpu(*iv++));
++		stm32_cryp_write(cryp, CRYP_IV1RR, be32_to_cpu(*iv++));
+ 	}
+ }
  
--	err = devm_request_irq(&pdev->dev, irq, ce_irq_handler, 0,
--			       "sun8i-ce-ns", ce);
-+	err = devm_request_irq(&pdev->dev, irq, ce_irq_handler, 0, "sun8i-ce-ns", ce);
- 	if (err) {
- 		dev_err(ce->dev, "Cannot request CryptoEngine Non-secure IRQ (err=%d)\n", err);
- 		goto error_irq;
+ static void stm32_cryp_get_iv(struct stm32_cryp *cryp)
+ {
+ 	struct skcipher_request *req = cryp->req;
+-	u32 *tmp = (void *)req->iv;
++	__be32 *tmp = (void *)req->iv;
+ 
+ 	if (!tmp)
+ 		return;
+@@ -417,13 +417,13 @@ static void stm32_cryp_hw_write_key(struct stm32_cryp *c)
+ 	int r_id;
+ 
+ 	if (is_des(c)) {
+-		stm32_cryp_write(c, CRYP_K1LR, cpu_to_be32(c->ctx->key[0]));
+-		stm32_cryp_write(c, CRYP_K1RR, cpu_to_be32(c->ctx->key[1]));
++		stm32_cryp_write(c, CRYP_K1LR, be32_to_cpu(c->ctx->key[0]));
++		stm32_cryp_write(c, CRYP_K1RR, be32_to_cpu(c->ctx->key[1]));
+ 	} else {
+ 		r_id = CRYP_K3RR;
+ 		for (i = c->ctx->keylen / sizeof(u32); i > 0; i--, r_id -= 4)
+ 			stm32_cryp_write(c, r_id,
+-					 cpu_to_be32(c->ctx->key[i - 1]));
++					 be32_to_cpu(c->ctx->key[i - 1]));
+ 	}
+ }
+ 
+@@ -469,7 +469,7 @@ static unsigned int stm32_cryp_get_input_text_len(struct stm32_cryp *cryp)
+ static int stm32_cryp_gcm_init(struct stm32_cryp *cryp, u32 cfg)
+ {
+ 	int ret;
+-	u32 iv[4];
++	__be32 iv[4];
+ 
+ 	/* Phase 1 : init */
+ 	memcpy(iv, cryp->areq->iv, 12);
+@@ -491,6 +491,7 @@ static int stm32_cryp_ccm_init(struct stm32_cryp *cryp, u32 cfg)
+ {
+ 	int ret;
+ 	u8 iv[AES_BLOCK_SIZE], b0[AES_BLOCK_SIZE];
++	__be32 *bd;
+ 	u32 *d;
+ 	unsigned int i, textlen;
+ 
+@@ -498,7 +499,7 @@ static int stm32_cryp_ccm_init(struct stm32_cryp *cryp, u32 cfg)
+ 	memcpy(iv, cryp->areq->iv, AES_BLOCK_SIZE);
+ 	memset(iv + AES_BLOCK_SIZE - 1 - iv[0], 0, iv[0] + 1);
+ 	iv[AES_BLOCK_SIZE - 1] = 1;
+-	stm32_cryp_hw_write_iv(cryp, (u32 *)iv);
++	stm32_cryp_hw_write_iv(cryp, (__be32 *)iv);
+ 
+ 	/* Build B0 */
+ 	memcpy(b0, iv, AES_BLOCK_SIZE);
+@@ -518,11 +519,14 @@ static int stm32_cryp_ccm_init(struct stm32_cryp *cryp, u32 cfg)
+ 
+ 	/* Write B0 */
+ 	d = (u32 *)b0;
++	bd = (__be32 *)b0;
+ 
+ 	for (i = 0; i < AES_BLOCK_32; i++) {
++		u32 xd = d[i];
++
+ 		if (!cryp->caps->padding_wa)
+-			*d = cpu_to_be32(*d);
+-		stm32_cryp_write(cryp, CRYP_DIN, *d++);
++			xd = be32_to_cpu(bd[i]);
++		stm32_cryp_write(cryp, CRYP_DIN, xd);
+ 	}
+ 
+ 	/* Wait for end of processing */
+@@ -617,7 +621,7 @@ static int stm32_cryp_hw_init(struct stm32_cryp *cryp)
+ 	case CR_TDES_CBC:
+ 	case CR_AES_CBC:
+ 	case CR_AES_CTR:
+-		stm32_cryp_hw_write_iv(cryp, (u32 *)cryp->req->iv);
++		stm32_cryp_hw_write_iv(cryp, (__be32 *)cryp->req->iv);
+ 		break;
+ 
+ 	default:
+@@ -1120,7 +1124,7 @@ static int stm32_cryp_read_auth_tag(struct stm32_cryp *cryp)
+ 		/* GCM: write aad and payload size (in bits) */
+ 		size_bit = cryp->areq->assoclen * 8;
+ 		if (cryp->caps->swap_final)
+-			size_bit = cpu_to_be32(size_bit);
++			size_bit = (__force u32)cpu_to_be32(size_bit);
+ 
+ 		stm32_cryp_write(cryp, CRYP_DIN, 0);
+ 		stm32_cryp_write(cryp, CRYP_DIN, size_bit);
+@@ -1129,7 +1133,7 @@ static int stm32_cryp_read_auth_tag(struct stm32_cryp *cryp)
+ 				cryp->areq->cryptlen - AES_BLOCK_SIZE;
+ 		size_bit *= 8;
+ 		if (cryp->caps->swap_final)
+-			size_bit = cpu_to_be32(size_bit);
++			size_bit = (__force u32)cpu_to_be32(size_bit);
+ 
+ 		stm32_cryp_write(cryp, CRYP_DIN, 0);
+ 		stm32_cryp_write(cryp, CRYP_DIN, size_bit);
+@@ -1137,14 +1141,19 @@ static int stm32_cryp_read_auth_tag(struct stm32_cryp *cryp)
+ 		/* CCM: write CTR0 */
+ 		u8 iv[AES_BLOCK_SIZE];
+ 		u32 *iv32 = (u32 *)iv;
++		__be32 *biv;
++
++		biv = (void *)iv;
+ 
+ 		memcpy(iv, cryp->areq->iv, AES_BLOCK_SIZE);
+ 		memset(iv + AES_BLOCK_SIZE - 1 - iv[0], 0, iv[0] + 1);
+ 
+ 		for (i = 0; i < AES_BLOCK_32; i++) {
++			u32 xiv = iv32[i];
++
+ 			if (!cryp->caps->padding_wa)
+-				*iv32 = cpu_to_be32(*iv32);
+-			stm32_cryp_write(cryp, CRYP_DIN, *iv32++);
++				xiv = be32_to_cpu(biv[i]);
++			stm32_cryp_write(cryp, CRYP_DIN, xiv);
+ 		}
+ 	}
+ 
+diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
+index 03c5e6683805..9fe4ba234006 100644
+--- a/drivers/crypto/stm32/stm32-hash.c
++++ b/drivers/crypto/stm32/stm32-hash.c
+@@ -748,7 +748,7 @@ static int stm32_hash_final_req(struct stm32_hash_dev *hdev)
+ static void stm32_hash_copy_hash(struct ahash_request *req)
+ {
+ 	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(req);
+-	u32 *hash = (u32 *)rctx->digest;
++	__be32 *hash = (void *)rctx->digest;
+ 	unsigned int i, hashsize;
+ 
+ 	switch (rctx->flags & HASH_FLAGS_ALGO_MASK) {
+@@ -769,7 +769,7 @@ static void stm32_hash_copy_hash(struct ahash_request *req)
+ 	}
+ 
+ 	for (i = 0; i < hashsize / sizeof(u32); i++)
+-		hash[i] = be32_to_cpu(stm32_hash_read(rctx->hdev,
++		hash[i] = cpu_to_be32(stm32_hash_read(rctx->hdev,
+ 						      HASH_HREG(i)));
+ }
+ 
 -- 
-2.26.2
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
