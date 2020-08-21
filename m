@@ -2,100 +2,73 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C15024D038
-	for <lists+linux-crypto@lfdr.de>; Fri, 21 Aug 2020 10:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E318124D06C
+	for <lists+linux-crypto@lfdr.de>; Fri, 21 Aug 2020 10:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbgHUIBk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 21 Aug 2020 04:01:40 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50080 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726332AbgHUIBf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 21 Aug 2020 04:01:35 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1k91zP-00049V-NF; Fri, 21 Aug 2020 18:01:32 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 21 Aug 2020 18:01:31 +1000
-Date:   Fri, 21 Aug 2020 18:01:31 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Yang Shen <shenyang39@huawei.com>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH v5 00/10] crypto: hisilicon/qm - misc fixes
-Message-ID: <20200821080131.GP25143@gondor.apana.org.au>
-References: <1597485377-2678-1-git-send-email-shenyang39@huawei.com>
+        id S1727101AbgHUIPi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 21 Aug 2020 04:15:38 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:17530 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725965AbgHUIPi (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 21 Aug 2020 04:15:38 -0400
+Received: by ajax-webmail-mail-app3 (Coremail) ; Fri, 21 Aug 2020 16:15:13
+ +0800 (GMT+08:00)
+X-Originating-IP: [10.192.85.18]
+Date:   Fri, 21 Aug 2020 16:15:13 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     "Gilad Ben-Yossef" <gilad@benyossef.com>,
+        "Herbert Xu" <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Geert Uytterhoeven" <geert+renesas@glider.be>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: ccree - fix runtime PM imbalance on error
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.12 build 20200616(0f5d8152)
+ Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1597485377-2678-1-git-send-email-shenyang39@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <5fe48e8a.e845.1741016074a.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cC_KCgBH_96Rgj9fyzj9Ag--.45498W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoSBlZdtPnBhAAns4
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbAIS07vEb7Iv0x
+        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
+        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
+        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
+        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIAIbVA2z4x0Y4vEx4A2jsIE14v26r
+        xl6s0DMIAIbVA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1lV2xY62AIxVAIcxkEcVAq
+        07x20xvEncxIr21lV2xY6c02F40EFcxC0VAKzVAqx4xG6I80ewCS07vEYx0E2Ix0cI8IcV
+        AFwI0_JrI_JrylV2xY6cIj6I8E87Iv67AKxVWUJVW8JwCS07vEOx8S6xCaFVCjc4AY6r1j
+        6r4UMIAIbVACjI8F5VA0II8E6IAqYI8I648v4I1lV2xY6x02cVAKzwCS07vEc2IjII80xc
+        xEwVAKI48JMIAIbVCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1lV2xY6xCjnVCjjxCrMIAI
+        bVCFx2IqxVCFs4IE7xkEbVWUJVW8JwCS07vEx2IqxVAqx4xG67AKxVWUJVWUGwCS07vEx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlV2xY6I8E67AF67kF1VAFwI0_Jw0_GFylV2xY6IIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lV2xY6IIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCS07
+        vEIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCS07vEIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        V2xY6IIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU=
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 05:56:07PM +0800, Yang Shen wrote:
-> This patchset fix some qm bugs:
-> patch 1: store the string address before pass to 'strsep'
-> patch 2: clear 'qp_status->used' when init the 'qp'
-> patch 3: use 'dev_info_ratelimited' to avoid printk flooding.
-> patch 4: fix the judgement of queue is full
-> patch 7: save the vf configuration space to make sure it is available
-> 	 after the 'PF' 'FLR'
-> patch 8: register callback to 'pci_driver.shutdown'
-> patch 9: wait for all working function finishs when remove the device
-> patch 10: move the process of register alg to crypto in driver 'hisi_zip'
-> 
-> v5:
->  - add a error branch instead of return immediately in patch "fix wrong
->    release after using strsep"
-> 
-> v4:
->  - exchange the patch 'fix the call trace when unbind device' and
->    'fix the process of register algorithms to crypto' to make sure the
->    driver is stable.
-> 
-> v3:
->  - add the patch 10 which is aimed to fix the call trace when remove a
->    working device
-> 
-> v2:
->  - fix the wrong email address on patch 1
-> 
-> Hui Tang (1):
->   crypto: hisilicon/qm - fix judgement of queue is full
-> 
-> Shukun Tan (3):
->   crypto: hisilicon/qm - clear used reference count when start qp
->   crypto: hisilicon/qm - fix event queue depth to 2048
->   crypto: hisilicon/qm - fix VF not available after PF FLR
-> 
-> Sihang Chen (1):
->   crypto: hisilicon/qm - fix wrong release after using strsep
-> 
-> Weili Qian (1):
->   crypto: hisilicon/qm - fix the call trace when unbind device
-> 
-> Yang Shen (4):
->   crypto: hisilicon/qm - fix print frequence in hisi_qp_send
->   crypto: hisilicon/qm - fix no stop reason when use 'hisi_qm_stop'
->   crypto: hisilicon/qm - register callback function to
->     'pci_driver.shutdown'
->   crypto: hisilicon/qm - fix the process of register algorithms to
->     crypto
-> 
->  drivers/crypto/hisilicon/hpre/hpre_crypto.c |  36 ++---
->  drivers/crypto/hisilicon/hpre/hpre_main.c   |  28 ++--
->  drivers/crypto/hisilicon/qm.c               | 224 ++++++++++++++++++++++++----
->  drivers/crypto/hisilicon/qm.h               |  27 ++--
->  drivers/crypto/hisilicon/sec2/sec_crypto.c  |  35 ++---
->  drivers/crypto/hisilicon/sec2/sec_main.c    |  34 ++---
->  drivers/crypto/hisilicon/zip/zip_crypto.c   |   2 +-
->  drivers/crypto/hisilicon/zip/zip_main.c     |  49 +++---
->  8 files changed, 290 insertions(+), 145 deletions(-)
-
-All applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+cG1fcnVudGltZV9nZXRfc3luYygpIGluY3JlbWVudHMgdGhlIHJ1bnRpbWUgUE0gdXNhZ2UgY291
+bnRlcgpldmVuIHdoZW4gaXQgcmV0dXJucyBhbiBlcnJvciBjb2RlLiBIb3dldmVyLCB1c2VycyBv
+ZiBjY19wbV9nZXQoKSwKYSBkaXJlY3Qgd3JhcHBlciBvZiBwbV9ydW50aW1lX2dldF9zeW5jKCks
+IGFzc3VtZSB0aGF0IFBNIHVzYWdlCmNvdW50ZXIgd2lsbCBub3QgY2hhbmdlIG9uIGVycm9yLiBU
+aHVzIGEgcGFpcmluZyBkZWNyZW1lbnQgaXMgbmVlZGVkCm9uIHRoZSBlcnJvciBoYW5kbGluZyBw
+YXRoIHRvIGtlZXAgdGhlIGNvdW50ZXIgYmFsYW5jZWQuCgpGaXhlczogOGM3ODQ5YTMwMjU1YyAo
+ImNyeXB0bzogY2NyZWUgLSBzaW1wbGlmeSBSdW50aW1lIFBNIGhhbmRsaW5nIikKU2lnbmVkLW9m
+Zi1ieTogRGluZ2hhbyBMaXUgPGRpbmdoYW8ubGl1QHpqdS5lZHUuY24+Ci0tLQogZHJpdmVycy9j
+cnlwdG8vY2NyZWUvY2NfcG0uYyB8IDYgKysrKystCiAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRp
+b25zKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9jcnlwdG8vY2NyZWUv
+Y2NfcG0uYyBiL2RyaXZlcnMvY3J5cHRvL2NjcmVlL2NjX3BtLmMKaW5kZXggZDM5ZTE2NjRmYzdl
+Li4zYzY1YmYwNzBjOTAgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvY3J5cHRvL2NjcmVlL2NjX3BtLmMK
+KysrIGIvZHJpdmVycy9jcnlwdG8vY2NyZWUvY2NfcG0uYwpAQCAtNjUsOCArNjUsMTIgQEAgY29u
+c3Qgc3RydWN0IGRldl9wbV9vcHMgY2NyZWVfcG0gPSB7CiBpbnQgY2NfcG1fZ2V0KHN0cnVjdCBk
+ZXZpY2UgKmRldikKIHsKIAlpbnQgcmMgPSBwbV9ydW50aW1lX2dldF9zeW5jKGRldik7CisJaWYg
+KHJjIDwgMCkgeworCQlwbV9ydW50aW1lX3B1dF9ub2lkbGUoZGV2KTsKKwkJcmV0dXJuIHJjOwor
+CX0KIAotCXJldHVybiAocmMgPT0gMSA/IDAgOiByYyk7CisJcmV0dXJuIDA7CiB9CiAKIHZvaWQg
+Y2NfcG1fcHV0X3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQotLSAKMi4xNy4xCg==
