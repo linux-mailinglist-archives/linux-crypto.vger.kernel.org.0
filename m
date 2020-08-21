@@ -2,53 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7609624D027
-	for <lists+linux-crypto@lfdr.de>; Fri, 21 Aug 2020 09:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0137424D02A
+	for <lists+linux-crypto@lfdr.de>; Fri, 21 Aug 2020 09:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbgHUH6e (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 21 Aug 2020 03:58:34 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50034 "EHLO fornost.hmeau.com"
+        id S1727955AbgHUH6v (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 21 Aug 2020 03:58:51 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:50044 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728423AbgHUH6b (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 21 Aug 2020 03:58:31 -0400
+        id S1726332AbgHUH6u (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 21 Aug 2020 03:58:50 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1k91wQ-000447-Bb; Fri, 21 Aug 2020 17:58:27 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 21 Aug 2020 17:58:26 +1000
-Date:   Fri, 21 Aug 2020 17:58:26 +1000
+        id 1k91we-00045u-EZ; Fri, 21 Aug 2020 17:58:41 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 21 Aug 2020 17:58:40 +1000
+Date:   Fri, 21 Aug 2020 17:58:40 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     ira.weiny@intel.com
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Cyrpto: Clean up kmap() use
-Message-ID: <20200821075826.GM25143@gondor.apana.org.au>
-References: <20200811004015.2800392-1-ira.weiny@intel.com>
+To:     madhuparnabhowmik10@gmail.com
+Cc:     jamie@jamieiles.com, davem@davemloft.net,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andrianov@ispras.ru,
+        ldv-project@linuxtesting.org
+Subject: Re: [PATCH] drivers: crypto: picoxcell_crypto: Fix potential race
+ condition bug
+Message-ID: <20200821075840.GN25143@gondor.apana.org.au>
+References: <20200811123024.14501-1-madhuparnabhowmik10@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200811004015.2800392-1-ira.weiny@intel.com>
+In-Reply-To: <20200811123024.14501-1-madhuparnabhowmik10@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 05:40:13PM -0700, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On Tue, Aug 11, 2020 at 06:00:24PM +0530, madhuparnabhowmik10@gmail.com wrote:
+> From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 > 
-> While going through kmap() users the following 2 issues were found via code
-> inspection.
+> engine->stat_irq_thresh was initialized after device_create_file() in
+> the probe function, the initialization may race with call to
+> spacc_stat_irq_thresh_store() which updates engine->stat_irq_thresh,
+> therefore initialize it before creating the file in probe function.
 > 
-> Ira Weiny (2):
->   crypto/ux500: Fix kmap() bug
->   crypto: Remove unused async iterators
+> Found by Linux Driver Verification project (linuxtesting.org).
 > 
->  crypto/ahash.c                        | 41 +++------------------------
->  drivers/crypto/ux500/hash/hash_core.c | 30 ++++++++++++--------
->  include/crypto/internal/hash.h        | 13 ---------
->  3 files changed, 22 insertions(+), 62 deletions(-)
+> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> ---
+>  drivers/crypto/picoxcell_crypto.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
