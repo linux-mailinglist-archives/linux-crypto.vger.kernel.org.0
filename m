@@ -2,73 +2,90 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C0724FF0C
-	for <lists+linux-crypto@lfdr.de>; Mon, 24 Aug 2020 15:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF06424FF6F
+	for <lists+linux-crypto@lfdr.de>; Mon, 24 Aug 2020 16:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727066AbgHXNjE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 24 Aug 2020 09:39:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727015AbgHXNi7 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 24 Aug 2020 09:38:59 -0400
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E3E42177B;
-        Mon, 24 Aug 2020 13:38:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598276339;
-        bh=kEbqLgXtUbdCPrN4ICEl0OvR3tkJnudXGG5JsPUDVig=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MLII6vb04GJQ+J/FKHi16LG3O2tI047xpNLr7Yy6fqVE3od/oITTChvIRzwLwzRA9
-         ThSwD0T8Bra0lEVUfDR7/JbGO0M4a6vV5K3RXBxP/6DbPK684u97use7vD3drZDdpE
-         4WAgxNaLPWltVSlkzLsPv3CaMfgzNYYYwc719kAM=
-Received: by mail-ot1-f53.google.com with SMTP id h22so7265270otq.11;
-        Mon, 24 Aug 2020 06:38:59 -0700 (PDT)
-X-Gm-Message-State: AOAM533ClwPx2f9BYgq3E4/uvggU1bB5zJyqBKpTqvAqH7S6HIU507ir
-        zncR4vZTx0PAMjoC8TSNHaMkqVf/Ddr82L3WzLE=
-X-Google-Smtp-Source: ABdhPJw1+FTr8NU33NPKN/I6Uh6X3jKuIjoVKrbJNixZCRN6rv3ElWe8BMm5ignE2b4v6a+Idlz15Bx3llj3ETTz3rU=
-X-Received: by 2002:a9d:774d:: with SMTP id t13mr3396136otl.108.1598276338681;
- Mon, 24 Aug 2020 06:38:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200824133001.9546-1-ardb@kernel.org> <20200824133001.9546-8-ardb@kernel.org>
- <20200824133448.GA5019@gondor.apana.org.au>
-In-Reply-To: <20200824133448.GA5019@gondor.apana.org.au>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 24 Aug 2020 15:38:47 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFSuFfgYHfD69XQHpGMyA+vg0KqEg-ymix1-Vu=CfDDvQ@mail.gmail.com>
-Message-ID: <CAMj1kXFSuFfgYHfD69XQHpGMyA+vg0KqEg-ymix1-Vu=CfDDvQ@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] crypto: arc4 - mark ecb(arc4) skcipher as obsolete
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <netdev@vger.kernel.org>, devel@driverdev.osuosl.org,
-        linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1726934AbgHXOBQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 24 Aug 2020 10:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbgHXOBM (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 24 Aug 2020 10:01:12 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7275C061573
+        for <linux-crypto@vger.kernel.org>; Mon, 24 Aug 2020 07:01:11 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id o22so6153451qtt.13
+        for <linux-crypto@vger.kernel.org>; Mon, 24 Aug 2020 07:01:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=XdATegxPLjRZ1S4FVShTFf9GHc/aayt9pgohmSeXGf4=;
+        b=GhFho+Whb925lK0QvwZZEgD0KL8uGJe1twqMwtHZtWQaDfE8W0VNo+ipvLaU7nryjW
+         UZM7kB4GEZQ2Bsq/EtYNhpYtIhVGwiwNnQLVpIBzsE0WUBn+1E+KwkeVGJhya/AtjDnp
+         bHaEGkoLh5rJCO0r2U7UtOIELog4bKxkYvJWo8pBec2B50/3Gx2V/WIEYOljIhbcQwVu
+         VRf/zGfsRgoC0v9MadZLvNdExBejZ6zT8a1JpJnl1an7fnEno2ftEMSWuUOSLe6ZHC0Y
+         b8pjkNzxJZJIFWk2XtHzP9tDKe31O4MRj1RQyR3RPXDkn0Obd/psbCMq0TOz1NjCGk2H
+         KLow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=XdATegxPLjRZ1S4FVShTFf9GHc/aayt9pgohmSeXGf4=;
+        b=WiJD/r2ya3SBkhdUyETaRaEmQyQISLUnGFwmCaJVsgbXv/abdhSEFXUbsOHOJ9TrT/
+         keg//JpSUj0niN4OppG4B/dLrOJbq+WIrkQoobbFbsXb/jPHR1xAr+aPaDkGKAv8tpoZ
+         /cVOUOrfYfxJH4FoYBq0C9empALeJ1mpNuDUGS+NPpTTomjGOjUPr0I6fbDt2lNmKcNm
+         hTfRDFN+4hG61Qi8l1byEa2zI2o3d5Y1T7Psathe4oVsq82nat7gF6vGZdXYcpyLjGFS
+         giLsuaH4HhAmG3wPSNCsmsCuY2mmbIcnKCuHhKNJBOJ7AFjAX2+IH0QW9nEM8b4yJAYw
+         DSMg==
+X-Gm-Message-State: AOAM532cTwUa4Os1ppbwfkqsElkvl4jxeieyQoCkS/3AunZKuP7Y1qv5
+        xUVeeZ/rihlXeop8KjmNs79KLzhGKcc=
+X-Google-Smtp-Source: ABdhPJy3v6o9XZ+hI2AtpPbRiWrP20uHMzFlskDAgpOiz2CxRlsxZqrx8wKYr4u2FNcM2Pfv/5rkog==
+X-Received: by 2002:ac8:22e2:: with SMTP id g31mr4681700qta.214.1598277669675;
+        Mon, 24 Aug 2020 07:01:09 -0700 (PDT)
+Received: from localhost.localdomain ([177.194.72.74])
+        by smtp.gmail.com with ESMTPSA id r20sm3244459qtc.87.2020.08.24.07.01.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 07:01:08 -0700 (PDT)
+From:   Fabio Estevam <festevam@gmail.com>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        mcoquelin.stm32@gmail.com, Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/2] crypto: stm32/crc32 - include <linux/io.h>
+Date:   Mon, 24 Aug 2020 10:58:39 -0300
+Message-Id: <20200824135840.3716-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, 24 Aug 2020 at 15:35, Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Mon, Aug 24, 2020 at 03:30:01PM +0200, Ard Biesheuvel wrote:
-> >
-> > +config CRYPTO_USER_ENABLE_OBSOLETE
-> > +     bool "Enable obsolete cryptographic algorithms for userspace"
-> > +     depends on CRYPTO_USER
->
-> That should be CRYPTO_USER_API which is the option for af_alg.
-> CRYPTO_USER is the configuration interface which has nothing to
-> do with af_alg.
->
+Building ARM allmodconfig leads to the following warnings:
 
-OK, will fix.
+drivers/crypto/stm32/stm32-crc32.c:128:2: error: implicit declaration of function 'writel_relaxed' [-Werror=implicit-function-declaration]
+drivers/crypto/stm32/stm32-crc32.c:134:17: error: implicit declaration of function 'readl_relaxed' [-Werror=implicit-function-declaration]
+drivers/crypto/stm32/stm32-crc32.c:176:4: error: implicit declaration of function 'writeb_relaxed' [-Werror=implicit-function-declaration]
+
+Include <linux/io.h> to fix such warnings.
+
+Reported-by: Olof's autobuilder <build@lixom.net>
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+ drivers/crypto/stm32/stm32-crc32.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
+index 3ba41148c2a4..2994549beba3 100644
+--- a/drivers/crypto/stm32/stm32-crc32.c
++++ b/drivers/crypto/stm32/stm32-crc32.c
+@@ -7,6 +7,7 @@
+ #include <linux/bitrev.h>
+ #include <linux/clk.h>
+ #include <linux/crc32poly.h>
++#include <linux/io.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/platform_device.h>
+-- 
+2.17.1
+
