@@ -2,101 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170472519B8
-	for <lists+linux-crypto@lfdr.de>; Tue, 25 Aug 2020 15:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAD4251A74
+	for <lists+linux-crypto@lfdr.de>; Tue, 25 Aug 2020 16:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726045AbgHYNdc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 25 Aug 2020 09:33:32 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:49194 "EHLO vps0.lunn.ch"
+        id S1726661AbgHYODl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 25 Aug 2020 10:03:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726703AbgHYNdV (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:33:21 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kAZ4V-00Bm6q-Ec; Tue, 25 Aug 2020 15:33:07 +0200
-Date:   Tue, 25 Aug 2020 15:33:07 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Van Leeuwen, Pascal" <pvanleeuwen@rambus.com>
-Cc:     Sabrina Dubroca <sd@queasysnail.net>,
-        Scott Dial <scott@scottdial.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Ryan Cox <ryan_cox@byu.edu>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Antoine Tenart <antoine.tenart@bootlin.com>,
-        "ebiggers@google.com" <ebiggers@google.com>
-Subject: Re: Severe performance regression in "net: macsec: preserve ingress
- frame ordering"
-Message-ID: <20200825133307.GP2588906@lunn.ch>
-References: <1b0cec71-d084-8153-2ba4-72ce71abeb65@byu.edu>
- <a335c8eb-0450-1274-d1bf-3908dcd9b251@scottdial.com>
- <20200810133427.GB1128331@bistromath.localdomain>
- <7663cbb1-7a55-6986-7d5d-8fab55887a80@scottdial.com>
- <20200812100443.GF1128331@bistromath.localdomain>
- <CY4PR0401MB36524B348358B23A8DFB741AC3420@CY4PR0401MB3652.namprd04.prod.outlook.com>
- <20200812124201.GF2154440@lunn.ch>
- <CY4PR0401MB365240B04FC43F7F8AAE6A0CC3560@CY4PR0401MB3652.namprd04.prod.outlook.com>
- <20200824130142.GN2588906@lunn.ch>
- <CY4PR0401MB3652AB8C5DC2FEA09A6F2BECC3570@CY4PR0401MB3652.namprd04.prod.outlook.com>
+        id S1726513AbgHYN71 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 25 Aug 2020 09:59:27 -0400
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D688F2075F
+        for <linux-crypto@vger.kernel.org>; Tue, 25 Aug 2020 13:59:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598363967;
+        bh=JUtbshDiaqT1abUNYm22UsrMzF65PvCYAKmKkgX37is=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WCXNF2cgC8BTqW48R2a4J7798vAgaKoERgWz8F6WZGl9gQ+5r+U1sfVV8p4hPzyQn
+         7CW0X5B5BAF1y9FdNQj8tbPfWByeV9zTYP/H9gDJTDWHwilLnwx+F2G0WLwBVjZ38K
+         9mfcZJhj4GJ5JuoZY+KnO/F5L9mLD36/eVKmjzrM=
+Received: by mail-oi1-f169.google.com with SMTP id b9so8239257oiy.3
+        for <linux-crypto@vger.kernel.org>; Tue, 25 Aug 2020 06:59:26 -0700 (PDT)
+X-Gm-Message-State: AOAM530mtI86sjju57GR8Fk6cl422BBa848dhf+AJHho07F5DpalB6tO
+        5QNr0szsxjuQSW9SK+9Ri4xRVIxURarDSDxUxQo=
+X-Google-Smtp-Source: ABdhPJy3nEfd6uI97/6QE72ErSZH4qiw9sQ+yjnPjzpbfrf+4FPUFC4/ZHF0KynKlWRV9NYzKr9rCOZDDvISbd4+yY0=
+X-Received: by 2002:a05:6808:b37:: with SMTP id t23mr1131302oij.174.1598363966153;
+ Tue, 25 Aug 2020 06:59:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY4PR0401MB3652AB8C5DC2FEA09A6F2BECC3570@CY4PR0401MB3652.namprd04.prod.outlook.com>
+References: <20200825013801.GA16040@gondor.apana.org.au>
+In-Reply-To: <20200825013801.GA16040@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 25 Aug 2020 15:59:15 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXECU_-VNy0xB+ZLHpB2mLh5MJiFP62ufgKCqWg7H1iCyg@mail.gmail.com>
+Message-ID: <CAMj1kXECU_-VNy0xB+ZLHpB2mLh5MJiFP62ufgKCqWg7H1iCyg@mail.gmail.com>
+Subject: Re: [PATCH] crypto: arm64/gcm - Fix endianness warnings
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 01:09:31PM +0000, Van Leeuwen, Pascal wrote:
-> > -----Original Message-----
-> > From: Andrew Lunn <andrew@lunn.ch>
-> > Sent: Monday, August 24, 2020 3:02 PM
-> > To: Van Leeuwen, Pascal <pvanleeuwen@rambus.com>
-> > Cc: Sabrina Dubroca <sd@queasysnail.net>; Scott Dial <scott@scottdial.com>; linux-crypto@vger.kernel.org; Ryan Cox
-> > <ryan_cox@byu.edu>; netdev@vger.kernel.org; davem@davemloft.net; Antoine Tenart <antoine.tenart@bootlin.com>;
-> > ebiggers@google.com
-> > Subject: Re: Severe performance regression in "net: macsec: preserve ingress frame ordering"
-> >
-> > <<< External Email >>>
-> > On Mon, Aug 24, 2020 at 09:07:26AM +0000, Van Leeuwen, Pascal wrote:
-> > > No need to point this out to me as we're the number one supplier of inline MACsec IP :-)
-> > > In fact, the Microsemi PHY solution you mention is ours, major parts of that design were
-> > > even created by these 2 hands here.
-> >
-> > Oh,  O.K.
-> >
-> > Do you know of other silicon vendors which are using the same IP?
-> >
-> I do, there are many. But unfortunately, I cannot disclose our customers unless this is already
-> public information, e.g. due to some press release or whatever.
+On Tue, 25 Aug 2020 at 03:41, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> This patch changes a couple u128's to be128 which is the correct
+> type to use and fixes a few sparse warnings.
+>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-O.K. Maybe i should flip the question around. If somebody was to
-submit a driver, how would i quickly determine it is your IP? Any
-particularly patterns i should look for.
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-> > Maybe we can encourage them to share the driver, rather than re-invent
-> > the wheel, which often happens when nobody realises it is basically
-> > the same core with a different wrapper.
-> >
-> Yes, that could save a lot of duplication of code and effort.
-
-It would save a lot of effort. But not code duplication. Because if i
-or one of the other maintainers notices it is just your IP with a
-different wrapper, we would NACK the patch and tell them to refactor
-the MSCC driver. There is a long established precedence for that.
-
-> The problem is: who will do it? We can't do it, because we have no
-> access to the actual HW.
-
-Microsemi are very friendly. If you ask them, i'm sure they would send
-you a board. I assume you also have some sort of FPGA setup you use
-for your own testing? That gives you two platforms. And if there are
-many PHYs using your IP, it should not be too hard to just go buy a
-reference design kit from a vendor.
-
-And there is the marketing aspect for Rambus. You can say your IP is
-easy to use, the core code is already in the kernel, supported and
-well tested, you just need to add a few wrapper functions in your
-driver. No vendor crap driver needed.
-
-	Andrew
+>
+> diff --git a/arch/arm64/crypto/ghash-ce-glue.c b/arch/arm64/crypto/ghash-ce-glue.c
+> index da1034867aaa..8536008e3e35 100644
+> --- a/arch/arm64/crypto/ghash-ce-glue.c
+> +++ b/arch/arm64/crypto/ghash-ce-glue.c
+> @@ -347,7 +347,7 @@ static int gcm_encrypt(struct aead_request *req)
+>         u8 buf[AES_BLOCK_SIZE];
+>         u8 iv[AES_BLOCK_SIZE];
+>         u64 dg[2] = {};
+> -       u128 lengths;
+> +       be128 lengths;
+>         u8 *tag;
+>         int err;
+>
+> @@ -461,7 +461,7 @@ static int gcm_decrypt(struct aead_request *req)
+>         u8 buf[AES_BLOCK_SIZE];
+>         u8 iv[AES_BLOCK_SIZE];
+>         u64 dg[2] = {};
+> -       u128 lengths;
+> +       be128 lengths;
+>         u8 *tag;
+>         int err;
+>
+> --
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
