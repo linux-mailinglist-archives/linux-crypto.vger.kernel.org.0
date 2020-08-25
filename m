@@ -2,711 +2,580 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A937F25135D
-	for <lists+linux-crypto@lfdr.de>; Tue, 25 Aug 2020 09:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CB125179B
+	for <lists+linux-crypto@lfdr.de>; Tue, 25 Aug 2020 13:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729615AbgHYHhb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 25 Aug 2020 03:37:31 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.169]:34563 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729524AbgHYHgk (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 25 Aug 2020 03:36:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598340989;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=Qa1Qr/pJ33uABBy0tNJC1Bd0eRwEBJ+qyCQQroEyZ24=;
-        b=dYpa/sdfWit0svikRK7IdKs8FQ30fZOrRYmIoIBV4C7yaELcNvVpFviHbfN8fTWwHs
-        Yc8Uszwdu32+9+RE9sfKImnd7VFu8YeG9Uz8DwFbwyubWbxGJ6/MFs0j2deTBuLMxSzP
-        2MKWGIrGUpcMShbMTN0IFVV0W/SxYnL45iuzKY2O2qZotvV0Urh6VMtURSbRDBXObHR+
-        TMgD1vgC0RCoY6bqAK7ErjvAUYfV+aFe640+PVLkd3yrgxMlv0gaZr9OJG7PAVwTN1D1
-        rXU++XitrdIn/QamqTbKmTtT8pzd/9XUb4gvBwRkN33eDnhZlVDLnYc7JorPgERAvpA1
-        Zy3g==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzHHXDaIvSXRbo="
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
-        with ESMTPSA id 002e9aw7P7ZAZGG
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Tue, 25 Aug 2020 09:35:10 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S1730021AbgHYLax (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 25 Aug 2020 07:30:53 -0400
+Received: from mga17.intel.com ([192.55.52.151]:56860 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728993AbgHYLao (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 25 Aug 2020 07:30:44 -0400
+IronPort-SDR: kBMp1dQOjNNxnCyYrsLlVEqZCOZ0pU9Njy2hpJlgYRFhcpEnEN19gDKryOXZ5ZaHZ2CDiN4dzx
+ qp6jORtF9xmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="136150086"
+X-IronPort-AV: E=Sophos;i="5.76,352,1592895600"; 
+   d="gz'50?scan'50,208,50";a="136150086"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 04:29:10 -0700
+IronPort-SDR: ks/Zk2xMMO5Phl1JnF7btq/bOO3Oh/oZ3y0/l/B06Dc7PXPklVTyI9DBnFL8JSe4pZQtLjQbbd
+ iaMCiMtAU5Kg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,352,1592895600"; 
+   d="gz'50?scan'50,208,50";a="373018571"
+Received: from lkp-server01.sh.intel.com (HELO 4f455964fc6c) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 25 Aug 2020 04:29:06 -0700
+Received: from kbuild by 4f455964fc6c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kAX8T-0000LG-O3; Tue, 25 Aug 2020 11:29:05 +0000
+Date:   Tue, 25 Aug 2020 19:28:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     kbuild-all@lists.01.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         linux-api@vger.kernel.org,
         "Eric W. Biederman" <ebiederm@xmission.com>,
         "Alexander E. Patrakov" <patrakov@gmail.com>,
         "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Nicolai Stange <nstange@suse.de>,
-        "Peter, Matthias" <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Roman Drahtmueller <draht@schaltsekun.de>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>
-Subject: [PATCH v34 12/12] LRNG - add power-on and runtime self-tests
-Date:   Tue, 25 Aug 2020 09:27:59 +0200
-Message-ID: <1734113.VLH7GnMWUR@positron.chronox.de>
-In-Reply-To: <11649613.O9o76ZdvQC@positron.chronox.de>
-References: <2544450.mvXUDI8C0e@positron.chronox.de> <5532247.MhkbZ0Pkbq@positron.chronox.de> <11649613.O9o76ZdvQC@positron.chronox.de>
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>
+Subject: Re: [PATCH v34 01/12] Linux Random Number Generator
+Message-ID: <202008251912.50LKcRvL%lkp@intel.com>
+References: <5695397.lOV4Wx5bFT@positron.chronox.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/mixed; boundary="W/nzBZO5zC0uMSeA"
+Content-Disposition: inline
+In-Reply-To: <5695397.lOV4Wx5bFT@positron.chronox.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Parts of the LRNG are already covered by self-tests, including:
 
-* Self-test of SP800-90A DRBG provided by the Linux kernel crypto API.
+--W/nzBZO5zC0uMSeA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-* Self-test of the PRNG provided by the Linux kernel crypto API.
+Hi "Stephan,
 
-* Raw noise source data testing including SP800-90B compliant
-  tests when enabling CONFIG_LRNG_HEALTH_TESTS
+Thank you for the patch! Perhaps something to improve:
 
-This patch adds the self-tests for the remaining critical functions of
-the LRNG that are essential to maintain entropy and provide
-cryptographic strong random numbers. The following self-tests are
-implemented:
+[auto build test WARNING on char-misc/char-misc-testing]
+[also build test WARNING on cryptodev/master crypto/master v5.9-rc2 next-20200825]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-* Self-test of the time array maintenance. This test verifies whether
-the time stamp array management to store multiple values in one integer
-implements a concatenation of the data.
+url:    https://github.com/0day-ci/linux/commits/Stephan-M-ller/dev-random-a-new-approach-with-full-SP800-90B-compliance/20200825-153914
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git d162219c655c8cf8003128a13840d6c1e183fb80
+config: microblaze-randconfig-r023-20200825 (attached as .config)
+compiler: microblaze-linux-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=microblaze 
 
-* Self-test of the LFSR operation. This test injects a monotonic
-increasing counter into the LFSR. After completion of the injection of
-the counter, 3 pool words are compared with known good values. The known
-good values are calculated with the newly-developed tool
-lfsr_testvector_generation provided as part of the LRNG test tool set at
-[1].
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-* Self-test of the Hash_DF operation ensures that this function operates
-compliant to the specification. The self-test performs a Hash_DF
-operation of a zeroized entropy pool state. The test vectors are
-generated using the newly-developed tool hash_df_testvector_generation
-provided as part of the LRNG test tool set at [1].
+All warnings (new ones prefixed by >>):
 
-* Self-test of the ChaCha20 DRNG is based on the self-tests that are
-already present and implemented with the stand-alone user space
-ChaCha20 DRNG implementation available at [2]. The self-tests cover
-different use cases of the DRNG seeded with known seed data.
+>> drivers/char/lrng/lrng_drng.c:381:6: warning: no previous prototype for 'lrng_reset' [-Wmissing-prototypes]
+     381 | void lrng_reset(void)
+         |      ^~~~~~~~~~
 
-The status of the LRNG self-tests is provided with the selftest_status
-SysFS file. If the file contains a zero, the self-tests passed. The
-value 0xffffffff means that the self-tests were not executed. Any other
-value indicates a self-test failure.
+# https://github.com/0day-ci/linux/commit/b5cc1c486b8491ab0a3817a48964bfd4797484c8
+git remote add linux-review https://github.com/0day-ci/linux
+git fetch --no-tags linux-review Stephan-M-ller/dev-random-a-new-approach-with-full-SP800-90B-compliance/20200825-153914
+git checkout b5cc1c486b8491ab0a3817a48964bfd4797484c8
+vim +/lrng_reset +381 drivers/char/lrng/lrng_drng.c
 
-The self-test may be compiled to panic the system if the self-test
-fails.
+   380	
+ > 381	void lrng_reset(void)
+   382	{
+   383		schedule_work(&lrng_reset_work);
+   384	}
+   385	
 
-All self-tests operate on private state data structures. This implies
-that none of the self-tests have any impact on the regular LRNG
-operations. This allows the self-tests to be repeated at runtime by
-writing anything into the selftest_status SysFS file.
-
-[1] https://www.chronox.de/lrng.html
-[2] https://www.chronox.de/chacha20.html
-
-CC: "Eric W. Biederman" <ebiederm@xmission.com>
-CC: "Alexander E. Patrakov" <patrakov@gmail.com>
-CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
-CC: "Theodore Y. Ts'o" <tytso@mit.edu>
-CC: Willy Tarreau <w@1wt.eu>
-CC: Matthew Garrett <mjg59@srcf.ucam.org>
-CC: Vito Caputo <vcaputo@pengaru.com>
-CC: Andreas Dilger <adilger.kernel@dilger.ca>
-CC: Jan Kara <jack@suse.cz>
-CC: Ray Strode <rstrode@redhat.com>
-CC: William Jon McCann <mccann@jhu.edu>
-CC: zhangjs <zachary@baishancloud.com>
-CC: Andy Lutomirski <luto@kernel.org>
-CC: Florian Weimer <fweimer@redhat.com>
-CC: Lennart Poettering <mzxreary@0pointer.de>
-CC: Nicolai Stange <nstange@suse.de>
-CC: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-CC: Neil Horman <nhorman@redhat.com>
-Signed-off-by: Stephan Mueller <smueller@chronox.de>
 ---
- drivers/char/lrng/Kconfig         |  25 ++
- drivers/char/lrng/Makefile        |   1 +
- drivers/char/lrng/lrng_selftest.c | 506 ++++++++++++++++++++++++++++++
- 3 files changed, 532 insertions(+)
- create mode 100644 drivers/char/lrng/lrng_selftest.c
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index de20f189e297..b75d809bed50 100644
---- a/drivers/char/lrng/Kconfig
-+++ b/drivers/char/lrng/Kconfig
-@@ -288,4 +288,29 @@ config LRNG_TESTING
- 
- endif #LRNG_TESTING_MENU
- 
-+config LRNG_SELFTEST
-+	bool "Enable power-on and on-demand self-tests"
-+	help
-+	  The power-on self-tests are executed during boot time
-+	  covering the ChaCha20 DRNG, the LFSR processing and the
-+	  time stamp management of the LRNG.
-+
-+	  The on-demand self-tests are triggered by writing any
-+	  value into the SysFS file selftest_status. At the same
-+	  time, when reading this file, the test status is
-+	  returned. A zero indicates that all tests were executed
-+	  successfully.
-+
-+	  If unsure, say Y.
-+
-+if LRNG_SELFTEST
-+
-+config LRNG_SELFTEST_PANIC
-+	bool "Panic the kernel upon self-test failure"
-+	help
-+	  If the option is enabled, the kernel is terminated if an
-+	  LRNG power-on self-test failure is detected.
-+
-+endif # LRNG_SELFTEST
-+
- endif # LRNG
-diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
-index b2ce1979dc4b..92219c565f66 100644
---- a/drivers/char/lrng/Makefile
-+++ b/drivers/char/lrng/Makefile
-@@ -16,3 +16,4 @@ obj-$(CONFIG_LRNG_KCAPI)	+= lrng_kcapi.o
- obj-$(CONFIG_LRNG_JENT)		+= lrng_jent.o
- obj-$(CONFIG_LRNG_HEALTH_TESTS)	+= lrng_health.o
- obj-$(CONFIG_LRNG_TESTING)	+= lrng_testing.o
-+obj-$(CONFIG_LRNG_SELFTEST)	+= lrng_selftest.o
-diff --git a/drivers/char/lrng/lrng_selftest.c b/drivers/char/lrng/lrng_selftest.c
-new file mode 100644
-index 000000000000..74a529b15fa5
---- /dev/null
-+++ b/drivers/char/lrng/lrng_selftest.c
-@@ -0,0 +1,506 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-+/*
-+ * LRNG power-on and on-demand self-test
-+ *
-+ * Copyright (C) 2016 - 2020, Stephan Mueller <smueller@chronox.de>
-+ */
-+
-+/*
-+ * In addition to the self-tests below, the following LRNG components
-+ * are covered with self-tests during regular operation:
-+ *
-+ * * power-on self-test: SP800-90A DRBG provided by the Linux kernel crypto API
-+ * * power-on self-test: PRNG provided by the Linux kernel crypto API
-+ * * runtime test: Raw noise source data testing including SP800-90B compliant
-+ *		   tests when enabling CONFIG_LRNG_HEALTH_TESTS
-+ *
-+ * Additional developer tests present with LRNG code:
-+ * * SP800-90B APT and RCT test enforcement validation when enabling
-+ *   CONFIG_LRNG_APT_BROKEN or CONFIG_LRNG_RCT_BROKEN.
-+ * * Collection of raw entropy from the interrupt noise source when enabling
-+ *   CONFIG_LRNG_TESTING and pulling the data from the kernel with the provided
-+ *   interface.
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/module.h>
-+#include <linux/lrng.h>
-+#include <linux/slab.h>
-+
-+#include "lrng_chacha20.h"
-+#include "lrng_internal.h"
-+#include "lrng_lfsr.h"
-+#include "lrng_sw_noise.h"
-+
-+#define LRNG_SELFTEST_PASSED		0
-+#define LRNG_SEFLTEST_ERROR_TIME	(1 << 0)
-+#define LRNG_SEFLTEST_ERROR_LFSR	(1 << 1)
-+#define LRNG_SEFLTEST_ERROR_CHACHA20	(1 << 2)
-+#define LRNG_SEFLTEST_ERROR_HASHDF	(1 << 3)
-+#define LRNG_SELFTEST_NOT_EXECUTED	0xffffffff
-+
-+static u32 lrng_time_selftest[LRNG_TIME_ARRAY_SIZE];
-+
-+static unsigned int lrng_selftest_status = LRNG_SELFTEST_NOT_EXECUTED;
-+
-+static inline void lrng_selftest_bswap32(u32 *ptr, u32 words)
-+{
-+	u32 i;
-+
-+	/* Byte-swap data which is an LE representation */
-+	for (i = 0; i < words; i++) {
-+		__le32 *p = (__le32 *)ptr;
-+
-+		*p = cpu_to_le32(*ptr);
-+		ptr++;
-+	}
-+}
-+
-+static inline void lrng_time_process_selftest_insert(u32 time)
-+{
-+	static u32 lrng_time_selftest_ptr = 0;
-+	u32 ptr = lrng_time_selftest_ptr++ & LRNG_TIME_WORD_MASK;
-+
-+	lrng_time_selftest[lrng_time_idx2array(ptr)] |=
-+		lrng_time_slot_val(time & LRNG_TIME_SLOTSIZE_MASK,
-+				   lrng_time_idx2slot(ptr));
-+}
-+
-+static unsigned int lrng_time_process_selftest(void)
-+{
-+	u32 time;
-+	u32 idx_zero_compare = (0 << 0) | (1 << 8) | (2 << 16) | (3 << 24);
-+	u32 idx_one_compare  = (4 << 0) | (5 << 8) | (6 << 16) | (7 << 24);
-+	u32 idx_last_compare = ((LRNG_TIME_NUM_VALUES - 4) << 0)  |
-+			       ((LRNG_TIME_NUM_VALUES - 3) << 8)  |
-+			       ((LRNG_TIME_NUM_VALUES - 2) << 16) |
-+			       ((LRNG_TIME_NUM_VALUES - 1) << 24);
-+
-+	(void)idx_one_compare;
-+
-+	for (time = 0; time < LRNG_TIME_NUM_VALUES; time++)
-+		lrng_time_process_selftest_insert(time);
-+
-+	if ((lrng_time_selftest[0] != idx_zero_compare) ||
-+#if (LRNG_TIME_ARRAY_SIZE > 1)
-+	    (lrng_time_selftest[1] != idx_one_compare)  ||
-+#endif
-+	    (lrng_time_selftest[LRNG_TIME_ARRAY_SIZE - 1] != idx_last_compare))
-+	{
-+		pr_err("LRNG time array self-test FAILED\n");
-+		return LRNG_SEFLTEST_ERROR_TIME;
-+	}
-+
-+	return LRNG_SELFTEST_PASSED;
-+}
-+
-+/*
-+ * The test vectors are generated with the lfsr_testvector_generation tool
-+ * provided as part of the test tool set of the LRNG.
-+ */
-+static unsigned int lrng_pool_lfsr_selftest(void)
-+{
-+	/*
-+	 * First, 67th and last entry of entropy pool.
-+	 *
-+	 * The 67th entry is picked because this one is the first to receive
-+	 * an entry. As we start with 1 to inject into the LFSR, the
-+	 * 67th entry should be equal to rol(1, 7) >> 3 considering that
-+	 * all other values of the LFSR are zero and the the twist value of 0
-+	 * is applied.
-+	 */
-+	static const u32 lrng_lfsr_selftest_result[][3] = {
-+		{ 0xf56df24a, 0x00000010, 0x0e014939 },
-+		{ 0x4b130726, 0x00000010, 0x2802f509 },
-+		{ 0x87279152, 0x00000010, 0x00150000 },
-+		{ 0x0b67f997, 0x00000010, 0x00150000 },
-+		{ 0x4fea174f, 0x00000010, 0xcbf4a6ae },
-+		{ 0x77149108, 0x00000010, 0x77bfadf2 },
-+		{ 0x1e96037e, 0x00000010, 0x18017e79 },
-+		{ 0xc84acef2, 0x00000010, 0x6345f7a8 },
-+		{ 0x6a2eb6df, 0x00000010, 0x03950000 },
-+	};
-+	struct lrng_pool *lrng_pool, *lrng_pool_aligned;
-+	u32 i, ret = LRNG_SELFTEST_PASSED;
-+
-+	BUILD_BUG_ON(ARRAY_SIZE(lrng_lfsr_selftest_result) <
-+							CONFIG_LRNG_POOL_SIZE);
-+
-+	lrng_pool = kzalloc(sizeof(struct lrng_pool) + LRNG_KCAPI_ALIGN,
-+			    GFP_KERNEL);
-+	if (!lrng_pool)
-+		return LRNG_SEFLTEST_ERROR_LFSR;
-+	lrng_pool_aligned = PTR_ALIGN(lrng_pool, sizeof(u32));
-+
-+	for (i = 1; i <= LRNG_POOL_SIZE; i++)
-+		_lrng_pool_lfsr_u32(lrng_pool_aligned, i);
-+
-+	if ((atomic_read_u32(&lrng_pool_aligned->pool[0]) !=
-+	     lrng_lfsr_selftest_result[CONFIG_LRNG_POOL_SIZE][0]) ||
-+	    (atomic_read_u32(&lrng_pool_aligned->pool[67 &
-+						      (LRNG_POOL_SIZE - 1)]) !=
-+	     lrng_lfsr_selftest_result[CONFIG_LRNG_POOL_SIZE][1]) ||
-+	    (atomic_read_u32(&lrng_pool_aligned->pool[LRNG_POOL_SIZE - 1]) !=
-+	     lrng_lfsr_selftest_result[CONFIG_LRNG_POOL_SIZE][2])) {
-+		pr_err("LRNG LFSR self-test FAILED\n");
-+		ret = LRNG_SEFLTEST_ERROR_LFSR;
-+	}
-+
-+	kfree(lrng_pool);
-+	return ret;
-+}
-+
-+/*
-+ * The test vectors are generated with the hash_df_testvector_generation tool
-+ * provided as part of the test tool set of the LRNG.
-+ */
-+static unsigned int lrng_hash_df_selftest(void)
-+{
-+	const struct lrng_crypto_cb *crypto_cb = &lrng_cc20_crypto_cb;
-+
-+	/*
-+	 * The size of 44 bytes is chosen arbitrarily. Yet, this size should
-+	 * ensure that we have at least one hash block plus some fraction
-+	 * of a hash block generated.
-+	 */
-+	static const u8 lrng_hash_df_selftest_result[][44] = {
-+#ifdef CONFIG_CRYPTO_LIB_SHA256
-+		{
-+			0x71, 0xd6, 0xcb, 0xad, 0xdd, 0xdd, 0xe5, 0xec,
-+			0xe7, 0x31, 0x12, 0x3e, 0x29, 0x17, 0x6a, 0x43,
-+			0x71, 0xb6, 0x2c, 0x07, 0xf8, 0x40, 0x3e, 0xe1,
-+			0x0b, 0x91, 0xb8, 0xea, 0xac, 0xda, 0x4c, 0x71,
-+			0xdc, 0xe7, 0x26, 0xde, 0x71, 0x51, 0x46, 0xa5,
-+			0xab, 0x49, 0x85, 0x9c,
-+		}, {
-+			0x85, 0x42, 0x04, 0xa4, 0x37, 0xf9, 0xb9, 0xc3,
-+			0xf8, 0x9c, 0x07, 0x96, 0x23, 0x18, 0x61, 0x39,
-+			0x8b, 0x2f, 0xfb, 0xa5, 0x63, 0x25, 0xcc, 0x7b,
-+			0x6f, 0x27, 0xf9, 0x13, 0xa3, 0x0a, 0xe9, 0x05,
-+			0x17, 0x08, 0x3a, 0xda, 0xca, 0xb6, 0x68, 0x83,
-+			0xe4, 0x32, 0xed, 0x20,
-+		}, {
-+			0xca, 0xe7, 0xbe, 0x63, 0x8c, 0x48, 0x59, 0xe1,
-+			0x42, 0xfb, 0x79, 0x6c, 0x79, 0xd5, 0x57, 0x35,
-+			0x64, 0xfd, 0x84, 0x42, 0x96, 0x30, 0xcf, 0x37,
-+			0x7d, 0x4b, 0x7b, 0xbe, 0xff, 0xa6, 0xb5, 0x77,
-+			0x15, 0xa8, 0xdb, 0x30, 0x38, 0xcd, 0xc2, 0x59,
-+			0xf2, 0x0e, 0xba, 0xce,
-+		}, {
-+			0x7d, 0xf6, 0xe0, 0x6f, 0x55, 0xa9, 0xc3, 0x5d,
-+			0xe4, 0xab, 0xec, 0x7d, 0xc8, 0x25, 0x44, 0xcc,
-+			0xcb, 0x53, 0x98, 0xbe, 0x10, 0x9d, 0x8f, 0x7d,
-+			0x37, 0xcf, 0xf8, 0xe4, 0xa6, 0x65, 0x29, 0xa2,
-+			0x4e, 0x40, 0x53, 0xe9, 0xe6, 0xdc, 0x49, 0xeb,
-+			0xc0, 0xb2, 0xbf, 0x59,
-+		}, {
-+			0x3e, 0xe5, 0x11, 0x25, 0xda, 0xc1, 0xff, 0x49,
-+			0x99, 0xaf, 0x62, 0xc0, 0x7b, 0x98, 0xd7, 0xd9,
-+			0xc4, 0x88, 0xf6, 0x1f, 0x6e, 0xca, 0x93, 0x4c,
-+			0xb3, 0x43, 0x2f, 0x95, 0x6c, 0x9b, 0x19, 0x24,
-+			0x5f, 0x73, 0xc3, 0xff, 0xbc, 0xec, 0x58, 0x2c,
-+			0x6f, 0x55, 0xb0, 0x1c,
-+		}, {
-+			0xbb, 0x59, 0x3a, 0xbd, 0xf7, 0xa0, 0x2b, 0x7b,
-+			0x20, 0x76, 0xe6, 0x2e, 0x5d, 0x73, 0x13, 0xd7,
-+			0xb0, 0x42, 0xbe, 0x61, 0x07, 0x3c, 0xc9, 0x50,
-+			0x15, 0x69, 0xe6, 0x70, 0xe3, 0xb6, 0x61, 0xe2,
-+			0x41, 0x6f, 0x05, 0xe4, 0x24, 0xb4, 0xd9, 0x21,
-+			0xb1, 0xab, 0xb7, 0x36,
-+		}, {
-+			0x19, 0xc2, 0x04, 0x31, 0x33, 0xf7, 0x25, 0xf4,
-+			0x7c, 0x44, 0x9e, 0xd9, 0x7f, 0x06, 0x80, 0x8b,
-+			0xc7, 0xe9, 0x3d, 0xa4, 0xeb, 0x9d, 0x07, 0x99,
-+			0x3b, 0x94, 0x31, 0x3e, 0xa0, 0xcd, 0x86, 0x04,
-+			0x37, 0x6d, 0x1f, 0xc9, 0x9e, 0x66, 0x2b, 0x64,
-+			0xbb, 0xd7, 0x77, 0x32,
-+		}, {
-+			0x06, 0xac, 0xb6, 0xc1, 0xf5, 0xcf, 0x25, 0x2d,
-+			0x91, 0xba, 0x78, 0x9f, 0x1f, 0x4a, 0x63, 0xbb,
-+			0xae, 0x42, 0xf7, 0xb9, 0xac, 0x20, 0x35, 0xfe,
-+			0x89, 0x81, 0x7f, 0x90, 0x94, 0xcf, 0xe1, 0x95,
-+			0x33, 0x06, 0xaa, 0x67, 0xb6, 0x2e, 0x3c, 0x5c,
-+			0x72, 0x55, 0x9c, 0x2f,
-+		}, {
-+			0x4e, 0x8b, 0x94, 0x76, 0x37, 0xe0, 0x42, 0x41,
-+			0x69, 0xd2, 0xc8, 0x7d, 0xd7, 0x58, 0x76, 0x3a,
-+			0xb9, 0xbf, 0xb3, 0xcf, 0xf2, 0xbd, 0x2e, 0x84,
-+			0x13, 0xe7, 0x55, 0x90, 0x55, 0x80, 0x50, 0x7a,
-+			0x19, 0xc3, 0x0c, 0x18, 0x0b, 0x6b, 0x66, 0xb7,
-+			0x43, 0x6c, 0xfe, 0x63,
-+		}
-+#else /* CONFIG_CRYPTO_LIB_SHA256 */
-+		{
-+			0x65, 0x48, 0xc4, 0xb3, 0x4d, 0x9c, 0xec, 0xd7,
-+			0x69, 0x72, 0xf7, 0x8b, 0x35, 0x23, 0xa8, 0x9a,
-+			0xb2, 0xe8, 0x83, 0xf8, 0xba, 0x32, 0x76, 0xae,
-+			0xed, 0xe2, 0x94, 0x6a, 0x93, 0x99, 0x6e, 0xce,
-+			0xd5, 0xb5, 0xc5, 0x16, 0xa7, 0x8d, 0xc8, 0xd3,
-+			0xe9, 0xdd, 0x4f, 0xca,
-+		}, {
-+			0x50, 0xcc, 0x6f, 0xe9, 0x40, 0x20, 0x40, 0x3e,
-+			0xce, 0x42, 0x3e, 0x30, 0x87, 0xf1, 0x3d, 0x60,
-+			0x75, 0xdd, 0x4f, 0x33, 0x06, 0x75, 0xbf, 0x5e,
-+			0x4c, 0x88, 0xc0, 0x60, 0x0f, 0x9d, 0xf9, 0xa5,
-+			0x63, 0xb1, 0xac, 0xc7, 0x32, 0x22, 0x60, 0xea,
-+			0x88, 0xe7, 0x61, 0x8b,
-+		}, {
-+			0x09, 0x96, 0xbe, 0x89, 0x16, 0x5e, 0x41, 0x82,
-+			0xf3, 0xab, 0xf6, 0x11, 0xef, 0x45, 0x0e, 0x87,
-+			0x72, 0x38, 0x40, 0xe4, 0x21, 0x0b, 0x1c, 0x45,
-+			0x25, 0x9c, 0x26, 0x34, 0x7e, 0xad, 0x25, 0x33,
-+			0xf2, 0xb0, 0xc5, 0xa7, 0x0b, 0x38, 0xd9, 0x89,
-+			0x02, 0x08, 0xa2, 0x5b,
-+		}, {
-+			0x10, 0x5b, 0xf4, 0x5b, 0xa9, 0xfc, 0x83, 0x2d,
-+			0x82, 0xf8, 0xa1, 0x17, 0x34, 0xe2, 0x67, 0xb7,
-+			0x95, 0xe2, 0x63, 0x2d, 0x1b, 0xf6, 0x59, 0x05,
-+			0x49, 0x9a, 0x3f, 0xa1, 0x16, 0xf7, 0x42, 0xd1,
-+			0x9c, 0x29, 0x5e, 0x31, 0xc9, 0x42, 0xf8, 0x9d,
-+			0x9b, 0x35, 0xd2, 0x30,
-+		}, {
-+			0x1e, 0x43, 0xfe, 0x8a, 0x66, 0x53, 0x2d, 0x94,
-+			0x68, 0xbe, 0xfc, 0xc6, 0xfa, 0x95, 0x4a, 0xca,
-+			0xa7, 0x54, 0xcd, 0x92, 0xc9, 0xca, 0xcc, 0x4f,
-+			0xb2, 0xc5, 0xc5, 0xb6, 0x17, 0xd7, 0xb5, 0x41,
-+			0xa0, 0x8e, 0xef, 0x75, 0x00, 0x96, 0x8e, 0x13,
-+			0x8c, 0x9f, 0xd6, 0xce,
-+		}, {
-+			0x70, 0x14, 0x94, 0x45, 0xa3, 0xb6, 0xac, 0xef,
-+			0x22, 0xe3, 0xe4, 0x2a, 0x38, 0x8c, 0x0e, 0x45,
-+			0x17, 0x61, 0x4e, 0x1d, 0xb3, 0xaf, 0xc1, 0xee,
-+			0x60, 0x31, 0x4d, 0xdc, 0xe1, 0x83, 0x8b, 0x85,
-+			0x97, 0x27, 0x30, 0x24, 0x57, 0xc2, 0xfd, 0xc0,
-+			0x99, 0x4b, 0xad, 0xb1,
-+		}, {
-+			0x12, 0x87, 0x51, 0x68, 0x28, 0xab, 0xa9, 0xd1,
-+			0x91, 0x64, 0x5e, 0x38, 0x7f, 0xf3, 0xaf, 0xd5,
-+			0x93, 0xbc, 0x31, 0xfd, 0xae, 0x19, 0x45, 0xd7,
-+			0x1f, 0xe8, 0x0c, 0x24, 0xa6, 0x6d, 0x09, 0x0b,
-+			0x17, 0x44, 0xdb, 0xce, 0x1c, 0x0a, 0xdb, 0x73,
-+			0x7a, 0x91, 0x33, 0x4c,
-+		}, {
-+			0x14, 0x81, 0x76, 0x37, 0x27, 0x19, 0x8d, 0x71,
-+			0xcc, 0x2e, 0xa3, 0x71, 0x92, 0x46, 0x6e, 0x3a,
-+			0xac, 0x87, 0xd6, 0x1e, 0xa7, 0xa9, 0x2e, 0x1e,
-+			0xd9, 0x6c, 0xea, 0xbe, 0x1a, 0x2e, 0xe9, 0x8a,
-+			0x96, 0x2a, 0xe3, 0xee, 0xd2, 0x25, 0xb2, 0xae,
-+			0xc6, 0xba, 0xe7, 0xef,
-+		}, {
-+			0x58, 0x78, 0xce, 0xcb, 0xcf, 0x61, 0xc2, 0x3d,
-+			0x00, 0x80, 0x74, 0x57, 0x56, 0x44, 0xc7, 0xe2,
-+			0x9a, 0xed, 0x30, 0x02, 0x3f, 0x9a, 0xf5, 0xcc,
-+			0xf7, 0x7b, 0x40, 0xf7, 0x10, 0x97, 0x8d, 0x8f,
-+			0x58, 0xa4, 0x80, 0x88, 0x87, 0x30, 0x87, 0x7b,
-+			0xac, 0x2e, 0xce, 0x0d,
-+		}
-+#endif /* CONFIG_CRYPTO_LIB_SHA256 */
-+	};
-+	struct lrng_pool *lrng_pool, *lrng_pool_aligned;
-+	u8 hash_df[sizeof(lrng_hash_df_selftest_result[0])]
-+							__aligned(sizeof(u32));
-+	u32 generated;
-+	int ret = 0;
-+
-+	BUILD_BUG_ON(ARRAY_SIZE(lrng_hash_df_selftest_result) <
-+							CONFIG_LRNG_POOL_SIZE);
-+	/* Calculated data needs to be byte-swapped */
-+	BUILD_BUG_ON(sizeof(lrng_hash_df_selftest_result[0]) % sizeof(32));
-+
-+	lrng_pool = kzalloc(sizeof(struct lrng_pool) + LRNG_KCAPI_ALIGN,
-+			    GFP_KERNEL);
-+	if (!lrng_pool)
-+		return LRNG_SEFLTEST_ERROR_HASHDF;
-+	lrng_pool_aligned = PTR_ALIGN(lrng_pool, sizeof(u32));
-+
-+	generated = __lrng_pool_hash_df(crypto_cb, NULL, lrng_pool_aligned,
-+					hash_df, sizeof(hash_df) << 3);
-+
-+	lrng_selftest_bswap32((u32 *)hash_df,
-+			sizeof(lrng_hash_df_selftest_result[0]) / sizeof(u32));
-+
-+	if ((generated >> 3) != sizeof(hash_df) ||
-+	    memcmp(hash_df, lrng_hash_df_selftest_result[CONFIG_LRNG_POOL_SIZE],
-+		   sizeof(hash_df))) {
-+		pr_err("LRNG Hash DF self-test FAILED\n");
-+		ret = LRNG_SEFLTEST_ERROR_HASHDF;
-+	}
-+
-+	kfree(lrng_pool);
-+	return ret;
-+}
-+
-+/*
-+ * The test vectors were generated using the ChaCha20 DRNG from
-+ * https://www.chronox.de/chacha20.html
-+ */
-+static unsigned int lrng_chacha20_drng_selftest(void)
-+{
-+	const struct lrng_crypto_cb *crypto_cb = &lrng_cc20_crypto_cb;
-+	u8 seed[CHACHA_KEY_SIZE * 2] = {
-+		0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-+		0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
-+		0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
-+		0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
-+		0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27,
-+		0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f,
-+		0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
-+		0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f,
-+	};
-+	struct chacha20_block chacha20;
-+	int ret;
-+	u8 outbuf[CHACHA_KEY_SIZE * 2] __aligned(sizeof(u32));
-+
-+	/*
-+	 * Expected result when ChaCha20 DRNG state is zero:
-+	 *	* constants are set to "expand 32-byte k"
-+	 *	* remaining state is 0
-+	 * and pulling one half ChaCha20 DRNG block.
-+	 */
-+	static const u8 expected_halfblock[CHACHA_KEY_SIZE] = {
-+		0x76, 0xb8, 0xe0, 0xad, 0xa0, 0xf1, 0x3d, 0x90,
-+		0x40, 0x5d, 0x6a, 0xe5, 0x53, 0x86, 0xbd, 0x28,
-+		0xbd, 0xd2, 0x19, 0xb8, 0xa0, 0x8d, 0xed, 0x1a,
-+		0xa8, 0x36, 0xef, 0xcc, 0x8b, 0x77, 0x0d, 0xc7 };
-+
-+	/*
-+	 * Expected result when ChaCha20 DRNG state is zero:
-+	 *	* constants are set to "expand 32-byte k"
-+	 *	* remaining state is 0
-+	 * followed by a reseed with two keyblocks
-+	 *	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-+	 *	0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
-+	 *	0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
-+	 *	0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
-+	 *	0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27,
-+	 *	0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f,
-+	 *	0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
-+	 *	0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f
-+	 * and pulling one ChaCha20 DRNG block.
-+	 */
-+	static const u8 expected_oneblock[CHACHA_KEY_SIZE * 2] = {
-+		0xf5, 0xb4, 0xb6, 0x5a, 0xec, 0xcd, 0x5a, 0x65,
-+		0x87, 0x56, 0xe3, 0x86, 0x51, 0x54, 0xfc, 0x90,
-+		0x56, 0xff, 0x5e, 0xae, 0x58, 0xf2, 0x01, 0x88,
-+		0xb1, 0x7e, 0xb8, 0x2e, 0x17, 0x9a, 0x27, 0xe6,
-+		0x86, 0xb3, 0xed, 0x33, 0xf7, 0xb9, 0x06, 0x05,
-+		0x8a, 0x2d, 0x1a, 0x93, 0xc9, 0x0b, 0x80, 0x04,
-+		0x03, 0xaa, 0x60, 0xaf, 0xd5, 0x36, 0x40, 0x11,
-+		0x67, 0x89, 0xb1, 0x66, 0xd5, 0x88, 0x62, 0x6d };
-+
-+	/*
-+	 * Expected result when ChaCha20 DRNG state is zero:
-+	 *	* constants are set to "expand 32-byte k"
-+	 *	* remaining state is 0
-+	 * followed by a reseed with one key block plus one byte
-+	 *	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-+	 *	0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
-+	 *	0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
-+	 *	0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
-+	 *	0x20
-+	 * and pulling less than one ChaCha20 DRNG block.
-+	 */
-+	static const u8 expected_block_nonalinged[CHACHA_KEY_SIZE + 4] = {
-+		0x9d, 0xdd, 0x4f, 0xbe, 0x97, 0xcd, 0x8e, 0x15,
-+		0xb3, 0xc4, 0x1a, 0x17, 0x49, 0x29, 0x32, 0x7c,
-+		0xb3, 0x84, 0xa4, 0x9b, 0xa7, 0x14, 0xb3, 0xc1,
-+		0x5b, 0x3b, 0xfb, 0xa1, 0xe4, 0x23, 0x42, 0x8e,
-+		0x08, 0x1f, 0x53, 0xa2 };
-+
-+	BUILD_BUG_ON(sizeof(seed) % sizeof(u32));
-+
-+	memset(&chacha20, 0, sizeof(chacha20));
-+	lrng_cc20_init_rfc7539(&chacha20);
-+	lrng_selftest_bswap32((u32 *)seed, sizeof(seed) / sizeof(u32));
-+
-+	/* Generate with zero state */
-+	ret = crypto_cb->lrng_drng_generate_helper(&chacha20, outbuf,
-+						   sizeof(expected_halfblock));
-+	if (ret != sizeof(expected_halfblock))
-+		goto err;
-+	if (memcmp(outbuf, expected_halfblock, sizeof(expected_halfblock)))
-+		goto err;
-+
-+	/* Clear state of DRNG */
-+	memset(&chacha20.key.u[0], 0, 48);
-+
-+	/* Reseed with 2 key blocks */
-+	ret = crypto_cb->lrng_drng_seed_helper(&chacha20, seed,
-+					       sizeof(expected_oneblock));
-+	if (ret < 0)
-+		goto err;
-+	ret = crypto_cb->lrng_drng_generate_helper(&chacha20, outbuf,
-+						   sizeof(expected_oneblock));
-+	if (ret != sizeof(expected_oneblock))
-+		goto err;
-+	if (memcmp(outbuf, expected_oneblock, sizeof(expected_oneblock)))
-+		goto err;
-+
-+	/* Clear state of DRNG */
-+	memset(&chacha20.key.u[0], 0, 48);
-+
-+	/* Reseed with 1 key block and one byte */
-+	ret = crypto_cb->lrng_drng_seed_helper(&chacha20, seed,
-+					sizeof(expected_block_nonalinged));
-+	if (ret < 0)
-+		goto err;
-+	ret = crypto_cb->lrng_drng_generate_helper(&chacha20, outbuf,
-+					sizeof(expected_block_nonalinged));
-+	if (ret != sizeof(expected_block_nonalinged))
-+		goto err;
-+	if (memcmp(outbuf, expected_block_nonalinged,
-+		   sizeof(expected_block_nonalinged)))
-+		goto err;
-+
-+	return LRNG_SELFTEST_PASSED;
-+
-+err:
-+	pr_err("LRNG ChaCha20 DRNG self-test FAILED\n");
-+	return LRNG_SEFLTEST_ERROR_CHACHA20;
-+}
-+
-+static int lrng_selftest(void)
-+{
-+	unsigned int ret = lrng_time_process_selftest();
-+
-+	ret |= lrng_pool_lfsr_selftest();
-+	ret |= lrng_chacha20_drng_selftest();
-+	ret |= lrng_hash_df_selftest();
-+
-+	if (ret) {
-+		if (IS_ENABLED(CONFIG_LRNG_SELFTEST_PANIC))
-+			panic("LRNG self-tests failed: %u\n", ret);
-+	} else {
-+		pr_info("LRNG self-tests passed\n");
-+	}
-+
-+	lrng_selftest_status = ret;
-+
-+	if (lrng_selftest_status)
-+		return -EFAULT;
-+	return 0;
-+}
-+
-+#ifdef CONFIG_SYSFS
-+/* Re-perform self-test when any value is written to the sysfs file. */
-+static int lrng_selftest_sysfs_set(const char *val,
-+				   const struct kernel_param *kp)
-+{
-+	return lrng_selftest();
-+}
-+
-+static const struct kernel_param_ops lrng_selftest_sysfs = {
-+	.set = lrng_selftest_sysfs_set,
-+	.get = param_get_uint,
-+};
-+module_param_cb(selftest_status, &lrng_selftest_sysfs, &lrng_selftest_status,
-+		0644);
-+#endif	/* CONFIG_SYSFS */
-+
-+static int __init lrng_selftest_init(void)
-+{
-+	return lrng_selftest();
-+}
-+
-+module_init(lrng_selftest_init);
--- 
-2.26.2
+--W/nzBZO5zC0uMSeA
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
 
-
-
+--W/nzBZO5zC0uMSeA--
