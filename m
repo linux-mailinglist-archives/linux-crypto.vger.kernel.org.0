@@ -2,89 +2,101 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5691F2519A7
-	for <lists+linux-crypto@lfdr.de>; Tue, 25 Aug 2020 15:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170472519B8
+	for <lists+linux-crypto@lfdr.de>; Tue, 25 Aug 2020 15:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgHYNbZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 25 Aug 2020 09:31:25 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:47212 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgHYNbZ (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:31:25 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07PDVKQY048023;
-        Tue, 25 Aug 2020 08:31:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1598362280;
-        bh=2SfrK0eHenlCVkqBRpYix7m8N1N8a2l1yYmb7XeCvjA=;
-        h=From:To:Subject:Date:In-Reply-To:References;
-        b=cgrIB4ORCiPSD0airAeC9X8uzhplIGEOH67o1NaQNTrGqvdpHFkD+ILuM4azv2/i5
-         4DUSGaePAY0Nu0kFA4x3YkpIxIrVOMkrBVDVM069l2trjvIqfx2eBRWw4SEPbhGh5J
-         Zy9GLbuUu5BJGJO9GjKKt/zw2DM/nKLcUaXAu6mA=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07PDVKLk016393
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 25 Aug 2020 08:31:20 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 25
- Aug 2020 08:31:20 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 25 Aug 2020 08:31:20 -0500
-Received: from sokoban.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07PDVFs0046832;
-        Tue, 25 Aug 2020 08:31:19 -0500
-From:   Tero Kristo <t-kristo@ti.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>
-Subject: [PATCH 2/2] crypto: sa2ul: fix compiler warning produced by clang
-Date:   Tue, 25 Aug 2020 16:31:06 +0300
-Message-ID: <20200825133106.21542-3-t-kristo@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200825133106.21542-1-t-kristo@ti.com>
-References: <20200825133106.21542-1-t-kristo@ti.com>
+        id S1726045AbgHYNdc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 25 Aug 2020 09:33:32 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:49194 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726703AbgHYNdV (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 25 Aug 2020 09:33:21 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kAZ4V-00Bm6q-Ec; Tue, 25 Aug 2020 15:33:07 +0200
+Date:   Tue, 25 Aug 2020 15:33:07 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Van Leeuwen, Pascal" <pvanleeuwen@rambus.com>
+Cc:     Sabrina Dubroca <sd@queasysnail.net>,
+        Scott Dial <scott@scottdial.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Ryan Cox <ryan_cox@byu.edu>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Antoine Tenart <antoine.tenart@bootlin.com>,
+        "ebiggers@google.com" <ebiggers@google.com>
+Subject: Re: Severe performance regression in "net: macsec: preserve ingress
+ frame ordering"
+Message-ID: <20200825133307.GP2588906@lunn.ch>
+References: <1b0cec71-d084-8153-2ba4-72ce71abeb65@byu.edu>
+ <a335c8eb-0450-1274-d1bf-3908dcd9b251@scottdial.com>
+ <20200810133427.GB1128331@bistromath.localdomain>
+ <7663cbb1-7a55-6986-7d5d-8fab55887a80@scottdial.com>
+ <20200812100443.GF1128331@bistromath.localdomain>
+ <CY4PR0401MB36524B348358B23A8DFB741AC3420@CY4PR0401MB3652.namprd04.prod.outlook.com>
+ <20200812124201.GF2154440@lunn.ch>
+ <CY4PR0401MB365240B04FC43F7F8AAE6A0CC3560@CY4PR0401MB3652.namprd04.prod.outlook.com>
+ <20200824130142.GN2588906@lunn.ch>
+ <CY4PR0401MB3652AB8C5DC2FEA09A6F2BECC3570@CY4PR0401MB3652.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CY4PR0401MB3652AB8C5DC2FEA09A6F2BECC3570@CY4PR0401MB3652.namprd04.prod.outlook.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Clang detects a warning for an assignment that doesn't really do
-anything. Fix this by removing the offending piece of code.
+On Tue, Aug 25, 2020 at 01:09:31PM +0000, Van Leeuwen, Pascal wrote:
+> > -----Original Message-----
+> > From: Andrew Lunn <andrew@lunn.ch>
+> > Sent: Monday, August 24, 2020 3:02 PM
+> > To: Van Leeuwen, Pascal <pvanleeuwen@rambus.com>
+> > Cc: Sabrina Dubroca <sd@queasysnail.net>; Scott Dial <scott@scottdial.com>; linux-crypto@vger.kernel.org; Ryan Cox
+> > <ryan_cox@byu.edu>; netdev@vger.kernel.org; davem@davemloft.net; Antoine Tenart <antoine.tenart@bootlin.com>;
+> > ebiggers@google.com
+> > Subject: Re: Severe performance regression in "net: macsec: preserve ingress frame ordering"
+> >
+> > <<< External Email >>>
+> > On Mon, Aug 24, 2020 at 09:07:26AM +0000, Van Leeuwen, Pascal wrote:
+> > > No need to point this out to me as we're the number one supplier of inline MACsec IP :-)
+> > > In fact, the Microsemi PHY solution you mention is ours, major parts of that design were
+> > > even created by these 2 hands here.
+> >
+> > Oh,  O.K.
+> >
+> > Do you know of other silicon vendors which are using the same IP?
+> >
+> I do, there are many. But unfortunately, I cannot disclose our customers unless this is already
+> public information, e.g. due to some press release or whatever.
 
-Fixes: 7694b6ca649f ("crypto: sa2ul - Add crypto driver")
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
----
- drivers/crypto/sa2ul.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+O.K. Maybe i should flip the question around. If somebody was to
+submit a driver, how would i quickly determine it is your IP? Any
+particularly patterns i should look for.
 
-diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
-index 5bc099052bd2..ff8bbdb4d235 100644
---- a/drivers/crypto/sa2ul.c
-+++ b/drivers/crypto/sa2ul.c
-@@ -1148,12 +1148,10 @@ static int sa_run(struct sa_req *req)
- 			ret = sg_split(req->dst, mapped_dst_nents, 0, 1,
- 				       &split_size, &dst, &dst_nents,
- 				       gfp_flags);
--			if (ret) {
--				dst_nents = dst_nents;
-+			if (ret)
- 				dst = req->dst;
--			} else {
-+			else
- 				rxd->split_dst_sg = dst;
--			}
- 		}
- 	}
- 
--- 
-2.17.1
+> > Maybe we can encourage them to share the driver, rather than re-invent
+> > the wheel, which often happens when nobody realises it is basically
+> > the same core with a different wrapper.
+> >
+> Yes, that could save a lot of duplication of code and effort.
 
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+It would save a lot of effort. But not code duplication. Because if i
+or one of the other maintainers notices it is just your IP with a
+different wrapper, we would NACK the patch and tell them to refactor
+the MSCC driver. There is a long established precedence for that.
+
+> The problem is: who will do it? We can't do it, because we have no
+> access to the actual HW.
+
+Microsemi are very friendly. If you ask them, i'm sure they would send
+you a board. I assume you also have some sort of FPGA setup you use
+for your own testing? That gives you two platforms. And if there are
+many PHYs using your IP, it should not be too hard to just go buy a
+reference design kit from a vendor.
+
+And there is the marketing aspect for Rambus. You can say your IP is
+easy to use, the core code is already in the kernel, supported and
+well tested, you just need to add a few wrapper functions in your
+driver. No vendor crap driver needed.
+
+	Andrew
