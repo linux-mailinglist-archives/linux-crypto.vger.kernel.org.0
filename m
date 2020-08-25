@@ -2,45 +2,46 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAD4251A74
-	for <lists+linux-crypto@lfdr.de>; Tue, 25 Aug 2020 16:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A89251A59
+	for <lists+linux-crypto@lfdr.de>; Tue, 25 Aug 2020 16:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgHYODl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 25 Aug 2020 10:03:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42354 "EHLO mail.kernel.org"
+        id S1726650AbgHYOAf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 25 Aug 2020 10:00:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726513AbgHYN71 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:59:27 -0400
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        id S1726432AbgHYOAI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 25 Aug 2020 10:00:08 -0400
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D688F2075F
-        for <linux-crypto@vger.kernel.org>; Tue, 25 Aug 2020 13:59:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F24C20786
+        for <linux-crypto@vger.kernel.org>; Tue, 25 Aug 2020 14:00:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598363967;
-        bh=JUtbshDiaqT1abUNYm22UsrMzF65PvCYAKmKkgX37is=;
+        s=default; t=1598364007;
+        bh=7VoAAPVacUCZkfNz/3lvK/x0OA/mKGggQ0/VQkY6OOg=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WCXNF2cgC8BTqW48R2a4J7798vAgaKoERgWz8F6WZGl9gQ+5r+U1sfVV8p4hPzyQn
-         7CW0X5B5BAF1y9FdNQj8tbPfWByeV9zTYP/H9gDJTDWHwilLnwx+F2G0WLwBVjZ38K
-         9mfcZJhj4GJ5JuoZY+KnO/F5L9mLD36/eVKmjzrM=
-Received: by mail-oi1-f169.google.com with SMTP id b9so8239257oiy.3
-        for <linux-crypto@vger.kernel.org>; Tue, 25 Aug 2020 06:59:26 -0700 (PDT)
-X-Gm-Message-State: AOAM530mtI86sjju57GR8Fk6cl422BBa848dhf+AJHho07F5DpalB6tO
-        5QNr0szsxjuQSW9SK+9Ri4xRVIxURarDSDxUxQo=
-X-Google-Smtp-Source: ABdhPJy3nEfd6uI97/6QE72ErSZH4qiw9sQ+yjnPjzpbfrf+4FPUFC4/ZHF0KynKlWRV9NYzKr9rCOZDDvISbd4+yY0=
-X-Received: by 2002:a05:6808:b37:: with SMTP id t23mr1131302oij.174.1598363966153;
- Tue, 25 Aug 2020 06:59:26 -0700 (PDT)
+        b=Cew30mprZTIbpRmFGXVz1Lqj++QL/82eIgehdnW9HjfN7JPUGbC7yonutV9mVC/aT
+         6aOZYjpeRmVUrQSgyot3lX+U5c5v41Zzbyiwn0yzfKFAzJ2UhkQFVj6wmxYwgurMgy
+         cw3ZBDwedIK98Xm2cvSVAdrbDparIsCcFUcmkEu8=
+Received: by mail-oi1-f173.google.com with SMTP id u24so11669916oic.7
+        for <linux-crypto@vger.kernel.org>; Tue, 25 Aug 2020 07:00:07 -0700 (PDT)
+X-Gm-Message-State: AOAM533KKsMGs4APfDf5ZzbnhZKMRt3dEGA0N1c4TQ6Wxs4O3vDQr84H
+        +1oeeDnnYyaR7Jhd7T5LVpyU3ETrEwPGxivRrxE=
+X-Google-Smtp-Source: ABdhPJx5AVoLXFkNIgo/21dGo9p4oyrvumZGDLUOS8Asdqkn3cjCoRZ7hWwM/7nHyM3081o0BPG4p6CSIyIu6n3nvgw=
+X-Received: by 2002:aca:5401:: with SMTP id i1mr1083017oib.33.1598364006802;
+ Tue, 25 Aug 2020 07:00:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200825013801.GA16040@gondor.apana.org.au>
-In-Reply-To: <20200825013801.GA16040@gondor.apana.org.au>
+References: <20200825013428.GA14497@gondor.apana.org.au>
+In-Reply-To: <20200825013428.GA14497@gondor.apana.org.au>
 From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 25 Aug 2020 15:59:15 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXECU_-VNy0xB+ZLHpB2mLh5MJiFP62ufgKCqWg7H1iCyg@mail.gmail.com>
-Message-ID: <CAMj1kXECU_-VNy0xB+ZLHpB2mLh5MJiFP62ufgKCqWg7H1iCyg@mail.gmail.com>
-Subject: Re: [PATCH] crypto: arm64/gcm - Fix endianness warnings
+Date:   Tue, 25 Aug 2020 15:59:56 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEWyWZBVLubUqZn0Gutu4VQ7Pe6PXsPZZWbh7HX8wi=9w@mail.gmail.com>
+Message-ID: <CAMj1kXEWyWZBVLubUqZn0Gutu4VQ7Pe6PXsPZZWbh7HX8wi=9w@mail.gmail.com>
+Subject: Re: [PATCH] crypto: arm64/sha - Add declarations for assembly variables
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
@@ -49,35 +50,52 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 On Tue, 25 Aug 2020 at 03:41, Herbert Xu <herbert@gondor.apana.org.au> wrote:
 >
-> This patch changes a couple u128's to be128 which is the correct
-> type to use and fixes a few sparse warnings.
+> This patch adds declarations for variables only used by assembly
+> code to silence compiler warnings:
+>
+>   CC [M]  arch/arm64/crypto/sha1-ce-glue.o
+>   AS [M]  arch/arm64/crypto/sha1-ce-core.o
+>   CC [M]  arch/arm64/crypto/sha2-ce-glue.o
+>   AS [M]  arch/arm64/crypto/sha2-ce-core.o
+>   CHECK   ../arch/arm64/crypto/sha1-ce-glue.c
+>   CHECK   ../arch/arm64/crypto/sha2-ce-glue.c
+> ../arch/arm64/crypto/sha1-ce-glue.c:38:11: warning: symbol 'sha1_ce_offsetof_count' was not declared. Should it be static?
+> ../arch/arm64/crypto/sha1-ce-glue.c:39:11: warning: symbol 'sha1_ce_offsetof_finalize' was not declared. Should it be static?
+> ../arch/arm64/crypto/sha2-ce-glue.c:38:11: warning: symbol 'sha256_ce_offsetof_count' was not declared. Should it be static?
+> ../arch/arm64/crypto/sha2-ce-glue.c:40:11: warning: symbol 'sha256_ce_offsetof_finalize' was not declared. Should it be static?
 >
 > Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
 Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
 >
-> diff --git a/arch/arm64/crypto/ghash-ce-glue.c b/arch/arm64/crypto/ghash-ce-glue.c
-> index da1034867aaa..8536008e3e35 100644
-> --- a/arch/arm64/crypto/ghash-ce-glue.c
-> +++ b/arch/arm64/crypto/ghash-ce-glue.c
-> @@ -347,7 +347,7 @@ static int gcm_encrypt(struct aead_request *req)
->         u8 buf[AES_BLOCK_SIZE];
->         u8 iv[AES_BLOCK_SIZE];
->         u64 dg[2] = {};
-> -       u128 lengths;
-> +       be128 lengths;
->         u8 *tag;
->         int err;
+> diff --git a/arch/arm64/crypto/sha1-ce-glue.c b/arch/arm64/crypto/sha1-ce-glue.c
+> index 565ef604ca04..c63b99211db3 100644
+> --- a/arch/arm64/crypto/sha1-ce-glue.c
+> +++ b/arch/arm64/crypto/sha1-ce-glue.c
+> @@ -25,6 +25,9 @@ struct sha1_ce_state {
+>         u32                     finalize;
+>  };
 >
-> @@ -461,7 +461,7 @@ static int gcm_decrypt(struct aead_request *req)
->         u8 buf[AES_BLOCK_SIZE];
->         u8 iv[AES_BLOCK_SIZE];
->         u64 dg[2] = {};
-> -       u128 lengths;
-> +       be128 lengths;
->         u8 *tag;
->         int err;
+> +extern const u32 sha1_ce_offsetof_count;
+> +extern const u32 sha1_ce_offsetof_finalize;
+> +
+>  asmlinkage void sha1_ce_transform(struct sha1_ce_state *sst, u8 const *src,
+>                                   int blocks);
+>
+> diff --git a/arch/arm64/crypto/sha2-ce-glue.c b/arch/arm64/crypto/sha2-ce-glue.c
+> index 9450d19b9e6e..5e956d7582a5 100644
+> --- a/arch/arm64/crypto/sha2-ce-glue.c
+> +++ b/arch/arm64/crypto/sha2-ce-glue.c
+> @@ -25,6 +25,9 @@ struct sha256_ce_state {
+>         u32                     finalize;
+>  };
+>
+> +extern const u32 sha256_ce_offsetof_count;
+> +extern const u32 sha256_ce_offsetof_finalize;
+> +
+>  asmlinkage void sha2_ce_transform(struct sha256_ce_state *sst, u8 const *src,
+>                                   int blocks);
 >
 > --
 > Email: Herbert Xu <herbert@gondor.apana.org.au>
