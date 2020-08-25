@@ -2,55 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0769250DC1
-	for <lists+linux-crypto@lfdr.de>; Tue, 25 Aug 2020 02:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A6E250E51
+	for <lists+linux-crypto@lfdr.de>; Tue, 25 Aug 2020 03:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgHYAnl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 24 Aug 2020 20:43:41 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:58782 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726090AbgHYAnl (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 24 Aug 2020 20:43:41 -0400
+        id S1725924AbgHYBlb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 24 Aug 2020 21:41:31 -0400
+Received: from [216.24.177.18] ([216.24.177.18]:58840 "EHLO fornost.hmeau.com"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S1725838AbgHYBlb (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 24 Aug 2020 21:41:31 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kAN3o-0004XJ-Ti; Tue, 25 Aug 2020 10:43:38 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 25 Aug 2020 10:43:36 +1000
-Date:   Tue, 25 Aug 2020 10:43:36 +1000
+        id 1kANfw-000554-LA; Tue, 25 Aug 2020 11:23:01 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 25 Aug 2020 11:23:00 +1000
+Date:   Tue, 25 Aug 2020 11:23:00 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     linux-crypto@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com, mcoquelin.stm32@gmail.com
-Subject: Re: [PATCH 1/2] crypto: stm32/crc32 - include <linux/io.h>
-Message-ID: <20200825004336.GA7849@gondor.apana.org.au>
-References: <20200824135840.3716-1-festevam@gmail.com>
+To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH] crypto: arm/poly1305 - Add prototype for poly1305_blocks_neon
+Message-ID: <20200825012300.GA10236@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200824135840.3716-1-festevam@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 10:58:39AM -0300, Fabio Estevam wrote:
-> Building ARM allmodconfig leads to the following warnings:
-> 
-> drivers/crypto/stm32/stm32-crc32.c:128:2: error: implicit declaration of function 'writel_relaxed' [-Werror=implicit-function-declaration]
-> drivers/crypto/stm32/stm32-crc32.c:134:17: error: implicit declaration of function 'readl_relaxed' [-Werror=implicit-function-declaration]
-> drivers/crypto/stm32/stm32-crc32.c:176:4: error: implicit declaration of function 'writeb_relaxed' [-Werror=implicit-function-declaration]
-> 
-> Include <linux/io.h> to fix such warnings.
-> 
-> Reported-by: Olof's autobuilder <build@lixom.net>
-> Signed-off-by: Fabio Estevam <festevam@gmail.com>
-> ---
->  drivers/crypto/stm32/stm32-crc32.c | 1 +
->  1 file changed, 1 insertion(+)
+This patch adds a prototype for poly1305_blocks_neon to slience
+a compiler warning:
 
-Thank you.  But this is already in the queue:
+  CC [M]  arch/arm/crypto/poly1305-glue.o
+../arch/arm/crypto/poly1305-glue.c:25:13: warning: no previous prototype for `poly1305_blocks_neon' [-Wmissing-prototypes]
+ void __weak poly1305_blocks_neon(void *state, const u8 *src, u32 len, u32 hibit)
+             ^~~~~~~~~~~~~~~~~~~~
 
-https://patchwork.kernel.org/patch/11729369/
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/arch/arm/crypto/poly1305-glue.c b/arch/arm/crypto/poly1305-glue.c
+index 13cfef4ae22e..3023c1acfa19 100644
+--- a/arch/arm/crypto/poly1305-glue.c
++++ b/arch/arm/crypto/poly1305-glue.c
+@@ -20,6 +20,7 @@
+ 
+ void poly1305_init_arm(void *state, const u8 *key);
+ void poly1305_blocks_arm(void *state, const u8 *src, u32 len, u32 hibit);
++void poly1305_blocks_neon(void *state, const u8 *src, u32 len, u32 hibit);
+ void poly1305_emit_arm(void *state, u8 *digest, const u32 *nonce);
+ 
+ void __weak poly1305_blocks_neon(void *state, const u8 *src, u32 len, u32 hibit)
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
