@@ -2,119 +2,97 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8049B252FAD
-	for <lists+linux-crypto@lfdr.de>; Wed, 26 Aug 2020 15:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162E4252FF7
+	for <lists+linux-crypto@lfdr.de>; Wed, 26 Aug 2020 15:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730129AbgHZN12 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 26 Aug 2020 09:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728276AbgHZN1R (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:27:17 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0F6C061574
-        for <linux-crypto@vger.kernel.org>; Wed, 26 Aug 2020 06:27:16 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id s13so1744352wmh.4
-        for <linux-crypto@vger.kernel.org>; Wed, 26 Aug 2020 06:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Mwi869cLwhFTmjSB6jbhW5eMJAjGCSc6RefBdVaSqGY=;
-        b=NHTMKcDcaTK5xWIR2to8WGIINFOEljxs4FlslunhBeYFZoUDFxup/CBWAY8lNvaJq0
-         gIbNLojxGNnAg/PrnQkDaaOkR7X5tWH9Yu0uiJLZ07xtMZV+9/MEvb1hr3WcRhvfhdZ0
-         8NwIgFcKLi6GqLZYT6L5rjFLZ439WqD/G08Mx49vyKho8+Qotv1E4yuCrmKtPOEjNsTz
-         cqRsro1AMHTi2gKguEgDunj4XkqrUnW4DVED3vFFDhstZt0/0kL8tWgA2hz+9TpzgHAU
-         O4NWOormsx6CeZGIyRnc4rbylbWhPWVqw3knl/CJ/hC2TxDX0vAqXPrwLa/7GAMvydI9
-         JvMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Mwi869cLwhFTmjSB6jbhW5eMJAjGCSc6RefBdVaSqGY=;
-        b=hFm26gvzDkn2XlmUtRmDQTHN/j8ifrfGOlUPSpc3BkGIzqTDzqBUGuWQRacsOVqBP4
-         kONQbG8Ae89E81X/wQfVDUUykxC5XDZfLuUooYSf/Mefue5fhuBZfCDrLqwLwVTXkmwy
-         2V3YEzo2xQUTdpPJOcLVW2dJ4LBX7oBLIb2pu8FCpL4Ws9PEv+UNCxeUoeixmvuNOnak
-         fAquYyeTd/TYuvDFuZElcKak3l7R2aTQRoZjMXEGOOwFQxlf/A6R9Tr3WaUnauRO2lvW
-         Gw9g5PwSg8vl9RU+/G/aqX5YfLH032r/fju1+QHl5EhfsSnwWhbSejG0WNWgnwz3tdfy
-         EPow==
-X-Gm-Message-State: AOAM531NtIuei4ODYHbEIBln1AmlB7kxz+ueCz8l5bLPz/p2bat6TQpq
-        Lr/LQbJV7Yc2prnskI/gyQfgxuRM5ko=
-X-Google-Smtp-Source: ABdhPJw0wILOm4ehRmc9Eo78FYz27qM09S/y38+CWBxstEmwkJTBpj2JYtqt/d7xXZ3jpjHTFKVfvA==
-X-Received: by 2002:a05:600c:2117:: with SMTP id u23mr7377471wml.41.1598448435330;
-        Wed, 26 Aug 2020 06:27:15 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id q11sm5806918wrw.61.2020.08.26.06.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 06:27:14 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 15:27:13 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Denis Efremov <efremov@linux.com>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] crypto: sun8i-ss - use kfree_sensitive()
-Message-ID: <20200826132713.GB13819@Red>
-References: <20200826132451.398651-1-efremov@linux.com>
+        id S1730322AbgHZNc1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 26 Aug 2020 09:32:27 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:33154 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730289AbgHZNa5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:30:57 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kAvUu-00052u-Ib; Wed, 26 Aug 2020 23:29:53 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 26 Aug 2020 23:29:52 +1000
+Date:   Wed, 26 Aug 2020 23:29:52 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Andrew Zaborowski <andrew.zaborowski@intel.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Caleb Jorden <caljorden@hotmail.com>,
+        Sasha Levin <sashal@kernel.org>, iwd@lists.01.org,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [PATCH] crypto: af_alg - Work around empty control messages without
+ MSG_MORE
+Message-ID: <20200826132952.GA4752@gondor.apana.org.au>
+References: <20200826055150.2753.90553@ml01.vlan13.01.org>
+ <b34f7644-a495-4845-0a00-0aebf4b9db52@molgen.mpg.de>
+ <CAMj1kXEUQdmQDCDXPBNb3hRrbui=HVyDjCDoiFwDr+mDSjP43A@mail.gmail.com>
+ <20200826114952.GA2375@gondor.apana.org.au>
+ <CAMj1kXGjytfJEbLMbz50it3okQfiLScHB5YK2FMqR5CsmFEBbg@mail.gmail.com>
+ <20200826120832.GA2996@gondor.apana.org.au>
+ <CAOq732JaP=4X9Yh_KjER5_ctQWoauxzXTZqyFP9KsLSxvVH8=w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200826132451.398651-1-efremov@linux.com>
+In-Reply-To: <CAOq732JaP=4X9Yh_KjER5_ctQWoauxzXTZqyFP9KsLSxvVH8=w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 04:24:51PM +0300, Denis Efremov wrote:
-> Use kfree_sensitive() instead of open-coding it.
-> 
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
->  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-> index 7b39b4495571..49d89b31eb6b 100644
-> --- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-> +++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-> @@ -369,8 +369,7 @@ void sun8i_ss_cipher_exit(struct crypto_tfm *tfm)
->  	struct sun8i_cipher_tfm_ctx *op = crypto_tfm_ctx(tfm);
->  
->  	if (op->key) {
-> -		memzero_explicit(op->key, op->keylen);
-> -		kfree(op->key);
-> +		kfree_sensitive(op->key);
->  	}
->  	crypto_free_skcipher(op->fallback_tfm);
->  	pm_runtime_put_sync(op->ss->dev);
-> @@ -394,8 +393,7 @@ int sun8i_ss_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
->  		return -EINVAL;
->  	}
->  	if (op->key) {
-> -		memzero_explicit(op->key, op->keylen);
-> -		kfree(op->key);
-> +		kfree_sensitive(op->key);
->  	}
->  	op->keylen = keylen;
->  	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
-> @@ -420,8 +418,7 @@ int sun8i_ss_des3_setkey(struct crypto_skcipher *tfm, const u8 *key,
->  	}
->  
->  	if (op->key) {
-> -		memzero_explicit(op->key, op->keylen);
-> -		kfree(op->key);
-> +		kfree_sensitive(op->key);
->  	}
->  	op->keylen = keylen;
->  	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
-> -- 
-> 2.26.2
-> 
+The iwd daemon uses libell which sets up the skcipher operation with
+two separate control messages.  This is fine by itself but the first
+control message is sent without MSG_MORE.  This means that the first
+control message is interpreted as an empty request.
 
-Hello
+While libell should be fixed to use MSG_MORE where appropriate, this
+patch works around the bug in the kernel so that existing binaries
+continue to work.
 
-Same comment than for your crypto/amlogic patch.
-Please remove the "if (op->key)"
+We will print a warning however.
 
-Regards
+Reported-by: Caleb Jorden <caljorden@hotmail.com>
+Fixes: f3c802a1f300 ("crypto: algif_aead - Only wake up when...")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/crypto/af_alg.c b/crypto/af_alg.c
+index a6f581ab200c..3da21cadc326 100644
+--- a/crypto/af_alg.c
++++ b/crypto/af_alg.c
+@@ -16,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/net.h>
+ #include <linux/rwsem.h>
++#include <linux/sched.h>
+ #include <linux/sched/signal.h>
+ #include <linux/security.h>
+ 
+@@ -846,8 +847,14 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 
+ 	lock_sock(sk);
+ 	if (ctx->init && (init || !ctx->more)) {
+-		err = -EINVAL;
+-		goto unlock;
++		if (ctx->used) {
++			err = -EINVAL;
++			goto unlock;
++		}
++
++		pr_info_once(
++			"%s sent an empty control message without MSG_MORE.\n",
++			current->comm);
+ 	}
+ 	ctx->init = true;
+ 
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
