@@ -2,104 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABE4253E13
-	for <lists+linux-crypto@lfdr.de>; Thu, 27 Aug 2020 08:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8E2253E04
+	for <lists+linux-crypto@lfdr.de>; Thu, 27 Aug 2020 08:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgH0GpI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 27 Aug 2020 02:45:08 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:40307 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727786AbgH0GpC (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:45:02 -0400
-Received: by mail-lj1-f196.google.com with SMTP id 185so5150702ljj.7;
-        Wed, 26 Aug 2020 23:45:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Z1FtQqybTk7XeGKn+tbU1SxGG4A7Kn9b4E+VmVIA+4E=;
-        b=QM0hma1AoivbeZTjGzIW4YhCx8nVHOSaSI1MOjB7VelmqZ53MhHZZ98537VNZYWkua
-         YfqvI8NwNNGrZlJk1MKCTBsQvmGQJJHqpPI9TuwVaVgYdrOojZU2huKe23m9128My5UT
-         nDr2LLnRloAAKHkLMusX/2R0hFkNaP7GDLjioIonO4auMgnuUTu5ma3uWkNJgtPItDog
-         VmmiqAI08mITBXkX+Hdf5pz0cMGiXLURBeOC8MDIWfu8NvEtOMEt4IeA3tIo13H66BfF
-         27grsA+hwqY65vFbkzpCiaGzHwG5sUKFUC9F4F1KVOKhDLDTchxygDmYatRPFE+GemOY
-         NNOQ==
-X-Gm-Message-State: AOAM532Zo41RZYhRTHGmNgPRDXbpGCswj67wr+2vCsdFlo6h5vMzuGHS
-        8HbCHemuvSrC2WmnbQFhKhVbNaLFPjU=
-X-Google-Smtp-Source: ABdhPJy/YgtnYLAzwc+zepGvHr3uKojbRx+/ttpKqGkFdWBQ+Mih5iRHExuBfwddNNTBXj4VSYR47g==
-X-Received: by 2002:a2e:9284:: with SMTP id d4mr8696417ljh.64.1598510699078;
-        Wed, 26 Aug 2020 23:44:59 -0700 (PDT)
-Received: from localhost.localdomain ([213.87.147.111])
-        by smtp.googlemail.com with ESMTPSA id j17sm282159lfr.32.2020.08.26.23.44.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 23:44:58 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     Denis Efremov <efremov@linux.com>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] crypto: sun8i-ss - use kfree_sensitive()
-Date:   Thu, 27 Aug 2020 09:44:02 +0300
-Message-Id: <20200827064402.7130-5-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200827064402.7130-1-efremov@linux.com>
-References: <20200827064402.7130-1-efremov@linux.com>
+        id S1726803AbgH0GoN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 27 Aug 2020 02:44:13 -0400
+Received: from a.mx.secunet.com ([62.96.220.36]:50502 "EHLO a.mx.secunet.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726266AbgH0GoN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 27 Aug 2020 02:44:13 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id C67BC2057A;
+        Thu, 27 Aug 2020 08:44:10 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id UZbeWDV983C0; Thu, 27 Aug 2020 08:44:10 +0200 (CEST)
+Received: from cas-essen-01.secunet.de (201.40.53.10.in-addr.arpa [10.53.40.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 5E7BB201D5;
+        Thu, 27 Aug 2020 08:44:10 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 27 Aug 2020 08:44:10 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 27 Aug
+ 2020 08:44:09 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 9E66831803E0; Thu, 27 Aug 2020 08:44:09 +0200 (CEST)
+Date:   Thu, 27 Aug 2020 08:44:09 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] padata: add a reviewer
+Message-ID: <20200827064409.GA20687@gauss3.secunet.de>
+References: <20200826145923.719126-1-daniel.m.jordan@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200826145923.719126-1-daniel.m.jordan@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Use kfree_sensitive() instead of open-coding it.
+On Wed, Aug 26, 2020 at 10:59:23AM -0400, Daniel Jordan wrote:
+> I volunteer to review padata changes for the foreseeable future.
+> 
+> Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: Steffen Klassert <steffen.klassert@secunet.com>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3b186ade3597..1481d47cfd75 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13024,6 +13024,7 @@ F:	lib/packing.c
+>  
+>  PADATA PARALLEL EXECUTION MECHANISM
+>  M:	Steffen Klassert <steffen.klassert@secunet.com>
+> +R:	Daniel Jordan <daniel.m.jordan@oracle.com>
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
- .../crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c   | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+Please also consider to add yourself as one of the maintainers.
 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-index 7b39b4495571..deb8b39a86db 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-@@ -368,10 +368,7 @@ void sun8i_ss_cipher_exit(struct crypto_tfm *tfm)
- {
- 	struct sun8i_cipher_tfm_ctx *op = crypto_tfm_ctx(tfm);
- 
--	if (op->key) {
--		memzero_explicit(op->key, op->keylen);
--		kfree(op->key);
--	}
-+	kfree_sensitive(op->key);
- 	crypto_free_skcipher(op->fallback_tfm);
- 	pm_runtime_put_sync(op->ss->dev);
- }
-@@ -393,10 +390,7 @@ int sun8i_ss_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 		dev_dbg(ss->dev, "ERROR: Invalid keylen %u\n", keylen);
- 		return -EINVAL;
- 	}
--	if (op->key) {
--		memzero_explicit(op->key, op->keylen);
--		kfree(op->key);
--	}
-+	kfree_sensitive(op->key);
- 	op->keylen = keylen;
- 	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
- 	if (!op->key)
-@@ -419,10 +413,7 @@ int sun8i_ss_des3_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 		return -EINVAL;
- 	}
- 
--	if (op->key) {
--		memzero_explicit(op->key, op->keylen);
--		kfree(op->key);
--	}
-+	kfree_sensitive(op->key);
- 	op->keylen = keylen;
- 	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
- 	if (!op->key)
--- 
-2.26.2
+Otherwise:
 
+Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
+
+Thanks!
