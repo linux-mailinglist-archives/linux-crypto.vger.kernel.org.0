@@ -2,99 +2,101 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A292125479F
-	for <lists+linux-crypto@lfdr.de>; Thu, 27 Aug 2020 16:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65605254AAB
+	for <lists+linux-crypto@lfdr.de>; Thu, 27 Aug 2020 18:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728155AbgH0Owb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 27 Aug 2020 10:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727069AbgH0OwZ (ORCPT
+        id S1726200AbgH0QZ7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 27 Aug 2020 12:25:59 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:38897 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726246AbgH0QZ6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:52:25 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F23CC061264;
-        Thu, 27 Aug 2020 07:52:25 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id u18so5443809wmc.3;
-        Thu, 27 Aug 2020 07:52:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jaeNLpsr8Lq2JSXGOnPmF1qMG1fiYbDN5QhNqdIriF8=;
-        b=kZd6UaPODsywloqPEXYGJE2wX1gHdTZH7hOlYW8yEjV/sq97IdGkfXMtF9vicvcwRm
-         KcJyQ6o2yMsjJOL2+s192UFD0bsxxS+9VHF43c6vcTFiRYA7JDLbz4itwwtuolELeCXK
-         D2VNogesiQaePTJ5fupCEAeBthgq8jr34crL+aE33HCzo/zMEoZ1+AaoQUkbz2wS0JfZ
-         psKxwafIEd9ZDy5KlS+qQaVT6xOT2P6Fsr1JYIERjesbxs5g4hlcQcQEkAlYttZ8apv+
-         0YL7sL5UUrNOOjQt0A/R761JJjb8zaiY6NOzhBoJaexFSe1nbXCV1eFPEsUyo5YxeGwL
-         5qAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jaeNLpsr8Lq2JSXGOnPmF1qMG1fiYbDN5QhNqdIriF8=;
-        b=OAHK8a5r4FIpOjsjJQ0GL3roSDlBZBTiQdvUMln9I3/GpeguALqFYDxVpoXdbydBCP
-         lvncT+KFqJCgCFfjEaHO8caPRlXkJfMKbQFlBmLZRD56ztHuvRjDd9IsWCb7w8xNRyW1
-         wNcdUU8cFuplZz0uaC+UbyOQTtq3es1jc4wWU2qqHAtesbvSope2Gh4BJZP3iuCZmXtA
-         tRr9SO9U1lcKqsii0KMVanlso3PoZ/8aYmkYmUK6TF5l//ogxN6yRGSA3Red7DLgv1ik
-         eHkAnD9ZEidoJEYnILONS0IK5jNJ1duGnBjoKTBzEoZYtNWlYp8DeCWj+icje5bPhflp
-         4wiw==
-X-Gm-Message-State: AOAM530d+x7G6wf8eutvHsa2fM0sb5SqzbIuzRVYHMSE82eKXNfG/DCm
-        3umaIQrU3QgZk/S9IqKaLLQ=
-X-Google-Smtp-Source: ABdhPJxObSFHl9EJZG44VyoYurqG2wa1VHgnKMJmUIawdImzxJvkV/78RYAh0OwF0PyYou3oscpcWA==
-X-Received: by 2002:a1c:2dcc:: with SMTP id t195mr11553794wmt.166.1598539943771;
-        Thu, 27 Aug 2020 07:52:23 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id q12sm6328221wrm.39.2020.08.27.07.52.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 07:52:23 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 16:52:21 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Denis Efremov <efremov@linux.com>, antoine.tenart@bootlin.com
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] crypto: inside-secure - use kfree_sensitive()
-Message-ID: <20200827145221.GB14173@Red>
-References: <20200827064402.7130-1-efremov@linux.com>
- <20200827064402.7130-2-efremov@linux.com>
+        Thu, 27 Aug 2020 12:25:58 -0400
+Received: from mail-qk1-f180.google.com ([209.85.222.180]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1M89TB-1kEtDr2pt5-005M6W; Thu, 27 Aug 2020 18:25:56 +0200
+Received: by mail-qk1-f180.google.com with SMTP id n129so6405768qkd.6;
+        Thu, 27 Aug 2020 09:25:56 -0700 (PDT)
+X-Gm-Message-State: AOAM530hfiOv3Nt3JWJ9skH5mYcG5EU0jHuMjJPtbUYNykBXdj3CYXdO
+        RR+N4CIoYzd9Ndb0o7q8orD4myxeO+/DD5yj6Uc=
+X-Google-Smtp-Source: ABdhPJxUhdTYhY5CBzZ+dnCUwe09YWPFjNGZ49hDy6yxEVFcT4Wq23Bym6d8f1MFQkwXoxzROGFxS/9tnxZFvGwWwhU=
+X-Received: by 2002:a37:6351:: with SMTP id x78mr19372765qkb.394.1598545555412;
+ Thu, 27 Aug 2020 09:25:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827064402.7130-2-efremov@linux.com>
+References: <202008271145.xE8qIAjp%lkp@intel.com> <20200827080558.GA3024@gondor.apana.org.au>
+ <CAMj1kXHJrLtnJWYBKBYRtNHVS6rv51+crMsjLEnSqkud0BBaWw@mail.gmail.com>
+ <CAK8P3a3tjv78arTj75eKk5zYUhrGkPYRDLiqv3WJJC=U+Jia0Q@mail.gmail.com>
+ <CAMj1kXHhmAdHjK5avXOySw43khzft1g8p48jX7aTeTC0FvS7tQ@mail.gmail.com>
+ <CAK8P3a1nOL+BbvGAM3-aiH-mfzmFYgfFL2dWJKd8=Rw-WosP=w@mail.gmail.com>
+ <CAMj1kXGpX+g_t4aAz5yGs-c+PG+NLnu1j9_QLJ6teWTjJ1FkMQ@mail.gmail.com> <20200827115104.GA5409@gondor.apana.org.au>
+In-Reply-To: <20200827115104.GA5409@gondor.apana.org.au>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 27 Aug 2020 18:25:39 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3Wo2cj-tHybp_e0zJ2b-88V1oxZzBz-pKtMu-+DovF3w@mail.gmail.com>
+Message-ID: <CAK8P3a3Wo2cj-tHybp_e0zJ2b-88V1oxZzBz-pKtMu-+DovF3w@mail.gmail.com>
+Subject: Re: lib/crypto/chacha.c:65:1: warning: the frame size of 1604 bytes
+ is larger than 1024 bytes
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:fuLDV0wazP+WHq7dP5kt8PSrweN0/iiqPWlZbrVcUhgf0r1IC1E
+ lYd4kNjqWI8GqyPnMxCBNbdqSxihOiAuZJV8gjyEtO1dTl+agVefPyyoxf0id6lStrkgj+m
+ SCbFVy6767t7QwqvN6ExDQbgbH0KfJbB2MQwxH8KiuXm7Tmn036Q9eZWvsefSHCtNzAeP5W
+ 3JJtsJjawbmZCZVnnwGRg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:o9cHxfUUjek=:lgAKLYV0WjxcSheIFnBDqk
+ TRGksPEAdDIO8B21mS6G5/G+kI0r04YVw0o6ZX/pegZjQVFXb2W0qO/tRncf4NP14yVC8l+i2
+ M+Wd6zl7SFgQlPUy/G3Y3skgBisJoJhgtrDoHcZ2Xiv+Pk0iaes+l+ib4KwzWLx1L8NpaXq0x
+ hrNJ0vfaG52GuHe8OHORwC2seJM1w3Sn6CryfqdrM1+Te7IwBSAICYe8h1s4dsKCMK0k//UQn
+ zF2v4vw3b84zHWZO+dzgwzxAOiRCLdkxkwsIYwnUFO3tTIIu3+mTLtB2I3LaCXmu5ibB/P0B3
+ 5HY75n3TntmgLxR+3+FJDsynxRHNtyFdb+/iQz48AENP3Fh6E1VzZjphLb52HPafoIKrKUgHL
+ IqSCMPmyUdUgobbqyaNr4oZ+72kZ8mqf7aqF7dQiOfw0k20sKW+4G/dtmSesFsiSeJNP5bt4L
+ Bd6YhHg1eSFzH3aDd55beq1Jx+3LtGrV73788Ofb2Y3y9RGR4Ja+vj8TzA/iT4HtFmAdlQTqT
+ zL1s0/tGDl9bQFPdEVXm89QcUVfy1usvUjxbrB+Fc5U7ABvauUBdkMrqyih7racjmFjbh7WoC
+ cG10u5fkRlNhSnPbCJ59+UmIa0gxRCuDlYgZBRBq3++uCr/QUZCjpUFGzdrVuU/QIehUWpcv/
+ lKyZVZejnyO/o81Npxd58jDEIxEqfAg2d0U9mCwxHupc+yEVpsiq8QzUIQOLNa36jDWPd27tA
+ 7+2NS94nsaQrYA9mJ0mrqSAgWFZYNNckLCX9EesrrP8SAHwtTM/5XcAR+MBR5lfwHViEZs13Q
+ 49ShMY2swfDKY/7kjNlT28SoGalySqZoPKk5DLDE6QTHYChhSvWfIRvntaTZs/WjwWhWDuQ
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 09:43:59AM +0300, Denis Efremov wrote:
-> Use kfree_sensitive() instead of open-coding it.
-> 
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
->  drivers/crypto/inside-secure/safexcel_hash.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
-> index 16a467969d8e..5ffdc1cd5847 100644
-> --- a/drivers/crypto/inside-secure/safexcel_hash.c
-> +++ b/drivers/crypto/inside-secure/safexcel_hash.c
-> @@ -1082,8 +1082,7 @@ static int safexcel_hmac_init_pad(struct ahash_request *areq,
->  		}
->  
->  		/* Avoid leaking */
-> -		memzero_explicit(keydup, keylen);
-> -		kfree(keydup);
-> +		kfree_sensitive(keydup);
->  
->  		if (ret)
->  			return ret;
-> -- 
-> 2.26.2
-> 
+On Thu, Aug 27, 2020 at 1:51 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Thu, Aug 27, 2020 at 12:41:53PM +0200, Ard Biesheuvel wrote:
+> >
+> > That does not help, unfortunately.
+> >
+> > What does seem to work is
+> >
+> > struct chacha_state { u32 x[16]; };
+> >
+> > struct chacha_state chacha_permute(struct chacha_state st, int nrounds)
+>
+> Passing 64 bytes by value is not good.
+>
+> Passing struct chacha_state as a pointer doesn't work either.
 
-The maintainer of this driver was not TO/CC.
+Marking the function as __always_inline avoids the problem, as it
+lets the compiler see the issue, but seems to produce somewhat
+worse object code.
 
-I Add him.
+I also tested with clang-11, which supports both -fsanitize-bounds
+and -fprofile-arcs but only needs 8 bytes of stack for this function.
 
-Regards
+One more data point, I looked at the actual object code and found
+that neither -fprofile-arcs  nor -fsanitize-bounds has a noticeable
+impact on the object code output by themselves (aside of not
+leading to the warning as you already mentioned). I would
+conclude that there is an actual problem with gcc here.
+
+      Arnd
