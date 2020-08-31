@@ -2,90 +2,95 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BE32578B0
-	for <lists+linux-crypto@lfdr.de>; Mon, 31 Aug 2020 13:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814B2257A5F
+	for <lists+linux-crypto@lfdr.de>; Mon, 31 Aug 2020 15:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgHaLue (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 31 Aug 2020 07:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49216 "EHLO
+        id S1727923AbgHaN1h (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 31 Aug 2020 09:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726292AbgHaLub (ORCPT
+        with ESMTP id S1726167AbgHaN0v (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 31 Aug 2020 07:50:31 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C5EC061573;
-        Mon, 31 Aug 2020 04:50:30 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j2so3996196wrx.7;
-        Mon, 31 Aug 2020 04:50:30 -0700 (PDT)
+        Mon, 31 Aug 2020 09:26:51 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D88C2C061236
+        for <linux-crypto@vger.kernel.org>; Mon, 31 Aug 2020 06:26:28 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id g6so6636914ljn.11
+        for <linux-crypto@vger.kernel.org>; Mon, 31 Aug 2020 06:26:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ntaRkESI0KlWO5jlbqkWdKKiUMc6rb52K24dWZmqT6o=;
-        b=Dj4tOupmz1KWVBoQsdx3/7r1/Ih6ggXsNelaJvaU2edQ51ThSogx2fjtgKQTG5XaDO
-         MGDV4ZS4K3wdSAyjV3AMMQthCh+pN4xdB7WPQ609HnE328BsFEgAleY7c6XI8vj2B7My
-         qRhw8Rn+hM/JcnT78AqI8GRtvTShuU2HLL3/HYKhi8/JlTGX/uajN3CjWlOC0gFLyF1s
-         ueaZmCd2kLxPhB9C3CAmFwd5PijywcXR1cTORwL1lCWS/ovccX3RVo3jVjNwd81PqkBA
-         o/7Yl8u7lS+R9HG57RxZEaFCROdq8CLPzIi5jLFWYRXFPUF1lV9SsrjIkoM0ywohNfKV
-         5mjQ==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=o69Nac3LLMj5CDhyPqLcnP7WGq46U4gQb9HzFdG/MvE=;
+        b=GvS5ONqONS+SkRITeLOYK+nEKqeftr2e4zlw8iOljUdVaT4ei8mXK/eMe5gdebbxul
+         qejaiESAwrQo/TwRSbsV2RgWo1cR2hwlUx3zHZP6xDZHfKXln6WrMjydy1j5UDKStApO
+         83k6OMYB/O4HA/D4ksOUSzU9ZpUpEqmaButNQtqR6C29H3+mAHSKCbPlI067sUdB20EE
+         ixBTW9S1A2kyuIbzfdQN/JSL5cc/RZ+/MNHv7Yis6pX8HuuJNUwic97zwHx5MU4x4PUn
+         9VwFvJUStfi4hRDyGGDy0ijlpU3bNrs4tLAIT0WFfsT49jK8zJO72eI6R18XAB60K+Uk
+         aflg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ntaRkESI0KlWO5jlbqkWdKKiUMc6rb52K24dWZmqT6o=;
-        b=Ur28FlOKl/3mPHQAKjt3IcH4gZlXTF+zv/Fjds84xz5+QF3D/1ii9FktD3wKlrxR+R
-         ZTUSeI2kk7IgEdNeIqFXdR6VLqtuX4FBOMzOWJpmUhB1dzEaIF5zQTW3NSbvewFI1waT
-         Mr25mZIUlIsXLOYlwXAKzaX3iLs32kptMA44qldkSRkLOvBhKmfLpFT2dV3tV5l6vuIf
-         5IRdd/Gq1/O8Mbo/Hhj6aQNykP+eX9VuAtX+hGcWx2JTPP2XCfGb0BWUxUh4xee/5Pm7
-         m00ZNe9ZzQ+TFy23I5tFLIsoS2nIVnwrJBpcW+6JSL8eVcglPEmu1TZkTauHoFk1bQ2u
-         qc6Q==
-X-Gm-Message-State: AOAM531lHTicUiomLYMeBLUB1GP3Xht7mWnFxfUAKGsPHz6lDsvb/jUN
-        ZEate9ycdEbUU/IISgfkaxg=
-X-Google-Smtp-Source: ABdhPJzxDWKOd3BFclKVGWV6b5n5xOxHiSCR70fyVnZZZtvN1MY5S1SWpZPiERyZJy0yqiHzlRahhA==
-X-Received: by 2002:adf:eb4c:: with SMTP id u12mr1273400wrn.161.1598874627021;
-        Mon, 31 Aug 2020 04:50:27 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id z6sm11901158wml.41.2020.08.31.04.50.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 04:50:26 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 13:50:24 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Martin Cerveny <m.cerveny@computer.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 3/3] crypto: sun4i-ss - add the V3s variant of SS
-Message-ID: <20200831115024.GA14248@Red>
-References: <20200831073101.3608-1-m.cerveny@computer.org>
- <20200831073101.3608-4-m.cerveny@computer.org>
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=o69Nac3LLMj5CDhyPqLcnP7WGq46U4gQb9HzFdG/MvE=;
+        b=Wk2bIOgoMPq77ppCGA40jHxPyW2FzW6c+VVpwpOZVFlRW0erP1kiCiN3hsPIKF01Y1
+         uIXcxf2BPhZWzPd9IE3PtWsb7osbvtsW8KOHWBJ24NyPDGxwAy//bVnqbotaf0HyhH84
+         0Ojqi+q8wWTEZZ80TvciZL/JJZIkeVI5I0cL5IAUFg+6R6yWuV7dBpFV7qDGCC4S1or2
+         vSN91GZvH5E6lAqyxapaUUCSzJW6Y0SPPR111NUBvw1or04F04ZB2cy76E9v3r5l+gfI
+         LLyTEVqyc2w/YAjHcKtahzQlioym8+ESCrtcBjVIgFtKLMUoc5KWwWLbhHfi/5kJTd0X
+         z1Og==
+X-Gm-Message-State: AOAM530vOxSvW4kzfthYstr0H9SCphYnpoUiBs5xQYaKr0zEL6wnKqd4
+        NEoFRdwnbgD37hmry3sXDSglmYcBU0JRwRX/bEw=
+X-Google-Smtp-Source: ABdhPJx5h73UdWdmqN0ZXklbmHxhGiANR3jS4fz3EetfufGWkyufJh3oSK0WTBZL+72KPBBqNF1EE+YcTj5isQyt2i4=
+X-Received: by 2002:a2e:5316:: with SMTP id h22mr714236ljb.167.1598880387154;
+ Mon, 31 Aug 2020 06:26:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831073101.3608-4-m.cerveny@computer.org>
+Reply-To: marie_avis12@yahoo.com
+Received: by 2002:a2e:9817:0:0:0:0:0 with HTTP; Mon, 31 Aug 2020 06:26:26
+ -0700 (PDT)
+From:   Miss Maris Avis <marie.avis11@gmail.com>
+Date:   Mon, 31 Aug 2020 13:26:26 +0000
+X-Google-Sender-Auth: aulnVZG-1gSOcZsrnz7-vOB6QCo
+Message-ID: <CADTVshPC=1cJsw0xvUiUZDDBg3VVdBcHJ+pk-zuvR4tycntngg@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 09:31:01AM +0200, Martin Cerveny wrote:
-> Like A33 "sun4i-ss" has a difference, it give SHA1 digest
-> directly in BE. So add new compatible.
-> 
-> Tested-by: Martin Cerveny <m.cerveny@computer.org>
-> Signed-off-by: Martin Cerveny <m.cerveny@computer.org>
-> ---
->  drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
+My Dear,
 
-Your commit message is wrong, "sun4i-ss" has no difference, but V3S yes.
-Your other patch has the same problem.
+My name is Miss Marie Avis the only daughter of Mr. Gabriel Avis, my
+Father was dealing in Cocoa and Timber in this country before his
+death,  It is my pleasure to contact you for a business venture which
+I intend to establish in your country. Though I have not met with you
+before but I believe one has to risk confiding before you can succeed
+sometimes in life.
 
-Otherwise you could add:
-Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+I can confide in you for my brighter future since you are a human
+being like me. There is this huge amount of Ten Million five hundred
+thousand United States dollars. ($10.500.000.00) which my late Father
+kept for me in a suspense account with one of the bank here in Abidjan
+Cote d'Ivoire before he was assassinated by unknown persons, Now I
+have decided to invest these money in your country or anywhere safe
+enough for me.
 
-Regards
+I want you to help me claim this fund from the bank and have it
+transfer into your personal account in your country for investment
+purposes in your country in these areas:
+
+1). Telecommunication
+2). The transport Industry
+3). Five Star Hotel
+4). Tourism
+5). Real Estate
+
+If you can be of assistance to me I will be pleased to offer you 20%
+of the total fund.
+
+I await your soonest response.
+
+Respectfully yours,
+Miss Marie Evis
+Tel: +225597438528
