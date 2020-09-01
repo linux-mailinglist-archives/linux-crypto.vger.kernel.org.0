@@ -2,372 +2,128 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0D925913B
-	for <lists+linux-crypto@lfdr.de>; Tue,  1 Sep 2020 16:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030B625922D
+	for <lists+linux-crypto@lfdr.de>; Tue,  1 Sep 2020 17:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727886AbgIAOPL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 1 Sep 2020 10:15:11 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:38566 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727786AbgIALt1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:49:27 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kD4ml-0000VV-7Y; Tue, 01 Sep 2020 21:49:12 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 01 Sep 2020 21:49:11 +1000
-Date:   Tue, 1 Sep 2020 21:49:11 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [v2 PATCH 2/2] crypto: cbc - Remove cbc.h
-Message-ID: <20200901114911.GB2519@gondor.apana.org.au>
-References: <20200901062804.GA1533@gondor.apana.org.au>
- <CAMj1kXGDPTbhs_2FkvHROMmp+j7eON43r8muWgMGJpFQKpTjSw@mail.gmail.com>
- <20200901114542.GA2441@gondor.apana.org.au>
- <20200901114840.GA2519@gondor.apana.org.au>
+        id S1726255AbgIAPFj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 1 Sep 2020 11:05:39 -0400
+Received: from mail-eopbgr70082.outbound.protection.outlook.com ([40.107.7.82]:49313
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726105AbgIAPFf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:05:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZE3Xe9AUrUctBtkky4KaXl2CjJRhkoAbAjAQsctXe0vmwfOnhBtIMq+DApfLSQj9Yo5knI3HCe05mtsdROLqnMSDNGM3MkZ/3Dvg8dOJQeyhXRzKEVBaWBOkq63Bac+BXvbKZngA1x1ElMnN1xwpX8eCxxo63t4xRRDmeXvYTOlF6J8p7hrYCgI59V6r4tIBN14BEAlpCFdRh9qXgzGJDCOmyu061ab0Wd6wf5SrJihAI8JZJESUWrDC7CV4JsgkyAtmQL3yFtdMoOSQ+KrtCMNlO9DaATvvyzf+w2szSG0c9i3pOD6Dn2DzP8wiGf1xQba+3Jbp+n0K/z1wT7GPTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NU3b0c/XTj8rj66YVJ8p+pWeAt5egagKsyONv0mz8zQ=;
+ b=WAUyH7FrbnnIu3AeB0OY8eqoAkct+GcU7XhuOF7MFVM834rqmmfK2ynDMKGXTyhpcNcYrDLsK+wllGJ/mivyejVKhU+a1e/1ggWRsS71nxhtkNkx1JZhGmMxyl5a1Tl3VFGRz7KnTDunCtLgl9rk/PBv1Elo+aV8IIzElgMCff/E5vpXAF/X/Kxng/pJkZ7lK6IvN/l9eP5Ycv/94VEYOHd9s2gGgHv10eWxAnFs/xpSVLuhJS5cEXwaozOqrPTUtshGrTfQ9GBByD1EthvsRQzC/b0HB61+3hrMI/GwDOm7G4kQB4B3zlSTnTeIqlBcVRcI8FUcARVSlMlUFRXeYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NU3b0c/XTj8rj66YVJ8p+pWeAt5egagKsyONv0mz8zQ=;
+ b=Lo6ZAfnL+UdFyt0V7a70ccjOvTLR/gtt4c+im4bjT2c9VuOuk5UNUso6GWcisqUuJFpQb0VktJMsWxkR5xmaKnRqZ8tYpBBctaowfOXd/M16yVruqX7L/ssQZjj773krE3vDO5jmfcUid0ACdmlsFnqwgBm8hJf21bjfyT4GC5s=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
+ (2603:10a6:803:1c::25) by VI1PR0401MB2688.eurprd04.prod.outlook.com
+ (2603:10a6:800:59::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.21; Tue, 1 Sep
+ 2020 15:05:31 +0000
+Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
+ ([fe80::2951:31f4:4e49:9895]) by VI1PR0402MB3712.eurprd04.prod.outlook.com
+ ([fe80::2951:31f4:4e49:9895%5]) with mapi id 15.20.3326.025; Tue, 1 Sep 2020
+ 15:05:31 +0000
+Subject: Re: [PATCH v1] crypto: caam - use traditional error check pattern
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        linux-crypto@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>
+References: <20200831075832.3827-1-andriy.shevchenko@linux.intel.com>
+From:   Iuliana Prodan <iuliana.prodan@nxp.com>
+Message-ID: <2306619d-66e4-6f37-8e16-6d97075081ed@nxp.com>
+Date:   Tue, 1 Sep 2020 18:05:27 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+In-Reply-To: <20200831075832.3827-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR03CA0018.eurprd03.prod.outlook.com
+ (2603:10a6:208:14::31) To VI1PR0402MB3712.eurprd04.prod.outlook.com
+ (2603:10a6:803:1c::25)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901114840.GA2519@gondor.apana.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.13] (86.127.128.228) by AM0PR03CA0018.eurprd03.prod.outlook.com (2603:10a6:208:14::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.20 via Frontend Transport; Tue, 1 Sep 2020 15:05:30 +0000
+X-Originating-IP: [86.127.128.228]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1dbe261c-9693-41ea-f4a7-08d84e887814
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2688:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB26881A6BD0ECDDE24095C1BC8C2E0@VI1PR0401MB2688.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:238;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oTcTPGGGbdFKT/iDbKM0eEq2FgDOkRq7mVb9Todfwo9gpfTOlAJeeXcQBALwQDLxlv1vuyXJ7/4SgVHvdAQuOj6l7XQwSNNDR4qlWb2ixT1d/lemZOuWiXCL4R6vncQgMhcLUgqDGfjYLbMsJLAi3V6fpnAJN3zPbdcUaPYwbGMekubux5EbDTh2sqAspyMsKySKGMP4s8//vspAPljPOgzGnD7uZwBGyfq6zmT5jCiUUZnXgnlII0jSSexxHWwjDO8l8gO5mDR+lKMXzz/N8wYJPFBmjXhe7XFBn0oL7Dv3lUPiWprvKYGTDP++vxVLADTYDVkY58A1uURrouALuUieILiKh+77HBuFXIpXvLcBdbQGA0qcqgTeaZ6viUD/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3712.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(136003)(376002)(346002)(26005)(316002)(66556008)(2906002)(110136005)(36756003)(6666004)(53546011)(478600001)(6486002)(186003)(956004)(8676002)(16526019)(86362001)(31696002)(66946007)(5660300002)(2616005)(66476007)(52116002)(8936002)(4744005)(31686004)(44832011)(16576012)(83380400001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: osjaPi2eBYTmwY0OsLbGkdAqtUINZ6e+AqkJQREDTw47/pky5r7T6NPE82RQGuc6tReRQIvamf9Hq0UstefZoflEiYfAeQrOjlaK0nN9qoqHU5RUH13dL9ji1ux82pkmPznowjHo/dB68CxgmMAkbKfxO1JCG9E2F5BKxlM9GJA+dQuJ/9icr3p6SuNm+UCXA5o8w8Z+ApLzkB1OjZ/u0ZA3KS6es7/Di/+JnyZBQMjyFZ8ZGEPgFYGqwF6JfxyQwMWL+nPEpmlKf79QrkgBjr67ZcJ7GT/ZTZdoHy/BlcoGXrn7his40ti7TlzSNOekP5mEtbI4pR5z9U6TvUOPApWlUaKzCpg+YGj4QuUeX3+foVdZtwuLTtxak/U3fn+26oKEb09vr6gvKlnOgVVocTYV00ArJYpbR1sDPrrPqdYNbXGJfeYt1rb14zf9Lb4SLNcNeV0B9IJxW8x9wCY8YnByBhji1eTKt3NvonQ3JNze8HHyNwNMFbOdLqEg1xkzWWP4GL3/gVudpmSZvOYddcnsq3D+NjhIdgz2iG5VsLddPmmWmoH8fSlrtU3IkQ63UICgrTINOSMcxbihQjujOuZmrQ6N3u/BPJDdzI3OuSIPIFmmrYLUMh0cDFCql1mgKT6kvRG47iwWKWunFIPA5Q==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1dbe261c-9693-41ea-f4a7-08d84e887814
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3712.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2020 15:05:31.2551
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F3lz41E5oO99kYgQVwHVrMvk+dhXjg37jJu3tvmoTl0qMqreEB3s2VuqP52lZ5LcNi9rayzINlF/s0/GbLaFZg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2688
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Now that crypto/cbc.h is only used by the generic cbc template,
-we can merge it back into the CBC code.
 
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-diff --git a/crypto/cbc.c b/crypto/cbc.c
-index e6f6273a7d39..0d9509dff891 100644
---- a/crypto/cbc.c
-+++ b/crypto/cbc.c
-@@ -6,7 +6,6 @@
-  */
- 
- #include <crypto/algapi.h>
--#include <crypto/cbc.h>
- #include <crypto/internal/skcipher.h>
- #include <linux/err.h>
- #include <linux/init.h>
-@@ -14,34 +13,157 @@
- #include <linux/log2.h>
- #include <linux/module.h>
- 
--static inline void crypto_cbc_encrypt_one(struct crypto_skcipher *tfm,
--					  const u8 *src, u8 *dst)
-+static int crypto_cbc_encrypt_segment(struct skcipher_walk *walk,
-+				      struct crypto_skcipher *skcipher)
- {
--	crypto_cipher_encrypt_one(skcipher_cipher_simple(tfm), dst, src);
-+	unsigned int bsize = crypto_skcipher_blocksize(skcipher);
-+	void (*fn)(struct crypto_tfm *, u8 *, const u8 *);
-+	unsigned int nbytes = walk->nbytes;
-+	u8 *src = walk->src.virt.addr;
-+	u8 *dst = walk->dst.virt.addr;
-+	struct crypto_cipher *cipher;
-+	struct crypto_tfm *tfm;
-+	u8 *iv = walk->iv;
-+
-+	cipher = skcipher_cipher_simple(skcipher);
-+	tfm = crypto_cipher_tfm(cipher);
-+	fn = crypto_cipher_alg(cipher)->cia_encrypt;
-+
-+	do {
-+		crypto_xor(iv, src, bsize);
-+		fn(tfm, dst, iv);
-+		memcpy(iv, dst, bsize);
-+
-+		src += bsize;
-+		dst += bsize;
-+	} while ((nbytes -= bsize) >= bsize);
-+
-+	return nbytes;
-+}
-+
-+static int crypto_cbc_encrypt_inplace(struct skcipher_walk *walk,
-+				      struct crypto_skcipher *skcipher)
-+{
-+	unsigned int bsize = crypto_skcipher_blocksize(skcipher);
-+	void (*fn)(struct crypto_tfm *, u8 *, const u8 *);
-+	unsigned int nbytes = walk->nbytes;
-+	u8 *src = walk->src.virt.addr;
-+	struct crypto_cipher *cipher;
-+	struct crypto_tfm *tfm;
-+	u8 *iv = walk->iv;
-+
-+	cipher = skcipher_cipher_simple(skcipher);
-+	tfm = crypto_cipher_tfm(cipher);
-+	fn = crypto_cipher_alg(cipher)->cia_encrypt;
-+
-+	do {
-+		crypto_xor(src, iv, bsize);
-+		fn(tfm, src, src);
-+		iv = src;
-+
-+		src += bsize;
-+	} while ((nbytes -= bsize) >= bsize);
-+
-+	memcpy(walk->iv, iv, bsize);
-+
-+	return nbytes;
- }
- 
- static int crypto_cbc_encrypt(struct skcipher_request *req)
- {
--	return crypto_cbc_encrypt_walk(req, crypto_cbc_encrypt_one);
-+	struct crypto_skcipher *skcipher = crypto_skcipher_reqtfm(req);
-+	struct skcipher_walk walk;
-+	int err;
-+
-+	err = skcipher_walk_virt(&walk, req, false);
-+
-+	while (walk.nbytes) {
-+		if (walk.src.virt.addr == walk.dst.virt.addr)
-+			err = crypto_cbc_encrypt_inplace(&walk, skcipher);
-+		else
-+			err = crypto_cbc_encrypt_segment(&walk, skcipher);
-+		err = skcipher_walk_done(&walk, err);
-+	}
-+
-+	return err;
-+}
-+
-+static int crypto_cbc_decrypt_segment(struct skcipher_walk *walk,
-+				      struct crypto_skcipher *skcipher)
-+{
-+	unsigned int bsize = crypto_skcipher_blocksize(skcipher);
-+	void (*fn)(struct crypto_tfm *, u8 *, const u8 *);
-+	unsigned int nbytes = walk->nbytes;
-+	u8 *src = walk->src.virt.addr;
-+	u8 *dst = walk->dst.virt.addr;
-+	struct crypto_cipher *cipher;
-+	struct crypto_tfm *tfm;
-+	u8 *iv = walk->iv;
-+
-+	cipher = skcipher_cipher_simple(skcipher);
-+	tfm = crypto_cipher_tfm(cipher);
-+	fn = crypto_cipher_alg(cipher)->cia_decrypt;
-+
-+	do {
-+		fn(tfm, dst, src);
-+		crypto_xor(dst, iv, bsize);
-+		iv = src;
-+
-+		src += bsize;
-+		dst += bsize;
-+	} while ((nbytes -= bsize) >= bsize);
-+
-+	memcpy(walk->iv, iv, bsize);
-+
-+	return nbytes;
- }
- 
--static inline void crypto_cbc_decrypt_one(struct crypto_skcipher *tfm,
--					  const u8 *src, u8 *dst)
-+static int crypto_cbc_decrypt_inplace(struct skcipher_walk *walk,
-+				      struct crypto_skcipher *skcipher)
- {
--	crypto_cipher_decrypt_one(skcipher_cipher_simple(tfm), dst, src);
-+	unsigned int bsize = crypto_skcipher_blocksize(skcipher);
-+	void (*fn)(struct crypto_tfm *, u8 *, const u8 *);
-+	unsigned int nbytes = walk->nbytes;
-+	u8 *src = walk->src.virt.addr;
-+	u8 last_iv[MAX_CIPHER_BLOCKSIZE];
-+	struct crypto_cipher *cipher;
-+	struct crypto_tfm *tfm;
-+
-+	cipher = skcipher_cipher_simple(skcipher);
-+	tfm = crypto_cipher_tfm(cipher);
-+	fn = crypto_cipher_alg(cipher)->cia_decrypt;
-+
-+	/* Start of the last block. */
-+	src += nbytes - (nbytes & (bsize - 1)) - bsize;
-+	memcpy(last_iv, src, bsize);
-+
-+	for (;;) {
-+		fn(tfm, src, src);
-+		if ((nbytes -= bsize) < bsize)
-+			break;
-+		crypto_xor(src, src - bsize, bsize);
-+		src -= bsize;
-+	}
-+
-+	crypto_xor(src, walk->iv, bsize);
-+	memcpy(walk->iv, last_iv, bsize);
-+
-+	return nbytes;
- }
- 
- static int crypto_cbc_decrypt(struct skcipher_request *req)
- {
--	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-+	struct crypto_skcipher *skcipher = crypto_skcipher_reqtfm(req);
- 	struct skcipher_walk walk;
- 	int err;
- 
- 	err = skcipher_walk_virt(&walk, req, false);
- 
- 	while (walk.nbytes) {
--		err = crypto_cbc_decrypt_blocks(&walk, tfm,
--						crypto_cbc_decrypt_one);
-+		if (walk.src.virt.addr == walk.dst.virt.addr)
-+			err = crypto_cbc_decrypt_inplace(&walk, skcipher);
-+		else
-+			err = crypto_cbc_decrypt_segment(&walk, skcipher);
- 		err = skcipher_walk_done(&walk, err);
- 	}
- 
-diff --git a/include/crypto/cbc.h b/include/crypto/cbc.h
-deleted file mode 100644
-index 2b6422db42e2..000000000000
---- a/include/crypto/cbc.h
-+++ /dev/null
-@@ -1,141 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * CBC: Cipher Block Chaining mode
-- *
-- * Copyright (c) 2016 Herbert Xu <herbert@gondor.apana.org.au>
-- */
--
--#ifndef _CRYPTO_CBC_H
--#define _CRYPTO_CBC_H
--
--#include <crypto/internal/skcipher.h>
--#include <linux/string.h>
--#include <linux/types.h>
--
--static inline int crypto_cbc_encrypt_segment(
--	struct skcipher_walk *walk, struct crypto_skcipher *tfm,
--	void (*fn)(struct crypto_skcipher *, const u8 *, u8 *))
--{
--	unsigned int bsize = crypto_skcipher_blocksize(tfm);
--	unsigned int nbytes = walk->nbytes;
--	u8 *src = walk->src.virt.addr;
--	u8 *dst = walk->dst.virt.addr;
--	u8 *iv = walk->iv;
--
--	do {
--		crypto_xor(iv, src, bsize);
--		fn(tfm, iv, dst);
--		memcpy(iv, dst, bsize);
--
--		src += bsize;
--		dst += bsize;
--	} while ((nbytes -= bsize) >= bsize);
--
--	return nbytes;
--}
--
--static inline int crypto_cbc_encrypt_inplace(
--	struct skcipher_walk *walk, struct crypto_skcipher *tfm,
--	void (*fn)(struct crypto_skcipher *, const u8 *, u8 *))
--{
--	unsigned int bsize = crypto_skcipher_blocksize(tfm);
--	unsigned int nbytes = walk->nbytes;
--	u8 *src = walk->src.virt.addr;
--	u8 *iv = walk->iv;
--
--	do {
--		crypto_xor(src, iv, bsize);
--		fn(tfm, src, src);
--		iv = src;
--
--		src += bsize;
--	} while ((nbytes -= bsize) >= bsize);
--
--	memcpy(walk->iv, iv, bsize);
--
--	return nbytes;
--}
--
--static inline int crypto_cbc_encrypt_walk(struct skcipher_request *req,
--					  void (*fn)(struct crypto_skcipher *,
--						     const u8 *, u8 *))
--{
--	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
--	struct skcipher_walk walk;
--	int err;
--
--	err = skcipher_walk_virt(&walk, req, false);
--
--	while (walk.nbytes) {
--		if (walk.src.virt.addr == walk.dst.virt.addr)
--			err = crypto_cbc_encrypt_inplace(&walk, tfm, fn);
--		else
--			err = crypto_cbc_encrypt_segment(&walk, tfm, fn);
--		err = skcipher_walk_done(&walk, err);
--	}
--
--	return err;
--}
--
--static inline int crypto_cbc_decrypt_segment(
--	struct skcipher_walk *walk, struct crypto_skcipher *tfm,
--	void (*fn)(struct crypto_skcipher *, const u8 *, u8 *))
--{
--	unsigned int bsize = crypto_skcipher_blocksize(tfm);
--	unsigned int nbytes = walk->nbytes;
--	u8 *src = walk->src.virt.addr;
--	u8 *dst = walk->dst.virt.addr;
--	u8 *iv = walk->iv;
--
--	do {
--		fn(tfm, src, dst);
--		crypto_xor(dst, iv, bsize);
--		iv = src;
--
--		src += bsize;
--		dst += bsize;
--	} while ((nbytes -= bsize) >= bsize);
--
--	memcpy(walk->iv, iv, bsize);
--
--	return nbytes;
--}
--
--static inline int crypto_cbc_decrypt_inplace(
--	struct skcipher_walk *walk, struct crypto_skcipher *tfm,
--	void (*fn)(struct crypto_skcipher *, const u8 *, u8 *))
--{
--	unsigned int bsize = crypto_skcipher_blocksize(tfm);
--	unsigned int nbytes = walk->nbytes;
--	u8 *src = walk->src.virt.addr;
--	u8 last_iv[MAX_CIPHER_BLOCKSIZE];
--
--	/* Start of the last block. */
--	src += nbytes - (nbytes & (bsize - 1)) - bsize;
--	memcpy(last_iv, src, bsize);
--
--	for (;;) {
--		fn(tfm, src, src);
--		if ((nbytes -= bsize) < bsize)
--			break;
--		crypto_xor(src, src - bsize, bsize);
--		src -= bsize;
--	}
--
--	crypto_xor(src, walk->iv, bsize);
--	memcpy(walk->iv, last_iv, bsize);
--
--	return nbytes;
--}
--
--static inline int crypto_cbc_decrypt_blocks(
--	struct skcipher_walk *walk, struct crypto_skcipher *tfm,
--	void (*fn)(struct crypto_skcipher *, const u8 *, u8 *))
--{
--	if (walk->src.virt.addr == walk->dst.virt.addr)
--		return crypto_cbc_decrypt_inplace(walk, tfm, fn);
--	else
--		return crypto_cbc_decrypt_segment(walk, tfm, fn);
--}
--
--#endif	/* _CRYPTO_CBC_H */
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+On 8/31/2020 10:58 AM, Andy Shevchenko wrote:
+> Use traditional error check pattern
+> 	ret = ...;
+> 	if (ret)
+> 		return ret;
+> 	...
+> instead of checking error code to be 0.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Reviewed-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+
+> ---
+>   drivers/crypto/caam/ctrl.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+> index 65de57f169d9..25785404a58e 100644
+> --- a/drivers/crypto/caam/ctrl.c
+> +++ b/drivers/crypto/caam/ctrl.c
+> @@ -333,11 +333,10 @@ static int instantiate_rng(struct device *ctrldev, int state_handle_mask,
+>   
+>   	kfree(desc);
+>   
+> -	if (!ret)
+> -		ret = devm_add_action_or_reset(ctrldev, devm_deinstantiate_rng,
+> -					       ctrldev);
+> +	if (ret)
+> +		return ret;
+>   
+> -	return ret;
+> +	return devm_add_action_or_reset(ctrldev, devm_deinstantiate_rng, ctrldev);
+>   }
+>   
+>   /*
+> 
