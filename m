@@ -2,102 +2,89 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122B325C2CC
-	for <lists+linux-crypto@lfdr.de>; Thu,  3 Sep 2020 16:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7E625C370
+	for <lists+linux-crypto@lfdr.de>; Thu,  3 Sep 2020 16:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729278AbgICOfp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 3 Sep 2020 10:35:45 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:48389 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729326AbgICOfg (ORCPT
+        id S1729224AbgICOvu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 3 Sep 2020 10:51:50 -0400
+Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:11712 "EHLO
+        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729210AbgICOPQ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:35:36 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R781e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0U7p6l-g_1599138767;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U7p6l-g_1599138767)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 03 Sep 2020 21:12:47 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Howells <dhowells@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        "Gilad Ben-Yossef" <gilad@benyossef.com>,
-        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-security-module@vger.kernel.org
-Cc:     Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH v6 8/8] integrity: Asymmetric digsig supports SM2-with-SM3 algorithm
-Date:   Thu,  3 Sep 2020 21:12:42 +0800
-Message-Id: <20200903131242.128665-9-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
-In-Reply-To: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
-References: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
+        Thu, 3 Sep 2020 10:15:16 -0400
+From:   Peter Enderborg <peter.enderborg@sony.com>
+To:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>
+CC:     Peter Enderborg <peter.enderborg@sony.com>
+Subject: [PATCH] crypto: Mark tfm buffer as non leak.
+Date:   Thu, 3 Sep 2020 15:40:07 +0200
+Message-ID: <20200903134007.2769-1-peter.enderborg@sony.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=FfdJO626 c=1 sm=1 tr=0 a=fZcToFWbXLKijqHhjJ02CA==:117 a=reM5J-MqmosA:10 a=z6gsHLkEAAAA:8 a=L8t1L5anSuFvw26KRygA:9 a=d-OLMTCWyvARjPbQ-enb:22
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Asymmetric digsig supports SM2-with-SM3 algorithm combination,
-so that IMA can also verify SM2's signature data.
+When running kmemleak on this I got a lot of
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Tested-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
+unreferenced object 0xfffffff942d4ec00 (size 1024):
+  comm "init", pid 1, jiffies 4294893619 (age 17475.864s)
+  hex dump (first 32 bytes):
+    38 1d cf bd 9e ff ff ff b8 37 8b bd 9e ff ff ff  8........7......
+    78 38 8b bd 9e ff ff ff 10 00 00 00 00 00 00 00  x8..............
+  backtrace:
+    [<00000000c3c55a80>] __kmalloc+0x2cc/0x3b0
+    [<00000000c599b091>] crypto_create_tfm+0x38/0xf0
+    [<00000000d4516e51>] crypto_spawn_tfm2+0x58/0xa0
+    [<000000001bab58aa>] cryptd_skcipher_init_tfm+0x1c/0x40
+    [<0000000006748df3>] crypto_skcipher_init_tfm+0x158/0x1e0
+    [<0000000017f3270c>] crypto_create_tfm+0x54/0xf0
+    [<000000006af1de62>] crypto_alloc_tfm+0x88/0x198
+    [<000000000d8e8c03>] crypto_alloc_skcipher+0x1c/0x28
+    [<0000000085448a2a>] cryptd_alloc_skcipher+0x5c/0xb0
+    [<000000003c48c083>] simd_skcipher_init+0x24/0x68
+    [<0000000006748df3>] crypto_skcipher_init_tfm+0x158/0x1e0
+    [<0000000017f3270c>] crypto_create_tfm+0x54/0xf0
+    [<00000000d4516e51>] crypto_spawn_tfm2+0x58/0xa0
+    [<00000000b5344705>] crypto_cts_init_tfm+0x1c/0x68
+    [<0000000006748df3>] crypto_skcipher_init_tfm+0x158/0x1e0
+    [<0000000017f3270c>] crypto_create_tfm+0x54/0xf0
+
+This is caused by tfm = (struct crypto_tfm *)(mem + tfmsize);
+that is keept instead of the allocated buffer in mem.
+Reference counting is done on alg.
+
+Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
 ---
- security/integrity/digsig_asymmetric.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ crypto/api.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/security/integrity/digsig_asymmetric.c b/security/integrity/digsig_asymmetric.c
-index cfa4127d0518..b86a4a8f61ab 100644
---- a/security/integrity/digsig_asymmetric.c
-+++ b/security/integrity/digsig_asymmetric.c
-@@ -99,14 +99,22 @@ int asymmetric_verify(struct key *keyring, const char *sig,
- 	memset(&pks, 0, sizeof(pks));
+diff --git a/crypto/api.c b/crypto/api.c
+index ed08cbd5b9d3..1a9cb6852a56 100644
+--- a/crypto/api.c
++++ b/crypto/api.c
+@@ -21,6 +21,7 @@
+ #include <linux/string.h>
+ #include <linux/completion.h>
+ #include "internal.h"
++#include <linux/kmemleak.h>
  
- 	pks.hash_algo = hash_algo_name[hdr->hash_algo];
--	if (hdr->hash_algo == HASH_ALGO_STREEBOG_256 ||
--	    hdr->hash_algo == HASH_ALGO_STREEBOG_512) {
-+	switch (hdr->hash_algo) {
-+	case HASH_ALGO_STREEBOG_256:
-+	case HASH_ALGO_STREEBOG_512:
- 		/* EC-RDSA and Streebog should go together. */
- 		pks.pkey_algo = "ecrdsa";
- 		pks.encoding = "raw";
--	} else {
-+		break;
-+	case HASH_ALGO_SM3_256:
-+		/* SM2 and SM3 should go together. */
-+		pks.pkey_algo = "sm2";
-+		pks.encoding = "raw";
-+		break;
-+	default:
- 		pks.pkey_algo = "rsa";
- 		pks.encoding = "pkcs1";
-+		break;
- 	}
- 	pks.digest = (u8 *)data;
- 	pks.digest_size = datalen;
+ LIST_HEAD(crypto_alg_list);
+ EXPORT_SYMBOL_GPL(crypto_alg_list);
+@@ -460,7 +461,7 @@ void *crypto_create_tfm_node(struct crypto_alg *alg,
+ 
+ 	if (!tfm->exit && alg->cra_init && (err = alg->cra_init(tfm)))
+ 		goto cra_init_failed;
+-
++	kmemleak_not_leak(mem);
+ 	goto out;
+ 
+ cra_init_failed:
 -- 
-2.19.1.3.ge56e4f7
+2.17.1
 
