@@ -2,141 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94C825D733
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Sep 2020 13:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F02525D783
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Sep 2020 13:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730014AbgIDL1S (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 4 Sep 2020 07:27:18 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:21986 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730210AbgIDL1J (ORCPT
+        id S1729977AbgIDLhE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 4 Sep 2020 07:37:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729941AbgIDLKR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 4 Sep 2020 07:27:09 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 084BMtnu014170;
-        Fri, 4 Sep 2020 13:25:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=I8ccoTHg3d9B6AkVKdCfXmiAQ8dN+CnLyb2SJtv640w=;
- b=S/tGmJML0d2Xt4lbIUD6dMLDrBrX41roU3etZNiaTzdqS3BFfiJoX3LhCq6NYJEM/14L
- rULRhvJS56awypM44t2P3DTtDyh/c/bdp27qhgADzpjjaoPUyeHXefglOngqIMKzOY/X
- k0zIrEAgkdnHay/lCHnD9V1DR4yuiE95y/k7XyaNqpAFKk+Pg1rsDMHdsrEObMRf6OBW
- dH41fAtF69FXKREm/0mX818jy5LtNFAaAuHz5NTLC+Es6+/EyzdXE2MvzAhxIE0Fk9n9
- niJquIeVAQlZaSCjYhYdMTA03e8le/iyFngAPJTru63SeA3XNXky5wHGVE/S9DY0s6JC 6A== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 337c591nbk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Sep 2020 13:25:54 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 14F7910002A;
-        Fri,  4 Sep 2020 13:25:51 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node1.st.com [10.75.127.16])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C024E2AC84B;
-        Fri,  4 Sep 2020 13:25:51 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG6NODE1.st.com (10.75.127.16)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 4 Sep 2020 13:25:51
- +0200
-From:   Nicolas Toromanoff <nicolas.toromanoff@st.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-CC:     Ard Biesheuvel <ardb@kernel.org>,
-        Nicolas Toromanoff <nicolas.toromanoff@st.com>,
-        <linux-crypto@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] crypto: stm32/crc32 - Avoid lock if hardware is already used
-Date:   Fri, 4 Sep 2020 13:25:27 +0200
-Message-ID: <20200904112527.15677-1-nicolas.toromanoff@st.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG5NODE3.st.com (10.75.127.15) To SFHDAG6NODE1.st.com
- (10.75.127.16)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-04_06:2020-09-04,2020-09-04 signatures=0
+        Fri, 4 Sep 2020 07:10:17 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD09C061251
+        for <linux-crypto@vger.kernel.org>; Fri,  4 Sep 2020 04:10:16 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id o21so5724726wmc.0
+        for <linux-crypto@vger.kernel.org>; Fri, 04 Sep 2020 04:10:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=FT+2gDwi+eo+TtESsfWRD1fT3NbLCZL+Gr5RVIpvd9A=;
+        b=a8BrO6udlqxdyuGU28A92cZCiYcUSD2su+5p7v7c3nvkb6/7BpS8K4IuVu5hUkvCGI
+         OGWfgVVb8EafZ6VWTYtBakT9kf+WAtF3GfdYPafixsaXbZUhpKPvIXurJlVy3/yZYSt+
+         4LTEwMPOiYKMTLgrKwz/2FKIURBdsrb7ffYKITbEeheUTjkoOkQGQFLs2S0seQLKVjLG
+         LhVQ4BSyz9tlfwDDje+IR8ZDQVaeug4muuinxWCdk5Sqne0m7tx6uITRkuYnHrKgMJe1
+         n1UBhPayZ1GqzXEhM0hy4KcVJ5EljdpwClVU1hUOmNvSdttGEmNhbzD7s8KSKxtZIN7P
+         tE5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=FT+2gDwi+eo+TtESsfWRD1fT3NbLCZL+Gr5RVIpvd9A=;
+        b=NDIK/aJ0fV3OnY9Td/LAPC1BnyM4jZS9rwzB+UniuGx8Hbe13S1Lgy3xM3qMKkTYp6
+         Mj+ty+WmNc3lxXrBiNuCQXhA5cEm+I6ENFvq3AzSdu5v2hjQCOX+dMjCQN8WQHKiX3nm
+         /c0eYnQXosLoK+UrqyPlv7BxcVDLETNicCXXyD1v/eXmvkYJuqrqUVnvCNNcRcr9qnlW
+         kOYPK9BdzoUai2gO9JoIHkr9vMHvKlbNCExAKyO4RTj/2cH45PmkIXBiUewYV2NvGbt2
+         nmcy/BCLRYYIl77rtTpDT3VxFLindHTaVw1Ax+txxFfdBosnHNxBHMOWhsEgBTYYRomq
+         bJ2g==
+X-Gm-Message-State: AOAM531bJpQLh34EC1dEu7tBSrTUzPSDe9gvZQnFXkui8TsgU83lVz4K
+        G/BEybUT2uGepOJXkRkWI7NFsw==
+X-Google-Smtp-Source: ABdhPJy04C8/p+fmq52PwzrBd2umCaqC3Mr5btRRscqtBGxSf3nIJbcHD7PikiMxfyp9Rp49HbattQ==
+X-Received: by 2002:a1c:a3c4:: with SMTP id m187mr7482650wme.159.1599217815551;
+        Fri, 04 Sep 2020 04:10:15 -0700 (PDT)
+Received: from localhost.localdomain ([51.15.160.169])
+        by smtp.googlemail.com with ESMTPSA id m3sm10622743wmb.26.2020.09.04.04.10.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Sep 2020 04:10:14 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mripard@kernel.org, wens@csie.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH v6 04/18] crypto: sun8i-ss: fix a trivial typo
+Date:   Fri,  4 Sep 2020 11:09:49 +0000
+Message-Id: <1599217803-29755-5-git-send-email-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1599217803-29755-1-git-send-email-clabbe@baylibre.com>
+References: <1599217803-29755-1-git-send-email-clabbe@baylibre.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-If STM32 CRC device is already in use, calculate CRC by software.
+This fixes a trivial typo.
 
-This will release CPU constraint for a concurrent access to the
-hardware, and avoid masking irqs during the whole block processing.
-
-Fixes: 7795c0baf5ac ("crypto: stm32/crc32 - protect from concurrent accesses")
-
-Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/crypto/stm32/Kconfig       |  2 ++
- drivers/crypto/stm32/stm32-crc32.c | 15 ++++++++++++---
- 2 files changed, 14 insertions(+), 3 deletions(-)
+ drivers/crypto/allwinner/sun8i-ss/sun8i-ss.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/stm32/Kconfig b/drivers/crypto/stm32/Kconfig
-index 4ef3eb11361c..8d605b07571f 100644
---- a/drivers/crypto/stm32/Kconfig
-+++ b/drivers/crypto/stm32/Kconfig
-@@ -3,6 +3,8 @@ config CRYPTO_DEV_STM32_CRC
- 	tristate "Support for STM32 crc accelerators"
- 	depends on ARCH_STM32
- 	select CRYPTO_HASH
-+	select CRYPTO_CRC32
-+	select CRYPTO_CRC32C
- 	help
- 	  This enables support for the CRC32 hw accelerator which can be found
- 	  on STMicroelectronics STM32 SOC.
-diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
-index 783a64f3f635..75867c0b0017 100644
---- a/drivers/crypto/stm32/stm32-crc32.c
-+++ b/drivers/crypto/stm32/stm32-crc32.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/bitrev.h>
- #include <linux/clk.h>
-+#include <linux/crc32.h>
- #include <linux/crc32poly.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
-@@ -149,7 +150,6 @@ static int burst_update(struct shash_desc *desc, const u8 *d8,
- 	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
- 	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
- 	struct stm32_crc *crc;
--	unsigned long flags;
- 
- 	crc = stm32_crc_get_next_crc();
- 	if (!crc)
-@@ -157,7 +157,15 @@ static int burst_update(struct shash_desc *desc, const u8 *d8,
- 
- 	pm_runtime_get_sync(crc->dev);
- 
--	spin_lock_irqsave(&crc->lock, flags);
-+	if (!spin_trylock(&crc->lock)) {
-+		/* Hardware is busy, calculate crc32 by software */
-+		if (mctx->poly == CRC32_POLY_LE)
-+			ctx->partial = crc32_le(ctx->partial, d8, length);
-+		else
-+			ctx->partial = __crc32c_le(ctx->partial, d8, length);
-+
-+		goto pm_out;
-+	}
- 
- 	/*
- 	 * Restore previously calculated CRC for this context as init value
-@@ -197,8 +205,9 @@ static int burst_update(struct shash_desc *desc, const u8 *d8,
- 	/* Store partial result */
- 	ctx->partial = readl_relaxed(crc->regs + CRC_DR);
- 
--	spin_unlock_irqrestore(&crc->lock, flags);
-+	spin_unlock(&crc->lock);
- 
-+pm_out:
- 	pm_runtime_mark_last_busy(crc->dev);
- 	pm_runtime_put_autosuspend(crc->dev);
- 
+diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss.h b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss.h
+index 377ea7acb54d..da71d8059019 100644
+--- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss.h
++++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss.h
+@@ -100,7 +100,7 @@ struct ss_clock {
+  * @alg_hash:	list of supported hashes. for each SS_ID_ this will give the
+  *              corresponding SS_ALG_XXX value
+  * @op_mode:	list of supported block modes
+- * @ss_clks!	list of clock needed by this variant
++ * @ss_clks:	list of clock needed by this variant
+  */
+ struct ss_variant {
+ 	char alg_cipher[SS_ID_CIPHER_MAX];
 -- 
-2.17.1
+2.26.2
 
