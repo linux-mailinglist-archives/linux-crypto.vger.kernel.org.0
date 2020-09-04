@@ -2,133 +2,147 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0237925D444
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Sep 2020 11:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8DB25D4A6
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Sep 2020 11:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730000AbgIDJH0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 4 Sep 2020 05:07:26 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:55275 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729901AbgIDJHZ (ORCPT
+        id S1730018AbgIDJWB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 4 Sep 2020 05:22:01 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:34395 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729712AbgIDJV7 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:07:25 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200904090723euoutp014dd457f2cdac0c5461e59adce746caab~xiWzr4J8M0628806288euoutp01X
-        for <linux-crypto@vger.kernel.org>; Fri,  4 Sep 2020 09:07:23 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200904090723euoutp014dd457f2cdac0c5461e59adce746caab~xiWzr4J8M0628806288euoutp01X
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1599210443;
-        bh=ZQ0PXpDZj1o8rgqUA1eu6VEabHL0uTSRcNQeoD20uR0=;
-        h=Subject:To:From:Date:In-Reply-To:References:From;
-        b=cTvEUuLmmN0ks6vYuw9s2z/AzrBKuBNdstzVS+Kgu06fhhB9J/og6qavc+yOJyHVF
-         wK4xz0lYe8R+2HM6hjbfhIumneeDJGQtRtn5h/Rz7EROPki+O7AdYrZq/5OFdtitN/
-         QuFLeKAV8997PKMC5JCMo+yjfICpMTyPZWNRK/A4=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200904090723eucas1p2b6b993ca0c152d8ce3054d5fcb873e00~xiWzdWjSZ1442414424eucas1p2d;
-        Fri,  4 Sep 2020 09:07:23 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id AF.2E.05997.BC3025F5; Fri,  4
-        Sep 2020 10:07:23 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200904090723eucas1p10b7d6f01088aeeff289b22a9f65039d4~xiWzMO2Jh3163431634eucas1p1g;
-        Fri,  4 Sep 2020 09:07:23 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200904090723eusmtrp230de8f2e240726048cfdf0e965a07659~xiWzLlJnf0713607136eusmtrp2X;
-        Fri,  4 Sep 2020 09:07:23 +0000 (GMT)
-X-AuditID: cbfec7f4-677ff7000000176d-14-5f5203cb0ffa
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 80.E9.06017.AC3025F5; Fri,  4
-        Sep 2020 10:07:23 +0100 (BST)
-Received: from [106.120.51.18] (unknown [106.120.51.18]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200904090722eusmtip22b25fd0bae84585d038e6865193d691f~xiWyyHkq22235822358eusmtip2t;
-        Fri,  4 Sep 2020 09:07:22 +0000 (GMT)
-Subject: Re: [PATCH 1/3] dt-bindings: crypto: slimsss: Correct a typo in
- compatible
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Kamil Konieczny <k.konieczny@samsung.com>
-Message-ID: <3b8f5c30-a669-c228-5835-5e4efa431879@samsung.com>
-Date:   Fri, 4 Sep 2020 11:07:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
-        Thunderbird/68.10.0
+        Fri, 4 Sep 2020 05:21:59 -0400
+X-Greylist: delayed 393 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Sep 2020 05:21:58 EDT
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CC571580383;
+        Fri,  4 Sep 2020 05:15:24 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 04 Sep 2020 05:15:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=rPHib73BNe2yJpxQ7N76hqf1+YQ
+        0PpnAHpyX+PBHPHo=; b=MRCq8nQvllk1NZEUvEqqyoTKwToKn+YZxRLmHaKeMkk
+        iyv3nm+Es3nSXJmUhrA+jBX+cLKG4VvZM0oe1yulLdqucwfXiAXoBALd8a2Gj/Nm
+        A3urSgadFqxMSnSJaEzezV2MwZZ0TY3KmkdYeVO7v4X/OmTADaNPxFikGW20MQZu
+        9agrkBJUna5KkhNlZAO51hAhfwZmZk5iN8uA8/XDxlm+3CHsffhQnhLCerk/mBWu
+        ZAKdxnKaEH54BGRX+iKZ4U3oMEYH35PXhBudtHiH0LJUEjxGyIyEZc/MytI7YvLP
+        ZgXqXakNciFyqNRqcRmDPzJ8EjfzuAucCc5b22kqAPA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rPHib7
+        3BNe2yJpxQ7N76hqf1+YQ0PpnAHpyX+PBHPHo=; b=da5TGH2kc8dVL5zmavPo+1
+        yLu/nJQp1JXkmnTWB1yQOpI80gt9qoMJ7XpXCxKY6fBW6n5QRWecZ7Gh1Bo/Z8n4
+        HnYcqDnGZk02o5/2lAOLOde3bm3FHsFccc/Z9z44qIs1Ck80m5V8vUBpobgGjIA/
+        mZju82dsrYkz61Q3MxCmqvBQOH5TIMHsNGS9r7F+toscAnNj1Iu0XK2HslEKAY2P
+        Wbz/rkkU4WOhorB9kJ7ZweoiBJZ4S0MyhatRvaDfXmy5hFzcA3JWLO2ZxMftZaot
+        rm3hE/NvY6lydJWuGgh1DaF4N8iOfFI501q7qrQbK8n2lWmSUsjshxkxKkEBeDTQ
+        ==
+X-ME-Sender: <xms:qgVSX5uGJu4UeKguzMZCO8CCRBDNU7IfXAaXGF_U3SiRirCSPqoE4g>
+    <xme:qgVSXyeuMMxL8sD-rrqgsl5KzvEvnq5-aVUPjLooVAEONZmqrWYR4BSKjz_rTNAzs
+    bUX-CvMqXUddF0QWVc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegfedgudegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
+    ertddtvdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
+    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeelkeeghefhuddtleejgfeljeffhe
+    ffgfeijefhgfeufefhtdevteegheeiheegudenucfkphepledtrdekledrieekrdejieen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
+    hmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:qgVSX8yIhQLFJEx5N92PNqZlRNxk4nskH6OPfGQqWr0ixrLobVSGQQ>
+    <xmx:qgVSXwPztVTPGbjCOioW2gsk8auO5lz1Haje_4Os8Ikf_V3Me9q-MQ>
+    <xmx:qgVSX5_u1GZxe1EM7TmMdBmM3duz6SuZ-cbeFdgOIYYMfMkTW1VUoA>
+    <xmx:rAVSX4baiUipkmSAjeUd2zBLs4_T2TObQYwnTXCM7i2pX-egAi9v8Q>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2528C3060060;
+        Fri,  4 Sep 2020 05:15:22 -0400 (EDT)
+Date:   Fri, 4 Sep 2020 11:15:20 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        robh+dt@kernel.org, robh@kernel.org, wens@csie.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, m.cerveny@computer.org
+Subject: Re: [PATCH v2] dt-bindings: crypto: Specify that
+ allwinner,sun8i-a33-crypto needs reset
+Message-ID: <20200904091520.cwrovnbb2squze5h@gilmour.lan>
+References: <20200903145445.31779-1-clabbe.montjoie@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200903180400.2865-1-krzk@kernel.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrEKsWRmVeSWpSXmKPExsWy7djP87qnmYPiDZrfClvMOd/CYjH/yDlW
-        i+5XMhbnz29gt7h/7yeTxeVdc9gsZpzfx2TRuvcIu8X/X83MDpweW1beZPLYdkDVY9OqTjaP
-        fwunsHh83iQXwBrFZZOSmpNZllqkb5fAlXHnzzfGgn3sFdun97A0MC5l62Lk5JAQMJG492Mi
-        SxcjF4eQwApGicO3bzNDOF8YJY4unswG4XxmlJjbfJ0JpmVF73FWiMRyRolX66awdzFyADlv
-        GSX6NEFqhAVCJT596gQbKyJwhEli7fM2VpAEm4C+xMGzJ1lAbF4BO4mH/YfAbBYBFYklLdPA
-        akQFIiV2Pn3JDlEjKHFy5hOwGk6gxV+vHwarYRYQl7j1ZD4ThC0vsf3tHLCzJQQ2sUv0LL7B
-        CnGpi8Sq3TOYIWxhiVfHt7BD2DIS/3eCNIM0NDNKnG6Yyg7h9DBK7P2yBRo01hKfPx5gA3mN
-        WUBTYv0ufYiwo8Sp+RuYQMISAnwSN94KQhzBJzFp23RmiDCvREebEES1qsTzUz3QgJOW6Pq/
-        jhWixEPiynKuCYyKs5B8OQvJZ7OQfDYL4YQFjCyrGMVTS4tz01OLjfJSy/WKE3OLS/PS9ZLz
-        czcxAlPS6X/Hv+xg3PUn6RCjAAejEg/vjfcB8UKsiWXFlbmHGCU4mJVEeJ3Ono4T4k1JrKxK
-        LcqPLyrNSS0+xCjNwaIkzmu86GWskEB6YklqdmpqQWoRTJaJg1OqgTHk1fnWU9V8Z9etFHNe
-        Fu1uqnQueEFH8CzWZbeqBKvjF7e9KFIuzo/db9KS4xn1beL3e3tajP74/jvOHr1YeIGW4+eC
-        pjtG8WbHT+8sVni+RU4jPNnQo3i+ec8b78+bkqpuzvhcL/FAdl5W6vaIW3bpXfXWRYzzjGyq
-        e3jDvveXXHcsipslr8RSnJFoqMVcVJwIAC0KJbJFAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJIsWRmVeSWpSXmKPExsVy+t/xe7qnmYPiDbbNYbSYc76FxWL+kXOs
-        Ft2vZCzOn9/AbnH/3k8mi8u75rBZzDi/j8mide8Rdov/v5qZHTg9tqy8yeSx7YCqx6ZVnWwe
-        /xZOYfH4vEkugDVKz6Yov7QkVSEjv7jEVina0MJIz9DSQs/IxFLP0Ng81srIVEnfziYlNSez
-        LLVI3y5BL+POn2+MBfvYK7ZP72FpYFzK1sXIySEhYCKxovc4K4gtJLCUUeLAakeIuLRE4+nV
-        TBC2sMSfa11A9VxANa8ZJZYsWMwOkhAWCJX49KmTBSQhInCESWL9zOdMEFXtjBL7bu8Ca2cT
-        0Jc4ePYkC4jNK2An8bD/EJjNIqAisaRlGtBqDg5RgUiJnTssIUoEJU7OfAJWwgl03dfrh8Gu
-        YxZQl/gz7xIzhC0ucevJfCYIW15i+9s5zBMYBWchaZ+FpGUWkpZZSFoWMLKsYhRJLS3OTc8t
-        NtIrTswtLs1L10vOz93ECIy2bcd+btnB2PUu+BCjAAejEg/vjfcB8UKsiWXFlbmHGCU4mJVE
-        eJ3Ono4T4k1JrKxKLcqPLyrNSS0+xGgK9NtEZinR5HxgIsgriTc0NTS3sDQ0NzY3NrNQEuft
-        EDgYIySQnliSmp2aWpBaBNPHxMEp1cAoF3jQIdruRPjR61dsrLnUD0b1LLsQUTKn9ab8gtlh
-        zafUutcrd1zzURCKOPX2Z/3r/5maH/9sniQQ+dXjzKOb0g5T905N3GXtvH3xhfqaB78OqoQr
-        XXxwee2awMlyRgfaJ1X9v7quVrs7h3/qtH9u0yeG//x2q/PpnoWr3yw20tlg/1nVY2ZBixJL
-        cUaioRZzUXEiABmAcpDMAgAA
-X-CMS-MailID: 20200904090723eucas1p10b7d6f01088aeeff289b22a9f65039d4
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200903180412eucas1p10d854b51ba650b27265f088b07c93b15
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200903180412eucas1p10d854b51ba650b27265f088b07c93b15
-References: <CGME20200903180412eucas1p10d854b51ba650b27265f088b07c93b15@eucas1p1.samsung.com>
-        <20200903180400.2865-1-krzk@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ywcvreqcqed5i46k"
+Content-Disposition: inline
+In-Reply-To: <20200903145445.31779-1-clabbe.montjoie@gmail.com>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
 
+--ywcvreqcqed5i46k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 9/3/20 8:03 PM, Krzysztof Kozlowski wrote:
-> Correct a typo in the compatible - missing trailing 's'.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+On Thu, Sep 03, 2020 at 04:54:45PM +0200, Corentin Labbe wrote:
+> When adding allwinner,sun8i-a33-crypto, I forgot to add that it needs res=
+et.
+> Furthermore, there are no need to use items to list only one compatible
+> in compatible list.
+>=20
+> Fixes: f81547ba7a98 ("dt-bindings: crypto: add new compatible for A33 SS")
+> Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 > ---
->  Documentation/devicetree/bindings/crypto/samsung-slimsss.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/crypto/samsung-slimsss.yaml b/Documentation/devicetree/bindings/crypto/samsung-slimsss.yaml
-> index 04fe5dfa794a..7743eae049ab 100644
-> --- a/Documentation/devicetree/bindings/crypto/samsung-slimsss.yaml
-> +++ b/Documentation/devicetree/bindings/crypto/samsung-slimsss.yaml
-> @@ -19,7 +19,7 @@ description: |+
->  properties:
->    compatible:
->      items:
-> -      - const: samsung,exynos5433-slim-ss
-> +      - const: samsung,exynos5433-slim-sss
->  
+> Change since v1:
+> - use an enum for adding allwinner,sun8i-a33-crypto to "reset list"
+>=20
+>  .../bindings/crypto/allwinner,sun4i-a10-crypto.yaml        | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10=
+-crypto.yaml b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10=
+-crypto.yaml
+> index fc823572bcff..279f4a2e1dd7 100644
+> --- a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto=
+=2Eyaml
+> +++ b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto=
+=2Eyaml
+> @@ -23,8 +23,7 @@ properties:
+>        - items:
+>            - const: allwinner,sun7i-a20-crypto
+>            - const: allwinner,sun4i-a10-crypto
+> -      - items:
+> -          - const: allwinner,sun8i-a33-crypto
+> +      - const: allwinner,sun8i-a33-crypto
+> =20
 >    reg:
 >      maxItems: 1
-> 
+> @@ -59,7 +58,9 @@ if:
+>    properties:
+>      compatible:
+>        contains:
+> -        const: allwinner,sun6i-a31-crypto
+> +        enum:
+> +          - const: allwinner,sun6i-a31-crypto
+> +          - const: allwinner,sun8i-a33-crypto
 
-Reviewed-by: Kamil Konieczny <k.konieczny@samsung.com>
-Acked-by: Kamil Konieczny <k.konieczny@samsung.com>
+That's not the proper syntax for an enum, this would be
+
+> +        enum:
+> +          - allwinner,sun6i-a31-crypto
+> +          - allwinner,sun8i-a33-crypto
+
+Maxime
+
+--ywcvreqcqed5i46k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX1IFqAAKCRDj7w1vZxhR
+xb4YAP9AndsjE//mBZmHVJjQxFxeoOtzDPG51bM/OUpqPddYmwD/fVvGjW3eKS5y
+J1RNMIZV2ualGb2JEL41KdNHYyCyfAk=
+=36HK
+-----END PGP SIGNATURE-----
+
+--ywcvreqcqed5i46k--
