@@ -2,88 +2,97 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C6825D47D
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Sep 2020 11:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 429F925D552
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Sep 2020 11:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730071AbgIDJRo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 4 Sep 2020 05:17:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730040AbgIDJRl (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:17:41 -0400
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F420208C7;
-        Fri,  4 Sep 2020 09:17:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599211060;
-        bh=Z3k+bA8kO3IZhxobmWH376bAC5FOT43FtDu9S5oDfrs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NtqWR9ZrdQ23oNQrwi4r9Q4DRrbPT2le37xve7njDICv2D1PQ3Uw3ThOXP/I275YU
-         vm+XptMcyEE0l0gpzBNaXOQfeVQfHpbcWpIjqc9OFTMUe9y4QIESB7XfmCc6kNQnt9
-         s5JZtqFsCyrNQi6H+eP9WRzcIIq3Q07s1R5XIwW8=
-Received: by mail-ej1-f44.google.com with SMTP id a15so7589417ejf.11;
-        Fri, 04 Sep 2020 02:17:40 -0700 (PDT)
-X-Gm-Message-State: AOAM530xfb9eDu5ZFYvmLmSc26UUdZUrTYfsEAAj6RmgfS+IsdhubB8c
-        hjb72kKKedIuyFQuHPxVAv+s8wI4G20AbuCvKSk=
-X-Google-Smtp-Source: ABdhPJwJGfE8pXwFD7YLIbqax+LSzRBe+8KCTVQf60jQGIYocFyzOcadCMDWhZ+17124hHHCNMwHJkOHoa7/Q2M1V/Q=
-X-Received: by 2002:a17:906:af53:: with SMTP id ly19mr6165007ejb.503.1599211058977;
- Fri, 04 Sep 2020 02:17:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <CGME20200903180412eucas1p10d854b51ba650b27265f088b07c93b15@eucas1p1.samsung.com>
- <20200903180400.2865-1-krzk@kernel.org> <3b8f5c30-a669-c228-5835-5e4efa431879@samsung.com>
-In-Reply-To: <3b8f5c30-a669-c228-5835-5e4efa431879@samsung.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Fri, 4 Sep 2020 11:17:27 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPdWWsgG3Y2DeLctT=8y31=2ari-qN2BUAYU7CvE-pfbJg@mail.gmail.com>
-Message-ID: <CAJKOXPdWWsgG3Y2DeLctT=8y31=2ari-qN2BUAYU7CvE-pfbJg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: crypto: slimsss: Correct a typo in compatible
-To:     Kamil Konieczny <k.konieczny@samsung.com>
-Cc:     Vladimir Zapolskiy <vz@mleia.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-crypto@vger.kernel.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729975AbgIDJm6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 4 Sep 2020 05:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729731AbgIDJmx (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:42:53 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2316FC061244;
+        Fri,  4 Sep 2020 02:42:52 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id d19so4040066pgl.10;
+        Fri, 04 Sep 2020 02:42:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=k2pP6uCXGE3hf4kIKSJ0TViSAKe2ZDHRqtthemQoyUE=;
+        b=gAzMbl9TqqnXyIRD4TGx12WtzlcUX32PTT1eW7BqLXqe/HdTdxT+emMOtGKKg2tS3H
+         jFqZlQ5OqWNgNqx+/n7a4Q7Te6jcGhHPYbSig/rg2q5PObd6SajiemVm3ewlGqpfu644
+         5Blfjst9QQT95RzWlLfk9rJvA94vL8w91xs3/BfC+cs37CHNKHlvmbiRivIvL6icBMYZ
+         JCrLsfugmAhujtWhAVmimv1MhdKlmKFUmobeCz/rdamM0xqc2Ggn0qP5zHOi6nfqCp95
+         yhOTIjgyy9U+EiWIZUcO0Vvsm3M+xsIAlm2y1B/5Ok9NgAQ0PLF8eHwBNjoTR2+EB6oE
+         5RVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=k2pP6uCXGE3hf4kIKSJ0TViSAKe2ZDHRqtthemQoyUE=;
+        b=quzCPOGu3tOzjrB21MDjEy5l8e6bFxA+/c71ALk/bM+C7QhrEqzyEgbdGPjDdpz5VA
+         5ftspYFE3GMvadFttzfZUUQGF4KAQq6lvzNenqyDtS4pMkZp8sXzovW53hke0O7+6Xd6
+         Iju5CRJhlZ5i89UDNjd8/D6WBMiRKUnjm5namghZtuVh4t1DbT/ajZSdLR9jXgfxyMZE
+         /vS1cf9b/N0a60wpsp03XrIvGiu07r+6hG8CEL3MjmkM5Pc3dPqfeBuL1WAJ0akiMfjt
+         n6GH8/fJ3MGxhJJZBfY1m0P15M5yt9mhb9C12Cew1dI/k8rHhjxNNujNiOfCksKhSxqo
+         46ZQ==
+X-Gm-Message-State: AOAM532rAxdYHml6QQZNBNxorXy8rOdSerK3ww5biS4ZylmaSHZfj3v3
+        zswWfqB6cUtrPl5iLEIh1wI=
+X-Google-Smtp-Source: ABdhPJxL3L6K5Vdob33AgTHPTkGlZCq/T3PVfZsknGNaQ4ivB+nB3Am35D+EDOqj9Yl1PfZqpKP8Eg==
+X-Received: by 2002:aa7:8010:: with SMTP id j16mr7428036pfi.210.1599212571903;
+        Fri, 04 Sep 2020 02:42:51 -0700 (PDT)
+Received: from localhost.localdomain ([218.247.215.252])
+        by smtp.gmail.com with ESMTPSA id a7sm6256342pfd.194.2020.09.04.02.42.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 02:42:51 -0700 (PDT)
+From:   Xiaoliang Pang <dawning.pang@gmail.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        matthias.bgg@gmail.com, swboyd@chromium.org, yuehaibing@huawei.com,
+        tianjia.zhang@linux.alibaba.com, ryder.lee@mediatek.com
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dawning.pang@gmail.com
+Subject: [PATCH v2] cypto: mediatek - fix leaks in mtk_desc_ring_alloc
+Date:   Fri,  4 Sep 2020 17:42:33 +0800
+Message-Id: <20200904094233.11624-1-dawning.pang@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, 4 Sep 2020 at 11:07, Kamil Konieczny <k.konieczny@samsung.com> wrote:
->
->
->
-> On 9/3/20 8:03 PM, Krzysztof Kozlowski wrote:
-> > Correct a typo in the compatible - missing trailing 's'.
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > ---
-> >  Documentation/devicetree/bindings/crypto/samsung-slimsss.yaml | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/crypto/samsung-slimsss.yaml b/Documentation/devicetree/bindings/crypto/samsung-slimsss.yaml
-> > index 04fe5dfa794a..7743eae049ab 100644
-> > --- a/Documentation/devicetree/bindings/crypto/samsung-slimsss.yaml
-> > +++ b/Documentation/devicetree/bindings/crypto/samsung-slimsss.yaml
-> > @@ -19,7 +19,7 @@ description: |+
-> >  properties:
-> >    compatible:
-> >      items:
-> > -      - const: samsung,exynos5433-slim-ss
-> > +      - const: samsung,exynos5433-slim-sss
-> >
-> >    reg:
-> >      maxItems: 1
-> >
->
-> Reviewed-by: Kamil Konieczny <k.konieczny@samsung.com>
-> Acked-by: Kamil Konieczny <k.konieczny@samsung.com>
+In the init loop, if an error occurs in function 'dma_alloc_coherent',
+then goto the err_cleanup section,
+in the cleanup loop,
+the struct mtk_ring rising[i] will not be released,
+causing a memory leak
 
-Thanks. In this case "Reviewed" is enough, it includes the meaning of Ack.
+Signed-off-by: Xiaoliang Pang <dawning.pang@gmail.com>
+---
+ drivers/crypto/mediatek/mtk-platform.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/drivers/crypto/mediatek/mtk-platform.c b/drivers/crypto/mediatek/mtk-platform.c
+index 05d341e4a696..ebb3bdef0dbe 100644
+--- a/drivers/crypto/mediatek/mtk-platform.c
++++ b/drivers/crypto/mediatek/mtk-platform.c
+@@ -469,13 +469,13 @@ static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
+ 	return 0;
+ 
+ err_cleanup:
+-	for (; i >= 0; --i) {
++	do {
+ 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
+ 				  ring[i]->res_base, ring[i]->res_dma);
+ 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
+ 				  ring[i]->cmd_base, ring[i]->cmd_dma);
+ 		kfree(ring[i]);
+-	}
++	}while(i--);
+ 	return err;
+ }
+ 
+-- 
+2.17.1
+
