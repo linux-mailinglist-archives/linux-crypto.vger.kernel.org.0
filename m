@@ -2,110 +2,111 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C55B260335
-	for <lists+linux-crypto@lfdr.de>; Mon,  7 Sep 2020 19:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F072603C9
+	for <lists+linux-crypto@lfdr.de>; Mon,  7 Sep 2020 19:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729314AbgIGRqG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 7 Sep 2020 13:46:06 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:49281 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729446AbgIGNRi (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:17:38 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 511a2b1e;
-        Mon, 7 Sep 2020 12:47:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=date:from:to
-        :cc:subject:message-id:references:mime-version:content-type
-        :in-reply-to; s=mail; bh=W4gXInNmSu0I9yniK7J+bIBfYz4=; b=ZLvaVIW
-        KiTnPaiyDcZUmImWX/0VrKn4+G2xV67W2A0MPv4zTgE8BZtit79s5JrL9kIGQa66
-        GOjOk8C1rzAo51Jc9OiYmKjD1w+n1KfmcYA+IonvGMsSo4ds6rTGd3xxq3ISItX6
-        FeWQ3XrDDc4pUYgPE034j3AiuK4zsq6jsQ5NzC12Or6xYQkwA3Q0J8FljXLMSx2o
-        uLUwpeetzZ6Nu/f9IKXOhIQdOkKblJnYsOX58VwkDNBUeR5dOtvkhuhnrDAMXpPQ
-        bUGi9XPs8itpy2EcVZMZFneW99yHoAOK9nQkluKdH3DmW1hkoWlKJMP7fdA1OLyb
-        H/hcNXkgKtSiv2A==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 3574d307 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Mon, 7 Sep 2020 12:47:19 +0000 (UTC)
-Date:   Mon, 7 Sep 2020 15:16:03 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Uros Bizjak <ubizjak@gmail.com>, herbert@gondor.apana.org.au
-Cc:     linux-crypto@vger.kernel.org, x86@kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] crypto/x86: Use XORL r32,32 in
- poly1305-x86_64-cryptogams.pl
-Message-ID: <20200907131603.GB52901@zx2c4.com>
-References: <20200827173831.95039-1-ubizjak@gmail.com>
+        id S1729799AbgIGRyz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 7 Sep 2020 13:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729184AbgIGRyu (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 7 Sep 2020 13:54:50 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D47C061573;
+        Mon,  7 Sep 2020 10:54:47 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z4so16616432wrr.4;
+        Mon, 07 Sep 2020 10:54:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FbRc5khqS8fj5sPJsPlmiUlETyEoMORWYslwTB7qr70=;
+        b=fDz8WphjtGoceLUkrGnnfBAOwDy5R8rTqCFJt4PTP+rBKl/C5XoRukYIkF3G2w9elx
+         PUVLJejK4SzQ1ZTR2pTmWD5lXLdGtREDcihYsHauYv5JcWGJVGgsm5R1GYZzAcqiyIDY
+         3Q0NdERNA8RYIyQOUcJgMPbzEL0UY5iYojbeYCK0cxWshQbnGuYTE3N1bT6dviE2kz5Z
+         zTHwoeoMIgvH7wk25c8sP2Mvqn9yz9F0nPn8jjADAbpHgcKEiF3qH/dKpN0xhcKwYKVa
+         CcUSK8s8myoplLJskSpusJcfIODFVnjlx7CAZPakyHWbCVmCt1dXr1HtLDUDpB82i7q+
+         TMEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FbRc5khqS8fj5sPJsPlmiUlETyEoMORWYslwTB7qr70=;
+        b=VExl44I8++okZ87a7TkqakrZWyoPKvIzVe4qzbQM6KOVNaWytbw4DbvYxGJENa69+C
+         FNltfkaehuxWlZIv6DFZztDRPuvibWBniAW0eeizg1ktQHQom5g/UXx+2vdGb/22XfFt
+         +bWz2iSprLVFch4Fo7ZnyvqNGWIWLR251BFt7QjYuVCE4u+nSaumQQOegGkkStxObENU
+         ROFSVAV7Lh14kFQiXJUsBiZSlHlFDf/BMsUdko1bum8Vt0ARY5gMuuM9JK0N0Ymg7RYe
+         i06g/SxFRUZn6fUIq5xcoPEKdJA8obSLTa4swH/sO9rh0bpawx7ho9rizxLCbMOhwwwt
+         6jQA==
+X-Gm-Message-State: AOAM533hB8OHNElj3wx2K5Y4Vz6BtToSDekSVJJ6hJTho6ediKJO2E3J
+        sHEOgTeh4dvj3aE5Z7maHiU=
+X-Google-Smtp-Source: ABdhPJyJbIrC0i02kkLyImI7fa2gKNv0JlxUJcUkpnOxEI7wSgKZ5W7ljdSo3sEUeo0nn22qV5Ktcg==
+X-Received: by 2002:a5d:4645:: with SMTP id j5mr22359726wrs.230.1599501286489;
+        Mon, 07 Sep 2020 10:54:46 -0700 (PDT)
+Received: from Red.localdomain ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id f6sm29049995wro.5.2020.09.07.10.54.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 10:54:45 -0700 (PDT)
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mripard@kernel.org, robh+dt@kernel.org, wens@csie.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, m.cerveny@computer.org,
+        Corentin Labbe <clabbe.montjoie@gmail.com>
+Subject: [PATCH v3] dt-bindings: crypto: Specify that allwinner,sun8i-a33-crypto needs reset
+Date:   Mon,  7 Sep 2020 19:54:37 +0200
+Message-Id: <20200907175437.4464-1-clabbe.montjoie@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200827173831.95039-1-ubizjak@gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Uros, Herbert,
+When adding allwinner,sun8i-a33-crypto, I forgot to add that it needs reset.
+Furthermore, there are no need to use items to list only one compatible
+in compatible list.
 
-On Thu, Aug 27, 2020 at 07:38:31PM +0200, Uros Bizjak wrote:
-> x86_64 zero extends 32bit operations, so for 64bit operands,
-> XORL r32,r32 is functionally equal to XORQ r64,r64, but avoids
-> a REX prefix byte when legacy registers are used.
-> 
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> ---
->  arch/x86/crypto/poly1305-x86_64-cryptogams.pl | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/crypto/poly1305-x86_64-cryptogams.pl b/arch/x86/crypto/poly1305-x86_64-cryptogams.pl
-> index 137edcf038cb..7d568012cc15 100644
-> --- a/arch/x86/crypto/poly1305-x86_64-cryptogams.pl
-> +++ b/arch/x86/crypto/poly1305-x86_64-cryptogams.pl
-> @@ -246,7 +246,7 @@ $code.=<<___ if (!$kernel);
->  ___
->  &declare_function("poly1305_init_x86_64", 32, 3);
->  $code.=<<___;
-> -	xor	%rax,%rax
-> +	xor	%eax,%eax
->  	mov	%rax,0($ctx)		# initialize hash value
->  	mov	%rax,8($ctx)
->  	mov	%rax,16($ctx)
-> @@ -2853,7 +2853,7 @@ $code.=<<___;
->  .type	poly1305_init_base2_44,\@function,3
->  .align	32
->  poly1305_init_base2_44:
-> -	xor	%rax,%rax
-> +	xor	%eax,%eax
->  	mov	%rax,0($ctx)		# initialize hash value
->  	mov	%rax,8($ctx)
->  	mov	%rax,16($ctx)
-> @@ -3947,7 +3947,7 @@ xor128_decrypt_n_pad:
->  	mov	\$16,$len
->  	sub	%r10,$len
->  	xor	%eax,%eax
-> -	xor	%r11,%r11
-> +	xor	%r11d,%r11d
->  .Loop_dec_byte:
->  	mov	($inp,$otp),%r11b
->  	mov	($otp),%al
-> @@ -4085,7 +4085,7 @@ avx_handler:
->  	.long	0xa548f3fc		# cld; rep movsq
->  
->  	mov	$disp,%rsi
-> -	xor	%rcx,%rcx		# arg1, UNW_FLAG_NHANDLER
-> +	xor	%ecx,%ecx		# arg1, UNW_FLAG_NHANDLER
->  	mov	8(%rsi),%rdx		# arg2, disp->ImageBase
->  	mov	0(%rsi),%r8		# arg3, disp->ControlPc
->  	mov	16(%rsi),%r9		# arg4, disp->FunctionEntry
-> -- 
-> 2.26.2
-> 
+Fixes: f81547ba7a98 ("dt-bindings: crypto: add new compatible for A33 SS")
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+Change since v2:
+- fixed enum syntax
 
-Per the discussion elsewhere,
+Change since v1:
+- use an enum for adding allwinner,sun8i-a33-crypto to "reset list"
 
-Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
+ .../bindings/crypto/allwinner,sun4i-a10-crypto.yaml        | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-for cryptodev-2.6.git, rather than crypto-2.6.git
+diff --git a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml
+index fc823572bcff..90c6d039b91b 100644
+--- a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml
++++ b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml
+@@ -23,8 +23,7 @@ properties:
+       - items:
+           - const: allwinner,sun7i-a20-crypto
+           - const: allwinner,sun4i-a10-crypto
+-      - items:
+-          - const: allwinner,sun8i-a33-crypto
++      - const: allwinner,sun8i-a33-crypto
+ 
+   reg:
+     maxItems: 1
+@@ -59,7 +58,9 @@ if:
+   properties:
+     compatible:
+       contains:
+-        const: allwinner,sun6i-a31-crypto
++        enum:
++          - allwinner,sun6i-a31-crypto
++          - allwinner,sun8i-a33-crypto
+ 
+ then:
+   required:
+-- 
+2.26.2
 
-Thanks,
-Jason
