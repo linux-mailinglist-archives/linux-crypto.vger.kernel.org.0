@@ -2,112 +2,102 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3F42639A8
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Sep 2020 03:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43EF263A70
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Sep 2020 04:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730339AbgIJB7f (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 9 Sep 2020 21:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730025AbgIJBrq (ORCPT
+        id S1730030AbgIJC07 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 9 Sep 2020 22:26:59 -0400
+Received: from smtprelay0192.hostedemail.com ([216.40.44.192]:41384 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729413AbgIJCYQ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 9 Sep 2020 21:47:46 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99690C061371
-        for <linux-crypto@vger.kernel.org>; Wed,  9 Sep 2020 18:09:23 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id 60so3992549otw.3
-        for <linux-crypto@vger.kernel.org>; Wed, 09 Sep 2020 18:09:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=SYnq/jporBaefXRI5d9VrnNDN+Eko+2ot0lwaHlz4BE=;
-        b=cdEdCF4G3MCG+SHNuxgtVbNLd9qYHYBXk6nWBfx6e7kldmykTVMqbqGxMLT8WOlps8
-         Ej7eQN+KMIIdulqYQLvquWECuk5VpZDldMg+ORoMPEHcNjavONM6B3U/m1tI26hbyjOJ
-         kFG4KM9OvH7gW7FbyX0JcFZm5DG5b9qrepkeRQ8TgnX/AqGFThEuBndCAQvZGHZRoctd
-         d9pykgimKwZUdW8difWrHY/v1T5A6SGr1prKT5Sx+SxNV+nki1QiVPCVtdtpxFWSfUfc
-         d0enPj5fbXq+bQ59LR6I+7s/RVoQYSmAv+dKb01FTU7m42NDFfbXC4/8eOeihvkMvfxr
-         ZFgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=SYnq/jporBaefXRI5d9VrnNDN+Eko+2ot0lwaHlz4BE=;
-        b=fqux5zvdtMVRO59DQtpdcBpFeJ0G7s9b/hEmqPEnDuM6M1nq/USEHAteXyaKv7hT7m
-         fZ7+Wd5bPpaeMhDiUojXER2wIwltyONwLkPR/vJC2zDf3PYvwlGwvP5M+Co6cu6aMxzB
-         GEinnCDmAU9zFGrVsYalWMRM4vhedOTiOGiPT/ajFQp/+OSnKBBNfAeM0L86pSo05vJO
-         fpsbomFy1FFE/RdoY64In3ocOhaqzuP1vta2NbF5D99Zx3MQuhlcgThFDP1atCunoJr4
-         FAzNNNII2ag5LXta1mJMeyRRr2EjGOE+AXCJdif3eWHajPtbss0q9mYwjM+L/Jh1UmLi
-         bHUg==
-X-Gm-Message-State: AOAM5310u6GYi4SsJMNe4Hc8j8PVx9GHN5lyVqsLybkfer1Dyw1r67Ec
-        gKC+SwM/jicpC0EgBVP2pb1PbdE3AQ1/hRWQ+wI=
-X-Google-Smtp-Source: ABdhPJxi1tIImMXOvijAaV73lkzSmcLwaemVIjweHFT3zuogQNbMbtVnyVEBXwofCSLuab5sH4yhzogaoY78XtJ1bHE=
-X-Received: by 2002:a05:6830:22cb:: with SMTP id q11mr2529166otc.232.1599700162567;
- Wed, 09 Sep 2020 18:09:22 -0700 (PDT)
+        Wed, 9 Sep 2020 22:24:16 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id 55AC918027FA3;
+        Wed,  9 Sep 2020 22:47:33 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id A42B7181D337B;
+        Wed,  9 Sep 2020 22:47:32 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2898:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:4321:5007:6742:6743:8700:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21433:21627:21939:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: sort28_6003546270e1
+X-Filterd-Recvd-Size: 3292
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  9 Sep 2020 22:47:25 +0000 (UTC)
+Message-ID: <b3d6f71aea87f4bb88554f1a3fdaee0b2feb158c.camel@perches.com>
+Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
+ break;
+From:   Joe Perches <joe@perches.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Kees Cook <kees.cook@canonical.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dm-devel@redhat.com,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-mtd@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
+        oss-drivers@netronome.com, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-nvme@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        storagedev@microchip.com, sparclinux@vger.kernel.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-parisc@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, bpf@vger.kernel.org,
+        dccp@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-sctp@vger.kernel.org,
+        alsa-devel <alsa-devel@alsa-project.org>
+Date:   Wed, 09 Sep 2020 15:47:24 -0700
+In-Reply-To: <20200909223602.GJ87483@ziepe.ca>
+References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+         <20200909223602.GJ87483@ziepe.ca>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Received: by 2002:a4a:b18d:0:0:0:0:0 with HTTP; Wed, 9 Sep 2020 18:09:21 -0700 (PDT)
-Reply-To: howardseasons@gmail.com
-From:   "Howard Season Esq." <hfourseason@gmail.com>
-Date:   Thu, 10 Sep 2020 02:09:21 +0100
-Message-ID: <CAJuobtSaJjyoTcDki7fnLiA8xVLRxWZs_HnU2hi=K+xg2YmtQg@mail.gmail.com>
-Subject: =?UTF-8?B?0KPQstCw0LbQsNC10LzRi9C5INCh0LzQuNGA0L3QvtCy?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-0KPQstCw0LbQsNC10LzRi9C5INCh0LzQuNGA0L3QvtCyDQoNCtCvINCw0LTQstC+0LrQsNGCINCT
-0L7QstCw0YDQtCDRgdC10LfQvtC9LCDQrdGB0LrQstCw0LnRgCwg0Y8g0LDQtNCy0L7QutCw0YIg
-0L/QvtC60L7QudC90L7Qs9C+INCt0L3Qs9GA0LAuINCQ0LvQtdC60YENCtCh0LzQuNGA0L3QvtCy
-LCDQs9GA0LDQttC00LDQvdC40L0g0LLQsNGI0LXQuSDRgdGC0YDQsNC90YssINC60L7RgtC+0YDR
-i9C5INC20LjQuyDQt9C00LXRgdGMINGB0L4g0YHQstC+0LXQuSDRgdC10LzRjNC10Lkg0LgNCtGA
-0LDQsdC+0YLQsNGOINCyINC60L7QvNC/0LDQvdC40LggT3J5eCAmR2FzINC00L4gMjAxOSDQs9C+
-0LTQsCwg0LrQvtCz0LTQsCDQvNC+0Lkg0L/QvtC60L7QudC90YvQuSDQutC70LjQtdC90YIg0LgN
-CtGB0LXQvNGM0Y8g0L/QvtCz0LjQsdC70Lgg0LIg0LDQstC40LDQutCw0YLQsNGB0YLRgNC+0YTQ
-tSDQrdGE0LjQvtC/0YHQutC40YUg0LDQstC40LDQu9C40L3QuNC5LCDQsiDRgNC10LfRg9C70YzR
-gtCw0YLQtQ0K0LrQvtGC0L7RgNC+0Lkg0L/QvtCz0LjQsdC70LggMTQ5INGH0LXQu9C+0LLQtdC6
-DQrQtNC70Y8g0L/QvtC70YPRh9C10L3QuNGPINC00L7Qv9C+0LvQvdC40YLQtdC70YzQvdC+0Lkg
-0LjQvdGE0L7RgNC80LDRhtC40Lgg0J3QkNCW0JzQmNCi0JUg0J3QmNCW0JUg0LLQtdCxLdGB0LDQ
-udGC0LANCmh0dHBzOi8vd3d3LmJiYy5jb20vbmV3cy93b3JsZC1hZnJpY2EtNDc1MTM1MDgNCg0K
-0JzQvtC5INC/0L7QutC+0LnQvdGL0Lkg0LrQu9C40LXQvdGCINCx0YvQuyDQs9GA0LDQttC00LDQ
-vdC40L3QvtC8INCy0LDRiNC10Lkg0YHRgtGA0LDQvdGLINC4INC90L7RgdC40Lsg0YLQviDQttC1
-INC40LzRjw0K0YEg0YLQvtCx0L7QuS4g0K8g0YHQstGP0LfRi9Cy0LDRjtGB0Ywg0YEg0LLQsNC8
-0Lgg0L/QviDQstCw0LbQvdC+0LzRgyDQstC+0L/RgNC+0YHRgywg0LrQsNGB0LDRjtGJ0LXQvNGD
-0YHRjyDQtdCz0L4g0LbQuNC30L3QuC4NCtGE0L7QvdC0INCyINC+0LTQvdC+0Lwg0LjQtyDQt9C0
-0LXRiNC90LjRhSDQsdCw0L3QutC+0LIuDQoNCtChINGC0LXRhSDQv9C+0YAg0LrQsNC6INCyIDIw
-MTkg0LPQvtC00YMg0YPQvNC10YAg0LzQvtC5INC/0L7QutC+0LnQvdGL0Lkg0LrQu9C40LXQvdGC
-INC4INC10LPQviDRgdC10LzRjNGPLCDRjw0K0L/RgNC10LTQv9GA0LjQvdGP0Lsg0L3QtdGB0LrQ
-vtC70YzQutC+INC/0L7Qv9GL0YLQvtC6INC90LDQudC00Lgg0LrQvtCz0L4t0L3QuNCx0YPQtNGM
-INC40Lcg0LXQs9C+INCx0L7Qu9GM0YjQvtC5INGB0LXQvNGM0LgsDQrQvdC+INC00L4g0YHQuNGF
-INC/0L7RgCDRjyDRgtCw0Lwg0L3QtSDQsdGL0LsuINGD0YHQv9C10YUuINCvINC/0L7Qu9GD0YfQ
-uNC7INCy0LDRiCDQutC+0L3RgtCw0LrRgiDRgdC10LPQvtC00L3RjyDRh9C10YDQtdC3DQrRhNCw
-0LzQuNC70LjRjiDQs9C10L3QtdCw0LvQvtCz0LjRh9C10YHQutGD0Y4NCtC/0L7QuNGB0Log0Y8g
-0L/RgNC+0LLQtdC7IHRvZGF5Lk15INC/0L7Qt9C00L3QuNC5INC60LvQuNC10L3RgiDQstC90LXR
-gSDRhNC40LrRgdC40YDQvtCy0LDQvdC90YvQuSDQtNC10L/QvtC30LjRgiDQsg0K0YDQsNC30LzQ
-tdGA0LUgJCA5LDYg0LzQuNC70LvQuNC+0L0g0YEg0LHQsNC90LrQvtC8INC30LTQtdGB0YwuDQoN
-CtCSINGA0LXQt9GD0LvRjNGC0LDRgtC1INC10LPQviDQsdC10LfQstGA0LXQvNC10L3QvdC+0Lkg
-0LrQvtC90YfQuNC90Ysg0YHRgNC+0YfQvdGL0Lkg0LTQtdC/0L7Qt9C40YLQvdGL0Lkg0YHRh9C1
-0YIg0LHRi9C7INC30LDQutGA0YvRgi4NCtCx0LXQt9C00LXQudGB0YLQstGD0LXRgiDRgSDRgtC1
-0YUg0L/QvtGALCDQutCw0Log0LTQtdC/0L7Qt9C40YIg0YHQvtC30YDQtdC7INC00LvRjyDQstGL
-0LLQvtC00LAg0YHRgNC10LTRgdGC0LIsINC40Lct0LfQsCDQvtGC0YHRg9GC0YHRgtCy0LjRjw0K
-0YHQstGP0LfRjCDRgSDQtdCz0L4g0YDQsNGB0YjQuNGA0LXQvdC90L7QuSDRgdC10LzRjNC10Lks
-INC90LjQutGC0L4g0L3QtSDQsdGL0Lsg0LTQvtGB0YLRg9C/0LXQvSwg0YfRgtC+0LHRiyDRgdGC
-0L7Rj9GC0YwNCtC60LDQuiDQvdCw0YHQu9C10LTQvdC40Log0L/RgNC10YLQtdC90LTQvtCy0LDR
-gtGMINC90LAg0L3QsNGB0LvQtdC00YHRgtCy0L4g0YEg0LHQsNC90LrQvtC8Lg0KDQrQo9GH0LjR
-gtGL0LLQsNGPINCy0LDRiNGDINGE0LDQvNC40LvQuNGOINC4INC90LDRhtC40L7QvdCw0LvRjNC9
-0L7RgdGC0YwsINGB0LLRj9C30LDQvdC90YPRjiDRgSDQv9C+0LrQvtC50L3Ri9C8INC60LvQuNC1
-0L3RgtC+0LwsINGPIC4uLg0K0YHQstGP0LfQsNCy0YjQuNGB0Ywg0YEg0LLQsNC80Lgg0LrQsNC6
-INGB0L4g0YHQstC+0LjQvCDQstC+0LfQvNC+0LbQvdGL0Lwg0YDQvtC00YHRgtCy0LXQvdC90LjQ
-utC+0LwsINC40YnRg9GJ0LjQvCDQstCw0YjQtdCz0L4NCtC90LXQv9C+0YHRgNC10LTRgdGC0LLQ
-tdC90L3QvtCz0L4g0YHQvtCz0LvQsNGB0LjQtSDQv9GA0LXQtNGB0YLQsNCy0LjRgtGMINCy0LDR
-gSDQsdCw0L3QutGDINCyINC60LDRh9C10YHRgtCy0LUg0L3QsNGB0LvQtdC00L3QuNC60LANCtC/
-0L4g0LjRgdC60YMNCtC90LDRgdC70LXQtNC+0LLQsNC90LjQtS4g0JLQsNGIINGB0YDQvtGH0L3R
-i9C5INC+0YLQstC10YIg0L7Rh9C10L3RjCDQstCw0LbQtdC9LCDQv9C+0YLQvtC80YMg0YfRgtC+
-INCx0LDQvdC6DQrQvdCw0LzQtdGA0LXQstCw0Y/RgdGMINC60L7QvdGE0LjRgdC60L7QstCw0YLR
-jCDQtNC10L/QvtC30LjRgtC90YvQuSDRgdGH0LXRgiDRhNC+0L3QtNCwINGC0LDQuiDRh9GC0L4g
-0LLQvtC30LLRgNCw0YnQsNC50YLQtdGB0YwNCtC60L4g0LzQvdC1INC60LDQug0K0LrQsNC6INC8
-0L7QttC90L4g0YHQutC+0YDQtdC1Lg0KDQrQoSDRg9Cy0LDQttC10L3QuNC10LwsDQrQk9C+0LLQ
-sNGA0LQg0KHQtdC30L7QvSDQrdGB0LrQstCw0LnRgC4NCg==
+On Wed, 2020-09-09 at 19:36 -0300, Jason Gunthorpe wrote:
+> On Wed, Sep 09, 2020 at 01:06:39PM -0700, Joe Perches wrote:
+> > fallthrough to a separate case/default label break; isn't very readable.
+> > 
+> > Convert pseudo-keyword fallthrough; statements to a simple break; when
+> > the next label is case or default and the only statement in the next
+> > label block is break;
+> > 
+> > Found using:
+> > 
+> > $ grep-2.5.4 -rP --include=*.[ch] -n "fallthrough;(\s*(case\s+\w+|default)\s*:\s*){1,7}break;" *
+> > 
+> > Miscellanea:
+> > 
+> > o Move or coalesce a couple label blocks above a default: block.
+> > 
+> > Signed-off-by: Joe Perches <joe@perches.com>
+> > ---
+> > 
+> > Compiled allyesconfig x86-64 only.
+> > A few files for other arches were not compiled.
+> 
+> IB part looks OK, I prefer it like this
+> 
+> You could do the same for continue as well, I saw a few of those..
+
+I saw some continue uses as well but wasn't sure
+and didn't look to see if the switch/case with
+continue was in a for/while loop.
+
+
