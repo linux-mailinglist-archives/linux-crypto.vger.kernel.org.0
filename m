@@ -2,122 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BE8262665
-	for <lists+linux-crypto@lfdr.de>; Wed,  9 Sep 2020 06:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 760F226288F
+	for <lists+linux-crypto@lfdr.de>; Wed,  9 Sep 2020 09:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725811AbgIIEf5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 9 Sep 2020 00:35:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725767AbgIIEf5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 9 Sep 2020 00:35:57 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53FCD20758;
-        Wed,  9 Sep 2020 04:35:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599626156;
-        bh=je5OA9iAHkvXkpmZ+WvCM+zHsYTFCH8f3LiqiwGOrNM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1w5ve+edGLAT2nehtd7dJtNqTvtB+ux5Y1IBrNfx40qWcTjiB0aADs04LS6T2JPQ0
-         qlNb4DdsSpLS8ncWZe8uldart0i0jxHYTIByWnOxkYiFNMjpgziG1DN+QCSB0838j1
-         aKBAonfCPTMXBD6ylDnMx/UQC3aIZ6wmO1tuCC/E=
-Date:   Tue, 8 Sep 2020 21:35:54 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Elena Petrova <lenaptr@google.com>
-Cc:     linux-crypto@vger.kernel.org,
-        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>
-Subject: Re: [PATCH v6] crypto: af_alg - add extra parameters for DRBG
- interface
-Message-ID: <20200909043554.GA8311@sol.localdomain>
-References: <20200821042443.GA25695@gondor.apana.org.au>
- <20200908170403.2625295-1-lenaptr@google.com>
+        id S1729507AbgIIH1X (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 9 Sep 2020 03:27:23 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:41980 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728584AbgIIH1V (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 9 Sep 2020 03:27:21 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0897RBah103472;
+        Wed, 9 Sep 2020 02:27:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599636431;
+        bh=CP77hOSCh/XJSIWu/JAdp6XYqnTek2ZtYkKUqWwTEpQ=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=bEs2+N5/opqv/F26O50NMeIDlmQfsG4IRDMZUOCuNz6oSki8Lv6iIBev7IWXndJ5D
+         mb3VX4f846dapOpTG8REJVamX3aNnzYj8xCH854AlYik+hK+WQ5EH1pHnboyqrpIYx
+         THxuQ80rfqisZL7cBjkkENXm0E4EiJH22N++EBXo=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0897RBG1064784;
+        Wed, 9 Sep 2020 02:27:11 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 9 Sep
+ 2020 02:27:10 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 9 Sep 2020 02:27:11 -0500
+Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0897R8E9067872;
+        Wed, 9 Sep 2020 02:27:09 -0500
+Subject: Re: [PATCH 1/1] dt-bindings: rng: Convert OMAP RNG to schema
+From:   Tero Kristo <t-kristo@ti.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <mpm@selenic.com>, <herbert@gondor.apana.org.au>,
+        <robh+dt@kernel.org>
+References: <20200514131947.28094-1-t-kristo@ti.com>
+ <20200528152750.GA108124@bogus> <537a8759-264c-f366-7fb1-398ff21c9a65@ti.com>
+Message-ID: <e7182d47-3bec-3c51-9fde-faa5a150d5bf@ti.com>
+Date:   Wed, 9 Sep 2020 10:27:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <537a8759-264c-f366-7fb1-398ff21c9a65@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200908170403.2625295-1-lenaptr@google.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 06:04:03PM +0100, Elena Petrova wrote:
-> Extend the user-space RNG interface:
->   1. Add entropy input via ALG_SET_DRBG_ENTROPY setsockopt option;
->   2. Add additional data input via sendmsg syscall.
+On 28/05/2020 19:54, Tero Kristo wrote:
+> On 28/05/2020 18:27, Rob Herring wrote:
+>> On Thu, 14 May 2020 16:19:47 +0300, Tero Kristo wrote:
+>>> Convert TI OMAP Random number generator bindings to DT schema.
+>>>
+>>> Signed-off-by: Tero Kristo <t-kristo@ti.com>
+>>> ---
+>>>   .../devicetree/bindings/rng/omap_rng.txt      | 38 ---------
+>>>   .../devicetree/bindings/rng/ti,omap-rng.yaml  | 77 +++++++++++++++++++
+>>>   2 files changed, 77 insertions(+), 38 deletions(-)
+>>>   delete mode 100644 Documentation/devicetree/bindings/rng/omap_rng.txt
+>>>   create mode 100644 
+>>> Documentation/devicetree/bindings/rng/ti,omap-rng.yaml
+>>>
+>>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
 > 
-> This allows DRBG to be tested with test vectors, for example for the
-> purpose of CAVP testing, which otherwise isn't possible.
-> 
-> To prevent erroneous use of entropy input, it is hidden under
-> CRYPTO_USER_API_RNG_CAVP config option and requires CAP_SYS_ADMIN to
-> succeed.
-> 
-> Signed-off-by: Elena Petrova <lenaptr@google.com>
-> Acked-by: Stephan M�ller <smueller@chronox.de>
+> Thanks Rob. Just a quick question, who is going to merge this seeing it 
+> is a standalone dt binding conversion to yaml?
 
-This doesn't compile for me.  Can you rebase this onto the latest
-"master" branch from
-https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git?
+Ping on this, it appears to have gone stale.
 
-> +static void rng_reset_addtl(struct rng_ctx *ctx)
->  {
-> -	struct sock *sk = sock->sk;
-> -	struct alg_sock *ask = alg_sk(sk);
-> -	struct rng_ctx *ctx = ask->private;
-> -	int err;
-> +	kzfree(ctx->addtl);
-> +	ctx->addtl = NULL;
-> +	ctx->addtl_len = 0;
-> +}
+Who is going to pick this up?
 
-kzfree() has been renamed to kfree_sensitive(); see commit 453431a54934
-("mm, treewide: rename kzfree() to kfree_sensitive()").
-So please use kfree_sensitive() rather than kzfree(), in all three places.
-
-Note, kzfree() won't actually cause a compilation error since it's still
-#define'd to kfree_sensitive().  But that #define probably will go away soon.
-
-> +static int rng_test_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
-> +{
-> +	int err;
-> +	struct alg_sock *ask = alg_sk(sock->sk);
-> +	struct rng_ctx *ctx = ask->private;
-> +
-> +	lock_sock(sock->sk);
-> +	if (len > MAXSIZE)
-> +		len = MAXSIZE;
-
-Since this function only supports providing the additional data all at once, not
-incrementally, shouldn't it return an error code if the length is too long,
-rather than truncate the length?
-
-> +	/*
-> +	 * Non NULL pctx->entropy means that CAVP test has been initiated on
-> +	 * this socket, replace proto_ops algif_rng_ops with algif_rng_test_ops.
-> +	 */
-> +	if (pctx->entropy)
-> +		sk->sk_socket->ops = algif_rng_test_ops;
-
-This means that providing additional data on a "request socket" via sendmsg will
-only work if ALG_SET_DRBG_ENTROPY was used on the "algorithm socket" earlier.
-If that's intentional, it needs to be mentioned in the documentation.
-
->  static const struct af_alg_type algif_type_rng = {
-> @@ -169,6 +319,9 @@ static const struct af_alg_type algif_type_rng = {
->  	.release	=	rng_release,
->  	.accept		=	rng_accept_parent,
->  	.setkey		=	rng_setkey,
-> +#if IS_ENABLED(CONFIG_CRYPTO_USER_API_RNG_CAVP)
-> +	.setentropy	=	rng_setentropy,
-> +#endif
-
-Since CRYPTO_USER_API_RNG_CAVP is now a bool rather than a tristate, this should
-use '#ifdef CONFIG_CRYPTO_USER_API_RNG_CAVP' instead of
-'IS_ENABLED(CONFIG_CRYPTO_USER_API_RNG_CAVP)'.
-
-- Eric
+-Tero
+--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
