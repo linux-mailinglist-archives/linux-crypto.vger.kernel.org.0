@@ -2,60 +2,152 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364EC26467B
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Sep 2020 15:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1D1264EFA
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Sep 2020 21:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730432AbgIJNA7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Sep 2020 09:00:59 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11787 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730905AbgIJM6O (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:58:14 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 860E4D250F1DEF30FDF8
-        for <linux-crypto@vger.kernel.org>; Thu, 10 Sep 2020 20:58:02 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 20:57:56 +0800
-From:   Longfang Liu <liulongfang@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>
-Subject: [PATCH 2/5] crypto: hisilicon - update HPRE module parameter description
-Date:   Thu, 10 Sep 2020 20:56:49 +0800
-Message-ID: <1599742610-33571-2-git-send-email-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1599742610-33571-1-git-send-email-liulongfang@huawei.com>
-References: <1599742610-33571-1-git-send-email-liulongfang@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        id S1727976AbgIJTbh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Sep 2020 15:31:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727807AbgIJT32 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 10 Sep 2020 15:29:28 -0400
+Received: from localhost.localdomain (unknown [194.230.155.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CA4620882;
+        Thu, 10 Sep 2020 19:29:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599766166;
+        bh=hL6w8E8SUjjPiOKWWzA5Ali9T6LnigQnlGkrYfgRtaI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=x84wJj85EWTbHdmxLHCcca3DxsfFMsG5BqTYdZV6EXFQI3f9917GjfxRCRslYuc9m
+         Etxu4BonuYY/VCMILOoyvU/yUt4mKRBC5qjGZ/oVZi4ZOsLZrjmWNCg6EmArpuPXdx
+         UIoQu++lCJCrdk5jovaAHaOen43XILBCHQRS6B/c=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Cc:     Iuliana Prodan <iuliana.prodan@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v2 1/4] crypto: caam - Fix kerneldoc
+Date:   Thu, 10 Sep 2020 21:29:16 +0200
+Message-Id: <20200910192919.12503-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-In order to pass kernel CRYPTO test, HPRE module parameter
-'pf_q_num' needs to be set as greater than 1.
+Fix kerneldoc warnings like:
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+  drivers/crypto/caam/caamalg_qi2.c:73: warning: cannot understand function prototype: 'struct caam_ctx'
+  drivers/crypto/caam/caamalg_qi2.c:2962: warning: cannot understand function prototype: 'struct caam_hash_ctx'
+  drivers/crypto/caam/ctrl.c:449: warning: Function parameter or member 'ctrl' not described in 'caam_get_era'
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+
 ---
- drivers/crypto/hisilicon/hpre/hpre_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 45741d2..cf9169d 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -190,7 +190,7 @@ static const struct kernel_param_ops hpre_pf_q_num_ops = {
+Changes since v1:
+1. Fix more warnings
+---
+ drivers/crypto/caam/caamalg_desc.c |  1 +
+ drivers/crypto/caam/caamalg_qi2.c  |  4 ++--
+ drivers/crypto/caam/ctrl.c         |  4 +++-
+ drivers/crypto/caam/jr.c           | 10 +++++-----
+ 4 files changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/crypto/caam/caamalg_desc.c b/drivers/crypto/caam/caamalg_desc.c
+index d6c58184bb57..f0f0fdd1ef32 100644
+--- a/drivers/crypto/caam/caamalg_desc.c
++++ b/drivers/crypto/caam/caamalg_desc.c
+@@ -373,6 +373,7 @@ EXPORT_SYMBOL(cnstr_shdsc_aead_encap);
+  *         with OP_ALG_AAI_HMAC_PRECOMP.
+  * @ivsize: initialization vector size
+  * @icvsize: integrity check value (ICV) size (truncated or full)
++ * @geniv: whether to generate Encrypted Chain IV
+  * @is_rfc3686: true when ctr(aes) is wrapped by rfc3686 template
+  * @nonce: pointer to rfc3686 nonce
+  * @ctx1_iv_off: IV offset in CONTEXT1 register
+diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
+index 66ae1d581168..0441e4ff2df2 100644
+--- a/drivers/crypto/caam/caamalg_qi2.c
++++ b/drivers/crypto/caam/caamalg_qi2.c
+@@ -59,7 +59,7 @@ struct caam_skcipher_alg {
+ };
  
- static u32 pf_q_num = HPRE_PF_DEF_Q_NUM;
- module_param_cb(pf_q_num, &hpre_pf_q_num_ops, &pf_q_num, 0444);
--MODULE_PARM_DESC(pf_q_num, "Number of queues in PF of CS(1-1024)");
-+MODULE_PARM_DESC(pf_q_num, "Number of queues in PF of CS(2-1024)");
+ /**
+- * caam_ctx - per-session context
++ * struct caam_ctx - per-session context
+  * @flc: Flow Contexts array
+  * @key:  [authentication key], encryption key
+  * @flc_dma: I/O virtual addresses of the Flow Contexts
+@@ -2951,7 +2951,7 @@ enum hash_optype {
+ };
  
- static const struct kernel_param_ops vfs_num_ops = {
- 	.set = vfs_num_set,
+ /**
+- * caam_hash_ctx - ahash per-session context
++ * struct caam_hash_ctx - ahash per-session context
+  * @flc: Flow Contexts array
+  * @key: authentication key
+  * @flc_dma: I/O virtual addresses of the Flow Contexts
+diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+index 65de57f169d9..f7adcf6ecea5 100644
+--- a/drivers/crypto/caam/ctrl.c
++++ b/drivers/crypto/caam/ctrl.c
+@@ -444,7 +444,9 @@ static int caam_get_era_from_hw(struct caam_ctrl __iomem *ctrl)
+  * by u-boot.
+  * In case this property is not passed an attempt to retrieve the CAAM
+  * era via register reads will be made.
+- **/
++ *
++ * @ctrl:	controller region
++ */
+ static int caam_get_era(struct caam_ctrl __iomem *ctrl)
+ {
+ 	struct device_node *caam_node;
+diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
+index bf6b03b17251..6f669966ba2c 100644
+--- a/drivers/crypto/caam/jr.c
++++ b/drivers/crypto/caam/jr.c
+@@ -324,7 +324,7 @@ EXPORT_SYMBOL(caam_jr_alloc);
+ 
+ /**
+  * caam_jr_free() - Free the Job Ring
+- * @rdev     - points to the dev that identifies the Job ring to
++ * @rdev:      points to the dev that identifies the Job ring to
+  *             be released.
+  **/
+ void caam_jr_free(struct device *rdev)
+@@ -349,15 +349,15 @@ EXPORT_SYMBOL(caam_jr_free);
+  *        of this request. This has the form:
+  *        callback(struct device *dev, u32 *desc, u32 stat, void *arg)
+  *        where:
+- *        @dev:    contains the job ring device that processed this
++ *        dev:     contains the job ring device that processed this
+  *                 response.
+- *        @desc:   descriptor that initiated the request, same as
++ *        desc:    descriptor that initiated the request, same as
+  *                 "desc" being argued to caam_jr_enqueue().
+- *        @status: untranslated status received from CAAM. See the
++ *        status:  untranslated status received from CAAM. See the
+  *                 reference manual for a detailed description of
+  *                 error meaning, or see the JRSTA definitions in the
+  *                 register header file
+- *        @areq:   optional pointer to an argument passed with the
++ *        areq:    optional pointer to an argument passed with the
+  *                 original request
+  * @areq: optional pointer to a user argument for use at callback
+  *        time.
 -- 
-2.8.1
+2.17.1
 
