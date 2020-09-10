@@ -2,460 +2,112 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C7F2639A9
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3F42639A8
 	for <lists+linux-crypto@lfdr.de>; Thu, 10 Sep 2020 03:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730178AbgIJB7W (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 9 Sep 2020 21:59:22 -0400
-Received: from smtprelay0215.hostedemail.com ([216.40.44.215]:43108 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728663AbgIJBic (ORCPT
+        id S1730339AbgIJB7f (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 9 Sep 2020 21:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730025AbgIJBrq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 9 Sep 2020 21:38:32 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id 08BE2180255BD;
-        Thu, 10 Sep 2020 00:20:47 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 4D665182CED34;
-        Thu, 10 Sep 2020 00:20:45 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:1:41:69:355:379:599:960:966:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1593:1594:1605:1730:1747:1777:1792:2110:2194:2196:2199:2200:2393:2553:2559:2562:2638:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3872:3874:4321:4385:4560:5007:9040:10004:10848:11026:11232:11658:11914:12043:12214:12291:12296:12297:12438:12555:12683:12740:12760:12895:12986:13161:13229:13439:14659:21060:21080:21611:21627:21796:21939:21990:30012:30036:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: smoke24_341571c270e1
-X-Filterd-Recvd-Size: 13205
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 10 Sep 2020 00:20:43 +0000 (UTC)
-Message-ID: <c50014e57e77842e4c710231dff829f3f67bbe59.camel@perches.com>
-Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
- break;
-From:   Joe Perches <joe@perches.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Keith Busch <kbusch@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Kees Cook <kees.cook@canonical.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 09 Sep 2020 17:20:42 -0700
-In-Reply-To: <20200909223540.GA27590@gondor.apana.org.au>
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-         <20200909205558.GA3384631@dhcp-10-100-145-180.wdl.wdc.com>
-         <b0c31cbb82aa64027569dff69803ca3ec2f65501.camel@perches.com>
-         <20200909223540.GA27590@gondor.apana.org.au>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 9 Sep 2020 21:47:46 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99690C061371
+        for <linux-crypto@vger.kernel.org>; Wed,  9 Sep 2020 18:09:23 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 60so3992549otw.3
+        for <linux-crypto@vger.kernel.org>; Wed, 09 Sep 2020 18:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=SYnq/jporBaefXRI5d9VrnNDN+Eko+2ot0lwaHlz4BE=;
+        b=cdEdCF4G3MCG+SHNuxgtVbNLd9qYHYBXk6nWBfx6e7kldmykTVMqbqGxMLT8WOlps8
+         Ej7eQN+KMIIdulqYQLvquWECuk5VpZDldMg+ORoMPEHcNjavONM6B3U/m1tI26hbyjOJ
+         kFG4KM9OvH7gW7FbyX0JcFZm5DG5b9qrepkeRQ8TgnX/AqGFThEuBndCAQvZGHZRoctd
+         d9pykgimKwZUdW8difWrHY/v1T5A6SGr1prKT5Sx+SxNV+nki1QiVPCVtdtpxFWSfUfc
+         d0enPj5fbXq+bQ59LR6I+7s/RVoQYSmAv+dKb01FTU7m42NDFfbXC4/8eOeihvkMvfxr
+         ZFgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=SYnq/jporBaefXRI5d9VrnNDN+Eko+2ot0lwaHlz4BE=;
+        b=fqux5zvdtMVRO59DQtpdcBpFeJ0G7s9b/hEmqPEnDuM6M1nq/USEHAteXyaKv7hT7m
+         fZ7+Wd5bPpaeMhDiUojXER2wIwltyONwLkPR/vJC2zDf3PYvwlGwvP5M+Co6cu6aMxzB
+         GEinnCDmAU9zFGrVsYalWMRM4vhedOTiOGiPT/ajFQp/+OSnKBBNfAeM0L86pSo05vJO
+         fpsbomFy1FFE/RdoY64In3ocOhaqzuP1vta2NbF5D99Zx3MQuhlcgThFDP1atCunoJr4
+         FAzNNNII2ag5LXta1mJMeyRRr2EjGOE+AXCJdif3eWHajPtbss0q9mYwjM+L/Jh1UmLi
+         bHUg==
+X-Gm-Message-State: AOAM5310u6GYi4SsJMNe4Hc8j8PVx9GHN5lyVqsLybkfer1Dyw1r67Ec
+        gKC+SwM/jicpC0EgBVP2pb1PbdE3AQ1/hRWQ+wI=
+X-Google-Smtp-Source: ABdhPJxi1tIImMXOvijAaV73lkzSmcLwaemVIjweHFT3zuogQNbMbtVnyVEBXwofCSLuab5sH4yhzogaoY78XtJ1bHE=
+X-Received: by 2002:a05:6830:22cb:: with SMTP id q11mr2529166otc.232.1599700162567;
+ Wed, 09 Sep 2020 18:09:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a4a:b18d:0:0:0:0:0 with HTTP; Wed, 9 Sep 2020 18:09:21 -0700 (PDT)
+Reply-To: howardseasons@gmail.com
+From:   "Howard Season Esq." <hfourseason@gmail.com>
+Date:   Thu, 10 Sep 2020 02:09:21 +0100
+Message-ID: <CAJuobtSaJjyoTcDki7fnLiA8xVLRxWZs_HnU2hi=K+xg2YmtQg@mail.gmail.com>
+Subject: =?UTF-8?B?0KPQstCw0LbQsNC10LzRi9C5INCh0LzQuNGA0L3QvtCy?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, 2020-09-10 at 08:35 +1000, Herbert Xu wrote:
-> On Wed, Sep 09, 2020 at 02:09:32PM -0700, Joe Perches wrote:
-> > On Wed, 2020-09-09 at 13:55 -0700, Keith Busch wrote:
-> > > On Wed, Sep 09, 2020 at 01:06:39PM -0700, Joe Perches wrote:
-> > > > diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-> > > > index eea0f453cfb6..8aac5bc60f4c 100644
-> > > > --- a/crypto/tcrypt.c
-> > > > +++ b/crypto/tcrypt.c
-> > > > @@ -2464,7 +2464,7 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
-> > > >  		test_hash_speed("streebog512", sec,
-> > > >  				generic_hash_speed_template);
-> > > >  		if (mode > 300 && mode < 400) break;
-> > > > -		fallthrough;
-> > > > +		break;
-> > > >  	case 399:
-> > > >  		break;
-> > > 
-> > > Just imho, this change makes the preceding 'if' look even more
-> > > pointless. Maybe the fallthrough was a deliberate choice? Not that my
-> > > opinion matters here as I don't know this module, but it looked a bit
-> > > odd to me.
-> > 
-> > It does look odd to me too.
-> > 
-> > It's also just a test module though so the
-> > code isn't particularly crucial.
-> > 
-> > Herbert/David? thoughts?
-> 
-> Please read the function as a whole, that fallthrough (and every other
-> one in do_test) needs to stay.
-
-Hi Herbert.
-
-OK, I did.  I think it's odd code.
-
-The do_test function could start at any 3xx or 4xx mode
-and then do all the next tests to the highest 99
-for ranges from 301-399 and 401-499.
-
-ie: Pass mode 312, it'll execute test 312 and every
-other test to 399.
-
-Not the same for the 500-599 or 600-699 range.
-
-I probably would've hoisted the code for all of the 0,
-any value from 300-399, and any value from 400-499
-out of the do_test function and into tcrypt_mod_init
-not used fallthrough in do_test at all.
-
-cheers, Joe
-
-Perhaps something like:
----
- crypto/tcrypt.c | 190 +++++++++++++++++++++-----------------------------------
- 1 file changed, 72 insertions(+), 118 deletions(-)
-
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index eea0f453cfb6..aeb089f6ee27 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -1660,7 +1660,6 @@ static inline int tcrypt_test(const char *alg)
- 
- static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- {
--	int i;
- 	int ret = 0;
- 
- 	switch (m) {
-@@ -1672,8 +1671,6 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 			break;
- 		}
- 
--		for (i = 1; i < 200; i++)
--			ret += do_test(NULL, 0, 0, i, num_mb);
- 		break;
- 
- 	case 1:
-@@ -2349,123 +2346,93 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 			test_hash_speed(alg, sec, generic_hash_speed_template);
- 			break;
- 		}
--		fallthrough;
-+		break;
- 	case 301:
- 		test_hash_speed("md4", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 302:
- 		test_hash_speed("md5", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 303:
- 		test_hash_speed("sha1", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 304:
- 		test_hash_speed("sha256", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 305:
- 		test_hash_speed("sha384", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 306:
- 		test_hash_speed("sha512", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 307:
- 		test_hash_speed("wp256", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 308:
- 		test_hash_speed("wp384", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 309:
- 		test_hash_speed("wp512", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 310:
- 		test_hash_speed("tgr128", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 311:
- 		test_hash_speed("tgr160", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 312:
- 		test_hash_speed("tgr192", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 313:
- 		test_hash_speed("sha224", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 314:
- 		test_hash_speed("rmd128", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 315:
- 		test_hash_speed("rmd160", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 316:
- 		test_hash_speed("rmd256", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 317:
- 		test_hash_speed("rmd320", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 318:
- 		klen = 16;
- 		test_hash_speed("ghash", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 319:
- 		test_hash_speed("crc32c", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 320:
- 		test_hash_speed("crct10dif", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 321:
- 		test_hash_speed("poly1305", sec, poly1305_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 322:
- 		test_hash_speed("sha3-224", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 323:
- 		test_hash_speed("sha3-256", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 324:
- 		test_hash_speed("sha3-384", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 325:
- 		test_hash_speed("sha3-512", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 326:
- 		test_hash_speed("sm3", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 327:
- 		test_hash_speed("streebog256", sec,
- 				generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 328:
- 		test_hash_speed("streebog512", sec,
- 				generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
--	case 399:
- 		break;
- 
- 	case 400:
-@@ -2473,122 +2440,93 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 			test_ahash_speed(alg, sec, generic_hash_speed_template);
- 			break;
- 		}
--		fallthrough;
-+		break;
- 	case 401:
- 		test_ahash_speed("md4", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 402:
- 		test_ahash_speed("md5", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 403:
- 		test_ahash_speed("sha1", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 404:
- 		test_ahash_speed("sha256", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 405:
- 		test_ahash_speed("sha384", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 406:
- 		test_ahash_speed("sha512", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 407:
- 		test_ahash_speed("wp256", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 408:
- 		test_ahash_speed("wp384", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 409:
- 		test_ahash_speed("wp512", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 410:
- 		test_ahash_speed("tgr128", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 411:
- 		test_ahash_speed("tgr160", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 412:
- 		test_ahash_speed("tgr192", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 413:
- 		test_ahash_speed("sha224", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 414:
- 		test_ahash_speed("rmd128", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 415:
- 		test_ahash_speed("rmd160", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 416:
- 		test_ahash_speed("rmd256", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 417:
- 		test_ahash_speed("rmd320", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 418:
- 		test_ahash_speed("sha3-224", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 419:
- 		test_ahash_speed("sha3-256", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 420:
- 		test_ahash_speed("sha3-384", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 421:
- 		test_ahash_speed("sha3-512", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 422:
- 		test_mb_ahash_speed("sha1", sec, generic_hash_speed_template,
- 				    num_mb);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 423:
- 		test_mb_ahash_speed("sha256", sec, generic_hash_speed_template,
- 				    num_mb);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 424:
- 		test_mb_ahash_speed("sha512", sec, generic_hash_speed_template,
- 				    num_mb);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 425:
- 		test_mb_ahash_speed("sm3", sec, generic_hash_speed_template,
- 				    num_mb);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 426:
- 		test_mb_ahash_speed("streebog256", sec,
- 				    generic_hash_speed_template, num_mb);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 427:
- 		test_mb_ahash_speed("streebog512", sec,
- 				    generic_hash_speed_template, num_mb);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
--	case 499:
- 		break;
- 
- 	case 500:
-@@ -3034,7 +2972,23 @@ static int __init tcrypt_mod_init(void)
- 			goto err_free_tv;
- 	}
- 
--	err = do_test(alg, type, mask, mode, num_mb);
-+	if (mode == 0) {
-+		err = do_test(alg, type, mask, mode, num_mb);
-+		if (!err) {
-+			for (i = 1; i < 200; i++)
-+				err |= do_test(NULL, 0, 0, i, num_mb);
-+		}
-+	} else if (mode >= 300 && mode < 400) {
-+		err = 0;
-+		for (i = mode; i < 400; i++)
-+			err |= do_test(alg, type, mask, i, num_mb);
-+	} else if (mode >= 400 && mode < 500) {
-+		err = 0;
-+		for (i = mode; i < 500; i++)
-+			err |= do_test(alg, type, mask, i, num_mb);
-+	} else {
-+		err = do_test(alg, type, mask, mode, num_mb);
-+	}
- 
- 	if (err) {
- 		printk(KERN_ERR "tcrypt: one or more tests failed!\n");
-
-
+0KPQstCw0LbQsNC10LzRi9C5INCh0LzQuNGA0L3QvtCyDQoNCtCvINCw0LTQstC+0LrQsNGCINCT
+0L7QstCw0YDQtCDRgdC10LfQvtC9LCDQrdGB0LrQstCw0LnRgCwg0Y8g0LDQtNCy0L7QutCw0YIg
+0L/QvtC60L7QudC90L7Qs9C+INCt0L3Qs9GA0LAuINCQ0LvQtdC60YENCtCh0LzQuNGA0L3QvtCy
+LCDQs9GA0LDQttC00LDQvdC40L0g0LLQsNGI0LXQuSDRgdGC0YDQsNC90YssINC60L7RgtC+0YDR
+i9C5INC20LjQuyDQt9C00LXRgdGMINGB0L4g0YHQstC+0LXQuSDRgdC10LzRjNC10Lkg0LgNCtGA
+0LDQsdC+0YLQsNGOINCyINC60L7QvNC/0LDQvdC40LggT3J5eCAmR2FzINC00L4gMjAxOSDQs9C+
+0LTQsCwg0LrQvtCz0LTQsCDQvNC+0Lkg0L/QvtC60L7QudC90YvQuSDQutC70LjQtdC90YIg0LgN
+CtGB0LXQvNGM0Y8g0L/QvtCz0LjQsdC70Lgg0LIg0LDQstC40LDQutCw0YLQsNGB0YLRgNC+0YTQ
+tSDQrdGE0LjQvtC/0YHQutC40YUg0LDQstC40LDQu9C40L3QuNC5LCDQsiDRgNC10LfRg9C70YzR
+gtCw0YLQtQ0K0LrQvtGC0L7RgNC+0Lkg0L/QvtCz0LjQsdC70LggMTQ5INGH0LXQu9C+0LLQtdC6
+DQrQtNC70Y8g0L/QvtC70YPRh9C10L3QuNGPINC00L7Qv9C+0LvQvdC40YLQtdC70YzQvdC+0Lkg
+0LjQvdGE0L7RgNC80LDRhtC40Lgg0J3QkNCW0JzQmNCi0JUg0J3QmNCW0JUg0LLQtdCxLdGB0LDQ
+udGC0LANCmh0dHBzOi8vd3d3LmJiYy5jb20vbmV3cy93b3JsZC1hZnJpY2EtNDc1MTM1MDgNCg0K
+0JzQvtC5INC/0L7QutC+0LnQvdGL0Lkg0LrQu9C40LXQvdGCINCx0YvQuyDQs9GA0LDQttC00LDQ
+vdC40L3QvtC8INCy0LDRiNC10Lkg0YHRgtGA0LDQvdGLINC4INC90L7RgdC40Lsg0YLQviDQttC1
+INC40LzRjw0K0YEg0YLQvtCx0L7QuS4g0K8g0YHQstGP0LfRi9Cy0LDRjtGB0Ywg0YEg0LLQsNC8
+0Lgg0L/QviDQstCw0LbQvdC+0LzRgyDQstC+0L/RgNC+0YHRgywg0LrQsNGB0LDRjtGJ0LXQvNGD
+0YHRjyDQtdCz0L4g0LbQuNC30L3QuC4NCtGE0L7QvdC0INCyINC+0LTQvdC+0Lwg0LjQtyDQt9C0
+0LXRiNC90LjRhSDQsdCw0L3QutC+0LIuDQoNCtChINGC0LXRhSDQv9C+0YAg0LrQsNC6INCyIDIw
+MTkg0LPQvtC00YMg0YPQvNC10YAg0LzQvtC5INC/0L7QutC+0LnQvdGL0Lkg0LrQu9C40LXQvdGC
+INC4INC10LPQviDRgdC10LzRjNGPLCDRjw0K0L/RgNC10LTQv9GA0LjQvdGP0Lsg0L3QtdGB0LrQ
+vtC70YzQutC+INC/0L7Qv9GL0YLQvtC6INC90LDQudC00Lgg0LrQvtCz0L4t0L3QuNCx0YPQtNGM
+INC40Lcg0LXQs9C+INCx0L7Qu9GM0YjQvtC5INGB0LXQvNGM0LgsDQrQvdC+INC00L4g0YHQuNGF
+INC/0L7RgCDRjyDRgtCw0Lwg0L3QtSDQsdGL0LsuINGD0YHQv9C10YUuINCvINC/0L7Qu9GD0YfQ
+uNC7INCy0LDRiCDQutC+0L3RgtCw0LrRgiDRgdC10LPQvtC00L3RjyDRh9C10YDQtdC3DQrRhNCw
+0LzQuNC70LjRjiDQs9C10L3QtdCw0LvQvtCz0LjRh9C10YHQutGD0Y4NCtC/0L7QuNGB0Log0Y8g
+0L/RgNC+0LLQtdC7IHRvZGF5Lk15INC/0L7Qt9C00L3QuNC5INC60LvQuNC10L3RgiDQstC90LXR
+gSDRhNC40LrRgdC40YDQvtCy0LDQvdC90YvQuSDQtNC10L/QvtC30LjRgiDQsg0K0YDQsNC30LzQ
+tdGA0LUgJCA5LDYg0LzQuNC70LvQuNC+0L0g0YEg0LHQsNC90LrQvtC8INC30LTQtdGB0YwuDQoN
+CtCSINGA0LXQt9GD0LvRjNGC0LDRgtC1INC10LPQviDQsdC10LfQstGA0LXQvNC10L3QvdC+0Lkg
+0LrQvtC90YfQuNC90Ysg0YHRgNC+0YfQvdGL0Lkg0LTQtdC/0L7Qt9C40YLQvdGL0Lkg0YHRh9C1
+0YIg0LHRi9C7INC30LDQutGA0YvRgi4NCtCx0LXQt9C00LXQudGB0YLQstGD0LXRgiDRgSDRgtC1
+0YUg0L/QvtGALCDQutCw0Log0LTQtdC/0L7Qt9C40YIg0YHQvtC30YDQtdC7INC00LvRjyDQstGL
+0LLQvtC00LAg0YHRgNC10LTRgdGC0LIsINC40Lct0LfQsCDQvtGC0YHRg9GC0YHRgtCy0LjRjw0K
+0YHQstGP0LfRjCDRgSDQtdCz0L4g0YDQsNGB0YjQuNGA0LXQvdC90L7QuSDRgdC10LzRjNC10Lks
+INC90LjQutGC0L4g0L3QtSDQsdGL0Lsg0LTQvtGB0YLRg9C/0LXQvSwg0YfRgtC+0LHRiyDRgdGC
+0L7Rj9GC0YwNCtC60LDQuiDQvdCw0YHQu9C10LTQvdC40Log0L/RgNC10YLQtdC90LTQvtCy0LDR
+gtGMINC90LAg0L3QsNGB0LvQtdC00YHRgtCy0L4g0YEg0LHQsNC90LrQvtC8Lg0KDQrQo9GH0LjR
+gtGL0LLQsNGPINCy0LDRiNGDINGE0LDQvNC40LvQuNGOINC4INC90LDRhtC40L7QvdCw0LvRjNC9
+0L7RgdGC0YwsINGB0LLRj9C30LDQvdC90YPRjiDRgSDQv9C+0LrQvtC50L3Ri9C8INC60LvQuNC1
+0L3RgtC+0LwsINGPIC4uLg0K0YHQstGP0LfQsNCy0YjQuNGB0Ywg0YEg0LLQsNC80Lgg0LrQsNC6
+INGB0L4g0YHQstC+0LjQvCDQstC+0LfQvNC+0LbQvdGL0Lwg0YDQvtC00YHRgtCy0LXQvdC90LjQ
+utC+0LwsINC40YnRg9GJ0LjQvCDQstCw0YjQtdCz0L4NCtC90LXQv9C+0YHRgNC10LTRgdGC0LLQ
+tdC90L3QvtCz0L4g0YHQvtCz0LvQsNGB0LjQtSDQv9GA0LXQtNGB0YLQsNCy0LjRgtGMINCy0LDR
+gSDQsdCw0L3QutGDINCyINC60LDRh9C10YHRgtCy0LUg0L3QsNGB0LvQtdC00L3QuNC60LANCtC/
+0L4g0LjRgdC60YMNCtC90LDRgdC70LXQtNC+0LLQsNC90LjQtS4g0JLQsNGIINGB0YDQvtGH0L3R
+i9C5INC+0YLQstC10YIg0L7Rh9C10L3RjCDQstCw0LbQtdC9LCDQv9C+0YLQvtC80YMg0YfRgtC+
+INCx0LDQvdC6DQrQvdCw0LzQtdGA0LXQstCw0Y/RgdGMINC60L7QvdGE0LjRgdC60L7QstCw0YLR
+jCDQtNC10L/QvtC30LjRgtC90YvQuSDRgdGH0LXRgiDRhNC+0L3QtNCwINGC0LDQuiDRh9GC0L4g
+0LLQvtC30LLRgNCw0YnQsNC50YLQtdGB0YwNCtC60L4g0LzQvdC1INC60LDQug0K0LrQsNC6INC8
+0L7QttC90L4g0YHQutC+0YDQtdC1Lg0KDQrQoSDRg9Cy0LDQttC10L3QuNC10LwsDQrQk9C+0LLQ
+sNGA0LQg0KHQtdC30L7QvSDQrdGB0LrQstCw0LnRgC4NCg==
