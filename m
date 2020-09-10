@@ -2,107 +2,191 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7304A264EF9
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Sep 2020 21:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC042652FF
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Sep 2020 23:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbgIJTbX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Sep 2020 15:31:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726512AbgIJT3j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 10 Sep 2020 15:29:39 -0400
-Received: from localhost.localdomain (unknown [194.230.155.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E811821D92;
-        Thu, 10 Sep 2020 19:29:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599766176;
-        bh=J+36KfiCj6ZqQvGQMiAmr/24p4yD+AflrA4ni1Zap14=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xPBKvVFpHggxzO23tGiSaky0KlkF4+un8LWAPbmZObck71qM/avY7UqWtG577qnY0
-         PnA5fZOLc357YA1FVO32FkV6B0h+ZvtEKxwKl3Jnz5KJxQ9pvava+qp9B+q6Tttgta
-         mqfZp2Q4IUeXW9ww6qq3T2nooXdigTyVomwfhcsc=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Cc:     Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 4/4] crypto: allwinner/sun8i - Simplify with dev_err_probe()
-Date:   Thu, 10 Sep 2020 21:29:19 +0200
-Message-Id: <20200910192919.12503-4-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200910192919.12503-1-krzk@kernel.org>
-References: <20200910192919.12503-1-krzk@kernel.org>
+        id S1728083AbgIJV1R (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Sep 2020 17:27:17 -0400
+Received: from mail-il1-f206.google.com ([209.85.166.206]:49669 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731101AbgIJOJr (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 10 Sep 2020 10:09:47 -0400
+Received: by mail-il1-f206.google.com with SMTP id f132so4609269ilh.16
+        for <linux-crypto@vger.kernel.org>; Thu, 10 Sep 2020 07:09:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=zVqSsWX+nI5HXEyIHZ7ZaxwHe+dDtC+0l7LqQAeVjBM=;
+        b=Mz41/4xi6fv9l0pv+LrAsMMCeEOMIZZWAZGkyJVdAnoLIIEZKaCXh7tW2zxtEo2LIQ
+         JKORT++kSZ5f3RI3ppeDOV0smDLOqoEAmuokucUYMvVpp+Lbj8XW63pFkS2R4fAzVz/z
+         kOzGObBMkK3vrOs5/EIG2W0f1xXkINTr2TTwElTrM6nXNQRKi38r13cpduA0ESLO4Pjg
+         jSwVo9xrIAgd3TZF+jKx/1EDwKc9hTwAtuTB6WUR8VqEaZnb0KP26AhpwbQrEVHhNjhF
+         9r8QihX4VUQ1FtfAX8/1pSuxl53YTCzaKiX+0CzNzoIbhCR8wp4ulODbOfSBdWDpbimp
+         nkJg==
+X-Gm-Message-State: AOAM533lJGotFZC9WEBE/9Fq12smv9CABOLOvPXHCm3UWd8DHfU4ftRy
+        mie2H90GpO3foIGQUytZ0MXJdAmT3t+pGnNo+imf9lc58HmK
+X-Google-Smtp-Source: ABdhPJxPWT1Q8/TP1NXh/xIeSW78G9A8i63k6ycgGU/3/OEQZmP1D6dEMJqfScus9pU65THHIFnKDRqW7jtXdrB/AvOYzftXQJOE
+MIME-Version: 1.0
+X-Received: by 2002:a05:6602:2e87:: with SMTP id m7mr7487680iow.106.1599746964353;
+ Thu, 10 Sep 2020 07:09:24 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 07:09:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008a7ae505aef61db1@google.com>
+Subject: KMSAN: uninit-value in aes_encrypt (4)
+From:   syzbot <syzbot+828dfc12440b4f6f305d@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Common pattern of handling deferred probe can be simplified with
-dev_err_probe().  Less code and the error value gets printed.
+Hello,
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+syzbot found the following issue on:
+
+HEAD commit:    3b3ea602 x86: add failure injection to get/put/clear_user
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1030dda5900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ee5f7a0b2e48ed66
+dashboard link: https://syzkaller.appspot.com/bug?extid=828dfc12440b4f6f305d
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17b15055900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12931621900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+828dfc12440b4f6f305d@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in subshift lib/crypto/aes.c:149 [inline]
+BUG: KMSAN: uninit-value in aes_encrypt+0x12c5/0x1bc0 lib/crypto/aes.c:282
+CPU: 0 PID: 8537 Comm: syz-executor872 Not tainted 5.8.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ subshift lib/crypto/aes.c:149 [inline]
+ aes_encrypt+0x12c5/0x1bc0 lib/crypto/aes.c:282
+ aesti_encrypt+0xe8/0x130 crypto/aes_ti.c:31
+ cipher_crypt_one crypto/cipher.c:75 [inline]
+ crypto_cipher_encrypt_one+0x1e2/0x3a0 crypto/cipher.c:82
+ crypto_cbcmac_digest_update+0x3e3/0x560 crypto/ccm.c:830
+ crypto_shash_update+0x455/0x5a0 crypto/shash.c:119
+ shash_ahash_finup+0x20b/0x7a0 crypto/shash.c:291
+ shash_async_finup+0xbb/0x110 crypto/shash.c:306
+ crypto_ahash_op+0x1c3/0x770 crypto/ahash.c:370
+ crypto_ahash_finup+0x8c/0xb0 crypto/ahash.c:395
+ crypto_ccm_auth+0x16b6/0x1780 crypto/ccm.c:221
+ crypto_ccm_encrypt+0x285/0x850 crypto/ccm.c:300
+ crypto_aead_encrypt+0x107/0x190 crypto/aead.c:94
+ tls_do_encryption net/tls/tls_sw.c:528 [inline]
+ tls_push_record+0x3cb9/0x4fc0 net/tls/tls_sw.c:762
+ bpf_exec_tx_verdict+0x195a/0x29e0 net/tls/tls_sw.c:802
+ tls_sw_do_sendpage+0x138a/0x1e30 net/tls/tls_sw.c:1213
+ tls_sw_sendpage+0x1da/0x250 net/tls/tls_sw.c:1277
+ inet_sendpage+0x1dc/0x2f0 net/ipv4/af_inet.c:828
+ kernel_sendpage net/socket.c:3642 [inline]
+ sock_sendpage+0x1dc/0x2b0 net/socket.c:945
+ pipe_to_sendpage+0x3f4/0x530 fs/splice.c:448
+ splice_from_pipe_feed fs/splice.c:502 [inline]
+ __splice_from_pipe+0x5e3/0xff0 fs/splice.c:626
+ splice_from_pipe fs/splice.c:661 [inline]
+ generic_splice_sendpage+0x1d5/0x2d0 fs/splice.c:834
+ do_splice_from fs/splice.c:846 [inline]
+ do_splice+0x2727/0x39e0 fs/splice.c:1144
+ __do_sys_splice fs/splice.c:1419 [inline]
+ __se_sys_splice+0x323/0x500 fs/splice.c:1401
+ __x64_sys_splice+0x6e/0x90 fs/splice.c:1401
+ do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x446a29
+Code: Bad RIP value.
+RSP: 002b:00007f91f8c0bd98 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
+RAX: ffffffffffffffda RBX: 00000000006dbc48 RCX: 0000000000446a29
+RDX: 0000000000000004 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 00000000006dbc40 R08: 00080000fffffffc R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc4c
+R13: 0000000020000680 R14: 00000000004ae948 R15: 20c49ba5e353f7cf
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
+ __msan_chain_origin+0x50/0x90 mm/kmsan/kmsan_instr.c:165
+ __crypto_xor+0x251/0x1610 crypto/algapi.c:1000
+ crypto_xor include/crypto/algapi.h:152 [inline]
+ crypto_cbcmac_digest_update+0x2b8/0x560 crypto/ccm.c:824
+ crypto_shash_update+0x455/0x5a0 crypto/shash.c:119
+ shash_ahash_finup+0x20b/0x7a0 crypto/shash.c:291
+ shash_async_finup+0xbb/0x110 crypto/shash.c:306
+ crypto_ahash_op+0x1c3/0x770 crypto/ahash.c:370
+ crypto_ahash_finup+0x8c/0xb0 crypto/ahash.c:395
+ crypto_ccm_auth+0x16b6/0x1780 crypto/ccm.c:221
+ crypto_ccm_encrypt+0x285/0x850 crypto/ccm.c:300
+ crypto_aead_encrypt+0x107/0x190 crypto/aead.c:94
+ tls_do_encryption net/tls/tls_sw.c:528 [inline]
+ tls_push_record+0x3cb9/0x4fc0 net/tls/tls_sw.c:762
+ bpf_exec_tx_verdict+0x195a/0x29e0 net/tls/tls_sw.c:802
+ tls_sw_do_sendpage+0x138a/0x1e30 net/tls/tls_sw.c:1213
+ tls_sw_sendpage+0x1da/0x250 net/tls/tls_sw.c:1277
+ inet_sendpage+0x1dc/0x2f0 net/ipv4/af_inet.c:828
+ kernel_sendpage net/socket.c:3642 [inline]
+ sock_sendpage+0x1dc/0x2b0 net/socket.c:945
+ pipe_to_sendpage+0x3f4/0x530 fs/splice.c:448
+ splice_from_pipe_feed fs/splice.c:502 [inline]
+ __splice_from_pipe+0x5e3/0xff0 fs/splice.c:626
+ splice_from_pipe fs/splice.c:661 [inline]
+ generic_splice_sendpage+0x1d5/0x2d0 fs/splice.c:834
+ do_splice_from fs/splice.c:846 [inline]
+ do_splice+0x2727/0x39e0 fs/splice.c:1144
+ __do_sys_splice fs/splice.c:1419 [inline]
+ __se_sys_splice+0x323/0x500 fs/splice.c:1401
+ __x64_sys_splice+0x6e/0x90 fs/splice.c:1401
+ do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Uninit was created at:
+ kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:144
+ kmsan_internal_alloc_meta_for_pages mm/kmsan/kmsan_shadow.c:269 [inline]
+ kmsan_alloc_page+0xc5/0x1a0 mm/kmsan/kmsan_shadow.c:293
+ __alloc_pages_nodemask+0xdf0/0x1030 mm/page_alloc.c:4889
+ alloc_pages_current+0x685/0xb50 mm/mempolicy.c:2292
+ alloc_pages include/linux/gfp.h:545 [inline]
+ skb_page_frag_refill+0x540/0x780 net/core/sock.c:2487
+ sk_page_frag_refill+0xa3/0x3b0 net/core/sock.c:2507
+ sk_msg_alloc+0x26e/0x1340 net/core/skmsg.c:38
+ tls_alloc_encrypted_msg net/tls/tls_sw.c:289 [inline]
+ tls_sw_do_sendpage+0xb0d/0x1e30 net/tls/tls_sw.c:1191
+ tls_sw_sendpage+0x1da/0x250 net/tls/tls_sw.c:1277
+ inet_sendpage+0x1dc/0x2f0 net/ipv4/af_inet.c:828
+ kernel_sendpage net/socket.c:3642 [inline]
+ sock_sendpage+0x1dc/0x2b0 net/socket.c:945
+ pipe_to_sendpage+0x3f4/0x530 fs/splice.c:448
+ splice_from_pipe_feed fs/splice.c:502 [inline]
+ __splice_from_pipe+0x5e3/0xff0 fs/splice.c:626
+ splice_from_pipe fs/splice.c:661 [inline]
+ generic_splice_sendpage+0x1d5/0x2d0 fs/splice.c:834
+ do_splice_from fs/splice.c:846 [inline]
+ do_splice+0x2727/0x39e0 fs/splice.c:1144
+ __do_sys_splice fs/splice.c:1419 [inline]
+ __se_sys_splice+0x323/0x500 fs/splice.c:1401
+ __x64_sys_splice+0x6e/0x90 fs/splice.c:1401
+ do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+=====================================================
+
 
 ---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Changes since v1:
-1. None
----
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 9 +++------
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 9 +++------
- 2 files changed, 6 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-index 138759dc8190..e3c62051c595 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-@@ -573,12 +573,9 @@ static int sun8i_ce_probe(struct platform_device *pdev)
- 		return irq;
- 
- 	ce->reset = devm_reset_control_get(&pdev->dev, NULL);
--	if (IS_ERR(ce->reset)) {
--		if (PTR_ERR(ce->reset) == -EPROBE_DEFER)
--			return PTR_ERR(ce->reset);
--		dev_err(&pdev->dev, "No reset control found\n");
--		return PTR_ERR(ce->reset);
--	}
-+	if (IS_ERR(ce->reset))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(ce->reset),
-+				     "No reset control found\n");
- 
- 	mutex_init(&ce->mlock);
- 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-index 9a23515783a6..576df8c8df51 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-@@ -545,12 +545,9 @@ static int sun8i_ss_probe(struct platform_device *pdev)
- 		return irq;
- 
- 	ss->reset = devm_reset_control_get(&pdev->dev, NULL);
--	if (IS_ERR(ss->reset)) {
--		if (PTR_ERR(ss->reset) == -EPROBE_DEFER)
--			return PTR_ERR(ss->reset);
--		dev_err(&pdev->dev, "No reset control found\n");
--		return PTR_ERR(ss->reset);
--	}
-+	if (IS_ERR(ss->reset))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(ss->reset),
-+				     "No reset control found\n");
- 
- 	mutex_init(&ss->mlock);
- 
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
