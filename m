@@ -2,28 +2,30 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE7426546B
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Sep 2020 23:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164C82653F8
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Sep 2020 23:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728514AbgIJVmf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Sep 2020 17:42:35 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11769 "EHLO huawei.com"
+        id S1727850AbgIJVmm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Sep 2020 17:42:42 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11770 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730127AbgIJL6D (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1729507AbgIJL6D (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 10 Sep 2020 07:58:03 -0400
 Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C54A9C3594118A33E39B
+        by Forcepoint Email with ESMTP id CC6DAD7DCEE43683BA2E
         for <linux-crypto@vger.kernel.org>; Thu, 10 Sep 2020 19:57:53 +0800 (CST)
 Received: from huawei.com (10.67.165.24) by DGGEMS403-HUB.china.huawei.com
  (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 19:57:49 +0800
+ 19:57:50 +0800
 From:   Longfang Liu <liulongfang@huawei.com>
 To:     <herbert@gondor.apana.org.au>
 CC:     <linux-crypto@vger.kernel.org>
-Subject: [PATCH 0/5] crypto: hisilicon - update ACC module parameter
-Date:   Thu, 10 Sep 2020 19:56:38 +0800
-Message-ID: <1599739003-23448-1-git-send-email-liulongfang@huawei.com>
+Subject: [PATCH 2/5] crypto: hisilicon - update HPRE module parameter description
+Date:   Thu, 10 Sep 2020 19:56:40 +0800
+Message-ID: <1599739003-23448-3-git-send-email-liulongfang@huawei.com>
 X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1599739003-23448-1-git-send-email-liulongfang@huawei.com>
+References: <1599739003-23448-1-git-send-email-liulongfang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.67.165.24]
@@ -33,24 +35,27 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-In order to pass kernel crypto test, the ACC module parameter
-pf_q_num needs to be set to an integer greater than 1,
-and then fixed two bugs.
+In order to pass kernel CRYPTO test, HPRE module parameter
+'pf_q_num' needs to be set as greater than 1.
 
-Longfang Liu (5):
-  crypto: hisilicon - update mininum queue
-  crypto: hisilicon - update HPRE module parameter description
-  crypto: hisilicon - update SEC module parameter description
-  crypto: hisilicon - update ZIP module parameter description
-  crypto: hisilicon - fixed memory allocation error
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+ drivers/crypto/hisilicon/hpre/hpre_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/crypto/hisilicon/hpre/hpre_main.c  |  2 +-
- drivers/crypto/hisilicon/qm.h              |  4 ++--
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 16 ++++++++++++----
- drivers/crypto/hisilicon/sec2/sec_main.c   |  2 +-
- drivers/crypto/hisilicon/zip/zip_main.c    |  2 +-
- 5 files changed, 17 insertions(+), 9 deletions(-)
-
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+index 45741d2..cf9169d 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_main.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+@@ -190,7 +190,7 @@ static const struct kernel_param_ops hpre_pf_q_num_ops = {
+ 
+ static u32 pf_q_num = HPRE_PF_DEF_Q_NUM;
+ module_param_cb(pf_q_num, &hpre_pf_q_num_ops, &pf_q_num, 0444);
+-MODULE_PARM_DESC(pf_q_num, "Number of queues in PF of CS(1-1024)");
++MODULE_PARM_DESC(pf_q_num, "Number of queues in PF of CS(2-1024)");
+ 
+ static const struct kernel_param_ops vfs_num_ops = {
+ 	.set = vfs_num_set,
 -- 
 2.8.1
 
