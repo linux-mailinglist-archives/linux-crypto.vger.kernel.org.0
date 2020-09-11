@@ -2,107 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A687A2659AD
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Sep 2020 08:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A5B2659AF
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Sep 2020 08:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725766AbgIKGzK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Sep 2020 02:55:10 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:58894 "EHLO fornost.hmeau.com"
+        id S1725535AbgIKG4G (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Sep 2020 02:56:06 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:58904 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725497AbgIKGzJ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Sep 2020 02:55:09 -0400
+        id S1725497AbgIKG4E (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 11 Sep 2020 02:56:04 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kGcxd-0007qD-3E; Fri, 11 Sep 2020 16:55:06 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 11 Sep 2020 16:55:05 +1000
-Date:   Fri, 11 Sep 2020 16:55:05 +1000
+        id 1kGcyV-0007qo-1n; Fri, 11 Sep 2020 16:56:00 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 11 Sep 2020 16:55:59 +1000
+Date:   Fri, 11 Sep 2020 16:55:59 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH] crypto: n2 - Fix sparse endianness warning
-Message-ID: <20200911065504.GA32089@gondor.apana.org.au>
+To:     Tero Kristo <t-kristo@ti.com>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 2/2] crypto: sa2ul: fix compiler warning produced by clang
+Message-ID: <20200911065558.GA32150@gondor.apana.org.au>
+References: <20200825133106.21542-1-t-kristo@ti.com>
+ <20200825133106.21542-3-t-kristo@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200825133106.21542-3-t-kristo@ti.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch fixes sparse endianness warnings by changing the type
-of hash_init to u8 from u32.  There should be no difference in the
-generated code.
+On Tue, Aug 25, 2020 at 04:31:06PM +0300, Tero Kristo wrote:
+> Clang detects a warning for an assignment that doesn't really do
+> anything. Fix this by removing the offending piece of code.
+> 
+> Fixes: 7694b6ca649f ("crypto: sa2ul - Add crypto driver")
+> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+> Signed-off-by: Tero Kristo <t-kristo@ti.com>
+> ---
+>  drivers/crypto/sa2ul.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-diff --git a/drivers/crypto/n2_core.c b/drivers/crypto/n2_core.c
-index f137f22da8fb..3642bf83d809 100644
---- a/drivers/crypto/n2_core.c
-+++ b/drivers/crypto/n2_core.c
-@@ -249,7 +249,7 @@ static inline bool n2_should_run_async(struct spu_queue *qp, int this_len)
- struct n2_ahash_alg {
- 	struct list_head	entry;
- 	const u8		*hash_zero;
--	const u32		*hash_init;
-+	const u8		*hash_init;
- 	u8			hw_op_hashsz;
- 	u8			digest_size;
- 	u8			auth_type;
-@@ -1225,7 +1225,7 @@ static LIST_HEAD(skcipher_algs);
- struct n2_hash_tmpl {
- 	const char	*name;
- 	const u8	*hash_zero;
--	const u32	*hash_init;
-+	const u8	*hash_init;
- 	u8		hw_op_hashsz;
- 	u8		digest_size;
- 	u8		block_size;
-@@ -1233,7 +1233,7 @@ struct n2_hash_tmpl {
- 	u8		hmac_type;
- };
- 
--static const u32 n2_md5_init[MD5_HASH_WORDS] = {
-+static const __le32 n2_md5_init[MD5_HASH_WORDS] = {
- 	cpu_to_le32(MD5_H0),
- 	cpu_to_le32(MD5_H1),
- 	cpu_to_le32(MD5_H2),
-@@ -1254,7 +1254,7 @@ static const u32 n2_sha224_init[SHA256_DIGEST_SIZE / 4] = {
- static const struct n2_hash_tmpl hash_tmpls[] = {
- 	{ .name		= "md5",
- 	  .hash_zero	= md5_zero_message_hash,
--	  .hash_init	= n2_md5_init,
-+	  .hash_init	= (u8 *)n2_md5_init,
- 	  .auth_type	= AUTH_TYPE_MD5,
- 	  .hmac_type	= AUTH_TYPE_HMAC_MD5,
- 	  .hw_op_hashsz	= MD5_DIGEST_SIZE,
-@@ -1262,7 +1262,7 @@ static const struct n2_hash_tmpl hash_tmpls[] = {
- 	  .block_size	= MD5_HMAC_BLOCK_SIZE },
- 	{ .name		= "sha1",
- 	  .hash_zero	= sha1_zero_message_hash,
--	  .hash_init	= n2_sha1_init,
-+	  .hash_init	= (u8 *)n2_sha1_init,
- 	  .auth_type	= AUTH_TYPE_SHA1,
- 	  .hmac_type	= AUTH_TYPE_HMAC_SHA1,
- 	  .hw_op_hashsz	= SHA1_DIGEST_SIZE,
-@@ -1270,7 +1270,7 @@ static const struct n2_hash_tmpl hash_tmpls[] = {
- 	  .block_size	= SHA1_BLOCK_SIZE },
- 	{ .name		= "sha256",
- 	  .hash_zero	= sha256_zero_message_hash,
--	  .hash_init	= n2_sha256_init,
-+	  .hash_init	= (u8 *)n2_sha256_init,
- 	  .auth_type	= AUTH_TYPE_SHA256,
- 	  .hmac_type	= AUTH_TYPE_HMAC_SHA256,
- 	  .hw_op_hashsz	= SHA256_DIGEST_SIZE,
-@@ -1278,7 +1278,7 @@ static const struct n2_hash_tmpl hash_tmpls[] = {
- 	  .block_size	= SHA256_BLOCK_SIZE },
- 	{ .name		= "sha224",
- 	  .hash_zero	= sha224_zero_message_hash,
--	  .hash_init	= n2_sha224_init,
-+	  .hash_init	= (u8 *)n2_sha224_init,
- 	  .auth_type	= AUTH_TYPE_SHA256,
- 	  .hmac_type	= AUTH_TYPE_RESERVED,
- 	  .hw_op_hashsz	= SHA256_DIGEST_SIZE,
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
