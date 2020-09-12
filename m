@@ -2,71 +2,97 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DF22679E3
-	for <lists+linux-crypto@lfdr.de>; Sat, 12 Sep 2020 13:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2205267BDB
+	for <lists+linux-crypto@lfdr.de>; Sat, 12 Sep 2020 21:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725850AbgILLNa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 12 Sep 2020 07:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725847AbgILLN0 (ORCPT
+        id S1725874AbgILTHv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 12 Sep 2020 15:07:51 -0400
+Received: from sonic305-2.consmr.mail.bf2.yahoo.com ([74.6.133.41]:37528 "EHLO
+        sonic305-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725869AbgILTHt (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 12 Sep 2020 07:13:26 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB91EC061573
-        for <linux-crypto@vger.kernel.org>; Sat, 12 Sep 2020 04:13:25 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id r24so14654797ljm.3
-        for <linux-crypto@vger.kernel.org>; Sat, 12 Sep 2020 04:13:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8kJorjEAS2sshdFf7fzymk8HS88x43/0TW3TqJZZypQ=;
-        b=h9/2Cx33+XfsGiZPgpZ6oW94JX9rIxBrKDyjbYvv0SSm7pl8Cc6xqlozgtRSix0hmN
-         TKCjv4ry2HYgeKWaM9KkQH8Or9P8iatpnpo9i4V13S7BmG2LSvcu3yD4X0GMcukHB55D
-         yaLvAV7PMK9hSKsTj5rGhZBU/xCyLtQ7uU3NcIPSOqAR4Vzq73ez5cQ+Veiyj+ZRgix5
-         i3UF8GJIDDGuAW8cw905uGjXC5dyF0LdIJyHUjqBbA47hYZ4rFwOKScSUaol9Axny43Q
-         bRE7CvuaQFw0x6W/2swatMIMG8QkpvKuzxNbi0ZkmW18+RC+2j4aDzKk0DcNg/W7rcIn
-         VCng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8kJorjEAS2sshdFf7fzymk8HS88x43/0TW3TqJZZypQ=;
-        b=A7F5q+NxblrC3YcvOaYDovt+W/IG1gyjfjoj1WREg5geBXqX2uDojGTe4FhoQT2yKG
-         HKzYhxtjCs/WS6WEeGORRRamBmfbYv3Nh8jCgYzdVsNm1J7AxQGajSQ683vKoSaYPg0C
-         4jSuHoPNgBzcc8tYqO3dr4a4zUjRvT1ngIDnYioxLlnC37DYKEURx+EDIPJvgseE2Pb8
-         EXZCcIPzmlubutl4X6vlaAnHCmyBW/GoBHb7mX57ocg442OV25VTAM86iwoVuHFmSzzN
-         ZKrEX0xLk0+xRMRhdIibm2+PaRtadx7bdF/WC2rzurTb1helP1jSeqSfQJ4dJsyb8WZa
-         whFQ==
-X-Gm-Message-State: AOAM532T0ltK5qSym27SuJnz8BNCY/4bdk0m/bS9Es8zgE/lxZtjVOQD
-        wJN7F8zXu1mzxnNs4gFZYdibKjhjXeGFS7lKHqtRDh1hW2s=
-X-Google-Smtp-Source: ABdhPJxmj7K8eit65gZ0vrTKHrtXBcH0KGQQTD6O2tEzV4ZaLHxMl8pKFM8Brk4MO2jHURP7Xkce+4Cf1FJ0ZaKCCHg=
-X-Received: by 2002:a2e:9988:: with SMTP id w8mr2379696lji.286.1599909204195;
- Sat, 12 Sep 2020 04:13:24 -0700 (PDT)
+        Sat, 12 Sep 2020 15:07:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1599937668; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=R5NM2QP1TgUL8GMSmfc3vofbumHSzF/TJYXsvTrN0612QpU41LSLuXz7JTkEJWb2MCXHMO5fLynJFHsa6akZaSzyA/dQV4lzkWXIHyDwuU6bcyCu6eqk0Uoa2BBCHkZjNqmqamVVR3a52+uqsCzp412W9ESbdt2t5HJ2JWptmZDRuJ/YedA6rylfXP2vD0nOSjV3f9SykKqfqPjHO6gCCyikHh3gta16vbn96uPYBHkP0iSPviRqsz3ftws/O2AOo/p7lgx3WFP33+CfiKTALwb1eu0PArN1eQn1WqBqpAg9e0dz8sGAJMaj0U8pEHT5CtMDDMxPvjkpuf+rlzhEwQ==
+X-YMail-OSG: ZnvdTcwVM1mrD6zjyf_ebbiYFaU6keGBmeNmbb_eGxgbN4SsDT_ECPZceWGDPXV
+ UVZ7MC8iIN4LUTp8z3hAmwQQhXkQxYqsEZgEjW6gYNuEdk2eZVAEZjh.1jvllz4EK6kmVw7UpC1s
+ NHc1JvWK_93WI6FSk2pPRbOXYwXyHzNkDrc_urlCPc6TbXOWyUYmU9TzaKn08imGKBAgvlMPJYrp
+ yhnaHrekpqss1EB2nEg5ohAkrBHpdJ1hyC21aJsvayFdQRdhY_ITjXpE97tXD2umO9qc9iBM3_KP
+ 3lLJyzCo0zOIZB.PYlZLuKYH02Id5cCCMMdOc18rMl1aVokfiiBpo4og4YN.vxk0GK1anYzFukyR
+ Rk8A7ZrH1gdFRDiKLxltzII2ZlcqXcQRiCvm6eArTiT__Tliufop4nH3iOp4nRU_O_z1oX7oDkGX
+ fHJz9PYPC4jggybPw1K.mS2T5y12r8SXIplgbK3G_IiCDnvvqMhVmwy.5hKJ5C7LIvBs3HzrrUoj
+ lNbjrgT2R3_HR8ivzrmVIAcyB757rHgkOYqDSAiozzvDwmYGxYVvHhCYGP26pc5qgitJFtGbGcOO
+ kU7YAEvZWPzdnovZiBtnUOCD51j0GBFjD3y_q_Bb9NSeS5Yv0ADZsSSAfQDCwr8PPyaYAh0AwneI
+ x6xSiiGOMHLcneTgubs5o9SZ11Q_nB74QvnuZjciA2U6TAYDr8T1JcQXa3RVwlv54T7lCaKPMayu
+ dxe9fFKSP9R_ByRkjlhp8zt8cL3wyAQ6IZMer91_r10KLAdS0_KzqQyX9CqG9wpzBHyeLHzzZT7w
+ yCXYIMls.zGFaiXMqoej1Vvu97Qi3bX9DeHUVqb_.Zqsp5EEPUDXzZRvCP9MKJTSM.e6ahLm6NPv
+ 0RQAD1ybBWAy9sc9ICc2lpV9Dvt7FcRupRVWwFdqnKC7t18n4pZqw__lzOAwDvGIKYeuMtrENnWP
+ Irrt.o3l84bPcOxHL1nYGSjEbX6A2eZ88oLw7XDdSzCG6BLHz1kA53bDQdj15KDOjOGpkM86_j65
+ unXz0vA5MCaEEmXAIcoe6cApzIk306vemTpLL1QOk2fq06sulf_cwYkCvBOT7XfD5anVIzBngW82
+ HNe0asPsPnxbWUD4FnacZaU9ooXP6b1ob1E2RVj_DHNA7aMz7QJcMRAxZQ4YctUJ5BR85xReexrI
+ 5P98rIswWqcW0KoqmhKnrbl3dEmcVwoCRd7vP1jNJC9gS.O6kV1KV7I3iuKt2JA5SEx.bEaP5CYc
+ HE0ysoAdN.KalUfy4AzZhhSB6xrln4aV3sEoKZbGZtqQb9ISEtW4e9UVPyH6w5nHzU.CxjV2YWLS
+ N0mIGDZV.7JjdOziGc7rbegZbqemRNSfFk1S8MMT0APgrmh0OvZ.lXoW8qEIK9dD9LVDSNKkbKpC
+ zNJZoGVGwU116tae97HK4i8MMJ3UDOY8zoTrd2yy.gnTzvCOFs9TW8DA-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.bf2.yahoo.com with HTTP; Sat, 12 Sep 2020 19:07:48 +0000
+Date:   Sat, 12 Sep 2020 19:07:36 +0000 (UTC)
+From:   "Mrs. Mina A, Brunel" <mrs.minaaaliyahbrunel216@gmail.com>
+Reply-To: mrs.minaaaliyahbrunel31@gmail.com
+Message-ID: <1818263650.1465011.1599937656272@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-References: <20200904082705.GA1139@gondor.apana.org.au>
-In-Reply-To: <20200904082705.GA1139@gondor.apana.org.au>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 12 Sep 2020 13:13:13 +0200
-Message-ID: <CACRpkdYzw0v9Fcvb8FoFNQ_ppSNwLdhRssGxHaA0Q3-QZ5NQ+A@mail.gmail.com>
-Subject: Re: [PATCH] crypto: ux500 - Fix sparse endianness warnings
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1818263650.1465011.1599937656272.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 10:27 AM Herbert Xu <herbert@gondor.apana.org.au> wrote:
 
-> This patch fixes a couple of sparse endianness warnings in the
-> ux500 driver.
->
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+My Dear in the lord
 
-Yours,
-Linus Walleij
+
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
+ugou the capital city of Burkina Faso in West Africa. The money was from th=
+e sale of his company and death benefits payment and entitlements of my dec=
+eased husband by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
