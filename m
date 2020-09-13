@@ -2,97 +2,233 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2205267BDB
-	for <lists+linux-crypto@lfdr.de>; Sat, 12 Sep 2020 21:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D32E267E54
+	for <lists+linux-crypto@lfdr.de>; Sun, 13 Sep 2020 09:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725874AbgILTHv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 12 Sep 2020 15:07:51 -0400
-Received: from sonic305-2.consmr.mail.bf2.yahoo.com ([74.6.133.41]:37528 "EHLO
-        sonic305-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725869AbgILTHt (ORCPT
+        id S1725913AbgIMHMY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 13 Sep 2020 03:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbgIMHMU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 12 Sep 2020 15:07:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1599937668; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=R5NM2QP1TgUL8GMSmfc3vofbumHSzF/TJYXsvTrN0612QpU41LSLuXz7JTkEJWb2MCXHMO5fLynJFHsa6akZaSzyA/dQV4lzkWXIHyDwuU6bcyCu6eqk0Uoa2BBCHkZjNqmqamVVR3a52+uqsCzp412W9ESbdt2t5HJ2JWptmZDRuJ/YedA6rylfXP2vD0nOSjV3f9SykKqfqPjHO6gCCyikHh3gta16vbn96uPYBHkP0iSPviRqsz3ftws/O2AOo/p7lgx3WFP33+CfiKTALwb1eu0PArN1eQn1WqBqpAg9e0dz8sGAJMaj0U8pEHT5CtMDDMxPvjkpuf+rlzhEwQ==
-X-YMail-OSG: ZnvdTcwVM1mrD6zjyf_ebbiYFaU6keGBmeNmbb_eGxgbN4SsDT_ECPZceWGDPXV
- UVZ7MC8iIN4LUTp8z3hAmwQQhXkQxYqsEZgEjW6gYNuEdk2eZVAEZjh.1jvllz4EK6kmVw7UpC1s
- NHc1JvWK_93WI6FSk2pPRbOXYwXyHzNkDrc_urlCPc6TbXOWyUYmU9TzaKn08imGKBAgvlMPJYrp
- yhnaHrekpqss1EB2nEg5ohAkrBHpdJ1hyC21aJsvayFdQRdhY_ITjXpE97tXD2umO9qc9iBM3_KP
- 3lLJyzCo0zOIZB.PYlZLuKYH02Id5cCCMMdOc18rMl1aVokfiiBpo4og4YN.vxk0GK1anYzFukyR
- Rk8A7ZrH1gdFRDiKLxltzII2ZlcqXcQRiCvm6eArTiT__Tliufop4nH3iOp4nRU_O_z1oX7oDkGX
- fHJz9PYPC4jggybPw1K.mS2T5y12r8SXIplgbK3G_IiCDnvvqMhVmwy.5hKJ5C7LIvBs3HzrrUoj
- lNbjrgT2R3_HR8ivzrmVIAcyB757rHgkOYqDSAiozzvDwmYGxYVvHhCYGP26pc5qgitJFtGbGcOO
- kU7YAEvZWPzdnovZiBtnUOCD51j0GBFjD3y_q_Bb9NSeS5Yv0ADZsSSAfQDCwr8PPyaYAh0AwneI
- x6xSiiGOMHLcneTgubs5o9SZ11Q_nB74QvnuZjciA2U6TAYDr8T1JcQXa3RVwlv54T7lCaKPMayu
- dxe9fFKSP9R_ByRkjlhp8zt8cL3wyAQ6IZMer91_r10KLAdS0_KzqQyX9CqG9wpzBHyeLHzzZT7w
- yCXYIMls.zGFaiXMqoej1Vvu97Qi3bX9DeHUVqb_.Zqsp5EEPUDXzZRvCP9MKJTSM.e6ahLm6NPv
- 0RQAD1ybBWAy9sc9ICc2lpV9Dvt7FcRupRVWwFdqnKC7t18n4pZqw__lzOAwDvGIKYeuMtrENnWP
- Irrt.o3l84bPcOxHL1nYGSjEbX6A2eZ88oLw7XDdSzCG6BLHz1kA53bDQdj15KDOjOGpkM86_j65
- unXz0vA5MCaEEmXAIcoe6cApzIk306vemTpLL1QOk2fq06sulf_cwYkCvBOT7XfD5anVIzBngW82
- HNe0asPsPnxbWUD4FnacZaU9ooXP6b1ob1E2RVj_DHNA7aMz7QJcMRAxZQ4YctUJ5BR85xReexrI
- 5P98rIswWqcW0KoqmhKnrbl3dEmcVwoCRd7vP1jNJC9gS.O6kV1KV7I3iuKt2JA5SEx.bEaP5CYc
- HE0ysoAdN.KalUfy4AzZhhSB6xrln4aV3sEoKZbGZtqQb9ISEtW4e9UVPyH6w5nHzU.CxjV2YWLS
- N0mIGDZV.7JjdOziGc7rbegZbqemRNSfFk1S8MMT0APgrmh0OvZ.lXoW8qEIK9dD9LVDSNKkbKpC
- zNJZoGVGwU116tae97HK4i8MMJ3UDOY8zoTrd2yy.gnTzvCOFs9TW8DA-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.bf2.yahoo.com with HTTP; Sat, 12 Sep 2020 19:07:48 +0000
-Date:   Sat, 12 Sep 2020 19:07:36 +0000 (UTC)
-From:   "Mrs. Mina A, Brunel" <mrs.minaaaliyahbrunel216@gmail.com>
-Reply-To: mrs.minaaaliyahbrunel31@gmail.com
-Message-ID: <1818263650.1465011.1599937656272@mail.yahoo.com>
-Subject: My Dear in the lord
+        Sun, 13 Sep 2020 03:12:20 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA06C061574
+        for <linux-crypto@vger.kernel.org>; Sun, 13 Sep 2020 00:12:20 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id b17so3750591pji.1
+        for <linux-crypto@vger.kernel.org>; Sun, 13 Sep 2020 00:12:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GvZM5rf5aV2Zc9VWGMundiwBvF5h3OlvoOB40Du6TQg=;
+        b=GBJWFNVxqHqk8jJElMjtWuriXVh3KdRKD5z/H0647c5ofUOkKOUvZPk7bXkwivl27h
+         kHaEzoRCdHCaJiD1s32VXjF0WiBIZGmfcvxBDRXJsupT6WuH9y0ID5oNBeMEc8TAaiPu
+         fUWNMO27vFop6ZrqR3d3GRwcJUdikIU8ONh+XwVlLe1M19I4KJHcBXFmC5sdHEz4WeLq
+         YuHCfJjto3cY443Y5hiAAd/w3CfRXkAWIvf1mXcRM7MVfzfRMj9VY/LnOqlpl3UYGgZ7
+         RtMK3BO9f9KOM1Bf5MSkWI04pPKpjoHBQVNXdM67/60WBiC+q7ODpbKhMkcXazNdyDR1
+         Wqpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GvZM5rf5aV2Zc9VWGMundiwBvF5h3OlvoOB40Du6TQg=;
+        b=KAqPt3PX30t/rvlmQDghmcGwh7/DBVX/qxsIR8e0gGB9adZspjPVUiTbQy9ruU2Y0z
+         ML4FHAPGwA9NDI0yjutALe9IP5p7THYeKfk2p+CEsh7VrdqrOhPtJJ2NehZKbdrzcCCV
+         DuSYBvovSIzZUxe9j8xv+nnd2NOR1Nx6224ggy3Smksgj16kOPQeR6AxyhNe85M1ozHu
+         N0kx8lAU6N8YLRwJTXdBWydHVKsqpBwyZxrk/9Pwn0ntwcN6DxjaIbhrkDKryIbh2N8k
+         YTYtTI3JHrIOoiFskh/0186fw5O0tK1zKpFNR8MzLER8N2TkCTwpFmclaiXfNKGV1Aon
+         tToA==
+X-Gm-Message-State: AOAM532KLL2y4fehuDeka9uqpE/0Fk1UoHy6f3Lqx9Ns77EAsA/fIeSz
+        eJ5FPTo7DqAetdP+vXs+xcPdEpaaBIPaWDC404djgA==
+X-Google-Smtp-Source: ABdhPJw6YNDARVPayuQQbt53xib3TWvar5zYdHdcFp0GbBRVYl+LqmDEzsx5NZyTVnc4kR7JRLrQATbzdTiFdugFixk=
+X-Received: by 2002:a17:90a:e609:: with SMTP id j9mr8481445pjy.129.1599981139628;
+ Sun, 13 Sep 2020 00:12:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com> <20200903131242.128665-8-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <20200903131242.128665-8-tianjia.zhang@linux.alibaba.com>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Sun, 13 Sep 2020 10:12:09 +0300
+Message-ID: <CAOtvUMfT5zgv=e9nCgz8-1r7LuYSRZ8Zdx2xc0JwckUJZufcvg@mail.gmail.com>
+Subject: Re: [PATCH v6 7/8] X.509: support OSCCA sm2-with-sm3 certificate verification
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Howells <dhowells@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephan Mueller <smueller@chronox.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Waiman Long <longman@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Vitaly Chikunov <vt@altlinux.org>,
+        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-security-module@vger.kernel.org,
+        Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-References: <1818263650.1465011.1599937656272.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Hi,
 
 
-My Dear in the lord
+On Thu, Sep 3, 2020 at 4:13 PM Tianjia Zhang
+<tianjia.zhang@linux.alibaba.com> wrote:
+>
+> The digital certificate format based on SM2 crypto algorithm as
+> specified in GM/T 0015-2012. It was published by State Encryption
+> Management Bureau, China.
+>
+> The method of generating Other User Information is defined as
+> ZA=3DH256(ENTLA || IDA || a || b || xG || yG || xA || yA), it also
+> specified in https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02.
+>
+> The x509 certificate supports sm2-with-sm3 type certificate
+> verification.  Because certificate verification requires ZA
+> in addition to tbs data, ZA also depends on elliptic curve
+> parameters and public key data, so you need to access tbs in sig
+> and calculate ZA. Finally calculate the digest of the
+> signature and complete the verification work. The calculation
+> process of ZA is declared in specifications GM/T 0009-2012
+> and GM/T 0003.2-2012.
+>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> Tested-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
+> ---
+>  crypto/asymmetric_keys/Makefile          |  1 +
+>  crypto/asymmetric_keys/public_key.c      |  6 +++
+>  crypto/asymmetric_keys/public_key_sm2.c  | 61 ++++++++++++++++++++++++
+>  crypto/asymmetric_keys/x509_public_key.c |  3 ++
+>  include/crypto/public_key.h              | 15 ++++++
+>  5 files changed, 86 insertions(+)
+>  create mode 100644 crypto/asymmetric_keys/public_key_sm2.c
+>
+> diff --git a/crypto/asymmetric_keys/Makefile b/crypto/asymmetric_keys/Mak=
+efile
+> index 28b91adba2ae..1a99ea5acb6b 100644
+> --- a/crypto/asymmetric_keys/Makefile
+> +++ b/crypto/asymmetric_keys/Makefile
+> @@ -11,6 +11,7 @@ asymmetric_keys-y :=3D \
+>         signature.o
+>
+>  obj-$(CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE) +=3D public_key.o
+> +obj-$(CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE) +=3D public_key_sm2.o
+>  obj-$(CONFIG_ASYMMETRIC_TPM_KEY_SUBTYPE) +=3D asym_tpm.o
+>
+>  #
+> diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys=
+/public_key.c
+> index d8410ffd7f12..1d0492098bbd 100644
+> --- a/crypto/asymmetric_keys/public_key.c
+> +++ b/crypto/asymmetric_keys/public_key.c
+> @@ -299,6 +299,12 @@ int public_key_verify_signature(const struct public_=
+key *pkey,
+>         if (ret)
+>                 goto error_free_key;
+>
+> +       if (strcmp(sig->pkey_algo, "sm2") =3D=3D 0 && sig->data_size) {
+> +               ret =3D cert_sig_digest_update(sig, tfm);
+> +               if (ret)
+> +                       goto error_free_key;
+> +       }
+> +
+>         sg_init_table(src_sg, 2);
+>         sg_set_buf(&src_sg[0], sig->s, sig->s_size);
+>         sg_set_buf(&src_sg[1], sig->digest, sig->digest_size);
+> diff --git a/crypto/asymmetric_keys/public_key_sm2.c b/crypto/asymmetric_=
+keys/public_key_sm2.c
+> new file mode 100644
+> index 000000000000..7325cf21dbb4
+> --- /dev/null
+> +++ b/crypto/asymmetric_keys/public_key_sm2.c
+> @@ -0,0 +1,61 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +/*
+> + * asymmetric public-key algorithm for SM2-with-SM3 certificate
+> + * as specified by OSCCA GM/T 0003.1-2012 -- 0003.5-2012 SM2 and
+> + * described at https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
+> + *
+> + * Copyright (c) 2020, Alibaba Group.
+> + * Authors: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> + */
+> +
+> +#include <crypto/sm3_base.h>
+> +#include <crypto/sm2.h>
+> +#include <crypto/public_key.h>
+> +
+> +#if IS_REACHABLE(CONFIG_CRYPTO_SM2)
+> +
+> +int cert_sig_digest_update(const struct public_key_signature *sig,
+> +                               struct crypto_akcipher *tfm_pkey)
+> +{
+> +       struct crypto_shash *tfm;
+> +       struct shash_desc *desc;
+> +       size_t desc_size;
+> +       unsigned char dgst[SM3_DIGEST_SIZE];
+> +       int ret;
+> +
+> +       BUG_ON(!sig->data);
+> +
+> +       ret =3D sm2_compute_z_digest(tfm_pkey, SM2_DEFAULT_USERID,
+> +                                       SM2_DEFAULT_USERID_LEN, dgst);
+> +       if (ret)
+> +               return ret;
+> +
+> +       tfm =3D crypto_alloc_shash(sig->hash_algo, 0, 0);
+> +       if (IS_ERR(tfm))
+> +               return PTR_ERR(tfm);
+> +
+> +       desc_size =3D crypto_shash_descsize(tfm) + sizeof(*desc);
+> +       desc =3D kzalloc(desc_size, GFP_KERNEL);
+> +       if (!desc)
+> +               goto error_free_tfm;
+> +
+> +       desc->tfm =3D tfm;
+> +
+> +       ret =3D crypto_shash_init(desc);
+> +       if (ret < 0)
+> +               goto error_free_desc;
+> +
+> +       ret =3D crypto_shash_update(desc, dgst, SM3_DIGEST_SIZE);
+> +       if (ret < 0)
+> +               goto error_free_desc;
+> +
+> +       ret =3D crypto_shash_finup(desc, sig->data, sig->data_size, sig->=
+digest);
 
+It looks like you are doing a separate init, update, finup every time
+- I would consider using crypto_shash_digest() in one go.
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
-ugou the capital city of Burkina Faso in West Africa. The money was from th=
-e sale of his company and death benefits payment and entitlements of my dec=
-eased husband by his company.
+In fact, considering the fact that you are allocating a tfm just for
+this use and then releasing it, I would consider switching to
+crypto_shash_tfm_digest() and dropping the kzalloc all together.
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
+This should simplify the code a bit.
 
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
+Other than that I don't have anything smart to say :-)
 
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
+Gilad
 
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
 
-Thanks
-Mrs. Mina A. Brunel
+values of =CE=B2 will give rise to dom!
