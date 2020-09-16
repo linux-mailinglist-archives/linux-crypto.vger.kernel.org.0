@@ -2,72 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6723026CAA7
-	for <lists+linux-crypto@lfdr.de>; Wed, 16 Sep 2020 22:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB7926CAC7
+	for <lists+linux-crypto@lfdr.de>; Wed, 16 Sep 2020 22:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727233AbgIPUKI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 16 Sep 2020 16:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33276 "EHLO
+        id S1727187AbgIPUOa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 16 Sep 2020 16:14:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727046AbgIPRdm (ORCPT
+        with ESMTP id S1726507AbgIPUNd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:33:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BD4C00217F;
-        Wed, 16 Sep 2020 07:46:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=I+Wrsf2OsM4H/FvG28XmzjWSyq2hOoPWFZhAVEE3RCk=; b=vuzIdI2myzrcSR8N8YUZIxJs7P
-        Sx91GDqxw7SKvTK3Q/nRp4WnHClkpkK/1OSKRygFhe90fZaV9fh+k7GQDAKnGLqU52NU1R7o24SfD
-        seMr7Y2+IlmkwzW5l1W2SFiJm7EC1UQvsJqgorQoJrd0mihZ0kd7Vp8ebhVZCF0Q0ELXjj/VrFWna
-        ctPysIiI3CtHiEShBsJMczKgdXTh3NyyyLxs+T7ZmyrJaIQAuUEi+E+Z480NRxWRE3n4HU0iyYgbT
-        oc26VCkL3wOc32lThfhoy8TDA7vL4lHIHRx7dN1lyrOOFn10v1O1A0ycsq6YvIr+h+Hpjh/++0yzE
-        tDUCoKHA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIYhO-0004Yh-Kj; Wed, 16 Sep 2020 14:46:18 +0000
-Date:   Wed, 16 Sep 2020 15:46:18 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Chris Mason <clm@fb.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
-        Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
-Subject: Re: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
-Message-ID: <20200916144618.GB16392@infradead.org>
-References: <20200916034307.2092020-1-nickrterrell@gmail.com>
- <20200916034307.2092020-7-nickrterrell@gmail.com>
- <20200916084958.GC31608@infradead.org>
- <CCDAB4AB-DE8D-4ADE-9221-02AE732CBAE2@fb.com>
- <20200916143046.GA13543@infradead.org>
- <1CAB33F1-95DB-4BC5-9023-35DD2E4E0C20@fb.com>
+        Wed, 16 Sep 2020 16:13:33 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DF2C0612F2
+        for <linux-crypto@vger.kernel.org>; Wed, 16 Sep 2020 13:13:14 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id a16so4780890vsp.12
+        for <linux-crypto@vger.kernel.org>; Wed, 16 Sep 2020 13:13:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=GcbBDc3F14nB5fItkaCR8bNi/7szL/0DDXdKpHCyoVg=;
+        b=WdOkItQh65coZKHtbLtCry05LIlLS/47JKxIFd5oHs6A7Luo37AFBUWhJGKmiHg2Kc
+         3lhisA2LapqsXclKHkpUt/m0EhzXQla8tSj9wUtUlwkCTqzQmj6zCCqc2V02xvF1Atya
+         2xsQm+aC1YGiYs1zK3BscTTaL7swsr8Vikd1jpxJhT/VOlZqFcjqrENNApxWjziVkfWL
+         HWjDTUBHH4USrOcn4I/vZDaywNTIaBubN2QoaWlhinD4oCycqiP5P7dmIcJCbIlvmvGC
+         Iv+fHlUz+hyH0hE6v2xSvt9SPQnkOYDD4XiXZrrHCvaCPae51rT3DBBjlpFB8dNDM3Nb
+         Ij4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=GcbBDc3F14nB5fItkaCR8bNi/7szL/0DDXdKpHCyoVg=;
+        b=liQyDcAjTBgPi/MITo/idQsrd5AmGhUJdVNMfnKiZf2bUE0mVxfZhGj5ZMqtrAHA3r
+         h288D6pWAkAHWC/o8py5vbl/ygvf9jfe0QBpHO/tZezxors13PBr4ds3vDWhyXLeyFWH
+         hIUIFIeI8lATE5G49y2JvbQh9Vqu8N4zto7SzZIc2KPfnVgNuNLbhQIHMigqaZ9Jo9LP
+         iki1xW+PXmFddyNcsTl7e6ua7Io7Qrq6ZLgbrFWnPUTjKVQ1aaMqbxw4dnotvurHGrKf
+         Qaapzp5c7OAuvuW+ECpX3Gw39WX1xFUE5SzKuIzQFxRHjZqndCRu02ffVJ9+Gx3bc7UK
+         0wBg==
+X-Gm-Message-State: AOAM533HCjqY5IyGkWsaAShImOh6MRAD54eaxDwOnl/Bp+8QIHkbyfHI
+        4Fn7lFDDAQVP6EudoKZkmwYfoVpdi7aAUKWSCjw=
+X-Google-Smtp-Source: ABdhPJxy1gxkUt72kPzIznZooaLfdaI+EfieVI+ftdsKxLlXkLj8DSbhlQHXpspMiWRODAFl9uCV0L87nI/k2vn4anY=
+X-Received: by 2002:a05:6102:101a:: with SMTP id q26mr6140643vsp.57.1600287189878;
+ Wed, 16 Sep 2020 13:13:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1CAB33F1-95DB-4BC5-9023-35DD2E4E0C20@fb.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Received: by 2002:ab0:3412:0:0:0:0:0 with HTTP; Wed, 16 Sep 2020 13:13:09
+ -0700 (PDT)
+Reply-To: aalihelp5@gmail.com
+From:   "Mr.Hui Ka Yan" <jacobmoore.moores41@gmail.com>
+Date:   Wed, 16 Sep 2020 13:13:09 -0700
+Message-ID: <CAEedSLdw9cQpdDgoAQWHTA9VDtMRsPUVn_VFAmSDuzGEiS==Sw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:43:04AM -0400, Chris Mason wrote:
-> Otherwise we just end up with drift and kernel-specific bugs that are harder
-> to debug.  To the extent those APIs make us contort the kernel code, I???m
-> sure Nick is interested in improving things in both places.
+Bin Herr Hui Ka Yan. Ich spende Ihnen einen Zuschuss von 10.500.000
+USD. Kontaktieren Sie mich (aalihelp5@gmail.com) f=C3=BCr weitere Details.
 
-Seriously, we do not care elsewhere.  Why would zlib be any different?
-
-> There are probably 1000 constructive ways to have that conversation.  Please
-> choose one of those instead of being an asshole.
-
-I think you are the asshole here by ignoring the practices we are using
-elsewhere and think your employers pet project is somehow special.  It
-is not, and claiming so is everything but constructive.
+Danke und Gott segne dich.
