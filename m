@@ -2,62 +2,94 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7763726BFCC
-	for <lists+linux-crypto@lfdr.de>; Wed, 16 Sep 2020 10:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F5E26C084
+	for <lists+linux-crypto@lfdr.de>; Wed, 16 Sep 2020 11:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgIPIuJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 16 Sep 2020 04:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726682AbgIPIuB (ORCPT
+        id S1726425AbgIPJ2e convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Wed, 16 Sep 2020 05:28:34 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:49973 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgIPJ2d (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:50:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA0CC06174A;
-        Wed, 16 Sep 2020 01:50:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HY5sSDf+1gYa2b3NXHBac5E/PqpXZ7sU5Qg7bTCCCV4=; b=hUxTXtIwup8HwXzRn4HnMIRdA5
-        FPpltTYYiaSUM8IwPHrwFgbd1a9DADpv9bhUGqJLTh2LIDgW3qQoydHUySggdhzxU97zPROKeanBn
-        2UGUonQzrkanDUmkWGawx1Kz3VDSPGdQOGCFC5/QmRQH/zLYeCQpTnchFIqk0K7Mj0WSP5YrWzQIG
-        qQqg+11Uzy9xSKl9cSXBhYTJkQEMppsELiB9kas2wXnbt8/4LschRanwncC6AhwXNXZnpiBkPt5mJ
-        F4UVmELqbY187ZKI+XMx7ALpwqvZfYhNMTim956FO9UZVhQYTuVHW4+YzCH41xaTf2tOfUoN8gp5Z
-        hW2p2S9w==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIT8Z-0008Nz-0U; Wed, 16 Sep 2020 08:49:59 +0000
-Date:   Wed, 16 Sep 2020 09:49:58 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Nick Terrell <nickrterrell@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
-Subject: Re: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
-Message-ID: <20200916084958.GC31608@infradead.org>
-References: <20200916034307.2092020-1-nickrterrell@gmail.com>
- <20200916034307.2092020-7-nickrterrell@gmail.com>
+        Wed, 16 Sep 2020 05:28:33 -0400
+X-Originating-IP: 90.76.143.236
+Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
+        (Authenticated sender: antoine.tenart@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 1CECE1C0005;
+        Wed, 16 Sep 2020 09:28:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916034307.2092020-7-nickrterrell@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <1599545445-5716-1-git-send-email-pvanleeuwen@rambus.com>
+References: <1599545445-5716-1-git-send-email-pvanleeuwen@rambus.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        Pascal van Leeuwen <pvanleeuwen@rambus.com>
+To:     Pascal van Leeuwen <pvanleeuwen@rambus.com>,
+        linux-crypto@vger.kernel.org
+From:   Antoine Tenart <antoine.tenart@bootlin.com>
+Subject: Re: [PATCH] crypto: inside-secure - Prevent missing of processing errors
+Message-ID: <160024850785.39497.13746876037464237291@kwain>
+Date:   Wed, 16 Sep 2020 11:28:28 +0200
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 08:42:59PM -0700, Nick Terrell wrote:
-> From: Nick Terrell <terrelln@fb.com>
-> 
-> Move away from the compatibility wrapper to the zstd-1.4.6 API. This
-> code is functionally equivalent.
+Hi Pascal,
 
-Again, please use sensible names  And no one gives a fuck if this bad
-API is "zstd-1.4.6" as the Linux kernel uses its own APIs, not some
-random mess from a badly written userspace package.
+Quoting Pascal van Leeuwen (2020-09-08 08:10:45)
+> On systems with coherence issues, packet processed could succeed while
+> it should have failed, e.g. because of an authentication fail.
+> This is because the driver would read stale status information that had
+> all error bits initialised to zero = no error.
+> Since this is potential a security risk, we want to prevent it from being
+> a possibility at all. So initialize all error bits to error state, so
+> that reading stale status information will always result in errors.
+> 
+> Signed-off-by: Pascal van Leeuwen <pvanleeuwen@rambus.com>
+
+Acked-by: Antoine Tenart <antoine.tenart@bootlin.com>
+
+Thanks!
+Antoine
+
+> ---
+>  drivers/crypto/inside-secure/safexcel_ring.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/crypto/inside-secure/safexcel_ring.c b/drivers/crypto/inside-secure/safexcel_ring.c
+> index e454c3d..90f1503 100644
+> --- a/drivers/crypto/inside-secure/safexcel_ring.c
+> +++ b/drivers/crypto/inside-secure/safexcel_ring.c
+> @@ -236,8 +236,8 @@ struct safexcel_result_desc *safexcel_add_rdesc(struct safexcel_crypto_priv *pri
+>  
+>         rdesc->particle_size = len;
+>         rdesc->rsvd0 = 0;
+> -       rdesc->descriptor_overflow = 0;
+> -       rdesc->buffer_overflow = 0;
+> +       rdesc->descriptor_overflow = 1; /* assume error */
+> +       rdesc->buffer_overflow = 1;     /* assume error */
+>         rdesc->last_seg = last;
+>         rdesc->first_seg = first;
+>         rdesc->result_size = EIP197_RD64_RESULT_SIZE;
+> @@ -245,9 +245,10 @@ struct safexcel_result_desc *safexcel_add_rdesc(struct safexcel_crypto_priv *pri
+>         rdesc->data_lo = lower_32_bits(data);
+>         rdesc->data_hi = upper_32_bits(data);
+>  
+> -       /* Clear length & error code in result token */
+> +       /* Clear length in result token */
+>         rtoken->packet_length = 0;
+> -       rtoken->error_code = 0;
+> +       /* Assume errors - HW will clear if not the case */
+> +       rtoken->error_code = 0x7fff;
+>  
+>         return rdesc;
+>  }
+> -- 
+> 1.8.3.1
+> 
+
+-- 
+Antoine Ténart, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
