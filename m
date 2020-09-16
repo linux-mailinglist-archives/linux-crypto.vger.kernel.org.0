@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8FF26BC5F
-	for <lists+linux-crypto@lfdr.de>; Wed, 16 Sep 2020 08:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F27B26BC60
+	for <lists+linux-crypto@lfdr.de>; Wed, 16 Sep 2020 08:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726093AbgIPGOf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 16 Sep 2020 02:14:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41650 "EHLO mail.kernel.org"
+        id S1726150AbgIPGOg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 16 Sep 2020 02:14:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726150AbgIPGOc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:14:32 -0400
+        id S1726222AbgIPGOe (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:14:34 -0400
 Received: from e123331-lin.nice.arm.com (adsl-245.46.190.88.tellas.gr [46.190.88.245])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B27B221D7D;
-        Wed, 16 Sep 2020 06:14:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45F73208E4;
+        Wed, 16 Sep 2020 06:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600236871;
-        bh=0nSj3j35RCFZr6qtVi1QaNSon8iL7sof8KVTioP5RtY=;
+        s=default; t=1600236874;
+        bh=oFwRGJjCRrulCBDDrJokTK2CTWnrn6oLnBO3s5RFsms=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TMTACuyG+FKgvnRSOhoTca4xvu/Pmee4Bw+7aOlNM6DaLMKh3Obx9XzZx7kS3ymNQ
-         /BUivn6VZxGEuhDY6Tac00lf1aMOHTn87flytuEIPUUazxjtSePN9zQN3ZxPartg+J
-         J+WMhs/igDx5buA1E3NgyNTI3JKs0c2gVnw/ff24=
+        b=UciQDKtHkb/bz1vo4VmaB1xzXEScVjfS457KpBZCmNI35BuzOf0CYTXKEGmx9hFn6
+         F6KDfgeIuAmtu5iU172i07yy70VKo9MnL24EC6TC4/wbUoCluHlbPDjHA+5PptH8Mh
+         nvOaeL3HXYjC1ZcFF+mgNpCutFiQplfqUzEaPTYo=
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, Ard Biesheuvel <ardb@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Stefan Agner <stefan@agner.ch>,
         Peter Smith <Peter.Smith@arm.com>
-Subject: [PATCH v2 1/2] crypto: arm/sha256-neon - avoid ADRL pseudo instruction
-Date:   Wed, 16 Sep 2020 09:14:17 +0300
-Message-Id: <20200916061418.9197-2-ardb@kernel.org>
+Subject: [PATCH v2 2/2] crypto: arm/sha512-neon - avoid ADRL pseudo instruction
+Date:   Wed, 16 Sep 2020 09:14:18 +0300
+Message-Id: <20200916061418.9197-3-ardb@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200916061418.9197-1-ardb@kernel.org>
 References: <20200916061418.9197-1-ardb@kernel.org>
@@ -54,15 +54,15 @@ instruction.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/arm/crypto/sha256-armv4.pl       | 4 ++--
- arch/arm/crypto/sha256-core.S_shipped | 4 ++--
+ arch/arm/crypto/sha512-armv4.pl       | 4 ++--
+ arch/arm/crypto/sha512-core.S_shipped | 4 ++--
  2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/crypto/sha256-armv4.pl b/arch/arm/crypto/sha256-armv4.pl
-index 9f96ff48e4a8..f3a2b54efd4e 100644
---- a/arch/arm/crypto/sha256-armv4.pl
-+++ b/arch/arm/crypto/sha256-armv4.pl
-@@ -175,7 +175,6 @@ $code=<<___;
+diff --git a/arch/arm/crypto/sha512-armv4.pl b/arch/arm/crypto/sha512-armv4.pl
+index 69df68981acd..2fc3516912fa 100644
+--- a/arch/arm/crypto/sha512-armv4.pl
++++ b/arch/arm/crypto/sha512-armv4.pl
+@@ -212,7 +212,6 @@ $code=<<___;
  #else
  .syntax unified
  # ifdef __thumb2__
@@ -70,21 +70,21 @@ index 9f96ff48e4a8..f3a2b54efd4e 100644
  .thumb
  # else
  .code   32
-@@ -471,7 +470,8 @@ sha256_block_data_order_neon:
- 	stmdb	sp!,{r4-r12,lr}
- 
- 	sub	$H,sp,#16*4+16
--	adrl	$Ktbl,K256
-+	adr	$Ktbl,.Lsha256_block_data_order
-+	sub	$Ktbl,$Ktbl,#.Lsha256_block_data_order-K256
- 	bic	$H,$H,#15		@ align for 128-bit stores
- 	mov	$t2,sp
- 	mov	sp,$H			@ alloca
-diff --git a/arch/arm/crypto/sha256-core.S_shipped b/arch/arm/crypto/sha256-core.S_shipped
-index ea04b2ab0c33..6363014a50d7 100644
---- a/arch/arm/crypto/sha256-core.S_shipped
-+++ b/arch/arm/crypto/sha256-core.S_shipped
-@@ -56,7 +56,6 @@
+@@ -602,7 +601,8 @@ sha512_block_data_order_neon:
+ 	dmb				@ errata #451034 on early Cortex A8
+ 	add	$len,$inp,$len,lsl#7	@ len to point at the end of inp
+ 	VFP_ABI_PUSH
+-	adrl	$Ktbl,K512
++	adr	$Ktbl,.Lsha512_block_data_order
++	sub	$Ktbl,$Ktbl,.Lsha512_block_data_order-K512
+ 	vldmia	$ctx,{$A-$H}		@ load context
+ .Loop_neon:
+ ___
+diff --git a/arch/arm/crypto/sha512-core.S_shipped b/arch/arm/crypto/sha512-core.S_shipped
+index cb147db5cbfe..03014624f2ab 100644
+--- a/arch/arm/crypto/sha512-core.S_shipped
++++ b/arch/arm/crypto/sha512-core.S_shipped
+@@ -79,7 +79,6 @@
  #else
  .syntax unified
  # ifdef __thumb2__
@@ -92,16 +92,16 @@ index ea04b2ab0c33..6363014a50d7 100644
  .thumb
  # else
  .code   32
-@@ -1885,7 +1884,8 @@ sha256_block_data_order_neon:
- 	stmdb	sp!,{r4-r12,lr}
- 
- 	sub	r11,sp,#16*4+16
--	adrl	r14,K256
-+	adr	r14,.Lsha256_block_data_order
-+	sub	r14,r14,#.Lsha256_block_data_order-K256
- 	bic	r11,r11,#15		@ align for 128-bit stores
- 	mov	r12,sp
- 	mov	sp,r11			@ alloca
+@@ -543,7 +542,8 @@ sha512_block_data_order_neon:
+ 	dmb				@ errata #451034 on early Cortex A8
+ 	add	r2,r1,r2,lsl#7	@ len to point at the end of inp
+ 	VFP_ABI_PUSH
+-	adrl	r3,K512
++	adr	r3,.Lsha512_block_data_order
++	sub	r3,r3,.Lsha512_block_data_order-K512
+ 	vldmia	r0,{d16-d23}		@ load context
+ .Loop_neon:
+ 	vshr.u64	d24,d20,#14	@ 0
 -- 
 2.17.1
 
