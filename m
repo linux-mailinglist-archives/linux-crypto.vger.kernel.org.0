@@ -2,62 +2,224 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2BA126C83C
-	for <lists+linux-crypto@lfdr.de>; Wed, 16 Sep 2020 20:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C875526C93E
+	for <lists+linux-crypto@lfdr.de>; Wed, 16 Sep 2020 21:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728041AbgIPSnz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 16 Sep 2020 14:43:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728108AbgIPSnM (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:43:12 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5458C061756
-        for <linux-crypto@vger.kernel.org>; Wed, 16 Sep 2020 11:43:11 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id c18so7931549wrm.9
-        for <linux-crypto@vger.kernel.org>; Wed, 16 Sep 2020 11:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=r4WgdkZdZwnrsReZJ2pa2DBLR31TnVu+CuK3WgIBCAA=;
-        b=khW4RRqOr552REfXJ1TXvAT25yjP4KVEzeTVxgf5U5Aw+VKoyk9P5q1CPMTmGb+1qX
-         XtRo8ylxYBtL2gC4nscheKFE8wmr7Cds4snDoBrG3ME67XXZb9lHiHlDevmA3KrRSYLf
-         rr3QPmrbH6kLIEXER3+6Of560j0bAdnQ0w7ZApaQnWzrUAPOk7K9SQttBX/Ke1CrZBTT
-         m9zuMEGd9NR3WxAPia1X9EphzJCEAVX+dawqRdQaRb6ecu/pBEzU6ZQbNSiuATbp3Wtm
-         BFnocZEwhrQ2pW36J0aoezZLksWztiAxLMFXmombBrjeAm+mdIKO7C46FDSQmPG6dAfZ
-         yaWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=r4WgdkZdZwnrsReZJ2pa2DBLR31TnVu+CuK3WgIBCAA=;
-        b=e7wl2gIF7Sgt1QuXGEVYC4HBn2KZ7V1bS7FYVS3TMcLis/6i4Wk3yKlYvcAJbgJzGd
-         +BiSLHWXiBkgi5IOOaNzFSXNqYDe18wce/otmJjffrYOJvYJqIOOe02OeHeVQ8cW7izX
-         6LTEv31iG/Fk6pn0Um3ol1IcWaDgCWIdNrNueO7xwT0zUHJePNzg4MiwFv9zG7uz9a6G
-         2FE0+IIp3kzLdmWfRoJcLkCrgU7FXKJoLBQQVbkYbMksaWKzZpqGE0YE8qJ+hYyN5dyd
-         HmSy72fyHtWATmsAV626EGN1EJfMUt718B1UjZKGC+OVGBpJvHW6widvRCWPXm37Mqm+
-         yD6Q==
-X-Gm-Message-State: AOAM532up3u0mwBlVpElI/PQyKpx79N8yrlofbMwbRzi8KccAPdjk6Kh
-        7w5BuNMWreSIqVOGgP1g8mWP05iYJnmbUM4zGek=
-X-Google-Smtp-Source: ABdhPJwbNH8tKJufxUDeB6Kod70/4MVgQ+Fo4DwabyA31RCXAyuwdKuGb1KeCrqWeKmybLMUNsusoqnNQHxNRIBiSt4=
-X-Received: by 2002:adf:dd51:: with SMTP id u17mr27979499wrm.355.1600281790313;
- Wed, 16 Sep 2020 11:43:10 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a5d:6589:0:0:0:0:0 with HTTP; Wed, 16 Sep 2020 11:43:09
- -0700 (PDT)
-Reply-To: sgtkaylam28@gmail.com
-From:   SgtKayla Manthey <sgt.robertjames33@gmail.com>
-Date:   Wed, 16 Sep 2020 11:43:09 -0700
-Message-ID: <CA+7iw6u0taFvEKS3dnDj+gd7936qXMsyoHi-uYb6mgGNtMNEcA@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        id S1727222AbgIPTFn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 16 Sep 2020 15:05:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37580 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727430AbgIPRqT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:46:19 -0400
+Received: from e123331-lin.nice.arm.com (adsl-245.46.190.88.tellas.gr [46.190.88.245])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 714C522226;
+        Wed, 16 Sep 2020 12:36:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600259813;
+        bh=BnJn+ur9GqzFa4zwQue+QDarPbQWiUfb7hyWM/oKasw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=USoUUYpvWuXTSLWLa71CN1jQmIZO4WPaOyoQddCVZngZUn05Y2xpr2rHzvsEFHVy/
+         E2cwiBCOuKu1ckbUF08hLYZcbI3KX+AqSuDbJEsvG1d/dDMzxlFdwoPnEJamlNk1QM
+         Phpbcs0Pt2cYHN5WfkjKJYqTCW57jmlFNo5uzbfM=
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 1/3] crypto: arm/aes-neonbs - avoid hacks to prevent Thumb2 mode switches
+Date:   Wed, 16 Sep 2020 15:36:40 +0300
+Message-Id: <20200916123642.20805-2-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200916123642.20805-1-ardb@kernel.org>
+References: <20200916123642.20805-1-ardb@kernel.org>
 Sender: linux-crypto-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Greetings,
-My name is Kayla please did you receive my previous message? write me
-back thank you.
+Instead of using a homegrown macrofied version of the adr instruction
+that sets the Thumb bit in the output value, only to ensure that any
+bx instructions consuming that value will not switch out of Thumb mode
+when branching, use non-interworking mov (to PC) instructions, which
+achieve the same thing.
+
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ arch/arm/crypto/aes-neonbs-core.S | 49 +++++++++-----------
+ 1 file changed, 22 insertions(+), 27 deletions(-)
+
+diff --git a/arch/arm/crypto/aes-neonbs-core.S b/arch/arm/crypto/aes-neonbs-core.S
+index cfaed4e67535..07cde1374bb0 100644
+--- a/arch/arm/crypto/aes-neonbs-core.S
++++ b/arch/arm/crypto/aes-neonbs-core.S
+@@ -77,11 +77,6 @@
+ 	vldr		\out\()h, \sym + 8
+ 	.endm
+ 
+-	.macro		__adr, reg, lbl
+-	adr		\reg, \lbl
+-THUMB(	orr		\reg, \reg, #1		)
+-	.endm
+-
+ 	.macro		in_bs_ch, b0, b1, b2, b3, b4, b5, b6, b7
+ 	veor		\b2, \b2, \b1
+ 	veor		\b5, \b5, \b6
+@@ -629,11 +624,11 @@ ENDPROC(aesbs_decrypt8)
+ 	push		{r4-r6, lr}
+ 	ldr		r5, [sp, #16]		// number of blocks
+ 
+-99:	__adr		ip, 0f
++99:	adr		ip, 0f
+ 	and		lr, r5, #7
+ 	cmp		r5, #8
+ 	sub		ip, ip, lr, lsl #2
+-	bxlt		ip			// computed goto if blocks < 8
++	movlt		pc, ip			// computed goto if blocks < 8
+ 
+ 	vld1.8		{q0}, [r1]!
+ 	vld1.8		{q1}, [r1]!
+@@ -648,11 +643,11 @@ ENDPROC(aesbs_decrypt8)
+ 	mov		rounds, r3
+ 	bl		\do8
+ 
+-	__adr		ip, 1f
++	adr		ip, 1f
+ 	and		lr, r5, #7
+ 	cmp		r5, #8
+ 	sub		ip, ip, lr, lsl #2
+-	bxlt		ip			// computed goto if blocks < 8
++	movlt		pc, ip			// computed goto if blocks < 8
+ 
+ 	vst1.8		{\o0}, [r0]!
+ 	vst1.8		{\o1}, [r0]!
+@@ -689,12 +684,12 @@ ENTRY(aesbs_cbc_decrypt)
+ 	push		{r4-r6, lr}
+ 	ldm		ip, {r5-r6}		// load args 4-5
+ 
+-99:	__adr		ip, 0f
++99:	adr		ip, 0f
+ 	and		lr, r5, #7
+ 	cmp		r5, #8
+ 	sub		ip, ip, lr, lsl #2
+ 	mov		lr, r1
+-	bxlt		ip			// computed goto if blocks < 8
++	movlt		pc, ip			// computed goto if blocks < 8
+ 
+ 	vld1.8		{q0}, [lr]!
+ 	vld1.8		{q1}, [lr]!
+@@ -718,11 +713,11 @@ ENTRY(aesbs_cbc_decrypt)
+ 	vmov		q14, q8
+ 	vmov		q15, q8
+ 
+-	__adr		ip, 1f
++	adr		ip, 1f
+ 	and		lr, r5, #7
+ 	cmp		r5, #8
+ 	sub		ip, ip, lr, lsl #2
+-	bxlt		ip			// computed goto if blocks < 8
++	movlt		pc, ip			// computed goto if blocks < 8
+ 
+ 	vld1.8		{q9}, [r1]!
+ 	vld1.8		{q10}, [r1]!
+@@ -733,9 +728,9 @@ ENTRY(aesbs_cbc_decrypt)
+ 	vld1.8		{q15}, [r1]!
+ 	W(nop)
+ 
+-1:	__adr		ip, 2f
++1:	adr		ip, 2f
+ 	sub		ip, ip, lr, lsl #3
+-	bxlt		ip			// computed goto if blocks < 8
++	movlt		pc, ip			// computed goto if blocks < 8
+ 
+ 	veor		q0, q0, q8
+ 	vst1.8		{q0}, [r0]!
+@@ -804,13 +799,13 @@ ENTRY(aesbs_ctr_encrypt)
+ 	vmov		q6, q0
+ 	vmov		q7, q0
+ 
+-	__adr		ip, 0f
++	adr		ip, 0f
+ 	sub		lr, r5, #1
+ 	and		lr, lr, #7
+ 	cmp		r5, #8
+ 	sub		ip, ip, lr, lsl #5
+ 	sub		ip, ip, lr, lsl #2
+-	bxlt		ip			// computed goto if blocks < 8
++	movlt		pc, ip			// computed goto if blocks < 8
+ 
+ 	next_ctr	q1
+ 	next_ctr	q2
+@@ -824,13 +819,13 @@ ENTRY(aesbs_ctr_encrypt)
+ 	mov		rounds, r3
+ 	bl		aesbs_encrypt8
+ 
+-	__adr		ip, 1f
++	adr		ip, 1f
+ 	and		lr, r5, #7
+ 	cmp		r5, #8
+ 	movgt		r4, #0
+ 	ldrle		r4, [sp, #40]		// load final in the last round
+ 	sub		ip, ip, lr, lsl #2
+-	bxlt		ip			// computed goto if blocks < 8
++	movlt		pc, ip			// computed goto if blocks < 8
+ 
+ 	vld1.8		{q8}, [r1]!
+ 	vld1.8		{q9}, [r1]!
+@@ -843,10 +838,10 @@ ENTRY(aesbs_ctr_encrypt)
+ 1:	bne		2f
+ 	vld1.8		{q15}, [r1]!
+ 
+-2:	__adr		ip, 3f
++2:	adr		ip, 3f
+ 	cmp		r5, #8
+ 	sub		ip, ip, lr, lsl #3
+-	bxlt		ip			// computed goto if blocks < 8
++	movlt		pc, ip			// computed goto if blocks < 8
+ 
+ 	veor		q0, q0, q8
+ 	vst1.8		{q0}, [r0]!
+@@ -900,12 +895,12 @@ __xts_prepare8:
+ 	vshr.u64	d30, d31, #7
+ 	vmov		q12, q14
+ 
+-	__adr		ip, 0f
++	adr		ip, 0f
+ 	and		r4, r6, #7
+ 	cmp		r6, #8
+ 	sub		ip, ip, r4, lsl #5
+ 	mov		r4, sp
+-	bxlt		ip			// computed goto if blocks < 8
++	movlt		pc, ip			// computed goto if blocks < 8
+ 
+ 	vld1.8		{q0}, [r1]!
+ 	next_tweak	q12, q14, q15, q13
+@@ -973,12 +968,12 @@ ENDPROC(__xts_prepare8)
+ 	mov		rounds, r3
+ 	bl		\do8
+ 
+-	__adr		ip, 0f
++	adr		ip, 0f
+ 	and		lr, r6, #7
+ 	cmp		r6, #8
+ 	sub		ip, ip, lr, lsl #2
+ 	mov		r4, sp
+-	bxlt		ip			// computed goto if blocks < 8
++	movlt		pc, ip			// computed goto if blocks < 8
+ 
+ 	vld1.8		{q8}, [r4, :128]!
+ 	vld1.8		{q9}, [r4, :128]!
+@@ -989,9 +984,9 @@ ENDPROC(__xts_prepare8)
+ 	vld1.8		{q14}, [r4, :128]!
+ 	vld1.8		{q15}, [r4, :128]
+ 
+-0:	__adr		ip, 1f
++0:	adr		ip, 1f
+ 	sub		ip, ip, lr, lsl #3
+-	bxlt		ip			// computed goto if blocks < 8
++	movlt		pc, ip			// computed goto if blocks < 8
+ 
+ 	veor		\o0, \o0, q8
+ 	vst1.8		{\o0}, [r0]!
+-- 
+2.17.1
+
