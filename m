@@ -2,110 +2,91 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A7D26E3D9
-	for <lists+linux-crypto@lfdr.de>; Thu, 17 Sep 2020 20:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E505F26E4DC
+	for <lists+linux-crypto@lfdr.de>; Thu, 17 Sep 2020 21:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgIQSgy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 17 Sep 2020 14:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
+        id S1726607AbgIQTA2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 17 Sep 2020 15:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726659AbgIQSgR (ORCPT
+        with ESMTP id S1726589AbgIQS7v (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:36:17 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D51DC06178C
-        for <linux-crypto@vger.kernel.org>; Thu, 17 Sep 2020 11:36:17 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id g4so3119354wrs.5
-        for <linux-crypto@vger.kernel.org>; Thu, 17 Sep 2020 11:36:17 -0700 (PDT)
+        Thu, 17 Sep 2020 14:59:51 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F490C061756
+        for <linux-crypto@vger.kernel.org>; Thu, 17 Sep 2020 11:59:45 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s12so3171522wrw.11
+        for <linux-crypto@vger.kernel.org>; Thu, 17 Sep 2020 11:59:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=XM0rn9lgSMh+/oP0wbhw4Z0Og4lOLAMikZRs+DnstJg=;
-        b=t1F4i2utZ2d6rs6DCDEg4dyCXwYJlvBxt8DAK7YCJPHWLEuWYXH+YP7uoYpl016u8t
-         R4PnzNq5M2D/veKMddKOixuoUYhHx0Ug4NcDn0Lq4wFCE0AlpgKfh9rf/6jG5dtNyR6R
-         DOpOWrtTBqxl96lLAdOcxUVPkbt4v8lWwcTJpGp66IEn3Jg6jiLT0n7khrcG6R1nkY/e
-         iUrlTNbDuw47FgRinC3Jlk4Nqi6JcZX7zeDcWOZSvyNib80nmJ7wJ6HAj1OjwjZrsRq6
-         lCv79+SzNgXnA0VhnjgiGBEAtTHLSyq+kQgc2XdhLMOurmIsXN0b9RbDLGKkktFjqb6/
-         TyXg==
+        h=from:to:cc:subject:date:message-id;
+        bh=/FQeEcWUlQDqfQ8wanTKIcTElJ0+/H0Q34PjAFqIS2E=;
+        b=UDH2kSarbkBuYBTeWj3n0fqUdD9XU0XvPc+4NOngHaapEW0SOpuLQ8y2YcruoNZeEX
+         svVWs1RwWe/w6VHGkXAOgYyz3Cix45a6NYx3vT6cF0+ufr8RGH7pgc/1fC9yA3KIbmZE
+         MTt7xB/yrUVL+6MJpVcF2vyvi/2cOm2JzUH6JFmGAgB61p5NzL4KKCADVFcHVZh7q+UF
+         ohOzgpHwsME46bLgBALQPJR3APlbQv4PT/DrXz2a7r+k3AZWUjujgKyUqrLxY2ve1zWl
+         96ociw42g1nxXnxTmBpW5arpqMbDoUXiYheqCebLj3yquFlTwDkxwk7xLLnZtqD4h3cP
+         N53A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=XM0rn9lgSMh+/oP0wbhw4Z0Og4lOLAMikZRs+DnstJg=;
-        b=R1fyf0Jgth17tRcRbR+eMMYlwdyt1+pCW9ERSfSbJLBQ87k9beB7FeDHGeK61m+7SS
-         lsv6KND8V5wKGPHyNc1P7bjdpN9FFr/n+lsdotbPEeE94NOrhNHZFT2AOpklqRr7wkrY
-         O6PUqS+zXqPX43D97vNS9WmTr0zHUy75Z7oRafSiM+cceDBz7vCz3hVkDT38+orsXrPL
-         EW++0uScbhJMQMRzLQRToCEf9EwQ2dfwatR4CWCnLWcSjTBLqkihMDL1y/i5ZBhwoMLQ
-         feZFWPDZ5jgmrHqyNcPsWczivQE9tsmSFnBMF7Z2KIW84rvMDGrb5FeSLS076DJkpHUf
-         fXzA==
-X-Gm-Message-State: AOAM532JkQmXKLigVUPjiStD1Yfm0t+5yf3N1rG+6nb/rkbv/HVqJ5fz
-        Kyw71G7yMIqr9lt7JK1g8Ul7KQ==
-X-Google-Smtp-Source: ABdhPJxBCR6h6xFHou/Y3/DMQ76QCXKRZvp9f6aSU4/C91Y2zTMNW6ZBe33yJ+uulWo9T5gTTbvvuA==
-X-Received: by 2002:adf:edd2:: with SMTP id v18mr33152164wro.242.1600367774867;
-        Thu, 17 Sep 2020 11:36:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/FQeEcWUlQDqfQ8wanTKIcTElJ0+/H0Q34PjAFqIS2E=;
+        b=iZ2RWn9u+OrWDymiyzpa9XWkr0cI6CTxvqeV59GmRHR7X2qNMpgz12OlutPpOdDKt/
+         y2zGQS1YTfq4oWzWOlKDtwt8b1trN5dhIbzvdkH6GsAFGkq9l1JsSJ9papj0LsdnxYH4
+         +UHaS5fP0XgJ22u/r3pcg87DebqfhEmKOA4bDf3DXuNwrVctLHZwWMvAiOTz8qnCkeA6
+         lhxCxjsqOf9V7EPlsXrjGl3v1Ch2ucwWbev6M57rop/H1elLsFEVvQ9pduEPPG7n2Q6U
+         G9fekzCs8TKdoHrSd3n58oQ9SeNAoSf4JxQiqFO2Q+xk+9RG62es9KipiBnhcKkkkXGG
+         P2KA==
+X-Gm-Message-State: AOAM530VwTywZZUfB+llcbNZhUy2lLvD5Q3A9wVO57ryOWI2GQobCsyU
+        n//oaUv5vMs75vVvyha8c/Ih7g==
+X-Google-Smtp-Source: ABdhPJzbVDEFcxbw/TjYhFdXwMyu3mguWYl6vvOW6/lfjbNAQgC808oX9KFWtD4HV3w00/BjD7ipww==
+X-Received: by 2002:a5d:6283:: with SMTP id k3mr35007812wru.191.1600369184565;
+        Thu, 17 Sep 2020 11:59:44 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id x16sm571901wrq.62.2020.09.17.11.36.13
+        by smtp.googlemail.com with ESMTPSA id f23sm16639470wmc.3.2020.09.17.11.59.43
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Sep 2020 11:36:14 -0700 (PDT)
+        Thu, 17 Sep 2020 11:59:43 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
-To:     arnd@arndb.de, davem@davemloft.net, herbert@gondor.apana.org.au,
-        mripard@kernel.org, wens@csie.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+To:     davem@davemloft.net, herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH 7/7] crypto: sun4i-ss: add SPDX header and remove blank lines
-Date:   Thu, 17 Sep 2020 18:35:58 +0000
-Message-Id: <1600367758-28589-8-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH] crypto: procfs: Removing some useless only space lines
+Date:   Thu, 17 Sep 2020 18:59:36 +0000
+Message-Id: <1600369176-28975-1-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600367758-28589-1-git-send-email-clabbe@baylibre.com>
-References: <1600367758-28589-1-git-send-email-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patchs fixes some remaining style issue.
+Some line got only spaces, remove them
 
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c | 3 ---
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c   | 1 +
- 2 files changed, 1 insertion(+), 3 deletions(-)
+ crypto/proc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-index be6599220e9d..2011aa4f0415 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-@@ -137,7 +137,6 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
- 	return err;
- }
- 
--
- static int noinline_for_stack sun4i_ss_cipher_poll_fallback(struct skcipher_request *areq)
+diff --git a/crypto/proc.c b/crypto/proc.c
+index 08d8c2bc7e62..12fccb9c5205 100644
+--- a/crypto/proc.c
++++ b/crypto/proc.c
+@@ -36,7 +36,7 @@ static void c_stop(struct seq_file *m, void *p)
+ static int c_show(struct seq_file *m, void *p)
  {
- 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(areq);
-@@ -549,7 +548,6 @@ int sun4i_ss_cipher_init(struct crypto_tfm *tfm)
- 				    sizeof(struct sun4i_cipher_req_ctx) +
- 				    crypto_skcipher_reqsize(op->fallback_tfm));
- 
--
- 	err = pm_runtime_get_sync(op->ss->dev);
- 	if (err < 0)
- 		goto error_pm;
-@@ -636,5 +634,4 @@ int sun4i_ss_des3_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 	crypto_skcipher_set_flags(op->fallback_tfm, tfm->base.crt_flags & CRYPTO_TFM_REQ_MASK);
- 
- 	return crypto_skcipher_setkey(op->fallback_tfm, key, keylen);
--
- }
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
-index 102f8a90ce0f..4d1610952e90 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- #include "sun4i-ss.h"
- 
- int sun4i_ss_prng_seed(struct crypto_rng *tfm, const u8 *seed,
+ 	struct crypto_alg *alg = list_entry(p, struct crypto_alg, cra_list);
+-	
++
+ 	seq_printf(m, "name         : %s\n", alg->cra_name);
+ 	seq_printf(m, "driver       : %s\n", alg->cra_driver_name);
+ 	seq_printf(m, "module       : %s\n", module_name(alg->cra_module));
+@@ -59,7 +59,7 @@ static int c_show(struct seq_file *m, void *p)
+ 		alg->cra_type->show(m, alg);
+ 		goto out;
+ 	}
+-	
++
+ 	switch (alg->cra_flags & CRYPTO_ALG_TYPE_MASK) {
+ 	case CRYPTO_ALG_TYPE_CIPHER:
+ 		seq_printf(m, "type         : cipher\n");
 -- 
 2.26.2
 
