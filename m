@@ -2,84 +2,125 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551C526F386
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Sep 2020 05:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1D926F55A
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Sep 2020 07:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730522AbgIRDHG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 17 Sep 2020 23:07:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727159AbgIRCDs (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:03:48 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726442AbgIRFVg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Sep 2020 01:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgIRFVg (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 18 Sep 2020 01:21:36 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A44CC06174A
+        for <linux-crypto@vger.kernel.org>; Thu, 17 Sep 2020 22:21:36 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B76F2311D;
-        Fri, 18 Sep 2020 02:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394627;
-        bh=1NFky1aHyOFCcv+zMkvnVftWgULXvQQIBmoB9HF5QTc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MIlBHPVRQXocLJJR6WPzHWTNdApfIi5S0mGPmc5/0S9zT3XlepNon5aCKipb6ms6q
-         jlBvz8zLt/tChbzdLQdbGTfMFGwv8xn0wTHwAHgCsOqV8jqTCVBuGht/oiO2BWVPnJ
-         0wHFQHqwPSWlfYgwpMUMdMKZTFCmQJjrwxE3eLb8=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 128/330] crypto: chelsio - This fixes the kernel panic which occurs during a libkcapi test
-Date:   Thu, 17 Sep 2020 21:57:48 -0400
-Message-Id: <20200918020110.2063155-128-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
-References: <20200918020110.2063155-1-sashal@kernel.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bt2Hs5rBWz9sSf;
+        Fri, 18 Sep 2020 15:21:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600406490;
+        bh=YuNkjMY+PPETCNlgaTO4CnNygY4KP4AnSDSyMlGt4mo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tPa0ZYJRuUySqDwpzgNn32SSZVQb/492jhKstS3//zh8AfQjFXVuyapf+Xjd8rNGL
+         IJNLovwSl6dcLgVq6SVXLNvfCODbCdTso+NllNoshfAjOnoMReNI/hNgxELrHRu5ct
+         B6HKZ0asNIoZUVvsJ3qo9SVM2S5/T8PajodPy19VP1nYGIEIcmtbOuvUf82lTdEhP+
+         axnz9d6OYjeviS1npj6l3rIWSsdkpKR4jFl7/KNlBGr7pSK0R4oVNwmM8E05rUtKSM
+         TqrHRmAgqBKO+dyj0mfXd5UP0gdCjZw3Ri87wAOVar7/GQc6DB9rx5rFpalHK5b0xd
+         PIbE/vFWnXNOQ==
+Date:   Fri, 18 Sep 2020 15:21:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the staging tree with the crypto tree
+Message-ID: <20200918152127.4414b524@canb.auug.org.au>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/8uQtOioeX7eIItwlkcKMxkL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Ayush Sawal <ayush.sawal@chelsio.com>
+--Sig_/8uQtOioeX7eIItwlkcKMxkL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[ Upstream commit 9195189e00a7db55e7d448cee973cae87c5a3c71 ]
+Hi all,
 
-The libkcapi test which causes kernel panic is
-aead asynchronous vmsplice multiple test.
+Today's linux-next merge of the staging tree got a conflict in:
 
-./bin/kcapi  -v -d 4 -x 10   -c "ccm(aes)"
--q 4edb58e8d5eb6bc711c43a6f3693daebde2e5524f1b55297abb29f003236e43d
--t a7877c99 -n 674742abd0f5ba -k 2861fd0253705d7875c95ba8a53171b4
--a fb7bc304a3909e66e2e0c5ef952712dd884ce3e7324171369f2c5db1adc48c7d
+  drivers/staging/rtl8192e/Kconfig
 
-This patch avoids dma_mapping of a zero length sg which causes the panic,
-by using sg_nents_for_len which maps only upto a specific length
+between commit:
 
-Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/crypto/chelsio/chcr_algo.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+  054694a46d64 ("staging/rtl8192e: switch to RC4 library interface")
 
-diff --git a/drivers/crypto/chelsio/chcr_algo.c b/drivers/crypto/chelsio/chcr_algo.c
-index fe2eadc0ce83d..2d30ed5a2674b 100644
---- a/drivers/crypto/chelsio/chcr_algo.c
-+++ b/drivers/crypto/chelsio/chcr_algo.c
-@@ -2480,8 +2480,9 @@ int chcr_aead_dma_map(struct device *dev,
- 	else
- 		reqctx->b0_dma = 0;
- 	if (req->src == req->dst) {
--		error = dma_map_sg(dev, req->src, sg_nents(req->src),
--				   DMA_BIDIRECTIONAL);
-+		error = dma_map_sg(dev, req->src,
-+				sg_nents_for_len(req->src, dst_size),
-+					DMA_BIDIRECTIONAL);
- 		if (!error)
- 			goto err;
- 	} else {
--- 
-2.25.1
+from the crypto tree and commits:
 
+  243d040a6e4a ("staging: rtl8192e: fix kconfig dependency warning for RTLL=
+IB_CRYPTO_TKIP")
+  02c4260713d6 ("staging: rtl8192e: fix kconfig dependency warning for RTLL=
+IB_CRYPTO_WEP")
+
+from the staging tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/staging/rtl8192e/Kconfig
+index 4c440bdaaf6e,31e076cc6f16..000000000000
+--- a/drivers/staging/rtl8192e/Kconfig
++++ b/drivers/staging/rtl8192e/Kconfig
+@@@ -25,7 -26,8 +26,8 @@@ config RTLLIB_CRYPTO_CCM
+  config RTLLIB_CRYPTO_TKIP
+  	tristate "Support for rtllib TKIP crypto"
+  	depends on RTLLIB
++ 	select CRYPTO
+ -	select CRYPTO_ARC4
+ +	select CRYPTO_LIB_ARC4
+  	select CRYPTO_MICHAEL_MIC
+  	default y
+  	help
+@@@ -35,7 -37,8 +37,8 @@@
+ =20
+  config RTLLIB_CRYPTO_WEP
+  	tristate "Support for rtllib WEP crypto"
++ 	select CRYPTO
+ -	select CRYPTO_ARC4
+ +	select CRYPTO_LIB_ARC4
+  	depends on RTLLIB
+  	default y
+  	help
+
+--Sig_/8uQtOioeX7eIItwlkcKMxkL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9kQ9cACgkQAVBC80lX
+0Gxr2Qf/bawMPref1jwdFOCFNVKlpscttUQrex19Y8Q1aoBWtAvM1Yrds9nnnwG4
+edvKq+bBUoCtMvQ6ZV6pSrxRvjtfHFbsGaef7XqdEwvBhfvuoWtrhCeBNMAJwplV
+4lZLxQLarQrgZgcpDhpAbU3FIy15EK/GFfiJAkvag4Ma5YJufrSJzEHTyvr/YJY5
+NASEKDAI+PnLI5z4WdyObT6H0Ew6Zj4k3NECb5Hqn4QaAkis6cUT5uFyR7+/vzMu
+jrhvHWmuQki9T4BHe5Bs+azfo+fjGzfDxOAKBkkrrcCOis5F0h3zVhAZadIhM9V3
+XWVi+WtqRYz16+zAtu1JV6ZDqfy2Hw==
+=M0Gs
+-----END PGP SIGNATURE-----
+
+--Sig_/8uQtOioeX7eIItwlkcKMxkL--
