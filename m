@@ -2,57 +2,53 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC07926F75A
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Sep 2020 09:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600C526F794
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Sep 2020 10:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgIRHus (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Sep 2020 03:50:48 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:57714 "EHLO fornost.hmeau.com"
+        id S1726342AbgIRIBf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Sep 2020 04:01:35 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:57738 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726192AbgIRHus (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:50:48 -0400
+        id S1726199AbgIRIBf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:01:35 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kJBAC-0003vW-7h; Fri, 18 Sep 2020 17:50:37 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Sep 2020 17:50:36 +1000
-Date:   Fri, 18 Sep 2020 17:50:36 +1000
+        id 1kJBKh-000484-PJ; Fri, 18 Sep 2020 18:01:28 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Sep 2020 18:01:27 +1000
+Date:   Fri, 18 Sep 2020 18:01:27 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Crypto List <linux-crypto@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the staging tree with the crypto tree
-Message-ID: <20200918075036.GA24315@gondor.apana.org.au>
-References: <20200918152127.4414b524@canb.auug.org.au>
- <20200918054134.GA9252@gondor.apana.org.au>
- <20200918074911.GA987884@kroah.com>
+To:     "Van Leeuwen, Pascal" <pvanleeuwen@rambus.com>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "antoine.tenart@bootlin.com" <antoine.tenart@bootlin.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH] crypto: inside-secure - Fix corruption on not fully
+ coherent systems
+Message-ID: <20200918080127.GA24222@gondor.apana.org.au>
+References: <1599466784-23596-1-git-send-email-pvanleeuwen@rambus.com>
+ <20200918065806.GA9698@gondor.apana.org.au>
+ <CY4PR0401MB365283BF192613FD82EC0C12C33F0@CY4PR0401MB3652.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200918074911.GA987884@kroah.com>
+In-Reply-To: <CY4PR0401MB365283BF192613FD82EC0C12C33F0@CY4PR0401MB3652.namprd04.prod.outlook.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 09:49:11AM +0200, Greg KH wrote:
+On Fri, Sep 18, 2020 at 07:42:35AM +0000, Van Leeuwen, Pascal wrote:
 >
-> Ok, I'll go revert these.
-
-Thanks!
-
-> > As the driver has been converted over to the lib arc4 API, it
-> > does not need to select CRYPTO at all.
+> Actually, that is what we did as a _quick hack_ initially, but:
 > 
-> Is it converted in your tree?  If so, have a branch/tag I can pull in to
-> prevent merge issues in the future?
+> First of all, it's not only about the L1 cacheline size. It's about the worst case cache
+> line size in the path all the way from the CPU to the actual memory interface.
+> 
+> Second, cache line sizes may differ from system to system. So it's not actually
+> a constant at all (unless you compile the driver specifically for 1 target system).
 
-It's in the cryptodev tree, but unfortunately it's not in a
-topic branch so you'd be pulling all other crypto changes along
-with it.
+Can this alignment exceed ARCH_DMA_MINALIGN? If not then the
+macro CRYPTO_MINALIGN should cover it.
 
 Cheers,
 -- 
