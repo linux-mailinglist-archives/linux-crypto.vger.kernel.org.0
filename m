@@ -2,99 +2,108 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1A8271710
-	for <lists+linux-crypto@lfdr.de>; Sun, 20 Sep 2020 20:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10123271719
+	for <lists+linux-crypto@lfdr.de>; Sun, 20 Sep 2020 20:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgITSh0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 20 Sep 2020 14:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56006 "EHLO
+        id S1726384AbgITShc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 20 Sep 2020 14:37:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgITSh0 (ORCPT
+        with ESMTP id S1726055AbgITSh1 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 20 Sep 2020 14:37:26 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F8CC0613CE
-        for <linux-crypto@vger.kernel.org>; Sun, 20 Sep 2020 11:37:25 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id o5so10477457wrn.13
-        for <linux-crypto@vger.kernel.org>; Sun, 20 Sep 2020 11:37:25 -0700 (PDT)
+        Sun, 20 Sep 2020 14:37:27 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86704C061755
+        for <linux-crypto@vger.kernel.org>; Sun, 20 Sep 2020 11:37:26 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id d4so10005461wmd.5
+        for <linux-crypto@vger.kernel.org>; Sun, 20 Sep 2020 11:37:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=j8r9eEl8b7+QpEqzy5gmnEbcHSyuwwOv6avMlgJ9/Pc=;
-        b=UueFFA/89e6NVRES7AU3cSYTUDSZZ+3RpMQPDgj9UUtObN6e+V2mRI3SUm9XGPfhyO
-         +PnfC7qHBd4YtETur0QBRQXabuLaqWO3yZ+rEHTjdoTZSWTTsBR2h/3xAaP9lSkeNzvo
-         yswIdwoRVVmsvWYppFNeoW9icBxA0oYx+dkznNpG6B0/gKF4/VLPym1XIDqEVv/t517G
-         wIq3323NNV/Qv3qWiuLa3/4XnruhOAVK1JNbTNXI//fnP0Y/mkmSsnWE2io+5Jiclgxl
-         yi/IOLU4hz4yfJjq2+UKYaoOwqQ0KSNTgoxlbAksOSWY/1E8YXGlqVQSd+rgeUCt0xOJ
-         FTTg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=jTdlzUzyc1hcRCjE509a2kDcbNHBKMDXHMkrLBJjCcg=;
+        b=pT0FFND6nkoHYyotdgwU1JAtZKe+QpWMkWB0/vahBAzG/8Ld4jH7LOF+KhWyjcj83t
+         5Sx1nwXbpU0PNjl2Y003G0PYjPMwRiIqD5CYsm3Z0nBKnZ52AW5B3f5Hhj8p7itelMfp
+         fvBatPUhYCOePXCZd1QIH91PiEHEvt+VDnDRsjG3ZauxunjMmzsJ+bmE99QNcPDxN6rS
+         mKT67ZLBJo3J9fkL813BBeFdlQUanY2I2v07DKoQLz8k78j1GXzlghb79gZU2bah7KKg
+         4p4K2uuaQccbL2gIHbH3zwiC8/XjHX0tiV71d3nbLb9AJadcKfPh7hAuDZKn0Mj0E89F
+         Hdqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=j8r9eEl8b7+QpEqzy5gmnEbcHSyuwwOv6avMlgJ9/Pc=;
-        b=EjWHyzJANFLjvoAi075YJ8wmfYMzDnkJadhKJRmSfZiWgen7Wk7cC13+MudQD30yh6
-         EL1rRHzEj6cmOp8jxFoPlaP8Brqw+Uj5LsM/tyBtt4zFcg5+kbJwKFxHBYrYcFTDIqRk
-         Ia8VknQMJLXXoBxormc6ZTFE9nyj1o5mKYYAKINrOx5Mb55S4StOEqlBRqrxXl9kH6c9
-         C8cM5P/cQWyMp52A76gErzkgE9YS7PLPTwl29RFoWZPEgSTCfbjAbvTBULI7s2tN+ptG
-         rCe70CgOcND4ScKrDCT049mK63TBeWXgKQHrrrhFHKGyp/oGw0vlZRVbnpCkKIjAr/S2
-         6WTw==
-X-Gm-Message-State: AOAM533jgF8sUZ4H55Ma0ceMidI8owZ7vdX7VL1g5rkhK3eLI6Bd8tZw
-        3Y2PvaIXEemNhsS6Sr361PgO8g==
-X-Google-Smtp-Source: ABdhPJwOnrMjEvc/9cxVRZ9axQzvCMFOdtPwe7N+OxLcHz643vix8ovK7cKjIC9bvXuk16+sFhKXjw==
-X-Received: by 2002:adf:a1d6:: with SMTP id v22mr50135924wrv.185.1600627044136;
-        Sun, 20 Sep 2020 11:37:24 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=jTdlzUzyc1hcRCjE509a2kDcbNHBKMDXHMkrLBJjCcg=;
+        b=hO0nNSa2qNfRo8tfes7hPS5+BB0TdGysA09xMc3TIZeB5OlAElf2qgjQOkDGqYRQU8
+         MsayZ7pEx4BcgX0/eTAkHA7vb1b5gqrlknBm16EWut3mCDg4tnrGvckP6Ai6HtSYIuNm
+         dEnvSTyyfq858IALgtagmgj6tQDoZdX+2OhF6mSHt/bKwycTVXG0rlCTICQvFmwlLW/U
+         hnI0J+zB7kl1O4EjJQCniqfJfaVDq/QRrTi0o+yqRSlKKJXZVWA3I0tEvNxBO8qtZmC2
+         LXxmlPtzc8zhqz3td76tT2wvGv7CdQS1c1yRXGWgiVqA37CXvakn4IiV0/YPFhbHICb2
+         6kMw==
+X-Gm-Message-State: AOAM531Bd4+e4C+MIuC0uIsGrAc9Ec5DSgKnTOWFAicoBXzJe4NnZK5a
+        cXutKAUSNubTt/AlbxLQmNQJ5Q==
+X-Google-Smtp-Source: ABdhPJznL0wnKPFRx+ll8rXF6fFCp51XOjtzRgf3arfEI4ScF5bVizdGKfVQJuxQR3n2Q1QXlekbrg==
+X-Received: by 2002:a05:600c:414b:: with SMTP id h11mr26441143wmm.20.1600627045206;
+        Sun, 20 Sep 2020 11:37:25 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id e18sm16419841wrx.50.2020.09.20.11.37.22
+        by smtp.googlemail.com with ESMTPSA id e18sm16419841wrx.50.2020.09.20.11.37.24
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 20 Sep 2020 11:37:22 -0700 (PDT)
+        Sun, 20 Sep 2020 11:37:24 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     arnd@arndb.de, davem@davemloft.net, herbert@gondor.apana.org.au,
         mripard@kernel.org, wens@csie.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
         Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v2 0/7] crypto: sun4i-ss: prevent always fallback for ciphers
-Date:   Sun, 20 Sep 2020 18:37:11 +0000
-Message-Id: <1600627038-40000-1-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH v2 1/7] crypto: sun4i-ss: linearize buffers content must be kept
+Date:   Sun, 20 Sep 2020 18:37:12 +0000
+Message-Id: <1600627038-40000-2-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1600627038-40000-1-git-send-email-clabbe@baylibre.com>
+References: <1600627038-40000-1-git-send-email-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello
+When running the non-optimized cipher function, SS produce partial random
+output.
+This is due to linearize buffers being reseted after each loop.
 
-For help testing on "crypto: sun4i-ss - Fix sparse endianness markers",
-I have added "stats" support like other allwinner's crypto drivers.
-Seeing stats showed a clear problem, the ciphers function were not used
-at all.
-This is due to the not-inialized need_fallback which is "init" as true
-everytime.
-So basicly, since the patch introduced it, this probem hidden some bugs.
+Fixes: 8d3bcb9900ca ("crypto: sun4i-ss - reduce stack usage")
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-This serie fixes all hidden problems, then fix the initialization of
-"need_fallback" and then add the stats like other allwinner drivers.
-
-Regards
-
-Changes since v1:
-- patch #4 is sufficient to fix BE problem (removed todo)
-
-Corentin Labbe (7):
-  crypto: sun4i-ss: linearize buffers content must be kept
-  crypto: sun4i-ss: checking sg length is not sufficient
-  crypto: sun4i-ss: IV register does not work on A10 and A13
-  crypto: sun4i-ss: handle BigEndian for cipher
-  crypto: sun4i-ss: initialize need_fallback
-  crypto: sun4i-ss: enabled stats via debugfs
-  crypto: sun4i-ss: add SPDX header and remove blank lines
-
- drivers/crypto/allwinner/Kconfig              |  9 ++
- .../allwinner/sun4i-ss/sun4i-ss-cipher.c      | 82 ++++++++++++++-----
- .../crypto/allwinner/sun4i-ss/sun4i-ss-core.c | 54 ++++++++++++
- .../crypto/allwinner/sun4i-ss/sun4i-ss-hash.c |  8 ++
- .../crypto/allwinner/sun4i-ss/sun4i-ss-prng.c |  6 ++
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h  | 11 +++
- 6 files changed, 148 insertions(+), 22 deletions(-)
-
+diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+index b72de8939497..b92d175b5d2a 100644
+--- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
++++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+@@ -163,6 +163,8 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 	unsigned int todo;
+ 	struct sg_mapping_iter mi, mo;
+ 	unsigned int oi, oo;	/* offset for in and out */
++	char buf[4 * SS_RX_MAX];/* buffer for linearize SG src */
++	char bufo[4 * SS_TX_MAX]; /* buffer for linearize SG dst */
+ 	unsigned int ob = 0;	/* offset in buf */
+ 	unsigned int obo = 0;	/* offset in bufo*/
+ 	unsigned int obl = 0;	/* length of data in bufo */
+@@ -233,8 +235,6 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 
+ 	while (oleft) {
+ 		if (ileft) {
+-			char buf[4 * SS_RX_MAX];/* buffer for linearize SG src */
+-
+ 			/*
+ 			 * todo is the number of consecutive 4byte word that we
+ 			 * can read from current SG
+@@ -295,8 +295,6 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 				oo = 0;
+ 			}
+ 		} else {
+-			char bufo[4 * SS_TX_MAX]; /* buffer for linearize SG dst */
+-
+ 			/*
+ 			 * read obl bytes in bufo, we read at maximum for
+ 			 * emptying the device
 -- 
 2.26.2
 
