@@ -2,32 +2,33 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8D827251B
-	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 15:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA04B272522
+	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 15:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727134AbgIUNJ7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 21 Sep 2020 09:09:59 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13751 "EHLO huawei.com"
+        id S1727494AbgIUNOX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 21 Sep 2020 09:14:23 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:58830 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726417AbgIUNJ4 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:09:56 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 99B166ED5E66D7E0C04D;
-        Mon, 21 Sep 2020 21:09:53 +0800 (CST)
+        id S1727056AbgIUNJz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:09:55 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 59B12778451AA172D40D;
+        Mon, 21 Sep 2020 21:09:51 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 21:09:43 +0800
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 21:09:45 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Boris Brezillon <bbrezillon@kernel.org>,
-        Arnaud Ebalard <arno@natisbad.org>,
-        Srujana Challa <schalla@marvell.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Matthias Brugger <matthias.bgg@gmail.com>
 CC:     "David S. Miller" <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next] crypto: marvell/octeontx - simplify the return expression of create_sysfs_eng_grps_info()
-Date:   Mon, 21 Sep 2020 21:10:07 +0800
-Message-ID: <20200921131007.91145-1-miaoqinglang@huawei.com>
+Subject: [PATCH -next] crypto: mediatek - simplify the return expression of mtk_dfe_dse_reset()
+Date:   Mon, 21 Sep 2020 21:10:09 +0800
+Message-ID: <20200921131009.91191-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -42,33 +43,35 @@ Simplify the return expression.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/crypto/marvell/octeontx/otx_cptpf_ucode.c | 8 +-------
+ drivers/crypto/mediatek/mtk-platform.c | 8 +-------
  1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/crypto/marvell/octeontx/otx_cptpf_ucode.c b/drivers/crypto/marvell/octeontx/otx_cptpf_ucode.c
-index cc103b1bc..40b482198 100644
---- a/drivers/crypto/marvell/octeontx/otx_cptpf_ucode.c
-+++ b/drivers/crypto/marvell/octeontx/otx_cptpf_ucode.c
-@@ -824,18 +824,12 @@ static ssize_t eng_grp_info_show(struct device *dev,
- static int create_sysfs_eng_grps_info(struct device *dev,
- 				      struct otx_cpt_eng_grp_info *eng_grp)
+diff --git a/drivers/crypto/mediatek/mtk-platform.c b/drivers/crypto/mediatek/mtk-platform.c
+index ef4339e84..66bb2378b 100644
+--- a/drivers/crypto/mediatek/mtk-platform.c
++++ b/drivers/crypto/mediatek/mtk-platform.c
+@@ -185,8 +185,6 @@ static int mtk_dfe_dse_state_check(struct mtk_cryp *cryp)
+ 
+ static int mtk_dfe_dse_reset(struct mtk_cryp *cryp)
  {
--	int ret;
+-	int err;
 -
- 	eng_grp->info_attr.show = eng_grp_info_show;
- 	eng_grp->info_attr.store = NULL;
- 	eng_grp->info_attr.attr.name = eng_grp->sysfs_info_name;
- 	eng_grp->info_attr.attr.mode = 0440;
- 	sysfs_attr_init(&eng_grp->info_attr.attr);
--	ret = device_create_file(dev, &eng_grp->info_attr);
--	if (ret)
--		return ret;
+ 	/* Reset DSE/DFE and correct system priorities for all rings. */
+ 	writel(MTK_DFSE_THR_CTRL_RESET, cryp->base + DFE_THR_CTRL);
+ 	writel(0, cryp->base + DFE_PRIO_0);
+@@ -200,11 +198,7 @@ static int mtk_dfe_dse_reset(struct mtk_cryp *cryp)
+ 	writel(0, cryp->base + DSE_PRIO_2);
+ 	writel(0, cryp->base + DSE_PRIO_3);
+ 
+-	err = mtk_dfe_dse_state_check(cryp);
+-	if (err)
+-		return err;
 -
 -	return 0;
-+	return device_create_file(dev, &eng_grp->info_attr);
++	return mtk_dfe_dse_state_check(cryp);
  }
  
- static void ucode_unload(struct device *dev, struct otx_cpt_ucode *ucode)
+ static void mtk_cmd_desc_ring_setup(struct mtk_cryp *cryp,
 -- 
 2.23.0
 
