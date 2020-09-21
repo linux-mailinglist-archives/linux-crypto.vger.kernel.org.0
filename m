@@ -2,19 +2,19 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2D0271CAD
-	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 10:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE4F271CB5
+	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 10:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgIUIAy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 21 Sep 2020 04:00:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57144 "EHLO mx2.suse.de"
+        id S1726577AbgIUIBI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 21 Sep 2020 04:01:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56892 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726589AbgIUH7j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726576AbgIUH7j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 21 Sep 2020 03:59:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9E7B9B288;
-        Mon, 21 Sep 2020 08:00:10 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3CEE4B532;
+        Mon, 21 Sep 2020 08:00:11 +0000 (UTC)
 From:   Nicolai Stange <nstange@suse.de>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
@@ -46,9 +46,9 @@ Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
         Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
         Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 37/41] random: implement the "Repetition Count" NIST SP800-90B health test
-Date:   Mon, 21 Sep 2020 09:58:53 +0200
-Message-Id: <20200921075857.4424-38-nstange@suse.de>
+Subject: [RFC PATCH 38/41] random: enable NIST SP800-90B startup tests
+Date:   Mon, 21 Sep 2020 09:58:54 +0200
+Message-Id: <20200921075857.4424-39-nstange@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
 References: <20200921075857.4424-1-nstange@suse.de>
@@ -58,125 +58,96 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The "Repetition Count Test" (RCT) as specified by NIST SP800-90B simply
-counts the number of times the same sample value has been observed and
-reports failure if an highly unlikely threshold is exceeded. The exact
-values of the latter depend on the estimated per-IRQ min-entropy H as well
-as on the upper bounds set on the probability of false positives. For the
-latter, a maximum value of 2^-20 is recommended and with this value the
-threshold can be calculated as 1 + ceil(20 / H). It should be noted that
-the RCT has very poor statistical power and is only intended to detect
-catastrophic noise source failures, like the get_cycles() in
-add_interrupt_randomness() always returning the same constant.
+NIST SP800-90B, section 4.3 requires an entropy source to inhibit output
+until the so-called "startup" tests have completed. These "startup" test
+shall process at least 1024 consecutive samples by means of the continuous
+health tests, i.e. the already implemented Repetition Count Test (RCT) and
+Adaptive Proportion Test (APT).
 
-Add the fields needed for maintaining the RCT state to struct health_test:
-->rct_previous_delta for storing the previous sample value and ->rct_count
-for keeping track of how many times this value has been observed in a row
-so far.
+Introduce a new field ->warmup to struct health_test. Initialize it to 1024
+from health_test_reset(). Make health_test_process() decrement ->warmup
+once per event processed without test failure, but reset ->warmup to the
+intitial value upon failure. Prevent health_test_process() from returning
+health_dispatch as long as ->warmup hasn't dropped to zero. This will cause
+the caller, i.e. add_interrupt_randomness(), to not dispatch any entropy to
+the global balance until the startup tests have finished.
 
-Implement the RCT and wrap it in a new function, health_test_rct().
-
-Make the health test entry point, health_test_process(), call it early
-before invoking the APT and forward failure reports to the caller. All
-other return codes from the RCT are ignored, because
-- as said, the statistical power is weak and a positive outcome wouldn't
-  tell anything and
-- it's not desirable to make the caller, i.e. add_interrupt_randomness(),
-  to further queue any entropy once the concurrently running APT has
-  signaled a successful completion.
+Note that this change will delay the initial seeding of the primary_crng,
+especially for those values of the estimated per-IRQ min-entropy H where
+the mimimum of 1024 events from above is by several factors larger than
+128/H, the number of events to be processed by a single APT run. That
+would only affect systems running with fips_enabled though and there's
+simply no way to avoid it without violating the specs.
 
 Signed-off-by: Nicolai Stange <nstange@suse.de>
 ---
- drivers/char/random.c | 55 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+ drivers/char/random.c | 25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 2c744d2a9b26..54ee082ca4a8 100644
+index 54ee082ca4a8..bd8c24e433d0 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -890,6 +890,9 @@ struct health_test {
- 	};
+@@ -880,6 +880,7 @@ static void discard_queued_entropy(struct entropy_store *r,
+ }
  
- 	u8 previous_sample;
-+
-+	u8 rct_previous_delta;
-+	unsigned short rct_count;
- };
+ struct health_test {
++	unsigned short warmup;
+ 	unsigned short apt_event_count;
+ 	union {
+ 		u32 apt_presearch_bit_counters;
+@@ -1059,6 +1060,13 @@ health_test_apt(struct health_test *h, unsigned int event_entropy_shift,
  
- enum health_result {
-@@ -899,6 +902,43 @@ enum health_result {
- 	health_discard,
- };
- 
-+/* Repetition count test. */
-+static enum health_result
-+health_test_rct(struct health_test *h, unsigned int event_entropy_shift,
-+		u8 sample_delta)
-+{
-+	unsigned int c;
-+
-+	if (likely(sample_delta != h->rct_previous_delta)) {
-+		h->rct_previous_delta = sample_delta;
-+		h->rct_count = 0;
-+		return health_dispatch;
-+	}
-+
-+	h->rct_count++;
-+	if (!h->rct_count) {
-+		/* Overflow. */
-+		h->rct_count = -1;
-+	}
-+
+ static void health_test_reset(struct health_test *h)
+ {
 +	/*
-+	 * With a min-entropy of H = 2^-event_entropy_shift bits per
-+	 * event, the maximum probability of seing any particular
-+	 * sample value (i.e. delta) is bounded by 2^-H. Thus, the
-+	 * probability to observe the same events C times in a row is
-+	 * less than 2^-((C - 1) * H). Limit the false positive rate
-+	 * of the repetition count test to 2^-20, which yields a
-+	 * cut-off value of C = 1 + 20/H. Note that the actual number
-+	 * of repetitions equals ->rct_count + 1, so this offset by
-+	 * one must be accounted for in the comparison below.
++	 * Don't dispatch until at least 1024 events have been
++	 * processed by the continuous health tests as required by
++	 * NIST SP800-90B for the startup tests.
 +	 */
-+	c = 20 << event_entropy_shift;
-+	if (h->rct_count >= c)
-+		return health_discard;
++	h->warmup = 1024;
 +
-+	return health_queue;
-+}
-+
- /* Adaptive Proportion Test */
- #define HEALTH_APT_PRESEARCH_EVENT_COUNT 7
+ 	health_apt_reset(h);
+ }
  
-@@ -1027,6 +1067,7 @@ health_test_process(struct health_test *h, unsigned int event_entropy_shift,
+@@ -1067,7 +1075,7 @@ health_test_process(struct health_test *h, unsigned int event_entropy_shift,
  		    u8 sample)
  {
  	u8 sample_delta;
-+	enum health_result rct;
+-	enum health_result rct;
++	enum health_result rct, apt;
  
  	/*
  	 * The min-entropy estimate has been made for the lower eight
-@@ -1036,6 +1077,20 @@ health_test_process(struct health_test *h, unsigned int event_entropy_shift,
- 	sample_delta = sample - h->previous_sample;
- 	h->previous_sample = sample;
+@@ -1083,6 +1091,8 @@ health_test_process(struct health_test *h, unsigned int event_entropy_shift,
+ 		 * Something is really off, get_cycles() has become
+ 		 * (or always been) a constant.
+ 		 */
++		if (h->warmup)
++			health_test_reset(h);
+ 		return health_discard;
+ 	}
  
-+	rct = health_test_rct(h, event_entropy_shift, sample_delta);
-+	if (rct == health_discard) {
+@@ -1091,7 +1101,18 @@ health_test_process(struct health_test *h, unsigned int event_entropy_shift,
+ 	 * don't care about whether the RCT needs to consume more
+ 	 * samples to complete.
+ 	 */
+-	return health_test_apt(h, event_entropy_shift, sample_delta);
++	apt = health_test_apt(h, event_entropy_shift, sample_delta);
++	if (unlikely(h->warmup) && --h->warmup) {
++		if (apt == health_discard)
++			health_test_reset(h);
 +		/*
-+		 * Something is really off, get_cycles() has become
-+		 * (or always been) a constant.
++		 * Don't allow the caller to dispatch until warmup
++		 * has completed.
 +		 */
-+		return health_discard;
++		return apt == health_dispatch ? health_queue : apt;
 +	}
 +
-+	/*
-+	 * Otherwise return whatever the APT returns. In particular,
-+	 * don't care about whether the RCT needs to consume more
-+	 * samples to complete.
-+	 */
- 	return health_test_apt(h, event_entropy_shift, sample_delta);
++	return apt;
  }
  
+ struct fast_pool {
 -- 
 2.26.2
 
