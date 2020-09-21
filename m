@@ -2,19 +2,19 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7E9271CBF
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC6B271CBE
 	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 10:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgIUIBb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1726845AbgIUIBb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Mon, 21 Sep 2020 04:01:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56980 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:56798 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726582AbgIUH7j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726581AbgIUH7j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 21 Sep 2020 03:59:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C5247B531;
-        Mon, 21 Sep 2020 08:00:11 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 60A82B535;
+        Mon, 21 Sep 2020 08:00:12 +0000 (UTC)
 From:   Nicolai Stange <nstange@suse.de>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
@@ -46,9 +46,9 @@ Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
         Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
         Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 39/41] random: make the startup tests include muliple APT invocations
-Date:   Mon, 21 Sep 2020 09:58:55 +0200
-Message-Id: <20200921075857.4424-40-nstange@suse.de>
+Subject: [RFC PATCH 40/41] random: trigger startup health test on any failure of the health tests
+Date:   Mon, 21 Sep 2020 09:58:56 +0200
+Message-Id: <20200921075857.4424-41-nstange@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
 References: <20200921075857.4424-1-nstange@suse.de>
@@ -58,128 +58,80 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Given a per-IRQ min-entropy estimate of H, the Adaptive Proportion Tests
-(APT) will need to consume at most n = 128/H samples before reaching a
-conclusion. The supported values for H are 1, 1/2, 1/4, 1/8, ..., 1/64,
-but only 1 and 1/8 are currently being actively used on systems with and
-without a high resolution get_cycles() respectively. The corresponding
-number of samples consumed by one APT execution are 128, 256, 512, 1024,
-2048, 4096 and 8192. Currently, the ->warmup parameter used for controlling
-the startup is hardcoded to be initialized to 1024 and the health test
-logic won't permit the caller, i.e. add_interrupt_randomness() to dispatch
-any entropy to the global balance until that many events have been
-processed *and* the first APT has completed, whichever comes later. It
-would take roughly eight successful APT invocations for H=1 until the
-startup sequence has completed, but for all H <= 1/8, the ->warmup logic is
-effectively useless because the first APT would always need to process
->= 1024 samples anyway.
-
-The probabilites of one single APT invocation successfully detecting a
-degradation of the per-IRQ min-entopy to H/2 ("power") are as follows for
-the different supported H estimates:
-
-   H     n   power
-   ---------------
-      1  128 64.7%
-    1/2  256 79.1%
-    1/4  512 81.6%
-    1/8 1024 84.0%
-   1/16 2048 84.9%
-   1/32 4096 86.9%
-   1/64 8192 86.4%
-
-Thus, for H=1, the probability that at least one out of those eight APT
-invocations will detect a degradation to H/2 is 1 - (1 - 64.7%)^8 = 99.98%,
-which is quite good. OTOH, the 84.0% achievable with the single APT
-invocation for H = 1/8 is only semi-satisfactory.
-
-Note that as it currently stands, the only point in time where the health
-tests can still intervene and keep back low quality noise from
-the primary_crng is before the initial seed has happened. Afterwards,
-failing continuous health tests would only potentially delay those best
-effort reseeds (which is questionable behaviour in itself, as the crng
-state's entropy is never reduced in the course of reseeding).
+The startup health tests to be executed at boot as required by NIST 800-90B
+consist of running the contiuous health tests, i.e. the Adaptive Proportion
+Test (APT) and the Repetition Count Test (RCT), until a certain amount
+of noise samples have been examined. In case of test failure during this
+period, the startup tests would get restarted by means of reinitializing
+the fast_pool's ->warmup member with the original number of total samples
+to examine during startup.
 
 A future patch will enable dynamically switching from the initial H=1 or
-1/8 resp. to lower per-IRQ entropy values upon health test failures in
-order to keep those systems going where these more or less arbitrary
-per-IRQ entropy estimates turn out to be simply wrong. From a paranoia POV,
-it is certainly a good idea to run the APT several times in a row during
-startup in order to achieve a good statistical power. Extending the warmup
-to cover the larger of the 1024 events required by NIST SP800-90B and four
-full APT lengths will result in a combined probability of detecting an
-entropy degradation to H/2 of >= 99.98% across all supported values of H.
-The obvious downside is that the number of IRQ events required for the
-initial seed will be qadrupled, at least for H <= 1/8.
+1/8 per-IRQ min-entropy estimates to lower values upon health test
+failures in order to keep those systems going where these more or less
+arbitrary per-IRQ entropy estimates turn out to simply be wrong. It is
+certainly desirable to restart the startup health tests upon such a switch.
 
-Follow this approach. Amend health_test_reset()'s signature by an
-additional parameter, event_entropy_shift, and make it set ->warmup to
-the larger of 1024 and 4 * 128 / (2^-event_entropy_shift). Adjust all
-call sites accordingly.
+In order to keep the upcoming code comprehensible, move the startup test
+restart logic from health_test_process() into add_interrupt_randomness().
+For simplicity, make add_interrupt_randomness() trigger a startup test on
+each health test failure. Note that there's a change in behaviour: up to
+now, only the bootime startup tests would have restarted themselves upon
+failure, whereas now even a failure of the continuous health tests can
+potentially trigger a startup test long after boot.
+
+Note that as it currently stands, rerunning the full startup tests after
+the crng has received its initial seed has the only effect to inhibit
+entropy dispatch for a while and thus, to potentially delay those best
+effort crng reseeds during runtime. As reseeds never reduce a crng state's
+entropy, this behaviour is admittedly questionable. However, further
+patches introducing forced reseeds might perhaps become necessary in the
+future, c.f. the specification of "reseed_interval" in NIST SP800-90A.
+Thus, it's better to keep the startup health test restart logic consistent
+for now.
 
 Signed-off-by: Nicolai Stange <nstange@suse.de>
 ---
- drivers/char/random.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+ drivers/char/random.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index bd8c24e433d0..86dd87588b1b 100644
+index 86dd87588b1b..bb79dcb96882 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -1058,14 +1058,21 @@ health_test_apt(struct health_test *h, unsigned int event_entropy_shift,
- 	return health_queue;
- }
- 
--static void health_test_reset(struct health_test *h)
-+static void health_test_reset(struct health_test *h,
-+			      unsigned int event_entropy_shift)
- {
- 	/*
--	 * Don't dispatch until at least 1024 events have been
--	 * processed by the continuous health tests as required by
--	 * NIST SP800-90B for the startup tests.
-+	 * Let H = 2^-event_entropy_shift equal the estimated per-IRQ
-+	 * min-entropy. One APT will consume at most 128 / H samples
-+	 * until completion. Run the startup tests for the larger of
-+	 * 1024 events as required by NIST or four times the APT
-+	 * length. In either case, the combined probability of the
-+	 * resulting number of successive APTs to detect a degradation
-+	 * of H to H/2 will be >= 99.8%, for any supported value of
-+	 * event_entropy_shift.
- 	 */
--	h->warmup = 1024;
-+	h->warmup = 4 * (128 << event_entropy_shift);
-+	h->warmup = max_t(unsigned int, h->warmup, 1024);
- 
- 	health_apt_reset(h);
- }
-@@ -1092,7 +1099,7 @@ health_test_process(struct health_test *h, unsigned int event_entropy_shift,
+@@ -1098,8 +1098,6 @@ health_test_process(struct health_test *h, unsigned int event_entropy_shift,
+ 		 * Something is really off, get_cycles() has become
  		 * (or always been) a constant.
  		 */
- 		if (h->warmup)
--			health_test_reset(h);
-+			health_test_reset(h, event_entropy_shift);
+-		if (h->warmup)
+-			health_test_reset(h, event_entropy_shift);
  		return health_discard;
  	}
  
-@@ -1104,7 +1111,7 @@ health_test_process(struct health_test *h, unsigned int event_entropy_shift,
+@@ -1110,8 +1108,6 @@ health_test_process(struct health_test *h, unsigned int event_entropy_shift,
+ 	 */
  	apt = health_test_apt(h, event_entropy_shift, sample_delta);
  	if (unlikely(h->warmup) && --h->warmup) {
- 		if (apt == health_discard)
--			health_test_reset(h);
-+			health_test_reset(h, event_entropy_shift);
+-		if (apt == health_discard)
+-			health_test_reset(h, event_entropy_shift);
  		/*
  		 * Don't allow the caller to dispatch until warmup
  		 * has completed.
-@@ -1883,7 +1890,7 @@ static inline void fast_pool_init_accounting(struct fast_pool *f)
- 		return;
+@@ -1928,6 +1924,14 @@ void add_interrupt_randomness(int irq, int irq_flags)
+ 			health_test_process(&fast_pool->health,
+ 					    fast_pool->event_entropy_shift,
+ 					    cycles);
++		if (unlikely(health_result == health_discard)) {
++			/*
++			 * Oops, something's odd. Restart the startup
++			 * tests.
++			 */
++			health_test_reset(&fast_pool->health,
++					  fast_pool->event_entropy_shift);
++		}
+ 	}
  
- 	f->event_entropy_shift = min_irq_event_entropy_shift();
--	health_test_reset(&f->health);
-+	health_test_reset(&f->health, f->event_entropy_shift);
- }
- 
- void add_interrupt_randomness(int irq, int irq_flags)
+ 	if (unlikely(crng_init == 0)) {
 -- 
 2.26.2
 
