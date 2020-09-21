@@ -2,18 +2,18 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC6B271CBE
-	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 10:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF627271CB4
+	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 10:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgIUIBb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 21 Sep 2020 04:01:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56798 "EHLO mx2.suse.de"
+        id S1726796AbgIUIBI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 21 Sep 2020 04:01:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57940 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726581AbgIUH7j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726592AbgIUH7j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 21 Sep 2020 03:59:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 60A82B535;
+        by mx2.suse.de (Postfix) with ESMTP id E0F6EB533;
         Mon, 21 Sep 2020 08:00:12 +0000 (UTC)
 From:   Nicolai Stange <nstange@suse.de>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
@@ -46,9 +46,9 @@ Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
         Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
         Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 40/41] random: trigger startup health test on any failure of the health tests
-Date:   Mon, 21 Sep 2020 09:58:56 +0200
-Message-Id: <20200921075857.4424-41-nstange@suse.de>
+Subject: [RFC PATCH 41/41] random: lower per-IRQ entropy estimate upon health test failure
+Date:   Mon, 21 Sep 2020 09:58:57 +0200
+Message-Id: <20200921075857.4424-42-nstange@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
 References: <20200921075857.4424-1-nstange@suse.de>
@@ -58,80 +58,129 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The startup health tests to be executed at boot as required by NIST 800-90B
-consist of running the contiuous health tests, i.e. the Adaptive Proportion
-Test (APT) and the Repetition Count Test (RCT), until a certain amount
-of noise samples have been examined. In case of test failure during this
-period, the startup tests would get restarted by means of reinitializing
-the fast_pool's ->warmup member with the original number of total samples
-to examine during startup.
+Currently, if fips_enabled is set, a per-IRQ min-entropy estimate of
+either 1 bit or 1/8 bit is assumed, depending on whether a high resolution
+get_cycles() is available or not. The statistical NIST SP800-90B startup
+health tests are run on a certain amount of noise samples and are intended
+to reject in case this hypothesis turns out to be wrong, i.e. if the
+actual min-entropy is smaller. As long as the startup tests haven't
+finished, entropy dispatch and thus, the initial crng seeding, is
+inhibited. On test failure, the startup tests would restart themselves
+from the beginning.
 
-A future patch will enable dynamically switching from the initial H=1 or
-1/8 per-IRQ min-entropy estimates to lower values upon health test
-failures in order to keep those systems going where these more or less
-arbitrary per-IRQ entropy estimates turn out to simply be wrong. It is
-certainly desirable to restart the startup health tests upon such a switch.
+It follows that in case a system's actual per-IRQ min-entropy is smaller
+than the more or less arbitrarily assessed 1 bit or 1/8 bit resp., there
+will be a good chance that the initial crng seed will never complete.
+AFAICT, such a situation could potentially prevent certain userspace
+daemons like OpenSSH from loading.
 
-In order to keep the upcoming code comprehensible, move the startup test
-restart logic from health_test_process() into add_interrupt_randomness().
-For simplicity, make add_interrupt_randomness() trigger a startup test on
-each health test failure. Note that there's a change in behaviour: up to
-now, only the bootime startup tests would have restarted themselves upon
-failure, whereas now even a failure of the continuous health tests can
-potentially trigger a startup test long after boot.
+In order to still be able to make any progress, make
+add_interrupt_randomness() lower the per-IRQ min-entropy by one half upon
+each health test failure, but only until the minimum supported value of
+1/64 bits has been reached. Note that health test failures will cause a
+restart of the startup health tests already and thus, a certain number of
+additional noise samples resp. IRQ events will have to get examined by the
+health tests before the initial crng seeding can take place. This number
+of fresh events required is reciprocal to the estimated per-IRQ
+min-entropy H: for the Adaptive Proportion Test (APT) it equals ~128 / H.
+It follows that this patch won't be of much help for embedded systems or
+VMs with poor IRQ rates at boot time, at least not without manual
+intervention. But there aren't many options left when fips_enabled is set.
 
-Note that as it currently stands, rerunning the full startup tests after
-the crng has received its initial seed has the only effect to inhibit
-entropy dispatch for a while and thus, to potentially delay those best
-effort crng reseeds during runtime. As reseeds never reduce a crng state's
-entropy, this behaviour is admittedly questionable. However, further
-patches introducing forced reseeds might perhaps become necessary in the
-future, c.f. the specification of "reseed_interval" in NIST SP800-90A.
-Thus, it's better to keep the startup health test restart logic consistent
-for now.
+With respect to NIST SP800-90B conformance, this patch enters kind of a
+gray area: NIST SP800-90B has no notion of such a dynamically adjusted
+min-entropy estimate. Instead, it is assumed that some fixed value has been
+estimated based on general principles and subsequently validated in the
+course of the certification process. However, I would argue that if a
+system had successfully passed certification for 1 bit or 1/8 bit resp. of
+estimated min-entropy per sample, it would automatically be approved for
+all smaller values as well. Had we started out with such a lower value
+passing the health tests from the beginning, the latter would never have
+complained in the first place and the system would have come up just fine.
+
+Finally, note that all statistical tests have a non-zero probability of
+false positives and so do the NIST SP800-90B health tests. In order to not
+keep the estimated per-IRQ entropy at a smaller level than necessary for
+forever after spurious health test failures, make
+add_interrupt_randomness() attempt to double it again after a certain
+number of successful health test passes at the degraded entropy level have
+been completed. This threshold should not be too small in order to avoid
+excessive entropy accounting loss due to continuously alternating between
+a too large per-IRQ entropy estimate and the next smaller value. For now,
+choose a value of five as a compromise between quick recovery and limiting
+said accounting loss.
+
+So, introduce a new member ->good_tests to struct fast_pool for keeping
+track of the number of successfult health test passes. Make
+add_interrupt_randomness() increment it upon successful healh test
+completion and reset it to zero on failures. Make
+add_interrupt_randomness() double the current min-entropy estimate and
+restart the startup health in case ->good_tests is > 4 and the entropy
+had previously been lowered.
 
 Signed-off-by: Nicolai Stange <nstange@suse.de>
 ---
- drivers/char/random.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/char/random.c | 25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 86dd87588b1b..bb79dcb96882 100644
+index bb79dcb96882..24c09ba9d7d0 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -1098,8 +1098,6 @@ health_test_process(struct health_test *h, unsigned int event_entropy_shift,
- 		 * Something is really off, get_cycles() has become
- 		 * (or always been) a constant.
- 		 */
--		if (h->warmup)
--			health_test_reset(h, event_entropy_shift);
- 		return health_discard;
- 	}
- 
-@@ -1110,8 +1108,6 @@ health_test_process(struct health_test *h, unsigned int event_entropy_shift,
- 	 */
- 	apt = health_test_apt(h, event_entropy_shift, sample_delta);
- 	if (unlikely(h->warmup) && --h->warmup) {
--		if (apt == health_discard)
--			health_test_reset(h, event_entropy_shift);
- 		/*
- 		 * Don't allow the caller to dispatch until warmup
- 		 * has completed.
-@@ -1928,6 +1924,14 @@ void add_interrupt_randomness(int irq, int irq_flags)
- 			health_test_process(&fast_pool->health,
- 					    fast_pool->event_entropy_shift,
+@@ -1126,6 +1126,7 @@ struct fast_pool {
+ 	bool		dispatch_needed : 1;
+ 	bool		discard_needed : 1;
+ 	int		event_entropy_shift;
++	unsigned int		good_tests;
+ 	struct queued_entropy	q;
+ 	struct health_test	health;
+ };
+@@ -1926,9 +1927,13 @@ void add_interrupt_randomness(int irq, int irq_flags)
  					    cycles);
-+		if (unlikely(health_result == health_discard)) {
-+			/*
-+			 * Oops, something's odd. Restart the startup
-+			 * tests.
-+			 */
+ 		if (unlikely(health_result == health_discard)) {
+ 			/*
+-			 * Oops, something's odd. Restart the startup
+-			 * tests.
++			 * Oops, something's odd. Lower the entropy
++			 * estimate and restart the startup tests.
+ 			 */
++			fast_pool->event_entropy_shift =
++				min_t(unsigned int,
++				      fast_pool->event_entropy_shift + 1, 6);
++			fast_pool->good_tests = 0;
+ 			health_test_reset(&fast_pool->health,
+ 					  fast_pool->event_entropy_shift);
+ 		}
+@@ -1951,6 +1956,7 @@ void add_interrupt_randomness(int irq, int irq_flags)
+ 		 * entropy discard request?
+ 		 */
+ 		fast_pool->dispatch_needed = !fast_pool->discard_needed;
++		fast_pool->good_tests++;
+ 		break;
+ 
+ 	case health_discard:
+@@ -2005,6 +2011,21 @@ void add_interrupt_randomness(int irq, int irq_flags)
+ 	if (fast_pool->dispatch_needed || health_result == health_none) {
+ 		reseed = __dispatch_queued_entropy_fast(r, q);
+ 		fast_pool->dispatch_needed = false;
++
++		/*
++		 * In case the estimated per-IRQ min-entropy had to be
++		 * lowered due to health test failure, but the lower
++		 * value has proven to withstand the tests for some
++		 * time now, try to give the next better value another
++		 * shot.
++		 */
++		if (unlikely((fast_pool->event_entropy_shift >
++			      min_irq_event_entropy_shift())) &&
++		    fast_pool->good_tests > 4) {
++			fast_pool->event_entropy_shift--;
 +			health_test_reset(&fast_pool->health,
 +					  fast_pool->event_entropy_shift);
 +		}
- 	}
+ 	} else if (fast_pool->discard_needed) {
+ 		int dummy;
  
- 	if (unlikely(crng_init == 0)) {
 -- 
 2.26.2
 
