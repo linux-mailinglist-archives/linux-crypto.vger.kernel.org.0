@@ -2,18 +2,18 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C294F271C81
-	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 09:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8DE271C84
+	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 09:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgIUH7j (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 21 Sep 2020 03:59:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57940 "EHLO mx2.suse.de"
+        id S1726574AbgIUH7i (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 21 Sep 2020 03:59:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58044 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726545AbgIUH73 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:59:29 -0400
+        id S1726546AbgIUH7a (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:59:30 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 14EEEB51E;
+        by mx2.suse.de (Postfix) with ESMTP id A4C55B524;
         Mon, 21 Sep 2020 08:00:03 +0000 (UTC)
 From:   Nicolai Stange <nstange@suse.de>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
@@ -46,9 +46,9 @@ Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
         Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
         Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 24/41] init: call time_init() before rand_initialize()
-Date:   Mon, 21 Sep 2020 09:58:40 +0200
-Message-Id: <20200921075857.4424-25-nstange@suse.de>
+Subject: [RFC PATCH 25/41] random: probe cycle counter resolution at initialization
+Date:   Mon, 21 Sep 2020 09:58:41 +0200
+Message-Id: <20200921075857.4424-26-nstange@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
 References: <20200921075857.4424-1-nstange@suse.de>
@@ -58,48 +58,95 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Commit d55535232c3d ("random: move rand_initialize() earlier") moved the
-rand_initialize() invocation from the early initcalls to right after
-timekeeping_init(), but before time_init().
+An upcoming patch will change the entropy estimate per
+add_interrupt_randomness() event for fips_enabled based on whether
+random_get_entropy() resp. get_cycles() is able to capture individual
+instructions.
 
-However, rand_initialize() would indirectly invoke random_get_entropy(),
-which is an alias to get_cycles() on most archs, in case an architectural
-RNG is not available. Problem is that on some archs, e.g. ARM,
-get_cycles() can only be relied upon when time_init() has completed.
+For example, x86's TSC would qualify, whereas I've seen cycle counters on
+e.g. a Raspberry PI 2B with an advertised resolution of only 52ns even
+though the CPU had been clocked at 1GHz. And then there's possibly hardware
+which doesn't have a cycle counter at all and where get_cycles() would
+always return the same constant.
 
-Move the invocation of time_init() a couple of lines up in start_kernel()
-so that it gets called before rand_initialize().
+Make rand_initialize() probe the cycle counter resolution.
 
-Note that random_get_entropy() data doesn't get any entropy credit and
-thus, this issue is not to be considered a bug, but more of an
-inconsistency.
+Introduce a new static_key have_highres_cycle_ctr, indicicating whether
+or not the system's cycle counter is able to capture individual
+instructions. Initially it's set to true. Introduce
+probe_cycle_ctr_resolution() and call it from rand_initialize().
+Make probe_cycle_ctr_resolution() compare 16 successive
+random_get_entropy() values and disable have_highres_cycle_ctr in case
+the same value has been read two times in a row. As have_highres_cycle_ctr
+will be only accessed if fips_enabled is true, make it return early in
+case it's not set.
 
-Fixes: d55535232c3d ("random: move rand_initialize() earlier")
 Signed-off-by: Nicolai Stange <nstange@suse.de>
 ---
- init/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/random.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/init/main.c b/init/main.c
-index ae78fb68d231..30892675f48e 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -942,6 +942,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
- 	hrtimers_init();
- 	softirq_init();
- 	timekeeping_init();
-+	time_init();
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index aaddee4e4ab1..a985ceb22c7c 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -335,6 +335,7 @@
+ #include <linux/syscalls.h>
+ #include <linux/completion.h>
+ #include <linux/uuid.h>
++#include <linux/jump_label.h>
+ #include <crypto/chacha.h>
+ #include <crypto/sha.h>
  
- 	/*
- 	 * For best initial stack canary entropy, prepare it after:
-@@ -956,7 +957,6 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
- 	add_device_randomness(command_line, strlen(command_line));
- 	boot_init_stack_canary();
+@@ -478,6 +479,8 @@ static struct ratelimit_state urandom_warning =
  
--	time_init();
- 	perf_event_init();
- 	profile_init();
- 	call_function_init();
+ static int ratelimit_disable __read_mostly;
+ 
++static DEFINE_STATIC_KEY_TRUE(have_highres_cycle_ctr);
++
+ module_param_named(ratelimit_disable, ratelimit_disable, int, 0644);
+ MODULE_PARM_DESC(ratelimit_disable, "Disable random ratelimit suppression");
+ 
+@@ -2170,6 +2173,31 @@ static void __init init_std_data(struct entropy_store *r)
+ 	mix_pool_bytes(r, utsname(), sizeof(*(utsname())));
+ }
+ 
++static void probe_cycle_ctr_resolution(void)
++{
++	cycles_t prev;
++	int i;
++
++	if (!fips_enabled)
++		return;
++
++	/*
++	 * Check if the cycle counter has insn granularity (or at
++	 * least close to).
++	 */
++	prev = random_get_entropy();
++	for (i = 0; i < 16; ++i) {
++		cycles_t next;
++
++		next = random_get_entropy();
++		if (next == prev) {
++			static_branch_disable(&have_highres_cycle_ctr);
++			return;
++		}
++		prev = next;
++	}
++}
++
+ /*
+  * Note that setup_arch() may call add_device_randomness()
+  * long before we get here. This allows seeding of the pools
+@@ -2182,6 +2210,7 @@ static void __init init_std_data(struct entropy_store *r)
+  */
+ int __init rand_initialize(void)
+ {
++	probe_cycle_ctr_resolution();
+ 	init_std_data(&input_pool);
+ 	crng_initialize_primary(&primary_crng);
+ 	crng_global_init_time = jiffies;
 -- 
 2.26.2
 
