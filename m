@@ -2,18 +2,18 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B69271CAC
-	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 10:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1196A271CBD
+	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 10:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgIUIAy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 21 Sep 2020 04:00:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57702 "EHLO mx2.suse.de"
+        id S1726365AbgIUIBa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 21 Sep 2020 04:01:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56802 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726586AbgIUH7j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726588AbgIUH7j (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 21 Sep 2020 03:59:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 591BBB529;
+        by mx2.suse.de (Postfix) with ESMTP id ED703B521;
         Mon, 21 Sep 2020 08:00:05 +0000 (UTC)
 From:   Nicolai Stange <nstange@suse.de>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
@@ -46,79 +46,304 @@ Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
         Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
         Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 28/41] random: don't award entropy to disk + input events if in FIPS mode
-Date:   Mon, 21 Sep 2020 09:58:44 +0200
-Message-Id: <20200921075857.4424-29-nstange@suse.de>
+Subject: [RFC PATCH 29/41] random: move definition of struct queued_entropy and related API upwards
+Date:   Mon, 21 Sep 2020 09:58:45 +0200
+Message-Id: <20200921075857.4424-30-nstange@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
 References: <20200921075857.4424-1-nstange@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-NIST SP800-90C prohibits the use of multiple correlated entropy sources.
+The next patch will add a member of type struct queued_entropy to struct
+fast_pool and thus, the former's definition needs to be visible at the
+latter's.
 
-Obviously, add_disk_randomness(), add_input_randomness() and
-add_interrupt_randomness() are not independent.
+Move the definition of struct queued_entropy upwards in the file so that
+it comes before the definition struct fast_pool. Move the associated
+function definitions as well in order to keep everything together.
 
-Follow the approach taken by Stephan Müller's LRNG patchset ([1]) and don't
-award any entropy to the former two if fips_enabled is true.
-Note that the entropy loss has already been compensated for by a previous
-patch increasing the IRQ event estimate.
+Note that said function definitions had originally been inserted at the
+old location with the intent to minimize their introducing patch's diff
+by placing them near the now removed credit_entropy_delta() they
+superseded.
 
-The actual entropy accounting from add_disk_randomness() and
-add_input_randomness() is implemented in the common add_timer_randomness()
-called therefrom.
-
-Make the latter to not dispatch any entropy to the global entropy balance
-if fips_enabled is on.
-
-[1] https://lkml.kernel.org/r/5695397.lOV4Wx5bFT@positron.chronox.de
-
-Suggested-by: Stephan Müller <smueller@chronox.de>
 Signed-off-by: Nicolai Stange <nstange@suse.de>
 ---
- drivers/char/random.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ drivers/char/random.c | 243 +++++++++++++++++++++---------------------
+ 1 file changed, 124 insertions(+), 119 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 8f79e90f2429..680ccc82a436 100644
+index 680ccc82a436..55e784a5a2ec 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -1481,12 +1481,24 @@ static void add_timer_randomness(struct timer_rand_state *state, unsigned num)
+@@ -519,6 +519,10 @@ static ssize_t extract_entropy(struct entropy_store *r, void *buf,
+ static ssize_t _extract_entropy(struct entropy_store *r, void *buf,
+ 				size_t nbytes, int fips);
  
- 	r = &input_pool;
- 	spin_lock_irqsave(&r->lock, flags);
--	/*
--	 * delta is now minimum absolute delta.
--	 * Round down by 1 bit on general principles,
--	 * and limit entropy estimate to 12 bits.
--	 */
--	__queue_entropy(r, &q, min_t(int, fls(delta>>1), 11) << ENTROPY_SHIFT);
-+	if (!fips_enabled) {
-+		unsigned int nfrac;
++static unsigned int pool_entropy_delta(struct entropy_store *r,
++				       int base_entropy_count,
++				       int nfrac, bool fast);
 +
-+		/*
-+		 * delta is now minimum absolute delta.
-+		 * Round down by 1 bit on general principles,
-+		 * and limit entropy estimate to 12 bits.
-+		 */
-+		nfrac = min_t(int, fls(delta>>1), 11) << ENTROPY_SHIFT;
-+		__queue_entropy(r, &q, nfrac);
-+	} else {
-+		/*
-+		 * Multiple correlated entropy sources are prohibited
-+		 * by NIST SP800-90C. Leave it up to
-+		 * add_interrupt_randomness() to contribute any
-+		 * entropy.
-+		 */
-+	}
- 	__mix_pool_bytes(r, &sample, sizeof(sample));
- 	reseed = __dispatch_queued_entropy_fast(r, &q);
+ static int min_crng_reseed_pool_entropy(void);
+ 
+ static void crng_reseed(struct crng_state *crng, struct entropy_store *r);
+@@ -610,125 +614,6 @@ static void mix_pool_bytes(struct entropy_store *r, const void *in,
  	spin_unlock_irqrestore(&r->lock, flags);
+ }
+ 
+-struct fast_pool {
+-	__u32		pool[4];
+-	unsigned long	last;
+-	unsigned short	reg_idx;
+-	unsigned char	count;
+-	int		event_entropy_shift;
+-};
+-
+-/*
+- * This is a fast mixing routine used by the interrupt randomness
+- * collector.  It's hardcoded for an 128 bit pool and assumes that any
+- * locks that might be needed are taken by the caller.
+- */
+-static void fast_mix(struct fast_pool *f)
+-{
+-	__u32 a = f->pool[0],	b = f->pool[1];
+-	__u32 c = f->pool[2],	d = f->pool[3];
+-
+-	a += b;			c += d;
+-	b = rol32(b, 6);	d = rol32(d, 27);
+-	d ^= a;			b ^= c;
+-
+-	a += b;			c += d;
+-	b = rol32(b, 16);	d = rol32(d, 14);
+-	d ^= a;			b ^= c;
+-
+-	a += b;			c += d;
+-	b = rol32(b, 6);	d = rol32(d, 27);
+-	d ^= a;			b ^= c;
+-
+-	a += b;			c += d;
+-	b = rol32(b, 16);	d = rol32(d, 14);
+-	d ^= a;			b ^= c;
+-
+-	f->pool[0] = a;  f->pool[1] = b;
+-	f->pool[2] = c;  f->pool[3] = d;
+-	f->count++;
+-}
+-
+-static void process_random_ready_list(void)
+-{
+-	unsigned long flags;
+-	struct random_ready_callback *rdy, *tmp;
+-
+-	spin_lock_irqsave(&random_ready_list_lock, flags);
+-	list_for_each_entry_safe(rdy, tmp, &random_ready_list, list) {
+-		struct module *owner = rdy->owner;
+-
+-		list_del_init(&rdy->list);
+-		rdy->func(rdy);
+-		module_put(owner);
+-	}
+-	spin_unlock_irqrestore(&random_ready_list_lock, flags);
+-}
+-
+-/*
+- * Based on the pool's current entropy fill level, specified as
+- * base_entropy_count, and the number of new entropy bits in units of
+- * 2^-ENTROPY_SHIFT to add, return the amount of new entropy to
+- * credit. If the 'fast' parameter is set to true, the calculation
+- * will be guaranteed to terminate quickly, but this comes at the
+- * expense of capping nbits to one half of the pool size.
+- */
+-static unsigned int pool_entropy_delta(struct entropy_store *r,
+-				       int base_entropy_count,
+-				       int nfrac, bool fast)
+-{
+-	const int pool_size = r->poolinfo->poolfracbits;
+-	int entropy_count = base_entropy_count;
+-
+-	if (!nfrac)
+-		return 0;
+-
+-	if (pool_size <= base_entropy_count)
+-		return 0;
+-
+-	/*
+-	 * Credit: we have to account for the possibility of
+-	 * overwriting already present entropy.	 Even in the
+-	 * ideal case of pure Shannon entropy, new contributions
+-	 * approach the full value asymptotically:
+-	 *
+-	 * entropy <- entropy + (pool_size - entropy) *
+-	 *	(1 - exp(-add_entropy/pool_size))
+-	 *
+-	 * For add_entropy <= pool_size/2 then
+-	 * (1 - exp(-add_entropy/pool_size)) >=
+-	 *    (add_entropy/pool_size)*0.7869...
+-	 * so we can approximate the exponential with
+-	 * 3/4*add_entropy/pool_size and still be on the
+-	 * safe side by adding at most pool_size/2 at a time.
+-	 *
+-	 * The use of pool_size-2 in the while statement is to
+-	 * prevent rounding artifacts from making the loop
+-	 * arbitrarily long; this limits the loop to log2(pool_size)*2
+-	 * turns no matter how large nbits is.
+-	 */
+-	do {
+-		/* The +2 corresponds to the /4 in the denominator */
+-		const int s = r->poolinfo->poolbitshift + ENTROPY_SHIFT + 2;
+-		unsigned int anfrac = min(nfrac, pool_size/2);
+-		unsigned int add =
+-			((pool_size - entropy_count)*anfrac*3) >> s;
+-
+-		entropy_count += add;
+-		nfrac -= anfrac;
+-	} while (unlikely(!fast && entropy_count < pool_size-2 && nfrac));
+-
+-	if (WARN_ON(entropy_count < 0)) {
+-		pr_warn("negative entropy/overflow: pool %s count %d\n",
+-			r->name, entropy_count);
+-		entropy_count = base_entropy_count;
+-	} else if (entropy_count > pool_size) {
+-		entropy_count = pool_size;
+-	}
+-
+-	return entropy_count - base_entropy_count;
+-}
+-
+ struct queued_entropy {
+ 	unsigned int pool_watermark_seq;
+ 	unsigned int queued_entropy_fracbits;
+@@ -994,6 +879,126 @@ static void discard_queued_entropy(struct entropy_store *r,
+ 	spin_unlock_irqrestore(&r->lock, flags);
+ }
+ 
++struct fast_pool {
++	__u32		pool[4];
++	unsigned long	last;
++	unsigned short	reg_idx;
++	unsigned char	count;
++	int		event_entropy_shift;
++};
++
++/*
++ * This is a fast mixing routine used by the interrupt randomness
++ * collector.  It's hardcoded for an 128 bit pool and assumes that any
++ * locks that might be needed are taken by the caller.
++ */
++static void fast_mix(struct fast_pool *f)
++{
++	__u32 a = f->pool[0],	b = f->pool[1];
++	__u32 c = f->pool[2],	d = f->pool[3];
++
++	a += b;			c += d;
++	b = rol32(b, 6);	d = rol32(d, 27);
++	d ^= a;			b ^= c;
++
++	a += b;			c += d;
++	b = rol32(b, 16);	d = rol32(d, 14);
++	d ^= a;			b ^= c;
++
++	a += b;			c += d;
++	b = rol32(b, 6);	d = rol32(d, 27);
++	d ^= a;			b ^= c;
++
++	a += b;			c += d;
++	b = rol32(b, 16);	d = rol32(d, 14);
++	d ^= a;			b ^= c;
++
++	f->pool[0] = a;  f->pool[1] = b;
++	f->pool[2] = c;  f->pool[3] = d;
++	f->count++;
++}
++
++static void process_random_ready_list(void)
++{
++	unsigned long flags;
++	struct random_ready_callback *rdy, *tmp;
++
++	spin_lock_irqsave(&random_ready_list_lock, flags);
++	list_for_each_entry_safe(rdy, tmp, &random_ready_list, list) {
++		struct module *owner = rdy->owner;
++
++		list_del_init(&rdy->list);
++		rdy->func(rdy);
++		module_put(owner);
++	}
++	spin_unlock_irqrestore(&random_ready_list_lock, flags);
++}
++
++/*
++ * Based on the pool's current entropy fill level, specified as
++ * base_entropy_count, and the number of new entropy bits in units of
++ * 2^-ENTROPY_SHIFT to add, return the amount of new entropy to
++ * credit. If the 'fast' parameter is set to true, the calculation
++ * will be guaranteed to terminate quickly, but this comes at the
++ * expense of capping nbits to one half of the pool size.
++ */
++static unsigned int pool_entropy_delta(struct entropy_store *r,
++				       int base_entropy_count,
++				       int nfrac, bool fast)
++{
++	const int pool_size = r->poolinfo->poolfracbits;
++	int entropy_count = base_entropy_count;
++
++	if (!nfrac)
++		return 0;
++
++	if (pool_size <= base_entropy_count)
++		return 0;
++
++	/*
++	 * Credit: we have to account for the possibility of
++	 * overwriting already present entropy.	 Even in the
++	 * ideal case of pure Shannon entropy, new contributions
++	 * approach the full value asymptotically:
++	 *
++	 * entropy <- entropy + (pool_size - entropy) *
++	 *	(1 - exp(-add_entropy/pool_size))
++	 *
++	 * For add_entropy <= pool_size/2 then
++	 * (1 - exp(-add_entropy/pool_size)) >=
++	 *    (add_entropy/pool_size)*0.7869...
++	 * so we can approximate the exponential with
++	 * 3/4*add_entropy/pool_size and still be on the
++	 * safe side by adding at most pool_size/2 at a time.
++	 *
++	 * The use of pool_size-2 in the while statement is to
++	 * prevent rounding artifacts from making the loop
++	 * arbitrarily long; this limits the loop to log2(pool_size)*2
++	 * turns no matter how large nbits is.
++	 */
++	do {
++		/* The +2 corresponds to the /4 in the denominator */
++		const int s = r->poolinfo->poolbitshift + ENTROPY_SHIFT + 2;
++		unsigned int anfrac = min(nfrac, pool_size/2);
++		unsigned int add =
++			((pool_size - entropy_count)*anfrac*3) >> s;
++
++		entropy_count += add;
++		nfrac -= anfrac;
++	} while (unlikely(!fast && entropy_count < pool_size-2 && nfrac));
++
++	if (WARN_ON(entropy_count < 0)) {
++		pr_warn("negative entropy/overflow: pool %s count %d\n",
++			r->name, entropy_count);
++		entropy_count = base_entropy_count;
++	} else if (entropy_count > pool_size) {
++		entropy_count = pool_size;
++	}
++
++	return entropy_count - base_entropy_count;
++}
++
++
+ /*********************************************************************
+  *
+  * CRNG using CHACHA20
 -- 
 2.26.2
 
