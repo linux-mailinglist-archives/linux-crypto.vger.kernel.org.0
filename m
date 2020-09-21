@@ -2,19 +2,19 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF81271CA1
-	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 10:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C39271C97
+	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 10:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIUIA2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 21 Sep 2020 04:00:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56802 "EHLO mx2.suse.de"
+        id S1726674AbgIUIAO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 21 Sep 2020 04:00:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57298 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726487AbgIUH7W (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:59:22 -0400
+        id S1726506AbgIUH7X (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:59:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B03C1B50E;
-        Mon, 21 Sep 2020 07:59:56 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C919BB512;
+        Mon, 21 Sep 2020 07:59:57 +0000 (UTC)
 From:   Nicolai Stange <nstange@suse.de>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
@@ -46,9 +46,9 @@ Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
         Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
         Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 13/41] random: convert try_to_generate_entropy() to queued_entropy API
-Date:   Mon, 21 Sep 2020 09:58:29 +0200
-Message-Id: <20200921075857.4424-14-nstange@suse.de>
+Subject: [RFC PATCH 15/41] random: convert add_hwgenerator_randomness() to queued_entropy API
+Date:   Mon, 21 Sep 2020 09:58:31 +0200
+Message-Id: <20200921075857.4424-16-nstange@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
 References: <20200921075857.4424-1-nstange@suse.de>
@@ -58,136 +58,43 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-In an effort to drop __credit_entropy_bits_fast() in favor of the new
-__queue_entropy()/__dispatch_queued_entropy_fast() API, convert
-try_to_generate_entropy() from the former to the latter.
+In an effort to drop credit_entropy_bits() in favor of the new
+queue_entropy()/dispatch_queued_entropy() API, convert
+add_hwgenerator_randomness() from the former to the latter.
 
-Replace the call to __credit_entropy_bits_fast() from the timer callback,
-entropy_timer(), by a queue_entropy() operation. Dispatch it from the loop
-in try_to_generate_entropy() by invoking __dispatch_queued_entropy_fast()
-after the timestamp has been mixed into the input_pool.
-
-In order to provide the timer callback and try_to_generate_entropy() with
-access to a common struct queued_entropy instance, move the currently
-anonymous struct definition from the local 'stack' variable declaration in
-try_to_generate_entropy() to file scope and assign it a name,
-"struct try_to_generate_entropy_stack". Make entropy_timer() obtain a
-pointer to the corresponding instance by means of container_of() on the
-->timer member contained therein. Amend struct
-try_to_generate_entropy_stack by a new member ->q of type struct
-queued_entropy.
-
-Note that the described scheme alters behaviour a bit: first of all, new
-entropy credit now gets only dispatched to the pool after the actual mixing
-has completed rather than in an unsynchronized manner directly from the
-timer callback. As the mixing loop try_to_generate_entropy() is expected to
-run at higher frequency than the timer, this is unlikely to make any
-difference in practice.
-
-Furthermore, the pool entropy watermark as tracked over the period from
-queuing the entropy in the timer callback and to its subsequent dispatch
-from try_to_generate_entropy() is now taken into account when calculating
-the actual credit at dispatch. In consequence, the amount of new entropy
-dispatched to the pool will potentially be lowered if said period happens
-to overlap with the pool extraction from an initial crng_reseed() on the
-primary_crng. However, as getting the primary_crng seeded is the whole
-point of the try_to_generate_entropy() exercise, this won't matter.
-
-Note that instead of calling queue_entropy() from the timer callback,
-an alternative would have been to maintain an invocation counter and queue
-that up from try_to_generate_entropy() right before the mix operation.
-This would have reduced the described effect of the pool's entropy
-watermark and in fact matched the intended queue_entropy() API usage
-better. However, in this particular case of try_to_generate_entropy(),
-jitter is desired and invoking queue_entropy() with its buffer locking etc.
-from the timer callback could potentially contribute to that.
+As a side effect, the pool entropy watermark as tracked over the duration
+of the mix_pool_bytes() operation is now taken correctly taken into account
+when calulating the amount of new entropy to dispatch to the pool based on
+the latter's fill level.
 
 Signed-off-by: Nicolai Stange <nstange@suse.de>
 ---
- drivers/char/random.c | 42 +++++++++++++++++++++++++++++-------------
- 1 file changed, 29 insertions(+), 13 deletions(-)
+ drivers/char/random.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index bd3774c6be4b..dfbe49fdbcf1 100644
+index 60ce185d7b2d..78e65367ea86 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -1911,6 +1911,12 @@ void get_random_bytes(void *buf, int nbytes)
- EXPORT_SYMBOL(get_random_bytes);
- 
- 
-+struct try_to_generate_entropy_stack {
-+	unsigned long now;
-+	struct timer_list timer;
-+	struct queued_entropy q;
-+} stack;
-+
- /*
-  * Each time the timer fires, we expect that we got an unpredictable
-  * jump in the cycle counter. Even if the timer is running on another
-@@ -1926,14 +1932,10 @@ EXPORT_SYMBOL(get_random_bytes);
-  */
- static void entropy_timer(struct timer_list *t)
+@@ -2640,6 +2640,7 @@ void add_hwgenerator_randomness(const char *buffer, size_t count,
+ 				size_t entropy)
  {
--	bool reseed;
--	unsigned long flags;
-+	struct try_to_generate_entropy_stack *stack;
+ 	struct entropy_store *poolp = &input_pool;
++	struct queued_entropy q = { 0 };
  
--	spin_lock_irqsave(&input_pool.lock, flags);
--	reseed = __credit_entropy_bits_fast(&input_pool, 1);
--	spin_unlock_irqrestore(&input_pool.lock, flags);
--	if (reseed)
--		crng_reseed(&primary_crng, &input_pool);
-+	stack = container_of(t, struct try_to_generate_entropy_stack, timer);
-+	queue_entropy(&input_pool, &stack->q, 1 << ENTROPY_SHIFT);
+ 	if (unlikely(crng_init == 0)) {
+ 		crng_fast_load(buffer, count);
+@@ -2652,8 +2653,9 @@ void add_hwgenerator_randomness(const char *buffer, size_t count,
+ 	 */
+ 	wait_event_interruptible(random_write_wait, kthread_should_stop() ||
+ 			ENTROPY_BITS(&input_pool) <= random_write_wakeup_bits);
++	queue_entropy(poolp, &q, entropy << ENTROPY_SHIFT);
+ 	mix_pool_bytes(poolp, buffer, count);
+-	credit_entropy_bits(poolp, entropy);
++	dispatch_queued_entropy(poolp, &q);
  }
+ EXPORT_SYMBOL_GPL(add_hwgenerator_randomness);
  
- /*
-@@ -1942,10 +1944,9 @@ static void entropy_timer(struct timer_list *t)
-  */
- static void try_to_generate_entropy(void)
- {
--	struct {
--		unsigned long now;
--		struct timer_list timer;
--	} stack;
-+	struct try_to_generate_entropy_stack stack = { 0 };
-+	unsigned long flags;
-+	bool reseed;
- 
- 	stack.now = random_get_entropy();
- 
-@@ -1957,14 +1958,29 @@ static void try_to_generate_entropy(void)
- 	while (!crng_ready()) {
- 		if (!timer_pending(&stack.timer))
- 			mod_timer(&stack.timer, jiffies+1);
--		mix_pool_bytes(&input_pool, &stack.now, sizeof(stack.now));
-+		spin_lock_irqsave(&input_pool.lock, flags);
-+		__mix_pool_bytes(&input_pool, &stack.now, sizeof(stack.now));
-+		reseed = __dispatch_queued_entropy_fast(&input_pool, &stack.q);
-+		spin_unlock_irqrestore(&input_pool.lock, flags);
-+
-+		if (reseed)
-+			crng_reseed(&primary_crng, &input_pool);
-+
- 		schedule();
- 		stack.now = random_get_entropy();
- 	}
- 
- 	del_timer_sync(&stack.timer);
- 	destroy_timer_on_stack(&stack.timer);
--	mix_pool_bytes(&input_pool, &stack.now, sizeof(stack.now));
-+	spin_lock_irqsave(&input_pool.lock, flags);
-+	__mix_pool_bytes(&input_pool, &stack.now, sizeof(stack.now));
-+	/*
-+	 * Must be called here once more in order to complete a
-+	 * previously unmatched queue_entropy() from entropy_timer(),
-+	 * if any.
-+	 */
-+	__dispatch_queued_entropy_fast(&input_pool, &stack.q);
-+	spin_unlock_irqrestore(&input_pool.lock, flags);
- }
- 
- /*
 -- 
 2.26.2
 
