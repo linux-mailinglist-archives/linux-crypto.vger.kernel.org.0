@@ -2,19 +2,19 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11C3271C8B
-	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 10:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C294F271C81
+	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 09:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgIUH7u (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 21 Sep 2020 03:59:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56802 "EHLO mx2.suse.de"
+        id S1726597AbgIUH7j (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 21 Sep 2020 03:59:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57940 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgIUH71 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:59:27 -0400
+        id S1726545AbgIUH73 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:59:29 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 80FADB51D;
-        Mon, 21 Sep 2020 08:00:02 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 14EEEB51E;
+        Mon, 21 Sep 2020 08:00:03 +0000 (UTC)
 From:   Nicolai Stange <nstange@suse.de>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
@@ -46,9 +46,9 @@ Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
         Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
         Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 23/41] random: don't award entropy to non-SP800-90B arch RNGs in FIPS mode
-Date:   Mon, 21 Sep 2020 09:58:39 +0200
-Message-Id: <20200921075857.4424-24-nstange@suse.de>
+Subject: [RFC PATCH 24/41] init: call time_init() before rand_initialize()
+Date:   Mon, 21 Sep 2020 09:58:40 +0200
+Message-Id: <20200921075857.4424-25-nstange@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
 References: <20200921075857.4424-1-nstange@suse.de>
@@ -58,57 +58,48 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-It is required by SP800-90C that only SP800-90B compliant entropy sources
-may be used for seeding DRBGs.
+Commit d55535232c3d ("random: move rand_initialize() earlier") moved the
+rand_initialize() invocation from the early initcalls to right after
+timekeeping_init(), but before time_init().
 
-Don't award any entropy to arch_get_random_long() if fips_enabled is
-true. Don't award any entropy to arch_get_random_seed_long() if
-fips_enabled && !arch_has_sp800_90b_random_seed().
+However, rand_initialize() would indirectly invoke random_get_entropy(),
+which is an alias to get_cycles() on most archs, in case an architectural
+RNG is not available. Problem is that on some archs, e.g. ARM,
+get_cycles() can only be relied upon when time_init() has completed.
 
-This is achieved by making min_crng_reseed_pool_entropy() return the
-full minimum seed size if fips_enabled && !arch_has_sp800_90b_random_seed()
-is true. This prevents crng_reseed() from attempting to make up for any
-lack of entropy in the input_pool by reading from the architectural RNG.
+Move the invocation of time_init() a couple of lines up in start_kernel()
+so that it gets called before rand_initialize().
 
-Make crng_reseed() bail out in FIPS mode if the input_pool provides
-insufficient entropy and any of the arch_get_random_seed_long()
-invocations fails: there's no statement regarding SP900-90B compliance of
-arch_get_random_long() and so it can't be used as a backup.
+Note that random_get_entropy() data doesn't get any entropy credit and
+thus, this issue is not to be considered a bug, but more of an
+inconsistency.
 
+Fixes: d55535232c3d ("random: move rand_initialize() earlier")
 Signed-off-by: Nicolai Stange <nstange@suse.de>
 ---
- drivers/char/random.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ init/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 7712b4464ef5..aaddee4e4ab1 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -1195,9 +1195,13 @@ static int min_crng_reseed_pool_entropy(void)
- 	 * up to one half of the minimum entropy needed for
- 	 * reseeding. That way it won't dominate the entropy
- 	 * collected by other means at input_pool.
-+	 * If in FIPS mode, restrict this to SP900-90B compliant
-+	 * architectural RNGs.
- 	 */
--	if (arch_has_random() || arch_has_random_seed())
-+	if (arch_has_sp800_90b_random_seed() ||
-+	    (!fips_enabled && (arch_has_random() || arch_has_random_seed()))) {
- 		return 8;
-+	}
- 	return 16;
- }
+diff --git a/init/main.c b/init/main.c
+index ae78fb68d231..30892675f48e 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -942,6 +942,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
+ 	hrtimers_init();
+ 	softirq_init();
+ 	timekeeping_init();
++	time_init();
  
-@@ -1233,7 +1237,8 @@ static void crng_reseed(struct crng_state *crng, struct entropy_store *r)
- 	for (i = 0; i < 8; i++) {
- 		unsigned long	rv;
- 		if (!arch_get_random_seed_long(&rv) &&
--		    !arch_get_random_long(&rv)) {
-+		    ((arch_randomness_required && fips_enabled) ||
-+		     !arch_get_random_long(&rv))) {
- 			if (arch_randomness_required) {
- 				/*
- 				 * The input_pool failed to provide
+ 	/*
+ 	 * For best initial stack canary entropy, prepare it after:
+@@ -956,7 +957,6 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
+ 	add_device_randomness(command_line, strlen(command_line));
+ 	boot_init_stack_canary();
+ 
+-	time_init();
+ 	perf_event_init();
+ 	profile_init();
+ 	call_function_init();
 -- 
 2.26.2
 
