@@ -2,18 +2,18 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E204271C92
-	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 10:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16AD271C89
+	for <lists+linux-crypto@lfdr.de>; Mon, 21 Sep 2020 09:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgIUH7u (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 21 Sep 2020 03:59:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57622 "EHLO mx2.suse.de"
+        id S1726630AbgIUH7v (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 21 Sep 2020 03:59:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57702 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726524AbgIUH71 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726532AbgIUH71 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 21 Sep 2020 03:59:27 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2A891B510;
+        by mx2.suse.de (Postfix) with ESMTP id BB3A9B51A;
         Mon, 21 Sep 2020 08:00:00 +0000 (UTC)
 From:   Nicolai Stange <nstange@suse.de>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
@@ -46,9 +46,9 @@ Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
         Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
         Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 19/41] random: reintroduce arch_has_random() + arch_has_random_seed()
-Date:   Mon, 21 Sep 2020 09:58:35 +0200
-Message-Id: <20200921075857.4424-20-nstange@suse.de>
+Subject: [RFC PATCH 20/41] random: provide min_crng_reseed_pool_entropy()
+Date:   Mon, 21 Sep 2020 09:58:36 +0200
+Message-Id: <20200921075857.4424-21-nstange@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
 References: <20200921075857.4424-1-nstange@suse.de>
@@ -58,213 +58,88 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-A future patch will introduce support for making up for a certain amount
-of lacking entropy in crng_reseed() by means of arch_get_random_long()
-or arch_get_random_seed_long() respectively.
+Currently, the current minimum entropy required from the input_pool for
+reseeding the primary_crng() is 16 bytes == 128 bits. A future patch will
+introduce support for obtaining up to a certain fraction thereof from the
+architecture's RNG, if available.
 
-However, before even the tiniest bit of precious entropy is withdrawn from
-the input_pool, it should be checked if whether the current arch even
-has support for these.
+This will effectively lower the minimum input_pool ->entropy_count required
+for a successful reseed of the primary_crng.
 
-Reintroduce arch_has_random() + arch_has_random_seed() and implement
-them for arm64, powerpc, s390 and x86 as appropriate (yeah, I know this
-should go in separate commits, but this is part of a RFC series).
+As this value is used at a couple of places, namely crng_reseed() itself
+as well as dispatch_queued_entropy() and __dispatch_queued_entropy_fast(),
+introduce min_crng_reseed_pool_entropy() to ensure consistency among
+these.
 
-Note that this more or less reverts commits
-  647f50d5d9d9 ("linux/random.h: Remove arch_has_random,
-                 arch_has_random_seed")
-  cbac004995a0 ("powerpc: Remove arch_has_random, arch_has_random_seed")
-  5e054c820f59 ("s390: Remove arch_has_random, arch_has_random_seed")
-  5f2ed7f5b99b ("x86: Remove arch_has_random, arch_has_random_seed")
+min_crng_reseed_pool_entropy() returns the minimum amount of entropy in
+bytes required from the input_pool for a successful reseed of the
+primary_crng. Currently it's hardcoded to 16.
+
+Use it in place of the hardcoded constants in crng_reseed(),
+dispatch_queued_entropy() and __dispatch_queued_entropy_fast().
 
 Signed-off-by: Nicolai Stange <nstange@suse.de>
 ---
- arch/arm64/include/asm/archrandom.h   | 25 ++++++++++++++++++-------
- arch/powerpc/include/asm/archrandom.h | 12 +++++++++++-
- arch/s390/include/asm/archrandom.h    | 14 ++++++++++++--
- arch/x86/include/asm/archrandom.h     | 18 ++++++++++++++----
- include/linux/random.h                |  8 ++++++++
- 5 files changed, 63 insertions(+), 14 deletions(-)
+ drivers/char/random.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/archrandom.h b/arch/arm64/include/asm/archrandom.h
-index 44209f6146aa..055d18713db7 100644
---- a/arch/arm64/include/asm/archrandom.h
-+++ b/arch/arm64/include/asm/archrandom.h
-@@ -26,17 +26,13 @@ static inline bool __arm64_rndr(unsigned long *v)
- 	return ok;
- }
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 1945249597e0..424de1565927 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -516,6 +516,8 @@ static ssize_t extract_entropy(struct entropy_store *r, void *buf,
+ static ssize_t _extract_entropy(struct entropy_store *r, void *buf,
+ 				size_t nbytes, int fips);
  
--static inline bool __must_check arch_get_random_long(unsigned long *v)
--{
--	return false;
--}
- 
--static inline bool __must_check arch_get_random_int(unsigned int *v)
-+static inline bool arch_has_random(void)
- {
- 	return false;
- }
- 
--static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
-+static inline bool arch_has_random_seed(void)
- {
- 	/*
- 	 * Only support the generic interface after we have detected
-@@ -44,7 +40,22 @@ static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
- 	 * cpufeature code and with potential scheduling between CPUs
- 	 * with and without the feature.
- 	 */
--	if (!cpus_have_const_cap(ARM64_HAS_RNG))
-+	return cpus_have_const_cap(ARM64_HAS_RNG);
-+}
++static int min_crng_reseed_pool_entropy(void);
 +
-+static inline bool __must_check arch_get_random_long(unsigned long *v)
-+{
-+	return false;
-+}
-+
-+static inline bool __must_check arch_get_random_int(unsigned int *v)
-+{
-+	return false;
-+}
-+
-+static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
-+{
-+	if (!arch_has_random_seed())
- 		return false;
+ static void crng_reseed(struct crng_state *crng, struct entropy_store *r);
+ static __u32 input_pool_data[INPUT_POOL_WORDS] __latent_entropy;
  
- 	return __arm64_rndr(v);
-diff --git a/arch/powerpc/include/asm/archrandom.h b/arch/powerpc/include/asm/archrandom.h
-index 9a53e29680f4..47c2d74e7244 100644
---- a/arch/powerpc/include/asm/archrandom.h
-+++ b/arch/powerpc/include/asm/archrandom.h
-@@ -6,6 +6,16 @@
+@@ -916,7 +918,7 @@ static bool __dispatch_queued_entropy_fast(struct entropy_store *r,
+ 	if (unlikely(r == &input_pool && crng_init < 2)) {
+ 		const int entropy_bits = entropy_count >> ENTROPY_SHIFT;
  
- #include <asm/machdep.h>
- 
-+static inline bool arch_has_random(void)
-+{
-+	return false;
-+}
-+
-+static inline bool arch_has_random_seed(void)
-+{
-+	return ppc_md.get_random_seed;
-+}
-+
- static inline bool __must_check arch_get_random_long(unsigned long *v)
- {
- 	return false;
-@@ -18,7 +28,7 @@ static inline bool __must_check arch_get_random_int(unsigned int *v)
- 
- static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
- {
--	if (ppc_md.get_random_seed)
-+	if (arch_has_random_seed())
- 		return ppc_md.get_random_seed(v);
- 
- 	return false;
-diff --git a/arch/s390/include/asm/archrandom.h b/arch/s390/include/asm/archrandom.h
-index de61ce562052..18973845634c 100644
---- a/arch/s390/include/asm/archrandom.h
-+++ b/arch/s390/include/asm/archrandom.h
-@@ -21,6 +21,16 @@ extern atomic64_t s390_arch_random_counter;
- 
- bool s390_arch_random_generate(u8 *buf, unsigned int nbytes);
- 
-+static inline bool arch_has_random(void)
-+{
-+	return false;
-+}
-+
-+static inline bool arch_has_random_seed(void)
-+{
-+	return static_branch_likely(&s390_arch_random_available);
-+}
-+
- static inline bool __must_check arch_get_random_long(unsigned long *v)
- {
- 	return false;
-@@ -33,7 +43,7 @@ static inline bool __must_check arch_get_random_int(unsigned int *v)
- 
- static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
- {
--	if (static_branch_likely(&s390_arch_random_available)) {
-+	if (arch_has_random_seed()) {
- 		return s390_arch_random_generate((u8 *)v, sizeof(*v));
+-		return (entropy_bits >= 128);
++		return (entropy_bits >= min_crng_reseed_pool_entropy() * 8);
  	}
- 	return false;
-@@ -41,7 +51,7 @@ static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
  
- static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
- {
--	if (static_branch_likely(&s390_arch_random_available)) {
-+	if (arch_has_random_seed()) {
- 		return s390_arch_random_generate((u8 *)v, sizeof(*v));
- 	}
  	return false;
-diff --git a/arch/x86/include/asm/archrandom.h b/arch/x86/include/asm/archrandom.h
-index ebc248e49549..030f46c9e310 100644
---- a/arch/x86/include/asm/archrandom.h
-+++ b/arch/x86/include/asm/archrandom.h
-@@ -70,24 +70,34 @@ static inline bool __must_check rdseed_int(unsigned int *v)
-  */
- #ifdef CONFIG_ARCH_RANDOM
+@@ -965,7 +967,7 @@ static void dispatch_queued_entropy(struct entropy_store *r,
+ 		if (crng_init < 2) {
+ 			const int entropy_bits = entropy_count >> ENTROPY_SHIFT;
  
-+static inline bool arch_has_random(void)
+-			if (entropy_bits < 128)
++			if (entropy_bits < min_crng_reseed_pool_entropy() * 8)
+ 				return;
+ 			crng_reseed(&primary_crng, r);
+ 		}
+@@ -1182,6 +1184,15 @@ static int crng_slow_load(const char *cp, size_t len)
+ 	return 1;
+ }
+ 
++/*
++ * Minimum amount of entropy in bytes required from the input_pool for
++ * a successful reseed of the primary_crng.
++ */
++static int min_crng_reseed_pool_entropy(void)
 +{
-+	return static_cpu_has(X86_FEATURE_RDRAND);
++	return 16;
 +}
 +
-+static inline bool arch_has_random_seed(void)
-+{
-+	return static_cpu_has(X86_FEATURE_RDSEED);
-+}
-+
- static inline bool __must_check arch_get_random_long(unsigned long *v)
+ static void crng_reseed(struct crng_state *crng, struct entropy_store *r)
  {
--	return static_cpu_has(X86_FEATURE_RDRAND) ? rdrand_long(v) : false;
-+	return arch_has_random() ? rdrand_long(v) : false;
- }
+ 	unsigned long	flags;
+@@ -1192,7 +1203,8 @@ static void crng_reseed(struct crng_state *crng, struct entropy_store *r)
+ 	} buf;
  
- static inline bool __must_check arch_get_random_int(unsigned int *v)
- {
--	return static_cpu_has(X86_FEATURE_RDRAND) ? rdrand_int(v) : false;
-+	return arch_has_random() ? rdrand_int(v) : false;
- }
- 
- static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
- {
--	return static_cpu_has(X86_FEATURE_RDSEED) ? rdseed_long(v) : false;
-+	return arch_has_random_seed() ? rdseed_long(v) : false;
- }
- 
- static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
- {
--	return static_cpu_has(X86_FEATURE_RDSEED) ? rdseed_int(v) : false;
-+	return arch_has_random_seed() ? rdseed_int(v) : false;
- }
- 
- extern void x86_init_rdrand(struct cpuinfo_x86 *c);
-diff --git a/include/linux/random.h b/include/linux/random.h
-index f45b8be3e3c4..d4653422a0c7 100644
---- a/include/linux/random.h
-+++ b/include/linux/random.h
-@@ -120,6 +120,14 @@ unsigned long randomize_page(unsigned long start, unsigned long range);
- #ifdef CONFIG_ARCH_RANDOM
- # include <asm/archrandom.h>
- #else
-+static inline bool arch_has_random(void)
-+{
-+	return false;
-+}
-+static inline bool arch_has_random_seed(void)
-+{
-+	return false;
-+}
- static inline bool __must_check arch_get_random_long(unsigned long *v)
- {
- 	return false;
+ 	if (r) {
+-		num = extract_entropy(r, &buf, 32, 16);
++		num = extract_entropy(r, &buf, 32,
++				      min_crng_reseed_pool_entropy());
+ 		if (num == 0)
+ 			return;
+ 	} else {
 -- 
 2.26.2
 
