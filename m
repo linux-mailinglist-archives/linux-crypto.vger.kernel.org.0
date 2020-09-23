@@ -2,92 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5019274EBF
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Sep 2020 03:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93B0275022
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Sep 2020 07:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgIWB5F (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Sep 2020 21:57:05 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:45385 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726847AbgIWB5F (ORCPT
+        id S1726891AbgIWFAH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Sep 2020 01:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726198AbgIWFAH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Sep 2020 21:57:05 -0400
-Received: by mail-il1-f195.google.com with SMTP id h2so19285152ilo.12;
-        Tue, 22 Sep 2020 18:57:04 -0700 (PDT)
+        Wed, 23 Sep 2020 01:00:07 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC0CC0613D1
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Sep 2020 22:00:06 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id f142so21657876qke.13
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Sep 2020 22:00:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=kuU8Wfl3BK6NTYe8MZfgh6IGAg0SnB1dB+g1AnM7c+xZZ0Gi80CDQ0/O9ZiifWGe6c
+         is/19X8GKZrFSMsZ+T93KLvWvbqe0cOJYsdxv/af9bjdHf6TRluH9TsMv//BwR4DsnbU
+         IMz8OM4rbb4i2iNndHSLKNsXWju9as6rwKxGHXijiwGvPbmGSDT87IOqTH8sw1ptknD+
+         4vYVzsgWlU3i6ibHIyavHTvaYt2bEgoCDuuM78laW1VmWcLrc7ulAlTURTigRxO1Q35S
+         hWzJV9Cj5Z4/mW7aBmzrW8Zk2CEEKxEWNprZyc0xoFfIiOuYghRy+5FFKpRLLFtIoJwg
+         QFfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=34pMhFQ28SHC3mzxbMUDtsJGYufWbe2RlD1uSSeVBbQ=;
-        b=ngMgJreq97y7VSnZSbgLuwuw8XXk9scYsIiN/FDI/FpB+Uh9Jm2ggdhPKP1PGGSOdd
-         1Yq1LcelwojMnbwmBZ1m7WA9fBgWSI7jU3q9VV9XrbqAf9/2BGSMkpriLJQukqD15FJi
-         aQiAT9JARR4dgHue/eO3oHbhX+TAewFmPSZMJ5U2XiYtnKWvOgKVlR4QH9JdH3tbSrla
-         lpb7uatxq+R4z7yPqkf8hrXMOFUGSFL2Byp5ca4Pbn50YQRq0dz2fGFzOLImUeeDRe6W
-         hKgT6lyCyfRbKPgsw5dBdA+cFI7yKVnwyuDKIo8+LNMKnQvI/AkCzGyw6jb5Ta0qE8fO
-         SSYA==
-X-Gm-Message-State: AOAM533Q+bOanVzc1sV/xf3sQ0eeePcO05pzg597y9ZafSOA8Fsz+KN9
-        f7vB0+ALzTmJw+Z86+gTqg==
-X-Google-Smtp-Source: ABdhPJw/o4PwxGTeqWV+adBWTIEGsOkRpZod6MJ/eFAMyAZXrL7UJ3MpPMRsbXfGwT/zjEc/YHa5jQ==
-X-Received: by 2002:a92:c7b0:: with SMTP id f16mr6998290ilk.137.1600826224427;
-        Tue, 22 Sep 2020 18:57:04 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id j77sm10254679ili.31.2020.09.22.18.57.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 18:57:03 -0700 (PDT)
-Received: (nullmailer pid 3701896 invoked by uid 1000);
-        Wed, 23 Sep 2020 01:57:02 -0000
-Date:   Tue, 22 Sep 2020 19:57:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ofir Drang <ofir.drang@arm.com>, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: update ccree optional params
-Message-ID: <20200923015702.GA3676455@bogus>
-References: <20200916071950.1493-1-gilad@benyossef.com>
- <20200916071950.1493-2-gilad@benyossef.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=SHibkDnNbUnTTYbNSEq4dI6UJA74tDvl7wiykz7pF27pL5qNEakBAsIrOfBspJGBWw
+         h1Yv8H7dFlCApYWzXQe1DbdUqnQU+C95Ii+dpoAXu6LA9wDGNrZU0WR91xgd7KKHL8b/
+         9t9FOyW0bUn61wVNiXa/noVSqZouaIgnWczKLVFe/Jpyw6hBaP9rnBOwMbel9CzA3K1K
+         3aaK7jh2j6gcmyqTlv06nClx95IFDjgfJzKsYBM050KmZuB//mBj0f5F3YTHLh7GKoE5
+         sE7UrfQsKIZ6fzD4QwdJ0hWve5HoeQKpa94no8RKEOfVtnG65vWf9EbquHfgTF2qMv1P
+         CEgA==
+X-Gm-Message-State: AOAM530iE9AlcAmFgx0N9wm5vK0zqJLKTUPYnGoYh+9hJlSRX5eWAnWz
+        fkl5xnskVqZeL8gVeAiVZy2HjUq/stocFJ4QhWc=
+X-Google-Smtp-Source: ABdhPJyJCH8bDzlhCuMk1/r8xUptp/qzTXTS0on/PVjkE/Fa581pKuj5dO+DOw8Tp0n1hEEWjJ1VfmkoVEPTZ86Rb0o=
+X-Received: by 2002:ae9:f444:: with SMTP id z4mr8630768qkl.333.1600837205649;
+ Tue, 22 Sep 2020 22:00:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916071950.1493-2-gilad@benyossef.com>
+Received: by 2002:a05:6214:1507:0:0:0:0 with HTTP; Tue, 22 Sep 2020 22:00:05
+ -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   Aisha Gaddafi <mrzakirhossain4444@gmail.com>
+Date:   Tue, 22 Sep 2020 22:00:05 -0700
+Message-ID: <CAJGJQuZYsxn7EDMpmkJoDpLLtg5xr5ekiretWNiQDfD89ED_Sw@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:19:49AM +0300, Gilad Ben-Yossef wrote:
-> Document ccree driver supporting new optional parameters allowing to
-> customize the DMA transactions cache parameters and ACE bus sharability
-> properties.
-> 
-> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-> ---
->  Documentation/devicetree/bindings/crypto/arm-cryptocell.txt | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> index 6130e6eb4af8..1a1603e457a8 100644
-> --- a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> +++ b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> @@ -13,6 +13,10 @@ Required properties:
->  Optional properties:
->  - clocks: Reference to the crypto engine clock.
->  - dma-coherent: Present if dma operations are coherent.
-> +- awcache: Set write transactions cache attributes
-> +- arcache: Set read transactions cache attributes
+--=20
+Lieber Freund (Assalamu Alaikum),
 
-dma-coherent already implies these are 011x, 101x or 111x. In my limited 
-experience configuring these (Calxeda SATA and ethernet), writeback, 
-write-allocate was pretty much always optimal. 
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
-> +- awdomain: Set write transactions ACE sharability domain (712, 703, 713 only)
-> +- ardomain: Set read transactions ACE sharability domain (712, 703, 713 only)
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
 
-This probably needs something common. We may need something for Mali, 
-too. I don't think different settings for read and write makes much 
-sense nor does anything beyond IS or OS. 
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
 
-These could also just be implied by the compatible string (and requiring 
-an SoC specific one).
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
 
-Rob
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
+
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
