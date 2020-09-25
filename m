@@ -2,63 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F105D278A63
-	for <lists+linux-crypto@lfdr.de>; Fri, 25 Sep 2020 16:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0DE27901A
+	for <lists+linux-crypto@lfdr.de>; Fri, 25 Sep 2020 20:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728942AbgIYOI7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 25 Sep 2020 10:08:59 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47148 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728959AbgIYOI6 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:08:58 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 58CF5DE3620179093242;
-        Fri, 25 Sep 2020 22:08:56 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 25 Sep 2020 22:08:50 +0800
-From:   Yang Shen <shenyang39@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH RESEND 4/4] crypto: hisilicon/zip - fix the uninitalized 'curr_qm_qp_num'
-Date:   Fri, 25 Sep 2020 22:06:17 +0800
-Message-ID: <1601042777-26150-5-git-send-email-shenyang39@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1601042777-26150-1-git-send-email-shenyang39@huawei.com>
-References: <1601042777-26150-1-git-send-email-shenyang39@huawei.com>
+        id S1727495AbgIYSMI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 25 Sep 2020 14:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726401AbgIYSMH (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 25 Sep 2020 14:12:07 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C14C0613CE;
+        Fri, 25 Sep 2020 11:12:07 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id a9so4394399wmm.2;
+        Fri, 25 Sep 2020 11:12:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=peKSZZv/3gch7m7CK+PuIaqJRq3FyLjvEDI1jpnv750=;
+        b=pRpaIJUqQjkqw6bRm/2R7blJ6O3KEmLRnXtjDVxqqs2lGFyb74ac+dVMdxh77WKddm
+         qyTaJEsEMpObuYhhPXKtryw1urlZqbln3v9uRKEo6I2MOvWSczuKSjmBoSeGHV8WzRFT
+         2+c4PzFQaFmHveltaK33NrTPrZkz2zGgxJ08iap2vQcX8tM1BA4ofjlb0Err0Aqv/Knk
+         63B3mwkZFSe64n2Uhs6pRr0FeCQwSx5AJ1wcuNBzMa7iqUnZeEF7MjsZlYM42f5a4xL/
+         oR1MuT22vC2Xa2PYqhWP12B6Ni+Z2h1dWyTbecIq2A5phvXFk9a1msgGjTw4MIOp0HBW
+         5D0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=peKSZZv/3gch7m7CK+PuIaqJRq3FyLjvEDI1jpnv750=;
+        b=EQ8sMwX5f6AW/kssiFbbTPzQXXGpwQlAE5MrMJiipKfbWw8fB62prL/6ts6DPvqyYr
+         gCLf7mpMq30aeiW/hysTm30nZfPdIJD+JvMUTqAHOdt+EgndxdcdhYNdLNzz4gqgr7lb
+         5iyvuhozEOY/iee4LAJPQ2CuFyfZOcaQEiM6xLISCvsGQx01nLxkZqmshu0t+CSzM3r3
+         yYf1UaaQHUc+fAaUf0I235v3ags6CcwEkLySrvxxcUalilkYFs65qyFlUPj8tv6Hs2yY
+         hdpSl4ekGf3TqfWB+mDI79EcSMW7vjbRIiFvHS/Rfm4XcYozxtC/63WOiIcg+U0czmPs
+         mxDg==
+X-Gm-Message-State: AOAM530VbQq+gKEBkAudRIRv+4OYcZib/eQgqNTKhuMTBY0TAoeg/jY2
+        LDtvWVNkRjNiDRy1Lw+gXaE=
+X-Google-Smtp-Source: ABdhPJxZvrVfLyQNosyiqJ+YnRZQYo+QLgncx0LWJ0hyamcXwxXU8sIDE244LW5ALbbwIiq4VNYBDA==
+X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr4355391wmh.152.1601057526226;
+        Fri, 25 Sep 2020 11:12:06 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id k8sm3858176wma.16.2020.09.25.11.12.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 11:12:05 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 20:12:03 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Will Deacon <will@kernel.org>, tj@kernel.org,
+        jiangshanlai@gmail.com, mark.rutland@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>
+Subject: Re: WARNING: at kernel/workqueue.c:1473 __queue_work+0x3b8/0x3d0
+Message-ID: <20200925181203.GA26463@Red>
+References: <20200217204803.GA13479@Red>
+ <20200218163504.y5ofvaejleuf5tbh@ca-dmjordan1.us.oracle.com>
+ <20200220090350.GA19858@Red>
+ <20200221174223.r3y6tugavp3k5jdl@ca-dmjordan1.us.oracle.com>
+ <20200228123311.GE3275@willie-the-truck>
+ <20200228153331.uimy62rat2tdxxod@ca-dmjordan1.us.oracle.com>
+ <20200301175351.GA11684@Red>
+ <20200302172510.fspofleipqjcdxak@ca-dmjordan1.us.oracle.com>
+ <20200303074819.GB9935@Red>
+ <20200303213111.op2vtxfmwtn7i6db@ca-dmjordan1.us.oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200303213111.op2vtxfmwtn7i6db@ca-dmjordan1.us.oracle.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Sihang Chen <chensihang1@hisilicon.com>
+On Tue, Mar 03, 2020 at 04:31:11PM -0500, Daniel Jordan wrote:
+> On Tue, Mar 03, 2020 at 08:48:19AM +0100, Corentin Labbe wrote:
+> > The patch fix the issue. Thanks!
+> 
+> Thanks for trying it!
+> 
+> > So you could add:
+> > Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> > Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> > Tested-on: sun50i-h6-pine-h64
+> > Tested-on: imx8mn-ddr4-evk
+> > Tested-on: sun50i-a64-bananapi-m64
+> 
+> I definitely will if the patch turns out to be the right fix.
+> 
+> thanks,
+> Daniel
 
-The 'qm->curr_qm_qp_num' is not initialized, which will result in failure
-to write the current_q file.
+Hello
 
-Signed-off-by: Sihang Chen <chensihang1@hisilicon.com>
-Signed-off-by: Yang Shen <shenyang39@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
----
- drivers/crypto/hisilicon/zip/zip_main.c | 1 +
- 1 file changed, 1 insertion(+)
+I forgot about this problem since the patch is in my branch since.
+But a co-worker hit this problem recently and without this patch my CI still have it.
 
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index f10bf99..4bd2c81 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -760,6 +760,7 @@ static int hisi_zip_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
- 	if (qm->fun_type == QM_HW_PF) {
- 		qm->qp_base = HZIP_PF_DEF_Q_BASE;
- 		qm->qp_num = pf_q_num;
-+		qm->debug.curr_qm_qp_num = pf_q_num;
- 		qm->qm_list = &zip_devices;
- 	} else if (qm->fun_type == QM_HW_VF && qm->ver == QM_HW_V1) {
- 		/*
--- 
-2.7.4
-
+Regards
