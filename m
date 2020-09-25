@@ -2,17 +2,17 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67325278A66
-	for <lists+linux-crypto@lfdr.de>; Fri, 25 Sep 2020 16:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E65278A6D
+	for <lists+linux-crypto@lfdr.de>; Fri, 25 Sep 2020 16:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728995AbgIYOJB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 25 Sep 2020 10:09:01 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47126 "EHLO huawei.com"
+        id S1728975AbgIYOI7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 25 Sep 2020 10:08:59 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:47144 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726990AbgIYOJB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:09:01 -0400
+        id S1728958AbgIYOI6 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 25 Sep 2020 10:08:58 -0400
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 504C634EFF37630B7607;
+        by Forcepoint Email with ESMTP id 549188A2292E46BAB632;
         Fri, 25 Sep 2020 22:08:56 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Yang Shen <shenyang39@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
         <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH RESEND 1/4] crypto: hisilicon/zip - fix the uncleared debug registers
-Date:   Fri, 25 Sep 2020 22:06:14 +0800
-Message-ID: <1601042777-26150-2-git-send-email-shenyang39@huawei.com>
+Subject: [PATCH RESEND 2/4] crypto: hisilicon/zip - fix zero length input in GZIP decompress
+Date:   Fri, 25 Sep 2020 22:06:15 +0800
+Message-ID: <1601042777-26150-3-git-send-email-shenyang39@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1601042777-26150-1-git-send-email-shenyang39@huawei.com>
 References: <1601042777-26150-1-git-send-email-shenyang39@huawei.com>
@@ -35,58 +35,77 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Hao Fang <fanghao11@huawei.com>
+From: Zhou Wang <wangzhou1@hisilicon.com>
 
-ZIP debug registers aren't cleared even if its driver is removed,
-so add a clearing operation when remove driver.
+The zero length input will cause a call trace when use GZIP
+decompress like this:
+    Unable to handle kernel paging request at virtual address
+    ...
+    lr : get_gzip_head_size+0x7c/0xd0 [hisi_zip]
 
-Signed-off-by: Hao Fang <fanghao11@huawei.com>
+Judge the input length and return '-EINVAL' when input is invalid.
+
+Fixes: 62c455ca853e("crypto: hisilicon - add HiSilicon ZIP...")
+Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
 Signed-off-by: Yang Shen <shenyang39@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
 ---
- drivers/crypto/hisilicon/zip/zip_main.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/crypto/hisilicon/zip/zip_crypto.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index bd53ee7..f10bf99 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -91,6 +91,11 @@
- #define HZIP_SQE_MASK_OFFSET		64
- #define HZIP_SQE_MASK_LEN		48
- 
-+#define HZIP_CNT_CLR_CE_EN		BIT(0)
-+#define HZIP_RO_CNT_CLR_CE_EN		BIT(2)
-+#define HZIP_RD_CNT_CLR_CE_EN		(HZIP_CNT_CLR_CE_EN | \
-+					 HZIP_RO_CNT_CLR_CE_EN)
-+
- static const char hisi_zip_name[] = "hisi_zip";
- static struct dentry *hzip_debugfs_root;
- 
-@@ -604,10 +609,23 @@ static int hisi_zip_debugfs_init(struct hisi_qm *qm)
- 	return ret;
+diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
+index 38f92d4..48dc2fd 100644
+--- a/drivers/crypto/hisilicon/zip/zip_crypto.c
++++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
+@@ -454,7 +454,7 @@ static int add_comp_head(struct scatterlist *dst, u8 req_type)
+ 	return head_size;
  }
  
-+/* hisi_zip_debug_regs_clear() - clear the zip debug regs */
- static void hisi_zip_debug_regs_clear(struct hisi_qm *qm)
+-static size_t get_gzip_head_size(struct scatterlist *sgl)
++static size_t __maybe_unused get_gzip_head_size(struct scatterlist *sgl)
  {
-+	int i, j;
-+
-+	/* clear current_qm */
- 	writel(0x0, qm->io_base + QM_DFX_MB_CNT_VF);
- 	writel(0x0, qm->io_base + QM_DFX_DB_CNT_VF);
-+
-+	/* enable register read_clear bit */
-+	writel(HZIP_RD_CNT_CLR_CE_EN, qm->io_base + HZIP_SOFT_CTRL_CNT_CLR_CE);
-+	for (i = 0; i < ARRAY_SIZE(core_offsets); i++)
-+		for (j = 0; j < ARRAY_SIZE(hzip_dfx_regs); j++)
-+			readl(qm->io_base + core_offsets[i] +
-+			      hzip_dfx_regs[j].offset);
-+
-+	/* disable register read_clear bit */
- 	writel(0x0, qm->io_base + HZIP_SOFT_CTRL_CNT_CLR_CE);
+ 	char buf[HZIP_GZIP_HEAD_BUF];
  
- 	hisi_qm_debug_regs_clear(qm);
+@@ -463,13 +463,20 @@ static size_t get_gzip_head_size(struct scatterlist *sgl)
+ 	return __get_gzip_head_size(buf);
+ }
+ 
+-static size_t get_comp_head_size(struct scatterlist *src, u8 req_type)
++static int  get_comp_head_size(struct acomp_req *acomp_req, u8 req_type)
+ {
++	if (!acomp_req->src || !acomp_req->slen)
++		return -EINVAL;
++
++	if ((req_type == HZIP_ALG_TYPE_GZIP) &&
++	    (acomp_req->slen < GZIP_HEAD_FEXTRA_SHIFT))
++		return -EINVAL;
++
+ 	switch (req_type) {
+ 	case HZIP_ALG_TYPE_ZLIB:
+ 		return TO_HEAD_SIZE(HZIP_ALG_TYPE_ZLIB);
+ 	case HZIP_ALG_TYPE_GZIP:
+-		return get_gzip_head_size(src);
++		return TO_HEAD_SIZE(HZIP_ALG_TYPE_GZIP);
+ 	default:
+ 		pr_err("request type does not support!\n");
+ 		return -EINVAL;
+@@ -606,10 +613,14 @@ static int hisi_zip_adecompress(struct acomp_req *acomp_req)
+ 	struct hisi_zip_qp_ctx *qp_ctx = &ctx->qp_ctx[HZIP_QPC_DECOMP];
+ 	struct device *dev = &qp_ctx->qp->qm->pdev->dev;
+ 	struct hisi_zip_req *req;
+-	size_t head_size;
+-	int ret;
++	int head_size, ret;
+ 
+-	head_size = get_comp_head_size(acomp_req->src, qp_ctx->qp->req_type);
++	head_size = get_comp_head_size(acomp_req, qp_ctx->qp->req_type);
++	if (head_size < 0) {
++		dev_err_ratelimited(dev, "failed to get comp head size (%d)!\n",
++				    head_size);
++		return head_size;
++	}
+ 
+ 	req = hisi_zip_create_req(acomp_req, qp_ctx, head_size, false);
+ 	if (IS_ERR(req))
 -- 
 2.7.4
 
