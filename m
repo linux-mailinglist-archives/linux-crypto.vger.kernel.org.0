@@ -2,20 +2,20 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5291F27849F
-	for <lists+linux-crypto@lfdr.de>; Fri, 25 Sep 2020 12:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1764B278A42
+	for <lists+linux-crypto@lfdr.de>; Fri, 25 Sep 2020 16:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727937AbgIYKAD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 25 Sep 2020 06:00:03 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:57366 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727132AbgIYKAB (ORCPT
+        id S1728662AbgIYOBZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 25 Sep 2020 10:01:25 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:39918 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728365AbgIYOBZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:00:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0UA1nVR2_1601027991;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UA1nVR2_1601027991)
+        Fri, 25 Sep 2020 10:01:25 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0UA2lM0k_1601042472;
+Received: from 30.25.232.10(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UA2lM0k_1601042472)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 25 Sep 2020 17:59:53 +0800
+          Fri, 25 Sep 2020 22:01:14 +0800
 Subject: Re: [PATCH] lib/mpi: Fix unused variable warnings
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -52,8 +52,8 @@ References: <20200920162103.83197-1-tianjia.zhang@linux.alibaba.com>
  <20200920162103.83197-3-tianjia.zhang@linux.alibaba.com>
  <20200925081955.GV6381@gondor.apana.org.au>
 From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <c14352da-bc82-3401-755d-f618ca908f84@linux.alibaba.com>
-Date:   Fri, 25 Sep 2020 17:59:51 +0800
+Message-ID: <5dc5b1cf-389c-0f96-0b8c-50fa41d186a9@linux.alibaba.com>
+Date:   Fri, 25 Sep 2020 22:01:12 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
@@ -67,10 +67,10 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 Hi Herbert,
 
-Thanks for your patch, I will do a test later.
+Thanks for your patch, The changes look good.
+I have tested this patch, so,
 
-By the way, did you add special compilation parameters? I compile 
-normally without warnings in gcc 6.5 and 9.3.
+Tested-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
 Best regards,
 Tianjia
