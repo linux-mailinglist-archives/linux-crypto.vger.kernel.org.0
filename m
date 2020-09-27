@@ -2,163 +2,195 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E88279865
-	for <lists+linux-crypto@lfdr.de>; Sat, 26 Sep 2020 12:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70D027A3DA
+	for <lists+linux-crypto@lfdr.de>; Sun, 27 Sep 2020 22:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgIZK1D (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 26 Sep 2020 06:27:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgIZK1B (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 26 Sep 2020 06:27:01 -0400
-Received: from e123331-lin.nice.arm.com (lfbn-nic-1-188-42.w2-15.abo.wanadoo.fr [2.15.37.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A859238EE;
-        Sat, 26 Sep 2020 10:26:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601116020;
-        bh=/9CtSjxFQfSsddr24DMLGCw8WbTrj3ejM5RVjJ3ZANw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0iiZ9/JKV0Q40qTMk+STOwH8vSE2/AmyRQcRXMcF5veebm5WS1deY2cRr9M2CbU/y
-         20QJaNOYa4eDKHORE/FtwjlrKkexEB6AzyOfSdz1aCrNMap7k5+eVR7eUl08+EhsnM
-         7PzjNqDLA3PDvRVRfQ1mygImdW3fOVdSuel4hmO8=
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, Ard Biesheuvel <ardb@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        David Laight <David.Laight@aculab.com>
-Subject: [PATCH v2 2/2] crypto: xor - use ktime for template benchmarking
-Date:   Sat, 26 Sep 2020 12:26:51 +0200
-Message-Id: <20200926102651.31598-3-ardb@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200926102651.31598-1-ardb@kernel.org>
-References: <20200926102651.31598-1-ardb@kernel.org>
+        id S1727038AbgI0UC2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 27 Sep 2020 16:02:28 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:14476
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726697AbgI0UC2 (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 27 Sep 2020 16:02:28 -0400
+X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Sun, 27 Sep 2020 16:02:25 EDT
+X-IronPort-AV: E=Sophos;i="5.77,311,1596492000"; 
+   d="scan'208";a="360169486"
+Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES256-SHA256; 27 Sep 2020 21:55:11 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     linux-iio@vger.kernel.org
+Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Joe Perches <joe@perches.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kernel-janitors@vger.kernel.org,
+        David Lechner <david@lechnology.com>,
+        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-crypto@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-amlogic@lists.infradead.org, linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org
+Subject: [PATCH 00/18] use semicolons rather than commas to separate statements
+Date:   Sun, 27 Sep 2020 21:12:10 +0200
+Message-Id: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Currently, we use the jiffies counter as a time source, by staring at
-it until a HZ period elapses, and then staring at it again and perform
-as many XOR operations as we can at the same time until another HZ
-period elapses, so that we can calculate the throughput. This takes
-longer than necessary, and depends on HZ, which is undesirable, since
-HZ is system dependent.
+These patches replace commas by semicolons.  This was done using the
+Coccinelle semantic patch (http://coccinelle.lip6.fr/) shown below.
 
-Let's use the ktime interface instead, and use it to time a fixed
-number of XOR operations, which can be done much faster, and makes
-the time spent depend on the performance level of the system itself,
-which is much more reasonable. To ensure that we have the resolution
-we need even on systems with 32 kHz time sources, while not spending too
-much time in the benchmark on a slow CPU, let's switch to 3 attempts of
-800 repetitions each: that way, we will only misidentify algorithms that
-perform within 10% of each other as the fastest if they are faster than
-10 GB/s to begin with, which is not expected to occur on systems with
-such coarse clocks.
+This semantic patch ensures that commas inside for loop headers will not be
+transformed.  It also doesn't touch macro definitions.
 
-On ThunderX2, I get the following results:
+Coccinelle ensures that braces are added as needed when a single-statement
+branch turns into a multi-statement one.
 
-Before:
+This semantic patch has a few false positives, for variable delcarations
+such as:
 
-  [72625.956765] xor: measuring software checksum speed
-  [72625.993104]    8regs     : 10169.000 MB/sec
-  [72626.033099]    32regs    : 12050.000 MB/sec
-  [72626.073095]    arm64_neon: 11100.000 MB/sec
-  [72626.073097] xor: using function: 32regs (12050.000 MB/sec)
+LIST_HEAD(x), *y;
 
-After:
+The semantic patch could be improved to avoid these, but for the moment
+they have been removed manually (2 occurrences).
 
-  [72599.650216] xor: measuring software checksum speed
-  [72599.651188]    8regs           : 10491 MB/sec
-  [72599.652006]    32regs          : 12345 MB/sec
-  [72599.652871]    arm64_neon      : 11402 MB/sec
-  [72599.652873] xor: using function: 32regs (12345 MB/sec)
+// <smpl>
+@initialize:ocaml@
+@@
 
-Link: https://lore.kernel.org/linux-crypto/20200923182230.22715-3-ardb@kernel.org/
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+let infunction p =
+  (* avoid macros *)
+  (List.hd p).current_element <> "something_else"
+
+let combined p1 p2 =
+  (List.hd p1).line_end = (List.hd p2).line ||
+  (((List.hd p1).line_end < (List.hd p2).line) &&
+   ((List.hd p1).col < (List.hd p2).col))
+
+@bad@
+statement S;
+declaration d;
+position p;
+@@
+
+S@p
+d
+
+// special cases where newlines are needed (hope for no more than 5)
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@r@
+expression e1,e2;
+statement S;
+position p != bad.p;
+@@
+
+e1 ,@S@p e2;
+
+@@
+expression e1,e2;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && not(combined p1 p2) };
+statement S;
+position r.p;
+@@
+
+e1@p1
+-,@S@p
++;
+e2@p2
+... when any
+// </smpl>
+
 ---
- crypto/xor.c | 38 +++++++++-----------
- 1 file changed, 16 insertions(+), 22 deletions(-)
 
-diff --git a/crypto/xor.c b/crypto/xor.c
-index b42c38343733..a0badbc03577 100644
---- a/crypto/xor.c
-+++ b/crypto/xor.c
-@@ -76,49 +76,43 @@ static int __init register_xor_blocks(void)
- }
- #endif
- 
--#define BENCH_SIZE (PAGE_SIZE)
-+#define BENCH_SIZE	4096
-+#define REPS		800U
- 
- static void __init
- do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
- {
- 	int speed;
--	unsigned long now, j;
--	int i, count, max;
-+	int i, j, count;
-+	ktime_t min, start, diff;
- 
- 	tmpl->next = template_list;
- 	template_list = tmpl;
- 
- 	preempt_disable();
- 
--	/*
--	 * Count the number of XORs done during a whole jiffy, and use
--	 * this to calculate the speed of checksumming.  We use a 2-page
--	 * allocation to have guaranteed color L1-cache layout.
--	 */
--	max = 0;
--	for (i = 0; i < 5; i++) {
--		j = jiffies;
--		count = 0;
--		while ((now = jiffies) == j)
--			cpu_relax();
--		while (time_before(jiffies, now + 1)) {
-+	min = (ktime_t)S64_MAX;
-+	for (i = 0; i < 3; i++) {
-+		start = ktime_get();
-+		for (j = 0; j < REPS; j++) {
- 			mb(); /* prevent loop optimzation */
- 			tmpl->do_2(BENCH_SIZE, b1, b2);
- 			mb();
- 			count++;
- 			mb();
- 		}
--		if (count > max)
--			max = count;
-+		diff = ktime_sub(ktime_get(), start);
-+		if (diff < min)
-+			min = diff;
- 	}
- 
- 	preempt_enable();
- 
--	speed = max * (HZ * BENCH_SIZE / 1024);
-+	// bytes/ns == GB/s, multiply by 1000 to get MB/s [not MiB/s]
-+	speed = (1000 * REPS * BENCH_SIZE) / (unsigned int)ktime_to_ns(min);
- 	tmpl->speed = speed;
- 
--	printk(KERN_INFO "   %-10s: %5d.%03d MB/sec\n", tmpl->name,
--	       speed / 1000, speed % 1000);
-+	pr_info("   %-16s: %5d MB/sec\n", tmpl->name, speed);
- }
- 
- static int __init
-@@ -158,8 +152,8 @@ calibrate_xor_blocks(void)
- 		if (f->speed > fastest->speed)
- 			fastest = f;
- 
--	printk(KERN_INFO "xor: using function: %s (%d.%03d MB/sec)\n",
--	       fastest->name, fastest->speed / 1000, fastest->speed % 1000);
-+	pr_info("xor: using function: %s (%d MB/sec)\n",
-+	       fastest->name, fastest->speed);
- 
- #undef xor_speed
- 
--- 
-2.17.1
-
+ drivers/acpi/processor_idle.c               |    4 +++-
+ drivers/ata/pata_icside.c                   |   21 +++++++++++++--------
+ drivers/base/regmap/regmap-debugfs.c        |    2 +-
+ drivers/bcma/driver_pci_host.c              |    4 ++--
+ drivers/block/drbd/drbd_receiver.c          |    6 ++++--
+ drivers/char/agp/amd-k7-agp.c               |    2 +-
+ drivers/char/agp/nvidia-agp.c               |    2 +-
+ drivers/char/agp/sworks-agp.c               |    2 +-
+ drivers/char/hw_random/iproc-rng200.c       |    8 ++++----
+ drivers/char/hw_random/mxc-rnga.c           |    6 +++---
+ drivers/char/hw_random/stm32-rng.c          |    8 ++++----
+ drivers/char/ipmi/bt-bmc.c                  |    6 +++---
+ drivers/clk/meson/meson-aoclk.c             |    2 +-
+ drivers/clk/mvebu/ap-cpu-clk.c              |    2 +-
+ drivers/clk/uniphier/clk-uniphier-cpugear.c |    2 +-
+ drivers/clk/uniphier/clk-uniphier-mux.c     |    2 +-
+ drivers/clocksource/mps2-timer.c            |    6 +++---
+ drivers/clocksource/timer-armada-370-xp.c   |    8 ++++----
+ drivers/counter/ti-eqep.c                   |    2 +-
+ drivers/crypto/amcc/crypto4xx_alg.c         |    2 +-
+ drivers/crypto/atmel-tdes.c                 |    2 +-
+ drivers/crypto/hifn_795x.c                  |    4 ++--
+ drivers/crypto/talitos.c                    |    8 ++++----
+ 23 files changed, 60 insertions(+), 51 deletions(-)
