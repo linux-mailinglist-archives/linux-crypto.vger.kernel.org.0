@@ -2,90 +2,77 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6213A27B901
-	for <lists+linux-crypto@lfdr.de>; Tue, 29 Sep 2020 02:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B0627BB3D
+	for <lists+linux-crypto@lfdr.de>; Tue, 29 Sep 2020 05:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgI2Apa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 28 Sep 2020 20:45:30 -0400
-Received: from smtprelay0076.hostedemail.com ([216.40.44.76]:56402 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726698AbgI2Apa (ORCPT
+        id S1726924AbgI2DDU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 28 Sep 2020 23:03:20 -0400
+Received: from mail.police.gov.ua ([91.227.69.84]:39838 "EHLO
+        mail.police.gov.ua" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgI2DDU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 28 Sep 2020 20:45:30 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 780A9100E7B40;
-        Tue, 29 Sep 2020 00:45:28 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1263:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2561:2564:2682:2685:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3870:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4362:4605:5007:6248:6742:7903:9025:9040:10004:10400:10848:10967:11232:11658:11914:12043:12266:12295:12297:12438:12740:12760:12895:13069:13071:13161:13229:13311:13357:13439:14180:14181:14659:14721:14777:21060:21080:21365:21433:21451:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: self77_011759527186
-X-Filterd-Recvd-Size: 2723
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf03.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 29 Sep 2020 00:45:25 +0000 (UTC)
-Message-ID: <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com>
-Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
- statements
-From:   Joe Perches <joe@perches.com>
-To:     Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org,
-        Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     linux-stm32@st-md-mailman.stormreply.com,
-        linux-crypto@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
-        Valdis =?UTF-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
-        openipmi-developer@lists.sourceforge.net,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-wireless@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Date:   Mon, 28 Sep 2020 17:45:24 -0700
-In-Reply-To: <160132172369.55460.9237357219623604216.b4-ty@kernel.org>
-References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
-         <160132172369.55460.9237357219623604216.b4-ty@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 28 Sep 2020 23:03:20 -0400
+X-Greylist: delayed 8077 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Sep 2020 23:03:19 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.police.gov.ua (Postfix) with ESMTP id CC24F26450C;
+        Tue, 29 Sep 2020 02:47:39 +0300 (EEST)
+Received: from mail.police.gov.ua ([127.0.0.1])
+        by localhost (mail.police.gov.ua [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id kC4zuiNf8w05; Tue, 29 Sep 2020 02:47:39 +0300 (EEST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.police.gov.ua (Postfix) with ESMTP id EFDB1285B6F;
+        Tue, 29 Sep 2020 02:32:05 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.police.gov.ua EFDB1285B6F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=police.gov.ua;
+        s=1E8CAC48-C9E3-11E8-A516-E74BFA64F937; t=1601335926;
+        bh=SxLfIeAXWY+aCk408hS3Pmo0ITXSNnUEXGe2fhx60GM=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=JLAJOr6bzXdbHNAtFnr/qWADM3zLhR+HiYkLMYwDJcXPvi4rslyTAPLcoBvV20Lb5
+         O8xCVnBRTvIm3DfPngZvmM4YvS3TiEAZOfRqbFeKcEzNG5yWRdQ65wBIitLtkMZV4X
+         my9H5j/s1VyiG/H8yA1wZYO9fkZusBxgYfo/hIvK6piLVYuwtdrlHlY/rewVrwoeQ+
+         NrxHO6aWsKXL79O3ONyMI3vMh5Pxc/lDGb+RvI0VkvY1sJwzaXDpuBpoZZuvkTNBHV
+         X0jK09I8C2foVrSfCCcokTu0TTMIMWiCvXcbofhT30bxMR8DAovpVk+m6xg/26IKse
+         Jzpo+V4UYfMLg==
+X-Virus-Scanned: amavisd-new at police.gov.ua
+Received: from mail.police.gov.ua ([127.0.0.1])
+        by localhost (mail.police.gov.ua [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id dipFuNtYG0uO; Tue, 29 Sep 2020 02:32:05 +0300 (EEST)
+Received: from [192.168.43.16] (unknown [105.112.123.255])
+        by mail.police.gov.ua (Postfix) with ESMTPSA id 57A6F261C8B;
+        Tue, 29 Sep 2020 02:15:51 +0300 (EEST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?Seien_Sie_gl=C3=BCcklich_2=2E000=2E000=2C00_Euro?=
+To:     Recipients <dkz_3@police.gov.ua>
+From:   dkz_3@police.gov.ua
+Date:   Tue, 29 Sep 2020 00:15:42 +0100
+Reply-To: cwjacksonjunior@gmail.com
+Message-Id: <20200928231551.57A6F261C8B@mail.police.gov.ua>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, 2020-09-28 at 20:35 +0100, Mark Brown wrote:
-> On Sun, 27 Sep 2020 21:12:10 +0200, Julia Lawall wrote:
-> > These patches replace commas by semicolons.  This was done using the
-> > Coccinelle semantic patch (http://coccinelle.lip6.fr/) shown below.
-> > 
-> > This semantic patch ensures that commas inside for loop headers will not be
-> > transformed.  It also doesn't touch macro definitions.
-> > 
-> > Coccinelle ensures that braces are added as needed when a single-statement
-> > branch turns into a multi-statement one.
-> > 
-> > [...]
-> 
-> Applied to
-> 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
-> 
-> Thanks!
-> 
-> [1/1] regmap: debugfs: use semicolons rather than commas to separate statements
->       commit: 7f4a122d0b50b40c64d24a5cf7aafe26dd9487ee
+Herzlichen Gl=FCckwunsch, Sie sind ein gl=FCcklicher Gewinner von 2 Million=
+en Euro, da Ihre E-Mail zuf=E4llig ausgew=E4hlt wurde. Ihre E-Mail hat 2.00=
+0.000,00 gewonnen. Kontaktieren Sie die E-Mail unten f=FCr weitere Informat=
+ionen und Anspr=FCche.
 
-Hi Mark.
+cwjacksonjunior@gmail.com
 
-Rather than replying to the 0/n cover letter to a patch
-series, can you reply to each of the specific patches in
-the patch series you are applying?
 
-Otherwise, it's a bit difficult to figure out which patches
-you are applying.
 
-thanks
 
+
+___________________________________________________________________
+
+
+
+
+
+Congratulations, you are a lucky winner of 2 million euros as your email wa=
+s randomly selected. Your email won 2,000,000.00. contact the email below f=
+or more information and claim.
+
+cwjacksonjunior@gmail.com
