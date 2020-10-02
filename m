@@ -2,45 +2,40 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DBE28119C
-	for <lists+linux-crypto@lfdr.de>; Fri,  2 Oct 2020 13:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4154B28119F
+	for <lists+linux-crypto@lfdr.de>; Fri,  2 Oct 2020 13:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387787AbgJBLyI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 2 Oct 2020 07:54:08 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:49102 "EHLO fornost.hmeau.com"
+        id S1726010AbgJBLyN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 2 Oct 2020 07:54:13 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:49108 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726010AbgJBLyH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 2 Oct 2020 07:54:07 -0400
+        id S1725964AbgJBLyK (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 2 Oct 2020 07:54:10 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kOJdG-0005LJ-Mr; Fri, 02 Oct 2020 21:53:51 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Oct 2020 21:53:51 +1000
-Date:   Fri, 2 Oct 2020 21:53:51 +1000
+        id 1kOJdP-0005LL-JQ; Fri, 02 Oct 2020 21:54:00 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Oct 2020 21:54:00 +1000
+Date:   Fri, 2 Oct 2020 21:54:00 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     George Cherian <gcherian@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+To:     Pavel Machek <pavel@denx.de>
+Cc:     thomas.lendacky@amd.com, john.allen@amd.com, davem@davemloft.net,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] crypto: cpt - simplify the return expression of
- cav_register_algs
-Message-ID: <20201002115351.GA1205@gondor.apana.org.au>
-References: <20200921082428.2591094-1-liushixin2@huawei.com>
+Subject: Re: [PATCH] crypto: ccp - fix error handling
+Message-ID: <20201002115359.GB1205@gondor.apana.org.au>
+References: <20200921113435.GA20450@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921082428.2591094-1-liushixin2@huawei.com>
+In-Reply-To: <20200921113435.GA20450@duo.ucw.cz>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 04:24:28PM +0800, Liu Shixin wrote:
-> Simplify the return expression.
+On Mon, Sep 21, 2020 at 01:34:35PM +0200, Pavel Machek wrote:
+> Fix resource leak in error handling.
 > 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->  drivers/crypto/cavium/cpt/cptvf_algs.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
 
 Patch applied.  Thanks.
 -- 
