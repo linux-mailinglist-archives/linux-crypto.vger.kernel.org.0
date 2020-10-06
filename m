@@ -2,59 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D442850D2
-	for <lists+linux-crypto@lfdr.de>; Tue,  6 Oct 2020 19:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 746632851C2
+	for <lists+linux-crypto@lfdr.de>; Tue,  6 Oct 2020 20:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725947AbgJFRbU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 6 Oct 2020 13:31:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgJFRbT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:31:19 -0400
-Received: from localhost.localdomain (unknown [95.149.105.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F5A820674;
-        Tue,  6 Oct 2020 17:31:17 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        Jeremy Linton <jeremy.linton@arm.com>
-Cc:     Will Deacon <will@kernel.org>, davem@davemloft.net,
-        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
-        dave.martin@arm.com, ardb@kernel.org, linux-crypto@vger.kernel.org,
-        broonie@kernel.org
-Subject: Re: [PATCH v3] crypto: arm64: Use x16 with indirect branch to bti_c
-Date:   Tue,  6 Oct 2020 18:31:15 +0100
-Message-Id: <160200545502.18883.1273632867328038422.b4-ty@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201006163326.2780619-1-jeremy.linton@arm.com>
-References: <20201006163326.2780619-1-jeremy.linton@arm.com>
+        id S1726864AbgJFSl2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 6 Oct 2020 14:41:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgJFSl2 (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 6 Oct 2020 14:41:28 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42F4C0613D5
+        for <linux-crypto@vger.kernel.org>; Tue,  6 Oct 2020 11:41:27 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id dt13so9734649ejb.12
+        for <linux-crypto@vger.kernel.org>; Tue, 06 Oct 2020 11:41:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=C8GBCgQbcL72bHfuvAY+Zdl7rDxtS++c+cKqr1GrZYs=;
+        b=DjuJ/p24mQDEl/vbTYnWHBbmgNI9BSc0YKBExESfRytQ6pfYduML0M70l4DO6jipI2
+         zaX+9OrKjTaumELrIGwrKGRM2EXzuMkBrJnSRljYKOHVmkQ6E/cLd3MK4KvQ8oAnqJbm
+         UpxCAUlOuV7STQXFSNMIEdRxiwdEW36wXZThR9e6+j6jXEVPG/GcIb7QBPh9EiTy7Tu3
+         8GhHeU4/UQhsP5UREXADAaMQ2TaQeTtuRgxCYGYxoRhYGaWu0PwEr++ETasnNHi+M2k4
+         j3FoRYxuc5fexqm8AS9165nxSRcnGJezi56zpM2HsiZcbEp+jCVj0TvMO8izM05Sz+VK
+         Scrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=C8GBCgQbcL72bHfuvAY+Zdl7rDxtS++c+cKqr1GrZYs=;
+        b=RdSkBDgcpLK8bHQem35cJI6xIUE15cVB1qZk0oeq2wdbo0J6kqpsijmfL7sJFonOWZ
+         Z+kxroVerNYN9H1PyWZDkoIxWEKVcZu4VnkR6CK27Rs6njEchShuEUEcEHqpsWVdLKxL
+         +mAxAuPvuWMPutkyaGWvd16FUGthEOGP9VF3eG3JrOBnY8/NETl6oxICrs795AF0eW/U
+         HUlHeqlMWCKDduC5CCRoDsQpIJbgeqGcDIgaNqlDse/Okd98s5QS6WnLw9htWFNO0c+E
+         V3f2mZgiVDczpjBgLhGKLvfFt3Js5UZhCXDpEvtDElsakJxNmQBJQYHfuW+vveVPKZPy
+         oh3A==
+X-Gm-Message-State: AOAM530OuvRnUQ6Wz7TOthG8SPvGGKBOSY4N947Bo6x4iZnrpZuiE74K
+        LlTBvlugMnD0Fu/lD3VzjkwHxaqO+4eT11y7RFo=
+X-Google-Smtp-Source: ABdhPJwxxh6PGu/CiD43ih/QOxChqReyXCVpm+S5i7eBm5XszzzFBNZYupRSu3v7y35kr7/OJFx65zzal/TZxdtBGKc=
+X-Received: by 2002:a17:906:a51:: with SMTP id x17mr945268ejf.137.1602009686244;
+ Tue, 06 Oct 2020 11:41:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a17:906:bc55:0:0:0:0 with HTTP; Tue, 6 Oct 2020 11:41:24
+ -0700 (PDT)
+Reply-To: mfdp@tlen.pl
+From:   Mr Bill T Winters <missfavourkip@gmail.com>
+Date:   Tue, 6 Oct 2020 11:41:24 -0700
+Message-ID: <CAJc0UUnUJvey7LoCQ_rsx28BKJ4u1pYKARah2rS2M9ttjqHKkg@mail.gmail.com>
+Subject: Good Morning!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, 6 Oct 2020 11:33:26 -0500, Jeremy Linton wrote:
-> The AES code uses a 'br x7' as part of a function called by
-> a macro. That branch needs a bti_j as a target. This results
-> in a panic as seen below. Using x16 (or x17) with an indirect
-> branch keeps the target bti_c.
-> 
->   Bad mode in Synchronous Abort handler detected on CPU1, code 0x34000003 -- BTI
->   CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
->   pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
->   pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
->   lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
->   sp : ffff80001052b730
-> 
-> [...]
-
-Applied to arm64 (for-next/fixes), thanks!
-
-[1/1] crypto: arm64: Use x16 with indirect branch to bti_c
-      https://git.kernel.org/arm64/c/39e4716caa59
-
 -- 
-Catalin
+Greetings,
+I Mr Bill T, did you Receive the (FUND), that was paid to you?
+Let me know with your full name:...  immediately,
 
+Sincerely Yours, Respectfully,
+
+Mr Bill T Winters,
+Group Chief Executive Officer & Executive Director,
