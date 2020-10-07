@@ -2,67 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D57285D40
-	for <lists+linux-crypto@lfdr.de>; Wed,  7 Oct 2020 12:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57790285F6B
+	for <lists+linux-crypto@lfdr.de>; Wed,  7 Oct 2020 14:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728200AbgJGKti convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Wed, 7 Oct 2020 06:49:38 -0400
-Received: from mx.metalurgs.lv ([81.198.125.103]:55631 "EHLO mx.metalurgs.lv"
+        id S1728283AbgJGMo2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 7 Oct 2020 08:44:28 -0400
+Received: from mga09.intel.com ([134.134.136.24]:25063 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728192AbgJGKth (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:49:37 -0400
-Received: from mx.metalurgs.lv (localhost [127.0.0.1])
-        by mx.metalurgs.lv (Postfix) with ESMTP id C8AD8664A3
-        for <linux-crypto@vger.kernel.org>; Wed,  7 Oct 2020 13:49:21 +0300 (EEST)
-Received: from kas30pipe.localhost (localhost [127.0.0.1])
-        by mx.metalurgs.lv (Postfix) with ESMTP id 52887663D2
-        for <linux-crypto@vger.kernel.org>; Wed,  7 Oct 2020 13:49:21 +0300 (EEST)
-Received: by mx.metalurgs.lv (Postfix, from userid 1005)
-        id 61C3C66253; Wed,  7 Oct 2020 13:49:20 +0300 (EEST)
-Received: from [100.64.1.74] (unknown [190.15.125.55])
-        (Authenticated sender: admin)
-        by mx.metalurgs.lv (Postfix) with ESMTPA id 15A61638EA;
-        Wed,  7 Oct 2020 13:49:13 +0300 (EEST)
+        id S1728282AbgJGMo1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 7 Oct 2020 08:44:27 -0400
+IronPort-SDR: IKhMNDoevlS7FiiVSGZn/fvktilLZvktMB6wEhGsjMzSw++iJp4Sh+MazW1GXOz2Le1cuGYMDd
+ XxOCrDOdOyPQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="165055362"
+X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
+   d="scan'208";a="165055362"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 05:44:27 -0700
+IronPort-SDR: V1wi7HBPR+u0cZFmfVoK7f961FhCL0ysP/D6ft4jbtxrE7nwENGgww74WyrGC/JTMHBypQDd+F
+ BKJ3LjJIzfmQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
+   d="scan'208";a="517791614"
+Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314.ger.corp.intel.com) ([10.237.222.51])
+  by fmsmga006.fm.intel.com with ESMTP; 07 Oct 2020 05:44:25 -0700
+From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>
+Subject: [PATCH] crypto: qat - remove unused function
+Date:   Wed,  7 Oct 2020 13:43:45 +0100
+Message-Id: <20201007124345.39125-1-giovanni.cabiddu@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Description: Mail message body
-To:     Recipients <financialcapability6@gmail.com>
-From:   "Mr. Hashim Bin" <financialcapability6@gmail.com>
-Date:   Wed, 07 Oct 2020 07:49:04 -0300
-Reply-To: hmurrah39@gmail.com
-X-SpamTest-Envelope-From: financialcapability6@gmail.com
-X-SpamTest-Group-ID: 00000000
-X-SpamTest-Info: Profiles 71303 [Jan 01 2015]
-X-SpamTest-Info: {TO: forged address, i.e. recipient, investors, public, etc.}
-X-SpamTest-Info: {DATE: unreal year}
-X-SpamTest-Method: none
-X-SpamTest-Rate: 55
-X-SpamTest-Status: Not detected
-X-SpamTest-Status-Extended: not_detected
-X-SpamTest-Version: SMTP-Filter Version 3.0.0 [0284], KAS30/Release
-Message-ID: <20201007104920.61C3C66253@mx.metalurgs.lv>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: Low Rate Loan./mmm,
-X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
-         bases: 20140401 #7726142, check: 20201007 notchecked
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello Dear,
+Remove unused function qat_dh_get_params().
+This is to fix the following warning when compiling the driver with
+CC=clang W=1
 
+    drivers/crypto/qat/qat_common/qat_asym_algs.c:207:34: warning: unused function 'qat_dh_get_params' [-Wunused-function]
 
-We are Base Investment Company offering Corporate and Personal Loan at 3% Interest Rate for a duration of 10Years.
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+---
+ drivers/crypto/qat/qat_common/qat_asym_algs.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
+diff --git a/drivers/crypto/qat/qat_common/qat_asym_algs.c b/drivers/crypto/qat/qat_common/qat_asym_algs.c
+index 846569ec9066..f112078be868 100644
+--- a/drivers/crypto/qat/qat_common/qat_asym_algs.c
++++ b/drivers/crypto/qat/qat_common/qat_asym_algs.c
+@@ -204,11 +204,6 @@ static unsigned long qat_dh_fn_id(unsigned int len, bool g2)
+ 	};
+ }
+ 
+-static inline struct qat_dh_ctx *qat_dh_get_params(struct crypto_kpp *tfm)
+-{
+-	return kpp_tfm_ctx(tfm);
+-}
+-
+ static int qat_dh_compute_value(struct kpp_request *req)
+ {
+ 	struct crypto_kpp *tfm = crypto_kpp_reqtfm(req);
+-- 
+2.26.2
 
-We also pay 1% commission to brokers, who introduce project owners for finance or other opportunities.
-
-
-Please get back to me if you are interested for more
-
-details.
-
-
-Yours faithfully,
-
-Hashim Murrah
