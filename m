@@ -2,54 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499EB287DD0
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Oct 2020 23:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5111287F2C
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 Oct 2020 01:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729805AbgJHVS2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 8 Oct 2020 17:18:28 -0400
-Received: from [58.87.100.240] ([58.87.100.240]:45364 "EHLO
-        mail.hebei-kuixing.com" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1726766AbgJHVS1 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 8 Oct 2020 17:18:27 -0400
-X-Greylist: delayed 668 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Oct 2020 17:18:22 EDT
-Received: from localhost (unknown [127.0.0.1])
-        by mail.hebei-kuixing.com (Postfix) with ESMTP id AC1A460E64;
-        Thu,  8 Oct 2020 21:07:07 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at hebei-kuixing.com
-Received: from mail.hebei-kuixing.com ([127.0.0.1])
-        by localhost (mail.hebei-kuixing.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 2baZvT9QzwCy; Fri,  9 Oct 2020 05:07:06 +0800 (CST)
-Received: from User (unknown [185.248.12.71])
-        by mail.hebei-kuixing.com (Postfix) with ESMTPA id 0E9CB60E6A;
-        Fri,  9 Oct 2020 05:06:50 +0800 (CST)
-Reply-To: <kim.leang2011@yahoo.com>
-From:   " Kim Leang" <sales@hebei-kuixing.com>
-Subject: Greeting!
-Date:   Fri, 9 Oct 2020 00:07:05 +0300
+        id S1725979AbgJHXfp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 8 Oct 2020 19:35:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725909AbgJHXfp (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 8 Oct 2020 19:35:45 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C437622242;
+        Thu,  8 Oct 2020 23:35:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602200145;
+        bh=guZ/fnj2ggLXl4Yp8HJIheTTgfcwcLKJ0a/mAEZhKzk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CpQZjGH5CzbMztfF3MTCGeBC8Jb/z5ONyNYEHNE+WvWQwGNSL2UCtw8a8P6NMuKCf
+         Wn0RPKS/dSxDHpV7M8JTThgGAf1uAsnWIyg30GAGjEWCyruAWr/25FMp+BO0WrZGF6
+         5L0WMBTako/b3vxkmC8AXr2zDvWb5sK5Pp6iWkDk=
+Date:   Thu, 8 Oct 2020 16:35:43 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [v2 PATCH] crypto: sun4i-ss - Fix sparse endianness markers
+Message-ID: <20201008233543.GD1869638@gmail.com>
+References: <20200907062400.GA15841@gondor.apana.org.au>
+ <20200907160029.GC11894@Red>
+ <20200908050036.GA19817@gondor.apana.org.au>
+ <20200910122248.GA22506@Red>
+ <20200911041354.GA5275@gondor.apana.org.au>
+ <20200914104058.GA14265@Red>
+ <20200924030859.GA8223@gondor.apana.org.au>
+ <20200924132738.GA24386@Red>
+ <20201008055238.GA9813@gondor.apana.org.au>
+ <20201008063623.GA17802@Red>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20201008210707.AC1A460E64@mail.hebei-kuixing.com>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008063623.GA17802@Red>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Greeting!
+On Thu, Oct 08, 2020 at 08:36:23AM +0200, Corentin Labbe wrote:
+> On Thu, Oct 08, 2020 at 04:52:38PM +1100, Herbert Xu wrote:
+> > On Thu, Sep 24, 2020 at 03:27:38PM +0200, Corentin Labbe wrote:
+> > >
+> > > This is an example on next-20200923+BigEndian
+> > > alg: ahash: sha1 test failed (wrong result) on test vector \"random: psize=194 ksize=0\", cfg=\"random: inplace may_sleep use_finup src_divs=[98.25%@+1124, <flush>1.75%@+5] iv_offset=18\"
 
-I am contacting you to receive and share with me an abandoned fund ( $21,537.000.00 ) left in our bank by a deceased customer. I was going through the Internet search when I found your email address. My name is Mr. Kim Leang.
+This failure is in one of the randomly generated test cases.  If it doesn't
+reproduce reliably, you can set cryptomgr.fuzz_iterations=1000 on the kernel
+command line (increased from the default 100).
 
-I want to utilize this opportunity and make use of this fund if I should present your name to the bank to stand as his business associate/ trustee for the fund to be released to you via Visa card for easy withdrawals in any VISA ATM machine anywhere in the World.
+It is confusing that it says just "sha1".  This seems to be a quirk specific to
+how tcrypt calls alg_test().  It's probably really testing "sha1-sun4i-ss".
+I guess that testmgr.c should be using the actual cra_driver_name in the log
+messages, not the 'driver' string that was passed into alg_test().
 
-The bank will also give you international online transfer options. With these you can transfer the funds without any risk.
-
-Should you be interested in working with me in this project? Please reply back and let's benefit from this golden opportunity.You are my first contact. I shall wait a few days and if I do not hear from you, I shall look for another person.
-
-Thanks and have a nice day,
-Mr. Kim Leang.
+- Eric
