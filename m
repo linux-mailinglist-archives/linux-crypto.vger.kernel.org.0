@@ -2,50 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4462F28A280
-	for <lists+linux-crypto@lfdr.de>; Sun, 11 Oct 2020 00:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C8E288EEC
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 Oct 2020 18:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730406AbgJJW52 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Sat, 10 Oct 2020 18:57:28 -0400
-Received: from mail.picmaila.com ([183.91.23.69]:59956 "EHLO mail.picmaila.com"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728648AbgJJVfh (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 10 Oct 2020 17:35:37 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.picmaila.com (Postfix) with ESMTP id 9FB3F1E700E20;
-        Fri,  9 Oct 2020 22:02:02 +0700 (+07)
-Received: from mail.picmaila.com ([127.0.0.1])
-        by localhost (mail.picmaila.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id al69BezmjFfm; Fri,  9 Oct 2020 22:02:02 +0700 (+07)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.picmaila.com (Postfix) with ESMTP id 60A511E700BD2;
-        Fri,  9 Oct 2020 22:01:58 +0700 (+07)
-X-Virus-Scanned: amavisd-new at picmaila.com
-Received: from mail.picmaila.com ([127.0.0.1])
-        by localhost (mail.picmaila.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 8EoyM7ghtMqE; Fri,  9 Oct 2020 22:01:58 +0700 (+07)
-Received: from [156.96.56.34] (unknown [183.91.23.65])
-        by mail.picmaila.com (Postfix) with ESMTP id E03011E700753;
-        Fri,  9 Oct 2020 22:01:50 +0700 (+07)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S2389144AbgJIQbS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 9 Oct 2020 12:31:18 -0400
+Received: from sv747.xserver.jp ([120.136.14.48]:49304 "EHLO sv747.xserver.jp"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388719AbgJIQbS (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 9 Oct 2020 12:31:18 -0400
+X-Greylist: delayed 416 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Oct 2020 12:31:17 EDT
+Received: from virusgw4.xserver.jp (virusgw4.xserver.jp [120.136.14.122])
+        by sv747.xserver.jp (Postfix) with ESMTP id 5D2AD186418C18;
+        Sat, 10 Oct 2020 01:23:06 +0900 (JST)
+Received: from sv747.xserver.jp (120.136.14.48)
+ by virusgw4.xserver.jp (F-Secure/fsigk_smtp/521/virusgw4.xserver.jp);
+ Sat, 10 Oct 2020 01:23:04 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/521/virusgw4.xserver.jp)
+Received: from webmail.xserver.ne.jp (webmail.xserver.ne.jp [210.188.201.183])
+        by sv747.xserver.jp (Postfix) with ESMTPA id F410D1815BE000;
+        Sat, 10 Oct 2020 01:23:04 +0900 (JST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Re : Good Day
-To:     Recipients <noreply@gmail.com>
-From:   "Gareth Henry" <noreply@gmail.com>
-Date:   Fri, 09 Oct 2020 09:09:24 -0700
-Reply-To: garethhenry_11@yahoo.com
-Message-Id: <20201009150150.E03011E700753@mail.picmaila.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 09 Oct 2020 17:23:04 +0100
+From:   Christian Artwell <mail@ruslab.jp>
+To:     undisclosed-recipients:;
+Subject: Greetings to you,
+Organization: Christian Artwell
+Reply-To: christianartwell.lw@gmail.com
+Mail-Reply-To: christianartwell.lw@gmail.com
+Message-ID: <45cbf0283e44936e539dda36a126df3b@ruslab.jp>
+X-Sender: mail@ruslab.jp
+User-Agent: Roundcube Webmail/1.2.0
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-I Hope you are having a good day and the Covid-19 is not hitting hard on your side. I would like to know if you got my previous email with regards to the inheritance claims I informed you about earlier. Please let me know your interest. I will send further details if you wish to proceed.
+Attention;
 
+I am a CHRISTIAN ARTWELL  working with BANQUE POPULAIRE S.A TOGO as 
+their
+SECRETARIAT GENERAL FOREIGN REMITTANCE DEPT, an account officer to late
+Engineer George, May I inform you that an amount of $9.6 million also 
+(150
+kg of Gold) with our bank will be moved on your name as the beneficiary 
+I
+need your help to receive this money and you will get 50% of the money
+while I get 50%  You will receive this amount through a bank wire 
+transfer.
+for more details
 
+Your quick response will be highly appreciated.
 
-Best regards,
-
-Gareth A. Henry  
-Email : henrygareth310@gmail.com
+CHRISTIAN ARTWELL
