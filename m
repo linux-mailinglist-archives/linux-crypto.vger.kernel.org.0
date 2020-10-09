@@ -2,58 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C8E288EEC
-	for <lists+linux-crypto@lfdr.de>; Fri,  9 Oct 2020 18:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BA0288F2A
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 Oct 2020 18:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389144AbgJIQbS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 9 Oct 2020 12:31:18 -0400
-Received: from sv747.xserver.jp ([120.136.14.48]:49304 "EHLO sv747.xserver.jp"
+        id S2389847AbgJIQsc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 9 Oct 2020 12:48:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388719AbgJIQbS (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:31:18 -0400
-X-Greylist: delayed 416 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Oct 2020 12:31:17 EDT
-Received: from virusgw4.xserver.jp (virusgw4.xserver.jp [120.136.14.122])
-        by sv747.xserver.jp (Postfix) with ESMTP id 5D2AD186418C18;
-        Sat, 10 Oct 2020 01:23:06 +0900 (JST)
-Received: from sv747.xserver.jp (120.136.14.48)
- by virusgw4.xserver.jp (F-Secure/fsigk_smtp/521/virusgw4.xserver.jp);
- Sat, 10 Oct 2020 01:23:04 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/521/virusgw4.xserver.jp)
-Received: from webmail.xserver.ne.jp (webmail.xserver.ne.jp [210.188.201.183])
-        by sv747.xserver.jp (Postfix) with ESMTPA id F410D1815BE000;
-        Sat, 10 Oct 2020 01:23:04 +0900 (JST)
+        id S2389431AbgJIQsc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 9 Oct 2020 12:48:32 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C06C622280;
+        Fri,  9 Oct 2020 16:48:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602262112;
+        bh=PtT8tA9ZiM41SPRuLlgpDHN+xt6ZKJNv3y+QK6l6Fno=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=0OmeX3/9Cx9QrT1hMHHVqF4zZi8qflWwLxpF49/scvT8f0KQJqIX7pNPiZQ1AIeYq
+         zUs4tIDDq6Ozz0nrsXBSPlYhekdMsvb/see/QpxNuqdEZB5+8ntR+WJyquXm9GaWCA
+         q2hkfrtzut0JUvwiaFKpUXqKyR9BbOY1UgiOdV1Y=
+Date:   Fri, 9 Oct 2020 09:48:30 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     poojatrivedi@gmail.com, linux-crypto@vger.kernel.org,
+        mallesh537@gmail.com, josh.tway@stackpath.com,
+        netdev@vger.kernel.org
+Subject: Re: [RFC 1/1] net/tls(TLS_SW): Handle -ENOSPC error return from
+ device/AES-NI
+Message-ID: <20201009094830.57736e5d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201008053534.GA4685@gondor.apana.org.au>
+References: <20201007134746.069d7f2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201008053534.GA4685@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 09 Oct 2020 17:23:04 +0100
-From:   Christian Artwell <mail@ruslab.jp>
-To:     undisclosed-recipients:;
-Subject: Greetings to you,
-Organization: Christian Artwell
-Reply-To: christianartwell.lw@gmail.com
-Mail-Reply-To: christianartwell.lw@gmail.com
-Message-ID: <45cbf0283e44936e539dda36a126df3b@ruslab.jp>
-X-Sender: mail@ruslab.jp
-User-Agent: Roundcube Webmail/1.2.0
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Attention;
+On Thu, 8 Oct 2020 16:35:34 +1100 Herbert Xu wrote:
+> Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > Why would the driver return EBUSY from an async API? What's the caller
+> > supposed to do with that?  
+> 
+> The Crypto API offers two modes for callers to deal with congestion.
+> If the request can be safely dropped (e.g., IPsec) then ENOSPC will
+> be returned and should be dealt with accordingly.
+> 
+> If the request cannot be dropped then EBUSY is returned to indicate
+> congestion, and the caller must refrain from issuing any more
+> requests until the Crypto API signals that there is space for them.
+> 
+> The request flag CRYPTO_TFM_REQ_MAY_BACKLOG is used to indicate
+> which mode you wish to use.
 
-I am a CHRISTIAN ARTWELL  working with BANQUE POPULAIRE S.A TOGO as 
-their
-SECRETARIAT GENERAL FOREIGN REMITTANCE DEPT, an account officer to late
-Engineer George, May I inform you that an amount of $9.6 million also 
-(150
-kg of Gold) with our bank will be moved on your name as the beneficiary 
-I
-need your help to receive this money and you will get 50% of the money
-while I get 50%  You will receive this amount through a bank wire 
-transfer.
-for more details
-
-Your quick response will be highly appreciated.
-
-CHRISTIAN ARTWELL
+Are you saying that if we set CRYPTO_TFM_REQ_MAY_BACKLOG we should
+never see ENOSPC with a correctly functioning driver? Or do we need 
+to handle both errors, regardless?
