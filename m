@@ -2,132 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE9B289148
-	for <lists+linux-crypto@lfdr.de>; Fri,  9 Oct 2020 20:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E25E289DA8
+	for <lists+linux-crypto@lfdr.de>; Sat, 10 Oct 2020 04:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731999AbgJISj3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 9 Oct 2020 14:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728317AbgJISj3 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:39:29 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4D5C0613D2;
-        Fri,  9 Oct 2020 11:39:28 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id h7so11324677wre.4;
-        Fri, 09 Oct 2020 11:39:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Mi7YxYl7fncx/CgSsE/zWObG9IGsSmppAk4/JwJE34A=;
-        b=uU0VX1vhzcQbZZaCjfERaymnhJnHhYexxv9Sl+OgwKUWxNj8cnvuFQUM+QL9SuC7tT
-         J/W5tvL2ovuSbX/TJUVHT9qWttvI4vNajh3ucM1ibsG71niC2bZvqmveVb+E1g3Bd6zd
-         oK1CTUzK1vPX6metLey1s3IziBaGV2EypsBkD9w5cRnWPnLSEgNwLXj1Lcxf2e/LA+SF
-         Odaq0bmv4lMR3T6Vvxj3oBRdwOOYYcIa7Nn4wED/dThOwKHXHn54SU4VXoGD1ddpirsh
-         YUFyqvhnB/8A38MADlX31e0D8KsUW9y/9eINPPaa/UWkeFJv+2321cmnHtL9q/1PTYW6
-         GEwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Mi7YxYl7fncx/CgSsE/zWObG9IGsSmppAk4/JwJE34A=;
-        b=OyXLUSWcwgtPLOsMYfrQfBkFVTmOdm63K0WXeypo77JBKb2+gfVsW/Hhj4uXWr3zF7
-         otXRceTLaArJPCO06hx2b/+zV6fF3+fIJ3r4KblQI4Grhx2mtC1/+nl4Q3vEiTWrwtwm
-         hP5HMjQhsrSi/d26lR+67HTRQcXcwaHNMHIsqx3sUPtiIHhtSxWPvj8G53W9GxazIT+t
-         akPppyDUFMClsNmXvcAfp26vJLzxwSh/DJ+zZZMwSvhknG41MWUs6Lk9ge3sOtoE4+9v
-         kD4lAncovGPfAKWVCYha785xlSoHvgXlNmqegU5IYOgIq+UJR/qcVGsRWyEDhZtLk38T
-         J2Hw==
-X-Gm-Message-State: AOAM531RgATn2vuoB4L2Z8OuJWtSIypEzcLECMH6ELcrBzudD/4PfUFq
-        5YQdjWKQX9VockYni+Rix+WZAS00Vwc=
-X-Google-Smtp-Source: ABdhPJwKl+htZFdhKjXQFLoVpVIXG9karKGrnrIsyrzjTHaBar561ScrKxkhrdDU8GDHKFuWqhtzvA==
-X-Received: by 2002:a5d:468f:: with SMTP id u15mr2515121wrq.154.1602268767638;
-        Fri, 09 Oct 2020 11:39:27 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id d4sm13352875wrp.47.2020.10.09.11.39.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 11:39:27 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 20:39:25 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] crypto: sun8x-ce*: update entries to its
- documentation
-Message-ID: <20201009183925.GA25856@Red>
-References: <cover.1602245659.git.mchehab+huawei@kernel.org>
- <52bfc99d585587cf4eaeb0b2ba85f7da751f7f33.1602245659.git.mchehab+huawei@kernel.org>
+        id S1730373AbgJJCtU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 9 Oct 2020 22:49:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729606AbgJJBhr (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 9 Oct 2020 21:37:47 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5521321D43;
+        Sat, 10 Oct 2020 01:37:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602293866;
+        bh=TImQnumvAsuIvB6ZjobGjyHEklCSDfcLpLW8oqlYYgs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q6weeN3oR0Vv4iCvav77zhUmvie+4vb02KfZ7c5fQbXh4raMCGsITrc+Tjib6BJrz
+         b1Gd1TkuB5RNgqgGMiWpvkaUQmLjtBWH2eXeFSj8CLGMKGKxdZcmFR+8mcP3QOyLDS
+         3AH4gJROj8IDnaJnNNAbLRK8Ue3fbJDisi4sjggE=
+Date:   Fri, 9 Oct 2020 18:37:44 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Srujana Challa <schalla@marvell.com>
+Cc:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <schandran@marvell.com>,
+        <pathreya@marvell.com>
+Subject: Re: [PATCH v4,net-next,00/13] Add Support for Marvell OcteonTX2
+ Cryptographic
+Message-ID: <20201009183744.7504cfc6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201009153421.30562-1-schalla@marvell.com>
+References: <20201009153421.30562-1-schalla@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <52bfc99d585587cf4eaeb0b2ba85f7da751f7f33.1602245659.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 02:15:31PM +0200, Mauro Carvalho Chehab wrote:
-> The README file was converted to ReST format. Update the
-> references for it accordingly.
+On Fri, 9 Oct 2020 21:04:08 +0530 Srujana Challa wrote:
+> This series introduces crypto(CPT) drivers(PF & VF) for Marvell OcteonTX2
+> CN96XX Soc.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 2 +-
->  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 2 +-
->  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
+> OcteonTX2 SOC's resource virtualization unit (RVU) supports multiple
+> physical and virtual functions. Each of the PF/VF's functionality is
+> determined by what kind of resources are attached to it. When the CPT
+> block is attached to a VF, it can function as a security device.
+> The following document provides an overview of the hardware and
+> different drivers for the OcteonTX2 SOC: 
+> https://www.kernel.org/doc/Documentation/networking/device_drivers/marvell/octeontx2.rst
 > 
-> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-> index fa2f1b4fad7b..a94bf28f858a 100644
-> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-> @@ -7,7 +7,7 @@
->   *
->   * This file add support for MD5 and SHA1/SHA224/SHA256/SHA384/SHA512.
->   *
-> - * You could find the datasheet in Documentation/arm/sunxi/README
-> + * You could find the datasheet in Documentation/arm/sunxi.rst
->   */
->  #include <linux/dma-mapping.h>
->  #include <linux/pm_runtime.h>
-> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
-> index 78503006949c..cfde9ee4356b 100644
-> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
-> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
-> @@ -7,7 +7,7 @@
->   *
->   * This file handle the PRNG
->   *
-> - * You could find a link for the datasheet in Documentation/arm/sunxi/README
-> + * You could find a link for the datasheet in Documentation/arm/sunxi.rst
->   */
->  #include "sun8i-ce.h"
->  #include <linux/dma-mapping.h>
-> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
-> index 654328160d19..5b7af4498bd5 100644
-> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
-> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
-> @@ -7,7 +7,7 @@
->   *
->   * This file handle the TRNG
->   *
-> - * You could find a link for the datasheet in Documentation/arm/sunxi/README
-> + * You could find a link for the datasheet in Documentation/arm/sunxi.rst
->   */
->  #include "sun8i-ce.h"
->  #include <linux/dma-mapping.h>
-> -- 
-> 2.26.2
+> The CPT PF driver is responsible for:
+> - Forwarding messages to/from VFs from/to admin function(AF),
+> - Enabling/disabling VFs,
+> - Loading/unloading microcode (creation/deletion of engine groups).
 > 
+> The CPT VF driver works as a crypto offload device.
+> 
+> This patch series includes:
+> - Patch to update existing Marvell sources to support the CPT driver.
+> - Patch that adds mailbox messages to the admin function (AF) driver,
+> to configure CPT HW registers.
+> - CPT PF driver patches that include AF<=>PF<=>VF mailbox communication,
+> sriov_configure, and firmware load to the acceleration engines.
+> - CPT VF driver patches that include VF<=>PF mailbox communication and
+> crypto offload support through the kernel cryptographic API.
+> 
+> This series is tested with CRYPTO_EXTRA_TESTS enabled and
+> CRYPTO_DISABLE_TESTS disabled.
 
-Hello
+Please rebase and resend, this doesn't apply to net-next:
 
-Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+error: patch failed: drivers/net/ethernet/marvell/octeontx2/af/Makefile:8
+error: drivers/net/ethernet/marvell/octeontx2/af/Makefile: patch does not apply
+hint: Use 'git am --show-current-patch=diff' to see the failed patch
+Applying: octeontx2-pf: move lmt flush to include/linux/soc
+Applying: octeontx2-af: add mailbox interface for CPT
+Patch failed at 0002 octeontx2-af: add mailbox interface for CPT
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
 
-Thanks
