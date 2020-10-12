@@ -2,53 +2,50 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C5E28AC57
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Oct 2020 05:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2C128AC96
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Oct 2020 05:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgJLDHn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 11 Oct 2020 23:07:43 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:55510 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726950AbgJLDHn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 11 Oct 2020 23:07:43 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kRoBT-0008T6-9j; Mon, 12 Oct 2020 14:07:36 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 12 Oct 2020 14:07:35 +1100
-Date:   Mon, 12 Oct 2020 14:07:35 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     poojatrivedi@gmail.com, linux-crypto@vger.kernel.org,
-        mallesh537@gmail.com, josh.tway@stackpath.com,
-        netdev@vger.kernel.org
-Subject: Re: [RFC 1/1] net/tls(TLS_SW): Handle -ENOSPC error return from
- device/AES-NI
-Message-ID: <20201012030735.GA24873@gondor.apana.org.au>
-References: <20201007134746.069d7f2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201008053534.GA4685@gondor.apana.org.au>
- <20201009094830.57736e5d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1726640AbgJLDet convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Sun, 11 Oct 2020 23:34:49 -0400
+Received: from slot0.aoraiaoa.ga ([104.168.172.97]:54080 "EHLO
+        slot0.aoraiaoa.ga" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbgJLDet (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 11 Oct 2020 23:34:49 -0400
+X-Greylist: delayed 601 seconds by postgrey-1.27 at vger.kernel.org; Sun, 11 Oct 2020 23:34:49 EDT
+Reply-To: interdeltd004@aol.com
+From:   "vger.kernel.org Macus" <noreply@vger.kernel.org>
+To:     linux-crypto@vger.kernel.org
+Subject: INQUIRY
+Date:   11 Oct 2020 20:24:47 -0700
+Message-ID: <20201011202446.7ACA16AC0577B9B4@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009094830.57736e5d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 09:48:30AM -0700, Jakub Kicinski wrote:
->
-> Are you saying that if we set CRYPTO_TFM_REQ_MAY_BACKLOG we should
-> never see ENOSPC with a correctly functioning driver? Or do we need 
-> to handle both errors, regardless?
+Dear Sir/Madam
 
-Correct, you will never see ENOSPC if you request MAY_BACKLOG.
-However, you must then ensure that when you get EBUSY that you
-stop issuing new requests until the Crypto API signals through
-the callback that you can start again.
+Kindly provide us with your updated catalog and prices for our 
+preview.
+Please indicate your payment terms for our review.
+We will get back to you with order details
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Kindly get back to us as we have contacted you since a month ago, 
+Due to the outbreak of the Covid-19 suitation we are in need of 
+your product as we wish to establish a business relationship with 
+your humble firm.
+
+Regards
+
+Marcus Donald
+
+Executive Purchase
+intrade Ltd
+Campinas - SP - Brasil
+Fone: 55 18 3214 - 8762.
+E-Mail: interdeltd004@aol.com
+Web: http://www.intradeltd.com.br/contact.html
