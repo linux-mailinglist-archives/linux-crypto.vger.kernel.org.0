@@ -2,31 +2,31 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682D828C2A1
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Oct 2020 22:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C8A28C2A3
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Oct 2020 22:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730531AbgJLUjX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 12 Oct 2020 16:39:23 -0400
+        id S1730459AbgJLUj0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 12 Oct 2020 16:39:26 -0400
 Received: from mga09.intel.com ([134.134.136.24]:33953 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728412AbgJLUjW (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 12 Oct 2020 16:39:22 -0400
-IronPort-SDR: teJyB9BoabldI6rHLpEPIiQLo2NoSrE7pPqm/Fj4TrJ7mzoDKN+NMjijSd8JbaSP5RzWu519mA
- 08IICZzuia5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="165913103"
+        id S1730088AbgJLUjX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 12 Oct 2020 16:39:23 -0400
+IronPort-SDR: Xo2nFey3OAD0otS9lnf6QUr+2rjxMym2vQ4CUaZmd3qwUtOOJ0pWSZf4yXc7ZRFVFS62YTA3WP
+ 7RxYpv0p3SkQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="165913107"
 X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
-   d="scan'208";a="165913103"
+   d="scan'208";a="165913107"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 13:39:21 -0700
-IronPort-SDR: WQDuRONGVPFGnwb3WORjLM8EIqbEg93TJvES/ros78480lh28dbMvxl7eRJ2JpFcZ0RlD65pAf
- 61/+GHIPoLJg==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 13:39:23 -0700
+IronPort-SDR: ccNyrkBhKwtkdeNDSQr2HkCYryE33CNWWDPF0qIHAcldAfPEvTf6aZMqrjvSWWkG5K25Z+D77S
+ wJtYQ1tE4nXQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
-   d="scan'208";a="299328168"
+   d="scan'208";a="299328179"
 Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314.ger.corp.intel.com) ([10.237.222.51])
-  by fmsmga007.fm.intel.com with ESMTP; 12 Oct 2020 13:39:20 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 12 Oct 2020 13:39:21 -0700
 From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 To:     herbert@gondor.apana.org.au
 Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
@@ -34,9 +34,9 @@ Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
         Fiona Trahe <fiona.trahe@intel.com>,
         Wojciech Ziemba <wojciech.ziemba@intel.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 10/31] crypto: qat - change admin sequence
-Date:   Mon, 12 Oct 2020 21:38:26 +0100
-Message-Id: <20201012203847.340030-11-giovanni.cabiddu@intel.com>
+Subject: [PATCH 11/31] crypto: qat - use admin mask to send fw constants
+Date:   Mon, 12 Oct 2020 21:38:27 +0100
+Message-Id: <20201012203847.340030-12-giovanni.cabiddu@intel.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201012203847.340030-1-giovanni.cabiddu@intel.com>
 References: <20201012203847.340030-1-giovanni.cabiddu@intel.com>
@@ -46,42 +46,50 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Call adf_set_fw_constants() before adf_init_ae().
+Introduce admin AE mask. If this mask set, the fw constant message is
+sent only to engines that belong to that set, otherwise it is sent to
+all engines.
 
-This is required by QAT GEN4 devices, which expect that the
-FW_CONSTANTS_CFG command is sent to the admin AEs before the FW_INIT_AE
-command.
+This is in preparation for the qat_4xxx driver where the constant message
+should be sent only to admin engines.
 
-Swapping the order of the two commands (FW_INIT_AE and FW_CONSTANTS_CFG)
-is allowed in QAT GEN2 devices as the firmware can handle those in any
-order.
+In GEN2 devices (c62x, c3xxx and dh895xcc), the admin AE mask is 0 and
+the fw constants message is sent to all AEs.
 
 Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
 Reviewed-by: Wojciech Ziemba <wojciech.ziemba@intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/crypto/qat/qat_common/adf_admin.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/qat/qat_common/adf_accel_devices.h | 1 +
+ drivers/crypto/qat/qat_common/adf_admin.c         | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/crypto/qat/qat_common/adf_accel_devices.h b/drivers/crypto/qat/qat_common/adf_accel_devices.h
+index 5f57850c2e8d..779f62fde3bd 100644
+--- a/drivers/crypto/qat/qat_common/adf_accel_devices.h
++++ b/drivers/crypto/qat/qat_common/adf_accel_devices.h
+@@ -171,6 +171,7 @@ struct adf_hw_device_data {
+ 	u32 instance_id;
+ 	u16 accel_mask;
+ 	u16 ae_mask;
++	u32 admin_ae_mask;
+ 	u16 tx_rings_mask;
+ 	u8 tx_rx_gap;
+ 	u8 num_banks;
 diff --git a/drivers/crypto/qat/qat_common/adf_admin.c b/drivers/crypto/qat/qat_common/adf_admin.c
-index 13a5e8659682..6d94746d266f 100644
+index 6d94746d266f..dcd580d2afe2 100644
 --- a/drivers/crypto/qat/qat_common/adf_admin.c
 +++ b/drivers/crypto/qat/qat_common/adf_admin.c
-@@ -206,11 +206,11 @@ int adf_send_admin_init(struct adf_accel_dev *accel_dev)
- {
- 	int ret;
+@@ -182,7 +182,7 @@ static int adf_set_fw_constants(struct adf_accel_dev *accel_dev)
+ 	struct icp_qat_fw_init_admin_req req;
+ 	struct icp_qat_fw_init_admin_resp resp;
+ 	struct adf_hw_device_data *hw_device = accel_dev->hw_device;
+-	u32 ae_mask = hw_device->ae_mask;
++	u32 ae_mask = hw_device->admin_ae_mask ?: hw_device->ae_mask;
  
--	ret = adf_init_ae(accel_dev);
-+	ret = adf_set_fw_constants(accel_dev);
- 	if (ret)
- 		return ret;
- 
--	return adf_set_fw_constants(accel_dev);
-+	return adf_init_ae(accel_dev);
- }
- EXPORT_SYMBOL_GPL(adf_send_admin_init);
- 
+ 	memset(&req, 0, sizeof(req));
+ 	memset(&resp, 0, sizeof(resp));
 -- 
 2.26.2
 
