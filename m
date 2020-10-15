@@ -2,253 +2,336 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1BFA28EB1C
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Oct 2020 04:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7766228EB90
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Oct 2020 05:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728900AbgJOCY2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 14 Oct 2020 22:24:28 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15292 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728072AbgJOCY1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 14 Oct 2020 22:24:27 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 1857598554734E10E3CB
-        for <linux-crypto@vger.kernel.org>; Thu, 15 Oct 2020 10:24:25 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 15 Oct 2020
- 10:24:21 +0800
-From:   Longfang Liu <liulongfang@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>
-Subject: [PATCH 2/2] crypto: hisilicon - fixes some coding style
-Date:   Thu, 15 Oct 2020 10:23:04 +0800
-Message-ID: <1602728584-47722-3-git-send-email-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1602728584-47722-1-git-send-email-liulongfang@huawei.com>
-References: <1602728584-47722-1-git-send-email-liulongfang@huawei.com>
+        id S1727020AbgJODcM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 14 Oct 2020 23:32:12 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:44046 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726869AbgJODcM (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 14 Oct 2020 23:32:12 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kStzd-0004qJ-An; Thu, 15 Oct 2020 14:31:54 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 15 Oct 2020 14:31:53 +1100
+Date:   Thu, 15 Oct 2020 14:31:53 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Keerthy <j-keerthy@ti.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Tero Kristo <t-kristo@ti.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [RESEND PATCH] crypto: sa2ul - Reduce stack usage
+Message-ID: <20201015033153.GA10972@gondor.apana.org.au>
+References: <202008161440.gqdm1lpp%lkp@intel.com>
+ <20200824131230.GA4813@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824131230.GA4813@gondor.apana.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Clean up extra blank lines
+Resending to linux-crypto.
+ 
+---8<---
+This patch reduces the stack usage in sa2ul:
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 17 ++++++-----------
- drivers/crypto/hisilicon/sec2/sec_main.c   | 30 ++++++++++++------------------
- 2 files changed, 18 insertions(+), 29 deletions(-)
+1. Move the exported sha state into sa_prepare_iopads so that it
+can occupy the same space as the k_pad buffer.
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index bb49342..87bc08a 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -101,6 +101,7 @@ static int sec_alloc_req_id(struct sec_req *req, struct sec_qp_ctx *qp_ctx)
+2. Use one buffer for ipad/opad in sa_prepare_iopads.
+
+3. Remove ipad/opad buffer from sa_set_sc_auth.
+
+4. Use async skcipher fallback and remove on-stack request from
+sa_cipher_run.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: d2c8ac187fc9 ("crypto: sa2ul - Add AEAD algorithm support")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
+index 5bc099052bd2..66629cad9531 100644
+--- a/drivers/crypto/sa2ul.c
++++ b/drivers/crypto/sa2ul.c
+@@ -9,8 +9,10 @@
+  *		Tero Kristo
+  */
+ #include <linux/clk.h>
++#include <linux/dma-mapping.h>
+ #include <linux/dmaengine.h>
+ #include <linux/dmapool.h>
++#include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
+@@ -356,42 +358,45 @@ static void sa_swiz_128(u8 *in, u16 len)
+ }
  
- 	req->qp_ctx = qp_ctx;
- 	qp_ctx->req_list[req_id] = req;
+ /* Prepare the ipad and opad from key as per SHA algorithm step 1*/
+-static void prepare_kiopad(u8 *k_ipad, u8 *k_opad, const u8 *key, u16 key_sz)
++static void prepare_kipad(u8 *k_ipad, const u8 *key, u16 key_sz)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < key_sz; i++) {
++	for (i = 0; i < key_sz; i++)
+ 		k_ipad[i] = key[i] ^ 0x36;
+-		k_opad[i] = key[i] ^ 0x5c;
+-	}
+ 
+ 	/* Instead of XOR with 0 */
+-	for (; i < SHA1_BLOCK_SIZE; i++) {
++	for (; i < SHA1_BLOCK_SIZE; i++)
+ 		k_ipad[i] = 0x36;
++}
 +
- 	return req_id;
- }
- 
-@@ -317,6 +318,7 @@ static int sec_alloc_pbuf_resource(struct device *dev, struct sec_alg_res *res)
- 				j * SEC_PBUF_PKG + pbuf_page_offset;
- 		}
- 	}
++static void prepare_kopad(u8 *k_opad, const u8 *key, u16 key_sz)
++{
++	int i;
 +
- 	return 0;
- }
- 
-@@ -345,12 +347,12 @@ static int sec_alg_resource_alloc(struct sec_ctx *ctx,
- 	}
- 
- 	return 0;
++	for (i = 0; i < key_sz; i++)
++		k_opad[i] = key[i] ^ 0x5c;
 +
- alloc_pbuf_fail:
- 	if (ctx->alg_type == SEC_AEAD)
- 		sec_free_mac_resource(dev, qp_ctx->res);
- alloc_fail:
- 	sec_free_civ_resource(dev, res);
--
- 	return ret;
++	/* Instead of XOR with 0 */
++	for (; i < SHA1_BLOCK_SIZE; i++)
+ 		k_opad[i] = 0x5c;
+-	}
  }
  
-@@ -419,7 +421,6 @@ static int sec_create_qp_ctx(struct hisi_qm *qm, struct sec_ctx *ctx,
- 	hisi_acc_free_sgl_pool(dev, qp_ctx->c_in_pool);
- err_destroy_idr:
- 	idr_destroy(&qp_ctx->req_idr);
--
- 	return ret;
+-static void sa_export_shash(struct shash_desc *hash, int block_size,
++static void sa_export_shash(void *state, struct shash_desc *hash,
+ 			    int digest_size, __be32 *out)
+ {
+-	union {
+-		struct sha1_state sha1;
+-		struct sha256_state sha256;
+-		struct sha512_state sha512;
+-	} sha;
+-	void *state;
++	struct sha1_state *sha1;
++	struct sha256_state *sha256;
+ 	u32 *result;
+-	int i;
+ 
+ 	switch (digest_size) {
+ 	case SHA1_DIGEST_SIZE:
+-		state = &sha.sha1;
+-		result = sha.sha1.state;
++		sha1 = state;
++		result = sha1->state;
+ 		break;
+ 	case SHA256_DIGEST_SIZE:
+-		state = &sha.sha256;
+-		result = sha.sha256.state;
++		sha256 = state;
++		result = sha256->state;
+ 		break;
+ 	default:
+ 		dev_err(sa_k3_dev, "%s: bad digest_size=%d\n", __func__,
+@@ -401,8 +406,7 @@ static void sa_export_shash(struct shash_desc *hash, int block_size,
+ 
+ 	crypto_shash_export(hash, state);
+ 
+-	for (i = 0; i < digest_size >> 2; i++)
+-		out[i] = cpu_to_be32(result[i]);
++	cpu_to_be32_array(out, result, digest_size / 4);
  }
  
-@@ -557,9 +558,9 @@ static int sec_skcipher_init(struct crypto_skcipher *tfm)
- 		goto err_cipher_init;
+ static void sa_prepare_iopads(struct algo_data *data, const u8 *key,
+@@ -411,24 +415,28 @@ static void sa_prepare_iopads(struct algo_data *data, const u8 *key,
+ 	SHASH_DESC_ON_STACK(shash, data->ctx->shash);
+ 	int block_size = crypto_shash_blocksize(data->ctx->shash);
+ 	int digest_size = crypto_shash_digestsize(data->ctx->shash);
+-	u8 k_ipad[SHA1_BLOCK_SIZE];
+-	u8 k_opad[SHA1_BLOCK_SIZE];
++	union {
++		struct sha1_state sha1;
++		struct sha256_state sha256;
++		u8 k_pad[SHA1_BLOCK_SIZE];
++	} sha;
  
- 	return 0;
+ 	shash->tfm = data->ctx->shash;
+ 
+-	prepare_kiopad(k_ipad, k_opad, key, key_sz);
+-
+-	memzero_explicit(ipad, block_size);
+-	memzero_explicit(opad, block_size);
++	prepare_kipad(sha.k_pad, key, key_sz);
+ 
+ 	crypto_shash_init(shash);
+-	crypto_shash_update(shash, k_ipad, block_size);
+-	sa_export_shash(shash, block_size, digest_size, ipad);
++	crypto_shash_update(shash, sha.k_pad, block_size);
++	sa_export_shash(&sha, shash, digest_size, ipad);
 +
- err_cipher_init:
- 	sec_ctx_base_uninit(ctx);
--
- 	return ret;
- }
++	prepare_kopad(sha.k_pad, key, key_sz);
  
-@@ -740,7 +741,6 @@ static void sec_cipher_pbuf_unmap(struct sec_ctx *ctx, struct sec_req *req,
+ 	crypto_shash_init(shash);
+-	crypto_shash_update(shash, k_opad, block_size);
++	crypto_shash_update(shash, sha.k_pad, block_size);
  
- 	if (unlikely(pbuf_length != copy_size))
- 		dev_err(dev, "copy pbuf data to dst error!\n");
--
- }
- 
- static int sec_cipher_map(struct sec_ctx *ctx, struct sec_req *req,
-@@ -913,9 +913,9 @@ static int sec_aead_setkey(struct crypto_aead *tfm, const u8 *key,
- 	}
- 
- 	return 0;
+-	sa_export_shash(shash, block_size, digest_size, opad);
++	sa_export_shash(&sha, shash, digest_size, opad);
 +
- bad_key:
- 	memzero_explicit(&keys, sizeof(struct crypto_authenc_keys));
--
- 	return -EINVAL;
++	memzero_explicit(&sha, sizeof(sha));
  }
  
-@@ -966,7 +966,6 @@ static int sec_request_transfer(struct sec_ctx *ctx, struct sec_req *req)
+ /* Derive the inverse key used in AES-CBC decryption operation */
+@@ -501,7 +509,8 @@ static int sa_set_sc_enc(struct algo_data *ad, const u8 *key, u16 key_sz,
+ static void sa_set_sc_auth(struct algo_data *ad, const u8 *key, u16 key_sz,
+ 			   u8 *sc_buf)
+ {
+-	__be32 ipad[64], opad[64];
++	__be32 *ipad = (void *)(sc_buf + 32);
++	__be32 *opad = (void *)(sc_buf + 64);
  
- unmap_req_buf:
- 	ctx->req_op->buf_unmap(ctx, req);
+ 	/* Set Authentication mode selector to hash processing */
+ 	sc_buf[0] = SA_HASH_PROCESSING;
+@@ -510,14 +519,9 @@ static void sa_set_sc_auth(struct algo_data *ad, const u8 *key, u16 key_sz,
+ 	sc_buf[1] |= ad->auth_ctrl;
+ 
+ 	/* Copy the keys or ipad/opad */
+-	if (ad->keyed_mac) {
++	if (ad->keyed_mac)
+ 		ad->prep_iopad(ad, key, key_sz, ipad, opad);
 -
- 	return ret;
+-		/* Copy ipad to AuthKey */
+-		memcpy(&sc_buf[32], ipad, ad->hash_size);
+-		/* Copy opad to Aux-1 */
+-		memcpy(&sc_buf[64], opad, ad->hash_size);
+-	} else {
++	else {
+ 		/* basic hash */
+ 		sc_buf[1] |= SA_BASIC_HASH;
+ 	}
+@@ -814,7 +818,7 @@ static void sa_cipher_cra_exit(struct crypto_skcipher *tfm)
+ 	sa_free_ctx_info(&ctx->enc, data);
+ 	sa_free_ctx_info(&ctx->dec, data);
+ 
+-	crypto_free_sync_skcipher(ctx->fallback.skcipher);
++	crypto_free_skcipher(ctx->fallback.skcipher);
  }
  
-@@ -1107,7 +1106,6 @@ static void sec_skcipher_callback(struct sec_ctx *ctx, struct sec_req *req,
- 		atomic64_inc(&ctx->sec->debug.dfx.recv_busy_cnt);
+ static int sa_cipher_cra_init(struct crypto_skcipher *tfm)
+@@ -822,6 +826,7 @@ static int sa_cipher_cra_init(struct crypto_skcipher *tfm)
+ 	struct sa_tfm_ctx *ctx = crypto_skcipher_ctx(tfm);
+ 	struct sa_crypto_data *data = dev_get_drvdata(sa_k3_dev);
+ 	const char *name = crypto_tfm_alg_name(&tfm->base);
++	struct crypto_skcipher *child;
+ 	int ret;
+ 
+ 	memzero_explicit(ctx, sizeof(*ctx));
+@@ -836,14 +841,17 @@ static int sa_cipher_cra_init(struct crypto_skcipher *tfm)
+ 		return ret;
  	}
  
--
- 	sk_req->base.complete(&sk_req->base, err);
- }
+-	ctx->fallback.skcipher =
+-		crypto_alloc_sync_skcipher(name, 0, CRYPTO_ALG_NEED_FALLBACK);
++	child = crypto_alloc_skcipher(name, 0, CRYPTO_ALG_NEED_FALLBACK);
  
-@@ -1279,7 +1277,6 @@ static int sec_process(struct sec_ctx *ctx, struct sec_req *req)
- 	sec_request_untransfer(ctx, req);
- err_uninit_req:
- 	sec_request_uninit(ctx, req);
--
- 	return ret;
- }
- 
-@@ -1349,7 +1346,6 @@ static int sec_aead_init(struct crypto_aead *tfm)
- 	sec_auth_uninit(ctx);
- err_auth_init:
- 	sec_ctx_base_uninit(ctx);
--
- 	return ret;
- }
- 
-@@ -1437,8 +1433,8 @@ static int sec_skcipher_param_check(struct sec_ctx *ctx, struct sec_req *sreq)
- 		}
- 		return 0;
+-	if (IS_ERR(ctx->fallback.skcipher)) {
++	if (IS_ERR(child)) {
+ 		dev_err(sa_k3_dev, "Error allocating fallback algo %s\n", name);
+-		return PTR_ERR(ctx->fallback.skcipher);
++		return PTR_ERR(child);
  	}
--
- 	dev_err(dev, "skcipher algorithm error!\n");
+ 
++	ctx->fallback.skcipher = child;
++	crypto_skcipher_set_reqsize(tfm, crypto_skcipher_reqsize(child) +
++					 sizeof(struct skcipher_request));
 +
- 	return -EINVAL;
- }
+ 	dev_dbg(sa_k3_dev, "%s(0x%p) sc-ids(0x%x(0x%pad), 0x%x(0x%pad))\n",
+ 		__func__, tfm, ctx->enc.sc_id, &ctx->enc.sc_phys,
+ 		ctx->dec.sc_id, &ctx->dec.sc_phys);
+@@ -854,6 +862,7 @@ static int sa_cipher_setkey(struct crypto_skcipher *tfm, const u8 *key,
+ 			    unsigned int keylen, struct algo_data *ad)
+ {
+ 	struct sa_tfm_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct crypto_skcipher *child = ctx->fallback.skcipher;
+ 	int cmdl_len;
+ 	struct sa_cmdl_cfg cfg;
+ 	int ret;
+@@ -869,12 +878,10 @@ static int sa_cipher_setkey(struct crypto_skcipher *tfm, const u8 *key,
+ 	cfg.enc_eng_id = ad->enc_eng.eng_id;
+ 	cfg.iv_size = crypto_skcipher_ivsize(tfm);
  
-@@ -1554,7 +1550,6 @@ static int sec_aead_param_check(struct sec_ctx *ctx, struct sec_req *sreq)
- 	if (unlikely(c_alg != SEC_CALG_AES)) {
- 		dev_err(SEC_CTX_DEV(ctx), "aead crypto alg error!\n");
- 		return -EINVAL;
--
- 	}
- 	if (sreq->c_req.encrypt)
- 		sreq->c_req.c_len = req->cryptlen;
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 5488963..2f52581 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -660,12 +660,10 @@ static int sec_debugfs_init(struct hisi_qm *qm)
+-	crypto_sync_skcipher_clear_flags(ctx->fallback.skcipher,
++	crypto_skcipher_clear_flags(child, CRYPTO_TFM_REQ_MASK);
++	crypto_skcipher_set_flags(child, tfm->base.crt_flags &
+ 					 CRYPTO_TFM_REQ_MASK);
+-	crypto_sync_skcipher_set_flags(ctx->fallback.skcipher,
+-				       tfm->base.crt_flags &
+-				       CRYPTO_TFM_REQ_MASK);
+-	ret = crypto_sync_skcipher_setkey(ctx->fallback.skcipher, key, keylen);
++	ret = crypto_skcipher_setkey(child, key, keylen);
  	if (ret)
- 		goto failed_to_create;
+ 		return ret;
  
+@@ -1234,7 +1241,6 @@ static int sa_cipher_run(struct skcipher_request *req, u8 *iv, int enc)
+ 	    crypto_skcipher_ctx(crypto_skcipher_reqtfm(req));
+ 	struct crypto_alg *alg = req->base.tfm->__crt_alg;
+ 	struct sa_req sa_req = { 0 };
+-	int ret;
+ 
+ 	if (!req->cryptlen)
+ 		return 0;
+@@ -1246,20 +1252,18 @@ static int sa_cipher_run(struct skcipher_request *req, u8 *iv, int enc)
+ 	if (req->cryptlen > SA_MAX_DATA_SZ ||
+ 	    (req->cryptlen >= SA_UNSAFE_DATA_SZ_MIN &&
+ 	     req->cryptlen <= SA_UNSAFE_DATA_SZ_MAX)) {
+-		SYNC_SKCIPHER_REQUEST_ON_STACK(subreq, ctx->fallback.skcipher);
++		struct skcipher_request *subreq = skcipher_request_ctx(req);
+ 
+-		skcipher_request_set_sync_tfm(subreq, ctx->fallback.skcipher);
++		skcipher_request_set_tfm(subreq, ctx->fallback.skcipher);
+ 		skcipher_request_set_callback(subreq, req->base.flags,
+-					      NULL, NULL);
++					      req->base.complete,
++					      req->base.data);
+ 		skcipher_request_set_crypt(subreq, req->src, req->dst,
+ 					   req->cryptlen, req->iv);
+ 		if (enc)
+-			ret = crypto_skcipher_encrypt(subreq);
++			return crypto_skcipher_encrypt(subreq);
+ 		else
+-			ret = crypto_skcipher_decrypt(subreq);
 -
- 	return 0;
- 
- failed_to_create:
- 	debugfs_remove_recursive(sec_debugfs_root);
--
- 	return ret;
- }
- 
-@@ -683,13 +681,13 @@ static void sec_log_hw_error(struct hisi_qm *qm, u32 err_sts)
- 	while (errs->msg) {
- 		if (errs->int_msk & err_sts) {
- 			dev_err(dev, "%s [error status=0x%x] found\n",
--				errs->msg, errs->int_msk);
-+					errs->msg, errs->int_msk);
- 
- 			if (SEC_CORE_INT_STATUS_M_ECC & errs->int_msk) {
- 				err_val = readl(qm->io_base +
- 						SEC_CORE_SRAM_ECC_ERR_INFO);
- 				dev_err(dev, "multi ecc sram num=0x%x\n",
--					SEC_ECC_NUM(err_val));
-+						SEC_ECC_NUM(err_val));
- 			}
- 		}
- 		errs++;
-@@ -724,13 +722,13 @@ static const struct hisi_qm_err_ini sec_err_ini = {
- 	.log_dev_hw_err		= sec_log_hw_error,
- 	.open_axi_master_ooo	= sec_open_axi_master_ooo,
- 	.err_info		= {
--		.ce			= QM_BASE_CE,
--		.nfe			= QM_BASE_NFE | QM_ACC_DO_TASK_TIMEOUT |
--					  QM_ACC_WB_NOT_READY_TIMEOUT,
--		.fe			= 0,
--		.ecc_2bits_mask		= SEC_CORE_INT_STATUS_M_ECC,
--		.msi_wr_port		= BIT(0),
--		.acpi_rst		= "SRST",
-+		.ce		= QM_BASE_CE,
-+		.nfe		= QM_BASE_NFE | QM_ACC_DO_TASK_TIMEOUT |
-+				  QM_ACC_WB_NOT_READY_TIMEOUT,
-+		.fe		= 0,
-+		.ecc_2bits_mask	= SEC_CORE_INT_STATUS_M_ECC,
-+		.msi_wr_port	= BIT(0),
-+		.acpi_rst	= "SRST",
+-		skcipher_request_zero(subreq);
+-		return ret;
++			return crypto_skcipher_decrypt(subreq);
  	}
- };
  
-@@ -899,17 +897,13 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	sa_req.size = req->cryptlen;
+diff --git a/drivers/crypto/sa2ul.h b/drivers/crypto/sa2ul.h
+index 7f7e3fe60d11..bb40df3876e5 100644
+--- a/drivers/crypto/sa2ul.h
++++ b/drivers/crypto/sa2ul.h
+@@ -12,10 +12,8 @@
+ #ifndef _K3_SA2UL_
+ #define _K3_SA2UL_
  
- err_alg_unregister:
- 	hisi_qm_alg_unregister(qm, &sec_devices);
--
- err_qm_stop:
- 	sec_debugfs_exit(qm);
- 	hisi_qm_stop(qm, QM_NORMAL);
--
- err_probe_uninit:
- 	sec_probe_uninit(qm);
--
- err_qm_uninit:
- 	sec_qm_uninit(qm);
--
- 	return ret;
- }
+-#include <linux/interrupt.h>
+-#include <linux/skbuff.h>
+-#include <linux/hw_random.h>
+ #include <crypto/aes.h>
++#include <crypto/sha.h>
  
-@@ -936,9 +930,9 @@ static void sec_remove(struct pci_dev *pdev)
+ #define SA_ENGINE_ENABLE_CONTROL	0x1000
  
- static const struct pci_error_handlers sec_err_handler = {
- 	.error_detected = hisi_qm_dev_err_detected,
--	.slot_reset =  hisi_qm_dev_slot_reset,
--	.reset_prepare		= hisi_qm_reset_prepare,
--	.reset_done		= hisi_qm_reset_done,
-+	.slot_reset	= hisi_qm_dev_slot_reset,
-+	.reset_prepare	= hisi_qm_reset_prepare,
-+	.reset_done	= hisi_qm_reset_done,
- };
- 
- static struct pci_driver sec_pci_driver = {
+@@ -311,7 +309,7 @@ struct sa_tfm_ctx {
+ 	struct crypto_shash	*shash;
+ 	/* for fallback */
+ 	union {
+-		struct crypto_sync_skcipher	*skcipher;
++		struct crypto_skcipher		*skcipher;
+ 		struct crypto_ahash		*ahash;
+ 		struct crypto_aead		*aead;
+ 	} fallback;
 -- 
-2.8.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
