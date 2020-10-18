@@ -2,110 +2,121 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB78291F6C
-	for <lists+linux-crypto@lfdr.de>; Sun, 18 Oct 2020 22:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0012D291972
+	for <lists+linux-crypto@lfdr.de>; Sun, 18 Oct 2020 21:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388665AbgJRUAA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 18 Oct 2020 16:00:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727698AbgJRTSd (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 18 Oct 2020 15:18:33 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727226AbgJRTSE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 18 Oct 2020 15:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726885AbgJRTSD (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 18 Oct 2020 15:18:03 -0400
+X-Greylist: delayed 264 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 18 Oct 2020 12:18:03 PDT
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA74C061755;
+        Sun, 18 Oct 2020 12:18:03 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 7A1D5128046A;
+        Sun, 18 Oct 2020 12:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1603048682;
+        bh=aTHhEGSm6DrUFNt/hKuOWL0f+WzaMvx/rc4IP5RJYRs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=WcP5INjnqihCMCJ+2ZkHdzEWBsqi3wavZOcf0NGlcoun37UNiQ4GoZk+2AoMrr8hd
+         1s2t7Y8IzQcDUGm581+QcIuy/enpzpZm6HswhyX4zoKl9l3S5fk96frr/LU4I9kVw8
+         r8s7AtR/5wOGbwEsua/QdQrVgo3j6VSqYIXYukhg=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ywWMwLsGscQI; Sun, 18 Oct 2020 12:18:02 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAD4B22274;
-        Sun, 18 Oct 2020 19:18:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603048712;
-        bh=jiy9vWTn50fD4MZ6fl/rHP8hti2qRxhKsMglCxxq8WI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y4onsN16Z46l3lw4BDB/12tsYp5Kq0kUfgPivGpRfpYRdHxw5FIjLnvCQkw4QdQVg
-         QkEvcS5L1EyQHS3ILIFwn1G6qaHbW7zA7VZkVFGroSRdwUpKamNE8i/hM1wHqe7wEP
-         b1j0UezWXHkxLjPrmBIqyn9wjI4AXgIjHgWToRAw=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Longfang Liu <liulongfang@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 020/111] crypto: hisilicon - fixed memory allocation error
-Date:   Sun, 18 Oct 2020 15:16:36 -0400
-Message-Id: <20201018191807.4052726-20-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201018191807.4052726-1-sashal@kernel.org>
-References: <20201018191807.4052726-1-sashal@kernel.org>
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 340C31280456;
+        Sun, 18 Oct 2020 12:18:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1603048682;
+        bh=aTHhEGSm6DrUFNt/hKuOWL0f+WzaMvx/rc4IP5RJYRs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=WcP5INjnqihCMCJ+2ZkHdzEWBsqi3wavZOcf0NGlcoun37UNiQ4GoZk+2AoMrr8hd
+         1s2t7Y8IzQcDUGm581+QcIuy/enpzpZm6HswhyX4zoKl9l3S5fk96frr/LU4I9kVw8
+         r8s7AtR/5wOGbwEsua/QdQrVgo3j6VSqYIXYukhg=
+Message-ID: <0a739bcd421a3154c2521b49779b287e6c0d08a2.camel@HansenPartnership.com>
+Subject: Re: [Ocfs2-devel] [RFC] treewide: cleanup unreachable breaks
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     trix@redhat.com, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, clang-built-linux@googlegroups.com,
+        linux-iio@vger.kernel.org, nouveau@lists.freedesktop.org,
+        storagedev@microchip.com, dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+        ath10k@lists.infradead.org, MPT-FusionLinux.pdl@broadcom.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        usb-storage@lists.one-eyed-alien.net,
+        linux-watchdog@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvdimm@lists.01.org, amd-gfx@lists.freedesktop.org,
+        linux-acpi@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        industrypack-devel@lists.sourceforge.net,
+        linux-pci@vger.kernel.org, spice-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-nfc@lists.01.org, linux-pm@vger.kernel.org,
+        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-gpio@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-amlogic@lists.infradead.org,
+        openipmi-developer@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-crypto@vger.kernel.org, patches@opensource.cirrus.com,
+        bpf@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        linux-power@fi.rohmeurope.com
+Date:   Sun, 18 Oct 2020 12:17:59 -0700
+In-Reply-To: <20201018191618.GO20115@casper.infradead.org>
+References: <20201017160928.12698-1-trix@redhat.com>
+         <20201018185943.GM20115@casper.infradead.org>
+         <45efa7780c79972eae9ca9bdeb9f7edbab4f3643.camel@HansenPartnership.com>
+         <20201018191618.GO20115@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Longfang Liu <liulongfang@huawei.com>
+On Sun, 2020-10-18 at 20:16 +0100, Matthew Wilcox wrote:
+> On Sun, Oct 18, 2020 at 12:13:35PM -0700, James Bottomley wrote:
+> > On Sun, 2020-10-18 at 19:59 +0100, Matthew Wilcox wrote:
+> > > On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
+> > > > clang has a number of useful, new warnings see
+> > > > https://urldefense.com/v3/__https://clang.llvm.org/docs/DiagnosticsReference.html__;!!GqivPVa7Brio!Krxz78O3RKcB9JBMVo_F98FupVhj_jxX60ddN6tKGEbv_cnooXc1nnBmchm-e_O9ieGnyQ$ 
+> > > 
+> > > Please get your IT department to remove that stupidity.  If you
+> > > can't, please send email from a non-Red Hat email address.
+> > 
+> > Actually, the problem is at Oracle's end somewhere in the ocfs2
+> > list ... if you could fix it, that would be great.  The usual real
+> > mailing lists didn't get this transformation
+> > 
+> > https://lore.kernel.org/bpf/20201017160928.12698-1-trix@redhat.com/
+> > 
+> > but the ocfs2 list archive did:
+> > 
+> > https://oss.oracle.com/pipermail/ocfs2-devel/2020-October/015330.html
+> > 
+> > I bet Oracle IT has put some spam filter on the list that mangles
+> > URLs this way.
+> 
+> *sigh*.  I'm sure there's a way.  I've raised it with someone who
+> should be able to fix it.
 
-[ Upstream commit 24efcec2919afa7d56f848c83a605b46c8042a53 ]
+As someone who works for IBM I can only say I feel your pain ...
 
-1. Fix the bug of 'mac' memory leak as allocating 'pbuf' failing.
-2. Fix the bug of 'qps' leak as allocating 'qp_ctx' failing.
+James
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 497969ae8b230..b9973d152a24a 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -342,11 +342,14 @@ static int sec_alg_resource_alloc(struct sec_ctx *ctx,
- 		ret = sec_alloc_pbuf_resource(dev, res);
- 		if (ret) {
- 			dev_err(dev, "fail to alloc pbuf dma resource!\n");
--			goto alloc_fail;
-+			goto alloc_pbuf_fail;
- 		}
- 	}
- 
- 	return 0;
-+alloc_pbuf_fail:
-+	if (ctx->alg_type == SEC_AEAD)
-+		sec_free_mac_resource(dev, qp_ctx->res);
- alloc_fail:
- 	sec_free_civ_resource(dev, res);
- 
-@@ -457,8 +460,10 @@ static int sec_ctx_base_init(struct sec_ctx *ctx)
- 	ctx->fake_req_limit = QM_Q_DEPTH >> 1;
- 	ctx->qp_ctx = kcalloc(sec->ctx_q_num, sizeof(struct sec_qp_ctx),
- 			      GFP_KERNEL);
--	if (!ctx->qp_ctx)
--		return -ENOMEM;
-+	if (!ctx->qp_ctx) {
-+		ret = -ENOMEM;
-+		goto err_destroy_qps;
-+	}
- 
- 	for (i = 0; i < sec->ctx_q_num; i++) {
- 		ret = sec_create_qp_ctx(&sec->qm, ctx, i, 0);
-@@ -467,12 +472,15 @@ static int sec_ctx_base_init(struct sec_ctx *ctx)
- 	}
- 
- 	return 0;
-+
- err_sec_release_qp_ctx:
- 	for (i = i - 1; i >= 0; i--)
- 		sec_release_qp_ctx(ctx, &ctx->qp_ctx[i]);
- 
--	sec_destroy_qps(ctx->qps, sec->ctx_q_num);
- 	kfree(ctx->qp_ctx);
-+err_destroy_qps:
-+	sec_destroy_qps(ctx->qps, sec->ctx_q_num);
-+
- 	return ret;
- }
- 
--- 
-2.25.1
 
