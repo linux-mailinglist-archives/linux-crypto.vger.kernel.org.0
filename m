@@ -2,86 +2,168 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C4F294406
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Oct 2020 22:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B502943FA
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Oct 2020 22:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438568AbgJTUkC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S2438559AbgJTUkC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Tue, 20 Oct 2020 16:40:02 -0400
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:41556 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438558AbgJTUkC (ORCPT
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:41472 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438557AbgJTUkC (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Tue, 20 Oct 2020 16:40:02 -0400
-Received: by mail-qv1-f67.google.com with SMTP id t20so1609568qvv.8;
-        Tue, 20 Oct 2020 13:40:00 -0700 (PDT)
+Received: by mail-qk1-f194.google.com with SMTP id b69so3100863qkg.8;
+        Tue, 20 Oct 2020 13:40:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fySJMPCABR3H70rEvYBVacbPjL+hPWAsa/DU0+SQkpE=;
-        b=ozsZoXq1ZCd04UVJoaS2V2/zwHh9f+FtcFN1RYXXIZO4+6pfT6IJnkgHXFOiVdYp5d
-         e8tEiFT/7rrRAH8TTjb7MqTGab92O0EOvEWy0gZgJ9pnpK32JIE8nhzJgsBcCq/OxwHi
-         pM3t1k2+X8s3uk3SW4FK/4e87VcBoyVTNNbk26mok3xzaKbxBJQ/Qq7jVBY1EpJXyCo9
-         lxSjrFOvaJyhnPUFJnbRHNdGXt7+ojOzjW0QVLSH/+IcYv0NJr8sX8gcNgyeMTeDDG3O
-         XydHe1RfBudnJUx+A/Yw1/twzlsQTi9WT3z42NKvmlijOOF0ilqjkXl1/8LkCJfh/LBq
-         Qjgg==
-X-Gm-Message-State: AOAM532Mm9A0LuNghgKzafCySolAdtcJMduNmdYC96OPeSPAJZu8FhzH
-        xD6HiGUlYMra4EDhzJlsroY=
-X-Google-Smtp-Source: ABdhPJyt4OYVx3p2QTs6voQLUquQTJV1czab5xLFmamkDBKLU9F04lhH6AIQIveNIE2AZx8bBceQAA==
-X-Received: by 2002:a05:6214:180d:: with SMTP id o13mr5310427qvw.34.1603226399526;
-        Tue, 20 Oct 2020 13:39:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oRMf8eK1KvMjfAflD4Pf4h9XYH++ind//dYyDMVAMdw=;
+        b=W6pPbOPEUGg0pRmE2oaHDqY3VKncBAopnMkqOSMAwa4xqUVtTNue08J069+J3vY6Xb
+         WM2l0pAjdGuXsKOZfHWvvBPw5KCrx1u1UNX8d+46PVGDsPbrV4jYIaO0QqMQOHpp4jKe
+         oPEB/Nz74vzTqocNseVkwxPSQNcio2fiSVxh/ImWwIduQQs0lIIJIugjFN1Eq0sAA/Wx
+         ez+/JwVyn2iXips0SgEBVj5qZRq2UeA9mxNG7vKVrk0hBWtPi0iZ84v22iioTb0Aiv4N
+         /m/jvS5m7nOLZTiwCuKR+DTlQJAEjcJJ0DeEi5ShST5iU3NpBj0j+i4YnJmW0eOLJ4sw
+         Z4JA==
+X-Gm-Message-State: AOAM533LaVLz41kBVkhnbXhT4AgT1hZ2gWrEh0nJfqBneF5eKlJeGfg8
+        iMlrd8+55h6ubaGAVTL8vFc=
+X-Google-Smtp-Source: ABdhPJz4tvqVqHLDMnlnleuvqD40m9l2fUpJCovASQvKnNfxaQXFPeJtjG24MU2UqPAT2ANEid6shA==
+X-Received: by 2002:a05:620a:986:: with SMTP id x6mr72820qkx.434.1603226400783;
+        Tue, 20 Oct 2020 13:40:00 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id m18sm1411165qkk.102.2020.10.20.13.39.58
+        by smtp.gmail.com with ESMTPSA id m18sm1411165qkk.102.2020.10.20.13.39.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 13:39:58 -0700 (PDT)
+        Tue, 20 Oct 2020 13:39:59 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
         "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
         David Laight <David.Laight@ACULAB.COM>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/6] crypto: lib/sha256 - cleanup/optimization
-Date:   Tue, 20 Oct 2020 16:39:51 -0400
-Message-Id: <20201020203957.3512851-1-nivedita@alum.mit.edu>
+Subject: [PATCH v2 1/6] crypto: Use memzero_explicit() for clearing state
+Date:   Tue, 20 Oct 2020 16:39:52 -0400
+Message-Id: <20201020203957.3512851-2-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201020203957.3512851-1-nivedita@alum.mit.edu>
+References: <20201020203957.3512851-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Patch 1 -- Use memzero_explicit() instead of structure assignment/plain
-memset() to clear sensitive state.
+Without the barrier_data() inside memzero_explicit(), the compiler may
+optimize away the state-clearing if it can tell that the state is not
+used afterwards. At least in lib/crypto/sha256.c:__sha256_final(), the
+function can get inlined into sha256(), in which case the memset is
+optimized away.
 
-Patch 2 -- I am not sure about this one: currently the temporary
-variables used in the generic sha256 implementation are cleared, but the
-clearing is optimized away due to lack of compiler barriers. I don't
-think it's really necessary to clear them, but I'm not a cryptanalyst,
-so I would like comment on whether it's indeed safe not to, or we should
-instead add the required barriers to force clearing.
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+---
+ include/crypto/sha1_base.h   | 3 ++-
+ include/crypto/sha256_base.h | 3 ++-
+ include/crypto/sha512_base.h | 3 ++-
+ include/crypto/sm3_base.h    | 3 ++-
+ lib/crypto/sha256.c          | 2 +-
+ 5 files changed, 9 insertions(+), 5 deletions(-)
 
-The last four patches are optimizations for generic sha256.
-
-v2:
-- Add patch to combine K and W arrays, suggested by David
-- Reformat SHA256_ROUND() macro a little
-
-Arvind Sankar (6):
-  crypto: Use memzero_explicit() for clearing state
-  crypto: lib/sha256 - Don't clear temporary variables
-  crypto: lib/sha256 - Clear W[] in sha256_update() instead of
-    sha256_transform()
-  crypto: lib/sha256 - Unroll SHA256 loop 8 times intead of 64
-  crypto: lib/sha256 - Unroll LOAD and BLEND loops
-  crypto: lib/sha - Combine round constants and message schedule
-
- include/crypto/sha1_base.h   |   3 +-
- include/crypto/sha256_base.h |   3 +-
- include/crypto/sha512_base.h |   3 +-
- include/crypto/sm3_base.h    |   3 +-
- lib/crypto/sha256.c          | 211 +++++++++++------------------------
- 5 files changed, 71 insertions(+), 152 deletions(-)
-
+diff --git a/include/crypto/sha1_base.h b/include/crypto/sha1_base.h
+index 20fd1f7468af..a5d6033efef7 100644
+--- a/include/crypto/sha1_base.h
++++ b/include/crypto/sha1_base.h
+@@ -12,6 +12,7 @@
+ #include <crypto/sha.h>
+ #include <linux/crypto.h>
+ #include <linux/module.h>
++#include <linux/string.h>
+ 
+ #include <asm/unaligned.h>
+ 
+@@ -101,7 +102,7 @@ static inline int sha1_base_finish(struct shash_desc *desc, u8 *out)
+ 	for (i = 0; i < SHA1_DIGEST_SIZE / sizeof(__be32); i++)
+ 		put_unaligned_be32(sctx->state[i], digest++);
+ 
+-	*sctx = (struct sha1_state){};
++	memzero_explicit(sctx, sizeof(*sctx));
+ 	return 0;
+ }
+ 
+diff --git a/include/crypto/sha256_base.h b/include/crypto/sha256_base.h
+index 6ded110783ae..93f9fd21cc06 100644
+--- a/include/crypto/sha256_base.h
++++ b/include/crypto/sha256_base.h
+@@ -12,6 +12,7 @@
+ #include <crypto/sha.h>
+ #include <linux/crypto.h>
+ #include <linux/module.h>
++#include <linux/string.h>
+ 
+ #include <asm/unaligned.h>
+ 
+@@ -105,7 +106,7 @@ static inline int sha256_base_finish(struct shash_desc *desc, u8 *out)
+ 	for (i = 0; digest_size > 0; i++, digest_size -= sizeof(__be32))
+ 		put_unaligned_be32(sctx->state[i], digest++);
+ 
+-	*sctx = (struct sha256_state){};
++	memzero_explicit(sctx, sizeof(*sctx));
+ 	return 0;
+ }
+ 
+diff --git a/include/crypto/sha512_base.h b/include/crypto/sha512_base.h
+index fb19c77494dc..93ab73baa38e 100644
+--- a/include/crypto/sha512_base.h
++++ b/include/crypto/sha512_base.h
+@@ -12,6 +12,7 @@
+ #include <crypto/sha.h>
+ #include <linux/crypto.h>
+ #include <linux/module.h>
++#include <linux/string.h>
+ 
+ #include <asm/unaligned.h>
+ 
+@@ -126,7 +127,7 @@ static inline int sha512_base_finish(struct shash_desc *desc, u8 *out)
+ 	for (i = 0; digest_size > 0; i++, digest_size -= sizeof(__be64))
+ 		put_unaligned_be64(sctx->state[i], digest++);
+ 
+-	*sctx = (struct sha512_state){};
++	memzero_explicit(sctx, sizeof(*sctx));
+ 	return 0;
+ }
+ 
+diff --git a/include/crypto/sm3_base.h b/include/crypto/sm3_base.h
+index 1cbf9aa1fe52..2f3a32ab97bb 100644
+--- a/include/crypto/sm3_base.h
++++ b/include/crypto/sm3_base.h
+@@ -13,6 +13,7 @@
+ #include <crypto/sm3.h>
+ #include <linux/crypto.h>
+ #include <linux/module.h>
++#include <linux/string.h>
+ #include <asm/unaligned.h>
+ 
+ typedef void (sm3_block_fn)(struct sm3_state *sst, u8 const *src, int blocks);
+@@ -104,7 +105,7 @@ static inline int sm3_base_finish(struct shash_desc *desc, u8 *out)
+ 	for (i = 0; i < SM3_DIGEST_SIZE / sizeof(__be32); i++)
+ 		put_unaligned_be32(sctx->state[i], digest++);
+ 
+-	*sctx = (struct sm3_state){};
++	memzero_explicit(sctx, sizeof(*sctx));
+ 	return 0;
+ }
+ 
+diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
+index 2321f6cb322f..d43bc39ab05e 100644
+--- a/lib/crypto/sha256.c
++++ b/lib/crypto/sha256.c
+@@ -265,7 +265,7 @@ static void __sha256_final(struct sha256_state *sctx, u8 *out, int digest_words)
+ 		put_unaligned_be32(sctx->state[i], &dst[i]);
+ 
+ 	/* Zeroize sensitive information. */
+-	memset(sctx, 0, sizeof(*sctx));
++	memzero_explicit(sctx, sizeof(*sctx));
+ }
+ 
+ void sha256_final(struct sha256_state *sctx, u8 *out)
 -- 
 2.26.2
 
