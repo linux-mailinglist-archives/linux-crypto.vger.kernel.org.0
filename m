@@ -2,149 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDB9293704
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Oct 2020 10:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 129C9293A15
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Oct 2020 13:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389506AbgJTItG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 20 Oct 2020 04:49:06 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:41530 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389490AbgJTItF (ORCPT
+        id S2392324AbgJTLdi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 20 Oct 2020 07:33:38 -0400
+Received: from sonic311-23.consmr.mail.ne1.yahoo.com ([66.163.188.204]:34585
+        "EHLO sonic311-23.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392316AbgJTLdi (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 20 Oct 2020 04:49:05 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09K8i7rI188082;
-        Tue, 20 Oct 2020 08:48:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : message-id :
- content-type : mime-version : subject : date : in-reply-to : cc : to :
- references; s=corp-2020-01-29;
- bh=UBSvDuZX45rcdCwz1yIzvCzCqfd2joSCizhea4x+Xao=;
- b=q8gn83IPPWdFm1HT3taLhd9DUF/VTUU+yXtsd8f9nD6wriupB19ul4FsqzWGdtIZMcde
- GW+G9oeRVHaGmJfZ8muagtVwvuWLE6AywXuhak+OXkSgdFP6EIR2H2OqKDUhR7yIW2Vz
- zpamQMFlTWRfwdWHBA7I0p8HYGgPlEg7NOi5pNpKeOCI5/Zqu82RI3DyvlSb3YeNhNvu
- 1nAbi2LxPOnr/RtC4QoVHdNGHfdCdQB+x9xvmqx+BqjtbEr8lrxt1aMjIali/bjhTn7W
- dzqjxrXdOv4FjsFo2kwRKNjQX5RScYby9/qqSUitUFXIKeMy4YBvXYVTZYkhax1TMfnU 0w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 347s8msmp0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 20 Oct 2020 08:48:12 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09K8is45150623;
-        Tue, 20 Oct 2020 08:48:12 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 348ahw07cp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 20 Oct 2020 08:48:12 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09K8mAEe159753;
-        Tue, 20 Oct 2020 08:48:10 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 348ahw07bh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Oct 2020 08:48:10 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09K8lvTX021447;
-        Tue, 20 Oct 2020 08:47:58 GMT
-Received: from [10.175.164.120] (/10.175.164.120)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 20 Oct 2020 01:47:57 -0700
-From:   John Haxby <john.haxby@oracle.com>
-Message-Id: <27A23102-A7F5-48C5-8972-48CE4C283C6E@oracle.com>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_9F9749E9-79EA-41AB-B516-003ECE07BEE3";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [Ocfs2-devel] [RFC] treewide: cleanup unreachable breaks
-Date:   Tue, 20 Oct 2020 09:47:45 +0100
-In-Reply-To: <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
-Cc:     Tom Rix <trix@redhat.com>, alsa-devel@alsa-project.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-iio@vger.kernel.org, nouveau@lists.freedesktop.org,
-        storagedev@microchip.com,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        virtualization@lists.linux-foundation.org,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        ath10k@lists.infradead.org, MPT-FusionLinux.pdl@broadcom.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        usb-storage@lists.one-eyed-alien.net,
-        linux-watchdog@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        linux-acpi@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        industrypack-devel@lists.sourceforge.net,
-        linux-pci@vger.kernel.org, spice-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-nfc@lists.01.org, linux-pm@vger.kernel.org,
-        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-gpio@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-amlogic@lists.infradead.org,
-        openipmi-developer@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-edac@vger.kernel.org, George Burgess <gbiv@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-usb@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com,
-        bpf <bpf@vger.kernel.org>, ocfs2-devel@oss.oracle.com,
-        linux-power@fi.rohmeurope.com
-To:     Nick Desaulniers <ndesaulniers@google.com>
-References: <20201017160928.12698-1-trix@redhat.com>
- <20201018054332.GB593954@kroah.com>
- <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9779 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
- phishscore=0 clxscore=1011 bulkscore=0 impostorscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010200059
+        Tue, 20 Oct 2020 07:33:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603193617; bh=YfdJmkgyAelV91TRnp6plxiix9tzbdDcoL6irU7Kg4w=; h=Date:From:Reply-To:Subject:References:From:Subject; b=nRmxdcUDQ6C+z2V0tbNcebtzFcJfTxOi9pjMtQ5XBFdPESaqM1SkDVT84aU7jl0XOHcvCaVKzVU5rUCJzjetCP1/A0ArICMh37fLazikzP2f6p5jS81iia72CSSokhLAfkrDa11/+4Id7mU8HFi1LlN4piipuISw4qhFYqdn05DVLyUrzjySFrWPu1FuBWvztWZZLgOVlYihBC/CsfNUZMd4tXkz3tcIiaLgG/zpknXD0RD0PxXQU5LB/jiavg6/Z8gDjmtsVaOTTjE+B62iWdZF942cAaA0RetzMsZp64F1CY5u4GsZNkS1CwqvWs4jAUoGUcExnNzv/MSZqa/XeQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603193617; bh=pp60LanEF6VuvbiIlVH3SP5+hqV1MDnoM/MmlNAivLF=; h=Date:From:Subject; b=fX6s7YSpYk6pAayoX7kNGO6lHJJC2Ju16QQqK0KEw0yMlqWrWO1LOhchtTDZO87cmf/Of8r4vKBRNqUMiYtC2o6IsXvZ1XgyxJSds3OqteCG63DgUenlbJjBPFg8OvU5v/cfrkfOysZ1YztWeU7HmKC0rREEYCmRZ6oSQrRrAqyFDSUC88pxP1iijM2eCNiKlLIcBO+3VqnT333zQit3ZTgR5fkVKK1p+LZhDgTDkWoqQIce/pB5vOQGfWd1zF+R1kmc8ON6MpFy+LIaYuuqtNPMPAnzk4XIfdI0SpTkf59ERYu7yHvQPPUTanjUXh3BARKPFgvylvTKxO1Y8V7K5w==
+X-YMail-OSG: 2_wY0eUVM1mKOgrmm2ZaVbNo.t6uQFvKTekNmyrzST4V2Tw0qvjwKe0zY9np1rL
+ 6J4qs3dh9jYcqCDApYfupAnbvxYoXSbSmzTd0h8VceWwQLSz5kmI3vQcuQBecFMbOJ7kylGAZPSn
+ un_88LpO4HvzqLXMg9f4uxe5OsaIG.EqfmQeJXlJ9nDBQTHMMjqJf.LdmoqdE4ZZ_Jbi1GcW62pj
+ XNIi0j_MNGZIPtbcF._7XqKQVRJZRzHp3aP.Dpy56_LCXd0uqSR8SkGN9Eg7WDvBK0.YnnRmxIMJ
+ hjU1joeXBTPiGZHeEoDDZxzbPpzY.KR2aLY7BP6GX.Uqlpt2VMHwbfrCuKcYp2xWy7Et1bi_fsss
+ 5F8sZCGOmMIYH.PG5St3e49Olz2SL9UckqOw4VhPcfM_jT.ikeuUFySKpjkeUyvFxrWnf_YpRqxY
+ 3MCQNyPtAOrHLtdh4YVe2Af1VAE4HAWAH7KFe92B7me3R37Ju4e5eQVPYzhicVr1Ign3K5kanNmG
+ c3Bh9gXnulIvBS0RVAnz0TQDptUFOxsmmXsCVxnIshuFy_jzNI4PKfq_VHJ4DxkFWAhpR7hpxUFf
+ Nm_eGJpPfMECKoABevEYvuSLjwPEAVo4KfvRZJg8ridmfQxiUDgZaSro5d9mCKKtZEQwZbnSYdZp
+ d3XpKJ_LcGKKESa49yec7T6YJr6jHIKmFNb2udUrtGt4mzPvSnxgS7ox6IBCMzS_zshSqLHOmzz6
+ sLzhJ4zUYn9Gr5Z0zi0LqHsUZ7GFVBj5CbadKQWjPWuACw5zqIjAEcfclNGeJgY5V9ecznU0FnrS
+ j6.RlOk2LYtMy7Q_IzFqiZoCK7oPhV7qo1FLPey4ljD04tD.6ZDi6WXD3DNV7wZeyFltBbymYl7B
+ 8gEKzCf_3XUlv8nm5MGPLkiGeIHleLD_57b_Bu8W_3ewOo8aPddph5_ScaUqTsXx3u0hEU_98KC3
+ 53NNsE9vGaAFGE09fhJtVUaDLlCixPyTyURKUr7QIZ.7cCg1IEJz09FF6Db4WtQuMNTUYiec35wm
+ hEI1LQV4d570MlsxQ63lxh_Q71YjvpcUjFci.aEFoUu5Iq5NgwRyqau9i5.W7Bp0MJQ5p02Rpujs
+ 1WHB68B7.1_5MF8aSvjEqO9.5VHLVtn0Q5eV50dBb__sqyUpvyp25WBMrYik8B0.jbmXqy7G6_ht
+ tkRpPAgcjbt1tXtRNSQOe7NvP3zhADjp_eVL1IMm2fcyf.wnUbRtfw626cBavd_bqmkNWMfHBDZJ
+ LDX042HWFLNZDOP0Q_sQHf8CjVyullmEqimT0GWQ4q8Bfm30Wp8L3xyiqqc637.Zl1I4ixImDeAf
+ SLf4uczA__Q53ECtkCTlLHkWD42JofLM8P5vd6sdHsYWJcaNyS9EmjgqYyc4omrho__wadAYwISn
+ lP3RoE8vqV13L9klCnMiOdaXOETbjLqJgiTHwHp1Ipus.
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Tue, 20 Oct 2020 11:33:37 +0000
+Date:   Tue, 20 Oct 2020 11:33:35 +0000 (UTC)
+From:   "Mr.Mohammed Emdad" <gerasimmelkumyan9@gmail.com>
+Reply-To: mohammedemdadmohammedemdad77@gmail.com
+Message-ID: <1222225440.1441422.1603193615526@mail.yahoo.com>
+Subject: URGENT
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1222225440.1441422.1603193615526.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16868 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
 
---Apple-Mail=_9F9749E9-79EA-41AB-B516-003ECE07BEE3
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+
+Dear Friend,
 
 
+My name is Mr.Mohammed Emdad, I am working with one of the prime bank in Bu=
+rkina Faso. Here in this bank there is existed dormant account for many yea=
+rs, which belong to one of our late foreign customer. The amount in this ac=
+count stands at $13,500,000.00 (Thirteen Million FiveHundred Thousand USA D=
+ollars).
 
-> On 19 Oct 2020, at 20:42, Nick Desaulniers <ndesaulniers@google.com> =
-wrote:
->=20
-> We probably should add all 3 to W=3D2 builds (wrapped in cc-option).
-> I've filed https://github.com/ClangBuiltLinux/linux/issues/1180 to
-> follow up on.
+I need a foreign account where the bank will transfer this fund. I know you=
+ would be surprised to read this message, especially from someone relativel=
+y unknown to you But do not worry yourself so much.This is a genuine, risk =
+free and legal business transaction. I am aware of the unsafe nature of the=
+ internet, and was compelled to use this medium due to the nature of this p=
+roject.
 
-It looks as though the URL mangling has been fixed.   If anyone sees =
-that specific URL mangled, please let me know.
+There is no risk involved; the transaction will be executed under a legitim=
+ate arrangement that will protect you from any breach of law. It is better =
+that we claim the money, than allowing the bank directors to take it, they =
+are rich already. I am not a greedy person, Let me know your mind on this a=
+nd please do treat this information highly confidential. I will review furt=
+her information=E2=80=99s / details to you as soon as i receive your positi=
+ve reply.
 
-jch
+If you are really sure of your integrity, trust worthy and confidentiality,=
+ kindly get back to me urgently.
 
---Apple-Mail=_9F9749E9-79EA-41AB-B516-003ECE07BEE3
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+Note you might receive this message in your inbox or spam or junk folder, d=
+epends on your web host or server network.
 
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
+Best regards,
 
-iHUEAREIAB0WIQT+pxvb11CFWUkNSOVFC7t+lC+jyAUCX46kMQAKCRBFC7t+lC+j
-yBKiAP90JVXdPzuAwtRGkROpw1eVCo7wCaZ5nOa8Oo0sN6gC9gD/S0eGTqQhmg+n
-sXPJxPYqQsg09qmS6k/HX+AP5Oz2AMo=
-=xx66
------END PGP SIGNATURE-----
+I wait for your positive response.
 
---Apple-Mail=_9F9749E9-79EA-41AB-B516-003ECE07BEE3--
+Mr. Mohammed Emdad
