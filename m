@@ -2,168 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43415294403
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Oct 2020 22:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDCC29449F
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Oct 2020 23:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438624AbgJTUkS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 20 Oct 2020 16:40:18 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:43952 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438558AbgJTUkI (ORCPT
+        id S2438722AbgJTVgF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Tue, 20 Oct 2020 17:36:05 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:44439 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2438720AbgJTVgF (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 20 Oct 2020 16:40:08 -0400
-Received: by mail-qk1-f194.google.com with SMTP id c2so3093684qkf.10;
-        Tue, 20 Oct 2020 13:40:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BCw7VQquYIPd9JPnAjoiF0ZfNAHI16hdt3AF4EdaI8s=;
-        b=IQjd+HED8RY9unoapsDgf7A7S33hMhYzTsKtudNxEsHuJ/hjWfNZXwj+unzJsqmOjn
-         /viROiPLpLJXs0uMfKZzP0w+IqcLQhfezRnWjYweJgHoVIQkdt7zrCQ7PAedfy4l2tmO
-         J8799aMFhtQ9FMc5A4MqGMBWop5/aVICetW231cTirC++A38JVhLW8MVaCBkai64FUO0
-         xn7VVrlDkl2+b8vJHGiPvJ19p8/RFRBn/5RbGnsMC+Ps139qGnReNJJamgM60ONYSp9O
-         ebYJ0jP6zAv7SqCGTF3E39RHskpjgJuVSsyPoFuxqbpAIAzPflwKJeG1QpP6IjGCFSIs
-         Jb6Q==
-X-Gm-Message-State: AOAM530leu4qt3awrX1TOD8rL5NkjpIIoMpaVXIKAL6EUI1JhLvfR21z
-        c1Q69jJcFn0/osHL94x8Log=
-X-Google-Smtp-Source: ABdhPJxMGCQ4K0SCS+bCPOy6kEHVB4i5UbRyQ4MWuaMTJynumL/mEmyGcFgJ6Tmfop097cyVGLGslQ==
-X-Received: by 2002:a05:620a:40f:: with SMTP id 15mr73478qkp.398.1603226406685;
-        Tue, 20 Oct 2020 13:40:06 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id m18sm1411165qkk.102.2020.10.20.13.40.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 13:40:05 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Tue, 20 Oct 2020 17:36:05 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-157-HDk49QzJPzOC6GM_K5-_uA-1; Tue, 20 Oct 2020 22:36:01 +0100
+X-MC-Unique: HDk49QzJPzOC6GM_K5-_uA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 20 Oct 2020 22:36:00 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 20 Oct 2020 22:36:00 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arvind Sankar' <nivedita@alum.mit.edu>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        David Laight <David.Laight@ACULAB.COM>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] crypto: lib/sha - Combine round constants and message schedule
-Date:   Tue, 20 Oct 2020 16:39:57 -0400
-Message-Id: <20201020203957.3512851-7-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201020203957.3512851-1-nivedita@alum.mit.edu>
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 6/6] crypto: lib/sha - Combine round constants and
+ message schedule
+Thread-Topic: [PATCH v2 6/6] crypto: lib/sha - Combine round constants and
+ message schedule
+Thread-Index: AQHWpyE0sF/IXICPKESRSNEpjVVK3amhAtQw
+Date:   Tue, 20 Oct 2020 21:36:00 +0000
+Message-ID: <d8c1750ffcef4236904919321b872cd2@AcuMS.aculab.com>
 References: <20201020203957.3512851-1-nivedita@alum.mit.edu>
+ <20201020203957.3512851-7-nivedita@alum.mit.edu>
+In-Reply-To: <20201020203957.3512851-7-nivedita@alum.mit.edu>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Putting the round constants and the message schedule arrays together in
-one structure saves one register, which can be a significant benefit on
-register-constrained architectures. On x86-32 (tested on Broadwell
-Xeon), this gives a 10% performance benefit.
+From: Arvind Sankar
+> Sent: 20 October 2020 21:40
+> 
+> Putting the round constants and the message schedule arrays together in
+> one structure saves one register, which can be a significant benefit on
+> register-constrained architectures. On x86-32 (tested on Broadwell
+> Xeon), this gives a 10% performance benefit.
 
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Suggested-by: David Laight <David.Laight@ACULAB.COM>
----
- lib/crypto/sha256.c | 49 ++++++++++++++++++++++++++-------------------
- 1 file changed, 28 insertions(+), 21 deletions(-)
+I'm actually stunned it makes that much difference.
+The object code must be truly horrid (before and after).
 
-diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
-index 3a8802d5f747..985cd0560d79 100644
---- a/lib/crypto/sha256.c
-+++ b/lib/crypto/sha256.c
-@@ -29,6 +29,11 @@ static const u32 SHA256_K[] = {
- 	0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
- };
- 
-+struct KW {
-+	u32 K[64];
-+	u32 W[64];
-+};
-+
- static inline u32 Ch(u32 x, u32 y, u32 z)
- {
- 	return z ^ (x & (y ^ z));
-@@ -56,39 +61,39 @@ static inline void BLEND_OP(int I, u32 *W)
- 
- #define SHA256_ROUND(i, a, b, c, d, e, f, g, h) do {		\
- 	u32 t1, t2;						\
--	t1 = h + e1(e) + Ch(e, f, g) + SHA256_K[i] + W[i];	\
-+	t1 = h + e1(e) + Ch(e, f, g) + KW->K[i] + KW->W[i];	\
- 	t2 = e0(a) + Maj(a, b, c);				\
- 	d += t1;						\
- 	h = t1 + t2;						\
- } while (0)
- 
--static void sha256_transform(u32 *state, const u8 *input, u32 *W)
-+static void sha256_transform(u32 *state, const u8 *input, struct KW *KW)
- {
- 	u32 a, b, c, d, e, f, g, h;
- 	int i;
- 
- 	/* load the input */
- 	for (i = 0; i < 16; i += 8) {
--		LOAD_OP(i + 0, W, input);
--		LOAD_OP(i + 1, W, input);
--		LOAD_OP(i + 2, W, input);
--		LOAD_OP(i + 3, W, input);
--		LOAD_OP(i + 4, W, input);
--		LOAD_OP(i + 5, W, input);
--		LOAD_OP(i + 6, W, input);
--		LOAD_OP(i + 7, W, input);
-+		LOAD_OP(i + 0, KW->W, input);
-+		LOAD_OP(i + 1, KW->W, input);
-+		LOAD_OP(i + 2, KW->W, input);
-+		LOAD_OP(i + 3, KW->W, input);
-+		LOAD_OP(i + 4, KW->W, input);
-+		LOAD_OP(i + 5, KW->W, input);
-+		LOAD_OP(i + 6, KW->W, input);
-+		LOAD_OP(i + 7, KW->W, input);
- 	}
- 
- 	/* now blend */
- 	for (i = 16; i < 64; i += 8) {
--		BLEND_OP(i + 0, W);
--		BLEND_OP(i + 1, W);
--		BLEND_OP(i + 2, W);
--		BLEND_OP(i + 3, W);
--		BLEND_OP(i + 4, W);
--		BLEND_OP(i + 5, W);
--		BLEND_OP(i + 6, W);
--		BLEND_OP(i + 7, W);
-+		BLEND_OP(i + 0, KW->W);
-+		BLEND_OP(i + 1, KW->W);
-+		BLEND_OP(i + 2, KW->W);
-+		BLEND_OP(i + 3, KW->W);
-+		BLEND_OP(i + 4, KW->W);
-+		BLEND_OP(i + 5, KW->W);
-+		BLEND_OP(i + 6, KW->W);
-+		BLEND_OP(i + 7, KW->W);
- 	}
- 
- 	/* load the state into our registers */
-@@ -115,7 +120,7 @@ void sha256_update(struct sha256_state *sctx, const u8 *data, unsigned int len)
- {
- 	unsigned int partial, done;
- 	const u8 *src;
--	u32 W[64];
-+	struct KW KW;
- 
- 	partial = sctx->count & 0x3f;
- 	sctx->count += len;
-@@ -129,13 +134,15 @@ void sha256_update(struct sha256_state *sctx, const u8 *data, unsigned int len)
- 			src = sctx->buf;
- 		}
- 
-+		memcpy(KW.K, SHA256_K, sizeof(KW.K));
-+
- 		do {
--			sha256_transform(sctx->state, src, W);
-+			sha256_transform(sctx->state, src, &KW);
- 			done += 64;
- 			src = data + done;
- 		} while (done + 63 < len);
- 
--		memzero_explicit(W, sizeof(W));
-+		memzero_explicit(KW.W, sizeof(KW.W));
- 
- 		partial = 0;
- 	}
--- 
-2.26.2
+There are probably other strange tweaks that give a similar
+improvement.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
