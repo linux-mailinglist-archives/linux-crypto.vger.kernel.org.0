@@ -2,47 +2,47 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83642943FC
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Oct 2020 22:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1B6294405
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Oct 2020 22:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438580AbgJTUkF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S2438583AbgJTUkF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Tue, 20 Oct 2020 16:40:05 -0400
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:43333 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438558AbgJTUkE (ORCPT
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:37877 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438579AbgJTUkE (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Tue, 20 Oct 2020 16:40:04 -0400
-Received: by mail-qv1-f67.google.com with SMTP id bl9so1607851qvb.10;
-        Tue, 20 Oct 2020 13:40:02 -0700 (PDT)
+Received: by mail-qv1-f66.google.com with SMTP id t6so1621570qvz.4;
+        Tue, 20 Oct 2020 13:40:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9+fYvZA6OGxCjC49pxceAMWASEc8BRotkYG4ADhk4ho=;
-        b=JWLvaS8wCjKWexcPc3BoI4sBdi39bUd8uh5pVd1l//M3aILYIbzthEMxWRZUZL4fXK
-         3/z4gbycqaVuCIlfDJLS5uWoBxQkx1BbqfXiMqoYxFdRskVJBLBaNQZMz+wLx+amwu8+
-         8im9MTThU+STMa6RtJJFtuoN9shhB1zpuSNyw5qT8rbzxwjj6NYkEea84/zsqCGO4GaU
-         wI+BmjLazwGahgYs89fUNXrTerz2+8qEmBYXJk8ct2zLqGjh9w7r1JyM4iMTgSbltbpx
-         LlkD870psX3MWg0hMjZz+soyytjjKnMLBnNknq0wz1ZOd7ygcWuEiXPi33ugdFQP1Yde
-         hsFQ==
-X-Gm-Message-State: AOAM533Q+f5DtHLodhN5x4lWNa+dfzegqrw9sPi5yIAthpG/Y7o6liRG
-        Nnbai84dpdHZav59ioyGWuA=
-X-Google-Smtp-Source: ABdhPJzfLl4jXSjc8Hggbj0SmPNpo+dqw+5034gdZpKS9UNyuPzF4ug4+ejto4Uo70CiFe9OknsVMQ==
-X-Received: by 2002:a05:6214:125:: with SMTP id w5mr5110433qvs.3.1603226401734;
-        Tue, 20 Oct 2020 13:40:01 -0700 (PDT)
+        bh=aC0csafA10XEKxluLw+TGr+3B4XctKQH20XSmRK1UrE=;
+        b=l+N9kGRbHb5p1FzQmgPSf84R+mww8Tb+Xfig/BDNCb7hSiqh8jJeIoWu0A9oCH9a3x
+         iWTmJ5cWMYDTUGArKprzRpZ7evoUPbpEtUcl3F3KvoJ6bFuVecHbj7ZaZ5Xx8LwkOdlQ
+         ogHVLrfyJQo6jFz7G/3XZK2SUPVlIydhc+vX0cmtL5nqefHTLf4BBgv/nH5GMnp8MQwA
+         eyC8m5z5nXYQWNMqH+G51SwcqMZQqUXRLaAR1um7XaPdAdCRFZ8LkZ7ARAxNuO1qFLkO
+         FNG9vIWzJZWLyS+IMpcYNNximhKUduXHcjSW9RQgFwYU/v+7K3DU9Uv0pUPJ3EUcxPaZ
+         AM0Q==
+X-Gm-Message-State: AOAM533Q5AO/3BrBHImD81pjvNjo2s0LXmy6cSeph81a+OpbVaUSZmxH
+        5f+Kw7KQNuUIMoWnC3nWlbM=
+X-Google-Smtp-Source: ABdhPJyOA39VOZwj2F+W2KoaKoywOL3Eaq+ZXvEAADKHxqRXeiimO49WrxbVPnzs+e+tjKdDhGXv+A==
+X-Received: by 2002:a0c:f102:: with SMTP id i2mr5264617qvl.29.1603226403277;
+        Tue, 20 Oct 2020 13:40:03 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id m18sm1411165qkk.102.2020.10.20.13.40.00
+        by smtp.gmail.com with ESMTPSA id m18sm1411165qkk.102.2020.10.20.13.40.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 13:40:01 -0700 (PDT)
+        Tue, 20 Oct 2020 13:40:02 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
         "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
         David Laight <David.Laight@ACULAB.COM>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/6] crypto: lib/sha256 - Don't clear temporary variables
-Date:   Tue, 20 Oct 2020 16:39:53 -0400
-Message-Id: <20201020203957.3512851-3-nivedita@alum.mit.edu>
+Subject: [PATCH v2 3/6] crypto: lib/sha256 - Clear W[] in sha256_update() instead of sha256_transform()
+Date:   Tue, 20 Oct 2020 16:39:54 -0400
+Message-Id: <20201020203957.3512851-4-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201020203957.3512851-1-nivedita@alum.mit.edu>
 References: <20201020203957.3512851-1-nivedita@alum.mit.edu>
@@ -52,32 +52,66 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The assignments to clear a through h and t1/t2 are optimized out by the
-compiler because they are unused after the assignments.
-
-These variables shouldn't be very sensitive: t1/t2 can be calculated
-from a through h, so they don't reveal any additional information.
-Knowing a through h is equivalent to knowing one 64-byte block's SHA256
-hash (with non-standard initial value) which, assuming SHA256 is secure,
-doesn't reveal any information about the input.
+The temporary W[] array is currently zeroed out once every call to
+sha256_transform(), i.e. once every 64 bytes of input data. Moving it to
+sha256_update() instead so that it is cleared only once per update can
+save about 2-3% of the total time taken to compute the digest, with a
+reasonable memset() implementation, and considerably more (~20%) with a
+bad one (eg the x86 purgatory currently uses a memset() coded in C).
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- lib/crypto/sha256.c | 1 -
- 1 file changed, 1 deletion(-)
+ lib/crypto/sha256.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
 diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
-index d43bc39ab05e..099cd11f83c1 100644
+index 099cd11f83c1..c6bfeacc5b81 100644
 --- a/lib/crypto/sha256.c
 +++ b/lib/crypto/sha256.c
-@@ -202,7 +202,6 @@ static void sha256_transform(u32 *state, const u8 *input)
- 	state[4] += e; state[5] += f; state[6] += g; state[7] += h;
- 
- 	/* clear any sensitive info... */
--	a = b = c = d = e = f = g = h = t1 = t2 = 0;
- 	memzero_explicit(W, 64 * sizeof(u32));
+@@ -43,10 +43,9 @@ static inline void BLEND_OP(int I, u32 *W)
+ 	W[I] = s1(W[I-2]) + W[I-7] + s0(W[I-15]) + W[I-16];
  }
  
+-static void sha256_transform(u32 *state, const u8 *input)
++static void sha256_transform(u32 *state, const u8 *input, u32 *W)
+ {
+ 	u32 a, b, c, d, e, f, g, h, t1, t2;
+-	u32 W[64];
+ 	int i;
+ 
+ 	/* load the input */
+@@ -200,15 +199,13 @@ static void sha256_transform(u32 *state, const u8 *input)
+ 
+ 	state[0] += a; state[1] += b; state[2] += c; state[3] += d;
+ 	state[4] += e; state[5] += f; state[6] += g; state[7] += h;
+-
+-	/* clear any sensitive info... */
+-	memzero_explicit(W, 64 * sizeof(u32));
+ }
+ 
+ void sha256_update(struct sha256_state *sctx, const u8 *data, unsigned int len)
+ {
+ 	unsigned int partial, done;
+ 	const u8 *src;
++	u32 W[64];
+ 
+ 	partial = sctx->count & 0x3f;
+ 	sctx->count += len;
+@@ -223,11 +220,13 @@ void sha256_update(struct sha256_state *sctx, const u8 *data, unsigned int len)
+ 		}
+ 
+ 		do {
+-			sha256_transform(sctx->state, src);
++			sha256_transform(sctx->state, src, W);
+ 			done += 64;
+ 			src = data + done;
+ 		} while (done + 63 < len);
+ 
++		memzero_explicit(W, sizeof(W));
++
+ 		partial = 0;
+ 	}
+ 	memcpy(sctx->buf + partial, src, len - done);
 -- 
 2.26.2
 
