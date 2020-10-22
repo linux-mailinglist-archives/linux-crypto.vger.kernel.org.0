@@ -2,68 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F9C296615
-	for <lists+linux-crypto@lfdr.de>; Thu, 22 Oct 2020 22:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36FF2967C6
+	for <lists+linux-crypto@lfdr.de>; Fri, 23 Oct 2020 01:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371831AbgJVUkZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 22 Oct 2020 16:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S371812AbgJVUkX (ORCPT
+        id S373645AbgJVX5h (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 22 Oct 2020 19:57:37 -0400
+Received: from host.saywowhosting.com ([208.75.148.9]:37262 "EHLO
+        host.saywowhosting.com" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S373639AbgJVX5h (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 22 Oct 2020 16:40:23 -0400
-X-Greylist: delayed 1383 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 22 Oct 2020 13:40:23 PDT
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87310C0613CE
-        for <linux-crypto@vger.kernel.org>; Thu, 22 Oct 2020 13:40:23 -0700 (PDT)
-Received: from martin by viti.kaiser.cx with local (Exim 4.89)
-        (envelope-from <martin@viti.kaiser.cx>)
-        id 1kVh0n-0003eP-EN; Thu, 22 Oct 2020 22:16:37 +0200
-Date:   Thu, 22 Oct 2020 22:16:37 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Nigel Christian <nigel.l.christian@gmail.com>
-Cc:     mpm@selenic.com, herbert@gondor.apana.org.au,
-        yuehaibing@huawei.com, hadar.gat@arm.com, arnd@arndb.de,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] hwrng: imx-rngc - platform_get_irq() already prints an
- error
-Message-ID: <20201022201637.w26kfecc553mqx6g@viti.kaiser.cx>
-References: <20201018222912.GA90387@fedora-thirty-three>
+        Thu, 22 Oct 2020 19:57:37 -0400
+X-Greylist: delayed 5015 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Oct 2020 19:57:36 EDT
+Received: from [127.0.0.1] (port=34538 helo=host.saywowhosting.com)
+        by host.saywowhosting.com with esmtpa (Exim 4.93)
+        (envelope-from <bmosthigh@gmail.com>)
+        id 1kVj9K-0007dh-8l; Thu, 22 Oct 2020 17:33:34 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201018222912.GA90387@fedora-thirty-three>
-User-Agent: NeoMutt/20170113 (1.7.2)
-Sender: Martin Kaiser <martin@viti.kaiser.cx>
+Date:   Thu, 22 Oct 2020 17:33:34 -0500
+From:   Manuel Franco <bmosthigh@gmail.com>
+To:     undisclosed-recipients:;
+Subject: Spende: 2 Millionen Euro
+Reply-To: bmosthigh@gmail.com
+Mail-Reply-To: bmosthigh@gmail.com
+Message-ID: <0df0be97c1b5bb1d0676639c01a96ef6@gmail.com>
+X-Sender: bmosthigh@gmail.com
+User-Agent: Roundcube Webmail/1.3.15
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - host.saywowhosting.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - gmail.com
+X-Get-Message-Sender-Via: host.saywowhosting.com: authenticated_id: info@cinderellajourneys.com
+X-Authenticated-Sender: host.saywowhosting.com: info@cinderellajourneys.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Thus wrote Nigel Christian (nigel.l.christian@gmail.com):
 
-> There is no need to call the dev_err() function directly to print
-> a custom message when handling an error from platform_get_irq()
-> as it prints the appropriate message in the event of a failure.
-> Change suggested via coccicheck report.
 
-> Signed-off-by: Nigel Christian <nigel.l.christian@gmail.com>
-> ---
->  drivers/char/hw_random/imx-rngc.c | 1 -
->  1 file changed, 1 deletion(-)
+-- 
+Mein Name ist Manuel Franco, ich bin der Gewinner des Powerball Mega
+Jackpot-Gewinners in Höhe von 768 Millionen US-Dollar aus New Jersey, 
+USA,
+und ich freue mich, Ihnen zu gratulieren, dass Sie zufällig unter den 5
+glücklichen Menschen ausgewählt wurden, denen ich jeweils 2 Millionen
+Euro (2.000.000,00 €) spende . Kontaktieren Sie meine E-Mail unten, um
+das Geld zu fordern.
 
-> diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
-> index 61c844baf26e..69f13ff1bbec 100644
-> --- a/drivers/char/hw_random/imx-rngc.c
-> +++ b/drivers/char/hw_random/imx-rngc.c
-> @@ -253,7 +253,6 @@ static int imx_rngc_probe(struct platform_device *pdev)
+E-Mail: bmosthigh@gmail.com
 
->  	irq = platform_get_irq(pdev, 0);
->  	if (irq <= 0) {
-> -		dev_err(&pdev->dev, "Couldn't get irq %d\n", irq);
->  		return irq;
->  	}
+____________________________________________________________________________________
 
-Looks good to me. This suppresses the error message if platform_get_irq
-returns -EPROBE_DEFER, which makes more sense than the current code.
+My name is Manuel Franco, I am the winner of $768 million Powerball mega
+jackpot winner from New Jersey, USA and I am pleased to congratulate you
+for being randomly picked among the 5 lucky people i am donating 2 
+million
+euros (€ 2,000,000.00) each to. Contact my email below to claim the
+money.
 
-Reviewed-by: Martin Kaiser <martin@kaiser.cx>
+Email: bmosthigh@gmail.com
