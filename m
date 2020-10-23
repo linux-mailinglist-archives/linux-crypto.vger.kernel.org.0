@@ -2,76 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BEE529793B
-	for <lists+linux-crypto@lfdr.de>; Sat, 24 Oct 2020 00:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BDD297949
+	for <lists+linux-crypto@lfdr.de>; Sat, 24 Oct 2020 00:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757043AbgJWWL3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 23 Oct 2020 18:11:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56996 "EHLO mail.kernel.org"
+        id S1757101AbgJWW2s (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 23 Oct 2020 18:28:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1757036AbgJWWL2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 23 Oct 2020 18:11:28 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1752863AbgJWW2r (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 23 Oct 2020 18:28:47 -0400
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AAA720724;
-        Fri, 23 Oct 2020 22:11:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EE3120BED;
+        Fri, 23 Oct 2020 22:28:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603491088;
-        bh=oYDdkAGeOEwqEQlJ3M1O6TGp5eWuctvbDWvQg3nFwJc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xxb/GAjvsPxTRs76hmFkdHimX18DvXWGGDbMDdK7f2OEgLtOzJAp9fOMx79mW5KDW
-         jrF+kplGKkYgHIb12ePKpXbDRPxWF5qKWHe+jO3D2Sf+yoFJccO/pd/9RPWaYrAw18
-         eywmcxbINrfrNIQN0OFWYyur+NOhGakeNv7rhJsE=
-Date:   Fri, 23 Oct 2020 15:11:26 -0700
+        s=default; t=1603492127;
+        bh=0JGkPldSTQ0mjX8nFULRC/vLmBKJl6lR8G1LPBTcZgw=;
+        h=From:To:Subject:Date:From;
+        b=tiGciqw2b7a05vZvzrnG4QAMHQhIVyNMVV1UOMVI/l0Lpdn/S5Fp4t0M1vk2Z7vkZ
+         nuNs60eYrRZkxnwR5dOn+L0JuH5KrKOEmfDUcRU4knOswydwPyeJwO32lsNKWR860m
+         reOQxtMD++rYTizeWbAzFokyeL3pAixotjTlc+AI=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] crypto: lib/sha256 - Don't clear temporary
- variables
-Message-ID: <20201023221126.GB180517@gmail.com>
-References: <20201023192203.400040-1-nivedita@alum.mit.edu>
- <20201023192203.400040-3-nivedita@alum.mit.edu>
+To:     linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH] crypto: x86/poly1305 - add back a needed assignment
+Date:   Fri, 23 Oct 2020 15:27:48 -0700
+Message-Id: <20201023222748.356207-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023192203.400040-3-nivedita@alum.mit.edu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 03:22:00PM -0400, Arvind Sankar wrote:
-> The assignments to clear a through h and t1/t2 are optimized out by the
-> compiler because they are unused after the assignments.
-> 
-> Clearing individual scalar variables is unlikely to be useful, as they
-> may have been assigned to registers, and even if stack spilling was
-> required, there may be compiler-generated temporaries that are
-> impossible to clear in any case.
-> 
-> So drop the clearing of a through h and t1/t2.
-> 
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> ---
->  lib/crypto/sha256.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
-> index d43bc39ab05e..099cd11f83c1 100644
-> --- a/lib/crypto/sha256.c
-> +++ b/lib/crypto/sha256.c
-> @@ -202,7 +202,6 @@ static void sha256_transform(u32 *state, const u8 *input)
->  	state[4] += e; state[5] += f; state[6] += g; state[7] += h;
->  
->  	/* clear any sensitive info... */
-> -	a = b = c = d = e = f = g = h = t1 = t2 = 0;
->  	memzero_explicit(W, 64 * sizeof(u32));
->  }
+From: Eric Biggers <ebiggers@google.com>
 
-Looks good,
+One of the assignments that was removed by commit 4a0c1de64bf9 ("crypto:
+x86/poly1305 - Remove assignments with no effect") is actually needed,
+since it affects the return value.
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+This fixes the following crypto self-test failure:
+
+    alg: shash: poly1305-simd test failed (wrong result) on test vector 2, cfg="init+update+final aligned buffer"
+
+Fixes: 4a0c1de64bf9 ("crypto: x86/poly1305 - Remove assignments with no effect")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+
+Note, this is a regression in mainline, so please include this in a pull
+request for 5.10.
+
+ arch/x86/crypto/poly1305_glue.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/crypto/poly1305_glue.c b/arch/x86/crypto/poly1305_glue.c
+index e508dbd91813..c44aba290fbb 100644
+--- a/arch/x86/crypto/poly1305_glue.c
++++ b/arch/x86/crypto/poly1305_glue.c
+@@ -158,6 +158,7 @@ static unsigned int crypto_poly1305_setdctxkey(struct poly1305_desc_ctx *dctx,
+ 			dctx->s[1] = get_unaligned_le32(&inp[4]);
+ 			dctx->s[2] = get_unaligned_le32(&inp[8]);
+ 			dctx->s[3] = get_unaligned_le32(&inp[12]);
++			acc += POLY1305_BLOCK_SIZE;
+ 			dctx->sset = true;
+ 		}
+ 	}
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
+
