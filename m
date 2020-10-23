@@ -2,103 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C61A2977A0
-	for <lists+linux-crypto@lfdr.de>; Fri, 23 Oct 2020 21:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B0F297864
+	for <lists+linux-crypto@lfdr.de>; Fri, 23 Oct 2020 22:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750842AbgJWTWQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 23 Oct 2020 15:22:16 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:42678 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751773AbgJWTWM (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 23 Oct 2020 15:22:12 -0400
-Received: by mail-qk1-f196.google.com with SMTP id i22so2236966qkn.9;
-        Fri, 23 Oct 2020 12:22:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rybpjupXWyCo0yLZ9NEgjQq2QiRjNeLKs2uYGAtk9sY=;
-        b=FgM9KcxHHLi5/dtjCDOYsj6aHKRRHthNr6/ZcEm2lOi7V5CpwSg9PwDQOq47T9eqB4
-         sL7T6+jmQE1zJx9zEw9H1UzojMpcuqU+XYEzEGMPwUjofkIekUBc00vHYw8sfFxwWK6n
-         lCdF4S2nv4McXnG0TXk6uRUU4vrHWMpUHyNNolyAzChEUG7DPbvwxhZ/IoapdOexiWPR
-         jGxJAGEIRGAZ1HJlBrocaVuc6S88AQ1SfZbMbvQuxnZ56J2LIau3wEWmyNf8UFOLVsQv
-         3ZmNufmVan7rf5v6KFX3iJmR4pJd0w8Y7fekuPr0dKC4Ofic1i51f3S3gji2Q0uOvDQk
-         YvNg==
-X-Gm-Message-State: AOAM53096bQy3/Fhw+I33eUnSChw2tDR6YdmmEOaAtfTUQEZaY8P0n9b
-        tt67q1hC/p9YDk1vgeuwZ3I=
-X-Google-Smtp-Source: ABdhPJyylrFMKbqm8pN8Uu40iZWqkKQdrfSuG++ijxAkjIyXpib1VPruhJJjwLX6FL/FXkezVYap9g==
-X-Received: by 2002:ae9:f507:: with SMTP id o7mr3658481qkg.420.1603480931081;
-        Fri, 23 Oct 2020 12:22:11 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id n199sm1398493qkn.77.2020.10.23.12.22.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 12:22:10 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        id S1751639AbgJWUpt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 23 Oct 2020 16:45:49 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:41342 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751068AbgJWUpt (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 23 Oct 2020 16:45:49 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kW3wO-0005cy-JB; Sat, 24 Oct 2020 07:45:37 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Sat, 24 Oct 2020 07:45:36 +1100
+Date:   Sat, 24 Oct 2020 07:45:36 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
         "David S. Miller" <davem@davemloft.net>,
         "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        David Laight <David.Laight@aculab.com>
-Cc:     linux-kernel@vger.kernel.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v3 5/5] crypto: lib/sha256 - Unroll LOAD and BLEND loops
-Date:   Fri, 23 Oct 2020 15:22:03 -0400
-Message-Id: <20201023192203.400040-6-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201023192203.400040-1-nivedita@alum.mit.edu>
-References: <20201023192203.400040-1-nivedita@alum.mit.edu>
+        David Laight <David.Laight@aculab.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] crypto: Use memzero_explicit() for clearing state
+Message-ID: <20201023204536.GB27708@gondor.apana.org.au>
+References: <20201020203957.3512851-1-nivedita@alum.mit.edu>
+ <20201020203957.3512851-2-nivedita@alum.mit.edu>
+ <20201022043633.GD857@sol.localdomain>
+ <20201023153927.GA217686@rani.riverdale.lan>
+ <20201023155604.GA3908702@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023155604.GA3908702@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Unrolling the LOAD and BLEND loops improves performance by ~8% on x86_64
-(tested on Broadwell Xeon) while not increasing code size too much.
+On Fri, Oct 23, 2020 at 08:56:04AM -0700, Eric Biggers wrote:
+>
+> When clearing memory because "it may be sensitive" rather than "it's needed for
+> the code to behave correctly", I think it's best to use memzero_explicit() to
+> make the intent clear, even if it seems that memset() is sufficient.  Also keep
+> in mind that support for compiling the kernel with LTO (link-time optimization)
+> is being worked on (and some people already do it), which results in more code
+> being optimized out.
 
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
----
- lib/crypto/sha256.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+The rule up until now has been that we only use memzero_explicit for
+stack variables.  At this point please don't convert anything else
+as it will cause too much churn.
 
-diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
-index e2e29d9b0ccd..cdef37c05972 100644
---- a/lib/crypto/sha256.c
-+++ b/lib/crypto/sha256.c
-@@ -76,12 +76,28 @@ static void sha256_transform(u32 *state, const u8 *input, u32 *W)
- 	int i;
- 
- 	/* load the input */
--	for (i = 0; i < 16; i++)
--		LOAD_OP(i, W, input);
-+	for (i = 0; i < 16; i += 8) {
-+		LOAD_OP(i + 0, W, input);
-+		LOAD_OP(i + 1, W, input);
-+		LOAD_OP(i + 2, W, input);
-+		LOAD_OP(i + 3, W, input);
-+		LOAD_OP(i + 4, W, input);
-+		LOAD_OP(i + 5, W, input);
-+		LOAD_OP(i + 6, W, input);
-+		LOAD_OP(i + 7, W, input);
-+	}
- 
- 	/* now blend */
--	for (i = 16; i < 64; i++)
--		BLEND_OP(i, W);
-+	for (i = 16; i < 64; i += 8) {
-+		BLEND_OP(i + 0, W);
-+		BLEND_OP(i + 1, W);
-+		BLEND_OP(i + 2, W);
-+		BLEND_OP(i + 3, W);
-+		BLEND_OP(i + 4, W);
-+		BLEND_OP(i + 5, W);
-+		BLEND_OP(i + 6, W);
-+		BLEND_OP(i + 7, W);
-+	}
- 
- 	/* load the state into our registers */
- 	a = state[0];  b = state[1];  c = state[2];  d = state[3];
+If LTO did arrive we should do a global conversion.
+
+Cheers,
 -- 
-2.26.2
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
