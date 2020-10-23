@@ -2,38 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF5429779B
-	for <lists+linux-crypto@lfdr.de>; Fri, 23 Oct 2020 21:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB5E29779D
+	for <lists+linux-crypto@lfdr.de>; Fri, 23 Oct 2020 21:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754141AbgJWTWI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 23 Oct 2020 15:22:08 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:44540 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750844AbgJWTWH (ORCPT
+        id S1751737AbgJWTWJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 23 Oct 2020 15:22:09 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:40468 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750751AbgJWTWJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 23 Oct 2020 15:22:07 -0400
-Received: by mail-qt1-f195.google.com with SMTP id m65so1815195qte.11;
-        Fri, 23 Oct 2020 12:22:06 -0700 (PDT)
+        Fri, 23 Oct 2020 15:22:09 -0400
+Received: by mail-qk1-f195.google.com with SMTP id h140so2237496qke.7;
+        Fri, 23 Oct 2020 12:22:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WaiSZM/zHLv+SM8aG+Xi49iKWwDUu00ZSVCNFd+ZJGs=;
-        b=Z/Ydp5l/AvCHjWW1VKrtutnIQLhW7PIL2RaC0pc1yU9u+uGymeYowGFBwtNhKGy7Rx
-         m4s3ZUjmUalVexVhsG6eWGiQli/IvhBVMsZxkVlfY0AtReqggVog3+B0dV/VD8pbFNuG
-         cD+LoE+DewMhcXeJBBpqqTC+AHE3UoUr/N/BRPSAaiHuPUsdkyxp3kZsEgvXiPAJL01Z
-         hBTPkwl8RflQLs+fcQFfXwV61ZH60kU+KIRkYsBQmTLymCpQLVkrVZcPs/OFgqT+YuDr
-         BlGhJDGI/kfjAEf7Ug6EX5IZxvNCa4aTIjo3A2FfPAswCAPZPTWPZ3eblm09uD6LHleu
-         GvWA==
-X-Gm-Message-State: AOAM5302P/1yuR9/PFMTPNMH1Z9+3h8ryO/I146MBXUomVBCyHmfse08
-        PnpFKODMBLrUiLLlJ5RTCUKwvmneFXpNgA==
-X-Google-Smtp-Source: ABdhPJytdwI+3HmIDdQi7x7r8HKnTSFaLNhqau7lJt0ZB5UiXnBLv+RF4MalVjpqB3HF1pY7R+M1gQ==
-X-Received: by 2002:ac8:58ce:: with SMTP id u14mr3720555qta.56.1603480925844;
-        Fri, 23 Oct 2020 12:22:05 -0700 (PDT)
+        bh=2MMdXJnn8I5qbdPqNRJaBrVa9H2HlYZso3sU1VlHnnc=;
+        b=GZSC6nz6G/Hv8vSqa4V+nuUq6c5J5ur8sp6iawql1orNUosyVXZKfnbZdDyeHidvCx
+         yeDVSOawEFDYSIz72UBxrM4BIE9K6YtoFitdSM8YF53xpxPzSQEymClECsXEBuqfzHgG
+         jHcpEB3YlwiBWutk5KMwXxakeJcjfb5F2VvNDac/lTh445wLi52cfcTvUkK4eMhSFGQm
+         qBFTRpUVF7uqqeL7yjSFBHdZ1nJ9dWE4tSLhh7uGozPvtwdrVIHdPHbjGIMPFmow1TBc
+         bePnb7WOzz3DXMBEPl9lKzxmbfpBMr//cXykzsTFbxn/hA+TRfIExMephnIQTBco84NJ
+         FtiQ==
+X-Gm-Message-State: AOAM531kLKHiGFbDUVDRIn+zJG7kSvDWHoAuTwHTcV/S8/Vi5wkc0haE
+        ymG4EOzcSWZyvxOl0oeY9usDy/TZzr5caQ==
+X-Google-Smtp-Source: ABdhPJwfoi1h8DUj9DC3Y6t1HmHe7rYHitdm4mibV5dm5Jtk9J8ABhu5i5U4p47WC4EXl6ICwhVfwA==
+X-Received: by 2002:a05:620a:4f8:: with SMTP id b24mr3565552qkh.299.1603480927925;
+        Fri, 23 Oct 2020 12:22:07 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
         by smtp.gmail.com with ESMTPSA id n199sm1398493qkn.77.2020.10.23.12.22.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 12:22:05 -0700 (PDT)
+        Fri, 23 Oct 2020 12:22:06 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
@@ -41,9 +41,9 @@ To:     Herbert Xu <herbert@gondor.apana.org.au>,
         Eric Biggers <ebiggers@kernel.org>,
         David Laight <David.Laight@aculab.com>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/5] crypto: Use memzero_explicit() for clearing state
-Date:   Fri, 23 Oct 2020 15:21:59 -0400
-Message-Id: <20201023192203.400040-2-nivedita@alum.mit.edu>
+Subject: [PATCH v3 2/5] crypto: lib/sha256 - Don't clear temporary variables
+Date:   Fri, 23 Oct 2020 15:22:00 -0400
+Message-Id: <20201023192203.400040-3-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201023192203.400040-1-nivedita@alum.mit.edu>
 References: <20201023192203.400040-1-nivedita@alum.mit.edu>
@@ -53,174 +53,33 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Without the barrier_data() inside memzero_explicit(), the compiler may
-optimize away the state-clearing if it can tell that the state is not
-used afterwards. At least in lib/crypto/sha256.c:__sha256_final(), the
-function can get inlined into sha256(), in which case the memset is
-optimized away.
+The assignments to clear a through h and t1/t2 are optimized out by the
+compiler because they are unused after the assignments.
+
+Clearing individual scalar variables is unlikely to be useful, as they
+may have been assigned to registers, and even if stack spilling was
+required, there may be compiler-generated temporaries that are
+impossible to clear in any case.
+
+So drop the clearing of a through h and t1/t2.
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- arch/arm64/crypto/ghash-ce-glue.c | 2 +-
- arch/arm64/crypto/poly1305-glue.c | 2 +-
- arch/arm64/crypto/sha3-ce-glue.c  | 2 +-
- arch/x86/crypto/poly1305_glue.c   | 2 +-
- include/crypto/sha1_base.h        | 3 ++-
- include/crypto/sha256_base.h      | 3 ++-
- include/crypto/sha512_base.h      | 3 ++-
- include/crypto/sm3_base.h         | 3 ++-
- lib/crypto/sha256.c               | 2 +-
- 9 files changed, 13 insertions(+), 9 deletions(-)
+ lib/crypto/sha256.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/crypto/ghash-ce-glue.c b/arch/arm64/crypto/ghash-ce-glue.c
-index 8536008e3e35..2427e2f3a9a1 100644
---- a/arch/arm64/crypto/ghash-ce-glue.c
-+++ b/arch/arm64/crypto/ghash-ce-glue.c
-@@ -168,7 +168,7 @@ static int ghash_final(struct shash_desc *desc, u8 *dst)
- 	put_unaligned_be64(ctx->digest[1], dst);
- 	put_unaligned_be64(ctx->digest[0], dst + 8);
- 
--	*ctx = (struct ghash_desc_ctx){};
-+	memzero_explicit(ctx, sizeof(*ctx));
- 	return 0;
- }
- 
-diff --git a/arch/arm64/crypto/poly1305-glue.c b/arch/arm64/crypto/poly1305-glue.c
-index f33ada70c4ed..683de671741a 100644
---- a/arch/arm64/crypto/poly1305-glue.c
-+++ b/arch/arm64/crypto/poly1305-glue.c
-@@ -177,7 +177,7 @@ void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- 	}
- 
- 	poly1305_emit(&dctx->h, dst, dctx->s);
--	*dctx = (struct poly1305_desc_ctx){};
-+	memzero_explicit(dctx, sizeof(*dctx));
- }
- EXPORT_SYMBOL(poly1305_final_arch);
- 
-diff --git a/arch/arm64/crypto/sha3-ce-glue.c b/arch/arm64/crypto/sha3-ce-glue.c
-index 9a4bbfc45f40..e5a2936f0886 100644
---- a/arch/arm64/crypto/sha3-ce-glue.c
-+++ b/arch/arm64/crypto/sha3-ce-glue.c
-@@ -94,7 +94,7 @@ static int sha3_final(struct shash_desc *desc, u8 *out)
- 	if (digest_size & 4)
- 		put_unaligned_le32(sctx->st[i], (__le32 *)digest);
- 
--	*sctx = (struct sha3_state){};
-+	memzero_explicit(sctx, sizeof(*sctx));
- 	return 0;
- }
- 
-diff --git a/arch/x86/crypto/poly1305_glue.c b/arch/x86/crypto/poly1305_glue.c
-index e508dbd91813..64d09520d279 100644
---- a/arch/x86/crypto/poly1305_glue.c
-+++ b/arch/x86/crypto/poly1305_glue.c
-@@ -209,7 +209,7 @@ void poly1305_final_arch(struct poly1305_desc_ctx *dctx, u8 *dst)
- 	}
- 
- 	poly1305_simd_emit(&dctx->h, dst, dctx->s);
--	*dctx = (struct poly1305_desc_ctx){};
-+	memzero_explicit(dctx, sizeof(*dctx));
- }
- EXPORT_SYMBOL(poly1305_final_arch);
- 
-diff --git a/include/crypto/sha1_base.h b/include/crypto/sha1_base.h
-index 20fd1f7468af..a5d6033efef7 100644
---- a/include/crypto/sha1_base.h
-+++ b/include/crypto/sha1_base.h
-@@ -12,6 +12,7 @@
- #include <crypto/sha.h>
- #include <linux/crypto.h>
- #include <linux/module.h>
-+#include <linux/string.h>
- 
- #include <asm/unaligned.h>
- 
-@@ -101,7 +102,7 @@ static inline int sha1_base_finish(struct shash_desc *desc, u8 *out)
- 	for (i = 0; i < SHA1_DIGEST_SIZE / sizeof(__be32); i++)
- 		put_unaligned_be32(sctx->state[i], digest++);
- 
--	*sctx = (struct sha1_state){};
-+	memzero_explicit(sctx, sizeof(*sctx));
- 	return 0;
- }
- 
-diff --git a/include/crypto/sha256_base.h b/include/crypto/sha256_base.h
-index 6ded110783ae..93f9fd21cc06 100644
---- a/include/crypto/sha256_base.h
-+++ b/include/crypto/sha256_base.h
-@@ -12,6 +12,7 @@
- #include <crypto/sha.h>
- #include <linux/crypto.h>
- #include <linux/module.h>
-+#include <linux/string.h>
- 
- #include <asm/unaligned.h>
- 
-@@ -105,7 +106,7 @@ static inline int sha256_base_finish(struct shash_desc *desc, u8 *out)
- 	for (i = 0; digest_size > 0; i++, digest_size -= sizeof(__be32))
- 		put_unaligned_be32(sctx->state[i], digest++);
- 
--	*sctx = (struct sha256_state){};
-+	memzero_explicit(sctx, sizeof(*sctx));
- 	return 0;
- }
- 
-diff --git a/include/crypto/sha512_base.h b/include/crypto/sha512_base.h
-index fb19c77494dc..93ab73baa38e 100644
---- a/include/crypto/sha512_base.h
-+++ b/include/crypto/sha512_base.h
-@@ -12,6 +12,7 @@
- #include <crypto/sha.h>
- #include <linux/crypto.h>
- #include <linux/module.h>
-+#include <linux/string.h>
- 
- #include <asm/unaligned.h>
- 
-@@ -126,7 +127,7 @@ static inline int sha512_base_finish(struct shash_desc *desc, u8 *out)
- 	for (i = 0; digest_size > 0; i++, digest_size -= sizeof(__be64))
- 		put_unaligned_be64(sctx->state[i], digest++);
- 
--	*sctx = (struct sha512_state){};
-+	memzero_explicit(sctx, sizeof(*sctx));
- 	return 0;
- }
- 
-diff --git a/include/crypto/sm3_base.h b/include/crypto/sm3_base.h
-index 1cbf9aa1fe52..2f3a32ab97bb 100644
---- a/include/crypto/sm3_base.h
-+++ b/include/crypto/sm3_base.h
-@@ -13,6 +13,7 @@
- #include <crypto/sm3.h>
- #include <linux/crypto.h>
- #include <linux/module.h>
-+#include <linux/string.h>
- #include <asm/unaligned.h>
- 
- typedef void (sm3_block_fn)(struct sm3_state *sst, u8 const *src, int blocks);
-@@ -104,7 +105,7 @@ static inline int sm3_base_finish(struct shash_desc *desc, u8 *out)
- 	for (i = 0; i < SM3_DIGEST_SIZE / sizeof(__be32); i++)
- 		put_unaligned_be32(sctx->state[i], digest++);
- 
--	*sctx = (struct sm3_state){};
-+	memzero_explicit(sctx, sizeof(*sctx));
- 	return 0;
- }
- 
 diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
-index 2321f6cb322f..d43bc39ab05e 100644
+index d43bc39ab05e..099cd11f83c1 100644
 --- a/lib/crypto/sha256.c
 +++ b/lib/crypto/sha256.c
-@@ -265,7 +265,7 @@ static void __sha256_final(struct sha256_state *sctx, u8 *out, int digest_words)
- 		put_unaligned_be32(sctx->state[i], &dst[i]);
+@@ -202,7 +202,6 @@ static void sha256_transform(u32 *state, const u8 *input)
+ 	state[4] += e; state[5] += f; state[6] += g; state[7] += h;
  
- 	/* Zeroize sensitive information. */
--	memset(sctx, 0, sizeof(*sctx));
-+	memzero_explicit(sctx, sizeof(*sctx));
+ 	/* clear any sensitive info... */
+-	a = b = c = d = e = f = g = h = t1 = t2 = 0;
+ 	memzero_explicit(W, 64 * sizeof(u32));
  }
  
- void sha256_final(struct sha256_state *sctx, u8 *out)
 -- 
 2.26.2
 
