@@ -2,94 +2,99 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9C1297CC9
-	for <lists+linux-crypto@lfdr.de>; Sat, 24 Oct 2020 16:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C246298223
+	for <lists+linux-crypto@lfdr.de>; Sun, 25 Oct 2020 15:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761969AbgJXOX6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 24 Oct 2020 10:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1759926AbgJXOX6 (ORCPT
+        id S1416754AbgJYObb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 25 Oct 2020 10:31:31 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:40859 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1416752AbgJYOba (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 24 Oct 2020 10:23:58 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D3CC0613CE
-        for <linux-crypto@vger.kernel.org>; Sat, 24 Oct 2020 07:23:57 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id r127so5777781lff.12
-        for <linux-crypto@vger.kernel.org>; Sat, 24 Oct 2020 07:23:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=qDTCfS+VEWVi3xEdbzSRaJW/rnaHPe1zxbojP+JjQRU=;
-        b=oh9zjhv0PwMCwVE2OfjL8xXByZGhl4fVqBNjcp7bXfj0XWA38/7JiV/hE3rUBd41Z5
-         tB0ma1eHL/LOHDnzeRTV17n+ZOAK12KceU7fSx1sw7Z8QK7gHQB3sbjsOYzvpOUtOxKY
-         t3XSvxSIPKQkgLkP1PbUzbs/ECt97nTOoLeqEfLfLj8NWsdg69V0D5PTLL+W6LG/gdNl
-         aJ+IBm2d7IioadfmFY4todS86xphZPcrqnnI1hS9tdvOAWeaKTtrein5xxJUeBJXk1Ff
-         y23JSETDIZDoiLPSMp14a5JkkVTgKKLAObj2j/dBBfDJJfwmJIuOeYsytb3hQMO04sgA
-         EyTA==
+        Sun, 25 Oct 2020 10:31:30 -0400
+Received: by mail-qk1-f194.google.com with SMTP id h140so6049522qke.7;
+        Sun, 25 Oct 2020 07:31:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=qDTCfS+VEWVi3xEdbzSRaJW/rnaHPe1zxbojP+JjQRU=;
-        b=YJ9RdqDbPH8FY6xMSRx/qkPNbdMb7upHLAOP5r4HJekquBuD0i+a2peaabVInXU5fa
-         WthtJxFuUznNAf2seGQtpnYA/rWlIcMyNx6uEDPG73W5CL3HSh6SuYVrAsbxe3yQtrTj
-         6w2474l+9T8Rpxi8YGtdQVD6X8ZQDXcNPP8e+AE/TMVb992f7twap4L0EIzi5f46886T
-         6X1dHNHad2LEKKxAW/6OIObZY4MUtN53NEZ6OwECCYBri7mlKGumxiTLPeqnoFpC6Bg+
-         s2lPGU5gsc8GhBxaRBQSEZ6WRxEyFQLqzPMuvMbbJXx1xzDvU72mtjLq9duw8fYA+KYG
-         zsjw==
-X-Gm-Message-State: AOAM533aDrkp/1/GQ5CER8SvfSPRmCllSNkEY/DTtcDZq27MqDlkAbcY
-        MOp5ziNlcGBy2mKbx2342t6WIhWccgd6sEyi4Ys=
-X-Google-Smtp-Source: ABdhPJzPVpdn3SURIN61kRg8s63moImbVdon7W9lK8jcfvCuOx8bkFkDwJRQ8M839rnaREejC/d2urU5PffdwtPBUt0=
-X-Received: by 2002:a19:8116:: with SMTP id c22mr2541404lfd.101.1603549435900;
- Sat, 24 Oct 2020 07:23:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x2UMZm4fcybM+vIIp7oarjvWnFnvnqafI+zu+Zq1CF8=;
+        b=CByY9S5eChDUvReJ8HF4vtDOzK9ugiI2BDLU/wTQwlHPdU7EnCjBf9jEIUq3L/iCrH
+         JkUR0zwURpR8llp5WwRZk4eg/ktKF2mbwdA0EPAgHay5t0hpeT8Pa0gGenhFVfCeCC46
+         MgOmdV+yfvuT2ODbAdRvq5hqbBBh+QZtiWBcj+8zRjHQPMo8JUejRlrEEI4edMx5aVIG
+         UHQtLFOJp7rFHn4swbCqVjHfVHbHAD801WjoCYIt7qTfwN47YG6KIHnanTvBubtmFrmO
+         +GKCfKrFq4MZfrhcryYD0PcL8/2gzf7KZz2kLmNinuo0MQug2P7JITXegHRr9ewIVs5u
+         Aqjg==
+X-Gm-Message-State: AOAM5319/1Avqa2sd5g8Q3J2wUSLqGaO0breg8CUq/ouwitiJmwj5Doh
+        18q+W4ULbERu8EQYAC4KaolM0HhQVLHNgg==
+X-Google-Smtp-Source: ABdhPJw10C/oZFL0qO/mz2dWvCyInZZwaHLUbNWqaIcyU4bXqKKyKpVCWOIhjtZYT3CzjtqlzBos0Q==
+X-Received: by 2002:a05:620a:21d1:: with SMTP id h17mr13082876qka.368.1603636282234;
+        Sun, 25 Oct 2020 07:31:22 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id s73sm4740898qke.71.2020.10.25.07.31.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Oct 2020 07:31:21 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        David Laight <David.Laight@aculab.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/6] crypto: lib/sha256 - cleanup/optimization
+Date:   Sun, 25 Oct 2020 10:31:13 -0400
+Message-Id: <20201025143119.1054168-1-nivedita@alum.mit.edu>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Received: by 2002:a05:6504:13a3:0:0:0:0 with HTTP; Sat, 24 Oct 2020 07:23:55
- -0700 (PDT)
-Reply-To: ccserviceorg93@gmail.com
-From:   domu omor <domuomor@gmail.com>
-Date:   Sat, 24 Oct 2020 16:23:55 +0200
-Message-ID: <CAExakiDnbkARV3t+7BkB3Lx71JierwyRn94p_Ch+PPnQ6rs0mg@mail.gmail.com>
-Subject: Re
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear beneficiary,
+Patch 1/2 -- Use memzero_explicit() instead of structure assignment/plain
+memset() to clear sensitive state.
 
-I am happy to let you know that we have successfully concluded the
-deal two weeks ago. The total funds were successfully transferred to
-the new bank account in Venezuela.
+Patch 3 -- Currently the temporary variables used in the generic sha256
+implementation are cleared, but the clearing is optimized away due to
+lack of compiler barriers. Drop the clearing.
 
-You are a good person and I appreciate your efforts and support during
-the transactions. I have decided to compensate you with the total
-amount of $800,000.00 USD.
+The last three patches are optimizations for generic sha256.
 
-I have deposited a total sum of$800,000.00 USD with the bank and I
-have instructed my account officer in the bank to send the money to
-you through ATM VISA CARD as soon as you contact her.Therefore you
-should contact my account officer Mrs. Roselyne Johnson and instruct
-her to send the $800,000.00 USD to you via ATM CARD.Contact Person:
-Mrs. Roselyne Johnson.
+v4:
+- Split the first patch into two, the first one just does
+  lib/crypto/sha256.c, so that the second one can be applied or dropped
+  depending on the outcome of the discussion between Herbert/Eric.
 
-E-Mail :(ccserviceorg93@gmail.com)
+v3:
+- Add some more files to patch 1
+- Reword commit message for patch 2
+- Reformat SHA256_K array
+- Drop v2 patch combining K and W arrays
 
-Please note that I will move to Venezuela today through Emirate
-airline and I may not be able to communicate with you soon because I
-will be very busy in Venezuela.Remember to send your information to
-her as sated below for easy communication with her.
+v2:
+- Add patch to combine K and W arrays, suggested by David
+- Reformat SHA256_ROUND() macro a little
 
-a) Your Full Name ==========================
-b) Your home country =======================
-c) Your Home Address =========================
-d) Your phone number =========================
+Arvind Sankar (6):
+  crypto: lib/sha256 - Use memzero_explicit() for clearing state
+  crypto: Use memzero_explicit() for clearing state
+  crypto: lib/sha256 - Don't clear temporary variables
+  crypto: lib/sha256 - Clear W[] in sha256_update() instead of
+    sha256_transform()
+  crypto: lib/sha256 - Unroll SHA256 loop 8 times intead of 64
+  crypto: lib/sha256 - Unroll LOAD and BLEND loops
 
-Please you should manage the money. it is a token of my appreciation
-for your efforts and attempts to help me during the transaction. Also
-you should remember to invest your money in a good business as we
-discussed.
+ arch/arm64/crypto/ghash-ce-glue.c |   2 +-
+ arch/arm64/crypto/poly1305-glue.c |   2 +-
+ arch/arm64/crypto/sha3-ce-glue.c  |   2 +-
+ arch/x86/crypto/poly1305_glue.c   |   2 +-
+ include/crypto/sha1_base.h        |   3 +-
+ include/crypto/sha256_base.h      |   3 +-
+ include/crypto/sha512_base.h      |   3 +-
+ include/crypto/sm3_base.h         |   3 +-
+ lib/crypto/sha256.c               | 212 +++++++++---------------------
+ 9 files changed, 76 insertions(+), 156 deletions(-)
 
-Best regards.
-Mr.Phillips Umeh.
+-- 
+2.26.2
+
