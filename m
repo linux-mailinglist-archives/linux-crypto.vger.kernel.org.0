@@ -2,76 +2,90 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A83129A24D
-	for <lists+linux-crypto@lfdr.de>; Tue, 27 Oct 2020 02:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C808B29A4E5
+	for <lists+linux-crypto@lfdr.de>; Tue, 27 Oct 2020 07:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504053AbgJ0BqI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 26 Oct 2020 21:46:08 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:42895 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504052AbgJ0BqH (ORCPT
+        id S2395402AbgJ0GxL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 27 Oct 2020 02:53:11 -0400
+Received: from mail-yb1-f196.google.com ([209.85.219.196]:35815 "EHLO
+        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgJ0GxL (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 26 Oct 2020 21:46:07 -0400
-Received: by mail-ej1-f66.google.com with SMTP id h24so17074932ejg.9
-        for <linux-crypto@vger.kernel.org>; Mon, 26 Oct 2020 18:46:06 -0700 (PDT)
+        Tue, 27 Oct 2020 02:53:11 -0400
+Received: by mail-yb1-f196.google.com with SMTP id m188so359314ybf.2
+        for <linux-crypto@vger.kernel.org>; Mon, 26 Oct 2020 23:53:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=vuvt4oHSoBKPakWvhuxYe1UtUDqPRxGqaIzUs0QFcLg=;
-        b=leTrAkPRSqAaEPeOLygTOC5XItw89GjJFM0jjI84QNZzagyWZ6qNuMaqh0fnxQTJXR
-         Qcc0ETCaYthigp+yHa62T8Z0qEUPPViPS/eVzdS2vF92jraZWF5UWZ+xdobYhRjRrevX
-         srOJ1HZBYt2G7X2LiM2BxbiLTOnIQli39a7N6sfjU1HUFPcvTMqU6U4bqShfd9TDHE9e
-         hPcqw0NR9bcJFQXDtz4yZfTwXYmpoYPsvRikj92zv6rOtVqznnROT27SgI7+UxSKGWNs
-         +THowd/CCk2j4Q7mOPxiVG9GZ5Z9OpZcJP+jtAh56cMyHFRuCkergCgNt/HJmskxy33B
-         tYpw==
+        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jjdl2dhuJDpqYsWLtlxuvUmg+zpTbJsyzx07rWA+3Bc=;
+        b=YGak6vUjSqyon7HWw3AXm4yi4I+zfP8DvCyJBwe75PHcDCOAkJCopDi7Qkzicv3++3
+         bhZeOruwmqj633uMGT9Fkoz80nrswtvPrNDAvux0JVFO2jnRcAuj5Z7XNbilg3XujWIo
+         batKSd11/ypHVD8GWSGZhQYHR7Wavf75sVSpYOXYnwSdf1vhDR7oFfPjt+P9E3PM+FAx
+         u9Kd4PZgrYM3ahytNjIF1wKkzRKyIGhaFDPGvE3/Wo1ESATJy/GjEyP5wC+HfAF5LgnT
+         ZpNyFFQWCOLyU5NeAZEtULbZ6CPUPhjCp/d8UZc4tQ4YZnfyqgzf10vsX7X8E7qcLFWL
+         CO4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=vuvt4oHSoBKPakWvhuxYe1UtUDqPRxGqaIzUs0QFcLg=;
-        b=R9sloW7nLi+RvwXS85XUj5KhXBCbqJohOYhZEF27NIv6jjq1BG75XWZiwgbpfBRJDl
-         qIzNVFGiWNW5Y8b+6npQzPR3EoSRGR8rQWQ4kNUf26pmdWi3J1toa98LaCY26Kqjf5vc
-         naI/qiHplezJDvzIcbacWPB5BoLd6mFDCqPNzH3p15GfHyybDfhT4WXCTQV7Dropvcgr
-         A8UiR6atRreusppMuL8vUGaqtSo9oWZYkDZqrC0r1HVtSoCVvIVPp127rxBzLtfOSVna
-         gPFaGsqaDYetiNfFvNM90nrM9kGwpNzPaIqmpVA5GWSZFclyUMQIF0+AOiYqBKEkSTB1
-         qK/w==
-X-Gm-Message-State: AOAM532qcXU0TMujY+N2UJMUgGs+v8xDxQ6swer5F/+g81uTmPFO6vNQ
-        Jx0k/ZR219C7EfzHKms4Yj18HDrO4iPmiyU9K6U=
-X-Google-Smtp-Source: ABdhPJywv8XbOikIHTefCiUkGqBknsLkmnK7jP0hc/1Dyyhy7vDIMUF0P5jigFTCz12e2752bSlIBk+UmCHqDDkzxOo=
-X-Received: by 2002:a17:906:b104:: with SMTP id u4mr98437ejy.121.1603763165378;
- Mon, 26 Oct 2020 18:46:05 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jjdl2dhuJDpqYsWLtlxuvUmg+zpTbJsyzx07rWA+3Bc=;
+        b=ap8oWqtfmP9fIh4OJTXl7Pm8hpx9Trbi1kEMDLCqZ7Dz1O8Uay1S82nrkdRmPbTXZH
+         ET3jHj8uOj4oJQKOLmTUX7RE/pEpBRmIPw2vG1k9CKcXRi09EhBIjCm0Hlm0Eea5yrNj
+         234vYeQ8uuwca/k6woH2jQa+Y1Gn1Ro5rHfjx6PqjYjpwImN5mZyO9BDcddl6uHXoQjx
+         gESwQIuUN0pAfQ7y9io7sU72ujb6pBBXhOG91kHwVMmepbeCHkm0QWXFUE9CwxEcXjBD
+         h+KMDW+hlDwGzyfnMxiefPts9GtW/WmBXIlgpH/r4ecWZroQT5m8CFYGaNrP2AK96fJA
+         Mdtg==
+X-Gm-Message-State: AOAM5317NorBuRgHXpsiBNd/HR2sqDg3X3tdgnLWdIMuTzf2O9p9GJcD
+        RsqpNim3kERFBlTTy778ZX8+/Yx0xyIVWmf/a7OXPA==
+X-Google-Smtp-Source: ABdhPJxG5Y81UbMg7yEAt0cjolVbinIPl2JL51jHpZOjbo4cTYsOAAhcLTlsA0vigb1dxR69f3JTQzU4O+5S2/bIvPE=
+X-Received: by 2002:a25:774f:: with SMTP id s76mr1026683ybc.235.1603781589825;
+ Mon, 26 Oct 2020 23:53:09 -0700 (PDT)
 MIME-Version: 1.0
-Sender: mrsmariam1977@gmail.com
-Received: by 2002:a50:6248:0:0:0:0:0 with HTTP; Mon, 26 Oct 2020 18:46:04
- -0700 (PDT)
-From:   "Dr. Hamza Kabore" <mr.hamzak252@gmail.com>
-Date:   Mon, 26 Oct 2020 18:46:04 -0700
-X-Google-Sender-Auth: ZJHLPfjeQvn-NYDHyF_6KIC4WWM
-Message-ID: <CAD1usYpZydGOU1bF8w2b7tT_m1zH=JSZShNBYXAr7D1C2CBQtA@mail.gmail.com>
-Subject: URGENT INFORMATION
-To:     undisclosed-recipients:;
+References: <20201026130450.6947-1-gilad@benyossef.com> <20201026130450.6947-2-gilad@benyossef.com>
+ <20201026182448.GH858@sol.localdomain> <20201026182628.GI858@sol.localdomain>
+In-Reply-To: <20201026182628.GI858@sol.localdomain>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Tue, 27 Oct 2020 08:53:04 +0200
+Message-ID: <CAOtvUMe=KnRahskJtEh1pgyBfGoeZw0Vsq00Hvh+A_enVFVwZQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] crypto: add eboiv as a crypto API template
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        Ofir Drang <ofir.drang@arm.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        linux-raid@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--- 
-Hello,
+On Mon, Oct 26, 2020 at 8:26 PM Eric Biggers <ebiggers@kernel.org> wrote:
 
-Greetings and hope this email meets you well?
+>
+> Here's the version of eboiv_create() I recommend (untested):
+>
+> static int eboiv_create(struct crypto_template *tmpl, struct rtattr **tb)
+> {
+>         struct skcipher_instance *inst;
+>         struct eboiv_instance_ctx *ictx;
+>         struct skcipher_alg *alg;
+>         u32 mask;
+>         int err;
+...
 
-I am Dr. Hamza Kabore, the  chief Medical consultant at a reputable
-clinic here in Ouagadougou, Burkina Faso and I have a Patient who
-hails from the Republic of philippines but unfortunately is in coma
-right now due to complications from a Cancer disease and she has the
-sum of $10.7 Million United States (Ten Million seven Hundred
-Thousand) Dollars she wants me to guide you on, so that her Bank can
-transfer it to you for charity purposes.
+Thank you very much for the review and assistance. I will send out a
+revised version.
 
-Please, I will like you to contact me for further details as this is a
-very sensitive issue that needs urgent attention from you.
+Thanks,
+Gilad
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
 
-Best Regards,
-
-Dr. Hamza Kabore on behalf of
-Mrs. Sismer Shirley Acojedo
+values of =CE=B2 will give rise to dom!
