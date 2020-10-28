@@ -2,119 +2,119 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8CB29DC49
-	for <lists+linux-crypto@lfdr.de>; Thu, 29 Oct 2020 01:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E848A29DE55
+	for <lists+linux-crypto@lfdr.de>; Thu, 29 Oct 2020 01:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388468AbgJ2AXt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Wed, 28 Oct 2020 20:23:49 -0400
-Received: from verein.lst.de ([213.95.11.211]:45358 "EHLO verein.lst.de"
+        id S1731869AbgJ1WTV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 28 Oct 2020 18:19:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388466AbgJ1Wh2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:37:28 -0400
-Received: by verein.lst.de (Postfix, from userid 107)
-        id 9202368C65; Wed, 28 Oct 2020 18:52:06 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on verein.lst.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=5.0 tests=ALL_TRUSTED,BAYES_50
-        autolearn=disabled version=3.3.1
-Received: from blackhole.lan (p5b33f9d6.dip0.t-ipconnect.de [91.51.249.214])
-        by verein.lst.de (Postfix) with ESMTPSA id 73EA367357;
-        Wed, 28 Oct 2020 18:51:22 +0100 (CET)
-Date:   Wed, 28 Oct 2020 18:51:17 +0100
-From:   Torsten Duwe <duwe@lst.de>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Stephan =?UTF-8?B?TcO8bGxlcg==?= <smueller@chronox.de>,
-        Willy Tarreau <w@1wt.eu>, linux-crypto@vger.kernel.org,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        And y Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Petr Tesarik <ptesarik@suse.cz>, marcelo.cerri@canonical.com,
-        simo@redhat.com
-Subject: Re: [PATCH v36 00/13] /dev/random - a new approach
-Message-ID: <20201028185117.74300988@blackhole.lan>
-In-Reply-To: <3073852.aeNJFYEL58@positron.chronox.de>
-References: <20200921075857.4424-1-nstange@suse.de>
-        <2961243.vtBmWVcJkq@tauon.chronox.de>
-        <20201016172619.GA18410@lst.de>
-        <3073852.aeNJFYEL58@positron.chronox.de>
-Organization: LST e.V.
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        id S1731740AbgJ1WRo (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:44 -0400
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEEC62468B;
+        Wed, 28 Oct 2020 09:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603876030;
+        bh=/lrSDP0AmQJOcuRx3S891VP10onVPlgynY6E24iOlPI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=obDj4W/cxxzuDRDhjEJ02wxDJFrEbj2hQ1HZkLoVMTZ3E0w5Hmw4ij5iHZ7d/jvdH
+         oJ10fcvj9aGpeidvV7oDDCpKRSIDtiwSNN3uHkXWsYb4sUhlegL9qU5sibWLM0hMm0
+         MCx7vEeRMavkKSq4YMaHmIE5H/axpVLxEuOxOQ8w=
+Received: by mail-ot1-f50.google.com with SMTP id f97so3600577otb.7;
+        Wed, 28 Oct 2020 02:07:10 -0700 (PDT)
+X-Gm-Message-State: AOAM530xlpC9CTDRFQpcRWcSPx+KFdbutqqchZ7cI4V0148+vfElzUNQ
+        +DZzZsYXbBXWqqE1YaLe/h+YYfbLeeBQHmK3xVw=
+X-Google-Smtp-Source: ABdhPJwP+vy3R9eXrfedfzYbhfaXJuGzXN7uUJfjpOFZSxVQke3eJWxIT2+Uk0rOjQpaqkmJvdNc/EeC5kO2jG4c1QY=
+X-Received: by 2002:a9d:2daa:: with SMTP id g39mr4698778otb.77.1603876029925;
+ Wed, 28 Oct 2020 02:07:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20201028090320.4222-1-horia.geanta@nxp.com>
+In-Reply-To: <20201028090320.4222-1-horia.geanta@nxp.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 28 Oct 2020 10:06:58 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGfwuY_uEGT83QpoUZwy9X=6k7zaxHs2kFrdsArKpVpOw@mail.gmail.com>
+Message-ID: <CAMj1kXGfwuY_uEGT83QpoUZwy9X=6k7zaxHs2kFrdsArKpVpOw@mail.gmail.com>
+Subject: Re: [PATCH] crypto: arm/aes-neonbs - fix usage of cbc(aes) fallback
+To:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, 19 Oct 2020 21:28:50 +0200
-Stephan Müller <smueller@chronox.de> wrote:
-[...]
-> * Sole use of crypto for data processing:
-[...]
->  - The LRNG uses only properly defined and implemented cryptographic
->    algorithms unlike the use of the SHA-1 transformation in the
-> existing /dev/random implementation.
-> 
->  - Hash operations use NUMA-node-local hash instances to benefit large
->    parallel systems.
-> 
->  - LRNG uses limited number of data post-processing steps
-[...]
-> * Performance
-> 
->  - Faster by up to 75% in the critical code path of the interrupt
-> handler depending on data collection size configurable at kernel
-> compile time - the default is about equal in performance with
-> existing /dev/random as outlined in [2] section 4.2.
+On Wed, 28 Oct 2020 at 10:03, Horia Geant=C4=83 <horia.geanta@nxp.com> wrot=
+e:
+>
+> Loading the module deadlocks since:
+> -local cbc(aes) implementation needs a fallback and
+> -crypto API tries to find one but the request_module() resolves back to
+> the same module
+>
+> Fix this by changing the module alias for cbc(aes) and
+> using the NEED_FALLBACK flag when requesting for a fallback algorithm.
+>
+> Fixes: 00b99ad2bac2 ("crypto: arm/aes-neonbs - Use generic cbc encryption=
+ path")
+> Signed-off-by: Horia Geant=C4=83 <horia.geanta@nxp.com>
 
-[...]
->  - ChaCha20 DRNG is significantly faster as implemented in the
-> existing /dev/random as demonstrated with [2] table 2.
-> 
->  - Faster entropy collection during boot time to reach fully seeded
->    level, including on virtual systems or systems with SSDs as
-> outlined in [2] section 4.1.
-> 
-> * Testing
-[...]
+Not sure what is happening here: IIRC the intention was to rely on the
+fact that only the sync cbc(aes) implementation needs the fallback,
+and therefore, allocating a sync skcipher explicitly would avoid this
+recursion.
 
-So we now have 2 proposals for a state-of-the-art RNG, and over a month
-without a single comment on-topic from any `get_maintainer.pl`
+Herbert?
 
-I don't want to emphasise the certification aspects so much. The
-interrelation is rather that those certifications require certain code
-features, features which are reasonable per se. But the current code is
-lagging way behind.
-
-I see the focus namely on performance, scalability, testability and
-virtualisation. And it certainly is an advantage to use the code
-already present under crypto, with its optimisations, and not rely
-on some home brew.
-
-Can we please have a discussion about how to proceed?
-Ted, Greg, Arnd: which approach would you prefer?
-
-	Torsten
-
+> ---
+>  arch/arm/crypto/aes-neonbs-glue.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm/crypto/aes-neonbs-glue.c b/arch/arm/crypto/aes-neon=
+bs-glue.c
+> index bda8bf17631e..f70af1d0514b 100644
+> --- a/arch/arm/crypto/aes-neonbs-glue.c
+> +++ b/arch/arm/crypto/aes-neonbs-glue.c
+> @@ -19,7 +19,7 @@ MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.or=
+g>");
+>  MODULE_LICENSE("GPL v2");
+>
+>  MODULE_ALIAS_CRYPTO("ecb(aes)");
+> -MODULE_ALIAS_CRYPTO("cbc(aes)");
+> +MODULE_ALIAS_CRYPTO("cbc(aes)-all");
+>  MODULE_ALIAS_CRYPTO("ctr(aes)");
+>  MODULE_ALIAS_CRYPTO("xts(aes)");
+>
+> @@ -191,7 +191,8 @@ static int cbc_init(struct crypto_skcipher *tfm)
+>         struct aesbs_cbc_ctx *ctx =3D crypto_skcipher_ctx(tfm);
+>         unsigned int reqsize;
+>
+> -       ctx->enc_tfm =3D crypto_alloc_skcipher("cbc(aes)", 0, CRYPTO_ALG_=
+ASYNC);
+> +       ctx->enc_tfm =3D crypto_alloc_skcipher("cbc(aes)", 0, CRYPTO_ALG_=
+ASYNC |
+> +                                            CRYPTO_ALG_NEED_FALLBACK);
+>         if (IS_ERR(ctx->enc_tfm))
+>                 return PTR_ERR(ctx->enc_tfm);
+>
+> @@ -441,7 +442,8 @@ static struct skcipher_alg aes_algs[] =3D { {
+>         .base.cra_blocksize     =3D AES_BLOCK_SIZE,
+>         .base.cra_ctxsize       =3D sizeof(struct aesbs_cbc_ctx),
+>         .base.cra_module        =3D THIS_MODULE,
+> -       .base.cra_flags         =3D CRYPTO_ALG_INTERNAL,
+> +       .base.cra_flags         =3D CRYPTO_ALG_INTERNAL |
+> +                                 CRYPTO_ALG_NEED_FALLBACK,
+>
+>         .min_keysize            =3D AES_MIN_KEY_SIZE,
+>         .max_keysize            =3D AES_MAX_KEY_SIZE,
+> --
+> 2.17.1
+>
