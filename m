@@ -2,133 +2,91 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4760529CC56
-	for <lists+linux-crypto@lfdr.de>; Tue, 27 Oct 2020 23:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C116429D53D
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 Oct 2020 23:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1832562AbgJ0W4P (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 27 Oct 2020 18:56:15 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50108 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1832564AbgJ0W4H (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 27 Oct 2020 18:56:07 -0400
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603839365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jttJQYUY921gdQBinUA2N0GBiq3HS7MmOYm/9rq3mlU=;
-        b=0GnEbZqlXJZLQfjONDg/KSujsSvfMvUdN9MjzKaP55p1OEL8105JJGIQe6F3XVpxye4QRG
-        RNPtf8SiqF6hXmGgkfl/1C/UqBtecqyV1R5ba28I2myfZGnsuvT0wtttW7aBU23i8cp0Kp
-        KPePrRqnO5QD3zsNjl0yz3RIKPYR9IqDfkJJwLOramUuxXxYnkd8Z0mwa5+ATFm5MBsojH
-        c1s8YWDtwJjB+Py3JzwS5Sia73LSJCXx75eylZj0Pz3x7x+1Nh9Y0AYUTJPGgc6ryex4na
-        0xwLG2EUr3iK9u8qT5n0uUKslQ2EpAHI1jsLzfDpVY5F44gyFbKLZ6KAepUyjA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603839365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jttJQYUY921gdQBinUA2N0GBiq3HS7MmOYm/9rq3mlU=;
-        b=LsJR1NJ1kfuG7mH7WHiTgHjGj108g1qTNgV4c1oTVdGNGA/LhmC59JAAm3KDssv9bSM5bW
-        AvG+0+npRHIheYCA==
-To:     netdev@vger.kernel.org
-Cc:     Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Daniel Drake <dsd@gentoo.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>, Jon Mason <jdmason@kudzu.us>,
-        Jouni Malinen <j@w1.fi>, Kalle Valo <kvalo@codeaurora.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-rdma@vger.kernel.org,
-        linux-wireless@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Rain River <rain.1986.08.12@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Samuel Chessman <chessman@tux.org>,
-        Ulrich Kunitz <kune@deine-taler.de>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH net-next 15/15] crypto: caam: Replace in_irq() usage.
-Date:   Tue, 27 Oct 2020 23:54:54 +0100
-Message-Id: <20201027225454.3492351-16-bigeasy@linutronix.de>
-In-Reply-To: <20201027225454.3492351-1-bigeasy@linutronix.de>
-References: <20201027225454.3492351-1-bigeasy@linutronix.de>
+        id S1729328AbgJ1V7c (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 28 Oct 2020 17:59:32 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:39076 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729318AbgJ1V7b (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:59:31 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B32D61A14E2;
+        Wed, 28 Oct 2020 10:03:44 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A55851A14F4;
+        Wed, 28 Oct 2020 10:03:44 +0100 (CET)
+Received: from fsr-ub1864-014.ea.freescale.net (fsr-ub1864-014.ea.freescale.net [10.171.95.219])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 4D4C92030E;
+        Wed, 28 Oct 2020 10:03:44 +0100 (CET)
+From:   =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: arm/aes-neonbs - fix usage of cbc(aes) fallback
+Date:   Wed, 28 Oct 2020 11:03:20 +0200
+Message-Id: <20201028090320.4222-1-horia.geanta@nxp.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The driver uses in_irq() + in_serving_softirq() magic to decide if NAPI
-scheduling is required or packet processing.
+Loading the module deadlocks since:
+-local cbc(aes) implementation needs a fallback and
+-crypto API tries to find one but the request_module() resolves back to
+the same module
 
-The usage of in_*() in drivers is phased out and Linus clearly requested
-that code which changes behaviour depending on context should either be
-seperated or the context be conveyed in an argument passed by the caller,
-which usually knows the context.
+Fix this by changing the module alias for cbc(aes) and
+using the NEED_FALLBACK flag when requesting for a fallback algorithm.
 
-Use the `napi' argument passed by the callback. It is set true if
-called from the interrupt handler and NAPI should be scheduled.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: "Horia Geant=C4=83" <horia.geanta@nxp.com>
-Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Madalin Bucur <madalin.bucur@nxp.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Li Yang <leoyang.li@nxp.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-arm-kernel@lists.infradead.org
+Fixes: 00b99ad2bac2 ("crypto: arm/aes-neonbs - Use generic cbc encryption path")
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
 ---
- drivers/crypto/caam/qi.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ arch/arm/crypto/aes-neonbs-glue.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/caam/qi.c b/drivers/crypto/caam/qi.c
-index 09ea398304c8b..79dbd90887f8a 100644
---- a/drivers/crypto/caam/qi.c
-+++ b/drivers/crypto/caam/qi.c
-@@ -545,14 +545,10 @@ static void cgr_cb(struct qman_portal *qm, struct qma=
-n_cgr *cgr, int congested)
- 	}
- }
-=20
--static int caam_qi_napi_schedule(struct qman_portal *p, struct caam_napi *=
-np)
-+static int caam_qi_napi_schedule(struct qman_portal *p, struct caam_napi *=
-np,
-+				 bool napi)
- {
--	/*
--	 * In case of threaded ISR, for RT kernels in_irq() does not return
--	 * appropriate value, so use in_serving_softirq to distinguish between
--	 * softirq and irq contexts.
--	 */
--	if (unlikely(in_irq() || !in_serving_softirq())) {
-+	if (napi) {
- 		/* Disable QMan IRQ source and invoke NAPI */
- 		qman_p_irqsource_remove(p, QM_PIRQ_DQRI);
- 		np->p =3D p;
-@@ -574,7 +570,7 @@ static enum qman_cb_dqrr_result caam_rsp_fq_dqrr_cb(str=
-uct qman_portal *p,
- 	struct caam_drv_private *priv =3D dev_get_drvdata(qidev);
- 	u32 status;
-=20
--	if (caam_qi_napi_schedule(p, caam_napi))
-+	if (caam_qi_napi_schedule(p, caam_napi, napi))
- 		return qman_cb_dqrr_stop;
-=20
- 	fd =3D &dqrr->fd;
---=20
-2.28.0
+diff --git a/arch/arm/crypto/aes-neonbs-glue.c b/arch/arm/crypto/aes-neonbs-glue.c
+index bda8bf17631e..f70af1d0514b 100644
+--- a/arch/arm/crypto/aes-neonbs-glue.c
++++ b/arch/arm/crypto/aes-neonbs-glue.c
+@@ -19,7 +19,7 @@ MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
+ MODULE_LICENSE("GPL v2");
+ 
+ MODULE_ALIAS_CRYPTO("ecb(aes)");
+-MODULE_ALIAS_CRYPTO("cbc(aes)");
++MODULE_ALIAS_CRYPTO("cbc(aes)-all");
+ MODULE_ALIAS_CRYPTO("ctr(aes)");
+ MODULE_ALIAS_CRYPTO("xts(aes)");
+ 
+@@ -191,7 +191,8 @@ static int cbc_init(struct crypto_skcipher *tfm)
+ 	struct aesbs_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
+ 	unsigned int reqsize;
+ 
+-	ctx->enc_tfm = crypto_alloc_skcipher("cbc(aes)", 0, CRYPTO_ALG_ASYNC);
++	ctx->enc_tfm = crypto_alloc_skcipher("cbc(aes)", 0, CRYPTO_ALG_ASYNC |
++					     CRYPTO_ALG_NEED_FALLBACK);
+ 	if (IS_ERR(ctx->enc_tfm))
+ 		return PTR_ERR(ctx->enc_tfm);
+ 
+@@ -441,7 +442,8 @@ static struct skcipher_alg aes_algs[] = { {
+ 	.base.cra_blocksize	= AES_BLOCK_SIZE,
+ 	.base.cra_ctxsize	= sizeof(struct aesbs_cbc_ctx),
+ 	.base.cra_module	= THIS_MODULE,
+-	.base.cra_flags		= CRYPTO_ALG_INTERNAL,
++	.base.cra_flags		= CRYPTO_ALG_INTERNAL |
++				  CRYPTO_ALG_NEED_FALLBACK,
+ 
+ 	.min_keysize		= AES_MIN_KEY_SIZE,
+ 	.max_keysize		= AES_MAX_KEY_SIZE,
+-- 
+2.17.1
 
