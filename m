@@ -2,93 +2,95 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A118129DE19
-	for <lists+linux-crypto@lfdr.de>; Thu, 29 Oct 2020 01:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06C629E07E
+	for <lists+linux-crypto@lfdr.de>; Thu, 29 Oct 2020 02:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgJ2AxM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 28 Oct 2020 20:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725787AbgJ2AwV (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 28 Oct 2020 20:52:21 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5DAC0613CF;
-        Wed, 28 Oct 2020 17:52:21 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id u62so1564985iod.8;
-        Wed, 28 Oct 2020 17:52:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=qYfouXO8KCaYN4zQ36HTIQpNGijmRLMWaq601lgAgNU=;
-        b=G2vDIVHWR7/IySHEfb2dLNbCkBqSEU5VvJPZJRUp/kBh6zWjJfcvZQTwD5bQcrVpyj
-         Lgu+oF51MHKub9m/z5fVoCaqEKrNRX3xwQZjygoSPFi2pCex2hHIrsYOyUlc9OM1ShKV
-         sIJLBedc4BovIGspIoi2hqzmO2iF+G49bbyR7PnRVWUX2CUWRorq4Mn1rPiNMUTAuyLS
-         6EsrhHnMZ7ka+rJbM47rmiHwKbvTI3YFcjPsrKppesVyX47nHLFDJL+ymF9xnk+G8Lk6
-         znxTNvg7a7V9mx1E6gfw8djo1TWbJSE+Ala0MPFZGKadfWG+LJ72Npd0qjS6BkfDzb76
-         vSHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=qYfouXO8KCaYN4zQ36HTIQpNGijmRLMWaq601lgAgNU=;
-        b=cjYDYwkTdzseqnr4gUrcMIfTMoGKIS4Kk6h3ZD9XMnzdNnfBKXfKA46oJrWaUU3XkH
-         uxtOiwe2B0NagDRm+EtMkWYnconiTFHDNpj8GAi6+7bGUw8r2hdAFqTopmVAUcc8NxSA
-         FukvlsmWSetbfnR5bsinsz6v6lFFmjghjLAN7cw/1SPS1Da1NbcZRHAvrygZBoVQE/se
-         O1otKDz0dnPTVj3R3PTli0Fbe+bXmtqrdBK7gaoidyymZbcHsWj6+T6VBH2hBU9NraDL
-         iiUZm8h7/rxkmNff29+8tD9zqGZ4BManEHOfYv78lNphT1nAWv+UT/RHURqRDooFlbPl
-         CIow==
-X-Gm-Message-State: AOAM53130jStcOnVwLM5pRLOal5ddPGdLXVgvlxnrpgAeKL6csa6ZUDm
-        SjFaS2v4qykNWzvjrbVJ0EU=
-X-Google-Smtp-Source: ABdhPJyJf1tSyGy80LhBfMuk+K/qeOqKhP54ePbdXLX+pW7phQWZckMRKslk5bWBBhJ6e0DrKDx4Hg==
-X-Received: by 2002:a5e:930d:: with SMTP id k13mr1593676iom.33.1603932740730;
-        Wed, 28 Oct 2020 17:52:20 -0700 (PDT)
-Received: from fedora-project ([185.240.246.172])
-        by smtp.gmail.com with ESMTPSA id r14sm1026454ilc.78.2020.10.28.17.52.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 17:52:20 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 20:52:17 -0400
-From:   Nigel Christian <nigel.l.christian@gmail.com>
-To:     dan.carpenter@oracle.com, martin@kaiser.cx
-Cc:     mpm@selenic.com, herbert@gondor.apana.org.au, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-crypto@vger.kernel.org,
-        prasannatsmkumar@gmail.com, m.felsch@pengutronix.de,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH resend] hwrng: imx-rngc - irq already prints an error
-Message-ID: <20201029005217.GA28008@fedora-project>
+        id S1729595AbgJ1WEx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 28 Oct 2020 18:04:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:38784 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729498AbgJ1WCP (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:02:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CCC741762;
+        Wed, 28 Oct 2020 05:34:23 -0700 (PDT)
+Received: from e110176-lin.kfn.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 787853F719;
+        Wed, 28 Oct 2020 05:34:21 -0700 (PDT)
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com
+Cc:     Ofir Drang <ofir.drang@arm.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Milan Broz <gmazyland@gmail.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] crypto: switch to crypto API for EBOIV generation
+Date:   Wed, 28 Oct 2020 14:34:15 +0200
+Message-Id: <20201028123420.30623-1-gilad@benyossef.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Clean up the check for irq. dev_err() is superfluous as
-platform_get_irq() already prints an error. Check for zero
-would indicate a bug. Remove curly braces to conform to
-styling requirements.
-Signed-off-by: Nigel Christian <nigel.l.christian@gmail.com>
----
- drivers/char/hw_random/imx-rngc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+This series creates an EBOIV template that produces a skcipher
+transform which passes through all operations to the skcipher, while
+using the same skcipher and key to encrypt the input IV, which is
+assumed to be a sector offset, although this is not enforced.
 
-diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
-index 61c844baf26e..b05d676ca814 100644
---- a/drivers/char/hw_random/imx-rngc.c
-+++ b/drivers/char/hw_random/imx-rngc.c
-@@ -252,10 +252,8 @@ static int imx_rngc_probe(struct platform_device *pdev)
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq <= 0) {
--		dev_err(&pdev->dev, "Couldn't get irq %d\n", irq);
-+	if (irq < 0)
- 		return irq;
--	}
- 
- 	ret = clk_prepare_enable(rngc->clk);
- 	if (ret)
+This matches dm-crypt use of EBOIV to provide BitLocker support,
+and so it is proposed as a replacement in patch #3.
+
+Replacing the dm-crypt specific EBOIV implementation to a Crypto
+API based one allows us to save a memory allocation per
+each request, as well as opening the way for use of compatible
+alternative transform providers, one of which, based on the
+Arm TrustZone CryptoCell hardware, is proposed as patch #4.
+
+Future potential work to allow encapsulating the handling of
+multiple subsequent blocks by the Crypto API may also
+benefit from this work.
+
+The code has been tested on both x86_64 virtual machine
+with the dm-crypt test suite and on an arm 32 bit board
+with the CryptoCell hardware.
+
+Since no offical source for eboiv test vectors is known,
+the test vectors supplied as patch #2 are derived from
+sectors which are part of the dm-crypt test suite.
+
+Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Milan Broz <gmazyland@gmail.com> 
+
+
+Changes from v1:
+- Incorporated feedback from Eric Biggers regarding eboiv template code.
+- Incorporated fixes for issues found by kernel test robot.
+- Moved from a Kconfig dependency of DM_CRYPT to EBOIV to
+  EBOIV default of DM_CRYPT as suggested by Herbert Xu.
+
+Gilad Ben-Yossef (4):
+  crypto: add eboiv as a crypto API template
+  crypto: add eboiv(cbc(aes)) test vectors
+  dm crypt: switch to EBOIV crypto API template
+  crypto: ccree: re-introduce ccree eboiv support
+
+ crypto/Kconfig                       |  23 +++
+ crypto/Makefile                      |   1 +
+ crypto/eboiv.c                       | 271 ++++++++++++++++++++++++++
+ crypto/tcrypt.c                      |   9 +
+ crypto/testmgr.c                     |   6 +
+ crypto/testmgr.h                     | 279 +++++++++++++++++++++++++++
+ drivers/crypto/ccree/cc_cipher.c     | 132 +++++++++----
+ drivers/crypto/ccree/cc_crypto_ctx.h |   1 +
+ drivers/md/dm-crypt.c                |  61 ++----
+ 9 files changed, 704 insertions(+), 79 deletions(-)
+ create mode 100644 crypto/eboiv.c
+
 -- 
 2.28.0
 
