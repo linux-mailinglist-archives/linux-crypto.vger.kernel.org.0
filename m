@@ -2,127 +2,77 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92F529D343
-	for <lists+linux-crypto@lfdr.de>; Wed, 28 Oct 2020 22:42:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 144FC29D688
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 Oct 2020 23:15:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726231AbgJ1Vm1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 28 Oct 2020 17:42:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38178 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726110AbgJ1VmZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:42:25 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4916124804;
-        Wed, 28 Oct 2020 18:06:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603908397;
-        bh=diRpUytNGr4vcLPj80uDkTMwdSI1HzXRNGWbFmZNeE4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L1PUX5qJV3wrtoiw3Awx/J+kAC9EjUHUAglD5hffuzyV53Hpkp+mPkP+JXr35QK7c
-         4jcgeKlnR1Uz4YpSQXrMBKUV/1DYWtIJ6C5d2/4Y76zd20lMFTX47E16FohUOYzfWs
-         32G2AlRPxoQEZu2HTsTdMnRz/0KmfVzygY7KSfEI=
-Date:   Wed, 28 Oct 2020 19:07:28 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Torsten Duwe <duwe@lst.de>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
-        Willy Tarreau <w@1wt.eu>, linux-crypto@vger.kernel.org,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        And y Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Petr Tesarik <ptesarik@suse.cz>, simo@redhat.com
-Subject: Re: [PATCH v36 00/13] /dev/random - a new approach
-Message-ID: <20201028180728.GA2831268@kroah.com>
-References: <20200921075857.4424-1-nstange@suse.de>
- <2961243.vtBmWVcJkq@tauon.chronox.de>
- <20201016172619.GA18410@lst.de>
- <3073852.aeNJFYEL58@positron.chronox.de>
- <20201028185117.74300988@blackhole.lan>
+        id S1731301AbgJ1WPR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 28 Oct 2020 18:15:17 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51986 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731268AbgJ1WPG (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:15:06 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id A654929A58;
+        Tue, 27 Oct 2020 23:26:19 -0400 (EDT)
+Date:   Wed, 28 Oct 2020 14:26:12 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Tom Rix <trix@redhat.com>
+cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org,
+        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
+Subject: Re: [RFC] clang tooling cleanups
+In-Reply-To: <20201027164255.1573301-1-trix@redhat.com>
+Message-ID: <alpine.LNX.2.23.453.2010281344120.31@nippy.intranet>
+References: <20201027164255.1573301-1-trix@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201028185117.74300988@blackhole.lan>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 06:51:17PM +0100, Torsten Duwe wrote:
-> On Mon, 19 Oct 2020 21:28:50 +0200
-> Stephan Müller <smueller@chronox.de> wrote:
-> [...]
-> > * Sole use of crypto for data processing:
-> [...]
-> >  - The LRNG uses only properly defined and implemented cryptographic
-> >    algorithms unlike the use of the SHA-1 transformation in the
-> > existing /dev/random implementation.
-> > 
-> >  - Hash operations use NUMA-node-local hash instances to benefit large
-> >    parallel systems.
-> > 
-> >  - LRNG uses limited number of data post-processing steps
-> [...]
-> > * Performance
-> > 
-> >  - Faster by up to 75% in the critical code path of the interrupt
-> > handler depending on data collection size configurable at kernel
-> > compile time - the default is about equal in performance with
-> > existing /dev/random as outlined in [2] section 4.2.
-> 
-> [...]
-> >  - ChaCha20 DRNG is significantly faster as implemented in the
-> > existing /dev/random as demonstrated with [2] table 2.
-> > 
-> >  - Faster entropy collection during boot time to reach fully seeded
-> >    level, including on virtual systems or systems with SSDs as
-> > outlined in [2] section 4.1.
-> > 
-> > * Testing
-> [...]
-> 
-> So we now have 2 proposals for a state-of-the-art RNG, and over a month
-> without a single comment on-topic from any `get_maintainer.pl`
-> 
-> I don't want to emphasise the certification aspects so much. The
-> interrelation is rather that those certifications require certain code
-> features, features which are reasonable per se. But the current code is
-> lagging way behind.
-> 
-> I see the focus namely on performance, scalability, testability and
-> virtualisation. And it certainly is an advantage to use the code
-> already present under crypto, with its optimisations, and not rely
-> on some home brew.
-> 
-> Can we please have a discussion about how to proceed?
-> Ted, Greg, Arnd: which approach would you prefer?
 
-Greg and Arnd are not the random driver maintainers, as is now correctly
-shown in the 5.10-rc1 MAINTAINERS file, so I doubt we (well at least I)
-have any say here, sorry.
+On Tue, 27 Oct 2020, trix@redhat.com wrote:
 
-good luck!
+> This rfc will describe
+> An upcoming treewide cleanup.
+> How clang tooling was used to programatically do the clean up.
+> Solicit opinions on how to generally use clang tooling.
+> 
 
-greg k-h
+This tooling is very impressive. It makes possible an idea that I had a 
+while ago, to help make code review more efficient. It works like this. 
+
+Suppose a patch, p, is the difference between the new tree, n, and the old 
+tree, o. That is, p = n - o.
+
+Now let clang-tidy be the transformation 't'. This gets you a much more 
+readable patch submission, P = t(n) - t(o).
+
+The only difficulty is that, if I submit P intead of p then 'git am' will 
+probably reject it. This is solved by a little tooling around git, such 
+that, should a patch P fail to apply, the relevant files are automatically 
+reformatted with the officially endorsed transformation t, to generate a 
+minimal cleanup patch, such that P can be automatically applied on top.
+
+If the patch submission process required* that every patch submission was 
+generated like P and not like p, it would immediately eliminate all 
+clean-up patches from the workload of all reviewers, and also make the 
+reviewers' job easier because all submissions are now formatted correctly, 
+and also avoid time lost to round-trips, such as, "you can have a 
+reviewed-by if you respin to fix some minor style issues".
+
+* Enforcing this, e.g. with checkpatch, is slightly more complicated, but 
+it works the same way: generate a minimal cleanup patch for the relevant 
+files, apply the patch-to-be-submitted, and finally confirm that the 
+modified files are unchanged under t.
