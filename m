@@ -2,128 +2,83 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7EE2A03FB
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Oct 2020 12:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB762A08A1
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Oct 2020 15:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgJ3LUr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 30 Oct 2020 07:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
+        id S1726878AbgJ3O6e (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 30 Oct 2020 10:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgJ3LUq (ORCPT
+        with ESMTP id S1726919AbgJ3O6d (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:20:46 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D20C0613D4
-        for <linux-crypto@vger.kernel.org>; Fri, 30 Oct 2020 04:20:46 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id o70so4831443ybc.1
-        for <linux-crypto@vger.kernel.org>; Fri, 30 Oct 2020 04:20:46 -0700 (PDT)
+        Fri, 30 Oct 2020 10:58:33 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F98C0613D5
+        for <linux-crypto@vger.kernel.org>; Fri, 30 Oct 2020 07:58:31 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id g25so6142160edm.6
+        for <linux-crypto@vger.kernel.org>; Fri, 30 Oct 2020 07:58:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=G9dXGMHL3LoWEWUdy1Ms+BhIgQ35oL2d5aGD3k8A1UE=;
-        b=HqGvZhBVNP/Aty6lRkxtyeTfSpOJnW/80pgI0PLU4TQJYmLSG0M1XSw7w7i6FFlrvi
-         3pIRW5VMXotOtXIRIt2rApfUcO7vyIdMH7GAgiBiIZyLRdQDG5i1TM74aYQLMcYA/ezh
-         HcMWRVV5gcjRQru+OlFfIB3l8TkYUQAED7gMm3sfgHMhgfYEC0clXYhl/tUMerpH6voB
-         6XimbfQZF5pGpP/VwXS9vpeLl1J2MT2KPnp144nKnafF/UF9GwiWkLPyH4XXCBEbv8f5
-         Zeex7cHz/sIUzsLi2EeiP3deNt8t9KwddYNfMuhThMdmDiHR0AYdlHV+SHkPwPJYgpKr
-         R9dQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=9fkQXWnoPSypfyxvIrXWSyd1r4Ua0eeDJczOBpIf/BU=;
+        b=cba/prsbSBmYoHoIyJJ/4nz72WNuXyuE8Im8hHokykrknu6T+ZGQ3oNaEZCnDQMKfK
+         7InrWK9/LAehftIUxFF07tvuUQ/41xDXt8c8cRINmlHgR1biRfbdW9zZPxVC6xa8zOlP
+         K6M6oRsBtl8MN1IVNiGcNelh1LOXBPRCedQHjpXjHdhTZUoXOfQ5ssal2G05i4dOSCvv
+         FIx5VhgkFc0MSmWonLWORS6bGxkDSNKyYqWmGabj1TsHCGlpIexLxPpAsXs6aOmBy4OY
+         u1xNW9W0JHHwE2pLQBvrBX9wQMtbUIk6CF2f6hu1cvsgwIaE0/cl0h377THHVavVg8oE
+         Ypbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=G9dXGMHL3LoWEWUdy1Ms+BhIgQ35oL2d5aGD3k8A1UE=;
-        b=kcOZAhFQmw+ThXplsf9pmdfXjIHyDFe1Ef/+S0KqWt3xtSogHYwoT5+ikxIItVUpsM
-         U+YawaIsmY1TfWrktRU+EvmomSRrNIzF43dhS/O723xHJW7XNPWm0X1a2fWsCF5AON+W
-         vFT9wPZR2auZs6ry7eIR1VSZwiu432FmjnfFh5wP8Yh/GnlMNnruGyhzKrXqCuThZXeR
-         k1fkYq+YSSEM2liPt5Wb3fw7BpHsxzgDi++m9+tXRb0HpTQ4dV0pw6VWKWIzcssM71JP
-         FsSnqvY0Vfiom1sKyCKmf+Q+5FwtBVL4O/sC++ibtk0ykOU1KcGmUs7aXITiEXp0lock
-         VjNw==
-X-Gm-Message-State: AOAM533RQeYGnRcMsS5aWLtpJSueKgLeegOv4EG4w6e4+dUYzHLL8+9u
-        fFHWBMpLWMkqc2K26MT3i5kAvM8w8BSH9Wp/u1jRSA==
-X-Google-Smtp-Source: ABdhPJzra1pMG5DWzyNsqxZMtv8L71QZ9N4kNvy1uCXEHLUKRwFRdAqW8KJMoQPn5ok9GmGGT6GuLe6CgauTI6lkDu8=
-X-Received: by 2002:a5b:389:: with SMTP id k9mr2590084ybp.75.1604056845834;
- Fri, 30 Oct 2020 04:20:45 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=9fkQXWnoPSypfyxvIrXWSyd1r4Ua0eeDJczOBpIf/BU=;
+        b=GaLt6kgGyRNj+no54gUlAI5SPxisx8trglTHK3XVFVB+2lvXS4gUB6DZCtQTU5+nDx
+         WE3WgjFNq9lnbnZIn8we2i5uJO/XiG00PuKpWK0O52roFQUKVNCGnuyOrNBEkTrcZ9Pa
+         g9fWR3qKoMPbjUE0T52hhUHpvLAy04Bcbx9ObwEbhLQO79TMTtlOqCNgaeY15c2l7fdV
+         ceQa14J5uZhCIy+JPSqgj4yRu1plCJsAz/g9P+14VY+AzMk/jy8NCrLuIDqZr9I2fehH
+         OaAsquAwTNHymEJA11HfqdoUD1zAleYQ0wmXZQFtd9v6kXK5I6Ok+q3XwLtwmgSzY6k2
+         3Acg==
+X-Gm-Message-State: AOAM5332FjdsgN9so4Oo4WpeUd/Apcd2De0gjsofxCSZkupvyfw9B0EF
+        EJDcA6NhX1zU+cxypDcZo0RYcgtIqhWcsLokLg==
+X-Google-Smtp-Source: ABdhPJz2xsjxOvoK0J4Ck702AA6tUztWDi8Hr+jNkMDLFNqNVV9sSKYCidfmYBReGemdlea1AJeouFi1w4gUiDPqlYM=
+X-Received: by 2002:a50:9e82:: with SMTP id a2mr2760020edf.117.1604069910083;
+ Fri, 30 Oct 2020 07:58:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201029100546.28686-1-gilad@benyossef.com> <20201029100546.28686-2-gilad@benyossef.com>
- <3a4804a5-5d5c-1216-1503-c241cc24f3c2@gmail.com>
-In-Reply-To: <3a4804a5-5d5c-1216-1503-c241cc24f3c2@gmail.com>
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-Date:   Fri, 30 Oct 2020 13:20:41 +0200
-Message-ID: <CAOtvUMdJxVSFhN4QMNL+eiF6OB2LevThcgDK34M-=JDXCoDXMA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] crypto: add eboiv as a crypto API template
-To:     Milan Broz <gmazyland@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        Ofir Drang <ofir.drang@arm.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Received: by 2002:a50:f14c:0:0:0:0:0 with HTTP; Fri, 30 Oct 2020 07:58:29
+ -0700 (PDT)
+Reply-To: li.anable85@gmail.com
+From:   Liliane Abel <k.griest04@gmail.com>
+Date:   Fri, 30 Oct 2020 15:58:29 +0100
+Message-ID: <CABAZL7kO5JQZMDhdiGK6i8XTXe8pbB5xWmsnDKzGXmDahQmacQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi,
+Dearest
 
-On Fri, Oct 30, 2020 at 12:33 PM Milan Broz <gmazyland@gmail.com> wrote:
->
-> On 29/10/2020 11:05, Gilad Ben-Yossef wrote:
-> >
-> > +config CRYPTO_EBOIV
-> > +     tristate "EBOIV support for block encryption"
-> > +     default DM_CRYPT
-> > +     select CRYPTO_CBC
-> > +     help
-> > +       Encrypted byte-offset initialization vector (EBOIV) is an IV
-> > +       generation method that is used in some cases by dm-crypt for
-> > +       supporting the BitLocker volume encryption used by Windows 8
-> > +       and onwards as a backwards compatible version in lieu of XTS
-> > +       support.
-> > +
-> > +       It uses the block encryption key as the symmetric key for a
-> > +       block encryption pass applied to the sector offset of the block=
-.
-> > +       Additional details can be found at
-> > +       https://www.jedec.org/sites/default/files/docs/JESD223C.pdf
->
-> This page is not available. Are you sure this is the proper documentation=
-?
+Greeting my dear, I am Liliane Abel by name, The only daughter of late
+Mr.Benson Abel. My father is one of the top Politician in our country
+and my mother is a farmers and cocoa merchant when they were both
+alive. After the death of my mother, long ago, my father was
+controlling their business until he was poisoned by his business
+associates which he suffered and died.
 
-You need to register at the JEDEC web site to get the PDF. The
-registration is free though.
-
-It's the only standard I am aware of that describe this mode, as
-opposed to a paper.
-
->
-> I think the only description we used (for dm-crypt) was original Ferguson=
-'s Bitlocker doc:
-> https://download.microsoft.com/download/0/2/3/0238acaf-d3bf-4a6d-b3d6-0a0=
-be4bbb36e/bitlockercipher200608.pdf
-
-
-Yes, the JEDEC has a reference to that as well, but the white paper
-doesn't actually describe the option without the diffuser.
-
->
-> IIRC EBOIV was a shortcut I added to dm-crypt because we found no officia=
-l terminology for this IV.
-> And after lunchtime, nobody invented anything better, so it stayed as it =
-is now :-)
-
-Well, I still don't have any better name to offer, LOL :-)
-
-Gilad
-
-
-
---=20
-Gilad Ben-Yossef
-Chief Coffee Drinker
-
-values of =CE=B2 will give rise to dom!
+Before the death of my father, He told me about (two million five
+hundred thousand united states dollars) which he deposited in the bank
+in Lome-Togo, It was the money he intended to transfer overseas for
+investment before he was poisoned. He also instructed me that I should
+seek for foreign partners in any country of my choice who will assist
+me transfer this money in overseas account where the money will be
+wisely invested.
+I am seeking for your kind assistance in the following ways:  (1) to
+provide a safe bank account into where the money will be transferred
+for investment. (2) To serve as a guardian of this fund since I am a
+girl of 19 years old. (3) To make arrangement for me to come over to
+your country to further my education. This is my reason for writing to
+you. Please if you are willing to assist me I will offer you 25% of
+the total money. Reply if  you are interested
+Best regards.
+Liliane Abel.
