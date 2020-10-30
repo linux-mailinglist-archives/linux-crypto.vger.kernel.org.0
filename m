@@ -2,83 +2,170 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB762A08A1
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Oct 2020 15:58:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77CD42A0AB3
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Oct 2020 17:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgJ3O6e (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 30 Oct 2020 10:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39132 "EHLO
+        id S1726522AbgJ3QH4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 30 Oct 2020 12:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726919AbgJ3O6d (ORCPT
+        with ESMTP id S1725355AbgJ3QHz (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:58:33 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F98C0613D5
-        for <linux-crypto@vger.kernel.org>; Fri, 30 Oct 2020 07:58:31 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id g25so6142160edm.6
-        for <linux-crypto@vger.kernel.org>; Fri, 30 Oct 2020 07:58:31 -0700 (PDT)
+        Fri, 30 Oct 2020 12:07:55 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4A3C0613CF
+        for <linux-crypto@vger.kernel.org>; Fri, 30 Oct 2020 09:07:54 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id m3so1555743vki.12
+        for <linux-crypto@vger.kernel.org>; Fri, 30 Oct 2020 09:07:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=9fkQXWnoPSypfyxvIrXWSyd1r4Ua0eeDJczOBpIf/BU=;
-        b=cba/prsbSBmYoHoIyJJ/4nz72WNuXyuE8Im8hHokykrknu6T+ZGQ3oNaEZCnDQMKfK
-         7InrWK9/LAehftIUxFF07tvuUQ/41xDXt8c8cRINmlHgR1biRfbdW9zZPxVC6xa8zOlP
-         K6M6oRsBtl8MN1IVNiGcNelh1LOXBPRCedQHjpXjHdhTZUoXOfQ5ssal2G05i4dOSCvv
-         FIx5VhgkFc0MSmWonLWORS6bGxkDSNKyYqWmGabj1TsHCGlpIexLxPpAsXs6aOmBy4OY
-         u1xNW9W0JHHwE2pLQBvrBX9wQMtbUIk6CF2f6hu1cvsgwIaE0/cl0h377THHVavVg8oE
-         Ypbg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y5CoSCnNRhCRozrYeGNW0V+sIJdvVi8383p8d1OtLeQ=;
+        b=mjJus0dvjSV9n4U6vqculXyM/k8ixxRixp07EK63G3QLr+wccVHK30Njor11feGdde
+         L53UCuDYf1n9hsHgnWmS0qXhYXyUrehnMd81hVRPqOsR/IeQm7csHJjBP7kSZkq3rM87
+         FKc9jaWWJ7NJliKNJVeUjocOZHsnXdN+y64azgVit+LdJNyGsCHp1tKOj0CZnRhYevP3
+         yJmy6xccZF/BP2VvyMHGB8JckGVpPHOzXvEmmW+Oano35hzQXLToXohe6A3U7UT5JVpA
+         7FmZ7WYW46SBkOjMUfufb/UF9+8kVcXoTDvespAMWj2YVd98dPktuBMTB5bJsGsPLwv7
+         9lnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=9fkQXWnoPSypfyxvIrXWSyd1r4Ua0eeDJczOBpIf/BU=;
-        b=GaLt6kgGyRNj+no54gUlAI5SPxisx8trglTHK3XVFVB+2lvXS4gUB6DZCtQTU5+nDx
-         WE3WgjFNq9lnbnZIn8we2i5uJO/XiG00PuKpWK0O52roFQUKVNCGnuyOrNBEkTrcZ9Pa
-         g9fWR3qKoMPbjUE0T52hhUHpvLAy04Bcbx9ObwEbhLQO79TMTtlOqCNgaeY15c2l7fdV
-         ceQa14J5uZhCIy+JPSqgj4yRu1plCJsAz/g9P+14VY+AzMk/jy8NCrLuIDqZr9I2fehH
-         OaAsquAwTNHymEJA11HfqdoUD1zAleYQ0wmXZQFtd9v6kXK5I6Ok+q3XwLtwmgSzY6k2
-         3Acg==
-X-Gm-Message-State: AOAM5332FjdsgN9so4Oo4WpeUd/Apcd2De0gjsofxCSZkupvyfw9B0EF
-        EJDcA6NhX1zU+cxypDcZo0RYcgtIqhWcsLokLg==
-X-Google-Smtp-Source: ABdhPJz2xsjxOvoK0J4Ck702AA6tUztWDi8Hr+jNkMDLFNqNVV9sSKYCidfmYBReGemdlea1AJeouFi1w4gUiDPqlYM=
-X-Received: by 2002:a50:9e82:: with SMTP id a2mr2760020edf.117.1604069910083;
- Fri, 30 Oct 2020 07:58:30 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y5CoSCnNRhCRozrYeGNW0V+sIJdvVi8383p8d1OtLeQ=;
+        b=TtOuHp9dMKDTa8GWLvV75/lI37LH9dB2883g4PR/uxQUfn7Jah/OjgPpcVvd3h7AHW
+         7EXBjFRuimTqzOE8diTCAa5UP3d4eg5B9Wgm78GpkyMXQwyu0QkKP2cqxUN/f8aoF1m6
+         i7AW22Wi4ATdeojCgYy0J+Uui40RYtB9N4fhPM+iVYAyV/D5YlPem2E2poaT8Ca41/by
+         3xtP+LXhk8lHmM89E0Xoija68g8ok8mIEFu/P73ftfqJbp+b+h99Dgpn7h3KM19bGhir
+         CgxfhIBPSlUF7VXR+diN8M5HqZqNqt6Mwa5RX/J8NoMfXuHzOptSNTmc6NxIsn7F29mK
+         WDaw==
+X-Gm-Message-State: AOAM530t3LK09sK2lWBh37qSUyHV6lFqvC99QC/kCZI3TDS58Z9nrAnu
+        cxSBUTl/IV3Fer9EzamD6oHCIvEK4w0=
+X-Google-Smtp-Source: ABdhPJx6Brtx2UYs9S+4SHVvw2AaZU4S2/pxLytr+jawpdFSPLK276jlaIfrfdlKlLTqO14zg9+4hw==
+X-Received: by 2002:ac5:c84f:: with SMTP id g15mr7809181vkm.11.1604074072670;
+        Fri, 30 Oct 2020 09:07:52 -0700 (PDT)
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
+        by smtp.gmail.com with ESMTPSA id w184sm577799vsw.3.2020.10.30.09.07.50
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 09:07:51 -0700 (PDT)
+Received: by mail-ua1-f51.google.com with SMTP id y1so1857306uac.13
+        for <linux-crypto@vger.kernel.org>; Fri, 30 Oct 2020 09:07:50 -0700 (PDT)
+X-Received: by 2002:ab0:299a:: with SMTP id u26mr1952445uap.108.1604074070157;
+ Fri, 30 Oct 2020 09:07:50 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a50:f14c:0:0:0:0:0 with HTTP; Fri, 30 Oct 2020 07:58:29
- -0700 (PDT)
-Reply-To: li.anable85@gmail.com
-From:   Liliane Abel <k.griest04@gmail.com>
-Date:   Fri, 30 Oct 2020 15:58:29 +0100
-Message-ID: <CABAZL7kO5JQZMDhdiGK6i8XTXe8pbB5xWmsnDKzGXmDahQmacQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
+References: <20201028145015.19212-1-schalla@marvell.com> <20201028145015.19212-3-schalla@marvell.com>
+In-Reply-To: <20201028145015.19212-3-schalla@marvell.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Fri, 30 Oct 2020 12:07:13 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSeLG+WV_Et75trH1kF0ahFpqfe2SvMRfjKk+OYycWktVw@mail.gmail.com>
+Message-ID: <CA+FuTSeLG+WV_Et75trH1kF0ahFpqfe2SvMRfjKk+OYycWktVw@mail.gmail.com>
+Subject: Re: [PATCH v8,net-next,02/12] octeontx2-af: add mailbox interface for CPT
+To:     Srujana Challa <schalla@marvell.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        David Miller <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-crypto@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+        schandran@marvell.com, pathreya@marvell.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dearest
+On Wed, Oct 28, 2020 at 10:44 PM Srujana Challa <schalla@marvell.com> wrote:
+>
+> On OcteonTX2 SoC, the admin function (AF) is the only one with all
+> priviliges to configure HW and alloc resources, PFs and it's VFs
+> have to request AF via mailbox for all their needs. This patch adds
+> a mailbox interface for CPT PFs and VFs to allocate resources
+> for cryptography.
+>
+> Signed-off-by: Suheil Chandran <schandran@marvell.com>
+> Signed-off-by: Srujana Challa <schalla@marvell.com>
+> ---
+>  .../ethernet/marvell/octeontx2/af/Makefile    |   3 +-
+>  .../net/ethernet/marvell/octeontx2/af/mbox.h  |  33 +++
+>  .../net/ethernet/marvell/octeontx2/af/rvu.c   |   2 +-
+>  .../net/ethernet/marvell/octeontx2/af/rvu.h   |   1 +
+>  .../ethernet/marvell/octeontx2/af/rvu_cpt.c   | 229 ++++++++++++++++++
+>  .../ethernet/marvell/octeontx2/af/rvu_reg.h   |  63 ++++-
+>  6 files changed, 323 insertions(+), 8 deletions(-)
+>  create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c
 
-Greeting my dear, I am Liliane Abel by name, The only daughter of late
-Mr.Benson Abel. My father is one of the top Politician in our country
-and my mother is a farmers and cocoa merchant when they were both
-alive. After the death of my mother, long ago, my father was
-controlling their business until he was poisoned by his business
-associates which he suffered and died.
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
+> index 7ca599b973c0..807b1c1a9d85 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
+> @@ -429,12 +429,63 @@
+>  #define TIM_AF_LF_RST                  (0x20)
+>
+>  /* CPT */
+> -#define CPT_AF_CONSTANTS0              (0x0000)
+> -#define CPT_PRIV_LFX_CFG               (0x41000)
+> -#define CPT_PRIV_LFX_INT_CFG           (0x43000)
+> -#define CPT_AF_RVU_LF_CFG_DEBUG                (0x45000)
+> -#define CPT_AF_LF_RST                  (0x44000)
+> -#define CPT_AF_BLK_RST                 (0x46000)
+> +#define CPT_AF_CONSTANTS0               (0x0000)
+> +#define CPT_AF_CONSTANTS1               (0x1000)
+> +#define CPT_AF_DIAG                     (0x3000)
+> +#define CPT_AF_ECO                      (0x4000)
+> +#define CPT_AF_FLTX_INT(a)              (0xa000ull | (u64)(a) << 3)
+> +#define CPT_AF_FLTX_INT_W1S(a)          (0xb000ull | (u64)(a) << 3)
+> +#define CPT_AF_FLTX_INT_ENA_W1C(a)      (0xc000ull | (u64)(a) << 3)
+> +#define CPT_AF_FLTX_INT_ENA_W1S(a)      (0xd000ull | (u64)(a) << 3)
+> +#define CPT_AF_PSNX_EXE(a)              (0xe000ull | (u64)(a) << 3)
+> +#define CPT_AF_PSNX_EXE_W1S(a)          (0xf000ull | (u64)(a) << 3)
+> +#define CPT_AF_PSNX_LF(a)               (0x10000ull | (u64)(a) << 3)
+> +#define CPT_AF_PSNX_LF_W1S(a)           (0x11000ull | (u64)(a) << 3)
+> +#define CPT_AF_EXEX_CTL2(a)             (0x12000ull | (u64)(a) << 3)
+> +#define CPT_AF_EXEX_STS(a)              (0x13000ull | (u64)(a) << 3)
+> +#define CPT_AF_EXE_ERR_INFO             (0x14000)
+> +#define CPT_AF_EXEX_ACTIVE(a)           (0x16000ull | (u64)(a) << 3)
+> +#define CPT_AF_INST_REQ_PC              (0x17000)
+> +#define CPT_AF_INST_LATENCY_PC          (0x18000)
+> +#define CPT_AF_RD_REQ_PC                (0x19000)
+> +#define CPT_AF_RD_LATENCY_PC            (0x1a000)
+> +#define CPT_AF_RD_UC_PC                 (0x1b000)
+> +#define CPT_AF_ACTIVE_CYCLES_PC         (0x1c000)
+> +#define CPT_AF_EXE_DBG_CTL              (0x1d000)
+> +#define CPT_AF_EXE_DBG_DATA             (0x1e000)
+> +#define CPT_AF_EXE_REQ_TIMER            (0x1f000)
+> +#define CPT_AF_EXEX_CTL(a)              (0x20000ull | (u64)(a) << 3)
+> +#define CPT_AF_EXE_PERF_CTL             (0x21000)
+> +#define CPT_AF_EXE_DBG_CNTX(a)          (0x22000ull | (u64)(a) << 3)
+> +#define CPT_AF_EXE_PERF_EVENT_CNT       (0x23000)
+> +#define CPT_AF_EXE_EPCI_INBX_CNT(a)     (0x24000ull | (u64)(a) << 3)
+> +#define CPT_AF_EXE_EPCI_OUTBX_CNT(a)    (0x25000ull | (u64)(a) << 3)
+> +#define CPT_AF_EXEX_UCODE_BASE(a)       (0x26000ull | (u64)(a) << 3)
+> +#define CPT_AF_LFX_CTL(a)               (0x27000ull | (u64)(a) << 3)
+> +#define CPT_AF_LFX_CTL2(a)              (0x29000ull | (u64)(a) << 3)
+> +#define CPT_AF_CPTCLK_CNT               (0x2a000)
+> +#define CPT_AF_PF_FUNC                  (0x2b000)
+> +#define CPT_AF_LFX_PTR_CTL(a)           (0x2c000ull | (u64)(a) << 3)
+> +#define CPT_AF_GRPX_THR(a)              (0x2d000ull | (u64)(a) << 3)
+> +#define CPT_AF_CTL                      (0x2e000ull)
+> +#define CPT_AF_XEX_THR(a)               (0x2f000ull | (u64)(a) << 3)
+> +#define CPT_PRIV_LFX_CFG                (0x41000)
+> +#define CPT_PRIV_AF_INT_CFG             (0x42000)
+> +#define CPT_PRIV_LFX_INT_CFG            (0x43000)
+> +#define CPT_AF_LF_RST                   (0x44000)
+> +#define CPT_AF_RVU_LF_CFG_DEBUG         (0x45000)
+> +#define CPT_AF_BLK_RST                  (0x46000)
+> +#define CPT_AF_RVU_INT                  (0x47000)
+> +#define CPT_AF_RVU_INT_W1S              (0x47008)
+> +#define CPT_AF_RVU_INT_ENA_W1S          (0x47010)
+> +#define CPT_AF_RVU_INT_ENA_W1C          (0x47018)
+> +#define CPT_AF_RAS_INT                  (0x47020)
+> +#define CPT_AF_RAS_INT_W1S              (0x47028)
+> +#define CPT_AF_RAS_INT_ENA_W1S          (0x47030)
+> +#define CPT_AF_RAS_INT_ENA_W1C          (0x47038)
+> +
+> +#define CPT_AF_LF_CTL2_SHIFT 3
+> +#define CPT_AF_LF_SSO_PF_FUNC_SHIFT 32
+>
+>  #define NPC_AF_BLK_RST                  (0x00040)
 
-Before the death of my father, He told me about (two million five
-hundred thousand united states dollars) which he deposited in the bank
-in Lome-Togo, It was the money he intended to transfer overseas for
-investment before he was poisoned. He also instructed me that I should
-seek for foreign partners in any country of my choice who will assist
-me transfer this money in overseas account where the money will be
-wisely invested.
-I am seeking for your kind assistance in the following ways:  (1) to
-provide a safe bank account into where the money will be transferred
-for investment. (2) To serve as a guardian of this fund since I am a
-girl of 19 years old. (3) To make arrangement for me to come over to
-your country to further my education. This is my reason for writing to
-you. Please if you are willing to assist me I will offer you 25% of
-the total money. Reply if  you are interested
-Best regards.
-Liliane Abel.
+Most of these are not related to this patch. Used only in the
+follow-on debug interface one?
