@@ -2,202 +2,80 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1992A1470
-	for <lists+linux-crypto@lfdr.de>; Sat, 31 Oct 2020 10:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C572A18D5
+	for <lists+linux-crypto@lfdr.de>; Sat, 31 Oct 2020 17:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgJaJIy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 31 Oct 2020 05:08:54 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7388 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbgJaJIw (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 31 Oct 2020 05:08:52 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CNYJH0P8Dz70tb;
-        Sat, 31 Oct 2020 17:08:47 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 31 Oct 2020 17:08:36 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH 8/8] crypto: hisilicon/qm - split 'hisi_qm_init' into smaller pieces
-Date:   Sat, 31 Oct 2020 17:07:08 +0800
-Message-ID: <1604135228-18410-9-git-send-email-qianweili@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1604135228-18410-1-git-send-email-qianweili@huawei.com>
-References: <1604135228-18410-1-git-send-email-qianweili@huawei.com>
+        id S1728091AbgJaQ7k (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 31 Oct 2020 12:59:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726586AbgJaQ7k (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 31 Oct 2020 12:59:40 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2138020679;
+        Sat, 31 Oct 2020 16:59:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604163579;
+        bh=lDhAL0eL5RojYfF/GFsNMNdak8tx6KUFC/4p8XlKQ+0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WPRhV/HezItBXgNi5d2ycQq4A4eUJK+BThEYto+xOSJ4smwlD233EQe/+MSo6OUG7
+         hAcoU/6GPl+ouTcU4vvF9vbkmuEbzLsBiM3DqzmAvhBNjBOSNGEpRMg+65J1cQxune
+         Ku7TDFT5KDbD/PDEsn/bQLdlZEwFITorDxMKVTVQ=
+Date:   Sat, 31 Oct 2020 09:59:38 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        netdev@vger.kernel.org, Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Daniel Drake <dsd@gentoo.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Horia =?UTF-8?B?R2VhbnTEgw==?= <horia.geanta@nxp.com>,
+        Jon Mason <jdmason@kudzu.us>, Jouni Malinen <j@w1.fi>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-rdma@vger.kernel.org,
+        linux-wireless@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Rain River <rain.1986.08.12@gmail.com>,
+        Samuel Chessman <chessman@tux.org>,
+        Ulrich Kunitz <kune@deine-taler.de>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH net-next 04/15] net: mlx5: Replace in_irq() usage.
+Message-ID: <20201031095938.3878412e@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201027225454.3492351-5-bigeasy@linutronix.de>
+References: <20201027225454.3492351-1-bigeasy@linutronix.de>
+        <20201027225454.3492351-5-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-'hisi_qm_init' initializes configuration of QM.
-To improve code readability, split it into two pieces.
+On Tue, 27 Oct 2020 23:54:43 +0100 Sebastian Andrzej Siewior wrote:
+> mlx5_eq_async_int() uses in_irq() to decide whether eq::lock needs to be
+> acquired and released with spin_[un]lock() or the irq saving/restoring
+> variants.
+> 
+> The usage of in_*() in drivers is phased out and Linus clearly requested
+> that code which changes behaviour depending on context should either be
+> seperated or the context be conveyed in an argument passed by the caller,
+> which usually knows the context.
+> 
+> mlx5_eq_async_int() knows the context via the action argument already so
+> using it for the lock variant decision is a straight forward replacement
+> for in_irq().
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Cc: Saeed Mahameed <saeedm@nvidia.com>
+> Cc: Leon Romanovsky <leon@kernel.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: linux-rdma@vger.kernel.org
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
----
- drivers/crypto/hisilicon/qm.c | 86 ++++++++++++++++++++++++++-----------------
- 1 file changed, 53 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 6e8d20d..f21ccae 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -2442,6 +2442,16 @@ static void hisi_qm_pre_init(struct hisi_qm *qm)
- 	qm->is_frozen = false;
- }
- 
-+static void hisi_qm_pci_uninit(struct hisi_qm *qm)
-+{
-+	struct pci_dev *pdev = qm->pdev;
-+
-+	pci_free_irq_vectors(pdev);
-+	iounmap(qm->io_base);
-+	pci_release_mem_regions(pdev);
-+	pci_disable_device(pdev);
-+}
-+
- /**
-  * hisi_qm_uninit() - Uninitialize qm.
-  * @qm: The qm needed uninit.
-@@ -2460,9 +2470,6 @@ void hisi_qm_uninit(struct hisi_qm *qm)
- 		return;
- 	}
- 
--	uacce_remove(qm->uacce);
--	qm->uacce = NULL;
--
- 	hisi_qp_memory_uninit(qm, qm->qp_num);
- 	idr_destroy(&qm->qp_idr);
- 
-@@ -2474,10 +2481,9 @@ void hisi_qm_uninit(struct hisi_qm *qm)
- 	}
- 
- 	qm_irq_unregister(qm);
--	pci_free_irq_vectors(pdev);
--	iounmap(qm->io_base);
--	pci_release_mem_regions(pdev);
--	pci_disable_device(pdev);
-+	hisi_qm_pci_uninit(qm);
-+	uacce_remove(qm->uacce);
-+	qm->uacce = NULL;
- 
- 	up_write(&qm->qps_lock);
- }
-@@ -4038,34 +4044,22 @@ void hisi_qm_alg_unregister(struct hisi_qm *qm, struct hisi_qm_list *qm_list)
- }
- EXPORT_SYMBOL_GPL(hisi_qm_alg_unregister);
- 
--/**
-- * hisi_qm_init() - Initialize configures about qm.
-- * @qm: The qm needing init.
-- *
-- * This function init qm, then we can call hisi_qm_start to put qm into work.
-- */
--int hisi_qm_init(struct hisi_qm *qm)
-+static int hisi_qm_pci_init(struct hisi_qm *qm)
- {
- 	struct pci_dev *pdev = qm->pdev;
- 	struct device *dev = &pdev->dev;
- 	unsigned int num_vec;
- 	int ret;
- 
--	hisi_qm_pre_init(qm);
--
--	ret = qm_alloc_uacce(qm);
--	if (ret < 0)
--		dev_warn(&pdev->dev, "fail to alloc uacce (%d)\n", ret);
--
- 	ret = pci_enable_device_mem(pdev);
- 	if (ret < 0) {
--		dev_err(&pdev->dev, "Failed to enable device mem!\n");
--		goto err_remove_uacce;
-+		dev_err(dev, "Failed to enable device mem!\n");
-+		return ret;
- 	}
- 
- 	ret = pci_request_mem_regions(pdev, qm->dev_name);
- 	if (ret < 0) {
--		dev_err(&pdev->dev, "Failed to request mem regions!\n");
-+		dev_err(dev, "Failed to request mem regions!\n");
- 		goto err_disable_pcidev;
- 	}
- 
-@@ -4093,9 +4087,42 @@ int hisi_qm_init(struct hisi_qm *qm)
- 		goto err_iounmap;
- 	}
- 
-+	return 0;
-+
-+err_iounmap:
-+	iounmap(qm->io_base);
-+err_release_mem_regions:
-+	pci_release_mem_regions(pdev);
-+err_disable_pcidev:
-+	pci_disable_device(pdev);
-+	return ret;
-+}
-+
-+/**
-+ * hisi_qm_init() - Initialize configures about qm.
-+ * @qm: The qm needing init.
-+ *
-+ * This function init qm, then we can call hisi_qm_start to put qm into work.
-+ */
-+int hisi_qm_init(struct hisi_qm *qm)
-+{
-+	struct pci_dev *pdev = qm->pdev;
-+	struct device *dev = &pdev->dev;
-+	int ret;
-+
-+	hisi_qm_pre_init(qm);
-+
-+	ret = qm_alloc_uacce(qm);
-+	if (ret < 0)
-+		dev_warn(dev, "fail to alloc uacce (%d)\n", ret);
-+
-+	ret = hisi_qm_pci_init(qm);
-+	if (ret)
-+		goto err_remove_uacce;
-+
- 	ret = qm_irq_register(qm);
- 	if (ret)
--		goto err_free_irq_vectors;
-+		goto err_pci_uninit;
- 
- 	if (qm->fun_type == QM_HW_VF && qm->ver != QM_HW_V1) {
- 		/* v2 starts to support get vft by mailbox */
-@@ -4118,14 +4145,8 @@ int hisi_qm_init(struct hisi_qm *qm)
- 
- err_irq_unregister:
- 	qm_irq_unregister(qm);
--err_free_irq_vectors:
--	pci_free_irq_vectors(pdev);
--err_iounmap:
--	iounmap(qm->io_base);
--err_release_mem_regions:
--	pci_release_mem_regions(pdev);
--err_disable_pcidev:
--	pci_disable_device(pdev);
-+err_pci_uninit:
-+	hisi_qm_pci_uninit(qm);
- err_remove_uacce:
- 	uacce_remove(qm->uacce);
- 	qm->uacce = NULL;
-@@ -4133,7 +4154,6 @@ int hisi_qm_init(struct hisi_qm *qm)
- }
- EXPORT_SYMBOL_GPL(hisi_qm_init);
- 
--
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Zhou Wang <wangzhou1@hisilicon.com>");
- MODULE_DESCRIPTION("HiSilicon Accelerator queue manager driver");
--- 
-2.8.1
-
+Saeed, please pick this up into your tree.
