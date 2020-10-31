@@ -2,29 +2,29 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB392A1475
-	for <lists+linux-crypto@lfdr.de>; Sat, 31 Oct 2020 10:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1992A1470
+	for <lists+linux-crypto@lfdr.de>; Sat, 31 Oct 2020 10:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgJaJJE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 31 Oct 2020 05:09:04 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7386 "EHLO
+        id S1726589AbgJaJIy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 31 Oct 2020 05:08:54 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:7388 "EHLO
         szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726559AbgJaJIt (ORCPT
+        with ESMTP id S1726560AbgJaJIw (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 31 Oct 2020 05:08:49 -0400
+        Sat, 31 Oct 2020 05:08:52 -0400
 Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CNYJH04GCz70kF;
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CNYJH0P8Dz70tb;
         Sat, 31 Oct 2020 17:08:47 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 31 Oct 2020 17:08:35 +0800
+ 14.3.487.0; Sat, 31 Oct 2020 17:08:36 +0800
 From:   Weili Qian <qianweili@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
         <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH 7/8] crypto: hisilicon/qm - split 'qm_eq_ctx_cfg' into smaller pieces
-Date:   Sat, 31 Oct 2020 17:07:07 +0800
-Message-ID: <1604135228-18410-8-git-send-email-qianweili@huawei.com>
+Subject: [PATCH 8/8] crypto: hisilicon/qm - split 'hisi_qm_init' into smaller pieces
+Date:   Sat, 31 Oct 2020 17:07:08 +0800
+Message-ID: <1604135228-18410-9-git-send-email-qianweili@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1604135228-18410-1-git-send-email-qianweili@huawei.com>
 References: <1604135228-18410-1-git-send-email-qianweili@huawei.com>
@@ -36,125 +36,168 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-'qm_eq_ctx_cfg' initializes configuration of EQ and AEQ,
-split it into two pieces to improve code readability.
+'hisi_qm_init' initializes configuration of QM.
+To improve code readability, split it into two pieces.
 
 Signed-off-by: Weili Qian <qianweili@huawei.com>
 Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
 ---
- drivers/crypto/hisilicon/qm.c | 44 +++++++++++++++++++++++++++++++------------
- 1 file changed, 32 insertions(+), 12 deletions(-)
+ drivers/crypto/hisilicon/qm.c | 86 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 53 insertions(+), 33 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 4c5cc60..6e8d20d 100644
+index 6e8d20d..f21ccae 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -1735,7 +1735,7 @@ void hisi_qm_release_qp(struct hisi_qp *qp)
- }
- EXPORT_SYMBOL_GPL(hisi_qm_release_qp);
- 
--static int qm_sq_ctx_cfg(struct hisi_qp *qp, int qp_id, int pasid)
-+static int qm_sq_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
- {
- 	struct hisi_qm *qm = qp->qm;
- 	struct device *dev = &qm->pdev->dev;
-@@ -1772,7 +1772,7 @@ static int qm_sq_ctx_cfg(struct hisi_qp *qp, int qp_id, int pasid)
- 	return ret;
+@@ -2442,6 +2442,16 @@ static void hisi_qm_pre_init(struct hisi_qm *qm)
+ 	qm->is_frozen = false;
  }
  
--static int qm_cq_ctx_cfg(struct hisi_qp *qp, int qp_id, int pasid)
-+static int qm_cq_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
- {
- 	struct hisi_qm *qm = qp->qm;
- 	struct device *dev = &qm->pdev->dev;
-@@ -1784,7 +1784,6 @@ static int qm_cq_ctx_cfg(struct hisi_qp *qp, int qp_id, int pasid)
- 	cqc = kzalloc(sizeof(struct qm_cqc), GFP_KERNEL);
- 	if (!cqc)
- 		return -ENOMEM;
++static void hisi_qm_pci_uninit(struct hisi_qm *qm)
++{
++	struct pci_dev *pdev = qm->pdev;
++
++	pci_free_irq_vectors(pdev);
++	iounmap(qm->io_base);
++	pci_release_mem_regions(pdev);
++	pci_disable_device(pdev);
++}
++
+ /**
+  * hisi_qm_uninit() - Uninitialize qm.
+  * @qm: The qm needed uninit.
+@@ -2460,9 +2470,6 @@ void hisi_qm_uninit(struct hisi_qm *qm)
+ 		return;
+ 	}
+ 
+-	uacce_remove(qm->uacce);
+-	qm->uacce = NULL;
 -
- 	cqc_dma = dma_map_single(dev, cqc, sizeof(struct qm_cqc),
- 				 DMA_TO_DEVICE);
- 	if (dma_mapping_error(dev, cqc_dma)) {
-@@ -1810,7 +1809,7 @@ static int qm_cq_ctx_cfg(struct hisi_qp *qp, int qp_id, int pasid)
- 	return ret;
- }
+ 	hisi_qp_memory_uninit(qm, qm->qp_num);
+ 	idr_destroy(&qm->qp_idr);
  
--static int qm_qp_ctx_cfg(struct hisi_qp *qp, int qp_id, int pasid)
-+static int qm_qp_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
+@@ -2474,10 +2481,9 @@ void hisi_qm_uninit(struct hisi_qm *qm)
+ 	}
+ 
+ 	qm_irq_unregister(qm);
+-	pci_free_irq_vectors(pdev);
+-	iounmap(qm->io_base);
+-	pci_release_mem_regions(pdev);
+-	pci_disable_device(pdev);
++	hisi_qm_pci_uninit(qm);
++	uacce_remove(qm->uacce);
++	qm->uacce = NULL;
+ 
+ 	up_write(&qm->qps_lock);
+ }
+@@ -4038,34 +4044,22 @@ void hisi_qm_alg_unregister(struct hisi_qm *qm, struct hisi_qm_list *qm_list)
+ }
+ EXPORT_SYMBOL_GPL(hisi_qm_alg_unregister);
+ 
+-/**
+- * hisi_qm_init() - Initialize configures about qm.
+- * @qm: The qm needing init.
+- *
+- * This function init qm, then we can call hisi_qm_start to put qm into work.
+- */
+-int hisi_qm_init(struct hisi_qm *qm)
++static int hisi_qm_pci_init(struct hisi_qm *qm)
  {
+ 	struct pci_dev *pdev = qm->pdev;
+ 	struct device *dev = &pdev->dev;
+ 	unsigned int num_vec;
  	int ret;
  
-@@ -2550,14 +2549,10 @@ static int qm_eq_ctx_cfg(struct hisi_qm *qm)
- {
- 	struct device *dev = &qm->pdev->dev;
- 	struct qm_eqc *eqc;
--	struct qm_aeqc *aeqc;
- 	dma_addr_t eqc_dma;
--	dma_addr_t aeqc_dma;
- 	int ret;
- 
--	qm_init_eq_aeq_status(qm);
+-	hisi_qm_pre_init(qm);
 -
--	eqc = kzalloc(sizeof(struct qm_eqc), GFP_KERNEL);
-+	eqc = kzalloc(sizeof(struct qm_eqc), GFP_KERNEL); //todo
- 	if (!eqc)
- 		return -ENOMEM;
- 	eqc_dma = dma_map_single(dev, eqc, sizeof(struct qm_eqc),
-@@ -2572,11 +2567,20 @@ static int qm_eq_ctx_cfg(struct hisi_qm *qm)
- 	if (qm->ver == QM_HW_V1)
- 		eqc->dw3 = cpu_to_le32(QM_EQE_AEQE_SIZE);
- 	eqc->dw6 = cpu_to_le32((QM_EQ_DEPTH - 1) | (1 << QM_EQC_PHASE_SHIFT));
+-	ret = qm_alloc_uacce(qm);
+-	if (ret < 0)
+-		dev_warn(&pdev->dev, "fail to alloc uacce (%d)\n", ret);
+-
+ 	ret = pci_enable_device_mem(pdev);
+ 	if (ret < 0) {
+-		dev_err(&pdev->dev, "Failed to enable device mem!\n");
+-		goto err_remove_uacce;
++		dev_err(dev, "Failed to enable device mem!\n");
++		return ret;
+ 	}
+ 
+ 	ret = pci_request_mem_regions(pdev, qm->dev_name);
+ 	if (ret < 0) {
+-		dev_err(&pdev->dev, "Failed to request mem regions!\n");
++		dev_err(dev, "Failed to request mem regions!\n");
+ 		goto err_disable_pcidev;
+ 	}
+ 
+@@ -4093,9 +4087,42 @@ int hisi_qm_init(struct hisi_qm *qm)
+ 		goto err_iounmap;
+ 	}
+ 
++	return 0;
 +
- 	ret = qm_mb(qm, QM_MB_CMD_EQC, eqc_dma, 0, 0);
- 	dma_unmap_single(dev, eqc_dma, sizeof(struct qm_eqc), DMA_TO_DEVICE);
- 	kfree(eqc);
--	if (ret)
--		return ret;
-+
++err_iounmap:
++	iounmap(qm->io_base);
++err_release_mem_regions:
++	pci_release_mem_regions(pdev);
++err_disable_pcidev:
++	pci_disable_device(pdev);
 +	return ret;
 +}
 +
-+static int qm_aeq_ctx_cfg(struct hisi_qm *qm)
++/**
++ * hisi_qm_init() - Initialize configures about qm.
++ * @qm: The qm needing init.
++ *
++ * This function init qm, then we can call hisi_qm_start to put qm into work.
++ */
++int hisi_qm_init(struct hisi_qm *qm)
 +{
-+	struct device *dev = &qm->pdev->dev;
-+	struct qm_aeqc *aeqc;
-+	dma_addr_t aeqc_dma;
-+	int ret;
- 
- 	aeqc = kzalloc(sizeof(struct qm_aeqc), GFP_KERNEL);
- 	if (!aeqc)
-@@ -2599,6 +2603,22 @@ static int qm_eq_ctx_cfg(struct hisi_qm *qm)
- 	return ret;
- }
- 
-+static int qm_eq_aeq_ctx_cfg(struct hisi_qm *qm)
-+{
-+	struct device *dev = &qm->pdev->dev;
++	struct pci_dev *pdev = qm->pdev;
++	struct device *dev = &pdev->dev;
 +	int ret;
 +
-+	qm_init_eq_aeq_status(qm);
++	hisi_qm_pre_init(qm);
 +
-+	ret = qm_eq_ctx_cfg(qm);
-+	if (ret) {
-+		dev_err(dev, "Set eqc failed!\n");
-+		return ret;
-+	}
++	ret = qm_alloc_uacce(qm);
++	if (ret < 0)
++		dev_warn(dev, "fail to alloc uacce (%d)\n", ret);
 +
-+	return qm_aeq_ctx_cfg(qm);
-+}
++	ret = hisi_qm_pci_init(qm);
++	if (ret)
++		goto err_remove_uacce;
 +
- static int __hisi_qm_start(struct hisi_qm *qm)
- {
- 	int ret;
-@@ -2615,7 +2635,7 @@ static int __hisi_qm_start(struct hisi_qm *qm)
- 			return ret;
- 	}
- 
--	ret = qm_eq_ctx_cfg(qm);
-+	ret = qm_eq_aeq_ctx_cfg(qm);
+ 	ret = qm_irq_register(qm);
  	if (ret)
- 		return ret;
+-		goto err_free_irq_vectors;
++		goto err_pci_uninit;
  
+ 	if (qm->fun_type == QM_HW_VF && qm->ver != QM_HW_V1) {
+ 		/* v2 starts to support get vft by mailbox */
+@@ -4118,14 +4145,8 @@ int hisi_qm_init(struct hisi_qm *qm)
+ 
+ err_irq_unregister:
+ 	qm_irq_unregister(qm);
+-err_free_irq_vectors:
+-	pci_free_irq_vectors(pdev);
+-err_iounmap:
+-	iounmap(qm->io_base);
+-err_release_mem_regions:
+-	pci_release_mem_regions(pdev);
+-err_disable_pcidev:
+-	pci_disable_device(pdev);
++err_pci_uninit:
++	hisi_qm_pci_uninit(qm);
+ err_remove_uacce:
+ 	uacce_remove(qm->uacce);
+ 	qm->uacce = NULL;
+@@ -4133,7 +4154,6 @@ int hisi_qm_init(struct hisi_qm *qm)
+ }
+ EXPORT_SYMBOL_GPL(hisi_qm_init);
+ 
+-
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Zhou Wang <wangzhou1@hisilicon.com>");
+ MODULE_DESCRIPTION("HiSilicon Accelerator queue manager driver");
 -- 
 2.8.1
 
