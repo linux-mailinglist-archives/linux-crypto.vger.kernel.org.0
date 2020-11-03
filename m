@@ -2,50 +2,170 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640CC2A3DB9
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Nov 2020 08:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 795CF2A44DD
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Nov 2020 13:15:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727567AbgKCHe2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Nov 2020 02:34:28 -0500
-Received: from mail2.directv.syn-alias.com ([69.168.106.50]:50368 "EHLO
-        mail.directv.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgKCHe2 (ORCPT
+        id S1728714AbgKCMPT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Nov 2020 07:15:19 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7134 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728168AbgKCMPT (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:34:28 -0500
-DKIM-Signature: v=1; a=rsa-sha1; d=wildblue.net; s=20170921; c=relaxed/simple;
-        q=dns/txt; i=@wildblue.net; t=1604388867;
-        h=From:Subject:Date:To:MIME-Version:Content-Type;
-        bh=WUG3OZfoJL5GgRQMneId4hT4nLU=;
-        b=UbIgK90dmeXLnzHN7123IrVpWUZ8ZOnnhGG8MX36hR9c2b5ENIqcsPnb7XgpjPdS
-        mRI+USC0SmwUA1GcqK9u6apSoLneNJQtqxeBHhHl0aw4Jc4CYWe/Q8daNsA6/pjt
-        Xs4feHwRgrFi3h7oHWXBveYRpx5uCDf0W8LwYQ+ZdfgLzewwPns3hsl3mxdJbNb5
-        3TTchb7CLoHRe2atB5+oyaOdLZSQBBe+X40uZJFqiUzQhZX66wWwTvgqJyyFk3Ox
-        ArlwzY8QmMsSEidaus+ScO+29YfTtX60mU9AYV9XpZYTgHeDyEntjanhL82pJig1
-        JusRf1DANTfzgNZmlv2gEQ==;
-X_CMAE_Category: , ,
-X-CNFS-Analysis: v=2.3 cv=Xt+ExmN9 c=1 sm=1 tr=0 cx=a_idp_x a=5P7mokhpKkQ94VAPLxu12w==:117 a=9cW_t1CCXrUA:10 a=KGjhK52YXX0A:10 a=FKkrIqjQGGEA:10 a=4kzrD15wkkkA:10 a=IyCVo8P4j2MA:10 a=IkcTkHD0fZMA:10 a=x7bEGLp0ZPQA:10 a=nNwsprhYR40A:10 a=Eoj24Je_-wkA:10 a=vC1tnkJpudoA:10 a=Dnx62EuyxQj-udzv6EUA:9 a=QEXdDO2ut3YA:10 a=xo5jKAKm-U-Zyk2_beg_:22 a=VV5kQtB0l8QJOsDfG6U3:22 a=pHzHmUro8NiASowvMSCR:22 a=nt3jZW36AmriUCFCBwmW:22
-X-CM-Score: 0
-X-Scanned-by: Cloudmark Authority Engine
-X-Authed-Username: am9iZWFyQHdpbGRibHVlLm5ldA==
-Received: from [10.80.118.5] ([10.80.118.5:43910] helo=md05.jasper.bos.sync.lan)
-        by mail2.directv.syn-alias.com (envelope-from <jobear@wildblue.net>)
-        (ecelerity 3.6.25.56547 r(Core:3.6.25.0)) with ESMTP
-        id E3/06-32012-20801AF5; Tue, 03 Nov 2020 02:34:26 -0500
-Date:   Tue, 3 Nov 2020 02:34:26 -0500 (EST)
-From:   George <jobear@wildblue.net>
-Reply-To: geohw2210@gmail.com
-Message-ID: <281548046.94244752.1604388866570.JavaMail.zimbra@wildblue.net>
-Subject: 
+        Tue, 3 Nov 2020 07:15:19 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CQTJ21W5Tz15R2V;
+        Tue,  3 Nov 2020 20:15:14 +0800 (CST)
+Received: from huawei.com (10.110.54.32) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Tue, 3 Nov 2020
+ 20:15:08 +0800
+From:   l00374334 <liqiang64@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-crypto@vger.kernel.org>, <liqiang64@huawei.com>
+Subject: [PATCH 0/1] arm64: Accelerate Adler32 using arm64 SVE instructions.
+Date:   Tue, 3 Nov 2020 20:15:05 +0800
+Message-ID: <20201103121506.1533-1-liqiang64@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [110.144.187.1]
-X-Mailer: Zimbra 8.7.6_GA_1776 (zclient/8.7.6_GA_1776)
-Thread-Index: XZHmd77eE3zHv0p/1fkpCeegJS3wtg==
-Thread-Topic: 
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.110.54.32]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Did you get my previous mail
+From: liqiang <liqiang64@huawei.com>
+
+Dear all,
+
+Thank you for taking the precious time to read this email!
+
+Let me introduce the implementation ideas of my code here.
+
+In the process of using the compression library libz, I found that the adler32
+checksum always occupies a higher hot spot, so I paid attention to this algorithm.
+After getting in touch with the SVE instruction set of armv8, I realized that
+SVE can effectively accelerate adler32, so I made some attempts and got correct
+and better performance results. I very much hope that this modification can be
+applied to the kernel.
+
+Below is my analysis process:
+
+Adler32 algorithm
+=================
+
+Reference: https://en.wikipedia.org/wiki/Adler-32
+
+Assume that the buf of the Adler32 checksum to be calculated is D and the length is n:
+
+        A = 1 + D1 + D2 + ... + Dn (mod 65521)
+
+        B = (1 + D1) + (1 + D1 + D2) + ... + (1 + D1 + D2 + ... + Dn) (mod 65521)
+          = n×D1 + (n−1)×D2 + (n−2)×D3 + ... + Dn + n (mod 65521)
+
+        Adler-32(D) = B × 65536 + A
+
+In C, an inefficient but straightforward implementation is:
+
+        const uint32_t MOD_ADLER = 65521;
+
+        uint32_t adler32(unsigned char *data, size_t len)
+        {
+                uint32_t a = 1, b = 0;
+                size_t index;
+
+                // Process each byte of the data in order
+                for (index = 0; index < len; ++index)
+                {
+                        a = (a + data[index]) % MOD_ADLER;
+                        b = (b + a) % MOD_ADLER;
+                }
+
+                return (b << 16) | a;
+        }
+
+SVE vector method
+=================
+
+Step 1. Determine the block size:
+        Use addvl instruction to get SVE bit width.
+        Assuming the SVE bit width is x here.
+
+Step 2. Start to calculate the first block:
+        The calculation formula is:
+                A1 = 1 + D1 + D2 + ... + Dx (mod 65521)
+                B1 = x*D1 + (x-1)*D2 + ... + Dx + x (mod 65521)
+
+Step 3. Calculate the follow block:
+        The calculation formula of A2 is very simple, just add up:
+                A2 = A1 + Dx+1 + Dx+2 + ... + D2x (mod 65521)
+
+        The calculation formula of B2 is more complicated, because
+        the result is related to the length of buf. When calculating
+        the B1 block, it is actually assumed that the length is the
+        block length x. Now when calculating B2, the length is expanded
+        to 2x, so B2 becomes:
+                B2 = 2x*D1 + (2x-1)*D2             + ... + (x+1)*Dx + x*D(x+1) + ... + D2x + 2x
+                   = x*D1 + x*D1 + x*D2 + (x-1)*D2 + ... + x*Dx + Dx + x*1 + x + [x*D(x+1) + (x-1)*D(x+2) + ... + D2x]
+                     ^^^^   ~~~~   ^^^^   ~~~~~~~~         ^^^^   ~~   ^^^   ~   +++++++++++++++++++++++++++++++++++++
+        Through the above polynomial transformation:
+                Symbol "^" represents the <x * A1>;
+                Symbol "~" represents the <B1>;
+                Symbol "+" represents the next block.
+
+        So we can get the method of calculating the next block from
+        the previous block(Assume that the first byte number of the
+        new block starts from 1):
+                An+1 = An + D1 + D2 + ... + Dx (mod 65521)
+                Bn+1 = Bn + x*An + x*D1 + (x-1)*D2 + ... + Dx (mod 65521)
+
+Step 4. Implement and test with SVE instruction set:
+        Implement the above ideas with the SVE instruction set (Please refer
+        to the patch for details), and conduct correctness and performance tests.
+
+        The following are three sets of test data, the test objects are random
+        data of 1M, 10M, 100M:
+                [root@xxx adler32]# ./benchmark 1000000
+                Libz alg: Time used:    615 us, 1626.0 Mb/s.
+                SVE  alg: Time used:    163 us, 6135.0 Mb/s.
+                Libz result: 0x7a6a200
+                Sve  result: 0x7a6a200
+                Equal
+
+                [root@xxx adler32]# ./benchmark 10000000
+                Libz alg: Time used:   6486 us, 1541.8 Mb/s.
+                SVE  alg: Time used:   2077 us, 4814.6 Mb/s.
+                Libz result: 0xf92a8b92
+                Sve  result: 0xf92a8b92
+                Equal
+
+                [root@xxx adler32]# ./benchmark 100000000
+                Libz alg: Time used:  64352 us, 1554.0 Mb/s.
+                SVE  alg: Time used:  20697 us, 4831.6 Mb/s.
+                Libz result: 0x295bf401
+                Sve  result: 0x295bf401
+                Equal
+	Test environment: Taishan 1951.
+
+        The test results show that on Taishan 1951, the speed of SVE is generally
+        about 3 to 4 times that of the C algorithm.
+
+liqiang (1):
+  Accelerate Adler32 using arm64 SVE instructions.
+
+ arch/arm64/crypto/Kconfig            |   5 ++
+ arch/arm64/crypto/Makefile           |   3 +
+ arch/arm64/crypto/adler32-sve-glue.c |  93 ++++++++++++++++++++
+ arch/arm64/crypto/adler32-sve.S      | 127 +++++++++++++++++++++++++++
+ crypto/testmgr.c                     |   8 +-
+ crypto/testmgr.h                     |  13 +++
+ 6 files changed, 248 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/crypto/adler32-sve-glue.c
+ create mode 100644 arch/arm64/crypto/adler32-sve.S
+
+-- 
+2.19.1
+
