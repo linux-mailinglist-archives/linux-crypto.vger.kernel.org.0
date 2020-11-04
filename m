@@ -2,115 +2,509 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0352A5E7B
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Nov 2020 08:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C2B2A5F09
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Nov 2020 09:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726225AbgKDHB0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 4 Nov 2020 02:01:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgKDHB0 (ORCPT
+        id S1726225AbgKDICB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 4 Nov 2020 03:02:01 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7456 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKDICB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 4 Nov 2020 02:01:26 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB843C061A4D
-        for <linux-crypto@vger.kernel.org>; Tue,  3 Nov 2020 23:01:25 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id i6so25754403lfd.1
-        for <linux-crypto@vger.kernel.org>; Tue, 03 Nov 2020 23:01:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=0+geSVfngHw7V1gJiU5CRyKN92E5ZY/77T95s5S89Cc=;
-        b=cGz6lfnzAtWinfumR8utHxHPY1Yna6vD8cfkMr2aE1yYstnyScsLKXWOKwrvE5lc3s
-         OIyEWb20WgwDM9gWZ/HQVwmPMx70fDnV3Yw7F+mB7Yk3RpWY1OEvmiCfN59FGS5h2hE9
-         YFYCMrLmbTjuR993AZT2UY+NO/a2SaKKjn+Gx2LIKetZuZXojsKQ2SQIaIh9pcScAO0k
-         RUAUiwacn4TXn4S0yKSf/MUsw6PS6/YkGGWO5rDsBAOXKfDM2f8iwx84LWzqJ79Di2mX
-         sofT19/QMzKSsiYrqaH2ZgYllULCbDKhGbknY1LTSXNpFhK4E84CoQHS5LtlLh66WaBI
-         JuuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=0+geSVfngHw7V1gJiU5CRyKN92E5ZY/77T95s5S89Cc=;
-        b=a70IQHo1zdo+ZAzOhh9HdtwAYcp6mI9rUkkf8P3utW45p7r3t4VTLMDhzBIq36RuML
-         JohPPEeEJZuhZGuIwU1lc9MWUC5SLc5qLkZMNrkViC0s3Di0p5Hcrx0WpDFu8vhGnDH4
-         RwhBY6h1dPRnRjz16VAtKM+ZmS/Qh5uhDHeoTR4x5bFN1rXMyBL/dMuZGH3/1SUHZ94G
-         G3TysoDHXRV7rKFtWjB9RFv7hPYy2A9V39pi3eJowccYqxNC+2DZYzN4v9N7vIie/2Zb
-         r8IV0YjNle2McARzg3yTaijxvE7SQq7RTrBJKFRezkL9gW3Ga5pnEzIytE5NM4YtuW8/
-         vwGQ==
-X-Gm-Message-State: AOAM531YF9SHNdxmrLEvyvxhxw1s+ezpZiEcUtXruZtyBE/exY8vhlH2
-        xum4IF1/Dp7aMe5tUu0Mu3BjPISOyqvbEJqjD34=
-X-Google-Smtp-Source: ABdhPJyjWBZldZlB6GdbZiLNEOHfIQ52AZ0t9Jn1RA5yXiAiR6qNNO7ofppVq0tQHHUPFPRf326yPou+OM5Q389MsU4=
-X-Received: by 2002:a19:420d:: with SMTP id p13mr8500011lfa.422.1604473284263;
- Tue, 03 Nov 2020 23:01:24 -0800 (PST)
+        Wed, 4 Nov 2020 03:02:01 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CQzdC1QjrzhbSr;
+        Wed,  4 Nov 2020 16:01:51 +0800 (CST)
+Received: from [10.110.54.32] (10.110.54.32) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 4 Nov 2020
+ 16:01:49 +0800
+Subject: Re: [PATCH 1/1] arm64: Accelerate Adler32 using arm64 SVE
+ instructions.
+To:     Ard Biesheuvel <ardb@kernel.org>, Dave Martin <Dave.Martin@arm.com>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "Alexandre Torgue" <alexandre.torgue@st.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+References: <20201103121506.1533-1-liqiang64@huawei.com>
+ <20201103121506.1533-2-liqiang64@huawei.com>
+ <CAMj1kXFJRQ59waFwbe2X0v5pGvMv6Yo6DJPLMEzjxDAThC-+gw@mail.gmail.com>
+From:   Li Qiang <liqiang64@huawei.com>
+Message-ID: <eaba1019-0cdb-fa36-5620-354c6478b713@huawei.com>
+Date:   Wed, 4 Nov 2020 16:01:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Received: by 2002:a19:cc58:0:0:0:0:0 with HTTP; Tue, 3 Nov 2020 23:01:23 -0800 (PST)
-Reply-To: miss.jeannettebryan@yandex.com
-From:   Miss Jeannette Bryan <misslindajones11@gmail.com>
-Date:   Tue, 3 Nov 2020 23:01:23 -0800
-Message-ID: <CAKYjb0iHL9wnzU9ReUCXW0_0JjSkYWWEC9atCFUvupoKh2kLkg@mail.gmail.com>
-Subject: Greetings from Miss Jeannette Bryan.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAMj1kXFJRQ59waFwbe2X0v5pGvMv6Yo6DJPLMEzjxDAThC-+gw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.110.54.32]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Greetings from Miss Jeannette Bryan.
+Hi Ard,
 
-How are you and your family doing today?Hope fine? I would like to use
-this opportunity to introduce myself to you. I am Miss Jeannette
-Bryan. My parents are Mr. and Mrs. Dikko Bryan ; my father was a
-highly reputable business magnet who operated  Sao Tome & Principe
-during his days.
+Thank you very much for your reply and comments on the code :)
 
-I am writing this mail to you with tears and sorrow from my heart.
-With due respect, trust and humanity, I know this mail will come to
-you as a surprise since we don=E2=80=99t know  each other before, and also
-considering the fact that I sourced your email contact through the
-Internet in search of a trusted person who can assist me.
+在 2020/11/3 22:34, Ard Biesheuvel 写道:
+> (+ Dave)
+> 
+> Hello liqiang,
+> 
+> First of all, I don't think it is safe at the moment to use SVE in the
+> kernel, as we don't preserve all state IIRC. My memory is a bit hazy,
+> though, so perhaps Dave can elaborate?
 
-It is sad to say that my dad passed away mysteriously in France during
-one of his business trips abroad. Though his sudden death was linked
-or rather suspected to have been masterminded by his half brother who
-traveled with him at that time. But God knows the truth! My mother
-died when I was just 6yrs old, and since then my father took me so
-special.
+OK, I understand this problem now.
 
-A month before his death, he told me that he had money left in a fixed
-deposit account in one of the leading banks. He further told me that
-he deposited the money in my name. He gave me the file to this fund
-with the bank.
+> 
+> I'll give my feedback on the code itself below, but please don't
+> consider this an ack on the intent of using SVE in the kernel.
+> 
+> Could you explain why SVE is so much better than NEON here?
 
-I am 21 years old and a university undergraduate. I really don't know
-what to do or who to turn to here. My uncles are only after what to
-get from my dad=E2=80=99s properties. They have shared the landed propertie=
-s
-amongst themselves claiming that our tradition does not permit a woman
-to inherit anything. Now I want an account overseas where I can
-transfer this funds and after the transaction I will come and reside
-permanently in your country till such a time that it will be
-convenient for me to return back home if I so desire.
+In the previous months of work, I spent some time researching ARM's SVE
+instruction set, and tried to use SVE instructions to optimize adler32
+and some other general algorithms, and achieved good optimization results
+on Adler32.
 
-The death of my father actually brought sorrow to my life. I also want
-to invest the fund under your care because I am ignorant of the
-business world. I am in a sincere desire for your humble assistance in
-this regard. Your suggestions and ideas will be highly regarded. Reply
-me on this email for more information: (
-miss.jeannettebryan@yandex.com )
+According to my current research and debugging (see cover-letter), I think
+the vectorization method of Adler32 algorithm is very suitable for SVE
+implementation, because it can divide data blocks of any length, such as
+16byte, 32byte, 128byte, 256byte, etc. so our code can adapt to any
+different SVE hardware from 128bit to 2048bit. Supporting SVE instructions
+with different bit widths does not require special changes and processing
+procedures. It only needs to determine the starting position of "Adler_sequence"
+according to the SVE bit width. And different hardware can give full play to
+its performance.
 
-Now permit me to ask these few questions:
+I am also trying to implement the algorithm with NEON instructions. I will
+reply to you in time if there are results.
 
-1. Can you honestly help me from your heart?
-2. Can I completely trust you?
-3. What percentage of the total amount in question will be good for
-you after the money is in your account?
+> 
+> On Tue, 3 Nov 2020 at 13:16, l00374334 <liqiang64@huawei.com> wrote:
+>>
+>> From: liqiang <liqiang64@huawei.com>
+>>
+>>         In the libz library, the checksum algorithm adler32 usually occupies
+>>         a relatively high hot spot, and the SVE instruction set can easily
+>>         accelerate it, so that the performance of libz library will be
+>>         significantly improved.
+>>
+>>         We can divides buf into blocks according to the bit width of SVE,
+>>         and then uses vector registers to perform operations in units of blocks
+>>         to achieve the purpose of acceleration.
+>>
+>>         On machines that support ARM64 sve instructions, this algorithm is
+>>         about 3~4 times faster than the algorithm implemented in C language
+>>         in libz. The wider the SVE instruction, the better the acceleration effect.
+>>
+>>         Measured on a Taishan 1951 machine that supports 256bit width SVE,
+>>         below are the results of my measured random data of 1M and 10M:
+>>
+>>                 [root@xxx adler32]# ./benchmark 1000000
+>>                 Libz alg: Time used:    608 us, 1644.7 Mb/s.
+>>                 SVE  alg: Time used:    166 us, 6024.1 Mb/s.
+>>
+>>                 [root@xxx adler32]# ./benchmark 10000000
+>>                 Libz alg: Time used:   6484 us, 1542.3 Mb/s.
+>>                 SVE  alg: Time used:   2034 us, 4916.4 Mb/s.
+>>
+>>         The blocks can be of any size, so the algorithm can automatically adapt
+>>         to SVE hardware with different bit widths without modifying the code.
+>>
+> 
+> Please drop this indentation from the commit log.
+> 
+>>
+>> Signed-off-by: liqiang <liqiang64@huawei.com>
+>> ---
+>>  arch/arm64/crypto/Kconfig            |   5 ++
+>>  arch/arm64/crypto/Makefile           |   3 +
+>>  arch/arm64/crypto/adler32-sve-glue.c |  93 ++++++++++++++++++++
+>>  arch/arm64/crypto/adler32-sve.S      | 127 +++++++++++++++++++++++++++
+>>  crypto/testmgr.c                     |   8 +-
+>>  crypto/testmgr.h                     |  13 +++
+> 
+> Please split into two patches. Also, who is going to use this "adler32" shash?
 
-Please, consider this and get back to me as soon as possible.
-Immediately I confirm your willingness, I will send you my Picture and
-also inform you more details involved in this matter.
+In the kernel, adler32 is used by the zlib_deflate algorithm as a checksum algorithm,
+and the same is used in the libz library.
 
-Kind Regards,
-Miss Jeannette Bryan
+> 
+>>  6 files changed, 248 insertions(+), 1 deletion(-)
+>>  create mode 100644 arch/arm64/crypto/adler32-sve-glue.c
+>>  create mode 100644 arch/arm64/crypto/adler32-sve.S
+>>
+>> diff --git a/arch/arm64/crypto/Kconfig b/arch/arm64/crypto/Kconfig
+>> index b8eb045..cfe58b9 100644
+>> --- a/arch/arm64/crypto/Kconfig
+>> +++ b/arch/arm64/crypto/Kconfig
+>> @@ -126,4 +126,9 @@ config CRYPTO_AES_ARM64_BS
+>>         select CRYPTO_LIB_AES
+>>         select CRYPTO_SIMD
+>>
+>> +config SVE_ADLER32
+>> +       tristate "Accelerate Adler32 using arm64 SVE instructions."
+>> +       depends on ARM64_SVE
+>> +       select CRYPTO_HASH
+>> +
+>>  endif
+>> diff --git a/arch/arm64/crypto/Makefile b/arch/arm64/crypto/Makefile
+>> index d0901e6..45fe649 100644
+>> --- a/arch/arm64/crypto/Makefile
+>> +++ b/arch/arm64/crypto/Makefile
+>> @@ -63,6 +63,9 @@ aes-arm64-y := aes-cipher-core.o aes-cipher-glue.o
+>>  obj-$(CONFIG_CRYPTO_AES_ARM64_BS) += aes-neon-bs.o
+>>  aes-neon-bs-y := aes-neonbs-core.o aes-neonbs-glue.o
+>>
+>> +obj-$(CONFIG_SVE_ADLER32) += sve-adler32.o
+>> +sve-adler32-y := adler32-sve.o adler32-sve-glue.o
+>> +
+>>  CFLAGS_aes-glue-ce.o   := -DUSE_V8_CRYPTO_EXTENSIONS
+>>
+>>  $(obj)/aes-glue-%.o: $(src)/aes-glue.c FORCE
+>> diff --git a/arch/arm64/crypto/adler32-sve-glue.c b/arch/arm64/crypto/adler32-sve-glue.c
+>> new file mode 100644
+>> index 0000000..cb74514
+>> --- /dev/null
+>> +++ b/arch/arm64/crypto/adler32-sve-glue.c
+>> @@ -0,0 +1,93 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Accelerate Adler32 using arm64 SVE instructions.
+>> + * Automatically support all bit width of SVE
+>> + * vector(128~2048).
+>> + *
+>> + * Copyright (C) 2020 Huawei Technologies Co., Ltd.
+>> + *
+>> + * Author: Li Qiang <liqiang64@huawei.com>
+>> + */
+>> +#include <linux/cpufeature.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/module.h>
+>> +#include <linux/zutil.h>
+>> +
+>> +#include <crypto/internal/hash.h>
+>> +#include <crypto/internal/simd.h>
+>> +
+>> +#include <asm/neon.h>
+>> +#include <asm/simd.h>
+>> +
+>> +/* Scalable vector extension min size 128bit */
+>> +#define SVE_ADLER32_MIN_SIZE 16U
+>> +#define SVE_ADLER32_DIGEST_SIZE 4
+>> +#define SVE_ADLER32_BLOCKSIZE 1
+>> +
+>> +asmlinkage u32 adler32_sve(u32 adler, const u8 *buf, u32 len);
+>> +
+>> +static int adler32_sve_init(struct shash_desc *desc)
+>> +{
+>> +       u32 *adler32 = shash_desc_ctx(desc);
+>> +
+>> +       *adler32 = 1;
+>> +       return 0;
+>> +}
+>> +
+>> +static int adler32_sve_update(struct shash_desc *desc, const u8 *data,
+>> +                                 unsigned int length)
+> 
+> Please indent function parameters
+> 
+>> +{
+>> +       u32 *adler32 = shash_desc_ctx(desc);
+>> +
+>> +       if (length >= SVE_ADLER32_MIN_SIZE && crypto_simd_usable()) {
+>> +               kernel_neon_begin();
+>> +               *adler32 = adler32_sve(*adler32, data, length);
+>> +               kernel_neon_end();
+>> +       } else {
+>> +               *adler32 = zlib_adler32(*adler32, data, length);
+>> +       }
+>> +       return 0;
+>> +}
+>> +
+>> +static int adler32_sve_final(struct shash_desc *desc, u8 *out)
+>> +{
+>> +       u32 *adler32 = shash_desc_ctx(desc);
+>> +
+>> +       *(u32 *)out = *adler32;
+> 
+> Please use put_unaligned here
+> 
+>> +       return 0;
+>> +}
+>> +
+>> +static struct shash_alg adler32_sve_alg[] = {{
+>> +       .digestsize                             = SVE_ADLER32_DIGEST_SIZE,
+>> +       .descsize                               = SVE_ADLER32_DIGEST_SIZE,
+>> +       .init                                   = adler32_sve_init,
+>> +       .update                                 = adler32_sve_update,
+>> +       .final                                  = adler32_sve_final,
+>> +
+>> +       .base.cra_name                  = "adler32",
+>> +       .base.cra_driver_name   = "adler32-arm64-sve",
+>> +       .base.cra_priority              = 200,
+>> +       .base.cra_blocksize             = SVE_ADLER32_BLOCKSIZE,
+>> +       .base.cra_module                = THIS_MODULE,
+> 
+> Please make sure the indentation is correct here.
+> 
+>> +}};
+>> +
+>> +static int __init adler32_sve_mod_init(void)
+>> +{
+>> +       if (!cpu_have_named_feature(SVE))
+>> +               return 0;
+>> +
+>> +       return crypto_register_shash(adler32_sve_alg);
+>> +}
+>> +
+>> +static void __exit adler32_sve_mod_exit(void)
+>> +{
+>> +       crypto_unregister_shash(adler32_sve_alg);
+>> +}
+>> +
+>> +module_init(adler32_sve_mod_init);
+>> +module_exit(adler32_sve_mod_exit);
+>> +
+>> +MODULE_AUTHOR("Li Qiang <liqiang64@huawei.com>");
+>> +MODULE_LICENSE("GPL v2");
+>> +MODULE_ALIAS_CRYPTO("adler32");
+>> +MODULE_ALIAS_CRYPTO("adler32-arm64-sve");
+>> diff --git a/arch/arm64/crypto/adler32-sve.S b/arch/arm64/crypto/adler32-sve.S
+>> new file mode 100644
+>> index 0000000..34ee4bb
+>> --- /dev/null
+>> +++ b/arch/arm64/crypto/adler32-sve.S
+>> @@ -0,0 +1,127 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Accelerate Adler32 using arm64 SVE instructions. Automatically support all bit
+>> + *      width of SVE vector(128~2048).
+>> + *
+>> + * Copyright (C) 2020 Huawei Technologies Co., Ltd.
+>> + *
+>> + * Author: Li Qiang <liqiang64@huawei.com>
+>> + */
+>> +
+>> +#include <linux/linkage.h>
+>> +#include <asm/assembler.h>
+>> +
+>> +.arch armv8-a+sve
+>> +.file "adler32_sve.S"
+> 
+> Drop the .file
+> 
+> Please indent the rest 1 tab
+> 
+>> +.text
+>> +.align 6
+>> +
+>> +//The supported sve vector length range is 128~2048 by this Adler_sequence
+>> +.Adler_sequence:
+> 
+> This should be in .rodata. Also, if you use . or L prefixes, use .L
+> because that is what you need to make these local symbols.
+> 
+> 
+>> +       .short 256,255,254,253,252,251,250,249,248,247,246,245,244,243,242,241
+>> +       .short 240,239,238,237,236,235,234,233,232,231,230,229,228,227,226,225
+>> +       .short 224,223,222,221,220,219,218,217,216,215,214,213,212,211,210,209
+>> +       .short 208,207,206,205,204,203,202,201,200,199,198,197,196,195,194,193
+>> +       .short 192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177
+>> +       .short 176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161
+>> +       .short 160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145
+>> +       .short 144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129
+>> +       .short 128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113
+>> +       .short 112,111,110,109,108,107,106,105,104,103,102,101,100, 99, 98, 97
+>> +       .short  96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 86, 85, 84, 83, 82, 81
+>> +       .short  80, 79, 78, 77, 76, 75, 74, 73, 72, 71, 70, 69, 68, 67, 66, 65
+>> +       .short  64, 63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49
+>> +       .short  48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33
+>> +       .short  32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17
+>> +       .short  16, 15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1
+>> +
+>> +SYM_FUNC_START(adler32_sve)
+>> +       and w10, w0, #0xffff
+>> +       lsr w11, w0, #16
+>> +
+> 
+> Please put the instruction mnemonics in different columns using tabs
+> 
+>> +       // Get the length of the sve vector to x6.
+>> +       mov x6, #0
+>> +       mov x9, #256
+>> +       addvl x6, x6, #1
+>> +       adr x12, .Adler_sequence
+>> +       ptrue p1.h
+>> +
+>> +       // Get the starting position of the required sequence.
+>> +       sub x9, x9, x6
+>> +       ld1h z24.h, p1/z, [x12, x9, lsl #1] // taps1 to z24.h
+>> +       inch x9
+>> +       ld1h z25.h, p1/z, [x12, x9, lsl #1] // taps2 to z25.h
+>> +       mov x9, #0
+>> +       // A little of byte, jumper to normal proc
+> 
+> What does this comment mean?
+> 
+>> +       mov x14, #3
+>> +       mul x15, x14, x6
+>> +       cmp x2, x15
+>> +       b.le Lnormal_proc
+>> +
+>> +       ptrue p0.b
+>> +.align 6
+> 
+> Ident.
+> 
+>> +LBig_loop:
+> 
+> Use .L prefix
+> 
+>> +       // x is SVE vector length (byte).
+>> +       // Bn = Bn-1 + An-1 * x + x * D1 + (x-1) * D2 + ... + 1 * Dx
+>> +       // An = An-1 + D1 + D2 + D3 + ... + Dx
+>> +
+>> +       .macro ADLER_BLOCK_X
+> 
+> Please use lower case for asm macros, to distinguish them from CPP macros
+> Also, indent the name, and move the macro out of the function for legibility.
+> 
+>> +       ld1b z0.b, p0/z, [x1, x9]
+>> +       incb x9
+>> +       uaddv d20, p0, z0.b // D1 + D2 + ... + Dx
+>> +       mov x12, v20.2d[0]
+>> +       madd x11, x10, x6, x11 // Bn = An-1 * x + Bn-1
+>> +
+>> +       uunpklo z26.h, z0.b
+>> +       uunpkhi z27.h, z0.b
+>> +       mul z26.h, p1/m, z26.h, z24.h // x * D1 + (x-1) * D2 + ... + (x/2 + 1) * D(x/2)
+>> +       mul z27.h, p1/m, z27.h, z25.h // (x/2) * D(x/2 + 1) + (x/2 - 1) * D(x/2 + 2) + ... + 1 * Dx
+>> +
+>> +       uaddv d21, p1, z26.h
+>> +       uaddv d22, p1, z27.h
+>> +       mov x13, v21.2d[0]
+>> +       mov x14, v22.2d[0]
+>> +
+>> +       add x11, x13, x11
+>> +       add x11, x14, x11         // Bn += x * D1 + (x-1) * D2 + ... + 1 * Dx
+>> +       add x10, x12, x10         // An += D1 + D2 + ... + Dx
+>> +       .endm
+>> +       ADLER_BLOCK_X
+>> +       ADLER_BLOCK_X
+>> +       ADLER_BLOCK_X
+>> +       // calc = reg0 % 65521
+>> +       .macro mod65521, reg0, reg1, reg2
+>> +       mov w\reg1, #0x8071
+>> +       mov w\reg2, #0xfff1
+>> +       movk w\reg1, #0x8007, lsl #16
+>> +       umull x\reg1, w\reg0, w\reg1
+>> +       lsr x\reg1, x\reg1, #47
+>> +       msub w\reg0, w\reg1, w\reg2, w\reg0
+>> +       .endm
+>> +
+> 
+> Same as above
+> 
+>> +       mod65521 10, 14, 12
+>> +       mod65521 11, 14, 12
+>> +
+>> +       sub x2, x2, x15
+>> +       cmp x2, x15
+>> +       b.ge LBig_loop
+>> +
+>> +.align 6
+> 
+> Indent
+> 
+>> +Lnormal_proc:
+> 
+> .L
+> 
+> 
+>> +       cmp x2, #0
+>> +       b.eq Lret
+>> +
+>> +       ldrb w12, [x1, x9]
+>> +       add x9, x9, #1
+>> +       add x10, x12, x10
+>> +       add x11, x10, x11
+>> +       sub x2, x2, #1
+>> +       b Lnormal_proc
+>> +
+>> +Lret:
+>> +       mod65521 10, 14, 12
+>> +       mod65521 11, 14, 12
+>> +       lsl x11, x11, #16
+>> +       orr x0, x10, x11
+>> +       ret
+>> +SYM_FUNC_END(adler32_sve)
+>> diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+>> index a64a639..58b8020 100644
+>> --- a/crypto/testmgr.c
+>> +++ b/crypto/testmgr.c
+>> @@ -4174,6 +4174,13 @@ static const struct alg_test_desc alg_test_descs[] = {
+>>                 .suite = {
+>>                         .cipher = __VECS(adiantum_xchacha20_aes_tv_template)
+>>                 },
+>> +       }, {
+>> +               .alg = "adler32",
+>> +               .test = alg_test_hash,
+>> +               .fips_allowed = 1,
+>> +               .suite = {
+>> +                       .hash = __VECS(adler32_tv_template)
+>> +               }
+>>         }, {
+>>                 .alg = "aegis128",
+>>                 .test = alg_test_aead,
+>> @@ -5640,7 +5647,6 @@ int alg_test(const char *driver, const char *alg, u32 type, u32 mask)
+>>         }
+>>
+>>         DO_ONCE(testmgr_onetime_init);
+>> -
+>>         if ((type & CRYPTO_ALG_TYPE_MASK) == CRYPTO_ALG_TYPE_CIPHER) {
+>>                 char nalg[CRYPTO_MAX_ALG_NAME];
+>>
+>> diff --git a/crypto/testmgr.h b/crypto/testmgr.h
+>> index 8c83811..5233960 100644
+>> --- a/crypto/testmgr.h
+>> +++ b/crypto/testmgr.h
+>> @@ -3676,6 +3676,19 @@ static const struct hash_testvec crct10dif_tv_template[] = {
+>>         }
+>>  };
+>>
+>> +static const struct hash_testvec adler32_tv_template[] = {
+>> +       {
+>> +               .plaintext      = "abcde",
+>> +               .psize          = 5,
+>> +               .digest         = "\xf0\x01\xc8\x05",
+>> +       },
+>> +       {
+>> +               .plaintext      = "0123456789101112131415",
+>> +               .psize          = 22,
+>> +               .digest         = "\x63\x04\xa8\x32",
+>> +       },
+>> +};
+>> +
+>>  /*
+>>   * Streebog test vectors from RFC 6986 and GOST R 34.11-2012
+>>   */
+>> --
+>> 2.19.1
+>>
+> .
+> 
+
+Thank you for your suggestions, I will modify them one by one in my code.
+:-)
+
+-- 
+Best regards,
+Li Qiang
