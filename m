@@ -2,76 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34E52A7A03
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Nov 2020 10:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2178A2A81CC
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Nov 2020 16:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729722AbgKEJGC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 5 Nov 2020 04:06:02 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7593 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729263AbgKEJGB (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:06:01 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CRd0d3SFczLqXg;
-        Thu,  5 Nov 2020 17:05:53 +0800 (CST)
-Received: from [10.110.54.32] (10.110.54.32) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Thu, 5 Nov 2020
- 17:05:54 +0800
-Subject: Re: [PATCH 1/1] arm64: Accelerate Adler32 using arm64 SVE
- instructions.
-To:     Ard Biesheuvel <ardb@kernel.org>
-CC:     Eric Biggers <ebiggers@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-References: <20201103121506.1533-1-liqiang64@huawei.com>
- <20201103121506.1533-2-liqiang64@huawei.com>
- <20201104175742.GA846@sol.localdomain>
- <2dad168c-f6cb-103c-04ce-cc3c2561e01b@huawei.com>
- <CAMj1kXG+YJvHLFDMk7ABAD=WthxLx5Uh0LAXCP6+2tXEySj7eg@mail.gmail.com>
-From:   Li Qiang <liqiang64@huawei.com>
-Message-ID: <5b528637-5cb9-a134-2936-7925afae95c6@huawei.com>
-Date:   Thu, 5 Nov 2020 17:05:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1730465AbgKEPEL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 5 Nov 2020 10:04:11 -0500
+Received: from mail.hiperkom.hu ([46.107.238.43]:54682 "EHLO mail.hiperkom.hu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731040AbgKEPEK (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:04:10 -0500
+X-Greylist: delayed 885 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Nov 2020 10:04:09 EST
+Received: from mail.hiperkom.hu (localhost [127.0.0.1])
+        by mail.hiperkom.hu (Postfix) with ESMTP id 0BB01A4DF1;
+        Thu,  5 Nov 2020 15:48:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hiperkom.hu; s=mail;
+        t=1604587716; bh=FKS3oUWqY7WlRpYPlJBh5h9eRjsc0BTg6E/Rs7k+fkU=;
+        h=Date:From:To:Subject:Reply-To;
+        b=Q1kk8/p6LVWLdqLd7/ZQ93mr6Kl0e1JEFJP/EngtT9yj4AUeigBOeXAgTeLCzccBH
+         6WlB/TUlbS0GIOsxUFYafAyagL7TwNFoLfcws3JjrIYJgQci0IQHeQe4j7JKBVdmAF
+         4nCKroQa16RkmN1SEEpQXLNVFcPLRIQpDBIzyQQDlPBfIhj035MEQbocnetGa4KaxC
+         R+w45xhshDX1PcpKdbMkAvhS4g5RGWaZq8NHE2kdV6bv9BFTeO8k+w4VCAmYvv3Ohv
+         c+hAfkNsp3LIfd048JM5np1blYf2FK672D3packSraAsVHCQJ/ezGUHs0zu/aFtZt2
+         xlROLMTEwlffw==
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXG+YJvHLFDMk7ABAD=WthxLx5Uh0LAXCP6+2tXEySj7eg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.110.54.32]
-X-CFilter-Loop: Reflected
+Date:   Thu, 05 Nov 2020 22:48:21 +0800
+From:   Mr Jonathan Hugo <gabemis@hiperkom.hu>
+To:     undisclosed-recipients:;
+Subject: Mr. Jonathan Hugo
+Reply-To: jonathanhugo001@gmail.com
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <5455aafd44080e11c05d730fbb5c3203@hiperkom.hu>
+X-Sender: gabemis@hiperkom.hu
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
 
 
-在 2020/11/5 15:51, Ard Biesheuvel 写道:
-> Note that NEON intrinsics can be compiled for 32-bit ARM as well (with
-> a bit of care - please refer to lib/raid6/recov_neon_inner.c for an
-> example of how to deal with intrinsics that are only available on
-> arm64) and are less error prone, so intrinsics should be preferred if
-> feasible.
-> 
-> However, you have still not explained how optimizing Adler32 makes a
-> difference for a real-world use case. Where is libdeflate used on a
-> hot path?
-> .
-
-Sorry :(, I have not specifically searched for the use of this algorithm
-in the kernel.
-
-When I used perf to test the performance of the libz library before,
-I saw that the adler32 algorithm occupies a lot of hot spots.I just
-saw this algorithm used in the kernel code, so I think optimizing this
-algorithm may have some positive optimization effects on the kernel.:)
-
 -- 
-Best regards,
-Li Qiang
+I am Mr. Jonathan Hugo. I have emailed you earlier on without any 
+response from you.I am The Attorney to my late client and I have decided 
+to contact you to stand as the next of kin to my Late client\\\ 's 
+deposited funds since you have the same last name with him as to enable 
+us receive his deposit as inheritance for investment amounted to US$ 
+14.5 M only.
+
+In my first email I mentioned about my late client whose relatives I 
+cannot get in touch with. But both of you have the same last name so it 
+will be very easy to front you as his official next of kin. I am 
+compelled to do this because I would not want the finance house to push 
+my client\\\'s funds into their treasury as unclaimed inheritance.
+
+If you are interested you do let me know so that I can give you 
+Comprehensive details on what we are to do.
+
+Waiting for your response.
+Many Thanks,
+Mr. Jonathan Hugo
