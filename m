@@ -2,40 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD042A955D
+	by mail.lfdr.de (Postfix) with ESMTP id CA7C62A955E
 	for <lists+linux-crypto@lfdr.de>; Fri,  6 Nov 2020 12:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727260AbgKFL3P (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 6 Nov 2020 06:29:15 -0500
+        id S1727261AbgKFL3Q (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 6 Nov 2020 06:29:16 -0500
 Received: from mga07.intel.com ([134.134.136.100]:59432 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727253AbgKFL3P (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:29:15 -0500
-IronPort-SDR: 2YsR7VRBKtXkoD6kHhEWSNIPjJF5GXAtZaoi62c23CTpLrnNZdeFKLwfCXSv3x6zlQOt5de5CK
- sWiVqH9PQfiw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="233698334"
+        id S1727253AbgKFL3Q (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 6 Nov 2020 06:29:16 -0500
+IronPort-SDR: TQIuDCd5jh2NESTkrz+g2ruxWyJB6SvaxLjYY2Hb8txqy9yQYSwfECNPyGX/WNxF4+u83/ZByR
+ KfVMWki5duyQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="233698338"
 X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="233698334"
+   d="scan'208";a="233698338"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 03:29:14 -0800
-IronPort-SDR: 9XKlYgyarV6Ym06TbRmveJWkOlAK0PjWXmHHPO5rTWGF1mp2RYdQPwrPKp1448E/oPOzX0CNb9
- XfTljXAQBYXg==
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2020 03:29:16 -0800
+IronPort-SDR: JvslKniYlm/ugDDU1R9M6BqcUkanIqvI00BlhH1X87vs2PsneNks0uZUmqTIqSL41I/T28gABl
+ rnW2bRb8/x8w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,456,1596524400"; 
-   d="scan'208";a="529779351"
+   d="scan'208";a="529779360"
 Received: from haps801-neoncity02.sh.intel.com ([10.67.114.160])
-  by fmsmga005.fm.intel.com with ESMTP; 06 Nov 2020 03:29:13 -0800
+  by fmsmga005.fm.intel.com with ESMTP; 06 Nov 2020 03:29:14 -0800
 From:   Jack Xu <jack.xu@intel.com>
 To:     herbert@gondor.apana.org.au
 Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
         Jack Xu <jack.xu@intel.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [PATCH 24/32] crypto: qat - loader: add misc control CSR to chip info
-Date:   Fri,  6 Nov 2020 19:28:02 +0800
-Message-Id: <20201106112810.2566-25-jack.xu@intel.com>
+        Wojciech Ziemba <wojciech.ziemba@intel.com>
+Subject: [PATCH 25/32] crypto: qat - loader: add check for null pointer
+Date:   Fri,  6 Nov 2020 19:28:03 +0800
+Message-Id: <20201106112810.2566-26-jack.xu@intel.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20201106112810.2566-1-jack.xu@intel.com>
 References: <20201106112810.2566-1-jack.xu@intel.com>
@@ -45,77 +44,61 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add misc control CSR to chip info since the CSR offset will be different
-in the next generation of QAT devices.
+Add null pointer check when freeing the memory for firmware.
 
 Signed-off-by: Jack Xu <jack.xu@intel.com>
 Co-developed-by: Wojciech Ziemba <wojciech.ziemba@intel.com>
 Signed-off-by: Wojciech Ziemba <wojciech.ziemba@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 ---
- .../crypto/qat/qat_common/icp_qat_fw_loader_handle.h  |  1 +
- drivers/crypto/qat/qat_common/qat_hal.c               | 11 +++++++----
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/crypto/qat/qat_common/qat_uclo.c | 28 ++++++++++++++----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/crypto/qat/qat_common/icp_qat_fw_loader_handle.h b/drivers/crypto/qat/qat_common/icp_qat_fw_loader_handle.h
-index 090c3e73938c..81dba42248bf 100644
---- a/drivers/crypto/qat/qat_common/icp_qat_fw_loader_handle.h
-+++ b/drivers/crypto/qat/qat_common/icp_qat_fw_loader_handle.h
-@@ -30,6 +30,7 @@ struct icp_qat_fw_loader_chip_info {
- 	u32 icp_rst_csr;
- 	u32 icp_rst_mask;
- 	u32 glb_clk_enable_csr;
-+	u32 misc_ctl_csr;
- 	u32 wakeup_event_val;
- 	bool fw_auth;
- };
-diff --git a/drivers/crypto/qat/qat_common/qat_hal.c b/drivers/crypto/qat/qat_common/qat_hal.c
-index c073e4e3e3ae..eae1a5e0efeb 100644
---- a/drivers/crypto/qat/qat_common/qat_hal.c
-+++ b/drivers/crypto/qat/qat_common/qat_hal.c
-@@ -417,13 +417,14 @@ int qat_hal_check_ae_active(struct icp_qat_fw_loader_handle *handle,
- static void qat_hal_reset_timestamp(struct icp_qat_fw_loader_handle *handle)
+diff --git a/drivers/crypto/qat/qat_common/qat_uclo.c b/drivers/crypto/qat/qat_common/qat_uclo.c
+index 32c64a48926f..7b02c4e165c6 100644
+--- a/drivers/crypto/qat/qat_common/qat_uclo.c
++++ b/drivers/crypto/qat/qat_common/qat_uclo.c
+@@ -1233,11 +1233,15 @@ static int qat_uclo_simg_alloc(struct icp_qat_fw_loader_handle *handle,
+ static void qat_uclo_simg_free(struct icp_qat_fw_loader_handle *handle,
+ 			       struct icp_firml_dram_desc *dram_desc)
  {
- 	unsigned long ae_mask = handle->hal_handle->ae_mask;
--	unsigned int misc_ctl;
-+	unsigned int misc_ctl_csr, misc_ctl;
- 	unsigned char ae;
- 
-+	misc_ctl_csr = handle->chip_info->misc_ctl_csr;
- 	/* stop the timestamp timers */
--	misc_ctl = GET_CAP_CSR(handle, MISC_CONTROL);
-+	misc_ctl = GET_CAP_CSR(handle, misc_ctl_csr);
- 	if (misc_ctl & MC_TIMESTAMP_ENABLE)
--		SET_CAP_CSR(handle, MISC_CONTROL, misc_ctl &
-+		SET_CAP_CSR(handle, misc_ctl_csr, misc_ctl &
- 			    (~MC_TIMESTAMP_ENABLE));
- 
- 	for_each_set_bit(ae, &ae_mask, handle->hal_handle->ae_max_num) {
-@@ -431,7 +432,7 @@ static void qat_hal_reset_timestamp(struct icp_qat_fw_loader_handle *handle)
- 		qat_hal_wr_ae_csr(handle, ae, TIMESTAMP_HIGH, 0);
- 	}
- 	/* start timestamp timers */
--	SET_CAP_CSR(handle, MISC_CONTROL, misc_ctl | MC_TIMESTAMP_ENABLE);
-+	SET_CAP_CSR(handle, misc_ctl_csr, misc_ctl | MC_TIMESTAMP_ENABLE);
+-	dma_free_coherent(&handle->pci_dev->dev,
+-			  (size_t)(dram_desc->dram_size),
+-			  dram_desc->dram_base_addr_v,
+-			  dram_desc->dram_bus_addr);
+-	memset(dram_desc, 0, sizeof(*dram_desc));
++	if (handle && dram_desc && dram_desc->dram_base_addr_v) {
++		dma_free_coherent(&handle->pci_dev->dev,
++				  (size_t)(dram_desc->dram_size),
++				  dram_desc->dram_base_addr_v,
++				  dram_desc->dram_bus_addr);
++	}
++
++	if (dram_desc)
++		memset(dram_desc, 0, sizeof(*dram_desc));
  }
  
- #define ESRAM_AUTO_TINIT	BIT(2)
-@@ -702,6 +703,7 @@ static int qat_hal_chip_init(struct icp_qat_fw_loader_handle *handle,
- 		handle->chip_info->lm_size = ICP_QAT_UCLO_MAX_LMEM_REG;
- 		handle->chip_info->icp_rst_csr = ICP_RESET;
- 		handle->chip_info->glb_clk_enable_csr = ICP_GLOBAL_CLK_ENABLE;
-+		handle->chip_info->misc_ctl_csr = MISC_CONTROL;
- 		handle->chip_info->wakeup_event_val = WAKEUP_EVENT;
- 		handle->chip_info->fw_auth = true;
- 		break;
-@@ -712,6 +714,7 @@ static int qat_hal_chip_init(struct icp_qat_fw_loader_handle *handle,
- 		handle->chip_info->lm_size = ICP_QAT_UCLO_MAX_LMEM_REG;
- 		handle->chip_info->icp_rst_csr = ICP_RESET;
- 		handle->chip_info->glb_clk_enable_csr = ICP_GLOBAL_CLK_ENABLE;
-+		handle->chip_info->misc_ctl_csr = MISC_CONTROL;
- 		handle->chip_info->wakeup_event_val = WAKEUP_EVENT;
- 		handle->chip_info->fw_auth = false;
- 		break;
+ static void qat_uclo_ummap_auth_fw(struct icp_qat_fw_loader_handle *handle,
+@@ -1245,12 +1249,14 @@ static void qat_uclo_ummap_auth_fw(struct icp_qat_fw_loader_handle *handle,
+ {
+ 	struct icp_firml_dram_desc dram_desc;
+ 
+-	dram_desc.dram_base_addr_v = *desc;
+-	dram_desc.dram_bus_addr = ((struct icp_qat_auth_chunk *)
+-				   (*desc))->chunk_bus_addr;
+-	dram_desc.dram_size = ((struct icp_qat_auth_chunk *)
+-			       (*desc))->chunk_size;
+-	qat_uclo_simg_free(handle, &dram_desc);
++	if (*desc) {
++		dram_desc.dram_base_addr_v = *desc;
++		dram_desc.dram_bus_addr = ((struct icp_qat_auth_chunk *)
++					   (*desc))->chunk_bus_addr;
++		dram_desc.dram_size = ((struct icp_qat_auth_chunk *)
++				       (*desc))->chunk_size;
++		qat_uclo_simg_free(handle, &dram_desc);
++	}
+ }
+ 
+ static int qat_uclo_map_auth_fw(struct icp_qat_fw_loader_handle *handle,
 -- 
 2.25.4
 
