@@ -2,93 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A572A8605
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Nov 2020 19:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5B92A8D80
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Nov 2020 04:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbgKESV6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 5 Nov 2020 13:21:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45458 "EHLO mail.kernel.org"
+        id S1725939AbgKFDa4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 5 Nov 2020 22:30:56 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:34042 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729783AbgKESV6 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 5 Nov 2020 13:21:58 -0500
-Received: from gmail.com (unknown [104.132.1.84])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A63062078E;
-        Thu,  5 Nov 2020 18:21:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604600517;
-        bh=+OtMxMqFHQbVi8HakvWqVl7xz/M4YezzWnkgDLi3czE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BIrK13uqz3GXI6KOTz/+g9XFoSvg3wJWzrlyNeeJ62M9XfUU7GZkaN+PV977Q+DPd
-         ghDTCMIQiTHAQDJh+Is4xSutKF/lrjhoK0ywBiQdw+WYN8+me/UNg8A0OulrPvGxue
-         dBkEVpgdKxbTcwRETNSmrGPbB3Z8f70ERpnXPxEM=
-Date:   Thu, 5 Nov 2020 10:21:55 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Li Qiang <liqiang64@huawei.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: [PATCH 1/1] arm64: Accelerate Adler32 using arm64 SVE
- instructions.
-Message-ID: <20201105182155.GA2555324@gmail.com>
-References: <20201103121506.1533-1-liqiang64@huawei.com>
- <20201103121506.1533-2-liqiang64@huawei.com>
- <20201104175742.GA846@sol.localdomain>
- <2dad168c-f6cb-103c-04ce-cc3c2561e01b@huawei.com>
- <CAMj1kXG+YJvHLFDMk7ABAD=WthxLx5Uh0LAXCP6+2tXEySj7eg@mail.gmail.com>
- <5b528637-5cb9-a134-2936-7925afae95c6@huawei.com>
+        id S1725830AbgKFDa4 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 5 Nov 2020 22:30:56 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kasSc-0005kn-Fz; Fri, 06 Nov 2020 14:30:47 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 06 Nov 2020 14:30:46 +1100
+Date:   Fri, 6 Nov 2020 14:30:46 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Zhang Qilong <zhangqilong3@huawei.com>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH -next] crypto: omap-aes - fix the reference count leak of
+ omap device
+Message-ID: <20201106033046.GA25372@gondor.apana.org.au>
+References: <20201027132510.81076-1-zhangqilong3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5b528637-5cb9-a134-2936-7925afae95c6@huawei.com>
+In-Reply-To: <20201027132510.81076-1-zhangqilong3@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 05:05:53PM +0800, Li Qiang wrote:
+On Tue, Oct 27, 2020 at 09:25:10PM +0800, Zhang Qilong wrote:
+> pm_runtime_get_sync() will increment  pm usage counter even
+> when it returns an error code. We should call put operation
+> in error handling paths of omap_aes_hw_init.
 > 
-> 
-> 在 2020/11/5 15:51, Ard Biesheuvel 写道:
-> > Note that NEON intrinsics can be compiled for 32-bit ARM as well (with
-> > a bit of care - please refer to lib/raid6/recov_neon_inner.c for an
-> > example of how to deal with intrinsics that are only available on
-> > arm64) and are less error prone, so intrinsics should be preferred if
-> > feasible.
-> > 
-> > However, you have still not explained how optimizing Adler32 makes a
-> > difference for a real-world use case. Where is libdeflate used on a
-> > hot path?
-> > .
-> 
-> Sorry :(, I have not specifically searched for the use of this algorithm
-> in the kernel.
-> 
-> When I used perf to test the performance of the libz library before,
-> I saw that the adler32 algorithm occupies a lot of hot spots.I just
-> saw this algorithm used in the kernel code, so I think optimizing this
-> algorithm may have some positive optimization effects on the kernel.:)
+> Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+> ---
+>  drivers/crypto/omap-aes.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Adler32 performance is important for zlib compression/decompression, which has a
-few use cases in the kernel such as btrfs compression.  However, these days
-those few kernel use cases are mostly switching to newer algorithms like lz4 and
-zstd.  Also as I mentioned, your patch doesn't actually wire up your code to be
-used by the kernel's implementation of zlib compression/decompression.
+Your patch has already been applied:
 
-I think you'd be much better off contributing to a userspace project, where
-DEFLATE/zlib/gzip support still has a long tail of use cases.  The official zlib
-isn't really being maintained and isn't accepting architecture-specific
-optimizations, but there are some performance-oriented forks of zlib (e.g.
-https://chromium.googlesource.com/chromium/src/third_party/zlib/ and
-https://github.com/zlib-ng/zlib-ng), as well as other projects like libdeflate
-(https://github.com/ebiggers/libdeflate).  Generally I'm happy to accept
-architecture-specific optimizations in libdeflate, but they need to be testable.
+commit 383e8a823014532ffd81c787ef9009f1c2bd3b79
+Author: Zhang Qilong <zhangqilong3@huawei.com>
+Date:   Fri Oct 16 17:05:36 2020 +0800
 
-- Eric
+    crypto: omap-aes - fix the reference count leak of omap device
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
