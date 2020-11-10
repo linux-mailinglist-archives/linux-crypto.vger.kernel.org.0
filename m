@@ -2,82 +2,179 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EE12ACB53
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Nov 2020 03:52:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C872AD0BB
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Nov 2020 08:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729452AbgKJCwS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 9 Nov 2020 21:52:18 -0500
-Received: from smtprelay0242.hostedemail.com ([216.40.44.242]:52914 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727311AbgKJCwS (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 9 Nov 2020 21:52:18 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id F008012CB;
-        Tue, 10 Nov 2020 02:52:13 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3870:4321:4605:5007:6117:6119:6742:6743:7652:7875:7903:8660:10004:10400:10848:11232:11658:11783:11914:12043:12048:12297:12679:12740:12895:13019:13069:13148:13230:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: ink22_1714ef1272f1
-X-Filterd-Recvd-Size: 2439
-Received: from [192.168.0.160] (cpe-72-134-80-165.natsow.res.rr.com [72.134.80.165])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 10 Nov 2020 02:52:09 +0000 (UTC)
-Message-ID: <3c39c363690d0b46069afddc3ad09213011e5cd4.camel@perches.com>
-Subject: Re: Subject: [RFC] clang tooling cleanups
-From:   Joe Perches <joe@perches.com>
-To:     trix@redhat.com, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, cocci <cocci@systeme.lip6.fr>
-Cc:     linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org,
-        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-Date:   Mon, 09 Nov 2020 18:52:08 -0800
-In-Reply-To: <20201027164255.1573301-1-trix@redhat.com>
-References: <20201027164255.1573301-1-trix@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728323AbgKJH6W (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 10 Nov 2020 02:58:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726825AbgKJH6W (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 10 Nov 2020 02:58:22 -0500
+Received: from e123331-lin.nice.arm.com (lfbn-nic-1-188-42.w2-15.abo.wanadoo.fr [2.15.37.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE9122080A;
+        Tue, 10 Nov 2020 07:58:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604995101;
+        bh=XyWnCCRqboN7ShlbLTs12iGG7x6q2Fg5mlE/bAWkn+I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=h1eklgoaSdZdLiHkzHjs8sjqNH3zu3UpZwmN14Z1abnXTKSUrIIVkRIgNC9fg3At/
+         +UlzTT/VIgXTPWMO9k5V/5u4a/Fk6beUn0TkH+IaLSuL/+Cgzi44HeXQx38UIQr4Ot
+         OMi2psqE7ZqYEtbD6iO0oZX8vBbQT67fjIX35uBs=
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH] crypto: arm64/gcm - move authentication tag check to SIMD domain
+Date:   Tue, 10 Nov 2020 08:58:10 +0100
+Message-Id: <20201110075810.29050-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, 2020-10-27 at 09:42 -0700, trix@redhat.com wrote:
-> This rfc will describe
-> An upcoming treewide cleanup.
-> How clang tooling was used to programatically do the clean up.
-> Solicit opinions on how to generally use clang tooling.
-> 
-> The clang warning -Wextra-semi-stmt produces about 10k warnings.
-> Reviewing these, a subset of semicolon after a switch looks safe to
-> fix all the time.  An example problem
-> 
-> void foo(int a) {
->      switch(a) {
->      	       case 1:
-> 	       ...
->      }; <--- extra semicolon
-> }
-> 
-> Treewide, there are about 100 problems in 50 files for x86_64 allyesconfig.
-> These fixes will be the upcoming cleanup.
+Instead of copying the calculated authentication tag to memory and
+calling crypto_memneq() to verify it, use vector bytewise compare and
+min across vector instructions to decide whether the tag is valid. This
+is more efficient, and given that the tag is only transiently held in a
+NEON register, it is also safer, given that calculated tags for failed
+decryptions should be withheld.
 
-coccinelle already does some of these.
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ arch/arm64/crypto/ghash-ce-core.S | 15 ++++++++++
+ arch/arm64/crypto/ghash-ce-glue.c | 46 +++++++++++++++++++------------
+ 2 files changed, 43 insertions(+), 18 deletions(-)
 
-For instance: scripts/coccinelle/misc/semicolon.cocci
-
-Perhaps some tool coordination can be done here as
-coccinelle/checkpatch/clang/Lindent call all be used
-to do some facet or another of these cleanup issues.
-
-
+diff --git a/arch/arm64/crypto/ghash-ce-core.S b/arch/arm64/crypto/ghash-ce-core.S
+index 6b958dcdf136..7868330dd54e 100644
+--- a/arch/arm64/crypto/ghash-ce-core.S
++++ b/arch/arm64/crypto/ghash-ce-core.S
+@@ -544,7 +544,22 @@ CPU_LE(	rev		w8, w8		)
+ 	ext		XL.16b, XL.16b, XL.16b, #8
+ 	rev64		XL.16b, XL.16b
+ 	eor		XL.16b, XL.16b, KS0.16b
++
++	.if		\enc == 1
+ 	st1		{XL.16b}, [x10]			// store tag
++	.else
++	ldp		x11, x12, [sp, #40]		// load tag pointer and authsize
++	adr_l		x17, .Lpermute_table
++	ld1		{KS0.16b}, [x11]		// load supplied tag
++	add		x17, x17, x12
++	ld1		{KS1.16b}, [x17]		// load permute vector
++
++	cmeq		XL.16b, XL.16b, KS0.16b		// compare tags
++	mvn		XL.16b, XL.16b			// -1 for fail, 0 for pass
++	tbl		XL.16b, {XL.16b}, KS1.16b	// keep authsize bytes only
++	sminv		b0, XL.16b			// signed minimum across XL
++	smov		w0, v0.b[0]			// return b0
++	.endif
+ 
+ 4:	ldp		x29, x30, [sp], #32
+ 	ret
+diff --git a/arch/arm64/crypto/ghash-ce-glue.c b/arch/arm64/crypto/ghash-ce-glue.c
+index 8536008e3e35..405923e3be4a 100644
+--- a/arch/arm64/crypto/ghash-ce-glue.c
++++ b/arch/arm64/crypto/ghash-ce-glue.c
+@@ -55,10 +55,10 @@ asmlinkage void pmull_ghash_update_p8(int blocks, u64 dg[], const char *src,
+ asmlinkage void pmull_gcm_encrypt(int bytes, u8 dst[], const u8 src[],
+ 				  u64 const h[][2], u64 dg[], u8 ctr[],
+ 				  u32 const rk[], int rounds, u8 tag[]);
+-
+-asmlinkage void pmull_gcm_decrypt(int bytes, u8 dst[], const u8 src[],
+-				  u64 const h[][2], u64 dg[], u8 ctr[],
+-				  u32 const rk[], int rounds, u8 tag[]);
++asmlinkage int pmull_gcm_decrypt(int bytes, u8 dst[], const u8 src[],
++				 u64 const h[][2], u64 dg[], u8 ctr[],
++				 u32 const rk[], int rounds, const u8 l[],
++				 const u8 tag[], u64 authsize);
+ 
+ static int ghash_init(struct shash_desc *desc)
+ {
+@@ -458,6 +458,7 @@ static int gcm_decrypt(struct aead_request *req)
+ 	unsigned int authsize = crypto_aead_authsize(aead);
+ 	int nrounds = num_rounds(&ctx->aes_key);
+ 	struct skcipher_walk walk;
++	u8 otag[AES_BLOCK_SIZE];
+ 	u8 buf[AES_BLOCK_SIZE];
+ 	u8 iv[AES_BLOCK_SIZE];
+ 	u64 dg[2] = {};
+@@ -474,9 +475,15 @@ static int gcm_decrypt(struct aead_request *req)
+ 	memcpy(iv, req->iv, GCM_IV_SIZE);
+ 	put_unaligned_be32(2, iv + GCM_IV_SIZE);
+ 
++	scatterwalk_map_and_copy(otag, req->src,
++				 req->assoclen + req->cryptlen - authsize,
++				 authsize, 0);
++
+ 	err = skcipher_walk_aead_decrypt(&walk, req, false);
+ 
+ 	if (likely(crypto_simd_usable())) {
++		int ret;
++
+ 		do {
+ 			const u8 *src = walk.src.virt.addr;
+ 			u8 *dst = walk.dst.virt.addr;
+@@ -493,9 +500,10 @@ static int gcm_decrypt(struct aead_request *req)
+ 			}
+ 
+ 			kernel_neon_begin();
+-			pmull_gcm_decrypt(nbytes, dst, src, ctx->ghash_key.h,
+-					  dg, iv, ctx->aes_key.key_enc, nrounds,
+-					  tag);
++			ret = pmull_gcm_decrypt(nbytes, dst, src,
++						ctx->ghash_key.h,
++						dg, iv, ctx->aes_key.key_enc,
++						nrounds, tag, otag, authsize);
+ 			kernel_neon_end();
+ 
+ 			if (unlikely(!nbytes))
+@@ -507,6 +515,11 @@ static int gcm_decrypt(struct aead_request *req)
+ 
+ 			err = skcipher_walk_done(&walk, walk.nbytes - nbytes);
+ 		} while (walk.nbytes);
++
++		if (err)
++			return err;
++		if (ret)
++			return -EBADMSG;
+ 	} else {
+ 		while (walk.nbytes >= AES_BLOCK_SIZE) {
+ 			int blocks = walk.nbytes / AES_BLOCK_SIZE;
+@@ -548,23 +561,20 @@ static int gcm_decrypt(struct aead_request *req)
+ 			err = skcipher_walk_done(&walk, 0);
+ 		}
+ 
++		if (err)
++			return err;
++
+ 		put_unaligned_be64(dg[1], tag);
+ 		put_unaligned_be64(dg[0], tag + 8);
+ 		put_unaligned_be32(1, iv + GCM_IV_SIZE);
+ 		aes_encrypt(&ctx->aes_key, iv, iv);
+ 		crypto_xor(tag, iv, AES_BLOCK_SIZE);
+-	}
+-
+-	if (err)
+-		return err;
+ 
+-	/* compare calculated auth tag with the stored one */
+-	scatterwalk_map_and_copy(buf, req->src,
+-				 req->assoclen + req->cryptlen - authsize,
+-				 authsize, 0);
+-
+-	if (crypto_memneq(tag, buf, authsize))
+-		return -EBADMSG;
++		if (crypto_memneq(tag, otag, authsize)) {
++			memzero_explicit(tag, AES_BLOCK_SIZE));
++			return -EBADMSG;
++		}
++	}
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
 
