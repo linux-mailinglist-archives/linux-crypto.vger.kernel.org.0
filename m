@@ -2,145 +2,95 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1BC2B5059
-	for <lists+linux-crypto@lfdr.de>; Mon, 16 Nov 2020 19:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4302B5065
+	for <lists+linux-crypto@lfdr.de>; Mon, 16 Nov 2020 19:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgKPSyx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 16 Nov 2020 13:54:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50332 "EHLO mail.kernel.org"
+        id S1726883AbgKPS7L (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 16 Nov 2020 13:59:11 -0500
+Received: from mga05.intel.com ([192.55.52.43]:4394 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726540AbgKPSyx (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:54:53 -0500
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76E252231B;
-        Mon, 16 Nov 2020 18:54:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605552892;
-        bh=VUgJn3gCDf8LQvqGJa0Q1W2ju75Kaw313SrTYPIIguA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=no7KwtrMBTttsCn1fg0tI1bOmdl35zp7bdNWYTgYRLZ1Avqp9sXhE5Xtu5LgDWkFI
-         x0mUv1e5sKqCguFn/uK09NdetwAut6wP8n2RmNcBrrlkKgFbrzRbTjXKR78hr9JJJk
-         tOcdml4xDl3FRHh1Oe7Jh6gmp3+YaIcT9cdgvNsY=
-Received: by mail-ot1-f48.google.com with SMTP id f16so16995792otl.11;
-        Mon, 16 Nov 2020 10:54:52 -0800 (PST)
-X-Gm-Message-State: AOAM532S3o+jbzuV6eJjHa5KSE2npB70FgoTYP7/1/7zIi7YeSZVrNLu
-        67yvJUiPOzz27dRSbweswFb8wxWgrvXL/qb/dg==
-X-Google-Smtp-Source: ABdhPJwGvsSVV4wVtv/wz445N2G+m7CZ57dR9o2XykijQzjw0jqj+bo8Xq6WnU3sswimSpwcaX3xfZQUJ4STsn0scJQ=
-X-Received: by 2002:a05:6830:2259:: with SMTP id t25mr532760otd.192.1605552891767;
- Mon, 16 Nov 2020 10:54:51 -0800 (PST)
+        id S1725879AbgKPS7K (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:59:10 -0500
+IronPort-SDR: ZSCnhhop357eiTV0eSs0L1+lPTN3EcbSKi+WEf8cW1OWCh1rfP594Irxi+I1YRlpWpk5BMlovR
+ IsV2TY/IZ16g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="255508820"
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="255508820"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:59:07 -0800
+IronPort-SDR: zbyVVXbqFUOi3JjC9nuCPM9Omjk+TB2gDXwV1guWIh7xQAmYY/YCyVlkpANIFjMWWF0eA+waJg
+ 5Of0r9R1X5ig==
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="543709966"
+Received: from abarnicl-mobl2.ger.corp.intel.com (HELO dalessan-mobl1.ir.intel.com) ([10.252.19.98])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:59:04 -0800
+From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Declan Murphy <declan.murphy@intel.com>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Subject: [PATCH v3 0/3] crypto: Add Keem Bay OCS HCU driver
+Date:   Mon, 16 Nov 2020 18:58:43 +0000
+Message-Id: <20201116185846.773464-1-daniele.alessandrelli@linux.intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200916071950.1493-1-gilad@benyossef.com> <20200916071950.1493-2-gilad@benyossef.com>
- <20200923015702.GA3676455@bogus> <CAOtvUMekoMjFij_xDnrwRj2PsfgO8tKx4Jk6d7C5vq-Vh+boWw@mail.gmail.com>
- <CAOtvUMfAKnodo+7EYx2M4yAvxu_VmxwXNRmgOW=KFWi3Wy7msQ@mail.gmail.com>
-In-Reply-To: <CAOtvUMfAKnodo+7EYx2M4yAvxu_VmxwXNRmgOW=KFWi3Wy7msQ@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 16 Nov 2020 12:54:40 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com>
-Message-ID: <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: update ccree optional params
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ofir Drang <ofir.drang@arm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Robin Murphy <Robin.Murphy@arm.com>,
-        Steven Price <steven.price@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 1:18 AM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
->
->
-> Hi again,
->
-> Any opinion on the suggested below?
+The Intel Keem Bay SoC has an Offload Crypto Subsystem (OCS) featuring a
+Hashing Control Unit (HCU) for accelerating hashing operations.
 
-Sorry, lost in the pile...
+This driver adds support for such hardware thus enabling hardware-accelerated
+hashing on the Keem Bay SoC for the following algorithms:
+- sha224 and hmac(sha224)
+- sha256 and hmac(sha256)
+- sha384 and hmac(sha384)
+- sha512 and hmac(sha512)
+- sm3    and hmac(sm3)
 
-> Thanks!
-> Gilad
->
->
-> On Tue, Sep 29, 2020 at 9:08 PM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
->>
->>
->> On Wed, Sep 23, 2020 at 4:57 AM Rob Herring <robh@kernel.org> wrote:
->> >
->> > On Wed, Sep 16, 2020 at 10:19:49AM +0300, Gilad Ben-Yossef wrote:
->> > > Document ccree driver supporting new optional parameters allowing to
->> > > customize the DMA transactions cache parameters and ACE bus sharability
->> > > properties.
->> > >
->> > > Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
->> > > ---
->> > >  Documentation/devicetree/bindings/crypto/arm-cryptocell.txt | 4 ++++
->> > >  1 file changed, 4 insertions(+)
->> > >
->> > > diff --git a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
->> > > index 6130e6eb4af8..1a1603e457a8 100644
->> > > --- a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
->> > > +++ b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
->> > > @@ -13,6 +13,10 @@ Required properties:
->> > >  Optional properties:
->> > >  - clocks: Reference to the crypto engine clock.
->> > >  - dma-coherent: Present if dma operations are coherent.
->> > > +- awcache: Set write transactions cache attributes
->> > > +- arcache: Set read transactions cache attributes
->> >
->> > dma-coherent already implies these are 011x, 101x or 111x. In my limited
->> > experience configuring these (Calxeda SATA and ethernet), writeback,
->> > write-allocate was pretty much always optimal.
->>
->> Indeed and these are the default. But not all SoC are born equal and
->> we got a request to allow setting these.
->>
->> Maybe instead of numerical values have three possible verbal setting
->> would be better?
->>
->>
->> > > +- awdomain: Set write transactions ACE sharability domain (712, 703, 713 only)
->> > > +- ardomain: Set read transactions ACE sharability domain (712, 703, 713 only)
->> >
->> > This probably needs something common. We may need something for Mali,
->> > too. I don't think different settings for read and write makes much
->> > sense nor does anything beyond IS or OS.
->>
->> I agree. Maybe
->>
->> sharability_domain: either "IS" or "OS"?
+The driver is passing crypto manager self-tests, including the extra tests
+(CRYPTO_MANAGER_EXTRA_TESTS=y).
 
-It's still an Arm thing, so it would need at least an 'arm,' prefix.
-But ideally it wouldn't be Arm specific though I'm not sure if any
-such thing is needed for other arches. If common either for Arm or
-across arches, then it needs to be documented in a common doc with
-some wider agreement than what a device specific property needs.
+v2 -> v3:
+- Fixed more issues with dt-bindings (removed useless descriptions for reg,
+  interrupts, and clocks)
 
->> > These could also just be implied by the compatible string (and requiring
->> > an SoC specific one).
->>
->> hm... we could do it but this will require us to know (and publicly
->> acknowledge) of every SoC making use of this piece of hardware design.
+v1 -> v2:
+- Fixed issues with dt-bindings
 
-That's already a requirement in general. Sometimes we can avoid it,
-but that's cases of getting lucky.
+Daniele Alessandrelli (1):
+  MAINTAINERS: Add maintainers for Keem Bay OCS HCU driver
 
->> There is currently no other part of the driver that needs this.
+Declan Murphy (2):
+  dt-bindings: crypto: Add Keem Bay OCS HCU bindings
+  crypto: keembay: Add Keem Bay OCS HCU driver
 
-If your DT is part of firmware, then waiting until adding some driver
-feature or quirk based on a new DT property is too late. Whereas with
-a SoC specific compatible, you can handle any new feature or quirk
-without a DT change (e.g. just a stable kernel update). Some platforms
-may not care about that model, but in general that's the policy we
-follow. Not doing that, we end up with the DWC3 binding.
+ .../crypto/intel,keembay-ocs-hcu.yaml         |   46 +
+ MAINTAINERS                                   |   11 +
+ drivers/crypto/Kconfig                        |    2 +
+ drivers/crypto/Makefile                       |    1 +
+ drivers/crypto/keembay/Kconfig                |   20 +
+ drivers/crypto/keembay/Makefile               |    5 +
+ drivers/crypto/keembay/keembay-ocs-hcu-core.c | 1484 +++++++++++++++++
+ drivers/crypto/keembay/ocs-hcu.c              |  593 +++++++
+ drivers/crypto/keembay/ocs-hcu.h              |  115 ++
+ 9 files changed, 2277 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/crypto/intel,keembay-ocs-hcu.yaml
+ create mode 100644 drivers/crypto/keembay/Kconfig
+ create mode 100644 drivers/crypto/keembay/Makefile
+ create mode 100644 drivers/crypto/keembay/keembay-ocs-hcu-core.c
+ create mode 100644 drivers/crypto/keembay/ocs-hcu.c
+ create mode 100644 drivers/crypto/keembay/ocs-hcu.h
 
-A fallback compatible is how we avoid updating drivers for every
-single SoC unless needed.
 
-Rob
+base-commit: c3a98c3ad5c0dc60a1ac66bf91147a3f39cac96b
+-- 
+2.26.2
+
