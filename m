@@ -2,93 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BB12B6470
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Nov 2020 14:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 793C92B661F
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Nov 2020 15:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387731AbgKQNr0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 17 Nov 2020 08:47:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387730AbgKQNrY (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:47:24 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26506C061A4E
-        for <linux-crypto@vger.kernel.org>; Tue, 17 Nov 2020 05:47:24 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id n132so20352865qke.1
-        for <linux-crypto@vger.kernel.org>; Tue, 17 Nov 2020 05:47:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=H9iD0vb59nEfd0VuYA1RFQfZKltqvw1+ddifT0t8kKQ=;
-        b=xNK2Dv0l/RS6jOxorOPlj4wF5Hm9Kcn7P3JHnJx5slQTGiKq12OhEu+qhyEOErdJrX
-         r8W6lPr8C1hJTJB2I/ZbVk5aXKQAZeeid7tFVdhxEEaQgIm4EKzktFnMbPYnbAZzLMJV
-         R+EHgazzvJT+Sln0/q2Tc6mBjWdqQBV/P9HW0uP0vP4q20NXnOQG6QsRqK18D5KURi/j
-         KadLP6sU4ITKWQJNdLj00TPPMUQ+VTqC8B//eO0dcoccI0GAqxcF7EZEdOEqpTcQrWmn
-         c/0ULiqzsBXaaLqflVUpUwWklJUmLthVs9ORrZ+3M/Tb/zrogNaKjNiaR0nta/JDuO+r
-         O2wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=H9iD0vb59nEfd0VuYA1RFQfZKltqvw1+ddifT0t8kKQ=;
-        b=pfprahnQPX6rwH+pshiAP6Zwe/eiJc1tvoWeIHkMrVQfIQjziJEgReObzUu1FLoqg9
-         FiNkIUVL+pR+SrhC5Xd+yiERnTOngpthSTrFpMB8SNDGHCaZ8pZ+cLo4jwYkbfx96d3i
-         nlyjD9+EqMPnh3iWxtsbwDGinzP4CdVWGl8pfjqxLgaj8sHvIxR0o5jFD/XacPKYXf+r
-         yknN/cc3hqFS/acml5/hoBIkEg1kVbVUDRRK0ZtYYFWnuF4ZBOi3LV7DCz70Xy0kn6aH
-         da4l70bUEH6u3005bDgdvb7+upC/zKmtinb4s72On0dWqk+9VL2L2S4aIvPmIdaD1I35
-         J1cw==
-X-Gm-Message-State: AOAM532pTAyAJK5AzmBZrmibWDddk13SnzV9l4ho/OU2Y35O4mIeh+g6
-        RQdQJKpwl4KWn70l/IeYvKiEUg==
-X-Google-Smtp-Source: ABdhPJyptcWBVT5M2++jj9hPPhmMcL9cKttwWytv2NLfLJoew0OcWZWypoNx+gJzkYTRIn3Tq13U9Q==
-X-Received: by 2002:a37:b782:: with SMTP id h124mr20237761qkf.169.1605620843333;
-        Tue, 17 Nov 2020 05:47:23 -0800 (PST)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id t133sm14607355qke.82.2020.11.17.05.47.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 05:47:22 -0800 (PST)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        robh+dt@kernel.org, sboyd@kernel.org, mturquette@baylibre.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: [PATCH 6/6] devicetree:bindings:crypto: Extend qcom-qce binding to add support for crypto engine version 5.4
-Date:   Tue, 17 Nov 2020 08:47:14 -0500
-Message-Id: <20201117134714.3456446-7-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201117134714.3456446-1-thara.gopinath@linaro.org>
-References: <20201117134714.3456446-1-thara.gopinath@linaro.org>
+        id S1731319AbgKQOB2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 17 Nov 2020 09:01:28 -0500
+Received: from verein.lst.de ([213.95.11.211]:59557 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733003AbgKQOBZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 17 Nov 2020 09:01:25 -0500
+Received: by verein.lst.de (Postfix, from userid 2005)
+        id CF5AD6736F; Tue, 17 Nov 2020 15:01:18 +0100 (CET)
+Date:   Tue, 17 Nov 2020 15:01:18 +0100
+From:   Torsten Duwe <duwe@lst.de>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Stephan =?utf-8?Q?M=C3=BCller?= <smueller@chronox.de>,
+        Willy Tarreau <w@1wt.eu>, linux-crypto@vger.kernel.org,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        And y Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>, ardb@kernel.org,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Petr Tesarik <ptesarik@suse.cz>, simo@redhat.com
+Subject: Re: [PATCH v36 00/13] /dev/random - a new approach
+Message-ID: <20201117140118.GA31400@lst.de>
+References: <20200921075857.4424-1-nstange@suse.de> <2961243.vtBmWVcJkq@tauon.chronox.de> <20201016172619.GA18410@lst.de> <3073852.aeNJFYEL58@positron.chronox.de> <20201028185117.74300988@blackhole.lan> <20201028180728.GA2831268@kroah.com> <20201102154435.71cab8c0@blackhole>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102154435.71cab8c0@blackhole>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add compatible string to support v5.4 crypto engine.
+On Mon, Nov 02, 2020 at 02:44:35PM +0100, Torsten Duwe wrote:
+> 
+> Ted, if you don't have the time any more to take care of /dev/random,
+> it's not a shame to hand over maintainership, especially given your
+> long history of Linux contributions.
+> 
+> Please do seriously consider to hand it over to someone new. This would
+> be a good opportunity.
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
- Documentation/devicetree/bindings/crypto/qcom-qce.txt | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I can see you are quite busy working on ext4, and there is a number of
+patches for drivers/char/random.c awaiting review. Wouldn't it be good
+to pass it on to someone more enthusiastic?
 
-diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.txt b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-index fdd53b184ba8..ed1ede9c0acc 100644
---- a/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-+++ b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-@@ -2,7 +2,9 @@ Qualcomm crypto engine driver
- 
- Required properties:
- 
--- compatible  : should be "qcom,crypto-v5.1"
-+- compatible  : should be
-+		"qcom,crypto-v5.1" for ipq6018
-+		"qcom,crypto-v5.4" for sdm845
- - reg         : specifies base physical address and size of the registers map
- - clocks      : phandle to clock-controller plus clock-specifier pair
- - clock-names : "iface" clocks register interface
--- 
-2.25.1
+At least some sort of reply would be appreciated.
+Or are you already pondering the request ;-) ?
+
+	Torsten
 
