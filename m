@@ -2,102 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95B12B5F52
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Nov 2020 13:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0332B64DB
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Nov 2020 14:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727267AbgKQMqI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 17 Nov 2020 07:46:08 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7636 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQMqI (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:46:08 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cb5Jw45DWz15MbQ;
-        Tue, 17 Nov 2020 20:45:52 +0800 (CST)
-Received: from [10.110.54.32] (10.110.54.32) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Tue, 17 Nov 2020
- 20:45:55 +0800
-Subject: Re: [PATCH 0/1] arm64: Accelerate Adler32 using arm64 SVE
- instructions.
-To:     Dave Martin <Dave.Martin@arm.com>
-CC:     <alexandre.torgue@st.com>, <catalin.marinas@arm.com>,
-        <gaoguijin@huawei.com>, <colordev.jiang@huawei.com>,
-        <luchunhua@huawei.com>, <linux-crypto@vger.kernel.org>,
-        <mcoquelin.stm32@gmail.com>, <liliang889@huawei.com>,
-        <will@kernel.org>, <davem@davemloft.net>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <herbert@gondor.apana.org.au>
-References: <20201103121506.1533-1-liqiang64@huawei.com>
- <20201105165301.GH6882@arm.com>
- <f323de50-c358-88e7-6588-7d14542f2754@huawei.com>
- <20201110104629.GJ6882@arm.com>
- <89a9bdcc-b96e-2f2d-6c52-ca44e0e3472c@huawei.com>
- <20201110160708.GL6882@arm.com>
- <484ad2c8-3905-fc98-237c-f7eb4045edbc@huawei.com>
- <20201112111745.GS6882@arm.com>
- <72514954-ea04-6aa3-73d8-bb0fc39b6de2@huawei.com>
- <20201116155636.GZ6882@arm.com>
-From:   Li Qiang <liqiang64@huawei.com>
-Message-ID: <ab2a10f0-82eb-8e31-f53f-0bcae6977504@huawei.com>
-Date:   Tue, 17 Nov 2020 20:45:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201116155636.GZ6882@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.110.54.32]
-X-CFilter-Loop: Reflected
+        id S1732321AbgKQNci (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 17 Nov 2020 08:32:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732315AbgKQNcf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:32:35 -0500
+Received: from e123331-lin.nice.arm.com (lfbn-nic-1-188-42.w2-15.abo.wanadoo.fr [2.15.37.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64E9B207BC;
+        Tue, 17 Nov 2020 13:32:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605619956;
+        bh=oiVGcTqRY5uab+1tLpgkJEwoZKWfuoa6ABQDcm2KJ+U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gjN/JhPeKbOYeT9RvNHHEDbsgRcZ43mVYGwkjJbRAAsUENkhUbam5lVPf3f5EKxwM
+         drJC5GuACJVoRZQeg2dAFmy7v8HORz/WJImNzkKibac6cNLAhcRL/uMern2yaMfCzX
+         +cPgtF23xO/5IUpqmsilK3n+CYZXeq7Fu7fXh1pQ=
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, linux-arm-kernel@lists.infradead.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ondrej Mosnacek <omosnacek@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH v3 0/4] crypto: aegis128 enhancements
+Date:   Tue, 17 Nov 2020 14:32:10 +0100
+Message-Id: <20201117133214.29114-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+This series supersedes [0] '[PATCH] crypto: aegis128/neon - optimize tail
+block handling', which is included as patch #3 here, but hasn't been
+modified substantially.
 
+Patch #1 should probably go to -stable, even though aegis128 does not appear
+to be widely used.
 
-在 2020/11/16 23:56, Dave Martin 写道:
->> --8<--
->> 	...
->> 	adler_A .req    x10
->> 	adler_B .req    x11
->> 	
->> 	.macro	adler32_core
->> 	ld1b	zX.h, p0/z, [x1]	// load bytes
->> 	inch	x1
->>
->> 	uaddv	d0, p0, zX.h
->> 	mul	zX.h, p0/m, zX.h, zJ.h	// Sum [j=0 .. v-1] j*X[j+n]
->> 	mov	x9, v0.d[0]
->> 	uaddv	d1, p0, zX.h
->> 	add	adler_A, adler_A, x9	// A[n+v] = An + Sum [j=0 ... v-1] X[j]
->> 	mov	x9, v1.d[0]
->> 	madd	adler_B, x7, adler_A, adler_B	// Bn + v*A[n+v]
->> 	sub	adler_B, adler_B, x9		// B[n+v] = Bn + v*A[n+v] - Sum [j=0 .. v-1] j*X[j+n]
->> 	.endm
-> If this has best performance, I find that quite surprising.  Those uaddv
-> instructions will stop the vector lanes flowing independently inside the
-> loop, so if an individual element load is slow arriuaddving then everything
-> will have to wait.
+Patches #2 and #3 improve the SIMD code paths.
 
-I don't know much about this problem, do you mean that the uaddv instruction used in
-the loop has a great impact on performance?
+Patch #4 enables fuzz testing for the SIMD code by registering the generic
+code as a separate driver if the SIMD code path is enabled.
 
-> 
-> A decent hardware prefetcher may tend to hide that issue for sequential
-> memory access, though: i.e., if the hardware does a decent job of
-> fetching data before the actual loads are issued, the data may appear to
-> arrive with minimal delay.
-> 
-> The effect might be a lot worse for algorithms that have less
-> predictable memory access patterns.
-> 
-> Possibly you do win some additional performance due to processing twice
-> as many elements at once, here.
+Changes since v2:
+- add Ondrej's ack to #1
+- fix an issue spotted by Ondrej in #4 where the generic code path would still
+  use some of the SIMD helpers
 
-I think so. Compared to loading bytes into zX.h, if you load them directly into zX.b,
-and then use uunpklo/uunpkhi for register expansion, the performance will be more better(20% faster).
-This may be the reason.
+Cc: Ondrej Mosnacek <omosnacek@gmail.com>
+Cc: Eric Biggers <ebiggers@kernel.org>
+
+[0] https://lore.kernel.org/linux-crypto/20201107195516.13952-1-ardb@kernel.org/
+
+Ard Biesheuvel (4):
+  crypto: aegis128 - wipe plaintext and tag if decryption fails
+  crypto: aegis128/neon - optimize tail block handling
+  crypto: aegis128/neon - move final tag check to SIMD domain
+  crypto: aegis128 - expose SIMD code path as separate driver
+
+ crypto/aegis128-core.c       | 245 ++++++++++++++------
+ crypto/aegis128-neon-inner.c | 122 ++++++++--
+ crypto/aegis128-neon.c       |  21 +-
+ 3 files changed, 287 insertions(+), 101 deletions(-)
 
 -- 
-Best regards,
-Li Qiang
+2.17.1
+
