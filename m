@@ -2,74 +2,136 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0332B64DB
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Nov 2020 14:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BE62B64E0
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Nov 2020 14:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732321AbgKQNci (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 17 Nov 2020 08:32:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42322 "EHLO mail.kernel.org"
+        id S1732324AbgKQNu3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 17 Nov 2020 08:50:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732315AbgKQNcf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:32:35 -0500
+        id S1732319AbgKQNch (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:32:37 -0500
 Received: from e123331-lin.nice.arm.com (lfbn-nic-1-188-42.w2-15.abo.wanadoo.fr [2.15.37.42])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64E9B207BC;
-        Tue, 17 Nov 2020 13:32:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B5ED2463D;
+        Tue, 17 Nov 2020 13:32:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619956;
-        bh=oiVGcTqRY5uab+1tLpgkJEwoZKWfuoa6ABQDcm2KJ+U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gjN/JhPeKbOYeT9RvNHHEDbsgRcZ43mVYGwkjJbRAAsUENkhUbam5lVPf3f5EKxwM
-         drJC5GuACJVoRZQeg2dAFmy7v8HORz/WJImNzkKibac6cNLAhcRL/uMern2yaMfCzX
-         +cPgtF23xO/5IUpqmsilK3n+CYZXeq7Fu7fXh1pQ=
+        s=default; t=1605619958;
+        bh=Iyf4Rgv1+x9PtEcqoWVcwfYPM8emMHSynQZDAw8Vlh8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=cet0n5JfTryI2r5wS0lajmlBaXW1o1RRiB4pZeSqFUJRK0Wwka+h0yt1RlMiiiUbm
+         VXdHZ6gmvmY4vFt072CdGV3xX1YatYMgxHBI6/vxVm/7DPdVepaOZ8fjkdrp92Tnmb
+         wZ7aKg3DlscXPu8H+jZ5tdfyq2Ctp+NBCqcyRzzk=
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, linux-arm-kernel@lists.infradead.org,
         Ard Biesheuvel <ardb@kernel.org>,
         Ondrej Mosnacek <omosnacek@gmail.com>,
         Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v3 0/4] crypto: aegis128 enhancements
-Date:   Tue, 17 Nov 2020 14:32:10 +0100
-Message-Id: <20201117133214.29114-1-ardb@kernel.org>
+Subject: [PATCH v3 1/4] crypto: aegis128 - wipe plaintext and tag if decryption fails
+Date:   Tue, 17 Nov 2020 14:32:11 +0100
+Message-Id: <20201117133214.29114-2-ardb@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201117133214.29114-1-ardb@kernel.org>
+References: <20201117133214.29114-1-ardb@kernel.org>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This series supersedes [0] '[PATCH] crypto: aegis128/neon - optimize tail
-block handling', which is included as patch #3 here, but hasn't been
-modified substantially.
+The AEGIS spec mentions explicitly that the security guarantees hold
+only if the resulting plaintext and tag of a failed decryption are
+withheld. So ensure that we abide by this.
 
-Patch #1 should probably go to -stable, even though aegis128 does not appear
-to be widely used.
+While at it, drop the unused struct aead_request *req parameter from
+crypto_aegis128_process_crypt().
 
-Patches #2 and #3 improve the SIMD code paths.
+Reviewed-by: Ondrej Mosnacek <omosnacek@gmail.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ crypto/aegis128-core.c | 32 ++++++++++++++++----
+ 1 file changed, 26 insertions(+), 6 deletions(-)
 
-Patch #4 enables fuzz testing for the SIMD code by registering the generic
-code as a separate driver if the SIMD code path is enabled.
-
-Changes since v2:
-- add Ondrej's ack to #1
-- fix an issue spotted by Ondrej in #4 where the generic code path would still
-  use some of the SIMD helpers
-
-Cc: Ondrej Mosnacek <omosnacek@gmail.com>
-Cc: Eric Biggers <ebiggers@kernel.org>
-
-[0] https://lore.kernel.org/linux-crypto/20201107195516.13952-1-ardb@kernel.org/
-
-Ard Biesheuvel (4):
-  crypto: aegis128 - wipe plaintext and tag if decryption fails
-  crypto: aegis128/neon - optimize tail block handling
-  crypto: aegis128/neon - move final tag check to SIMD domain
-  crypto: aegis128 - expose SIMD code path as separate driver
-
- crypto/aegis128-core.c       | 245 ++++++++++++++------
- crypto/aegis128-neon-inner.c | 122 ++++++++--
- crypto/aegis128-neon.c       |  21 +-
- 3 files changed, 287 insertions(+), 101 deletions(-)
-
+diff --git a/crypto/aegis128-core.c b/crypto/aegis128-core.c
+index 44fb4956f0dd..3a71235892f5 100644
+--- a/crypto/aegis128-core.c
++++ b/crypto/aegis128-core.c
+@@ -154,6 +154,12 @@ static void crypto_aegis128_ad(struct aegis_state *state,
+ 	}
+ }
+ 
++static void crypto_aegis128_wipe_chunk(struct aegis_state *state, u8 *dst,
++				       const u8 *src, unsigned int size)
++{
++	memzero_explicit(dst, size);
++}
++
+ static void crypto_aegis128_encrypt_chunk(struct aegis_state *state, u8 *dst,
+ 					  const u8 *src, unsigned int size)
+ {
+@@ -324,7 +330,6 @@ static void crypto_aegis128_process_ad(struct aegis_state *state,
+ 
+ static __always_inline
+ int crypto_aegis128_process_crypt(struct aegis_state *state,
+-				  struct aead_request *req,
+ 				  struct skcipher_walk *walk,
+ 				  void (*crypt)(struct aegis_state *state,
+ 					        u8 *dst, const u8 *src,
+@@ -403,14 +408,14 @@ static int crypto_aegis128_encrypt(struct aead_request *req)
+ 	if (aegis128_do_simd()) {
+ 		crypto_aegis128_init_simd(&state, &ctx->key, req->iv);
+ 		crypto_aegis128_process_ad(&state, req->src, req->assoclen);
+-		crypto_aegis128_process_crypt(&state, req, &walk,
++		crypto_aegis128_process_crypt(&state, &walk,
+ 					      crypto_aegis128_encrypt_chunk_simd);
+ 		crypto_aegis128_final_simd(&state, &tag, req->assoclen,
+ 					   cryptlen);
+ 	} else {
+ 		crypto_aegis128_init(&state, &ctx->key, req->iv);
+ 		crypto_aegis128_process_ad(&state, req->src, req->assoclen);
+-		crypto_aegis128_process_crypt(&state, req, &walk,
++		crypto_aegis128_process_crypt(&state, &walk,
+ 					      crypto_aegis128_encrypt_chunk);
+ 		crypto_aegis128_final(&state, &tag, req->assoclen, cryptlen);
+ 	}
+@@ -438,19 +443,34 @@ static int crypto_aegis128_decrypt(struct aead_request *req)
+ 	if (aegis128_do_simd()) {
+ 		crypto_aegis128_init_simd(&state, &ctx->key, req->iv);
+ 		crypto_aegis128_process_ad(&state, req->src, req->assoclen);
+-		crypto_aegis128_process_crypt(&state, req, &walk,
++		crypto_aegis128_process_crypt(&state, &walk,
+ 					      crypto_aegis128_decrypt_chunk_simd);
+ 		crypto_aegis128_final_simd(&state, &tag, req->assoclen,
+ 					   cryptlen);
+ 	} else {
+ 		crypto_aegis128_init(&state, &ctx->key, req->iv);
+ 		crypto_aegis128_process_ad(&state, req->src, req->assoclen);
+-		crypto_aegis128_process_crypt(&state, req, &walk,
++		crypto_aegis128_process_crypt(&state, &walk,
+ 					      crypto_aegis128_decrypt_chunk);
+ 		crypto_aegis128_final(&state, &tag, req->assoclen, cryptlen);
+ 	}
+ 
+-	return crypto_memneq(tag.bytes, zeros, authsize) ? -EBADMSG : 0;
++	if (unlikely(crypto_memneq(tag.bytes, zeros, authsize))) {
++		/*
++		 * From Chapter 4. 'Security Analysis' of the AEGIS spec [0]
++		 *
++		 * "3. If verification fails, the decrypted plaintext and the
++		 *     wrong authentication tag should not be given as output."
++		 *
++		 * [0] https://competitions.cr.yp.to/round3/aegisv11.pdf
++		 */
++		skcipher_walk_aead_decrypt(&walk, req, false);
++		crypto_aegis128_process_crypt(NULL, &walk,
++					      crypto_aegis128_wipe_chunk);
++		memzero_explicit(&tag, sizeof(tag));
++		return -EBADMSG;
++	}
++	return 0;
+ }
+ 
+ static struct aead_alg crypto_aegis128_alg = {
 -- 
 2.17.1
 
