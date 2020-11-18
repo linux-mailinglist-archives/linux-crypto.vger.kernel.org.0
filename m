@@ -2,56 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F952B7A30
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Nov 2020 10:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 256E12B7DA0
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Nov 2020 13:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726215AbgKRJRf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Wed, 18 Nov 2020 04:17:35 -0500
-Received: from tigeramira.ro ([88.158.78.30]:43814 "EHLO mail.tigeramira.ro"
-        rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1725804AbgKRJRe (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:17:34 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.tigeramira.ro (Postfix) with ESMTP id 09F57C63D2F
-        for <linux-crypto@vger.kernel.org>; Sun, 15 Nov 2020 20:20:05 +0200 (EET)
-Received: from mail.tigeramira.ro ([127.0.0.1])
-        by localhost (mail.tigeramira.ro [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id XmeC1-K3oafm for <linux-crypto@vger.kernel.org>;
-        Sun, 15 Nov 2020 20:19:51 +0200 (EET)
-Received: from mail.tigeramira.ro (localhost [127.0.0.1])
-        by mail.tigeramira.ro (Postfix) with ESMTP id 49647C0D78A
-        for <linux-crypto@vger.kernel.org>; Sat, 14 Nov 2020 18:56:47 +0200 (EET)
-Received: from [156.96.44.214] (unknown [192.168.12.254])
-        by mail.tigeramira.ro (Postfix) with ESMTP id C734F998A1B
-        for <linux-crypto@vger.kernel.org>; Fri, 13 Nov 2020 19:07:26 +0200 (EET)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1725794AbgKRMai (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 18 Nov 2020 07:30:38 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:35879 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725747AbgKRMai (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 18 Nov 2020 07:30:38 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R361e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UFoCyub_1605702631;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UFoCyub_1605702631)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 18 Nov 2020 20:30:31 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH] crypto: public_key: Remove redundant header file from public_key.h
+Date:   Wed, 18 Nov 2020 20:30:31 +0800
+Message-Id: <20201118123031.551-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Corporate and Personal Loan::,
-To:     linux-crypto@vger.kernel.org
-From:   "Investment  Corporate" <financialcapability6@gmail.com>
-Date:   Fri, 13 Nov 2020 08:07:39 -0800
-Reply-To: hmurrah39@gmail.com
-Message-Id: <20201113170727.C734F998A1B@mail.tigeramira.ro>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello linux-crypto@vger.kernel.org
+The akcipher.h header file was originally introduced in SM2, and
+then the definition of SM2 was moved to the existing code. This
+header file is left and should be removed.
 
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+---
+ include/crypto/public_key.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-We are Base Investment Company offering Corporate and Personal Loan at 3% Interest Rate for a duration of 10Years.
+diff --git a/include/crypto/public_key.h b/include/crypto/public_key.h
+index 948c5203ca9c..47accec68cb0 100644
+--- a/include/crypto/public_key.h
++++ b/include/crypto/public_key.h
+@@ -12,7 +12,6 @@
+ 
+ #include <linux/keyctl.h>
+ #include <linux/oid_registry.h>
+-#include <crypto/akcipher.h>
+ 
+ /*
+  * Cryptographic data for the public-key subtype of the asymmetric key type.
+-- 
+2.19.1.3.ge56e4f7
 
-
-We also pay 1% commission to brokers, who introduce project owners for finance or other opportunities.
-
-
-Please get back to me if you are interested for more
-
-details.
-
-
-Yours faithfully,
-
-Hashim Murrah
