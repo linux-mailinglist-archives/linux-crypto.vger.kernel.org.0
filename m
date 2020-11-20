@@ -2,64 +2,106 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E5F2BA571
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Nov 2020 10:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DDF2BA609
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Nov 2020 10:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725801AbgKTJGA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 20 Nov 2020 04:06:00 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7713 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgKTJF7 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:05:59 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CcrHH06xVzkcQN;
-        Fri, 20 Nov 2020 17:05:31 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 20 Nov 2020 17:05:00 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <mpm@selenic.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
-        Weili Qian <qianweili@huawei.com>
-Subject: [PATCH 4/4] MAINTAINERS: Move HiSilicon TRNG V2 driver
-Date:   Fri, 20 Nov 2020 17:02:34 +0800
-Message-ID: <1605862954-38300-4-git-send-email-qianweili@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1605862954-38300-1-git-send-email-qianweili@huawei.com>
-References: <1605862954-38300-1-git-send-email-qianweili@huawei.com>
+        id S1725797AbgKTJY5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 20 Nov 2020 04:24:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725789AbgKTJY4 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:24:56 -0500
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B49822226
+        for <linux-crypto@vger.kernel.org>; Fri, 20 Nov 2020 09:24:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605864296;
+        bh=6/moowqlNdpB66qj84VivfVu48Z+XrSgXY7wg0RBZuE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ckWT/HXO25eVrn3yXDHrIxMj5dTy2yK4FyTIj5+iTaFsr3JzP4NUCaRJ69MlPKyr+
+         D400k/KkFWmo4Sal+8CGLsnpjEnvJRf5qzS9G2A19tBGu2eVEq0azdhnI84MBmczqG
+         Dz9vAyYEMEf5Dgq/VyW2fVoc4QSJu0Oyw0CU23vE=
+Received: by mail-oi1-f169.google.com with SMTP id t16so9678135oie.11
+        for <linux-crypto@vger.kernel.org>; Fri, 20 Nov 2020 01:24:56 -0800 (PST)
+X-Gm-Message-State: AOAM532Jjs/zqshTDZ4jw6e9zkrf8nEAjBFpAJB1hIFv88nWNpLf7LQ0
+        YLKa8rmb9tb1Gh+psS6FiSFHh2Cxn/fv/Z08mEY=
+X-Google-Smtp-Source: ABdhPJymO9UiFjVrx3RLxgSsI2GyauA6MC8iCVz851Miui9NWbo47o7WFX9k85qx0UdtH7EFuZrnNHpTfjvrQZGMD8Y=
+X-Received: by 2002:aca:c657:: with SMTP id w84mr3952467oif.47.1605864295237;
+ Fri, 20 Nov 2020 01:24:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+References: <20201109083143.2884-1-ardb@kernel.org> <20201109083143.2884-3-ardb@kernel.org>
+ <20201120034440.GA18047@gondor.apana.org.au>
+In-Reply-To: <20201120034440.GA18047@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 20 Nov 2020 10:24:44 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFd1ab2uLbQ7UvL7_+ObLGbfh=p3aRm3GhAvH0tcOYQ5g@mail.gmail.com>
+Message-ID: <CAMj1kXFd1ab2uLbQ7UvL7_+ObLGbfh=p3aRm3GhAvH0tcOYQ5g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] crypto: tcrypt - permit tcrypt.ko to be builtin
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Move HiSilicon TRNG V2 driver into 'drivers/crypto/hisilicon/trng'
-with some updating on 'MAINTAINERS'.
+On Fri, 20 Nov 2020 at 04:44, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Mon, Nov 09, 2020 at 09:31:42AM +0100, Ard Biesheuvel wrote:
+> > When working on crypto algorithms, being able to run tcrypt quickly
+> > without booting an entire Linux installation can be very useful. For
+> > instance, QEMU/kvm can be used to boot a kernel from the command line,
+> > and having tcrypt.ko builtin would allow tcrypt to be executed to run
+> > benchmarks, or to run tests for algortithms that need to be instantiated
+> > from templates, without the need to make it past the point where the
+> > rootfs is mounted.
+> >
+> > So let's relax the requirement that tcrypt can only be built as a
+> > module when CRYPTO_MANAGER_EXTRA_TESTS is enabled, as this is already
+> > documented as a crypto development-only symbol.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  crypto/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/crypto/Kconfig b/crypto/Kconfig
+> > index 094ef56ab7b4..9ff2d687e334 100644
+> > --- a/crypto/Kconfig
+> > +++ b/crypto/Kconfig
+> > @@ -201,7 +201,7 @@ config CRYPTO_AUTHENC
+> >
+> >  config CRYPTO_TEST
+> >       tristate "Testing module"
+> > -     depends on m
+> > +     depends on m || CRYPTO_MANAGER_EXTRA_TESTS
+> >       select CRYPTO_MANAGER
+> >       help
+> >         Quick & dirty crypto test module.
+>
+> This breaks the build:
+>
+> crypto/Kconfig:150:error: recursive dependency detected!
+> crypto/Kconfig:150:     symbol CRYPTO_MANAGER_EXTRA_TESTS depends on CRYPTO_MANAGER
+> crypto/Kconfig:119:     symbol CRYPTO_MANAGER is selected by CRYPTO_TEST
+> crypto/Kconfig:206:     symbol CRYPTO_TEST depends on CRYPTO_MANAGER_EXTRA_TESTS
+> For a resolution refer to Documentation/kbuild/kconfig-language.rst
+> subsection "Kconfig recursive dependency limitations"
+>
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
-Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OK, I'll apply this on top
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e73636b..a835a74 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7999,7 +7999,7 @@ F:	drivers/staging/hikey9xx/
- HISILICON TRUE RANDOM NUMBER GENERATOR V2 SUPPORT
- M:	Zaibo Xu <xuzaibo@huawei.com>
- S:	Maintained
--F:	drivers/char/hw_random/hisi-trng-v2.c
-+F:	drivers/crypto/hisilicon/trng/trng.c
- 
- HISILICON V3XX SPI NOR FLASH Controller Driver
- M:	John Garry <john.garry@huawei.com>
--- 
-2.8.1
-
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 9ff2d687e334..959ee48f66a8 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -202,7 +202,7 @@ config CRYPTO_AUTHENC
+ config CRYPTO_TEST
+        tristate "Testing module"
+        depends on m || CRYPTO_MANAGER_EXTRA_TESTS
+-       select CRYPTO_MANAGER
++       depends on CRYPTO_MANAGER
+        help
+          Quick & dirty crypto test module.
