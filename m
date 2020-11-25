@@ -2,95 +2,77 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C4C2C46AE
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Nov 2020 18:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35ACC2C47DD
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Nov 2020 19:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732651AbgKYR0A (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 25 Nov 2020 12:26:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
+        id S1730989AbgKYSpo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 25 Nov 2020 13:45:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730868AbgKYR0A (ORCPT
+        with ESMTP id S1730473AbgKYSpo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:26:00 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6E2C0613D4;
-        Wed, 25 Nov 2020 09:26:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=wNUJaMYaw9Om5kTEvwoI8y+Hyo8Am2Dmz8bzn7pzxLY=; b=17Rwd0MsOskJ/cUSJdfuW9XsMn
-        KsT2OnSBtt6xsVSE4FN1zlczDLTGkm75/HO/znDkmdV5ZxFrQhhdB+QWxn+fhra/ajZzfxX8wkpQP
-        oerOaUupdUhFFfEjoR639m/PocGb6XnkAVfPH70WdsZSJEuS202kYhK1NL9EWPN0AkCsgjFTi1drD
-        31xEciB0h4/scEdoSW1rV4Tn2VrwQMUdjPjaSVN2Krj6CtXBPdHDKkrTaM2gYE4bT7k1+lyfYqIv1
-        b9QjARNV4J9h/SoVc0Rf09Ou8qvMmTHgYkiJvl289M2D9tqM7YAf0ufRTJovU8nBLiQW0T4HryhX9
-        cbOWWn2w==;
-Received: from [2601:1c0:6280:3f0::cc1f]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khyYG-0004SP-5q; Wed, 25 Nov 2020 17:25:56 +0000
-Subject: Re: [PATCH 4/4] Documentation/admin-guide/module-signing.rst: add
- openssl command option example for CodeSign EKU
-To:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ben Boeckel <me@benboeckel.net>,
-        Malte Gell <malte.gell@gmx.de>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Lee, Chun-Yi" <jlee@suse.com>
-References: <20201125072653.15657-1-jlee@suse.com>
- <20201125072653.15657-5-jlee@suse.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <aa6e405c-ef6a-e9eb-4431-cb5629fcfc73@infradead.org>
-Date:   Wed, 25 Nov 2020 09:25:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 25 Nov 2020 13:45:44 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6F2C0613D4
+        for <linux-crypto@vger.kernel.org>; Wed, 25 Nov 2020 10:45:25 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id d9so5632425qke.8
+        for <linux-crypto@vger.kernel.org>; Wed, 25 Nov 2020 10:45:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=fsB7lv+/h+1fgfExMz2bzDSqudbc480q4ftyl5At32g=;
+        b=r2cUX1T1GIGhfE9/dXWqVYW8IrnCkxlA2g6ZepVbU+PTc1AiQAkCQ1IOS+/o6ikxqn
+         Jd2HXIcKhWz1I5yPqe8ftSRWTzpBda17KDvEEsWpKFbHTMxcy4fCPUI4hbs0BQTopoai
+         //UesXlRmzXZnSqTiFNS/n5i4nG0i5uSt56oFsvFL4SGeZedGlhwuEvpDxwFgmNF14mh
+         1pZRcZzT6pozZ5BOvahvqBYjmINnODo3EHJwcJgaptY8K8QkosIeN61Oy+FJVDsQm+ez
+         6YTP7JBIO0Wzxg+83y9yOvm+R545uI8q0uJuvFB8gqBnbOFFNUnhzKtMTE54kLyXPza4
+         fNiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=fsB7lv+/h+1fgfExMz2bzDSqudbc480q4ftyl5At32g=;
+        b=LHJFvAFoOz3o29EQQjOeLosHtz8f8xzmcFiHNRxe63xrDBvEpaCXGmxkJ8CITSboiV
+         J5DBDcxbmeaQMtBCx/aKbdjY1qaSK4mVBfkQQJU8P7A/IDoxDxVVaVcAt67ZUwOPP7Vy
+         esjrZKbV4rEPHd/wulfQiHqWJGlFpk8nz5O0SPoFwTKYGv2FB+i5Ma4jCo5BtG/Uy7m1
+         /YeV7T34oLr1zSMjS7GoaM8kETCEqfVMLWfFtof9M+QJgsajPqy7s4JAxM678HtW3brL
+         GL7sH1621/QNJqVW2jQmYlpHEkdEOZ4zNA9f5MEXoAtB2qO5CHsJvmWBUxyRv8Y6ohug
+         ta+g==
+X-Gm-Message-State: AOAM533kHwNR1PgODqOOHBrpwNUZkr0hy2cIsVSpzlLgdaunOIxD+QlI
+        jjnv2NsGGRbjFfTFuMM3A0mpDUPEPPcvg8Uzwd4=
+X-Google-Smtp-Source: ABdhPJzOqeUQjN6vsHGb6X9k9hp5zRVzbKQaGRHFVrtLDBdnMIuTUhQLQNSMdF0zIdeAQ+kBMj2pp61vk2VAf3xu80s=
+X-Received: by 2002:ae9:ebd3:: with SMTP id b202mr289793qkg.26.1606329924920;
+ Wed, 25 Nov 2020 10:45:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201125072653.15657-5-jlee@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:aed:38a1:0:0:0:0:0 with HTTP; Wed, 25 Nov 2020 10:45:24
+ -0800 (PST)
+Reply-To: georgemike7030@gmail.com
+From:   george mike <ed7293954@gmail.com>
+Date:   Wed, 25 Nov 2020 19:45:24 +0100
+Message-ID: <CAN9EptJQu0tAdcbtjEqfFT-xJnObJjrcS6y5aCZZ27nA6SS9JA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi--
+Hallo
 
-On 11/24/20 11:26 PM, Lee, Chun-Yi wrote:
-> Add an openssl command option example for generating CodeSign extended
-> key usage in X.509 when CONFIG_CHECK_CODESIGN_EKU be enabled.
+Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
+Ihnen anbieten
+der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
+Millionen US-Dollar)
+Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
 
-                                                    is enabled.
+Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
+einem Autounfall ums Leben gekommen ist
+und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, 50% darauf
+sein f=C3=BCr dich.
+Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
+Informationen: georgemike7030@gmail.com
 
-> 
-> Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
-> ---
->  Documentation/admin-guide/module-signing.rst | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
-> index f8b584179cff..bc184124d646 100644
-> --- a/Documentation/admin-guide/module-signing.rst
-> +++ b/Documentation/admin-guide/module-signing.rst
-> @@ -170,6 +170,12 @@ generate the public/private key files::
->  	   -config x509.genkey -outform PEM -out kernel_key.pem \
->  	   -keyout kernel_key.pem
->  
-> +When ``CONFIG_CHECK_CODESIGN_EKU`` option be enabled, the following openssl
-
-                                             is enabled,
-
-> +command option should be added for generating CodeSign extended key usage in
-> +X.509::
-> +
-> +        -addext "extendedKeyUsage=codeSigning"
-> +
->  The full pathname for the resulting kernel_key.pem file can then be specified
->  in the ``CONFIG_MODULE_SIG_KEY`` option, and the certificate and key therein will
->  be used instead of an autogenerated keypair.
-> 
-
-
--- 
-~Randy
-
+Vielen Dank im Voraus,
+Mr. George Mike,
