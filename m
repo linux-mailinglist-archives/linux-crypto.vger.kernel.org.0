@@ -2,37 +2,50 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F55D2C5BF9
+	by mail.lfdr.de (Postfix) with ESMTP id AEA6E2C5BFA
 	for <lists+linux-crypto@lfdr.de>; Thu, 26 Nov 2020 19:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404028AbgKZSZ2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 26 Nov 2020 13:25:28 -0500
-Received: from static.214.254.202.116.clients.your-server.de ([116.202.254.214]:59502
-        "EHLO ciao.gmane.io" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403953AbgKZSZ2 (ORCPT
+        id S2404729AbgKZSZb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 26 Nov 2020 13:25:31 -0500
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:32628 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404443AbgKZSZb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 26 Nov 2020 13:25:28 -0500
-Received: from list by ciao.gmane.io with local (Exim 4.92)
-        (envelope-from <glkc-linux-crypto@m.gmane-mx.org>)
-        id 1kiLxO-0003AQ-2v
-        for linux-crypto@vger.kernel.org; Thu, 26 Nov 2020 19:25:26 +0100
-X-Injected-Via-Gmane: http://gmane.org/
-To:     linux-crypto@vger.kernel.org
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+        Thu, 26 Nov 2020 13:25:31 -0500
+Received: from [192.168.42.210] ([81.185.169.32])
+        by mwinf5d14 with ME
+        id x6RL230040iH0YH036RMEn; Thu, 26 Nov 2020 19:25:26 +0100
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 26 Nov 2020 19:25:26 +0100
+X-ME-IP: 81.185.169.32
 Subject: Re: [PATCH] crypto: qat - Use dma_set_mask_and_coherent to simplify
  code
-Date:   Thu, 26 Nov 2020 19:25:20 +0100
-Message-ID: <f8d556f4-75da-7daf-a4af-8335788ff4a1@wanadoo.fr>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc:     "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "Trahe, Fiona" <fiona.trahe@intel.com>,
+        "Ziemba, Wojciech" <wojciech.ziemba@intel.com>,
+        "Chiappero, Marco" <marco.chiappero@intel.com>,
+        qat-linux <qat-linux@intel.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Newsgroups: gmane.linux.kernel.cryptoapi,gmane.linux.kernel,gmane.linux.kernel.janitors
 References: <20201121071359.1320167-1-christophe.jaillet@wanadoo.fr>
  <20201126120408.GA21666@silpixa00400314>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <f8d556f4-75da-7daf-a4af-8335788ff4a1@wanadoo.fr>
+Date:   Thu, 26 Nov 2020 19:25:20 +0100
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.0
+MIME-Version: 1.0
 In-Reply-To: <20201126120408.GA21666@silpixa00400314>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: fr
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -60,4 +73,3 @@ Sure,
 sorry for missing this one.
 
 CJ
-
