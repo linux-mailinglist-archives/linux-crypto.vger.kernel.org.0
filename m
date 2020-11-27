@@ -2,91 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A6A2C6215
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Nov 2020 10:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA6A2C6243
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Nov 2020 10:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729459AbgK0Jmo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 27 Nov 2020 04:42:44 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:8419 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729148AbgK0Jmn (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:42:43 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cj8mV1bm5z741C;
-        Fri, 27 Nov 2020 17:42:18 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 27 Nov 2020 17:42:33 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        "Jernej Skrabec" <jernej.skrabec@siol.net>
-CC:     <linux-crypto@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH 3/3] crypto: sun8i - fix reference leak in sun8i-ss
-Date:   Fri, 27 Nov 2020 17:46:46 +0800
-Message-ID: <20201127094646.121735-4-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201127094646.121735-1-miaoqinglang@huawei.com>
-References: <20201127094646.121735-1-miaoqinglang@huawei.com>
+        id S1726250AbgK0JzO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 27 Nov 2020 04:55:14 -0500
+Received: from a.mx.secunet.com ([62.96.220.36]:36520 "EHLO a.mx.secunet.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725865AbgK0JzO (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:55:14 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id BAB2F20561;
+        Fri, 27 Nov 2020 10:55:12 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id lPCOVodai2_I; Fri, 27 Nov 2020 10:55:12 +0100 (CET)
+Received: from mail-essen-01.secunet.de (unknown [10.53.40.204])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 42A312026E;
+        Fri, 27 Nov 2020 10:55:12 +0100 (CET)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ mail-essen-01.secunet.de (10.53.40.204) with Microsoft SMTP Server (TLS) id
+ 14.3.487.0; Fri, 27 Nov 2020 10:55:12 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Fri, 27 Nov
+ 2020 10:55:11 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)      id 6E97F31805CB;
+ Fri, 27 Nov 2020 10:55:11 +0100 (CET)
+Date:   Fri, 27 Nov 2020 10:55:11 +0100
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Phil Sutter <phil@nwl.cc>, <linux-crypto@vger.kernel.org>,
+        <netfilter-devel@vger.kernel.org>
+Subject: Re: XFRM interface and NF_INET_LOCAL_OUT hook
+Message-ID: <20201127095511.GD9390@gauss3.secunet.de>
+References: <20201125112342.GA11766@orbyte.nwl.cc>
+ <20201126094021.GK8805@gauss3.secunet.de>
+ <20201126131200.GH4647@orbyte.nwl.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201126131200.GH4647@orbyte.nwl.cc>
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to putting operation will result in a
-reference leak here.
+On Thu, Nov 26, 2020 at 02:12:00PM +0100, Phil Sutter wrote:
+> > > 
+> > > Is this a bug or an expected quirk when using XFRM interface?
+> > 
+> > This is expected behaviour. The xfrm interfaces are plaintext devices,
+> > the plaintext packets are routed to the xfrm interface which guarantees
+> > transformation. So the lookup that assigns skb_dst(skb)->xfrm
+> > happens 'behind' the interface. After transformation,
+> > skb_dst(skb)->xfrm will be cleared. So this assignment exists just
+> > inside xfrm in that case.
+> 
+> OK, thanks for the clarification.
+> 
+> > Does netfilter match against skb_dst(skb)->xfrm? What is the exact case
+> > that does not work?
+> 
+> The reported use-case is a match against tunnel data in output hook:
+> 
+> | table t {
+> |     chain c {
+> |         type filter hook output priority filter
+> |         oifname eth0 ipsec out ip daddr 192.168.1.2
+> |     }
+> | }
+> 
+> The ipsec expression tries to extract that data from skb_dst(skb)->xfrm
+> if present. In xt_policy (for iptables), code is equivalent. The above
+> works when not using xfrm_interface. Initially I assumed one just needs
+> to adjust the oifname match, but even dropping it doesn't help.
 
-A new function pm_runtime_resume_and_get is introduced in
-[0] to keep usage counter balanced. So We fix the reference
-leak by replacing it with new funtion.
+Yes, this does not work with xfrm interfaces. As said, they are plaintext
+devices that guarantee transformation.
 
-[0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c | 2 +-
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-index ed2a69f82..7c355bc2f 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-@@ -351,7 +351,7 @@ int sun8i_ss_cipher_init(struct crypto_tfm *tfm)
- 	op->enginectx.op.prepare_request = NULL;
- 	op->enginectx.op.unprepare_request = NULL;
- 
--	err = pm_runtime_get_sync(op->ss->dev);
-+	err = pm_runtime_resume_and_get(op->ss->dev);
- 	if (err < 0) {
- 		dev_err(op->ss->dev, "pm error %d\n", err);
- 		goto error_pm;
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-index e0ddc6847..80e89066d 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-@@ -753,7 +753,7 @@ static int sun8i_ss_probe(struct platform_device *pdev)
- 	if (err)
- 		goto error_alg;
- 
--	err = pm_runtime_get_sync(ss->dev);
-+	err = pm_runtime_resume_and_get(ss->dev);
- 	if (err < 0)
- 		goto error_alg;
- 
--- 
-2.23.0
-
+Maybe you can try to match after transformation by using the secpath,
+but not sure if that is what you need.
