@@ -2,62 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393842C5FDD
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Nov 2020 06:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDA82C5FE0
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Nov 2020 06:49:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732267AbgK0Fsx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 27 Nov 2020 00:48:53 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:33306 "EHLO fornost.hmeau.com"
+        id S2389464AbgK0Ftp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 27 Nov 2020 00:49:45 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:33316 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726952AbgK0Fsx (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 27 Nov 2020 00:48:53 -0500
+        id S2389456AbgK0Ftp (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 27 Nov 2020 00:49:45 -0500
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kiWce-0000YS-J2; Fri, 27 Nov 2020 16:48:45 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Nov 2020 16:48:44 +1100
-Date:   Fri, 27 Nov 2020 16:48:44 +1100
+        id 1kiWdY-0000ZR-ID; Fri, 27 Nov 2020 16:49:41 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Nov 2020 16:49:40 +1100
+Date:   Fri, 27 Nov 2020 16:49:40 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
 To:     kernel test robot <lkp@intel.com>
 Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
         Alexander Sverdlin <alexander.sverdlin@nokia.com>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: ks-sa-rng.c:undefined reference to
- `devm_platform_ioremap_resource'
-Message-ID: <20201127054844.GB23521@gondor.apana.org.au>
+Subject: [PATCH] hwrng: ks-sa - Add dependency on IOMEM and OF
+Message-ID: <20201127054940.GA29627@gondor.apana.org.au>
 References: <202011132311.XmkAgWg0-lkp@intel.com>
+ <20201127054844.GB23521@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202011132311.XmkAgWg0-lkp@intel.com>
+In-Reply-To: <20201127054844.GB23521@gondor.apana.org.au>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 11:02:13PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
-> commit: 90c4b29eb1e555fee66f8329a18cb8a070090ad6 hwrng: ks-sa - Enable COMPILE_TEST
-> date:   12 months ago
-> config: s390-randconfig-r022-20201113 (attached as .config)
-> compiler: s390-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=90c4b29eb1e555fee66f8329a18cb8a070090ad6
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 90c4b29eb1e555fee66f8329a18cb8a070090ad6
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=s390 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-
->    s390-linux-ld: drivers/char/hw_random/ks-sa-rng.o: in function `ks_sa_rng_probe':
-> >> ks-sa-rng.c:(.text+0x2fa): undefined reference to `devm_platform_ioremap_resource'
+Resent with fixed Subject line.
 
 ---8<---
 This patch adds a dependency for KEYSTONE on HAS_IOMEM and OF to
