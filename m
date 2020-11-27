@@ -2,47 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15672C6020
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Nov 2020 07:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7952C6024
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Nov 2020 07:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392634AbgK0G1S (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 27 Nov 2020 01:27:18 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:33496 "EHLO fornost.hmeau.com"
+        id S2392654AbgK0G11 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 27 Nov 2020 01:27:27 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:33514 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392527AbgK0G1S (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 27 Nov 2020 01:27:18 -0500
+        id S2392527AbgK0G10 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 27 Nov 2020 01:27:26 -0500
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kiXDq-0000yy-Co; Fri, 27 Nov 2020 17:27:11 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Nov 2020 17:27:10 +1100
-Date:   Fri, 27 Nov 2020 17:27:10 +1100
+        id 1kiXE0-00011X-67; Fri, 27 Nov 2020 17:27:21 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Nov 2020 17:27:20 +1100
+Date:   Fri, 27 Nov 2020 17:27:20 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     davem@davemloft.net, gcherian@marvell.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] crypto: cavium - Use dma_set_mask_and_coherent to
- simplify code
-Message-ID: <20201127062710.GI11448@gondor.apana.org.au>
-References: <20201121075647.1324006-1-christophe.jaillet@wanadoo.fr>
+To:     Gilad Ben-Yossef <gilad@benyossef.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Ofir Drang <ofir.drang@arm.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] crypto: ccree - rework cache parameters handling
+Message-ID: <20201127062720.GJ11448@gondor.apana.org.au>
+References: <20201122075154.20478-1-gilad@benyossef.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201121075647.1324006-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20201122075154.20478-1-gilad@benyossef.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 08:56:47AM +0100, Christophe JAILLET wrote:
-> 'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
-> an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
+On Sun, Nov 22, 2020 at 09:51:53AM +0200, Gilad Ben-Yossef wrote:
+> Rework the setting of DMA cache parameters, program more appropriate
+> values and explicitly set sharability domain.
 > 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
 > ---
->  drivers/crypto/cavium/cpt/cptpf_main.c | 10 ++--------
->  drivers/crypto/cavium/cpt/cptvf_main.c | 10 ++--------
->  2 files changed, 4 insertions(+), 16 deletions(-)
+> 
+> Changes from previous versions:
+> - After discussion with Rob H., drop notion of setting the parameters
+>   from device tree and just use good defaults for cached/non cached.
+> 
+>  drivers/crypto/ccree/cc_driver.c | 75 +++++++++++++++++++++++++-------
+>  drivers/crypto/ccree/cc_driver.h |  6 +--
+>  drivers/crypto/ccree/cc_pm.c     |  2 +-
+>  3 files changed, 63 insertions(+), 20 deletions(-)
 
 Patch applied.  Thanks.
 -- 
