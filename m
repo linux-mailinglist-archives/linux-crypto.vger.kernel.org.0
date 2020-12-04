@@ -2,65 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31B72CF032
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Dec 2020 16:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0175D2CF064
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Dec 2020 16:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729486AbgLDPAb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 4 Dec 2020 10:00:31 -0500
-Received: from smtp-190d.mail.infomaniak.ch ([185.125.25.13]:40083 "EHLO
-        smtp-190d.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727620AbgLDPAa (ORCPT
+        id S1730398AbgLDPJK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 4 Dec 2020 10:09:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725923AbgLDPJJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:00:30 -0500
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CnbTW596pzlhmSq;
-        Fri,  4 Dec 2020 15:59:43 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4CnbTV6bcxzlh8TC;
-        Fri,  4 Dec 2020 15:59:42 +0100 (CET)
-Subject: Re: [PATCH v1 2/9] certs: Make blacklist_vet_description() more
- strict
-To:     David Howells <dhowells@redhat.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-References: <20201120180426.922572-3-mic@digikod.net>
- <20201120180426.922572-1-mic@digikod.net>
- <113978.1607090965@warthog.procyon.org.uk>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <44b14c7f-0136-4023-42fb-7ff19c78715d@digikod.net>
-Date:   Fri, 4 Dec 2020 15:59:42 +0100
-User-Agent: 
+        Fri, 4 Dec 2020 10:09:09 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF621C061A51;
+        Fri,  4 Dec 2020 07:08:29 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607094507;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=m+5fUfCGN4l8PttwLmFKEO9H2mckNeF24mD/TIdsWmA=;
+        b=IMK9HWTOFmsmGjUiNSHj45Vv6+Y4MUAZ4rHxVC3aeoHN2rE5EBGlduOSi8RJbyfAANrFlR
+        LvoWc0CDfTy7NXTHYTYsXnVED6ZyvuyBTu0a9o5jYQdphqrLvLPbskLSFNdS7uWI2tUzqz
+        cBemexfhX7i3B63iOQUMo+oE/d/o4zpyumtdAlZEuRm8S1RezGtdjN3T+jpF3gwVy4yLqq
+        7iP8XzvD/utBLvvxbLB0QOeJEFBwWoUuDHD8XVo8WC5mIwK2cUH+CEvlvaN/TDjn7U2OZL
+        z/SvS8RdMz/hjlYEnAejzfQZW5mr/bR2gzQ0XB7qiehZGarVU+FzWkPfkh7pog==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607094507;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=m+5fUfCGN4l8PttwLmFKEO9H2mckNeF24mD/TIdsWmA=;
+        b=INkOrHiJFDwY6z7hGqBnk6yKA9vFBYJNsviMtfs2IwfBxi0PyZSJvR9EccALbcd/BAKPYz
+        qCzaYhAQYTLVRtDg==
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linuxfoundation.org>
+Subject: Re: crypto: sun4i-ss: error with kmap
+In-Reply-To: <20201204132631.GA25321@Red>
+References: <20201201130102.GA23461@Red> <87ft4phcyx.fsf@nanos.tec.linutronix.de> <20201201135252.GA9584@Red> <87y2ihfw6z.fsf@nanos.tec.linutronix.de> <20201201144529.GA6786@Red> <87v9dlfthf.fsf@nanos.tec.linutronix.de> <20201202195501.GA29296@Red> <877dpzexfr.fsf@nanos.tec.linutronix.de> <20201203173846.GA16207@Red> <87r1o6bh1u.fsf@nanos.tec.linutronix.de> <20201204132631.GA25321@Red>
+Date:   Fri, 04 Dec 2020 16:08:27 +0100
+Message-ID: <874kl1bod0.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <113978.1607090965@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On Fri, Dec 04 2020 at 14:26, Corentin Labbe wrote:
+> On Fri, Dec 04, 2020 at 12:34:05AM +0100, Thomas Gleixner wrote:
+>> The unmap comes from sg_miter_stop() and looking at the previous
+>> map/unmap cycles there are never nested maps.
+>> 
+>> [  996.943030] cryptset-316       0d..4 73943317us : __kmap_local_pfn_prot: kmap_local_pfn: 1 ffefd000
+>> 
+>> is the first event which allocates a nested map. 
+>> 
+>> So something goes south either in sg_miter or in the crypto maze.
+>> 
+>> Enabling CONFIG_DEBUG_KMAP_LOCAL and function tracing might give us more clue.
+>
+> Done, http://kernel.montjoie.ovh/130466.log
 
+Does not provide more information with the debug enabled. So can you
+please enable CONFIG_FUNCTION_TRACER and add 'ftrace=function' to the
+command line?
 
-On 04/12/2020 15:09, David Howells wrote:
-> Mickaël Salaün <mic@digikod.net> wrote:
-> 
->> +	if (*desc)
->> +		/* The hash is greater than MAX_HASH_LEN. */
->> +		return -EINVAL;
-> 
-> -ENOPKG might be better.  It's not that the string is invalid, it's just that
-> it's unsupported at the moment.
+Thanks,
 
-Right, I'll switch to this with the next series.
-
-> 
-> David
-> 
+        tglx
