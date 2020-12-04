@@ -2,103 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C382CF374
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Dec 2020 18:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F972CF3EF
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Dec 2020 19:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387681AbgLDR5m (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 4 Dec 2020 12:57:42 -0500
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:57236 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726021AbgLDR5m (ORCPT
+        id S1726839AbgLDSWY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 4 Dec 2020 13:22:24 -0500
+Received: from mail.oakviewlaw.com ([184.105.149.4]:57594 "EHLO
+        mail.oakviewlaw.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgLDSWX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:57:42 -0500
+        Fri, 4 Dec 2020 13:22:23 -0500
+X-Greylist: delayed 477 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Dec 2020 13:22:23 EST
 Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id EFE5C12806D3;
-        Fri,  4 Dec 2020 09:57:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1607104620;
-        bh=j/eiQ9XC4YVyXHPaGvnixXqre38vTxKbe7IysEXG/gQ=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=LJv6d585fMMbsbl72vwxEil6yGk8n+dpPg0+K0c9QGLI6z2Tnb35IajlkkZ/poYVt
-         Apwk3JR5UaJjDvC46VLJvsCb+SFQ5eqvWGVnU98pT0RQI8tTzpuqlku09Jz0OireDV
-         CvQHnAFrsu77RWt/AkDGWfrret+uJBj5l78JAyzI=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id INp-1Jb0T2J6; Fri,  4 Dec 2020 09:57:00 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 92AB012806D2;
-        Fri,  4 Dec 2020 09:56:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1607104620;
-        bh=j/eiQ9XC4YVyXHPaGvnixXqre38vTxKbe7IysEXG/gQ=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=LJv6d585fMMbsbl72vwxEil6yGk8n+dpPg0+K0c9QGLI6z2Tnb35IajlkkZ/poYVt
-         Apwk3JR5UaJjDvC46VLJvsCb+SFQ5eqvWGVnU98pT0RQI8tTzpuqlku09Jz0OireDV
-         CvQHnAFrsu77RWt/AkDGWfrret+uJBj5l78JAyzI=
-Message-ID: <d706cdbcc4eba3fb3fe17453017a6623f1ec80dc.camel@HansenPartnership.com>
-Subject: Re: [RFC PATCH v1 00/12] Replace strstarts() by str_has_prefix()
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     laniel_francis@privacyrequired.com,
-        Russell King <linux@armlinux.org.uk>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Bin Liu <b-liu@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jessica Yu <jeyu@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-efi@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Date:   Fri, 04 Dec 2020 09:56:58 -0800
-In-Reply-To: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
-References: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        by mail.oakviewlaw.com (Postfix) with ESMTP id 712864FB8B2;
+        Fri,  4 Dec 2020 18:13:15 +0000 (UTC)
+Received: from mail.oakviewlaw.com ([127.0.0.1])
+        by localhost (mail.oakviewlaw.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id WllvanqS8pDh; Fri,  4 Dec 2020 18:13:15 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.oakviewlaw.com (Postfix) with ESMTP id 1422D4FB674;
+        Fri,  4 Dec 2020 18:13:15 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.oakviewlaw.com 1422D4FB674
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oakviewlaw.com;
+        s=selector; t=1607105595;
+        bh=O4faEs1u5TKKd2DgIzfqFIrp/N/6fhS+j4xcsYavjXw=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=Qm70K5p5vvq9kKD4JnHrAqqsyhcO4h382xg/I/nwOKynqyCC8CBM8G27K9bulnKdt
+         y5oHme8Ub9DA5JqstNDghVuAid+SCFcG789prk3MQ8ggH3IUcrJOJJNtNHmQCv/MmN
+         VDrGDXzt7n3vCwPuOqxARDMaMBMhdF6dwzHHPJRn3Qj2QR8ZtHQJ1pRGqJbSnEesRN
+         lSU4DF3ldQE/nOlBc4ZhcOvxnEYu/qLq63RswH9GaRJ0p/HbWDPTSntJknv8ikd2oY
+         zc2pizhcvPv5WlQiRhuEc1htGIWxxoEc5HGtVxqot7Uw6AOPzdsGsYhpiVijnceSSR
+         IOkxwAC/FSUtQ==
+X-Virus-Scanned: amavisd-new at oakviewlaw.com
+Received: from mail.oakviewlaw.com ([127.0.0.1])
+        by localhost (mail.oakviewlaw.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id w4bxsuj_h-YD; Fri,  4 Dec 2020 18:13:14 +0000 (UTC)
+Received: from [192.168.1.195] (unknown [91.187.51.3])
+        by mail.oakviewlaw.com (Postfix) with ESMTPSA id A347B4FB669;
+        Fri,  4 Dec 2020 18:13:04 +0000 (UTC)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: NEDBANK
+To:     Recipients <zimbra@oakviewlaw.com>
+From:   "Mr. Casmir Nkulu" <zimbra@oakviewlaw.com>
+Date:   Fri, 04 Dec 2020 10:12:54 -0800
+Reply-To: serty@webmail.co.za
+Message-Id: <20201204181304.A347B4FB669@mail.oakviewlaw.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, 2020-12-04 at 18:03 +0100, laniel_francis@privacyrequired.com
-wrote:
-> In this patch set, I replaced all calls to strstarts() by calls to
-> str_has_prefix(). Indeed, the kernel has two functions to test if a
-> string begins with an other:
-> 1. strstarts() which returns a bool, so 1 if the string begins with
-> the prefix,0 otherwise.
-> 2. str_has_prefix() which returns the length of the prefix or 0.
-> 
-> str_has_prefix() was introduced later than strstarts(), in commit
-> 495d714ad140 which also stated that str_has_prefix() should replace
-> strstarts(). This is what this patch set does.
+Attention: Esteemed Customer
 
-What's the reason why?  If you look at the use cases for the
-replacement of strstart()  they're all cases where we need to know the
-length we're skipping and this is hard coded, leading to potential
-errors later.  This is a classic example:  3d739c1f6156 ("tracing: Use
-the return of str_has_prefix() to remove open coded numbers").  However
-you're not doing this transformation in the conversion, so the
-conversion is pretty useless.  I also see no case for replacing
-strstart() where we're using it simply as a boolean without needing to
-know the length of the prefix.
+Note that the NED-BANK of RSA  have received the authority by United State =
+of  America Federal Reserve  Bank  in conjunction with the International Mo=
+netary Fund (IMF) and the  World Bank to finally release all pending Lotter=
+y winning payments, Contracts payments, Inheritance/ATM funds and Loan paym=
+ents.
 
-James
+Most importantly, we have received banking antennary as stated below for th=
+e transfer of your funds, as such we urgently request that you reconfirm wi=
+th us if you have given such mandate or not, failure to receive immediate r=
+esponse from you within the next seven workings days we shall believe that =
+such mandate was issued by you, to that effect we shall then commence with =
+the transfer of the fund into the bank details below.
 
 
+Bank Name: HSBC SINGAPORE
+Bank
+Address: Blk 131 Jurong East Street 13,
+
+Account N=B0: 486 4761 10
+
+Account name: Mr. Jurong Koui
+
+Swift Code: HSBCSGS2XXX
+
+Beneficiary: Mr. Jurong Koui
+
+Address: 131 Jurong Gateway Road
+
+Singapore 600131
+
+
+
+Regards,
+
+Mr Casmir Nkulu
+
+Head Foreign payment Department
+
+NED- Bank RSA
+
+#135 Rivonia roads, Sandown, Johannesburg South Africa
