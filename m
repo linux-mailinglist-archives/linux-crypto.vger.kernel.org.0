@@ -2,98 +2,77 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F972CF3EF
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Dec 2020 19:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A522CF3B7
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Dec 2020 19:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgLDSWY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 4 Dec 2020 13:22:24 -0500
-Received: from mail.oakviewlaw.com ([184.105.149.4]:57594 "EHLO
-        mail.oakviewlaw.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbgLDSWX (ORCPT
+        id S1728703AbgLDSO2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 4 Dec 2020 13:14:28 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47966 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726775AbgLDSO1 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:22:23 -0500
-X-Greylist: delayed 477 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Dec 2020 13:22:23 EST
-Received: from localhost (localhost [127.0.0.1])
-        by mail.oakviewlaw.com (Postfix) with ESMTP id 712864FB8B2;
-        Fri,  4 Dec 2020 18:13:15 +0000 (UTC)
-Received: from mail.oakviewlaw.com ([127.0.0.1])
-        by localhost (mail.oakviewlaw.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id WllvanqS8pDh; Fri,  4 Dec 2020 18:13:15 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.oakviewlaw.com (Postfix) with ESMTP id 1422D4FB674;
-        Fri,  4 Dec 2020 18:13:15 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.oakviewlaw.com 1422D4FB674
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oakviewlaw.com;
-        s=selector; t=1607105595;
-        bh=O4faEs1u5TKKd2DgIzfqFIrp/N/6fhS+j4xcsYavjXw=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=Qm70K5p5vvq9kKD4JnHrAqqsyhcO4h382xg/I/nwOKynqyCC8CBM8G27K9bulnKdt
-         y5oHme8Ub9DA5JqstNDghVuAid+SCFcG789prk3MQ8ggH3IUcrJOJJNtNHmQCv/MmN
-         VDrGDXzt7n3vCwPuOqxARDMaMBMhdF6dwzHHPJRn3Qj2QR8ZtHQJ1pRGqJbSnEesRN
-         lSU4DF3ldQE/nOlBc4ZhcOvxnEYu/qLq63RswH9GaRJ0p/HbWDPTSntJknv8ikd2oY
-         zc2pizhcvPv5WlQiRhuEc1htGIWxxoEc5HGtVxqot7Uw6AOPzdsGsYhpiVijnceSSR
-         IOkxwAC/FSUtQ==
-X-Virus-Scanned: amavisd-new at oakviewlaw.com
-Received: from mail.oakviewlaw.com ([127.0.0.1])
-        by localhost (mail.oakviewlaw.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id w4bxsuj_h-YD; Fri,  4 Dec 2020 18:13:14 +0000 (UTC)
-Received: from [192.168.1.195] (unknown [91.187.51.3])
-        by mail.oakviewlaw.com (Postfix) with ESMTPSA id A347B4FB669;
-        Fri,  4 Dec 2020 18:13:04 +0000 (UTC)
-Content-Type: text/plain; charset="iso-8859-1"
+        Fri, 4 Dec 2020 13:14:27 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0B4IDIuo007813
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 4 Dec 2020 13:13:18 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id DA510420136; Fri,  4 Dec 2020 13:13:17 -0500 (EST)
+Date:   Fri, 4 Dec 2020 13:13:17 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Bruce Fields <bfields@fieldses.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-afs@lists.infradead.org
+Subject: Re: Why the auxiliary cipher in gss_krb5_crypto.c?
+Message-ID: <20201204181317.GD577125@mit.edu>
+References: <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com>
+ <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
+ <118876.1607093975@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: NEDBANK
-To:     Recipients <zimbra@oakviewlaw.com>
-From:   "Mr. Casmir Nkulu" <zimbra@oakviewlaw.com>
-Date:   Fri, 04 Dec 2020 10:12:54 -0800
-Reply-To: serty@webmail.co.za
-Message-Id: <20201204181304.A347B4FB669@mail.oakviewlaw.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <118876.1607093975@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Attention: Esteemed Customer
+On Fri, Dec 04, 2020 at 02:59:35PM +0000, David Howells wrote:
+> Hi Chuck, Bruce,
+> 
+> Why is gss_krb5_crypto.c using an auxiliary cipher?  For reference, the
+> gss_krb5_aes_encrypt() code looks like the attached.
+> 
+> From what I can tell, in AES mode, the difference between the main cipher and
+> the auxiliary cipher is that the latter is "cbc(aes)" whereas the former is
+> "cts(cbc(aes))" - but they have the same key.
+> 
+> Reading up on CTS, I'm guessing the reason it's like this is that CTS is the
+> same as the non-CTS, except for the last two blocks, but the non-CTS one is
+> more efficient.
 
-Note that the NED-BANK of RSA  have received the authority by United State =
-of  America Federal Reserve  Bank  in conjunction with the International Mo=
-netary Fund (IMF) and the  World Bank to finally release all pending Lotter=
-y winning payments, Contracts payments, Inheritance/ATM funds and Loan paym=
-ents.
+The reason to use CTS is if you don't want to expand the size of the
+cipher text to the cipher block size.  e.g., if you have a 53 byte
+plaintext, and you can't afford to let the ciphertext be 56 bytes, the
+cryptographic engineer will reach for CTS instead of CBC.
 
-Most importantly, we have received banking antennary as stated below for th=
-e transfer of your funds, as such we urgently request that you reconfirm wi=
-th us if you have given such mandate or not, failure to receive immediate r=
-esponse from you within the next seven workings days we shall believe that =
-such mandate was issued by you, to that effect we shall then commence with =
-the transfer of the fund into the bank details below.
+So that probably explains the explanation to use CTS (and it's
+required by the spec in any case).  As far as why CBC is being used
+instead of CTS, the only reason I can think of is the one you posted.
+Perhaps there was some hardware or software configureation where
+cbc(aes) was hardware accelerated, and cts(cbc(aes)) would not be?
 
+In any case, using cbc(aes) for all but the last two blocks, and using
+cts(cbc(aes)) for the last two blocks, is identical to using
+cts(cbc(aes)) for the whole encryption.  So the only reason to do this
+in the more complex way would be because for performance reasons.
 
-Bank Name: HSBC SINGAPORE
-Bank
-Address: Blk 131 Jurong East Street 13,
-
-Account N=B0: 486 4761 10
-
-Account name: Mr. Jurong Koui
-
-Swift Code: HSBCSGS2XXX
-
-Beneficiary: Mr. Jurong Koui
-
-Address: 131 Jurong Gateway Road
-
-Singapore 600131
-
-
-
-Regards,
-
-Mr Casmir Nkulu
-
-Head Foreign payment Department
-
-NED- Bank RSA
-
-#135 Rivonia roads, Sandown, Johannesburg South Africa
+       	    	    	      	 	 - Ted
