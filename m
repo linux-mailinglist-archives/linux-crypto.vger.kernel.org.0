@@ -2,53 +2,160 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1C32CFD0D
-	for <lists+linux-crypto@lfdr.de>; Sat,  5 Dec 2020 19:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B748D2CFDCC
+	for <lists+linux-crypto@lfdr.de>; Sat,  5 Dec 2020 19:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729408AbgLESTa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 5 Dec 2020 13:19:30 -0500
-Received: from in01-tec.fasttelco.net ([78.159.162.5]:52311 "EHLO
-        in01-tec.fasttelco.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727869AbgLERtO (ORCPT
+        id S1728162AbgLESo0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 5 Dec 2020 13:44:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727039AbgLESoV (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:49:14 -0500
-Received: from psxr9bd.com ([62.215.195.91])
-        by in01-tec.fasttelco.net (8.14.3/8.14.3/Debian-9.4) with ESMTP id 0B5Fpi53028419
-        for <linux-crypto@vger.kernel.org>; Sat, 5 Dec 2020 18:51:46 +0300
-Message-Id: <202012051551.0B5Fpi53028419@in01-tec.fasttelco.net>
-From:   "United Nations Organization" <Office6@un.com>
-Subject: {United Nations for Strategic Coordination}
-To:     linux-crypto@vger.kernel.org
+        Sat, 5 Dec 2020 13:44:21 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564DEC0613D1;
+        Sat,  5 Dec 2020 10:43:40 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id h21so9945777wmb.2;
+        Sat, 05 Dec 2020 10:43:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xy8pTkIM3V0NC8hsWJahqGP6V2oO9J48tUSWZxlA9uk=;
+        b=ZC0wB4xOfrZGXbQAYkwSKi5ecx7lxC5Vf4+MXSsx4L7QUjRw4dfdEiQ8MIPjAiBNgn
+         vGLaRLq9GDAwwVjdTIE3mb6aa8BdM5f0ozv+eGRpnvq+rMgpgoaf5eXNtd+XcdO1efkI
+         q4apFVhyQ4I2JjN3jjJzcVbbnVijKtGUyNC9WtR2Ye91BioAlGYWa4M+4gCiXsmu4Eb+
+         urVod55S1VNcUvoxhkXZYS/Dg+8NDwuy4KoHjDqd8APLAa5jUepNnZwhMdAo9NeXwJLc
+         5MuUYSuHiB7Vf/Kplln2nrwITqqVXiajQRpn6Iu2ZUsPQ+GqGcliBEK3zoqcc9/8Mi1w
+         9oJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xy8pTkIM3V0NC8hsWJahqGP6V2oO9J48tUSWZxlA9uk=;
+        b=qkHllk2pMS5xXWDCsE0s/G7J6e8OQGfYe6iD4wfVoYxne2uk9FcJ+LvZL5zpH7URuI
+         MbkFl5s9gMxkm+Vz+0Mmt+JLHRNt2TQgvnVvxUc7cTe1I7QN/qlnROy9l9xN8fCR1FG2
+         UbAHxzcJkUwIffdFCw7YHNIpAMVFJNe4DrE3OQw888JIBBUtDNftuoPLjxx9WxA08WZ0
+         weqfEHX+dn7PUDUWTFeZiMyQJmjWuaUYJpD+fEcSjBNnaZASuq8JnDQzMb22dPBaIYPq
+         XIFUA7IK9N/KzCaVAx04TBvD1+wYOAiYdhN93tMH+bngnEUTLOGUIIPsKV1J+9SEL0k3
+         hleA==
+X-Gm-Message-State: AOAM5307BZk5RWWIGU+NqMkSbaUAJ1h52/oCLxO1p3ZE+BgIqhtQUk+X
+        hjnyve+KQtAIEUv7P7Z1cls=
+X-Google-Smtp-Source: ABdhPJwSK1RomPg3IX344esDcP0wSct5ZEkZlRVcgy1IeoI9W66W/Q0BTNxSa5aKL27jcKYmnyX4yQ==
+X-Received: by 2002:a1c:7c09:: with SMTP id x9mr10401089wmc.98.1607193819114;
+        Sat, 05 Dec 2020 10:43:39 -0800 (PST)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id j6sm8401536wrq.38.2020.12.05.10.43.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Dec 2020 10:43:38 -0800 (PST)
+Date:   Sat, 5 Dec 2020 19:43:34 +0100
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linuxfoundation.org>
+Subject: Re: crypto: sun4i-ss: error with kmap
+Message-ID: <20201205184334.GA8034@Red>
+References: <20201201144529.GA6786@Red>
+ <87v9dlfthf.fsf@nanos.tec.linutronix.de>
+ <20201202195501.GA29296@Red>
+ <877dpzexfr.fsf@nanos.tec.linutronix.de>
+ <20201203173846.GA16207@Red>
+ <87r1o6bh1u.fsf@nanos.tec.linutronix.de>
+ <20201204132631.GA25321@Red>
+ <874kl1bod0.fsf@nanos.tec.linutronix.de>
+ <20201204192753.GA19782@Red>
+ <87wnxx9tle.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Reply-To: "United Nations Organization" <mariamalmeer786@outlook.com>,
-          mariamalmeer786@outlook.com
-Date:   Sat, 5 Dec 2020 16:51:46 +0100
-X-Priority: 3
-X-Bayes-Prob: 0.0001 (Score 0, tokens from: corp_smtp, base:default, @@RPTN)
-X-Spam-Score: 2.91 (**) [Hold at 5.00] COMPENSATION:1.499,MISSING_MID:0.14,RDNS_NONE:1.274
-X-CanIt-Geo: ip=62.215.195.91; country=KW; latitude=29.3375; longitude=47.6581; http://maps.google.com/maps?q=29.3375,47.6581&z=6
-X-CanItPRO-Stream: base:corp_smtp (inherits from base:makc.com.kw,base:default)
-X-Canit-Stats-ID: 0440DPJMM - f122a20bc0a7 - 20201205
-X-Antispam-Training-Forget: https://spam.fasttelco.com/canit/b.php?c=f&i=0440DPJMM&m=f122a20bc0a7&rlm=base&t=20201205
-X-Antispam-Training-Nonspam: https://spam.fasttelco.com/canit/b.php?c=n&i=0440DPJMM&m=f122a20bc0a7&rlm=base&t=20201205
-X-Antispam-Training-Phish: https://spam.fasttelco.com/canit/b.php?c=p&i=0440DPJMM&m=f122a20bc0a7&rlm=base&t=20201205
-X-Antispam-Training-Spam: https://spam.fasttelco.com/canit/b.php?c=s&i=0440DPJMM&m=f122a20bc0a7&rlm=base&t=20201205
-X-Scanned-By: CanIt (www . roaringpenguin . com) on 78.159.162.5
+Content-Disposition: inline
+In-Reply-To: <87wnxx9tle.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-United Nations Assistant Secretary-General for Development Coordination.
+On Fri, Dec 04, 2020 at 09:58:21PM +0100, Thomas Gleixner wrote:
+> On Fri, Dec 04 2020 at 20:27, Corentin Labbe wrote:
+> > On Fri, Dec 04, 2020 at 04:08:27PM +0100, Thomas Gleixner wrote:
+> >> On Fri, Dec 04 2020 at 14:26, Corentin Labbe wrote:
+> >> > On Fri, Dec 04, 2020 at 12:34:05AM +0100, Thomas Gleixner wrote:
+> >> >> The unmap comes from sg_miter_stop() and looking at the previous
+> >> >> map/unmap cycles there are never nested maps.
+> >> >> 
+> >> >> [  996.943030] cryptset-316       0d..4 73943317us : __kmap_local_pfn_prot: kmap_local_pfn: 1 ffefd000
+> >> >> 
+> >> >> is the first event which allocates a nested map. 
+> >> >> 
+> >> >> So something goes south either in sg_miter or in the crypto maze.
+> >> >> 
+> >> >> Enabling CONFIG_DEBUG_KMAP_LOCAL and function tracing might give us more clue.
+> >> >
+> >> > Done, http://kernel.montjoie.ovh/130466.log
+> >> 
+> >> Does not provide more information with the debug enabled. So can you
+> >> please enable CONFIG_FUNCTION_TRACER and add 'ftrace=function' to the
+> >> command line?
+> >
+> > Done, http://kernel.montjoie.ovh/130490.log
+> 
+> Aaargh. That overwrites everything while printing out that
+> warning.
+> 
+> Can you please replace the debug patch with the one below and try again?
+> That stops the trace right on the condition.
+> 
+> Thanks,
+> 
+>         tglx
+> ---
+> diff --git a/mm/highmem.c b/mm/highmem.c
+> index b49364a306b8..8f8862f79d23 100644
+> --- a/mm/highmem.c
+> +++ b/mm/highmem.c
+> @@ -485,6 +485,7 @@ static inline bool kmap_high_unmap_local(unsigned long vaddr)
+>  {
+>  #ifdef ARCH_NEEDS_KMAP_HIGH_GET
+>  	if (vaddr >= PKMAP_ADDR(0) && vaddr < PKMAP_ADDR(LAST_PKMAP)) {
+> +		trace_printk("kunmap_high: %lx\n", vaddr);
+>  		kunmap_high(pte_page(pkmap_page_table[PKMAP_NR(vaddr)]));
+>  		return true;
+>  	}
+> @@ -520,6 +521,7 @@ void *__kmap_local_pfn_prot(unsigned long pfn, pgprot_t prot)
+>  	preempt_disable();
+>  	idx = arch_kmap_local_map_idx(kmap_local_idx_push(), pfn);
+>  	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
+> +	trace_printk("kmap_local_pfn: %d %lx\n", idx, (unsigned long) vaddr);
+>  	BUG_ON(!pte_none(*(kmap_pte - idx)));
+>  	pteval = pfn_pte(pfn, prot);
+>  	set_pte_at(&init_mm, vaddr, kmap_pte - idx, pteval);
+> @@ -545,8 +547,10 @@ void *__kmap_local_page_prot(struct page *page, pgprot_t prot)
+>  
+>  	/* Try kmap_high_get() if architecture has it enabled */
+>  	kmap = arch_kmap_local_high_get(page);
+> -	if (kmap)
+> +	if (kmap) {
+> +		trace_printk("kmap_local_high_get: %lx\n", (unsigned long) kmap);
+>  		return kmap;
+> +	}
+>  
+>  	return __kmap_local_pfn_prot(page_to_pfn(page), prot);
+>  }
+> @@ -578,7 +582,11 @@ void kunmap_local_indexed(void *vaddr)
+>  
+>  	preempt_disable();
+>  	idx = arch_kmap_local_unmap_idx(kmap_local_idx(), addr);
+> -	WARN_ON_ONCE(addr != __fix_to_virt(FIX_KMAP_BEGIN + idx));
+> +	trace_printk("kunmap_local: %i %lx\n", idx, (unsigned long) vaddr);
+> +	if (addr != __fix_to_virt(FIX_KMAP_BEGIN + idx)) {
+> +		tracing_off();
+> +		BUG();
+> +	}
+>  
+>  	arch_kmap_local_pre_unmap(addr);
+>  	pte_clear(&init_mm, addr, kmap_pte - idx);
+> 
 
+Hello, the result could be found at http://kernel.montjoie.ovh/130739.log
 
-Congratulations,
-
-
-Your email was randomly selected for the 2020 Relief Compensation of $1.5M Package for Third Quarter Reimbursement via certified ATM CARD. Please reach Mrs. Mariam AlMeer for more information.
-
-Name: Mrs. Mariam AlMeer
-Email:  mariamalmeer786@outlook.com
-
-
-Assistant Secretary General- Volker Turk
-United Nations for Strategic Coordination
+Thanks
