@@ -2,55 +2,53 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6642CF827
-	for <lists+linux-crypto@lfdr.de>; Sat,  5 Dec 2020 01:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1C32CFD0D
+	for <lists+linux-crypto@lfdr.de>; Sat,  5 Dec 2020 19:52:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730921AbgLEAq7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 4 Dec 2020 19:46:59 -0500
-Received: from vsm-gw.hyogo-dai.ac.jp ([202.244.76.12]:49526 "EHLO
-        vsm-gw.hyogo-dai.ac.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbgLEAq5 (ORCPT
+        id S1729408AbgLESTa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 5 Dec 2020 13:19:30 -0500
+Received: from in01-tec.fasttelco.net ([78.159.162.5]:52311 "EHLO
+        in01-tec.fasttelco.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727869AbgLERtO (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:46:57 -0500
-X-Greylist: delayed 14573 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Dec 2020 19:46:41 EST
-Received: from humans-kc.hyogo-dai.ac.jp (humans-kc.hyogo-dai.ac.jp [202.244.77.11])
-        by vsm-gw.hyogo-dai.ac.jp (Postfix) with ESMTP id 274A31A5589;
-        Sat,  5 Dec 2020 04:44:55 +0900 (JST)
-Received: from humans-kc.hyogo-dai.ac.jp (humans-kc.hyogo-dai.ac.jp [127.0.0.1])
-        by postfix.imss71 (Postfix) with ESMTP id E5C39838858;
-        Sat,  5 Dec 2020 04:44:54 +0900 (JST)
-Received: from hyogo-dai.ac.jp (unknown [202.244.77.11])
-        by humans-kc.hyogo-dai.ac.jp (Postfix) with SMTP id B84F6838260;
-        Sat,  5 Dec 2020 04:44:54 +0900 (JST)
-MIME-Version: 1.0
-Message-ID: <20201204194454.00002B21.0147@hyogo-dai.ac.jp>
-Date:   Sat, 05 Dec 2020 04:44:54 +0900
-From:   "Dr.Raymond" <tabata@hyogo-dai.ac.jp>
-To:     <infocarferr1@aim.com>
-Reply-To: <infocarfer@aim.com>
-Subject: I am Vice Chairman of Hang Seng Bank, Dr. Raymond Chien
-         Kuo Fung I have Important Matter to Discuss with you concerning
-         my late client. Died without a NEXT OF KIN. Send me your private
-         email for full details information. 
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Sat, 5 Dec 2020 12:49:14 -0500
+Received: from psxr9bd.com ([62.215.195.91])
+        by in01-tec.fasttelco.net (8.14.3/8.14.3/Debian-9.4) with ESMTP id 0B5Fpi53028419
+        for <linux-crypto@vger.kernel.org>; Sat, 5 Dec 2020 18:51:46 +0300
+Message-Id: <202012051551.0B5Fpi53028419@in01-tec.fasttelco.net>
+From:   "United Nations Organization" <Office6@un.com>
+Subject: {United Nations for Strategic Coordination}
+To:     linux-crypto@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Reply-To: "United Nations Organization" <mariamalmeer786@outlook.com>,
+          mariamalmeer786@outlook.com
+Date:   Sat, 5 Dec 2020 16:51:46 +0100
 X-Priority: 3
-X-MAILER: Active! mail
-X-TM-AS-MML: disable
-X-TM-AS-Product-Ver: IMSS-7.1.0.1808-8.2.0.1013-25446.007
-X-TM-AS-Result: No--4.326-5.0-31-10
-X-imss-scan-details: No--4.326-5.0-31-10
-X-TM-AS-User-Approved-Sender: No
-X-TMASE-MatchedRID: +T4Z3mpR0x5ITndh1lLRASsOycAMAhSTkCM77ifYafsBLhz6t76Ce/bj
-        Enpjm61/Gf23dqZJjE4Erxo5p8V1/E1+zyfzlN7y/sToY2qzpx7w5nZ/qYg41XEWw1TkKAjcYff
-        qdBtG2ocgOkCKsW/kbuunGEBqPil++coAzulIP8gMTyJMXCOBhj9BWL7GG0LsKrauXd3MZDUZaR
-        NzIP3XI5u3uLPgwbAMH5RdHnhWfwyq9gpuf+A6coDeeVSgzszVDx5n520Z3eZyT7DDRtYlKaWBy
-        ZE9nSaC/rhfyjvqkZu/pNa4BidtZEMMprcbiest
+X-Bayes-Prob: 0.0001 (Score 0, tokens from: corp_smtp, base:default, @@RPTN)
+X-Spam-Score: 2.91 (**) [Hold at 5.00] COMPENSATION:1.499,MISSING_MID:0.14,RDNS_NONE:1.274
+X-CanIt-Geo: ip=62.215.195.91; country=KW; latitude=29.3375; longitude=47.6581; http://maps.google.com/maps?q=29.3375,47.6581&z=6
+X-CanItPRO-Stream: base:corp_smtp (inherits from base:makc.com.kw,base:default)
+X-Canit-Stats-ID: 0440DPJMM - f122a20bc0a7 - 20201205
+X-Antispam-Training-Forget: https://spam.fasttelco.com/canit/b.php?c=f&i=0440DPJMM&m=f122a20bc0a7&rlm=base&t=20201205
+X-Antispam-Training-Nonspam: https://spam.fasttelco.com/canit/b.php?c=n&i=0440DPJMM&m=f122a20bc0a7&rlm=base&t=20201205
+X-Antispam-Training-Phish: https://spam.fasttelco.com/canit/b.php?c=p&i=0440DPJMM&m=f122a20bc0a7&rlm=base&t=20201205
+X-Antispam-Training-Spam: https://spam.fasttelco.com/canit/b.php?c=s&i=0440DPJMM&m=f122a20bc0a7&rlm=base&t=20201205
+X-Scanned-By: CanIt (www . roaringpenguin . com) on 78.159.162.5
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-infocarfer@aim.com
+United Nations Assistant Secretary-General for Development Coordination.
 
 
+Congratulations,
 
+
+Your email was randomly selected for the 2020 Relief Compensation of $1.5M Package for Third Quarter Reimbursement via certified ATM CARD. Please reach Mrs. Mariam AlMeer for more information.
+
+Name: Mrs. Mariam AlMeer
+Email:  mariamalmeer786@outlook.com
+
+
+Assistant Secretary General- Volker Turk
+United Nations for Strategic Coordination
