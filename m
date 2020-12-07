@@ -2,62 +2,48 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159F72D08CE
-	for <lists+linux-crypto@lfdr.de>; Mon,  7 Dec 2020 02:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D322D08E4
+	for <lists+linux-crypto@lfdr.de>; Mon,  7 Dec 2020 02:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbgLGBUx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 6 Dec 2020 20:20:53 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9121 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728448AbgLGBUw (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 6 Dec 2020 20:20:52 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cq57s0yrGz15YNj;
-        Mon,  7 Dec 2020 09:19:37 +0800 (CST)
-Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Dec 2020 09:20:06 +0800
+        id S1726400AbgLGBeu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 6 Dec 2020 20:34:50 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:41896 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726258AbgLGBeu (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 6 Dec 2020 20:34:50 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1km5Pb-0005QZ-QP; Mon, 07 Dec 2020 12:34:00 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 07 Dec 2020 12:33:59 +1100
+Date:   Mon, 7 Dec 2020 12:33:59 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     liulongfang <liulongfang@huawei.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 0/5] crypto: hisilicon - add some new algorithms
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Message-ID: <20201207013359.GA9845@gondor.apana.org.au>
 References: <1606357086-9785-1-git-send-email-liulongfang@huawei.com>
  <20201204070525.GA26479@gondor.apana.org.au>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <c74d3ea8-4286-b34f-36ef-8e0425b2dd19@huawei.com>
-Date:   Mon, 7 Dec 2020 09:20:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <c74d3ea8-4286-b34f-36ef-8e0425b2dd19@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20201204070525.GA26479@gondor.apana.org.au>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.118]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c74d3ea8-4286-b34f-36ef-8e0425b2dd19@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 2020/12/4 15:05, Herbert Xu wrote:
-> On Thu, Nov 26, 2020 at 10:18:01AM +0800, Longfang Liu wrote:
->> As the new Kunpeng930 supports some new algorithms,
->> the driver needs to be updated
->>
->> Longfang Liu (4):
->>   crypto: hisilicon/sec - add new type of sqe for Kunpeng930
->>   crypto: hisilicon/sec - add new skcipher mode for SEC
->>   crypto: hisilicon/sec - add new AEAD mode for SEC
->>   crypto: hisilicon/sec - fixes some coding style
->>
->> Meng Yu (1):
->>   crypto: hisilicon/hpre - add version adapt to new algorithms
-> 
-> Please include details on whether this has been tested with the
-> self-tests, including the extra fuzz tests.
-> 
-> Thanks,
-> 
-All of these new algorithms have been fully tested by the project team,
-Did any test case tests fail?
-Thanks.
-Longfang
+On Mon, Dec 07, 2020 at 09:20:05AM +0800, liulongfang wrote:
+>
+> Did any test case tests fail?
+
+You tell me :)
+
+If it passed all of the tests in your testing, please state that
+in the cover letter or in one of the patches.
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
