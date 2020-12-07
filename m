@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F452D0C7F
-	for <lists+linux-crypto@lfdr.de>; Mon,  7 Dec 2020 10:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 095E72D0C7D
+	for <lists+linux-crypto@lfdr.de>; Mon,  7 Dec 2020 10:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgLGJBz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 7 Dec 2020 04:01:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45526 "EHLO
+        id S1726207AbgLGJBa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 7 Dec 2020 04:01:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgLGJBz (ORCPT
+        with ESMTP id S1726530AbgLGJBa (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:01:55 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6C8C061A4F
-        for <linux-crypto@vger.kernel.org>; Mon,  7 Dec 2020 01:01:12 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id d2so5286592pfq.5
-        for <linux-crypto@vger.kernel.org>; Mon, 07 Dec 2020 01:01:12 -0800 (PST)
+        Mon, 7 Dec 2020 04:01:30 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD18C0613D0
+        for <linux-crypto@vger.kernel.org>; Mon,  7 Dec 2020 01:01:18 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id b5so3176131pjl.0
+        for <linux-crypto@vger.kernel.org>; Mon, 07 Dec 2020 01:01:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SBLd7A+SLeCAxqu7t9KC/1LuDodNLH34yTZT195Qbig=;
-        b=V/nvvdpbAm2HTIv7NRkBMdqo6AWPo2v3kMFA0+isJmP6m8q16UtsirsXkXpu2CCbWI
-         dcDbRNHfM7x9E74oDWkhjO1Ui7aG+G8216kgC2RuG11MT8Q8HqMDkmvnbuYkLgoPQV5l
-         FVRjFY7v6RDNE255LVx/zEMygZptqVPiDece4p52Imqwkz+5D3bMTUfNt60BJYSG1ErW
-         DZqUaf+sDLMzdfmPFQTjMZZs+4i8DWDPITE0Y7dCwFPxCWvuUP1ZydlnV55Km8af7yeK
-         eeaeeBIwqzmRBU7yNwKu0A2VBOfuwXZ1izmbTXoCvQLKzZEbGy0/+Sy7ORzjXGxH9U//
-         Z+Zg==
+        bh=4mCl+VG1quISRri67xJaj5KQFCDnCTzLaRrkOWH7JsU=;
+        b=lnQ5v3UX2W2r/x/vQHyes6K9heq249ZpMufZCezzXxp4d3l6W96+iwRF5MVEXJrN6i
+         ua1fA19fke3Qdvv2JTLeqx4d7pNgd0B35SlIuBVpQbF8B7OcIc+yRjr2vut2Ig1DKf7m
+         34YaWpfsrEOpCNCC6+Is6FySQEf32A0QBIOsygJDkuOU2yFXOg0kv+bIfdp4g3zfJQJu
+         EkXI9jvLARJAEBpbFzxiU+C+szZVXbI14ikJAIGdEUn42omWyH9GtPiG+b41c2xAXijX
+         HwT3E1tsvL12TgnAImytds8DPV3N/jGrEafcFspFuHM8d3bVlxbW/KJHHKnOYFlXt1C9
+         QFkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SBLd7A+SLeCAxqu7t9KC/1LuDodNLH34yTZT195Qbig=;
-        b=FrnHKmaJFq8Lck74cLPFZV4dNjivhYTsLDwgIjeYrO0Zxdx3AMf7Z7/nF2dBH0aAON
-         1dtx2/jHK9I8N0JBTEekGjs4Vh8XDctmGWMZpQXizugWJYPfvclU7skzO1H2MeFIwT3P
-         yIUMpKWgYoBRsB8cRJhKyrNfAjF75uioGX4RI1pKi2HGnNI6hrHhl0azUP9ZGJXrHocG
-         qcpJ/IVipJk25XEXT23EnUmxQy1qpCWqVl5uAiLZMcc+YT3qGLx+KCRIIdMZN9m74KX2
-         phDG66hcQsmVUvwHRBaHpGvGaT+uj7Kxktlg+SxozjXGs3N9xcoDpuZYbc6R6OH7NKXB
-         CtTg==
-X-Gm-Message-State: AOAM533ByT/5xhsui44HsuKearkEnd1GVyp5SLd01Us4G8L1h/T909fO
-        m4XW6FKA86whKeicaTspnh0=
-X-Google-Smtp-Source: ABdhPJz0E7uE2AhnfZ77YUzT9U7VF0+/WSHGyOrxo4AkCbvkEb75vLZCRMN/90HUJILoMW9OIvSx6g==
-X-Received: by 2002:a63:eb10:: with SMTP id t16mr12759586pgh.210.1607331671885;
-        Mon, 07 Dec 2020 01:01:11 -0800 (PST)
+        bh=4mCl+VG1quISRri67xJaj5KQFCDnCTzLaRrkOWH7JsU=;
+        b=SKeKQlZdhNXMaPIvP++Tj//Wwrhs+FcI+n6vzrzVZXIpIxjYXKKaHSrMDRrsaL6wKc
+         XvuBhIyw9Uv9TucuiopnlsKudrY2UrA1fLTzNbfd6E82QYU5z1/31/S/FwFsE/WFs3hv
+         gzXA3Zldgf+501tEOdMgaR/QJHcTPZ1jZS0xDGQHb9UqbpiBckzOuuUfLv23Fkfh2YgX
+         Y02BEGi5AujMkHlofLgd4vZ9eEX67S7tRFHbUTX5mcmPzJvnRUpKxo7QXxzCAgJf2Ea0
+         gkqje4ji8V/0iLz+sPP16oVv/MlIJ+1qiq3jBByfGNZSAm13qaL2KkxLrkd9aNAxhMBr
+         Dc3A==
+X-Gm-Message-State: AOAM531/mZCV2IHeUDmCKuFf4Q7vO0onZdcd7B602TTuJ/vfi0mRtn5Y
+        CX3lpcCI5mxiSVrxwPmiZ54=
+X-Google-Smtp-Source: ABdhPJyLsO9zc8jmQ5yZ74tnN7d4rzTrT/9FZk3hpbmLQCVW8ta4eNKtpJOEzuKc/61XrgpBnPzkdA==
+X-Received: by 2002:a17:90b:4785:: with SMTP id hz5mr16116798pjb.157.1607331677750;
+        Mon, 07 Dec 2020 01:01:17 -0800 (PST)
 Received: from localhost.localdomain ([49.207.208.18])
-        by smtp.gmail.com with ESMTPSA id w200sm11325029pfc.14.2020.12.07.01.01.05
+        by smtp.gmail.com with ESMTPSA id w200sm11325029pfc.14.2020.12.07.01.01.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 01:01:11 -0800 (PST)
+        Mon, 07 Dec 2020 01:01:17 -0800 (PST)
 From:   Allen Pais <allen.lkml@gmail.com>
 To:     herbert@gondor.apana.org.au
 Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
@@ -59,9 +59,9 @@ Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
         k.konieczny@samsung.com, linux-crypto@vger.kernel.org,
         Allen Pais <apais@microsoft.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [RESEND 13/19] crypto: picoxcell: convert tasklets to use new tasklet_setup() API
-Date:   Mon,  7 Dec 2020 14:29:25 +0530
-Message-Id: <20201207085931.661267-14-allen.lkml@gmail.com>
+Subject: [RESEND 14/19] crypto: qat: convert tasklets to use new tasklet_setup() API
+Date:   Mon,  7 Dec 2020 14:29:26 +0530
+Message-Id: <20201207085931.661267-15-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201207085931.661267-1-allen.lkml@gmail.com>
 References: <20201207085931.661267-1-allen.lkml@gmail.com>
@@ -81,35 +81,124 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <apais@microsoft.com>
 ---
- drivers/crypto/picoxcell_crypto.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/crypto/qat/qat_common/adf_isr.c               |  5 ++---
+ drivers/crypto/qat/qat_common/adf_sriov.c             | 10 +++++-----
+ drivers/crypto/qat/qat_common/adf_transport.c         |  4 ++--
+ .../crypto/qat/qat_common/adf_transport_internal.h    |  2 +-
+ drivers/crypto/qat/qat_common/adf_vf_isr.c            | 11 +++++------
+ 5 files changed, 15 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/crypto/picoxcell_crypto.c b/drivers/crypto/picoxcell_crypto.c
-index fb34bf92861d..e96fd1caba14 100644
---- a/drivers/crypto/picoxcell_crypto.c
-+++ b/drivers/crypto/picoxcell_crypto.c
-@@ -1136,9 +1136,9 @@ static int spacc_req_submit(struct spacc_req *req)
- 		return spacc_ablk_submit(req);
+diff --git a/drivers/crypto/qat/qat_common/adf_isr.c b/drivers/crypto/qat/qat_common/adf_isr.c
+index 36136f7db509..2c725c01ee4f 100644
+--- a/drivers/crypto/qat/qat_common/adf_isr.c
++++ b/drivers/crypto/qat/qat_common/adf_isr.c
+@@ -239,9 +239,8 @@ static int adf_setup_bh(struct adf_accel_dev *accel_dev)
+ 	int i;
+ 
+ 	for (i = 0; i < hw_data->num_banks; i++)
+-		tasklet_init(&priv_data->banks[i].resp_handler,
+-			     adf_response_handler,
+-			     (unsigned long)&priv_data->banks[i]);
++		tasklet_setup(&priv_data->banks[i].resp_handler,
++			     adf_response_handler);
+ 	return 0;
  }
  
--static void spacc_spacc_complete(unsigned long data)
-+static void spacc_spacc_complete(struct tasklet_struct *t)
+diff --git a/drivers/crypto/qat/qat_common/adf_sriov.c b/drivers/crypto/qat/qat_common/adf_sriov.c
+index 963b2bea78f2..f9e276cb6f23 100644
+--- a/drivers/crypto/qat/qat_common/adf_sriov.c
++++ b/drivers/crypto/qat/qat_common/adf_sriov.c
+@@ -49,9 +49,10 @@ static void adf_iov_send_resp(struct work_struct *work)
+ 	kfree(pf2vf_resp);
+ }
+ 
+-static void adf_vf2pf_bh_handler(void *data)
++static void adf_vf2pf_bh_handler(struct tasklet_struct *t)
  {
--	struct spacc_engine *engine = (struct spacc_engine *)data;
-+	struct spacc_engine *engine = from_tasklet(engine, t, complete);
- 	struct spacc_req *req, *tmp;
- 	unsigned long flags;
- 	LIST_HEAD(completed);
-@@ -1648,8 +1648,7 @@ static int spacc_probe(struct platform_device *pdev)
- 		return -ENXIO;
+-	struct adf_accel_vf_info *vf_info = (struct adf_accel_vf_info *)data;
++	struct adf_accel_vf_info *vf_info =
++				 from_tasklet(vf_info, t, vf2pf_bh_tasklet);
+ 	struct adf_pf2vf_resp *pf2vf_resp;
+ 
+ 	pf2vf_resp = kzalloc(sizeof(*pf2vf_resp), GFP_ATOMIC);
+@@ -81,9 +82,8 @@ static int adf_enable_sriov(struct adf_accel_dev *accel_dev)
+ 		vf_info->accel_dev = accel_dev;
+ 		vf_info->vf_nr = i;
+ 
+-		tasklet_init(&vf_info->vf2pf_bh_tasklet,
+-			     (void *)adf_vf2pf_bh_handler,
+-			     (unsigned long)vf_info);
++		tasklet_setup(&vf_info->vf2pf_bh_tasklet,
++			     adf_vf2pf_bh_handler);
+ 		mutex_init(&vf_info->pf2vf_lock);
+ 		ratelimit_state_init(&vf_info->vf2pf_ratelimit,
+ 				     DEFAULT_RATELIMIT_INTERVAL,
+diff --git a/drivers/crypto/qat/qat_common/adf_transport.c b/drivers/crypto/qat/qat_common/adf_transport.c
+index 2ad774017200..60982c67b466 100644
+--- a/drivers/crypto/qat/qat_common/adf_transport.c
++++ b/drivers/crypto/qat/qat_common/adf_transport.c
+@@ -297,9 +297,9 @@ static void adf_ring_response_handler(struct adf_etr_bank_data *bank)
  	}
+ }
  
--	tasklet_init(&engine->complete, spacc_spacc_complete,
--		     (unsigned long)engine);
-+	tasklet_setup(&engine->complete, spacc_spacc_complete);
+-void adf_response_handler(uintptr_t bank_addr)
++void adf_response_handler(struct tasklet_struct *t)
+ {
+-	struct adf_etr_bank_data *bank = (void *)bank_addr;
++	struct adf_etr_bank_data *bank = from_tasklet(bank, t, resp_handler);
  
- 	ret = devm_add_action(&pdev->dev, spacc_tasklet_kill,
- 			      &engine->complete);
+ 	/* Handle all the responses and reenable IRQs */
+ 	adf_ring_response_handler(bank);
+diff --git a/drivers/crypto/qat/qat_common/adf_transport_internal.h b/drivers/crypto/qat/qat_common/adf_transport_internal.h
+index c7faf4e2d302..ff891f5bc783 100644
+--- a/drivers/crypto/qat/qat_common/adf_transport_internal.h
++++ b/drivers/crypto/qat/qat_common/adf_transport_internal.h
+@@ -46,7 +46,7 @@ struct adf_etr_data {
+ 	struct dentry *debug;
+ };
+ 
+-void adf_response_handler(uintptr_t bank_addr);
++void adf_response_handler(struct tasklet_struct *t);
+ #ifdef CONFIG_DEBUG_FS
+ #include <linux/debugfs.h>
+ int adf_bank_debugfs_add(struct adf_etr_bank_data *bank);
+diff --git a/drivers/crypto/qat/qat_common/adf_vf_isr.c b/drivers/crypto/qat/qat_common/adf_vf_isr.c
+index c4a44dc6af3e..79c0d51ea263 100644
+--- a/drivers/crypto/qat/qat_common/adf_vf_isr.c
++++ b/drivers/crypto/qat/qat_common/adf_vf_isr.c
+@@ -68,9 +68,10 @@ static void adf_dev_stop_async(struct work_struct *work)
+ 	kfree(stop_data);
+ }
+ 
+-static void adf_pf2vf_bh_handler(void *data)
++static void adf_pf2vf_bh_handler(struct tasklet_struct *t)
+ {
+-	struct adf_accel_dev *accel_dev = data;
++	struct adf_accel_dev *accel_dev = from_tasklet(accel_dev, t,
++						       vf.pf2vf_bh_tasklet);
+ 	struct adf_hw_device_data *hw_data = accel_dev->hw_device;
+ 	struct adf_bar *pmisc =
+ 			&GET_BARS(accel_dev)[hw_data->get_misc_bar_id(hw_data)];
+@@ -138,8 +139,7 @@ static void adf_pf2vf_bh_handler(void *data)
+ 
+ static int adf_setup_pf2vf_bh(struct adf_accel_dev *accel_dev)
+ {
+-	tasklet_init(&accel_dev->vf.pf2vf_bh_tasklet,
+-		     (void *)adf_pf2vf_bh_handler, (unsigned long)accel_dev);
++	tasklet_setup(&accel_dev->vf.pf2vf_bh_tasklet, adf_pf2vf_bh_handler);
+ 
+ 	mutex_init(&accel_dev->vf.vf2pf_lock);
+ 	return 0;
+@@ -215,8 +215,7 @@ static int adf_setup_bh(struct adf_accel_dev *accel_dev)
+ {
+ 	struct adf_etr_data *priv_data = accel_dev->transport;
+ 
+-	tasklet_init(&priv_data->banks[0].resp_handler, adf_response_handler,
+-		     (unsigned long)priv_data->banks);
++	tasklet_setup(&priv_data->banks[0].resp_handler, adf_response_handler);
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
