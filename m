@@ -2,15 +2,15 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B8A2D649B
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Dec 2020 19:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A32DE2D649A
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Dec 2020 19:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388581AbgLJSN0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Dec 2020 13:13:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45580 "EHLO mail.kernel.org"
+        id S2404018AbgLJSNB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Dec 2020 13:13:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404103AbgLJSMs (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 10 Dec 2020 13:12:48 -0500
+        id S2404104AbgLJSMu (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 10 Dec 2020 13:12:50 -0500
 From:   Ard Biesheuvel <ardb@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-crypto@vger.kernel.org
@@ -19,9 +19,9 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Eric Biggers <ebiggers@google.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Ben Greear <greearb@candelatech.com>
-Subject: [RFC PATCH 1/3] ARM: vfp: allow kernel mode NEON in softirq context
-Date:   Thu, 10 Dec 2020 19:11:56 +0100
-Message-Id: <20201210181158.28960-2-ardb@kernel.org>
+Subject: [RFC PATCH 2/3] crypto: arm/aes-ce - drop non-SIMD fallbacks and SIMD helper
+Date:   Thu, 10 Dec 2020 19:11:57 +0100
+Message-Id: <20201210181158.28960-3-ardb@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201210181158.28960-1-ardb@kernel.org>
 References: <20201210181158.28960-1-ardb@kernel.org>
@@ -29,73 +29,143 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Allow kernel mode NEON to be used in softirq context as well as process
-context. To avoid nested use of the NEON, which would require the kernel
-mode process context NEON state to be preserved while the NEON is used in
-softirq context, turn off softirq processing when enabling kernel mode NEON.
+Now that kernel mode NEON is guaranteed to be available both in process
+and in softirq context, we no longer have a need for the SIMD helper or
+for non-SIMD fallbacks, given that the skcipher API is not supported in
+any other context anyway. So drop this code.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/arm/include/asm/simd.h | 12 ++++++++++++
- arch/arm/vfp/vfpmodule.c    | 11 +++++++----
- 2 files changed, 19 insertions(+), 4 deletions(-)
+ arch/arm/crypto/aes-ce-glue.c | 84 +-------------------
+ 1 file changed, 3 insertions(+), 81 deletions(-)
 
-diff --git a/arch/arm/include/asm/simd.h b/arch/arm/include/asm/simd.h
-new file mode 100644
-index 000000000000..0f44f0d9df4a
---- /dev/null
-+++ b/arch/arm/include/asm/simd.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#include <linux/hardirq.h>
-+
-+/*
-+ * may_use_simd - whether it is allowable at this time to issue SIMD
-+ *                instructions or access the SIMD register file
-+ */
-+static __must_check inline bool may_use_simd(void)
-+{
-+	return !in_irq() && !irqs_disabled() && !in_nmi();
-+}
-diff --git a/arch/arm/vfp/vfpmodule.c b/arch/arm/vfp/vfpmodule.c
-index c3b6451c18bd..849703571ffa 100644
---- a/arch/arm/vfp/vfpmodule.c
-+++ b/arch/arm/vfp/vfpmodule.c
-@@ -21,6 +21,7 @@
+diff --git a/arch/arm/crypto/aes-ce-glue.c b/arch/arm/crypto/aes-ce-glue.c
+index b668c97663ec..bcb2b6695241 100644
+--- a/arch/arm/crypto/aes-ce-glue.c
++++ b/arch/arm/crypto/aes-ce-glue.c
+@@ -7,11 +7,9 @@
  
- #include <asm/cp15.h>
- #include <asm/cputype.h>
-+#include <asm/simd.h>
- #include <asm/system_info.h>
- #include <asm/thread_notify.h>
- #include <asm/traps.h>
-@@ -719,12 +720,13 @@ void kernel_neon_begin(void)
- 	u32 fpexc;
- 
- 	/*
--	 * Kernel mode NEON is only allowed outside of interrupt context
--	 * with preemption disabled. This will make sure that the kernel
--	 * mode NEON register contents never need to be preserved.
-+	 * Kernel mode NEON is only allowed outside of hard interrupt context
-+	 * with preemption and softirq processing disabled. This ensures that
-+	 * the kernel mode NEON register contents never need to be preserved.
- 	 */
--	BUG_ON(in_interrupt());
-+	BUG_ON(!may_use_simd());
- 	cpu = get_cpu();
-+	local_bh_disable();
- 
- 	fpexc = fmrx(FPEXC) | FPEXC_EN;
- 	fmxr(FPEXC, fpexc);
-@@ -747,6 +749,7 @@ void kernel_neon_end(void)
- {
- 	/* Disable the NEON/VFP unit. */
- 	fmxr(FPEXC, fmrx(FPEXC) & ~FPEXC_EN);
-+	local_bh_enable();
- 	put_cpu();
+ #include <asm/hwcap.h>
+ #include <asm/neon.h>
+-#include <asm/simd.h>
+ #include <asm/unaligned.h>
+ #include <crypto/aes.h>
+ #include <crypto/ctr.h>
+-#include <crypto/internal/simd.h>
+ #include <crypto/internal/skcipher.h>
+ #include <crypto/scatterwalk.h>
+ #include <linux/cpufeature.h>
+@@ -418,29 +416,6 @@ static int ctr_encrypt(struct skcipher_request *req)
+ 	return err;
  }
- EXPORT_SYMBOL(kernel_neon_end);
+ 
+-static void ctr_encrypt_one(struct crypto_skcipher *tfm, const u8 *src, u8 *dst)
+-{
+-	struct crypto_aes_ctx *ctx = crypto_skcipher_ctx(tfm);
+-	unsigned long flags;
+-
+-	/*
+-	 * Temporarily disable interrupts to avoid races where
+-	 * cachelines are evicted when the CPU is interrupted
+-	 * to do something else.
+-	 */
+-	local_irq_save(flags);
+-	aes_encrypt(ctx, dst, src);
+-	local_irq_restore(flags);
+-}
+-
+-static int ctr_encrypt_sync(struct skcipher_request *req)
+-{
+-	if (!crypto_simd_usable())
+-		return crypto_ctr_encrypt_walk(req, ctr_encrypt_one);
+-
+-	return ctr_encrypt(req);
+-}
+-
+ static int xts_encrypt(struct skcipher_request *req)
+ {
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+@@ -647,25 +622,9 @@ static struct skcipher_alg aes_algs[] = { {
+ 	.encrypt		= ctr_encrypt,
+ 	.decrypt		= ctr_encrypt,
+ }, {
+-	.base.cra_name		= "ctr(aes)",
+-	.base.cra_driver_name	= "ctr-aes-ce-sync",
+-	.base.cra_priority	= 300 - 1,
+-	.base.cra_blocksize	= 1,
+-	.base.cra_ctxsize	= sizeof(struct crypto_aes_ctx),
+-	.base.cra_module	= THIS_MODULE,
+-
+-	.min_keysize		= AES_MIN_KEY_SIZE,
+-	.max_keysize		= AES_MAX_KEY_SIZE,
+-	.ivsize			= AES_BLOCK_SIZE,
+-	.chunksize		= AES_BLOCK_SIZE,
+-	.setkey			= ce_aes_setkey,
+-	.encrypt		= ctr_encrypt_sync,
+-	.decrypt		= ctr_encrypt_sync,
+-}, {
+-	.base.cra_name		= "__xts(aes)",
+-	.base.cra_driver_name	= "__xts-aes-ce",
++	.base.cra_name		= "xts(aes)",
++	.base.cra_driver_name	= "xts-aes-ce",
+ 	.base.cra_priority	= 300,
+-	.base.cra_flags		= CRYPTO_ALG_INTERNAL,
+ 	.base.cra_blocksize	= AES_BLOCK_SIZE,
+ 	.base.cra_ctxsize	= sizeof(struct crypto_aes_xts_ctx),
+ 	.base.cra_module	= THIS_MODULE,
+@@ -679,51 +638,14 @@ static struct skcipher_alg aes_algs[] = { {
+ 	.decrypt		= xts_decrypt,
+ } };
+ 
+-static struct simd_skcipher_alg *aes_simd_algs[ARRAY_SIZE(aes_algs)];
+-
+ static void aes_exit(void)
+ {
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(aes_simd_algs) && aes_simd_algs[i]; i++)
+-		simd_skcipher_free(aes_simd_algs[i]);
+-
+ 	crypto_unregister_skciphers(aes_algs, ARRAY_SIZE(aes_algs));
+ }
+ 
+ static int __init aes_init(void)
+ {
+-	struct simd_skcipher_alg *simd;
+-	const char *basename;
+-	const char *algname;
+-	const char *drvname;
+-	int err;
+-	int i;
+-
+-	err = crypto_register_skciphers(aes_algs, ARRAY_SIZE(aes_algs));
+-	if (err)
+-		return err;
+-
+-	for (i = 0; i < ARRAY_SIZE(aes_algs); i++) {
+-		if (!(aes_algs[i].base.cra_flags & CRYPTO_ALG_INTERNAL))
+-			continue;
+-
+-		algname = aes_algs[i].base.cra_name + 2;
+-		drvname = aes_algs[i].base.cra_driver_name + 2;
+-		basename = aes_algs[i].base.cra_driver_name;
+-		simd = simd_skcipher_create_compat(algname, drvname, basename);
+-		err = PTR_ERR(simd);
+-		if (IS_ERR(simd))
+-			goto unregister_simds;
+-
+-		aes_simd_algs[i] = simd;
+-	}
+-
+-	return 0;
+-
+-unregister_simds:
+-	aes_exit();
+-	return err;
++	return crypto_register_skciphers(aes_algs, ARRAY_SIZE(aes_algs));
+ }
+ 
+ module_cpu_feature_match(AES, aes_init);
 -- 
 2.17.1
 
