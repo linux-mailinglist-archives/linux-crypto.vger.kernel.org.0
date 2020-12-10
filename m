@@ -2,161 +2,83 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E752D6803
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Dec 2020 21:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A5C2D6BEB
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Dec 2020 00:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404567AbgLJUEL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Dec 2020 15:04:11 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:45608 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404559AbgLJUEG (ORCPT
+        id S1731867AbgLJX32 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Dec 2020 18:29:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729541AbgLJX3X (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 10 Dec 2020 15:04:06 -0500
-Received: by mail-oi1-f193.google.com with SMTP id f132so7103513oib.12;
-        Thu, 10 Dec 2020 12:03:50 -0800 (PST)
+        Thu, 10 Dec 2020 18:29:23 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52183C0613CF
+        for <linux-crypto@vger.kernel.org>; Thu, 10 Dec 2020 15:28:43 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id q22so5660594pfk.12
+        for <linux-crypto@vger.kernel.org>; Thu, 10 Dec 2020 15:28:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=CSt2FPKXtDQTYvs/cAS/t9n4d8NBaXGUQAaM+p/qblA=;
+        b=rbTnfKoJCPQv5YrR8jiywKYAw6yNxzB5OGt54Suax/v3IwCjdbe2y9TeXPoDqQFjEI
+         RrApWRXo3poxoacnjx30GrodOOetTNe9j0GfqfLceY3SRCOjIO7ZXeIzujWHtcjWrqgH
+         IoSs4e0U8DDoqFoeDeT9XszgsQUyiLWFcYJqzdUOfPifGawBI4JX5raHrt1mwmQJVJJJ
+         YM9LkcEGmlb8nSFyh3MMxqiqheWtT3szjtL2BezfUKXZvS52VIpeWlGeY/D69fLibcov
+         IH2tWxPpnHUYIgW/mlJulN6jkb6XF6BhZkK67CbWJOBQVRMB2nBWtHiuxcThmK94VOL1
+         Cdmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wYT6D6yOTVKMl9lCBQT5EHKzZ4TTN7Y8gqIdAhxWbzU=;
-        b=lXfSDT+B816vq7GPV5aNcidW2P4KOPoR38uMftCfGU6WQuMQ4z+Jtn8kNVMJ8nQ1at
-         xT6hbWbX3LbAY1JLClOmbM9Zc966gLh+7DrM0Yv98RmLr+3WvDFNd3s2+oCZoHb7i3dk
-         ORgUI/zvyYjPl3FQlDasHh2xJYiVm59zlxm4uTqQbLjoX0dbEKyQP8cniT4nbBG734IO
-         uLl7gFgtOu4bxOcsLKMwXANdNVMfWNQv/ndGrjpj51Ik6FeCy+39qJpGuuJY/5DUcA8i
-         jX8P2e2BpP876xdrfK9Cq/fpDMsPjuzrIxuJBFydpPTBz4Jus9pGb5mByk+1AGmmMxBA
-         m4lg==
-X-Gm-Message-State: AOAM532K9G/3qvCTKv4Xt+5yAhEiPFZgDIWvR/1Qa779NIpgQxgHBt/S
-        AK+6nnB3lXMPl1c/8zgJAA==
-X-Google-Smtp-Source: ABdhPJxZ/fKWmJZJ0n2BGw8t4WfwQQfcXvuzPetiSTDtYG86R1HrAOQX1YNSu6f3c/T+vqBwQMbyaQ==
-X-Received: by 2002:aca:2418:: with SMTP id n24mr6393172oic.62.1607630604964;
-        Thu, 10 Dec 2020 12:03:24 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id o82sm1220636oih.5.2020.12.10.12.03.23
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=CSt2FPKXtDQTYvs/cAS/t9n4d8NBaXGUQAaM+p/qblA=;
+        b=I2C1D293eFZ4hneJdsmLVeavSn128r5R+ZeppcqJRY1kOhmYRpX72qQ1ecXtThOOCB
+         sSic2Qnv9qeiJYcS6uzUgOqmY4mNdP104Rj8bJk6XJSb1/y2mbLjCaa5s6hzv3lIRlBi
+         Q2caoxHCTeL58DzcksWfa7kYBopaaoDLZiLAKt4da6/FeaFx8VOO7HXxyGE4SWpe5Vap
+         GC3XaoKHa8rk89nzgBDfezMWGaNE6SzMSx+j2x3jDrXiJHGGcQ78n03isnsRi93K0grK
+         S7qHDqxff/+HDXHV06GEfwd4UHeZmnJmFijrhH+56NQk8M1oNiQIeAs8UvrKh8wah9qm
+         rKzw==
+X-Gm-Message-State: AOAM533hzeJtngjK8Mtrfy0ZfWrmH20UlTnPTIdulnp2uiJ/nOdSICax
+        kXET4zSdcRXr2Aove0re7oznWg==
+X-Google-Smtp-Source: ABdhPJwFmOysqtEYH7lJTFtlxPjQzlHC4tPd1ANetiUdf4c0a/EEDaOb7x6HYq2n3bdzbGfoUg5P4A==
+X-Received: by 2002:a17:90a:1b0d:: with SMTP id q13mr9917082pjq.21.1607642922731;
+        Thu, 10 Dec 2020 15:28:42 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id e31sm7308677pgb.16.2020.12.10.15.28.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 12:03:23 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     Jamie Iles <jamie@jamieiles.com>,
+        Thu, 10 Dec 2020 15:28:41 -0800 (PST)
+Date:   Thu, 10 Dec 2020 15:28:41 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+cc:     Ard Biesheuvel <ardb@kernel.org>, kvm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        John Allen <john.allen@amd.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, soc@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 4/4] dt-bindings: Remove PicoXcell bindings
-Date:   Thu, 10 Dec 2020 14:03:15 -0600
-Message-Id: <20201210200315.2965567-5-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201210200315.2965567-1-robh@kernel.org>
-References: <20201210200315.2965567-1-robh@kernel.org>
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH] KVM/SVM: add support for SEV attestation command
+In-Reply-To: <78e18a3d-900b-fac5-19ca-c2defeb8d73a@amd.com>
+Message-ID: <e47f69b2-d4ea-1db0-aa13-729baba45b46@google.com>
+References: <20201204212847.13256-1-brijesh.singh@amd.com> <CAMj1kXFkyJwZ4BGSU-4UB5VR1etJ6atb7YpWMTzzBuu9FQKagA@mail.gmail.com> <78e18a3d-900b-fac5-19ca-c2defeb8d73a@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-PicoXcell has had nothing but treewide cleanups for at least the last 8
-years and no signs of activity. The most recent activity is a yocto vendor
-kernel based on v3.0 in 2015.
+On Wed, 9 Dec 2020, Brijesh Singh wrote:
 
-Cc: Jamie Iles <jamie@jamieiles.com>
-Cc: linux-crypto@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-I'll take this via the DT tree.
+> Noted, I will send v2 with these fixed.
+> 
 
- .../devicetree/bindings/arm/picoxcell.txt     | 24 -------------------
- .../bindings/crypto/picochip-spacc.txt        | 21 ----------------
- .../devicetree/bindings/net/macb.txt          |  2 --
- .../bindings/timer/snps,dw-apb-timer.yaml     |  7 ------
- 4 files changed, 54 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/picoxcell.txt
- delete mode 100644 Documentation/devicetree/bindings/crypto/picochip-spacc.txt
+And with those changes:
 
-diff --git a/Documentation/devicetree/bindings/arm/picoxcell.txt b/Documentation/devicetree/bindings/arm/picoxcell.txt
-deleted file mode 100644
-index e75c0ef51e69..000000000000
---- a/Documentation/devicetree/bindings/arm/picoxcell.txt
-+++ /dev/null
-@@ -1,24 +0,0 @@
--Picochip picoXcell device tree bindings.
--========================================
--
--Required root node properties:
--    - compatible:
--	- "picochip,pc7302-pc3x3" : PC7302 development board with PC3X3 device.
--	- "picochip,pc7302-pc3x2" : PC7302 development board with PC3X2 device.
--	- "picochip,pc3x3" : picoXcell PC3X3 device based board.
--	- "picochip,pc3x2" : picoXcell PC3X2 device based board.
--
--Timers required properties:
--    - compatible = "picochip,pc3x2-timer"
--    - interrupts : The single IRQ line for the timer.
--    - clock-freq : The frequency in HZ of the timer.
--    - reg : The register bank for the timer.
--
--Note: two timers are required - one for the scheduler clock and one for the
--event tick/NOHZ.
--
--VIC required properties:
--    - compatible = "arm,pl192-vic".
--    - interrupt-controller.
--    - reg : The register bank for the device.
--    - #interrupt-cells : Must be 1.
-diff --git a/Documentation/devicetree/bindings/crypto/picochip-spacc.txt b/Documentation/devicetree/bindings/crypto/picochip-spacc.txt
-deleted file mode 100644
-index df1151f87745..000000000000
---- a/Documentation/devicetree/bindings/crypto/picochip-spacc.txt
-+++ /dev/null
-@@ -1,21 +0,0 @@
--Picochip picoXcell SPAcc (Security Protocol Accelerator) bindings
--
--Picochip picoXcell devices contain crypto offload engines that may be used for
--IPSEC and femtocell layer 2 ciphering.
--
--Required properties:
--  - compatible : "picochip,spacc-ipsec" for the IPSEC offload engine
--    "picochip,spacc-l2" for the femtocell layer 2 ciphering engine.
--  - reg : Offset and length of the register set for this device
--  - interrupts : The interrupt line from the SPAcc.
--  - ref-clock : The input clock that drives the SPAcc.
--
--Example SPAcc node:
--
--spacc@10000 {
--	compatible = "picochip,spacc-ipsec";
--	reg = <0x100000 0x10000>;
--	interrupt-parent = <&vic0>;
--	interrupts = <24>;
--	ref-clock = <&ipsec_clk>, "ref";
--};
-diff --git a/Documentation/devicetree/bindings/net/macb.txt b/Documentation/devicetree/bindings/net/macb.txt
-index 0b61a90f1592..46dc52c0739a 100644
---- a/Documentation/devicetree/bindings/net/macb.txt
-+++ b/Documentation/devicetree/bindings/net/macb.txt
-@@ -7,8 +7,6 @@ Required properties:
-   Use "cdns,sam9x60-macb" for Microchip sam9x60 SoC.
-   Use "cdns,np4-macb" for NP4 SoC devices.
-   Use "cdns,at32ap7000-macb" for other 10/100 usage or use the generic form: "cdns,macb".
--  Use "cdns,pc302-gem" for Picochip picoXcell pc302 and later devices based on
--  the Cadence GEM, or the generic form: "cdns,gem".
-   Use "atmel,sama5d2-gem" for the GEM IP (10/100) available on Atmel sama5d2 SoCs.
-   Use "atmel,sama5d3-macb" for the 10/100Mbit IP available on Atmel sama5d3 SoCs.
-   Use "atmel,sama5d3-gem" for the Gigabit IP available on Atmel sama5d3 SoCs.
-diff --git a/Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml b/Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml
-index 2fc617377e2c..d65faf289a83 100644
---- a/Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml
-+++ b/Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml
-@@ -38,13 +38,6 @@ properties:
+Acked-by: David Rientjes <rientjes@google.com>
 
-   clock-frequency: true
-
--  clock-freq:
--    $ref: "/schemas/types.yaml#/definitions/uint32"
--    description: |
--      Has the same meaning as the 'clock-frequency' property - timer clock
--      frequency in HZ, but is defined only for the backwards compatibility
--      with the picoxcell platform.
--
- additionalProperties: false
-
- required:
---
-2.25.1
+Thanks Brijesh!
