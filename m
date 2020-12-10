@@ -2,265 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA9E2D67DD
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Dec 2020 21:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E732D681C
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Dec 2020 21:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404436AbgLJT7x (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Dec 2020 14:59:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404416AbgLJT7n (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:59:43 -0500
-Date:   Thu, 10 Dec 2020 20:58:55 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607630342;
-        bh=s2+iLf6qBKVf58ffYZN9l2zof1I9JLW9V6wDx6uBGB8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eklBHcybGU7NaHOQQv++7WWXgTVIXfU4CnRYhDTvdmMh828hU1HhwGuy262A7mXl3
-         UVfMlgSR9hjmxiHEEmyAKdwE8N24GronEa9YX/3xByG12lhH5sLlYjOzWtARATmbU+
-         gbjs//eYTsEVpjwIHW5m8/FwAch5WCZ79eUruF3gO37OfRXISugUzkUxi/tczLL5H1
-         C81E6xkV7hUWEVha0XOmiWm7bl+CmN06kwTj6Wpcq+BBF8+02d6kP4fL05muxPEfXb
-         pZ3KGXhlBNtOeEDWP9EZLwn/4dPMZS2smZLYs42jw9BUNf2bClh/cggGRtfKBSWABt
-         n3IVdl/kI4rwg==
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     George Cherian <gcherian@marvell.com>,
+        id S2390238AbgLJUHs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Dec 2020 15:07:48 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:44169 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404538AbgLJUD7 (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 10 Dec 2020 15:03:59 -0500
+Received: by mail-oi1-f196.google.com with SMTP id d189so7104358oig.11;
+        Thu, 10 Dec 2020 12:03:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BtR9F6p1ys0YkETvTwwNV2ZO40Vezo7i8tec8Hr766Q=;
+        b=CFz11nhyjWfFtJkwHws1wQ9EhJ3RiUvgLpYWfwZ9egMMqdwo3l5vHql5ZZPvQ5jmLn
+         9dKR6aGTY/P46TeI0VDMU9q/e+IRUPRXDbBoerACc7nlc9bjFhIup4jZphpxzcW5Ji5H
+         D8/YThEtUsQe5YvynsbgqZm6Hld+jBDttI04dAJ0uIar2q9U2ctv56L3RLhWKUXcjTNP
+         B6bWQzN9WY6SdKIGBrELSEsQnm+5K6T+KsIcDXewIjYKAJykLU0aTUCHHBNxJFOQzjmZ
+         HSgyG2NUrt7TcyFb2sNU9OLbP0Ypuf4Rrif8aPEsHYHzUlJIY4kwDfevzuPg5eIX5oF4
+         IRpw==
+X-Gm-Message-State: AOAM530uwy/pahiCl+39uuiKIwzGgKsc+pDP95rruXVV/1+PDYs2eO31
+        KM6M7Nk/uwPfYfVzxyMN6NIh7Cy0Fg==
+X-Google-Smtp-Source: ABdhPJydQtd6sep0NfygPaKwINOdAqbJ8No1je6RXTu8rcLYonG8EvpVSZkgmcSslyjfqjgtpt8U9Q==
+X-Received: by 2002:aca:383:: with SMTP id 125mr6508871oid.122.1607630597802;
+        Thu, 10 Dec 2020 12:03:17 -0800 (PST)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id o82sm1220636oih.5.2020.12.10.12.03.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 12:03:17 -0800 (PST)
+From:   Rob Herring <robh@kernel.org>
+To:     Jamie Iles <jamie@jamieiles.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Arnaud Ebalard <arno@natisbad.org>,
-        Srujana Challa <schalla@marvell.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Elie Morisse <syniurge@gmail.com>,
-        Nehal Shah <nehal-bakulchandra.shah@amd.com>,
-        Shyam Sundar S K <shyam-sundar.s-k@amd.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andreas Larsson <andreas@gaisler.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netanel Belgazal <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Guy Tzalik <gtzalik@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Zorik Machulsky <zorik@amazon.com>,
-        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
-        Keyur Chudgar <keyur@os.amperecomputing.com>,
-        Quan Nguyen <quan@os.amperecomputing.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        Michael Chan <michael.chan@broadcom.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Catherine Sullivan <csully@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        Jon Olson <jonolson@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Jon Mason <jdmason@kudzu.us>,
-        Rain River <rain.1986.08.12@gmail.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Pensando Drivers <drivers@pensando.io>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        Daniele Venzano <venza@brownhat.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Wingman Kwok <w-kwok2@ti.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Kevin Brace <kevinbrace@bracecomputerlab.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, qat-linux@intel.com,
-        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        ath11k@lists.infradead.org, wil6210@qti.qualcomm.com,
-        b43-dev@lists.infradead.org, iommu@lists.linux-foundation.org
-Subject: Re: [PATCH] dma-mapping: move hint unlikely for dma_mapping_error
- from drivers to core
-Message-ID: <20201210195855.GA11120@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        George Cherian <gcherian@marvell.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Arnaud Ebalard <arno@natisbad.org>,
-        Srujana Challa <schalla@marvell.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Elie Morisse <syniurge@gmail.com>,
-        Nehal Shah <nehal-bakulchandra.shah@amd.com>,
-        Shyam Sundar S K <shyam-sundar.s-k@amd.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Andreas Larsson <andreas@gaisler.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netanel Belgazal <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Guy Tzalik <gtzalik@amazon.com>, Saeed Bishara <saeedb@amazon.com>,
-        Zorik Machulsky <zorik@amazon.com>,
-        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
-        Keyur Chudgar <keyur@os.amperecomputing.com>,
-        Quan Nguyen <quan@os.amperecomputing.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        Michael Chan <michael.chan@broadcom.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Catherine Sullivan <csully@google.com>,
-        Sagi Shahar <sagis@google.com>, Jon Olson <jonolson@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>,
-        John Crispin <john@phrozen.org>, Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>, Jon Mason <jdmason@kudzu.us>,
-        Rain River <rain.1986.08.12@gmail.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Pensando Drivers <drivers@pensando.io>,
-        Jiri Pirko <jiri@resnulli.us>, Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        Daniele Venzano <venza@brownhat.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Wingman Kwok <w-kwok2@ti.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Kevin Brace <kevinbrace@bracecomputerlab.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, qat-linux@intel.com,
-        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        ath11k@lists.infradead.org, wil6210@qti.qualcomm.com,
-        b43-dev@lists.infradead.org, iommu@lists.linux-foundation.org
-References: <5d08af46-5897-b827-dcfb-181d869c8f71@gmail.com>
+        "David S. Miller" <davem@davemloft.net>, soc@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 0/4] Remove PicoXcell
+Date:   Thu, 10 Dec 2020 14:03:11 -0600
+Message-Id: <20201210200315.2965567-1-robh@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
-Content-Disposition: inline
-In-Reply-To: <5d08af46-5897-b827-dcfb-181d869c8f71@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+PicoXcell has had nothing but treewide cleanups for at least the last 8
+years and no signs of activity. The most recent activity is a yocto vendor
+kernel based on v3.0 in 2015.
 
---k+w/mQv8wyuph6w0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+These patches can go via the respective maintainers' trees.
 
-On Thu, Dec 10, 2020 at 03:47:50PM +0100, Heiner Kallweit wrote:
-> Zillions of drivers use the unlikely() hint when checking the result of
-> dma_mapping_error(). This is an inline function anyway, so we can move
-> the hint into the function and remove it from drivers.
-> From time to time discussions pop up how effective unlikely() is,
-> and that it should be used only if something is really very unlikely.
-> I think that's the case here.
->=20
-> Patch was created with some help from coccinelle.
->=20
-> @@
-> expression dev, dma_addr;
-> @@
->=20
-> - unlikely(dma_mapping_error(dev, dma_addr))
-> + dma_mapping_error(dev, dma_addr)
->=20
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Rob
 
-Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C
+Rob Herring (4):
+  ARM: dts: Remove PicoXcell platforms
+  ARM: Remove PicoXcell platform support
+  crypto: Remove PicoXcell driver
+  dt-bindings: Remove PicoXcell bindings
 
+ .../devicetree/bindings/arm/picoxcell.txt     |   24 -
+ .../bindings/crypto/picochip-spacc.txt        |   21 -
+ .../devicetree/bindings/net/macb.txt          |    2 -
+ .../bindings/timer/snps,dw-apb-timer.yaml     |    7 -
+ MAINTAINERS                                   |    9 -
+ arch/arm/Kconfig                              |    2 -
+ arch/arm/Kconfig.debug                        |   13 +-
+ arch/arm/Makefile                             |    1 -
+ arch/arm/boot/dts/Makefile                    |    3 -
+ arch/arm/boot/dts/picoxcell-pc3x2.dtsi        |  239 ---
+ arch/arm/boot/dts/picoxcell-pc3x3.dtsi        |  355 ----
+ arch/arm/boot/dts/picoxcell-pc7302-pc3x2.dts  |   78 -
+ arch/arm/boot/dts/picoxcell-pc7302-pc3x3.dts  |   84 -
+ arch/arm/mach-picoxcell/Kconfig               |    9 -
+ arch/arm/mach-picoxcell/Makefile              |    2 -
+ arch/arm/mach-picoxcell/common.c              |   81 -
+ drivers/crypto/Kconfig                        |   18 -
+ drivers/crypto/Makefile                       |    1 -
+ drivers/crypto/picoxcell_crypto.c             | 1806 -----------------
+ drivers/crypto/picoxcell_crypto_regs.h        |  115 --
+ 20 files changed, 1 insertion(+), 2869 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/picoxcell.txt
+ delete mode 100644 Documentation/devicetree/bindings/crypto/picochip-spacc.txt
+ delete mode 100644 arch/arm/boot/dts/picoxcell-pc3x2.dtsi
+ delete mode 100644 arch/arm/boot/dts/picoxcell-pc3x3.dtsi
+ delete mode 100644 arch/arm/boot/dts/picoxcell-pc7302-pc3x2.dts
+ delete mode 100644 arch/arm/boot/dts/picoxcell-pc7302-pc3x3.dts
+ delete mode 100644 arch/arm/mach-picoxcell/Kconfig
+ delete mode 100644 arch/arm/mach-picoxcell/Makefile
+ delete mode 100644 arch/arm/mach-picoxcell/common.c
+ delete mode 100644 drivers/crypto/picoxcell_crypto.c
+ delete mode 100644 drivers/crypto/picoxcell_crypto_regs.h
 
---k+w/mQv8wyuph6w0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/SffoACgkQFA3kzBSg
-KbYcjxAAgOE4gHcgEP8+Oex1fposdP2Z4KiWFjIYYWG4fo/Ry9PjDbSGh9Nptht2
-fnsCRcFXFj4oaSXaflBTq6ky4usgo2Gyp9puXbnpyj7P2uEjrqZs1zUFpAWdzMor
-UgiJkW/P2IZjCDfwxE8nn9L0fm8ZfcHWqVohAgDh/9SKsrQCdzlzwvd7vSQ94fXr
-qnYrmc6BF68dxVZx4TV18GddP5qFXYKytQ8pXL51XZEJTI05IGmc2l6hs/B4tKj6
-muxiEFw5Ac0eseMimi4J5YDJJZxWe28onn69mMJYQDzVPqSZRyhSAqCv0EhMg6Vp
-sABbG/eShtxir8A5ZrVRgqCaVyBjPu6pHAxdccHkj4d/6hfvD6F2FDXXaWirAf3i
-A4gsMJAmxtBYV0Lyx0D+fzCFnvUSDDSOEayRJdzotQXVCbLvuWHTp6EXVJFD5mMU
-/o3LApTC1uYQTXfGh1HHanpSEXLXfVgzjuDHRUsVIwemk5JwUAl6fw4oXbMrHYdZ
-v9Inx4U81LGxayz1vGmzbE39AeE7YH/5lH4metjot96RpKa+Gg++mMxUHBPW6Jam
-AOz6I3cKYsn7mPkzAZfDNvhvfgz2vxXcGGULSCdaWnVCJY7FMqe8i98w1z/Ymo7U
-JSXmDUhFS43r0JqUfbR0sRGgLL+kHTEa6I4ZT8UNd9DmTtS0Jmo=
-=4X1P
------END PGP SIGNATURE-----
-
---k+w/mQv8wyuph6w0--
+--
+2.25.1
