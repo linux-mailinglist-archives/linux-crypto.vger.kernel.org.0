@@ -2,200 +2,133 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C462D590F
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Dec 2020 12:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8B72D58FF
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Dec 2020 12:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389394AbgLJLPB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Dec 2020 06:15:01 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8740 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387702AbgLJLMs (ORCPT
+        id S2387787AbgLJLLN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Dec 2020 06:11:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729342AbgLJLLC (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:12:48 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CsB795gBtzkn1c;
-        Thu, 10 Dec 2020 19:11:17 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Dec 2020
- 19:11:55 +0800
-From:   Longfang Liu <liulongfang@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 6/6] crypto: hisilicon/sec - add new algorithm test case
-Date:   Thu, 10 Dec 2020 19:10:07 +0800
-Message-ID: <1607598607-8728-7-git-send-email-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1607598607-8728-1-git-send-email-liulongfang@huawei.com>
-References: <1607598607-8728-1-git-send-email-liulongfang@huawei.com>
+        Thu, 10 Dec 2020 06:11:02 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF686C0613D6
+        for <linux-crypto@vger.kernel.org>; Thu, 10 Dec 2020 03:10:21 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id a12so5031186wrv.8
+        for <linux-crypto@vger.kernel.org>; Thu, 10 Dec 2020 03:10:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=6wind.com; s=google;
+        h=reply-to:subject:to:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=d7ICbgeRa9HWZM53L6FPnxQMWAPWR9TgfC0TXxGcXgY=;
+        b=Y7E8EsSRlSiI1SKlfkm77fV6nbaNLGTDyBSWwv6ntHL2U2HSawwu3IVkGFzGepJTdP
+         ZMQIVisdTXTOzlVShKl8xIHGOyeiXR4SMggIwsUs1L2lLN8mVpu5V17VachjC1pn02bp
+         31mA4wtEG3mo/rz0Gdb/TRtvO//IVinAE8tg+PmnBjewPeO2OJzjTQfAbjTOO8M6krZE
+         95ex5r0MLFPOMEDv0IzZnHfAZajJat0+1v+gji+o7ZbMRSN/Sv2PTxhmGifh5Yhyar0U
+         0FaBhh4vH4wKn+QF+v1992doKWBnPBBLmgJkPGSfxfxCpLTaFSNLEou//OdLSvxF8Qw9
+         Zokw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=d7ICbgeRa9HWZM53L6FPnxQMWAPWR9TgfC0TXxGcXgY=;
+        b=DBnbfxoTF1cHiTXHx1NfBR7+g2XU/TkoTnOvYhzq8I74X6J0t4woWaf3gQKWunUa0g
+         cngggmN1U1ufX68SaQXOC5ZVGicPbk2PpVkOdAdnIG68zROI++IGceNMNcevvyZKhqZP
+         YMy2vlCKDTMvLroGcEnVWqfQzqDVItfn9FB2MtdHPPgvKY+cuvpUVeaMsdpFWtrjV9gs
+         vSxh/wmydeuIcZrr4qIM192ELfrRtV2iGp1mcBPxb+54t/dGdsjS3Bp4sl/DDSRCstM7
+         ZasIGUSbsz1bPu2a2yTN7n+KPeqF2O6svE7WSKih2Eacj0xteh+2a6UWozJHtVQ217/f
+         i8nA==
+X-Gm-Message-State: AOAM531saJQ2CHiRJM9kjbKrfY4XmN3MYN7Co8aExH8PK/yyukv2fkNv
+        RpEocMIn7xfiQ0kURWEaGN/7bg==
+X-Google-Smtp-Source: ABdhPJzb7Ju0zEnjWKanAAII/6K9SrAT10GNT6ZVuqEpTJappgIgntBt89e5JFa/EzIeWnwxq6WuGw==
+X-Received: by 2002:adf:fb88:: with SMTP id a8mr7665047wrr.412.1607598620562;
+        Thu, 10 Dec 2020 03:10:20 -0800 (PST)
+Received: from ?IPv6:2a01:e0a:410:bb00:111a:62e7:97b9:77f? ([2a01:e0a:410:bb00:111a:62e7:97b9:77f])
+        by smtp.gmail.com with ESMTPSA id s13sm8523254wmj.28.2020.12.10.03.10.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 03:10:19 -0800 (PST)
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: [PATCH v2] xfrm: interface: Don't hide plain packets from
+ netfilter
+To:     Eyal Birger <eyal.birger@gmail.com>, Phil Sutter <phil@nwl.cc>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-crypto@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
+References: <20201207134309.16762-1-phil@nwl.cc>
+ <CAHsH6Gupw7o96e5hOmaLBCZtqgoV0LZ4L7h-Y+2oROtXSXvTxw@mail.gmail.com>
+ <20201208185139.GZ4647@orbyte.nwl.cc>
+ <CAHsH6GvT=Af-BAWK0z_CdrYWPn0qt+C=BRjy10MLRNhLWfH0rQ@mail.gmail.com>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+Message-ID: <9fc5cbb8-26c7-c1c2-2018-3c0cd8c805f4@6wind.com>
+Date:   Thu, 10 Dec 2020 12:10:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAHsH6GvT=Af-BAWK0z_CdrYWPn0qt+C=BRjy10MLRNhLWfH0rQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add testing cases for new algorithms such as
-'XTS(SM4)', 'CCM(SM4)' and 'GCM(SM4)' to 'Crypto testmgr'.
+Le 09/12/2020 à 15:40, Eyal Birger a écrit :
+> Hi Phil,
+> 
+> On Tue, Dec 8, 2020 at 8:51 PM Phil Sutter <phil@nwl.cc> wrote:
+>>
+>> Hi Eyal,
+>>
+>> On Tue, Dec 08, 2020 at 04:47:02PM +0200, Eyal Birger wrote:
+>>> On Mon, Dec 7, 2020 at 4:07 PM Phil Sutter <phil@nwl.cc> wrote:
+[snip]
+>>
+>> The packet appears twice being sent to eth1, the second time as ESP
+>> packet. I understand xfrm interface as a collector of to-be-xfrmed
+>> packets, dropping those which do not match a policy.
+>>
+>>>> Fix this by looping packets transmitted from xfrm_interface through
+>>>> NF_INET_LOCAL_OUT before passing them on to dst_output(), which makes
+>>>> behaviour consistent again from netfilter's point of view.
+>>>
+>>> When an XFRM interface is used when forwarding, why would it be correct
+>>> for NF_INET_LOCAL_OUT to observe the inner packet?
+I think it is valid because:
+ - it would be consistent with ip tunnels (see iptunnel_xmit())
+ - it would be consistent with the standard xfrm path see [1]
+ - from the POV of the forwarder, the packet is locally emitted, the src @ is
+   owned by the forwarder.
 
-Except for CCM(AES) exiting with unexpected success,
-other algorithms have successfully  passed the
-crypto self-tests.
+[1] https://upload.wikimedia.org/wikipedia/commons/3/37/Netfilter-packet-flow.svg
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
----
- arch/arm64/configs/defconfig |  2 +-
- crypto/testmgr.c             | 26 ++++++++++++++++
- crypto/testmgr.h             | 72 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 99 insertions(+), 1 deletion(-)
+>>
+>> A valid question, indeed. One could interpret packets being forwarded by
+>> those tunneling devices emit the packets one feeds them from the local
+>> host. I just checked and ip_vti behaves identical to xfrm_interface
+>> prior to my patch, so maybe my patch is crap and the inability to match
+>> on ipsec context data when using any of those devices is just by design.
+There was no real design for vti[6] interfaces, it's why xfrmi interfaces have
+been added. But they should be consistent I think, so this patch should handle
+xfrmi and vti[6] together.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 646c3b4..b62d0ba 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -113,7 +113,7 @@ CONFIG_KVM=y
- CONFIG_ARM64_CRYPTO=y
- CONFIG_CRYPTO_SHA1_ARM64_CE=y
- CONFIG_CRYPTO_SHA2_ARM64_CE=y
--CONFIG_CRYPTO_SHA512_ARM64_CE=m
-+CONFIG_CRYPTO_SHA512_ARM64_CE=y
- CONFIG_CRYPTO_SHA3_ARM64=m
- CONFIG_CRYPTO_SM3_ARM64_CE=m
- CONFIG_CRYPTO_GHASH_ARM64_CE=y
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 321e38e..494cc0a 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4464,6 +4464,16 @@ static const struct alg_test_desc alg_test_descs[] = {
- 			}
- 		}
- 	}, {
-+		.alg = "ccm(sm4)",
-+		.test = alg_test_aead,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.aead = {
-+				____VECS(sm4_ccm_tv_template),
-+				.einval_allowed = 1,
-+			}
-+		}
-+	}, {
- 		.alg = "cfb(aes)",
- 		.test = alg_test_skcipher,
- 		.fips_allowed = 1,
-@@ -4942,6 +4952,14 @@ static const struct alg_test_desc alg_test_descs[] = {
- 			.aead = __VECS(aes_gcm_tv_template)
- 		}
- 	}, {
-+		.alg = "gcm(sm4)",
-+		.generic_driver = "gcm(sm4)",
-+		.test = alg_test_aead,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.aead = __VECS(sm4_gcm_tv_template)
-+		}
-+	}, {
- 		.alg = "ghash",
- 		.test = alg_test_hash,
- 		.fips_allowed = 1,
-@@ -5493,6 +5511,14 @@ static const struct alg_test_desc alg_test_descs[] = {
- 			.cipher = __VECS(serpent_xts_tv_template)
- 		}
- 	}, {
-+		.alg = "xts(sm4)",
-+		.generic_driver = "xts(sm4))",
-+		.test = alg_test_skcipher,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.cipher = __VECS(sm4_xts_tv_template)
-+		}
-+	}, {
- 		.alg = "xts(twofish)",
- 		.generic_driver = "xts(ecb(twofish-generic))",
- 		.test = alg_test_skcipher,
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index 8c83811..69bb29c 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -13319,6 +13319,78 @@ static const struct cipher_testvec sm4_cfb_tv_template[] = {
- 	}
- };
- 
-+static const struct cipher_testvec sm4_xts_tv_template[] = {
-+	{
-+		.key	= "\x11\x11\x11\x11\x11\x11\x11\x11"
-+			  "\x11\x11\x11\x11\x11\x11\x11\x11"
-+			  "\x22\x22\x22\x22\x22\x22\x22\x22"
-+			  "\x22\x22\x22\x22\x22\x22\x22\x22",
-+		.klen	= 32,
-+		.iv	= "\x33\x33\x33\x33\x33\x00\x00\x00"
-+			  "\x00\x00\x00\x00\x00\x00\x00\x00",
-+		.ptext	= "\x44\x44\x44\x44\x44\x44\x44\x44"
-+			  "\x44\x44\x44\x44\x44\x44\x44\x44"
-+			  "\x44\x44\x44\x44\x44\x44\x44\x44"
-+			  "\x44\x44\x44\x44\x44\x44\x44\x44",
-+		.ctext	= "\xA7\x4D\x72\x6C\x11\x19\x6A\x32"
-+			  "\xBE\x04\xE0\x01\xFF\x29\xD0\xC7"
-+			  "\x93\x2F\x9F\x3E\xC2\x9B\xFC\xB6"
-+			  "\x4D\xD1\x7F\x63\xCB\xD3\xEA\x31",
-+		.len	= 32,
-+	}
-+};
-+
-+static const struct aead_testvec sm4_ccm_tv_template[] = {
-+	{
-+		.key	= "\xc0\xc1\xc2\xc3\xc4\xc5\xc6\xc7"
-+			  "\xc8\xc9\xca\xcb\xcc\xcd\xce\xcf",
-+		.klen	= 16,
-+		.iv	= "\x01\x00\x00\x00\x03\x02\x01\x00"
-+			  "\xa0\xa1\xa2\xa3\xa4\xa5\x00\x00",
-+		.assoc	= "\x00\x01\x02\x03\x04\x05\x06\x07",
-+		.alen	= 8,
-+		.ptext	= "\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f"
-+			  "\x10\x11\x12\x13\x14\x15\x16\x17"
-+			  "\x18\x19\x1a\x1b\x1c\x1d\x1e",
-+		.plen	= 23,
-+		.ctext	= "\x7B\xFF\x4A\x15\xF5\x73\xCE\x82"
-+			  "\x6E\xC2\x31\x1D\xE2\x53\x02\xAC"
-+			  "\xA4\x48\xF9\xE4\xF5\x1F\x81\x70"
-+			  "\x18\xBC\xB6\x84\x01\xB8\xAE",
-+		.clen	= 31,
-+	}
-+};
-+
-+static const struct aead_testvec sm4_gcm_tv_template[] = {
-+	{
-+		.key	= "\xfe\xff\xe9\x92\x86\x65\x73\x1c"
-+			  "\x6d\x6a\x8f\x94\x67\x30\x83\x08",
-+		.klen	= 16,
-+		.iv	= "\xca\xfe\xba\xbe\xfa\xce\xdb\xad"
-+			  "\xde\xca\xf8\x88",
-+		.ptext	= "\xd9\x31\x32\x25\xf8\x84\x06\xe5"
-+			  "\xa5\x59\x09\xc5\xaf\xf5\x26\x9a"
-+			  "\x86\xa7\xa9\x53\x15\x34\xf7\xda"
-+			  "\x2e\x4c\x30\x3d\x8a\x31\x8a\x72"
-+			  "\x1c\x3c\x0c\x95\x95\x68\x09\x53"
-+			  "\x2f\xcf\x0e\x24\x49\xa6\xb5\x25"
-+			  "\xb1\x6a\xed\xf5\xaa\x0d\xe6\x57"
-+			  "\xba\x63\x7b\x39\x1a\xaf\xd2\x55",
-+		.plen	= 64,
-+		.ctext	= "\xe4\x11\x0f\xf1\xc1\x41\x97\xe6"
-+			  "\x76\x21\x6a\x33\x83\x10\x41\xeb"
-+			  "\x09\x58\x00\x11\x7b\xdc\x3f\x75"
-+			  "\x1a\x49\x6e\xfc\xf2\xbb\xdf\xdb"
-+			  "\x3a\x2e\x13\xfd\xc5\xc1\x9d\x07"
-+			  "\x1a\xe5\x48\x3f\xed\xde\x98\x5d"
-+			  "\x3f\x2d\x5b\x4e\xee\x0b\xb6\xdf"
-+			  "\xe3\x63\x36\x83\x23\xf7\x5b\x80"
-+			  "\x7d\xfe\x77\xef\x71\xb1\x5e\xc9"
-+			  "\x52\x6b\x09\xab\x84\x28\x4b\x8a",
-+		.clen	= 80,
-+	}
-+};
-+
- /* Cast6 test vectors from RFC 2612 */
- static const struct cipher_testvec cast6_tv_template[] = {
- 	{
--- 
-2.8.1
 
+Regards,
+Nicolas
+
+>>
+> 
+> I would find such interpretation and behavior to be surprising for an IPsec
+> forwarder...
+> I guess some functionality of policy matching is lost with these
+> devices; although they do offer the ability to match ipsec traffic based on
+> the destination interface it is possible to have multiple ipsec flows share
+> the same device so netfilter doesn't provide the ability to distinguish
+> between different flows on the outbound direction in such cases.
+> 
+> Thanks,
+> Eyal.
+> 
