@@ -2,78 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D462D9A0F
-	for <lists+linux-crypto@lfdr.de>; Mon, 14 Dec 2020 15:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0E22D9BBC
+	for <lists+linux-crypto@lfdr.de>; Mon, 14 Dec 2020 17:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437759AbgLNOff (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 14 Dec 2020 09:35:35 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:41308 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437703AbgLNOff (ORCPT
+        id S2439759AbgLNQFk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 14 Dec 2020 11:05:40 -0500
+Received: from server.kenspensetc.com ([185.148.128.76]:48008 "EHLO
+        server.kenspensetc.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439358AbgLNQFj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 14 Dec 2020 09:35:35 -0500
-Received: by mail-oi1-f195.google.com with SMTP id 15so19354551oix.8;
-        Mon, 14 Dec 2020 06:35:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pmYimdHqPZCmGoKy+QfoCbZ6cMjYvJ9Ol9TiMKbqo5U=;
-        b=UGNT6S3ltcqpANs7rrVV3QG+UqBdrSA6wH6Qv5gq/Ik7TwlpBFuP7Sxc+EZP3og3ad
-         ARJjn0VmpHeDgwDoxW0FldQob7EXeUWCply30Zyd4MlYf0sRlBc7p4qga2fAcA0PeVGP
-         7bsaVmaJJOVWK6D4vqiZm2DZj8/k69C6KnMWOIOcDzIVOTFrsER3shotSzJ7THJM0jy7
-         tj28ecrm81HXEWAX40mp1Phrja/eQnd8Xn6T1omPJty4JAaZWG5EwUpm/ULJ2Ou0p8bd
-         NBT8iH93YaOf3jpqfANLrdYluPrWCYusn0MS/+Iaz0O3cydrG7MgvQyEyGi9cgPVhmJs
-         PcfQ==
-X-Gm-Message-State: AOAM533PUfsKZChFi/R7AsPd05lGxDy1+yMCUJxBfm4I95qPlS2r5FJU
-        c78kDNJeuvt1B5CQjpSH2azuvsfRuA==
-X-Google-Smtp-Source: ABdhPJxIZjyrGjwvcSupSDPeypUPaJjXZrJg/DEAYpaJ6OrhlsJtNXtsfhunBmocYWyjVbBoZqy2LQ==
-X-Received: by 2002:aca:bc41:: with SMTP id m62mr18229830oif.16.1607956494486;
-        Mon, 14 Dec 2020 06:34:54 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d13sm4354186oti.74.2020.12.14.06.34.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 06:34:53 -0800 (PST)
-Received: (nullmailer pid 1883746 invoked by uid 1000);
-        Mon, 14 Dec 2020 14:34:52 -0000
-Date:   Mon, 14 Dec 2020 08:34:52 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, Jamie Iles <jamie@jamieiles.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>, soc@kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH 4/4] dt-bindings: Remove PicoXcell bindings
-Message-ID: <20201214143452.GA1883626@robh.at.kernel.org>
-References: <20201210200315.2965567-1-robh@kernel.org>
- <20201210200315.2965567-5-robh@kernel.org>
+        Mon, 14 Dec 2020 11:05:39 -0500
+Received: from localhost ([127.0.0.1]:47936 helo=server.kenspensetc.com)
+        by server.kenspensetc.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <sender@ridecals.com>)
+        id 1knLn0-00029V-6J; Thu, 10 Dec 2020 08:15:22 -0500
+Received: from [70.32.0.46] ([70.32.0.46]) by ridecals.com (Horde Framework)
+ with HTTPS; Thu, 10 Dec 2020 08:15:22 -0500
+Date:   Thu, 10 Dec 2020 08:15:22 -0500
+Message-ID: <20201210081522.Horde.GEA1j18D53oi4VTUxYWD_87@ridecals.com>
+From:   Russell Branting <sender@ridecals.com>
+Subject: Vital
+Reply-to: Goodagent01@gmail.com
+User-Agent: Horde Application Framework 5
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201210200315.2965567-5-robh@kernel.org>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server.kenspensetc.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - ridecals.com
+X-Get-Message-Sender-Via: server.kenspensetc.com: authenticated_id: sender9@ridecals.com
+X-Authenticated-Sender: server.kenspensetc.com: sender9@ridecals.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, 10 Dec 2020 14:03:15 -0600, Rob Herring wrote:
-> PicoXcell has had nothing but treewide cleanups for at least the last 8
-> years and no signs of activity. The most recent activity is a yocto vendor
-> kernel based on v3.0 in 2015.
-> 
-> Cc: Jamie Iles <jamie@jamieiles.com>
-> Cc: linux-crypto@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> I'll take this via the DT tree.
-> 
->  .../devicetree/bindings/arm/picoxcell.txt     | 24 -------------------
->  .../bindings/crypto/picochip-spacc.txt        | 21 ----------------
->  .../devicetree/bindings/net/macb.txt          |  2 --
->  .../bindings/timer/snps,dw-apb-timer.yaml     |  7 ------
->  4 files changed, 54 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/picoxcell.txt
->  delete mode 100644 Documentation/devicetree/bindings/crypto/picochip-spacc.txt
-> 
 
-Applied, thanks!
+I am instructed to inform you of your appointment as the next of kin  
+to your deceased relative estate. Kindly indicate your acceptance by  
+reconfirming your Full Name, Address & Phone Number for immediate  
+processing of the funds release to your control OR the deceased  
+deposited funds will be declared unclaimed.
+
+
