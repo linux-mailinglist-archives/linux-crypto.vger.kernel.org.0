@@ -2,80 +2,86 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A0E2D74DF
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Dec 2020 12:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEE12D75A2
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Dec 2020 13:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395111AbgLKLqL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Dec 2020 06:46:11 -0500
-Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:24280 "EHLO
-        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395106AbgLKLps (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:45:48 -0500
-X-Greylist: delayed 953 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Dec 2020 06:45:45 EST
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
- (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Fri, 11 Dec
- 2020 19:29:08 +0800
-Received: from tony-HX002EA.zhaoxin.com (10.32.56.37) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Fri, 11 Dec
- 2020 19:29:06 +0800
-From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <hpa@zytor.com>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <TimGuo-oc@zhaoxin.com>, <CooperYan@zhaoxin.com>,
-        <QiyuanWang@zhaoxin.com>, <HerryYang@zhaoxin.com>,
-        <CobeChen@zhaoxin.com>, <SilviaZhao@zhaoxin.com>
-Subject: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
-Date:   Fri, 11 Dec 2020 19:29:04 +0800
-Message-ID: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.32.56.37]
-X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
+        id S2388064AbgLKM2x (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Dec 2020 07:28:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395552AbgLKM2U (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 11 Dec 2020 07:28:20 -0500
+From:   Ard Biesheuvel <ardb@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, Ard Biesheuvel <ardb@kernel.org>,
+        Eric Biggers <ebiggers@google.com>
+Subject: [PATCH v2 0/2] crypto: remove bare cipher from public API
+Date:   Fri, 11 Dec 2020 13:27:13 +0100
+Message-Id: <20201211122715.15090-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
-On platforms with Zhaoxin CPUs supporting this X86 feature, When
-crc32c-intel and crc32c-generic are both registered, system will
-use crc32c-intel because its .cra_priority is greater than
-crc32c-generic. This case expect to use crc32c-generic driver for
-some Zhaoxin CPUs to get performance gain, So remove these Zhaoxin
-CPUs support from crc32c-intel.
+Patch #2 puts the cipher API (which should not be used outside of the
+crypto API implementation) into an internal header file and module
+namespace
 
-Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
----
- arch/x86/crypto/crc32c-intel_glue.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Patch #1 is a prerequisite for this, to avoid having to make the chelsio
+driver import the crypto internal namespace.
 
-diff --git a/arch/x86/crypto/crc32c-intel_glue.c b/arch/x86/crypto/crc32c-intel_glue.c
-index feccb52..6dafdae 100644
---- a/arch/x86/crypto/crc32c-intel_glue.c
-+++ b/arch/x86/crypto/crc32c-intel_glue.c
-@@ -222,8 +222,16 @@ MODULE_DEVICE_TABLE(x86cpu, crc32c_cpu_id);
- 
- static int __init crc32c_intel_mod_init(void)
- {
-+	struct cpuinfo_x86 *c = &boot_cpu_data;
-+
- 	if (!x86_match_cpu(crc32c_cpu_id))
- 		return -ENODEV;
-+
-+	if (c->x86_vendor == X86_VENDOR_ZHAOXIN || c->x86_vendor == X86_VENDOR_CENTAUR) {
-+		if (c->x86 == 0x6 || (c->x86 == 0x7 && c->x86_model <= 0x3b))
-+			return -ENODEV;
-+	}
-+
- #ifdef CONFIG_X86_64
- 	if (boot_cpu_has(X86_FEATURE_PCLMULQDQ)) {
- 		alg.update = crc32c_pcl_intel_update;
+Changes since v1:
+- add missing Kconfig dependency on CRYPT_LIB_AES (#1)
+- add missing module namespace import into skcipher.c (#2) - this addresses
+  the kbuild failure report
+- add module import to QAT driver, which now contains a valid use of the
+  bare cipher API
+
+Cc: Eric Biggers <ebiggers@google.com>
+
+Ard Biesheuvel (2):
+  chcr_ktls: use AES library for single use cipher
+  crypto: remove cipher routines from public crypto API
+
+ Documentation/crypto/api-skcipher.rst         |   4 +-
+ arch/arm/crypto/aes-neonbs-glue.c             |   3 +
+ arch/s390/crypto/aes_s390.c                   |   2 +
+ crypto/adiantum.c                             |   2 +
+ crypto/ansi_cprng.c                           |   2 +
+ crypto/cbc.c                                  |   1 +
+ crypto/ccm.c                                  |   2 +
+ crypto/cfb.c                                  |   2 +
+ crypto/cipher.c                               |   7 +-
+ crypto/cmac.c                                 |   2 +
+ crypto/ctr.c                                  |   2 +
+ crypto/drbg.c                                 |   2 +
+ crypto/ecb.c                                  |   1 +
+ crypto/essiv.c                                |   2 +
+ crypto/keywrap.c                              |   2 +
+ crypto/ofb.c                                  |   2 +
+ crypto/pcbc.c                                 |   2 +
+ crypto/skcipher.c                             |   2 +
+ crypto/testmgr.c                              |   3 +
+ crypto/vmac.c                                 |   2 +
+ crypto/xcbc.c                                 |   2 +
+ crypto/xts.c                                  |   2 +
+ drivers/crypto/geode-aes.c                    |   2 +
+ drivers/crypto/inside-secure/safexcel.c       |   1 +
+ drivers/crypto/inside-secure/safexcel_hash.c  |   1 +
+ drivers/crypto/qat/qat_common/adf_ctl_drv.c   |   1 +
+ drivers/crypto/qat/qat_common/qat_algs.c      |   1 +
+ drivers/crypto/vmx/aes.c                      |   1 +
+ drivers/crypto/vmx/vmx.c                      |   1 +
+ .../ethernet/chelsio/inline_crypto/Kconfig    |   1 +
+ .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c |  19 +-
+ include/crypto/algapi.h                       |  39 ----
+ include/crypto/internal/cipher.h              | 218 ++++++++++++++++++
+ include/crypto/internal/skcipher.h            |   1 +
+ include/linux/crypto.h                        | 163 -------------
+ 35 files changed, 281 insertions(+), 219 deletions(-)
+ create mode 100644 include/crypto/internal/cipher.h
+
 -- 
-2.7.4
+2.17.1
 
