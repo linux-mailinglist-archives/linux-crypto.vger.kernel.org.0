@@ -2,80 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511612D77A6
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Dec 2020 15:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BF62D7D2F
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Dec 2020 18:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405873AbgLKOSR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Dec 2020 09:18:17 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:13927 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392467AbgLKORr (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:17:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1607696095;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
-        Subject:Sender;
-        bh=BeWQGq5OH45QSmctQUr/hmfG243Im2dTgq5QSkZowP4=;
-        b=rQphjxf9Kci7gq2g6WL9AW3VEk8Ldj3eIvZkjHZ5BxKatBo9kCwmmc4XgSLnaKwCst
-        ocj/9wK9L0HfcOtBkwKAB/RozERKajPO/L63k1LZRkEdNRV1ls4uNon0/I70kxF2iQ7A
-        dNX+EJdcnb7P3RLpQrI++oZS/Lc9Uxv+M09SKn30HjnGSYQomxzqSBzgkB4Hol7Kjqr/
-        VSO4olqeUpOx/qeoK/VsCz9pp1JBvp7eVYT1fgYraMhahsITYv2GJkQ0aIydEzdf9cBd
-        as+MA8/dE3aSQ8hqQf8kSXsZPDRAOJmYvVhhraYtMUo2A88P1kV/GSLbN73G2v7KqPl+
-        gZ7g==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNzyCzy1Sfr67uExK884EC0GFGHev6G4xuq1eJ0Y="
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-        by smtp.strato.de (RZmta 47.7.1 DYNA|AUTH)
-        with ESMTPSA id L0a6acwBBEEX0rx
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Fri, 11 Dec 2020 15:14:33 +0100 (CET)
-Message-ID: <00235d6da9beddd365217aeb8add986c615762bc.camel@chronox.de>
-Subject: Re: [PATCH v4 5/5] crypto: hisilicon/hpre - add 'CURVE25519'
- algorithm
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Meng Yu <yumeng18@huawei.com>, herbert@gondor.apana.org.au,
-        davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
-        wangzhou1@hisilicon.com, linux-kernel@vger.kernel.org
-Date:   Fri, 11 Dec 2020 15:14:33 +0100
-In-Reply-To: <1607668234-46130-6-git-send-email-yumeng18@huawei.com>
-References: <1607668234-46130-1-git-send-email-yumeng18@huawei.com>
-         <1607668234-46130-6-git-send-email-yumeng18@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        id S2395333AbgLKRom (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Dec 2020 12:44:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395330AbgLKRoj (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 11 Dec 2020 12:44:39 -0500
+Date:   Fri, 11 Dec 2020 09:43:57 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607708639;
+        bh=7nRRic/cUXS9Hr120HkaEBHl46oBlU5a4nWuOWcPCFM=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MEsY9jZz2eeaM+mnf1yXNs0NqEbEnR/tGlBxqTngG/GgPHKPMN2KGA1wIt0eILUXH
+         LJWYJhD4xe8YcXtKtrL+/zHYaAFgHr9pE9ccJtQjBaotXOQKVhoCbN2n8tQQ8uSIhj
+         xiecXbJf+DaemV3DdBQR74EYj7fRiyBQ3Pq0lqv59XZG3tjiwVPTd1m8MfPhiS971z
+         xC9YAFxmFHFe6g2TmrYLNq38X2wZKnpm0XORAeI6OJDXKZpHbVu7RsYE7RoNwwUfct
+         aJXCmwDhgqIEr40Hliycj8/QkthUgjnBY9GicG65BsHMwzJaKLU9GqgKm+Wrg/5ibd
+         75JgQIgXoVnOA==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, TimGuo-oc@zhaoxin.com,
+        CooperYan@zhaoxin.com, QiyuanWang@zhaoxin.com,
+        HerryYang@zhaoxin.com, CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
+Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
+Message-ID: <X9Ov3RWDpUik7gXo@sol.localdomain>
+References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Am Freitag, den 11.12.2020, 14:30 +0800 schrieb Meng Yu:
->   
-> +/* curve25519 */
-> +static u64 curve25519_g_x[] = { 0x0000000000000009, 0x0000000000000000,
-> +                               0x0000000000000000, 0x0000000000000000 };
-> +static u64 curve25519_p[] = { 0xffffffffffffffed, 0xffffffffffffffff,
-> +                               0xffffffffffffffff, 0x7fffffffffffffff };
-> +static u64 curve25519_a[] = { 0x000000000001DB41, 0x0000000000000000,
-> +                               0x0000000000000000, 0x0000000000000000 };
-> +static const struct ecc_curve ecc_25519 = {
-> +       .name = "curve25519",
-> +       .g = {
-> +               .x = curve25519_g_x,
-> +               .ndigits = 4,
-> +       },
-> +       .p = curve25519_p,
-> +       .a = curve25519_a,
-> +};
+On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
+> The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
+> On platforms with Zhaoxin CPUs supporting this X86 feature, When
+> crc32c-intel and crc32c-generic are both registered, system will
+> use crc32c-intel because its .cra_priority is greater than
+> crc32c-generic. This case expect to use crc32c-generic driver for
+> some Zhaoxin CPUs to get performance gain, So remove these Zhaoxin
+> CPUs support from crc32c-intel.
+> 
+> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
 
-With this definition, I am not sure whether ecc_is_pubkey_valid_partial would
-work correctly. At least it *seems* that there would be a NULL-pointer
-dereference in vli_add with the undefined .b value. Did you test and can you
-confirm?
+Does this mean that the performance of the crc32c instruction on those CPUs is
+actually slower than a regular C implementation?  That's very weird.
 
-Thanks
-Stephan
-
-
+- Eric
