@@ -2,59 +2,78 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995992D73B7
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Dec 2020 11:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 731522D741E
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Dec 2020 11:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392179AbgLKKP1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Dec 2020 05:15:27 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:33428 "EHLO fornost.hmeau.com"
+        id S1727323AbgLKKnn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Dec 2020 05:43:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731920AbgLKKPF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:15:05 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1knfR7-0004wZ-4m; Fri, 11 Dec 2020 21:14:06 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 11 Dec 2020 21:14:05 +1100
-Date:   Fri, 11 Dec 2020 21:14:05 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Tudor-Dan Ambarus <tudor.ambarus@microchip.com>,
-        Arnd Bergmann <arnd@arndb.de>, Keerthy <j-keerthy@ti.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: atmel-i2c - select CONFIG_BITREVERSE
-Message-ID: <20201211101405.GC3266@gondor.apana.org.au>
-References: <20201203232022.1485386-1-arnd@kernel.org>
+        id S2390233AbgLKKnA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:43:00 -0500
+X-Gm-Message-State: AOAM530MCtu4PcfNQP21mxYujqHnCY/WzzcuFgTxJtJx4K+aRy3PY6UZ
+        HU7J42V5XPPDjPJsl5YyTYUE8IPx7iysm2P20sw=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607683340;
+        bh=2t9pEWVw7pzE9pIhgFfJ7Q4L3pamisj5RJVp5inOjD0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KtEmvc1q3PU+vPnml1LfDUExrnFo0OtoTi9yY0ywuHZQxcOtRtwa69VkzZpD+9WN5
+         ReGTYwQ3cHVd+qaFVEZzDbohc7hjG2HlkmAhUjeCLKErH713XpLOpb272FeElDh180
+         t8IA0468Ru+aEZV9P7qwPFHykMQI6c8zLvJTVJL/eSzjkx65ugt/nhHiEZhTVeLDrU
+         wDBcovwAypLLoPsKVdsKu2Jq6nBwvYhpwAuwQem02uAFzNkhcR4sJJ4JNroLtg1517
+         odGZEZKyoLvgls+mHdvLIkX9R+qnQZBbRy7OoG1C9UNluLvYXyruikNFYxoygOMXbN
+         XTDjP1OvCjjTw==
+X-Google-Smtp-Source: ABdhPJyfd6eKgcHqzZt6pnf4Suw6m4b9QMsmlwNqxVUISzDTYO99vPMOOrMF7pspm0xQE4dk8/MnHDTKXEENliaZvw8=
+X-Received: by 2002:aca:b809:: with SMTP id i9mr8674838oif.174.1607683339167;
+ Fri, 11 Dec 2020 02:42:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203232022.1485386-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201201142451.138221-1-giovanni.cabiddu@intel.com>
+ <20201201142451.138221-3-giovanni.cabiddu@intel.com> <20201211100748.GA994@gondor.apana.org.au>
+In-Reply-To: <20201211100748.GA994@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 11 Dec 2020 11:42:08 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGr-aJ_uqoq+ooqp6iFSfGraQMHaGi8idd+qc_UXvp7FA@mail.gmail.com>
+Message-ID: <CAMj1kXGr-aJ_uqoq+ooqp6iFSfGraQMHaGi8idd+qc_UXvp7FA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] crypto: qat - add AES-XTS support for QAT GEN4 devices
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        qat-linux <qat-linux@intel.com>,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Tomaszx Kowalik <tomaszx.kowalik@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 12:20:04AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The bitreverse helper is almost always built into the kernel,
-> but in a rare randconfig build it is possible to hit a case
-> in which it is a loadable module while the atmel-i2c driver
-> is built-in:
-> 
-> arm-linux-gnueabi-ld: drivers/crypto/atmel-i2c.o: in function `atmel_i2c_checksum':
-> atmel-i2c.c:(.text+0xa0): undefined reference to `byte_rev_table'
-> 
-> Add one more 'select' statement to prevent this.
-> 
-> Fixes: 11105693fa05 ("crypto: atmel-ecc - introduce Microchip / Atmel ECC driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/crypto/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+On Fri, 11 Dec 2020 at 11:07, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Tue, Dec 01, 2020 at 02:24:50PM +0000, Giovanni Cabiddu wrote:
+> >
+> > @@ -1293,6 +1366,12 @@ static int qat_alg_skcipher_init_xts_tfm(struct crypto_skcipher *tfm)
+> >       if (IS_ERR(ctx->ftfm))
+> >               return PTR_ERR(ctx->ftfm);
+> >
+> > +     ctx->tweak = crypto_alloc_cipher("aes", 0, 0);
+> > +     if (IS_ERR(ctx->tweak)) {
+> > +             crypto_free_skcipher(ctx->ftfm);
+> > +             return PTR_ERR(ctx->tweak);
+> > +     }
+> > +
+> >       reqsize = max(sizeof(struct qat_crypto_request),
+> >                     sizeof(struct skcipher_request) +
+> >                     crypto_skcipher_reqsize(ctx->ftfm));
+>
+> This may clash with the work that Ard is doing on simpler ciphers.
+>
+> So I think this should switch over to using the library interface
+> for aes.  What do you think Ard?
+>
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+I think this is a valid use of a bare cipher - it lives as long as the
+TFM itself, and may be used on a hot path.
+
+I need to respin the bare cipher change I sent the other day anyway,
+so I'll make sure this driver gets the right treatment as well (which
+shouldn't cause any conflicts so the changes can be merged in any
+order)
