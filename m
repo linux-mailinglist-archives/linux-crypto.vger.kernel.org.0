@@ -2,83 +2,43 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB4E2D73B0
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Dec 2020 11:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF762D73CB
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Dec 2020 11:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388659AbgLKKOz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Dec 2020 05:14:55 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:33380 "EHLO fornost.hmeau.com"
+        id S1726430AbgLKKO6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Dec 2020 05:14:58 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:33414 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731373AbgLKKOW (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:14:22 -0500
+        id S1728679AbgLKKOe (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:14:34 -0500
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1knfQa-0004wK-39; Fri, 11 Dec 2020 21:13:33 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 11 Dec 2020 21:13:32 +1100
-Date:   Fri, 11 Dec 2020 21:13:32 +1100
+        id 1knfQk-0004wQ-Dh; Fri, 11 Dec 2020 21:13:43 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 11 Dec 2020 21:13:42 +1100
+Date:   Fri, 11 Dec 2020 21:13:42 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-Cc:     linux-crypto@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Mark Gross <mgross@linux.intel.com>
-Subject: Re: [PATCH 0/2] crypto: Add Keem Bay OCS AES/SM4 driver
-Message-ID: <20201211101332.GA3266@gondor.apana.org.au>
-References: <20201126115148.68039-1-daniele.alessandrelli@linux.intel.com>
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     xuzaibo@huawei.com, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: hisilicon/trng replace atomic_add_return()
+Message-ID: <20201211101342.GB3266@gondor.apana.org.au>
+References: <1606805418-4739-1-git-send-email-yejune.deng@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126115148.68039-1-daniele.alessandrelli@linux.intel.com>
+In-Reply-To: <1606805418-4739-1-git-send-email-yejune.deng@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 11:51:46AM +0000, Daniele Alessandrelli wrote:
-> The Intel Keem Bay SoC has an Offload Crypto Subsystem (OCS) featuring a
-> crypto engine for accelerating AES/SM4 operations.
+On Tue, Dec 01, 2020 at 02:50:18PM +0800, Yejune Deng wrote:
+> a set of atomic_inc_return() looks more neater
 > 
-> This driver adds support for such hardware thus enabling hardware
-> acceleration for the following transformations on the Intel Keem Bay SoC:
-> 
-> - ecb(aes), cbc(aes), ctr(aes), cts(cbc(aes)), gcm(aes) and cbc(aes);
->   supported for 128-bit and 256-bit keys.
-> 
-> - ecb(sm4), cbc(sm4), ctr(sm4), cts(cbc(sm4)), gcm(sm4) and cbc(sm4);
->   supported for 128-bit keys.
-> 
-> The driver passes crypto manager self-tests, including the extra tests
-> (CRYPTO_MANAGER_EXTRA_TESTS=y).
-> 
-> Note: this driver is different from the Keem Bay OCS HCU driver previously
-> submitted. Keem Bay OCS HCU provides hardware-accelerated ahash, while
-> Keem Bay AES/SM4 (i.e., this driver) provides hardware-accelerated
-> skcipher and aead.
-> 
-> 
-> Daniele Alessandrelli (1):
->   dt-bindings: Add Keem Bay OCS AES bindings
-> 
-> Mike Healy (1):
->   crypto: keembay-ocs-aes: Add support for Keem Bay OCS AES/SM4
-> 
->  .../crypto/intel,keembay-ocs-aes.yaml         |   45 +
->  MAINTAINERS                                   |   10 +
->  drivers/crypto/Kconfig                        |    2 +
->  drivers/crypto/Makefile                       |    1 +
->  drivers/crypto/keembay/Kconfig                |   39 +
->  drivers/crypto/keembay/Makefile               |    5 +
->  drivers/crypto/keembay/keembay-ocs-aes-core.c | 1713 +++++++++++++++++
->  drivers/crypto/keembay/ocs-aes.c              | 1489 ++++++++++++++
->  drivers/crypto/keembay/ocs-aes.h              |  129 ++
->  9 files changed, 3433 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/crypto/intel,keembay-ocs-aes.yaml
->  create mode 100644 drivers/crypto/keembay/Kconfig
->  create mode 100644 drivers/crypto/keembay/Makefile
->  create mode 100644 drivers/crypto/keembay/keembay-ocs-aes-core.c
->  create mode 100644 drivers/crypto/keembay/ocs-aes.c
->  create mode 100644 drivers/crypto/keembay/ocs-aes.h
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> ---
+>  drivers/crypto/hisilicon/trng/trng.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
 All applied.  Thanks.
 -- 
