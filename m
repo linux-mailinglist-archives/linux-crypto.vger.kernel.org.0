@@ -2,74 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4D52D8599
-	for <lists+linux-crypto@lfdr.de>; Sat, 12 Dec 2020 11:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D90B42D8623
+	for <lists+linux-crypto@lfdr.de>; Sat, 12 Dec 2020 11:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407332AbgLLJyb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 12 Dec 2020 04:54:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58838 "EHLO mail.kernel.org"
+        id S2395183AbgLLK72 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 12 Dec 2020 05:59:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407229AbgLLJy2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 12 Dec 2020 04:54:28 -0500
-X-Gm-Message-State: AOAM531XCqonceRNB/Rx9BFvM75SPj7eexNEcF3GKDZPXepzXuvOLaww
-        NSR5sVMYO+8oiNz5z9ilGFckB0L+7Ta7gug7f1Q=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607765800;
-        bh=nFGtZ/HFEHYfdCjnllpqPiKX/TmzW3TQgjTrncJ6pZQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=baf2PcFhvxCvZxtGrLwrC1ENdEdlbJEQdN/O/ORkF5uxhuXxsSgdSWBiwiSYYWc0B
-         +WoGFHmw4W1eLQsfIs9dX4Cdts/iMIsnXEMgW9Gwby/VqRx+Fy/W6+RsLVnZzADy5q
-         pHm4PzWAiagcz6l+XSxVZL6K/9+chAX1CRSsTfzlERK2YlY3ONuozS8uKKSOy7iN47
-         qX2hQdYYKdfm5u3FD/ZXdYxIgy74pS4x2u3q75HPNSWR19q1BSqEzYrFt2T9llMynM
-         MQC8IjWKoV8kwqgoL6WsX0fbKMRDzXSZ+lX8VP1HJ0LR+rymFCH+EF4O7lMNnrjwu6
-         sNuHHyIwd7leA==
-X-Google-Smtp-Source: ABdhPJyKp2IMSGtwQ8agGmA1yEbsCVDrgQU7NO2o4B7q4Q/kokew7wD2ltF2196c5GcLnIFERGdFU7WlhtQdY1o5Gyc=
-X-Received: by 2002:a05:6830:10d2:: with SMTP id z18mr12824788oto.90.1607765799289;
- Sat, 12 Dec 2020 01:36:39 -0800 (PST)
-MIME-Version: 1.0
-References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com> <X9Ov3RWDpUik7gXo@sol.localdomain>
-In-Reply-To: <X9Ov3RWDpUik7gXo@sol.localdomain>
+        id S2393410AbgLLK71 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 12 Dec 2020 05:59:27 -0500
 From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 12 Dec 2020 10:36:28 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEDjQG_my5FWVY+b7Q43-_waW74sZyBAPCkd7EEdku+Rw@mail.gmail.com>
-Message-ID: <CAMj1kXEDjQG_my5FWVY+b7Q43-_waW74sZyBAPCkd7EEdku+Rw@mail.gmail.com>
-Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        TimGuo-oc@zhaoxin.com, CooperYan@zhaoxin.com,
-        QiyuanWang@zhaoxin.com, HerryYang@zhaoxin.com,
-        CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH] crypto: arm/chacha-neon - add missing counter increment
+Date:   Sat, 12 Dec 2020 09:32:43 +0100
+Message-Id: <20201212083243.27073-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, 11 Dec 2020 at 20:07, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
-> > The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
-> > On platforms with Zhaoxin CPUs supporting this X86 feature, When
-> > crc32c-intel and crc32c-generic are both registered, system will
-> > use crc32c-intel because its .cra_priority is greater than
-> > crc32c-generic. This case expect to use crc32c-generic driver for
-> > some Zhaoxin CPUs to get performance gain, So remove these Zhaoxin
-> > CPUs support from crc32c-intel.
-> >
-> > Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
->
-> Does this mean that the performance of the crc32c instruction on those CPUs is
-> actually slower than a regular C implementation?  That's very weird.
->
+Commit 86cd97ec4b943af3 ("crypto: arm/chacha-neon - optimize for non-block
+size multiples") refactored the chacha block handling in the glue code in
+a way that may result in the counter increment to be omitted when calling
+chacha_block_xor_neon() to process a full block. This violates the API,
+which requires that the output IV is suitable for handling more input as
+long as the preceding input has been presented in round multiples of the
+block size.
 
-This driver does not use CRC instructions, but carryless
-multiplication and aggregation. So I suppose the pclmulqdq instruction
-triggers some pathological performance limitation here.
+So increment the counter after calling chacha_block_xor_neon().
 
-That means the crct10dif driver probably needs the same treatment.
+Fixes: 86cd97ec4b943af3 ("crypto: arm/chacha-neon - optimize for non-block size multiples")
+Reported-by: Eric Biggers <ebiggers@kernel.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ arch/arm/crypto/chacha-glue.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/crypto/chacha-glue.c b/arch/arm/crypto/chacha-glue.c
+index 7b5cf8430c6d..f19e6da8cdd0 100644
+--- a/arch/arm/crypto/chacha-glue.c
++++ b/arch/arm/crypto/chacha-glue.c
+@@ -60,6 +60,7 @@ static void chacha_doneon(u32 *state, u8 *dst, const u8 *src,
+ 		chacha_block_xor_neon(state, d, s, nrounds);
+ 		if (d != dst)
+ 			memcpy(dst, buf, bytes);
++		state[12] += 1;
+ 	}
+ }
+ 
+-- 
+2.17.1
+
