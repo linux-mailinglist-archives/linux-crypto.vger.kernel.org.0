@@ -2,54 +2,55 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2C82D9FBE
-	for <lists+linux-crypto@lfdr.de>; Mon, 14 Dec 2020 19:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D3E2D9E4C
+	for <lists+linux-crypto@lfdr.de>; Mon, 14 Dec 2020 18:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502239AbgLNRha (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 14 Dec 2020 12:37:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
+        id S2502391AbgLNRkH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 14 Dec 2020 12:40:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502234AbgLNRh3 (ORCPT
+        with ESMTP id S2502385AbgLNRjw (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:37:29 -0500
+        Mon, 14 Dec 2020 12:39:52 -0500
 Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8ADC0613D3;
-        Mon, 14 Dec 2020 09:36:49 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id g18so12963721pgk.1;
-        Mon, 14 Dec 2020 09:36:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B3EC0613D3;
+        Mon, 14 Dec 2020 09:39:12 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id n7so12972781pgg.2;
+        Mon, 14 Dec 2020 09:39:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nIxWbfqFOleWxwNOOiq4EtbmkLWUxGq4z32hr/W7g/A=;
-        b=HcobUZv+dTiBCuFfvd9S2x5CE0T4gbdMiVs3UB8WXpdWmMW9iGP71Glr8KE3OlqRPV
-         XHCy/ZfeZntHDCzc4dZMaTIAk3nmlflqzkfMlb87gCcNh+X3zxyQa1gQioi/h1D0MLWp
-         ltfuVaY2QtXVFKu6/ujLdD4xErpkMSRp+ZPuS/gYnwCTDrd6hJxw4qTwU9iwVl6J51NF
-         2w6jC8azYmuSXEiLG70PxghCz26KdiDj3YL5cwSkYWqIsnt5RehYtt7NTGFDWtBdv352
-         2j7jzEvBS1JZCg+rQuzGIqh7U6sALGTXu6brcLYnOd8W/QLUrTqbQAu9YHzYrAKjpQ9N
-         n56Q==
+        bh=1JzYtBCWnpdNwjDUFu4kFxP+3W76N3GrA7cNrIJK+a4=;
+        b=hQCBRxOzRgHipNHZI21ke46+6EM9v26V4gz5LTVKdtYsXjOaKurKrC2LHuN3prTyNq
+         b7VoEybS2lvMNl62ZQHuK9FAY9LLpViIp10033UtpUpwGdMu+N0vaKt5EI/goIsjQSok
+         h5yhe3HMp3uhtWG6H+S7yEV6F++TiC8OaBEF3D1gslro8w8RV9atk4pSMoccPR8FK9Q+
+         Y7P7VWg95RnFtfd1W6wL2t6CGn/PADgWU5Fg0/tYEF+4C8Cah1SlwUj98ORPmw/3Tjr/
+         vQvMdwJTOw2vAnj1z7/WK8KuACl7QHTmrZW8hzd7R9S4NuaSLxlftAd1L22qh3oY2YVJ
+         l3aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=nIxWbfqFOleWxwNOOiq4EtbmkLWUxGq4z32hr/W7g/A=;
-        b=n4CgPK78/CArazMt3xspimOErLX0P+tjaP6N2G55v+9Qj3Q8LRPY8j2HewJ1A0k8BS
-         cKvfDXFyI7u3GSxduEzBoZEebhwBIkzXPfZj9Wa+FHBEk5/oEWzBNqoBSpozJtYsrgyL
-         0V8H3sZghMV6sPiLCi4FX492Q+waFakNz+6FCQSSdcbxpxJ3px5OE4/wNcU1Cb6NITRA
-         c+Ev2NvXmsTxJXPbvNK1kvhT1tJceiVG7VgwTkLIZhys8cPAp/qv50ChAwGTW33+zWkw
-         rdCTAY6yTBkNXs49GgEZHp2/TGWQV9YJqtjkvUuqqGijymZxTWBBYrfIJyjdkAC4TmrL
-         I56w==
-X-Gm-Message-State: AOAM530Fn091EsJFkKPHkPnocxiJV6h7XrBO7kVpXV8oNZx5FhJItyj0
-        WhB4sjLX8waKHZ9xq/MfvO/YbtcUkxI=
-X-Google-Smtp-Source: ABdhPJxWpPT5a/HyQMjeX4OkL2YwK/blYSOVzjYRu4XdFW9S0NUhkq3Mp5GixYLpblSNM52Lm6Odkw==
-X-Received: by 2002:a65:5bcd:: with SMTP id o13mr25355661pgr.81.1607967408689;
-        Mon, 14 Dec 2020 09:36:48 -0800 (PST)
+        bh=1JzYtBCWnpdNwjDUFu4kFxP+3W76N3GrA7cNrIJK+a4=;
+        b=iqQl3oxf6bNLgeWtYr85PaX69sEHJmyJqFzWNOJQszSoKCF7FfJCNZ4BjZAw4fktRn
+         LpWHi0+q52kgZXQUqXUZdqn4aTQc/0zbk88f5bbJe6fahnkmmLJ0tzkGs0Vj4ZaQRwBp
+         IpU2rTV8MjfoiddjJ0dIrhSClwpiO/TAYbn5r4W0+GnQOpzam2iWdgSA0crrL0kodLP+
+         tP/Hy0T0FRsYNVZxov7eypNq21M0SbSzKZ8Vr+hHwoXMHOfohf3DtnvNii4wP1wX2Qbx
+         UolG0FB3NTkOlUU3tsa5jXhy6k3vd2wADq06GHSoO4MhtHNMZJLO583/nAX17CgmmbMl
+         b6fQ==
+X-Gm-Message-State: AOAM531GisM9K+2g+rh22n8OCmxRZqQ62tg1wklEw0rvtOgrTskG85Pv
+        fg3Io4SNnihx/18gXgHA+cA=
+X-Google-Smtp-Source: ABdhPJzaZav5Hpv0qTgheQoiKVNuYWjMPzKERzNsKfL+LCm4DzE1rmM6fRt3LwC49BAQ5zt1bBIGZg==
+X-Received: by 2002:a62:3047:0:b029:197:6ca1:24de with SMTP id w68-20020a6230470000b02901976ca124demr24544428pfw.8.1607967552094;
+        Mon, 14 Dec 2020 09:39:12 -0800 (PST)
 Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id ev23sm17261664pjb.24.2020.12.14.09.36.41
+        by smtp.googlemail.com with ESMTPSA id 123sm20473111pgh.21.2020.12.14.09.39.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Dec 2020 09:36:47 -0800 (PST)
-Subject: Re: [PATCH 1/2] hwrng: iproc-rng200: Fix disable of the block.
+        Mon, 14 Dec 2020 09:39:11 -0800 (PST)
+Subject: Re: [PATCH 2/2] hwrng: iproc-rng200: Move enable/disable in separate
+ function
 To:     matthias.bgg@kernel.org, mpm@selenic.com,
         herbert@gondor.apana.org.au, rjui@broadcom.com,
         sbranden@broadcom.com, f.fainelli@gmail.com
@@ -58,6 +59,7 @@ Cc:     linux-kernel@vger.kernel.org, Julia.Lawall@inria.fr,
         linux-arm-kernel@lists.infradead.org, nsaenzjulienne@suse.de,
         linux-crypto@vger.kernel.org, Matthias Brugger <mbrugger@suse.com>
 References: <20201214160454.22769-1-matthias.bgg@kernel.org>
+ <20201214160454.22769-2-matthias.bgg@kernel.org>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  mQGiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -113,12 +115,12 @@ Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  caxTGgc5zzQHeX67eMzrGomG3ZnIxmd1sAbgvJUDaD2GrYlulfwGWwWyTNbWRvMighVdPkSF
  6XFgQaosWxkV0OELLy2N485YrTr2Uq64VKyxpncLh50e2RnyAJ9Za0Dx0yyp44iD1OvHtkEI
  M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <66f1721d-968e-8b2c-386d-cfe97910fe3b@gmail.com>
-Date:   Mon, 14 Dec 2020 09:36:37 -0800
+Message-ID: <55db8315-77b4-da25-9f28-0a0b55cebf3f@gmail.com>
+Date:   Mon, 14 Dec 2020 09:39:01 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201214160454.22769-1-matthias.bgg@kernel.org>
+In-Reply-To: <20201214160454.22769-2-matthias.bgg@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -129,13 +131,40 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 On 12/14/20 8:04 AM, matthias.bgg@kernel.org wrote:
 > From: Matthias Brugger <mbrugger@suse.com>
 > 
-> When trying to disable the block we bitwise or the control
-> register with value zero. This will leave the block always turned on.
-> Fix this by setting the corresponding bit to zero.
+> We are calling the same code for enable and disable the block in various
+> parts of the driver. Put that code into a new function to reduce code
+> duplication.
 > 
-> Fixes: c83d45d5685f ("hwrng: iproc-rng200 - Add Broadcom IPROC RNG driver")
 > Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+> 
+> ---
+> 
+>  drivers/char/hw_random/iproc-rng200.c | 37 ++++++++++++---------------
+>  1 file changed, 17 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/char/hw_random/iproc-rng200.c b/drivers/char/hw_random/iproc-rng200.c
+> index e106ce3c0146..3367b26085e8 100644
+> --- a/drivers/char/hw_random/iproc-rng200.c
+> +++ b/drivers/char/hw_random/iproc-rng200.c
+> @@ -53,15 +53,26 @@ struct iproc_rng200_dev {
+>  
+>  #define to_rng_priv(rng)	container_of(rng, struct iproc_rng200_dev, rng)
+>  
+> -static void iproc_rng200_restart(void __iomem *rng_base)
+> +static void iproc_rng200_enable(void __iomem *rng_base, bool enable)
+
+I would prefer naming the function iproc_rng200_enable_set() to indicate
+that it sets the enable to the parameter value, this is just personal
+taste, you may discard it.
+
+>  {
+>  	uint32_t val;
+
+Since you are refactoring this into a new function, do you mind changing
+the variable to u32 to match the kernel code? With that fixed:
 
 Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+
+Thanks!
 -- 
 Florian
