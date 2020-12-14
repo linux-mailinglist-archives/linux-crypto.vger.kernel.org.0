@@ -2,181 +2,132 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B076F2D95D1
-	for <lists+linux-crypto@lfdr.de>; Mon, 14 Dec 2020 11:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 100752D962E
+	for <lists+linux-crypto@lfdr.de>; Mon, 14 Dec 2020 11:15:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406380AbgLNKFC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 14 Dec 2020 05:05:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27968 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406164AbgLNKEq (ORCPT
+        id S1726329AbgLNKO2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 14 Dec 2020 05:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727840AbgLNKOZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:04:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607940199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=yJ53/DNAVbjiqqhCO/hzm6oL/uzwR3mDMF7d+PeaBIM=;
-        b=NyDiU+cqZ7gVS5ICSgcRfhwMDTBrh2PY1sx4bZoAtNwI7ONB6Q9kBo3queibeUzERkL7+Z
-        nHyxr4d3UuarSLtw49V2NEzhqwV8V0r920R559hgIJyYDHsvUcJ1UQUMIEH/X4Q601NJbK
-        MF8ZFG5YaOo6ANzjOE2ySe6PGw9a1us=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-474-F0AQXuaSMLaHCptt73k5YA-1; Mon, 14 Dec 2020 05:03:15 -0500
-X-MC-Unique: F0AQXuaSMLaHCptt73k5YA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A895190A7A3;
-        Mon, 14 Dec 2020 10:03:13 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E4752BCE6;
-        Mon, 14 Dec 2020 10:03:07 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-To:     torvalds@linux-foundation.org
-cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Ben Boeckel <mathstuf@gmail.com>,
-        Denis Efremov <efremov@linux.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jann Horn <jannh@google.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Tom Rix <trix@redhat.com>, YueHaibing <yuehaibing@huawei.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: [GIT PULL] keys: Collected minor fixes and cleanups
+        Mon, 14 Dec 2020 05:14:25 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547DCC0613CF
+        for <linux-crypto@vger.kernel.org>; Mon, 14 Dec 2020 02:13:37 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id cw27so16565142edb.5
+        for <linux-crypto@vger.kernel.org>; Mon, 14 Dec 2020 02:13:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mccsd.net; s=google;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=kuMuD6xCyI8JJbPCHEa0qMg6IeSzYUjw0C5u83DZV88=;
+        b=SlDMOOM6wnCU1Tky6IqjdLeLuS34RiecUEZpo/LdH7SiSBjwqrXBoa+lvRN/Bx7IND
+         KAapElQsV9Fk3jqJM85oFzDHnr6urKovBAlEXe+SONs1HwbdRxiF0vhDpT18AY05oDEv
+         b3ep100CxLohAQUp3ZrQQ7AXMj2FwIwEPgw7ntOH7QzUcBM8Eoq+CDSIf8MxWm1JlCcP
+         MevfN3vgantnTKxVz8vOESQ7N+cwHJCzUzLinFpXAYrbQjjsBGOpM2lFav5q06s8DCvJ
+         X2/dSBHjxxUAj+iGuQmsrd2oBuJhuXMZKVKAe98/wzxgESludY89KjkLawfh96sXYJcH
+         cC6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=kuMuD6xCyI8JJbPCHEa0qMg6IeSzYUjw0C5u83DZV88=;
+        b=TUEP+BUDIBosIE53pXi2VRo/tw3QPa1IU3mx54fouJYq7MhDLVHiKAZeV/tMkyvNqb
+         PEj6LRf17+Ra4BVP6vxxIASLLzSkfMdR5/JV7Vukl2NzpYsnIYXC8RSvzdlStk9B08KC
+         phwAm9xMmaQBPZkuEbLHwakosxHbIbN6EPVxEfyy7j0IExqA3LWGdYa/pGSLL6Pphz8M
+         khI+KFUPwk4sz2qVCb0uAEdsXRSmDtDofs6p/ZmDK4fp4rOdWF0AZvdKAQ5OQ7FOXWI4
+         rm/3sUHZzNBubvZwMcP77vMagD+QzBI+1H2rknjoEcv55ZlkdMup5jbXEjdZoEtg8O6q
+         WJoA==
+X-Gm-Message-State: AOAM533ooLssRbREy05KFsQ8DscRKlnny1Jm5V8NK60LEUMXUoMhwxAV
+        ugbNgDu27IkGkvWP9cENEfqRN8mk5q/KyRAE513v5Q==
+X-Google-Smtp-Source: ABdhPJzaU6i1iXB2FQvN/ewfq+zvmfwLvwJBFTqOBNBVF/aB1UxlWUUwpWW9UB3cjYjAicJlgZZBELTI42vyOLXkkDs=
+X-Received: by 2002:aa7:cd84:: with SMTP id x4mr23270403edv.192.1607940815571;
+ Mon, 14 Dec 2020 02:13:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Received: by 2002:a17:906:7e51:0:0:0:0 with HTTP; Mon, 14 Dec 2020 02:13:34
+ -0800 (PST)
+Reply-To: abderazackzebdani11@yandex.com
+From:   ABDERAZACK ZEBDANI <ekenned542@mccsd.net>
+Date:   Mon, 14 Dec 2020 02:13:34 -0800
+Message-ID: <CABnRa7vTCkrm8ovTGAijMQ1r68ZarKB_PB63Ta15t=NOmn-XYQ@mail.gmail.com>
+Subject: Greetings My Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-From:   David Howells <dhowells@redhat.com>
-Date:   Mon, 14 Dec 2020 10:03:06 +0000
-Message-ID: <2659836.1607940186@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Greetings My Dear Friend,
 
-Hi Linus,
+Before I introduce myself, I wish to inform you that this letter is
+not a hoax mail and I urge you to treat it serious.This letter must
+come to you as a big surprise, but I believe it is only a day that
+people meet and become great friends and business partners. Please I
+want you to read this letter very carefully and I must apologize for
+barging this message into your mail box without any formal
+introduction due to the urgency and confidentiality of this business
+and I know that this message will come to you as a surprise. Please
+this is not a joke and I will not like you to joke with it ok,With due
+respect to your person and much sincerity of purpose, I make this
+contact with you as I believe that you can be of great assistance to
+me. My name is Mr.Abderazack zebdani, from Burkina Faso, West Africa.
+I work in Bank Of Africa (BOA) as telex manager, please see this as a
+confidential message and do not reveal it to another person and let me
+know whether you can be of assistance regarding my proposal below
+because it is top secret.
 
-Here's a set of minor fixes/cleanups that I've collected from various
-people for the next merge window.
+I am about to retire from active Banking service to start a new life
+but I am skeptical to reveal this particular secret to a stranger. You
+must assure me that everything will be handled confidentially because
+we are not going to suffer again in life. It has been 10 years now
+that most of the greedy African Politicians used our bank to launder
+money overseas through the help of their Political advisers. Most of
+the funds which they transferred out of the shores of Africa were gold
+and oil money that was supposed to have been used to develop the
+continent. Their Political advisers always inflated the amounts before
+transferring to foreign accounts, so I also used the opportunity to
+divert part of the funds hence I am aware that there is no official
+trace of how much was transferred as all the accounts used for such
+transfers were being closed after transfer. I acted as the Bank
+Officer to most of the politicians and when I discovered that they
+were using me to succeed in their greedy act; I also cleaned some of
+their banking records from the Bank files and no one cared to ask me
+because the money was too much for them to control. They laundered
+over $5billion Dollars during the process.
 
-A couple of them might, in theory, be visible to userspace:
+Before I send this message to you, I have already diverted
+($10.5million Dollars) to an escrow account belonging to no one in the
+bank. The bank is anxious now to know who the beneficiary to the funds
+is because they have made a lot of profits with the funds. It is more
+than Eight years now and most of the politicians are no longer using
+our bank to transfer funds overseas. The ($10.5million Dollars) has
+been laying waste in our bank and I don=E2=80=99t want to retire from the b=
+ank
+without transferring the funds to a foreign account to enable me share
+the proceeds with the receiver (a foreigner). The money will be shared
+60% for me and 40% for you. There is no one coming to ask you about
+the funds because I secured everything. I only want you to assist me
+by providing a reliable bank account where the funds can be
+transferred.
 
- (*) Make blacklist_vet_description() reject uppercase letters as they
-     don't match the all-lowercase hex string generated for a blacklist
-     search.
-
-     This may want reconsideration in the future, but, currently, you can't
-     add to the blacklist keyring from userspace and the only source of
-     blacklist keys generates lowercase descriptions.
-
- (*) Fix blacklist_init() to use a new KEY_ALLOC_* flag to indicate that it
-     wants KEY_FLAG_KEEP to be set rather than passing KEY_FLAG_KEEP into
-     keyring_alloc() as KEY_FLAG_KEEP isn't a valid alloc flag.
-
-     This isn't currently a problem as the blacklist keyring isn't
-     currently writable by userspace.
-
-The rest of the patches are cleanups and I don't think they should have any
-visible effect.
-
-David
----
-The following changes since commit 85a2c56cb4454c73f56d3099d96942e7919b292f:
-
-  Merge tag 'pm-5.10-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/=
-rafael/linux-pm (2020-11-26 11:17:37 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/=
-keys-fixes-20201214
-
-for you to fetch changes up to 1b91ea77dfeb2c5924ab940f2e43177c78a37d8f:
-
-  certs: Replace K{U,G}IDT_INIT() with GLOBAL_ROOT_{U,G}ID (2020-12-10 09:2=
-4:43 +0000)
-
-----------------------------------------------------------------
-Keys fixes
-
-----------------------------------------------------------------
-Alex Shi (2):
-      PKCS#7: drop function from kernel-doc pkcs7_validate_trust_one
-      certs/blacklist: fix kernel doc interface issue
-
-Alexander A. Klimov (1):
-      encrypted-keys: Replace HTTP links with HTTPS ones
-
-David Howells (1):
-      certs: Fix blacklist flag type confusion
-
-Denis Efremov (1):
-      security/keys: use kvfree_sensitive()
-
-Gabriel Krisman Bertazi (1):
-      watch_queue: Drop references to /dev/watch_queue
-
-Gustavo A. R. Silva (1):
-      security: keys: Fix fall-through warnings for Clang
-
-Jann Horn (1):
-      keys: Remove outdated __user annotations
-
-Krzysztof Kozlowski (1):
-      KEYS: asymmetric: Fix kerneldoc
-
-Micka=C3=ABl Sala=C3=BCn (3):
-      certs: Fix blacklisted hexadecimal hash string check
-      PKCS#7: Fix missing include
-      certs: Replace K{U,G}IDT_INIT() with GLOBAL_ROOT_{U,G}ID
-
-Randy Dunlap (2):
-      security: keys: delete repeated words in comments
-      crypto: asymmetric_keys: fix some comments in pkcs7_parser.h
-
-Tianjia Zhang (1):
-      crypto: public_key: Remove redundant header file from public_key.h
-
-Tom Rix (2):
-      KEYS: remove redundant memset
-      keys: remove trailing semicolon in macro definition
-
-YueHaibing (1):
-      crypto: pkcs7: Use match_string() helper to simplify the code
-
- Documentation/security/keys/core.rst     |  4 ++--
- certs/blacklist.c                        | 10 +++++-----
- certs/system_keyring.c                   |  5 +++--
- crypto/asymmetric_keys/asymmetric_type.c |  6 ++++--
- crypto/asymmetric_keys/pkcs7_parser.h    |  5 ++---
- crypto/asymmetric_keys/pkcs7_trust.c     |  2 +-
- crypto/asymmetric_keys/pkcs7_verify.c    |  9 ++++-----
- include/crypto/public_key.h              |  1 -
- include/keys/encrypted-type.h            |  2 +-
- include/linux/key.h                      |  5 +++--
- include/linux/verification.h             |  2 ++
- samples/Kconfig                          |  2 +-
- samples/watch_queue/watch_test.c         |  2 +-
- security/integrity/ima/ima_mok.c         |  3 +--
- security/keys/Kconfig                    |  8 ++++----
- security/keys/big_key.c                  |  9 +++------
- security/keys/key.c                      |  2 ++
- security/keys/keyctl.c                   |  2 +-
- security/keys/keyctl_pkey.c              |  2 --
- security/keys/keyring.c                  | 10 +++++-----
- security/keys/process_keys.c             |  1 +
- 21 files changed, 46 insertions(+), 46 deletions(-)
-
+You are not to face any difficulties or legal implications as I am
+going to handle the transfer personally. If you are capable of
+receiving the funds, do let me know immediately to enable me give you
+a detailed information on what to do. For me, I have not stolen the
+money from anyone because the other people that took the whole money
+did not face any problems. This is my chance to grab my own life
+opportunity but you must keep the details of the funds secret to avoid
+any leakages as no one in the bank knows about my plans.Please get
+back to me if you are interested and capable to handle this project, I
+shall intimate you on what to do when I hear from your confirmation
+and acceptance.If you are capable of being my trusted associate, do
+declare your consent to me I am looking forward to hear from you
+immediately for further information. Kindly reply this email (
+abderazackzebdani11@yandex.com)
+Thanks with my best regards.
+Mr.Abderazack zebdani.
+Telex Manager
+Bank Of Africa (BOA)
+Burkina Faso.
