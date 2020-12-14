@@ -2,52 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0E22D9BBC
-	for <lists+linux-crypto@lfdr.de>; Mon, 14 Dec 2020 17:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33ABD2D9BED
+	for <lists+linux-crypto@lfdr.de>; Mon, 14 Dec 2020 17:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439759AbgLNQFk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 14 Dec 2020 11:05:40 -0500
-Received: from server.kenspensetc.com ([185.148.128.76]:48008 "EHLO
-        server.kenspensetc.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439358AbgLNQFj (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:05:39 -0500
-Received: from localhost ([127.0.0.1]:47936 helo=server.kenspensetc.com)
-        by server.kenspensetc.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <sender@ridecals.com>)
-        id 1knLn0-00029V-6J; Thu, 10 Dec 2020 08:15:22 -0500
-Received: from [70.32.0.46] ([70.32.0.46]) by ridecals.com (Horde Framework)
- with HTTPS; Thu, 10 Dec 2020 08:15:22 -0500
-Date:   Thu, 10 Dec 2020 08:15:22 -0500
-Message-ID: <20201210081522.Horde.GEA1j18D53oi4VTUxYWD_87@ridecals.com>
-From:   Russell Branting <sender@ridecals.com>
-Subject: Vital
-Reply-to: Goodagent01@gmail.com
-User-Agent: Horde Application Framework 5
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+        id S1730647AbgLNQGW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 14 Dec 2020 11:06:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2440057AbgLNQFn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 14 Dec 2020 11:05:43 -0500
+From:   matthias.bgg@kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     mpm@selenic.com, herbert@gondor.apana.org.au, rjui@broadcom.com,
+        sbranden@broadcom.com, f.fainelli@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Julia.Lawall@inria.fr,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, nsaenzjulienne@suse.de,
+        linux-crypto@vger.kernel.org, Matthias Brugger <mbrugger@suse.com>
+Subject: [PATCH 1/2] hwrng: iproc-rng200: Fix disable of the block.
+Date:   Mon, 14 Dec 2020 17:04:53 +0100
+Message-Id: <20201214160454.22769-1-matthias.bgg@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Disposition: inline
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server.kenspensetc.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - ridecals.com
-X-Get-Message-Sender-Via: server.kenspensetc.com: authenticated_id: sender9@ridecals.com
-X-Authenticated-Sender: server.kenspensetc.com: sender9@ridecals.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+From: Matthias Brugger <mbrugger@suse.com>
 
-I am instructed to inform you of your appointment as the next of kin  
-to your deceased relative estate. Kindly indicate your acceptance by  
-reconfirming your Full Name, Address & Phone Number for immediate  
-processing of the funds release to your control OR the deceased  
-deposited funds will be declared unclaimed.
+When trying to disable the block we bitwise or the control
+register with value zero. This will leave the block always turned on.
+Fix this by setting the corresponding bit to zero.
 
+Fixes: c83d45d5685f ("hwrng: iproc-rng200 - Add Broadcom IPROC RNG driver")
+Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+---
+
+ drivers/char/hw_random/iproc-rng200.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/char/hw_random/iproc-rng200.c b/drivers/char/hw_random/iproc-rng200.c
+index 01583faf9893..e106ce3c0146 100644
+--- a/drivers/char/hw_random/iproc-rng200.c
++++ b/drivers/char/hw_random/iproc-rng200.c
+@@ -28,7 +28,6 @@
+ #define RNG_CTRL_OFFSET					0x00
+ #define RNG_CTRL_RNG_RBGEN_MASK				0x00001FFF
+ #define RNG_CTRL_RNG_RBGEN_ENABLE			0x00000001
+-#define RNG_CTRL_RNG_RBGEN_DISABLE			0x00000000
+ 
+ #define RNG_SOFT_RESET_OFFSET				0x04
+ #define RNG_SOFT_RESET					0x00000001
+@@ -61,7 +60,7 @@ static void iproc_rng200_restart(void __iomem *rng_base)
+ 	/* Disable RBG */
+ 	val = ioread32(rng_base + RNG_CTRL_OFFSET);
+ 	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+-	val |= RNG_CTRL_RNG_RBGEN_DISABLE;
++	val &= ~RNG_CTRL_RNG_RBGEN_ENABLE;
+ 	iowrite32(val, rng_base + RNG_CTRL_OFFSET);
+ 
+ 	/* Clear all interrupt status */
+@@ -174,7 +173,7 @@ static void iproc_rng200_cleanup(struct hwrng *rng)
+ 	/* Disable RNG hardware */
+ 	val = ioread32(priv->base + RNG_CTRL_OFFSET);
+ 	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+-	val |= RNG_CTRL_RNG_RBGEN_DISABLE;
++	val &= ~RNG_CTRL_RNG_RBGEN_ENABLE;
+ 	iowrite32(val, priv->base + RNG_CTRL_OFFSET);
+ }
+ 
+-- 
+2.29.2
 
