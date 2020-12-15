@@ -2,606 +2,144 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A7C2DB742
-	for <lists+linux-crypto@lfdr.de>; Wed, 16 Dec 2020 01:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 499062DB758
+	for <lists+linux-crypto@lfdr.de>; Wed, 16 Dec 2020 01:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725846AbgLPABg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 15 Dec 2020 19:01:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725877AbgLOXz0 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 15 Dec 2020 18:55:26 -0500
-From:   Eric Biggers <ebiggers@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-crypto@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Sterba <dsterba@suse.com>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Paul Crowley <paulcrowley@google.com>
-Subject: [PATCH 5/5] crypto: arm/blake2b - add NEON-optimized BLAKE2b implementation
-Date:   Tue, 15 Dec 2020 15:47:08 -0800
-Message-Id: <20201215234708.105527-6-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201215234708.105527-1-ebiggers@kernel.org>
-References: <20201215234708.105527-1-ebiggers@kernel.org>
+        id S1725953AbgLPABc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 15 Dec 2020 19:01:32 -0500
+Received: from mail-eopbgr670044.outbound.protection.outlook.com ([40.107.67.44]:32288
+        "EHLO CAN01-TO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725783AbgLOXyX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 15 Dec 2020 18:54:23 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oJBnPaSkpAmRK0QyC9OhYRDvrz8oHAo4B8ZsUoF76IEgU6huvpgPBGD/bzGZN/8vk7xzJWAJKrofsXLyOmcHRuY3F1vWrRUVaUAapCanpJuqkVqJU3JpgEnoAIr8hLxsfxFEK27ZudfW4Cp8FCHSaCX1W8zYERuDFvbTy1x0BG4dVYJC2mDvPyz2DMnh8/RlvdNoY0RMaZwW5lMRj3o2lsaFj4eastDBkp4DGKYiraTGADG1CRHnvengr4C1jVCyBuxktLYMsMh7wH2Bdrq7j5kgbw6QU7D72KHfm5gtz81XhaQ1U3gD34dSI99cWNQUyNSKMaBneb4rQGBsy+HNEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZeRT43FzFpO5xxFh0Dia+10iPLx7RH4JqsSXH9iNi5k=;
+ b=Yeum0DogLZ7jE7L/gqa2SlOqfC4Iybqy1nJAY2U8G4IJC4muGwA0JJ8qLTX2MizeMBv4zNixGI75f744V1CHqWXi+PYOzpihhYwBQta8mUduppkcwjgUWt0n7w6UBLX6fy5cmZakbpssDVGQ5lsMkniyF7PXbXGAhWfRHSCLRiOOf4QUAXivXBnThU7Jp6GI8E5+EzEtJq0z3tNbLajdT363lH294mc+alEFPfi0e7HL7G0y+QEEYBc9/cZqt6I7SMiJzvRlNsZMPErC/eYmslXdtb0FyiPFzXkFS8xTUmXJE+iQbYsnoMCvLMTXOUGF3vRYBJ9nnfOOxHgpRJ2+EA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=calian.com; dmarc=pass action=none header.from=calian.com;
+ dkim=pass header.d=calian.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=calian.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZeRT43FzFpO5xxFh0Dia+10iPLx7RH4JqsSXH9iNi5k=;
+ b=M+Di0pfcr6uelb4XiBch4dCoTxpYbsYgjOgmCvc9ZXpqm1O6ONqCucVVprQ5pVIBGE1hhDpMVV5M7/aNQUyOA7Xv3EX4jCVzeMn9h0t1o14GF8OUFbuXe2AJxOvn749ryWqjNP18iCrmfhrgE8P38/q0kbG21Bi3E5AAX2XBuNI=
+Received: from YT1PR01MB3546.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:f::20)
+ by YT1PR01MB2858.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:1::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Tue, 15 Dec
+ 2020 23:53:40 +0000
+Received: from YT1PR01MB3546.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::dd1e:eba1:8e76:470b]) by YT1PR01MB3546.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::dd1e:eba1:8e76:470b%7]) with mapi id 15.20.3654.025; Tue, 15 Dec 2020
+ 23:53:40 +0000
+From:   Robert Hancock <robert.hancock@calian.com>
+To:     "aymen.sghaier@nxp.com" <aymen.sghaier@nxp.com>,
+        "horia.geanta@nxp.com" <horia.geanta@nxp.com>
+CC:     "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Subject: Re: iMX6D CAAM RNG problems in v5.10.1
+Thread-Topic: iMX6D CAAM RNG problems in v5.10.1
+Thread-Index: AQHW0zpjFR0LJiIzBUi6UNkHbuSSeKn41JEA
+Date:   Tue, 15 Dec 2020 23:53:40 +0000
+Message-ID: <d5e46cd91e6f64575cb3c731643f596379c42726.camel@calian.com>
+References: <00b1daa3cbd4b9eada873e5ef95f89fd2e5cee87.camel@calian.com>
+In-Reply-To: <00b1daa3cbd4b9eada873e5ef95f89fd2e5cee87.camel@calian.com>
+Accept-Language: en-CA, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=calian.com;
+x-originating-ip: [204.83.154.189]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 142ced70-49f1-4f83-cf5e-08d8a154a5ee
+x-ms-traffictypediagnostic: YT1PR01MB2858:
+x-microsoft-antispam-prvs: <YT1PR01MB2858EDCBDDB4DD1A13867E52ECC60@YT1PR01MB2858.CANPRD01.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Mufcb0EEXBuk1P8ScwqTTO3DGCfaTlMYB8xdETTI6OeJHRUeTkn1EH4EJtliToUb/PforZA1BJbtyCTlBAOIQKai1cqL5SzJKqxc81qmDw6u9Yk3LbCeJ3CDC5YVpZSdEDuf0+tjngun6+enAnpIhBo8pFUkyAhibKH6mLCpiOlrKpGoJRUhc3UiAo0fyacNuJ5K+tLXyNFh016FXIcAIL86kLh9YmTuTQ51r0KvTIzA+hCYIAwwsSLuTFZin+dTnT+kvRLjJDbccnQhxjoqbxyQUfSFz/WRW9unHZFqt22rrHKCo1jWDUywH680IRDHaK1Zhrj4Sn5Ti6VyoQdih80CUxDg5+HMWM+8Wi0mqyUWeG79xB8XRbu+YAiphGLGuph68fEC+trs121HxlbVwA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT1PR01MB3546.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(39830400003)(376002)(136003)(6486002)(86362001)(316002)(26005)(76116006)(478600001)(2906002)(110136005)(186003)(54906003)(36756003)(83380400001)(6512007)(5660300002)(66446008)(64756008)(66556008)(8676002)(66946007)(66476007)(4326008)(44832011)(8936002)(71200400001)(4001150100001)(2616005)(6506007)(99106002)(32563001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?NUsrSmhCcS9sZGIwRm9Zc3JuOVlLaHJNbURLeTZFWTdTenk0RnE4T3g3VHVv?=
+ =?utf-8?B?ZXRteHVtMGZTWEloS0Q4WksxVVJPNXJqL0lKbzNEaFVSQmVCWG9qWGtQN2dC?=
+ =?utf-8?B?L0NBMVBJOXc1b0ZwV2pldUMvVkM1czgzcHJSYlAyMFp6cXZmaUloQ2ZaQXNF?=
+ =?utf-8?B?UVltUXZTRHRlWnJlK3ZKZmVDRDl5TkhNc1BkTWVpZGNpdE1NUUl0SXozdytN?=
+ =?utf-8?B?Wmt2MERjeHAybklROS82bEczVDFsT2hYSXhueVNmM0RURlJRdGpMbXJyVkc3?=
+ =?utf-8?B?Rkh3YWc5MjFQOG1ZZm0vdkdsNDA4Tk5OVmpXWTFiajhqUUl1ZkNIT2Iwdy9k?=
+ =?utf-8?B?a0NjcjVGWVh2ZFpxWk5vblByMWZaN2RSQlBmTWdaMTVXRUVyRk1PZkpHR29o?=
+ =?utf-8?B?ZGsyK3pNc3pjRG15UkxSdlU2R2tSTXg0Uy91SXhVcUR0dmp6TDljWUdOTlI5?=
+ =?utf-8?B?OXRJV3NucHZhNHphM0NEQTd5SThGSU14U3QvTDdmU28yWXd2bFFxM2VyZzdS?=
+ =?utf-8?B?VUtzZjhhbWZLbXRzSjFqUU9CejBXZ1I0YS90aWdTcmpuNXo3N1lBa3ArZnBr?=
+ =?utf-8?B?WTgyYmU1U3o4SHZ1TExBSDNhSktqMDdZRDlPaWdpUTRBZVNsdjM0UVUrVnkr?=
+ =?utf-8?B?VE1MNmh1cTVObG9DdE5TUlBFYzZHejRDTU80M3V0VW8zK1o0Z3pXemhhMDZi?=
+ =?utf-8?B?R3dGRGlaSXQ3UEpybk10cVVpQ0hpVFI5RDliYmN2My9YVURVdWNLc1JndW5T?=
+ =?utf-8?B?Y1FkTm1XUmtZN1dVdEhYMDJ3RE1XNldwVkhzSVpGbGd0V0Z2OHRUSmhtWlg0?=
+ =?utf-8?B?RXJBaDR4N1lXdlVVSWNacmNnajRFOTA0Qm1MVURqWFloYzhudU54amhXampr?=
+ =?utf-8?B?eVlzUUs3Qk1FQmhpWnBDM01GWDBsNGp1U25qUzlQNDMwcFFiLzBpTVB3VHVa?=
+ =?utf-8?B?dHI1a0FhVVVXa1FhSWVwcHpRdzdObVFwYjRSeVZNUlJOZkV3TmllbWY2cVM5?=
+ =?utf-8?B?SHhnalFmdjFjekpkS3Y0cFNVSXk2K29jOXEydkFOcEY0M2lFZDJScENLY0pC?=
+ =?utf-8?B?cVJ5WVJDWUlaNTJBZXlvcGxuNi9oUWdQSTd0cFRwMUFVVDRPdG1tdVJzRklY?=
+ =?utf-8?B?L3NmR2tXcVg4dnQ1bmFKSjQ1SnNUOFNnaURZd0N6OVlBUVZUa3h3NGwrcG83?=
+ =?utf-8?B?dU1mVVlQeTA2RDA3WURYRVhNZWlaZ3ZkQ1hOUWNKeWgwV1hUZzFGZ0tXN1cx?=
+ =?utf-8?B?amo0akEvalJpME8wMDQ2VkRwcklka0Q0L3NVTjhSTGNjZ2VQRDZmam1XVDg4?=
+ =?utf-8?Q?T2EedjKNf1FKY7kF6beD1Tmw9OsTdiU4AT?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <037EF0ADCE3633409AF8A44A6EFEBC05@CANPRD01.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: calian.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: YT1PR01MB3546.CANPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 142ced70-49f1-4f83-cf5e-08d8a154a5ee
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2020 23:53:40.5271
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 23b57807-562f-49ad-92c4-3bb0f07a1fdf
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xpF8fqKWuQBYXI3Mxbn2uw+6vjDAYPQMgnVrNQ/Ma0ukcPLTnKBvosFJNq9VmEmCjnUBkw8tqpyeZF9wn0mjJqIniOFp4ThUOtUH5pDkrME=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: YT1PR01MB2858
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
-
-Add a NEON-optimized implementation of BLAKE2b.
-
-On Cortex-A7 (which these days is the most common ARM processor that
-doesn't have the ARMv8 Crypto Extensions), this is over twice as fast as
-SHA-256, and slightly faster than SHA-1.  It is also almost three times
-as fast as the generic implementation of BLAKE2b:
-
-	Algorithm            Cycles per byte (on 4096-byte messages)
-	===================  =======================================
-	blake2b-256-neon     14.1
-	sha1-neon            16.4
-	sha1-asm             20.8
-	blake2s-256-generic  26.1
-	sha256-neon	     28.9
-	sha256-asm	     32.1
-	blake2b-256-generic  39.9
-
-This implementation isn't directly based on any other implementation,
-but it borrows some ideas from previous NEON code I've written as well
-as from chacha-neon-core.S.  At least on Cortex-A7, it is faster than
-the other NEON implementations of BLAKE2b I'm aware of (the
-implementation in the BLAKE2 official repository using intrinsics, and
-Andrew Moon's implementation which can be found in SUPERCOP).
-
-NEON-optimized BLAKE2b is useful because there is interest in using
-BLAKE2b-256 for dm-verity on low-end Android devices (specifically,
-devices that lack the ARMv8 Crypto Extensions) to replace SHA-1.  On
-these devices, the performance cost of upgrading to SHA-256 may be
-unacceptable, whereas BLAKE2b-256 would actually improve performance.
-
-Although BLAKE2b is intended for 64-bit platforms (unlike BLAKE2s which
-is intended for 32-bit platforms), on 32-bit ARM processors with NEON,
-BLAKE2b is actually faster than BLAKE2s.  This is because NEON supports
-64-bit operations, and because BLAKE2s's block size is too small for
-NEON to be helpful for it.  The best I've been able to do with BLAKE2s
-on Cortex-A7 is 19.0 cpb with an optimized scalar implementation.
-
-(I didn't try BLAKE2sp and BLAKE3, which in theory would be faster, but
-they're more complex as they require running multiple hashes at once.
-Note that BLAKE2b already uses all the NEON bandwidth on the Cortex-A7,
-so I expect that any speedup from BLAKE2sp or BLAKE3 would come only
-from the smaller number of rounds, not from the extra parallelism.)
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- arch/arm/crypto/Kconfig             |  10 +
- arch/arm/crypto/Makefile            |   2 +
- arch/arm/crypto/blake2b-neon-core.S | 357 ++++++++++++++++++++++++++++
- arch/arm/crypto/blake2b-neon-glue.c | 105 ++++++++
- 4 files changed, 474 insertions(+)
- create mode 100644 arch/arm/crypto/blake2b-neon-core.S
- create mode 100644 arch/arm/crypto/blake2b-neon-glue.c
-
-diff --git a/arch/arm/crypto/Kconfig b/arch/arm/crypto/Kconfig
-index c9bf2df85cb90..f6a14c186b4ec 100644
---- a/arch/arm/crypto/Kconfig
-+++ b/arch/arm/crypto/Kconfig
-@@ -62,6 +62,16 @@ config CRYPTO_SHA512_ARM
- 	  SHA-512 secure hash standard (DFIPS 180-2) implemented
- 	  using optimized ARM assembler and NEON, when available.
- 
-+config CRYPTO_BLAKE2B_NEON
-+	tristate "BLAKE2b digest algorithm (ARM NEON)"
-+	depends on KERNEL_MODE_NEON
-+	select CRYPTO_BLAKE2B
-+	help
-+	  BLAKE2b digest algorithm optimized with ARM NEON instructions.
-+	  On ARM processors that have NEON support but not the ARMv8
-+	  Crypto Extensions, typically this BLAKE2b implementation is
-+	  much faster than SHA-2 and slightly faster than SHA-1.
-+
- config CRYPTO_AES_ARM
- 	tristate "Scalar AES cipher for ARM"
- 	select CRYPTO_ALGAPI
-diff --git a/arch/arm/crypto/Makefile b/arch/arm/crypto/Makefile
-index b745c17d356fe..ab835ceeb4f2e 100644
---- a/arch/arm/crypto/Makefile
-+++ b/arch/arm/crypto/Makefile
-@@ -9,6 +9,7 @@ obj-$(CONFIG_CRYPTO_SHA1_ARM) += sha1-arm.o
- obj-$(CONFIG_CRYPTO_SHA1_ARM_NEON) += sha1-arm-neon.o
- obj-$(CONFIG_CRYPTO_SHA256_ARM) += sha256-arm.o
- obj-$(CONFIG_CRYPTO_SHA512_ARM) += sha512-arm.o
-+obj-$(CONFIG_CRYPTO_BLAKE2B_NEON) += blake2b-neon.o
- obj-$(CONFIG_CRYPTO_CHACHA20_NEON) += chacha-neon.o
- obj-$(CONFIG_CRYPTO_POLY1305_ARM) += poly1305-arm.o
- obj-$(CONFIG_CRYPTO_NHPOLY1305_NEON) += nhpoly1305-neon.o
-@@ -29,6 +30,7 @@ sha256-arm-neon-$(CONFIG_KERNEL_MODE_NEON) := sha256_neon_glue.o
- sha256-arm-y	:= sha256-core.o sha256_glue.o $(sha256-arm-neon-y)
- sha512-arm-neon-$(CONFIG_KERNEL_MODE_NEON) := sha512-neon-glue.o
- sha512-arm-y	:= sha512-core.o sha512-glue.o $(sha512-arm-neon-y)
-+blake2b-neon-y  := blake2b-neon-core.o blake2b-neon-glue.o
- sha1-arm-ce-y	:= sha1-ce-core.o sha1-ce-glue.o
- sha2-arm-ce-y	:= sha2-ce-core.o sha2-ce-glue.o
- aes-arm-ce-y	:= aes-ce-core.o aes-ce-glue.o
-diff --git a/arch/arm/crypto/blake2b-neon-core.S b/arch/arm/crypto/blake2b-neon-core.S
-new file mode 100644
-index 0000000000000..734d9d3a161f7
---- /dev/null
-+++ b/arch/arm/crypto/blake2b-neon-core.S
-@@ -0,0 +1,357 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * BLAKE2b digest algorithm, NEON accelerated
-+ *
-+ * Copyright 2020 Google LLC
-+ *
-+ * Author: Eric Biggers <ebiggers@google.com>
-+ */
-+
-+#include <linux/linkage.h>
-+
-+	.text
-+	.fpu		neon
-+
-+	// The arguments to blake2b_compress_blocks_neon()
-+	STATE		.req	r0
-+	IN		.req	r1
-+	NBLOCKS		.req	r2
-+	INC		.req	r3
-+
-+	// Pointers to the rotation tables
-+	ROR24_TABLE	.req	r4
-+	ROR16_TABLE	.req	r5
-+
-+	// The original stack pointer
-+	ORIG_SP		.req	r6
-+
-+	// NEON registers which contain the message words of the current block.
-+	// M_0-M_3 are occasionally used for other purposes too.
-+	M_0		.req	d16
-+	M_1		.req	d17
-+	M_2		.req	d18
-+	M_3		.req	d19
-+	M_4		.req	d20
-+	M_5		.req	d21
-+	M_6		.req	d22
-+	M_7		.req	d23
-+	M_8		.req	d24
-+	M_9		.req	d25
-+	M_10		.req	d26
-+	M_11		.req	d27
-+	M_12		.req	d28
-+	M_13		.req	d29
-+	M_14		.req	d30
-+	M_15		.req	d31
-+
-+	.align		4
-+	// Tables for computing ror64(x, 24) and ror64(x, 16) using the vtbl.8
-+	// instruction.  This is the most efficient way to implement these
-+	// rotation amounts with NEON.  (On Cortex-A53 it's the same speed as
-+	// vshr.u64 + vsli.u64, while on Cortex-A7 it's faster.)
-+.Lror24_table:
-+	.byte		3, 4, 5, 6, 7, 0, 1, 2
-+.Lror16_table:
-+	.byte		2, 3, 4, 5, 6, 7, 0, 1
-+	// The BLAKE2b initialization vector
-+.Lblake2b_IV:
-+	.quad		0x6a09e667f3bcc908, 0xbb67ae8584caa73b
-+	.quad		0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1
-+	.quad		0x510e527fade682d1, 0x9b05688c2b3e6c1f
-+	.quad		0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
-+
-+// Execute one round of BLAKE2b by updating the state matrix v[0..15] in the
-+// NEON registers q0-q7.  The message block is in q8..q15.  The stack pointer
-+// points to a 32-byte aligned buffer containing a copy of q8 and q9, so that
-+// they can be reloaded if q8 and q9 are used as temporary registers.  The macro
-+// arguments s0-s15 give the order in which the message words are used in this
-+// round.  'final' is "true" if this is the final round, i.e. round 12 of 12.
-+.macro	_blake2b_round	s0, s1, s2, s3, s4, s5, s6, s7, \
-+			s8, s9, s10, s11, s12, s13, s14, s15, final="false"
-+
-+	// Mix the columns:
-+	// (v[0], v[4], v[8], v[12]), (v[1], v[5], v[9], v[13]),
-+	// (v[2], v[6], v[10], v[14]), and (v[3], v[7], v[11], v[15]).
-+
-+	// a += b + m[blake2b_sigma[r][2*i + 0]];
-+	vadd.u64	q0, q0, q2
-+	vadd.u64	q1, q1, q3
-+	vadd.u64	d0, d0, M_\s0
-+	vadd.u64	d1, d1, M_\s2
-+	vadd.u64	d2, d2, M_\s4
-+	vadd.u64	d3, d3, M_\s6
-+
-+	// d = ror64(d ^ a, 32);
-+	veor		q6, q6, q0
-+	veor		q7, q7, q1
-+	vrev64.32	q6, q6
-+	vrev64.32	q7, q7
-+
-+	// c += d;
-+	vadd.u64	q4, q4, q6
-+	vadd.u64	q5, q5, q7
-+
-+	// b = ror64(b ^ c, 24);
-+	vld1.8		{M_0}, [ROR24_TABLE, :64]
-+	veor		q2, q2, q4
-+	veor		q3, q3, q5
-+	vtbl.8		d4, {d4}, M_0
-+	vtbl.8		d5, {d5}, M_0
-+	vtbl.8		d6, {d6}, M_0
-+	vtbl.8		d7, {d7}, M_0
-+
-+	// a += b + m[blake2b_sigma[r][2*i + 1]];
-+	//
-+	// M_0 got clobbered above, so we have to reload it if any of the four
-+	// message words this step needs happens to be M_0.  Otherwise we don't
-+	// need to reload it here, as it will just get clobbered again below.
-+.if \s1 == 0 || \s3 == 0 || \s5 == 0 || \s7 == 0
-+	vld1.8		{M_0}, [sp, :64]
-+.endif
-+	vadd.u64	q0, q0, q2
-+	vadd.u64	q1, q1, q3
-+	vadd.u64	d0, d0, M_\s1
-+	vadd.u64	d1, d1, M_\s3
-+	vadd.u64	d2, d2, M_\s5
-+	vadd.u64	d3, d3, M_\s7
-+
-+	// d = ror64(d ^ a, 16);
-+	vld1.8		{M_0}, [ROR16_TABLE, :64]
-+	veor		q6, q6, q0
-+	veor		q7, q7, q1
-+	vtbl.8		d12, {d12}, M_0
-+	vtbl.8		d13, {d13}, M_0
-+	vtbl.8		d14, {d14}, M_0
-+	vtbl.8		d15, {d15}, M_0
-+
-+	// c += d;
-+	vadd.u64	q4, q4, q6
-+	vadd.u64	q5, q5, q7
-+
-+	// b = ror64(b ^ c, 63);
-+	//
-+	// This rotation amount isn't a multiple of 8, so it has to be
-+	// implemented using a pair of shifts, which requires temporary
-+	// registers.  Use q8-q9 (M_0-M_3) for this, and reload them afterwards.
-+	veor		q8, q2, q4
-+	veor		q9, q3, q5
-+	vshr.u64	q2, q8, #63
-+	vshr.u64	q3, q9, #63
-+	vsli.u64	q2, q8, #1
-+	vsli.u64	q3, q9, #1
-+	vld1.8		{q8-q9}, [sp, :256]
-+
-+	// Mix the diagonals:
-+	// (v[0], v[5], v[10], v[15]), (v[1], v[6], v[11], v[12]),
-+	// (v[2], v[7], v[8], v[13]), and (v[3], v[4], v[9], v[14]).
-+	//
-+	// There are two possible ways to do this: use 'vext' instructions to
-+	// shift the rows of the matrix so that the diagonals become columns,
-+	// and undo it afterwards; or just use 64-bit operations on 'd'
-+	// registers instead of 128-bit operations on 'q' registers.  We use the
-+	// latter approach, as it performs much better on Cortex-A7.
-+
-+	// a += b + m[blake2b_sigma[r][2*i + 0]];
-+	vadd.u64	d0, d0, d5
-+	vadd.u64	d1, d1, d6
-+	vadd.u64	d2, d2, d7
-+	vadd.u64	d3, d3, d4
-+	vadd.u64	d0, d0, M_\s8
-+	vadd.u64	d1, d1, M_\s10
-+	vadd.u64	d2, d2, M_\s12
-+	vadd.u64	d3, d3, M_\s14
-+
-+	// d = ror64(d ^ a, 32);
-+	veor		d15, d15, d0
-+	veor		d12, d12, d1
-+	veor		d13, d13, d2
-+	veor		d14, d14, d3
-+	vrev64.32	d15, d15
-+	vrev64.32	d12, d12
-+	vrev64.32	d13, d13
-+	vrev64.32	d14, d14
-+
-+	// c += d;
-+	vadd.u64	d10, d10, d15
-+	vadd.u64	d11, d11, d12
-+	vadd.u64	d8, d8, d13
-+	vadd.u64	d9, d9, d14
-+
-+	// b = ror64(b ^ c, 24);
-+	vld1.8		{M_0}, [ROR24_TABLE, :64]
-+	veor		d5, d5, d10
-+	veor		d6, d6, d11
-+	veor		d7, d7, d8
-+	veor		d4, d4, d9
-+	vtbl.8		d5, {d5}, M_0
-+	vtbl.8		d6, {d6}, M_0
-+	vtbl.8		d7, {d7}, M_0
-+	vtbl.8		d4, {d4}, M_0
-+
-+	// a += b + m[blake2b_sigma[r][2*i + 1]];
-+.if \s9 == 0 || \s11 == 0 || \s13 == 0 || \s15 == 0
-+	vld1.8		{M_0}, [sp, :64]
-+.endif
-+	vadd.u64	d0, d0, d5
-+	vadd.u64	d1, d1, d6
-+	vadd.u64	d2, d2, d7
-+	vadd.u64	d3, d3, d4
-+	vadd.u64	d0, d0, M_\s9
-+	vadd.u64	d1, d1, M_\s11
-+	vadd.u64	d2, d2, M_\s13
-+	vadd.u64	d3, d3, M_\s15
-+
-+	// d = ror64(d ^ a, 16);
-+	vld1.8		{M_0}, [ROR16_TABLE, :64]
-+	veor		d15, d15, d0
-+	veor		d12, d12, d1
-+	veor		d13, d13, d2
-+	veor		d14, d14, d3
-+	vtbl.8		d12, {d12}, M_0
-+	vtbl.8		d13, {d13}, M_0
-+	vtbl.8		d14, {d14}, M_0
-+	vtbl.8		d15, {d15}, M_0
-+
-+	// c += d;
-+	vadd.u64	d10, d10, d15
-+	vadd.u64	d11, d11, d12
-+	vadd.u64	d8, d8, d13
-+	vadd.u64	d9, d9, d14
-+
-+	// b = ror64(b ^ c, 63);
-+	veor		d16, d4, d9
-+	veor		d17, d5, d10
-+	veor		d18, d6, d11
-+	veor		d19, d7, d8
-+	vshr.u64	q2, q8, #63
-+	vshr.u64	q3, q9, #63
-+	vsli.u64	q2, q8, #1
-+	vsli.u64	q3, q9, #1
-+	// Reloading q8-q9 can be skipped on the final round.
-+.if \final != "true"
-+	vld1.8		{q8-q9}, [sp, :256]
-+.endif
-+.endm
-+
-+//
-+// void blake2b_compress_blocks_neon(struct blake2b_state *S,
-+//				     const u8 *in, size_t nblocks,
-+//				     unsigned int inc);
-+//
-+// Only the first three fields of struct blake2b_state are used:
-+//	u64 h[8];	(inout)
-+//	u64 t[2];	(in)
-+//	u64 f[2];	(in)
-+//
-+	.align		5
-+ENTRY(blake2b_compress_blocks_neon)
-+	push		{r4-r10}
-+
-+	// Allocate a 32-byte stack buffer that is 32-byte aligned.
-+	mov		ORIG_SP, sp
-+	sub		ip, sp, #32
-+	bic		ip, ip, #31
-+	mov		sp, ip
-+
-+	adr		ROR24_TABLE, .Lror24_table
-+	adr		ROR16_TABLE, .Lror16_table
-+
-+	mov		ip, STATE
-+	vld1.64		{q0-q1}, [ip]!		// Load h[0..3]
-+	vld1.64		{q2-q3}, [ip]!		// Load h[4..7]
-+.Lnext_block:
-+	  adr		r10, .Lblake2b_IV
-+	vld1.64		{q14-q15}, [ip]		// Load t[0..1] and f[0..1]
-+	vld1.64		{q4-q5}, [r10]!		// Load IV[0..3]
-+	  vmov		r7, r8, d28		// Copy t[0] to (r7, r8)
-+	vld1.64		{q6-q7}, [r10]		// Load IV[4..7]
-+	  adds		r7, r7, INC		// Increment counter
-+	bcs		.Lslow_inc_ctr
-+	vmov.i32	d28[0], r7
-+	vst1.64		{d28}, [ip]		// Update t[0]
-+.Linc_ctr_done:
-+
-+	// Load the next message block and finish initializing the state matrix
-+	// 'v'.  Fortunately, there are exactly enough NEON registers to fit the
-+	// entire state matrix in q0-q7 and the entire message block in q8-15.
-+	//
-+	// However, _blake2b_round also needs some extra registers for rotates,
-+	// so we have to spill some registers.  It's better to spill the message
-+	// registers than the state registers, as the message doesn't change.
-+	// Therefore we store a copy of the first 32 bytes of the message block
-+	// (q8-q9) in an aligned buffer on the stack so that they can be
-+	// reloaded when needed.  (We could just reload directly from the
-+	// message buffer, but it's faster to use aligned loads.)
-+	vld1.8		{q8-q9}, [IN]!
-+	  veor		q6, q6, q14	// v[12..13] = IV[4..5] ^ t[0..1]
-+	vld1.8		{q10-q11}, [IN]!
-+	  veor		q7, q7, q15	// v[14..15] = IV[6..7] ^ f[0..1]
-+	vld1.8		{q12-q13}, [IN]!
-+	vst1.8		{q8-q9}, [sp, :256]
-+	  mov		ip, STATE
-+	vld1.8		{q14-q15}, [IN]!
-+
-+	// Execute the rounds.  Each round is provided the order in which it
-+	// needs to use the message words.
-+	_blake2b_round	0,  1,  2,  3,  4,  5,  6,  7, \
-+			8,  9, 10, 11, 12, 13, 14, 15
-+	_blake2b_round 14, 10,  4,  8,  9, 15, 13,  6, \
-+			1, 12,  0,  2, 11,  7,  5,  3
-+	_blake2b_round 11,  8, 12,  0,  5,  2, 15, 13, \
-+		       10, 14,  3,  6,  7,  1,  9,  4
-+	_blake2b_round	7,  9,  3,  1, 13, 12, 11, 14, \
-+			2,  6,  5, 10,  4,  0, 15,  8
-+	_blake2b_round	9,  0,  5,  7,  2,  4, 10, 15, \
-+			14,  1, 11, 12,  6,  8,  3, 13
-+	_blake2b_round	2, 12,  6, 10,  0, 11,  8,  3, \
-+			4, 13,  7,  5, 15, 14,  1,  9
-+	_blake2b_round 12,  5,  1, 15, 14, 13,  4, 10, \
-+			0,  7,  6,  3,  9,  2,  8, 11
-+	_blake2b_round 13, 11,  7, 14, 12,  1,  3,  9, \
-+			5,  0, 15,  4,  8,  6,  2, 10
-+	_blake2b_round	6, 15, 14,  9, 11,  3,  0,  8, \
-+			12,  2, 13,  7,  1,  4, 10,  5
-+	_blake2b_round 10,  2,  8,  4,  7,  6,  1,  5, \
-+		       15, 11,  9, 14,  3, 12, 13,  0
-+	_blake2b_round	0,  1,  2,  3,  4,  5,  6,  7, \
-+			8,  9, 10, 11, 12, 13, 14, 15
-+	_blake2b_round 14, 10,  4,  8,  9, 15, 13,  6, \
-+			1, 12,  0,  2, 11,  7, 5,   3,  "true"
-+
-+	// Fold the final state matrix into the hash chaining value:
-+	//
-+	//	for (i = 0; i < 8; i++)
-+	//		h[i] ^= v[i] ^ v[i + 8];
-+	//
-+	  vld1.64	{q8-q9}, [ip]!		// Load old h[0..3]
-+	veor		q0, q0, q4		// v[0..1] ^= v[8..9]
-+	veor		q1, q1, q5		// v[2..3] ^= v[10..11]
-+	  vld1.64	{q10-q11}, [ip]		// Load old h[4..7]
-+	veor		q2, q2, q6		// v[4..5] ^= v[12..13]
-+	veor		q3, q3, q7		// v[6..7] ^= v[14..15]
-+	veor		q0, q0, q8		// v[0..1] ^= h[0..1]
-+	veor		q1, q1, q9		// v[2..3] ^= h[2..3]
-+	  mov		ip, STATE
-+	  subs		NBLOCKS, NBLOCKS, #1	// nblocks--
-+	  vst1.64	{q0-q1}, [ip]!		// Store new h[0..3]
-+	veor		q2, q2, q10		// v[4..5] ^= h[4..5]
-+	veor		q3, q3, q11		// v[6..7] ^= h[6..7]
-+	  vst1.64	{q2-q3}, [ip]!		// Store new h[4..7]
-+	bne		.Lnext_block		// nblocks != 0?
-+
-+	mov		sp, ORIG_SP
-+	pop		{r4-r10}
-+	mov		pc, lr
-+
-+.Lslow_inc_ctr:
-+	// Handle the case where the counter overflowed its low 32 bits, by
-+	// carrying the overflow bit into the full 128-bit counter.
-+	vmov		r9, r10, d29
-+	adcs		r8, r8, #0
-+	adcs		r9, r9, #0
-+	adc		r10, r10, #0
-+	vmov		d28, r7, r8
-+	vmov		d29, r9, r10
-+	vst1.64		{q14}, [ip]		// Update t[0] and t[1]
-+	b		.Linc_ctr_done
-+ENDPROC(blake2b_compress_blocks_neon)
-diff --git a/arch/arm/crypto/blake2b-neon-glue.c b/arch/arm/crypto/blake2b-neon-glue.c
-new file mode 100644
-index 0000000000000..27620d7a8bcb7
---- /dev/null
-+++ b/arch/arm/crypto/blake2b-neon-glue.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * BLAKE2b digest algorithm, NEON accelerated
-+ *
-+ * Copyright 2020 Google LLC
-+ */
-+
-+#include <asm/neon.h>
-+#include <asm/simd.h>
-+#include <crypto/internal/hash.h>
-+#include <crypto/internal/simd.h>
-+#include <crypto/blake2b.h>
-+#include <linux/module.h>
-+
-+asmlinkage void blake2b_compress_blocks_neon(struct blake2b_state *S,
-+					     const u8 *in, size_t nblocks,
-+					     unsigned int inc);
-+
-+static int blake2b_neon_update(struct shash_desc *desc,
-+			       const u8 *in, unsigned int inlen)
-+{
-+	struct blake2b_state *S = shash_desc_ctx(desc);
-+
-+	if (S->buflen + inlen < BLAKE2B_BLOCK_SIZE || !crypto_simd_usable())
-+		return crypto_blake2b_update(desc, in, inlen);
-+
-+	do {
-+		unsigned int n = min_t(unsigned int, inlen, SZ_4K);
-+
-+		kernel_neon_begin();
-+		__crypto_blake2b_update(desc, in, n,
-+					blake2b_compress_blocks_neon);
-+		kernel_neon_end();
-+		in += n;
-+		inlen -= n;
-+	} while (inlen);
-+	return 0;
-+}
-+
-+static int blake2b_neon_final(struct shash_desc *desc, u8 *out)
-+{
-+	int err;
-+
-+	if (!crypto_simd_usable())
-+		return crypto_blake2b_final(desc, out);
-+
-+	kernel_neon_begin();
-+	err = __crypto_blake2b_final(desc, out, blake2b_compress_blocks_neon);
-+	kernel_neon_end();
-+	return err;
-+}
-+
-+#define BLAKE2B_ALG(name, driver_name, digest_size)			\
-+	{								\
-+		.base.cra_name		= name,				\
-+		.base.cra_driver_name	= driver_name,			\
-+		.base.cra_priority	= 200,				\
-+		.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,	\
-+		.base.cra_blocksize	= BLAKE2B_BLOCK_SIZE,		\
-+		.base.cra_ctxsize	= sizeof(struct blake2b_tfm_ctx), \
-+		.base.cra_module	= THIS_MODULE,			\
-+		.digestsize		= digest_size,			\
-+		.setkey			= crypto_blake2b_setkey,	\
-+		.init			= crypto_blake2b_init,		\
-+		.update			= blake2b_neon_update,		\
-+		.final			= blake2b_neon_final,		\
-+		.descsize		= sizeof(struct blake2b_state),	\
-+	}
-+
-+static struct shash_alg blake2b_neon_algs[] = {
-+	BLAKE2B_ALG("blake2b-160", "blake2b-160-neon", BLAKE2B_160_HASH_SIZE),
-+	BLAKE2B_ALG("blake2b-256", "blake2b-256-neon", BLAKE2B_256_HASH_SIZE),
-+	BLAKE2B_ALG("blake2b-384", "blake2b-384-neon", BLAKE2B_384_HASH_SIZE),
-+	BLAKE2B_ALG("blake2b-512", "blake2b-512-neon", BLAKE2B_512_HASH_SIZE),
-+};
-+
-+static int __init blake2b_neon_mod_init(void)
-+{
-+	if (!(elf_hwcap & HWCAP_NEON))
-+		return -ENODEV;
-+
-+	return crypto_register_shashes(blake2b_neon_algs,
-+				       ARRAY_SIZE(blake2b_neon_algs));
-+}
-+
-+static void __exit blake2b_neon_mod_exit(void)
-+{
-+	return crypto_unregister_shashes(blake2b_neon_algs,
-+					 ARRAY_SIZE(blake2b_neon_algs));
-+}
-+
-+module_init(blake2b_neon_mod_init);
-+module_exit(blake2b_neon_mod_exit);
-+
-+MODULE_DESCRIPTION("BLAKE2b digest algorithm, NEON accelerated");
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Eric Biggers <ebiggers@google.com>");
-+MODULE_ALIAS_CRYPTO("blake2b-160");
-+MODULE_ALIAS_CRYPTO("blake2b-160-neon");
-+MODULE_ALIAS_CRYPTO("blake2b-256");
-+MODULE_ALIAS_CRYPTO("blake2b-256-neon");
-+MODULE_ALIAS_CRYPTO("blake2b-384");
-+MODULE_ALIAS_CRYPTO("blake2b-384-neon");
-+MODULE_ALIAS_CRYPTO("blake2b-512");
-+MODULE_ALIAS_CRYPTO("blake2b-512-neon");
--- 
-2.29.2
-
+SnVzdCBzYXcgTHVjYXMgU3RhY2gncyBwb3N0ICJDQUFNIFJORyB0cm91YmxlIiBmcm9tIHllc3Rl
+cmRheSB3aGljaA0Kc2VlbXMgdG8gYmUgZGVzY3JpYmluZyB0aGlzIHNhbWUgaXNzdWUgLSBhZGRl
+ZCB0byBDQy4NCg0KT24gVHVlLCAyMDIwLTEyLTE1IGF0IDE3OjMxIC0wNjAwLCBSb2JlcnQgSGFu
+Y29jayB3cm90ZToNCj4gSGVsbG8sDQo+IA0KPiBXZSBoYXZlIGFuIGlNWDZELWJhc2VkIGJvYXJk
+IHdoaWNoIHdhcyBwcmV2aW91c2x5IHVzaW5nIDUuNC54DQo+IGtlcm5lbHMuDQo+IEkgaGF2ZSBy
+ZWNlbnRseSBzdGFydGVkIHRlc3RpbmcgdjUuMTAuMSBvbiB0aGlzIGJvYXJkIGFuZCBhbSBydW5u
+aW5nDQo+IGludG8gYW4gaXNzdWUgd2l0aCB0aGUgQ0FBTSBSTkcuIFRoZSBkbWVzZyBpcyBnZXR0
+aW5nIG91dHB1dCBsaWtlDQo+IHRoaXMNCj4gYW5kIGFsbCByZWFkcyBmcm9tIC9kZXYvaHdybmcg
+YXJlIGZhaWxpbmcgd2l0aCBFSU5WQUw6DQo+IA0KPiBbICAgMTcuMzY4MzY4XSBjYWFtX2pyIDIx
+MDEwMDAuanI6IDIwMDAwMjViOiBDQ0I6IGRlc2MgaWR4IDI6IFJORzoNCj4gSGFyZHdhcmUgZXJy
+b3INCj4gWyAgIDE3LjM3NTcyMV0gaHdybmc6IG5vIGRhdGEgYXZhaWxhYmxlDQo+IFsgICAyMy4y
+MDAyNTVdIGNhYW1fanIgMjEwMTAwMC5qcjogMjAwMDNjNWI6IENDQjogZGVzYyBpZHggNjA6IFJO
+RzoNCj4gSGFyZHdhcmUgZXJyb3INCj4gWyAgIDIzLjIxNTUwOF0gY2FhbV9qciAyMTAxMDAwLmpy
+OiAyMDAwM2M1YjogQ0NCOiBkZXNjIGlkeCA2MDogUk5HOg0KPiBIYXJkd2FyZSBlcnJvcg0KPiBb
+ICAgMjMuMjI5MjQ5XSBjYWFtX2pyIDIxMDEwMDAuanI6IDIwMDAzYzViOiBDQ0I6IGRlc2MgaWR4
+IDYwOiBSTkc6DQo+IEhhcmR3YXJlIGVycm9yDQo+IFsgICAyMy4yNDM0MTVdIGNhYW1fanIgMjEw
+MTAwMC5qcjogMjAwMDNjNWI6IENDQjogZGVzYyBpZHggNjA6IFJORzoNCj4gSGFyZHdhcmUgZXJy
+b3INCj4gWyAgIDIzLjI1NzgwOV0gY2FhbV9qciAyMTAxMDAwLmpyOiAyMDAwM2M1YjogQ0NCOiBk
+ZXNjIGlkeCA2MDogUk5HOg0KPiBIYXJkd2FyZSBlcnJvcg0KPiBbICAgMjMuMjcyMTA5XSBjYWFt
+X2pyIDIxMDEwMDAuanI6IDIwMDAzYzViOiBDQ0I6IGRlc2MgaWR4IDYwOiBSTkc6DQo+IEhhcmR3
+YXJlIGVycm9yDQo+IA0KPiBXZSBhcmUgbm90IHVzaW5nIHNlY3VyZSBib290IHByZXNlbnRseSwg
+aWYgdGhhdCBtYXR0ZXJzLiBPbiA1LjQsIG5vDQo+IHN1Y2ggaXNzdWVzIGFuZCAvZGV2L2h3cm5n
+IHNlZW1zIHRvIHdvcmsgZmluZS4NCj4gDQo+IEkgc2VlIHRoZXJlIGFyZSBzb21lIENBQU0gUk5H
+IGNoYW5nZXMgYmV0d2VlbiA1LjQgYW5kIDUuMTAgYnV0IG5vdA0KPiBzdXJlDQo+IHdoaWNoIG1p
+Z2h0IGJlIHRoZSBjYXVzZT8NCj4gDQo+IFRoZSBDQUFNIGluaXRpYWxpemF0aW9uIG91dHB1dCBv
+biBib290IChzYW1lIG9uIHdvcmtpbmcgNS40IGFuZCBub24tDQo+IHdvcmtpbmcgNS4xMC4xIGtl
+cm5lbHMpOg0KPiANCj4gWyAgIDE2LjkzNDI1M10gY2FhbSAyMTAwMDAwLmNyeXB0bzogRW50cm9w
+eSBkZWxheSA9IDMyMDANCj4gWyAgIDE3LjAwMDE0Nl0gY2FhbSAyMTAwMDAwLmNyeXB0bzogSW5z
+dGFudGlhdGVkIFJORzQgU0gwDQo+IFsgICAxNy4wNjA5MTFdIGNhYW0gMjEwMDAwMC5jcnlwdG86
+IEluc3RhbnRpYXRlZCBSTkc0IFNIMQ0KPiBbICAgMTcuMDY3ODkxXSBjYWFtIDIxMDAwMDAuY3J5
+cHRvOiBkZXZpY2UgSUQgPSAweDBhMTYwMTAwMDAwMDAwMDANCj4gKEVyYQ0KPiA0KQ0KPiBbICAg
+MTcuMDgwMjg5XSBjYWFtIDIxMDAwMDAuY3J5cHRvOiBqb2IgcmluZ3MgPSAyLCBxaSA9IDANCj4g
+WyAgIDE3LjExMzQ5OF0gY2FhbSBhbGdvcml0aG1zIHJlZ2lzdGVyZWQgaW4gL3Byb2MvY3J5cHRv
+DQo+IFsgICAxNy4xMjAwOTldIGNhYW0gMjEwMDAwMC5jcnlwdG86IHJlZ2lzdGVyaW5nIHJuZy1j
+YWFtDQo+IA0K
