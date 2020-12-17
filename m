@@ -2,14 +2,14 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6EB2DDB44
+	by mail.lfdr.de (Postfix) with ESMTP id 019D82DDB43
 	for <lists+linux-crypto@lfdr.de>; Thu, 17 Dec 2020 23:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732068AbgLQWZk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1732070AbgLQWZk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Thu, 17 Dec 2020 17:25:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45150 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:45164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727137AbgLQWZk (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1732063AbgLQWZk (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 17 Dec 2020 17:25:40 -0500
 From:   Eric Biggers <ebiggers@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
@@ -20,83 +20,198 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         David Sterba <dsterba@suse.com>,
         "Jason A . Donenfeld" <Jason@zx2c4.com>,
         Paul Crowley <paulcrowley@google.com>
-Subject: [PATCH v2 00/11] crypto: arm32-optimized BLAKE2b and BLAKE2s
-Date:   Thu, 17 Dec 2020 14:21:27 -0800
-Message-Id: <20201217222138.170526-1-ebiggers@kernel.org>
+Subject: [PATCH v2 01/11] crypto: blake2b - rename constants for consistency with blake2s
+Date:   Thu, 17 Dec 2020 14:21:28 -0800
+Message-Id: <20201217222138.170526-2-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201217222138.170526-1-ebiggers@kernel.org>
+References: <20201217222138.170526-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patchset adds 32-bit ARM assembly language implementations of
-BLAKE2b and BLAKE2s.
+From: Eric Biggers <ebiggers@google.com>
 
-The BLAKE2b implementation is NEON-accelerated, while the BLAKE2s
-implementation uses scalar instructions since NEON doesn't work very
-well for it.  The BLAKE2b implementation is faster and is expected to be
-useful as a replacement for SHA-1 in dm-verity, while the BLAKE2s
-implementation would be useful for WireGuard which uses BLAKE2s.
+Rename some BLAKE2b-related constants to be consistent with the names
+used in the BLAKE2s implementation (see include/crypto/blake2s.h):
 
-Both implementations are provided via the shash API, while BLAKE2s is
-also provided via the library API.
+	BLAKE2B_*_DIGEST_SIZE  => BLAKE2B_*_HASH_SIZE
+	BLAKE2B_BLOCKBYTES     => BLAKE2B_BLOCK_SIZE
+	BLAKE2B_KEYBYTES       => BLAKE2B_KEY_SIZE
 
-While adding these, I also reworked the generic implementations of
-BLAKE2b and BLAKE2s to provide helper functions that make implementing
-other "shash" providers for these algorithms much easier.
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ crypto/blake2b_generic.c | 58 +++++++++++++++++++++-------------------
+ 1 file changed, 30 insertions(+), 28 deletions(-)
 
-See the individual commits for full details, including benchmarks.
-
-This patchset was tested on a Raspberry Pi 2 (which uses a Cortex-A7
-processor) with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y, plus other tests.
-
-This patchset applies to mainline commit 0c6c887835b5.
-
-Changed since v1:
-   - Added BLAKE2s implementation.
-   - Adjusted the BLAKE2b helper functions to be consistent with what I
-     decided to do for BLAKE2s.
-   - Fixed build error in blake2b-neon-core.S in some configurations.
-
-Eric Biggers (11):
-  crypto: blake2b - rename constants for consistency with blake2s
-  crypto: blake2b - define shash_alg structs using macros
-  crypto: blake2b - export helpers for optimized implementations
-  crypto: blake2b - update file comment
-  crypto: arm/blake2b - add NEON-accelerated BLAKE2b
-  crypto: blake2s - define shash_alg structs using macros
-  crypto: x86/blake2s - define shash_alg structs using macros
-  crypto: blake2s - remove unneeded includes
-  crypto: blake2s - share the "shash" API boilerplate code
-  crypto: arm/blake2s - add ARM scalar optimized BLAKE2s
-  wireguard: Kconfig: select CRYPTO_BLAKE2S_ARM
-
- arch/arm/crypto/Kconfig             |  20 ++
- arch/arm/crypto/Makefile            |   4 +
- arch/arm/crypto/blake2b-neon-core.S | 345 ++++++++++++++++++++++++++++
- arch/arm/crypto/blake2b-neon-glue.c | 105 +++++++++
- arch/arm/crypto/blake2s-core.S      | 272 ++++++++++++++++++++++
- arch/arm/crypto/blake2s-glue.c      |  78 +++++++
- arch/x86/crypto/blake2s-glue.c      | 150 +++---------
- crypto/Kconfig                      |   5 +
- crypto/Makefile                     |   1 +
- crypto/blake2b_generic.c            | 200 +++++++---------
- crypto/blake2s_generic.c            | 161 +++----------
- crypto/blake2s_helpers.c            |  87 +++++++
- drivers/net/Kconfig                 |   1 +
- include/crypto/blake2b.h            |  27 +++
- include/crypto/internal/blake2b.h   |  33 +++
- include/crypto/internal/blake2s.h   |  17 ++
- 16 files changed, 1139 insertions(+), 367 deletions(-)
- create mode 100644 arch/arm/crypto/blake2b-neon-core.S
- create mode 100644 arch/arm/crypto/blake2b-neon-glue.c
- create mode 100644 arch/arm/crypto/blake2s-core.S
- create mode 100644 arch/arm/crypto/blake2s-glue.c
- create mode 100644 crypto/blake2s_helpers.c
- create mode 100644 include/crypto/blake2b.h
- create mode 100644 include/crypto/internal/blake2b.h
-
+diff --git a/crypto/blake2b_generic.c b/crypto/blake2b_generic.c
+index a2ffe60e06d34..83942f511075e 100644
+--- a/crypto/blake2b_generic.c
++++ b/crypto/blake2b_generic.c
+@@ -25,21 +25,22 @@
+ #include <linux/bitops.h>
+ #include <crypto/internal/hash.h>
+ 
+-#define BLAKE2B_160_DIGEST_SIZE		(160 / 8)
+-#define BLAKE2B_256_DIGEST_SIZE		(256 / 8)
+-#define BLAKE2B_384_DIGEST_SIZE		(384 / 8)
+-#define BLAKE2B_512_DIGEST_SIZE		(512 / 8)
+-
+-enum blake2b_constant {
+-	BLAKE2B_BLOCKBYTES    = 128,
+-	BLAKE2B_KEYBYTES      = 64,
++
++enum blake2b_lengths {
++	BLAKE2B_BLOCK_SIZE = 128,
++	BLAKE2B_KEY_SIZE = 64,
++
++	BLAKE2B_160_HASH_SIZE = 20,
++	BLAKE2B_256_HASH_SIZE =	32,
++	BLAKE2B_384_HASH_SIZE = 48,
++	BLAKE2B_512_HASH_SIZE = 64,
+ };
+ 
+ struct blake2b_state {
+ 	u64      h[8];
+ 	u64      t[2];
+ 	u64      f[2];
+-	u8       buf[BLAKE2B_BLOCKBYTES];
++	u8       buf[BLAKE2B_BLOCK_SIZE];
+ 	size_t   buflen;
+ };
+ 
+@@ -96,7 +97,7 @@ static void blake2b_increment_counter(struct blake2b_state *S, const u64 inc)
+ 	} while (0)
+ 
+ static void blake2b_compress(struct blake2b_state *S,
+-			     const u8 block[BLAKE2B_BLOCKBYTES])
++			     const u8 block[BLAKE2B_BLOCK_SIZE])
+ {
+ 	u64 m[16];
+ 	u64 v[16];
+@@ -140,7 +141,7 @@ static void blake2b_compress(struct blake2b_state *S,
+ #undef ROUND
+ 
+ struct blake2b_tfm_ctx {
+-	u8 key[BLAKE2B_KEYBYTES];
++	u8 key[BLAKE2B_KEY_SIZE];
+ 	unsigned int keylen;
+ };
+ 
+@@ -149,7 +150,7 @@ static int blake2b_setkey(struct crypto_shash *tfm, const u8 *key,
+ {
+ 	struct blake2b_tfm_ctx *tctx = crypto_shash_ctx(tfm);
+ 
+-	if (keylen == 0 || keylen > BLAKE2B_KEYBYTES)
++	if (keylen == 0 || keylen > BLAKE2B_KEY_SIZE)
+ 		return -EINVAL;
+ 
+ 	memcpy(tctx->key, key, keylen);
+@@ -176,7 +177,7 @@ static int blake2b_init(struct shash_desc *desc)
+ 		 * _final will process it
+ 		 */
+ 		memcpy(state->buf, tctx->key, tctx->keylen);
+-		state->buflen = BLAKE2B_BLOCKBYTES;
++		state->buflen = BLAKE2B_BLOCK_SIZE;
+ 	}
+ 	return 0;
+ }
+@@ -186,7 +187,7 @@ static int blake2b_update(struct shash_desc *desc, const u8 *in,
+ {
+ 	struct blake2b_state *state = shash_desc_ctx(desc);
+ 	const size_t left = state->buflen;
+-	const size_t fill = BLAKE2B_BLOCKBYTES - left;
++	const size_t fill = BLAKE2B_BLOCK_SIZE - left;
+ 
+ 	if (!inlen)
+ 		return 0;
+@@ -195,16 +196,16 @@ static int blake2b_update(struct shash_desc *desc, const u8 *in,
+ 		state->buflen = 0;
+ 		/* Fill buffer */
+ 		memcpy(state->buf + left, in, fill);
+-		blake2b_increment_counter(state, BLAKE2B_BLOCKBYTES);
++		blake2b_increment_counter(state, BLAKE2B_BLOCK_SIZE);
+ 		/* Compress */
+ 		blake2b_compress(state, state->buf);
+ 		in += fill;
+ 		inlen -= fill;
+-		while (inlen > BLAKE2B_BLOCKBYTES) {
+-			blake2b_increment_counter(state, BLAKE2B_BLOCKBYTES);
++		while (inlen > BLAKE2B_BLOCK_SIZE) {
++			blake2b_increment_counter(state, BLAKE2B_BLOCK_SIZE);
+ 			blake2b_compress(state, in);
+-			in += BLAKE2B_BLOCKBYTES;
+-			inlen -= BLAKE2B_BLOCKBYTES;
++			in += BLAKE2B_BLOCK_SIZE;
++			inlen -= BLAKE2B_BLOCK_SIZE;
+ 		}
+ 	}
+ 	memcpy(state->buf + state->buflen, in, inlen);
+@@ -223,7 +224,8 @@ static int blake2b_final(struct shash_desc *desc, u8 *out)
+ 	/* Set last block */
+ 	state->f[0] = (u64)-1;
+ 	/* Padding */
+-	memset(state->buf + state->buflen, 0, BLAKE2B_BLOCKBYTES - state->buflen);
++	memset(state->buf + state->buflen, 0,
++	       BLAKE2B_BLOCK_SIZE - state->buflen);
+ 	blake2b_compress(state, state->buf);
+ 
+ 	/* Avoid temporary buffer and switch the internal output to LE order */
+@@ -240,10 +242,10 @@ static struct shash_alg blake2b_algs[] = {
+ 		.base.cra_driver_name	= "blake2b-160-generic",
+ 		.base.cra_priority	= 100,
+ 		.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
+-		.base.cra_blocksize	= BLAKE2B_BLOCKBYTES,
++		.base.cra_blocksize	= BLAKE2B_BLOCK_SIZE,
+ 		.base.cra_ctxsize	= sizeof(struct blake2b_tfm_ctx),
+ 		.base.cra_module	= THIS_MODULE,
+-		.digestsize		= BLAKE2B_160_DIGEST_SIZE,
++		.digestsize		= BLAKE2B_160_HASH_SIZE,
+ 		.setkey			= blake2b_setkey,
+ 		.init			= blake2b_init,
+ 		.update			= blake2b_update,
+@@ -254,10 +256,10 @@ static struct shash_alg blake2b_algs[] = {
+ 		.base.cra_driver_name	= "blake2b-256-generic",
+ 		.base.cra_priority	= 100,
+ 		.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
+-		.base.cra_blocksize	= BLAKE2B_BLOCKBYTES,
++		.base.cra_blocksize	= BLAKE2B_BLOCK_SIZE,
+ 		.base.cra_ctxsize	= sizeof(struct blake2b_tfm_ctx),
+ 		.base.cra_module	= THIS_MODULE,
+-		.digestsize		= BLAKE2B_256_DIGEST_SIZE,
++		.digestsize		= BLAKE2B_256_HASH_SIZE,
+ 		.setkey			= blake2b_setkey,
+ 		.init			= blake2b_init,
+ 		.update			= blake2b_update,
+@@ -268,10 +270,10 @@ static struct shash_alg blake2b_algs[] = {
+ 		.base.cra_driver_name	= "blake2b-384-generic",
+ 		.base.cra_priority	= 100,
+ 		.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
+-		.base.cra_blocksize	= BLAKE2B_BLOCKBYTES,
++		.base.cra_blocksize	= BLAKE2B_BLOCK_SIZE,
+ 		.base.cra_ctxsize	= sizeof(struct blake2b_tfm_ctx),
+ 		.base.cra_module	= THIS_MODULE,
+-		.digestsize		= BLAKE2B_384_DIGEST_SIZE,
++		.digestsize		= BLAKE2B_384_HASH_SIZE,
+ 		.setkey			= blake2b_setkey,
+ 		.init			= blake2b_init,
+ 		.update			= blake2b_update,
+@@ -282,10 +284,10 @@ static struct shash_alg blake2b_algs[] = {
+ 		.base.cra_driver_name	= "blake2b-512-generic",
+ 		.base.cra_priority	= 100,
+ 		.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
+-		.base.cra_blocksize	= BLAKE2B_BLOCKBYTES,
++		.base.cra_blocksize	= BLAKE2B_BLOCK_SIZE,
+ 		.base.cra_ctxsize	= sizeof(struct blake2b_tfm_ctx),
+ 		.base.cra_module	= THIS_MODULE,
+-		.digestsize		= BLAKE2B_512_DIGEST_SIZE,
++		.digestsize		= BLAKE2B_512_HASH_SIZE,
+ 		.setkey			= blake2b_setkey,
+ 		.init			= blake2b_init,
+ 		.update			= blake2b_update,
 
 base-commit: 0c6c887835b59c10602add88057c9c06f265effe
 -- 
