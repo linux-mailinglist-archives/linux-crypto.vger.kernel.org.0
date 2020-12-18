@@ -2,15 +2,15 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3268A2DE19E
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Dec 2020 11:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D6B2DE1A0
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Dec 2020 11:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgLRK54 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Dec 2020 05:57:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41276 "EHLO mail.kernel.org"
+        id S2389292AbgLRK57 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Dec 2020 05:57:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725897AbgLRK54 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:57:56 -0500
+        id S2389291AbgLRK57 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 18 Dec 2020 05:57:59 -0500
 From:   matthias.bgg@kernel.org
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     mpm@selenic.com, herbert@gondor.apana.org.au, rjui@broadcom.com,
@@ -19,10 +19,12 @@ Cc:     linux-kernel@vger.kernel.org, Julia.Lawall@inria.fr,
         bcm-kernel-feedback-list@broadcom.com,
         linux-arm-kernel@lists.infradead.org, nsaenzjulienne@suse.de,
         linux-crypto@vger.kernel.org, Matthias Brugger <mbrugger@suse.com>
-Subject: [PATCH v2 1/2] hwrng: iproc-rng200: Fix disable of the block.
-Date:   Fri, 18 Dec 2020 11:57:07 +0100
-Message-Id: <20201218105708.28480-1-matthias.bgg@kernel.org>
+Subject: [PATCH v2 2/2] hwrng: iproc-rng200: Move enable/disable in separate function
+Date:   Fri, 18 Dec 2020 11:57:08 +0100
+Message-Id: <20201218105708.28480-2-matthias.bgg@kernel.org>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201218105708.28480-1-matthias.bgg@kernel.org>
+References: <20201218105708.28480-1-matthias.bgg@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -31,50 +33,96 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Matthias Brugger <mbrugger@suse.com>
 
-When trying to disable the block we bitwise or the control
-register with value zero. This is confusing as using bitwise or with
-value zero doesn't have any effect at all. Drop this as we already set
-the enable bit to zero by appling inverted RNG_RBGEN_MASK.
+We are calling the same code for enable and disable the block in various
+parts of the driver. Put that code into a new function to reduce code
+duplication.
 
 Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 
 ---
 
 Changes in v2:
-- fix commit message, dropping Fixes tag
-- drop inverted RNT_RBGEN_ENABLE in disable case
+- rename function to iproc_rng200_enable_set()
+- use u32 value instead of uint32_t
 
- drivers/char/hw_random/iproc-rng200.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/char/hw_random/iproc-rng200.c | 35 ++++++++++++---------------
+ 1 file changed, 16 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/char/hw_random/iproc-rng200.c b/drivers/char/hw_random/iproc-rng200.c
-index 01583faf9893..70cd818a0f31 100644
+index 70cd818a0f31..a43743887db1 100644
 --- a/drivers/char/hw_random/iproc-rng200.c
 +++ b/drivers/char/hw_random/iproc-rng200.c
-@@ -28,7 +28,6 @@
- #define RNG_CTRL_OFFSET					0x00
- #define RNG_CTRL_RNG_RBGEN_MASK				0x00001FFF
- #define RNG_CTRL_RNG_RBGEN_ENABLE			0x00000001
--#define RNG_CTRL_RNG_RBGEN_DISABLE			0x00000000
+@@ -53,14 +53,24 @@ struct iproc_rng200_dev {
  
- #define RNG_SOFT_RESET_OFFSET				0x04
- #define RNG_SOFT_RESET					0x00000001
-@@ -61,7 +60,6 @@ static void iproc_rng200_restart(void __iomem *rng_base)
- 	/* Disable RBG */
+ #define to_rng_priv(rng)	container_of(rng, struct iproc_rng200_dev, rng)
+ 
+-static void iproc_rng200_restart(void __iomem *rng_base)
++static void iproc_rng200_enable_set(void __iomem *rng_base, bool enable)
+ {
+-	uint32_t val;
++	u32 val;
+ 
+-	/* Disable RBG */
  	val = ioread32(rng_base + RNG_CTRL_OFFSET);
  	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
--	val |= RNG_CTRL_RNG_RBGEN_DISABLE;
++
++	if (enable)
++		val |= RNG_CTRL_RNG_RBGEN_ENABLE;
++
  	iowrite32(val, rng_base + RNG_CTRL_OFFSET);
++}
++
++static void iproc_rng200_restart(void __iomem *rng_base)
++{
++	uint32_t val;
++
++	iproc_rng200_enable_set(rng_base, false);
  
  	/* Clear all interrupt status */
-@@ -174,7 +172,6 @@ static void iproc_rng200_cleanup(struct hwrng *rng)
- 	/* Disable RNG hardware */
- 	val = ioread32(priv->base + RNG_CTRL_OFFSET);
- 	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
--	val |= RNG_CTRL_RNG_RBGEN_DISABLE;
- 	iowrite32(val, priv->base + RNG_CTRL_OFFSET);
+ 	iowrite32(0xFFFFFFFFUL, rng_base + RNG_INT_STATUS_OFFSET);
+@@ -82,11 +92,7 @@ static void iproc_rng200_restart(void __iomem *rng_base)
+ 	val &= ~RBG_SOFT_RESET;
+ 	iowrite32(val, rng_base + RBG_SOFT_RESET_OFFSET);
+ 
+-	/* Enable RBG */
+-	val = ioread32(rng_base + RNG_CTRL_OFFSET);
+-	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+-	val |= RNG_CTRL_RNG_RBGEN_ENABLE;
+-	iowrite32(val, rng_base + RNG_CTRL_OFFSET);
++	iproc_rng200_enable_set(rng_base, true);
  }
  
+ static int iproc_rng200_read(struct hwrng *rng, void *buf, size_t max,
+@@ -153,13 +159,8 @@ static int iproc_rng200_read(struct hwrng *rng, void *buf, size_t max,
+ static int iproc_rng200_init(struct hwrng *rng)
+ {
+ 	struct iproc_rng200_dev *priv = to_rng_priv(rng);
+-	uint32_t val;
+ 
+-	/* Setup RNG. */
+-	val = ioread32(priv->base + RNG_CTRL_OFFSET);
+-	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+-	val |= RNG_CTRL_RNG_RBGEN_ENABLE;
+-	iowrite32(val, priv->base + RNG_CTRL_OFFSET);
++	iproc_rng200_enable_set(priv->base, true);
+ 
+ 	return 0;
+ }
+@@ -167,12 +168,8 @@ static int iproc_rng200_init(struct hwrng *rng)
+ static void iproc_rng200_cleanup(struct hwrng *rng)
+ {
+ 	struct iproc_rng200_dev *priv = to_rng_priv(rng);
+-	uint32_t val;
+ 
+-	/* Disable RNG hardware */
+-	val = ioread32(priv->base + RNG_CTRL_OFFSET);
+-	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+-	iowrite32(val, priv->base + RNG_CTRL_OFFSET);
++	iproc_rng200_enable_set(priv->base, false);
+ }
+ 
+ static int iproc_rng200_probe(struct platform_device *pdev)
 -- 
 2.29.2
 
