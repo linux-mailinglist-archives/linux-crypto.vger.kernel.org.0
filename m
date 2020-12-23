@@ -2,78 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616462E168F
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 04:10:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9131D2E1980
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 08:52:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731391AbgLWC7u (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Dec 2020 21:59:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45490 "EHLO mail.kernel.org"
+        id S1727093AbgLWHvd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Dec 2020 02:51:33 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:36572 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728855AbgLWCUE (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:20:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AE3A22248;
-        Wed, 23 Dec 2020 02:19:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689987;
-        bh=iZ9EnPp4I+VsiV/fkq4x3HqWHGBcJbtlzoXdQQkJY/o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tyxqFqurXB1hMqxcqg7JUDnyhCzndFmeOBfRaO4dBR5NQ0+qYvHGNEDwK+qqErCiO
-         IDSfy4nPfgn9fJarMWKZJCIpHTwwIdGAC5aCU6BkmT3OrCuDXj/AOxuK4E+BYu9V1Q
-         5q3FVtiXvdmHLMBd7PWg9PgD0d7YzxVZJyCuMmCGVcDJHXc6jiWW6bh1extupU2nlP
-         UQ/gbY84m+ndWHWEMhCyWwGwGSgxRYqEWP3/E+XxSNlWp0GoZKiKgA1J//JZSpV+bf
-         hb6VPu1pV0U8PxunbLpXjcRbfzl7ob3XLd+cyQDfqIgQFmuZlAQwWbHyS2hNL2hWTM
-         NVVnPYCBkdveg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 073/130] crypto: qce - Fix SHA result buffer corruption issues
-Date:   Tue, 22 Dec 2020 21:17:16 -0500
-Message-Id: <20201223021813.2791612-73-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
-References: <20201223021813.2791612-1-sashal@kernel.org>
+        id S1727063AbgLWHvd (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 23 Dec 2020 02:51:33 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kryun-0006aQ-Qa; Wed, 23 Dec 2020 18:50:34 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 23 Dec 2020 18:50:33 +1100
+Date:   Wed, 23 Dec 2020 18:50:33 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mike Healy <mikex.healy@intel.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: CRYPTO_DEV_KEEMBAY_OCS_AES_SM4 should depend on
+ ARCH_KEEMBAY
+Message-ID: <20201223075033.GA8269@gondor.apana.org.au>
+References: <20201216131459.1320396-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216131459.1320396-1-geert+renesas@glider.be>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Thara Gopinath <thara.gopinath@linaro.org>
+On Wed, Dec 16, 2020 at 02:14:59PM +0100, Geert Uytterhoeven wrote:
+> The Intel Keem Bay Offload and Crypto Subsystem (OCS) is only present on
+> Intel Keem Bay SoCs.  Hence add a dependency on ARCH_KEEMBAY, to prevent
+> asking the user about this driver when configuring a kernel without
+> Intel Keem Bay platform support.
+> 
+> While at it, fix a misspelling of "cipher".
+> 
+> Fixes: 88574332451380f4 ("crypto: keembay - Add support for Keem Bay OCS AES/SM4")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/crypto/keembay/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-[ Upstream commit 1148a9654b5a69611d33e14719251c6ec20f5f2c ]
-
-Partial hash was being copied into the final result buffer without the
-entire message block processed. Depending on how the end user processes
-this result buffer, errors vary from result buffer corruption to result
-buffer poisoing. Fix this issue by ensuring that only the final hash value
-is copied into the result buffer.
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/crypto/qce/sha.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/qce/sha.c b/drivers/crypto/qce/sha.c
-index 0853e74583ade..981957e9db592 100644
---- a/drivers/crypto/qce/sha.c
-+++ b/drivers/crypto/qce/sha.c
-@@ -47,7 +47,7 @@ static void qce_ahash_done(void *data)
- 	dma_unmap_sg(qce->dev, &rctx->result_sg, 1, DMA_FROM_DEVICE);
- 
- 	memcpy(rctx->digest, result->auth_iv, digestsize);
--	if (req->result)
-+	if (req->result && rctx->last_blk)
- 		memcpy(req->result, result->auth_iv, digestsize);
- 
- 	rctx->byte_count[0] = cpu_to_be32(result->auth_byte_count[0]);
+Patch applied.  Thanks.
 -- 
-2.27.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
