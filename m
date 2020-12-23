@@ -2,91 +2,79 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF5A2E2073
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 19:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1067D2E2086
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 19:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727372AbgLWSbU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 23 Dec 2020 13:31:20 -0500
-Received: from aquckbulck.top ([117.50.12.210]:63385 "EHLO aquckbulck.top"
+        id S1725957AbgLWSkl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Dec 2020 13:40:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727225AbgLWSbU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 23 Dec 2020 13:31:20 -0500
-X-Greylist: delayed 643 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Dec 2020 13:31:19 EST
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=default; d=aquckbulck.top;
- h=Reply-To:From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding; i=sales@aquckbulck.top;
- bh=MDtVvOBFMmp+704YsIBqQ6FpA/M=;
- b=MM7HHrFbDP2BxysLgk0/mLKqX7nnZDYY7ig4UQ0Q5cpHqOGy4LUA4kLNnGPRQAWHn8C8SArm+CVb
-   fMGN7w4gT+G39BSl/7FeOPS0b7/7iBIIBlgAdt8XcPN1m9WnV7230XmwAEUVSiOnOJx/09G99keB
-   eYCg3I6njZ+W/fLX0ZM=
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=default; d=aquckbulck.top;
- b=JRJR8tR9eKKEgLUbB6/3T7QakTTDhJo/cnG5VRrXy8ft/oOdvQFsWAJeV72KkFTqxPHwCrWOTFx/
-   GKE9ct5ht3tgHT9v1zuyBokbB8AUh0gaMu5wldoWD3a4LQWRQ5H4W5jemBuxg4S9NLZylHiUaAks
-   NPu+prHB70W8m3IhQQM=;
-Reply-To: andrewgraham267@gmail.com
-From:   TWP PROGRAM 2021 <sales@aquckbulck.top>
-To:     linux-crypto@vger.kernel.org
-Subject: =?UTF-8?B?TWFucG93ZXIgUmVjcnVpdG1lbnQgRm9yIENhbmFkYeKEog==?=
-Date:   23 Dec 2020 19:19:02 +0100
-Message-ID: <20201223191900.B9F1350313F52072@aquckbulck.top>
+        id S1725907AbgLWSkk (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 23 Dec 2020 13:40:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD91522287
+        for <linux-crypto@vger.kernel.org>; Wed, 23 Dec 2020 18:39:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608748799;
+        bh=vUX9x2rjJIpqCN27dCtMPBApRrG120cLfEn3C3MIebg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QdhntgnfinHKEZVAAaoto0H97bNAoJDmn1+ULGwArSqczsPCBwH1ZWKSGFs33Rh1k
+         IBTR838/BXEJUNE4uPsFMjvXbp53r+B2biQv209B8MzvOBjar+a0GpmVh6oIcdKXcW
+         Motw0LvuywnVusW1Z061KXVqT6fV2qTp/ZOye03lLtsNOGC7MiGGZ/y7Pq3ZroF+C4
+         MJRbxQN9PjO/pUyIBlxzD1renkIoW3aKoBozLGbKQEy3Efqt/uYDMmCRblSnsLHghH
+         sLVzmAcWuQv84OKSQobPZ7CbApCPeaPgMlRucsACFz/52KxrUkrwzQ7/2tG1J0MAKw
+         peeX4V6wASnRQ==
+Received: by mail-ot1-f53.google.com with SMTP id j12so15810286ota.7
+        for <linux-crypto@vger.kernel.org>; Wed, 23 Dec 2020 10:39:59 -0800 (PST)
+X-Gm-Message-State: AOAM531+Yvm5ds/3EFnyUo4t4NyxeD/0LiGDJD480TSpLUa4c4E9fOim
+        oAbtiPyywf+1hzaBTMne/4JHa66LRxBYyK5ENB0=
+X-Google-Smtp-Source: ABdhPJxWJkOr49i97SRHcVokdrAKmYZCW7wVjty1rwOsRT6OWN3cAeXlb10fBE6M7+aj9uvaf/bfMtgzX7XW1a4vcCQ=
+X-Received: by 2002:a9d:12c:: with SMTP id 41mr20163321otu.77.1608748799155;
+ Wed, 23 Dec 2020 10:39:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+References: <20201222130024.694558-1-marco.chiappero@intel.com>
+In-Reply-To: <20201222130024.694558-1-marco.chiappero@intel.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 23 Dec 2020 19:39:46 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGUBQX2HrGSS8OAC2zDS0_WyaiRQzxyFatpUG+Px+WcKQ@mail.gmail.com>
+Message-ID: <CAMj1kXGUBQX2HrGSS8OAC2zDS0_WyaiRQzxyFatpUG+Px+WcKQ@mail.gmail.com>
+Subject: Re: [PATCH] crypto: qat - add CRYPTO_AES to Kconfig dependencies
+To:     Marco Chiappero <marco.chiappero@intel.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        qat-linux <qat-linux@intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear Sir/Madam,
+On Tue, 22 Dec 2020 at 13:39, Marco Chiappero <marco.chiappero@intel.com> wrote:
+>
+> This patch includes a missing dependency (CRYPTO_AES) which may
+> lead to an "undefined reference to `aes_expandkey'" linking error.
+>
+> Fixes: 5106dfeaeabe ("crypto: qat - add AES-XTS support for QAT GEN4 devices")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
+> ---
+>  drivers/crypto/qat/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/crypto/qat/Kconfig b/drivers/crypto/qat/Kconfig
+> index beb379b23dc3..846a3d90b41a 100644
+> --- a/drivers/crypto/qat/Kconfig
+> +++ b/drivers/crypto/qat/Kconfig
+> @@ -11,6 +11,7 @@ config CRYPTO_DEV_QAT
+>         select CRYPTO_SHA1
+>         select CRYPTO_SHA256
+>         select CRYPTO_SHA512
+> +       select CRYPTO_AES
+>         select FW_LOADER
+>
+>  config CRYPTO_DEV_QAT_DH895xCC
+> --
+> 2.26.2
+>
 
-We are authorized to recruit 120 unskilled workers to work in=20
-Canada on a two years contract. Please kindly let us know if you=20
-can supply the same workers as my client's requirements for the=20
-following positions. Fish Packers, Cleaners, Laborers, Fruit=20
-packers, Supervisors, supermarket manager, salesman/woman,=20
-Storekeeper, Ground Maintenance, Gardener, Truck Drivers.
-Age from 20 to 55 years old is eligible to work, Primary=20
-Location: Montreal Quebec Canada.
-
-NOTE: No qualification is needed.
-
-TERMS AND CONDITIONS:
-
-1. Accommodation =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 - Provided.
-2. Ticket =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0-Pr=
-ovided.
-3. Medical =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 - Provid=
-ed.
-4. Transportation =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0- Provided.
-5. Working hours =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 - 8a.m-4p.m [Mon-Sat]
-6. Vacation =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0- 28.5 d=
-ays every year
-7. Salary =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0- C=
-a$20 per hourly
-8. Contract =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0- 2 year=
-s. Renewable
-9. Extra time =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0- Ca$22per ho=
-urly
-10. Insurance & Pension =C2=A0 =C2=A0 - According to Quebec Labor laws.
-11. Requirement =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 120 worker=
-s
-12. job description =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Laborers
-13. Skilled required =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Physically fit
-Other Benefits =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Famil=
-y Status, group benefit, and=20
-other fringe benefits.
-
-
-If you need more information regards to this recruitment please=20
-feel free to contact us at your most convenient time. Your Quick=20
-and Favorable Response would be highly appreciated.
-
-Best Regards
-
-
-Mr. Andrew Graham
-7450 Rue des Loutres
-Quebec City,
-Canada
-Phone: +1-581-533-6655
-Whats-app: +1-581-533-6655
-E-mail | andrewgraham267@gmail.com=20
+This should be 'select CRYPTO_LIB_AES'
