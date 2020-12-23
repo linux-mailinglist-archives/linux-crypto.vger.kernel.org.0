@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E40652E19C3
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 09:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4898D2E19C6
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 09:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbgLWIOP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 23 Dec 2020 03:14:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46934 "EHLO mail.kernel.org"
+        id S1727851AbgLWIOQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Dec 2020 03:14:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727827AbgLWIOP (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1727815AbgLWIOP (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Wed, 23 Dec 2020 03:14:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 346EF224D3;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA16B224D4;
         Wed, 23 Dec 2020 08:12:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1608711176;
-        bh=Kg5dRTba2a6zJZ3NuTGgwpK24+5oriIRi29coh0tJW8=;
+        bh=q4F9axpwjHT+hZCneYUehP2waWRDVZo8NQHm18Rvv8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XYRMu+FBeoVMUcupJYwwZOqU7b3daxt5OZvbwW9/YVdasPjxbBiMVzwBWPD20425A
-         F0qckfosbCHfAIJtvgLvuvKtjKx8+eBrYBRRC+vuLx7b0DkgjpWDt+XFUzsYNIJh6O
-         sozVo5XLKJqpFQYkyNl5bBl157MTdk4GC3zN2FHXEesCYgC+L/xYoRq72ngY16rHec
-         a/pXSSAsN/fDc36zkWWSSruVA4tu7SmOU5y6uAzUFME0Aw9RjsEB9rr8xZ4V8sf3Pl
-         YQe93nZ9/BtOidJkcPJbBmQqHTDcM0lbSTzT6OpXBQTnH6yLkw85LXjXGORDsMQ/mV
-         3UUGpJz9yy+3Q==
+        b=bRgb0YHY7nLLWkRGRYheVHAwG0hkbfuZl72KhzElKOFinUleUQ4wTPZULrx1EOiS/
+         91+jd1LkKsWFcRWBQ6tw0Nu+k42lFGIkiCcMuuopKoNLR+ukNCuyykggGUqGbB/FeE
+         VF38QzIeILBMrE3hoJ6k1oMOLz75rn9WPCm0xM0TMtmCVEb1nGNGvUOW+h2FSqs+yX
+         LMKs71l1HfIu2jxyJc8b81qEWoHSHbVJax1NGm4Z1yalmGhd9ej3Zd7R7FXqilYTUj
+         +wVRwMdfL4Q+1oe/05+qbxglVphIa86kPAeP4w7yY+2d9xeK5CYXCnDtJDL/D9eWYB
+         NVfRIEmJURd2Q==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org,
@@ -31,9 +31,9 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         David Sterba <dsterba@suse.com>,
         "Jason A . Donenfeld" <Jason@zx2c4.com>,
         Paul Crowley <paulcrowley@google.com>
-Subject: [PATCH v3 07/14] crypto: blake2s - add comment for blake2s_state fields
-Date:   Wed, 23 Dec 2020 00:09:56 -0800
-Message-Id: <20201223081003.373663-8-ebiggers@kernel.org>
+Subject: [PATCH v3 08/14] crypto: blake2s - adjust include guard naming
+Date:   Wed, 23 Dec 2020 00:09:57 -0800
+Message-Id: <20201223081003.373663-9-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201223081003.373663-1-ebiggers@kernel.org>
 References: <20201223081003.373663-1-ebiggers@kernel.org>
@@ -45,26 +45,57 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-The first three fields of 'struct blake2s_state' are used in assembly
-code, which isn't immediately obvious, so add a comment to this effect.
+Use the full path in the include guards for the BLAKE2s headers to avoid
+ambiguity and to match the convention for most files in include/crypto/.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/crypto/blake2s.h | 1 +
- 1 file changed, 1 insertion(+)
+ include/crypto/blake2s.h          | 6 +++---
+ include/crypto/internal/blake2s.h | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/include/crypto/blake2s.h b/include/crypto/blake2s.h
-index 734ed22b7a6aa..f1c8330a61a91 100644
+index f1c8330a61a91..3f06183c2d804 100644
 --- a/include/crypto/blake2s.h
 +++ b/include/crypto/blake2s.h
-@@ -24,6 +24,7 @@ enum blake2s_lengths {
- };
+@@ -3,8 +3,8 @@
+  * Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+  */
  
- struct blake2s_state {
-+	/* 'h', 't', and 'f' are used in assembly code, so keep them as-is. */
- 	u32 h[8];
- 	u32 t[2];
- 	u32 f[2];
+-#ifndef BLAKE2S_H
+-#define BLAKE2S_H
++#ifndef _CRYPTO_BLAKE2S_H
++#define _CRYPTO_BLAKE2S_H
+ 
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+@@ -105,4 +105,4 @@ static inline void blake2s(u8 *out, const u8 *in, const u8 *key,
+ void blake2s256_hmac(u8 *out, const u8 *in, const u8 *key, const size_t inlen,
+ 		     const size_t keylen);
+ 
+-#endif /* BLAKE2S_H */
++#endif /* _CRYPTO_BLAKE2S_H */
+diff --git a/include/crypto/internal/blake2s.h b/include/crypto/internal/blake2s.h
+index 867ef3753f5c1..8e50d487500f2 100644
+--- a/include/crypto/internal/blake2s.h
++++ b/include/crypto/internal/blake2s.h
+@@ -4,8 +4,8 @@
+  * Keep this in sync with the corresponding BLAKE2b header.
+  */
+ 
+-#ifndef BLAKE2S_INTERNAL_H
+-#define BLAKE2S_INTERNAL_H
++#ifndef _CRYPTO_INTERNAL_BLAKE2S_H
++#define _CRYPTO_INTERNAL_BLAKE2S_H
+ 
+ #include <crypto/blake2s.h>
+ #include <crypto/internal/hash.h>
+@@ -116,4 +116,4 @@ static inline int crypto_blake2s_final(struct shash_desc *desc, u8 *out,
+ 	return 0;
+ }
+ 
+-#endif /* BLAKE2S_INTERNAL_H */
++#endif /* _CRYPTO_INTERNAL_BLAKE2S_H */
 -- 
 2.29.2
 
