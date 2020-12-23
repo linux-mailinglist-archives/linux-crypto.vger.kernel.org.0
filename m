@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607AA2E227D
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 23:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 488272E227F
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 23:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbgLWWk1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 23 Dec 2020 17:40:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59406 "EHLO mail.kernel.org"
+        id S1726885AbgLWWk2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Dec 2020 17:40:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726662AbgLWWk0 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 23 Dec 2020 17:40:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7AB82251E;
-        Wed, 23 Dec 2020 22:39:18 +0000 (UTC)
+        id S1726662AbgLWWk2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 23 Dec 2020 17:40:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 453E92253A;
+        Wed, 23 Dec 2020 22:39:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608763160;
-        bh=yMEco4jB6uPO3oCF1nLy/Rr8w5NC9egUV5C3NnmzVCk=;
+        s=k20201202; t=1608763163;
+        bh=OIRH+BbthxHl/rjCstDZNorJmgFvhqADaPgq0/iYUDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sz+lShGkzXwrAfJ/3A9DizkviUJrcdZJ5V8N3llj111kY5+6hBilzxuFotvU3KkwW
-         MZjY/ingR6jkr2mxPbQoR6R2Ov9uqiTOHjUhmjfhOGWLveySPme9EMllfQHWHwNJoN
-         vU2TRSgewZnf5prlkB9w+6DEd5ItnUdKWK94ztBGtTVVcj9lEbVbszohOZLQ1JHPM5
-         vhTIDtPRC1I5NO9AAKJzrb74AjRHo8GbiqGQqRBtVz+G8/iCCWTqtfUrqLVP+uy554
-         kcJJb85SAMGOY3jkwb6tw/66M39gIU/U+N3DKdE1/qZO878g2tc++qeYaZOcLFexfz
-         jU0IOFZmdBYjg==
+        b=KuUDeROZPzcYguBMKUgMJTWwH5hvM9oqufAQwMgj7pQ1ELEspOlpGdLiki7kXdnRl
+         obsRBV3q/L2x7/uJWMHH5DgQqgjKIPGM9OOrngEqBkqg4DzKHpJv64eT+EkCxWrxLp
+         0BmGDb02sjtuI/R58yzRaws5Lmxpwq09Jx1wNk5go9zKulmLPrGJPP2XBDMnurj4Dd
+         QEfphAq+xhb8Cj4hOpZEiYvIldGYB6LUKpdLmLcpzpdYjct/J1uR5A16lguBWHO5ta
+         GZKi5DkXFy29IkTFqMvmFTLzcZlr+EnGtcnna/+TD6fa1I+QnPMTu7vpOqJ5ySc8GW
+         BZE5IUEc6geoA==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     dm-devel@redhat.com, Ard Biesheuvel <ardb@kernel.org>,
@@ -31,9 +31,9 @@ Cc:     dm-devel@redhat.com, Ard Biesheuvel <ardb@kernel.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Milan Broz <gmazyland@gmail.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [RFC PATCH 08/10] crypto: x86/serpent - drop CTR mode implementation
-Date:   Wed, 23 Dec 2020 23:38:39 +0100
-Message-Id: <20201223223841.11311-9-ardb@kernel.org>
+Subject: [RFC PATCH 09/10] crypto: x86/twofish - drop CTR mode implementation
+Date:   Wed, 23 Dec 2020 23:38:40 +0100
+Message-Id: <20201223223841.11311-10-ardb@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201223223841.11311-1-ardb@kernel.org>
 References: <20201223223841.11311-1-ardb@kernel.org>
@@ -41,30 +41,29 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Serpent in CTR mode is never used by the kernel directly, and is highly
+Twofish in CTR mode is never used by the kernel directly, and is highly
 unlikely to be relied upon by dm-crypt or algif_skcipher. So let's drop
 the accelerated CTR mode implementation, and instead, rely on the CTR
 template and the bare cipher.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/crypto/serpent-avx-x86_64-asm_64.S | 20 ------
- arch/x86/crypto/serpent-avx2-asm_64.S       | 25 --------
- arch/x86/crypto/serpent_avx2_glue.c         | 38 -----------
- arch/x86/crypto/serpent_avx_glue.c          | 51 ---------------
- arch/x86/crypto/serpent_sse2_glue.c         | 67 --------------------
- 5 files changed, 201 deletions(-)
+ arch/x86/crypto/twofish-avx-x86_64-asm_64.S | 27 --------
+ arch/x86/crypto/twofish_avx_glue.c          | 38 -----------
+ arch/x86/crypto/twofish_glue_3way.c         | 72 --------------------
+ arch/x86/include/asm/crypto/twofish.h       |  4 --
+ 4 files changed, 141 deletions(-)
 
-diff --git a/arch/x86/crypto/serpent-avx-x86_64-asm_64.S b/arch/x86/crypto/serpent-avx-x86_64-asm_64.S
-index 6b41f46bcc76..b7ee24df7fba 100644
---- a/arch/x86/crypto/serpent-avx-x86_64-asm_64.S
-+++ b/arch/x86/crypto/serpent-avx-x86_64-asm_64.S
-@@ -711,23 +711,3 @@ SYM_FUNC_START(serpent_cbc_dec_8way_avx)
+diff --git a/arch/x86/crypto/twofish-avx-x86_64-asm_64.S b/arch/x86/crypto/twofish-avx-x86_64-asm_64.S
+index 84e61ef03638..37e63b3c664e 100644
+--- a/arch/x86/crypto/twofish-avx-x86_64-asm_64.S
++++ b/arch/x86/crypto/twofish-avx-x86_64-asm_64.S
+@@ -374,30 +374,3 @@ SYM_FUNC_START(twofish_cbc_dec_8way)
  	FRAME_END
  	ret;
- SYM_FUNC_END(serpent_cbc_dec_8way_avx)
+ SYM_FUNC_END(twofish_cbc_dec_8way)
 -
--SYM_FUNC_START(serpent_ctr_8way_avx)
+-SYM_FUNC_START(twofish_ctr_8way)
 -	/* input:
 -	 *	%rdi: ctx, CTX
 -	 *	%rsi: dst
@@ -73,308 +72,211 @@ index 6b41f46bcc76..b7ee24df7fba 100644
 -	 */
 -	FRAME_BEGIN
 -
+-	pushq %r12;
+-
+-	movq %rsi, %r11;
+-	movq %rdx, %r12;
+-
 -	load_ctr_8way(%rcx, .Lbswap128_mask, RA1, RB1, RC1, RD1, RA2, RB2, RC2,
--		      RD2, RK0, RK1, RK2);
+-		      RD2, RX0, RX1, RY0);
 -
--	call __serpent_enc_blk8_avx;
+-	call __twofish_enc_blk8;
 -
--	store_ctr_8way(%rdx, %rsi, RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2);
+-	store_ctr_8way(%r12, %r11, RC1, RD1, RA1, RB1, RC2, RD2, RA2, RB2);
 -
--	FRAME_END
--	ret;
--SYM_FUNC_END(serpent_ctr_8way_avx)
-diff --git a/arch/x86/crypto/serpent-avx2-asm_64.S b/arch/x86/crypto/serpent-avx2-asm_64.S
-index a510a949f02f..9161b6e441f3 100644
---- a/arch/x86/crypto/serpent-avx2-asm_64.S
-+++ b/arch/x86/crypto/serpent-avx2-asm_64.S
-@@ -724,28 +724,3 @@ SYM_FUNC_START(serpent_cbc_dec_16way)
- 	FRAME_END
- 	ret;
- SYM_FUNC_END(serpent_cbc_dec_16way)
--
--SYM_FUNC_START(serpent_ctr_16way)
--	/* input:
--	 *	%rdi: ctx, CTX
--	 *	%rsi: dst (16 blocks)
--	 *	%rdx: src (16 blocks)
--	 *	%rcx: iv (little endian, 128bit)
--	 */
--	FRAME_BEGIN
--
--	vzeroupper;
--
--	load_ctr_16way(%rcx, .Lbswap128_mask, RA1, RB1, RC1, RD1, RA2, RB2, RC2,
--		       RD2, RK0, RK0x, RK1, RK1x, RK2, RK2x, RK3, RK3x, RNOT,
--		       tp);
--
--	call __serpent_enc_blk16;
--
--	store_ctr_16way(%rdx, %rsi, RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2);
--
--	vzeroupper;
+-	popq %r12;
 -
 -	FRAME_END
 -	ret;
--SYM_FUNC_END(serpent_ctr_16way)
-diff --git a/arch/x86/crypto/serpent_avx2_glue.c b/arch/x86/crypto/serpent_avx2_glue.c
-index 9cdf2c078e21..28e542c6512a 100644
---- a/arch/x86/crypto/serpent_avx2_glue.c
-+++ b/arch/x86/crypto/serpent_avx2_glue.c
-@@ -22,8 +22,6 @@ asmlinkage void serpent_ecb_enc_16way(const void *ctx, u8 *dst, const u8 *src);
- asmlinkage void serpent_ecb_dec_16way(const void *ctx, u8 *dst, const u8 *src);
- asmlinkage void serpent_cbc_dec_16way(const void *ctx, u8 *dst, const u8 *src);
+-SYM_FUNC_END(twofish_ctr_8way)
+diff --git a/arch/x86/crypto/twofish_avx_glue.c b/arch/x86/crypto/twofish_avx_glue.c
+index 7b539bbb108f..13f810b61034 100644
+--- a/arch/x86/crypto/twofish_avx_glue.c
++++ b/arch/x86/crypto/twofish_avx_glue.c
+@@ -25,8 +25,6 @@ asmlinkage void twofish_ecb_enc_8way(const void *ctx, u8 *dst, const u8 *src);
+ asmlinkage void twofish_ecb_dec_8way(const void *ctx, u8 *dst, const u8 *src);
  
--asmlinkage void serpent_ctr_16way(const void *ctx, u8 *dst, const u8 *src,
--				  le128 *iv);
- static int serpent_setkey_skcipher(struct crypto_skcipher *tfm,
+ asmlinkage void twofish_cbc_dec_8way(const void *ctx, u8 *dst, const u8 *src);
+-asmlinkage void twofish_ctr_8way(const void *ctx, u8 *dst, const u8 *src,
+-				 le128 *iv);
+ 
+ static int twofish_setkey_skcipher(struct crypto_skcipher *tfm,
  				   const u8 *key, unsigned int keylen)
- {
-@@ -46,22 +44,6 @@ static const struct common_glue_ctx serpent_enc = {
+@@ -55,22 +53,6 @@ static const struct common_glue_ctx twofish_enc = {
  	} }
  };
  
--static const struct common_glue_ctx serpent_ctr = {
+-static const struct common_glue_ctx twofish_ctr = {
 -	.num_funcs = 3,
--	.fpu_blocks_limit = 8,
+-	.fpu_blocks_limit = TWOFISH_PARALLEL_BLOCKS,
 -
 -	.funcs = { {
--		.num_blocks = 16,
--		.fn_u = { .ctr = serpent_ctr_16way }
--	},  {
--		.num_blocks = 8,
--		.fn_u = { .ctr = serpent_ctr_8way_avx }
+-		.num_blocks = TWOFISH_PARALLEL_BLOCKS,
+-		.fn_u = { .ctr = twofish_ctr_8way }
+-	}, {
+-		.num_blocks = 3,
+-		.fn_u = { .ctr = twofish_enc_blk_ctr_3way }
 -	}, {
 -		.num_blocks = 1,
--		.fn_u = { .ctr = __serpent_crypt_ctr }
+-		.fn_u = { .ctr = twofish_enc_blk_ctr }
 -	} }
 -};
 -
- static const struct common_glue_ctx serpent_dec = {
+ static const struct common_glue_ctx twofish_dec = {
  	.num_funcs = 3,
- 	.fpu_blocks_limit = 8,
-@@ -114,11 +96,6 @@ static int cbc_decrypt(struct skcipher_request *req)
- 	return glue_cbc_decrypt_req_128bit(&serpent_dec_cbc, req);
+ 	.fpu_blocks_limit = TWOFISH_PARALLEL_BLOCKS,
+@@ -123,11 +105,6 @@ static int cbc_decrypt(struct skcipher_request *req)
+ 	return glue_cbc_decrypt_req_128bit(&twofish_dec_cbc, req);
  }
  
 -static int ctr_crypt(struct skcipher_request *req)
 -{
--	return glue_ctr_req_128bit(&serpent_ctr, req);
+-	return glue_ctr_req_128bit(&twofish_ctr, req);
 -}
 -
- static struct skcipher_alg serpent_algs[] = {
+ static struct skcipher_alg twofish_algs[] = {
  	{
- 		.base.cra_name		= "__ecb(serpent)",
-@@ -147,21 +124,6 @@ static struct skcipher_alg serpent_algs[] = {
- 		.setkey			= serpent_setkey_skcipher,
+ 		.base.cra_name		= "__ecb(twofish)",
+@@ -156,21 +133,6 @@ static struct skcipher_alg twofish_algs[] = {
+ 		.setkey			= twofish_setkey_skcipher,
  		.encrypt		= cbc_encrypt,
  		.decrypt		= cbc_decrypt,
 -	}, {
--		.base.cra_name		= "__ctr(serpent)",
--		.base.cra_driver_name	= "__ctr-serpent-avx2",
--		.base.cra_priority	= 600,
--		.base.cra_flags		= CRYPTO_ALG_INTERNAL,
--		.base.cra_blocksize	= 1,
--		.base.cra_ctxsize	= sizeof(struct serpent_ctx),
--		.base.cra_module	= THIS_MODULE,
--		.min_keysize		= SERPENT_MIN_KEY_SIZE,
--		.max_keysize		= SERPENT_MAX_KEY_SIZE,
--		.ivsize			= SERPENT_BLOCK_SIZE,
--		.chunksize		= SERPENT_BLOCK_SIZE,
--		.setkey			= serpent_setkey_skcipher,
--		.encrypt		= ctr_crypt,
--		.decrypt		= ctr_crypt,
- 	},
- };
- 
-diff --git a/arch/x86/crypto/serpent_avx_glue.c b/arch/x86/crypto/serpent_avx_glue.c
-index b17a08b57a91..aa4605baf9d4 100644
---- a/arch/x86/crypto/serpent_avx_glue.c
-+++ b/arch/x86/crypto/serpent_avx_glue.c
-@@ -31,24 +31,6 @@ asmlinkage void serpent_cbc_dec_8way_avx(const void *ctx, u8 *dst,
- 					 const u8 *src);
- EXPORT_SYMBOL_GPL(serpent_cbc_dec_8way_avx);
- 
--asmlinkage void serpent_ctr_8way_avx(const void *ctx, u8 *dst, const u8 *src,
--				     le128 *iv);
--EXPORT_SYMBOL_GPL(serpent_ctr_8way_avx);
--
--void __serpent_crypt_ctr(const void *ctx, u8 *d, const u8 *s, le128 *iv)
--{
--	be128 ctrblk;
--	u128 *dst = (u128 *)d;
--	const u128 *src = (const u128 *)s;
--
--	le128_to_be128(&ctrblk, iv);
--	le128_inc(iv);
--
--	__serpent_encrypt(ctx, (u8 *)&ctrblk, (u8 *)&ctrblk);
--	u128_xor(dst, src, (u128 *)&ctrblk);
--}
--EXPORT_SYMBOL_GPL(__serpent_crypt_ctr);
--
- static int serpent_setkey_skcipher(struct crypto_skcipher *tfm,
- 				   const u8 *key, unsigned int keylen)
- {
-@@ -68,19 +50,6 @@ static const struct common_glue_ctx serpent_enc = {
- 	} }
- };
- 
--static const struct common_glue_ctx serpent_ctr = {
--	.num_funcs = 2,
--	.fpu_blocks_limit = SERPENT_PARALLEL_BLOCKS,
--
--	.funcs = { {
--		.num_blocks = SERPENT_PARALLEL_BLOCKS,
--		.fn_u = { .ctr = serpent_ctr_8way_avx }
--	}, {
--		.num_blocks = 1,
--		.fn_u = { .ctr = __serpent_crypt_ctr }
--	} }
--};
--
- static const struct common_glue_ctx serpent_dec = {
- 	.num_funcs = 2,
- 	.fpu_blocks_limit = SERPENT_PARALLEL_BLOCKS,
-@@ -127,11 +96,6 @@ static int cbc_decrypt(struct skcipher_request *req)
- 	return glue_cbc_decrypt_req_128bit(&serpent_dec_cbc, req);
- }
- 
--static int ctr_crypt(struct skcipher_request *req)
--{
--	return glue_ctr_req_128bit(&serpent_ctr, req);
--}
--
- static struct skcipher_alg serpent_algs[] = {
- 	{
- 		.base.cra_name		= "__ecb(serpent)",
-@@ -160,21 +124,6 @@ static struct skcipher_alg serpent_algs[] = {
- 		.setkey			= serpent_setkey_skcipher,
- 		.encrypt		= cbc_encrypt,
- 		.decrypt		= cbc_decrypt,
--	}, {
--		.base.cra_name		= "__ctr(serpent)",
--		.base.cra_driver_name	= "__ctr-serpent-avx",
--		.base.cra_priority	= 500,
--		.base.cra_flags		= CRYPTO_ALG_INTERNAL,
--		.base.cra_blocksize	= 1,
--		.base.cra_ctxsize	= sizeof(struct serpent_ctx),
--		.base.cra_module	= THIS_MODULE,
--		.min_keysize		= SERPENT_MIN_KEY_SIZE,
--		.max_keysize		= SERPENT_MAX_KEY_SIZE,
--		.ivsize			= SERPENT_BLOCK_SIZE,
--		.chunksize		= SERPENT_BLOCK_SIZE,
--		.setkey			= serpent_setkey_skcipher,
--		.encrypt		= ctr_crypt,
--		.decrypt		= ctr_crypt,
- 	},
- };
- 
-diff --git a/arch/x86/crypto/serpent_sse2_glue.c b/arch/x86/crypto/serpent_sse2_glue.c
-index 4fed8d26b91a..9acb3bf28feb 100644
---- a/arch/x86/crypto/serpent_sse2_glue.c
-+++ b/arch/x86/crypto/serpent_sse2_glue.c
-@@ -10,8 +10,6 @@
-  *
-  * CBC & ECB parts based on code (crypto/cbc.c,ecb.c) by:
-  *   Copyright (c) 2006 Herbert Xu <herbert@gondor.apana.org.au>
-- * CTR part based on code (crypto/ctr.c) by:
-- *   (C) Copyright IBM Corp. 2007 - Joy Latten <latten@us.ibm.com>
-  */
- 
- #include <linux/module.h>
-@@ -47,38 +45,6 @@ static void serpent_decrypt_cbc_xway(const void *ctx, u8 *d, const u8 *s)
- 		u128_xor(dst + (j + 1), dst + (j + 1), ivs + j);
- }
- 
--static void serpent_crypt_ctr(const void *ctx, u8 *d, const u8 *s, le128 *iv)
--{
--	be128 ctrblk;
--	u128 *dst = (u128 *)d;
--	const u128 *src = (const u128 *)s;
--
--	le128_to_be128(&ctrblk, iv);
--	le128_inc(iv);
--
--	__serpent_encrypt(ctx, (u8 *)&ctrblk, (u8 *)&ctrblk);
--	u128_xor(dst, src, (u128 *)&ctrblk);
--}
--
--static void serpent_crypt_ctr_xway(const void *ctx, u8 *d, const u8 *s,
--				   le128 *iv)
--{
--	be128 ctrblks[SERPENT_PARALLEL_BLOCKS];
--	u128 *dst = (u128 *)d;
--	const u128 *src = (const u128 *)s;
--	unsigned int i;
--
--	for (i = 0; i < SERPENT_PARALLEL_BLOCKS; i++) {
--		if (dst != src)
--			dst[i] = src[i];
--
--		le128_to_be128(&ctrblks[i], iv);
--		le128_inc(iv);
--	}
--
--	serpent_enc_blk_xway_xor(ctx, (u8 *)dst, (u8 *)ctrblks);
--}
--
- static const struct common_glue_ctx serpent_enc = {
- 	.num_funcs = 2,
- 	.fpu_blocks_limit = SERPENT_PARALLEL_BLOCKS,
-@@ -92,19 +58,6 @@ static const struct common_glue_ctx serpent_enc = {
- 	} }
- };
- 
--static const struct common_glue_ctx serpent_ctr = {
--	.num_funcs = 2,
--	.fpu_blocks_limit = SERPENT_PARALLEL_BLOCKS,
--
--	.funcs = { {
--		.num_blocks = SERPENT_PARALLEL_BLOCKS,
--		.fn_u = { .ctr = serpent_crypt_ctr_xway }
--	}, {
--		.num_blocks = 1,
--		.fn_u = { .ctr = serpent_crypt_ctr }
--	} }
--};
--
- static const struct common_glue_ctx serpent_dec = {
- 	.num_funcs = 2,
- 	.fpu_blocks_limit = SERPENT_PARALLEL_BLOCKS,
-@@ -152,11 +105,6 @@ static int cbc_decrypt(struct skcipher_request *req)
- 	return glue_cbc_decrypt_req_128bit(&serpent_dec_cbc, req);
- }
- 
--static int ctr_crypt(struct skcipher_request *req)
--{
--	return glue_ctr_req_128bit(&serpent_ctr, req);
--}
--
- static struct skcipher_alg serpent_algs[] = {
- 	{
- 		.base.cra_name		= "__ecb(serpent)",
-@@ -185,21 +133,6 @@ static struct skcipher_alg serpent_algs[] = {
- 		.setkey			= serpent_setkey_skcipher,
- 		.encrypt		= cbc_encrypt,
- 		.decrypt		= cbc_decrypt,
--	}, {
--		.base.cra_name		= "__ctr(serpent)",
--		.base.cra_driver_name	= "__ctr-serpent-sse2",
+-		.base.cra_name		= "__ctr(twofish)",
+-		.base.cra_driver_name	= "__ctr-twofish-avx",
 -		.base.cra_priority	= 400,
 -		.base.cra_flags		= CRYPTO_ALG_INTERNAL,
 -		.base.cra_blocksize	= 1,
--		.base.cra_ctxsize	= sizeof(struct serpent_ctx),
+-		.base.cra_ctxsize	= sizeof(struct twofish_ctx),
 -		.base.cra_module	= THIS_MODULE,
--		.min_keysize		= SERPENT_MIN_KEY_SIZE,
--		.max_keysize		= SERPENT_MAX_KEY_SIZE,
--		.ivsize			= SERPENT_BLOCK_SIZE,
--		.chunksize		= SERPENT_BLOCK_SIZE,
--		.setkey			= serpent_setkey_skcipher,
+-		.min_keysize		= TF_MIN_KEY_SIZE,
+-		.max_keysize		= TF_MAX_KEY_SIZE,
+-		.ivsize			= TF_BLOCK_SIZE,
+-		.chunksize		= TF_BLOCK_SIZE,
+-		.setkey			= twofish_setkey_skcipher,
 -		.encrypt		= ctr_crypt,
 -		.decrypt		= ctr_crypt,
  	},
  };
  
+diff --git a/arch/x86/crypto/twofish_glue_3way.c b/arch/x86/crypto/twofish_glue_3way.c
+index 768af6075479..b70f757403a3 100644
+--- a/arch/x86/crypto/twofish_glue_3way.c
++++ b/arch/x86/crypto/twofish_glue_3way.c
+@@ -52,46 +52,6 @@ void twofish_dec_blk_cbc_3way(const void *ctx, u8 *d, const u8 *s)
+ }
+ EXPORT_SYMBOL_GPL(twofish_dec_blk_cbc_3way);
+ 
+-void twofish_enc_blk_ctr(const void *ctx, u8 *d, const u8 *s, le128 *iv)
+-{
+-	be128 ctrblk;
+-	u128 *dst = (u128 *)d;
+-	const u128 *src = (const u128 *)s;
+-
+-	if (dst != src)
+-		*dst = *src;
+-
+-	le128_to_be128(&ctrblk, iv);
+-	le128_inc(iv);
+-
+-	twofish_enc_blk(ctx, (u8 *)&ctrblk, (u8 *)&ctrblk);
+-	u128_xor(dst, dst, (u128 *)&ctrblk);
+-}
+-EXPORT_SYMBOL_GPL(twofish_enc_blk_ctr);
+-
+-void twofish_enc_blk_ctr_3way(const void *ctx, u8 *d, const u8 *s, le128 *iv)
+-{
+-	be128 ctrblks[3];
+-	u128 *dst = (u128 *)d;
+-	const u128 *src = (const u128 *)s;
+-
+-	if (dst != src) {
+-		dst[0] = src[0];
+-		dst[1] = src[1];
+-		dst[2] = src[2];
+-	}
+-
+-	le128_to_be128(&ctrblks[0], iv);
+-	le128_inc(iv);
+-	le128_to_be128(&ctrblks[1], iv);
+-	le128_inc(iv);
+-	le128_to_be128(&ctrblks[2], iv);
+-	le128_inc(iv);
+-
+-	twofish_enc_blk_xor_3way(ctx, (u8 *)dst, (u8 *)ctrblks);
+-}
+-EXPORT_SYMBOL_GPL(twofish_enc_blk_ctr_3way);
+-
+ static const struct common_glue_ctx twofish_enc = {
+ 	.num_funcs = 2,
+ 	.fpu_blocks_limit = -1,
+@@ -105,19 +65,6 @@ static const struct common_glue_ctx twofish_enc = {
+ 	} }
+ };
+ 
+-static const struct common_glue_ctx twofish_ctr = {
+-	.num_funcs = 2,
+-	.fpu_blocks_limit = -1,
+-
+-	.funcs = { {
+-		.num_blocks = 3,
+-		.fn_u = { .ctr = twofish_enc_blk_ctr_3way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .ctr = twofish_enc_blk_ctr }
+-	} }
+-};
+-
+ static const struct common_glue_ctx twofish_dec = {
+ 	.num_funcs = 2,
+ 	.fpu_blocks_limit = -1,
+@@ -164,11 +111,6 @@ static int cbc_decrypt(struct skcipher_request *req)
+ 	return glue_cbc_decrypt_req_128bit(&twofish_dec_cbc, req);
+ }
+ 
+-static int ctr_crypt(struct skcipher_request *req)
+-{
+-	return glue_ctr_req_128bit(&twofish_ctr, req);
+-}
+-
+ static struct skcipher_alg tf_skciphers[] = {
+ 	{
+ 		.base.cra_name		= "ecb(twofish)",
+@@ -195,20 +137,6 @@ static struct skcipher_alg tf_skciphers[] = {
+ 		.setkey			= twofish_setkey_skcipher,
+ 		.encrypt		= cbc_encrypt,
+ 		.decrypt		= cbc_decrypt,
+-	}, {
+-		.base.cra_name		= "ctr(twofish)",
+-		.base.cra_driver_name	= "ctr-twofish-3way",
+-		.base.cra_priority	= 300,
+-		.base.cra_blocksize	= 1,
+-		.base.cra_ctxsize	= sizeof(struct twofish_ctx),
+-		.base.cra_module	= THIS_MODULE,
+-		.min_keysize		= TF_MIN_KEY_SIZE,
+-		.max_keysize		= TF_MAX_KEY_SIZE,
+-		.ivsize			= TF_BLOCK_SIZE,
+-		.chunksize		= TF_BLOCK_SIZE,
+-		.setkey			= twofish_setkey_skcipher,
+-		.encrypt		= ctr_crypt,
+-		.decrypt		= ctr_crypt,
+ 	},
+ };
+ 
+diff --git a/arch/x86/include/asm/crypto/twofish.h b/arch/x86/include/asm/crypto/twofish.h
+index 2c377a8042e1..12df400e6d53 100644
+--- a/arch/x86/include/asm/crypto/twofish.h
++++ b/arch/x86/include/asm/crypto/twofish.h
+@@ -17,9 +17,5 @@ asmlinkage void twofish_dec_blk_3way(const void *ctx, u8 *dst, const u8 *src);
+ 
+ /* helpers from twofish_x86_64-3way module */
+ extern void twofish_dec_blk_cbc_3way(const void *ctx, u8 *dst, const u8 *src);
+-extern void twofish_enc_blk_ctr(const void *ctx, u8 *dst, const u8 *src,
+-				le128 *iv);
+-extern void twofish_enc_blk_ctr_3way(const void *ctx, u8 *dst, const u8 *src,
+-				     le128 *iv);
+ 
+ #endif /* ASM_X86_TWOFISH_H */
 -- 
 2.17.1
 
