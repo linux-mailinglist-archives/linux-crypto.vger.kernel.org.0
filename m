@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29642E19B9
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 09:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B89F2E19BA
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 09:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727754AbgLWINf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1727759AbgLWINf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Wed, 23 Dec 2020 03:13:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46646 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:46662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727719AbgLWINf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1727712AbgLWINf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Wed, 23 Dec 2020 03:13:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 048B1224B0;
-        Wed, 23 Dec 2020 08:12:53 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71C29224B1;
+        Wed, 23 Dec 2020 08:12:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1608711174;
-        bh=AwolWcU1J9aB45wmv29fRS/pK38QTPj+/7OvPBNmghs=;
+        bh=fJvvlUbZ+ZnE9DMtGC+qGx+ypAakOfgJ3h5h3DOtI7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nl6T8XcJDi8VRbKkup4cgCKOYtpu9bkypOmsem76aK04D66bNx12XkRQBh34AzWJ6
-         skwBlyJTJf724l2kw7h43nbKBF6WG2ePRq/4iYbea9EzshxWZeWnFgI0ipdlaavO6b
-         Q5dKyDyjGMC3lTxO7JKWjsU4rTiLt4Ir364ET1rqLWJkNb4HM3M7UJySJuTa303xvf
-         1dDWjKc6ejT4oPIsFDknL6WQSTSXlzK18bsEKLlSWAyfe37mvZ3v8KDZf13CUObjKy
-         EAqxgxmk13uvAKj0ekXpLJedzztG754ahTsBQkMc+snhT0JUQQvNrKPfutMD96vT8z
-         G4TuNdtAlx04g==
+        b=hgUab9ejMd6tw83BmVEpH9nAOzPXmcy8F0TTpIuvpXt6Rs1OPlxF9ohod1+6IwiKb
+         kuwILck+wqZ+q9JQXBfXU0jbZ50SnR37eNRZZQNZIGy8+zYcMizxSiQLnCAId0Ev8/
+         NDIJkaVaxgTUUelwONFQembbtifmEzwdZ56IDm+4JzQMsjCHUQlE0Q6F3tufB9eDw4
+         3bX4MYkJtz29uVqdw35daOUX3mw6QTP2jj+HQMLNDNKkapuqLEUOY1W6xqNoYX/IhA
+         Xy3MT0dFsvvK9xJf9pk15uoTvZWQKlFex8TJnuSEKljsqT3pW4/IhUkAVBF/7zPrmA
+         bIIUCzg0W2xPg==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org,
@@ -31,9 +31,9 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         David Sterba <dsterba@suse.com>,
         "Jason A . Donenfeld" <Jason@zx2c4.com>,
         Paul Crowley <paulcrowley@google.com>
-Subject: [PATCH v3 02/14] crypto: x86/blake2s - define shash_alg structs using macros
-Date:   Wed, 23 Dec 2020 00:09:51 -0800
-Message-Id: <20201223081003.373663-3-ebiggers@kernel.org>
+Subject: [PATCH v3 03/14] crypto: blake2s - remove unneeded includes
+Date:   Wed, 23 Dec 2020 00:09:52 -0800
+Message-Id: <20201223081003.373663-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201223081003.373663-1-ebiggers@kernel.org>
 References: <20201223081003.373663-1-ebiggers@kernel.org>
@@ -45,111 +45,33 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-The shash_alg structs for the four variants of BLAKE2s are identical
-except for the algorithm name, driver name, and digest size.  So, avoid
-code duplication by using a macro to define these structs.
+It doesn't make sense for the generic implementation of BLAKE2s to
+include <crypto/internal/simd.h> and <linux/jump_label.h>, as these are
+things that would only be useful in an architecture-specific
+implementation.  Remove these unnecessary includes.
 
 Acked-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/x86/crypto/blake2s-glue.c | 84 ++++++++++------------------------
- 1 file changed, 23 insertions(+), 61 deletions(-)
+ crypto/blake2s_generic.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/x86/crypto/blake2s-glue.c b/arch/x86/crypto/blake2s-glue.c
-index c025a01cf7084..4dcb2ee89efc9 100644
---- a/arch/x86/crypto/blake2s-glue.c
-+++ b/arch/x86/crypto/blake2s-glue.c
-@@ -129,67 +129,29 @@ static int crypto_blake2s_final(struct shash_desc *desc, u8 *out)
- 	return 0;
- }
+diff --git a/crypto/blake2s_generic.c b/crypto/blake2s_generic.c
+index e3aa6e7ff3d83..b89536c3671cf 100644
+--- a/crypto/blake2s_generic.c
++++ b/crypto/blake2s_generic.c
+@@ -4,11 +4,9 @@
+  */
  
--static struct shash_alg blake2s_algs[] = {{
--	.base.cra_name		= "blake2s-128",
--	.base.cra_driver_name	= "blake2s-128-x86",
--	.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
--	.base.cra_ctxsize	= sizeof(struct blake2s_tfm_ctx),
--	.base.cra_priority	= 200,
--	.base.cra_blocksize     = BLAKE2S_BLOCK_SIZE,
--	.base.cra_module	= THIS_MODULE,
--
--	.digestsize		= BLAKE2S_128_HASH_SIZE,
--	.setkey			= crypto_blake2s_setkey,
--	.init			= crypto_blake2s_init,
--	.update			= crypto_blake2s_update,
--	.final			= crypto_blake2s_final,
--	.descsize		= sizeof(struct blake2s_state),
--}, {
--	.base.cra_name		= "blake2s-160",
--	.base.cra_driver_name	= "blake2s-160-x86",
--	.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
--	.base.cra_ctxsize	= sizeof(struct blake2s_tfm_ctx),
--	.base.cra_priority	= 200,
--	.base.cra_blocksize     = BLAKE2S_BLOCK_SIZE,
--	.base.cra_module	= THIS_MODULE,
--
--	.digestsize		= BLAKE2S_160_HASH_SIZE,
--	.setkey			= crypto_blake2s_setkey,
--	.init			= crypto_blake2s_init,
--	.update			= crypto_blake2s_update,
--	.final			= crypto_blake2s_final,
--	.descsize		= sizeof(struct blake2s_state),
--}, {
--	.base.cra_name		= "blake2s-224",
--	.base.cra_driver_name	= "blake2s-224-x86",
--	.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
--	.base.cra_ctxsize	= sizeof(struct blake2s_tfm_ctx),
--	.base.cra_priority	= 200,
--	.base.cra_blocksize     = BLAKE2S_BLOCK_SIZE,
--	.base.cra_module	= THIS_MODULE,
--
--	.digestsize		= BLAKE2S_224_HASH_SIZE,
--	.setkey			= crypto_blake2s_setkey,
--	.init			= crypto_blake2s_init,
--	.update			= crypto_blake2s_update,
--	.final			= crypto_blake2s_final,
--	.descsize		= sizeof(struct blake2s_state),
--}, {
--	.base.cra_name		= "blake2s-256",
--	.base.cra_driver_name	= "blake2s-256-x86",
--	.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
--	.base.cra_ctxsize	= sizeof(struct blake2s_tfm_ctx),
--	.base.cra_priority	= 200,
--	.base.cra_blocksize     = BLAKE2S_BLOCK_SIZE,
--	.base.cra_module	= THIS_MODULE,
--
--	.digestsize		= BLAKE2S_256_HASH_SIZE,
--	.setkey			= crypto_blake2s_setkey,
--	.init			= crypto_blake2s_init,
--	.update			= crypto_blake2s_update,
--	.final			= crypto_blake2s_final,
--	.descsize		= sizeof(struct blake2s_state),
--}};
-+#define BLAKE2S_ALG(name, driver_name, digest_size)			\
-+	{								\
-+		.base.cra_name		= name,				\
-+		.base.cra_driver_name	= driver_name,			\
-+		.base.cra_priority	= 200,				\
-+		.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,	\
-+		.base.cra_blocksize	= BLAKE2S_BLOCK_SIZE,		\
-+		.base.cra_ctxsize	= sizeof(struct blake2s_tfm_ctx), \
-+		.base.cra_module	= THIS_MODULE,			\
-+		.digestsize		= digest_size,			\
-+		.setkey			= crypto_blake2s_setkey,	\
-+		.init			= crypto_blake2s_init,		\
-+		.update			= crypto_blake2s_update,	\
-+		.final			= crypto_blake2s_final,		\
-+		.descsize		= sizeof(struct blake2s_state),	\
-+	}
-+
-+static struct shash_alg blake2s_algs[] = {
-+	BLAKE2S_ALG("blake2s-128", "blake2s-128-x86", BLAKE2S_128_HASH_SIZE),
-+	BLAKE2S_ALG("blake2s-160", "blake2s-160-x86", BLAKE2S_160_HASH_SIZE),
-+	BLAKE2S_ALG("blake2s-224", "blake2s-224-x86", BLAKE2S_224_HASH_SIZE),
-+	BLAKE2S_ALG("blake2s-256", "blake2s-256-x86", BLAKE2S_256_HASH_SIZE),
-+};
+ #include <crypto/internal/blake2s.h>
+-#include <crypto/internal/simd.h>
+ #include <crypto/internal/hash.h>
  
- static int __init blake2s_mod_init(void)
- {
+ #include <linux/types.h>
+-#include <linux/jump_label.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ 
 -- 
 2.29.2
 
