@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B955F2E19BD
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 09:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E29642E19B9
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 09:13:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbgLWINf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1727754AbgLWINf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Wed, 23 Dec 2020 03:13:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46628 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:46646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727712AbgLWINe (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 23 Dec 2020 03:13:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96C5922482;
+        id S1727719AbgLWINf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 23 Dec 2020 03:13:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 048B1224B0;
         Wed, 23 Dec 2020 08:12:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608711173;
-        bh=/JOeDVsRKecFgqhYuedJ9WzTU2siPkilHRHczO28l8M=;
+        s=k20201202; t=1608711174;
+        bh=AwolWcU1J9aB45wmv29fRS/pK38QTPj+/7OvPBNmghs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wl+Ffinee7BFY+nx97KgW6rOgIk0E4ofkHa8ND6e9IkVmfxdQeHGdZC7eCYC43wjZ
-         hIMltVJ7HwHBms18VmDXcKdN2IgzHSha0X20Eq9ywO9UPIsEV4fQSn4A8F4IE+Ofog
-         fex3tPySB78CEZYDRsGlAQlhSIsYk2r4WqsrZAraEdV3vQ1C0W6WKFH8Qw9GkEb35s
-         GKvTuyARJzf0hufuL03J4tohT78ekFCq2c6QF6qursb7vYCiXUv7qI5uv29lc1LiQp
-         jFpdNRpGbT3NdYqxwAP8PSfbmclIo1BR6FHipG3Yag9RH1LOr6wSJmhnNghAV8EnZP
-         iIQOMTDTlvsZg==
+        b=nl6T8XcJDi8VRbKkup4cgCKOYtpu9bkypOmsem76aK04D66bNx12XkRQBh34AzWJ6
+         skwBlyJTJf724l2kw7h43nbKBF6WG2ePRq/4iYbea9EzshxWZeWnFgI0ipdlaavO6b
+         Q5dKyDyjGMC3lTxO7JKWjsU4rTiLt4Ir364ET1rqLWJkNb4HM3M7UJySJuTa303xvf
+         1dDWjKc6ejT4oPIsFDknL6WQSTSXlzK18bsEKLlSWAyfe37mvZ3v8KDZf13CUObjKy
+         EAqxgxmk13uvAKj0ekXpLJedzztG754ahTsBQkMc+snhT0JUQQvNrKPfutMD96vT8z
+         G4TuNdtAlx04g==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org,
@@ -31,9 +31,9 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         David Sterba <dsterba@suse.com>,
         "Jason A . Donenfeld" <Jason@zx2c4.com>,
         Paul Crowley <paulcrowley@google.com>
-Subject: [PATCH v3 01/14] crypto: blake2s - define shash_alg structs using macros
-Date:   Wed, 23 Dec 2020 00:09:50 -0800
-Message-Id: <20201223081003.373663-2-ebiggers@kernel.org>
+Subject: [PATCH v3 02/14] crypto: x86/blake2s - define shash_alg structs using macros
+Date:   Wed, 23 Dec 2020 00:09:51 -0800
+Message-Id: <20201223081003.373663-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201223081003.373663-1-ebiggers@kernel.org>
 References: <20201223081003.373663-1-ebiggers@kernel.org>
@@ -52,20 +52,20 @@ code duplication by using a macro to define these structs.
 Acked-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/blake2s_generic.c | 88 ++++++++++++----------------------------
- 1 file changed, 27 insertions(+), 61 deletions(-)
+ arch/x86/crypto/blake2s-glue.c | 84 ++++++++++------------------------
+ 1 file changed, 23 insertions(+), 61 deletions(-)
 
-diff --git a/crypto/blake2s_generic.c b/crypto/blake2s_generic.c
-index 005783ff45ad0..e3aa6e7ff3d83 100644
---- a/crypto/blake2s_generic.c
-+++ b/crypto/blake2s_generic.c
-@@ -83,67 +83,33 @@ static int crypto_blake2s_final(struct shash_desc *desc, u8 *out)
+diff --git a/arch/x86/crypto/blake2s-glue.c b/arch/x86/crypto/blake2s-glue.c
+index c025a01cf7084..4dcb2ee89efc9 100644
+--- a/arch/x86/crypto/blake2s-glue.c
++++ b/arch/x86/crypto/blake2s-glue.c
+@@ -129,67 +129,29 @@ static int crypto_blake2s_final(struct shash_desc *desc, u8 *out)
  	return 0;
  }
  
 -static struct shash_alg blake2s_algs[] = {{
 -	.base.cra_name		= "blake2s-128",
--	.base.cra_driver_name	= "blake2s-128-generic",
+-	.base.cra_driver_name	= "blake2s-128-x86",
 -	.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
 -	.base.cra_ctxsize	= sizeof(struct blake2s_tfm_ctx),
 -	.base.cra_priority	= 200,
@@ -80,7 +80,7 @@ index 005783ff45ad0..e3aa6e7ff3d83 100644
 -	.descsize		= sizeof(struct blake2s_state),
 -}, {
 -	.base.cra_name		= "blake2s-160",
--	.base.cra_driver_name	= "blake2s-160-generic",
+-	.base.cra_driver_name	= "blake2s-160-x86",
 -	.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
 -	.base.cra_ctxsize	= sizeof(struct blake2s_tfm_ctx),
 -	.base.cra_priority	= 200,
@@ -95,7 +95,7 @@ index 005783ff45ad0..e3aa6e7ff3d83 100644
 -	.descsize		= sizeof(struct blake2s_state),
 -}, {
 -	.base.cra_name		= "blake2s-224",
--	.base.cra_driver_name	= "blake2s-224-generic",
+-	.base.cra_driver_name	= "blake2s-224-x86",
 -	.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
 -	.base.cra_ctxsize	= sizeof(struct blake2s_tfm_ctx),
 -	.base.cra_priority	= 200,
@@ -110,7 +110,7 @@ index 005783ff45ad0..e3aa6e7ff3d83 100644
 -	.descsize		= sizeof(struct blake2s_state),
 -}, {
 -	.base.cra_name		= "blake2s-256",
--	.base.cra_driver_name	= "blake2s-256-generic",
+-	.base.cra_driver_name	= "blake2s-256-x86",
 -	.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
 -	.base.cra_ctxsize	= sizeof(struct blake2s_tfm_ctx),
 -	.base.cra_priority	= 200,
@@ -128,7 +128,7 @@ index 005783ff45ad0..e3aa6e7ff3d83 100644
 +	{								\
 +		.base.cra_name		= name,				\
 +		.base.cra_driver_name	= driver_name,			\
-+		.base.cra_priority	= 100,				\
++		.base.cra_priority	= 200,				\
 +		.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,	\
 +		.base.cra_blocksize	= BLAKE2S_BLOCK_SIZE,		\
 +		.base.cra_ctxsize	= sizeof(struct blake2s_tfm_ctx), \
@@ -142,14 +142,10 @@ index 005783ff45ad0..e3aa6e7ff3d83 100644
 +	}
 +
 +static struct shash_alg blake2s_algs[] = {
-+	BLAKE2S_ALG("blake2s-128", "blake2s-128-generic",
-+		    BLAKE2S_128_HASH_SIZE),
-+	BLAKE2S_ALG("blake2s-160", "blake2s-160-generic",
-+		    BLAKE2S_160_HASH_SIZE),
-+	BLAKE2S_ALG("blake2s-224", "blake2s-224-generic",
-+		    BLAKE2S_224_HASH_SIZE),
-+	BLAKE2S_ALG("blake2s-256", "blake2s-256-generic",
-+		    BLAKE2S_256_HASH_SIZE),
++	BLAKE2S_ALG("blake2s-128", "blake2s-128-x86", BLAKE2S_128_HASH_SIZE),
++	BLAKE2S_ALG("blake2s-160", "blake2s-160-x86", BLAKE2S_160_HASH_SIZE),
++	BLAKE2S_ALG("blake2s-224", "blake2s-224-x86", BLAKE2S_224_HASH_SIZE),
++	BLAKE2S_ALG("blake2s-256", "blake2s-256-x86", BLAKE2S_256_HASH_SIZE),
 +};
  
  static int __init blake2s_mod_init(void)
