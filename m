@@ -2,39 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991562E165C
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 04:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC902E1674
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 04:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728307AbgLWCSt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Dec 2020 21:18:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46290 "EHLO mail.kernel.org"
+        id S1728630AbgLWCT1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 22 Dec 2020 21:19:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728255AbgLWCSs (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:18:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 764EC233EE;
-        Wed, 23 Dec 2020 02:17:40 +0000 (UTC)
+        id S1728620AbgLWCT0 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:19:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5693923359;
+        Wed, 23 Dec 2020 02:18:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689861;
+        s=k20201202; t=1608689927;
         bh=YTtdSqMawXFVA+HPyBMMCI2ZrtMdgwZ0Zmbdxko0Y0Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f7t5eI2MqPG51qB9vvTTjjRJv/EOvTCicbRBrAWfmr5wPnoLehlmCjO975VWwYMk8
-         eBkNtUGAfiuRdg2cBn7CDskh/oEzw+hQvzXmytwRpaVqcQYi0W1z5cVUcj3QR/vsgZ
-         WjF6GU3Lww8mg1RIxhO0D1QCwtQ0s7LOMJT+ZW0knTxyH1oDOhrkROSz5wy5KW1Zcb
-         kxCAuhs5+36QilRERXXoCo95+4Vd46uw67wPgtnyfs8hP369nVMzwSMrqGFbuOaxXe
-         5ZFLQfYqXfgDx6bCcMzhP+eMQ64FbcYO28JO2xoBTwmOMq6eQn501HlpumA20cmEXA
-         04hBe8lhm5goA==
+        b=DzJK3kTVpcMXzaWJ8JyS7LjqY5duRy86HL1S81SDPUcdFsvNzfFHrgLMIyW81+yCL
+         xlm/2eUHtkjtQT50vs83t5NRa+Eutn+3cV14Ui3bbV7LpY2DVbvuUYCyHgnJfwZQ83
+         He4KxiPZgBHBwKdpkvPdLa48b20kh/ca4zCNfWvzsUW3MAZ/DXRXRU/6OSravYCIA+
+         jFWzAKLMGCH9azElWznGFHrG+hV6kTY9fyluAXGV5NJTrgpAfz1xR6GmJZ/rMMbF7c
+         mswya15G41s0yFcgthIP+NjpBRlJ+2+27plfzvHj0zj5TFKr5CWrimGHP2QPMx3gFV
+         9xhYUTaGz37QQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
         Harald Freudenberger <freude@linux.ibm.com>,
         Heiko Carstens <hca@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 057/217] s390/trng: set quality to 1024
-Date:   Tue, 22 Dec 2020 21:13:46 -0500
-Message-Id: <20201223021626.2790791-57-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 026/130] s390/trng: set quality to 1024
+Date:   Tue, 22 Dec 2020 21:16:29 -0500
+Message-Id: <20201223021813.2791612-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
-References: <20201223021626.2790791-1-sashal@kernel.org>
+In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
+References: <20201223021813.2791612-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
