@@ -2,35 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDA12E14A7
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 03:48:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0B22E1497
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Dec 2020 03:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731089AbgLWClz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Dec 2020 21:41:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51014 "EHLO mail.kernel.org"
+        id S1730099AbgLWClK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 22 Dec 2020 21:41:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729947AbgLWCXS (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:23:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8383922D73;
-        Wed, 23 Dec 2020 02:22:56 +0000 (UTC)
+        id S1730006AbgLWCXa (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:23:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5BF922273;
+        Wed, 23 Dec 2020 02:23:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690177;
-        bh=UXKOGuw0XHr/W4/vCaNtZZD+Iilf1QiSCxs8krdK5io=;
+        s=k20201202; t=1608690191;
+        bh=kFX56l2DA+/DCghewOJUSjVM9juC4QCbi3IWQQGPhCU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l4Yy0w2yPEdg9HgcIydJfWKvA02k2TmLlIisPahRKx3h+9JeWuLD507w/YuGdaGtN
-         Tw7cBtHbHyv+YfGHykZEPTTFgny6aDQxMJ3fiu+Dc9moxd1Xlz87rqF9ELzgbU5BMT
-         oW6JAdtV845Vp/dL1c65M83nV+rcxrlcXDwOfngP5YSmufKIu2cqNqZgAZnLtpxOdb
-         uR3+vumLnup5wljRKQ5N9DG4jCscqnCcA37TMMz74j+ydvIb/BYF1k6YRdN+S8Ln1x
-         BD8TWjqkHJFQYWteu4FIwFXi5k+s23fw4HzBaae7zUe/fvD/c+H20TPI49jL74O3wH
-         i56EAzt1CXZFQ==
+        b=Yp1j38bBuQ0GQXdhHsxOUE1SXe40JCrUVo3CE+PswlQl5q+KnL8y0dQodKvVr/zi1
+         K4W3SsbcjQhUOTb6IhETyP2f+gg2nCiEe5qyREl5yC5PAMxWjvIdzQ+cdyutGyuUOF
+         Grv77ddFCEN6ycSXfwq8Nj/II5aHUlckoKBMFgzXmTfXyIxP4Iz2LF70MoguTatrVA
+         1nfA5LkvyzpxZMNE+vv7AeLtbJA9XDncq/4fN9DGrmUjYnXMWs+yDo2qgMIBXYQp+K
+         kaRz3kkOsF9ITR8q60XrmM5Rr2fr4OecgDhsGvuF6kgnBDqhDL51I0qKe+Gf3z4+wT
+         Qdb4plnqYo52Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhang Qilong <zhangqilong3@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 03/66] crypto: omap-aes - fix the reference count leak of omap device
-Date:   Tue, 22 Dec 2020 21:21:49 -0500
-Message-Id: <20201223022253.2793452-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 15/66] s390/trng: set quality to 1024
+Date:   Tue, 22 Dec 2020 21:22:01 -0500
+Message-Id: <20201223022253.2793452-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022253.2793452-1-sashal@kernel.org>
 References: <20201223022253.2793452-1-sashal@kernel.org>
@@ -42,33 +43,51 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Christian Borntraeger <borntraeger@de.ibm.com>
 
-[ Upstream commit 383e8a823014532ffd81c787ef9009f1c2bd3b79 ]
+[ Upstream commit d041315ef75cf52df19613f56a2da2c5911c163c ]
 
-pm_runtime_get_sync() will increment  pm usage counter even
-when it returns an error code. We should call put operation
-in error handling paths of omap_aes_hw_init.
+The s390-trng does provide 100% entropy. The quality value is supported
+to be between 1 and 1024 and not 1..1000.  Use 1024 to make this driver
+the preferred one. If we ever have a better driver that has the same
+quality but is faster we can change this again when merging the new
+driver. No need to be conservative.
 
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+This makes sure that the hw variant is preferred over things like
+virtio-rng, where the hypervisor has a potential to be misconfigured
+and thus should have a slightly lower confidence.
+
+Cc: Harald Freudenberger <freude@linux.ibm.com>
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/omap-aes.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/char/hw_random/s390-trng.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/omap-aes.c b/drivers/crypto/omap-aes.c
-index c376a3ee7c2c3..57d4269d17f65 100644
---- a/drivers/crypto/omap-aes.c
-+++ b/drivers/crypto/omap-aes.c
-@@ -106,6 +106,7 @@ static int omap_aes_hw_init(struct omap_aes_dev *dd)
+diff --git a/drivers/char/hw_random/s390-trng.c b/drivers/char/hw_random/s390-trng.c
+index aca48e893fca1..14747fb23a57f 100644
+--- a/drivers/char/hw_random/s390-trng.c
++++ b/drivers/char/hw_random/s390-trng.c
+@@ -196,14 +196,15 @@ static int trng_hwrng_read(struct hwrng *rng, void *data, size_t max, bool wait)
  
- 	err = pm_runtime_get_sync(dd->dev);
- 	if (err < 0) {
-+		pm_runtime_put_noidle(dd->dev);
- 		dev_err(dd->dev, "failed to get sync: %d\n", err);
- 		return err;
- 	}
+ /*
+  * hwrng register struct
+- * The trng is suppost to have 100% entropy, and thus
+- * we register with a very high quality value.
++ * The trng is supposed to have 100% entropy, and thus we register with a very
++ * high quality value. If we ever have a better driver in the future, we should
++ * change this value again when we merge this driver.
+  */
+ static struct hwrng trng_hwrng_dev = {
+ 	.name		= "s390-trng",
+ 	.data_read	= trng_hwrng_data_read,
+ 	.read		= trng_hwrng_read,
+-	.quality	= 999,
++	.quality	= 1024,
+ };
+ 
+ 
 -- 
 2.27.0
 
