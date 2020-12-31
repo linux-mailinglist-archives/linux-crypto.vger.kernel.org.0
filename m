@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3532E8179
-	for <lists+linux-crypto@lfdr.de>; Thu, 31 Dec 2020 18:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE56E2E8178
+	for <lists+linux-crypto@lfdr.de>; Thu, 31 Dec 2020 18:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgLaRZQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 31 Dec 2020 12:25:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55050 "EHLO mail.kernel.org"
+        id S1726885AbgLaRZP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 31 Dec 2020 12:25:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726540AbgLaRZQ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 31 Dec 2020 12:25:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5ACF22247F;
-        Thu, 31 Dec 2020 17:24:04 +0000 (UTC)
+        id S1726883AbgLaRZP (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 31 Dec 2020 12:25:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A0F922473;
+        Thu, 31 Dec 2020 17:24:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609435446;
-        bh=XAVqDW0bAWsrKd+67L2IKk7dIn9+Ngq/EVd/jpxzSaI=;
+        s=k20201202; t=1609435448;
+        bh=Y/24W4qtBypfZpCpO5EBH4g2ZR8hiD5+VnNNEAsnRX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YQxMc3oVIS4ku8/vLRYWoMW8Dan7vlUdvNG+V0HN7WQgV3kBRw+NJgIRPo7IweGeL
-         fHnY2uI1lpIDccUNnN3lM8oNcHLMXCrU+93A+7ydQrGW8OYWynQt6uj0lAwos2uLKH
-         kqc/M1ooUACegdIze2NET0JifCHOIcOxp5k+Q5GC60Rwuv6IOGdotuWE1yBk3a7LmH
-         ZzN3pmq6vR8KT/Xi1+9GiDWRhKqHLaos9Bkqv5xCigE9POpftVGxoU2DWQZXk7Ym9w
-         InzDpfRNjh47RAGYUCDTMMBzez1K+BALKNp57/3P8/0ImDZLqzcAnYAf169Jio5FIQ
-         dFrbXmJvwknOA==
+        b=iWJ7b22N9qCflw1r8Olu1JjYz3fpTlvoj5Y3ep8SoyOoXw6o9NWRrl0/vXTOWFLUt
+         sMJALcH2FTBKuiA7EAOj29Fjo/tjEjDl7TZ3+ED63KgOcg/EXuPESm7/lLn5vNV/Jn
+         ET8wUh8uDbJ66CtM7bHh7pgU2qmyngNEFpl+9GgktT9SyAlpZYPHP6J9W79f9eL+zH
+         W9xxkzmrHPCQPeDMd1i1eruk0ubIaRjfSbBF+/ka9g/yP1pb6lHbkgXYQPU9B5j4gv
+         nnmmsnNvh8bYpc9dBaYGjdwjjkDdbh00SFk/PpJwb/KDbVSeiJk+IIXi8CqyCKLg3f
+         lMLA2+fUT8EZQ==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
@@ -30,9 +30,9 @@ Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Milan Broz <gmazyland@gmail.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 07/21] crypto: x86/serpent - drop CTR mode implementation
-Date:   Thu, 31 Dec 2020 18:23:23 +0100
-Message-Id: <20201231172337.23073-8-ardb@kernel.org>
+Subject: [PATCH 08/21] crypto: x86/cast5 - drop CTR mode implementation
+Date:   Thu, 31 Dec 2020 18:23:24 +0100
+Message-Id: <20201231172337.23073-9-ardb@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201231172337.23073-1-ardb@kernel.org>
 References: <20201231172337.23073-1-ardb@kernel.org>
@@ -40,370 +40,157 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Serpent in CTR mode is never used by the kernel directly, and is highly
+CAST5 in CTR mode is never used by the kernel directly, and is highly
 unlikely to be relied upon by dm-crypt or algif_skcipher. So let's drop
 the accelerated CTR mode implementation, and instead, rely on the CTR
 template and the bare cipher.
 
-Acked-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/crypto/serpent-avx-x86_64-asm_64.S | 20 ------
- arch/x86/crypto/serpent-avx2-asm_64.S       | 25 --------
- arch/x86/crypto/serpent_avx2_glue.c         | 38 -----------
- arch/x86/crypto/serpent_avx_glue.c          | 51 ---------------
- arch/x86/crypto/serpent_sse2_glue.c         | 67 --------------------
- crypto/Kconfig                              |  3 +
- 6 files changed, 3 insertions(+), 201 deletions(-)
+ arch/x86/crypto/cast5_avx_glue.c | 103 --------------------
+ crypto/Kconfig                   |   1 +
+ 2 files changed, 1 insertion(+), 103 deletions(-)
 
-diff --git a/arch/x86/crypto/serpent-avx-x86_64-asm_64.S b/arch/x86/crypto/serpent-avx-x86_64-asm_64.S
-index 6b41f46bcc76..b7ee24df7fba 100644
---- a/arch/x86/crypto/serpent-avx-x86_64-asm_64.S
-+++ b/arch/x86/crypto/serpent-avx-x86_64-asm_64.S
-@@ -711,23 +711,3 @@ SYM_FUNC_START(serpent_cbc_dec_8way_avx)
- 	FRAME_END
- 	ret;
- SYM_FUNC_END(serpent_cbc_dec_8way_avx)
--
--SYM_FUNC_START(serpent_ctr_8way_avx)
--	/* input:
--	 *	%rdi: ctx, CTX
--	 *	%rsi: dst
--	 *	%rdx: src
--	 *	%rcx: iv (little endian, 128bit)
--	 */
--	FRAME_BEGIN
--
--	load_ctr_8way(%rcx, .Lbswap128_mask, RA1, RB1, RC1, RD1, RA2, RB2, RC2,
--		      RD2, RK0, RK1, RK2);
--
--	call __serpent_enc_blk8_avx;
--
--	store_ctr_8way(%rdx, %rsi, RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2);
--
--	FRAME_END
--	ret;
--SYM_FUNC_END(serpent_ctr_8way_avx)
-diff --git a/arch/x86/crypto/serpent-avx2-asm_64.S b/arch/x86/crypto/serpent-avx2-asm_64.S
-index a510a949f02f..9161b6e441f3 100644
---- a/arch/x86/crypto/serpent-avx2-asm_64.S
-+++ b/arch/x86/crypto/serpent-avx2-asm_64.S
-@@ -724,28 +724,3 @@ SYM_FUNC_START(serpent_cbc_dec_16way)
- 	FRAME_END
- 	ret;
- SYM_FUNC_END(serpent_cbc_dec_16way)
--
--SYM_FUNC_START(serpent_ctr_16way)
--	/* input:
--	 *	%rdi: ctx, CTX
--	 *	%rsi: dst (16 blocks)
--	 *	%rdx: src (16 blocks)
--	 *	%rcx: iv (little endian, 128bit)
--	 */
--	FRAME_BEGIN
--
--	vzeroupper;
--
--	load_ctr_16way(%rcx, .Lbswap128_mask, RA1, RB1, RC1, RD1, RA2, RB2, RC2,
--		       RD2, RK0, RK0x, RK1, RK1x, RK2, RK2x, RK3, RK3x, RNOT,
--		       tp);
--
--	call __serpent_enc_blk16;
--
--	store_ctr_16way(%rdx, %rsi, RA1, RB1, RC1, RD1, RA2, RB2, RC2, RD2);
--
--	vzeroupper;
--
--	FRAME_END
--	ret;
--SYM_FUNC_END(serpent_ctr_16way)
-diff --git a/arch/x86/crypto/serpent_avx2_glue.c b/arch/x86/crypto/serpent_avx2_glue.c
-index 9cdf2c078e21..28e542c6512a 100644
---- a/arch/x86/crypto/serpent_avx2_glue.c
-+++ b/arch/x86/crypto/serpent_avx2_glue.c
-@@ -22,8 +22,6 @@ asmlinkage void serpent_ecb_enc_16way(const void *ctx, u8 *dst, const u8 *src);
- asmlinkage void serpent_ecb_dec_16way(const void *ctx, u8 *dst, const u8 *src);
- asmlinkage void serpent_cbc_dec_16way(const void *ctx, u8 *dst, const u8 *src);
+diff --git a/arch/x86/crypto/cast5_avx_glue.c b/arch/x86/crypto/cast5_avx_glue.c
+index 384ccb00f9e1..e0d1c7903b29 100644
+--- a/arch/x86/crypto/cast5_avx_glue.c
++++ b/arch/x86/crypto/cast5_avx_glue.c
+@@ -23,8 +23,6 @@ asmlinkage void cast5_ecb_dec_16way(struct cast5_ctx *ctx, u8 *dst,
+ 				    const u8 *src);
+ asmlinkage void cast5_cbc_dec_16way(struct cast5_ctx *ctx, u8 *dst,
+ 				    const u8 *src);
+-asmlinkage void cast5_ctr_16way(struct cast5_ctx *ctx, u8 *dst, const u8 *src,
+-				__be64 *iv);
  
--asmlinkage void serpent_ctr_16way(const void *ctx, u8 *dst, const u8 *src,
--				  le128 *iv);
- static int serpent_setkey_skcipher(struct crypto_skcipher *tfm,
- 				   const u8 *key, unsigned int keylen)
- {
-@@ -46,22 +44,6 @@ static const struct common_glue_ctx serpent_enc = {
- 	} }
- };
- 
--static const struct common_glue_ctx serpent_ctr = {
--	.num_funcs = 3,
--	.fpu_blocks_limit = 8,
--
--	.funcs = { {
--		.num_blocks = 16,
--		.fn_u = { .ctr = serpent_ctr_16way }
--	},  {
--		.num_blocks = 8,
--		.fn_u = { .ctr = serpent_ctr_8way_avx }
--	}, {
--		.num_blocks = 1,
--		.fn_u = { .ctr = __serpent_crypt_ctr }
--	} }
--};
--
- static const struct common_glue_ctx serpent_dec = {
- 	.num_funcs = 3,
- 	.fpu_blocks_limit = 8,
-@@ -114,11 +96,6 @@ static int cbc_decrypt(struct skcipher_request *req)
- 	return glue_cbc_decrypt_req_128bit(&serpent_dec_cbc, req);
+ static int cast5_setkey_skcipher(struct crypto_skcipher *tfm, const u8 *key,
+ 				 unsigned int keylen)
+@@ -214,92 +212,6 @@ static int cbc_decrypt(struct skcipher_request *req)
+ 	return err;
  }
  
--static int ctr_crypt(struct skcipher_request *req)
+-static void ctr_crypt_final(struct skcipher_walk *walk, struct cast5_ctx *ctx)
 -{
--	return glue_ctr_req_128bit(&serpent_ctr, req);
+-	u8 *ctrblk = walk->iv;
+-	u8 keystream[CAST5_BLOCK_SIZE];
+-	u8 *src = walk->src.virt.addr;
+-	u8 *dst = walk->dst.virt.addr;
+-	unsigned int nbytes = walk->nbytes;
+-
+-	__cast5_encrypt(ctx, keystream, ctrblk);
+-	crypto_xor_cpy(dst, keystream, src, nbytes);
+-
+-	crypto_inc(ctrblk, CAST5_BLOCK_SIZE);
 -}
 -
- static struct skcipher_alg serpent_algs[] = {
- 	{
- 		.base.cra_name		= "__ecb(serpent)",
-@@ -147,21 +124,6 @@ static struct skcipher_alg serpent_algs[] = {
- 		.setkey			= serpent_setkey_skcipher,
- 		.encrypt		= cbc_encrypt,
- 		.decrypt		= cbc_decrypt,
--	}, {
--		.base.cra_name		= "__ctr(serpent)",
--		.base.cra_driver_name	= "__ctr-serpent-avx2",
--		.base.cra_priority	= 600,
--		.base.cra_flags		= CRYPTO_ALG_INTERNAL,
--		.base.cra_blocksize	= 1,
--		.base.cra_ctxsize	= sizeof(struct serpent_ctx),
--		.base.cra_module	= THIS_MODULE,
--		.min_keysize		= SERPENT_MIN_KEY_SIZE,
--		.max_keysize		= SERPENT_MAX_KEY_SIZE,
--		.ivsize			= SERPENT_BLOCK_SIZE,
--		.chunksize		= SERPENT_BLOCK_SIZE,
--		.setkey			= serpent_setkey_skcipher,
--		.encrypt		= ctr_crypt,
--		.decrypt		= ctr_crypt,
- 	},
- };
- 
-diff --git a/arch/x86/crypto/serpent_avx_glue.c b/arch/x86/crypto/serpent_avx_glue.c
-index b17a08b57a91..aa4605baf9d4 100644
---- a/arch/x86/crypto/serpent_avx_glue.c
-+++ b/arch/x86/crypto/serpent_avx_glue.c
-@@ -31,24 +31,6 @@ asmlinkage void serpent_cbc_dec_8way_avx(const void *ctx, u8 *dst,
- 					 const u8 *src);
- EXPORT_SYMBOL_GPL(serpent_cbc_dec_8way_avx);
- 
--asmlinkage void serpent_ctr_8way_avx(const void *ctx, u8 *dst, const u8 *src,
--				     le128 *iv);
--EXPORT_SYMBOL_GPL(serpent_ctr_8way_avx);
--
--void __serpent_crypt_ctr(const void *ctx, u8 *d, const u8 *s, le128 *iv)
+-static unsigned int __ctr_crypt(struct skcipher_walk *walk,
+-				struct cast5_ctx *ctx)
 -{
--	be128 ctrblk;
--	u128 *dst = (u128 *)d;
--	const u128 *src = (const u128 *)s;
+-	const unsigned int bsize = CAST5_BLOCK_SIZE;
+-	unsigned int nbytes = walk->nbytes;
+-	u64 *src = (u64 *)walk->src.virt.addr;
+-	u64 *dst = (u64 *)walk->dst.virt.addr;
 -
--	le128_to_be128(&ctrblk, iv);
--	le128_inc(iv);
+-	/* Process multi-block batch */
+-	if (nbytes >= bsize * CAST5_PARALLEL_BLOCKS) {
+-		do {
+-			cast5_ctr_16way(ctx, (u8 *)dst, (u8 *)src,
+-					(__be64 *)walk->iv);
 -
--	__serpent_encrypt(ctx, (u8 *)&ctrblk, (u8 *)&ctrblk);
--	u128_xor(dst, src, (u128 *)&ctrblk);
--}
--EXPORT_SYMBOL_GPL(__serpent_crypt_ctr);
+-			src += CAST5_PARALLEL_BLOCKS;
+-			dst += CAST5_PARALLEL_BLOCKS;
+-			nbytes -= bsize * CAST5_PARALLEL_BLOCKS;
+-		} while (nbytes >= bsize * CAST5_PARALLEL_BLOCKS);
 -
- static int serpent_setkey_skcipher(struct crypto_skcipher *tfm,
- 				   const u8 *key, unsigned int keylen)
- {
-@@ -68,19 +50,6 @@ static const struct common_glue_ctx serpent_enc = {
- 	} }
- };
- 
--static const struct common_glue_ctx serpent_ctr = {
--	.num_funcs = 2,
--	.fpu_blocks_limit = SERPENT_PARALLEL_BLOCKS,
--
--	.funcs = { {
--		.num_blocks = SERPENT_PARALLEL_BLOCKS,
--		.fn_u = { .ctr = serpent_ctr_8way_avx }
--	}, {
--		.num_blocks = 1,
--		.fn_u = { .ctr = __serpent_crypt_ctr }
--	} }
--};
--
- static const struct common_glue_ctx serpent_dec = {
- 	.num_funcs = 2,
- 	.fpu_blocks_limit = SERPENT_PARALLEL_BLOCKS,
-@@ -127,11 +96,6 @@ static int cbc_decrypt(struct skcipher_request *req)
- 	return glue_cbc_decrypt_req_128bit(&serpent_dec_cbc, req);
- }
- 
--static int ctr_crypt(struct skcipher_request *req)
--{
--	return glue_ctr_req_128bit(&serpent_ctr, req);
--}
--
- static struct skcipher_alg serpent_algs[] = {
- 	{
- 		.base.cra_name		= "__ecb(serpent)",
-@@ -160,21 +124,6 @@ static struct skcipher_alg serpent_algs[] = {
- 		.setkey			= serpent_setkey_skcipher,
- 		.encrypt		= cbc_encrypt,
- 		.decrypt		= cbc_decrypt,
--	}, {
--		.base.cra_name		= "__ctr(serpent)",
--		.base.cra_driver_name	= "__ctr-serpent-avx",
--		.base.cra_priority	= 500,
--		.base.cra_flags		= CRYPTO_ALG_INTERNAL,
--		.base.cra_blocksize	= 1,
--		.base.cra_ctxsize	= sizeof(struct serpent_ctx),
--		.base.cra_module	= THIS_MODULE,
--		.min_keysize		= SERPENT_MIN_KEY_SIZE,
--		.max_keysize		= SERPENT_MAX_KEY_SIZE,
--		.ivsize			= SERPENT_BLOCK_SIZE,
--		.chunksize		= SERPENT_BLOCK_SIZE,
--		.setkey			= serpent_setkey_skcipher,
--		.encrypt		= ctr_crypt,
--		.decrypt		= ctr_crypt,
- 	},
- };
- 
-diff --git a/arch/x86/crypto/serpent_sse2_glue.c b/arch/x86/crypto/serpent_sse2_glue.c
-index 4fed8d26b91a..9acb3bf28feb 100644
---- a/arch/x86/crypto/serpent_sse2_glue.c
-+++ b/arch/x86/crypto/serpent_sse2_glue.c
-@@ -10,8 +10,6 @@
-  *
-  * CBC & ECB parts based on code (crypto/cbc.c,ecb.c) by:
-  *   Copyright (c) 2006 Herbert Xu <herbert@gondor.apana.org.au>
-- * CTR part based on code (crypto/ctr.c) by:
-- *   (C) Copyright IBM Corp. 2007 - Joy Latten <latten@us.ibm.com>
-  */
- 
- #include <linux/module.h>
-@@ -47,38 +45,6 @@ static void serpent_decrypt_cbc_xway(const void *ctx, u8 *d, const u8 *s)
- 		u128_xor(dst + (j + 1), dst + (j + 1), ivs + j);
- }
- 
--static void serpent_crypt_ctr(const void *ctx, u8 *d, const u8 *s, le128 *iv)
--{
--	be128 ctrblk;
--	u128 *dst = (u128 *)d;
--	const u128 *src = (const u128 *)s;
--
--	le128_to_be128(&ctrblk, iv);
--	le128_inc(iv);
--
--	__serpent_encrypt(ctx, (u8 *)&ctrblk, (u8 *)&ctrblk);
--	u128_xor(dst, src, (u128 *)&ctrblk);
--}
--
--static void serpent_crypt_ctr_xway(const void *ctx, u8 *d, const u8 *s,
--				   le128 *iv)
--{
--	be128 ctrblks[SERPENT_PARALLEL_BLOCKS];
--	u128 *dst = (u128 *)d;
--	const u128 *src = (const u128 *)s;
--	unsigned int i;
--
--	for (i = 0; i < SERPENT_PARALLEL_BLOCKS; i++) {
--		if (dst != src)
--			dst[i] = src[i];
--
--		le128_to_be128(&ctrblks[i], iv);
--		le128_inc(iv);
+-		if (nbytes < bsize)
+-			goto done;
 -	}
 -
--	serpent_enc_blk_xway_xor(ctx, (u8 *)dst, (u8 *)ctrblks);
+-	/* Handle leftovers */
+-	do {
+-		u64 ctrblk;
+-
+-		if (dst != src)
+-			*dst = *src;
+-
+-		ctrblk = *(u64 *)walk->iv;
+-		be64_add_cpu((__be64 *)walk->iv, 1);
+-
+-		__cast5_encrypt(ctx, (u8 *)&ctrblk, (u8 *)&ctrblk);
+-		*dst ^= ctrblk;
+-
+-		src += 1;
+-		dst += 1;
+-		nbytes -= bsize;
+-	} while (nbytes >= bsize);
+-
+-done:
+-	return nbytes;
 -}
 -
- static const struct common_glue_ctx serpent_enc = {
- 	.num_funcs = 2,
- 	.fpu_blocks_limit = SERPENT_PARALLEL_BLOCKS,
-@@ -92,19 +58,6 @@ static const struct common_glue_ctx serpent_enc = {
- 	} }
- };
- 
--static const struct common_glue_ctx serpent_ctr = {
--	.num_funcs = 2,
--	.fpu_blocks_limit = SERPENT_PARALLEL_BLOCKS,
--
--	.funcs = { {
--		.num_blocks = SERPENT_PARALLEL_BLOCKS,
--		.fn_u = { .ctr = serpent_crypt_ctr_xway }
--	}, {
--		.num_blocks = 1,
--		.fn_u = { .ctr = serpent_crypt_ctr }
--	} }
--};
--
- static const struct common_glue_ctx serpent_dec = {
- 	.num_funcs = 2,
- 	.fpu_blocks_limit = SERPENT_PARALLEL_BLOCKS,
-@@ -152,11 +105,6 @@ static int cbc_decrypt(struct skcipher_request *req)
- 	return glue_cbc_decrypt_req_128bit(&serpent_dec_cbc, req);
- }
- 
 -static int ctr_crypt(struct skcipher_request *req)
 -{
--	return glue_ctr_req_128bit(&serpent_ctr, req);
+-	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+-	struct cast5_ctx *ctx = crypto_skcipher_ctx(tfm);
+-	bool fpu_enabled = false;
+-	struct skcipher_walk walk;
+-	unsigned int nbytes;
+-	int err;
+-
+-	err = skcipher_walk_virt(&walk, req, false);
+-
+-	while ((nbytes = walk.nbytes) >= CAST5_BLOCK_SIZE) {
+-		fpu_enabled = cast5_fpu_begin(fpu_enabled, &walk, nbytes);
+-		nbytes = __ctr_crypt(&walk, ctx);
+-		err = skcipher_walk_done(&walk, nbytes);
+-	}
+-
+-	cast5_fpu_end(fpu_enabled);
+-
+-	if (walk.nbytes) {
+-		ctr_crypt_final(&walk, ctx);
+-		err = skcipher_walk_done(&walk, 0);
+-	}
+-
+-	return err;
 -}
 -
- static struct skcipher_alg serpent_algs[] = {
+ static struct skcipher_alg cast5_algs[] = {
  	{
- 		.base.cra_name		= "__ecb(serpent)",
-@@ -185,21 +133,6 @@ static struct skcipher_alg serpent_algs[] = {
- 		.setkey			= serpent_setkey_skcipher,
+ 		.base.cra_name		= "__ecb(cast5)",
+@@ -328,21 +240,6 @@ static struct skcipher_alg cast5_algs[] = {
+ 		.setkey			= cast5_setkey_skcipher,
  		.encrypt		= cbc_encrypt,
  		.decrypt		= cbc_decrypt,
 -	}, {
--		.base.cra_name		= "__ctr(serpent)",
--		.base.cra_driver_name	= "__ctr-serpent-sse2",
--		.base.cra_priority	= 400,
+-		.base.cra_name		= "__ctr(cast5)",
+-		.base.cra_driver_name	= "__ctr-cast5-avx",
+-		.base.cra_priority	= 200,
 -		.base.cra_flags		= CRYPTO_ALG_INTERNAL,
 -		.base.cra_blocksize	= 1,
--		.base.cra_ctxsize	= sizeof(struct serpent_ctx),
+-		.base.cra_ctxsize	= sizeof(struct cast5_ctx),
 -		.base.cra_module	= THIS_MODULE,
--		.min_keysize		= SERPENT_MIN_KEY_SIZE,
--		.max_keysize		= SERPENT_MAX_KEY_SIZE,
--		.ivsize			= SERPENT_BLOCK_SIZE,
--		.chunksize		= SERPENT_BLOCK_SIZE,
--		.setkey			= serpent_setkey_skcipher,
+-		.min_keysize		= CAST5_MIN_KEY_SIZE,
+-		.max_keysize		= CAST5_MAX_KEY_SIZE,
+-		.ivsize			= CAST5_BLOCK_SIZE,
+-		.chunksize		= CAST5_BLOCK_SIZE,
+-		.setkey			= cast5_setkey_skcipher,
 -		.encrypt		= ctr_crypt,
 -		.decrypt		= ctr_crypt,
- 	},
+ 	}
  };
  
 diff --git a/crypto/Kconfig b/crypto/Kconfig
-index ea788cab8c7d..dd48c3bab3f5 100644
+index dd48c3bab3f5..fed73fff5a65 100644
 --- a/crypto/Kconfig
 +++ b/crypto/Kconfig
-@@ -1539,6 +1539,7 @@ config CRYPTO_SERPENT_SSE2_X86_64
- 	select CRYPTO_GLUE_HELPER_X86
- 	select CRYPTO_SERPENT
+@@ -1372,6 +1372,7 @@ config CRYPTO_CAST5_AVX_X86_64
+ 	select CRYPTO_CAST5
+ 	select CRYPTO_CAST_COMMON
  	select CRYPTO_SIMD
 +	imply CRYPTO_CTR
  	help
- 	  Serpent cipher algorithm, by Anderson, Biham & Knudsen.
- 
-@@ -1558,6 +1559,7 @@ config CRYPTO_SERPENT_SSE2_586
- 	select CRYPTO_GLUE_HELPER_X86
- 	select CRYPTO_SERPENT
- 	select CRYPTO_SIMD
-+	imply CRYPTO_CTR
- 	help
- 	  Serpent cipher algorithm, by Anderson, Biham & Knudsen.
- 
-@@ -1578,6 +1580,7 @@ config CRYPTO_SERPENT_AVX_X86_64
- 	select CRYPTO_SERPENT
- 	select CRYPTO_SIMD
- 	imply CRYPTO_XTS
-+	imply CRYPTO_CTR
- 	help
- 	  Serpent cipher algorithm, by Anderson, Biham & Knudsen.
- 
+ 	  The CAST5 encryption algorithm (synonymous with CAST-128) is
+ 	  described in RFC2144.
 -- 
 2.17.1
 
