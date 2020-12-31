@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068632E817A
-	for <lists+linux-crypto@lfdr.de>; Thu, 31 Dec 2020 18:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 898CC2E8173
+	for <lists+linux-crypto@lfdr.de>; Thu, 31 Dec 2020 18:25:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727146AbgLaRZy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 31 Dec 2020 12:25:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55282 "EHLO mail.kernel.org"
+        id S1727147AbgLaRZb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 31 Dec 2020 12:25:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727193AbgLaRZy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 31 Dec 2020 12:25:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76066224DF;
-        Thu, 31 Dec 2020 17:24:30 +0000 (UTC)
+        id S1727143AbgLaRZb (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 31 Dec 2020 12:25:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7450F224F4;
+        Thu, 31 Dec 2020 17:24:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609435472;
-        bh=PL/JmqseT6kVRCDd+a/4yxEhjYHHk5KCkaqlNFXVpLs=;
+        s=k20201202; t=1609435473;
+        bh=QswN+cSXOleQTv7jKXaF6pdOiygStZk2qsiKIqB19hE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YZ7uROC5//Lu84Aztilv/k4tdkcvFfINcmAcT6sJO89ke3mv+kUDFUtkUlkw24swr
-         cNKU6tECf0c1Mlww+9FrCYztN24+MwjfbZgJwUyyndMp06mX39HIA49pL9zOKvB7Mh
-         zV1IAJUYDuXSECJsEH/fw+8kcYSXKzANLfcD47FDYPE9xnBLsnJpSNddET+ZDHjOT0
-         ReXKBWINiWo6j8WZAPknk/ufmaTbqVGTrqRc7KfLPnEIHF3WrhHXv1U638ui6lB7FL
-         ygH2f/wy8VGM41RJNtx9xk2Xi3GCHjaor2vplf/7M9ZiVoBpMEnT2EjVV3uL3Cohr3
-         iWb9wShCynT8A==
+        b=b93NIClbcXdLr3aWWCvKG+3zNpaQAfHK9J0ax4iMV7sxTrPS76kL6q2t0om0eF19u
+         lewiBaW09+DMamylm6et0AwNJbPxe5j/tAN6vzpu6WVOvASJCi4FXvUEuGDwjEuXWn
+         Sc8qpg3kuqKULqo4QMHvIr+BcWMuxp1V2OzEDZzNriDUGNlRc5sD0/N3h5oqNCsX25
+         MCBJOUibpO9RbG2B5DUPKGEHbci6wbOSIodO37Sgu9/NzpSgtToAu/LN/7XKXTq95m
+         yCyCE2qqzxBNsxFhm4r92gRaUk5oVctpa47D4bq0fROHKSdeSMTOmVpzkH+12RAw7e
+         2UWGPcoeTAWoA==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
@@ -30,9 +30,9 @@ Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Milan Broz <gmazyland@gmail.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 18/21] crypto: x86/cast6 - drop dependency on glue helper
-Date:   Thu, 31 Dec 2020 18:23:34 +0100
-Message-Id: <20201231172337.23073-19-ardb@kernel.org>
+Subject: [PATCH 19/21] crypto: x86/twofish - drop dependency on glue helper
+Date:   Thu, 31 Dec 2020 18:23:35 +0100
+Message-Id: <20201231172337.23073-20-ardb@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201231172337.23073-1-ardb@kernel.org>
 References: <20201231172337.23073-1-ardb@kernel.org>
@@ -45,115 +45,264 @@ based on the new CPP macros, which avoid the need for indirect calls.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/crypto/cast6_avx_glue.c | 61 ++++++--------------
- crypto/Kconfig                   |  1 -
- 2 files changed, 17 insertions(+), 45 deletions(-)
+ arch/x86/crypto/twofish_avx_glue.c  | 73 +++++-------------
+ arch/x86/crypto/twofish_glue_3way.c | 80 ++++++--------------
+ crypto/Kconfig                      |  2 -
+ 3 files changed, 44 insertions(+), 111 deletions(-)
 
-diff --git a/arch/x86/crypto/cast6_avx_glue.c b/arch/x86/crypto/cast6_avx_glue.c
-index 790efcb6df3b..7e2aea372349 100644
---- a/arch/x86/crypto/cast6_avx_glue.c
-+++ b/arch/x86/crypto/cast6_avx_glue.c
-@@ -15,7 +15,8 @@
+diff --git a/arch/x86/crypto/twofish_avx_glue.c b/arch/x86/crypto/twofish_avx_glue.c
+index 13f810b61034..6ce198f808a5 100644
+--- a/arch/x86/crypto/twofish_avx_glue.c
++++ b/arch/x86/crypto/twofish_avx_glue.c
+@@ -15,9 +15,10 @@
  #include <crypto/algapi.h>
- #include <crypto/cast6.h>
  #include <crypto/internal/simd.h>
+ #include <crypto/twofish.h>
 -#include <asm/crypto/glue_helper.h>
-+
+ #include <asm/crypto/twofish.h>
+ 
 +#include "ecb_cbc_helpers.h"
++
+ #define TWOFISH_PARALLEL_BLOCKS 8
  
- #define CAST6_PARALLEL_BLOCKS 8
- 
-@@ -30,63 +31,35 @@ static int cast6_setkey_skcipher(struct crypto_skcipher *tfm,
- 	return cast6_setkey(&tfm->base, key, keylen);
+ /* 8-way parallel cipher functions */
+@@ -37,72 +38,38 @@ static inline void twofish_enc_blk_3way(const void *ctx, u8 *dst, const u8 *src)
+ 	__twofish_enc_blk_3way(ctx, dst, src, false);
  }
  
--static const struct common_glue_ctx cast6_enc = {
--	.num_funcs = 2,
--	.fpu_blocks_limit = CAST6_PARALLEL_BLOCKS,
+-static const struct common_glue_ctx twofish_enc = {
+-	.num_funcs = 3,
+-	.fpu_blocks_limit = TWOFISH_PARALLEL_BLOCKS,
 -
 -	.funcs = { {
--		.num_blocks = CAST6_PARALLEL_BLOCKS,
--		.fn_u = { .ecb = cast6_ecb_enc_8way }
+-		.num_blocks = TWOFISH_PARALLEL_BLOCKS,
+-		.fn_u = { .ecb = twofish_ecb_enc_8way }
+-	}, {
+-		.num_blocks = 3,
+-		.fn_u = { .ecb = twofish_enc_blk_3way }
 -	}, {
 -		.num_blocks = 1,
--		.fn_u = { .ecb = __cast6_encrypt }
+-		.fn_u = { .ecb = twofish_enc_blk }
 -	} }
 -};
 -
--static const struct common_glue_ctx cast6_dec = {
--	.num_funcs = 2,
--	.fpu_blocks_limit = CAST6_PARALLEL_BLOCKS,
+-static const struct common_glue_ctx twofish_dec = {
+-	.num_funcs = 3,
+-	.fpu_blocks_limit = TWOFISH_PARALLEL_BLOCKS,
 -
 -	.funcs = { {
--		.num_blocks = CAST6_PARALLEL_BLOCKS,
--		.fn_u = { .ecb = cast6_ecb_dec_8way }
+-		.num_blocks = TWOFISH_PARALLEL_BLOCKS,
+-		.fn_u = { .ecb = twofish_ecb_dec_8way }
+-	}, {
+-		.num_blocks = 3,
+-		.fn_u = { .ecb = twofish_dec_blk_3way }
 -	}, {
 -		.num_blocks = 1,
--		.fn_u = { .ecb = __cast6_decrypt }
+-		.fn_u = { .ecb = twofish_dec_blk }
 -	} }
 -};
 -
--static const struct common_glue_ctx cast6_dec_cbc = {
--	.num_funcs = 2,
--	.fpu_blocks_limit = CAST6_PARALLEL_BLOCKS,
+-static const struct common_glue_ctx twofish_dec_cbc = {
+-	.num_funcs = 3,
+-	.fpu_blocks_limit = TWOFISH_PARALLEL_BLOCKS,
 -
 -	.funcs = { {
--		.num_blocks = CAST6_PARALLEL_BLOCKS,
--		.fn_u = { .cbc = cast6_cbc_dec_8way }
+-		.num_blocks = TWOFISH_PARALLEL_BLOCKS,
+-		.fn_u = { .cbc = twofish_cbc_dec_8way }
+-	}, {
+-		.num_blocks = 3,
+-		.fn_u = { .cbc = twofish_dec_blk_cbc_3way }
 -	}, {
 -		.num_blocks = 1,
--		.fn_u = { .cbc = __cast6_decrypt }
+-		.fn_u = { .cbc = twofish_dec_blk }
 -	} }
 -};
 -
  static int ecb_encrypt(struct skcipher_request *req)
  {
--	return glue_ecb_req_128bit(&cast6_enc, req);
-+	ECB_WALK_START(req, CAST6_BLOCK_SIZE, CAST6_PARALLEL_BLOCKS);
-+	ECB_BLOCK(CAST6_PARALLEL_BLOCKS, cast6_ecb_enc_8way);
-+	ECB_BLOCK(1, __cast6_encrypt);
+-	return glue_ecb_req_128bit(&twofish_enc, req);
++	ECB_WALK_START(req, TF_BLOCK_SIZE, TWOFISH_PARALLEL_BLOCKS);
++	ECB_BLOCK(TWOFISH_PARALLEL_BLOCKS, twofish_ecb_enc_8way);
++	ECB_BLOCK(3, twofish_enc_blk_3way);
++	ECB_BLOCK(1, twofish_enc_blk);
 +	ECB_WALK_END();
  }
  
  static int ecb_decrypt(struct skcipher_request *req)
  {
--	return glue_ecb_req_128bit(&cast6_dec, req);
-+	ECB_WALK_START(req, CAST6_BLOCK_SIZE, CAST6_PARALLEL_BLOCKS);
-+	ECB_BLOCK(CAST6_PARALLEL_BLOCKS, cast6_ecb_dec_8way);
-+	ECB_BLOCK(1, __cast6_decrypt);
+-	return glue_ecb_req_128bit(&twofish_dec, req);
++	ECB_WALK_START(req, TF_BLOCK_SIZE, TWOFISH_PARALLEL_BLOCKS);
++	ECB_BLOCK(TWOFISH_PARALLEL_BLOCKS, twofish_ecb_dec_8way);
++	ECB_BLOCK(3, twofish_dec_blk_3way);
++	ECB_BLOCK(1, twofish_dec_blk);
 +	ECB_WALK_END();
  }
  
  static int cbc_encrypt(struct skcipher_request *req)
  {
--	return glue_cbc_encrypt_req_128bit(__cast6_encrypt, req);
-+	CBC_WALK_START(req, CAST6_BLOCK_SIZE, -1);
-+	CBC_ENC_BLOCK(__cast6_encrypt);
+-	return glue_cbc_encrypt_req_128bit(twofish_enc_blk, req);
++	CBC_WALK_START(req, TF_BLOCK_SIZE, -1);
++	CBC_ENC_BLOCK(twofish_enc_blk);
 +	CBC_WALK_END();
  }
  
  static int cbc_decrypt(struct skcipher_request *req)
  {
--	return glue_cbc_decrypt_req_128bit(&cast6_dec_cbc, req);
-+	CBC_WALK_START(req, CAST6_BLOCK_SIZE, CAST6_PARALLEL_BLOCKS);
-+	CBC_DEC_BLOCK(CAST6_PARALLEL_BLOCKS, cast6_cbc_dec_8way);
-+	CBC_DEC_BLOCK(1, __cast6_decrypt);
+-	return glue_cbc_decrypt_req_128bit(&twofish_dec_cbc, req);
++	CBC_WALK_START(req, TF_BLOCK_SIZE, TWOFISH_PARALLEL_BLOCKS);
++	CBC_DEC_BLOCK(TWOFISH_PARALLEL_BLOCKS, twofish_cbc_dec_8way);
++	CBC_DEC_BLOCK(3, twofish_dec_blk_cbc_3way);
++	CBC_DEC_BLOCK(1, twofish_dec_blk);
 +	CBC_WALK_END();
  }
  
- static struct skcipher_alg cast6_algs[] = {
+ static struct skcipher_alg twofish_algs[] = {
+diff --git a/arch/x86/crypto/twofish_glue_3way.c b/arch/x86/crypto/twofish_glue_3way.c
+index 88252370db0a..d1fdefa5195a 100644
+--- a/arch/x86/crypto/twofish_glue_3way.c
++++ b/arch/x86/crypto/twofish_glue_3way.c
+@@ -5,17 +5,16 @@
+  * Copyright (c) 2011 Jussi Kivilinna <jussi.kivilinna@mbnet.fi>
+  */
+ 
+-#include <asm/crypto/glue_helper.h>
+ #include <asm/crypto/twofish.h>
+ #include <crypto/algapi.h>
+-#include <crypto/b128ops.h>
+-#include <crypto/internal/skcipher.h>
+ #include <crypto/twofish.h>
+ #include <linux/crypto.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/types.h>
+ 
++#include "ecb_cbc_helpers.h"
++
+ EXPORT_SYMBOL_GPL(__twofish_enc_blk_3way);
+ EXPORT_SYMBOL_GPL(twofish_dec_blk_3way);
+ 
+@@ -30,79 +29,48 @@ static inline void twofish_enc_blk_3way(const void *ctx, u8 *dst, const u8 *src)
+ 	__twofish_enc_blk_3way(ctx, dst, src, false);
+ }
+ 
+-void twofish_dec_blk_cbc_3way(const void *ctx, u8 *d, const u8 *s)
++void twofish_dec_blk_cbc_3way(const void *ctx, u8 *dst, const u8 *src)
+ {
+-	u128 ivs[2];
+-	u128 *dst = (u128 *)d;
+-	const u128 *src = (const u128 *)s;
+-
+-	ivs[0] = src[0];
+-	ivs[1] = src[1];
++	u8 buf[2][TF_BLOCK_SIZE];
++	const u8 *s = src;
+ 
+-	twofish_dec_blk_3way(ctx, (u8 *)dst, (u8 *)src);
++	if (dst == src)
++		s = memcpy(buf, src, sizeof(buf));
++	twofish_dec_blk_3way(ctx, dst, src);
++	crypto_xor(dst + TF_BLOCK_SIZE, s, sizeof(buf));
+ 
+-	u128_xor(&dst[1], &dst[1], &ivs[0]);
+-	u128_xor(&dst[2], &dst[2], &ivs[1]);
+ }
+ EXPORT_SYMBOL_GPL(twofish_dec_blk_cbc_3way);
+ 
+-static const struct common_glue_ctx twofish_enc = {
+-	.num_funcs = 2,
+-	.fpu_blocks_limit = -1,
+-
+-	.funcs = { {
+-		.num_blocks = 3,
+-		.fn_u = { .ecb = twofish_enc_blk_3way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .ecb = twofish_enc_blk }
+-	} }
+-};
+-
+-static const struct common_glue_ctx twofish_dec = {
+-	.num_funcs = 2,
+-	.fpu_blocks_limit = -1,
+-
+-	.funcs = { {
+-		.num_blocks = 3,
+-		.fn_u = { .ecb = twofish_dec_blk_3way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .ecb = twofish_dec_blk }
+-	} }
+-};
+-
+-static const struct common_glue_ctx twofish_dec_cbc = {
+-	.num_funcs = 2,
+-	.fpu_blocks_limit = -1,
+-
+-	.funcs = { {
+-		.num_blocks = 3,
+-		.fn_u = { .cbc = twofish_dec_blk_cbc_3way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .cbc = twofish_dec_blk }
+-	} }
+-};
+-
+ static int ecb_encrypt(struct skcipher_request *req)
+ {
+-	return glue_ecb_req_128bit(&twofish_enc, req);
++	ECB_WALK_START(req, TF_BLOCK_SIZE, -1);
++	ECB_BLOCK(3, twofish_enc_blk_3way);
++	ECB_BLOCK(1, twofish_enc_blk);
++	ECB_WALK_END();
+ }
+ 
+ static int ecb_decrypt(struct skcipher_request *req)
+ {
+-	return glue_ecb_req_128bit(&twofish_dec, req);
++	ECB_WALK_START(req, TF_BLOCK_SIZE, -1);
++	ECB_BLOCK(3, twofish_dec_blk_3way);
++	ECB_BLOCK(1, twofish_dec_blk);
++	ECB_WALK_END();
+ }
+ 
+ static int cbc_encrypt(struct skcipher_request *req)
+ {
+-	return glue_cbc_encrypt_req_128bit(twofish_enc_blk, req);
++	CBC_WALK_START(req, TF_BLOCK_SIZE, -1);
++	CBC_ENC_BLOCK(twofish_enc_blk);
++	CBC_WALK_END();
+ }
+ 
+ static int cbc_decrypt(struct skcipher_request *req)
+ {
+-	return glue_cbc_decrypt_req_128bit(&twofish_dec_cbc, req);
++	CBC_WALK_START(req, TF_BLOCK_SIZE, -1);
++	CBC_DEC_BLOCK(3, twofish_dec_blk_cbc_3way);
++	CBC_DEC_BLOCK(1, twofish_dec_blk);
++	CBC_WALK_END();
+ }
+ 
+ static struct skcipher_alg tf_skciphers[] = {
 diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 29dce7efc443..25101558acb5 100644
+index 25101558acb5..b2182658c55e 100644
 --- a/crypto/Kconfig
 +++ b/crypto/Kconfig
-@@ -1393,7 +1393,6 @@ config CRYPTO_CAST6_AVX_X86_64
+@@ -1711,7 +1711,6 @@ config CRYPTO_TWOFISH_X86_64_3WAY
  	select CRYPTO_SKCIPHER
- 	select CRYPTO_CAST6
- 	select CRYPTO_CAST_COMMON
+ 	select CRYPTO_TWOFISH_COMMON
+ 	select CRYPTO_TWOFISH_X86_64
+-	select CRYPTO_GLUE_HELPER_X86
+ 	help
+ 	  Twofish cipher algorithm (x86_64, 3-way parallel).
+ 
+@@ -1730,7 +1729,6 @@ config CRYPTO_TWOFISH_AVX_X86_64
+ 	tristate "Twofish cipher algorithm (x86_64/AVX)"
+ 	depends on X86 && 64BIT
+ 	select CRYPTO_SKCIPHER
 -	select CRYPTO_GLUE_HELPER_X86
  	select CRYPTO_SIMD
- 	imply CRYPTO_XTS
- 	imply CRYPTO_CTR
+ 	select CRYPTO_TWOFISH_COMMON
+ 	select CRYPTO_TWOFISH_X86_64
 -- 
 2.17.1
 
