@@ -2,156 +2,307 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1492E8140
-	for <lists+linux-crypto@lfdr.de>; Thu, 31 Dec 2020 17:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD162E8141
+	for <lists+linux-crypto@lfdr.de>; Thu, 31 Dec 2020 17:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgLaQmp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 31 Dec 2020 11:42:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33006 "EHLO mail.kernel.org"
+        id S1727115AbgLaQmr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 31 Dec 2020 11:42:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727048AbgLaQmp (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 31 Dec 2020 11:42:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 744FD20798;
-        Thu, 31 Dec 2020 16:42:02 +0000 (UTC)
+        id S1727048AbgLaQmr (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 31 Dec 2020 11:42:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79E30223E8;
+        Thu, 31 Dec 2020 16:42:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609432924;
-        bh=gALniMUSs2DvymYTnIhGco9GudAx5geJ0b9iioQM+UM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hi1tyo1rrG0cUFwBX8om/k33B1CfE8VTUKH0tFhLvYhueomRb7BJJq7SVfJ2/4y2c
-         0SQahNyqLEfJFf/4ZeA+Tli4DI9XCnhkVQ/r3RdopaNEkT65sASDGkkYaHZq4yQ/o5
-         kvOQt1r4gZctep1As7x5RB4MKP70gkGgiDHxSR/kIMp7YEaD7yBe3z6KtNpjlrbpnt
-         VArwTdQcBBeZvSkfpa2HxF/VzJhAOvFkyk1SNLuBk7Gns5VRKJViIczMBLWgfJB2IV
-         191sCtXuJ/A8moFpKoQzZKLZIcyMrsdeAxvMnrfLbAW1xgWV7l7GJCofH4PCQz6Evt
-         JOSzN53hU3CJw==
+        s=k20201202; t=1609432926;
+        bh=a61NyhU4EXc07m0yuMkCp7M7ARt0rWyjbcfXQtTmxBc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SrBZavjA5J0OBYzV1ra6sJweeNrkwn+6SRHvLhv/ZUcaRHqiNOkNbOj2K/pWkWacq
+         XlfWl8DxjT+y7X5wbhYyxu/S5LwBiGp+1LXmdRPOUoHzHgTbDHqTLeiKEdUqupQaHe
+         K9W7SOrPWq1ENO5ohORQGaiZN5oXkNeURAzGcKu3lk8L4kjTtUF37cLPbYkPXuzh4r
+         SxvGT4sBA+HHNq/3JWuWNboTe+cAHOY40rDjOhy5lLyfJrEzwz1flaCPk1bJR75n42
+         RKhewKqsqoBOLeRBsDlYQye2fU5d+KJ5Jtck+THGgdxDW+qdmASTO7XHsHLeqBie9p
+         oEp+K3Xp+mOXg==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
         Eric Biggers <ebiggers@kernel.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Uros Bizjak <ubizjak@gmail.com>
-Subject: [PATCH v2 0/2] crypto: x86/aes-ni-xts - recover and improve performance
-Date:   Thu, 31 Dec 2020 17:41:53 +0100
-Message-Id: <20201231164155.21792-1-ardb@kernel.org>
+Subject: [PATCH v2 1/2] crypto: x86/aes-ni-xts - use direct calls to and 4-way stride
+Date:   Thu, 31 Dec 2020 17:41:54 +0100
+Message-Id: <20201231164155.21792-2-ardb@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201231164155.21792-1-ardb@kernel.org>
+References: <20201231164155.21792-1-ardb@kernel.org>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The AES-NI implementation of XTS was impacted significantly by the retpoline
-changes, which is due to the fact that both its asm helper and the chaining
-mode glue library use indirect calls for processing small quantitities of
-data
+The XTS asm helper arrangement is a bit odd: the 8-way stride helper
+consists of back-to-back calls to the 4-way core transforms, which
+are called indirectly, based on a boolean that indicates whether we
+are performing encryption or decryption.
 
-So let's fix this, by:
-- creating a minimal, backportable fix that recovers most of the performance,
-  by reducing the number of indirect calls substantially;
-- for future releases, rewrite the XTS implementation completely, and replace
-  the glue helper with a core asm routine that is more flexible, making the C
-  code wrapper much more straight-forward.
+Given how costly indirect calls are on x86, let's switch to direct
+calls, and given how the 8-way stride doesn't really add anything
+substantial, use a 4-way stride instead, and make the asm core
+routine deal with any multiple of 4 blocks. Since 512 byte sectors
+or 4 KB blocks are the typical quantities XTS operates on, increase
+the stride exported to the glue helper to 512 bytes as well.
 
-This results in a substantial performance improvement: around ~2x for 1k and
-4k blocks, and more than 3x for ~1k blocks that require ciphertext stealing
-(benchmarked using tcrypt using 1420 byte blocks - full results below)
+As a result, the number of indirect calls is reduced from 3 per 64 bytes
+of in/output to 1 per 512 bytes of in/output, which produces a 65% speedup
+when operating on 1 KB blocks (measured on a Intel(R) Core(TM) i7-8650U CPU)
 
-It also allows us to enable the same driver for i386.
+Fixes: 9697fa39efd3f ("x86/retpoline/crypto: Convert crypto assembler indirect jumps")
+Tested-by: Eric Biggers <ebiggers@google.com> # x86_64
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ arch/x86/crypto/aesni-intel_asm.S  | 115 ++++++++++++--------
+ arch/x86/crypto/aesni-intel_glue.c |  25 +++--
+ 2 files changed, 84 insertions(+), 56 deletions(-)
 
-Changes since v1:
-- use 'test LEN, LEN' instead of 'cmp $0, LEN' to get shorter opcodes, as
-  suggested by Uros
-- rebase to get rid of false dependencies on other changes that are in flight.
-
-NOTE: patch #2 depends on [0], which provides the permutation table used for
-      ciphertext stealing
-
-[0] https://lore.kernel.org/linux-crypto/20201207233402.17472-1-ardb@kernel.org/
-
-Cc: Megha Dey <megha.dey@intel.com>
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Uros Bizjak <ubizjak@gmail.com>
-
-Ard Biesheuvel (2):
-  crypto: x86/aes-ni-xts - use direct calls to and 4-way stride
-  crypto: x86/aes-ni-xts - rewrite and drop indirections via glue helper
-
- arch/x86/crypto/aesni-intel_asm.S  | 353 ++++++++++++++++----
- arch/x86/crypto/aesni-intel_glue.c | 229 +++++++------
- crypto/Kconfig                     |   1 -
- 3 files changed, 411 insertions(+), 172 deletions(-)
-
+diff --git a/arch/x86/crypto/aesni-intel_asm.S b/arch/x86/crypto/aesni-intel_asm.S
+index a2710f76862f..84d8a156cdcd 100644
+--- a/arch/x86/crypto/aesni-intel_asm.S
++++ b/arch/x86/crypto/aesni-intel_asm.S
+@@ -2842,25 +2842,18 @@ SYM_FUNC_END(aesni_ctr_enc)
+ 	pxor CTR, IV;
+ 
+ /*
+- * void aesni_xts_crypt8(const struct crypto_aes_ctx *ctx, u8 *dst,
+- *			 const u8 *src, bool enc, le128 *iv)
++ * void aesni_xts_encrypt(const struct crypto_aes_ctx *ctx, u8 *dst,
++ *			  const u8 *src, unsigned int len, le128 *iv)
+  */
+-SYM_FUNC_START(aesni_xts_crypt8)
++SYM_FUNC_START(aesni_xts_encrypt)
+ 	FRAME_BEGIN
+-	testb %cl, %cl
+-	movl $0, %ecx
+-	movl $240, %r10d
+-	leaq _aesni_enc4, %r11
+-	leaq _aesni_dec4, %rax
+-	cmovel %r10d, %ecx
+-	cmoveq %rax, %r11
+ 
+ 	movdqa .Lgf128mul_x_ble_mask, GF128MUL_MASK
+ 	movups (IVP), IV
+ 
+ 	mov 480(KEYP), KLEN
+-	addq %rcx, KEYP
+ 
++.Lxts_enc_loop4:
+ 	movdqa IV, STATE1
+ 	movdqu 0x00(INP), INC
+ 	pxor INC, STATE1
+@@ -2884,71 +2877,103 @@ SYM_FUNC_START(aesni_xts_crypt8)
+ 	pxor INC, STATE4
+ 	movdqu IV, 0x30(OUTP)
+ 
+-	CALL_NOSPEC r11
++	call _aesni_enc4
+ 
+ 	movdqu 0x00(OUTP), INC
+ 	pxor INC, STATE1
+ 	movdqu STATE1, 0x00(OUTP)
+ 
+-	_aesni_gf128mul_x_ble()
+-	movdqa IV, STATE1
+-	movdqu 0x40(INP), INC
+-	pxor INC, STATE1
+-	movdqu IV, 0x40(OUTP)
+-
+ 	movdqu 0x10(OUTP), INC
+ 	pxor INC, STATE2
+ 	movdqu STATE2, 0x10(OUTP)
+ 
+-	_aesni_gf128mul_x_ble()
+-	movdqa IV, STATE2
+-	movdqu 0x50(INP), INC
+-	pxor INC, STATE2
+-	movdqu IV, 0x50(OUTP)
+-
+ 	movdqu 0x20(OUTP), INC
+ 	pxor INC, STATE3
+ 	movdqu STATE3, 0x20(OUTP)
+ 
+-	_aesni_gf128mul_x_ble()
+-	movdqa IV, STATE3
+-	movdqu 0x60(INP), INC
+-	pxor INC, STATE3
+-	movdqu IV, 0x60(OUTP)
+-
+ 	movdqu 0x30(OUTP), INC
+ 	pxor INC, STATE4
+ 	movdqu STATE4, 0x30(OUTP)
+ 
+ 	_aesni_gf128mul_x_ble()
+-	movdqa IV, STATE4
+-	movdqu 0x70(INP), INC
+-	pxor INC, STATE4
+-	movdqu IV, 0x70(OUTP)
+ 
+-	_aesni_gf128mul_x_ble()
++	add $64, INP
++	add $64, OUTP
++	sub $64, LEN
++	ja .Lxts_enc_loop4
++
+ 	movups IV, (IVP)
+ 
+-	CALL_NOSPEC r11
++	FRAME_END
++	ret
++SYM_FUNC_END(aesni_xts_encrypt)
++
++/*
++ * void aesni_xts_decrypt(const struct crypto_aes_ctx *ctx, u8 *dst,
++ *			  const u8 *src, unsigned int len, le128 *iv)
++ */
++SYM_FUNC_START(aesni_xts_decrypt)
++	FRAME_BEGIN
++
++	movdqa .Lgf128mul_x_ble_mask, GF128MUL_MASK
++	movups (IVP), IV
++
++	mov 480(KEYP), KLEN
++	add $240, KEYP
+ 
+-	movdqu 0x40(OUTP), INC
++.Lxts_dec_loop4:
++	movdqa IV, STATE1
++	movdqu 0x00(INP), INC
+ 	pxor INC, STATE1
+-	movdqu STATE1, 0x40(OUTP)
++	movdqu IV, 0x00(OUTP)
+ 
+-	movdqu 0x50(OUTP), INC
++	_aesni_gf128mul_x_ble()
++	movdqa IV, STATE2
++	movdqu 0x10(INP), INC
++	pxor INC, STATE2
++	movdqu IV, 0x10(OUTP)
++
++	_aesni_gf128mul_x_ble()
++	movdqa IV, STATE3
++	movdqu 0x20(INP), INC
++	pxor INC, STATE3
++	movdqu IV, 0x20(OUTP)
++
++	_aesni_gf128mul_x_ble()
++	movdqa IV, STATE4
++	movdqu 0x30(INP), INC
++	pxor INC, STATE4
++	movdqu IV, 0x30(OUTP)
++
++	call _aesni_dec4
++
++	movdqu 0x00(OUTP), INC
++	pxor INC, STATE1
++	movdqu STATE1, 0x00(OUTP)
++
++	movdqu 0x10(OUTP), INC
+ 	pxor INC, STATE2
+-	movdqu STATE2, 0x50(OUTP)
++	movdqu STATE2, 0x10(OUTP)
+ 
+-	movdqu 0x60(OUTP), INC
++	movdqu 0x20(OUTP), INC
+ 	pxor INC, STATE3
+-	movdqu STATE3, 0x60(OUTP)
++	movdqu STATE3, 0x20(OUTP)
+ 
+-	movdqu 0x70(OUTP), INC
++	movdqu 0x30(OUTP), INC
+ 	pxor INC, STATE4
+-	movdqu STATE4, 0x70(OUTP)
++	movdqu STATE4, 0x30(OUTP)
++
++	_aesni_gf128mul_x_ble()
++
++	add $64, INP
++	add $64, OUTP
++	sub $64, LEN
++	ja .Lxts_dec_loop4
++
++	movups IV, (IVP)
+ 
+ 	FRAME_END
+ 	ret
+-SYM_FUNC_END(aesni_xts_crypt8)
++SYM_FUNC_END(aesni_xts_decrypt)
+ 
+ #endif
+diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
+index 96bdc1584215..84e3ed49b35d 100644
+--- a/arch/x86/crypto/aesni-intel_glue.c
++++ b/arch/x86/crypto/aesni-intel_glue.c
+@@ -101,6 +101,12 @@ asmlinkage void aesni_cts_cbc_dec(struct crypto_aes_ctx *ctx, u8 *out,
+ #define AVX_GEN2_OPTSIZE 640
+ #define AVX_GEN4_OPTSIZE 4096
+ 
++asmlinkage void aesni_xts_encrypt(const struct crypto_aes_ctx *ctx, u8 *out,
++				  const u8 *in, unsigned int len, u8 *iv);
++
++asmlinkage void aesni_xts_decrypt(const struct crypto_aes_ctx *ctx, u8 *out,
++				  const u8 *in, unsigned int len, u8 *iv);
++
+ #ifdef CONFIG_X86_64
+ 
+ static void (*aesni_ctr_enc_tfm)(struct crypto_aes_ctx *ctx, u8 *out,
+@@ -108,9 +114,6 @@ static void (*aesni_ctr_enc_tfm)(struct crypto_aes_ctx *ctx, u8 *out,
+ asmlinkage void aesni_ctr_enc(struct crypto_aes_ctx *ctx, u8 *out,
+ 			      const u8 *in, unsigned int len, u8 *iv);
+ 
+-asmlinkage void aesni_xts_crypt8(const struct crypto_aes_ctx *ctx, u8 *out,
+-				 const u8 *in, bool enc, le128 *iv);
+-
+ /* asmlinkage void aesni_gcm_enc()
+  * void *ctx,  AES Key schedule. Starts on a 16 byte boundary.
+  * struct gcm_context_data.  May be uninitialized.
+@@ -663,14 +666,14 @@ static void aesni_xts_dec(const void *ctx, u8 *dst, const u8 *src, le128 *iv)
+ 	glue_xts_crypt_128bit_one(ctx, dst, src, iv, aesni_dec);
+ }
+ 
+-static void aesni_xts_enc8(const void *ctx, u8 *dst, const u8 *src, le128 *iv)
++static void aesni_xts_enc32(const void *ctx, u8 *dst, const u8 *src, le128 *iv)
+ {
+-	aesni_xts_crypt8(ctx, dst, src, true, iv);
++	aesni_xts_encrypt(ctx, dst, src, 32 * AES_BLOCK_SIZE, (u8 *)iv);
+ }
+ 
+-static void aesni_xts_dec8(const void *ctx, u8 *dst, const u8 *src, le128 *iv)
++static void aesni_xts_dec32(const void *ctx, u8 *dst, const u8 *src, le128 *iv)
+ {
+-	aesni_xts_crypt8(ctx, dst, src, false, iv);
++	aesni_xts_decrypt(ctx, dst, src, 32 * AES_BLOCK_SIZE, (u8 *)iv);
+ }
+ 
+ static const struct common_glue_ctx aesni_enc_xts = {
+@@ -678,8 +681,8 @@ static const struct common_glue_ctx aesni_enc_xts = {
+ 	.fpu_blocks_limit = 1,
+ 
+ 	.funcs = { {
+-		.num_blocks = 8,
+-		.fn_u = { .xts = aesni_xts_enc8 }
++		.num_blocks = 32,
++		.fn_u = { .xts = aesni_xts_enc32 }
+ 	}, {
+ 		.num_blocks = 1,
+ 		.fn_u = { .xts = aesni_xts_enc }
+@@ -691,8 +694,8 @@ static const struct common_glue_ctx aesni_dec_xts = {
+ 	.fpu_blocks_limit = 1,
+ 
+ 	.funcs = { {
+-		.num_blocks = 8,
+-		.fn_u = { .xts = aesni_xts_dec8 }
++		.num_blocks = 32,
++		.fn_u = { .xts = aesni_xts_dec32 }
+ 	}, {
+ 		.num_blocks = 1,
+ 		.fn_u = { .xts = aesni_xts_dec }
 -- 
 2.17.1
 
-Benchmarked using tcrypt on a Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz.
-Requires patch below to get tcrypt to benchmark 1420 byte blocks.
-
-BEFORE
-
-testing speed of async xts(aes) (xts-aes-aesni) encryption
-tcrypt: test 0 (256 bit key, 16 byte blocks): 8030565 operations in 1 seconds (128489040 bytes)
-tcrypt: test 1 (256 bit key, 64 byte blocks): 4760527 operations in 1 seconds (304673728 bytes)
-tcrypt: test 2 (256 bit key, 256 byte blocks): 5250541 operations in 1 seconds (1344138496 bytes)
-tcrypt: test 3 (256 bit key, 1024 byte blocks): 2163398 operations in 1 seconds (2215319552 bytes)
-tcrypt: test 4 (256 bit key, 1420 byte blocks): 1036396 operations in 1 seconds (1471682320 bytes)
-tcrypt: test 5 (256 bit key, 4096 byte blocks): 568192 operations in 1 seconds (2327314432 bytes)
-tcrypt: test 6 (512 bit key, 16 byte blocks): 7916395 operations in 1 seconds (126662320 bytes)
-tcrypt: test 7 (512 bit key, 64 byte blocks): 4783114 operations in 1 seconds (306119296 bytes)
-tcrypt: test 8 (512 bit key, 256 byte blocks): 4916568 operations in 1 seconds (1258641408 bytes)
-tcrypt: test 9 (512 bit key, 1024 byte blocks): 1898349 operations in 1 seconds (1943909376 bytes)
-tcrypt: test 10 (512 bit key, 1420 byte blocks): 970328 operations in 1 seconds (1377865760 bytes)
-tcrypt: test 11 (512 bit key, 4096 byte blocks): 499687 operations in 1 seconds (2046717952 bytes)
-
-
-AFTER
-
-testing speed of async xts(aes) (xts-aes-aesni) encryption
-tcrypt: test 0 (256 bit key, 16 byte blocks): 11977048 operations in 1 seconds (191632768 bytes)
-tcrypt: test 1 (256 bit key, 64 byte blocks): 10504479 operations in 1 seconds (672286656 bytes)
-tcrypt: test 2 (256 bit key, 256 byte blocks): 7929809 operations in 1 seconds (2030031104 bytes)
-tcrypt: test 3 (256 bit key, 1024 byte blocks): 3992118 operations in 1 seconds (4087928832 bytes)
-tcrypt: test 4 (256 bit key, 1420 byte blocks): 3160481 operations in 1 seconds (4487883020 bytes)
-tcrypt: test 5 (256 bit key, 4096 byte blocks): 1240437 operations in 1 seconds (5080829952 bytes)
-tcrypt: test 6 (512 bit key, 16 byte blocks): 11694652 operations in 1 seconds (187114432 bytes)
-tcrypt: test 7 (512 bit key, 64 byte blocks): 9739536 operations in 1 seconds (623330304 bytes)
-tcrypt: test 8 (512 bit key, 256 byte blocks): 6833613 operations in 1 seconds (1749404928 bytes)
-tcrypt: test 9 (512 bit key, 1024 byte blocks): 3121421 operations in 1 seconds (3196335104 bytes)
-tcrypt: test 10 (512 bit key, 1420 byte blocks): 2421563 operations in 1 seconds (3438619460 bytes)
-tcrypt: test 11 (512 bit key, 4096 byte blocks): 941964 operations in 1 seconds (3858284544 bytes)
-
-
-diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-index 2054cd6f55cf..ac8b0d087927 100644
---- a/arch/x86/crypto/aesni-intel_glue.c
-+++ b/arch/x86/crypto/aesni-intel_glue.c
-@@ -994,12 +994,13 @@ static struct skcipher_alg aesni_skciphers[] = {
-                        .cra_driver_name        = "__xts-aes-aesni",
-                        .cra_priority           = 401,
-                        .cra_flags              = CRYPTO_ALG_INTERNAL,
--                       .cra_blocksize          = AES_BLOCK_SIZE,
-+                       .cra_blocksize          = 1,//AES_BLOCK_SIZE,
-                        .cra_ctxsize            = XTS_AES_CTX_SIZE,
-                        .cra_module             = THIS_MODULE,
-                },
-                .min_keysize    = 2 * AES_MIN_KEY_SIZE,
-                .max_keysize    = 2 * AES_MAX_KEY_SIZE,
-+               .chunksize      = AES_BLOCK_SIZE,
-                .ivsize         = AES_BLOCK_SIZE,
-                .setkey         = xts_aesni_setkey,
-                .encrypt        = xts_encrypt,
-diff --git a/crypto/xts.c b/crypto/xts.c
-index 6c12f30dbdd6..7ade682f1241 100644
---- a/crypto/xts.c
-+++ b/crypto/xts.c
-@@ -416,11 +416,12 @@ static int xts_create(struct crypto_template *tmpl, struct rtattr **tb)
-                goto err_free_inst;
-
-        inst->alg.base.cra_priority = alg->base.cra_priority;
--       inst->alg.base.cra_blocksize = XTS_BLOCK_SIZE;
-+       inst->alg.base.cra_blocksize = 1,//XTS_BLOCK_SIZE;
-        inst->alg.base.cra_alignmask = alg->base.cra_alignmask |
-                                       (__alignof__(u64) - 1);
-
-        inst->alg.ivsize = XTS_BLOCK_SIZE;
-+       inst->alg.chunksize = XTS_BLOCK_SIZE;
-        inst->alg.min_keysize = crypto_skcipher_alg_min_keysize(alg) * 2;
-        inst->alg.max_keysize = crypto_skcipher_alg_max_keysize(alg) * 2;
