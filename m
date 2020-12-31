@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB202E8172
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0542E8174
 	for <lists+linux-crypto@lfdr.de>; Thu, 31 Dec 2020 18:25:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727134AbgLaRZV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1727008AbgLaRZV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Thu, 31 Dec 2020 12:25:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55086 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:55088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727008AbgLaRZV (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1727094AbgLaRZV (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 31 Dec 2020 12:25:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AB7E224B2;
-        Thu, 31 Dec 2020 17:24:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F32C7224BD;
+        Thu, 31 Dec 2020 17:24:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609435461;
-        bh=Tp36mZIS84xfM5CYG/KD99bEcfDFJ5aHV/dLNt3SrXQ=;
+        s=k20201202; t=1609435464;
+        bh=KhyhXF1Bg7LO728Rqjs0ZDxux3uY4R6U1lxcsB2KOy8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KyQbR3pcNWtR/mUaRR8b+oDxqXZvkY3vdBGK/qdFQcR3z+DSkUjX4QJTs5tSbTi2Y
-         HeN1qkS1zTC4XvRC6Am1QcZS9QoqBFysUbZOjzupv2NPYBOaXdcas9VC+o39h8Kzpe
-         2Wz1tL8iel2zsm3GmSnaSQZ+11p87LgF/cd1WOvspUbfUSwM/fkd9Wa1C58KFgxyE3
-         7Q1ug/GUxK/bY+OtOgIAAAvQgogZgXZC1bDA/rAvqS9XG6dtl1WQaO95AbzkEH4qZ/
-         c9I4w/RbUTG42Y2fB1+mvK4MZ2bLmIakUuvotOUdujiL57C9BAY3zToY39va0dXXwv
-         r6rIj4jzc2IHg==
+        b=PI6/yGyYqlLq+gZX9kDwCz4h8kZUKYWyzP4enyV1AURrZ83EyHJmSBOujWTAdPhy1
+         0shaZoOEnu0HQ0d3UBXN8bm+ox5KmIABmBMnQIhodFuNR5Kaz5oGioiBoW+bc71EwU
+         1wGTDPh/rCyeWfFyz/6aoqEmZPmqEU8Ej/bGuy9IUOdoZcQ1Eeeb4xuFmea/of7S+G
+         MDgyjPv1d5VDeicQX1We6O6EAewx3w4BO7i9URIQNZb/rukYkoxJXCzEojPAyZCw6W
+         8P0k7ra17E+HslG2ykEjaUfe2MRcjJoi3LIk21P/UAkJUgbJY+7zKN5YgQwwbX/0s0
+         cQ9kkxnjohvKQ==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
@@ -30,9 +30,9 @@ Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Milan Broz <gmazyland@gmail.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 13/21] crypto: x86/blowfish - drop CTR mode implementation
-Date:   Thu, 31 Dec 2020 18:23:29 +0100
-Message-Id: <20201231172337.23073-14-ardb@kernel.org>
+Subject: [PATCH 14/21] crypto: x86 - add some helper macros for ECB and CBC modes
+Date:   Thu, 31 Dec 2020 18:23:30 +0100
+Message-Id: <20201231172337.23073-15-ardb@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201231172337.23073-1-ardb@kernel.org>
 References: <20201231172337.23073-1-ardb@kernel.org>
@@ -40,159 +40,112 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Blowfish in counter mode is never used in the kernel, so there
-is no point in keeping an accelerated implementation around.
+The x86 glue helper module has started to show its age:
+- It relies heavily on function pointers to invoke asm helper functions that
+  operate on fixed input sizes that are relatively small. This means the
+  performance is severely impacted by retpolines.
+- It goes to great lengths to amortize the cost of kernel_fpu_begin()/end()
+  over as much work as possible, which is no longer necessary now that FPU
+  save/restore is done lazily, and doing so may cause unbounded scheduling
+  blackouts due to the fact that enabling the FPU in kernel mode disables
+  preemption.
+- The CBC mode decryption helper makes backward strides through the input, in
+  order to avoid a single block size memcpy() between chunks. Consuming the
+  input in this manner is highly likely to defeat any hardware prefetchers,
+  so it is better to go through the data linearly, and perform the extra
+  memcpy() where needed (which is turned into direct loads and stores by the
+  compiler anyway). Note that benchmarks won't show this effect, given that
+  the memory they use is always cache hot.
+
+GCC does not seem to be smart enough to elide the indirect calls when the
+function pointers are passed as arguments to static inline helper routines
+modeled after the existing ones. So instead, let's create some CPP macros
+that encapsulate the core of the ECB and CBC processing, so we can wire
+them up for existing users of the glue helper module, i.e., Camellia,
+Serpent, Twofish and CAST6.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/crypto/blowfish_glue.c | 107 --------------------
- crypto/Kconfig                  |   1 +
- 2 files changed, 1 insertion(+), 107 deletions(-)
+ arch/x86/crypto/ecb_cbc_helpers.h | 71 ++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
 
-diff --git a/arch/x86/crypto/blowfish_glue.c b/arch/x86/crypto/blowfish_glue.c
-index cedfdba69ce3..a880e0b1c255 100644
---- a/arch/x86/crypto/blowfish_glue.c
-+++ b/arch/x86/crypto/blowfish_glue.c
-@@ -6,8 +6,6 @@
-  *
-  * CBC & ECB parts based on code (crypto/cbc.c,ecb.c) by:
-  *   Copyright (c) 2006 Herbert Xu <herbert@gondor.apana.org.au>
-- * CTR part based on code (crypto/ctr.c) by:
-- *   (C) Copyright IBM Corp. 2007 - Joy Latten <latten@us.ibm.com>
-  */
- 
- #include <crypto/algapi.h>
-@@ -247,97 +245,6 @@ static int cbc_decrypt(struct skcipher_request *req)
- 	return err;
- }
- 
--static void ctr_crypt_final(struct bf_ctx *ctx, struct skcipher_walk *walk)
--{
--	u8 *ctrblk = walk->iv;
--	u8 keystream[BF_BLOCK_SIZE];
--	u8 *src = walk->src.virt.addr;
--	u8 *dst = walk->dst.virt.addr;
--	unsigned int nbytes = walk->nbytes;
--
--	blowfish_enc_blk(ctx, keystream, ctrblk);
--	crypto_xor_cpy(dst, keystream, src, nbytes);
--
--	crypto_inc(ctrblk, BF_BLOCK_SIZE);
--}
--
--static unsigned int __ctr_crypt(struct bf_ctx *ctx, struct skcipher_walk *walk)
--{
--	unsigned int bsize = BF_BLOCK_SIZE;
--	unsigned int nbytes = walk->nbytes;
--	u64 *src = (u64 *)walk->src.virt.addr;
--	u64 *dst = (u64 *)walk->dst.virt.addr;
--	u64 ctrblk = be64_to_cpu(*(__be64 *)walk->iv);
--	__be64 ctrblocks[4];
--
--	/* Process four block batch */
--	if (nbytes >= bsize * 4) {
--		do {
--			if (dst != src) {
--				dst[0] = src[0];
--				dst[1] = src[1];
--				dst[2] = src[2];
--				dst[3] = src[3];
--			}
--
--			/* create ctrblks for parallel encrypt */
--			ctrblocks[0] = cpu_to_be64(ctrblk++);
--			ctrblocks[1] = cpu_to_be64(ctrblk++);
--			ctrblocks[2] = cpu_to_be64(ctrblk++);
--			ctrblocks[3] = cpu_to_be64(ctrblk++);
--
--			blowfish_enc_blk_xor_4way(ctx, (u8 *)dst,
--						  (u8 *)ctrblocks);
--
--			src += 4;
--			dst += 4;
--		} while ((nbytes -= bsize * 4) >= bsize * 4);
--
--		if (nbytes < bsize)
--			goto done;
--	}
--
--	/* Handle leftovers */
--	do {
--		if (dst != src)
--			*dst = *src;
--
--		ctrblocks[0] = cpu_to_be64(ctrblk++);
--
--		blowfish_enc_blk_xor(ctx, (u8 *)dst, (u8 *)ctrblocks);
--
--		src += 1;
--		dst += 1;
--	} while ((nbytes -= bsize) >= bsize);
--
--done:
--	*(__be64 *)walk->iv = cpu_to_be64(ctrblk);
--	return nbytes;
--}
--
--static int ctr_crypt(struct skcipher_request *req)
--{
--	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
--	struct bf_ctx *ctx = crypto_skcipher_ctx(tfm);
--	struct skcipher_walk walk;
--	unsigned int nbytes;
--	int err;
--
--	err = skcipher_walk_virt(&walk, req, false);
--
--	while ((nbytes = walk.nbytes) >= BF_BLOCK_SIZE) {
--		nbytes = __ctr_crypt(ctx, &walk);
--		err = skcipher_walk_done(&walk, nbytes);
--	}
--
--	if (nbytes) {
--		ctr_crypt_final(ctx, &walk);
--		err = skcipher_walk_done(&walk, 0);
--	}
--
--	return err;
--}
--
- static struct crypto_alg bf_cipher_alg = {
- 	.cra_name		= "blowfish",
- 	.cra_driver_name	= "blowfish-asm",
-@@ -384,20 +291,6 @@ static struct skcipher_alg bf_skcipher_algs[] = {
- 		.setkey			= blowfish_setkey_skcipher,
- 		.encrypt		= cbc_encrypt,
- 		.decrypt		= cbc_decrypt,
--	}, {
--		.base.cra_name		= "ctr(blowfish)",
--		.base.cra_driver_name	= "ctr-blowfish-asm",
--		.base.cra_priority	= 300,
--		.base.cra_blocksize	= 1,
--		.base.cra_ctxsize	= sizeof(struct bf_ctx),
--		.base.cra_module	= THIS_MODULE,
--		.min_keysize		= BF_MIN_KEY_SIZE,
--		.max_keysize		= BF_MAX_KEY_SIZE,
--		.ivsize			= BF_BLOCK_SIZE,
--		.chunksize		= BF_BLOCK_SIZE,
--		.setkey			= blowfish_setkey_skcipher,
--		.encrypt		= ctr_crypt,
--		.decrypt		= ctr_crypt,
- 	},
- };
- 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 5e820a57d138..24c0e001d06d 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1255,6 +1255,7 @@ config CRYPTO_BLOWFISH_X86_64
- 	depends on X86 && 64BIT
- 	select CRYPTO_SKCIPHER
- 	select CRYPTO_BLOWFISH_COMMON
-+	imply CRYPTO_CTR
- 	help
- 	  Blowfish cipher algorithm (x86_64), by Bruce Schneier.
- 
+diff --git a/arch/x86/crypto/ecb_cbc_helpers.h b/arch/x86/crypto/ecb_cbc_helpers.h
+new file mode 100644
+index 000000000000..c4e6c0f50bf5
+--- /dev/null
++++ b/arch/x86/crypto/ecb_cbc_helpers.h
+@@ -0,0 +1,71 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _CRYPTO_ECB_CBC_HELPER_H
++#define _CRYPTO_ECB_CBC_HELPER_H
++
++#include <crypto/internal/skcipher.h>
++#include <asm/fpu/api.h>
++
++/*
++ * Mode helpers to instantiate parameterized skcipher ECB/CBC modes without
++ * having to rely on indirect calls and retpolines.
++ */
++
++#define ECB_WALK_START(req, bsize, fpu_blocks) do {			\
++	void *ctx = crypto_skcipher_ctx(crypto_skcipher_reqtfm(req));	\
++	const int __bsize = (bsize);					\
++	struct skcipher_walk walk;					\
++	int err = skcipher_walk_virt(&walk, (req), false);		\
++	while (walk.nbytes > 0) {					\
++		unsigned int nbytes = walk.nbytes;			\
++		bool do_fpu = (fpu_blocks) != -1 &&			\
++			      nbytes >= (fpu_blocks) * __bsize;		\
++		const u8 *src = walk.src.virt.addr;			\
++		u8 *dst = walk.dst.virt.addr;				\
++		u8 __maybe_unused buf[(bsize)];				\
++		if (do_fpu) kernel_fpu_begin()
++
++#define CBC_WALK_START(req, bsize, fpu_blocks)				\
++	ECB_WALK_START(req, bsize, fpu_blocks)
++
++#define ECB_WALK_ADVANCE(blocks) do {					\
++	dst += (blocks) * __bsize;					\
++	src += (blocks) * __bsize;					\
++	nbytes -= (blocks) * __bsize;					\
++} while (0)
++
++#define ECB_BLOCK(blocks, func) do					\
++	while (nbytes >= (blocks) * __bsize) {				\
++		(func)(ctx, dst, src);					\
++		ECB_WALK_ADVANCE(blocks);				\
++	} while (0)
++
++#define CBC_ENC_BLOCK(func) do						\
++	while (nbytes >= __bsize) {					\
++		crypto_xor_cpy(dst, src, walk.iv, __bsize);		\
++		(func)(ctx, dst, dst);					\
++		memcpy(walk.iv, dst, __bsize);				\
++		ECB_WALK_ADVANCE(1);					\
++	} while (0)
++
++#define CBC_DEC_BLOCK(blocks, func) do					\
++	while (nbytes >= (blocks) * __bsize) {				\
++		const u8 *__s = src + ((blocks) - 1) * __bsize;		\
++		if (dst == src)						\
++			__s = memcpy(buf, __s, __bsize);		\
++		(func)(ctx, dst, src);					\
++		crypto_xor(dst, walk.iv, __bsize);			\
++		memcpy(walk.iv, __s, __bsize);				\
++		ECB_WALK_ADVANCE(blocks);				\
++	} while (0)
++
++#define ECB_WALK_END()							\
++		if (do_fpu) kernel_fpu_end();				\
++		err = skcipher_walk_done(&walk, nbytes);		\
++	}								\
++	return err;							\
++} while (0)
++
++#define CBC_WALK_END() ECB_WALK_END()
++
++#endif
 -- 
 2.17.1
 
