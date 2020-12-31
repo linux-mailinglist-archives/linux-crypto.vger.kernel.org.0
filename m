@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A3C2E8170
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2122E816F
 	for <lists+linux-crypto@lfdr.de>; Thu, 31 Dec 2020 18:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgLaRZT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1727029AbgLaRZT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Thu, 31 Dec 2020 12:25:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55082 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:55084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727008AbgLaRZT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726917AbgLaRZT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 31 Dec 2020 12:25:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 493D122483;
-        Thu, 31 Dec 2020 17:24:12 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16B6A224B0;
+        Thu, 31 Dec 2020 17:24:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609435455;
-        bh=LZJ5rT51wGaVrRzcx+bBG8RjvAZl7QeBAeeLpY6Y61o=;
+        s=k20201202; t=1609435458;
+        bh=fKXmKV7pdES/OQRIcaMDkJbEJVlbbOHwf4jakfmXbDQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ti9uoHWu5lLCiytbQe7648trnlnImnJaLzb3VgQisH6cz2Uw5hfwz0EU3zV+HS+io
-         QYEWe3KmUp8fvb20kFmS8KLjEb6xGcm2GO381EE8OEo/98tF20qSUL/luYIcGr8Jb5
-         5dv1mED0Z50+Tz+uErLVfCxuYbtS3fvNjrp4SLjYFQL3WjLpHy19QrdSfAWdcH7WZs
-         Sb66yWssAppPibT9ohWmooT4FvQEpfaMnraG5IerAehFLQUXjzVMAeBCUU7jY5ATZc
-         OM32xNFw+OphRNLs9beD7POuf1snqCxgwM58j3uwQCYQ7q4dZ4UyNWOkcABJYLUwlt
-         MjSEVMcUZHwdA==
+        b=QopIQTLpit1qnAsn7GhhtK/76reefE38uMsASl86aFttrM/VitDeK64Jjl27QnuKH
+         w0cRBtZOhSJkpg1Rm1msv1DJPgxj0XgW4NwRI5cQ30s/1ASHWAKDvIbbocV6UI8QlP
+         KGKBfPiH1v00DhHVtibqxR3zIQ4jDZHSrhhHHJomQd98urrf8BvD3Q/HmbJYS4+vRF
+         sljm4HcVt5thSNtOXpNoHQo+8TNuuu3Ry2cdyL6C29MI4mWnu35+Z2xPdixUygjHck
+         B2zigR/b5s0EXKyBECZRbaZlw/WJrXt5R5Y7TfPnyM+3cbTOBtp4J2Y/yR+T2u60BE
+         VF5O5FX2wjunw==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
@@ -30,9 +30,9 @@ Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Milan Broz <gmazyland@gmail.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 11/21] crypto: x86/glue-helper - drop CTR helper routines
-Date:   Thu, 31 Dec 2020 18:23:27 +0100
-Message-Id: <20201231172337.23073-12-ardb@kernel.org>
+Subject: [PATCH 12/21] crypto: x86/des - drop CTR mode implementation
+Date:   Thu, 31 Dec 2020 18:23:28 +0100
+Message-Id: <20201231172337.23073-13-ardb@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201231172337.23073-1-ardb@kernel.org>
 References: <20201231172337.23073-1-ardb@kernel.org>
@@ -40,140 +40,19 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The glue helper's CTR routines are no longer used, so drop them.
+DES or Triple DES in counter mode is never used in the kernel, so there
+is no point in keeping an accelerated implementation around.
 
-Acked-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/crypto/glue_helper-asm-avx.S     | 45 ------------
- arch/x86/crypto/glue_helper-asm-avx2.S    | 58 ----------------
- arch/x86/crypto/glue_helper.c             | 72 --------------------
- arch/x86/include/asm/crypto/glue_helper.h | 32 ---------
- 4 files changed, 207 deletions(-)
+ arch/x86/crypto/des3_ede_glue.c | 104 --------------------
+ crypto/Kconfig                  |   1 +
+ 2 files changed, 1 insertion(+), 104 deletions(-)
 
-diff --git a/arch/x86/crypto/glue_helper-asm-avx.S b/arch/x86/crypto/glue_helper-asm-avx.S
-index a94511432803..3da385271227 100644
---- a/arch/x86/crypto/glue_helper-asm-avx.S
-+++ b/arch/x86/crypto/glue_helper-asm-avx.S
-@@ -34,48 +34,3 @@
- 	vpxor (5*16)(src), x6, x6; \
- 	vpxor (6*16)(src), x7, x7; \
- 	store_8way(dst, x0, x1, x2, x3, x4, x5, x6, x7);
--
--#define inc_le128(x, minus_one, tmp) \
--	vpcmpeqq minus_one, x, tmp; \
--	vpsubq minus_one, x, x; \
--	vpslldq $8, tmp, tmp; \
--	vpsubq tmp, x, x;
--
--#define load_ctr_8way(iv, bswap, x0, x1, x2, x3, x4, x5, x6, x7, t0, t1, t2) \
--	vpcmpeqd t0, t0, t0; \
--	vpsrldq $8, t0, t0; /* low: -1, high: 0 */ \
--	vmovdqa bswap, t1; \
--	\
--	/* load IV and byteswap */ \
--	vmovdqu (iv), x7; \
--	vpshufb t1, x7, x0; \
--	\
--	/* construct IVs */ \
--	inc_le128(x7, t0, t2); \
--	vpshufb t1, x7, x1; \
--	inc_le128(x7, t0, t2); \
--	vpshufb t1, x7, x2; \
--	inc_le128(x7, t0, t2); \
--	vpshufb t1, x7, x3; \
--	inc_le128(x7, t0, t2); \
--	vpshufb t1, x7, x4; \
--	inc_le128(x7, t0, t2); \
--	vpshufb t1, x7, x5; \
--	inc_le128(x7, t0, t2); \
--	vpshufb t1, x7, x6; \
--	inc_le128(x7, t0, t2); \
--	vmovdqa x7, t2; \
--	vpshufb t1, x7, x7; \
--	inc_le128(t2, t0, t1); \
--	vmovdqu t2, (iv);
--
--#define store_ctr_8way(src, dst, x0, x1, x2, x3, x4, x5, x6, x7) \
--	vpxor (0*16)(src), x0, x0; \
--	vpxor (1*16)(src), x1, x1; \
--	vpxor (2*16)(src), x2, x2; \
--	vpxor (3*16)(src), x3, x3; \
--	vpxor (4*16)(src), x4, x4; \
--	vpxor (5*16)(src), x5, x5; \
--	vpxor (6*16)(src), x6, x6; \
--	vpxor (7*16)(src), x7, x7; \
--	store_8way(dst, x0, x1, x2, x3, x4, x5, x6, x7);
-diff --git a/arch/x86/crypto/glue_helper-asm-avx2.S b/arch/x86/crypto/glue_helper-asm-avx2.S
-index 456bface1e5d..c77e9049431f 100644
---- a/arch/x86/crypto/glue_helper-asm-avx2.S
-+++ b/arch/x86/crypto/glue_helper-asm-avx2.S
-@@ -37,61 +37,3 @@
- 	vpxor (5*32+16)(src), x6, x6; \
- 	vpxor (6*32+16)(src), x7, x7; \
- 	store_16way(dst, x0, x1, x2, x3, x4, x5, x6, x7);
--
--#define inc_le128(x, minus_one, tmp) \
--	vpcmpeqq minus_one, x, tmp; \
--	vpsubq minus_one, x, x; \
--	vpslldq $8, tmp, tmp; \
--	vpsubq tmp, x, x;
--
--#define add2_le128(x, minus_one, minus_two, tmp1, tmp2) \
--	vpcmpeqq minus_one, x, tmp1; \
--	vpcmpeqq minus_two, x, tmp2; \
--	vpsubq minus_two, x, x; \
--	vpor tmp2, tmp1, tmp1; \
--	vpslldq $8, tmp1, tmp1; \
--	vpsubq tmp1, x, x;
--
--#define load_ctr_16way(iv, bswap, x0, x1, x2, x3, x4, x5, x6, x7, t0, t0x, t1, \
--		       t1x, t2, t2x, t3, t3x, t4, t5) \
--	vpcmpeqd t0, t0, t0; \
--	vpsrldq $8, t0, t0; /* ab: -1:0 ; cd: -1:0 */ \
--	vpaddq t0, t0, t4; /* ab: -2:0 ; cd: -2:0 */\
--	\
--	/* load IV and byteswap */ \
--	vmovdqu (iv), t2x; \
--	vmovdqa t2x, t3x; \
--	inc_le128(t2x, t0x, t1x); \
--	vbroadcasti128 bswap, t1; \
--	vinserti128 $1, t2x, t3, t2; /* ab: le0 ; cd: le1 */ \
--	vpshufb t1, t2, x0; \
--	\
--	/* construct IVs */ \
--	add2_le128(t2, t0, t4, t3, t5); /* ab: le2 ; cd: le3 */ \
--	vpshufb t1, t2, x1; \
--	add2_le128(t2, t0, t4, t3, t5); \
--	vpshufb t1, t2, x2; \
--	add2_le128(t2, t0, t4, t3, t5); \
--	vpshufb t1, t2, x3; \
--	add2_le128(t2, t0, t4, t3, t5); \
--	vpshufb t1, t2, x4; \
--	add2_le128(t2, t0, t4, t3, t5); \
--	vpshufb t1, t2, x5; \
--	add2_le128(t2, t0, t4, t3, t5); \
--	vpshufb t1, t2, x6; \
--	add2_le128(t2, t0, t4, t3, t5); \
--	vpshufb t1, t2, x7; \
--	vextracti128 $1, t2, t2x; \
--	inc_le128(t2x, t0x, t3x); \
--	vmovdqu t2x, (iv);
--
--#define store_ctr_16way(src, dst, x0, x1, x2, x3, x4, x5, x6, x7) \
--	vpxor (0*32)(src), x0, x0; \
--	vpxor (1*32)(src), x1, x1; \
--	vpxor (2*32)(src), x2, x2; \
--	vpxor (3*32)(src), x3, x3; \
--	vpxor (4*32)(src), x4, x4; \
--	vpxor (5*32)(src), x5, x5; \
--	vpxor (6*32)(src), x6, x6; \
--	vpxor (7*32)(src), x7, x7; \
--	store_16way(dst, x0, x1, x2, x3, x4, x5, x6, x7);
-diff --git a/arch/x86/crypto/glue_helper.c b/arch/x86/crypto/glue_helper.c
-index 786ffda1caf4..895d34150c3f 100644
---- a/arch/x86/crypto/glue_helper.c
-+++ b/arch/x86/crypto/glue_helper.c
+diff --git a/arch/x86/crypto/des3_ede_glue.c b/arch/x86/crypto/des3_ede_glue.c
+index 89830e531350..e7cb68a3db3b 100644
+--- a/arch/x86/crypto/des3_ede_glue.c
++++ b/arch/x86/crypto/des3_ede_glue.c
 @@ -6,8 +6,6 @@
   *
   * CBC & ECB parts based on code (crypto/cbc.c,ecb.c) by:
@@ -182,146 +61,135 @@ index 786ffda1caf4..895d34150c3f 100644
 - *   (C) Copyright IBM Corp. 2007 - Joy Latten <latten@us.ibm.com>
   */
  
- #include <linux/module.h>
-@@ -154,74 +152,4 @@ int glue_cbc_decrypt_req_128bit(const struct common_glue_ctx *gctx,
+ #include <crypto/algapi.h>
+@@ -253,94 +251,6 @@ static int cbc_decrypt(struct skcipher_request *req)
+ 	return err;
  }
- EXPORT_SYMBOL_GPL(glue_cbc_decrypt_req_128bit);
  
--int glue_ctr_req_128bit(const struct common_glue_ctx *gctx,
--			struct skcipher_request *req)
+-static void ctr_crypt_final(struct des3_ede_x86_ctx *ctx,
+-			    struct skcipher_walk *walk)
 -{
--	void *ctx = crypto_skcipher_ctx(crypto_skcipher_reqtfm(req));
--	const unsigned int bsize = 128 / 8;
+-	u8 *ctrblk = walk->iv;
+-	u8 keystream[DES3_EDE_BLOCK_SIZE];
+-	u8 *src = walk->src.virt.addr;
+-	u8 *dst = walk->dst.virt.addr;
+-	unsigned int nbytes = walk->nbytes;
+-
+-	des3_ede_enc_blk(ctx, keystream, ctrblk);
+-	crypto_xor_cpy(dst, keystream, src, nbytes);
+-
+-	crypto_inc(ctrblk, DES3_EDE_BLOCK_SIZE);
+-}
+-
+-static unsigned int __ctr_crypt(struct des3_ede_x86_ctx *ctx,
+-				struct skcipher_walk *walk)
+-{
+-	unsigned int bsize = DES3_EDE_BLOCK_SIZE;
+-	unsigned int nbytes = walk->nbytes;
+-	__be64 *src = (__be64 *)walk->src.virt.addr;
+-	__be64 *dst = (__be64 *)walk->dst.virt.addr;
+-	u64 ctrblk = be64_to_cpu(*(__be64 *)walk->iv);
+-	__be64 ctrblocks[3];
+-
+-	/* Process four block batch */
+-	if (nbytes >= bsize * 3) {
+-		do {
+-			/* create ctrblks for parallel encrypt */
+-			ctrblocks[0] = cpu_to_be64(ctrblk++);
+-			ctrblocks[1] = cpu_to_be64(ctrblk++);
+-			ctrblocks[2] = cpu_to_be64(ctrblk++);
+-
+-			des3_ede_enc_blk_3way(ctx, (u8 *)ctrblocks,
+-					      (u8 *)ctrblocks);
+-
+-			dst[0] = src[0] ^ ctrblocks[0];
+-			dst[1] = src[1] ^ ctrblocks[1];
+-			dst[2] = src[2] ^ ctrblocks[2];
+-
+-			src += 3;
+-			dst += 3;
+-		} while ((nbytes -= bsize * 3) >= bsize * 3);
+-
+-		if (nbytes < bsize)
+-			goto done;
+-	}
+-
+-	/* Handle leftovers */
+-	do {
+-		ctrblocks[0] = cpu_to_be64(ctrblk++);
+-
+-		des3_ede_enc_blk(ctx, (u8 *)ctrblocks, (u8 *)ctrblocks);
+-
+-		dst[0] = src[0] ^ ctrblocks[0];
+-
+-		src += 1;
+-		dst += 1;
+-	} while ((nbytes -= bsize) >= bsize);
+-
+-done:
+-	*(__be64 *)walk->iv = cpu_to_be64(ctrblk);
+-	return nbytes;
+-}
+-
+-static int ctr_crypt(struct skcipher_request *req)
+-{
+-	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+-	struct des3_ede_x86_ctx *ctx = crypto_skcipher_ctx(tfm);
 -	struct skcipher_walk walk;
--	bool fpu_enabled = false;
 -	unsigned int nbytes;
 -	int err;
 -
 -	err = skcipher_walk_virt(&walk, req, false);
 -
--	while ((nbytes = walk.nbytes) >= bsize) {
--		const u128 *src = walk.src.virt.addr;
--		u128 *dst = walk.dst.virt.addr;
--		unsigned int func_bytes, num_blocks;
--		unsigned int i;
--		le128 ctrblk;
--
--		fpu_enabled = glue_fpu_begin(bsize, gctx->fpu_blocks_limit,
--					     &walk, fpu_enabled, nbytes);
--
--		be128_to_le128(&ctrblk, (be128 *)walk.iv);
--
--		for (i = 0; i < gctx->num_funcs; i++) {
--			num_blocks = gctx->funcs[i].num_blocks;
--			func_bytes = bsize * num_blocks;
--
--			if (nbytes < func_bytes)
--				continue;
--
--			/* Process multi-block batch */
--			do {
--				gctx->funcs[i].fn_u.ctr(ctx, (u8 *)dst,
--							(const u8 *)src,
--							&ctrblk);
--				src += num_blocks;
--				dst += num_blocks;
--				nbytes -= func_bytes;
--			} while (nbytes >= func_bytes);
--
--			if (nbytes < bsize)
--				break;
--		}
--
--		le128_to_be128((be128 *)walk.iv, &ctrblk);
+-	while ((nbytes = walk.nbytes) >= DES3_EDE_BLOCK_SIZE) {
+-		nbytes = __ctr_crypt(ctx, &walk);
 -		err = skcipher_walk_done(&walk, nbytes);
 -	}
 -
--	glue_fpu_end(fpu_enabled);
--
 -	if (nbytes) {
--		le128 ctrblk;
--		u128 tmp;
--
--		be128_to_le128(&ctrblk, (be128 *)walk.iv);
--		memcpy(&tmp, walk.src.virt.addr, nbytes);
--		gctx->funcs[gctx->num_funcs - 1].fn_u.ctr(ctx, (u8 *)&tmp,
--							  (const u8 *)&tmp,
--							  &ctrblk);
--		memcpy(walk.dst.virt.addr, &tmp, nbytes);
--		le128_to_be128((be128 *)walk.iv, &ctrblk);
--
+-		ctr_crypt_final(ctx, &walk);
 -		err = skcipher_walk_done(&walk, 0);
 -	}
 -
 -	return err;
 -}
--EXPORT_SYMBOL_GPL(glue_ctr_req_128bit);
 -
- MODULE_LICENSE("GPL");
-diff --git a/arch/x86/include/asm/crypto/glue_helper.h b/arch/x86/include/asm/crypto/glue_helper.h
-index 62680775d189..23e09efd2aa6 100644
---- a/arch/x86/include/asm/crypto/glue_helper.h
-+++ b/arch/x86/include/asm/crypto/glue_helper.h
-@@ -9,19 +9,15 @@
- #include <crypto/internal/skcipher.h>
- #include <linux/kernel.h>
- #include <asm/fpu/api.h>
--#include <crypto/b128ops.h>
- 
- typedef void (*common_glue_func_t)(const void *ctx, u8 *dst, const u8 *src);
- typedef void (*common_glue_cbc_func_t)(const void *ctx, u8 *dst, const u8 *src);
--typedef void (*common_glue_ctr_func_t)(const void *ctx, u8 *dst, const u8 *src,
--				       le128 *iv);
- 
- struct common_glue_func_entry {
- 	unsigned int num_blocks; /* number of blocks that @fn will process */
- 	union {
- 		common_glue_func_t ecb;
- 		common_glue_cbc_func_t cbc;
--		common_glue_ctr_func_t ctr;
- 	} fn_u;
+ static int des3_ede_x86_setkey(struct crypto_tfm *tfm, const u8 *key,
+ 			       unsigned int keylen)
+ {
+@@ -428,20 +338,6 @@ static struct skcipher_alg des3_ede_skciphers[] = {
+ 		.setkey			= des3_ede_x86_setkey_skcipher,
+ 		.encrypt		= cbc_encrypt,
+ 		.decrypt		= cbc_decrypt,
+-	}, {
+-		.base.cra_name		= "ctr(des3_ede)",
+-		.base.cra_driver_name	= "ctr-des3_ede-asm",
+-		.base.cra_priority	= 300,
+-		.base.cra_blocksize	= 1,
+-		.base.cra_ctxsize	= sizeof(struct des3_ede_x86_ctx),
+-		.base.cra_module	= THIS_MODULE,
+-		.min_keysize		= DES3_EDE_KEY_SIZE,
+-		.max_keysize		= DES3_EDE_KEY_SIZE,
+-		.ivsize			= DES3_EDE_BLOCK_SIZE,
+-		.chunksize		= DES3_EDE_BLOCK_SIZE,
+-		.setkey			= des3_ede_x86_setkey_skcipher,
+-		.encrypt		= ctr_crypt,
+-		.decrypt		= ctr_crypt,
+ 	}
  };
  
-@@ -66,31 +62,6 @@ static inline void glue_fpu_end(bool fpu_enabled)
- 		kernel_fpu_end();
- }
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 606f94079f05..5e820a57d138 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -1427,6 +1427,7 @@ config CRYPTO_DES3_EDE_X86_64
+ 	depends on X86 && 64BIT
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_LIB_DES
++	imply CRYPTO_CTR
+ 	help
+ 	  Triple DES EDE (FIPS 46-3) algorithm.
  
--static inline void le128_to_be128(be128 *dst, const le128 *src)
--{
--	dst->a = cpu_to_be64(le64_to_cpu(src->a));
--	dst->b = cpu_to_be64(le64_to_cpu(src->b));
--}
--
--static inline void be128_to_le128(le128 *dst, const be128 *src)
--{
--	dst->a = cpu_to_le64(be64_to_cpu(src->a));
--	dst->b = cpu_to_le64(be64_to_cpu(src->b));
--}
--
--static inline void le128_inc(le128 *i)
--{
--	u64 a = le64_to_cpu(i->a);
--	u64 b = le64_to_cpu(i->b);
--
--	b++;
--	if (!b)
--		a++;
--
--	i->a = cpu_to_le64(a);
--	i->b = cpu_to_le64(b);
--}
--
- extern int glue_ecb_req_128bit(const struct common_glue_ctx *gctx,
- 			       struct skcipher_request *req);
- 
-@@ -100,7 +71,4 @@ extern int glue_cbc_encrypt_req_128bit(const common_glue_func_t fn,
- extern int glue_cbc_decrypt_req_128bit(const struct common_glue_ctx *gctx,
- 				       struct skcipher_request *req);
- 
--extern int glue_ctr_req_128bit(const struct common_glue_ctx *gctx,
--			       struct skcipher_request *req);
--
- #endif /* _CRYPTO_GLUE_HELPER_H */
 -- 
 2.17.1
 
