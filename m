@@ -2,192 +2,340 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0832E977A
-	for <lists+linux-crypto@lfdr.de>; Mon,  4 Jan 2021 15:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C04912E9847
+	for <lists+linux-crypto@lfdr.de>; Mon,  4 Jan 2021 16:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727040AbhADOl1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 4 Jan 2021 09:41:27 -0500
-Received: from mga17.intel.com ([192.55.52.151]:26364 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726925AbhADOl1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:41:27 -0500
-IronPort-SDR: A9c2mIycfKXDDuefbfshRH/Maa52vH4cr6yx9VnvaM/q9F4fW4J1qnMedQ6k/Vfr6zZ5Ty3mj2
- 9sGo6UuiwC5A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9853"; a="156748658"
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="156748658"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 06:40:46 -0800
-IronPort-SDR: j8VPIfLP3oKZ/eXDnN+v+BuK3KtONSBYnZnfm+9UoXod+nazx5O8NT1CcIeaahm9IpGe9ZZG/c
- zN9iytjfgnpg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="421391082"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga001.jf.intel.com with ESMTP; 04 Jan 2021 06:40:45 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 4 Jan 2021 06:40:45 -0800
-Received: from fmsmsx604.amr.corp.intel.com (10.18.126.84) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 4 Jan 2021 06:40:44 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 4 Jan 2021 06:40:44 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.174)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Mon, 4 Jan 2021 06:40:44 -0800
+        id S1727410AbhADPTD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 4 Jan 2021 10:19:03 -0500
+Received: from mail-mw2nam10on2079.outbound.protection.outlook.com ([40.107.94.79]:22784
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727375AbhADPTD (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:19:03 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FFxX1WBCPOyCVRxCbqD5VDu879UM6KB+r0CBLVcV7k6/Jv4V4GD/fS17O08muC0D8iOwk+dgsvq9OjMksmSneYD3+u300GVcAYxYLA9lPRE7LGAkc8IEZq4Gu2euqgeqtt1z3PtkCoDtGBVdzjqsIAx+odr3rmc8JBiO82+oI3kjRm50r2N7+8EQY5mcSPZ6HAzdzepSl3JVTN2uzFokEb5tceIhtEEtpUya2Z6DpWIhJASLhzEsE5ZatAPcn2V++pJ7baZJGzYTPv5lyLC96JIMfcDpQUssTueKW6CfRyW3fEodWjXJnCheUDcd8pnQ/pM1ZxlCt5JntV7TsZfZ2w==
+ b=RFT1BzH3VIalFOuqOvFz2q7yWmgKDqvb8p8DDOvTK7OjYS2eK2T0tojU1/Px2YH2xs7Ig1tPJnexlrZI6k68v4ZcRXqccDdQlea4esh8+Rvc6JPTmeaz1gd0xonMwFaVi0tvGJvKH7xpxl0zDJAtYEjG65FNwNXJ8FH1nVzepmF66EtxT7RenrlbilRcm7dHq1dN6Ctcmlq9AWQ8YHW/HR6J7ymje9D6zlhqZzJEbfugEQg51IS17JyZmfbDIGDLM5eNWaQi5UmS4nPwnLK6omu6/LripBVZhkVyoXhM5NBMIqSCCHtNY9CETKC/06g1cT/AySIkhhzRPNiKrcIVZA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8E26ROC4R4Hr2Kl9ZzOsFEpuQ9GQXXDYYG91rLxYbC4=;
- b=TdnrwnHauB85om7MdlKBaRCR/Dag3rizI9lhEHk0xq1kpOdMoMRGNSvqdXAcl/fG06YfIM4IyvMt3bXx4PfN0hqNEjy/e94SVt5cIJdtIRIj7pk0m1pssKOJ36hBrPhR3aPPeKVeP/220ppkCo6dxV/uXG8/zKDYQcbxBbaYPS+Xvcf7OL/QD1GYfXAMu48l5J1r4MYANLj4eu+dNiYFyBsOYpd/VzjxZ8Mq6UIIkXV/CvhYNYNUF4OPZM3JPvBpo2x73q7oF9asLmzA2I3xw5gz2all3IfJ3QhKOxdlH+Mp6TGO9xANpH1zoBZsYOk1AIkWsNA4tFySfhUqXcWEdQ==
+ bh=Q+529ZXrdpzI5ti9EzZmRk7VhLaTGsQTBuDjeGdkRfY=;
+ b=B+CoGeDUP88hwdHhx31SchcsYUn+e5uJtbn62RYBvIrWtZLDSJi2mQPBXtN61GHjcqR+2Rv7/JvUoLpFgVcVsQEQiWIMmb2SqZb6PtuJrSvclUhkNqsEiK5Z1yiGceYs/zIOFlaTfs676uO6Dlx1AvID7IWKDkpgp1i0h1h5lZ6BO+3VIXRm1Ti6vEY2Suw2/3V8B/Wr7uA6QRWaYo4abVUOcnW+TCx9OgsJfcrmeRysHYg69TCU49pgEZw934GRFo5E2nq1z52WRTj08YB7v+vCEpwiHz9yWabXCJfN74FraVODg7V5sKJgWkYGUbCtC2Hj+SdZveVbwEsEuf8X+w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8E26ROC4R4Hr2Kl9ZzOsFEpuQ9GQXXDYYG91rLxYbC4=;
- b=qmN9jlX+F/DGZit0V0QyRIqkouWXii+YbjQEQouALW9PIBd6gDfQwkd4luoxf5U9iZS/0GWqmsq7gk3Z1JNhVBOtRcjLV3iTR5QXbfXfOkyCFxNhcc2j+KVED8yD432pGvJP3Nnjug0aDQe7V/Y8ikBVhFzcZtxBenjTS22Q7HE=
-Received: from CY4PR1101MB2326.namprd11.prod.outlook.com
- (2603:10b6:903:b3::23) by CY4PR11MB0054.namprd11.prod.outlook.com
- (2603:10b6:910:79::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.24; Mon, 4 Jan
- 2021 14:40:43 +0000
-Received: from CY4PR1101MB2326.namprd11.prod.outlook.com
- ([fe80::b127:6209:1930:3b93]) by CY4PR1101MB2326.namprd11.prod.outlook.com
- ([fe80::b127:6209:1930:3b93%3]) with mapi id 15.20.3721.024; Mon, 4 Jan 2021
- 14:40:43 +0000
-From:   "Reshetova, Elena" <elena.reshetova@intel.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Alessandrelli, Daniele" <daniele.alessandrelli@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>
-Subject: RE: [RFC PATCH 0/6] Keem Bay OCS ECC crypto driver
-Thread-Topic: [RFC PATCH 0/6] Keem Bay OCS ECC crypto driver
-Thread-Index: AQHW1JkZ8lMRowq1QUyYZqNdBK9VvaoXNMxwgAA8YgCAADFl8A==
-Date:   Mon, 4 Jan 2021 14:40:43 +0000
-Message-ID: <CY4PR1101MB23260DF5A317CA05BBA3C2F9E7D20@CY4PR1101MB2326.namprd11.prod.outlook.com>
-References: <20201217172101.381772-1-daniele.alessandrelli@linux.intel.com>
- <CY4PR1101MB2326ED0E6C23D1D868D53365E7D20@CY4PR1101MB2326.namprd11.prod.outlook.com>
- <20210104113148.GA20575@gondor.apana.org.au>
-In-Reply-To: <20210104113148.GA20575@gondor.apana.org.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: gondor.apana.org.au; dkim=none (message not signed)
- header.d=none;gondor.apana.org.au; dmarc=none action=none
- header.from=intel.com;
-x-originating-ip: [82.203.237.209]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 72a044f1-7a59-47e9-5ad9-08d8b0beb705
-x-ms-traffictypediagnostic: CY4PR11MB0054:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR11MB0054F758E9550B427D63C270E7D20@CY4PR11MB0054.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JUBJOhDkDm446TVle9kbd1bp1hdsMaIlayk/3VZrPZKuw7RFmNqNThxaR7V9R33Hp7fPzwQf+auDGSeM0SAo8D4ykeVtUw+p8N/2jqTE9WWgSFuHnmiSO6uamL/ce3EcECA8YOUYe9TJYuoKuvUmM0ySUy3boSdAaz0Czs2wMbus+5RFiXOTPndNTSSVXPS7ayAvn8TCH2wK7DIYYkTbKcsePgSD984Zr+H7MXr+zk/2H5dmqDGnaBA+91P/86feSnpqKMtrWcyBHXugAZiFp8bDPRM/QvhIXO8vyTv987KRpTtH3KYsex5bgpTLYVNYAjRcPvFxv5a3d1fNJdDaCD3blzMyoaGi/H36WUUT5PP5U43BC5hfdSUgJBrvNiH7iY0XqV8ESm6spBKRF4ypxg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2326.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(346002)(376002)(396003)(316002)(6916009)(9686003)(83380400001)(4326008)(33656002)(7696005)(71200400001)(86362001)(5660300002)(52536014)(54906003)(8936002)(186003)(66946007)(26005)(8676002)(66476007)(66556008)(64756008)(478600001)(66446008)(55016002)(76116006)(6506007)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?VhpJjcdaWxiE3p9VQm8Jw9vhsfHGRBmYSEarwMehmmFH3rBNftIcRwIM9e43?=
- =?us-ascii?Q?+kCALJs0nG+RVRZt1OgZe2ZMzCV1PpnYGcRL+PUruk6Kn1NIDlSkyNAlC+ZA?=
- =?us-ascii?Q?oQwNOPiXMty9c099bLrxyxjcMPwsQyhENRBT/A3HrzTFavHSHhQsvXMtBLgX?=
- =?us-ascii?Q?y9YDojnzCJ1Id/sFo6YyzaGePKuc76P+Mrm248Hid+KlHhWQh8f0EUQzh37F?=
- =?us-ascii?Q?ewdUNNNpLd4sNe9oYHWQU3DV9048gonak+A/Ne4IHnponcBs3dP2JFoCaUpG?=
- =?us-ascii?Q?zFFpnFDIV8AmTUVOyKYlNgGAtsJM1xFyup4TB5WiPHuPlMFZpnu6oX6XxiRP?=
- =?us-ascii?Q?01YesZlU2uX10Fr8dwMhC3UjXjgkpa6EQDunRL23iIIPs0vzag/uNxffO/sg?=
- =?us-ascii?Q?r0ox3DEgeQwe9CSpe3ROZak9Gvbu31c4AJoHgDleX5gq8/Ol/7jVoW6Hh/Iw?=
- =?us-ascii?Q?uc9eyIftxCimqUBBO3iXfyvolfWyNrbIhcdrv1IcA2GWkuWYI20IR6HEUjm7?=
- =?us-ascii?Q?lYMH//3YXy7jiHLSBRYN7Uq4uISpr5Cbc7htyr4nnPKlhY3OLEVCRvHr/4KQ?=
- =?us-ascii?Q?y3MpcCla0dAbzStkYQesTw7ec5pBFfa5R0K9egetn2Rzcmt0TALlQYUnpkyF?=
- =?us-ascii?Q?Omkt45/BNAPODo90s4Ig61N+dd2Uyz46pGDDDvvkneBAq+6/FF3jJyU1wg8C?=
- =?us-ascii?Q?OAAQy5nraAKgMOkdGXizuomsVongmk7rihuvgJuPlh+LWfCdkL2pwqVX1wrv?=
- =?us-ascii?Q?BF0fahqR4skVxtJSSPSh69zQeZnAB4HpL7nhvAzYflqtt3Dcb0nkfJ++q4Co?=
- =?us-ascii?Q?JTH2bUCXtbZB778kQjPVH1TrfpDBxZGINpcHx8c+In+AZ57xZFzVBFaGXYWz?=
- =?us-ascii?Q?o7OxPWrbYwDFV1v5QCXf4kmjkC3NumuXxNYFAFydrjwXCk2d1U5TFBUFIv4S?=
- =?us-ascii?Q?KH/AdmpSN5uZhDCJhLFBVyGE/st/+UU8WQtgVZogKTM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=Q+529ZXrdpzI5ti9EzZmRk7VhLaTGsQTBuDjeGdkRfY=;
+ b=xChUYL8IAEBFeScPDHKPm6yDLsCy0PdzkDHRDISHelr/e2nj8syZM0iqCXxAyg3BQuXrTCEu842wcSg5BGWju0U4AX8ZSw7fw66CPcLr2OhkChI7R1+ZRfrqCORoWzk0jEleeAlhuSZxEroyVT22xJi7ns9+aQmQd9Dd3O1JyG8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SN6PR12MB2719.namprd12.prod.outlook.com (2603:10b6:805:6c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.21; Mon, 4 Jan
+ 2021 15:18:05 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::18a2:699:70b3:2b8a]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::18a2:699:70b3:2b8a%6]) with mapi id 15.20.3721.024; Mon, 4 Jan 2021
+ 15:18:05 +0000
+From:   Brijesh Singh <brijesh.singh@amd.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Brijesh Singh <brijesh.singh@amd.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        John Allen <john.allen@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH v2] KVM/SVM: add support for SEV attestation command
+Date:   Mon,  4 Jan 2021 09:17:49 -0600
+Message-Id: <20210104151749.30248-1-brijesh.singh@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SA9PR13CA0110.namprd13.prod.outlook.com
+ (2603:10b6:806:24::25) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from sbrijesh-desktop.amd.com (165.204.77.1) by SA9PR13CA0110.namprd13.prod.outlook.com (2603:10b6:806:24::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.4 via Frontend Transport; Mon, 4 Jan 2021 15:18:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1a9f8aaf-4a8a-4306-fb89-08d8b0c3efa0
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2719:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR12MB2719C80BF3C4E198705AD14FE5D20@SN6PR12MB2719.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Eqa9uNHVxaNiZ3aGnxMD52HozRzoNKmNqvVo7oY/QPD+tCFvQROVyRUvRdeCduvXZc5jqboCLwwzS3T/QQFI2B4ptiXBLTaAooAbC1vhQaspwHQbFF+wLbVZoP/oioGR0rUk0AKy0hZyGamKCPAPM7PsXDK3q5y+BSHpyqYdXTCv2AzPnb1yAHnxnlxcx40G31ZyFWl/Wr5YilBmyAKA57vtlteDDQVibDHz22OTy8ekcT4I0ZaA4+q9UDKN9h9XBEeparBEzqwYPSE3or958ldwxZ9T3zxKmTkuHn6KnceNdz7vZkmYCNMsJDLfHNu6sM4gEInuoCqHuU3KTGTusWWdA3LB1OiPQDtq2Z9kBHZWgIPy+Xnm550/2XAW6pAx9ZGAjpX1d5AWWeLDNN6XMg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(366004)(376002)(136003)(7696005)(52116002)(66476007)(66556008)(66946007)(44832011)(6666004)(26005)(8676002)(316002)(186003)(6486002)(54906003)(16526019)(36756003)(8936002)(478600001)(4326008)(956004)(2616005)(2906002)(86362001)(83380400001)(1076003)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?oQS6HOsf1pXvAQq1enkbWPr3tuhx0OT0OlwAao0XnU4+MdKmsMu8HTvdJZ3o?=
+ =?us-ascii?Q?lQXOmiJHoMf3JRUTj/np0GgKrOpCDIbQgiHhXx79nro1izBw/wzy1BFKoWPq?=
+ =?us-ascii?Q?0ETjqjIiVtHRmPfAajuJZFzLonCnU2BVtK3W8HsrJugfnHnFWh0u7T3UI33c?=
+ =?us-ascii?Q?9sIVhsAQO9C3Hg95JueMOUBA9XUtJE7VL0LqUrD/56wYfo/DrQaUBJzG7CjA?=
+ =?us-ascii?Q?xYhNUbcnkEIM/jb8qP7KSfzaZ7edCXkW+5bKLqyloXJ83g1UZ2OzZw0DsPXr?=
+ =?us-ascii?Q?K20Esph620cJtdZwulV5RpP1E5N2uF/fwCo6cYQEUjeJHM25U9AWMkZIk56L?=
+ =?us-ascii?Q?G6gbJ/tj7itJMRW72IxF/TDaYVV7iJB1VTatYw1cIF7oW/yRDdBYuE6fGyz9?=
+ =?us-ascii?Q?ppNIQX6TCfoyuIH4Z0Js8sES3XMwlh4iAb+xx1kXDhE8Cp/0qICIOgoo5t5r?=
+ =?us-ascii?Q?cn21YHmLMwAQecZ9tlEXgPDZ4AzL2zop+DyFv4ycuCOMB71FlymkcT4LuUrJ?=
+ =?us-ascii?Q?nar6l6xst6BvbuWtR8jW6AmMRTlYKlncBMLB8dTt5rkh6p9MKRAulOb4wvgH?=
+ =?us-ascii?Q?gTcO22UtFnYBOAbpC87lGllCOSpSZT6gsE3I0NC9eW/p/PdrPt8wFUespmUb?=
+ =?us-ascii?Q?YnWJa4KOOAsKJydhQVd9pjHnxL3zQtFF4xSyKJ98A8DGdhWyCH2V8SMxnqUl?=
+ =?us-ascii?Q?Da/aD/u4gAhKmKEpk1+IUpXh7Zl4PD2gAt8jPbU6Xlj1eP4qNTPIX58UvL5S?=
+ =?us-ascii?Q?HWpHQNYC7Xb2ocFCZVrvpvlai5zQF9hiM84hMUvO0qeORdbyaSzZBJGfXBgh?=
+ =?us-ascii?Q?SmohWLZkntSQtDH58WlKFix3kgt71al7w18CWVZhFfMsHzp+KDV8TLbnwXlZ?=
+ =?us-ascii?Q?5K4oZ5uKSh9JWHGzsTa2D9xHkcEkSaJX3IlYcWhZchWy9mgqPXlQnaMfrgYx?=
+ =?us-ascii?Q?vdhuSeEsXf7KZzSAn7WacFwKUcSAwtTdMSeJ3iJLUI8=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2326.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72a044f1-7a59-47e9-5ad9-08d8b0beb705
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2021 14:40:43.2911
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2021 15:18:05.7921
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: s8fZf2WCZEMrdDmlPP+di44CGiThBIFC79rs376jVyszusDHgqRbwQWZ3i1O22iCrzypzPCjtJv9Fg5R7jtVKDCXciI7c6pDwf/oWvHYE0s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB0054
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a9f8aaf-4a8a-4306-fb89-08d8b0c3efa0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6WNVfO5lDpdOXKBMrx+P2yXSyyrHHlgojQVvoKMZUDT+aaVacbizOqKHlkwEHFoPm6kKBwkSvXuns0XjLdUW2Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2719
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-> On Mon, Jan 04, 2021 at 08:04:15AM +0000, Reshetova, Elena wrote:
-> > > 2. The OCS ECC HW does not support the NIST P-192 curve. We were plan=
-ning to
-> > >    add SW fallback for P-192 in the driver, but the Intel Crypto team
-> > >    (which, internally, has to approve any code involving cryptography=
-)
-> > >    advised against it, because they consider P-192 weak. As a result,=
- the
-> > >    driver is not passing crypto self-tests. Is there any possible sol=
-ution
-> > >    to this? Is it reasonable to change the self-tests to only test th=
-e
-> > >    curves actually supported by the tested driver? (not fully sure ho=
-w to do
-> > >    that).
-> >
-> > An additional reason against the P-192 SW fallback is the fact that it =
-can
-> > potentially trigger unsafe behavior which is not even "visible" to the =
-end user
-> > of the ECC functionality. If I request (by my developer mistake) a P-19=
-2
-> > weaker curve from ECC Keem Bay HW driver, it is much safer to return a
-> > "not supported" error that proceed behind my back with a SW code
-> > implementation making me believe that I am actually getting a HW-backed=
- up
-> > functionality (since I don't think there is a way for me to check that =
-I am using
-> > SW fallback).
->=20
-> Sorry, but if you break the Crypto API requirement then your driver
-> isn't getting merged.
+The SEV FW version >= 0.23 added a new command that can be used to query
+the attestation report containing the SHA-256 digest of the guest memory
+encrypted through the KVM_SEV_LAUNCH_UPDATE_{DATA, VMSA} commands and
+sign the report with the Platform Endorsement Key (PEK).
 
-But should not we think what behavior would make sense for good crypto driv=
-ers in future?
-As cryptography moves forward (especially for the post quantum era), we wil=
-l have
-lengths for all existing algorithms increased (in addition to having a bunc=
-h of new ones),=20
-and we surely should not expect the new generation of HW drivers to impleme=
-nt
-the old/weaker lengths, so why there the requirement to support them? It is=
- not a
-part of crypto API definition on what bit lengths should be supported, beca=
-use it
-cannot be part of API to begin with since it is always changing parameter (=
-algorithms and attacks
-develop all the time).=20
+See the SEV FW API spec section 6.8 for more details.
 
-Best Regards,
-Elena.
+Note there already exist a command (KVM_SEV_LAUNCH_MEASURE) that can be
+used to get the SHA-256 digest. The main difference between the
+KVM_SEV_LAUNCH_MEASURE and KVM_SEV_ATTESTATION_REPORT is that the latter
+can be called while the guest is running and the measurement value is
+signed with PEK.
+
+Cc: James Bottomley <jejb@linux.ibm.com>
+Cc: Tom Lendacky <Thomas.Lendacky@amd.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: John Allen <john.allen@amd.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: linux-crypto@vger.kernel.org
+Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Tested-by: James Bottomley <jejb@linux.ibm.com>
+Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+---
+v2:
+  * Fix documentation typo
+
+ .../virt/kvm/amd-memory-encryption.rst        | 21 ++++++
+ arch/x86/kvm/svm/sev.c                        | 71 +++++++++++++++++++
+ drivers/crypto/ccp/sev-dev.c                  |  1 +
+ include/linux/psp-sev.h                       | 17 +++++
+ include/uapi/linux/kvm.h                      |  8 +++
+ 5 files changed, 118 insertions(+)
+
+diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+index 09a8f2a34e39..469a6308765b 100644
+--- a/Documentation/virt/kvm/amd-memory-encryption.rst
++++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+@@ -263,6 +263,27 @@ Returns: 0 on success, -negative on error
+                 __u32 trans_len;
+         };
+ 
++10. KVM_SEV_GET_ATTESTATION_REPORT
++----------------------------------
++
++The KVM_SEV_GET_ATTESTATION_REPORT command can be used by the hypervisor to query the attestation
++report containing the SHA-256 digest of the guest memory and VMSA passed through the KVM_SEV_LAUNCH
++commands and signed with the PEK. The digest returned by the command should match the digest
++used by the guest owner with the KVM_SEV_LAUNCH_MEASURE.
++
++Parameters (in): struct kvm_sev_attestation
++
++Returns: 0 on success, -negative on error
++
++::
++
++        struct kvm_sev_attestation_report {
++                __u8 mnonce[16];        /* A random mnonce that will be placed in the report */
++
++                __u64 uaddr;            /* userspace address where the report should be copied */
++                __u32 len;
++        };
++
+ References
+ ==========
+ 
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 566f4d18185b..c4d3ee6be362 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -927,6 +927,74 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	return ret;
+ }
+ 
++static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
++{
++	void __user *report = (void __user *)(uintptr_t)argp->data;
++	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
++	struct sev_data_attestation_report *data;
++	struct kvm_sev_attestation_report params;
++	void __user *p;
++	void *blob = NULL;
++	int ret;
++
++	if (!sev_guest(kvm))
++		return -ENOTTY;
++
++	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
++		return -EFAULT;
++
++	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
++	if (!data)
++		return -ENOMEM;
++
++	/* User wants to query the blob length */
++	if (!params.len)
++		goto cmd;
++
++	p = (void __user *)(uintptr_t)params.uaddr;
++	if (p) {
++		if (params.len > SEV_FW_BLOB_MAX_SIZE) {
++			ret = -EINVAL;
++			goto e_free;
++		}
++
++		ret = -ENOMEM;
++		blob = kmalloc(params.len, GFP_KERNEL);
++		if (!blob)
++			goto e_free;
++
++		data->address = __psp_pa(blob);
++		data->len = params.len;
++		memcpy(data->mnonce, params.mnonce, sizeof(params.mnonce));
++	}
++cmd:
++	data->handle = sev->handle;
++	ret = sev_issue_cmd(kvm, SEV_CMD_ATTESTATION_REPORT, data, &argp->error);
++	/*
++	 * If we query the session length, FW responded with expected data.
++	 */
++	if (!params.len)
++		goto done;
++
++	if (ret)
++		goto e_free_blob;
++
++	if (blob) {
++		if (copy_to_user(p, blob, params.len))
++			ret = -EFAULT;
++	}
++
++done:
++	params.len = data->len;
++	if (copy_to_user(report, &params, sizeof(params)))
++		ret = -EFAULT;
++e_free_blob:
++	kfree(blob);
++e_free:
++	kfree(data);
++	return ret;
++}
++
+ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+ {
+ 	struct kvm_sev_cmd sev_cmd;
+@@ -971,6 +1039,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+ 	case KVM_SEV_LAUNCH_SECRET:
+ 		r = sev_launch_secret(kvm, &sev_cmd);
+ 		break;
++	case KVM_SEV_GET_ATTESTATION_REPORT:
++		r = sev_get_attestation_report(kvm, &sev_cmd);
++		break;
+ 	default:
+ 		r = -EINVAL;
+ 		goto out;
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index 476113e12489..cb9b4c4e371e 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -128,6 +128,7 @@ static int sev_cmd_buffer_len(int cmd)
+ 	case SEV_CMD_LAUNCH_UPDATE_SECRET:	return sizeof(struct sev_data_launch_secret);
+ 	case SEV_CMD_DOWNLOAD_FIRMWARE:		return sizeof(struct sev_data_download_firmware);
+ 	case SEV_CMD_GET_ID:			return sizeof(struct sev_data_get_id);
++	case SEV_CMD_ATTESTATION_REPORT:	return sizeof(struct sev_data_attestation_report);
+ 	default:				return 0;
+ 	}
+ 
+diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
+index 49d155cd2dfe..b801ead1e2bb 100644
+--- a/include/linux/psp-sev.h
++++ b/include/linux/psp-sev.h
+@@ -66,6 +66,7 @@ enum sev_cmd {
+ 	SEV_CMD_LAUNCH_MEASURE		= 0x033,
+ 	SEV_CMD_LAUNCH_UPDATE_SECRET	= 0x034,
+ 	SEV_CMD_LAUNCH_FINISH		= 0x035,
++	SEV_CMD_ATTESTATION_REPORT	= 0x036,
+ 
+ 	/* Guest migration commands (outgoing) */
+ 	SEV_CMD_SEND_START		= 0x040,
+@@ -483,6 +484,22 @@ struct sev_data_dbg {
+ 	u32 len;				/* In */
+ } __packed;
+ 
++/**
++ * struct sev_data_attestation_report - SEV_ATTESTATION_REPORT command parameters
++ *
++ * @handle: handle of the VM
++ * @mnonce: a random nonce that will be included in the report.
++ * @address: physical address where the report will be copied.
++ * @len: length of the physical buffer.
++ */
++struct sev_data_attestation_report {
++	u32 handle;				/* In */
++	u32 reserved;
++	u64 address;				/* In */
++	u8 mnonce[16];				/* In */
++	u32 len;				/* In/Out */
++} __packed;
++
+ #ifdef CONFIG_CRYPTO_DEV_SP_PSP
+ 
+ /**
+diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+index ca41220b40b8..d3385f7f08a2 100644
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@ -1585,6 +1585,8 @@ enum sev_cmd_id {
+ 	KVM_SEV_DBG_ENCRYPT,
+ 	/* Guest certificates commands */
+ 	KVM_SEV_CERT_EXPORT,
++	/* Attestation report */
++	KVM_SEV_GET_ATTESTATION_REPORT,
+ 
+ 	KVM_SEV_NR_MAX,
+ };
+@@ -1637,6 +1639,12 @@ struct kvm_sev_dbg {
+ 	__u32 len;
+ };
+ 
++struct kvm_sev_attestation_report {
++	__u8 mnonce[16];
++	__u64 uaddr;
++	__u32 len;
++};
++
+ #define KVM_DEV_ASSIGN_ENABLE_IOMMU	(1 << 0)
+ #define KVM_DEV_ASSIGN_PCI_2_3		(1 << 1)
+ #define KVM_DEV_ASSIGN_MASK_INTX	(1 << 2)
+-- 
+2.17.1
+
