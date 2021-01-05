@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 041EC2EB082
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Jan 2021 17:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EF02EB089
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Jan 2021 17:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbhAEQuS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 Jan 2021 11:50:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44090 "EHLO mail.kernel.org"
+        id S1729928AbhAEQu3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Jan 2021 11:50:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729101AbhAEQuS (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:50:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD41E22D0B;
-        Tue,  5 Jan 2021 16:49:13 +0000 (UTC)
+        id S1728740AbhAEQu1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 5 Jan 2021 11:50:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C35922D0A;
+        Tue,  5 Jan 2021 16:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609865355;
-        bh=72pNXIvTF5kr80p1Ma+KdL1NJUURfcgv1MnWkT7SZW4=;
+        s=k20201202; t=1609865357;
+        bh=z2mckoZpaR44K7+ASuoskQUpt6K7uK0P2zrbuXoLUrI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UkJiohJ2DmfSuoQOzh9LTlaFys7ynhaxeHrPb3Z7/uw6AIFcSil1404tN8/rdQRDr
-         5KNNUPL88y8BU50HCzQ3bxTFwxZxgSKwnqQNzcH0+w3r1zR7jGIdS3//rQYacQyWQV
-         7vrFe7tTuCynm8BGKAxxjfk+y8M5o72Zyq56ofssSv25DNwBDKt9lKVXM61fhfJsoH
-         IxWBN9wKGWreRBlRc6fXNw2O5/8QPQWYQcT+P94K74mo6xaifHCzpNtnZ3jlHrnaJ3
-         IEa+o9sO1saNCSmsTFZoJGg9bTdSQOfw9r8L8AIzIQM/LEOYWscheVbCDXCcOqkaxN
-         z4TMf1nBtCt1A==
+        b=TmumXuu3Hm2zbGPtXoKxUFR0+Fq9suhGLeGv8pYXBdNBjpbAfytI11cxZoA75x5VO
+         R8lWDENse19CcywasuZdqLZxkklnnAuoy4tainahwizgte2pdh6Ze0nAxCKw14T1U+
+         5b/MpKIsR1s6EoR1ksp70SPAt1DhS6hiUPZJlqxBUnO6eI+cslnszAijAdICxZLJUp
+         Z0Q4oL2C/9k7Wf9kQa3Clj9nBNf6RZH7dHgB/y4MADoTThqh7n3fQaCGw2dVQ6XSCp
+         BgandtVYqSSzXBx6QBlvA8q6GaeVHmJc1XWxPcifapQlKloqyb711B2LfJksxEzcCZ
+         UfhQzJRpQVu6w==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
@@ -30,9 +30,9 @@ Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Milan Broz <gmazyland@gmail.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH v2 14/21] crypto: x86 - add some helper macros for ECB and CBC modes
-Date:   Tue,  5 Jan 2021 17:48:02 +0100
-Message-Id: <20210105164809.8594-15-ardb@kernel.org>
+Subject: [PATCH v2 15/21] crypto: x86/camellia - drop dependency on glue helper
+Date:   Tue,  5 Jan 2021 17:48:03 +0100
+Message-Id: <20210105164809.8594-16-ardb@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210105164809.8594-1-ardb@kernel.org>
 References: <20210105164809.8594-1-ardb@kernel.org>
@@ -40,120 +40,396 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The x86 glue helper module is starting to show its age:
-- It relies heavily on function pointers to invoke asm helper functions that
-  operate on fixed input sizes that are relatively small. This means the
-  performance is severely impacted by retpolines.
-- It goes to great lengths to amortize the cost of kernel_fpu_begin()/end()
-  over as much work as possible, which is no longer necessary now that FPU
-  save/restore is done lazily, and doing so may cause unbounded scheduling
-  blackouts due to the fact that enabling the FPU in kernel mode disables
-  preemption.
-- The CBC mode decryption helper makes backward strides through the input, in
-  order to avoid a single block size memcpy() between chunks. Consuming the
-  input in this manner is highly likely to defeat any hardware prefetchers,
-  so it is better to go through the data linearly, and perform the extra
-  memcpy() where needed (which is turned into direct loads and stores by the
-  compiler anyway). Note that benchmarks won't show this effect, given that
-  the memory they use is always cache hot.
-- It implements blockwise XOR in terms of le128 pointers, which imply an
-  alignment that is not guaranteed by the API, violating the C standard.
-
-GCC does not seem to be smart enough to elide the indirect calls when the
-function pointers are passed as arguments to static inline helper routines
-modeled after the existing ones. So instead, let's create some CPP macros
-that encapsulate the core of the ECB and CBC processing, so we can wire
-them up for existing users of the glue helper module, i.e., Camellia,
-Serpent, Twofish and CAST6.
+Replace the glue helper dependency with implementations of ECB and CBC
+based on the new CPP macros, which avoid the need for indirect calls.
 
 Acked-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/crypto/ecb_cbc_helpers.h | 76 ++++++++++++++++++++
- 1 file changed, 76 insertions(+)
+ arch/x86/crypto/camellia_aesni_avx2_glue.c | 85 ++++++--------------
+ arch/x86/crypto/camellia_aesni_avx_glue.c  | 73 +++++------------
+ arch/x86/crypto/camellia_glue.c            | 75 ++++++-----------
+ crypto/Kconfig                             |  2 -
+ 4 files changed, 67 insertions(+), 168 deletions(-)
 
-diff --git a/arch/x86/crypto/ecb_cbc_helpers.h b/arch/x86/crypto/ecb_cbc_helpers.h
-new file mode 100644
-index 000000000000..eaa15c7b29d6
---- /dev/null
-+++ b/arch/x86/crypto/ecb_cbc_helpers.h
-@@ -0,0 +1,76 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
+diff --git a/arch/x86/crypto/camellia_aesni_avx2_glue.c b/arch/x86/crypto/camellia_aesni_avx2_glue.c
+index 8f25a2a6222e..ef5c0f094584 100644
+--- a/arch/x86/crypto/camellia_aesni_avx2_glue.c
++++ b/arch/x86/crypto/camellia_aesni_avx2_glue.c
+@@ -6,7 +6,6 @@
+  */
+ 
+ #include <asm/crypto/camellia.h>
+-#include <asm/crypto/glue_helper.h>
+ #include <crypto/algapi.h>
+ #include <crypto/internal/simd.h>
+ #include <linux/crypto.h>
+@@ -14,6 +13,8 @@
+ #include <linux/module.h>
+ #include <linux/types.h>
+ 
++#include "ecb_cbc_helpers.h"
 +
-+#ifndef _CRYPTO_ECB_CBC_HELPER_H
-+#define _CRYPTO_ECB_CBC_HELPER_H
+ #define CAMELLIA_AESNI_PARALLEL_BLOCKS 16
+ #define CAMELLIA_AESNI_AVX2_PARALLEL_BLOCKS 32
+ 
+@@ -23,63 +24,6 @@ asmlinkage void camellia_ecb_dec_32way(const void *ctx, u8 *dst, const u8 *src);
+ 
+ asmlinkage void camellia_cbc_dec_32way(const void *ctx, u8 *dst, const u8 *src);
+ 
+-static const struct common_glue_ctx camellia_enc = {
+-	.num_funcs = 4,
+-	.fpu_blocks_limit = CAMELLIA_AESNI_PARALLEL_BLOCKS,
+-
+-	.funcs = { {
+-		.num_blocks = CAMELLIA_AESNI_AVX2_PARALLEL_BLOCKS,
+-		.fn_u = { .ecb = camellia_ecb_enc_32way }
+-	}, {
+-		.num_blocks = CAMELLIA_AESNI_PARALLEL_BLOCKS,
+-		.fn_u = { .ecb = camellia_ecb_enc_16way }
+-	}, {
+-		.num_blocks = 2,
+-		.fn_u = { .ecb = camellia_enc_blk_2way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .ecb = camellia_enc_blk }
+-	} }
+-};
+-
+-static const struct common_glue_ctx camellia_dec = {
+-	.num_funcs = 4,
+-	.fpu_blocks_limit = CAMELLIA_AESNI_PARALLEL_BLOCKS,
+-
+-	.funcs = { {
+-		.num_blocks = CAMELLIA_AESNI_AVX2_PARALLEL_BLOCKS,
+-		.fn_u = { .ecb = camellia_ecb_dec_32way }
+-	}, {
+-		.num_blocks = CAMELLIA_AESNI_PARALLEL_BLOCKS,
+-		.fn_u = { .ecb = camellia_ecb_dec_16way }
+-	}, {
+-		.num_blocks = 2,
+-		.fn_u = { .ecb = camellia_dec_blk_2way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .ecb = camellia_dec_blk }
+-	} }
+-};
+-
+-static const struct common_glue_ctx camellia_dec_cbc = {
+-	.num_funcs = 4,
+-	.fpu_blocks_limit = CAMELLIA_AESNI_PARALLEL_BLOCKS,
+-
+-	.funcs = { {
+-		.num_blocks = CAMELLIA_AESNI_AVX2_PARALLEL_BLOCKS,
+-		.fn_u = { .cbc = camellia_cbc_dec_32way }
+-	}, {
+-		.num_blocks = CAMELLIA_AESNI_PARALLEL_BLOCKS,
+-		.fn_u = { .cbc = camellia_cbc_dec_16way }
+-	}, {
+-		.num_blocks = 2,
+-		.fn_u = { .cbc = camellia_decrypt_cbc_2way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .cbc = camellia_dec_blk }
+-	} }
+-};
+-
+ static int camellia_setkey(struct crypto_skcipher *tfm, const u8 *key,
+ 			   unsigned int keylen)
+ {
+@@ -88,22 +32,39 @@ static int camellia_setkey(struct crypto_skcipher *tfm, const u8 *key,
+ 
+ static int ecb_encrypt(struct skcipher_request *req)
+ {
+-	return glue_ecb_req_128bit(&camellia_enc, req);
++	ECB_WALK_START(req, CAMELLIA_BLOCK_SIZE, CAMELLIA_AESNI_PARALLEL_BLOCKS);
++	ECB_BLOCK(CAMELLIA_AESNI_AVX2_PARALLEL_BLOCKS, camellia_ecb_enc_32way);
++	ECB_BLOCK(CAMELLIA_AESNI_PARALLEL_BLOCKS, camellia_ecb_enc_16way);
++	ECB_BLOCK(2, camellia_enc_blk_2way);
++	ECB_BLOCK(1, camellia_enc_blk);
++	ECB_WALK_END();
+ }
+ 
+ static int ecb_decrypt(struct skcipher_request *req)
+ {
+-	return glue_ecb_req_128bit(&camellia_dec, req);
++	ECB_WALK_START(req, CAMELLIA_BLOCK_SIZE, CAMELLIA_AESNI_PARALLEL_BLOCKS);
++	ECB_BLOCK(CAMELLIA_AESNI_AVX2_PARALLEL_BLOCKS, camellia_ecb_dec_32way);
++	ECB_BLOCK(CAMELLIA_AESNI_PARALLEL_BLOCKS, camellia_ecb_dec_16way);
++	ECB_BLOCK(2, camellia_dec_blk_2way);
++	ECB_BLOCK(1, camellia_dec_blk);
++	ECB_WALK_END();
+ }
+ 
+ static int cbc_encrypt(struct skcipher_request *req)
+ {
+-	return glue_cbc_encrypt_req_128bit(camellia_enc_blk, req);
++	CBC_WALK_START(req, CAMELLIA_BLOCK_SIZE, -1);
++	CBC_ENC_BLOCK(camellia_enc_blk);
++	CBC_WALK_END();
+ }
+ 
+ static int cbc_decrypt(struct skcipher_request *req)
+ {
+-	return glue_cbc_decrypt_req_128bit(&camellia_dec_cbc, req);
++	CBC_WALK_START(req, CAMELLIA_BLOCK_SIZE, CAMELLIA_AESNI_PARALLEL_BLOCKS);
++	CBC_DEC_BLOCK(CAMELLIA_AESNI_AVX2_PARALLEL_BLOCKS, camellia_cbc_dec_32way);
++	CBC_DEC_BLOCK(CAMELLIA_AESNI_PARALLEL_BLOCKS, camellia_cbc_dec_16way);
++	CBC_DEC_BLOCK(2, camellia_decrypt_cbc_2way);
++	CBC_DEC_BLOCK(1, camellia_dec_blk);
++	CBC_WALK_END();
+ }
+ 
+ static struct skcipher_alg camellia_algs[] = {
+diff --git a/arch/x86/crypto/camellia_aesni_avx_glue.c b/arch/x86/crypto/camellia_aesni_avx_glue.c
+index 22a89cdfedfb..68fed0a79889 100644
+--- a/arch/x86/crypto/camellia_aesni_avx_glue.c
++++ b/arch/x86/crypto/camellia_aesni_avx_glue.c
+@@ -6,7 +6,6 @@
+  */
+ 
+ #include <asm/crypto/camellia.h>
+-#include <asm/crypto/glue_helper.h>
+ #include <crypto/algapi.h>
+ #include <crypto/internal/simd.h>
+ #include <linux/crypto.h>
+@@ -14,6 +13,8 @@
+ #include <linux/module.h>
+ #include <linux/types.h>
+ 
++#include "ecb_cbc_helpers.h"
 +
-+#include <crypto/internal/skcipher.h>
-+#include <asm/fpu/api.h>
+ #define CAMELLIA_AESNI_PARALLEL_BLOCKS 16
+ 
+ /* 16-way parallel cipher functions (avx/aes-ni) */
+@@ -26,54 +27,6 @@ EXPORT_SYMBOL_GPL(camellia_ecb_dec_16way);
+ asmlinkage void camellia_cbc_dec_16way(const void *ctx, u8 *dst, const u8 *src);
+ EXPORT_SYMBOL_GPL(camellia_cbc_dec_16way);
+ 
+-static const struct common_glue_ctx camellia_enc = {
+-	.num_funcs = 3,
+-	.fpu_blocks_limit = CAMELLIA_AESNI_PARALLEL_BLOCKS,
+-
+-	.funcs = { {
+-		.num_blocks = CAMELLIA_AESNI_PARALLEL_BLOCKS,
+-		.fn_u = { .ecb = camellia_ecb_enc_16way }
+-	}, {
+-		.num_blocks = 2,
+-		.fn_u = { .ecb = camellia_enc_blk_2way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .ecb = camellia_enc_blk }
+-	} }
+-};
+-
+-static const struct common_glue_ctx camellia_dec = {
+-	.num_funcs = 3,
+-	.fpu_blocks_limit = CAMELLIA_AESNI_PARALLEL_BLOCKS,
+-
+-	.funcs = { {
+-		.num_blocks = CAMELLIA_AESNI_PARALLEL_BLOCKS,
+-		.fn_u = { .ecb = camellia_ecb_dec_16way }
+-	}, {
+-		.num_blocks = 2,
+-		.fn_u = { .ecb = camellia_dec_blk_2way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .ecb = camellia_dec_blk }
+-	} }
+-};
+-
+-static const struct common_glue_ctx camellia_dec_cbc = {
+-	.num_funcs = 3,
+-	.fpu_blocks_limit = CAMELLIA_AESNI_PARALLEL_BLOCKS,
+-
+-	.funcs = { {
+-		.num_blocks = CAMELLIA_AESNI_PARALLEL_BLOCKS,
+-		.fn_u = { .cbc = camellia_cbc_dec_16way }
+-	}, {
+-		.num_blocks = 2,
+-		.fn_u = { .cbc = camellia_decrypt_cbc_2way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .cbc = camellia_dec_blk }
+-	} }
+-};
+-
+ static int camellia_setkey(struct crypto_skcipher *tfm, const u8 *key,
+ 			   unsigned int keylen)
+ {
+@@ -82,22 +35,36 @@ static int camellia_setkey(struct crypto_skcipher *tfm, const u8 *key,
+ 
+ static int ecb_encrypt(struct skcipher_request *req)
+ {
+-	return glue_ecb_req_128bit(&camellia_enc, req);
++	ECB_WALK_START(req, CAMELLIA_BLOCK_SIZE, CAMELLIA_AESNI_PARALLEL_BLOCKS);
++	ECB_BLOCK(CAMELLIA_AESNI_PARALLEL_BLOCKS, camellia_ecb_enc_16way);
++	ECB_BLOCK(2, camellia_enc_blk_2way);
++	ECB_BLOCK(1, camellia_enc_blk);
++	ECB_WALK_END();
+ }
+ 
+ static int ecb_decrypt(struct skcipher_request *req)
+ {
+-	return glue_ecb_req_128bit(&camellia_dec, req);
++	ECB_WALK_START(req, CAMELLIA_BLOCK_SIZE, CAMELLIA_AESNI_PARALLEL_BLOCKS);
++	ECB_BLOCK(CAMELLIA_AESNI_PARALLEL_BLOCKS, camellia_ecb_dec_16way);
++	ECB_BLOCK(2, camellia_dec_blk_2way);
++	ECB_BLOCK(1, camellia_dec_blk);
++	ECB_WALK_END();
+ }
+ 
+ static int cbc_encrypt(struct skcipher_request *req)
+ {
+-	return glue_cbc_encrypt_req_128bit(camellia_enc_blk, req);
++	CBC_WALK_START(req, CAMELLIA_BLOCK_SIZE, -1);
++	CBC_ENC_BLOCK(camellia_enc_blk);
++	CBC_WALK_END();
+ }
+ 
+ static int cbc_decrypt(struct skcipher_request *req)
+ {
+-	return glue_cbc_decrypt_req_128bit(&camellia_dec_cbc, req);
++	CBC_WALK_START(req, CAMELLIA_BLOCK_SIZE, CAMELLIA_AESNI_PARALLEL_BLOCKS);
++	CBC_DEC_BLOCK(CAMELLIA_AESNI_PARALLEL_BLOCKS, camellia_cbc_dec_16way);
++	CBC_DEC_BLOCK(2, camellia_decrypt_cbc_2way);
++	CBC_DEC_BLOCK(1, camellia_dec_blk);
++	CBC_WALK_END();
+ }
+ 
+ static struct skcipher_alg camellia_algs[] = {
+diff --git a/arch/x86/crypto/camellia_glue.c b/arch/x86/crypto/camellia_glue.c
+index fefeedf2b33d..0bc00ce68484 100644
+--- a/arch/x86/crypto/camellia_glue.c
++++ b/arch/x86/crypto/camellia_glue.c
+@@ -15,7 +15,8 @@
+ #include <linux/types.h>
+ #include <crypto/algapi.h>
+ #include <asm/crypto/camellia.h>
+-#include <asm/crypto/glue_helper.h>
 +
-+/*
-+ * Mode helpers to instantiate parameterized skcipher ECB/CBC modes without
-+ * having to rely on indirect calls and retpolines.
-+ */
-+
-+#define ECB_WALK_START(req, bsize, fpu_blocks) do {			\
-+	void *ctx = crypto_skcipher_ctx(crypto_skcipher_reqtfm(req));	\
-+	const int __bsize = (bsize);					\
-+	struct skcipher_walk walk;					\
-+	int err = skcipher_walk_virt(&walk, (req), false);		\
-+	while (walk.nbytes > 0) {					\
-+		unsigned int nbytes = walk.nbytes;			\
-+		bool do_fpu = (fpu_blocks) != -1 &&			\
-+			      nbytes >= (fpu_blocks) * __bsize;		\
-+		const u8 *src = walk.src.virt.addr;			\
-+		u8 *dst = walk.dst.virt.addr;				\
-+		u8 __maybe_unused buf[(bsize)];				\
-+		if (do_fpu) kernel_fpu_begin()
-+
-+#define CBC_WALK_START(req, bsize, fpu_blocks)				\
-+	ECB_WALK_START(req, bsize, fpu_blocks)
-+
-+#define ECB_WALK_ADVANCE(blocks) do {					\
-+	dst += (blocks) * __bsize;					\
-+	src += (blocks) * __bsize;					\
-+	nbytes -= (blocks) * __bsize;					\
-+} while (0)
-+
-+#define ECB_BLOCK(blocks, func) do {					\
-+	while (nbytes >= (blocks) * __bsize) {				\
-+		(func)(ctx, dst, src);					\
-+		ECB_WALK_ADVANCE(blocks);				\
-+	}								\
-+} while (0)
-+
-+#define CBC_ENC_BLOCK(func) do {					\
-+	const u8 *__iv = walk.iv;					\
-+	while (nbytes >= __bsize) {					\
-+		crypto_xor_cpy(dst, src, __iv, __bsize);		\
-+		(func)(ctx, dst, dst);					\
-+		__iv = dst;						\
-+		ECB_WALK_ADVANCE(1);					\
-+	}								\
-+	memcpy(walk.iv, __iv, __bsize);					\
-+} while (0)
-+
-+#define CBC_DEC_BLOCK(blocks, func) do {				\
-+	while (nbytes >= (blocks) * __bsize) {				\
-+		const u8 *__iv = src + ((blocks) - 1) * __bsize;	\
-+		if (dst == src)						\
-+			__iv = memcpy(buf, __iv, __bsize);		\
-+		(func)(ctx, dst, src);					\
-+		crypto_xor(dst, walk.iv, __bsize);			\
-+		memcpy(walk.iv, __iv, __bsize);				\
-+		ECB_WALK_ADVANCE(blocks);				\
-+	}								\
-+} while (0)
-+
-+#define ECB_WALK_END()							\
-+		if (do_fpu) kernel_fpu_end();				\
-+		err = skcipher_walk_done(&walk, nbytes);		\
-+	}								\
-+	return err;							\
-+} while (0)
-+
-+#define CBC_WALK_END() ECB_WALK_END()
-+
-+#endif
++#include "ecb_cbc_helpers.h"
+ 
+ /* regular block cipher functions */
+ asmlinkage void __camellia_enc_blk(const void *ctx, u8 *dst, const u8 *src,
+@@ -1262,75 +1263,47 @@ static int camellia_setkey_skcipher(struct crypto_skcipher *tfm, const u8 *key,
+ 	return camellia_setkey(&tfm->base, key, key_len);
+ }
+ 
+-void camellia_decrypt_cbc_2way(const void *ctx, u8 *d, const u8 *s)
++void camellia_decrypt_cbc_2way(const void *ctx, u8 *dst, const u8 *src)
+ {
+-	u128 *dst = (u128 *)d;
+-	const u128 *src = (const u128 *)s;
+-	u128 iv = *src;
+-
+-	camellia_dec_blk_2way(ctx, (u8 *)dst, (u8 *)src);
++	u8 buf[CAMELLIA_BLOCK_SIZE];
++	const u8 *iv = src;
+ 
+-	u128_xor(&dst[1], &dst[1], &iv);
++	if (dst == src)
++		iv = memcpy(buf, iv, sizeof(buf));
++	camellia_dec_blk_2way(ctx, dst, src);
++	crypto_xor(dst + CAMELLIA_BLOCK_SIZE, iv, CAMELLIA_BLOCK_SIZE);
+ }
+ EXPORT_SYMBOL_GPL(camellia_decrypt_cbc_2way);
+ 
+-static const struct common_glue_ctx camellia_enc = {
+-	.num_funcs = 2,
+-	.fpu_blocks_limit = -1,
+-
+-	.funcs = { {
+-		.num_blocks = 2,
+-		.fn_u = { .ecb = camellia_enc_blk_2way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .ecb = camellia_enc_blk }
+-	} }
+-};
+-
+-static const struct common_glue_ctx camellia_dec = {
+-	.num_funcs = 2,
+-	.fpu_blocks_limit = -1,
+-
+-	.funcs = { {
+-		.num_blocks = 2,
+-		.fn_u = { .ecb = camellia_dec_blk_2way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .ecb = camellia_dec_blk }
+-	} }
+-};
+-
+-static const struct common_glue_ctx camellia_dec_cbc = {
+-	.num_funcs = 2,
+-	.fpu_blocks_limit = -1,
+-
+-	.funcs = { {
+-		.num_blocks = 2,
+-		.fn_u = { .cbc = camellia_decrypt_cbc_2way }
+-	}, {
+-		.num_blocks = 1,
+-		.fn_u = { .cbc = camellia_dec_blk }
+-	} }
+-};
+-
+ static int ecb_encrypt(struct skcipher_request *req)
+ {
+-	return glue_ecb_req_128bit(&camellia_enc, req);
++	ECB_WALK_START(req, CAMELLIA_BLOCK_SIZE, -1);
++	ECB_BLOCK(2, camellia_enc_blk_2way);
++	ECB_BLOCK(1, camellia_enc_blk);
++	ECB_WALK_END();
+ }
+ 
+ static int ecb_decrypt(struct skcipher_request *req)
+ {
+-	return glue_ecb_req_128bit(&camellia_dec, req);
++	ECB_WALK_START(req, CAMELLIA_BLOCK_SIZE, -1);
++	ECB_BLOCK(2, camellia_dec_blk_2way);
++	ECB_BLOCK(1, camellia_dec_blk);
++	ECB_WALK_END();
+ }
+ 
+ static int cbc_encrypt(struct skcipher_request *req)
+ {
+-	return glue_cbc_encrypt_req_128bit(camellia_enc_blk, req);
++	CBC_WALK_START(req, CAMELLIA_BLOCK_SIZE, -1);
++	CBC_ENC_BLOCK(camellia_enc_blk);
++	CBC_WALK_END();
+ }
+ 
+ static int cbc_decrypt(struct skcipher_request *req)
+ {
+-	return glue_cbc_decrypt_req_128bit(&camellia_dec_cbc, req);
++	CBC_WALK_START(req, CAMELLIA_BLOCK_SIZE, -1);
++	CBC_DEC_BLOCK(2, camellia_decrypt_cbc_2way);
++	CBC_DEC_BLOCK(1, camellia_dec_blk);
++	CBC_WALK_END();
+ }
+ 
+ static struct crypto_alg camellia_cipher_alg = {
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 24c0e001d06d..f8518ff389bb 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -1286,7 +1286,6 @@ config CRYPTO_CAMELLIA_X86_64
+ 	depends on X86 && 64BIT
+ 	depends on CRYPTO
+ 	select CRYPTO_SKCIPHER
+-	select CRYPTO_GLUE_HELPER_X86
+ 	imply CRYPTO_CTR
+ 	help
+ 	  Camellia cipher algorithm module (x86_64).
+@@ -1305,7 +1304,6 @@ config CRYPTO_CAMELLIA_AESNI_AVX_X86_64
+ 	depends on CRYPTO
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_CAMELLIA_X86_64
+-	select CRYPTO_GLUE_HELPER_X86
+ 	select CRYPTO_SIMD
+ 	imply CRYPTO_XTS
+ 	help
 -- 
 2.17.1
 
