@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BF32EB08E
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Jan 2021 17:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05612EB08A
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Jan 2021 17:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729419AbhAEQu4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 Jan 2021 11:50:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44174 "EHLO mail.kernel.org"
+        id S1729536AbhAEQuc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Jan 2021 11:50:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729518AbhAEQuz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:50:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03F0222D2B;
-        Tue,  5 Jan 2021 16:49:24 +0000 (UTC)
+        id S1729938AbhAEQu3 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 5 Jan 2021 11:50:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF46322D01;
+        Tue,  5 Jan 2021 16:49:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609865366;
-        bh=7Hl7xWA576UO7K7qxdAB3pBVC3K/yat6nQST1MP9lNw=;
+        s=k20201202; t=1609865368;
+        bh=uw83rUWOAGk6iPx9EMuW1gytFdOt+09HXszrJA42X/w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ixyv95x1+B9Nlzt2TMZGXqPmErYIjvDTesvq21v3bgu5i64BdYZztOZbZh0+sDm2W
-         w8DB4q+gwgxJ7tQLeBNujnbDtqWSYsjtshQAqWpurrCdK6rmfNtpW40gELimUGhI2i
-         54GQerZU2YjE+qkhH5P1ZVAItZjZ59sB+ko+/+g1eoyg8LzJKZPCNwG7JwlP1GkvuD
-         Kn4knAFdbTAX6VFoZZ9Twkh0WZIWufQE1GTeW/hc2ddomPMElH6gmLmelsQFFXj3In
-         3y/UA4jHJdyjnQzxXxNysdR2UuCMLCIRTdyW/mZNnix109j6oI0ioWMgVZidRgM6tE
-         LYlAJAUpqJGVA==
+        b=SQ5ElfOUyGQosrVEIaFBsYcUygaC+jigRuNve12kFOth38IcFZPNC1UZYwTy/hPiY
+         MIY59PjVnxqEwHaruadHJs7F70mXlHs6s93o3LyIQ11KUT2mToK+sIiu2xmSY4A0He
+         WQ3XISNs4RioHvES0JsRHDqmn9aB4cQJ0DBr1IDs8UhQu4TKcmwWP3AiwoAN/eeYB3
+         s9T9QyzAO6sqCDPlIxt9NAB1KjZjMceF4WH5UYsB+F2tKJmylzC3RzIOQOxgb2QETe
+         53JrTPCB/X9TGA4dkJdRHkp+nT5MNoZiLtA7FTfRXNfuI8sG8jo7xAsDx6aLdDTwzO
+         FnpNAX87F4HHQ==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
@@ -30,9 +30,9 @@ Cc:     Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@intel.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Milan Broz <gmazyland@gmail.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH v2 20/21] crypto: x86 - remove glue helper module
-Date:   Tue,  5 Jan 2021 17:48:08 +0100
-Message-Id: <20210105164809.8594-21-ardb@kernel.org>
+Subject: [PATCH v2 21/21] crypto: x86 - use local headers for x86 specific shared declarations
+Date:   Tue,  5 Jan 2021 17:48:09 +0100
+Message-Id: <20210105164809.8594-22-ardb@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210105164809.8594-1-ardb@kernel.org>
 References: <20210105164809.8594-1-ardb@kernel.org>
@@ -43,320 +43,175 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-All dependencies on the x86 glue helper module have been replaced by
-local instantiations of the new ECB/CBC preprocessor helper macros, so
-the glue helper module can be retired.
+The Camellia, Serpent and Twofish related header files only contain
+declarations that are shared between different implementations of the
+respective algorithms residing under arch/x86/crypto, and none of their
+contents should be used elsewhere. So move the header files into the
+same location, and use local #includes instead.
 
 Acked-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/crypto/Makefile                  |   2 -
- arch/x86/crypto/glue_helper.c             | 155 --------------------
- arch/x86/include/asm/crypto/glue_helper.h |  74 ----------
- crypto/Kconfig                            |   5 -
- crypto/skcipher.c                         |   6 -
- include/crypto/internal/skcipher.h        |   1 -
- 6 files changed, 243 deletions(-)
+ arch/x86/{include/asm => }/crypto/camellia.h     | 0
+ arch/x86/crypto/camellia_aesni_avx2_glue.c       | 2 +-
+ arch/x86/crypto/camellia_aesni_avx_glue.c        | 2 +-
+ arch/x86/crypto/camellia_glue.c                  | 2 +-
+ arch/x86/{include/asm => }/crypto/serpent-avx.h  | 0
+ arch/x86/{include/asm => }/crypto/serpent-sse2.h | 0
+ arch/x86/crypto/serpent_avx2_glue.c              | 2 +-
+ arch/x86/crypto/serpent_avx_glue.c               | 2 +-
+ arch/x86/crypto/serpent_sse2_glue.c              | 2 +-
+ arch/x86/{include/asm => }/crypto/twofish.h      | 0
+ arch/x86/crypto/twofish_avx_glue.c               | 2 +-
+ arch/x86/crypto/twofish_glue_3way.c              | 2 +-
+ 12 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/crypto/Makefile b/arch/x86/crypto/Makefile
-index a31de0c6ccde..b28e36b7c96b 100644
---- a/arch/x86/crypto/Makefile
-+++ b/arch/x86/crypto/Makefile
-@@ -4,8 +4,6 @@
+diff --git a/arch/x86/include/asm/crypto/camellia.h b/arch/x86/crypto/camellia.h
+similarity index 100%
+rename from arch/x86/include/asm/crypto/camellia.h
+rename to arch/x86/crypto/camellia.h
+diff --git a/arch/x86/crypto/camellia_aesni_avx2_glue.c b/arch/x86/crypto/camellia_aesni_avx2_glue.c
+index ef5c0f094584..e7e4d64e9577 100644
+--- a/arch/x86/crypto/camellia_aesni_avx2_glue.c
++++ b/arch/x86/crypto/camellia_aesni_avx2_glue.c
+@@ -5,7 +5,6 @@
+  * Copyright © 2013 Jussi Kivilinna <jussi.kivilinna@mbnet.fi>
+  */
  
- OBJECT_FILES_NON_STANDARD := y
+-#include <asm/crypto/camellia.h>
+ #include <crypto/algapi.h>
+ #include <crypto/internal/simd.h>
+ #include <linux/crypto.h>
+@@ -13,6 +12,7 @@
+ #include <linux/module.h>
+ #include <linux/types.h>
  
--obj-$(CONFIG_CRYPTO_GLUE_HELPER_X86) += glue_helper.o
--
- obj-$(CONFIG_CRYPTO_TWOFISH_586) += twofish-i586.o
- twofish-i586-y := twofish-i586-asm_32.o twofish_glue.o
- obj-$(CONFIG_CRYPTO_TWOFISH_X86_64) += twofish-x86_64.o
-diff --git a/arch/x86/crypto/glue_helper.c b/arch/x86/crypto/glue_helper.c
-deleted file mode 100644
-index 895d34150c3f..000000000000
---- a/arch/x86/crypto/glue_helper.c
-+++ /dev/null
-@@ -1,155 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Shared glue code for 128bit block ciphers
-- *
-- * Copyright © 2012-2013 Jussi Kivilinna <jussi.kivilinna@iki.fi>
-- *
-- * CBC & ECB parts based on code (crypto/cbc.c,ecb.c) by:
-- *   Copyright (c) 2006 Herbert Xu <herbert@gondor.apana.org.au>
-- */
--
--#include <linux/module.h>
--#include <crypto/b128ops.h>
--#include <crypto/internal/skcipher.h>
--#include <crypto/scatterwalk.h>
--#include <asm/crypto/glue_helper.h>
--
--int glue_ecb_req_128bit(const struct common_glue_ctx *gctx,
--			struct skcipher_request *req)
--{
--	void *ctx = crypto_skcipher_ctx(crypto_skcipher_reqtfm(req));
--	const unsigned int bsize = 128 / 8;
--	struct skcipher_walk walk;
--	bool fpu_enabled = false;
--	unsigned int nbytes;
--	int err;
--
--	err = skcipher_walk_virt(&walk, req, false);
--
--	while ((nbytes = walk.nbytes)) {
--		const u8 *src = walk.src.virt.addr;
--		u8 *dst = walk.dst.virt.addr;
--		unsigned int func_bytes;
--		unsigned int i;
--
--		fpu_enabled = glue_fpu_begin(bsize, gctx->fpu_blocks_limit,
--					     &walk, fpu_enabled, nbytes);
--		for (i = 0; i < gctx->num_funcs; i++) {
--			func_bytes = bsize * gctx->funcs[i].num_blocks;
--
--			if (nbytes < func_bytes)
--				continue;
--
--			/* Process multi-block batch */
--			do {
--				gctx->funcs[i].fn_u.ecb(ctx, dst, src);
--				src += func_bytes;
--				dst += func_bytes;
--				nbytes -= func_bytes;
--			} while (nbytes >= func_bytes);
--
--			if (nbytes < bsize)
--				break;
--		}
--		err = skcipher_walk_done(&walk, nbytes);
--	}
--
--	glue_fpu_end(fpu_enabled);
--	return err;
--}
--EXPORT_SYMBOL_GPL(glue_ecb_req_128bit);
--
--int glue_cbc_encrypt_req_128bit(const common_glue_func_t fn,
--				struct skcipher_request *req)
--{
--	void *ctx = crypto_skcipher_ctx(crypto_skcipher_reqtfm(req));
--	const unsigned int bsize = 128 / 8;
--	struct skcipher_walk walk;
--	unsigned int nbytes;
--	int err;
--
--	err = skcipher_walk_virt(&walk, req, false);
--
--	while ((nbytes = walk.nbytes)) {
--		const u128 *src = (u128 *)walk.src.virt.addr;
--		u128 *dst = (u128 *)walk.dst.virt.addr;
--		u128 *iv = (u128 *)walk.iv;
--
--		do {
--			u128_xor(dst, src, iv);
--			fn(ctx, (u8 *)dst, (u8 *)dst);
--			iv = dst;
--			src++;
--			dst++;
--			nbytes -= bsize;
--		} while (nbytes >= bsize);
--
--		*(u128 *)walk.iv = *iv;
--		err = skcipher_walk_done(&walk, nbytes);
--	}
--	return err;
--}
--EXPORT_SYMBOL_GPL(glue_cbc_encrypt_req_128bit);
--
--int glue_cbc_decrypt_req_128bit(const struct common_glue_ctx *gctx,
--				struct skcipher_request *req)
--{
--	void *ctx = crypto_skcipher_ctx(crypto_skcipher_reqtfm(req));
--	const unsigned int bsize = 128 / 8;
--	struct skcipher_walk walk;
--	bool fpu_enabled = false;
--	unsigned int nbytes;
--	int err;
--
--	err = skcipher_walk_virt(&walk, req, false);
--
--	while ((nbytes = walk.nbytes)) {
--		const u128 *src = walk.src.virt.addr;
--		u128 *dst = walk.dst.virt.addr;
--		unsigned int func_bytes, num_blocks;
--		unsigned int i;
--		u128 last_iv;
--
--		fpu_enabled = glue_fpu_begin(bsize, gctx->fpu_blocks_limit,
--					     &walk, fpu_enabled, nbytes);
--		/* Start of the last block. */
--		src += nbytes / bsize - 1;
--		dst += nbytes / bsize - 1;
--
--		last_iv = *src;
--
--		for (i = 0; i < gctx->num_funcs; i++) {
--			num_blocks = gctx->funcs[i].num_blocks;
--			func_bytes = bsize * num_blocks;
--
--			if (nbytes < func_bytes)
--				continue;
--
--			/* Process multi-block batch */
--			do {
--				src -= num_blocks - 1;
--				dst -= num_blocks - 1;
--
--				gctx->funcs[i].fn_u.cbc(ctx, (u8 *)dst,
--							(const u8 *)src);
--
--				nbytes -= func_bytes;
--				if (nbytes < bsize)
--					goto done;
--
--				u128_xor(dst, dst, --src);
--				dst--;
--			} while (nbytes >= func_bytes);
--		}
--done:
--		u128_xor(dst, dst, (u128 *)walk.iv);
--		*(u128 *)walk.iv = last_iv;
--		err = skcipher_walk_done(&walk, nbytes);
--	}
--
--	glue_fpu_end(fpu_enabled);
--	return err;
--}
--EXPORT_SYMBOL_GPL(glue_cbc_decrypt_req_128bit);
--
--MODULE_LICENSE("GPL");
-diff --git a/arch/x86/include/asm/crypto/glue_helper.h b/arch/x86/include/asm/crypto/glue_helper.h
-deleted file mode 100644
-index 23e09efd2aa6..000000000000
---- a/arch/x86/include/asm/crypto/glue_helper.h
-+++ /dev/null
-@@ -1,74 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- * Shared glue code for 128bit block ciphers
-- */
--
--#ifndef _CRYPTO_GLUE_HELPER_H
--#define _CRYPTO_GLUE_HELPER_H
--
--#include <crypto/internal/skcipher.h>
--#include <linux/kernel.h>
--#include <asm/fpu/api.h>
--
--typedef void (*common_glue_func_t)(const void *ctx, u8 *dst, const u8 *src);
--typedef void (*common_glue_cbc_func_t)(const void *ctx, u8 *dst, const u8 *src);
--
--struct common_glue_func_entry {
--	unsigned int num_blocks; /* number of blocks that @fn will process */
--	union {
--		common_glue_func_t ecb;
--		common_glue_cbc_func_t cbc;
--	} fn_u;
--};
--
--struct common_glue_ctx {
--	unsigned int num_funcs;
--	int fpu_blocks_limit; /* -1 means fpu not needed at all */
--
--	/*
--	 * First funcs entry must have largest num_blocks and last funcs entry
--	 * must have num_blocks == 1!
--	 */
--	struct common_glue_func_entry funcs[];
--};
--
--static inline bool glue_fpu_begin(unsigned int bsize, int fpu_blocks_limit,
--				  struct skcipher_walk *walk,
--				  bool fpu_enabled, unsigned int nbytes)
--{
--	if (likely(fpu_blocks_limit < 0))
--		return false;
--
--	if (fpu_enabled)
--		return true;
--
--	/*
--	 * Vector-registers are only used when chunk to be processed is large
--	 * enough, so do not enable FPU until it is necessary.
--	 */
--	if (nbytes < bsize * (unsigned int)fpu_blocks_limit)
--		return false;
--
--	/* prevent sleeping if FPU is in use */
--	skcipher_walk_atomise(walk);
--
--	kernel_fpu_begin();
--	return true;
--}
--
--static inline void glue_fpu_end(bool fpu_enabled)
--{
--	if (fpu_enabled)
--		kernel_fpu_end();
--}
--
--extern int glue_ecb_req_128bit(const struct common_glue_ctx *gctx,
--			       struct skcipher_request *req);
--
--extern int glue_cbc_encrypt_req_128bit(const common_glue_func_t fn,
--				       struct skcipher_request *req);
--
--extern int glue_cbc_decrypt_req_128bit(const struct common_glue_ctx *gctx,
--				       struct skcipher_request *req);
--
--#endif /* _CRYPTO_GLUE_HELPER_H */
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index b2182658c55e..94f0fde06b94 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -210,11 +210,6 @@ config CRYPTO_SIMD
- 	tristate
- 	select CRYPTO_CRYPTD
++#include "camellia.h"
+ #include "ecb_cbc_helpers.h"
  
--config CRYPTO_GLUE_HELPER_X86
--	tristate
--	depends on X86
--	select CRYPTO_SKCIPHER
--
- config CRYPTO_ENGINE
- 	tristate
+ #define CAMELLIA_AESNI_PARALLEL_BLOCKS 16
+diff --git a/arch/x86/crypto/camellia_aesni_avx_glue.c b/arch/x86/crypto/camellia_aesni_avx_glue.c
+index 68fed0a79889..c7ccf63e741e 100644
+--- a/arch/x86/crypto/camellia_aesni_avx_glue.c
++++ b/arch/x86/crypto/camellia_aesni_avx_glue.c
+@@ -5,7 +5,6 @@
+  * Copyright © 2012-2013 Jussi Kivilinna <jussi.kivilinna@iki.fi>
+  */
  
-diff --git a/crypto/skcipher.c b/crypto/skcipher.c
-index ff16d05644c7..a15376245416 100644
---- a/crypto/skcipher.c
-+++ b/crypto/skcipher.c
-@@ -491,12 +491,6 @@ int skcipher_walk_virt(struct skcipher_walk *walk,
- }
- EXPORT_SYMBOL_GPL(skcipher_walk_virt);
+-#include <asm/crypto/camellia.h>
+ #include <crypto/algapi.h>
+ #include <crypto/internal/simd.h>
+ #include <linux/crypto.h>
+@@ -13,6 +12,7 @@
+ #include <linux/module.h>
+ #include <linux/types.h>
  
--void skcipher_walk_atomise(struct skcipher_walk *walk)
--{
--	walk->flags &= ~SKCIPHER_WALK_SLEEP;
--}
--EXPORT_SYMBOL_GPL(skcipher_walk_atomise);
--
- int skcipher_walk_async(struct skcipher_walk *walk,
- 			struct skcipher_request *req)
- {
-diff --git a/include/crypto/internal/skcipher.h b/include/crypto/internal/skcipher.h
-index 9dd6c0c17eb8..a2339f80a615 100644
---- a/include/crypto/internal/skcipher.h
-+++ b/include/crypto/internal/skcipher.h
-@@ -133,7 +133,6 @@ int skcipher_walk_done(struct skcipher_walk *walk, int err);
- int skcipher_walk_virt(struct skcipher_walk *walk,
- 		       struct skcipher_request *req,
- 		       bool atomic);
--void skcipher_walk_atomise(struct skcipher_walk *walk);
- int skcipher_walk_async(struct skcipher_walk *walk,
- 			struct skcipher_request *req);
- int skcipher_walk_aead_encrypt(struct skcipher_walk *walk,
++#include "camellia.h"
+ #include "ecb_cbc_helpers.h"
+ 
+ #define CAMELLIA_AESNI_PARALLEL_BLOCKS 16
+diff --git a/arch/x86/crypto/camellia_glue.c b/arch/x86/crypto/camellia_glue.c
+index 0bc00ce68484..66c435ba9d3d 100644
+--- a/arch/x86/crypto/camellia_glue.c
++++ b/arch/x86/crypto/camellia_glue.c
+@@ -14,8 +14,8 @@
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <crypto/algapi.h>
+-#include <asm/crypto/camellia.h>
+ 
++#include "camellia.h"
+ #include "ecb_cbc_helpers.h"
+ 
+ /* regular block cipher functions */
+diff --git a/arch/x86/include/asm/crypto/serpent-avx.h b/arch/x86/crypto/serpent-avx.h
+similarity index 100%
+rename from arch/x86/include/asm/crypto/serpent-avx.h
+rename to arch/x86/crypto/serpent-avx.h
+diff --git a/arch/x86/include/asm/crypto/serpent-sse2.h b/arch/x86/crypto/serpent-sse2.h
+similarity index 100%
+rename from arch/x86/include/asm/crypto/serpent-sse2.h
+rename to arch/x86/crypto/serpent-sse2.h
+diff --git a/arch/x86/crypto/serpent_avx2_glue.c b/arch/x86/crypto/serpent_avx2_glue.c
+index 261c9ac2d762..ccf0b5fa4933 100644
+--- a/arch/x86/crypto/serpent_avx2_glue.c
++++ b/arch/x86/crypto/serpent_avx2_glue.c
+@@ -12,8 +12,8 @@
+ #include <crypto/algapi.h>
+ #include <crypto/internal/simd.h>
+ #include <crypto/serpent.h>
+-#include <asm/crypto/serpent-avx.h>
+ 
++#include "serpent-avx.h"
+ #include "ecb_cbc_helpers.h"
+ 
+ #define SERPENT_AVX2_PARALLEL_BLOCKS 16
+diff --git a/arch/x86/crypto/serpent_avx_glue.c b/arch/x86/crypto/serpent_avx_glue.c
+index 5fe01d2a5b1d..6c248e1ea4ef 100644
+--- a/arch/x86/crypto/serpent_avx_glue.c
++++ b/arch/x86/crypto/serpent_avx_glue.c
+@@ -15,8 +15,8 @@
+ #include <crypto/algapi.h>
+ #include <crypto/internal/simd.h>
+ #include <crypto/serpent.h>
+-#include <asm/crypto/serpent-avx.h>
+ 
++#include "serpent-avx.h"
+ #include "ecb_cbc_helpers.h"
+ 
+ /* 8-way parallel cipher functions */
+diff --git a/arch/x86/crypto/serpent_sse2_glue.c b/arch/x86/crypto/serpent_sse2_glue.c
+index e28d60949c16..d78f37e9b2cf 100644
+--- a/arch/x86/crypto/serpent_sse2_glue.c
++++ b/arch/x86/crypto/serpent_sse2_glue.c
+@@ -20,8 +20,8 @@
+ #include <crypto/b128ops.h>
+ #include <crypto/internal/simd.h>
+ #include <crypto/serpent.h>
+-#include <asm/crypto/serpent-sse2.h>
+ 
++#include "serpent-sse2.h"
+ #include "ecb_cbc_helpers.h"
+ 
+ static int serpent_setkey_skcipher(struct crypto_skcipher *tfm,
+diff --git a/arch/x86/include/asm/crypto/twofish.h b/arch/x86/crypto/twofish.h
+similarity index 100%
+rename from arch/x86/include/asm/crypto/twofish.h
+rename to arch/x86/crypto/twofish.h
+diff --git a/arch/x86/crypto/twofish_avx_glue.c b/arch/x86/crypto/twofish_avx_glue.c
+index 6ce198f808a5..3eb3440b477a 100644
+--- a/arch/x86/crypto/twofish_avx_glue.c
++++ b/arch/x86/crypto/twofish_avx_glue.c
+@@ -15,8 +15,8 @@
+ #include <crypto/algapi.h>
+ #include <crypto/internal/simd.h>
+ #include <crypto/twofish.h>
+-#include <asm/crypto/twofish.h>
+ 
++#include "twofish.h"
+ #include "ecb_cbc_helpers.h"
+ 
+ #define TWOFISH_PARALLEL_BLOCKS 8
+diff --git a/arch/x86/crypto/twofish_glue_3way.c b/arch/x86/crypto/twofish_glue_3way.c
+index d1fdefa5195a..03725696397c 100644
+--- a/arch/x86/crypto/twofish_glue_3way.c
++++ b/arch/x86/crypto/twofish_glue_3way.c
+@@ -5,7 +5,6 @@
+  * Copyright (c) 2011 Jussi Kivilinna <jussi.kivilinna@mbnet.fi>
+  */
+ 
+-#include <asm/crypto/twofish.h>
+ #include <crypto/algapi.h>
+ #include <crypto/twofish.h>
+ #include <linux/crypto.h>
+@@ -13,6 +12,7 @@
+ #include <linux/module.h>
+ #include <linux/types.h>
+ 
++#include "twofish.h"
+ #include "ecb_cbc_helpers.h"
+ 
+ EXPORT_SYMBOL_GPL(__twofish_enc_blk_3way);
 -- 
 2.17.1
 
