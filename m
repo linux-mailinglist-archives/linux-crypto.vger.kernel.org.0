@@ -2,97 +2,92 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBC92ECE57
-	for <lists+linux-crypto@lfdr.de>; Thu,  7 Jan 2021 12:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8EF2ECF6A
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 Jan 2021 13:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbhAGK7k (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 7 Jan 2021 05:59:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35637 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726362AbhAGK7j (ORCPT
+        id S1728055AbhAGMRe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 7 Jan 2021 07:17:34 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9974 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728047AbhAGMRc (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:59:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610017093;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eJuYKsFgeD/TaN1guAoXSRGGao5WVLChcuMpd8zsQq4=;
-        b=huqjN0WsnF0kqGM5w+LF+0bg3LYzVV1br55vwxpc2u16wGPxOlDt669Kxz52uwwLVcG/25
-        N6PbCNH17/x8Mszg1U7Blx8JkvD+fMiJ99JHqMnIwphcw0p1Iw4raIXcmUC12lfNPcoGBP
-        kB6cjTaQYmjIK5UC5qwq9+H3/vMNiA4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-378-PLDymmrbNOGnq5zJt0MzTg-1; Thu, 07 Jan 2021 05:58:09 -0500
-X-MC-Unique: PLDymmrbNOGnq5zJt0MzTg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 47B8F4239C;
-        Thu,  7 Jan 2021 10:58:06 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 67BC271CB9;
-        Thu,  7 Jan 2021 10:58:03 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210107092855.76093-1-tianjia.zhang@linux.alibaba.com>
-References: <20210107092855.76093-1-tianjia.zhang@linux.alibaba.com>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     dhowells@redhat.com, Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Tobias Markus <tobias@markus-regensburg.de>,
-        Tee Hao Wei <angelsl@in04.sg>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] X.509: Fix crash caused by NULL pointer
+        Thu, 7 Jan 2021 07:17:32 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DBQF02KTWzj3Xw;
+        Thu,  7 Jan 2021 20:16:04 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 7 Jan 2021 20:16:42 +0800
+From:   Meng Yu <yumeng18@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>, <yumeng18@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v6 0/6] add ECDH and CURVE25519 algorithms support for Kunpeng 930
+Date:   Thu, 7 Jan 2021 20:14:33 +0800
+Message-ID: <1610021679-56456-1-git-send-email-yumeng18@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <772252.1610017082.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 07 Jan 2021 10:58:02 +0000
-Message-ID: <772253.1610017082@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
+1. Move elliptic curve parameter definitions out to "include/crypto";
+2. Add some new elliptic curve parameters definitions, and reorder
+   ECC 'Curves IDs';
+3. Add ECDH and CURVE25519 algorithms support for Kunpeng 930.
 
-> On the following call path, `sig->pkey_algo` is not assigned
-> in asymmetric_key_verify_signature(), which causes runtime
-> crash in public_key_verify_signature().
-> =
+v5->v6:
+- patch #1: add a new patch (the first patch), which is the "depend on" patch before
 
->   keyctl_pkey_verify
->     asymmetric_key_verify_signature
->       verify_signature
->         public_key_verify_signature
-> =
+v4->v5:
+- patch #4: delete P-128 and P-320 curve, as the few using case in the kernel
 
-> This patch simply check this situation and fixes the crash
-> caused by NULL pointer.
-> =
+v3 -> v4:
+- patch #3: add new, move ecc_curve params to "include/crypto"
 
-> Fixes: 215525639631 ("X.509: support OSCCA SM2-with-SM3 certificate veri=
-fication")
-> Cc: stable@vger.kernel.org # v5.10+
-> Reported-by: Tobias Markus <tobias@markus-regensburg.de>
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+v2 -> v3:
+- patch #5: fix sparse warnings
+- patch #5: add 'CRYPTO_LIB_CURVE25519_GENERIC' in 'Kconfig'
 
-Looks reasonable:
+v1 -> v2:
+- patch #5: delete `curve25519_null_point'
 
-Acked-by: David Howells <dhowells@redhat.com>
+Hui Tang (1):
+  crypto: hisilicon/hpre - add some updates to adapt to Kunpeng 930
 
-I wonder, though, if cert_sig_digest_update() should be obtained by some s=
-ort
-of function pointer.  It doesn't really seem to belong in this file.  But =
-this
-is a separate issue.
+Meng Yu (5):
+  crypto: hisilicon/hpre - add version adapt to new algorithms
+  crypto: hisilicon/hpre - add algorithm type
+  crypto: expose elliptic curve parameters as Crypto APIs
+  crypto: hisilicon/hpre - add 'ECDH' algorithm
+  crypto: hisilicon/hpre - add 'CURVE25519' algorithm
 
-David
+ crypto/ecc.c                                |   5 +-
+ crypto/ecc.h                                |  37 +-
+ crypto/ecc_curve_defs.h                     |  57 --
+ crypto/ecrdsa_defs.h                        |   2 +-
+ crypto/testmgr.h                            |  12 +-
+ drivers/crypto/hisilicon/Kconfig            |   1 +
+ drivers/crypto/hisilicon/hpre/hpre.h        |  25 +-
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 864 +++++++++++++++++++++++++++-
+ drivers/crypto/hisilicon/hpre/hpre_main.c   | 105 ++--
+ drivers/crypto/hisilicon/qm.c               |   4 +-
+ drivers/crypto/hisilicon/qm.h               |   4 +-
+ drivers/crypto/hisilicon/sec2/sec.h         |   4 +-
+ drivers/crypto/hisilicon/sec2/sec_crypto.c  |   4 +-
+ drivers/crypto/hisilicon/sec2/sec_crypto.h  |   4 +-
+ drivers/crypto/hisilicon/zip/zip.h          |   4 +-
+ drivers/crypto/hisilicon/zip/zip_crypto.c   |   4 +-
+ include/crypto/ecc_curve_defs.h             | 212 +++++++
+ include/crypto/ecdh.h                       |   5 +-
+ 18 files changed, 1186 insertions(+), 167 deletions(-)
+ delete mode 100644 crypto/ecc_curve_defs.h
+ create mode 100644 include/crypto/ecc_curve_defs.h
+
+-- 
+2.8.1
 
