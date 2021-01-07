@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06692ECFBA
-	for <lists+linux-crypto@lfdr.de>; Thu,  7 Jan 2021 13:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F14412ECFBD
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 Jan 2021 13:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbhAGMbK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 7 Jan 2021 07:31:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
+        id S1728097AbhAGMbS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 7 Jan 2021 07:31:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728233AbhAGMbI (ORCPT
+        with ESMTP id S1728103AbhAGMbR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 7 Jan 2021 07:31:08 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F521C0612F8;
-        Thu,  7 Jan 2021 04:30:28 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id b8so3426564plx.0;
-        Thu, 07 Jan 2021 04:30:28 -0800 (PST)
+        Thu, 7 Jan 2021 07:31:17 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AE7C0612F9;
+        Thu,  7 Jan 2021 04:30:37 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id n7so4749512pgg.2;
+        Thu, 07 Jan 2021 04:30:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uwo40ct7uzVjK8NcMtTbNQmNhWXoxMbACC3WJlaa3jg=;
-        b=ufEmWbyZUa+dQQvAYhIkE8p0pOHhu50F7qe/0f12DD/tRcDNzhDQ9/wCoyhw5VjPzQ
-         dnd0JxxBwzKuMIZz87eJM0611NaeBvh0JKQhwpyuBZAZSvrunvM2Krth7aa6VMlqwa2j
-         TofjP1deDG8A8Y/9MQ8q8w7i79bNBdRz5RX7iPHWy43hjJU1BlJErRE1Wd9mpJxGBv6g
-         WFoD+YH25Z/8jOGBVw1SCHZFUUWJFja/AyJIVQvV20LvPFD4ErlwVgkg/yOWNd6g/Lgw
-         pLHjomwwpODFFA76JDMXo5Bt4X1WycGxzqLZywA3GcxmORVXwmK11odoUNIP8LH+OA6K
-         N7zA==
+        bh=IcYiMBsXjgXqsCUOACpj4n3qnT1OSjGqlWhB/zIbApI=;
+        b=q1b14DkzpJRGPgQ2ngw61EBHyRojXOhmeARI7hubXPHWZuJ3ZbCQfQzA+Vg00Ji7oN
+         eglKJajT/phzHNQdYRWyowE60icmapabNDIYHLcMsSGODXVR4fpdciDdCrO9q5WR2NbU
+         Q9p/jU8+M97ZgPsiDx95fcTwUWO7Aj8NfhkPCmfEjaAehVV0TfU+lG8hYT0bH6zWhp0v
+         e7EmYHPq+Pm8eCmjsyO8DmmO+Mp3YYK+9dT08gsLBSU8uvzy2wozGxVK4R+1O5tmkmvN
+         VZSAcN/R5jx/0FmSw+VwcZ3O8gih4wxKUiKLLMVFbDRo19UMdcyq/Mc6JLZ8zr2v9UtP
+         BmLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uwo40ct7uzVjK8NcMtTbNQmNhWXoxMbACC3WJlaa3jg=;
-        b=hjGXID6MQylMDZDQ506g1Zuu1Hdti9EuYse0Y5EGRqdst+oxBtihoJ8Ie7hx50jICl
-         omVzGbHsEcTyEiei25bPYBs1m58qgrbtPdHOMaHXfja1kW+sonI5ztnXCLwKX6m8Ideb
-         pi3UIAO8AreJ/7CmBEEve5BHBVYET0frbYo94B8xNJ+bnbrMA/JwJ7fR6Lkqrj1ujFbT
-         Q3xvphSfrQrTlWcnKfJDgcLbAtHT8lpuQfsifWSev8AsjtisVJC7qKoR3flWiNjK0zvm
-         2skyqOcEnaUqTDsSx1OVpWBopyr8gnwLpJRWjOgLfvh2/XUrYU+DJL/kwMS0BoH4sTEC
-         3jKQ==
-X-Gm-Message-State: AOAM533p5XUHrTIF/mmDAIj543hQRtjfyOATRaulLV8a2eIQd/swXpDE
-        j6Jr3IfjEoUnpt4joiNh1Fw=
-X-Google-Smtp-Source: ABdhPJywWT2KX2/NpHZqqBSNZJnlsUYYQZ/FulwF+aZ9Tt2BgrZXxoPU8LPfCPWHRve1aUtV0yOF+Q==
-X-Received: by 2002:a17:902:76c8:b029:dc:183d:60cf with SMTP id j8-20020a17090276c8b02900dc183d60cfmr1981987plt.15.1610022627661;
-        Thu, 07 Jan 2021 04:30:27 -0800 (PST)
+        bh=IcYiMBsXjgXqsCUOACpj4n3qnT1OSjGqlWhB/zIbApI=;
+        b=rlgrEL9WfMwLyZi6mb4mXhkxRdsAnNeOU8SsANUiEZg5zRbKuLlXBvO3XRs5uJ+rxs
+         DVnHd0Ka1xFM/mOgiXeTt9N5uvR9R1ysVjigAMVi9jd8W6oc6s+cbPgWLd8Pfpp8tDQR
+         bKFxYjHC46jtZT8vmnUKWuGJujBhwqSnxRAP3MJkZ+Aous7R8i07ZvDR9NLIKuY0+WHT
+         eUxEN6nXMzRYa9wte9/rJjCkSd2qruCVCu2nYF9CsBQbeCeOhdCsbEAQD5D6rs2KuHbm
+         2Af8HjDFVR79n7q4EBpfP0DCrlnUduI00gM596QFLZR4aoa9fxsObWE1VqYrYSEDp7gq
+         G9Lw==
+X-Gm-Message-State: AOAM531TPE3tVOWCDwOhOlZKTfYvxs5bEdFSf3jEMTYPvf5Q/YN1hF2n
+        1x2XwvGsS6tnmOsIcaVAxvM=
+X-Google-Smtp-Source: ABdhPJwRdfOyuDoYxkXBo3Lx4+KPzBzDxEcsdT+IBiU4+pw8wU/dgoW9f8IkVaCL9kQ9AK1QuLGQMg==
+X-Received: by 2002:a63:605:: with SMTP id 5mr1620892pgg.144.1610022636869;
+        Thu, 07 Jan 2021 04:30:36 -0800 (PST)
 Received: from localhost.localdomain ([49.207.216.201])
-        by smtp.gmail.com with ESMTPSA id h12sm6356014pgk.70.2021.01.07.04.30.19
+        by smtp.gmail.com with ESMTPSA id h12sm6356014pgk.70.2021.01.07.04.30.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 04:30:27 -0800 (PST)
+        Thu, 07 Jan 2021 04:30:36 -0800 (PST)
 From:   Allen Pais <allen.lkml@gmail.com>
 To:     herbert@gondor.apana.org.au
 Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
@@ -64,9 +64,9 @@ Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
         linux-samsung-soc@vger.kernel.org,
         Allen Pais <apais@linux.microsoft.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH v2 07/19] crypto: ccree: convert tasklets to use new tasklet_setup() API
-Date:   Thu,  7 Jan 2021 17:59:32 +0530
-Message-Id: <20210107122944.16363-4-allen.lkml@gmail.com>
+Subject: [PATCH v2 08/19] crypto: hifn_795x: convert tasklets to use new tasklet_setup() API
+Date:   Thu,  7 Jan 2021 17:59:33 +0530
+Message-Id: <20210107122944.16363-5-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210107122944.16363-1-allen.lkml@gmail.com>
 References: <20210107122944.16363-1-allen.lkml@gmail.com>
@@ -86,82 +86,33 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <apais@linux.microsoft.com>
 ---
- drivers/crypto/ccree/cc_fips.c        |  8 ++++----
- drivers/crypto/ccree/cc_request_mgr.c | 12 ++++++------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ drivers/crypto/hifn_795x.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/ccree/cc_fips.c b/drivers/crypto/ccree/cc_fips.c
-index 702aefc21447..c1d03d99e3c3 100644
---- a/drivers/crypto/ccree/cc_fips.c
-+++ b/drivers/crypto/ccree/cc_fips.c
-@@ -8,7 +8,7 @@
- #include "cc_driver.h"
- #include "cc_fips.h"
- 
--static void fips_dsr(unsigned long devarg);
-+static void fips_dsr(struct tasklet_struct *tsk);
- 
- struct cc_fips_handle {
- 	struct tasklet_struct tasklet;
-@@ -109,9 +109,9 @@ void cc_tee_handle_fips_error(struct cc_drvdata *p_drvdata)
+diff --git a/drivers/crypto/hifn_795x.c b/drivers/crypto/hifn_795x.c
+index 7e7a8f01ea6b..47f7bb43477e 100644
+--- a/drivers/crypto/hifn_795x.c
++++ b/drivers/crypto/hifn_795x.c
+@@ -2445,9 +2445,9 @@ static int hifn_register_alg(struct hifn_device *dev)
+ 	return err;
  }
  
- /* Deferred service handler, run as interrupt-fired tasklet */
--static void fips_dsr(unsigned long devarg)
-+static void fips_dsr(struct tasklet_struct *tsk)
+-static void hifn_tasklet_callback(unsigned long data)
++static void hifn_tasklet_callback(struct tasklet_struct *t)
  {
--	struct cc_drvdata *drvdata = (struct cc_drvdata *)devarg;
-+	struct cc_drvdata *drvdata = from_tasklet(drvdata, tsk, tasklet);
- 	u32 irq, val;
+-	struct hifn_device *dev = (struct hifn_device *)data;
++	struct hifn_device *dev = from_tasklet(dev, t, tasklet);
  
- 	irq = (drvdata->irq & (CC_GPR0_IRQ_MASK));
-@@ -143,7 +143,7 @@ int cc_fips_init(struct cc_drvdata *p_drvdata)
- 	p_drvdata->fips_handle = fips_h;
+ 	/*
+ 	 * This is ok to call this without lock being held,
+@@ -2533,7 +2533,7 @@ static int hifn_probe(struct pci_dev *pdev, const struct pci_device_id *id)
  
- 	dev_dbg(dev, "Initializing fips tasklet\n");
--	tasklet_init(&fips_h->tasklet, fips_dsr, (unsigned long)p_drvdata);
-+	tasklet_setup(&fips_h->tasklet, fips_dsr);
- 	fips_h->drvdata = p_drvdata;
- 	fips_h->nb.notifier_call = cc_ree_fips_failure;
- 	atomic_notifier_chain_register(&fips_fail_notif_chain, &fips_h->nb);
-diff --git a/drivers/crypto/ccree/cc_request_mgr.c b/drivers/crypto/ccree/cc_request_mgr.c
-index 33fb27745d52..ec0f3bf00d33 100644
---- a/drivers/crypto/ccree/cc_request_mgr.c
-+++ b/drivers/crypto/ccree/cc_request_mgr.c
-@@ -70,7 +70,7 @@ static const u32 cc_cpp_int_masks[CC_CPP_NUM_ALGS][CC_CPP_NUM_SLOTS] = {
- 	  BIT(CC_HOST_IRR_REE_OP_ABORTED_SM_7_INT_BIT_SHIFT) }
- };
+ 	pci_set_drvdata(pdev, dev);
  
--static void comp_handler(unsigned long devarg);
-+static void comp_handler(struct tasklet_struct *t);
- #ifdef COMP_IN_WQ
- static void comp_work_handler(struct work_struct *work);
- #endif
-@@ -140,8 +140,7 @@ int cc_req_mgr_init(struct cc_drvdata *drvdata)
- 	INIT_DELAYED_WORK(&req_mgr_h->compwork, comp_work_handler);
- #else
- 	dev_dbg(dev, "Initializing completion tasklet\n");
--	tasklet_init(&req_mgr_h->comptask, comp_handler,
--		     (unsigned long)drvdata);
-+	tasklet_setup(&req_mgr_h->comptask, comp_handler);
- #endif
- 	req_mgr_h->hw_queue_size = cc_ioread(drvdata,
- 					     CC_REG(DSCRPTR_QUEUE_SRAM_SIZE));
-@@ -611,11 +610,12 @@ static inline u32 cc_axi_comp_count(struct cc_drvdata *drvdata)
- }
+-	tasklet_init(&dev->tasklet, hifn_tasklet_callback, (unsigned long)dev);
++	tasklet_setup(&dev->tasklet, hifn_tasklet_callback);
  
- /* Deferred service handler, run as interrupt-fired tasklet */
--static void comp_handler(unsigned long devarg)
-+static void comp_handler(struct tasklet_struct *t)
- {
--	struct cc_drvdata *drvdata = (struct cc_drvdata *)devarg;
- 	struct cc_req_mgr_handle *request_mgr_handle =
--						drvdata->request_mgr_handle;
-+				from_tasklet(request_mgr_handle, t, comptask);
-+	struct cc_drvdata *drvdata = container_of((void *)request_mgr_handle,
-+				     typeof(*drvdata), request_mgr_handle);
- 	struct device *dev = drvdata_to_dev(drvdata);
- 	u32 irq;
+ 	crypto_init_queue(&dev->queue, 1);
  
 -- 
 2.25.1
