@@ -2,96 +2,80 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6FD2ECA91
-	for <lists+linux-crypto@lfdr.de>; Thu,  7 Jan 2021 07:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3852ECABC
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 Jan 2021 08:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbhAGGij (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 7 Jan 2021 01:38:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbhAGGij (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 7 Jan 2021 01:38:39 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E6BC0612F4;
-        Wed,  6 Jan 2021 22:37:58 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0e340040aa7c2c4e2416a1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:3400:40aa:7c2c:4e24:16a1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EDEBE1EC0505;
-        Thu,  7 Jan 2021 07:37:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610001475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=v+qMAxqqt8nszXdetCtccYLnMdXSV0ny4ReqXtPVORw=;
-        b=aP7NQt5Lz7pIHzFTeA7T5LrK0qu5eRPssQukqAt5INooLBcAfxyHQf77Goom81Ycr/gTDO
-        0SoLv3gF7o3MWnxjCFkj0ZQA8KTvKtaky2CsGIXktMzoEz22dFJOv/4eEQZiZpZn5nOlAX
-        CY1lWo6OC0anBoE6SQZRNyL9M8peaTk=
-Date:   Thu, 7 Jan 2021 07:37:50 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com, tony.luck@intel.com, dave.hansen@intel.com,
-        seanjc@google.com, fenghua.yu@intel.com, thomas.lendacky@amd.com,
-        kyung.min.park@intel.com, kim.phillips@amd.com,
-        mgross@linux.intel.com, peterz@infradead.org,
-        krish.sadhukhan@oracle.com, liam.merwick@oracle.com,
-        mlevitsk@redhat.com, reinette.chatre@intel.com, babu.moger@amd.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        TimGuo-oc@zhaoxin.com, CooperYan@zhaoxin.com,
-        QiyuanWang@zhaoxin.com, HerryYang@zhaoxin.com,
-        CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
-Subject: Re: [PATCH v1 1/3] x86/cpufeatures: Add low performance CRC32C
- instruction CPU feature
-Message-ID: <20210107063750.GA14697@zn.tnic>
-References: <1610000348-17316-1-git-send-email-TonyWWang-oc@zhaoxin.com>
- <1610000348-17316-2-git-send-email-TonyWWang-oc@zhaoxin.com>
+        id S1725983AbhAGHAH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 7 Jan 2021 02:00:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725763AbhAGHAH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 7 Jan 2021 02:00:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 342B722E00;
+        Thu,  7 Jan 2021 06:59:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610002766;
+        bh=F+29O/lRMWzhcxDLYrF0XgcNB8oKJOS4ocekLsKW6sU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LAZEVOPfzfYtXokJbutIjBLAgx9Y8jxXVgn2OP4gERpMALuQtXgtVOMPQ2zX50nMx
+         VEhVL846W4k0iLO+oilS7ZKN7/yoOGmat/Z27Mfxp3DscWEKrDPMOUuHMo/lMAsPdE
+         y4BRxntzFwCKTCjDxhj6GLh90nw1y8Df5VNyjf1HwieX3yOULSxGcHcJ56xp745f1O
+         4jPxvORSghzuGW5b0VVZH43PC2REtDskl6IM3iPyClkXqMyKWXaJexO7SAE/+E7L6U
+         cSUj/wa6YxUyk8ob/hBJy6o17Jj3SEDZElzThM62uje/aTUGv+0nzuSbIuP5K0Op7y
+         k3PQ8x80yD1Ag==
+Date:   Wed, 6 Jan 2021 22:59:24 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Stephan Mueller <smueller@chronox.de>
+Cc:     herbert@gondor.apana.org.au, mathew.j.martineau@linux.intel.com,
+        dhowells@redhat.com, linux-crypto@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org
+Subject: Re: [PATCH 0/5] Add KDF implementations to crypto API
+Message-ID: <X/axTBTMGpJ07tft@sol.localdomain>
+References: <4616980.31r3eYUQgx@positron.chronox.de>
+ <X/OUt7+wGGEPkWh8@sol.localdomain>
+ <3f8cda66411d4e82074808657df7f1bbbcff37a9.camel@chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1610000348-17316-2-git-send-email-TonyWWang-oc@zhaoxin.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3f8cda66411d4e82074808657df7f1bbbcff37a9.camel@chronox.de>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 02:19:06PM +0800, Tony W Wang-oc wrote:
-> SSE4.2 on Zhaoxin CPUs are compatible with Intel. The presence of
-> CRC32C instruction is enumerated by CPUID.01H:ECX.SSE4_2[bit 20] = 1.
-> Some Zhaoxin CPUs declare support SSE4.2 instruction sets but their
-> CRC32C instruction are working with low performance.
+On Thu, Jan 07, 2021 at 07:37:05AM +0100, Stephan Mueller wrote:
+> Am Montag, dem 04.01.2021 um 14:20 -0800 schrieb Eric Biggers:
+> > On Mon, Jan 04, 2021 at 10:45:57PM +0100, Stephan Müller wrote:
+> > > The HKDF addition is used to replace the implementation in the filesystem
+> > > crypto extension. This code was tested by using an EXT4 encrypted file
+> > > system that was created and contains files written to by the current
+> > > implementation. Using the new implementation a successful read of the
+> > > existing files was possible and new files / directories were created
+> > > and read successfully. These newly added file system objects could be
+> > > successfully read using the current code. Yet if there is a test suite
+> > > to validate whether the invokcation of the HKDF calculates the same
+> > > result as the existing implementation, I would be happy to validate
+> > > the implementation accordingly.
+> > 
+> > See https://www.kernel.org/doc/html/latest/filesystems/fscrypt.html#tests
+> > for how to run the fscrypt tests.  'kvm-xfstests -c ext4 generic/582' should
+> > be
+> > enough for this, though you could run all the tests if you want.
 > 
-> Add a synthetic CPU flag to indicates that the CRC32C instruction is
-> not working as intended. This low performance CRC32C instruction flag
-> is depend on X86_FEATURE_XMM4_2.
+> I ran the $(kvm-xfstests -c encrypt -g auto) on 5.11-rc2 with and without my
+> HKDF changes. I.e. the testing shows the same results for both kernels which
+> seems to imply that my HKDF changes do not change the behavior.
 > 
-> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-> ---
->  arch/x86/include/asm/cpufeatures.h | 1 +
->  arch/x86/kernel/cpu/cpuid-deps.c   | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index 84b8878..9e8151b 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -292,6 +292,7 @@
->  #define X86_FEATURE_FENCE_SWAPGS_KERNEL	(11*32+ 5) /* "" LFENCE in kernel entry SWAPGS path */
->  #define X86_FEATURE_SPLIT_LOCK_DETECT	(11*32+ 6) /* #AC for split lock */
->  #define X86_FEATURE_PER_THREAD_MBA	(11*32+ 7) /* "" Per-thread Memory Bandwidth Allocation */
-> +#define X86_FEATURE_CRC32C		(11*32+ 8) /* "" Low performance CRC32C instruction */
+> I get the following errors in both occasions - let me know if I should dig a
+> bit more.
 
-Didn't hpa say to create a BUG flag for it - X86_BUG...? Low performance
-insn sounds like a bug and not a feature to me.
+The command you ran runs almost all xfstests with the test_dummy_encryption
+mount option enabled, which is different from running the encryption tests --
+and in fact it skips the real encryption tests, so it doesn't test the
+correctness of HKDF at all.  It looks like you saw some unrelated test failures.
+Sorry if I wasn't clear -- by "all tests" I meant all encryption tests, i.e.
+'kvm-xfstests -c ext4 -g encrypt'.  Also, even the single test generic/582
+should be sufficient to test HKDF, as I mentioned.
 
-And call it X86_BUG_CRC32C_SLOW or ..._UNUSABLE to denote what it means.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+- Eric
