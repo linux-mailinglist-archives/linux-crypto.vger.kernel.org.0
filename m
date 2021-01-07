@@ -2,137 +2,116 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728CB2ED345
-	for <lists+linux-crypto@lfdr.de>; Thu,  7 Jan 2021 16:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6D12ED3C9
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 Jan 2021 16:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbhAGPMH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 7 Jan 2021 10:12:07 -0500
-Received: from mail-bn8nam11on2082.outbound.protection.outlook.com ([40.107.236.82]:58081
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725894AbhAGPMG (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 7 Jan 2021 10:12:06 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YxhnhTnlzwGxkHs5PrDHKxh6NXQ1eMWi29vH27xEI6mkcHIB0QjQ8Ud2oBD4LL2oMaCBGoQw5KZTkkZX4ya6wiHRCjLQMzC6tdnxha0qRy07pxH6HV5mAEfKpM5dNJkFXzruQgLkMTQpaaDIVAmW8HFczudy7pADzvkhIy125mc659LUu4ERSsHQO3U7p5aGlixtKxTIl0tIQitkfpgX0FdRIJJw0hzG7q0A8puoh3HJHayaaRAsHx8thiw7++XN2ROAgTtnEHa/gsay5LDw9NYMuprGqVvyMjnJr/vjrks3pZISpoEK66C8iUSxJursKpc9u1EEe24Z+Pn7V2SqsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1Sv9NfZNEYtaWomCDYpvP80hD6u2WjaUnryrGNUGhL0=;
- b=fhdPLYl0IKmsj1ECE5G+apaj2k6n1jnia7PwTQ8YmqqXG3j51yL+gJdHw/lVQTqAvW+LHtGDbhwa10UcBPBud02paPpeCrrUoEm4AUEMn81RPHVH/2iIrx1basTXZ49ArkB3PGctxvBmE4ywXpr3MAe7SCVXEUKArrejRMDC3aKIg+bD6t9wSqonrZAbQrBogiVDtjxc2xm3sZ9VrNzWoqpHoPxf+PjwhHJaSoZWQTMT8H+tVTrMqCJRQ5cIjftEZQjhxoeoR3mG2bb/sXg9M2BW48qayp/oYJpChGnEMxwymFeTlgoj1t1fB5NC52+CzIHhrgVZjYndJs/5v7S28Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1Sv9NfZNEYtaWomCDYpvP80hD6u2WjaUnryrGNUGhL0=;
- b=1jA4YYKqDGScv0zYNPvF1uIt/wSlqkKRC2Lf93+aXzIEhsQzgGgal5Aws0d3AGdyWzBDJ21DPwyCgSXs8i+ZjGQrGfjyl7C3PoqDb3jYtXm1oPel32LlYuZvJ0JKwd+UkslHergHkrtLXnsptOsHdJsLKSs3hAurD6gtjUcJ268=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
-Received: from SN1PR12MB2590.namprd12.prod.outlook.com (2603:10b6:802:2e::17)
- by SN1PR12MB2431.namprd12.prod.outlook.com (2603:10b6:802:27::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Thu, 7 Jan
- 2021 15:11:14 +0000
-Received: from SN1PR12MB2590.namprd12.prod.outlook.com
- ([fe80::21ed:fdce:2ba8:2179]) by SN1PR12MB2590.namprd12.prod.outlook.com
- ([fe80::21ed:fdce:2ba8:2179%7]) with mapi id 15.20.3742.006; Thu, 7 Jan 2021
- 15:11:14 +0000
-Date:   Thu, 7 Jan 2021 09:10:50 -0600
-From:   John Allen <john.allen@amd.com>
-To:     Domen Stangar <domen.stangar@gmail.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-Subject: Re: problem with ccp-crypto module on apu
-Message-ID: <20210107151050.GA30454@nikka.amd.com>
-References: <em96a2a8ae-80a7-4608-905e-5d932c0cf9bb@domen1-pc>
- <20201228152245.GA90548@nikka.amd.com>
- <95c0d9f7-e8e9-0b71-1f0a-44230c3dbfe5@amd.com>
- <eme43aecb9-708c-4fda-ba76-a446ecc12790@domen-5950x>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eme43aecb9-708c-4fda-ba76-a446ecc12790@domen-5950x>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Originating-IP: [165.204.78.2]
-X-ClientProxiedBy: SA9PR13CA0215.namprd13.prod.outlook.com
- (2603:10b6:806:25::10) To SN1PR12MB2590.namprd12.prod.outlook.com
- (2603:10b6:802:2e::17)
+        id S1726427AbhAGPxe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 7 Jan 2021 10:53:34 -0500
+Received: from mga07.intel.com ([134.134.136.100]:35353 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726864AbhAGPxd (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 7 Jan 2021 10:53:33 -0500
+IronPort-SDR: 0LObVhqRAo3tiJH1Iy/0F8M8cBuY2cq+xi2j1D8k1DxEb/ey5ApLnJec7kxISsVFNZN8oy1NOX
+ bbgYPti01QBg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="241517808"
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="241517808"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 07:52:52 -0800
+IronPort-SDR: 9OzmBPeChze1h0ZC85DRo8fnWzA6qjhUiE4v7yYkm6iD5WoYlqr+on3qalNkphPOMarIUj0hgN
+ 2Qjc4q+V00Vw==
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="362007790"
+Received: from abartsch-mobl.amr.corp.intel.com (HELO [10.212.21.94]) ([10.212.21.94])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 07:52:50 -0800
+Subject: Re: [PATCH v1 2/3] x86/cpu: Set low performance CRC32C flag on some
+ Zhaoxin CPUs
+To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, tony.luck@intel.com, seanjc@google.com,
+        fenghua.yu@intel.com, thomas.lendacky@amd.com,
+        kyung.min.park@intel.com, kim.phillips@amd.com,
+        mgross@linux.intel.com, peterz@infradead.org,
+        krish.sadhukhan@oracle.com, liam.merwick@oracle.com,
+        mlevitsk@redhat.com, reinette.chatre@intel.com, babu.moger@amd.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     TimGuo-oc@zhaoxin.com, CooperYan@zhaoxin.com,
+        QiyuanWang@zhaoxin.com, HerryYang@zhaoxin.com,
+        CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
+References: <1610000348-17316-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <1610000348-17316-3-git-send-email-TonyWWang-oc@zhaoxin.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <607494aa-674a-fe93-50f6-2c45f385f7e9@intel.com>
+Date:   Thu, 7 Jan 2021 07:52:49 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from nikka.amd.com (165.204.78.2) by SA9PR13CA0215.namprd13.prod.outlook.com (2603:10b6:806:25::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.4 via Frontend Transport; Thu, 7 Jan 2021 15:11:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 6658c9ac-7a8b-4d70-7705-08d8b31e7977
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2431:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2431E13FCF8467F660A36DD39AAF0@SN1PR12MB2431.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vYqfVW7JLxCK92sQ8Og8VeQE8e7+osV6qxNVk2e1tvkcYUct4YZ5UaLwH+FspDVt4Ic+2U2NzKxtA8KNZm4Y/yXNc3ADUIWzZvSapPFnlmv9WjGJkPXKBOhWK8Ez2cH5nxXUL9zltgDOoBvpw3q/kfgBM504rFeV8xsCOnCdHpge3zqgrToBRG4cD53vCbTnn1J+xtpS921cAj4SLrSucFpfcQMzuuWmyBmg2ns4NFpUse3V/Jd8vUMEzZo7JHh/gB6IuJSx3MTXFd6UiqGHbR7eU/FlwHtc0hPlTzoDVVc0tbXh5t4vOZNClhyiNh6aCoRSIPSWK5q40PJzHuq1se1JNF+zAQrjWDHgzkC6U2kcfiDy9NHIQEhvneKBUs22TXhKSTssQEz1He5fV188Ng==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2590.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(376002)(366004)(4326008)(55016002)(8676002)(478600001)(7696005)(52116002)(316002)(6916009)(5660300002)(4744005)(2906002)(1076003)(54906003)(16526019)(83380400001)(186003)(33656002)(6666004)(8936002)(66556008)(86362001)(66946007)(956004)(66476007)(44832011)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?jl2PfGnhEmnYi3ha5SflWHqejDQb/DMSSEo5RQA2uQdMncWo6f+bhx34dl3r?=
- =?us-ascii?Q?otemNY1+ff9kPT65OJ+ETMOQiktEA6tdsz2I2EGkWotIiSKzZBYtlk9qHL/6?=
- =?us-ascii?Q?7/vtxDhZ5W408EuMBgVmHzZlmaqIrFT1IlZWF4j0kC+uOAsBPiXHcNwFQCGA?=
- =?us-ascii?Q?QMw2+T3quzEdxveYQAh2YkPBmsBx5jMAE4HcZxPeSjXeObCboiJlEACMo4lX?=
- =?us-ascii?Q?8iJaQEILsuuCODsV3Uj/cyBHTXlFxYL83iOi/ugNs2XgInZ9RdXZHdN+bCEs?=
- =?us-ascii?Q?6S9L6xivHNgVpcFB3gOML5+hCpw/fHwY/9PzjSWe+FUKk0bfNhncMX5jk4eh?=
- =?us-ascii?Q?KQwVmnD5V+WmIT8ZhKrBn5wII3v7GjfcGE/BhMGrwQx5aK3TGCauDZOtvzny?=
- =?us-ascii?Q?gEoG5UixJTDIdXBsS98bKMl+8QtWDuLjYhhHLcVAn+8mGrVhqKlRDSS1lweH?=
- =?us-ascii?Q?hQCQ9bW9takANL2koOZj5LB/PaQbuZKzo2RcGDe/w8z/42m4c9QgbbFPiBa7?=
- =?us-ascii?Q?lYygPOXuIFhSf+574P6xyE5mttMessoaZcI+ZL0/mw/6peMBCMcP1Co7a0zc?=
- =?us-ascii?Q?61zYI1UEAsdMYEGht8NIzBJUu8kzNd8OWDIXOgx2qC5rY+ozg9d34xRmoF17?=
- =?us-ascii?Q?xU+UJ2wSKfqd05JOZb0oTaUIlqjcrxtTNwDYnOZGVb6Yb8okgWUa0m1sPOqg?=
- =?us-ascii?Q?9wjMLoX4LAfOXTvB9mfmB/Evjxco50Ez1fB/8Sxdl4nEYEA+ahkPO9/SJjb7?=
- =?us-ascii?Q?IWygHaE4/a7Fd9hY/R22O9AoxuRs4EO9EwWj6c9FDem717PIUwcpjpbaFUUF?=
- =?us-ascii?Q?ZLHMPkvAJaW/yrsL2ivF4QUmOg6nGoXymfFYLzTHYfElRqnS3onxF6kivBTO?=
- =?us-ascii?Q?kCMHDQlNEekSdpnqpV7l5IY3HnMHjfa7Rgt5uAPartn99U9atBLT89jGRDsV?=
- =?us-ascii?Q?X1AhzLuyHxXzZauM2BvRm1YqSUJ4KNrxEwkHjP8rZTo=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2590.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2021 15:11:13.9849
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6658c9ac-7a8b-4d70-7705-08d8b31e7977
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zpkyH16Q2l/zBna/vfvul6y6mM+rpuMrzNFNLhXkdvYsX22rx73vncNamoAqH3C+hkJN5hMSq8gbigu6bdeYCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2431
+In-Reply-To: <1610000348-17316-3-git-send-email-TonyWWang-oc@zhaoxin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 04:10:26PM +0000, Domen Stangar wrote:
-> Device name: ccp-1
->    RNG name: ccp-1-rng
->    # Queues: 3
->      # Cmds: 0
->     Version: 5
->     Engines: AES 3DES SHA RSA ECC ZDE TRNG
->      Queues: 5
-> LSB Entries: 128
-> 
-> Let me know if you need anything else.
+On 1/6/21 10:19 PM, Tony W Wang-oc wrote:
+> +	/*
+> +	 * These CPUs declare support SSE4.2 instruction sets but
+> +	 * having low performance CRC32C instruction implementation.
+> +	 */
+> +	if (c->x86 == 0x6 || (c->x86 == 0x7 && c->x86_model <= 0x3b))
+> +		set_cpu_cap(c, X86_FEATURE_CRC32C);
+>  }
 
-Hi Domen,
+On the Intel side, we've tried to move away from open-coded model
+numbers.  Say another CPU is released that has a microarchitecture close
+to 0x3b, but has a model of 0x3c.  It's a *LOT* easier to grep for
+INTEL_FAM6_NEHALEM (or whatever) than 0x3c.  See:
 
-Looks like we may have a lead on this problem.
+	arch/x86/include/asm/intel-family.h
 
-Could you provide the following when you're loading the module?
-
-dmesg
-/proc/interrupts
-/sys/kernel/debug/ccp/ccp-1/stats
-
-Thanks,
-John
-
-> Domen
-> 
-> > Domen, do you have the debugfs support enabled? Could you supply the output from /sys/kernel/debug/ccp/ccp-X/info (where X is replaced with each of the present ccp ordinal values)?
-> > 
-> > Thanks,
-> > Tom
-> > 
-> 
+for examples.
