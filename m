@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86C32ECFC0
-	for <lists+linux-crypto@lfdr.de>; Thu,  7 Jan 2021 13:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA362ECFC2
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 Jan 2021 13:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728102AbhAGMb0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 7 Jan 2021 07:31:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38016 "EHLO
+        id S1728111AbhAGMbg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 7 Jan 2021 07:31:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728103AbhAGMb0 (ORCPT
+        with ESMTP id S1728118AbhAGMbg (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 7 Jan 2021 07:31:26 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B82C0612F4;
-        Thu,  7 Jan 2021 04:30:45 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id q20so484531pfu.8;
-        Thu, 07 Jan 2021 04:30:45 -0800 (PST)
+        Thu, 7 Jan 2021 07:31:36 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C66C0612F5;
+        Thu,  7 Jan 2021 04:30:55 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id j1so3414792pld.3;
+        Thu, 07 Jan 2021 04:30:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HNZLvmQAqbtAqMEvJP1wVGbLyEu2FmrY5NiRBOEZCk0=;
-        b=r/Samj46HFOW22YwxxLKb7kXMfMJZkv+fNvz018vr4h6HXcjxcSKw5uY/aUxVaNcbo
-         KH5B6prk28ejw3y5Ryfrz5Km9447Lb354jWKYqAmIXuoiCXbzseR9s1/hc3Pbu5madIw
-         59WJV5JdKd1D4B2VAz5IGa35TZtVnrMQxgNLe8wD/s24o3Ejm29SxHAcxFG+Ca8yfayr
-         h8FI+MQ4no59/kwrzdc6usou78p/m/y4ubf8AfkQjlVGHlk2s6QUG3oeuyzU/5xbvqNE
-         7UJCTmQ2GQvzKNskROlUCWNiGtQyjcl4p1atnUflE1tNsKbjAVTJ2X+FzPOGqWR6xn5K
-         Cktw==
+        bh=1e1njK4JCLyF4BWRntmeMNLMXKX/535/WykRDF+9nqU=;
+        b=hbZxd8GMbWMwunv97wfH2Jf1oJf/8UcNY6xBKZcNSEUqzpSUI65LKuKQrxS91lf3JW
+         Bupw/mebNEqeQTlLLVwWk16hsX081CmCeM3mCGPFqAIt6Y15WaGH/KwDFlvfhr1Hgg9Z
+         XmJtwwBRs5RusKIVtDfejCw5hq1vLWEe1lHia/3otyEyWTKYI3bUsoZQF2D5pI0ztNQy
+         0/6+Z3Om5i4sHkVm60WuZFrh8e9eyF3U8Mo1nCSfMgurTh2MkeWCP5UWfGjtMH2pbNlQ
+         Pt9JtbYllg2QWQaoR9nfEhdPC6MM/gw25S4hDUm222XYCSreZw2frFc8N124MrS997zA
+         oqyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HNZLvmQAqbtAqMEvJP1wVGbLyEu2FmrY5NiRBOEZCk0=;
-        b=dc3HPosJWvreaMbYB4p1kkX2JNzG/9a91rycu3Nw+0YQrPAVU6mLw8tUX6bgOZSrFm
-         95ZXI5ss+2cIoaJ63Y+U23bPKcmx1ZxwqmfTOyhAxkD+ofthpQxmJscJnBB8Yn4lq034
-         zRPoL/RL9GdiqGIhEB6pDuuJELW7gqv0AWlH9+siYQbKFyLRdNnqQKx7YTVwBzqLm2+6
-         wfNe5SEO4RUYI7CCd2MOlAZ+sLH1qpBe2Nr2jjcqzUX3lZk2+/dw3AbmXRoIsIp5OLQi
-         MjsPh5EarHHyg2RNwIQAj4BPNT5YHYPvl10WbtCPl0XJutqebg5idCpawJQ/7Et7EuT1
-         O5nQ==
-X-Gm-Message-State: AOAM533BwyDBLJmGkb8o2xNJF/FqcaG1ww+FHhdGcxbWARQxHXLRRRt4
-        kHCL9/PqNn87+iRYDCrXPUA=
-X-Google-Smtp-Source: ABdhPJwyAj4F5Fhuw4gMLL7mw2TuD871TGVzFmlexoKSH7il+8JqllUpDbrl6cfZ8d+zKs+UvJn9zw==
-X-Received: by 2002:a63:3549:: with SMTP id c70mr1607262pga.361.1610022645408;
-        Thu, 07 Jan 2021 04:30:45 -0800 (PST)
+        bh=1e1njK4JCLyF4BWRntmeMNLMXKX/535/WykRDF+9nqU=;
+        b=nJsZgXJl58kihtvuLq5vsuKhOYDQ+cHnVAwhtkjA7/sC4WNGeEJbiC7sZPmbkqDpys
+         pmv2V0mH9Yx0VA+A21ysLorPCQajQVkSyPnPjowt3sHy9rsRgXwdyeI2XzWoRXZnag7N
+         prmTy2+lb0YTkZZNxgOLUAJ+D/TWFx7raa8lf72dM9FIynOv5oZYJYVZkMJssaRaqkak
+         N0CEhmNECXD/pvIEnVGoetMWNlNNYhF0d2rP9hiAA3TIOmfD4U8zOvn73DeRCKLfRQ4n
+         96UPuhubt3oO5gh/2NS/Ks/oPmy9K5HH8UIFxriOJmajZ1nACNVIib9QM6Bnbyd3dSdC
+         NODg==
+X-Gm-Message-State: AOAM53298L2bnAGQlxPdTGqCn2rMnapMqyLcykw4j2epBvhW+59VautZ
+        JtEHjK2WZZ6yBL9ftjHGgFRNwOw8AoY=
+X-Google-Smtp-Source: ABdhPJxNswk3UqAPRQFOECWMZZXKETLsDLgMohWjq2tJwnnMR19IXzXOUsAVBJnz8yZ5/DQIIMxoDA==
+X-Received: by 2002:a17:90a:b90c:: with SMTP id p12mr8705424pjr.135.1610022654721;
+        Thu, 07 Jan 2021 04:30:54 -0800 (PST)
 Received: from localhost.localdomain ([49.207.216.201])
-        by smtp.gmail.com with ESMTPSA id h12sm6356014pgk.70.2021.01.07.04.30.37
+        by smtp.gmail.com with ESMTPSA id h12sm6356014pgk.70.2021.01.07.04.30.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 04:30:44 -0800 (PST)
+        Thu, 07 Jan 2021 04:30:54 -0800 (PST)
 From:   Allen Pais <allen.lkml@gmail.com>
 To:     herbert@gondor.apana.org.au
 Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
@@ -64,9 +64,9 @@ Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
         linux-samsung-soc@vger.kernel.org,
         Allen Pais <apais@linux.microsoft.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH v2 09/19] crypto: img-hash: convert tasklets to use new tasklet_setup() API
-Date:   Thu,  7 Jan 2021 17:59:34 +0530
-Message-Id: <20210107122944.16363-6-allen.lkml@gmail.com>
+Subject: [PATCH v2 10/19] crypto: ixp4xx: convert tasklets to use new tasklet_setup() API
+Date:   Thu,  7 Jan 2021 17:59:35 +0530
+Message-Id: <20210107122944.16363-7-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210107122944.16363-1-allen.lkml@gmail.com>
 References: <20210107122944.16363-1-allen.lkml@gmail.com>
@@ -86,48 +86,31 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <apais@linux.microsoft.com>
 ---
- drivers/crypto/img-hash.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/crypto/ixp4xx_crypto.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/img-hash.c b/drivers/crypto/img-hash.c
-index e813115d5432..72b65cdff856 100644
---- a/drivers/crypto/img-hash.c
-+++ b/drivers/crypto/img-hash.c
-@@ -355,9 +355,9 @@ static int img_hash_dma_init(struct img_hash_dev *hdev)
- 	return 0;
+diff --git a/drivers/crypto/ixp4xx_crypto.c b/drivers/crypto/ixp4xx_crypto.c
+index 8b0f17fc09fb..b783ab58d718 100644
+--- a/drivers/crypto/ixp4xx_crypto.c
++++ b/drivers/crypto/ixp4xx_crypto.c
+@@ -414,7 +414,7 @@ static void irqhandler(void *_unused)
+ 	tasklet_schedule(&crypto_done_tasklet);
  }
  
--static void img_hash_dma_task(unsigned long d)
-+static void img_hash_dma_task(struct tasklet_struct *t)
+-static void crypto_done_action(unsigned long arg)
++static void crypto_done_action(struct tasklet_struct *unused)
  {
--	struct img_hash_dev *hdev = (struct img_hash_dev *)d;
-+	struct img_hash_dev *hdev = from_tasklet(hdev, t, dma_task);
- 	struct img_hash_request_ctx *ctx = ahash_request_ctx(hdev->req);
- 	u8 *addr;
- 	size_t nbytes, bleft, wsend, len, tbc;
-@@ -887,9 +887,9 @@ static int img_unregister_algs(struct img_hash_dev *hdev)
+ 	int i;
+ 
+@@ -497,7 +497,7 @@ static int init_ixp_crypto(struct device *dev)
+ 		goto err;
+ 	}
+ 	qmgr_set_irq(RECV_QID, QUEUE_IRQ_SRC_NOT_EMPTY, irqhandler, NULL);
+-	tasklet_init(&crypto_done_tasklet, crypto_done_action, 0);
++	tasklet_setup(&crypto_done_tasklet, crypto_done_action);
+ 
+ 	qmgr_enable_irq(RECV_QID);
  	return 0;
- }
- 
--static void img_hash_done_task(unsigned long data)
-+static void img_hash_done_task(struct tasklet_struct *t)
- {
--	struct img_hash_dev *hdev = (struct img_hash_dev *)data;
-+	struct img_hash_dev *hdev = from_tasklet(hdev, t, done_task);
- 	int err = 0;
- 
- 	if (hdev->err == -EINVAL) {
-@@ -954,8 +954,8 @@ static int img_hash_probe(struct platform_device *pdev)
- 
- 	INIT_LIST_HEAD(&hdev->list);
- 
--	tasklet_init(&hdev->done_task, img_hash_done_task, (unsigned long)hdev);
--	tasklet_init(&hdev->dma_task, img_hash_dma_task, (unsigned long)hdev);
-+	tasklet_setup(&hdev->done_task, img_hash_done_task);
-+	tasklet_setup(&hdev->dma_task, img_hash_dma_task);
- 
- 	crypto_init_queue(&hdev->queue, IMG_HASH_QUEUE_LENGTH);
- 
 -- 
 2.25.1
 
