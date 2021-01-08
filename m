@@ -2,114 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86D82EF523
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 Jan 2021 16:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9132EF561
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 Jan 2021 17:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbhAHPuy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 8 Jan 2021 10:50:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
+        id S1726989AbhAHQCS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 8 Jan 2021 11:02:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727858AbhAHPuy (ORCPT
+        with ESMTP id S1727859AbhAHQCR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 8 Jan 2021 10:50:54 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB26C061381
-        for <linux-crypto@vger.kernel.org>; Fri,  8 Jan 2021 07:50:13 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id c14so6804081qtn.0
-        for <linux-crypto@vger.kernel.org>; Fri, 08 Jan 2021 07:50:13 -0800 (PST)
+        Fri, 8 Jan 2021 11:02:17 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59D0C0612A6
+        for <linux-crypto@vger.kernel.org>; Fri,  8 Jan 2021 08:00:56 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id v126so8781642qkd.11
+        for <linux-crypto@vger.kernel.org>; Fri, 08 Jan 2021 08:00:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jfyQVb5F4Fnofjwp4gp3HmfbIgP2C1LdLC9T1MaxhqE=;
-        b=Fd/iGCYcmREuauhENVWhXDuS650ocy4lTiDWN3CcIkwQ0pdr9wK4Nkdzy7n/iedqZD
-         lDRI7oO9bPLZBUSlBwBxZM6Ugs+c9VD8/sdlkYv2vP0T+Hc85ZKUr1OeQds9eU6lh3ev
-         /ymA5b1dQ63StLRN19OMeoIQKjTQqm78f6MGkH7Fn6vSrw198bmGmbxZhrZ+a9EztdC5
-         3J1yP+Byw3coh8YQv13vogIuH+zuKkVCCKA3rTfkRbtpDHqZW8lPWU/MwRAb5WcyXLrH
-         N/puP93uGUv3TwdsGUNn329/7tuFFe1QxJB9z4gqwxYBUAzzxm9T3U7T0A1BGwmA3tJp
-         x6DA==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=ik6B+6lkNc+iFrIPLOlH6nyfA0JsJ4cRGzVhof+Ll8w=;
+        b=VpA/rpQ5qi0dFR7Mowe5aGCpF9u7a1VmQn5q9ZZuQCrdDN5tZn6sXwU9XTDBXmdfYo
+         GHrqoepeF5HsPEyz7s83Q2FgcvfAPgYumhvcRGiBVC2GK+C5XV14Ui++lS3so5pA2/iT
+         1rfJS9pZ3rxyDmU9J33KM0ODd0VovMdrCXj4PDHLrX+mNc/gXoaOQ9JB4dQ8+Pi+t3Y5
+         owDd0dhEIxx5inTgS9uv9USD9ua3iUgbE7ZeBpPZmm3e8Mr6fY26xd3tbIKjFdXg+Z5e
+         HzKpZOj3j3xkWAI+2U0PJ6WCaJvaJp4eQ7JPK2DyyOLy9Is9PPJi0kyYoCvOmtdELPp9
+         eESw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jfyQVb5F4Fnofjwp4gp3HmfbIgP2C1LdLC9T1MaxhqE=;
-        b=fgj5Vn+e7sKGSNdnVCrfnLpomJ+nhgGxWCnvo/p7+0jfgmrqcQH0ch84U0P9ZhfNK2
-         js56xDJUqbr5dXXl9wXUlEXa50P0QJhrURjumQp+UmUttoYTjHKz9jffs1ICaaYuEMvs
-         79VGGDbHVo8xb2kKD6Leg4IgkJodBwOMMvxKFyl36G0mDlCeC5towMRCxSHo1pjMJiiS
-         TTMpbxquDkXzbY+5rRwl/A+CQ2NKu+DkXIs99jFlRKrDozmEd2eFLytb6OPni2uWZ60b
-         W3PlMzZ0ElCB5CykcsFMAnTO/ZsXRbN6m/kWq1Pc8/RcLg18EMHPZk6jLIN4ZugkY0g3
-         2OMg==
-X-Gm-Message-State: AOAM531h0sp2z4npSX7hl4ueiqhXPp96ZUPVFdIDqVhpFyQvpN/7S6vM
-        ga1YnV1YlTpBQUT/7aqxftLRmg==
-X-Google-Smtp-Source: ABdhPJyVgCVxH6DPzttzqVseTpzz084eIMiRf60Z3+k3TBhHzynQ2X+U/znUzzT8fPdW/OVwHeS2nw==
-X-Received: by 2002:ac8:5359:: with SMTP id d25mr4161265qto.132.1610121013125;
-        Fri, 08 Jan 2021 07:50:13 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id d140sm5071811qkc.111.2021.01.08.07.50.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 07:50:12 -0800 (PST)
-Subject: Re: [PATCH 1/6] drivers: crypto: qce: sha: Restore/save
- sha1_state/sha256_state with qce_sha_reqctx in export/import
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     davem@davemloft.net, bjorn.andersson@linaro.org,
-        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201219033027.3066042-1-thara.gopinath@linaro.org>
- <20201219033027.3066042-2-thara.gopinath@linaro.org>
- <20210102212501.GA1931@gondor.apana.org.au>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <a72257ba-14c2-8e61-435c-4daa3a7d6b6e@linaro.org>
-Date:   Fri, 8 Jan 2021 10:50:11 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
+         :from:date:message-id:subject:to:content-transfer-encoding;
+        bh=ik6B+6lkNc+iFrIPLOlH6nyfA0JsJ4cRGzVhof+Ll8w=;
+        b=XngM2lheegsnlrViI9PJVgWXDsqaQpjklR7fhClJwDQrDYlq9VUdwPN1Vmb23XoYlO
+         yUJyWnOrWIRSwzh8th+ek0awHDsfV/FzBwow4AjAPqn+cAK/QrU1Sgdldk6g0TDMvj/d
+         H+my5h2thaQiC6imNhh8pDuRaVOMz/nLUe5q7PcrSNXcLUvQpJxYi1g3AcuCL6FTvbA1
+         sdc54mUQyRPjeLwdo7HdbUys+M4+3nHWjTzT7Wqj5p7r9/PQINlc0k7OnPDUApyuDBSp
+         mhJY+zOe4Ik8FQ2CHz9enpUN1wdhKT0MKhjWLWxyDJD6E7V/APHnAaG1ulkAUubFNa9+
+         B9lw==
+X-Gm-Message-State: AOAM531P2Ad8CvPxV++XCl8B2ZRhtLowdm2mr/1hQLB3iSOSsWbJrnRQ
+        y0EPMB1WrKxqgKnDWkJpPhS9+/Ag8IOD+vDl2Q8=
+X-Google-Smtp-Source: ABdhPJy5DcDb2tpoN6hwwNxbrQ4+6iS7cEF5BYexkcUy5+hBuogz8U9cM9vP/oN0NUHGYqGpdQYDJc3bSIrriX19zaw=
+X-Received: by 2002:a37:9f14:: with SMTP id i20mr4583418qke.321.1610121655742;
+ Fri, 08 Jan 2021 08:00:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210102212501.GA1931@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6214:148d:0:0:0:0 with HTTP; Fri, 8 Jan 2021 08:00:55
+ -0800 (PST)
+Reply-To: camillejackson021@gmail.com
+In-Reply-To: <CAGCmbMQupVT-1ZX2--N7Bjf2eW4VuUQ4dE_hzd1qAGQuE_JBEQ@mail.gmail.com>
+References: <CAGCmbMQupVT-1ZX2--N7Bjf2eW4VuUQ4dE_hzd1qAGQuE_JBEQ@mail.gmail.com>
+From:   camille jackson <adamraouf78@gmail.com>
+Date:   Fri, 8 Jan 2021 16:00:55 +0000
+Message-ID: <CAGCmbMR9p4PyoggcTsQ1z8w+PCmEh+pd463ifnbWZyKw1o3FtQ@mail.gmail.com>
+Subject: =?UTF-8?B?0JfQtNGA0LDQstGB0YLQstGD0LnRgtC1LA==?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-
-
-On 1/2/21 4:25 PM, Herbert Xu wrote:
-> On Fri, Dec 18, 2020 at 10:30:22PM -0500, Thara Gopinath wrote:
->> Export and import interfaces save and restore partial transformation
->> states. The partial states were being stored and restored in struct
->> sha1_state for sha1/hmac(sha1) transformations and sha256_state for
->> sha256/hmac(sha256) transformations.This led to a bunch of corner cases
->> where improper state was being stored and restored. A few of the corner
->> cases that turned up during testing are:
->>
->> - wrong byte_count restored if export/import is called twice without h/w
->> transaction in between
->> - wrong buflen restored back if the pending buffer
->> length is exactly the block size.
->> - wrong state restored if buffer length is 0.
->>
->> To fix these issues, save and restore the entire qce_sha_rctx structure
->> instead of parts of it in sha1_state and sha256_state structures.
->> This in turn simplifies the export and import apis.
->>
->> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
->> ---
->>   drivers/crypto/qce/sha.c | 93 ++++------------------------------------
->>   1 file changed, 8 insertions(+), 85 deletions(-)
-> 
-> How is this safe when the reqctx structure contains pointers?
-
-Hi Herbert,
-
-You are right. Also more I think about this, it is better to have 
-another struct to export and import the relevant pieces.
-I will fix this and send across a v2.
-
-> 
-> Cheers,
-> 
-
--- 
-Warm Regards
-Thara
+0J/RgNC40LLQtdGC0YHRgtCy0YPRjiDRgtC10LHRjywg0LzQvtC5INC00YDRg9CzLCDQvdCw0LTQ
+tdGO0YHRjCwg0YLRiyDQsiDQv9C+0YDRj9C00LrQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsINC+
+0YLQstC10YLRjCDQvNC90LUNCtCx0LvQsNCz0L7QtNCw0YDRjywNCg==
