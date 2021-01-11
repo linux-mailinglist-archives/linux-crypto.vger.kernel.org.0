@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DCD2F1B89
-	for <lists+linux-crypto@lfdr.de>; Mon, 11 Jan 2021 17:53:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316F12F1B91
+	for <lists+linux-crypto@lfdr.de>; Mon, 11 Jan 2021 17:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389098AbhAKQxj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 11 Jan 2021 11:53:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46634 "EHLO mail.kernel.org"
+        id S2389053AbhAKQyN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 11 Jan 2021 11:54:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389086AbhAKQxj (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:53:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 257EB22B30;
-        Mon, 11 Jan 2021 16:52:56 +0000 (UTC)
+        id S2387574AbhAKQyM (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:54:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D421122B51;
+        Mon, 11 Jan 2021 16:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610383978;
-        bh=bDMPvU8UNU86OkjcEmn2+senxHqtQ5Y473/EwGLnoI0=;
+        s=k20201202; t=1610383980;
+        bh=0knrbaQvNbxq4+wTxIRfAEHDDOjfn9lPOK3J0RS2wsc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c7M53jAAcVKo1ZOMeLfLeZPJwEvn/bAtaWxYSu1gLnIMfhX1TmqVIVu3jNCn1StD0
-         iSvdT9n8Iq6MzxoNLdkAmIIHsAW3B9kJNQ+ghEopNXA26Fn9NuEYep3aORIs6K82CQ
-         0H61NDs5EW3JcGRUKcVagBBTy9AsrmWtiW6XHvNDwOF2XhSkb0FwPyBUttz+EbEUpB
-         r2DENp7N5gYwhykjqSY0rr1hiUcrSpPXHbVYDzRh3jZFVmuQM9NbM1yF2Q90pjOwOh
-         pUor2XFcvL5ZdVGRer9RoIn8FLhfbJp7gPowmZw8hG6EWelE+fwHvSr+/HlgP6eoYV
-         jCqMTXLjfdUZw==
+        b=gNP1z2yEtNYn2IluLxqp/o0+rEF26hdwmv3ZaPxixw1ec2wO+cQfAynV7qXpmFNSh
+         8QlcMjnhtiZakLf47Kv9JcS3hcSpFgi5+LWYKqNJHAQbXVzv3UYlsC0w8gtg0jVozZ
+         TEZ936rmwxxf22Lb8doQjal5l5azFKRJCO1lr0corPbOWC5RbTfYIr3zmSbpGFOyQL
+         eSBzZR7Jo2NdjdAKvMgRbxwmX3slB0ThWGpfAriRERKSD9fQWSsATey1bvEVM4ixTP
+         JBRjgEm08cdqcs0+uuDErb7vBU4s7d0XOXBr335G6NBX0H4WwJJNtAIAnr+32ZMDFK
+         3n+g3QUhxEMuQ==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, Ard Biesheuvel <ardb@kernel.org>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Eric Biggers <ebiggers@google.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 4/7] crypto: x86/crc-t10dif - convert to static call library API
-Date:   Mon, 11 Jan 2021 17:52:34 +0100
-Message-Id: <20210111165237.18178-5-ardb@kernel.org>
+Subject: [PATCH 5/7] crypto: arm/crc-t10dif - convert to static call library API
+Date:   Mon, 11 Jan 2021 17:52:35 +0100
+Message-Id: <20210111165237.18178-6-ardb@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210111165237.18178-1-ardb@kernel.org>
 References: <20210111165237.18178-1-ardb@kernel.org>
@@ -39,140 +39,110 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Get rid of the shash boilerplate, and register the accelerated x86
+Get rid of the shash boilerplate, and register the accelerated ARM
 version of the CRC-T10DIF algorithm with the library interface instead.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/crypto/crct10dif-pclmul_glue.c | 90 +++-----------------
- 1 file changed, 10 insertions(+), 80 deletions(-)
+ arch/arm/crypto/crct10dif-ce-glue.c | 58 ++++----------------
+ 1 file changed, 11 insertions(+), 47 deletions(-)
 
-diff --git a/arch/x86/crypto/crct10dif-pclmul_glue.c b/arch/x86/crypto/crct10dif-pclmul_glue.c
-index 71291d5af9f4..6f06499d96a3 100644
---- a/arch/x86/crypto/crct10dif-pclmul_glue.c
-+++ b/arch/x86/crypto/crct10dif-pclmul_glue.c
-@@ -25,7 +25,6 @@
- #include <linux/types.h>
- #include <linux/module.h>
+diff --git a/arch/arm/crypto/crct10dif-ce-glue.c b/arch/arm/crypto/crct10dif-ce-glue.c
+index e9191a8c87b9..ce21f958fd49 100644
+--- a/arch/arm/crypto/crct10dif-ce-glue.c
++++ b/arch/arm/crypto/crct10dif-ce-glue.c
+@@ -5,13 +5,13 @@
+  * Copyright (C) 2016 Linaro Ltd <ard.biesheuvel@linaro.org>
+  */
+ 
++#include <linux/cpufeature.h>
  #include <linux/crc-t10dif.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/string.h>
+ 
 -#include <crypto/internal/hash.h>
  #include <crypto/internal/simd.h>
- #include <linux/init.h>
- #include <linux/string.h>
-@@ -36,82 +35,17 @@
  
- asmlinkage u16 crc_t10dif_pcl(u16 init_crc, const u8 *buf, size_t len);
+ #include <asm/neon.h>
+@@ -21,68 +21,32 @@
  
--struct chksum_desc_ctx {
--	__u16 crc;
--};
--
--static int chksum_init(struct shash_desc *desc)
--{
--	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
--
--	ctx->crc = 0;
--
--	return 0;
--}
--
--static int chksum_update(struct shash_desc *desc, const u8 *data,
--			 unsigned int length)
--{
--	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
--
--	if (length >= 16 && crypto_simd_usable()) {
--		kernel_fpu_begin();
--		ctx->crc = crc_t10dif_pcl(ctx->crc, data, length);
--		kernel_fpu_end();
--	} else
--		ctx->crc = crc_t10dif_generic(ctx->crc, data, length);
--	return 0;
--}
--
--static int chksum_final(struct shash_desc *desc, u8 *out)
--{
--	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
--
--	*(__u16 *)out = ctx->crc;
--	return 0;
--}
--
--static int __chksum_finup(__u16 crc, const u8 *data, unsigned int len, u8 *out)
-+static u16 crc_t10dif_x86(u16 crc, const u8 *data, size_t len)
+ asmlinkage u16 crc_t10dif_pmull(u16 init_crc, const u8 *buf, size_t len);
+ 
+-static int crct10dif_init(struct shash_desc *desc)
++static u16 crc_t10dif_arm(u16 crc, const u8 *data, size_t len)
  {
- 	if (len >= 16 && crypto_simd_usable()) {
- 		kernel_fpu_begin();
--		*(__u16 *)out = crc_t10dif_pcl(crc, data, len);
-+		crc = crc_t10dif_pcl(crc, data, len);
- 		kernel_fpu_end();
--	} else
--		*(__u16 *)out = crc_t10dif_generic(crc, data, len);
+-	u16 *crc = shash_desc_ctx(desc);
+-
+-	*crc = 0;
 -	return 0;
 -}
 -
--static int chksum_finup(struct shash_desc *desc, const u8 *data,
--			unsigned int len, u8 *out)
+-static int crct10dif_update(struct shash_desc *desc, const u8 *data,
+-			    unsigned int length)
 -{
--	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
+-	u16 *crc = shash_desc_ctx(desc);
 -
--	return __chksum_finup(ctx->crc, data, len, out);
--}
--
--static int chksum_digest(struct shash_desc *desc, const u8 *data,
--			 unsigned int length, u8 *out)
--{
--	return __chksum_finup(0, data, length, out);
--}
--
--static struct shash_alg alg = {
--	.digestsize		=	CRC_T10DIF_DIGEST_SIZE,
--	.init		=	chksum_init,
--	.update		=	chksum_update,
--	.final		=	chksum_final,
--	.finup		=	chksum_finup,
--	.digest		=	chksum_digest,
--	.descsize		=	sizeof(struct chksum_desc_ctx),
--	.base			=	{
--		.cra_name		=	"crct10dif",
--		.cra_driver_name	=	"crct10dif-pclmul",
--		.cra_priority		=	200,
--		.cra_blocksize		=	CRC_T10DIF_BLOCK_SIZE,
--		.cra_module		=	THIS_MODULE,
-+	} else {
+-	if (length >= CRC_T10DIF_PMULL_CHUNK_SIZE && crypto_simd_usable()) {
++	if (len >= CRC_T10DIF_PMULL_CHUNK_SIZE && crypto_simd_usable()) {
+ 		kernel_neon_begin();
+-		*crc = crc_t10dif_pmull(*crc, data, length);
++		crc = crc_t10dif_pmull(crc, data, len);
+ 		kernel_neon_end();
+ 	} else {
+-		*crc = crc_t10dif_generic(*crc, data, length);
 +		crc = crc_t10dif_generic(crc, data, len);
  	}
--};
-+	return crc;
-+}
- 
- static const struct x86_cpu_id crct10dif_cpu_id[] = {
- 	X86_MATCH_FEATURE(X86_FEATURE_PCLMULQDQ, NULL),
-@@ -121,15 +55,12 @@ MODULE_DEVICE_TABLE(x86cpu, crct10dif_cpu_id);
- 
- static int __init crct10dif_intel_mod_init(void)
- {
--	if (!x86_match_cpu(crct10dif_cpu_id))
--		return -ENODEV;
 -
--	return crypto_register_shash(&alg);
-+	return crc_t10dif_register(crc_t10dif_x86, "crct10dif-pclmul");
+-	return 0;
++	return crc;
  }
  
- static void __exit crct10dif_intel_mod_fini(void)
+-static int crct10dif_final(struct shash_desc *desc, u8 *out)
+-{
+-	u16 *crc = shash_desc_ctx(desc);
+-
+-	*(u16 *)out = *crc;
+-	return 0;
+-}
+-
+-static struct shash_alg crc_t10dif_alg = {
+-	.digestsize		= CRC_T10DIF_DIGEST_SIZE,
+-	.init			= crct10dif_init,
+-	.update			= crct10dif_update,
+-	.final			= crct10dif_final,
+-	.descsize		= CRC_T10DIF_DIGEST_SIZE,
+-
+-	.base.cra_name		= "crct10dif",
+-	.base.cra_driver_name	= "crct10dif-arm-ce",
+-	.base.cra_priority	= 200,
+-	.base.cra_blocksize	= CRC_T10DIF_BLOCK_SIZE,
+-	.base.cra_module	= THIS_MODULE,
+-};
+-
+ static int __init crc_t10dif_mod_init(void)
  {
--	crypto_unregister_shash(&alg);
+-	if (!(elf_hwcap2 & HWCAP2_PMULL))
+-		return -ENODEV;
+-
+-	return crypto_register_shash(&crc_t10dif_alg);
++	return crc_t10dif_register(crc_t10dif_arm, "crct10dif-arm-ce");
+ }
+ 
+ static void __exit crc_t10dif_mod_exit(void)
+ {
+-	crypto_unregister_shash(&crc_t10dif_alg);
 +	crc_t10dif_unregister();
  }
  
- module_init(crct10dif_intel_mod_init);
-@@ -138,6 +69,5 @@ module_exit(crct10dif_intel_mod_fini);
- MODULE_AUTHOR("Tim Chen <tim.c.chen@linux.intel.com>");
- MODULE_DESCRIPTION("T10 DIF CRC calculation accelerated with PCLMULQDQ.");
- MODULE_LICENSE("GPL");
--
+-module_init(crc_t10dif_mod_init);
++module_cpu_feature_match(PMULL, crc_t10dif_mod_init);
+ module_exit(crc_t10dif_mod_exit);
+ 
+ MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
+ MODULE_LICENSE("GPL v2");
 -MODULE_ALIAS_CRYPTO("crct10dif");
--MODULE_ALIAS_CRYPTO("crct10dif-pclmul");
 +MODULE_ALIAS("crct10dif-arch");
 +MODULE_IMPORT_NS(CRYPTO_INTERNAL);
 -- 
