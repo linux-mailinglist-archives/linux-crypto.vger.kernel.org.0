@@ -2,59 +2,46 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37E72F5AEB
-	for <lists+linux-crypto@lfdr.de>; Thu, 14 Jan 2021 07:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70A92F5AE8
+	for <lists+linux-crypto@lfdr.de>; Thu, 14 Jan 2021 07:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbhANGrj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 14 Jan 2021 01:47:39 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:42184 "EHLO fornost.hmeau.com"
+        id S1726795AbhANGrt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 14 Jan 2021 01:47:49 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:42192 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725989AbhANGrj (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 14 Jan 2021 01:47:39 -0500
+        id S1725888AbhANGrt (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 14 Jan 2021 01:47:49 -0500
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kzwPA-00087n-LW; Thu, 14 Jan 2021 17:46:49 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 14 Jan 2021 17:46:48 +1100
-Date:   Thu, 14 Jan 2021 17:46:48 +1100
+        id 1kzwPJ-00087t-0t; Thu, 14 Jan 2021 17:46:58 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 14 Jan 2021 17:46:56 +1100
+Date:   Thu, 14 Jan 2021 17:46:56 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Qais Yousef <qais.yousef@arm.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH] crypto: Rename struct device_private to
- bcm_device_private
-Message-ID: <20210114064648.GE12584@gondor.apana.org.au>
-References: <20210104230237.916064-1-jolsa@kernel.org>
+To:     Kai Ye <yekai13@huawei.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: hisilicon/qm - SVA bugfixed on Kunpeng920
+Message-ID: <20210114064656.GF12584@gondor.apana.org.au>
+References: <1609827123-842-1-git-send-email-yekai13@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210104230237.916064-1-jolsa@kernel.org>
+In-Reply-To: <1609827123-842-1-git-send-email-yekai13@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 12:02:37AM +0100, Jiri Olsa wrote:
-> Renaming 'struct device_private' to 'struct bcm_device_private',
-> because it clashes with 'struct device_private' from
-> 'drivers/base/base.h'.
+On Tue, Jan 05, 2021 at 02:12:03PM +0800, Kai Ye wrote:
+> Kunpeng920 SEC/HPRE/ZIP cannot support running user space SVA and kernel
+> Crypto at the same time. Therefore, the algorithms should not be registered
+> to Crypto as user space SVA is enabled.
 > 
-> While it's not a functional problem, it's causing two distinct
-> type hierarchies in BTF data. It also breaks build with options:
->   CONFIG_DEBUG_INFO_BTF=y
->   CONFIG_CRYPTO_DEV_BCM_SPU=y
-> 
-> as reported by Qais Yousef [1].
-> 
-> [1] https://lore.kernel.org/lkml/20201229151352.6hzmjvu3qh6p2qgg@e107158-lin/
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Kai Ye <yekai13@huawei.com>
+> Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
+> Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
 > ---
->  drivers/crypto/bcm/cipher.c | 2 +-
->  drivers/crypto/bcm/cipher.h | 4 ++--
->  drivers/crypto/bcm/util.c   | 2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
+>  drivers/crypto/hisilicon/qm.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
 Patch applied.  Thanks.
 -- 
