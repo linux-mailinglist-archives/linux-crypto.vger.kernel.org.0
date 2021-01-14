@@ -2,181 +2,116 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDF32F6462
-	for <lists+linux-crypto@lfdr.de>; Thu, 14 Jan 2021 16:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7C32F64F2
+	for <lists+linux-crypto@lfdr.de>; Thu, 14 Jan 2021 16:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728242AbhANPVA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 14 Jan 2021 10:21:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729605AbhANPVA (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:21:00 -0500
-Received: from smtp-190c.mail.infomaniak.ch (smtp-190c.mail.infomaniak.ch [IPv6:2001:1600:4:17::190c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C2AC0617A4
-        for <linux-crypto@vger.kernel.org>; Thu, 14 Jan 2021 07:20:05 -0800 (PST)
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DGnz91BD1zMpv3g;
-        Thu, 14 Jan 2021 16:19:17 +0100 (CET)
-Received: from localhost (unknown [23.97.221.149])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DGnz85r23zlppyg;
-        Thu, 14 Jan 2021 16:19:16 +0100 (CET)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: [PATCH v3 10/10] tools/certs: Add print-cert-tbs-hash.sh
-Date:   Thu, 14 Jan 2021 16:19:09 +0100
-Message-Id: <20210114151909.2344974-11-mic@digikod.net>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210114151909.2344974-1-mic@digikod.net>
-References: <20210114151909.2344974-1-mic@digikod.net>
+        id S1727497AbhANPpH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 14 Jan 2021 10:45:07 -0500
+Received: from vps-vb.mhejs.net ([37.28.154.113]:60154 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727335AbhANPpH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 14 Jan 2021 10:45:07 -0500
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1l04nP-0000Eb-9U; Thu, 14 Jan 2021 16:44:23 +0100
+To:     Ignat Korchagin <ignat@cloudflare.com>
+Cc:     kernel-team@cloudflare.com, stable@vger.kernel.org, agk@redhat.com,
+        snitzer@redhat.com, dm-devel@redhat.com, dm-crypt@saout.de,
+        linux-kernel@vger.kernel.org,
+        linux-crypto <linux-crypto@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+References: <20210113191717.1439-1-ignat@cloudflare.com>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [dm-crypt] [PATCH] dm crypt: defer the decryption to a tasklet,
+ when being called with interrupts disabled
+Message-ID: <2a187957-a6c6-4550-8ad7-570571f75a26@maciej.szmigiero.name>
+Date:   Thu, 14 Jan 2021 16:44:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20210113191717.1439-1-ignat@cloudflare.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
+Hi Ignat,
 
-Add a new helper print-cert-tbs-hash.sh to generate a TBSCertificate
-hash from a given certificate.  This is useful to generate a blacklist
-key description used to forbid loading a specific certificate in a
-keyring, or to invalidate a certificate provided by a PKCS#7 file.
+On 13.01.2021 20:17, Ignat Korchagin wrote:
+> On some specific hardware on early boot we occasionally get
+> 
+> [ 1193.920255][    T0] BUG: sleeping function called from invalid context at mm/mempool.c:381
+> [ 1193.936616][    T0] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 0, name: swapper/69
+> [ 1193.953233][    T0] no locks held by swapper/69/0.
+> [ 1193.965871][    T0] irq event stamp: 575062
+> [ 1193.977724][    T0] hardirqs last  enabled at (575061): [<ffffffffab73f662>] tick_nohz_idle_exit+0xe2/0x3e0
+> [ 1194.002762][    T0] hardirqs last disabled at (575062): [<ffffffffab74e8af>] flush_smp_call_function_from_idle+0x4f/0x80
+> [ 1194.029035][    T0] softirqs last  enabled at (575050): [<ffffffffad600fd2>] asm_call_irq_on_stack+0x12/0x20
+> [ 1194.054227][    T0] softirqs last disabled at (575043): [<ffffffffad600fd2>] asm_call_irq_on_stack+0x12/0x20
+> [ 1194.079389][    T0] CPU: 69 PID: 0 Comm: swapper/69 Not tainted 5.10.6-cloudflare-kasan-2021.1.4-dev #1
+> [ 1194.104103][    T0] Hardware name: NULL R162-Z12-CD/MZ12-HD4-CD, BIOS R10 06/04/2020
+> [ 1194.119591][    T0] Call Trace:
+> [ 1194.130233][    T0]  dump_stack+0x9a/0xcc
+> [ 1194.141617][    T0]  ___might_sleep.cold+0x180/0x1b0
+> [ 1194.153825][    T0]  mempool_alloc+0x16b/0x300
+> [ 1194.165313][    T0]  ? remove_element+0x160/0x160
+> [ 1194.176961][    T0]  ? blk_mq_end_request+0x4b/0x490
+> [ 1194.188778][    T0]  crypt_convert+0x27f6/0x45f0 [dm_crypt]
+> [ 1194.201024][    T0]  ? rcu_read_lock_sched_held+0x3f/0x70
+> [ 1194.212906][    T0]  ? module_assert_mutex_or_preempt+0x3e/0x70
+> [ 1194.225318][    T0]  ? __module_address.part.0+0x1b/0x3a0
+> [ 1194.237212][    T0]  ? is_kernel_percpu_address+0x5b/0x190
+> [ 1194.249238][    T0]  ? crypt_iv_tcw_ctr+0x4a0/0x4a0 [dm_crypt]
+> [ 1194.261593][    T0]  ? is_module_address+0x25/0x40
+> [ 1194.272905][    T0]  ? static_obj+0x8a/0xc0
+> [ 1194.283582][    T0]  ? lockdep_init_map_waits+0x26a/0x700
+> [ 1194.295570][    T0]  ? __raw_spin_lock_init+0x39/0x110
+> [ 1194.307330][    T0]  kcryptd_crypt_read_convert+0x31c/0x560 [dm_crypt]
+> [ 1194.320496][    T0]  ? kcryptd_queue_crypt+0x1be/0x380 [dm_crypt]
+> [ 1194.333203][    T0]  blk_update_request+0x6d7/0x1500
+> [ 1194.344841][    T0]  ? blk_mq_trigger_softirq+0x190/0x190
+> [ 1194.356831][    T0]  blk_mq_end_request+0x4b/0x490
+> [ 1194.367994][    T0]  ? blk_mq_trigger_softirq+0x190/0x190
+> [ 1194.379693][    T0]  flush_smp_call_function_queue+0x24b/0x560
+> [ 1194.391847][    T0]  flush_smp_call_function_from_idle+0x59/0x80
+> [ 1194.403969][    T0]  do_idle+0x287/0x450
+> [ 1194.413891][    T0]  ? arch_cpu_idle_exit+0x40/0x40
+> [ 1194.424716][    T0]  ? lockdep_hardirqs_on_prepare+0x286/0x3f0
+> [ 1194.436399][    T0]  ? _raw_spin_unlock_irqrestore+0x39/0x40
+> [ 1194.447759][    T0]  cpu_startup_entry+0x19/0x20
+> [ 1194.458038][    T0]  secondary_startup_64_no_verify+0xb0/0xbb
+> 
+> IO completion can be queued to a different CPU by the block subsystem as a "call
+> single function/data". The CPU may run these routines from the idle task, but it
+> does so with interrupts disabled.
+> 
+> It is not a good idea to do decryption with irqs disabled even in an idle task
+> context, so just defer it to a tasklet as with requests from hard irqs.
+> 
+> Fixes: 39d42fa96ba1 ("dm crypt: add flags to optionally bypass kcryptd workqueues")
+> Cc: <stable@vger.kernel.org> # v5.9+
+> Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
 
-Cc: David Howells <dhowells@redhat.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
----
+Thanks for working on this.
 
-Changes since v1:
-* Fix typo.
-* Use "if" block instead of "||" .
----
- MAINTAINERS                        |  1 +
- tools/certs/print-cert-tbs-hash.sh | 91 ++++++++++++++++++++++++++++++
- 2 files changed, 92 insertions(+)
- create mode 100755 tools/certs/print-cert-tbs-hash.sh
+Looking at all these patches submitted in the last few weeks it seems
+to me that there are some non-trivial implicit assumptions in dm-crypt
+which are invalidated when bypassing its workqueues.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bda31ccbfad0..c7bad1354531 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4123,6 +4123,7 @@ F:	certs/
- F:	scripts/check-blacklist-hashes.awk
- F:	scripts/extract-cert.c
- F:	scripts/sign-file.c
-+F:	tools/certs/
- 
- CFAG12864B LCD DRIVER
- M:	Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
-diff --git a/tools/certs/print-cert-tbs-hash.sh b/tools/certs/print-cert-tbs-hash.sh
-new file mode 100755
-index 000000000000..c93df5387ec9
---- /dev/null
-+++ b/tools/certs/print-cert-tbs-hash.sh
-@@ -0,0 +1,91 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright © 2020, Microsoft Corporation. All rights reserved.
-+#
-+# Author: Mickaël Salaün <mic@linux.microsoft.com>
-+#
-+# Compute and print the To Be Signed (TBS) hash of a certificate.  This is used
-+# as description of keys in the blacklist keyring to identify certificates.
-+# This output should be redirected, without newline, in a file (hash0.txt) and
-+# signed to create a PKCS#7 file (hash0.p7s).  Both of these files can then be
-+# loaded in the kernel with.
-+#
-+# Exemple on a workstation:
-+# ./print-cert-tbs-hash.sh certificate-to-invalidate.pem > hash0.txt
-+# openssl smime -sign -in hash0.txt -inkey builtin-private-key.pem \
-+#               -signer builtin-certificate.pem -certfile certificate-chain.pem \
-+#               -noattr -binary -outform DER -out hash0.p7s
-+#
-+# Exemple on a managed system:
-+# keyctl padd blacklist "$(< hash0.txt)" %:.blacklist < hash0.p7s
-+
-+set -u -e -o pipefail
-+
-+CERT="${1:-}"
-+BASENAME="$(basename -- "${BASH_SOURCE[0]}")"
-+
-+if [ $# -ne 1 ] || [ ! -f "${CERT}" ]; then
-+	echo "usage: ${BASENAME} <certificate>" >&2
-+	exit 1
-+fi
-+
-+# Checks that it is indeed a certificate (PEM or DER encoded) and exclude the
-+# optional PEM text header.
-+if ! PEM="$(openssl x509 -inform DER -in "${CERT}" 2>/dev/null || openssl x509 -in "${CERT}")"; then
-+	echo "ERROR: Failed to parse certificate" >&2
-+	exit 1
-+fi
-+
-+# TBSCertificate starts at the second entry.
-+# Cf. https://tools.ietf.org/html/rfc3280#section-4.1
-+#
-+# Exemple of first lines printed by openssl asn1parse:
-+#    0:d=0  hl=4 l= 763 cons: SEQUENCE
-+#    4:d=1  hl=4 l= 483 cons: SEQUENCE
-+#    8:d=2  hl=2 l=   3 cons: cont [ 0 ]
-+#   10:d=3  hl=2 l=   1 prim: INTEGER           :02
-+#   13:d=2  hl=2 l=  20 prim: INTEGER           :3CEB2CB8818D968AC00EEFE195F0DF9665328B7B
-+#   35:d=2  hl=2 l=  13 cons: SEQUENCE
-+#   37:d=3  hl=2 l=   9 prim: OBJECT            :sha256WithRSAEncryption
-+RANGE_AND_DIGEST_RE='
-+2s/^\s*\([0-9]\+\):d=\s*[0-9]\+\s\+hl=\s*[0-9]\+\s\+l=\s*\([0-9]\+\)\s\+cons:\s*SEQUENCE\s*$/\1 \2/p;
-+7s/^\s*[0-9]\+:d=\s*[0-9]\+\s\+hl=\s*[0-9]\+\s\+l=\s*[0-9]\+\s\+prim:\s*OBJECT\s*:\(.*\)$/\1/p;
-+'
-+
-+RANGE_AND_DIGEST=($(echo "${PEM}" | \
-+	openssl asn1parse -in - | \
-+	sed -n -e "${RANGE_AND_DIGEST_RE}"))
-+
-+if [ "${#RANGE_AND_DIGEST[@]}" != 3 ]; then
-+	echo "ERROR: Failed to parse TBSCertificate." >&2
-+	exit 1
-+fi
-+
-+OFFSET="${RANGE_AND_DIGEST[0]}"
-+END="$(( OFFSET + RANGE_AND_DIGEST[1] ))"
-+DIGEST="${RANGE_AND_DIGEST[2]}"
-+
-+# The signature hash algorithm is used by Linux to blacklist certificates.
-+# Cf. crypto/asymmetric_keys/x509_cert_parser.c:x509_note_pkey_algo()
-+DIGEST_MATCH=""
-+while read -r DIGEST_ITEM; do
-+	if [ -z "${DIGEST_ITEM}" ]; then
-+		break
-+	fi
-+	if echo "${DIGEST}" | grep -qiF "${DIGEST_ITEM}"; then
-+		DIGEST_MATCH="${DIGEST_ITEM}"
-+		break
-+	fi
-+done < <(openssl list -digest-commands | tr ' ' '\n' | sort -ur)
-+
-+if [ -z "${DIGEST_MATCH}" ]; then
-+	echo "ERROR: Unknown digest algorithm: ${DIGEST}" >&2
-+	exit 1
-+fi
-+
-+echo "${PEM}" | \
-+	openssl x509 -in - -outform DER | \
-+	dd "bs=1" "skip=${OFFSET}" "count=${END}" "status=none" | \
-+	openssl dgst "-${DIGEST_MATCH}" - | \
-+	awk '{printf "tbs:" $2}'
--- 
-2.30.0
+It might be difficult to find the more subtle of them by trial and error,
+especial these which don't cause crashes but silent data corruption
+instead.
 
+I wonder if somebody with block and Crypto API knowledge could chime in
+here to statically review the code - I've added linux-crypto and
+linux-block to the CC list.
+
+By the way, I would appreciate if you could CC on dm-crypt "no workqueue"
+patches since I am interested in this functionality.
+
+Thanks,
+Maciej
