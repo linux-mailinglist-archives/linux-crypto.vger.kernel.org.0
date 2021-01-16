@@ -2,46 +2,45 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E8E2F8E39
-	for <lists+linux-crypto@lfdr.de>; Sat, 16 Jan 2021 18:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EDD2F8E35
+	for <lists+linux-crypto@lfdr.de>; Sat, 16 Jan 2021 18:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725964AbhAPRUS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 16 Jan 2021 12:20:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33406 "EHLO mail.kernel.org"
+        id S1727089AbhAPRUH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 16 Jan 2021 12:20:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726957AbhAPRUG (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1726989AbhAPRUG (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Sat, 16 Jan 2021 12:20:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD2A523359;
-        Sat, 16 Jan 2021 16:52:16 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E93DD23382;
+        Sat, 16 Jan 2021 16:54:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610815937;
-        bh=ZDSLu0JCfcOYuE9aL0IgQNet6XaP5vThHRTmm/vzuMc=;
+        s=k20201202; t=1610816090;
+        bh=aAxYMVAsUeoF4CVOhIXaZwp2MvSPjBImiW+eo3kDHKY=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rf6HIma/8HBkx/yapd0BlF0jmFJUj48+iYJlgrVuPgqOKC2ngssWuHUaoXHa3DJRI
-         EaIcxw6SV7vbbNuRD88NmNLOXvmCTOVN8lsCgGXktVwj0Z2DXzcHIG28MjOFGs5ZwJ
-         VL7BtgWdvqd0cCWYfMK1YO8R3nSixd9d6enVBsmlrABaLrMS1+SVAwipVRRdBeyZr1
-         6RSnQkt0l8MMedGRu1VhZfrPqwq/itJ2fAHGggBuFshu3VUvGIhP4YYj3HJZeQdHSP
-         63d2D4liVug3cRy3fUgResEba3FRhn4rNByj19lYY8JQ02kkp+rQjY5Zbp3FZqbeH2
-         QUnE8FxSvlwzQ==
-Received: by mail-ot1-f46.google.com with SMTP id o11so11876075ote.4;
-        Sat, 16 Jan 2021 08:52:16 -0800 (PST)
-X-Gm-Message-State: AOAM532nM9RrDPryCaRZjEJcl496BmGVwF488cpbYyD1RznF4TZfawBm
-        56hhYxCYmEpgSMuALSCyJzR052giw4c4H2duPj8=
-X-Google-Smtp-Source: ABdhPJzuUkG0CBnkY2jqz0+uDfkZr5i+JwP1UcUhW8LmXNEg8/XWke3dPKKlQWWfUJbeqTL26EvqjA2PzdQRpIKKMg0=
-X-Received: by 2002:a05:6830:10d2:: with SMTP id z18mr12528352oto.90.1610815936257;
- Sat, 16 Jan 2021 08:52:16 -0800 (PST)
+        b=hpzZdlJminatwp9JlZypGE4aZswa0ekU4lJxAwzWsZI5nyCVauje3JGx1zQwZhNIU
+         W0Mpd1jewzuL5AoV1PLvn6J9FUyw3rI24ROFETqiysFM/1wwASQ75IDVyrwr4NvUAU
+         PoVSYOfdmrcuH51Dybs6CsTgpxq4QUg1fNn+wQHbXjSk2DBxOJxE0ww4ZlNU5af0IC
+         pkI2VxQFSK7C77gIDZ7RikGZeqXCijpkDUFqLBNGcmPdDYnMbD2hFF5SMOcTpZyu3B
+         pmymqh0QPRGj3AY1SJfOlzkLl0i+N17305dvfKPDUETywqmjTOYfiQ1gnyxCAu2K0A
+         jAyQl/sJR3G/A==
+Received: by mail-ot1-f46.google.com with SMTP id d8so11871539otq.6;
+        Sat, 16 Jan 2021 08:54:49 -0800 (PST)
+X-Gm-Message-State: AOAM530nwVCXRjcpaHBxpKYCZ/dh2FElY3m8GtnNKdlEtJA421p5VZ8Q
+        vP72nJXYPdM7VOilnqHetOJCHRvB8RpdMTVao4s=
+X-Google-Smtp-Source: ABdhPJx3QtYh30q003OyCCTPQfe1O6bzFjbaLXqegynzA8+H/M3Ejf10HFOndqqORBG4ecSEXorD+tK1P4drlIC1SDo=
+X-Received: by 2002:a05:6830:1c24:: with SMTP id f4mr12134380ote.108.1610816089305;
+ Sat, 16 Jan 2021 08:54:49 -0800 (PST)
 MIME-Version: 1.0
-References: <1608325864-4033-1-git-send-email-megha.dey@intel.com>
- <X+Et0ubPcBVZOURL@sol.localdomain> <caa90522-14ac-c674-b6f5-22a7d8359a3c@intel.com>
-In-Reply-To: <caa90522-14ac-c674-b6f5-22a7d8359a3c@intel.com>
+References: <1608325864-4033-1-git-send-email-megha.dey@intel.com> <1608325864-4033-2-git-send-email-megha.dey@intel.com>
+In-Reply-To: <1608325864-4033-2-git-send-email-megha.dey@intel.com>
 From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 16 Jan 2021 17:52:05 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGFsQMpWCYCB8Vqeq2Kj+WBiXkVv=dom13PJhbR3EZKFQ@mail.gmail.com>
-Message-ID: <CAMj1kXGFsQMpWCYCB8Vqeq2Kj+WBiXkVv=dom13PJhbR3EZKFQ@mail.gmail.com>
-Subject: Re: [RFC V1 0/7] Introduce AVX512 optimized crypto algorithms
-To:     "Dey, Megha" <megha.dey@intel.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+Date:   Sat, 16 Jan 2021 17:54:38 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGJD1FdixURybqZEOJV+h1-QESp=WCJVPo-Bvd7Zh9j1Q@mail.gmail.com>
+Message-ID: <CAMj1kXGJD1FdixURybqZEOJV+h1-QESp=WCJVPo-Bvd7Zh9j1Q@mail.gmail.com>
+Subject: Re: [RFC V1 1/7] x86: Probe assembler capabilities for VAES and
+ VPLCMULQDQ support
+To:     Megha Dey <megha.dey@intel.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -58,46 +57,45 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, 28 Dec 2020 at 20:11, Dey, Megha <megha.dey@intel.com> wrote:
+On Fri, 18 Dec 2020 at 22:07, Megha Dey <megha.dey@intel.com> wrote:
 >
-> Hi Eric,
+> This is a preparatory patch to introduce the optimized crypto algorithms
+> using AVX512 instructions which would require VAES and VPLCMULQDQ support.
 >
-> On 12/21/2020 3:20 PM, Eric Biggers wrote:
-> > On Fri, Dec 18, 2020 at 01:10:57PM -0800, Megha Dey wrote:
-> >> Optimize crypto algorithms using VPCLMULQDQ and VAES AVX512 instructions
-> >> (first implemented on Intel's Icelake client and Xeon CPUs).
-> >>
-> >> These algorithms take advantage of the AVX512 registers to keep the CPU
-> >> busy and increase memory bandwidth utilization. They provide substantial
-> >> (2-10x) improvements over existing crypto algorithms when update data size
-> >> is greater than 128 bytes and do not have any significant impact when used
-> >> on small amounts of data.
-> >>
-> >> However, these algorithms may also incur a frequency penalty and cause
-> >> collateral damage to other workloads running on the same core(co-scheduled
-> >> threads). These frequency drops are also known as bin drops where 1 bin
-> >> drop is around 100MHz. With the SpecCPU and ffmpeg benchmark, a 0-1 bin
-> >> drop(0-100MHz) is observed on Icelake desktop and 0-2 bin drops (0-200Mhz)
-> >> are observed on the Icelake server.
-> >>
-> > Do these new algorithms all pass the self-tests, including the fuzz tests that
-> > are enabled when CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y?
+> Check for VAES and VPCLMULQDQ assembler support using AVX512 registers.
 >
-> I had tested these algorithms with CRYPTO_MANAGER_DISABLE_TESTS=n and
-> tcrypt, not with
-> CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y (I wasn't aware this existed, my bad).
-> I see a couple of errors after enabling it and am working on fixing those.
+> Cc: x86@kernel.org
+> Signed-off-by: Megha Dey <megha.dey@intel.com>
+> ---
+>  arch/x86/Kconfig.assembler | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 >
+> diff --git a/arch/x86/Kconfig.assembler b/arch/x86/Kconfig.assembler
+> index 26b8c08..9ea0bc8 100644
+> --- a/arch/x86/Kconfig.assembler
+> +++ b/arch/x86/Kconfig.assembler
+> @@ -1,6 +1,16 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  # Copyright (C) 2020 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+>
+> +config AS_VAES_AVX512
+> +       def_bool $(as-instr,vaesenc %zmm0$(comma)%zmm1$(comma)%zmm1) && 64BIT
 
-Hello Megha,
+Is the '&& 64BIT' necessary here, but not below?
 
-I think the GHASH changes can be dropped (as discussed in the other
-thread), given the lack of a use case. The existing GHASH driver could
-also be removed in the future, but I don't think it needs to be part
-of this series.
+In any case, better to use a separate 'depends on' line, for legibility
 
-Could you please rebase this onto the latest AES-NI changes that are
-in Herbert's tree? (as well as the ones I sent out today) They address
-some issues with indirect calls and excessive disabling of preemption,
-and your GCM and CTR changes are definitely going to be affected by
-this as well.
+> +       help
+> +         Supported by binutils >= 2.30 and LLVM integrated assembler
+> +
+> +config AS_VPCLMULQDQ
+> +       def_bool $(as-instr,vpclmulqdq \$0$(comma)%zmm2$(comma)%zmm6$(comma)%zmm4)
+> +       help
+> +         Supported by binutils >= 2.30 and LLVM integrated assembler
+> +
+>  config AS_AVX512
+>         def_bool $(as-instr,vpmovm2b %k1$(comma)%zmm5)
+>         help
+> --
+> 2.7.4
+>
