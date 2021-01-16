@@ -2,43 +2,42 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742632F8DD1
-	for <lists+linux-crypto@lfdr.de>; Sat, 16 Jan 2021 18:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D13152F8E17
+	for <lists+linux-crypto@lfdr.de>; Sat, 16 Jan 2021 18:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728077AbhAPRKN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 16 Jan 2021 12:10:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59488 "EHLO mail.kernel.org"
+        id S1727913AbhAPRPZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 16 Jan 2021 12:15:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728079AbhAPRKH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:10:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D89322527;
-        Sat, 16 Jan 2021 17:00:48 +0000 (UTC)
+        id S1727750AbhAPRPI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 16 Jan 2021 12:15:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE9D122AAA;
+        Sat, 16 Jan 2021 17:03:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610816448;
-        bh=Jhl+WxQR3dYL3p877dR8rbj8Q6qo6NZkbX45IT07E6c=;
+        s=k20201202; t=1610816638;
+        bh=TeXjR+ItUDvvMxOruc38Sze7esbkZH8fDlyb3hpc3rk=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HoKyxT5hndQe/N85S5WK5idq98B8T/WGyYqn2sr52PynAiB1KhZVymVb1Q7x33Ls7
-         A5v2jOMhpqrnezuxS24AUqgHsRQWEYglSbjsEjBfqK0V5+VFdudptdKKy7/OlC1+8k
-         TfRk1PhevULzjB44Juq5mJHaey3xx7j4KHEFj4N+oJY6SuwH8tn7+oFJnEYkFxK+wx
-         3tUlTyqISt2dBW/mM90zQicV8yt/ja2Oi0P3Z46CX3PhkGxhL+nI4FlyCvtNiE7Xnz
-         Qn9uP3BcE8QrqhumJZ++NL8rJut+RqSAL/iMiU4X8wtPyfEojUronpeaW9xrWiRdR2
-         D5ePHRz3Tnjgw==
-Received: by mail-ot1-f48.google.com with SMTP id r9so11836137otk.11;
-        Sat, 16 Jan 2021 09:00:48 -0800 (PST)
-X-Gm-Message-State: AOAM532lir7OwOEuEukr8N4RTWSNMj+/JOSWhic+gNITZ9WWxJYLG3tK
-        HK562bOGwCMF4Afh7CPnQ6gDfBCaKNIEhsdjipw=
-X-Google-Smtp-Source: ABdhPJywYD5slnXEYdzV8O84oswokomilTHDl/VHkRMpUAbOHtYX6EjqIG58Okpa3QKXmXV0X53P0RnOHwhbw+ms/QM=
-X-Received: by 2002:a9d:12c:: with SMTP id 41mr12189332otu.77.1610816447446;
- Sat, 16 Jan 2021 09:00:47 -0800 (PST)
+        b=LUAXYqTEskkYmVX/kWrYaoW7aOU/cEu9ltFiI/kj7uxkmbWqaYW8oKHjN+iMGFrqK
+         71xkgE5CFr3+IoWO9lbbUmfGNc6R9JhJ6S6FhmM5YuGMtaE0xWLhXOD99Z8rL0dV6X
+         8DVZ6TEQ/xSA+9QDYWQB306NpYgaC7gVV8BQWWScH2bbnoEXGcBWb9Ks9eKMIgMuHP
+         A+rcPcEOjEom7dBpdjY13WxrDGQO4jIyYyIITK7q3TMr1debJ4HmvEUzKXe3GKC7WK
+         jKadYc+KNW47KKYs0dKUGY7LkW8YbDG80+88Zgj1yB5FSxbwhyZ/A6AQB8yLEM+nkQ
+         YQB6POdIhyjyA==
+Received: by mail-ot1-f50.google.com with SMTP id a109so11924379otc.1;
+        Sat, 16 Jan 2021 09:03:58 -0800 (PST)
+X-Gm-Message-State: AOAM531fWYq1q/CwV3vHhwpwymLoGKXxLUW5Q83z4y114uWKcUuBfMeS
+        im/vynDyQ5ZuVcYSeLKSKIPrfhZT9sJDtXHqVx0=
+X-Google-Smtp-Source: ABdhPJzkAjNBN2co9LhDe+hdOICe3q0XS/UMt0Psbae9Vca98cTW7tdIL8QhUipG+4vArEp5q+dNqXhVJom3tXSDjjI=
+X-Received: by 2002:a05:6830:1c24:: with SMTP id f4mr12159353ote.108.1610816638018;
+ Sat, 16 Jan 2021 09:03:58 -0800 (PST)
 MIME-Version: 1.0
-References: <1608325864-4033-1-git-send-email-megha.dey@intel.com> <1608325864-4033-3-git-send-email-megha.dey@intel.com>
-In-Reply-To: <1608325864-4033-3-git-send-email-megha.dey@intel.com>
+References: <1608325864-4033-1-git-send-email-megha.dey@intel.com> <1608325864-4033-6-git-send-email-megha.dey@intel.com>
+In-Reply-To: <1608325864-4033-6-git-send-email-megha.dey@intel.com>
 From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 16 Jan 2021 18:00:36 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGOiy8ohS6Wa90qm3Fct4UvwhnLZcGM9-4E_Jn=pur-ug@mail.gmail.com>
-Message-ID: <CAMj1kXGOiy8ohS6Wa90qm3Fct4UvwhnLZcGM9-4E_Jn=pur-ug@mail.gmail.com>
-Subject: Re: [RFC V1 2/7] crypto: crct10dif - Accelerated CRC T10 DIF with
- vectorized instruction
+Date:   Sat, 16 Jan 2021 18:03:47 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXH3Mkwfeq-Mu9s9p1fB3i3ez2EEnRbr9ZHZWePShnovcw@mail.gmail.com>
+Message-ID: <CAMj1kXH3Mkwfeq-Mu9s9p1fB3i3ez2EEnRbr9ZHZWePShnovcw@mail.gmail.com>
+Subject: Re: [RFC V1 5/7] crypto: aesni - AES CTR x86_64 "by16" AVX512 optimization
 To:     Megha Dey <megha.dey@intel.com>
 Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
@@ -56,211 +55,183 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, 18 Dec 2020 at 22:07, Megha Dey <megha.dey@intel.com> wrote:
+On Fri, 18 Dec 2020 at 22:08, Megha Dey <megha.dey@intel.com> wrote:
 >
-> From: Kyung Min Park <kyung.min.park@intel.com>
+> Introduce the "by16" implementation of the AES CTR mode using AVX512
+> optimizations. "by16" means that 16 independent blocks (each block
+> being 128 bits) can be ciphered simultaneously as opposed to the
+> current 8 blocks.
 >
-> Update the crc_pcl function that calculates T10 Data Integrity Field
-> CRC16 (CRC T10 DIF) using VPCLMULQDQ instruction. VPCLMULQDQ instruction
-> with AVX-512F adds EVEX encoded 512 bit version of PCLMULQDQ instruction.
-> The advantage comes from packing multiples of 4 * 128 bit data into AVX512
-> reducing instruction latency.
->
-> The glue code in crct10diff module overrides the existing PCLMULQDQ version
-> with the VPCLMULQDQ version when the following criteria are met:
+> The glue code in AESNI module overrides the existing "by8" CTR mode
+> encryption/decryption routines with the "by16" ones when the following
+> criteria are met:
 > At compile time:
 > 1. CONFIG_CRYPTO_AVX512 is enabled
-> 2. toolchain(assembler) supports VPCLMULQDQ instructions
+> 2. toolchain(assembler) supports VAES instructions
 > At runtime:
-> 1. VPCLMULQDQ and AVX512VL features are supported on a platform (currently
+> 1. VAES and AVX512VL features are supported on platform (currently
 >    only Icelake)
-> 2. If compiled as built-in module, crct10dif_pclmul.use_avx512 is set at
->    boot time or /sys/module/crct10dif_pclmul/parameters/use_avx512 is set
->    to 1 after boot.
->    If compiled as loadable module, use_avx512 module parameter must be set:
->    modprobe crct10dif_pclmul use_avx512=1
+> 2. aesni_intel.use_avx512 module parameter is set at boot time. For this
+>    algorithm, switching from AVX512 optimized version is not possible once
+>    set at boot time because of how the code is structured today.(Can be
+>    changed later if required)
 >
-> A typical run of tcrypt with CRC T10 DIF calculation with PCLMULQDQ
-> instruction and VPCLMULQDQ instruction shows the following results:
-> For bytes per update >= 1KB, we see the average improvement of 46%(~1.4x)
-> For bytes per update < 1KB, we see the average improvement of 13%.
-> Test was performed on an Icelake based platform with constant frequency
-> set for CPU.
+> The functions aes_ctr_enc_128_avx512_by16(), aes_ctr_enc_192_avx512_by16()
+> and aes_ctr_enc_256_avx512_by16() are adapted from Intel Optimized IPSEC
+> Cryptographic library.
 >
-> Detailed results for a variety of block sizes and update sizes are in
-> the table below.
+> On a Icelake desktop, with turbo disabled and all CPUs running at maximum
+> frequency, the "by16" CTR mode optimization shows better performance
+> across data & key sizes as measured by tcrypt.
 >
-> ---------------------------------------------------------------------------
-> |            |            |         cycles/operation         |            |
-> |            |            |       (the lower the better)     |            |
-> |    byte    |   bytes    |----------------------------------| percentage |
-> |   blocks   | per update |   CRC T10 DIF  |  CRC T10 DIF    | loss/gain  |
-> |            |            | with PCLMULQDQ | with VPCLMULQDQ |            |
-> |------------|------------|----------------|-----------------|------------|
-> |      16    |     16     |        77      |        106      |   -27.0    |
-> |      64    |     16     |       411      |        390      |     5.4    |
-> |      64    |     64     |        71      |         85      |   -16.0    |
-> |     256    |     16     |      1224      |       1308      |    -6.4    |
-> |     256    |     64     |       393      |        407      |    -3.4    |
-> |     256    |    256     |        93      |         86      |     8.1    |
-> |    1024    |     16     |      4564      |       5020      |    -9.0    |
-> |    1024    |    256     |       486      |        475      |     2.3    |
-> |    1024    |   1024     |       221      |        148      |    49.3    |
-> |    2048    |     16     |      8945      |       9851      |    -9.1    |
-> |    2048    |    256     |       982      |        951      |     3.3    |
-> |    2048    |   1024     |       500      |        369      |    35.5    |
-> |    2048    |   2048     |       413      |        265      |    55.8    |
-> |    4096    |     16     |     17885      |      19351      |    -7.5    |
-> |    4096    |    256     |      1828      |       1713      |     6.7    |
-> |    4096    |   1024     |       968      |        805      |    20.0    |
-> |    4096    |   4096     |       739      |        475      |    55.6    |
-> |    8192    |     16     |     48339      |      41556      |    16.3    |
-> |    8192    |    256     |      3494      |       3342      |     4.5    |
-> |    8192    |   1024     |      1959      |       1462      |    34.0    |
-> |    8192    |   4096     |      1561      |       1036      |    50.7    |
-> |    8192    |   8192     |      1540      |       1004      |    53.4    |
-> ---------------------------------------------------------------------------
+> The average performance improvement of the "by16" version over the "by8"
+> version is as follows:
+> For all key sizes(128/192/256 bits),
+>         data sizes < 128 bytes/block, negligible improvement(~3% loss)
+>         data sizes > 128 bytes/block, there is an average improvement of
+> 48% for both encryption and decryption.
 >
-> This work was inspired by the CRC T10 DIF AVX512 optimization published
-> in Intel Intelligent Storage Acceleration Library.
-> https://github.com/intel/isa-l/blob/master/crc/crc16_t10dif_by16_10.asm
+> A typical run of tcrypt with AES CTR mode encryption/decryption of the
+> "by8" and "by16" optimization on a Icelake desktop shows the following
+> results:
 >
-> Co-developed-by: Greg Tucker <greg.b.tucker@intel.com>
-> Signed-off-by: Greg Tucker <greg.b.tucker@intel.com>
+> --------------------------------------------------------------
+> |  key   | bytes | cycles/op (lower is better)| percentage   |
+> | length |  per  |  encryption  |  decryption |  loss/gain   |
+> | (bits) | block |-------------------------------------------|
+> |        |       | by8  | by16  | by8  | by16 |  enc | dec   |
+> |------------------------------------------------------------|
+> |  128   |  16   | 156  | 168   | 164  | 168  | -7.7 |  -2.5 |
+> |  128   |  64   | 180  | 190   | 157  | 146  | -5.6 |   7.1 |
+> |  128   |  256  | 248  | 158   | 251  | 161  | 36.3 |  35.9 |
+> |  128   |  1024 | 633  | 316   | 642  | 319  | 50.1 |  50.4 |
+> |  128   |  1472 | 853  | 411   | 877  | 407  | 51.9 |  53.6 |
+> |  128   |  8192 | 4463 | 1959  | 4447 | 1940 | 56.2 |  56.4 |
+> |  192   |  16   | 136  | 145   | 149  | 166  | -6.7 | -11.5 |
+> |  192   |  64   | 159  | 154   | 157  | 160  |  3.2 |  -2   |
+> |  192   |  256  | 268  | 172   | 274  | 177  | 35.9 |  35.5 |
+> |  192   |  1024 | 710  | 358   | 720  | 355  | 49.6 |  50.7 |
+> |  192   |  1472 | 989  | 468   | 983  | 469  | 52.7 |  52.3 |
+> |  192   |  8192 | 6326 | 3551  | 6301 | 3567 | 43.9 |  43.4 |
+> |  256   |  16   | 153  | 165   | 139  | 156  | -7.9 | -12.3 |
+> |  256   |  64   | 158  | 152   | 174  | 161  |  3.8 |   7.5 |
+> |  256   |  256  | 283  | 176   | 287  | 202  | 37.9 |  29.7 |
+> |  256   |  1024 | 797  | 393   | 807  | 395  | 50.7 |  51.1 |
+> |  256   |  1472 | 1108 | 534   | 1107 | 527  | 51.9 |  52.4 |
+> |  256   |  8192 | 5763 | 2616  | 5773 | 2617 | 54.7 |  54.7 |
+> --------------------------------------------------------------
+>
+> This work was inspired by the AES CTR mode optimization published
+> in Intel Optimized IPSEC Cryptographic library.
+> https://github.com/intel/intel-ipsec-mb/blob/master/lib/avx512/cntr_vaes_avx512.asm
+>
 > Co-developed-by: Tomasz Kantecki <tomasz.kantecki@intel.com>
 > Signed-off-by: Tomasz Kantecki <tomasz.kantecki@intel.com>
-> Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
 > Signed-off-by: Megha Dey <megha.dey@intel.com>
 > ---
->  arch/x86/crypto/Makefile                  |   1 +
->  arch/x86/crypto/crct10dif-avx512-asm_64.S | 482 ++++++++++++++++++++++++++++++
->  arch/x86/crypto/crct10dif-pclmul_glue.c   |  24 +-
->  arch/x86/include/asm/disabled-features.h  |   8 +-
->  crypto/Kconfig                            |  23 ++
->  5 files changed, 535 insertions(+), 3 deletions(-)
->  create mode 100644 arch/x86/crypto/crct10dif-avx512-asm_64.S
+>  arch/x86/crypto/Makefile                    |   1 +
+>  arch/x86/crypto/aes_ctrby16_avx512-x86_64.S | 856 ++++++++++++++++++++++++++++
+>  arch/x86/crypto/aesni-intel_glue.c          |  57 +-
+>  arch/x86/crypto/avx512_vaes_common.S        | 422 ++++++++++++++
+>  arch/x86/include/asm/disabled-features.h    |   8 +-
+>  crypto/Kconfig                              |  12 +
+>  6 files changed, 1354 insertions(+), 2 deletions(-)
+>  create mode 100644 arch/x86/crypto/aes_ctrby16_avx512-x86_64.S
 >
 ...
-> diff --git a/arch/x86/crypto/crct10dif-pclmul_glue.c b/arch/x86/crypto/crct10dif-pclmul_glue.c
-> index 71291d5a..26a6350 100644
-> --- a/arch/x86/crypto/crct10dif-pclmul_glue.c
-> +++ b/arch/x86/crypto/crct10dif-pclmul_glue.c
-> @@ -35,6 +35,16 @@
->  #include <asm/simd.h>
+> diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
+> index ad8a718..f45059e 100644
+> --- a/arch/x86/crypto/aesni-intel_glue.c
+> +++ b/arch/x86/crypto/aesni-intel_glue.c
+> @@ -46,6 +46,10 @@
+>  #define CRYPTO_AES_CTX_SIZE (sizeof(struct crypto_aes_ctx) + AESNI_ALIGN_EXTRA)
+>  #define XTS_AES_CTX_SIZE (sizeof(struct aesni_xts_ctx) + AESNI_ALIGN_EXTRA)
 >
->  asmlinkage u16 crc_t10dif_pcl(u16 init_crc, const u8 *buf, size_t len);
-> +#ifdef CONFIG_CRYPTO_CRCT10DIF_AVX512
-> +asmlinkage u16 crct10dif_pcl_avx512(u16 init_crc, const u8 *buf, size_t len);
-> +#else
-> +static u16 crct10dif_pcl_avx512(u16 init_crc, const u8 *buf, size_t len)
-> +{ return 0; }
-> +#endif
-> +
-
-Please drop the alternative definition. If you code the references
-correctly, the alternative is never called.
-
 > +static bool use_avx512;
 > +module_param(use_avx512, bool, 0644);
 > +MODULE_PARM_DESC(use_avx512, "Use AVX512 optimized algorithm, if available");
->
->  struct chksum_desc_ctx {
->         __u16 crc;
-> @@ -56,7 +66,12 @@ static int chksum_update(struct shash_desc *desc, const u8 *data,
->
->         if (length >= 16 && crypto_simd_usable()) {
->                 kernel_fpu_begin();
-> -               ctx->crc = crc_t10dif_pcl(ctx->crc, data, length);
-> +               if (IS_ENABLED(CONFIG_CRYPTO_CRCT10DIF_AVX512) &&
-> +                   cpu_feature_enabled(X86_FEATURE_VPCLMULQDQ) &&
-> +                   use_avx512)
-> +                       ctx->crc = crct10dif_pcl_avx512(ctx->crc, data, length);
-> +               else
-> +                       ctx->crc = crc_t10dif_pcl(ctx->crc, data, length);
-
-Please use a static call or static key here, and initialize its value
-in the init code.
-
->                 kernel_fpu_end();
->         } else
->                 ctx->crc = crc_t10dif_generic(ctx->crc, data, length);
-> @@ -75,7 +90,12 @@ static int __chksum_finup(__u16 crc, const u8 *data, unsigned int len, u8 *out)
->  {
->         if (len >= 16 && crypto_simd_usable()) {
->                 kernel_fpu_begin();
-> -               *(__u16 *)out = crc_t10dif_pcl(crc, data, len);
-> +               if (IS_ENABLED(CONFIG_CRYPTO_CRCT10DIF_AVX512) &&
-> +                   cpu_feature_enabled(X86_FEATURE_VPCLMULQDQ) &&
-> +                   use_avx512)
-> +                       *(__u16 *)out = crct10dif_pcl_avx512(crc, data, len);
-> +               else
-> +                       *(__u16 *)out = crc_t10dif_pcl(crc, data, len);
-
-Same here.
-
->                 kernel_fpu_end();
->         } else
->                 *(__u16 *)out = crc_t10dif_generic(crc, data, len);
-> diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-> index 5861d34..1192dea 100644
-> --- a/arch/x86/include/asm/disabled-features.h
-> +++ b/arch/x86/include/asm/disabled-features.h
-> @@ -56,6 +56,12 @@
->  # define DISABLE_PTI           (1 << (X86_FEATURE_PTI & 31))
->  #endif
->
-> +#if defined(CONFIG_AS_VPCLMULQDQ)
-> +# define DISABLE_VPCLMULQDQ    0
+> +
+>  /* This data is stored at the end of the crypto_tfm struct.
+>   * It's a type of per "session" data storage location.
+>   * This needs to be 16 byte aligned.
+> @@ -191,6 +195,35 @@ asmlinkage void aes_ctr_enc_192_avx_by8(const u8 *in, u8 *iv,
+>                 void *keys, u8 *out, unsigned int num_bytes);
+>  asmlinkage void aes_ctr_enc_256_avx_by8(const u8 *in, u8 *iv,
+>                 void *keys, u8 *out, unsigned int num_bytes);
+> +
+> +#ifdef CONFIG_CRYPTO_AES_CTR_AVX512
+> +asmlinkage void aes_ctr_enc_128_avx512_by16(void *keys, u8 *out,
+> +                                           const u8 *in,
+> +                                           unsigned int num_bytes,
+> +                                           u8 *iv);
+> +asmlinkage void aes_ctr_enc_192_avx512_by16(void *keys, u8 *out,
+> +                                           const u8 *in,
+> +                                           unsigned int num_bytes,
+> +                                           u8 *iv);
+> +asmlinkage void aes_ctr_enc_256_avx512_by16(void *keys, u8 *out,
+> +                                           const u8 *in,
+> +                                           unsigned int num_bytes,
+> +                                           u8 *iv);
 > +#else
-> +# define DISABLE_VPCLMULQDQ    (1 << (X86_FEATURE_VPCLMULQDQ & 31))
+> +static inline void aes_ctr_enc_128_avx512_by16(void *keys, u8 *out,
+> +                                              const u8 *in,
+> +                                              unsigned int num_bytes,
+> +                                              u8 *iv) {}
+> +static inline void aes_ctr_enc_192_avx512_by16(void *keys, u8 *out,
+> +                                              const u8 *in,
+> +                                              unsigned int num_bytes,
+> +                                              u8 *iv) {}
+> +static inline void aes_ctr_enc_256_avx512_by16(void *keys, u8 *out,
+> +                                              const u8 *in,
+> +                                              unsigned int num_bytes,
+> +                                              u8 *iv) {}
 > +#endif
 > +
->  #ifdef CONFIG_IOMMU_SUPPORT
->  # define DISABLE_ENQCMD        0
->  #else
-> @@ -82,7 +88,7 @@
->  #define DISABLED_MASK14        0
->  #define DISABLED_MASK15        0
->  #define DISABLED_MASK16        (DISABLE_PKU|DISABLE_OSPKE|DISABLE_LA57|DISABLE_UMIP| \
-> -                        DISABLE_ENQCMD)
-> +                        DISABLE_ENQCMD|DISABLE_VPCLMULQDQ)
->  #define DISABLED_MASK17        0
->  #define DISABLED_MASK18        0
->  #define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
-> diff --git a/crypto/Kconfig b/crypto/Kconfig
-> index a367fcf..b090f14 100644
-> --- a/crypto/Kconfig
-> +++ b/crypto/Kconfig
-> @@ -613,6 +613,29 @@ config CRYPTO_CRC32C_VPMSUM
->           (vpmsum) instructions, introduced in POWER8. Enable on POWER8
->           and newer processors for improved performance.
+
+Please drop these alternatives.
+
+>  /*
+>   * asmlinkage void aesni_gcm_init_avx_gen2()
+>   * gcm_data *my_ctx_data, context data
+> @@ -487,6 +520,23 @@ static void aesni_ctr_enc_avx_tfm(struct crypto_aes_ctx *ctx, u8 *out,
+>                 aes_ctr_enc_256_avx_by8(in, iv, (void *)ctx, out, len);
+>  }
 >
-> +config CRYPTO_AVX512
-> +       bool "AVX512 hardware acceleration for crypto algorithms"
-> +       depends on X86
-> +       depends on 64BIT
-> +       help
-> +         This option will compile in AVX512 hardware accelerated crypto
-> +         algorithms. These optimized algorithms provide substantial(2-10x)
-> +         improvements over existing crypto algorithms for large data size.
-> +         However, it may also incur a frequency penalty (aka. "bin drops")
-> +         and cause collateral damage to other workloads running on the
-> +         same core.
+> +static void aesni_ctr_enc_avx512_tfm(struct crypto_aes_ctx *ctx, u8 *out,
+> +                                    const u8 *in, unsigned int len, u8 *iv)
+> +{
+> +       /*
+> +        * based on key length, override with the by16 version
+> +        * of ctr mode encryption/decryption for improved performance.
+> +        * aes_set_key_common() ensures that key length is one of
+> +        * {128,192,256}
+> +        */
+> +       if (ctx->key_length == AES_KEYSIZE_128)
+> +               aes_ctr_enc_128_avx512_by16((void *)ctx, out, in, len, iv);
+> +       else if (ctx->key_length == AES_KEYSIZE_192)
+> +               aes_ctr_enc_192_avx512_by16((void *)ctx, out, in, len, iv);
+> +       else
+> +               aes_ctr_enc_256_avx512_by16((void *)ctx, out, in, len, iv);
+> +}
 > +
-> +# We default CRYPTO_CRCT10DIF_AVX512 to Y but depend on CRYPTO_AVX512 in
-> +# order to have a singular option (CRYPTO_AVX512) select multiple algorithms
-> +# when supported. Specifically, if the platform and/or toolset does not
-> +# support VPLMULQDQ. Then this algorithm should not be supported as part of
-> +# the set that CRYPTO_AVX512 selects.
-> +config CRYPTO_CRCT10DIF_AVX512
-> +       bool
-> +       default y
-> +       depends on CRYPTO_AVX512
-> +       depends on CRYPTO_CRCT10DIF_PCLMUL
-> +       depends on AS_VPCLMULQDQ
->
->  config CRYPTO_CRC32C_SPARC64
->         tristate "CRC32c CRC algorithm (SPARC64)"
-> --
-> 2.7.4
->
+>  static int ctr_crypt(struct skcipher_request *req)
+>  {
+>         struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+> @@ -1076,7 +1126,12 @@ static int __init aesni_init(void)
+>                 aesni_gcm_tfm = &aesni_gcm_tfm_sse;
+>         }
+>         aesni_ctr_enc_tfm = aesni_ctr_enc;
+> -       if (boot_cpu_has(X86_FEATURE_AVX)) {
+> +       if (use_avx512 && IS_ENABLED(CONFIG_CRYPTO_AES_CTR_AVX512) &&
+> +           cpu_feature_enabled(X86_FEATURE_VAES)) {
+> +               /* Ctr mode performance optimization using AVX512 */
+> +               aesni_ctr_enc_tfm = aesni_ctr_enc_avx512_tfm;
+> +               pr_info("AES CTR mode by16 optimization enabled\n");
+
+This will need to be changed to a static_call_update() once my
+outstanding patch is merged.
+
+> +       } else if (boot_cpu_has(X86_FEATURE_AVX)) {
+>                 /* optimize performance of ctr mode encryption transform */
+>                 aesni_ctr_enc_tfm = aesni_ctr_enc_avx_tfm;
+>                 pr_info("AES CTR mode by8 optimization enabled\n");
