@@ -2,120 +2,66 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41E92FF352
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jan 2021 19:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3082FF55B
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jan 2021 21:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbhAUS0E (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Jan 2021 13:26:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726071AbhAUSX6 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Jan 2021 13:23:58 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED2EC06174A
-        for <linux-crypto@vger.kernel.org>; Thu, 21 Jan 2021 10:23:17 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id g3so3995714ejb.6
-        for <linux-crypto@vger.kernel.org>; Thu, 21 Jan 2021 10:23:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gfKHhBWnllqV8aYIWdKy3xPP8GjYeDgbWRRf1nj3hU4=;
-        b=A7bKNXnlzmjGEhMCNFdKraWE2UinHp3+g53w92NXQw6D4HRmkYR1TamlhYy7hxhfqU
-         JAa5o1DJKzhfcw0ySPsijksvbvKWhrNASWU0q5v+177wE+ZYEOhlmKfl/LQY/EKCgens
-         3/JBlLwZi20Tfk9nu+ToDUAZ8VGFY0EmUW3Gb/339DVq5QdZu5st2D3NTEIWDo5+ioa6
-         PL3iHZogxxP19ZLrXNSGmRbOYCiypwnDrDiFFxYms7bQnEtrZAPBjTw5ntt07AQuKDXx
-         VD9aBRrtqPwuvAtSXJxkFe+Hy3cAPyd/pDPAfz0PGoeoKKh5jyPpovy3oNJHizSFi64x
-         WK7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gfKHhBWnllqV8aYIWdKy3xPP8GjYeDgbWRRf1nj3hU4=;
-        b=nVVzqaWZE9hvJqSb6+dllTJrMUDMOquaZslS7BGr2+WosgoB1UOVb6ABZIHUsFuRFA
-         VvbkoCCCpN+MUGyTfWSuaxvEots3jL1rBvpR8mV4FL88cuuSSfeA7fGiPW3Oor6cMdqG
-         Jag5RuctRBffCUdSMt8QuLm8kmcEt8BIS2nLjA1qNT6YMKeAx5s0rTT6UN8tSxVKPEE5
-         ZGZ7dw7xqjRuj8/XuofwHbbkkA3GUA9ps06znoZN+ezm/L0cyurqaZzwSOxqaqJ1PzNg
-         fh2bcoVNm3mzSYd6jVjZ8T86M90tArxc2q2Q99HgHk+QGhFv9c9SHl2kWRGkmq2rOUcS
-         F1kQ==
-X-Gm-Message-State: AOAM530sSqHdCiB7if3l8OSvyRI4jPKXIxI4y8lRirCBtJjedt2IE6Zo
-        ke2UZvFSrwL6MGIADVSr0zA=
-X-Google-Smtp-Source: ABdhPJxN19zAsqU9K27OZ22QxGfnOp2IjFjqXs8iYJ81v/hx0qvhnT+mheRm1N1MkjTRLuHyKGwotw==
-X-Received: by 2002:a17:906:3999:: with SMTP id h25mr538652eje.146.1611253396600;
-        Thu, 21 Jan 2021 10:23:16 -0800 (PST)
-Received: from [192.168.2.27] (39.35.broadband4.iol.cz. [85.71.35.39])
-        by smtp.gmail.com with ESMTPSA id x9sm1144459eje.36.2021.01.21.10.23.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 10:23:16 -0800 (PST)
-Subject: Re: [PATCH 5/5] crypto: remove Salsa20 stream cipher algorithm
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, agk@redhat.com,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-References: <20210121130733.1649-1-ardb@kernel.org>
- <20210121130733.1649-6-ardb@kernel.org> <YAnCbnnFCQkyBpUA@sol.localdomain>
- <CAMj1kXEycOHSMQu2T1tdQrmapk+g0oQFDiWXDo0J0BKg4QgEuQ@mail.gmail.com>
-From:   Milan Broz <gmazyland@gmail.com>
-Message-ID: <2f010ae0-b949-d9b8-c382-e02447b36166@gmail.com>
-Date:   Thu, 21 Jan 2021 19:23:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726661AbhAUUEk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Jan 2021 15:04:40 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:51784 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726674AbhAUUEA (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 21 Jan 2021 15:04:00 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1l2gAT-0007bn-Je; Fri, 22 Jan 2021 07:02:58 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 22 Jan 2021 07:02:57 +1100
+Date:   Fri, 22 Jan 2021 07:02:57 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     "Alessandrelli, Daniele" <daniele.alessandrelli@intel.com>
+Cc:     "ardb@kernel.org" <ardb@kernel.org>,
+        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: Re: [RFC PATCH 0/6] Keem Bay OCS ECC crypto driver
+Message-ID: <20210121200257.GB27184@gondor.apana.org.au>
+References: <CY4PR1101MB2326ED0E6C23D1D868D53365E7D20@CY4PR1101MB2326.namprd11.prod.outlook.com>
+ <20210104113148.GA20575@gondor.apana.org.au>
+ <CY4PR1101MB23260DF5A317CA05BBA3C2F9E7D20@CY4PR1101MB2326.namprd11.prod.outlook.com>
+ <CY4PR1101MB232696B49BA1A3441E8B335EE7A80@CY4PR1101MB2326.namprd11.prod.outlook.com>
+ <CAMj1kXH9sHm_=dXS7646MbPQoQST9AepfHORSJgj0AxzWB4SvQ@mail.gmail.com>
+ <CY4PR1101MB232656080E3F457EC345E7B2E7A40@CY4PR1101MB2326.namprd11.prod.outlook.com>
+ <CAMj1kXF9yUVEdPeF6EUCSOdb44HdFuVPk6G2cKOAUAn-mVjCzw@mail.gmail.com>
+ <7ae7890f52226e75bf9e368808d6377e8c5efc2d.camel@intel.com>
+ <CAMj1kXE8TnHvZrp2NQv9SJ4CfUOxy1sVXVusjrSWaiXOjRTQ5g@mail.gmail.com>
+ <711536383d5e829bd128a41e1a56ae50399b6c26.camel@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXEycOHSMQu2T1tdQrmapk+g0oQFDiWXDo0J0BKg4QgEuQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <711536383d5e829bd128a41e1a56ae50399b6c26.camel@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 21/01/2021 19:09, Ard Biesheuvel wrote:
-> On Thu, 21 Jan 2021 at 19:05, Eric Biggers <ebiggers@kernel.org> wrote:
->>
->> On Thu, Jan 21, 2021 at 02:07:33PM +0100, Ard Biesheuvel wrote:
->>> Salsa20 is not used anywhere in the kernel, is not suitable for disk
->>> encryption, and widely considered to have been superseded by ChaCha20.
->>> So let's remove it.
->>>
->>> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
->>> ---
->>>  Documentation/admin-guide/device-mapper/dm-integrity.rst |    4 +-
->>>  crypto/Kconfig                                           |   12 -
->>>  crypto/Makefile                                          |    1 -
->>>  crypto/salsa20_generic.c                                 |  212 ----
->>>  crypto/tcrypt.c                                          |   11 +-
->>>  crypto/testmgr.c                                         |    6 -
->>>  crypto/testmgr.h                                         | 1162 --------------------
->>>  7 files changed, 3 insertions(+), 1405 deletions(-)
->>>
->>> diff --git a/Documentation/admin-guide/device-mapper/dm-integrity.rst b/Documentation/admin-guide/device-mapper/dm-integrity.rst
->>> index 4e6f504474ac..d56112e2e354 100644
->>> --- a/Documentation/admin-guide/device-mapper/dm-integrity.rst
->>> +++ b/Documentation/admin-guide/device-mapper/dm-integrity.rst
->>> @@ -143,8 +143,8 @@ recalculate
->>>  journal_crypt:algorithm(:key)        (the key is optional)
->>>       Encrypt the journal using given algorithm to make sure that the
->>>       attacker can't read the journal. You can use a block cipher here
->>> -     (such as "cbc(aes)") or a stream cipher (for example "chacha20",
->>> -     "salsa20" or "ctr(aes)").
->>> +     (such as "cbc(aes)") or a stream cipher (for example "chacha20"
->>> +     or "ctr(aes)").
->>
->> You should check with the dm-integrity maintainers how likely it is that people
->> are using salsa20 with dm-integrity.  It's possible that people are using it,
->> especially since the documentation says that dm-integrity can use a stream
->> cipher and specifically gives salsa20 as an example.
->>
-> 
-> Good point - cc'ed them now.
+On Thu, Jan 21, 2021 at 04:13:51PM +0000, Alessandrelli, Daniele wrote:
+>
+> As expected, the second implementation does not pass self-tests and
+> crypto_alloc_kpp() returns -ELIBBAD when trying to allocate it, but
+> I've seen that I can avoid the error (and have it allocated properly)
+> by passing the CRYPTO_ALG_TESTED flag in the 'type' argument, like
+> below:
 
-I would say - just remove it. I do not see any users, we do not even test this combination in userspace testsuite.
-It is just an example in doc.
+Did you set your algorithm's name to ecdh? I think Ard was suggesting
+you to not do that.  As long as you're not using the same name as a
+recognised algorithm, then you won't need to pass any self-tests at
+all.
 
-From my POV these stream crypto ciphers should be never used there (but cc to Mikulas, it was his patch :-)
-
-Milan
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
