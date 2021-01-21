@@ -2,109 +2,152 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55EBA2FE123
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jan 2021 05:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE3F2FE0EF
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jan 2021 05:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731354AbhAUDxF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 20 Jan 2021 22:53:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404283AbhATXyC (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 20 Jan 2021 18:54:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D032224D1;
-        Wed, 20 Jan 2021 23:53:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611186801;
-        bh=KaAIzngTFdJOggqeK7loFLhsbvngspe0/HlURAXHAgw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SHaQCXddx55iPn4zzRZ4h369HDxx+f10wwgXlwvnOYnceCMv/Tgt7UkQTt7vPpHk7
-         9CkGiWZx82+8Ue2VivIz/zDsRM1gPo/2HhcS3pGRiQXyOqSLeiqI9Ts6LiBwaOLTrQ
-         3Xa7oxqO6LpkXGVzVDW+mpRMD8BxILd9xkCAEoT6Rw8sYFkCSiWrMZvHlK5G+urMGs
-         FTZbWHiobojD4DtlCkJ6qO/JQmwjGQufBxqTNqrDSUt6sQ9QJbaBDeFUJ/I+zhepfk
-         ob0gCIqOmAffaeGFmUtLSFMuQHhyPWzrA567O6CJGCrFI8Mzty5QfSqaYbOG3FPrsF
-         XkJXSzsRDlatg==
-Date:   Thu, 21 Jan 2021 01:53:16 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v3 08/10] certs: Check that builtin blacklist hashes are
- valid
-Message-ID: <YAjCbKwQf8nS+Nuu@kernel.org>
-References: <20210114151909.2344974-1-mic@digikod.net>
- <20210114151909.2344974-9-mic@digikod.net>
- <YAe9egzT5D7B0swR@kernel.org>
- <11ce77c9-7b43-e2a0-55bc-c0035bf3d681@digikod.net>
+        id S1727396AbhAUEmq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 20 Jan 2021 23:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727008AbhAUEme (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 20 Jan 2021 23:42:34 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C204C0613C1;
+        Wed, 20 Jan 2021 20:41:54 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id s15so572916plr.9;
+        Wed, 20 Jan 2021 20:41:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G6oushXlU8/JCreEqr43J1ZyQ49iIsjnXql3SR0zTgQ=;
+        b=V4HmS+pH+pLJFk26hyU66R+rmnP2beqGFGjqdPk9FuWtDmlJDWr4kZH98+KgHhv7Ga
+         RPA7Mr2b3Nijoh13iOBPH9ro83W5pkA7ZlLMsPBNE8S8zTHhBhijZzCLCRNvLVRiSTxw
+         jcg7IZQ9ng670NwwC94FORu2Z9248Zky+xIV/Dmm5nah8Dq9CNY777NldJlsRiFJdvBE
+         MRcZ1sciB9airBCKh480cCWUg9vvQ/aesoYCNey5/0dZ68byYdgEcjpAtCfA0Vs59v5Q
+         /YFN7Me1W/MJ7PbfaoEByS8H7wu/X7IubsM2b1yVsble0T92RSA+swdomsE7WMLuY5vd
+         SO6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G6oushXlU8/JCreEqr43J1ZyQ49iIsjnXql3SR0zTgQ=;
+        b=R68EVLSe8+grN0rGTD81vpfWDY5IgujetFW2TCbQA1n4apaPCzTNcFW+FwGC6sFfPU
+         QeFQ5ed0TLz+g/wix1vmwJFlkPk81pQ2rni4k/3cEnAVN1K27F+jkM4am0Ja2U2XT2Op
+         MdoJ5Db+DoLoqbd0/Gtx1bLIaq+DFgwRw1hEhn2P7TK2TeYxckt/oRRZrNW/GOh1VGjR
+         ESk8F5jaKC/8iKKEUjfTgkZZuMSc6Ucuc/tyaWkZeDAHh2Y47/CG3zai6SHfUzcZ9Sp0
+         Kc6riA8s5/TP0Tl4z9Xqp+Q4POw6oxBf5XZP9kRi019eAuVga+/fdKDOfh2Ma8ay0keE
+         oIGg==
+X-Gm-Message-State: AOAM532GkDqohUfY0+YYxN+E7lwUhico36scWf7MQ0uqQ8XKwtm67bjW
+        oLD7xhrKVFmiTXxN3Xujo/M=
+X-Google-Smtp-Source: ABdhPJyFD6wnC1KYu+9K6XpUwh/1p7UXubKQt0iWRFV1Dfffo1znTuF53UVoEutnmzvIJRV+LiSs/g==
+X-Received: by 2002:a17:902:a501:b029:dc:3e1d:4ddb with SMTP id s1-20020a170902a501b02900dc3e1d4ddbmr13233027plq.60.1611204114069;
+        Wed, 20 Jan 2021 20:41:54 -0800 (PST)
+Received: from localhost.localdomain ([49.207.210.174])
+        by smtp.gmail.com with ESMTPSA id jx15sm3916014pjb.17.2021.01.20.20.41.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 20:41:53 -0800 (PST)
+From:   Allen Pais <allen.lkml@gmail.com>
+To:     herbert@gondor.apana.org.au
+Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
+        jesper.nilsson@axis.com, lars.persson@axis.com,
+        horia.geanta@nxp.com, aymen.sghaier@nxp.com, gcherian@marvell.com,
+        thomas.lendacky@amd.com, john.allen@amd.com, gilad@benyossef.com,
+        bbrezillon@kernel.org, arno@natisbad.org, schalla@marvell.com,
+        matthias.bgg@gmail.com, jamie@jamieiles.com,
+        giovanni.cabiddu@intel.com, heiko@sntech.de, krzk@kernel.org,
+        vz@mleia.com, k.konieczny@samsung.com,
+        linux-crypto@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        qat-linux@intel.com, linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        Allen Pais <apais@linux.microsoft.com>
+Subject: [PATCH v4 00/19]crypto: convert tasklets to use new tasklet_setup API()
+Date:   Thu, 21 Jan 2021 10:11:07 +0530
+Message-Id: <20210121044126.152274-1-allen.lkml@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <11ce77c9-7b43-e2a0-55bc-c0035bf3d681@digikod.net>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 12:57:55PM +0100, Mickaël Salaün wrote:
-> 
-> On 20/01/2021 06:19, Jarkko Sakkinen wrote:
-> > On Thu, Jan 14, 2021 at 04:19:07PM +0100, Mickaël Salaün wrote:
-> >> From: Mickaël Salaün <mic@linux.microsoft.com>
-> >>
-> >> Add and use a check-blacklist-hashes.awk script to make sure that the
-> >> builtin blacklist hashes will be approved by the run time blacklist
-> >> description checks.  This is useful to debug invalid hash formats, and
-> >> it make sure that previous hashes which could have been loaded in the
-> >> kernel (but ignored) are now noticed and deal with by the user.
-> >>
-> >> Cc: David Howells <dhowells@redhat.com>
-> >> Cc: David Woodhouse <dwmw2@infradead.org>
-> >> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-> >> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > 
-> > I get this with a self-signed cert:
-> > 
-> > certs/Makefile:18: *** target pattern contains no '%'.  Stop.
-> > 
-> > CONFIG_SYSTEM_BLACKLIST_HASH_LIST="tbs:8eed1340eef37c1dc84d996406ad05c7dbb3eade19132d688408ca2f63904869"
-> 
-> As said in the Kconfig documentation for
-> CONFIG_SYSTEM_BLACKLIST_HASH_LIST, you need to provide a file with the
-> list, not to set the string directly in the configuration variable. This
-> patch series didn't change this behavior. The same kind of macros are
-> used for CONFIG_MODULE_SIG_KEY.
+From: Allen Pais <apais@linux.microsoft.com>
 
-OK, the documentation just states that:
+Commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
+introduced a new tasklet initialization API. This series converts
+all the crypto modules to use the new tasklet_setup() API
 
-"Hashes to be preloaded into the system blacklist keyring"
+The series is based on v5.11-rc4 (19c329f68089)
+v4:
+  - added acks
+  - fixed checkpatch errors(Giovanni Cabiddu)
+v3:
+  - fixed rockchip driver(Emil Renner Berthing)
 
-No mention about a file. I'd add a patch to update this documentation.
+v2:
+  - added acks
+  - addressed comments [Krzysztof and Gilad]
 
-> 
-> > 
-> > I used the script in 10/10 to test this, which is another
-> > reamark: the patches are in invalid order, as you need to
-> > apply 10/10 before you can test  8/10.
-> 
-> I'll move patch 10/10 earlier but this kind of formatting was already
-> required (but silently ignored) for this option to be really taken into
-> account. Only the kernel code was available to understand how to
-> effectively create such hash.
+Allen Pais (19):
+  crypto: amcc: convert tasklets to use new tasklet_setup() API
+  crypto: atmel: convert tasklets to use new tasklet_setup() API
+  crypto: axis: convert tasklets to use new tasklet_setup() API
+  crypto: caam: convert tasklets to use new tasklet_setup() API
+  crypto: cavium: convert tasklets to use new tasklet_setup() API
+  crypto: ccp: convert tasklets to use new tasklet_setup() API
+  crypto: ccree: convert tasklets to use new tasklet_setup() API
+  crypto: hifn_795x: convert tasklets to use new tasklet_setup() API
+  crypto: img-hash: convert tasklets to use new tasklet_setup() API
+  crypto: ixp4xx: convert tasklets to use new tasklet_setup() API
+  crypto: mediatek: convert tasklets to use new tasklet_setup() API
+  crypto: omap: convert tasklets to use new tasklet_setup() API
+  crypto: picoxcell: convert tasklets to use new tasklet_setup() API
+  crypto: qat: convert tasklets to use new tasklet_setup() API
+  crypto: qce: convert tasklets to use new tasklet_setup() API
+  crypto: rockchip: convert tasklets to use new tasklet_setup() API
+  crypto: s5p: convert tasklets to use new tasklet_setup() API
+  crypto: talitos: convert tasklets to use new tasklet_setup() API
+  crypto: octeontx: convert tasklets to use new tasklet_setup() API
 
-Great, thanks.
+ drivers/crypto/amcc/crypto4xx_core.c          |  7 ++--
+ drivers/crypto/atmel-aes.c                    | 14 +++----
+ drivers/crypto/atmel-sha.c                    | 14 +++----
+ drivers/crypto/atmel-tdes.c                   | 14 +++----
+ drivers/crypto/axis/artpec6_crypto.c          |  7 ++--
+ drivers/crypto/caam/jr.c                      |  9 ++--
+ drivers/crypto/cavium/cpt/cptvf_main.c        |  9 ++--
+ drivers/crypto/cavium/nitrox/nitrox_common.h  |  2 +-
+ drivers/crypto/cavium/nitrox/nitrox_isr.c     | 13 +++---
+ drivers/crypto/cavium/nitrox/nitrox_reqmgr.c  |  4 +-
+ drivers/crypto/ccp/ccp-dev-v3.c               |  9 ++--
+ drivers/crypto/ccp/ccp-dev-v5.c               |  9 ++--
+ drivers/crypto/ccp/ccp-dmaengine.c            |  7 ++--
+ drivers/crypto/ccree/cc_fips.c                |  8 ++--
+ drivers/crypto/ccree/cc_request_mgr.c         | 12 +++---
+ drivers/crypto/hifn_795x.c                    |  6 +--
+ drivers/crypto/img-hash.c                     | 12 +++---
+ drivers/crypto/ixp4xx_crypto.c                |  4 +-
+ .../crypto/marvell/octeontx/otx_cptvf_main.c  | 12 +++---
+ drivers/crypto/mediatek/mtk-aes.c             | 14 +++----
+ drivers/crypto/mediatek/mtk-sha.c             | 14 +++----
+ drivers/crypto/omap-aes.c                     |  6 +--
+ drivers/crypto/omap-des.c                     |  6 +--
+ drivers/crypto/omap-sham.c                    |  6 +--
+ drivers/crypto/picoxcell_crypto.c             |  7 ++--
+ drivers/crypto/qat/qat_common/adf_isr.c       |  5 +--
+ drivers/crypto/qat/qat_common/adf_sriov.c     | 10 ++---
+ drivers/crypto/qat/qat_common/adf_transport.c |  4 +-
+ .../qat/qat_common/adf_transport_internal.h   |  2 +-
+ drivers/crypto/qat/qat_common/adf_vf_isr.c    | 11 +++--
+ drivers/crypto/qce/core.c                     |  7 ++--
+ drivers/crypto/rockchip/rk3288_crypto.c       | 14 +++----
+ drivers/crypto/s5p-sss.c                      | 13 +++---
+ drivers/crypto/talitos.c                      | 42 +++++++++----------
+ 34 files changed, 152 insertions(+), 181 deletions(-)
 
-
-> > 
-> > /Jarkko
-> > 
-
-
-/Jarkko
+-- 
+2.25.1
 
