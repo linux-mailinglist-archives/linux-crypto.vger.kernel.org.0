@@ -2,122 +2,362 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED812FE115
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jan 2021 05:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0050E2FE17D
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jan 2021 06:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbhAUEux (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 20 Jan 2021 23:50:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732513AbhAUEpc (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 20 Jan 2021 23:45:32 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD13C061575;
-        Wed, 20 Jan 2021 20:44:52 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id q4so584259plr.7;
-        Wed, 20 Jan 2021 20:44:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nmGD8HgPe/79+tkqFpZtuKTtNUxMt+0Wii+rdB2TPJ0=;
-        b=eS/1ggdFWLmfnsVYZXAbwW1SmBRdM7h+i8u7eMxYshtdJMIwvsuLM6yn9GZBZ9S/K8
-         KPB7IXVkvHseo+uWh3JXdsekkzlPnpD1fO5nonseXf9GOWYDGdR+HhSALKkTBW2yHqxA
-         vhNiTnb6elTC+ROHAMTVxAmqh54NOFG8AXMg5XK2ZaPgk0Zkawh6ZbuAdmEfdFkEhZm2
-         1UIpxFwDL7fAY+OlhacieGmRlqtZX1Sk/wWXzHNgZL3wH6FTjfH0lEmZHOzXOWK4oZol
-         FrhZLsRXZ91FD1PC349AL88h5bApuFeMzE3PJ1YZJKXFQ8yXe/V3L7GGuSfN9S3XXoFM
-         SpOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nmGD8HgPe/79+tkqFpZtuKTtNUxMt+0Wii+rdB2TPJ0=;
-        b=cqRFmP4HCr6x+0vWBHmYc/FCT8RzKVW7gSjVc41N132gmYrqJJAZGYpVjEK7/hn5sA
-         b33dUNiZpvpS2ckgshygcjIrQ1Y/soWDOuJJ2z/ev+U9yf12YE61tBd8TOuZU/FEECnP
-         y9RJBNvDD07GDon1FkYel7rg5KAliqdbWfYGVSIHAJrPf26YlLtT4ANT7UF99v8HDgCW
-         OIl0FJigRiKVzKV9M0eyIunN6fO2q9OqiavGqp2JAVBLnYwimoQnTOKqtYzVfGND/gDU
-         4tTapBj8Qq+/JCXz1Vv6W0EOCvv3QD0Bbx5uhj5zWrL5KfYQerMcPNBPr5oe1+ma3LBY
-         ROMQ==
-X-Gm-Message-State: AOAM531Y9x1F3fwANvASbT4JMnl4HnGiOHsGPcJOyAGyuZG068+NBmZU
-        uDsJXrJsGV3v5k2qkwAcg+g=
-X-Google-Smtp-Source: ABdhPJwK12yN+Nm/X1Li1WBmyUtsyI++TR5W0kfCfg/xipnswNtdqtNaye9X6xF+P0AT5ihT3NrvwA==
-X-Received: by 2002:a17:902:8549:b029:de:8aaa:b012 with SMTP id d9-20020a1709028549b02900de8aaab012mr13199334plo.34.1611204292055;
-        Wed, 20 Jan 2021 20:44:52 -0800 (PST)
-Received: from localhost.localdomain ([49.207.210.174])
-        by smtp.gmail.com with ESMTPSA id jx15sm3916014pjb.17.2021.01.20.20.44.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 20:44:51 -0800 (PST)
-From:   Allen Pais <allen.lkml@gmail.com>
-To:     herbert@gondor.apana.org.au
-Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
-        jesper.nilsson@axis.com, lars.persson@axis.com,
-        horia.geanta@nxp.com, aymen.sghaier@nxp.com, gcherian@marvell.com,
-        thomas.lendacky@amd.com, john.allen@amd.com, gilad@benyossef.com,
-        bbrezillon@kernel.org, arno@natisbad.org, schalla@marvell.com,
-        matthias.bgg@gmail.com, jamie@jamieiles.com,
-        giovanni.cabiddu@intel.com, heiko@sntech.de, krzk@kernel.org,
-        vz@mleia.com, k.konieczny@samsung.com,
-        linux-crypto@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        qat-linux@intel.com, linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Allen Pais <apais@linux.microsoft.com>
-Subject: [PATCH v4 19/19] crypto: octeontx: convert tasklets to use new tasklet_setup() API
-Date:   Thu, 21 Jan 2021 10:11:26 +0530
-Message-Id: <20210121044126.152274-20-allen.lkml@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210121044126.152274-1-allen.lkml@gmail.com>
-References: <20210121044126.152274-1-allen.lkml@gmail.com>
+        id S1726015AbhAUFWW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Jan 2021 00:22:22 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:49054 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727378AbhAUFRu (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 21 Jan 2021 00:17:50 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1l2SKs-0006Kh-VG; Thu, 21 Jan 2021 16:16:48 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 21 Jan 2021 16:16:46 +1100
+Date:   Thu, 21 Jan 2021 16:16:46 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Arnaud Ebalard <arno@natisbad.org>,
+        Srujana Challa <schalla@marvell.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: [PATCH] crypto: marvell/cesa - Fix use of sg_pcopy on iomem pointer
+Message-ID: <20210121051646.GA24114@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Allen Pais <apais@linux.microsoft.com>
+The cesa driver mixes use of iomem pointers and normal kernel
+pointers.  Sometimes it uses memcpy_toio/memcpy_fromio on both
+while other times it would use straight memcpy on both, through
+the sg_pcopy_* helpers.
 
-In preparation for unconditionally passing the
-struct tasklet_struct pointer to all tasklet
-callbacks, switch to using the new tasklet_setup()
-and from_tasklet() to pass the tasklet pointer explicitly.
+This patch fixes this by adding a new field sram_pool to the engine
+for the normal pointer case which then allows us to use the right
+interface depending on the value of engine->pool.
 
-Signed-off-by: Allen Pais <apais@linux.microsoft.com>
----
- drivers/crypto/marvell/octeontx/otx_cptvf_main.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-diff --git a/drivers/crypto/marvell/octeontx/otx_cptvf_main.c b/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
-index c076d0b3ad5f..831550123719 100644
---- a/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
-+++ b/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
-@@ -17,11 +17,12 @@
- #define DRV_NAME	"octeontx-cptvf"
- #define DRV_VERSION	"1.0"
+diff --git a/drivers/crypto/marvell/cesa/cesa.c b/drivers/crypto/marvell/cesa/cesa.c
+index 06211858bf2e..f14aac532f53 100644
+--- a/drivers/crypto/marvell/cesa/cesa.c
++++ b/drivers/crypto/marvell/cesa/cesa.c
+@@ -381,10 +381,10 @@ static int mv_cesa_get_sram(struct platform_device *pdev, int idx)
+ 	engine->pool = of_gen_pool_get(cesa->dev->of_node,
+ 				       "marvell,crypto-srams", idx);
+ 	if (engine->pool) {
+-		engine->sram = gen_pool_dma_alloc(engine->pool,
+-						  cesa->sram_size,
+-						  &engine->sram_dma);
+-		if (engine->sram)
++		engine->sram_pool = gen_pool_dma_alloc(engine->pool,
++						       cesa->sram_size,
++						       &engine->sram_dma);
++		if (engine->sram_pool)
+ 			return 0;
  
--static void vq_work_handler(unsigned long data)
-+static void vq_work_handler(struct tasklet_struct *t)
- {
--	struct otx_cptvf_wqe_info *cwqe_info =
--					(struct otx_cptvf_wqe_info *) data;
--
-+	struct otx_cptvf_wqe *cwqe = from_tasklet(cwqe, t, twork);
-+	struct otx_cptvf_wqe_info *cwqe_info = container_of(cwqe,
-+							typeof(*cwqe_info),
-+							vq_wqe[0]);
- 	otx_cpt_post_process(&cwqe_info->vq_wqe[0]);
+ 		engine->pool = NULL;
+@@ -422,7 +422,7 @@ static void mv_cesa_put_sram(struct platform_device *pdev, int idx)
+ 	struct mv_cesa_engine *engine = &cesa->engines[idx];
+ 
+ 	if (engine->pool)
+-		gen_pool_free(engine->pool, (unsigned long)engine->sram,
++		gen_pool_free(engine->pool, (unsigned long)engine->sram_pool,
+ 			      cesa->sram_size);
+ 	else
+ 		dma_unmap_resource(cesa->dev, engine->sram_dma,
+diff --git a/drivers/crypto/marvell/cesa/cesa.h b/drivers/crypto/marvell/cesa/cesa.h
+index fabfaaccca87..5c5eff0adbcc 100644
+--- a/drivers/crypto/marvell/cesa/cesa.h
++++ b/drivers/crypto/marvell/cesa/cesa.h
+@@ -428,6 +428,7 @@ struct mv_cesa_dev {
+  * @id:			engine id
+  * @regs:		engine registers
+  * @sram:		SRAM memory region
++ * @sram_pool:		SRAM memory region from pool
+  * @sram_dma:		DMA address of the SRAM memory region
+  * @lock:		engine lock
+  * @req:		current crypto request
+@@ -448,7 +449,10 @@ struct mv_cesa_dev {
+ struct mv_cesa_engine {
+ 	int id;
+ 	void __iomem *regs;
+-	void __iomem *sram;
++	union {
++		void __iomem *sram;
++		void *sram_pool;
++	};
+ 	dma_addr_t sram_dma;
+ 	spinlock_t lock;
+ 	struct crypto_async_request *req;
+@@ -867,6 +871,31 @@ int mv_cesa_dma_add_op_transfers(struct mv_cesa_tdma_chain *chain,
+ 				 struct mv_cesa_sg_dma_iter *sgiter,
+ 				 gfp_t gfp_flags);
+ 
++size_t mv_cesa_sg_copy(struct mv_cesa_engine *engine,
++		       struct scatterlist *sgl, unsigned int nents,
++		       unsigned int sram_off, size_t buflen, off_t skip,
++		       bool to_sram);
++
++static inline size_t mv_cesa_sg_copy_to_sram(struct mv_cesa_engine *engine,
++					     struct scatterlist *sgl,
++					     unsigned int nents,
++					     unsigned int sram_off,
++					     size_t buflen, off_t skip)
++{
++	return mv_cesa_sg_copy(engine, sgl, nents, sram_off, buflen, skip,
++			       true);
++}
++
++static inline size_t mv_cesa_sg_copy_from_sram(struct mv_cesa_engine *engine,
++					       struct scatterlist *sgl,
++					       unsigned int nents,
++					       unsigned int sram_off,
++					       size_t buflen, off_t skip)
++{
++	return mv_cesa_sg_copy(engine, sgl, nents, sram_off, buflen, skip,
++			       false);
++}
++
+ /* Algorithm definitions */
+ 
+ extern struct ahash_alg mv_md5_alg;
+diff --git a/drivers/crypto/marvell/cesa/cipher.c b/drivers/crypto/marvell/cesa/cipher.c
+index b4a6ff9dd6d5..b739d3b873dc 100644
+--- a/drivers/crypto/marvell/cesa/cipher.c
++++ b/drivers/crypto/marvell/cesa/cipher.c
+@@ -89,22 +89,29 @@ static void mv_cesa_skcipher_std_step(struct skcipher_request *req)
+ 			    CESA_SA_SRAM_PAYLOAD_SIZE);
+ 
+ 	mv_cesa_adjust_op(engine, &sreq->op);
+-	memcpy_toio(engine->sram, &sreq->op, sizeof(sreq->op));
++	if (engine->pool)
++		memcpy(engine->sram_pool, &sreq->op, sizeof(sreq->op));
++	else
++		memcpy_toio(engine->sram, &sreq->op, sizeof(sreq->op));
+ 
+-	len = sg_pcopy_to_buffer(req->src, creq->src_nents,
+-				 engine->sram + CESA_SA_DATA_SRAM_OFFSET,
+-				 len, sreq->offset);
++	len = mv_cesa_sg_copy_to_sram(engine, req->src, creq->src_nents,
++				      CESA_SA_DATA_SRAM_OFFSET, len,
++				      sreq->offset);
+ 
+ 	sreq->size = len;
+ 	mv_cesa_set_crypt_op_len(&sreq->op, len);
+ 
+ 	/* FIXME: only update enc_len field */
+ 	if (!sreq->skip_ctx) {
+-		memcpy_toio(engine->sram, &sreq->op, sizeof(sreq->op));
++		if (engine->pool)
++			memcpy(engine->sram_pool, &sreq->op, sizeof(sreq->op));
++		else
++			memcpy_toio(engine->sram, &sreq->op, sizeof(sreq->op));
+ 		sreq->skip_ctx = true;
+-	} else {
++	} else if (engine->pool)
++		memcpy(engine->sram_pool, &sreq->op, sizeof(sreq->op.desc));
++	else
+ 		memcpy_toio(engine->sram, &sreq->op, sizeof(sreq->op.desc));
+-	}
+ 
+ 	mv_cesa_set_int_mask(engine, CESA_SA_INT_ACCEL0_DONE);
+ 	writel_relaxed(CESA_SA_CFG_PARA_DIS, engine->regs + CESA_SA_CFG);
+@@ -121,9 +128,9 @@ static int mv_cesa_skcipher_std_process(struct skcipher_request *req,
+ 	struct mv_cesa_engine *engine = creq->base.engine;
+ 	size_t len;
+ 
+-	len = sg_pcopy_from_buffer(req->dst, creq->dst_nents,
+-				   engine->sram + CESA_SA_DATA_SRAM_OFFSET,
+-				   sreq->size, sreq->offset);
++	len = mv_cesa_sg_copy_from_sram(engine, req->dst, creq->dst_nents,
++					CESA_SA_DATA_SRAM_OFFSET, sreq->size,
++					sreq->offset);
+ 
+ 	sreq->offset += len;
+ 	if (sreq->offset < req->cryptlen)
+@@ -214,11 +221,14 @@ mv_cesa_skcipher_complete(struct crypto_async_request *req)
+ 		basereq = &creq->base;
+ 		memcpy(skreq->iv, basereq->chain.last->op->ctx.skcipher.iv,
+ 		       ivsize);
+-	} else {
++	} else if (engine->pool)
++		memcpy(skreq->iv,
++		       engine->sram_pool + CESA_SA_CRYPT_IV_SRAM_OFFSET,
++		       ivsize);
++	else
+ 		memcpy_fromio(skreq->iv,
+ 			      engine->sram + CESA_SA_CRYPT_IV_SRAM_OFFSET,
+ 			      ivsize);
+-	}
  }
  
-@@ -41,8 +42,7 @@ static int init_worker_threads(struct otx_cptvf *cptvf)
+ static const struct mv_cesa_req_ops mv_cesa_skcipher_req_ops = {
+diff --git a/drivers/crypto/marvell/cesa/hash.c b/drivers/crypto/marvell/cesa/hash.c
+index 8cf9fd518d86..c72b0672fc71 100644
+--- a/drivers/crypto/marvell/cesa/hash.c
++++ b/drivers/crypto/marvell/cesa/hash.c
+@@ -168,7 +168,12 @@ static void mv_cesa_ahash_std_step(struct ahash_request *req)
+ 	int i;
+ 
+ 	mv_cesa_adjust_op(engine, &creq->op_tmpl);
+-	memcpy_toio(engine->sram, &creq->op_tmpl, sizeof(creq->op_tmpl));
++	if (engine->pool)
++		memcpy(engine->sram_pool, &creq->op_tmpl,
++		       sizeof(creq->op_tmpl));
++	else
++		memcpy_toio(engine->sram, &creq->op_tmpl,
++			    sizeof(creq->op_tmpl));
+ 
+ 	if (!sreq->offset) {
+ 		digsize = crypto_ahash_digestsize(crypto_ahash_reqtfm(req));
+@@ -177,9 +182,14 @@ static void mv_cesa_ahash_std_step(struct ahash_request *req)
+ 				       engine->regs + CESA_IVDIG(i));
  	}
  
- 	for (i = 0; i < cptvf->num_queues; i++) {
--		tasklet_init(&cwqe_info->vq_wqe[i].twork, vq_work_handler,
--			     (u64)cwqe_info);
-+		tasklet_setup(&cwqe_info->vq_wqe[i].twork, vq_work_handler);
- 		cwqe_info->vq_wqe[i].cptvf = cptvf;
+-	if (creq->cache_ptr)
+-		memcpy_toio(engine->sram + CESA_SA_DATA_SRAM_OFFSET,
+-			    creq->cache, creq->cache_ptr);
++	if (creq->cache_ptr) {
++		if (engine->pool)
++			memcpy(engine->sram_pool + CESA_SA_DATA_SRAM_OFFSET,
++			       creq->cache, creq->cache_ptr);
++		else
++			memcpy_toio(engine->sram + CESA_SA_DATA_SRAM_OFFSET,
++				    creq->cache, creq->cache_ptr);
++	}
+ 
+ 	len = min_t(size_t, req->nbytes + creq->cache_ptr - sreq->offset,
+ 		    CESA_SA_SRAM_PAYLOAD_SIZE);
+@@ -190,12 +200,10 @@ static void mv_cesa_ahash_std_step(struct ahash_request *req)
  	}
- 	cptvf->wqe_info = cwqe_info;
+ 
+ 	if (len - creq->cache_ptr)
+-		sreq->offset += sg_pcopy_to_buffer(req->src, creq->src_nents,
+-						   engine->sram +
+-						   CESA_SA_DATA_SRAM_OFFSET +
+-						   creq->cache_ptr,
+-						   len - creq->cache_ptr,
+-						   sreq->offset);
++		sreq->offset += mv_cesa_sg_copy_to_sram(
++			engine, req->src, creq->src_nents,
++			CESA_SA_DATA_SRAM_OFFSET + creq->cache_ptr,
++			len - creq->cache_ptr, sreq->offset);
+ 
+ 	op = &creq->op_tmpl;
+ 
+@@ -220,16 +228,28 @@ static void mv_cesa_ahash_std_step(struct ahash_request *req)
+ 			if (len + trailerlen > CESA_SA_SRAM_PAYLOAD_SIZE) {
+ 				len &= CESA_HASH_BLOCK_SIZE_MSK;
+ 				new_cache_ptr = 64 - trailerlen;
+-				memcpy_fromio(creq->cache,
+-					      engine->sram +
+-					      CESA_SA_DATA_SRAM_OFFSET + len,
+-					      new_cache_ptr);
++				if (engine->pool)
++					memcpy(creq->cache,
++					       engine->sram_pool +
++					       CESA_SA_DATA_SRAM_OFFSET + len,
++					       new_cache_ptr);
++				else
++					memcpy_fromio(creq->cache,
++						      engine->sram +
++						      CESA_SA_DATA_SRAM_OFFSET +
++						      len,
++						      new_cache_ptr);
+ 			} else {
+ 				i = mv_cesa_ahash_pad_req(creq, creq->cache);
+ 				len += i;
+-				memcpy_toio(engine->sram + len +
+-					    CESA_SA_DATA_SRAM_OFFSET,
+-					    creq->cache, i);
++				if (engine->pool)
++					memcpy(engine->sram_pool + len +
++					       CESA_SA_DATA_SRAM_OFFSET,
++					       creq->cache, i);
++				else
++					memcpy_toio(engine->sram + len +
++						    CESA_SA_DATA_SRAM_OFFSET,
++						    creq->cache, i);
+ 			}
+ 
+ 			if (frag_mode == CESA_SA_DESC_CFG_LAST_FRAG)
+@@ -243,7 +263,10 @@ static void mv_cesa_ahash_std_step(struct ahash_request *req)
+ 	mv_cesa_update_op_cfg(op, frag_mode, CESA_SA_DESC_CFG_FRAG_MSK);
+ 
+ 	/* FIXME: only update enc_len field */
+-	memcpy_toio(engine->sram, op, sizeof(*op));
++	if (engine->pool)
++		memcpy(engine->sram_pool, op, sizeof(*op));
++	else
++		memcpy_toio(engine->sram, op, sizeof(*op));
+ 
+ 	if (frag_mode == CESA_SA_DESC_CFG_FIRST_FRAG)
+ 		mv_cesa_update_op_cfg(op, CESA_SA_DESC_CFG_MID_FRAG,
+diff --git a/drivers/crypto/marvell/cesa/tdma.c b/drivers/crypto/marvell/cesa/tdma.c
+index 0e0d63359798..f0b5537038c2 100644
+--- a/drivers/crypto/marvell/cesa/tdma.c
++++ b/drivers/crypto/marvell/cesa/tdma.c
+@@ -350,3 +350,53 @@ int mv_cesa_dma_add_op_transfers(struct mv_cesa_tdma_chain *chain,
+ 
+ 	return 0;
+ }
++
++size_t mv_cesa_sg_copy(struct mv_cesa_engine *engine,
++		       struct scatterlist *sgl, unsigned int nents,
++		       unsigned int sram_off, size_t buflen, off_t skip,
++		       bool to_sram)
++{
++	unsigned int sg_flags = SG_MITER_ATOMIC;
++	struct sg_mapping_iter miter;
++	unsigned int offset = 0;
++
++	if (to_sram)
++		sg_flags |= SG_MITER_FROM_SG;
++	else
++		sg_flags |= SG_MITER_TO_SG;
++
++	sg_miter_start(&miter, sgl, nents, sg_flags);
++
++	if (!sg_miter_skip(&miter, skip))
++		return 0;
++
++	while ((offset < buflen) && sg_miter_next(&miter)) {
++		unsigned int len;
++
++		len = min(miter.length, buflen - offset);
++
++		if (to_sram) {
++			if (engine->pool)
++				memcpy(engine->sram_pool + sram_off + offset,
++				       miter.addr, len);
++			else
++				memcpy_toio(engine->sram + sram_off + offset,
++					    miter.addr, len);
++		} else {
++			if (engine->pool)
++				memcpy(miter.addr,
++				       engine->sram_pool + sram_off + offset,
++				       len);
++			else
++				memcpy_fromio(miter.addr,
++					      engine->sram + sram_off + offset,
++					      len);
++		}
++
++		offset += len;
++	}
++
++	sg_miter_stop(&miter);
++
++	return offset;
++}
 -- 
-2.25.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
