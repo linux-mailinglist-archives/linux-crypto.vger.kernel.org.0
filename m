@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F072FE106
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jan 2021 05:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C69092FE10B
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jan 2021 05:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726714AbhAUEqG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 20 Jan 2021 23:46:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39454 "EHLO
+        id S1725967AbhAUEqZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 20 Jan 2021 23:46:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbhAUEpZ (ORCPT
+        with ESMTP id S1731776AbhAUEpH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 20 Jan 2021 23:45:25 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2F7C0613D6;
-        Wed, 20 Jan 2021 20:44:24 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id kx7so808095pjb.2;
-        Wed, 20 Jan 2021 20:44:24 -0800 (PST)
+        Wed, 20 Jan 2021 23:45:07 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87C0C06179A;
+        Wed, 20 Jan 2021 20:44:33 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id y205so780082pfc.5;
+        Wed, 20 Jan 2021 20:44:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YEPwpL8tIwFQ2pgUdTDSsmDRSKgoB9OQrqIbywK9g6k=;
-        b=dU9WU1E48oj1RRxS0YgvTzPsbpnhRc/jNgYXGzORXZK2kmMTbQmjpzN1uNz+lKkiNU
-         TOaLwOEAb4HlD3elA0CfbOZHOh+b4SKjf3/GELVuSnpAbZ9Y2PkjdN26sSERD6ONqgfM
-         FLZd77ZV9iyiG8iRIWR+DzFJQjg3BlPmsjRbU+d45KuBV/dnWMeZVA5cX0g7GhT5QoX/
-         Dj6KU3poUouCZqom9b7QhEh8xnGdXPOyBp4QlFHXgTlE7yvoyoEKa2amj7F8wyTgsFvD
-         KQuM21l9P5n+zlHdJqhWTFYCUsvpn2ac53gsWGoY0//kn3tKW0q/ddvcrB0QBDV7AdQR
-         t8Lg==
+        bh=hdFxs07OBJ0o+UoENy6opg4NHXCcbJpiwkpmIdQiwws=;
+        b=or/uV8vNwzSNQAD9VOW+E6JxiU2rzML6E1U7mO1jiDzNuL2NIYAHw64HUf5uK50fl/
+         BMnGsUkuiEABSJ/Rf6x4WZE236IE57YW16ZaJuT+Fcufv89T0K2IGzkxIQuCOHeraIwD
+         ZQNY6Cz/a++hUz8KgenUYRCZ3pPYRp/dU0uIya5WdmLgkEhcPGiqpHtGNMD4x+Mes/Ud
+         BLljOq/WKBAk3TZCPf5I67nA9Iv2XmL/ncubnhVHDlatxw4KmCoDOxuAlqEwDCjwIMX4
+         hH/2dwwo1UkfmUGjFtNUc7xfNOvFDaiy9oeCl4CfSpQKbW5f9dcmI8WiUQZD34Eqb3TV
+         b3fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YEPwpL8tIwFQ2pgUdTDSsmDRSKgoB9OQrqIbywK9g6k=;
-        b=Xs2G4r4cHXgPd7K4A6F/Mpq+KK2qo0s/FaFQ9Z9nDQ5N2fVMiWw8PBo+qXU8/2RFWa
-         1DWSTn1hMjEuu8NLFV4E49ZsOg4varv5hNA7ZREdFOx0zZgdPwC5A6lhNYRubhnswMsr
-         Sr9CrmSaFgGXyz/4KcfbzJbK5yigF7p1bAh/0NwGiO0Z5khg6EK0Atad0lVWmMscPI4F
-         silgeSivhM5xWkMfjqTIBeC64MPz11S4iXp1wUMwZsBz27J957DSD/rvZkoHdW6aHUOK
-         kXoiBcM54SN/IT1dcEsMSqGgSOirNL2D4Br45xYxfaobGpnoPTGqH4nCIARgwuKUP8N1
-         fLIA==
-X-Gm-Message-State: AOAM530ZjSZvpIS+nkJdgBZfI8snWAri+65nLZXY0J+5JqfCADpuTKN3
-        Qo+yG8fXo6n21dysu4ROkis=
-X-Google-Smtp-Source: ABdhPJwJ9hGf8pbMPGeEG6z5iRCJqmXre9McNlr8vNJHe99q8dg0/KYxRa6Y2rusHu50LojxQn4eEw==
-X-Received: by 2002:a17:90a:1913:: with SMTP id 19mr4557392pjg.183.1611204263868;
-        Wed, 20 Jan 2021 20:44:23 -0800 (PST)
+        bh=hdFxs07OBJ0o+UoENy6opg4NHXCcbJpiwkpmIdQiwws=;
+        b=mjRf3eek51DdtULSG7xzvmy0Nq2GC4IQnCv9mrUOODDyzdR6DsxEphhoVeIbEFmxu0
+         o3E62MQbNlontwoGNFrlhIHOZwexfzrqi5GsYHfIGptRYmdO+/dKjCDxukq+B27b8Qg3
+         5HEhdHyRR2tn0bdZ8k7VM4AlG+yRjwt2cvEdAJ3eKrqpdbItd62mR2I8tKcyTbvoBxwt
+         HlKvXo2xErY4UhVf6vyToYw1HVO9UoDAVFJf45s5o2xlNUGARBZQRP5lufVgqmaXwk8K
+         Wq7+8Zm+RLrMfvczKJDDUU9IKH6rDrR9d1rusOFxn+Zup8OX1qGXwBdDHmvt9CN10mS4
+         lXKw==
+X-Gm-Message-State: AOAM533VMV8I8uGrNBTdnhbM0owNVe3yH/WFgDQmDyOkrb8WBOV7ULcA
+        O7WIclQmNgZYDtXarAMK6D0=
+X-Google-Smtp-Source: ABdhPJxgMWq3EcaBTGUm+3pIVl34jEttbaEgC3Eeu3x5zjQqx3tSac0inE0U/K1D2V8XWxvYWNw73Q==
+X-Received: by 2002:a63:4c65:: with SMTP id m37mr12590854pgl.110.1611204273495;
+        Wed, 20 Jan 2021 20:44:33 -0800 (PST)
 Received: from localhost.localdomain ([49.207.210.174])
-        by smtp.gmail.com with ESMTPSA id jx15sm3916014pjb.17.2021.01.20.20.44.14
+        by smtp.gmail.com with ESMTPSA id jx15sm3916014pjb.17.2021.01.20.20.44.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 20:44:23 -0800 (PST)
+        Wed, 20 Jan 2021 20:44:32 -0800 (PST)
 From:   Allen Pais <allen.lkml@gmail.com>
 To:     herbert@gondor.apana.org.au
 Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
@@ -64,9 +64,9 @@ Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
         linux-samsung-soc@vger.kernel.org,
         Allen Pais <apais@linux.microsoft.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH v4 16/19] crypto: rockchip: convert tasklets to use new tasklet_setup() API
-Date:   Thu, 21 Jan 2021 10:11:23 +0530
-Message-Id: <20210121044126.152274-17-allen.lkml@gmail.com>
+Subject: [PATCH v4 17/19] crypto: s5p: convert tasklets to use new tasklet_setup() API
+Date:   Thu, 21 Jan 2021 10:11:24 +0530
+Message-Id: <20210121044126.152274-18-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210121044126.152274-1-allen.lkml@gmail.com>
 References: <20210121044126.152274-1-allen.lkml@gmail.com>
@@ -83,53 +83,60 @@ struct tasklet_struct pointer to all tasklet
 callbacks, switch to using the new tasklet_setup()
 and from_tasklet() to pass the tasklet pointer explicitly.
 
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <apais@linux.microsoft.com>
 ---
- drivers/crypto/rockchip/rk3288_crypto.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/crypto/s5p-sss.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/crypto/rockchip/rk3288_crypto.c b/drivers/crypto/rockchip/rk3288_crypto.c
-index 35d73061d156..85f314c79734 100644
---- a/drivers/crypto/rockchip/rk3288_crypto.c
-+++ b/drivers/crypto/rockchip/rk3288_crypto.c
-@@ -201,9 +201,9 @@ static int rk_crypto_enqueue(struct rk_crypto_info *dev,
- 	return ret;
+diff --git a/drivers/crypto/s5p-sss.c b/drivers/crypto/s5p-sss.c
+index 682c8a450a57..128512a365e1 100644
+--- a/drivers/crypto/s5p-sss.c
++++ b/drivers/crypto/s5p-sss.c
+@@ -1445,9 +1445,9 @@ static int s5p_hash_handle_queue(struct s5p_aes_dev *dd,
+  * s5p_hash_tasklet_cb() - hash tasklet
+  * @data:	ptr to s5p_aes_dev
+  */
+-static void s5p_hash_tasklet_cb(unsigned long data)
++static void s5p_hash_tasklet_cb(struct tasklet_struct *t)
+ {
+-	struct s5p_aes_dev *dd = (struct s5p_aes_dev *)data;
++	struct s5p_aes_dev *dd = from_tasklet(dd, t, hash_tasklet);
+ 
+ 	if (!test_bit(HASH_FLAGS_BUSY, &dd->hash_flags)) {
+ 		s5p_hash_handle_queue(dd, NULL);
+@@ -1975,9 +1975,9 @@ static void s5p_aes_crypt_start(struct s5p_aes_dev *dev, unsigned long mode)
+ 	s5p_aes_complete(req, err);
  }
  
--static void rk_crypto_queue_task_cb(unsigned long data)
-+static void rk_crypto_queue_task_cb(struct tasklet_struct *t)
+-static void s5p_tasklet_cb(unsigned long data)
++static void s5p_tasklet_cb(struct tasklet_struct *t)
  {
--	struct rk_crypto_info *dev = (struct rk_crypto_info *)data;
-+	struct rk_crypto_info *dev = from_tasklet(dev, t, queue_task);
+-	struct s5p_aes_dev *dev = (struct s5p_aes_dev *)data;
++	struct s5p_aes_dev *dev = from_tasklet(dev, t, tasklet);
  	struct crypto_async_request *async_req, *backlog;
+ 	struct s5p_aes_reqctx *reqctx;
  	unsigned long flags;
- 	int err = 0;
-@@ -231,9 +231,9 @@ static void rk_crypto_queue_task_cb(unsigned long data)
- 		dev->complete(dev->async_req, err);
- }
+@@ -2258,7 +2258,7 @@ static int s5p_aes_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, pdata);
+ 	s5p_dev = pdata;
  
--static void rk_crypto_done_task_cb(unsigned long data)
-+static void rk_crypto_done_task_cb(struct tasklet_struct *t)
- {
--	struct rk_crypto_info *dev = (struct rk_crypto_info *)data;
-+	struct rk_crypto_info *dev = from_tasklet(dev, t, done_task);
+-	tasklet_init(&pdata->tasklet, s5p_tasklet_cb, (unsigned long)pdata);
++	tasklet_setup(&pdata->tasklet, s5p_tasklet_cb);
+ 	crypto_init_queue(&pdata->queue, CRYPTO_QUEUE_LEN);
  
- 	if (dev->err) {
- 		dev->complete(dev->async_req, dev->err);
-@@ -389,10 +389,8 @@ static int rk_crypto_probe(struct platform_device *pdev)
- 	crypto_info->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, crypto_info);
+ 	for (i = 0; i < ARRAY_SIZE(algs); i++) {
+@@ -2268,8 +2268,7 @@ static int s5p_aes_probe(struct platform_device *pdev)
+ 	}
  
--	tasklet_init(&crypto_info->queue_task,
--		     rk_crypto_queue_task_cb, (unsigned long)crypto_info);
--	tasklet_init(&crypto_info->done_task,
--		     rk_crypto_done_task_cb, (unsigned long)crypto_info);
-+	tasklet_setup(&crypto_info->queue_task, rk_crypto_queue_task_cb);
-+	tasklet_setup(&crypto_info->done_task, rk_crypto_done_task_cb);
- 	crypto_init_queue(&crypto_info->queue, 50);
+ 	if (pdata->use_hash) {
+-		tasklet_init(&pdata->hash_tasklet, s5p_hash_tasklet_cb,
+-			     (unsigned long)pdata);
++		tasklet_setup(&pdata->hash_tasklet, s5p_hash_tasklet_cb);
+ 		crypto_init_queue(&pdata->hash_queue, SSS_HASH_QUEUE_LENGTH);
  
- 	crypto_info->enable_clk = rk_crypto_enable_clk;
+ 		for (hash_i = 0; hash_i < ARRAY_SIZE(algs_sha1_md5_sha256);
 -- 
 2.25.1
 
