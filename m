@@ -2,106 +2,147 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC91305D3D
-	for <lists+linux-crypto@lfdr.de>; Wed, 27 Jan 2021 14:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABDC305D36
+	for <lists+linux-crypto@lfdr.de>; Wed, 27 Jan 2021 14:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S313408AbhAZWfm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 26 Jan 2021 17:35:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388455AbhAZTHB (ORCPT
+        id S313519AbhAZWft (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 26 Jan 2021 17:35:49 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:65310 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2395233AbhAZTMT (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 26 Jan 2021 14:07:01 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88298C061574;
-        Tue, 26 Jan 2021 11:06:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=zUcP2Ekow40wDr8LQu56g1JOWBLSxsWCwNUDwttWnJY=; b=ad84LgFWJ8FgdoRvBSNVnAdb+
-        0I6Sw5zFHnURG6DddKEQ8HbimmJVGhfZNBE+p4AhrkuGcqgL8wXJS/82Ulh3PCv17KG3N45R7A4lo
-        nmAWv3AnHF/mSc9xZD1jBN9qCv/KUXD01csQwhWLG+rkGDTkxKX1bLlQ1gn5TyX5Nq4qryobh41F5
-        DB4HHmb9nD2Xu3mV8TLNo+8B+nWoKTBy48lo4Q1JucKdB4IQ7QCREGM7mwYt646OKNjClWNUO1E6M
-        j60U9ebf7BAEOHy7IwgCDiy4Xjl4pjGwcbLID7o2kdNIzvVrdpvSEcEUXs6vOb5LBBAMtPHo30HE4
-        oAMpwR9Vw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53070)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l4TeW-0004lN-0N; Tue, 26 Jan 2021 19:05:24 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l4TeJ-00042E-C4; Tue, 26 Jan 2021 19:05:11 +0000
-Date:   Tue, 26 Jan 2021 19:05:11 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-rtc@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-serial@vger.kernel.org, coresight@lists.linaro.org,
-        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-crypto@vger.kernel.org,
-        kernel@pengutronix.de, Leo Yan <leo.yan@linaro.org>,
-        dmaengine@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Mike Leach <mike.leach@linaro.org>
-Subject: Re: [PATCH v3 4/5] amba: Make the remove callback return void
-Message-ID: <20210126190511.GK1551@shell.armlinux.org.uk>
-References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
- <20210126165835.687514-5-u.kleine-koenig@pengutronix.de>
- <3e42b2ea-c713-31b2-9c86-c49a70d8e1f4@arm.com>
- <20210126175652.3caoqfnsky2es42f@pengutronix.de>
+        Tue, 26 Jan 2021 14:12:19 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10QJ1Xkb076035;
+        Tue, 26 Jan 2021 14:11:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=sigtRxcd2FME8yadU5aWQfSDBgsJlGfepDO9gFD1khI=;
+ b=s35ICghB3gT4W1wUBiam9O16eJZe2THQdFPT5s3hbG9dK2qqT6fwx/2XnuHJ4vzVKUjH
+ jnIVWUmqOAD/Nh2oTxlMydkIGns6SrKzLi+9bajSf2cPxZjfX22dbghitAIarjMcQLnO
+ xBErrDc/ZecU8/zVrs7onCHjygMCDLJcxqH9bXS3iTfCOyS1PSNoZO5TWcP070wDoJWW
+ 16qH9cwYUh7SOcovqAQzwGIIq02KhOdi7oU0ZVkiS3Fit5c4hjM7bg2Wbs1US5ezXUXa
+ hxFuM3lkETJoTB7HawZN6lzx/326LIiDiXPZD0YYmCBjRsM68xXZSH5vrjfSkoy6zT/B ew== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36apmqv81y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 14:11:24 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10QJ2sOB080479;
+        Tue, 26 Jan 2021 14:11:24 -0500
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36apmqv81m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 14:11:24 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10QJ36ee027883;
+        Tue, 26 Jan 2021 19:11:23 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma04dal.us.ibm.com with ESMTP id 36agvekssm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 19:11:23 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10QJBMDk25166310
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Jan 2021 19:11:22 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 30741136051;
+        Tue, 26 Jan 2021 19:11:22 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 933DE136055;
+        Tue, 26 Jan 2021 19:11:21 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 26 Jan 2021 19:11:21 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
+To:     dhowells@redhat.com, keyrings@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        patrick@puiterwijk.org, Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v2 0/3] Add support for x509 certs with NIST p256 and p192 keys
+Date:   Tue, 26 Jan 2021 14:11:12 -0500
+Message-Id: <20210126191115.434842-1-stefanb@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210126175652.3caoqfnsky2es42f@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-26_10:2021-01-26,2021-01-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 impostorscore=0
+ clxscore=1015 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101260096
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 06:56:52PM +0100, Uwe Kleine-König wrote:
-> I'm surprised to see that the remove callback introduced in 2952ecf5df33
-> ("coresight: etm4x: Refactor probing routine") has an __exit annotation.
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-In general, remove callbacks should not have an __exit annotation.
-__exit _can_ be discarded at link time for built-in stuff.
+This series of patches adds support for x509 certificates signed by a CA
+that uses NIST p256 or p192 keys for signing. It also adds support for
+certificates where the public key is a NIST p256 or p192 key. The math
+for ECDSA signature verification is also added.
+
+Since self-signed certificates are verified upon loading, the following
+script can be used for testing:
+
+keyctrl newring test @u
+
+while :; do
+	for hash in sha1 sha224 sha256 sha384 sha512; do
+		openssl req \
+			-x509 \
+			-${hash} \
+			-newkey ec \
+			-pkeyopt ec_paramgen_curve:prime256v1 \
+			-keyout key.pem \
+			-days 365 \
+			-subj '/CN=test' \
+			-nodes \
+			-outform der \
+			-out cert.der
+		keyctl padd asymmetric testkey %keyring:test < cert.der
+		if [ $? -ne 0 ]; then
+			echo "ERROR"
+			exit 1
+		fi
+	done
+done
+
+It also works with restricted keyrings where an RSA key is used to sign
+a NIST P256/P192 key. Scripts for testing are here:
+
+https://github.com/stefanberger/eckey-testing
+
+The ECDSA signature verification will be used by IMA Appraisal where ECDSA
+file signatures stored in RPM packages will use substantially less space
+than if RSA signatures were to be used.
+
+   Stefan
+
+v1->v2:
+  - using faster vli_sub rather than newly added vli_mod_fast to 'reduce'
+    result
+  - rearranged switch statements to follow after RSA
+  - 3rd patch from 1st posting is now 1st patch
+
+Stefan Berger (3):
+  x509: Detect sm2 keys by their parameters OID
+  x509: Add support for parsing x509 certs with NIST p256 keys
+  x509: Add support for NIST p192 keys in certificates and akcipher
+
+ crypto/Makefile                           |   9 +-
+ crypto/asymmetric_keys/public_key.c       |  19 ++
+ crypto/asymmetric_keys/x509_cert_parser.c |  45 ++-
+ crypto/ecc.c                              | 317 ++++++++++++++++++++++
+ crypto/ecc.h                              |   2 +
+ crypto/ecc_curve_defs.h                   |   4 +
+ crypto/eccsignature.asn1                  |   4 +
+ include/linux/oid_registry.h              |   6 +
+ 8 files changed, 403 insertions(+), 3 deletions(-)
+ create mode 100644 crypto/eccsignature.asn1
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.25.4
+
