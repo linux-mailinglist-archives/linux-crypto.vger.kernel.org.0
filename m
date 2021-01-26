@@ -2,65 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27558305C8A
-	for <lists+linux-crypto@lfdr.de>; Wed, 27 Jan 2021 14:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD57305D58
+	for <lists+linux-crypto@lfdr.de>; Wed, 27 Jan 2021 14:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238214AbhA0NJ1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 27 Jan 2021 08:09:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44082 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237868AbhA0NH1 (ORCPT
+        id S313150AbhAZWdc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 26 Jan 2021 17:33:32 -0500
+Received: from mail-m975.mail.163.com ([123.126.97.5]:54314 "EHLO
+        mail-m975.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729206AbhAZFVm (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:07:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611752761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qLn5/wsS0dcwc4LcvWQZoJ8QO8t05OxxxLh72rUzLqw=;
-        b=CQIwH+3qEffSl5wIyRQXspw4JzRYaGRV2iceIx9Ba0VoOt7I/vPXWGlUxFhYtV/DTFhIR0
-        PSQ37LbbkZhbVwvGsh3fgnlgjf2bsz44rZOvyqfjoH/nGjSuJbz1HeJBogKrmLmUB8D0dX
-        pj9Jo2+7d32C0DupSrAhG9VSYA2OJwU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-Q4WTgsKxNDqw4tXvcp7b4g-1; Wed, 27 Jan 2021 08:05:58 -0500
-X-MC-Unique: Q4WTgsKxNDqw4tXvcp7b4g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A94C19251A4;
-        Wed, 27 Jan 2021 13:05:56 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D0D8619D80;
-        Wed, 27 Jan 2021 13:05:54 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
-References: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     dhowells@redhat.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        patrick@puiterwijk.org, Stefan Berger <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v3 0/3] Add support for x509 certs with NIST p256 and p192 keys
+        Tue, 26 Jan 2021 00:21:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=5Qzhy
+        HkOIhzhyDKQmARRKm/yKJdbh50BiqAFk60dd7M=; b=HQv1XYRkgJvVvwKz2p6MX
+        m2HfOT5CjTGyT18MnKmQfxiqV85u7AWSyu03/iTYhPwWaUy8m+qf3d7XBCgq8gwJ
+        wedBfvtUsKhEoKCxBE6gVoWq26FjRfP5V6atMD4vOTgGSX7CmCfjfIuq8TY+ZUhm
+        WeGj6Nymf10UjaozghbmMA=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp5 (Coremail) with SMTP id HdxpCgD3_4FpkA9gI1qZAA--.101S2;
+        Tue, 26 Jan 2021 11:45:52 +0800 (CST)
+From:   dingsenjie@163.com
+To:     herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] crypto/ccree: fix spelling typo of allocated
+Date:   Tue, 26 Jan 2021 11:45:53 +0800
+Message-Id: <20210126034553.44496-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3069453.1611752753.1@warthog.procyon.org.uk>
-Date:   Wed, 27 Jan 2021 13:05:53 +0000
-Message-ID: <3069454.1611752753@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: HdxpCgD3_4FpkA9gI1qZAA--.101S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruw4xWrWDurW5tr43AF1DJrb_yoW3Awb_u3
+        yxWay7Xryj9wn3tr4UJw48ZrWF9343uFs2gr4jqrW5XFy3Zrs5uFy7ur13Ar17JrWrXryk
+        uws2g3Wayw43ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5cNVDUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiThEmyFUDHcZbaAAAsP
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Stefan Berger <stefanb@linux.vnet.ibm.com> wrote:
+From: dingsenjie <dingsenjie@yulong.com>
 
-> k=$(keyctrl newring test @u)
+allocted -> allocated
 
-keyctl - but I can fix that.
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+---
+ drivers/crypto/ccree/cc_cipher.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-David
+diff --git a/drivers/crypto/ccree/cc_cipher.c b/drivers/crypto/ccree/cc_cipher.c
+index cdfee50..78833491 100644
+--- a/drivers/crypto/ccree/cc_cipher.c
++++ b/drivers/crypto/ccree/cc_cipher.c
+@@ -921,7 +921,7 @@ static int cc_cipher_process(struct skcipher_request *req,
+ 			return crypto_skcipher_decrypt(subreq);
+ 	}
+ 
+-	/* The IV we are handed may be allocted from the stack so
++	/* The IV we are handed may be allocated from the stack so
+ 	 * we must copy it to a DMAable buffer before use.
+ 	 */
+ 	req_ctx->iv = kmemdup(iv, ivsize, flags);
+-- 
+1.9.1
 
