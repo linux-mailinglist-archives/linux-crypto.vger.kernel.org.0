@@ -2,157 +2,64 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE373060BE
-	for <lists+linux-crypto@lfdr.de>; Wed, 27 Jan 2021 17:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F3F306427
+	for <lists+linux-crypto@lfdr.de>; Wed, 27 Jan 2021 20:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343899AbhA0QNq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 27 Jan 2021 11:13:46 -0500
-Received: from mail-40140.protonmail.ch ([185.70.40.140]:21406 "EHLO
-        mail-40140.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343837AbhA0QNA (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:13:00 -0500
-Date:   Wed, 27 Jan 2021 16:12:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1611763933;
-        bh=CXG+0jciHe2vDbT437FM3Qo95DNVBYkdhL5WZaYUPoY=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=soC1P8y5fbrH54We/uaS8kb/dds+4mQBpXZy35ILyJjxvA7AiwxabAYh4pvwxNXoo
-         sJd2t2PH7IVYBhWLFvnCrNo+hPtPM1ZejKxhc3NLHZ9YAHPXrOXkLzXeFUIYdAwfM9
-         0DlB1Lw9h8W/zKKX63lNfW2kdfm8askULqa6Nv10=
+        id S1344461AbhA0TdW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 27 Jan 2021 14:33:22 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:49316 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344440AbhA0Tc5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 27 Jan 2021 14:32:57 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1l4qXh-0001Dq-4Z; Thu, 28 Jan 2021 06:31:54 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 28 Jan 2021 06:31:53 +1100
+Date:   Thu, 28 Jan 2021 06:31:52 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
 To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-From:   Nym Seddon <unseddd@protonmail.com>
-Cc:     "dhowells@redhat.com" <dhowells@redhat.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "patrick@puiterwijk.org" <patrick@puiterwijk.org>,
+Cc:     dhowells@redhat.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, patrick@puiterwijk.org,
         Stefan Berger <stefanb@linux.ibm.com>
-Reply-To: Nym Seddon <unseddd@protonmail.com>
-Subject: Re: [PATCH v3 0/3] Add support for x509 certs with NIST p256 and p192 keys
-Message-ID: <yOgLSllWWtGlr6OYcQxe8CeFwK4H9cWzWbalszgSv4xN_DxK6AGG_vNRyuVX6aKHzesDaj0LK9pB0q8SIQWXQETX26J6KXe428OPMHJYvus=@protonmail.com>
-In-Reply-To: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
+Subject: Re: [PATCH v3 2/3] x509: Add support for parsing x509 certs with
+ NIST p256 keys
+Message-ID: <20210127193152.GA27505@gondor.apana.org.au>
 References: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
+ <20210127123350.817593-3-stefanb@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127123350.817593-3-stefanb@linux.vnet.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Stefan,
+On Wed, Jan 27, 2021 at 07:33:49AM -0500, Stefan Berger wrote:
+>
+> +static struct akcipher_alg ecc_nist_p256 = {
+> +	.verify = ecdsa_verify,
+> +	.set_pub_key = ecc_set_pub_key,
+> +	.max_size = ecc_nist_p256_max_size,
+> +	.init = ecc_nist_p256_init_tfm,
+> +	.exit = ecc_exit_tfm,
+> +	.base = {
+> +		.cra_name = "nist_p256",
+> +		.cra_driver_name = "ecc-nist-p256",
+> +		.cra_priority = 100,
+> +		.cra_module = THIS_MODULE,
+> +		.cra_ctxsize = sizeof(struct ecc_ctx),
+> +	},
+> +};
 
-In the recommendations from SafeCurves (https://safecurves.cr.yp.to/twist.h=
-tml) there are a number of attacks against ECC twists. Two of those attacks=
- are relevant against NIST P192: invalid-curve attacks and invalid-curve at=
-tacks against ladders.
+This is not how we name generic algorithms.
 
-Both attacks can be mitigated by checking the supplied public key is on the=
- correct curve, before performing curve operations.
+Please split this out and submit them through the crypto tree
+instead.
 
-Not sure if the right place for those checks are in the signature verificat=
-ion code provided in these patches, or when reading public keys from the ce=
-rtificates. Does the kernel provide functions for checking curve points sat=
-isfy their respective curve equations?
-
-There are also tables describing the cost of combined attacks on various cu=
-rves, where NIST P224 already falls below the safe threshold. Because of th=
-at, I would recommend not implementing support for NIST P192 (since it woul=
-d fair even worse).
-
-What are your thoughts?
-
-Best,
-Nym
-
-=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
-ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
-On Wednesday, January 27, 2021 12:33 PM, Stefan Berger <stefanb@linux.vnet.=
-ibm.com> wrote:
-
-> From: Stefan Berger stefanb@linux.ibm.com
->
-> This series of patches adds support for x509 certificates signed by a CA
-> that uses NIST p256 or p192 keys for signing. It also adds support for
-> certificates where the public key is a NIST p256 or p192 key. The math
-> for ECDSA signature verification is also added.
->
-> Since self-signed certificates are verified upon loading, the following
-> script can be used for testing:
->
-> k=3D$(keyctrl newring test @u)
->
-> while :; do
-> for hash in sha1 sha224 sha256 sha384 sha512; do
-> openssl req \
-> -x509 \
-> -${hash} \
-> -newkey ec \
-> -pkeyopt ec_paramgen_curve:prime256v1 \
-> -keyout key.pem \
-> -days 365 \
-> -subj '/CN=3Dtest' \
-> -nodes \
-> -outform der \
-> -out cert.der
-> keyctl padd asymmetric testkey $k < cert.der
-> if [ $? -ne 0 ]; then
-> echo "ERROR"
-> exit 1
-> fi
-> done
-> done
->
-> It also works with restricted keyrings where an RSA key is used to sign
-> a NIST P256/P192 key. Scripts for testing are here:
->
-> https://github.com/stefanberger/eckey-testing
->
-> The ECDSA signature verification will be used by IMA Appraisal where ECDS=
-A
-> file signatures stored in RPM packages will use substantially less space
-> than if RSA signatures were to be used.
->
-> Stefan
->
-> v2->v3:
->
-> -   patch 2 now includes linux/scatterlist.h
->
->     v1->v2:
->
-> -   using faster vli_sub rather than newly added vli_mod_fast to 'reduce'
->     result
->
-> -   rearranged switch statements to follow after RSA
->
-> -   3rd patch from 1st posting is now 1st patch
->
->     Stefan Berger (3):
->     x509: Detect sm2 keys by their parameters OID
->     x509: Add support for parsing x509 certs with NIST p256 keys
->     x509: Add support for NIST p192 keys in certificates and akcipher
->
->     crypto/Makefile | 9 +-
->     crypto/asymmetric_keys/public_key.c | 19 ++
->     crypto/asymmetric_keys/x509_cert_parser.c | 45 ++-
->     crypto/ecc.c | 318 ++++++++++++++++++++++
->     crypto/ecc.h | 2 +
->     crypto/ecc_curve_defs.h | 4 +
->     crypto/eccsignature.asn1 | 4 +
->     include/linux/oid_registry.h | 6 +
->     8 files changed, 404 insertions(+), 3 deletions(-)
->     create mode 100644 crypto/eccsignature.asn1
->
->     --
->     2.25.4
->
-
-
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
