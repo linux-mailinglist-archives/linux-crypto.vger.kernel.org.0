@@ -2,188 +2,131 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081B2305D34
-	for <lists+linux-crypto@lfdr.de>; Wed, 27 Jan 2021 14:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CC8305DE7
+	for <lists+linux-crypto@lfdr.de>; Wed, 27 Jan 2021 15:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S313510AbhAZWfp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 26 Jan 2021 17:35:45 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3674 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2395231AbhAZTMS (ORCPT
+        id S231233AbhA0OJ2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 27 Jan 2021 09:09:28 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14382 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232364AbhA0OHW (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 26 Jan 2021 14:12:18 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10QJ2iqW189030;
-        Tue, 26 Jan 2021 14:11:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=ikDn+ZRYaj3bFOq/SC2Ll0iFE2WX9JysIlM2RPX6Jik=;
- b=TAor40+2O3Onk13z1A2JUZsrq8pbYEr+zfyByXkH5nNJh27+llglcWgGj52bIbICG06L
- E7sdP/APiSOvzJ9WYeN5jdnm12dh1LOI7WZIOnRcNYzhaJ2O68DlaEY0zwKM+IhQFcB0
- Ir9GjD+G63yV7cziXaAQ6QlOkUsCZYUuZwnogeH7LDdHTjCFIk9yd3d5xkZRha8WBhTM
- 2IXvQSTOixZcU85UDkrJa0qDcZwvHETG2SjpFrihF07ZzWT2uT0+hX5zshR5qu4IT793
- +Q/uIrfc5AJYrZdwvaSFPlR5rpfpxlboaqtpiWNdsKcp7I/VFvvkWk1ROq45SdP4jbON pw== 
+        Wed, 27 Jan 2021 09:07:22 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10RE3ZBA085244;
+        Wed, 27 Jan 2021 09:04:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=+gfgqu1/y4U3OJv7ojaSu7rxLiM7tLb8oobzVquqwV4=;
+ b=nu2oJMrFm75kebCqEWQNyB1TugzytjW5QIwYfCD0IIDo7y73zN/7vtZUQEJf4iVu+itM
+ ErpMTmvJ0QUuWgpRNOoTxlNnrN1l9jfPvH/PrTus2qU7Bh8mSHgI9d8WvB/e+w+Sa+Z4
+ g3MAnpgore1BWi4feT939UWGPCUGno0bqBlaIYRNhVwRBRVYXMnaCRE2Xj2lDqpvRrAs
+ YpEmSfujcV3B+RhzHdUVnOCnVQnEHBqKAyh4d5wCEhNKBA4UYlVIv4LFkZ6M7nlY2qqc
+ 894zSyPT0gKqENWZwF+K7tSx/Eq5JW/GCBtyN9BQW8/BOcYqaLbB2YnuZrguPCnXrHMY 1Q== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36aqvm1xus-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36b5aw7hc7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Jan 2021 14:11:28 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10QJ3Opq194219;
-        Tue, 26 Jan 2021 14:11:28 -0500
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36aqvm1xtw-1
+        Wed, 27 Jan 2021 09:04:12 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10RE3s3j087542;
+        Wed, 27 Jan 2021 09:04:10 -0500
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36b5aw7ha2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Jan 2021 14:11:27 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10QJ96KT024294;
-        Tue, 26 Jan 2021 19:11:25 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma01dal.us.ibm.com with ESMTP id 36adttn1qj-1
+        Wed, 27 Jan 2021 09:04:10 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10RE1aQo010034;
+        Wed, 27 Jan 2021 14:04:06 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma01fra.de.ibm.com with ESMTP id 368be820qn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Jan 2021 19:11:25 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10QJBOGC21430656
+        Wed, 27 Jan 2021 14:04:06 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10RE3uca13238774
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Jan 2021 19:11:24 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 76271136051;
-        Tue, 26 Jan 2021 19:11:24 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA5D2136061;
-        Tue, 26 Jan 2021 19:11:23 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Jan 2021 19:11:23 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     dhowells@redhat.com, keyrings@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        patrick@puiterwijk.org, Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v2 3/3] x509: Add support for NIST p192 keys in certificates and akcipher
-Date:   Tue, 26 Jan 2021 14:11:15 -0500
-Message-Id: <20210126191115.434842-4-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210126191115.434842-1-stefanb@linux.vnet.ibm.com>
-References: <20210126191115.434842-1-stefanb@linux.vnet.ibm.com>
-MIME-Version: 1.0
+        Wed, 27 Jan 2021 14:03:56 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7C1B911C052;
+        Wed, 27 Jan 2021 14:04:03 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0B24D11C050;
+        Wed, 27 Jan 2021 14:04:00 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.15.120])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 27 Jan 2021 14:03:59 +0000 (GMT)
+Message-ID: <61a0420790250807837b5a701bb52f3d63ff0c84.camel@linux.ibm.com>
+Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>
+Cc:     Eric Snowberg <eric.snowberg@oracle.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        dwmw2@infradead.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, jmorris@namei.org, serge@hallyn.com,
+        nayna@linux.ibm.com, erichte@linux.ibm.com, mpe@ellerman.id.au,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@hansenpartnership.com
+Date:   Wed, 27 Jan 2021 09:03:59 -0500
+In-Reply-To: <3063834.1611747971@warthog.procyon.org.uk>
+References: <YAjMm9Gq/FFOzQYG@kernel.org>
+         <E090372C-06A3-4991-8FC3-F06A0DA60729@oracle.com>
+         <20200916004927.64276-1-eric.snowberg@oracle.com>
+         <1360578.1607593748@warthog.procyon.org.uk>
+         <2442460.1610463459@warthog.procyon.org.uk>
+         <X/9a8naM8p4tT5sO@linux.intel.com>
+         <A05E3573-B1AF-474B-94A5-779E69E5880A@oracle.com>
+         <YAFdNiYZSWpB9vOw@kernel.org>
+         <CFBF6AEC-2832-44F7-9D7F-F20489498C33@oracle.com>
+         <YAgTawk3EENF/P6j@kernel.org>
+         <D9F5E0BD-E2FC-428F-91B3-35D2750493A0@oracle.com>
+         <3063834.1611747971@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-26_09:2021-01-26,2021-01-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 priorityscore=1501 phishscore=0
- adultscore=0 mlxlogscore=999 bulkscore=0 clxscore=1015 impostorscore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101260098
+ definitions=2021-01-27_05:2021-01-27,2021-01-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ bulkscore=0 adultscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 clxscore=1011 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101270074
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+[Cc'ing linux-integrity]
 
-Add support for NIST p192 keys in x509 certificates and support it in
-'akcipher'.
+On Wed, 2021-01-27 at 11:46 +0000, David Howells wrote:
+> Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> 
+> > > I suppose a user space tool could be created. But wouldn’t what is
+> > > currently done in the kernel in this area need to be removed?
+> > 
+> > Right. I don't think this was a great idea in the first place to
+> > do to the kernel but since it exists, I guess the patch does make
+> > sense.
+> 
+> This information needs to be loaded from the UEFI tables before the system
+> starts loading any kernel modules or running any programs (if we do
+> verification of such, which I think IMA can do).
 
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
----
- crypto/asymmetric_keys/public_key.c       |  3 ++
- crypto/asymmetric_keys/x509_cert_parser.c |  1 +
- crypto/ecc.c                              | 36 ++++++++++++++++++++++-
- include/linux/oid_registry.h              |  1 +
- 4 files changed, 40 insertions(+), 1 deletion(-)
+There needs to a clear distinction between the pre-boot and post-boot
+keys.  UEFI has its own trust model, which should be limited to UEFI. 
+The .platform keyring was upstreamed and limited to verifying the kexec
+kernel image.   Any other usage of the .platform keyring keys is
+abusing its intended purpose.
 
-diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
-index 0fcbaec0ded0..bb4a7cc0e3c8 100644
---- a/crypto/asymmetric_keys/public_key.c
-+++ b/crypto/asymmetric_keys/public_key.c
-@@ -98,6 +98,9 @@ int software_key_determine_akcipher(const char *encoding,
- 
- 		oid = look_up_OID(pkey->params + 2, pkey->paramlen - 2);
- 		switch (oid) {
-+		case OID_id_prime192v1:
-+			strcpy(alg_name, "nist_p192");
-+			return 0;
- 		case OID_id_prime256v1:
- 			strcpy(alg_name, "nist_p256");
- 			return 0;
-diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-index 50f6ecc70d8b..5ff891f8235d 100644
---- a/crypto/asymmetric_keys/x509_cert_parser.c
-+++ b/crypto/asymmetric_keys/x509_cert_parser.c
-@@ -505,6 +505,7 @@ int x509_extract_key_data(void *context, size_t hdrlen,
- 		case OID_sm2:
- 			ctx->cert->pub->pkey_algo = "sm2";
- 			break;
-+		case OID_id_prime192v1:
- 		case OID_id_prime256v1:
- 			ctx->cert->pub->pkey_algo = "ecdsa";
- 			break;
-diff --git a/crypto/ecc.c b/crypto/ecc.c
-index 3b5494794bce..02dbc45eef18 100644
---- a/crypto/ecc.c
-+++ b/crypto/ecc.c
-@@ -1812,13 +1812,47 @@ static struct akcipher_alg ecc_nist_p256 = {
- 	},
- };
- 
-+static unsigned int ecc_nist_p192_max_size(struct crypto_akcipher *tfm)
-+{
-+	return NIST_P192_KEY_SIZE;
-+}
-+
-+static int ecc_nist_p192_init_tfm(struct crypto_akcipher *tfm)
-+{
-+	struct ecc_ctx *ctx = akcipher_tfm_ctx(tfm);
-+
-+	return ecc_ec_ctx_init(ctx, ECC_CURVE_NIST_P192);
-+}
-+
-+static struct akcipher_alg ecc_nist_p192 = {
-+	.verify = ecdsa_verify,
-+	.set_pub_key = ecc_set_pub_key,
-+	.max_size = ecc_nist_p192_max_size,
-+	.init = ecc_nist_p192_init_tfm,
-+	.exit = ecc_exit_tfm,
-+	.base = {
-+		.cra_name = "nist_p192",
-+		.cra_driver_name = "ecc-nist-p192",
-+		.cra_priority = 100,
-+		.cra_module = THIS_MODULE,
-+		.cra_ctxsize = sizeof(struct ecc_ctx),
-+	},
-+};
-+
- static int ecc_init(void)
- {
--	return crypto_register_akcipher(&ecc_nist_p256);
-+	int ret;
-+
-+	ret = crypto_register_akcipher(&ecc_nist_p256);
-+	if (ret)
-+		return ret;
-+
-+	return crypto_register_akcipher(&ecc_nist_p192);
- }
- 
- static void ecc_exit(void)
- {
-+	crypto_unregister_akcipher(&ecc_nist_p192);
- 	crypto_unregister_akcipher(&ecc_nist_p256);
- }
- 
-diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-index 9060f19c80eb..e8071133d0e2 100644
---- a/include/linux/oid_registry.h
-+++ b/include/linux/oid_registry.h
-@@ -21,6 +21,7 @@ enum OID {
- 	OID_id_dsa,			/* 1.2.840.10040.4.1 */
- 	OID_id_ecdsa_with_sha1,		/* 1.2.840.10045.4.1 */
- 	OID_id_ecPublicKey,		/* 1.2.840.10045.2.1 */
-+	OID_id_prime192v1,		/* 1.2.840.10045.3.1.1 */
- 	OID_id_prime256v1,		/* 1.2.840.10045.3.1.7 */
- 	OID_id_ecdsa_with_sha224,	/* 1.2.840.10045.4.3.1 */
- 	OID_id_ecdsa_with_sha256,	/* 1.2.840.10045.4.3.2 */
--- 
-2.25.4
+The cover letter says,   "Anytime the .platform keyring is used, the
+keys in the .blacklist keyring are referenced, if a matching key is
+found, the key will be rejected."   I don't have a problem with loading
+the UEFI X509 dbx entries as long as its usage is limited to verifying
+the kexec kernel image.
+
+Mimi
 
