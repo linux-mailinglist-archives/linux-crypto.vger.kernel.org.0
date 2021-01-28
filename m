@@ -2,57 +2,107 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CED3073F3
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 Jan 2021 11:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D8F3076BD
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 Jan 2021 14:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhA1Kke (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 28 Jan 2021 05:40:34 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:52578 "EHLO fornost.hmeau.com"
+        id S231717AbhA1NHW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 28 Jan 2021 08:07:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231226AbhA1Kk2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:40:28 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1l54hh-0000Ph-4Z; Thu, 28 Jan 2021 21:39:10 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 28 Jan 2021 21:39:08 +1100
-Date:   Thu, 28 Jan 2021 21:39:08 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Meng Yu <yumeng18@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Zaibo Xu <xuzaibo@huawei.com>, wangzhou1@hisilicon.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-Subject: Re: [PATCH v7 4/7] crypto: add ecc curve and expose them
-Message-ID: <20210128103908.GA32495@gondor.apana.org.au>
-References: <1611299395-675-1-git-send-email-yumeng18@huawei.com>
- <1611299395-675-5-git-send-email-yumeng18@huawei.com>
- <20210128050354.GA30874@gondor.apana.org.au>
- <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
+        id S231250AbhA1NHV (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 28 Jan 2021 08:07:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFB7B64D9F;
+        Thu, 28 Jan 2021 13:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611839200;
+        bh=+6OMNZcUUWaDvKg8NRL1a4tI1nBxsV+pPg6GaYsCbds=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GXr7N4Nzg3nwJkB+78EsNwIdajoG/QMs9OlZ+IG+YIPqDeLfFcQFC9PmW7cdHTVYq
+         fDm9y4VWeeOweyXI5vQaa817K2iI1veQyxXnA8xylOF40YEBOkzpYVcuT4hR7G4TPp
+         k2fpEC6afKc1YdWg6ClcB0GqsUP4ID+/LMbdPAvDjzVMkI85sSIZMooGDquryDTCPG
+         tx8lv8x9qIsDpUvhUEM1fQsLx2bk3F4DczZ09irGl/EKNM9DoCoVkfQ2gOR1mflM20
+         gAOPAxZcmkzmcswawU4RpwOPOB5qlVUdUaoo46syL3HT9fTJm23Ln5A64VIhwBVlo0
+         Rvf7Z/dKUx0Nw==
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, linux-arm-kernel@lists.infradead.org,
+        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Dave Martin <dave.martin@arm.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 0/9] arm64: rework NEON yielding to avoid scheduling from asm code
+Date:   Thu, 28 Jan 2021 14:06:16 +0100
+Message-Id: <20210128130625.54076-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:30:23AM +0100, Ard Biesheuvel wrote:
->
-> But this also begs the question which ecdh-nist-pXXX implementations
-> we actually need? Why are we exposing these curves in the first place?
+Given how kernel mode NEON code disables preemption (to ensure that the
+FP/SIMD register state is protected without having to context switch it),
+we need to take care not to let those algorithms operate on unbounded
+input data, or we may end up with excessive scheduling blackouts on
+CONFIG_PREEMPT kernels.
 
-Once they're distinct algorithms, we can then make sure that only
-the ones that are used in the kernel is added, even if some hardware
-may support more curves.
+This is currently handled by the cond_yield_neon macros, which check the
+preempt count and the TIF_NEED_RESCHED flag from assembler code, and call
+into kernel_neon_end()+kernel_neon_begin(), triggering a reschedule.
+This works as expected, but is a bit messy, given how much of the state
+preserve/restore code in the algorithm needs to be duplicated, as well as
+causing the need to manage the stack frame explicitly. All of this is better
+handled by the compiler, especially now that we have enabled features such
+as the shadow call stack and BTI, and are working to improve call stack
+validation.
 
-Thanks,
+In some cases, yielding is not necessary at all: algoritms that implement
+skciphers and use the skcipher walk API will be invoked at page granularity,
+which is granular enough for our purpose.
+
+In other cases, it is better to simply return early from the assembler
+routine if a reschedule is pending, and let the C code handle with this, by
+retrying the call until it completes. This removes any voluntary schedule()
+calls from the call stack, making the code much easier to reason about in
+the context of stack validation, rcu_tasks synchronization, etc.
+
+Practical note: assuming there are no objections to these changes, it may
+be the most convenient to take patch #1 into the arm64 tree for v5.12,
+and postpone the rest for merging via the crypto tree. (Note that this
+series was created against the cryptodev tree, and so the arm64 maintainers
+are also welcome to take the whole set if it applies cleanly to the arm64
+tree)
+
+Cc: Dave Martin <dave.martin@arm.com>
+Cc: Eric Biggers <ebiggers@google.com>
+
+Ard Biesheuvel (9):
+  arm64: assembler: add cond_yield macro
+  crypto: arm64/sha1-ce - simplify NEON yield
+  crypto: arm64/sha2-ce - simplify NEON yield
+  crypto: arm64/sha3-ce - simplify NEON yield
+  crypto: arm64/sha512-ce - simplify NEON yield
+  crypto: arm64/aes-neonbs - remove NEON yield calls
+  crypto: arm64/aes-ce-mac - simplify NEON yield
+  crypto: arm64/crc-t10dif - move NEON yield to C code
+  arm64: assembler: remove conditional NEON yield macros
+
+ arch/arm64/crypto/aes-glue.c          | 21 +++--
+ arch/arm64/crypto/aes-modes.S         | 52 +++++--------
+ arch/arm64/crypto/aes-neonbs-core.S   |  8 +-
+ arch/arm64/crypto/crct10dif-ce-core.S | 43 +++--------
+ arch/arm64/crypto/crct10dif-ce-glue.c | 30 ++++++--
+ arch/arm64/crypto/sha1-ce-core.S      | 47 ++++--------
+ arch/arm64/crypto/sha1-ce-glue.c      | 22 +++---
+ arch/arm64/crypto/sha2-ce-core.S      | 38 ++++-----
+ arch/arm64/crypto/sha2-ce-glue.c      | 22 +++---
+ arch/arm64/crypto/sha3-ce-core.S      | 81 ++++++++------------
+ arch/arm64/crypto/sha3-ce-glue.c      | 14 ++--
+ arch/arm64/crypto/sha512-ce-core.S    | 29 ++-----
+ arch/arm64/crypto/sha512-ce-glue.c    | 53 +++++++------
+ arch/arm64/include/asm/assembler.h    | 78 +++----------------
+ 14 files changed, 209 insertions(+), 329 deletions(-)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.29.2
+
