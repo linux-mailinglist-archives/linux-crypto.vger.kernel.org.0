@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973093076B9
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 Jan 2021 14:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF963076BA
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 Jan 2021 14:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhA1NHd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S231637AbhA1NHd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Thu, 28 Jan 2021 08:07:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33586 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:33600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231981AbhA1NH3 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:07:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA13764DDF;
-        Thu, 28 Jan 2021 13:06:45 +0000 (UTC)
+        id S231377AbhA1NHb (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 28 Jan 2021 08:07:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A37B764DE5;
+        Thu, 28 Jan 2021 13:06:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611839208;
-        bh=cw3pLMOjs14IgFax7mzeW6bUTtTz4+xgzOB/o6jgTL8=;
+        s=k20201202; t=1611839210;
+        bh=VA2jobp2yu8XSsXRt4gkK4MgjnsZ4TfIb+20I/WQDkw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uhGWpQBGpRPLVbd4zd1sSTUYrt2RUDt0+FsdvUOIAcivhdEaHNSiEiu50p4Ifqocm
-         4kgVmJ+wL92O/pn9zIuNwu+945m3FiZhuY6N+IUGSZvzVF+RW7uDvjsGM0ddGVEVfI
-         /Oza+QCuAaQs66W4edb1Wwi7h4Pinh7H0dpZVmmkMfPs3MzPCVg/2sErmEM4i/JFe2
-         lb3c8leLA1PfyQuhyQUPvj1sNmhUUdDk3CRvTTnezI7h9iooBtjck8ZcCGDOnQFoIY
-         nm1oMIaQuXdQcJTLdsacK8Sp6bifDaq1O22ERpX7riOguBhFTi3FNXQZUgnSPtN1kz
-         muYDhuLIYTMWg==
+        b=Vr9LR15K4X+qdvMckMfJ7+LO+VtuLM0F9NW0Mh4c9T578Ew99d9AMJAX9Xgk2xscE
+         Ad0HkoEd5RMmOoInZUdXPo/9c43xpO5l1vkO+VrLnSDyskjPwGhNsEQlO5fQIRxhc4
+         Nw3sYErkWG+tvlqbQw/F+4h3IZFStK3fKtdsLFRiT6jeuIIY0J00VA9ioJkgagsLqx
+         vVvCvhy1FznYtZ0L4IWS03qjLdY4ylmf8SZLCmUP7W2BriBovBDeoblbWfu6f3KB+K
+         v8wikCC9Mh30H1c3wr2uF2Ea8Av57MrRdhVoaTmfrnILk12iCWk1O5B93ANgGZYkSO
+         uMCX1/flqRcWA==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, linux-arm-kernel@lists.infradead.org,
@@ -30,9 +30,9 @@ Cc:     herbert@gondor.apana.org.au, linux-arm-kernel@lists.infradead.org,
         Ard Biesheuvel <ardb@kernel.org>,
         Dave Martin <dave.martin@arm.com>,
         Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 3/9] crypto: arm64/sha2-ce - simplify NEON yield
-Date:   Thu, 28 Jan 2021 14:06:19 +0100
-Message-Id: <20210128130625.54076-4-ardb@kernel.org>
+Subject: [PATCH 4/9] crypto: arm64/sha3-ce - simplify NEON yield
+Date:   Thu, 28 Jan 2021 14:06:20 +0100
+Message-Id: <20210128130625.54076-5-ardb@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210128130625.54076-1-ardb@kernel.org>
 References: <20210128130625.54076-1-ardb@kernel.org>
@@ -48,166 +48,196 @@ task mode and a reschedule is pending, perform only the preempt count
 check in assembler, but simply return early in this case, and let the C
 code deal with the consequences.
 
-This reverts commit d82f37ab5e2426287013eba38b1212e8b71e5be3.
+This reverts commit 7edc86cb1c18b4c274672232117586ea2bef1d9a.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/arm64/crypto/sha2-ce-core.S | 38 +++++++-------------
- arch/arm64/crypto/sha2-ce-glue.c | 22 ++++++------
- 2 files changed, 25 insertions(+), 35 deletions(-)
+ arch/arm64/crypto/sha3-ce-core.S | 81 ++++++++------------
+ arch/arm64/crypto/sha3-ce-glue.c | 14 ++--
+ 2 files changed, 39 insertions(+), 56 deletions(-)
 
-diff --git a/arch/arm64/crypto/sha2-ce-core.S b/arch/arm64/crypto/sha2-ce-core.S
-index 3f9d0f326987..6cdea7d56059 100644
---- a/arch/arm64/crypto/sha2-ce-core.S
-+++ b/arch/arm64/crypto/sha2-ce-core.S
-@@ -76,36 +76,30 @@
- 	 */
- 	.text
- SYM_FUNC_START(sha2_ce_transform)
--	frame_push	3
--
--	mov		x19, x0
--	mov		x20, x1
--	mov		x21, x2
--
- 	/* load round constants */
--0:	adr_l		x8, .Lsha2_rcon
-+	adr_l		x8, .Lsha2_rcon
- 	ld1		{ v0.4s- v3.4s}, [x8], #64
- 	ld1		{ v4.4s- v7.4s}, [x8], #64
- 	ld1		{ v8.4s-v11.4s}, [x8], #64
- 	ld1		{v12.4s-v15.4s}, [x8]
- 
- 	/* load state */
--	ld1		{dgav.4s, dgbv.4s}, [x19]
-+	ld1		{dgav.4s, dgbv.4s}, [x0]
- 
- 	/* load sha256_ce_state::finalize */
- 	ldr_l		w4, sha256_ce_offsetof_finalize, x4
--	ldr		w4, [x19, x4]
-+	ldr		w4, [x0, x4]
- 
- 	/* load input */
--1:	ld1		{v16.4s-v19.4s}, [x20], #64
--	sub		w21, w21, #1
-+0:	ld1		{v16.4s-v19.4s}, [x1], #64
-+	sub		w2, w2, #1
- 
- CPU_LE(	rev32		v16.16b, v16.16b	)
- CPU_LE(	rev32		v17.16b, v17.16b	)
- CPU_LE(	rev32		v18.16b, v18.16b	)
- CPU_LE(	rev32		v19.16b, v19.16b	)
- 
--2:	add		t0.4s, v16.4s, v0.4s
-+1:	add		t0.4s, v16.4s, v0.4s
- 	mov		dg0v.16b, dgav.16b
- 	mov		dg1v.16b, dgbv.16b
- 
-@@ -134,24 +128,18 @@ CPU_LE(	rev32		v19.16b, v19.16b	)
- 	add		dgbv.4s, dgbv.4s, dg1v.4s
- 
- 	/* handled all input blocks? */
--	cbz		w21, 3f
--
--	if_will_cond_yield_neon
--	st1		{dgav.4s, dgbv.4s}, [x19]
--	do_cond_yield_neon
-+	cbz		w2, 2f
-+	cond_yield	3f, x5
- 	b		0b
--	endif_yield_neon
--
--	b		1b
+diff --git a/arch/arm64/crypto/sha3-ce-core.S b/arch/arm64/crypto/sha3-ce-core.S
+index 1cfb768df350..6f5208414fe3 100644
+--- a/arch/arm64/crypto/sha3-ce-core.S
++++ b/arch/arm64/crypto/sha3-ce-core.S
+@@ -37,20 +37,13 @@
+ 	.endm
  
  	/*
- 	 * Final block: add padding and total bit count.
- 	 * Skip if the input size was not a round multiple of the block size,
- 	 * the padding is handled by the C code in that case.
+-	 * sha3_ce_transform(u64 *st, const u8 *data, int blocks, int dg_size)
++	 * int sha3_ce_transform(u64 *st, const u8 *data, int blocks, int dg_size)
  	 */
--3:	cbz		x4, 4f
-+2:	cbz		x4, 3f
- 	ldr_l		w4, sha256_ce_offsetof_count, x4
--	ldr		x4, [x19, x4]
-+	ldr		x4, [x0, x4]
- 	movi		v17.2d, #0
- 	mov		x8, #0x80000000
- 	movi		v18.2d, #0
-@@ -160,10 +148,10 @@ CPU_LE(	rev32		v19.16b, v19.16b	)
- 	mov		x4, #0
- 	mov		v19.d[0], xzr
- 	mov		v19.d[1], x7
--	b		2b
-+	b		1b
+ 	.text
+ SYM_FUNC_START(sha3_ce_transform)
+-	frame_push	4
+-
+-	mov	x19, x0
+-	mov	x20, x1
+-	mov	x21, x2
+-	mov	x22, x3
+-
+-0:	/* load state */
+-	add	x8, x19, #32
+-	ld1	{ v0.1d- v3.1d}, [x19]
++	/* load state */
++	add	x8, x0, #32
++	ld1	{ v0.1d- v3.1d}, [x0]
+ 	ld1	{ v4.1d- v7.1d}, [x8], #32
+ 	ld1	{ v8.1d-v11.1d}, [x8], #32
+ 	ld1	{v12.1d-v15.1d}, [x8], #32
+@@ -58,13 +51,13 @@ SYM_FUNC_START(sha3_ce_transform)
+ 	ld1	{v20.1d-v23.1d}, [x8], #32
+ 	ld1	{v24.1d}, [x8]
  
- 	/* store new state */
--4:	st1		{dgav.4s, dgbv.4s}, [x19]
+-1:	sub	w21, w21, #1
++0:	sub	w2, w2, #1
+ 	mov	w8, #24
+ 	adr_l	x9, .Lsha3_rcon
+ 
+ 	/* load input */
+-	ld1	{v25.8b-v28.8b}, [x20], #32
+-	ld1	{v29.8b-v31.8b}, [x20], #24
++	ld1	{v25.8b-v28.8b}, [x1], #32
++	ld1	{v29.8b-v31.8b}, [x1], #24
+ 	eor	v0.8b, v0.8b, v25.8b
+ 	eor	v1.8b, v1.8b, v26.8b
+ 	eor	v2.8b, v2.8b, v27.8b
+@@ -73,10 +66,10 @@ SYM_FUNC_START(sha3_ce_transform)
+ 	eor	v5.8b, v5.8b, v30.8b
+ 	eor	v6.8b, v6.8b, v31.8b
+ 
+-	tbnz	x22, #6, 3f		// SHA3-512
++	tbnz	x3, #6, 2f		// SHA3-512
+ 
+-	ld1	{v25.8b-v28.8b}, [x20], #32
+-	ld1	{v29.8b-v30.8b}, [x20], #16
++	ld1	{v25.8b-v28.8b}, [x1], #32
++	ld1	{v29.8b-v30.8b}, [x1], #16
+ 	eor	 v7.8b,  v7.8b, v25.8b
+ 	eor	 v8.8b,  v8.8b, v26.8b
+ 	eor	 v9.8b,  v9.8b, v27.8b
+@@ -84,34 +77,34 @@ SYM_FUNC_START(sha3_ce_transform)
+ 	eor	v11.8b, v11.8b, v29.8b
+ 	eor	v12.8b, v12.8b, v30.8b
+ 
+-	tbnz	x22, #4, 2f		// SHA3-384 or SHA3-224
++	tbnz	x3, #4, 1f		// SHA3-384 or SHA3-224
+ 
+ 	// SHA3-256
+-	ld1	{v25.8b-v28.8b}, [x20], #32
++	ld1	{v25.8b-v28.8b}, [x1], #32
+ 	eor	v13.8b, v13.8b, v25.8b
+ 	eor	v14.8b, v14.8b, v26.8b
+ 	eor	v15.8b, v15.8b, v27.8b
+ 	eor	v16.8b, v16.8b, v28.8b
+-	b	4f
++	b	3f
+ 
+-2:	tbz	x22, #2, 4f		// bit 2 cleared? SHA-384
++1:	tbz	x3, #2, 3f		// bit 2 cleared? SHA-384
+ 
+ 	// SHA3-224
+-	ld1	{v25.8b-v28.8b}, [x20], #32
+-	ld1	{v29.8b}, [x20], #8
++	ld1	{v25.8b-v28.8b}, [x1], #32
++	ld1	{v29.8b}, [x1], #8
+ 	eor	v13.8b, v13.8b, v25.8b
+ 	eor	v14.8b, v14.8b, v26.8b
+ 	eor	v15.8b, v15.8b, v27.8b
+ 	eor	v16.8b, v16.8b, v28.8b
+ 	eor	v17.8b, v17.8b, v29.8b
+-	b	4f
++	b	3f
+ 
+ 	// SHA3-512
+-3:	ld1	{v25.8b-v26.8b}, [x20], #16
++2:	ld1	{v25.8b-v26.8b}, [x1], #16
+ 	eor	 v7.8b,  v7.8b, v25.8b
+ 	eor	 v8.8b,  v8.8b, v26.8b
+ 
+-4:	sub	w8, w8, #1
++3:	sub	w8, w8, #1
+ 
+ 	eor3	v29.16b,  v4.16b,  v9.16b, v14.16b
+ 	eor3	v26.16b,  v1.16b,  v6.16b, v11.16b
+@@ -190,33 +183,19 @@ SYM_FUNC_START(sha3_ce_transform)
+ 
+ 	eor	 v0.16b,  v0.16b, v31.16b
+ 
+-	cbnz	w8, 4b
+-	cbz	w21, 5f
+-
+-	if_will_cond_yield_neon
+-	add	x8, x19, #32
+-	st1	{ v0.1d- v3.1d}, [x19]
+-	st1	{ v4.1d- v7.1d}, [x8], #32
+-	st1	{ v8.1d-v11.1d}, [x8], #32
+-	st1	{v12.1d-v15.1d}, [x8], #32
+-	st1	{v16.1d-v19.1d}, [x8], #32
+-	st1	{v20.1d-v23.1d}, [x8], #32
+-	st1	{v24.1d}, [x8]
+-	do_cond_yield_neon
+-	b		0b
+-	endif_yield_neon
+-
+-	b	1b
++	cbnz	w8, 3b
++	cond_yield 3f, x8
++	cbnz	w2, 0b
+ 
+ 	/* save state */
+-5:	st1	{ v0.1d- v3.1d}, [x19], #32
+-	st1	{ v4.1d- v7.1d}, [x19], #32
+-	st1	{ v8.1d-v11.1d}, [x19], #32
+-	st1	{v12.1d-v15.1d}, [x19], #32
+-	st1	{v16.1d-v19.1d}, [x19], #32
+-	st1	{v20.1d-v23.1d}, [x19], #32
+-	st1	{v24.1d}, [x19]
 -	frame_pop
-+3:	st1		{dgav.4s, dgbv.4s}, [x0]
-+	mov		w0, w2
++3:	st1	{ v0.1d- v3.1d}, [x0], #32
++	st1	{ v4.1d- v7.1d}, [x0], #32
++	st1	{ v8.1d-v11.1d}, [x0], #32
++	st1	{v12.1d-v15.1d}, [x0], #32
++	st1	{v16.1d-v19.1d}, [x0], #32
++	st1	{v20.1d-v23.1d}, [x0], #32
++	st1	{v24.1d}, [x0]
++	mov	w0, w2
  	ret
- SYM_FUNC_END(sha2_ce_transform)
-diff --git a/arch/arm64/crypto/sha2-ce-glue.c b/arch/arm64/crypto/sha2-ce-glue.c
-index ded3a6488f81..c57a6119fefc 100644
---- a/arch/arm64/crypto/sha2-ce-glue.c
-+++ b/arch/arm64/crypto/sha2-ce-glue.c
-@@ -30,14 +30,22 @@ struct sha256_ce_state {
- extern const u32 sha256_ce_offsetof_count;
- extern const u32 sha256_ce_offsetof_finalize;
+ SYM_FUNC_END(sha3_ce_transform)
  
--asmlinkage void sha2_ce_transform(struct sha256_ce_state *sst, u8 const *src,
--				  int blocks);
-+asmlinkage int sha2_ce_transform(struct sha256_ce_state *sst, u8 const *src,
-+				 int blocks);
+diff --git a/arch/arm64/crypto/sha3-ce-glue.c b/arch/arm64/crypto/sha3-ce-glue.c
+index 7288d3046354..8c65cecf560a 100644
+--- a/arch/arm64/crypto/sha3-ce-glue.c
++++ b/arch/arm64/crypto/sha3-ce-glue.c
+@@ -28,8 +28,8 @@ MODULE_ALIAS_CRYPTO("sha3-256");
+ MODULE_ALIAS_CRYPTO("sha3-384");
+ MODULE_ALIAS_CRYPTO("sha3-512");
  
- static void __sha2_ce_transform(struct sha256_state *sst, u8 const *src,
- 				int blocks)
- {
--	sha2_ce_transform(container_of(sst, struct sha256_ce_state, sst), src,
--			  blocks);
-+	while (blocks) {
-+		int rem;
+-asmlinkage void sha3_ce_transform(u64 *st, const u8 *data, int blocks,
+-				  int md_len);
++asmlinkage int sha3_ce_transform(u64 *st, const u8 *data, int blocks,
++				 int md_len);
+ 
+ static int sha3_update(struct shash_desc *desc, const u8 *data,
+ 		       unsigned int len)
+@@ -59,11 +59,15 @@ static int sha3_update(struct shash_desc *desc, const u8 *data,
+ 		blocks = len / sctx->rsiz;
+ 		len %= sctx->rsiz;
+ 
+-		if (blocks) {
++		while (blocks) {
++			int rem;
 +
-+		kernel_neon_begin();
-+		rem = sha2_ce_transform(container_of(sst, struct sha256_ce_state,
-+						     sst), src, blocks);
-+		kernel_neon_end();
-+		src += (blocks - rem) * SHA256_BLOCK_SIZE;
-+		blocks = rem;
-+	}
- }
- 
- const u32 sha256_ce_offsetof_count = offsetof(struct sha256_ce_state,
-@@ -63,9 +71,7 @@ static int sha256_ce_update(struct shash_desc *desc, const u8 *data,
- 				__sha256_block_data_order);
- 
- 	sctx->finalize = 0;
--	kernel_neon_begin();
- 	sha256_base_do_update(desc, data, len, __sha2_ce_transform);
--	kernel_neon_end();
- 
- 	return 0;
- }
-@@ -90,11 +96,9 @@ static int sha256_ce_finup(struct shash_desc *desc, const u8 *data,
- 	 */
- 	sctx->finalize = finalize;
- 
--	kernel_neon_begin();
- 	sha256_base_do_update(desc, data, len, __sha2_ce_transform);
- 	if (!finalize)
- 		sha256_base_do_finalize(desc, __sha2_ce_transform);
--	kernel_neon_end();
- 	return sha256_base_finish(desc, out);
- }
- 
-@@ -108,9 +112,7 @@ static int sha256_ce_final(struct shash_desc *desc, u8 *out)
+ 			kernel_neon_begin();
+-			sha3_ce_transform(sctx->st, data, blocks, digest_size);
++			rem = sha3_ce_transform(sctx->st, data, blocks,
++						digest_size);
+ 			kernel_neon_end();
+-			data += blocks * sctx->rsiz;
++			data += (blocks - rem) * sctx->rsiz;
++			blocks = rem;
+ 		}
  	}
- 
- 	sctx->finalize = 0;
--	kernel_neon_begin();
- 	sha256_base_do_finalize(desc, __sha2_ce_transform);
--	kernel_neon_end();
- 	return sha256_base_finish(desc, out);
- }
  
 -- 
 2.29.2
