@@ -2,34 +2,34 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9897830AEAB
-	for <lists+linux-crypto@lfdr.de>; Mon,  1 Feb 2021 19:05:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F15930AEAC
+	for <lists+linux-crypto@lfdr.de>; Mon,  1 Feb 2021 19:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhBASDs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 1 Feb 2021 13:03:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53910 "EHLO mail.kernel.org"
+        id S229567AbhBASES (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 1 Feb 2021 13:04:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhBASDm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:03:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97E3464EB8;
-        Mon,  1 Feb 2021 18:03:00 +0000 (UTC)
+        id S229984AbhBASER (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 1 Feb 2021 13:04:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 143AA64EB9;
+        Mon,  1 Feb 2021 18:03:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612202581;
-        bh=F8NI4gGlhEPKGSsSKx1da+fnX3qID97zd5EPihO9rf0=;
+        s=k20201202; t=1612202583;
+        bh=dMhNJLwKQBJSk+VkWRbESrah6c7o3LbQV4IQtCiiilY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=helaF0sQI5XQDh8TvY4B1wpk8rk7DLnNy3GJFFkL81Twa1idM45VmYPx3peXl1YqR
-         Lr2VZK7aYoic7rmm/85YUPtkBBM0snHVrr2HU4cPCz3+Xi3Fd8KQkCuV4xZUQLWvlP
-         GvgTbKJsrBEtiAOfHRboPDmLFLLTwIiBzADAoCZBE46GPYwrhHYMbxyv6enx0ffRIe
-         nEIHC4/3O1PQulSq6GgS+KaWD5WRK1qQIMHCA6z0Myn0HXKpn83OYGkmCW1cj1Y+Y0
-         lYDtk4OJwgx10ZIx8mS/WwQ5LYLc87AWew/7f6BpCQzLL9l6EN44m5rNASJandlG2z
-         BXQ+VyU7RNIEQ==
+        b=ecQJNXAaBSVdun1+ji4aTojFXYJcdyTJXumTnZAqtZNcCOzVpOfPBZ8pesslrUhxC
+         vMwsp9nLL1bQXKLb+WBcNtySMuibM5Nbbah6XSpWIHcFeff7nsq9Izg89hMeA4NEnR
+         lSR/eYa7Ks/tsSh6bB1mOk1MjtSdOVhARyhovzsfb09C8kFpzaCchfIJSa7iSasb4e
+         ZMbTd6619Gfd7JYBYKRrFCM6JOcR0NrAcD6ZosqD98J8KI/AzfwZCGT34xTqH7J9XB
+         qkUNWMoLDK5a+gRStPkujnxRSozy5mIeFaUn7NF2oe4l7cwedwj2wSvCfWF8BhzN+s
+         yQ115KV+m2V7w==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
         Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 4/9] crypto: blowfish - use unaligned accessors instead of alignmask
-Date:   Mon,  1 Feb 2021 19:02:32 +0100
-Message-Id: <20210201180237.3171-5-ardb@kernel.org>
+Subject: [PATCH 5/9] crypto: camellia - use unaligned accessors instead of alignmask
+Date:   Mon,  1 Feb 2021 19:02:33 +0100
+Message-Id: <20210201180237.3171-6-ardb@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210201180237.3171-1-ardb@kernel.org>
 References: <20210201180237.3171-1-ardb@kernel.org>
@@ -39,88 +39,114 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Instead of using an alignmask of 0x3 to ensure 32-bit alignment of
-the Blowfish input and output blocks, which propagates to mode drivers,
-and results in pointless copying on architectures that don't care about
+Instead of using an alignmask of 0x3 to ensure 32-bit alignment of the
+Camellia input and output blocks, which propagates to mode drivers, and
+results in pointless copying on architectures that don't care about
 alignment, use the unaligned accessors, which will do the right thing on
 each respective architecture, avoiding the need for double buffering.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- crypto/blowfish_generic.c | 23 ++++++++------------
- 1 file changed, 9 insertions(+), 14 deletions(-)
+ crypto/camellia_generic.c | 45 +++++++-------------
+ 1 file changed, 16 insertions(+), 29 deletions(-)
 
-diff --git a/crypto/blowfish_generic.c b/crypto/blowfish_generic.c
-index c3c2041fe0c5..003b52c6880e 100644
---- a/crypto/blowfish_generic.c
-+++ b/crypto/blowfish_generic.c
-@@ -14,7 +14,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/mm.h>
--#include <asm/byteorder.h>
-+#include <asm/unaligned.h>
+diff --git a/crypto/camellia_generic.c b/crypto/camellia_generic.c
+index 0b9f409f7370..fd1a88af9e77 100644
+--- a/crypto/camellia_generic.c
++++ b/crypto/camellia_generic.c
+@@ -9,14 +9,6 @@
+  *  https://info.isl.ntt.co.jp/crypt/eng/camellia/specifications.html
+  */
+ 
+-/*
+- *
+- * NOTE --- NOTE --- NOTE --- NOTE
+- * This implementation assumes that all memory addresses passed
+- * as parameters are four-byte aligned.
+- *
+- */
+-
  #include <linux/crypto.h>
- #include <linux/types.h>
- #include <crypto/blowfish.h>
-@@ -36,12 +36,10 @@
- static void bf_encrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
+ #include <linux/errno.h>
+ #include <linux/init.h>
+@@ -994,16 +986,14 @@ camellia_set_key(struct crypto_tfm *tfm, const u8 *in_key,
+ static void camellia_encrypt(struct crypto_tfm *tfm, u8 *out, const u8 *in)
  {
- 	struct bf_ctx *ctx = crypto_tfm_ctx(tfm);
--	const __be32 *in_blk = (const __be32 *)src;
--	__be32 *const out_blk = (__be32 *)dst;
- 	const u32 *P = ctx->p;
- 	const u32 *S = ctx->s;
--	u32 yl = be32_to_cpu(in_blk[0]);
--	u32 yr = be32_to_cpu(in_blk[1]);
-+	u32 yl = get_unaligned_be32(src);
-+	u32 yr = get_unaligned_be32(src + 4);
+ 	const struct camellia_ctx *cctx = crypto_tfm_ctx(tfm);
+-	const __be32 *src = (const __be32 *)in;
+-	__be32 *dst = (__be32 *)out;
+ 	unsigned int max;
  
- 	ROUND(yr, yl, 0);
- 	ROUND(yl, yr, 1);
-@@ -63,19 +61,17 @@ static void bf_encrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
- 	yl ^= P[16];
- 	yr ^= P[17];
+ 	u32 tmp[4];
  
--	out_blk[0] = cpu_to_be32(yr);
--	out_blk[1] = cpu_to_be32(yl);
-+	put_unaligned_be32(yr, dst);
-+	put_unaligned_be32(yl, dst + 4);
+-	tmp[0] = be32_to_cpu(src[0]);
+-	tmp[1] = be32_to_cpu(src[1]);
+-	tmp[2] = be32_to_cpu(src[2]);
+-	tmp[3] = be32_to_cpu(src[3]);
++	tmp[0] = get_unaligned_be32(in);
++	tmp[1] = get_unaligned_be32(in + 4);
++	tmp[2] = get_unaligned_be32(in + 8);
++	tmp[3] = get_unaligned_be32(in + 12);
+ 
+ 	if (cctx->key_length == 16)
+ 		max = 24;
+@@ -1013,25 +1003,23 @@ static void camellia_encrypt(struct crypto_tfm *tfm, u8 *out, const u8 *in)
+ 	camellia_do_encrypt(cctx->key_table, tmp, max);
+ 
+ 	/* do_encrypt returns 0,1 swapped with 2,3 */
+-	dst[0] = cpu_to_be32(tmp[2]);
+-	dst[1] = cpu_to_be32(tmp[3]);
+-	dst[2] = cpu_to_be32(tmp[0]);
+-	dst[3] = cpu_to_be32(tmp[1]);
++	put_unaligned_be32(tmp[2], out);
++	put_unaligned_be32(tmp[3], out + 4);
++	put_unaligned_be32(tmp[0], out + 8);
++	put_unaligned_be32(tmp[1], out + 12);
  }
  
- static void bf_decrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
+ static void camellia_decrypt(struct crypto_tfm *tfm, u8 *out, const u8 *in)
  {
- 	struct bf_ctx *ctx = crypto_tfm_ctx(tfm);
--	const __be32 *in_blk = (const __be32 *)src;
--	__be32 *const out_blk = (__be32 *)dst;
- 	const u32 *P = ctx->p;
- 	const u32 *S = ctx->s;
--	u32 yl = be32_to_cpu(in_blk[0]);
--	u32 yr = be32_to_cpu(in_blk[1]);
-+	u32 yl = get_unaligned_be32(src);
-+	u32 yr = get_unaligned_be32(src + 4);
+ 	const struct camellia_ctx *cctx = crypto_tfm_ctx(tfm);
+-	const __be32 *src = (const __be32 *)in;
+-	__be32 *dst = (__be32 *)out;
+ 	unsigned int max;
  
- 	ROUND(yr, yl, 17);
- 	ROUND(yl, yr, 16);
-@@ -97,8 +93,8 @@ static void bf_decrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
- 	yl ^= P[1];
- 	yr ^= P[0];
+ 	u32 tmp[4];
  
--	out_blk[0] = cpu_to_be32(yr);
--	out_blk[1] = cpu_to_be32(yl);
-+	put_unaligned_be32(yr, dst);
-+	put_unaligned_be32(yl, dst + 4);
+-	tmp[0] = be32_to_cpu(src[0]);
+-	tmp[1] = be32_to_cpu(src[1]);
+-	tmp[2] = be32_to_cpu(src[2]);
+-	tmp[3] = be32_to_cpu(src[3]);
++	tmp[0] = get_unaligned_be32(in);
++	tmp[1] = get_unaligned_be32(in + 4);
++	tmp[2] = get_unaligned_be32(in + 8);
++	tmp[3] = get_unaligned_be32(in + 12);
+ 
+ 	if (cctx->key_length == 16)
+ 		max = 24;
+@@ -1041,10 +1029,10 @@ static void camellia_decrypt(struct crypto_tfm *tfm, u8 *out, const u8 *in)
+ 	camellia_do_decrypt(cctx->key_table, tmp, max);
+ 
+ 	/* do_decrypt returns 0,1 swapped with 2,3 */
+-	dst[0] = cpu_to_be32(tmp[2]);
+-	dst[1] = cpu_to_be32(tmp[3]);
+-	dst[2] = cpu_to_be32(tmp[0]);
+-	dst[3] = cpu_to_be32(tmp[1]);
++	put_unaligned_be32(tmp[2], out);
++	put_unaligned_be32(tmp[3], out + 4);
++	put_unaligned_be32(tmp[0], out + 8);
++	put_unaligned_be32(tmp[1], out + 12);
  }
  
- static struct crypto_alg alg = {
-@@ -108,7 +104,6 @@ static struct crypto_alg alg = {
+ static struct crypto_alg camellia_alg = {
+@@ -1054,7 +1042,6 @@ static struct crypto_alg camellia_alg = {
  	.cra_flags		=	CRYPTO_ALG_TYPE_CIPHER,
- 	.cra_blocksize		=	BF_BLOCK_SIZE,
- 	.cra_ctxsize		=	sizeof(struct bf_ctx),
+ 	.cra_blocksize		=	CAMELLIA_BLOCK_SIZE,
+ 	.cra_ctxsize		=	sizeof(struct camellia_ctx),
 -	.cra_alignmask		=	3,
  	.cra_module		=	THIS_MODULE,
- 	.cra_u			=	{ .cipher = {
- 	.cia_min_keysize	=	BF_MIN_KEY_SIZE,
+ 	.cra_u			=	{
+ 		.cipher = {
 -- 
 2.20.1
 
