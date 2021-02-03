@@ -2,136 +2,125 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1847730D8E0
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Feb 2021 12:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 954D430D949
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Feb 2021 12:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234170AbhBCLiw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 3 Feb 2021 06:38:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52162 "EHLO mail.kernel.org"
+        id S234380AbhBCL4q (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 3 Feb 2021 06:56:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44332 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234379AbhBCLiI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 3 Feb 2021 06:38:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A882E64F87;
-        Wed,  3 Feb 2021 11:37:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612352224;
-        bh=9WYGO0Ce/rjFmylFoCfrBQhNHedSfUBNdsArJu9+1tA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AIqdmmDe0qrxU/y15QirT6ZYI1cZZtdR7zNuR5lKroaK3WjoLpnACsVyWHPqz11JP
-         GlMz5Idh5immhWMTIlb4buelqHGwzRDuGBSjhpw+J0mcpeRpqF6eXsEaeg8cgzFwWH
-         If/Y3eivAKA1pvFM6htj9PXWQqq2YyvDThRK6CvCPFvzRlJUc/sFEbhObEBzVALsap
-         zKzxmsXcbSaI68rRW/bKgKXzAKuy00IeXrON8zRy8zx3Ykz8P4EvVUJWG4+gyQ2oji
-         /dC1dqiPu67SftlqUWVhPAyYiCoNolZPIXh2/wqF4+THdHLGtFFB5NNfXNy3Dhvf63
-         nzqHdPY73jHVg==
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, will@kernel.org,
-        mark.rutland@arm.com, catalin.marinas@arm.com,
-        herbert@gondor.apana.org.au, Ard Biesheuvel <ardb@kernel.org>,
-        Dave Martin <dave.martin@arm.com>,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2 9/9] arm64: assembler: remove conditional NEON yield macros
-Date:   Wed,  3 Feb 2021 12:36:26 +0100
-Message-Id: <20210203113626.220151-10-ardb@kernel.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210203113626.220151-1-ardb@kernel.org>
-References: <20210203113626.220151-1-ardb@kernel.org>
+        id S234170AbhBCL4p (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 3 Feb 2021 06:56:45 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B2493AEE7;
+        Wed,  3 Feb 2021 11:56:02 +0000 (UTC)
+Message-ID: <fcf4d0934a1523975c325c9911c1830a2121b27a.camel@suse.de>
+Subject: Re: [PATCH 3/3] dt-bindings: Fix errors in 'if' schemas
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Palmer <daniel@thingy.jp>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Vincent Cheng <vincent.cheng.xh@renesas.com>,
+        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-watchdog@vger.kernel.org,
+        Eric Anholt <eric@anholt.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+Date:   Wed, 03 Feb 2021 12:55:58 +0100
+In-Reply-To: <20210202205544.24812-3-robh@kernel.org>
+References: <20210202205544.24812-1-robh@kernel.org>
+         <20210202205544.24812-3-robh@kernel.org>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-5GqMeNDA14mTF3lYuG5p"
+User-Agent: Evolution 3.38.3 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The users of the conditional NEON yield macros have all been switched to
-the simplified cond_yield macro, and so the NEON specific ones can be
-removed.
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/arm64/include/asm/assembler.h | 70 --------------------
- 1 file changed, 70 deletions(-)
+--=-5GqMeNDA14mTF3lYuG5p
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index 27b1ea721c2d..0bb5829ff06f 100644
---- a/arch/arm64/include/asm/assembler.h
-+++ b/arch/arm64/include/asm/assembler.h
-@@ -675,76 +675,6 @@ USER(\label, ic	ivau, \tmp2)			// invalidate I line PoU
- 	.endif
- 	.endm
- 
--/*
-- * Check whether to yield to another runnable task from kernel mode NEON code
-- * (which runs with preemption disabled).
-- *
-- * if_will_cond_yield_neon
-- *        // pre-yield patchup code
-- * do_cond_yield_neon
-- *        // post-yield patchup code
-- * endif_yield_neon    <label>
-- *
-- * where <label> is optional, and marks the point where execution will resume
-- * after a yield has been performed. If omitted, execution resumes right after
-- * the endif_yield_neon invocation. Note that the entire sequence, including
-- * the provided patchup code, will be omitted from the image if
-- * CONFIG_PREEMPTION is not defined.
-- *
-- * As a convenience, in the case where no patchup code is required, the above
-- * sequence may be abbreviated to
-- *
-- * cond_yield_neon <label>
-- *
-- * Note that the patchup code does not support assembler directives that change
-- * the output section, any use of such directives is undefined.
-- *
-- * The yield itself consists of the following:
-- * - Check whether the preempt count is exactly 1 and a reschedule is also
-- *   needed. If so, calling of preempt_enable() in kernel_neon_end() will
-- *   trigger a reschedule. If it is not the case, yielding is pointless.
-- * - Disable and re-enable kernel mode NEON, and branch to the yield fixup
-- *   code.
-- *
-- * This macro sequence may clobber all CPU state that is not guaranteed by the
-- * AAPCS to be preserved across an ordinary function call.
-- */
--
--	.macro		cond_yield_neon, lbl
--	if_will_cond_yield_neon
--	do_cond_yield_neon
--	endif_yield_neon	\lbl
--	.endm
--
--	.macro		if_will_cond_yield_neon
--#ifdef CONFIG_PREEMPTION
--	get_current_task	x0
--	ldr		x0, [x0, #TSK_TI_PREEMPT]
--	sub		x0, x0, #PREEMPT_DISABLE_OFFSET
--	cbz		x0, .Lyield_\@
--	/* fall through to endif_yield_neon */
--	.subsection	1
--.Lyield_\@ :
--#else
--	.section	".discard.cond_yield_neon", "ax"
--#endif
--	.endm
--
--	.macro		do_cond_yield_neon
--	bl		kernel_neon_end
--	bl		kernel_neon_begin
--	.endm
--
--	.macro		endif_yield_neon, lbl
--	.ifnb		\lbl
--	b		\lbl
--	.else
--	b		.Lyield_out_\@
--	.endif
--	.previous
--.Lyield_out_\@ :
--	.endm
--
- 	/*
- 	 * Check whether preempt-disabled code should yield as soon as it
- 	 * is able. This is the case if re-enabling preemption a single
--- 
-2.30.0
+On Tue, 2021-02-02 at 14:55 -0600, Rob Herring wrote:
+> Properties in if/then schemas weren't getting checked by the meta-schemas=
+.
+> Enabling meta-schema checks finds several errors.
+>=20
+> The use of an 'items' schema (as opposed to the list form) is wrong in
+> some cases as it applies to all entries. 'contains' is the correct schema
+> to use in the case of multiple entries.
+>=20
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: Eric Anholt <eric@anholt.net>
+> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: Ray Jui <rjui@broadcom.com>
+> Cc: Scott Branden <sbranden@broadcom.com>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-leds@vger.kernel.org
+> Cc: linux-mmc@vger.kernel.org
+> Cc: linux-gpio@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+
+Reviewed-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+
+
+--=-5GqMeNDA14mTF3lYuG5p
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmAaj04ACgkQlfZmHno8
+x/7Bywf9Ghk5CuwNSJHbRiqlKJ1q12tWeWcLF7LmZIFgm2sawjY0skG82SyJfJow
+cwKef8GMfZ51OrlO4VmeoOJ1sK8zmq6rkPz24dgE0Fe82CRAXneaxyr+m19SOgll
+vmrtNrEQpRqlVrOTo4A2jAufrJtStlw2VAy0jJT/QlRlyRwArJoUskuIqwNzj7wF
+KbgUjHD7GbVhRHlbfhsY7TdO6MYB4iKQek7IgiYoK8lB8TexlKr2ygDdBj1aXs4u
+omTYdJANyOFSbFAmnWfl3ScKeyS7lVHPUZybV6rHp6YDt+k1vjRivIzZXOLXrv14
+i2YyoJudc8K5ZBi0AE6j2Y0njKpi9A==
+=vnPw
+-----END PGP SIGNATURE-----
+
+--=-5GqMeNDA14mTF3lYuG5p--
 
