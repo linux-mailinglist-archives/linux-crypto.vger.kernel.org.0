@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E951A30F1D2
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 12:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1452430F1CE
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 12:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235677AbhBDLPL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 Feb 2021 06:15:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40210 "EHLO
+        id S235583AbhBDLOs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 4 Feb 2021 06:14:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235614AbhBDLMo (ORCPT
+        with ESMTP id S235723AbhBDLM0 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:12:44 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7218C0611C1
-        for <linux-crypto@vger.kernel.org>; Thu,  4 Feb 2021 03:10:24 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id a1so3006625wrq.6
-        for <linux-crypto@vger.kernel.org>; Thu, 04 Feb 2021 03:10:24 -0800 (PST)
+        Thu, 4 Feb 2021 06:12:26 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10294C0611C3
+        for <linux-crypto@vger.kernel.org>; Thu,  4 Feb 2021 03:10:26 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 190so2770829wmz.0
+        for <linux-crypto@vger.kernel.org>; Thu, 04 Feb 2021 03:10:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WH1ZkfxgQ3lo4eJG51Uh12VlkOp1jMaFfnNoEjI139M=;
-        b=Fwbq732n3XUVYiF70e2xZk4Vv0WePzbXGtV9K9CQP0xq5MmYe2c1lY5kO8By5tRjBe
-         h/KA0K8rJ45UbLKMQLzOekJPUNVk5R0Om5p11Ff0vp99wZakGBPCBj8dWsHSAvV/t1Jy
-         Em53nt90VnSrtADHul75DC0T1PvBiYW6mxchyjXt+UDaBOqcW3io+1cHBqMULe5ZSN9k
-         9VaxajxrSgxEtiTW6jkWSFCATt4sKdT1RhryJqH+6qBX9rzO/9FE9T8WR7IlAugxKF4f
-         AKRQOxG56UXsyGqq9pkdFUnBuY5dZU6VpUrZCTdsDpJvbLR08WYPESgjONFzBpadKw1x
-         3MPQ==
+        bh=3IEsVjEj58gpnbEtzruF6QIgBE7zuGLR+EproOK/53M=;
+        b=pwnuFV934+1NBMnFc5tehmnUsznGHtEqWZhqeblMxHAXEAiQO6GdBjD9HxbnteJQcr
+         685CCA/s/RxaZFiIYu0DrIFt0EcTLzuxK77dJBvb+mRTMK3sUOvkv9but9M6CN43Z2J1
+         I7oJqVe5vMwwwgDcI5hJhNzeX6RutJNg35WaQCJ9FcrtDIAUFz3JXOjcPProru5uu5UK
+         0zOkNV8vIv+vwRwAD//KlfbPZStVsvZTPQNg5fIw5RhfnWevY5A4EH/gLo7FTAROjK+4
+         9ff74FS33cbCNPcvFgudhYPqg/Pq5qkF0Xg1xI2vN8P+tsvv96rzaDvzdNQsrA/CTTqj
+         CwSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WH1ZkfxgQ3lo4eJG51Uh12VlkOp1jMaFfnNoEjI139M=;
-        b=TTuqBn5LYKDq1tmhr/zsZYkiTFe9BTMo0YYFLkSJzN7ZfJg+v+QYy3YCjAyAkSikx8
-         ZAwcqJXeoMTCyvu5JohM9s1OTNw2kKNIzzY0GPPnPFdgKhxC8UXdo9FynI5jmLwyvNcS
-         aSNaXtT2O46ehTUXE7UjectkieE+5NJbqEv6YEPR/Uu25p9yqLQjcO2HQwabQPprKfs+
-         qsu9X43Zw3mc6kLdcow4IqflpZlwIGSK+SDlcL5JwLQJwDedmE0/hD3Eown9NHwgvXoU
-         ne8+l4CuAOqj//53sbpq7NuB9ThsoWgibcXhxYZa6ebMybsPbU6Gkf6nv5gpc6PRRRSq
-         LMbA==
-X-Gm-Message-State: AOAM533nJmest3aFp95VWUt0Uhh+F9UbAoyYpbXIRQBFo0Cm5H1NhHEn
-        FtcgJjqUmxCwbx/ZYR/5fJsSzQ==
-X-Google-Smtp-Source: ABdhPJzjUp9+e7p/dg0UnaZ0rUY3UY0nKqEvrLN6uQoqxKKkifC3adrh0/+QNGokJy751vuZFU+CFw==
-X-Received: by 2002:a5d:420d:: with SMTP id n13mr8658453wrq.320.1612437023472;
-        Thu, 04 Feb 2021 03:10:23 -0800 (PST)
+        bh=3IEsVjEj58gpnbEtzruF6QIgBE7zuGLR+EproOK/53M=;
+        b=L1SQprjlv63vrapsev8xtZl7fZdpJvOdGkyhlI3wfAmgNw/rBZ9t7XgfJ+6b7SQyUn
+         3SNGiwcE0jaLEAmXFXUd158GUUpBqv13+r8BoOr5Emm4hcCQBzpOhz50zc5QkQ82xCrk
+         /ZEygqbIGhW10KIH8SUrXCImTcHoJohPt4Rm5JRC1UKEA973tdzZ590PBw4xuN27CF5M
+         majFMSc/8tElvrRVJAvgaxkBs6mxd9nH4oav0qtdcKE8VbO+9ZZnXUsVJoC8M0MDm4YT
+         rCrFrd2IUbjjq7gB5TuyMEa2HOAQQ60tFtGmQZQXkDAbWlZ8dZh0+khl643V6jO/7xeN
+         HFZA==
+X-Gm-Message-State: AOAM5313+213s743BH4xHU1fxb2O4mk+XU5lptM0eClw4TRzstjkrmAi
+        /Jnl7alA6S0njPUjxaMyGxUV/A==
+X-Google-Smtp-Source: ABdhPJwzTr8uy4M0IvB8VO2hwiH8qyYaC4erJaP/nR/itMDq7tvkpIn8Do6atM7jT0LKBKilP1cAUQ==
+X-Received: by 2002:a1c:f70f:: with SMTP id v15mr6821758wmh.38.1612437024780;
+        Thu, 04 Feb 2021 03:10:24 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id y18sm7696218wrt.19.2021.02.04.03.10.22
+        by smtp.gmail.com with ESMTPSA id y18sm7696218wrt.19.2021.02.04.03.10.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 03:10:22 -0800 (PST)
+        Thu, 04 Feb 2021 03:10:24 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -61,9 +61,9 @@ Cc:     linux-kernel@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>,
         Kent Yoder <yoder1@us.ibm.com>, linux-crypto@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 17/20] crypto: nx: nx-aes-cbc: Headers comments should not be kernel-doc
-Date:   Thu,  4 Feb 2021 11:09:57 +0000
-Message-Id: <20210204111000.2800436-18-lee.jones@linaro.org>
+Subject: [PATCH 18/20] crypto: nx: nx_debugfs: Header comments should not be kernel-doc
+Date:   Thu,  4 Feb 2021 11:09:58 +0000
+Message-Id: <20210204111000.2800436-19-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210204111000.2800436-1-lee.jones@linaro.org>
 References: <20210204111000.2800436-1-lee.jones@linaro.org>
@@ -76,10 +76,8 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/crypto/nx/nx-aes-cbc.c:24: warning: Function parameter or member 'tfm' not described in 'cbc_aes_nx_set_key'
- drivers/crypto/nx/nx-aes-cbc.c:24: warning: Function parameter or member 'in_key' not described in 'cbc_aes_nx_set_key'
- drivers/crypto/nx/nx-aes-cbc.c:24: warning: Function parameter or member 'key_len' not described in 'cbc_aes_nx_set_key'
- drivers/crypto/nx/nx-aes-cbc.c:24: warning: expecting prototype for Nest Accelerators driver(). Prototype was for cbc_aes_nx_set_key() instead
+ drivers/crypto/nx/nx_debugfs.c:34: warning: Function parameter or member 'drv' not described in 'nx_debugfs_init'
+ drivers/crypto/nx/nx_debugfs.c:34: warning: expecting prototype for Nest Accelerators driver(). Prototype was for nx_debugfs_init() instead
 
 Cc: "Breno Leitão" <leitao@debian.org>
 Cc: Nayna Jain <nayna@linux.ibm.com>
@@ -94,18 +92,18 @@ Cc: linux-crypto@vger.kernel.org
 Cc: linuxppc-dev@lists.ozlabs.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/crypto/nx/nx-aes-cbc.c | 2 +-
+ drivers/crypto/nx/nx_debugfs.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/nx/nx-aes-cbc.c b/drivers/crypto/nx/nx-aes-cbc.c
-index 92e921eceed75..d6314ea9ae896 100644
---- a/drivers/crypto/nx/nx-aes-cbc.c
-+++ b/drivers/crypto/nx/nx-aes-cbc.c
+diff --git a/drivers/crypto/nx/nx_debugfs.c b/drivers/crypto/nx/nx_debugfs.c
+index 1975bcbee9974..ee7cd88bb10a7 100644
+--- a/drivers/crypto/nx/nx_debugfs.c
++++ b/drivers/crypto/nx/nx_debugfs.c
 @@ -1,5 +1,5 @@
  // SPDX-License-Identifier: GPL-2.0-only
 -/**
 +/*
-  * AES CBC routines supporting the Power 7+ Nest Accelerators driver
+  * debugfs routines supporting the Power 7+ Nest Accelerators driver
   *
   * Copyright (C) 2011-2012 International Business Machines Inc.
 -- 
