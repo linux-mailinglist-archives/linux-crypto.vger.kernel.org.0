@@ -2,106 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584B330F1D5
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 12:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E7930F1B6
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 12:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235788AbhBDLPx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 Feb 2021 06:15:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235749AbhBDLNX (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:13:23 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD59EC061A10
-        for <linux-crypto@vger.kernel.org>; Thu,  4 Feb 2021 03:10:29 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id w4so2744954wmi.4
-        for <linux-crypto@vger.kernel.org>; Thu, 04 Feb 2021 03:10:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hrNr+lBWtFId4EzjUkysKAYnQC+wg9XBY1JaRyhRGmU=;
-        b=wCl0IaHIQhVpYAG4G1XGZ11OJZCpT+nf40JxNtK/yc+i2oMo9dm0aJhJzAqrUs5tZq
-         FvFd5kcpNZcSkMIkXUKXojCIAXax2YYl6f3UUb7+IcUKpRf4nxy2ZTwBCW79IwyBXPxe
-         nopVLMan39vBhud+20LlTluJ6uScxi/yGDBBp/YSapWUhKBRLo35hbP6iqXDZBnKJcbC
-         CFwip/DRDdTdyItXEtbWAmYNzhJE8Vvg7y6c3IcP5y2n5d0INnR0TZodPX/41Y5ytAoQ
-         RaM+Ba3HalHyJBPImyICoe+EABpG6OYlwTQ/m0DC5KZBtguzx6yVEoQh2iE7p8a7P0UZ
-         abBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hrNr+lBWtFId4EzjUkysKAYnQC+wg9XBY1JaRyhRGmU=;
-        b=UypXwHa7zEC4vRfs1hOd8Etp0T+MxhHH5VSUqFKyzbNfZbtzMxyMEBhETZydy9izEi
-         7dh9An/n5n+nie0YIxjcQkZiKkyQHELL113bOXbpuvsMQQGW0xSBfYd4YJo9/N0LqNx8
-         etFhZU6VFjR4v7PzeSnPkttKlGsZeyLL0Yd4hNI2SNNsNauu96CQn1EunTzPq3e/fZYr
-         0YHoJTFUV499UYTsH3D1BUS/3oeMMFpMXBnHSWexpmUXNqTwCf6MwRmi216JXSuu1DLE
-         yZA+MPv367xJsnGim0BmIwh2kMrc1UcZQr1159TL4+yS+siA3g2Wek0XvMfPz2YJCwZn
-         Uweg==
-X-Gm-Message-State: AOAM5337TqzxsRgeK6B3i1bihCaLOuOPMjnTJNhPZINaXV0Ldp2OmnUa
-        DZnvwNuOzQVDkmGj2vqqWuIf2A==
-X-Google-Smtp-Source: ABdhPJyQt1sKw0ek1Sz27bkoNIJ4Dc3TqSZmz3zCEA0n7R042NG3hUP1E6LQ8QMiCibzFOUbIpWBnA==
-X-Received: by 2002:a1c:9ec9:: with SMTP id h192mr7238710wme.28.1612437028668;
-        Thu, 04 Feb 2021 03:10:28 -0800 (PST)
-Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id y18sm7696218wrt.19.2021.02.04.03.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 03:10:27 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH 20/20] crypto: cavium: nitrox_isr: Demote non-compliant kernel-doc headers
-Date:   Thu,  4 Feb 2021 11:10:00 +0000
-Message-Id: <20210204111000.2800436-21-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210204111000.2800436-1-lee.jones@linaro.org>
-References: <20210204111000.2800436-1-lee.jones@linaro.org>
+        id S235587AbhBDLL3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 4 Feb 2021 06:11:29 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:52226 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235579AbhBDLL1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 4 Feb 2021 06:11:27 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1l7cWo-0000Bb-AU; Thu, 04 Feb 2021 22:10:27 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 04 Feb 2021 22:10:26 +1100
+Date:   Thu, 4 Feb 2021 22:10:26 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Dave Martin <dave.martin@arm.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: (subset) Re: [PATCH v2 0/9] arm64: rework NEON yielding to avoid
+ scheduling from asm code
+Message-ID: <20210204111026.GA8155@gondor.apana.org.au>
+References: <20210203113626.220151-1-ardb@kernel.org>
+ <161238528350.1984862.12324465919265084208.b4-ty@kernel.org>
+ <20210204024429.GB5482@gondor.apana.org.au>
+ <CAMj1kXH6B8jbVk6xMa4H6GOpEgDCS9vbWLxvM0X-cdataoijdA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXH6B8jbVk6xMa4H6GOpEgDCS9vbWLxvM0X-cdataoijdA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Thu, Feb 04, 2021 at 09:29:16AM +0100, Ard Biesheuvel wrote:
+>
+> Half of the patches in this series conflict with
+> 
+> 0df07d8117c3 crypto: arm64/sha - add missing module aliases
+> 
+> in the cryptodev tree, so that won't work.
 
- drivers/crypto/cavium/nitrox/nitrox_isr.c:17: warning: expecting prototype for One vector for each type of ring(). Prototype was for NR_RING_VECTORS() instead
- drivers/crypto/cavium/nitrox/nitrox_isr.c:224: warning: Function parameter or member 'irq' not described in 'nps_core_int_isr'
- drivers/crypto/cavium/nitrox/nitrox_isr.c:224: warning: Function parameter or member 'data' not described in 'nps_core_int_isr'
+Fair enough.  I'll take the patches.
 
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/crypto/cavium/nitrox/nitrox_isr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/crypto/cavium/nitrox/nitrox_isr.c b/drivers/crypto/cavium/nitrox/nitrox_isr.c
-index 99b053094f5af..c288c4b51783d 100644
---- a/drivers/crypto/cavium/nitrox/nitrox_isr.c
-+++ b/drivers/crypto/cavium/nitrox/nitrox_isr.c
-@@ -10,7 +10,7 @@
- #include "nitrox_isr.h"
- #include "nitrox_mbx.h"
- 
--/**
-+/*
-  * One vector for each type of ring
-  *  - NPS packet ring, AQMQ ring and ZQMQ ring
-  */
-@@ -216,7 +216,7 @@ static void nps_core_int_tasklet(unsigned long data)
- 	}
- }
- 
--/**
-+/*
-  * nps_core_int_isr - interrupt handler for NITROX errors and
-  *   mailbox communication
-  */
+Thanks,
 -- 
-2.25.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
