@@ -2,18 +2,18 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3576830EF32
+	by mail.lfdr.de (Postfix) with ESMTP id B08BD30EF33
 	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 10:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234620AbhBDJDX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 Feb 2021 04:03:23 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12024 "EHLO
+        id S234627AbhBDJDY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 4 Feb 2021 04:03:24 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12026 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233567AbhBDJCq (ORCPT
+        with ESMTP id S233043AbhBDJCr (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:02:46 -0500
+        Thu, 4 Feb 2021 04:02:47 -0500
 Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DWXZc2vYMzjJlJ;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DWXZc3kW0zjJnk;
         Thu,  4 Feb 2021 17:00:40 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
@@ -23,9 +23,9 @@ To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
         <wangzhou1@hisilicon.com>, <tanghui20@huawei.com>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/4] crypto: hisilicon/hpre - tiny fix
-Date:   Thu, 4 Feb 2021 16:59:34 +0800
-Message-ID: <1612429176-28084-3-git-send-email-tanghui20@huawei.com>
+Subject: [PATCH 3/4] crypto: hisilicon/qm - fix use of 'dma_map_single'
+Date:   Thu, 4 Feb 2021 16:59:35 +0800
+Message-ID: <1612429176-28084-4-git-send-email-tanghui20@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1612429176-28084-1-git-send-email-tanghui20@huawei.com>
 References: <1612429176-28084-1-git-send-email-tanghui20@huawei.com>
@@ -37,45 +37,129 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Update since some special settings only for Kunpeng920.
+From: Weili Qian <qianweili@huawei.com>
 
+Calling 'dma_map_single' after the data is written to
+ensure that the cpu cache and dma cache are consistent.
+
+Signed-off-by: Weili Qian <qianweili@huawei.com>
 Signed-off-by: Hui Tang <tanghui20@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_main.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/crypto/hisilicon/qm.c | 50 +++++++++++++++++++++++--------------------
+ 1 file changed, 27 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 0045261..06448b8 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -318,7 +318,7 @@ static int hpre_set_cluster(struct hisi_qm *qm)
- }
+diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+index 904b99a..93d4a21 100644
+--- a/drivers/crypto/hisilicon/qm.c
++++ b/drivers/crypto/hisilicon/qm.c
+@@ -1747,12 +1747,6 @@ static int qm_sq_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
+ 	sqc = kzalloc(sizeof(struct qm_sqc), GFP_KERNEL);
+ 	if (!sqc)
+ 		return -ENOMEM;
+-	sqc_dma = dma_map_single(dev, sqc, sizeof(struct qm_sqc),
+-				 DMA_TO_DEVICE);
+-	if (dma_mapping_error(dev, sqc_dma)) {
+-		kfree(sqc);
+-		return -ENOMEM;
+-	}
 
- /*
-- * For Hi1620, we shoul disable FLR triggered by hardware (BME/PM/SRIOV).
-+ * For Kunpeng 920, we shoul disable FLR triggered by hardware (BME/PM/SRIOV).
-  * Or it may stay in D3 state when we bind and unbind hpre quickly,
-  * as it does FLR triggered by hardware.
-  */
-@@ -376,11 +376,14 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
- 	if (ret)
- 		return -ETIMEDOUT;
+ 	INIT_QC_COMMON(sqc, qp->sqe_dma, pasid);
+ 	if (ver == QM_HW_V1) {
+@@ -1765,6 +1759,13 @@ static int qm_sq_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
+ 	sqc->cq_num = cpu_to_le16(qp_id);
+ 	sqc->w13 = cpu_to_le16(QM_MK_SQC_W13(0, 1, qp->alg_type));
 
--	ret = hpre_cfg_by_dsm(qm);
--	if (ret)
--		dev_err(dev, "acpi_evaluate_dsm err.\n");
-+	/* This setting is only needed by Kunpeng 920. */
-+	if (qm->ver == QM_HW_V2) {
-+		ret = hpre_cfg_by_dsm(qm);
-+		if (ret)
-+			dev_err(dev, "acpi_evaluate_dsm err.\n");
-
--	disable_flr_of_bme(qm);
-+		disable_flr_of_bme(qm);
++	sqc_dma = dma_map_single(dev, sqc, sizeof(struct qm_sqc),
++				 DMA_TO_DEVICE);
++	if (dma_mapping_error(dev, sqc_dma)) {
++		kfree(sqc);
++		return -ENOMEM;
 +	}
++
+ 	ret = qm_mb(qm, QM_MB_CMD_SQC, sqc_dma, qp_id, 0);
+ 	dma_unmap_single(dev, sqc_dma, sizeof(struct qm_sqc), DMA_TO_DEVICE);
+ 	kfree(sqc);
+@@ -1784,12 +1785,6 @@ static int qm_cq_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
+ 	cqc = kzalloc(sizeof(struct qm_cqc), GFP_KERNEL);
+ 	if (!cqc)
+ 		return -ENOMEM;
+-	cqc_dma = dma_map_single(dev, cqc, sizeof(struct qm_cqc),
+-				 DMA_TO_DEVICE);
+-	if (dma_mapping_error(dev, cqc_dma)) {
+-		kfree(cqc);
+-		return -ENOMEM;
+-	}
 
- 	return ret;
- }
+ 	INIT_QC_COMMON(cqc, qp->cqe_dma, pasid);
+ 	if (ver == QM_HW_V1) {
+@@ -1802,6 +1797,13 @@ static int qm_cq_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
+ 	}
+ 	cqc->dw6 = cpu_to_le32(1 << QM_CQ_PHASE_SHIFT | 1 << QM_CQ_FLAG_SHIFT);
+
++	cqc_dma = dma_map_single(dev, cqc, sizeof(struct qm_cqc),
++				 DMA_TO_DEVICE);
++	if (dma_mapping_error(dev, cqc_dma)) {
++		kfree(cqc);
++		return -ENOMEM;
++	}
++
+ 	ret = qm_mb(qm, QM_MB_CMD_CQC, cqc_dma, qp_id, 0);
+ 	dma_unmap_single(dev, cqc_dma, sizeof(struct qm_cqc), DMA_TO_DEVICE);
+ 	kfree(cqc);
+@@ -2558,15 +2560,9 @@ static int qm_eq_ctx_cfg(struct hisi_qm *qm)
+ 	dma_addr_t eqc_dma;
+ 	int ret;
+
+-	eqc = kzalloc(sizeof(struct qm_eqc), GFP_KERNEL); //todo
++	eqc = kzalloc(sizeof(struct qm_eqc), GFP_KERNEL);
+ 	if (!eqc)
+ 		return -ENOMEM;
+-	eqc_dma = dma_map_single(dev, eqc, sizeof(struct qm_eqc),
+-				 DMA_TO_DEVICE);
+-	if (dma_mapping_error(dev, eqc_dma)) {
+-		kfree(eqc);
+-		return -ENOMEM;
+-	}
+
+ 	eqc->base_l = cpu_to_le32(lower_32_bits(qm->eqe_dma));
+ 	eqc->base_h = cpu_to_le32(upper_32_bits(qm->eqe_dma));
+@@ -2574,6 +2570,13 @@ static int qm_eq_ctx_cfg(struct hisi_qm *qm)
+ 		eqc->dw3 = cpu_to_le32(QM_EQE_AEQE_SIZE);
+ 	eqc->dw6 = cpu_to_le32((QM_EQ_DEPTH - 1) | (1 << QM_EQC_PHASE_SHIFT));
+
++	eqc_dma = dma_map_single(dev, eqc, sizeof(struct qm_eqc),
++				 DMA_TO_DEVICE);
++	if (dma_mapping_error(dev, eqc_dma)) {
++		kfree(eqc);
++		return -ENOMEM;
++	}
++
+ 	ret = qm_mb(qm, QM_MB_CMD_EQC, eqc_dma, 0, 0);
+ 	dma_unmap_single(dev, eqc_dma, sizeof(struct qm_eqc), DMA_TO_DEVICE);
+ 	kfree(eqc);
+@@ -2591,6 +2594,11 @@ static int qm_aeq_ctx_cfg(struct hisi_qm *qm)
+ 	aeqc = kzalloc(sizeof(struct qm_aeqc), GFP_KERNEL);
+ 	if (!aeqc)
+ 		return -ENOMEM;
++
++	aeqc->base_l = cpu_to_le32(lower_32_bits(qm->aeqe_dma));
++	aeqc->base_h = cpu_to_le32(upper_32_bits(qm->aeqe_dma));
++	aeqc->dw6 = cpu_to_le32((QM_Q_DEPTH - 1) | (1 << QM_EQC_PHASE_SHIFT));
++
+ 	aeqc_dma = dma_map_single(dev, aeqc, sizeof(struct qm_aeqc),
+ 				  DMA_TO_DEVICE);
+ 	if (dma_mapping_error(dev, aeqc_dma)) {
+@@ -2598,10 +2606,6 @@ static int qm_aeq_ctx_cfg(struct hisi_qm *qm)
+ 		return -ENOMEM;
+ 	}
+
+-	aeqc->base_l = cpu_to_le32(lower_32_bits(qm->aeqe_dma));
+-	aeqc->base_h = cpu_to_le32(upper_32_bits(qm->aeqe_dma));
+-	aeqc->dw6 = cpu_to_le32((QM_Q_DEPTH - 1) | (1 << QM_EQC_PHASE_SHIFT));
+-
+ 	ret = qm_mb(qm, QM_MB_CMD_AEQC, aeqc_dma, 0, 0);
+ 	dma_unmap_single(dev, aeqc_dma, sizeof(struct qm_aeqc), DMA_TO_DEVICE);
+ 	kfree(aeqc);
 --
 2.8.1
 
