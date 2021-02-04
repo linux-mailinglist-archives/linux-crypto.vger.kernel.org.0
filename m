@@ -2,18 +2,18 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08BD30EF33
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 10:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B856130EF31
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 10:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234627AbhBDJDY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 Feb 2021 04:03:24 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12026 "EHLO
+        id S234589AbhBDJDW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 4 Feb 2021 04:03:22 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12027 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233043AbhBDJCr (ORCPT
+        with ESMTP id S233214AbhBDJCq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:02:47 -0500
+        Thu, 4 Feb 2021 04:02:46 -0500
 Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DWXZc3kW0zjJnk;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DWXZc3680zjJn8;
         Thu,  4 Feb 2021 17:00:40 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
@@ -23,9 +23,9 @@ To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
         <wangzhou1@hisilicon.com>, <tanghui20@huawei.com>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/4] crypto: hisilicon/qm - fix use of 'dma_map_single'
-Date:   Thu, 4 Feb 2021 16:59:35 +0800
-Message-ID: <1612429176-28084-4-git-send-email-tanghui20@huawei.com>
+Subject: [PATCH 4/4] crypto: hisilicon - PASID fixed on Kunpeng 930
+Date:   Thu, 4 Feb 2021 16:59:36 +0800
+Message-ID: <1612429176-28084-5-git-send-email-tanghui20@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1612429176-28084-1-git-send-email-tanghui20@huawei.com>
 References: <1612429176-28084-1-git-send-email-tanghui20@huawei.com>
@@ -39,127 +39,159 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Weili Qian <qianweili@huawei.com>
 
-Calling 'dma_map_single' after the data is written to
-ensure that the cpu cache and dma cache are consistent.
+Enable PASID by setting 'sqc' and 'cqc' pasid bits
+per queue in Kunpeng 930.
+
+For Kunpeng 920, PASID is effective for all queues once set
+in SVA scenarios.
 
 Signed-off-by: Weili Qian <qianweili@huawei.com>
 Signed-off-by: Hui Tang <tanghui20@huawei.com>
 ---
- drivers/crypto/hisilicon/qm.c | 50 +++++++++++++++++++++++--------------------
- 1 file changed, 27 insertions(+), 23 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_main.c | 18 ++++++++++--------
+ drivers/crypto/hisilicon/qm.c             | 11 +++++++++++
+ drivers/crypto/hisilicon/qm.h             |  1 +
+ drivers/crypto/hisilicon/sec2/sec_main.c  |  2 +-
+ drivers/crypto/hisilicon/zip/zip_main.c   |  2 +-
+ 5 files changed, 24 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+index 06448b8..67f1fca 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_main.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+@@ -356,10 +356,6 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
+ 	writel(0x0, HPRE_ADDR(qm, HPRE_COMM_CNT_CLR_CE));
+ 	writel(0x0, HPRE_ADDR(qm, HPRE_ECC_BYPASS));
+
+-	/* Enable data buffer pasid */
+-	if (qm->use_sva)
+-		hpre_pasid_enable(qm);
+-
+ 	writel(HPRE_BD_USR_MASK, HPRE_ADDR(qm, HPRE_BD_ARUSR_CFG));
+ 	writel(HPRE_BD_USR_MASK, HPRE_ADDR(qm, HPRE_BD_AWUSR_CFG));
+ 	writel(0x1, HPRE_ADDR(qm, HPRE_RDCHN_INI_CFG));
+@@ -383,6 +379,10 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
+ 			dev_err(dev, "acpi_evaluate_dsm err.\n");
+
+ 		disable_flr_of_bme(qm);
++
++		/* Enable data buffer pasid */
++		if (qm->use_sva)
++			hpre_pasid_enable(qm);
+ 	}
+
+ 	return ret;
+@@ -993,16 +993,18 @@ static void hpre_remove(struct pci_dev *pdev)
+ 			return;
+ 		}
+ 	}
++
++	hpre_debugfs_exit(qm);
++	hisi_qm_stop(qm, QM_NORMAL);
++
+ 	if (qm->fun_type == QM_HW_PF) {
+-		if (qm->use_sva)
++		if (qm->use_sva && qm->ver == QM_HW_V2)
+ 			hpre_pasid_disable(qm);
+ 		hpre_cnt_regs_clear(qm);
+ 		qm->debug.curr_qm_qp_num = 0;
++		hisi_qm_dev_err_uninit(qm);
+ 	}
+
+-	hpre_debugfs_exit(qm);
+-	hisi_qm_stop(qm, QM_NORMAL);
+-	hisi_qm_dev_err_uninit(qm);
+ 	hisi_qm_uninit(qm);
+ }
 
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 904b99a..93d4a21 100644
+index 93d4a21..c36c4a5 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -1747,12 +1747,6 @@ static int qm_sq_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
- 	sqc = kzalloc(sizeof(struct qm_sqc), GFP_KERNEL);
- 	if (!sqc)
- 		return -ENOMEM;
--	sqc_dma = dma_map_single(dev, sqc, sizeof(struct qm_sqc),
--				 DMA_TO_DEVICE);
--	if (dma_mapping_error(dev, sqc_dma)) {
--		kfree(sqc);
--		return -ENOMEM;
--	}
+@@ -54,6 +54,8 @@
+ #define QM_SQ_PRIORITY_SHIFT		0
+ #define QM_SQ_ORDERS_SHIFT		4
+ #define QM_SQ_TYPE_SHIFT		8
++#define QM_QC_PASID_ENABLE		0x1
++#define QM_QC_PASID_ENABLE_SHIFT	7
 
- 	INIT_QC_COMMON(sqc, qp->sqe_dma, pasid);
- 	if (ver == QM_HW_V1) {
-@@ -1765,6 +1759,13 @@ static int qm_sq_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
+ #define QM_SQ_TYPE_MASK			GENMASK(3, 0)
+ #define QM_SQ_TAIL_IDX(sqc)		((le16_to_cpu((sqc)->w11) >> 6) & 0x1)
+@@ -1685,6 +1687,7 @@ static struct hisi_qp *qm_create_qp_nolock(struct hisi_qm *qm, u8 alg_type)
+ 	qp->req_cb = NULL;
+ 	qp->qp_id = qp_id;
+ 	qp->alg_type = alg_type;
++	qp->is_in_kernel = true;
+ 	qm->qp_in_used++;
+ 	atomic_set(&qp->qp_status.flags, QP_INIT);
+
+@@ -1759,6 +1762,10 @@ static int qm_sq_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
  	sqc->cq_num = cpu_to_le16(qp_id);
  	sqc->w13 = cpu_to_le16(QM_MK_SQC_W13(0, 1, qp->alg_type));
 
-+	sqc_dma = dma_map_single(dev, sqc, sizeof(struct qm_sqc),
-+				 DMA_TO_DEVICE);
-+	if (dma_mapping_error(dev, sqc_dma)) {
-+		kfree(sqc);
-+		return -ENOMEM;
-+	}
++	if (ver >= QM_HW_V3 && qm->use_sva && !qp->is_in_kernel)
++		sqc->w11 = cpu_to_le16(QM_QC_PASID_ENABLE <<
++				       QM_QC_PASID_ENABLE_SHIFT);
 +
- 	ret = qm_mb(qm, QM_MB_CMD_SQC, sqc_dma, qp_id, 0);
- 	dma_unmap_single(dev, sqc_dma, sizeof(struct qm_sqc), DMA_TO_DEVICE);
- 	kfree(sqc);
-@@ -1784,12 +1785,6 @@ static int qm_cq_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
- 	cqc = kzalloc(sizeof(struct qm_cqc), GFP_KERNEL);
- 	if (!cqc)
- 		return -ENOMEM;
--	cqc_dma = dma_map_single(dev, cqc, sizeof(struct qm_cqc),
--				 DMA_TO_DEVICE);
--	if (dma_mapping_error(dev, cqc_dma)) {
--		kfree(cqc);
--		return -ENOMEM;
--	}
-
- 	INIT_QC_COMMON(cqc, qp->cqe_dma, pasid);
- 	if (ver == QM_HW_V1) {
-@@ -1802,6 +1797,13 @@ static int qm_cq_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
+ 	sqc_dma = dma_map_single(dev, sqc, sizeof(struct qm_sqc),
+ 				 DMA_TO_DEVICE);
+ 	if (dma_mapping_error(dev, sqc_dma)) {
+@@ -1797,6 +1804,9 @@ static int qm_cq_ctx_cfg(struct hisi_qp *qp, int qp_id, u32 pasid)
  	}
  	cqc->dw6 = cpu_to_le32(1 << QM_CQ_PHASE_SHIFT | 1 << QM_CQ_FLAG_SHIFT);
 
-+	cqc_dma = dma_map_single(dev, cqc, sizeof(struct qm_cqc),
-+				 DMA_TO_DEVICE);
-+	if (dma_mapping_error(dev, cqc_dma)) {
-+		kfree(cqc);
-+		return -ENOMEM;
-+	}
++	if (ver >= QM_HW_V3 && qm->use_sva && !qp->is_in_kernel)
++		cqc->w11 = cpu_to_le16(QM_QC_PASID_ENABLE);
 +
- 	ret = qm_mb(qm, QM_MB_CMD_CQC, cqc_dma, qp_id, 0);
- 	dma_unmap_single(dev, cqc_dma, sizeof(struct qm_cqc), DMA_TO_DEVICE);
- 	kfree(cqc);
-@@ -2558,15 +2560,9 @@ static int qm_eq_ctx_cfg(struct hisi_qm *qm)
- 	dma_addr_t eqc_dma;
- 	int ret;
+ 	cqc_dma = dma_map_single(dev, cqc, sizeof(struct qm_cqc),
+ 				 DMA_TO_DEVICE);
+ 	if (dma_mapping_error(dev, cqc_dma)) {
+@@ -2067,6 +2077,7 @@ static int hisi_qm_uacce_get_queue(struct uacce_device *uacce,
+ 	qp->uacce_q = q;
+ 	qp->event_cb = qm_qp_event_notifier;
+ 	qp->pasid = arg;
++	qp->is_in_kernel = false;
 
--	eqc = kzalloc(sizeof(struct qm_eqc), GFP_KERNEL); //todo
-+	eqc = kzalloc(sizeof(struct qm_eqc), GFP_KERNEL);
- 	if (!eqc)
- 		return -ENOMEM;
--	eqc_dma = dma_map_single(dev, eqc, sizeof(struct qm_eqc),
--				 DMA_TO_DEVICE);
--	if (dma_mapping_error(dev, eqc_dma)) {
--		kfree(eqc);
--		return -ENOMEM;
--	}
+ 	return 0;
+ }
+diff --git a/drivers/crypto/hisilicon/qm.h b/drivers/crypto/hisilicon/qm.h
+index c1dd0fc..8f5a3b9 100644
+--- a/drivers/crypto/hisilicon/qm.h
++++ b/drivers/crypto/hisilicon/qm.h
+@@ -288,6 +288,7 @@ struct hisi_qp {
 
- 	eqc->base_l = cpu_to_le32(lower_32_bits(qm->eqe_dma));
- 	eqc->base_h = cpu_to_le32(upper_32_bits(qm->eqe_dma));
-@@ -2574,6 +2570,13 @@ static int qm_eq_ctx_cfg(struct hisi_qm *qm)
- 		eqc->dw3 = cpu_to_le32(QM_EQE_AEQE_SIZE);
- 	eqc->dw6 = cpu_to_le32((QM_EQ_DEPTH - 1) | (1 << QM_EQC_PHASE_SHIFT));
+ 	struct hisi_qm *qm;
+ 	bool is_resetting;
++	bool is_in_kernel;
+ 	u16 pasid;
+ 	struct uacce_queue *uacce_q;
+ };
+diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+index 4809c19..b5c2f7e 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_main.c
++++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -323,7 +323,7 @@ static int sec_engine_init(struct hisi_qm *qm)
 
-+	eqc_dma = dma_map_single(dev, eqc, sizeof(struct qm_eqc),
-+				 DMA_TO_DEVICE);
-+	if (dma_mapping_error(dev, eqc_dma)) {
-+		kfree(eqc);
-+		return -ENOMEM;
-+	}
-+
- 	ret = qm_mb(qm, QM_MB_CMD_EQC, eqc_dma, 0, 0);
- 	dma_unmap_single(dev, eqc_dma, sizeof(struct qm_eqc), DMA_TO_DEVICE);
- 	kfree(eqc);
-@@ -2591,6 +2594,11 @@ static int qm_aeq_ctx_cfg(struct hisi_qm *qm)
- 	aeqc = kzalloc(sizeof(struct qm_aeqc), GFP_KERNEL);
- 	if (!aeqc)
- 		return -ENOMEM;
-+
-+	aeqc->base_l = cpu_to_le32(lower_32_bits(qm->aeqe_dma));
-+	aeqc->base_h = cpu_to_le32(upper_32_bits(qm->aeqe_dma));
-+	aeqc->dw6 = cpu_to_le32((QM_Q_DEPTH - 1) | (1 << QM_EQC_PHASE_SHIFT));
-+
- 	aeqc_dma = dma_map_single(dev, aeqc, sizeof(struct qm_aeqc),
- 				  DMA_TO_DEVICE);
- 	if (dma_mapping_error(dev, aeqc_dma)) {
-@@ -2598,10 +2606,6 @@ static int qm_aeq_ctx_cfg(struct hisi_qm *qm)
- 		return -ENOMEM;
- 	}
+ 	reg = readl_relaxed(SEC_ADDR(qm, SEC_INTERFACE_USER_CTRL1_REG));
+ 	reg &= SEC_USER1_SMMU_MASK;
+-	if (qm->use_sva)
++	if (qm->use_sva && qm->ver == QM_HW_V2)
+ 		reg |= SEC_USER1_SMMU_SVA;
+ 	else
+ 		reg |= SEC_USER1_SMMU_NORMAL;
+diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
+index 9cdecff..115560f 100644
+--- a/drivers/crypto/hisilicon/zip/zip_main.c
++++ b/drivers/crypto/hisilicon/zip/zip_main.c
+@@ -292,7 +292,7 @@ static int hisi_zip_set_user_domain_and_cache(struct hisi_qm *qm)
+ 	writel(AXUSER_BASE, base + HZIP_SGL_RUSER_32_63);
+ 	writel(AXUSER_BASE, base + HZIP_BD_WUSER_32_63);
 
--	aeqc->base_l = cpu_to_le32(lower_32_bits(qm->aeqe_dma));
--	aeqc->base_h = cpu_to_le32(upper_32_bits(qm->aeqe_dma));
--	aeqc->dw6 = cpu_to_le32((QM_Q_DEPTH - 1) | (1 << QM_EQC_PHASE_SHIFT));
--
- 	ret = qm_mb(qm, QM_MB_CMD_AEQC, aeqc_dma, 0, 0);
- 	dma_unmap_single(dev, aeqc_dma, sizeof(struct qm_aeqc), DMA_TO_DEVICE);
- 	kfree(aeqc);
+-	if (qm->use_sva) {
++	if (qm->use_sva && qm->ver == QM_HW_V2) {
+ 		writel(AXUSER_BASE | AXUSER_SSV, base + HZIP_DATA_RUSER_32_63);
+ 		writel(AXUSER_BASE | AXUSER_SSV, base + HZIP_DATA_WUSER_32_63);
+ 	} else {
 --
 2.8.1
 
