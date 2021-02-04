@@ -2,73 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0499D30F1D0
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 12:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 584B330F1D5
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 12:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235723AbhBDLPA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 Feb 2021 06:15:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
+        id S235788AbhBDLPx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 4 Feb 2021 06:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235560AbhBDLMx (ORCPT
+        with ESMTP id S235749AbhBDLNX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:12:53 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6CBC0611BD
-        for <linux-crypto@vger.kernel.org>; Thu,  4 Feb 2021 03:10:28 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id m1so2641032wml.2
-        for <linux-crypto@vger.kernel.org>; Thu, 04 Feb 2021 03:10:28 -0800 (PST)
+        Thu, 4 Feb 2021 06:13:23 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD59EC061A10
+        for <linux-crypto@vger.kernel.org>; Thu,  4 Feb 2021 03:10:29 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id w4so2744954wmi.4
+        for <linux-crypto@vger.kernel.org>; Thu, 04 Feb 2021 03:10:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qhRaK7PEb1+VQbMXp2izacC8TWHkvWpyOp/JFxz8PSk=;
-        b=t5B27kseFaSQ07V34VI0+HtMHwzq/iu5wofl4aAA12lmp4bvmT9K7iM/vMiDXIvfmp
-         5gVTdvI880u0uezN8PA5uIEwySqb7up76wrmGmKbG1myjs2VLsWE41EmwhWLr4HqTC1N
-         dSWu8oC3jxsrIUtMphZ3UnYweS/gT1cGYPQro/LAqTh8PfiMVie9VOuiCMMw/FCWcRVp
-         KYrsbsjbMBWMfB4KzcX4FNY+xNmfKOi2vhUA9bUpdllUDvj/CfDlineW9XKQ3Y3VG35l
-         XWS4BgTzWKinSO0ZTFANwZbF6Ha33pKPf9YaE8v6ow6eiLsU6AlkdjcQfU9JeHTSEMv0
-         eGgQ==
+        bh=hrNr+lBWtFId4EzjUkysKAYnQC+wg9XBY1JaRyhRGmU=;
+        b=wCl0IaHIQhVpYAG4G1XGZ11OJZCpT+nf40JxNtK/yc+i2oMo9dm0aJhJzAqrUs5tZq
+         FvFd5kcpNZcSkMIkXUKXojCIAXax2YYl6f3UUb7+IcUKpRf4nxy2ZTwBCW79IwyBXPxe
+         nopVLMan39vBhud+20LlTluJ6uScxi/yGDBBp/YSapWUhKBRLo35hbP6iqXDZBnKJcbC
+         CFwip/DRDdTdyItXEtbWAmYNzhJE8Vvg7y6c3IcP5y2n5d0INnR0TZodPX/41Y5ytAoQ
+         RaM+Ba3HalHyJBPImyICoe+EABpG6OYlwTQ/m0DC5KZBtguzx6yVEoQh2iE7p8a7P0UZ
+         abBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qhRaK7PEb1+VQbMXp2izacC8TWHkvWpyOp/JFxz8PSk=;
-        b=k4b8PKgRhgcncvUprI8L8744DdIcFq7fssBZARV4a2ddTQpGwxs1/qDnhrLSAnI9QG
-         oV42uXVAbgwBpZuI2ii8ilzuUrCmqmkCzwbm2vTz4YknR8Cy/akh6/puUL+TMfuuCGVc
-         wmApRbhSug/48mTD4XFWRx1ZeFqJ1xinjraNCmtcUFZChfNt0TkcpeyNWox8qG/1kBIe
-         pwt2WBAbzhcZTYsvJuNfY6Ib84agmoKpnVVEeW87WwQD53ZKNeuMvYckjYpRfW94jb8e
-         HRyGlXfVKyb/tOSNekbJMKGUUdc/rRhKcQ/JYGEcZYBhWh/nqIMmpBYuZyeNzguKyH0i
-         HLiQ==
-X-Gm-Message-State: AOAM5315znERCDv58fsbFVNlFU83kSg2u2JwjiAIc+Tjz8BBXlLwOyRE
-        DyxBem5JvhGjRn/WP5WWr+lx9hA9IOrveg==
-X-Google-Smtp-Source: ABdhPJy3ovJmVWJwfdQ/ifr6A3rN/+QEp57dStSFcBGixXRzwdnUgrj5/e3P+zqOCrmcKmI+TdyFRA==
-X-Received: by 2002:a1c:6688:: with SMTP id a130mr6944242wmc.1.1612437025976;
-        Thu, 04 Feb 2021 03:10:25 -0800 (PST)
+        bh=hrNr+lBWtFId4EzjUkysKAYnQC+wg9XBY1JaRyhRGmU=;
+        b=UypXwHa7zEC4vRfs1hOd8Etp0T+MxhHH5VSUqFKyzbNfZbtzMxyMEBhETZydy9izEi
+         7dh9An/n5n+nie0YIxjcQkZiKkyQHELL113bOXbpuvsMQQGW0xSBfYd4YJo9/N0LqNx8
+         etFhZU6VFjR4v7PzeSnPkttKlGsZeyLL0Yd4hNI2SNNsNauu96CQn1EunTzPq3e/fZYr
+         0YHoJTFUV499UYTsH3D1BUS/3oeMMFpMXBnHSWexpmUXNqTwCf6MwRmi216JXSuu1DLE
+         yZA+MPv367xJsnGim0BmIwh2kMrc1UcZQr1159TL4+yS+siA3g2Wek0XvMfPz2YJCwZn
+         Uweg==
+X-Gm-Message-State: AOAM5337TqzxsRgeK6B3i1bihCaLOuOPMjnTJNhPZINaXV0Ldp2OmnUa
+        DZnvwNuOzQVDkmGj2vqqWuIf2A==
+X-Google-Smtp-Source: ABdhPJyQt1sKw0ek1Sz27bkoNIJ4Dc3TqSZmz3zCEA0n7R042NG3hUP1E6LQ8QMiCibzFOUbIpWBnA==
+X-Received: by 2002:a1c:9ec9:: with SMTP id h192mr7238710wme.28.1612437028668;
+        Thu, 04 Feb 2021 03:10:28 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id y18sm7696218wrt.19.2021.02.04.03.10.24
+        by smtp.gmail.com with ESMTPSA id y18sm7696218wrt.19.2021.02.04.03.10.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 03:10:25 -0800 (PST)
+        Thu, 04 Feb 2021 03:10:27 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Breno=20Leit=C3=A3o?= <leitao@debian.org>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Kent Yoder <yoder1@us.ibm.com>, linux-crypto@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 19/20] crypto: nx: Demote header comment and add description for 'nbytes'
-Date:   Thu,  4 Feb 2021 11:09:59 +0000
-Message-Id: <20210204111000.2800436-20-lee.jones@linaro.org>
+        linux-crypto@vger.kernel.org
+Subject: [PATCH 20/20] crypto: cavium: nitrox_isr: Demote non-compliant kernel-doc headers
+Date:   Thu,  4 Feb 2021 11:10:00 +0000
+Message-Id: <20210204111000.2800436-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210204111000.2800436-1-lee.jones@linaro.org>
 References: <20210204111000.2800436-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
@@ -76,50 +68,40 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/crypto/nx/nx.c:31: warning: Incorrect use of kernel-doc format:  * nx_hcall_sync - make an H_COP_OP hcall for the passed in op structure
- drivers/crypto/nx/nx.c:43: warning: Function parameter or member 'nx_ctx' not described in 'nx_hcall_sync'
- drivers/crypto/nx/nx.c:43: warning: Function parameter or member 'op' not described in 'nx_hcall_sync'
- drivers/crypto/nx/nx.c:43: warning: Function parameter or member 'may_sleep' not described in 'nx_hcall_sync'
- drivers/crypto/nx/nx.c:43: warning: expecting prototype for Nest Accelerators driver(). Prototype was for nx_hcall_sync() instead
- drivers/crypto/nx/nx.c:209: warning: Function parameter or member 'nbytes' not described in 'trim_sg_list'
+ drivers/crypto/cavium/nitrox/nitrox_isr.c:17: warning: expecting prototype for One vector for each type of ring(). Prototype was for NR_RING_VECTORS() instead
+ drivers/crypto/cavium/nitrox/nitrox_isr.c:224: warning: Function parameter or member 'irq' not described in 'nps_core_int_isr'
+ drivers/crypto/cavium/nitrox/nitrox_isr.c:224: warning: Function parameter or member 'data' not described in 'nps_core_int_isr'
 
-Cc: "Breno Leitão" <leitao@debian.org>
-Cc: Nayna Jain <nayna@linux.ibm.com>
-Cc: Paulo Flabiano Smorigo <pfsmorigo@gmail.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
 Cc: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Kent Yoder <yoder1@us.ibm.com>
 Cc: linux-crypto@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/crypto/nx/nx.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/crypto/cavium/nitrox/nitrox_isr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/nx/nx.c b/drivers/crypto/nx/nx.c
-index 0d2dc5be7f192..010be6793c9fc 100644
---- a/drivers/crypto/nx/nx.c
-+++ b/drivers/crypto/nx/nx.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
+diff --git a/drivers/crypto/cavium/nitrox/nitrox_isr.c b/drivers/crypto/cavium/nitrox/nitrox_isr.c
+index 99b053094f5af..c288c4b51783d 100644
+--- a/drivers/crypto/cavium/nitrox/nitrox_isr.c
++++ b/drivers/crypto/cavium/nitrox/nitrox_isr.c
+@@ -10,7 +10,7 @@
+ #include "nitrox_isr.h"
+ #include "nitrox_mbx.h"
+ 
 -/**
 +/*
-  * Routines supporting the Power 7+ Nest Accelerators driver
-  *
-  * Copyright (C) 2011-2012 International Business Machines Inc.
-@@ -200,7 +200,8 @@ struct nx_sg *nx_walk_and_build(struct nx_sg       *nx_dst,
-  * @sg: sg list head
-  * @end: sg lisg end
-  * @delta:  is the amount we need to crop in order to bound the list.
-- *
-+ * @nbytes: length of data in the scatterlists or data length - whichever
-+ *          is greater.
+  * One vector for each type of ring
+  *  - NPS packet ring, AQMQ ring and ZQMQ ring
   */
- static long int trim_sg_list(struct nx_sg *sg,
- 			     struct nx_sg *end,
+@@ -216,7 +216,7 @@ static void nps_core_int_tasklet(unsigned long data)
+ 	}
+ }
+ 
+-/**
++/*
+  * nps_core_int_isr - interrupt handler for NITROX errors and
+  *   mailbox communication
+  */
 -- 
 2.25.1
 
