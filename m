@@ -2,99 +2,107 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA22A30F768
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 17:17:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B830B30F8A0
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 17:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237837AbhBDQJi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 Feb 2021 11:09:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237835AbhBDQJa (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:09:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B37B264F6A;
-        Thu,  4 Feb 2021 16:08:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612454929;
-        bh=3IAPQCCNYn5V60zzmVrr36a9HtGkWRc99HBODO496rg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SbGXD2TYulwmiUQymxa1aJ6E9gI3aWMtXnHBN5sPgXVrkpXtCbu+v0ZHPxelGg3kf
-         OCEK7Js2lxNP6OULdJSFxzpq9FfVDxZmJCQNHvO0+GZx0qC8q1M2tspWFbV3CM2ebX
-         7vYTxzaaKedXFZO77mr+R3l5UMy2ORCNsruSabzc=
-Date:   Thu, 4 Feb 2021 17:08:46 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>, Matt Mackall <mpm@selenic.com>,
+        id S238216AbhBDQyX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 4 Feb 2021 11:54:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238191AbhBDQxo (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:53:44 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD47C06178B;
+        Thu,  4 Feb 2021 08:52:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=rU7kGtAV6x4h9PYVWyoXz+PtjR1Ekd/aEUlrk7YawjA=; b=VTPukyRsHKDa6AiBC7g1A33pB
+        SwzVRoY12CgfihopuGU84sVuVRYsUfiv6b3Emwm8BDSGMl47NJ4gm0qIsiqAwyM3pSwTIf2l6vha2
+        cDzPmBjk1ljXfebW71uB6xJtMeptgxH+fOQ7FkYaFWun/B6T1rfINwGd+rlb8M/Klezy3l/ReCdrv
+        V0d4qDQKYRRMYic1iTAdlcZh5yvqjMKyuvjs8Wsy37fKFKVUMlPg8hW+P5sXiwO/tuao+vtETwe0A
+        yHWeGg7btn+Meuk+vfx/5ICUUCrM+vrThjyBDk8k7p21ma/Hklw+jYC+vHctVDNhR+i6P6uievpnI
+        PK8/XvaQg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39164)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l7hrw-0006on-3V; Thu, 04 Feb 2021 16:52:36 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l7hrk-0005Ka-VR; Thu, 04 Feb 2021 16:52:24 +0000
+Date:   Thu, 4 Feb 2021 16:52:24 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-fbdev@vger.kernel.org, kvm@vger.kernel.org,
+        alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig.org@pengutronix.de>, linux-i2c@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-input@vger.kernel.org, Mike Leach <mike.leach@linaro.org>,
+        linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-crypto@vger.kernel.org,
+        kernel@pengutronix.de, Leo Yan <leo.yan@linaro.org>,
+        dmaengine@vger.kernel.org, Matt Mackall <mpm@selenic.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Haren Myneni <haren@us.ibm.com>,
-        Breno =?iso-8859-1?Q?Leit=E3o?= <leitao@debian.org>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
-        Steven Royer <seroyer@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Cristobal Forno <cforno12@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Cyr <mikecyr@linux.ibm.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
         Jiri Slaby <jirislaby@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        netdev@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org
-Subject: Re: [PATCH] vio: make remove callback return void
-Message-ID: <YBwcDmtefa2WmS90@kroah.com>
-References: <20210127215010.99954-1-uwe@kleine-koenig.org>
+        Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [GIT PULL] immutable branch for amba changes targeting v5.12-rc1
+Message-ID: <20210204165224.GA1463@shell.armlinux.org.uk>
+References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
+ <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
+ <YBlcTXlxemmC2lgr@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210127215010.99954-1-uwe@kleine-koenig.org>
+In-Reply-To: <YBlcTXlxemmC2lgr@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 10:50:10PM +0100, Uwe Kleine-König wrote:
-> The driver core ignores the return value of struct bus_type::remove()
-> because there is only little that can be done. To simplify the quest to
-> make this function return void, let struct vio_driver::remove() return
-> void, too. All users already unconditionally return 0, this commit makes
-> it obvious that returning an error code is a bad idea and makes it
-> obvious for future driver authors that returning an error code isn't
-> intended.
-> 
-> Note there are two nominally different implementations for a vio bus:
-> one in arch/sparc/kernel/vio.c and the other in
-> arch/powerpc/platforms/pseries/vio.c. I didn't care to check which
-> driver is using which of these busses (or if even some of them can be
-> used with both) and simply adapt all drivers and the two bus codes in
-> one go.
-> 
-> Note that for the powerpc implementation there is a semantical change:
-> Before this patch for a device that was bound to a driver without a
-> remove callback vio_cmo_bus_remove(viodev) wasn't called. As the device
-> core still considers the device unbound after vio_bus_remove() returns
-> calling this unconditionally is the consistent behaviour which is
-> implemented here.
-> 
-> Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
-> ---
-> Hello,
-> 
-> note that this change depends on
-> https://lore.kernel.org/r/20210121062005.53271-1-ljp@linux.ibm.com which removes
-> an (ignored) return -EBUSY in drivers/net/ethernet/ibm/ibmvnic.c.
-> I don't know when/if this latter patch will be applied, so it might take
-> some time until my patch can go in.
+On Tue, Feb 02, 2021 at 03:06:05PM +0100, Greg Kroah-Hartman wrote:
+> I'm glad to take this through my char/misc tree, as that's where the
+> other coresight changes flow through.  So if no one else objects, I will
+> do so...
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Greg, did you end up pulling this after all? If not, Uwe produced a v2.
+I haven't merged v2 yet as I don't know what you've done.
+
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
