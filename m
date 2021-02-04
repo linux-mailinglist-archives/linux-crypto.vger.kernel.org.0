@@ -2,60 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952AF30FF81
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 22:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E6130FFA9
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 22:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhBDVpf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 Feb 2021 16:45:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35364 "EHLO
+        id S229866AbhBDVuW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 4 Feb 2021 16:50:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230058AbhBDVpX (ORCPT
+        with ESMTP id S230064AbhBDVpY (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:45:23 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE82C061794
-        for <linux-crypto@vger.kernel.org>; Thu,  4 Feb 2021 13:44:04 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id t63so4974614qkc.1
-        for <linux-crypto@vger.kernel.org>; Thu, 04 Feb 2021 13:44:04 -0800 (PST)
+        Thu, 4 Feb 2021 16:45:24 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6C2C0617A7
+        for <linux-crypto@vger.kernel.org>; Thu,  4 Feb 2021 13:44:05 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id d85so4929002qkg.5
+        for <linux-crypto@vger.kernel.org>; Thu, 04 Feb 2021 13:44:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qH6pF/G1SFg+K0bTJv0NKKhaRdQW632kFeXNuGpnkfE=;
-        b=gbKxS5e8CTLLKMrWTEmfPwRWGpzyjMOngziTQj1g2+TvAFgL9trZ4VXVFANBUJfga5
-         3oDbRCy5R3qU1bE78K222fxBzdeVY/4cOtLBN/vJLGYpUlJy5hmNZ9dv03gItaiJAbWQ
-         GncNJH3B6AYgpytL3qa98eL+QQaV7blX85Wau42c/ZSCf0lB4LWY66S+VtVjudz4i4Ec
-         XNwDg8jTwxP6CjHfwLDvadYj4h0z7SBgCrTe6otn6oar4OWsg6nMFjSuMG0PyHRwXmTH
-         JDqUmP6q0a4N6WQAmu8jXZXuTOxJpcSb3GEmPrZlVvoJz1o+oViZh0XgYbAJMa+TnGd7
-         doNw==
+        bh=JO1AHf4uhYw2ez6Ve3o7chTARaAb1KHfpJckn1suQ+U=;
+        b=L5atl3u2FShWrNk0KPUgQBmlVFI8trZLK+DuEcZWP0P1LwPq9Kl5pxeU3pyfzKh6kN
+         oD4oYBetvwTOIHy2Tnt+aBmJvlseHBkH6HctukpVUSZoH/MgiQ2PyT0r8aTx7/5FZrs/
+         6LQUB2yFXjZ8IAIZGw2cScLTy1OwvS+k2kf0/zlttN00+XG22VEZJimpa4hbif8BFfzJ
+         FDt2mY3WTUsmO7HeJ15MKySQOlocbwcsNxJDYoLbn7fnH9FdeNoFMoK1Pgt0KpU0OXGK
+         ZJeVHEgjmCr5XIiJDlLQJ5i8V0AKbu98wSIUXpCOR6QvsdSTxY90F5JtaO9CjwQUGuzL
+         ZCmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qH6pF/G1SFg+K0bTJv0NKKhaRdQW632kFeXNuGpnkfE=;
-        b=cPtb8hJSdkxE3nOGALnvmtv6ZgxiJaMCvJC8SmYSFmbixOMkt37Vwcq+IqV1NsDzG2
-         W0shiPpFMnwuldBXI6jtc2/BFwmVk9WYYE1qouzonMpDurZkkLSX5NHhu0YWwxyJNw77
-         wM07vmqj15SF06E0cd2HSbm/fHSUmdDF8/gpvilnXl8FgOGEndllpXpRpOxsu7j1A9Ao
-         dmMiJwT6Kt3kKoqRhvjF9z1kWuAw++QOnMkKqUwitlfr2LYyrXNq90iGvA7N+uZZgWJf
-         HaezELSIgcZ+HtDY5cQUojk76gOain7eZZFQCBEjFkDKseA3sBLDh294j54NWyptWB7Q
-         UNSw==
-X-Gm-Message-State: AOAM531aDdwfzQpVgblef16HVC3iu4vQdwLYicEks2Wccs/PlDO4MI9t
-        PP8gi4m1Orps89VdWV5nFuyQgg==
-X-Google-Smtp-Source: ABdhPJwpif6KmauoadACXD3M6+LCcawEsG7ygPh+js460WIxpn+hXK5ZL8kTgTRkp2ZMvfY2jwADrA==
-X-Received: by 2002:a05:620a:544:: with SMTP id o4mr1314845qko.285.1612475043441;
-        Thu, 04 Feb 2021 13:44:03 -0800 (PST)
+        bh=JO1AHf4uhYw2ez6Ve3o7chTARaAb1KHfpJckn1suQ+U=;
+        b=YfttwysJS0QJR2nBgvh/Es5SfMl7LpS0IWfrhIK0V5xGTeER1BHDIQm7bzLqkrAzcU
+         kMKsgmdJhdGxYO9jlxNTGir/raQKq57SwvZ3cSMJGXiuMkEuptYLaXpCLrwbuo/3Ba9Z
+         vrVajrKZ/r0+hfWODK/MO7iSSgj7xFZRs+DtVnk2TeS6AavfM+1pCOH6m5JPid0Orj06
+         VFQHcmPQHt7qUnEQktiyUlxe4iVNT7ympAwI4FauxDwTv53L3FYaT+R3rZoaPQQ09cv3
+         FoFZLYCQUkfLdXaqq00F16I3dHhknWxUSloztH10mMBrDwKLpVzEaZMzO91UYzG5prYy
+         I04w==
+X-Gm-Message-State: AOAM533Y1KdtSg9avDYvZxwH2Abma1yT0AAF2cacOTKhrQhhGf4alwVE
+        Dn0bEn8d4lPVWUs5jNWffZLoUg==
+X-Google-Smtp-Source: ABdhPJwIHZywZI303E3pWw3kSBlHV4QnzG54HsWGTIi0sA/+BDHynMZ0HB9vH0454zjtUuYMHsKhXg==
+X-Received: by 2002:a37:8dc7:: with SMTP id p190mr1247597qkd.308.1612475044406;
+        Thu, 04 Feb 2021 13:44:04 -0800 (PST)
 Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id h185sm6353858qkd.122.2021.02.04.13.44.02
+        by smtp.googlemail.com with ESMTPSA id h185sm6353858qkd.122.2021.02.04.13.44.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 13:44:02 -0800 (PST)
+        Thu, 04 Feb 2021 13:44:03 -0800 (PST)
 From:   Thara Gopinath <thara.gopinath@linaro.org>
 To:     herbert@gondor.apana.org.au, davem@davemloft.net,
         bjorn.andersson@linaro.org
 Cc:     ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 03/11] crypto: qce: skcipher: Return unsupported if key1 and key 2 are same for AES XTS algorithm
-Date:   Thu,  4 Feb 2021 16:43:51 -0500
-Message-Id: <20210204214359.1993065-4-thara.gopinath@linaro.org>
+Subject: [PATCH v5 04/11] crypto: qce: skcipher: Return unsupported if any three keys are same for DES3 algorithms
+Date:   Thu,  4 Feb 2021 16:43:52 -0500
+Message-Id: <20210204214359.1993065-5-thara.gopinath@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210204214359.1993065-1-thara.gopinath@linaro.org>
 References: <20210204214359.1993065-1-thara.gopinath@linaro.org>
@@ -65,54 +65,47 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Crypto engine does not support key1 = key2 for AES XTS algorithm; the
-operation hangs the engines.  Return -EINVAL in case key1 and key2 are the
-same.
+Return unsupported if any three keys are same for DES3 algorithms
+since CE does not support this and the operation causes the engine to
+hang.
 
 Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 ---
- drivers/crypto/qce/skcipher.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ drivers/crypto/qce/skcipher.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
-index a2d3da0ad95f..12955dcd53dd 100644
+index 12955dcd53dd..de1f37ed4ee6 100644
 --- a/drivers/crypto/qce/skcipher.c
 +++ b/drivers/crypto/qce/skcipher.c
-@@ -167,16 +167,33 @@ static int qce_skcipher_setkey(struct crypto_skcipher *ablk, const u8 *key,
- 	struct crypto_tfm *tfm = crypto_skcipher_tfm(ablk);
- 	struct qce_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
- 	unsigned long flags = to_cipher_tmpl(ablk)->alg_flags;
-+	unsigned int __keylen;
- 	int ret;
+@@ -221,12 +221,27 @@ static int qce_des3_setkey(struct crypto_skcipher *ablk, const u8 *key,
+ 			   unsigned int keylen)
+ {
+ 	struct qce_cipher_ctx *ctx = crypto_skcipher_ctx(ablk);
++	u32 _key[6];
+ 	int err;
  
- 	if (!key || !keylen)
- 		return -EINVAL;
+ 	err = verify_skcipher_des3_key(ablk, key);
+ 	if (err)
+ 		return err;
  
--	switch (IS_XTS(flags) ? keylen >> 1 : keylen) {
 +	/*
-+	 * AES XTS key1 = key2 not supported by crypto engine.
-+	 * Revisit to request a fallback cipher in this case.
++	 * The crypto engine does not support any two keys
++	 * being the same for triple des algorithms. The
++	 * verify_skcipher_des3_key does not check for all the
++	 * below conditions. Return -ENOKEY in case any two keys
++	 * are the same. Revisit to see if a fallback cipher
++	 * is needed to handle this condition.
 +	 */
-+	if (IS_XTS(flags)) {
-+		__keylen = keylen >> 1;
-+		if (!memcmp(key, key + __keylen, __keylen))
-+			return -ENOKEY;
-+	} else {
-+		__keylen = keylen;
-+	}
++	memcpy(_key, key, DES3_EDE_KEY_SIZE);
++	if (!((_key[0] ^ _key[2]) | (_key[1] ^ _key[3])) |
++	    !((_key[2] ^ _key[4]) | (_key[3] ^ _key[5])) |
++	    !((_key[0] ^ _key[4]) | (_key[1] ^ _key[5])))
++		return -ENOKEY;
 +
-+	switch (__keylen) {
- 	case AES_KEYSIZE_128:
- 	case AES_KEYSIZE_256:
- 		memcpy(ctx->enc_key, key, keylen);
- 		break;
-+	case AES_KEYSIZE_192:
-+		break;
-+	default:
-+		return -EINVAL;
- 	}
- 
- 	ret = crypto_skcipher_setkey(ctx->fallback, key, keylen);
+ 	ctx->enc_keylen = keylen;
+ 	memcpy(ctx->enc_key, key, keylen);
+ 	return 0;
 -- 
 2.25.1
 
