@@ -2,95 +2,79 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC91330FF85
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 22:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA9631004D
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Feb 2021 23:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhBDVpx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 Feb 2021 16:45:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbhBDVpt (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:45:49 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1686C0613D6
-        for <linux-crypto@vger.kernel.org>; Thu,  4 Feb 2021 13:44:45 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id r77so4889265qka.12
-        for <linux-crypto@vger.kernel.org>; Thu, 04 Feb 2021 13:44:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hs1H1h3qwQTmNV+DMbywUe+Hs8J4rElNnCQHQMW80AE=;
-        b=tRQBCZJ+RkNH/wRu3kjQwVVRM3EjAps7GUkbn1aLAE25EO4DOxWSbQrCLKrxu7FtuK
-         dsqsMuv2UIvi2c7nvj91dqErnVdtW0+RDDTyXvqU92eFFAZRfhA1FY/FaRS6eR1/B6Pg
-         IKgj8VJkM3O1gB/0mluF2wrOqMAMYPLjyzWC1V1U6AF+vyZeTYY/8YIIjMrt1YSWVBk6
-         ijSsy5dXOMWi36V1eo7m01Yhq3K8qvU1DMqq3yfX4if8qr34BGPUNmHnQ50Zu62WOcF0
-         4tI+9SjRCz6WdNwr6mNJXkZSjHnkLEN2gNwCY4g/L72rgTge45ik1Y0eQh95TNeE0Gnf
-         1YQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hs1H1h3qwQTmNV+DMbywUe+Hs8J4rElNnCQHQMW80AE=;
-        b=j1//8aw5nY9nPzH4xVskd1c5/9HKMCqjIix+z55ydmDySvP7cMRt0jirMXoz24GBpi
-         sgRMN6cwPl+0E1GF/21wfSGiJY2cQpqelVoPS575TvOYktXUB5hnVXUoh/yc19pvT9cH
-         rtRHoxA5mFfDZK7x0E+6iplMzpnLPBezuVCat5XK8/LbyriQ/5d95b0O+sdiLnqV/u65
-         /QjXPL42isIrjQJm6L2iZjylMRPHmQTqB0+E/iVF5nJEPFylC2ooC6sXWG7t/OgXRRwx
-         Qkv+k6vKlWI/LRH0w7bv4A0Ir/fJy8S9eGcELRCFcf2TpIzjbOtiW6cZaiASh0psm3G5
-         /V8Q==
-X-Gm-Message-State: AOAM530GHl264RkFSa1GbhWyOg80zVYIbs2Qoomd1ue9NE1yeB6MO8/G
-        jDfMK4bi6VKNCe4qVZbNUp1w6Q==
-X-Google-Smtp-Source: ABdhPJzEW8TZNA5pK2vWSA2qCo2LuMNHPTC69O6yViuae5CzKGqus/Hxf51EXpaHo+yCx3A64RXmzw==
-X-Received: by 2002:a37:e17:: with SMTP id 23mr1284287qko.185.1612475085182;
-        Thu, 04 Feb 2021 13:44:45 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id b16sm6133086qkh.21.2021.02.04.13.44.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 13:44:44 -0800 (PST)
-Subject: Re: [PATCH v4 01/11] crypto: qce: sha: Restore/save ahash state with
- custom struct in export/import
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        kernel test robot <lkp@intel.com>
-Cc:     davem@davemloft.net, bjorn.andersson@linaro.org,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210203143307.1351563-2-thara.gopinath@linaro.org>
- <202102040442.I3XzFSaf-lkp@intel.com>
- <20210204024250.GA5482@gondor.apana.org.au>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <64321827-068f-bb32-ea83-176c8fe88811@linaro.org>
-Date:   Thu, 4 Feb 2021 16:44:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229572AbhBDWtq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 4 Feb 2021 17:49:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229511AbhBDWtp (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 4 Feb 2021 17:49:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C00ED64DF2;
+        Thu,  4 Feb 2021 22:49:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612478945;
+        bh=7QnK/aB3P7v5IBOvtzrGKwEUFve4+Dto18dDjO+8HLk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d/DLtBszbEmXjF281wBSMYWiRZDQpWLbNB1hCBU/WmWWmI91t0lNABmwDr+X9aJP0
+         QhhLgwVoYvVFVA7rPv2x1DAS3u9KAJhKY0VXDKG/YQIFdeFxqEtctIoxRCiHBzvL5I
+         V1iDbiBFQvkaVgZ/gBYdWuUNEVaUGwewKE5c1Kq6iZXrt2l0zl3zPcV7LaUnNrCRH2
+         Q8ljHsJEmySu7NFfshF30NTTI5pij9sWH/e9rkTUYfTG0F5XUDjQ+9ohC+qH5Gj2cj
+         lQ6XtAD6kOmVnEE6f/aCOYRyQVswghbEb045rL4IkM0somAhSEBthahOiU+qLZw1Y2
+         h5jASoZtw0I4w==
+Date:   Thu, 4 Feb 2021 14:48:41 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        bjorn.andersson@linaro.org, ardb@kernel.org,
+        sivaprak@codeaurora.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 05/11] crypto: qce: skcipher: Return error for zero
+ length messages
+Message-ID: <YBx5yWhKtT2EC2Ce@gmail.com>
+References: <20210204214359.1993065-1-thara.gopinath@linaro.org>
+ <20210204214359.1993065-6-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210204024250.GA5482@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204214359.1993065-6-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-
-
-On 2/3/21 9:42 PM, Herbert Xu wrote:
-> On Thu, Feb 04, 2021 at 04:56:17AM +0800, kernel test robot wrote:
->>
->> Thank you for the patch! Yet something to improve:
+On Thu, Feb 04, 2021 at 04:43:53PM -0500, Thara Gopinath wrote:
+> Crypto engine BAM dma does not support 0 length data. Return unsupported
+> if zero length messages are passed for transformation.
 > 
-> Please fix this before you resubmit again.
-
-Hi Herbert.
-
-Sorry about that. I have send the fix.
-
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+>  drivers/crypto/qce/skcipher.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> Thanks,
-> 
+> diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
+> index de1f37ed4ee6..331b3c3a5b59 100644
+> --- a/drivers/crypto/qce/skcipher.c
+> +++ b/drivers/crypto/qce/skcipher.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/moduleparam.h>
+>  #include <linux/types.h>
+> +#include <linux/errno.h>
+>  #include <crypto/aes.h>
+>  #include <crypto/internal/des.h>
+>  #include <crypto/internal/skcipher.h>
+> @@ -260,6 +261,10 @@ static int qce_skcipher_crypt(struct skcipher_request *req, int encrypt)
+>  	rctx->flags |= encrypt ? QCE_ENCRYPT : QCE_DECRYPT;
+>  	keylen = IS_XTS(rctx->flags) ? ctx->enc_keylen >> 1 : ctx->enc_keylen;
+>  
+> +	/* CE does not handle 0 length messages */
+> +	if (!req->cryptlen)
+> +		return -EOPNOTSUPP;
+> +
 
--- 
-Warm Regards
-Thara
+For the algorithms in question, the correct behavior is to return 0.
+
+Aren't the tests catching that difference?
+
+- Eric
