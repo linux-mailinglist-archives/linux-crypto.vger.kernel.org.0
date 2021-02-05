@@ -2,18 +2,18 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E248310910
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Feb 2021 11:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE423108D7
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Feb 2021 11:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhBEK3C (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 5 Feb 2021 05:29:02 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12136 "EHLO
+        id S231312AbhBEKS3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 5 Feb 2021 05:18:29 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12137 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbhBEKQH (ORCPT
+        with ESMTP id S231277AbhBEKQH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Fri, 5 Feb 2021 05:16:07 -0500
 Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DXB8r2mjkz164xQ;
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DXB8r3Bc8z164xV;
         Fri,  5 Feb 2021 18:14:04 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
@@ -22,9 +22,9 @@ From:   Weili Qian <qianweili@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
         <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH 5/6] crypto: hisilicon/qm - do not reset hardware when CE happens
-Date:   Fri, 5 Feb 2021 18:12:57 +0800
-Message-ID: <1612519978-33340-6-git-send-email-qianweili@huawei.com>
+Subject: [PATCH 6/6] crypto: hisilicon/qm - fix printing format issue
+Date:   Fri, 5 Feb 2021 18:12:58 +0800
+Message-ID: <1612519978-33340-7-git-send-email-qianweili@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1612519978-33340-1-git-send-email-qianweili@huawei.com>
 References: <1612519978-33340-1-git-send-email-qianweili@huawei.com>
@@ -36,136 +36,104 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-There is no need to reset hardware when Corrected Error(CE) happens.
+This patch fixes inconsistent of printing format with argument type.
 
 Signed-off-by: Weili Qian <qianweili@huawei.com>
 Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_main.c |  1 +
- drivers/crypto/hisilicon/qm.c             | 23 +++++++++++++++++------
- drivers/crypto/hisilicon/qm.h             |  1 +
- drivers/crypto/hisilicon/sec2/sec_main.c  |  1 +
- drivers/crypto/hisilicon/zip/zip_main.c   |  5 ++++-
- 5 files changed, 24 insertions(+), 7 deletions(-)
+ drivers/crypto/hisilicon/qm.c | 16 ++++++++--------
+ drivers/crypto/hisilicon/qm.h |  2 +-
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index ef2fe4d..6681e9a 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -848,6 +848,7 @@ static const struct hisi_qm_err_ini hpre_err_ini = {
- 		.fe			= 0,
- 		.ecc_2bits_mask		= HPRE_CORE_ECC_2BIT_ERR |
- 					  HPRE_OOO_ECC_2BIT_ERR,
-+		.dev_ce_mask		= HPRE_HAC_RAS_CE_ENABLE,
- 		.msi_wr_port		= HPRE_WR_MSI_PORT,
- 		.acpi_rst		= "HRST",
- 	}
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index ec7d068..5dbc054 100644
+index 5dbc054..47df981 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -1610,7 +1610,7 @@ static void qm_log_hw_error(struct hisi_qm *qm, u32 error_status)
+@@ -723,7 +723,7 @@ static irqreturn_t qm_aeq_irq(int irq, void *data)
+ 			dev_err(&qm->pdev->dev, "%s overflow\n",
+ 				qm_fifo_overflow[type]);
+ 		else
+-			dev_err(&qm->pdev->dev, "unknown error type %d\n",
++			dev_err(&qm->pdev->dev, "unknown error type %u\n",
+ 				type);
  
- static enum acc_err_result qm_hw_error_handle_v2(struct hisi_qm *qm)
- {
--	u32 error_status, tmp;
-+	u32 error_status, tmp, val;
+ 		if (qm->status.aeq_head == QM_Q_DEPTH - 1) {
+@@ -1127,7 +1127,7 @@ static int dump_show(struct hisi_qm *qm, void *info,
  
- 	/* read err sts */
- 	tmp = readl(qm->io_base + QM_ABNORMAL_INT_STATUS);
-@@ -1621,9 +1621,13 @@ static enum acc_err_result qm_hw_error_handle_v2(struct hisi_qm *qm)
- 			qm->err_status.is_qm_ecc_mbit = true;
- 
- 		qm_log_hw_error(qm, error_status);
--		if (error_status == QM_DB_RANDOM_INVALID) {
-+		val = error_status | QM_DB_RANDOM_INVALID | QM_BASE_CE;
-+		/* ce error does not need to be reset */
-+		if (val == (QM_DB_RANDOM_INVALID | QM_BASE_CE)) {
- 			writel(error_status, qm->io_base +
- 			       QM_ABNORMAL_INT_SOURCE);
-+			writel(qm->err_ini->err_info.nfe,
-+			       qm->io_base + QM_RAS_NFE_ENABLE);
- 			return ACC_ERR_RECOVERED;
- 		}
- 
-@@ -3302,12 +3306,19 @@ static enum acc_err_result qm_dev_err_handle(struct hisi_qm *qm)
- 		if (err_sts & qm->err_ini->err_info.ecc_2bits_mask)
- 			qm->err_status.is_dev_ecc_mbit = true;
- 
--		if (!qm->err_ini->log_dev_hw_err) {
--			dev_err(&qm->pdev->dev, "Device doesn't support log hw error!\n");
--			return ACC_ERR_NEED_RESET;
-+		if (qm->err_ini->log_dev_hw_err)
-+			qm->err_ini->log_dev_hw_err(qm, err_sts);
-+
-+		/* ce error does not need to be reset */
-+		if ((err_sts | qm->err_ini->err_info.dev_ce_mask) ==
-+		     qm->err_ini->err_info.dev_ce_mask) {
-+			if (qm->err_ini->clear_dev_hw_err_status)
-+				qm->err_ini->clear_dev_hw_err_status(qm,
-+								err_sts);
-+
-+			return ACC_ERR_RECOVERED;
- 		}
- 
--		qm->err_ini->log_dev_hw_err(qm, err_sts);
- 		return ACC_ERR_NEED_RESET;
+ 	dev_info(dev, "%s DUMP\n", info_name);
+ 	for (i = 0; i < info_size; i += BYTE_PER_DW) {
+-		pr_info("DW%d: %02X%02X %02X%02X\n", i / BYTE_PER_DW,
++		pr_info("DW%u: %02X%02X %02X%02X\n", i / BYTE_PER_DW,
+ 			info_buf[i], info_buf[i + 1UL],
+ 			info_buf[i + 2UL], info_buf[i + 3UL]);
  	}
+@@ -1160,7 +1160,7 @@ static int qm_sqc_dump(struct hisi_qm *qm, const char *s)
+ 
+ 	ret = kstrtou32(s, 0, &qp_id);
+ 	if (ret || qp_id >= qm->qp_num) {
+-		dev_err(dev, "Please input qp num (0-%d)", qm->qp_num - 1);
++		dev_err(dev, "Please input qp num (0-%u)", qm->qp_num - 1);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1206,7 +1206,7 @@ static int qm_cqc_dump(struct hisi_qm *qm, const char *s)
+ 
+ 	ret = kstrtou32(s, 0, &qp_id);
+ 	if (ret || qp_id >= qm->qp_num) {
+-		dev_err(dev, "Please input qp num (0-%d)", qm->qp_num - 1);
++		dev_err(dev, "Please input qp num (0-%u)", qm->qp_num - 1);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1285,7 +1285,7 @@ static int q_dump_param_parse(struct hisi_qm *qm, char *s,
+ 
+ 	ret = kstrtou32(presult, 0, q_id);
+ 	if (ret || *q_id >= qp_num) {
+-		dev_err(dev, "Please input qp num (0-%d)", qp_num - 1);
++		dev_err(dev, "Please input qp num (0-%u)", qp_num - 1);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -2714,7 +2714,7 @@ int hisi_qm_start(struct hisi_qm *qm)
+ 		return -EPERM;
+ 	}
+ 
+-	dev_dbg(dev, "qm start with %d queue pairs\n", qm->qp_num);
++	dev_dbg(dev, "qm start with %u queue pairs\n", qm->qp_num);
+ 
+ 	if (!qm->qp_num) {
+ 		dev_err(dev, "qp_num should not be 0\n");
+@@ -3149,7 +3149,7 @@ int hisi_qm_alloc_qps_node(struct hisi_qm_list *qm_list, int qp_num,
+ 
+ 	mutex_unlock(&qm_list->lock);
+ 	if (ret)
+-		pr_info("Failed to create qps, node[%d], alg[%d], qp[%d]!\n",
++		pr_info("Failed to create qps, node[%d], alg[%u], qp[%d]!\n",
+ 			node, alg_type, qp_num);
+ 
+ err:
+@@ -3357,7 +3357,7 @@ pci_ers_result_t hisi_qm_dev_err_detected(struct pci_dev *pdev,
+ 	if (pdev->is_virtfn)
+ 		return PCI_ERS_RESULT_NONE;
+ 
+-	pci_info(pdev, "PCI error detected, state(=%d)!!\n", state);
++	pci_info(pdev, "PCI error detected, state(=%u)!!\n", state);
+ 	if (state == pci_channel_io_perm_failure)
+ 		return PCI_ERS_RESULT_DISCONNECT;
  
 diff --git a/drivers/crypto/hisilicon/qm.h b/drivers/crypto/hisilicon/qm.h
-index c08ffe3..6be5338 100644
+index 6be5338..46e3a67 100644
 --- a/drivers/crypto/hisilicon/qm.h
 +++ b/drivers/crypto/hisilicon/qm.h
-@@ -173,6 +173,7 @@ struct hisi_qm_err_info {
- 	char *acpi_rst;
- 	u32 msi_wr_port;
- 	u32 ecc_2bits_mask;
-+	u32 dev_ce_mask;
- 	u32 ce;
- 	u32 nfe;
- 	u32 fe;
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 7db0e86..73866f2 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -752,6 +752,7 @@ static const struct hisi_qm_err_ini sec_err_ini = {
- 				  QM_ACC_WB_NOT_READY_TIMEOUT,
- 		.fe		= 0,
- 		.ecc_2bits_mask	= SEC_CORE_INT_STATUS_M_ECC,
-+		.dev_ce_mask	= SEC_RAS_CE_ENB_MSK,
- 		.msi_wr_port	= BIT(0),
- 		.acpi_rst	= "SRST",
- 	}
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index c5609f4..ca02e9c 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -66,6 +66,7 @@
- #define HZIP_CORE_INT_STATUS_M_ECC	BIT(1)
- #define HZIP_CORE_SRAM_ECC_ERR_INFO	0x301148
- #define HZIP_CORE_INT_RAS_CE_ENB	0x301160
-+#define HZIP_CORE_INT_RAS_CE_ENABLE	0x1
- #define HZIP_CORE_INT_RAS_NFE_ENB	0x301164
- #define HZIP_CORE_INT_RAS_FE_ENB        0x301168
- #define HZIP_CORE_INT_RAS_NFE_ENABLE	0x7FE
-@@ -327,7 +328,8 @@ static void hisi_zip_hw_error_enable(struct hisi_qm *qm)
- 	writel(HZIP_CORE_INT_MASK_ALL, qm->io_base + HZIP_CORE_INT_SOURCE);
+@@ -306,7 +306,7 @@ static inline int q_num_set(const char *val, const struct kernel_param *kp,
  
- 	/* configure error type */
--	writel(0x1, qm->io_base + HZIP_CORE_INT_RAS_CE_ENB);
-+	writel(HZIP_CORE_INT_RAS_CE_ENABLE,
-+	       qm->io_base + HZIP_CORE_INT_RAS_CE_ENB);
- 	writel(0x0, qm->io_base + HZIP_CORE_INT_RAS_FE_ENB);
- 	writel(HZIP_CORE_INT_RAS_NFE_ENABLE,
- 	       qm->io_base + HZIP_CORE_INT_RAS_NFE_ENB);
-@@ -727,6 +729,7 @@ static const struct hisi_qm_err_ini hisi_zip_err_ini = {
- 					  QM_ACC_WB_NOT_READY_TIMEOUT,
- 		.fe			= 0,
- 		.ecc_2bits_mask		= HZIP_CORE_INT_STATUS_M_ECC,
-+		.dev_ce_mask		= HZIP_CORE_INT_RAS_CE_ENABLE,
- 		.msi_wr_port		= HZIP_WR_PORT,
- 		.acpi_rst		= "ZRST",
- 	}
+ 	if (!pdev) {
+ 		q_num = min_t(u32, QM_QNUM_V1, QM_QNUM_V2);
+-		pr_info("No device found currently, suppose queue number is %d\n",
++		pr_info("No device found currently, suppose queue number is %u\n",
+ 			q_num);
+ 	} else {
+ 		if (pdev->revision == QM_HW_V1)
 -- 
 2.8.1
 
