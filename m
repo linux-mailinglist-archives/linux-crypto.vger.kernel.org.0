@@ -2,29 +2,29 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2921310925
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Feb 2021 11:33:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F93310929
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Feb 2021 11:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbhBEKc2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 5 Feb 2021 05:32:28 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12857 "EHLO
+        id S230466AbhBEKdA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 5 Feb 2021 05:33:00 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12856 "EHLO
         szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbhBEKQD (ORCPT
+        with ESMTP id S230377AbhBEKQC (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:16:03 -0500
+        Fri, 5 Feb 2021 05:16:02 -0500
 Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DXB8l5wGPz7hW5;
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DXB8l5fqQz7hTw;
         Fri,  5 Feb 2021 18:13:59 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Feb 2021 18:15:12 +0800
+ 14.3.498.0; Fri, 5 Feb 2021 18:15:13 +0800
 From:   Weili Qian <qianweili@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
         <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH 1/6] crypto: hisilicon/qm - removing driver after reset
-Date:   Fri, 5 Feb 2021 18:12:53 +0800
-Message-ID: <1612519978-33340-2-git-send-email-qianweili@huawei.com>
+Subject: [PATCH 2/6] crypto: hisilicon/qm - fix request missing error
+Date:   Fri, 5 Feb 2021 18:12:54 +0800
+Message-ID: <1612519978-33340-3-git-send-email-qianweili@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1612519978-33340-1-git-send-email-qianweili@huawei.com>
 References: <1612519978-33340-1-git-send-email-qianweili@huawei.com>
@@ -36,239 +36,67 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add waiting logic for resetting as removing driver,
-otherwise call trace will occur due to releasing resource.
+Add 'qp_stop_fail_cb' to ensure it is called as device is resetting.
 
 Signed-off-by: Weili Qian <qianweili@huawei.com>
 Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_main.c |  2 +-
- drivers/crypto/hisilicon/qm.c             | 48 ++++++++++++++++++++-----------
- drivers/crypto/hisilicon/qm.h             |  2 +-
- drivers/crypto/hisilicon/sec2/sec_main.c  |  2 +-
- drivers/crypto/hisilicon/zip/zip_main.c   |  2 +-
- 5 files changed, 36 insertions(+), 20 deletions(-)
+ drivers/crypto/hisilicon/qm.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 3b3481e..ef2fe4d 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -961,7 +961,7 @@ static void hpre_remove(struct pci_dev *pdev)
- 	hisi_qm_wait_task_finish(qm, &hpre_devices);
- 	hisi_qm_alg_unregister(qm, &hpre_devices);
- 	if (qm->fun_type == QM_HW_PF && qm->vfs_num) {
--		ret = hisi_qm_sriov_disable(pdev, qm->is_frozen);
-+		ret = hisi_qm_sriov_disable(pdev, true);
- 		if (ret) {
- 			pci_err(pdev, "Disable SRIOV fail!\n");
- 			return;
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 904b99a..e659436 100644
+index e659436..108fc0e 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -147,7 +147,6 @@
- #define QM_RAS_CE_TIMES_PER_IRQ		1
- #define QM_RAS_MSI_INT_SEL		0x1040f4
+@@ -622,6 +622,9 @@ static void qm_cq_head_update(struct hisi_qp *qp)
  
--#define QM_DEV_RESET_FLAG		0
- #define QM_RESET_WAIT_TIMEOUT		400
- #define QM_PEH_VENDOR_ID		0x1000d8
- #define ACC_VENDOR_ID_VALUE		0x5a5a
-@@ -185,6 +184,10 @@
- #define QM_SQE_ADDR_MASK		GENMASK(7, 0)
- #define QM_EQ_DEPTH			(1024 * 2)
- 
-+#define QM_DRIVER_REMOVING		0
-+#define QM_RST_SCHED			1
-+#define QM_RESETTING			2
-+
- #define QM_MK_CQC_DW3_V1(hop_num, pg_sz, buf_sz, cqe_sz) \
- 	(((hop_num) << QM_CQ_HOP_NUM_SHIFT)	| \
- 	((pg_sz) << QM_CQ_PAGE_SIZE_SHIFT)	| \
-@@ -2248,17 +2251,15 @@ static int qm_alloc_uacce(struct hisi_qm *qm)
-  */
- static int qm_frozen(struct hisi_qm *qm)
+ static void qm_poll_qp(struct hisi_qp *qp, struct hisi_qm *qm)
  {
--	down_write(&qm->qps_lock);
--
--	if (qm->is_frozen) {
--		up_write(&qm->qps_lock);
-+	if (test_bit(QM_DRIVER_REMOVING, &qm->misc_ctl))
- 		return 0;
--	}
++	if (unlikely(atomic_read(&qp->qp_status.flags) == QP_STOP))
++		return;
 +
-+	down_write(&qm->qps_lock);
+ 	if (qp->event_cb) {
+ 		qp->event_cb(qp);
+ 		return;
+@@ -1868,6 +1871,28 @@ int hisi_qm_start_qp(struct hisi_qp *qp, unsigned long arg)
+ EXPORT_SYMBOL_GPL(hisi_qm_start_qp);
  
- 	if (!qm->qp_in_used) {
- 		qm->qp_in_used = qm->qp_num;
--		qm->is_frozen = true;
- 		up_write(&qm->qps_lock);
-+		set_bit(QM_DRIVER_REMOVING, &qm->misc_ctl);
- 		return 0;
- 	}
- 
-@@ -2311,6 +2312,10 @@ void hisi_qm_wait_task_finish(struct hisi_qm *qm, struct hisi_qm_list *qm_list)
- 		msleep(WAIT_PERIOD);
- 	}
- 
-+	while (test_bit(QM_RST_SCHED, &qm->misc_ctl) ||
-+	       test_bit(QM_RESETTING, &qm->misc_ctl))
-+		msleep(WAIT_PERIOD);
+ /**
++ * qp_stop_fail_cb() - call request cb.
++ * @qp: stopped failed qp.
++ *
++ * Callback function should be called whether task completed or not.
++ */
++static void qp_stop_fail_cb(struct hisi_qp *qp)
++{
++	int qp_used = atomic_read(&qp->qp_status.used);
++	u16 cur_tail = qp->qp_status.sq_tail;
++	u16 cur_head = (cur_tail + QM_Q_DEPTH - qp_used) % QM_Q_DEPTH;
++	struct hisi_qm *qm = qp->qm;
++	u16 pos;
++	int i;
 +
- 	udelay(REMOVE_WAIT_DELAY);
- }
- EXPORT_SYMBOL_GPL(hisi_qm_wait_task_finish);
-@@ -2439,7 +2444,7 @@ static void hisi_qm_pre_init(struct hisi_qm *qm)
- 	mutex_init(&qm->mailbox_lock);
- 	init_rwsem(&qm->qps_lock);
- 	qm->qp_in_used = 0;
--	qm->is_frozen = false;
-+	qm->misc_ctl = false;
- }
- 
- static void hisi_qm_pci_uninit(struct hisi_qm *qm)
-@@ -3248,7 +3253,7 @@ EXPORT_SYMBOL_GPL(hisi_qm_sriov_disable);
- int hisi_qm_sriov_configure(struct pci_dev *pdev, int num_vfs)
- {
- 	if (num_vfs == 0)
--		return hisi_qm_sriov_disable(pdev, 0);
-+		return hisi_qm_sriov_disable(pdev, false);
++	for (i = 0; i < qp_used; i++) {
++		pos = (i + cur_head) % QM_Q_DEPTH;
++		qp->req_cb(qp, qp->sqe + (u32)(qm->sqe_size * pos));
++		atomic_dec(&qp->qp_status.used);
++	}
++}
++
++/**
+  * qm_drain_qp() - Drain a qp.
+  * @qp: The qp we want to drain.
+  *
+@@ -1962,6 +1987,9 @@ static int qm_stop_qp_nolock(struct hisi_qp *qp)
  	else
- 		return hisi_qm_sriov_enable(pdev, num_vfs);
- }
-@@ -3465,7 +3470,7 @@ static int qm_reset_prepare_ready(struct hisi_qm *qm)
- 	int delay = 0;
+ 		flush_work(&qp->qm->work);
  
- 	/* All reset requests need to be queued for processing */
--	while (test_and_set_bit(QM_DEV_RESET_FLAG, &pf_qm->reset_flag)) {
-+	while (test_and_set_bit(QM_RESETTING, &pf_qm->misc_ctl)) {
- 		msleep(++delay);
- 		if (delay > QM_RESET_WAIT_TIMEOUT)
- 			return -EBUSY;
-@@ -3489,6 +3494,7 @@ static int qm_controller_reset_prepare(struct hisi_qm *qm)
- 		ret = qm_vf_reset_prepare(qm, QM_SOFT_RESET);
- 		if (ret) {
- 			pci_err(pdev, "Fails to stop VFs!\n");
-+			clear_bit(QM_RESETTING, &qm->misc_ctl);
- 			return ret;
- 		}
- 	}
-@@ -3496,9 +3502,12 @@ static int qm_controller_reset_prepare(struct hisi_qm *qm)
- 	ret = hisi_qm_stop(qm, QM_SOFT_RESET);
- 	if (ret) {
- 		pci_err(pdev, "Fails to stop QM!\n");
-+		clear_bit(QM_RESETTING, &qm->misc_ctl);
- 		return ret;
- 	}
- 
-+	clear_bit(QM_RST_SCHED, &qm->misc_ctl);
++	if (unlikely(qp->is_resetting && atomic_read(&qp->qp_status.used)))
++		qp_stop_fail_cb(qp);
 +
- 	return 0;
- }
- 
-@@ -3736,7 +3745,7 @@ static int qm_controller_reset_done(struct hisi_qm *qm)
- 	hisi_qm_dev_err_init(qm);
- 	qm_restart_done(qm);
- 
--	clear_bit(QM_DEV_RESET_FLAG, &qm->reset_flag);
-+	clear_bit(QM_RESETTING, &qm->misc_ctl);
+ 	dev_dbg(dev, "stop queue %u!", qp->qp_id);
  
  	return 0;
- }
-@@ -3749,18 +3758,23 @@ static int qm_controller_reset(struct hisi_qm *qm)
- 	pci_info(pdev, "Controller resetting...\n");
- 
- 	ret = qm_controller_reset_prepare(qm);
--	if (ret)
-+	if (ret) {
-+		clear_bit(QM_RST_SCHED, &qm->misc_ctl);
- 		return ret;
-+	}
- 
- 	ret = qm_soft_reset(qm);
- 	if (ret) {
- 		pci_err(pdev, "Controller reset failed (%d)\n", ret);
-+		clear_bit(QM_RESETTING, &qm->misc_ctl);
- 		return ret;
- 	}
- 
- 	ret = qm_controller_reset_done(qm);
--	if (ret)
-+	if (ret) {
-+		clear_bit(QM_RESETTING, &qm->misc_ctl);
- 		return ret;
-+	}
- 
- 	pci_info(pdev, "Controller reset complete\n");
- 
-@@ -3867,8 +3881,6 @@ static bool qm_flr_reset_complete(struct pci_dev *pdev)
- 		return false;
- 	}
- 
--	clear_bit(QM_DEV_RESET_FLAG, &qm->reset_flag);
--
- 	return true;
- }
- 
-@@ -3912,6 +3924,8 @@ void hisi_qm_reset_done(struct pci_dev *pdev)
- flr_done:
- 	if (qm_flr_reset_complete(pdev))
- 		pci_info(pdev, "FLR reset complete\n");
-+
-+	clear_bit(QM_RESETTING, &qm->misc_ctl);
- }
- EXPORT_SYMBOL_GPL(hisi_qm_reset_done);
- 
-@@ -3922,7 +3936,9 @@ static irqreturn_t qm_abnormal_irq(int irq, void *data)
- 
- 	atomic64_inc(&qm->debug.dfx.abnormal_irq_cnt);
- 	ret = qm_process_dev_error(qm);
--	if (ret == ACC_ERR_NEED_RESET)
-+	if (ret == ACC_ERR_NEED_RESET &&
-+	    !test_bit(QM_DRIVER_REMOVING, &qm->misc_ctl) &&
-+	    !test_and_set_bit(QM_RST_SCHED, &qm->misc_ctl))
- 		schedule_work(&qm->rst_work);
- 
- 	return IRQ_HANDLED;
-diff --git a/drivers/crypto/hisilicon/qm.h b/drivers/crypto/hisilicon/qm.h
-index c1dd0fc..c08ffe3 100644
---- a/drivers/crypto/hisilicon/qm.h
-+++ b/drivers/crypto/hisilicon/qm.h
-@@ -230,7 +230,7 @@ struct hisi_qm {
- 	struct hisi_qm_status status;
- 	const struct hisi_qm_err_ini *err_ini;
- 	struct hisi_qm_err_status err_status;
--	unsigned long reset_flag;
-+	unsigned long misc_ctl; /* driver removing and reset sched */
- 
- 	struct rw_semaphore qps_lock;
- 	struct idr qp_idr;
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 4809c19..7db0e86 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -949,7 +949,7 @@ static void sec_remove(struct pci_dev *pdev)
- 	hisi_qm_wait_task_finish(qm, &sec_devices);
- 	hisi_qm_alg_unregister(qm, &sec_devices);
- 	if (qm->fun_type == QM_HW_PF && qm->vfs_num)
--		hisi_qm_sriov_disable(pdev, qm->is_frozen);
-+		hisi_qm_sriov_disable(pdev, true);
- 
- 	sec_debugfs_exit(qm);
- 
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index 9cdecff..c5609f4 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -901,7 +901,7 @@ static void hisi_zip_remove(struct pci_dev *pdev)
- 	hisi_qm_alg_unregister(qm, &zip_devices);
- 
- 	if (qm->fun_type == QM_HW_PF && qm->vfs_num)
--		hisi_qm_sriov_disable(pdev, qm->is_frozen);
-+		hisi_qm_sriov_disable(pdev, true);
- 
- 	hisi_zip_debugfs_exit(qm);
- 	hisi_qm_stop(qm, QM_NORMAL);
 -- 
 2.8.1
 
