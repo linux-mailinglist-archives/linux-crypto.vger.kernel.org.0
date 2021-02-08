@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6674F312DCC
-	for <lists+linux-crypto@lfdr.de>; Mon,  8 Feb 2021 10:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39284312DD2
+	for <lists+linux-crypto@lfdr.de>; Mon,  8 Feb 2021 10:50:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbhBHJtY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 8 Feb 2021 04:49:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37786 "EHLO
+        id S231910AbhBHJtq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 8 Feb 2021 04:49:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231931AbhBHJrH (ORCPT
+        with ESMTP id S231925AbhBHJrH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 8 Feb 2021 04:47:07 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8498C06121F;
-        Mon,  8 Feb 2021 01:44:17 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id t11so6161775pgu.8;
-        Mon, 08 Feb 2021 01:44:17 -0800 (PST)
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8657CC061221;
+        Mon,  8 Feb 2021 01:44:27 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id l18so8465681pji.3;
+        Mon, 08 Feb 2021 01:44:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IcYiMBsXjgXqsCUOACpj4n3qnT1OSjGqlWhB/zIbApI=;
-        b=jwHt9cB/hvAN5MrrCMC6fwqHPDhreR+WCLYhSewq9xsRxuWLQdqyULHg6vKpD3Vchl
-         D5a7wrmqyzXu1WzpgPr5kf2HpiXw+sRh1834qtJTvdD0aJUFMiB3LYfDU6WTEe0jZlv5
-         hkg98ppXMxwpU3+mOXsiYl/Va7T8XJ4k0qD6kkRoDwQKGTw81pOekPUXL/FXYJpCra2q
-         W+wBtdbtbcGZTJ30GrAq4gbRmISOIibABFn6dpVmSMpkTn8PUzVc49xIk0gXT158Edm7
-         HNIjNUB88Rj/1Vfv2EkzSsX1TomqMeX1pMWw5y0tHEeRL4uk7M1RMzyMdDEr+47DEbLt
-         hupQ==
+        bh=HNZLvmQAqbtAqMEvJP1wVGbLyEu2FmrY5NiRBOEZCk0=;
+        b=E9UVi4abvaxsbLhlHYyDlxF8WRm6Eu0gMRiLrkvvtuXqnPnqW6bL/KOZ5PtwqvI7L0
+         rr/mjZFilH2Hx/ngpK5+H81e3vqpySwZoJTo+05vSEiLs6urR/Pk7xeEkQq3955cfLQy
+         PDniBGHgBVTpAvBzFgL6HTS1Z1XXrDbvdPMxB1lKgQ6a6LDsJOiauZP9MYqaavtk3SfN
+         n2agapT/l7OsKweIbp61n2EXJS4S7anhuLKppP7bPX4HAQ7oHxxBu04I7PZ85idFkDjW
+         oNUFRt9BJ72Nx85EdziKeK/dIrL9M8B5gXEnis4KZQdrUUH5mSjubnWGQ5Ljme7a7Z/p
+         JMxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IcYiMBsXjgXqsCUOACpj4n3qnT1OSjGqlWhB/zIbApI=;
-        b=IWTQVmczURpjeHiD67VTs8yYjZV6DvwC2srWVweu8HJqONICchkTcmUqwf4DsjDJYc
-         4RRbQi6Oh3b+6U/HGa+nNfj+h5iC7tSbPn4JuV6ReeDgLIa7JEXGeVEMYYO10sypk4l2
-         VRL+aeDALIp6nEX7ZoSvIEARjfZ4LRvI686Am+WXTREO/WZ/AZJRQsvqtDW3hgVAStwD
-         ZCHD+V5BitAyJ4ytYCMwAz72QPvfoFHox8PM1rz9FnBBDYHFI3DRNgd1VYZMkHZqpTWv
-         k9+7jyiBhMcwM0gNFBAmyyYhFFeEXH8L08mBWnJ1y1+ekBpSprzww3ZwIWUCetLsqt+o
-         xhZw==
-X-Gm-Message-State: AOAM530ONBC56wITO9SFAskWugD/Wmkm/YrQchhW8V3+vkxrJD1FOIR2
-        9h/x6ACrQNKs1P+HhdZ4a2g=
-X-Google-Smtp-Source: ABdhPJxWIwHgr97+9Rx/z21GfgcB8MUOXefY1oiTlDyrjJ+4tQlyWpRXgMoWOM78yFdDOnVyZkv1tg==
-X-Received: by 2002:a63:f60e:: with SMTP id m14mr16244534pgh.413.1612777457335;
-        Mon, 08 Feb 2021 01:44:17 -0800 (PST)
+        bh=HNZLvmQAqbtAqMEvJP1wVGbLyEu2FmrY5NiRBOEZCk0=;
+        b=K3YsjEOdRg2mIIRc8DpTKGFpv6mKJqEl0k2qmGg4zm+DWpCpcK1StaBHrO0Hk0YC6K
+         XFIvRro99+cyvWbJ5tlrf52ehhLAnABIQFWlq+XA6RvVXhDIL2fFWhmyKCBaAxEByKz0
+         BYn62hqkVZ5ne+lp+7is+4jFJvUUHzfEyAM1B0Xonzt+10iIp/f+BitOiVLd3mEGoKyw
+         u179OKIjXAqQfmvppM7sr8BKpYNFhEjmauqj6Shapl9KeOvQqOic6R2NQ3fll5LMXQaz
+         iRk3uenyxrN6DexZSj0V/KDN1pY64mQquC3xI7Gx706qLJx9oRGEB5AzesY8bf5dUpg/
+         svQw==
+X-Gm-Message-State: AOAM533OvInGEF5z2S1VHXtmnPQbhs6cLpGwUSWcs/Jw/PStUsGebT3V
+        0qQd2A8vs+vb8+DpEO9bgY0=
+X-Google-Smtp-Source: ABdhPJwlG5OBJ0kvO2nRWf/monva/qL5NPmob87P7q3hiCtrCSN8PWpMlZ3xPHLxm8XYV9X9uwnvWA==
+X-Received: by 2002:a17:902:ed95:b029:e2:d080:7e0e with SMTP id e21-20020a170902ed95b02900e2d0807e0emr6794449plj.85.1612777467166;
+        Mon, 08 Feb 2021 01:44:27 -0800 (PST)
 Received: from localhost.localdomain ([49.207.205.214])
-        by smtp.gmail.com with ESMTPSA id k69sm12208958pfd.4.2021.02.08.01.44.08
+        by smtp.gmail.com with ESMTPSA id k69sm12208958pfd.4.2021.02.08.01.44.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 01:44:16 -0800 (PST)
+        Mon, 08 Feb 2021 01:44:26 -0800 (PST)
 From:   Allen Pais <allen.lkml@gmail.com>
 To:     herbert@gondor.apana.org.au
 Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
@@ -64,9 +64,9 @@ Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
         linux-samsung-soc@vger.kernel.org,
         Allen Pais <apais@linux.microsoft.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH v5 08/19] crypto: hifn_795x: convert tasklets to use new tasklet_setup() API
-Date:   Mon,  8 Feb 2021 15:12:27 +0530
-Message-Id: <20210208094238.571015-9-allen.lkml@gmail.com>
+Subject: [PATCH v5 09/19] crypto: img-hash: convert tasklets to use new tasklet_setup() API
+Date:   Mon,  8 Feb 2021 15:12:28 +0530
+Message-Id: <20210208094238.571015-10-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210208094238.571015-1-allen.lkml@gmail.com>
 References: <20210208094238.571015-1-allen.lkml@gmail.com>
@@ -86,33 +86,47 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <apais@linux.microsoft.com>
 ---
- drivers/crypto/hifn_795x.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/crypto/img-hash.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/crypto/hifn_795x.c b/drivers/crypto/hifn_795x.c
-index 7e7a8f01ea6b..47f7bb43477e 100644
---- a/drivers/crypto/hifn_795x.c
-+++ b/drivers/crypto/hifn_795x.c
-@@ -2445,9 +2445,9 @@ static int hifn_register_alg(struct hifn_device *dev)
- 	return err;
+diff --git a/drivers/crypto/img-hash.c b/drivers/crypto/img-hash.c
+index e813115d5432..72b65cdff856 100644
+--- a/drivers/crypto/img-hash.c
++++ b/drivers/crypto/img-hash.c
+@@ -355,9 +355,9 @@ static int img_hash_dma_init(struct img_hash_dev *hdev)
+ 	return 0;
  }
  
--static void hifn_tasklet_callback(unsigned long data)
-+static void hifn_tasklet_callback(struct tasklet_struct *t)
+-static void img_hash_dma_task(unsigned long d)
++static void img_hash_dma_task(struct tasklet_struct *t)
  {
--	struct hifn_device *dev = (struct hifn_device *)data;
-+	struct hifn_device *dev = from_tasklet(dev, t, tasklet);
+-	struct img_hash_dev *hdev = (struct img_hash_dev *)d;
++	struct img_hash_dev *hdev = from_tasklet(hdev, t, dma_task);
+ 	struct img_hash_request_ctx *ctx = ahash_request_ctx(hdev->req);
+ 	u8 *addr;
+ 	size_t nbytes, bleft, wsend, len, tbc;
+@@ -887,9 +887,9 @@ static int img_unregister_algs(struct img_hash_dev *hdev)
+ 	return 0;
+ }
  
- 	/*
- 	 * This is ok to call this without lock being held,
-@@ -2533,7 +2533,7 @@ static int hifn_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+-static void img_hash_done_task(unsigned long data)
++static void img_hash_done_task(struct tasklet_struct *t)
+ {
+-	struct img_hash_dev *hdev = (struct img_hash_dev *)data;
++	struct img_hash_dev *hdev = from_tasklet(hdev, t, done_task);
+ 	int err = 0;
  
- 	pci_set_drvdata(pdev, dev);
+ 	if (hdev->err == -EINVAL) {
+@@ -954,8 +954,8 @@ static int img_hash_probe(struct platform_device *pdev)
  
--	tasklet_init(&dev->tasklet, hifn_tasklet_callback, (unsigned long)dev);
-+	tasklet_setup(&dev->tasklet, hifn_tasklet_callback);
+ 	INIT_LIST_HEAD(&hdev->list);
  
- 	crypto_init_queue(&dev->queue, 1);
+-	tasklet_init(&hdev->done_task, img_hash_done_task, (unsigned long)hdev);
+-	tasklet_init(&hdev->dma_task, img_hash_dma_task, (unsigned long)hdev);
++	tasklet_setup(&hdev->done_task, img_hash_done_task);
++	tasklet_setup(&hdev->dma_task, img_hash_dma_task);
+ 
+ 	crypto_init_queue(&hdev->queue, IMG_HASH_QUEUE_LENGTH);
  
 -- 
 2.25.1
