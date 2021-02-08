@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954BE312DBC
-	for <lists+linux-crypto@lfdr.de>; Mon,  8 Feb 2021 10:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F13F7312DC6
+	for <lists+linux-crypto@lfdr.de>; Mon,  8 Feb 2021 10:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbhBHJsN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 8 Feb 2021 04:48:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
+        id S231438AbhBHJsy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 8 Feb 2021 04:48:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231640AbhBHJp1 (ORCPT
+        with ESMTP id S231722AbhBHJp1 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 8 Feb 2021 04:45:27 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2A6C061356;
-        Mon,  8 Feb 2021 01:43:21 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id 18so7210853pfz.3;
-        Mon, 08 Feb 2021 01:43:21 -0800 (PST)
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB56C06121C;
+        Mon,  8 Feb 2021 01:43:30 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id o21so8442526pgn.12;
+        Mon, 08 Feb 2021 01:43:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ChEdTs09dQ0RBgzbeZxLNBVFnUFhvXMwpM6L2ZZDSyQ=;
-        b=nzbSdwbvyR7XlzUNfDuHMmnUxZXpweHDy6eI73Iv3H2EkBR0EXickGMwhClb4MWucn
-         QIJpVZCbMmIGliO59xRp12kDXQ6B1KqAqPQYgbZyhQ7P2tOssv95YBBcLZY02R2DJ3Tf
-         gSY5IFtz0IGShCIsOUuxfmungm7QSq2YsNe/OvYgRlJT1TSmkjpUnF+SQNZLZXPDvEF2
-         Bke6WLbjKMx62qLGKwi2Cb4g6W2W5f9qv0q7D0mTIY37U2sM1OGX8VLFOqlJbUrYTtKH
-         ySB9Q5hFCQSSfDg2sKgSw6Y1CM+Xijuhhe3So4h4WaH9fRg/SD11v7dPAnko8Z+3hBqb
-         2n/g==
+        bh=Pt3Ra9o7wlpdpNYx3JDjTYF1o1dX6A0SMQwis6c4Pyw=;
+        b=QhEV9FMXBvym/ARUTAOQRFT+VSGwsl+HFKUhZjk6UM9PU4Um8MSAEq5+EDwRqucqEY
+         KB+KMqB66L+SkZrbcgoBoYwk09huncASO+rSBdiVdLeJ+Kfc4jIyl6ziOkJ8+p9DIKQD
+         XaURfC5FDoO/ulyUauhjQJz3XGVZ+yOCxp8c6N5JNiGx2jV1cSH3wAP1XDVfIrBRNhON
+         VfufsnT2Zxl6P4kRkJnU84TY8vkRxWlsnVOYffiAarN243ukvf6p9GRD+jXEuiITdmQC
+         fwYttSWNPBMPvKn4J4nqTVvhc2GjC/qa2tqWSz0bW0YDaWAzAvmwdPIaGOyqyX+9c1AL
+         mZPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ChEdTs09dQ0RBgzbeZxLNBVFnUFhvXMwpM6L2ZZDSyQ=;
-        b=kP+LdKBjvRLBcEu0xcGGFPHuziao+w0YdkYzWA5ZRQHGbS9/nqJKEf7WqmPBE3DB0k
-         Yo8vrtAIME5vDdSTqOoWPgEUpcJzGWK31En28nkbYeXDEqY3d38vqT/fHKvT4NapTn83
-         CAM2XSlP3NcHWUfDM8sX0DYPrEED101gFLtpQ2zAFNSVinZSFMKE2l8fDPQwtZubfXvX
-         6iBWd4aoyec3dm/HvmhiiiwqPDdwvMPD+cQ+UgudrWt7gAjEoq3znJPxRoNSpl12sgZC
-         VGYOdOvKkS8krMniDDuHRMmuQ7AnNDSSEzmQ5nfwqe2IFrm9tlnHBdQBCDXgfr6PSZw0
-         S2tQ==
-X-Gm-Message-State: AOAM533XFtlT0pyNU3q3Us98QIG1ph1JZL3FmdcZANTbWKb95AxX0TxQ
-        blZGztZn/gkXVJAoEYkqnyg=
-X-Google-Smtp-Source: ABdhPJx6a7cler/oKmhJJP3cw1Lbd+y1+iyJGo2HOyqo6eTSvi27sc4HpWSv8QSnNmjQOxGhxr6D4w==
-X-Received: by 2002:aa7:800d:0:b029:1d5:6701:68f with SMTP id j13-20020aa7800d0000b02901d56701068fmr17728979pfi.30.1612777400689;
-        Mon, 08 Feb 2021 01:43:20 -0800 (PST)
+        bh=Pt3Ra9o7wlpdpNYx3JDjTYF1o1dX6A0SMQwis6c4Pyw=;
+        b=X8/2dQ1e69kUrkqH+Zkf6Uw9AEOjfDx7C62xeCgcVfajsauAu0zSCBvD2fVNoUefDM
+         W+3zaaQAfemPfBJhIT2h+tjrJLIMBJo78dBVvosB57NbmctXQBi/T+QHaTn3FrzrOpwv
+         i98YZiMWLBzdEFGz3LWP2EM9ZI+6IrvuvPW1ZQE01IdQ2Wbvth1C6wzpDp96UEcrLQjp
+         rVLQItcO6JmDu/ikGsGYbHoWx94Wv6TTh815N4WthEujX71Qg6PGSnbZliThzTfCR7pq
+         6dyfjW9Hr4hPHtLtkSsMeTTL8LK6b+qruD8uNQ/+5wAiHcAZzjVczfct7fTSRO8GrUkL
+         FOEw==
+X-Gm-Message-State: AOAM533ex2aY9ygsevKTvYZSpb7En7R6j4ZsoPzDouSCcPYzZO2WrQjN
+        RXfDUaBYqcZZoeVXnm9rvYk=
+X-Google-Smtp-Source: ABdhPJxFGWbnMXnrhMoIW3WHCggAdOTATl5cBsG/jL9ehDb2rVejdDgpbUztvsK8Q4PVA28zFFyc6g==
+X-Received: by 2002:a63:505d:: with SMTP id q29mr16117823pgl.89.1612777410468;
+        Mon, 08 Feb 2021 01:43:30 -0800 (PST)
 Received: from localhost.localdomain ([49.207.205.214])
-        by smtp.gmail.com with ESMTPSA id k69sm12208958pfd.4.2021.02.08.01.43.11
+        by smtp.gmail.com with ESMTPSA id k69sm12208958pfd.4.2021.02.08.01.43.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 01:43:20 -0800 (PST)
+        Mon, 08 Feb 2021 01:43:29 -0800 (PST)
 From:   Allen Pais <allen.lkml@gmail.com>
 To:     herbert@gondor.apana.org.au
 Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
@@ -64,9 +64,9 @@ Cc:     davem@davemloft.net, nicolas.ferre@microchip.com,
         linux-samsung-soc@vger.kernel.org,
         Allen Pais <apais@linux.microsoft.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH v5 02/19] crypto: atmel: convert tasklets to use new tasklet_setup() API
-Date:   Mon,  8 Feb 2021 15:12:21 +0530
-Message-Id: <20210208094238.571015-3-allen.lkml@gmail.com>
+Subject: [PATCH v5 03/19] crypto: axis: convert tasklets to use new tasklet_setup() API
+Date:   Mon,  8 Feb 2021 15:12:22 +0530
+Message-Id: <20210208094238.571015-4-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210208094238.571015-1-allen.lkml@gmail.com>
 References: <20210208094238.571015-1-allen.lkml@gmail.com>
@@ -86,128 +86,35 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <apais@linux.microsoft.com>
 ---
- drivers/crypto/atmel-aes.c  | 14 ++++++--------
- drivers/crypto/atmel-sha.c  | 14 ++++++--------
- drivers/crypto/atmel-tdes.c | 14 ++++++--------
- 3 files changed, 18 insertions(+), 24 deletions(-)
+ drivers/crypto/axis/artpec6_crypto.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
-index b1d286004295..804e6a5a39d4 100644
---- a/drivers/crypto/atmel-aes.c
-+++ b/drivers/crypto/atmel-aes.c
-@@ -2300,16 +2300,16 @@ static void atmel_aes_dma_cleanup(struct atmel_aes_dev *dd)
- 	dma_release_channel(dd->src.chan);
+diff --git a/drivers/crypto/axis/artpec6_crypto.c b/drivers/crypto/axis/artpec6_crypto.c
+index 9ad188cffd0d..52e0c7fdbfa8 100644
+--- a/drivers/crypto/axis/artpec6_crypto.c
++++ b/drivers/crypto/axis/artpec6_crypto.c
+@@ -2075,9 +2075,9 @@ static void artpec6_crypto_timeout(struct timer_list *t)
+ 	tasklet_schedule(&ac->task);
  }
  
--static void atmel_aes_queue_task(unsigned long data)
-+static void atmel_aes_queue_task(struct tasklet_struct *t)
+-static void artpec6_crypto_task(unsigned long data)
++static void artpec6_crypto_task(struct tasklet_struct *t)
  {
--	struct atmel_aes_dev *dd = (struct atmel_aes_dev *)data;
-+	struct atmel_aes_dev *dd = from_tasklet(dd, t, queue_task);
+-	struct artpec6_crypto *ac = (struct artpec6_crypto *)data;
++	struct artpec6_crypto *ac = from_tasklet(ac, t, task);
+ 	struct artpec6_crypto_req_common *req;
+ 	struct artpec6_crypto_req_common *n;
+ 	struct list_head complete_done;
+@@ -2900,8 +2900,7 @@ static int artpec6_crypto_probe(struct platform_device *pdev)
+ 	artpec6_crypto_init_debugfs();
+ #endif
  
- 	atmel_aes_handle_queue(dd, NULL);
- }
+-	tasklet_init(&ac->task, artpec6_crypto_task,
+-		     (unsigned long)ac);
++	tasklet_setup(&ac->task, artpec6_crypto_task);
  
--static void atmel_aes_done_task(unsigned long data)
-+static void atmel_aes_done_task(struct tasklet_struct *t)
- {
--	struct atmel_aes_dev *dd = (struct atmel_aes_dev *)data;
-+	struct atmel_aes_dev *dd = from_tasklet(dd, t, done_task);
- 
- 	dd->is_async = true;
- 	(void)dd->resume(dd);
-@@ -2499,10 +2499,8 @@ static int atmel_aes_probe(struct platform_device *pdev)
- 	INIT_LIST_HEAD(&aes_dd->list);
- 	spin_lock_init(&aes_dd->lock);
- 
--	tasklet_init(&aes_dd->done_task, atmel_aes_done_task,
--					(unsigned long)aes_dd);
--	tasklet_init(&aes_dd->queue_task, atmel_aes_queue_task,
--					(unsigned long)aes_dd);
-+	tasklet_setup(&aes_dd->done_task, atmel_aes_done_task);
-+	tasklet_setup(&aes_dd->queue_task, atmel_aes_queue_task);
- 
- 	crypto_init_queue(&aes_dd->queue, ATMEL_AES_QUEUE_LENGTH);
- 
-diff --git a/drivers/crypto/atmel-sha.c b/drivers/crypto/atmel-sha.c
-index 352d80cb5ae9..8ec8a32606e8 100644
---- a/drivers/crypto/atmel-sha.c
-+++ b/drivers/crypto/atmel-sha.c
-@@ -1314,9 +1314,9 @@ static struct ahash_alg sha_384_512_algs[] = {
- },
- };
- 
--static void atmel_sha_queue_task(unsigned long data)
-+static void atmel_sha_queue_task(struct tasklet_struct *t)
- {
--	struct atmel_sha_dev *dd = (struct atmel_sha_dev *)data;
-+	struct atmel_sha_dev *dd = from_tasklet(dd, t, queue_task);
- 
- 	atmel_sha_handle_queue(dd, NULL);
- }
-@@ -1353,9 +1353,9 @@ static int atmel_sha_done(struct atmel_sha_dev *dd)
- 	return err;
- }
- 
--static void atmel_sha_done_task(unsigned long data)
-+static void atmel_sha_done_task(struct tasklet_struct *t)
- {
--	struct atmel_sha_dev *dd = (struct atmel_sha_dev *)data;
-+	struct atmel_sha_dev *dd = from_tasklet(dd, t, done_task);
- 
- 	dd->is_async = true;
- 	(void)dd->resume(dd);
-@@ -2570,10 +2570,8 @@ static int atmel_sha_probe(struct platform_device *pdev)
- 	INIT_LIST_HEAD(&sha_dd->list);
- 	spin_lock_init(&sha_dd->lock);
- 
--	tasklet_init(&sha_dd->done_task, atmel_sha_done_task,
--					(unsigned long)sha_dd);
--	tasklet_init(&sha_dd->queue_task, atmel_sha_queue_task,
--					(unsigned long)sha_dd);
-+	tasklet_setup(&sha_dd->done_task, atmel_sha_done_task);
-+	tasklet_setup(&sha_dd->queue_task, atmel_sha_queue_task);
- 
- 	crypto_init_queue(&sha_dd->queue, ATMEL_SHA_QUEUE_LENGTH);
- 
-diff --git a/drivers/crypto/atmel-tdes.c b/drivers/crypto/atmel-tdes.c
-index 4d63cb13a54f..b7a734f666ae 100644
---- a/drivers/crypto/atmel-tdes.c
-+++ b/drivers/crypto/atmel-tdes.c
-@@ -1049,16 +1049,16 @@ static struct skcipher_alg tdes_algs[] = {
- },
- };
- 
--static void atmel_tdes_queue_task(unsigned long data)
-+static void atmel_tdes_queue_task(struct tasklet_struct *t)
- {
--	struct atmel_tdes_dev *dd = (struct atmel_tdes_dev *)data;
-+	struct atmel_tdes_dev *dd = from_tasklet(dd, t, queue_task);
- 
- 	atmel_tdes_handle_queue(dd, NULL);
- }
- 
--static void atmel_tdes_done_task(unsigned long data)
-+static void atmel_tdes_done_task(struct tasklet_struct *t)
- {
--	struct atmel_tdes_dev *dd = (struct atmel_tdes_dev *) data;
-+	struct atmel_tdes_dev *dd = from_tasklet(dd, t, done_task);
- 	int err;
- 
- 	if (!(dd->flags & TDES_FLAGS_DMA))
-@@ -1177,10 +1177,8 @@ static int atmel_tdes_probe(struct platform_device *pdev)
- 	INIT_LIST_HEAD(&tdes_dd->list);
- 	spin_lock_init(&tdes_dd->lock);
- 
--	tasklet_init(&tdes_dd->done_task, atmel_tdes_done_task,
--					(unsigned long)tdes_dd);
--	tasklet_init(&tdes_dd->queue_task, atmel_tdes_queue_task,
--					(unsigned long)tdes_dd);
-+	tasklet_setup(&tdes_dd->done_task, atmel_tdes_done_task);
-+	tasklet_setup(&tdes_dd->queue_task, atmel_tdes_queue_task);
- 
- 	crypto_init_queue(&tdes_dd->queue, ATMEL_TDES_QUEUE_LENGTH);
- 
+ 	ac->pad_buffer = devm_kzalloc(&pdev->dev, 2 * ARTPEC_CACHE_LINE_MAX,
+ 				      GFP_KERNEL);
 -- 
 2.25.1
 
