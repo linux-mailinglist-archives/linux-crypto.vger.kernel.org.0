@@ -2,66 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1AD312BC2
-	for <lists+linux-crypto@lfdr.de>; Mon,  8 Feb 2021 09:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC75312CFA
+	for <lists+linux-crypto@lfdr.de>; Mon,  8 Feb 2021 10:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhBHIaR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 8 Feb 2021 03:30:17 -0500
-Received: from smtp-18d.idc2.mandic.com.br ([177.70.124.135]:19146 "EHLO
-        smtp-18.idc2.mandic.com.br" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230012AbhBHIaJ (ORCPT
+        id S230364AbhBHJNH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 8 Feb 2021 04:13:07 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:43132 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231398AbhBHJL2 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 8 Feb 2021 03:30:09 -0500
-Received: by smtp-18.smtp.mandic.prv (Postfix, from userid 491)
-        id 5BC52607E9FB; Mon,  8 Feb 2021 05:29:22 -0300 (-03)
-Received: from smtp-18.idc2.mandic.com.br (ifsmtp2 [192.168.1.38])
-        by smtp-18.smtp.mandic.prv (Postfix) with ESMTPS id C1044607AAA4;
-        Mon,  8 Feb 2021 05:29:16 -0300 (-03)
-Received: from User (unknown [52.235.38.23])
-        by smtp-18.smtp.mandic.prv (Postfix) with ESMTPA id 78375465E268;
-        Mon,  8 Feb 2021 05:26:42 -0300 (-03)
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <stefy@macrometrica.com.br>
-Subject: Re:reply
-Date:   Mon, 8 Feb 2021 08:29:15 -0000
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-X-Mandic-Auth: DYB6x5JcyVot9snxiAasWC73cfc93V+pC3vUrorm87+eXbqAUeEHL0ZNPgpM50IYQeUbiYx0PkMIK2oavHcOOA==
-X-Mandic-Sender: stefy@macrometrica.com.br
-Message-Id: <20210208082916.C1044607AAA4@smtp-18.smtp.mandic.prv>
-To:     unlisted-recipients:; (no To-header on input)
+        Mon, 8 Feb 2021 04:11:28 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UOAH5lm_1612775440;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UOAH5lm_1612775440)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 08 Feb 2021 17:10:40 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     herbert@gondor.apana.org.au
+Cc:     davem@davemloft.net, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, linux-crypto@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] crypto: sha: remove unneeded semicolon
+Date:   Mon,  8 Feb 2021 17:10:38 +0800
+Message-Id: <1612775438-126031-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello,
+Eliminate the following coccicheck warning:
+./arch/powerpc/crypto/sha1-spe-glue.c:110:2-3: Unneeded semicolon
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ arch/powerpc/crypto/sha1-spe-glue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
+diff --git a/arch/powerpc/crypto/sha1-spe-glue.c b/arch/powerpc/crypto/sha1-spe-glue.c
+index b1e577c..88e8ea7 100644
+--- a/arch/powerpc/crypto/sha1-spe-glue.c
++++ b/arch/powerpc/crypto/sha1-spe-glue.c
+@@ -107,7 +107,7 @@ static int ppc_spe_sha1_update(struct shash_desc *desc, const u8 *data,
+ 
+ 		src += bytes;
+ 		len -= bytes;
+-	};
++	}
+ 
+ 	memcpy((char *)sctx->buffer, src, len);
+ 	return 0;
+-- 
+1.8.3.1
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
-
-Regards,
-Ms. Reem.
