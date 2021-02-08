@@ -2,75 +2,83 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC3031298A
-	for <lists+linux-crypto@lfdr.de>; Mon,  8 Feb 2021 04:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D29312ACE
+	for <lists+linux-crypto@lfdr.de>; Mon,  8 Feb 2021 07:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbhBHDto (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 7 Feb 2021 22:49:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhBHDto (ORCPT
+        id S229703AbhBHGhE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 8 Feb 2021 01:37:04 -0500
+Received: from vmicros1.altlinux.org ([194.107.17.57]:59096 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhBHGge (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 7 Feb 2021 22:49:44 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDAFC061786
-        for <linux-crypto@vger.kernel.org>; Sun,  7 Feb 2021 19:49:03 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id y8so16489917ede.6
-        for <linux-crypto@vger.kernel.org>; Sun, 07 Feb 2021 19:49:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=yLUuWTNGS1KnT8fHdHJgwMCnNQ8uwH9tKJBb7oX0NdM=;
-        b=uiv7Wv8PfdeqMhc9oddncto+ZCtCa1wM7CFR/+jQIYyLjwruqlTG1mEF0SFV/T9dx9
-         OZDZrvcXVE6ju9FYx6HZqVLIo90pMjUQV6oxfg7A8H44TpMkAHLIagTGsFCp+DoNo3ER
-         tJbUawx45T4HgGtHjaf8ZX5U27r8gRA+Kxk/Ltye+qoW+uhQ9onCwEFRiFjP00wz5+ww
-         nkOqV37u2WJtuuk/CobfHwKVB0TIN58I/9H3yIFqDtsGKlrhvElIVr7vpqd+tFpVDMgy
-         UIakT2xuL94Otz4ZyHtgO5tmzQRbSJ/QPN4JT6enspwk205OhsapsLkUtr6uW5ecw/AK
-         XCkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=yLUuWTNGS1KnT8fHdHJgwMCnNQ8uwH9tKJBb7oX0NdM=;
-        b=Ib2kPvtXhYuuaEtSEkjQKKaPr2ZiGYClBkCeUWPS1LT3kKqtIWtsGDTzRh57n0OkiD
-         rgFIbGT91AWJuSi2djLu3c1rbWqeeqZNl8h0+CLZ9XJdkhdwEgMo4Ga7MjB19BVbqVNf
-         Mwmg+5QQPipyphTvMhzE8uIURrE9pJEPhIAwNakdpp2QO4WQmiZIvb9C+OH4g2wDr/X9
-         P0obDCdjNq7T2vfCcOACXFtFK+I6IFWy9UZUSSRLbUjMXTHW1Q33OyD2jXQear93HLBH
-         eTm5wFCTRNWBODCXH16IZdL9Wx4IhDmsoQJdP1x3UJhsq27/iMfHPQi6MW2+hbVWO3uD
-         FtsQ==
-X-Gm-Message-State: AOAM5311E9TIBGCxMk2M0WCOAiEL8PgqMROFtiw3ge56bjVExnJD2eXJ
-        vXaDxps3AP9R41LSbB10AP2XDfnFUY70ALLf91s=
-X-Google-Smtp-Source: ABdhPJx+OC3of1ecCxd87MNwtJ+sFBre934UNtdWOadL1gAh+eo1WhSzO8AZOsmnRGLE+A5CKJ/VLnuvaMJjqYKrTJs=
-X-Received: by 2002:aa7:dd4b:: with SMTP id o11mr15287915edw.303.1612756142351;
- Sun, 07 Feb 2021 19:49:02 -0800 (PST)
+        Mon, 8 Feb 2021 01:36:34 -0500
+Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id 7409972C8B4;
+        Mon,  8 Feb 2021 09:35:41 +0300 (MSK)
+Received: from altlinux.org (sole.flsd.net [185.75.180.6])
+        by imap.altlinux.org (Postfix) with ESMTPSA id 4A4554A474B;
+        Mon,  8 Feb 2021 09:35:41 +0300 (MSK)
+Date:   Mon, 8 Feb 2021 09:35:41 +0300
+From:   Vitaly Chikunov <vt@altlinux.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Stefan Berger <stefanb@linux.ibm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Meng Yu <yumeng18@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Zaibo Xu <xuzaibo@huawei.com>, wangzhou1@hisilicon.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        Patrick Uiterwijk <patrick@puiterwijk.org>
+Subject: Re: [PATCH v7 4/7] crypto: add ecc curve and expose them
+Message-ID: <20210208063541.ribifj3445djxfy5@altlinux.org>
+References: <1611299395-675-1-git-send-email-yumeng18@huawei.com>
+ <1611299395-675-5-git-send-email-yumeng18@huawei.com>
+ <20210128050354.GA30874@gondor.apana.org.au>
+ <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
+ <ff63fffd-2d65-337f-d802-adcf4352fdc3@linux.ibm.com>
+ <20210129030004.GA3463@gondor.apana.org.au>
 MIME-Version: 1.0
-Sender: marobert105@gmail.com
-Received: by 2002:a54:2b09:0:0:0:0:0 with HTTP; Sun, 7 Feb 2021 19:49:01 -0800 (PST)
-From:   Alexandra Kelly <alexandrakelly779@gmail.com>
-Date:   Mon, 8 Feb 2021 04:49:01 +0100
-X-Google-Sender-Auth: adC--XNOJugSQ4ob_7Ek8wF1qWM
-Message-ID: <CAJXtFgyhMaKuDPtEf+hXgZtzZnH1HE5FRELYVcH9Ue_MUfUPkA@mail.gmail.com>
-Subject: Urgent Response
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <20210129030004.GA3463@gondor.apana.org.au>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear friend,
+Herbert,
 
-I am contacting you independently of my investigation in
-my bank and no one is informed of this communication. I need your
-urgent assistance in transferring the sum of $5.3 million dollars to
-your private account,that belongs to one of our foreign customers who
-died a longtime with his supposed NEXT OF KIN since July 22, 2003. The
-money has been here in our Bank lying dormant for years now without
-anybody coming for the claim of it.
+On Fri, Jan 29, 2021 at 02:00:04PM +1100, Herbert Xu wrote:
+> On Thu, Jan 28, 2021 at 09:49:41PM -0500, Stefan Berger wrote:
+> >
+> > In my patch series I initially had registered the akciphers under the names
+> > ecc-nist-p192 and ecc-nist-p256 but now, in V4, joined them together as
+> > 'ecdsa'. This may be too generic for a name. Maybe it should be called
+> > ecsda-nist for the NIST family.
+> 
+> What I'm proposing is specifying the curve in the name as well, i.e.,
+> ecdsa-nist-p192 instead of just ecdsa or ecdsa-nist.
+> 
+> This simplifies the task of handling hardware that only supports a
+> subset of curves.
 
-I want to release the money to you as the relative to our deceased
-customer , the Banking laws here does not allow such money to stay
-more than 18 years, because the money will be recalled to the Bank
-treasury account as unclaimed fund. I am ready to share with you 40%
-for you and 60% will be kept for me, by indicating your interest i
-will send you the full details on how the business will be executed, i
-will be waiting for your urgent response.
+So, if some implementation supports multiple curves (like EC-RDSA
+currently supports 5 curves), it should add 5 ecrdsa-{a,b,c,..}
+algorithms with actually the same top level implementation?
+Right?
+
+
+> There is a parallel discussion of exactly what curves we should
+> support in the kernel.  Personally if there is a user in the kernel
+> for it then I'm happy to see it added.  In your specific case, as
+> long as your use of the algorithm in x509 is accepted then I don't
+> have any problems with adding support in the Crypto API.
+> 
+> Cheers,
+> -- 
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
