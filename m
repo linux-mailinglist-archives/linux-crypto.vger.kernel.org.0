@@ -2,19 +2,19 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEBE312DA6
-	for <lists+linux-crypto@lfdr.de>; Mon,  8 Feb 2021 10:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C327312DA7
+	for <lists+linux-crypto@lfdr.de>; Mon,  8 Feb 2021 10:46:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbhBHJpv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 8 Feb 2021 04:45:51 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12494 "EHLO
+        id S231699AbhBHJpz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 8 Feb 2021 04:45:55 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12491 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231856AbhBHJmi (ORCPT
+        with ESMTP id S231863AbhBHJmk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:42:38 -0500
+        Mon, 8 Feb 2021 04:42:40 -0500
 Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DZ1GH6y94zjBW5;
-        Mon,  8 Feb 2021 17:40:07 +0800 (CST)
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DZ1GJ0fpGzjKqr;
+        Mon,  8 Feb 2021 17:40:08 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
  14.3.498.0; Mon, 8 Feb 2021 17:41:20 +0800
@@ -25,9 +25,9 @@ To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
         <wangzhou1@hisilicon.com>, <yumeng18@huawei.com>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 3/9] crypto: atmel-ecc - move curve_id of ECDH from the key to algorithm name
-Date:   Mon, 8 Feb 2021 17:38:51 +0800
-Message-ID: <1612777137-51067-4-git-send-email-yumeng18@huawei.com>
+Subject: [PATCH v8 4/9] net/bluetooth: modify ECDH name in 'crypto_alloc_kpp'
+Date:   Mon, 8 Feb 2021 17:38:52 +0800
+Message-ID: <1612777137-51067-5-git-send-email-yumeng18@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1612777137-51067-1-git-send-email-yumeng18@huawei.com>
 References: <1612777137-51067-1-git-send-email-yumeng18@huawei.com>
@@ -39,90 +39,74 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-As curve id of ECDH will be moved from its key into algorithm name,
-we cannot use 'curve_id' in 'struct ecdh', so we should modify ECDH
-driver in atmel, and make ECDH algorithm name be the same as crypto
-(like 'ecdh-nist-pxxx');
+Algorithm name of ECDH will be changed in crypto, so we modify its name
+when we call ECDH.
 
 Signed-off-by: Meng Yu <yumeng18@huawei.com>
 Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
 ---
- drivers/crypto/atmel-ecc.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ net/bluetooth/ecdh_helper.c | 2 --
+ net/bluetooth/selftest.c    | 2 +-
+ net/bluetooth/smp.c         | 6 +++---
+ 3 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
-index 9bd8e51..9ade6ad 100644
---- a/drivers/crypto/atmel-ecc.c
-+++ b/drivers/crypto/atmel-ecc.c
-@@ -104,7 +104,7 @@ static int atmel_ecdh_set_secret(struct crypto_kpp *tfm, const void *buf,
- 		return -EINVAL;
+diff --git a/net/bluetooth/ecdh_helper.c b/net/bluetooth/ecdh_helper.c
+index 3226fe0..989401f 100644
+--- a/net/bluetooth/ecdh_helper.c
++++ b/net/bluetooth/ecdh_helper.c
+@@ -126,8 +126,6 @@ int set_ecdh_privkey(struct crypto_kpp *tfm, const u8 private_key[32])
+ 	int err;
+ 	struct ecdh p = {0};
+ 
+-	p.curve_id = ECC_CURVE_NIST_P256;
+-
+ 	if (private_key) {
+ 		tmp = kmalloc(32, GFP_KERNEL);
+ 		if (!tmp)
+diff --git a/net/bluetooth/selftest.c b/net/bluetooth/selftest.c
+index f71c6fa..f49604d 100644
+--- a/net/bluetooth/selftest.c
++++ b/net/bluetooth/selftest.c
+@@ -205,7 +205,7 @@ static int __init test_ecdh(void)
+ 
+ 	calltime = ktime_get();
+ 
+-	tfm = crypto_alloc_kpp("ecdh", 0, 0);
++	tfm = crypto_alloc_kpp("ecdh-nist-p256", 0, 0);
+ 	if (IS_ERR(tfm)) {
+ 		BT_ERR("Unable to create ECDH crypto context");
+ 		err = PTR_ERR(tfm);
+diff --git a/net/bluetooth/smp.c b/net/bluetooth/smp.c
+index c659c46..5de73de 100644
+--- a/net/bluetooth/smp.c
++++ b/net/bluetooth/smp.c
+@@ -1387,7 +1387,7 @@ static struct smp_chan *smp_chan_create(struct l2cap_conn *conn)
+ 		goto zfree_smp;
  	}
  
--	ctx->n_sz = atmel_ecdh_supported_curve(params.curve_id);
-+	ctx->n_sz = atmel_ecdh_supported_curve(ctx->curve_id);
- 	if (!ctx->n_sz || params.key_size) {
- 		/* fallback to ecdh software implementation */
- 		ctx->do_fallback = true;
-@@ -125,7 +125,6 @@ static int atmel_ecdh_set_secret(struct crypto_kpp *tfm, const void *buf,
- 		goto free_cmd;
- 
- 	ctx->do_fallback = false;
--	ctx->curve_id = params.curve_id;
- 
- 	atmel_i2c_init_genkey_cmd(cmd, DATA_SLOT_2);
- 
-@@ -263,6 +262,7 @@ static int atmel_ecdh_init_tfm(struct crypto_kpp *tfm)
- 	struct crypto_kpp *fallback;
- 	struct atmel_ecdh_ctx *ctx = kpp_tfm_ctx(tfm);
- 
-+	ctx->curve_id = ECC_CURVE_NIST_P256;
- 	ctx->client = atmel_ecc_i2c_client_alloc();
- 	if (IS_ERR(ctx->client)) {
- 		pr_err("tfm - i2c_client binding failed\n");
-@@ -306,7 +306,7 @@ static unsigned int atmel_ecdh_max_size(struct crypto_kpp *tfm)
- 	return ATMEL_ECC_PUBKEY_SIZE;
- }
- 
--static struct kpp_alg atmel_ecdh = {
-+static struct kpp_alg atmel_ecdh_nist_p256 = {
- 	.set_secret = atmel_ecdh_set_secret,
- 	.generate_public_key = atmel_ecdh_generate_public_key,
- 	.compute_shared_secret = atmel_ecdh_compute_shared_secret,
-@@ -315,7 +315,7 @@ static struct kpp_alg atmel_ecdh = {
- 	.max_size = atmel_ecdh_max_size,
- 	.base = {
- 		.cra_flags = CRYPTO_ALG_NEED_FALLBACK,
--		.cra_name = "ecdh",
-+		.cra_name = "ecdh-nist-p256",
- 		.cra_driver_name = "atmel-ecdh",
- 		.cra_priority = ATMEL_ECC_PRIORITY,
- 		.cra_module = THIS_MODULE,
-@@ -340,14 +340,14 @@ static int atmel_ecc_probe(struct i2c_client *client,
- 		      &driver_data.i2c_client_list);
- 	spin_unlock(&driver_data.i2c_list_lock);
- 
--	ret = crypto_register_kpp(&atmel_ecdh);
-+	ret = crypto_register_kpp(&atmel_ecdh_nist_p256);
- 	if (ret) {
- 		spin_lock(&driver_data.i2c_list_lock);
- 		list_del(&i2c_priv->i2c_client_list_node);
- 		spin_unlock(&driver_data.i2c_list_lock);
- 
- 		dev_err(&client->dev, "%s alg registration failed\n",
--			atmel_ecdh.base.cra_driver_name);
-+			atmel_ecdh_nist_p256.base.cra_driver_name);
- 	} else {
- 		dev_info(&client->dev, "atmel ecc algorithms registered in /proc/crypto\n");
- 	}
-@@ -365,7 +365,7 @@ static int atmel_ecc_remove(struct i2c_client *client)
- 		return -EBUSY;
+-	smp->tfm_ecdh = crypto_alloc_kpp("ecdh", 0, 0);
++	smp->tfm_ecdh = crypto_alloc_kpp("ecdh-nist-p256", 0, 0);
+ 	if (IS_ERR(smp->tfm_ecdh)) {
+ 		BT_ERR("Unable to create ECDH crypto context");
+ 		goto free_shash;
+@@ -3282,7 +3282,7 @@ static struct l2cap_chan *smp_add_cid(struct hci_dev *hdev, u16 cid)
+ 		return ERR_CAST(tfm_cmac);
  	}
  
--	crypto_unregister_kpp(&atmel_ecdh);
-+	crypto_unregister_kpp(&atmel_ecdh_nist_p256);
+-	tfm_ecdh = crypto_alloc_kpp("ecdh", 0, 0);
++	tfm_ecdh = crypto_alloc_kpp("ecdh-nist-p256", 0, 0);
+ 	if (IS_ERR(tfm_ecdh)) {
+ 		BT_ERR("Unable to create ECDH crypto context");
+ 		crypto_free_shash(tfm_cmac);
+@@ -3807,7 +3807,7 @@ int __init bt_selftest_smp(void)
+ 		return PTR_ERR(tfm_cmac);
+ 	}
  
- 	spin_lock(&driver_data.i2c_list_lock);
- 	list_del(&i2c_priv->i2c_client_list_node);
+-	tfm_ecdh = crypto_alloc_kpp("ecdh", 0, 0);
++	tfm_ecdh = crypto_alloc_kpp("ecdh-nist-p256", 0, 0);
+ 	if (IS_ERR(tfm_ecdh)) {
+ 		BT_ERR("Unable to create ECDH crypto context");
+ 		crypto_free_shash(tfm_cmac);
 -- 
 2.8.1
 
