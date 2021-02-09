@@ -2,31 +2,31 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D75D31493D
-	for <lists+linux-crypto@lfdr.de>; Tue,  9 Feb 2021 08:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E926931493B
+	for <lists+linux-crypto@lfdr.de>; Tue,  9 Feb 2021 08:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhBIHEc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 9 Feb 2021 02:04:32 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11713 "EHLO
+        id S229636AbhBIHEo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 9 Feb 2021 02:04:44 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11715 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhBIHEc (ORCPT
+        with ESMTP id S229725AbhBIHEe (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 9 Feb 2021 02:04:32 -0500
+        Tue, 9 Feb 2021 02:04:34 -0500
 Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DZYjT2pT7zlHvJ;
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DZYjT3MmXzlJ0t;
         Tue,  9 Feb 2021 15:02:05 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 9 Feb 2021 15:03:30 +0800
+ 14.3.498.0; Tue, 9 Feb 2021 15:03:31 +0800
 From:   chenxiang <chenxiang66@hisilicon.com>
 To:     <clabbe.montjoie@gmail.com>, <clabbe@baylibre.com>,
         <gcherian@marvell.com>, <herbert@gondor.apana.org.au>,
         <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <linuxarm@openeuler.org>,
         <prime.zeng@huawei.com>, Xiang Chen <chenxiang66@hisilicon.com>
-Subject: [PATCH 1/4] crypto: amlogic - Fix the parameter of dma_unmap_sg()
-Date:   Tue, 9 Feb 2021 14:59:22 +0800
-Message-ID: <1612853965-67777-2-git-send-email-chenxiang66@hisilicon.com>
+Subject: [PATCH 2/4] crypto: cavium - Fix the parameter of dma_unmap_sg()
+Date:   Tue, 9 Feb 2021 14:59:23 +0800
+Message-ID: <1612853965-67777-3-git-send-email-chenxiang66@hisilicon.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1612853965-67777-1-git-send-email-chenxiang66@hisilicon.com>
 References: <1612853965-67777-1-git-send-email-chenxiang66@hisilicon.com>
@@ -46,27 +46,49 @@ So fix this usage.
 
 Signed-off-by: Xiang Chen <chenxiang66@hisilicon.com>
 ---
- drivers/crypto/amlogic/amlogic-gxl-cipher.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/crypto/cavium/nitrox/nitrox_reqmgr.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/amlogic/amlogic-gxl-cipher.c b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-index 8b5e073..c6865cbd 100644
---- a/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-+++ b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-@@ -236,10 +236,10 @@ static int meson_cipher(struct skcipher_request *areq)
- 	dma_unmap_single(mc->dev, phykeyiv, keyivlen, DMA_TO_DEVICE);
+diff --git a/drivers/crypto/cavium/nitrox/nitrox_reqmgr.c b/drivers/crypto/cavium/nitrox/nitrox_reqmgr.c
+index 53ef067..1263194 100644
+--- a/drivers/crypto/cavium/nitrox/nitrox_reqmgr.c
++++ b/drivers/crypto/cavium/nitrox/nitrox_reqmgr.c
+@@ -170,7 +170,7 @@ static int dma_map_inbufs(struct nitrox_softreq *sr,
+ 		sr->in.total_bytes += sg_dma_len(sg);
  
- 	if (areq->src == areq->dst) {
--		dma_unmap_sg(mc->dev, areq->src, nr_sgs, DMA_BIDIRECTIONAL);
-+		dma_unmap_sg(mc->dev, areq->src, sg_nents(areq->src), DMA_BIDIRECTIONAL);
- 	} else {
--		dma_unmap_sg(mc->dev, areq->src, nr_sgs, DMA_TO_DEVICE);
--		dma_unmap_sg(mc->dev, areq->dst, nr_sgd, DMA_FROM_DEVICE);
-+		dma_unmap_sg(mc->dev, areq->src, sg_nents(areq->src), DMA_TO_DEVICE);
-+		dma_unmap_sg(mc->dev, areq->dst, sg_nents(areq->dst), DMA_FROM_DEVICE);
- 	}
+ 	sr->in.sg = req->src;
+-	sr->in.sgmap_cnt = nents;
++	sr->in.sgmap_cnt = sg_nents(req->src);
+ 	ret = create_sg_component(sr, &sr->in, sr->in.sgmap_cnt);
+ 	if (ret)
+ 		goto incomp_err;
+@@ -178,7 +178,7 @@ static int dma_map_inbufs(struct nitrox_softreq *sr,
+ 	return 0;
  
- 	if (areq->iv && ivsize > 0) {
+ incomp_err:
+-	dma_unmap_sg(dev, req->src, nents, DMA_BIDIRECTIONAL);
++	dma_unmap_sg(dev, req->src, sg_nents(req->src), DMA_BIDIRECTIONAL);
+ 	sr->in.sgmap_cnt = 0;
+ 	return ret;
+ }
+@@ -195,7 +195,7 @@ static int dma_map_outbufs(struct nitrox_softreq *sr,
+ 		return -EINVAL;
+ 
+ 	sr->out.sg = req->dst;
+-	sr->out.sgmap_cnt = nents;
++	sr->out.sgmap_cnt = sg_nents(req->dst);
+ 	ret = create_sg_component(sr, &sr->out, sr->out.sgmap_cnt);
+ 	if (ret)
+ 		goto outcomp_map_err;
+@@ -203,7 +203,7 @@ static int dma_map_outbufs(struct nitrox_softreq *sr,
+ 	return 0;
+ 
+ outcomp_map_err:
+-	dma_unmap_sg(dev, req->dst, nents, DMA_BIDIRECTIONAL);
++	dma_unmap_sg(dev, req->dst, sg_nents(req->dst), DMA_BIDIRECTIONAL);
+ 	sr->out.sgmap_cnt = 0;
+ 	sr->out.sg = NULL;
+ 	return ret;
 -- 
 2.8.1
 
