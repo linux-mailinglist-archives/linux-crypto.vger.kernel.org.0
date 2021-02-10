@@ -2,76 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6122231617C
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Feb 2021 09:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ECA63165FC
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Feb 2021 13:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbhBJIuG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 10 Feb 2021 03:50:06 -0500
-Received: from bl22-133-207.dsl.telepac.pt ([2.83.133.207]:50440 "EHLO
-        localhost" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230481AbhBJIrV (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:47:21 -0500
-Received: from Dysfwrbh ([127.0.0.1]) by localhost with
- MailEnable ESMTP; Wed, 10 Feb 2021 08:46:40 +0000
-Date:   Wed, 10 Feb 2021 08:46:14 -0000
-X-Mailer: airmen englishman
-Message-ID: <20210210084614363.7F0E50E751604CE0@Dctrftjzexzqzyslzt>
-To:     <linux-crypto@vger.kernel.org>
-From:   <jsguerra7@outlook.pt>
-Subject: Fatima, Portugal Places to stay
+        id S231253AbhBJMHJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 10 Feb 2021 07:07:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230470AbhBJMFA (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:05:00 -0500
+Received: from smtp-8fad.mail.infomaniak.ch (smtp-8fad.mail.infomaniak.ch [IPv6:2001:1600:3:17::8fad])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8C7C0613D6
+        for <linux-crypto@vger.kernel.org>; Wed, 10 Feb 2021 04:03:56 -0800 (PST)
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DbJM90QZBzMqW88;
+        Wed, 10 Feb 2021 13:03:49 +0100 (CET)
+Received: from localhost (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DbJM65mq6zlh8Tk;
+        Wed, 10 Feb 2021 13:03:46 +0100 (CET)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH v6 0/5] Enable root to update the blacklist keyring
+Date:   Wed, 10 Feb 2021 13:04:05 +0100
+Message-Id: <20210210120410.471693-1-mic@digikod.net>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear
+This new patch series is a rebase on David Howells's keys-misc branch.
+This mainly fixes UEFI DBX and the new Eric Snowberg's feature to import
+asymmetric keys to the blacklist keyring.
+I successfully tested this patch series with the 186 entries from
+https://uefi.org/sites/default/files/resources/dbxupdate_x64.bin (184
+binary hashes and 2 certificates).
 
-Have you ever visited Fatima, Portugal?
+The goal of these patches is to add a new configuration option to enable the
+root user to load signed keys in the blacklist keyring.  This keyring is useful
+to "untrust" certificates or files.  Enabling to safely update this keyring
+without recompiling the kernel makes it more usable.
 
-Free Fatima Rosary : https://www.facebook.com/groups/1621819681474553
+This can be applied on top of David Howells's keys-next branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=keys-next
+Git commits can be found in https://github.com/l0kod/linux branch
+dyn-auth-blacklist-v6 commit fcf976b74ffcd4551683e6b70dbf5fb102cf9906 .
 
-Here are some suggestions of great places to stay at very reasonable prices:
+Previous patch series:
+https://lore.kernel.org/lkml/20210128191705.3568820-1-mic@digikod.net/
 
-PRIVATE HOMES WITH KITCHEN USE PERMITED:
+Regards,
 
-* 2 Bedroom Apartment: https://airbnb.com/rooms/18052297
-* Fatima, Portugal - Shrine of Fatima: https://airbnb.com/rooms/999296
-* Double Occupancy bed: https://airbnb.com/rooms/11199054
-* Double Occupancy Room - João XXIII: https://airbnb.com/rooms/12938543
-* Two single beds in large Loft: https://airbnb.com/rooms/3941588
-* Bedroom: https://airbnb.com/rooms/6594785
-* Oxana Alex: https://airbnb.com/rooms/21145061
-* Rua Ladeira ,1Rés-do-chão E Fátima: https://airbnb.com/rooms/21145105
-* Full Apartment Near the Shrine: https://airbnb.com/rooms/18303035
+Mickaël Salaün (5):
+  tools/certs: Add print-cert-tbs-hash.sh
+  certs: Check that builtin blacklist hashes are valid
+  certs: Make blacklist_vet_description() more strict
+  certs: Factor out the blacklist hash creation
+  certs: Allow root user to append signed hashes to the blacklist
+    keyring
 
-By using Airbnb these places are verified and many have past clients comments for your review:
+ MAINTAINERS                                   |   2 +
+ certs/.gitignore                              |   1 +
+ certs/Kconfig                                 |  17 +-
+ certs/Makefile                                |  17 +-
+ certs/blacklist.c                             | 218 ++++++++++++++----
+ crypto/asymmetric_keys/x509_public_key.c      |   3 +-
+ include/keys/system_keyring.h                 |  14 +-
+ scripts/check-blacklist-hashes.awk            |  37 +++
+ .../platform_certs/keyring_handler.c          |  26 +--
+ tools/certs/print-cert-tbs-hash.sh            |  91 ++++++++
+ 10 files changed, 346 insertions(+), 80 deletions(-)
+ create mode 100755 scripts/check-blacklist-hashes.awk
+ create mode 100755 tools/certs/print-cert-tbs-hash.sh
 
-https://www.airbnb.com/rooms
 
-https://www.airbnb.com/tell-a-friend?airef=3n45jzf4822zz5
-
-Or HOMESTAY.COM at: https://www.homestay.com/portugal/fatima/28686-homestay-in-rotunda-sul-fatima
-
-I've been using Airbnb and love it! Savehttps://www.airbnb.com/tell-a-friend?airef=3n45jzf4822zz4 via @airbnb
-
-Recomended Restaurants in Fatima: 
-
-TABERNA DO BACALHAU
-http://www.tabernadobacalhau.pt/pt/120/a-taberna
-
-Retiro dos Cacadores
-https://retirodoscacadores.com/
-
-O Crispim
-https://www.ocrispim.com/
-
-Tia Alice Restaurante
-https://www.facebook.com/Tia.Alice.Restaurante
-
-Joe Pereira Guerra
-jsguerra7@outlook.pt
-+351926606165 Whatsapp, Viber, Skype 
-Facebook: https://www.facebook.com/Joepereiraguerra
+base-commit: 5bcd72358a7d7794ade0452ed12919b8c4d6ffc7
+-- 
+2.30.0
 
