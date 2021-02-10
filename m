@@ -2,37 +2,37 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C590E316995
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Feb 2021 16:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C6C3169A3
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Feb 2021 16:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231810AbhBJO7Q (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 10 Feb 2021 09:59:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31659 "EHLO
+        id S231478AbhBJPB2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 10 Feb 2021 10:01:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33195 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231765AbhBJO7A (ORCPT
+        by vger.kernel.org with ESMTP id S231876AbhBJPBM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:59:00 -0500
+        Wed, 10 Feb 2021 10:01:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612969052;
+        s=mimecast20190719; t=1612969184;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
         bh=z2dPGwBXCWSVZ5g1pGm6UIqGI0ADcDy1IxFOAnmlTEE=;
-        b=QzDF3vLj2CQafKLw1NTtknyaRd9MW/8vyDf/KHiFkcfoTdbNg5nEUDTbJ5l59n8qtZVjBy
-        mgShMLmYfcUevpLct+0Ard1IFiSWyTfOTuzcCoYqmWyswOjjUaBeGxP4JVcpDTLKaE9+nA
-        Ilw7pl/awho7Ah6C0gjqvYajMGWAeW4=
+        b=AelKfLknNFdyA5KVYElplYnlKIi6cFRBdOXRzPzGGgu78Dhot5Lo/W7N22RGoWokXPez3L
+        KaLZSBfSQmZkBTbXLbewuIhtPr8S/aWUOtm/o/CPNM3pZQyuTiHOZ7RWf0s1CMuGwcI1Dq
+        H9OjjyVLqnklwIq2r7XCOXa+xL/1/iY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-BUzlBjMCPu-BrVdmGJSJcQ-1; Wed, 10 Feb 2021 09:57:28 -0500
-X-MC-Unique: BUzlBjMCPu-BrVdmGJSJcQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-297-mJ4p5JH4Ntiknlw1hnpfrw-1; Wed, 10 Feb 2021 09:59:42 -0500
+X-MC-Unique: mJ4p5JH4Ntiknlw1hnpfrw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9451C192CC40;
-        Wed, 10 Feb 2021 14:57:24 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DB76CC622;
+        Wed, 10 Feb 2021 14:59:38 +0000 (UTC)
 Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 517BE60657;
-        Wed, 10 Feb 2021 14:57:20 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BA00710016F5;
+        Wed, 10 Feb 2021 14:59:34 +0000 (UTC)
 Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
         Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
         Kingdom.
@@ -55,13 +55,13 @@ cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
         Tom Rix <trix@redhat.com>, YueHaibing <yuehaibing@huawei.com>,
         keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: 
+Subject: [GIT PULL] keys: Collected minor fixes and cleanups
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 10 Feb 2021 14:57:19 +0000
-Message-ID: <1322700.1612969039@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Date:   Wed, 10 Feb 2021 14:59:34 +0000
+Message-ID: <1322896.1612969174@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
