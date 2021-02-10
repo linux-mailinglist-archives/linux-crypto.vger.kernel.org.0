@@ -2,65 +2,45 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C646A316006
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Feb 2021 08:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4526A31600A
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Feb 2021 08:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbhBJHZl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 10 Feb 2021 02:25:41 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:50348 "EHLO fornost.hmeau.com"
+        id S232626AbhBJH0J (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 10 Feb 2021 02:26:09 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:50370 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232501AbhBJHZB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 10 Feb 2021 02:25:01 -0500
+        id S232539AbhBJHZV (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 10 Feb 2021 02:25:21 -0500
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1l9jrG-0001Iq-DD; Wed, 10 Feb 2021 18:24:19 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 10 Feb 2021 18:24:18 +1100
-Date:   Wed, 10 Feb 2021 18:24:18 +1100
+        id 1l9jrS-0001J0-4X; Wed, 10 Feb 2021 18:24:31 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 10 Feb 2021 18:24:30 +1100
+Date:   Wed, 10 Feb 2021 18:24:30 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Weili Qian <qianweili@huawei.com>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH 0/6] crypto: hisilicon/qm - misc fixes
-Message-ID: <20210210072418.GN4493@gondor.apana.org.au>
-References: <1612519978-33340-1-git-send-email-qianweili@huawei.com>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     mpm@selenic.com, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] hw_random: timeriomem_rng: Use device-managed
+ registration API
+Message-ID: <20210210072429.GO4493@gondor.apana.org.au>
+References: <1612665545-43612-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1612519978-33340-1-git-send-email-qianweili@huawei.com>
+In-Reply-To: <1612665545-43612-1-git-send-email-tiantao6@hisilicon.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 06:12:52PM +0800, Weili Qian wrote:
-> This patchset fixes some bugs:
-> 1. Removing the waiting reset's completion logic of driver.
-> 2. In order to prevent request missing,
->    call user's callback before device resetting.
-> 3. Fix the value of 'QM_SQC_VFT_BASE_MASK_V2'.
-> 4. Update irqflag.
-> 5. Do not reset when CE error occurs.
-> 6. Fix printing format issue. 
+On Sun, Feb 07, 2021 at 10:39:05AM +0800, Tian Tao wrote:
+> Use devm_hwrng_register to get rid of manual unregistration.
 > 
-> Sihang Chen (1):
->   crypto: hisilicon/qm - update irqflag
-> 
-> Weili Qian (5):
->   crypto: hisilicon/qm - removing driver after reset
->   crypto: hisilicon/qm - fix request missing error
->   crypto: hisilicon/qm - fix the value of 'QM_SQC_VFT_BASE_MASK_V2'
->   crypto: hisilicon/qm - do not reset hardware when CE happens
->   crypto: hisilicon/qm - fix printing format issue
-> 
->  drivers/crypto/hisilicon/hpre/hpre_main.c |   3 +-
->  drivers/crypto/hisilicon/qm.c             | 124 +++++++++++++++++++++---------
->  drivers/crypto/hisilicon/qm.h             |   5 +-
->  drivers/crypto/hisilicon/sec2/sec_main.c  |   3 +-
->  drivers/crypto/hisilicon/zip/zip_main.c   |   7 +-
->  5 files changed, 101 insertions(+), 41 deletions(-)
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> ---
+>  drivers/char/hw_random/timeriomem-rng.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
