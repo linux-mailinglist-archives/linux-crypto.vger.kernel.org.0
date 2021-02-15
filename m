@@ -2,562 +2,375 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6C631B41F
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Feb 2021 03:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C832231B438
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Feb 2021 04:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhBOCsZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 14 Feb 2021 21:48:25 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:46706 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229631AbhBOCsT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 14 Feb 2021 21:48:19 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lBTuz-0000hn-J9; Mon, 15 Feb 2021 13:47:22 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 15 Feb 2021 13:47:21 +1100
-Date:   Mon, 15 Feb 2021 13:47:21 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [GIT PULL] Crypto Update for 5.12
-Message-ID: <20210215024721.GA20593@gondor.apana.org.au>
-References: <20200803044024.GA6429@gondor.apana.org.au>
- <20201012033249.GA25179@gondor.apana.org.au>
- <20201214055515.GA14196@gondor.apana.org.au>
+        id S229870AbhBODW4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 14 Feb 2021 22:22:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229875AbhBODWx (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 14 Feb 2021 22:22:53 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0E9C061788
+        for <linux-crypto@vger.kernel.org>; Sun, 14 Feb 2021 19:22:12 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id c8so3900900ljd.12
+        for <linux-crypto@vger.kernel.org>; Sun, 14 Feb 2021 19:22:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=NQgYVr7qq+o7gJZ9kqvT5i7Qq3VfwwaNB/l2CBMZDZM=;
+        b=blsk16ra11V7fXYnz4LRNir0QiC25PfKtrZg/SCJXVIg3xYU0OKdIbfRvHdQQ7h5ej
+         YZ8f2QGQHn5yliJn1Vhlwovbr8F6AkZoD/hhME17CgOdFA9XvExvybGgzSCmcdjQVx0Q
+         ATqNLV14A4h9LJyaMRg7pMUITug4IYtKlIEmCYbxLlyFn9yUPCiZRUBD5Ra79yf03Ecj
+         GQjQHHu2Bt/kFU+q8M11YPp2OfPv4MjkBv3Govufj8Rrx6b8ThNqHRGTDcwk6H6m6CRz
+         EzeIHWkkwtpuudrRFIRcgpHRJkIgcn0P4m4rcc8cvbQEzFCVO5x9nQgfPSBSWMswR4/j
+         eT9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=NQgYVr7qq+o7gJZ9kqvT5i7Qq3VfwwaNB/l2CBMZDZM=;
+        b=e+wTF02XYwUwyuaTv99zOhN377nClKK+n1Y5HbCHB91k7mHIo7DpDiWV4+7havknYg
+         jymJP0sL+VozTfeurVdeKKQjM2z2K8MMza6NcSt1XqMfRGb5p42r/QvJnWPFcl+psEap
+         JRYycsbvRC/RDjcL/dsHE3WGqKUC66lFkBYHpUulkk5mT6kwWLjPcmhdvRV5AbZJMXwp
+         J4m1M/QAqn77YLqoZOqkaVS2mXMoSaiTe63tFzaOVtBeXSRvObjF54U4umQyR2iUNB7L
+         B4ojfDv+X/i/hi81sGDXRVlW4UED/AacDyfBFUk54YJDZq1OAvWvdjPY2KwsiahZ1Z4U
+         IZdg==
+X-Gm-Message-State: AOAM531nCS9vRoWvMEjOWnGPOeIOdFhsHUw/qgEnqZVoQN9yY4wQ92KD
+        r8iDElgP5BkuRZOhOlm26FoYbbO6uK0iWn95Ki0=
+X-Google-Smtp-Source: ABdhPJzZDA2DYg5HE2cawkXd+uDIaqzvsDNsABrBmzeYIJs4UyVIr61y3BdPvWNFJcJHz98sYJJty/8Pp8gx50FnOAo=
+X-Received: by 2002:a05:651c:2c5:: with SMTP id f5mr8127694ljo.357.1613359330852;
+ Sun, 14 Feb 2021 19:22:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214055515.GA14196@gondor.apana.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:aa6:c205:0:b029:c0:808b:1af2 with HTTP; Sun, 14 Feb 2021
+ 19:22:09 -0800 (PST)
+Reply-To: lindawilliam2026@gmail.com
+From:   lucky frank <luckyfrank353@gmail.com>
+Date:   Mon, 15 Feb 2021 03:22:09 +0000
+Message-ID: <CAN6orYuLUXtYRiVw=x4GKS-Pq=h2vqnvH3-nqYkf4UMLm4x8-A@mail.gmail.com>
+Subject: KONTAKTIEREN SIE DEN BANKDIREKTOR.
+To:     undisclosed-recipients:;
+Content-Type: multipart/mixed; boundary="000000000000cf9b9805bb577d2c"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Linus:
+--000000000000cf9b9805bb577d2c
+Content-Type: text/plain; charset="UTF-8"
 
-API:
 
-- Restrict crypto_cipher to internal API users only.
 
-Algorithms:
+--000000000000cf9b9805bb577d2c
+Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document; 
+	name="CONTATE URGENTEMENTE O DIRETOR DO BANCO ORA..docx"
+Content-Disposition: attachment; 
+	filename="CONTATE URGENTEMENTE O DIRETOR DO BANCO ORA..docx"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: file0
 
-- Add x86 aesni acceleration for cts.
-- Improve x86 aesni acceleration for xts.
-- Remove x86 acceleration of some uncommon algorithms.
-- Remove RIPE-MD, Tiger and Salsa20.
-- Remove tnepres.
-- Add ARM acceleration for BLAKE2s and BLAKE2b.
-
-Drivers:
-
-- Add Keem Bay OCS HCU driver.
-- Add Marvell OcteonTX2 CPT PF driver.
-- Remove PicoXcell driver.
-- Remove mediatek driver.
-
-The following changes since commit 0aa171e9b267ce7c52d3a3df7bc9c1fc0203dec5:
-
-  crypto: ecdh - avoid buffer overflow in ecdh_set_secret() (2021-01-03 08:35:35 +1100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus 
-
-for you to fetch changes up to 0de9dc80625b0ca1cb9730c5ed1c5a8cab538369:
-
-  hwrng: timeriomem - Use device-managed registration API (2021-02-10 17:56:01 +1100)
-
-----------------------------------------------------------------
-Adam Guerin (3):
-      crypto: qat - fix potential spectre issue
-      crypto: qat - change format string and cast ring size
-      crypto: qat - reduce size of mapped region
-
-Ard Biesheuvel (60):
-      crypto: aesni - implement support for cts(cbc(aes))
-      crypto: tcrypt - avoid signed overflow in byte count
-      chcr_ktls: use AES library for single use cipher
-      crypto: remove cipher routines from public crypto API
-      crypto: arm64/aes-ce - really hide slower algos when faster ones are enabled
-      crypto: arm64/aes-ctr - improve tail handling
-      crypto: x86/aes-ni-xts - use direct calls to and 4-way stride
-      crypto: x86/aes-ni-xts - rewrite and drop indirections via glue helper
-      crypto: aesni - prevent misaligned buffers on the stack
-      crypto: aesni - drop unused asm prototypes
-      crypto: aesni - clean up mapping of associated data
-      crypto: aesni - refactor scatterlist processing
-      crypto: aesni - replace function pointers with static branches
-      crypto: x86/camellia - switch to XTS template
-      crypto: x86/cast6 - switch to XTS template
-      crypto: x86/serpent- switch to XTS template
-      crypto: x86/twofish - switch to XTS template
-      crypto: x86/glue-helper - drop XTS helper routines
-      crypto: x86/camellia - drop CTR mode implementation
-      crypto: x86/serpent - drop CTR mode implementation
-      crypto: x86/cast5 - drop CTR mode implementation
-      crypto: x86/cast6 - drop CTR mode implementation
-      crypto: x86/twofish - drop CTR mode implementation
-      crypto: x86/glue-helper - drop CTR helper routines
-      crypto: x86/des - drop CTR mode implementation
-      crypto: x86/blowfish - drop CTR mode implementation
-      crypto: x86 - add some helper macros for ECB and CBC modes
-      crypto: x86/camellia - drop dependency on glue helper
-      crypto: x86/serpent - drop dependency on glue helper
-      crypto: x86/cast5 - drop dependency on glue helper
-      crypto: x86/cast6 - drop dependency on glue helper
-      crypto: x86/twofish - drop dependency on glue helper
-      crypto: x86 - remove glue helper module
-      crypto: x86 - use local headers for x86 specific shared declarations
-      crypto - shash: reduce minimum alignment of shash_desc structure
-      crypto: arm64/sha - add missing module aliases
-      crypto: aesni - replace CTR function pointer with static call
-      crypto: aesni - release FPU during skcipher walk API calls
-      crypto: rmd128 - remove RIPE-MD 128 hash algorithm
-      crypto: rmd256 - remove RIPE-MD 256 hash algorithm
-      crypto: rmd320 - remove RIPE-MD 320 hash algorithm
-      crypto: tgr192 - remove Tiger 128/160/192 hash algorithms
-      crypto: salsa20 - remove Salsa20 stream cipher algorithm
-      arm64: assembler: add cond_yield macro
-      crypto: michael_mic - fix broken misalignment handling
-      crypto: serpent - get rid of obsolete tnepres variant
-      crypto: serpent - use unaligned accessors instead of alignmask
-      crypto: blowfish - use unaligned accessors instead of alignmask
-      crypto: camellia - use unaligned accessors instead of alignmask
-      crypto: cast5 - use unaligned accessors instead of alignmask
-      crypto: cast6 - use unaligned accessors instead of alignmask
-      crypto: fcrypt - drop unneeded alignmask
-      crypto: twofish - use unaligned accessors instead of alignmask
-      crypto: arm64/sha1-ce - simplify NEON yield
-      crypto: arm64/sha2-ce - simplify NEON yield
-      crypto: arm64/sha3-ce - simplify NEON yield
-      crypto: arm64/sha512-ce - simplify NEON yield
-      crypto: arm64/aes-neonbs - remove NEON yield calls
-      crypto: arm64/aes-ce-mac - simplify NEON yield
-      crypto: arm64/crc-t10dif - move NEON yield to C code
-
-Arnd Bergmann (1):
-      crypto: octeontx2 - fix -Wpointer-bool-conversion warning
-
-Bhaskar Chowdhury (2):
-      crypto: marvell/cesa - Fix a spelling s/fautly/faultly/ in comment
-      crypto: xor - Fix typo of optimization
-
-Christophe JAILLET (1):
-      hwrng: ingenic - Fix a resource leak in an error handling path
-
-Christophe Leroy (2):
-      crypto: talitos - Work around SEC6 ERRATA (AES-CTR mode data size error)
-      crypto: talitos - Fix ctr(aes) on SEC1
-
-Corentin Labbe (8):
-      crypto: sun4i-ss - linearize buffers content must be kept
-      crypto: sun4i-ss - checking sg length is not sufficient
-      crypto: sun4i-ss - IV register does not work on A10 and A13
-      crypto: sun4i-ss - handle BigEndian for cipher
-      crypto: sun4i-ss - initialize need_fallback
-      crypto: sun4i-ss - fix kmap usage
-      crypto: sun4i-ss - enabled stats via debugfs
-      crypto: sun4i-ss - add SPDX header and remove blank lines
-
-Dan Carpenter (2):
-      crypto: keembay-ocs-hcu - Fix a WARN() message
-      crypto: octeontx2 - fix signedness bug in cptvf_register_interrupts()
-
-Daniele Alessandrelli (6):
-      crypto: keembay-ocs-hcu - Add HMAC support
-      crypto: keembay-ocs-hcu - Add optional support for sha224
-      MAINTAINERS: Add maintainers for Keem Bay OCS HCU driver
-      crypto: keembay-ocs-hcu - Add dependency on HAS_IOMEM and ARCH_KEEMBAY
-      crypto: ecdh_helper - Ensure 'len >= secret.len' in decode_key()
-      crypto: keembay-ocs-aes - Fix 'q' assignment during CCM B0 generation
-
-Declan Murphy (2):
-      dt-bindings: crypto: Add Keem Bay OCS HCU bindings
-      crypto: keembay - Add Keem Bay OCS HCU driver
-
-Eric Biggers (14):
-      crypto: blake2s - define shash_alg structs using macros
-      crypto: x86/blake2s - define shash_alg structs using macros
-      crypto: blake2s - remove unneeded includes
-      crypto: blake2s - move update and final logic to internal/blake2s.h
-      crypto: blake2s - share the "shash" API boilerplate code
-      crypto: blake2s - optimize blake2s initialization
-      crypto: blake2s - add comment for blake2s_state fields
-      crypto: blake2s - adjust include guard naming
-      crypto: blake2s - include <linux/bug.h> instead of <asm/bug.h>
-      crypto: arm/blake2s - add ARM scalar optimized BLAKE2s
-      wireguard: Kconfig: select CRYPTO_BLAKE2S_ARM
-      crypto: blake2b - sync with blake2s implementation
-      crypto: blake2b - update file comment
-      crypto: arm/blake2b - add NEON-accelerated BLAKE2b
-
-Fabio Estevam (1):
-      crypto: sahara - Remove unused .id_table support
-
-Florian Fainelli (1):
-      crypto: crypto4xx - Avoid linking failure with HW_RANDOM=m
-
-Geert Uytterhoeven (1):
-      crypto: marvell - CRYPTO_DEV_OCTEONTX2_CPT should depend on ARCH_THUNDER2
-
-Herbert Xu (6):
-      crypto: vmx - Move extern declarations into header file
-      crypto: stm32 - Fix last sparse warning in stm32_cryp_check_ctr_counter
-      crypto: bcm - Fix sparse warnings
-      crypto: marvell/cesa - Fix use of sg_pcopy on iomem pointer
-      crypto: octeontx2 - Add dependency on NET_VENDOR_MARVELL
-      Merge git://git.kernel.org/.../arm64/linux for-next/crypto
-
-Hui Tang (6):
-      crypto: hisilicon/hpre - delete ECC 1bit error reported threshold
-      crypto: hisilicon/hpre - add two RAS correctable errors processing
-      crypto: hisilicon/hpre - add ecc algorithm inqury for uacce device
-      crypto: hisilicon/hpre - adapt the number of clusters
-      crypto: hisilicon/hpre - tiny fix
-      crypto: hisilicon/hpre - enable Elliptic curve cryptography
-
-Jan Henrik Weinstock (1):
-      hwrng: timeriomem - Fix cooldown period calculation
-
-Jason A. Donenfeld (1):
-      crypto: lib/chacha20poly1305 - define empty module exit function
-
-Jiapeng Chong (1):
-      crypto: caam - Replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
-
-Jiri Olsa (1):
-      crypto: bcm - Rename struct device_private to bcm_device_private
-
-Kai Ye (4):
-      crypto: hisilicon/qm - SVA bugfixed on Kunpeng920
-      crypto: hisilicon - add ZIP device using mode parameter
-      crypto: hisilicon/hpre - register HPRE device to uacce
-      crypto: hisilicon/sec - register SEC device to uacce
-
-Krzysztof Kozlowski (1):
-      MAINTAINERS: crypto: s5p-sss: drop Kamil Konieczny
-
-Marco Chiappero (1):
-      crypto: qat - replace CRYPTO_AES with CRYPTO_LIB_AES in Kconfig
-
-Matthias Brugger (2):
-      hwrng: iproc-rng200 - Fix disable of the block.
-      hwrng: iproc-rng200 - Move enable/disable in separate function
-
-Ovidiu Panait (1):
-      crypto: keembay - use 64-bit arithmetic for computing bit_len
-
-Rob Herring (1):
-      crypto: picoxcell - Remove PicoXcell driver
-
-Sihang Chen (1):
-      crypto: hisilicon/qm - update irqflag
-
-Srujana Challa (9):
-      crypto: marvell - add Marvell OcteonTX2 CPT PF driver
-      crypto: octeontx2 - add mailbox communication with AF
-      crypto: octeontx2 - enable SR-IOV and mailbox communication with VF
-      crypto: octeontx2 - load microcode and create engine groups
-      crypto: octeontx2 - add LF framework
-      crypto: octeontx2 - add support to get engine capabilities
-      crypto: octeontx2 - add virtual function driver support
-      crypto: octeontx2 - add support to process the crypto request
-      crypto: octeontx2 - register with linux crypto framework
-
-Tian Tao (4):
-      crypto: ccree - remove unused including <linux/version.h>
-      crypto: inside-secure - fix platform_get_irq.cocci warnings
-      hwrng: optee - Use device-managed registration API
-      hwrng: timeriomem - Use device-managed registration API
-
-Vic Wu (1):
-      crypto: mediatek - remove obsolete driver
-
-Weili Qian (7):
-      crypto: hisilicon/qm - fix use of 'dma_map_single'
-      crypto: hisilicon - PASID fixed on Kunpeng 930
-      crypto: hisilicon/qm - removing driver after reset
-      crypto: hisilicon/qm - fix request missing error
-      crypto: hisilicon/qm - fix the value of 'QM_SQC_VFT_BASE_MASK_V2'
-      crypto: hisilicon/qm - do not reset hardware when CE happens
-      crypto: hisilicon/qm - fix printing format issue
-
-Wojciech Ziemba (1):
-      crypto: qat - configure arbiter mapping based on engines enabled
-
-Xu Wang (1):
-      crypto: cpt - remove casting dma_alloc_coherent
-
-Yang Li (1):
-      crypto: powerpc/sha256 - remove unneeded semicolon
-
-dingsenjie (1):
-      crypto: ccree - fix spelling typo of allocated
-
- .mailmap                                           |    1 -
- .../admin-guide/device-mapper/dm-integrity.rst     |    4 +-
- Documentation/crypto/api-skcipher.rst              |    4 +-
- .../bindings/crypto/intel,keembay-ocs-hcu.yaml     |   46 +
- .../bindings/crypto/samsung-slimsss.yaml           |    1 -
- .../devicetree/bindings/crypto/samsung-sss.yaml    |    1 -
- MAINTAINERS                                        |   12 +-
- arch/arm/crypto/Kconfig                            |   19 +
- arch/arm/crypto/Makefile                           |    4 +
- arch/arm/crypto/aes-neonbs-glue.c                  |    3 +
- arch/arm/crypto/blake2b-neon-core.S                |  347 ++++
- arch/arm/crypto/blake2b-neon-glue.c                |  105 ++
- arch/arm/crypto/blake2s-core.S                     |  285 +++
- arch/arm/crypto/blake2s-glue.c                     |   78 +
- arch/arm64/crypto/aes-glue.c                       |   71 +-
- arch/arm64/crypto/aes-modes.S                      |  217 ++-
- arch/arm64/crypto/aes-neonbs-core.S                |    8 +-
- arch/arm64/crypto/crct10dif-ce-core.S              |   43 +-
- arch/arm64/crypto/crct10dif-ce-glue.c              |   30 +-
- arch/arm64/crypto/sha1-ce-core.S                   |   47 +-
- arch/arm64/crypto/sha1-ce-glue.c                   |   23 +-
- arch/arm64/crypto/sha2-ce-core.S                   |   38 +-
- arch/arm64/crypto/sha2-ce-glue.c                   |   24 +-
- arch/arm64/crypto/sha3-ce-core.S                   |   81 +-
- arch/arm64/crypto/sha3-ce-glue.c                   |   18 +-
- arch/arm64/crypto/sha512-ce-core.S                 |   29 +-
- arch/arm64/crypto/sha512-ce-glue.c                 |   55 +-
- arch/arm64/include/asm/assembler.h                 |   16 +
- arch/powerpc/crypto/sha256-spe-glue.c              |    2 +-
- arch/s390/crypto/aes_s390.c                        |    2 +
- arch/x86/crypto/Makefile                           |    2 -
- arch/x86/crypto/aesni-intel_asm.S                  |  482 +++++-
- arch/x86/crypto/aesni-intel_glue.c                 |  753 ++++----
- arch/x86/crypto/blake2s-glue.c                     |  150 +-
- arch/x86/crypto/blowfish_glue.c                    |  107 --
- arch/x86/crypto/camellia-aesni-avx-asm_64.S        |  298 ----
- arch/x86/crypto/camellia-aesni-avx2-asm_64.S       |  351 ----
- arch/x86/{include/asm => }/crypto/camellia.h       |   24 -
- arch/x86/crypto/camellia_aesni_avx2_glue.c         |  198 +--
- arch/x86/crypto/camellia_aesni_avx_glue.c          |  216 +--
- arch/x86/crypto/camellia_glue.c                    |  145 +-
- arch/x86/crypto/cast5_avx_glue.c                   |  287 +---
- arch/x86/crypto/cast6-avx-x86_64-asm_64.S          |   84 -
- arch/x86/crypto/cast6_avx_glue.c                   |  207 +--
- arch/x86/crypto/des3_ede_glue.c                    |  104 --
- arch/x86/crypto/ecb_cbc_helpers.h                  |   76 +
- arch/x86/crypto/glue_helper-asm-avx.S              |  104 --
- arch/x86/crypto/glue_helper-asm-avx2.S             |  136 --
- arch/x86/crypto/glue_helper.c                      |  381 -----
- arch/x86/crypto/serpent-avx-x86_64-asm_64.S        |   68 -
- arch/x86/crypto/serpent-avx.h                      |   21 +
- arch/x86/crypto/serpent-avx2-asm_64.S              |   87 -
- arch/x86/{include/asm => }/crypto/serpent-sse2.h   |    0
- arch/x86/crypto/serpent_avx2_glue.c                |  185 +-
- arch/x86/crypto/serpent_avx_glue.c                 |  215 +--
- arch/x86/crypto/serpent_sse2_glue.c                |  150 +-
- arch/x86/crypto/twofish-avx-x86_64-asm_64.S        |   80 -
- arch/x86/{include/asm => }/crypto/twofish.h        |    4 -
- arch/x86/crypto/twofish_avx_glue.c                 |  211 +--
- arch/x86/crypto/twofish_glue_3way.c                |  160 +-
- arch/x86/include/asm/crypto/glue_helper.h          |  118 --
- arch/x86/include/asm/crypto/serpent-avx.h          |   42 -
- crypto/Kconfig                                     |   96 +-
- crypto/Makefile                                    |    4 -
- crypto/adiantum.c                                  |    2 +
- crypto/ansi_cprng.c                                |    2 +
- crypto/blake2b_generic.c                           |  249 +--
- crypto/blake2s_generic.c                           |  158 +-
- crypto/blowfish_generic.c                          |   23 +-
- crypto/camellia_generic.c                          |   45 +-
- crypto/cast5_generic.c                             |   23 +-
- crypto/cast6_generic.c                             |   39 +-
- crypto/cbc.c                                       |    1 +
- crypto/ccm.c                                       |    2 +
- crypto/cfb.c                                       |    2 +
- crypto/cipher.c                                    |    7 +-
- crypto/cmac.c                                      |    2 +
- crypto/ctr.c                                       |    2 +
- crypto/drbg.c                                      |    2 +
- crypto/ecb.c                                       |    1 +
- crypto/ecdh_helper.c                               |    3 +
- crypto/essiv.c                                     |    2 +
- crypto/fcrypt.c                                    |    1 -
- crypto/keywrap.c                                   |    2 +
- crypto/michael_mic.c                               |   31 +-
- crypto/ofb.c                                       |    2 +
- crypto/pcbc.c                                      |    2 +
- crypto/ripemd.h                                    |   14 -
- crypto/rmd128.c                                    |  323 ----
- crypto/rmd256.c                                    |  342 ----
- crypto/rmd320.c                                    |  391 -----
- crypto/salsa20_generic.c                           |  212 ---
- crypto/serpent_generic.c                           |  126 +-
- crypto/skcipher.c                                  |    8 +-
- crypto/tcrypt.c                                    |  113 +-
- crypto/testmgr.c                                   |   57 +-
- crypto/testmgr.h                                   | 1632 ------------------
- crypto/tgr192.c                                    |  682 --------
- crypto/twofish_generic.c                           |   11 +-
- crypto/vmac.c                                      |    2 +
- crypto/xcbc.c                                      |    2 +
- crypto/xor.c                                       |    2 +-
- crypto/xts.c                                       |    2 +
- drivers/char/hw_random/ingenic-trng.c              |    6 +-
- drivers/char/hw_random/iproc-rng200.c              |   38 +-
- drivers/char/hw_random/optee-rng.c                 |    3 +-
- drivers/char/hw_random/timeriomem-rng.c            |    5 +-
- drivers/crypto/Kconfig                             |   35 +-
- drivers/crypto/Makefile                            |    2 -
- drivers/crypto/allwinner/Kconfig                   |    9 +
- .../crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c    |  196 ++-
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c  |   52 +
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c  |    6 +
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c  |    6 +
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h       |    8 +
- drivers/crypto/bcm/cipher.c                        |    6 +-
- drivers/crypto/bcm/cipher.h                        |    4 +-
- drivers/crypto/bcm/spu.c                           |   20 +-
- drivers/crypto/bcm/spu2.c                          |    6 +-
- drivers/crypto/bcm/spu2.h                          |    8 +-
- drivers/crypto/bcm/spum.h                          |   22 +-
- drivers/crypto/bcm/util.c                          |    4 +-
- drivers/crypto/bcm/util.h                          |   26 +-
- drivers/crypto/caam/debugfs.c                      |    4 +-
- drivers/crypto/cavium/cpt/cptvf_main.c             |    8 +-
- drivers/crypto/ccree/cc_cipher.c                   |    2 +-
- drivers/crypto/ccree/cc_driver.h                   |    1 -
- drivers/crypto/geode-aes.c                         |    2 +
- drivers/crypto/hisilicon/hpre/hpre.h               |    8 +-
- drivers/crypto/hisilicon/hpre/hpre_main.c          |  169 +-
- drivers/crypto/hisilicon/qm.c                      |  193 ++-
- drivers/crypto/hisilicon/qm.h                      |   33 +-
- drivers/crypto/hisilicon/sec2/sec_main.c           |   42 +-
- drivers/crypto/hisilicon/zip/zip_main.c            |   23 +-
- drivers/crypto/inside-secure/safexcel.c            |    6 +-
- drivers/crypto/inside-secure/safexcel_hash.c       |    1 +
- drivers/crypto/keembay/Kconfig                     |   31 +
- drivers/crypto/keembay/Makefile                    |    3 +
- drivers/crypto/keembay/keembay-ocs-hcu-core.c      | 1264 ++++++++++++++
- drivers/crypto/keembay/ocs-aes.c                   |   10 +-
- drivers/crypto/keembay/ocs-hcu.c                   |  840 +++++++++
- drivers/crypto/keembay/ocs-hcu.h                   |  106 ++
- drivers/crypto/marvell/Kconfig                     |   15 +
- drivers/crypto/marvell/Makefile                    |    1 +
- drivers/crypto/marvell/cesa/cesa.c                 |   10 +-
- drivers/crypto/marvell/cesa/cesa.h                 |   31 +-
- drivers/crypto/marvell/cesa/cipher.c               |   34 +-
- drivers/crypto/marvell/cesa/hash.c                 |   59 +-
- drivers/crypto/marvell/cesa/tdma.c                 |   52 +-
- drivers/crypto/marvell/octeontx2/Makefile          |   10 +
- drivers/crypto/marvell/octeontx2/otx2_cpt_common.h |  137 ++
- .../crypto/marvell/octeontx2/otx2_cpt_hw_types.h   |  464 +++++
- .../marvell/octeontx2/otx2_cpt_mbox_common.c       |  202 +++
- drivers/crypto/marvell/octeontx2/otx2_cpt_reqmgr.h |  197 +++
- drivers/crypto/marvell/octeontx2/otx2_cptlf.c      |  428 +++++
- drivers/crypto/marvell/octeontx2/otx2_cptlf.h      |  353 ++++
- drivers/crypto/marvell/octeontx2/otx2_cptpf.h      |   61 +
- drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c |  713 ++++++++
- drivers/crypto/marvell/octeontx2/otx2_cptpf_mbox.c |  356 ++++
- .../crypto/marvell/octeontx2/otx2_cptpf_ucode.c    | 1415 +++++++++++++++
- .../crypto/marvell/octeontx2/otx2_cptpf_ucode.h    |  162 ++
- drivers/crypto/marvell/octeontx2/otx2_cptvf.h      |   29 +
- drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c | 1758 +++++++++++++++++++
- drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.h |  178 ++
- drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c |  410 +++++
- drivers/crypto/marvell/octeontx2/otx2_cptvf_mbox.c |  167 ++
- .../crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c   |  541 ++++++
- drivers/crypto/mediatek/Makefile                   |    3 -
- drivers/crypto/mediatek/mtk-aes.c                  | 1271 --------------
- drivers/crypto/mediatek/mtk-platform.c             |  586 -------
- drivers/crypto/mediatek/mtk-platform.h             |  231 ---
- drivers/crypto/mediatek/mtk-regs.h                 |  190 --
- drivers/crypto/mediatek/mtk-sha.c                  | 1353 ---------------
- drivers/crypto/picoxcell_crypto.c                  | 1807 --------------------
- drivers/crypto/picoxcell_crypto_regs.h             |  115 --
- drivers/crypto/qat/Kconfig                         |    2 +-
- drivers/crypto/qat/qat_4xxx/adf_4xxx_hw_data.c     |   14 +-
- drivers/crypto/qat/qat_c3xxx/adf_c3xxx_hw_data.c   |   17 +-
- drivers/crypto/qat/qat_c62x/adf_c62x_hw_data.c     |   27 +-
- drivers/crypto/qat/qat_common/adf_accel_devices.h  |    3 +-
- drivers/crypto/qat/qat_common/adf_ctl_drv.c        |    1 +
- drivers/crypto/qat/qat_common/adf_hw_arbiter.c     |    8 +-
- drivers/crypto/qat/qat_common/adf_transport.c      |    2 +
- .../crypto/qat/qat_common/adf_transport_debug.c    |    4 +-
- drivers/crypto/qat/qat_common/qat_algs.c           |    1 +
- drivers/crypto/qat/qat_common/qat_asym_algs.c      |   12 +-
- .../crypto/qat/qat_dh895xcc/adf_dh895xcc_hw_data.c |   28 +-
- drivers/crypto/sahara.c                            |    7 -
- drivers/crypto/stm32/stm32-cryp.c                  |    2 +-
- drivers/crypto/talitos.c                           |   50 +-
- drivers/crypto/talitos.h                           |    1 +
- drivers/crypto/vmx/aes.c                           |    1 +
- drivers/crypto/vmx/aesp8-ppc.h                     |    6 +
- drivers/crypto/vmx/vmx.c                           |    7 +-
- drivers/net/Kconfig                                |    1 +
- drivers/net/ethernet/chelsio/inline_crypto/Kconfig |    1 +
- .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c      |   19 +-
- include/crypto/algapi.h                            |   39 -
- include/crypto/blake2b.h                           |   67 +
- include/crypto/blake2s.h                           |   63 +-
- include/crypto/hash.h                              |    8 +-
- include/crypto/internal/blake2b.h                  |  115 ++
- include/crypto/internal/blake2s.h                  |  109 +-
- include/crypto/internal/cipher.h                   |  218 +++
- include/crypto/internal/skcipher.h                 |    2 +-
- include/linux/crypto.h                             |  172 +-
- lib/crypto/blake2s.c                               |   48 +-
- lib/crypto/chacha20poly1305.c                      |    5 +
- 208 files changed, 13977 insertions(+), 15312 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/crypto/intel,keembay-ocs-hcu.yaml
- create mode 100644 arch/arm/crypto/blake2b-neon-core.S
- create mode 100644 arch/arm/crypto/blake2b-neon-glue.c
- create mode 100644 arch/arm/crypto/blake2s-core.S
- create mode 100644 arch/arm/crypto/blake2s-glue.c
- rename arch/x86/{include/asm => }/crypto/camellia.h (69%)
- create mode 100644 arch/x86/crypto/ecb_cbc_helpers.h
- delete mode 100644 arch/x86/crypto/glue_helper.c
- create mode 100644 arch/x86/crypto/serpent-avx.h
- rename arch/x86/{include/asm => }/crypto/serpent-sse2.h (100%)
- rename arch/x86/{include/asm => }/crypto/twofish.h (80%)
- delete mode 100644 arch/x86/include/asm/crypto/glue_helper.h
- delete mode 100644 arch/x86/include/asm/crypto/serpent-avx.h
- delete mode 100644 crypto/rmd128.c
- delete mode 100644 crypto/rmd256.c
- delete mode 100644 crypto/rmd320.c
- delete mode 100644 crypto/salsa20_generic.c
- delete mode 100644 crypto/tgr192.c
- create mode 100644 drivers/crypto/keembay/keembay-ocs-hcu-core.c
- create mode 100644 drivers/crypto/keembay/ocs-hcu.c
- create mode 100644 drivers/crypto/keembay/ocs-hcu.h
- create mode 100644 drivers/crypto/marvell/octeontx2/Makefile
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cpt_common.h
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cpt_hw_types.h
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cpt_mbox_common.c
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cpt_reqmgr.h
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptlf.c
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptlf.h
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptpf.h
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptpf_mbox.c
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.h
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptvf.h
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.h
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptvf_mbox.c
- create mode 100644 drivers/crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c
- delete mode 100644 drivers/crypto/mediatek/Makefile
- delete mode 100644 drivers/crypto/mediatek/mtk-aes.c
- delete mode 100644 drivers/crypto/mediatek/mtk-platform.c
- delete mode 100644 drivers/crypto/mediatek/mtk-platform.h
- delete mode 100644 drivers/crypto/mediatek/mtk-regs.h
- delete mode 100644 drivers/crypto/mediatek/mtk-sha.c
- delete mode 100644 drivers/crypto/picoxcell_crypto.c
- delete mode 100644 drivers/crypto/picoxcell_crypto_regs.h
- create mode 100644 include/crypto/blake2b.h
- create mode 100644 include/crypto/internal/blake2b.h
- create mode 100644 include/crypto/internal/cipher.h
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+UEsDBBQABgAIAAAAIQAJJIeCgQEAAI4FAAATAAgCW0NvbnRlbnRfVHlwZXNdLnhtbCCiBAIooAAC
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC0
+lE1Pg0AQhu8m/geyVwPbejDGlPag9ahNrPG8LkPZyH5kZ/v17x1KS6qhpVq9kMAy7/vMCzOD0UqX
+0QI8KmtS1k96LAIjbabMLGWv08f4lkUYhMlEaQ2kbA3IRsPLi8F07QAjqjaYsiIEd8c5ygK0wMQ6
+MHSSW69FoFs/407IDzEDft3r3XBpTQAT4lBpsOHgAXIxL0M0XtHjmsRDiSy6r1+svFImnCuVFIFI
++cJk31zirUNClZt3sFAOrwiD8VaH6uSwwbbumaLxKoNoInx4Epow+NL6jGdWzjX1kByXaeG0ea4k
+NPWVmvNWAiJlrsukOdFCmR3/QQ4M6xLw7ylq3RPt31QoxnkOkj52dx4a46rppLbYq+12gxAopFNM
+vv6CcVfouFXuRFjC+8u/UeyJd4LkNBpT8V7CCYn/MIxGuhMi0LwD31z7Z3NsZI5Z0mRMvHVI+8P/
+ou3dgqiqYxo5Bz4oaFZE24g1jrR7zu4Pqu2WQdbizTfbdPgJAAD//wMAUEsDBBQABgAIAAAAIQAe
+kRq38wAAAE4CAAALAAgCX3JlbHMvLnJlbHMgogQCKKAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjJLbSgNBDIbvBd9hyH032woi0tneSKF3
+IusDhJnsAXcOzKTavr2jILpQ217m9OfLT9abg5vUO6c8Bq9hWdWg2JtgR99reG23iwdQWchbmoJn
+DUfOsGlub9YvPJGUoTyMMaui4rOGQSQ+ImYzsKNchci+VLqQHEkJU4+RzBv1jKu6vsf0VwOamaba
+WQ1pZ+9AtcdYNl/WDl03Gn4KZu/Yy4kVyAdhb9kuYipsScZyjWop9SwabDDPJZ2RYqwKNuBpotX1
+RP9fi46FLAmhCYnP83x1nANaXg902aJ5x687HyFZLBZ9e/tDg7MvaD4BAAD//wMAUEsDBBQABgAI
+AAAAIQB8O5c5IgEAALkDAAAcAAgBd29yZC9fcmVscy9kb2N1bWVudC54bWwucmVscyCiBAEooAAB
+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
+--000000000000cf9b9805bb577d2c--
