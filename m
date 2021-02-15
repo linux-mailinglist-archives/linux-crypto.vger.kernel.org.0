@@ -2,180 +2,240 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A461831BF45
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Feb 2021 17:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5582D31C186
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Feb 2021 19:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhBOQ3L (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Feb 2021 11:29:11 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12570 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230256AbhBOQ0k (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:26:40 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11FG3URf013038;
-        Mon, 15 Feb 2021 11:25:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=VznWH/st8iEX8OCNg2iZEx5HK0tTns1td9csB+iRJEA=;
- b=Oa3dab+vW7b9UAYaEq0hwtgeljHhE9i1LV7apBvFxwG4RGpQlj8jvCfPjQx28TwlakeX
- LUUaW5gfnPDNiV+5uBs/Cgxw/G/UiCRUrkbEZLase4pUmNXS8255eoa8raHBCZ+CK4uy
- mbrz1bZs+0J/J2skYAR70qgL8bkNbZwZkQO39EhNdxF/Hk/HJmOQ5J3/8H/JSULNWNge
- mHlC4kH6RKCV6Yv//XjI3XgCZjvGdeFqSzBtyc9FAo8J4pZwG7mui/wZJRhrGFnWrYMN
- WNjq8k/hGT1bcD+MMDmtNDbJOFOm/KWC7oT9+IZoVVA6ve+4Ug5m44GVG2MifI3X+bnK fw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36qutyscaa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 11:25:52 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11FG4ach018365;
-        Mon, 15 Feb 2021 11:25:51 -0500
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36qutysc9t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 11:25:51 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11FGM5wB031920;
-        Mon, 15 Feb 2021 16:25:50 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma02wdc.us.ibm.com with ESMTP id 36p6d908n5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 16:25:50 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11FGPnsT13238902
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 16:25:49 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 607D86A047;
-        Mon, 15 Feb 2021 16:25:49 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 82A0B6A054;
-        Mon, 15 Feb 2021 16:25:48 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 15 Feb 2021 16:25:48 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.ibm.com>
-To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com, zohar@linux.ibm.com
-Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH v8 4/4] ima: Support EC keys for signature verification
-Date:   Mon, 15 Feb 2021 11:25:32 -0500
-Message-Id: <20210215162532.1077098-5-stefanb@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210215162532.1077098-1-stefanb@linux.ibm.com>
-References: <20210215162532.1077098-1-stefanb@linux.ibm.com>
+        id S229933AbhBOSbI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Feb 2021 13:31:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229925AbhBOSbI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 15 Feb 2021 13:31:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAEDC64DFF;
+        Mon, 15 Feb 2021 18:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613413826;
+        bh=x8OxQwBZU/RMhOy2ja6Kw/wOYNKkNQjVc5rU0UqZG+M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Gs5LrN00HgTFTez20C8HCFDIK/PAum6DpmR/YHl05Wa2GOB41YJFnP09BAHsDkPz7
+         Uc7sHhE9jMvx5JtvXm6RLg8xKhlQV/KpJeIpId3bfS5ruhoN4qFhDWwzQ3DRhi3sDA
+         YK5iiEUZeJQLpmsI7FISl1Y6ij1C/zo1xOO9tHD2i4dKrduwIRnCHCaxnXYcwpTBRD
+         0FKrGvDWSbszos1oUwGThI9YeWlGJMFGHTEYTWd8kcg3ES+nqa9oHK22KVeeCyt55g
+         B5/AJjhgcQ2q2i41IFdRAGeibYiXN5sHlS3hPwHAZ020kYjrArzXma8LL5pyjBG1yu
+         4OiMdci8657AA==
+Received: by mail-oi1-f170.google.com with SMTP id u66so8647037oig.9;
+        Mon, 15 Feb 2021 10:30:26 -0800 (PST)
+X-Gm-Message-State: AOAM531I21qfaZBkxqsLLPd2iN23xCFeKmHGmhN5pv+mr3SKyML79MsW
+        jyRE8Xf0lKCNso4IOKguxAq3oLtpS16FC3BqvZQ=
+X-Google-Smtp-Source: ABdhPJw76QW9zNZ/GOns4eLwvlpysOkkbtSN4hGo0lfMTUYwSaAKviPX1TneTGOiNC1a7zI/M5jdoD82HEOl6nPln5c=
+X-Received: by 2002:aca:b6c1:: with SMTP id g184mr142752oif.47.1613413825941;
+ Mon, 15 Feb 2021 10:30:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-15_11:2021-02-12,2021-02-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 clxscore=1015 suspectscore=0 malwarescore=0 mlxscore=0
- spamscore=0 phishscore=0 impostorscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102150124
+References: <20201218170106.23280-1-ardb@kernel.org> <20201218170106.23280-5-ardb@kernel.org>
+ <20210119160045.GA1684@arm.com> <CAMj1kXGSB8AJRhftUxabQhaggWHukiVwrSkUR2i=XQcZ3dqynQ@mail.gmail.com>
+ <20210120154422.GB1684@arm.com>
+In-Reply-To: <20210120154422.GB1684@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 15 Feb 2021 19:30:14 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEO1+JNQH5R-SAx73TWcuOA4ZtejobhO=9B5o---h5oVg@mail.gmail.com>
+Message-ID: <CAMj1kXEO1+JNQH5R-SAx73TWcuOA4ZtejobhO=9B5o---h5oVg@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/5] arm64: fpsimd: run kernel mode NEON with softirqs disabled
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add support for IMA signature verification for EC keys. Since SHA type
-of hashes can be used by RSA and ECDSA signature schemes we need to
-look at the key and derive from the key which signature scheme to use.
-Since this can be applied to all types of keys, we change the selection
-of the encoding type to be driven by the key's signature scheme rather
-than by the hash type.
+On Wed, 20 Jan 2021 at 16:44, Dave Martin <Dave.Martin@arm.com> wrote:
+>
+> On Tue, Jan 19, 2021 at 05:29:05PM +0100, Ard Biesheuvel wrote:
+> > On Tue, 19 Jan 2021 at 17:01, Dave Martin <Dave.Martin@arm.com> wrote:
+> > >
+> > > On Fri, Dec 18, 2020 at 06:01:05PM +0100, Ard Biesheuvel wrote:
+> > > > Kernel mode NEON can be used in task or softirq context, but only in
+> > > > a non-nesting manner, i.e., softirq context is only permitted if the
+> > > > interrupt was not taken at a point where the kernel was using the NEON
+> > > > in task context.
+> > > >
+> > > > This means all users of kernel mode NEON have to be aware of this
+> > > > limitation, and either need to provide scalar fallbacks that may be much
+> > > > slower (up to 20x for AES instructions) and potentially less safe, or
+> > > > use an asynchronous interface that defers processing to a later time
+> > > > when the NEON is guaranteed to be available.
+> > > >
+> > > > Given that grabbing and releasing the NEON is cheap, we can relax this
+> > > > restriction, by increasing the granularity of kernel mode NEON code, and
+> > > > always disabling softirq processing while the NEON is being used in task
+> > > > context.
+> > > >
+> > > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > >
+> > > Sorry for the slow reply on this...  it looks reasonable, but I have a
+> > > few comments below.
+> > >
+> >
+> > No worries - thanks for taking a look.
+> >
+> > > > ---
+> > > >  arch/arm64/include/asm/assembler.h | 19 +++++++++++++------
+> > > >  arch/arm64/kernel/asm-offsets.c    |  2 ++
+> > > >  arch/arm64/kernel/fpsimd.c         |  4 ++--
+> > > >  3 files changed, 17 insertions(+), 8 deletions(-)
+> > > >
+> > > > diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+> > > > index ddbe6bf00e33..74ce46ed55ac 100644
+> > > > --- a/arch/arm64/include/asm/assembler.h
+> > > > +++ b/arch/arm64/include/asm/assembler.h
+> > > > @@ -15,6 +15,7 @@
+> > > >  #include <asm-generic/export.h>
+> > > >
+> > > >  #include <asm/asm-offsets.h>
+> > > > +#include <asm/alternative.h>
+> > > >  #include <asm/cpufeature.h>
+> > > >  #include <asm/cputype.h>
+> > > >  #include <asm/debug-monitors.h>
+> > > > @@ -717,17 +718,23 @@ USER(\label, ic ivau, \tmp2)                    // invalidate I line PoU
+> > > >       .endm
+> > > >
+> > > >       .macro          if_will_cond_yield_neon
+> > > > -#ifdef CONFIG_PREEMPTION
+> > > >       get_current_task        x0
+> > > >       ldr             x0, [x0, #TSK_TI_PREEMPT]
+> > > > -     sub             x0, x0, #PREEMPT_DISABLE_OFFSET
+> > > > -     cbz             x0, .Lyield_\@
+> > > > +#ifdef CONFIG_PREEMPTION
+> > > > +     cmp             x0, #PREEMPT_DISABLE_OFFSET
+> > > > +     beq             .Lyield_\@      // yield on need_resched in task context
+> > > > +#endif
+> > > > +     /* never yield while serving a softirq */
+> > > > +     tbnz            x0, #SOFTIRQ_SHIFT, .Lnoyield_\@
+> > >
+> > > Can you explain the rationale here?
+> > >
+> > > Using if_will_cond_yield_neon suggests the algo thinks it may run for
+> > > too long the stall preemption until completion, but we happily stall
+> > > preemption _and_ softirqs here.
+> > >
+> > > Is it actually a bug to use the NEON conditional yield helpers in
+> > > softirq context?
+> > >
+> >
+> > No, it is not. But calling kernel_neon_end() from softirq context will
+> > not cause it to finish any faster, so there is really no point in
+> > doing so.
+> >
+> > > Ideally, if processing in softirq context takes an unreasonable about of
+> > > time, the work would be handed off to an asynchronous worker, but that
+> > > does seem to conflict rather with the purpose of this series...
+> > >
+> >
+> > Agreed, but this is not something we can police at this level. If the
+> > caller does an unreasonable amount of work from a softirq, no amount
+> > of yielding is going to make a difference.
+>
+> Ack, just wanted to make sure I wasn't missing something.
+>
+> Anyone writing softirq code can starve preemption, so I agree that we
+> should trust people to know what they're doing.
+>
+>
+> > > > +
+> > > > +     adr_l           x0, irq_stat + IRQ_CPUSTAT_SOFTIRQ_PENDING
+> > > > +     this_cpu_offset x1
+> > > > +     ldr             w0, [x0, x1]
+> > > > +     cbnz            w0, .Lyield_\@  // yield on pending softirq in task context
+> > > > +.Lnoyield_\@:
+> > > >       /* fall through to endif_yield_neon */
+> > > >       .subsection     1
+> > > >  .Lyield_\@ :
+> > > > -#else
+> > > > -     .section        ".discard.cond_yield_neon", "ax"
+> > > > -#endif
+> > > >       .endm
+> > > >
+> > > >       .macro          do_cond_yield_neon
+> > > > diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+> > > > index 7d32fc959b1a..34ef70877de4 100644
+> > > > --- a/arch/arm64/kernel/asm-offsets.c
+> > > > +++ b/arch/arm64/kernel/asm-offsets.c
+> > > > @@ -93,6 +93,8 @@ int main(void)
+> > > >    DEFINE(DMA_FROM_DEVICE,    DMA_FROM_DEVICE);
+> > > >    BLANK();
+> > > >    DEFINE(PREEMPT_DISABLE_OFFSET, PREEMPT_DISABLE_OFFSET);
+> > > > +  DEFINE(SOFTIRQ_SHIFT, SOFTIRQ_SHIFT);
+> > > > +  DEFINE(IRQ_CPUSTAT_SOFTIRQ_PENDING, offsetof(irq_cpustat_t, __softirq_pending));
+> > > >    BLANK();
+> > > >    DEFINE(CPU_BOOT_STACK,     offsetof(struct secondary_data, stack));
+> > > >    DEFINE(CPU_BOOT_TASK,              offsetof(struct secondary_data, task));
+> > > > diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
+> > > > index 062b21f30f94..823e3a8a8871 100644
+> > > > --- a/arch/arm64/kernel/fpsimd.c
+> > > > +++ b/arch/arm64/kernel/fpsimd.c
+> > > > @@ -180,7 +180,7 @@ static void __get_cpu_fpsimd_context(void)
+> > > >   */
+> > > >  static void get_cpu_fpsimd_context(void)
+> > > >  {
+> > > > -     preempt_disable();
+> > > > +     local_bh_disable();
+> > > >       __get_cpu_fpsimd_context();
+> > > >  }
+> > > >
+> > > > @@ -201,7 +201,7 @@ static void __put_cpu_fpsimd_context(void)
+> > > >  static void put_cpu_fpsimd_context(void)
+> > > >  {
+> > > >       __put_cpu_fpsimd_context();
+> > > > -     preempt_enable();
+> > > > +     local_bh_enable();
+> > > >  }
+> > > >
+> > > >  static bool have_cpu_fpsimd_context(void)
+> > >
+> > > I was concerned about catching all the relevant preempt_disable()s, but
+> > > it had slipped my memory that Julien had factored these into one place.
+> > >
+> > > I can't see off the top of my head any reason why this shouldn't work.
+> > >
+> >
+> > Thanks.
+> >
+> > >
+> > > In threory, switching to local_bh_enable() here will add a check for
+> > > pending softirqs onto context handling fast paths.  I haven't dug into
+> > > how that works, so perhaps this is trivial on top of the preemption
+> > > check in preempt_enable().  Do you see any difference in hackbench or
+> > > similar benchmarks?
+> > >
+> >
+> > I haven't tried, tbh. But by context handling fast paths, you mean
+> > managing the FP/SIMD state at context switch time, right? Checking for
+> > pending softirqs amounts to a single per-CPU load plus compare, so
+> > that should be negligible AFAICT. Obviously, actually handling the
+>
+> Yes.  I've tended to assume, rather than prove, that this kind of thing
+> is negligible -- so I confess I had not attempted to measure these
+> effects when writing the original code.
+>
+> > softirq may take additional time, but that penalty has to be taken
+> > somewhere - I don't see how that would create extra work that we
+> > wouldn't have to do otherwise.
+> >
+> > I'll do some experiments with hackbench once I get back to this series.
+>
+> That sounds fine.
+>
+> Probably you won't find a significant difference anyway.
+>
 
-Cc: Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Cc: linux-integrity@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>
-Cc: keyrings@vger.kernel.org
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Reviewed-by: Vitaly Chikunov <vt@altlinux.org>
-Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Acked-by: Mimi Zohar <zohar@linux.ibm.com>
-
----
-v7->v8:
-  - use strncmp to check for 'ecdsa-' to match 'ecdsa-nist-p192' and
-    'ecdsa-nist-p256' key types; previously they were just 'ecdsa'
----
- include/keys/asymmetric-type.h         |  6 ++++++
- security/integrity/digsig_asymmetric.c | 30 ++++++++++++--------------
- 2 files changed, 20 insertions(+), 16 deletions(-)
-
-diff --git a/include/keys/asymmetric-type.h b/include/keys/asymmetric-type.h
-index a29d3ff2e7e8..c432fdb8547f 100644
---- a/include/keys/asymmetric-type.h
-+++ b/include/keys/asymmetric-type.h
-@@ -72,6 +72,12 @@ const struct asymmetric_key_ids *asymmetric_key_ids(const struct key *key)
- 	return key->payload.data[asym_key_ids];
- }
- 
-+static inline
-+const struct public_key *asymmetric_key_public_key(const struct key *key)
-+{
-+	return key->payload.data[asym_crypto];
-+}
-+
- extern struct key *find_asymmetric_key(struct key *keyring,
- 				       const struct asymmetric_key_id *id_0,
- 				       const struct asymmetric_key_id *id_1,
-diff --git a/security/integrity/digsig_asymmetric.c b/security/integrity/digsig_asymmetric.c
-index a662024b4c70..23240d793b07 100644
---- a/security/integrity/digsig_asymmetric.c
-+++ b/security/integrity/digsig_asymmetric.c
-@@ -84,6 +84,7 @@ int asymmetric_verify(struct key *keyring, const char *sig,
- {
- 	struct public_key_signature pks;
- 	struct signature_v2_hdr *hdr = (struct signature_v2_hdr *)sig;
-+	const struct public_key *pk;
- 	struct key *key;
- 	int ret;
- 
-@@ -105,23 +106,20 @@ int asymmetric_verify(struct key *keyring, const char *sig,
- 	memset(&pks, 0, sizeof(pks));
- 
- 	pks.hash_algo = hash_algo_name[hdr->hash_algo];
--	switch (hdr->hash_algo) {
--	case HASH_ALGO_STREEBOG_256:
--	case HASH_ALGO_STREEBOG_512:
--		/* EC-RDSA and Streebog should go together. */
--		pks.pkey_algo = "ecrdsa";
--		pks.encoding = "raw";
--		break;
--	case HASH_ALGO_SM3_256:
--		/* SM2 and SM3 should go together. */
--		pks.pkey_algo = "sm2";
--		pks.encoding = "raw";
--		break;
--	default:
--		pks.pkey_algo = "rsa";
-+
-+	pk = asymmetric_key_public_key(key);
-+	pks.pkey_algo = pk->pkey_algo;
-+	if (!strcmp(pk->pkey_algo, "rsa"))
- 		pks.encoding = "pkcs1";
--		break;
--	}
-+	else if (!strncmp(pk->pkey_algo, "ecdsa-", 6))
-+		/* edcsa-nist-p192 etc. */
-+		pks.encoding = "x962";
-+	else if (!strcmp(pk->pkey_algo, "ecrdsa") ||
-+		   !strcmp(pk->pkey_algo, "sm2"))
-+		pks.encoding = "raw";
-+	else
-+		return -ENOPKG;
-+
- 	pks.digest = (u8 *)data;
- 	pks.digest_size = datalen;
- 	pks.s = hdr->sig;
--- 
-2.29.2
-
+Finally got around to trying this: as expected, I don't see any
+difference at all between the two versions (tested on TX2)
