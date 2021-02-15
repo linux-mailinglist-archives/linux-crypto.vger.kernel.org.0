@@ -2,141 +2,184 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC4231B9D6
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Feb 2021 13:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5703E31BF3E
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Feb 2021 17:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhBOMx5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Feb 2021 07:53:57 -0500
-Received: from mail-eopbgr20128.outbound.protection.outlook.com ([40.107.2.128]:52325
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230456AbhBOMxb (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:53:31 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F6U5t/eIQfK0S5wwAJpuyThyFK/vsjy2sRBxW9ui4PjaciTvzKtezGdP1Al4p26ZFj1HuDY9w6XQX/8uEESG+FkSJexPvlIZM3e9PvgS67WrlOYcbKluqyq44HfuKl2UWpypGr9Ihfe4EXXhxlMCedtu1qmeNCWjXEunnCV/DZ6Ue+j3vgJkgyEUbuAaxw08LnBL4QREsmAQLItsNv3r/2fdJjqZ2q7w+3NI+SIWd66K+my6H/Rb4nljtf6F0a6nLOedC/dwK2/UPvKVqNLz8quXtcehmyJrYuwMzrxhM9FfVpCoZ5ke+0XnmCyEdhv0N7uj+zMD3Z2BQBaAj2UweA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/upXFrg4tWd+jfdGiQrzMXYiaGC68t2I2alvbkAl31A=;
- b=T5qkpl4iujfXRG3AE2gdait74lu69vu0H7ISnQNDPt5ibDU9Zi4oQwYIlvJSowUqpt7VjLdx76cyTOZKHW/bfYsXR6j8xwhqp+Li0iNesbJNs+JEpSqMA+o3wo51/Lm4DevdSnCyktogAolkni4eK/Wzv9no8sAZdpp3dyZgI0di66POEB+fd55xb/yEi/BMxijDVLvUGDVhePY6nWNhu7iE4TyTLan+2T/XzvQe8Yy4xeQT2eOXowTZh/I0Ml9idWXlSFLeG5blbv1A75F30Lgln8Nd6ThOZlPhY7xps1srGdkU5pykUv7dkOpFT4A52MNUwQ7osf3XquPTN7Uiog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hitachi-powergrids.com; dmarc=pass action=none
- header.from=hitachi-powergrids.com; dkim=pass
- header.d=hitachi-powergrids.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=hitachi-powergrids.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/upXFrg4tWd+jfdGiQrzMXYiaGC68t2I2alvbkAl31A=;
- b=icaVLfmnMdZSggoVO0L/SOY+ecXWQOBNr0eOR4NAW2NkNm2GMoLoYujBCDQenjZGd0TUazBHilQKtLc9HJZgxwl7P2MtJ6aXJ38plPH42C9oP68xg5H/2n6aHs/jkk1hw6GFq4M2MW4N/Th413wfA5/MoMdYhgQLhA6dUP84LMA=
-Received: from AM6PR06MB5400.eurprd06.prod.outlook.com (2603:10a6:20b:85::31)
- by AM6PR06MB5495.eurprd06.prod.outlook.com (2603:10a6:20b:99::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Mon, 15 Feb
- 2021 12:52:41 +0000
-Received: from AM6PR06MB5400.eurprd06.prod.outlook.com
- ([fe80::dd3e:69ec:a4e4:5c7d]) by AM6PR06MB5400.eurprd06.prod.outlook.com
- ([fe80::dd3e:69ec:a4e4:5c7d%7]) with mapi id 15.20.3846.039; Mon, 15 Feb 2021
- 12:52:41 +0000
-From:   Luca Dariz <luca.dariz@hitachi-powergrids.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Matt Mackall <mpm@selenic.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Holger Brunck <holger.brunck@hitachi-powergrids.com>,
-        Valentin Longchamp <valentin.longchamp@hitachi-powergrids.com>
-Subject: RE: [PATCH v2] hwrng: fix khwrng lifecycle
-Thread-Topic: [PATCH v2] hwrng: fix khwrng lifecycle
-Thread-Index: AQHW05qFV0ZE+WiQXUGvKi1k/RGcnaoU8hoAgERxIBA=
-Date:   Mon, 15 Feb 2021 12:52:41 +0000
-Message-ID: <AM6PR06MB5400DAFE0551F1D468B728FBAB889@AM6PR06MB5400.eurprd06.prod.outlook.com>
-References: <20201216105906.6607-1-luca.dariz@hitachi-powergrids.com>
- <20210102211720.GA1788@gondor.apana.org.au>
-In-Reply-To: <20210102211720.GA1788@gondor.apana.org.au>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-processedbytemplafy: true
-authentication-results: gondor.apana.org.au; dkim=none (message not signed)
- header.d=none;gondor.apana.org.au; dmarc=none action=none
- header.from=hitachi-powergrids.com;
-x-originating-ip: [31.10.139.103]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2f25386e-cb7f-4209-a660-08d8d1b094f1
-x-ms-traffictypediagnostic: AM6PR06MB5495:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR06MB54958AFCDEC22092BF45F562AB889@AM6PR06MB5495.eurprd06.prod.outlook.com>
-x-abb-o365-outbound: ABBOUTBOUND1
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yOKLZ8jkYgdE2CvZVN3MKVV57/AOQpM7GhG4rPI/gB2ODqYZozUxPE2j1Dry72MdyPFr8NpQqgN2DLbAOxRvYvzCnXPhsykPCamaHSVuqpLLQEof+R/7vzL5Ptv8UF1p+7jju7ysDfmT60BN6tXHg1kZN1ZNhaCy+3d8/ntEukMlXR2UcGM5AOvjMs3o9DFNiNvoLIdCgYrW9ntoDU/cjMv9TtADKiJ96GTy+hHcvuEW5ynzwZrrND9hIYHZzWcAxnEhFIpTaFi9SRYNST+tHgYyeuEH9yLlwgngo5bLcrJusyVr3tjj1EqT4TZinDFiqG0w/OXSgoJIIs35cbyU5c6ZE+HBVH+cbRK78almN0M7MY3WJVqlLa1NKHlU/vtTWFgc+8rMafly0WT2kZJn0yhA9AyC9Fh/06NHGiW4YRYKomR5nOFGSm66SarGshe3IYe2C2MElAQawugdu2m6FJw2B9eg9ytogy9lEHpzMFsNPCyO6IZFdtrwGEDB/GWjOhBYKG67YLF2QwRdmf2CQRS4VfTgEXbUWVEc9rlYUQ6zdj1iwk0yl8F57LeLHryc
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR06MB5400.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(39860400002)(396003)(6506007)(55016002)(71200400001)(52536014)(8676002)(2906002)(4744005)(7696005)(8936002)(44832011)(5660300002)(186003)(26005)(86362001)(4326008)(316002)(9686003)(33656002)(66556008)(66446008)(66946007)(64756008)(66476007)(107886003)(6916009)(478600001)(76116006)(54906003)(40753002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Dt3yDIzTdlw06u9AQAhipFYytj4qQVpHQa9FUM77l8Fcgfcj4K4PM9aTNaDD?=
- =?us-ascii?Q?SSxFeuvhJTqiTtlpgqPbja6rafuDc+bzcjh4URDpEHMmZhDDNy3yUiogvrMV?=
- =?us-ascii?Q?zwBXd46IujBanNaFoaGxri9+J/PY0uGDpAV7lr7er19WLlNB+x+f+gcOfYUL?=
- =?us-ascii?Q?0CpO1bskJ7ZCvCkIfrgtpOgfdVkMWbupfrGx28Sd0Jfb/FhRs2TAD8gsnEgk?=
- =?us-ascii?Q?W92ovFhWQVMiOnaBlzAcrYnPVCMwZccqy19+aNfejdIPaNPlsVzjgUewMuwE?=
- =?us-ascii?Q?Jx0Nv88oy4BwufV97w/Ubt5DiLORuqUXxVT6Kka1rqw+oSSEBe1gBSabeSXB?=
- =?us-ascii?Q?9g5kmCNn3dkIDTPWidoZxFeTmZLL64v5BD5DxvpHqSn8SMt6zGLLRKTguAPn?=
- =?us-ascii?Q?jIEyKuIe318ewZYrikjR2zwlkqcm4g2cIA7/emWUuWKbtf6drMbeMv2tJcwg?=
- =?us-ascii?Q?NyZC/xwwV9urCMmM0oVrE+j+0Z9Xetg2+Ks6BNymkdg2WqLIGyxDZ2xLRY76?=
- =?us-ascii?Q?NGGiJFW2YtjvWU+CWZx9PIg5pkLUnB2mmM7OHVYB1QswmbSjPdmqxvfd0TPL?=
- =?us-ascii?Q?GRZHk4Tq5peG6z57nOcVH9FsAjPiDNwAHu8eYbXUrUXj0UDyfWRQ1JI+XnUK?=
- =?us-ascii?Q?m8zvWsqPWsasVjH5XbyxQQGHLXQmsfz7Gk/QyuTA71PuxAyHcFFtWIKWp8Yz?=
- =?us-ascii?Q?uP7xshRqNA/NIduPk9LhpbgZAckSCa8bsFUwnaSaOtp6G+JkCphkhxIkzv1X?=
- =?us-ascii?Q?NuquPR5MUOWVxh6P6HHdNhY3hRUAftHHFzrQkmp5lV7lQwgIM8tqxp7tPgsl?=
- =?us-ascii?Q?Tlve6FhgIUdZU3ah0cnf82698CUrNeZO2cg9akBT7pIUsEqHEo+INsI6IOOt?=
- =?us-ascii?Q?ZsiMBaCTD2o5O82juhQIRJDHmq4e+d+VqHRLRFqlvP7JeMw+vpvDP48/QGX8?=
- =?us-ascii?Q?knlNuzOoY8/Eft4HHBtFcCcZpCGo6kZrsWtLjpiWj0PN883KZgIRVibDtrEv?=
- =?us-ascii?Q?PE0h5LjODj9Qd/5Q6CjMv08dL1UM09df8wEL9sXe6slpSsKKDv/Eha8JLFMi?=
- =?us-ascii?Q?K/Wg21z9hjBQdtSIQXYeNzhjd8gV/+i13npN6oGZ4/nES18Ta+XNMt5X0jJ6?=
- =?us-ascii?Q?2UpsBqjETeDAhgOcXe8nAhOVpKnvSR7ALSkKG1I5WMY0PrHrOKKIILRj4U4G?=
- =?us-ascii?Q?8R2yKcQFGJFtZkVhWYx/eIQ5DgveV2i+drlWm2OELOKmE0mQyZeWhK3ORveI?=
- =?us-ascii?Q?P7NuFppybSym2F1Cclwa/l3XjClO4/9R9gZZj7MwU65X38Xu3HaqETnVqQbJ?=
- =?us-ascii?Q?n1qyTBLBGwpa0XUjQb4vKZ22?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231205AbhBOQ3F (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Feb 2021 11:29:05 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21334 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231247AbhBOQ0j (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 15 Feb 2021 11:26:39 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11FG1x5u091416;
+        Mon, 15 Feb 2021 11:25:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=p16JBaGq+vM9x1xiP2OOXyFJ46tBXYMEeSXZL2TEx/I=;
+ b=CzcWJdFpr+XpbiBYf6T+7DDHKwmetzuxF5xOcmKGoArq/ejqxJTJiCtiNF1oTltRrEpv
+ Dl/GOpX2pkIRJ4H8d9T1Pxaxe4BAArNdJkPu+CrbkqNgIbBzawhkmhfoxxRR4W7B5iZl
+ 3G7y/YOFNKIIQHaE+E89wvEngM34uR4ele9V6TjRMMCtjFRpTHtIEOHSFZPR/kvhgytY
+ faF0HaSjr8t3MfTzpGqidNTcVerJz/oYjEeoBYyD4+tai4r/mLkEfzHFn7qxETPv1M/o
+ BE9DIYm85/NtU5hz3/ZAlMaHKe9pREzWxe9IM0R9e5SWT8cirNhN1KDdnf0Z3RZ+6V3K cA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36qt30x00c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 11:25:48 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11FG2IiE092778;
+        Mon, 15 Feb 2021 11:25:48 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36qt30wyyn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 11:25:48 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11FGNSmt000623;
+        Mon, 15 Feb 2021 16:25:47 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma03dal.us.ibm.com with ESMTP id 36p6d8v939-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 16:25:47 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11FGPjJV32047564
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Feb 2021 16:25:45 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 937EE6A04D;
+        Mon, 15 Feb 2021 16:25:45 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DC2D86A047;
+        Mon, 15 Feb 2021 16:25:44 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 15 Feb 2021 16:25:44 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.ibm.com>
+To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v8 0/4] Add support for x509 certs with NIST p256 and p192 keys
+Date:   Mon, 15 Feb 2021 11:25:28 -0500
+Message-Id: <20210215162532.1077098-1-stefanb@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-OriginatorOrg: hitachi-powergrids.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR06MB5400.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f25386e-cb7f-4209-a660-08d8d1b094f1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Feb 2021 12:52:41.5119
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 7831e6d9-dc6c-4cd1-9ec6-1dc2b4133195
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Fxi7u1Me1sYsu0mG+OuY9X3W1r2tCpvYiOYxre/9D9vxcLpI/mF2a5jNyz86BO/pKw9pJ0aNtEVXpe0Jf9FdrSa00Ts18sxXvt7sT7TYw5NhARgRvbRXXNi3AYYW0NfZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR06MB5495
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-15_11:2021-02-12,2021-02-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ suspectscore=0 impostorscore=0 mlxscore=0 adultscore=0 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 priorityscore=1501 malwarescore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102150124
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
->On Wed, Dec 16, 2020 at 11:59:06AM +0100, Luca Dariz wrote:
->>
->> @@ -432,12 +433,15 @@ static int hwrng_fillfn(void *unused)  {
->>       long rc;
->>
->> +     complete(&hwrng_started);
->>       while (!kthread_should_stop()) {
->>               struct hwrng *rng;
->>
->>               rng =3D get_current_rng();
->> -             if (IS_ERR(rng) || !rng)
->> -                     break;
->> +             if (IS_ERR(rng) || !rng) {
->> +                     msleep_interruptible(10);
->> +                     continue;
->
->Please fix this properly with reference counting.
+This series of patches adds support for x509 certificates signed by a CA
+that uses NIST p256 or p192 keys for signing. It also adds support for
+certificates where the public key is a NIST p256 or p192 key. The math
+for ECDSA signature verification is also added.
 
-I thought a bit more about it, but I always find a potential race condition=
- with kthread_stop() and the hwrng_fill NULL pointer check.
-In my opinion the thread termination should be only triggered with kthread_=
-stop(), otherwise it might be called with an invalid or NULL hwrng_fill.
-Am I missing something?
+Since self-signed certificates are verified upon loading, the following
+script can be used for testing:
 
-Thanks
-Luca
+k=$(keyctl newring test @u)
+
+while :; do
+	for hash in sha1 sha224 sha256 sha384 sha512; do
+		openssl req \
+			-x509 \
+			-${hash} \
+			-newkey ec \
+			-pkeyopt ec_paramgen_curve:prime256v1 \
+			-keyout key.pem \
+			-days 365 \
+			-subj '/CN=test' \
+			-nodes \
+			-outform der \
+			-out cert.der
+		keyctl padd asymmetric testkey $k < cert.der
+		if [ $? -ne 0 ]; then
+			echo "ERROR"
+			exit 1
+		fi
+	done
+done
+
+Ecdsa support also works with restricted keyrings where an RSA key is used
+to sign a NIST P256/P192 key. Scripts for testing are here:
+
+https://github.com/stefanberger/eckey-testing
+
+The ECDSA signature verification will be used by IMA Appraisal where ECDSA
+file signatures stored in RPM packages will use substantially less space
+than if RSA signatures were to be used.
+
+   Stefan
+
+v7->v8:
+  - patch 3/4: Do not determine key algo using parse_OID in public_key.c
+    but do this when parsing the certificate. This addresses an issue
+    with certain build configurations where OID_REGISTRY is not available
+    as 'Reported-by: kernel test robot <lkp@intel.com>'.
+
+v6->v7:
+  - Moved some OID defintions to patch 1 for bisectability
+  - Applied R-b's
+  
+v5->v6:
+  - moved ecdsa code into its own module ecdsa_generic built from ecdsa.c
+  - added script-generated test vectors for NIST P256 & P192 and all hashes
+  - parsing of OID that contain header with new parse_oid()
+
+v4->v5:
+  - registering crypto support under names ecdsa-nist-p256/p192 following
+    Hubert Xu's suggestion in other thread
+  - appended IMA ECDSA support patch
+
+v3->v4:
+  - split off of ecdsa crypto part; registering akcipher as "ecdsa" and
+    deriving used curve from digits in parsed key
+
+v2->v3:
+  - patch 2 now includes linux/scatterlist.h
+
+v1->v2:
+  - using faster vli_sub rather than newly added vli_mod_fast to 'reduce'
+    result
+  - rearranged switch statements to follow after RSA
+  - 3rd patch from 1st posting is now 1st patch
+
+
+Stefan Berger (4):
+  crypto: Add support for ECDSA signature verification
+  x509: Detect sm2 keys by their parameters OID
+  x509: Add support for parsing x509 certs with ECDSA keys
+  ima: Support EC keys for signature verification
+
+ crypto/Kconfig                            |  10 +
+ crypto/Makefile                           |   6 +
+ crypto/asymmetric_keys/public_key.c       |   4 +-
+ crypto/asymmetric_keys/x509_cert_parser.c |  46 ++-
+ crypto/asymmetric_keys/x509_public_key.c  |   4 +-
+ crypto/ecc.c                              |  13 +-
+ crypto/ecc.h                              |  28 ++
+ crypto/ecdsa.c                            | 361 ++++++++++++++++++++++
+ crypto/ecdsasignature.asn1                |   4 +
+ crypto/testmgr.c                          |  12 +
+ crypto/testmgr.h                          | 267 ++++++++++++++++
+ include/keys/asymmetric-type.h            |   6 +
+ include/linux/oid_registry.h              |   7 +
+ lib/oid_registry.c                        |  13 +
+ security/integrity/digsig_asymmetric.c    |  30 +-
+ 15 files changed, 780 insertions(+), 31 deletions(-)
+ create mode 100644 crypto/ecdsa.c
+ create mode 100644 crypto/ecdsasignature.asn1
+
+-- 
+2.29.2
 
