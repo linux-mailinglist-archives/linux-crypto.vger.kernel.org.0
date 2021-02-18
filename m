@@ -2,56 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33B331CD37
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Feb 2021 16:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E89531E42B
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Feb 2021 03:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhBPPu7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 16 Feb 2021 10:50:59 -0500
-Received: from post.mbm-mab.com ([176.123.3.212]:36548 "EHLO post.mbm-mab.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230305AbhBPPu6 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 16 Feb 2021 10:50:58 -0500
-X-Greylist: delayed 2820 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Feb 2021 10:50:57 EST
-Received: from mbm-mab.com (unknown [105.112.120.183])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by post.mbm-mab.com (Postfix) with ESMTPSA id D19B71EAC7F
-        for <linux-crypto@vger.kernel.org>; Tue, 16 Feb 2021 16:46:37 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mbm-mab.com;
-        s=default; t=1613486798;
-        bh=L/NdPWFC4GwCQAEAmZBrR4bFkRE2KFFjxxbdZ8jLvek=;
-        h=From:To:Subject:Date;
-        b=SPmo6/jiuXTALje5lh3vo3pKXHegImmUZZNLHnOoc8fKPw5PbbgxaNihhKtfCMFr7
-         sNEKYvuN9yo5EryLTiH5RnXbXnrCUgVm1eHYG3A7OvaK1d2fr5F+Hqh14j5On0EXxs
-         xeBRG/mZU2pR8FpRdJLXHHPNfUPJ9HA2qZtDuNkM=
-From:   Albert Bourla <no_reply@mbm-mab.com>
-To:     linux-crypto@vger.kernel.org
-Subject: Bidding invitation
-Date:   16 Feb 2021 15:46:37 +0100
-Message-ID: <20210216154637.01687BCD36816C05@mbm-mab.com>
+        id S229745AbhBRCDK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 17 Feb 2021 21:03:10 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12615 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhBRCDJ (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 17 Feb 2021 21:03:09 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dgybr5V08z168fr;
+        Thu, 18 Feb 2021 10:00:56 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 18 Feb 2021 10:01:58 +0800
+Subject: Re: [PATCH v2 3/3] crypto: hisilicon/sec - fixes shash test error
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     <wangzhou1@hisilicon.com>, <xuzaibo@huawei.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1612692280-11386-1-git-send-email-liulongfang@huawei.com>
+ <1612692280-11386-4-git-send-email-liulongfang@huawei.com>
+ <20210210064328.GA15849@gondor.apana.org.au>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <0afaed85-eeb0-236c-817f-a0f9cf02c65a@huawei.com>
+Date:   Thu, 18 Feb 2021 10:01:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210210064328.GA15849@gondor.apana.org.au>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Good Day Sir/Ms.,
-
-We are pleased to invite you/your company to quote the following=20
-item listed below:
-=C2=A0
-Product/Model No: TM9653 PRESSURE REGULATOR
-Product Name:MEKO
-Qty. 30 units
-
-Compulsory, kindly send your quotation to: quotation@procurement-
-pfizer.com for immediate approval.
-
-Kind Regards,
-Albert Bourla
-PFIZER B.V Supply Chain Manager
-Tel: +31(0)208080 880
-ADDRESS: Rivium Westlaan 142, 2909 LD
-Capelle aan den IJssel, Netherlands
+On 2021/2/10 14:43, Herbert Xu Wrote:
+> On Sun, Feb 07, 2021 at 06:04:40PM +0800, Longfang Liu wrote:
+>> If the header file "crypto/internal/hash.h" not
+>> added, the allocation of crypto_tfm will fail when
+>> the shash algorithm calculates the hash
+>> through the software.
+>>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>> ---
+>>  drivers/crypto/hisilicon/sec2/sec_crypto.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+>> index d2c4a2c..988faf7 100644
+>> --- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
+>> +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+>> @@ -7,6 +7,7 @@
+>>  #include <crypto/des.h>
+>>  #include <crypto/hash.h>
+>>  #include <crypto/internal/aead.h>
+>> +#include <crypto/internal/hash.h>
+> 
+> Please explain what exactly in this file needs this header file.
+> 
+> As it stands you could just be hiding real bugs.
+> 
+> Thanks,
+> 
+The crypto_alloc_shash() interface in the header file
+will be used in the function sec_aead_ctx_init(),
+If this header file is not added, calling the interface
+crypto_alloc_shash() during the initialization of the
+aead algorithm will return an error.
+Thanks,
