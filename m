@@ -2,98 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5526A3209D0
-	for <lists+linux-crypto@lfdr.de>; Sun, 21 Feb 2021 12:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F15320A46
+	for <lists+linux-crypto@lfdr.de>; Sun, 21 Feb 2021 13:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbhBULRe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 21 Feb 2021 06:17:34 -0500
-Received: from smtp-bc0f.mail.infomaniak.ch ([45.157.188.15]:42615 "EHLO
-        smtp-bc0f.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229884AbhBULRc (ORCPT
+        id S229802AbhBUMlf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Sun, 21 Feb 2021 07:41:35 -0500
+Received: from mail.cittametropolitana.me.it ([109.117.9.231]:17118 "EHLO
+        mail.provincia.messina.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229588AbhBUMlf (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 21 Feb 2021 06:17:32 -0500
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Dk2nm4X2pzMqFPR;
-        Sun, 21 Feb 2021 12:16:44 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Dk2nj6xrTzlh8T8;
-        Sun, 21 Feb 2021 12:16:41 +0100 (CET)
-Subject: Re: [PATCH v6 0/5] Enable root to update the blacklist keyring
-To:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-References: <20210210120410.471693-1-mic@digikod.net>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <132a6049-e91b-3922-cd3f-89574dd049fe@digikod.net>
-Date:   Sun, 21 Feb 2021 12:17:54 +0100
-User-Agent: 
+        Sun, 21 Feb 2021 07:41:35 -0500
+X-Greylist: delayed 7800 seconds by postgrey-1.27 at vger.kernel.org; Sun, 21 Feb 2021 07:41:34 EST
+Received: from mail.cittametropolitana.me.it (unknown [10.0.0.34])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.provincia.messina.it (MTA) with ESMTPS id 4Dk16970HszxQ7D;
+        Sun, 21 Feb 2021 11:00:49 +0100 (CET)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.cittametropolitana.me.it (Postfix) with ESMTP id 2F6E7140727;
+        Sun, 21 Feb 2021 11:00:49 +0100 (CET)
+Received: from mail.cittametropolitana.me.it ([127.0.0.1])
+        by localhost (mail.cittametropolitana.me.it [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 3-2GRU71kDuR; Sun, 21 Feb 2021 11:00:48 +0100 (CET)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.cittametropolitana.me.it (Postfix) with ESMTP id 2B713140557;
+        Sun, 21 Feb 2021 11:00:48 +0100 (CET)
+X-Virus-Scanned: amavisd-new at provincia.messina.it
+Received: from mail.cittametropolitana.me.it ([127.0.0.1])
+        by localhost (mail.cittametropolitana.me.it [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id sYOVrENu43tw; Sun, 21 Feb 2021 11:00:47 +0100 (CET)
+Received: from mail.cittametropolitana.me.it (mail.provincia.messina.it [10.0.0.34])
+        by mail.cittametropolitana.me.it (Postfix) with ESMTP id 6ABBE140495;
+        Sun, 21 Feb 2021 11:00:45 +0100 (CET)
+Date:   Sun, 21 Feb 2021 11:00:45 +0100 (CET)
+From:   Azim premiji <a.greco@cittametropolitana.me.it>
+Reply-To: Azim premiji <premijiazim@gmail.com>
+Message-ID: <1788277496.3693127.1613901645371.JavaMail.zimbra@cittametropolitana.me.it>
+Subject: 
 MIME-Version: 1.0
-In-Reply-To: <20210210120410.471693-1-mic@digikod.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [160.152.145.47]
+X-Mailer: Zimbra 8.8.12_GA_3866 (zclient/8.8.12_GA_3866)
+Thread-Index: LE2yexrll56iGW4Ask7EOzlBoGDQwg==
+Thread-Topic: 
+To:     undisclosed-recipients:;
+x-msw-jemd-malware: unknown
+x-msw-jemd-newsletter: false
+x-msw-jemd-refid: 1,0,0,,d41d8cd98f00b204,a.greco@cittametropolitana.me.it,,RULES_HIT:10:41:152:355:379:387:541:555:582:973:988:989:1152:1261:1277:1311:1313:1314:1345:1373:1381:1437:1513:1515:1516:1518:1521:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2892:3138:3139:3140:3141:3142:3352:3870:3876:5007:6261:6298:6299:6666:6668:8619:8957:10400:10403:10407:11473:11658:12739:12986:13069:13311:13357:14344:14686:14777:14802:19901:19997:21451:21619:21620:21623:21624:21625:21626:21819:21990:30021:30054:30075:30084,0,RBL:04y87u1poyo7qmff6tdf5wryigapxopynzdqscg4zk5ezqknfqu1s7poawyrzbw.ihhnfw5t4mznybj6yo9re5b3m55ynd8se7rc9acerqdy78giw1gwzzi8zhe17y6.k-lbl8.mailshell.net-223.238.255.100,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:neutral,Custom_rules:0:0:0,LFtime:1104,LUA_SUMMARY:none;newsletter:no;malware:no;phishing:no
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-David, Eric, what is the status of this patch series?
 
-On 10/02/2021 13:04, Mickaël Salaün wrote:
-> This new patch series is a rebase on David Howells's keys-misc branch.
-> This mainly fixes UEFI DBX and the new Eric Snowberg's feature to import
-> asymmetric keys to the blacklist keyring.
-> I successfully tested this patch series with the 186 entries from
-> https://uefi.org/sites/default/files/resources/dbxupdate_x64.bin (184
-> binary hashes and 2 certificates).
-> 
-> The goal of these patches is to add a new configuration option to enable the
-> root user to load signed keys in the blacklist keyring.  This keyring is useful
-> to "untrust" certificates or files.  Enabling to safely update this keyring
-> without recompiling the kernel makes it more usable.
-> 
-> This can be applied on top of David Howells's keys-next branch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=keys-next
-> Git commits can be found in https://github.com/l0kod/linux branch
-> dyn-auth-blacklist-v6 commit fcf976b74ffcd4551683e6b70dbf5fb102cf9906 .
-> 
-> Previous patch series:
-> https://lore.kernel.org/lkml/20210128191705.3568820-1-mic@digikod.net/
-> 
-> Regards,
-> 
-> Mickaël Salaün (5):
->   tools/certs: Add print-cert-tbs-hash.sh
->   certs: Check that builtin blacklist hashes are valid
->   certs: Make blacklist_vet_description() more strict
->   certs: Factor out the blacklist hash creation
->   certs: Allow root user to append signed hashes to the blacklist
->     keyring
-> 
->  MAINTAINERS                                   |   2 +
->  certs/.gitignore                              |   1 +
->  certs/Kconfig                                 |  17 +-
->  certs/Makefile                                |  17 +-
->  certs/blacklist.c                             | 218 ++++++++++++++----
->  crypto/asymmetric_keys/x509_public_key.c      |   3 +-
->  include/keys/system_keyring.h                 |  14 +-
->  scripts/check-blacklist-hashes.awk            |  37 +++
->  .../platform_certs/keyring_handler.c          |  26 +--
->  tools/certs/print-cert-tbs-hash.sh            |  91 ++++++++
->  10 files changed, 346 insertions(+), 80 deletions(-)
->  create mode 100755 scripts/check-blacklist-hashes.awk
->  create mode 100755 tools/certs/print-cert-tbs-hash.sh
-> 
-> 
-> base-commit: 5bcd72358a7d7794ade0452ed12919b8c4d6ffc7
-> 
+
+Hallo,Ich bin Azim Hashim Premji, ein indischer Wirtschaftsmagnat, Investor und Philanthrop. Ich bin der Vorsitzende von Wipro Limited. Ich habe 25 pro verschenkt Prozent meines persönlichen Vermögens für wohltätige Zwecke. Und ich habe auch versprochen, zu verschenken die restlichen 25% in diesem Jahr 2021 .. Ich habe beschlossen, Ihnen 2.000.000,00 Euro zu spenden. Wenn Sie an meiner Spende interessiert sind, kontaktieren Sie mich bitte Für mehr Information. Ich möchte auch, dass du Teil meiner Nächstenliebe bist Stiftung, sobald Sie dieses Geld erhalten, damit wir uns zusammenschließen können um den Bedürftigen zu helfen ..Kontaktieren Sie sie per E-Mail für weitere Informationen: Herzlicher GrussGeschäftsführer Wipro Limited
+
+**********************************************************************
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the system manager.
+
+This footnote also confirms that this email message has been swept by
+MIMEsweeper for the presence of computer viruses.
+
+www.clearswift.com
+**********************************************************************
+
+*******************************************************************
+Mail sottoposta al controllo antivirus e antispam della Provincia Regionale di Messina
+per comunicazioni contattare postamm@provincia.messina.it
+*******************************************************************
