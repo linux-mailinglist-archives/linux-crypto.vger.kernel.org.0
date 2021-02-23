@@ -2,55 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40125322E39
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Feb 2021 17:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFBF4322EE3
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Feb 2021 17:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbhBWQCY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 23 Feb 2021 11:02:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49014 "EHLO
+        id S233576AbhBWQh3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 23 Feb 2021 11:37:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233315AbhBWQCW (ORCPT
+        with ESMTP id S233570AbhBWQhZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 23 Feb 2021 11:02:22 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91691C06174A;
-        Tue, 23 Feb 2021 08:01:39 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id b3so23092088wrj.5;
-        Tue, 23 Feb 2021 08:01:39 -0800 (PST)
+        Tue, 23 Feb 2021 11:37:25 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB79C061574;
+        Tue, 23 Feb 2021 08:36:44 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id kr16so2181879pjb.2;
+        Tue, 23 Feb 2021 08:36:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=s5r6aoP8yUhDgWY4u8j/36byZXYgA21Asmj6U6dj7SQ=;
-        b=Z6dUngibA3k2Zhdndsnjl7qXctPhCY0w7C9P9gjVTv8imnAyzSJn0bI5LDTWyIJfbA
-         9fmGK7lYVVJmslUpoG7zLGtN62SB4i3w/4HlJMRcMaoX4BhRWnxH+WyP9M3jYWGQr//L
-         ZL7UbFQja2YtcTPHeDh3pnrj7HOQF2NF3cCcTK7ziy4a5Ue2/hhVl/j01FNLQ6xM2knY
-         M6cVgnFkw6TfTgN5zuBD/2JVOLUPGAnN7gOOTwtsB0YaXNZs+wm30PyZZqv5F+I2JRul
-         BlnhwGYwhEAZ4Z59y5Z5oY/O7kY+Gvcg630FOankem2YkWX6NCLPMjbfUjb6eMh6GFTZ
-         xa/Q==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=jCm2d3L5ztm5gNWKp8iMLVnKNDCN56Zh/hTZRK0Phyc=;
+        b=l2nVT8bm3BGfG8Ch7gFLdDuL9NxQKaHyXV2x9Et5MwOSmcpiCW7bGRdkmbbfEP41u5
+         oI7Z6alDO9dABx/qtmVe/OwTuYJawOszEXeMUQSUBYIbZLL3sPCeoo8Li12QHZKhve+8
+         /vZUkbcD3KTLQoVHEFeS0YQIp0bl/+dN44A0mv68dts/q/Ct+xueRrAmxO7tm98AB1Wh
+         R4p59h1ElTaqdC2y1kTU50NToiYxOvMyAMPT3DMSfUdI6vgiDsybj1fhxmfuUna7xg/Q
+         xc+K+ir4ufho8nRkSpcmbL9bhgQBoBVeDn3XfizOyfpMa7xD7us6KM66foVN6RsDMimu
+         pK1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=s5r6aoP8yUhDgWY4u8j/36byZXYgA21Asmj6U6dj7SQ=;
-        b=HG9EfCYqe8gjuj1Gr3zut8Hh8ZNqowKSCvHX4YoeA2OuO/q5BfxoyByfGR1yVh636n
-         mAu/eJwjnJvrFY/Rt/vpJ8JcovZFodYjLEPx5zFDGghUp6FegLCoaZb+cIDCpLhMvWGj
-         ED5kRYOdBAziRdCLDlDUNkBjCOs7zeJHAhLfVxqiRowZMyuzulI1leAqOVFpZhJFnlWd
-         WT4b2tcz1XcA9aDnEO3Pu2kUj4bGQj69s2FxsAI1VST4NfcS0CnJr/zNizeMlxEPDaVB
-         0B4ap7pe2phSxE5XpUQ5iTcr11ctdcvXUJwLmSZgRAUTaV6reI1VczCwIPT/zIg8qJRK
-         I9fA==
-X-Gm-Message-State: AOAM532Rr9b7YEMmT1z8QSjU1OEHOnRcPD+FXKu3bCjx6ZkaBl6L5WSK
-        SOusVr4HhYN3yWp7Zq2L9yk=
-X-Google-Smtp-Source: ABdhPJwupnnvXFwHC3i/kzK26c7qamwCkq7cEOkWgqeQU0/8URXkmDCziwuLip7VcGDHeBw3PlTXLw==
-X-Received: by 2002:a05:6000:1a8c:: with SMTP id f12mr26949127wry.173.1614096098283;
-        Tue, 23 Feb 2021 08:01:38 -0800 (PST)
-Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id h15sm33999381wrh.13.2021.02.23.08.01.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 08:01:37 -0800 (PST)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     Matt Mackall <mpm@selenic.com>,
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jCm2d3L5ztm5gNWKp8iMLVnKNDCN56Zh/hTZRK0Phyc=;
+        b=FU4UZJCL9xSWCxzMhOEQeFCqb0KslxhxchJRFieQcbhn14ABs7kAFj3xkAM10DWn0x
+         a20warbDbpNz5TITFIwk39h4QhILba8SJjdQFjYK79/feQrUtM7ttPBTDAdxqOBgJv6L
+         1WziUyb1C95Ob2s1c05/b6zpKyPjA++Zd8cwddHfLIVcCId1KxmOYHy2k6/mAxBWSEen
+         RUW3jPevkc0/myPwM3947Oj1zKnI9LZthhoHFNGQ4qSCiO0+PbmjcZynHBg/ICly+Qua
+         JyXHtBkZ7N6PLIW1HPFjoQOkHvR1ikjphpy3r/55PHj3UudzFkmYX7Kk98sd+gBVBncX
+         ARUA==
+X-Gm-Message-State: AOAM533RL+I7iUyShgALTLavxzcl/cbRu5yzvWVhNOu6A9JY3bXHWvkO
+        cEItmgnfoEDOIZ00BTzvrXx7hRPaJfA=
+X-Google-Smtp-Source: ABdhPJzoisW/SI8uGhoOap1b4A1t7Rqs8Z0p7ao0J30ZnnzN8py2Zu4XLLOhuUOXMuMLo4ocWc+jrw==
+X-Received: by 2002:a17:90a:df12:: with SMTP id gp18mr27390877pjb.25.1614098203460;
+        Tue, 23 Feb 2021 08:36:43 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id x184sm15689761pfx.2.2021.02.23.08.36.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Feb 2021 08:36:42 -0800 (PST)
+Subject: Re: [PATCH 1/2] dt-bindings: rng: bcm2835: document reset support
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Rob Herring <robh+dt@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
@@ -62,97 +63,39 @@ To:     Matt Mackall <mpm@selenic.com>,
         Alexandru Ardelean <alexandru.ardelean@analog.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
         Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
         <nfraprado@protonmail.com>,
-        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
         Stefan Wahren <stefan.wahren@i2se.com>,
         linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
         linux-rpi-kernel@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] hwrng: bcm2835: add reset support
-Date:   Tue, 23 Feb 2021 17:01:31 +0100
-Message-Id: <20210223160131.29053-3-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210223160131.29053-1-noltari@gmail.com>
 References: <20210222194510.14004-1-noltari@gmail.com>
  <20210223160131.29053-1-noltari@gmail.com>
+ <20210223160131.29053-2-noltari@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <1b854f38-9322-71ee-5745-ee650ae92c9b@gmail.com>
+Date:   Tue, 23 Feb 2021 08:36:33 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20210223160131.29053-2-noltari@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-BCM6368 devices need to reset the in order to generate true random numbers.
-This is what BCM6368 produces without a reset:
-root@OpenWrt:/# cat /dev/hwrng | rngtest -c 1000
-rngtest 6.10
-Copyright (c) 2004 by Henrique de Moraes Holschuh
-This is free software; see the source for copying conditions.  There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-rngtest: starting FIPS tests...
-rngtest: bits received from input: 20000032
-rngtest: FIPS 140-2 successes: 0
-rngtest: FIPS 140-2 failures: 1000
-rngtest: FIPS 140-2(2001-10-10) Monobit: 2
-rngtest: FIPS 140-2(2001-10-10) Poker: 1000
-rngtest: FIPS 140-2(2001-10-10) Runs: 1000
-rngtest: FIPS 140-2(2001-10-10) Long run: 30
-rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
-rngtest: input channel speed: (min=37.253; avg=320.827; max=635.783)Mibits/s
-rngtest: FIPS tests speed: (min=12.141; avg=15.034; max=16.428)Mibits/s
-rngtest: Program run time: 1336176 microseconds
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- v2: no changes.
+On 2/23/2021 8:01 AM, Álvaro Fernández Rojas wrote:
+> Some devices may need to perform a reset before using the RNG, such as the
+> BCM6368.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 
- drivers/char/hw_random/bcm2835-rng.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
-index 1a7c43b43c6b..1b93a896d8e8 100644
---- a/drivers/char/hw_random/bcm2835-rng.c
-+++ b/drivers/char/hw_random/bcm2835-rng.c
-@@ -13,6 +13,7 @@
- #include <linux/platform_device.h>
- #include <linux/printk.h>
- #include <linux/clk.h>
-+#include <linux/reset.h>
- 
- #define RNG_CTRL	0x0
- #define RNG_STATUS	0x4
-@@ -32,6 +33,7 @@ struct bcm2835_rng_priv {
- 	void __iomem *base;
- 	bool mask_interrupts;
- 	struct clk *clk;
-+	struct reset_control *reset;
- };
- 
- static inline struct bcm2835_rng_priv *to_rng_priv(struct hwrng *rng)
-@@ -94,6 +96,10 @@ static int bcm2835_rng_init(struct hwrng *rng)
- 			return ret;
- 	}
- 
-+	ret = reset_control_reset(priv->reset);
-+	if (ret)
-+		return ret;
-+
- 	if (priv->mask_interrupts) {
- 		/* mask the interrupt */
- 		val = rng_readl(priv, RNG_INT_MASK);
-@@ -159,6 +165,10 @@ static int bcm2835_rng_probe(struct platform_device *pdev)
- 	if (PTR_ERR(priv->clk) == -EPROBE_DEFER)
- 		return -EPROBE_DEFER;
- 
-+	priv->reset = devm_reset_control_get_optional_exclusive(dev, NULL);
-+	if (IS_ERR(priv->reset))
-+		return PTR_ERR(priv->reset);
-+
- 	priv->rng.name = pdev->name;
- 	priv->rng.init = bcm2835_rng_init;
- 	priv->rng.read = bcm2835_rng_read;
+Since the reset is unique to the 6368, you may want to make the property
+mandatory for the 6368 compatible string and optional otherwise.
 -- 
-2.20.1
-
+Florian
