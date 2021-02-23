@@ -2,60 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514B43229CD
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Feb 2021 13:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FEE322E38
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Feb 2021 17:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbhBWLxy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 23 Feb 2021 06:53:54 -0500
-Received: from mail.jvpinto.com ([65.49.11.60]:49930 "EHLO mail.JVPinto.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232495AbhBWLxB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 23 Feb 2021 06:53:01 -0500
-Received: from RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) by
- RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 23 Feb 2021 03:52:13 -0800
-Received: from User (52.231.198.195) by RW-EXC1.JVPinto.com (172.32.1.13) with
- Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Tue, 23 Feb 2021
- 03:51:59 -0800
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <johnpinto@jvpinto.com>
-Subject: Hello okay
-Date:   Tue, 23 Feb 2021 11:52:12 +0000
+        id S233330AbhBWQCT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 23 Feb 2021 11:02:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233312AbhBWQCT (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 23 Feb 2021 11:02:19 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED91C061574;
+        Tue, 23 Feb 2021 08:01:36 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id l13so2926735wmg.5;
+        Tue, 23 Feb 2021 08:01:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=8pId0GGCaDJbuNBJy+4MFY+EnRSRCwJYtg+gI5eOlnY=;
+        b=uuT/einVI9mfGQbfukEiKjNUIKnYFFSaSfL482AnCpMXPacg6LKp58PvUT/dz5Lt8e
+         SxffJ8NaceEE5A0uolBUirvPdqwJ5XRz60pWn8ctMBzALYpJ8HLbyV+ZP4jISuJ+HsdU
+         PJSWaE04Z+YCazqMsqf2QGw/duTNrMVj+uSjSSu79O1J9NZ4IuRvlWLvzQcjmcagAScn
+         Mt2uieOSzvGixC9vlXnYik2bHBtpzxOJT6YfnjYdujagPl8RgTqmaLQqSGsEq2uhUSdb
+         4WqHTgdoC7C5UlQCpzXOZPcUtIHT+Nf0SGsf9cW7RGZJ5sdP2xtvAMyCLsNSRPob5Hm5
+         8rKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8pId0GGCaDJbuNBJy+4MFY+EnRSRCwJYtg+gI5eOlnY=;
+        b=EFpswKQtmjEkswosh/2rPNXRvcnWSaCjyoJmhVw8lLGNYxEGVrnV5rOsxEKBCWgM3x
+         paoHCCcEkKpFaPcuTXwtHaIvNMbrSPFpaeko5tLf3gdDaXyVMmqtUGqP954rhJT4ODaS
+         itKMYqYFRkL6vtL/eqyAC05XcxoiI9oTkWUGWoZNA4ivkQ45eWjytaML9CgUeGO+DQIO
+         mXQWD92ju3zWhZDh03N502/6CYeLKM7aR++tDnZtjMvSZOkKKciQ6RAV302XFAuc0mWb
+         vldoYZrctYqUcERg0QS783FJX+n4JIb+lZTjVueiImlD+BThYRL80sMuE3s2PZgC0y2f
+         HA1w==
+X-Gm-Message-State: AOAM533ajcIEyOOjedw2lxVZE/4lT0i13j67cINkastKs0LanfV89y3E
+        SHyISSfl5k82TZYtc5zls3Q=
+X-Google-Smtp-Source: ABdhPJxNxzbN1cZ3nt1lOUEhlhwxRBItAIvp+tgOfI3ePfkOMQDAXRZejsPegG1gryAOkXQl9qo11Q==
+X-Received: by 2002:a7b:c391:: with SMTP id s17mr7764852wmj.155.1614096095346;
+        Tue, 23 Feb 2021 08:01:35 -0800 (PST)
+Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id h15sm33999381wrh.13.2021.02.23.08.01.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 08:01:34 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@protonmail.com>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] hwrng: bcm2835: add reset support
+Date:   Tue, 23 Feb 2021 17:01:29 +0100
+Message-Id: <20210223160131.29053-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210222194510.14004-1-noltari@gmail.com>
+References: <20210222194510.14004-1-noltari@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <a979b4e3f4df4cf8baf7c5db5d0603cc@RW-EXC1.JVPinto.com>
-To:     Undisclosed recipients:;
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello,
+Some devices may need to perform a reset before using the RNG, such as the
+BCM6368.
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
+Álvaro Fernández Rojas (2):
+  dt-bindings: rng: bcm2835: document reset support
+  hwrng: bcm2835: add reset support
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
+ .../devicetree/bindings/rng/brcm,bcm2835.yaml          |  5 +++++
+ drivers/char/hw_random/bcm2835-rng.c                   | 10 ++++++++++
+ 2 files changed, 15 insertions(+)
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
+-- 
+2.20.1
 
-Regards,
-Ms. Reem.
