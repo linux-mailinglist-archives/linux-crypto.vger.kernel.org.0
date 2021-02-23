@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FEE322E38
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Feb 2021 17:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C175322E3D
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Feb 2021 17:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233330AbhBWQCT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 23 Feb 2021 11:02:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49004 "EHLO
+        id S233309AbhBWQCd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 23 Feb 2021 11:02:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233312AbhBWQCT (ORCPT
+        with ESMTP id S233365AbhBWQCY (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 23 Feb 2021 11:02:19 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED91C061574;
-        Tue, 23 Feb 2021 08:01:36 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id l13so2926735wmg.5;
-        Tue, 23 Feb 2021 08:01:36 -0800 (PST)
+        Tue, 23 Feb 2021 11:02:24 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AE6C061786;
+        Tue, 23 Feb 2021 08:01:42 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id r3so11463805wro.9;
+        Tue, 23 Feb 2021 08:01:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=8pId0GGCaDJbuNBJy+4MFY+EnRSRCwJYtg+gI5eOlnY=;
-        b=uuT/einVI9mfGQbfukEiKjNUIKnYFFSaSfL482AnCpMXPacg6LKp58PvUT/dz5Lt8e
-         SxffJ8NaceEE5A0uolBUirvPdqwJ5XRz60pWn8ctMBzALYpJ8HLbyV+ZP4jISuJ+HsdU
-         PJSWaE04Z+YCazqMsqf2QGw/duTNrMVj+uSjSSu79O1J9NZ4IuRvlWLvzQcjmcagAScn
-         Mt2uieOSzvGixC9vlXnYik2bHBtpzxOJT6YfnjYdujagPl8RgTqmaLQqSGsEq2uhUSdb
-         4WqHTgdoC7C5UlQCpzXOZPcUtIHT+Nf0SGsf9cW7RGZJ5sdP2xtvAMyCLsNSRPob5Hm5
-         8rKQ==
+        bh=QF57n3BJmbnE5g02H0hISJw4D48Vk03Ja0GucFbbgno=;
+        b=g7yKIyLjHLJAclUi1E3w2cGHPPPeepCJF8hoqOLbcLBjV3PJCdTaErAvevJG6OwOYT
+         ttX7Raveeakz/9V1ipN9FlrsS+TOVaGEtNrGhTKe4sqOSmFL5L/PIwwv9Adb4UW89WKZ
+         7XOpeH5JRAcbzvFevD4j8ytIF72fdXX2+EM0awp6NvRfK1iIUM8ILZYZQTcFSRytRD+B
+         eshykGlz/5TPS352P/WoN9loULc2LC7mAVFG4UM1Gny3LrvfEWzJ/2Fwl76wWLiICBXu
+         vWIcMVqy2ZVTzCH53efuq9oZIih0asMcqgXiF3sjTN7oTQt9oOeflSmLfs9iW0ovano3
+         JZRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8pId0GGCaDJbuNBJy+4MFY+EnRSRCwJYtg+gI5eOlnY=;
-        b=EFpswKQtmjEkswosh/2rPNXRvcnWSaCjyoJmhVw8lLGNYxEGVrnV5rOsxEKBCWgM3x
-         paoHCCcEkKpFaPcuTXwtHaIvNMbrSPFpaeko5tLf3gdDaXyVMmqtUGqP954rhJT4ODaS
-         itKMYqYFRkL6vtL/eqyAC05XcxoiI9oTkWUGWoZNA4ivkQ45eWjytaML9CgUeGO+DQIO
-         mXQWD92ju3zWhZDh03N502/6CYeLKM7aR++tDnZtjMvSZOkKKciQ6RAV302XFAuc0mWb
-         vldoYZrctYqUcERg0QS783FJX+n4JIb+lZTjVueiImlD+BThYRL80sMuE3s2PZgC0y2f
-         HA1w==
-X-Gm-Message-State: AOAM533ajcIEyOOjedw2lxVZE/4lT0i13j67cINkastKs0LanfV89y3E
-        SHyISSfl5k82TZYtc5zls3Q=
-X-Google-Smtp-Source: ABdhPJxNxzbN1cZ3nt1lOUEhlhwxRBItAIvp+tgOfI3ePfkOMQDAXRZejsPegG1gryAOkXQl9qo11Q==
-X-Received: by 2002:a7b:c391:: with SMTP id s17mr7764852wmj.155.1614096095346;
-        Tue, 23 Feb 2021 08:01:35 -0800 (PST)
+        bh=QF57n3BJmbnE5g02H0hISJw4D48Vk03Ja0GucFbbgno=;
+        b=kgOoOFncSw/DoSvQLUCB5zu/hZjbyNo3h09NUQ3vle0R2Nnou/J7yNnA1rs8Yb+Sut
+         dNaXlKzgfNj6B/F761NrY0lJOAcWdSXGpTDvhwRbE7WQwgXfQz1Jnas6LogfeVgEvq0A
+         R+PwRKwvv+QwJYzn/kXrfBv+xfb1POw4qDvcVWTpin+xtOYoihl1GL9KO+d6rL0NeSav
+         FUiR+tKFXMMYPc8A2x4tu4AZnncEC66JjjDzl1PF2m1NGyjVghfsMyEpbVpkNH5vog4X
+         QdTu6JWyQ8H4xCluJwCFkRslo+2j33blwjQH6W2wy48Dfc/SYjrU+B/THUjMvNKm5oPG
+         UMtw==
+X-Gm-Message-State: AOAM530jvTMerOjHRmvKkb5TgX0olBTFGgCdfZFuW51PVdhdvECC02Hs
+        uXf+C0llBkdqNqPVugPAPww=
+X-Google-Smtp-Source: ABdhPJyDyKvRwCwF1dKgt6Z1WCk/jUJlEnXDpXuYT68NLSpG8Z5uiZzpxIacTv/1WrE1omqdAlD3yA==
+X-Received: by 2002:adf:c3c8:: with SMTP id d8mr1050138wrg.167.1614096096954;
+        Tue, 23 Feb 2021 08:01:36 -0800 (PST)
 Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id h15sm33999381wrh.13.2021.02.23.08.01.33
+        by smtp.gmail.com with ESMTPSA id h15sm33999381wrh.13.2021.02.23.08.01.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 08:01:34 -0800 (PST)
+        Tue, 23 Feb 2021 08:01:36 -0800 (PST)
 From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
 To:     Matt Mackall <mpm@selenic.com>,
@@ -70,12 +70,13 @@ To:     Matt Mackall <mpm@selenic.com>,
         linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
         linux-rpi-kernel@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/2] hwrng: bcm2835: add reset support
-Date:   Tue, 23 Feb 2021 17:01:29 +0100
-Message-Id: <20210223160131.29053-1-noltari@gmail.com>
+Subject: [PATCH 1/2] dt-bindings: rng: bcm2835: document reset support
+Date:   Tue, 23 Feb 2021 17:01:30 +0100
+Message-Id: <20210223160131.29053-2-noltari@gmail.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210222194510.14004-1-noltari@gmail.com>
+In-Reply-To: <20210223160131.29053-1-noltari@gmail.com>
 References: <20210222194510.14004-1-noltari@gmail.com>
+ <20210223160131.29053-1-noltari@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -86,14 +87,34 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 Some devices may need to perform a reset before using the RNG, such as the
 BCM6368.
 
-Álvaro Fernández Rojas (2):
-  dt-bindings: rng: bcm2835: document reset support
-  hwrng: bcm2835: add reset support
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+---
+ v2: document reset support.
 
- .../devicetree/bindings/rng/brcm,bcm2835.yaml          |  5 +++++
- drivers/char/hw_random/bcm2835-rng.c                   | 10 ++++++++++
- 2 files changed, 15 insertions(+)
+ Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml b/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+index c147900f9041..dba70764b7d0 100644
+--- a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
++++ b/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+@@ -31,6 +31,9 @@ properties:
+   interrupts:
+     maxItems: 1
+ 
++  resets:
++    maxItems: 1
++
+ required:
+   - compatible
+   - reg
+@@ -58,4 +61,6 @@ examples:
+ 
+         clocks = <&periph_clk 18>;
+         clock-names = "ipsec";
++
++        resets = <&periph_rst 4>;
+     };
 -- 
 2.20.1
 
