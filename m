@@ -2,81 +2,102 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B081324228
-	for <lists+linux-crypto@lfdr.de>; Wed, 24 Feb 2021 17:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A09C23242F4
+	for <lists+linux-crypto@lfdr.de>; Wed, 24 Feb 2021 18:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235227AbhBXQdJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 24 Feb 2021 11:33:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28416 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234934AbhBXQb3 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:31:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614184198;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/DLjCfyPdWpsrA8C7WRrfmxuAmIfnze3qgJu059srp4=;
-        b=E64oJ7T8mwld4VY1r4y45ENIU7KjE1caB11DXZ3x3+0pLU0qz5Tk0t1WLmxl6kVngTUx6Z
-        8zEfD6t0TRzu/7frMwg4sEXQJS3eRNFtyMoS1tes+5miJHR/xhURTe3mg60xML9XoCaJh3
-        fw9PXYQTmAL+bgC+2xPDHHnk0DUpXnU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-145-EE2OuDdWNTW4amn49x2nhw-1; Wed, 24 Feb 2021 11:29:54 -0500
-X-MC-Unique: EE2OuDdWNTW4amn49x2nhw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29115107ACE4;
-        Wed, 24 Feb 2021 16:29:52 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-118-134.rdu2.redhat.com [10.10.118.134])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C9F8A60862;
-        Wed, 24 Feb 2021 16:29:50 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     x86@kernel.org, Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        id S229954AbhBXRLP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 24 Feb 2021 12:11:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231439AbhBXRLO (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 24 Feb 2021 12:11:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AD5864F0B;
+        Wed, 24 Feb 2021 17:10:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614186632;
+        bh=SJ5Rru5hG1o1K/jlMvVzI1qjCrEGLO45OJ/U+7040fc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HSPR/wWgNMbRQ+S4wYUT05rHBo4pCnm4/8aBrtKFABWfY75ExJsX5cSEMqDXmZkVk
+         B3wtKyPJBOp7d2e5rTI2UQBIRgYeSLMvBWeSkumFH7Sqw7b68djTOmIxt+dZc8ApuP
+         TdKCWjOtexw6313xPABgbZSohP010+hAp7Im7P3sstnrETat77/nOIu7K6qwGP35cc
+         AkH5FFiwidjLOdh4SLs/EOa6oFWqrxlCBCWiGA9f0U5ecLE46Q30Ab3nVY+diRIF+r
+         qcWkWYr1vb+xlHekc0exE6bYBNMNBxFD5mfVilO3H87fa7htEyq5BbVC6f637BMJYi
+         4lHqKDqQ7NClw==
+Received: by mail-ot1-f49.google.com with SMTP id s107so2828668otb.8;
+        Wed, 24 Feb 2021 09:10:32 -0800 (PST)
+X-Gm-Message-State: AOAM5314sw8vasSt/UKqk2Hl7gEQW2A3R8wzueJUUC4Nie7rX3Xl7eA+
+        csIHZ20/vKN6z5iv1vNFTioZl9/k1GHTvxjOUI0=
+X-Google-Smtp-Source: ABdhPJz5tsY3F8T09dNXv8JnxGazL++sEU1h6wwPeb3AK0KRDtvuCHcYpTFjaYYOXIdA5S3OKoKOP24SjVd8wbZsicU=
+X-Received: by 2002:a05:6830:135a:: with SMTP id r26mr9309607otq.77.1614186631597;
+ Wed, 24 Feb 2021 09:10:31 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1614182415.git.jpoimboe@redhat.com>
+In-Reply-To: <cover.1614182415.git.jpoimboe@redhat.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 24 Feb 2021 18:10:20 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFnfH2OMA=JhzXuM=gT3pGci2=wpmjic-AbxoJLZnEexA@mail.gmail.com>
+Message-ID: <CAMj1kXFnfH2OMA=JhzXuM=gT3pGci2=wpmjic-AbxoJLZnEexA@mail.gmail.com>
+Subject: Re: [PATCH 00/13] x86/crypto/asm: objtool support
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     X86 ML <x86@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
         Peter Zijlstra <peterz@infradead.org>,
         Eric Biggers <ebiggers@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
         Sami Tolvanen <samitolvanen@google.com>,
-        linux-crypto@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH 13/13] x86/crypto: Enable objtool in crypto code
-Date:   Wed, 24 Feb 2021 10:29:26 -0600
-Message-Id: <fc2a1918c50e33e46ef0e9a5de02743f2f6e3639.1614182415.git.jpoimboe@redhat.com>
-In-Reply-To: <cover.1614182415.git.jpoimboe@redhat.com>
-References: <cover.1614182415.git.jpoimboe@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Now that all the stack alignment prologues have been cleaned up in the
-crypto code, enable objtool.  Among other benefits, this will allow ORC
-unwinding to work.
+On Wed, 24 Feb 2021 at 17:29, Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> Standardize the crypto asm to make it resemble compiler-generated code,
+> so that objtool can understand it.
+>
+> This magically enables ORC unwinding from crypto code.  It also fixes
+> the last known remaining objtool warnings on vmlinux.o, for LTO and
+> more.
+>
+> Josh Poimboeuf (13):
+>   objtool: Support asm jump tables
+>   x86/crypto/aesni-intel_avx: Remove unused macros
+>   x86/crypto/aesni-intel_avx: Fix register usage comments
+>   x86/crypto/aesni-intel_avx: Standardize stack alignment prologue
+>   x86/crypto/camellia-aesni-avx2: Unconditionally allocate stack buffer
+>   x86/crypto/crc32c-pcl-intel: Standardize jump table
+>   x86/crypto/sha_ni: Standardize stack alignment prologue
+>   x86/crypto/sha1_avx2: Standardize stack alignment prologue
+>   x86/crypto/sha256-avx2: Standardize stack alignment prologue
+>   x86/crypto/sha512-avx: Standardize stack alignment prologue
+>   x86/crypto/sha512-avx2: Standardize stack alignment prologue
+>   x86/crypto/sha512-ssse3: Standardize stack alignment prologue
+>   x86/crypto: Enable objtool in crypto code
+>
 
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- arch/x86/crypto/Makefile | 2 --
- 1 file changed, 2 deletions(-)
+I gave this series a spin with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y,
+and all the tests still pass.
 
-diff --git a/arch/x86/crypto/Makefile b/arch/x86/crypto/Makefile
-index b28e36b7c96b..d0959e7b809f 100644
---- a/arch/x86/crypto/Makefile
-+++ b/arch/x86/crypto/Makefile
-@@ -2,8 +2,6 @@
- #
- # x86 crypto algorithms
- 
--OBJECT_FILES_NON_STANDARD := y
--
- obj-$(CONFIG_CRYPTO_TWOFISH_586) += twofish-i586.o
- twofish-i586-y := twofish-i586-asm_32.o twofish_glue.o
- obj-$(CONFIG_CRYPTO_TWOFISH_X86_64) += twofish-x86_64.o
--- 
-2.29.2
+Tested-by: Ard Biesheuvel <ardb@kernel.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
+
+
+>  arch/x86/crypto/Makefile                     |  2 -
+>  arch/x86/crypto/aesni-intel_avx-x86_64.S     | 28 +++++--------
+>  arch/x86/crypto/camellia-aesni-avx2-asm_64.S |  5 +--
+>  arch/x86/crypto/crc32c-pcl-intel-asm_64.S    |  7 +---
+>  arch/x86/crypto/sha1_avx2_x86_64_asm.S       |  8 ++--
+>  arch/x86/crypto/sha1_ni_asm.S                |  8 ++--
+>  arch/x86/crypto/sha256-avx2-asm.S            | 13 +++---
+>  arch/x86/crypto/sha512-avx-asm.S             | 41 +++++++++----------
+>  arch/x86/crypto/sha512-avx2-asm.S            | 42 ++++++++++----------
+>  arch/x86/crypto/sha512-ssse3-asm.S           | 41 +++++++++----------
+>  tools/objtool/check.c                        | 14 ++++++-
+>  11 files changed, 98 insertions(+), 111 deletions(-)
+>
+> --
+> 2.29.2
+>
