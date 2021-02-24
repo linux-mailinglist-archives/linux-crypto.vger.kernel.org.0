@@ -2,38 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78191323F77
+	by mail.lfdr.de (Postfix) with ESMTP id E9EA7323F78
 	for <lists+linux-crypto@lfdr.de>; Wed, 24 Feb 2021 16:20:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhBXOCi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 24 Feb 2021 09:02:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58438 "EHLO mail.kernel.org"
+        id S233329AbhBXODQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 24 Feb 2021 09:03:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235712AbhBXNFC (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:05:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B088B64F7B;
-        Wed, 24 Feb 2021 12:54:01 +0000 (UTC)
+        id S232847AbhBXNIk (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 24 Feb 2021 08:08:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D06D64F96;
+        Wed, 24 Feb 2021 12:54:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614171242;
-        bh=CbtLJBjPW04CHToB/xRnlOVVoQA1aptjneT2df6DPJo=;
+        s=k20201202; t=1614171291;
+        bh=0RFYgfXxVTQ5sYXpGbQ79U+wh2waQAJCNQz/uDfVLAU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KOZIBCsQsHtsPSTOPvKnCYVGLrEkPkXv3aBRysRKmJ0Alh8gbqPSMAOfk2/VnYZOS
-         h2VN38ngfaBK5W2okWN8gfConNsKv3AusKgBtnneTz18Lra3emxeONrssYJNbuk0mI
-         FkAkQcpGhQI0tKs4gV8k53ov7Uw0M64nv834UCwXb4ZZPf4se4sA1q7rLueeCKUokH
-         WyAUD7FBBbdoUdiZ8BZfb8z4+RubSY8TsM8wIGek4TYURiO9QT6gS+CIoPdXpIydRI
-         QEfDLjAd2dXnmbwdtMXC9fiUEGL4Gy29f3NVsNWeAI177SX3fpsYMVFN6XkfGypGoE
-         w94s98LsZ0VGw==
+        b=YzfMpRRlTksVHQsgStecHYKwpJ5u3pxKoweuUY7MS7xgiKAdV7b81XhMM0c9eWh3t
+         WvrsxDMm16wOHrfK7vlZi/lr7s8Ajln45DIYX+nd8LvG6boOrHND6Kfsrqom/CH2HT
+         TCV88dQt5mq9HvYEVlvLzU8kIzfeNZNmCvTdLy3dkqoYjroaK5QLoGwggmP+/DJdRn
+         X6YOb2d/Y+ugvzvgXOKjddxV6vLADrwTsNsdZVs4Ctsp4vg7sitTCrcc8pUJIQi3YC
+         sJgs3dzMD7S34L4mqsRff7spAs85X0ZthZmZtPpYvc9Q2ev4q5MA2/m3RkZZ3/ziCc
+         oC06EK+Dy75jQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Ard Biesheuvel <ardb@kernel.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 16/40] crypto: tcrypt - avoid signed overflow in byte count
-Date:   Wed, 24 Feb 2021 07:53:16 -0500
-Message-Id: <20210224125340.483162-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 12/26] crypto: tcrypt - avoid signed overflow in byte count
+Date:   Wed, 24 Feb 2021 07:54:20 -0500
+Message-Id: <20210224125435.483539-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210224125340.483162-1-sashal@kernel.org>
-References: <20210224125340.483162-1-sashal@kernel.org>
+In-Reply-To: <20210224125435.483539-1-sashal@kernel.org>
+References: <20210224125435.483539-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -62,10 +62,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index 83ad0b1fab30a..0cece1f883ebe 100644
+index d332988eb8dea..bf797c613ba2d 100644
 --- a/crypto/tcrypt.c
 +++ b/crypto/tcrypt.c
-@@ -198,8 +198,8 @@ static int test_mb_aead_jiffies(struct test_mb_aead_data *data, int enc,
+@@ -202,8 +202,8 @@ static int test_mb_aead_jiffies(struct test_mb_aead_data *data, int enc,
  			goto out;
  	}
  
@@ -76,7 +76,7 @@ index 83ad0b1fab30a..0cece1f883ebe 100644
  
  out:
  	kfree(rc);
-@@ -468,8 +468,8 @@ static int test_aead_jiffies(struct aead_request *req, int enc,
+@@ -472,8 +472,8 @@ static int test_aead_jiffies(struct aead_request *req, int enc,
  			return ret;
  	}
  
@@ -87,7 +87,7 @@ index 83ad0b1fab30a..0cece1f883ebe 100644
  	return 0;
  }
  
-@@ -759,8 +759,8 @@ static int test_mb_ahash_jiffies(struct test_mb_ahash_data *data, int blen,
+@@ -763,8 +763,8 @@ static int test_mb_ahash_jiffies(struct test_mb_ahash_data *data, int blen,
  			goto out;
  	}
  
@@ -98,7 +98,7 @@ index 83ad0b1fab30a..0cece1f883ebe 100644
  
  out:
  	kfree(rc);
-@@ -1196,8 +1196,8 @@ static int test_mb_acipher_jiffies(struct test_mb_skcipher_data *data, int enc,
+@@ -1200,8 +1200,8 @@ static int test_mb_acipher_jiffies(struct test_mb_skcipher_data *data, int enc,
  			goto out;
  	}
  
@@ -109,7 +109,7 @@ index 83ad0b1fab30a..0cece1f883ebe 100644
  
  out:
  	kfree(rc);
-@@ -1434,8 +1434,8 @@ static int test_acipher_jiffies(struct skcipher_request *req, int enc,
+@@ -1438,8 +1438,8 @@ static int test_acipher_jiffies(struct skcipher_request *req, int enc,
  			return ret;
  	}
  
