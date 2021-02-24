@@ -2,53 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9535332416B
-	for <lists+linux-crypto@lfdr.de>; Wed, 24 Feb 2021 17:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 664A13241F6
+	for <lists+linux-crypto@lfdr.de>; Wed, 24 Feb 2021 17:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233331AbhBXPz6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 24 Feb 2021 10:55:58 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:48940 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237410AbhBXPAM (ORCPT
+        id S232394AbhBXQSj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 24 Feb 2021 11:18:39 -0500
+Received: from mail.antaris-organics.com ([91.227.220.155]:48530 "EHLO
+        mail.antaris-organics.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234633AbhBXQQL (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:00:12 -0500
-Date:   Wed, 24 Feb 2021 14:57:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1614178654;
-        bh=9f9GIuhf2hS61SeaImYhYv8s0/Hi503HzYX0LoKMyzE=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=gLhepiYNxOpbxWldO8/g/bTQYYsDrkJvDPzY1naS0cXNXmvVRl1GMbzQrdMmih7hu
-         JVwi1ElCZsLzqjVjyYHRrfQZruyREAWvUWrhPohOPdjqChdNGq6LUDTgvC7EENNr6N
-         cIUdXP6rpqHNjyWkcd22voF7lV0WR8tEJ78YCy4Y=
+        Wed, 24 Feb 2021 11:16:11 -0500
+X-Greylist: delayed 627 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Feb 2021 11:16:11 EST
+Date:   Wed, 24 Feb 2021 17:04:43 +0100
+From:   Markus Reichelt <ml@mareichelt.com>
 To:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-From:   Jari Ruusu <jariruusu@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: Jari Ruusu <jariruusu@protonmail.com>
-Subject: Announce loop-AES-v3.7t file/swap crypto package
-Message-ID: <ps5Cel96vhDqLDwRW9Lou3Hh8Y7jt6TdiKM7AeGsKYfXv7dwl-zuEtuUu2g67S9hJIcwrQD_xm6Du2SqCIdHrpTLNiZb9yCgo9dpu3FESEs=@protonmail.com>
+Subject: Re: Announce loop-AES-v3.7t file/swap crypto package
+Message-ID: <20210224160443.GB12958@pc21.mareichelt.com>
+Mail-Followup-To: "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+References: <ps5Cel96vhDqLDwRW9Lou3Hh8Y7jt6TdiKM7AeGsKYfXv7dwl-zuEtuUu2g67S9hJIcwrQD_xm6Du2SqCIdHrpTLNiZb9yCgo9dpu3FESEs=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ps5Cel96vhDqLDwRW9Lou3Hh8Y7jt6TdiKM7AeGsKYfXv7dwl-zuEtuUu2g67S9hJIcwrQD_xm6Du2SqCIdHrpTLNiZb9yCgo9dpu3FESEs=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-loop-AES changes since previous release:
-- Worked around kernel interface changes on 5.11 kernels
+* Jari Ruusu <jariruusu@protonmail.com> wrote:
 
-bzip2 compressed tarball is here:
+> loop-AES changes since previous release:
+> - Worked around kernel interface changes on 5.11 kernels
 
-    http://loop-aes.sourceforge.net/loop-AES/loop-AES-v3.7t.tar.bz2
-    md5sum 974a0705207d97772b8c1388c43aee58
+thank you!
 
-    http://loop-aes.sourceforge.net/loop-AES/loop-AES-v3.7t.tar.bz2.sign
-
---
-Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
-80 8132 F189
-
+-- 
+left blank, right bald
