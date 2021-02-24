@@ -2,116 +2,53 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DEE323F7A
-	for <lists+linux-crypto@lfdr.de>; Wed, 24 Feb 2021 16:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9535332416B
+	for <lists+linux-crypto@lfdr.de>; Wed, 24 Feb 2021 17:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhBXODu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 24 Feb 2021 09:03:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238035AbhBXNuF (ORCPT
+        id S233331AbhBXPz6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 24 Feb 2021 10:55:58 -0500
+Received: from mail-02.mail-europe.com ([51.89.119.103]:48940 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237410AbhBXPAM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:50:05 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B58C061574;
-        Wed, 24 Feb 2021 05:35:43 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id t11so3091709ejx.6;
-        Wed, 24 Feb 2021 05:35:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=E35Anx43LiPy05GsYti9BfkgPBUJtvGhlU3qclOt8K4=;
-        b=Qzae4gSdEODSQi/0QwqZBX1N+d+1Ib4hCbF6In4F2pJulVBJpk0rGiziSFVGIdtjk8
-         wPdM97UUjXVmXu7WCjrzvIKG6GNshOfKbNcJHHzjfRFzfNGT9X2/q/vf9s2+HlrMOqtG
-         BKAsdvevRzsxTgebyrfSG50JZtn+SiJa7Oa5ErIyySLihTr1vQzJtYh5/POtBBTwd+85
-         o2lY3ydtCPE6mJIP30PuPJ7rKrPq4If5DKW+e0hJl9iCRuuqwTkg2GD8CjKTj8DZDn4R
-         OJzrmHpNuG6j6SMvPe5VfA0SEZi5ynYd3SbTgN14yt/lxLKM5Y4niPwrdDBGL1axb4Yi
-         lUYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=E35Anx43LiPy05GsYti9BfkgPBUJtvGhlU3qclOt8K4=;
-        b=qLzkaXJT1Mor7hAQzMl/J5vREpManaMonSpZ44uP5Y+to5E6UiTCfKLrxadB2F9cZd
-         JfyY2TqVdfG/P0KJ0D4zllJdffgMCh8kKgWa4YWG0w8jSZEWd1tOdJizJlSaLg71o3tZ
-         FcTYknwwXofAzL94GSlfME/Mksw79Dpc6W7sZvJEzOwvWC31F8z/OWjk3iDdp57dko79
-         J9nvOJ8Y/gq/ikzKufn6bjwn4gkNxCwXI7DQSkosQkb3DGMtiKytXI1bDqGuWQJOnOi+
-         iDySdEwffSlOQm8mKvZEe64wYnpvxYLT0GhfaWs6X9lOxsVGWAI1yLW+pWXOemYQnuOe
-         Ycug==
-X-Gm-Message-State: AOAM533umbrn2hgvSAO8uI3EynAv+s9qtEleFaXQqWd+woufm78n7P7H
-        1HpBZj3ZGaTAgqGr7/rn0flWU5aJwhVRzNn1tfbv49ddzHTlbEEt
-X-Google-Smtp-Source: ABdhPJxdMG2w1tsGLAuwbXPxnUmA4TgmD+z8b3xwM7YVdIXnRFUmhM43Z/M81Vo2uxFwX106MXuGz8xFNSblmgKZlBU=
-X-Received: by 2002:a17:906:e0cb:: with SMTP id gl11mr19893581ejb.87.1614173741708;
- Wed, 24 Feb 2021 05:35:41 -0800 (PST)
+        Wed, 24 Feb 2021 10:00:12 -0500
+Date:   Wed, 24 Feb 2021 14:57:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1614178654;
+        bh=9f9GIuhf2hS61SeaImYhYv8s0/Hi503HzYX0LoKMyzE=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=gLhepiYNxOpbxWldO8/g/bTQYYsDrkJvDPzY1naS0cXNXmvVRl1GMbzQrdMmih7hu
+         JVwi1ElCZsLzqjVjyYHRrfQZruyREAWvUWrhPohOPdjqChdNGq6LUDTgvC7EENNr6N
+         cIUdXP6rpqHNjyWkcd22voF7lV0WR8tEJ78YCy4Y=
+To:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: Announce loop-AES-v3.7t file/swap crypto package
+Message-ID: <ps5Cel96vhDqLDwRW9Lou3Hh8Y7jt6TdiKM7AeGsKYfXv7dwl-zuEtuUu2g67S9hJIcwrQD_xm6Du2SqCIdHrpTLNiZb9yCgo9dpu3FESEs=@protonmail.com>
 MIME-Version: 1.0
-References: <20210215162532.1077098-1-stefanb@linux.ibm.com>
- <20210222175850.1131780-1-saulo.alessandre@gmail.com> <2e829730-bb0c-47eb-70f2-731c184eba33@linux.ibm.com>
-In-Reply-To: <2e829730-bb0c-47eb-70f2-731c184eba33@linux.ibm.com>
-From:   Saulo Alessandre de Lima <saulo.alessandre@gmail.com>
-Date:   Wed, 24 Feb 2021 10:35:30 -0300
-Message-ID: <CABcgGGjc63+b+yp_bsVran5JKTBgLrOh-hoY0zcdoFbr_tTB1g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] add params and ids to support nist_p384
-To:     linux-crypto@vger.kernel.org
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Em seg., 22 de fev. de 2021 =C3=A0s 17:26, Stefan Berger
-<stefanb@linux.ibm.com> escreveu:
->
-> On 2/22/21 12:58 PM, Saulo Alessandre wrote:
-> > From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
-> >
-> > * crypto/asymmetric_keys/x509_cert_parser.c
-> >    - prepare x509 parser to load nist_secp384r1
-> >
-> > * crypto/ecc_curve_defs.h
-> >    - add nist_p384 params
-> >
-> > * include/crypto/ecdh.h
-> >    - add ECC_CURVE_NIST_P384
-> >
-> > * include/linux/oid_registry.h
-> >    - reorder OID_id_ecdsa_with_sha1
-> >    - add OID_id_secp384r1
-> >
-> > Signed-off-by: Saulo Alessandre <saulo.alessandre@tse.jus.br>
->
-> I would separate this patch into an x509: and certs: part since it
-> touches two subsystems.
->
-> I can take this series of patches and post my v9 including them at the
-> end. This would make it easier for others to test. I would massage them
-> a bit, including the separation of the 1st patch into 2 patches, if you
-> don't mind, preserving your Signed-off-by. I need to fix something in my
-> v8 regarding registration failure handling. Let me know whether this is
-> fine with you.
+loop-AES changes since previous release:
+- Worked around kernel interface changes on 5.11 kernels
 
-For me it's ok.
+bzip2 compressed tarball is here:
 
->
-> I had tested your patches over the weekend with my endless test tool
-> creating keys in user space and loading them into the kernel. It worked
-> fine for NIST p256 & p384. Also signing kernel modules with NIST p384 is
-> working fine.
->
-> So, for the series:
->
-> Tested-by: Stefan Berger <stefanb@linux.ibm.com>
->
-> Regards,
->
->      Stefan
->
->
+    http://loop-aes.sourceforge.net/loop-AES/loop-AES-v3.7t.tar.bz2
+    md5sum 974a0705207d97772b8c1388c43aee58
 
-Regards
---=20
-[]'s
------
-Saulo Alessandre <saulo.alessandre@gmail.com>
+    http://loop-aes.sourceforge.net/loop-AES/loop-AES-v3.7t.tar.bz2.sign
+
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
+
