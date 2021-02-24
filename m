@@ -2,38 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96238324220
-	for <lists+linux-crypto@lfdr.de>; Wed, 24 Feb 2021 17:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2F6324221
+	for <lists+linux-crypto@lfdr.de>; Wed, 24 Feb 2021 17:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234451AbhBXQcw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 24 Feb 2021 11:32:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49072 "EHLO
+        id S234680AbhBXQcz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 24 Feb 2021 11:32:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29740 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234708AbhBXQbT (ORCPT
+        by vger.kernel.org with ESMTP id S234717AbhBXQbU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:31:19 -0500
+        Wed, 24 Feb 2021 11:31:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614184187;
+        s=mimecast20190719; t=1614184186;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BGP1D+fN8RYYb6r5ixsRX3SnpxjoEGyiGCXv8vP6/MA=;
-        b=AczzPNyftfCwbLDC90SetT5H8nj4WjjNqt/A9Hb7otKshDaBUJp1agLN5P2Pn3oEIL6alz
-        1RNInWk+MVSEkhbL9Mb2xsfwn2lMCV9zIAJ+/Urah0olJ3MRWPGyWl4K74NtuKSRMOpBME
-        eZJuTQC7hWqtqMK5ITyWXZIZs8tbFZA=
+        bh=eOHOjeFiMtzP9OGzSSHIXYUBmM19lsPz/JuM7QoJPBE=;
+        b=TgLQCDy2bgsRVBHmbKeIYGLmStUd1Ogi9NQAC3rVtSH+4TgAP7LSwW4YytPKZu6lJd0yE5
+        kp2dHgzV08+385U7V0axuoodY9T9HAPCgEr3WcYHVU6gJGmDajbVs5PQeU0+O6zpdNQYlK
+        8Md705a3C2MuHgD5lU6ZycnO49JbqTE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-EpMdybTKMISHxWLyChJ06A-1; Wed, 24 Feb 2021 11:29:43 -0500
-X-MC-Unique: EpMdybTKMISHxWLyChJ06A-1
+ us-mta-41-1h4Bbw7aMJuFblwKAqeTwQ-1; Wed, 24 Feb 2021 11:29:45 -0500
+X-MC-Unique: 1h4Bbw7aMJuFblwKAqeTwQ-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67D3179EC3;
-        Wed, 24 Feb 2021 16:29:41 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F3FF79EC1;
+        Wed, 24 Feb 2021 16:29:43 +0000 (UTC)
 Received: from treble.redhat.com (ovpn-118-134.rdu2.redhat.com [10.10.118.134])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 13EF960CE7;
-        Wed, 24 Feb 2021 16:29:39 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BA4DA60862;
+        Wed, 24 Feb 2021 16:29:41 +0000 (UTC)
 From:   Josh Poimboeuf <jpoimboe@redhat.com>
 To:     x86@kernel.org, Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
         Sami Tolvanen <samitolvanen@google.com>,
         linux-crypto@vger.kernel.org,
         "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH 06/13] x86/crypto/crc32c-pcl-intel: Standardize jump table
-Date:   Wed, 24 Feb 2021 10:29:19 -0600
-Message-Id: <5357a039def90b8ef6b5874ef12cda008ecf18ba.1614182415.git.jpoimboe@redhat.com>
+Subject: [PATCH 07/13] x86/crypto/sha_ni: Standardize stack alignment prologue
+Date:   Wed, 24 Feb 2021 10:29:20 -0600
+Message-Id: <5033e1a79867dff1b18e1b4d0783c38897d3f223.1614182415.git.jpoimboe@redhat.com>
 In-Reply-To: <cover.1614182415.git.jpoimboe@redhat.com>
 References: <cover.1614182415.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
@@ -55,42 +55,50 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Simplify the jump table code so that it resembles a compiler-generated
-table.
+Use a more standard prologue for saving the stack pointer before
+realigning the stack.
 
-This enables ORC unwinding by allowing objtool to follow all the
-potential code paths.
+This enables ORC unwinding by allowing objtool to understand the stack
+realignment.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- arch/x86/crypto/crc32c-pcl-intel-asm_64.S | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ arch/x86/crypto/sha1_ni_asm.S | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/crypto/crc32c-pcl-intel-asm_64.S b/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
-index 884dc767b051..ac1f303eed0f 100644
---- a/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
-+++ b/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
-@@ -53,7 +53,7 @@
- .endm
+diff --git a/arch/x86/crypto/sha1_ni_asm.S b/arch/x86/crypto/sha1_ni_asm.S
+index 11efe3a45a1f..5d8415f482bd 100644
+--- a/arch/x86/crypto/sha1_ni_asm.S
++++ b/arch/x86/crypto/sha1_ni_asm.S
+@@ -59,8 +59,6 @@
+ #define DATA_PTR	%rsi	/* 2nd arg */
+ #define NUM_BLKS	%rdx	/* 3rd arg */
  
- .macro JMPTBL_ENTRY i
--.word crc_\i - crc_array
-+.quad crc_\i
- .endm
+-#define RSPSAVE		%rax
+-
+ /* gcc conversion */
+ #define FRAME_SIZE	32	/* space for 2x16 bytes */
  
- .macro JNC_LESS_THAN j
-@@ -168,10 +168,7 @@ continue_block:
- 	xor     crc2, crc2
+@@ -96,7 +94,8 @@
+ .text
+ .align 32
+ SYM_FUNC_START(sha1_ni_transform)
+-	mov		%rsp, RSPSAVE
++	push		%rbp
++	mov		%rsp, %rbp
+ 	sub		$FRAME_SIZE, %rsp
+ 	and		$~0xF, %rsp
  
- 	## branch into array
--	lea	jump_table(%rip), %bufp
--	movzwq  (%bufp, %rax, 2), len
--	lea	crc_array(%rip), %bufp
--	lea     (%bufp, len, 1), %bufp
-+	mov	jump_table(,%rax,8), %bufp
- 	JMP_NOSPEC bufp
+@@ -288,7 +287,8 @@ SYM_FUNC_START(sha1_ni_transform)
+ 	pextrd		$3, E0, 1*16(DIGEST_PTR)
  
- 	################################################################
+ .Ldone_hash:
+-	mov		RSPSAVE, %rsp
++	mov		%rbp, %rsp
++	pop		%rbp
+ 
+ 	ret
+ SYM_FUNC_END(sha1_ni_transform)
 -- 
 2.29.2
 
