@@ -2,38 +2,91 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664A13241F6
-	for <lists+linux-crypto@lfdr.de>; Wed, 24 Feb 2021 17:20:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB06F32421C
+	for <lists+linux-crypto@lfdr.de>; Wed, 24 Feb 2021 17:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbhBXQSj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 24 Feb 2021 11:18:39 -0500
-Received: from mail.antaris-organics.com ([91.227.220.155]:48530 "EHLO
-        mail.antaris-organics.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234633AbhBXQQL (ORCPT
+        id S232791AbhBXQcP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 24 Feb 2021 11:32:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30598 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234633AbhBXQbG (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:16:11 -0500
-X-Greylist: delayed 627 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Feb 2021 11:16:11 EST
-Date:   Wed, 24 Feb 2021 17:04:43 +0100
-From:   Markus Reichelt <ml@mareichelt.com>
-To:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-Subject: Re: Announce loop-AES-v3.7t file/swap crypto package
-Message-ID: <20210224160443.GB12958@pc21.mareichelt.com>
-Mail-Followup-To: "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-References: <ps5Cel96vhDqLDwRW9Lou3Hh8Y7jt6TdiKM7AeGsKYfXv7dwl-zuEtuUu2g67S9hJIcwrQD_xm6Du2SqCIdHrpTLNiZb9yCgo9dpu3FESEs=@protonmail.com>
+        Wed, 24 Feb 2021 11:31:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614184178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oHPOZACUKSG7YhdvvJWq0Sj5EssZNqse+Iw/jpiSFLU=;
+        b=KfLspqnmJuwLl61xD9O5OMF4pvo5ub2DtnmgDFI+/tBhgQuQ6Lm/2hBRrRj/tqSJH6108M
+        2Bs1P0Mg8gswES1CKdjJPiPpv3HVSqNLqa6u1nROEu5zHYsyLHA/42aVd22QyPjSSOIjm3
+        hehbmMxZOkOr8LFGIf60ngFcUC5rdhA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-364-HBySC3erPXKM8pophtMdYQ-1; Wed, 24 Feb 2021 11:29:33 -0500
+X-MC-Unique: HBySC3erPXKM8pophtMdYQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BD2B803F62;
+        Wed, 24 Feb 2021 16:29:32 +0000 (UTC)
+Received: from treble.redhat.com (ovpn-118-134.rdu2.redhat.com [10.10.118.134])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0ED3760CDE;
+        Wed, 24 Feb 2021 16:29:29 +0000 (UTC)
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     x86@kernel.org, Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-crypto@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH 00/13] x86/crypto/asm: objtool support
+Date:   Wed, 24 Feb 2021 10:29:13 -0600
+Message-Id: <cover.1614182415.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ps5Cel96vhDqLDwRW9Lou3Hh8Y7jt6TdiKM7AeGsKYfXv7dwl-zuEtuUu2g67S9hJIcwrQD_xm6Du2SqCIdHrpTLNiZb9yCgo9dpu3FESEs=@protonmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-* Jari Ruusu <jariruusu@protonmail.com> wrote:
+Standardize the crypto asm to make it resemble compiler-generated code,
+so that objtool can understand it.
 
-> loop-AES changes since previous release:
-> - Worked around kernel interface changes on 5.11 kernels
+This magically enables ORC unwinding from crypto code.  It also fixes
+the last known remaining objtool warnings on vmlinux.o, for LTO and
+more.
 
-thank you!
+Josh Poimboeuf (13):
+  objtool: Support asm jump tables
+  x86/crypto/aesni-intel_avx: Remove unused macros
+  x86/crypto/aesni-intel_avx: Fix register usage comments
+  x86/crypto/aesni-intel_avx: Standardize stack alignment prologue
+  x86/crypto/camellia-aesni-avx2: Unconditionally allocate stack buffer
+  x86/crypto/crc32c-pcl-intel: Standardize jump table
+  x86/crypto/sha_ni: Standardize stack alignment prologue
+  x86/crypto/sha1_avx2: Standardize stack alignment prologue
+  x86/crypto/sha256-avx2: Standardize stack alignment prologue
+  x86/crypto/sha512-avx: Standardize stack alignment prologue
+  x86/crypto/sha512-avx2: Standardize stack alignment prologue
+  x86/crypto/sha512-ssse3: Standardize stack alignment prologue
+  x86/crypto: Enable objtool in crypto code
+
+ arch/x86/crypto/Makefile                     |  2 -
+ arch/x86/crypto/aesni-intel_avx-x86_64.S     | 28 +++++--------
+ arch/x86/crypto/camellia-aesni-avx2-asm_64.S |  5 +--
+ arch/x86/crypto/crc32c-pcl-intel-asm_64.S    |  7 +---
+ arch/x86/crypto/sha1_avx2_x86_64_asm.S       |  8 ++--
+ arch/x86/crypto/sha1_ni_asm.S                |  8 ++--
+ arch/x86/crypto/sha256-avx2-asm.S            | 13 +++---
+ arch/x86/crypto/sha512-avx-asm.S             | 41 +++++++++----------
+ arch/x86/crypto/sha512-avx2-asm.S            | 42 ++++++++++----------
+ arch/x86/crypto/sha512-ssse3-asm.S           | 41 +++++++++----------
+ tools/objtool/check.c                        | 14 ++++++-
+ 11 files changed, 98 insertions(+), 111 deletions(-)
 
 -- 
-left blank, right bald
+2.29.2
+
