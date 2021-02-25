@@ -2,202 +2,97 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990B932532C
-	for <lists+linux-crypto@lfdr.de>; Thu, 25 Feb 2021 17:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 361D432556E
+	for <lists+linux-crypto@lfdr.de>; Thu, 25 Feb 2021 19:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233536AbhBYQKP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 25 Feb 2021 11:10:15 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12420 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233615AbhBYQJO (ORCPT
+        id S233001AbhBYS17 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 25 Feb 2021 13:27:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232077AbhBYS16 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:09:14 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PG32Jg060968;
-        Thu, 25 Feb 2021 11:08:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=vlulkbjFe3fFtDvvDhP9dMk2nV7D/SeYW3cL/u10bNs=;
- b=gzatDwh1Rmvu30MukGGhH4+FXuFxdggjHf7UhGb4fqWSWwGPUNlLt4Dzp3PQhLe//vRY
- bmbyIW6Fuaybz7HqjwNJ+ZvBCnPD9p+66DY/OQ1pt+yOhOuTAVRX+3yiTNgOCGmNIVq/
- 48YVTHAmm5JNnM0vCm+poW4WceICh+UGz7fVTjOM6qf/rrWWKiMUzpkebjKqXDotIUr9
- I/3ZvFrVfUY7lZi6P8OPerRn09fYq5t1G2V6DqGPncoA2L3w6ktPWczihwyKMWOluvOt
- PZytsmh1CwLjUk1yUbakOl2bE1ipgnt0nj8FcRmqJ/kl9FPnm3K9tBMp3tUY0kTHloaa GQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36xdyj37s1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 11:08:27 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11PG3VLu063576;
-        Thu, 25 Feb 2021 11:08:27 -0500
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36xdyj37rf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 11:08:27 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11PG2uam018938;
-        Thu, 25 Feb 2021 16:08:26 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma02dal.us.ibm.com with ESMTP id 36tt2ahtwt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 16:08:26 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11PG8OLM29295024
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 16:08:24 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 36EFD6E052;
-        Thu, 25 Feb 2021 16:08:24 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A526E6E04C;
-        Thu, 25 Feb 2021 16:08:23 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 25 Feb 2021 16:08:23 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com, zohar@linux.ibm.com
-Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v9 9/9] certs: Add support for using elliptic curve keys for signing modules
-Date:   Thu, 25 Feb 2021 11:08:02 -0500
-Message-Id: <20210225160802.2478700-10-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210225160802.2478700-1-stefanb@linux.vnet.ibm.com>
-References: <20210225160802.2478700-1-stefanb@linux.vnet.ibm.com>
+        Thu, 25 Feb 2021 13:27:58 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6011EC061574
+        for <linux-crypto@vger.kernel.org>; Thu, 25 Feb 2021 10:27:18 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id s15so4837052qtq.0
+        for <linux-crypto@vger.kernel.org>; Thu, 25 Feb 2021 10:27:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3qSHutfjPy0EOhPiH6AWkm82ddTRUb/cgeNETSCNBCc=;
+        b=FBYbGpWJCE+HSYVdV5pw2twtzkKMT+QzWxslw7/BhILvYCUfVXTEcQrASttmL4Z+mq
+         7ZiwQDVAKnLPnM0thr9I4RyPIc0tPMpmbbS9WdaN/W5elbbolcvwnV4MI0egLeeo+LmM
+         +C109WKTh6FqVHXVqWMKBWt4esqtR6BXTZGCxF3Fdem1p0vuR69kTxIwLVjJ8QPuv3UV
+         xtJRl40sV3T1SkXqZKgX4dQvdTKs01zbIIl5A3v/8MWjmquEGjsvL6SE7js5wEXaXkm2
+         JOr8JDtH6mdoh4CJRfjj6+wiJqaSBj/B5XoVsk3Q+DrioVDyXEi4kqQw1GBVoqX+An7k
+         VuxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3qSHutfjPy0EOhPiH6AWkm82ddTRUb/cgeNETSCNBCc=;
+        b=kz3gH+4FdeckJUATMziKn7FvRe2NCwE0k1MxRu9T8rBFOMqagFJm4bICmmOICoBlOx
+         xJDXUWBuZ8rSQ8EQFFSfp03Wq8iLPIB62VsmIlZOZJFM0bFhsWktuC4JQg30GnVBpqcn
+         C8v1W0fLPvrFxNB3pb2S4BDSmrW/ly1YEMsj82pEfFiNJpdCpneQrqyDhaqYBk6J/3Hr
+         2FdcMGcwIDho+puBjF3dxX6EihL2hUlopLxsDb0/VcsHvxRXuT8d7KsRKsVGVMk3/nBW
+         wc2EDllbNKOGBFvFriiNfw1Yg8BxV/ismcKNT4cErGHrWDDfNj5g9iq89/uHIp77i9e4
+         ziiQ==
+X-Gm-Message-State: AOAM531nxLiLR115RxrFuyqJvsXqEaVRXf51WmFbIdA/p+hJmWnOjDDi
+        MQB3b5GdBXf+Zk9FoWzVNfNGaw==
+X-Google-Smtp-Source: ABdhPJxRRGKChcV9zwck2AHYqWey+QMaXwyT+/UEQ7Tn/44kcqcNFuStrxW14hAzlrYCKuorP/9wAw==
+X-Received: by 2002:ac8:53c2:: with SMTP id c2mr3491946qtq.166.1614277637530;
+        Thu, 25 Feb 2021 10:27:17 -0800 (PST)
+Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.googlemail.com with ESMTPSA id l65sm4519678qkf.113.2021.02.25.10.27.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 10:27:17 -0800 (PST)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        bjorn.andersson@linaro.org
+Cc:     ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/7] Add support for AEAD algorithms in Qualcomm Crypto Engine driver
+Date:   Thu, 25 Feb 2021 13:27:09 -0500
+Message-Id: <20210225182716.1402449-1-thara.gopinath@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-25_09:2021-02-24,2021-02-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- adultscore=0 priorityscore=1501 phishscore=0 mlxscore=0 impostorscore=0
- clxscore=1015 lowpriorityscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102250127
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+Enable support for AEAD algorithms in Qualcomm CE driver.  The first three
+patches in this series are cleanups and add a few missing pieces required
+to add support for AEAD algorithms.  Patch 4 introduces supported AEAD
+transformations on Qualcomm CE.  Patches 5 and 6 implements the h/w
+infrastructure needed to enable and run the AEAD transformations on
+Qualcomm CE.  Patch 7 adds support to queue fallback algorithms in case of
+unsupported special inputs.
 
-This patch adds support for using elliptic curve keys for signing
-modules. It uses a NIST P384 (secp384r1) key if the user chooses an
-elliptic curve key and will have ECDSA support built into the kernel.
+This series is dependant on https://lkml.org/lkml/2021/2/11/1052.
 
-Note: A developer choosing an ECDSA key for signing modules has to
-manually delete the signing key (rm certs/signing_key.*) when falling
-back to building an older version of a kernel that only supports RSA
-keys since otherwise ECDSA-signed modules will not be usable when that
-older kernel runs and the ECDSA key was still used for signing modules.
+Thara Gopinath (7):
+  crypto: qce: common: Add MAC failed error checking
+  crypto: qce: common: Make result dump optional
+  crypto: qce: Add mode for rfc4309
+  crypto: qce: Add support for AEAD algorithms
+  crypto: qce: common: Clean up qce_auth_cfg
+  crypto: qce: common: Add support for AEAD algorithms
+  crypto: qce: aead: Schedule fallback algorithm
 
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+ drivers/crypto/Kconfig      |  15 +
+ drivers/crypto/qce/Makefile |   1 +
+ drivers/crypto/qce/aead.c   | 817 ++++++++++++++++++++++++++++++++++++
+ drivers/crypto/qce/aead.h   |  56 +++
+ drivers/crypto/qce/common.c | 198 ++++++++-
+ drivers/crypto/qce/common.h |   9 +-
+ drivers/crypto/qce/core.c   |   4 +
+ 7 files changed, 1077 insertions(+), 23 deletions(-)
+ create mode 100644 drivers/crypto/qce/aead.c
+ create mode 100644 drivers/crypto/qce/aead.h
 
----
-
-v8->v9:
- - Automatically select CONFIG_ECDSA for built-in ECDSA support
- - Added help documentation
-
-This patch builds on top Nayna's series for 'kernel build support for
-loading the kernel module signing key'.
-- https://lkml.org/lkml/2021/2/18/856
----
- certs/Kconfig                         | 22 ++++++++++++++++++++++
- certs/Makefile                        | 14 ++++++++++++++
- crypto/asymmetric_keys/pkcs7_parser.c |  4 ++++
- 3 files changed, 40 insertions(+)
-
-diff --git a/certs/Kconfig b/certs/Kconfig
-index 48675ad319db..919db43ce80b 100644
---- a/certs/Kconfig
-+++ b/certs/Kconfig
-@@ -15,6 +15,28 @@ config MODULE_SIG_KEY
-          then the kernel will automatically generate the private key and
-          certificate as described in Documentation/admin-guide/module-signing.rst
- 
-+choice
-+	prompt "Type of module signing key to be generated"
-+	default MODULE_SIG_KEY_TYPE_RSA
-+	help
-+	 The type of module signing key type to generated. This option
-+	 does not apply if a #PKCS11 URI is used.
-+
-+config MODULE_SIG_KEY_TYPE_RSA
-+	bool "RSA"
-+	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
-+	help
-+	 Use an RSA key for module signing.
-+
-+config MODULE_SIG_KEY_TYPE_ECDSA
-+	bool "ECDSA"
-+	select CRYPTO_ECDSA
-+	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
-+	help
-+	 Use an elliptic curve key (NIST P384) for module signing.
-+
-+endchoice
-+
- config SYSTEM_TRUSTED_KEYRING
- 	bool "Provide system-wide ring of trusted keys"
- 	depends on KEYS
-diff --git a/certs/Makefile b/certs/Makefile
-index 3fe6b73786fa..c487d7021c54 100644
---- a/certs/Makefile
-+++ b/certs/Makefile
-@@ -69,6 +69,18 @@ else
- SIGNER = -signkey $(obj)/signing_key.key
- endif # CONFIG_IMA_APPRAISE_MODSIG
- 
-+X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text)
-+
-+# Support user changing key type
-+ifdef CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
-+keytype_openssl = -newkey ec -pkeyopt ec_paramgen_curve:secp384r1
-+$(if $(findstring ecdsa-with-,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
-+endif
-+
-+ifdef CONFIG_MODULE_SIG_KEY_TYPE_RSA
-+$(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
-+endif
-+
- $(obj)/signing_key.pem: $(obj)/x509.genkey
- 	@$(kecho) "###"
- 	@$(kecho) "### Now generating an X.509 key pair to be used for signing modules."
-@@ -86,12 +98,14 @@ ifeq ($(CONFIG_IMA_APPRAISE_MODSIG),y)
- 		-batch -x509 -config $(obj)/x509.genkey \
- 		-outform PEM -out $(CA_KEY) \
- 		-keyout $(CA_KEY) -extensions ca_ext \
-+		$(keytype_openssl) \
- 		$($(quiet)redirect_openssl)
- endif # CONFIG_IMA_APPRAISE_MODSIG
- 	$(Q)openssl req -new -nodes -utf8 \
- 		-batch -config $(obj)/x509.genkey \
- 		-outform PEM -out $(obj)/signing_key.csr \
- 		-keyout $(obj)/signing_key.key -extensions myexts \
-+		$(keytype_openssl) \
- 		$($(quiet)redirect_openssl)
- 	$(Q)openssl x509 -req -days 36500 -in $(obj)/signing_key.csr \
- 		-outform PEM -out $(obj)/signing_key.crt $(SIGNER) \
-diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
-index 967329e0a07b..2546ec6a0505 100644
---- a/crypto/asymmetric_keys/pkcs7_parser.c
-+++ b/crypto/asymmetric_keys/pkcs7_parser.c
-@@ -269,6 +269,10 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
- 		ctx->sinfo->sig->pkey_algo = "rsa";
- 		ctx->sinfo->sig->encoding = "pkcs1";
- 		break;
-+	case OID_id_ecdsa_with_sha256:
-+		ctx->sinfo->sig->pkey_algo = "ecdsa";
-+		ctx->sinfo->sig->encoding = "x962";
-+		break;
- 	default:
- 		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
- 		return -ENOPKG;
 -- 
-2.29.2
+2.25.1
 
