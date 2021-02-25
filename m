@@ -2,60 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568AB325577
-	for <lists+linux-crypto@lfdr.de>; Thu, 25 Feb 2021 19:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FA432557D
+	for <lists+linux-crypto@lfdr.de>; Thu, 25 Feb 2021 19:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbhBYS3K (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 25 Feb 2021 13:29:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48404 "EHLO
+        id S233502AbhBYS3n (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 25 Feb 2021 13:29:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233245AbhBYS2j (ORCPT
+        with ESMTP id S232394AbhBYS3B (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 25 Feb 2021 13:28:39 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCFFC0617A7
-        for <linux-crypto@vger.kernel.org>; Thu, 25 Feb 2021 10:27:23 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id o34so4790482qtd.11
-        for <linux-crypto@vger.kernel.org>; Thu, 25 Feb 2021 10:27:23 -0800 (PST)
+        Thu, 25 Feb 2021 13:29:01 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53173C06121D
+        for <linux-crypto@vger.kernel.org>; Thu, 25 Feb 2021 10:27:24 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id 2so3270172qvd.0
+        for <linux-crypto@vger.kernel.org>; Thu, 25 Feb 2021 10:27:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FPKL92vwEKq+QVHwwPqWKXZtqeTS7tcJq/+AN38Hg8Q=;
-        b=VRJhTkxdkQimNwQpMHwAD5JhIKgnDzNtHyD0ZzM44wPyPaS4a7b//4xcwpI56sh+Aw
-         FCpCxkCD2yyTnQZ4zGL1fL/8cW8dABeqd9c1G8tobetcZ4U7SADTcq6Dis6fmfsM6G9L
-         GaFd1W2bxNkP+btujudqTDPAwVFy7fSh37h2WYc7R95Khn95K2PB0CTNGViKg3bRaLUK
-         TGGU/wOseB9lqpD3RZ2iVEamLspqVA6JpTiDjuryeOs97M68YGNELMHp7lgxU6xDZ7Z/
-         wMPuwi9DgQrwkZuOPKh4NJ/6WpPqH1fmHdOdAKfTsPZdw7lFj7qLpdZIuim4gQXHM/O8
-         L7Fw==
+        bh=K8qzTDRvDqE8beEmzlw5Ro8ITdxfmMURdYMnM5S+IyE=;
+        b=h+Q1XSl04Nzrd+2U2F0w6/LaJqEAvLRf+WZmIxdkjyk1DLN1dygniaGYvNl0sVQ0FM
+         AOj99fJI8uTPVhfy38PSj6uBbnmvPnsOYC0aMhet8dDzhUADC4fV3H+bvfazVieOFafw
+         dgAb8WwcbiWPMhzTAFyKeAkRbvHe/Z+evdApivRPuCqsPP3leyM879JxXJmV117UD0xW
+         //VUqP1GG1uGO8MR3jInaDy+tA40KBfWDxZ267/vtWQzkfglFXrBuu+pppvrErIDjO74
+         fhnb+Myys7oELCLBvJ0bh/aF3mdsyE7C4QnKdq11TWwFEtwhcNf8S/nFG1OlDaF4NenE
+         GG7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FPKL92vwEKq+QVHwwPqWKXZtqeTS7tcJq/+AN38Hg8Q=;
-        b=dQDOFv0d+IAK8J1FgXCwNdGW8RH33fSImCgy0n1inVsEz6OrVWie9RGB9rpn3W/2YQ
-         Rs+Ye/oJhUhr4VDgeku6kGevj2ZEadaD9wUGq0T1mmEgsqtJVmw+y+vmnVI5YmciNVz+
-         ogXrAUR9kK6YNosofZJ0aceWxc1lYZR3x0fPIPofOjU7bmlc4Dz/mgBZzJCUSiQJMWLm
-         uxb7bGVak9uWXxnzltSZSfC7JgyKpBth6DUQrWcl7GyzeD+ZN2f354L3PJR/Bb5a6wbI
-         xx3JcafefjEBBquXl/YAhR9MMmc4GkyDFGHqS+APY+DaZ7tjehr6zB6Rr3shV/3nr5c7
-         v5rA==
-X-Gm-Message-State: AOAM533VG72knuMdlQcONRrwFEdFJlrpNKqwGmI1OiSKWy4mDnrHkPNS
-        0T+mPir+c9wPw3KLjBwY44ds0Q==
-X-Google-Smtp-Source: ABdhPJxWTD2n7AVQVFzDn7pMU1keIVsA0aXipMoyL0Pkqig+TqhAKuJ9I1LloqhuQ6pU9xuK66ALpQ==
-X-Received: by 2002:ac8:7b9d:: with SMTP id p29mr3595210qtu.351.1614277642740;
-        Thu, 25 Feb 2021 10:27:22 -0800 (PST)
+        bh=K8qzTDRvDqE8beEmzlw5Ro8ITdxfmMURdYMnM5S+IyE=;
+        b=jeGmqskhdtPQ5KaXAPqdBc2z/vlArmR+2UVd9JK5B/agk55HNy31Y3ZF3fsAqUztZL
+         uZon6ymxA/Tb7H54SK+QBHaHUBwO9JcoEhkhksajQKnrGKPDRkIuRo/kFsEM7Q6+B+KP
+         ljyI/0G0S8b1Ba5MXIwBmglh9awubTRBeWx46sXWsDs1KondJ+jje+A1rvsnSfTiid3a
+         iwZzOKaOLncLOdCe3iV60HhAAG2uyvT0zPTQZ5o/7kll8NTagITvzgprOHFnbEaPudRD
+         x5zEYJoyCvyonXzxerN9OXqjLsCv/QjII8ZojolJb3pBuv1D77Fls5AhfGIsQxtoBGKl
+         o+BQ==
+X-Gm-Message-State: AOAM530W57iYIXqRgbc+5KF2inSNEQmWPuqXcf7jTAJysDieI1loLdIy
+        oZX1hIkO+/IijIvavhkMtY67jA==
+X-Google-Smtp-Source: ABdhPJxAfE2GJd/EajpQ676kFpKi8geeoB+J3n/FsuReVJ4Ig9YwxjEG7KFNFP/MaWQXfKDWCkdjSQ==
+X-Received: by 2002:a0c:eac9:: with SMTP id y9mr2955448qvp.58.1614277643557;
+        Thu, 25 Feb 2021 10:27:23 -0800 (PST)
 Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id l65sm4519678qkf.113.2021.02.25.10.27.21
+        by smtp.googlemail.com with ESMTPSA id l65sm4519678qkf.113.2021.02.25.10.27.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 10:27:22 -0800 (PST)
+        Thu, 25 Feb 2021 10:27:23 -0800 (PST)
 From:   Thara Gopinath <thara.gopinath@linaro.org>
 To:     herbert@gondor.apana.org.au, davem@davemloft.net,
         bjorn.andersson@linaro.org
 Cc:     ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/7] crypto: qce: common: Add support for AEAD algorithms
-Date:   Thu, 25 Feb 2021 13:27:15 -0500
-Message-Id: <20210225182716.1402449-7-thara.gopinath@linaro.org>
+Subject: [PATCH 7/7] crypto: qce: aead: Schedule fallback algorithm
+Date:   Thu, 25 Feb 2021 13:27:16 -0500
+Message-Id: <20210225182716.1402449-8-thara.gopinath@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210225182716.1402449-1-thara.gopinath@linaro.org>
 References: <20210225182716.1402449-1-thara.gopinath@linaro.org>
@@ -65,224 +65,174 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add register programming sequence for enabling AEAD
-algorithms on the Qualcomm crypto engine.
+Qualcomm crypto engine does not handle the following scenarios and
+will issue an abort. In such cases, pass on the transformation to
+a fallback algorithm.
+
+- DES3 algorithms with all three keys same.
+- AES192 algorithms.
+- 0 length messages.
 
 Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 ---
- drivers/crypto/qce/common.c | 155 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 153 insertions(+), 2 deletions(-)
+ drivers/crypto/qce/aead.c | 58 ++++++++++++++++++++++++++++++++-------
+ drivers/crypto/qce/aead.h |  3 ++
+ 2 files changed, 51 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
-index 05a71c5ecf61..54d209cb0525 100644
---- a/drivers/crypto/qce/common.c
-+++ b/drivers/crypto/qce/common.c
-@@ -15,6 +15,16 @@
- #include "core.h"
- #include "regs-v5.h"
- #include "sha.h"
-+#include "aead.h"
-+
-+static const u32 std_iv_sha1[SHA256_DIGEST_SIZE / sizeof(u32)] = {
-+	SHA1_H0, SHA1_H1, SHA1_H2, SHA1_H3, SHA1_H4, 0, 0, 0
-+};
-+
-+static const u32 std_iv_sha256[SHA256_DIGEST_SIZE / sizeof(u32)] = {
-+	SHA256_H0, SHA256_H1, SHA256_H2, SHA256_H3,
-+	SHA256_H4, SHA256_H5, SHA256_H6, SHA256_H7
-+};
- 
- static inline u32 qce_read(struct qce_device *qce, u32 offset)
- {
-@@ -96,7 +106,7 @@ static inline void qce_crypto_go(struct qce_device *qce, bool result_dump)
- 		qce_write(qce, REG_GOPROC, BIT(GO_SHIFT));
- }
- 
--#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
-+#if defined(CONFIG_CRYPTO_DEV_QCE_SHA) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
- static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
- {
- 	u32 cfg = 0;
-@@ -139,7 +149,9 @@ static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
- 
- 	return cfg;
- }
-+#endif
- 
-+#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
- static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
- {
- 	struct ahash_request *req = ahash_request_cast(async_req);
-@@ -225,7 +237,7 @@ static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
- }
- #endif
- 
--#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
-+#if defined(CONFIG_CRYPTO_DEV_QCE_SKCIPHER) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
- static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
- {
- 	u32 cfg = 0;
-@@ -271,7 +283,9 @@ static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
- 
- 	return cfg;
- }
-+#endif
- 
-+#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
- static void qce_xts_swapiv(__be32 *dst, const u8 *src, unsigned int ivsize)
- {
- 	u8 swap[QCE_AES_IV_LENGTH];
-@@ -386,6 +400,139 @@ static int qce_setup_regs_skcipher(struct crypto_async_request *async_req)
- }
- #endif
- 
-+#ifdef CONFIG_CRYPTO_DEV_QCE_AEAD
-+static int qce_setup_regs_aead(struct crypto_async_request *async_req)
-+{
-+	struct aead_request *req = aead_request_cast(async_req);
-+	struct qce_aead_reqctx *rctx = aead_request_ctx(req);
-+	struct qce_aead_ctx *ctx = crypto_tfm_ctx(async_req->tfm);
-+	struct qce_alg_template *tmpl = to_aead_tmpl(crypto_aead_reqtfm(req));
-+	struct qce_device *qce = tmpl->qce;
-+	__be32 enckey[QCE_MAX_CIPHER_KEY_SIZE / sizeof(__be32)] = {0};
-+	__be32 enciv[QCE_MAX_IV_SIZE / sizeof(__be32)] = {0};
-+	__be32 authkey[QCE_SHA_HMAC_KEY_SIZE / sizeof(__be32)] = {0};
-+	__be32 authiv[SHA256_DIGEST_SIZE / sizeof(__be32)] = {0};
-+	__be32 authnonce[QCE_MAX_NONCE / sizeof(__be32)] = {0};
-+	unsigned int enc_keylen = ctx->enc_keylen;
-+	unsigned int auth_keylen = ctx->auth_keylen;
-+	unsigned int enc_ivsize = rctx->ivsize;
-+	unsigned int auth_ivsize;
-+	unsigned int enckey_words, enciv_words;
-+	unsigned int authkey_words, authiv_words, authnonce_words;
-+	unsigned long flags = rctx->flags;
-+	u32 encr_cfg = 0, auth_cfg = 0, config, totallen;
-+	u32 *iv_last_word;
-+
-+	qce_setup_config(qce);
-+
-+	/* Write encryption key */
-+	qce_cpu_to_be32p_array(enckey, ctx->enc_key, enc_keylen);
-+	enckey_words = enc_keylen / sizeof(u32);
-+	qce_write_array(qce, REG_ENCR_KEY0, (u32 *)enckey, enckey_words);
-+
-+	/* Write encryption iv */
-+	qce_cpu_to_be32p_array(enciv, rctx->iv, enc_ivsize);
-+	enciv_words = enc_ivsize / sizeof(u32);
-+	qce_write_array(qce, REG_CNTR0_IV0, (u32 *)enciv, enciv_words);
-+
-+	if (IS_CCM(rctx->flags)) {
-+		iv_last_word = (u32 *)&enciv[enciv_words - 1];
-+//		qce_write(qce, REG_CNTR3_IV3, enciv[enciv_words - 1] + 1);
-+		qce_write(qce, REG_CNTR3_IV3, (*iv_last_word) + 1);
-+		qce_write_array(qce, REG_ENCR_CCM_INT_CNTR0, (u32 *)enciv, enciv_words);
-+		qce_write(qce, REG_CNTR_MASK, ~0);
-+		qce_write(qce, REG_CNTR_MASK0, ~0);
-+		qce_write(qce, REG_CNTR_MASK1, ~0);
-+		qce_write(qce, REG_CNTR_MASK2, ~0);
+diff --git a/drivers/crypto/qce/aead.c b/drivers/crypto/qce/aead.c
+index b594c4bb2640..4c2d024e5296 100644
+--- a/drivers/crypto/qce/aead.c
++++ b/drivers/crypto/qce/aead.c
+@@ -492,7 +492,20 @@ static int qce_aead_crypt(struct aead_request *req, int encrypt)
+ 	/* CE does not handle 0 length messages */
+ 	if (!rctx->cryptlen) {
+ 		if (!(IS_CCM(rctx->flags) && IS_DECRYPT(rctx->flags)))
+-			return -EINVAL;
++			ctx->need_fallback = true;
 +	}
 +
-+	/* Clear authentication IV and KEY registers of previous values */
-+	qce_clear_array(qce, REG_AUTH_IV0, 16);
-+	qce_clear_array(qce, REG_AUTH_KEY0, 16);
++	/* If fallback is needed, schedule and exit */
++	if (ctx->need_fallback) {
++		aead_request_set_tfm(&rctx->fallback_req, ctx->fallback);
++		aead_request_set_callback(&rctx->fallback_req, req->base.flags,
++					  req->base.complete, req->base.data);
++		aead_request_set_crypt(&rctx->fallback_req, req->src,
++				       req->dst, req->cryptlen, req->iv);
++		aead_request_set_ad(&rctx->fallback_req, req->assoclen);
 +
-+	/* Clear byte count */
-+	qce_clear_array(qce, REG_AUTH_BYTECNT0, 4);
-+
-+	/* Write authentication key */
-+	qce_cpu_to_be32p_array(authkey, ctx->auth_key, auth_keylen);
-+	authkey_words = DIV_ROUND_UP(auth_keylen, sizeof(u32));
-+	qce_write_array(qce, REG_AUTH_KEY0, (u32 *)authkey, authkey_words);
-+
-+	if (IS_SHA_HMAC(rctx->flags)) {
-+		/* Write default authentication iv */
-+		if (IS_SHA1_HMAC(rctx->flags)) {
-+			auth_ivsize = SHA1_DIGEST_SIZE;
-+			memcpy(authiv, std_iv_sha1, auth_ivsize);
-+		} else if (IS_SHA256_HMAC(rctx->flags)) {
-+			auth_ivsize = SHA256_DIGEST_SIZE;
-+			memcpy(authiv, std_iv_sha256, auth_ivsize);
-+		}
-+		authiv_words = auth_ivsize / sizeof(u32);
-+		qce_write_array(qce, REG_AUTH_IV0, (u32 *)authiv, authiv_words);
-+	}
-+
-+	if (IS_CCM(rctx->flags)) {
-+		qce_cpu_to_be32p_array(authnonce, rctx->ccm_nonce, QCE_MAX_NONCE);
-+		authnonce_words = QCE_MAX_NONCE / sizeof(u32);
-+		qce_write_array(qce, REG_AUTH_INFO_NONCE0, (u32 *)authnonce, authnonce_words);
-+	}
-+
-+	/* Set up ENCR_SEG_CFG */
-+	encr_cfg = qce_encr_cfg(flags, enc_keylen);
-+	if (IS_ENCRYPT(flags))
-+		encr_cfg |= BIT(ENCODE_SHIFT);
-+	qce_write(qce, REG_ENCR_SEG_CFG, encr_cfg);
-+
-+	/* Set up AUTH_SEG_CFG */
-+	auth_cfg = qce_auth_cfg(rctx->flags, auth_keylen, ctx->authsize);
-+	auth_cfg |= BIT(AUTH_LAST_SHIFT);
-+	auth_cfg |= BIT(AUTH_FIRST_SHIFT);
-+	if (IS_ENCRYPT(flags)) {
-+		if (IS_CCM(rctx->flags))
-+			auth_cfg |= AUTH_POS_BEFORE << AUTH_POS_SHIFT;
-+		else
-+			auth_cfg |= AUTH_POS_AFTER << AUTH_POS_SHIFT;
-+	} else {
-+		if (IS_CCM(rctx->flags))
-+			auth_cfg |= AUTH_POS_AFTER << AUTH_POS_SHIFT;
-+		else
-+			auth_cfg |= AUTH_POS_BEFORE << AUTH_POS_SHIFT;
-+	}
-+	qce_write(qce, REG_AUTH_SEG_CFG, auth_cfg);
-+
-+	totallen = rctx->cryptlen + rctx->assoclen;
-+
-+	/* Set the encryption size and start offset */
-+	if (IS_CCM(rctx->flags) && IS_DECRYPT(rctx->flags))
-+		qce_write(qce, REG_ENCR_SEG_SIZE, rctx->cryptlen + ctx->authsize);
-+	else
-+		qce_write(qce, REG_ENCR_SEG_SIZE, rctx->cryptlen);
-+	qce_write(qce, REG_ENCR_SEG_START, rctx->assoclen & 0xffff);
-+
-+	/* Set the authentication size and start offset */
-+	qce_write(qce, REG_AUTH_SEG_SIZE, totallen);
-+	qce_write(qce, REG_AUTH_SEG_START, 0);
-+
-+	/* Write total length */
-+	if (IS_CCM(rctx->flags) && IS_DECRYPT(rctx->flags))
-+		qce_write(qce, REG_SEG_SIZE, totallen + ctx->authsize);
-+	else
-+		qce_write(qce, REG_SEG_SIZE, totallen);
-+
-+	/* get little endianness */
-+	config = qce_config_reg(qce, 1);
-+	qce_write(qce, REG_CONFIG, config);
-+
-+	/* Start the process */
-+	if (IS_CCM(flags))
-+		qce_crypto_go(qce, 0);
-+	else
-+		qce_crypto_go(qce, 1);
-+
-+	return 0;
-+}
-+#endif
-+
- int qce_start(struct crypto_async_request *async_req, u32 type)
- {
- 	switch (type) {
-@@ -396,6 +543,10 @@ int qce_start(struct crypto_async_request *async_req, u32 type)
- #ifdef CONFIG_CRYPTO_DEV_QCE_SHA
- 	case CRYPTO_ALG_TYPE_AHASH:
- 		return qce_setup_regs_ahash(async_req);
-+#endif
-+#ifdef CONFIG_CRYPTO_DEV_QCE_AEAD
-+	case CRYPTO_ALG_TYPE_AEAD:
-+		return qce_setup_regs_aead(async_req);
- #endif
- 	default:
++		return encrypt ? crypto_aead_encrypt(&rctx->fallback_req) :
++				 crypto_aead_decrypt(&rctx->fallback_req);
+ 	}
+ 
+ 	/*
+@@ -533,7 +546,7 @@ static int qce_aead_ccm_setkey(struct crypto_aead *tfm, const u8 *key,
+ 		memcpy(ctx->ccm4309_salt, key + keylen, QCE_CCM4309_SALT_SIZE);
+ 	}
+ 
+-	if (keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_256)
++	if (keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_256 && keylen != AES_KEYSIZE_192)
  		return -EINVAL;
+ 
+ 	ctx->enc_keylen = keylen;
+@@ -542,7 +555,12 @@ static int qce_aead_ccm_setkey(struct crypto_aead *tfm, const u8 *key,
+ 	memcpy(ctx->enc_key, key, keylen);
+ 	memcpy(ctx->auth_key, key, keylen);
+ 
+-	return 0;
++	if (keylen == AES_KEYSIZE_192)
++		ctx->need_fallback = true;
++
++	return IS_CCM_RFC4309(flags) ?
++		crypto_aead_setkey(ctx->fallback, key, keylen + QCE_CCM4309_SALT_SIZE) :
++		crypto_aead_setkey(ctx->fallback, key, keylen);
+ }
+ 
+ static int qce_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int keylen)
+@@ -573,20 +591,21 @@ static int qce_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int
+ 		 * The crypto engine does not support any two keys
+ 		 * being the same for triple des algorithms. The
+ 		 * verify_skcipher_des3_key does not check for all the
+-		 * below conditions. Return -EINVAL in case any two keys
+-		 * are the same. Revisit to see if a fallback cipher
+-		 * is needed to handle this condition.
++		 * below conditions. Schedule fallback in this case.
+ 		 */
+ 		memcpy(_key, authenc_keys.enckey, DES3_EDE_KEY_SIZE);
+ 		if (!((_key[0] ^ _key[2]) | (_key[1] ^ _key[3])) ||
+ 		    !((_key[2] ^ _key[4]) | (_key[3] ^ _key[5])) ||
+ 		    !((_key[0] ^ _key[4]) | (_key[1] ^ _key[5])))
+-			return -EINVAL;
++			ctx->need_fallback = true;
+ 	} else if (IS_AES(flags)) {
+ 		/* No random key sizes */
+ 		if (authenc_keys.enckeylen != AES_KEYSIZE_128 &&
++		    authenc_keys.enckeylen != AES_KEYSIZE_192 &&
+ 		    authenc_keys.enckeylen != AES_KEYSIZE_256)
+ 			return -EINVAL;
++		if (authenc_keys.enckeylen == AES_KEYSIZE_192)
++			ctx->need_fallback = true;
+ 	}
+ 
+ 	ctx->enc_keylen = authenc_keys.enckeylen;
+@@ -597,7 +616,7 @@ static int qce_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int
+ 	memset(ctx->auth_key, 0, sizeof(ctx->auth_key));
+ 	memcpy(ctx->auth_key, authenc_keys.authkey, authenc_keys.authkeylen);
+ 
+-	return 0;
++	return crypto_aead_setkey(ctx->fallback, key, keylen);
+ }
+ 
+ static int qce_aead_setauthsize(struct crypto_aead *tfm, unsigned int authsize)
+@@ -612,15 +631,32 @@ static int qce_aead_setauthsize(struct crypto_aead *tfm, unsigned int authsize)
+ 			return -EINVAL;
+ 	}
+ 	ctx->authsize = authsize;
+-	return 0;
++
++	return crypto_aead_setauthsize(ctx->fallback, authsize);
+ }
+ 
+ static int qce_aead_init(struct crypto_aead *tfm)
+ {
++	struct qce_aead_ctx *ctx = crypto_aead_ctx(tfm);
++
++	ctx->need_fallback = false;
++	ctx->fallback = crypto_alloc_aead(crypto_tfm_alg_name(&tfm->base),
++					  0, CRYPTO_ALG_NEED_FALLBACK);
++
++	if (IS_ERR(ctx->fallback))
++		return PTR_ERR(ctx->fallback);
++
+ 	crypto_aead_set_reqsize(tfm, sizeof(struct qce_aead_reqctx));
+ 	return 0;
+ }
+ 
++static void qce_aead_exit(struct crypto_aead *tfm)
++{
++	struct qce_aead_ctx *ctx = crypto_aead_ctx(tfm);
++
++	crypto_free_aead(ctx->fallback);
++}
++
+ struct qce_aead_def {
+ 	unsigned long flags;
+ 	const char *name;
+@@ -718,11 +754,13 @@ static int qce_aead_register_one(const struct qce_aead_def *def, struct qce_devi
+ 	alg->encrypt			= qce_aead_encrypt;
+ 	alg->decrypt			= qce_aead_decrypt;
+ 	alg->init			= qce_aead_init;
++	alg->exit			= qce_aead_exit;
+ 
+ 	alg->base.cra_priority		= 300;
+ 	alg->base.cra_flags		= CRYPTO_ALG_ASYNC |
+ 					  CRYPTO_ALG_ALLOCATES_MEMORY |
+-					  CRYPTO_ALG_KERN_DRIVER_ONLY;
++					  CRYPTO_ALG_KERN_DRIVER_ONLY |
++					  CRYPTO_ALG_NEED_FALLBACK;
+ 	alg->base.cra_ctxsize		= sizeof(struct qce_aead_ctx);
+ 	alg->base.cra_alignmask		= 0;
+ 	alg->base.cra_module		= THIS_MODULE;
+diff --git a/drivers/crypto/qce/aead.h b/drivers/crypto/qce/aead.h
+index 3d1f2039930b..efb8477cc088 100644
+--- a/drivers/crypto/qce/aead.h
++++ b/drivers/crypto/qce/aead.h
+@@ -19,6 +19,8 @@ struct qce_aead_ctx {
+ 	unsigned int enc_keylen;
+ 	unsigned int auth_keylen;
+ 	unsigned int authsize;
++	bool need_fallback;
++	struct crypto_aead *fallback;
+ };
+ 
+ struct qce_aead_reqctx {
+@@ -39,6 +41,7 @@ struct qce_aead_reqctx {
+ 	u8 ccm_nonce[QCE_MAX_NONCE];
+ 	u8 ccmresult_buf[QCE_BAM_BURST_SIZE];
+ 	u8 ccm_rfc4309_iv[QCE_MAX_IV_SIZE];
++	struct aead_request fallback_req;
+ };
+ 
+ static inline struct qce_alg_template *to_aead_tmpl(struct crypto_aead *tfm)
 -- 
 2.25.1
 
