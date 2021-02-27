@@ -2,75 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1988326DE8
-	for <lists+linux-crypto@lfdr.de>; Sat, 27 Feb 2021 17:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BA5326F39
+	for <lists+linux-crypto@lfdr.de>; Sat, 27 Feb 2021 23:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhB0Qi5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 27 Feb 2021 11:38:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33030 "EHLO mail.kernel.org"
+        id S230107AbhB0WeR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 27 Feb 2021 17:34:17 -0500
+Received: from mail.jvpinto.com ([65.49.11.60]:31864 "EHLO mail.JVPinto.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230063AbhB0Qiq (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 27 Feb 2021 11:38:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE0F364E56;
-        Sat, 27 Feb 2021 16:38:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614443883;
-        bh=1anu053GguZ3XCbvS5ygkoPLcj3znMShlaNgpC+E1y0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jDImAwgbBb0G2bLtf4mpNrG0bqB59IVjn/Yow8DMSA7XYboWNu5rgW6Klarla5vXg
-         QfgcSjaoUhXFpv0EQ3b4UtIopuXsHvmnOhUH6KdpS+1Q954foaFnO2SffCUP5tCAjG
-         pcBl8et3YvtLUnbyFPNwHpqaltKvU+Ilvzp3kMpVqWRPCqaouSW5rFEMWqhDcVsTjU
-         wpshqd/F69k0l9leXDz+AcjW29vr9nrqSymDnuFwygWXplT0tlB+stG/xuozu65aNj
-         DK/iAmYWSqo+Y3ojx5d/HfEaLZK/j96CBE9fA3B186Wjdp6FmbDSqGIc9hiCyzD+Bv
-         sEwHTXWDuj7Bg==
-Received: by mail-ed1-f53.google.com with SMTP id h10so14806962edl.6;
-        Sat, 27 Feb 2021 08:38:02 -0800 (PST)
-X-Gm-Message-State: AOAM531lmRTH+LPFrzuOwWZL1bQ8j8RQkEc3hhYLGUpYTgYI9ZAcr1Gz
-        VZ7Tk+UnTiJIJbxh5WnMFxbj/9AHLj96Ds35M7Y=
-X-Google-Smtp-Source: ABdhPJwn27tq6U86eyjNIIhtXjQ36wkwUTAo3xCFwCoCjKkSb8GZMEYA6snPnwlD5dg7TXKUYDdpn2U1z7mIUp+QDVE=
-X-Received: by 2002:a05:6402:3d8:: with SMTP id t24mr8768323edw.298.1614443881380;
- Sat, 27 Feb 2021 08:38:01 -0800 (PST)
+        id S230001AbhB0WeN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 27 Feb 2021 17:34:13 -0500
+Received: from RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) by
+ RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Sat, 27 Feb 2021 14:33:24 -0800
+Received: from User (52.231.198.195) by RW-EXC1.JVPinto.com (172.32.1.13) with
+ Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Sat, 27 Feb 2021
+ 14:33:10 -0800
+Reply-To: <ms.reem@yandex.com>
+From:   "Ms. Reem" <johnpinto@jvpinto.com>
+Subject: Hello okay
+Date:   Sat, 27 Feb 2021 22:33:24 +0000
 MIME-Version: 1.0
-References: <20200826162954.28636-1-krzk@kernel.org> <20200904082804.GB1214@gondor.apana.org.au>
-In-Reply-To: <20200904082804.GB1214@gondor.apana.org.au>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Sat, 27 Feb 2021 17:37:49 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPfktQY_T0UpsZaGv-gUpyWmfrWVbB1yENEBtcJkZv2WKA@mail.gmail.com>
-Message-ID: <CAJKOXPfktQY_T0UpsZaGv-gUpyWmfrWVbB1yENEBtcJkZv2WKA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] crypto: sa2ul - Hide pointer and fix
- -Wpointer-to-int-cast in dev_dbg()
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Gilad Ben-Yossef <gilad@benyossef.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <e015761ecb9a47878030ad9f447dbf5c@RW-EXC1.JVPinto.com>
+To:     Undisclosed recipients:;
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, 4 Sept 2020 at 10:28, Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Wed, Aug 26, 2020 at 06:29:52PM +0200, Krzysztof Kozlowski wrote:
-> > Pointers should not be printed because they might leak important
-> > information about address space layout.  Use %p to hash the value.  This
-> > also fixes compilation warnings on 32-bit architecture:
-> >
-> >     drivers/crypto/sa2ul.c:1486:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > ---
-> >  drivers/crypto/sa2ul.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> All applied.  Thanks.
+Hello,
 
-Hi Herbert,
+My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
+and Petroleum" also "Minister of State for International Cooperation"
+in UAE. I write to you on behalf of my other "three (3) colleagues"
+who has approved me to solicit for your "partnership in claiming of
+{us$47=Million}" from a Financial Home in Cambodia on their behalf and
+for our "Mutual Benefits".
 
-I think this patch was lost, although you replied that the entire set
-is applied.
+The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
+deal with Cambodian/Vietnam Government within 2013/2014, however, we
+don't want our government to know about the fund. If this proposal
+interests you, let me know, by sending me an email and I will send to
+you detailed information on how this business would be successfully
+transacted. Be informed that nobody knows about the secret of this
+fund except us, and we know how to carry out the entire transaction.
+So I am compelled to ask, that you will stand on our behalf and
+receive this fund into any account that is solely controlled by you.
 
-Can you pick it up?
+We will compensate you with 15% of the total amount involved as
+gratification for being our partner in this transaction. Reply to:
+ms.reem@yandex.com
 
-Best regards,
-Krzysztof
+Regards,
+Ms. Reem.
