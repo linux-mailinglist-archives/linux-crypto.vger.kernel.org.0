@@ -2,60 +2,132 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BA5326F39
-	for <lists+linux-crypto@lfdr.de>; Sat, 27 Feb 2021 23:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 577CB326FA2
+	for <lists+linux-crypto@lfdr.de>; Sun, 28 Feb 2021 00:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhB0WeR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 27 Feb 2021 17:34:17 -0500
-Received: from mail.jvpinto.com ([65.49.11.60]:31864 "EHLO mail.JVPinto.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230001AbhB0WeN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 27 Feb 2021 17:34:13 -0500
-Received: from RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) by
- RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Sat, 27 Feb 2021 14:33:24 -0800
-Received: from User (52.231.198.195) by RW-EXC1.JVPinto.com (172.32.1.13) with
- Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Sat, 27 Feb 2021
- 14:33:10 -0800
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <johnpinto@jvpinto.com>
-Subject: Hello okay
-Date:   Sat, 27 Feb 2021 22:33:24 +0000
+        id S230090AbhB0Xiz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 27 Feb 2021 18:38:55 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:54760 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230040AbhB0Xiz (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 27 Feb 2021 18:38:55 -0500
+Received: by mail-io1-f72.google.com with SMTP id w26so10063941iow.21
+        for <linux-crypto@vger.kernel.org>; Sat, 27 Feb 2021 15:38:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Zl4y18V2kGpk2rxwQFCYfIWCUoTSTuHRsWuuxIxETdI=;
+        b=UTNwUXftTbKy1RW2w3QPAAQWSIMFuxtrsEKBaAmbQWXGigMp0zTwv9wA7SaATq7KMi
+         mw1/x9PQgbfxzz7KLvZtNlEq/EiYJULk+p/Rp0hhfH6yJx27bBQLZCFdbJrKwQhLL4CC
+         IqAkq25pFQWf3nmt0GabTjZNhuDMBNh4hqULmnJs3UqMxo1dKDvHLgLlRyUhCn2aWCZE
+         isAAXUDiwNB+cafeZQyQSGa1yzMhKoO1C8yCqOFyPyANokd5SCUZQgaam8+XpjCWM4nS
+         250axUHZmg8vdMdsZZwYVwbANit8XBoqdy0i3cr5lqmsaevkvapAQKfKgY4tgJwT3Dp9
+         /9Bg==
+X-Gm-Message-State: AOAM530WVX4S0SFR/OGpNZPmkHO9o8AyX2nObRaMxGQ6gBhVbdClSwIE
+        WPKzbvigIeQhns+LRmhhDkGSUXSnd8j4VcW0OeyjAAVUbR2I
+X-Google-Smtp-Source: ABdhPJwldLZXUzL7FQr3CnbXt6BXy5SWmWMF2vqQnKq6VSdhDtWCxsYbosx0PukrTTieaSLtxKkUXNUsWJ2FZU/CD+YX+RHtAElT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <e015761ecb9a47878030ad9f447dbf5c@RW-EXC1.JVPinto.com>
-To:     Undisclosed recipients:;
+X-Received: by 2002:a05:6638:d8a:: with SMTP id l10mr9311439jaj.2.1614469094346;
+ Sat, 27 Feb 2021 15:38:14 -0800 (PST)
+Date:   Sat, 27 Feb 2021 15:38:14 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000de949705bc59e0f6@google.com>
+Subject: general protection fault in crypto_destroy_tfm
+From:   syzbot <syzbot+12cf5fbfdeba210a89dd@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
 Hello,
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
+syzbot found the following issue on:
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
+HEAD commit:    29c395c7 Merge tag 'x86-entry-2021-02-24' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15246466d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c581c545cb4ffac7
+dashboard link: https://syzkaller.appspot.com/bug?extid=12cf5fbfdeba210a89dd
+compiler:       Debian clang version 11.0.1-2
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Regards,
-Ms. Reem.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+12cf5fbfdeba210a89dd@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
+CPU: 0 PID: 12596 Comm: syz-executor.2 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:crypto_destroy_tfm+0x3b/0x260 crypto/api.c:568
+Code: 48 89 fb e8 c7 d7 db fd 48 85 db 0f 84 0c 02 00 00 48 89 1c 24 49 bc 00 00 00 00 00 fc ff df 4c 8d 7d 10 4c 89 fb 48 c1 eb 03 <42> 80 3c 23 00 74 08 4c 89 ff e8 76 ff 1f fe 48 8b 45 10 48 89 44
+RSP: 0018:ffffc90001aff798 EFLAGS: 00010203
+RAX: ffffffff839ca5e9 RBX: 0000000000000002 RCX: 0000000000040000
+RDX: ffffc9000dd37000 RSI: 000000000000aeb0 RDI: 000000000000aeb1
+RBP: 0000000000000006 R08: ffffffff839ca4e5 R09: fffffbfff1f28ab5
+R10: fffffbfff1f28ab5 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff888012f78000 R14: ffff888012f78080 R15: 0000000000000016
+FS:  00007fe6e40b8700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000014a53ad CR3: 0000000029fb0000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ crypto_free_aead include/crypto/aead.h:191 [inline]
+ llsec_key_alloc net/mac802154/llsec.c:156 [inline]
+ mac802154_llsec_key_add+0x930/0xe50 net/mac802154/llsec.c:249
+ ieee802154_add_llsec_key+0x61/0x80 net/mac802154/cfg.c:338
+ rdev_add_llsec_key net/ieee802154/rdev-ops.h:260 [inline]
+ nl802154_add_llsec_key+0x4ca/0x7b0 net/ieee802154/nl802154.c:1584
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:739 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0xe4e/0x1280 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x9ae/0xd50 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0x519/0x800 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x2bf/0x370 net/socket.c:2437
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe6e40b8188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056c008 RCX: 0000000000465ef9
+RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000004
+RBP: 00000000004bcd1c R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c008
+R13: 00007fffc1f33d2f R14: 00007fe6e40b8300 R15: 0000000000022000
+Modules linked in:
+---[ end trace c6264ccb84eba4a4 ]---
+RIP: 0010:crypto_destroy_tfm+0x3b/0x260 crypto/api.c:568
+Code: 48 89 fb e8 c7 d7 db fd 48 85 db 0f 84 0c 02 00 00 48 89 1c 24 49 bc 00 00 00 00 00 fc ff df 4c 8d 7d 10 4c 89 fb 48 c1 eb 03 <42> 80 3c 23 00 74 08 4c 89 ff e8 76 ff 1f fe 48 8b 45 10 48 89 44
+RSP: 0018:ffffc90001aff798 EFLAGS: 00010203
+RAX: ffffffff839ca5e9 RBX: 0000000000000002 RCX: 0000000000040000
+RDX: ffffc9000dd37000 RSI: 000000000000aeb0 RDI: 000000000000aeb1
+RBP: 0000000000000006 R08: ffffffff839ca4e5 R09: fffffbfff1f28ab5
+R10: fffffbfff1f28ab5 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff888012f78000 R14: ffff888012f78080 R15: 0000000000000016
+FS:  00007fe6e40b8700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2d228000 CR3: 0000000029fb0000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
