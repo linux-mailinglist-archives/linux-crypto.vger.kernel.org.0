@@ -2,123 +2,119 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA78327F1A
-	for <lists+linux-crypto@lfdr.de>; Mon,  1 Mar 2021 14:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C37F432825E
+	for <lists+linux-crypto@lfdr.de>; Mon,  1 Mar 2021 16:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235420AbhCANMa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 1 Mar 2021 08:12:30 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1620 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235381AbhCANM2 (ORCPT
+        id S237177AbhCAPX3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 1 Mar 2021 10:23:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236673AbhCAPXO (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:12:28 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 121D47DD154971;
-        Mon, 1 Mar 2021 08:11:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=tJ9ufPL3b03q4eIjrN7DuEgd4aWZDYb3QhchfQ4FRbI=;
- b=j8Y2IacpCeG31mBIQisurejZbgnX9kjSdByPP/jdWaxfRURSVQmyv+2d+E+ShnbJOM1z
- ODjptmUvTr34UxjNOtJt5eBCh8ksvv1fJ7thC1R9cdbq9vsvPigIjuIn/1zueRNZM/XH
- s5fntKr1877MaedAD+IKBcgPE7dq6rnAvRVoMBtKKKHuKiOyjOqyX0RqiHIu1KwVUNcG
- NxGn0wvA9Lvk7Y6GcUTszd19HhqjO1n4bvOaaGHQp6yxE1U0VE9PtClV9XCeK836rMcD
- 9BkNGa7e8AyK7W8R9aPxrqYsIu4g7a2GyEQofsC/N5HkxQu6jkd30ppTg2RIxyIpNL3u dA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3710tk0a9w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 08:11:34 -0500
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 121D4RKT161377;
-        Mon, 1 Mar 2021 08:11:34 -0500
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3710tk0a8v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 08:11:34 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 121D7nsY002485;
-        Mon, 1 Mar 2021 13:11:31 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 36yj530w1k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 13:11:31 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 121DBSGG30343558
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Mar 2021 13:11:28 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BDA174C04E;
-        Mon,  1 Mar 2021 13:11:28 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ADCCE4C046;
-        Mon,  1 Mar 2021 13:11:25 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.103.165])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  1 Mar 2021 13:11:25 +0000 (GMT)
-Message-ID: <8618fdb7107ec6ec1aeb4e37faf82421050bdf91.camel@linux.ibm.com>
-Subject: Re: [PATCH v9 9/9] certs: Add support for using elliptic curve keys
- for signing modules
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     yumeng <yumeng18@huawei.com>,
-        Stefan Berger <stefanb@linux.vnet.ibm.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com
-Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>
-Date:   Mon, 01 Mar 2021 08:11:24 -0500
-In-Reply-To: <ce098224-893c-fba8-5995-a7bac90f82c2@huawei.com>
-References: <20210225160802.2478700-1-stefanb@linux.vnet.ibm.com>
-         <20210225160802.2478700-10-stefanb@linux.vnet.ibm.com>
-         <ce098224-893c-fba8-5995-a7bac90f82c2@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-01_08:2021-03-01,2021-03-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 suspectscore=0 phishscore=0 spamscore=0 impostorscore=0
- malwarescore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=999 mlxscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103010108
+        Mon, 1 Mar 2021 10:23:14 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1999BC061756
+        for <linux-crypto@vger.kernel.org>; Mon,  1 Mar 2021 07:22:33 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1lGkNU-0005ir-6h; Mon, 01 Mar 2021 16:22:32 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1lGkNT-000394-OS; Mon, 01 Mar 2021 16:22:31 +0100
+Date:   Mon, 1 Mar 2021 16:22:31 +0100
+To:     linux-crypto@vger.kernel.org
+Cc:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>, kernel@pengutronix.de
+Subject: CAAM: kernel BUG at drivers/crypto/caam/jr.c:230!
+Message-ID: <20210301152231.GC5549@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 16:18:25 up 11 days, 18:42, 82 users,  load average: 0.02, 0.12,
+ 0.16
+User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Sascha Hauer <sha@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, 2021-02-27 at 11:35 +0800, yumeng wrote:
-> 在 2021/2/26 0:08, Stefan Berger 写道:
-> > From: Stefan Berger <stefanb@linux.ibm.com>
-> > 
-> 
-> > diff --git a/certs/Makefile b/certs/Makefile
-> > index 3fe6b73786fa..c487d7021c54 100644
-> > --- a/certs/Makefile
-> > +++ b/certs/Makefile
-> > @@ -69,6 +69,18 @@ else
-> >   SIGNER = -signkey $(obj)/signing_key.key
-> >   endif # CONFIG_IMA_APPRAISE_MODSIG
-> >   
-> 
-> Is there anything wrong in this patch?
-> I can't apply it when I use 'git am '.
-> errors like below:
-> 
-> error: certs/Kconfig: does not match index
-> error: patch failed: certs/Makefile:69
-> error: certs/Makefile: patch does not apply
-> 
-> Thanks
+Hi All,
 
-Nothing wrong with the patch, just a dependency.  From the Change log:
-   - This patch builds on top Nayna's series for 'kernel build support
-   for loading the kernel module signing key'.
-   - https://lkml.org/lkml/2021/2/18/856
+I am on a Layerscape LS1046a using Linux-5.11. The CAAM driver sometimes
+crashes during the run-time self tests with:
 
-thanks,
+> kernel BUG at drivers/crypto/caam/jr.c:247!
+> Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+> Modules linked in:
+> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.11.0-20210225-3-00039-g434215968816-dirty #12
+> Hardware name: TQ TQMLS1046A SoM on Arkona AT1130 (C300) board (DT)
+> pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+> pc : caam_jr_dequeue+0x98/0x57c
+> lr : caam_jr_dequeue+0x98/0x57c
+> sp : ffff800010003d50
+> x29: ffff800010003d50 x28: ffff8000118d4000
+> x27: ffff8000118d4328 x26: 00000000000001f0
+> x25: ffff0008022be480 x24: ffff0008022c6410
+> x23: 00000000000001f1 x22: ffff8000118d4329
+> x21: 0000000000004d80 x20: 00000000000001f1
+> x19: 0000000000000001 x18: 0000000000000020
+> x17: 0000000000000000 x16: 0000000000000015
+> x15: ffff800011690230 x14: 2e2e2e2e2e2e2e2e
+> x13: 2e2e2e2e2e2e2020 x12: 3030303030303030
+> x11: ffff800011700a38 x10: 00000000fffff000
+> x9 : ffff8000100ada30 x8 : ffff8000116a8a38
+> x7 : 0000000000000001 x6 : 0000000000000000
+> x5 : 0000000000000000 x4 : 0000000000000000
+> x3 : 00000000ffffffff x2 : 0000000000000000
+> x1 : 0000000000000000 x0 : 0000000000001800
+> Call trace:
+>  caam_jr_dequeue+0x98/0x57c
+>  tasklet_action_common.constprop.0+0x164/0x18c
+>  tasklet_action+0x44/0x54
+>  __do_softirq+0x160/0x454
+>  __irq_exit_rcu+0x164/0x16c
+>  irq_exit+0x1c/0x30
+>  __handle_domain_irq+0xc0/0x13c
+>  gic_handle_irq+0x5c/0xf0
+>  el1_irq+0xb4/0x180
+>  arch_cpu_idle+0x18/0x30
+>  default_idle_call+0x3c/0x1c0
+>  do_idle+0x23c/0x274
+>  cpu_startup_entry+0x34/0x70
+>  rest_init+0xdc/0xec
+>  arch_call_rest_init+0x1c/0x28
+>  start_kernel+0x4ac/0x4e4
+> Code: 91392021 912c2000 d377d8c6 97f24d96 (d4210000)
 
-Mimi
+The driver iterates over the descriptors in the output ring and matches them
+with the ones it has previously queued. If it doesn't find a matching
+descriptor it complains with the BUG_ON() seen above. What I see sometimes is
+that the address in the output ring is 0x0, the job status in this case is
+0x40000006 (meaning DECO Invalid KEY command). It seems that the CAAM doesn't
+write the descriptor address to the output ring at least in some error cases.
+When we don't have the descriptor address of the failed descriptor we have no
+way to find it in the list of queued descriptors, thus we also can't find the
+callback for that descriptor. This looks very unfortunate, anyone else seen
+this or has an idea what to do about it?
 
+I haven't investigated yet which job actually fails and why. Of course that would
+be my ultimate goal to find that out.
 
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
