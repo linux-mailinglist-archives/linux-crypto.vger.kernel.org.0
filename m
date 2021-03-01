@@ -2,24 +2,24 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7D23284AA
-	for <lists+linux-crypto@lfdr.de>; Mon,  1 Mar 2021 17:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6953287E1
+	for <lists+linux-crypto@lfdr.de>; Mon,  1 Mar 2021 18:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234331AbhCAQke (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 1 Mar 2021 11:40:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42634 "EHLO mail.kernel.org"
+        id S231352AbhCAR36 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 1 Mar 2021 12:29:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234766AbhCAQi2 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:38:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0028164F3B;
-        Mon,  1 Mar 2021 16:27:10 +0000 (UTC)
+        id S237840AbhCARVT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:21:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB95D65058;
+        Mon,  1 Mar 2021 16:47:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616031;
-        bh=frRDVKUR4ASvQD20jeNGeti7N3M6Ttwit6pLr9Z3OtU=;
+        s=korg; t=1614617262;
+        bh=KIBWAFby9eWBBclJ7Q5+UuWIkuxO2Pq4bgx/Ct3+gOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yH4SYXsG0Io0qg9AzxWqIZwhXrZzlQxT+Ufy5LIW4GHsWlb8FgcNLNILB9I4bKbbm
-         vPtbA/V5MwSz/aZsuj+Z5n+jnzp0FRSdN7HDnOBep+Bgjss6cKGsf8Rz+TeMIKX/Bx
-         h9w6ZYEiqGfKQ33SyO3RfPI1qW1E3ZLwlCBK/25c=
+        b=WBJ3Hb77kIFh1zwahEFduEtwi6e+9ydFi/TzieOnoAI46hzKBE/R3/0UM9oWnnbcp
+         6lr20ih8Z3E01MPHcaM9HviVUNgWzEgDqloRbVpBVASZdrOINbMRNfFQYiR337rT1f
+         yiG8lubfKHb6GxL/D191TBDjMeaTPbbCMDQEiXcs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jann Horn <jannh@google.com>, Theodore Tso <tytso@mit.edu>,
         Ard Biesheuvel <ardb@kernel.org>,
         Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 4.14 011/176] random: fix the RNDRESEEDCRNG ioctl
-Date:   Mon,  1 Mar 2021 17:11:24 +0100
-Message-Id: <20210301161021.519314824@linuxfoundation.org>
+Subject: [PATCH 5.4 012/340] random: fix the RNDRESEEDCRNG ioctl
+Date:   Mon,  1 Mar 2021 17:09:16 +0100
+Message-Id: <20210301161048.913920766@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
-References: <20210301161020.931630716@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -66,7 +66,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -1984,7 +1984,7 @@ static long random_ioctl(struct file *f,
+@@ -2149,7 +2149,7 @@ static long random_ioctl(struct file *f,
  			return -EPERM;
  		if (crng_init < 2)
  			return -ENODATA;
