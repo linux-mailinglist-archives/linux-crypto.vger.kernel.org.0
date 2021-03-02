@@ -2,35 +2,45 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C53332B303
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Mar 2021 04:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCCB032B306
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Mar 2021 04:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233204AbhCCB0r (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Mar 2021 20:26:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34948 "EHLO mail.kernel.org"
+        id S234849AbhCCB1G (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 2 Mar 2021 20:27:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1376795AbhCBH4g (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:56:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 838BA64DE5;
-        Tue,  2 Mar 2021 07:55:40 +0000 (UTC)
+        id S1378839AbhCBJCz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 2 Mar 2021 04:02:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA7A164F04;
+        Tue,  2 Mar 2021 09:01:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614671741;
-        bh=U52npwZXvOiYHgDjNITsEfJDzhXXBzaGfsDnn9Jv/co=;
+        s=k20201202; t=1614675719;
+        bh=Z0EnfS30SP7mXyolFuHmeA91GSfI7L8TgL8Mrh6yoEc=;
         h=From:To:Cc:Subject:Date:From;
-        b=Q8gbzPSLwCq7CM19bgtQxFKZDPat9ro4lnl2qTUoKa/N5Mp2oWqSXO67zWTb0/u5Z
-         9eJJc2fJkJzhAwM1/IT7w4ncXjGQsVyAGq6Ij0gh7PsO8bgyT8wCn6hPtnlofMMnLb
-         yojn58BPxFTyCan0/aa1BqrHjYozApdD85JE7p23L4lvDUGIDr+H8hFua2Jgi75l8b
-         rT8x+E3a4um6Aq15V8xb/8H/MTWJ/FMz+5efXLKVaDJyWiIwCz+E6CeO1PTP7F4zLU
-         E8aqdSTlu9V3NJaxD2Fjr4qXQK9cTFMxpXrQmM5RUWxGYmHSKrZL9YAlSij0MsM/5A
-         KWdJTSf0XhoWQ==
+        b=RvZ5AcgmqQM0+Tiv65jOD4gfdQvozntZ9tlMKCHaMKkK+uQjdwC71iLjjkLT5VSzx
+         kFNU3xJ/UkkUkw89FJu0eTk3BQ6f4sfmTTtDSPZz4KdYsJO2p8aU1w9AJ8O7VdVjPC
+         PaAQiZnAttu/mjmySqfQub0rfbACCvxsJw+bWWFcU7a2vUAGiJ2htPTNWh5nuRqhJm
+         5pEDUrlBISgQxfleR8rTaMbQLCXYiqYiE7a9Gbg+b6QWztjMmWHTVuZvhjU1ytIhUz
+         +6di2x+RNcPZDwNbVoA89hCkrGjQ0qehHopWPpHsiy00IWQvjgRZrnG2ttG4zm7Jmb
+         WmnmB6OZKkR0Q==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
+Cc:     linux-arm-kernel@lists.infradead.org,
         Ard Biesheuvel <ardb@kernel.org>,
-        syzbot+12cf5fbfdeba210a89dd@syzkaller.appspotmail.com
-Subject: [PATCH v2] crypto: api - check for ERR pointers in crypto_destroy_tfm()
-Date:   Tue,  2 Mar 2021 08:55:30 +0100
-Message-Id: <20210302075530.29315-1-ardb@kernel.org>
+        Dave Martin <dave.martin@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH v2 0/9] running kernel mode SIMD with softirqs disabled
+Date:   Tue,  2 Mar 2021 10:01:09 +0100
+Message-Id: <20210302090118.30666-1-ardb@kernel.org>
 X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,134 +48,105 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Given that crypto_alloc_tfm() may return ERR pointers, and to avoid
-crashes on obscure error paths where such pointers are presented to
-crypto_destroy_tfm() (such as [0]), add an ERR_PTR check there
-before dereferencing the second argument as a struct crypto_tfm
-pointer.
+[ TL;DR for the non-ARM folks on CC: disabling softirq processing when using
+  SIMD in kernel mode could reduce complexity and improve performance, but we
+  need to decide whether we can do this, and how much softirq processing
+  latency we can tolerate. If we can find a satisfactory solution for this,
+  we might do the same for x86 and 32-bit ARM as well.
+  
+  However, based on preliminary off-list discussions with peterz and luto, it
+  seems that for x86, there is a preference for using per-CPU buffers to
+  preserve/restore the task context's kernel mode SIMD state when the task is
+  interrupted to perform kernel mode SIMD in softirq context. On arm64, we
+  actually had this arrangement before, and removed it because it made
+  reasoning about preserving/restoring userland SVE state (32 SIMD registers
+  of up to 2 kbit in size) rather complex. ]
 
-[0] https://lore.kernel.org/linux-crypto/000000000000de949705bc59e0f6@google.com/
+The crypto API provides two ways to invoke symmetric encryption algorithms:
+- synchronously, where the transformation is guaranteed to be done by the
+  time the function returns;
+- asynchronously, where the function may return with a -EINPROGRESS return code,
+  and a completion will be signalled when the transformation is done.
 
-Reported-by: syzbot+12cf5fbfdeba210a89dd@syzkaller.appspotmail.com
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
-v2: update kerneldoc comments of callers to crypto_destroy_tfm() that NULL or
-    error pointers are ignored.
+The latter is mainly intended for h/w accelerators, where the throughput would
+be severely limited by the latency otherwise. However, it is also being used
+for software algorithms based on SIMD instructions, which cannot be issued from
+any context (the rules are not the same on each architecture, but typically,
+SIMD can be used in task context, or in softirq context if it was not taken
+while the SIMD was already in use in kernel mode).
 
- crypto/api.c               | 2 +-
- include/crypto/acompress.h | 2 ++
- include/crypto/aead.h      | 2 ++
- include/crypto/akcipher.h  | 2 ++
- include/crypto/hash.h      | 2 ++
- include/crypto/kpp.h       | 2 ++
- include/crypto/rng.h       | 2 ++
- include/crypto/skcipher.h  | 2 ++
- 8 files changed, 15 insertions(+), 1 deletion(-)
+Many users of the crypto API exist in the kernel today that opt out of this
+asynchronous interface (802.11, macsec, kerberos, sw kTLS), or use a library
+interface which is fundamentally synchronous (wireguard). This means we end
+up using a degraded mode for the contended case (a scalar fallback) as well
+as the uncontended case (generic GCM/CCM/CTR chaining mode templates wrapped
+around the SIMD cipher as opposed to accelerated implementations of the full
+chaining modes in question). Note that scalar AES runs ~20x slower than the
+SIMD instruction based version.
 
-diff --git a/crypto/api.c b/crypto/api.c
-index ed08cbd5b9d3..c4eda56cff89 100644
---- a/crypto/api.c
-+++ b/crypto/api.c
-@@ -562,7 +562,7 @@ void crypto_destroy_tfm(void *mem, struct crypto_tfm *tfm)
- {
- 	struct crypto_alg *alg;
- 
--	if (unlikely(!mem))
-+	if (IS_ERR_OR_NULL(mem))
- 		return;
- 
- 	alg = tfm->__crt_alg;
-diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
-index fcde59c65a81..cb3d6b1c655d 100644
---- a/include/crypto/acompress.h
-+++ b/include/crypto/acompress.h
-@@ -165,6 +165,8 @@ static inline struct crypto_acomp *crypto_acomp_reqtfm(struct acomp_req *req)
-  * crypto_free_acomp() -- free ACOMPRESS tfm handle
-  *
-  * @tfm:	ACOMPRESS tfm handle allocated with crypto_alloc_acomp()
-+ *
-+ * If @tfm is a NULL or error pointer, this function does nothing.
-  */
- static inline void crypto_free_acomp(struct crypto_acomp *tfm)
- {
-diff --git a/include/crypto/aead.h b/include/crypto/aead.h
-index fcc12c593ef8..e728469c4ccc 100644
---- a/include/crypto/aead.h
-+++ b/include/crypto/aead.h
-@@ -185,6 +185,8 @@ static inline struct crypto_tfm *crypto_aead_tfm(struct crypto_aead *tfm)
- /**
-  * crypto_free_aead() - zeroize and free aead handle
-  * @tfm: cipher handle to be freed
-+ *
-+ * If @tfm is a NULL or error pointer, this function does nothing.
-  */
- static inline void crypto_free_aead(struct crypto_aead *tfm)
- {
-diff --git a/include/crypto/akcipher.h b/include/crypto/akcipher.h
-index 1d3aa252caba..5764b46bd1ec 100644
---- a/include/crypto/akcipher.h
-+++ b/include/crypto/akcipher.h
-@@ -174,6 +174,8 @@ static inline struct crypto_akcipher *crypto_akcipher_reqtfm(
-  * crypto_free_akcipher() - free AKCIPHER tfm handle
-  *
-  * @tfm: AKCIPHER tfm handle allocated with crypto_alloc_akcipher()
-+ *
-+ * If @tfm is a NULL or error pointer, this function does nothing.
-  */
- static inline void crypto_free_akcipher(struct crypto_akcipher *tfm)
- {
-diff --git a/include/crypto/hash.h b/include/crypto/hash.h
-index 13f8a6a54ca8..f065dbe2205c 100644
---- a/include/crypto/hash.h
-+++ b/include/crypto/hash.h
-@@ -281,6 +281,8 @@ static inline struct crypto_tfm *crypto_ahash_tfm(struct crypto_ahash *tfm)
- /**
-  * crypto_free_ahash() - zeroize and free the ahash handle
-  * @tfm: cipher handle to be freed
-+ *
-+ * If @tfm is a NULL or error pointer, this function does nothing.
-  */
- static inline void crypto_free_ahash(struct crypto_ahash *tfm)
- {
-diff --git a/include/crypto/kpp.h b/include/crypto/kpp.h
-index 88b591215d5c..cccceadc164b 100644
---- a/include/crypto/kpp.h
-+++ b/include/crypto/kpp.h
-@@ -154,6 +154,8 @@ static inline void crypto_kpp_set_flags(struct crypto_kpp *tfm, u32 flags)
-  * crypto_free_kpp() - free KPP tfm handle
-  *
-  * @tfm: KPP tfm handle allocated with crypto_alloc_kpp()
-+ *
-+ * If @tfm is a NULL or error pointer, this function does nothing.
-  */
- static inline void crypto_free_kpp(struct crypto_kpp *tfm)
- {
-diff --git a/include/crypto/rng.h b/include/crypto/rng.h
-index 8b4b844b4eef..17bb3673d3c1 100644
---- a/include/crypto/rng.h
-+++ b/include/crypto/rng.h
-@@ -111,6 +111,8 @@ static inline struct rng_alg *crypto_rng_alg(struct crypto_rng *tfm)
- /**
-  * crypto_free_rng() - zeroize and free RNG handle
-  * @tfm: cipher handle to be freed
-+ *
-+ * If @tfm is a NULL or error pointer, this function does nothing.
-  */
- static inline void crypto_free_rng(struct crypto_rng *tfm)
- {
-diff --git a/include/crypto/skcipher.h b/include/crypto/skcipher.h
-index 6a733b171a5d..ef0fc9ed4342 100644
---- a/include/crypto/skcipher.h
-+++ b/include/crypto/skcipher.h
-@@ -196,6 +196,8 @@ static inline struct crypto_tfm *crypto_skcipher_tfm(
- /**
-  * crypto_free_skcipher() - zeroize and free cipher handle
-  * @tfm: cipher handle to be freed
-+ *
-+ * If @tfm is a NULL or error pointer, this function does nothing.
-  */
- static inline void crypto_free_skcipher(struct crypto_skcipher *tfm)
- {
+So let's address this for arm64, by reorganizing kernel mode SIMD support so
+that the SIMD unit can always be assumed to be available. This means we need
+to defer softirq processing when grabbing the NEON unit in task context, so
+that any use of it in softirq context is guaranteed not to interrupt any code
+that was already using the NEON.
+
+This obviously impacts softirq processing latency, which is why the existing
+conditional yield support is modified to take pending softirqs into account.
+
+Change since RFC/v1:
+- add patch to remove obsolete cond_yield_neon macros
+- rebased onto new, simplified cond_yield macro
+- include patches to remove the async path from all arm64 crypto skciphers
+  and AEADs
+
+Previous RFC version:
+[0] https://lore.kernel.org/linux-arm-kernel/20201218170106.23280-1-ardb@kernel.org/
+
+The first 3 patches will need to go through the arm64 tree, so once this
+series is reviewed, some coordination is required between the arm64 and
+crypto trees to get this merged without conflicts.
+
+Cc: Dave Martin <dave.martin@arm.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+
+Ard Biesheuvel (9):
+  arm64: assembler: remove conditional NEON yield macros
+  arm64: assembler: introduce wxN aliases for wN registers
+  arm64: fpsimd: run kernel mode NEON with softirqs disabled
+  crypto: aead - disallow en/decrypt for non-task or non-softirq context
+  crypto: skcipher - disallow en/decrypt for non-task or non-softirq
+    context
+  crypto: arm64/gcm-aes-ce - remove non-SIMD fallback path
+  crypto: arm64/aes-ccm - remove non-SIMD fallback path
+  crypto: arm64/aes-ce - stop using SIMD helper for skciphers
+  crypto: arm64/aes-neonbs - stop using SIMD helper for skciphers
+
+ arch/arm64/crypto/Kconfig           |   3 -
+ arch/arm64/crypto/aes-ce-ccm-glue.c | 151 +++-----------
+ arch/arm64/crypto/aes-glue.c        | 102 ++--------
+ arch/arm64/crypto/aes-modes.S       |   2 +-
+ arch/arm64/crypto/aes-neonbs-glue.c | 122 +-----------
+ arch/arm64/crypto/ghash-ce-glue.c   | 209 +++++---------------
+ arch/arm64/crypto/sha1-ce-core.S    |   2 +-
+ arch/arm64/crypto/sha2-ce-core.S    |   2 +-
+ arch/arm64/crypto/sha3-ce-core.S    |   4 +-
+ arch/arm64/crypto/sha512-ce-core.S  |   2 +-
+ arch/arm64/include/asm/assembler.h  | 106 +++-------
+ arch/arm64/kernel/asm-offsets.c     |   2 +
+ arch/arm64/kernel/fpsimd.c          |   4 +-
+ crypto/aead.c                       |  10 +
+ crypto/skcipher.c                   |  10 +
+ 15 files changed, 162 insertions(+), 569 deletions(-)
+
 -- 
 2.30.1
 
