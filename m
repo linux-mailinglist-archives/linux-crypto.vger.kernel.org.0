@@ -2,282 +2,86 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728C932B015
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Mar 2021 04:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFD132B02B
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Mar 2021 04:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233627AbhCCBaf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Mar 2021 20:30:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378884AbhCBJFl (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:05:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 870D464EFB;
-        Tue,  2 Mar 2021 09:02:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614675753;
-        bh=QeSb1vakkawfHlAePTVlRzeExwYx/qD8bH6IzcpQYBg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MM4uRcPyouWovTGj/tiLHUJkKqxwS15Te6ggpgAiDKruPOqTH4exhms/59Se0e1fF
-         e2twlaaRKJmwZjGrYF5OZUYdCMT2KQsQBnmPMGIDO2UCCe1iW+l6D0KdD/6FeZtX2g
-         EQPWFlmYnFx65n4wBmuVUWOIA0X+EDZo29t9zYgmgiahjDDFvjLNbAZ+8yvvCLlyF3
-         tyaY9srB30mTRT1SEl79TaHqXJ/T+BpibKHUgUcGSdTZhnJsGi5QFSlsc9TAO4T+UA
-         ms4eYyarQrW6Di+SosgYRuNj2viERspkKzcxbcHo5Nm9T599AchSsKAOKZDUwtR4v1
-         FtOYtVsoy+d5A==
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Dave Martin <dave.martin@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v2 9/9] crypto: arm64/aes-neonbs - stop using SIMD helper for skciphers
-Date:   Tue,  2 Mar 2021 10:01:18 +0100
-Message-Id: <20210302090118.30666-10-ardb@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210302090118.30666-1-ardb@kernel.org>
-References: <20210302090118.30666-1-ardb@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S236966AbhCCBcl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 2 Mar 2021 20:32:41 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:49091 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1837909AbhCBJJu (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 2 Mar 2021 04:09:50 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UQ4egCQ_1614676146;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UQ4egCQ_1614676146)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 02 Mar 2021 17:09:07 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     clabbe.montjoie@gmail.com
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH v2] crypto: sun8i-ce: use kfree_sensitive() instead of 
+Date:   Tue,  2 Mar 2021 17:09:05 +0800
+Message-Id: <1614676145-93512-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Calls into the skcipher API can only occur from contexts where the SIMD
-unit is available, so there is no need for the SIMD helper.
+Use kfree_sensitive() instead of using kfree() to  make the intention 
+of the API more explicit.
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/arm64/crypto/Kconfig           |   1 -
- arch/arm64/crypto/aes-neonbs-glue.c | 122 ++------------------
- 2 files changed, 9 insertions(+), 114 deletions(-)
+fixed the following coccicheck:
+./drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c:30:16-17: WARNING
+opportunity for kfree_sensitive/kvfree_sensitive (memset at line 29)
+./drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c:42:16-17: WARNING
+opportunity for kfree_sensitive/kvfree_sensitive (memset at line 41)
+./drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c:161:8-9: WARNING
+opportunity for kfree_sensitive/kvfree_sensitive (memset at line 109)
 
-diff --git a/arch/arm64/crypto/Kconfig b/arch/arm64/crypto/Kconfig
-index 1a4374ed70fa..dbbbc9a0a9b4 100644
---- a/arch/arm64/crypto/Kconfig
-+++ b/arch/arm64/crypto/Kconfig
-@@ -122,6 +122,5 @@ config CRYPTO_AES_ARM64_BS
- 	select CRYPTO_AES_ARM64_NEON_BLK
- 	select CRYPTO_AES_ARM64
- 	select CRYPTO_LIB_AES
--	select CRYPTO_SIMD
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+--
+
+Changes in v2
+-Change the appropriate title
+
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+index cfde9ee..8259d52 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+@@ -27,7 +27,7 @@ void sun8i_ce_prng_exit(struct crypto_tfm *tfm)
+ 	struct sun8i_ce_rng_tfm_ctx *ctx = crypto_tfm_ctx(tfm);
  
- endif
-diff --git a/arch/arm64/crypto/aes-neonbs-glue.c b/arch/arm64/crypto/aes-neonbs-glue.c
-index fb507d569922..8df6ad8cb09d 100644
---- a/arch/arm64/crypto/aes-neonbs-glue.c
-+++ b/arch/arm64/crypto/aes-neonbs-glue.c
-@@ -63,11 +63,6 @@ struct aesbs_cbc_ctx {
- 	u32			enc[AES_MAX_KEYLENGTH_U32];
- };
+ 	memzero_explicit(ctx->seed, ctx->slen);
+-	kfree(ctx->seed);
++	kfree_sensitive(ctx->seed);
+ 	ctx->seed = NULL;
+ 	ctx->slen = 0;
+ }
+@@ -39,7 +39,7 @@ int sun8i_ce_prng_seed(struct crypto_rng *tfm, const u8 *seed,
  
--struct aesbs_ctr_ctx {
--	struct aesbs_ctx	key;		/* must be first member */
--	struct crypto_aes_ctx	fallback;
--};
--
- struct aesbs_xts_ctx {
- 	struct aesbs_ctx	key;
- 	u32			twkey[AES_MAX_KEYLENGTH_U32];
-@@ -207,25 +202,6 @@ static int cbc_decrypt(struct skcipher_request *req)
+ 	if (ctx->seed && ctx->slen != slen) {
+ 		memzero_explicit(ctx->seed, ctx->slen);
+-		kfree(ctx->seed);
++		kfree_sensitive(ctx->seed);
+ 		ctx->slen = 0;
+ 		ctx->seed = NULL;
+ 	}
+@@ -158,7 +158,7 @@ int sun8i_ce_prng_generate(struct crypto_rng *tfm, const u8 *src,
+ 	}
+ 	memzero_explicit(d, todo);
+ err_iv:
+-	kfree(d);
++	kfree_sensitive(d);
+ err_mem:
  	return err;
  }
- 
--static int aesbs_ctr_setkey_sync(struct crypto_skcipher *tfm, const u8 *in_key,
--				 unsigned int key_len)
--{
--	struct aesbs_ctr_ctx *ctx = crypto_skcipher_ctx(tfm);
--	int err;
--
--	err = aes_expandkey(&ctx->fallback, in_key, key_len);
--	if (err)
--		return err;
--
--	ctx->key.rounds = 6 + key_len / 4;
--
--	kernel_neon_begin();
--	aesbs_convert_key(ctx->key.rk, ctx->fallback.key_enc, ctx->key.rounds);
--	kernel_neon_end();
--
--	return 0;
--}
--
- static int ctr_encrypt(struct skcipher_request *req)
- {
- 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-@@ -292,29 +268,6 @@ static int aesbs_xts_setkey(struct crypto_skcipher *tfm, const u8 *in_key,
- 	return aesbs_setkey(tfm, in_key, key_len);
- }
- 
--static void ctr_encrypt_one(struct crypto_skcipher *tfm, const u8 *src, u8 *dst)
--{
--	struct aesbs_ctr_ctx *ctx = crypto_skcipher_ctx(tfm);
--	unsigned long flags;
--
--	/*
--	 * Temporarily disable interrupts to avoid races where
--	 * cachelines are evicted when the CPU is interrupted
--	 * to do something else.
--	 */
--	local_irq_save(flags);
--	aes_encrypt(&ctx->fallback, dst, src);
--	local_irq_restore(flags);
--}
--
--static int ctr_encrypt_sync(struct skcipher_request *req)
--{
--	if (!crypto_simd_usable())
--		return crypto_ctr_encrypt_walk(req, ctr_encrypt_one);
--
--	return ctr_encrypt(req);
--}
--
- static int __xts_crypt(struct skcipher_request *req, bool encrypt,
- 		       void (*fn)(u8 out[], u8 const in[], u8 const rk[],
- 				  int rounds, int blocks, u8 iv[]))
-@@ -431,13 +384,12 @@ static int xts_decrypt(struct skcipher_request *req)
- }
- 
- static struct skcipher_alg aes_algs[] = { {
--	.base.cra_name		= "__ecb(aes)",
--	.base.cra_driver_name	= "__ecb-aes-neonbs",
-+	.base.cra_name		= "ecb(aes)",
-+	.base.cra_driver_name	= "ecb-aes-neonbs",
- 	.base.cra_priority	= 250,
- 	.base.cra_blocksize	= AES_BLOCK_SIZE,
- 	.base.cra_ctxsize	= sizeof(struct aesbs_ctx),
- 	.base.cra_module	= THIS_MODULE,
--	.base.cra_flags		= CRYPTO_ALG_INTERNAL,
- 
- 	.min_keysize		= AES_MIN_KEY_SIZE,
- 	.max_keysize		= AES_MAX_KEY_SIZE,
-@@ -446,13 +398,12 @@ static struct skcipher_alg aes_algs[] = { {
- 	.encrypt		= ecb_encrypt,
- 	.decrypt		= ecb_decrypt,
- }, {
--	.base.cra_name		= "__cbc(aes)",
--	.base.cra_driver_name	= "__cbc-aes-neonbs",
-+	.base.cra_name		= "cbc(aes)",
-+	.base.cra_driver_name	= "cbc-aes-neonbs",
- 	.base.cra_priority	= 250,
- 	.base.cra_blocksize	= AES_BLOCK_SIZE,
- 	.base.cra_ctxsize	= sizeof(struct aesbs_cbc_ctx),
- 	.base.cra_module	= THIS_MODULE,
--	.base.cra_flags		= CRYPTO_ALG_INTERNAL,
- 
- 	.min_keysize		= AES_MIN_KEY_SIZE,
- 	.max_keysize		= AES_MAX_KEY_SIZE,
-@@ -462,13 +413,12 @@ static struct skcipher_alg aes_algs[] = { {
- 	.encrypt		= cbc_encrypt,
- 	.decrypt		= cbc_decrypt,
- }, {
--	.base.cra_name		= "__ctr(aes)",
--	.base.cra_driver_name	= "__ctr-aes-neonbs",
-+	.base.cra_name		= "ctr(aes)",
-+	.base.cra_driver_name	= "ctr-aes-neonbs",
- 	.base.cra_priority	= 250,
- 	.base.cra_blocksize	= 1,
- 	.base.cra_ctxsize	= sizeof(struct aesbs_ctx),
- 	.base.cra_module	= THIS_MODULE,
--	.base.cra_flags		= CRYPTO_ALG_INTERNAL,
- 
- 	.min_keysize		= AES_MIN_KEY_SIZE,
- 	.max_keysize		= AES_MAX_KEY_SIZE,
-@@ -479,29 +429,12 @@ static struct skcipher_alg aes_algs[] = { {
- 	.encrypt		= ctr_encrypt,
- 	.decrypt		= ctr_encrypt,
- }, {
--	.base.cra_name		= "ctr(aes)",
--	.base.cra_driver_name	= "ctr-aes-neonbs",
--	.base.cra_priority	= 250 - 1,
--	.base.cra_blocksize	= 1,
--	.base.cra_ctxsize	= sizeof(struct aesbs_ctr_ctx),
--	.base.cra_module	= THIS_MODULE,
--
--	.min_keysize		= AES_MIN_KEY_SIZE,
--	.max_keysize		= AES_MAX_KEY_SIZE,
--	.chunksize		= AES_BLOCK_SIZE,
--	.walksize		= 8 * AES_BLOCK_SIZE,
--	.ivsize			= AES_BLOCK_SIZE,
--	.setkey			= aesbs_ctr_setkey_sync,
--	.encrypt		= ctr_encrypt_sync,
--	.decrypt		= ctr_encrypt_sync,
--}, {
--	.base.cra_name		= "__xts(aes)",
--	.base.cra_driver_name	= "__xts-aes-neonbs",
-+	.base.cra_name		= "xts(aes)",
-+	.base.cra_driver_name	= "xts-aes-neonbs",
- 	.base.cra_priority	= 250,
- 	.base.cra_blocksize	= AES_BLOCK_SIZE,
- 	.base.cra_ctxsize	= sizeof(struct aesbs_xts_ctx),
- 	.base.cra_module	= THIS_MODULE,
--	.base.cra_flags		= CRYPTO_ALG_INTERNAL,
- 
- 	.min_keysize		= 2 * AES_MIN_KEY_SIZE,
- 	.max_keysize		= 2 * AES_MAX_KEY_SIZE,
-@@ -512,54 +445,17 @@ static struct skcipher_alg aes_algs[] = { {
- 	.decrypt		= xts_decrypt,
- } };
- 
--static struct simd_skcipher_alg *aes_simd_algs[ARRAY_SIZE(aes_algs)];
--
- static void aes_exit(void)
- {
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(aes_simd_algs); i++)
--		if (aes_simd_algs[i])
--			simd_skcipher_free(aes_simd_algs[i]);
--
- 	crypto_unregister_skciphers(aes_algs, ARRAY_SIZE(aes_algs));
- }
- 
- static int __init aes_init(void)
- {
--	struct simd_skcipher_alg *simd;
--	const char *basename;
--	const char *algname;
--	const char *drvname;
--	int err;
--	int i;
--
- 	if (!cpu_have_named_feature(ASIMD))
- 		return -ENODEV;
- 
--	err = crypto_register_skciphers(aes_algs, ARRAY_SIZE(aes_algs));
--	if (err)
--		return err;
--
--	for (i = 0; i < ARRAY_SIZE(aes_algs); i++) {
--		if (!(aes_algs[i].base.cra_flags & CRYPTO_ALG_INTERNAL))
--			continue;
--
--		algname = aes_algs[i].base.cra_name + 2;
--		drvname = aes_algs[i].base.cra_driver_name + 2;
--		basename = aes_algs[i].base.cra_driver_name;
--		simd = simd_skcipher_create_compat(algname, drvname, basename);
--		err = PTR_ERR(simd);
--		if (IS_ERR(simd))
--			goto unregister_simds;
--
--		aes_simd_algs[i] = simd;
--	}
--	return 0;
--
--unregister_simds:
--	aes_exit();
--	return err;
-+	return crypto_register_skciphers(aes_algs, ARRAY_SIZE(aes_algs));
- }
- 
- module_init(aes_init);
 -- 
-2.30.1
+1.8.3.1
 
