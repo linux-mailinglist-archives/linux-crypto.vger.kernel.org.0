@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCCB032B306
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Mar 2021 04:49:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CA732B309
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Mar 2021 04:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234849AbhCCB1G (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Mar 2021 20:27:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38608 "EHLO mail.kernel.org"
+        id S235299AbhCCB1r (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 2 Mar 2021 20:27:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378839AbhCBJCz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S1378840AbhCBJCz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
         Tue, 2 Mar 2021 04:02:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA7A164F04;
-        Tue,  2 Mar 2021 09:01:55 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21F4C64F16;
+        Tue,  2 Mar 2021 09:01:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614675719;
-        bh=Z0EnfS30SP7mXyolFuHmeA91GSfI7L8TgL8Mrh6yoEc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RvZ5AcgmqQM0+Tiv65jOD4gfdQvozntZ9tlMKCHaMKkK+uQjdwC71iLjjkLT5VSzx
-         kFNU3xJ/UkkUkw89FJu0eTk3BQ6f4sfmTTtDSPZz4KdYsJO2p8aU1w9AJ8O7VdVjPC
-         PaAQiZnAttu/mjmySqfQub0rfbACCvxsJw+bWWFcU7a2vUAGiJ2htPTNWh5nuRqhJm
-         5pEDUrlBISgQxfleR8rTaMbQLCXYiqYiE7a9Gbg+b6QWztjMmWHTVuZvhjU1ytIhUz
-         +6di2x+RNcPZDwNbVoA89hCkrGjQ0qehHopWPpHsiy00IWQvjgRZrnG2ttG4zm7Jmb
-         WmnmB6OZKkR0Q==
+        s=k20201202; t=1614675723;
+        bh=aQQMjGFMp2Bb6EAdSE481XHUoiuLHHMb2JHfGrl7s/Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Y9Y9skrG3ZpOLIg9ZjcKAdaEXs0t8IQQkjQ26AAYgJy3joZHYI1erC32NwWj/IVfk
+         B2vVTvc1WQCHtoHkG4lmoXmb6zMppFOqrFtJE0E/XXhYkVMo2zIOpH5YsYgUiET+wn
+         pR+lN3cFIW1oJdSOa4ftX5lU2+t4vvdFz++mUmPrOP7G+zss/qCeeI4cL6BPA6SuQV
+         O/AOAG0Kisw/VBkFHhGRp53BVHBXBsq/xJ39RFC72L134+yWr9wQ8AUb5fcNB81LpA
+         dHoWDOo3HqoJuy2M2wLTGjqYUJSV/smJu2qKRsK+BAbkAG23vLA2Ew1A3REpae9bwL
+         lnsBLwt/fZPHw==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org,
@@ -38,115 +38,108 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>,
         Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v2 0/9] running kernel mode SIMD with softirqs disabled
-Date:   Tue,  2 Mar 2021 10:01:09 +0100
-Message-Id: <20210302090118.30666-1-ardb@kernel.org>
+Subject: [PATCH v2 1/9] arm64: assembler: remove conditional NEON yield macros
+Date:   Tue,  2 Mar 2021 10:01:10 +0100
+Message-Id: <20210302090118.30666-2-ardb@kernel.org>
 X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210302090118.30666-1-ardb@kernel.org>
+References: <20210302090118.30666-1-ardb@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-[ TL;DR for the non-ARM folks on CC: disabling softirq processing when using
-  SIMD in kernel mode could reduce complexity and improve performance, but we
-  need to decide whether we can do this, and how much softirq processing
-  latency we can tolerate. If we can find a satisfactory solution for this,
-  we might do the same for x86 and 32-bit ARM as well.
-  
-  However, based on preliminary off-list discussions with peterz and luto, it
-  seems that for x86, there is a preference for using per-CPU buffers to
-  preserve/restore the task context's kernel mode SIMD state when the task is
-  interrupted to perform kernel mode SIMD in softirq context. On arm64, we
-  actually had this arrangement before, and removed it because it made
-  reasoning about preserving/restoring userland SVE state (32 SIMD registers
-  of up to 2 kbit in size) rather complex. ]
+The users of the conditional NEON yield macros have all been switched to
+the simplified cond_yield macro, and so the NEON specific ones can be
+removed.
 
-The crypto API provides two ways to invoke symmetric encryption algorithms:
-- synchronously, where the transformation is guaranteed to be done by the
-  time the function returns;
-- asynchronously, where the function may return with a -EINPROGRESS return code,
-  and a completion will be signalled when the transformation is done.
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ arch/arm64/include/asm/assembler.h | 70 --------------------
+ 1 file changed, 70 deletions(-)
 
-The latter is mainly intended for h/w accelerators, where the throughput would
-be severely limited by the latency otherwise. However, it is also being used
-for software algorithms based on SIMD instructions, which cannot be issued from
-any context (the rules are not the same on each architecture, but typically,
-SIMD can be used in task context, or in softirq context if it was not taken
-while the SIMD was already in use in kernel mode).
-
-Many users of the crypto API exist in the kernel today that opt out of this
-asynchronous interface (802.11, macsec, kerberos, sw kTLS), or use a library
-interface which is fundamentally synchronous (wireguard). This means we end
-up using a degraded mode for the contended case (a scalar fallback) as well
-as the uncontended case (generic GCM/CCM/CTR chaining mode templates wrapped
-around the SIMD cipher as opposed to accelerated implementations of the full
-chaining modes in question). Note that scalar AES runs ~20x slower than the
-SIMD instruction based version.
-
-So let's address this for arm64, by reorganizing kernel mode SIMD support so
-that the SIMD unit can always be assumed to be available. This means we need
-to defer softirq processing when grabbing the NEON unit in task context, so
-that any use of it in softirq context is guaranteed not to interrupt any code
-that was already using the NEON.
-
-This obviously impacts softirq processing latency, which is why the existing
-conditional yield support is modified to take pending softirqs into account.
-
-Change since RFC/v1:
-- add patch to remove obsolete cond_yield_neon macros
-- rebased onto new, simplified cond_yield macro
-- include patches to remove the async path from all arm64 crypto skciphers
-  and AEADs
-
-Previous RFC version:
-[0] https://lore.kernel.org/linux-arm-kernel/20201218170106.23280-1-ardb@kernel.org/
-
-The first 3 patches will need to go through the arm64 tree, so once this
-series is reviewed, some coordination is required between the arm64 and
-crypto trees to get this merged without conflicts.
-
-Cc: Dave Martin <dave.martin@arm.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-
-Ard Biesheuvel (9):
-  arm64: assembler: remove conditional NEON yield macros
-  arm64: assembler: introduce wxN aliases for wN registers
-  arm64: fpsimd: run kernel mode NEON with softirqs disabled
-  crypto: aead - disallow en/decrypt for non-task or non-softirq context
-  crypto: skcipher - disallow en/decrypt for non-task or non-softirq
-    context
-  crypto: arm64/gcm-aes-ce - remove non-SIMD fallback path
-  crypto: arm64/aes-ccm - remove non-SIMD fallback path
-  crypto: arm64/aes-ce - stop using SIMD helper for skciphers
-  crypto: arm64/aes-neonbs - stop using SIMD helper for skciphers
-
- arch/arm64/crypto/Kconfig           |   3 -
- arch/arm64/crypto/aes-ce-ccm-glue.c | 151 +++-----------
- arch/arm64/crypto/aes-glue.c        | 102 ++--------
- arch/arm64/crypto/aes-modes.S       |   2 +-
- arch/arm64/crypto/aes-neonbs-glue.c | 122 +-----------
- arch/arm64/crypto/ghash-ce-glue.c   | 209 +++++---------------
- arch/arm64/crypto/sha1-ce-core.S    |   2 +-
- arch/arm64/crypto/sha2-ce-core.S    |   2 +-
- arch/arm64/crypto/sha3-ce-core.S    |   4 +-
- arch/arm64/crypto/sha512-ce-core.S  |   2 +-
- arch/arm64/include/asm/assembler.h  | 106 +++-------
- arch/arm64/kernel/asm-offsets.c     |   2 +
- arch/arm64/kernel/fpsimd.c          |   4 +-
- crypto/aead.c                       |  10 +
- crypto/skcipher.c                   |  10 +
- 15 files changed, 162 insertions(+), 569 deletions(-)
-
+diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+index ca31594d3d6c..e0fc1d424f9b 100644
+--- a/arch/arm64/include/asm/assembler.h
++++ b/arch/arm64/include/asm/assembler.h
+@@ -692,76 +692,6 @@ USER(\label, ic	ivau, \tmp2)			// invalidate I line PoU
+ 	isb
+ .endm
+ 
+-/*
+- * Check whether to yield to another runnable task from kernel mode NEON code
+- * (which runs with preemption disabled).
+- *
+- * if_will_cond_yield_neon
+- *        // pre-yield patchup code
+- * do_cond_yield_neon
+- *        // post-yield patchup code
+- * endif_yield_neon    <label>
+- *
+- * where <label> is optional, and marks the point where execution will resume
+- * after a yield has been performed. If omitted, execution resumes right after
+- * the endif_yield_neon invocation. Note that the entire sequence, including
+- * the provided patchup code, will be omitted from the image if
+- * CONFIG_PREEMPTION is not defined.
+- *
+- * As a convenience, in the case where no patchup code is required, the above
+- * sequence may be abbreviated to
+- *
+- * cond_yield_neon <label>
+- *
+- * Note that the patchup code does not support assembler directives that change
+- * the output section, any use of such directives is undefined.
+- *
+- * The yield itself consists of the following:
+- * - Check whether the preempt count is exactly 1 and a reschedule is also
+- *   needed. If so, calling of preempt_enable() in kernel_neon_end() will
+- *   trigger a reschedule. If it is not the case, yielding is pointless.
+- * - Disable and re-enable kernel mode NEON, and branch to the yield fixup
+- *   code.
+- *
+- * This macro sequence may clobber all CPU state that is not guaranteed by the
+- * AAPCS to be preserved across an ordinary function call.
+- */
+-
+-	.macro		cond_yield_neon, lbl
+-	if_will_cond_yield_neon
+-	do_cond_yield_neon
+-	endif_yield_neon	\lbl
+-	.endm
+-
+-	.macro		if_will_cond_yield_neon
+-#ifdef CONFIG_PREEMPTION
+-	get_current_task	x0
+-	ldr		x0, [x0, #TSK_TI_PREEMPT]
+-	sub		x0, x0, #PREEMPT_DISABLE_OFFSET
+-	cbz		x0, .Lyield_\@
+-	/* fall through to endif_yield_neon */
+-	.subsection	1
+-.Lyield_\@ :
+-#else
+-	.section	".discard.cond_yield_neon", "ax"
+-#endif
+-	.endm
+-
+-	.macro		do_cond_yield_neon
+-	bl		kernel_neon_end
+-	bl		kernel_neon_begin
+-	.endm
+-
+-	.macro		endif_yield_neon, lbl
+-	.ifnb		\lbl
+-	b		\lbl
+-	.else
+-	b		.Lyield_out_\@
+-	.endif
+-	.previous
+-.Lyield_out_\@ :
+-	.endm
+-
+ 	/*
+ 	 * Check whether preempt-disabled code should yield as soon as it
+ 	 * is able. This is the case if re-enabling preemption a single
 -- 
 2.30.1
 
