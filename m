@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C47432B32A
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Mar 2021 04:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A715632B01E
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Mar 2021 04:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233844AbhCCB3n (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Mar 2021 20:29:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40170 "EHLO mail.kernel.org"
+        id S233554AbhCCBbX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 2 Mar 2021 20:31:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378881AbhCBJFa (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:05:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D603B64F18;
-        Tue,  2 Mar 2021 09:02:22 +0000 (UTC)
+        id S1378885AbhCBJFl (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 2 Mar 2021 04:05:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1ECF61494;
+        Tue,  2 Mar 2021 09:02:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614675746;
-        bh=H2GOdv4kmqAztPHmgAn7EHakKeKpHN0h1sdR1E++ryA=;
+        s=k20201202; t=1614675749;
+        bh=Ly/lmVS1QjZ7fNRVAZRVxfMooCRKtYIc6q90rwd41s0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EDD7lnrrZEZVKscBmqk/bDnF3dDLwdVQLGGdZpy3Ac30VRXL/a/B4rguHwxQC7xPI
-         elIohA72MIHnFm7i9kC0uPb7RZfycMR8c3GxJqw3BjgUN0BvXNcqzPPWeu87RmDwa3
-         QhOT1heZVzkTGVsWXtpt9+I28OUSfEelw7SdXmfandimFpLGgbkR/QUmKprHfRYpN5
-         y+Wrgntiy6fTOTrUKTBC8qXRADhLxGQkAzsMJhyKWGYb2/7N5UOhPiwQssH/X9KHck
-         px84SVIAdsO657J4jZZ8+gHNgnYgFBRiKejz1gZZ4mDN4l8vcGkXLWQeOMhEJM79RO
-         5ue/E3WufU43g==
+        b=ahWRnpcMnc895vwQmYMdW8uiFyevJhzoXU5sLkhUFPLoCinvZQ12o/bStc9LYVG4u
+         nXjDNNALFtcSbXTJq+XyImJNXSjBvP4An1xiSyrkpXm2FYg2OnpxUSqL+LPyijFShl
+         QvK+uo6y9ShDtJTRp2GoGj/t2SSlgA7yU5AqCnz/X17SA2dM8dL7IIHW1HQCqG0rAh
+         AsOqsXODY6phaPQuHMoa4mfy/vrf5IT3WWQTfg0Vtr/mBanWBsBIH0HEnUqdRU6Op6
+         dLlAnrp0efJyU+TZzFjyjGXJBumEcUWhH+K3ismxx+3VwTB37/cqRjOqgnTg5aCEuL
+         hO199v1M3WOWQ==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org,
@@ -38,9 +38,9 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>,
         Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v2 7/9] crypto: arm64/aes-ccm - remove non-SIMD fallback path
-Date:   Tue,  2 Mar 2021 10:01:16 +0100
-Message-Id: <20210302090118.30666-8-ardb@kernel.org>
+Subject: [PATCH v2 8/9] crypto: arm64/aes-ce - stop using SIMD helper for skciphers
+Date:   Tue,  2 Mar 2021 10:01:17 +0100
+Message-Id: <20210302090118.30666-9-ardb@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302090118.30666-1-ardb@kernel.org>
 References: <20210302090118.30666-1-ardb@kernel.org>
@@ -50,207 +50,228 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-AES/CCM on arm64 is implemented as a synchronous AEAD, and so it is
-guaranteed by the API that it is only invoked in task or softirq
-context. Since softirqs are now only handled when the SIMD is not
-being used in the task context that was interrupted to service the
-softirq, we no longer need a fallback path. Let's remove it.
+Calls into the skcipher API can only occur from contexts where the SIMD
+unit is available, so there is no need for the SIMD helper.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/arm64/crypto/aes-ce-ccm-glue.c | 151 ++++----------------
- 1 file changed, 30 insertions(+), 121 deletions(-)
+ arch/arm64/crypto/Kconfig    |   2 -
+ arch/arm64/crypto/aes-glue.c | 102 +++-----------------
+ 2 files changed, 13 insertions(+), 91 deletions(-)
 
-diff --git a/arch/arm64/crypto/aes-ce-ccm-glue.c b/arch/arm64/crypto/aes-ce-ccm-glue.c
-index f6d19b0dc893..e6a7243825a2 100644
---- a/arch/arm64/crypto/aes-ce-ccm-glue.c
-+++ b/arch/arm64/crypto/aes-ce-ccm-glue.c
-@@ -99,36 +99,10 @@ static int ccm_init_mac(struct aead_request *req, u8 maciv[], u32 msglen)
- static void ccm_update_mac(struct crypto_aes_ctx *key, u8 mac[], u8 const in[],
- 			   u32 abytes, u32 *macp)
+diff --git a/arch/arm64/crypto/Kconfig b/arch/arm64/crypto/Kconfig
+index b8eb0453123d..1a4374ed70fa 100644
+--- a/arch/arm64/crypto/Kconfig
++++ b/arch/arm64/crypto/Kconfig
+@@ -89,7 +89,6 @@ config CRYPTO_AES_ARM64_CE_BLK
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_AES_ARM64_CE
+ 	select CRYPTO_AES_ARM64
+-	select CRYPTO_SIMD
+ 
+ config CRYPTO_AES_ARM64_NEON_BLK
+ 	tristate "AES in ECB/CBC/CTR/XTS modes using NEON instructions"
+@@ -97,7 +96,6 @@ config CRYPTO_AES_ARM64_NEON_BLK
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_AES_ARM64
+ 	select CRYPTO_LIB_AES
+-	select CRYPTO_SIMD
+ 
+ config CRYPTO_CHACHA20_NEON
+ 	tristate "ChaCha20, XChaCha20, and XChaCha12 stream ciphers using NEON instructions"
+diff --git a/arch/arm64/crypto/aes-glue.c b/arch/arm64/crypto/aes-glue.c
+index 17e735931a0c..30b7cc6a7079 100644
+--- a/arch/arm64/crypto/aes-glue.c
++++ b/arch/arm64/crypto/aes-glue.c
+@@ -444,7 +444,7 @@ static int __maybe_unused essiv_cbc_decrypt(struct skcipher_request *req)
+ 	return err ?: cbc_decrypt_walk(req, &walk);
+ }
+ 
+-static int ctr_encrypt(struct skcipher_request *req)
++static int __maybe_unused ctr_encrypt(struct skcipher_request *req)
  {
--	if (crypto_simd_usable()) {
--		kernel_neon_begin();
--		ce_aes_ccm_auth_data(mac, in, abytes, macp, key->key_enc,
--				     num_rounds(key));
--		kernel_neon_end();
--	} else {
--		if (*macp > 0 && *macp < AES_BLOCK_SIZE) {
--			int added = min(abytes, AES_BLOCK_SIZE - *macp);
--
--			crypto_xor(&mac[*macp], in, added);
--
--			*macp += added;
--			in += added;
--			abytes -= added;
--		}
--
--		while (abytes >= AES_BLOCK_SIZE) {
--			aes_encrypt(key, mac, mac);
--			crypto_xor(mac, in, AES_BLOCK_SIZE);
--
--			in += AES_BLOCK_SIZE;
--			abytes -= AES_BLOCK_SIZE;
--		}
--
--		if (abytes > 0) {
--			aes_encrypt(key, mac, mac);
--			crypto_xor(mac, in, abytes);
--			*macp = abytes;
--		}
--	}
-+	kernel_neon_begin();
-+	ce_aes_ccm_auth_data(mac, in, abytes, macp, key->key_enc,
-+			     num_rounds(key));
-+	kernel_neon_end();
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+ 	struct crypto_aes_ctx *ctx = crypto_skcipher_ctx(tfm);
+@@ -485,29 +485,6 @@ static int ctr_encrypt(struct skcipher_request *req)
+ 	return err;
  }
  
- static void ccm_calculate_auth_mac(struct aead_request *req, u8 mac[])
-@@ -171,54 +145,6 @@ static void ccm_calculate_auth_mac(struct aead_request *req, u8 mac[])
- 	} while (len);
- }
- 
--static int ccm_crypt_fallback(struct skcipher_walk *walk, u8 mac[], u8 iv0[],
--			      struct crypto_aes_ctx *ctx, bool enc)
+-static void ctr_encrypt_one(struct crypto_skcipher *tfm, const u8 *src, u8 *dst)
 -{
--	u8 buf[AES_BLOCK_SIZE];
--	int err = 0;
+-	const struct crypto_aes_ctx *ctx = crypto_skcipher_ctx(tfm);
+-	unsigned long flags;
 -
--	while (walk->nbytes) {
--		int blocks = walk->nbytes / AES_BLOCK_SIZE;
--		u32 tail = walk->nbytes % AES_BLOCK_SIZE;
--		u8 *dst = walk->dst.virt.addr;
--		u8 *src = walk->src.virt.addr;
--		u32 nbytes = walk->nbytes;
--
--		if (nbytes == walk->total && tail > 0) {
--			blocks++;
--			tail = 0;
--		}
--
--		do {
--			u32 bsize = AES_BLOCK_SIZE;
--
--			if (nbytes < AES_BLOCK_SIZE)
--				bsize = nbytes;
--
--			crypto_inc(walk->iv, AES_BLOCK_SIZE);
--			aes_encrypt(ctx, buf, walk->iv);
--			aes_encrypt(ctx, mac, mac);
--			if (enc)
--				crypto_xor(mac, src, bsize);
--			crypto_xor_cpy(dst, src, buf, bsize);
--			if (!enc)
--				crypto_xor(mac, dst, bsize);
--			dst += bsize;
--			src += bsize;
--			nbytes -= bsize;
--		} while (--blocks);
--
--		err = skcipher_walk_done(walk, tail);
--	}
--
--	if (!err) {
--		aes_encrypt(ctx, buf, iv0);
--		aes_encrypt(ctx, mac, mac);
--		crypto_xor(mac, buf, AES_BLOCK_SIZE);
--	}
--	return err;
+-	/*
+-	 * Temporarily disable interrupts to avoid races where
+-	 * cachelines are evicted when the CPU is interrupted
+-	 * to do something else.
+-	 */
+-	local_irq_save(flags);
+-	aes_encrypt(ctx, dst, src);
+-	local_irq_restore(flags);
 -}
 -
- static int ccm_encrypt(struct aead_request *req)
+-static int __maybe_unused ctr_encrypt_sync(struct skcipher_request *req)
+-{
+-	if (!crypto_simd_usable())
+-		return crypto_ctr_encrypt_walk(req, ctr_encrypt_one);
+-
+-	return ctr_encrypt(req);
+-}
+-
+ static int __maybe_unused xts_encrypt(struct skcipher_request *req)
  {
- 	struct crypto_aead *aead = crypto_aead_reqtfm(req);
-@@ -241,30 +167,22 @@ static int ccm_encrypt(struct aead_request *req)
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+@@ -656,10 +633,9 @@ static int __maybe_unused xts_decrypt(struct skcipher_request *req)
+ static struct skcipher_alg aes_algs[] = { {
+ #if defined(USE_V8_CRYPTO_EXTENSIONS) || !IS_ENABLED(CONFIG_CRYPTO_AES_ARM64_BS)
+ 	.base = {
+-		.cra_name		= "__ecb(aes)",
+-		.cra_driver_name	= "__ecb-aes-" MODE,
++		.cra_name		= "ecb(aes)",
++		.cra_driver_name	= "ecb-aes-" MODE,
+ 		.cra_priority		= PRIO,
+-		.cra_flags		= CRYPTO_ALG_INTERNAL,
+ 		.cra_blocksize		= AES_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct crypto_aes_ctx),
+ 		.cra_module		= THIS_MODULE,
+@@ -671,10 +647,9 @@ static struct skcipher_alg aes_algs[] = { {
+ 	.decrypt	= ecb_decrypt,
+ }, {
+ 	.base = {
+-		.cra_name		= "__cbc(aes)",
+-		.cra_driver_name	= "__cbc-aes-" MODE,
++		.cra_name		= "cbc(aes)",
++		.cra_driver_name	= "cbc-aes-" MODE,
+ 		.cra_priority		= PRIO,
+-		.cra_flags		= CRYPTO_ALG_INTERNAL,
+ 		.cra_blocksize		= AES_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct crypto_aes_ctx),
+ 		.cra_module		= THIS_MODULE,
+@@ -687,10 +662,9 @@ static struct skcipher_alg aes_algs[] = { {
+ 	.decrypt	= cbc_decrypt,
+ }, {
+ 	.base = {
+-		.cra_name		= "__ctr(aes)",
+-		.cra_driver_name	= "__ctr-aes-" MODE,
++		.cra_name		= "ctr(aes)",
++		.cra_driver_name	= "ctr-aes-" MODE,
+ 		.cra_priority		= PRIO,
+-		.cra_flags		= CRYPTO_ALG_INTERNAL,
+ 		.cra_blocksize		= 1,
+ 		.cra_ctxsize		= sizeof(struct crypto_aes_ctx),
+ 		.cra_module		= THIS_MODULE,
+@@ -704,26 +678,9 @@ static struct skcipher_alg aes_algs[] = { {
+ 	.decrypt	= ctr_encrypt,
+ }, {
+ 	.base = {
+-		.cra_name		= "ctr(aes)",
+-		.cra_driver_name	= "ctr-aes-" MODE,
+-		.cra_priority		= PRIO - 1,
+-		.cra_blocksize		= 1,
+-		.cra_ctxsize		= sizeof(struct crypto_aes_ctx),
+-		.cra_module		= THIS_MODULE,
+-	},
+-	.min_keysize	= AES_MIN_KEY_SIZE,
+-	.max_keysize	= AES_MAX_KEY_SIZE,
+-	.ivsize		= AES_BLOCK_SIZE,
+-	.chunksize	= AES_BLOCK_SIZE,
+-	.setkey		= skcipher_aes_setkey,
+-	.encrypt	= ctr_encrypt_sync,
+-	.decrypt	= ctr_encrypt_sync,
+-}, {
+-	.base = {
+-		.cra_name		= "__xts(aes)",
+-		.cra_driver_name	= "__xts-aes-" MODE,
++		.cra_name		= "xts(aes)",
++		.cra_driver_name	= "xts-aes-" MODE,
+ 		.cra_priority		= PRIO,
+-		.cra_flags		= CRYPTO_ALG_INTERNAL,
+ 		.cra_blocksize		= AES_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct crypto_aes_xts_ctx),
+ 		.cra_module		= THIS_MODULE,
+@@ -738,10 +695,9 @@ static struct skcipher_alg aes_algs[] = { {
+ }, {
+ #endif
+ 	.base = {
+-		.cra_name		= "__cts(cbc(aes))",
+-		.cra_driver_name	= "__cts-cbc-aes-" MODE,
++		.cra_name		= "cts(cbc(aes))",
++		.cra_driver_name	= "cts-cbc-aes-" MODE,
+ 		.cra_priority		= PRIO,
+-		.cra_flags		= CRYPTO_ALG_INTERNAL,
+ 		.cra_blocksize		= AES_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct crypto_aes_ctx),
+ 		.cra_module		= THIS_MODULE,
+@@ -755,10 +711,9 @@ static struct skcipher_alg aes_algs[] = { {
+ 	.decrypt	= cts_cbc_decrypt,
+ }, {
+ 	.base = {
+-		.cra_name		= "__essiv(cbc(aes),sha256)",
+-		.cra_driver_name	= "__essiv-cbc-aes-sha256-" MODE,
++		.cra_name		= "essiv(cbc(aes),sha256)",
++		.cra_driver_name	= "essiv-cbc-aes-sha256-" MODE,
+ 		.cra_priority		= PRIO + 1,
+-		.cra_flags		= CRYPTO_ALG_INTERNAL,
+ 		.cra_blocksize		= AES_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct crypto_aes_essiv_cbc_ctx),
+ 		.cra_module		= THIS_MODULE,
+@@ -997,28 +952,15 @@ static struct shash_alg mac_algs[] = { {
+ 	.descsize		= sizeof(struct mac_desc_ctx),
+ } };
  
- 	err = skcipher_walk_aead_encrypt(&walk, req, false);
+-static struct simd_skcipher_alg *aes_simd_algs[ARRAY_SIZE(aes_algs)];
+-
+ static void aes_exit(void)
+ {
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(aes_simd_algs); i++)
+-		if (aes_simd_algs[i])
+-			simd_skcipher_free(aes_simd_algs[i]);
+-
+ 	crypto_unregister_shashes(mac_algs, ARRAY_SIZE(mac_algs));
+ 	crypto_unregister_skciphers(aes_algs, ARRAY_SIZE(aes_algs));
+ }
  
--	if (crypto_simd_usable()) {
--		while (walk.nbytes) {
--			u32 tail = walk.nbytes % AES_BLOCK_SIZE;
-+	while (walk.nbytes) {
-+		u32 tail = walk.nbytes % AES_BLOCK_SIZE;
+ static int __init aes_init(void)
+ {
+-	struct simd_skcipher_alg *simd;
+-	const char *basename;
+-	const char *algname;
+-	const char *drvname;
+ 	int err;
+-	int i;
  
--			if (walk.nbytes == walk.total)
--				tail = 0;
-+		if (walk.nbytes == walk.total)
-+			tail = 0;
- 
--			kernel_neon_begin();
--			ce_aes_ccm_encrypt(walk.dst.virt.addr,
--					   walk.src.virt.addr,
--					   walk.nbytes - tail, ctx->key_enc,
--					   num_rounds(ctx), mac, walk.iv);
--			kernel_neon_end();
-+		kernel_neon_begin();
-+		ce_aes_ccm_encrypt(walk.dst.virt.addr, walk.src.virt.addr,
-+				   walk.nbytes - tail, ctx->key_enc,
-+				   num_rounds(ctx), mac, walk.iv);
- 
--			err = skcipher_walk_done(&walk, tail);
--		}
--		if (!err) {
--			kernel_neon_begin();
--			ce_aes_ccm_final(mac, buf, ctx->key_enc,
--					 num_rounds(ctx));
--			kernel_neon_end();
--		}
--	} else {
--		err = ccm_crypt_fallback(&walk, mac, buf, ctx, true);
-+		if (walk.nbytes == walk.total)
-+			ce_aes_ccm_final(mac, buf, ctx->key_enc, num_rounds(ctx));
-+		kernel_neon_end();
-+
-+		err = skcipher_walk_done(&walk, tail);
- 	}
+ 	err = crypto_register_skciphers(aes_algs, ARRAY_SIZE(aes_algs));
  	if (err)
- 		return err;
-@@ -299,32 +217,23 @@ static int ccm_decrypt(struct aead_request *req)
+@@ -1028,26 +970,8 @@ static int __init aes_init(void)
+ 	if (err)
+ 		goto unregister_ciphers;
  
- 	err = skcipher_walk_aead_decrypt(&walk, req, false);
- 
--	if (crypto_simd_usable()) {
--		while (walk.nbytes) {
--			u32 tail = walk.nbytes % AES_BLOCK_SIZE;
-+	while (walk.nbytes) {
-+		u32 tail = walk.nbytes % AES_BLOCK_SIZE;
- 
--			if (walk.nbytes == walk.total)
--				tail = 0;
-+		if (walk.nbytes == walk.total)
-+			tail = 0;
- 
--			kernel_neon_begin();
--			ce_aes_ccm_decrypt(walk.dst.virt.addr,
--					   walk.src.virt.addr,
--					   walk.nbytes - tail, ctx->key_enc,
--					   num_rounds(ctx), mac, walk.iv);
--			kernel_neon_end();
-+		kernel_neon_begin();
-+		ce_aes_ccm_decrypt(walk.dst.virt.addr, walk.src.virt.addr,
-+				   walk.nbytes - tail, ctx->key_enc,
-+				   num_rounds(ctx), mac, walk.iv);
- 
--			err = skcipher_walk_done(&walk, tail);
--		}
--		if (!err) {
--			kernel_neon_begin();
--			ce_aes_ccm_final(mac, buf, ctx->key_enc,
--					 num_rounds(ctx));
--			kernel_neon_end();
--		}
--	} else {
--		err = ccm_crypt_fallback(&walk, mac, buf, ctx, false);
+-	for (i = 0; i < ARRAY_SIZE(aes_algs); i++) {
+-		if (!(aes_algs[i].base.cra_flags & CRYPTO_ALG_INTERNAL))
+-			continue;
+-
+-		algname = aes_algs[i].base.cra_name + 2;
+-		drvname = aes_algs[i].base.cra_driver_name + 2;
+-		basename = aes_algs[i].base.cra_driver_name;
+-		simd = simd_skcipher_create_compat(algname, drvname, basename);
+-		err = PTR_ERR(simd);
+-		if (IS_ERR(simd))
+-			goto unregister_simds;
+-
+-		aes_simd_algs[i] = simd;
 -	}
-+		if (walk.nbytes == walk.total)
-+			ce_aes_ccm_final(mac, buf, ctx->key_enc, num_rounds(ctx));
-+		kernel_neon_end();
+-
+ 	return 0;
  
-+		err = skcipher_walk_done(&walk, tail);
-+	}
- 	if (err)
- 		return err;
- 
+-unregister_simds:
+-	aes_exit();
+-	return err;
+ unregister_ciphers:
+ 	crypto_unregister_skciphers(aes_algs, ARRAY_SIZE(aes_algs));
+ 	return err;
 -- 
 2.30.1
 
