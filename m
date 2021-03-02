@@ -2,46 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8762632B030
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Mar 2021 04:43:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA8F32B03A
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Mar 2021 04:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236366AbhCCBd2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Mar 2021 20:33:28 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:51626 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382637AbhCBJka (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:40:30 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lH1V1-0002cy-BH; Tue, 02 Mar 2021 20:39:28 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 02 Mar 2021 20:39:27 +1100
-Date:   Tue, 2 Mar 2021 20:39:27 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     clabbe.montjoie@gmail.com, davem@davemloft.net, mripard@kernel.org,
-        wens@csie.org, jernej.skrabec@siol.net,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] crypto: sun8i-ce: use kfree_sensitive() instead of
-Message-ID: <20210302093927.GA2762@gondor.apana.org.au>
-References: <1614676145-93512-1-git-send-email-yang.lee@linux.alibaba.com>
+        id S237381AbhCCBfK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 2 Mar 2021 20:35:10 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:60619 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1579468AbhCBQ60 (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 2 Mar 2021 11:58:26 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lH7yx-0008WF-5K; Tue, 02 Mar 2021 16:34:47 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: sun8i-ss: Fix memory leak of object d when dma_iv fails to map
+Date:   Tue,  2 Mar 2021 16:34:46 +0000
+Message-Id: <20210302163446.21047-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614676145-93512-1-git-send-email-yang.lee@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 05:09:05PM +0800, Yang Li wrote:
-> Use kfree_sensitive() instead of using kfree() to  make the intention 
-> of the API more explicit.
+From: Colin Ian King <colin.king@canonical.com>
 
-Why did you keep the memzeros?
+In the case where the dma_iv mapping fails, the return error path leaks
+the memory allocated to object d.  Fix this by adding a new error return
+label and jumping to this to ensure d is free'd before the return.
 
-Thanks,
+Addresses-Coverity: ("Resource leak")
+Fixes: ac2614d721de ("crypto: sun8i-ss - Add support for the PRNG")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
+index 08a1473b2145..3191527928e4 100644
+--- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
++++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
+@@ -103,7 +103,8 @@ int sun8i_ss_prng_generate(struct crypto_rng *tfm, const u8 *src,
+ 	dma_iv = dma_map_single(ss->dev, ctx->seed, ctx->slen, DMA_TO_DEVICE);
+ 	if (dma_mapping_error(ss->dev, dma_iv)) {
+ 		dev_err(ss->dev, "Cannot DMA MAP IV\n");
+-		return -EFAULT;
++		err = -EFAULT;
++		goto err_free;
+ 	}
+ 
+ 	dma_dst = dma_map_single(ss->dev, d, todo, DMA_FROM_DEVICE);
+@@ -167,6 +168,7 @@ int sun8i_ss_prng_generate(struct crypto_rng *tfm, const u8 *src,
+ 		memcpy(ctx->seed, d + dlen, ctx->slen);
+ 	}
+ 	memzero_explicit(d, todo);
++err_free:
+ 	kfree(d);
+ 
+ 	return err;
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.30.0
+
