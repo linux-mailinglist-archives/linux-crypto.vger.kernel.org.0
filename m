@@ -2,135 +2,186 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07F632C37F
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Mar 2021 01:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191A232C343
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Mar 2021 01:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345713AbhCDAHU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 3 Mar 2021 19:07:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
+        id S235284AbhCDAHf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 3 Mar 2021 19:07:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239938AbhCCOHn (ORCPT
+        with ESMTP id S1444126AbhCCPBU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:07:43 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3C1C06178C;
-        Wed,  3 Mar 2021 06:06:52 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id w7so5277213wmb.5;
-        Wed, 03 Mar 2021 06:06:52 -0800 (PST)
+        Wed, 3 Mar 2021 10:01:20 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35791C061221
+        for <linux-crypto@vger.kernel.org>; Wed,  3 Mar 2021 06:34:56 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id d15so8689768wrv.5
+        for <linux-crypto@vger.kernel.org>; Wed, 03 Mar 2021 06:34:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=409MBK1RaSBcBkFgX0waobAB/KXrYT6ZhARjSd5/LV4=;
-        b=BTj8PkS+lJX313eZ+w7j8EzNUUB4UBS47RsvJERmHyIPz/ib70p9xFKn71mcwZHMDf
-         9X+6x90V8YqHlaU9967fH45mqBr1h+sV17t6AUYEQazBY8agivTDPQr9Nhq6DZotRsdL
-         Pa21rl6GnpDJnZqqqe6GunoPgympsZft9I07fhUwKnAqiVIQGTRtHYzJFNGDAvCcGGwT
-         f7vSHpEGsvigd1szOL3CPi1jQi6VqgdhMnqirGxMuAGdQgJ/P6RmvpXIiChCCUsAwA7Z
-         sSNtpcBkWcj5ay+fy67/PbLjBvr5YdI034Q9qxLofCS67e70b65fhhVjKxUPF1uDs7x5
-         D67A==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L1RbVwNozbMEhIlYozwqO6QzTGoV7UQM4uCG//6rsVY=;
+        b=L04HIeeFpp9qpeDcZe17XsnDPRYOxXbuL/gti0bbZINWR8fjhoFO6oA+icoYSdUbJU
+         qJv+GlOdvdTpBGY3eJyGOE5HFCKGgbsdcfuQoqpRmitfWZZTx5etug6AJqLE9Zpo+MIF
+         e7f82hcLy4d1aMZ4d/W0Tq4G/+lhPk+6zg5vxWsjN3bIthd0No7wyOXswPKPFzhQZhbd
+         sMsBsZ67uS8sUU0YQemEAenQzFd2I2bnzBx/CcaewbfmrweHYeNVanzhhq/qr0/xKl2g
+         ROXG+FZZ57NPM0CM3grm+pe5Y0NqCLU5IgVnFhG+cZR9MpbvWhrphZaJxct3OCDx6kcc
+         XzHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=409MBK1RaSBcBkFgX0waobAB/KXrYT6ZhARjSd5/LV4=;
-        b=h//yFT0/0G3FONA6kxIXCTcxhT8Z01xrpjrhw7VvaJYeLJerJiQ0Xs9MGTYL38Vbd7
-         xWtnn3YFImInqsu66olmIrG4rF7/ipXjdp/hzKRzHq077/UQ6rGqBS6Rx6M+FOn+u3AC
-         Kaq7+oo8ws/sAIWsj6mhyJOqDHFl8C4Dj13XBsySUK2JQtgLqlfvM8yWOUYgCcGxVhqO
-         C4T0i5ByF9TEOKsMMVQVETdM/sEPL8D2wcgP6R87FI63lC72hKlt/pE4L2ErhL7DBppN
-         7JmCOX3JyJeZUlWw3njSzY/osaZ3TrRWNRFTMMd5bLpqOaPxX/KjNZ/EU+bElnKxFqhn
-         eEjg==
-X-Gm-Message-State: AOAM531SyIJYbDhpvJgkmTHsMkZ54tFVgjcZOIxd03wCFEliUhokTnVD
-        DB6b+f2VjXSiqseNYpymydc=
-X-Google-Smtp-Source: ABdhPJxfUJRv37iA5SKz2sl4zvjmxoD5SO9XMgNmlkAeXz68F/mUm0OH/Poju7RD9jaM+2dccvuhdg==
-X-Received: by 2002:a7b:c755:: with SMTP id w21mr9539940wmk.89.1614780411113;
-        Wed, 03 Mar 2021 06:06:51 -0800 (PST)
-Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id c35sm5698479wmp.3.2021.03.03.06.06.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Mar 2021 06:06:49 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v4 2/2] hwrng: bcm2835: add reset support
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <cb7e29012e15ff10916374f911c74430fc3f5b32.camel@pengutronix.de>
-Date:   Wed, 3 Mar 2021 15:06:48 +0100
-Cc:     Matt Mackall <mpm@selenic.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L1RbVwNozbMEhIlYozwqO6QzTGoV7UQM4uCG//6rsVY=;
+        b=GZdjMRlVqUrySvsChp4/Es5DTf3mpVlOxyxoQfEm7M8oVqOoBgVWqFifuSgYOl5v4Y
+         9xYIFGuxl3Xhsp9AQmJosIj+5InR2PnCIGORq1B/jE8nwU9bQ8BOTf856fBy6bpOmh6J
+         CpvyTWUfA4RtDAcBapqEfMBuWopvhJuwD3+jCXzQDWYKCTRU2QVaktK92zEj1PDVRsDW
+         hM/CAJjo67Z7WBXv0JoncGQ8brxoFE2fGtkOLre2vJSIJd70kd11p7Yj2nFlQl/2/kA9
+         QMJ5U/IYKZc0tdYvSmdrINsN89C0wuzEdYkP8W3ZBu6QidUWVaYLdkEJm7yCWsar8Lfb
+         /2dQ==
+X-Gm-Message-State: AOAM530ZxX68I95bGToyoHOQZqP61KNcneeFCm3cCdf7TE7yx7PFxeas
+        meZhFKSVN3pYuBShk6LD5xk6Qg==
+X-Google-Smtp-Source: ABdhPJy/WNSjeAnc02Hh3KWLAXBxgB9kMs5eRjeHAQRlqgWIOlgEM2POuDGFU/Cws9/8rs2j+YABoQ==
+X-Received: by 2002:adf:dbc2:: with SMTP id e2mr26741212wrj.227.1614782093784;
+        Wed, 03 Mar 2021 06:34:53 -0800 (PST)
+Received: from dell.default ([91.110.221.155])
+        by smtp.gmail.com with ESMTPSA id f16sm31475923wrt.21.2021.03.03.06.34.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 06:34:53 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andreas Westin <andreas.westin@stericsson.com>,
+        Atul Gupta <atul.gupta@chelsio.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Berne Hebark <berne.herbark@stericsson.com>,
+        =?UTF-8?q?Breno=20Leit=C3=A3o?= <leitao@debian.org>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Declan Murphy <declan.murphy@intel.com>,
+        Harsh Jain <harsh@chelsio.com>,
+        Henrique Cerri <mhcerri@br.ibm.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Mark Brown <broonie@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        =?utf-8?B?Ik7DrWNvbGFzIEYuIFIuIEEuIFByYWRvIg==?= 
-        <nfraprado@protonmail.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        linux-crypto@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7B6F49A9-A31D-4126-8CB1-11EE3B2B7950@gmail.com>
-References: <20210223160131.29053-1-noltari@gmail.com>
- <20210224082230.29015-1-noltari@gmail.com>
- <20210224082230.29015-3-noltari@gmail.com>
- <cb7e29012e15ff10916374f911c74430fc3f5b32.camel@pengutronix.de>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Jitendra Lulla <jlulla@chelsio.com>,
+        Joakim Bech <joakim.xx.bech@stericsson.com>,
+        Jonas Linde <jonas.linde@stericsson.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Kent Yoder <yoder1@us.ibm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Manoj Malviya <manojmalviya@chelsio.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        M R Gowda <yeshaswi@chelsio.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Niklas Hernaeus <niklas.hernaeus@stericsson.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+        Rob Rice <rob.rice@broadcom.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        Shujuan Chen <shujuan.chen@stericsson.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Zaibo Xu <xuzaibo@huawei.com>
+Subject: [PATCH v2 00/10] Rid W=1 warnings in Crypto
+Date:   Wed,  3 Mar 2021 14:34:39 +0000
+Message-Id: <20210303143449.3170813-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Philipp,
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-> El 3 mar 2021, a las 14:52, Philipp Zabel <p.zabel@pengutronix.de> =
-escribi=C3=B3:
->=20
-> Hi =C3=81lvaro,
->=20
-> On Wed, 2021-02-24 at 09:22 +0100, =C3=81lvaro Fern=C3=A1ndez Rojas =
-wrote:
-> [...]
->> @@ -115,6 +121,8 @@ static void bcm2835_rng_cleanup(struct hwrng =
-*rng)
->> 	/* disable rng hardware */
->> 	rng_writel(priv, 0, RNG_CTRL);
->>=20
->> +	reset_control_rearm(priv->reset);
->> +
->> 	if (!IS_ERR(priv->clk))
->> 		clk_disable_unprepare(priv->clk);
->> }
->> @@ -159,6 +167,10 @@ static int bcm2835_rng_probe(struct =
-platform_device *pdev)
->> 	if (PTR_ERR(priv->clk) =3D=3D -EPROBE_DEFER)
->> 		return -EPROBE_DEFER;
->>=20
->> +	priv->reset =3D devm_reset_control_get_optional_exclusive(dev, =
-NULL);
->> +	if (IS_ERR(priv->reset))
->> +		return PTR_ERR(priv->reset);
->> +
->> 	priv->rng.name =3D pdev->name;
->> 	priv->rng.init =3D bcm2835_rng_init;
->> 	priv->rng.read =3D bcm2835_rng_read;
->=20
-> That doesn't seem right. reset_control_rearm() doesn't do anything if
-> the reset control is exclusive. Either the reset control should be
-> requested as shared, or the _rearm should be removed.
+This is set 1 of 2 sets required to fully clean Crypto.
 
-In only added reset_control_rearm() because Florian requested it=E2=80=A6
-I think it=E2=80=99s not needed, so we can use v3, since it was the only =
-change between v3 and v4...
+No functional changes since v1.
 
->=20
-> regards
-> Philipp
+Lee Jones (10):
+  crypto: hisilicon: sec_drv: Supply missing description for
+    'sec_queue_empty()'s 'queue' param
+  crypto: bcm: Fix a whole host of kernel-doc misdemeanours
+  crypto: chelsio: chcr_core: Fix some kernel-doc issues
+  crypto: ux500: hash: hash_core: Fix worthy kernel-doc headers and
+    remove others
+  crypto: keembay: ocs-hcu: Fix incorrectly named functions/structs
+  crypto: atmel-ecc: Struct headers need to start with keyword 'struct'
+  crypto: caam: caampkc: Provide the name of the function and provide
+    missing descriptions
+  crypto: vmx: Source headers are not good kernel-doc candidates
+  crypto: nx: nx-aes-cbc: Repair some kernel-doc problems
+  crypto: cavium: nitrox_isr: Demote non-compliant kernel-doc headers
 
-Best regards,
-=C3=81lvaro.=
+ drivers/crypto/atmel-ecc.c                |  2 +-
+ drivers/crypto/bcm/cipher.c               |  7 ++--
+ drivers/crypto/bcm/spu.c                  | 16 ++++-----
+ drivers/crypto/bcm/spu2.c                 | 43 +++++++++++++----------
+ drivers/crypto/bcm/util.c                 |  4 +--
+ drivers/crypto/caam/caamalg_qi2.c         |  2 ++
+ drivers/crypto/caam/caampkc.c             |  3 +-
+ drivers/crypto/cavium/nitrox/nitrox_isr.c |  4 +--
+ drivers/crypto/chelsio/chcr_algo.c        |  8 ++---
+ drivers/crypto/chelsio/chcr_core.c        |  2 +-
+ drivers/crypto/hisilicon/sec/sec_drv.c    |  1 +
+ drivers/crypto/keembay/ocs-hcu.c          |  6 ++--
+ drivers/crypto/nx/nx-aes-cbc.c            |  2 +-
+ drivers/crypto/nx/nx.c                    |  5 +--
+ drivers/crypto/nx/nx_debugfs.c            |  2 +-
+ drivers/crypto/ux500/cryp/cryp.c          |  5 +--
+ drivers/crypto/ux500/cryp/cryp_core.c     |  5 +--
+ drivers/crypto/ux500/cryp/cryp_irq.c      |  2 +-
+ drivers/crypto/ux500/hash/hash_core.c     | 15 +++-----
+ drivers/crypto/vmx/vmx.c                  |  2 +-
+ 20 files changed, 71 insertions(+), 65 deletions(-)
+
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Andreas Westin <andreas.westin@stericsson.com>
+Cc: Atul Gupta <atul.gupta@chelsio.com>
+Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
+Cc: Ayush Sawal <ayush.sawal@chelsio.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Berne Hebark <berne.herbark@stericsson.com>
+Cc: "Breno Leitão" <leitao@debian.org>
+Cc: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Declan Murphy <declan.murphy@intel.com>
+Cc: Harsh Jain <harsh@chelsio.com>
+Cc: Henrique Cerri <mhcerri@br.ibm.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "Horia Geantă" <horia.geanta@nxp.com>
+Cc: Jitendra Lulla <jlulla@chelsio.com>
+Cc: Joakim Bech <joakim.xx.bech@stericsson.com>
+Cc: Jonas Linde <jonas.linde@stericsson.com>
+Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
+Cc: Kent Yoder <yoder1@us.ibm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-crypto@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: Manoj Malviya <manojmalviya@chelsio.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: M R Gowda <yeshaswi@chelsio.com>
+Cc: Nayna Jain <nayna@linux.ibm.com>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Niklas Hernaeus <niklas.hernaeus@stericsson.com>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Paulo Flabiano Smorigo <pfsmorigo@gmail.com>
+Cc: Rob Rice <rob.rice@broadcom.com>
+Cc: Rohit Maheshwari <rohitm@chelsio.com>
+Cc: Shujuan Chen <shujuan.chen@stericsson.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+Cc: Zaibo Xu <xuzaibo@huawei.com>
+-- 
+2.27.0
+
