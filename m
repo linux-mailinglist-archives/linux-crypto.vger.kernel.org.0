@@ -2,154 +2,236 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E3B32C38A
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Mar 2021 01:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 270FD32C3D5
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Mar 2021 01:51:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354249AbhCDAHt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 3 Mar 2021 19:07:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352989AbhCDACy (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:02:54 -0500
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam08on2061f.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e8b::61f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4098DC061756
-        for <linux-crypto@vger.kernel.org>; Wed,  3 Mar 2021 15:11:51 -0800 (PST)
+        id S1356795AbhCDAHQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 3 Mar 2021 19:07:16 -0500
+Received: from mail-vi1eur05on2068.outbound.protection.outlook.com ([40.107.21.68]:3169
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238819AbhCCK1Y (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:27:24 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LHELIum9YK8Avs3Eh7xIGmWXRXeAOxGfqR5adW94f1SSDwvGZy/ai2n9hhhLSq/9V89pNBCp2lMoN7yU64AeaVPlHMfXt2l4aRjO56meQrW/cPwB/Zik7fHT6bx+IU0jMkTFhqJZTjHfAx0QxaqG2nZy3zkk7MhoLp5sphWemrcP6XSc9jpmTPMxtM3RtdjxESSiUO3a315uu0e9y9WOKRhn96e13wVltW8t/12aotDyhdIp7JGE6uZuo9JbHDYxsF1Te95wNe+/+j8pGMX+llY1iRqWO4oUHRlll7ah0mpitKbHHi1/EeFrpEF5pQMDPW+iFuy/fe4ngGRa+iFwpw==
+ b=lVIqvpbn7ZgySHDpDuATbBiF0xvxKbWV77BngEIXroZPqtE/L0YszMo+Zc2PMBPnoFak1RZbOdDCAys92eNJTfPLPyKz/74Cyl38CBtyGLDJj+f0HNYJuknRBract+3rO3UrgfHrQJomsC4WbKRI+Vk6YC/ZSBB9z7vMfaIftdjyYyTMA6IhqeSuC/mAyaHP6CyqPk1inquZMOGfFJqDYbMEvCb4cLrIDdJnWKSSwl1Kp0EdxR0S8C5UUvdiq4GuDqSxEZdKWpAx46agcK/xt1/FmgX26GNux8PzbDI58l5p5XzVQGzxdC2qYYSr2wNSCpOmzL8ouYS+o0N390Llvg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2R9rZO0rcRjtBxCKKH8XBtcYOWGegVd6s8RxCM5X2Us=;
- b=HTEdIycJ/8qc4Xkcv5cefPvCBIld8NTrr1NlHlm4Q2j1X8UqTerTXV3vcVqg2WbYfTfmnTJt0EztDTjsliXt6Wbcv6A/KWtym4vreWvYpbIK8LwZ8VBMrX+AaBAbMdlRpfYr83eB+08SKDRNcVZH3U1gaO4KtuZe72dXCFleecEMpVEbs5oqgw3LvVr+Z9CBv+w78P0r0iElEp+3q9jAce+wnLYfUwopXHds3sP27MtkQyhW0s7XT4uQaCqehqzlNODtgz1ffCWoQijwUXEEWQqYlzEwDWUEyftXa2HTsJ/GWeM32yHr11hkoSjyf+ZN6NN4AI16uF0MK2mjm98thA==
+ bh=Z9lFXCfyq5FtYrHqcZNlIUcYB53K2WNRT86q51SnmoY=;
+ b=C3nq68vmA8rCRd5pZQd/lDoipg5TgxQHwBffHRJmgjIyOIjr24m3GsQeR/w3NHLa2VHqBzpRv/HUktax8/A5PIL8lC8FULBFC3BbT2RpVnFMb2q56rBPvZUC5q2bi7fNstpsBuB8Ch1Tkj+tNo/5TDi2mQylXNfwl6whK1UPbqJqpW+TNLzLUPezVolNHt6v5k7tdr8GiabhJgomCuw+tLsllfJLIR2pDrY/Atd5vPxTABFJAV8/guqiEcBpHtTDGaZR/xJ6t71tUAfXM9lqHb0a034xOofXuraHf2GBbHJivooliX5eMfpmRl6PDbb4dsYteSKHp86xF+3LOUSKcQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2R9rZO0rcRjtBxCKKH8XBtcYOWGegVd6s8RxCM5X2Us=;
- b=0sYDkSc0sRi+E89t512BYFY1xAJYX5SPSGysLdyg8DriZH/JRaTr3NCF0/tyOJNyheYQ4E5T/ys/ks8P1jbKX/6v/7BWTNoNtwN4B8iX4Yb98ckC9lnddz9r7QH3jva9Oz5In2VSEtwWtV4Hedawn3Ccr9cfd9CN5Xk+driU7R0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR1201MB0027.namprd12.prod.outlook.com (2603:10b6:4:59::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3890.28; Wed, 3 Mar 2021 22:31:21 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::c9b6:a9ce:b253:db70]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::c9b6:a9ce:b253:db70%6]) with mapi id 15.20.3912.017; Wed, 3 Mar 2021
- 22:31:21 +0000
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-To:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        John Allen <john.allen@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH] crypto: ccp - Don't initialize SEV support without the SEV feature
-Date:   Wed,  3 Mar 2021 16:31:09 -0600
-Message-Id: <c1ea9899e6169bf3a3042866e165a2f90bda3ebd.1614810669.git.thomas.lendacky@amd.com>
-X-Mailer: git-send-email 2.30.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SN4PR0601CA0022.namprd06.prod.outlook.com
- (2603:10b6:803:2f::32) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+ bh=Z9lFXCfyq5FtYrHqcZNlIUcYB53K2WNRT86q51SnmoY=;
+ b=aUB+73M3rs3RGgDL0wB9sg3Hf3keuNC7P26kUPpccXBGE/ytAQisDqRYbErTTEZqcebX4NqRjHe7SzMmfzXOHfmSVPdZ3N4Z3bcRW7qjRfs6rqU09B4EyqGn5LneH2PW3NjUDPVfuYM+ZLyNywwD7wqo1epbN4/weh71NQvgHLY=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
+ by VI1PR04MB4592.eurprd04.prod.outlook.com (2603:10a6:803:75::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.28; Wed, 3 Mar
+ 2021 10:26:35 +0000
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::29a6:a7ec:c1d:47ba]) by VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::29a6:a7ec:c1d:47ba%5]) with mapi id 15.20.3912.017; Wed, 3 Mar 2021
+ 10:26:35 +0000
+Subject: Re: CAAM: kernel BUG at drivers/crypto/caam/jr.c:230! (and
+ dma-coherent query)
+To:     Sascha Hauer <sha@pengutronix.de>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Cc:     Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210301152231.GC5549@pengutronix.de>
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+Message-ID: <a52e0a0f-a784-2430-4b37-fb9fdcf3692b@nxp.com>
+Date:   Wed, 3 Mar 2021 12:26:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210301152231.GC5549@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [78.97.206.147]
+X-ClientProxiedBy: FRYP281CA0002.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::12)
+ To VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from tlendack-t1.amdoffice.net (165.204.77.1) by SN4PR0601CA0022.namprd06.prod.outlook.com (2603:10b6:803:2f::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Wed, 3 Mar 2021 22:31:20 +0000
+Received: from [192.168.0.213] (78.97.206.147) by FRYP281CA0002.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.16 via Frontend Transport; Wed, 3 Mar 2021 10:26:34 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 1e1df150-ab7a-4a94-f070-08d8de9411a4
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0027:
+X-MS-Office365-Filtering-Correlation-Id: 92fad99b-3647-4a12-288c-08d8de2ed27d
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4592:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB0027680047C733E289F2DD44EC989@DM5PR1201MB0027.namprd12.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <VI1PR04MB45920E6A3005B188BC3290A198989@VI1PR04MB4592.eurprd04.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bKFonX3xT19/D5Fft0E2E+CEThQ6wIAqOqOqe67QzMo3PdA7PUwhSaCwD4DqYSPEVRUr6XGRENZvbKIx1UgaZiWYnkmcszpOQ21MvvfOW3NmG2eH/ZIm88o5mqLtsTafucumNJXfMLmuIfqg/sU8ayiaCByrJLIjvzSMZ2fzYBhExVpKByG/1VidUcanCVURdpi0mE9X80XSXUV0m+GaMpQJxI+/OXrY1bZdX/A5XlZMYoIZIObYJJZc/HNflFSuLQcjgAAV1pHrIoINoy/9cacd1tvJH6HZeOqZ1uTj7BwctEcCDyaYCgMsUgP8bI3n49shLREYpNwR8EzXPn6xKnSr0csJC8K8+/huZ1KWiWJ+Hzs65nISIARU/BPUuRK0hX0p20D5SKCzP0m7Zv28IqNAISsu4VPCiDq5xqW5y6yfF2Ca4UtrSmiAdwPpoDH1oGa1deo4gp/XTOv0PTfiqWPN8QdojVj4LGXWHMkP/AFELPZNwziXzTBuGzskaq0I8Zejzenwwd+cZVwH55glwA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(136003)(366004)(346002)(6506007)(26005)(36756003)(8676002)(16526019)(186003)(478600001)(6666004)(956004)(52116002)(66476007)(4326008)(2906002)(66946007)(8936002)(83380400001)(86362001)(5660300002)(66556008)(2616005)(54906003)(316002)(6512007)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?GqjgYUplNz1M1VxwekRbcjkhpNSJwald1vJctZ1OlxkNqGFOhOEpJpao/nxj?=
- =?us-ascii?Q?trCGzma0biAMHXlQiaES/TmcB1pHuja7Dbn6fbzhR6bBSv9LzIFsV/9Y+r0A?=
- =?us-ascii?Q?IobOoEqa+z+G158VsB91UIjo0pGT9LsUXojszosfPUMwle3+JPMz5QVtAvkO?=
- =?us-ascii?Q?JmhX8oka7hhYM8AagC9kLi6+pqxbNGEs8CT1uWi3/PplDJvUvWNf4p+Xf1rn?=
- =?us-ascii?Q?aPWw4QU/hqgTW7t00lfwhrUJHovTvK8bs0zWTxEXZ4q9KnCK1QDl4QWgTVn+?=
- =?us-ascii?Q?NlLcEa/rIlN/00OycaHu6FDG5xjJor0U9aVu0RT0+pFqISqs4Tm8MZ5U4OZJ?=
- =?us-ascii?Q?1MTByyDHi+m7qgUAK6/T6+neo7CQqRmFvDlYeNVK7tTd0X3G4c2/XORj3Tr5?=
- =?us-ascii?Q?2xdYOL022hQP9jELOsbKJzv6JQ60ihz+CpuJpEVRaqDM4q+mNB5+zG2P8L+n?=
- =?us-ascii?Q?eiNrCL6lf6MTEKgycHEPhl6y5vEeZiMhHLVQtYQ4xzFqY+Ge846flxxItMcg?=
- =?us-ascii?Q?xFurQ8d8IPdiWQZ1V5BQ9a5nPBEG3yvvt7psFHUfFrWkyhl+Bbx7MMAmMIAq?=
- =?us-ascii?Q?ce3MqeQCPF/84KSJVSorMIJwN6dlJ3GlyMDCc/2rdjSj+Mpx+xdRjIStjctf?=
- =?us-ascii?Q?l08vBaq6vx/Dv1bDDaIKc6HIol1cgEdAk64w/avmYdRrEVYiBL3wGPh5LCLE?=
- =?us-ascii?Q?Zdzmx/kaVgITCTGLggJPFUUXov616mUa+t/sLMZLtOkXXFB0KFCE+wNFpWrf?=
- =?us-ascii?Q?jGtdrpROu80BF7pIjQL1tY44G6jerIvm97P7JuVPqOKvZ6yEa6Q/TH69BRvK?=
- =?us-ascii?Q?9UBTQBcGwlipx7vaVU0Xd6Hgk1Z73TKxO5TzSp5DWAlyvsBstpTmS54JpNiI?=
- =?us-ascii?Q?kLJOcJUKusfv8q5wtt1Fzs1LDZbDbn+KjtkXgQgIYLmUfYXTDKwuMtOTuRj3?=
- =?us-ascii?Q?BmYkHdcR92ztI8bBl/YCsAl6CLsmCrRovv00OvHUfc6Bck63yb2uIDSS1JCi?=
- =?us-ascii?Q?k+OvWpReaaxNsn29fap4eAGZW8lpxEBjMv9IhxrYDXue7tSZogteP6gXu8Pv?=
- =?us-ascii?Q?sJwfhE+DiXs2kEoDFYrviy0C1iuqcpBmcpFIYFJ62gjEax6NqFWebUhRiLjL?=
- =?us-ascii?Q?RIZ7M1odmFsRwWx3o3xobMLSZ+w8VqWgngI/z/OZi5roz9wvZb4KvqR1eS7L?=
- =?us-ascii?Q?TlggcBTthaqFtytxaoe/YwK62tVw+SoYMTCLOgC+dRyS/GBrcA5fgZtmFRbM?=
- =?us-ascii?Q?mlMP0eYxnXfgAx4ZhsSW5KPYEzvaMqzYasTO4TlwbOSeKiSXIzn6BvKnMubW?=
- =?us-ascii?Q?ADi8qFJFQexX7mfhdACAU/53?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e1df150-ab7a-4a94-f070-08d8de9411a4
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: +KHEN9RS1gm1/ehLQkHe0U5mbW/0k1jOuSkbQsJB5slUPvP4TtK5fEDM1dJjTgyzXgJ7yQuKJDAFXau4B0s3G1y7ZjYEbvGqM+hlOUfRTio13iiElRXqEaRm9u+V+GDHbOCgVTrdTZFtwEw4A/kQXcMAR07APR0Lls4Kds6vwkXdYCXLpjlN2YwZg7x8TsneHQzMIk5jqNmJEOTjN/54K7vDQnsopRjgWVYqKCyMbi7zKprse6gUHkzfamBU6WqedKgy0MMAsGov9u7N5ggJO/iUfhpQ15TYWyF7j4atvOQSxsbBaPYQLKhi8cMpxLGEwXyw4LnZsh0WMRE2FzBjasWG0Mx3ZViyypiDtKGQFQHuS6Eqrnlczel3YkjADuE2QLkkK3VhGRvQzdji8GjzsmiSZVVPN+RtijMsxJKv+0dxsyownPVzoy8DNnklset4Emxw4Ka8MDSfQhagNGm/D5utEQrTBNS6Su+E0m/qTByGtwTwVQXwE4QEuDSErfBdGHyChNzTrQtCtE9qujGw8CYvUmsJCIIOpLu2e3FP5oBeQnSgbou3Q6BY9z75Gg1zx9xFNdSzZipL4tuZIYQphn56GhPlpP36fmZmCgztK8L/V3y8hv5KpieeMBYvaGeHx9F8oVK2pDSuh3GXq/9tc1smV2zhsxi1H6EKkF2j+8k+9yKhHCNGHsmYhOZaUwnd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39860400002)(136003)(376002)(346002)(7416002)(31686004)(83380400001)(8676002)(2906002)(45080400002)(66946007)(8936002)(4326008)(186003)(16526019)(26005)(52116002)(66556008)(54906003)(2616005)(5660300002)(66476007)(478600001)(36756003)(956004)(53546011)(966005)(86362001)(31696002)(6486002)(16576012)(110136005)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cDJZalVzbko4RWUyR3U5Q2RWTXZyVllVbDlqUXhYOFg3TDRha2sydUJkY0Ju?=
+ =?utf-8?B?TUt0bkQ5WmNzb01XaFNCVGdVMWNMYVA0ZkZ4OEljYUllQ3BqQkZVVkJVMUNN?=
+ =?utf-8?B?L21VSldoYndWLzFyUUJuc1dPZEJVQ0ZkY0lpQkxVblNTOXp6L2cyTG96ZXJl?=
+ =?utf-8?B?TlhPV2NVd0F2bnZLV3lkcXh1Q2xmY0JaeHZhQ1NpMEM2UmtIbmZuVmJxeXZN?=
+ =?utf-8?B?UE5Fa1RzZSszNFdTOEp3OWQ4NW15RFRxcVJEWWRVbUl4ZGxjK054QnBYb1Bi?=
+ =?utf-8?B?dmdzQmxJeC90Skp3dkVDUXRCVy9IWEhndTRzcTV5a1FKT0FlUUxBeS9Cdjhp?=
+ =?utf-8?B?SHRHaU9Oc09MZW8wcEY4TXNmUVB1d2tCekJBNGZkWDFXN3Z1bm5mMnRXMEk5?=
+ =?utf-8?B?Mm1MT3JPVWVWMVdPb0x0WEJ0aStqdFJxQ1RaRkJWaE5YN2JUdU1nS1FUVmdT?=
+ =?utf-8?B?Y2JWZXZHSEttb0lMUWdSLzVRbGdDRnpKbUJUemZEa1BVd2lkTUVMMEdiU1dR?=
+ =?utf-8?B?RGZCSEdDSWV3aVNSTHZENUVQeWtoVk1pSEkxdWVTc09oYTkyVkVpZ0VGNkVH?=
+ =?utf-8?B?NkttRmpmNGNRaGdYbWthQmJ3NWZlUzJzcGxBQSt3RGVvendIS28rbEdGOXd4?=
+ =?utf-8?B?dzFOc3dzRWJoc1hqbzE1Q3JDT3pTSFBNSUJCc2RxamFQdjB6akNRYWVwN1VP?=
+ =?utf-8?B?VzA2cTZjOEszR2wxMjU4dUEzdmRWRjBLWHY1S0dEYVB2cUxGY3ZHRENKOXB0?=
+ =?utf-8?B?WG9pbHZwRk1aRFV1RHVTTE5jU3F5KytScVk2TFVicXQ5R1ZoanlFL204QTBw?=
+ =?utf-8?B?NzE0NHowa2N4bERKeGxyYmFHTlpZbUs0YlRrK0V5ZHlsaU10ejgxd2t1OWt4?=
+ =?utf-8?B?UW05MHZJQVF2UlUxaEVCSlBWQktpdnE0N0I5QnNHQjJQak4rR0dIRUtXY3Fr?=
+ =?utf-8?B?bUk0WlBuR3dmSGNYZ1pSRjJUS0RzV2x4eEVlNlVtRWhJYVZobkJLWTJESE81?=
+ =?utf-8?B?OGpSWDBlSTkxeVBuODdIYWZpRDFBT1hIL29oZVZUNVNjV3NtUDdhb3E4bGxN?=
+ =?utf-8?B?elJyVnh6RU04WmZuSHFJeHNPZnVVc1loNEFqVWpPU3I0VDZDUWJyaUlyQ0Rk?=
+ =?utf-8?B?WWN0ZXg4c0JuWlcvRVdHWlY1NlNuK3pOb0ZZZ2NZL1JNTWRQK1Q1cTF0UE1p?=
+ =?utf-8?B?OTg2ZUc0NHFQaFQ3K3RmajlNZVJVeGEzRHljczJNS3NSaGtoZ0kzWUVvWGVj?=
+ =?utf-8?B?VWNFRUdmQnZNdG5XdkRXVkdselpPVmliNGRGOEZUR1pyKzVqbk94VUFCejFm?=
+ =?utf-8?B?NlVkS1RWeGdodU8ydVNpT2loNlo2S2MxNkJ2NFhEWnFnTXplaGVnNlB3UmZF?=
+ =?utf-8?B?U1pHbVRaN0hPVENUOExUcGJGV3hObmZKQkxLbE5FWEIzd2QwbHV1ZTNjYmNl?=
+ =?utf-8?B?NmxFM0VmL0NPU3B6dGxGYlpvUiswUjRwR3VoT05KUFN0M2x3ZUxJdEZ3WCt1?=
+ =?utf-8?B?SGtTUGFBUjlrSGh0cFc1WEdRWHRVV25kVTRoRnhEdVFuVDk3YWNGK2oxWHlK?=
+ =?utf-8?B?WVhDR2FQeHBKcUdHQWF3akdKU0UvTWVIZGI1L01ibkp0SlpOQ0M4RDRuVzJ4?=
+ =?utf-8?B?TzlsTjB4andFaTVuVDdQNkVBZFRFNnVSVWhQNVMzSnkzZnJNOVZTeVp1cHFW?=
+ =?utf-8?B?ODFNLzVXZWFYMTFvWDhLbTIveHEwcEpiNGJWU3BWSncyUnY3ZHNLdHF0Y1pQ?=
+ =?utf-8?Q?mecpq3TnHtxcMRLEVLcQbDS0ia3ic9npwVLuY+F?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92fad99b-3647-4a12-288c-08d8de2ed27d
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2021 22:31:20.9121
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2021 10:26:35.6803
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: z6DO2S0aorVFYYY7Z9XUbPhPF7pV6/MO+SyoMgFUet7Ac9vWs2Gh3eEcx/CYA/YrApsrLtBcO9S4xuFKJaYmzQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0027
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6+KOcgM4tmcssLRjBXY6nusTgDVdzVmkdHvj23nqbXu4MaA+8XpRrBE6mEtu85nNGfeDk7bsjwsMdFwwvRQkmQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4592
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Tom Lendacky <thomas.lendacky@amd.com>
+Adding some people in the loop, maybe they could help in understanding
+why lack of "dma-coherent" property for a HW-coherent device could lead to
+unexpected / strange side effects.
 
-If SEV has been disabled (e.g. through BIOS), the driver probe will still
-issue SEV firmware commands. The SEV INIT firmware command will return an
-error in this situation, but the error code is a general error code that
-doesn't highlight the exact reason.
+On 3/1/2021 5:22 PM, Sascha Hauer wrote:
+> Hi All,
+> 
+> I am on a Layerscape LS1046a using Linux-5.11. The CAAM driver sometimes
+> crashes during the run-time self tests with:
+> 
+>> kernel BUG at drivers/crypto/caam/jr.c:247!
+>> Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+>> Modules linked in:
+>> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.11.0-20210225-3-00039-g434215968816-dirty #12
+>> Hardware name: TQ TQMLS1046A SoM on Arkona AT1130 (C300) board (DT)
+>> pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+>> pc : caam_jr_dequeue+0x98/0x57c
+>> lr : caam_jr_dequeue+0x98/0x57c
+>> sp : ffff800010003d50
+>> x29: ffff800010003d50 x28: ffff8000118d4000
+>> x27: ffff8000118d4328 x26: 00000000000001f0
+>> x25: ffff0008022be480 x24: ffff0008022c6410
+>> x23: 00000000000001f1 x22: ffff8000118d4329
+>> x21: 0000000000004d80 x20: 00000000000001f1
+>> x19: 0000000000000001 x18: 0000000000000020
+>> x17: 0000000000000000 x16: 0000000000000015
+>> x15: ffff800011690230 x14: 2e2e2e2e2e2e2e2e
+>> x13: 2e2e2e2e2e2e2020 x12: 3030303030303030
+>> x11: ffff800011700a38 x10: 00000000fffff000
+>> x9 : ffff8000100ada30 x8 : ffff8000116a8a38
+>> x7 : 0000000000000001 x6 : 0000000000000000
+>> x5 : 0000000000000000 x4 : 0000000000000000
+>> x3 : 00000000ffffffff x2 : 0000000000000000
+>> x1 : 0000000000000000 x0 : 0000000000001800
+>> Call trace:
+>>  caam_jr_dequeue+0x98/0x57c
+>>  tasklet_action_common.constprop.0+0x164/0x18c
+>>  tasklet_action+0x44/0x54
+>>  __do_softirq+0x160/0x454
+>>  __irq_exit_rcu+0x164/0x16c
+>>  irq_exit+0x1c/0x30
+>>  __handle_domain_irq+0xc0/0x13c
+>>  gic_handle_irq+0x5c/0xf0
+>>  el1_irq+0xb4/0x180
+>>  arch_cpu_idle+0x18/0x30
+>>  default_idle_call+0x3c/0x1c0
+>>  do_idle+0x23c/0x274
+>>  cpu_startup_entry+0x34/0x70
+>>  rest_init+0xdc/0xec
+>>  arch_call_rest_init+0x1c/0x28
+>>  start_kernel+0x4ac/0x4e4
+>> Code: 91392021 912c2000 d377d8c6 97f24d96 (d4210000)
+> 
+> The driver iterates over the descriptors in the output ring and matches them
+> with the ones it has previously queued. If it doesn't find a matching
+> descriptor it complains with the BUG_ON() seen above. What I see sometimes is
+> that the address in the output ring is 0x0, the job status in this case is
+> 0x40000006 (meaning DECO Invalid KEY command). It seems that the CAAM doesn't
+> write the descriptor address to the output ring at least in some error cases.
+> When we don't have the descriptor address of the failed descriptor we have no
+> way to find it in the list of queued descriptors, thus we also can't find the
+> callback for that descriptor. This looks very unfortunate, anyone else seen
+> this or has an idea what to do about it?
+> 
+> I haven't investigated yet which job actually fails and why. Of course that would
+> be my ultimate goal to find that out.
+> 
+This looks very similar to an earlier report from Greg.
+He confirmed that adding "dma-coherent" property to the "crypto" DT node
+fixes the issue:
+https://lore.kernel.org/linux-crypto/74f664f5-5433-d322-4789-3c78bdb814d8@kernel.org
+Patch rebased on v5.11 is at the bottom. Does it work for you too?
 
-Add a check for X86_FEATURE_SEV in sev_dev_init() and emit a meaningful
-message and skip attempting to initialize the SEV firmware if the feature
-is not enabled. Since building the SEV code is dependent on X86_64, adding
-the check won't cause any build problems.
+What I don't understand (and the reason I've postponed upstreaming it) is
+_why_ exactly this patch is working.
+I would have expected that a HW-coherent device to work fine even without
+the "dma-coherent" DT property in the corresponding node.
+I've found what seems related discussions involving eSDHC, but still I am trying
+to figure out what's happening. I'd really appreciate a clarification on what
+could go wrong (e.g. interactions with SW-based cache management etc.):
+https://lore.kernel.org/linux-mmc/20190916171509.GG25745@shell.armlinux.org.uk
+https://lore.kernel.org/lkml/20191010083503.250941866@linuxfoundation.org
+https://lore.kernel.org/linux-mmc/AM7PR04MB688507B5B4D84EB266738891F8320@AM7PR04MB6885.eurprd04.prod.outlook.com
 
-Cc: John Allen <john.allen@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Thanks,
+Horia
+
+-- >8 --
+
+Subject: [PATCH] arm64: dts: ls1046a: mark crypto engine dma coherent
+
+Crypto engine (CAAM) on LS1046A platform has support for HW coherency,
+mark accordingly the DT node.
+
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
 ---
- drivers/crypto/ccp/sev-dev.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 476113e12489..b9fc8d7aca73 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -21,6 +21,7 @@
- #include <linux/ccp.h>
- #include <linux/firmware.h>
- #include <linux/gfp.h>
-+#include <linux/cpufeature.h>
- 
- #include <asm/smp.h>
- 
-@@ -971,6 +972,11 @@ int sev_dev_init(struct psp_device *psp)
- 	struct sev_device *sev;
- 	int ret = -ENOMEM;
- 
-+	if (!boot_cpu_has(X86_FEATURE_SEV)) {
-+		dev_info_once(dev, "SEV: memory encryption not enabled by BIOS\n");
-+		return 0;
-+	}
-+
- 	sev = devm_kzalloc(dev, sizeof(*sev), GFP_KERNEL);
- 	if (!sev)
- 		goto e_err;
--- 
-2.30.0
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+index 025e1f587662..6d4db3e021e8 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+@@ -325,6 +325,7 @@
+                        ranges = <0x0 0x00 0x1700000 0x100000>;
+                        reg = <0x00 0x1700000 0x0 0x100000>;
+                        interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
++                       dma-coherent;
 
+                        sec_jr0: jr@10000 {
+                                compatible = "fsl,sec-v5.4-job-ring",
