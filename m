@@ -2,69 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF0532C33A
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Mar 2021 01:07:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D7E32C345
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Mar 2021 01:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357246AbhCDAHY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 3 Mar 2021 19:07:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36382 "EHLO
+        id S1344113AbhCDAHW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 3 Mar 2021 19:07:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243855AbhCCOhw (ORCPT
+        with ESMTP id S243833AbhCCOhu (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:37:52 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34044C0611BD
-        for <linux-crypto@vger.kernel.org>; Wed,  3 Mar 2021 06:35:04 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id h98so23906458wrh.11
-        for <linux-crypto@vger.kernel.org>; Wed, 03 Mar 2021 06:35:04 -0800 (PST)
+        Wed, 3 Mar 2021 09:37:50 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09C5C061A27
+        for <linux-crypto@vger.kernel.org>; Wed,  3 Mar 2021 06:35:05 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id j2so11074921wrx.9
+        for <linux-crypto@vger.kernel.org>; Wed, 03 Mar 2021 06:35:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TyCRNcW9jhoQTNtiMi/xmI1j72eDsy4y59EVvo0Z4FE=;
-        b=l8UUBG2uy3M0PPzlV0JbisAYlPqKofn0NrVD5U2bbR5BmLpsStqQ4UYbCQ9ZYOklNX
-         ZnA5xeEviOvpvW/3LNb5j4Ll2Y9l7O9dKYESIGO8aa3vmNYoR4WghDEDiP9PTvHeM/JP
-         XhgdSihASpr4apdI0bH9P5TvVPcSdPYljiLxd0BmcEKMDbWMJyildqTVgZ9gpj/2eLYu
-         8W9mOw9Z80Ii6YtrUWJLv6Wq/xQG6lpatAmPR5KiuDKhjDXN7HDPdKPhvP2+uYRiL9iS
-         m1G5k4nm8yvYX2LtBU0jB1Gkc9uUxg3WV6o5DiOTJ40RNZ1VaHhRm7aFFea1++YB2p8p
-         CHtQ==
+        bh=51h0lVd1c7+OEvoO2UQG6dIvRRvCEl0n5KWV8010Ypo=;
+        b=GkxKVVq7IkiWjmYpMI1QVOgqWdbTVgDmPsYWZtIM68tQPUU+sP13OEYiyBs7aFTC2a
+         zjmRxkMeM+VRRDJ9Q5Rh9pBjyAFKdijQa8mT2gzs9NvNFqiC2NEcVB/uDxFrokKlnXKk
+         bUlxZ6zLSS/x4qjwXKMAAvEP35y0gRtmxAGxNehjhnbhkOQSNXsjL27K/rnVwnn1foky
+         Kyliq/xAiJ2BM7u/vcf/HELPZf6g99B0srUDNT4+SGm3MDy4FO7gs9k1VkIPtuO/G01u
+         7ysCOpvwI9sSB+zwadrwca55dMboDEOYQ8xBCqNCsZCMQMgDB5Uw0yfMXh3bS4Ffy7Gd
+         OQIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TyCRNcW9jhoQTNtiMi/xmI1j72eDsy4y59EVvo0Z4FE=;
-        b=jVd0ujqe2qUG4w3qGmMUfrbgctnv57p1ocKL6svbsZ8oDU9bXTOh7kPe16NdON3KNl
-         yCCN6rIuzdMTdi83shDu8TkrJaUMH+Kj/ybzwgiw/6DM6kEvF+TNfHItr7nZYVi4AeHd
-         3WZkOP0m/2pqyrU9/8oXGtcaXS/VtoqoRgyLOlT2dTAr0NxC3T/Y19jFWwLJLyISV3N4
-         fPm4hh5lMDq4nLJ13VUpBLkn57ydR++G7qg/+Bcm3U0qo1IxqkduSzes7y2/N/Dlk8Ol
-         03rlzVI5YQLJsWMirdkyuP4d4+HCJzK1+fkqkEupGHpiThTxpkcQUQBFZGt7Dvozt96B
-         k/fw==
-X-Gm-Message-State: AOAM531AzYItIwgzEHuKsQd1LrUZuXOCkdMyQ1k9fLWBqCJVolkj+Z2f
-        /S+XOqHJTpuXEtUXAS6jJNG2vA==
-X-Google-Smtp-Source: ABdhPJy6wV8w5KlnpqihG1u/DW9aADK6d+5UUwRzDOfELWCTxZo0z3yIsOcs5twXTVVXgmdGD4SJ8Q==
-X-Received: by 2002:a5d:67c8:: with SMTP id n8mr20592106wrw.351.1614782102888;
-        Wed, 03 Mar 2021 06:35:02 -0800 (PST)
+        bh=51h0lVd1c7+OEvoO2UQG6dIvRRvCEl0n5KWV8010Ypo=;
+        b=Rii6bD5zcnZ9rgpCYMoKwATVtyQzbEies16YTxK5zA7bs2Jj25WxIxIQey4peaepbl
+         AWmlw/QnszBPpJw7yG0iXMZgy1/aoOqgBVXpQJTU5H03WwuCZXg+KvEaIAx9P/sxKyu+
+         oqZ1dn9Pfmx3bXGNhTkqI0Wqtx/i1fLakJckKVd4zNAQopRwWMusvkOhn+utd12pKHuR
+         4Z0jS8JduCVtdWW5GY0I+bgVzAedhvCHOTKwK1jBtUVEwyBa/LPMEfKvBIri9CR0oqz8
+         7vn8DfJZd9mZ2xDvD05cmk5nrG8nlOTP/5PjDcTq3kUq4dTkqjb9hzI3tq2+TQgOkmEO
+         ugYA==
+X-Gm-Message-State: AOAM532J5ws3xA0k3TE74zOhpiIIwp3Ln4fflvHzaO1SooI7gLHuzDK6
+        GHg6X6wOzAANSws53+KwnafPvw==
+X-Google-Smtp-Source: ABdhPJy6p+2gqBDKWQdfVK+vUYUsxiwwW6yVEu3D+yA9Si/XotFwXicN4U/A30h6CcBslOXvHnZcyg==
+X-Received: by 2002:a5d:4903:: with SMTP id x3mr23880148wrq.143.1614782104546;
+        Wed, 03 Mar 2021 06:35:04 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id f16sm31475923wrt.21.2021.03.03.06.35.01
+        by smtp.gmail.com with ESMTPSA id f16sm31475923wrt.21.2021.03.03.06.35.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 06:35:02 -0800 (PST)
+        Wed, 03 Mar 2021 06:35:04 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 06/10] crypto: atmel-ecc: Struct headers need to start with keyword 'struct'
-Date:   Wed,  3 Mar 2021 14:34:45 +0000
-Message-Id: <20210303143449.3170813-7-lee.jones@linaro.org>
+        linux-crypto@vger.kernel.org
+Subject: [PATCH 07/10] crypto: caam: caampkc: Provide the name of the function and provide missing descriptions
+Date:   Wed,  3 Mar 2021 14:34:46 +0000
+Message-Id: <20210303143449.3170813-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303143449.3170813-1-lee.jones@linaro.org>
 References: <20210303143449.3170813-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
@@ -72,34 +71,48 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/crypto/atmel-ecc.c:41: warning: cannot understand function prototype: 'struct atmel_ecdh_ctx '
+ drivers/crypto/caam/caampkc.c:199: warning: expecting prototype for from a given scatterlist(). Prototype was for caam_rsa_count_leading_zeros() instead
+ drivers/crypto/caam/caamalg_qi2.c:87: warning: Function parameter or member 'xts_key_fallback' not described in 'caam_ctx'
+ drivers/crypto/caam/caamalg_qi2.c:87: warning: Function parameter or member 'fallback' not described in 'caam_ctx'
 
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: "Horia Geantă" <horia.geanta@nxp.com>
+Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
 Cc: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
 Cc: linux-crypto@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/crypto/atmel-ecc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/caam/caamalg_qi2.c | 2 ++
+ drivers/crypto/caam/caampkc.c     | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
-index 9bd8e5167be34..66a31e5739f4c 100644
---- a/drivers/crypto/atmel-ecc.c
-+++ b/drivers/crypto/atmel-ecc.c
-@@ -26,7 +26,7 @@
- static struct atmel_ecc_driver_data driver_data;
+diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
+index a780e627838ae..22e45c5bf2023 100644
+--- a/drivers/crypto/caam/caamalg_qi2.c
++++ b/drivers/crypto/caam/caamalg_qi2.c
+@@ -71,6 +71,8 @@ struct caam_skcipher_alg {
+  * @adata: authentication algorithm details
+  * @cdata: encryption algorithm details
+  * @authsize: authentication tag (a.k.a. ICV / MAC) size
++ * @xts_key_fallback: whether to set the fallback key
++ * @fallback: the fallback key
+  */
+ struct caam_ctx {
+ 	struct caam_flc flc[NUM_OP];
+diff --git a/drivers/crypto/caam/caampkc.c b/drivers/crypto/caam/caampkc.c
+index dd5f101e43f83..e313233ec6de7 100644
+--- a/drivers/crypto/caam/caampkc.c
++++ b/drivers/crypto/caam/caampkc.c
+@@ -187,7 +187,8 @@ static void rsa_priv_f_done(struct device *dev, u32 *desc, u32 err,
+ }
  
  /**
-- * atmel_ecdh_ctx - transformation context
-+ * struct atmel_ecdh_ctx - transformation context
-  * @client     : pointer to i2c client device
-  * @fallback   : used for unsupported curves or when user wants to use its own
-  *               private key.
+- * Count leading zeros, need it to strip, from a given scatterlist
++ * caam_rsa_count_leading_zeros - Count leading zeros, need it to strip,
++ *                                from a given scatterlist
+  *
+  * @sgl   : scatterlist to count zeros from
+  * @nbytes: number of zeros, in bytes, to strip
 -- 
 2.27.0
 
