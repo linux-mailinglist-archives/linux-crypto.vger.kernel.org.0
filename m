@@ -2,58 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DAB32CD23
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Mar 2021 07:48:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC09F32CDAA
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Mar 2021 08:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235682AbhCDGqY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 Mar 2021 01:46:24 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:52750 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235670AbhCDGp7 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 Mar 2021 01:45:59 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lHhjK-0007gu-UT; Thu, 04 Mar 2021 17:45:04 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 04 Mar 2021 17:45:02 +1100
-Date:   Thu, 4 Mar 2021 17:45:02 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     mpe@ellerman.id.au, davem@davemloft.net, benh@kernel.crashing.org,
-        paulus@samba.org, linux-crypto@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] crypto/nx: add missing call to of_node_put()
-Message-ID: <20210304064502.GM15863@gondor.apana.org.au>
-References: <1614302586-15095-1-git-send-email-yang.lee@linux.alibaba.com>
+        id S231701AbhCDHeW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 4 Mar 2021 02:34:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhCDHdw (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 4 Mar 2021 02:33:52 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404FCC061574;
+        Wed,  3 Mar 2021 23:33:12 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id b18so19988030wrn.6;
+        Wed, 03 Mar 2021 23:33:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cxz2j8HGUHPiSHzceVEetuYSLp+UMokeayvePliJNIo=;
+        b=nxO+pk/+yTm3XNbgFW8Hhz4vJLEsbr4IH/rf4TegEEF/D8dSlm9F/8g/UE6y0ectDu
+         ocpCUFAn/vpl9zHd6koMl4JjLW0iferRffhZNKqjV1sx6LzizlSeRy9FulPjMo0Hs19A
+         P8Rs2UPA2BiKX4wKCtK/IzJQHgkc7dvTznz4W3o35ECBPkzrWg3jOzlvTTDwpxCb0/m6
+         O7F2jim2xgFn2y0Czm0qj5JMZ49YuLZuzNdWrGxqk2hIjEbKGlItFBSpdLd23HS3++H9
+         Ojm2+PUl06MF32jvYDNKpbfZS+1NaPplXrco9DnX3eMakVjGNWsomygAFusS0LM9d38X
+         MaWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cxz2j8HGUHPiSHzceVEetuYSLp+UMokeayvePliJNIo=;
+        b=OOIjdrfpurg76JEdvXhQGI2UO+C2gTCOKA6f9iNxd8mzAft/wVuNxBYwyTOZxoE0k0
+         CVTrI98F+QH+W7Gr/P3kG/KkNGImQHgbma4Es4nBUJGbCbHI02ZZIww4GclniIZ2zceD
+         YN5llFRdCi0Qej85mfcNJfJsp3KQC96A1R325bpo1DB5Z66CsSCHJjBiNm1rlmwyNNcb
+         Bmqjob8yfuM6ldWUAANrjLIA0m6STQn5bnz90YUOwqQZs+9VAW0RGU4L4TNTwv/23sw2
+         lYCYEWB2MW71G/0SXpWRxq+GDk2MLMJ+T1bo62ayvOj5r9TPEg19CnYl2F6G2ryT5L9o
+         zW0g==
+X-Gm-Message-State: AOAM532troC++Qixdvd5TG2zwf9dN1qk4DvJWFUkcvvcm3CZwVfZMwDf
+        K6bpoo5rLyyKYZO2Z0aVgQYssDnsSXMDqTB6
+X-Google-Smtp-Source: ABdhPJwsLaf04ly/s5i0z19++Xyjltzm9ii40XstGgGQPy5CUStuDXmZq8hTa3xWVDDYJ0qR1KHRpQ==
+X-Received: by 2002:a5d:528f:: with SMTP id c15mr2546510wrv.142.1614843190972;
+        Wed, 03 Mar 2021 23:33:10 -0800 (PST)
+Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id j30sm18328811wrj.62.2021.03.03.23.33.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 23:33:10 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v5 0/2] hwrng: bcm2835: add reset support
+Date:   Thu,  4 Mar 2021 08:33:06 +0100
+Message-Id: <20210304073308.25906-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614302586-15095-1-git-send-email-yang.lee@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 09:23:06AM +0800, Yang Li wrote:
-> In one of the error paths of the for_each_child_of_node() loop,
-> add missing call to of_node_put().
-> 
-> Fix the following coccicheck warning:
-> ./drivers/crypto/nx/nx-common-powernv.c:927:1-23: WARNING: Function
-> "for_each_child_of_node" should have of_node_put() before return around
-> line 936.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
-> 
-> Changes in v2:
-> -add braces for if
-> 
->  drivers/crypto/nx/nx-common-powernv.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+v5: remove reset_control_rearm() and apply on latest herbert/cryptodev-2.6.git.
+v4: fix documentation, add reset_control_rearm().
+v3: make resets required if brcm,bcm6368-rng.
+v2: document reset support.
 
-Patch applied.  Thanks.
+Álvaro Fernández Rojas (2):
+  dt-bindings: rng: bcm2835: document reset support
+  hwrng: bcm2835: add reset support
+
+ .../devicetree/bindings/rng/brcm,bcm2835.yaml   | 17 +++++++++++++++++
+ drivers/char/hw_random/bcm2835-rng.c            | 10 ++++++++++
+ 2 files changed, 27 insertions(+)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.20.1
+
