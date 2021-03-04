@@ -2,62 +2,44 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C22D732CD18
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Mar 2021 07:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E76A32CD1F
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Mar 2021 07:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235629AbhCDGpV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 Mar 2021 01:45:21 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:52682 "EHLO fornost.hmeau.com"
+        id S235584AbhCDGpw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 4 Mar 2021 01:45:52 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:52698 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233886AbhCDGpO (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 Mar 2021 01:45:14 -0500
+        id S235647AbhCDGpX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 4 Mar 2021 01:45:23 -0500
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lHhih-0007gZ-5p; Thu, 04 Mar 2021 17:44:24 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 04 Mar 2021 17:44:23 +1100
-Date:   Thu, 4 Mar 2021 17:44:22 +1100
+        id 1lHhit-0007gh-Tj; Thu, 04 Mar 2021 17:44:37 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 04 Mar 2021 17:44:35 +1100
+Date:   Thu, 4 Mar 2021 17:44:35 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Vladimir Zapolskiy <vz@mleia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [RFT PATCH] crypto: s5p-sss - initialize APB clock after the AXI
- bus clock for SlimSSS
-Message-ID: <20210304064422.GJ15863@gondor.apana.org.au>
-References: <20210212163526.69422-1-krzk@kernel.org>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     dsaxena@plexity.net, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] hwrng: omap - Fix included header from 'asm'
+Message-ID: <20210304064435.GK15863@gondor.apana.org.au>
+References: <1613733558-61854-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210212163526.69422-1-krzk@kernel.org>
+In-Reply-To: <1613733558-61854-1-git-send-email-tiantao6@hisilicon.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 05:35:26PM +0100, Krzysztof Kozlowski wrote:
-> The driver for Slim Security Subsystem (SlimSSS) on Exynos5433 takes two
-> clocks - aclk (AXI/AHB clock) and pclk (APB/Advanced Peripheral Bus
-> clock).  The "aclk", as main high speed bus clock, is enabled first.  Then
-> the "pclk" is enabled.
+On Fri, Feb 19, 2021 at 07:19:18PM +0800, Tian Tao wrote:
+> This commit fixes the checkpatch warning:
+> WARNING: Use #include <linux/io.h> instead of <asm/io.h>
+> drivers/char/hw_random/omap-rng.c:34
 > 
-> However the driver assigned reversed names for lookup of these clocks
-> from devicetree, so effectively the "pclk" was enabled first.
-> 
-> Although it might not matter in reality, the correct order is to enable
-> first main/high speed bus clock - "aclk".  Also this was the intention
-> of the actual code.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 > ---
-> 
-> Not tested, please kindly test on Exynos5433 hardware.
-> ---
->  drivers/crypto/s5p-sss.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/char/hw_random/omap-rng.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
 Patch applied.  Thanks.
 -- 
