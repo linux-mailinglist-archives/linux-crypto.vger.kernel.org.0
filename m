@@ -2,167 +2,212 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E787032DE37
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Mar 2021 01:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 893AC32DE7E
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Mar 2021 01:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhCEAE3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 Mar 2021 19:04:29 -0500
-Received: from mail-bn8nam11on2068.outbound.protection.outlook.com ([40.107.236.68]:7409
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231840AbhCEAE3 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 Mar 2021 19:04:29 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EwlqbkDzFM0dpyaMRppq1EYF0fp1jCFlUIttBqFoXEubgCd84r3tsyMp282rOjhtFNdQ2iiFz8cxE+mJkIhcfHdShT/5CbotD4f7t0j0eUIpwSI66anHOqx3K3vsqdNRZ6ERhxnORWeaVQHq+qMwod9g6tBRT/c3ANZfH0XBvlOkco54/U6fsFdqFBiKurn9ekKSK74a3mEd9PO1+VjVU6kbaKxlJkFYDrm6iw3iDEmawqzR1hjWiHwD1fJYKn2MCc8RVo3AqrdfdnoxUJyLIbl1XrXpO6aS/BKj3dLXRw19l7PkVTnauWAavhBY+A76RA9N5a8GQvUIiWFpR8l5LA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=msMkOVMaJP8Xv2pnmbcFunK2NqKOCK13CaPouoPBPu0=;
- b=CA09z7bl+iNWMjKkjOuIqay1jBp7rME2W9lSo23XK0pn9pxIYqpWOGXD0L3CpuNa/RNWnX4wAJYDn+ymYHgMxDO5OiN1ovSIWC80BBA2pNyAY4IbYsj7KyCmpbAqNtjm9KN1IeYuzIaSXLHCBkJtS+KejzH3lV7QuYvGzXpaUxxkKB99Oi0036XuRv59eJInGCz0HeIdmXQvwCQSoLdLdN7FQwP5QIwrrCXxwfRpwF3Tbr8mVbavY74EbArZIpPaNIUshpwyxEsJ5kkc055TGGjg1VH+pydOPpkXMV0ZrW7ddWK8bppe0gaNQtMXtLvcE1U9puVB2DqK9uIgB/iYug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=msMkOVMaJP8Xv2pnmbcFunK2NqKOCK13CaPouoPBPu0=;
- b=r4RuRjW1QbBJMJwZnVrRRP4x7sP1EmYBx/mPtdGmVOFhCWuk2A7axAshSsacOFm+pDBFtjquVcNbvP1mYBN9KPfwU3H0yZO4G+kgkbThDQppfbfwtOYi8tKePhET09EvCqoOz8rTj6npo8uiyA85MJhe1exXYk++VMdy8LbJlW0=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SA0PR12MB4495.namprd12.prod.outlook.com (2603:10b6:806:70::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Fri, 5 Mar
- 2021 00:04:27 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::30fb:2d6c:a0bf:2f1d]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::30fb:2d6c:a0bf:2f1d%3]) with mapi id 15.20.3890.032; Fri, 5 Mar 2021
- 00:04:27 +0000
-Cc:     brijesh.singh@amd.com, Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        John Allen <john.allen@amd.com>
-Subject: Re: [PATCH] crypto: ccp - Don't initialize SEV support without the
- SEV feature
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <c1ea9899e6169bf3a3042866e165a2f90bda3ebd.1614810669.git.thomas.lendacky@amd.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <802f4e75-6e77-c48f-464d-9abcdc53bd8f@amd.com>
-Date:   Thu, 4 Mar 2021 18:04:25 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
-In-Reply-To: <c1ea9899e6169bf3a3042866e165a2f90bda3ebd.1614810669.git.thomas.lendacky@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [70.112.153.56]
-X-ClientProxiedBy: SN4PR0701CA0022.namprd07.prod.outlook.com
- (2603:10b6:803:28::32) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        id S231490AbhCEAwV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 4 Mar 2021 19:52:21 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50582 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231308AbhCEAwU (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 4 Mar 2021 19:52:20 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1250YAJZ078488;
+        Thu, 4 Mar 2021 19:52:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Q4kCcvynNJuYhKW5Wc+LtHw7qxjK+Mew3Q/SxGZOcsw=;
+ b=Y971tgW1ye5t+7JuS0e3coqumzcsWUn7Cq2gqq945IkIBrVxrZfpgpa23IYh9nL3DMan
+ ycwHqGR7FdqUF6FUN88qoyNeCWl0lUoIsrpB8Rpf7J98q/g8W0vOSF0yCnTezpxWz6db
+ nky/ctU0uz2eUstxg8Yhg4luTYCONwAopKBnHYT8VVa5X+F7BENlmDZmpux3iuKK8lnc
+ KjB4jk/M6PoQLBomlei8LCQnrbOPMZw/COgm+mLH71tp3pSy5VeLK0T3YfKtVBL+n9tr
+ /x5+zMW4Z0S0MmkBP61/BIXZ1mGgjyNq9hWpXume79GiG55i3QE88CAWJ+pjhZEgOsG6 kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373a2crk75-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 19:52:10 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1250YuOJ083590;
+        Thu, 4 Mar 2021 19:52:09 -0500
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373a2crk6w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 19:52:09 -0500
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1250WUt2009505;
+        Fri, 5 Mar 2021 00:52:09 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma05wdc.us.ibm.com with ESMTP id 371b01gnev-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 00:52:09 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1250q7a010879542
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Mar 2021 00:52:08 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD9FFC6057;
+        Fri,  5 Mar 2021 00:52:07 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 56883C6055;
+        Fri,  5 Mar 2021 00:52:07 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Mar 2021 00:52:07 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
+To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v10 0/9] Add support for x509 certs with NIST P384/256/192 keys
+Date:   Thu,  4 Mar 2021 19:51:54 -0500
+Message-Id: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN4PR0701CA0022.namprd07.prod.outlook.com (2603:10b6:803:28::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 5 Mar 2021 00:04:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 26b6b142-8c60-4895-1667-08d8df6a3db5
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4495:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4495BF4752B6FABD5BFD416AE5969@SA0PR12MB4495.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mNFENpr4LA5MtnB+Cr/ZLOiR9XtsNGEBUUEVq7kk8LZYv2hnUd+balZvvm6wV/jRp7M855wNY9syzGPHPOrHizMOMM/DViQLJTsG8m6YkxuM9accgkmmIcjU9PnH2eJmhAqtuaEuKDXsYDt3KRcchGnB+gUabUew/lopiZU9tgmYk/tXTJkOEqairV08Wx30IDzNMULdD7Wt3mYtNJd22fTmJNuQdTFlbM4PcofMdSeWCKr6rQpaZcfgeQgDIFLBHa1sgyXGUeszTYXDUrZBTXpKmvvAv/lH7UOBdBFI0JCCljCOycW8KLMM2f4VQS3vhbhuqxivYUf8upo0ji5L2pivjn7KvGRd+PYlqzPPtyiRSTzSRepv5MN+lPr++j4wF4di9EoF0gwIeLwPwGVIE2nW5ijA5EaTBzHto+qpyIOTklmydgJGReU7d6OO1O6GkNtp7Cy/NNdb5Igs1HZ6L1g0ioRd/igy07Iuc1Mj7jq+7+a8tGSKnMx1uVe088fd82O+rmTlJ+aOD3GOi0NdNfIcpzE47Yq44II5Am/L9mY+THsrh1dlMiEkP+E6KME8SvWkvUDEmTlpWCsjP5bCokwWyeNYrrbycYjwAoSa+HQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(366004)(346002)(376002)(26005)(6512007)(8936002)(4326008)(186003)(8676002)(54906003)(86362001)(52116002)(956004)(2616005)(44832011)(83380400001)(16526019)(6486002)(53546011)(6506007)(66946007)(31686004)(31696002)(316002)(66476007)(2906002)(5660300002)(478600001)(66556008)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TlJ2TjZkS0NTdHBLdUo4ZnJjT0FYZ3RRRGZDUnBUMTFXK0NFRG1Za1B4YVY2?=
- =?utf-8?B?MXFSbXpDODliTUZtY09leWlLN054eFpFNnExOFovazJXVjZ6UTZuY0E4aTBQ?=
- =?utf-8?B?b3JuNjFITENhVnZSa1p2bjQzRnRoTUo2ejZxUDJFd2dsUytOdjM1TkVFUXJi?=
- =?utf-8?B?cmM1ZUxCVXJRbzlweXUxUUFYdm1YVHh1QmU4Rml2SFpPWXRSZHZZMFNuRDNB?=
- =?utf-8?B?YmwvNGhFNk9TdnZlTUkvNU95VXRHcFFPQkl4WDJmeXVoT3NlVWRSRHZoaDhk?=
- =?utf-8?B?N1RNNWs3Skl6UXFFeU0vTkJGRHlXOU0walhtd2tDdDBEK21nRlRzOThsQUQ2?=
- =?utf-8?B?OXlnTUZaTkg3S0Rja3RBb1l4czlVRWFVVC9tbHdNYlN1SExlNnl2cTRGcS9p?=
- =?utf-8?B?cW1za0YyK0xWWENTTHFuL2lja0NaNmlCOGdzek1XMko3MDVSR2FZRjlJMlVj?=
- =?utf-8?B?T0o5ZC9JUHNTQXBnN3dPZ1VMU0ZYYkppTmtnenBrWW9iazF5UW9iY0xXb0Nq?=
- =?utf-8?B?TTE3V05nOEJ3N29IczdoYzJ4YmhUcGQ4bkxRK2Z1WjlIOVRPRUdJSkRraFl6?=
- =?utf-8?B?d2RoMGNmQWhIMzdycVc0bnV2SWUxdE5oeVlpY3paMThxTThVNjZnUzNWcTFp?=
- =?utf-8?B?R1NoM3NTQkE5eUVFdDdCR2V6REhZVmhNamFOaWlNTEFJUGczSjF3eDBPckp0?=
- =?utf-8?B?NDhmVENVaE5uZjNVdEFiSHFVZlVzWkVDT0lGUTVYSWhPemx3K081UEdxRENv?=
- =?utf-8?B?aXFxVzZ3dmpPTmtLbTgxT3NSYjBKbnFNODdkRHFDNEpYU1FkN2xlU0FZNktj?=
- =?utf-8?B?RVJycmlzaHNPNjBDc3l3UUhiM1I3aFJjK3UzdkxacVo2akYvQUJQMTlTZC9l?=
- =?utf-8?B?Nzg1cU1RMWZ1dmdzelgvOUx1bVM1WTFOYlFSWWFVL3B4TGhMK1hsSkQ3U2hi?=
- =?utf-8?B?OHgyQTQ5a3pRdUNtbFJleGdPcHZMajIzbnNrT3pxRTFPK0h5RzB1RkF0L3VU?=
- =?utf-8?B?NkdOUHArcEYvcVZwdit1aHJFVXRuL0hLckdYRG9vRDI0dUhXSzQ4TUs2cmdY?=
- =?utf-8?B?RFdNbEd1N3QrTjdLWG05SjMwSmJNSFZBelA1cEZyOXc3cEVrS0k5L0lNMDRH?=
- =?utf-8?B?UkxvS0gzWTNFeWJmZlFjZ1Y4bnE1TkdyNnRWZUNMQlpqUEZvWVFabXRtSTJU?=
- =?utf-8?B?dWhmcHlSL3FzSlpaQitzMjBBR0Y4YUVHUFRHQVpOUU5RaTZneTNiRmZFUXJv?=
- =?utf-8?B?WXMwbFV3dTdMQ0lubk1HNHBWSmpJQWo3QnFIZDIxblJKQ0xwcWIydFlyYTlG?=
- =?utf-8?B?YVFnT0N0MDJwOG9lZEdQOTAvaXllMG9qOWhDNkFrODRucVlaNUE5YTR2Uk1G?=
- =?utf-8?B?Z0tsdERialZiYzJGVUttQ3VBMXUzSWZqamN4eXpXYXRWa2pXNjNyREMwWDB1?=
- =?utf-8?B?SEwwQUo3cU4vNEhRZDVVTDZoa2VISy9zRjJvenVydTZ4OExxZmFlcmJ1RW9z?=
- =?utf-8?B?aTROVFFvM0RsVnl6ZXlMaW5tdmQxN01pbXFrTGpGRDBtOEQ1LytsVHJ2K2N0?=
- =?utf-8?B?R1hrMmxQalhqRE9NanJSL01JbEcrb0xnZWYvdU9kVGcwZHJLOEZDVnBsZEFT?=
- =?utf-8?B?WmhzQmRWT01SRUNiU0FaNFdua21GT1pvdEJhU3k3SUd6MmlEdWIzRkJWQjY1?=
- =?utf-8?B?SDFVYU8yYnZSRE90TVVjMS9FZmx2WEd3bjFHcUxCcEdxcXh0czczRXNKQTJG?=
- =?utf-8?Q?c4m7r17CLhGbcp30oQoNGA5hWFbVnrmUx7R2YW0?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 26b6b142-8c60-4895-1667-08d8df6a3db5
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 00:04:27.0445
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vONwrTUHSJaqxdvbqZDpeRvCb5hVd6VvxnFhrevSZ58jg9aG/l8YE0b50wyP9ezZkyeqkpIu2bs2vqxLA6L3vA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4495
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_09:2021-03-03,2021-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 lowpriorityscore=0 adultscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 suspectscore=0 mlxscore=0 clxscore=1015
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103050001
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-On 3/3/21 4:31 PM, Tom Lendacky wrote:
-> From: Tom Lendacky <thomas.lendacky@amd.com>
->
-> If SEV has been disabled (e.g. through BIOS), the driver probe will still
-> issue SEV firmware commands. The SEV INIT firmware command will return an
-> error in this situation, but the error code is a general error code that
-> doesn't highlight the exact reason.
->
-> Add a check for X86_FEATURE_SEV in sev_dev_init() and emit a meaningful
-> message and skip attempting to initialize the SEV firmware if the feature
-> is not enabled. Since building the SEV code is dependent on X86_64, adding
-> the check won't cause any build problems.
->
-> Cc: John Allen <john.allen@amd.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+This series of patches adds support for x509 certificates signed by a CA
+that uses NIST P384, P256 or P192 keys for signing. It also adds support for
+certificates where the public key is one of this type of a key. The math
+for ECDSA signature verification is also added as well as the math for fast
+mmod operation for NIST P384.
+
+Since self-signed certificates are verified upon loading, the following
+script can be used for testing of NIST P256 keys:
+
+k=$(keyctl newring test @u)
+
+while :; do
+	for hash in sha1 sha224 sha256 sha384 sha512; do
+		openssl req \
+			-x509 \
+			-${hash} \
+			-newkey ec \
+			-pkeyopt ec_paramgen_curve:prime256v1 \
+			-keyout key.pem \
+			-days 365 \
+			-subj '/CN=test' \
+			-nodes \
+			-outform der \
+			-out cert.der
+		keyctl padd asymmetric testkey $k < cert.der
+		if [ $? -ne 0 ]; then
+			echo "ERROR"
+			exit 1
+		fi
+	done
+done
+
+Ecdsa support also works with restricted keyrings where an RSA key is used
+to sign a NIST P384/256/192 key. Scripts for testing are here:
+
+https://github.com/stefanberger/eckey-testing
+
+The ECDSA signature verification will be used by IMA Appraisal where ECDSA
+file signatures stored in RPM packages will use substantially less space
+than if RSA signatures were to be used.
+
+Further, a patch is added that allows kernel modules to be signed with a NIST
+p384 key.
+
+   Stefan and Saulo
+
+v9->v10:
+  - rearranged order of patches to have crypto patches first
+  - moved hunk from patch 3 to patch 2 to avoid compilation warning due to
+    unused symbol
+
+v8->v9:
+  - Appended Saulo's patches
+  - Appended patch to support kernel modules signed with NIST p384 key. This
+    patch requires Nayna's series here: https://lkml.org/lkml/2021/2/18/856
+
+v7->v8:
+  - patch 3/4: Do not determine key algo using parse_OID in public_key.c
+    but do this when parsing the certificate. This addresses an issue
+    with certain build configurations where OID_REGISTRY is not available
+    as 'Reported-by: kernel test robot <lkp@intel.com>'.
+
+v6->v7:
+  - Moved some OID defintions to patch 1 for bisectability
+  - Applied R-b's
+  
+v5->v6:
+  - moved ecdsa code into its own module ecdsa_generic built from ecdsa.c
+  - added script-generated test vectors for NIST P256 & P192 and all hashes
+  - parsing of OID that contain header with new parse_oid()
+
+v4->v5:
+  - registering crypto support under names ecdsa-nist-p256/p192 following
+    Hubert Xu's suggestion in other thread
+  - appended IMA ECDSA support patch
+
+v3->v4:
+  - split off of ecdsa crypto part; registering akcipher as "ecdsa" and
+    deriving used curve from digits in parsed key
+
+v2->v3:
+  - patch 2 now includes linux/scatterlist.h
+
+v1->v2:
+  - using faster vli_sub rather than newly added vli_mod_fast to 'reduce'
+    result
+  - rearranged switch statements to follow after RSA
+  - 3rd patch from 1st posting is now 1st patch
 
 
-Reviewed-By: Brijesh Singh <brijesh.singh@amd.com>
+Saulo Alessandre (4):
+  crypto: Add NIST P384 curve parameters
+  crypto: Add math to support fast NIST P384
+  ecdsa: Register NIST P384 and extend test suite
+  x509: Add OID for NIST P384 and extend parser for it
 
-> ---
->  drivers/crypto/ccp/sev-dev.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index 476113e12489..b9fc8d7aca73 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -21,6 +21,7 @@
->  #include <linux/ccp.h>
->  #include <linux/firmware.h>
->  #include <linux/gfp.h>
-> +#include <linux/cpufeature.h>
->  
->  #include <asm/smp.h>
->  
-> @@ -971,6 +972,11 @@ int sev_dev_init(struct psp_device *psp)
->  	struct sev_device *sev;
->  	int ret = -ENOMEM;
->  
-> +	if (!boot_cpu_has(X86_FEATURE_SEV)) {
-> +		dev_info_once(dev, "SEV: memory encryption not enabled by BIOS\n");
-> +		return 0;
-> +	}
-> +
->  	sev = devm_kzalloc(dev, sizeof(*sev), GFP_KERNEL);
->  	if (!sev)
->  		goto e_err;
+Stefan Berger (5):
+  crypto: Add support for ECDSA signature verification
+  x509: Detect sm2 keys by their parameters OID
+  x509: Add support for parsing x509 certs with ECDSA keys
+  ima: Support EC keys for signature verification
+  certs: Add support for using elliptic curve keys for signing modules
+
+ certs/Kconfig                             |  22 ++
+ certs/Makefile                            |  14 +
+ crypto/Kconfig                            |  10 +
+ crypto/Makefile                           |   6 +
+ crypto/asymmetric_keys/pkcs7_parser.c     |   4 +
+ crypto/asymmetric_keys/public_key.c       |   4 +-
+ crypto/asymmetric_keys/x509_cert_parser.c |  49 ++-
+ crypto/asymmetric_keys/x509_public_key.c  |   4 +-
+ crypto/ecc.c                              | 281 +++++++++-----
+ crypto/ecc.h                              |  31 +-
+ crypto/ecc_curve_defs.h                   |  32 ++
+ crypto/ecdsa.c                            | 400 ++++++++++++++++++++
+ crypto/ecdsasignature.asn1                |   4 +
+ crypto/testmgr.c                          |  18 +
+ crypto/testmgr.h                          | 424 ++++++++++++++++++++++
+ include/crypto/ecdh.h                     |   1 +
+ include/keys/asymmetric-type.h            |   6 +
+ include/linux/oid_registry.h              |  10 +-
+ lib/oid_registry.c                        |  13 +
+ security/integrity/digsig_asymmetric.c    |  30 +-
+ 20 files changed, 1256 insertions(+), 107 deletions(-)
+ create mode 100644 crypto/ecdsa.c
+ create mode 100644 crypto/ecdsasignature.asn1
+
+-- 
+2.29.2
+
