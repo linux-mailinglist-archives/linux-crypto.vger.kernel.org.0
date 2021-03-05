@@ -2,142 +2,103 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966B932E24F
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Mar 2021 07:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0864F32E2B0
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Mar 2021 08:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbhCEGha (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 5 Mar 2021 01:37:30 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13437 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhCEGha (ORCPT
+        id S229512AbhCEHBg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 5 Mar 2021 02:01:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhCEHBg (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 5 Mar 2021 01:37:30 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DsJ0N2vvSzjVjr;
-        Fri,  5 Mar 2021 14:36:04 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Mar 2021 14:37:18 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <marco.chiappero@intel.com>, <ebiggers@google.com>,
-        <tomaszx.kowalik@intel.com>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/2] crypto: qat - fix use of 'dma_map_single'
-Date:   Fri, 5 Mar 2021 14:35:02 +0800
-Message-ID: <1614926102-44388-3-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1614926102-44388-1-git-send-email-tanghui20@huawei.com>
-References: <1614926102-44388-1-git-send-email-tanghui20@huawei.com>
+        Fri, 5 Mar 2021 02:01:36 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234C2C061574;
+        Thu,  4 Mar 2021 23:01:36 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id a18so863937wrc.13;
+        Thu, 04 Mar 2021 23:01:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pH2+9JAFmJC7s5/cQ1Bjnd0LzvMdoyaqsqzj6ICiWMo=;
+        b=ZH2JWuNP5/SNX9uc+HMaxgCcwVFn0egPZQ4vA0dOFv3DrxkDNJ6S+KXfiQdShx2u9I
+         oc/wo2Msr0VJg36A0/I3MaC4y0j+42gvufk0v0nTodJYLyVwEfoKe7IQ5F9ynO+/2CMk
+         aCLOfsVkqurU8KcBZ/ZPAQ11PjtUyfWNZuhUSXJvR2pg8BWzs1IGPZdT9Hq3zDx+kcM0
+         KvfE6oBtCO9v8Bmh2/6S18ClrvtjXYjd/L53pyfYOhleTJKpuI2YLzbjY6iQdD8efJ3O
+         0VQKUd+9yWYfGVfEhPXH1Pkbjvx4AokTOEqYz/Zh8w/DjIQaCur1zkltv6Jz6Mc8sD7E
+         oicg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pH2+9JAFmJC7s5/cQ1Bjnd0LzvMdoyaqsqzj6ICiWMo=;
+        b=oQzRFMjuJVdIra4OcAJLjjFvgqT8D3ZAK0sdm1Uf2qlafSnX1TY5cqRmFrIzFRWVmI
+         MXFRWjMIjE+suk/ct0D3mi5q9HGuCRbH8T76/EOUunamHByybecsEKjL25Ozz9xwS+Y9
+         T/8O9AmciRKosD095w7TIPiYAOJWfbuyCxWN3pby+F+YOpLEe6hr67A17KpIyHGUC0Q5
+         IUT+ONAhnHP6dfGyH4DZKeTU8uYzzesZMuzEXk9hvDeukkWYQ2VPosL+H9BRznrNtERF
+         6Q6tZARV+bh/CG33sAJ1wgb3tr9IapkQNWPsPXOWRJ8CchM4LthmDvCxd3/2/STOxvPM
+         etlw==
+X-Gm-Message-State: AOAM531YqiNJfksuMCHZF///g+kxFXp16yfXUIwB/Ydq4uTksqXys1fQ
+        s1892hRaBymNA1ORdqbnZ6uqOrsvjDgM0LoR
+X-Google-Smtp-Source: ABdhPJyBumVXPYcelUUdEU2yXOYCkvuLZyotagaGcwuwzEHSwCDZLPzJPQCWmBPGlqVRgUrpr/nfhA==
+X-Received: by 2002:adf:a453:: with SMTP id e19mr7516340wra.283.1614927694832;
+        Thu, 04 Mar 2021 23:01:34 -0800 (PST)
+Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id y18sm2799220wrq.61.2021.03.04.23.01.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 23:01:34 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/3] hwrng: bcm2835: add reset support
+Date:   Fri,  5 Mar 2021 08:01:29 +0100
+Message-Id: <20210305070132.2986-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-DMA_TO_DEVICE synchronisation must be done after the last modification
-of the memory region by the software and before it is handed off to
-the device.
+Some devices may need to perform a reset before using the RNG, such as the
+BCM6368.
 
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/crypto/qat/qat_common/qat_algs.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+v6: fix dt-bindings documentation, add patch makings clocks mandatory for
+ BCM6368.
+v5: remove reset_control_rearm() and apply on latest herbert/cryptodev-2.6.git.
+v4: fix documentation, add reset_control_rearm().
+v3: make resets required if brcm,bcm6368-rng.
+v2: document reset support.
 
-diff --git a/drivers/crypto/qat/qat_common/qat_algs.c b/drivers/crypto/qat/qat_common/qat_algs.c
-index ea1c689..f998ed5 100644
---- a/drivers/crypto/qat/qat_common/qat_algs.c
-+++ b/drivers/crypto/qat/qat_common/qat_algs.c
-@@ -718,8 +718,8 @@ static int qat_alg_sgl_to_bufl(struct qat_crypto_instance *inst,
- 	int n = sg_nents(sgl);
- 	struct qat_alg_buf_list *bufl;
- 	struct qat_alg_buf_list *buflout = NULL;
--	dma_addr_t blp;
--	dma_addr_t bloutp;
-+	dma_addr_t blp = DMA_MAPPING_ERROR;
-+	dma_addr_t bloutp = DMA_MAPPING_ERROR;
- 	struct scatterlist *sg;
- 	size_t sz_out, sz = struct_size(bufl, bufers, n + 1);
+Álvaro Fernández Rojas (3):
+  dt-bindings: rng: bcm2835: add clock constraints
+  dt-bindings: rng: bcm2835: document reset support
+  hwrng: bcm2835: add reset support
 
-@@ -734,10 +734,6 @@ static int qat_alg_sgl_to_bufl(struct qat_crypto_instance *inst,
- 	for_each_sg(sgl, sg, n, i)
- 		bufl->bufers[i].addr = DMA_MAPPING_ERROR;
+ .../devicetree/bindings/rng/brcm,bcm2835.yaml | 21 +++++++++++++++++++
+ drivers/char/hw_random/bcm2835-rng.c          | 10 +++++++++
+ 2 files changed, 31 insertions(+)
 
--	blp = dma_map_single(dev, bufl, sz, DMA_TO_DEVICE);
--	if (unlikely(dma_mapping_error(dev, blp)))
--		goto err_in;
--
- 	for_each_sg(sgl, sg, n, i) {
- 		int y = sg_nctr;
-
-@@ -753,6 +749,9 @@ static int qat_alg_sgl_to_bufl(struct qat_crypto_instance *inst,
- 		sg_nctr++;
- 	}
- 	bufl->num_bufs = sg_nctr;
-+	blp = dma_map_single(dev, bufl, sz, DMA_TO_DEVICE);
-+	if (unlikely(dma_mapping_error(dev, blp)))
-+		goto err_in;
- 	qat_req->buf.bl = bufl;
- 	qat_req->buf.blp = blp;
- 	qat_req->buf.sz = sz;
-@@ -772,9 +771,6 @@ static int qat_alg_sgl_to_bufl(struct qat_crypto_instance *inst,
- 		for_each_sg(sglout, sg, n, i)
- 			bufers[i].addr = DMA_MAPPING_ERROR;
-
--		bloutp = dma_map_single(dev, buflout, sz_out, DMA_TO_DEVICE);
--		if (unlikely(dma_mapping_error(dev, bloutp)))
--			goto err_out;
- 		for_each_sg(sglout, sg, n, i) {
- 			int y = sg_nctr;
-
-@@ -791,6 +787,9 @@ static int qat_alg_sgl_to_bufl(struct qat_crypto_instance *inst,
- 		}
- 		buflout->num_bufs = sg_nctr;
- 		buflout->num_mapped_bufs = sg_nctr;
-+		bloutp = dma_map_single(dev, buflout, sz_out, DMA_TO_DEVICE);
-+		if (unlikely(dma_mapping_error(dev, bloutp)))
-+			goto err_out;
- 		qat_req->buf.blout = buflout;
- 		qat_req->buf.bloutp = bloutp;
- 		qat_req->buf.sz_out = sz_out;
-@@ -802,17 +801,21 @@ static int qat_alg_sgl_to_bufl(struct qat_crypto_instance *inst,
- 	return 0;
-
- err_out:
-+	if (!dma_mapping_error(dev, bloutp))
-+		dma_unmap_single(dev, bloutp, sz_out, DMA_TO_DEVICE);
-+
- 	n = sg_nents(sglout);
- 	for (i = 0; i < n; i++)
- 		if (!dma_mapping_error(dev, buflout->bufers[i].addr))
- 			dma_unmap_single(dev, buflout->bufers[i].addr,
- 					 buflout->bufers[i].len,
- 					 DMA_BIDIRECTIONAL);
--	if (!dma_mapping_error(dev, bloutp))
--		dma_unmap_single(dev, bloutp, sz_out, DMA_TO_DEVICE);
- 	kfree(buflout);
-
- err_in:
-+	if (!dma_mapping_error(dev, blp))
-+		dma_unmap_single(dev, blp, sz, DMA_TO_DEVICE);
-+
- 	n = sg_nents(sgl);
- 	for (i = 0; i < n; i++)
- 		if (!dma_mapping_error(dev, bufl->bufers[i].addr))
-@@ -820,8 +823,6 @@ static int qat_alg_sgl_to_bufl(struct qat_crypto_instance *inst,
- 					 bufl->bufers[i].len,
- 					 DMA_BIDIRECTIONAL);
-
--	if (!dma_mapping_error(dev, blp))
--		dma_unmap_single(dev, blp, sz, DMA_TO_DEVICE);
- 	kfree(bufl);
-
- 	dev_err(dev, "Failed to map buf for dma\n");
---
-2.8.1
+-- 
+2.20.1
 
