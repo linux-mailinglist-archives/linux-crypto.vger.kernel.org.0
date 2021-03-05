@@ -2,83 +2,119 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D20132E1F7
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Mar 2021 07:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE6E32E21C
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Mar 2021 07:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229458AbhCEGGZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Fri, 5 Mar 2021 01:06:25 -0500
-Received: from mail.cittametropolitana.me.it ([109.117.9.231]:6764 "EHLO
-        mail.provincia.messina.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhCEGGZ (ORCPT
+        id S229464AbhCEG0e (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 5 Mar 2021 01:26:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhCEG0d (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 5 Mar 2021 01:06:25 -0500
-X-Greylist: delayed 3748 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Mar 2021 01:06:24 EST
-Received: from mail.cittametropolitana.me.it (unknown [10.0.0.34])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.provincia.messina.it (MTA) with ESMTPS id 4DsDs22k2JzxT6j;
-        Fri,  5 Mar 2021 05:14:30 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.cittametropolitana.me.it (Postfix) with ESMTP id C8E651403E0;
-        Fri,  5 Mar 2021 05:14:29 +0100 (CET)
-Received: from mail.cittametropolitana.me.it ([127.0.0.1])
-        by localhost (mail.cittametropolitana.me.it [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id v43tkIddRKyq; Fri,  5 Mar 2021 05:14:29 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.cittametropolitana.me.it (Postfix) with ESMTP id 195B21403F4;
-        Fri,  5 Mar 2021 05:14:28 +0100 (CET)
-X-Virus-Scanned: amavisd-new at provincia.messina.it
-Received: from mail.cittametropolitana.me.it ([127.0.0.1])
-        by localhost (mail.cittametropolitana.me.it [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id UaH_2NPBxU31; Fri,  5 Mar 2021 05:14:27 +0100 (CET)
-Received: from mail.cittametropolitana.me.it (mail.provincia.messina.it [10.0.0.34])
-        by mail.cittametropolitana.me.it (Postfix) with ESMTP id 704A914025B;
-        Fri,  5 Mar 2021 05:14:25 +0100 (CET)
-Date:   Fri, 5 Mar 2021 05:14:25 +0100 (CET)
-From:   Pietro Alito <p.alito@cittametropolitana.me.it>
-Reply-To: Azim premiji <premijiazim@gmail.com>
-Message-ID: <1053265004.4739728.1614917665400.JavaMail.zimbra@cittametropolitana.me.it>
-Subject: spende
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [160.152.82.185]
-X-Mailer: Zimbra 8.8.12_GA_3866 (zclient/8.8.12_GA_3866)
-Thread-Index: 1zhHolU4piZzV3Tbpy4Nj8cNLh2xVA==
-Thread-Topic: spende
-To:     undisclosed-recipients:;
-x-msw-jemd-malware: unknown
-x-msw-jemd-newsletter: false
-x-msw-jemd-refid: [1]30,0,0,,d41d8cd98f00b204,p.alito@cittametropolitana.me.it,,RULES_HIT:10:41:152:355:379:387:541:582:800:967:973:988:989:1152:1261:1277:1311:1313:1314:1345:1373:1381:1437:1513:1515:1516:1518:1521:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2525:2559:2563:2682:2685:2859:2892:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3870:3876:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:5007:6261:6298:6299:6666:6668:7514:8619:8985:9025:10400:10403:10407:11473:11658:11815:12043:12739:12986:13069:13311:13357:13846:14181:14344:14686:14721:14777:14802:19901:19997:21451:21619:21620:21623:21624:21625:21626:21786:21819:21939:21990:30021:30054:30075:30084,0,RBL:04yrddpmiuj4kp9eywbj5g3yendueyc6xhabwwft6c457sq6hku1s7poawy8571.6bmizhqoctcj3ay99a17pstnquiyfp83mj1zhp3qnxs3qpbf6q7id7ogk8gaxzu.n-lbl8.mailshell.net-223.238.255.100,CacheIP:none,Bayesian:0.5,0.5,0.5,Netch
-x-msw-jemd-refid: [2]eck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:me.it-dnsbl7.mailshell.net-127.0.0.120;38a9b6349ad809c3d45614ee1ee39ccb.wikipedia.org-dnsbl7.mailshell.net-127.0.0.130,Custom_rules:0:0:0,LFtime:723,LUA_SUMMARY:none;newsletter:no;malware:no;phishing:no
+        Fri, 5 Mar 2021 01:26:33 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF37AC061574;
+        Thu,  4 Mar 2021 22:26:32 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id o2so417148wme.5;
+        Thu, 04 Mar 2021 22:26:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=NNNoVrG5d7tOM41mvwYb60m8dYDHF6mZjSC7fCCIN1A=;
+        b=Dm/OS2p4akwEji3N23M8kqsSx89IRPazBAgfT1S8RhLIGtWAGCRGwXPjPp2bB4hPYx
+         AQKRV92rdvMIRXFGCQPw/HMlORVGbMVKjTRCVFaXJ7h71q6xqdjRvF59tKNUtSfWkIPh
+         1vZ+l8ZLX24504HMOeTPFfh9vgNJNfHnL1wmqt+QizK0oOyLIE3RCHO93LEXWEFfmYGA
+         UCoV9wZ8pGtXKXYyI/m3pErwsypP/5VbRXs4ho6m4On1upzL3Y30pDgRocAy45b1bTr0
+         WJnIAY+gIEf84+r1ZU7AzyS6e1fz9XHv+G4VKXT3qmtUFZQK/TJq+DLJei95Ji04ohBF
+         4J/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=NNNoVrG5d7tOM41mvwYb60m8dYDHF6mZjSC7fCCIN1A=;
+        b=Hq5XnIa0tY+Uq47JsbQ3h24U3ZQ93mer34TmNmzSKxgsjFZMrYYk+QGMQEsCgnDidZ
+         E5P65pFtvsHrxQOHxP+jVbSle2c2W/9P/d5Mt4qO9uiwMKH5/YPN7hIf3Pg4QQUTjPgv
+         r8w+X9vwRW/8n+CwFBTC+pMlVjzIrmOw7jlnqzyGO79Bibjn1+9jIKucwAe+xXYiRWDl
+         wn18+1lsUr+S1u1gpRC0WmqZkclMv4xuPOzJhGzjknXMbcMS43V6BCHwnWBz3QB1ppgu
+         BLjUMTfj4hsJtbVoC6uYAhowUB5jNHb3z4Lwgb97RzqkOKcITfwq4qoffG96g5ULLprM
+         uVdg==
+X-Gm-Message-State: AOAM53008aLbUtleQHpBVrMWojFrKDpes7Pr6GkkQW0kOYvZ846cINTA
+        haX6nSCL3d72D0Tp1zFiP9g=
+X-Google-Smtp-Source: ABdhPJxPzDs6HeUpfqwXJ7krgAyG4WR5WyH9O4SZwe4iqskvtgG5yPgiivWaJBtlfdCHuau9C4UDrg==
+X-Received: by 2002:a1c:df8a:: with SMTP id w132mr7112323wmg.53.1614925591409;
+        Thu, 04 Mar 2021 22:26:31 -0800 (PST)
+Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id f126sm2796782wmf.17.2021.03.04.22.26.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Mar 2021 22:26:31 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH] hwrng: bcm2835: set quality to 1000
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+In-Reply-To: <b0cf1be0-4c7c-57ee-fea5-789fe215b85d@gmail.com>
+Date:   Fri, 5 Mar 2021 07:26:29 +0100
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Andrew Lunn <andrew@lunn.ch>, Matt Mackall <mpm@selenic.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-crypto@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Stijn Tintel <stijn@linux-ipv6.be>, ynezz@true.cz
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6D1459DF-A7E1-422C-AA05-655156AEBA23@gmail.com>
+References: <20210220174741.23665-1-noltari@gmail.com>
+ <YDFeao/bOxvoXI9D@lunn.ch> <9b86c773-7153-1e18-472a-f66b01c83173@gmail.com>
+ <20210303092019.GB8134@gondor.apana.org.au>
+ <66AED5A4-3227-47CA-A4A2-B5AD6A571AAC@gmail.com>
+ <c76c82668142710ba5a7a8454759c9aa2423d72f.camel@suse.de>
+ <b0cf1be0-4c7c-57ee-fea5-789fe215b85d@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hallo,
+Hi Florian,
 
-Ich bin Azim Hashim Premji, ein indischer Wirtschaftsmagnat, Investor und Philanthrop. Ich bin der Vorsitzende von Wipro Limited. Ich habe 25 pro verschenkt Prozent meines persönlichen Vermögens für wohltätige Zwecke. Und ich habe auch versprochen, zu verschenken die restlichen 25% in diesem Jahr 2021 .. Ich habe beschlossen, Ihnen 2.000.000,00 Euro zu spenden. Wenn Sie an meiner Spende interessiert sind, kontaktieren Sie mich bitte Für mehr Information. Ich möchte auch, dass du Teil meiner Nächstenliebe bist Stiftung, sobald Sie dieses Geld erhalten, damit wir uns zusammenschließen können um den Bedürftigen zu helfen ..
+> El 4 mar 2021, a las 23:28, Florian Fainelli <f.fainelli@gmail.com> =
+escribi=C3=B3:
+>=20
+> On 3/4/21 7:11 AM, Nicolas Saenz Julienne wrote:
+>> On Wed, 2021-03-03 at 10:29 +0100, =C3=81lvaro Fern=C3=A1ndez Rojas =
+wrote:
+>>> Hi Herbert,
+>>>=20
+>>>> El 3 mar 2021, a las 10:20, Herbert Xu =
+<herbert@gondor.apana.org.au> escribi=C3=B3:
+>>>>=20
+>>>> On Sat, Feb 20, 2021 at 08:12:45PM +0100, =C3=81lvaro Fern=C3=A1ndez =
+Rojas wrote:
+>>>>>=20
+>>>>> I ran rngtest and this is what I got:
+>>>>=20
+>>>> This is meaningless except for sources that have not been whitened.
+>>>>=20
+>>>> Your justification needs to be based on what the hardware does or
+>>>> is documented to do.
+>>>=20
+>>> Ok, so I guess that we=E2=80=99re never setting that value to =
+anything since there=E2=80=99s
+>>> no public documentation about that =C2=AF\_(=E3=83=84)_/=C2=AF.
+>>=20
+>> @Florian, is there a way you might be able to get the official value?
+>=20
+> I will be looking into the documentation this weekend and let you know
+> whether we can change the driver's quality accordingly.
 
-auch mehr über mich über den folgenden Link lesen
-https://en.wikipedia.org/wiki/Azim_Premji
+Could you do that for iproc-rng200.c too?
 
-Kontaktieren Sie sie per E-Mail für weitere Informationen: premijiazim@gmail.com
-Herzlicher Gruss
-Geschäftsführer Wipro Limited
+> --=20
+> Florian
 
-**********************************************************************
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the system manager.
-
-This footnote also confirms that this email message has been swept by
-MIMEsweeper for the presence of computer viruses.
-
-www.clearswift.com
-**********************************************************************
-
-*******************************************************************
-Mail sottoposta al controllo antivirus e antispam della Provincia Regionale di Messina
-per comunicazioni contattare postamm@provincia.messina.it
-*******************************************************************
+Best regards,
+=C3=81lvaro.=
