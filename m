@@ -2,69 +2,70 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436D032F4E2
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Mar 2021 22:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2B432F4E9
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Mar 2021 22:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbhCEVAV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 5 Mar 2021 16:00:21 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49368 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229563AbhCEVAL (ORCPT
+        id S229899AbhCEVAX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 5 Mar 2021 16:00:23 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26134 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229616AbhCEVAP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:00:11 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125Kd2fm088864;
-        Fri, 5 Mar 2021 16:00:04 -0500
+        Fri, 5 Mar 2021 16:00:15 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125KY0Z8119862;
+        Fri, 5 Mar 2021 16:00:06 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=niAyQwmdKx6f0YB7Kpf/eHYKGfKhTDz1oiuvJUn7NaY=;
- b=shGO8Qqnq291otYEF7U72qTrPIH9a+L/ThsgIBp5tFMmgt5Nj7s+lZN9u0WYLYTlCMBl
- Z1o4Hl0Db8Av4XIv+C5jNnQn0CcxFyCGAj/otUwIu795H9zt5dpw6Gtf+OcSYSN1M1oj
- X0e71dHw/Wbfd/czQKZ5tdviQ7xd4uKJAwC+6j8hX6Oa3NwrluYLrdW+l1LTpJC0HHGH
- FvQ9076bVmPyLfe1n8PCTyr6NZ144jyNS4g3+UUGiz9iLFd6EwkdJy5eq3dAFVzH4sNP
- NcfNh4m/BMRpokzovP5Mca9RQaZvvsFE/M6QFgaxpCHsHlhbEFLcho+l79AN/1Mjgxqg vQ== 
+ bh=KyrLnGpXvjPR/2F0kE/Rgfg3iTmEUTS7wtNH+ZMgZmE=;
+ b=lNt5zs+BWJ+5lP1tQaMJUvakjaM0pR8Z7uaAEMuaTMHJnkx2Nwsgn3wsOi64HoWltf96
+ ncRHU1WNvckSoH+JQRQit0iu8FomaHla6tOL0/VPKshA630zC7wTv0du2oWtPg/H3w1s
+ XZWMfyFOhNLE9yN1IYO8kL+pMzd+y5ASXJtoj7hC06b4PDUsl5fp9DN8yRWSBbhoj3GB
+ 1o7yGVxeKfQtUoBQ3CxGKFqAd2gZoknAvOOlBTo4u2s0d+oJvTqMgXhTFhshNHd9pi+/
+ Kk4sZ6Mke5K6Hpimnwl3EowgWixMMSNKJqnbZt8xoU3o7aksMeb0y9v5HujoNZ0M4HiL /g== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373tntt4mp-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373umu0pbw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 16:00:04 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 125Kd9mv089427;
-        Fri, 5 Mar 2021 16:00:03 -0500
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373tntt4ky-1
+        Fri, 05 Mar 2021 16:00:06 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 125KY38r120819;
+        Fri, 5 Mar 2021 16:00:05 -0500
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373umu0pbb-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 16:00:03 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 125KrJAQ001883;
-        Fri, 5 Mar 2021 21:00:02 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma02wdc.us.ibm.com with ESMTP id 3711dxjqd5-1
+        Fri, 05 Mar 2021 16:00:05 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 125Kr78t024288;
+        Fri, 5 Mar 2021 21:00:04 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma03wdc.us.ibm.com with ESMTP id 37128h2am8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 21:00:02 +0000
+        Fri, 05 Mar 2021 21:00:04 +0000
 Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 125L01Bq17695006
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 125L02Oq23724364
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Mar 2021 21:00:01 GMT
+        Fri, 5 Mar 2021 21:00:02 GMT
 Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EF8F9BE056;
-        Fri,  5 Mar 2021 21:00:00 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id C7F97BE06A;
+        Fri,  5 Mar 2021 21:00:02 +0000 (GMT)
 Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2C478BE054;
-        Fri,  5 Mar 2021 21:00:00 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 0B021BE075;
+        Fri,  5 Mar 2021 21:00:02 +0000 (GMT)
 Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
         by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri,  5 Mar 2021 21:00:00 +0000 (GMT)
+        Fri,  5 Mar 2021 21:00:01 +0000 (GMT)
 From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
 To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
         davem@davemloft.net, herbert@gondor.apana.org.au,
         dhowells@redhat.com, zohar@linux.ibm.com, jarkko@kernel.org
 Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
         linux-integrity@vger.kernel.org,
+        Saulo Alessandre <saulo.alessandre@tse.jus.br>,
         Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v11 01/10] oid_registry: Add OIDs for ECDSA with sha224/256/384/512
-Date:   Fri,  5 Mar 2021 15:59:47 -0500
-Message-Id: <20210305205956.3594375-2-stefanb@linux.vnet.ibm.com>
+Subject: [PATCH v11 03/10] crypto: Add NIST P384 curve parameters
+Date:   Fri,  5 Mar 2021 15:59:49 -0500
+Message-Id: <20210305205956.3594375-4-stefanb@linux.vnet.ibm.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210305205956.3594375-1-stefanb@linux.vnet.ibm.com>
 References: <20210305205956.3594375-1-stefanb@linux.vnet.ibm.com>
@@ -73,42 +74,105 @@ Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-03-05_14:2021-03-03,2021-03-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- priorityscore=1501 malwarescore=0 spamscore=0 bulkscore=0 impostorscore=0
- mlxscore=0 suspectscore=0 mlxlogscore=934 phishscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ clxscore=1015 mlxlogscore=999 malwarescore=0 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 impostorscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2103050103
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
 
-Add OIDs for ECDSA with sha224/256/384/512.
+Add the parameters for the NIST P384 curve and define a new curve ID
+for it. Make the curve available in ecc_get_curve.
 
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+Summary of changes:
+
+* crypto/ecc_curve_defs.h
+  - add nist_p384 params
+
+* include/crypto/ecdh.h
+  - add ECC_CURVE_NIST_P384
+
+* crypto/ecc.c
+  - change ecc_get_curve to accept nist_p384
+
+Signed-off-by: Saulo Alessandre <saulo.alessandre@tse.jus.br>
+Tested-by: Stefan Berger <stefanb@linux.ibm.com>
 ---
- include/linux/oid_registry.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ crypto/ecc.c            |  2 ++
+ crypto/ecc_curve_defs.h | 32 ++++++++++++++++++++++++++++++++
+ include/crypto/ecdh.h   |  1 +
+ 3 files changed, 35 insertions(+)
 
-diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-index 4462ed2c18cd..b504e2f36b25 100644
---- a/include/linux/oid_registry.h
-+++ b/include/linux/oid_registry.h
-@@ -19,8 +19,12 @@
- enum OID {
- 	OID_id_dsa_with_sha1,		/* 1.2.840.10030.4.3 */
- 	OID_id_dsa,			/* 1.2.840.10040.4.1 */
--	OID_id_ecdsa_with_sha1,		/* 1.2.840.10045.4.1 */
- 	OID_id_ecPublicKey,		/* 1.2.840.10045.2.1 */
-+	OID_id_ecdsa_with_sha1,		/* 1.2.840.10045.4.1 */
-+	OID_id_ecdsa_with_sha224,	/* 1.2.840.10045.4.3.1 */
-+	OID_id_ecdsa_with_sha256,	/* 1.2.840.10045.4.3.2 */
-+	OID_id_ecdsa_with_sha384,	/* 1.2.840.10045.4.3.3 */
-+	OID_id_ecdsa_with_sha512,	/* 1.2.840.10045.4.3.4 */
+diff --git a/crypto/ecc.c b/crypto/ecc.c
+index 25e79fd70566..f6cef5a7942d 100644
+--- a/crypto/ecc.c
++++ b/crypto/ecc.c
+@@ -50,6 +50,8 @@ const struct ecc_curve *ecc_get_curve(unsigned int curve_id)
+ 		return fips_enabled ? NULL : &nist_p192;
+ 	case ECC_CURVE_NIST_P256:
+ 		return &nist_p256;
++	case ECC_CURVE_NIST_P384:
++		return &nist_p384;
+ 	default:
+ 		return NULL;
+ 	}
+diff --git a/crypto/ecc_curve_defs.h b/crypto/ecc_curve_defs.h
+index 69be6c7d228f..b327732f6ef5 100644
+--- a/crypto/ecc_curve_defs.h
++++ b/crypto/ecc_curve_defs.h
+@@ -54,4 +54,36 @@ static struct ecc_curve nist_p256 = {
+ 	.b = nist_p256_b
+ };
  
- 	/* PKCS#1 {iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-1(1)} */
- 	OID_rsaEncryption,		/* 1.2.840.113549.1.1.1 */
++/* NIST P-384 */
++static u64 nist_p384_g_x[] = { 0x3A545E3872760AB7ull, 0x5502F25DBF55296Cull,
++				0x59F741E082542A38ull, 0x6E1D3B628BA79B98ull,
++				0x8Eb1C71EF320AD74ull, 0xAA87CA22BE8B0537ull };
++static u64 nist_p384_g_y[] = { 0x7A431D7C90EA0E5Full, 0x0A60B1CE1D7E819Dull,
++				0xE9DA3113B5F0B8C0ull, 0xF8F41DBD289A147Cull,
++				0x5D9E98BF9292DC29ull, 0x3617DE4A96262C6Full };
++static u64 nist_p384_p[] = { 0x00000000FFFFFFFFull, 0xFFFFFFFF00000000ull,
++				0xFFFFFFFFFFFFFFFEull, 0xFFFFFFFFFFFFFFFFull,
++				0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFFFFFFFFFFull };
++static u64 nist_p384_n[] = { 0xECEC196ACCC52973ull, 0x581A0DB248B0A77Aull,
++				0xC7634D81F4372DDFull, 0xFFFFFFFFFFFFFFFFull,
++				0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFFFFFFFFFFull };
++static u64 nist_p384_a[] = { 0x00000000FFFFFFFCull, 0xFFFFFFFF00000000ull,
++				0xFFFFFFFFFFFFFFFEull, 0xFFFFFFFFFFFFFFFFull,
++				0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFFFFFFFFFFull };
++static u64 nist_p384_b[] = { 0x2a85c8edd3ec2aefull, 0xc656398d8a2ed19dull,
++				0x0314088f5013875aull, 0x181d9c6efe814112ull,
++				0x988e056be3f82d19ull, 0xb3312fa7e23ee7e4ull };
++static struct ecc_curve nist_p384 = {
++	.name = "nist_384",
++	.g = {
++		.x = nist_p384_g_x,
++		.y = nist_p384_g_y,
++		.ndigits = 6,
++	},
++	.p = nist_p384_p,
++	.n = nist_p384_n,
++	.a = nist_p384_a,
++	.b = nist_p384_b
++};
++
+ #endif
+diff --git a/include/crypto/ecdh.h b/include/crypto/ecdh.h
+index a5b805b5526d..e4ba1de961e4 100644
+--- a/include/crypto/ecdh.h
++++ b/include/crypto/ecdh.h
+@@ -25,6 +25,7 @@
+ /* Curves IDs */
+ #define ECC_CURVE_NIST_P192	0x0001
+ #define ECC_CURVE_NIST_P256	0x0002
++#define ECC_CURVE_NIST_P384	0x0003
+ 
+ /**
+  * struct ecdh - define an ECDH private key
 -- 
 2.29.2
 
