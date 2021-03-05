@@ -2,201 +2,160 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1956832F4F2
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Mar 2021 22:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D525432F5C0
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Mar 2021 23:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhCEVA0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 5 Mar 2021 16:00:26 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32156 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229693AbhCEVAS (ORCPT
+        id S229591AbhCEWQ0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 5 Mar 2021 17:16:26 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40406 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229576AbhCEWPv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:00:18 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125KXLkK182717;
-        Fri, 5 Mar 2021 16:00:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=pHGMUorRKoM0SU+XHOfDbWQVMw9U7ZaFRKwfSwIa7Ls=;
- b=j9rkYH0WQ65aWaTqfelPmO/R/9NVioEnJ8PjiEUtRleZGgEdFfXt3YD13SQ2POQyD0FM
- VuKvJbCfZMEi0iXbtndlxNqQwFnpDSXqG0koOWV2pz+eZkO6tSj586kC/+hZFvKyH8Q3
- Urdu5HS5e5oGfgaTnziMhX4HMS9wr2njVNmCmIBjPNUdAZapjqkAvmSiw2vRZlhZi8mQ
- IlYUC/HMbmuoVnk4edZ30w43q1Ddg4Sy1OP+nL+4uwI1i83Zr9dXIq1A09hNvn2jS2jT
- gj9VtCNfalAnRW5nQV4GmUpfWI2miiU214wFILNfv4pYxp7J9a57Yty31DxxnkHgTVMS rQ== 
+        Fri, 5 Mar 2021 17:15:51 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125M5LcM049164;
+        Fri, 5 Mar 2021 17:15:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=VAzirJe/Hk/A2gCMur0L8RjwwmeZlMeq9cZyz2PGjEw=;
+ b=bM+NyN1PJ3UAim5D3wAptX1h+/xc074+OPS9f5qvFsX+MtIAUhhjre8/BPbDIKgpHO3C
+ K3pcmEeJOFP2xZmef4rhbAtWVudoTTEPFVfINYeSngV58UDPtUxa03xWzV8bojBSkpXj
+ 0jKXBUAe0Wrg68RXrcgVYT43l3tjgpVHEr5xIcOvJT5uzrELWcYcFU9/aRB6ZWUnNhO5
+ Nu4ARkCbVCw/nRD0DylOg6LSgKWQXFBO5nE6c61GYh46mC68FG8B6/Oni0SfMCwLkKfD
+ xco1XmOGKBdaWj+fp2W58N4Z1Jxl8pljAvCrevN0GJ4VU60++45ZwOh3XF97GRQtJHpm EA== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373usj0h06-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373tntuuxs-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 16:00:11 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 125Ka11F191282;
-        Fri, 5 Mar 2021 16:00:11 -0500
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373usj0gyf-1
+        Fri, 05 Mar 2021 17:15:41 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 125M78Q3057284;
+        Fri, 5 Mar 2021 17:15:41 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373tntuuxa-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 16:00:11 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 125KqOUS006352;
-        Fri, 5 Mar 2021 21:00:10 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma04wdc.us.ibm.com with ESMTP id 3712pja4g0-1
+        Fri, 05 Mar 2021 17:15:41 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 125MCQ0m012336;
+        Fri, 5 Mar 2021 22:15:40 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma03dal.us.ibm.com with ESMTP id 3720r14th5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 21:00:10 +0000
+        Fri, 05 Mar 2021 22:15:40 +0000
 Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 125L09m611534780
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 125MFd2N12583468
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Mar 2021 21:00:09 GMT
+        Fri, 5 Mar 2021 22:15:39 GMT
 Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 50255BE06D;
-        Fri,  5 Mar 2021 21:00:09 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id EFA13BE086;
+        Fri,  5 Mar 2021 22:15:38 +0000 (GMT)
 Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 96107BE06A;
-        Fri,  5 Mar 2021 21:00:08 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id EAC52BE054;
+        Fri,  5 Mar 2021 22:15:37 +0000 (GMT)
 Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
         by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri,  5 Mar 2021 21:00:08 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Fri,  5 Mar 2021 22:15:37 +0000 (GMT)
+Subject: Re: [PATCH v10 1/9] crypto: Add support for ECDSA signature
+ verification
+To:     Vitaly Chikunov <vt@altlinux.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
         davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com, zohar@linux.ibm.com, jarkko@kernel.org
-Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v11 10/10] certs: Add support for using elliptic curve keys for signing modules
-Date:   Fri,  5 Mar 2021 15:59:56 -0500
-Message-Id: <20210305205956.3594375-11-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210305205956.3594375-1-stefanb@linux.vnet.ibm.com>
-References: <20210305205956.3594375-1-stefanb@linux.vnet.ibm.com>
+        dhowells@redhat.com, zohar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org
+References: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
+ <20210305005203.3547587-2-stefanb@linux.vnet.ibm.com>
+ <YEJk44FXEl0+mEPr@kernel.org> <20210305194640.nnerhdadoczqyta3@altlinux.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <4abdc777-03a9-bee1-3ae1-93d77e14eea0@linux.ibm.com>
+Date:   Fri, 5 Mar 2021 17:15:37 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <20210305194640.nnerhdadoczqyta3@altlinux.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-03-05_14:2021-03-03,2021-03-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- mlxscore=0 clxscore=1015 spamscore=0 impostorscore=0 malwarescore=0
- lowpriorityscore=0 phishscore=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103050103
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 malwarescore=0 spamscore=0 bulkscore=0 impostorscore=0
+ mlxscore=0 suspectscore=0 mlxlogscore=712 phishscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103050112
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+On 3/5/21 2:46 PM, Vitaly Chikunov wrote:
+> Jarkko,
+>
+> On Fri, Mar 05, 2021 at 07:05:39PM +0200, Jarkko Sakkinen wrote:
+>>> +// SPDX-License-Identifier: GPL-2.0+
+>>> +/*
+>>> + * Copyright (c) 2021 IBM Corporation
+>>> + *
+>>> + * Redistribution and use in source and binary forms, with or without
+>>> + * modification, are permitted provided that the following conditions are
+>>> + * met:
+>>> + *  * Redistributions of source code must retain the above copyright
+>>> + *   notice, this list of conditions and the following disclaimer.
+>>> + *  * Redistributions in binary form must reproduce the above copyright
+>>> + *    notice, this list of conditions and the following disclaimer in the
+>>> + *    documentation and/or other materials provided with the distribution.
+>>> + *
+>>> + * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+>>> + * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+>>> + * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+>>> + * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+>>> + * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+>>> + * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+>>> + * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+>>> + * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+>>> + * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+>>> + * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+>>> + * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+>>> + */
+>> This license platter is redundant, given SPDX.
+> I think SPDX identifier supplements license plate and is machine readable
+> identifier, but it does not replace or making adding of license plate
+> redundant.
+>
+> - Quoting https://spdx.dev/ids/
+>
+>    "When a license defines a recommended notice to attach to files under
+>    that license (sometimes called a “standard header”), the SPDX project
+>    recommends that the standard header be included in the files, in
+>    addition to an SPDX ID.
+>
+>    Additionally, when a file already contains a standard header or other
+>    license notice, the SPDX project recommends that those existing
+>    notices should not be removed. The SPDX ID is recommended to be used
+>    to supplement, not replace, existing notices in files."
+>
+> - GPL license text have section on "How to Apply These Terms to Your New
+>    Programs" which says to add license boilerplate text and it does not
+>    say SPDX identifier is enough.
+>
+> - Also, page https://www.kernel.org/doc/html/latest/process/license-rules.html
+>    does not forbid adding license plate text. (Even though it misguidedly
+>    says "alternative to boilerplate text" is the use of SPDX.)
+>
+> - License text is a readable text and not just identifier.
+>    I think SPDX tag could be not legally binding in all jurisdictions.
+>
+> By there reasons I believe you cannot request removing license platter
+> from the source and this should be author's decision.
+>
+> Thanks,
+>
+Thanks for looking into this. I am fine with the SPDX identifier.
 
-Add support for using elliptic curve keys for signing modules. It uses
-a NIST P384 (secp384r1) key if the user chooses an elliptic curve key
-and will have ECDSA support built into the kernel.
+Regards,
 
-Note: A developer choosing an ECDSA key for signing modules has to
-manually delete the signing key (rm certs/signing_key.*) when falling
-back to building an older version of a kernel that only supports RSA
-keys since otherwise ECDSA-signed modules will not be usable when that
-older kernel runs and the ECDSA key was still used for signing modules.
+    Stefan
 
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
----
-
-v8->v9:
- - Automatically select CONFIG_ECDSA for built-in ECDSA support
- - Added help documentation
-
-This patch builds on top Nayna's series for 'kernel build support for
-loading the kernel module signing key'.
-- https://lkml.org/lkml/2021/2/18/856
----
- certs/Kconfig                         | 22 ++++++++++++++++++++++
- certs/Makefile                        | 14 ++++++++++++++
- crypto/asymmetric_keys/pkcs7_parser.c |  4 ++++
- 3 files changed, 40 insertions(+)
-
-diff --git a/certs/Kconfig b/certs/Kconfig
-index 48675ad319db..919db43ce80b 100644
---- a/certs/Kconfig
-+++ b/certs/Kconfig
-@@ -15,6 +15,28 @@ config MODULE_SIG_KEY
-          then the kernel will automatically generate the private key and
-          certificate as described in Documentation/admin-guide/module-signing.rst
- 
-+choice
-+	prompt "Type of module signing key to be generated"
-+	default MODULE_SIG_KEY_TYPE_RSA
-+	help
-+	 The type of module signing key type to generated. This option
-+	 does not apply if a #PKCS11 URI is used.
-+
-+config MODULE_SIG_KEY_TYPE_RSA
-+	bool "RSA"
-+	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
-+	help
-+	 Use an RSA key for module signing.
-+
-+config MODULE_SIG_KEY_TYPE_ECDSA
-+	bool "ECDSA"
-+	select CRYPTO_ECDSA
-+	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
-+	help
-+	 Use an elliptic curve key (NIST P384) for module signing.
-+
-+endchoice
-+
- config SYSTEM_TRUSTED_KEYRING
- 	bool "Provide system-wide ring of trusted keys"
- 	depends on KEYS
-diff --git a/certs/Makefile b/certs/Makefile
-index 3fe6b73786fa..c487d7021c54 100644
---- a/certs/Makefile
-+++ b/certs/Makefile
-@@ -69,6 +69,18 @@ else
- SIGNER = -signkey $(obj)/signing_key.key
- endif # CONFIG_IMA_APPRAISE_MODSIG
- 
-+X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text)
-+
-+# Support user changing key type
-+ifdef CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
-+keytype_openssl = -newkey ec -pkeyopt ec_paramgen_curve:secp384r1
-+$(if $(findstring ecdsa-with-,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
-+endif
-+
-+ifdef CONFIG_MODULE_SIG_KEY_TYPE_RSA
-+$(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
-+endif
-+
- $(obj)/signing_key.pem: $(obj)/x509.genkey
- 	@$(kecho) "###"
- 	@$(kecho) "### Now generating an X.509 key pair to be used for signing modules."
-@@ -86,12 +98,14 @@ ifeq ($(CONFIG_IMA_APPRAISE_MODSIG),y)
- 		-batch -x509 -config $(obj)/x509.genkey \
- 		-outform PEM -out $(CA_KEY) \
- 		-keyout $(CA_KEY) -extensions ca_ext \
-+		$(keytype_openssl) \
- 		$($(quiet)redirect_openssl)
- endif # CONFIG_IMA_APPRAISE_MODSIG
- 	$(Q)openssl req -new -nodes -utf8 \
- 		-batch -config $(obj)/x509.genkey \
- 		-outform PEM -out $(obj)/signing_key.csr \
- 		-keyout $(obj)/signing_key.key -extensions myexts \
-+		$(keytype_openssl) \
- 		$($(quiet)redirect_openssl)
- 	$(Q)openssl x509 -req -days 36500 -in $(obj)/signing_key.csr \
- 		-outform PEM -out $(obj)/signing_key.crt $(SIGNER) \
-diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
-index 967329e0a07b..2546ec6a0505 100644
---- a/crypto/asymmetric_keys/pkcs7_parser.c
-+++ b/crypto/asymmetric_keys/pkcs7_parser.c
-@@ -269,6 +269,10 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
- 		ctx->sinfo->sig->pkey_algo = "rsa";
- 		ctx->sinfo->sig->encoding = "pkcs1";
- 		break;
-+	case OID_id_ecdsa_with_sha256:
-+		ctx->sinfo->sig->pkey_algo = "ecdsa";
-+		ctx->sinfo->sig->encoding = "x962";
-+		break;
- 	default:
- 		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
- 		return -ENOPKG;
--- 
-2.29.2
 
