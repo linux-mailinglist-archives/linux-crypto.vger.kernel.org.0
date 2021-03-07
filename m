@@ -2,94 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE25733026E
-	for <lists+linux-crypto@lfdr.de>; Sun,  7 Mar 2021 16:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4708330318
+	for <lists+linux-crypto@lfdr.de>; Sun,  7 Mar 2021 17:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhCGPDc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 7 Mar 2021 10:03:32 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:40519 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230063AbhCGPDJ (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 7 Mar 2021 10:03:09 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 57F962408;
-        Sun,  7 Mar 2021 10:03:08 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sun, 07 Mar 2021 10:03:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=lMpMG5VZVPZqrn7upzdH0uShBQN
-        ra/BfJs8BBOkLjSA=; b=dwNrRd2PVc5wF4XvK0qSaB7/lFkTGI7t5k4YBRpYV8f
-        B1NH8ielaHKFHj7jw1k+qqBSfKaqYnYX+d0/bklemMUKwH3Bx8kGgTh73kF0v2uJ
-        tcIy7Vv8JaSJBWagiPOGbUZUw0ci17Kc63N5JLuTKBdwydBSg/SxpYhLEKEGUamW
-        BEjhM+k3WpYyu+eoXcoIXLDgTgJI6053hlFhJBHg0s0jT9hV1wfSvc8UkLaTIq3q
-        LiVtK7drleZJEoJmIWcTERj0yNR+OTgmvtp1TVWquiitT+pCFSWXRtDsImmfRQf3
-        44iR4ucS+95RW2Tp3CwtHSO6ATMaFXrlJ1foKPAhz8w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=lMpMG5
-        VZVPZqrn7upzdH0uShBQNra/BfJs8BBOkLjSA=; b=m78rVVxQQRRezjiBN45iX9
-        Eps3l02slc9vXWDqnaGLQjRIKrS80NRHiKulQv++EO0Df60CwkV7/5mHuAV1H0Tw
-        YOK9NjPU20MwKc0RVrd2Rr9O8BcCCJ/NiluleO4FAvpWZRC2GVmrXBk3O4OB9sHf
-        EV+YgWn30SAKp3qgFTh7fyC3Fp3cXACSNfzwYHF9oiCC7cqGD/eP37a+fxQkLrr7
-        jiAG19wDijw0JpzFasq/in/iUoShRNdNZfM/NX2NWBFqf47gVf9G1ve7UMLZY/HY
-        lus970zAYd16ovQdvvvnd68U7RIipgUqpWc6YQmp0EXA7QbLrpbarui4FrwwxxJw
-        ==
-X-ME-Sender: <xms:K-tEYJgrtIiZiYUe0Rr05b8kszdsOK9bOtsT2-okOBb7ZVqPNXvbcg>
-    <xme:K-tEYOA791ulNgeaSU39QFpi68RmzIMuZ1fX-yIvsJ7olQuzzS4M1STCcC6PJVUBR
-    SBOvh5TM4pV3A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddutddgieefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:K-tEYJEW8LFTzbD0ukWw4CIdvgQZdXAyrDfFlC1nJ1EWZP9DbHXFXA>
-    <xmx:K-tEYORND0jOsK9gXTlAUM6-hIx80tY9svdKFQzRKCqlYZBK7TQ8tQ>
-    <xmx:K-tEYGzG8jC6sHr5QQSFhFkfCsIqEJwxgnwTRkglGFkulk6vCMgS5w>
-    <xmx:K-tEYNqZrh0wYIzRVN1CowyCXt4pNCKajX6SOYTs3Kjv87VPCsc_CA>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B4BF31080057;
-        Sun,  7 Mar 2021 10:03:06 -0500 (EST)
-Date:   Sun, 7 Mar 2021 16:03:04 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     stable@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: please apply 660d2062190db131 to v5.4+
-Message-ID: <YETrKGcENSBg5WT6@kroah.com>
-References: <CAMj1kXFhAmy746r+2VqtLHSwtM4-hcKsqqQRRMsFJkrQ99Yf2g@mail.gmail.com>
+        id S232515AbhCGQyv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 7 Mar 2021 11:54:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231314AbhCGQyf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 7 Mar 2021 11:54:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EEB264F98;
+        Sun,  7 Mar 2021 16:54:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615136075;
+        bh=hF4AFhK88NIj45qdQXdYlBTiI1jez+BfYUTFHQwl0+c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sil0yzU/TRWX2NRSt3sJ0zv69p9tmwSxXdskYhZncnVXOntnKwn7c1GwNRo+uNCzk
+         GSyeEjP1yrHeLM2E4uZ/qGN5bPZDdRSV4mPrYPqIB5K1yn2BEvA9JNG9RKTT4D6Ddu
+         lABTduxzlJvvmIX5py28CkmCDBozb/bEuhKGx6A/0pnnv5U5nxvasqcDRm7dLxXx/H
+         9mgRn7xrQqkDIMJMi8v3yS6lZC9psm4JchqeFzefO2na5tXkYqWPnFsBskEirtY2Vw
+         RRjb9IF9PuYdEAxqGQ4Zkc4G0eEfIHEdMt24SZ64x4DkfS17h2yAmWmP0mLmJrb9Qh
+         zAjrKa+UCQ9yg==
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, Ard Biesheuvel <ardb@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v2 0/2] crypto: arm - clean up redundant helper macros
+Date:   Sun,  7 Mar 2021 17:54:22 +0100
+Message-Id: <20210307165424.165188-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXFhAmy746r+2VqtLHSwtM4-hcKsqqQRRMsFJkrQ99Yf2g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 01:48:26PM +0100, Ard Biesheuvel wrote:
-> Please consider applying the following upstream patch to stable trees
-> v5.4 and up
-> 
-> commit 660d2062190db131d2feaf19914e90f868fe285c
-> Author: Ard Biesheuvel <ardb@kernel.org>
-> Date:   Wed Jan 13 10:11:35 2021 +0100
-> 
-> crypto - shash: reduce minimum alignment of shash_desc structure
-> 
-> On architectures such as arm64, it reduces the worst case memory
-> footprint of a SHASH_DESC_ON_STACK() allocation (which reserves space
-> for two struct shash_desc instances) by ~350 bytes.
+Now that ARM's asm/assembler.h provides mov_l and rev_l macros, let's get
+rid of the locally defined ones that live in the ChaCha and AES crypto code.
 
-Now queued up, thanks.
+Changes since v1;
+- drop the patch that introduces rev_l, it has been merged in v5.12-rc
+- rev_32 was renamed to rev_l, so both patches were updated to reflect that
+- add acks from Nico, Geert and Linux
 
-greg k-h
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Nicolas Pitre <nico@fluxnic.net>
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+
+Ard Biesheuvel (2):
+  crypto: arm/aes-scalar - switch to common rev_32/mov_l macros
+  crypto: arm/chacha-scalar - switch to common rev_32 macro
+
+ arch/arm/crypto/aes-cipher-core.S    | 42 +++++--------------
+ arch/arm/crypto/chacha-scalar-core.S | 43 ++++++--------------
+ 2 files changed, 23 insertions(+), 62 deletions(-)
+
+-- 
+2.30.1
+
