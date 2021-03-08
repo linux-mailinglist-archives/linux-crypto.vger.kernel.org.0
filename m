@@ -2,171 +2,179 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A5E330316
-	for <lists+linux-crypto@lfdr.de>; Sun,  7 Mar 2021 17:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD533307A0
+	for <lists+linux-crypto@lfdr.de>; Mon,  8 Mar 2021 06:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbhCGQyw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 7 Mar 2021 11:54:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46460 "EHLO mail.kernel.org"
+        id S234592AbhCHFmD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 8 Mar 2021 00:42:03 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:47200 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231380AbhCGQyk (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 7 Mar 2021 11:54:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EA17650F7;
-        Sun,  7 Mar 2021 16:54:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615136080;
-        bh=sRnuXXD7TlfFv4eImJMtLg/XRHVEyLz/rJplHnrqJ5w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HmD5feJRT/m5WjVhVrMiryy2N3E/TYW1urTAJpWyrct8FRurRkNyvJq8z4M4bW4YS
-         aa6fuFApzqY7pyxd8QUcCsbezkcusnzvNsUOY6mn0yY0BhZC+lXuvSCne/t2rLWcrM
-         nBvLGICrOr2iPVcrs0m1ZQ59lvWBPoNoXelQahlS0EiyvWCjkNHmaJ8uYoi+954ubj
-         X2Ivgd4nxjycAQng+BcqQo6ecRZS/dOHlqGfTkwnQ50+hM5W5VJeOWDI1PPIxQL7TI
-         MWieH9kNXhi7gxj16RHjyQrkC1TU0Bw2S/PupMXdwoOTw/R+mwvi3usGZdHeaRDzbg
-         uHbO5IaCl8qqA==
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, Ard Biesheuvel <ardb@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v2 2/2] crypto: arm/chacha-scalar - switch to common rev_32 macro
-Date:   Sun,  7 Mar 2021 17:54:24 +0100
-Message-Id: <20210307165424.165188-3-ardb@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210307165424.165188-1-ardb@kernel.org>
-References: <20210307165424.165188-1-ardb@kernel.org>
+        id S234459AbhCHFlq (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 8 Mar 2021 00:41:46 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lJ8e4-00015E-AL; Mon, 08 Mar 2021 16:41:33 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 08 Mar 2021 16:41:32 +1100
+Date:   Mon, 8 Mar 2021 16:41:32 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [PATCH] crypto: aegis128 - Move simd prototypes into aegis.h
+Message-ID: <20210308054132.GA14854@gondor.apana.org.au>
+References: <202102280353.5krQC7aq-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202102280353.5krQC7aq-lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Drop the local definition of a byte swapping macro and use the common
-one instead.
+On Sun, Feb 28, 2021 at 03:14:55AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   5695e51619745d4fe3ec2506a2f0cd982c5e27a4
+> commit: a4397635afea5d127548d64e0055ed471ef2d5be crypto: aegis128 - provide a SIMD implementation based on NEON intrinsics
+> date:   1 year, 6 months ago
+> config: arm64-randconfig-r035-20210226 (attached as .config)
+> compiler: aarch64-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a4397635afea5d127548d64e0055ed471ef2d5be
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout a4397635afea5d127548d64e0055ed471ef2d5be
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arm64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> crypto/aegis128-neon.c:17:6: warning: no previous prototype for 'crypto_aegis128_have_simd' [-Wmissing-prototypes]
+>       17 | bool crypto_aegis128_have_simd(void)
+>          |      ^~~~~~~~~~~~~~~~~~~~~~~~~
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
----
- arch/arm/crypto/chacha-scalar-core.S | 43 ++++++--------------
- 1 file changed, 13 insertions(+), 30 deletions(-)
+---8<---
+This patch fixes missing prototype warnings in crypto/aegis128-neon.c.
 
-diff --git a/arch/arm/crypto/chacha-scalar-core.S b/arch/arm/crypto/chacha-scalar-core.S
-index 2985b80a45b5..083fe1ab96d0 100644
---- a/arch/arm/crypto/chacha-scalar-core.S
-+++ b/arch/arm/crypto/chacha-scalar-core.S
-@@ -41,32 +41,15 @@
- 	X14	.req	r12
- 	X15	.req	r14
+Fixes: a4397635afea ("crypto: aegis128 - provide a SIMD...")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/crypto/aegis.h b/crypto/aegis.h
+index 6920ebe77679..6ef9c174c973 100644
+--- a/crypto/aegis.h
++++ b/crypto/aegis.h
+@@ -21,9 +21,28 @@ union aegis_block {
+ 	u8 bytes[AEGIS_BLOCK_SIZE];
+ };
  
--.macro __rev		out, in,  t0, t1, t2
--.if __LINUX_ARM_ARCH__ >= 6
--	rev		\out, \in
--.else
--	lsl		\t0, \in, #24
--	and		\t1, \in, #0xff00
--	and		\t2, \in, #0xff0000
--	orr		\out, \t0, \in, lsr #24
--	orr		\out, \out, \t1, lsl #8
--	orr		\out, \out, \t2, lsr #8
--.endif
--.endm
++struct aegis_state;
++
++extern int aegis128_have_aes_insn;
++
+ #define AEGIS_BLOCK_ALIGN (__alignof__(union aegis_block))
+ #define AEGIS_ALIGNED(p) IS_ALIGNED((uintptr_t)p, AEGIS_BLOCK_ALIGN)
+ 
++bool crypto_aegis128_have_simd(void);
++void crypto_aegis128_update_simd(struct aegis_state *state, const void *msg);
++void crypto_aegis128_init_simd(struct aegis_state *state,
++			       const union aegis_block *key,
++			       const u8 *iv);
++void crypto_aegis128_encrypt_chunk_simd(struct aegis_state *state, u8 *dst,
++					const u8 *src, unsigned int size);
++void crypto_aegis128_decrypt_chunk_simd(struct aegis_state *state, u8 *dst,
++					const u8 *src, unsigned int size);
++int crypto_aegis128_final_simd(struct aegis_state *state,
++			       union aegis_block *tag_xor,
++			       unsigned int assoclen,
++			       unsigned int cryptlen,
++			       unsigned int authsize);
++
+ static __always_inline void crypto_aegis_block_xor(union aegis_block *dst,
+ 						   const union aegis_block *src)
+ {
+diff --git a/crypto/aegis128-core.c b/crypto/aegis128-core.c
+index 89dc1c559689..c4f1bfa1d04f 100644
+--- a/crypto/aegis128-core.c
++++ b/crypto/aegis128-core.c
+@@ -58,21 +58,6 @@ static bool aegis128_do_simd(void)
+ 	return false;
+ }
+ 
+-bool crypto_aegis128_have_simd(void);
+-void crypto_aegis128_update_simd(struct aegis_state *state, const void *msg);
+-void crypto_aegis128_init_simd(struct aegis_state *state,
+-			       const union aegis_block *key,
+-			       const u8 *iv);
+-void crypto_aegis128_encrypt_chunk_simd(struct aegis_state *state, u8 *dst,
+-					const u8 *src, unsigned int size);
+-void crypto_aegis128_decrypt_chunk_simd(struct aegis_state *state, u8 *dst,
+-					const u8 *src, unsigned int size);
+-int crypto_aegis128_final_simd(struct aegis_state *state,
+-			       union aegis_block *tag_xor,
+-			       unsigned int assoclen,
+-			       unsigned int cryptlen,
+-			       unsigned int authsize);
 -
--.macro _le32_bswap	x,  t0, t1, t2
-+.macro _le32_bswap_4x	a, b, c, d,  tmp
- #ifdef __ARMEB__
--	__rev		\x, \x,  \t0, \t1, \t2
-+	rev_l		\a,  \tmp
-+	rev_l		\b,  \tmp
-+	rev_l		\c,  \tmp
-+	rev_l		\d,  \tmp
- #endif
- .endm
+ static void crypto_aegis128_update(struct aegis_state *state)
+ {
+ 	union aegis_block tmp;
+diff --git a/crypto/aegis128-neon.c b/crypto/aegis128-neon.c
+index 94d591a002a4..a7856915ec85 100644
+--- a/crypto/aegis128-neon.c
++++ b/crypto/aegis128-neon.c
+@@ -30,7 +30,7 @@ bool crypto_aegis128_have_simd(void)
+ 	return IS_ENABLED(CONFIG_ARM64);
+ }
  
--.macro _le32_bswap_4x	a, b, c, d,  t0, t1, t2
--	_le32_bswap	\a,  \t0, \t1, \t2
--	_le32_bswap	\b,  \t0, \t1, \t2
--	_le32_bswap	\c,  \t0, \t1, \t2
--	_le32_bswap	\d,  \t0, \t1, \t2
--.endm
--
- .macro __ldrd		a, b, src, offset
- #if __LINUX_ARM_ARCH__ >= 6
- 	ldrd		\a, \b, [\src, #\offset]
-@@ -200,7 +183,7 @@
- 	add		X1, X1, r9
- 	add		X2, X2, r10
- 	add		X3, X3, r11
--	_le32_bswap_4x	X0, X1, X2, X3,  r8, r9, r10
-+	_le32_bswap_4x	X0, X1, X2, X3,  r8
- 	ldmia		r12!, {r8-r11}
- 	eor		X0, X0, r8
- 	eor		X1, X1, r9
-@@ -216,7 +199,7 @@
- 	ldmia		r12!, {X0-X3}
- 	add		X6, r10, X6, ror #brot
- 	add		X7, r11, X7, ror #brot
--	_le32_bswap_4x	X4, X5, X6, X7,  r8, r9, r10
-+	_le32_bswap_4x	X4, X5, X6, X7,  r8
- 	eor		X4, X4, X0
- 	eor		X5, X5, X1
- 	eor		X6, X6, X2
-@@ -231,7 +214,7 @@
- 	add		r1, r1, r9		// x9
- 	add		r6, r6, r10		// x10
- 	add		r7, r7, r11		// x11
--	_le32_bswap_4x	r0, r1, r6, r7,  r8, r9, r10
-+	_le32_bswap_4x	r0, r1, r6, r7,  r8
- 	ldmia		r12!, {r8-r11}
- 	eor		r0, r0, r8		// x8
- 	eor		r1, r1, r9		// x9
-@@ -245,7 +228,7 @@
- 	add		r3, r9, r3, ror #drot	// x13
- 	add		r4, r10, r4, ror #drot	// x14
- 	add		r5, r11, r5, ror #drot	// x15
--	_le32_bswap_4x	r2, r3, r4, r5,  r9, r10, r11
-+	_le32_bswap_4x	r2, r3, r4, r5,  r9
- 	  ldr		r9, [sp, #72]		// load LEN
- 	eor		r2, r2, r0		// x12
- 	eor		r3, r3, r1		// x13
-@@ -301,7 +284,7 @@
- 	add		X1, X1, r9
- 	add		X2, X2, r10
- 	add		X3, X3, r11
--	_le32_bswap_4x	X0, X1, X2, X3,  r8, r9, r10
-+	_le32_bswap_4x	X0, X1, X2, X3,  r8
- 	stmia		r14!, {X0-X3}
+-void crypto_aegis128_init_simd(union aegis_block *state,
++void crypto_aegis128_init_simd(struct aegis_state *state,
+ 			       const union aegis_block *key,
+ 			       const u8 *iv)
+ {
+@@ -39,14 +39,14 @@ void crypto_aegis128_init_simd(union aegis_block *state,
+ 	kernel_neon_end();
+ }
  
- 	// Save keystream for x4-x7
-@@ -311,7 +294,7 @@
- 	add		X5, r9, X5, ror #brot
- 	add		X6, r10, X6, ror #brot
- 	add		X7, r11, X7, ror #brot
--	_le32_bswap_4x	X4, X5, X6, X7,  r8, r9, r10
-+	_le32_bswap_4x	X4, X5, X6, X7,  r8
- 	  add		r8, sp, #64
- 	stmia		r14!, {X4-X7}
+-void crypto_aegis128_update_simd(union aegis_block *state, const void *msg)
++void crypto_aegis128_update_simd(struct aegis_state *state, const void *msg)
+ {
+ 	kernel_neon_begin();
+ 	crypto_aegis128_update_neon(state, msg);
+ 	kernel_neon_end();
+ }
  
-@@ -323,7 +306,7 @@
- 	add		r1, r1, r9		// x9
- 	add		r6, r6, r10		// x10
- 	add		r7, r7, r11		// x11
--	_le32_bswap_4x	r0, r1, r6, r7,  r8, r9, r10
-+	_le32_bswap_4x	r0, r1, r6, r7,  r8
- 	stmia		r14!, {r0,r1,r6,r7}
- 	__ldrd		r8, r9, sp, 144
- 	__ldrd		r10, r11, sp, 152
-@@ -331,7 +314,7 @@
- 	add		r3, r9, r3, ror #drot	// x13
- 	add		r4, r10, r4, ror #drot	// x14
- 	add		r5, r11, r5, ror #drot	// x15
--	_le32_bswap_4x	r2, r3, r4, r5,  r9, r10, r11
-+	_le32_bswap_4x	r2, r3, r4, r5,  r9
- 	stmia		r14, {r2-r5}
+-void crypto_aegis128_encrypt_chunk_simd(union aegis_block *state, u8 *dst,
++void crypto_aegis128_encrypt_chunk_simd(struct aegis_state *state, u8 *dst,
+ 					const u8 *src, unsigned int size)
+ {
+ 	kernel_neon_begin();
+@@ -54,7 +54,7 @@ void crypto_aegis128_encrypt_chunk_simd(union aegis_block *state, u8 *dst,
+ 	kernel_neon_end();
+ }
  
- 	// Stack: ks0-ks15 unused0-unused7 x0-x15 OUT IN LEN
+-void crypto_aegis128_decrypt_chunk_simd(union aegis_block *state, u8 *dst,
++void crypto_aegis128_decrypt_chunk_simd(struct aegis_state *state, u8 *dst,
+ 					const u8 *src, unsigned int size)
+ {
+ 	kernel_neon_begin();
+@@ -62,7 +62,7 @@ void crypto_aegis128_decrypt_chunk_simd(union aegis_block *state, u8 *dst,
+ 	kernel_neon_end();
+ }
+ 
+-int crypto_aegis128_final_simd(union aegis_block *state,
++int crypto_aegis128_final_simd(struct aegis_state *state,
+ 			       union aegis_block *tag_xor,
+ 			       unsigned int assoclen,
+ 			       unsigned int cryptlen,
 -- 
-2.30.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
