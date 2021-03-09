@@ -2,148 +2,113 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF84A332044
-	for <lists+linux-crypto@lfdr.de>; Tue,  9 Mar 2021 09:13:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA293321A8
+	for <lists+linux-crypto@lfdr.de>; Tue,  9 Mar 2021 10:11:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhCIIM3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 9 Mar 2021 03:12:29 -0500
-Received: from mail-co1nam11on2079.outbound.protection.outlook.com ([40.107.220.79]:58721
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229520AbhCIIL6 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:11:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VWQgTBwq5Iy9cFv8kgApy5j6qcvT6soJyEKEKYl8Pu8xiC5RioKlV2G8vbzoq/Ob1g9dwrxcuXUSfuOesVfFmR7YLu+Iy74PgFiQ16eKlR/yz8hawC0QF2HqDJO9nPnfyt9nRL5LdADfS88Hr3Zlr4IBe4Nu9ef0UYX0oR+MydU7x1nHZKjUrUmzj18KHeALxT7MUC18REO97yxVuhOFiZbhRMHa1dCd5WKcdi9Xa65OhyeuLOEBC7p/YUtQgiRwmmoh5Ow62NYcobfKnQbFGmXvwMtmyF+w4qmdEW9L+lVAykWFeGSVlqkaodYw1o2nQPI4mlvXCq5vltI7LU6geg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aQOwS+A8HdLAiWTerKUibK80WJRzhUKlIjF0VAdpRv8=;
- b=bOTsf0TU5kiWAoMLVb8gFUHtX8r8CoRSL0tVPl773HFTUPj6I/WlfWYcn8Pw2zktwdBh872kKrClt0sQlAbcp6LldbpPWdQ2vmTCiLNElJMsPor8C50Hoy0xCtnk49+Pu1Jrj/yV6Yj5QL/dtJU/WbVwwgo66Y6i9BG32PTfLRwpJPkprM5CdcfaZLyP9Ynu4Rpu3OHYzTLBkLNKrA4s2C78unNhX4IH3EobA8CpPeVRwv8P4w/FT3qUnZN3c7h76I2UTHL+MVZsqiIejthSGNWGgUHsylrPTJdT29gO3WQy4MaMOLRlEme0O7V1gaSeFG/8WhNlCX4cwOihqy369A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aQOwS+A8HdLAiWTerKUibK80WJRzhUKlIjF0VAdpRv8=;
- b=MEkMnsINmq996spC4rX5/o++Yg6C/2FPn2n81vwkzAGohgjpxiz+ACG8hjIemCSNlepeBqu3LaCxkJqtBM8gdN2RQI9M3WgFQVXypi16rhzVTxRulI8jCGV4hygpJDY5vuo+CAJv011VhteBF9c0iohtNw2SFped/p6ZZZtIZAI=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB4719.namprd12.prod.outlook.com (2603:10b6:805:e9::25)
- by SA0PR12MB4397.namprd12.prod.outlook.com (2603:10b6:806:93::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Tue, 9 Mar
- 2021 08:11:57 +0000
-Received: from SN6PR12MB4719.namprd12.prod.outlook.com
- ([fe80::c32:245b:4812:ee03]) by SN6PR12MB4719.namprd12.prod.outlook.com
- ([fe80::c32:245b:4812:ee03%3]) with mapi id 15.20.3912.027; Tue, 9 Mar 2021
- 08:11:57 +0000
-From:   Rijo Thomas <Rijo-john.Thomas@amd.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        id S229641AbhCIJLV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 9 Mar 2021 04:11:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229840AbhCIJLU (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:11:20 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9CBC06174A;
+        Tue,  9 Mar 2021 01:11:19 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id x29so8346152pgk.6;
+        Tue, 09 Mar 2021 01:11:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=/CvRWYjORCw8flby47H5HqIvyfw8yrJSz4E5Q321rKY=;
+        b=KhGsELbeaVZ6fva0mXjyYAtemsZGD5reVs23Ve6MCIp49iOr9f/Z8lsUe9PzyN4AiN
+         ahCfPk4zBSGIceUjwb+XTczDg+nl1Ghpp4KG69cgItLu6iUpx2+w6tjgmPtd1yKHZ9o/
+         0n3EVCwaKUO9cF3G5NFK0/hENzH4tX4ecvB/NkMIFRRfnTFjptPK7HteEBjVRUh0t89T
+         3yu10uBdV+7u75xJym5RIIrTMn5/foqi5+JXHXwD4vQZg6VGqbfDB2p0XFPuyeETEoaf
+         43OOW+39Ubp6f9vcxDCobgRculalzTl1FXuEQhJIYUzNATifBuuhPjJl38ei6BYDS28m
+         3QgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/CvRWYjORCw8flby47H5HqIvyfw8yrJSz4E5Q321rKY=;
+        b=ebrdna47zz1/fhm3YwYrjvOULG2zEGQWFHbM3Y4s9AWWHsJcw170CiEhqpGhIfPP9a
+         tLLwDY0hJxnIg7urBNk2WpWE3ACyrOlWglfMcUcDyMkH413sYcugK9MulyGOc1kZdfz8
+         6YopXTGxU86OPIOfhgLCvg63SZPCS5NCWB1SZOCljkTdvq6BtiBH2/zzReWVg9M75OlL
+         00Ft65q6mlcwOA8rVqIr+k0otAaehuvJmHiVDTZ7ZMrD1oKIxZz94YrA1BOtWeFygp3K
+         d3Iaha8sbxfeQUrWRX9UYTqJydfjnbvpxOmjMXTnnaqNtVxD8UPlEBh7SEait7a04VUV
+         5aig==
+X-Gm-Message-State: AOAM532AFGOhcicePyGVo0NGnQxY17N+slFlGfkvfwx86RTjl6OKuCg/
+        N1fxuEnldY+xApnaqyIzyK8=
+X-Google-Smtp-Source: ABdhPJxamEBcduvWmfcWf0H1uPFhPcgfg3x1QwED2/BSxm/iKPknJszw4cmj9AGseSWhD21+HGXi+g==
+X-Received: by 2002:a63:ab05:: with SMTP id p5mr8228421pgf.149.1615281078913;
+        Tue, 09 Mar 2021 01:11:18 -0800 (PST)
+Received: from linux-l9pv.suse ([124.11.22.254])
+        by smtp.gmail.com with ESMTPSA id js16sm2094860pjb.21.2021.03.09.01.11.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Mar 2021 01:11:18 -0800 (PST)
+From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     Rijo Thomas <Rijo-john.Thomas@amd.com>,
-        Mythri Pandeshwara krishna <mythri.pandeshwarakrishna@amd.com>,
-        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: [PATCH 3/3] crypto: ccp - update copyright year for tee
-Date:   Tue,  9 Mar 2021 13:41:13 +0530
-Message-Id: <a87bc3ff11249e0cfa891a80a65cda555be723be.1615276206.git.Rijo-john.Thomas@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1615276206.git.Rijo-john.Thomas@amd.com>
-References: <cover.1615276206.git.Rijo-john.Thomas@amd.com>
-Content-Type: text/plain
-X-Originating-IP: [165.204.156.251]
-X-ClientProxiedBy: MA1PR0101CA0068.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:20::30) To SN6PR12MB4719.namprd12.prod.outlook.com
- (2603:10b6:805:e9::25)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from andbang6.amd.com (165.204.156.251) by MA1PR0101CA0068.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:20::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 08:11:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 0ee93f39-4239-4a97-3c44-08d8e2d301d0
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4397:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4397E492BDAD221BEAB82C74CF929@SA0PR12MB4397.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UbolDd2ABQRQywyPJmExj3yWIuW3sfEIF5CyvxAoklp88g3QqEigV7NvUGzlKP16ersf3KyD0211zwYZHoU5wtYO4kBhZztj5mfsjhxaOp9jCnXQ3VVo/ZQC8HoTJ71K6sRIzyQbMYcr7cxdS4Wr39qB3FhYZGG7sOBQkbaLTPGqSOtf8K/AGO0QVVPKhzGIBgc0BYwYfyCS8JqJjaC9/SKaGCtjwJqwzvvDj98PNoueggaOJ1qgz+Lf/t61WoKQsCb/gsKUlkM4/AAh2RGPG3tLTm+wFr38IYVi4jxdlP3zhYK1PtKy9bJgO4i8xz8n8nZuCFnKe3QEhdA9iO9i9MiNZFlgr9Z1JYQwP6H2VvIBPZnwpzXrH7+3Ud6xrjTAbGYoyPMUPCUkFo0toCdo7ZGeNvVYHUHa0H08A5VW0bh1btUZ5u7wWT12IivDCNG1X7WUA/eaczwXFKzgjFnuiKnMjGD+FD29oUVfza19CbMkvT1K+eMvftWEJjthszvRv5VjNLhaTCgfsY6DM/Ij+A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB4719.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(396003)(39860400002)(136003)(66476007)(15650500001)(8936002)(5660300002)(4326008)(66556008)(2616005)(956004)(316002)(54906003)(26005)(2906002)(6666004)(8676002)(110136005)(6486002)(83380400001)(66946007)(36756003)(86362001)(186003)(478600001)(16526019)(52116002)(7696005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?5NeWXrz5EccJUMw+F/ASYNPWmeTecoknCKs6GtyH9ptCEafHOHgzM53jAS/w?=
- =?us-ascii?Q?eFPjGzvTMHs7/cHr1Pc2v5NGHhmVU7hCxk9UyDq8kyIrr20+CbkmD7RUxDM/?=
- =?us-ascii?Q?W2xZjNXi7TP6UJvUCCRXghHnTn17d7yXuZKi8QgMmr3ht5BW1P+tVtnzlIPH?=
- =?us-ascii?Q?sz7kjAch43+QUoJAoqZlUnJRFBBddomYY+V16JnZ7gwI8inwIecG4OyvPbQS?=
- =?us-ascii?Q?BUlKe4TBvr8qwnMpU9Sic/LbBJjkjSjh0dvrj+RYMHbfHqijr7UBo+PxkLV3?=
- =?us-ascii?Q?98JMNPVt93zvjEjEmk5LqCW/WiDQ1K0J5e2OQ5WwVTPHDTHU5nfsO4cj7nrn?=
- =?us-ascii?Q?K/24vFY7oSZkO8ShYGPWWgskf6iJeXlL1kVLyE8ygSsAfX2BQ0PjIJvGn6Fi?=
- =?us-ascii?Q?VGm8h5B6PxgCyeLVc/ypusKdSZU8sMPWtE6m7v8eH7cEVbpJN5MHfNJ9NXke?=
- =?us-ascii?Q?Vh1ApJQEZhE28awPJl5z5MjxOHfMc+KDcEr0TgSYjUo2pmzdOPhGcNHVZNwD?=
- =?us-ascii?Q?fo8wPPSpCBa5w1zqpNESg4UajIZjdEYGkQ/fLLoOuFrMYn6uxuyK6kFEl4NF?=
- =?us-ascii?Q?ipwk+8fUVAK/cdRsCG+MTQ8UHgMvmhqVkPbZFOd4e7pI/zQjtRaVbMZRz+Bz?=
- =?us-ascii?Q?Ks5g1ES799kF8dDJ9jjUKE6f0T3tPr/RmLLbXXfavH7xec7CI3v2TfuJtEji?=
- =?us-ascii?Q?CV4eV6pB+Wsj2XF3uGXgNIIGdwXtGivYZavAA5unIOg7v6ud3aJfPUc34HcO?=
- =?us-ascii?Q?aEKoTUj6t5lz1uTqKSsiPSXCC7PRaOQUteHAqCs/C7kQj3tTeYoe1tegp7Os?=
- =?us-ascii?Q?kzTE5RsKVwhQjZl//xeETrkCb/KizTh7S9F5nOdCNxxvg0fFua35BikLyUPR?=
- =?us-ascii?Q?tLoFPJSKXfhbv3/bZH5lO2MUmRCHNrroqA+NM6iLLS/wDMQYDFAspeTvOR/K?=
- =?us-ascii?Q?/mnh0JarLzv7AJBt4lGMd8BOuWnLXe4rnrgU1ANSzhXJudxvPC9cu9DvljnH?=
- =?us-ascii?Q?PI6wZeMNtC93ZmM5y4zg4N6kPZ/aSw69nwZrrI+5F5fJhtQW3NeziHZRSmcV?=
- =?us-ascii?Q?2UxK+1h1uJS+odiFBtI4vyTXRfCMcv28isKKTuSD3fwYmp57q5UfCvTHe08a?=
- =?us-ascii?Q?9JvMmw7973XEIVQcso2Y1JMmQfjATBXGHN91dm8p2b7qvfztAt1FK0SpgqK4?=
- =?us-ascii?Q?8VW57IprDFNS7OYG4ebxXU+L3hyd/z6DCA64njXScerdfEgSvETHgawAhS2I?=
- =?us-ascii?Q?WGdSOBzJQ7JI2izITPQFLWzDoIMK6P0VMK7siKYCqqr69arYpMU/b180PCpy?=
- =?us-ascii?Q?uY/HFa0D7uaqT9/0m+iijqxj?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ee93f39-4239-4a97-3c44-08d8e2d301d0
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB4719.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 08:11:57.3823
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VghX3DT+kYp53/xZQ10OcQmlCjnSzKQJaO9Rav2vpVofHQxNS4lOrWiuq5emrr+YHiTxxavuh8h199mz53159A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4397
+        Ben Boeckel <me@benboeckel.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Malte Gell <malte.gell@gmx.de>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Lee, Chun-Yi" <jlee@suse.com>
+Subject: [PATCH v5 0/4] Check codeSigning extended key usage extension
+Date:   Tue,  9 Mar 2021 17:10:40 +0800
+Message-Id: <20210309091044.2298-1-jlee@suse.com>
+X-Mailer: git-send-email 2.12.3
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Update the copyright year for PSP TEE driver files.
+NIAP PP_OS certification requests that the OS shall validate the
+CodeSigning extended key usage extension field for integrity
+verifiction of exectable code:
 
-Signed-off-by: Rijo Thomas <Rijo-john.Thomas@amd.com>
----
- drivers/crypto/ccp/tee-dev.c | 2 +-
- drivers/crypto/ccp/tee-dev.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+    https://www.niap-ccevs.org/MMO/PP/-442-/
+        FIA_X509_EXT.1.1
 
-diff --git a/drivers/crypto/ccp/tee-dev.c b/drivers/crypto/ccp/tee-dev.c
-index 1aa264815028..8cade4775115 100644
---- a/drivers/crypto/ccp/tee-dev.c
-+++ b/drivers/crypto/ccp/tee-dev.c
-@@ -5,7 +5,7 @@
-  * Author: Rijo Thomas <Rijo-john.Thomas@amd.com>
-  * Author: Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>
-  *
-- * Copyright 2019 Advanced Micro Devices, Inc.
-+ * Copyright (C) 2019,2021 Advanced Micro Devices, Inc.
-  */
- 
- #include <linux/types.h>
-diff --git a/drivers/crypto/ccp/tee-dev.h b/drivers/crypto/ccp/tee-dev.h
-index dbeb7d289acb..49d26158b71e 100644
---- a/drivers/crypto/ccp/tee-dev.h
-+++ b/drivers/crypto/ccp/tee-dev.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: MIT */
- /*
-- * Copyright 2019 Advanced Micro Devices, Inc.
-+ * Copyright (C) 2019,2021 Advanced Micro Devices, Inc.
-  *
-  * Author: Rijo Thomas <Rijo-john.Thomas@amd.com>
-  * Author: Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>
+This patchset adds the logic for parsing the codeSigning EKU extension
+field in X.509. And checking the CodeSigning EKU when verifying
+signature of kernel module or kexec PE binary in PKCS#7.
+
+v5:
+Fixed the wording in module-signing.rst.
+
+v4:
+Fixed the wording in patch description.
+
+v3:
+- Add codeSigning EKU to x509.genkey key generation config.
+- Add openssl command option example for generating CodeSign EKU to
+  module-signing.rst document. 
+
+v2:
+Changed the help wording in the Kconfig.
+
+Lee, Chun-Yi (4):
+  X.509: Add CodeSigning extended key usage parsing
+  PKCS#7: Check codeSigning EKU for kernel module and kexec pe
+    verification
+  modsign: Add codeSigning EKU when generating X.509 key generation
+    config
+  Documentation/admin-guide/module-signing.rst: add openssl command
+    option example for CodeSign EKU
+
+ Documentation/admin-guide/module-signing.rst |  6 +++++
+ certs/Makefile                               |  1 +
+ certs/system_keyring.c                       |  2 +-
+ crypto/asymmetric_keys/Kconfig               |  9 +++++++
+ crypto/asymmetric_keys/pkcs7_trust.c         | 37 +++++++++++++++++++++++++---
+ crypto/asymmetric_keys/x509_cert_parser.c    | 24 ++++++++++++++++++
+ include/crypto/pkcs7.h                       |  3 ++-
+ include/crypto/public_key.h                  |  1 +
+ include/linux/oid_registry.h                 |  5 ++++
+ 9 files changed, 83 insertions(+), 5 deletions(-)
+
 -- 
-2.17.1
+2.16.4
 
