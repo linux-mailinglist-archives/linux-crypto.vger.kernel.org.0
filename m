@@ -2,70 +2,69 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D23333C05
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Mar 2021 13:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0B4333FCE
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Mar 2021 15:02:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhCJMCn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 10 Mar 2021 07:02:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232650AbhCJMCS (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:02:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD80F64FD7;
-        Wed, 10 Mar 2021 12:02:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615377737;
-        bh=/eEinG3KxIZMrWrXYSrji41H6Uu/4J7UuAOlOdWiTj0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cLgPQkud3EZJAvUe8zTGtf9xZy75Cp1zn83QLkvBV1FE4dLkX1gt9C37RBEjyt/7X
-         r/oiUJHp50bjwh3fChkvKQ+OH2E18j3d2DWsLtfJTPDVmAxMkUQRrgL/tDbpebk4fF
-         on4e+Ug7qQTiNR6ytW+d0cJR7xRRfpMzSogQO8gA=
-Date:   Wed, 10 Mar 2021 13:02:14 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] crypto: public_key: check that pkey_algo is non-NULL
- before passing it to strcmp()
-Message-ID: <YEi1RgPgwfT7qHQM@kroah.com>
-References: <875z419ihk.fsf@toke.dk>
- <20210112161044.3101-1-toke@redhat.com>
- <2648795.1610536273@warthog.procyon.org.uk>
- <2656681.1610542679@warthog.procyon.org.uk>
- <87sg6yqich.fsf@toke.dk>
+        id S232776AbhCJOBi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 10 Mar 2021 09:01:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232659AbhCJOBT (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 10 Mar 2021 09:01:19 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A1EC061761
+        for <linux-crypto@vger.kernel.org>; Wed, 10 Mar 2021 06:01:19 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id mm21so38831031ejb.12
+        for <linux-crypto@vger.kernel.org>; Wed, 10 Mar 2021 06:01:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=5rh8dKjg0pKk0KNWl2xSO7nhxy+c296f7suB18dXI8U=;
+        b=NRys/JVgIifMs/VJcA3qxZwyt7VHc80TVQPtrFTbXgnYmg8X2NJt4edDx/oy8xJfnH
+         4kEmg4xqymUo4bKVUZW8evb4ZssZYn1ao9fRmO9Ck+QolrGB1zpVvCvr0duPidoqchwp
+         5FWub1ITyXlRu4HialhPIglQCOksUcjnUPeAoyujqqXO0Q6QGB6TQSyfy20nPZTjztiQ
+         FmRJPN3FkWLk5WgQ335YqhGCu2MsIivQcU3lNJinLxDDa0cSv/2C5ccHGH2/lL7Yw7pJ
+         gvMfL+h4VRj8so8S0SkRRWYiz6NWJ6piGdDnyePVglxIMevfIr8276fGtegf2ApQXI8q
+         OCmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=5rh8dKjg0pKk0KNWl2xSO7nhxy+c296f7suB18dXI8U=;
+        b=muMi+sQNLh650eOzT4FDegInyExUQzjPISutKBcbhZCVLo0Fgi0Lz53T/lX6HuFD2u
+         f+w60CoozbpRQS7mbTf2lZmbpxob2wt9AMgGcpOsTgH1iE/sr0YMZRNlOCIMiPw0IVph
+         F6iuN8Gwb3OpgE83H1XGw78ZN35lb4tDVtd8TuPYyHtUlbsXDbYif6yz9jRYsztQB3Ks
+         P+MochRA4VnE+LTzL3fC26aJ5D+/rguV0YlEBQ3yg0mWd5qtceuwTWWhPTJtN1/3gatn
+         tAOzaTWiOxAfm/JpaBvgFJgNz3nZo8Q4BXz/3a6/0eCDF9Qtpd1j4bXRtkAgWhsHaQM3
+         QkSA==
+X-Gm-Message-State: AOAM530XTuNakFOztpb4g6ITrPgyB1AvD7XumI5bCpq8ppClKEBboBK5
+        NkHNVCIUjBFwyHx1xJ84JFo5wLEhanHVwp46JcY=
+X-Google-Smtp-Source: ABdhPJytB6NSUorcr8eD+98rcO1p2jWS4nnEquxcHuUcQVP4Yz7JOZD4wvG5FyttQxluaKz/5Hl+LY+4JZqDHnAyKfE=
+X-Received: by 2002:a17:906:959:: with SMTP id j25mr3813128ejd.553.1615384874534;
+ Wed, 10 Mar 2021 06:01:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87sg6yqich.fsf@toke.dk>
+Received: by 2002:ab4:92c3:0:0:0:0:0 with HTTP; Wed, 10 Mar 2021 06:01:13
+ -0800 (PST)
+From:   JOHN UMAH <pastorjohnumnewaposchurch@gmail.com>
+Date:   Wed, 10 Mar 2021 14:01:13 +0000
+Message-ID: <CANw=0K6gD7r=Jz8gnsZbVAu7YRVEpo9uYzpqYSAnfTz2LtBBFg@mail.gmail.com>
+Subject: Caleb Leo Foundation,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 06:13:02PM +0100, Toke Høiland-Jørgensen wrote:
-> David Howells <dhowells@redhat.com> writes:
-> 
-> > Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> >
-> >> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> >> 
-> >> and also, if you like:
-> >> 
-> >> Tested-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> >
-> > Thanks!
-> 
-> Any chance of that patch getting into -stable anytime soon? Would be
-> nice to have working WiFi without having to compile my own kernels ;)
+Caleb Leo Foundation
+1501 K St NWWashington DC 20005
+United States of America
+You've received $ 1,300,000 from the Calab Leo Foundation course
+Humanitarian aid / poverty reduction program.
+In the case of claims for this gift, please fill in the following form;
 
-What ever happened to this patch?  I can't seem to find it in Linus's
-tree anywhere :(
-
-thanks,
-
-greg k-h
+Full name:
+Telephone number:
+State:
+Country:
+kindly respond for more details.
+in God We Trust.
