@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98716333533
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Mar 2021 06:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B116333535
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Mar 2021 06:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232330AbhCJF0T (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 10 Mar 2021 00:26:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54814 "EHLO
+        id S232339AbhCJF0U (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 10 Mar 2021 00:26:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232300AbhCJFZv (ORCPT
+        with ESMTP id S231209AbhCJFZ4 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 10 Mar 2021 00:25:51 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B95C061760
-        for <linux-crypto@vger.kernel.org>; Tue,  9 Mar 2021 21:25:50 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id g4so10619687pgj.0
-        for <linux-crypto@vger.kernel.org>; Tue, 09 Mar 2021 21:25:50 -0800 (PST)
+        Wed, 10 Mar 2021 00:25:56 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9DDDC061760
+        for <linux-crypto@vger.kernel.org>; Tue,  9 Mar 2021 21:25:56 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id ha17so168122pjb.2
+        for <linux-crypto@vger.kernel.org>; Tue, 09 Mar 2021 21:25:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rCnpcLpuqTdHmtaa7vEu9Tx55M7Ej3EbyXNq00c5adU=;
-        b=sJR0eTnWGvsWHfKsGs1GxG5L1cwoqOeg3Yd0ioLF14Xa3dmshqNyd1Gl4BzpsteYUz
-         DHpLTFAWqi5QMX8fFbywmvPnSZBQtkuHyoyvXfxDn0/JLUjpY6vYxSyHcrE7RqqfC804
-         4WgBcuXlgH9BPCmvnFp8UKsJRVJLQQezriFNkQvo9y+Z+Zthu2nsTVZJeE9WNj8g6jA9
-         cELC7WpcQnuQJFdOIm3iD8rOdfsdx46CY7iRF3/2Mee6KJyUU5S+fPq4MHxJk0eT2TDO
-         lhJvDD6/zSv5yBOXG/fI4ppo/D0ryDRleseOhCQuueTh3ASNP/xDxukS+M77Mnbxb5No
-         IAww==
+        bh=VmOMUUhp3vtSE7CptEWQ9fYIwV1ThT78JbnR+RZ0uIQ=;
+        b=TqE0mZ6ZH/dhIJ1JDztPKdeokaTI8W2brCl7nkuChEyTAn29JJhimIDqG+Zeb8ABH9
+         +eUxVbGOkkBfpjptJZxEA4yxQo4UWi5+HQm87PusbYbcX7h+ZIp6ErI3FKJzdF/V8AMV
+         rn3goVF13mF3/IhQG+bm4cELSJWjt7DPDTqXchcRwUNR/014/WpHdkhob4AlWS42sIne
+         2N+A8k5gtSd1pPmc9sXXUhlP12k/UNE7nxha+iz9X/LDFU0BnOKBJ93MA8VvqYSU3PkD
+         KQCYf7xfuvp3SWGaPy7zOjTv+6jtSYOdXdYhEn4581kXudurSOJ2QHENaqBeI3HfKh7j
+         GLRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rCnpcLpuqTdHmtaa7vEu9Tx55M7Ej3EbyXNq00c5adU=;
-        b=cKLvy3nUl5fhXYTwD0urxT7nrUNHMjZsAwjuTSBvRurqJVFiltw/ULsMBsWkgxCBKA
-         nLkmpjhC75WaaZPU5hGkbbYrma25Lbf7a62mHjEMyM1SC3MkHyxXgV5CA9yoqSFZbJ03
-         bsoCbqrruCd9VIYdERMM3uzk2KowNvpCc64uUvRo6AcTMstF0N6bEUUzbBDkvEorYBSN
-         w+At+lpkztB+wzPMWNgz8epvVIfnruCl+Ko0BrnhzcXvnjSK8NffWynAgNeHGo9xDoUC
-         Pc56ujV+C1hdjL52/mah+VBR53g7NYr5vuuRecgmiDVsns9h6WJBjl1cMGvxlopmPgwz
-         AoSg==
-X-Gm-Message-State: AOAM531V9ypEQUhohszLm7t+XvxoErCnWKeoN5zWRLxDo4ovxC3XVyhu
-        ytVAa8MI0PIpfR3XbvRWhucgIw==
-X-Google-Smtp-Source: ABdhPJzmRPeOWu16uPBVPML5utQZj0PB0c1OsJTfAdIhHMoFqp1dfNL6o3ViJOXYPndUKRT5BvtY4Q==
-X-Received: by 2002:a65:6a44:: with SMTP id o4mr1313921pgu.312.1615353950393;
-        Tue, 09 Mar 2021 21:25:50 -0800 (PST)
+        bh=VmOMUUhp3vtSE7CptEWQ9fYIwV1ThT78JbnR+RZ0uIQ=;
+        b=blv3p6+TUuN6CO7EJb5/1c8Rj0tjs3i/m/t0A8Gj3KOiS5jS274oSSyL9G11i6+/dq
+         Ev4i8H+SNJairUVTFYAkPt9/bEdZBbSysuiPVguf4kXz4VfdaohLO52WLez1LCc15a5p
+         u8zCeibKUWl2qtP2r/5eaz0w9wlNNa1ebpxx16PsLRzJyqer5I9oGwZsV4xZhlqrdMYF
+         TjU1mXWAdvYOPpkT+tKD14LwDoAB73uG1w96r6e8zB2U7QNSo3wC/CQEHT4fuJhuZey3
+         kJJxO7ZtIa11X+hHHEms2BIRhggXQTSyOZGOL6kVqj2EZN4qKwPDPSyDxLHTHxHbfGwo
+         +3+w==
+X-Gm-Message-State: AOAM533MKPJqbEvJ+BCCWv81Ki9DEwRsnhkQ/UJEYAw6GnM99uK8ZphK
+        Tmc80cvn4w7oHebH/fqfjwZl3Q==
+X-Google-Smtp-Source: ABdhPJwTXHZP5PDYf47cVuytOuWRQMvaZxPhsVLjHkn2E/yCYJ/LpAqCdIaO/es35OFo7YfEcCYo3Q==
+X-Received: by 2002:a17:902:dacb:b029:e5:b538:9ce6 with SMTP id q11-20020a170902dacbb02900e5b5389ce6mr1444258plx.8.1615353956435;
+        Tue, 09 Mar 2021 21:25:56 -0800 (PST)
 Received: from localhost.localdomain ([2402:3a80:9f4:a436:21bd:7573:25c0:73a0])
-        by smtp.gmail.com with ESMTPSA id g7sm13915224pgb.10.2021.03.09.21.25.43
+        by smtp.gmail.com with ESMTPSA id g7sm13915224pgb.10.2021.03.09.21.25.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 21:25:50 -0800 (PST)
+        Tue, 09 Mar 2021 21:25:56 -0800 (PST)
 From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     bhupesh.sharma@linaro.org,
@@ -62,9 +62,9 @@ Cc:     bhupesh.sharma@linaro.org,
         linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         bhupesh.linux@gmail.com
-Subject: [PATCH 4/8] dt-bindings/clock: qcom: sm8250: Add gcc clocks for sm8250 crypto block
-Date:   Wed, 10 Mar 2021 10:54:59 +0530
-Message-Id: <20210310052503.3618486-5-bhupesh.sharma@linaro.org>
+Subject: [PATCH 5/8] clk: qcom: clk-rpmh: Add CE clock on sm8250
+Date:   Wed, 10 Mar 2021 10:55:00 +0530
+Message-Id: <20210310052503.3618486-6-bhupesh.sharma@linaro.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210310052503.3618486-1-bhupesh.sharma@linaro.org>
 References: <20210310052503.3618486-1-bhupesh.sharma@linaro.org>
@@ -74,9 +74,9 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds the global clock controller (gcc) clocks required
-by the sm8250 crypto block to function to the dt-binding header file
-(namely: GCC_CE1_AHB_CLK, GCC_CE1_AXI_CLK and GCC_CE1_CLK).
+The Qualcomm CE clock resource (managed by BCM) is also required
+by sm8250 crypto driver to access the core clock, so add an entry
+for the same in 'sm8250_rpmh_clocks' array.
 
 Cc: Thara Gopinath <thara.gopinath@linaro.org>
 Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
@@ -93,23 +93,21 @@ Cc: linux-kernel@vger.kernel.org
 Cc: bhupesh.linux@gmail.com
 Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 ---
- include/dt-bindings/clock/qcom,gcc-sm8250.h | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/clk/qcom/clk-rpmh.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/dt-bindings/clock/qcom,gcc-sm8250.h b/include/dt-bindings/clock/qcom,gcc-sm8250.h
-index 7b7abe327e37..6c58320238c4 100644
---- a/include/dt-bindings/clock/qcom,gcc-sm8250.h
-+++ b/include/dt-bindings/clock/qcom,gcc-sm8250.h
-@@ -207,6 +207,9 @@
- #define GCC_VIDEO_AXI0_CLK					197
- #define GCC_VIDEO_AXI1_CLK					198
- #define GCC_VIDEO_XO_CLK					199
-+#define GCC_CE1_AHB_CLK						200
-+#define GCC_CE1_AXI_CLK						201
-+#define GCC_CE1_CLK						202
+diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
+index 91dc390a583b..59f73494a9c1 100644
+--- a/drivers/clk/qcom/clk-rpmh.c
++++ b/drivers/clk/qcom/clk-rpmh.c
+@@ -470,6 +470,7 @@ static struct clk_hw *sm8250_rpmh_clocks[] = {
+ 	[RPMH_RF_CLK1_A]	= &sdm845_rf_clk1_ao.hw,
+ 	[RPMH_RF_CLK3]		= &sdm845_rf_clk3.hw,
+ 	[RPMH_RF_CLK3_A]	= &sdm845_rf_clk3_ao.hw,
++	[RPMH_CE_CLK]		= &sdm845_ce.hw,
+ };
  
- /* GCC resets */
- #define GCC_GPU_BCR						0
+ static const struct clk_rpmh_desc clk_rpmh_sm8250 = {
 -- 
 2.29.2
 
