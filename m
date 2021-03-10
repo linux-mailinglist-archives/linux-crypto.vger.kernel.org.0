@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFE233351B
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Mar 2021 06:26:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98716333533
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Mar 2021 06:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhCJFZq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 10 Mar 2021 00:25:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54786 "EHLO
+        id S232330AbhCJF0T (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 10 Mar 2021 00:26:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232236AbhCJFZn (ORCPT
+        with ESMTP id S232300AbhCJFZv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 10 Mar 2021 00:25:43 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9308AC061762
-        for <linux-crypto@vger.kernel.org>; Tue,  9 Mar 2021 21:25:43 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so6841491pjv.1
-        for <linux-crypto@vger.kernel.org>; Tue, 09 Mar 2021 21:25:43 -0800 (PST)
+        Wed, 10 Mar 2021 00:25:51 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B95C061760
+        for <linux-crypto@vger.kernel.org>; Tue,  9 Mar 2021 21:25:50 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id g4so10619687pgj.0
+        for <linux-crypto@vger.kernel.org>; Tue, 09 Mar 2021 21:25:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GVkcidVr+dQRgdeYwXPMC77EhnCPIwmcpaqf5tpCWzk=;
-        b=LqDaiMgDgkwNzNyIeZZmwTTGVXbbH5JaioyrYI/naE53D3WpY6nmbab8SzY4dq4uPp
-         b5IQlKv3apOMbwrUxEFs6G3m1MrYfvz00XcuWlnHyTaLlcLqfUKW80aZ3/Kn8gzyU9cr
-         7GnbIi5Kp2E4QFnPdpJCF1LcVyEWsuTFcAQGr3S/BkkqH8KTbX0ScYLe14JcsfmE+4JU
-         3g34fxCIiQiW+AinOXiDvsm6LpBIT9RTcIDCRL5W0wjw2KNl8f6B4cczyhKLu7mjT/4N
-         MLGps+LYImgxbX0xraB2bKiQ7hJ4Ygp7Kal9HjC3cZJTxnTLj/oj6rKQOkarmNV+PFzz
-         n/0g==
+        bh=rCnpcLpuqTdHmtaa7vEu9Tx55M7Ej3EbyXNq00c5adU=;
+        b=sJR0eTnWGvsWHfKsGs1GxG5L1cwoqOeg3Yd0ioLF14Xa3dmshqNyd1Gl4BzpsteYUz
+         DHpLTFAWqi5QMX8fFbywmvPnSZBQtkuHyoyvXfxDn0/JLUjpY6vYxSyHcrE7RqqfC804
+         4WgBcuXlgH9BPCmvnFp8UKsJRVJLQQezriFNkQvo9y+Z+Zthu2nsTVZJeE9WNj8g6jA9
+         cELC7WpcQnuQJFdOIm3iD8rOdfsdx46CY7iRF3/2Mee6KJyUU5S+fPq4MHxJk0eT2TDO
+         lhJvDD6/zSv5yBOXG/fI4ppo/D0ryDRleseOhCQuueTh3ASNP/xDxukS+M77Mnbxb5No
+         IAww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GVkcidVr+dQRgdeYwXPMC77EhnCPIwmcpaqf5tpCWzk=;
-        b=eiZibIAEOJECDZoI8bFs64JtwISgVqWAfRPMXRaYzNMbSOl7fWQSwzLgwqpyz/BMNK
-         9eRAnOpKiFCJCZ1K/iDzQhzp48rPbKMUuXxxGT2ExyB/9ET2QchGtxj72Rnde+n5TSBB
-         IA6IOjT4UrhstqFDnPtuI1Tf5MEw96GzSy2V993EWActlbPCXRUk4moWhXMc1ILZvgD8
-         p03K56FArNJg3tmmRRkyUtOyWZs/BNCA6CxKw7JPPI9BY4TPh1cZjn37LFobopWXFBtB
-         h5GbzzHW5Bn5DKs5oUugAdsJgBZG/TvaDhvQCBR6LFfwPvd++yItaYXz1S50f+4OIsPY
-         8BLg==
-X-Gm-Message-State: AOAM533CIXmMf45HLs4+jkau7EfYLKIjBEkVi39733Rc4xPdCzGhekRA
-        Vhs6VHBvWaPAuus9mutG4dPVkw==
-X-Google-Smtp-Source: ABdhPJxn4p8YhJigLSPvS6brmz6OvH+OGNaXEqaBdO7Q+jiGGtTl9R1ad5aaz8S2St3RBL/WvDK4+Q==
-X-Received: by 2002:a17:90b:2304:: with SMTP id mt4mr1777287pjb.179.1615353943198;
-        Tue, 09 Mar 2021 21:25:43 -0800 (PST)
+        bh=rCnpcLpuqTdHmtaa7vEu9Tx55M7Ej3EbyXNq00c5adU=;
+        b=cKLvy3nUl5fhXYTwD0urxT7nrUNHMjZsAwjuTSBvRurqJVFiltw/ULsMBsWkgxCBKA
+         nLkmpjhC75WaaZPU5hGkbbYrma25Lbf7a62mHjEMyM1SC3MkHyxXgV5CA9yoqSFZbJ03
+         bsoCbqrruCd9VIYdERMM3uzk2KowNvpCc64uUvRo6AcTMstF0N6bEUUzbBDkvEorYBSN
+         w+At+lpkztB+wzPMWNgz8epvVIfnruCl+Ko0BrnhzcXvnjSK8NffWynAgNeHGo9xDoUC
+         Pc56ujV+C1hdjL52/mah+VBR53g7NYr5vuuRecgmiDVsns9h6WJBjl1cMGvxlopmPgwz
+         AoSg==
+X-Gm-Message-State: AOAM531V9ypEQUhohszLm7t+XvxoErCnWKeoN5zWRLxDo4ovxC3XVyhu
+        ytVAa8MI0PIpfR3XbvRWhucgIw==
+X-Google-Smtp-Source: ABdhPJzmRPeOWu16uPBVPML5utQZj0PB0c1OsJTfAdIhHMoFqp1dfNL6o3ViJOXYPndUKRT5BvtY4Q==
+X-Received: by 2002:a65:6a44:: with SMTP id o4mr1313921pgu.312.1615353950393;
+        Tue, 09 Mar 2021 21:25:50 -0800 (PST)
 Received: from localhost.localdomain ([2402:3a80:9f4:a436:21bd:7573:25c0:73a0])
-        by smtp.gmail.com with ESMTPSA id g7sm13915224pgb.10.2021.03.09.21.25.37
+        by smtp.gmail.com with ESMTPSA id g7sm13915224pgb.10.2021.03.09.21.25.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 21:25:42 -0800 (PST)
+        Tue, 09 Mar 2021 21:25:50 -0800 (PST)
 From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     bhupesh.sharma@linaro.org,
@@ -62,9 +62,9 @@ Cc:     bhupesh.sharma@linaro.org,
         linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         bhupesh.linux@gmail.com
-Subject: [PATCH 3/8] arm64/dts: qcom: sdm845: Use RPMH_CE_CLK macro directly
-Date:   Wed, 10 Mar 2021 10:54:58 +0530
-Message-Id: <20210310052503.3618486-4-bhupesh.sharma@linaro.org>
+Subject: [PATCH 4/8] dt-bindings/clock: qcom: sm8250: Add gcc clocks for sm8250 crypto block
+Date:   Wed, 10 Mar 2021 10:54:59 +0530
+Message-Id: <20210310052503.3618486-5-bhupesh.sharma@linaro.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210310052503.3618486-1-bhupesh.sharma@linaro.org>
 References: <20210310052503.3618486-1-bhupesh.sharma@linaro.org>
@@ -74,14 +74,9 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-In commit 3e482859f1ef ("dts: qcom: sdm845: Add dt entries
-to support crypto engine."), we decided to use the value indicated
-by constant RPMH_CE_CLK rather than using it directly.
-
-Now that the same RPMH clock value will also be used for other
-SoCs (in addition to sdm845), let's use the constant
-RPMH_CE_CLK to make sure that this dtsi is compatible with the
-other qcom ones.
+This patch adds the global clock controller (gcc) clocks required
+by the sm8250 crypto block to function to the dt-binding header file
+(namely: GCC_CE1_AHB_CLK, GCC_CE1_AXI_CLK and GCC_CE1_CLK).
 
 Cc: Thara Gopinath <thara.gopinath@linaro.org>
 Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
@@ -98,31 +93,23 @@ Cc: linux-kernel@vger.kernel.org
 Cc: bhupesh.linux@gmail.com
 Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/dt-bindings/clock/qcom,gcc-sm8250.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 454f794af547..54ba95dcb35a 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -2304,7 +2304,7 @@ cryptobam: dma@1dc4000 {
- 			compatible = "qcom,bam-v1.7.0";
- 			reg = <0 0x01dc4000 0 0x24000>;
- 			interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&rpmhcc 15>;
-+			clocks = <&rpmhcc RPMH_CE_CLK>;
- 			clock-names = "bam_clk";
- 			#dma-cells = <1>;
- 			qcom,ee = <0>;
-@@ -2320,7 +2320,7 @@ crypto: crypto@1dfa000 {
- 			reg = <0 0x01dfa000 0 0x6000>;
- 			clocks = <&gcc GCC_CE1_AHB_CLK>,
- 				 <&gcc GCC_CE1_AHB_CLK>,
--				 <&rpmhcc 15>;
-+				 <&rpmhcc RPMH_CE_CLK>;
- 			clock-names = "iface", "bus", "core";
- 			dmas = <&cryptobam 6>, <&cryptobam 7>;
- 			dma-names = "rx", "tx";
+diff --git a/include/dt-bindings/clock/qcom,gcc-sm8250.h b/include/dt-bindings/clock/qcom,gcc-sm8250.h
+index 7b7abe327e37..6c58320238c4 100644
+--- a/include/dt-bindings/clock/qcom,gcc-sm8250.h
++++ b/include/dt-bindings/clock/qcom,gcc-sm8250.h
+@@ -207,6 +207,9 @@
+ #define GCC_VIDEO_AXI0_CLK					197
+ #define GCC_VIDEO_AXI1_CLK					198
+ #define GCC_VIDEO_XO_CLK					199
++#define GCC_CE1_AHB_CLK						200
++#define GCC_CE1_AXI_CLK						201
++#define GCC_CE1_CLK						202
+ 
+ /* GCC resets */
+ #define GCC_GPU_BCR						0
 -- 
 2.29.2
 
