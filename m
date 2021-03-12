@@ -2,92 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A143392DE
-	for <lists+linux-crypto@lfdr.de>; Fri, 12 Mar 2021 17:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E401D339315
+	for <lists+linux-crypto@lfdr.de>; Fri, 12 Mar 2021 17:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhCLQQ4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 12 Mar 2021 11:16:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54090 "EHLO
+        id S231925AbhCLQWw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 12 Mar 2021 11:22:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231786AbhCLQQw (ORCPT
+        with ESMTP id S232130AbhCLQWZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:16:52 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6945C061574;
-        Fri, 12 Mar 2021 08:16:51 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id b23so2168497pfo.8;
-        Fri, 12 Mar 2021 08:16:51 -0800 (PST)
+        Fri, 12 Mar 2021 11:22:25 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97795C061574;
+        Fri, 12 Mar 2021 08:22:25 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id by2so4493281qvb.11;
+        Fri, 12 Mar 2021 08:22:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RWX7IO2Oo8TmYRuvuDdsRAk9vA6pUn2t00R0cd7mmNY=;
-        b=X4jSZfe3lHmcE9DCz66oF+AtqRfB9k4nokKIZLlTYP0fUTdg4jUnEBbV8+B4X9gXKr
-         v41BQlIVv63M6r/7EnNVCLgRgPetx1PR7p4CFwA2UJnLZBwAk9ZulMBuPMmoEsi6m29W
-         OmOLY6ys2ZYaMv/XuQS7OUhHDEaymlyczm5M/t9s3npWtw0wl2l0qKFuUzo2FH+MZ1qE
-         lOJMBbNZJYOCCm/YN/G6MbnoGE8nnhhHuXQrMAWenAZndJ4+ruQuQcg3mn6CF8upb316
-         8pCR+hEoKHH1XTJY7ofscv+TFMtAMYTi/p/Ye69ZqF+RI79GEIxD6HoHiz/L6ljdMSRB
-         lVKA==
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A2UZVq4RWM1EK4WKKShJf3qblovDef5sWEZC7pI0LcQ=;
+        b=kdNrQCA0SX7W8OuOXyJxWnj9EIQirUIR/ddyqiXJ4mtchy+yrtIZR/Kj+HSiciBUvh
+         rHGxieqlfUL4Zg9lQ7qm1zeBtoz71elWwVkp1KLPUNKJX+WLfo4uTo6zYOpKY48htU4+
+         4MdIcHbesAgRRadsWK2CK3p3zNJUhn+aqs4CYchGqDaNh30MSMVsFJG41XGKI4LRB9y+
+         KBuIgkM59FzI69cz/9BXGdafuHFyDBxo9Rc4//jPoJSpi5j/LXZPyX17xlD5nyoCG7Um
+         khZY9ZOY2DXinI8+rStAvu4Hy1pCAHsRYlmF2tprlu9aLJQcSirPRtECkCmn1hd15uiT
+         qHog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RWX7IO2Oo8TmYRuvuDdsRAk9vA6pUn2t00R0cd7mmNY=;
-        b=YauMUALDdKdRZ2daBIpqBySadVzjZySsO/ZbuHMVMlMfAujRy7Xfmwhxwv/NjF7mVZ
-         3ChVaxzUB7egvLw5sFiUQGcjS1cA4DbpvROA0LupI74P9tHFLv5O+bLPT3n7l/qI0FYC
-         4oTiAoohm+PIIFHCDTr2MCCOxEQ58Mh/faTZxseTAxHsbI66CBU+VxVG4ziHSitY6m6n
-         FCb0cG2q4kg1TaGt6YMQ4jsTuCWSOO9XWysjbSShQEhMuT3w/IpCDA7ktmfD/UmEMs0W
-         eK+UdJSP2bJiBpEryEVROWz89aJwxqdXqMti7wUJhd0gcD0zflefpTPWo6sYTRkEnoM5
-         Rf1w==
-X-Gm-Message-State: AOAM532/A31DeWo7nBc1+vgyxRsbUQYUB/LGlrK/DObmuNG0YNhvwIGx
-        yzlq33lqAUpuGHLHzGz/Ocic9I4oEjKqKUrlmsE=
-X-Google-Smtp-Source: ABdhPJz6vyzpTP4o67vc3LofqtGMMBjfIhyVHOQ7lRF8qzxyZJzPG6wfXLunT91X9sV5ghtOs7hM9AfLFkXGo8BrcwI=
-X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id
- g136-20020a62528e0000b02901f5c5eea487mr12965348pfb.7.1615565811282; Fri, 12
- Mar 2021 08:16:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20210312141908.2388121-1-ztong0001@gmail.com> <20210312141908.2388121-3-ztong0001@gmail.com>
- <CAHp75VduTXkNgpmuQj_feQbHMAfWi7iGLtYxEJ6ugojmL1Da9Q@mail.gmail.com>
- <CAA5qM4CM4noDtaedPpd0yh8R2f+jDV2DnCERKi_ycD5Lq-vKDw@mail.gmail.com>
- <CAHp75VcFDXTXcaFqOyRCdArx1bGED_jsEeK1yRQhxUvHp0goTg@mail.gmail.com> <CAA5qM4DPqtPWMydx41Ovx6DCQoEESewkZbQrbhdwfVhkcy0nCA@mail.gmail.com>
-In-Reply-To: <CAA5qM4DPqtPWMydx41Ovx6DCQoEESewkZbQrbhdwfVhkcy0nCA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 12 Mar 2021 18:16:35 +0200
-Message-ID: <CAHp75Ven=Sfmy0YE_Q60fiF-pyXg2tO8iq7_vN+aUzaxYTtZmA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] crypto: qat: ADF_STATUS_PF_RUNNING should be set
- after adf_dev_init
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A2UZVq4RWM1EK4WKKShJf3qblovDef5sWEZC7pI0LcQ=;
+        b=MbCiF7US1ZUma+xuZy3aAihlqJEq1c4jWhEsgFLRGlk/j3mPaTxkyFBc8WkNM+qCcl
+         UZ0JNWKX7Y7Y5r5rQcQKGXBRhOEmw+4n6SklBKLPXjcX79vvmAzpfphTEUdBdfSLxj1o
+         UUhEmawHk1Abm1L/NcOP/rfEBWMiaLnnfKpTDoXvrkb4R+692ub4X4GJiw0eYFiLT8Ea
+         95HV35048Tu6AvEov6lSKvCmRKrFPwdlbmU7LTeiTeYIWBFIkWRw+tAspPXU7otM8Ovt
+         CTNJpTI9gayZhre36uo0EdQgRwpKhGFvtNMIOJBRqX0u0mscnGlIZNLjHanIalFnA0Jk
+         fefw==
+X-Gm-Message-State: AOAM532iTr5w6IMQjqbOzZ1mFZ44tgXxqiPZ8XWFy/ixgssE6wu3c1ms
+        J9g9g4N8y1ZDCO9+oTmnnjc=
+X-Google-Smtp-Source: ABdhPJxKhDJ9EXGmmsXNlhQwE3+AQhGu+/arRJk/5uXBpIBozkvLaof/bOUB7r/Y/9DamIzjyQjJ2Q==
+X-Received: by 2002:ad4:4581:: with SMTP id x1mr13144164qvu.9.1615566144660;
+        Fri, 12 Mar 2021 08:22:24 -0800 (PST)
+Received: from tong-desktop.local ([2601:5c0:c200:27c6:b9e0:c84:da81:d749])
+        by smtp.googlemail.com with ESMTPSA id e15sm4178623qti.79.2021.03.12.08.22.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 08:22:24 -0800 (PST)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Fiona Trahe <fiona.trahe@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        qat-linux@intel.com, linux-crypto <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Tong Zhang <ztong0001@gmail.com>, qat-linux@intel.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] crypto: qat: fix couple crashes duing error handling
+Date:   Fri, 12 Mar 2021 11:22:01 -0500
+Message-Id: <20210312162203.2416149-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 6:10 PM Tong Zhang <ztong0001@gmail.com> wrote:
+There are a couple of issues in qat error handling. Those drivers tries to
+release resources that is not initialized. This patch series tries to fix
+crashes caused by incorrect error handling.
 
-> I am not really sure this reviewed by line should be added by me --
-> IMHO from my past experience this line is added by the actual person
-> who reviewed it on a per-patch and version basis
+v2: removed excessive dump in commit log as suggested by Andy Shevchenko <andy.shevchenko@gmail.com>
+v3: collect tags as suggested by Andy Shevchenko <andy.shevchenko@gmail.com>
 
-> I can send out another revision adding this Reviewed-by line if you
-> think this is something should be done by me,
-> but I don't feel I have such power to do this since I am not that guy
-> and I am not a maintainer.
+Tong Zhang (2):
+  crypto: qat - dont release uninitialized resources
+  crypto: qat: ADF_STATUS_PF_RUNNING should be set after adf_dev_init
 
-If you are sending a new version, it's your responsibility to collect
-all tags, except the cases when the code in question drastically
-changed between versions of the series.
-So, please add a tag (and feel free to add the same tag to the patch
-1) and resend as v3.
-Thanks!
+ drivers/crypto/qat/qat_c3xxxvf/adf_drv.c    |  4 ++--
+ drivers/crypto/qat/qat_c62xvf/adf_drv.c     |  4 ++--
+ drivers/crypto/qat/qat_common/adf_vf_isr.c  | 17 +++++++++++++----
+ drivers/crypto/qat/qat_dh895xccvf/adf_drv.c |  4 ++--
+ 4 files changed, 19 insertions(+), 10 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
