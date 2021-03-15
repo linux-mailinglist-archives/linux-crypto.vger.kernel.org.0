@@ -2,89 +2,121 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9084B33C310
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Mar 2021 18:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A9233C518
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Mar 2021 19:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbhCOQ7r (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Mar 2021 12:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
+        id S230239AbhCOSC1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Mar 2021 14:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234831AbhCOQ7W (ORCPT
+        with ESMTP id S231361AbhCOSB6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:59:22 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D716BC0613D7
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Mar 2021 09:59:20 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id u4so58023414lfs.0
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Mar 2021 09:59:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=nn1W9Wc+k1CJYE8WxkSJGXK0N+qf/mcCb4Whw81sCBc=;
-        b=eLaM2VJC2VPxWCmJI4pRm7gIwsdtcXVX+gwqcmG5feM136k/MJaMOmGBB2kdOk6Af4
-         OdHMopIeKZg49h5cW6vGbxvuQTW/SkQ9HuA/ev1jJcl0AAurwCe0DNziSPl1EC93VQ1C
-         ZhL/pBGs4yClRQ+yNSuJ3e3yxg7nGxyN7EkaEc9UnMX6RUqxH4o2rsWq+1OyBGhsQ60t
-         mlr/pvPbTkbXwuQ72wwZySMbV7eKPbN/RoefzS3gvRqxUNqqkiwACUnwYhkfp8NF4XOV
-         usiuSlIdkRdT/XFr8JMUz5dBUV3A2ubIZJBv5AzJJikhHdudGeMH2zRoSMkB+ojxPFvS
-         VkOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=nn1W9Wc+k1CJYE8WxkSJGXK0N+qf/mcCb4Whw81sCBc=;
-        b=H6b+dI1p8yKdYSSW0kLGKDwQVjHjsDua9rSj3iSM0BZ7mtav1t++WlTkkL2n7v0ucQ
-         t+zxI6vaiHeGwamMHVGGgCyvGpXcOBBpghkJwfmIo1p2+3Z1HRUa6fxwmW+RQFJCxb6W
-         1gCClBhwpm54FNGX36uWCfW82gBLRm4SWsTb0jwI37OiFrnyEWLEqwILrqkFmWI5JTlV
-         rp5mzQu0LYLs9Hq8oSE1NP6cg794k2kyoZKXFzhzEqSNxZaZ5GMWXjRPLpDIKgqJ65Wm
-         3s0BMeeOElRdNTiERXFv/SKLUcv2s1pv3nFV3NSBW/SXtQT5DEV3HTCytk2Y4uCmXhLH
-         U1Ig==
-X-Gm-Message-State: AOAM532Ikm6G59uaRD9ud1DKd5EO/s3UlwVomNczGyYeizej1xto4atK
-        psvJn1unvoJL1aPAf4ohNVZuSU34LpTlT9yY8+g=
-X-Google-Smtp-Source: ABdhPJz7/gfpeD06O79Pnw07FE/mA8Ji4e09y71x9+hvfgu2S8MD9xmK2/Q/AOYN3ItI3qPG23+Pfv2arGi/0+HLTes=
-X-Received: by 2002:a05:6512:370f:: with SMTP id z15mr8619417lfr.562.1615827559310;
- Mon, 15 Mar 2021 09:59:19 -0700 (PDT)
+        Mon, 15 Mar 2021 14:01:58 -0400
+Received: from smtp-190f.mail.infomaniak.ch (smtp-190f.mail.infomaniak.ch [IPv6:2001:1600:3:17::190f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF62C06175F
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Mar 2021 11:01:58 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Dzkl642lMzMqGSq;
+        Mon, 15 Mar 2021 19:01:54 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Dzkl16VGbzlh8T3;
+        Mon, 15 Mar 2021 19:01:49 +0100 (CET)
+Subject: Re: [PATCH v7 5/5] certs: Allow root user to append signed hashes to
+ the blacklist keyring
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+References: <20210312171232.2681989-1-mic@digikod.net>
+ <20210312171232.2681989-6-mic@digikod.net>
+ <A4CD568A-6D8E-4043-971B-8E79FFB58709@oracle.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <bd28dd0b-b183-44bd-1928-59e3e1274045@digikod.net>
+Date:   Mon, 15 Mar 2021 19:01:36 +0100
+User-Agent: 
 MIME-Version: 1.0
-Received: by 2002:a05:651c:1382:0:0:0:0 with HTTP; Mon, 15 Mar 2021 09:59:18
- -0700 (PDT)
-Reply-To: ezbtg22@gmail.com
-From:   "Mrs.Glenn" <mrganuserge@gmail.com>
-Date:   Mon, 15 Mar 2021 09:59:18 -0700
-Message-ID: <CA+Wfa7YG6kanV1cpekUWYP2FGpSSSKYxaq+gNSZdX+nSoPjTrA@mail.gmail.com>
-Subject: From Mrs.Glenn
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <A4CD568A-6D8E-4043-971B-8E79FFB58709@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--- 
-Dear Beloved,
 
-I am Mrs Elizabet Glenn from Israel. I am a missionary but right now
-in a hospital bed in Israel. I am 59 years and childless; my husband
-is dead. I was diagnosed with terminal cancer. And my doctor just
-predicted that I have but very limited time to live due to damages in
-my system and as a result of that I decided to dispose my 10.5 million
-US dollars to a God-fearing one for the continuation of charitable
-work. This is why I located you.My guess about you may not be accurate
-because I came across your contact at the humanitarian calendar event
-of the year but I believe in God who  divinely directed me to you for
-this solemn proposal of charitable work. I wholeheartedly wish to
-bequeath my fortune to you as a God-fearing person for the
-continuation of charitable work anywhere around the world.
+On 15/03/2021 17:59, Eric Snowberg wrote:
+> 
+>> On Mar 12, 2021, at 10:12 AM, Mickaël Salaün <mic@digikod.net> wrote:
+>>
+>> From: Mickaël Salaün <mic@linux.microsoft.com>
+>>
+>> Add a kernel option SYSTEM_BLACKLIST_AUTH_UPDATE to enable the root user
+>> to dynamically add new keys to the blacklist keyring.  This enables to
+>> invalidate new certificates, either from being loaded in a keyring, or
+>> from being trusted in a PKCS#7 certificate chain.  This also enables to
+>> add new file hashes to be denied by the integrity infrastructure.
+>>
+>> Being able to untrust a certificate which could have normaly been
+>> trusted is a sensitive operation.  This is why adding new hashes to the
+>> blacklist keyring is only allowed when these hashes are signed and
+>> vouched by the builtin trusted keyring.  A blacklist hash is stored as a
+>> key description.  The PKCS#7 signature of this description must be
+>> provided as the key payload.
+>>
+>> Marking a certificate as untrusted should be enforced while the system
+>> is running.  It is then forbiden to remove such blacklist keys.
+>>
+>> Update blacklist keyring, blacklist key and revoked certificate access rights:
+>> * allows the root user to search for a specific blacklisted hash, which
+>>  make sense because the descriptions are already viewable;
+>> * forbids key update (blacklist and asymmetric ones);
+>> * restricts kernel rights on the blacklist keyring to align with the
+>>  root user rights.
+>>
+>> See help in tools/certs/print-cert-tbs-hash.sh .
+>>
+>> Cc: David Howells <dhowells@redhat.com>
+>> Cc: David Woodhouse <dwmw2@infradead.org>
+>> Cc: Eric Snowberg <eric.snowberg@oracle.com>
+>> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+>> Link: https://lore.kernel.org/r/20210312171232.2681989-6-mic@digikod.net
+> 
+> I tried testing this, it doesn’t work as I would expect.  
+> Here is my test setup:
+> 
+> Kernel built with two keys compiled into the builtin_trusted_keys keyring
+> 
+> Generated a tbs cert from one of the keys and signed it with the other key
+> 
+> As root, added the tbs cert hash to the blacklist keyring
+> 
+> Verified the tbs hash is in the blacklist keyring
+> 
+> Enabled lockdown to enforce kernel module signature checking
+> 
+> Signed a kernel module with the key I just blacklisted
+> 
+> Load the kernel module 
+> 
+> I’m seeing the kernel module load, I would expect this to fail, since the 
+> key is now blacklisted.  Or is this change just supposed to prevent new keys 
+> from being added in the future?
 
-I shall be going in for a surgery operations soonest and desire this
-money to be transferred to you as I do not wish to leave this money in
-the bank because bankers might misuse it for their own interest after
-my death. As soon as I receive your quick reply assuring me that you
-will utilize the money as I instructed you for the benefit of the less
-privilege, I shall give you more details and also instruct my bank to
-release the money to you for the charity project. I hope you receive
-this mail in good health.
+This is the expected behavior and the way the blacklist keyring is
+currently used, as explained in the commit message:
+"This enables to invalidate new certificates, either from being loaded
+in a keyring, or from being trusted in a PKCS#7 certificate chain."
 
-Because I don t know what will be my situation in next minute,
-
-I am waiting for your reply.
-
-Yours sincerely,
-Mrs Elizabet Glenn.
+If you want a (trusted root) key to be untrusted, you need to remove it
+from the keyring, which is not allowed for the builtin trusted keyring.
