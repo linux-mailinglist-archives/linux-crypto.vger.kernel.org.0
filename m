@@ -2,121 +2,83 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A9233C518
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Mar 2021 19:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC7933CB39
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Mar 2021 03:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhCOSC1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Mar 2021 14:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbhCOSB6 (ORCPT
+        id S233801AbhCPB7y (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Mar 2021 21:59:54 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13618 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233878AbhCPB7v (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:01:58 -0400
-Received: from smtp-190f.mail.infomaniak.ch (smtp-190f.mail.infomaniak.ch [IPv6:2001:1600:3:17::190f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF62C06175F
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Mar 2021 11:01:58 -0700 (PDT)
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Dzkl642lMzMqGSq;
-        Mon, 15 Mar 2021 19:01:54 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Dzkl16VGbzlh8T3;
-        Mon, 15 Mar 2021 19:01:49 +0100 (CET)
-Subject: Re: [PATCH v7 5/5] certs: Allow root user to append signed hashes to
- the blacklist keyring
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-References: <20210312171232.2681989-1-mic@digikod.net>
- <20210312171232.2681989-6-mic@digikod.net>
- <A4CD568A-6D8E-4043-971B-8E79FFB58709@oracle.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <bd28dd0b-b183-44bd-1928-59e3e1274045@digikod.net>
-Date:   Mon, 15 Mar 2021 19:01:36 +0100
-User-Agent: 
+        Mon, 15 Mar 2021 21:59:51 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DzxJK4ds7z17LlX;
+        Tue, 16 Mar 2021 09:57:53 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 16 Mar 2021 09:59:35 +0800
+From:   chenxiang <chenxiang66@hisilicon.com>
+To:     <clabbe.montjoie@gmail.com>, <clabbe@baylibre.com>,
+        <gcherian@marvell.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <linuxarm@openeuler.org>,
+        Xiang Chen <chenxiang66@hisilicon.com>
+Subject: [PATCH v2 0/4] Fix the parameter of dma_map_sg()
+Date:   Tue, 16 Mar 2021 09:55:22 +0800
+Message-ID: <1615859726-57062-1-git-send-email-chenxiang66@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <A4CD568A-6D8E-4043-971B-8E79FFB58709@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+From: Xiang Chen <chenxiang66@hisilicon.com>
 
-On 15/03/2021 17:59, Eric Snowberg wrote:
-> 
->> On Mar 12, 2021, at 10:12 AM, Mickaël Salaün <mic@digikod.net> wrote:
->>
->> From: Mickaël Salaün <mic@linux.microsoft.com>
->>
->> Add a kernel option SYSTEM_BLACKLIST_AUTH_UPDATE to enable the root user
->> to dynamically add new keys to the blacklist keyring.  This enables to
->> invalidate new certificates, either from being loaded in a keyring, or
->> from being trusted in a PKCS#7 certificate chain.  This also enables to
->> add new file hashes to be denied by the integrity infrastructure.
->>
->> Being able to untrust a certificate which could have normaly been
->> trusted is a sensitive operation.  This is why adding new hashes to the
->> blacklist keyring is only allowed when these hashes are signed and
->> vouched by the builtin trusted keyring.  A blacklist hash is stored as a
->> key description.  The PKCS#7 signature of this description must be
->> provided as the key payload.
->>
->> Marking a certificate as untrusted should be enforced while the system
->> is running.  It is then forbiden to remove such blacklist keys.
->>
->> Update blacklist keyring, blacklist key and revoked certificate access rights:
->> * allows the root user to search for a specific blacklisted hash, which
->>  make sense because the descriptions are already viewable;
->> * forbids key update (blacklist and asymmetric ones);
->> * restricts kernel rights on the blacklist keyring to align with the
->>  root user rights.
->>
->> See help in tools/certs/print-cert-tbs-hash.sh .
->>
->> Cc: David Howells <dhowells@redhat.com>
->> Cc: David Woodhouse <dwmw2@infradead.org>
->> Cc: Eric Snowberg <eric.snowberg@oracle.com>
->> Cc: Jarkko Sakkinen <jarkko@kernel.org>
->> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
->> Link: https://lore.kernel.org/r/20210312171232.2681989-6-mic@digikod.net
-> 
-> I tried testing this, it doesn’t work as I would expect.  
-> Here is my test setup:
-> 
-> Kernel built with two keys compiled into the builtin_trusted_keys keyring
-> 
-> Generated a tbs cert from one of the keys and signed it with the other key
-> 
-> As root, added the tbs cert hash to the blacklist keyring
-> 
-> Verified the tbs hash is in the blacklist keyring
-> 
-> Enabled lockdown to enforce kernel module signature checking
-> 
-> Signed a kernel module with the key I just blacklisted
-> 
-> Load the kernel module 
-> 
-> I’m seeing the kernel module load, I would expect this to fail, since the 
-> key is now blacklisted.  Or is this change just supposed to prevent new keys 
-> from being added in the future?
+According to Documentation/core-api/dma-api-howto.rst, the parameters
+of dma_unmap_sg() must be the same as those which are passed in to the
+scatter/gather mapping API.
+But for some drivers under crypto, the <nents> parameter of dma_unmap_sg()
+is number of elements after mapping. So fix them.
 
-This is the expected behavior and the way the blacklist keyring is
-currently used, as explained in the commit message:
-"This enables to invalidate new certificates, either from being loaded
-in a keyring, or from being trusted in a PKCS#7 certificate chain."
+Part of the document is as follows:
 
-If you want a (trusted root) key to be untrusted, you need to remove it
-from the keyring, which is not allowed for the builtin trusted keyring.
+To unmap a scatterlist, just call::
+
+        dma_unmap_sg(dev, sglist, nents, direction);
+	
+Again, make sure DMA activity has already finished.
+	
+        .. note::
+		
+	    The 'nents' argument to the dma_unmap_sg call must be
+	    the _same_ one you passed into the dma_map_sg call,
+	    it should _NOT_ be the 'count' value _returned_ from the
+	    dma_map_sg call.
+
+Change Log:
+v1 -> v2: Remove changing the count passed to create_sg_component 
+in driver cavium;
+
+Xiang Chen (4):
+  crypto: amlogic - Fix the parameter of dma_unmap_sg()
+  crypto: cavium - Fix the parameter of dma_unmap_sg()
+  crypto: ux500 - Fix the parameter of dma_unmap_sg()
+  crypto: allwinner - Fix the parameter of dma_unmap_sg()
+
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c | 9 ++++++---
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c   | 3 ++-
+ drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c | 9 ++++++---
+ drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c   | 3 ++-
+ drivers/crypto/amlogic/amlogic-gxl-cipher.c         | 6 +++---
+ drivers/crypto/cavium/nitrox/nitrox_reqmgr.c        | 9 +++++----
+ drivers/crypto/ux500/cryp/cryp_core.c               | 4 ++--
+ drivers/crypto/ux500/hash/hash_core.c               | 2 +-
+ 8 files changed, 27 insertions(+), 18 deletions(-)
+
+-- 
+2.8.1
+
