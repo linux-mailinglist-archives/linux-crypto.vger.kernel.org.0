@@ -2,39 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFF933DA23
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Mar 2021 18:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D2D33DA19
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Mar 2021 18:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238957AbhCPRCo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 16 Mar 2021 13:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
+        id S237499AbhCPRCi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 16 Mar 2021 13:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238066AbhCPRCO (ORCPT
+        with ESMTP id S237457AbhCPRCF (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:02:14 -0400
+        Tue, 16 Mar 2021 13:02:05 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B7DC0613D9
-        for <linux-crypto@vger.kernel.org>; Tue, 16 Mar 2021 10:02:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577D8C06175F
+        for <linux-crypto@vger.kernel.org>; Tue, 16 Mar 2021 10:02:04 -0700 (PDT)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <afa@pengutronix.de>)
-        id 1lMD4c-0000Nr-4C; Tue, 16 Mar 2021 18:01:38 +0100
+        id 1lMD4c-0000Ns-4C; Tue, 16 Mar 2021 18:01:38 +0100
 Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <afa@pengutronix.de>)
-        id 1lMD4Y-0000VZ-G5; Tue, 16 Mar 2021 18:01:34 +0100
+        id 1lMD4Y-0000Ve-HF; Tue, 16 Mar 2021 18:01:34 +0100
 From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
+To:     =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
         Aymen Sghaier <aymen.sghaier@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>
-Cc:     kernel@pengutronix.de, David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     kernel@pengutronix.de, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
         James Morris <jmorris@namei.org>,
         "Serge E. Hallyn" <serge@hallyn.com>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
         Udit Agarwal <udit.agarwal@nxp.com>,
         Jan Luebbe <j.luebbe@penutronix.de>,
         David Gstir <david@sigma-star.at>,
@@ -43,10 +43,12 @@ Cc:     kernel@pengutronix.de, David Howells <dhowells@redhat.com>,
         linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-security-module@vger.kernel.org
-Subject: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
-Date:   Tue, 16 Mar 2021 18:01:15 +0100
-Message-Id: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+Subject: [PATCH v1 1/3] crypto: caam - add in-kernel interface for blob generator
+Date:   Tue, 16 Mar 2021 18:01:16 +0100
+Message-Id: <420d2319e533ac97965fb826a70bdb023af2a844.1615914058.git-series.a.fatoum@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -58,69 +60,38 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
-built into many newer i.MX and QorIQ SoCs by NXP.
+The CAAM can be used to protect user-defined data across system reboot:
 
-Its blob mechanism can AES encrypt/decrypt user data using a unique
-never-disclosed device-specific key. There has been multiple
-discussions on how to represent this within the kernel:
+  - When the system is fused and boots into secure state, the master
+    key is a unique never-disclosed device-specific key
+  - random key is encrypted by key derived from master key
+  - data is encrypted using the random key
+  - encrypted data and its encrypted random key are stored alongside
+  - This blob can now be safely stored in non-volatile memory
 
- - [RFC] crypto: caam - add red blobifier
-   Steffen implemented[1] a PoC sysfs driver to start a discussion on how to
-   best integrate the blob mechanism.
-   Mimi suggested that it could be used to implement trusted keys.
-   Trusted keys back then were a TPM-only feature.
+On next power-on:
+  - blob is loaded into CAAM
+  - CAAM writes decrypted data either into memory or key register
 
- - security/keys/secure_key: Adds the secure key support based on CAAM.
-   Udit added[2] a new "secure" key type with the CAAM as backend. The key
-   material stays within the kernel only.
-   Mimi and James agreed that this needs a generic interface, not specific
-   to CAAM. Mimi suggested trusted keys. Jan noted that this could serve as
-   basis for TEE-backed keys.
+Add functions to realize encrypting and decrypting into memory alongside
+the CAAM driver.
 
- - [RFC] drivers: crypto: caam: key: Add caam_tk key type
-   Franck added[3] a new "caam_tk" key type based on Udit's work. The key
-   material stays within the kernel only, but can optionally be user-set
-   instead of coming from RNG. James voiced the opinion that there should
-   be just one user-facing generic wrap/unwrap key type with multiple
-   possible handlers. David suggested trusted keys.
+They will be used in a later commit as a source for the trusted key
+seal/unseal mechanism.
 
- - Introduce TEE based Trusted Keys support
-   Sumit reworked[4] trusted keys to support multiple possible backends with
-   one chosen at boot time and added a new TEE backend along with TPM.
-   This now sits in Jarkko's master branch to be sent out for v5.13
-
-This patch series builds on top of Sumit's rework to have the CAAM as yet another
-trusted key backend.
-
-The CAAM bits are based on Steffen's initial patch from 2015. His work had been
-used in the field for some years now, so I preferred not to deviate too much from it.
-
-This series has been tested with dmcrypt[5] on an i.MX6DL.
-
-Looking forward to your feedback.
-
-Cheers,
-Ahmad
-
- [1]: https://lore.kernel.org/linux-crypto/1447082306-19946-2-git-send-email-s.trumtrar@pengutronix.de/
- [2]: https://lore.kernel.org/linux-integrity/20180723111432.26830-1-udit.agarwal@nxp.com/
- [3]: https://lore.kernel.org/lkml/1551456599-10603-2-git-send-email-franck.lenormand@nxp.com/
- [4]: https://lore.kernel.org/lkml/1604419306-26105-1-git-send-email-sumit.garg@linaro.org/
- [5]: https://lore.kernel.org/linux-integrity/20210122084321.24012-2-a.fatoum@pengutronix.de/
-
+Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 ---
-To: Jarkko Sakkinen <jarkko@kernel.org>
 To: "Horia Geantă" <horia.geanta@nxp.com>
-To: Mimi Zohar <zohar@linux.ibm.com>
 To: Aymen Sghaier <aymen.sghaier@nxp.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>
 To: "David S. Miller" <davem@davemloft.net>
-To: James Bottomley <jejb@linux.ibm.com>
+Cc: James Bottomley <jejb@linux.ibm.com>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Mimi Zohar <zohar@linux.ibm.com>
 Cc: David Howells <dhowells@redhat.com>
 Cc: James Morris <jmorris@namei.org>
 Cc: "Serge E. Hallyn" <serge@hallyn.com>
-Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>
 Cc: Udit Agarwal <udit.agarwal@nxp.com>
 Cc: Jan Luebbe <j.luebbe@penutronix.de>
 Cc: David Gstir <david@sigma-star.at>
@@ -131,28 +102,337 @@ Cc: keyrings@vger.kernel.org
 Cc: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: linux-security-module@vger.kernel.org
-
-Ahmad Fatoum (3):
-  crypto: caam - add in-kernel interface for blob generator
-  KEYS: trusted: implement fallback to kernel RNG
-  KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
-
- Documentation/admin-guide/kernel-parameters.txt |   1 +-
- drivers/crypto/caam/Kconfig                     |   4 +-
- drivers/crypto/caam/Makefile                    |   1 +-
- drivers/crypto/caam/blob_gen.c                  | 230 +++++++++++++++++-
- include/keys/trusted-type.h                     |   2 +-
- include/keys/trusted_caam.h                     |  11 +-
- include/soc/fsl/caam-blob.h                     |  54 ++++-
- security/keys/trusted-keys/Makefile             |   1 +-
- security/keys/trusted-keys/trusted_caam.c       |  74 +++++-
- security/keys/trusted-keys/trusted_core.c       |  17 +-
- 10 files changed, 392 insertions(+), 3 deletions(-)
+---
+ drivers/crypto/caam/Kconfig    |   4 +-
+ drivers/crypto/caam/Makefile   |   1 +-
+ drivers/crypto/caam/blob_gen.c | 230 ++++++++++++++++++++++++++++++++++-
+ include/soc/fsl/caam-blob.h    |  54 ++++++++-
+ 4 files changed, 289 insertions(+)
  create mode 100644 drivers/crypto/caam/blob_gen.c
- create mode 100644 include/keys/trusted_caam.h
  create mode 100644 include/soc/fsl/caam-blob.h
- create mode 100644 security/keys/trusted-keys/trusted_caam.c
 
-base-commit: 8a3fa8ade8a35d8f7c178f5680f07f223da41b87
+diff --git a/drivers/crypto/caam/Kconfig b/drivers/crypto/caam/Kconfig
+index 84ea7cba5ee5..8f7df1299f3d 100644
+--- a/drivers/crypto/caam/Kconfig
++++ b/drivers/crypto/caam/Kconfig
+@@ -151,6 +151,10 @@ config CRYPTO_DEV_FSL_CAAM_RNG_API
+ 	  Selecting this will register the SEC4 hardware rng to
+ 	  the hw_random API for supplying the kernel entropy pool.
+ 
++config CRYPTO_DEV_FSL_CAAM_BLOB_GEN
++	bool
++	default y if TRUSTED_KEYS
++
+ endif # CRYPTO_DEV_FSL_CAAM_JR
+ 
+ endif # CRYPTO_DEV_FSL_CAAM
+diff --git a/drivers/crypto/caam/Makefile b/drivers/crypto/caam/Makefile
+index 3570286eb9ce..21e83ad0f226 100644
+--- a/drivers/crypto/caam/Makefile
++++ b/drivers/crypto/caam/Makefile
+@@ -13,6 +13,7 @@ obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM) += caam.o
+ obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_JR) += caam_jr.o
+ obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API_DESC) += caamalg_desc.o
+ obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_AHASH_API_DESC) += caamhash_desc.o
++obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_BLOB_GEN) += blob_gen.o
+ 
+ caam-y := ctrl.o
+ caam_jr-y := jr.o key_gen.o
+diff --git a/drivers/crypto/caam/blob_gen.c b/drivers/crypto/caam/blob_gen.c
+new file mode 100644
+index 000000000000..6a17941c9504
+--- /dev/null
++++ b/drivers/crypto/caam/blob_gen.c
+@@ -0,0 +1,230 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2015 Pengutronix, Steffen Trumtrar <kernel@pengutronix.de>
++ * Copyright (C) 2021 Pengutronix, Ahmad Fatoum <kernel@pengutronix.de>
++ */
++
++#include <linux/device.h>
++#include <soc/fsl/caam-blob.h>
++
++#include "compat.h"
++#include "desc_constr.h"
++#include "desc.h"
++#include "error.h"
++#include "intern.h"
++#include "jr.h"
++#include "regs.h"
++
++struct caam_blob_priv {
++	struct device jrdev;
++};
++
++struct caam_blob_job_result {
++	int err;
++	struct completion completion;
++};
++
++static void caam_blob_job_done(struct device *dev, u32 *desc, u32 err, void *context)
++{
++	struct caam_blob_job_result *res = context;
++	int ecode = 0;
++
++	dev_dbg(dev, "%s %d: err 0x%x\n", __func__, __LINE__, err);
++
++	if (err)
++		ecode = caam_jr_strstatus(dev, err);
++
++	res->err = ecode;
++
++	/*
++	 * Upon completion, desc points to a buffer containing a CAAM job
++	 * descriptor which encapsulates data into an externally-storable
++	 * blob.
++	 */
++	complete(&res->completion);
++}
++
++static u32 *caam_blob_alloc_desc(size_t keymod_len)
++{
++	size_t len;
++
++	/* header + (key mod immediate) + 2x pointers + op */
++	len = 4 + (4 + ALIGN(keymod_len, 4)) + 2*(4 + 4 + CAAM_PTR_SZ_MAX) + 4;
++
++	if (len > CAAM_DESC_BYTES_MAX)
++		return NULL;
++
++	return kzalloc(len, GFP_KERNEL | GFP_DMA);
++}
++
++int caam_encap_blob(struct caam_blob_priv *priv, const char *keymod,
++		    void *input, void *output, size_t length)
++{
++	u32 *desc;
++	struct device *jrdev = &priv->jrdev;
++	dma_addr_t dma_in, dma_out;
++	struct caam_blob_job_result testres;
++	size_t keymod_len = strlen(keymod);
++	int ret;
++
++	if (length <= CAAM_BLOB_OVERHEAD)
++		return -EINVAL;
++
++	desc = caam_blob_alloc_desc(keymod_len);
++	if (!desc) {
++		dev_err(jrdev, "unable to allocate desc\n");
++		return -ENOMEM;
++	}
++
++	dma_in = dma_map_single(jrdev, input, length - CAAM_BLOB_OVERHEAD, DMA_TO_DEVICE);
++	if (dma_mapping_error(jrdev, dma_in)) {
++		dev_err(jrdev, "unable to map input DMA buffer\n");
++		ret = -ENOMEM;
++		goto out_free;
++	}
++
++	dma_out = dma_map_single(jrdev, output, length,	DMA_FROM_DEVICE);
++	if (dma_mapping_error(jrdev, dma_out)) {
++		dev_err(jrdev, "unable to map output DMA buffer\n");
++		ret = -ENOMEM;
++		goto out_unmap_in;
++	}
++
++	/*
++	 * A data blob is encrypted using a blob key (BK); a random number.
++	 * The BK is used as an AES-CCM key. The initial block (B0) and the
++	 * initial counter (Ctr0) are generated automatically and stored in
++	 * Class 1 Context DWords 0+1+2+3. The random BK is stored in the
++	 * Class 1 Key Register. Operation Mode is set to AES-CCM.
++	 */
++
++	init_job_desc(desc, 0);
++	append_key_as_imm(desc, keymod, keymod_len, keymod_len,
++			  CLASS_2 | KEY_DEST_CLASS_REG);
++	append_seq_in_ptr(desc, dma_in, length - CAAM_BLOB_OVERHEAD, 0);
++	append_seq_out_ptr(desc, dma_out, length, 0);
++	append_operation(desc, OP_TYPE_ENCAP_PROTOCOL | OP_PCLID_BLOB);
++
++	print_hex_dump_debug("data@"__stringify(__LINE__)": ",
++			     DUMP_PREFIX_ADDRESS, 16, 1, input,
++			     length - CAAM_BLOB_OVERHEAD, false);
++	print_hex_dump_debug("jobdesc@"__stringify(__LINE__)": ",
++			     DUMP_PREFIX_ADDRESS, 16, 1, desc,
++			     desc_bytes(desc), false);
++
++	testres.err = 0;
++	init_completion(&testres.completion);
++
++	ret = caam_jr_enqueue(jrdev, desc, caam_blob_job_done, &testres);
++	if (ret == -EINPROGRESS) {
++		wait_for_completion(&testres.completion);
++		ret = testres.err;
++		print_hex_dump_debug("output@"__stringify(__LINE__)": ",
++				     DUMP_PREFIX_ADDRESS, 16, 1, output,
++				     length, false);
++	}
++
++	dma_unmap_single(jrdev, dma_out, length, DMA_FROM_DEVICE);
++out_unmap_in:
++	dma_unmap_single(jrdev, dma_in, length - CAAM_BLOB_OVERHEAD, DMA_TO_DEVICE);
++out_free:
++	kfree(desc);
++
++	return ret;
++}
++EXPORT_SYMBOL(caam_encap_blob);
++
++int caam_decap_blob(struct caam_blob_priv *priv, const char *keymod,
++		    void *input, void *output, size_t length)
++{
++	u32 *desc;
++	struct device *jrdev = &priv->jrdev;
++	dma_addr_t dma_in, dma_out;
++	struct caam_blob_job_result testres;
++	size_t keymod_len = strlen(keymod);
++	int ret;
++
++	if (length <= CAAM_BLOB_OVERHEAD)
++		return -EINVAL;
++
++	desc = caam_blob_alloc_desc(keymod_len);
++	if (!desc) {
++		dev_err(jrdev, "unable to allocate desc\n");
++		return -ENOMEM;
++	}
++
++	dma_in = dma_map_single(jrdev, input, length, DMA_TO_DEVICE);
++	if (dma_mapping_error(jrdev, dma_in)) {
++		dev_err(jrdev, "unable to map input DMA buffer\n");
++		ret = -ENOMEM;
++		goto out_free;
++	}
++
++	dma_out = dma_map_single(jrdev, output, length - CAAM_BLOB_OVERHEAD, DMA_FROM_DEVICE);
++	if (dma_mapping_error(jrdev, dma_out)) {
++		dev_err(jrdev, "unable to map output DMA buffer\n");
++		ret = -ENOMEM;
++		goto out_unmap_in;
++	}
++
++	/*
++	 * A data blob is encrypted using a blob key (BK); a random number.
++	 * The BK is used as an AES-CCM key. The initial block (B0) and the
++	 * initial counter (Ctr0) are generated automatically and stored in
++	 * Class 1 Context DWords 0+1+2+3. The random BK is stored in the
++	 * Class 1 Key Register. Operation Mode is set to AES-CCM.
++	 */
++
++	init_job_desc(desc, 0);
++	append_key_as_imm(desc, keymod, keymod_len, keymod_len,
++			  CLASS_2 | KEY_DEST_CLASS_REG);
++	append_seq_in_ptr(desc, dma_in, length, 0);
++	append_seq_out_ptr(desc, dma_out, length - CAAM_BLOB_OVERHEAD, 0);
++	append_operation(desc, OP_TYPE_DECAP_PROTOCOL | OP_PCLID_BLOB);
++
++	print_hex_dump_debug("data@"__stringify(__LINE__)": ",
++			     DUMP_PREFIX_ADDRESS, 16, 1, input,
++			     length, false);
++	print_hex_dump_debug("jobdesc@"__stringify(__LINE__)": ",
++			     DUMP_PREFIX_ADDRESS, 16, 1, desc,
++			     desc_bytes(desc), false);
++
++	testres.err = 0;
++	init_completion(&testres.completion);
++
++	ret = caam_jr_enqueue(jrdev, desc, caam_blob_job_done, &testres);
++	if (ret == -EINPROGRESS) {
++		wait_for_completion(&testres.completion);
++		ret = testres.err;
++		print_hex_dump_debug("output@"__stringify(__LINE__)": ",
++				     DUMP_PREFIX_ADDRESS, 16, 1, output,
++				     length - CAAM_BLOB_OVERHEAD, false);
++	}
++
++	dma_unmap_single(jrdev, dma_out, length - CAAM_BLOB_OVERHEAD, DMA_FROM_DEVICE);
++out_unmap_in:
++	dma_unmap_single(jrdev, dma_in, length, DMA_TO_DEVICE);
++out_free:
++	kfree(desc);
++
++	return ret;
++}
++EXPORT_SYMBOL(caam_decap_blob);
++
++struct caam_blob_priv *caam_blob_gen_init(void)
++{
++	struct device *jrdev;
++
++	jrdev = caam_jr_alloc();
++	if (IS_ERR(jrdev))
++		return ERR_CAST(jrdev);
++
++	return container_of(jrdev, struct caam_blob_priv, jrdev);
++}
++EXPORT_SYMBOL(caam_blob_gen_init);
++
++void caam_blob_gen_exit(struct caam_blob_priv *priv)
++{
++	caam_jr_free(&priv->jrdev);
++}
++EXPORT_SYMBOL(caam_blob_gen_exit);
+diff --git a/include/soc/fsl/caam-blob.h b/include/soc/fsl/caam-blob.h
+new file mode 100644
+index 000000000000..7eea0f543832
+--- /dev/null
++++ b/include/soc/fsl/caam-blob.h
+@@ -0,0 +1,54 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2020 Pengutronix, Ahmad Fatoum <kernel@pengutronix.de>
++ */
++
++#ifndef __CAAM_BLOB_GEN
++#define __CAAM_BLOB_GEN
++
++#include <linux/types.h>
++
++#define CAAM_BLOB_KEYMOD_LENGTH		16
++#define CAAM_BLOB_OVERHEAD		(32 + 16)
++#define CAAM_BLOB_MAX_LEN		4096
++
++struct caam_blob_priv;
++
++/** caam_blob_gen_init - initialize blob generation
++ *
++ * returns either pointer to new caam_blob_priv instance
++ * or error pointer
++ */
++struct caam_blob_priv *caam_blob_gen_init(void);
++
++/** caam_blob_gen_init - free blob generation resources
++ *
++ * @priv: instance returned by caam_blob_gen_init
++ */
++void caam_blob_gen_exit(struct caam_blob_priv *priv);
++
++/** caam_encap_blob - encapsulate blob
++ *
++ * @priv:   instance returned by caam_blob_gen_init
++ * @keymod: string to use as key modifier for blob encapsulation
++ * @input:  buffer which CAAM will DMA from
++ * @output: buffer which CAAM will DMA to
++ * @length: buffer length including blob overhead
++ *          CAAM_BLOB_OVERHEAD < length <= CAAM_BLOB_MAX_LEN
++ */
++int caam_encap_blob(struct caam_blob_priv *priv, const char *keymod,
++		    void *input, void *output, size_t length);
++
++/** caam_decap_blob - decapsulate blob
++ *
++ * @priv:   instance returned by caam_blob_gen_init
++ * @keymod: string to use as key modifier for blob decapsulation
++ * @input:  buffer which CAAM will DMA from
++ * @output: buffer which CAAM will DMA to
++ * @length: buffer length including blob overhead
++ *          CAAM_BLOB_OVERHEAD < length <= CAAM_BLOB_MAX_LEN
++ */
++int caam_decap_blob(struct caam_blob_priv *priv, const char *keymod,
++		    void *input, void *output, size_t length);
++
++#endif
 -- 
 git-series 0.9.1
