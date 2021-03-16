@@ -2,31 +2,31 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2516233CB38
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Mar 2021 03:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B635733CB3B
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Mar 2021 03:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233878AbhCPB7y (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Mar 2021 21:59:54 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13958 "EHLO
+        id S231668AbhCPCAY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Mar 2021 22:00:24 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13957 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbhCPB7v (ORCPT
+        with ESMTP id S234013AbhCPB7x (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Mar 2021 21:59:51 -0400
+        Mon, 15 Mar 2021 21:59:53 -0400
 Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DzxJK6X6RzrWkn;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DzxJK6Gw0zrWkd;
         Tue, 16 Mar 2021 09:57:53 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 16 Mar 2021 09:59:36 +0800
+ 14.3.498.0; Tue, 16 Mar 2021 09:59:35 +0800
 From:   chenxiang <chenxiang66@hisilicon.com>
 To:     <clabbe.montjoie@gmail.com>, <clabbe@baylibre.com>,
         <gcherian@marvell.com>, <herbert@gondor.apana.org.au>,
         <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <linuxarm@openeuler.org>,
         Xiang Chen <chenxiang66@hisilicon.com>
-Subject: [PATCH v2 4/4] crypto: allwinner - Fix the parameter of dma_unmap_sg()
-Date:   Tue, 16 Mar 2021 09:55:26 +0800
-Message-ID: <1615859726-57062-5-git-send-email-chenxiang66@hisilicon.com>
+Subject: [PATCH v2 2/4] crypto: cavium - Fix the parameter of dma_unmap_sg()
+Date:   Tue, 16 Mar 2021 09:55:24 +0800
+Message-ID: <1615859726-57062-3-git-send-email-chenxiang66@hisilicon.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1615859726-57062-1-git-send-email-chenxiang66@hisilicon.com>
 References: <1615859726-57062-1-git-send-email-chenxiang66@hisilicon.com>
@@ -45,86 +45,50 @@ elements in the scatterlist prior to the mapping, not after the mapping.
 So fix this usage.
 
 Signed-off-by: Xiang Chen <chenxiang66@hisilicon.com>
-Acked-by: Corentin LABBE <clabbe.montjoie@gmail.com>
-Tested-by: Corentin LABBE <clabbe.montjoie@gmail.com>
 ---
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c | 9 ++++++---
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c   | 3 ++-
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c | 9 ++++++---
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c   | 3 ++-
- 4 files changed, 16 insertions(+), 8 deletions(-)
+ drivers/crypto/cavium/nitrox/nitrox_reqmgr.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-index 33707a2..54ae8d1 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-@@ -240,11 +240,14 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
- 
- theend_sgs:
- 	if (areq->src == areq->dst) {
--		dma_unmap_sg(ce->dev, areq->src, nr_sgs, DMA_BIDIRECTIONAL);
-+		dma_unmap_sg(ce->dev, areq->src, sg_nents(areq->src),
-+			     DMA_BIDIRECTIONAL);
- 	} else {
- 		if (nr_sgs > 0)
--			dma_unmap_sg(ce->dev, areq->src, nr_sgs, DMA_TO_DEVICE);
--		dma_unmap_sg(ce->dev, areq->dst, nr_sgd, DMA_FROM_DEVICE);
-+			dma_unmap_sg(ce->dev, areq->src, sg_nents(areq->src),
-+				     DMA_TO_DEVICE);
-+		dma_unmap_sg(ce->dev, areq->dst, sg_nents(areq->dst),
-+			     DMA_FROM_DEVICE);
- 	}
- 
- theend_iv:
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-index 2f09a37..8819471 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-@@ -405,7 +405,8 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
- 	err = sun8i_ce_run_task(ce, flow, crypto_tfm_alg_name(areq->base.tfm));
- 
- 	dma_unmap_single(ce->dev, addr_pad, j * 4, DMA_TO_DEVICE);
--	dma_unmap_sg(ce->dev, areq->src, nr_sgs, DMA_TO_DEVICE);
-+	dma_unmap_sg(ce->dev, areq->src, sg_nents(areq->src),
-+		     DMA_TO_DEVICE);
- 	dma_unmap_single(ce->dev, addr_res, digestsize, DMA_FROM_DEVICE);
+diff --git a/drivers/crypto/cavium/nitrox/nitrox_reqmgr.c b/drivers/crypto/cavium/nitrox/nitrox_reqmgr.c
+index 53ef067..df95ba2 100644
+--- a/drivers/crypto/cavium/nitrox/nitrox_reqmgr.c
++++ b/drivers/crypto/cavium/nitrox/nitrox_reqmgr.c
+@@ -58,14 +58,15 @@ static void softreq_unmap_sgbufs(struct nitrox_softreq *sr)
+ 	struct device *dev = DEV(ndev);
  
  
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-index ed2a69f..f945750 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-@@ -232,10 +232,13 @@ static int sun8i_ss_cipher(struct skcipher_request *areq)
+-	dma_unmap_sg(dev, sr->in.sg, sr->in.sgmap_cnt, DMA_BIDIRECTIONAL);
++	dma_unmap_sg(dev, sr->in.sg, sg_nents(sr->in.sg),
++		     DMA_BIDIRECTIONAL);
+ 	dma_unmap_single(dev, sr->in.sgcomp_dma, sr->in.sgcomp_len,
+ 			 DMA_TO_DEVICE);
+ 	kfree(sr->in.sgcomp);
+ 	sr->in.sg = NULL;
+ 	sr->in.sgmap_cnt = 0;
  
- theend_sgs:
- 	if (areq->src == areq->dst) {
--		dma_unmap_sg(ss->dev, areq->src, nr_sgs, DMA_BIDIRECTIONAL);
-+		dma_unmap_sg(ss->dev, areq->src, sg_nents(areq->src),
-+			     DMA_BIDIRECTIONAL);
- 	} else {
--		dma_unmap_sg(ss->dev, areq->src, nr_sgs, DMA_TO_DEVICE);
--		dma_unmap_sg(ss->dev, areq->dst, nr_sgd, DMA_FROM_DEVICE);
-+		dma_unmap_sg(ss->dev, areq->src, sg_nents(areq->src),
-+			     DMA_TO_DEVICE);
-+		dma_unmap_sg(ss->dev, areq->dst, sg_nents(areq->dst),
-+			     DMA_FROM_DEVICE);
- 	}
+-	dma_unmap_sg(dev, sr->out.sg, sr->out.sgmap_cnt,
++	dma_unmap_sg(dev, sr->out.sg, sg_nents(sr->out.sg),
+ 		     DMA_BIDIRECTIONAL);
+ 	dma_unmap_single(dev, sr->out.sgcomp_dma, sr->out.sgcomp_len,
+ 			 DMA_TO_DEVICE);
+@@ -178,7 +179,7 @@ static int dma_map_inbufs(struct nitrox_softreq *sr,
+ 	return 0;
  
- theend_iv:
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-index 0b9aa24..7d1fc9a 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-@@ -432,7 +432,8 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
- 	err = sun8i_ss_run_hash_task(ss, rctx, crypto_tfm_alg_name(areq->base.tfm));
+ incomp_err:
+-	dma_unmap_sg(dev, req->src, nents, DMA_BIDIRECTIONAL);
++	dma_unmap_sg(dev, req->src, sg_nents(req->src), DMA_BIDIRECTIONAL);
+ 	sr->in.sgmap_cnt = 0;
+ 	return ret;
+ }
+@@ -203,7 +204,7 @@ static int dma_map_outbufs(struct nitrox_softreq *sr,
+ 	return 0;
  
- 	dma_unmap_single(ss->dev, addr_pad, j * 4, DMA_TO_DEVICE);
--	dma_unmap_sg(ss->dev, areq->src, nr_sgs, DMA_TO_DEVICE);
-+	dma_unmap_sg(ss->dev, areq->src, sg_nents(areq->src),
-+		     DMA_TO_DEVICE);
- 	dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
- 
- 	kfree(pad);
+ outcomp_map_err:
+-	dma_unmap_sg(dev, req->dst, nents, DMA_BIDIRECTIONAL);
++	dma_unmap_sg(dev, req->dst, sg_nents(req->dst), DMA_BIDIRECTIONAL);
+ 	sr->out.sgmap_cnt = 0;
+ 	sr->out.sg = NULL;
+ 	return ret;
 -- 
 2.8.1
 
