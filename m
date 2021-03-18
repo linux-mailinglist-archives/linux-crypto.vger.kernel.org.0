@@ -2,106 +2,124 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D793405E8
-	for <lists+linux-crypto@lfdr.de>; Thu, 18 Mar 2021 13:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9EA1340641
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Mar 2021 14:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhCRMpD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 18 Mar 2021 08:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231344AbhCRMom (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:44:42 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F82C06174A
-        for <linux-crypto@vger.kernel.org>; Thu, 18 Mar 2021 05:44:41 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id p19so3471855wmq.1
-        for <linux-crypto@vger.kernel.org>; Thu, 18 Mar 2021 05:44:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TY1HutZnteRyydV5Ih0Egjx6tbg8POtzIYYu0tZ9gLI=;
-        b=YpCedp9IdwWeyxohsMCGQpMQoLV/hkD4ApREPjeUj04im6YuhY7tA13/cQE/+ppygN
-         gD4CV7xwu/vJdv5lQCoaNMHriSIdIv5N5QBPK4Wmn0C4U2djRnpU7/C+E5upxSCkWGzE
-         tOHe9MF2in8lHi0Op/RB+Od7D9SCVOqREpzBkQArb4HKpO6hAcjGDN64seMVmvqwHPEP
-         r9nseEw/mDgKSTAg8kqsHIeCaOWrJc1XDZrInFEKRSwtrMPhD7pJ9wZh3wzYT+Lm4bQO
-         CoTKTy2nH43TNBDPGKNNWkgx4Qf9u4MvFGSgQqtWJC8oTc7Xsla9O4alkLDH06QTK7hS
-         e9gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TY1HutZnteRyydV5Ih0Egjx6tbg8POtzIYYu0tZ9gLI=;
-        b=lk9MMFMiwQ8ZSafSYBAed0EJJgI1bpa9TYvEnIT4vdS5MkRwvhbxiomgczcXmrtvze
-         cYPHsFzzNsFINB9LYBOF7QQEyuTYoTfFWJLwtJXGXF4/OyrnejjCfdBQwdDRF7zESchV
-         3aM3bkzHaVcMyHOFHyLoASI7bPETk4OwpMgka54Q/5rUT5d1cHLMDpsHQojEtCojV9xd
-         JpeNwISySwZemWDjOsqo+NO4EaHs6uNv2mNIEt1MU/GUDkCso1mmDRtsXqmhpBLxNz6x
-         qcCUUlOOTjOdpF3+poSwYFSaEu8R/Kquq9ZT4ywYFa7iJsKtJT6w69+mcWAj5XJpAmzl
-         VlcQ==
-X-Gm-Message-State: AOAM532PDfVcr9WSF305oSejT/tPrCyPdyjwEiD7ngIb1KTXwRLSlpOg
-        Wj+AEog4e/bPO+A52LLtVI1lXA==
-X-Google-Smtp-Source: ABdhPJwayS+6aJydxHj5yStfZeVa3lyWXiOrvhsKnl33t0rWgECJEOb5yGGRqE5y2RprFfC7xgfXqg==
-X-Received: by 2002:a05:600c:3514:: with SMTP id h20mr3567716wmq.45.1616071480151;
-        Thu, 18 Mar 2021 05:44:40 -0700 (PDT)
-Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id q15sm2813900wrx.56.2021.03.18.05.44.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 05:44:39 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH 10/10] crypto: cavium: nitrox_isr: Demote non-compliant kernel-doc headers
-Date:   Thu, 18 Mar 2021 12:44:22 +0000
-Message-Id: <20210318124422.3200180-11-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210318124422.3200180-1-lee.jones@linaro.org>
-References: <20210318124422.3200180-1-lee.jones@linaro.org>
+        id S230498AbhCRNDZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 18 Mar 2021 09:03:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230169AbhCRNDG (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 18 Mar 2021 09:03:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C238564DFB;
+        Thu, 18 Mar 2021 13:03:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616072586;
+        bh=H6FwzdcR6qvs2S3lGFKitAunGXBMVAggNXohomzWTJs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bWfYlaL4e1wy5J/8tv/4LjIWO/K7eY8EjaTBE/nDluRODRc5fduBkAl7zzAetXb8U
+         XK9eGBiz5utE1KB3LXXa/51FX6ZbMO+ul1HPVovxuLuWWDJ8HxSNlDhka7Xm3XQLmW
+         NKw2oFRSGFqr+Q1KESoI/8kyj84TsDr9IyUq5fgLuBrYnbtxWVKV3ECuVaBkblubWr
+         KP7q2pkPrTISrjGPvUt0Kt39ge5k42zQaRQ/P6bvA3t5P1nZqSHtEwT1dNk1wyYOnI
+         tCGsiapEGLcXXCYA6yJpHZYo/DUsR+5Ux1cgvcHBmfXpKAtmAY7K3lmX6uEzuXhG8v
+         fw8xrkkV7hljQ==
+Date:   Thu, 18 Mar 2021 09:03:04 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Thomas Backlund <tmb@tmb.nu>, "# 3.4.x" <stable@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: Re: stable request
+Message-ID: <YFNPiHAvEwDpGLrv@sashalap>
+References: <d5c825ba-cdcb-29eb-c434-83ef4db05ee0@tmb.nu>
+ <CAMj1kXEM76Dejv1fTZ-1EmXpSsE-ZtKWf19dPNTSBRuPcAkreA@mail.gmail.com>
+ <1e6eb02b-e699-d1ff-9cfb-4ef77255e244@tmb.nu>
+ <9493dced-908e-a9bd-009a-6b20a8422ec1@tmb.nu>
+ <CAMj1kXHzEEU2-mVxVD8g=P_Py_WJMOn0q8m+k-txUUioS+2ajQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXHzEEU2-mVxVD8g=P_Py_WJMOn0q8m+k-txUUioS+2ajQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Tue, Mar 16, 2021 at 01:35:40PM +0100, Ard Biesheuvel wrote:
+>On Tue, 16 Mar 2021 at 13:28, Thomas Backlund <tmb@tmb.nu> wrote:
+>>
+>>
+>> Den 16.3.2021 kl. 14:15, skrev Thomas Backlund:
+>> >
+>> > Den 16.3.2021 kl. 12:17, skrev Ard Biesheuvel:
+>> >> On Tue, 16 Mar 2021 at 10:21, Thomas Backlund <tmb@tmb.nu> wrote:
+>> >>> Den 16.3.2021 kl. 08:37, skrev Ard Biesheuvel:
+>> >>>> Please consider backporting commit
+>> >>>>
+>> >>>> 86ad60a65f29dd862a11c22bb4b5be28d6c5cef1
+>> >>>> crypto: x86/aes-ni-xts - use direct calls to and 4-way stride
+>> >>>>
+>> >>>> to stable. It addresses a rather substantial retpoline-related
+>> >>>> performance regression in the AES-NI XTS code, which is a widely used
+>> >>>> disk encryption algorithm on x86.
+>> >>>>
+>> >>> To get all the nice bits, we added the following in Mageia 5.10 / 5.11
+>> >>> series kerenels (the 2 first is needed to get the third to apply/build
+>> >>> nicely):
+>> >>>
+>> >> I will leave it up to the -stable maintainers to decide, but I will
+>> >> point out that none of the additional patches fix any bugs, so this
+>> >> may violate the stable kernel rules. In fact, I deliberately split the
+>> >> XTS changes into two  patches so that the first one could be
+>> >> backported individually.
+>> >
+>> > Yes, I understand that.
+>> >
+>> > but commit
+>> >
+>> > 86ad60a65f29dd862a11c22bb4b5be28d6c5cef1
+>> > crypto: x86/aes-ni-xts - use direct calls to and 4-way stride
+>> >
+>> > only applies cleanly on 5.11.
+>> >
+>> >
+>> > So if it's wanted in 5.10 you need the 2 others too... unless you intend to provide a tested backport...
+>> > and IIRC GregKH prefers 1:1 matching of patches between -stable and linus tree unless they are too intrusive.
+>> >
+>> >
+>> > As for the last one I seem to remember comments that it too was part of the "affects performance", but I might be remembering wrong... and since you are Author of them I assume you know better about the facts :)
+>> >
+>> >
+>> > That's why I listed them as an extra "hopefully helfpful" info and datapoint that they work...
+>> > We have been carrying them in 5.10 series since we rebased to 5.10.8 on January 17th, 2021
+>> >
+>> >
+>> > but in the end it's up to the -stable maintainers as you point out...
+>>
+>>
+>> and now  I re-checked...
+>>
+>> Only the first is needed to get your fix to apply cleanly on 5.10
+>>
+>>
+>> the second came in as a pre-req for the fourth patch...
+>>
+>
+>OK so that would be
+>
+>032d049ea0f45b45c21f3f02b542aa18bc6b6428
+>Uros Bizjak <ubizjak@gmail.com>
+>crypto: aesni - Use TEST %reg,%reg instead of CMP $0,%reg
+>
+>which is already in 5.11, but needs to be backported as well for the
+>originally requested backport to apply cleanly to 5.10 and earlier.
+>
+>Thanks for digging that up.
 
- drivers/crypto/cavium/nitrox/nitrox_isr.c:17: warning: expecting prototype for One vector for each type of ring(). Prototype was for NR_RING_VECTORS() instead
- drivers/crypto/cavium/nitrox/nitrox_isr.c:224: warning: Function parameter or member 'irq' not described in 'nps_core_int_isr'
- drivers/crypto/cavium/nitrox/nitrox_isr.c:224: warning: Function parameter or member 'data' not described in 'nps_core_int_isr'
+Queued up for 5.10 and 5.11.
 
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/crypto/cavium/nitrox/nitrox_isr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+What about anything older than 5.10? Looks like it's needed there too?
 
-diff --git a/drivers/crypto/cavium/nitrox/nitrox_isr.c b/drivers/crypto/cavium/nitrox/nitrox_isr.c
-index 99b053094f5af..c288c4b51783d 100644
---- a/drivers/crypto/cavium/nitrox/nitrox_isr.c
-+++ b/drivers/crypto/cavium/nitrox/nitrox_isr.c
-@@ -10,7 +10,7 @@
- #include "nitrox_isr.h"
- #include "nitrox_mbx.h"
- 
--/**
-+/*
-  * One vector for each type of ring
-  *  - NPS packet ring, AQMQ ring and ZQMQ ring
-  */
-@@ -216,7 +216,7 @@ static void nps_core_int_tasklet(unsigned long data)
- 	}
- }
- 
--/**
-+/*
-  * nps_core_int_isr - interrupt handler for NITROX errors and
-  *   mailbox communication
-  */
 -- 
-2.27.0
-
+Thanks,
+Sasha
