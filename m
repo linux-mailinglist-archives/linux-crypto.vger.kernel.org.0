@@ -2,118 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C123416A2
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 Mar 2021 08:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0C53416C0
+	for <lists+linux-crypto@lfdr.de>; Fri, 19 Mar 2021 08:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234148AbhCSHdJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 19 Mar 2021 03:33:09 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13994 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234082AbhCSHcz (ORCPT
+        id S234092AbhCSHgW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 19 Mar 2021 03:36:22 -0400
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:35184 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234078AbhCSHfy (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 19 Mar 2021 03:32:55 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F1wY96ldHzrYPc;
-        Fri, 19 Mar 2021 15:30:53 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 19 Mar 2021 15:32:39 +0800
-From:   Yang Shen <shenyang39@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>
-Subject: [PATCH 4/4] crypto: hisilicon/zip - support new 'sqe' type in Kunpeng930
-Date:   Fri, 19 Mar 2021 15:33:07 +0800
-Message-ID: <1616139187-63425-5-git-send-email-shenyang39@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616139187-63425-1-git-send-email-shenyang39@huawei.com>
-References: <1616139187-63425-1-git-send-email-shenyang39@huawei.com>
+        Fri, 19 Mar 2021 03:35:54 -0400
+Date:   Fri, 19 Mar 2021 07:35:44 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tmb.nu;
+        s=protonmail; t=1616139347;
+        bh=VA+is5LeWi9h2GKvlIGi2doPXuZf10NEWefk9OB/HFM=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=ufu/RXYcP7riTV0gKgyjGu8TUtxS0LkvHAuJj1BNMD98fBv49lrMO5DgqdkKdM4qD
+         cK/QkHs16KKQKQNqAYMtTFoduqkEKv9yKZ9o4QGWqi3dpeNgKP1/O3IWkZf/bk9d9C
+         HrLXhE/o/SroqE5KR2u40BP9Qlz1EJk1fGdhgJls=
+To:     Sasha Levin <sashal@kernel.org>, Ard Biesheuvel <ardb@kernel.org>
+From:   Thomas Backlund <tmb@tmb.nu>
+Cc:     "# 3.4.x" <stable@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Reply-To: Thomas Backlund <tmb@tmb.nu>
+Subject: Re: stable request
+Message-ID: <a39ebdf9-c7c3-990f-3d9d-81f138e55d94@tmb.nu>
+In-Reply-To: <YFNPiHAvEwDpGLrv@sashalap>
+References: <d5c825ba-cdcb-29eb-c434-83ef4db05ee0@tmb.nu> <CAMj1kXEM76Dejv1fTZ-1EmXpSsE-ZtKWf19dPNTSBRuPcAkreA@mail.gmail.com> <1e6eb02b-e699-d1ff-9cfb-4ef77255e244@tmb.nu> <9493dced-908e-a9bd-009a-6b20a8422ec1@tmb.nu> <CAMj1kXHzEEU2-mVxVD8g=P_Py_WJMOn0q8m+k-txUUioS+2ajQ@mail.gmail.com> <YFNPiHAvEwDpGLrv@sashalap>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The Kunpeng930 changes some field meanings in 'sqe'. So add a new
-'hisi_zip_sqe_ops' to describe the 'sqe' operations.
+Den 18-03-2021 kl. 15:03, skrev Sasha Levin:
+>
+> On Tue, Mar 16, 2021 at 01:35:40PM +0100, Ard Biesheuvel wrote:
+>> On Tue, 16 Mar 2021 at 13:28, Thomas Backlund <tmb@tmb.nu> wrote:
+>>>
+>>>
+>>> Den 16.3.2021 kl. 14:15, skrev Thomas Backlund:
+>>>>
+>>>> Den 16.3.2021 kl. 12:17, skrev Ard Biesheuvel:
+>>>>> On Tue, 16 Mar 2021 at 10:21, Thomas Backlund <tmb@tmb.nu> wrote:
+>>>>>> Den 16.3.2021 kl. 08:37, skrev Ard Biesheuvel:
+>>>>>>> Please consider backporting commit
+>>>>>>>
+>>>>>>> 86ad60a65f29dd862a11c22bb4b5be28d6c5cef1
+>>>>>>> crypto: x86/aes-ni-xts - use direct calls to and 4-way stride
 
-Signed-off-by: Yang Shen <shenyang39@huawei.com>
----
- drivers/crypto/hisilicon/zip/zip.h        |  1 +
- drivers/crypto/hisilicon/zip/zip_crypto.c | 25 +++++++++++++++++++++++++
- 2 files changed, 26 insertions(+)
 
-diff --git a/drivers/crypto/hisilicon/zip/zip.h b/drivers/crypto/hisilicon/zip/zip.h
-index b4d3e03..517fdbd 100644
---- a/drivers/crypto/hisilicon/zip/zip.h
-+++ b/drivers/crypto/hisilicon/zip/zip.h
-@@ -75,6 +75,7 @@ struct hisi_zip_sqe {
- 	u32 dw23;
- 	u32 dw24;
- 	u32 dw25;
-+	/* tag: in sqe type 3 */
- 	u32 dw26;
- 	u32 dw27;
- 	u32 rsvd1[4];
-diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
-index 85dcf6a..4bd41a4 100644
---- a/drivers/crypto/hisilicon/zip/zip_crypto.c
-+++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
-@@ -298,6 +298,11 @@ static void hisi_zip_fill_tag_v1(struct hisi_zip_sqe *sqe, struct hisi_zip_req *
- 	sqe->dw13 = req->req_id;
- }
- 
-+static void hisi_zip_fill_tag_v2(struct hisi_zip_sqe *sqe, struct hisi_zip_req *req)
-+{
-+	sqe->dw26 = req->req_id;
-+}
-+
- static void hisi_zip_fill_sqe_type(struct hisi_zip_sqe *sqe, u8 sqe_type)
- {
- 	u32 val;
-@@ -380,6 +385,11 @@ static u32 hisi_zip_get_tag_v1(struct hisi_zip_sqe *sqe)
- 	return sqe->dw13;
- }
- 
-+static u32 hisi_zip_get_tag_v2(struct hisi_zip_sqe *sqe)
-+{
-+	return sqe->dw26;
-+}
-+
- static u32 hisi_zip_get_status(struct hisi_zip_sqe *sqe)
- {
- 	return sqe->dw3 & HZIP_BD_STATUS_M;
-@@ -527,6 +537,19 @@ const struct hisi_zip_sqe_ops hisi_zip_ops_v1 = {
- 	.get_dstlen		= hisi_zip_get_dstlen,
- };
- 
-+const struct hisi_zip_sqe_ops hisi_zip_ops_v2 = {
-+	.sqe_type		= 0x3,
-+	.fill_addr		= hisi_zip_fill_addr,
-+	.fill_buf_size		= hisi_zip_fill_buf_size,
-+	.fill_buf_type		= hisi_zip_fill_buf_type,
-+	.fill_req_type		= hisi_zip_fill_req_type,
-+	.fill_tag		= hisi_zip_fill_tag_v2,
-+	.fill_sqe_type		= hisi_zip_fill_sqe_type,
-+	.get_tag		= hisi_zip_get_tag_v2,
-+	.get_status		= hisi_zip_get_status,
-+	.get_dstlen		= hisi_zip_get_dstlen,
-+};
-+
- static int hisi_zip_ctx_init(struct hisi_zip_ctx *hisi_zip_ctx, u8 req_type, int node)
- {
- 	struct hisi_qp *qps[HZIP_CTX_Q_NUM] = { NULL };
-@@ -560,6 +583,8 @@ static int hisi_zip_ctx_init(struct hisi_zip_ctx *hisi_zip_ctx, u8 req_type, int
- 
- 	if (hisi_zip->qm.ver < QM_HW_V3)
- 		hisi_zip_ctx->ops = &hisi_zip_ops_v1;
-+	else
-+		hisi_zip_ctx->ops = &hisi_zip_ops_v2;
- 
- 	return 0;
- }
--- 
-2.7.4
+>
+> Queued up for 5.10 and 5.11.
+>
+
+I dont see:
+86ad60a65f29 ("crypto: x86/aes-ni-xts - use direct calls to and 4-way
+stride")
+
+in 5.11 queue.
+
+--
+Thomas
 
