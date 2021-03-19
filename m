@@ -2,32 +2,30 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC686341A54
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 Mar 2021 11:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A9F341A5A
+	for <lists+linux-crypto@lfdr.de>; Fri, 19 Mar 2021 11:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhCSKrX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 19 Mar 2021 06:47:23 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14384 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbhCSKqu (ORCPT
+        id S229785AbhCSKrz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 19 Mar 2021 06:47:55 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14100 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229745AbhCSKri (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:46:50 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F20s14qHJz90QZ;
-        Fri, 19 Mar 2021 18:44:53 +0800 (CST)
+        Fri, 19 Mar 2021 06:47:38 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F20sx137Fz17N01;
+        Fri, 19 Mar 2021 18:45:41 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 19 Mar 2021 18:46:42 +0800
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 19 Mar 2021 18:47:27 +0800
 From:   Hui Tang <tanghui20@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
         <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] crypto: hisilicon/hpre - optimise 'hpre_algs_register' error path
-Date:   Fri, 19 Mar 2021 18:44:19 +0800
-Message-ID: <1616150659-10756-3-git-send-email-tanghui20@huawei.com>
+Subject: [PATCH] crypto: hisilicon - fix the check on dma address
+Date:   Fri, 19 Mar 2021 18:45:05 +0800
+Message-ID: <1616150705-11516-1-git-send-email-tanghui20@huawei.com>
 X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1616150659-10756-1-git-send-email-tanghui20@huawei.com>
-References: <1616150659-10756-1-git-send-email-tanghui20@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.67.165.24]
@@ -36,53 +34,103 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-There is redundant code especially when registing new algorithms
-in the future.
+System may be able to get physical address of zero if not reserved by
+firmware.
+
+The dma address obtained by 'dma_alloc_coherent' is valid, since already
+checking cpu va before, so do not check again.
 
 Signed-off-by: Hui Tang <tanghui20@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 12 ------------
+ drivers/crypto/hisilicon/qm.c               |  2 +-
+ drivers/crypto/hisilicon/sec2/sec_crypto.c  |  6 ------
+ 3 files changed, 1 insertion(+), 19 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index 50ccd10..b77473b 100644
+index d7a4adf..d743c54 100644
 --- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
 +++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -1993,25 +1993,24 @@ int hpre_algs_register(struct hisi_qm *qm)
- 		return ret;
+@@ -298,8 +298,6 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	dma_addr_t tmp;
  
- 	ret = crypto_register_kpp(&dh);
--	if (ret) {
--		crypto_unregister_akcipher(&rsa);
--		return ret;
--	}
-+	if (ret)
-+		goto unreg_rsa;
+ 	tmp = le64_to_cpu(sqe->in);
+-	if (unlikely(!tmp))
+-		return;
  
- 	if (qm->ver >= QM_HW_V3) {
- 		ret = hpre_register_ecdh();
- 		if (ret)
--			goto reg_err;
-+			goto unreg_dh;
- 		ret = crypto_register_kpp(&curve25519_alg);
--		if (ret) {
--			hpre_unregister_ecdh();
--			goto reg_err;
--		}
-+		if (ret)
-+			goto unreg_ecdh;
+ 	if (src) {
+ 		if (req->src)
+@@ -309,8 +307,6 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
  	}
- 	return 0;
  
--reg_err:
-+unreg_ecdh:
-+	hpre_unregister_ecdh();
-+unreg_dh:
- 	crypto_unregister_kpp(&dh);
-+unreg_rsa:
- 	crypto_unregister_akcipher(&rsa);
- 	return ret;
- }
+ 	tmp = le64_to_cpu(sqe->out);
+-	if (unlikely(!tmp))
+-		return;
+ 
+ 	if (req->dst) {
+ 		if (dst)
+@@ -1369,15 +1365,11 @@ static void hpre_ecdh_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	dma_addr_t dma;
+ 
+ 	dma = le64_to_cpu(sqe->in);
+-	if (unlikely(!dma))
+-		return;
+ 
+ 	if (src && req->src)
+ 		dma_free_coherent(dev, ctx->key_sz << 2, req->src, dma);
+ 
+ 	dma = le64_to_cpu(sqe->out);
+-	if (unlikely(!dma))
+-		return;
+ 
+ 	if (req->dst)
+ 		dma_free_coherent(dev, ctx->key_sz << 1, req->dst, dma);
+@@ -1668,15 +1660,11 @@ static void hpre_curve25519_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	dma_addr_t dma;
+ 
+ 	dma = le64_to_cpu(sqe->in);
+-	if (unlikely(!dma))
+-		return;
+ 
+ 	if (src && req->src)
+ 		dma_free_coherent(dev, ctx->key_sz, req->src, dma);
+ 
+ 	dma = le64_to_cpu(sqe->out);
+-	if (unlikely(!dma))
+-		return;
+ 
+ 	if (req->dst)
+ 		dma_free_coherent(dev, ctx->key_sz, req->dst, dma);
+diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+index bc23174..e3688bf 100644
+--- a/drivers/crypto/hisilicon/qm.c
++++ b/drivers/crypto/hisilicon/qm.c
+@@ -2681,7 +2681,7 @@ static int __hisi_qm_start(struct hisi_qm *qm)
+ {
+ 	int ret;
+ 
+-	WARN_ON(!qm->qdma.dma);
++	WARN_ON(!qm->qdma.va);
+ 
+ 	if (qm->fun_type == QM_HW_PF) {
+ 		ret = qm_dev_mem_reset(qm);
+diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+index f835514..6c91c90 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
++++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+@@ -710,12 +710,6 @@ static int sec_cipher_pbuf_map(struct sec_ctx *ctx, struct sec_req *req,
+ 	}
+ 
+ 	c_req->c_in_dma = qp_ctx->res[req_id].pbuf_dma;
+-
+-	if (!c_req->c_in_dma) {
+-		dev_err(dev, "fail to set pbuffer address!\n");
+-		return -ENOMEM;
+-	}
+-
+ 	c_req->c_out_dma = c_req->c_in_dma;
+ 
+ 	return 0;
 -- 
 2.8.1
 
