@@ -2,223 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1163D34382E
-	for <lists+linux-crypto@lfdr.de>; Mon, 22 Mar 2021 06:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC963438C4
+	for <lists+linux-crypto@lfdr.de>; Mon, 22 Mar 2021 06:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229455AbhCVFON (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 22 Mar 2021 01:14:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhCVFOD (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 22 Mar 2021 01:14:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 228EE61966;
-        Mon, 22 Mar 2021 05:14:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616390043;
-        bh=kvzUarcK5ql0ZCwi4iYGL+4ZF5ovTepKQPphb29B/zw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ouusz8aa/JfyyLv5IsUnBfS4leVXVO8pUKNA2XGUsG0hxH1bIpG0u6EQENnrwjp0U
-         FdI03Dy1VGZ6jIECYoTMZR4VHAGnS4kE9zC1DlQHRKsVqc26qQr/GbR5eDJ4JnXdo/
-         wPHW8UUwB5QlIK7woIo2vOv4CNv0ewe0xy1VMRtB3wEo1DV78g5X/Ga9MbzgL9poyT
-         GTDxRm3K8uhI71GNxaqjWX2GZwQVyNSA5hg1F1ajUahyvF8mJ3B276AHGcngOndH7J
-         y+WfWeefFdXQ8R1e9lYAhIKm1PvYmEsUA0IkF7wDjesaEnYQiNz8QWSxf534AArqEv
-         WYXSngtXh1RxA==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>, Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH RESEND] random: remove dead code left over from blocking pool
-Date:   Sun, 21 Mar 2021 22:14:00 -0700
-Message-Id: <20210322051400.266903-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.31.0
+        id S229482AbhCVFqP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 22 Mar 2021 01:46:15 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:37258 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229621AbhCVFqE (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 22 Mar 2021 01:46:04 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12M5isjs043843;
+        Mon, 22 Mar 2021 05:45:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=6lqeceNwNjvLIvI4KG2Mzz1t5DsQN3/hObHOkdaqajk=;
+ b=BPFsK4L7FOeZ5xC1VGWYZ6uRVeYG1eLYglHjoFQYCFnFsYv1vyyMPEV4/cOxM6FC9rmd
+ W3Djc+YxxpJeQT5/I5VGkDkXNc2zRmX+vX8+UnHyqh4BjK7pUQ92mDatjQSihLkRmY3a
+ dNvB6WFD2L5cZsSko6+d+lw1zoTdIiIjAoJnZChu5YTfq7q6Bk1qvvseVwRyr5f+K/q/
+ /NwnUzUNntw8YqeQg+wM19+Kky4YPYHsFBlVS5RCHJImVMMFMtOOyW7OLNNcWeDFNh3g
+ oO2pO/LrdaM27ZQgD5FZQ3JJWIPih04Rv2aKAPtue/Lq2nmrfi2mESnX26zXiAh2UJZ0 1A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 37d8fr2cbd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Mar 2021 05:45:33 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12M5eHj5129213;
+        Mon, 22 Mar 2021 05:45:31 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 37dtxwj09v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Mar 2021 05:45:31 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12M5jUZE018654;
+        Mon, 22 Mar 2021 05:45:30 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 21 Mar 2021 22:45:29 -0700
+Date:   Mon, 22 Mar 2021 08:45:22 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-crypto@vger.kernel.org, Neil Horman <nhorman@tuxdriver.com>,
+        Corentin Labbe <clabbe@baylibre.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] crypto: rng - fix crypto_rng_reset() refcounting when
+ !CRYPTO_STATS
+Message-ID: <20210322054522.GC1667@kadam>
+References: <20210322050748.265604-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322050748.265604-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9930 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103220044
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9930 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
+ impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
+ phishscore=0 bulkscore=0 adultscore=0 malwarescore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103220045
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Sun, Mar 21, 2021 at 10:07:48PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> crypto_stats_get() is a no-op when the kernel is compiled without
+> CONFIG_CRYPTO_STATS, so pairing it with crypto_alg_put() unconditionally
+> (as crypto_rng_reset() does) is wrong.
+> 
 
-Remove some dead code that was left over following commit 90ea1c6436d2
-("random: remove the blocking pool").
+Presumably the intention was that _get() and _put() should always pair.
+It's really ugly and horrible that they don't. We could have
+predicted bug like this would happen and will continue to happen until
+the crypto_stats_get() is renamed.
 
-Cc: linux-crypto@vger.kernel.org
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: Theodore Ts'o <tytso@mit.edu>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- drivers/char/random.c         | 17 ++-----
- include/trace/events/random.h | 83 -----------------------------------
- 2 files changed, 3 insertions(+), 97 deletions(-)
-
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 5d6acfecd919b..605969ed0f965 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -500,7 +500,6 @@ struct entropy_store {
- 	unsigned short add_ptr;
- 	unsigned short input_rotate;
- 	int entropy_count;
--	unsigned int initialized:1;
- 	unsigned int last_data_init:1;
- 	__u8 last_data[EXTRACT_SIZE];
- };
-@@ -660,7 +659,7 @@ static void process_random_ready_list(void)
-  */
- static void credit_entropy_bits(struct entropy_store *r, int nbits)
- {
--	int entropy_count, orig, has_initialized = 0;
-+	int entropy_count, orig;
- 	const int pool_size = r->poolinfo->poolfracbits;
- 	int nfrac = nbits << ENTROPY_SHIFT;
- 
-@@ -717,23 +716,14 @@ static void credit_entropy_bits(struct entropy_store *r, int nbits)
- 	if (cmpxchg(&r->entropy_count, orig, entropy_count) != orig)
- 		goto retry;
- 
--	if (has_initialized) {
--		r->initialized = 1;
--		kill_fasync(&fasync, SIGIO, POLL_IN);
--	}
--
- 	trace_credit_entropy_bits(r->name, nbits,
- 				  entropy_count >> ENTROPY_SHIFT, _RET_IP_);
- 
- 	if (r == &input_pool) {
- 		int entropy_bits = entropy_count >> ENTROPY_SHIFT;
- 
--		if (crng_init < 2) {
--			if (entropy_bits < 128)
--				return;
-+		if (crng_init < 2 && entropy_bits >= 128)
- 			crng_reseed(&primary_crng, r);
--			entropy_bits = ENTROPY_BITS(r);
--		}
- 	}
- }
- 
-@@ -1372,8 +1362,7 @@ static size_t account(struct entropy_store *r, size_t nbytes, int min,
- }
- 
- /*
-- * This function does the actual extraction for extract_entropy and
-- * extract_entropy_user.
-+ * This function does the actual extraction for extract_entropy.
-  *
-  * Note: we assume that .poolwords is a multiple of 16 words.
-  */
-diff --git a/include/trace/events/random.h b/include/trace/events/random.h
-index 9570a10cb949b..3d7b432ca5f31 100644
---- a/include/trace/events/random.h
-+++ b/include/trace/events/random.h
-@@ -85,28 +85,6 @@ TRACE_EVENT(credit_entropy_bits,
- 		  __entry->entropy_count, (void *)__entry->IP)
- );
- 
--TRACE_EVENT(push_to_pool,
--	TP_PROTO(const char *pool_name, int pool_bits, int input_bits),
--
--	TP_ARGS(pool_name, pool_bits, input_bits),
--
--	TP_STRUCT__entry(
--		__field( const char *,	pool_name		)
--		__field(	  int,	pool_bits		)
--		__field(	  int,	input_bits		)
--	),
--
--	TP_fast_assign(
--		__entry->pool_name	= pool_name;
--		__entry->pool_bits	= pool_bits;
--		__entry->input_bits	= input_bits;
--	),
--
--	TP_printk("%s: pool_bits %d input_pool_bits %d",
--		  __entry->pool_name, __entry->pool_bits,
--		  __entry->input_bits)
--);
--
- TRACE_EVENT(debit_entropy,
- 	TP_PROTO(const char *pool_name, int debit_bits),
- 
-@@ -161,35 +139,6 @@ TRACE_EVENT(add_disk_randomness,
- 		  MINOR(__entry->dev), __entry->input_bits)
- );
- 
--TRACE_EVENT(xfer_secondary_pool,
--	TP_PROTO(const char *pool_name, int xfer_bits, int request_bits,
--		 int pool_entropy, int input_entropy),
--
--	TP_ARGS(pool_name, xfer_bits, request_bits, pool_entropy,
--		input_entropy),
--
--	TP_STRUCT__entry(
--		__field( const char *,	pool_name		)
--		__field(	  int,	xfer_bits		)
--		__field(	  int,	request_bits		)
--		__field(	  int,	pool_entropy		)
--		__field(	  int,	input_entropy		)
--	),
--
--	TP_fast_assign(
--		__entry->pool_name	= pool_name;
--		__entry->xfer_bits	= xfer_bits;
--		__entry->request_bits	= request_bits;
--		__entry->pool_entropy	= pool_entropy;
--		__entry->input_entropy	= input_entropy;
--	),
--
--	TP_printk("pool %s xfer_bits %d request_bits %d pool_entropy %d "
--		  "input_entropy %d", __entry->pool_name, __entry->xfer_bits,
--		  __entry->request_bits, __entry->pool_entropy,
--		  __entry->input_entropy)
--);
--
- DECLARE_EVENT_CLASS(random__get_random_bytes,
- 	TP_PROTO(int nbytes, unsigned long IP),
- 
-@@ -253,38 +202,6 @@ DEFINE_EVENT(random__extract_entropy, extract_entropy,
- 	TP_ARGS(pool_name, nbytes, entropy_count, IP)
- );
- 
--DEFINE_EVENT(random__extract_entropy, extract_entropy_user,
--	TP_PROTO(const char *pool_name, int nbytes, int entropy_count,
--		 unsigned long IP),
--
--	TP_ARGS(pool_name, nbytes, entropy_count, IP)
--);
--
--TRACE_EVENT(random_read,
--	TP_PROTO(int got_bits, int need_bits, int pool_left, int input_left),
--
--	TP_ARGS(got_bits, need_bits, pool_left, input_left),
--
--	TP_STRUCT__entry(
--		__field(	  int,	got_bits		)
--		__field(	  int,	need_bits		)
--		__field(	  int,	pool_left		)
--		__field(	  int,	input_left		)
--	),
--
--	TP_fast_assign(
--		__entry->got_bits	= got_bits;
--		__entry->need_bits	= need_bits;
--		__entry->pool_left	= pool_left;
--		__entry->input_left	= input_left;
--	),
--
--	TP_printk("got_bits %d still_needed_bits %d "
--		  "blocking_pool_entropy_left %d input_entropy_left %d",
--		  __entry->got_bits, __entry->got_bits, __entry->pool_left,
--		  __entry->input_left)
--);
--
- TRACE_EVENT(urandom_read,
- 	TP_PROTO(int got_bits, int pool_left, int input_left),
- 
--- 
-2.31.0
+regards,
+dan carpenter
 
