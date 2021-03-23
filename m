@@ -2,96 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737E8345681
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Mar 2021 04:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D22B5345893
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Mar 2021 08:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhCWD4e (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 22 Mar 2021 23:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhCWD4D (ORCPT
+        id S229972AbhCWHYP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 23 Mar 2021 03:24:15 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13665 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229897AbhCWHYH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 22 Mar 2021 23:56:03 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D9BC061574;
-        Mon, 22 Mar 2021 20:56:02 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id v186so10383240pgv.7;
-        Mon, 22 Mar 2021 20:56:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=wB1I6Nqq7AfdRuGhioLL2RWvT/EvSUrtBmeOoGNpC4c=;
-        b=UXpW9XC2NJqo7rfMeftU26YMoK90BHzqbUDDT4ow5DfNL2VY+06Rp3ATLnompDaf29
-         URFgJYp6bGlRdf6keBw/FE901PTen0GhQYjwTk6cy4jhT4xib/LgUOwWieEVhO+sJtL7
-         wjcrbxUunWkk7MzMd/JsGvObERbO7waXPGrN2rkh59FTQWf2/q55VYiah2Ck3m0jeLX+
-         mWZolC7MH7YNibNKr9zFS745BMoJvI2qHpEcJW0HSpidbJXDE13vn+g9EQ8+HsWFeReh
-         VWEuC0VwGiSzjOMRF9Dc/tG5wFBK+tZKtdMiXsLcxP6bMfMKRHZ5W6V54dPVbcvgrxlh
-         lsLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=wB1I6Nqq7AfdRuGhioLL2RWvT/EvSUrtBmeOoGNpC4c=;
-        b=hDTDBoVlhOT+p8Kv9G13LcLJwLfgUo33jbbwT42YR1AbyqEUnvvaAJ97zNyF1C5p4o
-         tq7P0LXBT//7uPi1T9o9QPWJpbJjaTPAkiSdafhy0mvFfUOC64uAU0WdiEkrpyAzhhur
-         b+LDoEogVBLMgzoRbRIDh/ueBtHy2cdzZjOQbhr2sLQqQf3xW/sxFxMV4f6QwPMGHDgd
-         b1K3Owxq6OSGOfnae3CVUOp3ii5QggHrQ5ZHQm5Zd4o+vzMkuscCq1mvYwXmnTiE+rH0
-         U3WVqirzOoMjXIEGuKWFA5e++jlR6eUNiyvdD9k7QgekVrPbaf5KF6NLi26zLEo3iqja
-         OrGA==
-X-Gm-Message-State: AOAM531BJ1plwk544CD1S+mtxj68+7JJJNHz//SL/NpvI2hZuirsKkAr
-        gKZNLAxze21Gzjz3FTiVPMU=
-X-Google-Smtp-Source: ABdhPJydHbGnZnMAt1icAGF5YoesfMt9wBbr8Fj49YkpN2/TMf4kipg460iug9SOSvZFlO4f3LGzeA==
-X-Received: by 2002:aa7:9910:0:b029:1f1:b41b:f95c with SMTP id z16-20020aa799100000b02901f1b41bf95cmr2960636pff.5.1616471762418;
-        Mon, 22 Mar 2021 20:56:02 -0700 (PDT)
-Received: from linux-l9pv.suse ([124.11.22.254])
-        by smtp.gmail.com with ESMTPSA id z22sm14415630pfa.41.2021.03.22.20.56.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Mar 2021 20:56:02 -0700 (PDT)
-From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
-X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ben Boeckel <me@benboeckel.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Malte Gell <malte.gell@gmx.de>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Subject: [PATCH 4/4] Documentation/admin-guide/module-signing.rst: add openssl command option example for CodeSign EKU
-Date:   Tue, 23 Mar 2021 11:55:21 +0800
-Message-Id: <20210323035521.5843-5-jlee@suse.com>
-X-Mailer: git-send-email 2.12.3
-In-Reply-To: <20210323035521.5843-1-jlee@suse.com>
-References: <20210323035521.5843-1-jlee@suse.com>
+        Tue, 23 Mar 2021 03:24:07 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4N8b1LFZznVJr;
+        Tue, 23 Mar 2021 15:21:35 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Tue, 23 Mar 2021
+ 15:23:58 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <xuzaibo@huawei.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>
+Subject: [PATCH -next] crypto: hisilicon/hpre: fix link error
+Date:   Tue, 23 Mar 2021 15:27:16 +0800
+Message-ID: <20210323072716.3146252-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add an openssl command option example for generating CodeSign extended
-key usage in X.509 when CONFIG_CHECK_CODESIGN_EKU is enabled.
+Fix the follow link error by select config CRYPTO_ECC and CRYPTO_ECDH.
 
-Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+ERROR: modpost: "ecc_get_curve25519" [drivers/crypto/hisilicon/hpre/hisi_hpre.ko] undefined!
+ERROR: modpost: "ecc_get_curve" [drivers/crypto/hisilicon/hpre/hisi_hpre.ko] undefined!
+ERROR: modpost: "crypto_ecdh_decode_key" [drivers/crypto/hisilicon/hpre/hisi_hpre.ko] undefined!
+
+Fixes: 90274769cf79 ("crypto: hisilicon/hpre - add 'CURVE25519' algorithm")
+Fixes: 05e7b906aa7c ("crypto: hisilicon/hpre - add 'ECDH' algorithm")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- Documentation/admin-guide/module-signing.rst | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/crypto/hisilicon/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
-index 7d7c7c8a545c..ca3b8f19466c 100644
---- a/Documentation/admin-guide/module-signing.rst
-+++ b/Documentation/admin-guide/module-signing.rst
-@@ -170,6 +170,12 @@ generate the public/private key files::
- 	   -config x509.genkey -outform PEM -out kernel_key.pem \
- 	   -keyout kernel_key.pem
- 
-+When ``CONFIG_CHECK_CODESIGN_EKU`` option is enabled, the following openssl
-+command option should be added where for generating CodeSign extended key usage
-+in X.509::
-+
-+        -addext "extendedKeyUsage=codeSigning"
-+
- The full pathname for the resulting kernel_key.pem file can then be specified
- in the ``CONFIG_MODULE_SIG_KEY`` option, and the certificate and key therein will
- be used instead of an autogenerated keypair.
+diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
+index c45adb15ce8d..d87c89af2a7f 100644
+--- a/drivers/crypto/hisilicon/Kconfig
++++ b/drivers/crypto/hisilicon/Kconfig
+@@ -69,6 +69,8 @@ config CRYPTO_DEV_HISI_HPRE
+ 	select CRYPTO_DEV_HISI_QM
+ 	select CRYPTO_DH
+ 	select CRYPTO_RSA
++	select CRYPTO_ECC
++	select CRYPTO_ECDH
+ 	help
+ 	  Support for HiSilicon HPRE(High Performance RSA Engine)
+ 	  accelerator, which can accelerate RSA and DH algorithms.
 -- 
-2.16.4
+2.25.1
 
