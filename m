@@ -2,77 +2,130 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6B83459C1
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Mar 2021 09:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD883459CF
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Mar 2021 09:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhCWIdd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 23 Mar 2021 04:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbhCWIdV (ORCPT
+        id S229897AbhCWIfm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 23 Mar 2021 04:35:42 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:37920 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229972AbhCWIfe (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:33:21 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18928C061756
-        for <linux-crypto@vger.kernel.org>; Tue, 23 Mar 2021 01:33:21 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u4so24494383ljo.6
-        for <linux-crypto@vger.kernel.org>; Tue, 23 Mar 2021 01:33:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ZUdJJhfJPvOOe7mOjuFlm+wwoxt/2BSRCMdBTLgkQm4=;
-        b=J4uPFwTQfQgPg4fEtJzDzX+PmP8hBKtpuWD/YO3Yb9e1b5VunYpeNr1HupUJdhjKpV
-         YNlo1sUo8YPz4hGSBekpWJBjwrzSzacxdbf4Q/Nh1PIfKno7498DYVx30SEUqDSPwUoc
-         1BO/k+yNH4B3G8wnIZbkS+BghV//xj4ps6Ezh4mb2H8YDfIVYnp6IZq44ggCu0Quzu7E
-         yhUtqnKEqhshrVma0Vwx0mkrEzoipVaJJ9otZeS2SEFXi5ktjnMsi6LePF9yQR6oO1rc
-         H466JvZdbJ/BN1FRNO51/iGdfpD+/grODZ4yx4Pzkm5FRzTxuJ2TyRYmWQ6WKRARHLVe
-         l/aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ZUdJJhfJPvOOe7mOjuFlm+wwoxt/2BSRCMdBTLgkQm4=;
-        b=QnhxGJfKlWL0ovAWq/PanJeZB9TWCQjwPVifkDNgw4MzW681DFhrOu6LEevg7TPekQ
-         IakztnHlSFtyrOI83bHpqaGM5dkOQersn51tjGkIXY8M7dZf/qsFf+V6Z0FKbGeWMCrP
-         sDiUDWTZHbDaMj0EksauRhyx/hRrp7U6u2WnOt6Ve6hbaCQIbkS4HxJka3YZPAC9WLeQ
-         4oKqGCZInD8NHuyvzVzEO5/6DOCIdPRpRtHhae5xVtj7CgOsYR3PvgwYL36aNq1lcVMK
-         GoVfcDt4HvCAx6dScaCO4Ol3YAly7KNlKr/Fxgw6Gk4l4rYqWX9lHwwDRZK7bevVRC9s
-         lfWA==
-X-Gm-Message-State: AOAM533vVKr00CbSvZFiZnTKHNSjw83y5RYZh6mUWZeOJVmZJnSIXdo3
-        WHANe6tZ92xondCvieg7LWRFBGZY2RTJ8pTzC98=
-X-Google-Smtp-Source: ABdhPJyzkwnRd/N9T15OBd8A4chsZs9Jm/OIwVjlqSkto9SiHg3E1/YwxsG45KKrNkoAYceaZF/jNqxyWOsxOzblxcU=
-X-Received: by 2002:a2e:6f11:: with SMTP id k17mr2398392ljc.231.1616488399493;
- Tue, 23 Mar 2021 01:33:19 -0700 (PDT)
+        Tue, 23 Mar 2021 04:35:34 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UT38Cws_1616488528;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UT38Cws_1616488528)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 23 Mar 2021 16:35:29 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Nick Terrell <terrelln@fb.com>, KP Singh <kpsingh@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>, keyrings@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH] init/Kconfig: Support sign module with SM3 hash algorithm
+Date:   Tue, 23 Mar 2021 16:35:28 +0800
+Message-Id: <20210323083528.25678-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-Received: by 2002:a2e:5406:0:0:0:0:0 with HTTP; Tue, 23 Mar 2021 01:33:19
- -0700 (PDT)
-Reply-To: mrs.chantal166@gmail.com
-From:   Mrs Chantal <mrschantal3@gmail.com>
-Date:   Tue, 23 Mar 2021 09:33:19 +0100
-Message-ID: <CAL4C8Ejdo=Q+XG18Hnf+Tkdqdpo7Fj=dnyttw+5LYejAoz0Cxw@mail.gmail.com>
-Subject: You have a new message
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear Friend
-You have been compensated with the sum of 4.3 million dollars in this
-united nation the payment will be issue into atm visa card and send to
-you from the santander bank we need your address and your whatsapp
-number
+The kernel module signature supports the option to use the SM3
+secure hash (OSCCA GM/T 0004-2012 SM3).
 
-Fill the followings with your details;
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+---
+ Documentation/admin-guide/module-signing.rst | 5 +++--
+ crypto/asymmetric_keys/pkcs7_parser.c        | 7 +++++++
+ init/Kconfig                                 | 5 +++++
+ 3 files changed, 15 insertions(+), 2 deletions(-)
 
-1. Your Name:
-2. Country :
-3. Age and Sex:
-4. Occupation :
-5. Mobile Telephone:
-6. Delivery Address:
-7. Id Card Identification
+diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
+index 7d7c7c8a545c..8d8980808b5b 100644
+--- a/Documentation/admin-guide/module-signing.rst
++++ b/Documentation/admin-guide/module-signing.rst
+@@ -30,8 +30,8 @@ This facility uses X.509 ITU-T standard certificates to encode the public keys
+ involved.  The signatures are not themselves encoded in any industrial standard
+ type.  The facility currently only supports the RSA public key encryption
+ standard (though it is pluggable and permits others to be used).  The possible
+-hash algorithms that can be used are SHA-1, SHA-224, SHA-256, SHA-384, and
+-SHA-512 (the algorithm is selected by data in the signature).
++hash algorithms that can be used are SHA-1, SHA-224, SHA-256, SHA-384, SHA-512,
++and SM3 (the algorithm is selected by data in the signature).
+ 
+ 
+ ==========================
+@@ -86,6 +86,7 @@ This has a number of options available:
+ 	``CONFIG_MODULE_SIG_SHA256``	:menuselection:`Sign modules with SHA-256`
+ 	``CONFIG_MODULE_SIG_SHA384``	:menuselection:`Sign modules with SHA-384`
+ 	``CONFIG_MODULE_SIG_SHA512``	:menuselection:`Sign modules with SHA-512`
++	``CONFIG_MODULE_SIG_SM3``	:menuselection:`Sign modules with SM3`
+         =============================== ==========================================
+ 
+      The algorithm selected here will also be built into the kernel (rather
+diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
+index 967329e0a07b..6cf6c4552c11 100644
+--- a/crypto/asymmetric_keys/pkcs7_parser.c
++++ b/crypto/asymmetric_keys/pkcs7_parser.c
+@@ -248,6 +248,9 @@ int pkcs7_sig_note_digest_algo(void *context, size_t hdrlen,
+ 	case OID_sha224:
+ 		ctx->sinfo->sig->hash_algo = "sha224";
+ 		break;
++	case OID_sm3:
++		ctx->sinfo->sig->hash_algo = "sm3";
++		break;
+ 	default:
+ 		printk("Unsupported digest algo: %u\n", ctx->last_oid);
+ 		return -ENOPKG;
+@@ -269,6 +272,10 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
+ 		ctx->sinfo->sig->pkey_algo = "rsa";
+ 		ctx->sinfo->sig->encoding = "pkcs1";
+ 		break;
++	case OID_SM2_with_SM3:
++		ctx->sinfo->sig->pkey_algo = "sm2";
++		ctx->sinfo->sig->encoding = "raw";
++		break;
+ 	default:
+ 		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
+ 		return -ENOPKG;
+diff --git a/init/Kconfig b/init/Kconfig
+index 5f5c776ef192..fed9236078e4 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -2202,6 +2202,10 @@ config MODULE_SIG_SHA512
+ 	bool "Sign modules with SHA-512"
+ 	select CRYPTO_SHA512
+ 
++config MODULE_SIG_SM3
++	bool "Sign modules with SM3"
++	select CRYPTO_SM3
++
+ endchoice
+ 
+ config MODULE_SIG_HASH
+@@ -2212,6 +2216,7 @@ config MODULE_SIG_HASH
+ 	default "sha256" if MODULE_SIG_SHA256
+ 	default "sha384" if MODULE_SIG_SHA384
+ 	default "sha512" if MODULE_SIG_SHA512
++	default "sm3" if MODULE_SIG_SM3
+ 
+ config MODULE_COMPRESS
+ 	bool "Compress modules on installation"
+-- 
+2.19.1.3.ge56e4f7
 
-thanks
-
-mrs.chantal
