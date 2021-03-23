@@ -2,71 +2,77 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF143458EF
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Mar 2021 08:42:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6B83459C1
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Mar 2021 09:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbhCWHla (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 23 Mar 2021 03:41:30 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13666 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCWHlU (ORCPT
+        id S229692AbhCWIdd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 23 Mar 2021 04:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229893AbhCWIdV (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:41:20 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4NXS2xtcznTX3;
-        Tue, 23 Mar 2021 15:38:48 +0800 (CST)
-Received: from [10.67.101.248] (10.67.101.248) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 23 Mar 2021 15:41:09 +0800
-Subject: Re: [PATCH -next] crypto: hisilicon/hpre: fix link error
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210323072716.3146252-1-yangyingliang@huawei.com>
-CC:     <xuzaibo@huawei.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>
-From:   tanghui20 <tanghui20@huawei.com>
-Message-ID: <9194c58f-f240-b993-5fec-2a994b26f0eb@huawei.com>
-Date:   Tue, 23 Mar 2021 15:41:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Tue, 23 Mar 2021 04:33:21 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18928C061756
+        for <linux-crypto@vger.kernel.org>; Tue, 23 Mar 2021 01:33:21 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id u4so24494383ljo.6
+        for <linux-crypto@vger.kernel.org>; Tue, 23 Mar 2021 01:33:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ZUdJJhfJPvOOe7mOjuFlm+wwoxt/2BSRCMdBTLgkQm4=;
+        b=J4uPFwTQfQgPg4fEtJzDzX+PmP8hBKtpuWD/YO3Yb9e1b5VunYpeNr1HupUJdhjKpV
+         YNlo1sUo8YPz4hGSBekpWJBjwrzSzacxdbf4Q/Nh1PIfKno7498DYVx30SEUqDSPwUoc
+         1BO/k+yNH4B3G8wnIZbkS+BghV//xj4ps6Ezh4mb2H8YDfIVYnp6IZq44ggCu0Quzu7E
+         yhUtqnKEqhshrVma0Vwx0mkrEzoipVaJJ9otZeS2SEFXi5ktjnMsi6LePF9yQR6oO1rc
+         H466JvZdbJ/BN1FRNO51/iGdfpD+/grODZ4yx4Pzkm5FRzTxuJ2TyRYmWQ6WKRARHLVe
+         l/aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ZUdJJhfJPvOOe7mOjuFlm+wwoxt/2BSRCMdBTLgkQm4=;
+        b=QnhxGJfKlWL0ovAWq/PanJeZB9TWCQjwPVifkDNgw4MzW681DFhrOu6LEevg7TPekQ
+         IakztnHlSFtyrOI83bHpqaGM5dkOQersn51tjGkIXY8M7dZf/qsFf+V6Z0FKbGeWMCrP
+         sDiUDWTZHbDaMj0EksauRhyx/hRrp7U6u2WnOt6Ve6hbaCQIbkS4HxJka3YZPAC9WLeQ
+         4oKqGCZInD8NHuyvzVzEO5/6DOCIdPRpRtHhae5xVtj7CgOsYR3PvgwYL36aNq1lcVMK
+         GoVfcDt4HvCAx6dScaCO4Ol3YAly7KNlKr/Fxgw6Gk4l4rYqWX9lHwwDRZK7bevVRC9s
+         lfWA==
+X-Gm-Message-State: AOAM533vVKr00CbSvZFiZnTKHNSjw83y5RYZh6mUWZeOJVmZJnSIXdo3
+        WHANe6tZ92xondCvieg7LWRFBGZY2RTJ8pTzC98=
+X-Google-Smtp-Source: ABdhPJyzkwnRd/N9T15OBd8A4chsZs9Jm/OIwVjlqSkto9SiHg3E1/YwxsG45KKrNkoAYceaZF/jNqxyWOsxOzblxcU=
+X-Received: by 2002:a2e:6f11:: with SMTP id k17mr2398392ljc.231.1616488399493;
+ Tue, 23 Mar 2021 01:33:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210323072716.3146252-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.101.248]
-X-CFilter-Loop: Reflected
+Received: by 2002:a2e:5406:0:0:0:0:0 with HTTP; Tue, 23 Mar 2021 01:33:19
+ -0700 (PDT)
+Reply-To: mrs.chantal166@gmail.com
+From:   Mrs Chantal <mrschantal3@gmail.com>
+Date:   Tue, 23 Mar 2021 09:33:19 +0100
+Message-ID: <CAL4C8Ejdo=Q+XG18Hnf+Tkdqdpo7Fj=dnyttw+5LYejAoz0Cxw@mail.gmail.com>
+Subject: You have a new message
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-There is a patch similar to yours that was send in advance, as follows:
-https://www.spinics.net/lists/linux-crypto/msg54238.html
+Dear Friend
+You have been compensated with the sum of 4.3 million dollars in this
+united nation the payment will be issue into atm visa card and send to
+you from the santander bank we need your address and your whatsapp
+number
 
-On 2021/3/23 15:27, Yang Yingliang wrote:
-> Fix the follow link error by select config CRYPTO_ECC and CRYPTO_ECDH.
->
-> ERROR: modpost: "ecc_get_curve25519" [drivers/crypto/hisilicon/hpre/hisi_hpre.ko] undefined!
-> ERROR: modpost: "ecc_get_curve" [drivers/crypto/hisilicon/hpre/hisi_hpre.ko] undefined!
-> ERROR: modpost: "crypto_ecdh_decode_key" [drivers/crypto/hisilicon/hpre/hisi_hpre.ko] undefined!
->
-> Fixes: 90274769cf79 ("crypto: hisilicon/hpre - add 'CURVE25519' algorithm")
-> Fixes: 05e7b906aa7c ("crypto: hisilicon/hpre - add 'ECDH' algorithm")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/crypto/hisilicon/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
-> index c45adb15ce8d..d87c89af2a7f 100644
-> --- a/drivers/crypto/hisilicon/Kconfig
-> +++ b/drivers/crypto/hisilicon/Kconfig
-> @@ -69,6 +69,8 @@ config CRYPTO_DEV_HISI_HPRE
->  	select CRYPTO_DEV_HISI_QM
->  	select CRYPTO_DH
->  	select CRYPTO_RSA
-> +	select CRYPTO_ECC
-> +	select CRYPTO_ECDH
->  	help
->  	  Support for HiSilicon HPRE(High Performance RSA Engine)
->  	  accelerator, which can accelerate RSA and DH algorithms.
->
+Fill the followings with your details;
+
+1. Your Name:
+2. Country :
+3. Age and Sex:
+4. Occupation :
+5. Mobile Telephone:
+6. Delivery Address:
+7. Id Card Identification
+
+thanks
+
+mrs.chantal
