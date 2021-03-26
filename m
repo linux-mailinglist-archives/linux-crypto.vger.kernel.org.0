@@ -2,64 +2,80 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C5F34A44B
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Mar 2021 10:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3545434A44D
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Mar 2021 10:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhCZJ3n (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 26 Mar 2021 05:29:43 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:35320 "EHLO fornost.hmeau.com"
+        id S229871AbhCZJaQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 26 Mar 2021 05:30:16 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:35340 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229898AbhCZJ3Y (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:29:24 -0400
+        id S229931AbhCZJ3m (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 26 Mar 2021 05:29:42 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lPimN-0003Rf-Jg; Fri, 26 Mar 2021 20:29:20 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Mar 2021 20:29:19 +1100
-Date:   Fri, 26 Mar 2021 20:29:19 +1100
+        id 1lPimY-0003Ro-So; Fri, 26 Mar 2021 20:29:32 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Mar 2021 20:29:30 +1100
+Date:   Fri, 26 Mar 2021 20:29:30 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Rijo Thomas <Rijo-john.Thomas@amd.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Mythri Pandeshwara krishna <mythri.pandeshwarakrishna@amd.com>,
-        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: Re: [PATCH v3 0/2] PSP TEE driver update and bug fixes
-Message-ID: <20210326092919.GB12658@gondor.apana.org.au>
-References: <cover.1615796554.git.Rijo-john.Thomas@amd.com>
+To:     chenxiang <chenxiang66@hisilicon.com>
+Cc:     clabbe.montjoie@gmail.com, clabbe@baylibre.com,
+        gcherian@marvell.com, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linuxarm@openeuler.org
+Subject: Re: [PATCH v2 0/4] Fix the parameter of dma_map_sg()
+Message-ID: <20210326092930.GC12658@gondor.apana.org.au>
+References: <1615859726-57062-1-git-send-email-chenxiang66@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1615796554.git.Rijo-john.Thomas@amd.com>
+In-Reply-To: <1615859726-57062-1-git-send-email-chenxiang66@hisilicon.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 01:55:27PM +0530, Rijo Thomas wrote:
-> The first patch helps to improve the response time by reducing the
-> polling time of the tee command status variable.
+On Tue, Mar 16, 2021 at 09:55:22AM +0800, chenxiang wrote:
+> From: Xiang Chen <chenxiang66@hisilicon.com>
 > 
-> Second patch is a bug fix to handle multi-threaded use-case.
-> During testing, race condition was seen due to missing synchronisation
-> in writes to the TEE ring buffer. This patch helps to resolve that.
+> According to Documentation/core-api/dma-api-howto.rst, the parameters
+> of dma_unmap_sg() must be the same as those which are passed in to the
+> scatter/gather mapping API.
+> But for some drivers under crypto, the <nents> parameter of dma_unmap_sg()
+> is number of elements after mapping. So fix them.
 > 
-> v3:
->  * Fixed checkpatch.pl warning
+> Part of the document is as follows:
 > 
-> v2:
->  * Updated copyright year as a part of code change
+> To unmap a scatterlist, just call::
 > 
-> Rijo Thomas (2):
->   crypto: ccp - reduce tee command status polling interval from 5ms to
->     1ms
->   crypto: ccp - fix command queuing to TEE ring buffer
+>         dma_unmap_sg(dev, sglist, nents, direction);
+> 	
+> Again, make sure DMA activity has already finished.
+> 	
+>         .. note::
+> 		
+> 	    The 'nents' argument to the dma_unmap_sg call must be
+> 	    the _same_ one you passed into the dma_map_sg call,
+> 	    it should _NOT_ be the 'count' value _returned_ from the
+> 	    dma_map_sg call.
 > 
->  drivers/crypto/ccp/tee-dev.c | 57 ++++++++++++++++++++++++------------
->  drivers/crypto/ccp/tee-dev.h | 20 +++++++++++--
->  2 files changed, 57 insertions(+), 20 deletions(-)
+> Change Log:
+> v1 -> v2: Remove changing the count passed to create_sg_component 
+> in driver cavium;
+> 
+> Xiang Chen (4):
+>   crypto: amlogic - Fix the parameter of dma_unmap_sg()
+>   crypto: cavium - Fix the parameter of dma_unmap_sg()
+>   crypto: ux500 - Fix the parameter of dma_unmap_sg()
+>   crypto: allwinner - Fix the parameter of dma_unmap_sg()
+> 
+>  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c | 9 ++++++---
+>  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c   | 3 ++-
+>  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c | 9 ++++++---
+>  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c   | 3 ++-
+>  drivers/crypto/amlogic/amlogic-gxl-cipher.c         | 6 +++---
+>  drivers/crypto/cavium/nitrox/nitrox_reqmgr.c        | 9 +++++----
+>  drivers/crypto/ux500/cryp/cryp_core.c               | 4 ++--
+>  drivers/crypto/ux500/hash/hash_core.c               | 2 +-
+>  8 files changed, 27 insertions(+), 18 deletions(-)
 
 All applied.  Thanks.
 -- 
