@@ -2,60 +2,92 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4B6349E9C
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Mar 2021 02:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD89349FB9
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Mar 2021 03:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCZBXc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 25 Mar 2021 21:23:32 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14880 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbhCZBX0 (ORCPT
+        id S231740AbhCZCVu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 25 Mar 2021 22:21:50 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:57676 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231643AbhCZCVa (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:23:26 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F641b24WFz9tC0;
-        Fri, 26 Mar 2021 09:21:23 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Fri, 26 Mar 2021
- 09:23:16 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH 3/3] crypto: stm32 - use memzero_explicit() for clearing data
-Date:   Fri, 26 Mar 2021 09:20:48 +0800
-Message-ID: <1616721648-56258-4-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1616721648-56258-1-git-send-email-yekai13@huawei.com>
-References: <1616721648-56258-1-git-send-email-yekai13@huawei.com>
+        Thu, 25 Mar 2021 22:21:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UTKgvox_1616725288;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UTKgvox_1616725288)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 26 Mar 2021 10:21:28 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Mimi Zohar <zohar@linux.ibm.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH] crypto: sm3 - use the more precise type u32 instead of unsigned int
+Date:   Fri, 26 Mar 2021 10:21:28 +0800
+Message-Id: <20210326022128.71727-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-use memzero_explicit instead of memset to clear sensitive data
+In the process of calculating the hash, use the more accurate type
+'u32' instead of the original 'unsigned int' to avoid ambiguity.
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 ---
- drivers/crypto/stm32/stm32-cryp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ crypto/sm3_generic.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index 2a479317..c4297e80 100644
---- a/drivers/crypto/stm32/stm32-cryp.c
-+++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -675,7 +675,7 @@ static void stm32_cryp_finish_req(struct stm32_cryp *cryp, int err)
- 		crypto_finalize_skcipher_request(cryp->engine, cryp->req,
- 						   err);
- 
--	memset(cryp->ctx->key, 0, cryp->ctx->keylen);
-+	memzero_explicit(cryp->ctx->key, cryp->ctx->keylen);
+diff --git a/crypto/sm3_generic.c b/crypto/sm3_generic.c
+index 193c4584bd00..562e96f92f64 100644
+--- a/crypto/sm3_generic.c
++++ b/crypto/sm3_generic.c
+@@ -36,17 +36,17 @@ static inline u32 p1(u32 x)
+ 	return x ^ rol32(x, 15) ^ rol32(x, 23);
  }
  
- static int stm32_cryp_cpu_start(struct stm32_cryp *cryp)
+-static inline u32 ff(unsigned int n, u32 a, u32 b, u32 c)
++static inline u32 ff(u32 n, u32 a, u32 b, u32 c)
+ {
+ 	return (n < 16) ? (a ^ b ^ c) : ((a & b) | (a & c) | (b & c));
+ }
+ 
+-static inline u32 gg(unsigned int n, u32 e, u32 f, u32 g)
++static inline u32 gg(u32 n, u32 e, u32 f, u32 g)
+ {
+ 	return (n < 16) ? (e ^ f ^ g) : ((e & f) | ((~e) & g));
+ }
+ 
+-static inline u32 t(unsigned int n)
++static inline u32 t(u32 n)
+ {
+ 	return (n < 16) ? SM3_T1 : SM3_T2;
+ }
+@@ -54,7 +54,7 @@ static inline u32 t(unsigned int n)
+ static void sm3_expand(u32 *t, u32 *w, u32 *wt)
+ {
+ 	int i;
+-	unsigned int tmp;
++	u32 tmp;
+ 
+ 	/* load the input */
+ 	for (i = 0; i <= 15; i++)
+@@ -123,8 +123,8 @@ static void sm3_compress(u32 *w, u32 *wt, u32 *m)
+ 
+ static void sm3_transform(struct sm3_state *sst, u8 const *src)
+ {
+-	unsigned int w[68];
+-	unsigned int wt[64];
++	u32 w[68];
++	u32 wt[64];
+ 
+ 	sm3_expand((u32 *)src, w, wt);
+ 	sm3_compress(w, wt, sst->state);
 -- 
-2.8.1
+2.19.1.3.ge56e4f7
 
