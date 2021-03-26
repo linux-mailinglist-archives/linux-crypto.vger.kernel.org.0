@@ -2,72 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB2B34A491
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Mar 2021 10:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5480F34A48D
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Mar 2021 10:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCZJfg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 26 Mar 2021 05:35:36 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:35608 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230135AbhCZJfE (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        id S230300AbhCZJfE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Fri, 26 Mar 2021 05:35:04 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:35558 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230394AbhCZJem (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 26 Mar 2021 05:34:42 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lPirI-0003cX-LR; Fri, 26 Mar 2021 20:34:25 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Mar 2021 20:34:24 +1100
-Date:   Fri, 26 Mar 2021 20:34:24 +1100
+        id 1lPirS-0003ci-Qv; Fri, 26 Mar 2021 20:34:35 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Mar 2021 20:34:34 +1100
+Date:   Fri, 26 Mar 2021 20:34:34 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
 To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     leitao@debian.org, lukas.bulwahn@gmail.com, corbet@lwn.net,
-        rdunlap@infradead.org,
+Cc:     lukas.bulwahn@gmail.com, corbet@lwn.net, rdunlap@infradead.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
-        nayna@linux.ibm.com, pfsmorigo@gmail.com, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: vmx: fix incorrect kernel-doc comment syntax in
+Subject: Re: [PATCH] crypto: amcc: fix incorrect kernel-doc comment syntax in
  files
-Message-ID: <20210326093424.GP12658@gondor.apana.org.au>
-References: <20210320202525.12562-1-yashsri421@gmail.com>
+Message-ID: <20210326093434.GQ12658@gondor.apana.org.au>
+References: <20210321120832.12837-1-yashsri421@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210320202525.12562-1-yashsri421@gmail.com>
+In-Reply-To: <20210321120832.12837-1-yashsri421@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 01:55:25AM +0530, Aditya Srivastava wrote:
+On Sun, Mar 21, 2021 at 05:38:32PM +0530, Aditya Srivastava wrote:
 > The opening comment mark '/**' is used for highlighting the beginning of
 > kernel-doc comments.
-> There are certain files in drivers/crypto/vmx, which follow this syntax,
+> There are certain files in drivers/crypto/amcc, which follow this syntax,
 > but the content inside does not comply with kernel-doc.
 > Such lines were probably not meant for kernel-doc parsing, but are parsed
 > due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
 > causes unexpected warnings from kernel-doc.
 > 
-> E.g., presence of kernel-doc like comment in the header line for
-> drivers/crypto/vmx/vmx.c causes this warning by kernel-doc:
+> E.g., presence of kernel-doc like comment in
+> drivers/crypto/amcc/crypto4xx_alg.c at header, and some other lines,
+> causes these warnings by kernel-doc:
 > 
-> "warning: expecting prototype for Routines supporting VMX instructions on the Power 8(). Prototype was for p8_init() instead"
-> 
-> Similarly for other files too.
+> "warning: expecting prototype for AMCC SoC PPC4xx Crypto Driver(). Prototype was for set_dynamic_sa_command_0() instead"
+> "warning: Function parameter or member 'dir' not described in 'set_dynamic_sa_command_0'"
+> etc..
 > 
 > Provide a simple fix by replacing such occurrences with general comment
 > format, i.e. '/*', to prevent kernel-doc from parsing it.
 > 
 > Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 > ---
-> * Applies perfectly on next-20210319
-> 
->  drivers/crypto/vmx/aes.c     | 2 +-
->  drivers/crypto/vmx/aes_cbc.c | 2 +-
->  drivers/crypto/vmx/aes_ctr.c | 2 +-
->  drivers/crypto/vmx/aes_xts.c | 2 +-
->  drivers/crypto/vmx/ghash.c   | 2 +-
->  drivers/crypto/vmx/vmx.c     | 2 +-
->  6 files changed, 6 insertions(+), 6 deletions(-)
+>  drivers/crypto/amcc/crypto4xx_alg.c     | 12 ++++++------
+>  drivers/crypto/amcc/crypto4xx_core.c    | 18 +++++++++---------
+>  drivers/crypto/amcc/crypto4xx_core.h    |  4 ++--
+>  drivers/crypto/amcc/crypto4xx_reg_def.h |  8 ++++----
+>  drivers/crypto/amcc/crypto4xx_sa.h      | 18 +++++++++---------
+>  drivers/crypto/amcc/crypto4xx_trng.h    |  2 +-
+>  6 files changed, 31 insertions(+), 31 deletions(-)
 
 Patch applied.  Thanks.
 -- 
