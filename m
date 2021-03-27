@@ -2,74 +2,59 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A397134B3E1
-	for <lists+linux-crypto@lfdr.de>; Sat, 27 Mar 2021 04:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B0D34B501
+	for <lists+linux-crypto@lfdr.de>; Sat, 27 Mar 2021 08:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhC0DA3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 26 Mar 2021 23:00:29 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14153 "EHLO
+        id S230272AbhC0Hb4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 27 Mar 2021 03:31:56 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14630 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhC0C77 (ORCPT
+        with ESMTP id S230203AbhC0Hba (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 26 Mar 2021 22:59:59 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F6k5v4jZkznZQW;
-        Sat, 27 Mar 2021 10:57:23 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.207) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Sat, 27 Mar 2021
- 10:59:49 +0800
-Subject: Re: [PATCH 4/4] crypto: hisilicon/zip - support new 'sqe' type in
- Kunpeng930
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-References: <1616139187-63425-1-git-send-email-shenyang39@huawei.com>
- <1616139187-63425-5-git-send-email-shenyang39@huawei.com>
- <20210326091457.GA1153@gondor.apana.org.au>
-CC:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>, <wangzhou1@hisilicon.com>
-From:   "shenyang (M)" <shenyang39@huawei.com>
-Message-ID: <833da1eb-0277-8466-23dc-15533eafbd8f@huawei.com>
-Date:   Sat, 27 Mar 2021 10:59:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Sat, 27 Mar 2021 03:31:30 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F6r7n3N5pz1BFg3;
+        Sat, 27 Mar 2021 15:29:25 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 27 Mar 2021 15:31:19 +0800
+From:   Yang Shen <shenyang39@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>
+Subject: [PATCH v2 0/4] crypto: hisilicon/zip - support new 'sqe' type in Kunpeng930
+Date:   Sat, 27 Mar 2021 15:28:44 +0800
+Message-ID: <1616830128-46827-1-git-send-email-shenyang39@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210326091457.GA1153@gondor.apana.org.au>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.38.207]
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+In Kunpeng930, some field meanings in 'sqe' are changed, so driver need to
+distinguish the type on different platform.
 
+To avoid checking the platform everytime when driver fills the 'sqe', add a
+struct 'hisi_zip_sqe_ops' to describe the 'sqe' operations. The driver only
+need to choose the 'ops' once when call 'hisi_zip_acomp_init'.
 
-On 2021/3/26 17:14, Herbert Xu wrote:
-> On Fri, Mar 19, 2021 at 03:33:07PM +0800, Yang Shen wrote:
->>
->> +const struct hisi_zip_sqe_ops hisi_zip_ops_v2 = {
->> +	.sqe_type		= 0x3,
->> +	.fill_addr		= hisi_zip_fill_addr,
->> +	.fill_buf_size		= hisi_zip_fill_buf_size,
->> +	.fill_buf_type		= hisi_zip_fill_buf_type,
->> +	.fill_req_type		= hisi_zip_fill_req_type,
->> +	.fill_tag		= hisi_zip_fill_tag_v2,
->> +	.fill_sqe_type		= hisi_zip_fill_sqe_type,
->> +	.get_tag		= hisi_zip_get_tag_v2,
->> +	.get_status		= hisi_zip_get_status,
->> +	.get_dstlen		= hisi_zip_get_dstlen,
->> +};
->> +
->
-> This triggers a new warning:
->
->   CHECK   ../drivers/crypto/hisilicon/zip/zip_crypto.c
->   ../drivers/crypto/hisilicon/zip/zip_crypto.c:527:31: warning: symbol 'hisi_zip_ops_v1' was not declared. Should it be static?
->   ../drivers/crypto/hisilicon/zip/zip_crypto.c:540:31: warning: symbol 'hisi_zip_ops_v2' was not declared. Should it be static?
->
-> Please fix.  Thanks.
->
+v1 -> v2:
+* fix a sparse warning
 
-Sorry， I'll fix this in next version.
+Yang Shen (4):
+  crypto: hisilicon/zip - adjust functions location
+  crypto: hisilicon/zip - add comments for 'hisi_zip_sqe'
+  crypto: hisilicon/zip - initialize operations about 'sqe' in
+    'acomp_alg.init'
+  crypto: hisilicon/zip - support new 'sqe' type in Kunpeng930
 
-Thanks.
+ drivers/crypto/hisilicon/zip/zip.h        |  46 +-
+ drivers/crypto/hisilicon/zip/zip_crypto.c | 706 +++++++++++++++++-------------
+ 2 files changed, 438 insertions(+), 314 deletions(-)
+
+--
+2.8.1
 
