@@ -2,18 +2,18 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A2334E270
-	for <lists+linux-crypto@lfdr.de>; Tue, 30 Mar 2021 09:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810A634E272
+	for <lists+linux-crypto@lfdr.de>; Tue, 30 Mar 2021 09:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbhC3Hl6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S231424AbhC3Hl6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Tue, 30 Mar 2021 03:41:58 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15098 "EHLO
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15099 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbhC3Hlu (ORCPT
+        with ESMTP id S231394AbhC3Hls (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:41:50 -0400
+        Tue, 30 Mar 2021 03:41:48 -0400
 Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F8hDG3QpBz19Jcq;
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F8hDG3FWsz19J3j;
         Tue, 30 Mar 2021 15:39:42 +0800 (CST)
 Received: from huawei.com (10.67.165.24) by DGGEMS406-HUB.china.huawei.com
  (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Tue, 30 Mar 2021
@@ -22,9 +22,9 @@ From:   Kai Ye <yekai13@huawei.com>
 To:     <herbert@gondor.apana.org.au>
 CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH v2 4/5] crypto: hisilicon/sgl - fix the soft sg map to hardware sg
-Date:   Tue, 30 Mar 2021 15:39:05 +0800
-Message-ID: <1617089946-48078-5-git-send-email-yekai13@huawei.com>
+Subject: [PATCH v2 5/5] crypto: hisilicon/sgl - fix the sg buf unmap
+Date:   Tue, 30 Mar 2021 15:39:06 +0800
+Message-ID: <1617089946-48078-6-git-send-email-yekai13@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1617089946-48078-1-git-send-email-yekai13@huawei.com>
 References: <1617089946-48078-1-git-send-email-yekai13@huawei.com>
@@ -36,26 +36,45 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The buffer of the hardware sge needs to be initialized by
-soft sgl.
+Add clear data operation for sge data.
 
 Signed-off-by: Kai Ye <yekai13@huawei.com>
 ---
- drivers/crypto/hisilicon/sgl.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/crypto/hisilicon/sgl.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/crypto/hisilicon/sgl.c b/drivers/crypto/hisilicon/sgl.c
-index 4bece3d..c618aaf 100644
+index c618aaf..7a58ab3 100644
 --- a/drivers/crypto/hisilicon/sgl.c
 +++ b/drivers/crypto/hisilicon/sgl.c
-@@ -173,6 +173,7 @@ static void sg_map_to_hw_sg(struct scatterlist *sgl,
- {
- 	hw_sge->buf = sg_dma_address(sgl);
- 	hw_sge->len = cpu_to_le32(sg_dma_len(sgl));
-+	hw_sge->page_ctrl = sg_virt(sgl);
+@@ -189,6 +189,18 @@ static void update_hw_sgl_sum_sge(struct hisi_acc_hw_sgl *hw_sgl, u16 sum)
+ 	hw_sgl->entry_sum_in_chain = cpu_to_le16(sum);
  }
  
- static void inc_hw_sgl_sge(struct hisi_acc_hw_sgl *hw_sgl)
++static void clear_hw_sgl_sge(struct hisi_acc_hw_sgl *hw_sgl)
++{
++	struct acc_hw_sge *hw_sge = hw_sgl->sge_entries;
++	int i;
++
++	for (i = 0; i < hw_sgl->entry_sum_in_sgl; i++) {
++		hw_sge[i].page_ctrl = NULL;
++		hw_sge[i].buf = 0;
++		hw_sge[i].len = 0;
++	}
++}
++
+ /**
+  * hisi_acc_sg_buf_map_to_hw_sgl - Map a scatterlist to a hw sgl.
+  * @dev: The device which hw sgl belongs to.
+@@ -266,7 +278,7 @@ void hisi_acc_sg_buf_unmap(struct device *dev, struct scatterlist *sgl,
+ 		return;
+ 
+ 	dma_unmap_sg(dev, sgl, sg_nents(sgl), DMA_BIDIRECTIONAL);
+-
++	clear_hw_sgl_sge(hw_sgl);
+ 	hw_sgl->entry_sum_in_chain = 0;
+ 	hw_sgl->entry_sum_in_sgl = 0;
+ 	hw_sgl->entry_length_in_sgl = 0;
 -- 
 2.8.1
 
