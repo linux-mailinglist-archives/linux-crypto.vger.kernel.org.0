@@ -2,109 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DAF334FAC3
-	for <lists+linux-crypto@lfdr.de>; Wed, 31 Mar 2021 09:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F47D34FCEA
+	for <lists+linux-crypto@lfdr.de>; Wed, 31 Mar 2021 11:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234202AbhCaHvn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 31 Mar 2021 03:51:43 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.171]:31419 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234146AbhCaHvP (ORCPT
+        id S234680AbhCaJdV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 31 Mar 2021 05:33:21 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15055 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234476AbhCaJdL (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:51:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1617177068; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=TR0d/ZKvDNwN5gzG/lb80S/qpN9/7RWomMeP5atcaDSmHL51CsxmRWzS+iv49K1nSA
-    GI58AN/5Z0iCTFPRQvkLd8rwiWsb8x1Yz3Dbm/6SxBi9L6uGoO9n3pE7BtTEqdbnaU9m
-    ADbstgiVMHornq8EDlX1MVVAGjtP8oQMw2ractsMF7QI8BI1cAmxoe0MOG+1fryblDWb
-    hZb6XfXZaY2pMMgpTQLdpikzhddG7jZqmtiXMbDWKTI1Q6F+twuergcXgwU4p4fSMlw4
-    MF8KUQxo62PNc2b1A5RdapSaz+ow9/QbqECK9QSSxsP1rg1nBBh2Q4rqmDxVCg/0rbgc
-    6JSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1617177068;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=eOZ4VZTdJ8pUyk2sIkEdXMWyRYgM3XjOzKwRBLoG7YA=;
-    b=EikoZYCvG+XSGOG4ekv/KgMgVYDCEyse8WuWslRsCoYupcOfnoEIfWnrryhxrMKArK
-    JxR0OnRONtF96SLNti9N24sNQEcsJKEngxvOziWYlO+16tf2zII4hAdDuDSyjl11R/1D
-    i3mfbnYXlfI5rWzkFyj18IBG8pgJbHWF8Wki0PZhjnYtsV8hGjY7gooSaxeRCB/3HYcv
-    SvAw2yXNdiSMxi3egkrmx18f3GZsbZMLU+ltL2+z7H4w3ehpbqf7RfFQBg4a7dEZOb81
-    PNPmq3EG5Ijfj5/vDvd2UPT04bj5FGm9uGOdjkK2D7CwcmQHMfFhCD1oEXWVr+oUHv8X
-    3KAQ==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1617177068;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=eOZ4VZTdJ8pUyk2sIkEdXMWyRYgM3XjOzKwRBLoG7YA=;
-    b=O7mYg3tMvt/rPg+eKobQo5DBe3L15n/eF7PzT15g1E5Yn6sIFzjyFm2o4EUUljxqhN
-    ePuvn5y7Qw5HoyX2WVO8Bk7t12ebc07qmyIgLpHijfQfcMzrqgmRpJYX3hDgjdqJ90sb
-    sgl8px1NHJwG3s7swcelTXNTssjZCG0MMCYnfChrnwWNxSzTcvwzyluaLdP82vm5OFkg
-    GAmLYlIrvN4szd6ZWE9IkjugJHAxMYBexEfxYGIdDi4OHt5a2cIVkaWRnYaXPA5JGZOA
-    KyYDxWXBTejcSkp/bjSW01Ly9wu3Rssp/xEJrOnF9g+PPS9812ja1dBbsGZRVcGbcqvs
-    Wyxw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNzyCzy1Sfr67uExK884EC0GFGHavJShEkMReN0E="
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-    by smtp.strato.de (RZmta 47.23.1 DYNA|AUTH)
-    with ESMTPSA id e03072x2V7p7LPw
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 31 Mar 2021 09:51:07 +0200 (CEST)
-Message-ID: <7b29ae50e40a031fa145f12b5f5b31fb6578626e.camel@chronox.de>
-Subject: Re: crypto: FIPS 200 mode
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Miller <davem@davemloft.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Wed, 31 Mar 2021 09:51:07 +0200
-In-Reply-To: <4e940d39-77c0-74d4-d282-216cc6030c11@infradead.org>
-References: <4e940d39-77c0-74d4-d282-216cc6030c11@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Wed, 31 Mar 2021 05:33:11 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F9Ldf5q1fzNrKC;
+        Wed, 31 Mar 2021 17:30:30 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Wed, 31 Mar 2021
+ 17:33:01 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
+Subject: [PATCH v2 0/5] bug fix and clear coding style
+Date:   Wed, 31 Mar 2021 17:30:27 +0800
+Message-ID: <1617183032-30983-1-git-send-email-yekai13@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Am Dienstag, dem 30.03.2021 um 15:26 -0700 schrieb Randy Dunlap:
-> 
-> The Kconfig help text for CRYPTO_FIPS says
-> 
-> config CRYPTO_FIPS
->         bool "FIPS 200 compliance"
-> ...
->         help
->           This option enables the fips boot option which is
->           required if you want the system to operate in a FIPS 200
->           certification.  You should say no unless you know what
->           this is.
-> 
-> This seems confusing to me since it says "compliance" in one place and
-> "certification" in another place. And AFAICT, those two words don't
-> mean the same thing as far as NIST & FIPS are concerned.
-> 
-> 
-> Should it say "compliance" in both places?  E.g.
-> 
->         help
->           This option enables the fips boot option which is
->           required if you want the system to operate in FIPS 200
->           compliance mode.  You should say no unless you know what
->           this is.
+Fixup coding style such as delete unneeded variable
+initialization. Add a comment for block size initialization.
+Add  data cleared operation in sg buf unmap, and other misc fix.
 
-Sounds good to me.
+v1 -> v2:
+ 1. fix [PATCH v2] error in v1.
+ 2. v1 use a macro replace of magic number, v2 use a comment 
+    for block size initialization.
 
-Ciao
-Stephan
-> 
-> 
-> thanks.
+Kai Ye (5):
+  crypto: hisilicon/sgl - add a comment for block size initialization
+  crypto: hisilicon/sgl - delete unneeded variable initialization
+  crypto: hisilicon/sgl - add some dfx logs
+  crypto: hisilicon/sgl - fix the soft sg map to hardware sg
+  crypto: hisilicon/sgl - fix the sg buf unmap
 
+ drivers/crypto/hisilicon/sgl.c | 37 +++++++++++++++++++++++++++++++------
+ 1 file changed, 31 insertions(+), 6 deletions(-)
+
+-- 
+2.8.1
 
