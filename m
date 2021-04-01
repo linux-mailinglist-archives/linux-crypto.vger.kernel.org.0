@@ -2,129 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B96A35195B
-	for <lists+linux-crypto@lfdr.de>; Thu,  1 Apr 2021 20:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594873519FC
+	for <lists+linux-crypto@lfdr.de>; Thu,  1 Apr 2021 20:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235327AbhDARw7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 1 Apr 2021 13:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59756 "EHLO
+        id S235200AbhDAR5U (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 1 Apr 2021 13:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237112AbhDARu3 (ORCPT
+        with ESMTP id S236502AbhDARyj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:50:29 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C688C005714
-        for <linux-crypto@vger.kernel.org>; Thu,  1 Apr 2021 07:13:02 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id d12so3036287lfv.11
-        for <linux-crypto@vger.kernel.org>; Thu, 01 Apr 2021 07:13:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4LRc5zlX4dmIqJZC4tRXENYZk181mewXwD7X4GEXkKA=;
-        b=Vm+Tjv8EGF4ON3BmePiF+an1PklXoMoLGfZKYRESqwWronVx6WRRZIS+F6TP+Lbfr9
-         c2fhhAhZk/8su55Y2QryQk7HxxWzqTdDivxWH4tQoshMJgWi+bZJvhsQdFOJrHT3LogF
-         ReLuPuqCYkvLIBoIvAIP0KsgTTMVWftEFB2m1jz11/crEDOHsPcdzNSm0vmeT8TittD3
-         wxip5yY2IJe+jJ1e9DNffMb2CBHe+fM+0pjqre0pvnviuVjWpxDowfLaDS073O8T2T1r
-         S/Tk43FTwPTMksk0XsjA7dB2lZp93arrwSecLvBVeuX60gZ9hxIPny6zhtsP+UkF+xgk
-         B/DA==
+        Thu, 1 Apr 2021 13:54:39 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF11C02FEAC;
+        Thu,  1 Apr 2021 09:20:10 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id k25so2313666oic.4;
+        Thu, 01 Apr 2021 09:20:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4LRc5zlX4dmIqJZC4tRXENYZk181mewXwD7X4GEXkKA=;
-        b=DMVNdHkuwq6Rc4gZBaQ5rRHKQvqX/4bxbq8gx65OAPZRDqmIXrGa5krnOAeuG/sITy
-         7wEGuFRab/C5U9yYqkgYOt/DMZO9U/zI0uhlvIOzDofMmzjL8qM6O1S3aPmPaOkYjDBz
-         jWzsIjbmXQ5VyPwjLJ2DKKUsxdS3dVOLAzC5vb52zb+xYgSmoen9Ue+/LRhJ5qbVEwCa
-         iYcVslMCtZUfc48G0Y0lDMrtlfaxVEybSnIKfk2dUxL4qWwr2t64FkVscXm7SlX7wzI/
-         mvlSwqNly4YxlWIQyMJEwac4DY/nFttwoolAWyNuj+Js4nwFl/XVoSGMYWVyWUFNdCQg
-         isyw==
-X-Gm-Message-State: AOAM5317dwvJzHGcIdM5jB+how2aBQlfVo2WpO1FZmqqM6MgGRZuHbWQ
-        /V6BtxNB55HSHGRTYS2aBTZTW8rJfSvPd4aLvE8PSQ==
-X-Google-Smtp-Source: ABdhPJyNTkFv6LNWIK5vqvAiZQLpPg75ghn4iKbcqKm1L+mPpFDnlADouEnrSfxrIbDhgL/PNaz27oq5y6nNZioEwVg=
-X-Received: by 2002:ac2:5970:: with SMTP id h16mr5350347lfp.108.1617286380737;
- Thu, 01 Apr 2021 07:13:00 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=Hoy9JWbZpNKKgJwwAmTLHFplX2rUrxGqNdm9v8L9dMU=;
+        b=j7/QkXhOpGVwzChbSZ94wE8RHL2qth7PoVtFxL9ypQ7Vb4OtJEQ1qVfN4jQdIBxToB
+         m6lH/8CiEitgkAtDGLyHGbRGF0fEEBnPAOband/GhQSBE0gfA9zKIqvzRu6PwOdyMU+e
+         fxhXQoauxr8naE+uZ2rxkne3vV6faJCtU70NYGjB3BPzkuih+X4qQz3M4FZYmxUX0AyK
+         nF4prV0jkQGEu7a61eu57DXJn8qIsPf5ZGkA3rWrJ/cYw+dcuPs78sBtXALAYKzxw6gd
+         7scwNxYKLJ24HXOonS6RAaSZo9C0NkoWKbDXj40YTyFlBdrzs/3O5sytibKbZ5INduQe
+         bs8Q==
+X-Gm-Message-State: AOAM530w6bpgKVrlctRqrinAk3YimROJYkJnvtku35h3BHAB6YOzAlmn
+        71rcB/9JtVIlPTS+b1sL+uc54Jjl923+W+HKCuM=
+X-Google-Smtp-Source: ABdhPJwLLFe8AN0azUamchJsJA2GytFp8mOWOLpmp56AWSXoBEUHQmtJLTpZhJIOrc4IiBnN23gOPVFKYY4e5y8xWD8=
+X-Received: by 2002:aca:5fc3:: with SMTP id t186mr6329836oib.69.1617294008998;
+ Thu, 01 Apr 2021 09:20:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
- <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com>
- <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de> <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com>
- <CAFA6WYO29o73nSg4ikU9cyaOr0kpaXFJpcGLGmFLgjKQWchcEg@mail.gmail.com>
- <1666035815.140054.1617283065549.JavaMail.zimbra@nod.at> <ea261e53-8f5d-ac52-f3b9-7f2db4532244@pengutronix.de>
- <CAFA6WYODfsMTiCEyFA2aRGm+UQE0OTe-ui7mMSK-cqUR_YJFTA@mail.gmail.com> <1846277009.140163.1617285566823.JavaMail.zimbra@nod.at>
-In-Reply-To: <1846277009.140163.1617285566823.JavaMail.zimbra@nod.at>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 1 Apr 2021 19:42:49 +0530
-Message-ID: <CAFA6WYNjS=1JsAPfh=j8D6HUn9rCEADyZxtWvYWuvbz_FsVbTQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        horia geanta <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        aymen sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>,
-        kernel <kernel@pengutronix.de>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        david <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+References: <20210401122458.12663-1-crecklin@redhat.com> <20210401122458.12663-2-crecklin@redhat.com>
+ <CAJZ5v0gCkhoKC_81WP6wdehZBYpEpmNhHwDygYawFdrWk3K6vg@mail.gmail.com> <CAMj1kXFKRtB_YNGCKAGmRfvZTERCYJHR3hRdZ9-vyiRrB67rdg@mail.gmail.com>
+In-Reply-To: <CAMj1kXFKRtB_YNGCKAGmRfvZTERCYJHR3hRdZ9-vyiRrB67rdg@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 1 Apr 2021 18:19:57 +0200
+Message-ID: <CAJZ5v0iqB7h1i_wuHTHTV-cvX+uQsbuae8W7wcFS8QffitD4aw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] use crc32 instead of md5 for hibernation e820
+ integrity check
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Chris von Recklinghausen <crecklin@redhat.com>,
+        Simo Sorce <simo@redhat.com>, Dexuan Cui <decui@microsoft.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, 1 Apr 2021 at 19:29, Richard Weinberger <richard@nod.at> wrote:
+On Thu, Apr 1, 2021 at 3:59 PM Ard Biesheuvel <ardb@kernel.org> wrote:
 >
-> Sumit,
->
-> ----- Urspr=C3=BCngliche Mail -----
-> > Von: "Sumit Garg" <sumit.garg@linaro.org>
-> > In this case why would one prefer to use CAAM when you have standards
-> > compliant TPM-Chip which additionally offers sealing to specific PCR
-> > (integrity measurement) values.
->
-> I don't think we can dictate what good/sane solutions are and which are n=
-ot.
-> Both CAAM and TPM have pros and cons, I don't see why supporting both is =
-a bad idea.
-
-I didn't mean to say that supporting both is a bad idea but rather I
-was looking for use-cases where one time selection of the best trust
-source (whether it be a TPM or TEE or CAAM etc.) for a platform
-wouldn't suffice for user needs.
-
->
-> >> > IMHO allowing only one backend at the same time is a little over sim=
-plified.
-> >>
-> >> It is, but I'd rather leave this until it's actually needed.
-> >> What can be done now is adopting a format for the exported keys that w=
-ould
-> >> make this extension seamless in future.
-> >>
+> On Thu, 1 Apr 2021 at 15:34, Rafael J. Wysocki <rafael@kernel.org> wrote:
 > >
-> > +1
+> > On Thu, Apr 1, 2021 at 2:25 PM Chris von Recklinghausen
+> > <crecklin@redhat.com> wrote:
+> > >
+> > > Suspend fails on a system in fips mode because md5 is used for the e820
+> > > integrity check and is not available. Use crc32 instead.
+> > >
+> > > Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
+> > >        by md5 digest")
+> > > Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
+> > > ---
+> > >  arch/x86/power/hibernate.c | 31 +++++++++++++++++--------------
+> > >  1 file changed, 17 insertions(+), 14 deletions(-)
+> > >
+> > > diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
+> > > index cd3914fc9f3d..6a3f4e32e49c 100644
+> > > --- a/arch/x86/power/hibernate.c
+> > > +++ b/arch/x86/power/hibernate.c
+> > > @@ -55,31 +55,31 @@ int pfn_is_nosave(unsigned long pfn)
+> > >  }
+> > >
+> > >
+> > > -#define MD5_DIGEST_SIZE 16
+> > > +#define CRC32_DIGEST_SIZE 16
+> > >
+> > >  struct restore_data_record {
+> > >         unsigned long jump_address;
+> > >         unsigned long jump_address_phys;
+> > >         unsigned long cr3;
+> > >         unsigned long magic;
+> > > -       u8 e820_digest[MD5_DIGEST_SIZE];
+> > > +       u8 e820_digest[CRC32_DIGEST_SIZE];
+> > >  };
+> >
+> > No.
+> >
+> > CRC32 was used here before and it was deemed insufficient.
+> >
 >
-> As long we don't make multiple backends at runtime impossible I'm
-> fine and will happily add support for it when needed. :-)
->
+> Why? The git commit log does not have an explanation of this.
 
-You are most welcome to add such support. I will be happy to review it.
+IIRC there was an example of a memory map that would produce the same
+CRC32 value as the original or something like that.
 
--Sumit
-
-> Thanks,
-> //richard
+But that said this code is all about failing more gracefully, so I
+guess it isn't a big deal if the failure is more graceful in fewer
+cases ...
