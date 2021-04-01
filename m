@@ -2,127 +2,129 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C40C351ABA
-	for <lists+linux-crypto@lfdr.de>; Thu,  1 Apr 2021 20:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B96A35195B
+	for <lists+linux-crypto@lfdr.de>; Thu,  1 Apr 2021 20:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236107AbhDASC4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 1 Apr 2021 14:02:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45517 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234729AbhDAR4S (ORCPT
+        id S235327AbhDARw7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 1 Apr 2021 13:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237112AbhDARu3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:56:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617299776;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a0Q1VkfOZIavvpczXjt7TZjbwwjRT1qxWEncvyA0WC8=;
-        b=NDMaGp3Mj1AzVqhj6dk2OE8BIStjC+yAYFSxc5Lhp4xNg/4EaxYYmS9YRQEjoJPv4KKBZB
-        oMNCJJkk6E5AfaBRrFqhbYFdbrD4AQVp2G72pEezeLfFMOFkRhbEpO8+BUP8ih2CyQEYaw
-        8n3bRqibmYYE9+TmO+Af1bqvULDpzgs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-384-bTpy2vqsPHWKDQ6nxtplsw-1; Thu, 01 Apr 2021 09:54:45 -0400
-X-MC-Unique: bTpy2vqsPHWKDQ6nxtplsw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC44A1018F95;
-        Thu,  1 Apr 2021 13:54:23 +0000 (UTC)
-Received: from crecklin.bos.csb (unknown [10.22.8.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0FA865D9CC;
-        Thu,  1 Apr 2021 13:54:21 +0000 (UTC)
-Reply-To: crecklin@redhat.com
-Subject: Re: Fix hibernation in FIPS mode?
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Simo Sorce <simo@redhat.com>, Dexuan Cui <decui@microsoft.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <MW2PR2101MB08924CD74C6EB773C4D5FAFDBF7E9@MW2PR2101MB0892.namprd21.prod.outlook.com>
- <CAJZ5v0g+=AnRAmAAn8NpHm8bmZ1WkwDpjb5rr_zPOVABW1PYug@mail.gmail.com>
- <4e95307db43e2f7cc8516e645b81db7db0dd8ad4.camel@redhat.com>
- <CAMj1kXHg2RDgwmOhJkaAPoWeHpxnd6tixp94Kha1-bzNvCaQUg@mail.gmail.com>
- <504652e70f0a4e42e4927583b9ed47cd78590329.camel@redhat.com>
- <CAMj1kXHRduBs0TJcLC4iMkyoGXyyrXPM_WpVVij33ki8THf9Kw@mail.gmail.com>
- <CAJZ5v0hKPBtUzGKfGHD6KX-c2QEETfatCkNjCK8ukh-AhVfUhA@mail.gmail.com>
-From:   Chris von Recklinghausen <crecklin@redhat.com>
-Organization: Red Hat
-Message-ID: <2b452865-ca6c-892d-f04e-3e6e2a74b598@redhat.com>
-Date:   Thu, 1 Apr 2021 09:54:21 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 1 Apr 2021 13:50:29 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C688C005714
+        for <linux-crypto@vger.kernel.org>; Thu,  1 Apr 2021 07:13:02 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id d12so3036287lfv.11
+        for <linux-crypto@vger.kernel.org>; Thu, 01 Apr 2021 07:13:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4LRc5zlX4dmIqJZC4tRXENYZk181mewXwD7X4GEXkKA=;
+        b=Vm+Tjv8EGF4ON3BmePiF+an1PklXoMoLGfZKYRESqwWronVx6WRRZIS+F6TP+Lbfr9
+         c2fhhAhZk/8su55Y2QryQk7HxxWzqTdDivxWH4tQoshMJgWi+bZJvhsQdFOJrHT3LogF
+         ReLuPuqCYkvLIBoIvAIP0KsgTTMVWftEFB2m1jz11/crEDOHsPcdzNSm0vmeT8TittD3
+         wxip5yY2IJe+jJ1e9DNffMb2CBHe+fM+0pjqre0pvnviuVjWpxDowfLaDS073O8T2T1r
+         S/Tk43FTwPTMksk0XsjA7dB2lZp93arrwSecLvBVeuX60gZ9hxIPny6zhtsP+UkF+xgk
+         B/DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4LRc5zlX4dmIqJZC4tRXENYZk181mewXwD7X4GEXkKA=;
+        b=DMVNdHkuwq6Rc4gZBaQ5rRHKQvqX/4bxbq8gx65OAPZRDqmIXrGa5krnOAeuG/sITy
+         7wEGuFRab/C5U9yYqkgYOt/DMZO9U/zI0uhlvIOzDofMmzjL8qM6O1S3aPmPaOkYjDBz
+         jWzsIjbmXQ5VyPwjLJ2DKKUsxdS3dVOLAzC5vb52zb+xYgSmoen9Ue+/LRhJ5qbVEwCa
+         iYcVslMCtZUfc48G0Y0lDMrtlfaxVEybSnIKfk2dUxL4qWwr2t64FkVscXm7SlX7wzI/
+         mvlSwqNly4YxlWIQyMJEwac4DY/nFttwoolAWyNuj+Js4nwFl/XVoSGMYWVyWUFNdCQg
+         isyw==
+X-Gm-Message-State: AOAM5317dwvJzHGcIdM5jB+how2aBQlfVo2WpO1FZmqqM6MgGRZuHbWQ
+        /V6BtxNB55HSHGRTYS2aBTZTW8rJfSvPd4aLvE8PSQ==
+X-Google-Smtp-Source: ABdhPJyNTkFv6LNWIK5vqvAiZQLpPg75ghn4iKbcqKm1L+mPpFDnlADouEnrSfxrIbDhgL/PNaz27oq5y6nNZioEwVg=
+X-Received: by 2002:ac2:5970:: with SMTP id h16mr5350347lfp.108.1617286380737;
+ Thu, 01 Apr 2021 07:13:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0hKPBtUzGKfGHD6KX-c2QEETfatCkNjCK8ukh-AhVfUhA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com>
+ <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de> <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com>
+ <CAFA6WYO29o73nSg4ikU9cyaOr0kpaXFJpcGLGmFLgjKQWchcEg@mail.gmail.com>
+ <1666035815.140054.1617283065549.JavaMail.zimbra@nod.at> <ea261e53-8f5d-ac52-f3b9-7f2db4532244@pengutronix.de>
+ <CAFA6WYODfsMTiCEyFA2aRGm+UQE0OTe-ui7mMSK-cqUR_YJFTA@mail.gmail.com> <1846277009.140163.1617285566823.JavaMail.zimbra@nod.at>
+In-Reply-To: <1846277009.140163.1617285566823.JavaMail.zimbra@nod.at>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 1 Apr 2021 19:42:49 +0530
+Message-ID: <CAFA6WYNjS=1JsAPfh=j8D6HUn9rCEADyZxtWvYWuvbz_FsVbTQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Richard Weinberger <richard@nod.at>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        horia geanta <horia.geanta@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        aymen sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>,
+        James Bottomley <jejb@linux.ibm.com>,
+        kernel <kernel@pengutronix.de>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        david <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 4/1/21 9:38 AM, Rafael J. Wysocki wrote:
-> On Thu, Apr 1, 2021 at 10:47 AM Ard Biesheuvel <ardb@kernel.org> wrote:
->> On Tue, 30 Mar 2021 at 21:56, Simo Sorce <simo@redhat.com> wrote:
->>> On Tue, 2021-03-30 at 21:45 +0200, Ard Biesheuvel wrote:
->>>> On Tue, 30 Mar 2021 at 20:05, Simo Sorce <simo@redhat.com> wrote:
->>>>> On Tue, 2021-03-30 at 16:46 +0200, Rafael J. Wysocki wrote:
->>>>>> On Tue, Mar 30, 2021 at 12:14 AM Dexuan Cui <decui@microsoft.com> wrote:
->>>>>>> Hi,
->>>>>>> MD5 was marked incompliant with FIPS in 2009:
->>>>>>> a3bef3a31a19 ("crypto: testmgr - Skip algs not flagged fips_allowed in fips mode")
->>>>>>> a1915d51e8e7 ("crypto: testmgr - Mark algs allowed in fips mode")
->>>>>>>
->>>>>>> But hibernation_e820_save() is still using MD5, and fails in FIPS mode
->>>>>>> due to the 2018 patch:
->>>>>>> 749fa17093ff ("PM / hibernate: Check the success of generating md5 digest before hibernation")
->>>>>>>
->>>>>>> As a result, hibernation doesn't work when FIPS is on.
->>>>>>>
->>>>>>> Do you think if hibernation_e820_save() should be changed to use a
->>>>>>> FIPS-compliant algorithm like SHA-1?
->>>>>> I would say yes, it should.
->>>>>>
->>>>>>> PS, currently it looks like FIPS mode is broken in the mainline:
->>>>>>> https://www.mail-archive.com/linux-crypto@vger.kernel.org/msg49414.html
->>>>> FYI, SHA-1 is not a good choice, it is only permitted in HMAC
->>>>> constructions and only for specified uses. If you need to change
->>>>> algorithm you should go straight to SHA-2 or SHA-3 based hashes.
->>>>>
->>>> What is the reason for using a [broken] cryptographic hash here? if
->>>> this is just an integrity check, better use CRC32
-> Not really.
+On Thu, 1 Apr 2021 at 19:29, Richard Weinberger <richard@nod.at> wrote:
 >
-> CRC32 is not really sufficient for integrity checking here AFAICS.  It
-> might be made a fallback option if MD5 is not available, but making it
-> the default would be somewhat over the top IMO.
+> Sumit,
+>
+> ----- Urspr=C3=BCngliche Mail -----
+> > Von: "Sumit Garg" <sumit.garg@linaro.org>
+> > In this case why would one prefer to use CAAM when you have standards
+> > compliant TPM-Chip which additionally offers sealing to specific PCR
+> > (integrity measurement) values.
+>
+> I don't think we can dictate what good/sane solutions are and which are n=
+ot.
+> Both CAAM and TPM have pros and cons, I don't see why supporting both is =
+a bad idea.
 
-
-Would ghash be a better choice? It produces the same size digest as md5.
-
-Does anyone have any other suggestions of algorithms to try?
-
-Thanks,
-
-Chris
+I didn't mean to say that supporting both is a bad idea but rather I
+was looking for use-cases where one time selection of the best trust
+source (whether it be a TPM or TEE or CAAM etc.) for a platform
+wouldn't suffice for user needs.
 
 >
->>> If the integrity check is used exclusively to verify there were no
->>> accidental changes and is not used as a security measure, by all means
->>> I agree that using crc32 is a better idea.
->>>
->> Looking at 62a03defeabd58f74e07ca030d6c21e069d4d88e which introduced
->> this, it is only a best effort check which is simply omitted if md5
->> happens to be unavailable, so there is definitely no need for crypto
->> here.
-> Yes, it is about integrity checking only.  No, CRC32 is not equivalent
-> to MD5 in that respect AFAICS.
+> >> > IMHO allowing only one backend at the same time is a little over sim=
+plified.
+> >>
+> >> It is, but I'd rather leave this until it's actually needed.
+> >> What can be done now is adopting a format for the exported keys that w=
+ould
+> >> make this extension seamless in future.
+> >>
+> >
+> > +1
 >
-> Thanks!
+> As long we don't make multiple backends at runtime impossible I'm
+> fine and will happily add support for it when needed. :-)
 >
 
+You are most welcome to add such support. I will be happy to review it.
+
+-Sumit
+
+> Thanks,
+> //richard
