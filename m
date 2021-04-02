@@ -2,46 +2,42 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35153526C4
-	for <lists+linux-crypto@lfdr.de>; Fri,  2 Apr 2021 09:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3725F3526D3
+	for <lists+linux-crypto@lfdr.de>; Fri,  2 Apr 2021 09:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbhDBHAN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 2 Apr 2021 03:00:13 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:51370 "EHLO fornost.hmeau.com"
+        id S229684AbhDBHGq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 2 Apr 2021 03:06:46 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:51420 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhDBHAN (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 2 Apr 2021 03:00:13 -0400
+        id S229594AbhDBHGp (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 2 Apr 2021 03:06:45 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lSDmm-0001BB-Dc; Fri, 02 Apr 2021 18:00:05 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Apr 2021 18:00:04 +1100
-Date:   Fri, 2 Apr 2021 18:00:04 +1100
+        id 1lSDtB-0001Hi-0e; Fri, 02 Apr 2021 18:06:42 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Apr 2021 18:06:40 +1100
+Date:   Fri, 2 Apr 2021 18:06:40 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
 To:     Kai Ye <yekai13@huawei.com>
 Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         wangzhou1@hisilicon.com
-Subject: Re: [PATCH] crypto: hisilicon/qm - delete redundant code
-Message-ID: <20210402070004.GA10299@gondor.apana.org.au>
-References: <1616721272-47909-1-git-send-email-yekai13@huawei.com>
+Subject: Re: [PATCH 0/3] crypto: replace memset by memzero_explicit
+Message-ID: <20210402070640.GA10374@gondor.apana.org.au>
+References: <1616721648-56258-1-git-send-email-yekai13@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1616721272-47909-1-git-send-email-yekai13@huawei.com>
+In-Reply-To: <1616721648-56258-1-git-send-email-yekai13@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 09:14:32AM +0800, Kai Ye wrote:
-> The memory not needed to clear that will be freed. and the memset is useless
-> after the dma is freed.
+On Fri, Mar 26, 2021 at 09:20:45AM +0800, Kai Ye wrote:
+>  use memzero_explicit instead of memset to clear sensitive data,
+>  such as buffer or key.
 
-I don't doubt that this memory probably doesn't need to be zeroed
-since all it contains is a bunch of pointers instead of actual data.
-
-But your patch description is poorly written and needs to be
-rephrased to describe more clearly why it is safe to remove
-the memset.
+Does this fix a real issue? If not then it's just unnecessary
+churn.
 
 Thanks,
 -- 
