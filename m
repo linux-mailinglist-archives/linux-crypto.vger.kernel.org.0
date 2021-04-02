@@ -2,86 +2,47 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C1535290C
-	for <lists+linux-crypto@lfdr.de>; Fri,  2 Apr 2021 11:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BF2352902
+	for <lists+linux-crypto@lfdr.de>; Fri,  2 Apr 2021 11:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234448AbhDBJsz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 2 Apr 2021 05:48:55 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:33790 "EHLO fornost.hmeau.com"
+        id S231160AbhDBJrz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 2 Apr 2021 05:47:55 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:33720 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234217AbhDBJsz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:48:55 -0400
+        id S234275AbhDBJrz (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:47:55 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lSGOu-0003UO-NG; Fri, 02 Apr 2021 20:47:37 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Apr 2021 20:47:36 +1100
-Date:   Fri, 2 Apr 2021 20:47:36 +1100
+        id 1lSGP7-0003UQ-PM; Fri, 02 Apr 2021 20:47:50 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Apr 2021 20:47:49 +1100
+Date:   Fri, 2 Apr 2021 20:47:49 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Eric Biggers <ebiggers@google.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH] crypto: poly1305: fix poly1305_core_setkey() declaration
-Message-ID: <20210402094736.GC24509@gondor.apana.org.au>
-References: <20210322170542.1791154-1-arnd@kernel.org>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
+        Marco Chiappero <marco.chiappero@intel.com>
+Subject: Re: [PATCH] crypto: qat - fix error path in adf_isr_resource_alloc()
+Message-ID: <20210402094749.GD24509@gondor.apana.org.au>
+References: <20210325083418.153771-1-giovanni.cabiddu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210322170542.1791154-1-arnd@kernel.org>
+In-Reply-To: <20210325083418.153771-1-giovanni.cabiddu@intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 06:05:15PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Mar 25, 2021 at 08:34:18AM +0000, Giovanni Cabiddu wrote:
+> The function adf_isr_resource_alloc() is not unwinding correctly in case
+> of error.
+> This patch fixes the error paths and propagate the errors to the caller.
 > 
-> gcc-11 points out a mismatch between the declaration and the definition
-> of poly1305_core_setkey():
-> 
-> lib/crypto/poly1305-donna32.c:13:67: error: argument 2 of type ‘const u8[16]’ {aka ‘const unsigned char[16]’} with mismatched bound [-Werror=array-parameter=]
->    13 | void poly1305_core_setkey(struct poly1305_core_key *key, const u8 raw_key[16])
->       |                                                          ~~~~~~~~~^~~~~~~~~~~
-> In file included from lib/crypto/poly1305-donna32.c:11:
-> include/crypto/internal/poly1305.h:21:68: note: previously declared as ‘const u8 *’ {aka ‘const unsigned char *’}
->    21 | void poly1305_core_setkey(struct poly1305_core_key *key, const u8 *raw_key);
-> 
-> This is harmless in principle, as the calling conventions are the same,
-> but the more specific prototype allows better type checking in the
-> caller.
-> 
-> Change the declaration to match the actual function definition.
-> The poly1305_simd_init() is a bit suspicious here, as it previously
-> had a 32-byte argument type, but looks like it needs to take the
-> 16-byte POLY1305_BLOCK_SIZE array instead.
-> 
-> Fixes: 1c08a104360f ("crypto: poly1305 - add new 32 and 64-bit generic versions")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Fixes: 7afa232e76ce ("crypto: qat - Intel(R) QAT DH895xcc accelerator")
+> Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+> Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
 > ---
->  arch/arm/crypto/poly1305-glue.c    | 2 +-
->  arch/arm64/crypto/poly1305-glue.c  | 2 +-
->  arch/mips/crypto/poly1305-glue.c   | 2 +-
->  arch/x86/crypto/poly1305_glue.c    | 6 +++---
->  include/crypto/internal/poly1305.h | 3 ++-
->  include/crypto/poly1305.h          | 6 ++++--
->  lib/crypto/poly1305-donna32.c      | 3 ++-
->  lib/crypto/poly1305-donna64.c      | 3 ++-
->  lib/crypto/poly1305.c              | 3 ++-
->  9 files changed, 18 insertions(+), 12 deletions(-)
+>  drivers/crypto/qat/qat_common/adf_isr.c | 29 ++++++++++++++++++-------
+>  1 file changed, 21 insertions(+), 8 deletions(-)
 
 Patch applied.  Thanks.
 -- 
