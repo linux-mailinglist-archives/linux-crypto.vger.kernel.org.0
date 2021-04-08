@@ -2,77 +2,178 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B206358089
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Apr 2021 12:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649AB358109
+	for <lists+linux-crypto@lfdr.de>; Thu,  8 Apr 2021 12:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhDHK0u (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 8 Apr 2021 06:26:50 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15184 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhDHK0s (ORCPT
+        id S229831AbhDHKqv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 8 Apr 2021 06:46:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40647 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229741AbhDHKqv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 8 Apr 2021 06:26:48 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGHRS6r8QzpWLN;
-        Thu,  8 Apr 2021 18:23:48 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
- 18:26:25 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yekai13@huawei.com>
-Subject: [PATCH 2/2] crypto: hisilicon/sec_drv - use the correct print format
-Date:   Thu, 8 Apr 2021 18:23:51 +0800
-Message-ID: <1617877431-38290-3-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1617877431-38290-1-git-send-email-yekai13@huawei.com>
-References: <1617877431-38290-1-git-send-email-yekai13@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        Thu, 8 Apr 2021 06:46:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617878800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc; bh=STb3jemIR0oAseGZ4IZyjWqpuAar06/ylX4SI0DH0XM=;
+        b=ZgcnQnFP/Ra6mRFve0yENV7UPpksYfya66ZYV6FlrcpZRUVHwaBsCPDAHih02/PQO9QPDa
+        P2bjKZ2mmlkD5kVSwiAmJjuF/2WVUkLGV0hVAM9KmElkTDBaHYB4X0V3AxvV+13faHUesi
+        tIyK1Uc2K6C47nBkHv5Wg/OcBdhU2X4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-1UrL5Wv3MrmZ4_OmNDd8vw-1; Thu, 08 Apr 2021 06:46:36 -0400
+X-MC-Unique: 1UrL5Wv3MrmZ4_OmNDd8vw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F39781006701;
+        Thu,  8 Apr 2021 10:46:34 +0000 (UTC)
+Received: from crecklin.bos.com (ovpn-113-158.rdu2.redhat.com [10.10.113.158])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ED50660C0F;
+        Thu,  8 Apr 2021 10:46:30 +0000 (UTC)
+From:   Chris von Recklinghausen <crecklin@redhat.com>
+To:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
+        decui@microsoft.com, linux-pm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/1] use crc32 instead of md5 for hibernation e820 integrity check
+Date:   Thu,  8 Apr 2021 06:46:29 -0400
+Message-Id: <20210408104629.31357-1-crecklin@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-According to Documentation/core-api/printk-formats.rst, Use
-the correct print format. Printing an unsigned int value should use %u
-instead of %d.
+Suspend fails on a system in fips mode because md5 is used for the e820
+integrity check and is not available. Use crc32 instead.
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
+Prior to this patch, MD5 is used only to create a digest to ensure integrity of
+the region, no actual encryption is done. This patch set changes the integrity
+check to use crc32 instead of md5 since crc32 is available in both FIPS and
+non-FIPS modes.
+
+Note that the digest is only used as an integrity check. No actual encryption
+is done.
+
+Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
+       by md5 digest")
+
+Tested-by: Dexuan Cui <decui@microsoft.com>
+Reviewed-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
 ---
- drivers/crypto/hisilicon/sec/sec_drv.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+v1 -> v2
+   bump up RESTORE_MAGIC
+v2 -> v3
+   move embelishment from cover letter to commit comments (no code change)
+v3 -> v4
+   add note to comments that md5 isn't used for encryption here.
 
-diff --git a/drivers/crypto/hisilicon/sec/sec_drv.c b/drivers/crypto/hisilicon/sec/sec_drv.c
-index 91ee2bb..819bbb5 100644
---- a/drivers/crypto/hisilicon/sec/sec_drv.c
-+++ b/drivers/crypto/hisilicon/sec/sec_drv.c
-@@ -233,7 +233,7 @@ static int sec_queue_map_io(struct sec_queue *queue)
- 				    IORESOURCE_MEM,
- 				    2 + queue->queue_id);
- 	if (!res) {
--		dev_err(dev, "Failed to get queue %d memory resource\n",
-+		dev_err(dev, "Failed to get queue %u memory resource\n",
- 			queue->queue_id);
+ arch/x86/power/hibernate.c | 35 +++++++++++++++++++----------------
+ 1 file changed, 19 insertions(+), 16 deletions(-)
+
+diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
+index cd3914fc9f3d..b56172553275 100644
+--- a/arch/x86/power/hibernate.c
++++ b/arch/x86/power/hibernate.c
+@@ -55,31 +55,31 @@ int pfn_is_nosave(unsigned long pfn)
+ }
+ 
+ 
+-#define MD5_DIGEST_SIZE 16
++#define CRC32_DIGEST_SIZE 16
+ 
+ struct restore_data_record {
+ 	unsigned long jump_address;
+ 	unsigned long jump_address_phys;
+ 	unsigned long cr3;
+ 	unsigned long magic;
+-	u8 e820_digest[MD5_DIGEST_SIZE];
++	u8 e820_digest[CRC32_DIGEST_SIZE];
+ };
+ 
+-#if IS_BUILTIN(CONFIG_CRYPTO_MD5)
++#if IS_BUILTIN(CONFIG_CRYPTO_CRC32)
+ /**
+- * get_e820_md5 - calculate md5 according to given e820 table
++ * get_e820_crc32 - calculate crc32 according to given e820 table
+  *
+  * @table: the e820 table to be calculated
+- * @buf: the md5 result to be stored to
++ * @buf: the crc32 result to be stored to
+  */
+-static int get_e820_md5(struct e820_table *table, void *buf)
++static int get_e820_crc32(struct e820_table *table, void *buf)
+ {
+ 	struct crypto_shash *tfm;
+ 	struct shash_desc *desc;
+ 	int size;
+ 	int ret = 0;
+ 
+-	tfm = crypto_alloc_shash("md5", 0, 0);
++	tfm = crypto_alloc_shash("crc32", 0, 0);
+ 	if (IS_ERR(tfm))
  		return -ENOMEM;
- 	}
-@@ -653,12 +653,12 @@ static int sec_queue_free(struct sec_queue *queue)
- 	struct sec_dev_info *info = queue->dev_info;
  
- 	if (queue->queue_id >= SEC_Q_NUM) {
--		dev_err(info->dev, "No queue %d\n", queue->queue_id);
-+		dev_err(info->dev, "No queue %u\n", queue->queue_id);
- 		return -ENODEV;
- 	}
+@@ -107,24 +107,24 @@ static int get_e820_md5(struct e820_table *table, void *buf)
  
- 	if (!queue->in_use) {
--		dev_err(info->dev, "Queue %d is idle\n", queue->queue_id);
-+		dev_err(info->dev, "Queue %u is idle\n", queue->queue_id);
- 		return -ENODEV;
- 	}
+ static int hibernation_e820_save(void *buf)
+ {
+-	return get_e820_md5(e820_table_firmware, buf);
++	return get_e820_crc32(e820_table_firmware, buf);
+ }
  
+ static bool hibernation_e820_mismatch(void *buf)
+ {
+ 	int ret;
+-	u8 result[MD5_DIGEST_SIZE];
++	u8 result[CRC32_DIGEST_SIZE];
+ 
+-	memset(result, 0, MD5_DIGEST_SIZE);
++	memset(result, 0, CRC32_DIGEST_SIZE);
+ 	/* If there is no digest in suspend kernel, let it go. */
+-	if (!memcmp(result, buf, MD5_DIGEST_SIZE))
++	if (!memcmp(result, buf, CRC32_DIGEST_SIZE))
+ 		return false;
+ 
+-	ret = get_e820_md5(e820_table_firmware, result);
++	ret = get_e820_crc32(e820_table_firmware, result);
+ 	if (ret)
+ 		return true;
+ 
+-	return memcmp(result, buf, MD5_DIGEST_SIZE) ? true : false;
++	return memcmp(result, buf, CRC32_DIGEST_SIZE) ? true : false;
+ }
+ #else
+ static int hibernation_e820_save(void *buf)
+@@ -134,15 +134,15 @@ static int hibernation_e820_save(void *buf)
+ 
+ static bool hibernation_e820_mismatch(void *buf)
+ {
+-	/* If md5 is not builtin for restore kernel, let it go. */
++	/* If crc32 is not builtin for restore kernel, let it go. */
+ 	return false;
+ }
+ #endif
+ 
+ #ifdef CONFIG_X86_64
+-#define RESTORE_MAGIC	0x23456789ABCDEF01UL
++#define RESTORE_MAGIC	0x23456789ABCDEF02UL
+ #else
+-#define RESTORE_MAGIC	0x12345678UL
++#define RESTORE_MAGIC	0x12345679UL
+ #endif
+ 
+ /**
+@@ -160,6 +160,9 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
+ 	rdr->jump_address = (unsigned long)restore_registers;
+ 	rdr->jump_address_phys = __pa_symbol(restore_registers);
+ 
++	/* crc32 digest size is 4 but digest buffer size is 16 so zero it all */
++	memset(rdr->e820_digest, 0, CRC32_DIGEST_SIZE);
++
+ 	/*
+ 	 * The restore code fixes up CR3 and CR4 in the following sequence:
+ 	 *
 -- 
-2.8.1
+2.18.1
 
