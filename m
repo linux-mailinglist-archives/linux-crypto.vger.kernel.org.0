@@ -2,63 +2,179 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E39B357F2B
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Apr 2021 11:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E732357F35
+	for <lists+linux-crypto@lfdr.de>; Thu,  8 Apr 2021 11:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhDHJbY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 8 Apr 2021 05:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
+        id S229686AbhDHJcY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 8 Apr 2021 05:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhDHJbY (ORCPT
+        with ESMTP id S231205AbhDHJcX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:31:24 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3B4C061760
-        for <linux-crypto@vger.kernel.org>; Thu,  8 Apr 2021 02:31:13 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id e7so1548842edu.10
-        for <linux-crypto@vger.kernel.org>; Thu, 08 Apr 2021 02:31:12 -0700 (PDT)
+        Thu, 8 Apr 2021 05:32:23 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED75C061760
+        for <linux-crypto@vger.kernel.org>; Thu,  8 Apr 2021 02:32:11 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id z1so1931835ybf.6
+        for <linux-crypto@vger.kernel.org>; Thu, 08 Apr 2021 02:32:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=ACBy0CsTf9AfHQ2TfvGukMtn0sCHQJeURQpJCTFtmRw=;
-        b=pJCLe27Ti2XwbwLFzfv1/h85gHSfTZEOmbVXpVRkYnQ/+Gdpzdy4wF3+AFoFIlERRL
-         yOa9yc4lDe115r0LgmZYc7M/eqxh1+NUtM+5N8O4dzarYcdxDAc3AxoCISO15S7aovWf
-         IW0TbGtlnGJhT+iXOMcigj+1vV+Npj770ABJtjg5aY51q+NP9cyTJfa71pT2WivJYsXa
-         tliOGSbNiLVcgubRWckluellB06pYncCSZjTBSN9RmcCca/ZYH9ssWLDUspLtsylROZm
-         7LRteQV66WylqwL0kInjbkU+Xb97BytvNPEAOEe8kY8Ffb1de5eeqLXUJkJiv03BTsVT
-         AFPw==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=fnMlI4cCi5i1NUufdtdv3pSuJm+l7oWlNXT7wYqme/w=;
+        b=bHgeyreC34y/fcAqWRBoIwsfvdZkzYyZmrqHyhWcPg7AMKYpwTPLq28D/dFAhF5Yl+
+         XgR6err4AXKzcy6stJsw43sjDFB560/4rfw+ll+kNJfshWjncVPXRMr4FebB7kBt29W+
+         0B9zB/cGDhfNM6X1J3Y6HEBk7KtW+/so6iQ8LBdf4j+giIhpckip8lcUuAPnVZYGBAm9
+         6w16j7CoA03fE9IVY0q3/Fc4SH0a8mIycVu8LVQmjenHD23gr5SoWcfnmfOODFkh0tzO
+         kxeCVjEG9wdyWPa9u8CKnezQQ1OgKBN2D44b9ShOZIaHjX6cau5gGi02TY+rH75+UpCK
+         Y70Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=ACBy0CsTf9AfHQ2TfvGukMtn0sCHQJeURQpJCTFtmRw=;
-        b=ag+6xM0D0ggOqoUEIoNPI/wruS0b8jz13CMGA447EYbay3lvGnuwWlFxvbpizV4ys8
-         INpD2aHQKN6/HFgueRB5dIi97TRMkwnCWSFe4XWAlMO3j+qy/4VUgoHSeZFh+ZsxvbHh
-         WCSGjGtCKuq1KSEVy6HBTN+tGNbO5eZU9rWy8SucrAVIFM3CSzIGMSsjLXtXp8Yts+Qf
-         BZdD+SA4VF+oo8AxtzkeI5WlTU1oAUBrIfIxlgbFnMVg1Peyu76Is1NU5st4N6jh10eW
-         3XPhiKPwNHjLr/MdT/xTWcd+nOU5yz7PI3f+bmvxK4LEu2UIpRQYhA+9IaAc+p2fDHGF
-         Io0w==
-X-Gm-Message-State: AOAM531wrrIChjldJc37/fN6y2GO34UFqD8fyMghtLUFuGsLi3cmkRES
-        CrKj7lz6LZ18vECk62zxQEpIUffvJRmwokzdVBk=
-X-Google-Smtp-Source: ABdhPJzQSTdCTVNtzeZbWAlXhWTW4T7A6xxTUFcbLZUO3VSfsBZdvadWD2ctS5OW2NtWUENTqtXsa9fuzjZec4hV9PY=
-X-Received: by 2002:aa7:d5c9:: with SMTP id d9mr9947052eds.335.1617874271520;
- Thu, 08 Apr 2021 02:31:11 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=fnMlI4cCi5i1NUufdtdv3pSuJm+l7oWlNXT7wYqme/w=;
+        b=QCM1nexxjc3rU9ZQDY1phDWmkEPiBkGZHMRFutoHXVcuYvF66PT8gdA/7/JZiEZTuz
+         CVPt8nZbX3aBovYnltXOKywRMMQ+3l/83cTyZK2IzXBwKtlH1wC4Wd7ElWtscSgD0fRG
+         ulZz8vyfU8zYpR1d+UApv7F4St4HCO8B7rBrhQ4YhZV2bbVPRtCFcucz3CnP3QRR3Eo4
+         TtakjQz3w9tFYYotpI0+BbGCDg2oD/EcfLql3Mg8txafBYl3NItB48loaDf2WpT7WFR+
+         LGH6mxBzgqvHdHfU+okhh/9fSZzfT6TxUsmDGVgj3WGNtzp1JLDj7miDQmyPmlvHZAf5
+         V6yg==
+X-Gm-Message-State: AOAM532baojcaRWZDMdxsjcuWqd00v2kherDB86t8bxie8rbkpkp7RF2
+        FhpymccjpYxqCwUAXUp2HKayJDrrPGC2xDXXfmI=
+X-Google-Smtp-Source: ABdhPJyQ4YkNxT7dTfE5jXwHMohMXu/712oSG60h7tDyNnw8AHnXvu0iGYiOvjRIQ5tE2DIYBmwBcCj+7r9BoGe3uzM=
+X-Received: by 2002:a25:b906:: with SMTP id x6mr9689759ybj.504.1617874330845;
+ Thu, 08 Apr 2021 02:32:10 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6402:56:0:0:0:0 with HTTP; Thu, 8 Apr 2021 02:31:10
- -0700 (PDT)
-From:   carine david <carinedavid122@gmail.com>
-Date:   Thu, 8 Apr 2021 11:31:10 +0200
-Message-ID: <CANwfgZJ=ki9E-ME7ML5LU1VRBObcFG_jMaommqpqe_dACw1dLw@mail.gmail.com>
-Subject: please very urgent message
-To:     undisclosed-recipients:;
+From:   Tony He <huangya90@gmail.com>
+Date:   Thu, 8 Apr 2021 17:31:59 +0800
+Message-ID: <CAAUX2SU=_h32YHa9=U1fjq6LWXFi_9yaa_-pRWwNY=jgO+0kxQ@mail.gmail.com>
+Subject: =?UTF-8?Q?Is_it_possible_to_add_block_ciphers_for_MIPS_OCTEON?=
+        =?UTF-8?Q?=EF=BC=9F?=
+To:     aaro.koskinen@iki.fi
+Cc:     linux-crypto@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dearest One.
-Please i need your kind assistance  to help me transfer to your country
-some money ($1.8m),  my late father deposited in the  bank for investments
-before he died in a car accident,  Please i will be
-expecting your kind response to give you detailed information..
-Sincerely yours,
-Miss Carine David..
+[Resend this email because the previous one contains a HTML subpart.
+Very sorry!]
+
+Hi Aaro,
+
+Sorry to bother you. I saw you have added some message digest modules
+to support OCTEON hardware accelerator. May I know if we can support
+block ciphers
+such as AES/DES ? We can get ASM primitives from
+https://svn.dd-wrt.com//browser/src/linux/universal/linux-3.10/arch/mips/include/asm/octeon/cvmx-asm.h?rev=24520
+Thanks.
+
+// AES
+
+
+
+#define CVMX_MT_AES_ENC_CBC0(val) asm volatile ("dmtc2 %[rt],0x0108" :
+: [rt] "d" (val))
+
+#define CVMX_MT_AES_ENC_CBC1(val) asm volatile ("dmtc2 %[rt],0x3109" :
+: [rt] "d" (val))
+
+#define CVMX_MT_AES_ENC0(val) asm volatile ("dmtc2 %[rt],0x010a" : :
+[rt] "d" (val))
+
+#define CVMX_MT_AES_ENC1(val) asm volatile ("dmtc2 %[rt],0x310b" : :
+[rt] "d" (val))
+
+#define CVMX_MT_AES_DEC_CBC0(val) asm volatile ("dmtc2 %[rt],0x010c" :
+: [rt] "d" (val))
+
+#define CVMX_MT_AES_DEC_CBC1(val) asm volatile ("dmtc2 %[rt],0x310d" :
+: [rt] "d" (val))
+
+#define CVMX_MT_AES_DEC0(val) asm volatile ("dmtc2 %[rt],0x010e" : :
+[rt] "d" (val))
+
+#define CVMX_MT_AES_DEC1(val) asm volatile ("dmtc2 %[rt],0x310f" : :
+[rt] "d" (val))
+
+// pos can be 0-3
+
+#define CVMX_MT_AES_KEY(val,pos) asm volatile ("dmtc2 %[rt],0x0104+"
+CVMX_TMP_STR(pos) : : [rt] "d" (val))
+
+// pos can be 0-1
+
+#define CVMX_MT_AES_IV(val,pos) asm volatile ("dmtc2 %[rt],0x0102+"
+CVMX_TMP_STR(pos) : : [rt] "d" (val))
+
+#define CVMX_MT_AES_KEYLENGTH(val) asm volatile ("dmtc2 %[rt],0x0110"
+: : [rt] "d" (val)) // write the keylen
+
+// pos can be 0-1
+
+#define CVMX_MT_AES_RESULT(val,pos) asm volatile ("dmtc2
+%[rt],0x0100+" CVMX_TMP_STR(pos) : : [rt] "d" (val))
+
+
+
+// pos can be 0-1
+
+#define CVMX_MF_AES_RESULT(val,pos) asm volatile ("dmfc2
+%[rt],0x0100+" CVMX_TMP_STR(pos) : [rt] "=d" (val) : )
+
+// pos can be 0-1
+
+#define CVMX_MF_AES_IV(val,pos) asm volatile ("dmfc2 %[rt],0x0102+"
+CVMX_TMP_STR(pos) : [rt] "=d" (val) : )
+
+// pos can be 0-3
+
+#define CVMX_MF_AES_KEY(val,pos) asm volatile ("dmfc2 %[rt],0x0104+"
+CVMX_TMP_STR(pos) : [rt] "=d" (val) : )
+
+#define CVMX_MF_AES_KEYLENGTH(val) asm volatile ("dmfc2 %[rt],0x0110"
+: [rt] "=d" (val) : ) // read the keylen
+
+#define CVMX_MF_AES_DAT0(val) asm volatile ("dmfc2 %[rt],0x0111" :
+[rt] "=d" (val) : ) // first piece of input data
+
+// 3DES
+
+
+
+// pos can be 0-2
+
+#define CVMX_MT_3DES_KEY(val,pos) asm volatile ("dmtc2 %[rt],0x0080+"
+CVMX_TMP_STR(pos) : : [rt] "d" (val))
+
+#define CVMX_MT_3DES_IV(val) asm volatile ("dmtc2 %[rt],0x0084" : :
+[rt] "d" (val))
+
+#define CVMX_MT_3DES_ENC_CBC(val) asm volatile ("dmtc2 %[rt],0x4088" :
+: [rt] "d" (val))
+
+#define CVMX_MT_3DES_ENC(val) asm volatile ("dmtc2 %[rt],0x408a" : :
+[rt] "d" (val))
+
+#define CVMX_MT_3DES_DEC_CBC(val) asm volatile ("dmtc2 %[rt],0x408c" :
+: [rt] "d" (val))
+
+#define CVMX_MT_3DES_DEC(val) asm volatile ("dmtc2 %[rt],0x408e" : :
+[rt] "d" (val))
+
+#define CVMX_MT_3DES_RESULT(val) asm volatile ("dmtc2 %[rt],0x0098" :
+: [rt] "d" (val))
+
+
+
+// pos can be 0-2
+
+#define CVMX_MF_3DES_KEY(val,pos) asm volatile ("dmfc2 %[rt],0x0080+"
+CVMX_TMP_STR(pos) : [rt] "=d" (val) : )
+
+#define CVMX_MF_3DES_IV(val) asm volatile ("dmfc2 %[rt],0x0084" : [rt]
+"=d" (val) : )
+
+#define CVMX_MF_3DES_RESULT(val) asm volatile ("dmfc2 %[rt],0x0088" :
+[rt] "=d" (val) : )
+
+
+Tony
