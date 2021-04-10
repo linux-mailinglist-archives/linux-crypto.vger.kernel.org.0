@@ -2,32 +2,30 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B1735AC8C
-	for <lists+linux-crypto@lfdr.de>; Sat, 10 Apr 2021 11:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E4C35AC93
+	for <lists+linux-crypto@lfdr.de>; Sat, 10 Apr 2021 11:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234618AbhDJJuz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 10 Apr 2021 05:50:55 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16563 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233943AbhDJJuy (ORCPT
+        id S234594AbhDJJwp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 10 Apr 2021 05:52:45 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16518 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234433AbhDJJwp (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 10 Apr 2021 05:50:54 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FHVYg25JQz17RFW;
-        Sat, 10 Apr 2021 17:48:23 +0800 (CST)
+        Sat, 10 Apr 2021 05:52:45 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FHVb71sgwzPnxM;
+        Sat, 10 Apr 2021 17:49:39 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 10 Apr 2021 17:50:28 +0800
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 10 Apr 2021 17:52:18 +0800
 From:   Hui Tang <tanghui20@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
         <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] crypto: hisilicon/hpre - add debug log
-Date:   Sat, 10 Apr 2021 17:47:01 +0800
-Message-ID: <1618048021-50335-4-git-send-email-tanghui20@huawei.com>
+Subject: [PATCH] crypto: hisilicon/hpre - fix unmapping invalid dma address
+Date:   Sat, 10 Apr 2021 17:49:17 +0800
+Message-ID: <1618048157-6289-1-git-send-email-tanghui20@huawei.com>
 X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1618048021-50335-1-git-send-email-tanghui20@huawei.com>
-References: <1618048021-50335-1-git-send-email-tanghui20@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.67.165.24]
@@ -36,47 +34,103 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-When the received sqe is abnormal, the error message in the sqe written
-back by the hardware is printed to help to analyze the abnormal causes.
+Currently, an invalid dma address may be unmapped when calling
+'xx_data_clr_all' in error path, so check dma address of sqe in/out
+whether it has been mapped before calling 'dma_free_coherent' or
+'dma_unmap_single'.
 
+An abnormal case is as follows:
+hpre_curve25519_compute_value
+	-> hpre_curve25519_src_init
+	-> hpre_curve25519_hw_data_clr_all
+
+Fixes: a9214b0b6ed2(crypto: hisilicon - fix the check on dma address)
 Signed-off-by: Hui Tang <tanghui20@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index 0adaf92..c8531c0 100644
+index f363653..d23893a 100644
 --- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
 +++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -325,14 +325,16 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
- static int hpre_alg_res_post_hf(struct hpre_ctx *ctx, struct hpre_sqe *sqe,
- 				void **kreq)
- {
-+	struct device *dev = HPRE_DEV(ctx);
- 	struct hpre_asym_request *req;
--	unsigned int err, done;
-+	unsigned int err, done, alg;
- 	int id;
-
- #define HPRE_NO_HW_ERR		0
- #define HPRE_HW_TASK_DONE	3
- #define HREE_HW_ERR_MASK	0x7ff
- #define HREE_SQE_DONE_MASK	0x3
-+#define HREE_ALG_TYPE_MASK	0x1f
- 	id = (int)le16_to_cpu(sqe->tag);
- 	req = ctx->req_list[id];
- 	hpre_rm_req_from_ctx(req);
-@@ -347,6 +349,10 @@ static int hpre_alg_res_post_hf(struct hpre_ctx *ctx, struct hpre_sqe *sqe,
- 	if (likely(err == HPRE_NO_HW_ERR && done == HPRE_HW_TASK_DONE))
- 		return 0;
-
-+	alg = le32_to_cpu(sqe->dw0) & HREE_ALG_TYPE_MASK;
-+	dev_err_ratelimited(dev, "alg[0x%x] error: done[0x%x], etype[0x%x]\n",
-+		alg, done, err);
-+
- 	return -EINVAL;
- }
-
---
+@@ -298,6 +298,8 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	dma_addr_t tmp;
+ 
+ 	tmp = le64_to_cpu(sqe->in);
++	if (unlikely(dma_mapping_error(dev, tmp)))
++		return;
+ 
+ 	if (src) {
+ 		if (req->src)
+@@ -307,6 +309,8 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	}
+ 
+ 	tmp = le64_to_cpu(sqe->out);
++	if (unlikely(dma_mapping_error(dev, tmp)))
++		return;
+ 
+ 	if (req->dst) {
+ 		if (dst)
+@@ -517,6 +521,8 @@ static int hpre_msg_request_set(struct hpre_ctx *ctx, void *req, bool is_rsa)
+ 		msg->key = cpu_to_le64(ctx->dh.dma_xa_p);
+ 	}
+ 
++	msg->in = DMA_MAPPING_ERROR;
++	msg->out = DMA_MAPPING_ERROR;
+ 	msg->dw0 |= cpu_to_le32(0x1 << HPRE_SQE_DONE_SHIFT);
+ 	msg->task_len1 = (ctx->key_sz >> HPRE_BITS_2_BYTES_SHIFT) - 1;
+ 	h_req->ctx = ctx;
+@@ -1365,11 +1371,15 @@ static void hpre_ecdh_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	dma_addr_t dma;
+ 
+ 	dma = le64_to_cpu(sqe->in);
++	if (unlikely(dma_mapping_error(dev, dma)))
++		return;
+ 
+ 	if (src && req->src)
+ 		dma_free_coherent(dev, ctx->key_sz << 2, req->src, dma);
+ 
+ 	dma = le64_to_cpu(sqe->out);
++	if (unlikely(dma_mapping_error(dev, dma)))
++		return;
+ 
+ 	if (req->dst)
+ 		dma_free_coherent(dev, ctx->key_sz << 1, req->dst, dma);
+@@ -1424,6 +1434,8 @@ static int hpre_ecdh_msg_request_set(struct hpre_ctx *ctx,
+ 	h_req->areq.ecdh = req;
+ 	msg = &h_req->req;
+ 	memset(msg, 0, sizeof(*msg));
++	msg->in = DMA_MAPPING_ERROR;
++	msg->out = DMA_MAPPING_ERROR;
+ 	msg->key = cpu_to_le64(ctx->ecdh.dma_p);
+ 
+ 	msg->dw0 |= cpu_to_le32(0x1U << HPRE_SQE_DONE_SHIFT);
+@@ -1660,11 +1672,15 @@ static void hpre_curve25519_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	dma_addr_t dma;
+ 
+ 	dma = le64_to_cpu(sqe->in);
++	if (unlikely(dma_mapping_error(dev, dma)))
++		return;
+ 
+ 	if (src && req->src)
+ 		dma_free_coherent(dev, ctx->key_sz, req->src, dma);
+ 
+ 	dma = le64_to_cpu(sqe->out);
++	if (unlikely(dma_mapping_error(dev, dma)))
++		return;
+ 
+ 	if (req->dst)
+ 		dma_free_coherent(dev, ctx->key_sz, req->dst, dma);
+@@ -1715,6 +1731,8 @@ static int hpre_curve25519_msg_request_set(struct hpre_ctx *ctx,
+ 	h_req->areq.curve25519 = req;
+ 	msg = &h_req->req;
+ 	memset(msg, 0, sizeof(*msg));
++	msg->in = DMA_MAPPING_ERROR;
++	msg->out = DMA_MAPPING_ERROR;
+ 	msg->key = cpu_to_le64(ctx->curve25519.dma_p);
+ 
+ 	msg->dw0 |= cpu_to_le32(0x1U << HPRE_SQE_DONE_SHIFT);
+-- 
 2.8.1
 
