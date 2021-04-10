@@ -2,18 +2,18 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4231935AC89
-	for <lists+linux-crypto@lfdr.de>; Sat, 10 Apr 2021 11:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A70F35AC8B
+	for <lists+linux-crypto@lfdr.de>; Sat, 10 Apr 2021 11:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234433AbhDJJuy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 10 Apr 2021 05:50:54 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16561 "EHLO
+        id S234594AbhDJJuz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 10 Apr 2021 05:50:55 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16562 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhDJJux (ORCPT
+        with ESMTP id S229992AbhDJJux (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Sat, 10 Apr 2021 05:50:53 -0400
 Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FHVYg2WXjz17RFl;
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FHVYg2Kmgz17RFh;
         Sat, 10 Apr 2021 17:48:23 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
@@ -22,9 +22,9 @@ From:   Hui Tang <tanghui20@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
         <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/3] crypto: hisilicon/hpre - delete the rudundant space after return
-Date:   Sat, 10 Apr 2021 17:46:59 +0800
-Message-ID: <1618048021-50335-2-git-send-email-tanghui20@huawei.com>
+Subject: [PATCH 2/3] crypto: hisilicon/hpre - use the correct variable type
+Date:   Sat, 10 Apr 2021 17:47:00 +0800
+Message-ID: <1618048021-50335-3-git-send-email-tanghui20@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1618048021-50335-1-git-send-email-tanghui20@huawei.com>
 References: <1618048021-50335-1-git-send-email-tanghui20@huawei.com>
@@ -36,49 +36,28 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-There are two spaces after return, just keep one.
+The return value of 'le32_to_cpu' is unsigned, so change the
+variable type from 'int' to 'unsigned int'.
 
 Signed-off-by: Hui Tang <tanghui20@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 2 +-
- drivers/crypto/hisilicon/hpre/hpre_main.c   | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index d23893a..b312a38 100644
+index b312a38..0adaf92 100644
 --- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
 +++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -344,7 +344,7 @@ static int hpre_alg_res_post_hf(struct hpre_ctx *ctx, struct hpre_sqe *sqe,
- 		HREE_SQE_DONE_MASK;
+@@ -326,7 +326,8 @@ static int hpre_alg_res_post_hf(struct hpre_ctx *ctx, struct hpre_sqe *sqe,
+ 				void **kreq)
+ {
+ 	struct hpre_asym_request *req;
+-	int err, id, done;
++	unsigned int err, done;
++	int id;
  
- 	if (likely(err == HPRE_NO_HW_ERR && done == HPRE_HW_TASK_DONE))
--		return  0;
-+		return 0;
- 
- 	return -EINVAL;
- }
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 264684a..916af3f 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -472,7 +472,7 @@ static int hpre_clear_enable_write(struct hpre_debugfs_file *file, u32 val)
- 	       ~HPRE_CTRL_CNT_CLR_CE_BIT) | val;
- 	writel(tmp, qm->io_base + HPRE_CTRL_CNT_CLR_CE);
- 
--	return  0;
-+	return 0;
- }
- 
- static u32 hpre_cluster_inqry_read(struct hpre_debugfs_file *file)
-@@ -494,7 +494,7 @@ static int hpre_cluster_inqry_write(struct hpre_debugfs_file *file, u32 val)
- 
- 	writel(val, qm->io_base + offset + HPRE_CLUSTER_INQURY);
- 
--	return  0;
-+	return 0;
- }
- 
- static ssize_t hpre_ctrl_debug_read(struct file *filp, char __user *buf,
+ #define HPRE_NO_HW_ERR		0
+ #define HPRE_HW_TASK_DONE	3
 -- 
 2.8.1
 
