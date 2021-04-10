@@ -2,149 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6685535A94B
-	for <lists+linux-crypto@lfdr.de>; Sat, 10 Apr 2021 01:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 975E535AC8A
+	for <lists+linux-crypto@lfdr.de>; Sat, 10 Apr 2021 11:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235193AbhDIXgi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 9 Apr 2021 19:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235096AbhDIXgh (ORCPT
+        id S234507AbhDJJuz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 10 Apr 2021 05:50:55 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16564 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232254AbhDJJux (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 9 Apr 2021 19:36:37 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7B2C061762
-        for <linux-crypto@vger.kernel.org>; Fri,  9 Apr 2021 16:36:22 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id u4so8341450ljo.6
-        for <linux-crypto@vger.kernel.org>; Fri, 09 Apr 2021 16:36:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MQEhdxl+cSU7BC7XRTZDcCsNpOwQL3MJhJomrvmkJCY=;
-        b=naXn5kfXgRlukFVoSCe/aS9mSub16qMDDnXU0x9NB9VvBXEc/nCg53QsttbiYYoOdy
-         NvXp8jYd89b8HUaPN7fRNWO7pgHhHGs0K2z7HvJSpG4ldxCjcMZNSGLrjUXwkFVHREQu
-         EkdeDYJ7eqF5tFBnfniDsngW17bsbFPd/pBe5DFNZhQSWnOUt41ATFBagvjygDaOpiYo
-         62J7wMp79geIT6GRT+gjXifp+0VcR8gXSKkd4nk/0kY3pkxISXwVA86aOf+t+AdlrKRe
-         U7Y/TWL9S15pzXqvCbz7Fo4iNaFjd0uAUUBxFrQUZ7BwZ3283l1O3CNk3bQetk5ztkO4
-         RIrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MQEhdxl+cSU7BC7XRTZDcCsNpOwQL3MJhJomrvmkJCY=;
-        b=SWcwUC405YZgPMNwW8sWttxJqeK+iUQz/vmK0PlJWXKbpDaevNTLtqn6L84G/CcN+q
-         RUXLUcFnIx4nozuOn2FLNPvKWVZ+pQ+xfYa37OzN5+NgtzT06I3d4doIyoYzhNqsRmjJ
-         g7jtaCWDcxVKfThXHcygccgRdKWutiPqp8c58hio80M9PA6qSzjeZnA6hjc9TkUFF17o
-         FKPkc42yjRlqL/HkVoIgci/XagHgYSxuOOiXyT7PtP1GAG7qz1LD3v+9762iUcJCWYUs
-         VLDZ7oKSqkr3zB961wvgwyZA+TR9tXiWnHM5cgYQM5dGKzoHmGtCBIpLks6nCfWwn5lc
-         EPhQ==
-X-Gm-Message-State: AOAM532KJ0woS3l+DHAmZky/TOBYkzJkz2Kp9wcSs8sA2voXhviTLuDC
-        mvmz3DRYuzOruOInG+6jrJ28+OyL2uiCKgMRbhuDpfrxbbU2+8cb
-X-Google-Smtp-Source: ABdhPJxPZM+yBj5h9pJP265DYko714wL+M/i9xL4wgwVQK69SoBcfbh2i4JxHFXtqH+bSlHJjvuHtaD+RYSUTCWwTuU=
-X-Received: by 2002:a2e:3603:: with SMTP id d3mr10563594lja.495.1618011380903;
- Fri, 09 Apr 2021 16:36:20 -0700 (PDT)
+        Sat, 10 Apr 2021 05:50:53 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FHVYg1sLdz17RFS;
+        Sat, 10 Apr 2021 17:48:23 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 10 Apr 2021 17:50:27 +0800
+From:   Hui Tang <tanghui20@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] crypto: hisilicon/hpre - add debug log
+Date:   Sat, 10 Apr 2021 17:46:58 +0800
+Message-ID: <1618048021-50335-1-git-send-email-tanghui20@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-References: <20210409221155.1113205-1-nathan@kernel.org>
-In-Reply-To: <20210409221155.1113205-1-nathan@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 9 Apr 2021 16:36:09 -0700
-Message-ID: <CAKwvOdnTFXPy29L5JhcMBJAP4STfZUMn6739Mc4J_2Qwu3efBw@mail.gmail.com>
-Subject: Re: [PATCH] crypto: arm/curve25519 - Move '.fpu' after '.arch'
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "# 3.4.x" <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jessica Clarke <jrtc27@jrtc27.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 3:12 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> Debian's clang carries a patch that makes the default FPU mode
-> 'vfp3-d16' instead of 'neon' for 'armv7-a' to avoid generating NEON
-> instructions on hardware that does not support them:
->
-> https://salsa.debian.org/pkg-llvm-team/llvm-toolchain/-/raw/5a61ca6f21b4ad8c6ac4970e5ea5a7b5b4486d22/debian/patches/clang-arm-default-vfp3-on-armv7a.patch
-> https://bugs.debian.org/841474
-> https://bugs.debian.org/842142
-> https://bugs.debian.org/914268
+This patchset adds the debug log and cleanup code style.
 
-Another good link would be the one from Jessica describing more
-precisely what the ARM targets for Debian are:
-https://wiki.debian.org/ArchitectureSpecificsMemo#armel
+Hui Tang (3):
+  crypto: hisilicon/hpre - delete the rudundant space after return
+  crypto: hisilicon/hpre - use the correct variable type
+  crypto: hisilicon/hpre - add debug log
 
->
-> This results in the following build error when clang's integrated
-> assembler is used because the '.arch' directive overrides the '.fpu'
-> directive:
->
-> arch/arm/crypto/curve25519-core.S:25:2: error: instruction requires: NEON
->  vmov.i32 q0, #1
->  ^
-> arch/arm/crypto/curve25519-core.S:26:2: error: instruction requires: NEON
->  vshr.u64 q1, q0, #7
->  ^
-> arch/arm/crypto/curve25519-core.S:27:2: error: instruction requires: NEON
->  vshr.u64 q0, q0, #8
->  ^
-> arch/arm/crypto/curve25519-core.S:28:2: error: instruction requires: NEON
->  vmov.i32 d4, #19
->  ^
->
-> Shuffle the order of the '.arch' and '.fpu' directives so that the code
-> builds regardless of the default FPU mode. This has been tested against
-> both clang with and without Debian's patch and GCC.
->
-> Cc: stable@vger.kernel.org
-> Fixes: d8f1308a025f ("crypto: arm/curve25519 - wire up NEON implementation")
-> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/118
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Suggested-by: Jessica Clarke <jrtc27@jrtc27.com>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 11 +++++++++--
+ drivers/crypto/hisilicon/hpre/hpre_main.c   |  4 ++--
+ 2 files changed, 11 insertions(+), 4 deletions(-)
 
-Great work tracking down that Debian was carrying patches! Thank you!
-I've run this through the same 3 assemblers.
+--
+2.8.1
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> ---
->  arch/arm/crypto/curve25519-core.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm/crypto/curve25519-core.S b/arch/arm/crypto/curve25519-core.S
-> index be18af52e7dc..b697fa5d059a 100644
-> --- a/arch/arm/crypto/curve25519-core.S
-> +++ b/arch/arm/crypto/curve25519-core.S
-> @@ -10,8 +10,8 @@
->  #include <linux/linkage.h>
->
->  .text
-> -.fpu neon
->  .arch armv7-a
-> +.fpu neon
->  .align 4
->
->  ENTRY(curve25519_neon)
->
-> base-commit: e49d033bddf5b565044e2abe4241353959bc9120
-> --
-> 2.31.1.189.g2e36527f23
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
