@@ -2,95 +2,107 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4637E35C656
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Apr 2021 14:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90F035C6A4
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Apr 2021 14:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241053AbhDLMeq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 12 Apr 2021 08:34:46 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16574 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241047AbhDLMep (ORCPT
+        id S241375AbhDLMq6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 12 Apr 2021 08:46:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59664 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241368AbhDLMq6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:34:45 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FJp5l1WSgz18H5l;
-        Mon, 12 Apr 2021 20:32:11 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 12 Apr 2021 20:34:19 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
-        <liulongfang@huawei.com>, Weili Qian <qianweili@huawei.com>
-Subject: [PATCH 4/4] crypto: hisilicon - enable new error types for QM
-Date:   Mon, 12 Apr 2021 20:31:35 +0800
-Message-ID: <1618230695-22775-5-git-send-email-qianweili@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1618230695-22775-1-git-send-email-qianweili@huawei.com>
-References: <1618230695-22775-1-git-send-email-qianweili@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        Mon, 12 Apr 2021 08:46:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618231600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gyRA3eXvjPEiAnUmzzROMJvtjDJt+882R/Pm9YO3IBI=;
+        b=O2By6KcIdBvikeSUSv9xjDybrHonKkdGa5IeNQcY5zVQLwLZJNp+nxpBU7143JUeKE2v9+
+        v4rYfoPySGWEQDfYQB1WHTpoeOCu6+8GU1enPp1yD4NNVvWwZQ/ZKs+Rl6NK4//TLpZA3S
+        Y/8DgcGpnsh31t9O0NwbsfCAs/VItcg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-H2Ovd74qMrWeALGVTF0e4Q-1; Mon, 12 Apr 2021 08:46:38 -0400
+X-MC-Unique: H2Ovd74qMrWeALGVTF0e4Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E15306D252;
+        Mon, 12 Apr 2021 12:46:36 +0000 (UTC)
+Received: from ovpn-112-53.phx2.redhat.com (ovpn-112-53.phx2.redhat.com [10.3.112.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A59646090F;
+        Mon, 12 Apr 2021 12:46:29 +0000 (UTC)
+Message-ID: <01fae6c3113d454cc009f065fde77f66af9845b6.camel@redhat.com>
+Subject: Re: [PATCH net-next] [RESEND] wireguard: disable in FIPS mode
+From:   Simo Sorce <simo@redhat.com>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "herbert.xu" <herbert.xu@redhat.com>
+Date:   Mon, 12 Apr 2021 08:46:28 -0400
+In-Reply-To: <5d6137d0e4ea1d67ee495398f2cb12a1c21653fd.camel@redhat.com>
+References: <20210407113920.3735505-1-liuhangbin@gmail.com>
+         <CAHmME9p40M5oHDZXnFDXfO4-JuJ7bUB5BnsccGV1pksguz73sg@mail.gmail.com>
+         <c47d99b9d0efeea4e6cd238c2affc0fbe296b53c.camel@redhat.com>
+         <CAHmME9pRSOANrdvegLm9x8VTNWKcMtoymYrgStuSx+nsu=jpwA@mail.gmail.com>
+         <20210409024143.GL2900@Leo-laptop-t470s>
+         <CAHmME9oqK9iXRn3wxAB-MZvX3k_hMbtjHF_V9UY96u6NLcczAw@mail.gmail.com>
+         <20210409024907.GN2900@Leo-laptop-t470s> <YG/EAePSEeYdonA0@zx2c4.com>
+         <CAMj1kXG-e_NtLkAdLYp70x5ft_Q1Bn9rmdXs4awt7FEd5PQ4+Q@mail.gmail.com>
+         <0ef180dea02996fc5f4660405f2333220e8ae4c4.camel@redhat.com>
+         <CAHmME9opMi_2_cOS66U6jJvYZ=WJWv4E-mjYr20YaL=zzJxv+Q@mail.gmail.com>
+         <5d6137d0e4ea1d67ee495398f2cb12a1c21653fd.camel@redhat.com>
+Organization: Red Hat, Inc.
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-QM adds 'qm_mailbox_timeout' and 'qm_flr_timeout' hardware error types on
-Kunpeng930. This patch enables the new error types and configures the error
-types as NFE.
+On Fri, 2021-04-09 at 14:56 -0400, Simo Sorce wrote:
+> Hi Jason,
+> I can't speak for Hangbin, we do not work for the same company and I
+> was not aware of his efforts until this patch landed.
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 6 ++++--
- drivers/crypto/hisilicon/qm.h | 5 ++++-
- 2 files changed, 8 insertions(+), 3 deletions(-)
+Turns out I and Hangbin do work for the same company after all.
+Left hand is meeting right hand internally now. :-D
+The comments still stand of course.
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index deab797..20dbd13 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -135,9 +135,9 @@
- #define QM_DFX_CNT_CLR_CE		0x100118
- 
- #define QM_ABNORMAL_INT_SOURCE		0x100000
--#define QM_ABNORMAL_INT_SOURCE_CLR	GENMASK(12, 0)
-+#define QM_ABNORMAL_INT_SOURCE_CLR	GENMASK(14, 0)
- #define QM_ABNORMAL_INT_MASK		0x100004
--#define QM_ABNORMAL_INT_MASK_VALUE	0x1fff
-+#define QM_ABNORMAL_INT_MASK_VALUE	0x7fff
- #define QM_ABNORMAL_INT_STATUS		0x100008
- #define QM_ABNORMAL_INT_SET		0x10000c
- #define QM_ABNORMAL_INF00		0x100010
-@@ -389,6 +389,8 @@ static const struct hisi_qm_hw_error qm_hw_error[] = {
- 	{ .int_msk = BIT(10), .msg = "qm_db_timeout" },
- 	{ .int_msk = BIT(11), .msg = "qm_of_fifo_of" },
- 	{ .int_msk = BIT(12), .msg = "qm_db_random_invalid" },
-+	{ .int_msk = BIT(13), .msg = "qm_mailbox_timeout" },
-+	{ .int_msk = BIT(14), .msg = "qm_flr_timeout" },
- 	{ /* sentinel */ }
- };
- 
-diff --git a/drivers/crypto/hisilicon/qm.h b/drivers/crypto/hisilicon/qm.h
-index 8c67712..acefdf8 100644
---- a/drivers/crypto/hisilicon/qm.h
-+++ b/drivers/crypto/hisilicon/qm.h
-@@ -64,10 +64,13 @@
- #define QM_DB_TIMEOUT			BIT(10)
- #define QM_OF_FIFO_OF			BIT(11)
- #define QM_DB_RANDOM_INVALID		BIT(12)
-+#define QM_MAILBOX_TIMEOUT		BIT(13)
-+#define QM_FLR_TIMEOUT			BIT(14)
- 
- #define QM_BASE_NFE	(QM_AXI_RRESP | QM_AXI_BRESP | QM_ECC_MBIT | \
- 			 QM_ACC_GET_TASK_TIMEOUT | QM_DB_TIMEOUT | \
--			 QM_OF_FIFO_OF | QM_DB_RANDOM_INVALID)
-+			 QM_OF_FIFO_OF | QM_DB_RANDOM_INVALID | \
-+			 QM_MAILBOX_TIMEOUT | QM_FLR_TIMEOUT)
- #define QM_BASE_CE			QM_ECC_1BIT
- 
- #define QM_Q_DEPTH			1024
+Simo.
+
+> For my part we were already looking at big_key, wireguard and other
+> areas internally, but were not thinking of sending upstream patches
+> like these w/o first a good assessment with our teams and lab that they
+> were proper and sufficient.
+> 
+> >  So
+> > I think either you should send an exhaustive patch series that forbids
+> > all use of non-FIPS crypto anywhere in the kernel (another example:
+> > net/core/secure_seq.c) in addition to all tunneling modules that don't
+> > use FIPS-certified crypto, or figure out how to disable the lib/crypto
+> > primitives that you want to be disabled in "fips mode". With a
+> > coherent patchset for either of these, we can then evaluate it.
+> 
+> Yes a cohesive approach would be ideal, but I do not know if pushing
+> substantially the same checks we have in the Crypto API down to
+> lib/crypto is the right way to go, I am not oppose but I guess Herbert
+> would have to chime in here.
+> 
+
 -- 
-2.8.1
+Simo Sorce
+RHEL Crypto Team
+Red Hat, Inc
+
+
+
 
