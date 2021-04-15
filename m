@@ -2,151 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33498360221
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Apr 2021 08:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD9C3602AE
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Apr 2021 08:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhDOGD7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 15 Apr 2021 02:03:59 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16591 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhDOGD7 (ORCPT
+        id S229503AbhDOGwD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Thu, 15 Apr 2021 02:52:03 -0400
+Received: from vsrv57620.customer.xenway.de ([95.129.54.190]:46286 "EHLO
+        vsrv57620.customer.xenway.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230090AbhDOGwD (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 15 Apr 2021 02:03:59 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FLTHK4V0bz16KSS;
-        Thu, 15 Apr 2021 14:01:17 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 15 Apr 2021 14:03:26 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <thomas.lendacky@amd.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, Tian Tao <tiantao6@hisilicon.com>
-Subject: [PATCH] crypto: ccp - Make ccp_dev_suspend and ccp_dev_resume void functions
-Date:   Thu, 15 Apr 2021 14:03:47 +0800
-Message-ID: <1618466627-17596-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+        Thu, 15 Apr 2021 02:52:03 -0400
+X-Greylist: delayed 1236 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 02:51:58 EDT
+Received: from [193.56.28.106] (unknown [193.56.28.106])
+        by vsrv57620.customer.xenway.de (Postfix) with ESMTPA id 613C83097B5;
+        Thu, 15 Apr 2021 08:23:44 +0200 (CEST)
+Date:   Wed, 14 Apr 2021 23:24:19 -0700
+Mime-version: 1.0
+Subject: Compliments
+From:   Christopher Quinlan QC <cqukesq@gmail.com>
+To:     Undisclosed-Recipients:;
+Message-Id: <20210414232419.UVUVQACXIIXYKI@gmail.com>
+Reply-To: cqukesq@gmail.com
+Content-type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-transfer-encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Since ccp_dev_suspend() and ccp_dev_resume() only return 0 which causes
-ret to equal 0 in sp_suspend and sp_resume, making the if condition
-impossible to use. it might be a more appropriate fix to have these be
-void functions and eliminate the if condition in sp_suspend() and
-sp_resume().
+My name is Christopher Quinlan QC I am a solicitor at law / investment adviser to your late relative. Your late relative left behind Cash deposit in capital and investment security account along with properties, I will like to discuss with you regarding making this claim since he is related to you going by the lineage, surname and country of origin.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/crypto/ccp/ccp-dev.c | 12 ++++--------
- drivers/crypto/ccp/sp-dev.c  | 12 ++----------
- drivers/crypto/ccp/sp-dev.h  |  4 ++--
- 3 files changed, 8 insertions(+), 20 deletions(-)
+Please get back to me on my private email cqukesq6@gmail.com for further details.
 
-diff --git a/drivers/crypto/ccp/ccp-dev.c b/drivers/crypto/ccp/ccp-dev.c
-index 0971ee6..6777582 100644
---- a/drivers/crypto/ccp/ccp-dev.c
-+++ b/drivers/crypto/ccp/ccp-dev.c
-@@ -548,7 +548,7 @@ bool ccp_queues_suspended(struct ccp_device *ccp)
- 	return ccp->cmd_q_count == suspended;
- }
- 
--int ccp_dev_suspend(struct sp_device *sp)
-+void ccp_dev_suspend(struct sp_device *sp)
- {
- 	struct ccp_device *ccp = sp->ccp_data;
- 	unsigned long flags;
-@@ -556,7 +556,7 @@ int ccp_dev_suspend(struct sp_device *sp)
- 
- 	/* If there's no device there's nothing to do */
- 	if (!ccp)
--		return 0;
-+		return;
- 
- 	spin_lock_irqsave(&ccp->cmd_lock, flags);
- 
-@@ -572,11 +572,9 @@ int ccp_dev_suspend(struct sp_device *sp)
- 	while (!ccp_queues_suspended(ccp))
- 		wait_event_interruptible(ccp->suspend_queue,
- 					 ccp_queues_suspended(ccp));
--
--	return 0;
- }
- 
--int ccp_dev_resume(struct sp_device *sp)
-+void ccp_dev_resume(struct sp_device *sp)
- {
- 	struct ccp_device *ccp = sp->ccp_data;
- 	unsigned long flags;
-@@ -584,7 +582,7 @@ int ccp_dev_resume(struct sp_device *sp)
- 
- 	/* If there's no device there's nothing to do */
- 	if (!ccp)
--		return 0;
-+		return;
- 
- 	spin_lock_irqsave(&ccp->cmd_lock, flags);
- 
-@@ -597,8 +595,6 @@ int ccp_dev_resume(struct sp_device *sp)
- 	}
- 
- 	spin_unlock_irqrestore(&ccp->cmd_lock, flags);
--
--	return 0;
- }
- 
- int ccp_dev_init(struct sp_device *sp)
-diff --git a/drivers/crypto/ccp/sp-dev.c b/drivers/crypto/ccp/sp-dev.c
-index 6284a15..7eb3e46 100644
---- a/drivers/crypto/ccp/sp-dev.c
-+++ b/drivers/crypto/ccp/sp-dev.c
-@@ -213,12 +213,8 @@ void sp_destroy(struct sp_device *sp)
- 
- int sp_suspend(struct sp_device *sp)
- {
--	int ret;
--
- 	if (sp->dev_vdata->ccp_vdata) {
--		ret = ccp_dev_suspend(sp);
--		if (ret)
--			return ret;
-+		ccp_dev_suspend(sp);
- 	}
- 
- 	return 0;
-@@ -226,12 +222,8 @@ int sp_suspend(struct sp_device *sp)
- 
- int sp_resume(struct sp_device *sp)
- {
--	int ret;
--
- 	if (sp->dev_vdata->ccp_vdata) {
--		ret = ccp_dev_resume(sp);
--		if (ret)
--			return ret;
-+		ccp_dev_resume(sp);
- 	}
- 
- 	return 0;
-diff --git a/drivers/crypto/ccp/sp-dev.h b/drivers/crypto/ccp/sp-dev.h
-index 0218d06..e6e9f9d 100644
---- a/drivers/crypto/ccp/sp-dev.h
-+++ b/drivers/crypto/ccp/sp-dev.h
-@@ -134,8 +134,8 @@ struct sp_device *sp_get_psp_master_device(void);
- int ccp_dev_init(struct sp_device *sp);
- void ccp_dev_destroy(struct sp_device *sp);
- 
--int ccp_dev_suspend(struct sp_device *sp);
--int ccp_dev_resume(struct sp_device *sp);
-+void ccp_dev_suspend(struct sp_device *sp);
-+void ccp_dev_resume(struct sp_device *sp);
- 
- #else	/* !CONFIG_CRYPTO_DEV_SP_CCP */
- 
--- 
-2.7.4
+To facilitate the process of this transaction, urgently forward to me
+Your full names,
+Telephone and fax numbers,
+Address,
+Age,
+Marital status,
+Occupation
+
+I will be expecting to hear from you.
+
+Regards
+
+Christopher Quinlan QC
+Private email cqukesq6@gmail.com
 
