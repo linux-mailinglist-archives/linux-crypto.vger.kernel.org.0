@@ -2,49 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD9C3602AE
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Apr 2021 08:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ADA636068C
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Apr 2021 12:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbhDOGwD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Thu, 15 Apr 2021 02:52:03 -0400
-Received: from vsrv57620.customer.xenway.de ([95.129.54.190]:46286 "EHLO
-        vsrv57620.customer.xenway.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230090AbhDOGwD (ORCPT
+        id S232113AbhDOKHA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 15 Apr 2021 06:07:00 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:11327 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230190AbhDOKHA (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 15 Apr 2021 02:52:03 -0400
-X-Greylist: delayed 1236 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 02:51:58 EDT
-Received: from [193.56.28.106] (unknown [193.56.28.106])
-        by vsrv57620.customer.xenway.de (Postfix) with ESMTPA id 613C83097B5;
-        Thu, 15 Apr 2021 08:23:44 +0200 (CEST)
-Date:   Wed, 14 Apr 2021 23:24:19 -0700
-Mime-version: 1.0
-Subject: Compliments
-From:   Christopher Quinlan QC <cqukesq@gmail.com>
-To:     Undisclosed-Recipients:;
-Message-Id: <20210414232419.UVUVQACXIIXYKI@gmail.com>
-Reply-To: cqukesq@gmail.com
-Content-type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-transfer-encoding: 8BIT
+        Thu, 15 Apr 2021 06:07:00 -0400
+Received: from localhost.localdomain (cyclone.blr.asicdesigners.com [10.193.186.206])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 13FA6QAR023909;
+        Thu, 15 Apr 2021 03:06:27 -0700
+From:   Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+To:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        davem@davemloft.net
+Cc:     secdev@chelsio.com, Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+Subject: [PATCH] chelsio/chcr: Remove useless MODULE_VERSION
+Date:   Thu, 15 Apr 2021 15:36:07 +0530
+Message-Id: <20210415100607.422838-1-vinay.yadav@chelsio.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-My name is Christopher Quinlan QC I am a solicitor at law / investment adviser to your late relative. Your late relative left behind Cash deposit in capital and investment security account along with properties, I will like to discuss with you regarding making this claim since he is related to you going by the lineage, surname and country of origin.
+kernel version describes module state more accurately.
+hence remove chcr versioning.
 
-Please get back to me on my private email cqukesq6@gmail.com for further details.
+Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+---
+ drivers/crypto/chelsio/chcr_core.c | 3 +--
+ drivers/crypto/chelsio/chcr_core.h | 1 -
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-To facilitate the process of this transaction, urgently forward to me
-Your full names,
-Telephone and fax numbers,
-Address,
-Age,
-Marital status,
-Occupation
-
-I will be expecting to hear from you.
-
-Regards
-
-Christopher Quinlan QC
-Private email cqukesq6@gmail.com
+diff --git a/drivers/crypto/chelsio/chcr_core.c b/drivers/crypto/chelsio/chcr_core.c
+index f91f9d762a45..12fdae41a967 100644
+--- a/drivers/crypto/chelsio/chcr_core.c
++++ b/drivers/crypto/chelsio/chcr_core.c
+@@ -184,7 +184,7 @@ static void *chcr_uld_add(const struct cxgb4_lld_info *lld)
+ 	struct uld_ctx *u_ctx;
+ 
+ 	/* Create the device and add it in the device list */
+-	pr_info_once("%s - version %s\n", DRV_DESC, DRV_VERSION);
++	pr_info_once("%s\n", DRV_DESC);
+ 	if (!(lld->ulp_crypto & ULP_CRYPTO_LOOKASIDE))
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 
+@@ -309,4 +309,3 @@ module_exit(chcr_crypto_exit);
+ MODULE_DESCRIPTION("Crypto Co-processor for Chelsio Terminator cards.");
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Chelsio Communications");
+-MODULE_VERSION(DRV_VERSION);
+diff --git a/drivers/crypto/chelsio/chcr_core.h b/drivers/crypto/chelsio/chcr_core.h
+index b02f981e7c32..f7c8bb95a71b 100644
+--- a/drivers/crypto/chelsio/chcr_core.h
++++ b/drivers/crypto/chelsio/chcr_core.h
+@@ -44,7 +44,6 @@
+ #include "cxgb4_uld.h"
+ 
+ #define DRV_MODULE_NAME "chcr"
+-#define DRV_VERSION "1.0.0.0-ko"
+ #define DRV_DESC "Chelsio T6 Crypto Co-processor Driver"
+ 
+ #define MAX_PENDING_REQ_TO_HW 20
+-- 
+2.30.2
 
