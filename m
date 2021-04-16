@@ -2,65 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B10F361ECE
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Apr 2021 13:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24938361ED2
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Apr 2021 13:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240007AbhDPLdC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 16 Apr 2021 07:33:02 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:53120 "EHLO fornost.hmeau.com"
+        id S242765AbhDPLdn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 16 Apr 2021 07:33:43 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:53148 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238757AbhDPLdC (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:33:02 -0400
+        id S242542AbhDPLdm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:33:42 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lXMi9-0003WY-2n; Fri, 16 Apr 2021 21:32:34 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 16 Apr 2021 21:32:32 +1000
-Date:   Fri, 16 Apr 2021 21:32:32 +1000
+        id 1lXMiO-0003We-Dy; Fri, 16 Apr 2021 21:32:49 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 16 Apr 2021 21:32:48 +1000
+Date:   Fri, 16 Apr 2021 21:32:48 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>
-Subject: Re: [PATCH] crypto: qat - enable detection of accelerators hang
-Message-ID: <20210416113232.GL16633@gondor.apana.org.au>
-References: <20210409135619.3879-1-giovanni.cabiddu@intel.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jessica Clarke <jrtc27@jrtc27.com>
+Subject: Re: [PATCH] crypto: arm/curve25519 - Move '.fpu' after '.arch'
+Message-ID: <20210416113248.GM16633@gondor.apana.org.au>
+References: <20210409221155.1113205-1-nathan@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210409135619.3879-1-giovanni.cabiddu@intel.com>
+In-Reply-To: <20210409221155.1113205-1-nathan@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 02:56:19PM +0100, Giovanni Cabiddu wrote:
-> From: Wojciech Ziemba <wojciech.ziemba@intel.com>
+On Fri, Apr 09, 2021 at 03:11:55PM -0700, Nathan Chancellor wrote:
+> Debian's clang carries a patch that makes the default FPU mode
+> 'vfp3-d16' instead of 'neon' for 'armv7-a' to avoid generating NEON
+> instructions on hardware that does not support them:
 > 
-> Enable the detection of hangs by setting watchdog timers (WDTs) on
-> generations that supports that feature.
+> https://salsa.debian.org/pkg-llvm-team/llvm-toolchain/-/raw/5a61ca6f21b4ad8c6ac4970e5ea5a7b5b4486d22/debian/patches/clang-arm-default-vfp3-on-armv7a.patch
+> https://bugs.debian.org/841474
+> https://bugs.debian.org/842142
+> https://bugs.debian.org/914268
 > 
-> The default timeout value comes from HW specs. WTDs are reset each time
-> an accelerator wins arbitration and is able to send/read a command to/from
-> an accelerator.
+> This results in the following build error when clang's integrated
+> assembler is used because the '.arch' directive overrides the '.fpu'
+> directive:
 > 
-> The value has added significant margin to make sure there are no spurious
-> timeouts. The scope of watchdog is per QAT device.
+> arch/arm/crypto/curve25519-core.S:25:2: error: instruction requires: NEON
+>  vmov.i32 q0, #1
+>  ^
+> arch/arm/crypto/curve25519-core.S:26:2: error: instruction requires: NEON
+>  vshr.u64 q1, q0, #7
+>  ^
+> arch/arm/crypto/curve25519-core.S:27:2: error: instruction requires: NEON
+>  vshr.u64 q0, q0, #8
+>  ^
+> arch/arm/crypto/curve25519-core.S:28:2: error: instruction requires: NEON
+>  vmov.i32 d4, #19
+>  ^
 > 
-> If a timeout is detected, the firmware resets the accelerator and
-> returns a response descriptor with an appropriate error code.
+> Shuffle the order of the '.arch' and '.fpu' directives so that the code
+> builds regardless of the default FPU mode. This has been tested against
+> both clang with and without Debian's patch and GCC.
 > 
-> Signed-off-by: Wojciech Ziemba <wojciech.ziemba@intel.com>
-> Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+> Cc: stable@vger.kernel.org
+> Fixes: d8f1308a025f ("crypto: arm/curve25519 - wire up NEON implementation")
+> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/118
+> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Suggested-by: Jessica Clarke <jrtc27@jrtc27.com>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 > ---
->  .../crypto/qat/qat_4xxx/adf_4xxx_hw_data.c    |  1 +
->  .../crypto/qat/qat_c3xxx/adf_c3xxx_hw_data.c  |  1 +
->  .../crypto/qat/qat_c62x/adf_c62x_hw_data.c    |  1 +
->  .../crypto/qat/qat_common/adf_accel_devices.h |  1 +
->  .../crypto/qat/qat_common/adf_gen2_hw_data.c  | 25 ++++++++++++
->  .../crypto/qat/qat_common/adf_gen2_hw_data.h  | 13 ++++++
->  .../crypto/qat/qat_common/adf_gen4_hw_data.c  | 40 +++++++++++++++++++
->  .../crypto/qat/qat_common/adf_gen4_hw_data.h  | 14 ++++++-
->  drivers/crypto/qat/qat_common/adf_init.c      |  4 ++
->  9 files changed, 99 insertions(+), 1 deletion(-)
+>  arch/arm/crypto/curve25519-core.S | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Patch applied.  Thanks.
 -- 
