@@ -2,70 +2,174 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDE03616D1
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Apr 2021 02:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 709F936170A
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Apr 2021 03:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235208AbhDPAd5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 15 Apr 2021 20:33:57 -0400
-Received: from mbox.abcom.al ([217.73.143.249]:51472 "EHLO mbox.abcom.al"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234865AbhDPAd5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 15 Apr 2021 20:33:57 -0400
-X-Greylist: delayed 24785 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 20:33:56 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mbox.abcom.al (Postfix) with ESMTP id 5E755446831;
-        Fri, 16 Apr 2021 02:33:31 +0200 (CEST)
-Received: from mbox.abcom.al ([127.0.0.1])
-        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id S4YKk6QhM9fP; Fri, 16 Apr 2021 02:33:31 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mbox.abcom.al (Postfix) with ESMTP id E8C884EF44C;
-        Fri, 16 Apr 2021 02:33:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mbox.abcom.al E8C884EF44C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abcom.al;
-        s=0F3BA0EE-D5D4-11E8-9596-F9115129F2F4; t=1618533211;
-        bh=VCOKpjxaLoatOvx+LSaT3i7u3saMYZrSANTtqEwi9j4=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=OLqW49C8vttTiMzPodOLXk6XSpPmBz6MkH+3XemPLDYiNf73VHNLAIAdo1RNd+wOU
-         7KnKZLIG93/w2LggNKd4dEWD++3uCXVlLlCvp8IlyUW/3h5LQMcBNHPC5c938s7f44
-         v4LnpPfLMzCP6swi+X3LmEBLwM5DZQPEo040d9CJlz6M/sw/s+bkk+gjUgblZmWkPi
-         oG59W0VL4/M/Gvp1ILz3DVNDT/lVQz0r5MkWEnp6QTbwYB6LdScdGuuTEaPIz+xtlU
-         z/Xt2WMPa1nPuhWoomJgEIaSqe3kNxOFpQx4t6onXZWqhGmhs6rkfZSY51vp+bhpzy
-         LhU7i6ylL2sfA==
-X-Virus-Scanned: amavisd-new at mbox.abcom.al
-Received: from mbox.abcom.al ([127.0.0.1])
-        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id zbn9hKvEWA9U; Fri, 16 Apr 2021 02:33:30 +0200 (CEST)
-Received: from [10.41.71.107] (unknown [105.4.2.96])
-        by mbox.abcom.al (Postfix) with ESMTPSA id 538DB446831;
-        Fri, 16 Apr 2021 02:33:23 +0200 (CEST)
-Content-Type: text/plain; charset="utf-8"
+        id S234548AbhDPBG6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 15 Apr 2021 21:06:58 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16595 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237219AbhDPBG6 (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 15 Apr 2021 21:06:58 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FLyf6359Cz18H8S;
+        Fri, 16 Apr 2021 09:04:14 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 16 Apr 2021 09:06:19 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <thomas.lendacky@amd.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, Tian Tao <tiantao6@hisilicon.com>
+Subject: [PATCH v2] crypto: ccp - Make ccp_dev_suspend and ccp_dev_resume void functions
+Date:   Fri, 16 Apr 2021 09:06:42 +0800
+Message-ID: <1618535202-11397-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Spende
-To:     Recipients <mtodo@abcom.al>
-From:   "William Kruger" <mtodo@abcom.al>
-Date:   Thu, 15 Apr 2021 17:33:11 -0700
-Reply-To: robadamengineeringltd@gmail.com
-Message-Id: <20210416003323.538DB446831@mbox.abcom.al>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hallo Liebes, ich bin William Kruger aus Lantana im Palm Beach County, USA.=
- Ich habe einen $ 168 Millionen Jackpot gewonnen, der einer der gr=C3=B6=C3=
-=9Ften Lotterie-Jackpots ist. Im Namen meiner Familie und aus gutem Willen =
-spenden wir Ihnen und Ihrer Familie einen Betrag von (=E2=82=AC 850,000.00 =
-EUR). Ich versuche, die gemeinn=C3=BCtzigen Waisenh=C3=A4user zu erreichen =
-und zur Armutsbek=C3=A4mpfung beizutragen und eine angemessene Gesundheitsv=
-ersorgung f=C3=BCr Einzelpersonen zu gew=C3=A4hrleisten, insbesondere w=C3=
-=A4hrend dieser Welt Pandemic Covid 19. Ich m=C3=B6chte auch, dass Sie eine=
-n Teil dieser Spende in die =C3=B6ffentliche Infrastruktur investieren, um =
-Arbeitslosen in Ihrem Land Arbeitspl=C3=A4tze zu bieten . Ich habe dich gew=
-=C3=A4hlt, weil ich an dich glaube. Ich brauche Ihre uneingeschr=C3=A4nkte =
-Mitarbeit in Bezug auf diese Spende. Hier ist Ihr ausgew=C3=A4hlter Geheimc=
-ode: [W5900Q2172021] und bitte teilen Sie den Code niemandem mit, wenn Sie =
-interessiert und bereit sind, mit mir zu arbeiten. Bitte kontaktieren Sie m=
-ich mit Ihrem Spenden- / Geheimcode [W5900Q2172021] und Ihren vollst=C3=A4n=
-digen Namen hier bei meiner privaten E-Mail: krugerwilliamhome@gmail.com
+Since ccp_dev_suspend() and ccp_dev_resume() only return 0 which causes
+ret to equal 0 in sp_suspend and sp_resume, making the if condition
+impossible to use. it might be a more appropriate fix to have these be
+void functions and eliminate the if condition in sp_suspend() and
+sp_resume().
+
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+---
+v2: handle the case that didn't define CONFIG_CRYPTO_DEV_SP_CCP.
+---
+ drivers/crypto/ccp/ccp-dev.c | 12 ++++--------
+ drivers/crypto/ccp/sp-dev.c  | 12 ++----------
+ drivers/crypto/ccp/sp-dev.h  | 15 ++++-----------
+ 3 files changed, 10 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/crypto/ccp/ccp-dev.c b/drivers/crypto/ccp/ccp-dev.c
+index 0971ee6..6777582 100644
+--- a/drivers/crypto/ccp/ccp-dev.c
++++ b/drivers/crypto/ccp/ccp-dev.c
+@@ -548,7 +548,7 @@ bool ccp_queues_suspended(struct ccp_device *ccp)
+ 	return ccp->cmd_q_count == suspended;
+ }
+ 
+-int ccp_dev_suspend(struct sp_device *sp)
++void ccp_dev_suspend(struct sp_device *sp)
+ {
+ 	struct ccp_device *ccp = sp->ccp_data;
+ 	unsigned long flags;
+@@ -556,7 +556,7 @@ int ccp_dev_suspend(struct sp_device *sp)
+ 
+ 	/* If there's no device there's nothing to do */
+ 	if (!ccp)
+-		return 0;
++		return;
+ 
+ 	spin_lock_irqsave(&ccp->cmd_lock, flags);
+ 
+@@ -572,11 +572,9 @@ int ccp_dev_suspend(struct sp_device *sp)
+ 	while (!ccp_queues_suspended(ccp))
+ 		wait_event_interruptible(ccp->suspend_queue,
+ 					 ccp_queues_suspended(ccp));
+-
+-	return 0;
+ }
+ 
+-int ccp_dev_resume(struct sp_device *sp)
++void ccp_dev_resume(struct sp_device *sp)
+ {
+ 	struct ccp_device *ccp = sp->ccp_data;
+ 	unsigned long flags;
+@@ -584,7 +582,7 @@ int ccp_dev_resume(struct sp_device *sp)
+ 
+ 	/* If there's no device there's nothing to do */
+ 	if (!ccp)
+-		return 0;
++		return;
+ 
+ 	spin_lock_irqsave(&ccp->cmd_lock, flags);
+ 
+@@ -597,8 +595,6 @@ int ccp_dev_resume(struct sp_device *sp)
+ 	}
+ 
+ 	spin_unlock_irqrestore(&ccp->cmd_lock, flags);
+-
+-	return 0;
+ }
+ 
+ int ccp_dev_init(struct sp_device *sp)
+diff --git a/drivers/crypto/ccp/sp-dev.c b/drivers/crypto/ccp/sp-dev.c
+index 6284a15..7eb3e46 100644
+--- a/drivers/crypto/ccp/sp-dev.c
++++ b/drivers/crypto/ccp/sp-dev.c
+@@ -213,12 +213,8 @@ void sp_destroy(struct sp_device *sp)
+ 
+ int sp_suspend(struct sp_device *sp)
+ {
+-	int ret;
+-
+ 	if (sp->dev_vdata->ccp_vdata) {
+-		ret = ccp_dev_suspend(sp);
+-		if (ret)
+-			return ret;
++		ccp_dev_suspend(sp);
+ 	}
+ 
+ 	return 0;
+@@ -226,12 +222,8 @@ int sp_suspend(struct sp_device *sp)
+ 
+ int sp_resume(struct sp_device *sp)
+ {
+-	int ret;
+-
+ 	if (sp->dev_vdata->ccp_vdata) {
+-		ret = ccp_dev_resume(sp);
+-		if (ret)
+-			return ret;
++		ccp_dev_resume(sp);
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/crypto/ccp/sp-dev.h b/drivers/crypto/ccp/sp-dev.h
+index 0218d06..20377e6 100644
+--- a/drivers/crypto/ccp/sp-dev.h
++++ b/drivers/crypto/ccp/sp-dev.h
+@@ -134,8 +134,8 @@ struct sp_device *sp_get_psp_master_device(void);
+ int ccp_dev_init(struct sp_device *sp);
+ void ccp_dev_destroy(struct sp_device *sp);
+ 
+-int ccp_dev_suspend(struct sp_device *sp);
+-int ccp_dev_resume(struct sp_device *sp);
++void ccp_dev_suspend(struct sp_device *sp);
++void ccp_dev_resume(struct sp_device *sp);
+ 
+ #else	/* !CONFIG_CRYPTO_DEV_SP_CCP */
+ 
+@@ -144,15 +144,8 @@ static inline int ccp_dev_init(struct sp_device *sp)
+ 	return 0;
+ }
+ static inline void ccp_dev_destroy(struct sp_device *sp) { }
+-
+-static inline int ccp_dev_suspend(struct sp_device *sp)
+-{
+-	return 0;
+-}
+-static inline int ccp_dev_resume(struct sp_device *sp)
+-{
+-	return 0;
+-}
++static inline void ccp_dev_suspend(struct sp_device *sp) { }
++static inline void ccp_dev_resume(struct sp_device *sp) { }
+ #endif	/* CONFIG_CRYPTO_DEV_SP_CCP */
+ 
+ #ifdef CONFIG_CRYPTO_DEV_SP_PSP
+-- 
+2.7.4
+
