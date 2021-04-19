@@ -2,70 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C699364D92
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Apr 2021 00:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA433364DC3
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Apr 2021 00:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhDSWRX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 19 Apr 2021 18:17:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48840 "EHLO mail.kernel.org"
+        id S229681AbhDSWmh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 19 Apr 2021 18:42:37 -0400
+Received: from mbox.abcom.al ([217.73.143.249]:39010 "EHLO mbox.abcom.al"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229597AbhDSWRX (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 19 Apr 2021 18:17:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A6CD61077;
-        Mon, 19 Apr 2021 22:16:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618870612;
-        bh=qRooJuDbQ+D+m6HobSIVP6DCMoUZC3we2TUQA6ENpSs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VMgB1sFI1Tn3I4bsx2aEhICJD1WjRUQ4jdAvLBctLLJ1J2HBvzBw0hwpdVHLPhFZq
-         DC84xZTg6CW642MyIMsYNTDztNu7FioZ+4p0edAT5UUmuw6kiBkgy74C9vXIiQITux
-         8mNqrbI30uSpiTh6wwdiyI2+fFjPaUDVnlYHCUymz4hO6HXnA9jsLcFqdxqR78uHAh
-         1bVWDt/ZXk8HHcry7MrAqLRWqjetuifKXcEZdi8+nJPzWJDAWEcYbdJ9pzOLuyFyj5
-         gzpyNKM0Oi2UZrnY0wamBYhEX61a99zxd46FdGagye58eyZdPhDaNP/V/lLsInbmFP
-         pXryfAo5s3GBA==
-Date:   Mon, 19 Apr 2021 15:16:51 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chris von Recklinghausen <crecklin@redhat.com>
-Cc:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
-        decui@microsoft.com, linux-pm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1 v9] use crc32 instead of md5 for hibernation e820
- integrity check
-Message-ID: <YH4BUx4Jkx8NtXtw@gmail.com>
-References: <20210416131655.22112-1-crecklin@redhat.com>
+        id S229718AbhDSWmg (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 19 Apr 2021 18:42:36 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mbox.abcom.al (Postfix) with ESMTP id 5EA8A13127122;
+        Tue, 20 Apr 2021 00:00:37 +0200 (CEST)
+Received: from mbox.abcom.al ([127.0.0.1])
+        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id bl-EdmeFJHIg; Tue, 20 Apr 2021 00:00:37 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by mbox.abcom.al (Postfix) with ESMTP id D317D12942FD2;
+        Tue, 20 Apr 2021 00:00:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mbox.abcom.al D317D12942FD2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abcom.al;
+        s=0F3BA0EE-D5D4-11E8-9596-F9115129F2F4; t=1618869621;
+        bh=BZv72htijiAiJQlxop8ucT2O5E8VQfLYZFZIV1NskB4=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=LbhRIBrCzcliMamKp306++25+tRXddInxaXnoBRdHWg4wtPcNgoZJV5FJtNcrC8Xh
+         zePq5e4l3FsRXEGfKz0ZVMrz771MKADqmqhKjXD9/SyGHNxUyI1RlCdeYewgO3k9Do
+         0MW6Yj0OnKIDCaKvbAh/Lt81UAYFteS+LvcuKoHiWY8q6eOhWDziNHfCgGR5Uo+aHG
+         bSyJJ1fCwAAqT1Np9JsYVL39PQ28YNO7Efx2O6wrODuhkpX0gC2t3oD8Nc8J7tPLyI
+         bHnsvGyQA/LN0pjmwoO8xrDl4CcbnMxQrig+D+5yltO8Btz71S7RiUnvvyx6hovhWd
+         QrIQmZiLqnb2g==
+X-Virus-Scanned: amavisd-new at mbox.abcom.al
+Received: from mbox.abcom.al ([127.0.0.1])
+        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 6ASHb-7wG_rZ; Tue, 20 Apr 2021 00:00:20 +0200 (CEST)
+Received: from [192.168.43.60] (unknown [105.4.5.77])
+        by mbox.abcom.al (Postfix) with ESMTPSA id E8E2A1312711A;
+        Mon, 19 Apr 2021 23:59:50 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416131655.22112-1-crecklin@redhat.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?Hallo=2C_Sie_haben_eine_Spende_von_=E2=82=AC_2=2E000=2E000=2C00?=
+To:     Recipients <abashi@abcom.al>
+From:   <abashi@abcom.al>
+Date:   Mon, 19 Apr 2021 23:59:12 +0200
+Reply-To: tayebsouamidonationorg@gmail.com
+Message-Id: <20210419215950.E8E2A1312711A@mbox.abcom.al>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 09:16:55AM -0400, Chris von Recklinghausen wrote:
-> Hibernation fails on a system in fips mode because md5 is used for the e820
-> integrity check and is not available. Use crc32 instead.
-
-Doesn't the commit title need to be prefixed with something like "x86/power"?
-
-> The check is intended to detect whether the E820 memory map provided
-> by the firmware after cold boot unexpectedly differs from the one that
-> was in use when the hibernation image was created. In this case, the
-> hibernation image cannot be restored, as it may cover memory regions
-> that are no longer available to the OS.
-> 
-> A non-cryptographic checksum such as CRC-32 is sufficient to detect such
-> inadvertent deviations.
-> 
-> Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
->        by md5 digest")
-
-The "Fixes" line shouldn't be line-wrapped.
-
-Otherwise this looks fine.  The explanation in the commit message still isn't
-great, but it's much better than it was before.
-
-You can add:
-
-	Reviewed-by: Eric Biggers <ebiggers@google.com>
-
-- Eric
+I'm Tayeb Souami, 55-year-old an elderly citizen of New Jersey, USA. I won =
+a $315.3 million jackpot, On behalf of my family and act of good will, we a=
+re donating to you and your family the sum of (=E2=82=AC 2,000,000.00 EUR) =
+I try to reach the public charity orphanages. Contribute to poverty reducti=
+on and ensure adequate health care for individuals. I also want you to inve=
+st part of this donation in public infrastructure to provide jobs for unemp=
+loyed citizens in your country.You can Watch me on youtube Claimed  https:/=
+/www.youtube.com/watch?v=3DZ6ui8ZDQ6Ks I choose you because I believe in yo=
+u. I need your full cooperation regarding this donation. Please contact me =
+back here at my private email: tayebsouamidonationorg@gmail.com
