@@ -2,154 +2,255 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7AF1365811
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Apr 2021 13:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDA436596B
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Apr 2021 15:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232347AbhDTLsX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 20 Apr 2021 07:48:23 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:41291 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232277AbhDTLrm (ORCPT
+        id S232266AbhDTNAi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 20 Apr 2021 09:00:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57076 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232268AbhDTNAh (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 20 Apr 2021 07:47:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1618919230;
+        Tue, 20 Apr 2021 09:00:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618923605;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l8WyrO7ptjoqVa5LGx9xZNYw6pC5eWEnI2PvwnthvUg=;
-        b=SWPN6dmtraxfsFKuwba7gYhh2H9jS3kFnwXTrJkjizctRjqj5nUsMV6Mi7vBM0oxvZKTtn
-        +tbfzNHC88q9KROrD9fVjGZc4qMUsF6a4R9PHIrmChTxpIC+TZPQ2nq4BwT93qStGCHtp+
-        M63YC4xmjCGiTkWXPvc8Z+BAvNwxLGo=
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur01lp2054.outbound.protection.outlook.com [104.47.2.54]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-20-5BSPKEX8MG60j6c3iwi83Q-1; Tue, 20 Apr 2021 13:47:08 +0200
-X-MC-Unique: 5BSPKEX8MG60j6c3iwi83Q-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j1Eq7V/I9WArnfD0zc9iK09KtOQtQQhRsjg5c/5nbB1i2y/h+O2rHATusxZ+iRKk6gR2QQbXVXAkohRcI7h1HsjdDseIMVhYV2b0Ij80qy8zIpbSuf8MZ/HUcg3w+NIvg1sHrO6IyxdvsEb/znIqyavBnIY1502/IPwsOrJ09F2TPqM2CPNHUnMpgTrMJvO+cSVoyq/9W12b32PxbwEDPoRmCfXJtwdAhT6rLqNGvYYHvyPV46xrqulvDrw8UFlC1UPyPglJYRkYfHO8v1zQzLInUmyeZSN5/PX9ZR9IpGkxbic86ScGJrMNADT2yrw4banCKCYWJmyNoh3l1IYGQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PBNG1zTCxXyLMe36f9znlMWEDeDi6roTGj5H9Von5AY=;
- b=VWS/DrtLCyb4UqIhQn1YX+PaDHF50DWnReMoQjWjCafwo0LusVxlXZir6ZT2I4g9K4L+5IgpY7ZXfZ+nOSEjF+BEvsWCHgmd6/F+0n0t48VAJEkndz/FYfmZG6wK9Z9coA3oZqKu70S1CYw3O1okrvb7LTtRDus6LvKhK28PPv/WbJiGdQx8MEvnBtPULWjLVAN7lRhxUTQ7go06qsBkMHbvRVKyrY051DuRAdPb9qG1Fh32ahLgYQ2GaHeWoTjvNmMsuDp+NC9YYJIXoX+VUQlYnIINTISoaLtM38IMNKMVoPLKCZM4yz75WDTNMD/xU5AN8gcEw001M2un57OTyg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from AM0PR04MB5650.eurprd04.prod.outlook.com (2603:10a6:208:128::18)
- by AM0PR04MB4995.eurprd04.prod.outlook.com (2603:10a6:208:c4::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Tue, 20 Apr
- 2021 11:47:07 +0000
-Received: from AM0PR04MB5650.eurprd04.prod.outlook.com
- ([fe80::756a:86b8:8283:733d]) by AM0PR04MB5650.eurprd04.prod.outlook.com
- ([fe80::756a:86b8:8283:733d%6]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
- 11:47:07 +0000
-To:     David Howells <dhowells@redhat.com>
-CC:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, vt@altlinux.org,
-        tianjia.zhang@linux.alibaba.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org
-References: <20210408141516.11369-1-varad.gautam@suse.com>
- <13252.1617894484@warthog.procyon.org.uk>
-From:   Varad Gautam <varad.gautam@suse.com>
-Subject: Re: [PATCH v2 00/18] Implement RSASSA-PSS signature verification
-Message-ID: <bb9e7bb2-7e93-b0cf-5e4e-29e726d3da1f@suse.com>
-Date:   Tue, 20 Apr 2021 13:47:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <13252.1617894484@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [95.90.93.216]
-X-ClientProxiedBy: AM0PR04CA0120.eurprd04.prod.outlook.com
- (2603:10a6:208:55::25) To AM0PR04MB5650.eurprd04.prod.outlook.com
- (2603:10a6:208:128::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.77.179] (95.90.93.216) by AM0PR04CA0120.eurprd04.prod.outlook.com (2603:10a6:208:55::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Tue, 20 Apr 2021 11:47:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a5c21058-aa5f-45db-a5fc-08d903f20619
-X-MS-TrafficTypeDiagnostic: AM0PR04MB4995:
-X-Microsoft-Antispam-PRVS: <AM0PR04MB49955199F1704A856232C110E0489@AM0PR04MB4995.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uJHaftNklxXHt9oWklGMVA0kATTrD++c0ZCsNc70MIQuyX0Uxs1r9W0RNhXh+CEH9ArbxgxZ1ciNjOALRJvO+3dNTRGmSfwCevlaywgAwpzPTAz/USmJRiS2fS7DMHnjiy/Gjhh8aUkgdKKdlWawwWZ4ogRN2A+tmC+y+5csKxSFR/hGsciTAw0CNB4vspUOjcT32DcjustSNRMvCsoOkRQdtzEHJA5+eLfar3X7VAVTnEdlPfMJELXJe/03oGOUIIV57MO+XLnYJl1J6ygrt6O1EVRPu9acjXckpaS1rsI2veb4vTbjRFJi8qICVl0vxymOCmpyKDtDfForeOyXLcdy2qROU16Jfcs7gXR4QOdqFUpLV914SuDCbF/0jRAqPG1JwJHUEuesX2sZM+nZA69op5E1Z+p8hleGjkGCzWivMfuoO4Hmm+S59MNWZ6d5TfDbB/3kLxUJoxrYfidefL1hUOBm66L3x9qgdrtkkrYaPjrykk68S/+w4Q9Rwr9EuCFMXqpzu8bMIiMggdQNBOfOnlYYQYFmwI2tQzwXIPLExq+8IUmADxjX7OYXEPYqb/qpnbFR+skjr0jdtR6yPj6NX8xy0esxx8SoCbJEtIL03Cbnl+nwjEUXYI2fM6/eIrXtwB6hsTmolQ6oOT1gawy07lGey4Y0Bn2QSGX78C2WeQ62JrJGLR5CODExngeFvg3aKujlEtoLoxyCRlvmJ2xxKE9tEXtzO0yaL+dUqCjKc8PTtzs7UJLaMTBD4vUZvMSuOT1qHe5Iu9ujRUnyyO3nMJI5naTTYA/KcbnW/gs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5650.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(376002)(39850400004)(366004)(136003)(316002)(16576012)(8936002)(31686004)(6486002)(52116002)(26005)(956004)(53546011)(8676002)(16526019)(2616005)(6916009)(478600001)(44832011)(4326008)(38100700002)(186003)(2906002)(66556008)(86362001)(66476007)(38350700002)(5660300002)(66946007)(966005)(36756003)(31696002)(4744005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?q3xJ/WP8TlVdzT2dLR68W4mTIOasjVVA+HJvPFNl2VMlCC0yzKYAgEGMQigw?=
- =?us-ascii?Q?cSHBHdulUmVVYuG7yDIML5bRZfhAINQr/5agAAn2+3IJUPWT+/xtVGXKqdDb?=
- =?us-ascii?Q?DNn476JW/CyTcx3y2tyT7wSsa3wCrfR8Sd/tPi4dI9DS7r5Fr31P8MAxkOT4?=
- =?us-ascii?Q?K+XoQwEnPH3Z+UDNDFDdyhHodXUgRPy44zUqh2trOFabmj0GiASK9w5e+n1d?=
- =?us-ascii?Q?rtcW1Do3hLqXOPy8Zfw2K4ZDtr7+hf5/LbZxpJ1aM78nEoMh3feAQJdYFm0F?=
- =?us-ascii?Q?C/mMW1NeCQG+LcJBw6X8mcUIpnoZcJPt45HEaUoGCr4UxDRoZZIqALE29W+S?=
- =?us-ascii?Q?6idWaebTi+ihNDWl1sDu++GHYXmZ12L4Qb9H58bqtmbBrlC4m+qJZMfRmC3j?=
- =?us-ascii?Q?BFFezxu1cOyWV56ISoNa57weVmNrQ8bMtIUJn9JkjBqaUGuutEYMA3V4dbMN?=
- =?us-ascii?Q?5fMVvexdOIch8osMurQa2MFFfHquDn5QOm8pIuQP8YPryoV2lJUl2bb6DPa6?=
- =?us-ascii?Q?TIOTZFJaol2h1000MAp1pQv+0PYdhiUj6IAbDYCP1yZINprok+Hb21pPyD1w?=
- =?us-ascii?Q?Zuwr4xINhIrc5nJAs2kenT1iFMivHrJPJ3vQ1XcZ/7u2zQGanTpIh1MMhFVE?=
- =?us-ascii?Q?nDY6mqmoGXftAVqKGIniLrumu2dUsA1fpDKcn+w8b7YhOk0uVP411psso6R6?=
- =?us-ascii?Q?2g3V2UvSURr0F405R6TQ6dwzYcrgS2+KQrGz/5jWgL8+7XbsVT6wQkjll+E3?=
- =?us-ascii?Q?yDdb6XYnhaqZWval3rqvifcCv2p3gklGLESDm9kHQ0TSpyfQT0eDcx+cluJ3?=
- =?us-ascii?Q?KmH5dkIukS0eLc6b2Uj6SuQS03wAofsaqfdIh3A7RXS8nmnFWHCsSFHQPT2c?=
- =?us-ascii?Q?rx+w95pPzrQw58crXtiW7vpQ07X+ciuOpvTKzpozPOoEebIek325a6Y1WQ0Y?=
- =?us-ascii?Q?Kr0XGQQ7ynW9gZCgJNFtBDZClTL6Ttztv2p8BtnaqgkwUuQYbfdcNOoahb8D?=
- =?us-ascii?Q?wgXuAhUe0+VVMVJFynABdUHJMFgionAejldNeJlb7qvHi0a2E08he154ujfy?=
- =?us-ascii?Q?jFHTLN1UWesGFHiFc04UU3Q30jPJct4ZGyqKM1jmwP0Ws4br23BHGD6xae4I?=
- =?us-ascii?Q?iicZ2PMIERcVYMr4lX6Waxxpo4divBY46TKtIxCfy1GjdIV6l2dm2htk4TFV?=
- =?us-ascii?Q?NGN0KMYa4Dwshaf8a52DYSI7FliG7P1tZ47oCzr/svNzITDoe7eXuSSQubp7?=
- =?us-ascii?Q?KUKgX7UtTIQljA4on0hP+COZkoLuI7RreWgegEc0VLunZFBVLhTIkxL4LGfR?=
- =?us-ascii?Q?rACQQNLUJOt6DYex7jfT0JRO?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5c21058-aa5f-45db-a5fc-08d903f20619
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5650.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 11:47:06.9818
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: usoQ2YxK0YxziwNq5iB1UsZGstWvKzKfejn5hGByzP9NNSirJPwCxZodoza7V2k6jnx4y4/G93Dwvngjq15+Lw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4995
+         to:to:cc; bh=NQHj+Z0RSmuYblhHzrwE/j5Df/lULRXDHiHNLCKu+2E=;
+        b=OQ7rO82nWYJKDKWhNoxFBVKuSf0vrh/+FmDvYVmaucK9JLKGJtu/9zzx6Hc7YfYsRIksag
+        3jsBzTLFuJfofNrAA0vja0r4v0vYAMuyXvdU6DUgqBzZnGCKKPS+rxA4Z0Pl6kiCkmO3Xs
+        IcP2Q/ubQJ4979VVtVVwNMzTy3Ys1NQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-590-MdRiD_5FNh-KFiNXGFYVFw-1; Tue, 20 Apr 2021 09:00:04 -0400
+X-MC-Unique: MdRiD_5FNh-KFiNXGFYVFw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 60BBF193578F;
+        Tue, 20 Apr 2021 12:57:45 +0000 (UTC)
+Received: from crecklin.bos.com (unknown [10.10.115.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C76855D9CA;
+        Tue, 20 Apr 2021 12:57:40 +0000 (UTC)
+From:   Chris von Recklinghausen <crecklin@redhat.com>
+To:     ebiggers@kernel.org, ardb@kernel.org, simo@redhat.com,
+        rafael@kernel.org, decui@microsoft.com, linux-pm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1 v10] x86/power use crc32 instead of md5 for hibernation e820 integrity check
+Date:   Tue, 20 Apr 2021 08:57:39 -0400
+Message-Id: <20210420125739.29353-1-crecklin@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi David,
+Hibernation fails on a system in fips mode because md5 is used for the e820
+integrity check and is not available. Use crc32 instead.
 
-On 4/8/21 5:08 PM, David Howells wrote:
-> Varad Gautam <varad.gautam@suse.com> wrote:
->=20
->> The test harness is available at [5].
->=20
-> Can you add this to the keyutils testsuite?
->=20
+The check is intended to detect whether the E820 memory map provided
+by the firmware after cold boot unexpectedly differs from the one that
+was in use when the hibernation image was created. In this case, the
+hibernation image cannot be restored, as it may cover memory regions
+that are no longer available to the OS.
 
-These are two separate things IMO - the keyutils tests test
-for "the keyctl interface behaves as advertised". Testing the underlying
-algorithms used for key operations (against reference vectors eg. NIST /
-Wycheproof atm) is independent of the keyctl interface, and can also
-happen at a layer below (eg. a kmod). I doubt keyutils is the best place
-to keep this.
+A non-cryptographic checksum such as CRC-32 is sufficient to detect such
+inadvertent deviations.
 
-Regards,
-Varad
+Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map by md5 digest")
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/keyutils.git
->=20
-> David
->=20
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Tested-by: Dexuan Cui <decui@microsoft.com>
+Reviewed-by: Dexuan Cui <decui@microsoft.com>
 
---=20
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 N=C3=BCrnberg
-Germany
+Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
+---
+v1 -> v2
+   bump up RESTORE_MAGIC
+v2 -> v3
+   move embelishment from cover letter to commit comments (no code change)
+v3 -> v4
+   add note to comments that md5 isn't used for encryption here.
+v4 -> v5
+   reword comment per Simo's suggestion
+v5 -> v6
+   use wording from Eric Biggers, use crc32_le instead of crc32 from crypto
+	framework (crc32_le is in the core API and removes need for #defines)
+v6 -> v7
+   reword with input from Eric/Ard/Simo, code changed per Eric's feedback
+v7 -> v8
+   More feedback per Eric -
+   change 'Suspend' to 'Hibernation' in commit comments, rename e820_digest to
+   e820_checksum and change it to an unsigned long. rename get_e820_md5 to
+   compute_e820_crc32 and have it return the checksum value instead of writing
+   it into a user supplied buffer, get rid of hibernation_e820_save in favor of
+   calling compute_e820_crc32 directly, likewise, get rid of
+   hibernation_e820_mismatch in favor of comparing e820_checksum to the return
+   value of compute_e820_crc32()
+v8 -> v9
+   Make comment for compute_e820_crc32 more kerneldoc friendly. Also update
+   comment about the e820 firmware table in arch/x86/kernel/e820.c since it
+   also referred to MD5 and hibernation.
+v9 -> v10
+   Don't line wrap Fixes: line, add Reviewed-by lines from Eric and Dexuan and
+   Tested-by line from Dexuan. No code changed.
 
-HRB 36809, AG N=C3=BCrnberg
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+ arch/x86/kernel/e820.c     |  4 +-
+ arch/x86/power/hibernate.c | 89 ++++++--------------------------------
+ 2 files changed, 16 insertions(+), 77 deletions(-)
+
+diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
+index 22aad412f965..629c4994f165 100644
+--- a/arch/x86/kernel/e820.c
++++ b/arch/x86/kernel/e820.c
+@@ -31,8 +31,8 @@
+  *       - inform the user about the firmware's notion of memory layout
+  *         via /sys/firmware/memmap
+  *
+- *       - the hibernation code uses it to generate a kernel-independent MD5
+- *         fingerprint of the physical memory layout of a system.
++ *       - the hibernation code uses it to generate a kernel-independent CRC32
++ *         checksum of the physical memory layout of a system.
+  *
+  * - 'e820_table_kexec': a slightly modified (by the kernel) firmware version
+  *   passed to us by the bootloader - the major difference between
+diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
+index cd3914fc9f3d..e94e0050a583 100644
+--- a/arch/x86/power/hibernate.c
++++ b/arch/x86/power/hibernate.c
+@@ -13,8 +13,8 @@
+ #include <linux/kdebug.h>
+ #include <linux/cpu.h>
+ #include <linux/pgtable.h>
+-
+-#include <crypto/hash.h>
++#include <linux/types.h>
++#include <linux/crc32.h>
+ 
+ #include <asm/e820/api.h>
+ #include <asm/init.h>
+@@ -54,95 +54,33 @@ int pfn_is_nosave(unsigned long pfn)
+ 	return pfn >= nosave_begin_pfn && pfn < nosave_end_pfn;
+ }
+ 
+-
+-#define MD5_DIGEST_SIZE 16
+-
+ struct restore_data_record {
+ 	unsigned long jump_address;
+ 	unsigned long jump_address_phys;
+ 	unsigned long cr3;
+ 	unsigned long magic;
+-	u8 e820_digest[MD5_DIGEST_SIZE];
++	unsigned long e820_checksum;
+ };
+ 
+-#if IS_BUILTIN(CONFIG_CRYPTO_MD5)
+ /**
+- * get_e820_md5 - calculate md5 according to given e820 table
++ * compute_e820_crc32 - calculate crc32 of a given e820 table
+  *
+  * @table: the e820 table to be calculated
+- * @buf: the md5 result to be stored to
++ *
++ * Return: the resulting checksum
+  */
+-static int get_e820_md5(struct e820_table *table, void *buf)
++static inline u32 compute_e820_crc32(struct e820_table *table)
+ {
+-	struct crypto_shash *tfm;
+-	struct shash_desc *desc;
+-	int size;
+-	int ret = 0;
+-
+-	tfm = crypto_alloc_shash("md5", 0, 0);
+-	if (IS_ERR(tfm))
+-		return -ENOMEM;
+-
+-	desc = kmalloc(sizeof(struct shash_desc) + crypto_shash_descsize(tfm),
+-		       GFP_KERNEL);
+-	if (!desc) {
+-		ret = -ENOMEM;
+-		goto free_tfm;
+-	}
+-
+-	desc->tfm = tfm;
+-
+-	size = offsetof(struct e820_table, entries) +
++	int size = offsetof(struct e820_table, entries) +
+ 		sizeof(struct e820_entry) * table->nr_entries;
+ 
+-	if (crypto_shash_digest(desc, (u8 *)table, size, buf))
+-		ret = -EINVAL;
+-
+-	kfree_sensitive(desc);
+-
+-free_tfm:
+-	crypto_free_shash(tfm);
+-	return ret;
+-}
+-
+-static int hibernation_e820_save(void *buf)
+-{
+-	return get_e820_md5(e820_table_firmware, buf);
+-}
+-
+-static bool hibernation_e820_mismatch(void *buf)
+-{
+-	int ret;
+-	u8 result[MD5_DIGEST_SIZE];
+-
+-	memset(result, 0, MD5_DIGEST_SIZE);
+-	/* If there is no digest in suspend kernel, let it go. */
+-	if (!memcmp(result, buf, MD5_DIGEST_SIZE))
+-		return false;
+-
+-	ret = get_e820_md5(e820_table_firmware, result);
+-	if (ret)
+-		return true;
+-
+-	return memcmp(result, buf, MD5_DIGEST_SIZE) ? true : false;
+-}
+-#else
+-static int hibernation_e820_save(void *buf)
+-{
+-	return 0;
+-}
+-
+-static bool hibernation_e820_mismatch(void *buf)
+-{
+-	/* If md5 is not builtin for restore kernel, let it go. */
+-	return false;
++	return ~crc32_le(~0, (unsigned char const *)table, size);
+ }
+-#endif
+ 
+ #ifdef CONFIG_X86_64
+-#define RESTORE_MAGIC	0x23456789ABCDEF01UL
++#define RESTORE_MAGIC	0x23456789ABCDEF02UL
+ #else
+-#define RESTORE_MAGIC	0x12345678UL
++#define RESTORE_MAGIC	0x12345679UL
+ #endif
+ 
+ /**
+@@ -179,7 +117,8 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
+ 	 */
+ 	rdr->cr3 = restore_cr3 & ~CR3_PCID_MASK;
+ 
+-	return hibernation_e820_save(rdr->e820_digest);
++	rdr->e820_checksum = compute_e820_crc32(e820_table_firmware);
++	return 0;
+ }
+ 
+ /**
+@@ -200,7 +139,7 @@ int arch_hibernation_header_restore(void *addr)
+ 	jump_address_phys = rdr->jump_address_phys;
+ 	restore_cr3 = rdr->cr3;
+ 
+-	if (hibernation_e820_mismatch(rdr->e820_digest)) {
++	if (rdr->e820_checksum != compute_e820_crc32(e820_table_firmware)) {
+ 		pr_crit("Hibernate inconsistent memory map detected!\n");
+ 		return -ENODEV;
+ 	}
+-- 
+2.18.1
 
