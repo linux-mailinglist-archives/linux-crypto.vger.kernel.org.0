@@ -2,50 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2FB3675FF
-	for <lists+linux-crypto@lfdr.de>; Thu, 22 Apr 2021 02:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CF836761D
+	for <lists+linux-crypto@lfdr.de>; Thu, 22 Apr 2021 02:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240048AbhDVAB7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 21 Apr 2021 20:01:59 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:45800 "EHLO fornost.hmeau.com"
+        id S235459AbhDVAPI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 21 Apr 2021 20:15:08 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:45926 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234886AbhDVAB6 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 21 Apr 2021 20:01:58 -0400
+        id S231363AbhDVAPI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 21 Apr 2021 20:15:08 -0400
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lZMmW-0006CR-Ik; Thu, 22 Apr 2021 10:01:21 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 22 Apr 2021 10:01:20 +1000
-Date:   Thu, 22 Apr 2021 10:01:20 +1000
+        id 1lZMzG-0006L1-Bl; Thu, 22 Apr 2021 10:14:31 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 22 Apr 2021 10:14:30 +1000
+Date:   Thu, 22 Apr 2021 10:14:30 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v2 1/2] fscrypt: relax Kconfig dependencies for crypto
- API algorithms
-Message-ID: <20210422000120.GA4039@gondor.apana.org.au>
-References: <20210421075511.45321-1-ardb@kernel.org>
- <20210421075511.45321-2-ardb@kernel.org>
- <YIBsXY5QOcEjnZ6I@gmail.com>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     linux-crypto@vger.kernel.org, linus.walleij@linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: cortina/gemini: hwrng: what is its quality ?
+Message-ID: <20210422001430.GA4246@gondor.apana.org.au>
+References: <YICFBQ8mQRJ4zSh9@Red>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YIBsXY5QOcEjnZ6I@gmail.com>
+In-Reply-To: <YICFBQ8mQRJ4zSh9@Red>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:18:05AM -0700, Eric Biggers wrote:
->
-> Herbert, is there still time for you to take these two patches through the
-> crypto tree for 5.13?  There aren't any other fscrypt or fsverity patches for
-> 5.13, so that would be easiest for me.
+On Wed, Apr 21, 2021 at 10:03:17PM +0200, Corentin Labbe wrote:
+> hello
+> 
+> I work on the crypto part of the cortina/gemini SL3516 SoC.
+> The datasheet mention a HWRNG in its IP but really briefly:
+> """
+> The implementation is a 32-bit Hardware Random Number Generator that has a uniformed
+> distribution between 0 and 2^32 -1. The hardware randomness is created by sampling data from
+> different clock domains, and feeding it as input to the 32-bit maximum length LFSR (Linear Feedback
+> Shift Register)
+> """
+> 
+> Piping its output to rngtest give:
+> dd if=/dev/hwrng count=2000 bs=2048 | rngtest
+> rngtest 6.11
+> rngtest: starting FIPS tests...
+> rngtest: entropy source drained
+> rngtest: bits received from input: 32768000
+> rngtest: FIPS 140-2 successes: 1191
+> rngtest: FIPS 140-2 failures: 447
+> rngtest: FIPS 140-2(2001-10-10) Monobit: 183
+> rngtest: FIPS 140-2(2001-10-10) Poker: 116
+> rngtest: FIPS 140-2(2001-10-10) Runs: 346
+> 2000+0 records in
+> 2000+0 records out
+> rngtest: FIPS 140-2(2001-10-10) Long run: 0
+> rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
+> rngtest: input channel speed: (min=303.606; avg=3143.352; max=9712.208)Kibits/s
+> rngtest: FIPS tests speed: (min=7.104; avg=10.332; max=10.638)Mibits/s
+> rngtest: Program run time: 13303224 microseconds
+> 
+> That's a quite number of failure.
+> Can the hwrng still be used with some "hwrng->quality" setting ?
+> Or it is just too many failure to be used ?
 
-Sure, I can take these patches.
+If in doubt just leave it zero and the admin can override it if
+necessary.
 
-Cheers,
+Thanks,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
