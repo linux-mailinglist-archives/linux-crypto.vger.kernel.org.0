@@ -2,60 +2,66 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51215368D17
-	for <lists+linux-crypto@lfdr.de>; Fri, 23 Apr 2021 08:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF613690D7
+	for <lists+linux-crypto@lfdr.de>; Fri, 23 Apr 2021 13:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhDWGZQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Fri, 23 Apr 2021 02:25:16 -0400
-Received: from mail.rusoil.net ([188.128.114.25]:33351 "EHLO mail.rusoil.net"
+        id S229890AbhDWLJR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 23 Apr 2021 07:09:17 -0400
+Received: from 8bytes.org ([81.169.241.247]:35996 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230113AbhDWGZQ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 23 Apr 2021 02:25:16 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.rusoil.net (Postfix) with ESMTP id 6503E40718;
-        Fri, 23 Apr 2021 11:25:23 +0500 (YEKT)
-Received: from mail.rusoil.net ([127.0.0.1])
-        by localhost (mail.rusoil.net [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id HbdBRYdI4vx9; Fri, 23 Apr 2021 11:25:23 +0500 (YEKT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.rusoil.net (Postfix) with ESMTP id 00AF14071E;
-        Fri, 23 Apr 2021 11:25:22 +0500 (YEKT)
-X-Virus-Scanned: amavisd-new at mail.rusoil.net
-Received: from mail.rusoil.net ([127.0.0.1])
-        by localhost (mail.rusoil.net [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id m3jTESGb1-Tf; Fri, 23 Apr 2021 11:25:22 +0500 (YEKT)
-Received: from [91.224.92.185] (unknown [91.224.92.185])
-        by mail.rusoil.net (Postfix) with ESMTPSA id CEBD040718;
-        Fri, 23 Apr 2021 11:25:21 +0500 (YEKT)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S229807AbhDWLJP (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 23 Apr 2021 07:09:15 -0400
+Received: from cap.home.8bytes.org (p5b0069de.dip0.t-ipconnect.de [91.0.105.222])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id AD1B4F3;
+        Fri, 23 Apr 2021 13:08:37 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        John Allen <john.allen@amd.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joerg Roedel <joro@sev.home.8bytes.org>, stable@vger.kernel.org
+Subject: [PATCH] crypto: ccp: Annotate SEV Firmware file names
+Date:   Fri, 23 Apr 2021 13:08:33 +0200
+Message-Id: <20210423110833.10922-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Werden Sie unser Agent
-To:     Recipients <Blue@mail.rusoil.net>
-From:   Blue@mail.rusoil.net, Oak@mail.rusoil.net,
-        Mortgage@mail.rusoil.net, and@mail.rusoil.net,
-        Loans@mail.rusoil.net, "<Sharono@rusoil.net>"@mail.rusoil.net
-Date:   Thu, 22 Apr 2021 23:24:34 -0700
-Reply-To: info@bluelmtg.net
-Message-Id: <20210423062521.CEBD040718@mail.rusoil.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Ich leite den Betrieb bei Blue Oak Mortagage and Loans, einem Unternehmen für digitale Handelsfinanzierung mit Sitz in Istanbul, Türkei. Nach der erfolgreichen Finanzierung grenzüberschreitender Transaktionen in Höhe von über 1 Milliarde US-Dollar haben wir jetzt ein Partnerschaftsprogramm gestartet.
+From: Joerg Roedel <joro@sev.home.8bytes.org>
+
+Annotate the firmware files CCP might need using MODULE_FIRMWARE().
+This will get them included into an initrd when CCP is also included
+there. Otherwise the CCP module will not find its firmware when loaded
+before the root-fs is mounted.
+This can cause problems when the pre-loaded SEV firmware is too old to
+support current SEV and SEV-ES virtualization features.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Joerg Roedel <joro@sev.home.8bytes.org>
+---
+ drivers/crypto/ccp/sev-dev.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index cb9b4c4e371e..9883e3afe10b 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -42,6 +42,9 @@ static int psp_probe_timeout = 5;
+ module_param(psp_probe_timeout, int, 0644);
+ MODULE_PARM_DESC(psp_probe_timeout, " default timeout value, in seconds, during PSP device probe");
  
-Hier ein kurzer Überblick über unsere Angebote:
++MODULE_FIRMWARE("amd/amd_sev_fam17h_model0xh.sbin");
++MODULE_FIRMWARE("amd/amd_sev_fam17h_model3xh.sbin");
++
+ static bool psp_dead;
+ static int psp_timeout;
+ 
+-- 
+2.31.1
 
-Wir rekrutieren derzeit Agenten, die unsere Dienstleistungen vor Ort erweitern werden.
-
-Die Gehaltsstruktur basiert auf Provisionen. Gebühr von 1,5% für Kreditanträge unter 500.000 USD, 1,25% für 500.000 bis 1.000.000 USD und 1% für über 1.000.000 USD.
-
-Bitte klicken Sie auf den Link unten und füllen Sie das Formular aus. Unser Team wird sich mit Ihnen in Verbindung setzen, um weitere Informationen zu erhalten.
-
-https://www.bluelmtg.net/become-an-agent
-
-Thomas Michael
-tmichael@bluelmtg.net
-Personalabteilung
-Blue Oak Hypothek und Kredite
