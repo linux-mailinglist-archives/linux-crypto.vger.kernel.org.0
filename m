@@ -2,243 +2,150 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 128A536ED14
-	for <lists+linux-crypto@lfdr.de>; Thu, 29 Apr 2021 17:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9FF36ED4C
+	for <lists+linux-crypto@lfdr.de>; Thu, 29 Apr 2021 17:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240802AbhD2PI1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 29 Apr 2021 11:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240626AbhD2PID (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:08:03 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D243C06138F
-        for <linux-crypto@vger.kernel.org>; Thu, 29 Apr 2021 08:07:17 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id 8so33719390qkv.8
-        for <linux-crypto@vger.kernel.org>; Thu, 29 Apr 2021 08:07:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EAJclNu5gCfIMzIcfLRFLOY6aPCs84wagw7Ng4g4WPE=;
-        b=aHldvDBxe0q18B3BPRssa004Y8f+LA+eNfmC343d8B7v9zweaJYeO3v5lbbcpxpFdD
-         zxUVgiedCqBuWpYmo5ozuMTYfZtT8ncqy22fRs/ZNXYLu1597O4A8yp7X/ZuLePuZjYD
-         5RG6bm27Y1Gk8N5BjYq10sJVVNBnY46UzPkTepRGwdEuROlMnN6vRYk1unGfegeDh0SR
-         OpNPfeyWRwzTui61dDupg6K+10Z0FeVqiVON/PUXYusIaytQmg3LhtVrtP9YEZWbxf5P
-         lauDMl6M8Gw635e0e4Iuwp/8LaXwJvv77OOLVOqi2yEOIy1wM0PPghGbNv1Hmd3P0d8W
-         vmXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EAJclNu5gCfIMzIcfLRFLOY6aPCs84wagw7Ng4g4WPE=;
-        b=YzBNEO/itvdu0AuAoZQENcmHVDakMNIBzMd3w8hSMGBgrrZmci+e3exAefoe7rmB5D
-         naCsSlJQTMomAhVj87Y7xr3nrESb4glBP1jnvI+Ac1GTJZQR7BWWhG4kdtppZctT7dHh
-         IxbRvQfYY2qXA5a4HqZPAzW4/oGk5gORpDmOC62ZNIzGf6rd2TpyOd5OnCe/K0a/kVse
-         uiheUein9SCkGYtoo0yyFqpEC7fuzaZqS4KdLtq0R8z0L5ds27S7TLllagzsupYlSTLT
-         kAM+W2qma1EbnJsIOEJGlxQbQ4IldZxs6rma1bUNmaPpqyVVs6dkrRBK4IaV0gcOvNms
-         h+cw==
-X-Gm-Message-State: AOAM5335uR93voP4RU/rAiSBc3F1XX1prPOUptZVZuewjGhXHwm+M7aZ
-        GE/GIwD8B82jq1DnMPnXb+9yWA==
-X-Google-Smtp-Source: ABdhPJynTvhxR+rkdsECq11IqLL5FpLJSpryGxpvw+9lu+AtYYUuQ7KCw1ybLe4ADcT+GRZFglj2Qg==
-X-Received: by 2002:a37:f509:: with SMTP id l9mr129609qkk.172.1619708836520;
-        Thu, 29 Apr 2021 08:07:16 -0700 (PDT)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id j191sm2223822qke.131.2021.04.29.08.07.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 08:07:15 -0700 (PDT)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        bjorn.andersson@linaro.org
-Cc:     ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [Patch v4 7/7] crypto: qce: aead: Schedule fallback algorithm
-Date:   Thu, 29 Apr 2021 11:07:07 -0400
-Message-Id: <20210429150707.3168383-8-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210429150707.3168383-1-thara.gopinath@linaro.org>
-References: <20210429150707.3168383-1-thara.gopinath@linaro.org>
+        id S240603AbhD2PXn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 29 Apr 2021 11:23:43 -0400
+Received: from mail-eopbgr20076.outbound.protection.outlook.com ([40.107.2.76]:46214
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232989AbhD2PXm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 29 Apr 2021 11:23:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ixzwn6v7aKt1xxcQOQfa/eBnKngBC3+v4CgDT2gM4RKilo74pSO/MiggkiACSe+KnQRgZGFXtwH7TzoBXZI3U7gha2NorC5ZJGKYw1AFsrxNnUM6V3ZQ6ATFYsksUD1cZ6KxlNQI8QZNIKDqr1bmOWg8emjf2GvSRXHCJbIy52tG17O3P7c6armdP9JQpTwn6HzAQVeoNknMen0Q8PcY+6f+8zN86USXGbz10YNrIKDSA0uEX2+BGqZeQ5fIcrwRtW5AB4glSHmgF3Ke/ZBKiqozKRfRVd4FzVcdvgb7jG46Z3+I4knjHvTfwe9GYZhN9MUQMEqNnfZO7cCDi8Zh2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E1cCO2A+lX6ecM+zjv1WfM3Fr3iIhR6Gw3YRNEPUrZk=;
+ b=R2JW3Jo9qb8+gLn1zY8gCSH0GAHv58K7An6qDfoHXyw8K6ryBfP/VuaRnHuy4Qcw4m96Z42oiYoB2QsEtBVFhyqa0duDqexKf3PVeoF8NWXkvINd6CxbLGuqpuBHNPsO3zJh8BX0L63ftUaoRZmX5EzvD2ChpFUaTgohU1DvytUgJMWBM4bdNrcrwjBPTNdgyd5I74dNk2k8bAuctaU5qFFdqOLZ2VMYeDGbuMDBx6V8fcWNjl7Gzt0Cuje/tZGo47Ly+Xf+7PYx5tyLeQtjMhAohKZ+031lBOyq4D0sX70vYas5iH3TR3nMRYTYsRDHBEwwPtM7aaaxrCAh1+Fk+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E1cCO2A+lX6ecM+zjv1WfM3Fr3iIhR6Gw3YRNEPUrZk=;
+ b=U8Ky0R9c0K3A0e2PyN9wqSl/hSRvizf31n/+lHdk815tAFGPAVZizhMHUWWnao3uslEnDod6ufK2c8Fdh+jXWbjfqwbZ+qZrKrGlq2/CK7Bnyxw9ZE7JsgvfbzBO+VXjMwFABylZKE2S76bTTqiynprSMZX6ka0oTmAXBM/Ecr0=
+Received: from AM6PR04MB6053.eurprd04.prod.outlook.com (2603:10a6:20b:b9::10)
+ by AM6PR04MB4199.eurprd04.prod.outlook.com (2603:10a6:209:49::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Thu, 29 Apr
+ 2021 15:22:51 +0000
+Received: from AM6PR04MB6053.eurprd04.prod.outlook.com
+ ([fe80::b034:690:56aa:7b18]) by AM6PR04MB6053.eurprd04.prod.outlook.com
+ ([fe80::b034:690:56aa:7b18%4]) with mapi id 15.20.4087.025; Thu, 29 Apr 2021
+ 15:22:51 +0000
+From:   "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
+To:     Fabio Estevam <festevam@gmail.com>,
+        "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
+CC:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "dominique.martinet@atmark-techno.com" 
+        <dominique.martinet@atmark-techno.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>
+Subject: RE: [PATCH v1 2/2] caam: imx8m: change to use of_match_node in
+ run_descriptor_deco0
+Thread-Topic: [PATCH v1 2/2] caam: imx8m: change to use of_match_node in
+ run_descriptor_deco0
+Thread-Index: AQHXPQBPQp7syc9+7kmnegummfCQsqrLh0YAgAASmjA=
+Date:   Thu, 29 Apr 2021 15:22:51 +0000
+Message-ID: <AM6PR04MB60536DF97D12915D5E5A8663E25F9@AM6PR04MB6053.eurprd04.prod.outlook.com>
+References: <20210429140250.2321-1-alice.guo@oss.nxp.com>
+ <20210429140250.2321-2-alice.guo@oss.nxp.com>
+ <CAOMZO5Cbfh3Aj5-i2y+GDZ=-SZw-wLMbPMew=YTcf9Yr6ohVCw@mail.gmail.com>
+In-Reply-To: <CAOMZO5Cbfh3Aj5-i2y+GDZ=-SZw-wLMbPMew=YTcf9Yr6ohVCw@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [92.121.68.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2b6a604c-4962-47f5-51c9-08d90b22a785
+x-ms-traffictypediagnostic: AM6PR04MB4199:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR04MB4199889ED6E864A48523D56FA35F9@AM6PR04MB4199.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Y9BU/wExQeUU6b/V+L+i8uNv0j9sRZrZhwoND7ujb4l73VyxW+ndBhuh5EdiG7hTdyVLV9z0MPwJnhxU5SO+zZOp95lPnbfWTOlccISVr4AayEUT+bqoBjTLrAETxSdZ8EoyESzfj0tWDT1+nRgbmEpUi+t7kk+s5XBdZJx7mV3tILDxXK19XX6owO7a/p2G6stL97MF4dtQPxLSAsKgZabF3mP4X6S2Ny2vQPO/FqNCcHHwS734ZOGkcaeGYDGNSwrUqVHuuR0LDb68nLY6mMFedZI/UoWH5vkBSG42mpkA6++J+r8hp52+QkJ+jmNfSOiqbRZQy9b+MmpGUHow45URLltZnBUupB0hk8zxVB+ycwqQ5K4jFYoe+fqyavlsZoZm8RP1/iazFSh4n4WrpQAoYzLciJAmWM+lt2+iszJsfX6uKfjIaxI1ZeULbojwZ79VaaOCzyuVVcKdZcx6VnkBBVakxjKivpjP1cFlsAv0kogz+lZlp5o6IOCzimf82E/dDiBtC+fr0o64LcEhbmBpVrwDbS4BObZ9PaJg/oyJrccfCjiXTydQk6zG58xfH5xwXtUFnztpQOvN0e/mUeKlFVQfPcsWTF6SrritzvB29prhuwfuMFCwPWehojjzKlTeRsle7vxIujbtJznQVg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6053.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(498600001)(54906003)(8936002)(76116006)(2906002)(110136005)(186003)(122000001)(52536014)(66446008)(66476007)(26005)(66946007)(66556008)(64756008)(7416002)(55016002)(5660300002)(53546011)(4744005)(7696005)(33656002)(6506007)(8676002)(86362001)(71200400001)(9686003)(83380400001)(4326008)(38100700002)(32563001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?Y3JPNkhxS2VGY3V0STNyY0gzRm02c3VocWxpV3RHNmxhM0tKYWo0TkVKamJ3?=
+ =?utf-8?B?VTlaQmo4T0swRjFVTjBoZWRNK1h2U1pucjlGT2k0UHc1dHJUSU9idW54d3B6?=
+ =?utf-8?B?VDMxTERxYlpRWmE4YlY0OW9zMlFYNWsxdlY3ZUxHa0tBSVc1bWRwdTNSdzJ1?=
+ =?utf-8?B?aFBCWE9IVzZoMU9paFNualdJNDlrSVlMRjF6K1NhMnh3R0wxd0NSNEsxWEZ5?=
+ =?utf-8?B?TFlPZEsvQzdFb1RxQlVGeXByQXFzTTYvaHNSeTZxcDE5MHpuZEtNd2gwcEYv?=
+ =?utf-8?B?N3NNVVhPL3JpZGJDeGRHdjkrenNLU0JOWmlYVGJCTU9qM2d6OVY3QTdBRjRa?=
+ =?utf-8?B?S1FLWkVEaFdPUzNIZXExZHVCaXJSa2Q4bTBSS1pTS0x1WWFRdU1UNU1PWXlP?=
+ =?utf-8?B?VkpSamlOb0ZjcXdhaWFjSU1lTTVURFR4VURHUVFaTVJ0S0NiWllNKzArT2gy?=
+ =?utf-8?B?bHVpdUFDd3FVU1hMWHNlN01NYnhDdkZOWHdUQ2NCWWN6TkVRaUN2QXhNRTBC?=
+ =?utf-8?B?T1dnY2JOSGFzMjU1eEVnM3hZQ05hWVRXdW0rYU5ZbTFibG5aM1Mrb0FZUWVQ?=
+ =?utf-8?B?d3RTTzZtdlAya25lSSs1cnlCR1Y5WVFkN2xGZlVJbFlHS1o3bTMxbkltM2F2?=
+ =?utf-8?B?YnFhYmQzd1BNTFhsdTRFd090Q2Q5SVl5N0EwRDNkcllkUFBuSnZEcVFRWWRt?=
+ =?utf-8?B?SDV6a1p6R0t4WXRxY2FHTnBOaGZiekNodkpKSnFhOWtPTFZwSkZ6OG1ld3k2?=
+ =?utf-8?B?MWFSSi9PZ1JnREpwbVhGeEN2Z2lSK0RIZlZEL1dVQmZzOVhNQThNVWxpbmZZ?=
+ =?utf-8?B?blVWL1dxSFRjNllzcEdablhSK1ZDOUNHM3NQR2hSOVlBM3kxeWZ2bXNodzRV?=
+ =?utf-8?B?cDBQY0ozemRvdnNrN0Z1ZWd3VHBQVlI0U1pvQ24ycHAwc1BRR1J6OUpLL1dR?=
+ =?utf-8?B?VVp0eEhnb0Nza2FWQ0NHbVoyNFo2WUhVMTlXVy9SNENaTi9pd0h0VVNhTzRO?=
+ =?utf-8?B?U3dEREJDdUNteW5iWVQ1SEFDdjQ1c1JIVC9QMCtTTUpPRlh5a1BaYWxJdEdY?=
+ =?utf-8?B?VElwUXZENHlVSUVLQUJZQU1IVUZubHNTbXlwNTUwYW9GQmZmSDNOYmxnRVRa?=
+ =?utf-8?B?QjVlcE1mcExrcjg5UmdXSStIM2xoQ29abDJpeU5NMXp2MnFpWnVvZGVEL1NW?=
+ =?utf-8?B?VWFwSC9LaFJQVENOLzlISDFZT1k3b0FFL1pocjduUTFYOFN6cWwvbXJkWlZy?=
+ =?utf-8?B?eGJYYlAwTXFoY1VyRkcrS3g5a0hlSnBIeTB5MXVXQnZUdks5bzcxNVN6eUhK?=
+ =?utf-8?B?ektwdGxGSktoWmhUL1Vya2dVNVpQS3JEVzYxNmZTb3FFdHUyRTZ4QW5nTjFK?=
+ =?utf-8?B?c0xNNThlV3hiVWVBclpDWnlPUzdrYnpDMGZyWUdqeGlySzdDQkI2ZzF1UjIv?=
+ =?utf-8?B?eVoxbjdsUm1EQVF0Uml2dFJQaUpoVHRyY28wK3JRWFJDUmxZV3V1UWhGZUtD?=
+ =?utf-8?B?QUVMTlNOSHhtMi80SGhOSW1aSitFWFFvakRIa0MwZ2J3eEJTa01YMGFzM1k1?=
+ =?utf-8?B?cXBYelI1MlVQSGZBT2ovVWVlaEFmRUJrVkIwV3JLaUpBMUVJa2MxcFZLdDIv?=
+ =?utf-8?B?UzBHcFRVZC8xWVduZDRWWm5VdEUzNWpDQ1FzTG9qNS9OcEhjOVhMUEs4anpN?=
+ =?utf-8?B?NkFPbkRETWJoQzkyNldPd3V6Wi94Uk1xdUJxYmp3TnRMMUdTU3Jjc2RkRkFH?=
+ =?utf-8?Q?ZEieNMW5GmVtx3JN8t+6GxCFjy+mBai9SlNuczK?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6053.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b6a604c-4962-47f5-51c9-08d90b22a785
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2021 15:22:51.5632
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dtfpC3vqvCUJ0GAgvU7Artvfy6iElzQaKKtW2/z2H/F3Res9RbCwzy+DrjF3e/FBtqc+vjMO/ECI7am1E8Nzhg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4199
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Qualcomm crypto engine does not handle the following scenarios and
-will issue an abort. In such cases, pass on the transformation to
-a fallback algorithm.
-
-- DES3 algorithms with all three keys same.
-- AES192 algorithms.
-- 0 length messages.
-
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
- drivers/crypto/qce/aead.c | 64 ++++++++++++++++++++++++++++++++-------
- drivers/crypto/qce/aead.h |  3 ++
- 2 files changed, 56 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/crypto/qce/aead.c b/drivers/crypto/qce/aead.c
-index ef66ae21eae3..6d06a19b48e4 100644
---- a/drivers/crypto/qce/aead.c
-+++ b/drivers/crypto/qce/aead.c
-@@ -512,7 +512,23 @@ static int qce_aead_crypt(struct aead_request *req, int encrypt)
- 	/* CE does not handle 0 length messages */
- 	if (!rctx->cryptlen) {
- 		if (!(IS_CCM(rctx->flags) && IS_DECRYPT(rctx->flags)))
--			return -EINVAL;
-+			ctx->need_fallback = true;
-+	}
-+
-+	/* If fallback is needed, schedule and exit */
-+	if (ctx->need_fallback) {
-+		/* Reset need_fallback in case the same ctx is used for another transaction */
-+		ctx->need_fallback = false;
-+
-+		aead_request_set_tfm(&rctx->fallback_req, ctx->fallback);
-+		aead_request_set_callback(&rctx->fallback_req, req->base.flags,
-+					  req->base.complete, req->base.data);
-+		aead_request_set_crypt(&rctx->fallback_req, req->src,
-+				       req->dst, req->cryptlen, req->iv);
-+		aead_request_set_ad(&rctx->fallback_req, req->assoclen);
-+
-+		return encrypt ? crypto_aead_encrypt(&rctx->fallback_req) :
-+				 crypto_aead_decrypt(&rctx->fallback_req);
- 	}
- 
- 	/*
-@@ -553,7 +569,7 @@ static int qce_aead_ccm_setkey(struct crypto_aead *tfm, const u8 *key,
- 		memcpy(ctx->ccm4309_salt, key + keylen, QCE_CCM4309_SALT_SIZE);
- 	}
- 
--	if (keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_256)
-+	if (keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_256 && keylen != AES_KEYSIZE_192)
- 		return -EINVAL;
- 
- 	ctx->enc_keylen = keylen;
-@@ -562,7 +578,12 @@ static int qce_aead_ccm_setkey(struct crypto_aead *tfm, const u8 *key,
- 	memcpy(ctx->enc_key, key, keylen);
- 	memcpy(ctx->auth_key, key, keylen);
- 
--	return 0;
-+	if (keylen == AES_KEYSIZE_192)
-+		ctx->need_fallback = true;
-+
-+	return IS_CCM_RFC4309(flags) ?
-+		crypto_aead_setkey(ctx->fallback, key, keylen + QCE_CCM4309_SALT_SIZE) :
-+		crypto_aead_setkey(ctx->fallback, key, keylen);
- }
- 
- static int qce_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int keylen)
-@@ -593,20 +614,21 @@ static int qce_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int
- 		 * The crypto engine does not support any two keys
- 		 * being the same for triple des algorithms. The
- 		 * verify_skcipher_des3_key does not check for all the
--		 * below conditions. Return -EINVAL in case any two keys
--		 * are the same. Revisit to see if a fallback cipher
--		 * is needed to handle this condition.
-+		 * below conditions. Schedule fallback in this case.
- 		 */
- 		memcpy(_key, authenc_keys.enckey, DES3_EDE_KEY_SIZE);
- 		if (!((_key[0] ^ _key[2]) | (_key[1] ^ _key[3])) ||
- 		    !((_key[2] ^ _key[4]) | (_key[3] ^ _key[5])) ||
- 		    !((_key[0] ^ _key[4]) | (_key[1] ^ _key[5])))
--			return -EINVAL;
-+			ctx->need_fallback = true;
- 	} else if (IS_AES(flags)) {
- 		/* No random key sizes */
- 		if (authenc_keys.enckeylen != AES_KEYSIZE_128 &&
-+		    authenc_keys.enckeylen != AES_KEYSIZE_192 &&
- 		    authenc_keys.enckeylen != AES_KEYSIZE_256)
- 			return -EINVAL;
-+		if (authenc_keys.enckeylen == AES_KEYSIZE_192)
-+			ctx->need_fallback = true;
- 	}
- 
- 	ctx->enc_keylen = authenc_keys.enckeylen;
-@@ -617,7 +639,7 @@ static int qce_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int
- 	memset(ctx->auth_key, 0, sizeof(ctx->auth_key));
- 	memcpy(ctx->auth_key, authenc_keys.authkey, authenc_keys.authkeylen);
- 
--	return 0;
-+	return crypto_aead_setkey(ctx->fallback, key, keylen);
- }
- 
- static int qce_aead_setauthsize(struct crypto_aead *tfm, unsigned int authsize)
-@@ -632,15 +654,33 @@ static int qce_aead_setauthsize(struct crypto_aead *tfm, unsigned int authsize)
- 			return -EINVAL;
- 	}
- 	ctx->authsize = authsize;
--	return 0;
-+
-+	return crypto_aead_setauthsize(ctx->fallback, authsize);
- }
- 
- static int qce_aead_init(struct crypto_aead *tfm)
- {
--	crypto_aead_set_reqsize(tfm, sizeof(struct qce_aead_reqctx));
-+	struct qce_aead_ctx *ctx = crypto_aead_ctx(tfm);
-+
-+	ctx->need_fallback = false;
-+	ctx->fallback = crypto_alloc_aead(crypto_tfm_alg_name(&tfm->base),
-+					  0, CRYPTO_ALG_NEED_FALLBACK);
-+
-+	if (IS_ERR(ctx->fallback))
-+		return PTR_ERR(ctx->fallback);
-+
-+	crypto_aead_set_reqsize(tfm, sizeof(struct qce_aead_reqctx) +
-+				crypto_aead_reqsize(ctx->fallback));
- 	return 0;
- }
- 
-+static void qce_aead_exit(struct crypto_aead *tfm)
-+{
-+	struct qce_aead_ctx *ctx = crypto_aead_ctx(tfm);
-+
-+	crypto_free_aead(ctx->fallback);
-+}
-+
- struct qce_aead_def {
- 	unsigned long flags;
- 	const char *name;
-@@ -738,11 +778,13 @@ static int qce_aead_register_one(const struct qce_aead_def *def, struct qce_devi
- 	alg->encrypt			= qce_aead_encrypt;
- 	alg->decrypt			= qce_aead_decrypt;
- 	alg->init			= qce_aead_init;
-+	alg->exit			= qce_aead_exit;
- 
- 	alg->base.cra_priority		= 300;
- 	alg->base.cra_flags		= CRYPTO_ALG_ASYNC |
- 					  CRYPTO_ALG_ALLOCATES_MEMORY |
--					  CRYPTO_ALG_KERN_DRIVER_ONLY;
-+					  CRYPTO_ALG_KERN_DRIVER_ONLY |
-+					  CRYPTO_ALG_NEED_FALLBACK;
- 	alg->base.cra_ctxsize		= sizeof(struct qce_aead_ctx);
- 	alg->base.cra_alignmask		= 0;
- 	alg->base.cra_module		= THIS_MODULE;
-diff --git a/drivers/crypto/qce/aead.h b/drivers/crypto/qce/aead.h
-index 3d1f2039930b..efb8477cc088 100644
---- a/drivers/crypto/qce/aead.h
-+++ b/drivers/crypto/qce/aead.h
-@@ -19,6 +19,8 @@ struct qce_aead_ctx {
- 	unsigned int enc_keylen;
- 	unsigned int auth_keylen;
- 	unsigned int authsize;
-+	bool need_fallback;
-+	struct crypto_aead *fallback;
- };
- 
- struct qce_aead_reqctx {
-@@ -39,6 +41,7 @@ struct qce_aead_reqctx {
- 	u8 ccm_nonce[QCE_MAX_NONCE];
- 	u8 ccmresult_buf[QCE_BAM_BURST_SIZE];
- 	u8 ccm_rfc4309_iv[QCE_MAX_IV_SIZE];
-+	struct aead_request fallback_req;
- };
- 
- static inline struct qce_alg_template *to_aead_tmpl(struct crypto_aead *tfm)
--- 
-2.25.1
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRmFiaW8gRXN0ZXZhbSA8
+ZmVzdGV2YW1AZ21haWwuY29tPg0KPiBTZW50OiAyMDIx5bm0NOaciDI55pelIDIyOjA1DQo+IFN1
+YmplY3Q6IFJlOiBbUEFUQ0ggdjEgMi8yXSBjYWFtOiBpbXg4bTogY2hhbmdlIHRvIHVzZSBvZl9t
+YXRjaF9ub2RlIGluDQo+IHJ1bl9kZXNjcmlwdG9yX2RlY28wDQo+IA0KPiBIaSBBbGljZQ0KPiAN
+Cj4gT24gVGh1LCBBcHIgMjksIDIwMjEgYXQgMTE6MDIgQU0gQWxpY2UgR3VvIChPU1MpIDxhbGlj
+ZS5ndW9Ab3NzLm54cC5jb20+DQo+IHdyb3RlOg0KPiA+DQo+ID4gRnJvbTogQWxpY2UgR3VvIDxh
+bGljZS5ndW9AbnhwLmNvbT4NCj4gPg0KPiA+IFBhdGNoICJmaXggdGhlIGJ1aWx0LWluIGNhYW0g
+ZHJpdmVyIGNhbm5vdCBtYXRjaCBzb2NfaWQiIHByb3ZpZGVzDQo+ID4gaW14OG1fbWFjaGluZV9t
+YXRjaCB0byBtYXRjaCBpLk1YOE17USxNLE4sUH0sIHNvIGNoYW5nZSB0byB1c2UgdG8NCj4gPiBv
+Zl9tYXRjaF9ub2RlIHdoaWNoIGNhbiBzaW1wbGlmeSB0aGUgY29kZS4NCj4gDQo+IFNob3VsZG4n
+dCB0aGVzZSBwYXRjaGVzIGJlIHNxdWFzaGVkPw0KDQpUaGVzZSBwYXRjaGVzIHNob3VsZCBub3Qg
+YmUgc3F1YXNoZWQgYmVjYXVzZSAiZml4IHRoZSBidWlsdC1pbiBjYWFtIGRyaXZlciBjYW5ub3Qg
+bWF0Y2ggc29jX2lkIg0KaXMgbWFpbmx5IHVzZWQgdG8gcHJvdmlkZSBkZWZlciBwcm9iZSB3aGVu
+IHNvYyBkZXZpY2UgaGFzIG5vdCBiZWVuIHByb2JlZCB5ZXQsIGFuZCBpcyBvbmx5IGZvcg0KaS5N
+WDhNLiAiY2hhbmdlIHRvIHVzZSBvZl9tYXRjaF9ub2RlIGluIHJ1bl9kZXNjcmlwdG9yX2RlY28w
+IiBpcyBqdXN0IHRvIHNpbXBsaWZ5IGNvZGUuDQoNCkJlc3QgUmVnYXJkcywNCkFsaWNlIEd1bw0K
+DQogDQoNCg==
