@@ -2,68 +2,102 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6C9374EF1
-	for <lists+linux-crypto@lfdr.de>; Thu,  6 May 2021 07:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B923E375FD2
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 May 2021 07:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbhEFFm2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 6 May 2021 01:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
+        id S233669AbhEGFms (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 7 May 2021 01:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbhEFFln (ORCPT
+        with ESMTP id S232868AbhEGFmq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 6 May 2021 01:41:43 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFE3C061574
-        for <linux-crypto@vger.kernel.org>; Wed,  5 May 2021 22:40:25 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id c17so4303201pfn.6
-        for <linux-crypto@vger.kernel.org>; Wed, 05 May 2021 22:40:25 -0700 (PDT)
+        Fri, 7 May 2021 01:42:46 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F041DC0613ED
+        for <linux-crypto@vger.kernel.org>; Thu,  6 May 2021 22:41:46 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id j11so5840880qtn.12
+        for <linux-crypto@vger.kernel.org>; Thu, 06 May 2021 22:41:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=MhaWH0xm/odULRUgpRN30Lg5qdDn6Ee/GPJGPBWoxIc=;
-        b=kWWIvWmemVePN6f4NUYr3ql/fQ/y+NfVsXuY2PGRy7EXGajH2Ojxx3ywApl8p66z/O
-         x9D5r9ye7+jXNRqGoXPyhxKqvhLbPbRMq8d8vGR5JvnnLOMuaoLUbmJUDrATGTzr6yKi
-         kIL8PZrWMDEXt9A+EyZBGoUxleGC0ttY3I4zC97CFKhb3WTycnQ0eTMD+7WYnv6JKARr
-         8W7FfNaCQqP3dwbWiVNy7/rz+jCS1jXm6HLjsV2680ztFcW/7uAEtyf60GvSHixpFAv0
-         sea2dyiyBvZy3WPLSfM++V3sRXWaitGm3P616B4m94d+6t/ZMGadOJVXyzxUaYpuxyGp
-         /G8g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=G2kOry2o6vDINWYKN+kItqoO3L4K4kcs80lC7IG5WJU=;
+        b=bRNCVPdRqAocCuyFxBXJy2AsS3Qe16WxtrKO74QvMjIBi0wx/v0BGOcsSVuCwagmwO
+         mEpXlMTxD1HFdaXZU/T1fxWDz699KuxZayEaQSrFIDZLj8Ead5DAxXB9JfrfRt3f2cRc
+         rNLBYP7Y77arlJFye/ae+jdYD4IXyPTUZ0cUY0OXf49OBpBiYq76ArNyvrHpbghR9Rhg
+         qOhCTh4uIpwLhVXQOSAPeJwuful8xOMAXw5jI01ZZNM/dq+XJLqGGQ63QLXI42+uDEF0
+         pU9ZzPvgxK4IDacYhC1eWthFdl4lsGumueuhlWco99oFSq6f1ccZdXPiqKhDsysYq+Jx
+         PGCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=MhaWH0xm/odULRUgpRN30Lg5qdDn6Ee/GPJGPBWoxIc=;
-        b=WWy46MxBseGktrtPsYbo2Xh/xvjwI7KwSr35IVFf5inArLvF73Kv77RO0812a27LfA
-         9UNtaXnoMqXOUH3pA5//LkxcfgZNXl2S989nXFrnE/9b1NeY/BomHlzJMmOf8sWOKt+i
-         HEb81eC/ULdLgQbeX7PwGdzm45xIbs1eCYivP8DxQb+96kgjbgHw/je4sJg6Bshw8OnX
-         PihEVdiRXJJngMZ6Po2I6ztw5evW8JRp8lu0r2nOP+4SixkhfKG6QCH8o4fh8SK7Hk5w
-         0EPW044h6rTKRfDMm+j5xETd0M8MyZcGaVTrlBgl5dMRWpuA9IeTJt2IjoFgTklDWEQd
-         jolQ==
-X-Gm-Message-State: AOAM530RS2/ljbwzLxHPlx6BW6TctjmpzNgNm9cRKQvIsoWJmZPETjKc
-        95iENaw5/OcDcJUV1z+YW6lHbQspxTeo3FLQmHw=
-X-Google-Smtp-Source: ABdhPJx47Ny3zSe2cQRZEjyQdDmyvYdHVZdDbaZ5dRZ8dTbP046c+q7lZheKgdRm25pyM+/3clyf1+feZojO5bOQJDs=
-X-Received: by 2002:a63:1064:: with SMTP id 36mr2606708pgq.164.1620279624460;
- Wed, 05 May 2021 22:40:24 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=G2kOry2o6vDINWYKN+kItqoO3L4K4kcs80lC7IG5WJU=;
+        b=lWC7Qy9tZY3Wz12h5ikmUH6Zrt5hxJC1m0OwHdZj+YBvQhXzpCtSXm482w0WcpjIK/
+         j8ETFmb7JwYirQeFaumi/TCALz4ggPG1HU2Sg/GP6UahZWhD9zrsKn0ubNnumUxTPwA6
+         R7+VpldsOHSnXF7innXrBqnzkMldUXkMt+N7ix9FVLTMYSwaGMhDP6IVqF9rA+qWrZRS
+         eKnfs9deQK1mtzcfR7/EEZdvIlNXL+T6NDrpdnk4Gwi587C6xUmYhsw0u+rQ6j9Qpzh7
+         DsIqx79b3kbGn2jPZpuaefrF5p5N8+/Miaaid2FTOfBCaGtgfVTY1WvmG5+BnDrGck7k
+         SbEg==
+X-Gm-Message-State: AOAM531Eq7IvL3GT2lbTm2lyVE70m0RvOMkMajoX3z1MVYYbE7MQCJAK
+        LOG2s2UAZpvNNwRk+OddbfzlsiVhGiqiiXMcfDJffnVWdDY=
+X-Google-Smtp-Source: ABdhPJxKzVdU7bSErDYXXQjwSjZWZmXz9hyH9G8BChwcxOvNxbG1yz0nOahlJ4/XXLydJCJ11FAw2oQ3ssxn5ejbvYM=
+X-Received: by 2002:ac8:714c:: with SMTP id h12mr8066884qtp.221.1620366106260;
+ Thu, 06 May 2021 22:41:46 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6a11:48e:0:0:0:0 with HTTP; Wed, 5 May 2021 22:40:23
- -0700 (PDT)
-Reply-To: isabella.ferreira@yandex.com
-From:   "Isabella.Ferreira" <drdavidchris500@gmail.com>
-Date:   Wed, 5 May 2021 23:40:23 -0600
-Message-ID: <CAC-V+SMd8enpCKeTjwNA2cp0O9DoHLi+OkK8k8U4Q93wgTqZfg@mail.gmail.com>
-Subject: Greetings,
-To:     undisclosed-recipients:;
+References: <CAE9cyGSX4nwRrDbazih2FDp1_8e+wGTD17euyCJyitXWOignMw@mail.gmail.com>
+ <YJF708LCG0l8WBaD@gmail.com>
+In-Reply-To: <YJF708LCG0l8WBaD@gmail.com>
+From:   Kestrel seventyfour <kestrelseventyfour@gmail.com>
+Date:   Fri, 7 May 2021 07:41:35 +0200
+Message-ID: <CAE9cyGToQUPuU3GfZK1SSTEUts3Ot1x7nAW1QdttvfVNDQqBoQ@mail.gmail.com>
+Subject: Re: cannot pass split cryptomgr tests for aes ctr
+To:     linux-crypto@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Greetings,
+Hi Eric,
 
-I wonder why you continue neglecting my emails. Please, acknowledge
-the receipt of this message in reference to the subject above as I
-intend to send to you the details of the mail. Sometimes, try to check
-your spam box because most of these correspondences fall out sometimes
-in SPAM folder.
+thanks for the info. Walksize did the trick returning the chunks.
 
-Best regards,
-Isabella
+D. Kestrel
+
+Am Di., 4. Mai 2021 um 18:52 Uhr schrieb Eric Biggers <ebiggers@kernel.org>:
+>
+> On Mon, May 03, 2021 at 09:56:40AM +0200, Kestrel seventyfour wrote:
+> > Hi,
+> >
+> > I am trying to update the old ifxdeu driver to pass the crypto mgr tests.
+> > However, I continously fail to pass the split tests and I wonder what to do.
+> >
+> > For example, I successfully pass the test vector 0 here:
+> > https://elixir.bootlin.com/linux/latest/source/crypto/testmgr.h#L16654
+> > if there is no split.
+> >
+> > But if the text "Single block msg" is split into two 8 byte blocks
+> > (single even aligned splits), which end up as separate skcipher walks
+> > in the driver, the second block is wrong and does not compare
+> > correctly, to what is hardcoded in testmgr.h. Same if I try it with
+> > online aes-ctr encoders in the web.
+> > I have tried doing the xor manually with the aes encoded iv, but I get
+> > the same result as the hardware and if I use the next last iv, I still
+> > do not get the second 8 bytes that are hardcoded in cryptomgr.h.
+> >
+> > Can someone shed a light on it?
+> > Is it valid to compare a crypto result that was done on a single walk
+> > with 16byte with two separate walks on the 8 byte splits (of the
+> > original 16)? Is the cryptomgr test on the split tests expecting that
+> > I concat the two walks into a single one?
+> > If yes, how to do that on the uneven splits with separations like 15
+> > 16 5 byte sequences, etc., fill up the walk up to full block size and
+> > spill over into the next walk?
+> >
+>
+> The split test cases expect the same output (same sequence of bytes) as the
+> non-split test cases.  The only difference is how the data is split up into
+> scatterlist elements.  Yes, that means that a single 16-byte block of the
+> keystream may need to be XOR'ed with data from multiple scatterlist elements.
+> Take a look at how other drivers handle this.
+>
+> - Eric
