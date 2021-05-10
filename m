@@ -2,18 +2,18 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA27377F08
-	for <lists+linux-crypto@lfdr.de>; Mon, 10 May 2021 11:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E11377F07
+	for <lists+linux-crypto@lfdr.de>; Mon, 10 May 2021 11:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhEJJLD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 10 May 2021 05:11:03 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2742 "EHLO
+        id S230229AbhEJJLC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 10 May 2021 05:11:02 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2745 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230189AbhEJJLA (ORCPT
+        with ESMTP id S230200AbhEJJLA (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 10 May 2021 05:11:00 -0400
 Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FdwCZ4ndVzqV1M;
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FdwCZ4zzmzqV1P;
         Mon, 10 May 2021 17:06:34 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
@@ -22,9 +22,9 @@ From:   Hui Tang <tanghui20@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
         <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 7/8] crypto: hisilicon/hpre - delete rudundant macro definition
-Date:   Mon, 10 May 2021 17:06:50 +0800
-Message-ID: <1620637611-41643-8-git-send-email-tanghui20@huawei.com>
+Subject: [PATCH 8/8] crypto: hisilicon/hpre - add 'default' for switch statement
+Date:   Mon, 10 May 2021 17:06:51 +0800
+Message-ID: <1620637611-41643-9-git-send-email-tanghui20@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1620637611-41643-1-git-send-email-tanghui20@huawei.com>
 References: <1620637611-41643-1-git-send-email-tanghui20@huawei.com>
@@ -36,34 +36,29 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Delete rudundant macro definition.
+Return error immediately if it goto 'default' path.
 
 Signed-off-by: Hui Tang <tanghui20@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index b94185a..f837cb2 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -57,7 +57,6 @@
- #define HPRE_CORE_INI_STATUS (HPRE_CLSTR_BASE + HPRE_CORE_INI_STATUS_OFFSET)
- #define HPRE_HAC_ECC1_CNT		0x301a04
- #define HPRE_HAC_ECC2_CNT		0x301a08
--#define HPRE_HAC_INT_STATUS		0x301800
- #define HPRE_HAC_SOURCE_INT		0x301600
- #define HPRE_CLSTR_ADDR_INTRVL		0x1000
- #define HPRE_CLUSTER_INQURY		0x100
-@@ -828,7 +827,7 @@ static void hpre_log_hw_error(struct hisi_qm *qm, u32 err_sts)
- 
- static u32 hpre_get_hw_err_status(struct hisi_qm *qm)
- {
--	return readl(qm->io_base + HPRE_HAC_INT_STATUS);
-+	return readl(qm->io_base + HPRE_INT_STATUS);
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+index fb8e9c0..b4b12dc 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+@@ -617,9 +617,9 @@ static int hpre_is_dh_params_length_valid(unsigned int key_sz)
+ 	case _HPRE_DH_GRP15:
+ 	case _HPRE_DH_GRP16:
+ 		return 0;
++	default:
++		return -EINVAL;
+ 	}
+-
+-	return -EINVAL;
  }
  
- static void hpre_clear_hw_err_status(struct hisi_qm *qm, u32 err_sts)
+ static int hpre_dh_set_params(struct hpre_ctx *ctx, struct dh *params)
 -- 
 2.8.1
 
