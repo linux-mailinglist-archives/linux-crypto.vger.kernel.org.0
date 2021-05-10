@@ -2,138 +2,54 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84B5377EED
-	for <lists+linux-crypto@lfdr.de>; Mon, 10 May 2021 11:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA83377F06
+	for <lists+linux-crypto@lfdr.de>; Mon, 10 May 2021 11:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhEJJG6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 10 May 2021 05:06:58 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2482 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbhEJJG6 (ORCPT
+        id S230224AbhEJJLC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 10 May 2021 05:11:02 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2741 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230134AbhEJJLA (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 10 May 2021 05:06:58 -0400
-Received: from dggeml703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fdw7x2rdHzRfHC;
-        Mon, 10 May 2021 17:03:25 +0800 (CST)
-Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
- dggeml703-chm.china.huawei.com (10.3.17.136) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 10 May 2021 17:05:51 +0800
+        Mon, 10 May 2021 05:11:00 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FdwCZ4bg5zqV1L;
+        Mon, 10 May 2021 17:06:34 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
- dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 10 May 2021 17:05:51 +0800
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 10 May 2021 17:09:46 +0800
 From:   Hui Tang <tanghui20@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
         <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] crypto: hisilicon/hpre - fix unmapping invalid dma address
-Date:   Mon, 10 May 2021 17:02:55 +0800
-Message-ID: <1620637375-39155-1-git-send-email-tanghui20@huawei.com>
+Subject: [PATCH 0/8] crypto: hisilicon/hpre - fix coding style
+Date:   Mon, 10 May 2021 17:06:43 +0800
+Message-ID: <1620637611-41643-1-git-send-email-tanghui20@huawei.com>
 X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi760-chm.china.huawei.com (10.1.198.146)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Currently, an invalid dma address may be unmapped when calling
-'xx_data_clr_all' in error path, so check dma address of sqe in/out
-if initialized before calling 'dma_free_coherent' or 'dma_unmap_single'.
+This patchset fix coding style, as follows:
 
-Fixes: a9214b0b6ed2(crypto: hisilicon - fix the check on dma address)
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
----
-v1 -> v2: Fix sparse warning.
----
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+Hui Tang (8):
+  crypto: hisilicon/hpre - the macro 'HPRE_ADDR' expands
+  crypto: hisilicon/hpre - init a structure member each line
+  crypto: hisilicon/hpre - replace macro with inline function
+  crypto: hisilicon/hpre - remove the macro of 'HPRE_DEV'
+  crypto: hisilicon/hpre - delete rudundant initialization
+  crypto: hisilicon/hpre - use 'GENMASK' to generate mask value
+  crypto: hisilicon/hpre - delete rudundant macro definition
+  crypto: hisilicon/hpre - add 'default' for switch statement
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index a380087..782ddff 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -298,6 +298,8 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
- 	dma_addr_t tmp;
- 
- 	tmp = le64_to_cpu(sqe->in);
-+	if (unlikely(dma_mapping_error(dev, tmp)))
-+		return;
- 
- 	if (src) {
- 		if (req->src)
-@@ -307,6 +309,8 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
- 	}
- 
- 	tmp = le64_to_cpu(sqe->out);
-+	if (unlikely(dma_mapping_error(dev, tmp)))
-+		return;
- 
- 	if (req->dst) {
- 		if (dst)
-@@ -524,6 +528,8 @@ static int hpre_msg_request_set(struct hpre_ctx *ctx, void *req, bool is_rsa)
- 		msg->key = cpu_to_le64(ctx->dh.dma_xa_p);
- 	}
- 
-+	msg->in = cpu_to_le64(DMA_MAPPING_ERROR);
-+	msg->out = cpu_to_le64(DMA_MAPPING_ERROR);
- 	msg->dw0 |= cpu_to_le32(0x1 << HPRE_SQE_DONE_SHIFT);
- 	msg->task_len1 = (ctx->key_sz >> HPRE_BITS_2_BYTES_SHIFT) - 1;
- 	h_req->ctx = ctx;
-@@ -1372,11 +1378,15 @@ static void hpre_ecdh_hw_data_clr_all(struct hpre_ctx *ctx,
- 	dma_addr_t dma;
- 
- 	dma = le64_to_cpu(sqe->in);
-+	if (unlikely(dma_mapping_error(dev, dma)))
-+		return;
- 
- 	if (src && req->src)
- 		dma_free_coherent(dev, ctx->key_sz << 2, req->src, dma);
- 
- 	dma = le64_to_cpu(sqe->out);
-+	if (unlikely(dma_mapping_error(dev, dma)))
-+		return;
- 
- 	if (req->dst)
- 		dma_free_coherent(dev, ctx->key_sz << 1, req->dst, dma);
-@@ -1431,6 +1441,8 @@ static int hpre_ecdh_msg_request_set(struct hpre_ctx *ctx,
- 	h_req->areq.ecdh = req;
- 	msg = &h_req->req;
- 	memset(msg, 0, sizeof(*msg));
-+	msg->in = cpu_to_le64(DMA_MAPPING_ERROR);
-+	msg->out = cpu_to_le64(DMA_MAPPING_ERROR);
- 	msg->key = cpu_to_le64(ctx->ecdh.dma_p);
- 
- 	msg->dw0 |= cpu_to_le32(0x1U << HPRE_SQE_DONE_SHIFT);
-@@ -1667,11 +1679,15 @@ static void hpre_curve25519_hw_data_clr_all(struct hpre_ctx *ctx,
- 	dma_addr_t dma;
- 
- 	dma = le64_to_cpu(sqe->in);
-+	if (unlikely(dma_mapping_error(dev, dma)))
-+		return;
- 
- 	if (src && req->src)
- 		dma_free_coherent(dev, ctx->key_sz, req->src, dma);
- 
- 	dma = le64_to_cpu(sqe->out);
-+	if (unlikely(dma_mapping_error(dev, dma)))
-+		return;
- 
- 	if (req->dst)
- 		dma_free_coherent(dev, ctx->key_sz, req->dst, dma);
-@@ -1722,6 +1738,8 @@ static int hpre_curve25519_msg_request_set(struct hpre_ctx *ctx,
- 	h_req->areq.curve25519 = req;
- 	msg = &h_req->req;
- 	memset(msg, 0, sizeof(*msg));
-+	msg->in = cpu_to_le64(DMA_MAPPING_ERROR);
-+	msg->out = cpu_to_le64(DMA_MAPPING_ERROR);
- 	msg->key = cpu_to_le64(ctx->curve25519.dma_p);
- 
- 	msg->dw0 |= cpu_to_le32(0x1U << HPRE_SQE_DONE_SHIFT);
--- 
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c |  67 ++++++------
+ drivers/crypto/hisilicon/hpre/hpre_main.c   | 151 +++++++++++++++++-----------
+ 2 files changed, 128 insertions(+), 90 deletions(-)
+
+--
 2.8.1
 
