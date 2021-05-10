@@ -2,18 +2,18 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67852377F0B
-	for <lists+linux-crypto@lfdr.de>; Mon, 10 May 2021 11:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA27377F08
+	for <lists+linux-crypto@lfdr.de>; Mon, 10 May 2021 11:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhEJJLE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 10 May 2021 05:11:04 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2746 "EHLO
+        id S230237AbhEJJLD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 10 May 2021 05:11:03 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2742 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbhEJJLC (ORCPT
+        with ESMTP id S230189AbhEJJLA (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 10 May 2021 05:11:02 -0400
+        Mon, 10 May 2021 05:11:00 -0400
 Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FdwCZ5ZHzzqV1W;
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FdwCZ4ndVzqV1M;
         Mon, 10 May 2021 17:06:34 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
@@ -22,9 +22,9 @@ From:   Hui Tang <tanghui20@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
         <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 6/8] crypto: hisilicon/hpre - use 'GENMASK' to generate mask value
-Date:   Mon, 10 May 2021 17:06:49 +0800
-Message-ID: <1620637611-41643-7-git-send-email-tanghui20@huawei.com>
+Subject: [PATCH 7/8] crypto: hisilicon/hpre - delete rudundant macro definition
+Date:   Mon, 10 May 2021 17:06:50 +0800
+Message-ID: <1620637611-41643-8-git-send-email-tanghui20@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1620637611-41643-1-git-send-email-tanghui20@huawei.com>
 References: <1620637611-41643-1-git-send-email-tanghui20@huawei.com>
@@ -36,57 +36,34 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Use 'GENMASK' to generate mask value, just make the code clearer.
+Delete rudundant macro definition.
 
 Signed-off-by: Hui Tang <tanghui20@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 6 +++---
- drivers/crypto/hisilicon/hpre/hpre_main.c   | 8 +++++++-
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_main.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index 3a3af82..fb8e9c0 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -326,9 +326,9 @@ static int hpre_alg_res_post_hf(struct hpre_ctx *ctx, struct hpre_sqe *sqe,
- 
- #define HPRE_NO_HW_ERR		0
- #define HPRE_HW_TASK_DONE	3
--#define HREE_HW_ERR_MASK	0x7ff
--#define HREE_SQE_DONE_MASK	0x3
--#define HREE_ALG_TYPE_MASK	0x1f
-+#define HREE_HW_ERR_MASK	GENMASK(10, 0)
-+#define HREE_SQE_DONE_MASK	GENMASK(1, 0)
-+#define HREE_ALG_TYPE_MASK	GENMASK(4, 0)
- 	id = (int)le16_to_cpu(sqe->tag);
- 	req = ctx->req_list[id];
- 	hpre_rm_req_from_ctx(req);
 diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 1e7d1fb..b94185a 100644
+index b94185a..f837cb2 100644
 --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
 +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -36,7 +36,7 @@
- #define HPRE_INT_MASK			0x301400
- #define HPRE_INT_STATUS			0x301800
- #define HPRE_CORE_INT_ENABLE		0
--#define HPRE_CORE_INT_DISABLE		0x003fffff
-+#define HPRE_CORE_INT_DISABLE		GENMASK(21, 0)
- #define HPRE_RDCHN_INI_ST		0x301a00
- #define HPRE_CLSTR_BASE			0x302000
- #define HPRE_CORE_EN_OFFSET		0x04
-@@ -75,6 +75,12 @@
- #define HPRE_BD_USR_MASK		0x3
- #define HPRE_CLUSTER_CORE_MASK_V2	0xf
- #define HPRE_CLUSTER_CORE_MASK_V3	0xff
-+#define HPRE_QM_USR_CFG_MASK		GENMASK(31, 1)
-+#define HPRE_QM_AXI_CFG_MASK		GENMASK(15, 0)
-+#define HPRE_QM_VFG_AX_MASK		GENMASK(7, 0)
-+#define HPRE_BD_USR_MASK		GENMASK(1, 0)
-+#define HPRE_CLUSTER_CORE_MASK_V2	GENMASK(3, 0)
-+#define HPRE_CLUSTER_CORE_MASK_V3	GENMASK(7, 0)
+@@ -57,7 +57,6 @@
+ #define HPRE_CORE_INI_STATUS (HPRE_CLSTR_BASE + HPRE_CORE_INI_STATUS_OFFSET)
+ #define HPRE_HAC_ECC1_CNT		0x301a04
+ #define HPRE_HAC_ECC2_CNT		0x301a08
+-#define HPRE_HAC_INT_STATUS		0x301800
+ #define HPRE_HAC_SOURCE_INT		0x301600
+ #define HPRE_CLSTR_ADDR_INTRVL		0x1000
+ #define HPRE_CLUSTER_INQURY		0x100
+@@ -828,7 +827,7 @@ static void hpre_log_hw_error(struct hisi_qm *qm, u32 err_sts)
  
- #define HPRE_AM_OOO_SHUTDOWN_ENB	0x301044
- #define HPRE_AM_OOO_SHUTDOWN_ENABLE	BIT(0)
+ static u32 hpre_get_hw_err_status(struct hisi_qm *qm)
+ {
+-	return readl(qm->io_base + HPRE_HAC_INT_STATUS);
++	return readl(qm->io_base + HPRE_INT_STATUS);
+ }
+ 
+ static void hpre_clear_hw_err_status(struct hisi_qm *qm, u32 err_sts)
 -- 
 2.8.1
 
