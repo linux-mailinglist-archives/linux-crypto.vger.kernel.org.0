@@ -2,83 +2,91 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BAA037BFDE
-	for <lists+linux-crypto@lfdr.de>; Wed, 12 May 2021 16:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D8137EE13
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 May 2021 00:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhELOY6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 May 2021 10:24:58 -0400
-Received: from vmicros1.altlinux.org ([194.107.17.57]:33506 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbhELOY5 (ORCPT
+        id S1345729AbhELVIK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 12 May 2021 17:08:10 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:41872 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1385272AbhELUH6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 May 2021 10:24:57 -0400
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id D107B72C8B4;
-        Wed, 12 May 2021 17:23:47 +0300 (MSK)
-Received: from altlinux.org (sole.flsd.net [185.75.180.6])
-        by imap.altlinux.org (Postfix) with ESMTPSA id 03B614A46E8;
-        Wed, 12 May 2021 17:23:47 +0300 (MSK)
-Date:   Wed, 12 May 2021 17:23:46 +0300
-From:   Vitaly Chikunov <vt@altlinux.org>
-To:     Elvira Khabirova <e.khabirova@omp.ru>
-Cc:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, davem@davemloft.net,
-        herbert@gondor.apana.org.au, dhowells@redhat.com
-Subject: Re: [PATCH] pkcs7: support EC-RDSA/streebog in SignerInfo
-Message-ID: <20210512142346.kui3zeyheo7wlnwm@altlinux.org>
-References: <20210511174744.4f3c6c59@msk1wst204>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <20210511174744.4f3c6c59@msk1wst204>
+        Wed, 12 May 2021 16:07:58 -0400
+Received: by mail-oi1-f176.google.com with SMTP id c3so23335039oic.8;
+        Wed, 12 May 2021 13:06:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=oIC6fjBsBBa/9DolC8gyU2fnbDGV0M3iOztTJzuBJgE=;
+        b=CxBFzn5IoQkgQbuHlDPq70+IJ2IkIY+NT/S3u38kjoN2JAW3EyzhTBoCWmRtpTxOZY
+         MuvuXrfqWMxYjqAlfz9oh3bmVYJPVU+2h90GMdw0RKGknhXSEO2WYm/mY1u4x8qXdU1e
+         Ryki3ptA3J2t9OXpPo0oEuhWLDFsy2dmzeRGLMYar8/sKvUZCnTGnWsfJhvC3ZvmzTE3
+         y55a+wA30/HPAKiEO1qnK5ehblK3udUUKXjl0I9sxl3888Kw6ZTGfi2mXd/V1pRqWOgZ
+         FN70lrMBasHod+3GKViUgMFQ4xv0w9jzM4A7XXKIJQP7/SdYexP8iuYC5SewT7tTg27m
+         3LfA==
+X-Gm-Message-State: AOAM530FV9WYgVfVQFNxe/skssiCeyeMamfKo1ZLbUk5v5PLtgYskb5x
+        SSSUcZY6TPidpTVzraMnUQ==
+X-Google-Smtp-Source: ABdhPJxs6DaOjZ5AP9Q5L742mIrNt1lpTK8EPddVNEA2s1v1SdOWBuSFcVGkSZhJ9FtL8Un0pJqaFQ==
+X-Received: by 2002:aca:ac58:: with SMTP id v85mr27314598oie.1.1620850009660;
+        Wed, 12 May 2021 13:06:49 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k20sm189762otb.15.2021.05.12.13.06.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 13:06:48 -0700 (PDT)
+Received: (nullmailer pid 2020685 invoked by uid 1000);
+        Tue, 11 May 2021 13:40:20 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>, Imre Kaloz <kaloz@openwrt.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Krzysztof Halasa <khalasa@piap.pl>
+In-Reply-To: <20210510213634.600866-2-linus.walleij@linaro.org>
+References: <20210510213634.600866-1-linus.walleij@linaro.org> <20210510213634.600866-2-linus.walleij@linaro.org>
+Subject: Re: [PATCH 2/3] crypto: ixp4xx: Add DT bindings
+Date:   Tue, 11 May 2021 08:40:20 -0500
+Message-Id: <1620740420.942104.2020684.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, May 11, 2021 at 05:47:44PM +0300, Elvira Khabirova wrote:
-> Allow using EC-RDSA/streebog in pkcs7 certificates in a similar way
-> to how it's done in the x509 parser.
+On Mon, 10 May 2021 23:36:33 +0200, Linus Walleij wrote:
+> This adds device tree bindings for the ixp4xx crypto engine.
 > 
-> This is needed e.g. for loading kernel modules signed with EC-RDSA.
-> 
-> Signed-off-by: Elvira Khabirova <e.khabirova@omp.ru>
-
-Reviewed-by: Vitaly Chikunov <vt@altlinux.org>
-
-Thanks,
-
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
->  crypto/asymmetric_keys/pkcs7_parser.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+> Herbert, David: This can be applied separately once we are
+> happy with the bindings, alternatively it can be merged
+> with the support code into ARM SoC.
+> ---
+>  .../bindings/crypto/intel,ixp4xx-crypto.yaml  | 59 +++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/crypto/intel,ixp4xx-crypto.yaml
 > 
-> diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
-> index 967329e0a07b..39c260a04167 100644
-> --- a/crypto/asymmetric_keys/pkcs7_parser.c
-> +++ b/crypto/asymmetric_keys/pkcs7_parser.c
-> @@ -248,6 +248,12 @@ int pkcs7_sig_note_digest_algo(void *context, size_t hdrlen,
->  	case OID_sha224:
->  		ctx->sinfo->sig->hash_algo = "sha224";
->  		break;
-> +	case OID_gost2012Digest256:
-> +		ctx->sinfo->sig->hash_algo = "streebog256";
-> +		break;
-> +	case OID_gost2012Digest512:
-> +		ctx->sinfo->sig->hash_algo = "streebog512";
-> +		break;
->  	default:
->  		printk("Unsupported digest algo: %u\n", ctx->last_oid);
->  		return -ENOPKG;
-> @@ -269,6 +275,11 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
->  		ctx->sinfo->sig->pkey_algo = "rsa";
->  		ctx->sinfo->sig->encoding = "pkcs1";
->  		break;
-> +	case OID_gost2012PKey256:
-> +	case OID_gost2012PKey512:
-> +		ctx->sinfo->sig->pkey_algo = "ecrdsa";
-> +		ctx->sinfo->sig->encoding = "raw";
-> +		break;
->  	default:
->  		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
->  		return -ENOPKG;
-> -- 
-> 2.25.1
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/crypto/intel,ixp4xx-crypto.example.dt.yaml: npe@c8006000: 'crypto' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/intel,ixp4xx-network-processing-engine.yaml
+
+See https://patchwork.ozlabs.org/patch/1476741
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
