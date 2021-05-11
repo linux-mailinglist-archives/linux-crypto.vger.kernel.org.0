@@ -2,114 +2,61 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3B037A794
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 May 2021 15:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD1637A9D3
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 May 2021 16:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbhEKNaw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 11 May 2021 09:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbhEKNaw (ORCPT
+        id S231684AbhEKOsB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 11 May 2021 10:48:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56074 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231643AbhEKOsB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 11 May 2021 09:30:52 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348ADC061760
-        for <linux-crypto@vger.kernel.org>; Tue, 11 May 2021 06:29:45 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id y9so25118699ljn.6
-        for <linux-crypto@vger.kernel.org>; Tue, 11 May 2021 06:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=X1K7rwa/77HQwchJ9fJE8GZcfgMpgknk71cF9VgYv1o=;
-        b=xlDW7nnBqI5/8ogVeHOoccWHafRm5Ctg21qga+VPtpuLBc1DC9fDMT06++MoURMO0S
-         x8jpIB4SQELDG+KXL1D1VwmN2WMSc7RpTbjWRf80bRQO55PqcfU1xFxw9AU3J7WgP2XH
-         1a39u8xDD9erSER3QGkNoSv4zmJh8nWb9tXsUgqz4cGoswbGKW89AhvW9hcxnNEe7j4u
-         6MvmgLrgbnAFFklDCDDURq0MrYxybnJastgpriYTzT/SQPE2YYIqtt1NkBROGwV30Mof
-         Fe9fV3C9muEOkAhXZ770mBnJbeyhBY4RvDW1ssftvOdV4Y5pDLAKtSlSgIdTOlvxZhuQ
-         2vpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=X1K7rwa/77HQwchJ9fJE8GZcfgMpgknk71cF9VgYv1o=;
-        b=DjIoI7hUvIzX2wWuByVtkb7/BsuhVVzhStY44t4cUl5o240WnWuXOoI6Xoa+msT1KN
-         JmlHKwyrvHe43vpnROBQWHqpISagYSbW56Dd8+LQm2XLnRTif1n3dXW8DMpAb9tfOd8T
-         KXM/Cuvm2Z1JJ//IhzM51aKDxA/mEL/xf1l98JG+KL4hyaCofjj7chKXtD3sphXQ3iot
-         y0YJzeLRkQjpIhhMz9AjqHXC/APVANEmvejfNFbZzLdFPydLayKFcy3RLJK7bszU14hu
-         bWOmS6HQGSMjUQV0EakY8IOUsY+cqd2X2jJfnKldNT+X9drbREssxBlgezRFugFNWHAB
-         o1QQ==
-X-Gm-Message-State: AOAM532wklYc/9+Cvxg4FdmP0adNiABQVaEjrQxrqqguXgApw7Nvkn9z
-        QUH57MrIacRemQj+q6Gxu0b1Aw==
-X-Google-Smtp-Source: ABdhPJyDmnwdL16PDw0PUP1YKPwqTMJj0o0sNMewcKSf3Pt55F025LCcWVAbPYWYg7y8/AGiPq9SKw==
-X-Received: by 2002:a05:651c:485:: with SMTP id s5mr24967388ljc.364.1620739783661;
-        Tue, 11 May 2021 06:29:43 -0700 (PDT)
-Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
-        by smtp.gmail.com with ESMTPSA id m4sm3699740ljc.20.2021.05.11.06.29.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 06:29:43 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Deepak Saxena <dsaxena@plexity.net>
-Cc:     linux-crypto@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5/5] hw_random: ixp4xx: Add OF support
-Date:   Tue, 11 May 2021 15:29:28 +0200
-Message-Id: <20210511132928.814697-5-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210511132928.814697-1-linus.walleij@linaro.org>
-References: <20210511132928.814697-1-linus.walleij@linaro.org>
+        Tue, 11 May 2021 10:48:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620744414;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=6Lnvc0+a40OR30zqdZUM/znfFU40ZwYiFKsjTJls1DU=;
+        b=RKcVXTsA4FukMIk9PsnUj7u7GiQQj43y+cnd9JsL29hOuenWYI0qW4DuSktJuh89hs9TNW
+        wuqmETGtPm0UNO8feZ/PhfH5n1CVGM2ENIR2G8STcq19XZSTW5J/CNgX4H4HF3nJeDJnsy
+        f1MhgVLzAP2fBGl9zgkqDp7pL8Bdono=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-273-GtEQvuKVM3KdXq1GH3fAPQ-1; Tue, 11 May 2021 10:46:53 -0400
+X-MC-Unique: GtEQvuKVM3KdXq1GH3fAPQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F04FE106BB29;
+        Tue, 11 May 2021 14:46:51 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 19C875C1A3;
+        Tue, 11 May 2021 14:46:50 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+cc:     dhowells@redhat.com, linux-nfs@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: Extracting out the gss/krb5 support in sunrpc
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2581830.1620744410.1@warthog.procyon.org.uk>
+Date:   Tue, 11 May 2021 15:46:50 +0100
+Message-ID: <2581831.1620744410@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This makes the hardware random number generator found in
-the IXP46x SoCs probe from the device tree.
+Hi Trond,
 
-Cc: Deepak Saxena <dsaxena@plexity.net>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-The idea is to apply this through the ARM SoC tree along
-with other IXP4xx refactorings.
-Please tell me if you prefer another solution.
----
- drivers/char/hw_random/ixp4xx-rng.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+I'm looking at extracting out the gssapi/krb5 support from the sunrpc package
+in the kernel into a common library under crypto/ so that afs (and anyone else
+- cifs, maybe) can use it too.  Are you willing to entertain that idea - or is
+that a definite no for you?
 
-diff --git a/drivers/char/hw_random/ixp4xx-rng.c b/drivers/char/hw_random/ixp4xx-rng.c
-index 8b59aeefd4a4..188854dd16a9 100644
---- a/drivers/char/hw_random/ixp4xx-rng.c
-+++ b/drivers/char/hw_random/ixp4xx-rng.c
-@@ -19,6 +19,7 @@
- #include <linux/init.h>
- #include <linux/bitops.h>
- #include <linux/hw_random.h>
-+#include <linux/of.h>
- #include <linux/soc/ixp4xx/cpu.h>
- 
- #include <asm/io.h>
-@@ -55,9 +56,18 @@ static int ixp4xx_rng_probe(struct platform_device *pdev)
- 	return devm_hwrng_register(dev, &ixp4xx_rng_ops);
- }
- 
-+static const struct of_device_id ixp4xx_rng_of_match[] = {
-+	{
-+		.compatible = "intel,ixp46x-rng",
-+	},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, ixp4xx_rng_of_match);
-+
- static struct platform_driver ixp4xx_rng_driver = {
- 	.driver = {
- 		.name = "ixp4xx-hwrandom",
-+		.of_match_table = ixp4xx_rng_of_match,
- 	},
- 	.probe = ixp4xx_rng_probe,
- };
--- 
-2.30.2
+David
 
