@@ -2,61 +2,62 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C160A37A793
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 May 2021 15:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E62137A796
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 May 2021 15:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhEKNaw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 11 May 2021 09:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34936 "EHLO
+        id S231401AbhEKNay (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 11 May 2021 09:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231465AbhEKNas (ORCPT
+        with ESMTP id S231305AbhEKNaw (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 11 May 2021 09:30:48 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB46C061574
-        for <linux-crypto@vger.kernel.org>; Tue, 11 May 2021 06:29:41 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id a2so7642182lfc.9
-        for <linux-crypto@vger.kernel.org>; Tue, 11 May 2021 06:29:41 -0700 (PDT)
+        Tue, 11 May 2021 09:30:52 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6868C06174A
+        for <linux-crypto@vger.kernel.org>; Tue, 11 May 2021 06:29:43 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id c3so28645970lfs.7
+        for <linux-crypto@vger.kernel.org>; Tue, 11 May 2021 06:29:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0kH9GejFwRKEAZVnNqAOcSajeuUIKWFZ2mSCj9ztQJ4=;
-        b=uAGW7Wix3B9nYc4qK57H9E8J1wBIayQBT+GL+0GNNbSPwzbK+A7EAyH1BrvQYIV/Y/
-         XNKH1GgPPM/Vf1yTRR39ymsNaZTcsLejdvqVW9NgZ93zgGGtTE/oPlRAPwAmiEaQtMdv
-         whrhHzW0cVNRxx9uRfodABWVSQXNGdskS6NIQBtbbGQB7R4UAs/s62tzAb/82BUQf5Mj
-         dLxZ/w1woEFAziK4bXbX8hkSgkN94bu6+p5inWrH1hGG+/VvE3y6OCOE2G3aTZNLEc2y
-         Bak25Qi+Ayi+SOMgrisdmtqPNZygmR9Isa7MgrL+VDxSV7cX6aiwKT24XmrSIrYYrb3X
-         csbg==
+        bh=FFYr3Xo1ppCbhfOBPELbi7/g/WpT3C+kHa8n/mlqcNc=;
+        b=xqyvcHJ3/7tk/3+p2H6mz7mGJYVGdp6Lwz1loHB0CDVOFJlyMuVPJ0XIX7zcqu4T0M
+         ZNcQQT4Wx5RLT59t+TY6MjUlZKGMCB/JaJcLiEJ7LxntOuWHkTo6YkGZ4l9trrZlCIV/
+         LzdCb1dBjuvyaVkHrzUDSEDMR31jRLi+zdfjO3ae+63VSw6Q1EJTmPU1beqjfkWf/Xhs
+         XEq2zZib3MmsD2WjTVXgWL2Rmzus2nqmPUkmzurLX1PfKiXqipUqKkE71HP/fNrI1KMQ
+         DyKvib95bsgPUnjaig8+UJ2bm+P7MlqqqSlLwTxJAVT+V3EdicAGqzd7r/Xf/usdh7wC
+         Bulg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0kH9GejFwRKEAZVnNqAOcSajeuUIKWFZ2mSCj9ztQJ4=;
-        b=V3UQs4qO32/QUqaMescWDHvRuINjhvjrxYCTLKbVKEsWqRflbwylKJ1FzBIv3vOiaW
-         fk0vMHMwdZbn/No1xTaqIjDzZ1YkvuewnzLgI7rK+tkIM44FVJxyGHKsUhMouszjkdg/
-         NULmNrjBPmICL4u9SaFEIzZOOI0fLSXjTp8pzgGxX25KhCM0Y7wUoPHDnLhb9CxgK+h1
-         m/8GW9JL5tPehBMQW1Zlns4lXeYpuqHV06KxXhaHyPmWAK9WZUZ/5vX+ei71WMsYvs8U
-         ZgzXaWjmUCYnuQK7INX3rbiXv+iqoLfOUq+KkTn9QnPzmgfcLqjEkZo2TMToUrf1xWOv
-         DPUQ==
-X-Gm-Message-State: AOAM5332vppnC1jdONQyEbnKyDIKfLuS4NHHSkpB68hVFT8WNUzVgQlX
-        bwAeK9Ol7qXhtIjhAOqm0jcb+A==
-X-Google-Smtp-Source: ABdhPJxi8rsT3KpPgclRphHVqaEsDYLBwDAOQdff1nW5XutEVmljUOL7MLlQP1d0Vgo8ry5ZHd7HhQ==
-X-Received: by 2002:a05:6512:358c:: with SMTP id m12mr20504720lfr.289.1620739779939;
-        Tue, 11 May 2021 06:29:39 -0700 (PDT)
+        bh=FFYr3Xo1ppCbhfOBPELbi7/g/WpT3C+kHa8n/mlqcNc=;
+        b=UCZn10lUCwXZ+O46plQfQeuSxpqo2lC3HpcfU7nXiK5bSVB57jzjS8d8RXKc2i5TrD
+         4WjRfYzeHMhLgZRD8i0+OxgVOhs9kPwdPJlMMlBRPCKBoKD9mvUhYedBB9d7gWBnaGhG
+         5/JT9qvgyArm47io1LjWHJz3JEp5IBIMfHG3ubc/Z4mpUc83kh8MfjguS3Yuah+vAXo9
+         Ykd6Y/qy3tFwmEs33y3ktPewONu0M60fSK95UOc0Nv4fzpsf4VcMYc+M6lwQA0VlLiH7
+         2grbSufjsw9RYtTVGu3K7wCwa+SQWHkzw/B/Ggy3bT7b890HgW7WT9XpeIgUtQZza7Gt
+         bSPQ==
+X-Gm-Message-State: AOAM530C1lZ65M26V7DkHH5va2BnvnF5Dlmh9LZsU0IcSgiO5KInyhOK
+        MxlyHWH66sOHqytGgpUg6dFWlw==
+X-Google-Smtp-Source: ABdhPJzFq6lZIyzeqJ0O+rx0RF9ZTO8L/DRul5UAuP4Z7uMSuZCun9S0iVdArkWaQQCmOFreo+ZHzQ==
+X-Received: by 2002:a05:6512:3056:: with SMTP id b22mr20331716lfb.526.1620739782260;
+        Tue, 11 May 2021 06:29:42 -0700 (PDT)
 Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
-        by smtp.gmail.com with ESMTPSA id m4sm3699740ljc.20.2021.05.11.06.29.39
+        by smtp.gmail.com with ESMTPSA id m4sm3699740ljc.20.2021.05.11.06.29.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 06:29:39 -0700 (PDT)
+        Tue, 11 May 2021 06:29:42 -0700 (PDT)
 From:   Linus Walleij <linus.walleij@linaro.org>
 To:     Matt Mackall <mpm@selenic.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Deepak Saxena <dsaxena@plexity.net>
 Cc:     linux-crypto@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 3/5] hw_random: ixp4xx: Turn into a module
-Date:   Tue, 11 May 2021 15:29:26 +0200
-Message-Id: <20210511132928.814697-3-linus.walleij@linaro.org>
+        Linus Walleij <linus.walleij@linaro.org>,
+        devicetree@vger.kernel.org
+Subject: [PATCH 4/5] hw_random: ixp4xx: Add DT bindings
+Date:   Tue, 11 May 2021 15:29:27 +0200
+Message-Id: <20210511132928.814697-4-linus.walleij@linaro.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210511132928.814697-1-linus.walleij@linaro.org>
 References: <20210511132928.814697-1-linus.walleij@linaro.org>
@@ -66,129 +67,76 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Instead of just initializing always, which will invariably
-create problems on multiplatform builds, turn this driver into
-a module and pass a resource with the memory location.
-The device only exist on the IXP46x so we only register
-the device for the IXP46x SoC.
+This adds device tree bindings for the simple random number
+generator found in the IXP46x SoCs.
 
 Cc: Deepak Saxena <dsaxena@plexity.net>
+Cc: devicetree@vger.kernel.org
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
 The idea is to apply this through the ARM SoC tree along
 with other IXP4xx refactorings.
 Please tell me if you prefer another solution.
 ---
- arch/arm/mach-ixp4xx/common.c       | 24 ++++++++++++++++++-
- drivers/char/hw_random/ixp4xx-rng.c | 37 +++++++++++++----------------
- 2 files changed, 40 insertions(+), 21 deletions(-)
+ .../bindings/rng/intel,ixp46x-rng.yaml        | 36 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 2 files changed, 37 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rng/intel,ixp46x-rng.yaml
 
-diff --git a/arch/arm/mach-ixp4xx/common.c b/arch/arm/mach-ixp4xx/common.c
-index f86c1bf34eea..a10aa14d09b1 100644
---- a/arch/arm/mach-ixp4xx/common.c
-+++ b/arch/arm/mach-ixp4xx/common.c
-@@ -237,6 +237,27 @@ static struct resource ixp46x_i2c_resources[] = {
- 	}
- };
- 
-+/* A single 32-bit register on IXP46x */
-+#define IXP4XX_HWRANDOM_BASE_PHYS	0x70002100
+diff --git a/Documentation/devicetree/bindings/rng/intel,ixp46x-rng.yaml b/Documentation/devicetree/bindings/rng/intel,ixp46x-rng.yaml
+new file mode 100644
+index 000000000000..61963fa9347e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/rng/intel,ixp46x-rng.yaml
+@@ -0,0 +1,36 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/rng/intel,ixp46x-rng.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+static struct resource ixp46x_hwrandom_resource[] = {
-+	{
-+		.start = IXP4XX_HWRANDOM_BASE_PHYS,
-+		.end = IXP4XX_HWRANDOM_BASE_PHYS + 0x3,
-+		.flags = IORESOURCE_MEM,
-+	},
-+};
++title: Intel IXP46x RNG bindings
 +
-+static struct platform_device ixp46x_hwrandom_device = {
-+	.name           = "ixp4xx-hwrandom",
-+	.id             = -1,
-+	.dev = {
-+		.coherent_dma_mask      = DMA_BIT_MASK(32),
-+	},
-+	.resource = ixp46x_hwrandom_resource,
-+	.num_resources  = ARRAY_SIZE(ixp46x_hwrandom_resource),
-+};
++description: |
++  The Intel IXP46x has a random number generator at a fixed physical
++  location in memory. Each read is guaranteed to provide a unique
++  32 bit random number.
 +
- /*
-  * I2C controller. The IXP46x uses the same block as the IOP3xx, so
-  * we just use the same device name.
-@@ -249,7 +270,8 @@ static struct platform_device ixp46x_i2c_controller = {
- };
++maintainers:
++  - Linus Walleij <linus.walleij@linaro.org>
++
++properties:
++  compatible:
++    const: intel,ixp46x-rng
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    rng@70002100 {
++      compatible = "intel,ixp46x-rng";
++      reg = <0x70002100 4>;
++    };
++
+diff --git a/MAINTAINERS b/MAINTAINERS
+index bd7aff0c120f..cc4bb4e75f04 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9248,6 +9248,7 @@ F:	include/linux/soc/ixp4xx/qmgr.h
+ INTEL IXP4XX RANDOM NUMBER GENERATOR SUPPORT
+ M:	Deepak Saxena <dsaxena@plexity.net>
+ S:	Maintained
++F:	Documentation/devicetree/bindings/display/intel,ixp46x-rng.yaml
+ F:	drivers/char/hw_random/ixp4xx-rng.c
  
- static struct platform_device *ixp46x_devices[] __initdata = {
--	&ixp46x_i2c_controller
-+	&ixp46x_hwrandom_device,
-+	&ixp46x_i2c_controller,
- };
- 
- unsigned long ixp4xx_exp_bus_size;
-diff --git a/drivers/char/hw_random/ixp4xx-rng.c b/drivers/char/hw_random/ixp4xx-rng.c
-index defd8176cb68..8b59aeefd4a4 100644
---- a/drivers/char/hw_random/ixp4xx-rng.c
-+++ b/drivers/char/hw_random/ixp4xx-rng.c
-@@ -15,6 +15,7 @@
- #include <linux/types.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-+#include <linux/platform_device.h>
- #include <linux/init.h>
- #include <linux/bitops.h>
- #include <linux/hw_random.h>
-@@ -36,35 +37,31 @@ static struct hwrng ixp4xx_rng_ops = {
- 	.data_read	= ixp4xx_rng_data_read,
- };
- 
--static int __init ixp4xx_rng_init(void)
-+static int ixp4xx_rng_probe(struct platform_device *pdev)
- {
- 	void __iomem * rng_base;
--	int err;
-+	struct device *dev = &pdev->dev;
-+	struct resource *res;
- 
- 	if (!cpu_is_ixp46x()) /* includes IXP455 */
- 		return -ENOSYS;
- 
--	rng_base = ioremap(0x70002100, 4);
--	if (!rng_base)
--		return -ENOMEM;
--	ixp4xx_rng_ops.priv = (unsigned long)rng_base;
--	err = hwrng_register(&ixp4xx_rng_ops);
--	if (err)
--		iounmap(rng_base);
--
--	return err;
--}
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	rng_base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(rng_base))
-+		return PTR_ERR(rng_base);
- 
--static void __exit ixp4xx_rng_exit(void)
--{
--	void __iomem * rng_base = (void __iomem *)ixp4xx_rng_ops.priv;
--
--	hwrng_unregister(&ixp4xx_rng_ops);
--	iounmap(rng_base);
-+	ixp4xx_rng_ops.priv = (unsigned long)rng_base;
-+	return devm_hwrng_register(dev, &ixp4xx_rng_ops);
- }
- 
--module_init(ixp4xx_rng_init);
--module_exit(ixp4xx_rng_exit);
-+static struct platform_driver ixp4xx_rng_driver = {
-+	.driver = {
-+		.name = "ixp4xx-hwrandom",
-+	},
-+	.probe = ixp4xx_rng_probe,
-+};
-+module_platform_driver(ixp4xx_rng_driver);
- 
- MODULE_AUTHOR("Deepak Saxena <dsaxena@plexity.net>");
- MODULE_DESCRIPTION("H/W Pseudo-Random Number Generator (RNG) driver for IXP45x/46x");
+ INTEL KEEM BAY DRM DRIVER
 -- 
 2.30.2
 
