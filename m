@@ -2,43 +2,44 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3815B37EEE0
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 May 2021 01:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3392D37EEE5
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 May 2021 01:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbhELWUz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 May 2021 18:20:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49204 "EHLO mail.kernel.org"
+        id S229854AbhELWYR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 12 May 2021 18:24:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1387602AbhELVZa (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 May 2021 17:25:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C88E613E6
-        for <linux-crypto@vger.kernel.org>; Wed, 12 May 2021 21:24:21 +0000 (UTC)
+        id S1391312AbhELV0L (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 12 May 2021 17:26:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1608F613F7
+        for <linux-crypto@vger.kernel.org>; Wed, 12 May 2021 21:25:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620854661;
-        bh=dpMpwE/+0xsrNEBWSrB3F2tfcXWYhcQJFd7Iugffe4g=;
+        s=k20201202; t=1620854703;
+        bh=f95kky9fWPP9zmOAqEAX7s3lv8BZDFV+H/qK5UnLA5Y=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TI6i2pnrjixOQ0EjSlyqNi776kSVB26wcmAwfSxkf8IAT8tjTGYETNOmQmVmIOozX
-         uElNWaC2sIgq0uigB5eT9PK8DK5BlntjroQBeTrYDvFZighVUHMzI+pgjcrW6vnRfe
-         zZ7avYbmJc5WDFYGTgU0KarRQRGSapYh6LcQALob12EIRLzIf8ZZJxG5DUpz6kyWZI
-         luOwi9Bh/G6PbEEuKz6M3QEvh1k30qsZvjrcXNbjLRPmyVrNfN23pJozx0+UMq6hu2
-         2uY2gXVqyEqafogjKgEXn2MURj5cOj6RcEMU2DYvGFde3MC+BkfQL8UZq5ZiBpR7Pc
-         g5gfo45WZU7CQ==
-Received: by mail-ot1-f54.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso21872159otg.9
-        for <linux-crypto@vger.kernel.org>; Wed, 12 May 2021 14:24:21 -0700 (PDT)
-X-Gm-Message-State: AOAM530koBdD/2PT2Wk9PgcHo7giVugBPq223w/tGZusQOrHqeaGpJHd
-        StNyiG5JXCUHh5+hLR55I6pbonJMdo8WvmPy9Jg=
-X-Google-Smtp-Source: ABdhPJz1crGpZ2a/Nstlgsq6mSlP9NuQT6jz7eZ0TUXDgP1IP3cYsDpVaNhe/4teRWkhB86fF1AT2AoSZl5bA/LQBAQ=
-X-Received: by 2002:a9d:7cd8:: with SMTP id r24mr20523715otn.90.1620854660323;
- Wed, 12 May 2021 14:24:20 -0700 (PDT)
+        b=HZguiLPH5qdbXAdBg478u9jptd5qxHD/I1Amhw3QGV1r4dOZcrZ0BrqqZcgJiYPUK
+         NabD9JhMOTmZrHnm95ThqAbRAhmYImRURAdQraL/FNwiunW91rOoEKCWivfsNi8bUY
+         ZlPvK4za5i6NpONGTNYQW4TSfT8e/JdR6v7v0UYYQ6TkTuOELqI/pWlbivg3JXXk39
+         ZD/0bPkgeJ7kXbVHw3UbitKM/oGXOPQZ9mwsseb1XFajKkd63rTU4iqEwHBP8zx+Yg
+         Lxhht5t/s74TgeHcsviEACyGjrAxPl1OIXDmU+sj974I71bRt5Nh0cjTRVrdP58OMj
+         DRYS3HiU5SMsg==
+Received: by mail-ot1-f44.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so17889057oto.0
+        for <linux-crypto@vger.kernel.org>; Wed, 12 May 2021 14:25:03 -0700 (PDT)
+X-Gm-Message-State: AOAM532wdHMlygSDARvgBI8aSSzDIS2WihK0kSxM6xjrvLb0x++rXLEA
+        uuJtLyrJV3CrdpmMZnJrkm9y6mSc/oQ2BoZGA5g=
+X-Google-Smtp-Source: ABdhPJyqF400LwQmcv8n0cvc2qRMttw1kHSf37IPM7sk7LtlHoXuad+DAhDwnwZps9xMbduti9tZZpgD41cySXXo43A=
+X-Received: by 2002:aca:4056:: with SMTP id n83mr386361oia.47.1620854702296;
+ Wed, 12 May 2021 14:25:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210512184439.8778-1-ardb@kernel.org> <20210512184439.8778-2-ardb@kernel.org>
- <YJw01Z3oxwY5Sfpa@gmail.com>
-In-Reply-To: <YJw01Z3oxwY5Sfpa@gmail.com>
+References: <20210512184439.8778-1-ardb@kernel.org> <20210512184439.8778-3-ardb@kernel.org>
+ <YJw1KLD8bCLTd+Oc@gmail.com>
+In-Reply-To: <YJw1KLD8bCLTd+Oc@gmail.com>
 From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 12 May 2021 23:24:09 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHofDrzEs4qc8VNCLpyL-Hc4PSg-JXKTckJvfD6qoK78Q@mail.gmail.com>
-Message-ID: <CAMj1kXHofDrzEs4qc8VNCLpyL-Hc4PSg-JXKTckJvfD6qoK78Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/7] crypto: handle zero sized AEAD inputs correctly
+Date:   Wed, 12 May 2021 23:24:51 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFg8Viy-+h1Nsd1dXsc2KdwtDvdv4e1YeEKMnoLRhszow@mail.gmail.com>
+Message-ID: <CAMj1kXFg8Viy-+h1Nsd1dXsc2KdwtDvdv4e1YeEKMnoLRhszow@mail.gmail.com>
+Subject: Re: [PATCH v3 2/7] crypto: aead - disallow en/decrypt for non-task or
+ non-softirq context
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
@@ -50,40 +51,52 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, 12 May 2021 at 22:04, Eric Biggers <ebiggers@kernel.org> wrote:
+On Wed, 12 May 2021 at 22:06, Eric Biggers <ebiggers@kernel.org> wrote:
 >
-> On Wed, May 12, 2021 at 08:44:33PM +0200, Ard Biesheuvel wrote:
-> > There are corner cases where skcipher_walk_aead_[en|de]crypt() may be
-> > invoked with a zero sized input, which is not rejected by the walker
-> > code, but results in the skcipher_walk structure to not be fully
-> > initialized. This will leave stale values in its page and buffer
-> > members, which will be subsequently passed to kfree() or free_page() by
-> > skcipher_walk_done(), resulting in a crash if those routines fail to
-> > identify them as in valid inputs.
-> >
-> > Fix this by setting page and buffer to NULL even if the size of the
-> > input is zero.
+> On Wed, May 12, 2021 at 08:44:34PM +0200, Ard Biesheuvel wrote:
+> > In order to ensure that kernel mode SIMD routines will not need a scalar
+> > fallback if they run with softirqs disabled, disallow any use of the
+> > AEAD encrypt and decrypt routines from outside of task or softirq context.
 > >
 > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  crypto/aead.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/crypto/aead.c b/crypto/aead.c
+> > index 16991095270d..b5304b3d3314 100644
+> > --- a/crypto/aead.c
+> > +++ b/crypto/aead.c
+> > @@ -87,6 +87,11 @@ int crypto_aead_encrypt(struct aead_request *req)
+> >       unsigned int cryptlen = req->cryptlen;
+> >       int ret;
+> >
+> > +     if (!(alg->cra_flags & CRYPTO_ALG_ASYNC) &&
+> > +         WARN_ONCE(!in_task() && !in_serving_softirq(),
+> > +                   "synchronous call from invalid context\n"))
+> > +             return -EBUSY;
+> > +
+> >       crypto_stats_get(alg);
+> >       if (crypto_aead_get_flags(aead) & CRYPTO_TFM_NEED_KEY)
+> >               ret = -ENOKEY;
+> > @@ -104,6 +109,11 @@ int crypto_aead_decrypt(struct aead_request *req)
+> >       unsigned int cryptlen = req->cryptlen;
+> >       int ret;
+> >
+> > +     if (!(alg->cra_flags & CRYPTO_ALG_ASYNC) &&
+> > +         WARN_ONCE(!in_task() && !in_serving_softirq(),
+> > +                   "synchronous call from invalid context\n"))
+> > +             return -EBUSY;
+> > +
+> >       crypto_stats_get(alg);
+> >       if (crypto_aead_get_flags(aead) & CRYPTO_TFM_NEED_KEY)
+> >               ret = -ENOKEY;
 >
-> Is this fixing an existing bug, or only a bug that got exposed by this patchset?
-> It would be helpful to make that clear (and if it fixes an existing bug, include
-> a Fixes tag).
+> This probably should go after crypto_stats_get() so that the error gets counted
+> in the stats (if stats are enabled) -- analogous to how the ENOKEY error is
+> counted.
+>
+> Likewise for the skcipher patch.
 >
 
-The CCM change in the last patch uncovers this issue, and I don't
-think it is likely we would ever hit it anywhere else.
-
-> Also, skcipher_walk_virt() doesn't set page and buffer to NULL, as it is
-> currently expected that skcipher_walk_done() is only called when
-> walk.nbytes != 0.  Is something different for skcipher_walk_aead_[en|de]crypt()?
->
-
-The difference is that zero sized inputs never make sense for
-skciphers, but for AEADs, they could occur, even if they are uncommon
-(the AEAD could have associated data only, and no plain/ciphertext)
-
-But in the general case, I would assume that skcipher_walk_done() can
-be called on a walk that was successfully started with
-skcipher_walk_virt() without crashing, even if the scatterlist has
-size zero, so perhaps we should fix that one as well.
+Good point, I'll fix that
