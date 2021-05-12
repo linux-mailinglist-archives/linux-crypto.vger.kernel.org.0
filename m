@@ -2,65 +2,89 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74A537EE11
+	by mail.lfdr.de (Postfix) with ESMTP id 36AB337EE10
 	for <lists+linux-crypto@lfdr.de>; Thu, 13 May 2021 00:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237322AbhELVIH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S238505AbhELVIH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Wed, 12 May 2021 17:08:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53932 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:54332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1384947AbhELUFr (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 May 2021 16:05:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07D4C613FB;
-        Wed, 12 May 2021 20:04:38 +0000 (UTC)
+        id S1385214AbhELUHL (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 12 May 2021 16:07:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7028C61408;
+        Wed, 12 May 2021 20:06:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620849879;
-        bh=KV/kbZd31J8snv17/g8BAEhBEHm7mAyytVKpZqg3zA0=;
+        s=k20201202; t=1620849962;
+        bh=QQfyPA2bVAhyX/rOl9YJ4esWVuFWaoi+C+eJcg9P1ZI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=inc5AvJgcd9lavh0t/B/EzghYuDxnl7fL46NWCRgeeCX+fOBqrignfUptxNfGL8Eh
-         YA5AEAHGbu6swO4mKkEiDRp3WZDo8PZ93qISy+1i2oQh31ZRIGxg+Na0rZIMdoPck4
-         UD2VaiKq+YFruaRas2sSuAjUngZ34OgFXJW4yJJoRitM3lrB1EkF+inxNwBIZlw7TS
-         6PA7XQaTN4ejeor5yFGLR5cZFI+ssWDJS5HkZQdnMUL48eMC7feJuW8MUzpvJubK4Z
-         bqAGPhrGSSxM2bALvhos0Ek6JRJFszpGFDGj3y+kr4lNCZC3qYnXJfKN4+0w2TlGj2
-         2fQr64TW/u7Kw==
-Date:   Wed, 12 May 2021 13:04:37 -0700
+        b=qPbmnlRzEOq2EYn0QnCivlyyxTPzs67SCwCKbY/BC0Hec2HrNRKomvk/+GKtXsTKC
+         gdGL9CDENOLpR/PxmhMdJc1iuwAobNUVf7Rr6E/fPItTVPkXY3Cmz4IZAN7xfwtAwG
+         MGoRPT1Illjx+wtlYVEQUjbQkeoKq/xnCTf2FZL6tW2ZejnDJCRpZRiku9NgIfDqR9
+         UiYkwC8TBrGvEo/b94tjKQua+0oDSeEtMF5lQVw0SwliIZli+amH1/HrqtGIGzvjP7
+         DDxRm7JopOF3o3Jv+9BFaYZTHJEnZJyMcnT918RItEKTUFNYc6X4AxFvbC5vs0kF4e
+         zQSFZN5WwAnvw==
+Date:   Wed, 12 May 2021 13:06:00 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Ard Biesheuvel <ardb@kernel.org>
 Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         herbert@gondor.apana.org.au, will@kernel.org,
         kernel-team@android.com
-Subject: Re: [PATCH v3 1/7] crypto: handle zero sized AEAD inputs correctly
-Message-ID: <YJw01Z3oxwY5Sfpa@gmail.com>
+Subject: Re: [PATCH v3 2/7] crypto: aead - disallow en/decrypt for non-task
+ or non-softirq context
+Message-ID: <YJw1KLD8bCLTd+Oc@gmail.com>
 References: <20210512184439.8778-1-ardb@kernel.org>
- <20210512184439.8778-2-ardb@kernel.org>
+ <20210512184439.8778-3-ardb@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210512184439.8778-2-ardb@kernel.org>
+In-Reply-To: <20210512184439.8778-3-ardb@kernel.org>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, May 12, 2021 at 08:44:33PM +0200, Ard Biesheuvel wrote:
-> There are corner cases where skcipher_walk_aead_[en|de]crypt() may be
-> invoked with a zero sized input, which is not rejected by the walker
-> code, but results in the skcipher_walk structure to not be fully
-> initialized. This will leave stale values in its page and buffer
-> members, which will be subsequently passed to kfree() or free_page() by
-> skcipher_walk_done(), resulting in a crash if those routines fail to
-> identify them as in valid inputs.
-> 
-> Fix this by setting page and buffer to NULL even if the size of the
-> input is zero.
+On Wed, May 12, 2021 at 08:44:34PM +0200, Ard Biesheuvel wrote:
+> In order to ensure that kernel mode SIMD routines will not need a scalar
+> fallback if they run with softirqs disabled, disallow any use of the
+> AEAD encrypt and decrypt routines from outside of task or softirq context.
 > 
 > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  crypto/aead.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/crypto/aead.c b/crypto/aead.c
+> index 16991095270d..b5304b3d3314 100644
+> --- a/crypto/aead.c
+> +++ b/crypto/aead.c
+> @@ -87,6 +87,11 @@ int crypto_aead_encrypt(struct aead_request *req)
+>  	unsigned int cryptlen = req->cryptlen;
+>  	int ret;
+>  
+> +	if (!(alg->cra_flags & CRYPTO_ALG_ASYNC) &&
+> +	    WARN_ONCE(!in_task() && !in_serving_softirq(),
+> +		      "synchronous call from invalid context\n"))
+> +		return -EBUSY;
+> +
+>  	crypto_stats_get(alg);
+>  	if (crypto_aead_get_flags(aead) & CRYPTO_TFM_NEED_KEY)
+>  		ret = -ENOKEY;
+> @@ -104,6 +109,11 @@ int crypto_aead_decrypt(struct aead_request *req)
+>  	unsigned int cryptlen = req->cryptlen;
+>  	int ret;
+>  
+> +	if (!(alg->cra_flags & CRYPTO_ALG_ASYNC) &&
+> +	    WARN_ONCE(!in_task() && !in_serving_softirq(),
+> +		      "synchronous call from invalid context\n"))
+> +		return -EBUSY;
+> +
+>  	crypto_stats_get(alg);
+>  	if (crypto_aead_get_flags(aead) & CRYPTO_TFM_NEED_KEY)
+>  		ret = -ENOKEY;
 
-Is this fixing an existing bug, or only a bug that got exposed by this patchset?
-It would be helpful to make that clear (and if it fixes an existing bug, include
-a Fixes tag).
+This probably should go after crypto_stats_get() so that the error gets counted
+in the stats (if stats are enabled) -- analogous to how the ENOKEY error is
+counted.
 
-Also, skcipher_walk_virt() doesn't set page and buffer to NULL, as it is
-currently expected that skcipher_walk_done() is only called when
-walk.nbytes != 0.  Is something different for skcipher_walk_aead_[en|de]crypt()?
+Likewise for the skcipher patch.
 
 - Eric
