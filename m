@@ -2,118 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E205237EE0F
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 May 2021 00:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74A537EE11
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 May 2021 00:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237180AbhELVIG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 May 2021 17:08:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54670 "EHLO mx2.suse.de"
+        id S237322AbhELVIH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 12 May 2021 17:08:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1383634AbhELTxS (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 May 2021 15:53:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 178B9AC6A;
-        Wed, 12 May 2021 19:52:07 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D4311DA7B0; Wed, 12 May 2021 21:49:35 +0200 (CEST)
-Date:   Wed, 12 May 2021 21:49:35 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nick Terrell <terrelln@fb.com>
-Cc:     Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "squashfs-devel@lists.sourceforge.net" 
-        <squashfs-devel@lists.sourceforge.net>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        David Sterba <dsterba@suse.cz>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Felix Handte <felixh@fb.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        torvalds@linux-foundation.org
-Subject: Re: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
-Message-ID: <20210512194935.GY7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nick Terrell <terrelln@fb.com>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "squashfs-devel@lists.sourceforge.net" <squashfs-devel@lists.sourceforge.net>,
-        "linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Felix Handte <felixh@fb.com>, Eric Biggers <ebiggers@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>, torvalds@linux-foundation.org
-References: <20210430013157.747152-1-nickrterrell@gmail.com>
- <B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com>
+        id S1384947AbhELUFr (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 12 May 2021 16:05:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07D4C613FB;
+        Wed, 12 May 2021 20:04:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620849879;
+        bh=KV/kbZd31J8snv17/g8BAEhBEHm7mAyytVKpZqg3zA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=inc5AvJgcd9lavh0t/B/EzghYuDxnl7fL46NWCRgeeCX+fOBqrignfUptxNfGL8Eh
+         YA5AEAHGbu6swO4mKkEiDRp3WZDo8PZ93qISy+1i2oQh31ZRIGxg+Na0rZIMdoPck4
+         UD2VaiKq+YFruaRas2sSuAjUngZ34OgFXJW4yJJoRitM3lrB1EkF+inxNwBIZlw7TS
+         6PA7XQaTN4ejeor5yFGLR5cZFI+ssWDJS5HkZQdnMUL48eMC7feJuW8MUzpvJubK4Z
+         bqAGPhrGSSxM2bALvhos0Ek6JRJFszpGFDGj3y+kr4lNCZC3qYnXJfKN4+0w2TlGj2
+         2fQr64TW/u7Kw==
+Date:   Wed, 12 May 2021 13:04:37 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        herbert@gondor.apana.org.au, will@kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 1/7] crypto: handle zero sized AEAD inputs correctly
+Message-ID: <YJw01Z3oxwY5Sfpa@gmail.com>
+References: <20210512184439.8778-1-ardb@kernel.org>
+ <20210512184439.8778-2-ardb@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210512184439.8778-2-ardb@kernel.org>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, May 11, 2021 at 08:53:41PM +0000, Nick Terrell wrote:
-> Pinging this series. Is there anything I should do to help get this
-> merged?
+On Wed, May 12, 2021 at 08:44:33PM +0200, Ard Biesheuvel wrote:
+> There are corner cases where skcipher_walk_aead_[en|de]crypt() may be
+> invoked with a zero sized input, which is not rejected by the walker
+> code, but results in the skcipher_walk structure to not be fully
+> initialized. This will leave stale values in its page and buffer
+> members, which will be subsequently passed to kfree() or free_page() by
+> skcipher_walk_done(), resulting in a crash if those routines fail to
+> identify them as in valid inputs.
 > 
-> The use of zstd in the kernel is continuously increasing over time,
-> both in terms of number of use cases, and number of users that
-> actually enable zstd compression in production. E.g. Fedora is
-> making btrfs with zstd compression enabled the default.
+> Fix this by setting page and buffer to NULL even if the size of the
+> input is zero.
 > 
-> I would love to see the zstd code updated to the latest upstream
-> and be kept up to date. The latest upstream brings bug fixes, and
-> significant performance improvements. Additionally, the latest
-> upstream code is continuously fuzzed.
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 
-The btrfs community and I in particular have interest to get zstd
-updated but also there's the patch 3 that goes against what kernel
-requires regarding patch size and logical split of changes.
+Is this fixing an existing bug, or only a bug that got exposed by this patchset?
+It would be helpful to make that clear (and if it fixes an existing bug, include
+a Fixes tag).
 
-That the update is so large shouldn't have happened, it covers 3 years
-of development, the syncs should have happened more often, but here we
-are.
+Also, skcipher_walk_virt() doesn't set page and buffer to NULL, as it is
+currently expected that skcipher_walk_done() is only called when
+walk.nbytes != 0.  Is something different for skcipher_walk_aead_[en|de]crypt()?
 
-Other points that have been raised in the past:
-
-* new wrappers - there are new wrappers changing users of the API, the
-  new names are more conforming, eg ZSTD_decompressDCtx -> zstd_decompress_dctx,
-  sounds like an improvement to me
-
-* high stack usage - mentioned in patch 3, slight increase but bounded
-  and upstream now monitors that so it does not increase
-
-Other points that are worth mentioning:
-
-* bisectability - the version switch happens in one patch, so the
-  effects before/after the patch are only runtime as there's no change
-  in format etc, so ok
-
-* will be maintained - no such huge update should happen again
-
-So I suggest to merge in current form. I'm not sure what was the
-original plan if it was supposed to go via Herbert's crypto tree, but
-that was before Nick added himself as maintainer.
-
-I think that Nick can send the pull request to Linus, perhaps with acks
-to all changes that are in the non-zstd code (patch 1).
-
-Cover letter v11: https://lore.kernel.org/linux-btrfs/20210430013157.747152-1-nickrterrell@gmail.com/
+- Eric
