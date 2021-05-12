@@ -2,44 +2,42 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2D637EEE4
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 May 2021 01:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFAF37EEE6
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 May 2021 01:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhELWYS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 May 2021 18:24:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49908 "EHLO mail.kernel.org"
+        id S232353AbhELWYT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 12 May 2021 18:24:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1391355AbhELV0h (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 May 2021 17:26:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A87C2613E6
-        for <linux-crypto@vger.kernel.org>; Wed, 12 May 2021 21:25:28 +0000 (UTC)
+        id S1391836AbhELVc3 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 12 May 2021 17:32:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98558613F7
+        for <linux-crypto@vger.kernel.org>; Wed, 12 May 2021 21:31:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620854728;
-        bh=IGcdttm/efsi9wyuzy8aRbmONo4WCnKnqQbbyC7kjaU=;
+        s=k20201202; t=1620855078;
+        bh=OAAlNOf1uOXTWb17XYkxTD2FRz+0rfsKiFX8+G83r0o=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uTjfLKWUa0yKz/BoDY+6MEKYa8MAjfW8CdM3jM8KJ+PNrHRjvCKvCuVAm9qkBdd34
-         vV6Mv+Cc8qqFZ/AFd3aF9KEqkiLlfz6IenV9ervJ9tszynZkK+NZHlu0RnW/qxXP32
-         SbLFYQybCBZ2ktQweH/vHO+vI0iRfuh1SabM/CA8IVJslicYTj0IAGAUoMLhmyPUi8
-         PiTnudhGP4oZTrBULrDcNzxLHPAW+CXLCgdkiJsK0NbFCEyZzwD0hAymATwIprwHaZ
-         ISn0zfWRJCWYFeNvsKFZ0tIGFclPzl4L530iTFHdbJWf1ZzqlW+HMetvdRBFZN9r59
-         JBOob8Ou35jkw==
-Received: by mail-ot1-f50.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso21825744otb.13
-        for <linux-crypto@vger.kernel.org>; Wed, 12 May 2021 14:25:28 -0700 (PDT)
-X-Gm-Message-State: AOAM530rK5Bh4+Qu07pX6FQ2pVhV5bXgvlyIrGTq5ONa8yDFtMb+Td1B
-        9onfJRpRunv2Nx9uXRv9/n3TGfTZh11N9+KIL8E=
-X-Google-Smtp-Source: ABdhPJz27EoyMK1A8vlNtsnpAJAWPLNjT66+j88vDFe9UUwDafPfWjTVqfB4HkS1YA4OWIDfzC1xoX1xR4OaZYmt/sA=
-X-Received: by 2002:aca:4056:: with SMTP id n83mr387700oia.47.1620854727957;
- Wed, 12 May 2021 14:25:27 -0700 (PDT)
+        b=u0wt+mvVnpqtUirH/i1z/hLrWQc1u8GiS1LRUg2uLxhAWeV7lr8NND/061hJBw8c5
+         2e3hKJjVy1KOY/n568ac9ZBjtiA8kYErjPs7hZ6zmmU3KSEYoAptnHUPgcipmO3siG
+         wN7kZ02vFBHpv0EUlRSDDd/FnHjBfoqH65vqPml/tVCMQdpWkxgQLE/E/DYIJfWn2K
+         XR4nVSsyaF1CGOArSrRLfXQPbs5P8CK4SWfeOGLXml96+WRRXtMpZnCnZ1ewXp85+f
+         T6sCn57AvwDRDtpRC2j9+nohAsP7n2zbsrJTOi01gCn/ivD5vtfsxvMJjhDeoIhpaw
+         2GbRfp0rjFH0w==
+Received: by mail-ot1-f44.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so15588425oth.8
+        for <linux-crypto@vger.kernel.org>; Wed, 12 May 2021 14:31:18 -0700 (PDT)
+X-Gm-Message-State: AOAM5300ynicrN8DyiFpnNJK+B81TvhTvgePoTsw6fcjBko7ddu+NHt8
+        8y8raPsYQQQ5r5SfUIQ6Bpj1/37VGJANgjFltZc=
+X-Google-Smtp-Source: ABdhPJyrUMSRYMeITDk5+ILCDguAypmRVcPtQOTC2Xo5lgpzcNFod81nouBZbhXIWcH8a7oJ+AgJk3CCQCDUoOQ5H4w=
+X-Received: by 2002:a9d:69c5:: with SMTP id v5mr31870218oto.108.1620855077847;
+ Wed, 12 May 2021 14:31:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210512184439.8778-1-ardb@kernel.org> <20210512184439.8778-6-ardb@kernel.org>
- <YJw1zrPQMqKDVeih@gmail.com>
-In-Reply-To: <YJw1zrPQMqKDVeih@gmail.com>
+References: <20210512184439.8778-1-ardb@kernel.org> <YJw2Z5zlFtAx9koA@gmail.com>
+In-Reply-To: <YJw2Z5zlFtAx9koA@gmail.com>
 From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 12 May 2021 23:25:16 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHN6f03=BQXAx0A84yiE7-YbGdg12GRfoF-fnRyT9xnpg@mail.gmail.com>
-Message-ID: <CAMj1kXHN6f03=BQXAx0A84yiE7-YbGdg12GRfoF-fnRyT9xnpg@mail.gmail.com>
-Subject: Re: [PATCH v3 5/7] crypto: arm64/aes-neonbs - stop using SIMD helper
- for skciphers
+Date:   Wed, 12 May 2021 23:31:06 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXF6XU8MLHZYAEnNa4v0G0k1vshxNkXpZ8ijG-BxzV=5fw@mail.gmail.com>
+Message-ID: <CAMj1kXF6XU8MLHZYAEnNa4v0G0k1vshxNkXpZ8ijG-BxzV=5fw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] running kernel mode SIMD with softirqs disabled
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
@@ -51,20 +49,43 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, 12 May 2021 at 22:08, Eric Biggers <ebiggers@kernel.org> wrote:
+On Wed, 12 May 2021 at 22:11, Eric Biggers <ebiggers@kernel.org> wrote:
 >
-> On Wed, May 12, 2021 at 08:44:37PM +0200, Ard Biesheuvel wrote:
-> > Calls into the skcipher API can only occur from contexts where the SIMD
-> > unit is available, so there is no need for the SIMD helper.
+> On Wed, May 12, 2021 at 08:44:32PM +0200, Ard Biesheuvel wrote:
+> > This is a follow-up to [0], but given that the arm64 architectural
+> > pieces have been merged for arm64, the only remaining changes are crypto
+> > specific. Therefore, the audience has been reduced to those people who
+> > are likely to care about these specifics.
 > >
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > Patch #1 addresses an issue in the skcipher walker which doesn't handle
+> > zero sized AEAD inputs entirely consistently, which is uncovered by the
+> > change in patch #7.
+> >
+> > Patches #2 and #3 add some sanity checks to the public AEAD and skcipher
+> > APIs to limit their availibility to either task or softirq context
+> > (which is the only way in which they are currently being used). Adding
+> > this restriction permits the arm64 crypto code to get rid of all scalar
+> > fallbacks, given that on this architecture, softirqs are no longer
+> > served while the SIMD unit is being used in kernel mode, which means
+> > that the scalar fallbacks are never needed. These are removed in the
+> > remaining 4 patches.
+> >
+> > [0] https://lore.kernel.org/linux-arm-kernel/20210302090118.30666-1-ardb@kernel.org/
 >
-> It would be helpful if the commit message made it clear that "Calls into the
-> skcipher API can only occur from contexts where the SIMD unit is available" is
-> something that is now the case but wasn't the case previously.  Otherwise I
-> could see people backporting this patch without its prerequisites.
->
-> Likewise for some of the other patches in this patchset.
+> Did you check whether any updates to the self-tests in testmgr.c are warranted?
+> Specifically, is disabling the use of SIMD for testing still something that
+> makes sense?
 >
 
-OK
+The situation is not ideal, but I am not sure what we can do about
+this: the scalar fallbacks are gone, which means that the SIMD unit
+will be used in the test even if testmgr attempts to disable it. But
+keeping the scalar fallbacks just for the test suite makes no sense
+either. So I don't think we should change anything, other than perhaps
+document this somewhere (any suggestions on a place to put that)
+
+Note that the library routines, as well as shashes (which are
+sometimes exposed via library routines, e.g., CRC-T10DIF and CRC-32,
+and maybe others) are different, which is why their scalar fallbacks
+are retained. There, we need the testmgr to override SIMD availability
+to ensure that combinations of the SIMD and scalar code are tested.
