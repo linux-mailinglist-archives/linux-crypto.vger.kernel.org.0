@@ -2,67 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DCF37EE15
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 May 2021 00:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3815B37EEE0
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 May 2021 01:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345779AbhELVIR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 May 2021 17:08:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57174 "EHLO mail.kernel.org"
+        id S231204AbhELWUz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 12 May 2021 18:20:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344521AbhELUMa (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 May 2021 16:12:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAA43613FB;
-        Wed, 12 May 2021 20:11:20 +0000 (UTC)
+        id S1387602AbhELVZa (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 12 May 2021 17:25:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C88E613E6
+        for <linux-crypto@vger.kernel.org>; Wed, 12 May 2021 21:24:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620850281;
-        bh=3TFHlYbgs5TDv6kvL2Z+EmWCUhN1bJEXciDXrAKpvaw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rdka4BjJS9gRKT1s96RPLFKpXqumhSWbtmiAwgtAtPvQBzC/DfutQrh8nkBo2UIX5
-         x5g9EWu3Kqo6bj5PIyBhaLECP60eGeLX2tdfHlH8+K4BWCCVQX1FQEuxYdsS5bkfy/
-         YDg5LXXyZzD0yewhKXuVaodgEHmWPgfiyaRTPac0RHhAoC6gDV4qugtg1rqKo6Y29w
-         y40ut5X3jLWoqBiCKBgG8F8kNxd7cJ5cCkLOtMQf/ZQRCbbWFEmoZlmwL67nS6PDOB
-         /YVZT/Mqlhj2h3tb7cHCRpBaeRsBGT0vZzhVaMnInn+rPX2+9PQrHhnJonvnwgdPeH
-         /4nJqPHRhQt5w==
-Date:   Wed, 12 May 2021 13:11:19 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        herbert@gondor.apana.org.au, will@kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 0/7] running kernel mode SIMD with softirqs disabled
-Message-ID: <YJw2Z5zlFtAx9koA@gmail.com>
-References: <20210512184439.8778-1-ardb@kernel.org>
+        s=k20201202; t=1620854661;
+        bh=dpMpwE/+0xsrNEBWSrB3F2tfcXWYhcQJFd7Iugffe4g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TI6i2pnrjixOQ0EjSlyqNi776kSVB26wcmAwfSxkf8IAT8tjTGYETNOmQmVmIOozX
+         uElNWaC2sIgq0uigB5eT9PK8DK5BlntjroQBeTrYDvFZighVUHMzI+pgjcrW6vnRfe
+         zZ7avYbmJc5WDFYGTgU0KarRQRGSapYh6LcQALob12EIRLzIf8ZZJxG5DUpz6kyWZI
+         luOwi9Bh/G6PbEEuKz6M3QEvh1k30qsZvjrcXNbjLRPmyVrNfN23pJozx0+UMq6hu2
+         2uY2gXVqyEqafogjKgEXn2MURj5cOj6RcEMU2DYvGFde3MC+BkfQL8UZq5ZiBpR7Pc
+         g5gfo45WZU7CQ==
+Received: by mail-ot1-f54.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso21872159otg.9
+        for <linux-crypto@vger.kernel.org>; Wed, 12 May 2021 14:24:21 -0700 (PDT)
+X-Gm-Message-State: AOAM530koBdD/2PT2Wk9PgcHo7giVugBPq223w/tGZusQOrHqeaGpJHd
+        StNyiG5JXCUHh5+hLR55I6pbonJMdo8WvmPy9Jg=
+X-Google-Smtp-Source: ABdhPJz1crGpZ2a/Nstlgsq6mSlP9NuQT6jz7eZ0TUXDgP1IP3cYsDpVaNhe/4teRWkhB86fF1AT2AoSZl5bA/LQBAQ=
+X-Received: by 2002:a9d:7cd8:: with SMTP id r24mr20523715otn.90.1620854660323;
+ Wed, 12 May 2021 14:24:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512184439.8778-1-ardb@kernel.org>
+References: <20210512184439.8778-1-ardb@kernel.org> <20210512184439.8778-2-ardb@kernel.org>
+ <YJw01Z3oxwY5Sfpa@gmail.com>
+In-Reply-To: <YJw01Z3oxwY5Sfpa@gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 12 May 2021 23:24:09 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHofDrzEs4qc8VNCLpyL-Hc4PSg-JXKTckJvfD6qoK78Q@mail.gmail.com>
+Message-ID: <CAMj1kXHofDrzEs4qc8VNCLpyL-Hc4PSg-JXKTckJvfD6qoK78Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/7] crypto: handle zero sized AEAD inputs correctly
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Will Deacon <will@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, May 12, 2021 at 08:44:32PM +0200, Ard Biesheuvel wrote:
-> This is a follow-up to [0], but given that the arm64 architectural
-> pieces have been merged for arm64, the only remaining changes are crypto
-> specific. Therefore, the audience has been reduced to those people who
-> are likely to care about these specifics.
-> 
-> Patch #1 addresses an issue in the skcipher walker which doesn't handle
-> zero sized AEAD inputs entirely consistently, which is uncovered by the
-> change in patch #7.
-> 
-> Patches #2 and #3 add some sanity checks to the public AEAD and skcipher
-> APIs to limit their availibility to either task or softirq context
-> (which is the only way in which they are currently being used). Adding
-> this restriction permits the arm64 crypto code to get rid of all scalar
-> fallbacks, given that on this architecture, softirqs are no longer
-> served while the SIMD unit is being used in kernel mode, which means
-> that the scalar fallbacks are never needed. These are removed in the
-> remaining 4 patches.
-> 
-> [0] https://lore.kernel.org/linux-arm-kernel/20210302090118.30666-1-ardb@kernel.org/
+On Wed, 12 May 2021 at 22:04, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Wed, May 12, 2021 at 08:44:33PM +0200, Ard Biesheuvel wrote:
+> > There are corner cases where skcipher_walk_aead_[en|de]crypt() may be
+> > invoked with a zero sized input, which is not rejected by the walker
+> > code, but results in the skcipher_walk structure to not be fully
+> > initialized. This will leave stale values in its page and buffer
+> > members, which will be subsequently passed to kfree() or free_page() by
+> > skcipher_walk_done(), resulting in a crash if those routines fail to
+> > identify them as in valid inputs.
+> >
+> > Fix this by setting page and buffer to NULL even if the size of the
+> > input is zero.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+>
+> Is this fixing an existing bug, or only a bug that got exposed by this patchset?
+> It would be helpful to make that clear (and if it fixes an existing bug, include
+> a Fixes tag).
+>
 
-Did you check whether any updates to the self-tests in testmgr.c are warranted?
-Specifically, is disabling the use of SIMD for testing still something that
-makes sense?
+The CCM change in the last patch uncovers this issue, and I don't
+think it is likely we would ever hit it anywhere else.
 
-- Eric
+> Also, skcipher_walk_virt() doesn't set page and buffer to NULL, as it is
+> currently expected that skcipher_walk_done() is only called when
+> walk.nbytes != 0.  Is something different for skcipher_walk_aead_[en|de]crypt()?
+>
+
+The difference is that zero sized inputs never make sense for
+skciphers, but for AEADs, they could occur, even if they are uncommon
+(the AEAD could have associated data only, and no plain/ciphertext)
+
+But in the general case, I would assume that skcipher_walk_done() can
+be called on a walk that was successfully started with
+skcipher_walk_virt() without crashing, even if the scatterlist has
+size zero, so perhaps we should fix that one as well.
