@@ -2,55 +2,90 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92C738089D
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 May 2021 13:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56343380DD2
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 May 2021 18:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbhENLhx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 14 May 2021 07:37:53 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:37334 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231897AbhENLhx (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 14 May 2021 07:37:53 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.89 #2 (Debian))
-        id 1lhW7O-00033U-1s; Fri, 14 May 2021 19:36:34 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1lhW7N-0002ZW-KO; Fri, 14 May 2021 19:36:33 +0800
-Date:   Fri, 14 May 2021 19:36:33 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Andreas Westin <andreas.westin@stericsson.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] crypto: ux500 - Fix error return code in
- hash_hw_final()
-Message-ID: <20210514113633.faxp737uxm2w5x7f@gondor.apana.org.au>
-References: <20210508070049.2674-1-thunder.leizhen@huawei.com>
+        id S233085AbhENQOM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 14 May 2021 12:14:12 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39558 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232438AbhENQOL (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 14 May 2021 12:14:11 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14EGCqlw083265;
+        Fri, 14 May 2021 11:12:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621008772;
+        bh=OQ+Ix9MIKU9XQ3zLGXvsa0ysovBtndx9AhnqN1l25i8=;
+        h=From:To:CC:Subject:Date;
+        b=vo88a/V6/b955trrrBR1Xn52swmO2EE31c1lc0Sm0NCWXOzCBVoDS5FoV0z1zrj6e
+         Uz/r9B42w4lVvSkJ6rUocu0kM0b7GqVJc9M7IMDzQik6YqD5IhvPtcWShf8b5/UgeV
+         hJV9jm8E+nTB/Dr9XuebX2R6dq2bgQvtVRZyZSJs=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14EGCqnM007526
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 14 May 2021 11:12:52 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 14
+ May 2021 11:12:51 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 14 May 2021 11:12:51 -0500
+Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14EGCpr0042030;
+        Fri, 14 May 2021 11:12:51 -0500
+Received: from localhost ([10.250.35.60])
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 14EGCp7u035302;
+        Fri, 14 May 2021 11:12:51 -0500
+From:   Suman Anna <s-anna@ti.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     Deepak Saxena <dsaxena@plexity.net>,
+        Tero Kristo <kristo@kernel.org>, Keerthy <j-keerthy@ti.com>,
+        Gowtham Tammana <g-tammana@ti.com>,
+        Vaibhav Gupta <v_gupta@ti.com>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
+Subject: [PATCH 0/6] Misc. SA2UL fixes/cleanups
+Date:   Fri, 14 May 2021 11:12:40 -0500
+Message-ID: <20210514161246.22517-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210508070049.2674-1-thunder.leizhen@huawei.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, May 08, 2021 at 03:00:49PM +0800, Zhen Lei wrote:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
-> 
-> Fixes: 8a63b1994c50 ("crypto: ux500 - Add driver for HASH hardware")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  drivers/crypto/ux500/hash/hash_core.c | 1 +
->  1 file changed, 1 insertion(+)
+Hi All,
 
-Patch applied.  Thanks.
+The following series includes various fixes for multiple minor
+cleanup issues on failure paths in the TI K3 SA2UL Crypto driver.
+The patches are all based on top of 5.13-rc1.
+
+Patch 1 is the only non SA2UL patch, and allows the OMAP RNG driver
+to be built for K3 platforms and probed properly when SA2UL is
+selected, and the SA2UL driver is probed (the rng device is a child
+of the sa2ul device).
+
+regards
+Suman
+
+Suman Anna (6):
+  hwrng: omap - Enable driver for TI K3 family
+  crypto: sa2ul - Fix leaks on failure paths with sa_dma_init()
+  crypto: sa2ul - Fix pm_runtime enable in sa_ul_probe()
+  crypto: sa2ul - Use of_device_get_match_data() helper
+  crypto: sa2ul - Use devm_platform_ioremap_resource()
+  crypto: sa2ul - Remove child devices in remove
+
+ drivers/char/hw_random/Kconfig |  2 +-
+ drivers/crypto/sa2ul.c         | 46 ++++++++++++++++++----------------
+ 2 files changed, 25 insertions(+), 23 deletions(-)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.30.1
+
