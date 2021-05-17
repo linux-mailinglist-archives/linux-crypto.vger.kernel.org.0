@@ -2,75 +2,110 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A786C38268F
-	for <lists+linux-crypto@lfdr.de>; Mon, 17 May 2021 10:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F31382921
+	for <lists+linux-crypto@lfdr.de>; Mon, 17 May 2021 12:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235505AbhEQIR2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 17 May 2021 04:17:28 -0400
-Received: from mga05.intel.com ([192.55.52.43]:28960 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235599AbhEQIRL (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 17 May 2021 04:17:11 -0400
-IronPort-SDR: 98kv+UMpapn4qREoNlaEIg3UfSXuRysBY1SFtpsAE5L+ZHVQQlzFXBNNLmhDik6ERZ5Ma5VcGk
- wJwI6mdo4NMA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="285940872"
-X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
-   d="scan'208";a="285940872"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 01:15:55 -0700
-IronPort-SDR: cHFRWiGZVNnnqyzalUR2Xtoe8JZZdd7b1aNPe+AYhegi5+V6BhlHaQr+U2pvQvFHvo4/vyZo/4
- VHehoqUYqG0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
-   d="scan'208";a="410729309"
-Received: from qat-server-296.sh.intel.com ([10.67.117.159])
-  by orsmga002.jf.intel.com with ESMTP; 17 May 2021 01:15:54 -0700
-From:   Jack Xu <jack.xu@intel.com>
-To:     herbert@gondor.apana.org.au
-Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        Jack Xu <jack.xu@intel.com>,
-        Zhehui Xiang <zhehui.xiang@intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [PATCH 5/5] crypto: qat - remove unused macro in FW loader
-Date:   Mon, 17 May 2021 05:13:16 -0400
-Message-Id: <20210517091316.69630-6-jack.xu@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517091316.69630-1-jack.xu@intel.com>
-References: <20210517091316.69630-1-jack.xu@intel.com>
+        id S236352AbhEQKAR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 17 May 2021 06:00:17 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34573 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236461AbhEQJ7u (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 17 May 2021 05:59:50 -0400
+Received: from mail-ej1-f69.google.com ([209.85.218.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <juerg.haefliger@canonical.com>)
+        id 1lia1B-0002Ra-CF
+        for linux-crypto@vger.kernel.org; Mon, 17 May 2021 09:58:33 +0000
+Received: by mail-ej1-f69.google.com with SMTP id sd18-20020a170906ce32b02903cedf584542so830547ejb.9
+        for <linux-crypto@vger.kernel.org>; Mon, 17 May 2021 02:58:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q/wSN0+Q7UW1xpdFuLri53LFWf1u+HpJsXzIKwoz29A=;
+        b=Z3o2xlBzX9voLRZDhPw+6i9ckvi5HHvWMT4cBOO6+wGsSCWntPPV43dVsvTOLsUuFM
+         XDxjw9hXXK/dqwTxEp4a+HrA/Kea0j0qKLsHIYdM6CFEHFQ5lQW65+K7F5AoVNa0InJS
+         wsEwCxTlT9nxgYjLUSPHXa4Z3rErv3wy3oE+FAdsSN1Pmr1g9iAymQ01uephhQzXRiZc
+         xFbb7IdBzLpc7WxY2MXBhp5PxacLY6KHCDjGIanEu4MxvqJhWk9fgcD80bcT55kapoNF
+         Q989BD8r21YwG+BsbzVLfAqlH6dxqxWdUZzEAc/GTUdF9BWhDgRkTZLtILmQgVvmhuCu
+         UlXQ==
+X-Gm-Message-State: AOAM533JhAOmCGI0FlwM6PUt3S4n8Zy5xPKV8JrKzBDbJiTCBrtMcVSQ
+        RSUXCpHmJiRaLXUH2gtqMI7O99YHDidK0LZH7M0uniZXvBIdNgnLW7d3GEB5R8jcct33dR5FD6U
+        hnrVi+Ns1bpiKwwt3fJGwxhISts2x3t+QwJ1VjE4vwg==
+X-Received: by 2002:aa7:d818:: with SMTP id v24mr26537149edq.290.1621245513101;
+        Mon, 17 May 2021 02:58:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxNlXvNzVQOstOtLAhWapeNUCRt/jrF806iuW+e4UxXf45W748ZixHui0OO1NUHaHLpYFlN1A==
+X-Received: by 2002:aa7:d818:: with SMTP id v24mr26537136edq.290.1621245512971;
+        Mon, 17 May 2021 02:58:32 -0700 (PDT)
+Received: from gollum.fritz.box ([194.191.244.86])
+        by smtp.gmail.com with ESMTPSA id bh2sm7362212ejb.80.2021.05.17.02.58.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 02:58:32 -0700 (PDT)
+From:   Juerg Haefliger <juerg.haefliger@canonical.com>
+X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
+To:     mpm@selenic.com, herbert@gondor.apana.org.au,
+        zhouyanjie@wanyeetech.com, linux-crypto@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, juergh@canonical.com
+Subject: [PATCH] hwrng: Remove leading spaces in Kconfig
+Date:   Mon, 17 May 2021 11:58:31 +0200
+Message-Id: <20210517095831.81631-1-juergh@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Remove the unused macro ICP_DH895XCC_PESRAM_BAR_SIZE in the firmware
-loader.
+Remove leading spaces before tabs in Kconfig file(s) by running the
+following command:
 
-This is to fix the following warning when compiling the driver using the
-clang compiler with CC=clang W=2:
+  $ find drivers/char/hw_random -name 'Kconfig*' | x\
+    args sed -r -i 's/^[ ]+\t/\t/'
 
-    drivers/crypto/qat/qat_common/qat_uclo.c:345:9: warning: macro is not used [-Wunused-macros]
-
-Signed-off-by: Jack Xu <jack.xu@intel.com>
-Co-developed-by: Zhehui Xiang <zhehui.xiang@intel.com>
-Signed-off-by: Zhehui Xiang <zhehui.xiang@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Signed-off-by: Juerg Haefliger <juergh@canonical.com>
 ---
- drivers/crypto/qat/qat_common/qat_uclo.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/char/hw_random/Kconfig | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/qat/qat_common/qat_uclo.c b/drivers/crypto/qat/qat_common/qat_uclo.c
-index ed1343bb36ac..2026cc6be8f0 100644
---- a/drivers/crypto/qat/qat_common/qat_uclo.c
-+++ b/drivers/crypto/qat/qat_common/qat_uclo.c
-@@ -342,7 +342,6 @@ static int qat_uclo_init_umem_seg(struct icp_qat_fw_loader_handle *handle,
- 	return 0;
- }
+diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+index 1fe006f3f12f..0e1e97680f08 100644
+--- a/drivers/char/hw_random/Kconfig
++++ b/drivers/char/hw_random/Kconfig
+@@ -168,14 +168,14 @@ config HW_RANDOM_OMAP
+ 	depends on ARCH_OMAP16XX || ARCH_OMAP2PLUS || ARCH_MVEBU
+ 	default HW_RANDOM
+ 	help
+- 	  This driver provides kernel-side support for the Random Number
++	  This driver provides kernel-side support for the Random Number
+ 	  Generator hardware found on OMAP16xx, OMAP2/3/4/5, AM33xx/AM43xx
+ 	  multimedia processors, and Marvell Armada 7k/8k SoCs.
  
--#define ICP_DH895XCC_PESRAM_BAR_SIZE 0x80000
- static int qat_uclo_init_ae_memory(struct icp_qat_fw_loader_handle *handle,
- 				   struct icp_qat_uof_initmem *init_mem)
- {
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called omap-rng.
+ 
+- 	  If unsure, say Y.
++	  If unsure, say Y.
+ 
+ config HW_RANDOM_OMAP3_ROM
+ 	tristate "OMAP3 ROM Random Number Generator support"
+@@ -485,13 +485,13 @@ config HW_RANDOM_NPCM
+ 	depends on ARCH_NPCM || COMPILE_TEST
+ 	default HW_RANDOM
+ 	help
+- 	  This driver provides support for the Random Number
++	  This driver provides support for the Random Number
+ 	  Generator hardware available in Nuvoton NPCM SoCs.
+ 
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called npcm-rng.
+ 
+- 	  If unsure, say Y.
++	  If unsure, say Y.
+ 
+ config HW_RANDOM_KEYSTONE
+ 	depends on ARCH_KEYSTONE || COMPILE_TEST
 -- 
-2.31.1
+2.27.0
 
