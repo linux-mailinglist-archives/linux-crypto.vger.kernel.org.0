@@ -2,96 +2,91 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBBD38AE05
-	for <lists+linux-crypto@lfdr.de>; Thu, 20 May 2021 14:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A639C38AE49
+	for <lists+linux-crypto@lfdr.de>; Thu, 20 May 2021 14:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbhETMXJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 20 May 2021 08:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54428 "EHLO
+        id S233684AbhETMeE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 20 May 2021 08:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232075AbhETMXG (ORCPT
+        with ESMTP id S233161AbhETMdz (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 20 May 2021 08:23:06 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44E6C09F5F5
-        for <linux-crypto@vger.kernel.org>; Thu, 20 May 2021 04:17:04 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso4859318wmc.1
-        for <linux-crypto@vger.kernel.org>; Thu, 20 May 2021 04:17:04 -0700 (PDT)
+        Thu, 20 May 2021 08:33:55 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEA2C0E1EF4
+        for <linux-crypto@vger.kernel.org>; Thu, 20 May 2021 04:39:35 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id z17so17290441wrq.7
+        for <linux-crypto@vger.kernel.org>; Thu, 20 May 2021 04:39:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FFbC/8AD0LOFNwNu9BRgUtFruC/G1IwePtG3av6RsOY=;
-        b=k1LNclxtiP6W7x7zqryjIF2j1zX5LVI89E2F+ZC0OosAJK+edKHkMljCHDcNA4W6r9
-         oo4eZKxNjGjNVEJ8BFhLlpoqnPMwuEiPyWw0EOz4IxxVlKUgsrlswX/caR97z6QS70oV
-         NZ3/faNHyMCstTucEuXIupFp8etwQE4J3yqi0J69jZcU0Mx7BKVpa2T7q24WhNiKWtvb
-         PU5LpeN250fH9rB8YtK5Dy/MNYmxcDZJKb5GKWG8MkZ5EEWxsJ6BFLPncstIQhXlrfUP
-         vHUQIPzmn+0TEAFURxP+OL/A4Cij2M4dnT2BPNlHbT0nR+8xyCyGrpl/dPtQmw2IqIcV
-         nkXg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=rOR/bE6KeQ5HZ3FZ82kLVJ7uz1OxpfmHwQwUe9gKcNs=;
+        b=NZr70dRmEM0JMXAWO6zmUcOkBIe/qjOpjpzp1IaGbh67LHHyOvFaZLweiqdQEHPrX4
+         GKtci8trVgcHmMkHT0ee0RghnbnilbIgQS2Sed9iDBJQgTZOFW+1YRdteD1w74NcRetM
+         C0la3E2/beovJg27Nec9wf6h4nj4YeWhB4X9vBVeBFDZQ4HxqIxirJ7mVIDkqXmQxPMM
+         tYXKwMLhG0M/Dg0izKm3UlokCh2KSlXruugL1CYzBiREmC8ZIo2oLkcQ3uQrW+OfQ0dP
+         GHvKtCzUXRrvY98J5VB7AiRn3RGl3/iB+XVt1PKRSjGby02HopKbxcOR+zoHJKggOdRx
+         YBcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FFbC/8AD0LOFNwNu9BRgUtFruC/G1IwePtG3av6RsOY=;
-        b=geWPHwzSMuce1IJgUQP6cTWpJCD/YTwnSFNL+dJrIomjzRldNESLRKyjvb07D5HZH3
-         019RGTiYoPdQ8kVdOR9QwfhfuQwFKoRx7xJw2WaW+ijeEsHT6iYlz5W/AxO3nrctely2
-         461qinBGBz2bKTPLLBOgBzZeTLMCRgdddsX8oeFKQ13hLsSWRto/ICeCJW2mA/7P9JjF
-         ols/1y/v24i1SCqTd1BD/fXFIo8bLZNWrEZ7NyG70S3e6H6D/F3QZUExJJdBkJkG9IcF
-         7Uet2a1h8xK61+dXkEUvMNJ1WzKTbd2PcdyXTAVlbi7PBIvfnAJpOwo+OG6EKiIQKfB2
-         cjow==
-X-Gm-Message-State: AOAM531nzRAOdwcbr4RyNz8t+Furzk6PNta22gOS/5L4qRu79ISo6SAz
-        cXdHOVCqR6XqaMQC5nSUFMbzUQ==
-X-Google-Smtp-Source: ABdhPJy170kk8Q53GOuLn6l2Mf+w5xTtNMkRzkP4oBTF3ZetnMbI5rV9xgKJjjvpwPsSs4pLxpDMAw==
-X-Received: by 2002:a1c:4d01:: with SMTP id o1mr3222583wmh.42.1621509423424;
-        Thu, 20 May 2021 04:17:03 -0700 (PDT)
-Received: from localhost.localdomain ([88.160.162.107])
-        by smtp.gmail.com with ESMTPSA id a19sm2310757wmb.40.2021.05.20.04.17.02
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=rOR/bE6KeQ5HZ3FZ82kLVJ7uz1OxpfmHwQwUe9gKcNs=;
+        b=rEvAInJ+dG2i0fc+ASETbv5Wek0VvkJ+1zf4Sk7Djaf934U4QjJnVqhcI4HdoUga1e
+         chYWg2XoJeM2hTyOCXZ8Vqe+nAHwtBjtOdQQ1UrDBi1QzsSGoDliegoV7Ct/jC5aav9O
+         LPrFTKgJpU779bB0tWjF+3mDjDsLJ08qKBikoYBfZ3Xb2GBvYZbfNCIhdI0N6e2U0lox
+         Vg2zLJw6GFHBM7hN/79tV3oduakh7Ixbx8qvDNlxTQH4/M/dB0eJ1LctfAL/wbaAT5d2
+         ZTj/lv+C/0qPEVS9MeLitR3KETLKL7o6IUJd/00BJGFM6JFT0tzHhmehllMvvHifHfTN
+         LRQg==
+X-Gm-Message-State: AOAM530rVV8Sb2Mj6337C0PxtkaTvhj5OBiMyZ3lueCpnaEL0UEf116B
+        z+nzLrrESMVL2JI6FhOVno9iQg==
+X-Google-Smtp-Source: ABdhPJyXeIV+dQjn1qVkcKlSbCmMspSSPlaH/0NkZU7TQGJqPfLIDWDnR2nLd0Zd8vmh/3KNV26pBw==
+X-Received: by 2002:adf:e607:: with SMTP id p7mr3813981wrm.358.1621510773767;
+        Thu, 20 May 2021 04:39:33 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id d3sm2934456wrs.41.2021.05.20.04.39.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 04:17:02 -0700 (PDT)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>
-Cc:     mkorpershoek@baylibre.com, Fabien Parent <fparent@baylibre.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] dt-bindings: rng: mediatek: add mt8365 to mtk rng binding
-Date:   Thu, 20 May 2021 13:16:56 +0200
-Message-Id: <20210520111656.66017-2-fparent@baylibre.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520111656.66017-1-fparent@baylibre.com>
-References: <20210520111656.66017-1-fparent@baylibre.com>
+        Thu, 20 May 2021 04:39:33 -0700 (PDT)
+Date:   Thu, 20 May 2021 13:39:30 +0200
+From:   LABBE Corentin <clabbe@baylibre.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        linus.walleij@linaro.org, linux@armlinux.org.uk,
+        robh+dt@kernel.org, ulli.kroll@googlemail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] crypto: add gemini/sl3516 crypto driver
+Message-ID: <YKZKchyUeeQwedXF@Red>
+References: <20210518151655.125153-1-clabbe@baylibre.com>
+ <YKVbW8T92bY3NG4u@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YKVbW8T92bY3NG4u@gmail.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add RNG binding for MT8365 SoC.
+Le Wed, May 19, 2021 at 11:39:23AM -0700, Eric Biggers a écrit :
+> On Tue, May 18, 2021 at 03:16:50PM +0000, Corentin Labbe wrote:
+> > The gemini SL3516 SoC has a crypto IP.
+> > This serie had support for it.
+> > 
+> 
+> Please describe how this was tested.
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
----
+Sorry I forgot to write it.
+It was tested with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y.
+Furthermore, it survives hours and gigs of write/read to a luks2 using xts(ecb-aes-sl3516).
 
-v2: Write the compatible in a more compact way
+I forgot also to write on performance, which is quite good.
+On a luks2 partition (2To with bs=4096), a fsck comes from 14m26(without CE) to 8m48(with CE).
+So it is really usefull.
 
- Documentation/devicetree/bindings/rng/mtk-rng.yaml | 1 +
- 1 file changed, 1 insertion(+)
+With bs=512, the performance is similar with software.
 
-diff --git a/Documentation/devicetree/bindings/rng/mtk-rng.yaml b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
-index 4be5fc3c1409..61888e07bda0 100644
---- a/Documentation/devicetree/bindings/rng/mtk-rng.yaml
-+++ b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
-@@ -21,6 +21,7 @@ properties:
-           - enum:
-               - mediatek,mt7622-rng
-               - mediatek,mt7629-rng
-+              - mediatek,mt8365-rng
-               - mediatek,mt8516-rng
-           - const: mediatek,mt7623-rng
- 
--- 
-2.31.1
+Regards
 
