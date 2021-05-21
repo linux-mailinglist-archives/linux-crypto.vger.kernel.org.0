@@ -2,226 +2,125 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6966738C393
-	for <lists+linux-crypto@lfdr.de>; Fri, 21 May 2021 11:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9291A38C39B
+	for <lists+linux-crypto@lfdr.de>; Fri, 21 May 2021 11:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbhEUJnn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 21 May 2021 05:43:43 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39438 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236946AbhEUJnd (ORCPT
+        id S236959AbhEUJoc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 21 May 2021 05:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237002AbhEUJoY (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 21 May 2021 05:43:33 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14L9YRGu092849;
-        Fri, 21 May 2021 05:42:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=0W7kIX6FOOTKalWI22G3z8O5NCLDuITllHpG9FZSN+M=;
- b=lu2Z9lFOn+36Fepjtu4lkwfmorob/q/GTgzEHhcBw0gcWfPmV22/c3MaVRGJ0dLvsZlM
- cnkmGBgyxEZupe21fehMKQx9GGeiE2l7evx0gvjSmm+HWTrl8pRriEmEP0D+tTzj/0ob
- ibSR5JYCnHg1qhRLKcDZEiMup7MTf+aq/rr0FGb0D86VbyhAlvmAj0cnppW0N4Rzatje
- Is8O2Rwzmjb0xJZKu+PmyYGKGItTwymWBlyWE+MIq0MhkObmy22G8xpOxpIIe470e3TX
- jAikY/y7CKqGaFWQJLChRD3jqDL6eylG2F5cy5HeOof+X+Zv7D3T2yrsQSgszVi9Yen5 Jg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38pa2k8rus-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 05:42:02 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14L9YSji092950;
-        Fri, 21 May 2021 05:42:01 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38pa2k8rt0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 05:42:01 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14L9WoRT001852;
-        Fri, 21 May 2021 09:42:00 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma04dal.us.ibm.com with ESMTP id 38j5xat6jv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 09:42:00 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14L9fxeX38863358
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 09:41:59 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B0DB9B2066;
-        Fri, 21 May 2021 09:41:59 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C45FDB2065;
-        Fri, 21 May 2021 09:41:58 +0000 (GMT)
-Received: from sig-9-65-94-165.ibm.com (unknown [9.65.94.165])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 21 May 2021 09:41:58 +0000 (GMT)
-Message-ID: <f89258ec786c15d6fca90a227e89cda6db1028cd.camel@linux.ibm.com>
-Subject: [PATCH v4 15/16] crypto/nx: Get NX capabilities for GZIP
- coprocessor type
-From:   Haren Myneni <haren@linux.ibm.com>
-To:     linuxppc-dev@lists.ozlabs.org, linux-crypto@vger.kernel.org,
-        mpe@ellerman.id.au, herbert@gondor.apana.org.au, npiggin@gmail.com
-Cc:     hbabu@us.ibm.com, haren@us.ibm.com
-Date:   Fri, 21 May 2021 02:41:57 -0700
-In-Reply-To: <8d219c0816133a8643d650709066cf04c9c77322.camel@linux.ibm.com>
-References: <8d219c0816133a8643d650709066cf04c9c77322.camel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 6_ewy_UhkRsTYm01MHtxAQ-91qsBgWIr
-X-Proofpoint-ORIG-GUID: OCF2uE4sV3Hr2TrEdt43kQY34BIVdIt0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-21_03:2021-05-20,2021-05-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 clxscore=1015 mlxlogscore=999 lowpriorityscore=0
- impostorscore=0 spamscore=0 bulkscore=0 phishscore=0 malwarescore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105210061
+        Fri, 21 May 2021 05:44:24 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DD7C061574;
+        Fri, 21 May 2021 02:43:00 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 27so12490498pgy.3;
+        Fri, 21 May 2021 02:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=KZgfiEzIPvsgTFxoIStVxbrN1vw78Fru0mAoJ7v9Q38=;
+        b=KJkka3pOqaaPrpeHGbn/5qJgNS7ejHBSZ04McsUUJTogdMBAjzZHGA2mimzEl9RzEL
+         xqnqMNAS7mSXVPF3onxn48E8Br7a89j5cGo2+Z/K06LBcsvMc7gZcKJ2DCiH3FtWhXEL
+         YIlDr29Jeis0iwcbQEhBpcnm0HwgqeScX3zW502DJHCRJcGtEIf3oEmB1tEop1KyKG4d
+         CkWMTjCb5d+gZQZdmvggnKYnDyd9/L++XGKi7khuNSqEu7dkMvshuanwLvCHhFoqgf+l
+         R2Tl975qVDswKyTSKaWOoRzvu2dRmAMGl0qhVAdQ8fR1X14gH096OayPYAxJof80cqN8
+         gLfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KZgfiEzIPvsgTFxoIStVxbrN1vw78Fru0mAoJ7v9Q38=;
+        b=eSwX3DZHRRvm+p87MG62hU20GrGJK63Wcyoe0FlX/9DcdGd9pksWArDBMtnGT7tYAd
+         lLR07uYx1XcVRt5X9TwXhYh9BI4VuvvbQ8F2K7W23MMmr9BonhGv2G0QASj907RtZ7f2
+         sMvOfVHg1+IEOKr+SK7yedxfFWHoMaZOwBBpHvmdvNqxDfsY8MFIWlRN+amoMma7B83X
+         w+XCf1dhM5PWeqLEp+htPf0vneSXMakKkO7hSgVG7QGnge6gr4D8Y3MmU8BGiI4bTdOt
+         svzk8vlqKh5HOMsfEva4ZKSyI9GutOEUUL/MYgoZKEGXLLDIqMlOwsf72gwAu0bQWG4i
+         /ygw==
+X-Gm-Message-State: AOAM530xVPkso/ieeRgM/7KI8jmlfLtGFP8SVXSV3sV9jOuTfLZ2H5zD
+        I4ZgG7rLsJqXjsTo7PNE1M0=
+X-Google-Smtp-Source: ABdhPJwP2eDcCNOHj+jbX58H/KMkHnEV1mkrlpdFs13/Y4d0vhEg0tcECDTbxxEeUxCr2wSLODYBfg==
+X-Received: by 2002:a62:d447:0:b029:291:19f7:ddcd with SMTP id u7-20020a62d4470000b029029119f7ddcdmr9437698pfl.54.1621590180094;
+        Fri, 21 May 2021 02:43:00 -0700 (PDT)
+Received: from linux-l9pv.suse ([124.11.22.254])
+        by smtp.gmail.com with ESMTPSA id g202sm4091931pfb.54.2021.05.21.02.42.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 May 2021 02:42:59 -0700 (PDT)
+From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ben Boeckel <me@benboeckel.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Malte Gell <malte.gell@gmx.de>,
+        Varad Gautam <varad.gautam@suse.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Lee, Chun-Yi" <jlee@suse.com>
+Subject: [PATCH v7 0/4] Check codeSigning extended key usage extension
+Date:   Fri, 21 May 2021 17:42:16 +0800
+Message-Id: <20210521094220.1238-1-jlee@suse.com>
+X-Mailer: git-send-email 2.12.3
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+NIAP PP_OS certification requests that the OS shall validate the
+CodeSigning extended key usage extension field for integrity
+verifiction of exectable code:
 
-The hypervisor provides different capabilities that it supports
-to define the user space NX request. These capabilities are
-recommended minimum compression / decompression lengths and the
-maximum request buffer size in bytes.
+    https://www.niap-ccevs.org/MMO/PP/-442-/
+        FIA_X509_EXT.1.1
 
-Changes to get NX overall capabilities which points to the
-specific features that the hypervisor supports. Then retrieve
-the capabilities for the specific feature (available only
-for NXGZIP).
+This patchset adds the logic for parsing the codeSigning EKU extension
+field in X.509. And checking the CodeSigning EKU when verifying
+signature of kernel module or kexec PE binary in PKCS#7.
 
-Signed-off-by: Haren Myneni <haren@linux.ibm.com>
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
----
- drivers/crypto/nx/nx-common-pseries.c | 89 +++++++++++++++++++++++++++
- 1 file changed, 89 insertions(+)
+v7:
+- Fixed the broken function call in is_key_on_revocation_list().
+  (be found by kernel test robot)
+- Use a general name check_eku_by_usage() instead of check_codesign_eku().
 
-diff --git a/drivers/crypto/nx/nx-common-pseries.c b/drivers/crypto/nx/nx-common-pseries.c
-index 9a40fca8a9e6..4a7278464156 100644
---- a/drivers/crypto/nx/nx-common-pseries.c
-+++ b/drivers/crypto/nx/nx-common-pseries.c
-@@ -9,6 +9,7 @@
-  */
- 
- #include <asm/vio.h>
-+#include <asm/hvcall.h>
- #include <asm/vas.h>
- 
- #include "nx-842.h"
-@@ -20,6 +21,30 @@ MODULE_DESCRIPTION("842 H/W Compression driver for IBM Power processors");
- MODULE_ALIAS_CRYPTO("842");
- MODULE_ALIAS_CRYPTO("842-nx");
- 
-+/*
-+ * Coprocessor type specific capabilities from the hypervisor.
-+ */
-+struct hv_nx_ct_caps {
-+	__be64	descriptor;
-+	__be64	req_max_processed_len;	/* Max bytes in one GZIP request */
-+	__be64	min_compress_len;	/* Min compression size in bytes */
-+	__be64	min_decompress_len;	/* Min decompression size in bytes */
-+} __packed __aligned(0x1000);
-+
-+/*
-+ * Coprocessor type specific capabilities.
-+ */
-+struct nx_ct_caps {
-+	char	name[VAS_DESCR_LEN + 1];
-+	u64	descriptor;
-+	u64	req_max_processed_len;	/* Max bytes in one GZIP request */
-+	u64	min_compress_len;	/* Min compression in bytes */
-+	u64	min_decompress_len;	/* Min decompression in bytes */
-+};
-+
-+static u64 caps_feat;
-+static struct nx_ct_caps nx_ct_caps;
-+
- static struct nx842_constraints nx842_pseries_constraints = {
- 	.alignment =	DDE_BUFFER_ALIGN,
- 	.multiple =	DDE_BUFFER_LAST_MULT,
-@@ -1066,6 +1091,66 @@ static void nx842_remove(struct vio_dev *viodev)
- 	kfree(old_devdata);
- }
- 
-+/*
-+ * Get NX capabilities from the hypervisor.
-+ * Only NXGZIP capabilities are provided by the hypersvisor right
-+ * now and these values are available to user space with sysfs.
-+ */
-+static void __init nxct_get_capabilities(void)
-+{
-+	struct hv_vas_all_caps *hv_caps;
-+	struct hv_nx_ct_caps *hv_nxc;
-+	int rc;
-+
-+	hv_caps = kmalloc(sizeof(*hv_caps), GFP_KERNEL);
-+	if (!hv_caps)
-+		return;
-+	/*
-+	 * Get NX overall capabilities with feature type=0
-+	 */
-+	rc = plpar_vas_query_capabilities(H_QUERY_NX_CAPABILITIES, 0,
-+					  (u64)virt_to_phys(hv_caps));
-+	if (rc)
-+		goto out;
-+
-+	caps_feat = be64_to_cpu(hv_caps->feat_type);
-+	/*
-+	 * NX-GZIP feature available
-+	 */
-+	if (caps_feat & VAS_NX_GZIP_FEAT_BIT) {
-+		hv_nxc = kmalloc(sizeof(*hv_nxc), GFP_KERNEL);
-+		if (!hv_nxc)
-+			goto out;
-+		/*
-+		 * Get capabilities for NX-GZIP feature
-+		 */
-+		rc = plpar_vas_query_capabilities(H_QUERY_NX_CAPABILITIES,
-+						  VAS_NX_GZIP_FEAT,
-+						  (u64)virt_to_phys(hv_nxc));
-+	} else {
-+		pr_err("NX-GZIP feature is not available\n");
-+		rc = -EINVAL;
-+	}
-+
-+	if (!rc) {
-+		snprintf(nx_ct_caps.name, VAS_DESCR_LEN + 1, "%.8s",
-+			 (char *)&hv_nxc->descriptor);
-+		nx_ct_caps.descriptor = be64_to_cpu(hv_nxc->descriptor);
-+		nx_ct_caps.req_max_processed_len =
-+				be64_to_cpu(hv_nxc->req_max_processed_len);
-+		nx_ct_caps.min_compress_len =
-+				be64_to_cpu(hv_nxc->min_compress_len);
-+		nx_ct_caps.min_decompress_len =
-+				be64_to_cpu(hv_nxc->min_decompress_len);
-+	} else {
-+		caps_feat = 0;
-+	}
-+
-+	kfree(hv_nxc);
-+out:
-+	kfree(hv_caps);
-+}
-+
- static const struct vio_device_id nx842_vio_driver_ids[] = {
- 	{"ibm,compression-v1", "ibm,compression"},
- 	{"", ""},
-@@ -1093,6 +1178,10 @@ static int __init nx842_pseries_init(void)
- 		return -ENOMEM;
- 
- 	RCU_INIT_POINTER(devdata, new_devdata);
-+	/*
-+	 * Get NX capabilities from the hypervisor.
-+	 */
-+	nxct_get_capabilities();
- 
- 	ret = vio_register_driver(&nx842_vio_driver);
- 	if (ret) {
+v6:
+- Add more length checking when parsing extKeyUsage and EKU's OID blob.
+- Add 'usage' parameter to the comment of pkcs7_validate_trust function.
+
+v5:
+Fixed the wording in module-signing.rst.
+
+v4:
+Fixed the wording in patch description.
+
+v3:
+- Add codeSigning EKU to x509.genkey key generation config.
+- Add openssl command option example for generating CodeSign EKU to
+  module-signing.rst document.
+
+v2:
+Changed the help wording in the Kconfig.
+
+Lee, Chun-Yi (4):
+  X.509: Add CodeSigning extended key usage parsing
+  PKCS#7: Check codeSigning EKU for kernel module and kexec pe
+    verification
+  modsign: Add codeSigning EKU when generating X.509 key generation
+    config
+  Documentation/admin-guide/module-signing.rst: add openssl command
+    option example for CodeSign EKU
+
+ Documentation/admin-guide/module-signing.rst |  6 ++++
+ certs/Makefile                               |  1 +
+ certs/blacklist.c                            |  6 ++--
+ certs/system_keyring.c                       |  4 +--
+ crypto/asymmetric_keys/Kconfig               |  9 ++++++
+ crypto/asymmetric_keys/pkcs7_trust.c         | 43 ++++++++++++++++++++++++++--
+ crypto/asymmetric_keys/x509_cert_parser.c    | 25 ++++++++++++++++
+ include/crypto/pkcs7.h                       |  4 ++-
+ include/crypto/public_key.h                  |  1 +
+ include/keys/system_keyring.h                |  7 +++--
+ include/linux/oid_registry.h                 |  5 ++++
+ 11 files changed, 101 insertions(+), 10 deletions(-)
+
 -- 
-2.18.2
-
+2.16.4
 
