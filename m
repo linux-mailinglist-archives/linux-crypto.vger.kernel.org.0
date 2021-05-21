@@ -2,56 +2,61 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45E738C0F3
-	for <lists+linux-crypto@lfdr.de>; Fri, 21 May 2021 09:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E772238C11B
+	for <lists+linux-crypto@lfdr.de>; Fri, 21 May 2021 09:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236289AbhEUHsd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 21 May 2021 03:48:33 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:55802 "EHLO deadmen.hmeau.com"
+        id S234811AbhEUH5M (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 21 May 2021 03:57:12 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:55850 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231636AbhEUHsc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 21 May 2021 03:48:32 -0400
+        id S231301AbhEUH5L (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 21 May 2021 03:57:11 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1ljzs9-0004N0-Am; Fri, 21 May 2021 15:47:05 +0800
+        id 1lk00a-0004WP-00; Fri, 21 May 2021 15:55:48 +0800
 Received: from herbert by gondobar with local (Exim 4.89)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1ljzs9-0005pM-7x; Fri, 21 May 2021 15:47:05 +0800
-Date:   Fri, 21 May 2021 15:47:05 +0800
+        id 1lk00W-0005qv-MY; Fri, 21 May 2021 15:55:44 +0800
+Date:   Fri, 21 May 2021 15:55:44 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     wangzhou1@hisilicon.com, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v2] crypto: hisilicon - switch to memdup_user_nul()
-Message-ID: <20210521074705.7neeycmydjqb6va4@gondor.apana.org.au>
-References: <1620804439-21392-1-git-send-email-zou_wei@huawei.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH v3 1/7] crypto: handle zero sized AEAD inputs correctly
+Message-ID: <20210521075544.kywxswbfyoauvhmg@gondor.apana.org.au>
+References: <20210512184439.8778-1-ardb@kernel.org>
+ <20210512184439.8778-2-ardb@kernel.org>
+ <YJw01Z3oxwY5Sfpa@gmail.com>
+ <CAMj1kXHofDrzEs4qc8VNCLpyL-Hc4PSg-JXKTckJvfD6qoK78Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1620804439-21392-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <CAMj1kXHofDrzEs4qc8VNCLpyL-Hc4PSg-JXKTckJvfD6qoK78Q@mail.gmail.com>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, May 12, 2021 at 03:27:19PM +0800, Zou Wei wrote:
-> diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-> index ce439a0..83a5d30 100644
-> --- a/drivers/crypto/hisilicon/qm.c
-> +++ b/drivers/crypto/hisilicon/qm.c
-> @@ -1570,17 +1570,10 @@ static ssize_t qm_cmd_write(struct file *filp, const char __user *buffer,
->  	if (count > QM_DBG_WRITE_LEN)
->  		return -ENOSPC;
->  
-> -	cmd_buf = kzalloc(count + 1, GFP_KERNEL);
-> -	if (!cmd_buf)
-> +	cmd_buf = memdup_user_nul(buffer, count);
-> +	if (IS_ERR(cmd_buf))
->  		return -ENOMEM;
+On Wed, May 12, 2021 at 11:24:09PM +0200, Ard Biesheuvel wrote:
+>
+> The difference is that zero sized inputs never make sense for
+> skciphers, but for AEADs, they could occur, even if they are uncommon
+> (the AEAD could have associated data only, and no plain/ciphertext)
 
-You should return the actual error and not ENOMEM.
+I don't see what a zero-sized input has to do with this though.
+When the walk->nbytes is zero, that means that you must never
+call the done function, because the walk state could be in error
+in which case everything would have been freed already and calling
+the done function may potentially cause a double-free.
 
-Thanks,
+I don't understand why in the case of AEAD you cannot structure
+your code such that the done function is not called when nbytes
+is zero.
+
+Cheers,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
