@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB41738D68F
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 May 2021 19:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCCBF38D691
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 May 2021 19:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhEVRCs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 22 May 2021 13:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54834 "EHLO
+        id S231311AbhEVRCy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 22 May 2021 13:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhEVRCs (ORCPT
+        with ESMTP id S231301AbhEVRCv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 22 May 2021 13:02:48 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9415C061574
-        for <linux-crypto@vger.kernel.org>; Sat, 22 May 2021 10:01:20 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id q7so32980029lfr.6
-        for <linux-crypto@vger.kernel.org>; Sat, 22 May 2021 10:01:20 -0700 (PDT)
+        Sat, 22 May 2021 13:02:51 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D73C06174A
+        for <linux-crypto@vger.kernel.org>; Sat, 22 May 2021 10:01:26 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id j10so34280355lfb.12
+        for <linux-crypto@vger.kernel.org>; Sat, 22 May 2021 10:01:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cq6+ozOHxatifJxmjJnhjKtut+46PPMCogrnEz7m7b0=;
-        b=UAVFWis8oSSM6tsabuur7WglLQPrnLt2nHbWJlJ5cssnDGXqj8Z5Yg0krfCbVG1aJe
-         B6bxsqQxP4v+Er2ucGNFdE0z2ettZZlrWu+7k6kJH+P5pkcFErF3JP6fPhQQyXQtlqrV
-         o3QmEKAFAWYJcSd0Qj331nOVS7xOORhqRH1xRtiUXn3DriCx3wckNnuC6rER1iqVocDu
-         DAZFbrlK9hyyfEOT/zRu9CYGy4JrIy0vZPhbkY/24SWDTWo3m5L7CDlIpp6Fpaq6ztcp
-         QkV0TjwWE4IRZuKAd8cAXBgqajoiOV9Oz6qWDKD49LcHcVarnFc0cKwiKyxHUkQVGEi1
-         vuqA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=2cWMWt6l1K/FKK4PMngOirfi0Lo5LlcuDK06p3mrXkw=;
+        b=drlak+cfCEu6nlbXAljLk1Y0mrM5HuORnJowV1Dl3MMY3N0q+zSBNhJRDdKrdatGV5
+         dEPaS7WWn5jejafZ3hJrJv+MPzsMd/VaEcGKSmAaCsT+kt2+8ap3rkkAYu8mphZjQhxt
+         D0adSI+8To4awcpUP7Gv/umf6vrgOYrlsptBJ+0FjGZTb5n5R/L4V+iBr3n3TQvOHO9D
+         xA5tSjPQN4FM8ljKFE6evjGSzMaRjLLNKcXF3scEB8/ZW70SvH+KpjKaFQuDrXEbPVEC
+         K1Xd5TlK1PgWT3Uz3cE7Npaolm5RKrDoTUHjkt4GwFiFF8+/Qv1+K7PH3eTNW5kNx/w/
+         P/tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cq6+ozOHxatifJxmjJnhjKtut+46PPMCogrnEz7m7b0=;
-        b=QIPKKIIU2sd4M9mvtkHAdtIwlpgvH9gnvd2GRsOOSSHUFFZ+RNhH79MZFYKTfis5wg
-         C+NjYz2UK4InXHey/n43YDp23K93uzPUI+GwQ6tjy4VPH//WzDaUuNPaThEl8kXoYsRo
-         qhMY7Px04oI5Fgj3bdUZ86iTMCm05kX42y+kYl89yIbZfINjWF779WBtVhEfQtbOVu2t
-         d8pqFMfhwSbUnmKoTDS7USRytanMGotPVMKaPGHLj5cRgAKrcdYfjC8ELUlDK7HzJZ3K
-         BVFpJBj8VXbCpVBlV67X87tsq8DM3ZFrLqV60XeoC6IGfzMg9Sdr1/pniFu7SX4O1dkT
-         yeMA==
-X-Gm-Message-State: AOAM532OT43Xkfe8Rz3McW2ygZycqf42sG3Kl7EXbj7oijM9rWmc1J39
-        vSLCUnmkhlJEhaDYFH8Sgww55x+C46XSlQ==
-X-Google-Smtp-Source: ABdhPJzG+z9Qjdc+9D2ks76dCLD7hvXbetW6b0VU5Zkz3/r4fD/i3Mllb2JarGZwVahNNNkx1jnVqA==
-X-Received: by 2002:a05:6512:a83:: with SMTP id m3mr5545501lfu.44.1621702878939;
-        Sat, 22 May 2021 10:01:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2cWMWt6l1K/FKK4PMngOirfi0Lo5LlcuDK06p3mrXkw=;
+        b=uH6GEYumH+fJExT4bk9GIKI8adCwA4gFHD0uHYRZziNwELlTXPiWcJuZem17aZ0ARe
+         QIXCh0GWRH5G4bcXPCPka7u44zj4tsxjZMEQa4qx4DGNhuoGF60jXc77Bo2+Jy3a7xqZ
+         keTlbsSSr4KdoXiYdccsS8qVaiop9WsO9VZ3un7rf0oAAdWZ5IA2R8/8MtSQn/qrXUeH
+         gkC+we1/1vWqL/qPafPJ90cKFEJ04XkPiEbAzL61K5B3z+X97SX9gL7TFXow6TadQrHz
+         tLz/iwa8a7kdGQQHCEwy97X9KHfXX/YTwfsgrMJoP7lSCr4wjRfhBUpYgPA9YLZrYGEa
+         zxTA==
+X-Gm-Message-State: AOAM530orFmaYaGulyx8FQRB/3CMQXeDPeN9qW/l59lOS9re4ZpmdXrt
+        leEi1TIb2sl3Ywd+Rk5QBCV1hzz9py+xDg==
+X-Google-Smtp-Source: ABdhPJzVsBkjhvVTSyU21VZiODTytLTnG5QM/grVgTYVEmggqmIyK697G6bd8+FTxTGFRbbokqTfnQ==
+X-Received: by 2002:ac2:533a:: with SMTP id f26mr5810752lfh.424.1621702884294;
+        Sat, 22 May 2021 10:01:24 -0700 (PDT)
 Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
-        by smtp.gmail.com with ESMTPSA id u15sm958870lfs.67.2021.05.22.10.01.18
+        by smtp.gmail.com with ESMTPSA id u15sm958870lfs.67.2021.05.22.10.01.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 May 2021 10:01:18 -0700 (PDT)
+        Sat, 22 May 2021 10:01:24 -0700 (PDT)
 From:   Linus Walleij <linus.walleij@linaro.org>
 To:     linux-crypto@vger.kernel.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
@@ -57,176 +57,138 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Imre Kaloz <kaloz@openwrt.org>,
         Krzysztof Halasa <khalasa@piap.pl>,
         Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 1/3 v3] crypto: ixp4xx: convert to platform driver
-Date:   Sat, 22 May 2021 18:59:11 +0200
-Message-Id: <20210522165913.915100-1-linus.walleij@linaro.org>
+        Linus Walleij <linus.walleij@linaro.org>,
+        devicetree@vger.kernel.org
+Subject: [PATCH 2/3 v3] crypto: ixp4xx: Add DT bindings
+Date:   Sat, 22 May 2021 18:59:12 +0200
+Message-Id: <20210522165913.915100-2-linus.walleij@linaro.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210522165913.915100-1-linus.walleij@linaro.org>
+References: <20210522165913.915100-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
-
-The ixp4xx_crypto driver traditionally registers a bare platform
-device without attaching it to a driver, and detects the hardware
-at module init time by reading an SoC specific hardware register.
-
-Change this to the conventional method of registering the platform
-device from the platform code itself when the device is present,
-turning the module_init/module_exit functions into probe/release
-driver callbacks.
-
-This enables compile-testing as well as potentially having ixp4xx
-coexist with other ARMv5 platforms in the same kernel in the future.
+This adds device tree bindings for the ixp4xx crypto engine.
 
 Cc: Corentin Labbe <clabbe@baylibre.com>
-Tested-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: devicetree@vger.kernel.org
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
 ChangeLog v2->v3:
-- No changes, just resending with the other patches.
+- Use the reg property to set the NPE instance number for
+  the crypto engine.
+- Add address-cells and size-cells to the NPE bindings
+  consequently.
+- Use a patternProperty to match the cryto engine child
+  "crypto@N".
+- Define as crypto@2 in the example.
+- Describe the usage of the queue instance cell for the
+  queue manager phandles.
 ChangeLog v1->v2:
-- Rebase on Corentin's patches in the cryptodev tree
-- Drop the compile test Kconfig, it will not compile for
-  anything not IXP4xx anyway because it needs the NPE and QMGR
-  to be compiled in and those only exist on IXP4xx.
+- Drop the phandle to self, just add an NPE instance number
+  instead.
+- Add the crypto node to the NPE binding.
+- Move the example over to the NPE binding where it appears
+  in context.
 ---
- arch/arm/mach-ixp4xx/common.c  | 26 ++++++++++++++++++++++++
- drivers/crypto/ixp4xx_crypto.c | 37 ++++++++++++----------------------
- 2 files changed, 39 insertions(+), 24 deletions(-)
+ .../bindings/crypto/intel,ixp4xx-crypto.yaml  | 46 +++++++++++++++++++
+ ...ntel,ixp4xx-network-processing-engine.yaml | 21 +++++++++
+ 2 files changed, 67 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/crypto/intel,ixp4xx-crypto.yaml
 
-diff --git a/arch/arm/mach-ixp4xx/common.c b/arch/arm/mach-ixp4xx/common.c
-index 000f672a94c9..007a44412e24 100644
---- a/arch/arm/mach-ixp4xx/common.c
-+++ b/arch/arm/mach-ixp4xx/common.c
-@@ -233,12 +233,38 @@ static struct platform_device *ixp46x_devices[] __initdata = {
- unsigned long ixp4xx_exp_bus_size;
- EXPORT_SYMBOL(ixp4xx_exp_bus_size);
- 
-+static struct platform_device_info ixp_dev_info __initdata = {
-+	.name		= "ixp4xx_crypto",
-+	.id		= 0,
-+	.dma_mask	= DMA_BIT_MASK(32),
-+};
+diff --git a/Documentation/devicetree/bindings/crypto/intel,ixp4xx-crypto.yaml b/Documentation/devicetree/bindings/crypto/intel,ixp4xx-crypto.yaml
+new file mode 100644
+index 000000000000..9df2062e4816
+--- /dev/null
++++ b/Documentation/devicetree/bindings/crypto/intel,ixp4xx-crypto.yaml
+@@ -0,0 +1,46 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2018 Linaro Ltd.
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/crypto/intel,ixp4xx-crypto.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+static int __init ixp_crypto_register(void)
-+{
-+	struct platform_device *pdev;
++title: Intel IXP4xx cryptographic engine
 +
-+	if (!(~(*IXP4XX_EXP_CFG2) & (IXP4XX_FEATURE_HASH |
-+				IXP4XX_FEATURE_AES | IXP4XX_FEATURE_DES))) {
-+		printk(KERN_ERR "ixp_crypto: No HW crypto available\n");
-+		return -ENODEV;
-+	}
++maintainers:
++  - Linus Walleij <linus.walleij@linaro.org>
 +
-+	pdev = platform_device_register_full(&ixp_dev_info);
-+	if (IS_ERR(pdev))
-+		return PTR_ERR(pdev);
++description: |
++  The Intel IXP4xx cryptographic engine makes use of the IXP4xx NPE
++  (Network Processing Engine). Since it is not a device on its own
++  it is defined as a subnode of the NPE, if crypto support is
++  available on the platform.
 +
-+	return 0;
-+}
++properties:
++  compatible:
++    const: intel,ixp4xx-crypto
 +
- void __init ixp4xx_sys_init(void)
- {
- 	ixp4xx_exp_bus_size = SZ_16M;
- 
- 	platform_add_devices(ixp4xx_devices, ARRAY_SIZE(ixp4xx_devices));
- 
-+	if (IS_ENABLED(CONFIG_CRYPTO_DEV_IXP4XX))
-+		ixp_crypto_register();
++  reg:
++    minimum: 0
++    maximum: 3
++    description: instance number to the NPE this crypto engine is using
 +
- 	if (cpu_is_ixp46x()) {
- 		int region;
- 
-diff --git a/drivers/crypto/ixp4xx_crypto.c b/drivers/crypto/ixp4xx_crypto.c
-index b38650b0fea1..76099d6cfff9 100644
---- a/drivers/crypto/ixp4xx_crypto.c
-+++ b/drivers/crypto/ixp4xx_crypto.c
-@@ -229,8 +229,6 @@ static dma_addr_t crypt_phys;
- 
- static int support_aes = 1;
- 
--#define DRIVER_NAME "ixp4xx_crypto"
--
- static struct platform_device *pdev;
- 
- static inline dma_addr_t crypt_virt2phys(struct crypt_ctl *virt)
-@@ -453,11 +451,6 @@ static int init_ixp_crypto(struct device *dev)
- 	int ret = -ENODEV;
- 	u32 msg[2] = { 0, 0 };
- 
--	if (! ( ~(*IXP4XX_EXP_CFG2) & (IXP4XX_FEATURE_HASH |
--				IXP4XX_FEATURE_AES | IXP4XX_FEATURE_DES))) {
--		dev_err(dev, "ixp_crypto: No HW crypto available\n");
--		return ret;
--	}
- 	npe_c = npe_request(NPE_ID);
- 	if (!npe_c)
- 		return ret;
-@@ -1441,26 +1434,17 @@ static struct ixp_aead_alg ixp4xx_aeads[] = {
- 
- #define IXP_POSTFIX "-ixp4xx"
- 
--static const struct platform_device_info ixp_dev_info __initdata = {
--	.name		= DRIVER_NAME,
--	.id		= 0,
--	.dma_mask	= DMA_BIT_MASK(32),
--};
--
--static int __init ixp_module_init(void)
-+static int ixp_crypto_probe(struct platform_device *_pdev)
- {
- 	int num = ARRAY_SIZE(ixp4xx_algos);
- 	int i, err;
- 
--	pdev = platform_device_register_full(&ixp_dev_info);
--	if (IS_ERR(pdev))
--		return PTR_ERR(pdev);
-+	pdev = _pdev;
- 
- 	err = init_ixp_crypto(&pdev->dev);
--	if (err) {
--		platform_device_unregister(pdev);
-+	if (err)
- 		return err;
--	}
++  queue-rx:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    maxItems: 1
++    description: phandle to the RX queue on the NPE, the cell describing
++      the queue instance to be used.
 +
- 	for (i = 0; i < num; i++) {
- 		struct skcipher_alg *cra = &ixp4xx_algos[i].crypto;
- 
-@@ -1531,7 +1515,7 @@ static int __init ixp_module_init(void)
- 	return 0;
- }
- 
--static void __exit ixp_module_exit(void)
-+static int ixp_crypto_remove(struct platform_device *pdev)
- {
- 	int num = ARRAY_SIZE(ixp4xx_algos);
- 	int i;
-@@ -1546,11 +1530,16 @@ static void __exit ixp_module_exit(void)
- 			crypto_unregister_skcipher(&ixp4xx_algos[i].crypto);
- 	}
- 	release_ixp_crypto(&pdev->dev);
--	platform_device_unregister(pdev);
++  queue-txready:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    maxItems: 1
++    description: phandle to the TX READY queue on the NPE, the cell describing
++      the queue instance to be used.
 +
-+	return 0;
- }
++required:
++  - compatible
++  - reg
++  - queue-rx
++  - queue-txready
++
++additionalProperties: false
+diff --git a/Documentation/devicetree/bindings/firmware/intel,ixp4xx-network-processing-engine.yaml b/Documentation/devicetree/bindings/firmware/intel,ixp4xx-network-processing-engine.yaml
+index 1bd2870c3a9c..8b2eaf835b66 100644
+--- a/Documentation/devicetree/bindings/firmware/intel,ixp4xx-network-processing-engine.yaml
++++ b/Documentation/devicetree/bindings/firmware/intel,ixp4xx-network-processing-engine.yaml
+@@ -30,6 +30,18 @@ properties:
+       - description: NPE1 register range
+       - description: NPE2 register range
  
--module_init(ixp_module_init);
--module_exit(ixp_module_exit);
-+static struct platform_driver ixp_crypto_driver = {
-+	.probe = ixp_crypto_probe,
-+	.remove = ixp_crypto_remove,
-+	.driver = { .name = "ixp4xx_crypto" },
-+};
-+module_platform_driver(ixp_crypto_driver);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Christian Hohnstaedt <chohnstaedt@innominate.com>");
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++patternProperties:
++  "^crypto@[0-7]+$":
++    $ref: /schemas/crypto/intel,ixp4xx-crypto.yaml#
++    type: object
++    description: Optional node for the embedded crypto engine
++
+ required:
+   - compatible
+   - reg
+@@ -41,5 +53,14 @@ examples:
+     npe@c8006000 {
+          compatible = "intel,ixp4xx-network-processing-engine";
+          reg = <0xc8006000 0x1000>, <0xc8007000 0x1000>, <0xc8008000 0x1000>;
++         #address-cells = <1>;
++         #size-cells = <0>;
++
++         crypto@2 {
++             compatible = "intel,ixp4xx-crypto";
++             reg = <2>;
++             queue-rx = <&qmgr 30>;
++             queue-txready = <&qmgr 29>;
++         };
+     };
+ ...
 -- 
 2.31.1
 
