@@ -2,84 +2,92 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038D338FFE1
-	for <lists+linux-crypto@lfdr.de>; Tue, 25 May 2021 13:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EA338FFFE
+	for <lists+linux-crypto@lfdr.de>; Tue, 25 May 2021 13:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbhEYLZc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 25 May 2021 07:25:32 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48540 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231128AbhEYLZc (ORCPT
+        id S230109AbhEYLcL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 25 May 2021 07:32:11 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:44886 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231321AbhEYLcI (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 25 May 2021 07:25:32 -0400
-Received: from mail-ua1-f70.google.com ([209.85.222.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1llVAH-0005k2-TZ
-        for linux-crypto@vger.kernel.org; Tue, 25 May 2021 11:24:01 +0000
-Received: by mail-ua1-f70.google.com with SMTP id x11-20020a9f2f0b0000b029020331a0ba74so12893062uaj.15
-        for <linux-crypto@vger.kernel.org>; Tue, 25 May 2021 04:24:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cKFEGWGjPKFTHbLCEq/FcmjCObs9nvntIcJ76aA6+yU=;
-        b=C3N9l3UhNoyPlY6QPsxBVQp7gghVrVn7gb68A3kKcp7mrgUAVAiBtXyFuYZzJ0UtQ+
-         WK/w3J2bjiyjFhWMOyIMaVKvMiA02leSoIhW0cvM7Ngrk7BiJfoWYWUjR0n5T3uctBFK
-         tQkpO8dPo0PFceuGWeMZqjY5Zp2rkYr5H/iwYxXUZHa7C2gnybA9DvErxxn9WMk2+gwE
-         MObUm19OLk+piEQv/kpfyoJfI2lmGBPJeNuq3uXozINKDsuRvjpH7dWDZ2mKrjV33RLS
-         MSrLck0g1OdlKb1Dby7fwTgF6TKBjlu6QGVIFEmr00P44vmw0E4lgMAwLP2Zt2TWjnod
-         IRoQ==
-X-Gm-Message-State: AOAM5313rH5M0rMv12Hc3F3T1icZfNES5e4Qnujc58/K/h7whvCvadwf
-        uaYEvP6UlQAwsrubQJ5ELivdji8O2C6mQbZwqgaznI2N9l8qbya1OjxygOG3f5XjogtRPrUSEmU
-        SRh6MS2KA0SjQP7VBO+WSTbOiZx8jTbd0nJOFnUYgdg==
-X-Received: by 2002:a1f:2d10:: with SMTP id t16mr24846432vkt.20.1621941840755;
-        Tue, 25 May 2021 04:24:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxKohWztINz3BHc6DY3l8WbUf9DL9+UvvtFDqk6elvIA3QHFY7rcn0DZHytmH5OC97CQv5/Bg==
-X-Received: by 2002:a1f:2d10:: with SMTP id t16mr24846423vkt.20.1621941840580;
-        Tue, 25 May 2021 04:24:00 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.3])
-        by smtp.gmail.com with ESMTPSA id a201sm1452649vke.21.2021.05.25.04.23.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 04:24:00 -0700 (PDT)
-Subject: Re: [PATCH v2] hwrng: exynos: Use pm_runtime_resume_and_get() to
- replace open coding
-To:     Tian Tao <tiantao6@hisilicon.com>, l.stelmach@samsung.com
-Cc:     linux-samsung-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <1621857218-28590-1-git-send-email-tiantao6@hisilicon.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <3f0117f8-a96a-08c5-f67b-ca4d6c7a22b3@canonical.com>
-Date:   Tue, 25 May 2021 07:23:42 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 25 May 2021 07:32:08 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PBUPU6028126;
+        Tue, 25 May 2021 04:30:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=mAkMu1+TVLOV+6VgA8/k5DOXUGSoGAtVt3S5a0Ph3Gc=;
+ b=JCSWAU0xR+VCoztzKA7gVmvsMyxUxr4DKwuqSl+Hai+ceTAIMfhbVEygDceSc5btzfnl
+ KY8GMMUrQRkd/Or8xP/d7V6LqpbggxHj43Ww2qgFSeb/EYi0mSc5Cv8N5MeFq165WI4a
+ MMm19CSwjhJQwLFo/U+1p+mEs0O7/fRLZxW3av+kZBpHlxDXeSOLrk3Zr5cO/SIj4ltF
+ BOyxidvgaAEULunKrRtTG3eCioHUPMnZ9OVbLDgsQdjtcIM4JKDGzdfYYg5Iw2m2ThXC
+ muDMeUZEm5BELjL0e0vyk1sfC7rKb+FXFoiEx8PRcGgpW24y7f4SeURZKKnw5HrhO69B OA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 38s0dw801h-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 04:30:29 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
+ 2021 04:27:43 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 25 May 2021 04:27:43 -0700
+Received: from hyd1schalla-dt.caveonetworks.com.com (unknown [10.29.8.39])
+        by maili.marvell.com (Postfix) with ESMTP id 9D25A3F703F;
+        Tue, 25 May 2021 04:27:41 -0700 (PDT)
+From:   Srujana Challa <schalla@marvell.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
+        <arno@natisbad.org>, <bbrezillon@kernel.org>, <jerinj@marvell.com>,
+        "Srujana Challa" <schalla@marvell.com>
+Subject: [PATCH 0/4] Add support for Marvell CN10K CPT block
+Date:   Tue, 25 May 2021 16:57:14 +0530
+Message-ID: <20210525112718.18288-1-schalla@marvell.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <1621857218-28590-1-git-send-email-tiantao6@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: PcO-DROIe4dSq-MRGxO4lFcmpVpm5U0Y
+X-Proofpoint-ORIG-GUID: PcO-DROIe4dSq-MRGxO4lFcmpVpm5U0Y
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-25_06:2021-05-25,2021-05-25 signatures=0
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 24/05/2021 07:53, Tian Tao wrote:
-> use pm_runtime_resume_and_get() to replace pm_runtime_get_sync and
-> pm_runtime_put_noidle. this change is just to simplify the code, no
-> actual functional changes.
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
-> v2: drop unnecessary change about if condition.
-> ---
->  drivers/char/hw_random/exynos-trng.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
+The current CPT driver supports OcteonTX2 silicon variants.
+The same OcteonTX2 Resource Virtualization Unit(RVU) is
+carried forward to the next-gen silicon ie OcteonTX3(CN10K),
+with some changes and feature enhancements.
 
+This patch series adds support for CN10K silicon.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Srujana Challa (4):
+  crypto: octeontx2: Add mailbox support for CN10K
+  crypto: octeontx2: add support to map LMTST region for CN10K
+  crypto: octeontx2: add support for CPT operations on CN10K
+  crypto: octeontx2: enable and handle ME interrupts
 
+ drivers/crypto/marvell/octeontx2/Makefile     |  13 +-
+ drivers/crypto/marvell/octeontx2/cn10k_cpt.c  |  93 ++++++++++
+ drivers/crypto/marvell/octeontx2/cn10k_cpt.h  |  36 ++++
+ .../marvell/octeontx2/otx2_cpt_common.h       |  23 +++
+ .../marvell/octeontx2/otx2_cpt_hw_types.h     |  16 +-
+ drivers/crypto/marvell/octeontx2/otx2_cptlf.c |   9 +-
+ drivers/crypto/marvell/octeontx2/otx2_cptlf.h |  10 ++
+ drivers/crypto/marvell/octeontx2/otx2_cptpf.h |   1 +
+ .../marvell/octeontx2/otx2_cptpf_main.c       | 160 +++++++++++++-----
+ .../marvell/octeontx2/otx2_cptpf_ucode.c      |  32 +++-
+ .../marvell/octeontx2/otx2_cptpf_ucode.h      |   8 +-
+ drivers/crypto/marvell/octeontx2/otx2_cptvf.h |   3 +
+ .../marvell/octeontx2/otx2_cptvf_main.c       |  49 ++++--
+ .../marvell/octeontx2/otx2_cptvf_mbox.c       |  43 +++++
+ .../marvell/octeontx2/otx2_cptvf_reqmgr.c     |  17 +-
+ 15 files changed, 438 insertions(+), 75 deletions(-)
+ create mode 100644 drivers/crypto/marvell/octeontx2/cn10k_cpt.c
+ create mode 100644 drivers/crypto/marvell/octeontx2/cn10k_cpt.h
 
-Best regards,
-Krzysztof
+-- 
+2.29.0
+
