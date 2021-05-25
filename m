@@ -2,260 +2,410 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E7638FFFD
-	for <lists+linux-crypto@lfdr.de>; Tue, 25 May 2021 13:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFBC9390387
+	for <lists+linux-crypto@lfdr.de>; Tue, 25 May 2021 16:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbhEYLcL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 25 May 2021 07:32:11 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:14556 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230414AbhEYLcI (ORCPT
+        id S233555AbhEYOKo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 25 May 2021 10:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233776AbhEYOKm (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 25 May 2021 07:32:08 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PBUPU7028126;
-        Tue, 25 May 2021 04:30:29 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=D3yREjf6iQdaIRqhI0riw2nDFyNV+IF6m/MM/d+O+fE=;
- b=XWYqbok8Hlix+QYVgU1z/N8C+MSzDgZ1GLlNMUZRebulrfW+AxK63bqMpLPqRkIdhi3r
- wcYKYxw985DrgijlO3VgdxHLYxhuLQCgYdXp+GylLhN7CfsaqJ9A4AKWbPOVPIEQF7nO
- ZO1BXKd3es/y8FmfqEHJDAeLXvUN173CaiJ9xGAi/pstoqLcWwx9wu9OGyrAEbX3haT6
- Xax6FsPNu5CS/2OG0ryu6EEnUu4HwX1Dhy5/FQ651+Htppt0bvcZGPLEUysP/w0+WGi3
- M+a9tr7SbMQgZwZgfoCMmDRCLSZRsVx3OFkWYOdozjpRMe5OpNRMBAfac2heoc4NMFOj xQ== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 38s0dw801h-9
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 04:30:29 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
- 2021 04:28:02 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 25 May 2021 04:28:02 -0700
-Received: from hyd1schalla-dt.caveonetworks.com.com (unknown [10.29.8.39])
-        by maili.marvell.com (Postfix) with ESMTP id B2AFD3F7040;
-        Tue, 25 May 2021 04:27:59 -0700 (PDT)
-From:   Srujana Challa <schalla@marvell.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
-        <arno@natisbad.org>, <bbrezillon@kernel.org>, <jerinj@marvell.com>,
-        "Srujana Challa" <schalla@marvell.com>
-Subject: [PATCH 4/4] crypto: octeontx2: enable and handle ME interrupts
-Date:   Tue, 25 May 2021 16:57:18 +0530
-Message-ID: <20210525112718.18288-5-schalla@marvell.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20210525112718.18288-1-schalla@marvell.com>
-References: <20210525112718.18288-1-schalla@marvell.com>
+        Tue, 25 May 2021 10:10:42 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6C2C06138A;
+        Tue, 25 May 2021 07:09:11 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id e22so7095166pgv.10;
+        Tue, 25 May 2021 07:09:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=/e/U7fJSKZcxIXMCK9KEbqze3faq7Ma38vE17vz3Eew=;
+        b=sZyV1JRgqBTJUzU9kC79SFBnSi59ha8SrAbANym0TkB3kwzAzUc4S6bPzMnBhuABhX
+         E5oycWiHYtUwHjgvF/OWKm0lALmh3qmvumn+xt5StR+ctBuL7Udv9fhlmaf9Bo1Hd386
+         KtsErfwpv4A8o2dNYPAR73g3dfIgGSE5FfmNoWZZIIevrbg/2dHCz68guIypXrAfUeCX
+         wlW8u1+/p7N4JYanwLviOIFNrXs+gNHa3/r12zi5DXF5XEmGUWtcCxeJ/Y7o3Ly8QMB+
+         zm7hC0RG5X+p3JWgQWFujyEmGhK/3GZn3vQ4vYMb91CH2xXS5aEYiI/L9kptF07f47Ol
+         pwxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=/e/U7fJSKZcxIXMCK9KEbqze3faq7Ma38vE17vz3Eew=;
+        b=BpFYUYQwZUWx+Ow+q18ERtlKrCOKyJ1G4e6SM0oQcR98ZOFpXh1Ty3P/0KD9q2hREL
+         +fqdRmtaJKYw+SIAHLSqEzNCiLyaazPOW4/Z/e7WXwP+orsL1qsboy9RfhpobzmbRIfL
+         XvgoxJ+ihiMWNkoZAvGEyPttdk9IkLDND9xd5U+12KySEij5/2tZN3GhcUeDy49SnS7/
+         kD1wOgmQjkjCiHJNNPnD2fvUiQORoFYxT8iKjzm3rUAxrJ8+dAcC3FTTu5O4NEIo74k1
+         l0vxK+h1vXPv2s8FMVo9kbwCviqvVHSYlLjuQQ5PqWCVz8A8lFnOx7eCFPrUtjxmq6Pg
+         Fyxg==
+X-Gm-Message-State: AOAM533rGJf0aVkFG9T/P8wINWtkmk/qBmeyhxiR+zoH+vzc6ajrTLM8
+        jtndDFm/oyUrpz3fuiHmWOQFZPuNyCm/+w==
+X-Google-Smtp-Source: ABdhPJyYt+R+UVgIkdhTMizVfpi6Z/QOUz982iqTjZ2WyVI1eHeZT7XbKEJqfFVXxpIBNeub/Kr4qw==
+X-Received: by 2002:a05:6a00:a:b029:2e0:d1b:59d6 with SMTP id h10-20020a056a00000ab02902e00d1b59d6mr30310027pfk.27.1621951750960;
+        Tue, 25 May 2021 07:09:10 -0700 (PDT)
+Received: from localhost ([106.193.2.10])
+        by smtp.gmail.com with ESMTPSA id h24sm14090798pfn.180.2021.05.25.07.09.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 25 May 2021 07:09:10 -0700 (PDT)
+Date:   Tue, 25 May 2021 19:39:03 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     herbert@gondor.apana.org.au
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers: crypto: talitos.c: Replace space with tabs
+Message-ID: <20210525140903.nqj5rdohduzemm4l@kewl-virtual-machine>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: zkcnEQd_L_Bx8-Eo4zh0bI17XHnH0s5W
-X-Proofpoint-ORIG-GUID: zkcnEQd_L_Bx8-Eo4zh0bI17XHnH0s5W
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-25_06:2021-05-25,2021-05-25 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Adds master enable (ME) interrupt handler in PF. Upon
-receiving ME interrupt for a VF, PF clears it's transaction
-pending bit.
+Tabs have been used instead of spaces for indentation
+This is done to maintain code uniformity(LINDENT).
 
-Signed-off-by: Srujana Challa <schalla@marvell.com>
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
 ---
- .../marvell/octeontx2/otx2_cptpf_main.c       | 118 ++++++++++++++----
- 1 file changed, 95 insertions(+), 23 deletions(-)
+ drivers/crypto/talitos.c | 198 +++++++++++++++++++--------------------
+ 1 file changed, 99 insertions(+), 99 deletions(-)
 
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
-index 1fb04f9bb7ac..146a55ac4b9b 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
-@@ -63,45 +63,66 @@ static void cptpf_disable_vfpf_mbox_intr(struct otx2_cptpf_dev *cptpf,
- 	}
- }
- 
--static void cptpf_enable_vf_flr_intrs(struct otx2_cptpf_dev *cptpf)
-+static void cptpf_enable_vf_flr_me_intrs(struct otx2_cptpf_dev *cptpf,
-+					 int num_vfs)
- {
--	/* Clear interrupt if any */
-+	/* Clear FLR interrupt if any */
- 	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0, RVU_PF_VFFLR_INTX(0),
--			~0x0ULL);
--	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0, RVU_PF_VFFLR_INTX(1),
--			~0x0ULL);
-+			 INTR_MASK(num_vfs));
- 
- 	/* Enable VF FLR interrupts */
- 	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0,
--			 RVU_PF_VFFLR_INT_ENA_W1SX(0), ~0x0ULL);
-+			 RVU_PF_VFFLR_INT_ENA_W1SX(0), INTR_MASK(num_vfs));
-+	/* Clear ME interrupt if any */
-+	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0, RVU_PF_VFME_INTX(0),
-+			 INTR_MASK(num_vfs));
-+	/* Enable VF ME interrupts */
-+	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0,
-+			 RVU_PF_VFME_INT_ENA_W1SX(0), INTR_MASK(num_vfs));
-+
-+	if (num_vfs <= 64)
-+		return;
-+
-+	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0, RVU_PF_VFFLR_INTX(1),
-+			 INTR_MASK(num_vfs - 64));
- 	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0,
--			 RVU_PF_VFFLR_INT_ENA_W1SX(1), ~0x0ULL);
-+			 RVU_PF_VFFLR_INT_ENA_W1SX(1), INTR_MASK(num_vfs - 64));
-+
-+	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0, RVU_PF_VFME_INTX(1),
-+			 INTR_MASK(num_vfs - 64));
-+	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0,
-+			 RVU_PF_VFME_INT_ENA_W1SX(1), INTR_MASK(num_vfs - 64));
- }
- 
--static void cptpf_disable_vf_flr_intrs(struct otx2_cptpf_dev *cptpf,
-+static void cptpf_disable_vf_flr_me_intrs(struct otx2_cptpf_dev *cptpf,
- 				       int num_vfs)
- {
- 	int vector;
- 
- 	/* Disable VF FLR interrupts */
- 	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0,
--			 RVU_PF_VFFLR_INT_ENA_W1CX(0), ~0x0ULL);
-+			 RVU_PF_VFFLR_INT_ENA_W1CX(0), INTR_MASK(num_vfs));
-+	vector = pci_irq_vector(cptpf->pdev, RVU_PF_INT_VEC_VFFLR0);
-+	free_irq(vector, cptpf);
-+
-+	/* Disable VF ME interrupts */
- 	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0,
--			 RVU_PF_VFFLR_INT_ENA_W1CX(1), ~0x0ULL);
-+			 RVU_PF_VFME_INT_ENA_W1CX(0), INTR_MASK(num_vfs));
-+	vector = pci_irq_vector(cptpf->pdev, RVU_PF_INT_VEC_VFME0);
-+	free_irq(vector, cptpf);
- 
--	/* Clear interrupt if any */
--	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0, RVU_PF_VFFLR_INTX(0),
--			 ~0x0ULL);
--	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0, RVU_PF_VFFLR_INTX(1),
--			 ~0x0ULL);
-+	if (num_vfs <= 64)
-+		return;
- 
--	vector = pci_irq_vector(cptpf->pdev, RVU_PF_INT_VEC_VFFLR0);
-+	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0,
-+			 RVU_PF_VFFLR_INT_ENA_W1CX(1), INTR_MASK(num_vfs - 64));
-+	vector = pci_irq_vector(cptpf->pdev, RVU_PF_INT_VEC_VFFLR1);
- 	free_irq(vector, cptpf);
- 
--	if (num_vfs > 64) {
--		vector = pci_irq_vector(cptpf->pdev, RVU_PF_INT_VEC_VFFLR1);
--		free_irq(vector, cptpf);
--	}
-+	otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0,
-+			 RVU_PF_VFME_INT_ENA_W1CX(1), INTR_MASK(num_vfs - 64));
-+	vector = pci_irq_vector(cptpf->pdev, RVU_PF_INT_VEC_VFME1);
-+	free_irq(vector, cptpf);
- }
- 
- static void cptpf_flr_wq_handler(struct work_struct *work)
-@@ -173,11 +194,38 @@ static irqreturn_t cptpf_vf_flr_intr(int __always_unused irq, void *arg)
- 	return IRQ_HANDLED;
- }
- 
-+static irqreturn_t cptpf_vf_me_intr(int __always_unused irq, void *arg)
-+{
-+	struct otx2_cptpf_dev *cptpf = arg;
-+	int reg, vf, num_reg = 1;
-+	u64 intr;
-+
-+	if (cptpf->max_vfs > 64)
-+		num_reg = 2;
-+
-+	for (reg = 0; reg < num_reg; reg++) {
-+		intr = otx2_cpt_read64(cptpf->reg_base, BLKADDR_RVUM, 0,
-+				       RVU_PF_VFME_INTX(reg));
-+		if (!intr)
-+			continue;
-+		for (vf = 0; vf < 64; vf++) {
-+			if (!(intr & BIT_ULL(vf)))
-+				continue;
-+			otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0,
-+					 RVU_PF_VFTRPENDX(reg), BIT_ULL(vf));
-+			/* Clear interrupt */
-+			otx2_cpt_write64(cptpf->reg_base, BLKADDR_RVUM, 0,
-+					 RVU_PF_VFME_INTX(reg), BIT_ULL(vf));
-+		}
-+	}
-+	return IRQ_HANDLED;
-+}
-+
- static void cptpf_unregister_vfpf_intr(struct otx2_cptpf_dev *cptpf,
- 				       int num_vfs)
- {
- 	cptpf_disable_vfpf_mbox_intr(cptpf, num_vfs);
--	cptpf_disable_vf_flr_intrs(cptpf, num_vfs);
-+	cptpf_disable_vf_flr_me_intrs(cptpf, num_vfs);
- }
- 
- static int cptpf_register_vfpf_intr(struct otx2_cptpf_dev *cptpf, int num_vfs)
-@@ -203,6 +251,15 @@ static int cptpf_register_vfpf_intr(struct otx2_cptpf_dev *cptpf, int num_vfs)
- 			"IRQ registration failed for VFFLR0 irq\n");
- 		goto free_mbox0_irq;
- 	}
-+	vector = pci_irq_vector(pdev, RVU_PF_INT_VEC_VFME0);
-+	/* Register VF ME interrupt handler */
-+	ret = request_irq(vector, cptpf_vf_me_intr, 0, "CPTPF ME0", cptpf);
-+	if (ret) {
-+		dev_err(dev,
-+			"IRQ registration failed for PFVF mbox0 irq\n");
-+		goto free_flr0_irq;
-+	}
-+
- 	if (num_vfs > 64) {
- 		vector = pci_irq_vector(pdev, RVU_PF_INT_VEC_VFPF_MBOX1);
- 		ret = request_irq(vector, otx2_cptpf_vfpf_mbox_intr, 0,
-@@ -210,7 +267,7 @@ static int cptpf_register_vfpf_intr(struct otx2_cptpf_dev *cptpf, int num_vfs)
- 		if (ret) {
- 			dev_err(dev,
- 				"IRQ registration failed for PFVF mbox1 irq\n");
--			goto free_flr0_irq;
-+			goto free_me0_irq;
- 		}
- 		vector = pci_irq_vector(pdev, RVU_PF_INT_VEC_VFFLR1);
- 		/* Register VF FLR interrupt handler */
-@@ -221,15 +278,30 @@ static int cptpf_register_vfpf_intr(struct otx2_cptpf_dev *cptpf, int num_vfs)
- 				"IRQ registration failed for VFFLR1 irq\n");
- 			goto free_mbox1_irq;
- 		}
-+		vector = pci_irq_vector(pdev, RVU_PF_INT_VEC_VFME1);
-+		/* Register VF FLR interrupt handler */
-+		ret = request_irq(vector, cptpf_vf_me_intr, 0, "CPTPF ME1",
-+				  cptpf);
-+		if (ret) {
-+			dev_err(dev,
-+				"IRQ registration failed for VFFLR1 irq\n");
-+			goto free_flr1_irq;
-+		}
- 	}
- 	cptpf_enable_vfpf_mbox_intr(cptpf, num_vfs);
--	cptpf_enable_vf_flr_intrs(cptpf);
-+	cptpf_enable_vf_flr_me_intrs(cptpf, num_vfs);
+diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
+index 25c9f825b8b5..e40f78ec8c4b 100644
+--- a/drivers/crypto/talitos.c
++++ b/drivers/crypto/talitos.c
+@@ -174,7 +174,7 @@ static int reset_channel(struct device *dev, int ch)
+ 	/* and ICCR writeback, if available */
+ 	if (priv->features & TALITOS_FTR_HW_AUTH_CHECK)
+ 		setbits32(priv->chan[ch].reg + TALITOS_CCCR_LO,
+-		          TALITOS_CCCR_LO_IWSE);
++				TALITOS_CCCR_LO_IWSE);
  
  	return 0;
+ }
+@@ -249,7 +249,7 @@ static int init_device(struct device *dev)
+ 	/* disable integrity check error interrupts (use writeback instead) */
+ 	if (priv->features & TALITOS_FTR_HW_AUTH_CHECK)
+ 		setbits32(priv->reg_mdeu + TALITOS_EUICR_LO,
+-		          TALITOS_MDEUICR_LO_ICE);
++				TALITOS_MDEUICR_LO_ICE);
  
-+free_flr1_irq:
-+	vector = pci_irq_vector(pdev, RVU_PF_INT_VEC_VFFLR1);
-+	free_irq(vector, cptpf);
- free_mbox1_irq:
- 	vector = pci_irq_vector(pdev, RVU_PF_INT_VEC_VFPF_MBOX1);
- 	free_irq(vector, cptpf);
-+free_me0_irq:
-+	vector = pci_irq_vector(pdev, RVU_PF_INT_VEC_VFME0);
-+	free_irq(vector, cptpf);
- free_flr0_irq:
- 	vector = pci_irq_vector(pdev, RVU_PF_INT_VEC_VFFLR0);
- 	free_irq(vector, cptpf);
+ 	return 0;
+ }
+@@ -2276,12 +2276,12 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.maxauthsize = SHA1_DIGEST_SIZE,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+-			             DESC_HDR_SEL0_AESU |
+-		                     DESC_HDR_MODE0_AESU_CBC |
+-		                     DESC_HDR_SEL1_MDEUA |
+-		                     DESC_HDR_MODE1_MDEU_INIT |
+-		                     DESC_HDR_MODE1_MDEU_PAD |
+-		                     DESC_HDR_MODE1_MDEU_SHA1_HMAC,
++			DESC_HDR_SEL0_AESU |
++			DESC_HDR_MODE0_AESU_CBC |
++			DESC_HDR_SEL1_MDEUA |
++			DESC_HDR_MODE1_MDEU_INIT |
++			DESC_HDR_MODE1_MDEU_PAD |
++			DESC_HDR_MODE1_MDEU_SHA1_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+@@ -2321,13 +2321,13 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.setkey = aead_des3_setkey,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+-			             DESC_HDR_SEL0_DEU |
+-		                     DESC_HDR_MODE0_DEU_CBC |
+-		                     DESC_HDR_MODE0_DEU_3DES |
+-		                     DESC_HDR_SEL1_MDEUA |
+-		                     DESC_HDR_MODE1_MDEU_INIT |
+-		                     DESC_HDR_MODE1_MDEU_PAD |
+-		                     DESC_HDR_MODE1_MDEU_SHA1_HMAC,
++					DESC_HDR_SEL0_DEU |
++					DESC_HDR_MODE0_DEU_CBC |
++					DESC_HDR_MODE0_DEU_3DES |
++					DESC_HDR_SEL1_MDEUA |
++					DESC_HDR_MODE1_MDEU_INIT |
++					DESC_HDR_MODE1_MDEU_PAD |
++					DESC_HDR_MODE1_MDEU_SHA1_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+@@ -2413,13 +2413,13 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.setkey = aead_des3_setkey,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+-			             DESC_HDR_SEL0_DEU |
+-		                     DESC_HDR_MODE0_DEU_CBC |
+-		                     DESC_HDR_MODE0_DEU_3DES |
+-		                     DESC_HDR_SEL1_MDEUA |
+-		                     DESC_HDR_MODE1_MDEU_INIT |
+-		                     DESC_HDR_MODE1_MDEU_PAD |
+-		                     DESC_HDR_MODE1_MDEU_SHA224_HMAC,
++					DESC_HDR_SEL0_DEU |
++					DESC_HDR_MODE0_DEU_CBC |
++					DESC_HDR_MODE0_DEU_3DES |
++					DESC_HDR_SEL1_MDEUA |
++					DESC_HDR_MODE1_MDEU_INIT |
++					DESC_HDR_MODE1_MDEU_PAD |
++					DESC_HDR_MODE1_MDEU_SHA224_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+@@ -2438,13 +2438,13 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.setkey = aead_des3_setkey,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_HMAC_SNOOP_NO_AFEU |
+-				     DESC_HDR_SEL0_DEU |
+-				     DESC_HDR_MODE0_DEU_CBC |
+-				     DESC_HDR_MODE0_DEU_3DES |
+-				     DESC_HDR_SEL1_MDEUA |
+-				     DESC_HDR_MODE1_MDEU_INIT |
+-				     DESC_HDR_MODE1_MDEU_PAD |
+-				     DESC_HDR_MODE1_MDEU_SHA224_HMAC,
++					DESC_HDR_SEL0_DEU |
++					DESC_HDR_MODE0_DEU_CBC |
++					DESC_HDR_MODE0_DEU_3DES |
++					DESC_HDR_SEL1_MDEUA |
++					DESC_HDR_MODE1_MDEU_INIT |
++					DESC_HDR_MODE1_MDEU_PAD |
++					DESC_HDR_MODE1_MDEU_SHA224_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.alg.aead = {
+@@ -2460,12 +2460,12 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.maxauthsize = SHA256_DIGEST_SIZE,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+-			             DESC_HDR_SEL0_AESU |
+-		                     DESC_HDR_MODE0_AESU_CBC |
+-		                     DESC_HDR_SEL1_MDEUA |
+-		                     DESC_HDR_MODE1_MDEU_INIT |
+-		                     DESC_HDR_MODE1_MDEU_PAD |
+-		                     DESC_HDR_MODE1_MDEU_SHA256_HMAC,
++					DESC_HDR_SEL0_AESU |
++					DESC_HDR_MODE0_AESU_CBC |
++					DESC_HDR_SEL1_MDEUA |
++					DESC_HDR_MODE1_MDEU_INIT |
++					DESC_HDR_MODE1_MDEU_PAD |
++					DESC_HDR_MODE1_MDEU_SHA256_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+@@ -2505,13 +2505,13 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.setkey = aead_des3_setkey,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+-			             DESC_HDR_SEL0_DEU |
+-		                     DESC_HDR_MODE0_DEU_CBC |
+-		                     DESC_HDR_MODE0_DEU_3DES |
+-		                     DESC_HDR_SEL1_MDEUA |
+-		                     DESC_HDR_MODE1_MDEU_INIT |
+-		                     DESC_HDR_MODE1_MDEU_PAD |
+-		                     DESC_HDR_MODE1_MDEU_SHA256_HMAC,
++					DESC_HDR_SEL0_DEU |
++					DESC_HDR_MODE0_DEU_CBC |
++					DESC_HDR_MODE0_DEU_3DES |
++					DESC_HDR_SEL1_MDEUA |
++					DESC_HDR_MODE1_MDEU_INIT |
++					DESC_HDR_MODE1_MDEU_PAD |
++					DESC_HDR_MODE1_MDEU_SHA256_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+@@ -2530,13 +2530,13 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.setkey = aead_des3_setkey,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_HMAC_SNOOP_NO_AFEU |
+-				     DESC_HDR_SEL0_DEU |
+-				     DESC_HDR_MODE0_DEU_CBC |
+-				     DESC_HDR_MODE0_DEU_3DES |
+-				     DESC_HDR_SEL1_MDEUA |
+-				     DESC_HDR_MODE1_MDEU_INIT |
+-				     DESC_HDR_MODE1_MDEU_PAD |
+-				     DESC_HDR_MODE1_MDEU_SHA256_HMAC,
++					DESC_HDR_SEL0_DEU |
++					DESC_HDR_MODE0_DEU_CBC |
++					DESC_HDR_MODE0_DEU_3DES |
++					DESC_HDR_SEL1_MDEUA |
++					DESC_HDR_MODE1_MDEU_INIT |
++					DESC_HDR_MODE1_MDEU_PAD |
++					DESC_HDR_MODE1_MDEU_SHA256_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.alg.aead = {
+@@ -2552,12 +2552,12 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.maxauthsize = SHA384_DIGEST_SIZE,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+-			             DESC_HDR_SEL0_AESU |
+-		                     DESC_HDR_MODE0_AESU_CBC |
+-		                     DESC_HDR_SEL1_MDEUB |
+-		                     DESC_HDR_MODE1_MDEU_INIT |
+-		                     DESC_HDR_MODE1_MDEU_PAD |
+-		                     DESC_HDR_MODE1_MDEUB_SHA384_HMAC,
++					DESC_HDR_SEL0_AESU |
++					DESC_HDR_MODE0_AESU_CBC |
++					DESC_HDR_SEL1_MDEUB |
++					DESC_HDR_MODE1_MDEU_INIT |
++					DESC_HDR_MODE1_MDEU_PAD |
++					DESC_HDR_MODE1_MDEUB_SHA384_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.alg.aead = {
+@@ -2575,13 +2575,13 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.setkey = aead_des3_setkey,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+-			             DESC_HDR_SEL0_DEU |
+-		                     DESC_HDR_MODE0_DEU_CBC |
+-		                     DESC_HDR_MODE0_DEU_3DES |
+-		                     DESC_HDR_SEL1_MDEUB |
+-		                     DESC_HDR_MODE1_MDEU_INIT |
+-		                     DESC_HDR_MODE1_MDEU_PAD |
+-		                     DESC_HDR_MODE1_MDEUB_SHA384_HMAC,
++				DESC_HDR_SEL0_DEU |
++				DESC_HDR_MODE0_DEU_CBC |
++				DESC_HDR_MODE0_DEU_3DES |
++				DESC_HDR_SEL1_MDEUB |
++				DESC_HDR_MODE1_MDEU_INIT |
++				DESC_HDR_MODE1_MDEU_PAD |
++				DESC_HDR_MODE1_MDEUB_SHA384_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.alg.aead = {
+@@ -2597,12 +2597,12 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.maxauthsize = SHA512_DIGEST_SIZE,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+-			             DESC_HDR_SEL0_AESU |
+-		                     DESC_HDR_MODE0_AESU_CBC |
+-		                     DESC_HDR_SEL1_MDEUB |
+-		                     DESC_HDR_MODE1_MDEU_INIT |
+-		                     DESC_HDR_MODE1_MDEU_PAD |
+-		                     DESC_HDR_MODE1_MDEUB_SHA512_HMAC,
++					DESC_HDR_SEL0_AESU |
++					DESC_HDR_MODE0_AESU_CBC |
++					DESC_HDR_SEL1_MDEUB |
++					DESC_HDR_MODE1_MDEU_INIT |
++					DESC_HDR_MODE1_MDEU_PAD |
++					DESC_HDR_MODE1_MDEUB_SHA512_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.alg.aead = {
+@@ -2620,13 +2620,13 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.setkey = aead_des3_setkey,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+-			             DESC_HDR_SEL0_DEU |
+-		                     DESC_HDR_MODE0_DEU_CBC |
+-		                     DESC_HDR_MODE0_DEU_3DES |
+-		                     DESC_HDR_SEL1_MDEUB |
+-		                     DESC_HDR_MODE1_MDEU_INIT |
+-		                     DESC_HDR_MODE1_MDEU_PAD |
+-		                     DESC_HDR_MODE1_MDEUB_SHA512_HMAC,
++					DESC_HDR_SEL0_DEU |
++					DESC_HDR_MODE0_DEU_CBC |
++					DESC_HDR_MODE0_DEU_3DES |
++					DESC_HDR_SEL1_MDEUB |
++					DESC_HDR_MODE1_MDEU_INIT |
++					DESC_HDR_MODE1_MDEU_PAD |
++					DESC_HDR_MODE1_MDEUB_SHA512_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.alg.aead = {
+@@ -2642,12 +2642,12 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.maxauthsize = MD5_DIGEST_SIZE,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+-			             DESC_HDR_SEL0_AESU |
+-		                     DESC_HDR_MODE0_AESU_CBC |
+-		                     DESC_HDR_SEL1_MDEUA |
+-		                     DESC_HDR_MODE1_MDEU_INIT |
+-		                     DESC_HDR_MODE1_MDEU_PAD |
+-		                     DESC_HDR_MODE1_MDEU_MD5_HMAC,
++					DESC_HDR_SEL0_AESU |
++					DESC_HDR_MODE0_AESU_CBC |
++					DESC_HDR_SEL1_MDEUA |
++					DESC_HDR_MODE1_MDEU_INIT |
++					DESC_HDR_MODE1_MDEU_PAD |
++					DESC_HDR_MODE1_MDEU_MD5_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+@@ -2664,12 +2664,12 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.maxauthsize = MD5_DIGEST_SIZE,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_HMAC_SNOOP_NO_AFEU |
+-				     DESC_HDR_SEL0_AESU |
+-				     DESC_HDR_MODE0_AESU_CBC |
+-				     DESC_HDR_SEL1_MDEUA |
+-				     DESC_HDR_MODE1_MDEU_INIT |
+-				     DESC_HDR_MODE1_MDEU_PAD |
+-				     DESC_HDR_MODE1_MDEU_MD5_HMAC,
++					DESC_HDR_SEL0_AESU |
++					DESC_HDR_MODE0_AESU_CBC |
++					DESC_HDR_SEL1_MDEUA |
++					DESC_HDR_MODE1_MDEU_INIT |
++					DESC_HDR_MODE1_MDEU_PAD |
++					DESC_HDR_MODE1_MDEU_MD5_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.alg.aead = {
+@@ -2686,13 +2686,13 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.setkey = aead_des3_setkey,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+-			             DESC_HDR_SEL0_DEU |
+-		                     DESC_HDR_MODE0_DEU_CBC |
+-		                     DESC_HDR_MODE0_DEU_3DES |
+-		                     DESC_HDR_SEL1_MDEUA |
+-		                     DESC_HDR_MODE1_MDEU_INIT |
+-		                     DESC_HDR_MODE1_MDEU_PAD |
+-		                     DESC_HDR_MODE1_MDEU_MD5_HMAC,
++					DESC_HDR_SEL0_DEU |
++					DESC_HDR_MODE0_DEU_CBC |
++					DESC_HDR_MODE0_DEU_3DES |
++					DESC_HDR_SEL1_MDEUA |
++					DESC_HDR_MODE1_MDEU_INIT |
++					DESC_HDR_MODE1_MDEU_PAD |
++					DESC_HDR_MODE1_MDEU_MD5_HMAC,
+ 	},
+ 	{	.type = CRYPTO_ALG_TYPE_AEAD,
+ 		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+@@ -2839,9 +2839,9 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.setkey = skcipher_des3_setkey,
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_COMMON_NONSNOOP_NO_AFEU |
+-			             DESC_HDR_SEL0_DEU |
+-		                     DESC_HDR_MODE0_DEU_CBC |
+-		                     DESC_HDR_MODE0_DEU_3DES,
++					DESC_HDR_SEL0_DEU |
++					DESC_HDR_MODE0_DEU_CBC |
++					DESC_HDR_MODE0_DEU_3DES,
+ 	},
+ 	/* AHASH algorithms. */
+ 	{	.type = CRYPTO_ALG_TYPE_AHASH,
+@@ -3131,7 +3131,7 @@ static int hw_supports(struct device *dev, __be32 desc_hdr_template)
+ 
+ 	if (SECONDARY_EU(desc_hdr_template))
+ 		ret = ret && (1 << SECONDARY_EU(desc_hdr_template)
+-		              & priv->exec_units);
++				& priv->exec_units);
+ 
+ 	return ret;
+ }
+@@ -3176,7 +3176,7 @@ static int talitos_remove(struct platform_device *ofdev)
+ 
+ static struct talitos_crypto_alg *talitos_alg_alloc(struct device *dev,
+ 						    struct talitos_alg_template
+-						           *template)
++							*template)
+ {
+ 	struct talitos_private *priv = dev_get_drvdata(dev);
+ 	struct talitos_crypto_alg *t_alg;
 -- 
-2.29.0
+2.17.1
 
