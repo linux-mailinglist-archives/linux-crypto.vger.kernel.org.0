@@ -2,58 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F253339335C
-	for <lists+linux-crypto@lfdr.de>; Thu, 27 May 2021 18:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A079C393350
+	for <lists+linux-crypto@lfdr.de>; Thu, 27 May 2021 18:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235870AbhE0QOt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 27 May 2021 12:14:49 -0400
-Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.122]:15872 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237123AbhE0QOZ (ORCPT
+        id S237186AbhE0QOc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 27 May 2021 12:14:32 -0400
+Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.100]:36645 "EHLO
+        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237051AbhE0QOR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 27 May 2021 12:14:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1622131885; cv=none;
+        Thu, 27 May 2021 12:14:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1622131884; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=ssMh6SUtyLmg6v+wibXkPY/l3ixcOPGLJ1JW/0n3qlGM5NOrXBglQJFbY5a1Vaiy1O
-    eApinSY9Fb+aEdREUlpoghtzvce7xlTH5JQN/kN5JeM6iwht0Rm7scmiUZYZLnVi02OQ
-    Gq+xm6hoK9UVp+gtQPIJvT+Andn9LBor9plR3t7opN/8bQzv5hObqKX+ladzsuSiIzmG
-    MijgmC7RBHzrbwv+v2SeZFm4tvR8RAssz4Jc0pm4AaoZnSfeYe8Fe6/uEkxNKpoGAVrc
-    QpXU1JAx8rfyvco/BKLla86oZOWIelGwFbMvI7gN+9/BwEfW8r+qubbWeM+0lJVXzzTr
-    l7Fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622131885;
+    b=Fxm1ro7LMBBHHB6c7jPMfiRC/GT3Tq/I+ttLP6BgdY+Q7s/I6WtLbq71Tzw7uJAfjs
+    Ehrvv3GgXWkKLR3aLoRuwbM1UbN3roYRORfd6nfuaByhqnhlqWRnMez6lzbFS4kBLwa8
+    qR0xjCS0zBx9IKlDvaopYda/R3nX76A43NxY39hoftqTAeE5iZkXNsMQxjtUj6/cHqAP
+    xMlNM+wCUOmIVMLDQVDhVg+av2Y3+X+AFLvO/nu9lm3xd/mZBUPnZpPU72TJRKA+tvyR
+    WhisvBtwTodekxQTTr22p5nszrA9UfaaeNaQUN9PTFciEce4kcTdtRNMgOMzLMVZ00MS
+    wiZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622131884;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=ranCbvW4TnthBRZ12Yjv+jFdhJhWaYkicXK0NNup6iM=;
-    b=sij5VvfSW7A3MxqZkDpFtfP4I9Znejmpn1WUNU2uM4rXgtbObabDV9MXoW8BAHpGmB
-    o//lmRqif69AGnOkR1haEabjFuQs7plbPreVMHSwtFQg7Eynv7+6YCe8mLKJFOX58E4m
-    ZSqXIed1RX39M1Cqco97bMFaDIidCo3MrNJnpAz9817mT4799Tuwl8oQ6l54qwNOLuXz
-    9Ahy69a74jRn/UhQ7xG832oot2ObYEH7Se2aTY2zPsIQdzEb78gvJ0I41F+OqZbJNw0G
-    G2UGXE9UaYkNS09F6+kGG1UhaLJvM09QadJIBfVqCtMkjbvGGT+rb7XPncDyjCmjsoNl
-    UQhg==
+    bh=2TV0uTZbW1JQUIpPa1mP0SIEuzE2CNSB6yn4DmpuhR8=;
+    b=TyiTbBH+Axh9m7vLJ6ex97esy8RmPw/Ykgr+/taOxk1Xb04h5OTeZ6DWY5AuZ32bYQ
+    qaviQ2W1I3RY0BDB7fZ/cnL9A9SA4Nnm3QU3DcW9STPUr+PpeNn1FHE23Qj5kb/5tFuy
+    4GdLQ1e5g7va1SomhWNIoPLtY9YiauOlqoozyfhUOExlU+R74wfZa5LkFRsRBuzf5sbY
+    8gBNV1Tb3fcMh8nlaO1kYaOsBWbcBCIVIqJMQ6OAuIJoKSO9ZdDGTdd8cLUHTnItNQ3C
+    FsaOFOdVGgePjC7uD41VSmUeF9Bz3NL8HIatSunElbbtl1OjSwD0kcEEz0P+tH70vGev
+    XKFw==
 ARC-Authentication-Results: i=1; strato.com;
     dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622131885;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622131884;
     s=strato-dkim-0002; d=chronox.de;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=ranCbvW4TnthBRZ12Yjv+jFdhJhWaYkicXK0NNup6iM=;
-    b=Y3iKVkMx0HlRV6ZAOkqNUeWFQEw70jn/Fp3umnfr5XA1ORu6zz7wK9fU7pRSQwpys2
-    6BBrWTJRJ+HlTCxvNz52IyvHFcOpjLXPBweF7NEKGbcMF4VfJLv4s01ih/v9vf9YJF8L
-    AqEOEnnbG2tpy957M5mp/NL6guLtgFxUdrdSp2JruPhfXfaBOSQX5ak6BIkdeQjFcn6H
-    oJadRLjgLr8EQwREnmo9EVR9GAkLnBlr6tZfejlF9nMT1NxClIcAGbxotgwWMELwnu91
-    rdd9iNQLulPhqCFzV/O9xuMNY/5md/KUxtosj5CgoMsTWlurBonfbIqVjYqTyAqI7vQ0
-    /wEQ==
+    bh=2TV0uTZbW1JQUIpPa1mP0SIEuzE2CNSB6yn4DmpuhR8=;
+    b=FBE+hDaUVykec8PG0VXfI7hi2dNvE/WqOR1EOObSd9Kemv506FvPUmlZEk8TpTEofT
+    Sal4L4GmhLhm2IEg62eXshl0M2jqG1lJXEXeQZPd/W5j+OkQyidgu1tKBFS2x2cMTcAx
+    o3TbqBwziWHxN9t8ScJ7/EGTRCe02pfgrOnpa9D2b7SS8rGlxL0iJv05RIjvnxlXZjRF
+    gNpFUViwFVyHZuYB2a51B4WEEgjcqUgekaIOo+PzTmbXxe7Uad0OAfB5wyCHE43WsX+e
+    Z2hS2/U65QFVhH76OQlwylfS7u/2qBH/NySNgUtIQc6Zso0yySSM2Yq7YaeI8sKPYAEg
+    QClg==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJvSfFeK2"
 X-RZG-CLASS-ID: mo00
 Received: from positron.chronox.de
     by smtp.strato.de (RZmta 47.26.3 DYNA|AUTH)
-    with ESMTPSA id R0123ax4RGBO0Tl
+    with ESMTPSA id R0123ax4RGBN0Tk
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Thu, 27 May 2021 18:11:24 +0200 (CEST)
+    Thu, 27 May 2021 18:11:23 +0200 (CEST)
 From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
 To:     Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org
 Cc:     Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
@@ -83,24 +83,21 @@ Cc:     Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
         "Jason A. Donenfeld" <Jason@zx2c4.com>,
         Petr Tesarik <ptesarik@suse.cz>,
         John Haxby <john.haxby@oracle.com>
-Subject: [PATCH v40 09/13] crypto: provide access to a static Jitter RNG state
-Date:   Thu, 27 May 2021 18:02:12 +0200
-Message-ID: <2378105.yh0kzDQQHu@positron.chronox.de>
+Subject: [PATCH v40 10/13] LRNG - add Jitter RNG fast noise source
+Date:   Thu, 27 May 2021 18:02:48 +0200
+Message-ID: <1905320.hsLGNjb90J@positron.chronox.de>
 In-Reply-To: <18450229.rjpLZT9oXI@positron.chronox.de>
 References: <18450229.rjpLZT9oXI@positron.chronox.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-To support the LRNG operation which uses the Jitter RNG separately
-from the kernel crypto API, at a time where potentially the regular
-memory management is not yet initialized, the Jitter RNG needs to
-provide a state whose memory is defined at compile time. As only once
-instance will ever be needed by the LRNG, define once static memory
-block which is solely to be used by the LRNG.
+The Jitter RNG fast noise source implemented as part of the kernel
+crypto API is queried for 256 bits of entropy at the time the seed
+buffer managed by the LRNG is about to be filled.
 
 CC: Torsten Duwe <duwe@lst.de>
 CC: "Eric W. Biederman" <ebiederm@xmission.com>
@@ -119,98 +116,145 @@ CC: Andy Lutomirski <luto@kernel.org>
 CC: Florian Weimer <fweimer@redhat.com>
 CC: Lennart Poettering <mzxreary@0pointer.de>
 CC: Nicolai Stange <nstange@suse.de>
-Reviewed-by: Roman Drahtmueller <draht@schaltsekun.de>
-Tested-by: Roman Drahtm=FCller <draht@schaltsekun.de>
+Reviewed-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
 Tested-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
 Tested-by: Neil Horman <nhorman@redhat.com>
 Signed-off-by: Stephan Mueller <smueller@chronox.de>
-=2D--
- crypto/jitterentropy-kcapi.c                  |  3 +-
- crypto/jitterentropy.c                        | 31 ++++++++++++++++++-
- .../crypto/internal}/jitterentropy.h          |  3 ++
- 3 files changed, 34 insertions(+), 3 deletions(-)
- rename {crypto =3D> include/crypto/internal}/jitterentropy.h (84%)
+---
+ drivers/char/lrng/Kconfig     | 12 +++++
+ drivers/char/lrng/Makefile    |  1 +
+ drivers/char/lrng/lrng_jent.c | 91 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 104 insertions(+)
+ create mode 100644 drivers/char/lrng/lrng_jent.c
 
-diff --git a/crypto/jitterentropy-kcapi.c b/crypto/jitterentropy-kcapi.c
-index e8a4165a1874..c90e60910827 100644
-=2D-- a/crypto/jitterentropy-kcapi.c
-+++ b/crypto/jitterentropy-kcapi.c
-@@ -43,8 +43,7 @@
- #include <linux/fips.h>
- #include <linux/time.h>
- #include <crypto/internal/rng.h>
-=2D
-=2D#include "jitterentropy.h"
-+#include <crypto/internal/jitterentropy.h>
-=20
- /*************************************************************************=
-**
-  * Helper function
-diff --git a/crypto/jitterentropy.c b/crypto/jitterentropy.c
-index 6e147c43fc18..fa1459f09b01 100644
-=2D-- a/crypto/jitterentropy.c
-+++ b/crypto/jitterentropy.c
-@@ -117,7 +117,7 @@ struct rand_data {
- #define JENT_EHEALTH		9 /* Health test failed during initialization */
- #define JENT_ERCT		10 /* RCT failed during initialization */
-=20
-=2D#include "jitterentropy.h"
-+#include <crypto/internal/jitterentropy.h>
-=20
- /*************************************************************************=
-**
-  * Adaptive Proportion Test
-@@ -854,3 +854,32 @@ int jent_entropy_init(void)
-=20
- 	return 0;
- }
+diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
+index e66e8cd1d86f..7e302b204f7c 100644
+--- a/drivers/char/lrng/Kconfig
++++ b/drivers/char/lrng/Kconfig
+@@ -196,4 +196,16 @@ config LRNG_KCAPI
+ 	  provided by the selected kernel crypto API RNG.
+ endif # LRNG_DRNG_SWITCH
+ 
++config LRNG_JENT
++	bool "Enable Jitter RNG as LRNG Seed Source"
++	depends on CRYPTO
++	select CRYPTO_JITTERENTROPY
++	help
++	  The Linux RNG may use the Jitter RNG as noise source. Enabling
++	  this option enables the use of the Jitter RNG. Its default
++	  entropy level is 16 bits of entropy per 256 data bits delivered
++	  by the Jitter RNG. This entropy level can be changed at boot
++	  time or at runtime with the lrng_base.jitterrng configuration
++	  variable.
 +
-+struct rand_data *jent_lrng_entropy_collector(void)
+ endif # LRNG
+diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
+index 97d2b13d3227..6be88156010a 100644
+--- a/drivers/char/lrng/Makefile
++++ b/drivers/char/lrng/Makefile
+@@ -14,3 +14,4 @@ obj-$(CONFIG_LRNG_DRNG_SWITCH)	+= lrng_switch.o
+ obj-$(CONFIG_LRNG_KCAPI_HASH)	+= lrng_kcapi_hash.o
+ obj-$(CONFIG_LRNG_DRBG)		+= lrng_drbg.o
+ obj-$(CONFIG_LRNG_KCAPI)	+= lrng_kcapi.o
++obj-$(CONFIG_LRNG_JENT)		+= lrng_jent.o
+diff --git a/drivers/char/lrng/lrng_jent.c b/drivers/char/lrng/lrng_jent.c
+new file mode 100644
+index 000000000000..ba1dd2ae89d2
+--- /dev/null
++++ b/drivers/char/lrng/lrng_jent.c
+@@ -0,0 +1,91 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++/*
++ * LRNG Fast Noise Source: Jitter RNG
++ *
++ * Copyright (C) 2016 - 2021, Stephan Mueller <smueller@chronox.de>
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/types.h>
++#include <crypto/internal/jitterentropy.h>
++
++#include "lrng_internal.h"
++
++/*
++ * Estimated entropy of data is a 16th of LRNG_DRNG_SECURITY_STRENGTH_BITS.
++ * Albeit a full entropy assessment is provided for the noise source indicating
++ * that it provides high entropy rates and considering that it deactivates
++ * when it detects insufficient hardware, the chosen under estimation of
++ * entropy is considered to be acceptable to all reviewers.
++ */
++static u32 jitterrng = LRNG_DRNG_SECURITY_STRENGTH_BITS>>4;
++module_param(jitterrng, uint, 0644);
++MODULE_PARM_DESC(jitterrng, "Entropy in bits of 256 data bits from Jitter RNG noise source");
++
++static bool lrng_jent_initialized = false;
++static struct rand_data *lrng_jent_state;
++
++static int __init lrng_jent_initialize(void)
 +{
-+	static unsigned char lrng_jent_mem[JENT_MEMORY_SIZE];
-+	static struct rand_data lrng_jent_state =3D {
-+		.data		=3D 0,
-+		.old_data	=3D 0,
-+		.prev_time	=3D 0,
-+		.last_delta	=3D 0,
-+		.last_delta2	=3D 0,
-+		.osr		=3D 1,
-+		.mem		=3D lrng_jent_mem,
-+		.memlocation	=3D 0,
-+		.memblocks	=3D JENT_MEMORY_BLOCKSIZE,
-+		.memblocksize	=3D JENT_MEMORY_BLOCKS,
-+		.memaccessloops	=3D JENT_MEMORY_ACCESSLOOPS,
-+		.rct_count	=3D 0,
-+		.apt_observations =3D 0,
-+		.apt_count	=3D 0,
-+		.apt_base	=3D 0,
-+		.apt_base_set	=3D 0,
-+		.health_failure =3D 0
-+	};
++	u32 ent_bits = lrng_fast_noise_entropylevel(jitterrng,
++					LRNG_DRNG_SECURITY_STRENGTH_BITS);
 +
-+	if (jent_entropy_init())
-+		return NULL;
++	/* Initialize the Jitter RNG after the clocksources are initialized. */
++	lrng_jent_state = jent_lrng_entropy_collector();
++	if (!lrng_jent_state) {
++		jitterrng = 0;
++		pr_info("Jitter RNG unusable on current system\n");
++		return 0;
++	}
++	lrng_jent_initialized = true;
++	lrng_update_entropy_thresh(ent_bits);
++	pr_debug("Jitter RNG working on current system\n");
 +
-+	return &lrng_jent_state;
++	return 0;
 +}
-diff --git a/crypto/jitterentropy.h b/include/crypto/internal/jitterentropy=
-=2Eh
-similarity index 84%
-rename from crypto/jitterentropy.h
-rename to include/crypto/internal/jitterentropy.h
-index c83fff32d130..6e07d86eac82 100644
-=2D-- a/crypto/jitterentropy.h
-+++ b/include/crypto/internal/jitterentropy.h
-@@ -15,3 +15,6 @@ extern int jent_read_entropy(struct rand_data *ec, unsign=
-ed char *data,
- extern struct rand_data *jent_entropy_collector_alloc(unsigned int osr,
- 						      unsigned int flags);
- extern void jent_entropy_collector_free(struct rand_data *entropy_collecto=
-r);
++device_initcall(lrng_jent_initialize);
 +
-+/* Access to statically allocated Jitter RNG instance */
-+extern struct rand_data *jent_lrng_entropy_collector(void);
-=2D-=20
++/**
++ * lrng_get_jent() - Get Jitter RNG entropy
++ *
++ * @outbuf: buffer to store entropy
++ * @outbuflen: length of buffer
++ *
++ * Return:
++ * * > 0 on success where value provides the added entropy in bits
++ * * 0 if no fast source was available
++ */
++u32 lrng_get_jent(u8 *outbuf, u32 requested_bits)
++{
++	int ret;
++	u32 ent_bits = lrng_jent_entropylevel(requested_bits);
++	unsigned long flags;
++	static DEFINE_SPINLOCK(lrng_jent_lock);
++
++	spin_lock_irqsave(&lrng_jent_lock, flags);
++
++	if (!ent_bits || !lrng_jent_initialized) {
++		spin_unlock_irqrestore(&lrng_jent_lock, flags);
++		return 0;
++	}
++
++	ret = jent_read_entropy(lrng_jent_state, outbuf, requested_bits >> 3);
++	spin_unlock_irqrestore(&lrng_jent_lock, flags);
++
++	if (ret) {
++		pr_debug("Jitter RNG failed with %d\n", ret);
++		return 0;
++	}
++
++	pr_debug("obtained %u bits of entropy from Jitter RNG noise source\n",
++		 ent_bits);
++
++	return ent_bits;
++}
++
++u32 lrng_jent_entropylevel(u32 requested_bits)
++{
++	return lrng_fast_noise_entropylevel((lrng_jent_initialized) ?
++					    jitterrng : 0, requested_bits);
++}
+-- 
 2.31.1
 
 
