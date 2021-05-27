@@ -2,58 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255D1393354
-	for <lists+linux-crypto@lfdr.de>; Thu, 27 May 2021 18:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A2C39334D
+	for <lists+linux-crypto@lfdr.de>; Thu, 27 May 2021 18:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234155AbhE0QOk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 27 May 2021 12:14:40 -0400
-Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.223]:32350 "EHLO
+        id S237176AbhE0QOa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 27 May 2021 12:14:30 -0400
+Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.179]:27122 "EHLO
         mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237120AbhE0QOS (ORCPT
+        with ESMTP id S236293AbhE0QOQ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 27 May 2021 12:14:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1622131893; cv=none;
+        Thu, 27 May 2021 12:14:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1622131892; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=VHs6fuz3V0iFGUluh6DaA2SzqrS9TYenuXEpwibh/ZS9vZGEae7On2g5mb/ZWJZuyo
-    QpkiRv3rPSHkcyWdo8BJ6O+99+SHP7Mq6oOhQdru4rJHJvrm0BGtjo4uNyfQiUwiHlc4
-    czAz9Rm81zcixvMJ5DpA3hcZPwyyFMfcZlsBD5hGu5vGN3Z1TAX4Y8CIFAEn5gOpuva/
-    x7OWiH0w38a8TZyOF3iFymstVxSv7EZRUXnRVp3X4MD2O2ohnTtkhgUrItGJmR6Q4To8
-    NE8hpmnODl71jo8gNg29+/4/JxiGE4Ako4xHdzGU/qPWdpNdNJofaVPDa0laqIYthy+u
-    h8lw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622131893;
+    b=Y2s9UhkZLm2K9FNN/zf0FxV4UcxZPGjW3ktmO6vbcT70vQWDr8WJofWxQZ0YhMQ3Q1
+    DxjxOkFMB3/1dhnL2UihnPnLj4LxzZxkM7/OVn/zKoGyJur/HhkAxdIumfHcx9/1d339
+    kRDIisSNnbhfoo8OmsmWPPQvslBdEmsLRDHI+Kml60NOl9zxR7fwcio5NK8ddQhGcrqX
+    rOVKnHV4TMza6RdztXD1XR2ZenEFpAawQ7k+NfT1M+iZ8MUFAvIjt5Mzs5N9gR3ruVut
+    wHxyioZdqtoFqJh5bsQmBHbV33B1Uk2HZlNbEzSFNCz8crTAt8g39goG57aeFm+R7MJh
+    +qag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622131892;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=SPxu9TnNlwMr6dD7oPK5IIH8n4sNEyrczmlOaGGh3wQ=;
-    b=NuC41Udmy3FcH6EkoQuTumwVshO2dsKTVi630F9nhuPvlMBBs5Ulk7LT0epqj+xSNL
-    rS8Y99P67m40Ak3TcTvJM5vfn9wRgUTdWsbMPfgKeOSlk/p7WgUxWLNvLZ4Z3HJHbWMp
-    7tHr4U1Zln15mXQ74EHojwc2CP6JRLASdAR+ZwsDRUDppZOoOi32s1UO1PFwjCT8GwVc
-    X4y3y8rvDflyfcuGZyv6PgrShpLZMPV9x1dir2W8ivv5k30n/0S38chGL9hBwm75PpbK
-    C/sVAQ/R9thh2pn08zs6iiz+KHXYE7IgCN80ETdj1QSoqXFtzBW5c3BJMi650cojFk6s
-    LFfg==
+    bh=RfqmGjXt/nEWVmiwFES876S/nx5XAYPOZNlyIhbeUCE=;
+    b=oucGb4LnzjZUdZR7R54AIZAdW/3Tizor5Zt9qpy50nGR33sprRO3UJA3RpAyExIQnj
+    D2poRxN7d6+D6qWSq204ANGm69Tx8u2OtCUc+KPxoHyUMFKkmH1AxmVAuqFhSbj93W8N
+    a7ePYyNNcUOvcwcsfd/idQbJegR2V/03wYs6MD/Ty2AOLNFTxAXMI3C9q8Jz9irku5BM
+    vPTc1/lqwuwXtjCYSbhSl2ZSJzCNcDw7RvexRbasGQ4eg06Od3eLhwUypQj4Tthfp0by
+    yCeDELpT3SbPr9blW0+gjoxNqri1AAh/B7+jwNutKgzBO/IVSYXXt/2GGwcIyKvWUKP8
+    CpPQ==
 ARC-Authentication-Results: i=1; strato.com;
     dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622131893;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622131892;
     s=strato-dkim-0002; d=chronox.de;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=SPxu9TnNlwMr6dD7oPK5IIH8n4sNEyrczmlOaGGh3wQ=;
-    b=m5CTUtAaDi0Sq049IVrHHY4OgcY8zRzFFdC1bDpEIkTqasD+wiSr9GPTFvCnMhVG5e
-    9fgVfEs1pAvTOg9FJac3YyRdMQum8w+/T9mfD/GOUVb/vpQ365LO6+1b6aVxl4WvDWIv
-    LiDD7TVLh/ALkFaDRUpVOwbI7XAEDrGNAc5JVC7ZF3dq2kqnwLO/3s+ru87uWuIG+6Qm
-    vC3gucPUe0rE6hmtrKeShY6j8QAQSwpiGOzYV3WolLUVeMbC8s5dFNeXVaABj3Zllwro
-    dMv3CxX5o3qIRD9WWAJO6fGL1lYKd9yxAomKuLLQmWoY2bzwSnMS2qdD3TE+e8xKeAUr
-    IPaw==
+    bh=RfqmGjXt/nEWVmiwFES876S/nx5XAYPOZNlyIhbeUCE=;
+    b=bFv57qTBDNVmwEUkjfAyCCdOIcL62lQ7Tl99HRkoGlKn7FoNi2I4l0LEBZm8H6nCZs
+    xzmEpY+tq7RSggDn/cIZi3ce9ODe4aYBiMFUFt+fQoaZdpsEZCqN075rsxx0b6feTn1z
+    AZpKghmMTYe8fzXDr6BlC32kGm6VAsvvJ1QommRJ/F6tFI6dU6qs3jcPJJubnNHcp+RM
+    m8t+CiewXtiTKyhmH04k6oQXeodfREtT2y+B4rJCcJAzmlAfEYPWcGDIM5Ep8BT++AHD
+    TyhJ5LiJ3RYlH2ITf40ZpoV+REM97ZuSRiGWj8sG7gWrFKvj1Hs4DSNUu5mID90dl7n/
+    yXiA==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJvSfFeK2"
 X-RZG-CLASS-ID: mo00
 Received: from positron.chronox.de
     by smtp.strato.de (RZmta 47.26.3 DYNA|AUTH)
-    with ESMTPSA id R0123ax4RGBW0Tt
+    with ESMTPSA id R0123ax4RGBV0Ts
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Thu, 27 May 2021 18:11:32 +0200 (CEST)
+    Thu, 27 May 2021 18:11:31 +0200 (CEST)
 From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
 To:     Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org
 Cc:     Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
@@ -83,9 +83,9 @@ Cc:     Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
         "Jason A. Donenfeld" <Jason@zx2c4.com>,
         Petr Tesarik <ptesarik@suse.cz>,
         John Haxby <john.haxby@oracle.com>
-Subject: [PATCH v40 03/13] LRNG - sysctls and /proc interface
-Date:   Thu, 27 May 2021 17:56:47 +0200
-Message-ID: <19328008.Szbnv0p3ID@positron.chronox.de>
+Subject: [PATCH v40 04/13] LRNG - add switchable DRNG support
+Date:   Thu, 27 May 2021 17:57:32 +0200
+Message-ID: <3728895.5tnKXvvxBo@positron.chronox.de>
 In-Reply-To: <18450229.rjpLZT9oXI@positron.chronox.de>
 References: <18450229.rjpLZT9oXI@positron.chronox.de>
 MIME-Version: 1.0
@@ -95,36 +95,41 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The LRNG sysctl interface provides the same controls as the existing
-/dev/random implementation. These sysctls behave identically and are
-implemented identically. The goal is to allow a possible merge of the
-existing /dev/random implementation with this implementation which
-implies that this patch tries have a very close similarity. Yet, all
-sysctls are documented at [1].
+The DRNG switch support allows replacing the DRNG mechanism of the
+LRNG. The switching support rests on the interface definition of
+include/linux/lrng.h. A new DRNG is implemented by filling in the
+interface defined in this header file.
 
-In addition, it provides the file lrng_type which provides details about
-the LRNG:
+In addition to the DRNG, the extension also has to provide a hash
+implementation that is used to hash the entropy pool for random number
+extraction.
 
-- the name of the DRNG that produces the random numbers for /dev/random,
-/dev/urandom, getrandom(2)
+Note: It is permissible to implement a DRNG whose operations may sleep.
+However, the hash function must not sleep.
 
-- the hash used to produce random numbers from the entropy pool
+The switchable DRNG support allows replacing the DRNG at runtime.
+However, only one DRNG extension is allowed to be loaded at any given
+time. Before replacing it with another DRNG implementation, the possibly
+existing DRNG extension must be unloaded.
 
-- the number of secondary DRNG instances
+The switchable DRNG extension activates the new DRNG during load time.
+It is expected, however, that such a DRNG switch would be done only once
+by an administrator to load the intended DRNG implementation.
 
-- indicator whether the LRNG operates SP800-90B compliant
+It is permissible to compile DRNG extensions either as kernel modules or
+statically. The initialization of the DRNG extension should be performed
+with a late_initcall to ensure the extension is available when user
+space starts but after all other initialization completed.
+The initialization is performed by registering the function call data
+structure with the lrng_set_drng_cb function. In order to unload the
+DRNG extension, lrng_set_drng_cb must be invoked with the NULL
+parameter.
 
-- indicator whether a high-resolution timer is identified - only with a
-high-resolution timer the interrupt noise source will deliver sufficient
-entropy
+The DRNG extension should always provide a security strength that is at
+least as strong as LRNG_DRNG_SECURITY_STRENGTH_BITS.
 
-- indicator whether the LRNG has been minimally seeded (i.e. is the
-secondary DRNG seeded with at least 128 bits of of entropy)
-
-- indicator whether the LRNG has been fully seeded (i.e. is the
-secondary DRNG seeded with at least 256 bits of entropy)
-
-[1] https://www.chronox.de/lrng.html
+The hash extension must not sleep and must not maintain a separate
+state.
 
 CC: Torsten Duwe <duwe@lst.de>
 CC: "Eric W. Biederman" <ebiederm@xmission.com>
@@ -149,243 +154,262 @@ Tested-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
 Tested-by: Neil Horman <nhorman@redhat.com>
 Signed-off-by: Stephan Mueller <smueller@chronox.de>
 ---
- drivers/char/lrng/Makefile          |   1 +
- drivers/char/lrng/lrng_interfaces.c |   2 -
- drivers/char/lrng/lrng_internal.h   |   4 +
- drivers/char/lrng/lrng_proc.c       | 186 ++++++++++++++++++++++++++++
- 4 files changed, 191 insertions(+), 2 deletions(-)
- create mode 100644 drivers/char/lrng/lrng_proc.c
+ drivers/char/lrng/Kconfig       |   7 +
+ drivers/char/lrng/Makefile      |   1 +
+ drivers/char/lrng/lrng_switch.c | 219 ++++++++++++++++++++++++++++++++
+ 3 files changed, 227 insertions(+)
+ create mode 100644 drivers/char/lrng/lrng_switch.c
 
+diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
+index c9e35e808c77..4e02542d7fcc 100644
+--- a/drivers/char/lrng/Kconfig
++++ b/drivers/char/lrng/Kconfig
+@@ -158,4 +158,11 @@ config LRNG_COLLECTION_SIZE
+ 	default 4096 if LRNG_COLLECTION_SIZE_4096
+ 	default 8192 if LRNG_COLLECTION_SIZE_8192
+ 
++menuconfig LRNG_DRNG_SWITCH
++	bool "Support DRNG runtime switching"
++	help
++	  The Linux RNG per default uses a ChaCha20 DRNG that is
++	  accessible via the external interfaces. With this configuration
++	  option other DRNGs can be selected and loaded at runtime.
++
+ endif # LRNG
 diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
-index 29724c65287d..ac97f0b11cb7 100644
+index ac97f0b11cb7..0eb4a6849c88 100644
 --- a/drivers/char/lrng/Makefile
 +++ b/drivers/char/lrng/Makefile
-@@ -9,3 +9,4 @@ obj-y				+= lrng_pool.o lrng_aux.o \
- 				   lrng_interfaces.o
+@@ -10,3 +10,4 @@ obj-y				+= lrng_pool.o lrng_aux.o \
  
  obj-$(CONFIG_NUMA)		+= lrng_numa.o
-+obj-$(CONFIG_SYSCTL)		+= lrng_proc.o
-diff --git a/drivers/char/lrng/lrng_interfaces.c b/drivers/char/lrng/lrng_interfaces.c
-index efcadcfa79f2..8121ba495844 100644
---- a/drivers/char/lrng/lrng_interfaces.c
-+++ b/drivers/char/lrng/lrng_interfaces.c
-@@ -38,8 +38,6 @@ static DECLARE_WAIT_QUEUE_HEAD(lrng_write_wait);
- static DECLARE_WAIT_QUEUE_HEAD(lrng_init_wait);
- static struct fasync_struct *fasync;
- 
--struct ctl_table random_table[];
--
- /********************************** Helper ***********************************/
- 
- /* Is the DRNG seed level too low? */
-diff --git a/drivers/char/lrng/lrng_internal.h b/drivers/char/lrng/lrng_internal.h
-index 49a7c11d4f10..7a2c44423729 100644
---- a/drivers/char/lrng/lrng_internal.h
-+++ b/drivers/char/lrng/lrng_internal.h
-@@ -108,7 +108,11 @@ void lrng_cc20_init_state(struct chacha20_state *state);
- 
- /********************************** /proc *************************************/
- 
-+#ifdef CONFIG_SYSCTL
-+void lrng_pool_inc_numa_node(void);
-+#else
- static inline void lrng_pool_inc_numa_node(void) { }
-+#endif
- 
- /****************************** LRNG interfaces *******************************/
- 
-diff --git a/drivers/char/lrng/lrng_proc.c b/drivers/char/lrng/lrng_proc.c
+ obj-$(CONFIG_SYSCTL)		+= lrng_proc.o
++obj-$(CONFIG_LRNG_DRNG_SWITCH)	+= lrng_switch.o
+diff --git a/drivers/char/lrng/lrng_switch.c b/drivers/char/lrng/lrng_switch.c
 new file mode 100644
-index 000000000000..62e7b7884f18
+index 000000000000..a2b117b2b87e
 --- /dev/null
-+++ b/drivers/char/lrng/lrng_proc.c
-@@ -0,0 +1,186 @@
++++ b/drivers/char/lrng/lrng_switch.c
+@@ -0,0 +1,219 @@
 +// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
 +/*
-+ * LRNG proc and sysctl interfaces
++ * LRNG DRNG switching support
 + *
 + * Copyright (C) 2016 - 2021, Stephan Mueller <smueller@chronox.de>
 + */
 +
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
 +#include <linux/lrng.h>
-+#include <linux/proc_fs.h>
-+#include <linux/seq_file.h>
-+#include <linux/sysctl.h>
-+#include <linux/uuid.h>
 +
 +#include "lrng_internal.h"
-+#include "lrng_sw_noise.h"
 +
-+/*
-+ * This function is used to return both the bootid UUID, and random
-+ * UUID.  The difference is in whether table->data is NULL; if it is,
-+ * then a new UUID is generated and returned to the user.
-+ *
-+ * If the user accesses this via the proc interface, the UUID will be
-+ * returned as an ASCII string in the standard UUID format; if via the
-+ * sysctl system call, as 16 bytes of binary data.
-+ */
-+static int lrng_proc_do_uuid(struct ctl_table *table, int write,
-+			     void *buffer, size_t *lenp, loff_t *ppos)
++static int lrng_drng_switch(struct lrng_drng *drng_store,
++			    const struct lrng_crypto_cb *cb, int node)
 +{
-+	struct ctl_table fake_table;
-+	unsigned char buf[64], tmp_uuid[16], *uuid;
++	const struct lrng_crypto_cb *old_cb;
++	unsigned long flags = 0, flags2 = 0;
++	int ret;
++	u8 seed[LRNG_DRNG_SECURITY_STRENGTH_BYTES];
++	void *new_drng = cb->lrng_drng_alloc(LRNG_DRNG_SECURITY_STRENGTH_BYTES);
++	void *old_drng, *new_hash, *old_hash;
++	u32 current_security_strength;
++	bool sl = false, reset_drng = !lrng_get_available();
 +
-+	uuid = table->data;
-+	if (!uuid) {
-+		uuid = tmp_uuid;
-+		generate_random_uuid(uuid);
-+	} else {
-+		static DEFINE_SPINLOCK(bootid_spinlock);
-+
-+		spin_lock(&bootid_spinlock);
-+		if (!uuid[8])
-+			generate_random_uuid(uuid);
-+		spin_unlock(&bootid_spinlock);
++	if (IS_ERR(new_drng)) {
++		pr_warn("could not allocate new DRNG for NUMA node %d (%ld)\n",
++			node, PTR_ERR(new_drng));
++		return PTR_ERR(new_drng);
 +	}
 +
-+	sprintf(buf, "%pU", uuid);
++	new_hash = cb->lrng_hash_alloc();
++	if (IS_ERR(new_hash)) {
++		pr_warn("could not allocate new LRNG pool hash (%ld)\n",
++			PTR_ERR(new_hash));
++		cb->lrng_drng_dealloc(new_drng);
++		return PTR_ERR(new_hash);
++	}
 +
-+	fake_table.data = buf;
-+	fake_table.maxlen = sizeof(buf);
++	if (cb->lrng_hash_digestsize(new_hash) > LRNG_MAX_DIGESTSIZE) {
++		pr_warn("digest size of newly requested hash too large\n");
++		cb->lrng_hash_dealloc(new_hash);
++		cb->lrng_drng_dealloc(new_drng);
++		return -EINVAL;
++	}
 +
-+	return proc_dostring(&fake_table, write, buffer, lenp, ppos);
++	current_security_strength = lrng_security_strength();
++	lrng_drng_lock(drng_store, &flags);
++
++	/*
++	 * Pull from existing DRNG to seed new DRNG regardless of seed status
++	 * of old DRNG -- the entropy state for the DRNG is left unchanged which
++	 * implies that als the new DRNG is reseeded when deemed necessary. This
++	 * seeding of the new DRNG shall only ensure that the new DRNG has the
++	 * same entropy as the old DRNG.
++	 */
++	ret = drng_store->crypto_cb->lrng_drng_generate_helper(
++				drng_store->drng, seed, sizeof(seed));
++	lrng_drng_unlock(drng_store, &flags);
++
++	if (ret < 0) {
++		reset_drng = true;
++		pr_warn("getting random data from DRNG failed for NUMA node %d (%d)\n",
++			node, ret);
++	} else {
++		/* seed new DRNG with data */
++		ret = cb->lrng_drng_seed_helper(new_drng, seed, ret);
++		if (ret < 0) {
++			reset_drng = true;
++			pr_warn("seeding of new DRNG failed for NUMA node %d (%d)\n",
++				node, ret);
++		} else {
++			pr_debug("seeded new DRNG of NUMA node %d instance from old DRNG instance\n",
++				 node);
++		}
++	}
++
++	mutex_lock(&drng_store->lock);
++	write_lock_irqsave(&drng_store->hash_lock, flags2);
++	/*
++	 * If we switch the DRNG from the initial ChaCha20 DRNG to something
++	 * else, there is a lock transition from spin lock to mutex (see
++	 * lrng_drng_is_atomic and how the lock is taken in lrng_drng_lock).
++	 * Thus, we need to take both locks during the transition phase.
++	 */
++	if (lrng_drng_is_atomic(drng_store)) {
++		spin_lock_irqsave(&drng_store->spin_lock, flags);
++		sl = true;
++	} else {
++		__acquire(&drng_store->spin_lock);
++	}
++
++	/* Trigger the switch of the per-CPU entropy pools for current node. */
++	ret = lrng_pcpu_switch_hash(node, cb, new_hash, drng_store->crypto_cb);
++	if (!ret) {
++		u32 additional = 0;
++
++		if (reset_drng)
++			lrng_drng_reset(drng_store);
++
++		old_drng = drng_store->drng;
++		old_cb = drng_store->crypto_cb;
++		drng_store->drng = new_drng;
++		drng_store->crypto_cb = cb;
++
++		old_hash = drng_store->hash;
++		drng_store->hash = new_hash;
++		pr_info("Entropy pool read-hash allocated for DRNG for NUMA node %d\n",
++			node);
++
++		lrng_set_digestsize(cb->lrng_hash_digestsize(new_hash));
++		if (lrng_sp80090c_compliant())
++			additional = CONFIG_LRNG_SEED_BUFFER_INIT_ADD_BITS;
++		lrng_set_entropy_thresh(lrng_security_strength() + additional +
++					CONFIG_LRNG_OVERSAMPLE_ES_BITS);
++
++		/* Reseed if previous LRNG security strength was insufficient */
++		if (current_security_strength < lrng_security_strength())
++			drng_store->force_reseed = true;
++
++		/* Force oversampling seeding as we initialize DRNG */
++		if (IS_ENABLED(CONFIG_LRNG_OVERSAMPLE_ENTROPY_SOURCES)) {
++			drng_store->force_reseed = true;
++			drng_store->fully_seeded = false;
++		}
++
++		/* ChaCha20 serves as atomic instance left untouched. */
++		if (old_drng != &chacha20) {
++			old_cb->lrng_drng_dealloc(old_drng);
++			old_cb->lrng_hash_dealloc(old_hash);
++		}
++
++		pr_info("DRNG of NUMA node %d switched\n", node);
++	}
++
++	if (sl)
++		spin_unlock_irqrestore(&drng_store->spin_lock, flags);
++	else
++		__release(&drng_store->spin_lock);
++	write_unlock_irqrestore(&drng_store->hash_lock, flags2);
++	mutex_unlock(&drng_store->lock);
++
++	return ret;
 +}
 +
-+static int lrng_proc_do_entropy(struct ctl_table *table, int write,
-+				void *buffer, size_t *lenp, loff_t *ppos)
++/*
++ * Switch the existing DRNG instances with new using the new crypto callbacks.
++ * The caller must hold the lrng_crypto_cb_update lock.
++ */
++static int lrng_drngs_switch(const struct lrng_crypto_cb *cb)
 +{
-+	struct ctl_table fake_table;
-+	int entropy_count;
++	struct lrng_drng **lrng_drng = lrng_drng_instances();
++	struct lrng_drng *lrng_drng_init = lrng_drng_init_instance();
++	int ret = 0;
 +
-+	entropy_count = lrng_avail_entropy();
++	/* Update DRNG */
++	if (lrng_drng) {
++		u32 node;
 +
-+	fake_table.data = &entropy_count;
-+	fake_table.maxlen = sizeof(entropy_count);
++		for_each_online_node(node) {
++			if (lrng_drng[node])
++				ret = lrng_drng_switch(lrng_drng[node], cb,
++						       node);
++		}
++	} else {
++		ret = lrng_drng_switch(lrng_drng_init, cb, 0);
++	}
 +
-+	return proc_dointvec(&fake_table, write, buffer, lenp, ppos);
++	if (!ret)
++		lrng_set_available();
++
++	return 0;
 +}
 +
-+static int lrng_proc_do_poolsize(struct ctl_table *table, int write,
-+				 void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	struct ctl_table fake_table;
-+	int entropy_count;
-+
-+	/* LRNG can at most retain entropy in per-CPU pools and aux pool */
-+	entropy_count = lrng_get_digestsize() + lrng_pcpu_avail_pool_size();
-+
-+	fake_table.data = &entropy_count;
-+	fake_table.maxlen = sizeof(entropy_count);
-+
-+	return proc_dointvec(&fake_table, write, buffer, lenp, ppos);
-+}
-+
-+static int lrng_min_write_thresh;
-+static int lrng_max_write_thresh = LRNG_MAX_DIGESTSIZE;
-+static char lrng_sysctl_bootid[16];
-+static int lrng_drng_reseed_max_min;
-+
-+struct ctl_table random_table[] = {
-+	{
-+		.procname	= "poolsize",
-+		.maxlen		= sizeof(int),
-+		.mode		= 0444,
-+		.proc_handler	= lrng_proc_do_poolsize,
-+	},
-+	{
-+		.procname	= "entropy_avail",
-+		.maxlen		= sizeof(int),
-+		.mode		= 0444,
-+		.proc_handler	= lrng_proc_do_entropy,
-+	},
-+	{
-+		.procname	= "write_wakeup_threshold",
-+		.data		= &lrng_write_wakeup_bits,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= &lrng_min_write_thresh,
-+		.extra2		= &lrng_max_write_thresh,
-+	},
-+	{
-+		.procname	= "boot_id",
-+		.data		= &lrng_sysctl_bootid,
-+		.maxlen		= 16,
-+		.mode		= 0444,
-+		.proc_handler	= lrng_proc_do_uuid,
-+	},
-+	{
-+		.procname	= "uuid",
-+		.maxlen		= 16,
-+		.mode		= 0444,
-+		.proc_handler	= lrng_proc_do_uuid,
-+	},
-+	{
-+		.procname       = "urandom_min_reseed_secs",
-+		.data           = &lrng_drng_reseed_max_time,
-+		.maxlen         = sizeof(int),
-+		.mode           = 0644,
-+		.proc_handler   = proc_dointvec,
-+		.extra1		= &lrng_drng_reseed_max_min,
-+	},
-+	{ }
-+};
-+
-+/* Number of online DRNGs */
-+static u32 numa_drngs = 1;
-+
-+void lrng_pool_inc_numa_node(void)
-+{
-+	numa_drngs++;
-+}
-+
-+static int lrng_proc_type_show(struct seq_file *m, void *v)
++/**
++ * lrng_set_drng_cb - Register new cryptographic callback functions for DRNG
++ * The registering implies that all old DRNG states are replaced with new
++ * DRNG states.
++ *
++ * @cb: Callback functions to be registered -- if NULL, use the default
++ *	callbacks pointing to the ChaCha20 DRNG.
++ *
++ * Return:
++ * * 0 on success
++ * * < 0 on error
++ */
++int lrng_set_drng_cb(const struct lrng_crypto_cb *cb)
 +{
 +	struct lrng_drng *lrng_drng_init = lrng_drng_init_instance();
-+	unsigned long flags = 0;
-+	unsigned char buf[390];
++	int ret;
 +
-+	lrng_drng_lock(lrng_drng_init, &flags);
-+	snprintf(buf, sizeof(buf),
-+		 "DRNG name: %s\n"
-+		 "Hash for reading entropy pool: %s\n"
-+		 "Hash for operating aux entropy pool: %s\n"
-+		 "LRNG security strength in bits: %d\n"
-+		 "per-CPU interrupt collection size: %u\n"
-+		 "number of DRNG instances: %u\n"
-+		 "SP800-90B compliance: %s\n"
-+		 "SP800-90C compliance: %s\n"
-+		 "High-resolution timer: %s\n"
-+		 "LRNG minimally seeded: %s\n"
-+		 "LRNG fully seeded: %s\n"
-+		 "Continuous compression: %s\n",
-+		 lrng_drng_init->crypto_cb->lrng_drng_name(),
-+		 lrng_drng_init->crypto_cb->lrng_hash_name(),
-+		 lrng_drng_init->crypto_cb->lrng_hash_name(),
-+		 lrng_security_strength(),
-+		 LRNG_DATA_NUM_VALUES,
-+		 numa_drngs,
-+		 lrng_sp80090b_compliant() ? "true" : "false",
-+		 lrng_sp80090c_compliant() ? "true" : "false",
-+		 lrng_pool_highres_timer() ? "true" : "false",
-+		 lrng_state_min_seeded() ? "true" : "false",
-+		 lrng_state_fully_seeded() ? "true" : "false",
-+		 lrng_pcpu_continuous_compression_state() ? "true" : "false");
-+	lrng_drng_unlock(lrng_drng_init, &flags);
++	if (!cb)
++		cb = &lrng_cc20_crypto_cb;
 +
-+	seq_write(m, buf, strlen(buf));
++	mutex_lock(&lrng_crypto_cb_update);
 +
-+	return 0;
++	/*
++	 * If a callback other than the default is set, allow it only to be
++	 * set back to the default callback. This ensures that multiple
++	 * different callbacks can be registered at the same time. If a
++	 * callback different from the current callback and the default
++	 * callback shall be set, the current callback must be deregistered
++	 * (e.g. the kernel module providing it must be unloaded) and the new
++	 * implementation can be registered.
++	 */
++	if ((cb != &lrng_cc20_crypto_cb) &&
++	    (lrng_drng_init->crypto_cb != &lrng_cc20_crypto_cb)) {
++		pr_warn("disallow setting new cipher callbacks, unload the old callbacks first!\n");
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = lrng_drngs_switch(cb);
++
++out:
++	mutex_unlock(&lrng_crypto_cb_update);
++	return ret;
 +}
-+
-+static int __init lrng_proc_type_init(void)
-+{
-+	proc_create_single("lrng_type", 0444, NULL, &lrng_proc_type_show);
-+	return 0;
-+}
-+
-+module_init(lrng_proc_type_init);
++EXPORT_SYMBOL(lrng_set_drng_cb);
 -- 
 2.31.1
 
