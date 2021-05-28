@@ -2,50 +2,50 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AADD393DBC
-	for <lists+linux-crypto@lfdr.de>; Fri, 28 May 2021 09:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7BA393DBE
+	for <lists+linux-crypto@lfdr.de>; Fri, 28 May 2021 09:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhE1H0p (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 28 May 2021 03:26:45 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50184 "EHLO deadmen.hmeau.com"
+        id S230200AbhE1H0u (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 28 May 2021 03:26:50 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:50194 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232012AbhE1H0n (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 28 May 2021 03:26:43 -0400
+        id S234347AbhE1H0q (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 28 May 2021 03:26:46 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1lmWrc-0003Xj-7f; Fri, 28 May 2021 15:25:00 +0800
+        id 1lmWrj-0003Y5-VJ; Fri, 28 May 2021 15:25:07 +0800
 Received: from herbert by gondobar with local (Exim 4.92)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1lmWrR-0001wE-7i; Fri, 28 May 2021 15:24:49 +0800
-Date:   Fri, 28 May 2021 15:24:49 +0800
+        id 1lmWrj-0001wd-ER; Fri, 28 May 2021 15:25:07 +0800
+Date:   Fri, 28 May 2021 15:25:07 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Juerg Haefliger <juerg.haefliger@canonical.com>
-Cc:     mpm@selenic.com, zhouyanjie@wanyeetech.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        juergh@canonical.com
-Subject: Re: [PATCH] hwrng: Remove leading spaces in Kconfig
-Message-ID: <20210528072449.GB7392@gondor.apana.org.au>
-References: <20210517095831.81631-1-juergh@canonical.com>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        linux-crypto <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH 1/1] crypto: Fix spelling mistakes in header files
+Message-ID: <20210528072507.GC7392@gondor.apana.org.au>
+References: <20210517110234.7416-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210517095831.81631-1-juergh@canonical.com>
+In-Reply-To: <20210517110234.7416-1-thunder.leizhen@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, May 17, 2021 at 11:58:31AM +0200, Juerg Haefliger wrote:
-> Remove leading spaces before tabs in Kconfig file(s) by running the
-> following command:
+On Mon, May 17, 2021 at 07:02:34PM +0800, Zhen Lei wrote:
+> Fix some spelling mistakes in comments:
+> cipherntext ==> ciphertext
+> syncronise ==> synchronise
+> feeded ==> fed
 > 
->   $ find drivers/char/hw_random -name 'Kconfig*' | x\
->     args sed -r -i 's/^[ ]+\t/\t/'
-> 
-> Signed-off-by: Juerg Haefliger <juergh@canonical.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > ---
->  drivers/char/hw_random/Kconfig | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  include/crypto/aead.h   | 2 +-
+>  include/crypto/engine.h | 2 +-
+>  include/crypto/hash.h   | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
 
 Patch applied.  Thanks.
 -- 
