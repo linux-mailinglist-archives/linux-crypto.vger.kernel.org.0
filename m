@@ -2,154 +2,81 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E25394BD9
-	for <lists+linux-crypto@lfdr.de>; Sat, 29 May 2021 13:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461CD394C2F
+	for <lists+linux-crypto@lfdr.de>; Sat, 29 May 2021 14:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbhE2LFa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 29 May 2021 07:05:30 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2537 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbhE2LFO (ORCPT
+        id S229746AbhE2MUl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 29 May 2021 08:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229737AbhE2MUk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 29 May 2021 07:05:14 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fsdrk6tR9zYrYJ;
-        Sat, 29 May 2021 19:00:54 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 19:03:31 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 19:03:29 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Marek Szyprowski" <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Eric Biederman <ebiederm@xmission.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        "Steffen Klassert" <steffen.klassert@secunet.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        kgdb-bugreport <kgdb-bugreport@lists.sourceforge.net>,
-        kexec <kexec@lists.infradead.org>,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 4/4] time: Fix spelling mistakes
-Date:   Sat, 29 May 2021 19:03:05 +0800
-Message-ID: <20210529110305.9446-5-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210529110305.9446-1-thunder.leizhen@huawei.com>
-References: <20210529110305.9446-1-thunder.leizhen@huawei.com>
+        Sat, 29 May 2021 08:20:40 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70819C061574
+        for <linux-crypto@vger.kernel.org>; Sat, 29 May 2021 05:19:04 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id t3so7876395edc.7
+        for <linux-crypto@vger.kernel.org>; Sat, 29 May 2021 05:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Hv9x+MxSOs0TP+quj925H7KamJ9IvIbT66tcyaDF/fQ=;
+        b=uk347i7pPeO9GkX+NonU4GWWPxqLY8i2bkw2f7gzhpqVdmkb437H10su+v1FqtG75l
+         hkhyjX63U+qx5IEBxh/HaE48JxGMfLsvXp/QYP5WZDE2emFPDNfCD8CD9ejD4p9Lc0hz
+         ntAWl68yW48d1f3lL5UWXp0Qwl48iicHgLTWKYLP+HKqJd3WL1JOsF/P/9vBsHhQCEIy
+         JlwbXjr46GpDyinWHEv7F4trao8X7v5ps2ZS8tg+rqHEorMrbSQuqkQJmU5lD9m+8Nm0
+         w5AU6d0j1ycYaTjns7LPt3MnjCjP6otHlb0VFyDGkKcHq8my8hB7q+i/nQnwMWTwb7kO
+         0Sbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Hv9x+MxSOs0TP+quj925H7KamJ9IvIbT66tcyaDF/fQ=;
+        b=NYwJlB8RAxdgKB8XjWRGO2L7fInDDiWppcEvGDZrNaa/9pgvq+kfrYfZWZj2Y14wMy
+         s9ujswSeyc0XQHUgglRtTmoUJpAcK9Xwn4AZfEJx5w/mzBH/9BRp9kCXCJuTZCytGbm9
+         qMAeQDQUDODBXkzj+1IAvkCYJ/rfHSsEfw8vOKNE/4myaUm3Rawm9BM1Se1qZDi3dW4v
+         YqB3Tgk03n4MV82pW064BIGo+57X9LkzrOOumoWtY7cWAmrdwyA/7Ua00HsEDsl4VI9Q
+         Sx135rDlYDny3RHE5WSuIh+7C4xfSfFT8AkgKDOrnspN2a87uXuWFXgnNe8i4kM39G56
+         QsTA==
+X-Gm-Message-State: AOAM530vzFzV8N5Tu++xlT9qvxyVB8Da2+K76NFBIZKETh8Vw6vZj+Qx
+        kgcUF+CaKd+tiPqV77xwlieh509suV7hbSulW/w=
+X-Google-Smtp-Source: ABdhPJwWlEB3uPwZMvPKyeJ8mahBzazVv4D6uBwmBluhOimVEn4GeqjhKevgp2RxlAIiNbYu41pPqo+YmH/qaQhSAzo=
+X-Received: by 2002:a05:6402:695:: with SMTP id f21mr577191edy.96.1622290743041;
+ Sat, 29 May 2021 05:19:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Received: by 2002:a17:907:a93:0:0:0:0 with HTTP; Sat, 29 May 2021 05:19:02
+ -0700 (PDT)
+Reply-To: westernunion8289@zohomail.com
+From:   WESTERN UNION AGENT <ekouedodji45@gmail.com>
+Date:   Sat, 29 May 2021 05:19:02 -0700
+Message-ID: <CAD4sUyUjM8=j+4zhUuQUg791Ag=VAc08B22KP5MSD9W=C3JevA@mail.gmail.com>
+Subject: WESTERN UNION AGENT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Fix some spelling mistakes in comments:
-wit ==> with
-initialy ==> initially
-syncrhonized ==> synchronized
-therefor ==> therefore
+Attention,
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- include/linux/timekeeping.h | 2 +-
- include/linux/timer.h       | 2 +-
- kernel/time/alarmtimer.c    | 2 +-
- kernel/time/timer.c         | 4 ++--
- 4 files changed, 5 insertions(+), 5 deletions(-)
+We have deposited the cheque of your fund ($ 2.5 Million USD) through
+Western Union department Finally after our meeting Regarding your
+fund,  All you do is to contact Western Union director Dr.Fedinand
+Umeh via Email ( westernunion8289@zohomail.com ) he will give you
+direction on how you will be receiving the Funds daily,remember to
+send him your full information to avoid wrong transfer Such as,
 
-diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
-index 78a98bdff76d..01bd6ff322be 100644
---- a/include/linux/timekeeping.h
-+++ b/include/linux/timekeeping.h
-@@ -28,7 +28,7 @@ extern int do_sys_settimeofday64(const struct timespec64 *tv,
-  * For other references, use the functions with "real", "clocktai",
-  * "boottime" and "raw" suffixes.
-  *
-- * To get the time in a different format, use the ones wit
-+ * To get the time in a different format, use the ones with
-  * "ns", "ts64" and "seconds" suffix.
-  *
-  * See Documentation/core-api/timekeeping.rst for more details.
-diff --git a/include/linux/timer.h b/include/linux/timer.h
-index fda13c9d1256..a7f7c7cac4c0 100644
---- a/include/linux/timer.h
-+++ b/include/linux/timer.h
-@@ -56,7 +56,7 @@ struct timer_list {
-  *
-  * Note: Because enqueuing of timers can migrate the timer from one
-  * CPU to another, pinned timers are not guaranteed to stay on the
-- * initialy selected CPU.  They move to the CPU on which the enqueue
-+ * initially selected CPU.  They move to the CPU on which the enqueue
-  * function is invoked via mod_timer() or add_timer().  If the timer
-  * should be placed on a particular CPU, then add_timer_on() has to be
-  * used.
-diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
-index 5897828b9d7e..a400139b9a9c 100644
---- a/kernel/time/alarmtimer.c
-+++ b/kernel/time/alarmtimer.c
-@@ -35,7 +35,7 @@
- 
- /**
-  * struct alarm_base - Alarm timer bases
-- * @lock:		Lock for syncrhonized access to the base
-+ * @lock:		Lock for synchronized access to the base
-  * @timerqueue:		Timerqueue head managing the list of events
-  * @get_ktime:		Function to read the time correlating to the base
-  * @get_timespec:	Function to read the namespace time correlating to the base
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 84332f01dc57..df6585281713 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -62,7 +62,7 @@ EXPORT_SYMBOL(jiffies_64);
- 
- /*
-  * The timer wheel has LVL_DEPTH array levels. Each level provides an array of
-- * LVL_SIZE buckets. Each level is driven by its own clock and therefor each
-+ * LVL_SIZE buckets. Each level is driven by its own clock and therefore each
-  * level has a different granularity.
-  *
-  * The level granularity is:		LVL_CLK_DIV ^ lvl
-@@ -70,7 +70,7 @@ EXPORT_SYMBOL(jiffies_64);
-  *
-  * The array level of a newly armed timer depends on the relative expiry
-  * time. The farther the expiry time is away the higher the array level and
-- * therefor the granularity becomes.
-+ * therefore the granularity becomes.
-  *
-  * Contrary to the original timer wheel implementation, which aims for 'exact'
-  * expiry of the timers, this implementation removes the need for recascading
--- 
-2.25.1
+Receiver's Name _______________
+Address: ________________
+Country: _____________
+Phone Number: _____________
+Your email address _______________
 
+Though,  Dr.Fedinand Umeh has sent $ 5,000 through Western Union  in
+your name  today  so contact  Dr.Fedinand Umeh as soon as you receive
+this email and tell him to give you the Mtcn, sender name and question
+/ answer to pick the $ 5000 and Please let us know as soon as you
+received all your fund.
 
+Best Regards.
+WESTERN UNION AGENT
