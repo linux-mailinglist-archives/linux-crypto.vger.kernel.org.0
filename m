@@ -2,27 +2,27 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54355394BD5
-	for <lists+linux-crypto@lfdr.de>; Sat, 29 May 2021 13:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E25394BD9
+	for <lists+linux-crypto@lfdr.de>; Sat, 29 May 2021 13:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbhE2LFY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 29 May 2021 07:05:24 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2354 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhE2LFI (ORCPT
+        id S229744AbhE2LFa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 29 May 2021 07:05:30 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2537 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229768AbhE2LFO (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 29 May 2021 07:05:08 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FsdpN1h2mz1BFw1;
-        Sat, 29 May 2021 18:58:52 +0800 (CST)
+        Sat, 29 May 2021 07:05:14 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fsdrk6tR9zYrYJ;
+        Sat, 29 May 2021 19:00:54 +0800 (CST)
 Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 19:03:29 +0800
+ 15.1.2176.2; Sat, 29 May 2021 19:03:31 +0800
 Received: from thunder-town.china.huawei.com (10.174.177.72) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 19:03:28 +0800
+ 15.1.2176.2; Sat, 29 May 2021 19:03:29 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     Jason Wessel <jason.wessel@windriver.com>,
         Daniel Thompson <daniel.thompson@linaro.org>,
@@ -57,9 +57,9 @@ To:     Jason Wessel <jason.wessel@windriver.com>,
         linux-crypto <linux-crypto@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 3/4] kexec: fix a spelling mistake in comment
-Date:   Sat, 29 May 2021 19:03:04 +0800
-Message-ID: <20210529110305.9446-4-thunder.leizhen@huawei.com>
+Subject: [PATCH v2 4/4] time: Fix spelling mistakes
+Date:   Sat, 29 May 2021 19:03:05 +0800
+Message-ID: <20210529110305.9446-5-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20210529110305.9446-1-thunder.leizhen@huawei.com>
 References: <20210529110305.9446-1-thunder.leizhen@huawei.com>
@@ -74,27 +74,81 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-alloed ==> allowed
+Fix some spelling mistakes in comments:
+wit ==> with
+initialy ==> initially
+syncrhonized ==> synchronized
+therefor ==> therefore
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
 ---
- kernel/kexec_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/timekeeping.h | 2 +-
+ include/linux/timer.h       | 2 +-
+ kernel/time/alarmtimer.c    | 2 +-
+ kernel/time/timer.c         | 4 ++--
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-index 4b34a9aa32bc..21d44f7ae8a8 100644
---- a/kernel/kexec_core.c
-+++ b/kernel/kexec_core.c
-@@ -180,7 +180,7 @@ int sanity_check_segment_list(struct kimage *image)
- 	}
+diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
+index 78a98bdff76d..01bd6ff322be 100644
+--- a/include/linux/timekeeping.h
++++ b/include/linux/timekeeping.h
+@@ -28,7 +28,7 @@ extern int do_sys_settimeofday64(const struct timespec64 *tv,
+  * For other references, use the functions with "real", "clocktai",
+  * "boottime" and "raw" suffixes.
+  *
+- * To get the time in a different format, use the ones wit
++ * To get the time in a different format, use the ones with
+  * "ns", "ts64" and "seconds" suffix.
+  *
+  * See Documentation/core-api/timekeeping.rst for more details.
+diff --git a/include/linux/timer.h b/include/linux/timer.h
+index fda13c9d1256..a7f7c7cac4c0 100644
+--- a/include/linux/timer.h
++++ b/include/linux/timer.h
+@@ -56,7 +56,7 @@ struct timer_list {
+  *
+  * Note: Because enqueuing of timers can migrate the timer from one
+  * CPU to another, pinned timers are not guaranteed to stay on the
+- * initialy selected CPU.  They move to the CPU on which the enqueue
++ * initially selected CPU.  They move to the CPU on which the enqueue
+  * function is invoked via mod_timer() or add_timer().  If the timer
+  * should be placed on a particular CPU, then add_timer_on() has to be
+  * used.
+diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
+index 5897828b9d7e..a400139b9a9c 100644
+--- a/kernel/time/alarmtimer.c
++++ b/kernel/time/alarmtimer.c
+@@ -35,7 +35,7 @@
  
- 	/* Verify our destination addresses do not overlap.
--	 * If we alloed overlapping destination addresses
-+	 * If we allowed overlapping destination addresses
- 	 * through very weird things can happen with no
- 	 * easy explanation as one segment stops on another.
- 	 */
+ /**
+  * struct alarm_base - Alarm timer bases
+- * @lock:		Lock for syncrhonized access to the base
++ * @lock:		Lock for synchronized access to the base
+  * @timerqueue:		Timerqueue head managing the list of events
+  * @get_ktime:		Function to read the time correlating to the base
+  * @get_timespec:	Function to read the namespace time correlating to the base
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 84332f01dc57..df6585281713 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -62,7 +62,7 @@ EXPORT_SYMBOL(jiffies_64);
+ 
+ /*
+  * The timer wheel has LVL_DEPTH array levels. Each level provides an array of
+- * LVL_SIZE buckets. Each level is driven by its own clock and therefor each
++ * LVL_SIZE buckets. Each level is driven by its own clock and therefore each
+  * level has a different granularity.
+  *
+  * The level granularity is:		LVL_CLK_DIV ^ lvl
+@@ -70,7 +70,7 @@ EXPORT_SYMBOL(jiffies_64);
+  *
+  * The array level of a newly armed timer depends on the relative expiry
+  * time. The farther the expiry time is away the higher the array level and
+- * therefor the granularity becomes.
++ * therefore the granularity becomes.
+  *
+  * Contrary to the original timer wheel implementation, which aims for 'exact'
+  * expiry of the timers, this implementation removes the need for recascading
 -- 
 2.25.1
 
