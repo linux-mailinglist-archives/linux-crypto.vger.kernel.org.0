@@ -2,52 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19D5397634
-	for <lists+linux-crypto@lfdr.de>; Tue,  1 Jun 2021 17:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 661EE39763B
+	for <lists+linux-crypto@lfdr.de>; Tue,  1 Jun 2021 17:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbhFAPN2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 1 Jun 2021 11:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
+        id S234283AbhFAPNj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 1 Jun 2021 11:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234424AbhFAPNZ (ORCPT
+        with ESMTP id S234452AbhFAPN1 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:13:25 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A023C0613CE
-        for <linux-crypto@vger.kernel.org>; Tue,  1 Jun 2021 08:11:43 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q5so4088633wrm.1
-        for <linux-crypto@vger.kernel.org>; Tue, 01 Jun 2021 08:11:43 -0700 (PDT)
+        Tue, 1 Jun 2021 11:13:27 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D8DC06138A
+        for <linux-crypto@vger.kernel.org>; Tue,  1 Jun 2021 08:11:44 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id h5-20020a05600c3505b029019f0654f6f1so1298313wmq.0
+        for <linux-crypto@vger.kernel.org>; Tue, 01 Jun 2021 08:11:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+GjmxYyUga7B4GL+GCcTHSSwwi6F91q3aeKrD7ugyx4=;
-        b=ALrkzpxJ1biPvqhqumjgIqBXq+bep0HrKvz3jz+nlA/sKQvui6LfibMA1czxiBD2Tn
-         BpvnZsNvgMoxqhyDcLqpwiK99vAb7nBCtcE803sHwg0yjzhiqlV/5NoTKT+6UkqfnVlt
-         lrwL7hY9Sm4oa+XH4zoClOyt+8AvjI+Lq7rwZLjuS4QDoWUU5xgDAyyFsOmovjSGq7cj
-         QuJg8XIWB41cFrLz3/xvhn3TmRYzCywHyFVmYqSyXa/y2v+4S6ecV0MW3XWbdSng0Ico
-         wzHmja10yvaOc+U5fydDd6RLs9FNUUF0dtJR+2Lk3jOufW/Lb01JReqM6+0S7FMCs+mN
-         mYpA==
+        bh=s8v8Jp0/rfEPlkp9XhdnLdHk722YQ+tq+nr0R2AwQ5s=;
+        b=TQzJ8IV1oQ36hKJrP1tDjXvJDcPCTaVcyBJqwLQWXW4i/J/12PfueR1gE8GYcq5dkD
+         jfvkX2yIEwKS9b3A4LYcp/moCf2tUVPsLHqEVaZsFbnuwrqPTW5FWEx+avAv/p7MKNSz
+         5jOYPruEUp0T+PPZ/HSTkQwGDSoNEiSO0KbpK1OxWDkBcev9plIVfOw5XwdHe1XEwC3d
+         mc0TvRJeIHn9yS81HNBAutCwuzi1SlJlk3YnCvP1qiegKv2EybrX4NpWlvYR3581k4UO
+         2A8Ow/ljvM9c8WvQYh1mmgIBLgBOi2OhEYOIy37SBoewjI1UnTWFq+So6F+QkIEpnwiF
+         QFGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+GjmxYyUga7B4GL+GCcTHSSwwi6F91q3aeKrD7ugyx4=;
-        b=hl8uGDjhvbvUOCg1lYZyDnoRHc7tDqlbRWRJoU3n/uy3bt1vlOV5aBXMo7uPbBZnXp
-         I7i48oWdGvHR0urhZ3DQohXekd7bafVn99zwN+Z9aEwwhtICyKJBSXAjFNhkPKWRg9oQ
-         qzLNPLHs4uAn6O24fXY8V9LzgwcYlcPyOWa48UCQNyGZwBr24D2OaYaOcmRvYpEejj4X
-         VrbV6GKbXZngOjoD7ZxD/iEvaJ5DfqHcMrFlooB2gegbJkwkY0yqWThc0foglLJGX/ud
-         3+5e93Y3Knzy54qRm1LElJageJhKt6quQu7zcr5YBFBqYMohtFdt/atrsaamKI2BRYLf
-         j5jA==
-X-Gm-Message-State: AOAM530fCytfD/K5MgZh2/+0D20Ho7e0yM9wVdkOKrDIX4FUyBHMDLNI
-        AYrr/26uD1V2jJNOzeHebNcv4g==
-X-Google-Smtp-Source: ABdhPJyV59TMbxN75gBzpa2VPvEZRuB+a5vUoi7VNyYoZhJaB1DMacQ4LthLe9mCtnE3Cn36NQ270A==
-X-Received: by 2002:a5d:4f05:: with SMTP id c5mr2512404wru.341.1622560302106;
-        Tue, 01 Jun 2021 08:11:42 -0700 (PDT)
+        bh=s8v8Jp0/rfEPlkp9XhdnLdHk722YQ+tq+nr0R2AwQ5s=;
+        b=mucSmNaRQj7CYC5LDJBzCowFXKryCRFMLQwEAOGtPQSbKINRpi6M1BIbX2WyDJCWrj
+         +VX3tnC0IXUuwX39pTDARfUG21r2u0uIIl1uAXry7VA8kEF6zb1wW9lrGVeW8r7QIzzw
+         tpkqvYr+WAkdTy9amg0Bg5uKEsXenctNXIaZeR712ObKR08Bi+04slPfIW87wW45f1HN
+         n1MaMafqU2f2sAZGWr4HZnC/3asgFzRF2Ccm5NauYXv05T4CDQdeeACtZ9R6xnfHhojM
+         BIHFY1OKLBBUMl0oQ6Fw4cJ9frTlCNrq0PM04FQdv24Y3aka2Ir/ghlzCpvHlQoYHYEY
+         NeDw==
+X-Gm-Message-State: AOAM5324fMAubVKdwJvvR1LNuFShfEBXkfKfs5hSV8iJfUBQPuDijQHJ
+        NQmOmsb02ZUcwUdCnkJXLK6YKg==
+X-Google-Smtp-Source: ABdhPJxz/yuFedQdkot/kQXyn3h2pRCCVDsiCuT4xOdxYDDNxG6gNMvMdESkKDFopMfgqdvdo96R7A==
+X-Received: by 2002:a1c:f213:: with SMTP id s19mr11482590wmc.61.1622560303019;
+        Tue, 01 Jun 2021 08:11:43 -0700 (PDT)
 Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id f20sm22344163wmh.41.2021.06.01.08.11.41
+        by smtp.googlemail.com with ESMTPSA id f20sm22344163wmh.41.2021.06.01.08.11.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 08:11:41 -0700 (PDT)
+        Tue, 01 Jun 2021 08:11:42 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     davem@davemloft.net, herbert@gondor.apana.org.au,
         linus.walleij@linaro.org, linux@armlinux.org.uk,
@@ -55,9 +55,9 @@ To:     davem@davemloft.net, herbert@gondor.apana.org.au,
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v2 4/5] ARM: gemini_config: enable sl3516-ce crypto
-Date:   Tue,  1 Jun 2021 15:11:31 +0000
-Message-Id: <20210601151132.1893443-5-clabbe@baylibre.com>
+Subject: [PATCH v2 5/5] MAINTAINERS: add gemini crypto sl3516-ce
+Date:   Tue,  1 Jun 2021 15:11:32 +0000
+Message-Id: <20210601151132.1893443-6-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210601151132.1893443-1-clabbe@baylibre.com>
 References: <20210601151132.1893443-1-clabbe@baylibre.com>
@@ -67,22 +67,40 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Enable the crypto offloader by default.
+Add myself as maintainer of gemini sl3516-ce crypto driver.
+Add also the driver to the list of files for gemini SoC.
 
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- arch/arm/configs/gemini_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm/configs/gemini_defconfig b/arch/arm/configs/gemini_defconfig
-index d2d5f1cf815f..3ae4b8f62b82 100644
---- a/arch/arm/configs/gemini_defconfig
-+++ b/arch/arm/configs/gemini_defconfig
-@@ -100,3 +100,4 @@ CONFIG_NLS_CODEPAGE_437=y
- CONFIG_NLS_ISO8859_1=y
- # CONFIG_ENABLE_MUST_CHECK is not set
- CONFIG_DEBUG_FS=y
-+CONFIG_CRYPTO_DEV_SL3516=y
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d8648ee43199..439e353539de 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1812,6 +1812,7 @@ F:	Documentation/devicetree/bindings/net/cortina,gemini-ethernet.txt
+ F:	Documentation/devicetree/bindings/pinctrl/cortina,gemini-pinctrl.txt
+ F:	Documentation/devicetree/bindings/rtc/faraday,ftrtc010.txt
+ F:	arch/arm/mach-gemini/
++F:	drivers/crypto/gemini/
+ F:	drivers/net/ethernet/cortina/
+ F:	drivers/pinctrl/pinctrl-gemini.c
+ F:	drivers/rtc/rtc-ftrtc010.c
+@@ -7589,6 +7590,12 @@ M:	Kieran Bingham <kbingham@kernel.org>
+ S:	Supported
+ F:	scripts/gdb/
+ 
++GEMINI CRYPTO DRIVER
++M:	Corentin Labbe <clabbe@baylibre.com>
++L:	linux-crypto@vger.kernel.org
++S:	Maintained
++F:	drivers/crypto/gemini/
++
+ GEMTEK FM RADIO RECEIVER DRIVER
+ M:	Hans Verkuil <hverkuil@xs4all.nl>
+ L:	linux-media@vger.kernel.org
 -- 
 2.31.1
 
