@@ -2,184 +2,101 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D085F39AFBB
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Jun 2021 03:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE1B39B039
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Jun 2021 04:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbhFDBda (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 3 Jun 2021 21:33:30 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7098 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbhFDBd3 (ORCPT
+        id S229835AbhFDCPD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 3 Jun 2021 22:15:03 -0400
+Received: from mail-lf1-f47.google.com ([209.85.167.47]:33716 "EHLO
+        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhFDCPD (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:33:29 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fx4t10KXPzYqcf;
-        Fri,  4 Jun 2021 09:28:57 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 09:31:42 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 4 Jun 2021
- 09:31:42 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH v2 4/4] crypto: hisilicon/sec - modify the SEC request structure
-Date:   Fri, 4 Jun 2021 09:31:29 +0800
-Message-ID: <1622770289-21588-5-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622770289-21588-1-git-send-email-yekai13@huawei.com>
-References: <1622770289-21588-1-git-send-email-yekai13@huawei.com>
+        Thu, 3 Jun 2021 22:15:03 -0400
+Received: by mail-lf1-f47.google.com with SMTP id t7so4596469lff.0;
+        Thu, 03 Jun 2021 19:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=e938uIx3j0ytYF43Gu2UvAvTYhUrU4CqL39m4sXKDLo=;
+        b=jB1o57YFZ/z0UbSQMIix1odWKf3OKj1Vgv/cx+oEn2BynbKVvg9pupzQed/QD90X11
+         lu72W+nmvPDDJe4OzPjww9OIaoAxobSsxWT/KDppr2lZViTBJWNNRF74KBCrvSDE8AWB
+         csSm2g1MuA7/AD9ML5bsrsX8MUOT7hqq2A+oOj8Sicsww+XmeiJuVzPBKGf/F6wzs0W9
+         7G1EMfBsXShX55BN2MAShuDehdhr9Zmhs3nJ57j7/plSPpHJ5s1xuAzK2tAYrA8iueWs
+         RH22q1SxsROzvJUFrgnae0Sbs7qfVptfoE6Xt1AZH/efiOCCfL1MsplNcDDOR37oL8RM
+         LAcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=e938uIx3j0ytYF43Gu2UvAvTYhUrU4CqL39m4sXKDLo=;
+        b=UcZ1vmj32dOQnwaivpAQSdh1a0MlGbonCxtfmd7txy4pAKjl2lBGMf1tOk8EK3Kq55
+         y/VTjrAZs64wTCWQzNVPbzYhRfNeMWUAmd5e5Qgho2dyhrw6T47/M4mbY4OFZOd1ELh/
+         QkZ48ijlS9ruav2hXQ32QnnFyzREApZXR2kBL9XKPbvfmiIxqN42M7oXonJEVD1IrDDC
+         jcRD96pQRu5sBdLWUvGvJnGUBPS2fy/nIEKDusViqMjMDCcvVsIATmuKxfEkZYs61FPj
+         OK599bXZ9HeOZzWmwykbYQBBxh1Ik9pCgTjthY5r5zxHdircOZQyv+/xUHubOnXGopDb
+         b96Q==
+X-Gm-Message-State: AOAM530WlJP767ZoEI3PPdr3WywbG5vQnyvbFyNAblLU3IDtD4goKeHg
+        gla57hbrgfP51rCHtLB5cFxk6Ky4ScRJ4y0G71g=
+X-Google-Smtp-Source: ABdhPJyS7VJbQHWYeAVHWleNzp1SXF1+rmRnM1VyuMhNAt40ga1HjAGJ1WD9vjZKZle7LrPwk2tDKOOYpuiB8Hw9yNE=
+X-Received: by 2002:a05:6512:21ae:: with SMTP id c14mr1162158lft.483.1622772721138;
+ Thu, 03 Jun 2021 19:12:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+References: <1622552752-15501-1-git-send-email-herbert.tencent@gmail.com> <20210603123357.GM6161@gondor.apana.org.au>
+In-Reply-To: <20210603123357.GM6161@gondor.apana.org.au>
+From:   hongbo li <herbert.tencent@gmail.com>
+Date:   Fri, 4 Jun 2021 10:11:51 +0800
+Message-ID: <CABpmuwJepSr3eE9OQoNUV6761agn7+OU1eG766W2B96rVo1S3A@mail.gmail.com>
+Subject: Re: [PATCH] crypto: sm2 - fix a memory leak in sm2
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        linux-crypto@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>,
+        David Howells <dhowells@redhat.com>, jarkko@kernel.org,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        =?UTF-8?B?aGVyYmVydGhibGko5p2O5byY5Y2aKQ==?= 
+        <herberthbli@tencent.com>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Modify the SEC request structure, combines two common parameters of the
-SEC request into one parameter.
+Thank you for your review, I will resend this patch.
+Regards,
+Hongbo
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec.h        |  7 ++++--
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 34 +++++++++++++++---------------
- 2 files changed, 22 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/crypto/hisilicon/sec2/sec.h b/drivers/crypto/hisilicon/sec2/sec.h
-index 3fe7875..018415b 100644
---- a/drivers/crypto/hisilicon/sec2/sec.h
-+++ b/drivers/crypto/hisilicon/sec2/sec.h
-@@ -21,8 +21,6 @@ struct sec_alg_res {
- 
- /* Cipher request of SEC private */
- struct sec_cipher_req {
--	struct hisi_acc_hw_sgl *c_in;
--	dma_addr_t c_in_dma;
- 	struct hisi_acc_hw_sgl *c_out;
- 	dma_addr_t c_out_dma;
- 	u8 *c_ivin;
-@@ -49,6 +47,11 @@ struct sec_req {
- 	struct sec_ctx *ctx;
- 	struct sec_qp_ctx *qp_ctx;
- 
-+	/**
-+	 * Common parameter of the SEC request.
-+	 */
-+	struct hisi_acc_hw_sgl *in;
-+	dma_addr_t in_dma;
- 	struct sec_cipher_req c_req;
- 	struct sec_aead_req aead_req;
- 	struct list_head backlog_head;
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 75122f0..f23af61 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -871,8 +871,8 @@ static int sec_cipher_pbuf_map(struct sec_ctx *ctx, struct sec_req *req,
- 		memcpy(a_req->out_mac, mac_offset, authsize);
- 	}
- 
--	c_req->c_in_dma = qp_ctx->res[req_id].pbuf_dma;
--	c_req->c_out_dma = c_req->c_in_dma;
-+	req->in_dma = qp_ctx->res[req_id].pbuf_dma;
-+	c_req->c_out_dma = req->in_dma;
- 
- 	return 0;
- }
-@@ -950,14 +950,13 @@ static int sec_cipher_map(struct sec_ctx *ctx, struct sec_req *req,
- 		a_req->out_mac_dma = res->out_mac_dma;
- 	}
- 
--	c_req->c_in = hisi_acc_sg_buf_map_to_hw_sgl(dev, src,
--						    qp_ctx->c_in_pool,
--						    req->req_id,
--						    &c_req->c_in_dma);
--
--	if (IS_ERR(c_req->c_in)) {
-+	req->in = hisi_acc_sg_buf_map_to_hw_sgl(dev, src,
-+						qp_ctx->c_in_pool,
-+						req->req_id,
-+						&req->in_dma);
-+	if (IS_ERR(req->in)) {
- 		dev_err(dev, "fail to dma map input sgl buffers!\n");
--		return PTR_ERR(c_req->c_in);
-+		return PTR_ERR(req->in);
- 	}
- 
- 	if (!c_req->encrypt && ctx->alg_type == SEC_AEAD) {
-@@ -967,9 +966,10 @@ static int sec_cipher_map(struct sec_ctx *ctx, struct sec_req *req,
- 			return ret;
- 		}
- 	}
-+
- 	if (dst == src) {
--		c_req->c_out = c_req->c_in;
--		c_req->c_out_dma = c_req->c_in_dma;
-+		c_req->c_out = req->in;
-+		c_req->c_out_dma = req->in_dma;
- 	} else {
- 		c_req->c_out = hisi_acc_sg_buf_map_to_hw_sgl(dev, dst,
- 							     qp_ctx->c_out_pool,
-@@ -978,7 +978,7 @@ static int sec_cipher_map(struct sec_ctx *ctx, struct sec_req *req,
- 
- 		if (IS_ERR(c_req->c_out)) {
- 			dev_err(dev, "fail to dma map output sgl buffers!\n");
--			hisi_acc_sg_buf_unmap(dev, src, c_req->c_in);
-+			hisi_acc_sg_buf_unmap(dev, src, req->in);
- 			return PTR_ERR(c_req->c_out);
- 		}
- 	}
-@@ -996,7 +996,7 @@ static void sec_cipher_unmap(struct sec_ctx *ctx, struct sec_req *req,
- 		sec_cipher_pbuf_unmap(ctx, req, dst);
- 	} else {
- 		if (dst != src)
--			hisi_acc_sg_buf_unmap(dev, src, c_req->c_in);
-+			hisi_acc_sg_buf_unmap(dev, src, req->in);
- 
- 		hisi_acc_sg_buf_unmap(dev, dst, c_req->c_out);
- 	}
-@@ -1236,7 +1236,7 @@ static int sec_skcipher_bd_fill(struct sec_ctx *ctx, struct sec_req *req)
- 
- 	sec_sqe->type2.c_key_addr = cpu_to_le64(c_ctx->c_key_dma);
- 	sec_sqe->type2.c_ivin_addr = cpu_to_le64(c_req->c_ivin_dma);
--	sec_sqe->type2.data_src_addr = cpu_to_le64(c_req->c_in_dma);
-+	sec_sqe->type2.data_src_addr = cpu_to_le64(req->in_dma);
- 	sec_sqe->type2.data_dst_addr = cpu_to_le64(c_req->c_out_dma);
- 
- 	sec_sqe->type2.icvw_kmode |= cpu_to_le16(((u16)c_ctx->c_mode) <<
-@@ -1263,7 +1263,7 @@ static int sec_skcipher_bd_fill(struct sec_ctx *ctx, struct sec_req *req)
- 
- 	sec_sqe->sdm_addr_type |= da_type;
- 	scene = SEC_COMM_SCENE << SEC_SCENE_OFFSET;
--	if (c_req->c_in_dma != c_req->c_out_dma)
-+	if (req->in_dma != c_req->c_out_dma)
- 		de = 0x1 << SEC_DE_OFFSET;
- 
- 	sec_sqe->sds_sa_type = (de | scene | sa_type);
-@@ -1286,7 +1286,7 @@ static int sec_skcipher_bd_fill_v3(struct sec_ctx *ctx, struct sec_req *req)
- 
- 	sec_sqe3->c_key_addr = cpu_to_le64(c_ctx->c_key_dma);
- 	sec_sqe3->no_scene.c_ivin_addr = cpu_to_le64(c_req->c_ivin_dma);
--	sec_sqe3->data_src_addr = cpu_to_le64(c_req->c_in_dma);
-+	sec_sqe3->data_src_addr = cpu_to_le64(req->in_dma);
- 	sec_sqe3->data_dst_addr = cpu_to_le64(c_req->c_out_dma);
- 
- 	sec_sqe3->c_mode_alg = ((u8)c_ctx->c_alg << SEC_CALG_OFFSET_V3) |
-@@ -1309,7 +1309,7 @@ static int sec_skcipher_bd_fill_v3(struct sec_ctx *ctx, struct sec_req *req)
- 	}
- 
- 	bd_param |= SEC_COMM_SCENE << SEC_SCENE_OFFSET_V3;
--	if (c_req->c_in_dma != c_req->c_out_dma)
-+	if (req->in_dma != c_req->c_out_dma)
- 		bd_param |= 0x1 << SEC_DE_OFFSET_V3;
- 
- 	bd_param |= SEC_BD_TYPE3;
--- 
-2.8.1
-
+Herbert Xu <herbert@gondor.apana.org.au> =E4=BA=8E2021=E5=B9=B46=E6=9C=883=
+=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=888:34=E5=86=99=E9=81=93=EF=BC=
+=9A
+>
+> On Tue, Jun 01, 2021 at 09:05:52PM +0800, Hongbo Li wrote:
+> > From: Hongbo Li <herberthbli@tencent.com>
+> >
+> > SM2 module alloc ec->Q in sm2_set_pub_key(), when doing alg test in
+> > test_akcipher_one(), it will set public key for every test vector,
+> > and don't free ec->Q. This will cause a memory leak.
+> >
+> > This patch alloc ec->Q in sm2_ec_ctx_init().
+> >
+> > Fixes: ea7ecb66440b ("crypto: sm2 - introduce OSCCA SM2 asymmetric ciph=
+er algorithm")
+> > Signed-off-by: Hongbo Li <herberthbli@tencent.com>
+> > Cc: stable@vger.kernel.org # v5.10+
+> > Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> > ---
+> >  crypto/sm2.c | 24 ++++++++++--------------
+> >  1 file changed, 10 insertions(+), 14 deletions(-)
+>
+> Your patch has been discarded by patchwork because you didn't
+> update the Subject.  The usual method is to use a version prefix
+> such as v2, v3, etc. so that the Subject remains distinct.
+>
+> Please resubmit with a new Subject.
+>
+> Oh and don't cc stable@vger.kernel.org.
+>
+> Thanks,
+> --
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
