@@ -2,117 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF753A2468
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Jun 2021 08:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601553A2A2F
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Jun 2021 13:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229895AbhFJGYM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Jun 2021 02:24:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229778AbhFJGYL (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:24:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A2F613C6;
-        Thu, 10 Jun 2021 06:22:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623306135;
-        bh=72TN9omId61IJS4+e4qfytxdlcJKrvXsUI726KlmhcU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uzGDALwmZ6js2fmyYM6meEZuMeylXBgpnpjGVd4Y8TkMnCtH612yLME4rV/7zJUf4
-         cmsPEMeTUx5QsalRhOpqJ0EFYf0CdvSE+nG+v3R9a4QmCgV/JfwqzRZlEikJbFWcyG
-         2x2Tm/sTTJetOuQgeYfTHvRiZJgKExFYXfpG2GRgKtCpDFymPi82YKO06mekkl1Z77
-         2HOkb9R547gb0409UrXC1O7eUv2bBnNiXVgGgkA0DcvCQGX/2YslQU9RplKuo46JFH
-         faxOFX2vpeDUj4+JLvqA2if8+F7qE++k4J8v/IyPGdEpspG1DWQF+N73Ymog/CCasO
-         muFPrpyTs1R1w==
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, Ard Biesheuvel <ardb@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v3] crypto: shash - avoid comparing pointers to exported functions under CFI
-Date:   Thu, 10 Jun 2021 08:21:50 +0200
-Message-Id: <20210610062150.212779-1-ardb@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S229935AbhFJLbp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Jun 2021 07:31:45 -0400
+Received: from mail.chalver.com.ec ([186.3.12.10]:22199 "EHLO
+        mail.chalver.com.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhFJLbo (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 10 Jun 2021 07:31:44 -0400
+Received: from mail.chalver.com.ec (localhost.localdomain [127.0.0.1])
+        by mail.chalver.com.ec (Postfix) with ESMTPS id E0C2F1F28DC7;
+        Thu, 10 Jun 2021 04:56:06 -0500 (ECT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.chalver.com.ec (Postfix) with ESMTP id C80451F26377;
+        Thu, 10 Jun 2021 03:42:06 -0500 (ECT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.chalver.com.ec C80451F26377
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chalver.com.ec;
+        s=E2A417BC-DDA7-11E6-85F6-38495636B764; t=1623314526;
+        bh=PxMh0SAMbBGlctefOH2OhvTlJNlHw25bONEEE7Ldp0I=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=aw1YomDIqtbXQdzBcEne8DPQx+Xq3YaCBn6QzUyBjLBBDzum/A2wN/mAW4AGLxhcg
+         nzU3eFAZGgPzHTC85XeUE+2vip/Rm2H2i0a+B5+g9VHvVWtwKldSVwhWB8w727w4pS
+         rUjcO1K0VBr6vEj0XOqb0iW5WuISW6Tf7N/Qr3I91Mb+468hgCv0bFNxzGUVMNJ1Wh
+         0G6+VkMpFeH+eh/TkYXQTHP5uT31H/jIwJArSAC3mv6o/G4nN9YvUGhMsKH9bQYs7O
+         jchtqjDm+PD1DftDNbdgeYEv6XSsygsGUgQBF04W+P/Du5fWqzNXp8o50puBN077pX
+         kGrDv39t3hqjw==
+X-Virus-Scanned: amavisd-new at chalver.com.ec
+Received: from mail.chalver.com.ec ([127.0.0.1])
+        by localhost (mail.chalver.com.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ceoEEEHgWwr7; Thu, 10 Jun 2021 03:42:06 -0500 (ECT)
+Received: from cris-PC.wifi (unknown [105.9.120.116])
+        by mail.chalver.com.ec (Postfix) with ESMTPSA id 7F6F91F2635D;
+        Thu, 10 Jun 2021 03:41:56 -0500 (ECT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?Covid_19_Wohlt=C3=A4tigkeitsfonds?=
+To:     Recipients <mpaucar@chalver.com.ec>
+From:   ''Tayeb souami'' <mpaucar@chalver.com.ec>
+Date:   Thu, 10 Jun 2021 10:49:08 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20210610084156.7F6F91F2635D@mail.chalver.com.ec>
+X-Laboratorios-Chalver-MailScanner-Information: Please contact the ISP for more information
+X-Laboratorios-Chalver-MailScanner-ID: 7F6F91F2635D.A184D
+X-Laboratorios-Chalver-MailScanner: Not scanned: please contact your Internet E-Mail Service Provider for details
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-crypto_shash_alg_has_setkey() is implemented by testing whether the
-.setkey() member of a struct shash_alg points to the default version,
-called shash_no_setkey(). As crypto_shash_alg_has_setkey() is a static
-inline, this requires shash_no_setkey() to be exported to modules.
 
-Unfortunately, when building with CFI, function pointers are routed
-via CFI stubs which are private to each module (or to the kernel proper)
-and so this function pointer comparison may fail spuriously.
+Lieber Freund,
 
-Let's fix this by turning crypto_shash_alg_has_setkey() into an out of
-line function.
+Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der =
+Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zu=
+f=C3=A4llige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Ma=
+il nach einem Spinball ausgew=C3=A4hlt.Ich habe den gr=C3=B6=C3=9Ften Teil =
+meines Verm=C3=B6gens auf eine Reihe von Wohlt=C3=A4tigkeitsorganisationen =
+und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die =
+Summe von =E2=82=AC 2.000.000,00 an Sie als eine der ausgew=C3=A4hlten 5 zu=
+ spenden, um meine Gewinne zu =C3=BCberpr=C3=BCfen, sehen Sie bitte meine Y=
+ou Tube Seite unten.
 
-Cc: Sami Tolvanen <samitolvanen@google.com>
-Cc: Eric Biggers <ebiggers@kernel.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
-v3: improve comment as per Eric's suggestion
-v2: add code comment to explain why the function needs to remain out of
-line
+UHR MICH HIER: https://www.youtube.com/watch?v=3DZ6ui8ZDQ6Ks
 
- crypto/shash.c                 | 18 +++++++++++++++---
- include/crypto/internal/hash.h |  8 +-------
- 2 files changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/crypto/shash.c b/crypto/shash.c
-index 2e3433ad9762..0a0a50cb694f 100644
---- a/crypto/shash.c
-+++ b/crypto/shash.c
-@@ -20,12 +20,24 @@
- 
- static const struct crypto_type crypto_shash_type;
- 
--int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
--		    unsigned int keylen)
-+static int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
-+			   unsigned int keylen)
- {
- 	return -ENOSYS;
- }
--EXPORT_SYMBOL_GPL(shash_no_setkey);
-+
-+/*
-+ * Check whether an shash algorithm has a setkey function.
-+ *
-+ * For CFI compatibility, this must not be an inline function.  This is because
-+ * when CFI is enabled, modules won't get the same address for shash_no_setkey
-+ * (if it were exported, which inlining would require) as the core kernel will.
-+ */
-+bool crypto_shash_alg_has_setkey(struct shash_alg *alg)
-+{
-+	return alg->setkey != shash_no_setkey;
-+}
-+EXPORT_SYMBOL_GPL(crypto_shash_alg_has_setkey);
- 
- static int shash_setkey_unaligned(struct crypto_shash *tfm, const u8 *key,
- 				  unsigned int keylen)
-diff --git a/include/crypto/internal/hash.h b/include/crypto/internal/hash.h
-index 0a288dddcf5b..25806141db59 100644
---- a/include/crypto/internal/hash.h
-+++ b/include/crypto/internal/hash.h
-@@ -75,13 +75,7 @@ void crypto_unregister_ahashes(struct ahash_alg *algs, int count);
- int ahash_register_instance(struct crypto_template *tmpl,
- 			    struct ahash_instance *inst);
- 
--int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
--		    unsigned int keylen);
--
--static inline bool crypto_shash_alg_has_setkey(struct shash_alg *alg)
--{
--	return alg->setkey != shash_no_setkey;
--}
-+bool crypto_shash_alg_has_setkey(struct shash_alg *alg);
- 
- static inline bool crypto_shash_alg_needs_key(struct shash_alg *alg)
- {
--- 
-2.30.2
 
+Das ist dein Spendencode: [TS530342018]
+
+
+
+Antworten Sie mit dem SPENDE-CODE an diese
+
+E-Mail:Tayebsouam.spende@gmail.com
+
+
+Ich hoffe, Sie und Ihre Familie gl=C3=BCcklich zu machen.
+
+Gr=C3=BC=C3=9Fe
+Herr Tayeb Souami
