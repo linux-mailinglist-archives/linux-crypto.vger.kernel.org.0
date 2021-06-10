@@ -2,582 +2,258 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831363A2D54
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Jun 2021 15:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD0D3A2EA5
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Jun 2021 16:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhFJNrC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Jun 2021 09:47:02 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:41108 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230035AbhFJNrB (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:47:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0Ubz5Z10_1623332701;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0Ubz5Z10_1623332701)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 10 Jun 2021 21:45:01 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        id S231366AbhFJOyJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Jun 2021 10:54:09 -0400
+Received: from mail-eopbgr150047.outbound.protection.outlook.com ([40.107.15.47]:33957
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231337AbhFJOyI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:54:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DKVA7SY7UFH+W1Z5F+bNWw5CBNEXt5mTrO4S6QN+xS4+wPMJ6Pl2WGUthlJ678MrDZ7GAyHwb1v/eR26tPfME0xq4s83LkFCKmz3+hsMy3SKDhdvXVWPGzFz7Qjl5kBmIekyMhcjMsgHigS8DX3pWrEN+idRie8K9H6krD3PEstdGFtMNn0/m9gy1bDOfN/5s0iqVdCtqYuHU15z2hlWjexVh3r4XHiFvq3GC4tdJLIPGE0afmsQtnteLk6jEmj8Lsw1O5J9ULI4IsOPJtUB2m8NAq5C0SkeOJaTejYeoS5+VLb+zcPhsXVCtnusJBH35EZE2p8d3FpMad016uI6pg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+putAtfRiM2iBKqceOyA10Rf3OE07Fy+GsVAKbVMFzI=;
+ b=b2fcmiKgjr1kIHNO5QtLkvmmu2TkNowxX7agOjlBvkNh195Bqel56ABaKG6jS6byMAkSovTEresPA/IfnfpP7JKND6VPpS/gzUIA8jR6KK8Pk+X5a7yqRaCWEMVUDoQijkYCGl0BtcA8ImXu5XFHwATDrZtaOJYksGOlbIzYOpiqWhYzxYSeJ3ibBNDnkTYjYv0H+Q3k56svJP8OJOorT3+DYbHJb2pofexpCYU/Lcfeic2iIdmD9IAuqd+zyn0TKuWPvyePkxtcWO8Zj4eGj2Oi35FntBaM6wetL8cjjwKBEfPQzpjMkL22UV/CAvSwEY/ChNKD/CjiCM97DfuxRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+putAtfRiM2iBKqceOyA10Rf3OE07Fy+GsVAKbVMFzI=;
+ b=k/v/aCrJmcYiY+o2yYu5/Pt2qYZwPgjfy9pykOCWs5OAGqGp7/DooazFTaMgGYUwGmG4JQaPYyNm0gnG7trWxyIld0iayQWpfaeCV6HrnZvgYCOTSuszWlyGlUl80Yo2NTquLrXOS7WXYb2oQmOCfwW5On/tjtfDDDBONCew+aM=
+Authentication-Results: lists.linux-foundation.org; dkim=none (message not
+ signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
+ by VI1PR04MB4048.eurprd04.prod.outlook.com (2603:10a6:803:44::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Thu, 10 Jun
+ 2021 14:52:10 +0000
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::e8df:8117:d230:f321]) by VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::e8df:8117:d230:f321%5]) with mapi id 15.20.4219.022; Thu, 10 Jun 2021
+ 14:52:10 +0000
+Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb)
+ stable/for-linus-5.12)
+To:     Dominique MARTINET <dominique.martinet@atmark-techno.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jianxiong Gao <jxgao@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lukas Hartmann <lukas@mntmn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        "Markku-Juhani O . Saarinen" <mjos@iki.fi>,
-        Jussi Kivilinna <jussi.kivilinna@iki.fi>, x86@kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH 3/3] crypto: x86/sm4 - add AES-NI/AVX/x86_64 assembler implementation
-Date:   Thu, 10 Jun 2021 21:44:59 +0800
-Message-Id: <20210610134459.28541-4-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
-In-Reply-To: <20210610134459.28541-1-tianjia.zhang@linux.alibaba.com>
-References: <20210610134459.28541-1-tianjia.zhang@linux.alibaba.com>
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+References: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local>
+ <YL7XXNOnbaDgmTB9@atmark-techno.com>
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+Message-ID: <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com>
+Date:   Thu, 10 Jun 2021 17:52:07 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <YL7XXNOnbaDgmTB9@atmark-techno.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [78.97.206.147]
+X-ClientProxiedBy: AM0PR04CA0131.eurprd04.prod.outlook.com
+ (2603:10a6:208:55::36) To VI1PR04MB4046.eurprd04.prod.outlook.com
+ (2603:10a6:803:4d::29)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.213] (78.97.206.147) by AM0PR04CA0131.eurprd04.prod.outlook.com (2603:10a6:208:55::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Thu, 10 Jun 2021 14:52:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4a1fd4c5-35aa-41ba-b4e9-08d92c1f531b
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4048:
+X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB404803EE388E9643F578659898359@VI1PR04MB4048.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Xh5AAVHc/0r+Q/6paQlib+U4Wq5v41XOQbxdzL9cVfnn3PYWghw/8GpQgpn602X1SrtspvWXF1C492V4jW9vPohGQQMsPMdHvDRBqAJ4HakaCLMaN0iyjxYU09bRKVJTtAuD32slCUVZTmNwlCmE3QjIvnH4TrwUs8mIImQD7ENwtpHbonNJFDByP/jvOdvqXs6vFqI2bj8ZcXYSjFg3gBVoxUOY1XRMLplljgMqs3LWoRWrRyCBh2gK9KLC+CcTNKIzBpzDZ5wdUQ+pKe+Km8vAU2Z4CpkilVIsgv1ctrT7ImTHinGgEE4WsfeMInVZHhHsgPWDi5n/7J1st/7vLtrtOckky5RhVTC0dKechu/fQm8jYbHQiRe0s/qi5WPQiRR72dwsQOaGUaP4t03Jv5+bMfp4WOzR8kSZyv3VuwZL/D6XTSbF4q5YlQIStYWhyoAs+MinU1TfppxAmf9pNRcWMd6lRV3JoCkrCMCuD546TzY7EJ4I+zsr4Pai3LSrq9rmDTQkf64MSoG3JO+eP7L+ajepnDsrAY/MvTBpqGDjyYv9+ojNeZR8CNzgKL8IJpYvEsRyOyg/ms8Pi909BlsQd9MfCZYbHpyvUZp2GvqkXBTsEfO6QMn6HjU0HZSm1uTaCX6LABvD/UwDxwzFXBoNQmZuHcDh1Yf8zAo7cMaMZdbdBopkOLhgWu6ETzhDyVzzMXyD+iSggNs8BpSEcbC2xdA3kb5vw6MS/f4yTky3wFsFXY97OmOnx66EWisXYJFGiOdQN6CU20pn7UYW0W97oA8sMMQPcWeYM+GQ8xevF3xB8Wx6FeMgGKuwUZABrHuwH2lQ4kaD02ecI3sBkw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(396003)(39860400002)(346002)(38350700002)(16576012)(38100700002)(45080400002)(478600001)(8936002)(110136005)(54906003)(2616005)(966005)(83380400001)(5660300002)(31686004)(36756003)(26005)(4326008)(53546011)(66556008)(316002)(66476007)(31696002)(52116002)(86362001)(2906002)(66946007)(956004)(6486002)(186003)(7416002)(16526019)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UTVQaXN1bWpjUmJkUFdheXhxd1lkZHdNdlFBOG9PZTl6TGVtbVMxQ2hpY25n?=
+ =?utf-8?B?dXdCRjNnekhRUjR4ZUViMGRsYit1UGM4MFdMSzN5cFNIWmRHUTJWaXV2ckda?=
+ =?utf-8?B?djVTUFNHQmM1cXN6SlBTSEo5N2JjYXVoMWNNR2VCcEltcFhPcVJkOU5sVk5J?=
+ =?utf-8?B?TTZoa1hoeEw1c2hNK0pNb3FZamxlV1JUWTUzQU1xUnRYZEpicE84Nld5WnUv?=
+ =?utf-8?B?Mi9uNUcyUDNaM3cyL0RvaEtIS2JsK2dwSjZqZFZ0M1gvV050Z1p2R0VjZk44?=
+ =?utf-8?B?bmlRYmhvME9tQzlkTFM2SlIyeW92RnFkU1BaZEZGYzVzZWpQNlJhK3Zzcndo?=
+ =?utf-8?B?Rk84YSt5ZFF1Snl5ZlV4U1lTVjJBV0pkS2paSDB2d0IwSWxsRUxXQ0hCSGxv?=
+ =?utf-8?B?U0VQUDVjWUFoKzJLdm9Jc3BWK01QSGwwMGZIaW5YK2thUXhmME5idTh4S09J?=
+ =?utf-8?B?aFd6cHhtSnFETDc2ZHRjeFFRZk5mLzNVTkZvTzVSN3JZQ2RRVVJqOGY2SlY3?=
+ =?utf-8?B?eVVFQ2JmVC9wQzdoWVAwTEk2MStTMjl1dTJteTJYRHpTYis5L0ZsbFYwTytX?=
+ =?utf-8?B?UlFIdHRVbW1uaUNQTGVQK0Z5VCtHNHdVK0JWR0dWRUJ4b1R6RVM5b2h3eklE?=
+ =?utf-8?B?SWx4MnJ2NjZ4a1VRZWEvOUI3aEc0ZnlRa0UxOHpTS09ZR3Zlb21HV0JiNEdn?=
+ =?utf-8?B?bHFZaS9OQmMzQnp2R0trMm9CazJQZm0xOFRyRHRKSDNtK0NNekZBMWdhSlll?=
+ =?utf-8?B?ZFc2OXZ6bkpmRFZWL3pIRTc0cWhlZWRZazF6U1Rnd21paGFKbVlxemh6SnhR?=
+ =?utf-8?B?MGRmZnM5QzIvSmtwY3lzR1hMRnhNOStiWjhacC8wN005UTRsOWVpcW9RRmVy?=
+ =?utf-8?B?OGc1VE92aXpNaE8rMlRYYktHS3pnUjI2UTk4Z3lZVlArRUZsaEpQOXllN091?=
+ =?utf-8?B?M1l3Q1lNSFZZWFFzR2I0cmgwbGlNbDZ4eE1UT2NtMmVzZjZxajVobUc3K3Yx?=
+ =?utf-8?B?eGI3Nk9VYlNGbE5ma09IajRhd2NwQnp1NDZnd2luYzFaT0VGZjB2SWNwN1ox?=
+ =?utf-8?B?M3paTitBS1JnL2Z1U21ydDZNNkx1M0hVTy95dGp4S0ZpZDhIcGJ3emdPYzNo?=
+ =?utf-8?B?VEFtc09RdEdiOCtGVldxdlZpUXVZZ2R6eS8xdk1pVU1RaWt1M1dGOEFsY2U5?=
+ =?utf-8?B?VmNFdk8xRTFqMmRGTXVyb1dRaDBTTlYySjZpZzFyZG50Q0pSczloMjVuY0px?=
+ =?utf-8?B?aUN1czUvVVJicjRzelArbVhIa0pHRURQRjBYbzNLWEIvMjlXQ0Z5OVhBK0or?=
+ =?utf-8?B?aWdzN3ZUM3c4L0p6Y3RJMm9hcnhZS3Y3VzM5Z0ZNUkpmTDVpL3JXZG9wZ2lw?=
+ =?utf-8?B?NUkzaHhFNkhQdFZWUjQxWFVQalRCQTFDQ2JONGRrWG96bjBTanQ5NUlqWkFH?=
+ =?utf-8?B?aXB2NTNqVGIrQ0ljUm4xZXpud2diWk0vdXNCNkgxZ3EvQ0pVaGkwVkRUUmhD?=
+ =?utf-8?B?bDA0TGdYeVdmT0VoTFhPK1BrTElFTHFtV3Z2L0VRWXIvRGdpZTlDaGdPUlhT?=
+ =?utf-8?B?eTJlV1lvMFhwYmZCeEdtdG5LTExLYTFVMXYyaWZpOG00R29kcEtUMkxFL2FC?=
+ =?utf-8?B?MG12RHJrNjFHZElLY3NGQmgyVVFoTjNzUFRGN21CZ2N3YnhEKzYxVExDMzRk?=
+ =?utf-8?B?UXNtTTd2NDYwVW1KRHNSeXdDalJJaGhZa2JXT2g0MW91SUU5YnljbVhLcExt?=
+ =?utf-8?Q?TvPFlu98O3oRyZkbwywfyYoiyfn//xBYkyGlQwt?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a1fd4c5-35aa-41ba-b4e9-08d92c1f531b
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 14:52:10.2087
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yxiJUdWkNjXNfAahzWa6om8Rg1S9NANYUtAumj/+/ktAQAZF2DTTil/hp2jEIL7Qtu6qTjyrqMJXSUwpH53H3g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4048
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds AES-NI/AVX/x86_64 assembler implementation of SM4
-block cipher. Through two affine transforms, we can use the AES
-S-Box to simulate the SM4 S-Box to achieve the effect of instruction
-acceleration.
+On 6/8/2021 5:35 AM, Dominique MARTINET wrote:
+> I'm not able to find any individual mails for Christoph's patches so
+> replying to the PR.
+> 
+The patch set is here:
+https://lore.kernel.org/linux-iommu/20210207160327.2955490-1-hch@lst.de
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- arch/x86/crypto/Makefile               |   3 +
- arch/x86/crypto/sm4-aesni-avx-asm_64.S | 339 +++++++++++++++++++++++++
- arch/x86/crypto/sm4_aesni_avx_glue.c   | 115 +++++++++
- crypto/Kconfig                         |  29 +++
- 4 files changed, 486 insertions(+)
- create mode 100644 arch/x86/crypto/sm4-aesni-avx-asm_64.S
- create mode 100644 arch/x86/crypto/sm4_aesni_avx_glue.c
+> In particular, this commit:
+> Konrad Rzeszutek Wilk wrote on Fri, Feb 26, 2021 at 11:00:08AM -0500:
+>> Christoph Hellwig (8):
+>>       swiotlb: don't modify orig_addr in swiotlb_tbl_sync_single
+> 
+> merged as 16fc3cef33a0, breaks caam as used today (thanks Lukas for
+> bisecting it!)
+> 
+Thanks.
 
-diff --git a/arch/x86/crypto/Makefile b/arch/x86/crypto/Makefile
-index d0959e7b809f..08f95d4e1e7c 100644
---- a/arch/x86/crypto/Makefile
-+++ b/arch/x86/crypto/Makefile
-@@ -88,6 +88,9 @@ nhpoly1305-avx2-y := nh-avx2-x86_64.o nhpoly1305-avx2-glue.o
- 
- obj-$(CONFIG_CRYPTO_CURVE25519_X86) += curve25519-x86_64.o
- 
-+obj-$(CONFIG_CRYPTO_SM4_AESNI_AVX_X86_64) += sm4-aesni-avx-x86_64.o
-+sm4-aesni-avx-x86_64-y := sm4-aesni-avx-asm_64.o sm4_aesni_avx_glue.o
-+
- quiet_cmd_perlasm = PERLASM $@
-       cmd_perlasm = $(PERL) $< > $@
- $(obj)/%.S: $(src)/%.pl FORCE
-diff --git a/arch/x86/crypto/sm4-aesni-avx-asm_64.S b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-new file mode 100644
-index 000000000000..c7cbb7e90bec
---- /dev/null
-+++ b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-@@ -0,0 +1,339 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * SM4 Cipher Algorithm, AES-NI/AVX optimized.
-+ * as specified in
-+ * https://tools.ietf.org/id/draft-ribose-cfrg-sm4-04.html
-+ *
-+ * Copyright (C) 2018 Markku-Juhani O. Saarinen <mjos@iki.fi>
-+ * Copyright (C) 2020 Jussi Kivilinna <jussi.kivilinna@iki.fi>
-+ * Copyright (c) 2021 Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-+ */
-+
-+/* Based on SM4 AES-NI work by libgcrypt and Markku-Juhani O. Saarinen at:
-+ *  https://github.com/mjosaarinen/sm4ni
-+ */
-+
-+#include <linux/linkage.h>
-+#include <asm/frame.h>
-+
-+#define rRIP         (%rip)
-+
-+#define RX0          %xmm0
-+#define RX1          %xmm1
-+#define MASK_4BIT    %xmm2
-+#define RTMP0        %xmm3
-+#define RTMP1        %xmm4
-+#define RTMP2        %xmm5
-+#define RTMP3        %xmm6
-+#define RTMP4        %xmm7
-+
-+#define RA0          %xmm8
-+#define RA1          %xmm9
-+#define RA2          %xmm10
-+#define RA3          %xmm11
-+
-+#define RB0          %xmm12
-+#define RB1          %xmm13
-+#define RB2          %xmm14
-+#define RB3          %xmm15
-+
-+#define RNOT         %xmm0
-+#define RBSWAP       %xmm1
-+
-+
-+/* Transpose four 32-bit words between 128-bit vectors. */
-+#define transpose_4x4(x0, x1, x2, x3, t1, t2) \
-+	vpunpckhdq x1, x0, t2;                \
-+	vpunpckldq x1, x0, x0;                \
-+	                                      \
-+	vpunpckldq x3, x2, t1;                \
-+	vpunpckhdq x3, x2, x2;                \
-+	                                      \
-+	vpunpckhqdq t1, x0, x1;               \
-+	vpunpcklqdq t1, x0, x0;               \
-+	                                      \
-+	vpunpckhqdq x2, t2, x3;               \
-+	vpunpcklqdq x2, t2, x2;
-+
-+/* pre-SubByte transform. */
-+#define transform_pre(x, lo_t, hi_t, mask4bit, tmp0) \
-+	vpand x, mask4bit, tmp0;                     \
-+	vpandn x, mask4bit, x;                       \
-+	vpsrld $4, x, x;                             \
-+	                                             \
-+	vpshufb tmp0, lo_t, tmp0;                    \
-+	vpshufb x, hi_t, x;                          \
-+	vpxor tmp0, x, x;
-+
-+/* post-SubByte transform. Note: x has been XOR'ed with mask4bit by
-+ * 'vaeslastenc' instruction.
-+ */
-+#define transform_post(x, lo_t, hi_t, mask4bit, tmp0) \
-+	vpandn mask4bit, x, tmp0;                     \
-+	vpsrld $4, x, x;                              \
-+	vpand x, mask4bit, x;                         \
-+	                                              \
-+	vpshufb tmp0, lo_t, tmp0;                     \
-+	vpshufb x, hi_t, x;                           \
-+	vpxor tmp0, x, x;
-+
-+
-+.section	.rodata.cst16, "aM", @progbits, 16
-+.align 16
-+
-+/*
-+ * Following four affine transform look-up tables are from work by
-+ * Markku-Juhani O. Saarinen, at https://github.com/mjosaarinen/sm4ni
-+ *
-+ * These allow exposing SM4 S-Box from AES SubByte.
-+ */
-+
-+/* pre-SubByte affine transform, from SM4 field to AES field. */
-+.Lpre_tf_lo_s:
-+	.quad 0x9197E2E474720701, 0xC7C1B4B222245157
-+.Lpre_tf_hi_s:
-+	.quad 0xE240AB09EB49A200, 0xF052B91BF95BB012
-+
-+/* post-SubByte affine transform, from AES field to SM4 field. */
-+.Lpost_tf_lo_s:
-+	.quad 0x5B67F2CEA19D0834, 0xEDD14478172BBE82
-+.Lpost_tf_hi_s:
-+	.quad 0xAE7201DD73AFDC00, 0x11CDBE62CC1063BF
-+
-+/* For isolating SubBytes from AESENCLAST, inverse shift row */
-+.Linv_shift_row:
-+	.byte 0x00, 0x0d, 0x0a, 0x07, 0x04, 0x01, 0x0e, 0x0b
-+	.byte 0x08, 0x05, 0x02, 0x0f, 0x0c, 0x09, 0x06, 0x03
-+
-+/* Inverse shift row + Rotate left by 8 bits on 32-bit words with vpshufb */
-+.Linv_shift_row_rol_8:
-+	.byte 0x07, 0x00, 0x0d, 0x0a, 0x0b, 0x04, 0x01, 0x0e
-+	.byte 0x0f, 0x08, 0x05, 0x02, 0x03, 0x0c, 0x09, 0x06
-+
-+/* Inverse shift row + Rotate left by 16 bits on 32-bit words with vpshufb */
-+.Linv_shift_row_rol_16:
-+	.byte 0x0a, 0x07, 0x00, 0x0d, 0x0e, 0x0b, 0x04, 0x01
-+	.byte 0x02, 0x0f, 0x08, 0x05, 0x06, 0x03, 0x0c, 0x09
-+
-+/* Inverse shift row + Rotate left by 24 bits on 32-bit words with vpshufb */
-+.Linv_shift_row_rol_24:
-+	.byte 0x0d, 0x0a, 0x07, 0x00, 0x01, 0x0e, 0x0b, 0x04
-+	.byte 0x05, 0x02, 0x0f, 0x08, 0x09, 0x06, 0x03, 0x0c
-+
-+/* For CTR-mode IV byteswap */
-+.Lbswap128_mask:
-+	.byte 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
-+
-+/* For input word byte-swap */
-+.Lbswap32_mask:
-+	.byte 3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12
-+
-+.align 4
-+/* 4-bit mask */
-+.L0f0f0f0f:
-+	.long 0x0f0f0f0f
-+
-+
-+.text
-+.align 16
-+
-+/*
-+ * void sm4_aesni_avx_expand_key(const u8 *key, u32 *rk_enc,
-+ *                  u32 *rk_dec, const u32 *fk, const u32 *ck);
-+ */
-+SYM_FUNC_START(sm4_aesni_avx_expand_key)
-+	/* input:
-+	 *	%rdi: 128-bit key
-+	 *	%rsi: rkey_enc
-+	 *	%rdx: rkey_dec
-+	 *	%rcx: fk array
-+	 *	%r8: ck array
-+	 */
-+	FRAME_BEGIN
-+
-+	vmovd 0*4(%rdi), RA0;
-+	vmovd 1*4(%rdi), RA1;
-+	vmovd 2*4(%rdi), RA2;
-+	vmovd 3*4(%rdi), RA3;
-+
-+	vmovdqa .Lbswap32_mask rRIP, RTMP2;
-+	vpshufb RTMP2, RA0, RA0;
-+	vpshufb RTMP2, RA1, RA1;
-+	vpshufb RTMP2, RA2, RA2;
-+	vpshufb RTMP2, RA3, RA3;
-+
-+	vmovd 0*4(%rcx), RB0;
-+	vmovd 1*4(%rcx), RB1;
-+	vmovd 2*4(%rcx), RB2;
-+	vmovd 3*4(%rcx), RB3;
-+	vpxor RB0, RA0, RA0;
-+	vpxor RB1, RA1, RA1;
-+	vpxor RB2, RA2, RA2;
-+	vpxor RB3, RA3, RA3;
-+
-+	vbroadcastss .L0f0f0f0f rRIP, MASK_4BIT;
-+	vmovdqa .Lpre_tf_lo_s rRIP, RTMP4;
-+	vmovdqa .Lpre_tf_hi_s rRIP, RB0;
-+	vmovdqa .Lpost_tf_lo_s rRIP, RB1;
-+	vmovdqa .Lpost_tf_hi_s rRIP, RB2;
-+	vmovdqa .Linv_shift_row rRIP, RB3;
-+
-+#define ROUND(round, s0, s1, s2, s3)                              \
-+	vbroadcastss (4*(round))(%r8), RX0;                       \
-+	vpxor s1, RX0, RX0;                                       \
-+	vpxor s2, RX0, RX0;                                       \
-+	vpxor s3, RX0, RX0; /* s1 ^ s2 ^ s3 ^ rk */               \
-+	                                                          \
-+	/* sbox, non-linear part */                               \
-+	transform_pre(RX0, RTMP4, RB0, MASK_4BIT, RTMP0);         \
-+	vaesenclast MASK_4BIT, RX0, RX0;                          \
-+	transform_post(RX0, RB1, RB2, MASK_4BIT, RTMP0);          \
-+	                                                          \
-+	/* linear part */                                         \
-+	vpshufb RB3, RX0, RX0;                                    \
-+	vpxor RX0, s0, s0; /* s0 ^ x */                           \
-+	vpslld $13, RX0, RTMP0;                                   \
-+	vpsrld $19, RX0, RTMP1;                                   \
-+	vpslld $23, RX0, RTMP2;                                   \
-+	vpsrld $9, RX0, RTMP3;                                    \
-+	vpxor RTMP0, RTMP1, RTMP1;                                \
-+	vpxor RTMP2, RTMP3, RTMP3;                                \
-+	vpxor RTMP1, s0, s0; /* s0 ^ x ^ rol(x,13) */             \
-+	vpxor RTMP3, s0, s0; /* s0 ^ x ^ rol(x,13) ^ rol(x,23) */
-+
-+	leaq (32*4)(%r8), %rax;
-+	leaq (32*4)(%rdx), %rdx;
-+.align 16
-+.Lroundloop_expand_key:
-+	leaq (-4*4)(%rdx), %rdx;
-+	ROUND(0, RA0, RA1, RA2, RA3);
-+	ROUND(1, RA1, RA2, RA3, RA0);
-+	ROUND(2, RA2, RA3, RA0, RA1);
-+	ROUND(3, RA3, RA0, RA1, RA2);
-+	leaq (4*4)(%r8), %r8;
-+	vmovd RA0, (0*4)(%rsi);
-+	vmovd RA1, (1*4)(%rsi);
-+	vmovd RA2, (2*4)(%rsi);
-+	vmovd RA3, (3*4)(%rsi);
-+	vmovd RA0, (3*4)(%rdx);
-+	vmovd RA1, (2*4)(%rdx);
-+	vmovd RA2, (1*4)(%rdx);
-+	vmovd RA3, (0*4)(%rdx);
-+	leaq (4*4)(%rsi), %rsi;
-+	cmpq %rax, %r8;
-+	jne .Lroundloop_expand_key;
-+
-+#undef ROUND
-+
-+	vzeroall;
-+	FRAME_END
-+	ret;
-+SYM_FUNC_END(sm4_aesni_avx_expand_key)
-+
-+
-+/*
-+ * void sm4_aesni_avx_crypt4(const u32 *rk, u8 *dst,
-+ *                          const u8 *src, int nblocks)
-+ */
-+SYM_FUNC_START(sm4_aesni_avx_crypt4)
-+	/* input:
-+	 *	%rdi: round key array, CTX
-+	 *	%rsi: dst (1..4 blocks)
-+	 *	%rdx: src (1..4 blocks)
-+	 *	%rcx: num blocks (1..4)
-+	 */
-+	FRAME_BEGIN
-+
-+	vmovdqu 0*16(%rdx), RA0;
-+	vmovdqa RA0, RA1;
-+	vmovdqa RA0, RA2;
-+	vmovdqa RA0, RA3;
-+	cmpq $2, %rcx;
-+	jb .Lblk4_load_input_done;
-+	vmovdqu 1*16(%rdx), RA1;
-+	je .Lblk4_load_input_done;
-+	vmovdqu 2*16(%rdx), RA2;
-+	cmpq $3, %rcx;
-+	je .Lblk4_load_input_done;
-+	vmovdqu 3*16(%rdx), RA3;
-+
-+.Lblk4_load_input_done:
-+
-+	vmovdqa .Lbswap32_mask rRIP, RTMP2;
-+	vpshufb RTMP2, RA0, RA0;
-+	vpshufb RTMP2, RA1, RA1;
-+	vpshufb RTMP2, RA2, RA2;
-+	vpshufb RTMP2, RA3, RA3;
-+
-+	vbroadcastss .L0f0f0f0f rRIP, MASK_4BIT;
-+	vmovdqa .Lpre_tf_lo_s rRIP, RTMP4;
-+	vmovdqa .Lpre_tf_hi_s rRIP, RB0;
-+	vmovdqa .Lpost_tf_lo_s rRIP, RB1;
-+	vmovdqa .Lpost_tf_hi_s rRIP, RB2;
-+	vmovdqa .Linv_shift_row rRIP, RB3;
-+	vmovdqa .Linv_shift_row_rol_8 rRIP, RTMP2;
-+	vmovdqa .Linv_shift_row_rol_16 rRIP, RTMP3;
-+	transpose_4x4(RA0, RA1, RA2, RA3, RTMP0, RTMP1);
-+
-+#define ROUND(round, s0, s1, s2, s3)                                \
-+	vbroadcastss (4*(round))(%rdi), RX0;                        \
-+	vpxor s1, RX0, RX0;                                         \
-+	vpxor s2, RX0, RX0;                                         \
-+	vpxor s3, RX0, RX0; /* s1 ^ s2 ^ s3 ^ rk */                 \
-+	                                                            \
-+	/* sbox, non-linear part */                                 \
-+	transform_pre(RX0, RTMP4, RB0, MASK_4BIT, RTMP0);           \
-+	vaesenclast MASK_4BIT, RX0, RX0;                            \
-+	transform_post(RX0, RB1, RB2, MASK_4BIT, RTMP0);            \
-+	                                                            \
-+	/* linear part */                                           \
-+	vpshufb RB3, RX0, RTMP0;                                    \
-+	vpxor RTMP0, s0, s0; /* s0 ^ x */                           \
-+	vpshufb RTMP2, RX0, RTMP1;                                  \
-+	vpxor RTMP1, RTMP0, RTMP0; /* x ^ rol(x,8) */               \
-+	vpshufb RTMP3, RX0, RTMP1;                                  \
-+	vpxor RTMP1, RTMP0, RTMP0; /* x ^ rol(x,8) ^ rol(x,16) */   \
-+	vpshufb .Linv_shift_row_rol_24 rRIP, RX0, RTMP1;            \
-+	vpxor RTMP1, s0, s0; /* s0 ^ x ^ rol(x,24) */               \
-+	vpslld $2, RTMP0, RTMP1;                                    \
-+	vpsrld $30, RTMP0, RTMP0;                                   \
-+	vpxor RTMP0, s0, s0;                                        \
-+	/* s0 ^ x ^ rol(x,2) ^ rol(x,10) ^ rol(x,18) ^ rol(x,24) */ \
-+	vpxor RTMP1, s0, s0;
-+
-+	leaq (32*4)(%rdi), %rax;
-+.align 16
-+.Lroundloop_blk4:
-+	ROUND(0, RA0, RA1, RA2, RA3);
-+	ROUND(1, RA1, RA2, RA3, RA0);
-+	ROUND(2, RA2, RA3, RA0, RA1);
-+	ROUND(3, RA3, RA0, RA1, RA2);
-+	leaq (4*4)(%rdi), %rdi;
-+	cmpq %rax, %rdi;
-+	jne .Lroundloop_blk4;
-+
-+#undef ROUND
-+
-+	vmovdqa .Lbswap128_mask rRIP, RTMP2;
-+
-+	transpose_4x4(RA0, RA1, RA2, RA3, RTMP0, RTMP1);
-+	vpshufb RTMP2, RA0, RA0;
-+	vpshufb RTMP2, RA1, RA1;
-+	vpshufb RTMP2, RA2, RA2;
-+	vpshufb RTMP2, RA3, RA3;
-+
-+	vmovdqu RA0, 0*16(%rsi);
-+	cmpq $2, %rcx;
-+	jb .Lblk4_store_output_done;
-+	vmovdqu RA1, 1*16(%rsi);
-+	je .Lblk4_store_output_done;
-+	vmovdqu RA2, 2*16(%rsi);
-+	cmpq $3, %rcx;
-+	je .Lblk4_store_output_done;
-+	vmovdqu RA3, 3*16(%rsi);
-+
-+.Lblk4_store_output_done:
-+	vzeroall;
-+	FRAME_END
-+	ret;
-+SYM_FUNC_END(sm4_aesni_avx_crypt4)
-diff --git a/arch/x86/crypto/sm4_aesni_avx_glue.c b/arch/x86/crypto/sm4_aesni_avx_glue.c
-new file mode 100644
-index 000000000000..3f822fa1070a
---- /dev/null
-+++ b/arch/x86/crypto/sm4_aesni_avx_glue.c
-@@ -0,0 +1,115 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * SM4 Cipher Algorithm, AES-NI/AVX optimized.
-+ * as specified in
-+ * https://tools.ietf.org/id/draft-ribose-cfrg-sm4-04.html
-+ *
-+ * Copyright (c) 2021 Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/crypto.h>
-+#include <asm/simd.h>
-+#include <crypto/internal/simd.h>
-+#include <crypto/sm4.h>
-+
-+asmlinkage void sm4_aesni_avx_expand_key(const u8 *key, u32 *rk_enc,
-+				u32 *rk_dec, const u32 *fk, const u32 *ck);
-+asmlinkage void sm4_aesni_avx_crypt4(const u32 *rk, u8 *dst,
-+				const u8 *src, int nblocks);
-+
-+static int sm4_setkey(struct crypto_tfm *tfm, const u8 *in_key,
-+			unsigned int key_len)
-+{
-+	struct crypto_sm4_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	if (key_len != SM4_KEY_SIZE)
-+		return -EINVAL;
-+
-+	if (crypto_simd_usable()) {
-+		kernel_fpu_begin();
-+		sm4_aesni_avx_expand_key(in_key, ctx->rkey_enc,
-+				ctx->rkey_dec, crypto_sm4_fk, crypto_sm4_ck);
-+		kernel_fpu_end();
-+	} else
-+		crypto_sm4_expand_key(ctx, in_key, key_len);
-+
-+	return 0;
-+}
-+
-+static void sm4_encrypt(struct crypto_tfm *tfm, u8 *out, const u8 *in)
-+{
-+	const struct crypto_sm4_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	if (crypto_simd_usable()) {
-+		kernel_fpu_begin();
-+		sm4_aesni_avx_crypt4(ctx->rkey_enc, out, in, 1);
-+		kernel_fpu_end();
-+	} else
-+		crypto_sm4_do_crypt(ctx->rkey_enc, out, in);
-+}
-+
-+static void sm4_decrypt(struct crypto_tfm *tfm, u8 *out, const u8 *in)
-+{
-+	const struct crypto_sm4_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	if (crypto_simd_usable()) {
-+		kernel_fpu_begin();
-+		sm4_aesni_avx_crypt4(ctx->rkey_dec, out, in, 1);
-+		kernel_fpu_end();
-+	} else
-+		crypto_sm4_do_crypt(ctx->rkey_dec, out, in);
-+}
-+
-+static struct crypto_alg sm4_asm_alg = {
-+	.cra_name		= "sm4",
-+	.cra_driver_name	= "sm4-asm",
-+	.cra_priority		= 200,
-+	.cra_flags		= CRYPTO_ALG_TYPE_CIPHER,
-+	.cra_blocksize		= SM4_BLOCK_SIZE,
-+	.cra_ctxsize		= sizeof(struct crypto_sm4_ctx),
-+	.cra_module		= THIS_MODULE,
-+	.cra_u			= {
-+		.cipher = {
-+			.cia_min_keysize	= SM4_KEY_SIZE,
-+			.cia_max_keysize	= SM4_KEY_SIZE,
-+			.cia_setkey		= sm4_setkey,
-+			.cia_encrypt		= sm4_encrypt,
-+			.cia_decrypt		= sm4_decrypt
-+		}
-+	}
-+};
-+
-+static int __init sm4_init(void)
-+{
-+	const char *feature_name;
-+
-+	if (!boot_cpu_has(X86_FEATURE_AVX) ||
-+	    !boot_cpu_has(X86_FEATURE_AES) ||
-+	    !boot_cpu_has(X86_FEATURE_OSXSAVE)) {
-+		pr_info("AVX or AES-NI instructions are not detected.\n");
-+		return -ENODEV;
-+	}
-+
-+	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM,
-+				&feature_name)) {
-+		pr_info("CPU feature '%s' is not supported.\n", feature_name);
-+		return -ENODEV;
-+	}
-+
-+	return crypto_register_alg(&sm4_asm_alg);
-+}
-+
-+static void __exit sm4_exit(void)
-+{
-+	crypto_unregister_alg(&sm4_asm_alg);
-+}
-+
-+module_init(sm4_init);
-+module_exit(sm4_exit);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Tianjia Zhang <tianjia.zhang@linux.alibaba.com>");
-+MODULE_DESCRIPTION("SM4 Cipher Algorithm, AES-NI/AVX optimized");
-+MODULE_ALIAS_CRYPTO("sm4");
-+MODULE_ALIAS_CRYPTO("sm4-asm");
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 4fbc9c080ca9..9f639395c667 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1570,6 +1570,35 @@ config CRYPTO_SM4
- 
- 	  If unsure, say N.
- 
-+config CRYPTO_SM4_AESNI_AVX_X86_64
-+	tristate "SM4 cipher algorithm (x86_64/AES-NI/AVX)"
-+	depends on X86 && 64BIT
-+	select CRYPTO_SKCIPHER
-+	select CRYPTO_SIMD
-+	select CRYPTO_ALGAPI
-+	select CRYPTO_LIB_SM4
-+	help
-+	  SM4 cipher algorithms (OSCCA GB/T 32907-2016) (x86_64/AES-NI/AVX).
-+
-+	  SM4 (GBT.32907-2016) is a cryptographic standard issued by the
-+	  Organization of State Commercial Administration of China (OSCCA)
-+	  as an authorized cryptographic algorithms for the use within China.
-+
-+	  SMS4 was originally created for use in protecting wireless
-+	  networks, and is mandated in the Chinese National Standard for
-+	  Wireless LAN WAPI (Wired Authentication and Privacy Infrastructure)
-+	  (GB.15629.11-2003).
-+
-+	  The latest SM4 standard (GBT.32907-2016) was proposed by OSCCA and
-+	  standardized through TC 260 of the Standardization Administration
-+	  of the People's Republic of China (SAC).
-+
-+	  The input, output, and key of SMS4 are each 128 bits.
-+
-+	  See also: <https://eprint.iacr.org/2008/329.pdf>
-+
-+	  If unsure, say N.
-+
- config CRYPTO_TEA
- 	tristate "TEA, XTEA and XETA cipher algorithms"
- 	depends on CRYPTO_USER_API_ENABLE_OBSOLETE
--- 
-2.19.1.3.ge56e4f7
+I've noticed the failure also in v5.10 and v5.11 stable kernels,
+since the patch set has been backported.
 
+> 
+> More precisely, drivers/crypto/caam/caamalg.c does a lot of mappings
+> that aren't aligned:
+> 
+> dma_sync_single_for_device(jrdev, ctx->sh_desc_enc_dma,
+>                            desc_bytes(desc), ctx->dir);
+> dma_sync_single_for_device(jrdev, ctx->sh_desc_dec_dma,
+>                            desc_bytes(desc), ctx->dir);
+> 
+Right. These dma sync ops are in caaamalg.c and should be fixed.
+
+OTOH there are other dma sync ops in caam driver - e.g. caamhash.c:
+	dma_sync_single_for_device(jrdev, ctx->sh_desc_update_dma,
+				   desc_bytes(desc), ctx->dir);
+where the mappings are aligned (see struct caam_hash_ctx),
+but even in this case the crypto algorithms are failing.
+
+> 
+> which can be caught by crypto tests with this caam enabled, for example
+> adding a warning when an unaligned mapping happens I get this trace:
+> --------
+> [ 1628.670226]  swiotlb_tbl_sync_single+0x74/0xa0
+> [ 1628.674677]  dma_sync_single_for_device+0xe4/0x110
+> [ 1628.679472]  skcipher_setkey+0xd0/0xf0
+> [ 1628.683224]  des3_skcipher_setkey+0x74/0xac
+> [ 1628.687416]  crypto_skcipher_setkey+0x54/0x110
+> [ 1628.691866]  crypto_authenc_setkey+0x94/0xd0
+> [ 1628.696138]  crypto_aead_setkey+0x34/0x10c
+> [ 1628.700236]  test_aead_vec_cfg+0x3a0/0x770
+> [ 1628.704338]  test_aead+0xac/0x130
+> [ 1628.707656]  alg_test_aead+0xa8/0x190
+> [ 1628.711324]  alg_test.part.0+0xf4/0x41c
+> [ 1628.715161]  alg_test+0x1c/0x60
+> [ 1628.718307]  do_test+0x37ec/0x4c50
+> [ 1628.721709]  do_test+0x4bec/0x4c50
+> [ 1628.725114]  tcrypt_mod_init+0x54/0xac
+> [ 1628.728864]  do_one_initcall+0x4c/0x1b0
+> [ 1628.732701]  kernel_init_freeable+0x1d0/0x234
+> [ 1628.737060]  kernel_init+0x10/0x114
+> [ 1628.740550]  ret_from_fork+0x10/0x24
+> -----
+> 
+> and the tests themselves also fail (all or at least most of them) with
+> e.g.
+> ------
+> [    8.454233] caam_jr 30901000.jr: 40001713: DECO: desc idx 23: Header Error. Invalid length or parity, or certain other problems.
+> [    8.465820] alg: ahash: hmac-sha256-caam final() failed with err -22 on test vector 0, cfg="init+update+final aligned buffer"
+> [    8.477149] ------------[ cut here ]------------
+> [    8.481781] alg: self-tests for hmac-sha256-caam (hmac(sha256)) failed (rc=-22)
+> [    8.481818] WARNING: CPU: 2 PID: 295 at crypto/testmgr.c:5645 alg_test.part.0+0x128/0x41c
+> [    8.497307] Modules linked in:
+> [    8.500365] CPU: 2 PID: 295 Comm: cryptomgr_test Tainted: G        W         5.13.0-rc5-00002-gc98cdee6172e #23
+> [    8.510455] Hardware name: NXP i.MX8MPlus EVK board (DT)
+> [    8.515767] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+> [    8.521778] pc : alg_test.part.0+0x128/0x41c
+> [    8.526050] lr : alg_test.part.0+0x128/0x41c
+> [    8.530324] sp : ffff80001371bd10
+> [    8.533637] x29: ffff80001371bd10 x28: 000000000000008f x27: 000000000000008f
+> [    8.540785] x26: 000000000000008f x25: 0000000000000400 x24: ffff8000111658c8
+> [    8.547930] x23: ffff0000c02aaa80 x22: 000000000001008f x21: ffff0000c02aaa00
+> [    8.555075] x20: 0000000000000085 x19: 00000000ffffffea x18: 00000000fffffffc
+> [    8.562221] x17: 0000000000000001 x16: 0000000000000003 x15: 0000000000000020
+> [    8.569365] x14: ffffffffffffffff x13: 00000000000003e7 x12: ffff80001371b9e0
+> [    8.576511] x11: ffff80001188c940 x10: ffff800011844300 x9 : ffff800011886b98
+> [    8.583658] x8 : ffff80001182eb98 x7 : ffff800011886b98 x6 : ffffffffffff0888
+> [    8.590801] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
+> [    8.597945] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff0000c1684e00
+> [    8.605093] Call trace:
+> [    8.607540]  alg_test.part.0+0x128/0x41c
+> [    8.611467]  alg_test+0x1c/0x60
+> [    8.614608]  cryptomgr_test+0x28/0x50
+> [    8.618275]  kthread+0x154/0x160
+> [    8.621511]  ret_from_fork+0x10/0x24
+> [    8.625088] ---[ end trace 2d195377ee3c219e ]---
+> ------
+> 
+> 
+> 
+> Looking at it a bit further it seems to me that swiotlb_bounce() should
+> either keep the offset (re-adding the line that was removed except it
+> would go back in swiotlb_bounce, diff at end of mail), or the size
+> should be adjusted to cover from the start of the page up until the
+> original offset + size which would also probably work (not tested)
+> 
+> That, or make unaligned mappings forbidden and warn when we see one, but
+> I have no idea what other component could be doing some -- I'm not sure
+> if what the caam code does it legitimate (e.g. would it be possible to
+> do the mappings once at init and use them?), but the swiotlb code
+> doesn't look quite right.
+> 
+Well, it's not only about unaligned accesses.
+
+It's also about partial syncs, e.g.
+	dma_handle = dma_map_single(dev, cpu_addr, size, DMA_BIDIRECTIONAL);
+	[...]
+	dma_sync_single_for_device(dev, dma_handle + offset, size - offset,
+				   DMA_BIDIRECTIONAL);
+(where dma_handle + offset should be cacheline-aligned).
+
+Documentation/core-api/dma-api.rst explicitly allows for partial syncs:
+Synchronise a single contiguous or scatter/gather mapping for the CPU
+and device. With the sync_sg API, all the parameters must be the same
+as those passed into the single mapping API. With the sync_single API,
+you can use dma_handle and size parameters that aren't identical to
+those passed into the single mapping API to do a partial sync.
+
+AFAICS commit 16fc3cef33a0 ("swiotlb: don't modify orig_addr in swiotlb_tbl_sync_single")
+is breaking this functionality.
+
+Thanks,
+Horia
