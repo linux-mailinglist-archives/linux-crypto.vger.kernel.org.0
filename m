@@ -2,21 +2,21 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BECC73A3EA1
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Jun 2021 11:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733B73A3EAC
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Jun 2021 11:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbhFKJJR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Jun 2021 05:09:17 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4034 "EHLO
+        id S231604AbhFKJJa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Jun 2021 05:09:30 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9078 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231492AbhFKJJI (ORCPT
+        with ESMTP id S231548AbhFKJJZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:09:08 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G1Zbq2QQNzWspr;
-        Fri, 11 Jun 2021 17:02:15 +0800 (CST)
+        Fri, 11 Jun 2021 05:09:25 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G1ZfW2kymzZcpv;
+        Fri, 11 Jun 2021 17:04:35 +0800 (CST)
 Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2176.2; Fri, 11 Jun 2021 17:07:09 +0800
 Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
@@ -27,9 +27,9 @@ From:   Kai Ye <yekai13@huawei.com>
 To:     <herbert@gondor.apana.org.au>
 CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH 3/8] crypto: hisilicon/qm - merges the work initialization process into a single function
-Date:   Fri, 11 Jun 2021 17:06:45 +0800
-Message-ID: <1623402410-63906-4-git-send-email-yekai13@huawei.com>
+Subject: [PATCH 4/8] crypto: hisilicon/qm - add pf ping single vf function
+Date:   Fri, 11 Jun 2021 17:06:46 +0800
+Message-ID: <1623402410-63906-5-git-send-email-yekai13@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1623402410-63906-1-git-send-email-yekai13@huawei.com>
 References: <1623402410-63906-1-git-send-email-yekai13@huawei.com>
@@ -43,50 +43,61 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Merges the work initialization process into a single function from
-qm initialization.
+According to the function communication, add pf ping single
+vf function to be used in the vf read QoS.
 
 Signed-off-by: Kai Ye <yekai13@huawei.com>
 ---
- drivers/crypto/hisilicon/qm.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ drivers/crypto/hisilicon/qm.c | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 171ddbb..9b8e09e 100644
+index 9b8e09e..72648dc 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -5337,6 +5337,16 @@ static int hisi_qm_pci_init(struct hisi_qm *qm)
- 	return ret;
+@@ -2142,6 +2142,42 @@ static void qm_trigger_pf_interrupt(struct hisi_qm *qm)
+ 	writel(val, qm->io_base + QM_IFC_INT_SET_V);
  }
  
-+static void hisi_qm_init_work(struct hisi_qm *qm)
++static int qm_ping_single_vf(struct hisi_qm *qm, u64 cmd, u32 fun_num)
 +{
-+	INIT_WORK(&qm->work, qm_work_process);
-+	if (qm->fun_type == QM_HW_PF)
-+		INIT_WORK(&qm->rst_work, hisi_qm_controller_reset);
++	struct device *dev = &qm->pdev->dev;
++	struct qm_mailbox mailbox;
++	int cnt = 0;
++	u64 val;
++	int ret;
 +
-+	if (qm->ver > QM_HW_V2)
-+		INIT_WORK(&qm->cmd_process, qm_cmd_process);
++	qm_mb_pre_init(&mailbox, QM_MB_CMD_SRC, cmd, fun_num, 0);
++	mutex_lock(&qm->mailbox_lock);
++	ret = qm_mb_nolock(qm, &mailbox);
++	if (ret) {
++		dev_err(dev, "failed to send command to vf(%u)!\n", fun_num);
++		goto err_unlock;
++	}
++
++	qm_trigger_vf_interrupt(qm, fun_num);
++	while (true) {
++		msleep(QM_WAIT_DST_ACK);
++		val = readq(qm->io_base + QM_IFC_READY_STATUS);
++		/* if VF respond, PF notifies VF successfully. */
++		if (!(val & BIT(fun_num)))
++			goto err_unlock;
++
++		if (++cnt > QM_MAX_PF_WAIT_COUNT) {
++			dev_err(dev, "failed to get response from VF(%u)!\n", fun_num);
++			ret = -ETIMEDOUT;
++			break;
++		}
++	}
++
++err_unlock:
++	mutex_unlock(&qm->mailbox_lock);
++	return ret;
 +}
 +
- static int hisi_qp_alloc_memory(struct hisi_qm *qm)
+ static int qm_ping_all_vfs(struct hisi_qm *qm, u64 cmd)
  {
  	struct device *dev = &qm->pdev->dev;
-@@ -5452,13 +5462,7 @@ int hisi_qm_init(struct hisi_qm *qm)
- 	if (ret)
- 		goto err_alloc_uacce;
- 
--	INIT_WORK(&qm->work, qm_work_process);
--	if (qm->fun_type == QM_HW_PF)
--		INIT_WORK(&qm->rst_work, hisi_qm_controller_reset);
--
--	if (qm->ver >= QM_HW_V3)
--		INIT_WORK(&qm->cmd_process, qm_cmd_process);
--
-+	hisi_qm_init_work(qm);
- 	qm_cmd_init(qm);
- 	atomic_set(&qm->status.flags, QM_INIT);
- 
 -- 
 2.7.4
 
