@@ -2,55 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828B33A3CFB
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Jun 2021 09:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500E93A3D00
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Jun 2021 09:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhFKHZY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Jun 2021 03:25:24 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50558 "EHLO deadmen.hmeau.com"
+        id S231246AbhFKHZm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Jun 2021 03:25:42 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:50560 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231350AbhFKHZY (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Jun 2021 03:25:24 -0400
+        id S231210AbhFKHZm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 11 Jun 2021 03:25:42 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1lrbVl-0005M7-S7; Fri, 11 Jun 2021 15:23:25 +0800
+        id 1lrbVx-0005MI-Uw; Fri, 11 Jun 2021 15:23:38 +0800
 Received: from herbert by gondobar with local (Exim 4.92)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1lrbVk-0002Mp-Tq; Fri, 11 Jun 2021 15:23:24 +0800
-Date:   Fri, 11 Jun 2021 15:23:24 +0800
+        id 1lrbVv-0002NA-Gg; Fri, 11 Jun 2021 15:23:35 +0800
+Date:   Fri, 11 Jun 2021 15:23:35 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Kai Ye <yekai13@huawei.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH 0/4] crypto: hisilicon - supports new aeads for new
- hardware
-Message-ID: <20210611072324.GF23016@gondor.apana.org.au>
-References: <1622770289-21588-1-git-send-email-yekai13@huawei.com>
+To:     Hongbo Li <herbert.tencent@gmail.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        ebiggers@kernel.org, dhowells@redhat.com, jarkko@kernel.org,
+        tianjia.zhang@linux.alibaba.com, herberthbli@tencent.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] crypto: sm2 - fix a memory leak in sm2
+Message-ID: <20210611072335.GG23016@gondor.apana.org.au>
+References: <1622788235-10739-1-git-send-email-herbert.tencent@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1622770289-21588-1-git-send-email-yekai13@huawei.com>
+In-Reply-To: <1622788235-10739-1-git-send-email-herbert.tencent@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 09:31:25AM +0800, Kai Ye wrote:
-> The driver adds new aeads, add fallback tfm supporting.
-> Modify the driver as needed. The crypto fuzzing test has been passed.
+On Fri, Jun 04, 2021 at 02:30:35PM +0800, Hongbo Li wrote:
+> From: Hongbo Li <herberthbli@tencent.com>
 > 
-> Kai Ye (4):
->   crypto: hisilicon/sec - add new algorithm mode for AEAD
->   crypto: hisilicon/sec - add fallback tfm supporting for aeads
->   crypto: hisilicon/sec - add hardware integrity check value process
->   crypto: hisilicon/sec - modify the SEC request structure
+> SM2 module alloc ec->Q in sm2_set_pub_key(), when doing alg test in
+> test_akcipher_one(), it will set public key for every test vector,
+> and don't free ec->Q. This will cause a memory leak.
 > 
->  drivers/crypto/hisilicon/sec2/sec.h        |  13 +-
->  drivers/crypto/hisilicon/sec2/sec_crypto.c | 575 ++++++++++++++++++++++++-----
->  drivers/crypto/hisilicon/sec2/sec_crypto.h |   9 +
->  3 files changed, 507 insertions(+), 90 deletions(-)
+> This patch alloc ec->Q in sm2_ec_ctx_init().
+> 
+> Fixes: ea7ecb66440b ("crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm")
+> Signed-off-by: Hongbo Li <herberthbli@tencent.com>
+> Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> ---
+>  crypto/sm2.c | 24 ++++++++++--------------
+>  1 file changed, 10 insertions(+), 14 deletions(-)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
