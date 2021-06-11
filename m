@@ -2,92 +2,94 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2B23A3EAB
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Jun 2021 11:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2101D3A3F54
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Jun 2021 11:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhFKJJa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Jun 2021 05:09:30 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9077 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbhFKJJY (ORCPT
+        id S229480AbhFKJrE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Jun 2021 05:47:04 -0400
+Received: from mail-wm1-f50.google.com ([209.85.128.50]:53861 "EHLO
+        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231574AbhFKJrE (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:09:24 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G1ZfV0FWtzZcm6;
-        Fri, 11 Jun 2021 17:04:34 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 17:07:09 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
- 2021 17:07:09 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH 8/8] crypto: hisilicon/zip - adds the max shaper type rate
-Date:   Fri, 11 Jun 2021 17:06:50 +0800
-Message-ID: <1623402410-63906-9-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1623402410-63906-1-git-send-email-yekai13@huawei.com>
-References: <1623402410-63906-1-git-send-email-yekai13@huawei.com>
+        Fri, 11 Jun 2021 05:47:04 -0400
+Received: by mail-wm1-f50.google.com with SMTP id b205so3037440wmb.3
+        for <linux-crypto@vger.kernel.org>; Fri, 11 Jun 2021 02:45:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=Iohi461kjcJMARSaZJtMtzgG1Y04ZNwqpJYB6vEREOE=;
+        b=Ym8Hcdc8JD8YE1hevYjwN5wHnINI60kjdJnJgyB0GfB8M66tpxkw+8vA1wrwbvQcV0
+         jdFieWUBRPqTqAvQYpzXy1MogRF2dgdZzQ9Ei6bzEB7JQHrQL70S4/95mUZt0lLkAM28
+         LqarfU7FK856wqutC5XWrjTOB3AVrT5sojFHhEFHyvo2nxH9SOPoKMqyLpQ4kbX73riK
+         mHwrU7n2oNf8Gw3h1x4O7mkW8HgDmNyLF/tlCjW1CYsbFU733TEaWPfY6RGFvVoA8Y4H
+         7/4TcOUnADQK8ACBIslL7bnRqhwkZVFHc5oaILZfpPfxTwVrx+OXvdQWfp4MCEJ66jTL
+         3QQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=Iohi461kjcJMARSaZJtMtzgG1Y04ZNwqpJYB6vEREOE=;
+        b=HPQipksMsxp6/yv95C7FdAzi/IUDcb1URLZHvEYGHHC+I28t297Ajdf4dUBFHz/fI0
+         y/8The2u/9xvShdrKfFJ1Lsas/I9+h1eVjMa2H/cP/vjZY+W5JYzkbskgCju3Mwq1IMn
+         cVy2O8NAMnvkZKHK95TY3EEOWQZtaeo+H25mBO62uIlctptXBwNlpq57KabPeac/3VS9
+         KzWj9eiJNThr/8W9PoA2hpdFACpXOBg1yrL1+CRx8t8uq47jFDfQycLBgvEh1+7E5c8f
+         tUTrn1p70IDRVkgf8tHkuncj36wPAypGAp0x5sVd72UA/JyooLqMq28J2YBvuOJuYQRW
+         oE0w==
+X-Gm-Message-State: AOAM531zt63vQgUmg/t4vd2fKCaZX8alCG0C4imS7q+9xePCEaIWTcTf
+        NzRC93JTVrkXdJv1sgYBtatGKLZb8wMt5Nk8G0T3mFwVZzw=
+X-Google-Smtp-Source: ABdhPJy9m2r9OaAQWG+tlKB6rQYExtmtyg2ZFLH2qcpQ2fU7jqcOwtapOfWrdv/34RcyqMBvhSLWGyfItrQDf/UVbwk=
+X-Received: by 2002:a7b:c192:: with SMTP id y18mr19502274wmi.65.1623404645585;
+ Fri, 11 Jun 2021 02:44:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+References: <CALFqKjSnOWyFjp7NQZKMXQ+TfzXMCBS=y8xnv5GE56SHVr5tCg@mail.gmail.com>
+ <CACXcFmnRAkrj0Q3uFjyLu7RaWQh0VPbmErkj+cUaxZMb=YiGCw@mail.gmail.com>
+In-Reply-To: <CACXcFmnRAkrj0Q3uFjyLu7RaWQh0VPbmErkj+cUaxZMb=YiGCw@mail.gmail.com>
+From:   Sandy Harris <sandyinchina@gmail.com>
+Date:   Fri, 11 Jun 2021 17:43:52 +0800
+Message-ID: <CACXcFmmW+tCUf8JS=a=wJEnBY2JojP8VwEGLncYcGLZqiU+5Jw@mail.gmail.com>
+Subject: Re: Lockless /dev/random - Performance/Security/Stability improvement
+To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "Ted Ts'o" <tytso@mit.edu>, Stephan Mueller <smueller@chronox.de>,
+        John Denker <jsd@av8n.com>, m@ib.tc
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The ZIP driver support configure each function's QoS in the Host
-for Kunpeng930. The ZIP driver needs to configure the maximum shaper
-type rate.
+Sandy Harris <sandyinchina@gmail.com> wrote:
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/zip/zip_main.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+> The basic ideas here look good to me; I will look at details later.
 
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index 9e4c49c..f8482ce 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -102,6 +102,8 @@
- #define HZIP_PREFETCH_ENABLE		(~(BIT(26) | BIT(17) | BIT(0)))
- #define HZIP_SVA_PREFETCH_DISABLE	BIT(26)
- #define HZIP_SVA_DISABLE_READY		(BIT(26) | BIT(30))
-+#define HZIP_SHAPER_RATE_COMPRESS	252
-+#define HZIP_SHAPER_RATE_DECOMPRESS	229
- #define HZIP_DELAY_1_US		1
- #define HZIP_POLL_TIMEOUT_US	1000
- 
-@@ -823,6 +825,7 @@ static void hisi_zip_qm_uninit(struct hisi_qm *qm)
- 
- static int hisi_zip_probe_init(struct hisi_zip *hisi_zip)
- {
-+	u32 type_rate = HZIP_SHAPER_RATE_COMPRESS;
- 	struct hisi_qm *qm = &hisi_zip->qm;
- 	int ret;
- 
-@@ -830,6 +833,14 @@ static int hisi_zip_probe_init(struct hisi_zip *hisi_zip)
- 		ret = hisi_zip_pf_probe_init(hisi_zip);
- 		if (ret)
- 			return ret;
-+		/* enable shaper type 0 */
-+		if (qm->ver >= QM_HW_V3) {
-+			type_rate |= QM_SHAPER_ENABLE;
-+
-+			/* ZIP need to enable shaper type 1 */
-+			type_rate |= HZIP_SHAPER_RATE_DECOMPRESS << QM_SHAPER_TYPE1_OFFSET;
-+			qm->type_rate = type_rate;
-+		}
- 	}
- 
- 	return 0;
--- 
-2.7.4
+Looking now, finding some things questionable.
 
+Your doc has:
+
+" /dev/random needs to be fast, and in the past it relied on using a
+cryptographic primitive for expansion of PNRG to fill a given request
+
+" urandom on the other hand uses a cryptographic primitive to compact
+rather than expand,
+
+This does not seem coherent to me & as far as I can tell, it is wrong as well.
+/dev/random neither uses a PRNG nor does expansion.
+/dev/urandom does both, but you seem to be saying the opposite.
+
+" We can assume AES preserves confidentiality...
+
+That is a reasonable assumption & it does make the design easier, but
+is it necessary? If I understood some of Ted's writing correctly, one
+of his design goals was not to have to trust the crypto too much. It
+seems to me that is a worthy goal. One of John Denker's papers has
+some quite nice stuff about using a hash function to compress input
+data while preserving entropy. It needs only quite weak assumptions
+about the hash.
+https://www.av8n.com/turbid/
+
+You want to use AES in OFB mode. Why? The existing driver uses ChaCha,
+I think mainly because it is faster.
+
+The classic analysis of how to use a block cipher to build a hash is
+Preneel et al.
+https://link.springer.com/content/pdf/10.1007%2F3-540-48329-2_31.pdf
+As I recall, it examines 64 possibilities & finds only 9 are secure. I
+do not know if OFB, used as you propose, is one of those. Do you?
