@@ -2,59 +2,70 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D3A3A3D05
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Jun 2021 09:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBC43A3EA2
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Jun 2021 11:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhFKH0K (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Jun 2021 03:26:10 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50562 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhFKH0J (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Jun 2021 03:26:09 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1lrbWO-0005Ol-Qc; Fri, 11 Jun 2021 15:24:04 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1lrbWK-0002Nk-41; Fri, 11 Jun 2021 15:24:00 +0800
-Date:   Fri, 11 Jun 2021 15:24:00 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
-        acostag.ubuntu@gmail.com, lee.jones@linaro.org,
-        Jampala.Srikanth@cavium.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] crypto: cavium/nitrox - Fix an erro rhandling path in
- 'nitrox_probe()'
-Message-ID: <20210611072400.GH23016@gondor.apana.org.au>
-References: <26f71d3925541924bfda1dca9114a48db5ffafe4.1622897629.git.christophe.jaillet@wanadoo.fr>
+        id S231494AbhFKJJS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Jun 2021 05:09:18 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4033 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231145AbhFKJJI (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 11 Jun 2021 05:09:08 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G1Zbq2DwqzWsnD;
+        Fri, 11 Jun 2021 17:02:15 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 17:07:08 +0800
+Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
+ (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
+ 2021 17:07:08 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
+Subject: [PATCH 0/8] crypto: hisilicon - supports to configure function's QoS for ACC
+Date:   Fri, 11 Jun 2021 17:06:42 +0800
+Message-ID: <1623402410-63906-1-git-send-email-yekai13@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <26f71d3925541924bfda1dca9114a48db5ffafe4.1622897629.git.christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 02:55:56PM +0200, Christophe JAILLET wrote:
-> If an error occurs after a successful 'ioremap()' call, it must be undone
-> by a corresponding 'iounmap()' call, as already done in the remove
-> function.
-> Ass a 'pf_sw_fail' label in the error handling path and add the missing
-> 'iounmap()'.
-> 
-> While at it, also add a 'flr_fail' label in the error handling path and use
-> it to avoid some code duplication.
-> 
-> Fixes: 14fa93cdcd9b ("crypto: cavium - Add support for CNN55XX adapters.")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/crypto/cavium/nitrox/nitrox_main.c | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
+Based on the Token bucket algorithm. The QM can limit the throughput
+of functions in Kunpeng930. By the device debugfs node that named
+"alg_qos", the ACC driver supports to configue each function's QoS
+in the host. Based on the communication between pf and vf, the driver
+supports reading each function's QoS in the host and VM also by the
+debugfs node.
 
-Patch applied.  Thanks.
+Kai Ye (8):
+  crypto: hisilicon/qm - supports writing QoS int the Host
+  crypto: hisilicon/qm - add the "alg_qos" file node
+  crypto: hisilicon/qm - merges the work initialization process into a
+    single function
+  crypto: hisilicon/qm - add pf ping single vf function
+  crypto: hisilicon/qm - supports to inquiry each function's QoS
+  crypto: hisilicon/sec - adds the max shaper type rate
+  crypto: hisilicon/hpre - adds the max shaper type rate
+  crypto: hisilicon/zip - adds the max shaper type rate
+
+ drivers/crypto/hisilicon/hpre/hpre_main.c |   7 +
+ drivers/crypto/hisilicon/qm.c             | 909 +++++++++++++++++++++++-------
+ drivers/crypto/hisilicon/qm.h             |  14 +
+ drivers/crypto/hisilicon/sec2/sec_main.c  |   7 +
+ drivers/crypto/hisilicon/zip/zip_main.c   |  11 +
+ 5 files changed, 757 insertions(+), 191 deletions(-)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.7.4
+
