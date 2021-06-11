@@ -2,120 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01CB93A4669
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Jun 2021 18:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B033A4809
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Jun 2021 19:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhFKQYk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Jun 2021 12:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhFKQYk (ORCPT
+        id S230051AbhFKRqQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Jun 2021 13:46:16 -0400
+Received: from mail-pf1-f171.google.com ([209.85.210.171]:41820 "EHLO
+        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229951AbhFKRqP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:24:40 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159C1C0617AF
-        for <linux-crypto@vger.kernel.org>; Fri, 11 Jun 2021 09:22:42 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id f30so9400916lfj.1
-        for <linux-crypto@vger.kernel.org>; Fri, 11 Jun 2021 09:22:41 -0700 (PDT)
+        Fri, 11 Jun 2021 13:46:15 -0400
+Received: by mail-pf1-f171.google.com with SMTP id x73so5031442pfc.8
+        for <linux-crypto@vger.kernel.org>; Fri, 11 Jun 2021 10:44:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O7VLGpzo0pic/uCZ5FLPezepVfzXChJpgysJmVZaFsc=;
-        b=J/Dt9jQa1QKH8awC7zPDGpIDCC1B4T52bk/xbJkYWmrsyiPBf1xyBpuuJ6YktX8o19
-         OGXWD4ofRJ+1Y/e3NXpAm87lNARcyx+eUZLb2kGvTbni8Z4d4UmVsZbpfpQ1wYz+9Ynn
-         Tu2YFuveWjy2F/JCy1EWycl4zSkeUBSU/byuI=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=H90Q8HQv3r87PSkgndEiRHLarWPDw/QxWChQ/DnKR8o=;
+        b=U6exQY7Yg9T8TYkOj40iFmJLnF+hck/6g7w0cdImsSSCABV2XYLA89dRnD3LP711KV
+         IRvHk5Sms1QQ2DF79EIoxKOtH/i/cdBH8bLnZ5WjkKHBzBLlJJ0bd9U+/CQIw7WupKLn
+         STNV7VQ9GHcuCF7L3RofpDNVLIhp7Cp9/v3ko5vdyJGCHQo3SU8gd0ZMc9C4OwGZeCsm
+         zJNnXT45YP80k3oMkF8LC93jPQaTRGYFlO2ZWgmFIcQwe/iCROzhlU4Mdu6nNxJVBWpV
+         mTqhipLQoqTTNKw5EjLdOQdPDA7RUXaX/l+CoNx3iS2H/bx91hUvyydSWUSw1wz5euEw
+         i1Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O7VLGpzo0pic/uCZ5FLPezepVfzXChJpgysJmVZaFsc=;
-        b=TwXuIVICd22R/qN57MWlKHqtI+I8mBy/Kd51Fqy/qZxupnPYZEB0oVMqvxgVhBgqVN
-         juvRURSfuoGwsOlheQejl2LaXLJDIN/UjINJpU1eii4IkLo8XETfddEN8S1lUGJF9O2P
-         CTRVDYJuJmxpZrRoLsa23QP3ZS4YfaGCnUMBO33mhzHb1LJBilsE0CillNaCFM1vWDJ5
-         zCX8/OMEWqmOxQg8AI28ECzxBNJ+BwOLnfId46Gi/xFZF/YRMipxvye/D5BWQYSUqkVu
-         xKpBwpKDSkT6zh7Q/xQnBQPkIRWu8x5xqnjVpldDKJJanLmgYZeIwkETDmMf73nhk5UD
-         1/BA==
-X-Gm-Message-State: AOAM531Yej/+6Cqt10BnGr5TFjyB7Qksf5Z66ARHoEe/0rBEc/ggAcH1
-        YDIpKmv9tbXXsvHkrZF/xi46a0zoTNCZP2zV4b0=
-X-Google-Smtp-Source: ABdhPJzYVOgVTgEhDdH9AOkaJ7v66TE3XzEFcPS4P2xnlJG8YShtPBjZsktOcCBekR2GJ5E4PQ3aBg==
-X-Received: by 2002:a19:ed04:: with SMTP id y4mr3140783lfy.562.1623428560163;
-        Fri, 11 Jun 2021 09:22:40 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id h22sm774252ljk.133.2021.06.11.09.21.59
-        for <linux-crypto@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 09:22:12 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id r16so10540986ljc.0
-        for <linux-crypto@vger.kernel.org>; Fri, 11 Jun 2021 09:21:59 -0700 (PDT)
-X-Received: by 2002:a2e:c52:: with SMTP id o18mr3611750ljd.411.1623428518600;
- Fri, 11 Jun 2021 09:21:58 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
+         :from:date:message-id:subject:to:content-transfer-encoding;
+        bh=H90Q8HQv3r87PSkgndEiRHLarWPDw/QxWChQ/DnKR8o=;
+        b=lxu+gcjJzKwTRNoCp1isbXryOfos2+gw/r11cSq7VhBH7u77segn9VcGLnXuCPcv20
+         eiKkXyvuQ8pqdVz6WjwOa3F9uOKG34viuUR7isUMr6ZD0nkbjuFqgkkUeOmSTRCICp6v
+         +K41P9/FuINRDfH3fUwcV1IycCBm84m8HzAg9tGQXrrhdoRFcaOUf8Zm98nCi/Ply+OK
+         249Rgbr5EQzR5eDPUTSfXrERIrJ+uY//e37gJWEZ3pxPsVbSG62qL9MXqvwKbuEpvoEh
+         2Eq2ihgI2/r8R/+7P6ZVqXPFFQoFA7mra0zig5nke6ahskzfj42Br0P0rGyMJsCW5szH
+         8DXg==
+X-Gm-Message-State: AOAM532VZHJmHiIZM5+rbTbv7ZMzcfusFbpAQIDv2TESqaiqkgAgmMDx
+        ffzVnwTCB1056FEjnGZFzYqME1fr5HwDRhOgidM=
+X-Google-Smtp-Source: ABdhPJy5YeivD86YOiExX135TxEZcHkQ0GILQ0YYQjo81Sj90MyTYktNm2BrXA3jh671MYNUaHWdtjCQtFIGea4/ZoQ=
+X-Received: by 2002:a63:530a:: with SMTP id h10mr4819411pgb.98.1623433389060;
+ Fri, 11 Jun 2021 10:43:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local> <YL7XXNOnbaDgmTB9@atmark-techno.com>
- <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com> <20210611062153.GA30906@lst.de>
- <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
-In-Reply-To: <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 11 Jun 2021 09:21:42 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgxgTB=G7P6KRneAd0s310WYK2NDisXM5P-wsNibgLrQA@mail.gmail.com>
-Message-ID: <CAHk-=wgxgTB=G7P6KRneAd0s310WYK2NDisXM5P-wsNibgLrQA@mail.gmail.com>
-Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb) stable/for-linus-5.12)
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Dominique MARTINET <dominique.martinet@atmark-techno.com>,
-        jianxiong Gao <jxgao@google.com>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lukas Hartmann <lukas@mntmn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+Received: by 2002:a17:90a:6b42:0:0:0:0 with HTTP; Fri, 11 Jun 2021 10:43:08
+ -0700 (PDT)
+Reply-To: banqueatlantiquetogobranch@gmail.com
+In-Reply-To: <CADRB3KqTsLw9JgQLeuROgaM=JeXS0te0HZD-ux2fLFkMSwn+fA@mail.gmail.com>
+References: <CADRB3KrL=mGJhbPJZG7Rs74ctSnta=2nUm8F4j5Lapi9QiOjkA@mail.gmail.com>
+ <CADRB3KqTsLw9JgQLeuROgaM=JeXS0te0HZD-ux2fLFkMSwn+fA@mail.gmail.com>
+From:   "Ms. Kristalina Georgieva" <tonywoodto@gmail.com>
+Date:   Fri, 11 Jun 2021 19:43:08 +0200
+Message-ID: <CADRB3KrExkkfTg-BnYH2Xy_ZJNMX27vByn+9z2QcC_mLTXi_6g@mail.gmail.com>
+Subject: 11/06/2021
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 3:35 AM Konrad Rzeszutek Wilk
-<konrad.wilk@oracle.com> wrote:
->
-> Linus,
->
-> Would you be terribly offended if I took your code (s/unsigned
-> long/unsigned int), and used Chanho's description of the problem (see below)?
+Dear email owner / fund recipient,
+I am Mrs.Kristalina Georgieva the Executive Director and President of
+the International Monetary Fund Washington D.C, We have indeed
+reviewed all the obstacles and problems that accompanied your
+incomplete transaction and your inability to cope with the transfer
+fees charged for past the transfer options, visit our confirmation
+page 38 =C2=B0 53'56 "N 77 =C2=B0 2" 39 =E2=80=B3 F.
 
-No offense to that at all - that looks like the right solution. See my
-answer to Christoph: I do think my patch does the right one, but I
-can't test it and my knowledge of the swiotlb code is not complete
-enough to really do anything else than "this looks right".
+The Board of Directors World Bank and International Monetary Fund
+(IMF) Washington D.C in cooperation with the US Treasury Department
+and some other relevant investigative agencies here in the United
+States has ordered our Foreign Transfer Unit BANQUE ATLANTIQUE
+INTERNATIONAL TOGO to convert a compensation fund worth =E2=82=AC761,000.00
+into an ATM master card and send to you.
 
-And adding my sign-off to the patch is fine, but I don't necessarily
-need the authorship credit - mine was a throw-away patch just looking
-at what the bisection report said. All the real effort was by the
-reporters (and for the commit message, Bumyong Lee & co).
+During our investigation we were horrified to find that your fund was
+unnecessarily delayed by corrupt bank officials whom was trying to
+redirect your funds to their private accounts for their selfish
+interest, today we would like to inform you that your fund has been
+deposited in BANQUEATLANTIQUE INTERNATIONAL TOGO also ready for
+delivery, now contact Prof.Susan Robinson the foreign remittance
+director BANQUE ATLANTIQUE INTERNATIONAL TOGO,
+email:biainquirettg@hotmail.com, Send her the following information to
+enable her remit your total compensation fund worth =E2=82=AC761,000.00 int=
+o
+an ATM  master card and send to you without any mistake or delay.
 
-Finally - looking at the two places that do have that
-swiotlb_align_offset(), my reaction is "I don't understand what that
-code is doing".
+(1) Your full name......................................
+(2) Your home address..............................
+(3) A copy of your national identity card or passport........
+(4) Your country.........................................
+(5) Postcode=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=
+=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6.
+(6) Your private phone number........................
 
-The index does that
-
-        index = find_slots(dev, orig_addr, alloc_size + offset);
-
-so that offset does seem to depend on how the find_slots code works.
-Which in turn does use the same dma_get_min_align_mask() thing that
-swiotlb_align_offset() uses.  So the offsets do seem to match, but
-find_slots(dev() does a lot of stuff that I don't know. so...
-
-IOW, it does reinforce my "I don't know this code AT ALL". Which just
-makes me more convinced that I shouldn't get authorship of the patch
-because if something goes wrong with it, I can't help.
-
-So at most maybe a "Suggested-by:".
-
-My patch really was based on very little context and "this is the
-calculation that makes sense given the other calculations in the
-function".
-
-              Linus
+Sincerely
+Mrs.Kristalina Georgieva
+Managing Director of International monetary fund.
