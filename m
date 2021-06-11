@@ -2,98 +2,140 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B033A4809
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Jun 2021 19:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4CBD3A4A1A
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Jun 2021 22:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhFKRqQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Jun 2021 13:46:16 -0400
-Received: from mail-pf1-f171.google.com ([209.85.210.171]:41820 "EHLO
-        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbhFKRqP (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:46:15 -0400
-Received: by mail-pf1-f171.google.com with SMTP id x73so5031442pfc.8
-        for <linux-crypto@vger.kernel.org>; Fri, 11 Jun 2021 10:44:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=H90Q8HQv3r87PSkgndEiRHLarWPDw/QxWChQ/DnKR8o=;
-        b=U6exQY7Yg9T8TYkOj40iFmJLnF+hck/6g7w0cdImsSSCABV2XYLA89dRnD3LP711KV
-         IRvHk5Sms1QQ2DF79EIoxKOtH/i/cdBH8bLnZ5WjkKHBzBLlJJ0bd9U+/CQIw7WupKLn
-         STNV7VQ9GHcuCF7L3RofpDNVLIhp7Cp9/v3ko5vdyJGCHQo3SU8gd0ZMc9C4OwGZeCsm
-         zJNnXT45YP80k3oMkF8LC93jPQaTRGYFlO2ZWgmFIcQwe/iCROzhlU4Mdu6nNxJVBWpV
-         mTqhipLQoqTTNKw5EjLdOQdPDA7RUXaX/l+CoNx3iS2H/bx91hUvyydSWUSw1wz5euEw
-         i1Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to:content-transfer-encoding;
-        bh=H90Q8HQv3r87PSkgndEiRHLarWPDw/QxWChQ/DnKR8o=;
-        b=lxu+gcjJzKwTRNoCp1isbXryOfos2+gw/r11cSq7VhBH7u77segn9VcGLnXuCPcv20
-         eiKkXyvuQ8pqdVz6WjwOa3F9uOKG34viuUR7isUMr6ZD0nkbjuFqgkkUeOmSTRCICp6v
-         +K41P9/FuINRDfH3fUwcV1IycCBm84m8HzAg9tGQXrrhdoRFcaOUf8Zm98nCi/Ply+OK
-         249Rgbr5EQzR5eDPUTSfXrERIrJ+uY//e37gJWEZ3pxPsVbSG62qL9MXqvwKbuEpvoEh
-         2Eq2ihgI2/r8R/+7P6ZVqXPFFQoFA7mra0zig5nke6ahskzfj42Br0P0rGyMJsCW5szH
-         8DXg==
-X-Gm-Message-State: AOAM532VZHJmHiIZM5+rbTbv7ZMzcfusFbpAQIDv2TESqaiqkgAgmMDx
-        ffzVnwTCB1056FEjnGZFzYqME1fr5HwDRhOgidM=
-X-Google-Smtp-Source: ABdhPJy5YeivD86YOiExX135TxEZcHkQ0GILQ0YYQjo81Sj90MyTYktNm2BrXA3jh671MYNUaHWdtjCQtFIGea4/ZoQ=
-X-Received: by 2002:a63:530a:: with SMTP id h10mr4819411pgb.98.1623433389060;
- Fri, 11 Jun 2021 10:43:09 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a17:90a:6b42:0:0:0:0 with HTTP; Fri, 11 Jun 2021 10:43:08
- -0700 (PDT)
-Reply-To: banqueatlantiquetogobranch@gmail.com
-In-Reply-To: <CADRB3KqTsLw9JgQLeuROgaM=JeXS0te0HZD-ux2fLFkMSwn+fA@mail.gmail.com>
-References: <CADRB3KrL=mGJhbPJZG7Rs74ctSnta=2nUm8F4j5Lapi9QiOjkA@mail.gmail.com>
- <CADRB3KqTsLw9JgQLeuROgaM=JeXS0te0HZD-ux2fLFkMSwn+fA@mail.gmail.com>
-From:   "Ms. Kristalina Georgieva" <tonywoodto@gmail.com>
-Date:   Fri, 11 Jun 2021 19:43:08 +0200
-Message-ID: <CADRB3KrExkkfTg-BnYH2Xy_ZJNMX27vByn+9z2QcC_mLTXi_6g@mail.gmail.com>
-Subject: 11/06/2021
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S229951AbhFKU1C (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Jun 2021 16:27:02 -0400
+Received: from ciao.gmane.io ([116.202.254.214]:35424 "EHLO ciao.gmane.io"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229937AbhFKU1C (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 11 Jun 2021 16:27:02 -0400
+X-Greylist: delayed 301 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Jun 2021 16:27:02 EDT
+Received: from list by ciao.gmane.io with local (Exim 4.92)
+        (envelope-from <glkc-linux-crypto@m.gmane-mx.org>)
+        id 1lrndK-0005WL-4K
+        for linux-crypto@vger.kernel.org; Fri, 11 Jun 2021 22:20:02 +0200
+X-Injected-Via-Gmane: http://gmane.org/
+To:     linux-crypto@vger.kernel.org
+From:   Jean-Denis Girard <jd.girard@sysnux.pf>
+Subject: Re: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
+Date:   Fri, 11 Jun 2021 10:06:58 -1000
+Message-ID: <sa0fp3$12s9$1@ciao.gmane.io>
+References: <20210430013157.747152-1-nickrterrell@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210430013157.747152-1-nickrterrell@gmail.com>
+Content-Language: fr
+Cc:     linux-btrfs@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear email owner / fund recipient,
-I am Mrs.Kristalina Georgieva the Executive Director and President of
-the International Monetary Fund Washington D.C, We have indeed
-reviewed all the obstacles and problems that accompanied your
-incomplete transaction and your inability to cope with the transfer
-fees charged for past the transfer options, visit our confirmation
-page 38 =C2=B0 53'56 "N 77 =C2=B0 2" 39 =E2=80=B3 F.
+Hi list,
 
-The Board of Directors World Bank and International Monetary Fund
-(IMF) Washington D.C in cooperation with the US Treasury Department
-and some other relevant investigative agencies here in the United
-States has ordered our Foreign Transfer Unit BANQUE ATLANTIQUE
-INTERNATIONAL TOGO to convert a compensation fund worth =E2=82=AC761,000.00
-into an ATM master card and send to you.
+Le 29/04/2021 à 15:31, Nick Terrell a écrit :
+> From: Nick Terrell <terrelln@fb.com>
+> 
+> Please pull from
+> 
+>    git@github.com:terrelln/linux.git tags/v11-zstd-1.4.10
+> 
+> to get these changes. Alternatively the patchset is included.
+> 
+> This patchset lists me as the maintainer for zstd and upgrades the zstd library
+> to the latest upstream release. The current zstd version in the kernel is a
+> modified version of upstream zstd-1.3.1. At the time it was integrated, zstd
+> wasn't ready to be used in the kernel as-is. But, it is now possible to use
+> upstream zstd directly in the kernel.
+> 
+> I have not yet released zstd-1.4.10 upstream. I want the zstd version in the
+> kernel to match up with a known upstream release, so we know exactly what code
+> is running. Whenever this patchset is ready for merge, I will cut a release at
+> the upstream commit that gets merged. This should not be necessary for future
+> releases.
+> 
+> The kernel zstd library is automatically generated from upstream zstd. A script
+> makes the necessary changes and imports it into the kernel. The changes are:
+> 
+> 1. Replace all libc dependencies with kernel replacements and rewrite includes.
+> 2. Remove unncessary portability macros like: #if defined(_MSC_VER).
+> 3. Use the kernel xxhash instead of bundling it.
+> 
+> This automation gets tested every commit by upstream's continuous integration.
+> When we cut a new zstd release, we will submit a patch to the kernel to update
+> the zstd version in the kernel.
+> 
+> I've updated zstd to upstream with one big patch because every commit must build,
+> so that precludes partial updates. Since the commit is 100% generated, I hope the
+> review burden is lightened. I considered replaying upstream commits, but that is
+> not possible because there have been ~3500 upstream commits since the last zstd
+> import, and the commits don't all build individually. The bulk update preserves
+> bisectablity because bugs can be bisected to the zstd version update. At that
+> point the update can be reverted, and we can work with upstream to find and fix
+> the bug. After this big switch in how the kernel consumes zstd, future patches
+> will be smaller, because they will only have one upstream release worth of
+> changes each.
+> 
+> This patchset adds a new kernel-style wrapper around zstd. This wrapper API is
+> functionally equivalent to the subset of the current zstd API that is currently
+> used. The wrapper API changes to be kernel style so that the symbols don't
+> collide with zstd's symbols. The update to zstd-1.4.6 maintains the same API
+> and preserves the semantics, so that none of the callers need to be updated.
+> 
+> This patchset comes in 2 parts:
+> 1. The first 2 patches prepare for the zstd upgrade. The first patch adds the
+>     new kernel style API so zstd can be upgraded without modifying any callers.
+>     The second patch adds an indirection for the lib/decompress_unzstd.c
+>     including of all decompression source files.
+> 2. Import zstd-1.4.10. This patch is completely generated from upstream using
+>     automated tooling.
+> 
+> I tested every caller of zstd on x86_64. I tested both after the 1.4.10 upgrade
+> using the compatibility wrapper, and after the final patch in this series.
+> 
+> I tested kernel and initramfs decompression in i386 and arm.
+> 
+> I ran benchmarks to compare the current zstd in the kernel with zstd-1.4.6.
+> I benchmarked on x86_64 using QEMU with KVM enabled on an Intel i9-9900k.
+> I found:
+> * BtrFS zstd compression at levels 1 and 3 is 5% faster
+> * BtrFS zstd decompression+read is 15% faster
+> * SquashFS zstd decompression+read is 15% faster
+> * F2FS zstd compression+write at level 3 is 8% faster
+> * F2FS zstd decompression+read is 20% faster
+> * ZRAM decompression+read is 30% faster
+> * Kernel zstd decompression is 35% faster
+> * Initramfs zstd decompression+build is 5% faster
+> 
+> The latest zstd also offers bug fixes. For example the problem with large kernel
+> decompression has been fixed upstream for over 2 years
+> https://lkml.org/lkml/2020/9/29/27.
+> 
+> Please let me know if there is anything that I can do to ease the way for these
+> patches. I think it is important because it gets large performance improvements,
+> contains bug fixes, and is switching to a more maintainable model of consuming
+> upstream zstd directly, making it easy to keep up to date.
+> 
+> Best,
+> Nick Terrell
 
-During our investigation we were horrified to find that your fund was
-unnecessarily delayed by corrupt bank officials whom was trying to
-redirect your funds to their private accounts for their selfish
-interest, today we would like to inform you that your fund has been
-deposited in BANQUEATLANTIQUE INTERNATIONAL TOGO also ready for
-delivery, now contact Prof.Susan Robinson the foreign remittance
-director BANQUE ATLANTIQUE INTERNATIONAL TOGO,
-email:biainquirettg@hotmail.com, Send her the following information to
-enable her remit your total compensation fund worth =E2=82=AC761,000.00 int=
-o
-an ATM  master card and send to you without any mistake or delay.
 
-(1) Your full name......................................
-(2) Your home address..............................
-(3) A copy of your national identity card or passport........
-(4) Your country.........................................
-(5) Postcode=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=
-=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6.
-(6) Your private phone number........................
+I've been using this series on stable kernel since 5.12.3 (now on 
+5.12.10) on my main system without issues.
 
-Sincerely
-Mrs.Kristalina Georgieva
-Managing Director of International monetary fund.
+Tested-by: Jean-Denis Girard <jd.girard@sysnux.pf>
+
+
+Thanks,
+-- 
+Jean-Denis Girard
+
+SysNux                   Systèmes   Linux   en   Polynésie  française
+https://www.sysnux.pf/   Tél: +689 40.50.10.40 / GSM: +689 87.797.527
+
