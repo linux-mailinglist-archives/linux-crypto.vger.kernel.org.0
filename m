@@ -2,81 +2,116 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300A13A6F67
-	for <lists+linux-crypto@lfdr.de>; Mon, 14 Jun 2021 21:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0333A7051
+	for <lists+linux-crypto@lfdr.de>; Mon, 14 Jun 2021 22:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232975AbhFNTwY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 14 Jun 2021 15:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233356AbhFNTwX (ORCPT
+        id S235280AbhFNU0Z (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 14 Jun 2021 16:26:25 -0400
+Received: from lilium.sigma-star.at ([109.75.188.150]:59394 "EHLO
+        lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235071AbhFNU0W (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:52:23 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D99C061574;
-        Mon, 14 Jun 2021 12:50:20 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f09b9000c5f6a5325ce378c.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:b900:c5f:6a53:25ce:378c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3E1DE1EC04DB;
-        Mon, 14 Jun 2021 21:50:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623700219;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9YY3xAUgDz0EUh/pTeFLuR4h6BtRben1A76O8bKSCS4=;
-        b=Jt47Xz5W/6Qvfgerh3MVE24F5/Tn1CluSb47AQVTTILN/PaJ7nWjQUpDTPTGXTp0tDG21W
-        TggwwZfiPtrBh6i1M3hI1h41NT8b7ver/35pKyd0ggOpu1QJ7xqdTCqHjMXvvyG4MfMDlL
-        HlI12X8iQE4A9fA1yqcWFqkftOL+fL0=
-Date:   Mon, 14 Jun 2021 21:50:11 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-Subject: Re: [PATCH Part1 RFC v3 16/22] KVM: SVM: Create a separate mapping
- for the SEV-ES save area
-Message-ID: <YMey8xMXLcB/0WnA@zn.tnic>
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-17-brijesh.singh@amd.com>
- <YMc2R4JRZ3yFffy/@zn.tnic>
- <f6ad5b50-f462-35e1-3be4-e7113feee3a9@amd.com>
+        Mon, 14 Jun 2021 16:26:22 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lilium.sigma-star.at (Postfix) with ESMTP id CD8851817A0D5;
+        Mon, 14 Jun 2021 22:16:36 +0200 (CEST)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id LQOMc3Q2a1Ft; Mon, 14 Jun 2021 22:16:35 +0200 (CEST)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 3Byo3RcpDR1u; Mon, 14 Jun 2021 22:16:34 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     keyrings@vger.kernel.org
+Cc:     Richard Weinberger <richard@nod.at>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Fabio Estevam <festevam@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Bottomley <jejb@linux.ibm.com>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 0/3] DCP as trusted keys backend
+Date:   Mon, 14 Jun 2021 22:16:17 +0200
+Message-Id: <20210614201620.30451-1-richard@nod.at>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f6ad5b50-f462-35e1-3be4-e7113feee3a9@amd.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 02:34:03PM -0500, Tom Lendacky wrote:
-> I guess we can call it just prot_save_area or protected_save_area or even
-> encrypted_save_area (no need for guest, since guest is implied, e.g. we
-> don't call the normal save area guest_save_area).
+DCP is an IP core found on NXP SoCs such as i.mx6ull.
+While its bigger brother, CAAM, can directly wrap and unwrap blobs
+in hardware[0], DCP offers only the bare minimum and the blob
+mechanism needs aid from software.
 
-All three sound good to me.
+This series adds support for a new trusted keys backend that makes use
+of DCP's feature to use hardware keys which can never be read out.
 
-Thx.
+[0] https://lore.kernel.org/lkml/cover.56fff82362af6228372ea82e6bd7e586e2=
+3f0966.1615914058.git-series.a.fatoum@pengutronix.de/
 
--- 
-Regards/Gruss,
-    Boris.
+---
+Cc: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc: David Gstir <david@sigma-star.at>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: James Bottomley <jejb@linux.ibm.com>
+Cc: James Morris <jmorris@namei.org>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: keyrings@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-integrity@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-security-module@vger.kernel.org
+Cc: Mimi Zohar <zohar@linux.ibm.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
 
-https://people.kernel.org/tglx/notes-about-netiquette
+David Gstir (1):
+  doc: trusted-encrypted: add DCP as new trust source
+
+Richard Weinberger (2):
+  crypto: mxs-dcp: Add support for hardware provided keys
+  KEYS: trusted: Introduce support for NXP DCP-based trusted keys
+
+ .../admin-guide/kernel-parameters.txt         |   1 +
+ .../security/keys/trusted-encrypted.rst       |  84 ++++-
+ MAINTAINERS                                   |   9 +
+ drivers/crypto/mxs-dcp.c                      | 110 +++++-
+ include/keys/trusted_dcp.h                    |  13 +
+ include/linux/mxs-dcp.h                       |  19 +
+ security/keys/trusted-keys/Makefile           |   1 +
+ security/keys/trusted-keys/trusted_core.c     |   6 +-
+ security/keys/trusted-keys/trusted_dcp.c      | 325 ++++++++++++++++++
+ 9 files changed, 554 insertions(+), 14 deletions(-)
+ create mode 100644 include/keys/trusted_dcp.h
+ create mode 100644 include/linux/mxs-dcp.h
+ create mode 100644 security/keys/trusted-keys/trusted_dcp.c
+
+--=20
+2.26.2
+
