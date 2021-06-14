@@ -2,64 +2,193 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4793A690E
-	for <lists+linux-crypto@lfdr.de>; Mon, 14 Jun 2021 16:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF0F3A6CDF
+	for <lists+linux-crypto@lfdr.de>; Mon, 14 Jun 2021 19:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbhFNOfl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 14 Jun 2021 10:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbhFNOfl (ORCPT
+        id S234176AbhFNRRd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 14 Jun 2021 13:17:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22752 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232994AbhFNRRb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:35:41 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2097EC061574
-        for <linux-crypto@vger.kernel.org>; Mon, 14 Jun 2021 07:33:38 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id g8so17082844ejx.1
-        for <linux-crypto@vger.kernel.org>; Mon, 14 Jun 2021 07:33:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=iPXO2WxOI4kfZyDAE7w7JXdDG7n4qC4bl0bnuoZa+ws=;
-        b=cRot8dAIh6oScEKM1/yaaJrM2UMT8umv6GtkgRFZF2T6hBo8QgialxkJHhOg4Rixkf
-         Qudd2UfBXUTvkDQs1BVjjvkqOggp7DVjolyDsFlp0LCB5tvdVL0gHww5TCk8mdTxvY4Z
-         tby3yYjsk0Cq2Zc61mOB+mN43XEPq39tT62qZyYugVdq2adnENHy0k0eD0E4vuuAZ5EJ
-         Gr6YUeqPucj1nfP1xWi8o6RU7ao6ja4559LgbkNzTSoA7efPcreSWi30FwGYjcQWBK6K
-         RqUvOxajjYnaTsbzLoOcPk5w17kQgEyM7vXzml0taVPyO2LgfGtuluKzX19j2kAhh7M4
-         3F9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=iPXO2WxOI4kfZyDAE7w7JXdDG7n4qC4bl0bnuoZa+ws=;
-        b=C0ovcdxsU1Z71Y/EnGgXh6lCQkrqup9i0SfaXi4dQ/qPg2vU6KQeMLMcIfMLfBmbRU
-         6/6jR8xu5mRg3+44OBjL/4YTrVFj5tpI5GaNlPgBZq51DyClF2kZuv0VeP2PIKeBfIXW
-         wvFpRWmvJmyyf7EIubFEIttd8SrxUdxWJ/i8ZLAfNpNZ4ODQyDCEcXJFmvw3gg3VjVaG
-         QH5HGKr7FZrPp9iQZ4K99ZWhQDypVXfIoyXx5yumqy3iYsc2YQWf76WIpvMeH+i6JDzO
-         LHkEwGXytLFn3LCnCi8JORShe48f0G/tFy7mqhELwLg1Vwuc7oL3XqkkIWkWqmEevLOp
-         FScA==
-X-Gm-Message-State: AOAM532dO9SW3zlkXTkCx9U39QU0/TWTjkSccYd/+VA86qR4NOdN/WeD
-        K+HigVksbRRDqGUNgdmOBZsAnKKafBJFpq2J8jY=
-X-Google-Smtp-Source: ABdhPJwWSwa8I99CArYZb+EAynsj8hkgwUaIRO8a4PNYan4nRtF2QH9YDqZmYKik1RR4xBuYMzXkh58tWoF0J9vl9x8=
-X-Received: by 2002:a17:906:49c8:: with SMTP id w8mr15754730ejv.497.1623681216692;
- Mon, 14 Jun 2021 07:33:36 -0700 (PDT)
+        Mon, 14 Jun 2021 13:17:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623690927;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G+gTijY/9FvVzLFpGxKknxMCcEc6fcclmIjEJe/DmWM=;
+        b=ZCJ1PHVK/4ybw5BjL9Q5lkL0TtRWD+MOnNQvea0JnkeVqjqCShFC/vnKAwpzz6S7Y85lUD
+        B2AhLs4jup/3RnS+SpYZGsb86e83Q9NsDCj9Bg27PdrKh/8GpRhQS63sdcIEDXGh26kFPY
+        ET9fq4cSnqf7Zx1mgcrJ7EBmqpgAgsY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-371-8P8sYQ2cMfCzk8w2c626Cg-1; Mon, 14 Jun 2021 13:15:26 -0400
+X-MC-Unique: 8P8sYQ2cMfCzk8w2c626Cg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56E498015A4;
+        Mon, 14 Jun 2021 17:15:23 +0000 (UTC)
+Received: from work-vm (ovpn-114-158.ams2.redhat.com [10.36.114.158])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 398B95D9CA;
+        Mon, 14 Jun 2021 17:15:11 +0000 (UTC)
+Date:   Mon, 14 Jun 2021 18:15:08 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 21/22] x86/sev: Register SNP guest request
+ platform device
+Message-ID: <YMeOnO4PBnvxEQEv@work-vm>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-22-brijesh.singh@amd.com>
+ <YMEVedGOrYgI1Klc@work-vm>
+ <8a598020-7d89-b399-efb9-735b2a6da8a9@amd.com>
 MIME-Version: 1.0
-Received: by 2002:a17:906:380c:0:0:0:0 with HTTP; Mon, 14 Jun 2021 07:33:36
- -0700 (PDT)
-Reply-To: chevronoilcorporation@engineer.com
-From:   Chevronoil Corporation <chrisdickson151515@gmail.com>
-Date:   Mon, 14 Jun 2021 15:33:36 +0100
-Message-ID: <CAPWAWuwsYc=mPJrhyQUrvD-0=h5pNhb7rS-faw-9TmyjNThTWw@mail.gmail.com>
-Subject: VE A GREAT DAY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a598020-7d89-b399-efb9-735b2a6da8a9@amd.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-BEWARE, Real company doesn't ask for money, Chevron Oil and Gas United
-States is employing now free flight ticket, if you are interested
-reply with your Resume/CV.
+* Tom Lendacky (thomas.lendacky@amd.com) wrote:
+> On 6/9/21 2:24 PM, Dr. David Alan Gilbert wrote:
+> > * Brijesh Singh (brijesh.singh@amd.com) wrote:
+> >> Version 2 of GHCB specification provides NAEs that can be used by the SNP
+> >> guest to communicate with the PSP without risk from a malicious hypervisor
+> >> who wishes to read, alter, drop or replay the messages sent.
+> >>
+> >> The hypervisor uses the SNP_GUEST_REQUEST command interface provided by
+> >> the SEV-SNP firmware to forward the guest messages to the PSP.
+> >>
+> >> In order to communicate with the PSP, the guest need to locate the secrets
+> >> page inserted by the hypervisor during the SEV-SNP guest launch. The
+> >> secrets page contains the communication keys used to send and receive the
+> >> encrypted messages between the guest and the PSP.
+> >>
+> >> The secrets page is located either through the setup_data cc_blob_address
+> >> or EFI configuration table.
+> >>
+> >> Create a platform device that the SNP guest driver can bind to get the
+> >> platform resources. The SNP guest driver can provide userspace interface
+> >> to get the attestation report, key derivation etc.
+> >>
+> >> The helper snp_issue_guest_request() will be used by the drivers to
+> >> send the guest message request to the hypervisor. The guest message header
+> >> contains a message count. The message count is used in the IV. The
+> >> firmware increments the message count by 1, and expects that next message
+> >> will be using the incremented count.
+> >>
+> >> The helper snp_msg_seqno() will be used by driver to get and message
+> >> sequence counter, and it will be automatically incremented by the
+> >> snp_issue_guest_request(). The incremented value is be saved in the
+> >> secrets page so that the kexec'ed kernel knows from where to begin.
+> >>
+> >> See SEV-SNP and GHCB spec for more details.
+> >>
+> >> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> >> ---
+> >>  arch/x86/include/asm/sev.h      |  12 +++
+> >>  arch/x86/include/uapi/asm/svm.h |   2 +
+> >>  arch/x86/kernel/sev.c           | 176 ++++++++++++++++++++++++++++++++
+> >>  arch/x86/platform/efi/efi.c     |   2 +
+> >>  include/linux/efi.h             |   1 +
+> >>  include/linux/sev-guest.h       |  76 ++++++++++++++
+> >>  6 files changed, 269 insertions(+)
+> >>  create mode 100644 include/linux/sev-guest.h
+> >>
+> 
+> >> +u64 snp_msg_seqno(void)
+> >> +{
+> >> +	struct snp_secrets_page_layout *layout;
+> >> +	u64 count;
+> >> +
+> >> +	layout = snp_map_secrets_page();
+> >> +	if (layout == NULL)
+> >> +		return 0;
+> >> +
+> >> +	/* Read the current message sequence counter from secrets pages */
+> >> +	count = readl(&layout->os_area.msg_seqno_0);
+> > 
+> > Why is this seqno_0 - is that because it's the count of talking to the
+> > PSP?
+> 
+> Yes, the sequence number is an ever increasing value that is used in
+> communicating with the PSP. The PSP maintains the next expected sequence
+> number and will reject messages which have a sequence number that is not
+> in sync with the PSP. The 0 refers to the VMPL level. Each VMPL level has
+> its own sequence number.
 
-Regards,
-H.R.M. Chevron.
+Can you just clarify; is that the VMPL of the caller or the destination?
+What I'm partially asking here is whether it matters which VMPL the
+kernel is running at (which I'm assuming could well be non-0)
+
+> > 
+> >> +	iounmap(layout);
+> >> +
+> >> +	/*
+> >> +	 * The message sequence counter for the SNP guest request is a 64-bit value
+> >> +	 * but the version 2 of GHCB specification defines the 32-bit storage for the
+> >> +	 * it.
+> >> +	 */
+> >> +	if ((count + 1) >= INT_MAX)
+> >> +		return 0;
+> > 
+> > Is that UINT_MAX?
+> > 
+> >> +
+> >> +	return count + 1;
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(snp_msg_seqno);
+> >> +
+> >> +static void snp_gen_msg_seqno(void)
+> >> +{
+> >> +	struct snp_secrets_page_layout *layout;
+> >> +	u64 count;
+> >> +
+> >> +	layout = snp_map_secrets_page();
+> >> +	if (layout == NULL)
+> >> +		return;
+> >> +
+> >> +	/* Increment the sequence counter by 2 and save in secrets page. */
+> >> +	count = readl(&layout->os_area.msg_seqno_0);
+> >> +	count += 2;
+> > 
+> > Why 2 not 1 ?
+> 
+> The return message by the PSP also increments the sequence number, hence
+> the increment by 2 instead of 1 for the next message to be submitted.
+
+OK
+
+Dave
+
+> I'll let Brijesh address the other questions.
+> 
+> Thanks,
+> Tom
+> 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+
