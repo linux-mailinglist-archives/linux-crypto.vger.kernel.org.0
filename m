@@ -2,58 +2,66 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A79B3AAE4F
-	for <lists+linux-crypto@lfdr.de>; Thu, 17 Jun 2021 10:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4DA3AAE56
+	for <lists+linux-crypto@lfdr.de>; Thu, 17 Jun 2021 10:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhFQIDb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 17 Jun 2021 04:03:31 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50728 "EHLO deadmen.hmeau.com"
+        id S230455AbhFQIDp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 17 Jun 2021 04:03:45 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:50732 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230076AbhFQIDZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:03:25 -0400
+        id S230283AbhFQIDc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 17 Jun 2021 04:03:32 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1ltmxe-0003ib-Mc; Thu, 17 Jun 2021 16:01:14 +0800
+        id 1ltmxo-0003k1-Ht; Thu, 17 Jun 2021 16:01:24 +0800
 Received: from herbert by gondobar with local (Exim 4.92)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1ltmxe-0002nt-K4; Thu, 17 Jun 2021 16:01:14 +0800
-Date:   Thu, 17 Jun 2021 16:01:14 +0800
+        id 1ltmxn-0002oE-RU; Thu, 17 Jun 2021 16:01:23 +0800
+Date:   Thu, 17 Jun 2021 16:01:23 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v2] crypto: remove CRYPTOA_U32 and related functions
-Message-ID: <20210617080114.GD10662@gondor.apana.org.au>
-References: <20210611020100.2008894-1-liushixin2@huawei.com>
+To:     Kai Ye <yekai13@huawei.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wangzhou1@hisilicon.com
+Subject: Re: [PATCH 0/8] crypto: hisilicon - supports to configure function's
+ QoS for ACC
+Message-ID: <20210617080123.GE10662@gondor.apana.org.au>
+References: <1623402410-63906-1-git-send-email-yekai13@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210611020100.2008894-1-liushixin2@huawei.com>
+In-Reply-To: <1623402410-63906-1-git-send-email-yekai13@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 10:01:00AM +0800, Liu Shixin wrote:
-> According to the advice of Eric and Herbert, type CRYPTOA_U32
-> has been unused for over a decade, so remove the code related to
-> CRYPTOA_U32.
+On Fri, Jun 11, 2021 at 05:06:42PM +0800, Kai Ye wrote:
+> Based on the Token bucket algorithm. The QM can limit the throughput
+> of functions in Kunpeng930. By the device debugfs node that named
+> "alg_qos", the ACC driver supports to configue each function's QoS
+> in the host. Based on the communication between pf and vf, the driver
+> supports reading each function's QoS in the host and VM also by the
+> debugfs node.
 > 
-> After removing CRYPTOA_U32, the type of the variable attrs can be
-> changed from union to struct.
+> Kai Ye (8):
+>   crypto: hisilicon/qm - supports writing QoS int the Host
+>   crypto: hisilicon/qm - add the "alg_qos" file node
+>   crypto: hisilicon/qm - merges the work initialization process into a
+>     single function
+>   crypto: hisilicon/qm - add pf ping single vf function
+>   crypto: hisilicon/qm - supports to inquiry each function's QoS
+>   crypto: hisilicon/sec - adds the max shaper type rate
+>   crypto: hisilicon/hpre - adds the max shaper type rate
+>   crypto: hisilicon/zip - adds the max shaper type rate
 > 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> Reviewed-by: Eric Biggers <ebiggers@google.com>
-> ---
-> v1->v2: Fix format issue.
-> 
->  crypto/algapi.c         | 18 ------------------
->  crypto/algboss.c        | 31 ++++++-------------------------
->  include/crypto/algapi.h |  1 -
->  include/linux/crypto.h  |  5 -----
->  4 files changed, 6 insertions(+), 49 deletions(-)
+>  drivers/crypto/hisilicon/hpre/hpre_main.c |   7 +
+>  drivers/crypto/hisilicon/qm.c             | 909 +++++++++++++++++++++++-------
+>  drivers/crypto/hisilicon/qm.h             |  14 +
+>  drivers/crypto/hisilicon/sec2/sec_main.c  |   7 +
+>  drivers/crypto/hisilicon/zip/zip_main.c   |  11 +
+>  5 files changed, 757 insertions(+), 191 deletions(-)
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
