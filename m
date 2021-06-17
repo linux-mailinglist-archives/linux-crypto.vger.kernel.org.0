@@ -2,56 +2,55 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B3E3AAE54
-	for <lists+linux-crypto@lfdr.de>; Thu, 17 Jun 2021 10:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060AB3AAE4C
+	for <lists+linux-crypto@lfdr.de>; Thu, 17 Jun 2021 10:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhFQIDq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 17 Jun 2021 04:03:46 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50730 "EHLO deadmen.hmeau.com"
+        id S229783AbhFQIDP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 17 Jun 2021 04:03:15 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:50724 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230238AbhFQIDb (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:03:31 -0400
+        id S229716AbhFQIDK (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 17 Jun 2021 04:03:10 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1ltmxT-0003hK-78; Thu, 17 Jun 2021 16:01:03 +0800
+        id 1ltmxP-0003hM-8f; Thu, 17 Jun 2021 16:00:59 +0800
 Received: from herbert by gondobar with local (Exim 4.92)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1ltmx9-0002mO-VK; Thu, 17 Jun 2021 16:00:43 +0800
-Date:   Thu, 17 Jun 2021 16:00:43 +0800
+        id 1ltmxJ-0002md-OH; Thu, 17 Jun 2021 16:00:53 +0800
+Date:   Thu, 17 Jun 2021 16:00:53 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     trix@redhat.com
-Cc:     mdf@kernel.org, robh+dt@kernel.org, hao.wu@intel.com,
-        corbet@lwn.net, fbarrat@linux.ibm.com, ajd@linux.ibm.com,
-        bbrezillon@kernel.org, arno@natisbad.org, schalla@marvell.com,
-        davem@davemloft.net, gregkh@linuxfoundation.org,
-        Sven.Auhagen@voleatech.de, grandmaster@al2klimov.de,
-        linux-fpga@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-crypto@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH 04/11] crypto: marvell: cesa: change FPGA indirect
- article to an
-Message-ID: <20210617080043.GA10662@gondor.apana.org.au>
-References: <20210608212350.3029742-1-trix@redhat.com>
- <20210608212350.3029742-6-trix@redhat.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>, weiyongjun1@huawei.com,
+        yuehaibing@huawei.com, yangjihong1@huawei.com, yukuai3@huawei.com,
+        linux-crypto@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next v2] crypto: ccp - Use list_move_tail instead of
+ list_del/list_add_tail in ccp-dmaengine.c
+Message-ID: <20210617080053.GB10662@gondor.apana.org.au>
+References: <20210609071526.1338089-1-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210608212350.3029742-6-trix@redhat.com>
+In-Reply-To: <20210609071526.1338089-1-libaokun1@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 02:23:43PM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On Wed, Jun 09, 2021 at 03:15:26PM +0800, Baokun Li wrote:
+> Using list_move_tail() instead of list_del() + list_add_tail() in ccp-dmaengine.c.
 > 
-> Change use of 'a fpga' to 'an fpga'
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 > ---
->  drivers/crypto/marvell/cesa/cesa.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> V1->V2:
+> 	CC mailist
+> 
+>  drivers/crypto/ccp/ccp-dmaengine.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
 Patch applied.  Thanks.
 -- 
