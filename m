@@ -2,92 +2,86 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D803AC7C2
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Jun 2021 11:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBA43AC7F4
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Jun 2021 11:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbhFRJiy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Jun 2021 05:38:54 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:8271 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232666AbhFRJiv (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:38:51 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G5twS56bLz1BNSw;
-        Fri, 18 Jun 2021 17:31:36 +0800 (CST)
-Received: from dggema713-chm.china.huawei.com (10.3.20.77) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 18 Jun 2021 17:36:40 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggema713-chm.china.huawei.com (10.3.20.77) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 18 Jun 2021 17:36:39 +0800
-From:   Wenkai Lin <linwenkai6@hisilicon.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <prime.zeng@hisilicon.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH] crypto: hisilicon/qm - implement for querying hardware tasks status.
-Date:   Fri, 18 Jun 2021 17:36:06 +0800
-Message-ID: <1624008966-1395-1-git-send-email-linwenkai6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S232399AbhFRJtN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Jun 2021 05:49:13 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:34154 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230399AbhFRJtL (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 18 Jun 2021 05:49:11 -0400
+Received: from zn.tnic (p200300ec2f0dd8004fc95bebb5201001.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d800:4fc9:5beb:b520:1001])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6F1EC1EC0559;
+        Fri, 18 Jun 2021 11:46:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1624009601;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=fhCS1VjB+E7C2WKgFiWhTOQPZHXnjbEcqr3FRlWi0xU=;
+        b=mVNHyRCG/AgGBIUULY2n0rYyqbBpwtuaHTqg5MgQ8DzjcE9TF4eqo9kb51Zi7yIPdYmL1j
+        UmVDFMG5XYUnevK4WKpCAJrbwegX9Q43eENYMOjzOw/qYPF1y04M24QPeRJ9ZYw+hFFVzJ
+        pl8wgyAk+mMAdq8y2SXzcZsoQS0G0Ek=
+Date:   Fri, 18 Jun 2021 11:46:31 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 21/22] x86/sev: Register SNP guest request
+ platform device
+Message-ID: <YMxrd5M1teku/hnA@zn.tnic>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-22-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema713-chm.china.huawei.com (10.3.20.77)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210602140416.23573-22-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds a function hisi_qm_is_q_updated to
-check if the task is ready in hardware queue when
-user polls an UACCE queue.This prevents users from
-repeatedly querying whether the accelerator has
-completed tasks, which wastes CPU resources.
+On Wed, Jun 02, 2021 at 09:04:15AM -0500, Brijesh Singh wrote:
+>  arch/x86/include/asm/sev.h      |  12 +++
+>  arch/x86/include/uapi/asm/svm.h |   2 +
+>  arch/x86/kernel/sev.c           | 176 ++++++++++++++++++++++++++++++++
+>  arch/x86/platform/efi/efi.c     |   2 +
+>  include/linux/efi.h             |   1 +
+>  include/linux/sev-guest.h       |  76 ++++++++++++++
+>  6 files changed, 269 insertions(+)
+>  create mode 100644 include/linux/sev-guest.h
 
-Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
----
- drivers/crypto/hisilicon/qm.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+This patch is at least three patches in one:
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 5807094..1d67f94 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -2926,6 +2926,23 @@ static void hisi_qm_uacce_stop_queue(struct uacce_queue *q)
- 	hisi_qm_stop_qp(q->priv);
- }
- 
-+static int hisi_qm_is_q_updated(struct uacce_queue *q)
-+{
-+	struct hisi_qp *qp = q->priv;
-+	struct qm_cqe *cqe = qp->cqe + qp->qp_status.cq_head;
-+	int updated = 0;
-+
-+	while (QM_CQE_PHASE(cqe) == qp->qp_status.cqc_phase) {
-+		/* make sure to read data from memory */
-+		dma_rmb();
-+		qm_cq_head_update(qp);
-+		cqe = qp->cqe + qp->qp_status.cq_head;
-+		updated = 1;
-+	}
-+
-+	return updated;
-+}
-+
- static void qm_set_sqctype(struct uacce_queue *q, u16 type)
- {
- 	struct hisi_qm *qm = q->uacce->priv;
-@@ -2971,6 +2988,7 @@ static const struct uacce_ops uacce_qm_ops = {
- 	.stop_queue = hisi_qm_uacce_stop_queue,
- 	.mmap = hisi_qm_uacce_mmap,
- 	.ioctl = hisi_qm_uacce_ioctl,
-+	.is_q_updated = hisi_qm_is_q_updated,
- };
- 
- static int qm_alloc_uacce(struct hisi_qm *qm)
+1. EFI changes
+2. SNP_GUEST_REQUEST struct etc definitions
+3. Add the functionality.
+
+Please split it this way before I take a look.
+
+Thx.
+
 -- 
-2.7.4
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
