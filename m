@@ -2,66 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328AB3B1DED
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Jun 2021 17:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8993F3B1F1F
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Jun 2021 19:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhFWP43 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Wed, 23 Jun 2021 11:56:29 -0400
-Received: from [183.90.58.236] ([183.90.58.236]:51548 "EHLO ns1.zackeruz.tk"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231439AbhFWP43 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:56:29 -0400
-Received: from johnlewis.com (unknown [192.168.20.1])
-        by ns1.zackeruz.tk (Postfix) with ESMTPSA id 381FC8462E0
-        for <linux-crypto@vger.kernel.org>; Wed, 23 Jun 2021 23:54:09 +0800 (+08)
-Reply-To: robert_turner@johnlewis-trading.com,
-          pippawicks.sales@johnlewis-trading.com
-From:   John Lewis & Partnersip <robert.turner107@johnlewis.com>
-To:     linux-crypto@vger.kernel.org
-Subject: 6/23/2021 Product Inquiry 
-Date:   23 Jun 2021 15:54:09 +0000
-Message-ID: <20210623094114.50086F33BD3ED9F9@johnlewis.com>
+        id S230004AbhFWRCr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Jun 2021 13:02:47 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:49870 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWRCq (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 23 Jun 2021 13:02:46 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1001)
+        id 22BC220B7188; Wed, 23 Jun 2021 10:00:29 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 22BC220B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1624467629;
+        bh=L5/H7FIrkz8GoqL+W/32b5NGry8n7J+n2NEMmYkG6jM=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=h7y0rAKUyxJFDSCeiHCLM6LCm94bD1SnSwGrKLXNMlokmNBETkm1LwdXxqkczC2vs
+         RM3Me+trkcLQvetAnKmpxcwWUsg5vfKFFu01SXXQk5bZBtFvhahBGZAW1zs1istIsb
+         DO6fZsoueoVdMTDiEbQQGkLzsLMvo/mM9z19fgUM=
+Received: from localhost (localhost [127.0.0.1])
+        by linux.microsoft.com (Postfix) with ESMTP id 21C203070324;
+        Wed, 23 Jun 2021 10:00:29 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 10:00:29 -0700 (PDT)
+From:   James Morris <jamorris@linux.microsoft.com>
+To:     Stephan Mueller <smueller@chronox.de>
+cc:     =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        David Miller <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Haxby <john.haxby@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Simo Sorce <simo@redhat.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        hpa@zytor.com, tytso@mit.edu
+Subject: Re: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A
+ rev1
+In-Reply-To: <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de>
+Message-ID: <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
+References: <20210623120751.3033390-1-mic@digikod.net> <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear linux-crypto
+On Wed, 23 Jun 2021, Stephan Mueller wrote:
 
-The famous brand John Lewis Partnership, is UK's largest multi-
-channel retailer with over 126 shops and multiple expansion in 
-Africa furnished by European/Asian/American products. We are 
-sourcing new products to attract new customers and also retain 
-our existing ones, create new partnerships with companies dealing 
-with different kinds of goods globally.
+> 
+> > These changes replace the use of the Linux RNG with the Jitter RNG,
+> > which is NIST SP800-90B compliant, to get a proper entropy input and a
+> > nonce as defined by FIPS.
+> 
+> Can you please help me understand what is missing in the current code which
+> seemingly already has achieved this goal?
 
-Your company's products are of interest to our market as we have 
-an amazing market for your products.
-
-Provide us your current catalog through email to review more. We 
-hope to be able to order with you and start a long-term friendly,
-respectable and solid business partnership. Please we would 
-appreciate it if you could send us your stock availability via 
-email if any.
-
-Our payment terms are 15 days net in Europe, 30 days Net in UK 
-and 30 days net in Asia/USA as we operate with over 5297 
-suppliers around the globe for the past 50 years now. For 
-immediate response Send your reply to robert_turner@johnlewis-
-trading.com for us to be able to 
-treat with care and urgency.
+The advice we have is that if an attacker knows the internal state of the 
+CPU, then the output of the Jitter RNG can be predicted.
 
 
-Best Regards
 
-Rob Turner
-Head Of Procurement Operations
-John Lewis & Partners.
-robert_turner@johnlewis-trading.com
-Tel: +44-7451-274090
-WhatsApp: +447497483925
-www.johnlewis.com
-REGISTERED OFFICE: 171 VICTORIA STREET, LONDON SW1E 5NN 
+-- 
+James Morris
+<jamorris@linux.microsoft.com>
