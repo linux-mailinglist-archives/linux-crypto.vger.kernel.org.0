@@ -2,49 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F1F3B296B
-	for <lists+linux-crypto@lfdr.de>; Thu, 24 Jun 2021 09:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9763B2972
+	for <lists+linux-crypto@lfdr.de>; Thu, 24 Jun 2021 09:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbhFXHjC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 24 Jun 2021 03:39:02 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50844 "EHLO deadmen.hmeau.com"
+        id S231706AbhFXHjT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 24 Jun 2021 03:39:19 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:50850 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231589AbhFXHjB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 24 Jun 2021 03:39:01 -0400
+        id S231666AbhFXHjT (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 24 Jun 2021 03:39:19 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1lwJug-0006Fn-R9; Thu, 24 Jun 2021 15:36:38 +0800
+        id 1lwJut-0006H1-0t; Thu, 24 Jun 2021 15:36:51 +0800
 Received: from herbert by gondobar with local (Exim 4.92)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1lwJue-0004hD-Ue; Thu, 24 Jun 2021 15:36:36 +0800
-Date:   Thu, 24 Jun 2021 15:36:36 +0800
+        id 1lwJus-0004ha-2i; Thu, 24 Jun 2021 15:36:50 +0800
+Date:   Thu, 24 Jun 2021 15:36:50 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Pankaj Gupta <pankaj.gupta@nxp.com>,
-        linux-crypto@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     ulli.kroll@googlemail.com, linus.walleij@linaro.org,
+        clabbe@baylibre.com, davem@davemloft.net,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: update caam crypto driver maintainers list
-Message-ID: <20210624073636.GD17892@gondor.apana.org.au>
-References: <20210617091926.23517-1-horia.geanta@nxp.com>
+Subject: Re: [PATCH v2 -next] crypto: sl3516 - Fix build warning without
+ CONFIG_PM
+Message-ID: <20210624073650.GE17892@gondor.apana.org.au>
+References: <20210618093551.23748-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210617091926.23517-1-horia.geanta@nxp.com>
+In-Reply-To: <20210618093551.23748-1-yuehaibing@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 12:19:26PM +0300, Horia Geantă wrote:
-> Aymen steps down as caam maintainer, being replaced by Pankaj.
+On Fri, Jun 18, 2021 at 05:35:51PM +0800, YueHaibing wrote:
+> drivers/crypto/gemini/sl3516-ce-core.c:345:12:
+>  warning: ‘sl3516_ce_pm_resume’ defined but not used [-Wunused-function]
+>  static int sl3516_ce_pm_resume(struct device *dev)
+>             ^~~~~~~~~~~~~~~~~~~
 > 
-> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+> The driver needs PM, otherwise clock and resets are never set.
+> So make it depends on PM to fix this warning.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Suggested-by: LABBE Corentin <clabbe@baylibre.com>
 > ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> v2: Using depends on PM instead of #ifdef macro
+> 
+>  drivers/crypto/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
 Patch applied.  Thanks.
 -- 
