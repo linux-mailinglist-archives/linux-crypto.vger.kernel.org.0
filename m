@@ -2,36 +2,35 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8376D3BB1D9
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 Jul 2021 01:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B743BB327
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 Jul 2021 01:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbhGDXNT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 4 Jul 2021 19:13:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48840 "EHLO mail.kernel.org"
+        id S233057AbhGDXR3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 4 Jul 2021 19:17:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhGDXMV (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:12:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB6786162A;
-        Sun,  4 Jul 2021 23:08:46 +0000 (UTC)
+        id S229614AbhGDXNP (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:13:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9754461960;
+        Sun,  4 Jul 2021 23:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440127;
-        bh=6qvfVHz8Ivbu+S8FtkH8bJH6LL/dj1fkRbuXihqrtqk=;
+        s=k20201202; t=1625440141;
+        bh=EwONuDiDclzvsM2MjoctyHGHG0D1+bQenust0cxuNPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f8Bo68t7zPfWk8U+oQVdKVU2/Pbt2+qgdlR/BWUmKM2LMPTKQc1y0/nTihtha7wCX
-         k7ZcpwoyyHUVLup2XelNL5r5J/It0P/XZJ/GL1hKPWtCMOuq7YZtBNc2Oonn9SSZak
-         k+1hO0xi5uEfqU9JW6+8SL35rxUawtfIwXphypWDdX5wVjaxUxI//57OyRhNSjmZqR
-         0RZythKcO2jRoexg1ZzRJTM+Bqz8hx8jiqjk1jSR2FJttl0IQDdv7UKd0ACfWdYCOj
-         M1NDOdc2AYhbjJCKYCgbgzBiz273XAAVsBT9kSDzwCzjzTUiZ01bOZhI7qD4tcdXny
-         fP2p0EFbaHFPA==
+        b=LS4fREZ8njo9A+TcWCwZ/hCNGwrQzswmbKgaCof9dVjmq3MX4K3plZd8r9VqM1R3q
+         Mt2CYp+EDUeDDSF8DjKwulRN6GHSG9GSJ+AJ0suPSACBmmIX1PNzJyQWA3g7nZyGtP
+         EtZAzja+ppg+QYY0wSUGL/qqu9VyBpgqEJRBOysgWOm+S4Lpo00A2eg5ozP9yT+Ppj
+         ZilVB3V6u/F2SWsFhdaPbxbo64DtU1VdnMSNjCC6L9lQHS3I8Ciwtdb3PkIfKze/pZ
+         frDGR8lS4BjAEgL27JnfQol30VukP3YWvQTcHGIV1sbXPGXizWmPTDe9LCu/jif7hq
+         0mXbkLLti6Ktw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
+Cc:     Kai Ye <yekai13@huawei.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 31/70] crypto: qce: skcipher: Fix incorrect sg count for dma transfers
-Date:   Sun,  4 Jul 2021 19:07:24 -0400
-Message-Id: <20210704230804.1490078-31-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 42/70] crypto: hisilicon/sec - fixup 3des minimum key size declaration
+Date:   Sun,  4 Jul 2021 19:07:35 -0400
+Message-Id: <20210704230804.1490078-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704230804.1490078-1-sashal@kernel.org>
 References: <20210704230804.1490078-1-sashal@kernel.org>
@@ -43,68 +42,37 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Thara Gopinath <thara.gopinath@linaro.org>
+From: Kai Ye <yekai13@huawei.com>
 
-[ Upstream commit 1339a7c3ba05137a2d2fe75f602311bbfc6fab33 ]
+[ Upstream commit 6161f40c630bd7ced5f236cd5fbabec06e47afae ]
 
-Use the sg count returned by dma_map_sg to call into
-dmaengine_prep_slave_sg rather than using the original sg count. dma_map_sg
-can merge consecutive sglist entries, thus making the original sg count
-wrong. This is a fix for memory coruption issues observed while testing
-encryption/decryption of large messages using libkcapi framework.
+Fixup the 3des algorithm  minimum key size declaration.
 
-Patch has been tested further by running full suite of tcrypt.ko tests
-including fuzz tests.
-
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+Signed-off-by: Kai Ye <yekai13@huawei.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qce/skcipher.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/crypto/hisilicon/sec2/sec_crypto.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
-index a2d3da0ad95f..5a6559131eac 100644
---- a/drivers/crypto/qce/skcipher.c
-+++ b/drivers/crypto/qce/skcipher.c
-@@ -71,7 +71,7 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
- 	struct scatterlist *sg;
- 	bool diff_dst;
- 	gfp_t gfp;
--	int ret;
-+	int dst_nents, src_nents, ret;
+diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+index 41f1fcacb280..630dcb59ad56 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
++++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+@@ -1515,11 +1515,11 @@ static struct skcipher_alg sec_skciphers[] = {
+ 			 AES_BLOCK_SIZE, AES_BLOCK_SIZE)
  
- 	rctx->iv = req->iv;
- 	rctx->ivsize = crypto_skcipher_ivsize(skcipher);
-@@ -122,21 +122,22 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
- 	sg_mark_end(sg);
- 	rctx->dst_sg = rctx->dst_tbl.sgl;
+ 	SEC_SKCIPHER_ALG("ecb(des3_ede)", sec_setkey_3des_ecb,
+-			 SEC_DES3_2KEY_SIZE, SEC_DES3_3KEY_SIZE,
++			 SEC_DES3_3KEY_SIZE, SEC_DES3_3KEY_SIZE,
+ 			 DES3_EDE_BLOCK_SIZE, 0)
  
--	ret = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
--	if (ret < 0)
-+	dst_nents = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
-+	if (dst_nents < 0)
- 		goto error_free;
+ 	SEC_SKCIPHER_ALG("cbc(des3_ede)", sec_setkey_3des_cbc,
+-			 SEC_DES3_2KEY_SIZE, SEC_DES3_3KEY_SIZE,
++			 SEC_DES3_3KEY_SIZE, SEC_DES3_3KEY_SIZE,
+ 			 DES3_EDE_BLOCK_SIZE, DES3_EDE_BLOCK_SIZE)
  
- 	if (diff_dst) {
--		ret = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
--		if (ret < 0)
-+		src_nents = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
-+		if (src_nents < 0)
- 			goto error_unmap_dst;
- 		rctx->src_sg = req->src;
- 	} else {
- 		rctx->src_sg = rctx->dst_sg;
-+		src_nents = dst_nents - 1;
- 	}
- 
--	ret = qce_dma_prep_sgs(&qce->dma, rctx->src_sg, rctx->src_nents,
--			       rctx->dst_sg, rctx->dst_nents,
-+	ret = qce_dma_prep_sgs(&qce->dma, rctx->src_sg, src_nents,
-+			       rctx->dst_sg, dst_nents,
- 			       qce_skcipher_done, async_req);
- 	if (ret)
- 		goto error_unmap_src;
+ 	SEC_SKCIPHER_ALG("xts(sm4)", sec_setkey_sm4_xts,
 -- 
 2.30.2
 
