@@ -2,57 +2,91 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642BE3BC3DB
-	for <lists+linux-crypto@lfdr.de>; Tue,  6 Jul 2021 00:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194C43BC521
+	for <lists+linux-crypto@lfdr.de>; Tue,  6 Jul 2021 06:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233135AbhGEWQ6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 5 Jul 2021 18:16:58 -0400
-Received: from static-190-25-223-138.static.etb.net.co ([190.25.223.138]:45478
-        "EHLO correo.hdv.gov.co" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233134AbhGEWQ6 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 5 Jul 2021 18:16:58 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by correo.hdv.gov.co (Postfix) with ESMTP id F126622047ED;
-        Mon,  5 Jul 2021 15:42:51 -0500 (-05)
-Received: from correo.hdv.gov.co ([127.0.0.1])
-        by localhost (correo.hdv.gov.co [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id kBefhJc5-3rl; Mon,  5 Jul 2021 15:42:51 -0500 (-05)
-Received: from localhost (localhost [127.0.0.1])
-        by correo.hdv.gov.co (Postfix) with ESMTP id AD42A22047D8;
-        Mon,  5 Jul 2021 15:42:50 -0500 (-05)
-DKIM-Filter: OpenDKIM Filter v2.10.3 correo.hdv.gov.co AD42A22047D8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hdv.gov.co;
-        s=11DF984A-9D1F-11E6-B193-F2669FC4C452; t=1625517770;
-        bh=Po3+jYC7/Rg7V8Ibt2yKIqN5eintSYPogxawXJ1TVGE=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=wBWtcbSQF8Sc7gCxT1MHa5ksEcKn8R5mWCDD2DmE3eOiqkikXvpVWIO75e9Cq+fQ7
-         Z6Qgj6bOHmNC7gZql6iscibSPYILSCVI8jxK1kQ/3a2bEA1Y49QN6F7ifQnnfColb7
-         /WJDsn9IYHy5sD3Li2hPQ7gM3GUzpyqapRIA/tfU=
-X-Virus-Scanned: amavisd-new at correo.hdv.gov.co
-Received: from correo.hdv.gov.co ([127.0.0.1])
-        by localhost (correo.hdv.gov.co [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id MBSSvJn6r8Hc; Mon,  5 Jul 2021 15:42:50 -0500 (-05)
-Received: from [10.1.237.235] (unknown [154.13.1.139])
-        by correo.hdv.gov.co (Postfix) with ESMTPSA id EB17E22046B4;
-        Mon,  5 Jul 2021 15:42:42 -0500 (-05)
-Content-Type: text/plain; charset="utf-8"
+        id S229992AbhGFECg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 6 Jul 2021 00:02:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229550AbhGFECf (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 6 Jul 2021 00:02:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AC8961375;
+        Tue,  6 Jul 2021 03:59:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625543998;
+        bh=EBb836TUqwdFybd5e2qAGza9Mok0L1tjLS+MbMnBjN4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ro2L/nJ4cUN3ER5i2dJBf/AoagWgvc7fTnq9wCDIWMaIK1/W4Fsl2yB0GSMy9mC0L
+         D3ywytE827DeLQGb9bH5+zgKUENID8BWXwP7OgigfS++eWj34tKndOwKh1d6ACah7A
+         HMjgnNxt8KkJ97fiXGIEQ4riZ9A6cfV+i6nd6Lce18CP8vCVXpYL4yaiUkrT7RX2kP
+         ixKBJ1i36AsdX/evHWTr4u3uzEEsHHRoYXFG6Mr49SnegKfLZTkN2zNxBGGjX/vKew
+         WgTvpmKmW/NF3DleCNOTTj0eisiOauD4DzjHiBGeetDA9i2g6R7XC4iwkEULdjNHLH
+         6vPk8pBEd6jog==
+Date:   Tue, 6 Jul 2021 06:59:54 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        liulongfang <liulongfang@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        yuzenghui <yuzenghui@huawei.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "Wangzhou (B)" <wangzhou1@hisilicon.com>
+Subject: Re: [RFC v2 1/4] hisi-acc-vfio-pci: add new vfio_pci driver for
+ HiSilicon ACC devices
+Message-ID: <YOPVOnRXPWGvloIT@unreal>
+References: <20210702095849.1610-1-shameerali.kolothum.thodi@huawei.com>
+ <20210702095849.1610-2-shameerali.kolothum.thodi@huawei.com>
+ <YOFdTnlkcDZzw4b/@unreal>
+ <fc9d6b0b82254fbdb1cc96365b5bdef3@huawei.com>
+ <d02dff3a-8035-ced1-7fc3-fcff791f9203@nvidia.com>
+ <834a009bba0d4db1b7a1c32e8f20611d@huawei.com>
+ <YONPGcwjGH+gImDj@unreal>
+ <20210705183247.GU4459@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: RE:
-To:     Recipients <planeacion.arquitecto@hdv.gov.co>
-From:   planeacion.arquitecto@hdv.gov.co
-Date:   Mon, 05 Jul 2021 22:42:28 +0200
-Reply-To: callumfoundation18@gmail.com
-Message-Id: <20210705204242.EB17E22046B4@correo.hdv.gov.co>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705183247.GU4459@nvidia.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-F=C3=BCr Sie wurde eine Spende in H=C3=B6he von 2.800.000,00 =E2=82=AC gesp=
-endet. Bitte antworten Sie auf diese E-Mail, um die Spenderin (MRS. LERYNNE=
- WEST) f=C3=BCr weitere Informationen zu gespendeten Mitteln zu kontaktiere=
-n.
+On Mon, Jul 05, 2021 at 03:32:47PM -0300, Jason Gunthorpe wrote:
+> On Mon, Jul 05, 2021 at 09:27:37PM +0300, Leon Romanovsky wrote:
+> 
+> > > I think, in any case, it would be good to update the Documentation based on
+> > > which way we end up doing this.
+> > 
+> > The request to update Documentation can be seen as an example of
+> > choosing not-good API decisions. Expectation to see all drivers to
+> > use same callbacks with same vfio-core function calls sounds strange
+> > to me.
+> 
+> It is not vfio-core, it is vfio-pci-core. It is similar to how some of
+> the fops stuff works, eg the generic_file whatever functions everyone
+> puts in.
 
-Sch=C3=B6ne Gr=C3=BC=C3=9Fe
+It doesn't really matter if it is vfio-core or vfio-pci-core. This looks
+horrible and it is going to be repeated for every driver:
+
++       .release        = vfio_pci_core_release,
++       .ioctl          = vfio_pci_core_ioctl,
++       .read           = vfio_pci_core_read,
++       .write          = vfio_pci_core_write,
++       .mmap           = vfio_pci_core_mmap,
++       .request        = vfio_pci_core_request,
++       .match          = vfio_pci_core_match,
++       .reflck_attach  = vfio_pci_core_reflck_attach,
++};
+
+At some point of time you will add new .XXX callback and will
+find yourself changing all drivers to have something like
+".XXX = vfio_pci_core_XXX,"
+
+Thanks
