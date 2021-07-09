@@ -2,123 +2,146 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512F43C1CF5
-	for <lists+linux-crypto@lfdr.de>; Fri,  9 Jul 2021 03:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CE43C1D52
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 Jul 2021 04:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhGIBOI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 8 Jul 2021 21:14:08 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29998 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229637AbhGIBOG (ORCPT
+        id S230436AbhGICUl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 8 Jul 2021 22:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230262AbhGICUj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 8 Jul 2021 21:14:06 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16913lvR179385;
-        Thu, 8 Jul 2021 21:11:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=FI1qzW9vg11HTR0gAlwlHCY0vo4meaCwC4bF1sUyszc=;
- b=QX3q5U2wrRa+C87k+scNfpcRlsHOkg2p1NA7GtPj0rSkVkL/b1Zbw4mmGBK+LVzItuPd
- izMijkJWK+3UAAMGLpHj1PUXcdB00EZOVNBjPDDdt+KmL0XhBNZGpM5i+PdJSfZxdY14
- hpR6WG8oD7FLbYgOs/B4Zjic/JkEiAq7ZoZwGvoShjHA7cau8sPoM2bjgaZwJ2WsaSaF
- n1vtYQ1BB8KIvri+xM8dUh/le70HXj1FLP0lgsNdlMTInUBlg6jY+OFuPAd+Ox5qNOYK
- MtOdJnWOx+gcCtpzxQOTvg2ndWFrV/bugKfeXhEu0wLPD1yLD88ixNYlNbCOCD2+qc5D 7g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39n287x0cy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 21:11:00 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16919xLj196388;
-        Thu, 8 Jul 2021 21:10:59 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39n287x0ca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 21:10:59 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1691Av0W032007;
-        Fri, 9 Jul 2021 01:10:57 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 39jfh8h9ys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Jul 2021 01:10:56 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1691AsJB31326546
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Jul 2021 01:10:54 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4F4A642041;
-        Fri,  9 Jul 2021 01:10:54 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C8C74203F;
-        Fri,  9 Jul 2021 01:10:48 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.81.156])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  9 Jul 2021 01:10:48 +0000 (GMT)
-Message-ID: <ef480c8f83780eea4ff8fdcd35c6208760b5e1d7.camel@linux.ibm.com>
-Subject: Re: [PATCH RFC 00/12] Enroll kernel keys thru MOK
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     keyrings@vger.kernel.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
+        Thu, 8 Jul 2021 22:20:39 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1B3C061762;
+        Thu,  8 Jul 2021 19:17:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=q5PBy6APiXWPEupiMc3NRNYtzT/lblW7v71tiwv6vD4=; b=a/xws38deUOeggL/Jkk2RG3+/g
+        pbJBq3tgbEiBzTrJRwB7MG09RkMZ5vTIXko+KXmrvX674zUJGw3yuH+YiHYUASZV+cqdacFTr53iD
+        mVrQ+/u9zWGvZyO+yaDsziYvExuD9KOKY4amjXtsb3N4pHQ5R0OC55UWoZ4IkQF5K4icAZ4MFjSz4
+        LzOK5l1BDX3Z4AAydCNNM6arBp6ZC2/L+9s+8ZVQOZJJJCZHaXOllWzEGjx81IltrUWJ/PNkeBbBh
+        lMXwS5eNaW70KOC6n8U7xf/qYaU45bRUHLrMh6lO4psjQQYVdPSLlD8cxqcBQEKz2rXfOr8QjdbiA
+        KNVhR8yA==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1g5N-000Wlc-IQ; Fri, 09 Jul 2021 02:17:49 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andres Salomon <dilinger@queued.net>,
+        linux-geode@lists.infradead.org, Matt Mackall <mpm@selenic.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
-        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-        scott.branden@broadcom.com, weiyongjun1@huawei.com,
-        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
-        nramas@linux.microsoft.com, lszubowi@redhat.com,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        glin@suse.com, "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>
-Date:   Thu, 08 Jul 2021 21:10:47 -0400
-In-Reply-To: <839EF700-7A2C-4282-AF97-768FAD1A9957@oracle.com>
-References: <20210707024403.1083977-1-eric.snowberg@oracle.com>
-         <42b787dd3a20fe37c4de60daf75db06e409cfb6d.camel@linux.ibm.com>
-         <5BFB3C52-36D4-47A5-B1B8-977717C555A0@oracle.com>
-         <886f30dcf7b3d48644289acc3601c2f0207b19b6.camel@linux.ibm.com>
-         <D34A6328-91CA-4E1E-845C-FAC9B424819B@oracle.com>
-         <c0cf7f883a9252c17427f1f992e4973e78481304.camel@linux.ibm.com>
-         <21EFCB58-2D89-4D30-8DA2-B952A7E1B1BD@oracle.com>
-         <490941a5197bf4bcf0d6f95610085ee4d46ed9bb.camel@linux.ibm.com>
-         <839EF700-7A2C-4282-AF97-768FAD1A9957@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: FMn_hX5NZ_CCLtfcgqQvPGUn7SHHsF0z
-X-Proofpoint-ORIG-GUID: CZDy5YSAnV3UvrlJeOGW1sSUTSKHEugt
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-08_14:2021-07-08,2021-07-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- mlxscore=0 priorityscore=1501 malwarescore=0 suspectscore=0 spamscore=0
- phishscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107090003
+        linux-crypto@vger.kernel.org,
+        Christian Gromm <christian.gromm@microchip.com>,
+        Krzysztof Halasa <khc@pm.waw.pl>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>, linux-x25@vger.kernel.org,
+        wireguard@lists.zx2c4.com
+Subject: [PATCH 0/6] treewide: rename 'mod_init' & 'mod_exit' functions to be module-specific
+Date:   Thu,  8 Jul 2021 19:17:41 -0700
+Message-Id: <20210709021747.32737-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, 2021-07-08 at 17:17 -0600, Eric Snowberg wrote:
-> > Once all the CA keys in the MOK db are loaded onto the MOK keyring,
-> 
-> To avoid confusion with the new keyring name, would it be more appropriate 
-> to change what we are calling the .mok keyring to the .trusted_platform 
-> keyring instead? Or just leave it as .mok?
+There are multiple (16) modules which use a module_init() function
+with the name 'mod_init' and a module_exit() function with the name
+'mod_exit'. This can lead to confusion or ambiguity when reading
+crashes/oops/bugs etc. and when reading an initcall_debug log.
 
-Definitely not ".trusted_platform" keyring, as it would be too
-confusing with the existing "trusted" key type [1].  At least for now,
-leave it as ".mok".
+Example 1: (System.map file)
 
-thanks,
+ffffffff83446d10 t mod_init
+ffffffff83446d18 t mod_init
+ffffffff83446d20 t mod_init
+...
+ffffffff83454665 t mod_init
+ffffffff834548a4 t mod_init
+ffffffff83454a53 t mod_init
+...
+ffffffff8345bd42 t mod_init
+...
+ffffffff8345c916 t mod_init
+ffffffff8345c92a t mod_init
+ffffffff8345c93e t mod_init
+ffffffff8345c952 t mod_init
+ffffffff8345c966 t mod_init
+...
+ffffffff834672c9 t mod_init
 
-Mimi
+Example 2: (boot log when using 'initcall_debug')
 
-[1] Documentation/security/keys/trusted-encrypted.rst
+[    0.252157] initcall mod_init+0x0/0x8 returned 0 after 0 usecs
+[    0.252180] initcall mod_init+0x0/0x8 returned 0 after 0 usecs
+[    0.252202] initcall mod_init+0x0/0x8 returned 0 after 0 usecs
+...
+[    0.892907] initcall mod_init+0x0/0x23f returned -19 after 104 usecs
+[    0.913788] initcall mod_init+0x0/0x1af returned -19 after 9 usecs
+[    0.934353] initcall mod_init+0x0/0x49 returned -19 after 0 usecs
+...
+[    1.454870] initcall mod_init+0x0/0x66 returned 0 after 72 usecs
+...
+[    1.455527] initcall mod_init+0x0/0x14 returned 0 after 0 usecs
+[    1.455531] initcall mod_init+0x0/0x14 returned 0 after 0 usecs
+[    1.455536] initcall mod_init+0x0/0x14 returned 0 after 0 usecs
+[    1.455541] initcall mod_init+0x0/0x14 returned 0 after 0 usecs
+[    1.455545] initcall mod_init+0x0/0x52 returned 0 after 0 usecs
+...
+[    1.588162] initcall mod_init+0x0/0xef returned 0 after 45 usecs
 
+
+Cc: Jason A. Donenfeld <Jason@zx2c4.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Andres Salomon <dilinger@queued.net>
+Cc: linux-geode@lists.infradead.org
+Cc: Matt Mackall <mpm@selenic.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: linux-crypto@vger.kernel.org
+Cc: Christian Gromm <christian.gromm@microchip.com>
+Cc: Krzysztof Halasa <khc@pm.waw.pl>
+Cc: netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Martin Schiller <ms@dev.tdt.de>
+Cc: linux-x25@vger.kernel.org
+Cc: wireguard@lists.zx2c4.com
+
+[PATCH 1/6] arm: crypto: rename 'mod_init' & 'mod_exit' functions to be module-specific
+[PATCH 2/6] hw_random: rename 'mod_init' & 'mod_exit' functions to be module-specific
+[PATCH 3/6] lib: crypto: rename 'mod_init' & 'mod_exit' functions to be module-specific
+[PATCH 4/6] MOST: cdev: rename 'mod_init' & 'mod_exit' functions to be module-specific
+[PATCH 5/6] net: hdlc: rename 'mod_init' & 'mod_exit' functions to be module-specific
+[PATCH 6/6] net: wireguard: rename 'mod_init' & 'mod_exit' functions to be module-specific
+
+ arch/arm/crypto/curve25519-glue.c  |    8 ++++----
+ drivers/char/hw_random/amd-rng.c   |    8 ++++----
+ drivers/char/hw_random/geode-rng.c |    8 ++++----
+ drivers/char/hw_random/intel-rng.c |    8 ++++----
+ drivers/char/hw_random/via-rng.c   |    8 ++++----
+ drivers/most/most_cdev.c           |    8 ++++----
+ drivers/net/wan/hdlc_cisco.c       |    8 ++++----
+ drivers/net/wan/hdlc_fr.c          |    8 ++++----
+ drivers/net/wan/hdlc_ppp.c         |    8 ++++----
+ drivers/net/wan/hdlc_raw.c         |    8 ++++----
+ drivers/net/wan/hdlc_raw_eth.c     |    8 ++++----
+ drivers/net/wan/hdlc_x25.c         |    8 ++++----
+ drivers/net/wireguard/main.c       |    8 ++++----
+ lib/crypto/blake2s.c               |    8 ++++----
+ lib/crypto/chacha20poly1305.c      |    8 ++++----
+ lib/crypto/curve25519.c            |    8 ++++----
+ 16 files changed, 64 insertions(+), 64 deletions(-)
