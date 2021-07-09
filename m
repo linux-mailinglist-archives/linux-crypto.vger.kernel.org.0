@@ -2,37 +2,44 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5A53C1D4A
-	for <lists+linux-crypto@lfdr.de>; Fri,  9 Jul 2021 04:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3153C2200
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 Jul 2021 11:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhGICUj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 8 Jul 2021 22:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37058 "EHLO
+        id S231889AbhGIKCD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 9 Jul 2021 06:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhGICUj (ORCPT
+        with ESMTP id S231864AbhGIKCD (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 8 Jul 2021 22:20:39 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB446C061574;
-        Thu,  8 Jul 2021 19:17:56 -0700 (PDT)
+        Fri, 9 Jul 2021 06:02:03 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F882C0613DD;
+        Fri,  9 Jul 2021 02:59:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=Ep9SfC7/Ynwl3BgyBMLme/h0/tBd0UyBTX7M2kcAoJE=; b=Sx7g5Hj1ylzSFnfbdHGFcWdsY5
-        kkmBqvIvhGUCBg+k+HGby30LlED/ptI7tKMQi8WgkwAz2CZnxCRxOilTaM8WIOVTiXswWg5oc7MUu
-        DMVjnptiCY+FU23LQit80+jAf5UIY73/1XvaC1wwQodLoDHPGTGldi40lZ9Su0DjUrjp9sYHcGGT2
-        cV5ffQJbTcR+ioERVCiV93HeoHLHzVG0nbcZWH0tlIMn6yeZYFGDlsbS4HGb18agPO/IfZb0fI9wo
-        cnNKIgn0PAfOHPX+4T9FGeCoh5HGtassgxW7VSLUTMfBtqGB1YV+bqKgA3JcKWScwvdmWDGhkR5Jq
-        tpTUonVQ==;
-Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1g5S-000Wlc-Ha; Fri, 09 Jul 2021 02:17:54 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=GDAKEVAY6G2FkEMJUuqWlfJMGpOgImfNbDfdp8SNumE=; b=IMZi9QswDZgjH87rP0vZpPXoF
+        hkkdXd5InlsEhhdJjWVgtPUSzH8uLG1mhs1nLgoJJGh1TJ/umARn53rRP2XFvZfTfrqhig93+SrEk
+        pwSdP0aiFbhBENQhAM0rgOslCQM6GiVkJkdzxlHoZ6jeDm+YEKs6hQ2Ef45vT8MpHaoShG9hM6lEL
+        2J4tVIIQoTMfyMszH1ymZ/IiUmcXyU8uMLVL3pza6vWQACxls3lgWLTjRQ5XiC6JP8UKk+/fQqkcJ
+        mhiCWgutwI1MQY2qUSq115qrial/eLIyOqV2+P74Tsp8YNW7Dhz6reW2bby88gZoY5TMXrPrUv4ff
+        gv1ZmfeKA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45906)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1m1nHr-0001gg-Hc; Fri, 09 Jul 2021 10:59:11 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1m1nHi-0004ra-CP; Fri, 09 Jul 2021 10:59:02 +0100
+Date:   Fri, 9 Jul 2021 10:59:02 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
         "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Russell King <linux@armlinux.org.uk>,
         linux-arm-kernel@lists.infradead.org,
         Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -46,62 +53,36 @@ Cc:     Randy Dunlap <rdunlap@infradead.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Martin Schiller <ms@dev.tdt.de>, linux-x25@vger.kernel.org,
         wireguard@lists.zx2c4.com
-Subject: [PATCH 6/6] net: wireguard: rename 'mod_init' & 'mod_exit' functions to be module-specific
-Date:   Thu,  8 Jul 2021 19:17:47 -0700
-Message-Id: <20210709021747.32737-7-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210709021747.32737-1-rdunlap@infradead.org>
+Subject: Re: [PATCH 1/6] arm: crypto: rename 'mod_init' & 'mod_exit'
+ functions to be module-specific
+Message-ID: <20210709095902.GY22278@shell.armlinux.org.uk>
 References: <20210709021747.32737-1-rdunlap@infradead.org>
+ <20210709021747.32737-2-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709021747.32737-2-rdunlap@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Rename module_init & module_exit functions that are named
-"mod_init" and "mod_exit" so that they are unique in both the
-System.map file and in initcall_debug output instead of showing
-up as almost anonymous "mod_init".
+On Thu, Jul 08, 2021 at 07:17:42PM -0700, Randy Dunlap wrote:
+> Rename module_init & module_exit functions that are named
+> "mod_init" and "mod_exit" so that they are unique in both the
+> System.map file and in initcall_debug output instead of showing
+> up as almost anonymous "mod_init".
+> 
+> This is helpful for debugging and in determining how long certain
+> module_init calls take to execute.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jason A. Donenfeld <Jason@zx2c4.com>
+> Cc: linux-arm-kernel@lists.infradead.org
 
-This is helpful for debugging and in determining how long certain
-module_init calls take to execute.
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jason A. Donenfeld <Jason@zx2c4.com>
-Cc: wireguard@lists.zx2c4.com
-Cc: netdev@vger.kernel.org
----
- drivers/net/wireguard/main.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
---- linux-next-20210708.orig/drivers/net/wireguard/main.c
-+++ linux-next-20210708/drivers/net/wireguard/main.c
-@@ -17,7 +17,7 @@
- #include <linux/genetlink.h>
- #include <net/rtnetlink.h>
- 
--static int __init mod_init(void)
-+static int __init wireguard_init(void)
- {
- 	int ret;
- 
-@@ -60,7 +60,7 @@ err_allowedips:
- 	return ret;
- }
- 
--static void __exit mod_exit(void)
-+static void __exit wireguard_exit(void)
- {
- 	wg_genetlink_uninit();
- 	wg_device_uninit();
-@@ -68,8 +68,8 @@ static void __exit mod_exit(void)
- 	wg_allowedips_slab_uninit();
- }
- 
--module_init(mod_init);
--module_exit(mod_exit);
-+module_init(wireguard_init);
-+module_exit(wireguard_exit);
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("WireGuard secure network tunnel");
- MODULE_AUTHOR("Jason A. Donenfeld <Jason@zx2c4.com>");
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
