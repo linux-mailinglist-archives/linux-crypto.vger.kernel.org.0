@@ -2,108 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF22A3C3FB3
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jul 2021 00:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969203C5675
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jul 2021 12:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbhGKWeq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 11 Jul 2021 18:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbhGKWen (ORCPT
+        id S1349159AbhGLISe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 12 Jul 2021 04:18:34 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:50900 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1356737AbhGLIQo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 11 Jul 2021 18:34:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE11C0613DD;
-        Sun, 11 Jul 2021 15:31:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=der3BYRgQwyk0PHod6HemFTpspJQxjKE+51Oljy5seE=; b=tx0aVYvKL99MnMl/pjnNUVCJRL
-        4oVMVMsArLs13Y2NgNGqIJFYSmCAHPQNWE2YgziKsD3SEtPuQtWfY5W226D8zX+J8qf1cuqzrv7NJ
-        230AXmfYsXXqq9sa2PjpHDzu3UWGJOY6mWzqXFULSOyaAGAebTqqljRJQD6p82YxjWzl9hbZhrrsU
-        sqUGtkeJKvgJeLLlhV1i4dsDMwXFR87GORSOneKfqnFNYAuFrUfqB6dI1ezwm0Yv9pSV41CGF9mNx
-        ZPj9QxkF4zShtoSICuZQwEQktd3VIDnfn0L0564sPXyM4G2kQXAvSL7+duJ/ny60iTPwBCEkR/6LU
-        5N/7KnQg==;
-Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m2hzP-005U4u-Hi; Sun, 11 Jul 2021 22:31:55 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andres Salomon <dilinger@queued.net>,
-        linux-geode@lists.infradead.org, Matt Mackall <mpm@selenic.com>,
+        Mon, 12 Jul 2021 04:16:44 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0UfVJpuB_1626077632;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UfVJpuB_1626077632)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 12 Jul 2021 16:13:53 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     David Howells <dhowells@redhat.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org,
-        Christian Gromm <christian.gromm@microchip.com>,
-        Krzysztof Halasa <khc@pm.waw.pl>, netdev@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>, linux-x25@vger.kernel.org,
-        wireguard@lists.zx2c4.com
-Subject: [PATCH 6/6 v2] wireguard: main: rename 'mod_init' & 'mod_exit' functions to be module-specific
-Date:   Sun, 11 Jul 2021 15:31:48 -0700
-Message-Id: <20210711223148.5250-7-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210711223148.5250-1-rdunlap@infradead.org>
-References: <20210711223148.5250-1-rdunlap@infradead.org>
+        Eric Biggers <ebiggers@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Vitaly Chikunov <vt@altlinux.org>,
+        "Gilad Ben-Yossef" <gilad@benyossef.com>,
+        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>,
+        "YiLin . Li" <YiLin.Li@linux.alibaba.com>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH] X.509: Support parsing certificate using SM2 algorithm
+Date:   Mon, 12 Jul 2021 16:13:52 +0800
+Message-Id: <20210712081352.23692-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Rename module_init & module_exit functions that are named
-"mod_init" and "mod_exit" so that they are unique in both the
-System.map file and in initcall_debug output instead of showing
-up as almost anonymous "mod_init".
+The SM2-with-SM3 certificate generated by latest openssl no longer
+reuses the OID_id_ecPublicKey, but directly uses OID_sm2. This patch
+supports this type of x509 certificate parsing.
 
-This is helpful for debugging and in determining how long certain
-module_init calls take to execute.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jason A. Donenfeld <Jason@zx2c4.com>
-Cc: wireguard@lists.zx2c4.com
-Cc: netdev@vger.kernel.org
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 ---
-v2: change Subject: prefixes and function names (thanks, Jason)
+ crypto/asymmetric_keys/x509_cert_parser.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
- drivers/net/wireguard/main.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+index 6d003096b5bc..6a945a6ce787 100644
+--- a/crypto/asymmetric_keys/x509_cert_parser.c
++++ b/crypto/asymmetric_keys/x509_cert_parser.c
+@@ -496,6 +496,9 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+ 	case OID_gost2012PKey512:
+ 		ctx->cert->pub->pkey_algo = "ecrdsa";
+ 		break;
++	case OID_sm2:
++		ctx->cert->pub->pkey_algo = "sm2";
++		break;
+ 	case OID_id_ecPublicKey:
+ 		if (parse_OID(ctx->params, ctx->params_size, &oid) != 0)
+ 			return -EBADMSG;
+-- 
+2.19.1.3.ge56e4f7
 
---- linux-next-20210708.orig/drivers/net/wireguard/main.c
-+++ linux-next-20210708/drivers/net/wireguard/main.c
-@@ -17,7 +17,7 @@
- #include <linux/genetlink.h>
- #include <net/rtnetlink.h>
- 
--static int __init mod_init(void)
-+static int __init wg_mod_init(void)
- {
- 	int ret;
- 
-@@ -60,7 +60,7 @@ err_allowedips:
- 	return ret;
- }
- 
--static void __exit mod_exit(void)
-+static void __exit wg_mod_exit(void)
- {
- 	wg_genetlink_uninit();
- 	wg_device_uninit();
-@@ -68,8 +68,8 @@ static void __exit mod_exit(void)
- 	wg_allowedips_slab_uninit();
- }
- 
--module_init(mod_init);
--module_exit(mod_exit);
-+module_init(wg_mod_init);
-+module_exit(wg_mod_exit);
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("WireGuard secure network tunnel");
- MODULE_AUTHOR("Jason A. Donenfeld <Jason@zx2c4.com>");
