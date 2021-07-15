@@ -2,77 +2,126 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60663CA436
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Jul 2021 19:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818233CA4C4
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Jul 2021 19:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235410AbhGOR2i (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 15 Jul 2021 13:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
+        id S235437AbhGORy0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 15 Jul 2021 13:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235437AbhGOR2g (ORCPT
+        with ESMTP id S230082AbhGORyZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 15 Jul 2021 13:28:36 -0400
+        Thu, 15 Jul 2021 13:54:25 -0400
 Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BDDC0613E4
-        for <linux-crypto@vger.kernel.org>; Thu, 15 Jul 2021 10:25:42 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id my10so4524322pjb.1
-        for <linux-crypto@vger.kernel.org>; Thu, 15 Jul 2021 10:25:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74621C061764
+        for <linux-crypto@vger.kernel.org>; Thu, 15 Jul 2021 10:51:32 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id v18-20020a17090ac912b0290173b9578f1cso6042760pjt.0
+        for <linux-crypto@vger.kernel.org>; Thu, 15 Jul 2021 10:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Ibb5KNEw1DKqJEg9n4gJy5KnzVasBofn6QaWYsu9UCQ=;
-        b=A07qw47jpyx7/pJf1ZS9aQv4pD7PiHBZWlsl9UoiurRqqc+7ZndQI51YdaaD0nkecu
-         Qd4i+G02coH8O2I/r6ZupOF8oYSIAoIwVq4zkuCtuhDJYsbynWGQdegcG7aq+QxGg/bp
-         poyp2DbaibSeABlojQr/pIAqMWExNaHg4RIE+IQzBlXdCiQq16Yp/UqkBXwITYu4DgIP
-         XTs1gXkC7Br62pPmJXs/2nF+jRhXCAs3iAxTxuy51YthTghMWE/kONdSGZKCG8sWM+Ev
-         WU1ATEDaIH5W63c7UQCvZTdM21+mq9I9FOl7BCTb650pCRFEJMZ521zklByg85zlNwmj
-         7b/w==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SPUir8j18PLybVHK4M3a0vCQIxEbnuUyBjChvlSKLmw=;
+        b=O6AX+9hzZex3eU5uvfUHqD2gB8kkBZk+ho0pFS2dUIJw1QUWPEIQ3cGrzjEgmQ5EGx
+         gYai+UQVtsPWNE6v8zHWdWbJJXlcF02q/r7/sQz/nFxk1BSaW85VYOSPU3ABhgUDkUur
+         5N6ceKHGHDX7KUttzFzG/IKO2ub60a5iylSdkeqcMkchE0JkEuAicdvSqID+aIUDAu1A
+         Az9u0TdsmnrXPgK4u5zDJWgJfYtd4H1fQ8U39B5RZq1fYuA2RNah69hBucHHAQrhcpK6
+         H7NekraqO2ltqIVdk8+zE5/NUcItPe6ci/slDsqdql74v6bwnu6pit9OxnS4H2jQscpC
+         Dt/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Ibb5KNEw1DKqJEg9n4gJy5KnzVasBofn6QaWYsu9UCQ=;
-        b=fB3KP2AovsfBR7EvKBKQPALb/8iieyjHa65stVMhh/loQwqH26IG5C+a4nChfTOazd
-         04LTgUs28onVANnbMP3ay0nKJDyix2EM/t4+Li9o7xf40GiXtDSDwY/EUpz3nfwRe6yq
-         dw5TqdSxoIY86p9WZtVo1wtd7jemVVw+egzTc3XeZRyY5AqKQ9DH/wAWaLg1UUJXwr7Y
-         Ns7OsMB3SpGrqG6Oj20O2WCmrfvRaI/FEtWpb0K4Li+BNSZV6RrNgyjT2IcxzKcS4s0p
-         3cPPRjmkcTTZAt+H+c2gJy0AHCR0YmJHAcUUM0QnsolQbLT4suXrQT+EWvWVd2n+TCaa
-         cs6g==
-X-Gm-Message-State: AOAM533NQEp+2lFIBCi1zfWpOuIernmUQBQJIoFdVaHaUzm5M2iJFt4L
-        Chq/7TfL8UPUXyjxe2gA5Wd6IRWvOA6sSWC0JyY=
-X-Google-Smtp-Source: ABdhPJyZMrq1Z7I3pjjmyAtUHW3ABh0oEghTe77F5dAxRk/llsByjQhtZ30eIUOoh7sIooPsLTy5+nPJ1BCNgIavtsM=
-X-Received: by 2002:a17:90b:d8f:: with SMTP id bg15mr10963237pjb.152.1626369941880;
- Thu, 15 Jul 2021 10:25:41 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SPUir8j18PLybVHK4M3a0vCQIxEbnuUyBjChvlSKLmw=;
+        b=kFhaailmu0PmTBZuTeRoYa/2L/JpHNE4z/1o/Ma9toVfs+8VwZQxjnnCWzFJ4/jaC1
+         Uijm7LRB6EGXeiSaqDgqjFAlfcGKCOTYXWXNaOGvHztXi38dxXBUg2emow8gDwmnI+EA
+         TR0VX85TqHTmKJ/z7bQkp0vjaFxJFCoEWX7afqOvPJBuAhZ5TG4e2WYI/iYSIfAQmWRs
+         OaPL04G7xkOS+Vx02s84g/5ahyLlBJM+a5XMFWH7COpah5IY5y2/zGFIv2x2WERUi/NC
+         0bja5gE37fCydXFCxhScW1SAWALhj+pQ9Jb15frkK9CZhEBaShw8zU3rZEPpirwTzR2n
+         L1tQ==
+X-Gm-Message-State: AOAM532AsPUJeL8Bb+2wQUVVI2ZHLQQcc2H8HJDKb1kALWncM8UWAIwr
+        sAqC5eSkc5ZN9mQKG5j9kFDy6w==
+X-Google-Smtp-Source: ABdhPJwBoOpS4t+WKHVcsb/gcZglXaCGGZ+MYH+86n+Y3LrgK7OgBFTpOpP7AW5uPh8vDSMESTclww==
+X-Received: by 2002:a17:90a:9f06:: with SMTP id n6mr5466944pjp.92.1626371491663;
+        Thu, 15 Jul 2021 10:51:31 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j19sm8009841pgm.44.2021.07.15.10.51.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 10:51:31 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 17:51:27 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 07/40] x86/sev: Split the physmap when
+ adding the page in RMP table
+Message-ID: <YPB1n0+G+0EoyEvE@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-8-brijesh.singh@amd.com>
+ <YO9kP1v0TAFXISHD@google.com>
+ <d486a008-8340-66b0-9667-11c8a50974e4@amd.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:fc85:0:0:0:0 with HTTP; Thu, 15 Jul 2021 10:25:41
- -0700 (PDT)
-Reply-To: faty.muhamad@gmail.com
-From:   Ms Fatima Muhammad <general.infofederalreserve@gmail.com>
-Date:   Thu, 15 Jul 2021 17:25:41 +0000
-Message-ID: <CAJzJz_Dwu6rUxmnqq1QV9qD4hugxutFJZuENGUwx7RamXm5txA@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d486a008-8340-66b0-9667-11c8a50974e4@amd.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello Dear,
+On Thu, Jul 15, 2021, Brijesh Singh wrote:
+> 
+> On 7/14/21 5:25 PM, Sean Christopherson wrote:
+> > > @@ -2375,6 +2375,12 @@ int rmpupdate(struct page *page, struct rmpupdate *val)
+> > >   	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> > >   		return -ENXIO;
+> > > +	ret = set_memory_4k((unsigned long)page_to_virt(page), 1);
+> > 
+> > IIUC, this shatters the direct map for page that's assigned to an SNP guest, and
+> > the large pages are never recovered?
+> > 
+> > I believe a better approach would be to do something similar to memfd_secret[*],
+> > which encountered a similar problem with the direct map.  Instead of forcing the
+> > direct map to be forever 4k, unmap the direct map when making a page guest private,
+> > and restore the direct map when it's made shared (or freed).
+> > 
+> > I thought memfd_secret had also solved the problem of restoring large pages in
+> > the direct map, but at a glance I can't tell if that's actually implemented
+> > anywhere.  But, even if it's not currently implemented, I think it makes sense
+> > to mimic the memfd_secret approach so that both features can benefit if large
+> > page preservation/restoration is ever added.
+> > 
+> 
+> thanks for the memfd_secrets pointer. At the lowest level it shares the
+> same logic to split the physmap. We both end up calling to
+> change_page_attrs_set_clr() which split the page and updates the page
+> table attributes.
+> 
+> Given this, I believe in future if the change_page_attrs_set_clr() is
+> enhanced to track the splitting of the pages and restore it later then it
+> should work transparently.
 
-My name is Ms.Fatima Muhammad., Please forgive me for stressing you
-with my predicaments and I sorry to approach you through this media
-because is serves the fastest means of  my communication right now,
-
-I came across your Email from my personal search and I decided to
-contact you believing you will be honest to fulfill my business
-proposal which I believe that will be a very good opportunity for both
-of us. Please it is my pleasure to contact you today for a business
-partnership investments projects worth $4.6 million USD which I intend
-to establish in your country..
-
-Pls If this business proposal offends your moral and ethic values do
-accept my apology. therefore kindly contact me immediately if you are
-interested for more details.
-
-Thank you for your wiliness to help me
-Yours Sincerely Fatima Muhammad
+But something actually needs to initiate the restore.  If the RMPUDATE path just
+force 4k pages then there will never be a restore.  And zapping the direct map
+for private pages is a good thing, e.g. prevents the kernel from reading garbage,
+which IIUC isn't enforced by the RMP?
