@@ -2,75 +2,128 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F157C3CB549
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Jul 2021 11:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3A13CB685
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Jul 2021 13:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhGPJfV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 16 Jul 2021 05:35:21 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:46327 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231244AbhGPJfU (ORCPT
+        id S230319AbhGPLHj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 16 Jul 2021 07:07:39 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49476 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231937AbhGPLHi (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 16 Jul 2021 05:35:20 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0UfxpEdN_1626427941;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UfxpEdN_1626427941)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 16 Jul 2021 17:32:22 +0800
-Subject: Re: [PATCH v2 2/4] crypto: arm64/sm4-ce - Make dependent on sm4
- library instead of sm4-generic
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Markku-Juhani O . Saarinen" <mjos@iki.fi>,
-        Jussi Kivilinna <jussi.kivilinna@iki.fi>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>,
-        "YiLin . Li" <YiLin.Li@linux.alibaba.com>
-References: <20210624080857.126660-1-tianjia.zhang@linux.alibaba.com>
- <20210624080857.126660-3-tianjia.zhang@linux.alibaba.com>
- <20210716074825.GA13279@gondor.apana.org.au>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <5397e44f-9a05-80ff-9a2f-08a95ebfef4d@linux.alibaba.com>
-Date:   Fri, 16 Jul 2021 17:32:20 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Fri, 16 Jul 2021 07:07:38 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4A6AF22BA9;
+        Fri, 16 Jul 2021 11:04:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626433482; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=C8+jbnRN3YHZZAIvtHiS36Wu7Wdx09uaJz3zYdIkw1s=;
+        b=vIFqDPXE7bwsA5y8oE4uoApySSEA9dvwUjInZyHA8oepU4+7uVtuk/zKWVqZJ0dX9UJd24
+        TAdfFHaDqox+yj38wBTslvaO2AsoY61hs2gHWFwReBb+CJU+UVgm6epjgzwen9N55mmR6R
+        qeQd6mdnyGfrjkIw9B7A47vEJEMCb6I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626433482;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=C8+jbnRN3YHZZAIvtHiS36Wu7Wdx09uaJz3zYdIkw1s=;
+        b=JOZqLDMx7LhKOU1/o2zUNtfW4ik3+5+Wi7KoTx59shvIa+qor4ck/nDWnFV1c4a/o2LkgV
+        ibM1ybS0cqarWcDg==
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id B2778A3BB3;
+        Fri, 16 Jul 2021 11:04:41 +0000 (UTC)
+Received: by adalid.arch.suse.de (Postfix, from userid 16045)
+        id 70C775171604; Fri, 16 Jul 2021 13:04:41 +0200 (CEST)
+From:   Hannes Reinecke <hare@suse.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <keith.busch@wdc.com>,
+        linux-nvme@lists.infradead.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, Hannes Reinecke <hare@suse.de>
+Subject: [RFC PATCH 00/11] nvme: In-band authentication support
+Date:   Fri, 16 Jul 2021 13:04:17 +0200
+Message-Id: <20210716110428.9727-1-hare@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210716074825.GA13279@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Herbert,
+Hi all,
 
-On 7/16/21 3:48 PM, Herbert Xu wrote:
-> On Thu, Jun 24, 2021 at 04:08:55PM +0800, Tianjia Zhang wrote:
->>
->> +int sm4_ce_setkey(struct crypto_tfm *tfm, const u8 *in_key,
->> +		       unsigned int key_len)
->> +{
->> +	struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
->> +
->> +	return sm4_expandkey(ctx, in_key, key_len);
->> +}
-> 
-> This triggers a new warning.  Please fix and resubmit.
-> 
-> Thanks,
-> 
+recent updates to the NVMe spec have added definitions for in-band
+authentication, and seeing that it provides some real benefit especially
+for NVMe-TCP here's an attempt to implement it.
 
-Thanks for your comment, I will fix and resubmit in next version patch.
+Tricky bit here is that the specification orients itself on TLS 1.3,
+but supports only the FFDHE groups. Which of course the kernel doesn't
+support. I've been able to come up with a patch for this, but as this
+is my first attempt to fix anything in the crypto area I would invite
+people more familiar with these matters to have a look.
 
-Cheers,
-Tianjia
+Also note that this is just for in-band authentication. Secure concatenation
+(ie starting TLS with the negotiated parameters) is not implemented; one would
+need to update the kernel TLS implementation for this, which at this time is
+beyond scope.
+
+As usual, comments and reviews are welcome.
+
+Hannes Reinecke (11):
+  crypto: add crypto_has_shash()
+  crypto: add crypto_has_kpp()
+  crypto/ffdhe: Finite Field DH Ephemeral Parameters
+  lib/base64: RFC4648-compliant base64 encoding
+  nvme: add definitions for NVMe In-Band authentication
+  nvme: Implement In-Band authentication
+  nvme-auth: augmented challenge support
+  nvmet: Parse fabrics commands on all queues
+  nvmet: Implement basic In-Band Authentication
+  nvmet-auth: implement support for augmented challenge
+  nvme: add non-standard ECDH and curve25517 algorithms
+
+ crypto/Kconfig                         |    8 +
+ crypto/Makefile                        |    1 +
+ crypto/ffdhe_helper.c                  |  877 +++++++++++++++++
+ crypto/kpp.c                           |    6 +
+ crypto/shash.c                         |    6 +
+ drivers/nvme/host/Kconfig              |   11 +
+ drivers/nvme/host/Makefile             |    1 +
+ drivers/nvme/host/auth.c               | 1188 ++++++++++++++++++++++++
+ drivers/nvme/host/auth.h               |   23 +
+ drivers/nvme/host/core.c               |   77 +-
+ drivers/nvme/host/fabrics.c            |   65 +-
+ drivers/nvme/host/fabrics.h            |    8 +
+ drivers/nvme/host/nvme.h               |   15 +
+ drivers/nvme/host/trace.c              |   32 +
+ drivers/nvme/target/Kconfig            |   10 +
+ drivers/nvme/target/Makefile           |    1 +
+ drivers/nvme/target/admin-cmd.c        |    4 +
+ drivers/nvme/target/auth.c             |  608 ++++++++++++
+ drivers/nvme/target/configfs.c         |  102 +-
+ drivers/nvme/target/core.c             |   10 +
+ drivers/nvme/target/fabrics-cmd-auth.c |  472 ++++++++++
+ drivers/nvme/target/fabrics-cmd.c      |   30 +-
+ drivers/nvme/target/nvmet.h            |   71 ++
+ include/crypto/ffdhe.h                 |   24 +
+ include/crypto/hash.h                  |    2 +
+ include/crypto/kpp.h                   |    2 +
+ include/linux/base64.h                 |   16 +
+ include/linux/nvme.h                   |  187 +++-
+ lib/Makefile                           |    2 +-
+ lib/base64.c                           |  111 +++
+ 30 files changed, 3961 insertions(+), 9 deletions(-)
+ create mode 100644 crypto/ffdhe_helper.c
+ create mode 100644 drivers/nvme/host/auth.c
+ create mode 100644 drivers/nvme/host/auth.h
+ create mode 100644 drivers/nvme/target/auth.c
+ create mode 100644 drivers/nvme/target/fabrics-cmd-auth.c
+ create mode 100644 include/crypto/ffdhe.h
+ create mode 100644 include/linux/base64.h
+ create mode 100644 lib/base64.c
+
+-- 
+2.29.2
+
