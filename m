@@ -2,106 +2,64 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355B73CCF88
-	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jul 2021 11:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BFF3CCFD8
+	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jul 2021 11:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235269AbhGSIRS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 19 Jul 2021 04:17:18 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:30871 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235313AbhGSIRS (ORCPT
+        id S234973AbhGSIVq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 19 Jul 2021 04:21:46 -0400
+Received: from mail-yb1-f177.google.com ([209.85.219.177]:46831 "EHLO
+        mail-yb1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235374AbhGSIVq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:17:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1626684715;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=dWok9o8gQ6+5Ip4xo7b/xcJ8eJ4EHeLf0PW7SYuRJ2s=;
-    b=Q+nuYqZBAwl1KFY4p3jYxN7prLCv4zwXwpXwyrrrs4Rh7GK8DeeMXk5lNboUnwHyPZ
-    RQX75tPCTbRhoYcGsZf0Vacg7W2CnhXza9i9OSf5hbZdQNibHMh8Ua2GN4JtqM3+4Tuy
-    jtHWfR2qjv14pkcPHU7IwpxJhMSzlmzSJXPz4iOlLgnDI7w8TA9KOTStJrRGjAsZCx52
-    dLwUsW8KtGATK4xcKxetS6xPks13xEIzDqaSC9L+mkAVB1hjoq6QjYlSyOdftRy7zs0p
-    7uSrHc/BG35Za1uAen39capZixR+LYa9rohTT4OoIG2JhTDaGEkp+EG01rPThRqtMuZe
-    QJ1A==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNzyCzy1Sfr67uExK884EC0GFGHavJSlBkMRYMkE="
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-    by smtp.strato.de (RZmta 47.28.1 DYNA|AUTH)
-    with ESMTPSA id 9043bbx6J8prGyn
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 19 Jul 2021 10:51:53 +0200 (CEST)
-Message-ID: <463a191b9896dd708015645cfc125988cd5deaef.camel@chronox.de>
-Subject: Re: [PATCH 09/11] nvmet: Implement basic In-Band Authentication
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <keith.busch@wdc.com>,
-        linux-nvme@lists.infradead.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Date:   Mon, 19 Jul 2021 10:51:53 +0200
-In-Reply-To: <59695981-9edc-6b7a-480a-94cca95a0b8c@suse.de>
-References: <20210716110428.9727-1-hare@suse.de>
-         <2510347.locV8n3378@positron.chronox.de>
-         <a4d4bda0-2bc8-0d0c-3e81-55adecd6ce52@suse.de>
-         <6538288.aohFRl0Q45@positron.chronox.de>
-         <59695981-9edc-6b7a-480a-94cca95a0b8c@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Mon, 19 Jul 2021 04:21:46 -0400
+Received: by mail-yb1-f177.google.com with SMTP id i18so26607691yba.13
+        for <linux-crypto@vger.kernel.org>; Mon, 19 Jul 2021 02:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=CWBvtEb1cVW90LjALSI8sJI/328ShyeY59fFSvnwMg0=;
+        b=kHNAyfDXQRE2pi/Uzbgn44/vjn+s+nL37+fqJYSdclsPSoPrBgUgZ7PECfgDwq3k2e
+         Mut3/sh2iIhfqeJBEWqyfHgezb3amVt1x79kc2CuoykqDP+9qpB3781JA+AC53miv9PY
+         /UOpPhdMmv4qKnGI/9y6265Cd0noiCxBgTolkz1aJgy5FyNnUiLAjFHea0C+z1etIiRX
+         1hnJYvyTZ/IvIRQAIaUccFbRTgCfWyCBPSF5aTiTVcMo4EpbGjz+EsF5JlZucCrLIbPW
+         gsav5ppOB69BHBI+9y37eGQMxDeRLNpZUyTjnI+/37eZVIBtCH12U5E7pxVrBhJPCUdB
+         N+Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=CWBvtEb1cVW90LjALSI8sJI/328ShyeY59fFSvnwMg0=;
+        b=mLE3yubSN6PrL4sMdWYmpYgWJLmctwiwU/JyZ2s35sWGDL6HFeopr5SrWwc8k0bel2
+         QoVzvYNvkZ75kdmELnQdrOHXffQQcq7ZOgsMfYjpW6RWdriXhY79Gjwqb5raxErk3Nn0
+         7jtDmEXCJlCoPUjW2ScWywNJCsK1PpMIbnfmM36Wl0T8ymo3iatCdA7dfQSxLXkdKh1f
+         yOkBXkX1Bvn1bhCeBs/Gb5ZWNPeL8JvfS2Goa+gvYqGd4Kpy86Md87KMCsNkbpOl3tdi
+         0JTQrv6isw7DWwHk8a53PvJxHFQyn6onnEXmFtfoShNG/pWdqYxS44rHujO1oS+CWbyL
+         7BsQ==
+X-Gm-Message-State: AOAM53262mvtBC8viiV2AdkSCunfd289I8hO/JTIZXK/s0yTdZslkjTA
+        gMOd6OJSC5ps3AM3t61cSHvO00EfG3+JT4neMSptnB00YKt9P0G+
+X-Google-Smtp-Source: ABdhPJwIVb8bgJM6bJKpzcWpQg2L7uAAtA9D05r9XkBoyev/GMRJyYHjvYqw2gi64DSOxk6albESlZ2hnzb71EsrT/c=
+X-Received: by 2002:a9d:3608:: with SMTP id w8mr18174277otb.371.1626683832176;
+ Mon, 19 Jul 2021 01:37:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ac9:4105:0:0:0:0:0 with HTTP; Mon, 19 Jul 2021 01:37:11
+ -0700 (PDT)
+Reply-To: michaelrachid7@gmail.com
+From:   Michael Rachid <blattenjohn@gmail.com>
+Date:   Mon, 19 Jul 2021 09:37:11 +0100
+Message-ID: <CAAGatwi=518jd-2LOEWM255ZG+K4ESVFbE4SsqZ6GED-7=cVnw@mail.gmail.com>
+Subject: Proposal
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Am Montag, dem 19.07.2021 um 10:15 +0200 schrieb Hannes Reinecke:
-> On 7/18/21 2:56 PM, Stephan Müller wrote:
-> > Am Sonntag, 18. Juli 2021, 14:37:34 CEST schrieb Hannes Reinecke:
+Dear friend,
 
-> > > The key is also used when using the ffdhe algorithm.
-> > > Note: I _think_ that I need to use this key for the ffdhe algorithm,
-> > > because the implementation I came up with is essentially plain DH with
-> > > pre-defined 'p', 'q' and 'g' values. But the DH implementation also
-> > > requires a 'key', and for that I'm using this key here.
-> > > 
-> > > It might be that I'm completely off, and don't need to use a key for our
-> > > DH implementation. In that case you are correct.
-> > > (And that's why I said I'll need a review of the FFDHE implementation).
-> > > But for now I'll need the key for FFDHE.
-> > 
-> > Do I understand you correctly that the dhchap_key is used as the input to
-> > the 
-> > DH - i.e. it is the remote public key then? It looks strange that this is
-> > used 
-> > for DH but then it is changed here by hashing it together with something
-> > else 
-> > to form a new dhchap_key. Maybe that is what the protocol says. But it
-> > sounds 
-> > strange to me, especially when you think that dhchap_key would be, say,
-> > 2048 
-> > bits if it is truly the remote public key and then after the hashing it is
-> > 256 
-> > this dhchap_key cannot be used for FFC-DH.
-> > 
-> > Or are you using the dhchap_key for two different purposes?
-> > 
-> > It seems I miss something here.
-> > 
-> No, not entirely. It's me who buggered it up.
-> I got carried away by the fact that there is a crypto_dh_encode_key()
-> function, and thought I need to use it here.
+I write to inform you about a business proposal I have which I would
+like to handle with you.
+Fifty Five million dollars is involved. Be rest assured that
+everything is legal and risk free.
+Kindly indicate your interest.
 
-Thank you for clarifying that. It sounds to me that there is no defined
-protocol (or if there, I would be wondering how the code would have worked
-with a different implementation). Would it make sense to first specify a
-protocol for authentication and have it discussed? I personally think it is a
-bit difficult to fully understand the protocol from the code and discuss
-protocol-level items based on the code.
-
-Thanks
-Stephan
-
+Michael Rachid.
