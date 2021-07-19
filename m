@@ -2,53 +2,53 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98713CEE43
-	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jul 2021 23:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9523CEE46
+	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jul 2021 23:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358038AbhGSUcG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 19 Jul 2021 16:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
+        id S1358099AbhGSUca (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 19 Jul 2021 16:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384163AbhGSSYX (ORCPT
+        with ESMTP id S1384784AbhGSSgq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 19 Jul 2021 14:24:23 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FE6C0613DD
-        for <linux-crypto@vger.kernel.org>; Mon, 19 Jul 2021 11:52:23 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id my10so11963617pjb.1
-        for <linux-crypto@vger.kernel.org>; Mon, 19 Jul 2021 12:03:11 -0700 (PDT)
+        Mon, 19 Jul 2021 14:36:46 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AECAC0613E7
+        for <linux-crypto@vger.kernel.org>; Mon, 19 Jul 2021 12:04:27 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id o4so15391769pgs.6
+        for <linux-crypto@vger.kernel.org>; Mon, 19 Jul 2021 12:14:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=9m2rZHOVB1NoZtYoNA6EFBVCz7Bbir+fDae0NyH8yOk=;
-        b=cKMSuskXfTZmYOL+qFY2CjsQm3HSNuYn6k9NptZ+JPJvmISriI4cZ3yoIyeYtyxvv1
-         7oGLcbXabYb6lI+2vVxKFEJvm0ak02KG+H7bbNvqNZVkkmSiKcPJdAFjSPe2MDdu91II
-         l5JB7D82QfrUjFShHZTnPAy+smnwbQuWDI0w462/H1ygcKedZSNtC5I7u7xO9JNeg7vg
-         JqJAwxUtVLVBsS9kTMF9Thfv1hSTtzrZlIZ31izAavsZjUTXVHIXgvyzcT/qV9CGue75
-         c7WuDs77rTWCMSdOjcww3bR8tv6L5H28sqTZcJJbnPEzgwpVo2WWSvCNXmrmWKdZYdE+
-         Hl1g==
+        bh=2XllpOUOhhdBvpd5Av+f2na/9hRxJV/QURDHxqubmW8=;
+        b=TAK2LJLZI6u4VHRX2CtOxDwgftlqvQHU1lzhdQy0LcCcpbcr9ralpKcma3Fe1DAXVB
+         YEbBG2X95V7PcYiO0NGfbsi3Mq0cpEE3BWadst6/qrqSI45eUiSf3Qjvvs6crWGL9pAk
+         f2S4uAxDH1tnD8dXBw6emsJHGIQpk2eykj7mExtMmKVHuA7Vr+eL6Oey1hzAPDg0oa7c
+         OqiF98AMx5gJrcAFkQlYE7iIsV7JKMNqh9RKqeBFp/4OqS+g0z1Kqo7z2BDexEgHIRFG
+         OcCF2FjqNIBEhh9hv1V9N0corxEGyzsVRPh6ngPwFo0wqMpY3VZZiMwxPSWpMijKQ4qA
+         4xYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=9m2rZHOVB1NoZtYoNA6EFBVCz7Bbir+fDae0NyH8yOk=;
-        b=Tz9iZcSORmpM7SFnYbObeT2pDkNnU6fqKM0qdQCWSK/oVvLht9BjT0OpjKerer9O32
-         g7Sm2/0O9lLHubgkUpJBE9Hycn1C+Q7qC/wW1hR7i/sMjkMI11/ktfI3WKFvmZd3FiSu
-         RMP+IxRD3nY6Sx7HvVfViowl829Ry2RyuzuNlhVjf6StEGqrDW8ecQV9h87oXJWnmEhA
-         2VIbClmqJgvbkbB7XhVc3AUTGevv8oSJ3rD5Dvb84mzQMEy7BsrmmEgDHD1C6j/nmAIA
-         meSfdtoR6/Bx14DLtPZW23Z8XSptDaipItfvpZwpZTDTIzbFP43JfnmbndFVeQT0gOvV
-         vEnQ==
-X-Gm-Message-State: AOAM532OKNzifA8qjtI+HgU17pnuiLZcYDlI2sqKr9AxKR1DtnB5/Vfn
-        /p+HVgA6V9Z1BvrMGKLjYckdxA==
-X-Google-Smtp-Source: ABdhPJzKRz7pQLf5Lk3Ijby/XshCZupalvr6olwQaiWS02HChg4VytvEL0vS1aw+zs+u/vaUP8R/OA==
-X-Received: by 2002:a17:90a:d486:: with SMTP id s6mr26678412pju.142.1626721391280;
-        Mon, 19 Jul 2021 12:03:11 -0700 (PDT)
+        bh=2XllpOUOhhdBvpd5Av+f2na/9hRxJV/QURDHxqubmW8=;
+        b=cKD3HlgYZOeIo4ilv72RkcTH6CeqApoEKHK+aP6MPdxbnb+vS+G6VwE3chqPuR78Zt
+         4ik/DUV0pyiaYnizVmRxMWKbzCcWc+P94bKJuNWQJ/dcU3HhR/21gOueohiLZFk4PDhI
+         Qn3f5P0KiZqWWH1B+wV1uAxwivDCtkpN/ftHxrYeZn0hk3CAyU7fvhrKWIGKpX+bqZ0b
+         b8a/Xz2CJxcVLObxiCd8uWKbUiNxVsicCCLbCjg6l1jPr917TvojeUrkKqWHLYd23Qmn
+         u+iBd9idCIDUC9RdbhHOMZB0guvhkyfhiwzcNCF9uB6yISu29S84TLzAxuFZwSvTcRod
+         AYIw==
+X-Gm-Message-State: AOAM5307ucmrqsgn8rzYoKWlbgYQQ/hirGtxTNj5mk1bTgi0u5v+ll0A
+        UAuSHE3fRoInFU+hMiICRVLZqA==
+X-Google-Smtp-Source: ABdhPJx+EzDcqa/llq3nQF6Vq0NHWvv5j8Tkv3O31Pzz7AmNV8hJdli78mh1Sa+ATMQeYmFd5XN3Uw==
+X-Received: by 2002:a63:5059:: with SMTP id q25mr26911779pgl.9.1626722059360;
+        Mon, 19 Jul 2021 12:14:19 -0700 (PDT)
 Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f7sm20453955pfc.111.2021.07.19.12.03.10
+        by smtp.gmail.com with ESMTPSA id u24sm22109816pfm.141.2021.07.19.12.14.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 12:03:10 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 19:03:06 +0000
+        Mon, 19 Jul 2021 12:14:18 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 19:14:15 +0000
 From:   Sean Christopherson <seanjc@google.com>
 To:     Brijesh Singh <brijesh.singh@amd.com>
 Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
@@ -76,7 +76,7 @@ Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         npmccallum@redhat.com, brijesh.ksingh@gmail.com
 Subject: Re: [PATCH Part2 RFC v4 25/40] KVM: SVM: Reclaim the guest pages
  when SEV-SNP VM terminates
-Message-ID: <YPXMas+9O1Y5910b@google.com>
+Message-ID: <YPXPB1WMW8WY9cZ7@google.com>
 References: <20210707183616.5620-1-brijesh.singh@amd.com>
  <20210707183616.5620-26-brijesh.singh@amd.com>
  <YPHnb5pW9IoTcwWU@google.com>
@@ -85,30 +85,47 @@ References: <20210707183616.5620-1-brijesh.singh@amd.com>
  <e1cc1e21-e7b7-5930-1c01-8f4bb6e43b3a@amd.com>
  <YPWz6YwjDZcla5/+@google.com>
  <912c929c-06ba-a391-36bb-050384907d81@amd.com>
+ <YPXMas+9O1Y5910b@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <912c929c-06ba-a391-36bb-050384907d81@amd.com>
+In-Reply-To: <YPXMas+9O1Y5910b@google.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jul 19, 2021, Brijesh Singh wrote:
-> 
-> On 7/19/21 12:18 PM, Sean Christopherson wrote:
-> > > 
-> > > Okay, I will add helper to make things easier. One case where we will
-> > > need to directly call the rmpupdate() is during the LAUNCH_UPDATE
-> > > command. In that case the page is private and its immutable bit is also
-> > > set. This is because the firmware makes change to the page, and we are
-> > > required to set the immutable bit before the call.
+On Mon, Jul 19, 2021, Sean Christopherson wrote:
+> On Mon, Jul 19, 2021, Brijesh Singh wrote:
 > > 
-> > Or do "int rmp_make_firmware(u64 pfn, bool immutable)"?
+> > On 7/19/21 12:18 PM, Sean Christopherson wrote:
+> > > > 
+> > > > Okay, I will add helper to make things easier. One case where we will
+> > > > need to directly call the rmpupdate() is during the LAUNCH_UPDATE
+> > > > command. In that case the page is private and its immutable bit is also
+> > > > set. This is because the firmware makes change to the page, and we are
+> > > > required to set the immutable bit before the call.
+> > > 
+> > > Or do "int rmp_make_firmware(u64 pfn, bool immutable)"?
+> > 
+> > That's not what we need.
+> > 
+> > We need 'rmp_make_private() + immutable' all in one RMPUPDATE.  Here is the
+> > snippet from SNP_LAUNCH_UPDATE.
 > 
-> That's not what we need.
-> 
-> We need 'rmp_make_private() + immutable' all in one RMPUPDATE.  Here is the
-> snippet from SNP_LAUNCH_UPDATE.
+> Ah, not firmwrare, gotcha.  But we can still use a helper, e.g. an inner
+> double-underscore helper, __rmp_make_private().
 
-Ah, not firmwrare, gotcha.  But we can still use a helper, e.g. an inner
-double-underscore helper, __rmp_make_private().
+Hmm, looking at it again, I think I also got confused by the comment for the VMSA
+page:
+
+	/* Transition the VMSA page to a firmware state. */
+ 	e.assigned = 1;
+	e.immutable = 1;
+	e.asid = sev->asid;
+	e.gpa = -1;
+	e.pagesize = RMP_PG_SIZE_4K;
+
+Unlike __snp_alloc_firmware_pages() in the CCP code, the VMSA is associated with
+the guest's ASID, just not a GPA.  I.e. the VMSA is more of a specialized guest
+private page, as opposed to a dedicated firmware page.  I.e. a __rmp_make_private()
+and/or rmp_make_private_immutable() definitely seems like a good idea.
