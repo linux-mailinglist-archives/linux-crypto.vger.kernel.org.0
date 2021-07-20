@@ -2,187 +2,123 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A8E3CF222
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jul 2021 04:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3645A3CF2DD
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jul 2021 05:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345373AbhGTCBb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 19 Jul 2021 22:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442265AbhGSWxd (ORCPT
+        id S244216AbhGTDGv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 19 Jul 2021 23:06:51 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:55439 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347987AbhGTDGJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 19 Jul 2021 18:53:33 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4680C06127E
-        for <linux-crypto@vger.kernel.org>; Mon, 19 Jul 2021 16:30:31 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d12so18067330pfj.2
-        for <linux-crypto@vger.kernel.org>; Mon, 19 Jul 2021 16:30:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ml3Q/kTxZiD4jac4rsa9z6q3oqgw/koE0r8JlYAWEoE=;
-        b=sMaBLc6xZX7zehQ8U1kn7T2/C76fdCJIRBEmJcwUdtN+Ur6xNDVNIA4wnj+n5MAgrI
-         fRKop8qSFfB5cJj5Qd7DEJPBG9n2V1DApSvIFOjQinvQRz7V6ozyOBexcCug8btYPM+J
-         MMZqkMfsPwKR7hJ8KfXCbL9q5j/u8ILTW+OotIbqxzJ+akWq3OX+Rux7DSgW64emjSxx
-         /G3uagHiW/9cKFWa857nddfAl6IcWtZDkPwv7s7H35o+5FI3X0D2AEhUoR4OdKHktGMB
-         5lpjpv8BqF9q2yg/iuIW7lEANMTukouIkKW+oDuuhgdavYXnIqR/tPR7p66hSzMduya7
-         pthQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ml3Q/kTxZiD4jac4rsa9z6q3oqgw/koE0r8JlYAWEoE=;
-        b=DaMrpqu+bOoiQP6WLvejr7hvDaEd2/OAYdutPrt5OcDwbYk+6+9jXrtbm92uZAoyGh
-         sdZAolvVhb5cn5kYtyQFYuZB46SgCNc8d2wwoCG3kNz1xA/1iuvMR/+k5LgR9N1nU9Rc
-         r5xUt4RFVX69mO07BrdLYFYmUsq8WTg9/MOuucVXPno5JGCl9cHdtfHOhwKtErgBnf3m
-         7eZLCi6i5NptFjHl/0ilc5iD+HDPlpnRDyinKr9Gak5Q+0ldYkPYpyqB7bYPfw6TWZ/3
-         KAWGuissJnJMSbEyqlDL524jw8wHhQ8/jIHv+t/wTCmsxbnwd2NSOXD5I4/QOxhZ1YFw
-         6c+A==
-X-Gm-Message-State: AOAM533QmBxuv7ledIv01s+m82p4FDJa43jSf4nHYQKe+VL3RHk1bq04
-        vW9x8To2OUk8Ato7Wqgb1mLrKA==
-X-Google-Smtp-Source: ABdhPJxkrxZk/0Zz1bAor5ysJ9w0e2+YW2IaG8snr9Fl4r2Iz1JNpsaNu5NP3/nbL6PnRtlutO5udg==
-X-Received: by 2002:a62:4e0f:0:b029:329:20be:287a with SMTP id c15-20020a624e0f0000b029032920be287amr28021297pfb.55.1626737431050;
-        Mon, 19 Jul 2021 16:30:31 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id bt17sm571551pjb.40.2021.07.19.16.30.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 16:30:30 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 23:30:26 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 35/40] KVM: Add arch hooks to track the host
- write to guest memory
-Message-ID: <YPYLEksyzOWHZwpA@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-36-brijesh.singh@amd.com>
+        Mon, 19 Jul 2021 23:06:09 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R921e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UgNap9U_1626752802;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UgNap9U_1626752802)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 20 Jul 2021 11:46:43 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Markku-Juhani O . Saarinen" <mjos@iki.fi>,
+        Jussi Kivilinna <jussi.kivilinna@iki.fi>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>,
+        "YiLin . Li" <YiLin.Li@linux.alibaba.com>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH v3 0/4] Introduce x86 assembler accelerated implementation for SM4 algorithm
+Date:   Tue, 20 Jul 2021 11:46:38 +0800
+Message-Id: <20210720034642.19230-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-36-brijesh.singh@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> The kvm_write_guest{_page} and kvm_vcpu_write_guest{_page} are used by
-> the hypevisor to write to the guest memory. The kvm_vcpu_map() and
-> kvm_map_gfn() are used by the hypervisor to map the guest memory and
-> and access it later.
-> 
-> When SEV-SNP is enabled in the guest VM, the guest memory pages can
-> either be a private or shared. A write from the hypervisor goes through
-> the RMP checks. If hardware sees that hypervisor is attempting to write
-> to a guest private page, then it triggers an RMP violation (i.e, #PF with
-> RMP bit set).
-> 
-> Enhance the KVM guest write helpers to invoke an architecture specific
-> hooks (kvm_arch_write_gfn_{begin,end}) to track the write access from the
-> hypervisor.
-> 
-> When SEV-SNP is enabled, the guest uses the PAGE_STATE vmgexit to ask the
-> hypervisor to change the page state from shared to private or vice versa.
-> While changing the page state to private, use the
-> kvm_host_write_track_is_active() to check whether the page is being
-> tracked for the host write access (i.e either mapped or kvm_write_guest
-> is in progress). If its tracked, then do not change the page state.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
+This patchset extracts the public SM4 algorithm as a separate library,
+At the same time, the acceleration implementation of SM4 in arm64 was
+adjusted to adapt to this SM4 library. Then introduces an accelerated
+implementation of the instruction set on x86_64.
 
-...
+This optimization supports the four modes of SM4, ECB, CBC, CFB, and
+CTR. Since CBC and CFB do not support multiple block parallel
+encryption, the optimization effect is not obvious. And all selftests
+have passed already.
 
-> @@ -3468,3 +3489,33 @@ int sev_get_tdp_max_page_level(struct kvm_vcpu *vcpu, gpa_t gpa, int max_level)
->  
->  	return min_t(uint32_t, level, max_level);
->  }
-> +
-> +void sev_snp_write_page_begin(struct kvm *kvm, struct kvm_memory_slot *slot, gfn_t gfn)
-> +{
-> +	struct rmpentry *e;
-> +	int level, rc;
-> +	kvm_pfn_t pfn;
-> +
-> +	if (!sev_snp_guest(kvm))
-> +		return;
-> +
-> +	pfn = gfn_to_pfn(kvm, gfn);
-> +	if (is_error_noslot_pfn(pfn))
-> +		return;
-> +
-> +	e = snp_lookup_page_in_rmptable(pfn_to_page(pfn), &level);
-> +	if (unlikely(!e))
-> +		return;
-> +
-> +	/*
-> +	 * A hypervisor should never write to the guest private page. A write to the
-> +	 * guest private will cause an RMP violation. If the guest page is private,
-> +	 * then make it shared.
+The main algorithm implementation comes from SM4 AES-NI work by
+libgcrypt and Markku-Juhani O. Saarinen at:
+https://github.com/mjosaarinen/sm4ni
 
-NAK on converting RMP entries in response to guest accesses.  Corrupting guest
-data (due to dropping the "validated" flag) on a rogue/incorrect guest emulation
-request or misconfigured PV feature is double ungood.  The potential kernel panic
-below isn't much better.
+Benchmark on Intel Xeon Cascadelake, the data comes from the mode 218
+and mode 518 of tcrypt. The abscissas are blocks of different lengths.
+The data is tabulated and the unit is Mb/s:
 
-And I also don't think we need this heavyweight flow for user access, e.g.
-__copy_to_user(), just eat the RMP violation #PF like all other #PFs and exit
-to userspace with -EFAULT.
+sm4-generic   |    16      64     128     256    1024    1420    4096
+      ECB enc | 40.99   46.50   48.05   48.41   49.20   49.25   49.28
+      ECB dec | 41.07   46.99   48.15   48.67   49.20   49.25   49.29
+      CBC enc | 37.71   45.28   46.77   47.60   48.32   48.37   48.40
+      CBC dec | 36.48   44.82   46.43   47.45   48.23   48.30   48.36
+      CFB enc | 37.94   44.84   46.12   46.94   47.57   47.46   47.68
+      CFB dec | 37.50   42.84   43.74   44.37   44.85   44.80   44.96
+      CTR enc | 39.20   45.63   46.75   47.49   48.09   47.85   48.08
+      CTR dec | 39.64   45.70   46.72   47.47   47.98   47.88   48.06
+sm4-aesni-avx
+      ECB enc | 33.75  134.47  221.64  243.43  264.05  251.58  258.13
+      ECB dec | 34.02  134.92  223.11  245.14  264.12  251.04  258.33
+      CBC enc | 38.85   46.18   47.67   48.34   49.00   48.96   49.14
+      CBC dec | 33.54  131.29  223.88  245.27  265.50  252.41  263.78
+      CFB enc | 38.70   46.10   47.58   48.29   49.01   48.94   49.19
+      CFB dec | 32.79  128.40  223.23  244.87  265.77  253.31  262.79
+      CTR enc | 32.58  122.23  220.29  241.16  259.57  248.32  256.69
+      CTR dec | 32.81  122.47  218.99  241.54  258.42  248.58  256.61
 
-kvm_vcpu_map() and friends might need the manual lookup, at least initially, but
-in an ideal world that would be naturally handled by gup(), e.g. by unmapping
-guest private memory or whatever approach TDX ends up employing to avoid #MCs.
+---
+v3 changes:
+  * Remove single block algorithm that does not greatly improve performance
+  * Remove accelerated for sm4 key expand, which is not performance-critical
+  * Fix the warning on arm64/sm4-ce
 
-> +	 */
-> +	if (rmpentry_assigned(e)) {
-> +		pr_err("SEV-SNP: write to guest private gfn %llx\n", gfn);
-> +		rc = snp_make_page_shared(kvm_get_vcpu(kvm, 0),
-> +				gfn << PAGE_SHIFT, pfn, PG_LEVEL_4K);
-> +		BUG_ON(rc != 0);
-> +	}
-> +}
+v2 changes:
+  * SM4 library functions use "sm4_" prefix instead of "crypto_" prefix
+  * sm4-aesni-avx supports accelerated implementation of four specific modes
+  * tcrypt benchmark supports sm4-aesni-avx
+  * fixes of other reviews
 
-...
 
-> +void kvm_arch_write_gfn_begin(struct kvm *kvm, struct kvm_memory_slot *slot, gfn_t gfn)
-> +{
-> +	update_gfn_track(slot, gfn, KVM_PAGE_TRACK_WRITE, 1);
+Tianjia Zhang (4):
+  crypto: sm4 - create SM4 library based on sm4 generic code
+  crypto: arm64/sm4-ce - Make dependent on sm4 library instead of
+    sm4-generic
+  crypto: x86/sm4 - add AES-NI/AVX/x86_64 implementation
+  crypto: tcrypt - add the asynchronous speed test for SM4
 
-Tracking only writes isn't correct, as KVM reads to guest private memory will
-return garbage.  Pulling the rug out from under KVM reads won't fail as
-spectacularly as writes (at least not right away), but they'll still fail.  I'm
-actually ok reading garbage if the guest screws up, but KVM needs consistent
-semantics.
+ arch/arm64/crypto/Kconfig              |   2 +-
+ arch/arm64/crypto/sm4-ce-glue.c        |  20 +-
+ arch/x86/crypto/Makefile               |   3 +
+ arch/x86/crypto/sm4-aesni-avx-asm_64.S | 589 +++++++++++++++++++++++++
+ arch/x86/crypto/sm4_aesni_avx_glue.c   | 459 +++++++++++++++++++
+ crypto/Kconfig                         |  22 +
+ crypto/sm4_generic.c                   | 180 +-------
+ crypto/tcrypt.c                        |  26 +-
+ include/crypto/sm4.h                   |  25 +-
+ lib/crypto/Kconfig                     |   3 +
+ lib/crypto/Makefile                    |   3 +
+ lib/crypto/sm4.c                       | 176 ++++++++
+ 12 files changed, 1330 insertions(+), 178 deletions(-)
+ create mode 100644 arch/x86/crypto/sm4-aesni-avx-asm_64.S
+ create mode 100644 arch/x86/crypto/sm4_aesni_avx_glue.c
+ create mode 100644 lib/crypto/sm4.c
 
-Good news is that per-gfn tracking is probably overkill anyways.  As mentioned
-above, user access don't need extra magic, they either fail or they don't.
+-- 
+2.19.1.3.ge56e4f7
 
-For kvm_vcpu_map(), one thought would be to add a "short-term" map variant that
-is not allowed to be retained across VM-Entry, and then use e.g. SRCU to block
-PSC requests until there are no consumers.
-
-> +	if (kvm_x86_ops.write_page_begin)
-> +		kvm_x86_ops.write_page_begin(kvm, slot, gfn);
-> +}
