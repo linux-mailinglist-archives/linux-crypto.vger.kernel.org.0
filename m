@@ -2,45 +2,45 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DE93CF674
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jul 2021 10:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D81C3CF67E
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jul 2021 10:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234555AbhGTIQq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 20 Jul 2021 04:16:46 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:24883 "EHLO
+        id S234848AbhGTIRW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 20 Jul 2021 04:17:22 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:41181 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234494AbhGTIPO (ORCPT
+        with ESMTP id S232483AbhGTIPR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:15:14 -0400
+        Tue, 20 Jul 2021 04:15:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1626771353; x=1658307353;
+  t=1626771355; x=1658307355;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=4K8bV3JW1qimCrMpXoHJsQZL134CQa/zIp1gnXlYhGc=;
-  b=mmfMubMHmg0PHSf8kkH2lTsesccCzutpCkZRz6FSH/JyUG5JYF1nZJBa
-   3ecJbLf27VoPKmn2QCgJcpWVtWlXBTWCUKtGaSKUsu2D2OIR75M4cAt60
-   XFFR1MXIvSYIVt4i+XkxPpvHeAjTgQkMMgC0+evoYUTvWwazvPewvHPhE
-   q8MU9bqZCahayiLL684hfq3GWN/G7+uA5nxYqdChh0LHIVpX5qabLaDq+
-   B1116tk8oQ0qIDcqIwY80ovzKnWqFJuMeXM9tO1jWtY+yE0ikdAx9MvO8
-   u/uRsYHyKKwso9z3h9wAdGBGMDX2EkfhPH8H9MHJipRbjMSJCSVWBqtc8
-   g==;
-IronPort-SDR: I4q7+Z6fn3oYhuvcx0Dx4rbfidh3/JIABjGawph2ZZgTmLayyT5c1+DMaR4X5hzvz4bRuOUMp7
- nOKDdGCKzwFsSstHvKBpmVvMHGRVQKugJvFtVwWLpHgpd6CZlTJW1QBj2b1Ju/i4hO0fvEcc9g
- d3i/F9gO8exC60K19JVbvXPjLXsXrgVvn5cNfqiqRgRhdcjD8b8X95Zu9Q+Y4PHPvcss49zIKH
- oSlCo/TwDBjr8f5+I8onQZpyN9Lbopo2RbyrJ9WN/++cuuwBcVVLYX46k4vYFGV2jZLXo/G20d
- aXgb4u/tl7qeQrUKQVWZ9ub/
+  bh=hVd8xpyglrOfRYOTqJne5vynkGg7GlMgVqvOu0dtfXU=;
+  b=agPqvCJMq38vDecx/GSJ0VUxQGOdhI/MP/4q3p/rmN9G/fbukC6Z0Vfj
+   cnIs18G/T/m0KAVmwPjBMrAzTcUDRjmIp1N8zaBiFvmfesuRa5otBwZn1
+   bDUfmQoes5ygv4s8aGlHotgyWEB2K5aKCQSSxU8gxYZsxgZTT9klz0uJT
+   rEw6UyufHU0q+O5hQmQFpOSdGYvzHnqxqilD04H2p4xNTEzf3JYMtPztS
+   8HstcDf4eG/8a7ZsEzYLSREqPZ2C0hsNZi2gv+8HtDSCkaIVdeU/nVOHi
+   Ngz96Bzev6pQkeL/8VhP1zwwdxCsrZz8yERjuUV0jwezPUKB6K9TjBFQX
+   A==;
+IronPort-SDR: A8EdHpt6RD7sCTQKpOa5KAjWEF4yqPwQxlxvbusIpgzN3XypSoEZLy9Lz9zove/mM1bDshw3CF
+ DtLUQWE9Cl3l7DAgyBbgN06QmW823RHWqIck+/qzQjuU1tdJbNdIU/0cZJmpzURjdOhqdhdhpS
+ z33hPTuAzy4kUhivI1F+Zjr4nAFMgUaGpPPOQgrAH2fnfNZJhiNiJ7VHLvISoiPYqmIy+ZOyil
+ ERTjgv0D22xa5mXM1QD0rvBISnvignJIlhqlt/evLqPSRph0cOxp/WgrLJXHZJ/eQuHnlnQTIg
+ vLIZQ7LoXeoC3JFmi7HwBsNj
 X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="128973603"
+   d="scan'208";a="122687330"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Jul 2021 01:55:42 -0700
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Jul 2021 01:55:55 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 01:55:41 -0700
+ 15.1.2176.2; Tue, 20 Jul 2021 01:55:44 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Tue, 20 Jul 2021 01:55:39 -0700
+ 15.1.2176.2 via Frontend Transport; Tue, 20 Jul 2021 01:55:42 -0700
 From:   Tudor Ambarus <tudor.ambarus@microchip.com>
 To:     <herbert@gondor.apana.org.au>
 CC:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -48,9 +48,9 @@ CC:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         "Tudor Ambarus" <tudor.ambarus@microchip.com>
-Subject: [PATCH 1/9] crypto: atmel-tdes: Clarify how tdes dev gets allocated to the tfm
-Date:   Tue, 20 Jul 2021 11:55:27 +0300
-Message-ID: <20210720085535.141486-2-tudor.ambarus@microchip.com>
+Subject: [PATCH 2/9] crypto: atmel-tdes: Handle error messages
+Date:   Tue, 20 Jul 2021 11:55:28 +0300
+Message-ID: <20210720085535.141486-3-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210720085535.141486-1-tudor.ambarus@microchip.com>
 References: <20210720085535.141486-1-tudor.ambarus@microchip.com>
@@ -61,80 +61,139 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The tdes dev gets allocated to the tfm at alg->init time, there's no
-need to overwrite the pointer to tdes_dd afterwards.
-There's a single IP per SoC anyway, the first entry from the
-atmel_tdes.dev_list is chosen without counting for tfms for example,
-in case one thinks of an even distribution of tfms across the TDES
-IPs: there's only one. At alg->init time the ctx->dd should already
-be NULL, there's no need to check its value before requesting for a
-tdes dev.
+Downgrade all runtime error messages to dev_dbg so that we don't
+pollute the console. All probe error messages are kept with dev_err.
+Get rid of pr_err and use dev_dbg instead, so that we know from which
+device the error comes.
+dma_mapping_error() return code was overwritten, use the error code
+that the function returns.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/crypto/atmel-tdes.c | 28 +++++++++-------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
+ drivers/crypto/atmel-tdes.c | 33 ++++++++++++++++-----------------
+ 1 file changed, 16 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/crypto/atmel-tdes.c b/drivers/crypto/atmel-tdes.c
-index 6f01c51e3c37..dda70dbe0838 100644
+index dda70dbe0838..abbf1b7a75ab 100644
 --- a/drivers/crypto/atmel-tdes.c
 +++ b/drivers/crypto/atmel-tdes.c
-@@ -196,23 +196,15 @@ static void atmel_tdes_write_n(struct atmel_tdes_dev *dd, u32 offset,
- 		atmel_tdes_write(dd, offset, *value);
+@@ -312,7 +312,7 @@ static int atmel_tdes_crypt_pdc_stop(struct atmel_tdes_dev *dd)
+ 				dd->buf_out, dd->buflen, dd->dma_size, 1);
+ 		if (count != dd->dma_size) {
+ 			err = -EINVAL;
+-			pr_err("not all data converted: %zu\n", count);
++			dev_dbg(dd->dev, "not all data converted: %zu\n", count);
+ 		}
+ 	}
+ 
+@@ -329,24 +329,24 @@ static int atmel_tdes_buff_init(struct atmel_tdes_dev *dd)
+ 	dd->buflen &= ~(DES_BLOCK_SIZE - 1);
+ 
+ 	if (!dd->buf_in || !dd->buf_out) {
+-		dev_err(dd->dev, "unable to alloc pages.\n");
++		dev_dbg(dd->dev, "unable to alloc pages.\n");
+ 		goto err_alloc;
+ 	}
+ 
+ 	/* MAP here */
+ 	dd->dma_addr_in = dma_map_single(dd->dev, dd->buf_in,
+ 					dd->buflen, DMA_TO_DEVICE);
+-	if (dma_mapping_error(dd->dev, dd->dma_addr_in)) {
+-		dev_err(dd->dev, "dma %zd bytes error\n", dd->buflen);
+-		err = -EINVAL;
++	err = dma_mapping_error(dd->dev, dd->dma_addr_in);
++	if (err) {
++		dev_dbg(dd->dev, "dma %zd bytes error\n", dd->buflen);
+ 		goto err_map_in;
+ 	}
+ 
+ 	dd->dma_addr_out = dma_map_single(dd->dev, dd->buf_out,
+ 					dd->buflen, DMA_FROM_DEVICE);
+-	if (dma_mapping_error(dd->dev, dd->dma_addr_out)) {
+-		dev_err(dd->dev, "dma %zd bytes error\n", dd->buflen);
+-		err = -EINVAL;
++	err = dma_mapping_error(dd->dev, dd->dma_addr_out);
++	if (err) {
++		dev_dbg(dd->dev, "dma %zd bytes error\n", dd->buflen);
+ 		goto err_map_out;
+ 	}
+ 
+@@ -359,8 +359,6 @@ static int atmel_tdes_buff_init(struct atmel_tdes_dev *dd)
+ err_alloc:
+ 	free_page((unsigned long)dd->buf_out);
+ 	free_page((unsigned long)dd->buf_in);
+-	if (err)
+-		pr_err("error: %d\n", err);
+ 	return err;
  }
  
--static struct atmel_tdes_dev *atmel_tdes_find_dev(struct atmel_tdes_ctx *ctx)
-+static struct atmel_tdes_dev *atmel_tdes_dev_alloc(void)
- {
--	struct atmel_tdes_dev *tdes_dd = NULL;
--	struct atmel_tdes_dev *tmp;
-+	struct atmel_tdes_dev *tdes_dd;
+@@ -512,14 +510,14 @@ static int atmel_tdes_crypt_start(struct atmel_tdes_dev *dd)
  
- 	spin_lock_bh(&atmel_tdes.lock);
--	if (!ctx->dd) {
--		list_for_each_entry(tmp, &atmel_tdes.dev_list, list) {
--			tdes_dd = tmp;
--			break;
--		}
--		ctx->dd = tdes_dd;
--	} else {
--		tdes_dd = ctx->dd;
--	}
-+	/* One TDES IP per SoC. */
-+	tdes_dd = list_first_entry_or_null(&atmel_tdes.dev_list,
-+					   struct atmel_tdes_dev, list);
- 	spin_unlock_bh(&atmel_tdes.lock);
--
- 	return tdes_dd;
- }
+ 		err = dma_map_sg(dd->dev, dd->in_sg, 1, DMA_TO_DEVICE);
+ 		if (!err) {
+-			dev_err(dd->dev, "dma_map_sg() error\n");
++			dev_dbg(dd->dev, "dma_map_sg() error\n");
+ 			return -EINVAL;
+ 		}
  
-@@ -646,7 +638,6 @@ static int atmel_tdes_handle_queue(struct atmel_tdes_dev *dd,
- 	rctx->mode &= TDES_FLAGS_MODE_MASK;
- 	dd->flags = (dd->flags & ~TDES_FLAGS_MODE_MASK) | rctx->mode;
- 	dd->ctx = ctx;
--	ctx->dd = dd;
+ 		err = dma_map_sg(dd->dev, dd->out_sg, 1,
+ 				DMA_FROM_DEVICE);
+ 		if (!err) {
+-			dev_err(dd->dev, "dma_map_sg() error\n");
++			dev_dbg(dd->dev, "dma_map_sg() error\n");
+ 			dma_unmap_sg(dd->dev, dd->in_sg, 1,
+ 				DMA_TO_DEVICE);
+ 			return -EINVAL;
+@@ -670,7 +668,7 @@ static int atmel_tdes_crypt_dma_stop(struct atmel_tdes_dev *dd)
+ 				dd->buf_out, dd->buflen, dd->dma_size, 1);
+ 			if (count != dd->dma_size) {
+ 				err = -EINVAL;
+-				pr_err("not all data converted: %zu\n", count);
++				dev_dbg(dd->dev, "not all data converted: %zu\n", count);
+ 			}
+ 		}
+ 	}
+@@ -682,11 +680,12 @@ static int atmel_tdes_crypt(struct skcipher_request *req, unsigned long mode)
+ 	struct crypto_skcipher *skcipher = crypto_skcipher_reqtfm(req);
+ 	struct atmel_tdes_ctx *ctx = crypto_skcipher_ctx(skcipher);
+ 	struct atmel_tdes_reqctx *rctx = skcipher_request_ctx(req);
++	struct device *dev = ctx->dd->dev;
  
- 	err = atmel_tdes_write_ctrl(dd);
- 	if (!err)
-@@ -897,14 +888,13 @@ static int atmel_tdes_ofb_decrypt(struct skcipher_request *req)
- static int atmel_tdes_init_tfm(struct crypto_skcipher *tfm)
- {
- 	struct atmel_tdes_ctx *ctx = crypto_skcipher_ctx(tfm);
--	struct atmel_tdes_dev *dd;
--
--	crypto_skcipher_set_reqsize(tfm, sizeof(struct atmel_tdes_reqctx));
+ 	switch (mode & TDES_FLAGS_OPMODE_MASK) {
+ 	case TDES_FLAGS_CFB8:
+ 		if (!IS_ALIGNED(req->cryptlen, CFB8_BLOCK_SIZE)) {
+-			pr_err("request size is not exact amount of CFB8 blocks\n");
++			dev_dbg(dev, "request size is not exact amount of CFB8 blocks\n");
+ 			return -EINVAL;
+ 		}
+ 		ctx->block_size = CFB8_BLOCK_SIZE;
+@@ -694,7 +693,7 @@ static int atmel_tdes_crypt(struct skcipher_request *req, unsigned long mode)
  
--	dd = atmel_tdes_find_dev(ctx);
--	if (!dd)
-+	ctx->dd = atmel_tdes_dev_alloc();
-+	if (!ctx->dd)
- 		return -ENODEV;
+ 	case TDES_FLAGS_CFB16:
+ 		if (!IS_ALIGNED(req->cryptlen, CFB16_BLOCK_SIZE)) {
+-			pr_err("request size is not exact amount of CFB16 blocks\n");
++			dev_dbg(dev, "request size is not exact amount of CFB16 blocks\n");
+ 			return -EINVAL;
+ 		}
+ 		ctx->block_size = CFB16_BLOCK_SIZE;
+@@ -702,7 +701,7 @@ static int atmel_tdes_crypt(struct skcipher_request *req, unsigned long mode)
  
-+	crypto_skcipher_set_reqsize(tfm, sizeof(struct atmel_tdes_reqctx));
-+
- 	return 0;
- }
+ 	case TDES_FLAGS_CFB32:
+ 		if (!IS_ALIGNED(req->cryptlen, CFB32_BLOCK_SIZE)) {
+-			pr_err("request size is not exact amount of CFB32 blocks\n");
++			dev_dbg(dev, "request size is not exact amount of CFB32 blocks\n");
+ 			return -EINVAL;
+ 		}
+ 		ctx->block_size = CFB32_BLOCK_SIZE;
+@@ -710,7 +709,7 @@ static int atmel_tdes_crypt(struct skcipher_request *req, unsigned long mode)
  
+ 	default:
+ 		if (!IS_ALIGNED(req->cryptlen, DES_BLOCK_SIZE)) {
+-			pr_err("request size is not exact amount of DES blocks\n");
++			dev_dbg(dev, "request size is not exact amount of DES blocks\n");
+ 			return -EINVAL;
+ 		}
+ 		ctx->block_size = DES_BLOCK_SIZE;
 -- 
 2.25.1
 
