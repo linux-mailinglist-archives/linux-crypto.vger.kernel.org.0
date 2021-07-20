@@ -2,133 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DF33D035D
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jul 2021 22:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A653D036F
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jul 2021 22:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236630AbhGTUJE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 20 Jul 2021 16:09:04 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:38157 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237286AbhGTTsx (ORCPT
+        id S236716AbhGTUJF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 20 Jul 2021 16:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237970AbhGTT5d (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 20 Jul 2021 15:48:53 -0400
-Received: from [192.168.0.113] ([178.252.67.224]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.163]) with ESMTPSA (Nemesis) id
- 1M6YEz-1m3SJE2PNp-0070ir; Tue, 20 Jul 2021 22:28:41 +0200
-Subject: Re: [PATCH 06/11] nvme: Implement In-Band authentication
-To:     Hannes Reinecke <hare@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Keith Busch <keith.busch@wdc.com>, linux-nvme@lists.infradead.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-References: <20210716110428.9727-1-hare@suse.de>
- <20210716110428.9727-7-hare@suse.de>
- <bd588839-8acc-91cf-5946-f702007b0c7d@grimberg.me>
- <d74c29b8-1c64-e439-9015-6c424baad3d3@suse.de>
-From:   Vladislav Bolkhovitin <vst@vlnb.net>
-Message-ID: <a3098fb2-2127-6f81-97e9-ab5de503508e@vlnb.net>
-Date:   Tue, 20 Jul 2021 23:28:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 20 Jul 2021 15:57:33 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B608CC061574;
+        Tue, 20 Jul 2021 13:38:09 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id w26so469531qto.9;
+        Tue, 20 Jul 2021 13:38:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uhJDEodH1yw/K8SgUN/yQPj6QfswnQRoLXT9NJLX4jQ=;
+        b=sRFWu2X/37KyrIRC/Ee0whTh60sAZvseALcf/YWuo+qRJbIthIIrxIXqGT8/Cg/ZPf
+         Fdw1KpIYtcigTQbIeHtX3E4CZ5OEUhgAL115aD6/u7h+aPe8V5p9UHEbGP4rs2kDFEd4
+         mRocR57sdxdxUmYfo6sCpFbtrgezBweI4aXMEN5cb4xZk4sQuanotjRMJeZvbTLvhw0m
+         gL3qYm3ArSrHC9/JWsF904LfdMaJdMIe3VzDDNvNfs+i70jQ9vVbcnZQwcwehn+zyAZw
+         QCRljqBwgDSyDS856mlCE9N52P37ao2PIAEd7st+zclyVQ6zz+KfQ3H55fxKEGvO129M
+         U0Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uhJDEodH1yw/K8SgUN/yQPj6QfswnQRoLXT9NJLX4jQ=;
+        b=DJcYDemQgTRbOiLvhKqbQWw6sGyxLsw6qLmWXnmh6PVbTrlOanrLPLcUfsDgtxLBeo
+         1Uqgii54RvQ+weldo1FXkaCbkvkgwX6ka6IChmjrwJNRW4AmY1Gepgi+jLTvfBCB1Bbt
+         aI0gqPAG8rcpoNo+UYsq7IlCx/QZoBjqk80/He8YeJi8Zmvfu1qq3kJ5+SQxEKfma1hx
+         lEYss5rZCRkx9OuOxgj9D+tI+Hadkza2P3aBpSuTfzgPTFIkCxnwJltBEK7WZ2TZvgJi
+         Vx9tHL6Kxpr76ZqW5oh+XGhFJ0pr4LUXI8NqcllBoOJ+5XCb/vOzSH6Z6dBed61m7lo7
+         Q3Qw==
+X-Gm-Message-State: AOAM530aYt9F773KuV6XjA6xVZ7AC0Us4BdGXEr9VW2Qr1ic+BY9D7RD
+        hpYs2vBPH6TPD1F5VkymUK34BXD4wIpxGbkjcr0=
+X-Google-Smtp-Source: ABdhPJzKbzRuSFMwsIcAKjxgt66Cj/VfmkGl8d6QZc7DgNNxohAaGjry2ZWWegKWeNBoHA+LaSsjHwDAOBK07Fm95Fc=
+X-Received: by 2002:a05:622a:138d:: with SMTP id o13mr28072669qtk.245.1626813488854;
+ Tue, 20 Jul 2021 13:38:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d74c29b8-1c64-e439-9015-6c424baad3d3@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:PbE+rqglmpjeNnT05S+5EUIqm2w3pEbGcHIffWpSRXX9biz2QeV
- tyUB8AS6Qo55qo8uqL+5neAoyx0kl4F3UmzVph2ILPwNpFPn0VjNwYyIoz5/1Dt8xFXgonN
- 2eJvzYyQvpQ/1FVMyjYrmTAs1csH0ukTHK/n28AF12USDkhfH7DhVKWbtOxBL8UfwJoyPcS
- AZxLVpm0hqpr96iosFLjg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9Mgyzmns+BA=:iubR+6YagoGNIqn9YX1i2M
- g5kcs/ivnzTG88BCmuhVAbgXGL1XZsCdN2brkgZQ4WZGYJWivoQB4r66CkhvIZUW4QhD5uxMz
- hRUgUXg5cdqR9MHXse/8HSMDle+iiYrVYt7iE7jIBsEszu1O1QxO+fwXDhJLxJXDjcEyvqkgb
- dh6HcshaaUNE3pSBLHG6oudBeMJv0RQxfgwl9jA2vYvQddB911nURptWKOIlM4zT72/8Ncoh1
- LcCmC7YPCZyVN3z22fuLe/97QJAYY6Gc80fH5X2r4hV22CPIFl1/q0oVfmfbe7t8T49tGk8J4
- hhze9qKix37cXVKsdyEuzAIeLmzfPW4UdXIbiVmE0B9AVaB2Q1o9BxCgIuw+utWIjnqAB8Lln
- yFpbdf2IG+x4Oy8NB0uYgk59TXqaxW2icuaB4Ldas+t5fS/WYmOuwvk+eaJfS3pjY4m3lyMqP
- 2WyOkcund5irMV/dqpkbvWfOckEqrR1kcQtCu6a3vjhAk9dYY53MwE5oMSBTvTGiXRjY6vOlb
- XkoNFCP2LofC842BjZuHqO8j0WCZuj7MOCJ0fAkcH1u+FRhB1VGYoyA217CCLRmDGcX8AdEuX
- L3pnZpSUQvHt+iASgepTP1ESghteGyzTl7Afp2gTprRkDqe60qk2j2vov84bYho+A7MP7tG66
- J2EKPpUXMF61RzTWbj2v32q5F52txiS4mUXRkjF+uLdu/VUbgzMoq2//clb4C2XKgFjMB1F8+
- fKXCG8119kWQTz9ts+6gT/bZ+3yUHOmr4XUVaJH274qrsVbKaxEZ5ajwDiqeP0kEeBuZiYsTL
- dRrp9v0kPMzGnIEWOg7trNguI+fQ3TNTvuozpwhA3UfmlRc/DdaaXwh36fy8obUsvbuuXiw
+References: <cover.1dfbb73645d917b3c76d01290804a3410bd9932e.1624364386.git-series.a.fatoum@pengutronix.de>
+ <39e6d65ca5d2a0a35fb71d6c1f85add8ee489a19.1624364386.git-series.a.fatoum@pengutronix.de>
+ <1850833581.13438.1625172175436.JavaMail.zimbra@nod.at> <2f608e5a-5a12-6db1-b9bd-a2cd9e3e3671@pengutronix.de>
+ <783613027.15909.1625223222889.JavaMail.zimbra@nod.at> <ac8ef66f-4d57-ead0-d1b3-e97220463241@pengutronix.de>
+ <CAFLxGvxr94apP2jaT0tB6JRDtv_ivrguXK2Ykd3zer_4xtJ+2w@mail.gmail.com> <40e167cca7b59fc4e11f45ba807486e11eade419.camel@linux.ibm.com>
+In-Reply-To: <40e167cca7b59fc4e11f45ba807486e11eade419.camel@linux.ibm.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Tue, 20 Jul 2021 22:37:57 +0200
+Message-ID: <CAFLxGvyiWLwH30XnD5GxqYX2WduxLC-kK7Non5O5N=up6RswGg@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Richard Weinberger <richard@nod.at>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        horia geanta <horia.geanta@nxp.com>,
+        aymen sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>, Udit Agarwal <udit.agarwal@nxp.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        david <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On Tue, Jul 20, 2021 at 10:24 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > I'm not sure how to proceed.  Should I base my changes on this series
+> > or do you plan to send an updated
+> > version soon?
+> > Maybe it makes also sense to base my DCP patch set on yours.
+> >
+> > Trusted Keys maintainers, what do you prefer?
+>
+> Jarkko sent an email saying he is on vacation for 2 weeks.   James was
+> on vacation as well.   If there is something that needs immediate
+> attention, please let me know.
 
-On 7/18/21 3:21 PM, Hannes Reinecke wrote:
-> On 7/17/21 9:22 AM, Sagi Grimberg wrote:
->>> Implement NVMe-oF In-Band authentication. This patch adds two new
->>> fabric options 'dhchap_key' to specify the PSK
->>
->> pre-shared-key.
->>
->> Also, we need a sysfs knob to rotate the key that will trigger
->> re-authentication or even a simple controller(s-plural) reset, so this
->> should go beyond just the connection string.
->>
-> 
-> Yeah, re-authentication currently is not implemented. I first wanted to
-> get this patchset out such that we can settle on the userspace interface
-> (both from host and target).
-> I'll have to think on how we should handle authentication; one of the
-> really interesting cases would be when one malicious admin will _just_
-> send a 'negotiate' command to the controller. As per spec the controller
-> will be waiting for an 'authentication receive' command to send a
-> 'challenge' payload back to the host. But that will never come, so as it
-> stands currently the controller is required to abort the connection.
-> Not very nice.
+Oh, let them enjoy their well deserved vacation.
+There no need to hurry. :-)
 
-Yes, in this case after some reasonable timeout (I would suggest 10-15
-seconds) the controller expected to abort connection and clean up all
-allocated resources.
-
-To handle DoS possibility to make too many such "orphan" negotiations,
-hence consume all controller memory, some additional handling is needed.
-For simplicity as a first step I would suggest to have a global limit on
-number of currently being authenticated connections.
-
-[...]
-
->>> +    chap->key = nvme_auth_extract_secret(ctrl->opts->dhchap_secret,
->>> +                         &chap->key_len);
->>> +    if (IS_ERR(chap->key)) {
->>> +        ret = PTR_ERR(chap->key);
->>> +        chap->key = NULL;
->>> +        return ret;
->>> +    }
->>> +
->>> +    if (key_hash == 0)
->>> +        return 0;
->>> +
->>> +    hmac_name = nvme_auth_hmac_name(key_hash);
->>> +    if (!hmac_name) {
->>> +        pr_debug("Invalid key hash id %d\n", key_hash);
->>> +        return -EKEYREJECTED;
->>> +    }
->>
->> Why does the user influence the hmac used? isn't that is driven
->> by the susbsystem?
->>
->> I don't think that the user should choose in this level.
->>
-> 
-> That is another weirdness of the spec.
-> The _secret_ will be hashed with a specific function, and that function
-> is stated in the transport representation.
-> (Cf section "DH-HMAC-CHAP Security Requirements").
-> This is _not_ the hash function used by the authentication itself, which
-> will be selected by the protocol.
-> So it's not the user here, but rather the transport specification of the
-> key which selects the hash algorithm.
-
-Yes, good catch. It looks as a minor errata material to specify that
-hash function here is implementation specific.
-
-I would suggest to just hardcode SHA512 here. Users don't have to be
-confused by this.
-
-Vlad
+-- 
+Thanks,
+//richard
