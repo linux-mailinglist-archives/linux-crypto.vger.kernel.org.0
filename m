@@ -2,136 +2,193 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39823D0354
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jul 2021 22:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDDB3D0357
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jul 2021 22:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235378AbhGTUIm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 20 Jul 2021 16:08:42 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55974 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236896AbhGTTpQ (ORCPT
+        id S235573AbhGTUIx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 20 Jul 2021 16:08:53 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:36725 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237133AbhGTTr3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 20 Jul 2021 15:45:16 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16KK4bK2023434;
-        Tue, 20 Jul 2021 16:24:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=6d0AvtuBA/mdM+Xm+jajpNkrlEgOYj7D9PlUbi2xZB4=;
- b=V4zOHp+W0kVwdjd25UFD8InNd5+irwbyCnzI9y3RmjFPUQ12T41Kpwozn5isTwnh7pQq
- +ra/ibOqCusdT8/wYLkkUMjdk1cAOuBfLcuD6F+q7iS/Mwpr9alu4WiMU7QmFVH5Cjpx
- V8Vc9lCAQ/gkzrB3regmEONyJjMZVbeAMpyAK7jBq1hCbWWEpdjesgO9C2KqZRHx2uik
- oacNlYSIedCv5ldJqIqOIE3C72zhbuCy/hfm4/Zn0nEowT+iKHg6d4XPWcW/duPwUQcz
- 3Bbt1pHc/Cvo4bJIBsnxHu0udqNeYNW/tdB3o3X7JvAD2JjrquSAoKWJ3Yc6994l+mRT 0Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39wy71wjmh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 16:24:59 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16KK6Adj032512;
-        Tue, 20 Jul 2021 16:24:58 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39wy71wjkw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 16:24:58 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16KKCqSp012806;
-        Tue, 20 Jul 2021 20:24:56 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 39vng714qm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Jul 2021 20:24:55 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16KKOrF527066780
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Jul 2021 20:24:53 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F24BA42047;
-        Tue, 20 Jul 2021 20:24:52 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A1E5D42042;
-        Tue, 20 Jul 2021 20:24:47 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.68.252])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 20 Jul 2021 20:24:47 +0000 (GMT)
-Message-ID: <40e167cca7b59fc4e11f45ba807486e11eade419.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 6/6] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Richard Weinberger <richard.weinberger@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        horia geanta <horia.geanta@nxp.com>,
-        aymen sghaier <aymen.sghaier@nxp.com>,
+        Tue, 20 Jul 2021 15:47:29 -0400
+Received: from [192.168.0.113] ([178.252.67.224]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.163]) with ESMTPSA (Nemesis) id
+ 1N7Qgn-1l2w370noT-017lIO; Tue, 20 Jul 2021 22:27:00 +0200
+Subject: Re: [RFC PATCH 00/11] nvme: In-band authentication support
+To:     Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <keith.busch@wdc.com>,
+        linux-nvme@lists.infradead.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>, Udit Agarwal <udit.agarwal@nxp.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        david <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
-Date:   Tue, 20 Jul 2021 16:24:46 -0400
-In-Reply-To: <CAFLxGvxr94apP2jaT0tB6JRDtv_ivrguXK2Ykd3zer_4xtJ+2w@mail.gmail.com>
-References: <cover.1dfbb73645d917b3c76d01290804a3410bd9932e.1624364386.git-series.a.fatoum@pengutronix.de>
-         <39e6d65ca5d2a0a35fb71d6c1f85add8ee489a19.1624364386.git-series.a.fatoum@pengutronix.de>
-         <1850833581.13438.1625172175436.JavaMail.zimbra@nod.at>
-         <2f608e5a-5a12-6db1-b9bd-a2cd9e3e3671@pengutronix.de>
-         <783613027.15909.1625223222889.JavaMail.zimbra@nod.at>
-         <ac8ef66f-4d57-ead0-d1b3-e97220463241@pengutronix.de>
-         <CAFLxGvxr94apP2jaT0tB6JRDtv_ivrguXK2Ykd3zer_4xtJ+2w@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+References: <20210716110428.9727-1-hare@suse.de>
+From:   Vladislav Bolkhovitin <vst@vlnb.net>
+Message-ID: <66b3b869-02bd-9dee-fadc-8538c6aad57a@vlnb.net>
+Date:   Tue, 20 Jul 2021 23:26:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210716110428.9727-1-hare@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: IEFJRJOHfvwOngpKt1XIsPonFtReajLI
-X-Proofpoint-ORIG-GUID: wkYED_fW-_xDkCD6flgnu-e43ZxxTkI5
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-20_13:2021-07-19,2021-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 clxscore=1011 suspectscore=0 mlxlogscore=999
- spamscore=0 mlxscore=0 malwarescore=0 adultscore=0 phishscore=0
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2107200128
+X-Provags-ID: V03:K1:C+RFXPti1OtFpeySbbdTGDoG6HjjVzlMsUSbWdqc2G9TDwqgBF2
+ +jx3Xta9ZLFtOURu1xlbdl1MDHUkiFA6IAe8c5C/egpw0fcgYVx01ep63GE7oZzIIOtmAJu
+ PkULJW+6MqXSH/ePb02jfymaKIAjCohmZzoeWM6Gw6akIlmjmbDHQoAIlo8205VzvP7f1P+
+ Sa4xEPr9W2sDFNcDcUz4A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pYwAjRlTAq0=:5wPmRJUct811TLss1SELLD
+ KI6e4hZYGbwVyy7TJPMNWLtnKWUeDAcUPeh9FtSr4/cXdCzPDh1/w+vMXyfBgDiOZjOyQZlup
+ BlZlJWZeYgY3rFK4HcB5KHIpn6Dpkcf6SzBTP1W7u9xqQHEu/9Jd838thy+aQAwsWyWotc0xF
+ 7wUUmWSo8EZhnnHfn7Pg/r2PALkQrOrjoFjZ/ANzc5XTWbGvl/xxSNzXQwQenJdWMcZToK7i1
+ n+mpjWOdBIe6ullcYAy+L3nAfHxijGR5KGPr24N3A3xg+RL9cuyxI2q351wliqAoniU8exg9i
+ N4NZ0vL1DecUx8ZE8Rt5QgnHa8eOUA0pXT1I9WClWF6k0LypDnkSS6tXPoWDcNV5kq+zn996P
+ XL+PuKY8ZYs1Ung8CXqydBopp34Sl3fpvMM0p8AcAHd0TtFu/8KQ/0cguv0bLCxQumW/D+qCY
+ 3JYZM9cPOuJpfjvOyHlmGLxmQCtSYACahW0/EeE8RNMQSOhk5WMDXsPQmTaLT5yguPqEpIxCD
+ EfnUw9hLpz8dWd53Q1ht/6ohNd5IEmWO3JzT2ORDN1T0Bylj9PvIFmsnaO7QzCo9vymBSsjRk
+ /ESwp1ZwH5XBREizPVhGWfGPJItDa/gP7XktpWHilwlD+uZTTaRqMd2M2LqqPsPjQs1tClYsI
+ XWqd1pSMrVVM0BegNsgIKmnY0k7LBItMRef5F73XWzInB6c86tIiyemUVAJ4+jNWLzgWQ6rYy
+ iaXtZwfMAnjk/q6lbzUFJPrqT2orjBAG2Yy7mauB8tYB921koNahKsfRkEtsgM2I7exvb+mSr
+ MNR/OwE89XTZGLAMgMjd9x90M0i/f1MaV85y5/04OhV/WwYGPNLXSWeSFH/hqiX7Qz3IA5s
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-HI -
+Hi,
 
-On Tue, 2021-07-20 at 21:19 +0200, Richard Weinberger wrote:
-> On Fri, Jul 2, 2021 at 2:37 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> > > Both is possible. If the string starts with "0x" it needs to be decoded to a
-> > > 128 bit key. Otherwise it has to be a up to 16 byte string.
-> >
-> > Fine by me. Looking forward to your patches. :-)
+Great to see those patches coming! After some review, they look to be
+very well done. Some comments/suggestions below.
+
+1. I strongly recommend to implement DH exponentials reuse (g x mod p /
+g y mod p as well as g xy mod p) as specified in section 8.13.5.7
+"DH-HMAC-CHAP Security Requirements". When I was working on TP 8006 I
+had a prototype that demonstrated that DH math has quite significant
+latency, something like (as far as I remember) 30ms for 4K group and few
+hundreds of ms for 8K group. For single connection it is not a big deal,
+but imagine AMD EPYC with 128 cores. Since all connections are created
+sequentially, even with 30 ms per connection time to complete full
+remote device connection would become 128*30 => almost 4 seconds. With
+8K group it might be more than 10 seconds. Users are unlikely going to
+be happy with this, especially in cases, when connecting multiple of
+NVMe-oF devices is a part of a server or VM boot sequence.
+
+If DH exponential reuse implemented, for all subsequent connections the
+DH math is excluded, so authentication overhead becomes pretty much
+negligible.
+
+In my prototype I implemented DH exponential reuse as a simple
+per-host/target cache that keeps DH exponentials (including g xy mod p)
+for up to 10 seconds. Simple and sufficient.
+
+Another, might be ever more significant reason why DH exponential reuse
+is important is that without it x (or y on the host side) must always be
+randomly generated each time a new connection is established. Which
+means, for instance, for 8K groups for each connection 1KB of random
+bytes must be taken from the random pool. With 128 connections it is now
+128KB. Quite a big pressure on the random pool that DH exponential reuse
+mostly avoids.
+
+Those are the 2 reasons why we added this DH exponential reuse sentence
+in the spec. In the original TP 8006 there was a small informative piece
+explaining reasonings behind that, but for some reasons it was removed
+from the final version.
+
+2. What is the status of this code from perspective of stability in face
+of malicious host behavior? Seems implementation is carefully done, but,
+for instance, at the first look I was not able to find a code to clean
+up if host in not acting for too long in the middle of exchange. Other
+observation is that in nvmet_execute_auth_send()
+nvmet_check_transfer_len() does not check if tl size is reasonable,
+i.e., for instance, not 1GB.
+
+For sure, we don't want to allow remote hosts to hang or crash target.
+For instance, because of OOM conditions that happened, because malicious
+host asked target to allocate too much memory or open to many being
+authenticated connections in which the host is not going to reply in the
+middle of exchange.
+
+Asking, because don't want to go in my review too far ahead from the
+author ;)
+
+In this regard, it would be great if you add in your test application
+ability to perform authentication with random parameters and randomly
+stop responding. Overnight running of such test would give us good
+degree of confidence that it will always work as expected.
+
+Vlad
+
+On 7/16/21 2:04 PM, Hannes Reinecke wrote:
+> Hi all,
 > 
-> I'm not sure how to proceed.  Should I base my changes on this series
-> or do you plan to send an updated
-> version soon?
-> Maybe it makes also sense to base my DCP patch set on yours.
+> recent updates to the NVMe spec have added definitions for in-band
+> authentication, and seeing that it provides some real benefit especially
+> for NVMe-TCP here's an attempt to implement it.
 > 
-> Trusted Keys maintainers, what do you prefer?
-
-Jarkko sent an email saying he is on vacation for 2 weeks.   James was
-on vacation as well.   If there is something that needs immediate
-attention, please let me know.
-
-thanks,
-
-Mimi
-
+> Tricky bit here is that the specification orients itself on TLS 1.3,
+> but supports only the FFDHE groups. Which of course the kernel doesn't
+> support. I've been able to come up with a patch for this, but as this
+> is my first attempt to fix anything in the crypto area I would invite
+> people more familiar with these matters to have a look.
+> 
+> Also note that this is just for in-band authentication. Secure concatenation
+> (ie starting TLS with the negotiated parameters) is not implemented; one would
+> need to update the kernel TLS implementation for this, which at this time is
+> beyond scope.
+> 
+> As usual, comments and reviews are welcome.
+> 
+> Hannes Reinecke (11):
+>   crypto: add crypto_has_shash()
+>   crypto: add crypto_has_kpp()
+>   crypto/ffdhe: Finite Field DH Ephemeral Parameters
+>   lib/base64: RFC4648-compliant base64 encoding
+>   nvme: add definitions for NVMe In-Band authentication
+>   nvme: Implement In-Band authentication
+>   nvme-auth: augmented challenge support
+>   nvmet: Parse fabrics commands on all queues
+>   nvmet: Implement basic In-Band Authentication
+>   nvmet-auth: implement support for augmented challenge
+>   nvme: add non-standard ECDH and curve25517 algorithms
+> 
+>  crypto/Kconfig                         |    8 +
+>  crypto/Makefile                        |    1 +
+>  crypto/ffdhe_helper.c                  |  877 +++++++++++++++++
+>  crypto/kpp.c                           |    6 +
+>  crypto/shash.c                         |    6 +
+>  drivers/nvme/host/Kconfig              |   11 +
+>  drivers/nvme/host/Makefile             |    1 +
+>  drivers/nvme/host/auth.c               | 1188 ++++++++++++++++++++++++
+>  drivers/nvme/host/auth.h               |   23 +
+>  drivers/nvme/host/core.c               |   77 +-
+>  drivers/nvme/host/fabrics.c            |   65 +-
+>  drivers/nvme/host/fabrics.h            |    8 +
+>  drivers/nvme/host/nvme.h               |   15 +
+>  drivers/nvme/host/trace.c              |   32 +
+>  drivers/nvme/target/Kconfig            |   10 +
+>  drivers/nvme/target/Makefile           |    1 +
+>  drivers/nvme/target/admin-cmd.c        |    4 +
+>  drivers/nvme/target/auth.c             |  608 ++++++++++++
+>  drivers/nvme/target/configfs.c         |  102 +-
+>  drivers/nvme/target/core.c             |   10 +
+>  drivers/nvme/target/fabrics-cmd-auth.c |  472 ++++++++++
+>  drivers/nvme/target/fabrics-cmd.c      |   30 +-
+>  drivers/nvme/target/nvmet.h            |   71 ++
+>  include/crypto/ffdhe.h                 |   24 +
+>  include/crypto/hash.h                  |    2 +
+>  include/crypto/kpp.h                   |    2 +
+>  include/linux/base64.h                 |   16 +
+>  include/linux/nvme.h                   |  187 +++-
+>  lib/Makefile                           |    2 +-
+>  lib/base64.c                           |  111 +++
+>  30 files changed, 3961 insertions(+), 9 deletions(-)
+>  create mode 100644 crypto/ffdhe_helper.c
+>  create mode 100644 drivers/nvme/host/auth.c
+>  create mode 100644 drivers/nvme/host/auth.h
+>  create mode 100644 drivers/nvme/target/auth.c
+>  create mode 100644 drivers/nvme/target/fabrics-cmd-auth.c
+>  create mode 100644 include/crypto/ffdhe.h
+>  create mode 100644 include/linux/base64.h
+>  create mode 100644 lib/base64.c
+> 
