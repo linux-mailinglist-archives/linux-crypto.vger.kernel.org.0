@@ -2,84 +2,133 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A6E3D0358
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jul 2021 22:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93DF33D035D
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jul 2021 22:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236525AbhGTUJC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 20 Jul 2021 16:09:02 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:35357 "EHLO
+        id S236630AbhGTUJE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 20 Jul 2021 16:09:04 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:38157 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237202AbhGTTsD (ORCPT
+        with ESMTP id S237286AbhGTTsx (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 20 Jul 2021 15:48:03 -0400
+        Tue, 20 Jul 2021 15:48:53 -0400
 Received: from [192.168.0.113] ([178.252.67.224]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.163]) with ESMTPSA (Nemesis) id
- 1M26iv-1m7s9U1YhV-002aGq; Tue, 20 Jul 2021 22:27:49 +0200
+ (mreue012 [212.227.15.163]) with ESMTPSA (Nemesis) id
+ 1M6YEz-1m3SJE2PNp-0070ir; Tue, 20 Jul 2021 22:28:41 +0200
 Subject: Re: [PATCH 06/11] nvme: Implement In-Band authentication
-To:     Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <keith.busch@wdc.com>,
-        linux-nvme@lists.infradead.org,
+To:     Hannes Reinecke <hare@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Keith Busch <keith.busch@wdc.com>, linux-nvme@lists.infradead.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S . Miller" <davem@davemloft.net>,
         linux-crypto@vger.kernel.org
 References: <20210716110428.9727-1-hare@suse.de>
  <20210716110428.9727-7-hare@suse.de>
+ <bd588839-8acc-91cf-5946-f702007b0c7d@grimberg.me>
+ <d74c29b8-1c64-e439-9015-6c424baad3d3@suse.de>
 From:   Vladislav Bolkhovitin <vst@vlnb.net>
-Message-ID: <2946f3ff-bfa5-2487-4d91-c5286e3a7189@vlnb.net>
-Date:   Tue, 20 Jul 2021 23:27:26 +0300
+Message-ID: <a3098fb2-2127-6f81-97e9-ab5de503508e@vlnb.net>
+Date:   Tue, 20 Jul 2021 23:28:21 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210716110428.9727-7-hare@suse.de>
+In-Reply-To: <d74c29b8-1c64-e439-9015-6c424baad3d3@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:dV4jZRVKUd80jgKdUBVpml2f835ViidI6XcAZn8BhG3MNtWLP2Q
- f0nt3S6gKnEZywn1Q2PE04M5RZ4hU/RLIBKqBZCXo7U1F3Gi/gv50xCWOCOS/bZP7BApTkc
- G7TnqruzRNjD3dDL9DN3VGAjsL6WnHMb+BeNqjwKPjxu3VLsIv9KLABTVBMkiOeKKt1On0j
- DwvrM1+0f51OGxKS4g9xA==
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:PbE+rqglmpjeNnT05S+5EUIqm2w3pEbGcHIffWpSRXX9biz2QeV
+ tyUB8AS6Qo55qo8uqL+5neAoyx0kl4F3UmzVph2ILPwNpFPn0VjNwYyIoz5/1Dt8xFXgonN
+ 2eJvzYyQvpQ/1FVMyjYrmTAs1csH0ukTHK/n28AF12USDkhfH7DhVKWbtOxBL8UfwJoyPcS
+ AZxLVpm0hqpr96iosFLjg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/6Y1UxJomSU=:RyE9yXts4luQ9BIQMHPL8N
- P5Ku7iHEKWgWY8Bka+p86GcUcWxCnrlKJ9g7NaxEUf9tEOW8yGcM3z0H7tnVGaLIY6kPtwfEk
- RptMvMocpxI1pXCUAlyhrSFTZgbfErf+gTG0DumntrzUpDVb0NpfnBae/zoWWIvQjxF3W3PmB
- BD3zOW4dbhM79iZt9VSHGMMDtK12dTkR0sqQeQm59c6j+EzV9ngbMHmwiRezUJhZ2UGKHrwVf
- tUe7yc+m9gvz6fpZGeHcZKEL/uOttbGJUY0hzOdk+6Cw1qURKeDYH3ZpxPq6yeK/RBLHyeBuF
- NLqLTuZc6qjolJufzxGSMB5SheNrKZ3qftLZMhgJFJO5pZxC0fWZXQcu2YPB91DVzGBFBZh22
- SyVmMrCmvKCizsLMJ0RZVMu/Jq5jijvOe5ZbBtb/n3ZjoZTPXhIkOd4ZVane9pN4LFil+YSL0
- YKKQj0TJIwhGfOvULBv+YzVmU1zj9NYiWWoiBhjiLhYvyct6Q6/Yk1gjKRlDh8bQHPubv5P9b
- fjYxOkD+lCbNwSg3PNVUvIdwlNC1PoKrVUqqIuXIZWktKrFTJE+dmBiTKuNE9estkhCkOANff
- z7qMERmY2D0Ad5vpmFIg/SsD/TBeQ3k8kAQxtH5U7+REzvWMvhQ4VqUxqYFqIPIFfFsXCtet6
- WxQH/XgEAlF1JEs/DojmKgT7CueCXEp45ST8gJQJHH3Zd6xfKBwfcVkKpBpffwpU7HXjoU6IC
- mPtLmdITVqLAdA92lBY5DoBdr0sUpm8+bgeRo5MOdlah84btKZXjlSeCxwudMJd068SegzVgE
- PgsRiVK4U+e0rt9IjdWjMf8e9CxhF6ALZ6cShw0Byr91Dq/R9OtJKruGFS754hYtRhVc8e5
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9Mgyzmns+BA=:iubR+6YagoGNIqn9YX1i2M
+ g5kcs/ivnzTG88BCmuhVAbgXGL1XZsCdN2brkgZQ4WZGYJWivoQB4r66CkhvIZUW4QhD5uxMz
+ hRUgUXg5cdqR9MHXse/8HSMDle+iiYrVYt7iE7jIBsEszu1O1QxO+fwXDhJLxJXDjcEyvqkgb
+ dh6HcshaaUNE3pSBLHG6oudBeMJv0RQxfgwl9jA2vYvQddB911nURptWKOIlM4zT72/8Ncoh1
+ LcCmC7YPCZyVN3z22fuLe/97QJAYY6Gc80fH5X2r4hV22CPIFl1/q0oVfmfbe7t8T49tGk8J4
+ hhze9qKix37cXVKsdyEuzAIeLmzfPW4UdXIbiVmE0B9AVaB2Q1o9BxCgIuw+utWIjnqAB8Lln
+ yFpbdf2IG+x4Oy8NB0uYgk59TXqaxW2icuaB4Ldas+t5fS/WYmOuwvk+eaJfS3pjY4m3lyMqP
+ 2WyOkcund5irMV/dqpkbvWfOckEqrR1kcQtCu6a3vjhAk9dYY53MwE5oMSBTvTGiXRjY6vOlb
+ XkoNFCP2LofC842BjZuHqO8j0WCZuj7MOCJ0fAkcH1u+FRhB1VGYoyA217CCLRmDGcX8AdEuX
+ L3pnZpSUQvHt+iASgepTP1ESghteGyzTl7Afp2gTprRkDqe60qk2j2vov84bYho+A7MP7tG66
+ J2EKPpUXMF61RzTWbj2v32q5F52txiS4mUXRkjF+uLdu/VUbgzMoq2//clb4C2XKgFjMB1F8+
+ fKXCG8119kWQTz9ts+6gT/bZ+3yUHOmr4XUVaJH274qrsVbKaxEZ5ajwDiqeP0kEeBuZiYsTL
+ dRrp9v0kPMzGnIEWOg7trNguI+fQ3TNTvuozpwhA3UfmlRc/DdaaXwh36fy8obUsvbuuXiw
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
 
-On 7/16/21 2:04 PM, Hannes Reinecke wrote:
+On 7/18/21 3:21 PM, Hannes Reinecke wrote:
+> On 7/17/21 9:22 AM, Sagi Grimberg wrote:
+>>> Implement NVMe-oF In-Band authentication. This patch adds two new
+>>> fabric options 'dhchap_key' to specify the PSK
+>>
+>> pre-shared-key.
+>>
+>> Also, we need a sysfs knob to rotate the key that will trigger
+>> re-authentication or even a simple controller(s-plural) reset, so this
+>> should go beyond just the connection string.
+>>
+> 
+> Yeah, re-authentication currently is not implemented. I first wanted to
+> get this patchset out such that we can settle on the userspace interface
+> (both from host and target).
+> I'll have to think on how we should handle authentication; one of the
+> really interesting cases would be when one malicious admin will _just_
+> send a 'negotiate' command to the controller. As per spec the controller
+> will be waiting for an 'authentication receive' command to send a
+> 'challenge' payload back to the host. But that will never come, so as it
+> stands currently the controller is required to abort the connection.
+> Not very nice.
+
+Yes, in this case after some reasonable timeout (I would suggest 10-15
+seconds) the controller expected to abort connection and clean up all
+allocated resources.
+
+To handle DoS possibility to make too many such "orphan" negotiations,
+hence consume all controller memory, some additional handling is needed.
+For simplicity as a first step I would suggest to have a global limit on
+number of currently being authenticated connections.
 
 [...]
 
-> +struct nvmet_dhchap_hash_map {
-> +	int id;
-> +	int hash_len;
-> +	const char hmac[15];
-> +	const char digest[15];
-> +} hash_map[] = {
-> +	{.id = NVME_AUTH_DHCHAP_HASH_SHA256,
-> +	 .hash_len = 32,
-> +	 .hmac = "hmac(sha256)", .digest = "sha256" },
-> +	{.id = NVME_AUTH_DHCHAP_HASH_SHA384,
-> +	 .hash_len = 48,
-> +	 .hmac = "hmac(sha384)", .digest = "sha384" },
-> +	{.id = NVME_AUTH_DHCHAP_HASH_SHA512,
-> +	 .hash_len = 64,
-> +	 .hmac = "hmac(sha512)", .digest = "sha512" },
-> +};
+>>> +    chap->key = nvme_auth_extract_secret(ctrl->opts->dhchap_secret,
+>>> +                         &chap->key_len);
+>>> +    if (IS_ERR(chap->key)) {
+>>> +        ret = PTR_ERR(chap->key);
+>>> +        chap->key = NULL;
+>>> +        return ret;
+>>> +    }
+>>> +
+>>> +    if (key_hash == 0)
+>>> +        return 0;
+>>> +
+>>> +    hmac_name = nvme_auth_hmac_name(key_hash);
+>>> +    if (!hmac_name) {
+>>> +        pr_debug("Invalid key hash id %d\n", key_hash);
+>>> +        return -EKEYREJECTED;
+>>> +    }
+>>
+>> Why does the user influence the hmac used? isn't that is driven
+>> by the susbsystem?
+>>
+>> I don't think that the user should choose in this level.
+>>
+> 
+> That is another weirdness of the spec.
+> The _secret_ will be hashed with a specific function, and that function
+> is stated in the transport representation.
+> (Cf section "DH-HMAC-CHAP Security Requirements").
+> This is _not_ the hash function used by the authentication itself, which
+> will be selected by the protocol.
+> So it's not the user here, but rather the transport specification of the
+> key which selects the hash algorithm.
 
-"hmac()" is always here, so why not to just auto-generate hmac(sha512)
-from sha512?
+Yes, good catch. It looks as a minor errata material to specify that
+hash function here is implementation specific.
+
+I would suggest to just hardcode SHA512 here. Users don't have to be
+confused by this.
 
 Vlad
