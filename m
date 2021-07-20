@@ -2,79 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AD43D036E
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jul 2021 22:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A6E3D0358
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jul 2021 22:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236435AbhGTUI6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 20 Jul 2021 16:08:58 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:38999 "EHLO
+        id S236525AbhGTUJC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 20 Jul 2021 16:09:02 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:35357 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237168AbhGTTrn (ORCPT
+        with ESMTP id S237202AbhGTTsD (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 20 Jul 2021 15:47:43 -0400
+        Tue, 20 Jul 2021 15:48:03 -0400
 Received: from [192.168.0.113] ([178.252.67.224]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.163]) with ESMTPSA (Nemesis) id
- 1MderZ-1lWbRq3WwD-00ZgwV; Tue, 20 Jul 2021 22:27:15 +0200
-Subject: Re: [PATCH 05/11] nvme: add definitions for NVMe In-Band
- authentication
-To:     Hannes Reinecke <hare@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Keith Busch <keith.busch@wdc.com>, linux-nvme@lists.infradead.org,
+ (mreue009 [212.227.15.163]) with ESMTPSA (Nemesis) id
+ 1M26iv-1m7s9U1YhV-002aGq; Tue, 20 Jul 2021 22:27:49 +0200
+Subject: Re: [PATCH 06/11] nvme: Implement In-Band authentication
+To:     Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <keith.busch@wdc.com>,
+        linux-nvme@lists.infradead.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S . Miller" <davem@davemloft.net>,
         linux-crypto@vger.kernel.org
 References: <20210716110428.9727-1-hare@suse.de>
- <20210716110428.9727-6-hare@suse.de>
- <affd7d4a-6eb5-20b4-fcb3-7e8a0767d7a2@grimberg.me>
- <2eebe51b-7ca0-c2cf-0949-18fb88a0395b@suse.de>
+ <20210716110428.9727-7-hare@suse.de>
 From:   Vladislav Bolkhovitin <vst@vlnb.net>
-Message-ID: <2bc945e4-c1a7-f537-aa74-a4fdc81f9d12@vlnb.net>
-Date:   Tue, 20 Jul 2021 23:26:56 +0300
+Message-ID: <2946f3ff-bfa5-2487-4d91-c5286e3a7189@vlnb.net>
+Date:   Tue, 20 Jul 2021 23:27:26 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <2eebe51b-7ca0-c2cf-0949-18fb88a0395b@suse.de>
+In-Reply-To: <20210716110428.9727-7-hare@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:iWPJ2DwRbNoWBzOqSvRw156UUCsO5gFEUpS7ar/9SVweYVuST7p
- Am2uZD6MyxopWUHQNral4DOMBbCSZSvKuub6fifMSq7F43g44IvOTv2HMYCuAt612PZ890T
- 1S8ydKiuB2J2KVfhDRfmRTKRZmxr3SMCANYcUnOQuALB++dh6dqxbgDUH4D/eMaKc77uxac
- 1CqEnTbsvTMsH0MnGKPnw==
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:dV4jZRVKUd80jgKdUBVpml2f835ViidI6XcAZn8BhG3MNtWLP2Q
+ f0nt3S6gKnEZywn1Q2PE04M5RZ4hU/RLIBKqBZCXo7U1F3Gi/gv50xCWOCOS/bZP7BApTkc
+ G7TnqruzRNjD3dDL9DN3VGAjsL6WnHMb+BeNqjwKPjxu3VLsIv9KLABTVBMkiOeKKt1On0j
+ DwvrM1+0f51OGxKS4g9xA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:O2VJ8bYgfpw=:UHN7I/4vSf4bZQjLCP3E3H
- 6qDLCbTVCXUbxueU9MyrBcATZJNJ9OYAsd8qp+Ui4tG2wWlY0/vc38M3jSYAjI7Mk0OPd0s8G
- qPCaPTKzzzU45QFGSH8HWrWQPJOk+Q5AlaeMFw2hnCrz8Rpa4164yYWnXK7h02cId7oK31H/N
- cy++ac+4506ssAYzmyo4M6Pzztpb6rA8vPrVb9N+SF9oLEqBm/nhKs6On5lo+DFFiOmxufJxv
- Fscof6WBPu//MlHuTUTgJqB9SXOfUHPG4sGWIjcdNdyU+1YITD04dXj71q6HgYUZLelMlrwdR
- OCZciTJSFVdQG6K/4/nYbseTM/gX9kZBKewSxRvO5jwO9fxefJ9GeNWO1zVqJ7Bx9bPr9VbIl
- 1EgCrkNu9UZMMjUbmV9DeJ1uT20v2pEdDRHEBXAxt0OBCbfh3Yr+NCT3OcfKi2tsOxRpCfujK
- bKiryFWXH9hCv3wVk8sHZZlIgmh2KQBayDjLy5Ns9H4QEANjr/9qziaDY/zSfFhN6KJMVMiew
- bJzf6fJaQf+Mzrzo7Q+vjcEffyOXflpPuYUyZToxX4L8XuNDaS0T6E/bbdWDdc5r3MI5w+raM
- WY5UQEb561M8WazvW2gz9Bg1o645RUgJd+JpmMXOU1ArHTxUAtL8Jea0shHQuGGEF3ji83r/O
- P9BTY1ACrpaKISgYKk865c7ZCo0Pjz0u7ENd9C49YhBqeNYhML7QI/w3a1pRyiWkLZ55e97Xt
- k2Ewf3cBkRGP7mgdRIJDJMEuwKeifd7F9ymOzAuoznXIegjqo23hf61OmybLJ35RdARJyFP2w
- 9mt+0dTUbbeg90psEgnLcSdlPFT4CpP/dhnGqEU2iqZ4ddf7g2P5xMQm+JCXiXDIhaWWOUE
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/6Y1UxJomSU=:RyE9yXts4luQ9BIQMHPL8N
+ P5Ku7iHEKWgWY8Bka+p86GcUcWxCnrlKJ9g7NaxEUf9tEOW8yGcM3z0H7tnVGaLIY6kPtwfEk
+ RptMvMocpxI1pXCUAlyhrSFTZgbfErf+gTG0DumntrzUpDVb0NpfnBae/zoWWIvQjxF3W3PmB
+ BD3zOW4dbhM79iZt9VSHGMMDtK12dTkR0sqQeQm59c6j+EzV9ngbMHmwiRezUJhZ2UGKHrwVf
+ tUe7yc+m9gvz6fpZGeHcZKEL/uOttbGJUY0hzOdk+6Cw1qURKeDYH3ZpxPq6yeK/RBLHyeBuF
+ NLqLTuZc6qjolJufzxGSMB5SheNrKZ3qftLZMhgJFJO5pZxC0fWZXQcu2YPB91DVzGBFBZh22
+ SyVmMrCmvKCizsLMJ0RZVMu/Jq5jijvOe5ZbBtb/n3ZjoZTPXhIkOd4ZVane9pN4LFil+YSL0
+ YKKQj0TJIwhGfOvULBv+YzVmU1zj9NYiWWoiBhjiLhYvyct6Q6/Yk1gjKRlDh8bQHPubv5P9b
+ fjYxOkD+lCbNwSg3PNVUvIdwlNC1PoKrVUqqIuXIZWktKrFTJE+dmBiTKuNE9estkhCkOANff
+ z7qMERmY2D0Ad5vpmFIg/SsD/TBeQ3k8kAQxtH5U7+REzvWMvhQ4VqUxqYFqIPIFfFsXCtet6
+ WxQH/XgEAlF1JEs/DojmKgT7CueCXEp45ST8gJQJHH3Zd6xfKBwfcVkKpBpffwpU7HXjoU6IC
+ mPtLmdITVqLAdA92lBY5DoBdr0sUpm8+bgeRo5MOdlah84btKZXjlSeCxwudMJd068SegzVgE
+ PgsRiVK4U+e0rt9IjdWjMf8e9CxhF6ALZ6cShw0Byr91Dq/R9OtJKruGFS754hYtRhVc8e5
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
 
-On 7/17/21 5:04 PM, Hannes Reinecke wrote:
-> On 7/17/21 8:30 AM, Sagi Grimberg wrote:
+On 7/16/21 2:04 PM, Hannes Reinecke wrote:
 
 [...]
 
->>> +
->>> +enum {
->>> +    NVME_AUTH_DHCHAP_HASH_SHA256    = 0x01,
->>
->> Maybe s/HASH/HF/ (stands for hash function, which is
->> a better description).
-> 
-> Or HMAC, as this is what it's used for...
+> +struct nvmet_dhchap_hash_map {
+> +	int id;
+> +	int hash_len;
+> +	const char hmac[15];
+> +	const char digest[15];
+> +} hash_map[] = {
+> +	{.id = NVME_AUTH_DHCHAP_HASH_SHA256,
+> +	 .hash_len = 32,
+> +	 .hmac = "hmac(sha256)", .digest = "sha256" },
+> +	{.id = NVME_AUTH_DHCHAP_HASH_SHA384,
+> +	 .hash_len = 48,
+> +	 .hmac = "hmac(sha384)", .digest = "sha384" },
+> +	{.id = NVME_AUTH_DHCHAP_HASH_SHA512,
+> +	 .hash_len = 64,
+> +	 .hmac = "hmac(sha512)", .digest = "sha512" },
+> +};
 
-I would better do just NVME_AUTH_DHCHAP_SHA256. "HASH" is redundant
-here. Better to keep it shorter.
+"hmac()" is always here, so why not to just auto-generate hmac(sha512)
+from sha512?
 
 Vlad
