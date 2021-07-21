@@ -2,134 +2,139 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C003D0EA6
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jul 2021 14:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA713D0EA3
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jul 2021 14:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236787AbhGULac (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 21 Jul 2021 07:30:32 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:36375 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234243AbhGULab (ORCPT
+        id S236002AbhGUL34 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 21 Jul 2021 07:29:56 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25054 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236765AbhGUL34 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 21 Jul 2021 07:30:31 -0400
-Received: from [192.168.0.113] ([178.252.67.224]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.163]) with ESMTPSA (Nemesis) id
- 1MK3FW-1lo5Ap3rpu-00LRrJ; Wed, 21 Jul 2021 14:10:38 +0200
-Subject: Re: [RFC PATCH 00/11] nvme: In-band authentication support
-To:     Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <keith.busch@wdc.com>,
-        linux-nvme@lists.infradead.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-References: <20210716110428.9727-1-hare@suse.de>
- <66b3b869-02bd-9dee-fadc-8538c6aad57a@vlnb.net>
- <e339e6e7-fc32-2480-ca99-516547105776@suse.de>
-From:   Vladislav Bolkhovitin <vst@vlnb.net>
-Message-ID: <833cfd62-1e1f-1dca-2e38-ff07b3a5e8fb@vlnb.net>
-Date:   Wed, 21 Jul 2021 15:10:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 21 Jul 2021 07:29:56 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LC2siw105881;
+        Wed, 21 Jul 2021 08:10:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=j4u8BqA42tjXeh/DryDQIP/SBRVwP+9xAMLbvz0lXuc=;
+ b=VgO3UPGe3/AoJXNckNFKUyQ3VhYRzmzwqzZm/Xuw6zx9dilgBbo/ydLTT4OG4AUv5kYT
+ TCJIvTcIp/4TcYv+E9d0v7eXsFkSJ2xz2lGxFeRpgsvLnjEt2mcoxw3Ezt6SqganksTF
+ kZoJ0GO4MVp4i1bmvcdZ2Vq1nICwD2ie9kivT4MpRy/5SpHIe0eF66Nsih/lIVOcAJdW
+ KTU+CqDXp0S6E75GNr+qvAAl+N2dbF3jJ4qQYLzyCVMtGCkVFbyV7LNX9EB2u0hO/aNr
+ CXxBrqCz7+0SFZwx2C0l5K4Rvk1qlq/aiKeAEx3lCyTSNlF/z3PhaMa4pG+8GL9RWqq7 GA== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39xjrk12ec-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Jul 2021 08:10:22 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16LC3kNs009841;
+        Wed, 21 Jul 2021 12:10:22 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma03dal.us.ibm.com with ESMTP id 39upudm8aj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Jul 2021 12:10:21 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16LCALed53936462
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Jul 2021 12:10:21 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F28FAC05F;
+        Wed, 21 Jul 2021 12:10:21 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE279AC066;
+        Wed, 21 Jul 2021 12:10:20 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Jul 2021 12:10:20 +0000 (GMT)
+Subject: Re: [PATCH] crypto: ecc: handle unaligned input buffer in
+ ecc_swap_digits
+To:     Mian Yousaf Kaukab <ykaukab@suse.de>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au, tiwai@suse.de,
+        guillaume.gardet@arm.com
+References: <20210721083905.15144-1-ykaukab@suse.de>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <1662e2df-34e9-d8fa-4a24-e579618f635e@linux.ibm.com>
+Date:   Wed, 21 Jul 2021 08:10:20 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <e339e6e7-fc32-2480-ca99-516547105776@suse.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210721083905.15144-1-ykaukab@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:zbM9u+v9ZDUik8JpLNXsF0h3y9Y2NPHI/N8c7/Lq5bR/vSdJKcp
- UZrccZ5qijLT8pbjYGo99G2jl0cbo2Aqoyd7CoiZPwrLkpJxwE5yYobTiSE1iJ61MbBjbQm
- s5NvnnGCmAbV4PxAULDCThn0tlG7Wg/rpCTEl8Gx42rQOIkLZ6bIKdnb9VdvRVUy3lYMGDq
- MEKPfG0Xp2DTJdrbdjsMw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hDe7GysI62M=:FkCpEmbyBNAb/Hb1GlBvwN
- x69T+n5bwvlFeX2EbCRLfKQwfD+DEiNO6x6Gefrb2xzzVZ/w7+g52mkNe1pCDhJT7iaODtMeY
- K6Ov6NWgBFAhstWKkUBxQvzen61UR7togP+R7iCtgBzT0rjLNlx3WVH9wgrNCvZbT6EOzmOlZ
- whJDnjDB2f7qaqti3kg9xoazzYugJYnzoBHuCruMJkTjKiKZVm4YgulK8g/OkyeYK6eNvbuVA
- FoObD2/a+HctvDXsLaGy0ZU1Pg/qAbeqAjqR7akfRXr0LNPirCs+XAK4EtVX1D8hiF4CRW8vH
- i20DhWH+Ari6EvLwnCwUurQW5ElcWwZ37zEAXX86yTXb7T4U5D/ocz8kGwS/TH4pncS5hHT/7
- QJU643kS2jgdn6p8//nW+ZpQhFHqer3I6gX8pWwsLWa9QyJH/Rn2YDXMpRHidTRaV9m1rYMgL
- I64NUts2JaBEdzq0AMlzEf7C7JHxZPO25wRjtJtT1MWWwhtvx/XOmFVDnmT+TLltlCuSgZ5db
- 4mWPKQCVK2D1fBjNylawiATxFHyDhrLsIqKJ42AEI26PLnx5BR8w7J1oFpEvhrtqTClkMSxIK
- +ZNrWsSkZNQV+uFyE4j81kNlY/zSGMtU9vRHm60VfCz1gf+zJs5cqIOzfBlngDhYao22XYOql
- JJF4vlfNcFSOb24jN5Fye2h6GL2kbiALACFbXYsR9mVDX/1YY8lcC0VUfmXTbV/gPG8hr4qA7
- KGEt+f3WKY7t2bpCaS6uZE9mKiH3EejhnkoBF4Bp3B7IL0hb8pOlcqP2r96Ja34hAcbWf9Hoy
- E/6Wifo9PElo/PyM6JhKGpZtfOD0WAMwZIN6UDlHNyV495kGtrGPnduCl3MEu2swUdOXrve
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: N4ujAXeTq72On5MSSCq_jwEuR8auDImn
+X-Proofpoint-ORIG-GUID: N4ujAXeTq72On5MSSCq_jwEuR8auDImn
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-21_05:2021-07-21,2021-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
+ mlxscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
+ mlxlogscore=999 priorityscore=1501 impostorscore=0 adultscore=0
+ spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107210069
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
 
-On 7/21/21 9:06 AM, Hannes Reinecke wrote:
-> On 7/20/21 10:26 PM, Vladislav Bolkhovitin wrote:
->> Hi,
->>
->> Great to see those patches coming! After some review, they look to be
->> very well done. Some comments/suggestions below.
->>
->> 1. I strongly recommend to implement DH exponentials reuse (g x mod p /
->> g y mod p as well as g xy mod p) as specified in section 8.13.5.7
->> "DH-HMAC-CHAP Security Requirements". When I was working on TP 8006 I
->> had a prototype that demonstrated that DH math has quite significant
->> latency, something like (as far as I remember) 30ms for 4K group and few
->> hundreds of ms for 8K group. For single connection it is not a big deal,
->> but imagine AMD EPYC with 128 cores. Since all connections are created
->> sequentially, even with 30 ms per connection time to complete full
->> remote device connection would become 128*30 => almost 4 seconds. With
->> 8K group it might be more than 10 seconds. Users are unlikely going to
->> be happy with this, especially in cases, when connecting multiple of
->> NVMe-oF devices is a part of a server or VM boot sequence.
->>
-> Oh, indeed, I can confirm that. FFDHE calculations are quite time-consuming.
-> But incidentally, ECDH and curve25519 are reasonably fast,
+On 7/21/21 4:39 AM, Mian Yousaf Kaukab wrote:
+> ecdsa_set_pub_key() makes an u64 pointer at 1 byte offset of the key.
+> This results in an unaligned u64 pointer. This pointer is passed to
+> ecc_swap_digits() which assumes natural alignment.
+>
+> This causes a kernel crash on an armv7 platform:
+> [    0.409022] Unhandled fault: alignment exception (0x001) at 0xc2a0a6a9
+> ...
+> [    0.416982] PC is at ecdsa_set_pub_key+0xdc/0x120
+> ...
+> [    0.491492] Backtrace:
+> [    0.492059] [<c07c266c>] (ecdsa_set_pub_key) from [<c07c75d4>] (test_akcipher_one+0xf4/0x6c0)
+>
+> Handle unaligned input buffer in ecc_swap_digits() by replacing
+> be64_to_cpu() to get_unaligned_be64(). Change type of in pointer to
+> void to reflect it doesn’t necessarily need to be aligned.
+>
+> Fixes: 4e6602916bc6 ("crypto: ecdsa - Add support for ECDSA signature verification")
+> Reported-by: Guillaume Gardet <guillaume.gardet@arm.com>
+> Suggested-by: Takashi Iwai <tiwai@suse.de>
+> Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
 
-Yes, EC calculations are very fast, this is why EC cryptography is
-gaining more and more popularity.
 
-> so maybe
-> there _is_ a value in having a TPAR asking for them to be specified, too ...
+Tested-by: Stefan Berger <stefanb@linux.ibm.com>
 
-There's too much politics and procedures involved here. Even in the
-current scope it took more, than 2 years to get the spec officially done
-(I started proposing it early 2018). Maybe, in future, if someone comes
-in the the committee with the corresponding proposal and value
-justification.
 
-Although, frankly speaking, with DH exponentials reuse I personally
-don't see much value in ECDH in this application. Maybe, only for very
-small embedded devices with really limited computational capabilities.
-
->> If DH exponential reuse implemented, for all subsequent connections the
->> DH math is excluded, so authentication overhead becomes pretty much
->> negligible.
->>
->> In my prototype I implemented DH exponential reuse as a simple
->> per-host/target cache that keeps DH exponentials (including g xy mod p)
->> for up to 10 seconds. Simple and sufficient.
->>
-> 
-> Frankly, I hadn't looked at exponential reuse; this implementation
-> really is just a first step to get feedback from people if this is a
-> direction they want to go.
-
-Sure, I understand.
-
->> Another, might be ever more significant reason why DH exponential reuse
->> is important is that without it x (or y on the host side) must always be
->> randomly generated each time a new connection is established. Which
->> means, for instance, for 8K groups for each connection 1KB of random
->> bytes must be taken from the random pool. With 128 connections it is now
->> 128KB. Quite a big pressure on the random pool that DH exponential reuse
->> mostly avoids.
->>
->> Those are the 2 reasons why we added this DH exponential reuse sentence
->> in the spec. In the original TP 8006 there was a small informative piece
->> explaining reasonings behind that, but for some reasons it was removed
->> from the final version.
->>
-> 
-> Thanks for the hint. I'll be adding exponential reuse to the code.
-
-Yes, please. Otherwise, people might start talking that Linux NVMe-oF
-authentication is too bad and slow.
-
-Vlad
+> ---
+>   crypto/ecc.h | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/crypto/ecc.h b/crypto/ecc.h
+> index a006132646a4..1350e8eb6ac2 100644
+> --- a/crypto/ecc.h
+> +++ b/crypto/ecc.h
+> @@ -27,6 +27,7 @@
+>   #define _CRYPTO_ECC_H
+>   
+>   #include <crypto/ecc_curve.h>
+> +#include <asm/unaligned.h>
+>   
+>   /* One digit is u64 qword. */
+>   #define ECC_CURVE_NIST_P192_DIGITS  3
+> @@ -46,13 +47,13 @@
+>    * @out:      Output array
+>    * @ndigits:  Number of digits to copy
+>    */
+> -static inline void ecc_swap_digits(const u64 *in, u64 *out, unsigned int ndigits)
+> +static inline void ecc_swap_digits(const void *in, u64 *out, unsigned int ndigits)
+>   {
+>   	const __be64 *src = (__force __be64 *)in;
+>   	int i;
+>   
+>   	for (i = 0; i < ndigits; i++)
+> -		out[i] = be64_to_cpu(src[ndigits - 1 - i]);
+> +		out[i] = get_unaligned_be64(&src[ndigits - 1 - i]);
+>   }
+>   
+>   /**
