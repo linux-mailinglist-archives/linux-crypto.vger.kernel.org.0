@@ -2,106 +2,134 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65083D0DE1
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jul 2021 13:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C003D0EA6
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jul 2021 14:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235259AbhGUK4f (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 21 Jul 2021 06:56:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238070AbhGUKga (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 21 Jul 2021 06:36:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 357E060FED;
-        Wed, 21 Jul 2021 11:17:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626866221;
-        bh=NWYaHNv3Ni0zyuqO1rUfqLULE5ZBPCsn6kFjPseILWU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sapDQ4NPrMyEC5pbgvPlwQ8XJhdyBfq7tK9RMPeUxGRfKGL2PchsjtQM+2+8nOhAx
-         HbAeuB6L6TmBo2vTaor1cmXBJU5w4ynpa7qL+7CRSnFjrcwaAVo2eAT7YagLVpLhTO
-         qKhF47If46jMcH6gRrYMujMOfEY7HpaZIdOcFSUOOhItj0vQRcXm5GZnWSZtnOKvMQ
-         nVhdvDkZQMfG47qeMIBFFPCG/oQBlyzjTU7+uJNHK/DtJgJAiUgzCqgmfRuVGvlAET
-         J0c6MJQjNo5XpNp5lSYJVru4JcGpEsdN7qeZpADyIFuxlDrDNS33V8PtAJdW/m9a6x
-         KGD1W8YlVXadw==
-Date:   Wed, 21 Jul 2021 12:16:56 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Matt Mackall <mpm@selenic.com>,
+        id S236787AbhGULac (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 21 Jul 2021 07:30:32 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:36375 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234243AbhGULab (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 21 Jul 2021 07:30:31 -0400
+Received: from [192.168.0.113] ([178.252.67.224]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.163]) with ESMTPSA (Nemesis) id
+ 1MK3FW-1lo5Ap3rpu-00LRrJ; Wed, 21 Jul 2021 14:10:38 +0200
+Subject: Re: [RFC PATCH 00/11] nvme: In-band authentication support
+To:     Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <keith.busch@wdc.com>,
+        linux-nvme@lists.infradead.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, Ali Saidi <alisaidi@amazon.com>,
-        Jon Nettleton <jon@solid-run.com>
-Subject: Re: [PATCH v2] hwrng: Add Arm SMCCC TRNG based driver
-Message-ID: <20210721111656.GA4259@sirena.org.uk>
-References: <20210720152158.31804-1-andre.przywara@arm.com>
- <CAMj1kXEW7DT3P3FuV+poFykf6wwm4FTJuV6emGSWabCp7UZX9A@mail.gmail.com>
- <20210720171631.071f84f5@slackpad.fritz.box>
- <e494866f38e9dcd2834971d3867244fb1d7e6ceb.camel@kernel.crashing.org>
- <20210721001803.303dfba1@slackpad.fritz.box>
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+References: <20210716110428.9727-1-hare@suse.de>
+ <66b3b869-02bd-9dee-fadc-8538c6aad57a@vlnb.net>
+ <e339e6e7-fc32-2480-ca99-516547105776@suse.de>
+From:   Vladislav Bolkhovitin <vst@vlnb.net>
+Message-ID: <833cfd62-1e1f-1dca-2e38-ff07b3a5e8fb@vlnb.net>
+Date:   Wed, 21 Jul 2021 15:10:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
-Content-Disposition: inline
-In-Reply-To: <20210721001803.303dfba1@slackpad.fritz.box>
-X-Cookie: Many pages make a thick book.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <e339e6e7-fc32-2480-ca99-516547105776@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:zbM9u+v9ZDUik8JpLNXsF0h3y9Y2NPHI/N8c7/Lq5bR/vSdJKcp
+ UZrccZ5qijLT8pbjYGo99G2jl0cbo2Aqoyd7CoiZPwrLkpJxwE5yYobTiSE1iJ61MbBjbQm
+ s5NvnnGCmAbV4PxAULDCThn0tlG7Wg/rpCTEl8Gx42rQOIkLZ6bIKdnb9VdvRVUy3lYMGDq
+ MEKPfG0Xp2DTJdrbdjsMw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hDe7GysI62M=:FkCpEmbyBNAb/Hb1GlBvwN
+ x69T+n5bwvlFeX2EbCRLfKQwfD+DEiNO6x6Gefrb2xzzVZ/w7+g52mkNe1pCDhJT7iaODtMeY
+ K6Ov6NWgBFAhstWKkUBxQvzen61UR7togP+R7iCtgBzT0rjLNlx3WVH9wgrNCvZbT6EOzmOlZ
+ whJDnjDB2f7qaqti3kg9xoazzYugJYnzoBHuCruMJkTjKiKZVm4YgulK8g/OkyeYK6eNvbuVA
+ FoObD2/a+HctvDXsLaGy0ZU1Pg/qAbeqAjqR7akfRXr0LNPirCs+XAK4EtVX1D8hiF4CRW8vH
+ i20DhWH+Ari6EvLwnCwUurQW5ElcWwZ37zEAXX86yTXb7T4U5D/ocz8kGwS/TH4pncS5hHT/7
+ QJU643kS2jgdn6p8//nW+ZpQhFHqer3I6gX8pWwsLWa9QyJH/Rn2YDXMpRHidTRaV9m1rYMgL
+ I64NUts2JaBEdzq0AMlzEf7C7JHxZPO25wRjtJtT1MWWwhtvx/XOmFVDnmT+TLltlCuSgZ5db
+ 4mWPKQCVK2D1fBjNylawiATxFHyDhrLsIqKJ42AEI26PLnx5BR8w7J1oFpEvhrtqTClkMSxIK
+ +ZNrWsSkZNQV+uFyE4j81kNlY/zSGMtU9vRHm60VfCz1gf+zJs5cqIOzfBlngDhYao22XYOql
+ JJF4vlfNcFSOb24jN5Fye2h6GL2kbiALACFbXYsR9mVDX/1YY8lcC0VUfmXTbV/gPG8hr4qA7
+ KGEt+f3WKY7t2bpCaS6uZE9mKiH3EejhnkoBF4Bp3B7IL0hb8pOlcqP2r96Ja34hAcbWf9Hoy
+ E/6Wifo9PElo/PyM6JhKGpZtfOD0WAMwZIN6UDlHNyV495kGtrGPnduCl3MEu2swUdOXrve
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
 
---Q68bSM7Ycu6FN28Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 7/21/21 9:06 AM, Hannes Reinecke wrote:
+> On 7/20/21 10:26 PM, Vladislav Bolkhovitin wrote:
+>> Hi,
+>>
+>> Great to see those patches coming! After some review, they look to be
+>> very well done. Some comments/suggestions below.
+>>
+>> 1. I strongly recommend to implement DH exponentials reuse (g x mod p /
+>> g y mod p as well as g xy mod p) as specified in section 8.13.5.7
+>> "DH-HMAC-CHAP Security Requirements". When I was working on TP 8006 I
+>> had a prototype that demonstrated that DH math has quite significant
+>> latency, something like (as far as I remember) 30ms for 4K group and few
+>> hundreds of ms for 8K group. For single connection it is not a big deal,
+>> but imagine AMD EPYC with 128 cores. Since all connections are created
+>> sequentially, even with 30 ms per connection time to complete full
+>> remote device connection would become 128*30 => almost 4 seconds. With
+>> 8K group it might be more than 10 seconds. Users are unlikely going to
+>> be happy with this, especially in cases, when connecting multiple of
+>> NVMe-oF devices is a part of a server or VM boot sequence.
+>>
+> Oh, indeed, I can confirm that. FFDHE calculations are quite time-consuming.
+> But incidentally, ECDH and curve25519 are reasonably fast,
 
-On Wed, Jul 21, 2021 at 12:18:03AM +0100, Andre Przywara wrote:
-> On Wed, 21 Jul 2021 08:02:42 +1000
-> Benjamin Herrenschmidt <benh@kernel.crashing.org> wrote:
-> > On Tue, 2021-07-20 at 17:16 +0100, Andre Przywara wrote:
+Yes, EC calculations are very fast, this is why EC cryptography is
+gaining more and more popularity.
 
-> > > Yes, a similar idea was already brought up before. I think there is e=
-ven
-> > > the potential for something like an artificial SMCCC "bus", where tho=
-se
-> > > services presentable as devices could be auto-detected (by checking
-> > > known function IDs), the respective drivers would then probe
-> > > automatically? =20
+> so maybe
+> there _is_ a value in having a TPAR asking for them to be specified, too ...
 
-> > Sounds like a boot time killer...
+There's too much politics and procedures involved here. Even in the
+current scope it took more, than 2 years to get the spec officially done
+(I started proposing it early 2018). Maybe, in future, if someone comes
+in the the committee with the corresponding proposal and value
+justification.
 
-> How so? To be clear, at the moment there is basically just the TRNG
-> service we would probe for, maybe FF-A, then adding as we go. But in
-> any case it would be just a handful, and querying is very quick
-> (SMC/HVC, then just a switch/case on the other side, and ERET).
-> Is there any particular scenario you are concerned about? Quick
-> starting guests?
+Although, frankly speaking, with DH exponentials reuse I personally
+don't see much value in ECDH in this application. Maybe, only for very
+small embedded devices with really limited computational capabilities.
 
-It's also worth pointing out that we're already doing the enumeration
-part, making things a bus would just be about reorganising the code that
-checks if services are present to a central place so it looks more Linux
-style.  If anything I'd guess that if we get to the point where things
-are slow enough to worry about having that code in one central place
-would make doing something about it easier (eg, adding a "list all
-services" service or firmware binding).
+>> If DH exponential reuse implemented, for all subsequent connections the
+>> DH math is excluded, so authentication overhead becomes pretty much
+>> negligible.
+>>
+>> In my prototype I implemented DH exponential reuse as a simple
+>> per-host/target cache that keeps DH exponentials (including g xy mod p)
+>> for up to 10 seconds. Simple and sufficient.
+>>
+> 
+> Frankly, I hadn't looked at exponential reuse; this implementation
+> really is just a first step to get feedback from people if this is a
+> direction they want to go.
 
---Q68bSM7Ycu6FN28Q
-Content-Type: application/pgp-signature; name="signature.asc"
+Sure, I understand.
 
------BEGIN PGP SIGNATURE-----
+>> Another, might be ever more significant reason why DH exponential reuse
+>> is important is that without it x (or y on the host side) must always be
+>> randomly generated each time a new connection is established. Which
+>> means, for instance, for 8K groups for each connection 1KB of random
+>> bytes must be taken from the random pool. With 128 connections it is now
+>> 128KB. Quite a big pressure on the random pool that DH exponential reuse
+>> mostly avoids.
+>>
+>> Those are the 2 reasons why we added this DH exponential reuse sentence
+>> in the spec. In the original TP 8006 there was a small informative piece
+>> explaining reasonings behind that, but for some reasons it was removed
+>> from the final version.
+>>
+> 
+> Thanks for the hint. I'll be adding exponential reuse to the code.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD4AicACgkQJNaLcl1U
-h9B1/Qf+POQrRjDcaawnwQmaPxlIW3/6Swx2huY1ofbdsQ/4vZlt6Ju2sXX1md1J
-LCNF+B2/pxjieNhz3Eswsf/LYr4+yeLtuHNgWsEmgcxSNhYBFvw6kjUn8/yUdsTR
-d2QItg/3wqqcitKz3DQnuylZPrbh46pgt9jboJUqYmnyvxgOrtwG1Va+ng692SKA
-cMvSib8oQQehNhQ3jl88EuJ2g1hoBKQlRrQkw8vpDLRpN7dZlSlEkzBaOZFsChKE
-dYptfBTDBx7RUYHWQT3GY4/xYcdcmH8ICSm2+WPRTy02qorgGyNnKwsJvf3BCbK4
-zJhyg/66rMJExeRp2L/Cy+za+YxSlg==
-=8SIw
------END PGP SIGNATURE-----
+Yes, please. Otherwise, people might start talking that Linux NVMe-oF
+authentication is too bad and slow.
 
---Q68bSM7Ycu6FN28Q--
+Vlad
