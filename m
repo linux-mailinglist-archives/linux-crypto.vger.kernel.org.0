@@ -2,108 +2,62 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7FB3E109A
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Aug 2021 10:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6F73E123A
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Aug 2021 12:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237793AbhHEIyn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 5 Aug 2021 04:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
+        id S240297AbhHEKKT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 5 Aug 2021 06:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232651AbhHEIyn (ORCPT
+        with ESMTP id S240178AbhHEKKS (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 5 Aug 2021 04:54:43 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F93C061765;
-        Thu,  5 Aug 2021 01:54:28 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso7690296pjo.1;
-        Thu, 05 Aug 2021 01:54:28 -0700 (PDT)
+        Thu, 5 Aug 2021 06:10:18 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9647AC061798
+        for <linux-crypto@vger.kernel.org>; Thu,  5 Aug 2021 03:10:04 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id cf5so7592447edb.2
+        for <linux-crypto@vger.kernel.org>; Thu, 05 Aug 2021 03:10:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=TziLtL+sARxh/qxYNF2Uhc00DMrpSx0VoD8GtPIdbOk=;
-        b=kBVAbmT108V9EURr4THvvr3zJgFojwcFM0XvqybjxLRu7e1rqQ/v6bW81R1AVUfC1Q
-         XII87OLaCGc3ynl4ASmIXxz1hBbsaPJwZ7qFInQmVa1H7U5gPeL324vLWq97bQDxqwUK
-         TpuYOcZLbXi/Jgi2GIUoqf9JBbLROruST33GuMlUDeGtyYYrlK14QlvZBbuGT+yhxCef
-         VPGz2Vy0vDYUgyp+UF4UEoHSrLQbEvTdRD/iv6yIXUEzTmmsy+FdgF84oW33O5sQS3ZU
-         FstFTi096QgO0teITY1vBZLZFxZlN3KEVYTgEskjwZehv2Yqfqn7VA/YMy0+X4VQJ3Qt
-         flNg==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=J67+rxbQxfS8kPDQ/50P30WNOuT2eFzd+bURjICaS/k=;
+        b=mi7yqQmOLKzEVXr7wZThmDGoqeJFGIgCDYiykBvaZDH33/GJ2mshOA3hFWFOAMEVTV
+         RGHdbeyE8TefpTiUekIFXfL8f6Qmwvmpk7XWI5JExFDXhij754H7PBmVgU+DZ3Caw0KD
+         KSoQGPNapPGzVsgcTMgRYRGzhtThqQtYzCnCJjAwFFtUkFM1OREvkgYWVDEzrRARMNNk
+         6I9g7jNZLp73gOrhlB9U6TP30MA3/u2HcBxT0iI535tV9n6Gs5IdX23sa+kBivMIknKi
+         vpTklzE3+XjTCg0YgVpNjd4C+MEnHMjgJBcUdb6GeieDZfU+8HNFUETz+YzllsEPIlBB
+         ensw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=TziLtL+sARxh/qxYNF2Uhc00DMrpSx0VoD8GtPIdbOk=;
-        b=Cmqmb2VWE5mRZBP8Eb0DkCaVSXhkzLZyn17A/NpzhVi+aathuWpAIgsf9I2Ngb3mcW
-         oAbCFywSy84ZvYzvppJx9yJi9KUqa+xvbLabbNb/twcj9bXTjWVljnMzOkGASnvSh1Ji
-         moWZVmsy1DzvHlcj8MgRcu7//QxDQygxOrqN/IbARZBoDkUeQkmK0UnZRDbLFpgMjwu4
-         THNR2C0y+VTQK7jlMWIKaHS1stoAqxGBrKsC7Vw/SJ12NPIZlctr8fUXjbKcmQLRrHSV
-         d7DRr89QnmzgMUcmW3bGhe44ThklxGojEGv07GJTO4qXx7VvDLS/Zc39S52KS3cTuW90
-         h57g==
-X-Gm-Message-State: AOAM531GaueCfxSqQORPvZBnJaGDdxU6iK6JzQU5LJKDCB/154RulVg7
-        yUGqR4pVevRfjlVYKcCecwZdyiT5kfc=
-X-Google-Smtp-Source: ABdhPJxTa/yRwWkII0EHrJcOn29TMXkCE7CeSA1CVmtGwFMejxu7Ri9Un1h/weRVO2TxirVC/b3S/w==
-X-Received: by 2002:a63:e0c:: with SMTP id d12mr531109pgl.386.1628153667689;
-        Thu, 05 Aug 2021 01:54:27 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id z15sm5986233pfn.90.2021.08.05.01.54.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Aug 2021 01:54:27 -0700 (PDT)
-From:   Hongbo Li <herbert.tencent@gmail.com>
-To:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
-        ebiggers@kernel.org, herberthbli@tencent.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] lib/mpi: use kcalloc in mpi_resize
-Date:   Thu,  5 Aug 2021 16:53:32 +0800
-Message-Id: <1628153612-14419-1-git-send-email-herbert.tencent@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=J67+rxbQxfS8kPDQ/50P30WNOuT2eFzd+bURjICaS/k=;
+        b=BVMva6VplcIjNp5majF76NyKc7UPaOlbQ06lpzh9R24aXE12kJrF0YcPlBcUuY5hfw
+         3WSoow+rVSyLTlit9/w3DGVi8FWZoPjxcPNBjTuj/pwUvNkvRSye7tq1GzebFdQBokoz
+         QadWnIX8K4SZBGKCXLKboZHZQbBwx7UDMya1A1tcEipC+hoVCdVLdlgyVtke38qyhAon
+         vP4ojjhK+5r9bZQ5YY/aFOj8wdGA6P17q5OVl3XPgfMz7pStygfBBz3I0aNY0X6KniL2
+         kvxgm6/cIkgdGE+BHzGOqNzic+8Pj1DOxU7tyFaBoOd56d4C+Iy8dY7TiyQD0/4PtiWY
+         /DYQ==
+X-Gm-Message-State: AOAM533Mi+t6WEMpIuPevIAb/eumkIuJa7Y9AUX+XdKK6XZGb07czmhM
+        wUadvobJB2v54LHgtzvo+wOGCdx2YNcRvofABxQ=
+X-Google-Smtp-Source: ABdhPJyc6kq4jxhLPfEHrwJQcuNjuK59ctIFdrqoitA1rgwEt2xq2bVZ01pmYykWojTA+YLqXBFaxgvJXBJe8yBl6SU=
+X-Received: by 2002:aa7:c50a:: with SMTP id o10mr5420087edq.118.1628158203271;
+ Thu, 05 Aug 2021 03:10:03 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:6408:258c:b029:e3:fe5c:5c2d with HTTP; Thu, 5 Aug 2021
+ 03:10:02 -0700 (PDT)
+Reply-To: theresabangurah3333@yahoo.com
+From:   Theresa Bangurah <mariamabah77879@gmail.com>
+Date:   Thu, 5 Aug 2021 11:10:02 +0100
+Message-ID: <CAAi==jpQpEPQWUPEqzapg6pajWjV52XxDfY2zJeX+gxNgAMo8w@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Hongbo Li <herberthbli@tencent.com>
-
-We should set the additional space to 0 in mpi_resize().
-So use kcalloc() instead of kmalloc_array().
-
-In lib/mpi/ec.c:
-/****************
- * Resize the array of A to NLIMBS. the additional space is cleared
- * (set to 0) [done by m_realloc()]
- */
-int mpi_resize(MPI a, unsigned nlimbs)
-
-Like the comment of kernel's mpi_resize() said, the additional space
-need to be set to 0, but when a->d is not NULL, it does not set.
-
-The kernel's mpi lib is from libgcrypt, the mpi resize in libgcrypt
-is _gcry_mpi_resize() which set the additional space to 0.
-
-This bug may cause mpi api which use mpi_resize() get wrong result
-under the condition of using the additional space without initiation.
-If this condition is not met, the bug would not be triggered.
-Currently in kernel, rsa, sm2 and dh use mpi lib, and they works well,
-so the bug is not triggered in these cases.
-
-add_points_edwards() use the additional space directly, so it will
-get a wrong result.
-
-Fixes: cdec9cb5167a ("crypto: GnuPG based MPI lib - source files (part 1)")
-Signed-off-by: Hongbo Li <herberthbli@tencent.com>
----
- lib/mpi/mpiutil.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/mpi/mpiutil.c b/lib/mpi/mpiutil.c
-index 3c63710..e6c4b31 100644
---- a/lib/mpi/mpiutil.c
-+++ b/lib/mpi/mpiutil.c
-@@ -148,7 +148,7 @@ int mpi_resize(MPI a, unsigned nlimbs)
- 		return 0;	/* no need to do it */
- 
- 	if (a->d) {
--		p = kmalloc_array(nlimbs, sizeof(mpi_limb_t), GFP_KERNEL);
-+		p = kcalloc(nlimbs, sizeof(mpi_limb_t), GFP_KERNEL);
- 		if (!p)
- 			return -ENOMEM;
- 		memcpy(p, a->d, a->alloced * sizeof(mpi_limb_t));
 -- 
-1.8.3.1
-
+My name is Mrs.Theresa Bangurah,i am American citizen i have something
+important to tell you.Reply me immediately you get this message.God
+bless you.
