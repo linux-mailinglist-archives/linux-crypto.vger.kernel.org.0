@@ -2,19 +2,19 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912763E27A1
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Aug 2021 11:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C073E27A2
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Aug 2021 11:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244635AbhHFJpk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 6 Aug 2021 05:45:40 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12462 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbhHFJpj (ORCPT
+        id S244664AbhHFJpl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 6 Aug 2021 05:45:41 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:13289 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242840AbhHFJpk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:45:39 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gh0qb5rtCzckT3;
-        Fri,  6 Aug 2021 17:41:47 +0800 (CST)
+        Fri, 6 Aug 2021 05:45:40 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Gh0p61Fllz83Ms;
+        Fri,  6 Aug 2021 17:40:30 +0800 (CST)
 Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
  dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -22,15 +22,17 @@ Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
 Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
  (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 6 Aug 2021
- 17:45:22 +0800
+ 17:45:23 +0800
 From:   Kai Ye <yekai13@huawei.com>
 To:     <herbert@gondor.apana.org.au>
 CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH v2 0/5] crypto: hisilicon - some misc bugfix for SEC engine
-Date:   Fri, 6 Aug 2021 17:44:21 +0800
-Message-ID: <1628243066-32648-1-git-send-email-yekai13@huawei.com>
+Subject: [PATCH v2 1/5] crypto: hisilicon/sec - fixup icv checking enabled on Kunpeng 930
+Date:   Fri, 6 Aug 2021 17:44:22 +0800
+Message-ID: <1628243066-32648-2-git-send-email-yekai13@huawei.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1628243066-32648-1-git-send-email-yekai13@huawei.com>
+References: <1628243066-32648-1-git-send-email-yekai13@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.56]
@@ -41,23 +43,27 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-some misc bugfix for SEC engine.
+Fixup icv(integrity check value) checking enabled wrong on
+Kunpeng 930
 
-chages v1->v2:
-	add rate limited for printing messages.
+Signed-off-by: Kai Ye <yekai13@huawei.com>
+---
+ drivers/crypto/hisilicon/sec2/sec_crypto.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Kai Ye (5):
-  crypto: hisilicon/sec - fixup icv checking enabled on Kunpeng 930
-  crypto: hisilicon/sec - delete the print of fallback tfm application
-    failure
-  crypto: hisilicon/sec - fix the max length of AAD for the CCM mode
-  crypto: hisilicon/sec - fix the CTR mode BD configuration
-  crypto: hisilicon/sec - use the correct print format
-
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 30 ++++++++++++++++++++----------
- drivers/crypto/hisilicon/sec2/sec_crypto.h |  6 ++++--
- 2 files changed, 24 insertions(+), 12 deletions(-)
-
+diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+index 6a45bd23..bf93c98 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
++++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+@@ -1614,7 +1614,7 @@ static void sec_auth_bd_fill_ex_v3(struct sec_auth_ctx *ctx, int dir,
+ 		sqe3->auth_mac_key |= cpu_to_le32((u32)SEC_AUTH_TYPE1);
+ 		sqe3->huk_iv_seq &= SEC_CIPHER_AUTH_V3;
+ 	} else {
+-		sqe3->auth_mac_key |= cpu_to_le32((u32)SEC_AUTH_TYPE1);
++		sqe3->auth_mac_key |= cpu_to_le32((u32)SEC_AUTH_TYPE2);
+ 		sqe3->huk_iv_seq |= SEC_AUTH_CIPHER_V3;
+ 	}
+ 	sqe3->a_len_key = cpu_to_le32(c_req->c_len + aq->assoclen);
 -- 
 2.7.4
 
