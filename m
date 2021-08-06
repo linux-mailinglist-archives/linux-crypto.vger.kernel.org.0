@@ -2,182 +2,174 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2EB3E2632
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Aug 2021 10:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDA73E2526
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Aug 2021 10:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbhHFIel (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 6 Aug 2021 04:34:41 -0400
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:38089 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbhHFIek (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:34:40 -0400
-X-Greylist: delayed 1799 seconds by postgrey-1.27 at vger.kernel.org; Fri, 06 Aug 2021 04:34:40 EDT
-Received: from unknown (HELO lgeamrelo02.lge.com) (156.147.1.126)
-        by 156.147.23.51 with ESMTP; 6 Aug 2021 17:04:23 +0900
-X-Original-SENDERIP: 156.147.1.126
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.126 with ESMTP; 6 Aug 2021 17:04:23 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Fri, 6 Aug 2021 17:03:44 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     torvalds@linux-foundation.org, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        rostedt@goodmis.org, joel@joelfernandes.org,
-        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com
-Subject: [REPORT] Request for reviewing crypto code wrt wait_for_completion()
-Message-ID: <20210806080344.GA5788@X58A-UD3R>
-References: <20210803021611.GA28236@X58A-UD3R>
+        id S243797AbhHFISA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 6 Aug 2021 04:18:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243995AbhHFIQ3 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:16:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6A7E611EF;
+        Fri,  6 Aug 2021 08:16:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628237774;
+        bh=s2bWJEORa+DqWmMyAsTBwaCD6kYNZqRTyDUNsRsO6RQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hvatL+gZhNYnvtMQmtdMmXtiDfodx8xOY05MKAanGlbxo+s/RfmjEqcSv4pwKjpke
+         nQx0m45OtYLPU4dYMxUFWXAWsZzofTVdGB4BD6Ba4rEa0qhiP9nCdZG5VvYz5JnYu2
+         iFeYBPsQG8dUBKx6dE5owPneuK3qoskUz++9aI9Q=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-crypto@vger.kernel.org,
+        Yang Yingliang <yangyingliang@huawei.com>
+Subject: [PATCH 4.19 15/16] padata: validate cpumask without removed CPU during offline
+Date:   Fri,  6 Aug 2021 10:15:06 +0200
+Message-Id: <20210806081111.628446735@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210806081111.144943357@linuxfoundation.org>
+References: <20210806081111.144943357@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803021611.GA28236@X58A-UD3R>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello crypto folks,
+From: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-I developed a tool for tracking waiters and reporting if any of the
-events that the waiters are waiting for would never happen, say, a
-deadlock. Yes, it would look like Lockdep but more inclusive.
+commit 894c9ef9780c5cf2f143415e867ee39a33ecb75d upstream.
 
-While I ran the tool(Dept: Dependency Tracker) on v5.4.96, I got some
-reports from the tool. One of them is related to crypto subsystem.
-Because I'm not that familiar with the code, I'd like to ask you guys to
-review the related code.
+Configuring an instance's parallel mask without any online CPUs...
 
-If I understand correctly, it doesn't actually cause deadlock but looks
-like a problematic code. I know you are not used to the format of the
-report from Dept so.. let me summerize the result.
+  echo 2 > /sys/kernel/pcrypt/pencrypt/parallel_cpumask
+  echo 0 > /sys/devices/system/cpu/cpu1/online
 
-The simplified call trace looks like when the problem araised :
+...makes tcrypt mode=215 crash like this:
 
-THREAD A
---------
-A1 crypto_alg_mod_lookup()
-A2    crypto_probing_notify(CRYPTO_MSG_ALG_REQUEST)
-A3       cryptomgr_schedule_probe()
-A4          kthread_run(cyptomgr_probe) ---> Start THREAD B
+  divide error: 0000 [#1] SMP PTI
+  CPU: 4 PID: 283 Comm: modprobe Not tainted 5.4.0-rc8-padata-doc-v2+ #2
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20191013_105130-anatol 04/01/2014
+  RIP: 0010:padata_do_parallel+0x114/0x300
+  Call Trace:
+   pcrypt_aead_encrypt+0xc0/0xd0 [pcrypt]
+   crypto_aead_encrypt+0x1f/0x30
+   do_mult_aead_op+0x4e/0xdf [tcrypt]
+   test_mb_aead_speed.constprop.0.cold+0x226/0x564 [tcrypt]
+   do_test+0x28c2/0x4d49 [tcrypt]
+   tcrypt_mod_init+0x55/0x1000 [tcrypt]
+   ...
 
-A5    crypto_larval_wait()
-A6       wait_for_completion_killable_timeout(c) /* waiting for B10 */
+cpumask_weight() in padata_cpu_hash() returns 0 because the mask has no
+CPUs.  The problem is __padata_remove_cpu() checks for valid masks too
+early and so doesn't mark the instance PADATA_INVALID as expected, which
+would have made padata_do_parallel() return error before doing the
+division.
 
-THREAD B
---------
-B1 cryptomgr_probe()
-B2    pkcslpad_create()
-B3       crypto_wait_for_test()
-B4          crypto_probing_notify(CRYPTO_MSG_ALG_REGISTER)
-B5             cryptomgr_schedule_test()
-B6                kthread_run(cyptomgr_test) ---> Start THREAD C
+Fix by introducing a second padata CPU hotplug state before
+CPUHP_BRINGUP_CPU so that __padata_remove_cpu() sees the online mask
+without @cpu.  No need for the second argument to padata_replace() since
+@cpu is now already missing from the online mask.
 
-B7    tmpl->alloc()
-B8    crupto_register_instance()
-B9          wait_for_completion_killable(c) /* waiting for C3 */
-B10   complete_all(c)
-
-THREAD C
---------
-C1 cryptomgr_test()
-C2    crypto_alg_tested()
-C3       complete_all(c)
-
+Fixes: 33e54450683c ("padata: Handle empty padata cpumasks")
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
+ include/linux/cpuhotplug.h |    1 +
+ kernel/padata.c            |   18 ++++++++++++++----
+ 2 files changed, 15 insertions(+), 4 deletions(-)
 
-For example, in this situation, I think C3 could wake up both A6 and B9
-before THREAD B reaches B10 which is not desired by A6. Say, is it okay
-to wake up A6 with B7 ~ B9 having yet to complete?
-
-Sorry if I misunderstand the code. It looks so complicated to me. Could
-you check if the code is good?
-
-Just FYI, the below is the report from the tool, Dept, I developed.
-
-Thanks,
-Byungchul
-
----
-
-[   10.520128 ] ===================================================
-[   10.526037 ] Dept: Circular dependency has been detected.
-[   10.531337 ] 5.4.96-242 #1 Tainted: G        W   
-[   10.536375 ] ---------------------------------------------------
-[   10.542280 ] summary
-[   10.544366 ] ---------------------------------------------------
-[   10.550271 ] *** AA DEADLOCK ***
-[   10.550271 ] 
-[   10.554875 ] context A
-[   10.557136 ]     [S] (unknown)(&larval->completion:0)
-[   10.562087 ]     [W] wait_for_completion_killable(&larval->completion:0)
-[   10.568688 ]     [E] complete_all(&larval->completion:0)
-[   10.573898 ] 
-[   10.575377 ] [S]: start of the event context
-[   10.579546 ] [W]: the wait blocked
-[   10.582848 ] [E]: the event not reachable
-[   10.586757 ] ---------------------------------------------------
-[   10.592662 ] context A's detail
-[   10.595703 ] ---------------------------------------------------
-[   10.601608 ] context A
-[   10.603868 ]     [S] (unknown)(&larval->completion:0)
-[   10.608819 ]     [W] wait_for_completion_killable(&larval->completion:0)
-[   10.615419 ]     [E] complete_all(&larval->completion:0)
-[   10.620630 ] 
-[   10.622109 ] [S] (unknown)(&larval->completion:0):
-[   10.626799 ] (N/A)
-[   10.628712 ] 
-[   10.630191 ] [W] wait_for_completion_killable(&larval->completion:0):
-[   10.636537 ] [<ffffffc0104dfc20>] crypto_wait_for_test+0x40/0x80
-[   10.642443 ] stacktrace:
-[   10.644881 ]       wait_for_completion_killable+0x34/0x160
-[   10.650267 ]       crypto_wait_for_test+0x40/0x80
-[   10.654871 ]       crypto_register_instance+0xb0/0xe0
-[   10.659824 ]       akcipher_register_instance+0x30/0x38
-[   10.664950 ]       pkcs1pad_create+0x238/0x2b0
-[   10.669295 ]       cryptomgr_probe+0x40/0xd0
-[   10.673467 ]       kthread+0x150/0x188
-[   10.677118 ]       ret_from_fork+0x10/0x18
-[   10.681114 ] 
-[   10.682592 ] [E] complete_all(&larval->completion:0):
-[   10.687544 ] [<ffffffc0104e8d20>] cryptomgr_probe+0xb0/0xd0
-[   10.693016 ] stacktrace:
-[   10.695452 ]       complete_all+0x30/0x70
-[   10.699362 ]       cryptomgr_probe+0xb0/0xd0
-[   10.703532 ]       kthread+0x150/0x188
-[   10.707181 ]       ret_from_fork+0x10/0x18
-[   10.711177 ] ---------------------------------------------------
-[   10.717083 ] information that might be helpful
-[   10.721426 ] ---------------------------------------------------
-[   10.727334 ] CPU: 0 PID: 1787 Comm: cryptomgr_probe Tainted: G        W
-5.4.96-242 #1
-[   10.735757 ] Hardware name: LG Electronics, DTV SoC LG1213 (AArch64) (DT)
-[   10.742444 ] Call trace:
-[   10.744879 ]  dump_backtrace+0x0/0x148
-[   10.748529 ]  show_stack+0x14/0x20
-[   10.751833 ]  dump_stack+0xd0/0x12c
-[   10.755223 ]  print_circle+0x3b0/0x3f8
-[   10.758873 ]  cb_check_dl+0x54/0x70
-[   10.762262 ]  bfs+0x64/0x1a0
-[   10.765043 ]  add_dep+0x90/0xb8
-[   10.768086 ]  dept_event+0x4c8/0x560
-[   10.771562 ]  complete_all+0x30/0x70
-[   10.775038 ]  cryptomgr_probe+0xb0/0xd0
-[   10.778774 ]  kthread+0x150/0x188
-[   10.781989 ]  ret_from_fork+0x10/0x18
-[   10.786091 ] cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
-[   10.792783 ] platform regulatory.0: Direct firmware load for
-regulatory.db failed with error -2
-[   10.796148 ] ALSA device list:
-[   10.801423 ] cfg80211: failed to load regulatory.db
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -59,6 +59,7 @@ enum cpuhp_state {
+ 	CPUHP_IOMMU_INTEL_DEAD,
+ 	CPUHP_LUSTRE_CFS_DEAD,
+ 	CPUHP_AP_ARM_CACHE_B15_RAC_DEAD,
++	CPUHP_PADATA_DEAD,
+ 	CPUHP_WORKQUEUE_PREP,
+ 	CPUHP_POWER_NUMA_PREPARE,
+ 	CPUHP_HRTIMERS_PREPARE,
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -682,7 +682,7 @@ static int __padata_remove_cpu(struct pa
+ {
+ 	struct parallel_data *pd = NULL;
+ 
+-	if (cpumask_test_cpu(cpu, cpu_online_mask)) {
++	if (!cpumask_test_cpu(cpu, cpu_online_mask)) {
+ 
+ 		if (!padata_validate_cpumask(pinst, pinst->cpumask.pcpu) ||
+ 		    !padata_validate_cpumask(pinst, pinst->cpumask.cbcpu))
+@@ -758,7 +758,7 @@ static int padata_cpu_online(unsigned in
+ 	return ret;
+ }
+ 
+-static int padata_cpu_prep_down(unsigned int cpu, struct hlist_node *node)
++static int padata_cpu_dead(unsigned int cpu, struct hlist_node *node)
+ {
+ 	struct padata_instance *pinst;
+ 	int ret;
+@@ -779,6 +779,7 @@ static enum cpuhp_state hp_online;
+ static void __padata_free(struct padata_instance *pinst)
+ {
+ #ifdef CONFIG_HOTPLUG_CPU
++	cpuhp_state_remove_instance_nocalls(CPUHP_PADATA_DEAD, &pinst->node);
+ 	cpuhp_state_remove_instance_nocalls(hp_online, &pinst->node);
+ #endif
+ 
+@@ -964,6 +965,8 @@ static struct padata_instance *padata_al
+ 
+ #ifdef CONFIG_HOTPLUG_CPU
+ 	cpuhp_state_add_instance_nocalls_cpuslocked(hp_online, &pinst->node);
++	cpuhp_state_add_instance_nocalls_cpuslocked(CPUHP_PADATA_DEAD,
++						    &pinst->node);
+ #endif
+ 	return pinst;
+ 
+@@ -1010,17 +1013,24 @@ static __init int padata_driver_init(voi
+ 	int ret;
+ 
+ 	ret = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, "padata:online",
+-				      padata_cpu_online,
+-				      padata_cpu_prep_down);
++				      padata_cpu_online, NULL);
+ 	if (ret < 0)
+ 		return ret;
+ 	hp_online = ret;
++
++	ret = cpuhp_setup_state_multi(CPUHP_PADATA_DEAD, "padata:dead",
++				      NULL, padata_cpu_dead);
++	if (ret < 0) {
++		cpuhp_remove_multi_state(hp_online);
++		return ret;
++	}
+ 	return 0;
+ }
+ module_init(padata_driver_init);
+ 
+ static __exit void padata_driver_exit(void)
+ {
++	cpuhp_remove_multi_state(CPUHP_PADATA_DEAD);
+ 	cpuhp_remove_multi_state(hp_online);
+ }
+ module_exit(padata_driver_exit);
 
 
