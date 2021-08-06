@@ -2,89 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4D13E2A6C
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Aug 2021 14:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8853E2C33
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Aug 2021 16:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343635AbhHFMPU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 6 Aug 2021 08:15:20 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:51754 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343589AbhHFMPU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 6 Aug 2021 08:15:20 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mBykc-0003hl-Nt; Fri, 06 Aug 2021 20:14:58 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mBykW-0006fS-4A; Fri, 06 Aug 2021 20:14:52 +0800
-Date:   Fri, 6 Aug 2021 20:14:52 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>,
-        Ali Saidi <alisaidi@amazon.com>,
-        Jon Nettleton <jon@solid-run.com>
-Subject: Re: [PATCH v4 0/2] hwrng: Add Arm SMCCC TRNG based driver
-Message-ID: <20210806121452.GC25554@gondor.apana.org.au>
-References: <20210731204845.21196-1-andre.przywara@arm.com>
+        id S235736AbhHFOLR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 6 Aug 2021 10:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236161AbhHFOKu (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 6 Aug 2021 10:10:50 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97C8C0617A3
+        for <linux-crypto@vger.kernel.org>; Fri,  6 Aug 2021 07:10:32 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id y7so13216698eda.5
+        for <linux-crypto@vger.kernel.org>; Fri, 06 Aug 2021 07:10:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/oMubRmlLM5EZ/UdY6Fj3wsfS2kyoMzN9ASXgZ3xneY=;
+        b=q3xyYt1HrVQnyL1KZndhIFKim0Z6RZXWCajZa6+jKaUt/xPBmWrU2b2TpwIqgxHoY3
+         6sUeXJPoUC3zz+xqx5Y/7bh16ON7BcCcP2liy5jl/yv+hyxVGmxIcBCDJXoapuOO0RIl
+         REN9Zv+ClhtVVEMybVDTEUTnyt+YraWqvgNO4CiPEvSNbjJp0ymaQzc4FwPALfOqM4La
+         f+KzIMXFoGuca5XlZdCXXnnqi+xUiOGsem/cV9JUjNFonSZWOzEGazowyEr2eG3dp5DR
+         pLBa7cN2FmOkeXw/dSFAaB7k29Eu0Yivashc8iQbXHlro4ZoI7aiyRP21+G8wGDlMmu6
+         HPDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/oMubRmlLM5EZ/UdY6Fj3wsfS2kyoMzN9ASXgZ3xneY=;
+        b=DOp6htoQ45FxMkoq0d/jc6X17mtfH5kEe7AH/2HApcy7Mx15XHMSmihM2b5exm1uy1
+         2hMY5qnPHF3OJMxNCc6giIjRdxhZk8tzjGqSjPFUSskwozuInxCwNHZulm7n5bT7P4F6
+         ASjCa58FY7AZHddLzmAZ7riTbxTOIt6aIOlpVIHBdHH29g7uLqxHsiGAo/iweJWgL/SW
+         QeV+uz1/oXhCN0E6piLnmWcwxYHcS8SChFEkCic7wxNhCyteMMDN7seZaShO3drF8db4
+         MqQsv8U1LUDlv/0KzGICVzVKmPY2p1U4BHncXGh/lDyXyesw7Eu9TTW6C6wuXXX370Jt
+         ji5Q==
+X-Gm-Message-State: AOAM5339TsWIzNpukQUpTHb+gPt1EcXIbjeVjoZZr05V1oaRk5uUoaqO
+        srNt0tACFNA+8bdpe9I1y1UzQyeemqeJdKMo7Q==
+X-Google-Smtp-Source: ABdhPJx229jhz+o+nQwdgIkoqR5HwLh3S4+JGHt0eG+5fB4X3WTmNmInTj1ZpuXDIVm9CYEhhFZzLyuZYbLrplGdX6A=
+X-Received: by 2002:a05:6402:3094:: with SMTP id de20mr13526197edb.272.1628259031175;
+ Fri, 06 Aug 2021 07:10:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210731204845.21196-1-andre.przywara@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a54:26cf:0:0:0:0:0 with HTTP; Fri, 6 Aug 2021 07:10:30 -0700 (PDT)
+Reply-To: mrmaxwellwatford@gmail.com
+From:   Maxwell Watford <orchowskiruthi@gmail.com>
+Date:   Fri, 6 Aug 2021 14:10:30 +0000
+Message-ID: <CA+q9Q6OJB6Z0+y=5_3MBDNGkAUG9rVxg7bZVma38uDOvJ+sOGw@mail.gmail.com>
+Subject: i need your reply
+To:     orchowskiruthi@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 09:48:43PM +0100, Andre Przywara wrote:
-> The "Arm True Random Number Generator Firmware Interface"[1] provides
-> an SMCCC based interface to a true hardware random number generator.
-> So far we are using that in arch_get_random_seed(), but it might be
-> useful to expose the entropy through the /dev/hwrng device as well. This
-> allows to assess the quality of the implementation, by using "rngtest"
-> from the rng-tools package, for example.
-> 
-> Patch 1 creates a platform device, triggered by the previous discovery
-> of the SMCCC TRNG service.
-> Patch 2 implements a hw_random platform driver, which is instantiated
-> through this said platform device.
-> 
-> The driver can be loaded as module, or built into the kernel.
-> 
-> [1] https://developer.arm.com/documentation/den0098/latest/
-> 
-> Changelog v3 ... v4:
-> - drop pointless driver loading message
-> - drop unneeded init() routine
-> 
-> Changelog v2 ... v3:
-> - split platform device and driver
-> 
-> Changelog v1 ... v2:
-> - fix building as a module
-> - de-register device upon exit
-> - mention module name in Kconfig
-> 
-> Andre Przywara (2):
->   firmware: smccc: Register smccc_trng platform device
->   hwrng: Add Arm SMCCC TRNG based driver
-> 
->  drivers/char/hw_random/Kconfig          |  14 +++
->  drivers/char/hw_random/Makefile         |   1 +
->  drivers/char/hw_random/arm_smccc_trng.c | 123 ++++++++++++++++++++++++
->  drivers/firmware/smccc/smccc.c          |  17 ++++
->  4 files changed, 155 insertions(+)
->  create mode 100644 drivers/char/hw_random/arm_smccc_trng.c
+Greetings,
 
-All applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+We are writing to you from Ecowas Finance Controller Office Lome Togo,
+because we have received a file from the Ministry of Finance Lome-
+Togo, concerning an Inherited Fund bearing your name on it, And after
+our verifications, we found out that the funds belong to you.
+
+It has been awarded and I will like to guide you to claim the funds.
+Please contact me at my private email address
+(mrmaxwellwatford@gmail.com) for more information and directive
+
+I am looking forward to your urgent reply,
+Best regards
+Mr Maxwell Watford
