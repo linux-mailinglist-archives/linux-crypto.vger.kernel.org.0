@@ -2,56 +2,94 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF0C3E2627
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Aug 2021 10:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D893E26BA
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Aug 2021 11:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235848AbhHFIck (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 6 Aug 2021 04:32:40 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:51746 "EHLO deadmen.hmeau.com"
+        id S243869AbhHFJFh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 6 Aug 2021 05:05:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235706AbhHFIck (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:32:40 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mBvHD-0007OM-R0; Fri, 06 Aug 2021 16:32:23 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mBvHD-0003Qi-OI; Fri, 06 Aug 2021 16:32:23 +0800
-Date:   Fri, 6 Aug 2021 16:32:23 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Kai Ye <yekai13@huawei.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH 3/5] crypto: hisilicon/sec - fix the max length of AAD
- for the CCM mode
-Message-ID: <20210806083223.GB13132@gondor.apana.org.au>
-References: <1627701996-4589-1-git-send-email-yekai13@huawei.com>
- <1627701996-4589-4-git-send-email-yekai13@huawei.com>
+        id S243794AbhHFJFh (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 6 Aug 2021 05:05:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1797611C9;
+        Fri,  6 Aug 2021 09:05:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628240721;
+        bh=TNTkDivd9iEayXno0KqWQGcsGWF9R2u7kmQVVbQ599o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IOIlyUjaXAIuXdnTMnPwQo/aRvckN2cFjeGIwEcVA/JnWN635BXz1yFWYglNQMCMw
+         ENAcRMHBLzQ98S4YcQHfrrcChDNFN68+q4cx1Qy/Pe49/qq5tx90bTAucGYSB2JSni
+         YTdk54Q6ES6FoHBhAqT8F9lDvwLJ6rrZGI9fMmaC6tz1V7uk3TBMRhp1pdSHdPe9Un
+         aUyeeMoUGhMWaLS0VuY1J30l9Fj0kKVM+xNLaxXUL7OMTBKZYtqnhYTOJq1s/hGtQp
+         RKNks++OVG9nii5IZ0RhnXR4YoDT8P/gPx7HRgJLyLDPFDfmaLDinjrDMqDk8dSmRi
+         vgKuh03oMWIyw==
+Received: by mail-oo1-f52.google.com with SMTP id z3-20020a4a98430000b029025f4693434bso2060550ooi.3;
+        Fri, 06 Aug 2021 02:05:21 -0700 (PDT)
+X-Gm-Message-State: AOAM530mDlKZhDKT503b/V+fR1LydP/L/jcAClk6DiJdWdLG1YURb1c6
+        uAiDtsgyrqpeyV4Er8GoNsdrzBrzCM4Tnqp+Wrc=
+X-Google-Smtp-Source: ABdhPJx5KVGcVwubPN1s9jELV2wY6UX+s5VXewRK26P7IoSSx07z6hMOluoz7TrsWlBZBqLl7JuHLA5ZfZ/G3bchqXE=
+X-Received: by 2002:a4a:e750:: with SMTP id n16mr4229495oov.13.1628240721001;
+ Fri, 06 Aug 2021 02:05:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1627701996-4589-4-git-send-email-yekai13@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210730134155.1005358-1-chouhan.shreyansh630@gmail.com> <20210806082320.GA12731@gondor.apana.org.au>
+In-Reply-To: <20210806082320.GA12731@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 6 Aug 2021 11:05:09 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFnCK5xiuGzxkj6rOP43a7OuA7uUP9-eJqsgb54MmuZPQ@mail.gmail.com>
+Message-ID: <CAMj1kXFnCK5xiuGzxkj6rOP43a7OuA7uUP9-eJqsgb54MmuZPQ@mail.gmail.com>
+Subject: Re: [PATCH] crypto: add missing kernel_fpu_end() call
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 11:26:34AM +0800, Kai Ye wrote:
+On Fri, 6 Aug 2021 at 10:23, Herbert Xu <herbert@gondor.apana.org.au> wrote:
 >
-> @@ -2218,6 +2219,10 @@ static int sec_aead_spec_check(struct sec_ctx *ctx, struct sec_req *sreq)
->  	}
->  
->  	if (c_mode == SEC_CMODE_CCM) {
-> +		if (unlikely(req->assoclen > SEC_MAX_CCM_AAD_LEN)) {
-> +			dev_err(dev, "CCM input aad parameter is too long!\n");
-> +			return -EINVAL;
-> +		}
+> On Fri, Jul 30, 2021 at 07:11:55PM +0530, Shreyansh Chouhan wrote:
+> > xts_crypt() code doesn't call kernel_fpu_end() after calling
+> > kernel_fpu_begin() if walk.nbytes is 0. Add a call to kernel_fpu_end()
+> > for this case.
+> >
+> > Reported-by: syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+> > Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+> > ---
+> >  arch/x86/crypto/aesni-intel_glue.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+>
+> Ard?
+>
+> > diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
+> > index 2144e54a6c89..bd55a0cd7bde 100644
+> > --- a/arch/x86/crypto/aesni-intel_glue.c
+> > +++ b/arch/x86/crypto/aesni-intel_glue.c
+> > @@ -894,6 +894,9 @@ static int xts_crypt(struct skcipher_request *req, bool encrypt)
+> >                       kernel_fpu_begin();
+> >       }
+> >
+> > +     if (walk.nbytes == 0)
+> > +             kernel_fpu_end();
+> > +
 
-You shouldn't be printing messages on a code path that can be
-triggered by userspace without rate limit.
+Don't we end up calling kernel_fpu_end() twice this way if we do enter
+the while() loop at least once?
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+
+> >       if (unlikely(tail > 0 && !err)) {
+> >               struct scatterlist sg_src[2], sg_dst[2];
+> >               struct scatterlist *src, *dst;
+> > --
+> > 2.31.1
+>
+> --
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
