@@ -2,220 +2,182 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E85D3E2377
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Aug 2021 08:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2EB3E2632
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Aug 2021 10:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243414AbhHFGt2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 6 Aug 2021 02:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243427AbhHFGtZ (ORCPT
+        id S231526AbhHFIel (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 6 Aug 2021 04:34:41 -0400
+Received: from lgeamrelo11.lge.com ([156.147.23.51]:38089 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230402AbhHFIek (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 6 Aug 2021 02:49:25 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99795C061798
-        for <linux-crypto@vger.kernel.org>; Thu,  5 Aug 2021 23:49:10 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mBtcu-0007Bd-Gw; Fri, 06 Aug 2021 08:46:40 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mBtce-0004p1-8f; Fri, 06 Aug 2021 08:46:24 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mBtce-0003LN-5b; Fri, 06 Aug 2021 08:46:24 +0200
-Date:   Fri, 6 Aug 2021 08:46:23 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-pci@vger.kernel.org, Alexander Duyck <alexanderduyck@fb.com>,
-        Russell Currey <ruscur@russell.cc>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        oss-drivers@corigine.com, Paul Mackerras <paulus@samba.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        linux-perf-users@vger.kernel.org,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-scsi@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Ido Schimmel <idosch@nvidia.com>, x86@kernel.org,
-        qat-linux@intel.com,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-wireless@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Michael Buesch <m@bues.ch>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        xen-devel@lists.xenproject.org, Vadym Kochan <vkochan@marvell.com>,
-        MPT-FusionLinux.pdl@broadcom.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        linux-kernel@vger.kernel.org, Taras Chornyi <tchornyi@marvell.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
-        netdev@vger.kernel.org, Frederic Barrat <fbarrat@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2 0/6] PCI: Drop duplicated tracking of a pci_dev's
- bound driver
-Message-ID: <20210806064623.3lxl4clzbjpmchef@pengutronix.de>
-References: <20210803100150.1543597-1-u.kleine-koenig@pengutronix.de>
- <20210805234234.GA1797883@bjorn-Precision-5520>
+        Fri, 6 Aug 2021 04:34:40 -0400
+X-Greylist: delayed 1799 seconds by postgrey-1.27 at vger.kernel.org; Fri, 06 Aug 2021 04:34:40 EDT
+Received: from unknown (HELO lgeamrelo02.lge.com) (156.147.1.126)
+        by 156.147.23.51 with ESMTP; 6 Aug 2021 17:04:23 +0900
+X-Original-SENDERIP: 156.147.1.126
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
+        by 156.147.1.126 with ESMTP; 6 Aug 2021 17:04:23 +0900
+X-Original-SENDERIP: 10.177.222.33
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Fri, 6 Aug 2021 17:03:44 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     torvalds@linux-foundation.org, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, joel@joelfernandes.org,
+        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        bfields@fieldses.org, gregkh@linuxfoundation.org,
+        kernel-team@lge.com
+Subject: [REPORT] Request for reviewing crypto code wrt wait_for_completion()
+Message-ID: <20210806080344.GA5788@X58A-UD3R>
+References: <20210803021611.GA28236@X58A-UD3R>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nllglfksvmzlkdkm"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210805234234.GA1797883@bjorn-Precision-5520>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
+In-Reply-To: <20210803021611.GA28236@X58A-UD3R>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Hello crypto folks,
 
---nllglfksvmzlkdkm
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I developed a tool for tracking waiters and reporting if any of the
+events that the waiters are waiting for would never happen, say, a
+deadlock. Yes, it would look like Lockdep but more inclusive.
 
-Hello Bjorn,
+While I ran the tool(Dept: Dependency Tracker) on v5.4.96, I got some
+reports from the tool. One of them is related to crypto subsystem.
+Because I'm not that familiar with the code, I'd like to ask you guys to
+review the related code.
 
-On Thu, Aug 05, 2021 at 06:42:34PM -0500, Bjorn Helgaas wrote:
-> On Tue, Aug 03, 2021 at 12:01:44PM +0200, Uwe Kleine-K=F6nig wrote:
-> > Hello,
-> >=20
-> > changes since v1 (https://lore.kernel.org/linux-pci/20210729203740.1377=
-045-1-u.kleine-koenig@pengutronix.de):
-> >=20
-> > - New patch to simplify drivers/pci/xen-pcifront.c, spotted and
-> >   suggested by Boris Ostrovsky
-> > - Fix a possible NULL pointer dereference I introduced in xen-pcifront.c
-> > - A few whitespace improvements
-> > - Add a commit log to patch #6 (formerly #5)
-> >=20
-> > I also expanded the audience for patches #4 and #6 to allow affected
-> > people to actually see the changes to their drivers.
-> >=20
-> > Interdiff can be found below.
-> >=20
-> > The idea is still the same: After a few cleanups (#1 - #3) a new macro
-> > is introduced abstracting access to struct pci_dev->driver. All users
-> > are then converted to use this and in the last patch the macro is
-> > changed to make use of struct pci_dev::dev->driver to get rid of the
-> > duplicated tracking.
->=20
-> I love the idea of this series!
+If I understand correctly, it doesn't actually cause deadlock but looks
+like a problematic code. I know you are not used to the format of the
+report from Dept so.. let me summerize the result.
 
-\o/
+The simplified call trace looks like when the problem araised :
 
-> I looked at all the bus_type.probe() methods, it looks like pci_dev is
-> not the only offender here.  At least the following also have a driver
-> pointer in the device struct:
->=20
->   parisc_device.driver
->   acpi_device.driver
->   dio_dev.driver
->   hid_device.driver
->   pci_dev.driver
->   pnp_dev.driver
->   rio_dev.driver
->   zorro_dev.driver
+THREAD A
+--------
+A1 crypto_alg_mod_lookup()
+A2    crypto_probing_notify(CRYPTO_MSG_ALG_REQUEST)
+A3       cryptomgr_schedule_probe()
+A4          kthread_run(cyptomgr_probe) ---> Start THREAD B
 
-Right, when I converted zorro_dev it was pointed out that the code was
-copied from pci and the latter has the same construct. :-)
-See
-https://lore.kernel.org/r/20210730191035.1455248-5-u.kleine-koenig@pengutro=
-nix.de
-for the patch, I don't find where pci was pointed out, maybe it was on
-irc only.
+A5    crypto_larval_wait()
+A6       wait_for_completion_killable_timeout(c) /* waiting for B10 */
 
-> Do you plan to do the same for all of them, or is there some reason
-> why they need the pointer and PCI doesn't?
+THREAD B
+--------
+B1 cryptomgr_probe()
+B2    pkcslpad_create()
+B3       crypto_wait_for_test()
+B4          crypto_probing_notify(CRYPTO_MSG_ALG_REGISTER)
+B5             cryptomgr_schedule_test()
+B6                kthread_run(cyptomgr_test) ---> Start THREAD C
 
-There is a list of cleanup stuff I intend to work on. Considering how
-working on that list only made it longer in the recent past, maybe it
-makes more sense to not work on it :-)
+B7    tmpl->alloc()
+B8    crupto_register_instance()
+B9          wait_for_completion_killable(c) /* waiting for C3 */
+B10   complete_all(c)
 
-> In almost all cases, other buses define a "to_<bus>_driver()"
-> interface.  In fact, PCI already has a to_pci_driver().
->=20
-> This series adds pci_driver_of_dev(), which basically just means we
-> can do this:
->=20
->   pdrv =3D pci_driver_of_dev(pdev);
->=20
-> instead of this:
->=20
->   pdrv =3D to_pci_driver(pdev->dev.driver);
->=20
-> I don't see any other "<bus>_driver_of_dev()" interfaces, so I assume
-> other buses just live with the latter style?  I'd rather not be
-> different and have two ways to get the "struct pci_driver *" unless
-> there's a good reason.
+THREAD C
+--------
+C1 cryptomgr_test()
+C2    crypto_alg_tested()
+C3       complete_all(c)
 
-Among few the busses I already fixed in this regard pci was the first
-that has a considerable amount of usage. So I considered it worth giving
-it a name.
-=20
-> Looking through the places that care about pci_dev.driver (the ones
-> updated by patch 5/6), many of them are ... a little dubious to begin
-> with.  A few need the "struct pci_error_handlers *err_handler"
-> pointer, so that's probably legitimate.  But many just need a name,
-> and should probably be using dev_driver_string() instead.
+---
 
-Yeah, I considered adding a function to get the driver name from a
-pci_dev and a function to get the error handlers. Maybe it's an idea to
-introduce these two and then use to_pci_driver(pdev->dev.driver) for the
-few remaining users? Maybe doing that on top of my current series makes
-sense to have a clean switch from pdev->driver to pdev->dev.driver?!
+For example, in this situation, I think C3 could wake up both A6 and B9
+before THREAD B reaches B10 which is not desired by A6. Say, is it okay
+to wake up A6 with B7 ~ B9 having yet to complete?
 
-Best regards
-Uwe
+Sorry if I misunderstand the code. It looks so complicated to me. Could
+you check if the code is good?
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Just FYI, the below is the report from the tool, Dept, I developed.
 
---nllglfksvmzlkdkm
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Byungchul
 
------BEGIN PGP SIGNATURE-----
+---
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEM2rwACgkQwfwUeK3K
-7AlqBggAh2Z8+ZW+YMYlQQ8AzujRmGYo9gKX26eGdp2jNjZUeOc0CEZwm/GiW4aZ
-9+W1RS3i+O6ToHVYkt9fNEpdUGO3YdBKiMHGWsrkQuwNjm4Yv5Dlx/wRz0dU4vIX
-QQDa5tw6Mow1g0gjZqHvDuwbgKoJyHXzFD115kBaINYN/XqOLST9YvMqxxSsHHsD
-qRmpU59QTxEqHXKIsgABctdVnQBkbixppZH3/6nu+Xh7qkZvczBLpx/C5V1+XeAv
-47LOxaH3wiLQBS/sICKlAFeYcbAyNhwh+nbMxx5i3lG6O6LhaeX46FPMoTG6qiAj
-MaO1mAnwrEO35eTXFBgw4IYh37zS9A==
-=/ZHI
------END PGP SIGNATURE-----
+[   10.520128 ] ===================================================
+[   10.526037 ] Dept: Circular dependency has been detected.
+[   10.531337 ] 5.4.96-242 #1 Tainted: G        W   
+[   10.536375 ] ---------------------------------------------------
+[   10.542280 ] summary
+[   10.544366 ] ---------------------------------------------------
+[   10.550271 ] *** AA DEADLOCK ***
+[   10.550271 ] 
+[   10.554875 ] context A
+[   10.557136 ]     [S] (unknown)(&larval->completion:0)
+[   10.562087 ]     [W] wait_for_completion_killable(&larval->completion:0)
+[   10.568688 ]     [E] complete_all(&larval->completion:0)
+[   10.573898 ] 
+[   10.575377 ] [S]: start of the event context
+[   10.579546 ] [W]: the wait blocked
+[   10.582848 ] [E]: the event not reachable
+[   10.586757 ] ---------------------------------------------------
+[   10.592662 ] context A's detail
+[   10.595703 ] ---------------------------------------------------
+[   10.601608 ] context A
+[   10.603868 ]     [S] (unknown)(&larval->completion:0)
+[   10.608819 ]     [W] wait_for_completion_killable(&larval->completion:0)
+[   10.615419 ]     [E] complete_all(&larval->completion:0)
+[   10.620630 ] 
+[   10.622109 ] [S] (unknown)(&larval->completion:0):
+[   10.626799 ] (N/A)
+[   10.628712 ] 
+[   10.630191 ] [W] wait_for_completion_killable(&larval->completion:0):
+[   10.636537 ] [<ffffffc0104dfc20>] crypto_wait_for_test+0x40/0x80
+[   10.642443 ] stacktrace:
+[   10.644881 ]       wait_for_completion_killable+0x34/0x160
+[   10.650267 ]       crypto_wait_for_test+0x40/0x80
+[   10.654871 ]       crypto_register_instance+0xb0/0xe0
+[   10.659824 ]       akcipher_register_instance+0x30/0x38
+[   10.664950 ]       pkcs1pad_create+0x238/0x2b0
+[   10.669295 ]       cryptomgr_probe+0x40/0xd0
+[   10.673467 ]       kthread+0x150/0x188
+[   10.677118 ]       ret_from_fork+0x10/0x18
+[   10.681114 ] 
+[   10.682592 ] [E] complete_all(&larval->completion:0):
+[   10.687544 ] [<ffffffc0104e8d20>] cryptomgr_probe+0xb0/0xd0
+[   10.693016 ] stacktrace:
+[   10.695452 ]       complete_all+0x30/0x70
+[   10.699362 ]       cryptomgr_probe+0xb0/0xd0
+[   10.703532 ]       kthread+0x150/0x188
+[   10.707181 ]       ret_from_fork+0x10/0x18
+[   10.711177 ] ---------------------------------------------------
+[   10.717083 ] information that might be helpful
+[   10.721426 ] ---------------------------------------------------
+[   10.727334 ] CPU: 0 PID: 1787 Comm: cryptomgr_probe Tainted: G        W
+5.4.96-242 #1
+[   10.735757 ] Hardware name: LG Electronics, DTV SoC LG1213 (AArch64) (DT)
+[   10.742444 ] Call trace:
+[   10.744879 ]  dump_backtrace+0x0/0x148
+[   10.748529 ]  show_stack+0x14/0x20
+[   10.751833 ]  dump_stack+0xd0/0x12c
+[   10.755223 ]  print_circle+0x3b0/0x3f8
+[   10.758873 ]  cb_check_dl+0x54/0x70
+[   10.762262 ]  bfs+0x64/0x1a0
+[   10.765043 ]  add_dep+0x90/0xb8
+[   10.768086 ]  dept_event+0x4c8/0x560
+[   10.771562 ]  complete_all+0x30/0x70
+[   10.775038 ]  cryptomgr_probe+0xb0/0xd0
+[   10.778774 ]  kthread+0x150/0x188
+[   10.781989 ]  ret_from_fork+0x10/0x18
+[   10.786091 ] cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+[   10.792783 ] platform regulatory.0: Direct firmware load for
+regulatory.db failed with error -2
+[   10.796148 ] ALSA device list:
+[   10.801423 ] cfg80211: failed to load regulatory.db
 
---nllglfksvmzlkdkm--
+
