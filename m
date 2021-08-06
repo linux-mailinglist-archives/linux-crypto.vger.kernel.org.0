@@ -2,132 +2,135 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7DF3E27EF
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Aug 2021 11:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5D93E28BD
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Aug 2021 12:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244771AbhHFJ7t (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 6 Aug 2021 05:59:49 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7801 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244700AbhHFJ7t (ORCPT
+        id S245153AbhHFKgg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 6 Aug 2021 06:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245103AbhHFKgf (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:59:49 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gh1Cv4FM6zYlmS;
-        Fri,  6 Aug 2021 17:59:23 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 6 Aug 2021 17:59:31 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 6 Aug 2021
- 17:59:30 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH 2/2] crypto: hisilicon/sec - modify the hardware endian configuration
-Date:   Fri, 6 Aug 2021 17:58:34 +0800
-Message-ID: <1628243914-33224-3-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628243914-33224-1-git-send-email-yekai13@huawei.com>
-References: <1628243914-33224-1-git-send-email-yekai13@huawei.com>
+        Fri, 6 Aug 2021 06:36:35 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3E1C061798;
+        Fri,  6 Aug 2021 03:36:18 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id l19so16041445pjz.0;
+        Fri, 06 Aug 2021 03:36:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KvDsWq0aD9C7qh0g19FSMx9NiSGhRzrfiTYiXVD5DrQ=;
+        b=MXxObmZt4nfxA1erJGVzMqnOkcazWAzBFX5WJDMmNvE3MS6cAmvs0dvfjU3xn03JSx
+         cbZp/3kn4sOISQ7g+gS9A+VMecWeUqBFmKASryFE10839CsGxmgBZuC+2jFuBfUSf8zP
+         WIN1PaRCRIz7t/UeIUYyocC8bWtXuav/ndV/D0VGIYI5LjrYVYQSltvCWwYI4iOMIHgk
+         L7YdQLzqgPpbH3hz+lB7poc8YggmvsjgT2vSp3UBDnC0P1AMfkD+CG8RmRDUvJ9T8dFe
+         xeLcnpvTRlgbcPVTvs/neCkXGWi6unA7fro9NlmHImu6uvXrNUAK/TrkZJLB2UlH63Va
+         G+AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KvDsWq0aD9C7qh0g19FSMx9NiSGhRzrfiTYiXVD5DrQ=;
+        b=udb0e8I57VJW7NvFMUCUWknM4Xj8ziSxBzAPXylQuEQdogiX4XUWMAiIxRxMifGj1z
+         OLy3RhNFdgtjEgxSTEG3J0DNARj7syGN0e8bB00BdE7rs23dnytOmBoulF4QG4ijwH6F
+         hDVa2Bpva4yKG978pYNZYkXEZnN5EobXsAT8BGHYfLNMi7e2C2ghn+HAXWSinlxbA+xX
+         jtLWZZuGNHbRxmeKippcAdCMImATe7pVOijxbwf6iD3E9Ck9DE4m1BnELoAUMAuT0odO
+         v3/lC646wZK9+QyoyL7KwlgA70JerC8KSpFixpZW2m6MUM4X3aBMv4K8KfQmPgF/COwi
+         5i0Q==
+X-Gm-Message-State: AOAM530LrvNa8DimMgFHOgjUytu1GHYqOH1sdiI8C1M0eouf+o+fppLP
+        6i8ZT+Ud2NUI9HBw0qY04CE=
+X-Google-Smtp-Source: ABdhPJxJ2KOgE6CUJCASuhD/shIkShZeJY6pS1EEvW6wJxTZC7itD6HQkcSQ1JzqW6gUAC+aFF3Gcg==
+X-Received: by 2002:a17:90a:940e:: with SMTP id r14mr20097966pjo.41.1628246177736;
+        Fri, 06 Aug 2021 03:36:17 -0700 (PDT)
+Received: from fedora ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
+        by smtp.gmail.com with ESMTPSA id g7sm9477138pfv.66.2021.08.06.03.36.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 03:36:17 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 16:06:11 +0530
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+Subject: Re: [PATCH] crypto: add missing kernel_fpu_end() call
+Message-ID: <YQ0Qm+Xs1g/7Eant@fedora>
+References: <20210730134155.1005358-1-chouhan.shreyansh630@gmail.com>
+ <20210806082320.GA12731@gondor.apana.org.au>
+ <CAMj1kXFnCK5xiuGzxkj6rOP43a7OuA7uUP9-eJqsgb54MmuZPQ@mail.gmail.com>
+ <CAMj1kXEYymiYaMUobuncmyO-vQxHrOByc7wQn4rKK_wdKuLgXQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXEYymiYaMUobuncmyO-vQxHrOByc7wQn4rKK_wdKuLgXQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-When the endian configuration of the hardware is abnormal, it will
-cause the SEC engine is faulty that reports empty message. And it
-will affect the normal function of the hardware. Currently the soft
-configuration method can't restore the faulty device. The endian
-needs to be configured according to the system properties. So fix it.
+Hi,
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec.h      |  5 -----
- drivers/crypto/hisilicon/sec2/sec_main.c | 35 ++++++++++----------------------
- 2 files changed, 11 insertions(+), 29 deletions(-)
+On Fri, Aug 06, 2021 at 11:07:43AM +0200, Ard Biesheuvel wrote:
+> On Fri, 6 Aug 2021 at 11:05, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Fri, 6 Aug 2021 at 10:23, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+> > >
+> > > On Fri, Jul 30, 2021 at 07:11:55PM +0530, Shreyansh Chouhan wrote:
+> > > > xts_crypt() code doesn't call kernel_fpu_end() after calling
+> > > > kernel_fpu_begin() if walk.nbytes is 0. Add a call to kernel_fpu_end()
+> > > > for this case.
+> > > >
+> > > > Reported-by: syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+> > > > Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+> > > > ---
+> > > >  arch/x86/crypto/aesni-intel_glue.c | 3 +++
+> > > >  1 file changed, 3 insertions(+)
+> > >
+> > > Ard?
+> > >
+> > > > diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
+> > > > index 2144e54a6c89..bd55a0cd7bde 100644
+> > > > --- a/arch/x86/crypto/aesni-intel_glue.c
+> > > > +++ b/arch/x86/crypto/aesni-intel_glue.c
+> > > > @@ -894,6 +894,9 @@ static int xts_crypt(struct skcipher_request *req, bool encrypt)
+> > > >                       kernel_fpu_begin();
+> > > >       }
+> > > >
+> > > > +     if (walk.nbytes == 0)
+> > > > +             kernel_fpu_end();
+> > > > +
+> >
+> > Don't we end up calling kernel_fpu_end() twice this way if we do enter
+> > the while() loop at least once?
+> >
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec.h b/drivers/crypto/hisilicon/sec2/sec.h
-index 018415b..d97cf02 100644
---- a/drivers/crypto/hisilicon/sec2/sec.h
-+++ b/drivers/crypto/hisilicon/sec2/sec.h
-@@ -157,11 +157,6 @@ struct sec_ctx {
- 	struct device *dev;
- };
- 
--enum sec_endian {
--	SEC_LE = 0,
--	SEC_32BE,
--	SEC_64BE
--};
- 
- enum sec_debug_file_index {
- 	SEC_CLEAR_ENABLE,
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 8addbd7..f637fc8 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -312,31 +312,20 @@ static const struct pci_device_id sec_dev_ids[] = {
- };
- MODULE_DEVICE_TABLE(pci, sec_dev_ids);
- 
--static u8 sec_get_endian(struct hisi_qm *qm)
-+static void sec_set_endian(struct hisi_qm *qm)
- {
- 	u32 reg;
- 
--	/*
--	 * As for VF, it is a wrong way to get endian setting by
--	 * reading a register of the engine
--	 */
--	if (qm->pdev->is_virtfn) {
--		dev_err_ratelimited(&qm->pdev->dev,
--				    "cannot access a register in VF!\n");
--		return SEC_LE;
--	}
- 	reg = readl_relaxed(qm->io_base + SEC_CONTROL_REG);
--	/* BD little endian mode */
--	if (!(reg & BIT(0)))
--		return SEC_LE;
--
--	/* BD 32-bits big endian mode */
--	else if (!(reg & BIT(1)))
--		return SEC_32BE;
--
--	/* BD 64-bits big endian mode */
--	else
--		return SEC_64BE;
-+	reg &= ~(BIT(1) | BIT(0));
-+#ifndef CONFIG_64BIT
-+	reg |= BIT(1);
-+#endif
-+
-+#ifndef CONFIG_CPU_LITTLE_ENDIAN
-+	reg |= BIT(0);
-+#endif
-+	writel_relaxed(reg, qm->io_base + SEC_CONTROL_REG);
- }
- 
- static void sec_open_sva_prefetch(struct hisi_qm *qm)
-@@ -429,9 +418,7 @@ static int sec_engine_init(struct hisi_qm *qm)
- 		       qm->io_base + SEC_BD_ERR_CHK_EN_REG3);
- 
- 	/* config endian */
--	reg = readl_relaxed(qm->io_base + SEC_CONTROL_REG);
--	reg |= sec_get_endian(qm);
--	writel_relaxed(reg, qm->io_base + SEC_CONTROL_REG);
-+	sec_set_endian(qm);
- 
- 	return 0;
- }
--- 
-2.7.4
+Oh ha, we do. I missed that.
 
+> 
+> How about the below instead, does that work?
+> 
+
+This should work. I will resend the updated patch.
+
+> --- a/arch/x86/crypto/aesni-intel_glue.c
+> +++ b/arch/x86/crypto/aesni-intel_glue.c
+> @@ -849,7 +849,7 @@ static int xts_crypt(struct skcipher_request *req,
+> bool encrypt)
+>                 return -EINVAL;
+> 
+>         err = skcipher_walk_virt(&walk, req, false);
+> -       if (err)
+> +       if (err || !walk.nbytes)
+>                 return err;
+> 
+>         if (unlikely(tail > 0 && walk.nbytes < walk.total)) {
+
+Thanks a lot for the review.
+
+Regards,
+Shreyansh Chouhan
