@@ -2,66 +2,59 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C8A3E349D
-	for <lists+linux-crypto@lfdr.de>; Sat,  7 Aug 2021 12:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4436A3E34CC
+	for <lists+linux-crypto@lfdr.de>; Sat,  7 Aug 2021 12:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbhHGKJh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 7 Aug 2021 06:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231814AbhHGKJ0 (ORCPT
+        id S231846AbhHGKgg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 7 Aug 2021 06:36:36 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16991 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231687AbhHGKgf (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 7 Aug 2021 06:09:26 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D612C0613CF
-        for <linux-crypto@vger.kernel.org>; Sat,  7 Aug 2021 03:09:06 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id c6so4190110qtv.5
-        for <linux-crypto@vger.kernel.org>; Sat, 07 Aug 2021 03:09:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=aiYv+ghkj1wcr5KlnL1ML71lfnXzfmxAeT1E5sMi1Qw=;
-        b=Qn7f/ZGqtmvwGXQRciZWri+KO/NsgF3CPH0EwL+RE5kFwMrrWlCCcuJJc15QVRBmdh
-         Ed+21E8DokJUWCU2MBOQCQSKFKUHp6ECVDQ1el7J0tbrfPl8P/WW5gR6WZtczafilAxD
-         c0V0t1Zmfe/l3aj2IdKLTV9AkeA0ybUdpWt+fig0Uofea2CDqGA7SXpP8nkjz/Kccmtm
-         soKTugSIqa99AFZlqXwZvQUyG7XFCsvVut/lDmr6U2gssIVFfAhKqU2FQX4XcMSUD3D8
-         lXbP72nnj26QJR8IoNuXUEbAP+6SLmrWHO81Ts4ApLFeTj0nqwv2A3t2ClAeQDyZ5TIk
-         qeRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=aiYv+ghkj1wcr5KlnL1ML71lfnXzfmxAeT1E5sMi1Qw=;
-        b=OxJKOAb96rYoixcfZojRLgtGe43Wf/Xn3YVJeAupPuudCSXs0+YaPY6y6CpsE/eRkN
-         9/vorE2LcxLjDhEXoXsrIi4tJ6M29cmXL5M1KHu/qu9IDYQ1zurzilZbusigGS9c2cxF
-         aYH1CIJLBB45QUiUU/ydvltOyItEhMbTPiLkgs0ZpyNlmWufjVEuQuNjoAuDEqtYUraR
-         xjDo21Hjziw+ciD9xZGl1BFx7c0n5KfMMxqG6Uk0vrMTmoHdDXHn8bVftJar1lKlZ630
-         VDrOPdVRGBvN1AGfAxpxNdW6T27VJ/cVOVhc/RFP90oX6g/cPpjvmH/vgUsqcfaTZpSB
-         2i9A==
-X-Gm-Message-State: AOAM533xJGruPySfmO52QCPP51ntE2Tn9c5pPhRTwemh16TBdfTP95Tp
-        hEuuwpzujgsNI7ag2E85HAlDXqfq8/YRtl7ncaE=
-X-Google-Smtp-Source: ABdhPJwb7x3UIr1pPG0IvC2ctQ/MoS4MPC7G5vQAqYl0moU/AdS6laUFZ5J0Y4ztxsgXgXT9rwncXxZ+62NN1GshMHY=
-X-Received: by 2002:ac8:6655:: with SMTP id j21mr12505024qtp.57.1628330945515;
- Sat, 07 Aug 2021 03:09:05 -0700 (PDT)
+        Sat, 7 Aug 2021 06:36:35 -0400
+Received: from dggeme768-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ghdvs1M17zZxjW;
+        Sat,  7 Aug 2021 18:32:41 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ dggeme768-chm.china.huawei.com (10.3.19.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 7 Aug 2021 18:36:17 +0800
+From:   Weili Qian <qianweili@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>, <liulongfang@huawei.com>
+Subject: [PATCH 0/5] crypto: hisilicon - support runtime PM for accelerator devices
+Date:   Sat, 7 Aug 2021 18:32:31 +0800
+Message-ID: <1628332356-33278-1-git-send-email-qianweili@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Received: by 2002:a05:622a:112:0:0:0:0 with HTTP; Sat, 7 Aug 2021 03:09:05
- -0700 (PDT)
-Reply-To: ssaar0101@gmail.com
-From:   Medinat Sherrif <do348911@gmail.com>
-Date:   Sat, 7 Aug 2021 10:09:05 +0000
-Message-ID: <CA+WgU6qbkcYPx0r5NPqVUCWv6G0EB2ZsTNhT69YmSSECjt58uQ@mail.gmail.com>
-Subject: Good morning,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme768-chm.china.huawei.com (10.3.19.114)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Greetings from here.
+Kunpeng930 accelerator devices support runtime power management, this
+patchset enables runtime PM for accelerator devices.
 
-My name is Medinat. M  Sherrif, I have something very confidential to
-discuss with you in my next mail. Reply to me with your private email
-address for confidential discussion.
+Weili Qian (5):
+  crypto: hisilicon - using 'debugfs_create_file' instead of
+    'debugfs_create_regset32'
+  crypto: hisilicon - add runtime PM ops
+  crypto: hisilicon - support runtime PM for accelerator device
+  crypto: hisilicon - change parameter passing of debugfs function
+  crypto: hisilicon - check _PS0 and _PR0 method
 
-Best Regards.
-Medinat. M  Sherrif,
+ drivers/crypto/hisilicon/hpre/hpre_main.c |  60 ++++-
+ drivers/crypto/hisilicon/qm.c             | 430 +++++++++++++++++++++++++-----
+ drivers/crypto/hisilicon/qm.h             |   8 +
+ drivers/crypto/hisilicon/sec2/sec_main.c  |  58 +++-
+ drivers/crypto/hisilicon/zip/zip_main.c   |  57 +++-
+ 5 files changed, 521 insertions(+), 92 deletions(-)
+
+-- 
+2.8.1
+
