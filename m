@@ -2,103 +2,53 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCBF3E363E
-	for <lists+linux-crypto@lfdr.de>; Sat,  7 Aug 2021 18:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32213E37B9
+	for <lists+linux-crypto@lfdr.de>; Sun,  8 Aug 2021 02:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbhHGQB6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 7 Aug 2021 12:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhHGQB6 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 7 Aug 2021 12:01:58 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5ADC0613CF
-        for <linux-crypto@vger.kernel.org>; Sat,  7 Aug 2021 09:01:39 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id a201so21012629ybg.12
-        for <linux-crypto@vger.kernel.org>; Sat, 07 Aug 2021 09:01:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=e4pW9vKIOzMq5Gn3WkxjAuwkMIg/8cleIxXl8R08Qj4=;
-        b=UItQ5mNNI7V27pVl83kaHBYx6k7ttzcFfzsoN9H0XI2oxxj1nfrV6COvdpn5jdy9Dn
-         NRmPcud86sdLZdI5fXP+hxvjDzL97LN9Tb7p2NEYpvtTWrkkcZZolpudB8yciMbzmisI
-         Ae2r/+Unqrdh+aYuGFIbMHI+6mxUtRDa8IlBXk47d3SqdgsJt6E/D7AJB1f7hp9Ha6+w
-         Hv6wZwGfapjvO76p1ifeQSlQT4z0lVstKi8BBZyq38Zn5WhM3gmq6bydybjJJUjn7DQh
-         4Os0FnLeMTwhzLe4Rm2YpoCryr9l1FzsUnLoJXif550ugxDykSFPYIddV8YzRyo1KiGi
-         R8/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=e4pW9vKIOzMq5Gn3WkxjAuwkMIg/8cleIxXl8R08Qj4=;
-        b=UZPIVfwtItY2IGIc+6KaAcOUn4luNiSSE7qrtmohMSASdf+Dx+dFkShtlQZAJP5ncm
-         v3NjYmJz6uAt84+HHMTQwRmHKyGoYGWlvCQSwKADDmsF0I5UVeBTIigQUXObYL8a5Kwg
-         KU6lGcCTmCaR+IiPjU0w39sru+ao1CaTY4INizlDMl8gfvaV7LqBzQ2GqgcP9TYfVHvV
-         Lzyshx1x7j6NuOWK5Pnu8+z7Ddfy7Z++Nr0grw03Jk17heJ/mmyHsbcXE7UjMU3h7l/p
-         zU6c13HnQ59Ah+0l2GqMv5Ye1BdL/k10gReka+RzH9xwtzOn6xADEiar1u03WBxCZ/Q2
-         ID6w==
-X-Gm-Message-State: AOAM533bxz4KG+xdjC/jq1lCGQILbsZrNJy/6W464oKprpcvCBm1ynH4
-        yCX6zCk9hxiacbeDVcvR/3+zyMqLiLWTmoKBgwY=
-X-Google-Smtp-Source: ABdhPJxDa8pXU0hZwA++1+PoYyGF+2Rxcv26bQIHFyMgqoNCi/I7cxQmHuyJVD8oYagADhZKaJRv5fZ1otTlxSH7cnc=
-X-Received: by 2002:a25:678a:: with SMTP id b132mr10623907ybc.88.1628352098318;
- Sat, 07 Aug 2021 09:01:38 -0700 (PDT)
+        id S229947AbhHHA1r convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Sat, 7 Aug 2021 20:27:47 -0400
+Received: from mail.maynitek.ru ([94.137.227.4]:60970 "EHLO mail.maynitek.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229842AbhHHA1r (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 7 Aug 2021 20:27:47 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.maynitek.ru (Postfix) with ESMTP id C233A1580D035;
+        Sun,  8 Aug 2021 01:56:51 +0500 (+05)
+Received: from mail.maynitek.ru ([127.0.0.1])
+        by localhost (mail.maynitek.ru [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id CvqQSD9e6XHD; Sun,  8 Aug 2021 01:56:51 +0500 (+05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.maynitek.ru (Postfix) with ESMTP id 5F8E61580CA19;
+        Sun,  8 Aug 2021 01:56:50 +0500 (+05)
+X-Virus-Scanned: amavisd-new at maynitek.ru
+Received: from mail.maynitek.ru ([127.0.0.1])
+        by localhost (mail.maynitek.ru [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 2E2UGIjJ5q-u; Sun,  8 Aug 2021 01:56:50 +0500 (+05)
+Received: from [192.168.1.3] (unknown [91.132.136.30])
+        by mail.maynitek.ru (Postfix) with ESMTPSA id 0305C1580A945;
+        Sun,  8 Aug 2021 01:56:42 +0500 (+05)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Received: by 2002:a05:7108:4092:0:0:0:0 with HTTP; Sat, 7 Aug 2021 09:01:37
- -0700 (PDT)
-From:   phot akachi <photakachi@gmail.com>
-Date:   Sat, 7 Aug 2021 09:01:37 -0700
-Message-ID: <CAKTgzwyuC3qHPgrHPhLc2GDYg1MSNnZtqaBURwX+eR+8RG5c0A@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Spende.
+To:     Recipients <deployer@maynitek.ru>
+From:   deployer@maynitek.ru
+Date:   Sat, 07 Aug 2021 23:56:19 +0300
+Reply-To: rinatakhmeto@gmail.com
+Message-Id: <20210807205643.0305C1580A945@mail.maynitek.ru>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-0JLQvdC40LzQsNC90LjQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsDQoNCtCvINCR0LDRgC4gdWNo
-ZW5uYSBpbG9iaSwg0LrQsNC6INC00LXQu9CwLCDQvdCw0LTQtdGO0YHRjCDRgyDRgtC10LHRjyDQ
-stGB0LUg0YXQvtGA0L7RiNC+INC4INC30LTQvtGA0L7QstC+Pw0K0KHQvtC+0LHRidCw0LXQvCDQ
-stCw0LwsINGH0YLQviDRjyDRg9GB0L/QtdGI0L3QviDQt9Cw0LLQtdGA0YjQuNC7INGB0LTQtdC7
-0LrRgyDRgSDQv9C+0LzQvtGJ0YzRjiDQvdC+0LLQvtCz0L4g0L/QsNGA0YLQvdC10YDQsA0K0LjQ
-tyDQktC10L3QtdGB0YPRjdC70YssINC4INGC0LXQv9C10YDRjCDRgdGA0LXQtNGB0YLQstCwINCx
-0YvQu9C4INC/0LXRgNC10LLQtdC00LXQvdGLINCyINCS0LXQvdC10YHRg9GN0LvRgyDQvdCwDQrQ
-sdCw0L3QutC+0LLRgdC60LjQuSDRgdGH0LXRgiDQvdC+0LLQvtCz0L4g0L/QsNGA0YLQvdC10YDQ
-sC4NCg0K0KLQtdC8INCy0YDQtdC80LXQvdC10Lwg0Y8g0YDQtdGI0LjQuyDQutC+0LzQv9C10L3R
-gdC40YDQvtCy0LDRgtGMINCy0LDQvCDRgdGD0LzQvNGDINCyIDM1MCAwMDAg0LTQvtC70LvQsNGA
-0L7QsiDQodCo0JANCijRgtGA0Lgg0YHQvtGC0L3QuCDQv9GP0YLRjNC00LXRgdGP0YIg0YLRi9GB
-0Y/RhyDQtNC+0LvQu9Cw0YDQvtCyINCh0KjQkCkg0LjQty3Qt9CwINCy0LDRiNC40YUg0L/RgNC+
-0YjQu9GL0YUg0YPRgdC40LvQuNC5LA0K0YXQvtGC0Y8g0LLRiyDQvNC10L3RjyDRgNCw0LfQvtGH
-0LDRgNC+0LLQsNC70LguINCd0L4sINGC0LXQvCDQvdC1INC80LXQvdC10LUsINGPINC+0YfQtdC9
-0Ywg0YDQsNC0INGD0YHQv9C10YjQvdC+0LzRgw0K0LfQsNCy0LXRgNGI0LXQvdC40Y4g0YLRgNCw
-0L3Qt9Cw0LrRhtC40Lgg0LHQtdC3INC60LDQutC40YUt0LvQuNCx0L4g0L/RgNC+0LHQu9C10Lws
-INC4INC/0L7RjdGC0L7QvNGDINGPINGA0LXRiNC40LsNCtC60L7QvNC/0LXQvdGB0LjRgNC+0LLQ
-sNGC0Ywg0LLQsNC8INGB0YPQvNC80YMg0LIg0YDQsNC30LzQtdGA0LUgMzUwIDAwMCwwMCDQtNC+
-0LvQu9Cw0YDQvtCyINCh0KjQkCwg0YfRgtC+0LHRiyDQstGLDQrRgNCw0LfQtNC10LvQuNC70Lgg
-0YHQviDQvNC90L7QuSDRgNCw0LTQvtGB0YLRjC4NCg0K0K8g0YHQvtCy0LXRgtGD0Y4g0LLQsNC8
-INC+0LHRgNCw0YLQuNGC0YzRgdGPINC6INC80L7QtdC80YMg0YHQtdC60YDQtdGC0LDRgNGOINC3
-0LAg0LHQsNC90LrQvtC80LDRgtC90L7QuSDQutCw0YDRgtC+0Lkg0L3QsA0KMzUwIDAwMCDQtNC+
-0LvQu9Cw0YDQvtCyINCh0KjQkCwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQ
-u9GPINCy0LDRgS4g0KHQstGP0LbQuNGC0LXRgdGMINGBINC90LjQvA0K0YHQtdC50YfQsNGBINCx
-0LXQtyDQv9GA0L7QvNC10LTQu9C10L3QuNGPLg0KDQrQndCw0LfQstCw0L3QuNC1OiDQsdGA0LXQ
-vdC00Lgg0YHQvtC70L7QvNC+0L0NCg0K0K3Qu9C10LrRgtGA0L7QvdC90LDRjyDQv9C+0YfRgtCw
-OiBzb2xvbW9uYnJhbmR5Zml2ZW9uZUBnbWFpbC5jb20NCg0K0KPQsdC10LTQuNGC0LXQu9GM0L3Q
-viDQv9C+0LTRgtCy0LXRgNC00LjRgtC1INC10LzRgyDRgdC70LXQtNGD0Y7RidGD0Y4g0LjQvdGE
-0L7RgNC80LDRhtC40Y46DQoNCtCS0LDRiNC1INC/0L7Qu9C90L7QtSDQuNC80Y9fX19fX19fX19f
-X19fX19fX19fX19fX19fDQrQktCw0Ygg0LDQtNGA0LXRgdGBX19fX19fX19fX19fX19fX19fX19f
-X19fX18NCtCi0LLQvtGPINGB0YLRgNCw0L3QsF9fX19fX19fX19fX19fX19fX19fX19fX19fXw0K
-0KLQstC+0Lkg0LLQvtC30YDQsNGB0YJfX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCS
-0LDRiCDRgNC+0LQg0LfQsNC90Y/RgtC40LlfX19fX19fX19fX19fX19fX19fX19fX18NCtCS0LDR
-iCDQvdC+0LzQtdGAINC80L7QsdC40LvRjNC90L7Qs9C+INGC0LXQu9C10YTQvtC90LAgX19fX19f
-X19fX19fX19fX19fX19fXw0KDQrQntCx0YDQsNGC0LjRgtC1INCy0L3QuNC80LDQvdC40LU6INC1
-0YHQu9C4INCy0Ysg0L3QtSDQvtGC0L/RgNCw0LLQuNC70Lgg0LXQvNGDINC/0L7Qu9C90YPRjiDQ
-uNC90YTQvtGA0LzQsNGG0LjRjiwg0L7QvSDQvdC1DQrQstGL0LTQsNGB0YIg0LLQsNC8INC60LDR
-gNGC0YMg0LHQsNC90LrQvtC80LDRgtCwLCDQv9C+0YLQvtC80YMg0YfRgtC+INC+0L0g0LTQvtC7
-0LbQtdC9INCx0YvRgtGMINGD0LLQtdGA0LXQvSwg0YfRgtC+INGN0YLQvg0K0LLRiy4g0J/QvtC/
-0YDQvtGB0LjRgtC1INC10LPQviDQstGL0YHQu9Cw0YLRjCDQstCw0Lwg0LrQsNGA0YLRgyDQsdCw
-0L3QutC+0LzQsNGC0LAg0L3QsCDQvtCx0YnRg9GOINGB0YPQvNC80YMgKDM1MCAwMDANCtC00L7Q
-u9C70LDRgNC+0LIg0KHQqNCQKSwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQ
-u9GPINCy0LDRgS4NCg0K0KEg0YPQstCw0LbQtdC90LjQtdC8LA0KDQrQky3QvSDRg9GH0LXQvdC9
-0LAg0LjQu9C+0LHQuA0K
+Ich, Rinat Akhmetov, bin ein ukrainischer Milliardär, Oligarch und Gründer und Präsident von System Capital Management in der Ukraine (Europa). Sie können über mich lesen auf:
+
+https://en.wikipedia.org/wiki/Rinat_Akhmetov
+
+Ich beabsichtige, Ihnen einen Teil (Viertel) meines Nettovermögens von jeweils 1,500.000 EURO an 4 Personen weltweit im Rahmen unseres Wohltätigkeitsprojekts zu geben, das ich überwiesen habe. Wenn Sie meine E-Mail erhalten haben, senden Sie uns bitte Ihre Daten so dass wir unsere Bank anweisen, die Überweisung der
+
+1,500.000 EURO zu finanzieren, in der Hoffnung, dass es auch Ihnen und anderen hilft.
+
+E-Mail zur Bestätigung unten.
+
+E-Mail oder Antwort an:rinatakhmeto@gmail.com
