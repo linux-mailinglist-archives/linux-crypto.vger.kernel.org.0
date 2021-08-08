@@ -2,68 +2,69 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9EA3E3CAF
-	for <lists+linux-crypto@lfdr.de>; Sun,  8 Aug 2021 22:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6E03E3CCC
+	for <lists+linux-crypto@lfdr.de>; Sun,  8 Aug 2021 22:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbhHHUXS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 8 Aug 2021 16:23:18 -0400
-Received: from mail.zx2c4.com ([104.131.123.232]:40638 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229977AbhHHUXS (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 8 Aug 2021 16:23:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1628454176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hwMXHfWfY1HwtKLFV1C9p+LNgMMZXcsO9o0YDBO5lpY=;
-        b=A0sw1zzmJnofdfzUawTVUJ/IciosRPm+uLSnUwvRtxnt3LLTFNSDU3h+vGfe5Ndi/FowLf
-        LjS9JXZosImxK0b2413SmCNhwokBiJNYwudSG+/oplPjozb+FLIT20ujRPfGod4q0ap87N
-        uNReM6HlnDnqYV9jeL/fJoBYqMuXSu4=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 413f59e3 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Sun, 8 Aug 2021 20:22:56 +0000 (UTC)
-Received: by mail-yb1-f176.google.com with SMTP id j77so25667860ybj.3;
-        Sun, 08 Aug 2021 13:22:54 -0700 (PDT)
-X-Gm-Message-State: AOAM5332yhvrWNGM+YGDIcl4dBrbdrK0sSnxkoM53+owtMaNYws/zSI4
-        Yr5NWkzFijiJX8WDw/qU6Ifj/Fhgv6GW0P0qA9Q=
-X-Google-Smtp-Source: ABdhPJwAQlzVFpIsrq+ZqLHe2FFAW/bpSKn/srqbL9Rcr2xkwEBPFudnUGdpUeYlE2UfYEgtmwNjOzQmNPZpBk7bZwo=
-X-Received: by 2002:a25:8445:: with SMTP id r5mr28369650ybm.20.1628454173366;
- Sun, 08 Aug 2021 13:22:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210711223148.5250-1-rdunlap@infradead.org> <20210711223148.5250-7-rdunlap@infradead.org>
-In-Reply-To: <20210711223148.5250-7-rdunlap@infradead.org>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Sun, 8 Aug 2021 22:22:42 +0200
-X-Gmail-Original-Message-ID: <CAHmME9pqLEmNKu1gZDsvTbukzqv8O2kCp6ndQROTu9RzcPnrVA@mail.gmail.com>
-Message-ID: <CAHmME9pqLEmNKu1gZDsvTbukzqv8O2kCp6ndQROTu9RzcPnrVA@mail.gmail.com>
-Subject: Re: [PATCH 6/6 v2] wireguard: main: rename 'mod_init' & 'mod_exit'
- functions to be module-specific
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andres Salomon <dilinger@queued.net>,
-        linux-geode@lists.infradead.org, Matt Mackall <mpm@selenic.com>,
+        id S231521AbhHHUxH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 8 Aug 2021 16:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230201AbhHHUwz (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 8 Aug 2021 16:52:55 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1005FC061760;
+        Sun,  8 Aug 2021 13:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=obVVKT7zJZtqd8jm+BSJkYIVZxA7NA30OpaREitSbX0=; b=iYqRiOLMg7Dxg4Gbg702A8T3Mc
+        51ulKVmjipVAWk/AMjNRdz86/OIiDv3Rj3Ni9oxGsCjxk4xnb/vI1MP0xDcbvnw4I9QLSKGANGff/
+        eTuG529Bv/qdLtLAPd1TfdNlRzvLXA1AEuPGRZpsD2JrxxqQx1/Wm9QqxXYN1QRQVT1XvyJbQnj8L
+        BmGE4iCdd4Q9KVoW2/oJL0ProDr5b5AS/K3NwJx1yABoUgjsi/LjxfpqxkyMJNIO2mnbmZtOmo3WM
+        fhyzpAt684Yy63V+e73jcTenoqLioOghOgN9N8X2MlOR7FsDSFLu8DP4vMNZ6xn45I6JvjgVOKncz
+        xrMRlEMQ==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mCpmc-00GUaC-E3; Sun, 08 Aug 2021 20:52:34 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Christian Gromm <christian.gromm@microchip.com>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Netdev <netdev@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>, linux-x25@vger.kernel.org,
-        WireGuard mailing list <wireguard@lists.zx2c4.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-crypto@vger.kernel.org
+Subject: [PATCH] crypto: wp512: correct a non-kernel-doc comment
+Date:   Sun,  8 Aug 2021 13:52:33 -0700
+Message-Id: <20210808205233.21662-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Randy,
+Don't use "/**" to begin a comment that is not kernel-doc notation.
 
-Thanks, I've applied this to the wireguard stable tree, and it'll be
-sent off to netdev during the next push there.
+crypto/wp512.c:779: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ * The core Whirlpool transform.
 
-Regards,
-Jason
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: linux-crypto@vger.kernel.org
+---
+ crypto/wp512.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-next-20210806.orig/crypto/wp512.c
++++ linux-next-20210806/crypto/wp512.c
+@@ -775,7 +775,7 @@ static const u64 rc[WHIRLPOOL_ROUNDS] =
+ 	0xca2dbf07ad5a8333ULL,
+ };
+ 
+-/**
++/*
+  * The core Whirlpool transform.
+  */
+ 
