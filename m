@@ -2,114 +2,136 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26393E5926
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Aug 2021 13:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDDA3E5A32
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Aug 2021 14:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbhHJLdU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 10 Aug 2021 07:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhHJLdU (ORCPT
+        id S239115AbhHJMnQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 10 Aug 2021 08:43:16 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40758 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240713AbhHJMnP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 10 Aug 2021 07:33:20 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FB0C0613D3;
-        Tue, 10 Aug 2021 04:32:58 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d650032ff4b0dbb793dda.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6500:32ff:4b0d:bb79:3dda])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 124861EC0345;
-        Tue, 10 Aug 2021 13:32:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1628595170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=R0Bn+dXKzaBou1+W8ZeOwhmfqcSDNHnGnKGMW8DU+1o=;
-        b=Flm+45n8y3Gtv+plIrS/FRcndJKdE24N1BwdLlt+khb4sM4nPfiJaI8pTzCJCrQgE26phx
-        D+cVO7QxwpUFbuhBxXejG6qZ3AkJlIiTSvMrYvQRzKtD5dDIiK8EbnSKyeoCVsbX6EW2c8
-        c81rM3/neP7P3s/3IznKD+Dekv/zL8o=
-Date:   Tue, 10 Aug 2021 13:33:34 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part1 RFC v4 05/36] x86/sev: Define the Linux specific
- guest termination reasons
-Message-ID: <YRJkDhcbUi9xQemM@zn.tnic>
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-6-brijesh.singh@amd.com>
+        Tue, 10 Aug 2021 08:43:15 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1C0562205B;
+        Tue, 10 Aug 2021 12:42:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628599372; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=7TVDZAujBf7sFXgpvFDzO1aGEdIfIwzMjsRhQOMUQwo=;
+        b=eH5whLwpBBtkeVGA5erzBsS4CVSDqYbCLEhgMQ1QThRwz+h17KYCkOBQyc7pr/AclHaNfz
+        xqwyHKpqLwRWky7gsxXByFojp7xUC+MZJ5OIezyY0I2oDKNEln1SP4n9iTagR79cxsrYJ8
+        rXZ9fHg91MMKcUKSsu0+f/GWQoiri+w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628599372;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=7TVDZAujBf7sFXgpvFDzO1aGEdIfIwzMjsRhQOMUQwo=;
+        b=eAC0vzIta0tLf0R2qApvcnMGvTYMa5/NnAC4UbEdBOLdzGJV4i7ywFusl/2ocQgo/W2Xfs
+        d97U/KD0xEXsVWDA==
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id 9B006A3B8C;
+        Tue, 10 Aug 2021 12:42:50 +0000 (UTC)
+Received: by adalid.arch.suse.de (Postfix, from userid 16045)
+        id 50C32518C540; Tue, 10 Aug 2021 14:42:50 +0200 (CEST)
+From:   Hannes Reinecke <hare@suse.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <keith.busch@wdc.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-nvme@lists.infradead.org, linux-crypto@vger.kernel.org,
+        Hannes Reinecke <hare@suse.de>
+Subject: [PATCHv2 00/13] nvme: In-band authentication support
+Date:   Tue, 10 Aug 2021 14:42:17 +0200
+Message-Id: <20210810124230.12161-1-hare@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210707181506.30489-6-brijesh.singh@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 01:14:35PM -0500, Brijesh Singh wrote:
-> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
-> index 23929a3010df..e75e29c05f59 100644
-> --- a/arch/x86/include/asm/sev-common.h
-> +++ b/arch/x86/include/asm/sev-common.h
-> @@ -63,9 +63,17 @@
->  	(((((u64)reason_set) &  GHCB_MSR_TERM_REASON_SET_MASK) << GHCB_MSR_TERM_REASON_SET_POS) | \
->  	((((u64)reason_val) & GHCB_MSR_TERM_REASON_MASK) << GHCB_MSR_TERM_REASON_POS))
->  
-> +/* Error code from reason set 0 */
+Hi all,
 
-... Error codes...
+recent updates to the NVMe spec have added definitions for in-band
+authentication, and seeing that it provides some real benefit
+especially for NVMe-TCP here's an attempt to implement it.
 
-> +#define SEV_TERM_SET_GEN		0
->  #define GHCB_SEV_ES_GEN_REQ		0
->  #define GHCB_SEV_ES_PROT_UNSUPPORTED	1
->  
->  #define GHCB_RESP_CODE(v)		((v) & GHCB_MSR_INFO_MASK)
->  
-> +/* Linux specific reason codes (used with reason set 1) */
+Tricky bit here is that the specification orients itself on TLS 1.3,
+but supports only the FFDHE groups. Which of course the kernel doesn't
+support. I've been able to come up with a patch for this, but as this
+is my first attempt to fix anything in the crypto area I would invite
+people more familiar with these matters to have a look.
 
-... Linux-specific ...
+Also note that this is just for in-band authentication. Secure
+concatenation (ie starting TLS with the negotiated parameters) is not
+implemented; one would need to update the kernel TLS implementation
+for this, which at this time is beyond scope.
 
-> +#define SEV_TERM_SET_LINUX		1
+As usual, comments and reviews are welcome.
 
-GHCB doc says:
+Changes to the original submission:
+- Included reviews from Vladislav
+- Included reviews from Sagi
+- Implemented re-authentication support
+- Fixed up key handling
 
-"This document defines and owns reason code set 0x0"
+Hannes Reinecke (13):
+  crypto: add crypto_has_shash()
+  crypto: add crypto_has_kpp()
+  crypto/ffdhe: Finite Field DH Ephemeral Parameters
+  lib/base64: RFC4648-compliant base64 encoding
+  nvme: add definitions for NVMe In-Band authentication
+  nvme-fabrics: decode 'authentication required' connect error
+  nvme: Implement In-Band authentication
+  nvme-auth: Diffie-Hellman key exchange support
+  nvmet: Parse fabrics commands on all queues
+  nvmet: Implement basic In-Band Authentication
+  nvmet-auth: Diffie-Hellman key exchange support
+  nvmet-auth: expire authentication sessions
+  nvme: add non-standard ECDH and curve25517 algorithms
 
-Should it also say, reason code set 1 is allocated for Linux guest use?
-I don't see why not...
-
-Tom?
-
-> +#define GHCB_TERM_REGISTER		0	/* GHCB GPA registration failure */
-> +#define GHCB_TERM_PSC			1	/* Page State Change failure */
-> +#define GHCB_TERM_PVALIDATE		2	/* Pvalidate failure */
-> +
->  #endif
+ crypto/Kconfig                         |    8 +
+ crypto/Makefile                        |    1 +
+ crypto/ffdhe_helper.c                  |  880 ++++++++++++++
+ crypto/kpp.c                           |    6 +
+ crypto/shash.c                         |    6 +
+ drivers/nvme/host/Kconfig              |   12 +
+ drivers/nvme/host/Makefile             |    1 +
+ drivers/nvme/host/auth.c               | 1470 ++++++++++++++++++++++++
+ drivers/nvme/host/auth.h               |   33 +
+ drivers/nvme/host/core.c               |   79 +-
+ drivers/nvme/host/fabrics.c            |   77 +-
+ drivers/nvme/host/fabrics.h            |    6 +
+ drivers/nvme/host/nvme.h               |   30 +
+ drivers/nvme/host/trace.c              |   32 +
+ drivers/nvme/target/Kconfig            |   10 +
+ drivers/nvme/target/Makefile           |    1 +
+ drivers/nvme/target/admin-cmd.c        |    4 +
+ drivers/nvme/target/auth.c             |  442 +++++++
+ drivers/nvme/target/configfs.c         |  102 +-
+ drivers/nvme/target/core.c             |   10 +
+ drivers/nvme/target/fabrics-cmd-auth.c |  506 ++++++++
+ drivers/nvme/target/fabrics-cmd.c      |   30 +-
+ drivers/nvme/target/nvmet.h            |   70 ++
+ include/crypto/ffdhe.h                 |   24 +
+ include/crypto/hash.h                  |    2 +
+ include/crypto/kpp.h                   |    2 +
+ include/linux/base64.h                 |   16 +
+ include/linux/nvme.h                   |  188 ++-
+ lib/Makefile                           |    2 +-
+ lib/base64.c                           |  115 ++
+ 30 files changed, 4154 insertions(+), 11 deletions(-)
+ create mode 100644 crypto/ffdhe_helper.c
+ create mode 100644 drivers/nvme/host/auth.c
+ create mode 100644 drivers/nvme/host/auth.h
+ create mode 100644 drivers/nvme/target/auth.c
+ create mode 100644 drivers/nvme/target/fabrics-cmd-auth.c
+ create mode 100644 include/crypto/ffdhe.h
+ create mode 100644 include/linux/base64.h
+ create mode 100644 lib/base64.c
 
 -- 
-Regards/Gruss,
-    Boris.
+2.29.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
