@@ -2,85 +2,83 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DFB3E5904
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Aug 2021 13:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9A53E591B
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Aug 2021 13:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237665AbhHJLYz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 10 Aug 2021 07:24:55 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:43204 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229967AbhHJLYy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 10 Aug 2021 07:24:54 -0400
-Received: from zn.tnic (p200300ec2f0d6500ceb5d19a4916b1c0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6500:ceb5:d19a:4916:b1c0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9716D1EC0345;
-        Tue, 10 Aug 2021 13:24:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1628594662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6S+ETniR7WhqqlO2dSqQJM2eqSUaUqBNPhhFnNKJ9cU=;
-        b=dFA4QAN1+pvTGtiXZZkPLc/N+UbZ8l9GSpS+VKA6mjulGQJwNAT6u/fAFFB/sOH7It96ik
-        uTbTx3CIBStUSXy0J8iJjFs7wlCyH/RcNhXfcaD/Jjx8Ri8OUH1RlBOLv2pilm5/kpzu7X
-        /vUxoD3TXAgx8B/iAQHICkq8PvYBdN4=
-Date:   Tue, 10 Aug 2021 13:25:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part1 RFC v4 04/36] x86/mm: Add sev_feature_enabled()
- helper
-Message-ID: <YRJiEwvUJpO9LUfC@zn.tnic>
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-5-brijesh.singh@amd.com>
+        id S238252AbhHJL3i convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Tue, 10 Aug 2021 07:29:38 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:40431 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240110AbhHJL3h (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 10 Aug 2021 07:29:37 -0400
+Date:   Tue, 10 Aug 2021 11:28:25 +0000
+Authentication-Results: mail-4316.protonmail.ch; dkim=none
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+From:   David Gstir <david@sigma-star.at>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        =?utf-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        Richard Weinberger <richard@nod.at>,
+        James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        linux-integrity@vger.kernel.org,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Reply-To: David Gstir <david@sigma-star.at>
+Subject: Re: [PATCH 0/4] KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
+Message-ID: <74737543-4A73-49F8-92F7-F7FFE64A00DB@sigma-star.at>
+In-Reply-To: <8321cac9-350b-1325-4b7e-390f4f292070@pengutronix.de>
+References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de> <b9e44f8e-84a0-90be-6cfc-d3a0bde12178@pengutronix.de> <20210809093519.er32rmspuvkrww45@kernel.org> <8321cac9-350b-1325-4b7e-390f4f292070@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210707181506.30489-5-brijesh.singh@amd.com>
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.0 required=10.0 tests=ALL_TRUSTED shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 01:14:34PM -0500, Brijesh Singh wrote:
-> The sev_feature_enabled() helper can be used by the guest to query whether
-> the SNP - Secure Nested Paging feature is active.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/include/asm/mem_encrypt.h |  8 ++++++++
->  arch/x86/include/asm/msr-index.h   |  2 ++
->  arch/x86/mm/mem_encrypt.c          | 14 ++++++++++++++
->  3 files changed, 24 insertions(+)
+Hi Ahmad,
 
-This will get replaced by this I presume:
+> On 09.08.2021, at 12:16, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 
-https://lkml.kernel.org/r/cover.1627424773.git.thomas.lendacky@amd.com
+[...]
 
--- 
-Regards/Gruss,
-    Boris.
+> If it interests you, I described[2] my CAAM+ubifs+fscrypt use case in the
+> discussion thread on my fscrypt-trusted-keys v1. Jan, a colleague of mine, held a
+> talk[3] on the different solutions for authenticated and encrypted storage, which
+> you may want to check out.
+>
+> I'd really appreciate feedback here on the the CAAM parts of this series, so this can
+> eventually go mainline.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Since you mention the fscrypt trusted-keys use case:
+
+I noticed that the key length for trusted-keys is limited to
+256 - 1024bit keys. fscrypt does however also support keys
+with e.g. 128bit keys (AES-128-CBC-ESSIV, AES-128-CTS-CBC).
+AFAIK, CAAM and TEE key blobs would also support key lengths outside the 256 - 1024bit range.
+
+Wouldn’t it make sense to align the supported key lengths?
+I.e. extend the range of supported key lengths for trusted keys.
+Or is there a specific reason why key lengths below 256bit are
+not supported by trusted-keys?
+
+Cheers,
+David
+
+
