@@ -2,61 +2,118 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047F73E9148
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Aug 2021 14:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE80F3E92E0
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Aug 2021 15:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhHKMcY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Aug 2021 08:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
+        id S230360AbhHKNmo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Aug 2021 09:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbhHKMcS (ORCPT
+        with ESMTP id S230030AbhHKNmo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:32:18 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DD8C061A49
-        for <linux-crypto@vger.kernel.org>; Wed, 11 Aug 2021 05:30:18 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id c2-20020a0568303482b029048bcf4c6bd9so3092802otu.8
-        for <linux-crypto@vger.kernel.org>; Wed, 11 Aug 2021 05:30:18 -0700 (PDT)
+        Wed, 11 Aug 2021 09:42:44 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0237C0613D5;
+        Wed, 11 Aug 2021 06:42:20 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id e13-20020a9d63cd0000b02904fa42f9d275so3393549otl.1;
+        Wed, 11 Aug 2021 06:42:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=77BwqRII9XCweQU8IJul6unijI/BEL+vUJmVmCRLxH4=;
-        b=JLDnRf25Eb6PKvCYA5DKs9y9j99zKAJA36bc7PJTIpXiHPDCujx3MnACbZjp6mrxrY
-         eEnZVPRoG9jdc54LvqexHB+U7VEq9IxY2QdfBq2YSFH3SOEjhlw4x/NLZYvR2HSN6BUe
-         SCcSBdPGwWVA2Zj9N4A1YQAiAQiGoiNcBA2ckslmkH2JqPbF6RIP3bps3Oc3PVj8NFaD
-         +ETGkX1KAHW7/LPI6Jo2RFOcVlRvlIzX0BMFIKtErpKFnIzBuJlBG8pa7svbB3Db2tHU
-         TBlGkxVV3m1mswxYPcuZRKFIsOvmRMoelP8xE2ArlsNG12tr0m2ogNjil1ITH7O7SKhB
-         mKgg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hz+p4gP3lCXrc+gD0f6i+2Jz++hhSm2TSQk8dx4ur28=;
+        b=nZ2UF4T4GhHt2s2B7v/GSlVVwtT+DjhKHTiV6Wn3U8mXrGGvoY3UYvf35wcy1CCp9l
+         CxCibh/b01vnsLBIbmODsBKNO/kDYZQyopXPOilGmcf+kyAK1xbuWRjMpzQ7/gsQaWgd
+         KQ/Bm7CQsdrQpmEimCF0gRtnO9/0JD+xQEurbh8r7r76Q/ABcO3rF+WrUqNRX0lHojCQ
+         PSkm9Tq0jn4YkwyIXWOTk8AP12kJOqKxvwexxWuD3qeShQ5HkJgJr1jBAd+7JdCykhaQ
+         1N1hzET8J+mWn+F/lgrSReg0eBM9vva0ogAjQ37ZpDhe0uxvDCTtJslDu5Z4+M6Isbwe
+         oS7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=77BwqRII9XCweQU8IJul6unijI/BEL+vUJmVmCRLxH4=;
-        b=mz23WiSuRD9OCJMIAVrDAM90M1YpPP44z4Vn+Llw2Fm3gPnZ8VQYe/np/s6j7CiOZk
-         sR5Dk/mSy9edDrb00KKk1epcOZfyJgMgEHm2McwJ+fKYgimnaxS9U8E01+5x5Hpsumim
-         w8VSrNqVnOKY9yWdQwsZtx5aT5Xa8j7MLxbqjeXLo4mVgMW/WFBBm1G/PzbUR6cloEwv
-         qcnt7H1JUrx91RucHRQaMFXZJKAfl5fH2yQUT1gr0yMk6vKRSiuII8Y+RY4S0SxPdy6Y
-         tcK4tc0Y4YnAF1T1KQhzKvxeDbo/5VYQJ9wHAwNERBZwVaBiclNylmjTFC+r1SUvR+Rz
-         xSZA==
-X-Gm-Message-State: AOAM532tWcWVkTtqLfm54A1B2Pf3p9NUQERDkKUyzAwt2LaS83VtjN0D
-        9wKYmWN0oeovfu7C6tUbX+oW/G0fth4TbX0mHvk=
-X-Google-Smtp-Source: ABdhPJwdrr7XguJcPmO5+g98rSs/4n6T51gE6N2Czls1WtQylyxhyPliwkpfVE5Y3mUZMeaTO8hfijSwokFMiUVWtAk=
-X-Received: by 2002:a9d:65d0:: with SMTP id z16mr22680523oth.196.1628685017856;
- Wed, 11 Aug 2021 05:30:17 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hz+p4gP3lCXrc+gD0f6i+2Jz++hhSm2TSQk8dx4ur28=;
+        b=fCYomNCdG6aOGecLPvht7ZdH9eYkiW7hLHh8W8UBHp5lklggMYKuAQM4SyU7gezOV1
+         ZlNRbLQ+Ocy1ocwuVmM1Y6VmQyWoP7ANr6bAqrVU/AwqSpnAn1SWMIBw7lTqdO7AWDFd
+         orV5ZNiDtqf3yrGF3OeDqw5X96a1fHOASOaPQpz02JfXhUVagJ6e1o07kTA+BVecqB1t
+         M7wkxeO7QlWL2KjCk/epD+GbAfO/fnUNksxg35pNReo6EXB3P/lP3sTGeePSilGN/+6Z
+         ejpGh5l1q5XqEvBGEXcYhGrT6DKUQRl9Qk8up1IP9Z+FIVQQLrliefiGJBLeM1vu7TGD
+         SysA==
+X-Gm-Message-State: AOAM532zRAPhyrw8OysCnwllvVy8kvkJaJgrO/P4bgC+NI4zxgtp0Rws
+        QdZSh9aSEdngDpAbHzz1KRM=
+X-Google-Smtp-Source: ABdhPJxdODF9OoSlnIa5RL/vRy5NZLti/s0RzpXrEpOHVCNgHsyK/KkpSQPBtALY6NwdtYHGK6Z5Sw==
+X-Received: by 2002:a9d:a72:: with SMTP id 105mr23573290otg.99.1628689340070;
+        Wed, 11 Aug 2021 06:42:20 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.45])
+        by smtp.googlemail.com with ESMTPSA id w13sm2730559otl.41.2021.08.11.06.42.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 06:42:19 -0700 (PDT)
+Subject: Re: [RFCv2 1/9] tcp: authopt: Initial support and key management
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        David Ahern <dsahern@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-crypto@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        Dmitry Safonov <dima@arista.com>
+References: <cover.1628544649.git.cdleonard@gmail.com>
+ <67c1471683200188b96a3f712dd2e8def7978462.1628544649.git.cdleonard@gmail.com>
+ <CAJwJo6aicw_KGQSM5U1=0X11QfuNf2dMATErSymytmpf75W=tA@mail.gmail.com>
+ <1e2848fb-1538-94aa-0431-636fa314a36d@gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <8d656f85-6f66-6c40-c4af-b05c6639b9ab@gmail.com>
+Date:   Wed, 11 Aug 2021 07:42:17 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Received: by 2002:a05:6830:23a5:0:0:0:0 with HTTP; Wed, 11 Aug 2021 05:30:17
- -0700 (PDT)
-Reply-To: rihabmanyang07@yahoo.com
-From:   Rihab Manyang <ndourandiogou1@gmail.com>
-Date:   Wed, 11 Aug 2021 13:30:17 +0100
-Message-ID: <CAP5_mB7uaxDVzgPo-0C2sDYvzWYre49BQzTgZym0ALZ8xnLUGg@mail.gmail.com>
-Subject: hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1e2848fb-1538-94aa-0431-636fa314a36d@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--- 
-How are you?I am miss.Rihab Manyang i will like to be your friend
-please write me back on my email for more details, Thanks.
+On 8/11/21 2:29 AM, Leonard Crestez wrote:
+> On 8/10/21 11:41 PM, Dmitry Safonov wrote:
+>> Hi Leonard,
+>>
+>> On Tue, 10 Aug 2021 at 02:50, Leonard Crestez <cdleonard@gmail.com>
+>> wrote:
+>> [..]
+>>> +/* Representation of a Master Key Tuple as per RFC5925 */
+>>> +struct tcp_authopt_key_info {
+>>> +       struct hlist_node node;
+>>> +       /* Local identifier */
+>>> +       u32 local_id;
+>>
+>> There is no local_id in RFC5925, what's that?
+>> An MKT is identified by (send_id, recv_id), together with
+>> (src_addr/src_port, dst_addr/dst_port).
+>> Why introducing something new to already complicated RFC?
+> 
+> It was there to simplify user interface and initial implementation.
+> 
+> But it seems that BGP listeners already needs to support multiple
+> keychains for different peers so identifying the key by (send_id,
+> recv_id, binding) is easier for userspace to work with. Otherwise they
+> need to create their own local_id mapping internally.
+> 
+
+any proposed simplification needs to be well explained and how it
+relates to the RFC spec.
+
