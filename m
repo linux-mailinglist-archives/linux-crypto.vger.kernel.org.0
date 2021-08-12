@@ -2,130 +2,42 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B68A3EA41D
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Aug 2021 13:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DBA3EA495
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Aug 2021 14:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236544AbhHLL4w (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 12 Aug 2021 07:56:52 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:17008 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236383AbhHLL4v (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:56:51 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GllRt3R2rzb19W;
-        Thu, 12 Aug 2021 19:52:42 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 12 Aug 2021 19:56:22 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 12 Aug
- 2021 19:56:22 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH v2 2/2] crypto: hisilicon/sec - modify the hardware endian configuration
-Date:   Thu, 12 Aug 2021 19:55:21 +0800
-Message-ID: <1628769321-25192-3-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628769321-25192-1-git-send-email-yekai13@huawei.com>
-References: <1628769321-25192-1-git-send-email-yekai13@huawei.com>
+        id S235924AbhHLMZq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 12 Aug 2021 08:25:46 -0400
+Received: from verein.lst.de ([213.95.11.211]:44106 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233613AbhHLMZp (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 12 Aug 2021 08:25:45 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6B43868B05; Thu, 12 Aug 2021 14:25:18 +0200 (CEST)
+Date:   Thu, 12 Aug 2021 14:25:18 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <keith.busch@wdc.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-nvme@lists.infradead.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 13/13] nvme: add non-standard ECDH and curve25517
+ algorithms
+Message-ID: <20210812122518.GA19050@lst.de>
+References: <20210810124230.12161-1-hare@suse.de> <20210810124230.12161-14-hare@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810124230.12161-14-hare@suse.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-When the endian configuration of the hardware is abnormal, it will
-cause the SEC engine is faulty that reports empty message. And it
-will affect the normal function of the hardware. Currently the soft
-configuration method can't restore the faulty device. The endian
-needs to be configured according to the system properties. So fix it.
+On Tue, Aug 10, 2021 at 02:42:30PM +0200, Hannes Reinecke wrote:
+> TLS 1.3 specifies ECDH and curve25517 in addition to the FFDHE
+> groups, and these are already implemented in the kernel.
+> So add support for these non-standard groups for NVMe in-band
+> authentication to validate the augmented challenge implementation.
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec.h      |  5 -----
- drivers/crypto/hisilicon/sec2/sec_main.c | 31 +++++++++----------------------
- 2 files changed, 9 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/crypto/hisilicon/sec2/sec.h b/drivers/crypto/hisilicon/sec2/sec.h
-index 018415b..d97cf02 100644
---- a/drivers/crypto/hisilicon/sec2/sec.h
-+++ b/drivers/crypto/hisilicon/sec2/sec.h
-@@ -157,11 +157,6 @@ struct sec_ctx {
- 	struct device *dev;
- };
- 
--enum sec_endian {
--	SEC_LE = 0,
--	SEC_32BE,
--	SEC_64BE
--};
- 
- enum sec_debug_file_index {
- 	SEC_CLEAR_ENABLE,
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 8addbd7..a0cc46b 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -312,31 +312,20 @@ static const struct pci_device_id sec_dev_ids[] = {
- };
- MODULE_DEVICE_TABLE(pci, sec_dev_ids);
- 
--static u8 sec_get_endian(struct hisi_qm *qm)
-+static void sec_set_endian(struct hisi_qm *qm)
- {
- 	u32 reg;
- 
--	/*
--	 * As for VF, it is a wrong way to get endian setting by
--	 * reading a register of the engine
--	 */
--	if (qm->pdev->is_virtfn) {
--		dev_err_ratelimited(&qm->pdev->dev,
--				    "cannot access a register in VF!\n");
--		return SEC_LE;
--	}
- 	reg = readl_relaxed(qm->io_base + SEC_CONTROL_REG);
--	/* BD little endian mode */
--	if (!(reg & BIT(0)))
--		return SEC_LE;
-+	reg &= ~(BIT(1) | BIT(0));
-+	if (!IS_ENABLED(CONFIG_64BIT))
-+		reg |= BIT(1);
- 
--	/* BD 32-bits big endian mode */
--	else if (!(reg & BIT(1)))
--		return SEC_32BE;
- 
--	/* BD 64-bits big endian mode */
--	else
--		return SEC_64BE;
-+	if (!IS_ENABLED(CONFIG_CPU_LITTLE_ENDIAN))
-+		reg |= BIT(0);
-+
-+	writel_relaxed(reg, qm->io_base + SEC_CONTROL_REG);
- }
- 
- static void sec_open_sva_prefetch(struct hisi_qm *qm)
-@@ -429,9 +418,7 @@ static int sec_engine_init(struct hisi_qm *qm)
- 		       qm->io_base + SEC_BD_ERR_CHK_EN_REG3);
- 
- 	/* config endian */
--	reg = readl_relaxed(qm->io_base + SEC_CONTROL_REG);
--	reg |= sec_get_endian(qm);
--	writel_relaxed(reg, qm->io_base + SEC_CONTROL_REG);
-+	sec_set_endian(qm);
- 
- 	return 0;
- }
--- 
-2.7.4
-
+If you think these are useful please add them to the standard.
