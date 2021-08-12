@@ -2,55 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB3E3EA3DB
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Aug 2021 13:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DCA3EA420
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Aug 2021 13:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236988AbhHLLh2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 12 Aug 2021 07:37:28 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:52742 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236970AbhHLLh1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:37:27 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mE919-0003MQ-PP; Thu, 12 Aug 2021 19:36:59 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mE919-0000BQ-MF; Thu, 12 Aug 2021 19:36:59 +0800
-Date:   Thu, 12 Aug 2021 19:36:59 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: wp512: correct a non-kernel-doc comment
-Message-ID: <20210812113659.GF561@gondor.apana.org.au>
-References: <20210808205233.21662-1-rdunlap@infradead.org>
+        id S237113AbhHLL4x (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 12 Aug 2021 07:56:53 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:13416 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235554AbhHLL4w (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 12 Aug 2021 07:56:52 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GllRt03tdzcmmZ;
+        Thu, 12 Aug 2021 19:52:42 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 12 Aug 2021 19:56:22 +0800
+Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
+ (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 12 Aug
+ 2021 19:56:21 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
+Subject: [PATCH v2 0/2] crypto: hisilicon - some misc bugfix for SEC engine
+Date:   Thu, 12 Aug 2021 19:55:19 +0800
+Message-ID: <1628769321-25192-1-git-send-email-yekai13@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210808205233.21662-1-rdunlap@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sun, Aug 08, 2021 at 01:52:33PM -0700, Randy Dunlap wrote:
-> Don't use "/**" to begin a comment that is not kernel-doc notation.
-> 
-> crypto/wp512.c:779: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->  * The core Whirlpool transform.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: linux-crypto@vger.kernel.org
-> ---
->  crypto/wp512.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+some misc bugfix for SEC engine.
 
-Patch applied.  Thanks.
+chages v1->v2:
+	delete the "ifdefs", use the IS_ENABLED.
+
+Kai Ye (2):
+  crypto: hisilicon/sec - fix the abnormal exiting process
+  crypto: hisilicon/sec - modify the hardware endian configuration
+
+ drivers/crypto/hisilicon/sec2/sec.h      |  5 -----
+ drivers/crypto/hisilicon/sec2/sec_main.c | 34 +++++++++++---------------------
+ 2 files changed, 11 insertions(+), 28 deletions(-)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.7.4
+
