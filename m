@@ -2,22 +2,26 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D38C43EA560
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Aug 2021 15:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64303EA617
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Aug 2021 15:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232356AbhHLNWH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 12 Aug 2021 09:22:07 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:41339 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237043AbhHLNSR (ORCPT
+        id S233027AbhHLOAL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 12 Aug 2021 10:00:11 -0400
+Received: from vmicros1.altlinux.org ([194.107.17.57]:37284 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232351AbhHLOAL (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:18:17 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Uio.0Gz_1628774269;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0Uio.0Gz_1628774269)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 12 Aug 2021 21:17:49 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Thu, 12 Aug 2021 10:00:11 -0400
+Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id E484A72C8FB;
+        Thu, 12 Aug 2021 16:59:43 +0300 (MSK)
+Received: from altlinux.org (sole.flsd.net [185.75.180.6])
+        by imap.altlinux.org (Postfix) with ESMTPSA id 931454A46F1;
+        Thu, 12 Aug 2021 16:59:43 +0300 (MSK)
+Date:   Thu, 12 Aug 2021 16:59:43 +0300
+From:   Vitaly Chikunov <vt@altlinux.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Biggers <ebiggers@google.com>,
         Eric Biggers <ebiggers@kernel.org>,
@@ -26,97 +30,74 @@ To:     Herbert Xu <herbert@gondor.apana.org.au>,
         linux-kernel@vger.kernel.org,
         Jia Zhang <zhang.jia@linux.alibaba.com>,
         "YiLin . Li" <YiLin.Li@linux.alibaba.com>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH 3/3] crypto: tcrypt: add GCM/CCM mode test for SM4 algorithm
-Date:   Thu, 12 Aug 2021 21:17:48 +0800
-Message-Id: <20210812131748.81620-4-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
-In-Reply-To: <20210812131748.81620-1-tianjia.zhang@linux.alibaba.com>
+Subject: Re: [PATCH 1/3] crypto: tcrypt - Fix the wrong position of return
+ value test statement
+Message-ID: <20210812135943.mnuce4252wp4xi52@altlinux.org>
 References: <20210812131748.81620-1-tianjia.zhang@linux.alibaba.com>
+ <20210812131748.81620-2-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <20210812131748.81620-2-tianjia.zhang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-tcrypt supports GCM/CCM mode, CMAC, CBCMAC, and speed test of
-SM4 algorithm.
+Tianjia,
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- crypto/tcrypt.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+On Thu, Aug 12, 2021 at 09:17:46PM +0800, Tianjia Zhang wrote:
+> The position of the return value test statement of crypto_aead_setkey()
+> is wrong, adjust to make it work properly.
 
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index 73c97e085baf..8d20e903beaa 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -1906,6 +1906,14 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 		ret += tcrypt_test("streebog512");
- 		break;
- 
-+	case 55:
-+		ret += tcrypt_test("gcm(sm4)");
-+		break;
-+
-+	case 56:
-+		ret += tcrypt_test("ccm(sm4)");
-+		break;
-+
- 	case 100:
- 		ret += tcrypt_test("hmac(md5)");
- 		break;
-@@ -1997,6 +2005,15 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 	case 157:
- 		ret += tcrypt_test("authenc(hmac(sha1),ecb(cipher_null))");
- 		break;
-+
-+	case 158:
-+		ret += tcrypt_test("cbcmac(sm4)");
-+		break;
-+
-+	case 159:
-+		ret += tcrypt_test("cmac(sm4)");
-+		break;
-+
- 	case 181:
- 		ret += tcrypt_test("authenc(hmac(sha1),cbc(des))");
- 		break;
-@@ -2326,6 +2343,34 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 				NULL, 0, 16, 8, speed_template_16);
- 		break;
- 
-+	case 222:
-+		test_aead_speed("gcm(sm4)", ENCRYPT, sec,
-+				NULL, 0, 16, 8, speed_template_16);
-+		test_aead_speed("gcm(sm4)", DECRYPT, sec,
-+				NULL, 0, 16, 8, speed_template_16);
-+		break;
-+
-+	case 223:
-+		test_aead_speed("rfc4309(ccm(sm4))", ENCRYPT, sec,
-+				NULL, 0, 16, 16, aead_speed_template_19);
-+		test_aead_speed("rfc4309(ccm(sm4))", DECRYPT, sec,
-+				NULL, 0, 16, 16, aead_speed_template_19);
-+		break;
-+
-+	case 224:
-+		test_mb_aead_speed("gcm(sm4)", ENCRYPT, sec, NULL, 0, 16, 8,
-+				   speed_template_16, num_mb);
-+		test_mb_aead_speed("gcm(sm4)", DECRYPT, sec, NULL, 0, 16, 8,
-+				   speed_template_16, num_mb);
-+		break;
-+
-+	case 225:
-+		test_mb_aead_speed("rfc4309(ccm(sm4))", ENCRYPT, sec, NULL, 0,
-+				   16, 16, aead_speed_template_19, num_mb);
-+		test_mb_aead_speed("rfc4309(ccm(sm4))", DECRYPT, sec, NULL, 0,
-+				   16, 16, aead_speed_template_19, num_mb);
-+		break;
-+
- 	case 300:
- 		if (alg) {
- 			test_hash_speed(alg, sec, generic_hash_speed_template);
--- 
-2.19.1.3.ge56e4f7
+This commit message does not explain anything. It's nearly equivalent to
+"fix".
 
+> 
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> ---
+>  crypto/tcrypt.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
+> index d73a42fdaa9b..73c97e085baf 100644
+> --- a/crypto/tcrypt.c
+> +++ b/crypto/tcrypt.c
+> @@ -612,6 +612,12 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
+>  				}
+>  			}
+>  			ret = crypto_aead_setkey(tfm, key, *keysize);
+
+Perhaps, you would say that return value of crypto_aead_setkey was lost.
+
+> +			if (ret) {
+> +				pr_err("setkey() failed flags=%x\n",
+> +						crypto_aead_get_flags(tfm));
+> +				goto out;
+> +			}
+> +
+>  			ret = crypto_aead_setauthsize(tfm, authsize);
+
+But, isn't now return value of crypto_aead_setauthsize is lost?
+
+Thanks,
+
+>  
+>  			iv_len = crypto_aead_ivsize(tfm);
+> @@ -622,15 +628,8 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
+>  			printk(KERN_INFO "test %u (%d bit key, %d byte blocks): ",
+>  					i, *keysize * 8, bs);
+>  
+> -
+>  			memset(tvmem[0], 0xff, PAGE_SIZE);
+>  
+> -			if (ret) {
+> -				pr_err("setkey() failed flags=%x\n",
+> -						crypto_aead_get_flags(tfm));
+> -				goto out;
+> -			}
+> -
+>  			sg_init_aead(sg, xbuf, bs + (enc ? 0 : authsize),
+>  				     assoc, aad_size);
+>  
+> -- 
+> 2.19.1.3.ge56e4f7
