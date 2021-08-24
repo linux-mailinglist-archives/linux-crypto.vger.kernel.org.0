@@ -2,104 +2,129 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E589D3F5E01
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Aug 2021 14:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AB33F608A
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Aug 2021 16:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237191AbhHXMcP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 24 Aug 2021 08:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbhHXMcO (ORCPT
+        id S237858AbhHXOiN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 24 Aug 2021 10:38:13 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15730 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237852AbhHXOiN (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 24 Aug 2021 08:32:14 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE17C061757
-        for <linux-crypto@vger.kernel.org>; Tue, 24 Aug 2021 05:31:30 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id a93so40768751ybi.1
-        for <linux-crypto@vger.kernel.org>; Tue, 24 Aug 2021 05:31:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=TRjaWKEPVAbYmcyTrEjZ5MangDAm0gSp+lRrNJV1+0E=;
-        b=ucU/hfoDDeza4lVjzNCd1Q1vM2cpURtuk2JSa+Jjy7rCOioWPQsRDGaDOMsBNuviR4
-         n5lWT8NHWzGjf3KP7mMjk811sqyG4gE/0EKroDlog+Qj50AfyoCaQ2pEUDM0H1fqok3u
-         SMFf68q5p69jofvRQimP+bwnoFP4R1WbTeHsPg2hxKPqjVKCwxOEljClupvXRhRajlbh
-         lDOX39tDd5QClPAfcg+1pkd1Qin3G1xpD+XlPfItsYljTpn8G7uoabJa+GPsJpY3B9Uq
-         rKzEpcd6stZbXhGQ3Wa+GnIqLPCaKZF3L72jPAWKk56Tp0jFucV8SPKeTjYS8YFe9JZq
-         x7JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=TRjaWKEPVAbYmcyTrEjZ5MangDAm0gSp+lRrNJV1+0E=;
-        b=XQ1+qH1TiXQA07BEVKduxnMrY01XS27DhLql7bZdn0lpu5baFVDJl02/LbTG3v/2kX
-         l5cX7F6V1P5nCuYPQd5NyuR1WYn2273/2ynOrn+cRm6xIsNk0ptzscsM1n0CAqGn/I1F
-         GCGmhDaW/hiTbmH6X+40GHtuk4vqj0Mzxl2USX0Zq313tynu2Ryx00oxVblnzlccmjQf
-         TiL0L5HV9H1miU8QgpR6zMCwEtpflWKs0qwuwfU53yfBhltyjlc3BCmpANBDPeGdPJjK
-         GXVnq4ZF+IKkOBx5mr4H9j6nLqqXJYopZzd8l1y75HEBAY0yHv0TIShLQYDborhnwbDI
-         1dXQ==
-X-Gm-Message-State: AOAM531F5NqqghFttluh58lajVI6tSp/oTLnoN0yDXwO9SwsfLO5GU1u
-        tM2qFrnZhPARKiX3GzPchjHrQBIOJ5ShaV/mlxM=
-X-Google-Smtp-Source: ABdhPJyb/47p6H5ebp2HB43zDvZKVDF5O8mdS0SeOEpdXe788b9FWz3eIDjZ5mS5fftGZ8hA2En9wz8TjEVKDfmq/hc=
-X-Received: by 2002:a25:4786:: with SMTP id u128mr15092787yba.374.1629808289895;
- Tue, 24 Aug 2021 05:31:29 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a25:b90e:0:0:0:0:0 with HTTP; Tue, 24 Aug 2021 05:31:29
- -0700 (PDT)
-Reply-To: sarahjamson1999@gmail.com
-From:   Robert Morrison <zw6541790@gmail.com>
-Date:   Tue, 24 Aug 2021 13:31:29 +0100
-Message-ID: <CAKn1wY-9Gfm_q67LmFLEiJn4sPiF_0fTJzK+1SrYmSFs4SGUiQ@mail.gmail.com>
-Subject: ATM Card
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+        Tue, 24 Aug 2021 10:38:13 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17OEaQIV088398;
+        Tue, 24 Aug 2021 10:36:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=LscKHOmM4JXne0ldvl9TPd0dEiLHWZoKTEFyx0n/fFk=;
+ b=Vt5FXLCTugPQWD9ChXt6LeboeDn2bqF/B+EuObl75hT2ljdFNqWEsUFjOmtuB8AepbA+
+ wEmjaN2um8Z3RUgkRk79Dw5yXtfG+tIi1iybUnxkF7RM6Wn0MndCrVzC2LbYmNROndA+
+ ZPb78OhAPtzrKssNQsfxKAjv0LFjnl/yN/dBNkmMuatOobejo6zAGalji0x+LG64+UfF
+ JrxLeF8lk1Z7qs93J0nerCmF4Aak8+qohTz4jwMakuQ/zTU1eEuncTSctRAmzITG9bIT
+ TFNgWJOKfqEltaEye4oRFsDHx4uY6TSOJX7lEmFHzHjeShMEVDr6r97FKW0LtlCr+6ZD QA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3amv09beb3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 10:36:43 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17OEacmN089288;
+        Tue, 24 Aug 2021 10:36:43 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3amv09bdt3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 10:36:43 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17OEXVaS004979;
+        Tue, 24 Aug 2021 14:34:18 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 3ajs48wbvr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 14:34:17 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17OEYFQc54133198
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Aug 2021 14:34:15 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6709F42041;
+        Tue, 24 Aug 2021 14:34:15 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 622124204C;
+        Tue, 24 Aug 2021 14:34:10 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.88.64])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 24 Aug 2021 14:34:10 +0000 (GMT)
+Message-ID: <9526a4e0be9579a9e52064dd590a78c6496ee025.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 00/12] Enroll kernel keys thru MOK
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Nayna <nayna@linux.vnet.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
+        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+        scott.branden@broadcom.com, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        lszubowi@redhat.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        pjones@redhat.com,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        Patrick Uiterwijk <patrick@puiterwijk.org>
+Date:   Tue, 24 Aug 2021 10:34:09 -0400
+In-Reply-To: <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
+References: <20210819002109.534600-1-eric.snowberg@oracle.com>
+         <fcb30226f378ef12cd8bd15938f0af0e1a3977a2.camel@kernel.org>
+         <f76fcf41728fbdd65f2b3464df0821f248b2cba0.camel@linux.ibm.com>
+         <91B1FE51-C6FC-4ADF-B05A-B1E59E20132E@oracle.com>
+         <e7e251000432cf7c475e19c56b0f438b92fec16e.camel@linux.ibm.com>
+         <cedc77fefdf22b2cec086f3e0dd9cc698db9bca2.camel@kernel.org>
+         <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: r_swUgDIao0jShx0mbE5bkkPhHhggCoq
+X-Proofpoint-GUID: SQpjP5z9YPQ9zB2BIjFB6bvDvc41h9gG
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-24_05:2021-08-24,2021-08-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 mlxlogscore=999 mlxscore=0 phishscore=0 clxscore=1015
+ suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108240094
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-LS0gDQrQn9Cw0LLQsNC20LDQvdGLINGB0Y/QsdCw0YAsDQoNCtCU0L7QsdGA0Ysg0LTQt9C10L3R
-jCwg0LTQsNGA0LDQs9GWINGB0Y/QsdCw0YAsINGP0Log0YHQv9GA0LDQstGLPyDQodCw0LzRiyDQ
-tNC+0Z7Qs9GWINGH0LDRgS4g0K8g0YDQsNC00YsNCtC/0LDQstC10LTQsNC80ZbRhtGMINCy0LDQ
-vCDQsNCxINC80LDRltC8INC/0L7RgdC/0LXRhdGDINGeINC/0LXRgNCw0LTQsNGH0Ysg0LPRjdGC
-0YvRhSDRgdGA0L7QtNC60LDRniDRgdC/0LDQtNGH0YvQvdGLINC/0YDRiw0K0YHRg9C/0YDQsNGG
-0L7RntC90ZbRhtGC0LLQtSDQvdC+0LLQsNCz0LAg0L/QsNGA0YLQvdGR0YDQsC4g0KMg0YbRj9C/
-0LXRgNCw0YjQvdGWINGH0LDRgSDRjyDQt9C90LDRhdC+0LTQttGD0YHRjyDRng0K0ZbQvdC00YvQ
-udGB0LrRltGFINGW0L3QstC10YHRgtGL0YbRi9C50L3Ri9GFINC/0YDQsNC10LrRgtCw0YUg0Lcg
-0YPQu9Cw0YHQvdCw0Lkg0LTQvtC70Y/QuSDQsNC0INCw0LPRg9C70YzQvdCw0Lkg0YHRg9C80Ysu
-INCc0LDRjg0K0L3QsCDRntCy0LDQt9C1LCDRiNGC0L4g0Y8g0L3QtSDQt9Cw0LHRi9Cy0LDRniDQ
-stCw0YjRiyDQvNGW0L3Rg9C70YvRjyDQvdCw0LzQsNCz0LDQvdC90ZYg0ZYg0YHQv9GA0L7QsdGL
-INC00LDQv9Cw0LzQsNCz0YfRiw0K0LzQvdC1INGeINC/0LXRgNCw0LTQsNGH0Ysg0LPRjdGC0YvR
-hSDRgdGA0L7QtNC60LDRniDRgdC/0LDQtNGH0YvQvdGLLCDRhdC+0YbRjCDQs9GN0YLQsCDQvdCw
-0Lwg0L3QtSDRntC00LDQu9C+0YHRjy4g0KbRj9C/0LXRgA0K0LfQstGP0LbRi9GG0LXRgdGPINC3
-INC80LDRkdC5INGB0LDQutGA0LDRgtCw0YDQutCw0Lkg0YMg0JfQsNGF0L7QtNC90Y/QuSDQkNGE
-0YDRi9GG0Ysg0JvQvtC80LUsINGP0LUg0LfQsNCy0YPRhtGMINCh0LDRgNCwDQrQlNC20Y3QvNGB
-0LDQvSDQvdCwINGP0LUg0LDQtNGA0LDRgSDRjdC70LXQutGC0YDQvtC90L3QsNC5INC/0L7RiNGC
-0YsgKHNhcmFoamFtc29uMTk5OUBnbWFpbC5jb20pINGWDQrQv9Cw0L/RgNCw0YHRltGG0LUg0Y/Q
-tSDQstGL0YHQu9Cw0YbRjCDQstCw0Lwg0LDQs9GD0LvRjNC90YPRjiDRgdGD0LzRgyAoNTAwIDAw
-MCwwMCDQtNC+0LvQsNGA0LDRniDQl9Co0JApLA0K0L/Rj9GG0YzRgdC+0YIg0YLRi9GB0Y/RhyDQ
-tNC+0LvQsNGA0LDRniDQl9Co0JAsINGP0LrRltGPINGPINC30LDRhdC+0Z7QstCw0Z4g0LLQsNGI
-0LAg0LrQsNC80L/QtdC90YHQsNGG0YvRjyDQt9CwINGe0YHQtQ0K0LzRltC90YPQu9GL0Y8g0L3Q
-sNC80LDQs9Cw0L3QvdGWINGWINGB0L/RgNC+0LHRiyDQtNCw0L/QsNC80LDQs9GH0Ysg0LzQvdC1
-INGeINC30LTQt9C10LvRhtGLLiDQryDQstC10LvRjNC80ZYg0LDRhtCw0L3RltGeDQrQstCw0YjR
-iyDQvdCw0LzQsNCz0LDQvdC90ZYg0Z4g0YLQvtC5INGH0LDRgS4g0KLQsNC6INGI0YLQviDQvdC1
-INGB0LDRgNC+0LzQtdC50YbQtdGB0Y8g0ZYg0LfQstGP0LbRi9GG0LXRgdGPINC3INC80LDRkdC5
-DQrRgdCw0LrRgNCw0YLQsNGA0LrQsNC5INCh0LDRgNCw0Lkg0JTQttGN0LzRgdCw0L0g0ZYg0YHQ
-utCw0LbRi9GG0LUg0ZHQuSwg0LrRg9C00Ysg0LDQtNC/0YDQsNCy0ZbRhtGMINCa0JDQoNCi0JrQ
-ow0K0LHQsNC90LrQsNC80LDRgtCwINC90LAg0LDQs9GD0LvRjNC90YPRjiDRgdGD0LzRgyAoNTAw
-IDAwMCwwMCDQtNC+0LvQsNGA0LDRniDQl9Co0JApLiDQmtCw0LvRliDQu9Cw0YHQutCwLCDQtNCw
-0LnRhtC1DQrQvNC90LUg0LLQtdC00LDRhtGMLCDQutCw0LvRliDQstGLINGP0LPQviDQsNGC0YDR
-i9C80LDQtdGG0LUsINC60LDQsSDQvNGLINC80LDQs9C70ZYg0L/QsNC00LfRj9C70ZbRhtGG0LAg
-0YDQsNC00LDRgdGG0Y4NCtC/0LDRgdC70Y8g0Z7RgdGW0YUg0L/QsNC60YPRgiDRgyDRgtC+0Lkg
-0YfQsNGBLiDQoyDQs9GN0YLRiyDQvNC+0LzQsNC90YIg0Y8g0LLQtdC70YzQvNGWINC30LDQvdGP
-0YLRiyDRgtGD0YIg0LcgLdC30LANCtGW0L3QstC10YHRgtGL0YbRi9C50L3Ri9GFINC/0YDQsNC1
-0LrRgtCw0Z4sINGP0LrRltGPINC80LDRjiDQtyDQvdC+0LLRi9C8INC/0LDRgNGC0L3RkdGA0LDQ
-vCwg0L3QsNGA0Y3RiNGG0LUg0Z7RgdC/0L7QvNC90ZbRhtC1LA0K0YjRgtC+INGPINC/0LXRgNCw
-0LTQsNGeINGW0L3RgdGC0YDRg9C60YbRi9GWINC80LDQudC80YMg0YHQsNC60YDQsNGC0LDRgNGD
-INCw0LQg0LLQsNGI0LDQs9CwINGW0LzRjyDQsNGC0YDRi9C80LDRhtGMINC60LDRgNGC0LrRgw0K
-0LHQsNC90LrQsNC80LDRgtCwLCDRgtCw0LzRgyDQvdC1INGB0LDRgNC+0LzQtdC50YbQtdGB0Y8g
-0LfQstGP0LfQsNGG0YbQsCDQtyDQodCw0YDQsNC5INCU0LbRjdC80YHQsNC9LCDRj9C90LAg0LLR
-i9GI0LvQtSDQstCw0LwNCtGB0YPQvNGDINCx0LXQtyDQt9Cw0YLRgNGL0LzQutGWLg0KDQrQlyDQ
-vdCw0LnQu9C10L/RiNGL0LzRliDQv9Cw0LbQsNC00LDQvdC90Y/QvNGWLA0KDQrQkyAt0L0g0KDQ
-vtCx0LXRgNGCINCc0L7RgNGL0YHQsNC9Lg0K
+
+> >> Jarkko, I think the emphasis should not be on "machine" from Machine
+> >> Owner Key (MOK), but on "owner".  Whereas Nayna is focusing more on the
+> >> "_ca" aspect of the name.   Perhaps consider naming it
+> >> "system_owner_ca" or something along those lines.
+
+> > What do you gain such overly long identifier? Makes no sense. What
+> > is "ca aspect of the name" anyway?
+> 
+> As I mentioned previously, the main usage of this new keyring is that it 
+> should contain only CA keys which can be later used to vouch for user 
+> keys loaded onto secondary or IMA keyring at runtime. Having ca in the 
+> name like .xxxx_ca, would make the keyring name self-describing. Since 
+> you preferred .system, we can call it .system_ca.
+
+Sounds good to me.  Jarkko?
+
+thanks,
+
+Mimi
+
