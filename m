@@ -2,181 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4223FA367
-	for <lists+linux-crypto@lfdr.de>; Sat, 28 Aug 2021 05:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A37853FA40E
+	for <lists+linux-crypto@lfdr.de>; Sat, 28 Aug 2021 08:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbhH1Dlo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 27 Aug 2021 23:41:44 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:18984 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbhH1Dln (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 27 Aug 2021 23:41:43 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GxMhW694bzbjqb;
-        Sat, 28 Aug 2021 11:36:59 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 28 Aug 2021 11:40:51 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 28 Aug
- 2021 11:40:51 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH 2/2] crypto: hisilicon/qm - support the userspace task resetting
-Date:   Sat, 28 Aug 2021 11:39:39 +0800
-Message-ID: <1630121979-53760-3-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1630121979-53760-1-git-send-email-yekai13@huawei.com>
-References: <1630121979-53760-1-git-send-email-yekai13@huawei.com>
+        id S233317AbhH1GsZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 28 Aug 2021 02:48:25 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:54472 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233088AbhH1GsZ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 28 Aug 2021 02:48:25 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mJs7i-0008E9-EV; Sat, 28 Aug 2021 14:47:26 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mJs7Y-0006ig-53; Sat, 28 Aug 2021 14:47:16 +0800
+Date:   Sat, 28 Aug 2021 14:47:16 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     "yekai(A)" <yekai13@huawei.com>
+Cc:     wangzhou1@hisilicon.com, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 2/5] crypto: hisilicon/sec - add ahash alg features for
+ Kunpeng920
+Message-ID: <20210828064716.GA25697@gondor.apana.org.au>
+References: <1628847626-24383-1-git-send-email-yekai13@huawei.com>
+ <1628847626-24383-3-git-send-email-yekai13@huawei.com>
+ <20210821072557.GA31491@gondor.apana.org.au>
+ <bac4d0b8-0dd1-ddeb-8d78-0c20a2d5ecdc@huawei.com>
+ <20210827083652.GD21571@gondor.apana.org.au>
+ <337a3bac-86d4-c66e-9d6a-d4aa6685f83d@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <337a3bac-86d4-c66e-9d6a-d4aa6685f83d@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Allocate an extra memory page for qp in the qp memory initialization.
-Set a qp error flag in the extra page addr when device resetting.
-This error flag can be seen in the userspace. This flag can helps
-users to stop tasks when device resetting. After resetting, this error
-flag will be reset when this qp is created again. So app should release
-the old qp and request a new one, and do the task on the new queue
-again.
+On Sat, Aug 28, 2021 at 11:16:47AM +0800, yekai(A) wrote:
+>
+> I refered to other people's plans. Modify the value of halg.statesize
+> is sizeof(struct sec_req) + sizeof(u32), So user can allocate an extra
+> sizeof(u32) memory. The driver will write a tag number to the addr in the
+> export process, then the driver will check the pointers by the tag number
+> through the import path.
+> I think this plan can avoid random pointers.
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 46 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 45 insertions(+), 1 deletion(-)
+I don't see what that's going to achieve.  The whole point of
+export/import is to serialise the entire hash state.  You can
+not store any pointers in there.  After all, I can export the
+hash state, reboot, and then reimport the hash state and it
+should still work.
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 2bd25bf..cc5563d 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -233,6 +233,8 @@
- #define QM_DBG_WRITE_LEN		1024
- #define QM_DBG_TMP_BUF_LEN		22
- #define QM_PCI_COMMAND_INVALID		~0
-+#define QM_RESET_STOP_TX_OFFSET		1
-+#define QM_RESET_STOP_RX_OFFSET		2
- 
- #define WAIT_PERIOD			20
- #define REMOVE_WAIT_DELAY		10
-@@ -883,6 +885,20 @@ static irqreturn_t qm_mb_cmd_irq(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
-+static void qm_set_qp_disable(struct hisi_qp *qp, int offset)
-+{
-+	u32 *addr;
-+
-+	if (qp->is_in_kernel)
-+		return;
-+
-+	addr = (u32 *)(qp->qdma.va + qp->qdma.size) - offset;
-+	*addr = 1;
-+
-+	/* make sure setup is completed */
-+	mb();
-+}
-+
- static irqreturn_t qm_aeq_irq(int irq, void *data)
- {
- 	struct hisi_qm *qm = data;
-@@ -2467,6 +2483,15 @@ static void *qm_get_avail_sqe(struct hisi_qp *qp)
- 	return qp->sqe + sq_tail * qp->qm->sqe_size;
- }
- 
-+static void hisi_qm_unset_hw_reset(struct hisi_qp *qp)
-+{
-+	u64 *addr;
-+
-+	/* Use last 64 bits of DUS to reset status. */
-+	addr = (u64 *)(qp->qdma.va + qp->qdma.size) - QM_RESET_STOP_TX_OFFSET;
-+	*addr = 0;
-+}
-+
- static struct hisi_qp *qm_create_qp_nolock(struct hisi_qm *qm, u8 alg_type)
- {
- 	struct device *dev = &qm->pdev->dev;
-@@ -2492,7 +2517,7 @@ static struct hisi_qp *qm_create_qp_nolock(struct hisi_qm *qm, u8 alg_type)
- 	}
- 
- 	qp = &qm->qp_array[qp_id];
--
-+	hisi_qm_unset_hw_reset(qp);
- 	memset(qp->cqe, 0, sizeof(struct qm_cqe) * QM_Q_DEPTH);
- 
- 	qp->event_cb = NULL;
-@@ -2912,6 +2937,14 @@ static int hisi_qm_get_available_instances(struct uacce_device *uacce)
- 	return hisi_qm_get_free_qp_num(uacce->priv);
- }
- 
-+static void hisi_qm_set_hw_reset(struct hisi_qm *qm, int offset)
-+{
-+	int i;
-+
-+	for (i = 0; i < qm->qp_num; i++)
-+		qm_set_qp_disable(&qm->qp_array[i], offset);
-+}
-+
- static int hisi_qm_uacce_get_queue(struct uacce_device *uacce,
- 				   unsigned long arg,
- 				   struct uacce_queue *q)
-@@ -3684,11 +3717,13 @@ int hisi_qm_stop(struct hisi_qm *qm, enum qm_stop_reason r)
- 
- 	if (qm->status.stop_reason == QM_SOFT_RESET ||
- 	    qm->status.stop_reason == QM_FLR) {
-+		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_TX_OFFSET);
- 		ret = qm_stop_started_qp(qm);
- 		if (ret < 0) {
- 			dev_err(dev, "Failed to stop started qp!\n");
- 			goto err_unlock;
- 		}
-+		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_RX_OFFSET);
- 	}
- 
- 	/* Mask eq and aeq irq */
-@@ -5047,6 +5082,8 @@ static int qm_controller_reset(struct hisi_qm *qm)
- 
- 	ret = qm_controller_reset_prepare(qm);
- 	if (ret) {
-+		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_TX_OFFSET);
-+		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_RX_OFFSET);
- 		clear_bit(QM_RST_SCHED, &qm->misc_ctl);
- 		return ret;
- 	}
-@@ -5133,6 +5170,8 @@ void hisi_qm_reset_prepare(struct pci_dev *pdev)
- 	ret = hisi_qm_stop(qm, QM_FLR);
- 	if (ret) {
- 		pci_err(pdev, "Failed to stop QM, ret = %d.\n", ret);
-+		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_TX_OFFSET);
-+		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_RX_OFFSET);
- 		return;
- 	}
- 
-@@ -5316,9 +5355,14 @@ static void qm_pf_reset_vf_prepare(struct hisi_qm *qm,
- 		atomic_set(&qm->status.flags, QM_STOP);
- 		cmd = QM_VF_PREPARE_FAIL;
- 		goto err_prepare;
-+	} else {
-+		goto out;
- 	}
- 
- err_prepare:
-+	hisi_qm_set_hw_reset(qm, QM_RESET_STOP_TX_OFFSET);
-+	hisi_qm_set_hw_reset(qm, QM_RESET_STOP_RX_OFFSET);
-+out:
- 	pci_save_state(pdev);
- 	ret = qm->ops->ping_pf(qm, cmd);
- 	if (ret)
+Cheers,
 -- 
-2.7.4
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
