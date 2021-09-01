@@ -2,92 +2,144 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A979A3FE1D7
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 Sep 2021 20:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A123FE477
+	for <lists+linux-crypto@lfdr.de>; Wed,  1 Sep 2021 23:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346618AbhIASMO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 1 Sep 2021 14:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346715AbhIASMN (ORCPT
+        id S245666AbhIAVDs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 1 Sep 2021 17:03:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29316 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244854AbhIAVDm (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:12:13 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D76C0612A4
-        for <linux-crypto@vger.kernel.org>; Wed,  1 Sep 2021 11:11:12 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id s25so574154vsa.9
-        for <linux-crypto@vger.kernel.org>; Wed, 01 Sep 2021 11:11:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=2joGkq8i8C5vglZO1FYNTlWqLyr4vSiCXKQYXBVnv4Q=;
-        b=LD3mpzy1s09M3e/Eheelu/QMtbN6lrYJQ+S1BsYhmG4zP9OQuKOeD1zHV2lZaK7Hdt
-         vXoBMumPRACuZhnwd8TYAFIvdImPe0Zn4DA41GnzHGsnpDZPE0wUFWVFNzgpxF6bh6D8
-         CVxTiiIN7w8BVpPirFLytZKK2cFqqV6q9qR8cw4XmdYYgGZs+MdnDeP+neEr/SbnLI2h
-         mwT6gqJ8+HvNCQei5Zu6b3U+/YcUOepEDfVn6t0IkNG5YzxTV8mH8IqZ4zEsqBchdgxI
-         E/zGH3KCiuS7UdfEMBVKPbpzhhPyh4quLRALvE4iCHtswqSZDgWUuzksodIw8OWwGR1Z
-         0RlA==
+        Wed, 1 Sep 2021 17:03:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630530165;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nBI2ltINoLF2WMdaOQSg8GJs4aIarAV4j3nj9NG4RCY=;
+        b=HByoika+oOEO8lw/ZOUcWUwDCrQnHgKm2FQSoPaVxYCEJQoevFTusP7iBADyaSaVAVb+no
+        ESiVyXlLwa1/1pI59YMEiplIeqJW+TxJV9L0pJAiVVXTDatgOzjNEdYnM6gMZslniEZ8AX
+        NHQVsQYHDe6qQgn0MHh1Y+AOxgY4HfQ=
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
+ [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-Q2fqzhhaMPq_yTLQSsbVAw-1; Wed, 01 Sep 2021 17:02:44 -0400
+X-MC-Unique: Q2fqzhhaMPq_yTLQSsbVAw-1
+Received: by mail-oo1-f69.google.com with SMTP id f2-20020a4a2202000000b0028c8a8074deso452411ooa.20
+        for <linux-crypto@vger.kernel.org>; Wed, 01 Sep 2021 14:02:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=2joGkq8i8C5vglZO1FYNTlWqLyr4vSiCXKQYXBVnv4Q=;
-        b=CG7xT6gmS341V6Six6UgyGVDpzuwT88ySYd2ocxAkVbVn9dFxVSK9KsvBL+3L0z91m
-         KTh5z/Nh72tY4/RaqBMQQK1T3WHqrffDP8yfaAZn1Lln72Q+WXKrwF8OaGwEpOAR/L2F
-         WbanIAF3h9ktjkAAY7UeEWDG8nnAcWVSJN2MTu73NfL5hDgXE+3/+DgAWSSBJPNxoyyN
-         63JDConC8ibR/tTBcPXnQ7ciEvjyhTOSQp5GuU3zmY+Kk84kXmxN2cYPNJr8qsCZjd8w
-         e+TMkqb08be8Gn49vNQRK+w1e2opF/VFL95hkixGMaUodEkf6y5Jf6dm/q2rg1ZgnQ/K
-         KCdw==
-X-Gm-Message-State: AOAM533tkSD9t1pUGmptSGfmFXyNkt9D5gw5DSU2hgvuU5vks/YwJf/K
-        AUcyK+FKPDWotY34Dm6yyNobPhstQn2QvLhe5vg=
-X-Google-Smtp-Source: ABdhPJwbbBYGjUEQSS3Bb7EfYk34O3AVuG22pVIF78fkATQG8c+PQmeHgcc35+YrriS74Wl5STB8JbzOasp+8kCVBlk=
-X-Received: by 2002:a67:8c5:: with SMTP id 188mr1017695vsi.4.1630519870726;
- Wed, 01 Sep 2021 11:11:10 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nBI2ltINoLF2WMdaOQSg8GJs4aIarAV4j3nj9NG4RCY=;
+        b=X0VjO3lDx/cXM7cKeLwY22hLIZz3jEKVq4Gw3EPryDzFKyBK6UhyQ6SJr0sS84QS8C
+         c8/i7UgNu+dWYj4GEku+Ka7SL7trV4Rjjs950zmYS5YJkMSaC4IjcM+5leNsJFGxhIfr
+         DUp2H3ZMUSr5AlQieZ2Kp3UdsjCmFZBQqh1aBpAjxdKSLwSTlvn6caMX8ao3AMeCONI2
+         N2LucVgqjyzHeAD5FZKkGytdYZKbIyFcUL054dMZNvx26T3LfJ5NOpId29kTqxbXj4Ez
+         w0MwXIyPu5hPcrO3mmvUC3fGiX+tHyImJp2d2g+ifdfIkLwD26MeM6gPlsSW99VuvE74
+         Ri6Q==
+X-Gm-Message-State: AOAM533qoJMWKLgS4alATugqQ9aen/+sQHJ2Q9TaTp+SjZoMDWTFjf3G
+        a6CKVI/LKDv5okfQOVhpkK+Tcs3zoUYXdQmfGLZKk5K8scXs9n76QXFUc5E/U10IVnExQStRhQA
+        uQFzxO9Wwcw3vZBY/s0qxy2LM
+X-Received: by 2002:a9d:2278:: with SMTP id o111mr1184914ota.229.1630530163658;
+        Wed, 01 Sep 2021 14:02:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxVUSuG9t8V3EY9ijjDut6hzkV3I1FofZCKPV4YLZB5pOCffAS8WhHs+T2fCeGtw9DYBKnfGw==
+X-Received: by 2002:a9d:2278:: with SMTP id o111mr1184892ota.229.1630530163442;
+        Wed, 01 Sep 2021 14:02:43 -0700 (PDT)
+Received: from [192.168.0.112] (ip68-102-24-81.ks.ok.cox.net. [68.102.24.81])
+        by smtp.gmail.com with ESMTPSA id q26sm160065otf.39.2021.09.01.14.02.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 14:02:43 -0700 (PDT)
+Subject: Re: [PATCH Part2 v5 17/45] crypto: ccp: Add the
+ SNP_{SET,GET}_EXT_CONFIG command
+To:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        tfanelli@redhat.com
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-18-brijesh.singh@amd.com>
+From:   Connor Kuehl <ckuehl@redhat.com>
+Message-ID: <2b07b160-48af-4682-1a4b-2716cd13fb65@redhat.com>
+Date:   Wed, 1 Sep 2021 16:02:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: by 2002:ab0:740d:0:0:0:0:0 with HTTP; Wed, 1 Sep 2021 11:11:10 -0700 (PDT)
-From:   CorisBank International <corisbankintlbf@gmail.com>
-Date:   Wed, 1 Sep 2021 11:11:10 -0700
-Message-ID: <CA+25hwzjLgVdtDXYWeuqFBTvAbpc4oxK0dW54s7tjGNyU_m0ow@mail.gmail.com>
-Subject: CORISBANK INTERNATIONAL OFFICIAL NOTIFICATION
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210820155918.7518-18-brijesh.singh@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Att: Client
+On 8/20/21 10:58 AM, Brijesh Singh wrote:
+> +2.4 SNP_SET_EXT_CONFIG
+> +----------------------
+> +:Technology: sev-snp
+> +:Type: hypervisor ioctl cmd
+> +:Parameters (in): struct sev_data_snp_ext_config
+> +:Returns (out): 0 on success, -negative on error
+> +
+> +The SNP_SET_EXT_CONFIG is used to set the system-wide configuration such as
+> +reported TCB version in the attestation report. The command is similar to
+> +SNP_CONFIG command defined in the SEV-SNP spec. The main difference is the
+> +command also accepts an additional certificate blob defined in the GHCB
+> +specification.
+> +
+> +If the certs_address is zero, then previous certificate blob will deleted.
+> +For more information on the certificate blob layout, see the GHCB spec
+> +(extended guest request message).
 
+Hi Brijesh,
 
-CORISBANK INTERNATIONAL URGENT NOTIFICATION
+Just to be clear, is the documentation you're referring to regarding the
+layout of the certificate blob specified on page 47 of the GHCB spec?
+More specifically, is it the `struct cert_table` on that page?
 
-Notification / Notification/ Notification
+https://developer.amd.com/wp-content/resources/56421.pdf
 
-Note, We are writing to inform you officially that Finally the Central
-Bank Financial Authority have approved to transfer your $8.2Million
-which was signed by late Mrs Rose Banneth the COVID.19 victim to
-transfer to you, Late Mrs Rose Banneth the France Lady contacted us to
-transfer her fund in our bank to you for Orphanage work before she
-died by the COVID.19
-and as it is now, you will receive your fund through our corresponding
-bank in Dubai [Emirate Investment Bank ] for security reason. Please
-you should reconfirm your details to receive the $8.2Million.
+If so, where is the VCEK certificate layout documented?
 
-Name, Country, Address, occupations, Age, Telephone number, account
-Details so that we can immediately forward to the World Bank to
-transfer the fund.
-You are advised to comply on timely manner to permit this esteem bank
-transfer your fund as scheduled.
+Connor
 
-We look forward to serving you better
-Your Financial Comfort Is A Priority
-Thank you for choosing Corisbank International.
+> +/**
+> + * struct sev_data_snp_ext_config - system wide configuration value for SNP.
+> + *
+> + * @config_address: address of the struct sev_user_data_snp_config or 0 when
+> + *		reported_tcb does not need to be updated.
+> + * @certs_address: address of extended guest request certificate chain or
+> + *              0 when previous certificate should be removed on SNP_SET_EXT_CONFIG.
+> + * @certs_len: length of the certs
+> + */
+> +struct sev_user_data_ext_snp_config {
+> +	__u64 config_address;		/* In */
+> +	__u64 certs_address;		/* In */
+> +	__u32 certs_len;		/* In */
+> +};
 
-Sincerely,
-
-----
-
-Mr Diakarya Ouattara
-Managing Director
-Bank Coris
-Burkina Faso
-+226 556 163 37
-financial_bf_info@accountant.com
