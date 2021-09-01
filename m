@@ -2,169 +2,92 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B123FE16A
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 Sep 2021 19:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A979A3FE1D7
+	for <lists+linux-crypto@lfdr.de>; Wed,  1 Sep 2021 20:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346670AbhIARv1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 1 Sep 2021 13:51:27 -0400
-Received: from mga11.intel.com ([192.55.52.93]:16284 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347528AbhIARvF (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:51:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="215694376"
-X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
-   d="scan'208";a="215694376"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 10:49:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
-   d="scan'208";a="499022534"
-Received: from silpixa00400294.ir.intel.com ([10.237.222.100])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Sep 2021 10:49:54 -0700
-From:   Wojciech Ziemba <wojciech.ziemba@intel.com>
-To:     herbert@gondor.apana.org.au
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qat-linux@intel.com, Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [PATCH 4/4] crypto: qat - free irq in case of failure
-Date:   Wed,  1 Sep 2021 18:36:08 +0100
-Message-Id: <20210901173608.16777-5-wojciech.ziemba@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210901173608.16777-1-wojciech.ziemba@intel.com>
-References: <20210901173608.16777-1-wojciech.ziemba@intel.com>
+        id S1346618AbhIASMO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 1 Sep 2021 14:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346715AbhIASMN (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 1 Sep 2021 14:12:13 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D76C0612A4
+        for <linux-crypto@vger.kernel.org>; Wed,  1 Sep 2021 11:11:12 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id s25so574154vsa.9
+        for <linux-crypto@vger.kernel.org>; Wed, 01 Sep 2021 11:11:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=2joGkq8i8C5vglZO1FYNTlWqLyr4vSiCXKQYXBVnv4Q=;
+        b=LD3mpzy1s09M3e/Eheelu/QMtbN6lrYJQ+S1BsYhmG4zP9OQuKOeD1zHV2lZaK7Hdt
+         vXoBMumPRACuZhnwd8TYAFIvdImPe0Zn4DA41GnzHGsnpDZPE0wUFWVFNzgpxF6bh6D8
+         CVxTiiIN7w8BVpPirFLytZKK2cFqqV6q9qR8cw4XmdYYgGZs+MdnDeP+neEr/SbnLI2h
+         mwT6gqJ8+HvNCQei5Zu6b3U+/YcUOepEDfVn6t0IkNG5YzxTV8mH8IqZ4zEsqBchdgxI
+         E/zGH3KCiuS7UdfEMBVKPbpzhhPyh4quLRALvE4iCHtswqSZDgWUuzksodIw8OWwGR1Z
+         0RlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=2joGkq8i8C5vglZO1FYNTlWqLyr4vSiCXKQYXBVnv4Q=;
+        b=CG7xT6gmS341V6Six6UgyGVDpzuwT88ySYd2ocxAkVbVn9dFxVSK9KsvBL+3L0z91m
+         KTh5z/Nh72tY4/RaqBMQQK1T3WHqrffDP8yfaAZn1Lln72Q+WXKrwF8OaGwEpOAR/L2F
+         WbanIAF3h9ktjkAAY7UeEWDG8nnAcWVSJN2MTu73NfL5hDgXE+3/+DgAWSSBJPNxoyyN
+         63JDConC8ibR/tTBcPXnQ7ciEvjyhTOSQp5GuU3zmY+Kk84kXmxN2cYPNJr8qsCZjd8w
+         e+TMkqb08be8Gn49vNQRK+w1e2opF/VFL95hkixGMaUodEkf6y5Jf6dm/q2rg1ZgnQ/K
+         KCdw==
+X-Gm-Message-State: AOAM533tkSD9t1pUGmptSGfmFXyNkt9D5gw5DSU2hgvuU5vks/YwJf/K
+        AUcyK+FKPDWotY34Dm6yyNobPhstQn2QvLhe5vg=
+X-Google-Smtp-Source: ABdhPJwbbBYGjUEQSS3Bb7EfYk34O3AVuG22pVIF78fkATQG8c+PQmeHgcc35+YrriS74Wl5STB8JbzOasp+8kCVBlk=
+X-Received: by 2002:a67:8c5:: with SMTP id 188mr1017695vsi.4.1630519870726;
+ Wed, 01 Sep 2021 11:11:10 -0700 (PDT)
 MIME-Version: 1.0
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ab0:740d:0:0:0:0:0 with HTTP; Wed, 1 Sep 2021 11:11:10 -0700 (PDT)
+From:   CorisBank International <corisbankintlbf@gmail.com>
+Date:   Wed, 1 Sep 2021 11:11:10 -0700
+Message-ID: <CA+25hwzjLgVdtDXYWeuqFBTvAbpc4oxK0dW54s7tjGNyU_m0ow@mail.gmail.com>
+Subject: CORISBANK INTERNATIONAL OFFICIAL NOTIFICATION
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-If devm_request_irq() fails inside adf_request_irqs(), unwind properly by
-freeing the allocated irqs.
-
-Signed-off-by: Wojciech Ziemba <wojciech.ziemba@intel.com>
-Co-developed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
----
- drivers/crypto/qat/qat_common/adf_isr.c | 63 +++++++++++++------------
- 1 file changed, 34 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/crypto/qat/qat_common/adf_isr.c b/drivers/crypto/qat/qat_common/adf_isr.c
-index 861a9368b9db..c55a9f14b0d2 100644
---- a/drivers/crypto/qat/qat_common/adf_isr.c
-+++ b/drivers/crypto/qat/qat_common/adf_isr.c
-@@ -126,6 +126,31 @@ static irqreturn_t adf_msix_isr_ae(int irq, void *dev_ptr)
- 	return IRQ_NONE;
- }
- 
-+static void adf_free_irqs(struct adf_accel_dev *accel_dev)
-+{
-+	struct adf_accel_pci *pci_dev_info = &accel_dev->accel_pci_dev;
-+	struct adf_hw_device_data *hw_data = accel_dev->hw_device;
-+	struct adf_irq *irqs = pci_dev_info->msix_entries.irqs;
-+	struct adf_etr_data *etr_data = accel_dev->transport;
-+	int clust_irq = hw_data->num_banks;
-+	int irq, i = 0;
-+
-+	if (pci_dev_info->msix_entries.num_entries > 1) {
-+		for (i = 0; i < hw_data->num_banks; i++) {
-+			if (irqs[i].enabled) {
-+				irq = pci_irq_vector(pci_dev_info->pci_dev, i);
-+				irq_set_affinity_hint(irq, NULL);
-+				free_irq(irq, &etr_data->banks[i]);
-+			}
-+		}
-+	}
-+
-+	if (irqs[i].enabled) {
-+		irq = pci_irq_vector(pci_dev_info->pci_dev, clust_irq);
-+		free_irq(irq, accel_dev);
-+	}
-+}
-+
- static int adf_request_irqs(struct adf_accel_dev *accel_dev)
- {
- 	struct adf_accel_pci *pci_dev_info = &accel_dev->accel_pci_dev;
-@@ -150,7 +175,8 @@ static int adf_request_irqs(struct adf_accel_dev *accel_dev)
- 				dev_err(&GET_DEV(accel_dev),
- 					"Failed to get IRQ number of device vector %d - %s\n",
- 					i, name);
--				return irq;
-+				ret = irq;
-+				goto err;
- 			}
- 			ret = request_irq(irq, adf_msix_isr_bundle, 0,
- 					  &name[0], bank);
-@@ -158,7 +184,7 @@ static int adf_request_irqs(struct adf_accel_dev *accel_dev)
- 				dev_err(&GET_DEV(accel_dev),
- 					"Failed to allocate IRQ %d for %s\n",
- 					irq, name);
--				return ret;
-+				goto err;
- 			}
- 
- 			cpu = ((accel_dev->accel_id * hw_data->num_banks) +
-@@ -177,41 +203,20 @@ static int adf_request_irqs(struct adf_accel_dev *accel_dev)
- 		dev_err(&GET_DEV(accel_dev),
- 			"Failed to get IRQ number of device vector %d - %s\n",
- 			i, name);
--		return irq;
-+		ret = irq;
-+		goto err;
- 	}
- 	ret = request_irq(irq, adf_msix_isr_ae, 0, &name[0], accel_dev);
- 	if (ret) {
- 		dev_err(&GET_DEV(accel_dev),
- 			"Failed to allocate IRQ %d for %s\n", irq, name);
--		return ret;
-+		goto err;
- 	}
- 	irqs[i].enabled = true;
- 	return ret;
--}
--
--static void adf_free_irqs(struct adf_accel_dev *accel_dev)
--{
--	struct adf_accel_pci *pci_dev_info = &accel_dev->accel_pci_dev;
--	struct adf_hw_device_data *hw_data = accel_dev->hw_device;
--	struct adf_irq *irqs = pci_dev_info->msix_entries.irqs;
--	struct adf_etr_data *etr_data = accel_dev->transport;
--	int clust_irq = hw_data->num_banks;
--	int irq, i = 0;
--
--	if (pci_dev_info->msix_entries.num_entries > 1) {
--		for (i = 0; i < hw_data->num_banks; i++) {
--			if (irqs[i].enabled) {
--				irq = pci_irq_vector(pci_dev_info->pci_dev, i);
--				irq_set_affinity_hint(irq, NULL);
--				free_irq(irq, &etr_data->banks[i]);
--			}
--		}
--	}
--
--	if (irqs[i].enabled) {
--		irq = pci_irq_vector(pci_dev_info->pci_dev, clust_irq);
--		free_irq(irq, accel_dev);
--	}
-+err:
-+	adf_free_irqs(accel_dev);
-+	return ret;
- }
- 
- static int adf_isr_alloc_msix_vectors_data(struct adf_accel_dev *accel_dev)
--- 
-2.29.2
-
---------------------------------------------------------------
-Intel Research and Development Ireland Limited
-Registered in Ireland
-Registered Office: Collinstown Industrial Park, Leixlip, County Kildare
-Registered Number: 308263
+Att: Client
 
 
-This e-mail and any attachments may contain confidential material for the sole
-use of the intended recipient(s). Any review or distribution by others is
-strictly prohibited. If you are not the intended recipient, please contact the
-sender and delete all copies.
+CORISBANK INTERNATIONAL URGENT NOTIFICATION
 
+Notification / Notification/ Notification
+
+Note, We are writing to inform you officially that Finally the Central
+Bank Financial Authority have approved to transfer your $8.2Million
+which was signed by late Mrs Rose Banneth the COVID.19 victim to
+transfer to you, Late Mrs Rose Banneth the France Lady contacted us to
+transfer her fund in our bank to you for Orphanage work before she
+died by the COVID.19
+and as it is now, you will receive your fund through our corresponding
+bank in Dubai [Emirate Investment Bank ] for security reason. Please
+you should reconfirm your details to receive the $8.2Million.
+
+Name, Country, Address, occupations, Age, Telephone number, account
+Details so that we can immediately forward to the World Bank to
+transfer the fund.
+You are advised to comply on timely manner to permit this esteem bank
+transfer your fund as scheduled.
+
+We look forward to serving you better
+Your Financial Comfort Is A Priority
+Thank you for choosing Corisbank International.
+
+Sincerely,
+
+----
+
+Mr Diakarya Ouattara
+Managing Director
+Bank Coris
+Burkina Faso
++226 556 163 37
+financial_bf_info@accountant.com
