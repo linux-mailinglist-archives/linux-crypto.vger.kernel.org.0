@@ -2,37 +2,37 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945CE4013E2
-	for <lists+linux-crypto@lfdr.de>; Mon,  6 Sep 2021 03:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AC14013E5
+	for <lists+linux-crypto@lfdr.de>; Mon,  6 Sep 2021 03:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240551AbhIFBcC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 5 Sep 2021 21:32:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47504 "EHLO mail.kernel.org"
+        id S239215AbhIFBcE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 5 Sep 2021 21:32:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241060AbhIFB1f (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 5 Sep 2021 21:27:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8067E61101;
-        Mon,  6 Sep 2021 01:22:47 +0000 (UTC)
+        id S239196AbhIFB1i (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 5 Sep 2021 21:27:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48F3E61027;
+        Mon,  6 Sep 2021 01:22:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630891368;
-        bh=WIhAtogWrHU206UCb2vW6PRQGML7LBfLTU1JD9Y1cFI=;
+        s=k20201202; t=1630891372;
+        bh=kfvp6RxnixOZswBUFl3mXIebYjbttY6adhaxG+mPoPw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M7UETSIDOXraz+VKPOe7ZHMVBckgTYjaKTkKzgDgudb0jhzteaQTGn6Z9rdS8zwoO
-         e3OFI5K1porsAXy/8gDui20I3HLNO48CjrvB4ZuVWI0pyJ4Af/ctfxaC6pCpP3+Fjy
-         bMt9TcUxO5Pd1MPcq6AgmoENXuQ5G63OZKp441YVSe86BnvIHZraiTf8PwvE7otC1g
-         nl9tfWIBFcL5sEV+AlRfr1drPKdrZlIcZRIHxlKOo8c9if2PG8z5mJ9AqJjp/avWtt
-         GobH+UgDrPLmwxbQh4x/KSmSHF852Cdx+ZBBkfrcCw4iQQwUx8C70OEhxdyhRwYqAU
-         haFxUBqpzx8nw==
+        b=ZV33SirZSwJT9kiqVGp5mkz4O2H0qA8vNtRkSY+hBTwIpTgJ+Jy8EsAPQQ+uTo11m
+         4JUn/+cdzUrs8ao8Dz3FHaKKALdzURj1zSXS/sh+o3+sgc49b0RF+BRPRvSe7+vRdj
+         sdx83l/ZVaeLmSX4/8vPfEq/b6FNOIlU4a/EXaDWBGjULRVHrP/ViYzqoiWiWspsWq
+         WV1swUA1Zn3i6EJitPvPln7wZrYxgidLhZO0GPkix2tJynb6TF+s3qUVspwx9O8b8Z
+         sgSDVFB5QH0QF/D2sknxmwoAlma+bY5JJE7gfkQl1RFw16nXE2VXGp4+pTcblzYaZb
+         GLHfEoRU2aZNw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sean Anderson <sean.anderson@seco.com>,
-        Richard Weinberger <richard@nod.at>,
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 03/30] crypto: mxs-dcp - Check for DMA mapping errors
-Date:   Sun,  5 Sep 2021 21:22:16 -0400
-Message-Id: <20210906012244.930338-3-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 06/30] crypto: omap-sham - clear dma flags only after omap_sham_update_dma_stop()
+Date:   Sun,  5 Sep 2021 21:22:19 -0400
+Message-Id: <20210906012244.930338-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210906012244.930338-1-sashal@kernel.org>
 References: <20210906012244.930338-1-sashal@kernel.org>
@@ -44,123 +44,40 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Sean Anderson <sean.anderson@seco.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit df6313d707e575a679ada3313358289af24454c0 ]
+[ Upstream commit fe28140b3393b0ba1eb95cc109f974a7e58b26fd ]
 
-After calling dma_map_single(), we must also call dma_mapping_error().
-This fixes the following warning when compiling with CONFIG_DMA_API_DEBUG:
+We should not clear FLAGS_DMA_ACTIVE before omap_sham_update_dma_stop() is
+done calling dma_unmap_sg(). We already clear FLAGS_DMA_ACTIVE at the
+end of omap_sham_update_dma_stop().
 
-[  311.241478] WARNING: CPU: 0 PID: 428 at kernel/dma/debug.c:1027 check_unmap+0x79c/0x96c
-[  311.249547] DMA-API: mxs-dcp 2280000.crypto: device driver failed to check map error[device address=0x00000000860cb080] [size=32 bytes] [mapped as single]
+The early clearing of FLAGS_DMA_ACTIVE is not causing issues as we do not
+need to defer anything based on FLAGS_DMA_ACTIVE currently. So this can be
+applied as clean-up.
 
-Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-Reviewed-by: Richard Weinberger <richard@nod.at>
+Cc: Lokesh Vutla <lokeshvutla@ti.com>
+Cc: Tero Kristo <kristo@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/mxs-dcp.c | 45 +++++++++++++++++++++++++++++++---------
- 1 file changed, 35 insertions(+), 10 deletions(-)
+ drivers/crypto/omap-sham.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/mxs-dcp.c b/drivers/crypto/mxs-dcp.c
-index f8a48a84df2a..66fa524b6261 100644
---- a/drivers/crypto/mxs-dcp.c
-+++ b/drivers/crypto/mxs-dcp.c
-@@ -168,15 +168,19 @@ static struct dcp *global_sdcp;
- 
- static int mxs_dcp_start_dma(struct dcp_async_ctx *actx)
- {
-+	int dma_err;
- 	struct dcp *sdcp = global_sdcp;
- 	const int chan = actx->chan;
- 	uint32_t stat;
- 	unsigned long ret;
- 	struct dcp_dma_desc *desc = &sdcp->coh->desc[actx->chan];
--
- 	dma_addr_t desc_phys = dma_map_single(sdcp->dev, desc, sizeof(*desc),
- 					      DMA_TO_DEVICE);
- 
-+	dma_err = dma_mapping_error(sdcp->dev, desc_phys);
-+	if (dma_err)
-+		return dma_err;
-+
- 	reinit_completion(&sdcp->completion[chan]);
- 
- 	/* Clear status register. */
-@@ -214,18 +218,29 @@ static int mxs_dcp_start_dma(struct dcp_async_ctx *actx)
- static int mxs_dcp_run_aes(struct dcp_async_ctx *actx,
- 			   struct ablkcipher_request *req, int init)
- {
-+	dma_addr_t key_phys, src_phys, dst_phys;
- 	struct dcp *sdcp = global_sdcp;
- 	struct dcp_dma_desc *desc = &sdcp->coh->desc[actx->chan];
- 	struct dcp_aes_req_ctx *rctx = ablkcipher_request_ctx(req);
- 	int ret;
- 
--	dma_addr_t key_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_key,
--					     2 * AES_KEYSIZE_128,
--					     DMA_TO_DEVICE);
--	dma_addr_t src_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_in_buf,
--					     DCP_BUF_SZ, DMA_TO_DEVICE);
--	dma_addr_t dst_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_out_buf,
--					     DCP_BUF_SZ, DMA_FROM_DEVICE);
-+	key_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_key,
-+				  2 * AES_KEYSIZE_128, DMA_TO_DEVICE);
-+	ret = dma_mapping_error(sdcp->dev, key_phys);
-+	if (ret)
-+		return ret;
-+
-+	src_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_in_buf,
-+				  DCP_BUF_SZ, DMA_TO_DEVICE);
-+	ret = dma_mapping_error(sdcp->dev, src_phys);
-+	if (ret)
-+		goto err_src;
-+
-+	dst_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_out_buf,
-+				  DCP_BUF_SZ, DMA_FROM_DEVICE);
-+	ret = dma_mapping_error(sdcp->dev, dst_phys);
-+	if (ret)
-+		goto err_dst;
- 
- 	if (actx->fill % AES_BLOCK_SIZE) {
- 		dev_err(sdcp->dev, "Invalid block size!\n");
-@@ -263,10 +278,12 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx,
- 	ret = mxs_dcp_start_dma(actx);
- 
- aes_done_run:
-+	dma_unmap_single(sdcp->dev, dst_phys, DCP_BUF_SZ, DMA_FROM_DEVICE);
-+err_dst:
-+	dma_unmap_single(sdcp->dev, src_phys, DCP_BUF_SZ, DMA_TO_DEVICE);
-+err_src:
- 	dma_unmap_single(sdcp->dev, key_phys, 2 * AES_KEYSIZE_128,
- 			 DMA_TO_DEVICE);
--	dma_unmap_single(sdcp->dev, src_phys, DCP_BUF_SZ, DMA_TO_DEVICE);
--	dma_unmap_single(sdcp->dev, dst_phys, DCP_BUF_SZ, DMA_FROM_DEVICE);
- 
- 	return ret;
- }
-@@ -565,6 +582,10 @@ static int mxs_dcp_run_sha(struct ahash_request *req)
- 	dma_addr_t buf_phys = dma_map_single(sdcp->dev, sdcp->coh->sha_in_buf,
- 					     DCP_BUF_SZ, DMA_TO_DEVICE);
- 
-+	ret = dma_mapping_error(sdcp->dev, buf_phys);
-+	if (ret)
-+		return ret;
-+
- 	/* Fill in the DMA descriptor. */
- 	desc->control0 = MXS_DCP_CONTROL0_DECR_SEMAPHORE |
- 		    MXS_DCP_CONTROL0_INTERRUPT |
-@@ -597,6 +618,10 @@ static int mxs_dcp_run_sha(struct ahash_request *req)
- 	if (rctx->fini) {
- 		digest_phys = dma_map_single(sdcp->dev, sdcp->coh->sha_out_buf,
- 					     DCP_SHA_PAY_SZ, DMA_FROM_DEVICE);
-+		ret = dma_mapping_error(sdcp->dev, digest_phys);
-+		if (ret)
-+			goto done_run;
-+
- 		desc->control0 |= MXS_DCP_CONTROL0_HASH_TERM;
- 		desc->payload = digest_phys;
- 	}
+diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
+index f80db1eb2994..f8a146554b1f 100644
+--- a/drivers/crypto/omap-sham.c
++++ b/drivers/crypto/omap-sham.c
+@@ -1734,7 +1734,7 @@ static void omap_sham_done_task(unsigned long data)
+ 		if (test_and_clear_bit(FLAGS_OUTPUT_READY, &dd->flags))
+ 			goto finish;
+ 	} else if (test_bit(FLAGS_DMA_READY, &dd->flags)) {
+-		if (test_and_clear_bit(FLAGS_DMA_ACTIVE, &dd->flags)) {
++		if (test_bit(FLAGS_DMA_ACTIVE, &dd->flags)) {
+ 			omap_sham_update_dma_stop(dd);
+ 			if (dd->err) {
+ 				err = dd->err;
 -- 
 2.30.2
 
