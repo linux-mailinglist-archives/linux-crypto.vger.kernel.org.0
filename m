@@ -2,39 +2,40 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1A04012B6
-	for <lists+linux-crypto@lfdr.de>; Mon,  6 Sep 2021 03:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA604012DE
+	for <lists+linux-crypto@lfdr.de>; Mon,  6 Sep 2021 03:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239197AbhIFBWG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 5 Sep 2021 21:22:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38492 "EHLO mail.kernel.org"
+        id S239455AbhIFBWt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 5 Sep 2021 21:22:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238794AbhIFBVm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 5 Sep 2021 21:21:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53E2261076;
-        Mon,  6 Sep 2021 01:20:37 +0000 (UTC)
+        id S239105AbhIFBWB (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 5 Sep 2021 21:22:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0CC6610E7;
+        Mon,  6 Sep 2021 01:20:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630891238;
-        bh=HpDrTH5dFqfXuhuMC5F+a3DrZqroMthUZD0oSwhxfGA=;
+        s=k20201202; t=1630891257;
+        bh=W9yqL3arC6UNFr/fcNYw4yJx9lC/1tDau6WWaigkSJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g6KUdQ4FWhoUGBYRMrUynSLupZrxy5HizPxB1tyz6Qyr41yNKpD69JTfhYPki6kd0
-         NtANkBxSUG1u0B+aVJ+YyGFdk/9LHYLUDUBVAUa5AxEOMfo/Jd9pIyDZl2eGYKo7Jn
-         ndZVty/rp5OwwVpP0wwpWk4bQ4ewworJ4LYJ3LMAVfy/QUAXD7aFqRuuEyhCLpNUT3
-         oBDR/pT5OVIEseitNbthQ7P4oXyq4ZEO0ELaq1wc7InzuxlVOzYUIMsPAmUX825PaE
-         YHcJAegjgrWW/7I2MbDhvStaNDGAHbLF7f9AqpB/Oc8KwsqL598paHF0X38jvTCfX9
-         RZYagZz7b/JEA==
+        b=srrNdoGpjQhr+w5H3tiGrFlEZpmp/G3Q1aOQaUA1aApSh0ti5C3Z0kYx4TQisQIt+
+         p2+id0fMo1DtrPr389ZqfR4MTtsxccDsHrICrRjLT/+NvXXCCuJIhivAQ2l8uyikWi
+         RBC0hvL348n1iaLFoKidM+jPjVKY/V55zIX4R2lA7F359GXPq6adb3kP+wVR+WZ5VF
+         TCxr5HlVq+8xCNecMSUgLuQT3Mouz+rEvUhBZ2922wiph1FMsbGs+YWkSaVCT/1HLI
+         7hKvWAvBJY1jjI50vhehxDyds29Q3GG2WP7fYiYdqpFtSI+9mHKUnvgiGqqFkwgMrh
+         Tf1HKyBNVsCow==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
+Cc:     Sean Anderson <sean.anderson@seco.com>,
+        Richard Weinberger <richard@nod.at>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 37/47] crypto: tcrypt - Fix missing return value check
-Date:   Sun,  5 Sep 2021 21:19:41 -0400
-Message-Id: <20210906011951.928679-37-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.13 04/46] crypto: mxs-dcp - Check for DMA mapping errors
+Date:   Sun,  5 Sep 2021 21:20:09 -0400
+Message-Id: <20210906012052.929174-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210906011951.928679-1-sashal@kernel.org>
-References: <20210906011951.928679-1-sashal@kernel.org>
+In-Reply-To: <20210906012052.929174-1-sashal@kernel.org>
+References: <20210906012052.929174-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,102 +44,123 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+From: Sean Anderson <sean.anderson@seco.com>
 
-[ Upstream commit 7b3d52683b3a47c0ba1dfd6b5994a3a795b06972 ]
+[ Upstream commit df6313d707e575a679ada3313358289af24454c0 ]
 
-There are several places where the return value check of crypto_aead_setkey
-and crypto_aead_setauthsize were lost. It is necessary to add these checks.
+After calling dma_map_single(), we must also call dma_mapping_error().
+This fixes the following warning when compiling with CONFIG_DMA_API_DEBUG:
 
-At the same time, move the crypto_aead_setauthsize() call out of the loop,
-and only need to call it once after load transform.
+[  311.241478] WARNING: CPU: 0 PID: 428 at kernel/dma/debug.c:1027 check_unmap+0x79c/0x96c
+[  311.249547] DMA-API: mxs-dcp 2280000.crypto: device driver failed to check map error[device address=0x00000000860cb080] [size=32 bytes] [mapped as single]
 
-Fixee: 53f52d7aecb4 ("crypto: tcrypt - Added speed tests for AEAD crypto alogrithms in tcrypt test suite")
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Reviewed-by: Vitaly Chikunov <vt@altlinux.org>
+Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+Reviewed-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/tcrypt.c | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+ drivers/crypto/mxs-dcp.c | 45 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 35 insertions(+), 10 deletions(-)
 
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index f8d06da78e4f..6863e57b088d 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -290,6 +290,11 @@ static void test_mb_aead_speed(const char *algo, int enc, int secs,
- 	}
+diff --git a/drivers/crypto/mxs-dcp.c b/drivers/crypto/mxs-dcp.c
+index d6a7784d2988..f397cc5bf102 100644
+--- a/drivers/crypto/mxs-dcp.c
++++ b/drivers/crypto/mxs-dcp.c
+@@ -170,15 +170,19 @@ static struct dcp *global_sdcp;
  
- 	ret = crypto_aead_setauthsize(tfm, authsize);
-+	if (ret) {
-+		pr_err("alg: aead: Failed to setauthsize for %s: %d\n", algo,
-+		       ret);
-+		goto out_free_tfm;
-+	}
- 
- 	for (i = 0; i < num_mb; ++i)
- 		if (testmgr_alloc_buf(data[i].xbuf)) {
-@@ -315,7 +320,7 @@ static void test_mb_aead_speed(const char *algo, int enc, int secs,
- 	for (i = 0; i < num_mb; ++i) {
- 		data[i].req = aead_request_alloc(tfm, GFP_KERNEL);
- 		if (!data[i].req) {
--			pr_err("alg: skcipher: Failed to allocate request for %s\n",
-+			pr_err("alg: aead: Failed to allocate request for %s\n",
- 			       algo);
- 			while (i--)
- 				aead_request_free(data[i].req);
-@@ -567,13 +572,19 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
- 	sgout = &sg[9];
- 
- 	tfm = crypto_alloc_aead(algo, 0, 0);
+ static int mxs_dcp_start_dma(struct dcp_async_ctx *actx)
+ {
++	int dma_err;
+ 	struct dcp *sdcp = global_sdcp;
+ 	const int chan = actx->chan;
+ 	uint32_t stat;
+ 	unsigned long ret;
+ 	struct dcp_dma_desc *desc = &sdcp->coh->desc[actx->chan];
 -
- 	if (IS_ERR(tfm)) {
- 		pr_err("alg: aead: Failed to load transform for %s: %ld\n", algo,
- 		       PTR_ERR(tfm));
- 		goto out_notfm;
- 	}
+ 	dma_addr_t desc_phys = dma_map_single(sdcp->dev, desc, sizeof(*desc),
+ 					      DMA_TO_DEVICE);
  
-+	ret = crypto_aead_setauthsize(tfm, authsize);
-+	if (ret) {
-+		pr_err("alg: aead: Failed to setauthsize for %s: %d\n", algo,
-+		       ret);
-+		goto out_noreq;
-+	}
++	dma_err = dma_mapping_error(sdcp->dev, desc_phys);
++	if (dma_err)
++		return dma_err;
 +
- 	crypto_init_wait(&wait);
- 	printk(KERN_INFO "\ntesting speed of %s (%s) %s\n", algo,
- 			get_driver_name(crypto_aead, tfm), e);
-@@ -611,8 +622,13 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
- 					break;
- 				}
- 			}
+ 	reinit_completion(&sdcp->completion[chan]);
+ 
+ 	/* Clear status register. */
+@@ -216,18 +220,29 @@ static int mxs_dcp_start_dma(struct dcp_async_ctx *actx)
+ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx,
+ 			   struct skcipher_request *req, int init)
+ {
++	dma_addr_t key_phys, src_phys, dst_phys;
+ 	struct dcp *sdcp = global_sdcp;
+ 	struct dcp_dma_desc *desc = &sdcp->coh->desc[actx->chan];
+ 	struct dcp_aes_req_ctx *rctx = skcipher_request_ctx(req);
+ 	int ret;
+ 
+-	dma_addr_t key_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_key,
+-					     2 * AES_KEYSIZE_128,
+-					     DMA_TO_DEVICE);
+-	dma_addr_t src_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_in_buf,
+-					     DCP_BUF_SZ, DMA_TO_DEVICE);
+-	dma_addr_t dst_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_out_buf,
+-					     DCP_BUF_SZ, DMA_FROM_DEVICE);
++	key_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_key,
++				  2 * AES_KEYSIZE_128, DMA_TO_DEVICE);
++	ret = dma_mapping_error(sdcp->dev, key_phys);
++	if (ret)
++		return ret;
 +
- 			ret = crypto_aead_setkey(tfm, key, *keysize);
--			ret = crypto_aead_setauthsize(tfm, authsize);
-+			if (ret) {
-+				pr_err("setkey() failed flags=%x: %d\n",
-+					crypto_aead_get_flags(tfm), ret);
-+				goto out;
-+			}
++	src_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_in_buf,
++				  DCP_BUF_SZ, DMA_TO_DEVICE);
++	ret = dma_mapping_error(sdcp->dev, src_phys);
++	if (ret)
++		goto err_src;
++
++	dst_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_out_buf,
++				  DCP_BUF_SZ, DMA_FROM_DEVICE);
++	ret = dma_mapping_error(sdcp->dev, dst_phys);
++	if (ret)
++		goto err_dst;
  
- 			iv_len = crypto_aead_ivsize(tfm);
- 			if (iv_len)
-@@ -622,15 +638,8 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
- 			printk(KERN_INFO "test %u (%d bit key, %d byte blocks): ",
- 					i, *keysize * 8, bs);
+ 	if (actx->fill % AES_BLOCK_SIZE) {
+ 		dev_err(sdcp->dev, "Invalid block size!\n");
+@@ -265,10 +280,12 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx,
+ 	ret = mxs_dcp_start_dma(actx);
  
--
- 			memset(tvmem[0], 0xff, PAGE_SIZE);
+ aes_done_run:
++	dma_unmap_single(sdcp->dev, dst_phys, DCP_BUF_SZ, DMA_FROM_DEVICE);
++err_dst:
++	dma_unmap_single(sdcp->dev, src_phys, DCP_BUF_SZ, DMA_TO_DEVICE);
++err_src:
+ 	dma_unmap_single(sdcp->dev, key_phys, 2 * AES_KEYSIZE_128,
+ 			 DMA_TO_DEVICE);
+-	dma_unmap_single(sdcp->dev, src_phys, DCP_BUF_SZ, DMA_TO_DEVICE);
+-	dma_unmap_single(sdcp->dev, dst_phys, DCP_BUF_SZ, DMA_FROM_DEVICE);
  
--			if (ret) {
--				pr_err("setkey() failed flags=%x\n",
--						crypto_aead_get_flags(tfm));
--				goto out;
--			}
--
- 			sg_init_aead(sg, xbuf, bs + (enc ? 0 : authsize),
- 				     assoc, aad_size);
+ 	return ret;
+ }
+@@ -557,6 +574,10 @@ static int mxs_dcp_run_sha(struct ahash_request *req)
+ 	dma_addr_t buf_phys = dma_map_single(sdcp->dev, sdcp->coh->sha_in_buf,
+ 					     DCP_BUF_SZ, DMA_TO_DEVICE);
  
++	ret = dma_mapping_error(sdcp->dev, buf_phys);
++	if (ret)
++		return ret;
++
+ 	/* Fill in the DMA descriptor. */
+ 	desc->control0 = MXS_DCP_CONTROL0_DECR_SEMAPHORE |
+ 		    MXS_DCP_CONTROL0_INTERRUPT |
+@@ -589,6 +610,10 @@ static int mxs_dcp_run_sha(struct ahash_request *req)
+ 	if (rctx->fini) {
+ 		digest_phys = dma_map_single(sdcp->dev, sdcp->coh->sha_out_buf,
+ 					     DCP_SHA_PAY_SZ, DMA_FROM_DEVICE);
++		ret = dma_mapping_error(sdcp->dev, digest_phys);
++		if (ret)
++			goto done_run;
++
+ 		desc->control0 |= MXS_DCP_CONTROL0_HASH_TERM;
+ 		desc->payload = digest_phys;
+ 	}
 -- 
 2.30.2
 
