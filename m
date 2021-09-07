@@ -2,77 +2,73 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1298401E72
-	for <lists+linux-crypto@lfdr.de>; Mon,  6 Sep 2021 18:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB93F402488
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Sep 2021 09:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244190AbhIFQd6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 6 Sep 2021 12:33:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244223AbhIFQds (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:33:48 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645F1C061292
-        for <linux-crypto@vger.kernel.org>; Mon,  6 Sep 2021 09:32:43 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id j15so7358199ila.1
-        for <linux-crypto@vger.kernel.org>; Mon, 06 Sep 2021 09:32:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Hi0ERA05Hh6q+34+Ou3AtyiRWoG/jVLdZcB+Ekv+M3g=;
-        b=AQXQzDCQYveoXX8TzTwuiAk/FEyR3wCuvC9VFUOgylxIOdg1EFZyjuPsYQnAcX6J45
-         hGQ/TLw/xoIRE4dR4duos/11L9nUC9pcUBl/RXv6WkJZOj9GF3K+dFgRBHNvOmD3hg/2
-         8aWexR+OCBkLd9FzUsmw6Mf2hXMKPJJYu5JOjAjvp1WIk7xCdh9mnYnLj+26R+tY7rgo
-         HJPLbs6wPd+nl87UvFskxFfDoXbe22pxgW1zf9L/3TdM0lyau7vB+LmM0EAyEmYoeoMO
-         ZhwZDLJwTAD2meT4nF7FnViJ3hJIW4496YAschcWJBrRRFI5yQJjoNMRwEQgQiqRwsUz
-         E0sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Hi0ERA05Hh6q+34+Ou3AtyiRWoG/jVLdZcB+Ekv+M3g=;
-        b=MyTi6zZBwY3uXcsLEq+cLQVZs2CI98Z9MDjHWISj0sRHiET58K793DOhvfB55YX/q8
-         sEsEgHSkUe53JJGNE9lwQaM25xebIGR10ZFulHJb+6O+MoZKKnqycLDiBupMLiztuLqn
-         8eqikm2Ns0BubE3icCbmKjvqpTJsF3ZZQCfts9cGHRme0gGJtV/6CXiOBq7eFLZzjqzL
-         IDaqIWQQzDjoukz4XcksOvdyLx6P3mia//JOv4bnWPbyvE5FdX3xy46yGKlMqpvdlKmh
-         j7VKcoEoAUw0BVaBN24zTWfqSd6nXuHMqa2R9X403ILT62fNcnUq+KiJKJz2QJYm7qwj
-         UW6Q==
-X-Gm-Message-State: AOAM533bJUfhGWuFvKpQSqgSKSEd9jhEAPu7yYl1JpPB9odfmVG9DSz3
-        KkUq9zP+/PJzPAm1CFLJc5KpK2vS6git6ln7mw4=
-X-Google-Smtp-Source: ABdhPJyNYLbPp58BcQ7mI7j8eL1xi4DRM/CVSKmP+XLlKZnpaM0c4B2zxnkjBdrMYYyKOgNolLHbsclwr0lft4or1UU=
-X-Received: by 2002:a05:6e02:1ca6:: with SMTP id x6mr8854675ill.86.1630945961991;
- Mon, 06 Sep 2021 09:32:41 -0700 (PDT)
+        id S233441AbhIGHl5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 7 Sep 2021 03:41:57 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:42602 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233439AbhIGHl4 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 7 Sep 2021 03:41:56 -0400
+Received: from BC-Mail-HQEx02.internal.baidu.com (unknown [172.31.51.58])
+        by Forcepoint Email with ESMTPS id 63D01B5E0DF535D7C67F;
+        Tue,  7 Sep 2021 15:40:48 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-HQEx02.internal.baidu.com (172.31.51.58) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 7 Sep 2021 15:40:48 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 7 Sep 2021 15:40:47 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Deepak Saxena <dsaxena@plexity.net>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] hw_random: ixp4xx: Make use of the helper function devm_platform_ioremap_resource()
+Date:   Tue, 7 Sep 2021 15:40:41 +0800
+Message-ID: <20210907074042.1992-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Received: by 2002:a05:6e02:1d86:0:0:0:0 with HTTP; Mon, 6 Sep 2021 09:32:41
- -0700 (PDT)
-Reply-To: suzara.wans2021@gmail.com
-From:   Mrs Suzara Maling Wan <mr.brueshands4world@gmail.com>
-Date:   Mon, 6 Sep 2021 09:32:41 -0700
-Message-ID: <CABvx5tpkSnzTGw2hd3awtMaYZ6SrrR=GwA3X22LN=2t5+bDtOw@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BJHW-Mail-Ex09.internal.baidu.com (10.127.64.32) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Use the devm_platform_ioremap_resource() helper instead of
+calling platform_get_resource() and devm_ioremap_resource()
+separately
+
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/char/hw_random/ixp4xx-rng.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/char/hw_random/ixp4xx-rng.c b/drivers/char/hw_random/ixp4xx-rng.c
+index 188854dd16a9..7df5e9f7519d 100644
+--- a/drivers/char/hw_random/ixp4xx-rng.c
++++ b/drivers/char/hw_random/ixp4xx-rng.c
+@@ -42,13 +42,11 @@ static int ixp4xx_rng_probe(struct platform_device *pdev)
+ {
+ 	void __iomem * rng_base;
+ 	struct device *dev = &pdev->dev;
+-	struct resource *res;
+ 
+ 	if (!cpu_is_ixp46x()) /* includes IXP455 */
+ 		return -ENOSYS;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	rng_base = devm_ioremap_resource(dev, res);
++	rng_base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(rng_base))
+ 		return PTR_ERR(rng_base);
+ 
 -- 
-My names are Mrs Suzara Maling Wan, I am a Nationality of the Republic
-of the Philippine presently base in West Africa B/F, dealing with
-exportation of Gold, I was diagnose of blood Causal decease, and my
-doctor have announce to me that I have few days to leave due to the
-condition of my sickness.
+2.25.1
 
-I have a desire to build an orphanage home in your country of which i
-cannot execute the project myself due to my present health condition,
-I am willing to hand over the project under your care for you to help
-me fulfill my dreams and desire of building an orphanage home in your
-country.
-
-Reply in you are will to help so that I can direct you to my bank for
-the urgent transfer of the fund/money require for the project to your
-account as I have already made the fund/money available.
-
-With kind regards
-Mrs Suzara Maling Wan
