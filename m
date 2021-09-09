@@ -2,39 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FFF4049AA
-	for <lists+linux-crypto@lfdr.de>; Thu,  9 Sep 2021 13:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA782404E09
+	for <lists+linux-crypto@lfdr.de>; Thu,  9 Sep 2021 14:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236816AbhIILnB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 9 Sep 2021 07:43:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46202 "EHLO mail.kernel.org"
+        id S241909AbhIIMIB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 9 Sep 2021 08:08:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236817AbhIILmn (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:42:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AC25611C2;
-        Thu,  9 Sep 2021 11:41:32 +0000 (UTC)
+        id S245633AbhIIMDe (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:03:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB456610E9;
+        Thu,  9 Sep 2021 11:46:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631187693;
+        s=k20201202; t=1631188014;
         bh=9dqMjvJJhqY7NqJYkQIh6fgNR1D6JEdW1PhphlFg0jE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tWMe5C/1Rfsjiys4hCWLA2iiuhu717g21dej/xDRTKKZtc/rik5sciKpgpmwrjs9S
-         ArXY2iUUXZu70MYNMZlq+Ap6Gq5JyD7cTm9Kq17ztA+YZ5h1Ii82FdI7YITlN1aSBv
-         WYzRqokcFw1XvJcu1G4Y9pq2Pk0RjWvBeXrYjlKjmHVWhjRbopujG+5cL2b/uQI3ee
-         ZbcAdMWnkhZSf5NsO61whTaTwqrE9Qx/aijvTw18q03qHCqVJV7mVxoeBFtCmzYe4m
-         9qkQxNb2/PbJ4kpeLR46Lho0zJWvm1x9il4XyM9AL8QBVU0ILM379jY8qjYtLNWCZm
-         u52wfGyP2owiA==
+        b=dvTGRCKynP3ByC2rJdugz3imWsv9qO6r0w3peMbA4rmnfLwkcrG8WtacteeFECxgo
+         gtqKQ/fdcATyHGrsD56PJAvmkjw/vcThRYDVk3bF0rmG9BbK26yD6m5nQE1Ys99Al2
+         4NdZoUqpFf8UZkdm14d3hujN0Z/ek4BmNGORvGaIOHm8uU/wyBoA6FwiC1vymtJwQc
+         vbOy1R+YLm2mMJRbnrULHKdVrNMDnBWQoM5ojB/YXcLKayVbhYohChEDMtays3CVTk
+         1JLXpP3/UqlXuYrgoKOoPHyL7wfx1EqOAXWYXkSw+Xrfk3v5krjpXtnG6r4NI+HFpZ
+         qt4zMNPGXELfw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Sean Anderson <sean.anderson@seco.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.14 020/252] crypto: mxs-dcp - Use sg_mapping_iter to copy data
-Date:   Thu,  9 Sep 2021 07:37:14 -0400
-Message-Id: <20210909114106.141462-20-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.13 014/219] crypto: mxs-dcp - Use sg_mapping_iter to copy data
+Date:   Thu,  9 Sep 2021 07:43:10 -0400
+Message-Id: <20210909114635.143983-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210909114106.141462-1-sashal@kernel.org>
-References: <20210909114106.141462-1-sashal@kernel.org>
+In-Reply-To: <20210909114635.143983-1-sashal@kernel.org>
+References: <20210909114635.143983-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
