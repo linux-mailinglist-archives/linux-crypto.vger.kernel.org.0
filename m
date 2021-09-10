@@ -2,141 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D30406754
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Sep 2021 08:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E333406B44
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Sep 2021 14:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhIJGo6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 10 Sep 2021 02:44:58 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42294 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbhIJGov (ORCPT
+        id S232952AbhIJMQq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 10 Sep 2021 08:16:46 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:37878
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232941AbhIJMQp (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 10 Sep 2021 02:44:51 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 370CA22407;
-        Fri, 10 Sep 2021 06:43:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631256219; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/bhXoI+NYux7cxf3GbMWyXOSi3QTT+qJMxHbAox/FyQ=;
-        b=XxpjPGfz3eHAmG4y0aG2iVNxtnT5t2M0QJbImL1Rkl6QNXmE5eDpetPkzeiYLdbXXQQDVz
-        fdcC+WsAOqCNbAk4DS8Dv5Owku8RNhx13tdeQ2uClpc/yjCP0Pwu1eHh8yAF/xXcDxna0F
-        FgSrhDya8FcMOqu8O/n+B7INa4JbyKM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631256219;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/bhXoI+NYux7cxf3GbMWyXOSi3QTT+qJMxHbAox/FyQ=;
-        b=qnJPuUYf3eH/L6lyV9jDtoRY8lOnuHSWQYdQeopn+JBvBMhZ9lrcdpNnC8p4LuBSinE0I7
-        ICdroPa6JtKSCnBw==
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 2D2F6A3BB2;
-        Fri, 10 Sep 2021 06:43:39 +0000 (UTC)
-Received: by adalid.arch.suse.de (Postfix, from userid 16045)
-        id C82EC518E332; Fri, 10 Sep 2021 08:43:36 +0200 (CEST)
-From:   Hannes Reinecke <hare@suse.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <keith.busch@wdc.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        Fri, 10 Sep 2021 08:16:45 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id AF3223F328;
+        Fri, 10 Sep 2021 12:15:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631276132;
+        bh=WH5acUJXrOaRqz+J2404Ycvly8mHVPMOcA9T/AX5FBw=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=b0PPT3Tadgfgm16gBw637065w4w47RlmElz/m56mi5dfOfRt8xW8x5u7Uxzzzg6aS
+         0qRdyU2IWl2rVPnw1aoqI3eJfEU8Ecgsa2EVZC18VWDS71FJbiY8UvCWSdT/4T6yx7
+         SyVjA/lwqnpfjTNH8pTdsAUPcosdbBRQVJNtm0pZTCuQ4TNz2ekL2lj6JT7Iy128g1
+         l2jtkPXn2npVaNbKyx9zfxDYHDQPs5HUJwWe832vmcFO2gXXN1VxBlfr67jG9amtCm
+         p4Vjlt8jg8B9BSaXdGOaFHWd2SKSFKN/vy4t99XyVNOBrlhKtKFWqrlqF8hJTSEnZL
+         RZjPidX5CVeHg==
+From:   Colin King <colin.king@canonical.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S . Miller" <davem@davemloft.net>,
-        linux-nvme@lists.infradead.org, linux-crypto@vger.kernel.org,
-        Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 12/12] nvmet-auth: expire authentication sessions
-Date:   Fri, 10 Sep 2021 08:43:22 +0200
-Message-Id: <20210910064322.67705-13-hare@suse.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210910064322.67705-1-hare@suse.de>
-References: <20210910064322.67705-1-hare@suse.de>
+        linux-crypto@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: img-hash: remove need for error return variable ret
+Date:   Fri, 10 Sep 2021 13:15:32 +0100
+Message-Id: <20210910121532.50366-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Each authentication step is required to be completed within the
-KATO interval (or two minutes if not set). So add a workqueue function
-to reset the transaction ID and the expected next protocol step;
-this will automatically the next authentication command referring
-to the terminated authentication.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
+The assignment to error return variable ret and then the jump to
+an error exit path can be simplified by just returning the error
+return at the failure point. This allows variable ret and the
+error return path to be removed. This cleans up a static analysis
+warninng that variable ret is being assigned (value never being
+used) and being re-assigned later.
+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/nvme/target/auth.c             |  1 +
- drivers/nvme/target/fabrics-cmd-auth.c | 20 +++++++++++++++++++-
- drivers/nvme/target/nvmet.h            |  1 +
- 3 files changed, 21 insertions(+), 1 deletion(-)
+ drivers/crypto/img-hash.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/nvme/target/auth.c b/drivers/nvme/target/auth.c
-index fe44593a37f8..c7c62ba089da 100644
---- a/drivers/nvme/target/auth.c
-+++ b/drivers/nvme/target/auth.c
-@@ -197,6 +197,7 @@ int nvmet_setup_auth(struct nvmet_ctrl *ctrl)
- 
- void nvmet_auth_sq_free(struct nvmet_sq *sq)
+diff --git a/drivers/crypto/img-hash.c b/drivers/crypto/img-hash.c
+index aa4c7b2af3e2..d8e82d69745d 100644
+--- a/drivers/crypto/img-hash.c
++++ b/drivers/crypto/img-hash.c
+@@ -674,14 +674,12 @@ static int img_hash_digest(struct ahash_request *req)
+ static int img_hash_cra_init(struct crypto_tfm *tfm, const char *alg_name)
  {
-+	cancel_delayed_work(&sq->auth_expired_work);
- 	kfree(sq->dhchap_c1);
- 	sq->dhchap_c1 = NULL;
- 	kfree(sq->dhchap_c2);
-diff --git a/drivers/nvme/target/fabrics-cmd-auth.c b/drivers/nvme/target/fabrics-cmd-auth.c
-index 2f1b95098917..7e7322846b82 100644
---- a/drivers/nvme/target/fabrics-cmd-auth.c
-+++ b/drivers/nvme/target/fabrics-cmd-auth.c
-@@ -12,9 +12,22 @@
- #include "nvmet.h"
- #include "../host/auth.h"
+ 	struct img_hash_ctx *ctx = crypto_tfm_ctx(tfm);
+-	int err = -ENOMEM;
  
-+static void nvmet_auth_expired_work(struct work_struct *work)
-+{
-+	struct nvmet_sq *sq = container_of(to_delayed_work(work),
-+			struct nvmet_sq, auth_expired_work);
-+
-+	pr_debug("%s: ctrl %d qid %d transaction %u expired, resetting\n",
-+		 __func__, sq->ctrl->cntlid, sq->qid, sq->dhchap_tid);
-+	sq->dhchap_step = NVME_AUTH_DHCHAP_MESSAGE_NEGOTIATE;
-+	sq->dhchap_tid = -1;
-+}
-+
- void nvmet_init_auth(struct nvmet_ctrl *ctrl, struct nvmet_req *req)
- {
- 	/* Initialize in-band authentication */
-+	INIT_DELAYED_WORK(&req->sq->auth_expired_work,
-+			  nvmet_auth_expired_work);
- 	req->sq->authenticated = false;
- 	req->sq->dhchap_step = NVME_AUTH_DHCHAP_MESSAGE_NEGOTIATE;
- 	req->cqe->result.u32 |= 0x2 << 16;
-@@ -303,8 +316,13 @@ void nvmet_execute_auth_send(struct nvmet_req *req)
- 	req->cqe->result.u64 = 0;
- 	nvmet_req_complete(req, status);
- 	if (req->sq->dhchap_step != NVME_AUTH_DHCHAP_MESSAGE_SUCCESS2 &&
--	    req->sq->dhchap_step != NVME_AUTH_DHCHAP_MESSAGE_FAILURE2)
-+	    req->sq->dhchap_step != NVME_AUTH_DHCHAP_MESSAGE_FAILURE2) {
-+		unsigned long auth_expire_secs = ctrl->kato ? ctrl->kato : 120;
-+
-+		mod_delayed_work(system_wq, &req->sq->auth_expired_work,
-+				 auth_expire_secs * HZ);
- 		return;
-+	}
- 	/* Final states, clear up variables */
- 	nvmet_auth_sq_free(req->sq);
- 	if (req->sq->dhchap_step == NVME_AUTH_DHCHAP_MESSAGE_FAILURE2)
-diff --git a/drivers/nvme/target/nvmet.h b/drivers/nvme/target/nvmet.h
-index d0849404f398..84bf7043674e 100644
---- a/drivers/nvme/target/nvmet.h
-+++ b/drivers/nvme/target/nvmet.h
-@@ -109,6 +109,7 @@ struct nvmet_sq {
- 	u32			sqhd;
- 	bool			sqhd_disabled;
- #ifdef CONFIG_NVME_TARGET_AUTH
-+	struct delayed_work	auth_expired_work;
- 	bool			authenticated;
- 	u16			dhchap_tid;
- 	u16			dhchap_status;
+ 	ctx->fallback = crypto_alloc_ahash(alg_name, 0,
+ 					   CRYPTO_ALG_NEED_FALLBACK);
+ 	if (IS_ERR(ctx->fallback)) {
+ 		pr_err("img_hash: Could not load fallback driver.\n");
+-		err = PTR_ERR(ctx->fallback);
+-		goto err;
++		return PTR_ERR(ctx->fallback);
+ 	}
+ 	crypto_ahash_set_reqsize(__crypto_ahash_cast(tfm),
+ 				 sizeof(struct img_hash_request_ctx) +
+@@ -689,9 +687,6 @@ static int img_hash_cra_init(struct crypto_tfm *tfm, const char *alg_name)
+ 				 IMG_HASH_DMA_THRESHOLD);
+ 
+ 	return 0;
+-
+-err:
+-	return err;
+ }
+ 
+ static int img_hash_cra_md5_init(struct crypto_tfm *tfm)
 -- 
-2.29.2
+2.32.0
 
