@@ -2,89 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8126F415152
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Sep 2021 22:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C774151C6
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Sep 2021 22:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237563AbhIVUYy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 22 Sep 2021 16:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
+        id S237797AbhIVU43 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 22 Sep 2021 16:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237555AbhIVUYv (ORCPT
+        with ESMTP id S237811AbhIVU42 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:24:51 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A55FC06175F
-        for <linux-crypto@vger.kernel.org>; Wed, 22 Sep 2021 13:23:21 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id 194so13917334qkj.11
-        for <linux-crypto@vger.kernel.org>; Wed, 22 Sep 2021 13:23:21 -0700 (PDT)
+        Wed, 22 Sep 2021 16:56:28 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E673C0613DF
+        for <linux-crypto@vger.kernel.org>; Wed, 22 Sep 2021 13:54:57 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id y28so17135275lfb.0
+        for <linux-crypto@vger.kernel.org>; Wed, 22 Sep 2021 13:54:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TEV/Vzi75nBQ0CgOWTo2LIT5xk/CQpqKUn1lL40YXMU=;
-        b=DDbmxtbe6npd0HBHK0YoCqJgrvf7mfstmOFC+uUJiEnR9C1o+94NaRaQcE2K2Sm1Ln
-         JBLoMsOdAZ8Ds9czVGxzHL4m5lj0Z0r+HlZLchgn50khgYUIHfBlEdyPwOcOFOSIt1+A
-         9sK4B4AXSoL1lXMuIPnbu7+M1xxK3QtdGWNWIxDldG4NtGOZLnRK+9LZIIneRsTx2s15
-         7dECv1IZltjJumF+7mFuFDafWSEzY+2TwQOUAJ7qJd9uWVspQccFL6SKchtj8VBXTf6P
-         Y8vScOJMUirdYG7UeIEydi1JxHvhI4XKxNi5YWBb/WzwFVvw3J1f4mzX2omiHmaRXpRu
-         CMzA==
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=ijKrByR1/KtEp2Ut8Wj0vMi00kBZm/A/r1gPwOEYZIg=;
+        b=fr8lNb1tzuroNDnbJJtYWeXOCGZbssrkZvaRy8HVdYCeSSxS96vSwd3R2+r1vg3M6/
+         ex66FoD7Oi9BZ+eroN2ctcLno3UxJhL89X1t6yEsFayGc2q4Pz0zZQBaUGqcHr3s/S1+
+         lgIwwHuJ4O8SDnA5oR3zC/CFwa9fWO84703n6I2aQyNKP1VzeqgyNRTdZaVTG81gy6Vx
+         t6u58+esbUQxWBZY5IFD1w784RDrV2U7d72/V+RQAoF8LyHU+KHsqwJTuZK+RI9xoYHQ
+         hU/k+XKo5P60J+yjbN5r0LQMnBzU5qvJitpMdoh7dt6f9DChJ/lZbweVN/xESakomSrI
+         Tc/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TEV/Vzi75nBQ0CgOWTo2LIT5xk/CQpqKUn1lL40YXMU=;
-        b=MCOhCaXkoNU30WhDiBB2QBR72YgpaXXu0KutfdkTr80FEjWBmFkz7+0GrkqfnG2Zmv
-         lNvCFWpv7egaTn5whwsuR2MZhaSiZn4mya+FrhETF9O8j3M7pOYV0u9T74lG12+2QQ9O
-         +s3KaMuvD+wnV6F1NBpvnjI+YYL9jLfFOUCItjEiQGoe1mwepHuFf77H4KgUnUXnKoCS
-         xxLQrt4dCNiVX2Ti60+3CNygMmvuA4JOshtadboqSg4YziOYMOBOm4EwpqeJRlRMzq8/
-         KPg88o0FlIyJa79Xjde9FTNcosHMjZ8Yw6b4HhBFsfq5DVHMyRw8o+5p75NsH69ysrXj
-         AsjA==
-X-Gm-Message-State: AOAM5311GASUnq1Tqvg8PnUaUei0nF14cDzNQy1bZ2R0Lbxmr5b8WdY6
-        yr1stlIkfu3z664U/ZNDmDaO7ESljtr3zbLlgwjDXg==
-X-Google-Smtp-Source: ABdhPJyEx6KBe9BQEZ0kEhx991VWLgF8Es/v0jUNZTuXN7al4IqDjMj8qvUcB4XbYLssLYxzNl/Kn+9mRNLr1Tn9jNQ=
-X-Received: by 2002:a05:620a:53d:: with SMTP id h29mr1232083qkh.395.1632342200580;
- Wed, 22 Sep 2021 13:23:20 -0700 (PDT)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=ijKrByR1/KtEp2Ut8Wj0vMi00kBZm/A/r1gPwOEYZIg=;
+        b=G2k4vvGGwrrYoKmkRUEvxUr1Lzx783sDvVBnafg6yi6oKFxmE77UCMsRwYmq/84xPN
+         o3sIDwWtTSOFJBHUS8YymPWyLQjAQj2nAF8GoSDj/z9BX0Fxiptg/yf//I7exkPmt/qu
+         Ubyom6JWhy1JX7SEeF2gvfyH3lXTC8eO/MgXnpNJML7oYxEtbTZlC8uObl/k+Pxj/BBY
+         OTzVQINiIp9z0CLQMSL/9YOIMrgc+oJExKRez8QOR3ZzFgpHfBstE6Djb9zsElFvDSi4
+         6xvjwXoUsaKH+kNEf2dP+5e6eLoD0J94VkFDfna3C4xxbMSpfJ5gz4A+DqhyKmXGA76l
+         SzyQ==
+X-Gm-Message-State: AOAM531MsXqqNRQJv649GWGw3aarKSG8VAL8fiV0/aSYcbeOFVenTWiw
+        SM/j+X6mHIQnT/8YzpZwnXcCN2NRzRoMTW7PryY=
+X-Google-Smtp-Source: ABdhPJwYYn7ZwazUxB30/XTxKCOf4dlZaC6TfP1ljKsU4ZNb40cpLRsdAvw7sAb51nYQkeG7S6W5vU7Cgq+lC3FYxgE=
+X-Received: by 2002:a05:651c:1546:: with SMTP id y6mr1383813ljp.53.1632344095088;
+ Wed, 22 Sep 2021 13:54:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1632240523.git.cdleonard@gmail.com>
-In-Reply-To: <cover.1632240523.git.cdleonard@gmail.com>
-From:   Francesco Ruggeri <fruggeri@arista.com>
-Date:   Wed, 22 Sep 2021 13:23:09 -0700
-Message-ID: <CA+HUmGjQWwDJSYRJPix3xBw8yMwqLcgYO7hBWxXT9eYmJttKgQ@mail.gmail.com>
-Subject: Re: [PATCH 00/19] tcp: Initial support for RFC5925 auth option
-To:     Leonard Crestez <cdleonard@gmail.com>
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Ivan Delalande <colona@arista.com>,
-        Priyaranjan Jha <priyarjha@google.com>,
-        Menglong Dong <dong.menglong@zte.com.cn>,
-        netdev <netdev@vger.kernel.org>, linux-crypto@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
+Sender: ratcliffijames58@gmail.com
+Received: by 2002:a05:6504:5067:0:0:0:0 with HTTP; Wed, 22 Sep 2021 13:54:54
+ -0700 (PDT)
+From:   Aisha Al-Qaddafi <aisha.gdaffi24@gmail.com>
+Date:   Wed, 22 Sep 2021 21:54:54 +0100
+X-Google-Sender-Auth: B3PIuwFz7UcaHNCffYC8akvbLEk
+Message-ID: <CAKVTYWSPSMf085dB7FkhkLr9XtoZHkjbvunoMard5qsSPn4ZOg@mail.gmail.com>
+Subject: My Dear Friend
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 9:15 AM Leonard Crestez <cdleonard@gmail.com> wrote:
-> * Sequence Number Extension not implemented so connections will flap
-> every ~4G of traffic.
-
-Could you expand on this?
-What exactly do you mean by flap? Will the connection be terminated?
-I assume that depending on the initial sequence numbers the first flaps
-may occur well before 4G.
-Do you use a SNE of 0 in the hash computation, or do you just not include
-the SNE in it?
-
-Thanks,
-Francesco
+Assalamu alaikum,
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological,
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children. I have investment funds
+worth Twenty Seven Million Five Hundred Thousand United State Dollar
+($27.500.000.00 ) and i need a trusted  investment Manager/Partner
+because of my current refugee status, however, I am interested in you
+for investment project assistance in your country. If you are willing
+to handle this project on my behalf kindly reply urgently to enable me
+to provide you more information about the investment
+funds.
+Best Regards
