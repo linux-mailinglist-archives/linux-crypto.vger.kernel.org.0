@@ -2,68 +2,77 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2115E41780B
-	for <lists+linux-crypto@lfdr.de>; Fri, 24 Sep 2021 17:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19244417C7A
+	for <lists+linux-crypto@lfdr.de>; Fri, 24 Sep 2021 22:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347183AbhIXPzp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 24 Sep 2021 11:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57764 "EHLO
+        id S1344835AbhIXUt7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 24 Sep 2021 16:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347176AbhIXPzp (ORCPT
+        with ESMTP id S245656AbhIXUt6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 24 Sep 2021 11:55:45 -0400
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC937C061571
-        for <linux-crypto@vger.kernel.org>; Fri, 24 Sep 2021 08:54:11 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id s137so4106561vke.11
-        for <linux-crypto@vger.kernel.org>; Fri, 24 Sep 2021 08:54:11 -0700 (PDT)
+        Fri, 24 Sep 2021 16:49:58 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B945C06161E
+        for <linux-crypto@vger.kernel.org>; Fri, 24 Sep 2021 13:48:25 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id i12so8423757ybq.9
+        for <linux-crypto@vger.kernel.org>; Fri, 24 Sep 2021 13:48:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=iqFDC5uLqeZQYDiuBDuS55rb4VBnQhsPL0fF4fSTCrI=;
-        b=oTIpKgK/k7Rdb2L+AtxNV0G1y+ZvcJbprB0UR1bKPniJ5C92Gc3bOQAb+x0kDKBVuA
-         lnwIy0fas77P2tg8VKK5wQT0Wv/5NIQa1U7Aj3JcZ5eIjleUlLhP8q6mlta0T6atjUQx
-         utTQwN5pnjCxM75W4oC72hludW5e9zE0UuWOB/rHodJLoT1xZAmJKzSuidSOIlURPc/V
-         5Bl0T0Y90cR/ihfD0t0VtCdmY/u95tFhb0021dzTwfamCW4FgytrukS3G7UCgQO5/ak7
-         AdxtRr6PcYxr7QN8zD0lidbItXmVXrV82Gw8/vDWlQ31zV17Y+MIlmA8wZlYVYUQawvA
-         fhZQ==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=0qEo5Ap0ifMWHx1F0/BPWjIUEuK4FRkMI4xfMQnIEvY=;
+        b=e/Glh4PkFKsVuF7Cquv4a8Co1lwuccP3uANYH56udWWVyRB/xlT+ZSpmos4I6MZRZV
+         CXlPLuE9ZBWOSo3FsiH6bGurJH6490XDXfR/SLs2wsmZJewkN4nFriUWhJRB+/ihqjM9
+         CGRfkmOiV55OZfmZ+1JFMht00/vuOCXDao/w7EKyxPk26k6sv6kWLAmqWky60sF6qIfE
+         6fnmGjHKWQcMKkz73RsZepjWOf+ivEda7eM9TmomZ7r+KCY3MsRf63KeArI7EmWzdO5j
+         5E+8Spgl19CkArJh6nIgHZp0DsThJkYuIQsMsaUCSvtyYUtnOgdfZyoYYITbzpW0M62v
+         kXUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=iqFDC5uLqeZQYDiuBDuS55rb4VBnQhsPL0fF4fSTCrI=;
-        b=sFEeQG6Op99ihTQE+oSAxCw9Yc3JaUw52f9PSDeSwlZ5X8mMk60H4iMdDUvO1gfs2e
-         4M5eA0D4IkYHpKtedTTy+BdpYkEVmuzO/rxryICWYf5LxjXHxKu+ZBzcaMjvF89E3bYd
-         sTazbJUToA0raHTfXb37KIQjPTg7CKY6B3ZXV1Z3DVJN+107VNk5IcgRfn9S9wGWTsbi
-         Medneql4YdhL9MPyaolz4zG2N5S/Q46+O+8hvevGvtfonIsjJSBwXBa/KtNEqQjHWcr+
-         k8mB1UyheHGIGSOD719YCTecjtsPw1MrZkRa47zNLPHAIclmZccOQcibgO+ChTquKPRU
-         uF4Q==
-X-Gm-Message-State: AOAM533QBVyL9eazxqu6NxhWa56iih9G8ggRwU3oBtdXDhi51ZRUBpsk
-        IDW6QSDHPcQxObQBNb7e91GNc47+GCtNRI7XqjE=
-X-Google-Smtp-Source: ABdhPJwkR1KUGqzW3gMOy4MXmfrFScNhszfQbd1VbDPHpf7HAuU6HE02wRY2RD8cJjAK6BblSnzX5X/EJoed+1CJCEU=
-X-Received: by 2002:ac5:c7b8:: with SMTP id d24mr8776979vkn.22.1632498851107;
- Fri, 24 Sep 2021 08:54:11 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=0qEo5Ap0ifMWHx1F0/BPWjIUEuK4FRkMI4xfMQnIEvY=;
+        b=fvcoskmrdtgcuhl9wPwKlMyc/PQA1pPkNXaHiTwntlnJqr6zxH5se9ww78oCCd9pbp
+         P46hO8aLDraHAMK26gulECyT8i9iS3RTN1GkxUd+xzaLgTcftMVfNWBUGGvQG3ozf1ID
+         WxjftAeiCdD7s7sJ0/WZYUzy9YdTX8enAMRqDnjGiDQrhCqHV9lNikAiuzrWVYbyWzHc
+         arqyuWJn/YndUUe+4TossdIrsCHJAkZP5gwH7n1hKHkvz4PxkiNaD9DwW2WDaBVNSVZ4
+         bA7+3/15BB551a3cnGInvtZ6KtfQdj83bVwa5WPXPodIA7k/GrgkTHbRQO25Umjzidkz
+         Fs9w==
+X-Gm-Message-State: AOAM531p/sCE3R/5oFvg/xPePFXzOtwxHrxWbRaMliRWLoZdOxFnHMUm
+        K0IWtiEjCH19I/mjxNl4wJivjSD3A0kiZlaPhFI=
+X-Google-Smtp-Source: ABdhPJwrGDS7f0inz5qJ5qjH9lS5vmNoPC9uM80lrxfeQceh+amew2tUsYuHtcVoHOjUGgaox6oX50IWoxj5XmPAhgI=
+X-Received: by 2002:a25:7e81:: with SMTP id z123mr15013702ybc.64.1632516504227;
+ Fri, 24 Sep 2021 13:48:24 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a59:cecd:0:b0:22d:97f6:77c6 with HTTP; Fri, 24 Sep 2021
- 08:54:10 -0700 (PDT)
-Reply-To: tracymedicinemed3@gmail.com
-From:   Dr Tracy William <prettypercious@gmail.com>
-Date:   Fri, 24 Sep 2021 08:54:10 -0700
-Message-ID: <CAF8i-5GGxBUaTUSWdaJ2B6b6kUEmE92NwAe+fD8RyAwQ7BqyTQ@mail.gmail.com>
-Subject: From Dr Tracy William from United States
+Reply-To: richardmendyy@gmail.com
+Sender: claraakone@gmail.com
+Received: by 2002:a05:7110:6030:b0:fa:19f2:1417 with HTTP; Fri, 24 Sep 2021
+ 13:48:23 -0700 (PDT)
+From:   Richard Mendy <richardmendyy@gmail.com>
+Date:   Fri, 24 Sep 2021 20:48:23 +0000
+X-Google-Sender-Auth: jfhM2kVC7emn3EmAOOdOv0bJ9I8
+Message-ID: <CADRfTEBKhEv0J4Lc3T4sqHwnoHuwAuFTtzkjocQpRUwpTcDQug@mail.gmail.com>
+Subject: Greetings
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--- 
-Hello Dear,
-My name is Tracy William from United States.I am a French and American national
-(dual)living in the U.S and sometimes in the U.K for the Purpose of Work.
-I hope you consider my friend request and consider me worthy to be your friend.
-I will share some of my pics and more details about my self when i get
-your response
-Thanks
-With love
-Tracy
+I am Mr.Richard, i work as an accountant in a bank. I am contacting
+you independently of my investigation in my bank, i discovered an
+abandoned sum of $11.6million dollars, the money belongs to one of our
+foreign customer who died along with his supposed next of kin since
+July 22, 2003. The money has been here in our Bank lying dormant about
+19years now without anybody coming for the claim of it. I need your
+urgent assistance in transferring the fund into your private bank
+account.
+
+I want the bank to release the money to you as the nearest relative
+and next of kin to our deceased customer. The banking laws here does
+not allow such money to stay more than 21years because the money will
+be recalled to the bank treasury account as unclaimed fund. That is
+why contacted you for a business deal where this money can be shared
+between us in the ratio of 40% for you and 60% for me by indicating
+your interest i will send you the full details on how the business
+will be executed.
