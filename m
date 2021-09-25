@@ -2,77 +2,114 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19244417C7A
-	for <lists+linux-crypto@lfdr.de>; Fri, 24 Sep 2021 22:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CA0417F0B
+	for <lists+linux-crypto@lfdr.de>; Sat, 25 Sep 2021 03:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344835AbhIXUt7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 24 Sep 2021 16:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
+        id S232151AbhIYBgn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 24 Sep 2021 21:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245656AbhIXUt6 (ORCPT
+        with ESMTP id S232003AbhIYBgm (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 24 Sep 2021 16:49:58 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B945C06161E
-        for <linux-crypto@vger.kernel.org>; Fri, 24 Sep 2021 13:48:25 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id i12so8423757ybq.9
-        for <linux-crypto@vger.kernel.org>; Fri, 24 Sep 2021 13:48:25 -0700 (PDT)
+        Fri, 24 Sep 2021 21:36:42 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59BCC061571;
+        Fri, 24 Sep 2021 18:35:08 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id 24so17097722oix.0;
+        Fri, 24 Sep 2021 18:35:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=0qEo5Ap0ifMWHx1F0/BPWjIUEuK4FRkMI4xfMQnIEvY=;
-        b=e/Glh4PkFKsVuF7Cquv4a8Co1lwuccP3uANYH56udWWVyRB/xlT+ZSpmos4I6MZRZV
-         CXlPLuE9ZBWOSo3FsiH6bGurJH6490XDXfR/SLs2wsmZJewkN4nFriUWhJRB+/ihqjM9
-         CGRfkmOiV55OZfmZ+1JFMht00/vuOCXDao/w7EKyxPk26k6sv6kWLAmqWky60sF6qIfE
-         6fnmGjHKWQcMKkz73RsZepjWOf+ivEda7eM9TmomZ7r+KCY3MsRf63KeArI7EmWzdO5j
-         5E+8Spgl19CkArJh6nIgHZp0DsThJkYuIQsMsaUCSvtyYUtnOgdfZyoYYITbzpW0M62v
-         kXUQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Cpa/Eb47JNf6PfSYR9n7chIq/QRBhzZP64CmCksOOpI=;
+        b=iuwqA6XagR8MHbJ89FJZMHClU+dLE7ihVnJy7DyXFeeP6nEWcsIGThrz5GEhRqgpJ8
+         8UUIXlU1w/TNr7arCG0N+qhW2fqd0Rq1bvwL4fwAwJjXxqOWrJAGmXyj4l8QJReHKfUc
+         9hFQehZuNGQT1/pl3z16PJk6zZs1PedqqxfEtqOeKM7ZRrXQP4zxLEYtNQ32n1eLMsJF
+         VWhSo7vXluT+RSaQ2UnQnuU9sgpchriwPjZaC8bSugH8kDcmCKfpYgUz4rI/qozuw3+e
+         O2PMLQ03B76QxANqjVBeG63J+ZDmYfmjxe04c1pZ0NdjwFxb+XMbHPAfuvKYDZbnagr3
+         2/sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=0qEo5Ap0ifMWHx1F0/BPWjIUEuK4FRkMI4xfMQnIEvY=;
-        b=fvcoskmrdtgcuhl9wPwKlMyc/PQA1pPkNXaHiTwntlnJqr6zxH5se9ww78oCCd9pbp
-         P46hO8aLDraHAMK26gulECyT8i9iS3RTN1GkxUd+xzaLgTcftMVfNWBUGGvQG3ozf1ID
-         WxjftAeiCdD7s7sJ0/WZYUzy9YdTX8enAMRqDnjGiDQrhCqHV9lNikAiuzrWVYbyWzHc
-         arqyuWJn/YndUUe+4TossdIrsCHJAkZP5gwH7n1hKHkvz4PxkiNaD9DwW2WDaBVNSVZ4
-         bA7+3/15BB551a3cnGInvtZ6KtfQdj83bVwa5WPXPodIA7k/GrgkTHbRQO25Umjzidkz
-         Fs9w==
-X-Gm-Message-State: AOAM531p/sCE3R/5oFvg/xPePFXzOtwxHrxWbRaMliRWLoZdOxFnHMUm
-        K0IWtiEjCH19I/mjxNl4wJivjSD3A0kiZlaPhFI=
-X-Google-Smtp-Source: ABdhPJwrGDS7f0inz5qJ5qjH9lS5vmNoPC9uM80lrxfeQceh+amew2tUsYuHtcVoHOjUGgaox6oX50IWoxj5XmPAhgI=
-X-Received: by 2002:a25:7e81:: with SMTP id z123mr15013702ybc.64.1632516504227;
- Fri, 24 Sep 2021 13:48:24 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Cpa/Eb47JNf6PfSYR9n7chIq/QRBhzZP64CmCksOOpI=;
+        b=MaLoiBRZDmdIRVtN/gP0+uUBZqNNNZk7+lUZKHy+9KyV0KgyiXuR84auXQcGTMTg0R
+         Y7rc3rflVrnUjKwRaV40aDxEGRBD+pIq9YF5y+r1Yeb4IavNdQxWMds+Dp6bOoCRfsCG
+         /TCINMY0KpYG7NNgzr03+KyNjZWkkvWzkoq8sGOKeL2bVQBClWjAbKs2UKu83UJyXwxG
+         n/8qXoy5GZe3PKxYnJ3q+GVmHrNhbM7GECMBbSPzV+2NP/yLY4hQ5NfybdZMwQvfFr/R
+         nd+pBb9/ZsXxhxkSonWPGHBFB6kimCITP0WnFTOnFKhGKRKJ+U+R95n9rwoDOEyYu7iL
+         JQow==
+X-Gm-Message-State: AOAM533Apy8qQuE9aKidxoo5LwKzWGO8g0vr55Ts5Ct/VJP+PNsHWdvz
+        +3ToQcjAf2QLEjOReA1N9saguoZwxsF90g==
+X-Google-Smtp-Source: ABdhPJwto/am7Wj0+Bci031aCjr5vhhlEKD9KCTvSqWFXx3yQEnNNoLsNvfxEQ0hvZx/iDY8/OPphw==
+X-Received: by 2002:aca:d686:: with SMTP id n128mr3837577oig.144.1632533707735;
+        Fri, 24 Sep 2021 18:35:07 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.50])
+        by smtp.googlemail.com with ESMTPSA id r20sm2592363oot.16.2021.09.24.18.35.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 18:35:06 -0700 (PDT)
+Subject: Re: [PATCH 00/19] tcp: Initial support for RFC5925 auth option
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        Francesco Ruggeri <fruggeri@arista.com>
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        netdev <netdev@vger.kernel.org>, linux-crypto@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+References: <cover.1632240523.git.cdleonard@gmail.com>
+ <CA+HUmGjQWwDJSYRJPix3xBw8yMwqLcgYO7hBWxXT9eYmJttKgQ@mail.gmail.com>
+ <6505b7d2-7792-429d-42a6-d41711de0dc1@gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <e5b191ed-881e-542c-40e1-0cefdbfb2f10@gmail.com>
+Date:   Fri, 24 Sep 2021 19:35:04 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Reply-To: richardmendyy@gmail.com
-Sender: claraakone@gmail.com
-Received: by 2002:a05:7110:6030:b0:fa:19f2:1417 with HTTP; Fri, 24 Sep 2021
- 13:48:23 -0700 (PDT)
-From:   Richard Mendy <richardmendyy@gmail.com>
-Date:   Fri, 24 Sep 2021 20:48:23 +0000
-X-Google-Sender-Auth: jfhM2kVC7emn3EmAOOdOv0bJ9I8
-Message-ID: <CADRfTEBKhEv0J4Lc3T4sqHwnoHuwAuFTtzkjocQpRUwpTcDQug@mail.gmail.com>
-Subject: Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6505b7d2-7792-429d-42a6-d41711de0dc1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-I am Mr.Richard, i work as an accountant in a bank. I am contacting
-you independently of my investigation in my bank, i discovered an
-abandoned sum of $11.6million dollars, the money belongs to one of our
-foreign customer who died along with his supposed next of kin since
-July 22, 2003. The money has been here in our Bank lying dormant about
-19years now without anybody coming for the claim of it. I need your
-urgent assistance in transferring the fund into your private bank
-account.
+On 9/23/21 1:38 AM, Leonard Crestez wrote:
+> On 9/22/21 11:23 PM, Francesco Ruggeri wrote:
+>> On Tue, Sep 21, 2021 at 9:15 AM Leonard Crestez <cdleonard@gmail.com>
+>> wrote:
+>>> * Sequence Number Extension not implemented so connections will flap
+>>> every ~4G of traffic.
+>>
+>> Could you expand on this?
+>> What exactly do you mean by flap? Will the connection be terminated?
+>> I assume that depending on the initial sequence numbers the first flaps
+>> may occur well before 4G.
+>> Do you use a SNE of 0 in the hash computation, or do you just not include
+>> the SNE in it?
+> 
+> SNE is hardcoded to zero, with the logical consequence of incorrect
+> signatures on sequence number wrapping. The SNE has to be included
+> because otherwise all signatures would be invalid.
+> 
+> You are correct that this can break much sooner than 4G of traffic, but
+> still in the GB range on average. I didn't test the exact behavior (not
+> clear how) but if signatures don't validate the connection will likely
+> timeout.
+> 
 
-I want the bank to release the money to you as the nearest relative
-and next of kin to our deceased customer. The banking laws here does
-not allow such money to stay more than 21years because the money will
-be recalled to the bank treasury account as unclaimed fund. That is
-why contacted you for a business deal where this money can be shared
-between us in the ratio of 40% for you and 60% for me by indicating
-your interest i will send you the full details on how the business
-will be executed.
+This is for BGP and LDP connections. What's the expected frequency of
+rollover for large FIBs? Seems like it could be fairly often.
