@@ -2,57 +2,99 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C254141A060
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Sep 2021 22:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314F941A0F6
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Sep 2021 23:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236520AbhI0Upy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 27 Sep 2021 16:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
+        id S237156AbhI0VDH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 27 Sep 2021 17:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236390AbhI0Upy (ORCPT
+        with ESMTP id S237154AbhI0VDH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:45:54 -0400
+        Mon, 27 Sep 2021 17:03:07 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00102C061575
-        for <linux-crypto@vger.kernel.org>; Mon, 27 Sep 2021 13:44:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CC8C061575
+        for <linux-crypto@vger.kernel.org>; Mon, 27 Sep 2021 14:01:28 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1mUxTc-0001jq-2n; Mon, 27 Sep 2021 22:43:52 +0200
+        id 1mUxik-0003sZ-Tr; Mon, 27 Sep 2021 22:59:30 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1mUxTY-0001Ya-VG; Mon, 27 Sep 2021 22:43:48 +0200
+        id 1mUxia-0001cX-8M; Mon, 27 Sep 2021 22:59:20 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1mUxTY-0001Nx-Tm; Mon, 27 Sep 2021 22:43:48 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pci@vger.kernel.org,
-        kernel@pengutronix.de,
+        id 1mUxia-0001SG-3t; Mon, 27 Sep 2021 22:59:20 +0200
+Date:   Mon, 27 Sep 2021 22:59:17 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
         Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Tomaszx Kowalik <tomaszx.kowalik@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Russell Currey <ruscur@russell.cc>, x86@kernel.org,
+        qat-linux@intel.com, oss-drivers@corigine.com,
+        Oliver O'Halloran <oohall@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Marco Chiappero <marco.chiappero@intel.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-scsi@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-pci@vger.kernel.org,
+        linux-wireless@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jack Xu <jack.xu@intel.com>, Borislav Petkov <bp@alien8.de>,
+        Michael Buesch <m@bues.ch>, Jiri Pirko <jiri@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        xen-devel@lists.xenproject.org, Vadym Kochan <vkochan@marvell.com>,
+        MPT-FusionLinux.pdl@broadcom.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
         Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Jack Xu <jack.xu@intel.com>, qat-linux@intel.com,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH v4 6/8] crypto: qat - simplify adf_enable_aer()
-Date:   Mon, 27 Sep 2021 22:43:24 +0200
-Message-Id: <20210927204326.612555-7-uwe@kleine-koenig.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210927204326.612555-1-uwe@kleine-koenig.org>
+        linux-kernel@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        netdev@vger.kernel.org, Frederic Barrat <fbarrat@linux.ibm.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Tomaszx Kowalik <tomaszx.kowalik@intel.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-perf-users@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v4 0/8] PCI: Drop duplicated tracking of a pci_dev's
+ bound driver
+Message-ID: <20210927205917.e763q5mojkwk6per@pengutronix.de>
 References: <20210927204326.612555-1-uwe@kleine-koenig.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Patch-Hashes: v=1; h=sha256; i=woJ+XG24qLZpRfQYIhuIjBJ10HF9ai4yZDNEgvzBdKs=; m=43Bwh4bgNofseZy3pN98J/xw6T54xBXYb8+EgplqK/c=; p=SQt3CPSU9wwjwvOv3D8H5KfiBMcQYtZEVT5hBcpI3tw=; g=7cffdd55e5e8024bc4d1ee46c6d04a3a018e82b9
-X-Patch-Sig: m=pgp; i=uwe@kleine-koenig.org; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFSLNgACgkQwfwUeK3K7AmxtQf8CVg QIHFtfD/yXvLvTXpqIOqByOm/HDBiu387ug70ssQ9rJFtk4f43XU0oZ+9ItiQw7FkNd9Bc+vjHGcD ZQTfeoSIxXnATXW0OFvVBiQjgSbHJk6nfQ0ffrMQJIumaRZR20Nkln3Cr+LHMlr3PlQCWQ05eJyn4 oh4h+AO6w6oYHIPh8hpIx46zyilTXHRTlarL2579PjZUaaGUef5MaNC+ObzbW21Q6OYMTF28kB9iP bWgH241s0frIilaLo8wAWNin1d6Pe2q2IFkO/vxUmImdf2iXvQrqEu2qvGQqfQ07Ou+NCbcGXHl08 X+cQjcsdzdFK20Wo73QR6vEQ2am4jGQ==
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="upxcpc44c7obtcwt"
+Content-Disposition: inline
+In-Reply-To: <20210927204326.612555-1-uwe@kleine-koenig.org>
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: ukl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -61,176 +103,42 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-A struct pci_driver is supposed to be constant and assigning .err_handler
-once per bound device isn't really sensible. Also as the function returns
-zero unconditionally let it return no value instead and simplify the
-callers accordingly.
+--upxcpc44c7obtcwt
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As a side effect this removes one user of struct pci_dev::driver. This
-member is planned to be removed.
+Hello,
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/crypto/qat/qat_4xxx/adf_drv.c          |  7 ++-----
- drivers/crypto/qat/qat_c3xxx/adf_drv.c         |  7 ++-----
- drivers/crypto/qat/qat_c62x/adf_drv.c          |  7 ++-----
- drivers/crypto/qat/qat_common/adf_aer.c        | 10 +++-------
- drivers/crypto/qat/qat_common/adf_common_drv.h |  2 +-
- drivers/crypto/qat/qat_dh895xcc/adf_drv.c      |  7 ++-----
- 6 files changed, 12 insertions(+), 28 deletions(-)
+On Mon, Sep 27, 2021 at 10:43:18PM +0200, Uwe Kleine-K=F6nig wrote:
+> From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-diff --git a/drivers/crypto/qat/qat_4xxx/adf_drv.c b/drivers/crypto/qat/qat_4xxx/adf_drv.c
-index 359fb7989dfb..b401f7541699 100644
---- a/drivers/crypto/qat/qat_4xxx/adf_drv.c
-+++ b/drivers/crypto/qat/qat_4xxx/adf_drv.c
-@@ -247,11 +247,7 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	pci_set_master(pdev);
- 
--	if (adf_enable_aer(accel_dev)) {
--		dev_err(&pdev->dev, "Failed to enable aer.\n");
--		ret = -EFAULT;
--		goto out_err;
--	}
-+	adf_enable_aer(accel_dev);
- 
- 	if (pci_save_state(pdev)) {
- 		dev_err(&pdev->dev, "Failed to save pci state.\n");
-@@ -304,6 +300,7 @@ static struct pci_driver adf_driver = {
- 	.probe = adf_probe,
- 	.remove = adf_remove,
- 	.sriov_configure = adf_sriov_configure,
-+	.err_handler = adf_err_handler,
- };
- 
- module_pci_driver(adf_driver);
-diff --git a/drivers/crypto/qat/qat_c3xxx/adf_drv.c b/drivers/crypto/qat/qat_c3xxx/adf_drv.c
-index cc6e75dc60de..4570b644574d 100644
---- a/drivers/crypto/qat/qat_c3xxx/adf_drv.c
-+++ b/drivers/crypto/qat/qat_c3xxx/adf_drv.c
-@@ -33,6 +33,7 @@ static struct pci_driver adf_driver = {
- 	.probe = adf_probe,
- 	.remove = adf_remove,
- 	.sriov_configure = adf_sriov_configure,
-+	.err_handler = adf_err_handler,
- };
- 
- static void adf_cleanup_pci_dev(struct adf_accel_dev *accel_dev)
-@@ -192,11 +193,7 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	}
- 	pci_set_master(pdev);
- 
--	if (adf_enable_aer(accel_dev)) {
--		dev_err(&pdev->dev, "Failed to enable aer\n");
--		ret = -EFAULT;
--		goto out_err_free_reg;
--	}
-+	adf_enable_aer(accel_dev);
- 
- 	if (pci_save_state(pdev)) {
- 		dev_err(&pdev->dev, "Failed to save pci state\n");
-diff --git a/drivers/crypto/qat/qat_c62x/adf_drv.c b/drivers/crypto/qat/qat_c62x/adf_drv.c
-index bf251dfe74b3..80de12e3e552 100644
---- a/drivers/crypto/qat/qat_c62x/adf_drv.c
-+++ b/drivers/crypto/qat/qat_c62x/adf_drv.c
-@@ -33,6 +33,7 @@ static struct pci_driver adf_driver = {
- 	.probe = adf_probe,
- 	.remove = adf_remove,
- 	.sriov_configure = adf_sriov_configure,
-+	.err_handler = adf_err_handler,
- };
- 
- static void adf_cleanup_pci_dev(struct adf_accel_dev *accel_dev)
-@@ -192,11 +193,7 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	}
- 	pci_set_master(pdev);
- 
--	if (adf_enable_aer(accel_dev)) {
--		dev_err(&pdev->dev, "Failed to enable aer\n");
--		ret = -EFAULT;
--		goto out_err_free_reg;
--	}
-+	adf_enable_aer(accel_dev);
- 
- 	if (pci_save_state(pdev)) {
- 		dev_err(&pdev->dev, "Failed to save pci state\n");
-diff --git a/drivers/crypto/qat/qat_common/adf_aer.c b/drivers/crypto/qat/qat_common/adf_aer.c
-index ed3e40bc56eb..fe9bb2f3536a 100644
---- a/drivers/crypto/qat/qat_common/adf_aer.c
-+++ b/drivers/crypto/qat/qat_common/adf_aer.c
-@@ -166,11 +166,12 @@ static void adf_resume(struct pci_dev *pdev)
- 	dev_info(&pdev->dev, "Device is up and running\n");
- }
- 
--static const struct pci_error_handlers adf_err_handler = {
-+const struct pci_error_handlers adf_err_handler = {
- 	.error_detected = adf_error_detected,
- 	.slot_reset = adf_slot_reset,
- 	.resume = adf_resume,
- };
-+EXPORT_SYMBOL_GPL(adf_err_handler);
- 
- /**
-  * adf_enable_aer() - Enable Advance Error Reporting for acceleration device
-@@ -179,17 +180,12 @@ static const struct pci_error_handlers adf_err_handler = {
-  * Function enables PCI Advance Error Reporting for the
-  * QAT acceleration device accel_dev.
-  * To be used by QAT device specific drivers.
-- *
-- * Return: 0 on success, error code otherwise.
-  */
--int adf_enable_aer(struct adf_accel_dev *accel_dev)
-+void adf_enable_aer(struct adf_accel_dev *accel_dev)
- {
- 	struct pci_dev *pdev = accel_to_pci_dev(accel_dev);
--	struct pci_driver *pdrv = pdev->driver;
- 
--	pdrv->err_handler = &adf_err_handler;
- 	pci_enable_pcie_error_reporting(pdev);
--	return 0;
- }
- EXPORT_SYMBOL_GPL(adf_enable_aer);
- 
-diff --git a/drivers/crypto/qat/qat_common/adf_common_drv.h b/drivers/crypto/qat/qat_common/adf_common_drv.h
-index 4261749fae8d..54ccbd91d0c5 100644
---- a/drivers/crypto/qat/qat_common/adf_common_drv.h
-+++ b/drivers/crypto/qat/qat_common/adf_common_drv.h
-@@ -95,7 +95,7 @@ void adf_ae_fw_release(struct adf_accel_dev *accel_dev);
- int adf_ae_start(struct adf_accel_dev *accel_dev);
- int adf_ae_stop(struct adf_accel_dev *accel_dev);
- 
--int adf_enable_aer(struct adf_accel_dev *accel_dev);
-+void adf_enable_aer(struct adf_accel_dev *accel_dev);
- void adf_disable_aer(struct adf_accel_dev *accel_dev);
- void adf_reset_sbr(struct adf_accel_dev *accel_dev);
- void adf_reset_flr(struct adf_accel_dev *accel_dev);
-diff --git a/drivers/crypto/qat/qat_dh895xcc/adf_drv.c b/drivers/crypto/qat/qat_dh895xcc/adf_drv.c
-index 3976a81bd99b..c4b85b182e68 100644
---- a/drivers/crypto/qat/qat_dh895xcc/adf_drv.c
-+++ b/drivers/crypto/qat/qat_dh895xcc/adf_drv.c
-@@ -33,6 +33,7 @@ static struct pci_driver adf_driver = {
- 	.probe = adf_probe,
- 	.remove = adf_remove,
- 	.sriov_configure = adf_sriov_configure,
-+	.err_handler = adf_err_handler,
- };
- 
- static void adf_cleanup_pci_dev(struct adf_accel_dev *accel_dev)
-@@ -192,11 +193,7 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	}
- 	pci_set_master(pdev);
- 
--	if (adf_enable_aer(accel_dev)) {
--		dev_err(&pdev->dev, "Failed to enable aer\n");
--		ret = -EFAULT;
--		goto out_err_free_reg;
--	}
-+	adf_enable_aer(accel_dev);
- 
- 	if (pci_save_state(pdev)) {
- 		dev_err(&pdev->dev, "Failed to save pci state\n");
--- 
-2.30.2
+I sent the series from the wrong email address :-\ I should have used
+the above address as sender. Also I failed to add Christoph Hellwig to
+Cc: (fixed for this mail). I guess I'll have to send a v5, but I will
+wait a bit until the build bots are done with this series.
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--upxcpc44c7obtcwt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFSMKIACgkQwfwUeK3K
+7AnalQgAlpBrfIgHu7fEFcJYkSR/33uv+V4CLZsCsu9MNXsSeds9vT38r8/y0bJl
+rOEKhsH1blIcq3bsV8/AulLrFkmjYRkkih/gA/y9CeoqpbV0/NzhrS4Xo9kMos8z
+n+0f+PzRO1qg1RVWyPL7K4pkXR5cMkqWGoie07ihkt3Y9mVY8ItYl9ny3oDxCRcU
+r8KFjr7Jw0Vo8eI3Kr9lu62KyFZFByf1DDBurR5crF8ZcWM7e9kOezvJrxOQxGPP
+Z82uFafVCkhtIkKaks/6/y9pMmJF9hzDd91ubgKfbkPIMvBjpL7n07Y/Sk4S34vM
+5wdHQGNinogsdgdebn8YdZCULLmXSQ==
+=/nd3
+-----END PGP SIGNATURE-----
+
+--upxcpc44c7obtcwt--
