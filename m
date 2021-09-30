@@ -2,151 +2,107 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DD241DF55
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 Sep 2021 18:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D161841E217
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 Sep 2021 21:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352239AbhI3Qni (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 30 Sep 2021 12:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
+        id S235171AbhI3TOh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 30 Sep 2021 15:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352232AbhI3Qnh (ORCPT
+        with ESMTP id S229652AbhI3TOh (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:43:37 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5C6C06176D
-        for <linux-crypto@vger.kernel.org>; Thu, 30 Sep 2021 09:41:54 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id z22so6470075vsp.1
-        for <linux-crypto@vger.kernel.org>; Thu, 30 Sep 2021 09:41:54 -0700 (PDT)
+        Thu, 30 Sep 2021 15:14:37 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F63C06176A
+        for <linux-crypto@vger.kernel.org>; Thu, 30 Sep 2021 12:12:53 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id i6-20020a1c3b06000000b0030d05169e9bso7110182wma.4
+        for <linux-crypto@vger.kernel.org>; Thu, 30 Sep 2021 12:12:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=/T9drlD1s9vO6lHEMs4LJzmDo2MKXEHBXvFYaWoQWpk=;
-        b=pOaGKNYWfb4v0nwXyM4HQq5RhcHrgKkGxtXo9Ik9BWPtid2/WmjZyIl8LN1E6Sy1Yf
-         pdaezqCdtmbXNhV2+jv14JS+cyaV20spfm1Fv4CY7xN469gxbewLOgQJSg5+wzdJ7OTd
-         oGXlJUu2ADfKtdc2WvEWFBMIT6STlKwELS+QDAfJBm6Bf8TVRSON1fAlNczO1tSHH01Q
-         GhTm4uQSsW0kgUhMRFDXDpEy8bE6luXh1c2Z256gr1SWIS5gM95NLiiyVLRL356TMpBS
-         rhPTgcVllOzU9WYGJ0gotOkBzNbX3/Qb+LZOTv6W285uvxFIy/Xpl7bOeXWzBn+A2Tlr
-         Vofw==
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y3dpOnDXlgJcFTCuS+F/+JL7imW1C4nTJ31Epoj0e+I=;
+        b=bwAS4qXyVy5lrCFNe3bp3qWlLe4NhL1c36wauGEWB6DyD18i4Ss7dObFv4YdMqDGZW
+         skhpVHNiYGzPXclorFKhF9zPBjfhDnzW/qpNsANXsPMKKYLxc/XviSoH+sJAiBkMzdgI
+         wKEx5UKAxPCIL8hdltmLbcOlHDNP+AQ4PpzueOtP9j4vx22We2l03/wwpCea8a9o0T2V
+         FYwNPUkk8C7WfQan6eDbF8HI4PDVuZ33RSefMmtiPDFQFj+l6izgK1Uz42X2AnQ0QTli
+         O0xEhuaqx4DgcH5xDKKHJE/F5qeaUOit6yCZTajclWlYqEC+pG3Tr1nZweP/b/RMnrEw
+         1vWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=/T9drlD1s9vO6lHEMs4LJzmDo2MKXEHBXvFYaWoQWpk=;
-        b=cmbkByCKQ2k36h/+i+WA+POZtObihbosWZtHSXML1rNuwFqtdwEiRyynmZD0qD+zMH
-         PCqpK95NUvZC5aasS9HJqsRdFExZkOzXDkIzRsFdLqCWrZg+sRjJirPMbGitx0f9g5hy
-         hjcopI6xqWhS94kz8cEixRW3HU1iN8NPDP2zEhCBnmsKsHB8l2PoXLw+mpxVsjaIXSs9
-         eTT3CHVhcJxh6+T2wvJ+d7QwGL7M/TTthh50vU/66hLn+0UCl0xTbUm6qYnH40oYTMu+
-         Nrnpbn0LWqcafQvODYnk8RdJT5T8vqgc0HQ7zC5v1f5yIYcGKZb1ZfocBtQXajwQXrVt
-         B2XA==
-X-Gm-Message-State: AOAM532o26+HlcfFmfu9aMBfwaMWrHR9X15FcSz1kYHfXmSKyHBHtKwp
-        9GBLOlWmGIKf57yIitehjppmrjAsiPAN5qiEeNs=
-X-Google-Smtp-Source: ABdhPJyXJBR94aCQkDR2nyB9qUV3pduaZl7pZqBCOwpPstHXzcZti+KikFV2xiLcEDgbELfK9GtfAOGhGFV38IzhWX4=
-X-Received: by 2002:a67:d589:: with SMTP id m9mr267626vsj.30.1633020113945;
- Thu, 30 Sep 2021 09:41:53 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y3dpOnDXlgJcFTCuS+F/+JL7imW1C4nTJ31Epoj0e+I=;
+        b=Zjrg2pMF2o6FgNZcc8nERqvoBxB0aShuOfjnvczL+o/Ca072HR9azm3ejjscn/N1L1
+         QZUX3/5juaOjD15kXwO1R1ClOtvUHa28GkKOXccCKpT8AWpSJ38lgSNamqCwinzal/mw
+         KvnnTeXel4S3MmqrBNVuqAyOhsOTdlD/edLtUenSw3ZyTUNzqWAcCCqED5C/Alh7C93E
+         I+OQpgvp4MaZzwo6vu5XFZchAHzKF6mtOYWJMP5MnPVP1aSmRAX/W0tLtQYgmL+YQojc
+         EPS3HZv/yeUIvEjg2EEPcmpzx4ZAsIEoP7coT82bkNZBpS3dsPpUfkc7W8aQRShtN8eB
+         MAaA==
+X-Gm-Message-State: AOAM533dt7S1zhZkNo0InosXqFvpDjKckgepEsvf46xgcd7PgXL5gZNR
+        6I7cRXBVpRaLCyQHt8wW2bzb+g==
+X-Google-Smtp-Source: ABdhPJwrtPqllvSZg5XcCvZ2XXZZaUirsC+ZKZwYlgp++pji+2vnfiAHalOo1fEL4a19NSKpsLasvA==
+X-Received: by 2002:a05:600c:3506:: with SMTP id h6mr782894wmq.62.1633029172329;
+        Thu, 30 Sep 2021 12:12:52 -0700 (PDT)
+Received: from blmsp.lan ([2a02:2454:3e6:c900::97e])
+        by smtp.gmail.com with ESMTPSA id l11sm4813809wms.45.2021.09.30.12.12.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 12:12:52 -0700 (PDT)
+From:   Markus Schneider-Pargmann <msp@baylibre.com>
+To:     Sean Wang <sean.wang@mediatek.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Matt Mackall <mpm@selenic.com>
+Cc:     linux-mediatek@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Markus Schneider-Pargmann <msp@baylibre.com>
+Subject: [PATCH] hwrng: mediatek - Force runtime pm ops for sleep ops
+Date:   Thu, 30 Sep 2021 21:12:42 +0200
+Message-Id: <20210930191242.2542315-1-msp@baylibre.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Received: by 2002:a59:ab2e:0:b0:22d:7f44:603a with HTTP; Thu, 30 Sep 2021
- 09:41:53 -0700 (PDT)
-Reply-To: irenezakari24@gmail.com
-From:   Irene zakari <irenezakari88@gmail.com>
-Date:   Thu, 30 Sep 2021 09:41:53 -0700
-Message-ID: <CAFT8PFHpXMWJg2tokhnCJ-6xrLEBPe7kzvKSH=Q-ze3yy8WSPw@mail.gmail.com>
-Subject: PLEASE I NEED YOUR HELP
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello   ..
+Currently mtk_rng_runtime_suspend/resume is called for both runtime pm
+and system sleep operations.
 
-How do you do over there? I hope you are doing well?
+This is wrong as these should only be runtime ops as the name already
+suggests. Currently freezing the system will lead to a call to
+mtk_rng_runtime_suspend even if the device currently isn't active. This
+leads to a clock warning because it is disabled/unprepared although it
+isn't enabled/prepared currently.
 
-My name is Irene. (24 years), i am single, from Gambia, the only child
-of late Eng. Bernard Bakary Zakaria. the Director of Bajam Enterprise
-(Building Construction Company in The Gambia) also the CEO of Bernard
-Import and Export (GAMBIA).
+This patch fixes this by only setting the runtime pm ops and forces to
+call the runtime pm ops from the system sleep ops as well if active but
+not otherwise.
 
-As a matter of fact my mother died when i was barely 4 years old
-according to my late father and because of the type of love he had for
-my mother made him to remain UN-married till he left the ghost..
+Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+---
+ drivers/char/hw_random/mtk-rng.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-So after the death of my father as a result of assassinate, his brother (My
-Uncle) who is the purchasing and marketing sale manager of my late
-fathers company named (Mr. James Tokunbo Oriade Zakaria) wanted to
-convert all the properties and resources of my late father into his
-which i quarreled with him and it made him to lay his anger on me to
-the extent of hiring an assassins to kill me but to God be the glory i
-succeeded by making a way to Burkina faso for my dear life.
-Honestly i do live a fearful life even here in Burkina faso because of
-those Assassins coming after me .
+diff --git a/drivers/char/hw_random/mtk-rng.c b/drivers/char/hw_random/mtk-rng.c
+index 8ad7b515a51b..6c00ea008555 100644
+--- a/drivers/char/hw_random/mtk-rng.c
++++ b/drivers/char/hw_random/mtk-rng.c
+@@ -166,8 +166,13 @@ static int mtk_rng_runtime_resume(struct device *dev)
+ 	return mtk_rng_init(&priv->rng);
+ }
+ 
+-static UNIVERSAL_DEV_PM_OPS(mtk_rng_pm_ops, mtk_rng_runtime_suspend,
+-			    mtk_rng_runtime_resume, NULL);
++static const struct dev_pm_ops mtk_rng_pm_ops = {
++	SET_RUNTIME_PM_OPS(mtk_rng_runtime_suspend,
++			   mtk_rng_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
++};
++
+ #define MTK_RNG_PM_OPS (&mtk_rng_pm_ops)
+ #else	/* CONFIG_PM */
+ #define MTK_RNG_PM_OPS NULL
+-- 
+2.33.0
 
-I would want to live and study in your country for my better future.
-because my father same blood brother wanted to force me into undecided
-marriage, just for me to leave my father home and went and live with
-another man I never know as he want to occupied all my father home
-and maybe to sold it as my father no longer alive, I'm the only child
-daughter my father born, '' but he don't know that i am not
-interesting in any of my father properties or early marriage for now,
-because i still have future to think about and to focus on my studies
-first as i was doing my first year in the University before the death
-of my father.
-
-Actually what I want to discuss with you is about my personal issue
-concern funds my late father deposited in a bank outside my country,
-worth $4.5 million united state dollars. i need your assistance to
-receive and invest this funds in your country.
-
-Please help me, I am sincere to you and I want to be member of your
-family as well if you wouldn't mind to accept me and lead me to better
-future in your country.
-
-All the documents the bank issue to my father during time of deposit
-is with me now.
-I already notify the bank on phone about the death of my father and
-they are surprise for the news and accept that my father is their good
-customer.
-I will be happy if this money can be invested in any business of your
-choice and it will be under your control till i finished my education,
-also I'm assuring you good relationship and I am ready to discuss the
-amount of money to give you from this money for your help.
-
-Therefore, I shall give you the bank contact and other necessary
-information in my next email if you will only promise me that you will
-not/never betray and disclosed this matter to anybody, because, this
-money is the only hope i have for survival on earth since I have lost
-my parents.
-
-Moreover I have the FUND PLACEMENT CERTIFICATE and the DEATH
-CERTIFICATE here with me, but before I give you further information, i
-will like to know your full data
-
-1. Full Name: ........................
-2. Address: ..................
-3. Nationality: ........... Sex................
-4. Age:........... Date of Birth:................
-5. Occupation:...................
-.....
-6. Phone: ........... Fax:.........................
-7. State of Origin: .......Country:..............
-8. Occupation:...................
-................
-9. Marital status........... E-mail address's: ............
-10. Scan copy of your ID card or Driving License/Photo:............
-DECLARATION:
-
-so that i will be fully sure that i am not trusting the wrong person.
-and it will also give me the mind to send you the bank contact for you
-to communicate with them for more verification about this money. and
-to know you more better.
-
-Meanwhile, you can reach me through my pastor,his name is Pastor Paul
-any time you call, tell him that you want to speak with me because
-right now i am living in the church here in Burkina faso and i don't
-want to stay here any longer,
-send for me to speak with you his phone number is this(+226 75213646)
-
-I will stop here and i will be waiting for your reply and feel free
-ask any thing you want to know about me.
-Please help me, I would be highly appreciated
-Have nice day.
-From Irene
