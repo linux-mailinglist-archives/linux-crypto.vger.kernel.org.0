@@ -2,99 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D427241EE19
-	for <lists+linux-crypto@lfdr.de>; Fri,  1 Oct 2021 15:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1270C41EE61
+	for <lists+linux-crypto@lfdr.de>; Fri,  1 Oct 2021 15:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353831AbhJANEq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 1 Oct 2021 09:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
+        id S231597AbhJANTu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 1 Oct 2021 09:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353738AbhJANEp (ORCPT
+        with ESMTP id S231616AbhJANTD (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:04:45 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7691C061775;
-        Fri,  1 Oct 2021 06:03:01 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0e8e00c9205f48360a92d6.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8e00:c920:5f48:360a:92d6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4DFB81EC05BF;
-        Fri,  1 Oct 2021 15:03:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633093380;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Pww6+dMpzZfasK3x5P00rVcRmv+YdyobAl7XmL8o1hQ=;
-        b=UPoCccmafl2kj4ZfjkRANSs2qzDvdnHfjG51lKFvLOwkF4ENeK9ENX3ewAMPoJY36xSu1g
-        s+vucdZRWDPD9eq8FW57/jUSDnwGFsRUHn9t6CMr+f71s76rhviCESLb4QpZWHhAnhg015
-        UUFkcN2vhdLDHQriiIKjCj6JDq5eIQI=
-Date:   Fri, 1 Oct 2021 15:03:01 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Marc Orr <marcorr@google.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 32/45] KVM: x86: Define RMP page fault error
- bits for #NPF
-Message-ID: <YVcHBQA602iCOo+J@zn.tnic>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-33-brijesh.singh@amd.com>
- <CAA03e5G-UX761uBAFLS3e1NuYZOh2v8b=UkrX+rZUviegyWVGQ@mail.gmail.com>
+        Fri, 1 Oct 2021 09:19:03 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B93C06177C
+        for <linux-crypto@vger.kernel.org>; Fri,  1 Oct 2021 06:17:18 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id z5so20481497ybj.2
+        for <linux-crypto@vger.kernel.org>; Fri, 01 Oct 2021 06:17:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=0NqHQYP/c3mUi/IFOx7CMz/U7QYzqFRbcXZKclx3qeg=;
+        b=nqfTvakp93HIH6pG/rqS5UYPU9iAYTJjaAEx2Rju9Q2DlZGZx7ctWG69arpapjqao+
+         SZj9oaMloKcaSpCz5bVhChyJ6FV9urpR8KExMY5lP9Wv7457CyaQs7RNRzL4Q91npBRF
+         iiJCJzlY4SRy74uNQuarwb4d93/ButF9MY2Q5I8NzzBPr6g9hWaDteZjZUjBWfnaO6JF
+         z1bCPGPispKkJzwznhMiLeVA4tEMTxvEBv4OhEPSnrYppAZEb/XRVYycwA7jQKP9WRlk
+         Ov7vPtvqD5zNO0rsdCydL7aBsSaEMTlEP2qfK44zKJc9OLxRzwQCDg1CSdcbLyb9DAtM
+         QjZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=0NqHQYP/c3mUi/IFOx7CMz/U7QYzqFRbcXZKclx3qeg=;
+        b=r9jGQ9hejsJkuy52TaudMX0wOLTBOPZJz3if0bTX0I8JGNJXktx2pSMb3TBtcTjGAQ
+         I9HJC8kX9SBKL1t5YheeUjCdz341t4SYJhJISajlNQlaKZF9lwCW75qFCiXAqeTa2LB0
+         WBcuoICdUHAhH50eWlkBbWcCu6o08AoB8qupvXmsvUwkfT4GvrauSu4V2rq6Qs4Nhyud
+         eNBFDIvY6qug1Nmwf0Mfd19GY0Novxc5hnxKDicY5JyWlK1KCt3+BE6/KrdPzmmbNrsK
+         /IIQp4ytDogPFSzpFabXCY1xnruXgXJi88gye5VkoIMRSgwNhDOBTrIfVKDq7NGYq9Hk
+         EJzQ==
+X-Gm-Message-State: AOAM532Y9Z/E3M0aiCkrZBg6loqwhXvkB+Zsoex26gtMI8KBXK/j/Rew
+        RH/O2pi8l1rv5xw4QQgPKch1hV8fZUiBLfxoDRI=
+X-Google-Smtp-Source: ABdhPJy/xMnbsK1iXcQmwr9RKhw+dkb75+SSfjZtJwRq/Ml81upIqtlfudARLK7qzW2MHSONgr6UcsjFwTL8yt6pE4o=
+X-Received: by 2002:a25:2d07:: with SMTP id t7mr5648050ybt.419.1633094237375;
+ Fri, 01 Oct 2021 06:17:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAA03e5G-UX761uBAFLS3e1NuYZOh2v8b=UkrX+rZUviegyWVGQ@mail.gmail.com>
+Received: by 2002:a25:dc4e:0:0:0:0:0 with HTTP; Fri, 1 Oct 2021 06:17:17 -0700 (PDT)
+Reply-To: monica43brown@gmail.com
+From:   " monica brown." <wassemawuvi@gmail.com>
+Date:   Fri, 1 Oct 2021 14:17:17 +0100
+Message-ID: <CAKZt8WeaKW7eNyWNSCj7KRTTxSeqtXdAteJ_oeo=yhD13=viZw@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 04:41:54PM -0700, Marc Orr wrote:
-> On Fri, Aug 20, 2021 at 9:00 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
-> >
-> > When SEV-SNP is enabled globally, the hardware places restrictions on all
-> > memory accesses based on the RMP entry, whether the hypervisor or a VM,
-> > performs the accesses. When hardware encounters an RMP access violation
-> > during a guest access, it will cause a #VMEXIT(NPF).
-> >
-> > See APM2 section 16.36.10 for more details.
-> 
-> nit: Section # should be 15.36.10 (rather than 16.36.10). Also, is it
-> better to put section headings, rather than numbers in the commit logs
-> and comments? Someone mentioned to me that the section numbering in
-> APM and SDM can move around over time, but the section titles tend to
-> be more stable. I'm not sure how true this is, so feel free to
-> disregard this comment.
-
-No, that comment is correct, please make it unambiguous so that if
-someone's looking later, someone can find the section even in future
-docs. (I'm hoping they don't change headings, that is...).
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Greetings from me
+My name is Monica Brown and how are you today, please I have something that
+i will like to share with you okay please try and get back.
