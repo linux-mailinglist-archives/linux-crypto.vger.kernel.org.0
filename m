@@ -2,84 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4551341FB4F
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 Oct 2021 13:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD35341FDCA
+	for <lists+linux-crypto@lfdr.de>; Sat,  2 Oct 2021 20:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232817AbhJBMAy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 2 Oct 2021 08:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
+        id S233886AbhJBSve (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 2 Oct 2021 14:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232936AbhJBMAw (ORCPT
+        with ESMTP id S233885AbhJBSvd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 2 Oct 2021 08:00:52 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8120EC061780
-        for <linux-crypto@vger.kernel.org>; Sat,  2 Oct 2021 04:59:05 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id d11so13312444ilc.8
-        for <linux-crypto@vger.kernel.org>; Sat, 02 Oct 2021 04:59:05 -0700 (PDT)
+        Sat, 2 Oct 2021 14:51:33 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9D3C0613EF
+        for <linux-crypto@vger.kernel.org>; Sat,  2 Oct 2021 11:49:47 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id u11so9180861uaw.3
+        for <linux-crypto@vger.kernel.org>; Sat, 02 Oct 2021 11:49:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=nsZbpm1YBoHMpWTnzHLuE/zYZ0yg4jBiKD5Q7oCTPBE=;
-        b=UMcJW0fAQ7gTisaYLI8AckvYa/fSsMtmqFBzJBLmAgNSnmcOVIbjq/6pHlowPr+e/g
-         pB/4VsEQPoU3bz+G6//dg8Ny+eFZGwvt4ObXxcMafcjsoK82NhEcylXpmWo2r+V3hRpj
-         zemI25YM792FQuD8eh+T1be8GXEOedCUnwP9b3/GmnBB9RwL68yOhhQKNKopapWkDYq1
-         6hIQdYPp2GIWR42hyGd1Nm/ubo6xKwEseRqdfkTSoCo1P1Ubklk6c7/R2YiqVgQo18+Y
-         8Evsr1ekExsmW2cL7SNRiUdgTVNl6W/xsDKaKMzxGPbK3CQnk/xvASlMQqIp44Xn7C9D
-         D//Q==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=bfjkfkQ4odeg3fpRFERICHEUIBA0vhvscC5uvVo4zjE=;
+        b=hdOXVeCSae5ACxescRU07J8CDAISYGfRkbH+QRVv7nNFTFA7JiFiG/mOCbDR4fRwhn
+         bLhxcTa9ZV4m7iGg/IvynrDJmz9xfH5485qJ5KrF22G+31x+ccW6ERrsRWvQKihyd0w6
+         rRqay1Ag2d8CwqieHnQ3QC6HlOj31mwQT/6K/pOIH1C5buWL74V/Lb50KHWs/TfuNBcj
+         jbnEX4E2GrGOFZQDuG9CWkATLp8OH3UEBmTm4zVw1k0ppRb2y++bABQUFQm61d7EqPJE
+         Vl7hqL8yDhtU+X79gk6x6TfABGBqZTUUoxTgp39d0meixVrb40C7Epl8UipKNWPAgSx+
+         ih1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=nsZbpm1YBoHMpWTnzHLuE/zYZ0yg4jBiKD5Q7oCTPBE=;
-        b=SjvOKSjeSAx8ChkL18Si3x3edHOVXG3j9kG/k2GxOLYBs/aezIKrv4AL9gvfGJWUkP
-         4dBinXpB8QQN9djbN3PekidNeoB0EtI2neaPG9yKVLCiHOFEGpmyKvPlDLS3OhV7ot6o
-         9TCd8BO7x4d9CcQA5eWUIZXnKNIi7xrli/wnhnCd2c0o03jrVaAOUA7S8Qo3nrzAvy5u
-         0/0rhKX7dzDv6lMoR/BrSikgEFr1WIhOl+LY9ozjzA4kHgyiDSOc1LmghgSQbwAeTJ65
-         /0SOAXbTwgyWTOc9RmMVZr0etF6yKUzH4UiI5qJbdSEjxJDDRMtx0FSAIM+TfivxoOrh
-         BYLw==
-X-Gm-Message-State: AOAM531ScEXZzImWEXozYoFvmKKzoiJzAf9BAVWFOeQL1YQpV+ck6Kgg
-        kdag/IHtI7/om9dQ2wIGEe9TNtwwhQcGLOYbKxs=
-X-Google-Smtp-Source: ABdhPJyahlkHA+3aVTPCxx+t7r2z9rk36ZKEqmFq1pcJwH6CaH7pl7p/Rq/UQiztZWPIiaBC3SV3WJU2YMk4Jmp0G3A=
-X-Received: by 2002:a05:6e02:2144:: with SMTP id d4mr2471426ilv.316.1633175944946;
- Sat, 02 Oct 2021 04:59:04 -0700 (PDT)
+         :subject:to;
+        bh=bfjkfkQ4odeg3fpRFERICHEUIBA0vhvscC5uvVo4zjE=;
+        b=ICE8Wtnvt6mMsLFWMcfNTLG46bDlbyycfNni5Jw10abeaIeITJr5hLQLN+n6VwT+7J
+         QkwXpYoueWmtL9o5vXo4H/zBpSFLndS9ed4UkhbJCUo+n6v/N+/QgcTgmfSTQ7p0v1nK
+         atPPJlMEN5oTgCP8uz3SMyDs98R8Q/7sO2rWxS/GlIhTz16ynFNFPyWLtBib7eVKDowv
+         F+M6ZqBDrjRSjBIJ09i0zyax5/pu54SlriEpQkXof8T7wE9OhQNp0/RRxGHrj+FoEyRt
+         t95MGbt6cJMFaTKI6sNfimS0iapwg9p9GQsFUNzYeN3PslpWeb5rqE3pQ3v7zzQInJ2x
+         +t8w==
+X-Gm-Message-State: AOAM531tjjQxS/B0MrvxG/hC+TiebX5uMt+bbjbJ6TeVWVIgqiPjh+GK
+        VatlI66V/ps+wI1vG0MyflGrp+ca2cSYlOKibcg=
+X-Google-Smtp-Source: ABdhPJz+Tn6dA/kIXcAFCvllZmQSvaLjkPreus8tM54n4HJe5/kwBIq+qGVjbdoZLlM71JO41za+soYbaSBhg6AkSMI=
+X-Received: by 2002:a9f:2371:: with SMTP id 104mr2472974uae.80.1633200586695;
+ Sat, 02 Oct 2021 11:49:46 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a4f:f90d:0:0:0:0:0 with HTTP; Sat, 2 Oct 2021 04:59:04 -0700 (PDT)
-Reply-To: unitednnation0@gmail.com
-From:   "U.n" <wadebaye33@gmail.com>
-Date:   Fri, 1 Oct 2021 23:59:04 -1200
-Message-ID: <CACE0T5XuTLR43h+shXv_fqEPsKkMRB3xAfFWObFOmzeEd9AZAg@mail.gmail.com>
-Subject: Attention
-To:     unitednnation0@gmail.com
+Received: by 2002:ab0:3572:0:0:0:0:0 with HTTP; Sat, 2 Oct 2021 11:49:46 -0700 (PDT)
+Reply-To: barristerdinkarim09@gmail.com
+From:   Din Karim <akpenerajavon@gmail.com>
+Date:   Sat, 2 Oct 2021 18:49:46 +0000
+Message-ID: <CAGN3L+A186MXv1CLdXpygjvrGo94qjv6oYK+FCsmUX92Wx6QMA@mail.gmail.com>
+Subject: Dear
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---=20
+Hello dear,
 
+I'm Barr Din Karim from the Republic of Ghana please i wish to have
+communicate with you.
 
-Attention Sir/Madam
-This is the United Nation (UN). We the United Nations (UN) Globally
-has approved (US$2.500,000)( two Million Five hundred thousand
-dollars) compensation as part of our responsibilities for humanitarian
-Aid for fighting against CoronaVirus and you are among the lucky ones.
+I wait for your response.
 
-
-This compensation is for the most affected countries, communities and
-families across the global. Your funds were deposited with Bank in USA
-to transfer your funds to you via Internet Banking. You have to send
-your full details as state below:with this email Address
-  ( unitednnation0@gmail.com )
-Your full names:
-Address:
-Telephone:
-Occupation:
-
-
-
-Yours Sincerely
-Mr. Ant=C3=B3nio Guterres
-United Nations (UN).
+Barr Din Karim(Esq)
