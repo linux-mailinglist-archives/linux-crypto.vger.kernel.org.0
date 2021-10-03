@@ -2,65 +2,110 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD35341FDCA
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 Oct 2021 20:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A42E41FEDC
+	for <lists+linux-crypto@lfdr.de>; Sun,  3 Oct 2021 02:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbhJBSve (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 2 Oct 2021 14:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
+        id S234270AbhJCAJx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 2 Oct 2021 20:09:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233885AbhJBSvd (ORCPT
+        with ESMTP id S234236AbhJCAJw (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 2 Oct 2021 14:51:33 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9D3C0613EF
-        for <linux-crypto@vger.kernel.org>; Sat,  2 Oct 2021 11:49:47 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id u11so9180861uaw.3
-        for <linux-crypto@vger.kernel.org>; Sat, 02 Oct 2021 11:49:47 -0700 (PDT)
+        Sat, 2 Oct 2021 20:09:52 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CB6C0613EC
+        for <linux-crypto@vger.kernel.org>; Sat,  2 Oct 2021 17:08:06 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id t4so726379plo.0
+        for <linux-crypto@vger.kernel.org>; Sat, 02 Oct 2021 17:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=bfjkfkQ4odeg3fpRFERICHEUIBA0vhvscC5uvVo4zjE=;
-        b=hdOXVeCSae5ACxescRU07J8CDAISYGfRkbH+QRVv7nNFTFA7JiFiG/mOCbDR4fRwhn
-         bLhxcTa9ZV4m7iGg/IvynrDJmz9xfH5485qJ5KrF22G+31x+ccW6ERrsRWvQKihyd0w6
-         rRqay1Ag2d8CwqieHnQ3QC6HlOj31mwQT/6K/pOIH1C5buWL74V/Lb50KHWs/TfuNBcj
-         jbnEX4E2GrGOFZQDuG9CWkATLp8OH3UEBmTm4zVw1k0ppRb2y++bABQUFQm61d7EqPJE
-         Vl7hqL8yDhtU+X79gk6x6TfABGBqZTUUoxTgp39d0meixVrb40C7Epl8UipKNWPAgSx+
-         ih1Q==
+        d=callas.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=DkQ6IRkEUKachDYiECv++90Ss3z7wENE2DZR/9gtVkA=;
+        b=Vhlbv7VZp+Mp0SiIE9/L5FUOMKYWZAlkclV5VwfUi/MFgTbBH3ChSsTo1GjWz2FWZy
+         PkEZFGr/VEyyllOLJmDwffvMZprjG/Bnd5ldapGUbNarziavqXlKX0KTWpaEa08paSWW
+         tq5C2cCQmNX+PZn5ZrGhwh2ecc0sSdqWNNzpOwo1rFRdtcXnSiDd5/lUK7p2aOsQyDcL
+         aQUaDZ/u3VCwdklggH/msLX/XA1daGpX0SDQ4Mj2IegAkYmHaMJSYKQFqvq7dgD9luQi
+         tkuy399/Zk2CyLRoJtKOsGjzdCsNUI/YQCxBJPIKf08LeSgQBvOn2sxzQd4/iDV03AWs
+         VwUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=bfjkfkQ4odeg3fpRFERICHEUIBA0vhvscC5uvVo4zjE=;
-        b=ICE8Wtnvt6mMsLFWMcfNTLG46bDlbyycfNni5Jw10abeaIeITJr5hLQLN+n6VwT+7J
-         QkwXpYoueWmtL9o5vXo4H/zBpSFLndS9ed4UkhbJCUo+n6v/N+/QgcTgmfSTQ7p0v1nK
-         atPPJlMEN5oTgCP8uz3SMyDs98R8Q/7sO2rWxS/GlIhTz16ynFNFPyWLtBib7eVKDowv
-         F+M6ZqBDrjRSjBIJ09i0zyax5/pu54SlriEpQkXof8T7wE9OhQNp0/RRxGHrj+FoEyRt
-         t95MGbt6cJMFaTKI6sNfimS0iapwg9p9GQsFUNzYeN3PslpWeb5rqE3pQ3v7zzQInJ2x
-         +t8w==
-X-Gm-Message-State: AOAM531tjjQxS/B0MrvxG/hC+TiebX5uMt+bbjbJ6TeVWVIgqiPjh+GK
-        VatlI66V/ps+wI1vG0MyflGrp+ca2cSYlOKibcg=
-X-Google-Smtp-Source: ABdhPJz+Tn6dA/kIXcAFCvllZmQSvaLjkPreus8tM54n4HJe5/kwBIq+qGVjbdoZLlM71JO41za+soYbaSBhg6AkSMI=
-X-Received: by 2002:a9f:2371:: with SMTP id 104mr2472974uae.80.1633200586695;
- Sat, 02 Oct 2021 11:49:46 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:ab0:3572:0:0:0:0:0 with HTTP; Sat, 2 Oct 2021 11:49:46 -0700 (PDT)
-Reply-To: barristerdinkarim09@gmail.com
-From:   Din Karim <akpenerajavon@gmail.com>
-Date:   Sat, 2 Oct 2021 18:49:46 +0000
-Message-ID: <CAGN3L+A186MXv1CLdXpygjvrGo94qjv6oYK+FCsmUX92Wx6QMA@mail.gmail.com>
-Subject: Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=DkQ6IRkEUKachDYiECv++90Ss3z7wENE2DZR/9gtVkA=;
+        b=7RrJ9g6xBrYmUG1ao3Z0FzIkZCcGxbUk40T3vnkNCIF951RzZguQFRqtUU/D3cnFVo
+         KJ6MGfKP/pDVunwjyZo1KfptmUGGnxUhwtzmZR5EMWmZQN/HG0osfcHJIDoOHI3iGRT4
+         W5vOJzDmY42C0LaHD2eJiRe1E7Rtg+lnVbFdOexpiMF6NJd0ita10s2/ka/bbBiF+4BI
+         RRT10KPD2zv7zrxhtaAcmy8OozYBrjGLe96GMu9jokQV8fMaPH2raCKUQx5Hr4yZcz08
+         ITEbozTIKzOZwjdpZZt/C4Kpw9yMFywAdRukD2hIY4jR4PYl7Uodt6KKFc9Nz3mfVDGZ
+         bb8Q==
+X-Gm-Message-State: AOAM53313vxvKnlQhKBtzO18QMvriFA9zSqRhNuFifwUAWVM5GQhrzdE
+        VEzreQrNi7OAfhxWUypdol6zoylWw5/VZdKc
+X-Google-Smtp-Source: ABdhPJwiI+lO/lgvi0ZCzecyyibDIEJchExxB7Dj8qllU0wGLvIIRALNTPrxbtDI09onD0il5PQJYQ==
+X-Received: by 2002:a17:902:7d95:b0:13d:a304:1b55 with SMTP id a21-20020a1709027d9500b0013da3041b55mr16342343plm.51.1633219685560;
+        Sat, 02 Oct 2021 17:08:05 -0700 (PDT)
+Received: from smtpclient.apple ([2600:1700:38c4:12bf:b553:2d38:d1e0:adbb])
+        by smtp.gmail.com with ESMTPSA id p17sm10335352pfo.9.2021.10.02.17.08.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 02 Oct 2021 17:08:04 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [Cryptography] [RFC] random: add new pseudorandom number
+ generator
+From:   Jon Callas <jon@callas.org>
+In-Reply-To: <CACXcFm=-E_wnDdRPztKJwDo8hvt6ENf84D90iFUXReuw2s0kuQ@mail.gmail.com>
+Date:   Sat, 2 Oct 2021 17:08:03 -0700
+Cc:     Jon Callas <jon@callas.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Cryptography <cryptography@metzdowd.com>,
+        Ted Ts'o <tytso@mit.edu>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <378733E4-D976-4E2D-BE14-AD900C901CE8@callas.org>
+References: <CACXcFm=-E_wnDdRPztKJwDo8hvt6ENf84D90iFUXReuw2s0kuQ@mail.gmail.com>
+To:     Sandy Harris <sandyinchina@gmail.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello dear,
 
-I'm Barr Din Karim from the Republic of Ghana please i wish to have
-communicate with you.
 
-I wait for your response.
+> On Sep 16, 2021, at 20:18, Sandy Harris <sandyinchina@gmail.com> =
+wrote:
+>=20
+> I have a PRNG that I want to use within the Linux random(4) driver. It
+> looks remarkably strong to me, but analysis from others is needed.
 
-Barr Din Karim(Esq)
+A good block cipher in counter mode makes a pretty-okay PRNG. I say =
+pretty-okay only because I would like my PRNG not to be invertible. =
+Iterated hash functions are better. However, they are slower, and a =
+property you want in a PRNG is that it's fast. I did a system PRNG that =
+was intentionally faster than arc4random() and close to =
+linear-congruential because then there's no excuse for not using it. A =
+mildly evil person would replace both of those with a fast real PRNG. =
+(Mildly evil because if some user knew the internals and was counting on =
+it acting the way the internals specified, they might be disappointed.)
+
+XTEA is an okay block cipher. Not great, okay. Probably good enough for =
+a PRNG. But -- why wouldn't you use AES? An obvious answer is that you =
+don't have it in hardware and see previous 'graph commentary about =
+speed. Note that XTEA is a 64-bit block, so if you compare to AES, take =
+that in mind.
+
+The NIST AES_CTR_DRBG is mostly-okay. It's got a few issues (see =
+<https://eprint.iacr.org/2020/619.pdf>), but you can get around them. I =
+don't like that it takes a simple concept (a good block cipher is a good =
+PRP/PRF) and throws enough scaffolding around it to make it hard to =
+understand. I understand the reasons (they are essentially the same as =
+your rekey protection and some more), it just bugs me.
+
+So why not just use your CPU's AES (assuming you have one), or further =
+wrap XTEA in the DRBG stuff for the added misuse protection? Or even =
+iterate MD5, or, ummm, you knew this was coming, didn't you, use the =
+PRNG mode of Skein-512 (which is about twice as fast as software AES on =
+a 64-bit CPU)? Yeah, I know, driver. So we're back to why not AES? =
+What's the design consideration?
+
+	Jon
+
