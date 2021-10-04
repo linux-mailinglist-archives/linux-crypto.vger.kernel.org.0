@@ -2,364 +2,364 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CE1420B14
-	for <lists+linux-crypto@lfdr.de>; Mon,  4 Oct 2021 14:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8581421064
+	for <lists+linux-crypto@lfdr.de>; Mon,  4 Oct 2021 15:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233233AbhJDMoQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 4 Oct 2021 08:44:16 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:36100 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233179AbhJDMoP (ORCPT
+        id S237834AbhJDNnN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 4 Oct 2021 09:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237915AbhJDNlf (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:44:15 -0400
-X-UUID: 0b41f822a1914e3e9b0e0e65c729dad5-20211004
-X-UUID: 0b41f822a1914e3e9b0e0e65c729dad5-20211004
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <sam.shih@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 260975352; Mon, 04 Oct 2021 20:42:20 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Mon, 4 Oct 2021 20:42:19 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkcas07.mediatek.inc
- (172.21.101.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 4 Oct
- 2021 20:42:18 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 4 Oct 2021 20:42:18 +0800
-From:   Sam Shih <sam.shih@mediatek.com>
-To:     <maz@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <Ryder.Lee@mediatek.com>, <devicetree@vger.kernel.org>,
-        <enric.balletbo@collabora.com>, <fparent@baylibre.com>,
-        <gregkh@linuxfoundation.org>, <herbert@gondor.apana.org.au>,
-        <hsinyi@chromium.org>, <john@phrozen.org>,
-        <linus.walleij@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-clk@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <linux@roeck-us.net>, <mpm@selenic.com>, <mturquette@baylibre.com>,
-        <robh+dt@kernel.org>, <sam.shih@mediatek.com>, <sboyd@kernel.org>,
-        <sean.wang@kernel.org>, <seiya.wang@mediatek.com>,
-        <wim@linux-watchdog.org>
-Subject: [v5,9/9] arm64: dts: mediatek: add mt7986b support
-Date:   Mon, 4 Oct 2021 20:42:14 +0800
-Message-ID: <20211004124214.1445-1-sam.shih@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <39193058d8c206e616d7b179762a7829@kernel.org>
-References: <39193058d8c206e616d7b179762a7829@kernel.org>
+        Mon, 4 Oct 2021 09:41:35 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739DEC028C21
+        for <linux-crypto@vger.kernel.org>; Mon,  4 Oct 2021 06:00:43 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mXNZO-00054e-PH; Mon, 04 Oct 2021 14:59:50 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mXNZF-0000Kt-4h; Mon, 04 Oct 2021 14:59:41 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mXNZE-0000ay-Vr; Mon, 04 Oct 2021 14:59:40 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org, kernel@pengutronix.de,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ido Schimmel <idosch@nvidia.com>,
+        Ingo Molnar <mingo@redhat.com>, Jack Xu <jack.xu@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
+        Juergen Gross <jgross@suse.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Michael Buesch <m@bues.ch>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        Russell Currey <ruscur@russell.cc>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomaszx Kowalik <tomaszx.kowalik@intel.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        qat-linux@intel.com, x86@kernel.org, xen-devel@lists.xenproject.org
+Subject: [PATCH v6 00/11] PCI: Drop duplicated tracking of a pci_dev's bound driver
+Date:   Mon,  4 Oct 2021 14:59:24 +0200
+Message-Id: <20211004125935.2300113-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add basic chip support for Mediatek mt7986b, include
-uart nodes with correct clocks, rng node with correct clock,
-and watchdog node and mt7986b pinctrl node.
+Hello,
 
-Add cpu node, timer node, gic node, psci and reserved-memory node
-for ARM Trusted Firmware,
+this is v6 of the quest to drop the "driver" member from struct pci_dev
+which tracks the same data (apart from a constant offset) as dev.driver.
 
-Add clock controller nodes, include 40M clock source, topckgen, infracfg,
-apmixedsys and ethernet subsystem.
+Changes since v5:
+ - Some Acks added
+ - Some fixes in "PCI: Replace pci_dev::driver usage by
+   pci_dev::dev.driver" to properly handle that
+   to_pci_driver(X) is wrong if X is NULL.
+   This should fix the problem reported by Ido Schimmel.
 
-Signed-off-by: Sam Shih <sam.shih@mediatek.com>
----
-v5: follow reviewr's comment: removed clock freqency node in timer due to
-    we have set CNTFRQ_EL0 in ATF firmware, and also corrected GICD range
-v4: added missing gic register bases, and fixed range of GICR
-v3: used the stdout-path instead of console=ttyS0
-v2: modified clock and uart node due to clock driver updated
----
- arch/arm64/boot/dts/mediatek/Makefile        |   1 +
- arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts |  26 +++
- arch/arm64/boot/dts/mediatek/mt7986b.dtsi    | 229 +++++++++++++++++++
- 3 files changed, 256 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt7986b.dtsi
+Full range diff below.
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index e6c3a73b9e4a..d555e43d1ccc 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -8,6 +8,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-x20-dev.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-rfb1.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-bananapi-bpi-r64.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-rfb.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986b-rfb.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8167-pumpkin.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts b/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-new file mode 100644
-index 000000000000..95a202505bb2
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2021 MediaTek Inc.
-+ * Author: Sam.Shih <sam.shih@mediatek.com>
-+ */
-+
-+/dts-v1/;
-+#include "mt7986b.dtsi"
-+
-+/ {
-+	model = "MediaTek MT7986b RFB";
-+	compatible = "mediatek,mt7986b-rfb";
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+		bootargs = "earlycon=uart8250,mmio32,0x11002000 swiotlb=512";
-+	};
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986b.dtsi b/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-new file mode 100644
-index 000000000000..318547dde733
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-@@ -0,0 +1,229 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2021 MediaTek Inc.
-+ * Author: Sam.Shih <sam.shih@mediatek.com>
-+ */
-+
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/clock/mt7986-clk.h>
-+
-+/ {
-+	compatible = "mediatek,mt7986b";
-+	interrupt-parent = <&gic>;
-+	#address-cells = <2>;
-+	#size-cells = <2>;
-+
-+	clk40m: oscillator@0 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <40000000>;
-+		clock-output-names = "clkxtal";
-+	};
-+
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			enable-method = "psci";
-+			reg = <0x0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu1: cpu@1 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			enable-method = "psci";
-+			reg = <0x1>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu2: cpu@2 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			enable-method = "psci";
-+			reg = <0x2>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu3: cpu@3 {
-+			device_type = "cpu";
-+			enable-method = "psci";
-+			compatible = "arm,cortex-a53";
-+			reg = <0x3>;
-+			#cooling-cells = <2>;
-+		};
-+	};
-+
-+	psci {
-+		compatible  = "arm,psci-0.2";
-+		method      = "smc";
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+		/* 192 KiB reserved for ARM Trusted Firmware (BL31) */
-+		secmon_reserved: secmon@43000000 {
-+			reg = <0 0x43000000 0 0x30000>;
-+			no-map;
-+		};
-+	};
-+
-+	timer {
-+		compatible = "arm,armv8-timer";
-+		interrupt-parent = <&gic>;
-+		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
-+	};
-+
-+	soc {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		compatible = "simple-bus";
-+		ranges;
-+
-+		gic: interrupt-controller@c000000 {
-+			compatible = "arm,gic-v3";
-+			#interrupt-cells = <3>;
-+			interrupt-parent = <&gic>;
-+			interrupt-controller;
-+			reg = <0 0x0c000000 0 0x10000>,  /* GICD */
-+			      <0 0x0c080000 0 0x80000>,  /* GICR */
-+			      <0 0x0c400000 0 0x2000>,   /* GICC */
-+			      <0 0x0c410000 0 0x1000>,   /* GICH */
-+			      <0 0x0c420000 0 0x2000>;   /* GICV */
-+			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
-+		};
-+
-+		infracfg: infracfg@10001000 {
-+			compatible = "mediatek,mt7986-infracfg", "syscon";
-+			reg = <0 0x10001000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		topckgen: topckgen@1001b000 {
-+			compatible = "mediatek,mt7986-topckgen", "syscon";
-+			reg = <0 0x1001B000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		watchdog: watchdog@1001c000 {
-+			compatible = "mediatek,mt7986-wdt",
-+				     "mediatek,mt6589-wdt";
-+			reg = <0 0x1001c000 0 0x1000>;
-+			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-+			#reset-cells = <1>;
-+			status = "disabled";
-+		};
-+
-+		apmixedsys: apmixedsys@1001e000 {
-+			compatible = "mediatek,mt7986-apmixedsys";
-+			reg = <0 0x1001E000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		pio: pinctrl@1001f000 {
-+			compatible = "mediatek,mt7986b-pinctrl";
-+			reg = <0 0x1001f000 0 0x1000>,
-+			      <0 0x11c30000 0 0x1000>,
-+			      <0 0x11c40000 0 0x1000>,
-+			      <0 0x11e20000 0 0x1000>,
-+			      <0 0x11e30000 0 0x1000>,
-+			      <0 0x11f00000 0 0x1000>,
-+			      <0 0x11f10000 0 0x1000>,
-+			      <0 0x1000b000 0 0x1000>;
-+			reg-names = "gpio_base", "iocfg_rt_base", "iocfg_rb_base",
-+				    "iocfg_lt_base", "iocfg_lb_base", "iocfg_tr_base",
-+				    "iocfg_tl_base", "eint";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			gpio-ranges = <&pio 0 0 41>, <&pio 66 66 35>;
-+			interrupt-controller;
-+			interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-parent = <&gic>;
-+			#interrupt-cells = <2>;
-+		};
-+
-+		sgmiisys0: syscon@10060000 {
-+			compatible = "mediatek,mt7986-sgmiisys_0",
-+				     "syscon";
-+			reg = <0 0x10060000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		sgmiisys1: syscon@10070000 {
-+			compatible = "mediatek,mt7986-sgmiisys_1",
-+				     "syscon";
-+			reg = <0 0x10070000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		trng: trng@1020f000 {
-+			compatible = "mediatek,mt7986-rng",
-+				     "mediatek,mt7623-rng";
-+			reg = <0 0x1020f000 0 0x100>;
-+			clocks = <&infracfg CLK_INFRA_TRNG_CK>;
-+			clock-names = "rng";
-+			status = "disabled";
-+		};
-+
-+		uart0: serial@11002000 {
-+			compatible = "mediatek,mt7986-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11002000 0 0x400>;
-+			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&infracfg CLK_INFRA_UART0_SEL>,
-+				 <&infracfg CLK_INFRA_UART0_CK>;
-+			clock-names = "baud", "bus";
-+			assigned-clocks = <&topckgen CLK_TOP_UART_SEL>,
-+					  <&infracfg CLK_INFRA_UART0_SEL>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_XTAL>,
-+						 <&topckgen CLK_TOP_UART_SEL>;
-+			status = "disabled";
-+		};
-+
-+		uart1: serial@11003000 {
-+			compatible = "mediatek,mt7986-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11003000 0 0x400>;
-+			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&infracfg CLK_INFRA_UART1_SEL>,
-+				 <&infracfg CLK_INFRA_UART1_CK>;
-+			clock-names = "baud", "bus";
-+			assigned-clocks = <&infracfg CLK_INFRA_UART1_SEL>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_F26M_SEL>;
-+			status = "disabled";
-+		};
-+
-+		uart2: serial@11004000 {
-+			compatible = "mediatek,mt7986-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11004000 0 0x400>;
-+			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&infracfg CLK_INFRA_UART2_SEL>,
-+				 <&infracfg CLK_INFRA_UART2_CK>;
-+			clock-names = "baud", "bus";
-+			assigned-clocks = <&infracfg CLK_INFRA_UART2_SEL>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_F26M_SEL>;
-+			status = "disabled";
-+		};
-+
-+		ethsys: syscon@15000000 {
-+			 #address-cells = <1>;
-+			 #size-cells = <1>;
-+			 compatible = "mediatek,mt7986-ethsys",
-+				      "syscon";
-+			 reg = <0 0x15000000 0 0x1000>;
-+			 #clock-cells = <1>;
-+			 #reset-cells = <1>;
-+		};
-+
-+	};
-+
-+};
+This patch stack survived an allmodconfig build on arm64, m68k, powerpc,
+riscv, s390, sparc64 and x86_64 on top of v5.15-rc3.
+
+Best regards
+Uwe
+
+Uwe Kleine-König (11):
+  PCI: Simplify pci_device_remove()
+  PCI: Drop useless check from pci_device_probe()
+  xen/pci: Drop some checks that are always true
+  bcma: simplify reference to the driver's name
+  powerpc/eeh: Don't use driver member of struct pci_dev and further
+    cleanups
+  ssb: Simplify determination of driver name
+  PCI: Replace pci_dev::driver usage that gets the driver name
+  scsi: message: fusion: Remove unused parameter of mpt_pci driver's
+    probe()
+  crypto: qat - simplify adf_enable_aer()
+  PCI: Replace pci_dev::driver usage by pci_dev::dev.driver
+  PCI: Drop duplicated tracking of a pci_dev's bound driver
+
+ arch/powerpc/include/asm/ppc-pci.h            |  5 -
+ arch/powerpc/kernel/eeh.c                     |  8 ++
+ arch/powerpc/kernel/eeh_driver.c              | 10 +-
+ arch/x86/events/intel/uncore.c                |  2 +-
+ arch/x86/kernel/probe_roms.c                  | 10 +-
+ drivers/bcma/host_pci.c                       |  6 +-
+ drivers/crypto/hisilicon/qm.c                 |  2 +-
+ drivers/crypto/qat/qat_4xxx/adf_drv.c         |  7 +-
+ drivers/crypto/qat/qat_c3xxx/adf_drv.c        |  7 +-
+ drivers/crypto/qat/qat_c62x/adf_drv.c         |  7 +-
+ drivers/crypto/qat/qat_common/adf_aer.c       | 10 +-
+ .../crypto/qat/qat_common/adf_common_drv.h    |  3 +-
+ drivers/crypto/qat/qat_dh895xcc/adf_drv.c     |  7 +-
+ drivers/message/fusion/mptbase.c              |  7 +-
+ drivers/message/fusion/mptbase.h              |  2 +-
+ drivers/message/fusion/mptctl.c               |  4 +-
+ drivers/message/fusion/mptlan.c               |  2 +-
+ drivers/misc/cxl/guest.c                      | 24 +++--
+ drivers/misc/cxl/pci.c                        | 30 +++---
+ .../ethernet/hisilicon/hns3/hns3_ethtool.c    |  2 +-
+ .../ethernet/marvell/prestera/prestera_pci.c  |  2 +-
+ drivers/net/ethernet/mellanox/mlxsw/pci.c     |  2 +-
+ .../ethernet/netronome/nfp/nfp_net_ethtool.c  |  3 +-
+ drivers/pci/iov.c                             | 33 +++++--
+ drivers/pci/pci-driver.c                      | 96 ++++++++++---------
+ drivers/pci/pci.c                             |  4 +-
+ drivers/pci/pcie/err.c                        | 36 +++----
+ drivers/pci/xen-pcifront.c                    | 63 ++++++------
+ drivers/ssb/pcihost_wrapper.c                 |  6 +-
+ drivers/usb/host/xhci-pci.c                   |  2 +-
+ include/linux/pci.h                           |  1 -
+ 31 files changed, 208 insertions(+), 195 deletions(-)
+
+Range-diff against v5:
+ -:  ------------ >  1:  c2b53ab26a6b PCI: Simplify pci_device_remove()
+ -:  ------------ >  2:  2c733e1d5186 PCI: Drop useless check from pci_device_probe()
+ -:  ------------ >  3:  547ca5a7aa16 xen/pci: Drop some checks that are always true
+ -:  ------------ >  4:  40eb07353844 bcma: simplify reference to the driver's name
+ -:  ------------ >  5:  bab59c1dff6d powerpc/eeh: Don't use driver member of struct pci_dev and further cleanups
+ 1:  abd70de9782d !  6:  92f4d61bbac3 ssb: Simplify determination of driver name
+    @@ Commit message
+         This has the upside of not requiring the driver member of struct pci_dev
+         which is about to be removed and being simpler.
+     
+    +    Acked-by: Michael Büsch <m@bues.ch>
+         Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+     
+      ## drivers/ssb/pcihost_wrapper.c ##
+ 2:  735845bd26b9 !  7:  6303f03ab2aa PCI: Replace pci_dev::driver usage that gets the driver name
+    @@ Commit message
+         driver name by dev_driver_string() which implicitly makes use of struct
+         pci_dev::dev->driver.
+     
+    +    Acked-by: Simon Horman <simon.horman@corigine.com> (for NFP)
+         Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+     
+      ## drivers/crypto/hisilicon/qm.c ##
+ 3:  1e58019165b9 =  8:  658a6c00ec96 scsi: message: fusion: Remove unused parameter of mpt_pci driver's probe()
+ 4:  dea72a470141 =  9:  aceaf5321603 crypto: qat - simplify adf_enable_aer()
+ 5:  b4165dda38ea ! 10:  80648d999985 PCI: Replace pci_dev::driver usage by pci_dev::dev.driver
+    @@ arch/x86/kernel/probe_roms.c: static struct resource video_rom_resource = {
+      static bool match_id(struct pci_dev *pdev, unsigned short vendor, unsigned short device)
+      {
+     -	struct pci_driver *drv = pdev->driver;
+    -+	struct pci_driver *drv = to_pci_driver(pdev->dev.driver);
+      	const struct pci_device_id *id;
+      
+      	if (pdev->vendor == vendor && pdev->device == device)
+    + 		return true;
+    + 
+    +-	for (id = drv ? drv->id_table : NULL; id && id->vendor; id++)
+    +-		if (id->vendor == vendor && id->device == device)
+    +-			break;
+    ++	if (pdev->dev.driver) {
+    ++		struct pci_driver *drv = to_pci_driver(pdev->dev.driver);
+    ++		for (id = drv->id_table; id && id->vendor; id++)
+    ++			if (id->vendor == vendor && id->device == device)
+    ++				break;
+    ++	}
+    + 
+    + 	return id && id->vendor;
+    + }
+     
+      ## drivers/misc/cxl/guest.c ##
+     @@ drivers/misc/cxl/guest.c: static void pci_error_handlers(struct cxl_afu *afu,
+    @@ drivers/pci/iov.c: static ssize_t sriov_vf_total_msix_show(struct device *dev,
+      
+      	device_lock(dev);
+     -	if (!pdev->driver || !pdev->driver->sriov_get_vf_total_msix)
+    -+	pdrv = to_pci_driver(dev->driver);
+    -+	if (!pdrv || !pdrv->sriov_get_vf_total_msix)
+    ++	if (!dev->driver)
+      		goto unlock;
+      
+     -	vf_total_msix = pdev->driver->sriov_get_vf_total_msix(pdev);
+    ++	pdrv = to_pci_driver(dev->driver);
+    ++	if (!pdrv->sriov_get_vf_total_msix)
+    ++		goto unlock;
+    ++
+     +	vf_total_msix = pdrv->sriov_get_vf_total_msix(pdev);
+      unlock:
+      	device_unlock(dev);
+    @@ drivers/pci/iov.c: static ssize_t sriov_vf_msix_count_store(struct device *dev,
+      
+      	device_lock(&pdev->dev);
+     -	if (!pdev->driver || !pdev->driver->sriov_set_msix_vec_count) {
+    ++	if (!pdev->dev.driver) {
+    ++		ret = -EOPNOTSUPP;
+    ++		goto err_pdev;
+    ++	}
+    ++
+     +	pdrv = to_pci_driver(pdev->dev.driver);
+    -+	if (!pdrv || !pdrv->sriov_set_msix_vec_count) {
+    ++	if (!pdrv->sriov_set_msix_vec_count) {
+      		ret = -EOPNOTSUPP;
+      		goto err_pdev;
+      	}
+    @@ drivers/pci/pci-driver.c: static void pci_device_remove(struct device *dev)
+      {
+      	struct pci_dev *pci_dev = to_pci_dev(dev);
+     -	struct pci_driver *drv = pci_dev->driver;
+    -+	struct pci_driver *drv = to_pci_driver(pci_dev->dev.driver);
+      
+      	pm_runtime_resume(dev);
+      
+    +-	if (drv && drv->shutdown)
+    +-		drv->shutdown(pci_dev);
+    ++	if (pci_dev->dev.driver) {
+    ++		struct pci_driver *drv = to_pci_driver(pci_dev->dev.driver);
+    ++
+    ++		if (drv->shutdown)
+    ++			drv->shutdown(pci_dev);
+    ++	}
+    + 
+    + 	/*
+    + 	 * If this is a kexec reboot, turn off Bus Master bit on the
+     @@ drivers/pci/pci-driver.c: static int pci_pm_reenable_device(struct pci_dev *pci_dev)
+      static int pci_legacy_suspend(struct device *dev, pm_message_t state)
+      {
+      	struct pci_dev *pci_dev = to_pci_dev(dev);
+     -	struct pci_driver *drv = pci_dev->driver;
+    -+	struct pci_driver *drv = to_pci_driver(dev->driver);
+      
+    - 	if (drv && drv->suspend) {
+    - 		pci_power_t prev = pci_dev->current_state;
+    +-	if (drv && drv->suspend) {
+    +-		pci_power_t prev = pci_dev->current_state;
+    +-		int error;
+    ++	if (dev->driver) {
+    ++		struct pci_driver *drv = to_pci_driver(dev->driver);
+    + 
+    +-		error = drv->suspend(pci_dev, state);
+    +-		suspend_report_result(drv->suspend, error);
+    +-		if (error)
+    +-			return error;
+    ++		if (drv->suspend) {
+    ++			pci_power_t prev = pci_dev->current_state;
+    ++			int error;
+    + 
+    +-		if (!pci_dev->state_saved && pci_dev->current_state != PCI_D0
+    +-		    && pci_dev->current_state != PCI_UNKNOWN) {
+    +-			pci_WARN_ONCE(pci_dev, pci_dev->current_state != prev,
+    +-				      "PCI PM: Device state not saved by %pS\n",
+    +-				      drv->suspend);
+    ++			error = drv->suspend(pci_dev, state);
+    ++			suspend_report_result(drv->suspend, error);
+    ++			if (error)
+    ++				return error;
+    ++
+    ++			if (!pci_dev->state_saved && pci_dev->current_state != PCI_D0
+    ++			    && pci_dev->current_state != PCI_UNKNOWN) {
+    ++				pci_WARN_ONCE(pci_dev, pci_dev->current_state != prev,
+    ++					      "PCI PM: Device state not saved by %pS\n",
+    ++					      drv->suspend);
+    ++			}
+    + 		}
+    + 	}
+    + 
+     @@ drivers/pci/pci-driver.c: static int pci_legacy_suspend_late(struct device *dev, pm_message_t state)
+      static int pci_legacy_resume(struct device *dev)
+      {
+      	struct pci_dev *pci_dev = to_pci_dev(dev);
+     -	struct pci_driver *drv = pci_dev->driver;
+    -+	struct pci_driver *drv = to_pci_driver(pci_dev->dev.driver);
+      
+      	pci_fixup_device(pci_fixup_resume, pci_dev);
+      
+    +-	return drv && drv->resume ?
+    +-			drv->resume(pci_dev) : pci_pm_reenable_device(pci_dev);
+    ++	if (pci_dev->dev.driver) {
+    ++		struct pci_driver *drv = to_pci_driver(pci_dev->dev.driver);
+    ++
+    ++		if (drv->resume)
+    ++			return drv->resume(pci_dev);
+    ++	}
+    ++
+    ++	return pci_pm_reenable_device(pci_dev);
+    + }
+    + 
+    + /* Auxiliary functions used by the new power management framework */
+     @@ drivers/pci/pci-driver.c: static void pci_pm_default_suspend(struct pci_dev *pci_dev)
+      
+      static bool pci_has_legacy_pm_support(struct pci_dev *pci_dev)
+      {
+     -	struct pci_driver *drv = pci_dev->driver;
+    -+	struct pci_driver *drv = to_pci_driver(pci_dev->dev.driver);
+    - 	bool ret = drv && (drv->suspend || drv->resume);
+    +-	bool ret = drv && (drv->suspend || drv->resume);
+    ++	struct pci_driver *drv;
+    ++	bool ret;
+    ++
+    ++	if (!pci_dev->dev.driver)
+    ++		return false;
+    ++
+    ++	drv = to_pci_driver(pci_dev->dev.driver);
+    ++	ret = drv && (drv->suspend || drv->resume);
+      
+      	/*
+    + 	 * Legacy PM support is used by default, so warn if the new framework is
+     @@ drivers/pci/pci-driver.c: static int pci_pm_runtime_suspend(struct device *dev)
+      	int error;
+      
+ 6:  d93a138bd7ab = 11:  2686d69bca17 PCI: Drop duplicated tracking of a pci_dev's bound driver
+
+base-commit: 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
 -- 
-2.29.2
+2.30.2
 
