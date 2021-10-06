@@ -2,59 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A6F423F64
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Oct 2021 15:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B29424402
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Oct 2021 19:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238218AbhJFNgy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 6 Oct 2021 09:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231655AbhJFNgy (ORCPT
+        id S238111AbhJFRZp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 6 Oct 2021 13:25:45 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:60478
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229835AbhJFRZo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:36:54 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C138BC061755
-        for <linux-crypto@vger.kernel.org>; Wed,  6 Oct 2021 06:35:01 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id r18so9939664edv.12
-        for <linux-crypto@vger.kernel.org>; Wed, 06 Oct 2021 06:35:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=j1tS4tfwswvJl3BqQQ/NgIROag+113gYNCztgVwbM8PzF8wLYq+xmZy3u0u8RU8axy
-         jeTBOIYkH/bk51pJlTZGQ6Dm0MH71+g/SAkkx4ng9b2xftuqlpInQFRzGsL2/6UGjKWw
-         Wt6VPVr+zZ0MBAdmwdjdQV5DvO7FhiWfy+a/eLExav16JYob3YJ/3xP8Dpq26azv8/K7
-         wCqLNyr/MTZsCDab2IkHZeO6zEpz8D2tqptHTzXsFmU75dn2piX3ufsb/q3rGE6YsDgL
-         /8glzyasNGxai50th9oLF+sTiDobfM5ZHYmPdkukHQWEiUnsr6XrBxhOoPTLtHjqtwmj
-         dCGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=J7cZFKH6NJqwkCCpP1GHu6vwxy+6TwhagGL60agUg40JgK/W44FYF8D5EBe7bcD4Wp
-         XWDx1KFbc6ehmA1WoULpfxYz6G76Lzv2KvQ5tbJ5ZpShmkZzRR7tj95lMty8vJB/gedH
-         3KJPbcL//SLfDAU6HQxnxEoBGB4Gk7K4bDD4OO2JtwZTwT+nNeDY/tjbwLaCT4FV+pqz
-         1DlE+xuyNNjSDm1FPhEdcMKnGcRqpMHAV5WqpF3NG+dfKGpdQPFkZLs9iF6fkfEjFk9I
-         25diS64mnzPKh+DdJDbtzD0YkoKoNEg9GYeDA6v91iaHHz/slIKIo8vVdHhpYc5irS09
-         UIoQ==
-X-Gm-Message-State: AOAM532M7pMd43Pt4M+FqOHRDKGNXd5icW9oecQOY6dAfVptgoJkxp/C
-        GrV6FX4IUjCUVt0NIJQdiUrKU9hjVbjmyRNpHoU=
-X-Google-Smtp-Source: ABdhPJwB7MxImAj4xmVxqmVHqmumB/CW0yzgILkN4NWFqPHtxcu1vHlJJ4SSi2lY+HvcnNHnUXrXS52U8QE4KjqHnTU=
-X-Received: by 2002:a17:906:4f82:: with SMTP id o2mr32487762eju.10.1633527300155;
- Wed, 06 Oct 2021 06:35:00 -0700 (PDT)
+        Wed, 6 Oct 2021 13:25:44 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id CE11D3FFE4;
+        Wed,  6 Oct 2021 17:23:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633541030;
+        bh=MJeBRb5etdZcXTPQ8b0j2/km0oaalM1EtK76TFXxa+w=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=lp/3KZVs08cKssNF2KsDkim83QzobVTto7zJRqmjSopuQJMf35IzPuUrk0I/Tc7Nd
+         8h0KtwSDdyDs2bvO5kIQuDZfciBX95YI7/6KgczSNTi+9VeD//rvJmDOhtQPXirFSc
+         FNq0b2zmzwaxKDyWCHteFiqBWhVlHReLeXFOL3xWEJkFjGHG3ROgz1itrdGiC1afRt
+         PT35LUZ/9DDo5y2zDhPpqXzJfzDHtpiPD/qqnLqktqYYGuFm1Ksg0vrWDnF51gfSjs
+         6i6mnDAMMQXG6B2WTU++E9IG7IEU5h9f6qsoef7vUU05bBSch5POIP0aePxZGd8EAT
+         WcSwe+xrug/Gw==
+From:   Colin King <colin.king@canonical.com>
+To:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto : asymmetric_keys: Fix function description to match prototype
+Date:   Wed,  6 Oct 2021 18:23:50 +0100
+Message-Id: <20211006172350.1025091-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: by 2002:a54:328d:0:0:0:0:0 with HTTP; Wed, 6 Oct 2021 06:34:59 -0700 (PDT)
-Reply-To: muna322255gh@gmail.com
-From:   Mala koffi <anthonykokon1977@gmail.com>
-Date:   Wed, 6 Oct 2021 06:34:59 -0700
-Message-ID: <CALgjj-tFcy3ei=FcD0HDSjRJSbbdU1c-usfR91bqx+Ln9+uiLA@mail.gmail.com>
-Subject: Re: Hello i sent you a message containing the details of the
- transaction Did you see it?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
+
+The function arguments in the description does not match the prototype.
+Fix this by renaming trust_keys to trusted_keys.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ crypto/asymmetric_keys/verify_pefile.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/crypto/asymmetric_keys/verify_pefile.c b/crypto/asymmetric_keys/verify_pefile.c
+index 7553ab18db89..148cad70fe79 100644
+--- a/crypto/asymmetric_keys/verify_pefile.c
++++ b/crypto/asymmetric_keys/verify_pefile.c
+@@ -387,7 +387,7 @@ static int pefile_digest_pe(const void *pebuf, unsigned int pelen,
+  * verify_pefile_signature - Verify the signature on a PE binary image
+  * @pebuf: Buffer containing the PE binary image
+  * @pelen: Length of the binary image
+- * @trust_keys: Signing certificate(s) to use as starting points
++ * @trusted_keys: Signing certificate(s) to use as starting points
+  * @usage: The use to which the key is being put.
+  *
+  * Validate that the certificate chain inside the PKCS#7 message inside the PE
+-- 
+2.32.0
 
