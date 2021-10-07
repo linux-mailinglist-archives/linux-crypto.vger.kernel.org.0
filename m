@@ -2,72 +2,77 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C43425041
-	for <lists+linux-crypto@lfdr.de>; Thu,  7 Oct 2021 11:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A2742555E
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 Oct 2021 16:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbhJGJoU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 7 Oct 2021 05:44:20 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35744 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhJGJoT (ORCPT
+        id S242066AbhJGO1h (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 7 Oct 2021 10:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233375AbhJGO1h (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:44:19 -0400
-Date:   Thu, 7 Oct 2021 11:42:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633599745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hXTFpyDfhx6qm6cp9KbouOiVxuKlk0eijeOxEYNJX8c=;
-        b=I7zz9I2Svh4dGKF04vuuJXfVoYvxgJdP9zxru27kllAILb0YONqA+9Rsm6PisPCGUxZjcC
-        dGD30+hmRciZMuRe95oTH/Sshwu626KrOgb8sSL1lb3tCl2yjFHkgqshac8hjsLjMZWASn
-        QQBXT7ZNnh3++vf7q1Dqo+auL+6iXkJ+NXNiHXpBAL9/guv9dB8G2ZVaLh7OAjcaCTTBFK
-        bKcWYWo0FCLF0lBIBDv5+2iwKmVd8x0tk2GKhXw2JajMeQDLIItr4avVat4M1ep5HFkU83
-        LjKeL8Hxdeq1pUSfeJceFwfZAyMpup+3JHRdh2Trdd/td0EM8mJ3bIZIiO/t4A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633599745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hXTFpyDfhx6qm6cp9KbouOiVxuKlk0eijeOxEYNJX8c=;
-        b=BXEVfhNByUM4Z4iH7VoOU9kVd6oG93jxXTxn278T4oOrrwRA0ornqBQimpyYvWkcJfI6Ak
-        W2Ezf3I9W0ZxSMDA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] crypto: testmgr - Only disable migration in
- crypto_disable_simd_for_test()
-Message-ID: <20211007094224.owhdgujcln2zh2eg@linutronix.de>
-References: <20210928115401.441339-1-bigeasy@linutronix.de>
- <YVyWrKUk81e10zM7@gmail.com>
+        Thu, 7 Oct 2021 10:27:37 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7DAC061746
+        for <linux-crypto@vger.kernel.org>; Thu,  7 Oct 2021 07:25:43 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id j15so4054617plh.7
+        for <linux-crypto@vger.kernel.org>; Thu, 07 Oct 2021 07:25:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=LKMdW8eXJJQoIzur5jtUB7TYD/pVRqgw99BRVM74YbM=;
+        b=pqPuz3sJ4w86eX240AbJi2OYbK3joyS2DL7HmKH2AJA1iQ4PMyJKrggBOqZSY/2srB
+         pPWqGiUCtw/WB/pHZpdC7PtrlOcqRsyMa6b8h4YCmGzn7JWFRAVNTGRUHAyERIixkuEK
+         i0WpKz+LnzxDjkfHWEaiCd5Jp0qZGELNV9aUUMiwI8YfGT0N2CTpbjJfa9Wx+w9kLPxU
+         CVZKRpWqvLQnB/OTg8Ltvr7v/DX9lAHafiw42yV9mx3QvATGtZTyaJmM8RW2r2EwBD33
+         OGMQpbkVnWM2yY5Fk3NeikfSHnByM8WFFyMWMS5mF7xGQcgqy9KHa1hPEbn5dlTTPj+6
+         OVlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=LKMdW8eXJJQoIzur5jtUB7TYD/pVRqgw99BRVM74YbM=;
+        b=GYn0+eFsktkBGnfiCM0CyREfkNaSb4OZOYz6gzmvusTsG41pmOdOP/GnlswOurcG1R
+         /DYVzHl3iv0PAIl/UcYKYOi0hLuPifwKYv3i3M23HAUr18GVzEEGLXGbhI5FU2y2cJkn
+         lpXxpaIP/yN2GEGKPCSpgSd1bvDGWqu9hRiUCp5kcWSWoaowwNBDKhK9aq8zCVsNzoOu
+         +ZU2WTY+ZpYAP2rnM0tvuIW/n0loC2oDfn6eTvMYfcOHJROYEFyBtnKgh7/PhzRPk9UO
+         AtWOm9Cyz7Qu2sEk4NbeWrnbqvkCpf20YKHFvb5nOZcDZeLYpA4gmAELHc0EnQl0PC+g
+         3rqQ==
+X-Gm-Message-State: AOAM530hKNzj5cyxRE3ilLXD6/fSwq9dcoi5atV4vkfrdRPJvpm/dsZ2
+        Iu8aBwgALkr74TFYuUfj25V62CRHEB0VK4fE+ok=
+X-Google-Smtp-Source: ABdhPJwUVmIl0oC+fosDbupGJKC/nvrImqaGK+BG23hTR2GBUgubrBzSMBvPYEZ64RhEpdY33SKeCh+6+aJx46njoq8=
+X-Received: by 2002:a17:902:8543:b029:12d:461f:a6a8 with SMTP id
+ d3-20020a1709028543b029012d461fa6a8mr4159215plo.1.1633616743050; Thu, 07 Oct
+ 2021 07:25:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YVyWrKUk81e10zM7@gmail.com>
+Received: by 2002:a05:7300:76cb:b0:3f:de06:fa40 with HTTP; Thu, 7 Oct 2021
+ 07:25:42 -0700 (PDT)
+Reply-To: lydiawright836@gmail.com
+From:   LYDIA WRIGHT <bryanwalker534@gmail.com>
+Date:   Thu, 7 Oct 2021 17:25:42 +0300
+Message-ID: <CAKxfBbTjVMD9w0JpDEg6JYqvJCs_LyTpb3itagjAp4qH3igVzQ@mail.gmail.com>
+Subject: Best Regards
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 2021-10-05 11:17:16 [-0700], Eric Biggers wrote:
-> Hi Sebastian,
-Hi,
+Greetings dear,
 
-> The comment above the definition of migrate_disable() in include/linux/preempt.h
-> claims that it is a temporary workaround.
+My name is Lydia A. Wright, and I'm from Akron, Ohio. The U.S.A, This
+message will most likely surprise you. I'm dying of cancer, which I
+was diagnosed with around two years ago, and I'm recovering from a
+stroke that has made walking difficult.
+Mr. L=C3=A9vi Wright, my husband, passed away in mid-March 2011 from a
+heart attack. I'll be having surgery soon.  I only have a few years
+left in this world, my late spouse has  $10.5 million as a family
+valuable , which I intend to gift to charity.
 
-It claims that, yes. I think this is due to the scheduler's limitation
-and should not encourage to use this over long sections.
+For more information, please contact me at (lydiawright836@gmail.com)
+. Thank you sincerely!
 
-> Is there a better way to do this that should be used instead?
-
-An alternative might be to move the whole test into a kworker which is
-bound to a specific CPU. So even without disabling preemption/ migration
-the per-CPU pointer would remain stable.
-
-> - Eric
-
-Sebastian
+Mrs. Lydia A. Wright
+Rosalind Ct, Akron, Ohio , U.S.A
