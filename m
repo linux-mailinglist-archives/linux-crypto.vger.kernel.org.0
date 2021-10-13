@@ -2,159 +2,174 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FF142BDDB
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 Oct 2021 12:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9265642BE00
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 Oct 2021 12:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhJMK4e (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 13 Oct 2021 06:56:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhJMK4d (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:56:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85F6E60ED4;
-        Wed, 13 Oct 2021 10:54:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634122469;
-        bh=7iHTFHMgD8tHMQJ8um3MWnq2WmS30AxI0TP6/V1BtV4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=OqtFMqGMGFV4K9yVj94P1PdYhryA/CdqOslHcpNhaQ08AmoURmbWpdbwgGLpBRtvv
-         GOsgbbkXEnNemfGxenULuEuLWhQSBLZDlcXtsIPUtWRz0Xquu4nM3on/FjIIYLKVym
-         bnMheTYnvnPKKCMeJmHy92kqkk6lJLUVe2jWrwP9ZfoZxr9KzicovqTES+nvgUJrgd
-         CW5TCOmBqfvu1ALAWILVarLhtB0Ty7o6Te/0Wlj3D4Ep4xDYZe5KxmPTRIsD28cE8M
-         U3L0ny1u+JWyxeAAoH7731EvVOLTcEPfK9OIXkjw0dh6LOeY9oV0Ng9JEnXKuTIMCX
-         IWg5mdhv7zLQg==
-Date:   Wed, 13 Oct 2021 05:54:28 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-pci@vger.kernel.org, Alexander Duyck <alexanderduyck@fb.com>,
-        Russell Currey <ruscur@russell.cc>, x86@kernel.org,
-        qat-linux@intel.com, oss-drivers@corigine.com,
-        Oliver O'Halloran <oohall@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-scsi@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-wireless@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jack Xu <jack.xu@intel.com>, Borislav Petkov <bp@alien8.de>,
-        Michael Buesch <m@bues.ch>, Jiri Pirko <jiri@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        xen-devel@lists.xenproject.org, Vadym Kochan <vkochan@marvell.com>,
-        MPT-FusionLinux.pdl@broadcom.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
-        netdev@vger.kernel.org, Frederic Barrat <fbarrat@linux.ibm.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Tomaszx Kowalik <tomaszx.kowalik@intel.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v6 00/11] PCI: Drop duplicated tracking of a pci_dev's
- bound driver
-Message-ID: <20211013105428.GA1890798@bhelgaas>
+        id S231644AbhJMK6E (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 13 Oct 2021 06:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231495AbhJMK6A (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 13 Oct 2021 06:58:00 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2F6C061746
+        for <linux-crypto@vger.kernel.org>; Wed, 13 Oct 2021 03:55:57 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id k23so1946770pji.0
+        for <linux-crypto@vger.kernel.org>; Wed, 13 Oct 2021 03:55:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xbAijj6QaI02gvcAy4f4tAKGg3l2cqTKGjVN7HjQges=;
+        b=fQ7aY8AEbwdT3LQeqkDE/J85tNeDdlbIsT6osfMpW5w9jnmB03akGA8MegjotgZCzJ
+         +bR4FdfJvLIZojey+EdVN9QFdPMmD8KY9L/uyvGk03eqxCIIvkKsD0dMWr6nXLWfTWK4
+         QqTVQtGyK1+xitzNO4W/qD9ojtZ7beCPSfoCLbiqDpealxd5PJn3uHXWqm1VOqnNBwNP
+         eMvaKonKVXstGw4cKhht/rtR62kyTfOwAdpK02oHnZWEAExCppbCEHwTgo4oVyLZOjiW
+         4mY3zaKyoUeyPmctNcORz6R8cAMrX2H8E474lG553AeVqqmTl7GV+QMHeHpCyw6eoBoR
+         wI8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xbAijj6QaI02gvcAy4f4tAKGg3l2cqTKGjVN7HjQges=;
+        b=YXpmawGXXqz32nWc+Da1eBYizxA1EYJJoPezNFElkP/qOySjlYwt6nUk8GJ4DF0toI
+         /DjZwLc92QQ3ut1aOhOhVTh2fdYgejhs3NKvIuPpG4zpKEHf3IEfQK7qhf2Oc4aTzaj2
+         R3Sij0mEdDEhvDO8tvikcih96ueU1zmBFVFB3WnRFcm+jDK4+AtnTHXiEAEpo4W/8Fi1
+         birQgcQ9Atz2RnGb8biLkkA/3yuUZ0BeLz0aJ71yy9Xm4Av0pqtwO0Vs44s047RHwOwM
+         SRto+qczxaysP12AmXoogi7jkIo7Jw3s7o7b1vtJNMtLuQQMyjVSK0RGZ1RG1fELKkHl
+         LY8Q==
+X-Gm-Message-State: AOAM533vOeZtyjcG1lR7qDCNS9eazt6MVLzwlHZX3YrpksD5uaIUyQXk
+        K34vESlK9FfbgpvWy0+e/1vrwg==
+X-Google-Smtp-Source: ABdhPJyznrmr6OjfULh94pwo6WFj5BKiEuGBJkYn8+rdV5DctaT54a82qvxMRhQvN508YJl2jVSoHg==
+X-Received: by 2002:a17:902:e8ce:b0:132:b140:9540 with SMTP id v14-20020a170902e8ce00b00132b1409540mr35175652plg.28.1634122556807;
+        Wed, 13 Oct 2021 03:55:56 -0700 (PDT)
+Received: from localhost.name ([122.161.48.68])
+        by smtp.gmail.com with ESMTPSA id b13sm6155351pjl.15.2021.10.13.03.55.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 03:55:56 -0700 (PDT)
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+To:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, agross@kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH v4 00/20] Enable Qualcomm Crypto Engine on sm8250
+Date:   Wed, 13 Oct 2021 16:25:21 +0530
+Message-Id: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211013085131.5htnch5p6zv46mzn@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 10:51:31AM +0200, Uwe Kleine-König wrote:
-> On Tue, Oct 12, 2021 at 06:32:12PM -0500, Bjorn Helgaas wrote:
-> > On Mon, Oct 04, 2021 at 02:59:24PM +0200, Uwe Kleine-König wrote:
-> > > Hello,
-> > > 
-> > > this is v6 of the quest to drop the "driver" member from struct pci_dev
-> > > which tracks the same data (apart from a constant offset) as dev.driver.
-> > 
-> > I like this a lot and applied it to pci/driver for v5.16, thanks!
-> > 
-> > I split some of the bigger patches apart so they only touched one
-> > driver or subsystem at a time.  I also updated to_pci_driver() so it
-> > returns NULL when given NULL, which makes some of the validations
-> > quite a bit simpler, especially in the PM code in pci-driver.c.
-> 
-> OK.
-> 
-> > Full interdiff from this v6 series:
-> > 
-> > diff --git a/arch/x86/kernel/probe_roms.c b/arch/x86/kernel/probe_roms.c
-> > index deaaef6efe34..36e84d904260 100644
-> > --- a/arch/x86/kernel/probe_roms.c
-> > +++ b/arch/x86/kernel/probe_roms.c
-> > @@ -80,17 +80,15 @@ static struct resource video_rom_resource = {
-> >   */
-> >  static bool match_id(struct pci_dev *pdev, unsigned short vendor, unsigned short device)
-> >  {
-> > +	struct pci_driver *drv = to_pci_driver(pdev->dev.driver);
-> >  	const struct pci_device_id *id;
-> >  
-> >  	if (pdev->vendor == vendor && pdev->device == device)
-> >  		return true;
-> >  
-> > -	if (pdev->dev.driver) {
-> > -		struct pci_driver *drv = to_pci_driver(pdev->dev.driver);
-> > -		for (id = drv->id_table; id && id->vendor; id++)
-> > -			if (id->vendor == vendor && id->device == device)
-> > -				break;
-> > -	}
-> > +	for (id = drv ? drv->id_table : NULL; id && id->vendor; id++)
-> > +		if (id->vendor == vendor && id->device == device)
-> > +			break;
-> >  
-> >  	return id && id->vendor;
-> >  }
-> > diff --git a/drivers/misc/cxl/guest.c b/drivers/misc/cxl/guest.c
-> > index d997c9c3ebb5..7eb3706cf42d 100644
-> > --- a/drivers/misc/cxl/guest.c
-> > +++ b/drivers/misc/cxl/guest.c
-> > @@ -20,38 +20,38 @@ static void pci_error_handlers(struct cxl_afu *afu,
-> >  				pci_channel_state_t state)
-> >  {
-> >  	struct pci_dev *afu_dev;
-> > +	struct pci_driver *afu_drv;
-> > +	struct pci_error_handlers *err_handler;
-> 
-> These two could be moved into the for loop (where afu_drv was with my
-> patch already). This is also possible in a few other drivers.
+Sorry for a delayed v4, but I have been caught up with some other
+patches.
 
-That's true, they could.  I tried to follow the prevailing style in
-the file.  At least in cxl, I didn't see any other cases of
-declarations being in the minimal scope like that.
+Changes since v3:
+=================
+- v3 can be seen here: https://lore.kernel.org/linux-arm-msm/20210519143700.27392-1-bhupesh.sharma@linaro.org/
+- Dropped a couple of patches from v3, on basis of the review comments:
+   ~ [PATCH 13/17] crypto: qce: core: Make clocks optional
+   ~ [PATCH 15/17] crypto: qce: Convert the device found dev_dbg() to dev_info()
+- Addressed review comments from Thara, Rob and Stephan Gerhold.
+- Collect Reviewed-by from Rob and Thara on some of the patches from the
+  v3 patchset.
 
-Bjorn
+Changes since v2:
+=================
+- v2 can be seen here: https://lore.kernel.org/dmaengine/20210505213731.538612-1-bhupesh.sharma@linaro.org/
+- Drop a couple of patches from v1, which tried to address the defered
+  probing of qce driver in case bam dma driver is not yet probed.
+  Replace it instead with a single (simpler) patch [PATCH 16/17].
+- Convert bam dma and qce crypto dt-bindings to YAML.
+- Addressed review comments from Thara, Bjorn, Vinod and Rob.
+
+Changes since v1:
+=================
+- v1 can be seen here: https://lore.kernel.org/linux-arm-msm/20210310052503.3618486-1-bhupesh.sharma@linaro.org/ 
+- v1 did not work well as reported earlier by Dmitry, so v2 contains the following
+  changes/fixes:
+  ~ Enable the interconnect path b/w BAM DMA and main memory first
+    before trying to access the BAM DMA registers.
+  ~ Enable the interconnect path b/w qce crytpo and main memory first
+    before trying to access the qce crypto registers.
+  ~ Make sure to document the required and optional properties for both
+    BAM DMA and qce crypto drivers.
+  ~ Add a few debug related print messages in case the qce crypto driver
+    passes or fails to probe.
+  ~ Convert the qce crypto driver probe to a defered one in case the BAM DMA
+    or the interconnect driver(s) (needed on specific Qualcomm parts) are not
+    yet probed.
+
+Qualcomm crypto engine is also available on sm8250 SoC.
+It supports hardware accelerated algorithms for encryption
+and authentication. It also provides support for aes, des, 3des
+encryption algorithms and sha1, sha256, hmac(sha1), hmac(sha256)
+authentication algorithms.
+
+Tested the enabled crypto algorithms with cryptsetup test utilities
+on sm8250-mtp and RB5 board (see [1]) and also with crypto self-tests,
+including the fuzz tests (CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y).
+
+Note that this series is rebased on a SMMU related fix from Arnd applied
+on either linus's tip of linux-next's tip (see [2]), without which
+the sm8250 based boards fail to boot with the latest tip.
+
+[1]. https://linux.die.net/man/8/cryptsetup
+[2]. https://lore.kernel.org/linux-arm-kernel/CAA8EJpoD4Th1tdwYQLnZur2oA0xX0LojSrNFLyJqdi6+rnB3YQ@mail.gmail.com/T/
+
+Cc: Thara Gopinath <thara.gopinath@linaro.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+
+Bhupesh Sharma (17):
+  arm64/dts: qcom: Fix 'dma' & 'qcom,controlled-remotely' nodes in dts
+  arm64/dts: qcom: ipq6018: Remove unused 'qcom,config-pipe-trust-reg'
+    property
+  arm64/dts: qcom: ipq6018: Remove unused 'iface_clk' property from
+    dma-controller node
+  dt-bindings: qcom-bam: Convert binding to YAML
+  dt-bindings: qcom-bam: Add 'interconnects' & 'interconnect-names' to
+    optional properties
+  dt-bindings: qcom-bam: Add 'iommus' to optional properties
+  dt-bindings: qcom-qce: Convert bindings to yaml
+  dt-bindings: qcom-qce: Add 'interconnects' and move 'clocks' to
+    optional properties
+  dt-bindings: qcom-qce: Add 'iommus' to optional properties
+  arm64/dts: qcom: sdm845: Use RPMH_CE_CLK macro directly
+  dt-bindings: crypto : Add new compatible strings for qcom-qce
+  arm64/dts: qcom: Use new compatibles for crypto nodes
+  crypto: qce: Add new compatibles for qce crypto driver
+  crypto: qce: Print a failure msg in case probe() fails
+  crypto: qce: Defer probing if BAM dma channel is not yet initialized
+  crypto: qce: Add 'sm8250-qce' compatible string check
+  arm64/dts: qcom: sm8250: Add dt entries to support crypto engine.
+
+Thara Gopinath (3):
+  dma: qcom: bam_dma: Add support to initialize interconnect path
+  crypto: qce: core: Add support to initialize interconnect path
+  crypto: qce: core: Make clocks optional
+
+ .../devicetree/bindings/crypto/qcom-qce.yaml  |  90 +++++++++++++++
+ .../devicetree/bindings/dma/qcom_bam_dma.txt  |  50 --------
+ .../devicetree/bindings/dma/qcom_bam_dma.yaml | 107 ++++++++++++++++++
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi         |  10 +-
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi         |   4 +-
+ arch/arm64/boot/dts/qcom/msm8996.dtsi         |   4 +-
+ arch/arm64/boot/dts/qcom/msm8998.dtsi         |   2 +-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          |  10 +-
+ arch/arm64/boot/dts/qcom/sm8250.dtsi          |  28 +++++
+ drivers/crypto/qce/core.c                     |  66 +++++++----
+ drivers/crypto/qce/core.h                     |   1 +
+ drivers/dma/qcom/bam_dma.c                    |  16 ++-
+ 12 files changed, 302 insertions(+), 86 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+ delete mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+ create mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+
+-- 
+2.31.1
+
