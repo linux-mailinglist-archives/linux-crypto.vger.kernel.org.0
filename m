@@ -2,184 +2,134 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8642142F899
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 Oct 2021 18:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2293942F9F1
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 Oct 2021 19:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241561AbhJOQtC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 15 Oct 2021 12:49:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241554AbhJOQtC (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:49:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34DF061164;
-        Fri, 15 Oct 2021 16:46:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634316415;
-        bh=UazkFhnF58o243B84E27T2Q0kziPCzNQlAM0EXnPs+0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=uJA4ra39P0Gv6naQSVcILGvPjCJywIq0xOMKparacmz05rvVX6Np5K3P9TBtMV+Q6
-         0fZMoqlsDqrvmOr81us08+gZah/AgsMkvZGLUZdvStWvkLQD9P6+IT1gNPD5kGzCTz
-         OqQa78pHkuTPX/IwPxuJYSyFJgvQojor9CCfmM0cFvkyP8yz7FerO3C6Xj6Ja6G65F
-         0JNWOrnI2B9XClHx9c5DgYXjOqp4IU9Zrxk/YET9tVYaYS+dnGehAv9e/YWKzwcbHz
-         D1LRfA0mXkjJ2/mnwlueLADrqQ5YuEa5UTY+rPKkoEu2iEn918jjZk3T8fIflFmK8o
-         yGBq7Ksq4IKXA==
-Date:   Fri, 15 Oct 2021 11:46:53 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jack Xu <jack.xu@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        Juergen Gross <jgross@suse.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Michael Buesch <m@bues.ch>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
+        id S242134AbhJORSl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 15 Oct 2021 13:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242220AbhJORSj (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 15 Oct 2021 13:18:39 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52971C061570
+        for <linux-crypto@vger.kernel.org>; Fri, 15 Oct 2021 10:16:33 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id e65so6766889pgc.5
+        for <linux-crypto@vger.kernel.org>; Fri, 15 Oct 2021 10:16:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Yz4DxDEI/Cdimscz6u8043i4TbobnMf/UyaeMP7e7fk=;
+        b=R+KdF0sGuMsU7NaWwXEV/CtpO8oPzKODFyJvx0XbcWSvuHqF6hiQZv0LcDzeZlPsPp
+         1Wk/T7I/I2ySHJMwuJCIw1zOMTF39MFy3f0A/U1Yj4qhbbOwEyMh6lTbrhzhoLsVb/1G
+         Wy5ziNpFCQ9trOiwO5Yn9yB5nzCOxN1IH6C8L6ebAdFNj0zM1jJPBnEgUP1cLTVTItg5
+         OR4GLXAbs+Wrs8agQaTMqNPq5uqBhKNbp4UnFMPc5saHaH0gV3JwymJCdLlQYlmE9XyU
+         RdfTsPcPKpc2OApqgCf5oKTjrzZiMVwLPni1+ovOkHwwYg6ibTiFy20NBmOBy74jdQFL
+         hq7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yz4DxDEI/Cdimscz6u8043i4TbobnMf/UyaeMP7e7fk=;
+        b=Yz3e+r9KE3N1BwDoQ07f20nxQPDnxQDwiK7pkr0ZZHO0Qp65nwmMSRx62ssL+2q3Ha
+         coDl6cq/4wKCRPPIXY+vjFXs+Rn8baxwha07hBlNe6/ufFPf1wzPf5w0U6NvuysLQUO+
+         XQnQfU8AX/Gso8WkqfJU/T5Mqfs+Xr8gPX000TPdKvTWoLiTedYV48MaVro1fKti+YQF
+         DIimyHRQibeXjfc5EXHLq4rSEm6+JN6Xi/g24L96kc3iWJJgkq7Xc0d/lNn0v8e8DYrk
+         fWudUicpXM0I5a0ZvL5V4znuxiuTkShkuBbXvLb0vEG+ucag+/WVQ/8lAOb61qIRLMk3
+         mkWA==
+X-Gm-Message-State: AOAM532uZGdtTCmrGE6urKmmOerjA/fWb7fEHkK5YoveH6fh+nOdt+sJ
+        Jz/oQRDTb4Bja4OajdZLoGKiiA==
+X-Google-Smtp-Source: ABdhPJzhWqYnWQxyRmrq2ph14bPlsygjQ8Zd2kY5FuLjbc+VOkShpD1Vy52EHoVShBuQrHaJwf5uKQ==
+X-Received: by 2002:a62:9215:0:b0:44c:4de1:f777 with SMTP id o21-20020a629215000000b0044c4de1f777mr12957675pfd.31.1634318192625;
+        Fri, 15 Oct 2021 10:16:32 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id a7sm5398634pfo.32.2021.10.15.10.16.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 10:16:31 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 17:16:28 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Russell Currey <ruscur@russell.cc>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomaszx Kowalik <tomaszx.kowalik@intel.com>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
-        MPT-FusionLinux.pdl@broadcom.com, netdev <netdev@vger.kernel.org>,
-        oss-drivers@corigine.com, qat-linux@intel.com,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v6 00/11] PCI: Drop duplicated tracking of a pci_dev's
- bound driver
-Message-ID: <20211015164653.GA2108651@bhelgaas>
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 39/45] KVM: SVM: Introduce ops for the post gfn
+ map and unmap
+Message-ID: <YWm3bOFcUSlyZjNb@google.com>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-40-brijesh.singh@amd.com>
+ <YWYm/Gw8PbaAKBF0@google.com>
+ <YWc+sRwHxEmcZZxB@google.com>
+ <4e41dcff-7c7b-cf36-434a-c7732e7e8ff2@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YWbdvc7EWEZLVTHM@smile.fi.intel.com>
+In-Reply-To: <4e41dcff-7c7b-cf36-434a-c7732e7e8ff2@amd.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 04:23:09PM +0300, Andy Shevchenko wrote:
-> On Wed, Oct 13, 2021 at 06:33:56AM -0500, Bjorn Helgaas wrote:
-> > On Wed, Oct 13, 2021 at 12:26:42PM +0300, Andy Shevchenko wrote:
-> > > On Wed, Oct 13, 2021 at 2:33 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Mon, Oct 04, 2021 at 02:59:24PM +0200, Uwe Kleine-König wrote:
-
-> > > > +       return drv && drv->resume ?
-> > > > +                       drv->resume(pci_dev) : pci_pm_reenable_device(pci_dev);
-> > > 
-> > > One line?
-> > 
-> > I don't think I touched that line.
+On Fri, Oct 15, 2021, Brijesh Singh wrote:
 > 
-> Then why they are both in + section?
-
-They're both in the + section of the interdiff because Uwe's v6 patch
-looks like this:
-
-  static int pci_legacy_resume(struct device *dev)
-  {
-          struct pci_dev *pci_dev = to_pci_dev(dev);
-  -       return drv && drv->resume ?
-  -                       drv->resume(pci_dev) : pci_pm_reenable_device(pci_dev);
-  +       if (pci_dev->dev.driver) {
-  +               struct pci_driver *drv = to_pci_driver(pci_dev->dev.driver);
-  +
-  +               if (drv->resume)
-  +                       return drv->resume(pci_dev);
-  +       }
-  +
-  +       return pci_pm_reenable_device(pci_dev);
-
-and my revision looks like this:
-
-   static int pci_legacy_resume(struct device *dev)
-   {
-	  struct pci_dev *pci_dev = to_pci_dev(dev);
-  -       struct pci_driver *drv = pci_dev->driver;
-  +       struct pci_driver *drv = to_pci_driver(dev->driver);
-
-so compared to Uwe's v6, I restored that section to the original code.
-My goal here was to make the patch as simple and easy to review as
-possible.
-
-> > > > +       struct pci_driver *drv = to_pci_driver(dev->dev.driver);
-> > > >         const struct pci_error_handlers *err_handler =
-> > > > -                       dev->dev.driver ? to_pci_driver(dev->dev.driver)->err_handler : NULL;
-> > > > +                       drv ? drv->err_handler : NULL;
-> > > 
-> > > Isn't dev->driver == to_pci_driver(dev->dev.driver)?
-> > 
-> > Yes, I think so, but not sure what you're getting at here, can you
-> > elaborate?
+> On 10/13/21 1:16 PM, Sean Christopherson wrote:
+> > On Wed, Oct 13, 2021, Sean Christopherson wrote:
+> >> On Fri, Aug 20, 2021, Brijesh Singh wrote:
+> >>> When SEV-SNP is enabled in the guest VM, the guest memory pages can
+> >>> either be a private or shared. A write from the hypervisor goes through
+> >>> the RMP checks. If hardware sees that hypervisor is attempting to write
+> >>> to a guest private page, then it triggers an RMP violation #PF.
+> >>>
+> >>> To avoid the RMP violation, add post_{map,unmap}_gfn() ops that can be
+> >>> used to verify that its safe to map a given guest page. Use the SRCU to
+> >>> protect against the page state change for existing mapped pages.
+> >> SRCU isn't protecting anything.  The synchronize_srcu_expedited() in the PSC code
+> >> forces it to wait for existing maps to go away, but it doesn't prevent new maps
+> >> from being created while the actual RMP updates are in-flight.  Most telling is
+> >> that the RMP updates happen _after_ the synchronize_srcu_expedited() call.
+> > Argh, another goof on my part.  Rereading prior feedback, I see that I loosely
+> > suggested SRCU as a possible solution.  That was a bad, bad suggestion.  I think
+> > (hope) I made it offhand without really thinking it through.  SRCU can't work in
+> > this case, because the whole premise of Read-Copy-Update is that there can be
+> > multiple copies of the data.  That simply can't be true for the RMP as hardware
+> > operates on a single table.
+> >
+> > In the future, please don't hesitate to push back on and/or question suggestions,
+> > especially those that are made without concrete examples, i.e. are likely off the
+> > cuff.  My goal isn't to set you up for failure :-/
 > 
-> Getting pointer from another pointer seems waste of resources, why we
-> can't simply
-> 
-> 	struct pci_driver *drv = dev->driver;
+> What do you think about going back to my initial proposal of per-gfn
+> tracking [1] ? We can limit the changes to just for the kvm_vcpu_map()
+> and let the copy_to_user() take a fault and return an error (if it
+> attempt to write to guest private). If PSC happen while lock is held
+> then simplify return and let the guest retry PSC.
 
-I think this is in pci_dev_save_and_disable(), and "dev" here is a
-struct pci_dev *.  We're removing the dev->driver member.  Let me know
-if I'm still missing something.
+That approach is also broken as it doesn't hold a lock when updating host_write_track,
+e.g. the count can be corrupted if writers collide, and nothing blocks writers on
+in-progress readers.
 
-> > > > -                               "bad request in aer recovery "
-> > > > -                               "operation!\n");
-> > > > +                               "bad request in AER recovery operation!\n");
-
-> > > Stray change? Or is it in a separate patch in your tree?
-> > 
-> > Could be skipped.  The string now fits on one line so I combined it to
-> > make it more greppable.
-> 
-> This is inconsistency in your changes, in one case you are objecting of
-> doing something close to the changed lines, in the other you are doing
-> unrelated change.
-
-You're right, this didn't make much sense in that patch.  I moved the
-line join to the previous patch, which unindented this section and
-made space for this to fit on one line.  Here's the revised commit:
-
-  https://git.kernel.org/cgit/linux/kernel/git/helgaas/pci.git/commit/?id=34ab316d7287
-
+I'm not opposed to a scheme that blocks PSC while KVM is reading, but I don't want
+to spend time iterating on the KVM case until consensus has been reached on how
+exactly RMP updates will be handled, and in general how the kernel will manage
+guest private memory.
