@@ -2,66 +2,192 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D7E4303B2
-	for <lists+linux-crypto@lfdr.de>; Sat, 16 Oct 2021 18:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E76E4309A2
+	for <lists+linux-crypto@lfdr.de>; Sun, 17 Oct 2021 16:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240734AbhJPQ1X (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 16 Oct 2021 12:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236105AbhJPQ1W (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 16 Oct 2021 12:27:22 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9F4C061767
-        for <linux-crypto@vger.kernel.org>; Sat, 16 Oct 2021 09:25:14 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id 5so20804376edw.7
-        for <linux-crypto@vger.kernel.org>; Sat, 16 Oct 2021 09:25:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=PXDRqRXHhYJ9G2cpvs3vbJxoTINuAvYFHHfiK0UYON8=;
-        b=o2nRbaXvGvY7WbKlFMmVKHRKfHlV/tlu6rJZirHuH69aMffZrLNDqyFVherHp44bKt
-         18fSRI6/AoVJvHo7M9geXgocUBqsqEPLtJQ19Uj5KswayKN5VVf6esVg2KjnHMMXYnvh
-         ASUmAUJi4MbwTmzIkDwP7s9IOyxczMjzd+oyDqhNa5TGRCCct83Lykgd2uKy9phEuuCr
-         5aqobhqhUBb8EEQzC2mgJHoa2fXoBoLGc+Z8iFiAQBYlAAtnDzQiLPQSYFE9rXDridBk
-         jwKWTVKW24E4F/FRbSMlgiYJJcduq8AWPOCe+MhlYuGmcwOLUTSmekXpNLyadKTriJnJ
-         T6Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=PXDRqRXHhYJ9G2cpvs3vbJxoTINuAvYFHHfiK0UYON8=;
-        b=AhVZikdV2aLqycn5g2FuBihALTlnbc3cyEAp+bsoN/7xNz08zil9EkKj1bIA3mZEun
-         pvN9rRYVYx36I0BGHsjMCeh2f7YxzYnvLFJDjnMxmNLEKKXvrcf/3JpgBxIVF3m2ZaDv
-         q0EKO2TJ18uur1AYOp5+tHCUkxNbZP9quUo0W3YdBV9RBtJADHjEQI3sGea+4N2f6Ky4
-         nKvVLkF9eR1VWG93geymGVaml9gz3ZL1pB6b+BsUN8Mbrw523TG9Ep8ceM2NDL/o7ejY
-         Ut+M+KQ+VNj+S1Wy4hm5aLDPGFvb6mqqatflQs8DvPWsAK+6A4CbqK/IAl/J1O4g9dcw
-         ASDw==
-X-Gm-Message-State: AOAM530ojy//sGPSwsVnf9jWo1kgBjO5v8E6OFo651VB958nATn6HY92
-        7QXZmaFaG751GIcuEmhjUHyoK2lreDNt/CsUM9s=
-X-Google-Smtp-Source: ABdhPJzURrxwauAtjty+KaCUe4lihAvC4I3hHOz3jF4Vw0ybooDZK5BIjYt7Lqi2pXzg7HbyYk/+t9f3pu1zibn0AQA=
-X-Received: by 2002:a17:906:7c86:: with SMTP id w6mr15710724ejo.283.1634401513010;
- Sat, 16 Oct 2021 09:25:13 -0700 (PDT)
+        id S1343806AbhJQOOj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 17 Oct 2021 10:14:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238183AbhJQOOi (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 17 Oct 2021 10:14:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C7F0604DB;
+        Sun, 17 Oct 2021 14:12:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634479948;
+        bh=RmSMKTg5TcL3qjURkxbM+BvVnDKiX6oL/7vB+Xbd55c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p9N+SfeMaoSGCiyxtDBec1UPv6WMgXjFcy/M3JLFPbVafXBNaxdjpG9B30dDW+YCM
+         1w7o17spKr/RDQdS/NDnncfMCzYUuyBikegmGijUFJIAFKXC6JxKBQkOyxWpOPSkMG
+         Xcf3Ny84a19kDTXcxLIlTN6rmnIPZn1mjgXZZ9+Dc8WFgbhY12z4AcuEe7HWqRja5M
+         sJePhxIZkZFRjmpYsRgp1Xe1IXRkzbSJzbuO1E9W0NfEhJS5mWuBnyV95F9ShTR0m/
+         N7QNQaMRxo2QFps6aw3PgKihE2TivErXbQejJdKE4pf9mljG1KyIeEc1cS3pdn6VoR
+         5yxzQIavynIbg==
+Date:   Sun, 17 Oct 2021 16:12:19 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gonglei <arei.gonglei@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        David Airlie <airlied@linux.ie>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Jie Deng <jie.deng@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-um@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-i2c@vger.kernel.org, iommu@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net, kvm@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
+Message-ID: <YWwvQ+YMAKzX1aO3@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gonglei <arei.gonglei@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Jie Deng <jie.deng@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        linux-um@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-i2c@vger.kernel.org, iommu@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net, kvm@vger.kernel.org,
+        alsa-devel@alsa-project.org
+References: <20211013105226.20225-1-mst@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:ab4:a24e:0:0:0:0:0 with HTTP; Sat, 16 Oct 2021 09:25:12
- -0700 (PDT)
-Reply-To: drobafemiaina@gmail.com
-From:   Rev James William <officialunit11@gmail.com>
-Date:   Sat, 16 Oct 2021 09:25:12 -0700
-Message-ID: <CAFYe6wrDLryPU6DPS5hroc=1p=-gOr-9A88vq-ZVVyf2TGn8UA@mail.gmail.com>
-Subject: COMPENSATION PAYMENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="byZ/nyBYz0KyHzOz"
+Content-Disposition: inline
+In-Reply-To: <20211013105226.20225-1-mst@redhat.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-COMPENSATION PAYMENT Your Name Was Among the Scam Victims Listed to Be
-Compensated by World Bank/IMF Via ATM Card Valued at ($950,000.00USD)
-Send Your Full: Name: ......................... Address:
-...................................... Mobile No:
-.................................. ID Proof: Reply me;
-drobafemiaina@gmail.com
-Regards,
-Rev James William
+
+--byZ/nyBYz0KyHzOz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Oct 13, 2021 at 06:55:31AM -0400, Michael S. Tsirkin wrote:
+> This will enable cleanups down the road.
+> The idea is to disable cbs, then add "flush_queued_cbs" callback
+> as a parameter, this way drivers can flush any work
+> queued after callbacks have been disabled.
+>=20
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+
+Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C changes
+
+
+--byZ/nyBYz0KyHzOz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFsLz8ACgkQFA3kzBSg
+KbbhcRAAqrAP/5XyaQEyoVcqsJ6xfTgBJXC8/fUFVary0yMagmjEQLKzCbVBRQiF
+UyKdQuoAJkemPBp13oZuYHgojk26k9r+hRKLoXigmy0tMboLZisXMh7/pcFDyz2e
+1C+0lbx3IQ5Q9LV590CAlOS1i7wPOXFDW0LkIu1mb8TX2Z2NU4G7Tz9TQlGBXO39
+MhIC6ggPDf141nztlFknKIlcLzpBXatCQrhN7cdcr3LxTjoKa20bHHVIGokKmFma
+sJK0vVc5vuqlye+Ea8AZ1jzol4xFQRcSHoNCC5MfHUfxVaJ3mvYQ6jXl9cAfYkLN
+0V5IehblsGFyBZ/Kpw/9SnPGTBV2Chs/o4JURyiKp3wVIpkAMagVz9OI4cOC+TTt
+8007Fqv9jQtFpu+w9FC3//i0C+JiUH12eYjCt8Me4FZC4EHIosqfm8i7yRB+MZIv
+WtaR04OJSlPS/DVFNb1AhUrvITU7uOw2fvVRyyC33iPXIJpvDoyoS9voJTGWYxRn
+u7CYO2yy9EfLoB6bPLn4wbfk1TUlbBpSuuycqOpSfjJ0CSEK0d/t4fKkwsDZ+gxb
+bS6NiNuzBiaxzsm8EUVR1q+gqY46ywMDIOYmbBykiXipERJofhxjro8Czauj9+b6
+FgdQ6J1aFiV8/k36NqD1M5WdM3VecyPECGa7Ba2Nce+uc/k8jCw=
+=Y+5l
+-----END PGP SIGNATURE-----
+
+--byZ/nyBYz0KyHzOz--
