@@ -2,67 +2,110 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278CC431901
-	for <lists+linux-crypto@lfdr.de>; Mon, 18 Oct 2021 14:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A307B4319FC
+	for <lists+linux-crypto@lfdr.de>; Mon, 18 Oct 2021 14:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbhJRM1D (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 18 Oct 2021 08:27:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbhJRM1D (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:27:03 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BECBC06161C
-        for <linux-crypto@vger.kernel.org>; Mon, 18 Oct 2021 05:24:52 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id z20so70567369edc.13
-        for <linux-crypto@vger.kernel.org>; Mon, 18 Oct 2021 05:24:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=xHSoCIZD0EInavAwpcigvAvFazAufYkObBEArOoQeV4=;
-        b=n4M3KDmgQ+iil1FATkocD4Y55KR8MBIdQKXfeH1Ad36h1qWVptnusdCG/U8I7MfpGF
-         D0CctjfhEmlz+sLJSrApycsbiAxisgrgmQnt6IWi1o6b0TNEFynA6+GNCf0n0M6PVYQn
-         mQlatwkPDz7mEJJIsST7BAjnX3UrByYrIt8hPmIvVIlOc+cjjkgAKGmk9lgXByXPynI3
-         K0LzEl2ZwT58kDLv7Z9nAis8CsGholfTT1Mimsqwr9xwIP0tRO/INY/MxGXFajP73mWy
-         hBrCs6LcYvr1dIEGSbj2hS8nZiZG4LssWQjI7m8iRAb761eVmRA3lEfDIuNAgJsmgzQx
-         IAkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=xHSoCIZD0EInavAwpcigvAvFazAufYkObBEArOoQeV4=;
-        b=iAhdcHOdOCq376r4IdPdWKnapmYhvVz7500xeLKuKVkAU5BqqBoA1DYBfUMlylW/f8
-         vebn9L+ZxHa+TLwHxFF3T7t2RBhQ5ylKHJuvk8IRzIVH3dtSRweM0iggFndvKD6KCa2o
-         inaHBASFsnwCmaIOGn+fPgwC7A0WH8EmY9+tKna58rFZCCzfO4ecT94CVZh3lYVu4Wri
-         86DkL9NDFYPgH7PZSt5/CzbwyjerSUgYq91swx06vlXHzvL2GJzKAimKIrilTYtWTrQ7
-         5QjZS6xwy9ghXWpPlbEXh1eqg5Lqt5O4kxIWbVmorfry4meZd6tLttxETv/Y0S4qF4TA
-         CglQ==
-X-Gm-Message-State: AOAM531he/V3ydE2Ppm+MiEpQHi/yVRxwOG92yzIbfeP0flaUXSCUSgp
-        M2+WcF77BQ0ElnjfmWwMFCmG+3oXU/UJOC8CZHM=
-X-Google-Smtp-Source: ABdhPJzLNwFeS5MwCLDtzv2tznt+gu0I9vu0VxPA3c5BXIa6rUknTIo+1s3vxSqhPDno/uMs/mAEdMr0dO43RzApwMM=
-X-Received: by 2002:aa7:de8f:: with SMTP id j15mr569256edv.347.1634559877573;
- Mon, 18 Oct 2021 05:24:37 -0700 (PDT)
-MIME-Version: 1.0
-Sender: michealkevin175@gmail.com
-Received: by 2002:a17:906:ff43:0:0:0:0 with HTTP; Mon, 18 Oct 2021 05:24:37
- -0700 (PDT)
-From:   Aisha Al-Qaddafi <aisha.gdaffi24@gmail.com>
-Date:   Mon, 18 Oct 2021 13:24:37 +0100
-X-Google-Sender-Auth: 2hHUsxV6NjZiqTCJxgaoRB-X-wE
-Message-ID: <CAFDyLcw0KRYuKttRcOy+P0MdSKSYSxO09WWBpBdTcrJiDQQK8A@mail.gmail.com>
-Subject: My Dear Friend,
-To:     undisclosed-recipients:;
+        id S231655AbhJRMui (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 18 Oct 2021 08:50:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231645AbhJRMui (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:50:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 949BA60FF2;
+        Mon, 18 Oct 2021 12:48:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634561307;
+        bh=iUCyCMM2FKcF5aARf6r4eS3ztMciGwsmxK7BcZeTtVk=;
+        h=Subject:From:To:Date:In-Reply-To:References:From;
+        b=gNeC13ZwtB4aP0GVC8EgFI6A/3typ7w2TZhIW25frk/eJt30bN4wWuqlxE0vfI4Py
+         g36RTS9q5p6tpusanojngeCX2QvAR2WSAd0gzNNtCB6dySZ15JsQ92DnPug9UhpqLO
+         8sWzkzYs5j29+WndETA1q/YPhL9+tUx71UWengpSk6JDx1nv/humDJWP8MkNbi5bAc
+         t4jLioiVWCIR9Y6vI1CD1jN0uHyKRsNN3Afng0ijl41JShDCocPeHgG7MROD/m8K9t
+         683qVN6imLGqPDz6rAP13QFkAoftLbGZhPiSsNT6U5YpDv6psc6/526NGWJ9TrqgLS
+         qSxJpGoNpK8UA==
+Message-ID: <8ca00c48a987278a85435d6e046ce9a12bc9050b.camel@kernel.org>
+Subject: Re: [PATCH 2/2] tpm: use SM3 instead of SM3_256
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
+Date:   Mon, 18 Oct 2021 15:48:24 +0300
+In-Reply-To: <5b0bc02a-eeb5-9d86-852b-d3041f3c6286@linux.alibaba.com>
+References: <20211009130828.101396-1-tianjia.zhang@linux.alibaba.com>
+         <20211009130828.101396-3-tianjia.zhang@linux.alibaba.com>
+         <c6c2337ed83c237f70716cb4c62794d1d3da31f2.camel@kernel.org>
+         <5db32f21-1df7-c92e-42a1-a2a85b29dfbf@linux.alibaba.com>
+         <31d49f7785dd82fd2f0c1078c9a94153e3c389ac.camel@kernel.org>
+         <5b0bc02a-eeb5-9d86-852b-d3041f3c6286@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.0-1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-I came across your e-mail contact prior to a private search while in
-need of a trusted person. My name is Mrs. Aisha Gaddafi, a single
-Mother and a Widow with three Children. I am the only biological
-Daughter of late Libyan President (Late Colonel Muammar Gaddafi)I have
-a business Proposal for you worth $27.5Million dollars and I need
-mutual respect, trust, honesty, transparency, adequate support and
-assistance, Hope to hear from you for more details.
-Warmest regards
+On Mon, 2021-10-18 at 10:37 +0800, Tianjia Zhang wrote:
+> Hi Jarkko,
+>=20
+> On 10/15/21 11:19 PM, Jarkko Sakkinen wrote:
+> > On Thu, 2021-10-14 at 17:46 +0800, Tianjia Zhang wrote:
+> > > Hi Jarkko,
+> > >=20
+> > > On 10/12/21 11:21 PM, Jarkko Sakkinen wrote:
+> > > > On Sat, 2021-10-09 at 21:08 +0800, Tianjia Zhang wrote:
+> > > > > According to https://tools.ietf.org/id/draft-oscca-cfrg-sm3-01.ht=
+ml,
+> > > > > SM3 always produces a 256-bit hash value and there are no plans f=
+or
+> > > > > other length development, so there is no ambiguity in the name of=
+ sm3.
+> > > > >=20
+> > > > > Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> > > >=20
+> > > > This is not enough to make any changes because the commit message
+> > > > does not describe what goes wrong if we keep it as it was.
+> > > >=20
+> > > > /Jarkko
+> > > >=20
+> > >=20
+> > > This did not cause an error, just to use a more standard algorithm na=
+me.
+> > > If it is possible to use the SM3 name instead of SM3_256 if it can be
+> > > specified from the source, it is of course better. I have contacted t=
+he
+> > > trustedcomputinggroup and have not yet received a reply.
+> > >=20
+> > > Best regards,
+> > > Tianjia
+> >=20
+> > Why don't you then create a patch set that fully removes SM3_256, if it
+> > is incorrect?
+> >=20
+> > This looks a bit half-baked patch set.
+> >=20
+> > /Jarkko
+> >=20
+>=20
+> This series of patch is a complete replacement. Patch 1 is a replacement=
+=20
+> of the crypto subsystem, and patch 2 is a replacement of the tpm driver.
+>=20
+> Best regards,
+> Tianjia
+
+In which patch that symbol is removed?
+
+/Jarkko
