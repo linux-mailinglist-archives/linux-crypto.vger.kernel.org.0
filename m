@@ -2,98 +2,115 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4301243328B
-	for <lists+linux-crypto@lfdr.de>; Tue, 19 Oct 2021 11:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74134332AD
+	for <lists+linux-crypto@lfdr.de>; Tue, 19 Oct 2021 11:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235095AbhJSJlI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 19 Oct 2021 05:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235107AbhJSJlF (ORCPT
+        id S235061AbhJSJmJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 19 Oct 2021 05:42:09 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:60981 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234808AbhJSJmI (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:41:05 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5938C061771
-        for <linux-crypto@vger.kernel.org>; Tue, 19 Oct 2021 02:38:51 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id d125so19579531iof.5
-        for <linux-crypto@vger.kernel.org>; Tue, 19 Oct 2021 02:38:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=h7Ka/8DlpkXEXF23rPgOfJJ3SyquA2FhD5HYDsybiG4=;
-        b=TOvN/3L74NxJ8jkZLAwc1HWcAigE5PqgL50bgmFqgfF5N3Ni/F/hFF6HKKLKTN31yN
-         HevaAXYbPfypt8hhKvSPyehT5ALdXqczNk+5xUwtC+i5sgHXh2uIQwAecZjfCaWU8ix6
-         IP3iNNDeKzM9Rarn67S7Y6Q5meavaw7Mpk+sez5Jm9gTXVkS2K7rH0HxN0wGBD1vTEZW
-         SlZ7Ohjm5TDffwxVe9psHKkZrw9F8ewS3UJdvRp48BugnVC9N6o6tGt7kOuD9dBL9WOI
-         l1dbXlU20FuuDCR1G9eGV6dpPzPq/obtSd+vSUmjw4dvgQ3M4KndmuUgzevCd5/KLP2j
-         AvJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=h7Ka/8DlpkXEXF23rPgOfJJ3SyquA2FhD5HYDsybiG4=;
-        b=vVHPhF9YB8tQkmiiq6Lg1bcerss1QbabIJ1OF1O5r2hTWK72OkxxhRBeTBW8a6+6pZ
-         OM2ej0vXVP5is/RPU4v0SGxpm6T115ouI2CyZZgyu8e8HahXyzPO2DBR7UAse+DR0qzy
-         S+SAwpySTQ8Chu4iUTylmPp15QL77th3HYJZGpgK5727jA2E/Ick9JJNfB84q6i4GE8c
-         J8M9gRj+MdLf4VgqRUt1FUuv6ZqWotSbDvyEt2FfU7VsMx/bhgDlK1HwnImty1ud8cM7
-         WTTSHvD7oMrVHztz3GGmCUbknS5jU0PVyDrQC7GX3CbQLOnrvQCE0vvW46UF30rvFzuJ
-         6R6A==
-X-Gm-Message-State: AOAM5316S40MQbBIfgV0GNGuN3zzy9bM++ag4kMrkcecQa20ipjaz3UL
-        LWC1gZR6mSZgUdmLUOO9HtJWYrXfdRR/HkP2DRY=
-X-Google-Smtp-Source: ABdhPJzMH7/Viv+gmOFi/wRxRbcc549EbhNxq1WBmFuuCl5Y1sIaNw3hPc5P9A8SHm6QnP1HNGNAvecvirmJS/oiL6w=
-X-Received: by 2002:a02:6f5d:: with SMTP id b29mr3319085jae.113.1634636331013;
- Tue, 19 Oct 2021 02:38:51 -0700 (PDT)
+        Tue, 19 Oct 2021 05:42:08 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0UsueS9M_1634636390;
+Received: from 30.240.101.11(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UsueS9M_1634636390)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 19 Oct 2021 17:39:51 +0800
+Message-ID: <aac78812-18dc-5e78-ab48-61e15eeb9315@linux.alibaba.com>
+Date:   Tue, 19 Oct 2021 17:39:49 +0800
 MIME-Version: 1.0
-Received: by 2002:a92:c7c6:0:0:0:0:0 with HTTP; Tue, 19 Oct 2021 02:38:50
- -0700 (PDT)
-Reply-To: megaritalouisdrayfu199@yahoo.com
-From:   "Mrs. Margarita Louis-Dreyfus." <anniewei112@gmail.com>
-Date:   Mon, 18 Oct 2021 21:38:50 -1200
-Message-ID: <CAGT4pMkzKn8mfeY05OAG04CCAxodKEVDUk46D=O7cfK8+n1=tA@mail.gmail.com>
-Subject: Charitable funds to help the less privilege!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH 1/2] crypto: use SM3 instead of SM3_256
+Content-Language: en-US
+To:     Jarkko Sakkinen <jarkko@kernel.org>, jejb@linux.ibm.com,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
+References: <20211009130828.101396-1-tianjia.zhang@linux.alibaba.com>
+ <20211009130828.101396-2-tianjia.zhang@linux.alibaba.com>
+ <7035153d58e220473fe3cd17c9f574f2d91c740b.camel@linux.ibm.com>
+ <dbac037710d711959d5ce0969f80ea0dd18a176e.camel@kernel.org>
+ <af8c2098c4cfe23b941a191f7b4ec0e3a5251760.camel@linux.ibm.com>
+ <41aba1e1c5849b58f83108eb9f9f115d0cd5826f.camel@kernel.org>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <41aba1e1c5849b58f83108eb9f9f115d0cd5826f.camel@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---=20
-Hello,
+Hi Jarkko,
 
-I am sorry to encroach into your privacy in this manner, my name
-Margarita Louis-Dreyfus , I find it pleasurable to offer you my
-partnership in business, i only pray at this time that your email
-address is still valid. I want to solicit your attention to receive
-money on my behalf for humanitarian project to help the less
-priviledge.
+On 10/18/21 9:41 PM, Jarkko Sakkinen wrote:
+> On Mon, 2021-10-18 at 09:32 -0400, James Bottomley wrote:
+>> On Mon, 2021-10-18 at 16:27 +0300, Jarkko Sakkinen wrote:
+>>> On Mon, 2021-10-18 at 09:05 -0400, James Bottomley wrote:
+>>>> On Sat, 2021-10-09 at 21:08 +0800, Tianjia Zhang wrote:
+>>>> [...]
+>>>>> diff --git a/include/uapi/linux/hash_info.h
+>>>>> b/include/uapi/linux/hash_info.h
+>>>>> index 74a8609fcb4d..1355525dd4aa 100644
+>>>>> --- a/include/uapi/linux/hash_info.h
+>>>>> +++ b/include/uapi/linux/hash_info.h
+>>>>> @@ -32,7 +32,7 @@ enum hash_algo {
+>>>>>          HASH_ALGO_TGR_128,
+>>>>>          HASH_ALGO_TGR_160,
+>>>>>          HASH_ALGO_TGR_192,
+>>>>> -       HASH_ALGO_SM3_256,
+>>>>> +       HASH_ALGO_SM3,
+>>>>>          HASH_ALGO_STREEBOG_256,
+>>>>>          HASH_ALGO_STREEBOG_512,
+>>>>>          HASH_ALGO__LAST
+>>>>
+>>>> This is another one you can't do: all headers in UAPI are exports
+>>>> to userspace and the definitions constitute an ABI.  If you simply
+>>>> do a rename, every userspace program that uses the current
+>>>> definition will immediately break on compile.  You could add
+>>>> HASH_ALGO_SM3, but you can't remove HASH_ALGO_SM3_256
+>>>>
+>>>> James
+>>>
+>>> So: shouldn't then also the old symbol continue to work also
+>>> semantically?
+>>
+>> Yes, that's the point: you can add a new definition ... in this case an
+>> alias for the old one, but you can't remove a definition that's been
+>> previously exported.
+> 
+> Thanks, this of course obvious :-) I forgot temporarily that crypto
+> has uapi interface. Tianjia, this patch set break production systems,
+> so no chance we would ever merge it in this form.
+> 
+> Why not just do this:
+> 
+> ...
+> HASH_ALGO_SM3_256,
+> HASH_ALOG_SM3 = HASH_ALOG_SM_256,
+> ...
+> 
+> There is not good reason to mod the implementation because both symbols
+> are kept.
+> 
+> /Jarkko
+> 
 
-The purpose of my contacting you is because my status would not permit
-me to do this alone. Given my current state of health, I have decided
-to donate Ninety -Eight Million United State Dollars to establish a
-foundation with your help to reach out to the less privilege, orphans,
-sick and homeless people in your country who will receive their
-blessings as i promised my God before i leave this earth.
+Very good suggestion, I will do this in the next version patch. Maybe 
+this is more appropriate:
 
-I got your contact through my personal search, you were revealed as
-being quite astute in private entrepreneurship, and i have no doubt
-that you can handle this huge financial transaction. Please contact my
-executor for more information:
+   HASH_ALGO_SM3,
+   HASH_ALGO_SM3_256 = HASH_ALGO_SM3,
 
-Mr. Ford Spencer(Attorney at Law).
-For: Mrs. Margarita Louis-Dreyfus
-LEGAL DEPARTMENT LAWSON & ASSOCIATES
-(JUSTICE, FAIRPLAY & EQUITY)
-Email: fordspencer828@yahoo.com, fordspencereqs828@gmail.com
-Office: +1-970-414-1400
-+1-702-714-3422
-Mobile: +1 916 269 2733
-Fax: +1-970-414-1433
-=C2=AE Property of Steven C Spence PA.
-
-Your earliest response to this letter will be appreciated.
-
-Kind Regards,
-
-Mrs. Margarita Louis-Dreyfus.
+Best regards,
+Tianjia
