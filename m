@@ -2,69 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1582643746F
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Oct 2021 11:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2649E437632
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Oct 2021 13:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbhJVJPR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 22 Oct 2021 05:15:17 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14845 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbhJVJPK (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:15:10 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HbJQy11yBz90QV;
-        Fri, 22 Oct 2021 17:07:54 +0800 (CST)
-Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 22 Oct 2021 17:12:51 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml100012.china.huawei.com
- (7.185.36.121) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Fri, 22 Oct
- 2021 17:12:51 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>,
-        <liulongfang@huawei.com>
-Subject: [PATCH v3 6/6] crypto: hisilicon/sec - add sm3/md5 generic selection for ahash
-Date:   Fri, 22 Oct 2021 17:10:55 +0800
-Message-ID: <20211022091055.15369-7-yekai13@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211022091055.15369-1-yekai13@huawei.com>
-References: <20211022091055.15369-1-yekai13@huawei.com>
+        id S232757AbhJVLyQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 22 Oct 2021 07:54:16 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:56236 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232670AbhJVLyQ (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 22 Oct 2021 07:54:16 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mdt5Z-0001Wj-Nx; Fri, 22 Oct 2021 19:51:57 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mdt5O-0007JW-RH; Fri, 22 Oct 2021 19:51:46 +0800
+Date:   Fri, 22 Oct 2021 19:51:46 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Nicolai Stange <nstange@suse.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        Torsten Duwe <duwe@suse.de>
+Subject: Re: [PATCH 8/8] crypto: api - make the algorithm lookup priorize
+ non-larvals
+Message-ID: <20211022115146.GA27997@gondor.apana.org.au>
+References: <20211003181413.12465-1-nstange@suse.de>
+ <20211003181413.12465-9-nstange@suse.de>
+ <20211008115432.GC26495@gondor.apana.org.au>
+ <87lf30rmd8.fsf@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml100012.china.huawei.com (7.185.36.121)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lf30rmd8.fsf@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add sm3/md5 generic selection for ahash in the Kconfig.
+On Mon, Oct 11, 2021 at 10:34:11AM +0200, Nicolai Stange wrote:
+>
+> In order to keep a FIPS certification manageable in terms of scope,
+> we're looking for a way to disable everything under drivers/crypto iff
+> fips_enabled == 1. The most convenient way to achieve this downstream
+> would be to add dummy entries to testmgr.c like so:
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+How about testing based on the flag CRYPTO_ALG_KERN_DRIVER_ONLY?
+That flag is meant to correspond to pretty much exactly drivers/crypto.
 
-diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
-index e572f9982d4e..300398665fc5 100644
---- a/drivers/crypto/hisilicon/Kconfig
-+++ b/drivers/crypto/hisilicon/Kconfig
-@@ -23,6 +23,8 @@ config CRYPTO_DEV_HISI_SEC2
- 	select CRYPTO_AEAD
- 	select CRYPTO_AUTHENC
- 	select CRYPTO_HMAC
-+	select CRYPTO_MD5
-+	select CRYPTO_SM3
- 	select CRYPTO_SHA1
- 	select CRYPTO_SHA256
- 	select CRYPTO_SHA512
+Cheers,
 -- 
-2.33.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
