@@ -2,90 +2,70 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C434376DD
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Oct 2021 14:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B95437732
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Oct 2021 14:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbhJVMYN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 22 Oct 2021 08:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231978AbhJVMYK (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:24:10 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE1AC061228
-        for <linux-crypto@vger.kernel.org>; Fri, 22 Oct 2021 05:21:52 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id ec8so1008610edb.6
-        for <linux-crypto@vger.kernel.org>; Fri, 22 Oct 2021 05:21:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=EabbjzyBCsHP1Pqryzjhoy0dM3xlyxLmmpO8ACgMTo8=;
-        b=opUIgqVWyZcHOIldu+LgQVfQLu2JLSm4eq0yRYoR8X3EkJ0jJdtgK1LJrEC4fAYG/u
-         x5QndCavFk6KrgrLKL2M04eWhmo9Ht5gsCUOTzm6BFmYlOhPKCnfQmAWRcGWJ3Kgd+Po
-         dxnzE1GzD0Fe/zdoRYGanqsnNZ7HZwcDd5jvb2P53Z7ySB2eUUW5eKcCwJjvHcLwQW3D
-         hmZMQ0WQ67mADARNZlQPTMDFACAa1pT2f55C5E+z5xU/0SGGI05AA1ys/nk/8Z7QRecx
-         rbFLK51ODld/urTp+hjZ3tCNNEiv03NL8R5n8H4ZVv1sIR3Pcfr4FSd/aUugOrtvCJBK
-         4QUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=EabbjzyBCsHP1Pqryzjhoy0dM3xlyxLmmpO8ACgMTo8=;
-        b=61dl6nqpQaI7d8QVkIS9QxGO/tzYBf3MFvhtp7c6vrlI100Q6kq2t3+voYNud80qod
-         VSSox9aFU51KIA3vHjoCnlbSElFnMuffNPoW/DvVLF65iTA9D1ObEf8WnTZOdwTdlxqI
-         lEzrOrkh1ZS6NJK1H9H+xhb3VfECoGMMcyv/ta7w0mgnBKIXtI3kPfKJHY1LbU9NtmMk
-         LiKSgOZHBUXo8HTkAoTOeEPgfjyQ8+8VfyvZpG0+2oWMlozcdp4gZdFkgxZdq9kCIugy
-         u7I7vWnMJE/Dz+1NHoOLVGNhY5M86GcvyXqR6YHOkFyDsZsUFo8es5ffTxYFTBRD1K+g
-         9qfw==
-X-Gm-Message-State: AOAM531EZ4wiaWe+d+/cxdb3Zl0uRzutbNTN5gesz7kyWrlADb42gKDq
-        8Mt0k2LlB7WO8VdtQSCHNHVv3JQC5iPuMNBz0sA=
-X-Google-Smtp-Source: ABdhPJy2Z+mCK6UsBedDHfuHLqHjOelryE6bx9xZ/OavTEghlxY+bPID2uQBe/oD5nVNF4jHf9BZTkpf3h9vpVXzB08=
-X-Received: by 2002:a17:907:1b0a:: with SMTP id mp10mr15488909ejc.29.1634905309828;
- Fri, 22 Oct 2021 05:21:49 -0700 (PDT)
+        id S232276AbhJVMjJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 22 Oct 2021 08:39:09 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:56246 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231473AbhJVMjE (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 22 Oct 2021 08:39:04 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mdtmR-00030v-LC; Fri, 22 Oct 2021 20:36:15 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mdtmK-0001o2-4u; Fri, 22 Oct 2021 20:36:08 +0800
+Date:   Fri, 22 Oct 2021 20:36:08 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Abaci Robot <abaci@linux.alibaba.com>,
+        Heyuan Shi <heyuan@linux.alibaba.com>, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: x86/sm4 - Fix invalid section entry size
+Message-ID: <20211022123608.GA6920@gondor.apana.org.au>
+References: <20211015034733.51205-1-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-Received: by 2002:a17:907:7fa7:0:0:0:0 with HTTP; Fri, 22 Oct 2021 05:21:48
- -0700 (PDT)
-Reply-To: bahadur.rayanby@gmail.com
-From:   Ryan Bahadur <dr.philposman7@gmail.com>
-Date:   Fri, 22 Oct 2021 05:21:48 -0700
-Message-ID: <CAMOT=VQ19xGMh1Soq8rNHNKaBCqZh03d0u+Nrf_Ou9bAtd-seQ@mail.gmail.com>
-Subject: CAN I TRUST YOU
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015034733.51205-1-tianjia.zhang@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On Fri, Oct 15, 2021 at 11:47:33AM +0800, Tianjia Zhang wrote:
+> This fixes the following warning:
+> 
+>   vmlinux.o: warning: objtool: elf_update: invalid section entry size
+> 
+> The size of the rodata section is 164 bytes, directly using the
+> entry_size of 164 bytes will cause errors in some versions of the
+> gcc compiler, while using 16 bytes directly will cause errors in
+> the clang compiler. This patch correct it by filling the size of
+> rodata to a 16-byte boundary.
+> 
+> Fixes: a7ee22ee1445 ("crypto: x86/sm4 - add AES-NI/AVX/x86_64 implementation")
+> Fixes: 5b2efa2bb865 ("crypto: x86/sm4 - add AES-NI/AVX2/x86_64 implementation")
+> Reported-by: Peter Zijlstra <peterz@infradead.org>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> Tested-by: Heyuan Shi <heyuan@linux.alibaba.com>
+> ---
+>  arch/x86/crypto/sm4-aesni-avx-asm_64.S  | 6 +++++-
+>  arch/x86/crypto/sm4-aesni-avx2-asm_64.S | 6 +++++-
+>  2 files changed, 10 insertions(+), 2 deletions(-)
+
+Patch applied.  Thanks.
 -- 
-Greetings,
-
-Firstly, I apologize for encroaching into your privacy in this manner
-as it may seem unethical though it is a matter of great importance.
-
-I am Mr.Ryan Bahadur, I work with Cayman National Bank (Cayman Islands).
-
-I am contacting you because my status would not permit me to do this
-alone as it is concerning our customer and an investment placed under
-our bank's management over 5 years ago.
-
-I have a proposal I would love to discuss with you which will be very
-beneficial to both of us. It's regarding my late client who has a huge
-deposit with my bank.
-
-He is from your country and shares the same last name with you.
-
-I want to seek your consent to present you as the next of kin to my
-late client who died and left a huge deposit with my bank.
-
-I would respectfully request that you keep the contents of this mail
-confidential and respect the integrity of the information you come by
-as a result of this mail.
-
-Please kindly get back to me for more details if I can TRUST YOU.{
-bahadur.rayanby@gmail.com}
-
-Regards
-Mr.Ryan Bahadur
-Treasury and Deposit Management,
-Cayman National Bank Cayman Islands.
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
