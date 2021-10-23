@@ -2,86 +2,70 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CBD438128
-	for <lists+linux-crypto@lfdr.de>; Sat, 23 Oct 2021 02:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 015E94383AE
+	for <lists+linux-crypto@lfdr.de>; Sat, 23 Oct 2021 14:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhJWAuj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 22 Oct 2021 20:50:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229507AbhJWAui (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 22 Oct 2021 20:50:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADB5F6101C;
-        Sat, 23 Oct 2021 00:48:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634950100;
-        bh=kbtNHfGbGhSMTAw0+cA9930pf9e1d4ODVtDxLJB8ts0=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=Eo8NRWz4J4aoPfPJ2sLX/Xrbd8+vVzacRcBGYaC9WBuZFnUcrew6/6//GZeuq8O2C
-         htN23e6J3Q39RBFAS1DqXxIkQZHS0Y3YFPwj35yEkRbXfwq18VaLc4+akTbmegKa61
-         QFkDW3igonoSEBFsbbIKyixv6VOIKcSmE0CUPd5UUqDAIbg46od8rLrcDXwIfEYzxP
-         M31o7JQvj69xmboEk2A1IIfALhcDrpiV4q7usN9F8+IfUKLw4hwQkubO4xQNHuxpz+
-         ekIbOSY7ZPdDliovD/MLBeP08CcI1j1Jb8gQrRZIUZ2+EzRhs7V2Dz1MblFasLw//m
-         xF89ZSZqBo7+Q==
-Message-ID: <f5c87a233027c8026ae8574f3e25c9162da3bfff.camel@kernel.org>
-Subject: Re: [PATCH v2 1/2] crypto: use SM3 instead of SM3_256
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
-Date:   Sat, 23 Oct 2021 03:48:17 +0300
-In-Reply-To: <20211019100423.43615-2-tianjia.zhang@linux.alibaba.com>
-References: <20211019100423.43615-1-tianjia.zhang@linux.alibaba.com>
-         <20211019100423.43615-2-tianjia.zhang@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.40.4-1 
+        id S230361AbhJWMoU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 23 Oct 2021 08:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229699AbhJWMoU (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 23 Oct 2021 08:44:20 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EF5C061766
+        for <linux-crypto@vger.kernel.org>; Sat, 23 Oct 2021 05:42:01 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id s3so7369134ild.0
+        for <linux-crypto@vger.kernel.org>; Sat, 23 Oct 2021 05:42:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=jfZ6y8fcGvAE1BlPR3wVs6P5tuC6lUydmPFOe3mAfpg=;
+        b=U91wDh6/KG0O/4T+djaJYyNYDTJqN5eQVdy7BavcVD34DREwnLE/4bBbrZFE/Rrnhz
+         ZjCGe/RD69ZWUDte/C3Oqp9A93/Jg7qSQ7jOI9WpXZuI9NliablOXG6WJ+4kl7e3KAa7
+         lo3u1Cd1ARNxHb1TW695gUNiQTDAi1gF0vJJ/kF3TiHmdEopioHJCfbGSIQO2xr0tIjM
+         PbRdSiM38XTuwawVYQsyRCI0+h4pXaZn1Oied9cbKnciBQCmhiDyd6jonp8DRQncbNsI
+         kHdmlO1asUBEzKicZmHeQECk4xrUcCpm/hN4viTjew4F+RF6/L93loPkjDMR6fmCLnXf
+         lWVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=jfZ6y8fcGvAE1BlPR3wVs6P5tuC6lUydmPFOe3mAfpg=;
+        b=qhwoyZk4nxpsNvFnO+PgaQgkHHR/MeGgDQ/pF2V9Eyg6Mw2BIDC0CgdeKKEkgZfr5N
+         JGWrjzOfiSRRsX0MWr+WWq6VCuWduiOjkqT2JeqtzwohPLQMRpir3JZAehosV8U7zyhP
+         rMCWWhpmEtwIKUBhEmc75kqS8KKyPYV9WrDIBr2vOXPYs36DSpgTFN1XG6K7j7bQZT5Z
+         m665qhUmxWio8aq3VHUZ/XSuut3TlEyUnNfnKwlsRtZjAmlLL6jlTWIYYntgqQLONSsv
+         vhdxg6sRFTpCUiQ5dOqrz0b0rqICnpHv5YQQ/G81lQ13ynXwIo72cM7yCGCHMeJayRNW
+         1L4A==
+X-Gm-Message-State: AOAM531ltZGYCKI5F1Bs+59E1u2rp+TyRa31vsj5bWt6nafY6WEtDFSH
+        byAWruohh2dxJUQXjZZnUcRMzGTt6mqTPLFc5uY=
+X-Google-Smtp-Source: ABdhPJxmRkorpCiDEfDWEzki3pAS9kjDa9VIuh4ogYHfbEwjaj61IyYRULF0JAl6piZYgHx4ZmW+Gk+tsT6g7UGAqGE=
+X-Received: by 2002:a05:6e02:152e:: with SMTP id i14mr3304951ilu.252.1634992920359;
+ Sat, 23 Oct 2021 05:42:00 -0700 (PDT)
 MIME-Version: 1.0
+Received: by 2002:a4f:ca01:0:0:0:0:0 with HTTP; Sat, 23 Oct 2021 05:41:59
+ -0700 (PDT)
+Reply-To: mrmichelduku@outlook.com
+From:   mr michel <mrmichel2233@gmail.com>
+Date:   Sat, 23 Oct 2021 12:41:59 +0000
+Message-ID: <CALSo2NYqsdnnESKhdO7xfnNULzHnOWoR9v+9wrfLKC79u66nHw@mail.gmail.com>
+Subject: Please Respond Urgently
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTEwLTE5IGF0IDE4OjA0ICswODAwLCBUaWFuamlhIFpoYW5nIHdyb3RlOgo+
-IEFjY29yZGluZyB0byBodHRwczovL3Rvb2xzLmlldGYub3JnL2lkL2RyYWZ0LW9zY2NhLWNmcmct
-c20zLTAxLmh0bWwsCj4gU00zIGFsd2F5cyBwcm9kdWNlcyBhIDI1Ni1iaXQgaGFzaCB2YWx1ZSBh
-bmQgdGhlcmUgYXJlIG5vIHBsYW5zIGZvcgo+IG90aGVyIGxlbmd0aCBkZXZlbG9wbWVudCwgc28g
-dGhlcmUgaXMgbm8gYW1iaWd1aXR5IGluIHRoZSBuYW1lIG9mIHNtMy4KPiAKPiBTdWdnZXN0ZWQt
-Ynk6IEphbWVzIEJvdHRvbWxleSA8amVqYkBsaW51eC5pYm0uY29tPgo+IFNpZ25lZC1vZmYtYnk6
-IFRpYW5qaWEgWmhhbmcgPHRpYW5qaWEuemhhbmdAbGludXguYWxpYmFiYS5jb20+Cj4gLS0tCj4g
-wqBEb2N1bWVudGF0aW9uL3NlY3VyaXR5L2tleXMvdHJ1c3RlZC1lbmNyeXB0ZWQucnN0IHwgMiAr
-LQo+IMKgY3J5cHRvL2hhc2hfaW5mby5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCA0ICsrLS0KPiDCoGRyaXZlcnMvY2hhci90
-cG0vdHBtMi1jbWQuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHwgMiArLQo+IMKgaW5jbHVkZS9jcnlwdG8vaGFzaF9pbmZvLmjCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgMiArLQo+IMKgaW5jbHVkZS91YXBpL2xpbnV4
-L2hhc2hfaW5mby5owqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCAzICsr
-LQo+IMKgc2VjdXJpdHkva2V5cy90cnVzdGVkLWtleXMvdHJ1c3RlZF90cG0yLmPCoMKgwqDCoMKg
-wqDCoMKgIHwgMiArLQo+IMKgNiBmaWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDcgZGVs
-ZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vc2VjdXJpdHkva2V5cy90
-cnVzdGVkLWVuY3J5cHRlZC5yc3QgYi9Eb2N1bWVudGF0aW9uL3NlY3VyaXR5L2tleXMvdHJ1c3Rl
-ZC1lbmNyeXB0ZWQucnN0Cj4gaW5kZXggODBkNWE1YWY2MmExLi4zMjkyNDYxNTE3ZjYgMTAwNjQ0
-Cj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9zZWN1cml0eS9rZXlzL3RydXN0ZWQtZW5jcnlwdGVkLnJz
-dAo+ICsrKyBiL0RvY3VtZW50YXRpb24vc2VjdXJpdHkva2V5cy90cnVzdGVkLWVuY3J5cHRlZC5y
-c3QKPiBAQCAtMTYyLDcgKzE2Miw3IEBAIFVzYWdlOjoKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgZGVmYXVsdCAxIChyZXNlYWxpbmcgYWxsb3dlZCkKPiDCoMKg
-wqDCoMKgwqDCoCBoYXNoPcKgwqDCoMKgwqDCoMKgwqAgaGFzaCBhbGdvcml0aG0gbmFtZSBhcyBh
-IHN0cmluZy4gRm9yIFRQTSAxLnggdGhlIG9ubHkKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgYWxsb3dlZCB2YWx1ZSBpcyBzaGExLiBGb3IgVFBNIDIueCB0aGUg
-YWxsb3dlZCB2YWx1ZXMKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBhcmUgc2hhMSwgc2hhMjU2LCBzaGEzODQsIHNoYTUxMiBhbmQgc20zLTI1Ni4KPiArwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBhcmUgc2hhMSwgc2hhMjU2LCBzaGEz
-ODQsIHNoYTUxMiBhbmQgc20zLgoKWW91IGNhbm5vdCByZW1vdmUgc20zLTI1NiBmcm9tIHVhcGku
-CgovSmFya2tvCgo=
+Greetings,
 
+With due respect to your person, I make this contact with you as I
+believe that you can be of great assistance to me. I need your
+assistance in transferring the sum of $11.3million to your account
+Where this money can be shared between us.
+
+By indicating your interest I will send you the full details on how
+the business will be executed.
+
+Best Regards,
+Michel Duku.
