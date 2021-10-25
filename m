@@ -2,143 +2,66 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59DF438C7F
-	for <lists+linux-crypto@lfdr.de>; Mon, 25 Oct 2021 01:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE66438CF5
+	for <lists+linux-crypto@lfdr.de>; Mon, 25 Oct 2021 03:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhJXXVk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 24 Oct 2021 19:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33034 "EHLO
+        id S231689AbhJYBVz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 24 Oct 2021 21:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhJXXVk (ORCPT
+        with ESMTP id S229554AbhJYBVz (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 24 Oct 2021 19:21:40 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D433BC061745
-        for <linux-crypto@vger.kernel.org>; Sun, 24 Oct 2021 16:19:18 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id s9so13131141oiw.6
-        for <linux-crypto@vger.kernel.org>; Sun, 24 Oct 2021 16:19:18 -0700 (PDT)
+        Sun, 24 Oct 2021 21:21:55 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DE2C061745
+        for <linux-crypto@vger.kernel.org>; Sun, 24 Oct 2021 18:19:33 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z14so8575504wrg.6
+        for <linux-crypto@vger.kernel.org>; Sun, 24 Oct 2021 18:19:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pv3yKrebsG4+UvHFA+gEH7kLCAky4RcnNh+s60n1ECg=;
-        b=DRxQ/fjnTpPb4MC72a1IZMfz9ncUBy+xnhuEsFNFoAN+EA5O9dGCsmbZunJx800wLQ
-         exY3higOsh5+ledswU+RuEi/T2mYz1a0ClJLtde2XScVA3eX2rGGZ14HpYrCTsmfiNcq
-         tYRvD0zPaaD2S/An+nWFbP242YCELYg/ZrXJ240iqty7h7NmI5CEaBHVED7w3x4A05NY
-         ihNYA9xxhUbl2ZJfv3Knok5o5lmsI+oQ+0hM8tBSm2ae3UgM6zlg8QH4hSKrvXsaNRo3
-         Yc2STjrtZTz74ptZB4aeI2Hg1l4NeUZkI2dGYTksnHAa9JkWk2qyKwZE+GC6Uei3eHui
-         dXow==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=yOIB1cM1n4AVjkajdRdBpAYqP2G0HC9nHfA5pv+kPpE=;
+        b=oE1Z5MkZZ7RExijeiajs1x+2d1dUI0nuCzr6//JrZ+0kkrdfpHcMMygj0ffJQcG7JQ
+         /kKHex+MbPg5T5L0gNp/DfqERzrcJdfgOGHz1Iyrt7LQRzsTUMFL/tlPiQCGk2iFiq58
+         p8tDlq6bmw5llCZhB92SBLvHFr50ZIoVxlzF5Q7XvPxcVbRNHmWTJYwyahm5WB6jBYIq
+         d3cKGrkelQ+/4rTGth/qp4p+XKwK8EO++PHYxUAz+MDTg+0B3x24SuxNZJ22dBGoyZ44
+         OqUDarqbZ6oWXUHPL0/9CPQ6rD2oda6PhX/vr1u7LtAUXzcCHWwyn4KdItdb2Ng4BIXt
+         X4SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pv3yKrebsG4+UvHFA+gEH7kLCAky4RcnNh+s60n1ECg=;
-        b=3mvbov5Z8yzWx+1IcySf9BrEGw1pkZy+wH1Hc1YnogKTiDvJbMtiri4f42oWC+S/HG
-         uzP8noCmUGRodOK5s+QaeJxFWmdDDe9m99mtRsw2uQIJWYCFzcyRcXngfU/yl2yu5TVU
-         ZD+AfBLl5T9+lWWS/nEBqkJFqm9EUCq8TDL3rzZUwfCtpX+dZjUBfN5jz89myJ90AN+d
-         3MsZnZe0SLIijqGGQ1gkkTQGou4ZmT4gyxrXWVMl2U8JZAoLFAyeCsMjbdu8ningX8TF
-         facAtq0/2KgKjkXGKtnbCFL0ycTuNj7Djm1FhCJe8pG4NCVPNbGqQ9xmr9zVUTBPvUlH
-         HRdA==
-X-Gm-Message-State: AOAM531wMQ28e8Ft+QzMu8ozaxR5Xv5IFaZADaqaasSSr5u6+rAEW3jr
-        QlvwKDYYnQ/DCyFSXH9Mn1XaBQ==
-X-Google-Smtp-Source: ABdhPJy3j3tGjtYGKybCdCNCsXxJC2IRee2Yfy5EcWU7XgHjAUm63VmFrLBW+5NYKewmuEZnl5tv4A==
-X-Received: by 2002:a05:6808:1246:: with SMTP id o6mr9674571oiv.38.1635117557816;
-        Sun, 24 Oct 2021 16:19:17 -0700 (PDT)
-Received: from yoga ([2600:1700:a0:3dc8:40c7:d4ff:fe65:a72c])
-        by smtp.gmail.com with ESMTPSA id a6sm2316967oid.18.2021.10.24.16.19.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 16:19:17 -0700 (PDT)
-Date:   Sun, 24 Oct 2021 18:19:15 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thara Gopinath <thara.gopinath@linaro.org>
-Subject: Re: [PATCH 1/2] crypto: qce: Add 'sm8150-qce' compatible string check
-Message-ID: <YXXp80d19dDhYXzA@yoga>
-References: <20211013165823.88123-1-bhupesh.sharma@linaro.org>
- <20211013165823.88123-2-bhupesh.sharma@linaro.org>
- <YXWVYZlCpkSRb7xv@builder.lan>
- <CAH=2NtyHpZa0KV5TRDuvciC+uV6mdO03RmEJSKMXES4HZOg-HA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=yOIB1cM1n4AVjkajdRdBpAYqP2G0HC9nHfA5pv+kPpE=;
+        b=T+yjljpDg6JXcr0yBhZ/jSUIG53s+GYG/fRukehureijKNCbrKusrwZHlj3KKiAQMe
+         3nGq+I3FghqYF0SD6IfueMVJrENjnq2zEfu2lUSk/XWC0sRKULJMk58h8zyrSUHKmf2i
+         iZkGuRI2tdvWhGEx3ElZy75b06PkR3cmMnY3B+Sx4czttM6HEPpiTuanBlAiZKVEzSFI
+         Ag5ndl6DIDP76Pr+AD+KdG0swlZoXY/SuIOeMxJPXAL4sOtiW2VZOKtH/EObZPnZ5mF2
+         LRtEOdjR2LOgYRerhHiqZcmjDddXS5vtxbIMLiVThRoaQLFSj/7WsE8cFgEdNKOfWaEv
+         tNsg==
+X-Gm-Message-State: AOAM531alQQ32HJ0IjD4f7NY0lQIIZJg5qHDLItLG82geLNbMh3T4lqg
+        0gDo2HOW660IzzmbAO95RBMpHPMmP5XUNvcagfU=
+X-Google-Smtp-Source: ABdhPJwpYDiPfsMuFQ+p2QwxHQjCnJGILC/aVQ2Txrbv6d49H18y5sFBC9wVqebvscOa+ESui/e4yX7UJt8Cq9ZVyO8=
+X-Received: by 2002:adf:9dc1:: with SMTP id q1mr19349588wre.13.1635124772185;
+ Sun, 24 Oct 2021 18:19:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH=2NtyHpZa0KV5TRDuvciC+uV6mdO03RmEJSKMXES4HZOg-HA@mail.gmail.com>
+Received: by 2002:a5d:504e:0:0:0:0:0 with HTTP; Sun, 24 Oct 2021 18:19:31
+ -0700 (PDT)
+Reply-To: justinseydou@gmail.com
+From:   Justin Seydou <cathydampry@gmail.com>
+Date:   Mon, 25 Oct 2021 02:19:31 +0100
+Message-ID: <CAJt1DuKZ44VsO1ZVJEfE3SZr0QAPR_9K9dBxgKy73bsyaU6HFA@mail.gmail.com>
+Subject: Proposal
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sun 24 Oct 12:59 CDT 2021, Bhupesh Sharma wrote:
+Dear friend,
 
-> Hi Bjorn,
-> 
-> On Sun, 24 Oct 2021 at 22:48, Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Wed 13 Oct 11:58 CDT 2021, Bhupesh Sharma wrote:
-> >
-> > > Add 'sm8150-qce' compatible string check in qce crypto
-> > > driver as we add support for sm8150 crypto device in the
-> > > device-tree in the subsequent patch.
-> > >
-> > > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > > ---
-> > >  drivers/crypto/qce/core.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> > > index 4c55eceb4e7f..ecbe9f7c6c0a 100644
-> > > --- a/drivers/crypto/qce/core.c
-> > > +++ b/drivers/crypto/qce/core.c
-> > > @@ -306,6 +306,7 @@ static int qce_crypto_remove(struct platform_device *pdev)
-> > >  static const struct of_device_id qce_crypto_of_match[] = {
-> > >       { .compatible = "qcom,ipq6018-qce", },
-> > >       { .compatible = "qcom,sdm845-qce", },
-> > > +     { .compatible = "qcom,sm8150-qce", },
-> > >       { .compatible = "qcom,sm8250-qce", },
-> >
-> > When I look at linux-next I see qce_crypto_of_match defined as:
-> >
-> > static const struct of_device_id qce_crypto_of_match[] = {
-> >         { .compatible = "qcom,crypto-v5.1", },
-> >         { .compatible = "qcom,crypto-v5.4", },
-> >         {}
-> > };
-> >
-> > Can you please help me understand what I'm doing wrong?
-> 
-> Oh, you have missed [PATCH 15/20] from the sm8250 qce crypto addition
-> series (see [1])
-> 
-> This series is dependent on the sm8250 qce enablement series, as I
-> noted in the cover letter (see [2]).
-> 
+I am Mr. Justin Seydou. I have a mutually beneficial proposal of
+$35millionUSD I want to introduce to you. All documents to execute the
+transaction are valid and available.
+Kindly indicate your interest to enable me explain further.
 
-Ah, now I see. Thanks for the pointer!
-
-> However, Thara and Vladimir pointed out backward compatibility issues
-> with PATCH 15/20 of the first series. So I will send a v5 to fix the
-> same along with other issues pointed in the v4.
-> 
-> Sorry for any confusion caused.
-> 
-
-No worries. Could you include these two patches in v5 of the other
-series, to clarify the dependency?
-
-Thanks,
-Bjorn
-
-> [1]. https://lore.kernel.org/linux-arm-msm/20211013105541.68045-1-bhupesh.sharma@linaro.org/T/#m566546d32d8da7ee94822dfba625e98fd3496d17
-> [2]. https://www.spinics.net/lists/linux-arm-msm/msg96053.html
-> 
-> Regards,
-> Bhupesh
+Justin Seydou.
