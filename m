@@ -2,63 +2,90 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905B143DDA7
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 Oct 2021 11:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8D043DE7A
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 Oct 2021 12:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhJ1JZP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 28 Oct 2021 05:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhJ1JZO (ORCPT
+        id S230077AbhJ1KOI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 28 Oct 2021 06:14:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58333 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229626AbhJ1KOG (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 28 Oct 2021 05:25:14 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7F9C061745
-        for <linux-crypto@vger.kernel.org>; Thu, 28 Oct 2021 02:22:48 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id z20so22286964edc.13
-        for <linux-crypto@vger.kernel.org>; Thu, 28 Oct 2021 02:22:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=wCJFupkfysjed5WX1Da8guwpZrVCWii+QlnOoyiJswc=;
-        b=SZIVrQnLSlwkTDY4JjdDsvIzWaSVf2BGPLscI9qCvJBk1+r7OAKuTOGiqJjQUOCc/R
-         0VodNiMwNwlhQ2kk6VE1ZMig9xgRKqOcjNdI6AqEqfKCckMuVNebKSMvexgCqx4nrOsO
-         f30asdbSjukbniLaeqrjmncaJcPnq3Wb4CPVrXkRa2QlGquiH1wHofzsSn7ftrlJMLzC
-         Uv+v9yoPkEUZ25ROnOu8dkjO3cgMj/EVWWWtHiPfWqn17KPlBJrrE71mW+hvdA/oAJ0b
-         PLyq5FCwNcPwj538tikFx0N5aft3GOcajNfzpJLmENnlE2Qa1/yYfzanIVVKSGkYTOlu
-         iT1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=wCJFupkfysjed5WX1Da8guwpZrVCWii+QlnOoyiJswc=;
-        b=iNmWVEpExY/elJ5MASuZReHRi/SjMbBowMrXdnxvIstfDmI718ZKoGH20hxDZaLP9L
-         c+n1UvnM0kbgnIwwp3Pw1wx/sCpliPtWrTyRL9fy3ffCjIpx8WEQJr/6FWP/dhVYcJjf
-         01t+cuAJeogUQxr2ijGpcyKDHfxMh9aPzx6osKm+yFExFRurxy16Z9dj0jSeR6bon0uq
-         c3KwXJ5Y07c+qux8kUpAEblrKRA+hkpbc0EVXX5tqZkHdlBCw2oDksXR5cBMcUPdzoAL
-         OSO4dojhF55c/ZcHklO6icOoxhT+OoSGlh+nTIXPT3BwwGicBjH+bw5iIjiD1fvztYGw
-         Kjyg==
-X-Gm-Message-State: AOAM530oQBlUYvfNl9hugw7ECCMMfaUzAzk8Vs/mP6QQFNKWL0piQJoe
-        xjBRAwNCjJss/Fk6M5EfVym5TeU6wjrkaZF+ZX4=
-X-Google-Smtp-Source: ABdhPJwqW1k051qV3ukD95K8Kot/F7bpinSm9lihCAKxxL0LGF3E9G1OXAbKOQXqWa1JI+X885x7IlRW21RtCA1bsN8=
-X-Received: by 2002:a50:d8cf:: with SMTP id y15mr4676234edj.66.1635412966789;
- Thu, 28 Oct 2021 02:22:46 -0700 (PDT)
+        Thu, 28 Oct 2021 06:14:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635415899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Lf5038czWxD5TVdb3xzJS31yq5LDU7rgKUOZR2ujX9Y=;
+        b=ScE/ShA+qF1HzfNI3oqvvxiZAD2q7zPDEWBC2fxPTXNh2wm5L+N7W5jpSbWPEiNJgVs0OZ
+        LzFXLaeybsu8q6REGAJHqfTZKFKQEsuYLl49o6+M9S5JyhR3qjYG9Wu3I+94MKhScl+j7u
+        O4eMwQ3F2qc/j1pssZ6QN1HPbPJuqGI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-507-CeVCjHmJNmOCLy6xJIUSjw-1; Thu, 28 Oct 2021 06:11:33 -0400
+X-MC-Unique: CeVCjHmJNmOCLy6xJIUSjw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67BAD10A8E02;
+        Thu, 28 Oct 2021 10:11:31 +0000 (UTC)
+Received: from thinkpad.redhat.com (unknown [10.39.194.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E635D60C04;
+        Thu, 28 Oct 2021 10:11:12 +0000 (UTC)
+From:   Laurent Vivier <lvivier@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     amit@kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+        Matt Mackall <mpm@selenic.com>,
+        virtualization@lists.linux-foundation.org,
+        Dmitriy Vyukov <dvyukov@google.com>, rusty@rustcorp.com.au,
+        akong@redhat.com, Alexander Potapenko <glider@google.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        linux-crypto@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>
+Subject: [PATCH v2 0/4] hwrng: virtio - add an internal buffer
+Date:   Thu, 28 Oct 2021 12:11:07 +0200
+Message-Id: <20211028101111.128049-1-lvivier@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Received: by 2002:ab4:8fca:0:0:0:0:0 with HTTP; Thu, 28 Oct 2021 02:22:46
- -0700 (PDT)
-Reply-To: mrsdjessie@gmail.com
-From:   Jessie Daniel <jessiedaniel375@gmail.com>
-Date:   Thu, 28 Oct 2021 11:22:46 +0200
-Message-ID: <CANj4tAMecOmAKqi1o_n_UL3piXaZR9pmkrvR=FupydffWWwH0A@mail.gmail.com>
-Subject: divine gift
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Writing From Hospital,I have a Donation of (US$3,500,000.00) for
-Charity Purpose which I want to donate through your help since am very
-sick now. I will tell you more about myself and my plans with this
-money when I hear back from you.
-Mrs. Jessie Daniel
+hwrng core uses two buffers that can be mixed in the virtio-rng queue.=0D
+=0D
+This series fixes the problem by adding an internal buffer in virtio-rng.=0D
+=0D
+Once the internal buffer is added, we can fix two other problems:=0D
+=0D
+- to be able to release the driver without waiting the device releases the=
+=0D
+  buffer=0D
+=0D
+- actually returns some data when wait=3D0 as we can have some already=0D
+  available data=0D
+=0D
+It also tries to improve the performance by always having a buffer in=0D
+the queue of the device.=0D
+=0D
+v2:=0D
+fixes issue reported by syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.c=
+om=0D
+by reseting data_idx to 0 when the buffer is submitted not when it is=0D
+received as the consumer checks for data_avail, not only for the completion=
+.=0D
+=0D
+Laurent Vivier (4):=0D
+  hwrng: virtio - add an internal buffer=0D
+  hwrng: virtio - don't wait on cleanup=0D
+  hwrng: virtio - don't waste entropy=0D
+  hwrng: virtio - always add a pending request=0D
+=0D
+ drivers/char/hw_random/virtio-rng.c | 86 ++++++++++++++++++++++-------=0D
+ 1 file changed, 65 insertions(+), 21 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
+
