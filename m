@@ -2,154 +2,90 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD04443DE85
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 Oct 2021 12:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2D043DF41
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 Oct 2021 12:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhJ1KOh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 28 Oct 2021 06:14:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23356 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230164AbhJ1KOg (ORCPT
+        id S230135AbhJ1Kyj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 28 Oct 2021 06:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229835AbhJ1Kyj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:14:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635415929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=niNxNs+708zjm3j3rRaODc+lHl5+1aQR820Stcz2CGo=;
-        b=aVz+Tdo+FyGRwdfSBl+R+/QgDCJ6XUBGHJBxJscxI9uiLUwx2qY5G2O5MOAjKHxiSUJWdL
-        Epk59WTMcigAYLLmmaES+LZA6oH3mToHil5osCg01RflvXAfTfnM9QuSiR8SwUFiFo4Uk4
-        /eVi0l/E2Jef8uKoK+kZi6d2i3gfnn0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-EH0ScqUPMOiHbfZG9hSlSA-1; Thu, 28 Oct 2021 06:12:04 -0400
-X-MC-Unique: EH0ScqUPMOiHbfZG9hSlSA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9BDFB10A8E02;
-        Thu, 28 Oct 2021 10:12:02 +0000 (UTC)
-Received: from thinkpad.redhat.com (unknown [10.39.194.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E90C060C04;
-        Thu, 28 Oct 2021 10:11:59 +0000 (UTC)
-From:   Laurent Vivier <lvivier@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     amit@kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-        Matt Mackall <mpm@selenic.com>,
-        virtualization@lists.linux-foundation.org,
-        Dmitriy Vyukov <dvyukov@google.com>, rusty@rustcorp.com.au,
-        akong@redhat.com, Alexander Potapenko <glider@google.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        linux-crypto@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>
-Subject: [PATCH v2 4/4] hwrng: virtio - always add a pending request
-Date:   Thu, 28 Oct 2021 12:11:11 +0200
-Message-Id: <20211028101111.128049-5-lvivier@redhat.com>
-In-Reply-To: <20211028101111.128049-1-lvivier@redhat.com>
-References: <20211028101111.128049-1-lvivier@redhat.com>
+        Thu, 28 Oct 2021 06:54:39 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112FBC061570
+        for <linux-crypto@vger.kernel.org>; Thu, 28 Oct 2021 03:52:12 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id k13so9872783ljj.12
+        for <linux-crypto@vger.kernel.org>; Thu, 28 Oct 2021 03:52:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=vprh3gRT3Cegcj0K7Fy7tqOfLGKK384XjLMkCZvF/BY=;
+        b=MqgQiMnth4O6zLvpsYbAhVLW1BorpgoCleWwfkY0/i+i6OSDuXRZO1jIKzpTTrmehO
+         XtsLWdXiTcL+XCe4naFtf2tTUJnbwwmDpuUkpvRhLd+LEnuxY7nNr11hmTRUVX1WOHsO
+         bN0u1arCg4gm9LHdXRMZFcXOD22U5gDGuBOuhPo6qvWbt6nA2j/p/5IZ88XFHrEsiSW3
+         12hentYJMlWeUfa2lUQkLm+5/fvMSizrI7wGoF2taOa3dgGUV5HKZWb0yAAH7nAXVevJ
+         tDC/xbHNLzSn310XeD3Gkoobjl6MPBQzT5DSLzerNBdTKOdmyp3xvfvOyo80qVUTZIED
+         gaRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=vprh3gRT3Cegcj0K7Fy7tqOfLGKK384XjLMkCZvF/BY=;
+        b=T5A8N17yogXPcLp5Mai68zBr7ijgtPduvb6wn8tQ8G05lVEhqi4jOAwiJ8NJrhfcRN
+         a+IR0ehpi3+M6xCQZqdDysH8rGDK/MnKXSIFeR+e9fx5dJzlSHEdr0KUJWeHqWdRmzTn
+         vqVi4oXABjvEZyXjectos0CSpnCpmi35a+SxM7R1uAm6y3dT5I8eeK9mx4CcyFXAPG7y
+         1R38zNg89gh/Zz75hMSUSrP112duc92aXM1Rb/aOAtf8jly0kMWfa8mnnjFk+wNRYYS5
+         OdNGpnQvG6jmMJhwnJBohsnBU7bw2Rh+5ToRuJKpMZmahpqeyZxiVPvTEDpzVOJeIfjB
+         Nk0g==
+X-Gm-Message-State: AOAM533Qg2eu82ZTg0AEWMYd8qURD+cXvLBMgSHG2SLd+Lb71FXFmVqH
+        eDM7PrwY+x7ue69R3ZbByJMLlTSHvRxhXHsNgWs=
+X-Google-Smtp-Source: ABdhPJw39EF9dJlXS9lAFrZ3adXxB8DVzXcygVzA3uRLiZxWlggxaB9ElCxkEB0P82xisoA6G442GD5iqMe2hCgLIt8=
+X-Received: by 2002:a2e:9a83:: with SMTP id p3mr3750290lji.145.1635418330269;
+ Thu, 28 Oct 2021 03:52:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Received: by 2002:ab3:6f89:0:0:0:0:0 with HTTP; Thu, 28 Oct 2021 03:52:09
+ -0700 (PDT)
+Reply-To: aabdulwalialhashmi@gmail.com
+From:   Abdulwali Alhashmi <husamalsayed.hs@gmail.com>
+Date:   Thu, 28 Oct 2021 03:52:09 -0700
+Message-ID: <CAF6yYCeS=rm8=_71-kMjVo4oaVK57w9X52R_yv1HDrBe7vh-sA@mail.gmail.com>
+Subject: PLEASE GET BACK TO ME IF I CAN I TRUST YOU
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-If we ensure we have already some data available by enqueuing
-again the buffer once data are exhausted, we can return what we
-have without waiting for the device answer.
-
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
----
- drivers/char/hw_random/virtio-rng.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/char/hw_random/virtio-rng.c b/drivers/char/hw_random/virtio-rng.c
-index 8ba97cf4ca8f..0a7dde135db1 100644
---- a/drivers/char/hw_random/virtio-rng.c
-+++ b/drivers/char/hw_random/virtio-rng.c
-@@ -20,7 +20,6 @@ struct virtrng_info {
- 	struct virtqueue *vq;
- 	char name[25];
- 	int index;
--	bool busy;
- 	bool hwrng_register_done;
- 	bool hwrng_removed;
- 	/* data transfer */
-@@ -44,16 +43,18 @@ static void random_recv_done(struct virtqueue *vq)
- 		return;
- 
- 	vi->data_idx = 0;
--	vi->busy = false;
- 
- 	complete(&vi->have_data);
- }
- 
--/* The host will fill any buffer we give it with sweet, sweet randomness. */
--static void register_buffer(struct virtrng_info *vi)
-+static void request_entropy(struct virtrng_info *vi)
- {
- 	struct scatterlist sg;
- 
-+	reinit_completion(&vi->have_data);
-+	vi->data_avail = 0;
-+	vi->data_idx = 0;
-+
- 	sg_init_one(&sg, vi->data, sizeof(vi->data));
- 
- 	/* There should always be room for one buffer. */
-@@ -69,6 +70,8 @@ static unsigned int copy_data(struct virtrng_info *vi, void *buf,
- 	memcpy(buf, vi->data + vi->data_idx, size);
- 	vi->data_idx += size;
- 	vi->data_avail -= size;
-+	if (vi->data_avail == 0)
-+		request_entropy(vi);
- 	return size;
- }
- 
-@@ -98,13 +101,7 @@ static int virtio_read(struct hwrng *rng, void *buf, size_t size, bool wait)
- 	 * so either size is 0 or data_avail is 0
- 	 */
- 	while (size != 0) {
--		/* data_avail is 0 */
--		if (!vi->busy) {
--			/* no pending request, ask for more */
--			vi->busy = true;
--			reinit_completion(&vi->have_data);
--			register_buffer(vi);
--		}
-+		/* data_avail is 0 but a request is pending */
- 		ret = wait_for_completion_killable(&vi->have_data);
- 		if (ret < 0)
- 			return ret;
-@@ -126,8 +123,7 @@ static void virtio_cleanup(struct hwrng *rng)
- {
- 	struct virtrng_info *vi = (struct virtrng_info *)rng->priv;
- 
--	if (vi->busy)
--		complete(&vi->have_data);
-+	complete(&vi->have_data);
- }
- 
- static int probe_common(struct virtio_device *vdev)
-@@ -163,6 +159,9 @@ static int probe_common(struct virtio_device *vdev)
- 		goto err_find;
- 	}
- 
-+	/* we always have a pending entropy request */
-+	request_entropy(vi);
-+
- 	return 0;
- 
- err_find:
-@@ -181,7 +180,6 @@ static void remove_common(struct virtio_device *vdev)
- 	vi->data_idx = 0;
- 	complete(&vi->have_data);
- 	vdev->config->reset(vdev);
--	vi->busy = false;
- 	if (vi->hwrng_register_done)
- 		hwrng_unregister(&vi->hwrng);
- 	vdev->config->del_vqs(vdev);
 -- 
-2.31.1
+Greetings,
 
+Firstly, I apologize for encroaching into your privacy in this manner
+as it may seem unethical though it is a matter of great importance.
+
+I am Abdulwali Alhashmi, I work with Cayman National Bank (Cayman Islands).
+
+I am contacting you because my status would not permit me to do this
+alone as it is concerning our customer and an investment placed under
+our bank's management over 5 years ago.
+
+I have a proposal I would love to discuss with you which will be very
+beneficial to both of us. It's regarding my late client who has a huge
+deposit with my bank.
+
+He is from your country and shares the same last name with you.
+
+I want to seek your consent to present you as the next of kin to my
+late client who died and left a huge deposit with my bank.
+
+I would respectfully request that you keep the contents of this mail
+confidential and respect the integrity of the information you come by
+as a result of this mail.
+
+Please kindly get back to me for more details if I can TRUST YOU.{
+aabdulwalialhashmi@gmail.com }
+
+Regards
+Abdulwali Alhashmi
+Treasury and Deposit Management,
+Cayman National Bank Cayman Islands
