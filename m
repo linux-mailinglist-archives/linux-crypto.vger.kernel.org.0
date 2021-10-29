@@ -2,40 +2,40 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188DC43FDC1
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 Oct 2021 16:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C178B43FDAF
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 Oct 2021 15:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231655AbhJ2OEM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 29 Oct 2021 10:04:12 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:49704 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231599AbhJ2OEH (ORCPT
+        id S229803AbhJ2OA0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 29 Oct 2021 10:00:26 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:53862 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230495AbhJ2OAX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:04:07 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19TDDEl9001318;
-        Fri, 29 Oct 2021 15:56:55 +0200
+        Fri, 29 Oct 2021 10:00:23 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19TDDAoE031422;
+        Fri, 29 Oct 2021 15:57:43 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=MfpHSI52M0i0Nom3MXV8FzBssiO3dC8IN7JqkuD8uSM=;
- b=k63HHQaCHiwFaIU5laynOIevCXbpVR2lYxTq3FyqU8Y41FVPcQuMzw/xxI9rcp9HfY9X
- ObcZKoj1vFoBEFXa+lmaWNX8S2ZxZMZ7FKGNFGmLI4/bxDDnAjJ+A05NAQeEZ9NbBtAq
- ZBjRBJUOxIQVt95PUnMUREA9tZ6eVEUSa5HEdyxLfYltQrY1M0gJFdl1teemk8Cmxq+E
- 7wuDswGTt0YoJ8EPszmTurDD7b20OHDAGLhcbR+xEIva5B5F40jrvBAzy0jCFfMMltKB
- pDdSIcifQzw+x1kz9jfQjPlkU73Ra0IcD+K0BBQu6XTifmgm0Pi7oWr33i/2BZP6xrRY CQ== 
+ bh=3nPicLVOl2aSkfsU0TRSpPtChIqVQ03FJiPNFD12SEA=;
+ b=uLCy2Fso+L/lpAIyvWP60lQm1sCCBg8FUKFKGEo5KOrU57BFprpWyoox3tQd6YheA2y8
+ U4D918j8nqFWZg/npBgOlfMpdkE5ZyjRZHBB7SddEmz7Q4ybaJgh9kGaHWz2inwk0AED
+ 7fsKw/fyOacpmYmzlS5w6c2w+cgPcQI0cUQIspm2Ue6oKXdP1dslm/Lxq+DxZNsqw2HZ
+ 5wlRhnbMkXjVfwwVQneiHdnZy3A0j1QZGkMfIzlItMQLrQ9T19LTD6zcnLKveA51nFFl
+ XP+UYrAVOkXN7/UwakZUiIz2ObthyZvG9EO/aKO0ZhoNUwdoAXLorsCrsW9Z2nCTJBxo iQ== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3c07xgkpae-1
+        by mx07-00178001.pphosted.com with ESMTP id 3c0c4y2f7r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Oct 2021 15:56:55 +0200
+        Fri, 29 Oct 2021 15:57:43 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 56E2E100034;
-        Fri, 29 Oct 2021 15:56:55 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 888E7100034;
+        Fri, 29 Oct 2021 15:57:42 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 35CB724C742;
-        Fri, 29 Oct 2021 15:56:55 +0200 (CEST)
-Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 29 Oct 2021 15:56:54
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7FD3D24C745;
+        Fri, 29 Oct 2021 15:57:42 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 29 Oct 2021 15:57:41
  +0200
 From:   Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
@@ -48,16 +48,16 @@ CC:     Marek Vasut <marex@denx.de>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 5/8] crypto: stm32/cryp - check early input data
-Date:   Fri, 29 Oct 2021 15:54:51 +0200
-Message-ID: <20211029135454.4383-6-nicolas.toromanoff@foss.st.com>
+Subject: [PATCH 8/8] crypto: stm32/cryp - reorder hw initialization
+Date:   Fri, 29 Oct 2021 15:54:54 +0200
+Message-ID: <20211029135454.4383-9-nicolas.toromanoff@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211029135454.4383-1-nicolas.toromanoff@foss.st.com>
 References: <20211029135454.4383-1-nicolas.toromanoff@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
  (10.75.127.5)
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
@@ -66,229 +66,96 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Return early for empty buffer
-Accept all valid authsize for gcm(aes)
-Check iv for ccm(aes)
-Check buffer size is a multiple of algorithm block size.
-
-Fixes: 9e054ec21ef8 ("crypto: stm32 - Support for STM32 CRYP crypto module")
+The CRYP IP checks the written key depending of the configuration, it's
+safer to write the whole configuration then the key to avoid unexpected
+behavior.
 
 Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
 ---
- drivers/crypto/stm32/stm32-cryp.c | 114 +++++++++++++++++++++++++++++-
- 1 file changed, 113 insertions(+), 1 deletion(-)
+ drivers/crypto/stm32/stm32-cryp.c | 39 ++++++++++++++++++++-----------
+ 1 file changed, 26 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index f97f9ee68d6f..874bec6d868e 100644
+index 54e19cbe35c9..25d0147012cb 100644
 --- a/drivers/crypto/stm32/stm32-cryp.c
 +++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -801,7 +801,20 @@ static int stm32_cryp_aes_aead_setkey(struct crypto_aead *tfm, const u8 *key,
- static int stm32_cryp_aes_gcm_setauthsize(struct crypto_aead *tfm,
- 					  unsigned int authsize)
- {
--	return authsize == AES_BLOCK_SIZE ? 0 : -EINVAL;
-+	switch (authsize) {
-+	case 4:
-+	case 8:
-+	case 12:
-+	case 13:
-+	case 14:
-+	case 15:
-+	case 16:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
+@@ -232,6 +232,11 @@ static inline int stm32_cryp_wait_busy(struct stm32_cryp *cryp)
+ 			!(status & SR_BUSY), 10, 100000);
  }
  
- static int stm32_cryp_aes_ccm_setauthsize(struct crypto_aead *tfm,
-@@ -825,31 +838,61 @@ static int stm32_cryp_aes_ccm_setauthsize(struct crypto_aead *tfm,
- 
- static int stm32_cryp_aes_ecb_encrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen % AES_BLOCK_SIZE)
-+		return -EINVAL;
-+
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_AES | FLG_ECB | FLG_ENCRYPT);
- }
- 
- static int stm32_cryp_aes_ecb_decrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen % AES_BLOCK_SIZE)
-+		return -EINVAL;
-+
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_AES | FLG_ECB);
- }
- 
- static int stm32_cryp_aes_cbc_encrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen % AES_BLOCK_SIZE)
-+		return -EINVAL;
-+
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_AES | FLG_CBC | FLG_ENCRYPT);
- }
- 
- static int stm32_cryp_aes_cbc_decrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen % AES_BLOCK_SIZE)
-+		return -EINVAL;
-+
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_AES | FLG_CBC);
- }
- 
- static int stm32_cryp_aes_ctr_encrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_AES | FLG_CTR | FLG_ENCRYPT);
- }
- 
- static int stm32_cryp_aes_ctr_decrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_AES | FLG_CTR);
- }
- 
-@@ -863,53 +906,122 @@ static int stm32_cryp_aes_gcm_decrypt(struct aead_request *req)
- 	return stm32_cryp_aead_crypt(req, FLG_AES | FLG_GCM);
- }
- 
-+static inline int crypto_ccm_check_iv(const u8 *iv)
++static inline void stm32_cryp_enable(struct stm32_cryp *cryp)
 +{
-+	/* 2 <= L <= 8, so 1 <= L' <= 7. */
-+	if (iv[0] < 1 || iv[0] > 7)
-+		return -EINVAL;
-+
-+	return 0;
++	writel_relaxed(readl_relaxed(cryp->regs + CRYP_CR) | CR_CRYPEN, cryp->regs + CRYP_CR);
 +}
 +
- static int stm32_cryp_aes_ccm_encrypt(struct aead_request *req)
+ static inline int stm32_cryp_wait_enable(struct stm32_cryp *cryp)
  {
-+	int err;
-+
-+	err = crypto_ccm_check_iv(req->iv);
-+	if (err)
-+		return err;
-+
- 	return stm32_cryp_aead_crypt(req, FLG_AES | FLG_CCM | FLG_ENCRYPT);
- }
+ 	u32 status;
+@@ -534,9 +539,6 @@ static int stm32_cryp_hw_init(struct stm32_cryp *cryp)
+ 	/* Disable interrupt */
+ 	stm32_cryp_write(cryp, CRYP_IMSCR, 0);
  
- static int stm32_cryp_aes_ccm_decrypt(struct aead_request *req)
- {
-+	int err;
-+
-+	err = crypto_ccm_check_iv(req->iv);
-+	if (err)
-+		return err;
-+
- 	return stm32_cryp_aead_crypt(req, FLG_AES | FLG_CCM);
- }
+-	/* Set key */
+-	stm32_cryp_hw_write_key(cryp);
+-
+ 	/* Set configuration */
+ 	cfg = CR_DATA8 | CR_FFLUSH;
  
- static int stm32_cryp_des_ecb_encrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen % DES_BLOCK_SIZE)
-+		return -EINVAL;
-+
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_DES | FLG_ECB | FLG_ENCRYPT);
- }
+@@ -562,23 +564,36 @@ static int stm32_cryp_hw_init(struct stm32_cryp *cryp)
+ 	/* AES ECB/CBC decrypt: run key preparation first */
+ 	if (is_decrypt(cryp) &&
+ 	    ((hw_mode == CR_AES_ECB) || (hw_mode == CR_AES_CBC))) {
+-		stm32_cryp_write(cryp, CRYP_CR, cfg | CR_AES_KP | CR_CRYPEN);
++		/* Configure in key preparation mode */
++		stm32_cryp_write(cryp, CRYP_CR, cfg | CR_AES_KP);
  
- static int stm32_cryp_des_ecb_decrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen % DES_BLOCK_SIZE)
-+		return -EINVAL;
++		/* Set key only after full configuration done */
++		stm32_cryp_hw_write_key(cryp);
 +
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_DES | FLG_ECB);
- }
++		/* Start prepare key */
++		stm32_cryp_enable(cryp);
+ 		/* Wait for end of processing */
+ 		ret = stm32_cryp_wait_busy(cryp);
+ 		if (ret) {
+ 			dev_err(cryp->dev, "Timeout (key preparation)\n");
+ 			return ret;
+ 		}
+-	}
  
- static int stm32_cryp_des_cbc_encrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen % DES_BLOCK_SIZE)
-+		return -EINVAL;
-+
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_DES | FLG_CBC | FLG_ENCRYPT);
- }
+-	cfg |= hw_mode;
++		cfg |= hw_mode | CR_DEC_NOT_ENC;
  
- static int stm32_cryp_des_cbc_decrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen % DES_BLOCK_SIZE)
-+		return -EINVAL;
-+
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_DES | FLG_CBC);
- }
+-	if (is_decrypt(cryp))
+-		cfg |= CR_DEC_NOT_ENC;
++		/* Apply updated config (Decrypt + algo) and flush */
++		stm32_cryp_write(cryp, CRYP_CR, cfg);
++	} else {
++		cfg |= hw_mode;
++		if (is_decrypt(cryp))
++			cfg |= CR_DEC_NOT_ENC;
  
- static int stm32_cryp_tdes_ecb_encrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen % DES_BLOCK_SIZE)
-+		return -EINVAL;
+-	/* Apply config and flush (valid when CRYPEN = 0) */
+-	stm32_cryp_write(cryp, CRYP_CR, cfg);
++		/* Apply config and flush */
++		stm32_cryp_write(cryp, CRYP_CR, cfg);
 +
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_TDES | FLG_ECB | FLG_ENCRYPT);
- }
++		/* Set key only after configuration done */
++		stm32_cryp_hw_write_key(cryp);
++	}
  
- static int stm32_cryp_tdes_ecb_decrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen % DES_BLOCK_SIZE)
-+		return -EINVAL;
-+
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_TDES | FLG_ECB);
- }
+ 	switch (hw_mode) {
+ 	case CR_AES_GCM:
+@@ -606,9 +621,7 @@ static int stm32_cryp_hw_init(struct stm32_cryp *cryp)
+ 	}
  
- static int stm32_cryp_tdes_cbc_encrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen % DES_BLOCK_SIZE)
-+		return -EINVAL;
-+
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_TDES | FLG_CBC | FLG_ENCRYPT);
- }
+ 	/* Enable now */
+-	cfg |= CR_CRYPEN;
+-
+-	stm32_cryp_write(cryp, CRYP_CR, cfg);
++	stm32_cryp_enable(cryp);
  
- static int stm32_cryp_tdes_cbc_decrypt(struct skcipher_request *req)
- {
-+	if (req->cryptlen % DES_BLOCK_SIZE)
-+		return -EINVAL;
-+
-+	if (req->cryptlen == 0)
-+		return 0;
-+
- 	return stm32_cryp_crypt(req, FLG_TDES | FLG_CBC);
+ 	return 0;
  }
- 
 -- 
 2.17.1
 
