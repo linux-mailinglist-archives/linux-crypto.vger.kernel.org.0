@@ -2,46 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3343943FD2D
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 Oct 2021 15:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1545D43FD33
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 Oct 2021 15:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhJ2NOI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 29 Oct 2021 09:14:08 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:56394 "EHLO deadmen.hmeau.com"
+        id S231509AbhJ2NOX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 29 Oct 2021 09:14:23 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:56398 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229603AbhJ2NOI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 29 Oct 2021 09:14:08 -0400
+        id S229603AbhJ2NOW (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 29 Oct 2021 09:14:22 -0400
 Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
         by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mgRfT-0002nP-Vn; Fri, 29 Oct 2021 21:11:36 +0800
+        id 1mgRfe-0002oU-JE; Fri, 29 Oct 2021 21:11:46 +0800
 Received: from herbert by gondobar with local (Exim 4.92)
         (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mgRfT-0003DJ-T0; Fri, 29 Oct 2021 21:11:35 +0800
-Date:   Fri, 29 Oct 2021 21:11:35 +0800
+        id 1mgRfc-0003Dd-PV; Fri, 29 Oct 2021 21:11:44 +0800
+Date:   Fri, 29 Oct 2021 21:11:44 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: sa2ul - Use the defined variable to clean code
-Message-ID: <20211029131135.GC12278@gondor.apana.org.au>
-References: <20211021021624.29672-1-tangbin@cmss.chinamobile.com>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: ccp - Make use of the helper macro kthread_run()
+Message-ID: <20211029131144.GD12278@gondor.apana.org.au>
+References: <20211021083854.1865-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211021021624.29672-1-tangbin@cmss.chinamobile.com>
+In-Reply-To: <20211021083854.1865-1-caihuoqing@baidu.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 10:16:23AM +0800, Tang Bin wrote:
-> Use the defined variable "dev" to make the code cleaner.
+On Thu, Oct 21, 2021 at 04:38:54PM +0800, Cai Huoqing wrote:
+> Repalce kthread_create/wake_up_process() with kthread_run()
+> to simplify the code.
 > 
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 > ---
->  drivers/crypto/sa2ul.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
+>  drivers/crypto/ccp/ccp-dev-v3.c | 5 ++---
+>  drivers/crypto/ccp/ccp-dev-v5.c | 5 ++---
+>  2 files changed, 4 insertions(+), 6 deletions(-)
 
 Patch applied.  Thanks.
 -- 
