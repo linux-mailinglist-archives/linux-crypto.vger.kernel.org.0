@@ -2,120 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA3D440E67
-	for <lists+linux-crypto@lfdr.de>; Sun, 31 Oct 2021 13:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD4D441015
+	for <lists+linux-crypto@lfdr.de>; Sun, 31 Oct 2021 19:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbhJaMbn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 31 Oct 2021 08:31:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229798AbhJaMbm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 31 Oct 2021 08:31:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0EEA61039;
-        Sun, 31 Oct 2021 12:29:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635683351;
-        bh=ph3gBE0UwLAlyx3ipLRKhIarn/rc9a7pyxJUqyXnYE8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AlSTPonwsVQTS7e6538bAhrsoddx69iTXWdkrXr6iSt+XpMXlvezHzTCflXQ39yZr
-         OXas2DnW6jbe82k53YFTnhcdR/Dfe1W5dbrmkZWe2AKWyXi39EJd7gs99EG0zrJ4YA
-         Xpev1Vw3s09aDXg61qEWMTVAKFL7NeeehC2vd6sAmYng5egDyFv+BArjzaYVH4JvhM
-         L6tmAnOfiZVT0OSCNoMhPNbUslsbB5DWX/ZZjBNvxpUd/y3ZDgzxu6h22cW/guM3q/
-         vk0rVuybrU/inRfOTAJWpW1Cv2g71dvomxt7Jtv2+PxHX8V1cAiAPNufDxnzzmHZuJ
-         KPWUD7xnP/ECQ==
-Received: by mail-ot1-f42.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so21208322otq.12;
-        Sun, 31 Oct 2021 05:29:10 -0700 (PDT)
-X-Gm-Message-State: AOAM531Pbo9CzJYU1hAabTxmni2exjSYt4Lo4VA2ewAdEA1daORAheir
-        6TKV5pJHDd77w2XVjpNyYTLkjMR4okkHb6/DpdY=
-X-Google-Smtp-Source: ABdhPJwgPIx5Ajj0S1T2KjyV/1WG7VBWyhFaagI5h0bGfEPDwtYo8G+a8GQ77xOCXiUmzae1g2e9z77AEw4JstfixnE=
-X-Received: by 2002:a05:6830:1d6e:: with SMTP id l14mr16396459oti.147.1635683350134;
- Sun, 31 Oct 2021 05:29:10 -0700 (PDT)
+        id S230219AbhJaSSh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 31 Oct 2021 14:18:37 -0400
+Received: from mailgate.kemenperin.go.id ([202.47.80.142]:51760 "EHLO
+        mailgate.kemenperin.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229853AbhJaSSh (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sun, 31 Oct 2021 14:18:37 -0400
+X-Greylist: delayed 1946 seconds by postgrey-1.27 at vger.kernel.org; Sun, 31 Oct 2021 14:18:25 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 5C56C828694;
+        Mon,  1 Nov 2021 00:39:29 +0700 (WIB)
+Received: from mailgate.kemenperin.go.id ([127.0.0.1])
+        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Tuljp_J1Cdlq; Mon,  1 Nov 2021 00:39:28 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id ADDE58286A9;
+        Mon,  1 Nov 2021 00:39:19 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mailgate.kemenperin.go.id ADDE58286A9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kemenperin.go.id;
+        s=3298A942-BBC6-11E3-B333-483736368EC2; t=1635701959;
+        bh=+tje3x5yIAM91gcZZJ8xoRjx6IuR+B3ePoXPCKu2mgI=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=I9X5S/EXkVkRluX+ZSit7NFR+OW43BqhWaImhHOVukb3qOg4mxQL0FOzHiQQ0QWtu
+         KQa7Ki4CUyShQL6tKlHQ2sju9QbGIAAqzmfnY9543e4CcsCf3fTpzVOzH7DFyJ+n2N
+         pbIsYLFs1Y2zkQa1+kK/NYR2sChScl7lzgpXIyKs=
+X-Virus-Scanned: amavisd-new at kemenperin.go.id
+Received: from mailgate.kemenperin.go.id ([127.0.0.1])
+        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id yX4BRpdxBRqw; Mon,  1 Nov 2021 00:39:19 +0700 (WIB)
+Received: from mailgate.kemenperin.go.id (mailgate.kemenperin.go.id [10.1.0.89])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 047EB8286A0;
+        Mon,  1 Nov 2021 00:39:10 +0700 (WIB)
+Date:   Mon, 1 Nov 2021 00:39:09 +0700 (WIB)
+From:   Manuel Franco <silitonga@kemenperin.go.id>
+Reply-To: Manuel Franco <manuelfrancospende1@gmail.com>
+Message-ID: <1813105855.326067.1635701949890.JavaMail.zimbra@kemenperin.go.id>
+Subject: 2,000,000.00 Euro
 MIME-Version: 1.0
-References: <20211029135454.4383-1-nicolas.toromanoff@foss.st.com> <20211029135454.4383-4-nicolas.toromanoff@foss.st.com>
-In-Reply-To: <20211029135454.4383-4-nicolas.toromanoff@foss.st.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 31 Oct 2021 13:28:58 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXF5_2AnQH8pjgzbeq63iSkdkUVq3wZM_NURotoHj0sJMw@mail.gmail.com>
-Message-ID: <CAMj1kXF5_2AnQH8pjgzbeq63iSkdkUVq3wZM_NURotoHj0sJMw@mail.gmail.com>
-Subject: Re: [PATCH 3/8] crypto: stm32/cryp - fix CTR counter carry
-To:     Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Marek Vasut <marex@denx.de>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.1.0.89]
+Thread-Index: Rc07z4zuj7w66chiYJCRC031ZEpyeA==
+Thread-Topic: 2,000,000.00 Euro
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, 29 Oct 2021 at 16:01, Nicolas Toromanoff
-<nicolas.toromanoff@foss.st.com> wrote:
->
-> Fix issue in CTR counter overflow, the carry-over is now properly
-> managed.
-> Fixes: bbb2832620ac ("crypto: stm32 - Fix sparse warnings")
->
-> Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
-> ---
->  drivers/crypto/stm32/stm32-cryp.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-> index 7b55ad6d2f1a..6eeeca0d70ce 100644
-> --- a/drivers/crypto/stm32/stm32-cryp.c
-> +++ b/drivers/crypto/stm32/stm32-cryp.c
-> @@ -163,7 +163,7 @@ struct stm32_cryp {
->         struct scatter_walk     in_walk;
->         struct scatter_walk     out_walk;
->
-> -       u32                     last_ctr[4];
-> +       __be32                  last_ctr[4];
->         u32                     gcm_ctr;
->  };
->
-> @@ -1219,25 +1219,26 @@ static void stm32_cryp_check_ctr_counter(struct stm32_cryp *cryp)
->
->         if (unlikely(cryp->last_ctr[3] == 0xFFFFFFFF)) {
->                 cryp->last_ctr[3] = 0;
-> -               cryp->last_ctr[2]++;
-> +               cryp->last_ctr[2] = cpu_to_be32(be32_to_cpu(cryp->last_ctr[2]) + 1);
->                 if (!cryp->last_ctr[2]) {
-> -                       cryp->last_ctr[1]++;
-> +                       cryp->last_ctr[1] = cpu_to_be32(be32_to_cpu(cryp->last_ctr[1]) + 1);
->                         if (!cryp->last_ctr[1])
-> -                               cryp->last_ctr[0]++;
-> +                               cryp->last_ctr[0] = cpu_to_be32(be32_to_cpu(cryp->last_ctr[0]) + 1);
->                 }
->
 
-crypto_inc() ??
 
->                 cr = stm32_cryp_read(cryp, CRYP_CR);
->                 stm32_cryp_write(cryp, CRYP_CR, cr & ~CR_CRYPEN);
->
-> -               stm32_cryp_hw_write_iv(cryp, (__be32 *)cryp->last_ctr);
-> +               stm32_cryp_hw_write_iv(cryp, cryp->last_ctr);
->
->                 stm32_cryp_write(cryp, CRYP_CR, cr);
->         }
->
-> -       cryp->last_ctr[0] = stm32_cryp_read(cryp, CRYP_IV0LR);
-> -       cryp->last_ctr[1] = stm32_cryp_read(cryp, CRYP_IV0RR);
-> -       cryp->last_ctr[2] = stm32_cryp_read(cryp, CRYP_IV1LR);
-> -       cryp->last_ctr[3] = stm32_cryp_read(cryp, CRYP_IV1RR);
-> +       /* The IV registers are BE  */
-> +       cryp->last_ctr[0] = cpu_to_be32(stm32_cryp_read(cryp, CRYP_IV0LR));
-> +       cryp->last_ctr[1] = cpu_to_be32(stm32_cryp_read(cryp, CRYP_IV0RR));
-> +       cryp->last_ctr[2] = cpu_to_be32(stm32_cryp_read(cryp, CRYP_IV1LR));
-> +       cryp->last_ctr[3] = cpu_to_be32(stm32_cryp_read(cryp, CRYP_IV1RR));
->  }
->
->  static bool stm32_cryp_irq_read_data(struct stm32_cryp *cryp)
-> --
-> 2.17.1
->
+-- 
+You have a donation of 2,000,000.00 Euro.Get back to me now so we can proceed.
