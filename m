@@ -2,82 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9974414D2
-	for <lists+linux-crypto@lfdr.de>; Mon,  1 Nov 2021 09:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE45441BEF
+	for <lists+linux-crypto@lfdr.de>; Mon,  1 Nov 2021 14:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhKAIIf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 1 Nov 2021 04:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbhKAIIe (ORCPT
+        id S232209AbhKANvm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 1 Nov 2021 09:51:42 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15328 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231493AbhKANva (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 1 Nov 2021 04:08:34 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92025C061764
-        for <linux-crypto@vger.kernel.org>; Mon,  1 Nov 2021 01:06:01 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id x27so34789333lfu.5
-        for <linux-crypto@vger.kernel.org>; Mon, 01 Nov 2021 01:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=J/sLAHxRh6EjJh2rcjPDJLzA40VXjb4DP54UXQAr8IU=;
-        b=jTwGY7UqyQ8YIhJUDjrqZPtk3LzrWCAUOAMDPLz5M7CqLBHqNsFTo9C861qV1B25Xf
-         r5L553Wxmro5Ww3I0Kz3a52AwkmZqFToii6+0ZOhpUkOfcb53PnNGE9m6Sqik3zmhZwo
-         n/R9HTp53zn5NI3DbL08muEwIh9gH7g9lDe2tstM5tUGQD80ibC8oJ7RZsh0jabUj80l
-         TjW7jDszyj0LgBKofuNs3yAxUhi8ze1MSxaF3AEB8qSt1N3bygNegk5wBFiWacOIsTYm
-         giGQNkRW+M+En5ZqEkyuSVwtFALtbKc66CUkcVFPmwMgTZmFkWlfrtrQ91sQ12FB43ir
-         IgcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=J/sLAHxRh6EjJh2rcjPDJLzA40VXjb4DP54UXQAr8IU=;
-        b=6gCe8x3VY0DRBaMnjYXAsUHgEVM0bOAN6JgbnqLvyCZM9+Mka/rt2UMLpx8FlMkGnJ
-         yx/JvbU9DYlNd1XZ17GfAN8TpgS9X/IAGT+AqzRPVv7gI4UZkoMy/XYmrOD6qrND6nh/
-         jkX7k3oZ8dq1BTw5oHPt1nCSJoJRVBxMfCvTeDXGPRBmO4DxhFnyvvH7tuT0KtmYbObP
-         7f9tEtXbXvdIkViemBxB48Z/Ht07AQ3SIKLbcvzJ2UD4vNFRYxLweumJOdSBF9ErpG/2
-         qlSZg1uv62L9lEwWQFmxx6Q0oBbfLj6cGUzBmzr6wTxMjGtsvsPafMn4xOms51EujxTR
-         pyYw==
-X-Gm-Message-State: AOAM533lhofK+k8mte9E3/ZMVM+1ooQh/g2z5EtMBTqiaPf1F618ONPc
-        al86hKZ5wf/Sdfcu36nOrr8pEwFB36gS1jArPtI=
-X-Google-Smtp-Source: ABdhPJxmqEVdpxtX6Hrcfxe4l+hmj7ibNqiYjCRoHEGQmkHQsxyv4j0y0ocCVsmwYp4ABnpO0ho1EyHAGzTI8DbI2zw=
-X-Received: by 2002:a05:6512:3696:: with SMTP id d22mr7627111lfs.659.1635753959932;
- Mon, 01 Nov 2021 01:05:59 -0700 (PDT)
+        Mon, 1 Nov 2021 09:51:30 -0400
+Received: from dggeml709-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HjZBQ5M0kz90Nb;
+        Mon,  1 Nov 2021 21:48:46 +0800 (CST)
+Received: from localhost.localdomain (10.175.102.38) by
+ dggeml709-chm.china.huawei.com (10.3.17.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Mon, 1 Nov 2021 21:48:53 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     <weiyongjun1@huawei.com>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Prabhjot Khurana <prabhjot.khurana@intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] crypto: keembay-ocs-ecc - Fix error return code in kmb_ocs_ecc_probe()
+Date:   Mon, 1 Nov 2021 14:02:33 +0000
+Message-ID: <20211101140233.777222-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a05:6512:304b:0:0:0:0 with HTTP; Mon, 1 Nov 2021 01:05:59
- -0700 (PDT)
-Reply-To: aisha.7d@yahoo.com
-From:   Aisha AG <rbx17058@gmail.com>
-Date:   Mon, 1 Nov 2021 00:05:59 -0800
-Message-ID: <CA+KbyychNgycp0rGBpdptJEdAFJQQCku4iDOhYe4CxitYXaueA@mail.gmail.com>
-Subject: Hello Dear,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.102.38]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeml709-chm.china.huawei.com (10.3.17.139)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--- 
+Fix to return negative error code -ENOMEM from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Hello Dear,
+Fixes: c9f608c38009 ("crypto: keembay-ocs-ecc - Add Keem Bay OCS ECC Driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/crypto/keembay/keembay-ocs-ecc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col.Muammar Al-Qaddafi.
-Am a Widow and a single Mother with three Children.
+diff --git a/drivers/crypto/keembay/keembay-ocs-ecc.c b/drivers/crypto/keembay/keembay-ocs-ecc.c
+index 679e6ae295e0..5d0785d3f1b5 100644
+--- a/drivers/crypto/keembay/keembay-ocs-ecc.c
++++ b/drivers/crypto/keembay/keembay-ocs-ecc.c
+@@ -930,6 +930,7 @@ static int kmb_ocs_ecc_probe(struct platform_device *pdev)
+ 	ecc_dev->engine = crypto_engine_alloc_init(dev, 1);
+ 	if (!ecc_dev->engine) {
+ 		dev_err(dev, "Could not allocate crypto engine\n");
++		rc = -ENOMEM;
+ 		goto list_del;
+ 	}
+ 
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar $27.500.000.00, and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country,may be from there,we can build business relationship
-in the nearest future.
-
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits.
-
-If you are willing to handle this project on my behalf kindly reply
-urgently to enable me to provide you more information about the
-investment funds.
-Best Regards
-Mrs Aisha Al-Qaddafi.
