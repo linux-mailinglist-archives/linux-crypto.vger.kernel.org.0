@@ -2,90 +2,101 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3069F4432DA
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Nov 2021 17:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4CB4433A8
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Nov 2021 17:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234986AbhKBQi4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Nov 2021 12:38:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235028AbhKBQiq (ORCPT
+        id S230315AbhKBQup (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 2 Nov 2021 12:50:45 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:51346 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231708AbhKBQun (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:38:46 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E73C0432C5
-        for <linux-crypto@vger.kernel.org>; Tue,  2 Nov 2021 09:28:36 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id k24so16453895ljg.3
-        for <linux-crypto@vger.kernel.org>; Tue, 02 Nov 2021 09:28:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EFG0W4zbuZBKc8KwN//b04i0rLIBd1L+XKZX7MrXoOc=;
-        b=hpAI9rD1GQefjY1Adn77Zrw92FmMVgTkMn30tMZmiv+NzH79bDofjvVfqKAG8t/k/X
-         RX50bQ0reQiJiASa+Wi3Ks1ITAO2X1a1eJlnJACu0G3dfCj6pzLhRwt8ttFnbVlWmoih
-         YPvqmqixTXafViP0iPMRbo61wTri5tdAgB7Xgql0KMeJu4DRONJOd+Fi6ZlSTyat+I+Q
-         5xy0YYH3X0UkObJm99RE+K2WL4jqLBDPTTC+Tzj6E00Dm9qb+8BNDCtMvoqEYLD0zh/b
-         IqW8SERdtvpoDMuR6KEkDkzZ+qx8Wj5KfkegnFR8YN9De6j7NaUULuVOt67gpk6SN3hR
-         u+ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EFG0W4zbuZBKc8KwN//b04i0rLIBd1L+XKZX7MrXoOc=;
-        b=3csLoukBQWn9+6xE/W+DL3vwhoTBW4yIYPfMzCsTWNOqYhAkDb5t1L50Gj14RaQqZv
-         p7eGb9tQ33L4c30ciVjZ3pjr7vqVUCXiM4KumqJHf2wab5fXx4/qmOvMQOFcCKY45cld
-         t+Unsj6ql4nI6GGw4dslAsnPknpWGG/fqK174lHkq9L2UrzdXkPJtfUas0NAYlXmV9je
-         2b9zsYEvr6Gp78EuhUL09EUITYmPH+kcEQM1pHtxwBdxousqCHGPYCwKu1dUF7YG1c+M
-         f6P1rmxLXCjKDLrVcG1FHH96ushKbUKaVW51rM8HoHhPcezm5AtQy+zZzvJ+1zbwNwgc
-         gq5w==
-X-Gm-Message-State: AOAM530x5J3L9QImI5sn7HXBi9xpFDwHImJwxjRy+QRJq1KRJsUORxCx
-        C2oKSMj0dPG4r+dMHA6p2tailmHPYXo0joJBzC1smw==
-X-Google-Smtp-Source: ABdhPJyjGrPaYpq4OUOloYJA4hOuXnQyAusv+PW6kvERDc2Qqy0X3OdonYHzSsLN1pu41EWzSDjt6FFszoZuWuMvlVI=
-X-Received: by 2002:a2e:9a18:: with SMTP id o24mr34636588lji.426.1635870514872;
- Tue, 02 Nov 2021 09:28:34 -0700 (PDT)
+        Tue, 2 Nov 2021 12:50:43 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A2G39sv025654;
+        Tue, 2 Nov 2021 17:47:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=E6cFgMQ5mYO6zhL9efbx4Y+zk1mNlk4o4AVLdYE5S0k=;
+ b=heKgWNQVhkvD/DGGQ8wyXn3uWdT1ryCdBTCRMMC63Nhp05tzLsmocaiCXLExnxS35MgA
+ sZbqdddNYdBtUW/YM7makKPSHKBaPQYCQ81MZ2n3X1LXVQK1X1Z8gqQBn70PPhObeqpi
+ HW76NpxggcwfMr+5clVW5VQbhDxKYeswpS3l++aQjbEymhNj2KTDmMWLRh4VlhoxCgVc
+ xbqXXFcU4bUBRsuPJ1BB8ceVDfktuGfRQcJKH3uKCM/hO5edIw03ys30l51pNxpeVH8M
+ BSo8R5vjCzG7irGgc5oaKx5EN8j8yljKoaokJwJptEFvm6Lj9BYmlru6h7kq1cIB0vgJ 4A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c30vnbqe4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Nov 2021 17:47:49 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 484FC10002A;
+        Tue,  2 Nov 2021 17:47:45 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0FAE623480D;
+        Tue,  2 Nov 2021 17:47:45 +0100 (CET)
+Received: from localhost (10.75.127.46) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 2 Nov 2021 17:47:44
+ +0100
+From:   Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Marek Vasut <marex@denx.de>,
+        Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        <linux-crypto@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/8] STM32 CRYP driver: many fixes
+Date:   Tue, 2 Nov 2021 17:47:21 +0100
+Message-ID: <20211102164729.9957-1-nicolas.toromanoff@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20211102142331.3753798-1-pgonda@google.com> <20211102142331.3753798-5-pgonda@google.com>
- <0701eb12-a60e-381f-ddd0-9ee9a0fa3edb@amd.com>
-In-Reply-To: <0701eb12-a60e-381f-ddd0-9ee9a0fa3edb@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Tue, 2 Nov 2021 10:28:23 -0600
-Message-ID: <CAMkAt6psP-qK3DJiDD=54_LKQ6cA8xHndD7wLmsOkrmvA=+EVA@mail.gmail.com>
-Subject: Re: [PATCH V3 4/4] crypto: ccp - Add SEV_INIT_EX support
-To:     Tom Lendacky <Thomas.Lendacky@amd.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-02_08,2021-11-02_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 9:38 AM Tom Lendacky <thomas.lendacky@amd.com> wrote:
->
-> On 11/2/21 9:23 AM, Peter Gonda wrote:
-> > From: David Rientjes <rientjes@google.com>
-> >
-> > +
-> > +     nread = kernel_read(fp, sev_init_ex_nv_address, NV_LENGTH, NULL);
->
-> Not sure if you missed the previous comment, but kernel_read can return an
-> error, shouldn't it be checked and fail on error?
+Hello,
 
-I did miss that comment. Updated to make sure nread == NV_LENGTH.
->
-> Thanks,
-> Tom
->
-> > +     dev_dbg(psp_master->dev, "SEV: read %ld bytes from NV file\n", nread);
-> > +     filp_close(fp, NULL);
-> > +
-> > +     return 0;
-> > +}
-> > +
+This set of patches update the STM32 CRYP driver.
+
+First two update about EPROBE_DEFER management.
+Then many fixes to success the cryptomanager EXTRA_TESTS.
+And finally we reorder the initialization to set the key as last step.
+
+This patch series applies to cryptodev/master.
+
+v1 -> v2 :
+  - use crypto_inc() in "crypto: stm32/cryp - fix CTR counter carry".
+  - more explicit commit description.
+  - with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y all tests pass, at boot 
+    if built into kernel, at insmod if in module. (as v1)
+
+Etienne Carriere (2):
+  crypto: stm32/cryp - defer probe for reset controller
+  crypto: stm32/cryp - don't print error on probe deferral
+
+Nicolas Toromanoff (6):
+  crypto: stm32/cryp - fix CTR counter carry
+  crypto: stm32/cryp - fix race condition in crypto_engine requests
+  crypto: stm32/cryp - check early input data
+  crypto: stm32/cryp - fix double pm exit.
+  crypto: stm32/cryp - fix bugs and crash in tests
+  crypto: stm32/cryp - reorder hw initialization
+
+ drivers/crypto/stm32/stm32-cryp.c | 983 ++++++++++++------------------
+ 1 file changed, 403 insertions(+), 580 deletions(-)
+
+
+base-commit: 3ae88f676aa63366ffa9eebb8ae787c7e19f0c57
+-- 
+2.17.1
+
