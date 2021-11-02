@@ -2,76 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3213F4434A7
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Nov 2021 18:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE004435EA
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Nov 2021 19:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234476AbhKBRkE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 2 Nov 2021 13:40:04 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:43669 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230214AbhKBRkE (ORCPT
+        id S235506AbhKBSrL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 2 Nov 2021 14:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235169AbhKBSrF (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:40:04 -0400
-Received: by mail-oi1-f169.google.com with SMTP id o4so31031805oia.10;
-        Tue, 02 Nov 2021 10:37:29 -0700 (PDT)
+        Tue, 2 Nov 2021 14:47:05 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D04AC061714
+        for <linux-crypto@vger.kernel.org>; Tue,  2 Nov 2021 11:44:30 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id t127so532991ybf.13
+        for <linux-crypto@vger.kernel.org>; Tue, 02 Nov 2021 11:44:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=sQl7t73aBkaEXHZnLco2JyiUledsuD6FoDpCBbsiJUE=;
+        b=Ei6yZPOohDSVGQMECR89V02P1OVmNohgFzynLVV1PqRkqmhPC/5zsSop3BomqtAlpt
+         VccuDiNZ5QI7mt8bubVQDJwx53xvMjaz58ZP7Hp8LS2xXo0xOIlLT3u60dQjTvxsVuNs
+         8rnfF3kl/ASe595Bprqq4aJfjjzgp+tWBRgWGTZGSIbQNSnPWJRnPEy6AlX6cTcnYoQo
+         6iTSH+4vX9x/zlJJYBOxqj/ptCG4WiiYJ9Ho3MBt7me3D8lEt3c+JduoiR+1Z01Dz3LW
+         tdV5uRA86JZRlJurg6eQI4sSZLdykzH8QUaxslCeXrph1sVWKPTArM3dKVVQk6YewSkx
+         NprA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I4wS/MeApg+acnjIPcmIJRjqzT3xZ9ohIefTe2eA5Ww=;
-        b=YL5pLW4vosf9iSz6oAAuJr+PHyni+O/SwLdZ0O+K1RYZzB8tgi19GZld3bhstBinLw
-         NZd4VkF/VnTKz9bGsUj5xUqTYxpA5Vj0rTK1+9XjS/vJd+RcLi7Qe/YMkYrwll8/mAHe
-         qGbvCUPC4oQAOIuOcxSZPqdW3IzxomzV08so89b5oMqyzmjNYFJnAP9KnqX2DaoQMwoG
-         kJGGHuuk4dFY1F27AMsjTawaaJpEXgRhUQD1Lr4htrrBF5AyyeILUcFzlQ9XK5FSqLQi
-         bVAn0DX3arFXnGq/EF0+YwUGzHeYxisnJ9/E803Ei1nVctlJL1nxhD08MgM8zgt9E9s/
-         0Nvg==
-X-Gm-Message-State: AOAM531LNUqGaQOCQVYvghUdZU1tSrC6py9UjLWgzRQwIBZSIAKqaVSL
-        LffjMlEiAMIdne+BFXg1SA==
-X-Google-Smtp-Source: ABdhPJwFt7oZf3aTr+9ZIpmdhnMpkMuBp6BB+Cfvx0lXcBpv3bbPDYT7FEjrIJFQ4+bQKQlHHGLxdQ==
-X-Received: by 2002:aca:d956:: with SMTP id q83mr6099213oig.165.1635874648601;
-        Tue, 02 Nov 2021 10:37:28 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id m14sm4199586ooe.39.2021.11.02.10.37.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 10:37:28 -0700 (PDT)
-Received: (nullmailer pid 3130452 invoked by uid 1000);
-        Tue, 02 Nov 2021 17:37:27 -0000
-Date:   Tue, 2 Nov 2021 12:37:27 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Richard van Schagen <vschagen@icloud.com>
-Cc:     robh+dt@kernel.org, matthias.bgg@gmail.com,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: crypto: Add Mediatek EIP-93 crypto
- engine
-Message-ID: <YYF3V0FzIwhIuyNK@robh.at.kernel.org>
-References: <20211028015800.3449040-1-vschagen@icloud.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=sQl7t73aBkaEXHZnLco2JyiUledsuD6FoDpCBbsiJUE=;
+        b=EXoE1JT1NSy65aSixrssir927GHH3T/m9yrp6H2ne+seNFpAtToRZXR4yLzNe6wckz
+         Ee3pmaf7v9RViXJbQ2nmZSsWzv6HekSSRgJ82lXsz4pBNFrtvfGo7eU8SzQtFGSVEDoE
+         Iuyq2nEw0tG6hL8rR9pK6TnZizJqjiT40md6S3yyMUo9RagTNg5+PhFI5K/M4FKg7alI
+         emv4v7n5A8JZneAByzbsqpWUaVhVogfUKfjahy2kRnQ8MUOmuzeFqZ7o7JvXX+CLC+3d
+         LeMdEQ3G8NpBghCIlE7I996uUz1hv3KYXFJmVNjvx6k7RT8tFS6rxRLpA0FtOTPdZl4k
+         u4Sg==
+X-Gm-Message-State: AOAM530GiizA1PuP+cwqk7YvCzP5d08jYAa+Q/IJxD9uxarMyJEQ9K6E
+        Fk0YlkM8ko5aar/PnStwxqX+y5hOETXKt9IGgWo=
+X-Google-Smtp-Source: ABdhPJx9dm70Of7CA3UxXY0L6RlWOZ4bF7n6NBWKSDvEU/rE491/N2YCscdWoou/xWympPE3V9PYSNGtOHQL5ZuuvYU=
+X-Received: by 2002:a25:8382:: with SMTP id t2mr23448701ybk.273.1635878669551;
+ Tue, 02 Nov 2021 11:44:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211028015800.3449040-1-vschagen@icloud.com>
+Received: by 2002:a05:7010:920c:b0:1df:25e1:4439 with HTTP; Tue, 2 Nov 2021
+ 11:44:29 -0700 (PDT)
+Reply-To: salemchantal@mail.ee
+From:   MRS Salem Chantal Lawrence <wkate2579@gmail.com>
+Date:   Tue, 2 Nov 2021 11:44:29 -0700
+Message-ID: <CAJ724YDuh+mySnk=wDyXCP_TC683EQkL29wJDz-BftkYV9t0Cw@mail.gmail.com>
+Subject: Dear Friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, 28 Oct 2021 09:58:00 +0800, Richard van Schagen wrote:
-> Add bindings for the Mediatek EIP-93 crypto engine.
-> 
-> Signed-off-by: Richard van Schagen <vschagen@icloud.com>
-> ---
-> Changes since V3:
->  - Corrected typo
->  - Removed "interrupt-parent"
-> 
-> Changes since V2:
->  - Adding 2 missing "static" which got lost in my editing (sorry)
-> 
-> Changes since V1
->  - Add missing #include to examples
-> 
->  .../bindings/crypto/mediatek,mtk-eip93.yaml   | 38 +++++++++++++++++++
->  1 file changed, 38 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/crypto/mediatek,mtk-eip93.yaml
-> 
+Attention
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+You have been compensated with the sum of 4.6 million dollars in this
+United Nation the payment will be issue into Atm Visa Card and send to you
+from the Bank we need your Address Passport and your whatsapp number
+
+Contact this Email address for more Details (salemchantal@mail.ee)
+
+THANKS
+MRS Salem Chantal Lawrence
