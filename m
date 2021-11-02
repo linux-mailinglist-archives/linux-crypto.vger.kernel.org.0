@@ -2,57 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E468443042
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Nov 2021 15:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7942C443044
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Nov 2021 15:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhKBO0T (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S231392AbhKBO0T (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Tue, 2 Nov 2021 10:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbhKBO0K (ORCPT
+        with ESMTP id S231138AbhKBO0P (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:26:10 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CC7C061767
-        for <linux-crypto@vger.kernel.org>; Tue,  2 Nov 2021 07:23:35 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id u15-20020a62790f000000b004802fdd141dso6489581pfc.17
-        for <linux-crypto@vger.kernel.org>; Tue, 02 Nov 2021 07:23:35 -0700 (PDT)
+        Tue, 2 Nov 2021 10:26:15 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7134EC061205
+        for <linux-crypto@vger.kernel.org>; Tue,  2 Nov 2021 07:23:37 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id y3-20020a170902d64300b0013fc50eb97eso8344277plh.17
+        for <linux-crypto@vger.kernel.org>; Tue, 02 Nov 2021 07:23:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=u6e4WOpk0Gy7k+VMHluWLZb26ejBKbKlf2/TYAs8po4=;
-        b=XTjOStoKg0N6wfHaH3SzwOZID8vIMWONfnqf8lYJCeqJ2EiS/S6Hjq9ofmqln9P1EW
-         MK6wB0SISa52PPpwF3WyGEILcviw4Z0TwMyEQrlVTMOaVOjyuefpxn/Vxl2xiQeeqdMM
-         pH2QT1EO5clygoA7+wugYZ3pXkf/+US8wCMqYVEUr0K6OYhxXCUJFROEifzwNUn5dER3
-         5tJFFhG6Zm6vw97ArYpj+vh0MiEv4qpk/T4sZcpYpITGMDjIaHL9lFveEqUM5b4vk1d2
-         qmX1RaK3+SrFEsb0SqRiIMtBcoqLQsqhm5Mn69bzHtfNtn7gOSHj8C55GJ0+W6ZeMu1+
-         zfSA==
+        bh=qXnwABhA26FtcwRiOkwwItakkHsn0lTvM03+FEbDB6Y=;
+        b=YYnVCEW2r4hHwMzOIxQTSzlv652l5c9dHtPufSOWZtNfEThh5O1mMSabauac5msWvh
+         va1NieZjuSXPW0TY5zrbeh1jnhAZQaHvewJGt51pZLSKeQRrx7prSAR/CqTtYAx22Olb
+         YKR8ixWvMg/aSK1YzchrZV9ZdnyPGIBP7Gfw1Cj3t2kw4DTbl0TDdBFklcaty9TG2Oz7
+         ZdN31vJy3T1N0YH1DGWMl88ASVIWa9PXuz/J3HyyykbFpBvbzF03om/8g67ELQ+A9TIi
+         LVQfZJLTdxlTNBM8uylEHE/mHGesX+MKkRFUt81qrvFPH1X/j9W3X4juEd8BEEAheFGs
+         +PVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=u6e4WOpk0Gy7k+VMHluWLZb26ejBKbKlf2/TYAs8po4=;
-        b=auFFxaSnY5OuvTTIjdjG+dxpzJLWwDtN1wnhol1LiK/qIJxMbRz/1CpYSxCqh/UlkJ
-         JwdUMeznIPbqHUGOKFCEaTKTrWvaVU2uvDfHzlc2ytXwa6bZRUhS8Av8QAB4MN/cjPTm
-         gdGlobr3PCPd49cuSM6KekPZU1AMFDhvrWnd3CCUj++52yEPgXbTcCcywCFAfWExWihT
-         TobKZ3DoytNjpso9PhYVPRbV207wy69qS7ktUiXO1pG0E/AU8DSXJ2y3M8QCAoMFk3Vw
-         mDwpvJV76B6Qcm30Xk0//Qm6ix7UGg1NsAPk0/x8JKwMzJ9uov8KCk91D7RzDFiwMf0m
-         lm5g==
-X-Gm-Message-State: AOAM5324ACRhXvndHyf+dHoi038X7H0WJ27s8yTK+HKSbuiDIZ2mhZ36
-        EnFSXTZlbCeqIvOsSEukiXrgRBQ0tUU=
-X-Google-Smtp-Source: ABdhPJy/fKRYQWUyxSBEeGg1RfqjWhYkU35eXTT+y4WzPcVm2Gqegz6Udg89ZNRpZWG5jJBtW1NkltZ3KFQ=
+        bh=qXnwABhA26FtcwRiOkwwItakkHsn0lTvM03+FEbDB6Y=;
+        b=kl6qd2FB1DDRrHjr3Z2cRaAqtEXQeP4eW/E8F/6/CxyUtztjIXYTJB+h5GhTC4OQoa
+         kjlyTN22fku7CKvAo5ubQggZigsLFJedODNW5MwJyscxiTyn4bWbSFk6nFztrY0eR3I3
+         VL8xN0g8itU0YKgg7tGtv96FaWMqwk0PmuGgyMD1uPh1NArSCd8f7p2/EM7M9VLRt2UG
+         SFK48xbtFFKa5wpt6NrWWRF5rvRukoZg1U/w0QfIMQYFVohaVGWdGE6czBNOZPvoAAhm
+         pMJCc+OKz85Kv7VQjQLhOXrTUUG+obByWbG316Vhdu8qVTuZXTVt39toKEW1DdDCTVEa
+         rThw==
+X-Gm-Message-State: AOAM530I/jbQToFTNwnzRLav9382RZy4fmpfYj2hLMCdLfYbAbNIMQg3
+        sT/CPq1eAL3Etq2VhXxzRr9kN2uH4Oo=
+X-Google-Smtp-Source: ABdhPJxQxw3IpsO6tsK07Airg4jfVnZE0ymteCk3hDLFQZ1gjUTW3/LpPax5EyjpakE1n8BivFwrfUgy8tI=
 X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:3109:8497:f59d:9150])
- (user=pgonda job=sendgmr) by 2002:a17:902:9694:b0:141:ea16:aecb with SMTP id
- n20-20020a170902969400b00141ea16aecbmr12630734plp.62.1635863014799; Tue, 02
- Nov 2021 07:23:34 -0700 (PDT)
-Date:   Tue,  2 Nov 2021 07:23:28 -0700
+ (user=pgonda job=sendgmr) by 2002:a17:90a:5285:: with SMTP id
+ w5mr37602pjh.1.1635863016596; Tue, 02 Nov 2021 07:23:36 -0700 (PDT)
+Date:   Tue,  2 Nov 2021 07:23:29 -0700
 In-Reply-To: <20211102142331.3753798-1-pgonda@google.com>
-Message-Id: <20211102142331.3753798-2-pgonda@google.com>
+Message-Id: <20211102142331.3753798-3-pgonda@google.com>
 Mime-Version: 1.0
 References: <20211102142331.3753798-1-pgonda@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH V3 1/4] crypto: ccp - Fix SEV_INIT error logging on init
+Subject: [PATCH V3 2/4] crypto: ccp - Move SEV_INIT retry for corrupted data
 From:   Peter Gonda <pgonda@google.com>
 To:     thomas.lendacky@amd.com
 Cc:     Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
@@ -69,11 +68,11 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Currently only the firmware error code is printed. This is incomplete
-and also incorrect as error cases exists where the firmware is never
-called and therefore does not set an error code. This change zeros the
-firmware error code in case the call does not get that far and prints
-the return code for non firmware errors.
+This change moves the data corrupted retry of SEV_INIT into the
+__sev_platform_init_locked() function. This is for upcoming INIT_EX
+support as well as helping direct callers of
+__sev_platform_init_locked() which currently do not support the
+retry.
 
 Signed-off-by: Peter Gonda <pgonda@google.com>
 Reviewed-by: Marc Orr <marcorr@google.com>
@@ -91,32 +90,51 @@ Cc: Paolo Bonzini <pbonzini@redhat.com>
 Cc: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
- drivers/crypto/ccp/sev-dev.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/crypto/ccp/sev-dev.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 2ecb0e1f65d8..ec89a82ba267 100644
+index ec89a82ba267..e4bc833949a0 100644
 --- a/drivers/crypto/ccp/sev-dev.c
 +++ b/drivers/crypto/ccp/sev-dev.c
-@@ -1065,7 +1065,7 @@ void sev_pci_init(void)
- {
- 	struct sev_device *sev = psp_master->sev_data;
- 	struct page *tmr_page;
--	int error, rc;
-+	int error = 0, rc;
- 
- 	if (!sev)
- 		return;
-@@ -1104,7 +1104,8 @@ void sev_pci_init(void)
+@@ -267,6 +267,18 @@ static int __sev_platform_init_locked(int *error)
  	}
  
+ 	rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
++	if (rc && *error == SEV_RET_SECURE_DATA_INVALID) {
++		/*
++		 * INIT command returned an integrity check failure
++		 * status code, meaning that firmware load and
++		 * validation of SEV related persistent data has
++		 * failed and persistent state has been erased.
++		 * Retrying INIT command here should succeed.
++		 */
++		dev_dbg(sev->dev, "SEV: retrying INIT command");
++		rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
++	}
++
+ 	if (rc)
+ 		return rc;
+ 
+@@ -1091,18 +1103,6 @@ void sev_pci_init(void)
+ 
+ 	/* Initialize the platform */
+ 	rc = sev_platform_init(&error);
+-	if (rc && (error == SEV_RET_SECURE_DATA_INVALID)) {
+-		/*
+-		 * INIT command returned an integrity check failure
+-		 * status code, meaning that firmware load and
+-		 * validation of SEV related persistent data has
+-		 * failed and persistent state has been erased.
+-		 * Retrying INIT command here should succeed.
+-		 */
+-		dev_dbg(sev->dev, "SEV: retrying INIT command");
+-		rc = sev_platform_init(&error);
+-	}
+-
  	if (rc) {
--		dev_err(sev->dev, "SEV: failed to INIT error %#x\n", error);
-+		dev_err(sev->dev, "SEV: failed to INIT error %#x, rc %d\n",
-+			error, rc);
- 		return;
- 	}
- 
+ 		dev_err(sev->dev, "SEV: failed to INIT error %#x, rc %d\n",
+ 			error, rc);
 -- 
 2.33.1.1089.g2158813163f-goog
 
