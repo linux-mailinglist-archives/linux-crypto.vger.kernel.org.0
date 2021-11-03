@@ -2,65 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB492443E72
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Nov 2021 09:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C6B443F91
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Nov 2021 10:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhKCIfX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 3 Nov 2021 04:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33128 "EHLO
+        id S231338AbhKCJuC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 3 Nov 2021 05:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbhKCIfX (ORCPT
+        with ESMTP id S230097AbhKCJuB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 3 Nov 2021 04:35:23 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10187C061714
-        for <linux-crypto@vger.kernel.org>; Wed,  3 Nov 2021 01:32:47 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id v20so2889607uaj.9
-        for <linux-crypto@vger.kernel.org>; Wed, 03 Nov 2021 01:32:47 -0700 (PDT)
+        Wed, 3 Nov 2021 05:50:01 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8AEC061714;
+        Wed,  3 Nov 2021 02:47:25 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id t30so2580706wra.10;
+        Wed, 03 Nov 2021 02:47:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=LZl0PsKLy4lR1GMZzRsDE6dGXhKEbh6dgaf+h08o+xU=;
-        b=fEu5JkDzXz5KkRRRjFscVK0IbPJVkmNa+xAS3ZA62o+Um6HdUh2uaE47KnzQUVfiZz
-         SxgM1sA9gBQ02aalvCAfaSk1t4GuE84M7chfYgbGyH8LMv4770EYG8FDyELrGmURRfbt
-         qdyrEF40aLoAtmcNX1JL+UROnLPGx1bkjfHXsTS3dhxInIQbdU/ara4/Lz6/aV2Han6o
-         jIaZwUC3murtdgO+nEe8s67vr+CnsMxINDO2cZ8fZPTqV+q359I8nwMk0LO/hTnawVaM
-         pF3NbzEnAzu649eMQZUiFxCLwu2ZEifgQD1/AgRm15Zvk6fW4ofKA3HcXUdYCKPyJE1h
-         MISg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Owuxu/u/a2bHMDCGZQeGYLoaD+hfbfqkKmW4rV72EDg=;
+        b=OHlMo4AEB3El1xuPYSeoUEOZ8QkjsQ/eUYqmmv/EZCjaM+yZQV4XNLGiayYmXQJ7dY
+         U0QThqegFN7ujzo5fqAxGE/k/fogrx2nWD1LNZL+RAMrvmeHC/0bHWuSYbtRkMhIjaMa
+         QvgD7ra+DMDY0qSLZr4MrQO6/S6YGWKK4TJWjhyxKvqvr56YQ2R1rHTXiVzhvgg/VGri
+         gE4nooMYMvUK5LbJJrD96RCVg0gXEgpZaBkHzcCnLdLlHad2/889nZHp6FlmY+59OZde
+         BSqOYVJ7o6jnbBctnRO7pFdjQobsu6XaCk07uVuh2FlmFjCrwPbriIlft+rmz2CJY2lV
+         +qDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=LZl0PsKLy4lR1GMZzRsDE6dGXhKEbh6dgaf+h08o+xU=;
-        b=flKtqNYF08Lu297KUafTqqTolfPG1Zu9HvrCQVePvBChqTC4xJ3Z32qCdzEK/9//AL
-         9aKoxyfCRpJvSXKJ0YqiSzxrabQR2WqQWz4rpUt5GeFyaDp6+I9/TykUQCZlBN80Hl3u
-         qna/lEwhTCOFnDDFcqijNwydK6sKEt2MgZE7WjqGgosh3mWLGLpwMmZifg9UHFUYtcus
-         EzjPQhrfSfYntNag1059SgUvP7PKOXwvhaZXxSp70HQZG1da+1n2RFRq6yH1+4Th5NIW
-         TtbQhc5vlMFO8POIK4wiq4gxoa4EsqUHD6KwoA2AgmvXdTXinMCa4x0BpqpgGd6JBZJV
-         H9CQ==
-X-Gm-Message-State: AOAM533AsZ4Da2+QG9Lbw0Qagik6hTe+PvPNFNbFUESDTet7+X+QD9a3
-        fz7VTVguzocO7B4DkXol1CCXYB6qBACjfk0DNw==
-X-Google-Smtp-Source: ABdhPJyVzdv6eFDyKOGs0Hvwt6QOi7v1I0vv6z7C4otXUYASeqvwh2Vsjm6wYydLGXEZ7cDDQd7SBTCMyLz83vK/E0k=
-X-Received: by 2002:a67:e084:: with SMTP id f4mr21168092vsl.57.1635928366159;
- Wed, 03 Nov 2021 01:32:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Owuxu/u/a2bHMDCGZQeGYLoaD+hfbfqkKmW4rV72EDg=;
+        b=HphlRgUQ5viFhfDvOtNnt2kFjwBOSHG/DDZev5Wa1cL0egGN2DPWhkHMFWCXg+MBcc
+         evKRUZEavyB+3P2sebPtZoW45GrCiJgb3QAuCUiZVgokelGKohIrtZZFyujEDeyz7vp0
+         dPqZ++VQEaaF8CUKi0R5lHcynAwC2nXZlYR7SrP8P8nORwDTn+0uAxxGa10GkaRsBOaJ
+         m5EdCUC1O5/YgNGLdep7M2UFGrnxvlr++FbnqIGGhCPf3JQYSnI+myrAUYgZgfqNNd9Q
+         5MSLfNsqaWa3iKEuXM+6Ym3tLQYWi+1Q4Da90Ppfed+jhOD0PT0JwDD7YOLj6VWr1p11
+         b/Qg==
+X-Gm-Message-State: AOAM532bR27jeKBhiD6fpL6XmLwwIAlwARcDzRWPECeIbHABkqokDOBi
+        /O1Hc5nXfYj00uzutRM6YGc=
+X-Google-Smtp-Source: ABdhPJw6J4+VCHWxT1GPXHqXpGNOOBk0+iT4tUFqkeGI1hU7hTG0Xt73bJZaS6mBMLuFHyr5y1ED4Q==
+X-Received: by 2002:adf:fe4f:: with SMTP id m15mr25960360wrs.81.1635932843964;
+        Wed, 03 Nov 2021 02:47:23 -0700 (PDT)
+Received: from localhost.elektrobit.com (eth1-fw1-nbg6.eb.noris.de. [213.95.148.172])
+        by smtp.gmail.com with ESMTPSA id l7sm1779889wry.86.2021.11.03.02.47.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 02:47:23 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Declan Murphy <declan.murphy@intel.com>,
+        linux-crypto@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: rectify entry for INTEL KEEM BAY OCS ECC CRYPTO DRIVER
+Date:   Wed,  3 Nov 2021 10:47:11 +0100
+Message-Id: <20211103094711.8844-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Received: by 2002:a59:a7ef:0:b0:23d:4642:884 with HTTP; Wed, 3 Nov 2021
- 01:32:45 -0700 (PDT)
-Reply-To: marykaya3m@gmail.com
-From:   Mary Kayash <marcfreym@gmail.com>
-Date:   Wed, 3 Nov 2021 03:32:45 -0500
-Message-ID: <CAEfSaObpDRUteh+0bJJASEnBFbups3XvVAjd8tc37ovw5gahFQ@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello,
+Commit c9f608c38009 ("crypto: keembay-ocs-ecc - Add Keem Bay OCS ECC
+Driver") only adds drivers/crypto/keembay/keembay-ocs-ecc.c, but adds a
+file entry drivers/crypto/keembay/ocs-ecc-curve-defs.h in MAINTAINERS.
 
-I want to know if this email is still valid.
+Hence, ./scripts/get_maintainer.pl --self-test=patterns warns:
 
-Thank you,
+  warning: no file matches  F:  drivers/crypto/keembay/ocs-ecc-curve-defs.h
 
-Mrs Mary Kayash,
+Assuming that this header is obsolete and will not be included in the
+repository, remove the unneeded file entry from MAINTAINERS.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ MAINTAINERS | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ba9f6537abc3..1fb254aa12d1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9671,7 +9671,6 @@ F:	Documentation/devicetree/bindings/crypto/intel,keembay-ocs-ecc.yaml
+ F:	drivers/crypto/keembay/Kconfig
+ F:	drivers/crypto/keembay/Makefile
+ F:	drivers/crypto/keembay/keembay-ocs-ecc.c
+-F:	drivers/crypto/keembay/ocs-ecc-curve-defs.h
+ 
+ INTEL KEEM BAY OCS HCU CRYPTO DRIVER
+ M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+-- 
+2.26.2
+
