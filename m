@@ -2,76 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E35E443C37
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Nov 2021 05:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB492443E72
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Nov 2021 09:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbhKCEd1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 3 Nov 2021 00:33:27 -0400
-Received: from ciao.gmane.io ([116.202.254.214]:44028 "EHLO ciao.gmane.io"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229650AbhKCEd1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 3 Nov 2021 00:33:27 -0400
-Received: from list by ciao.gmane.io with local (Exim 4.92)
-        (envelope-from <glkc-linux-crypto@m.gmane-mx.org>)
-        id 1mi7vE-0005tW-Ux
-        for linux-crypto@vger.kernel.org; Wed, 03 Nov 2021 05:30:48 +0100
-X-Injected-Via-Gmane: http://gmane.org/
-To:     linux-crypto@vger.kernel.org
-From:   Jean-Denis Girard <jd.girard@sysnux.pf>
-Subject: Re: [GIT PULL] zstd changes for linux-next
-Date:   Tue, 2 Nov 2021 18:30:20 -1000
-Message-ID: <slt39h$k3q$1@ciao.gmane.io>
-References: <20211006191724.3187129-1-nickrterrell@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: fr
-In-Reply-To: <20211006191724.3187129-1-nickrterrell@gmail.com>
-Cc:     linux-next@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
+        id S231259AbhKCIfX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 3 Nov 2021 04:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230463AbhKCIfX (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 3 Nov 2021 04:35:23 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10187C061714
+        for <linux-crypto@vger.kernel.org>; Wed,  3 Nov 2021 01:32:47 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id v20so2889607uaj.9
+        for <linux-crypto@vger.kernel.org>; Wed, 03 Nov 2021 01:32:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=LZl0PsKLy4lR1GMZzRsDE6dGXhKEbh6dgaf+h08o+xU=;
+        b=fEu5JkDzXz5KkRRRjFscVK0IbPJVkmNa+xAS3ZA62o+Um6HdUh2uaE47KnzQUVfiZz
+         SxgM1sA9gBQ02aalvCAfaSk1t4GuE84M7chfYgbGyH8LMv4770EYG8FDyELrGmURRfbt
+         qdyrEF40aLoAtmcNX1JL+UROnLPGx1bkjfHXsTS3dhxInIQbdU/ara4/Lz6/aV2Han6o
+         jIaZwUC3murtdgO+nEe8s67vr+CnsMxINDO2cZ8fZPTqV+q359I8nwMk0LO/hTnawVaM
+         pF3NbzEnAzu649eMQZUiFxCLwu2ZEifgQD1/AgRm15Zvk6fW4ofKA3HcXUdYCKPyJE1h
+         MISg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=LZl0PsKLy4lR1GMZzRsDE6dGXhKEbh6dgaf+h08o+xU=;
+        b=flKtqNYF08Lu297KUafTqqTolfPG1Zu9HvrCQVePvBChqTC4xJ3Z32qCdzEK/9//AL
+         9aKoxyfCRpJvSXKJ0YqiSzxrabQR2WqQWz4rpUt5GeFyaDp6+I9/TykUQCZlBN80Hl3u
+         qna/lEwhTCOFnDDFcqijNwydK6sKEt2MgZE7WjqGgosh3mWLGLpwMmZifg9UHFUYtcus
+         EzjPQhrfSfYntNag1059SgUvP7PKOXwvhaZXxSp70HQZG1da+1n2RFRq6yH1+4Th5NIW
+         TtbQhc5vlMFO8POIK4wiq4gxoa4EsqUHD6KwoA2AgmvXdTXinMCa4x0BpqpgGd6JBZJV
+         H9CQ==
+X-Gm-Message-State: AOAM533AsZ4Da2+QG9Lbw0Qagik6hTe+PvPNFNbFUESDTet7+X+QD9a3
+        fz7VTVguzocO7B4DkXol1CCXYB6qBACjfk0DNw==
+X-Google-Smtp-Source: ABdhPJyVzdv6eFDyKOGs0Hvwt6QOi7v1I0vv6z7C4otXUYASeqvwh2Vsjm6wYydLGXEZ7cDDQd7SBTCMyLz83vK/E0k=
+X-Received: by 2002:a67:e084:: with SMTP id f4mr21168092vsl.57.1635928366159;
+ Wed, 03 Nov 2021 01:32:46 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a59:a7ef:0:b0:23d:4642:884 with HTTP; Wed, 3 Nov 2021
+ 01:32:45 -0700 (PDT)
+Reply-To: marykaya3m@gmail.com
+From:   Mary Kayash <marcfreym@gmail.com>
+Date:   Wed, 3 Nov 2021 03:32:45 -0500
+Message-ID: <CAEfSaObpDRUteh+0bJJASEnBFbups3XvVAjd8tc37ovw5gahFQ@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Hello,
 
-Le 06/10/2021 à 09:17, Nick Terrell a écrit :
-> From: Nick Terrell <terrelln@fb.com>
-> 
-> The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
-> 
->    Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
-> 
-> are available in the Git repository at:
-> 
->    https://github.com/terrelln/linux.git zstd-1.4.10
-> 
-> for you to fetch changes up to a0ccd980d5048053578f3b524e3cd3f5d980a9c5:
-> 
->    MAINTAINERS: Add maintainer entry for zstd (2021-10-04 20:04:32 -0700)
-> 
-> I would like to merge this pull request into linux-next to bake, and then submit
-> the PR to Linux in the 5.16 merge window. If you have been a part of the
-> discussion, are a maintainer of a caller of zstd, tested this code, or otherwise
-> been involved, thank you! And could you please respond below with an appropiate
-> tag, so I can collect support for the PR
-> 
-> Best,
-> Nick Terrell
+I want to know if this email is still valid.
 
+Thank you,
 
-I have used this patch for a while on 5.14.x, and on 5.15 since 
-yesterday: no problem found.
-
-Tested-by: Jean-Denis Girard <jd.girard@sysnux.pf>
-
-
-Thanks,
--- 
-Jean-Denis Girard
-
-SysNux                   Systèmes   Linux   en   Polynésie  française
-https://www.sysnux.pf/   Tél: +689 40.50.10.40 / GSM: +689 87.797.527
-
+Mrs Mary Kayash,
