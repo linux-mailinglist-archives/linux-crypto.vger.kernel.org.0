@@ -2,105 +2,62 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36AC446A65
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Nov 2021 22:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92588446AF2
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Nov 2021 23:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhKEVOr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 5 Nov 2021 17:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
+        id S233378AbhKEWhO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 5 Nov 2021 18:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhKEVOq (ORCPT
+        with ESMTP id S230145AbhKEWhM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 5 Nov 2021 17:14:46 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFC7C061570
-        for <linux-crypto@vger.kernel.org>; Fri,  5 Nov 2021 14:12:06 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id bl12so9883121qkb.13
-        for <linux-crypto@vger.kernel.org>; Fri, 05 Nov 2021 14:12:06 -0700 (PDT)
+        Fri, 5 Nov 2021 18:37:12 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981A0C061714
+        for <linux-crypto@vger.kernel.org>; Fri,  5 Nov 2021 15:34:32 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id x9so10936365ilu.6
+        for <linux-crypto@vger.kernel.org>; Fri, 05 Nov 2021 15:34:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=E63rFcABRFafy7FYzxz7iS49IsPyTowk4qVbpdWjfQw=;
-        b=EOBIa1aZzIWrZsSnRKO2Y2n4rBeO1VRY9xAopIoS7KtRFmVP1JLerEKABFZaA6TP3i
-         dNb0+z3E81/8g6cY0kUnZtRC/ppRCI8f8ydTevXYm9rlvXmEgosz+zwT7OfllS/lbwoj
-         q4GBd9DlQEPBDGOqqCeNw7xR7rGLeH4mE4av/ut1VAg6V4+XZdk+w0y5KrKGeekEJIzj
-         uAuRws4NBYX3N3Na0d4QWjOhl4cxRLwdpG+l6ZPYgwh3pxPudmkWUkgqp/h9dGtSHfXJ
-         SduWkGODG203Y6u9jRTZszmqg925sR51Z0jEgLBF3jgQvGy78AByMxvcps+Zuer/C4Nb
-         RnEw==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=eriDMJ1VSc5nz4G+g+1zHzTH043RgXlZ6cpKSPDYOeU=;
+        b=V8ihsxlWvii9ykWAosYp3IZ2HStn6sOx05hwdJABkuFTTmhpden1g1SgK0sa6SyL4i
+         it0H5FIT5gLE0zDck9v0elRAE4zJRd6x7mhlQMFdObPriict4A5kc3TdmyxRioI7LOMi
+         K4v/WFajAdqC0MDlRr6DQJr6QLMH08zkP1LZN874HHMKYaTVoy5p4j7Kb/HuzZrdnJWI
+         Wrwns3akCwDFe4gCDCi2KB3mCv42Zx19z+EtFT4klIS+JMsU87zVG8w2cAjxM9RBa4kL
+         NLROrbHO4NPYPqD6JbQ1sU+ySiY9alzGpv/MXVN48hJTkUgX73octq4ScolkEmUHUpPZ
+         pLfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=E63rFcABRFafy7FYzxz7iS49IsPyTowk4qVbpdWjfQw=;
-        b=dSJJdb/r+N/hqVo7TFnvHMmyXn2cVpoBHGTrqybhtERIjyiy+D5ldNjlLiNh7psFlQ
-         /7nA93S1+1sP/aYxq1HPYgBlXzdKwHIwgyD751pw19SEF/SP8f7YoUXP9Ct5f2i0rkjH
-         0jQyBgs72D9WGoG7f4qeXSJAJz/9rWv3jP/pzaP1w9CPyYVgYgRuusRYl/YH5bqyO4UX
-         fBTczPCDxCxrhYzSFC3lIJr/BnTnH6s4RFW47e7zlonhrHMnqyCXlG75yZBW9AZlThjv
-         HDaWM5JTRszOEtGIsEjPABxgQRzvEfXgWx/p+wtgE6NFgILaDOPNZYCKNd89174Ak7HH
-         3lHQ==
-X-Gm-Message-State: AOAM530lUvTt5/BLHJ+lQOepbRLtuD+q+bYalR1sL6jtC/IxjEFFmMCb
-        DPPYAqpa0tvy2QRqPnYwnr68Hg==
-X-Google-Smtp-Source: ABdhPJwB5ojt8u4YPwOut4pV362BuCfMS+WpbyXqmWaXmfj8HaB90DX8AcfEKFB7vKsEfTCX/uyzew==
-X-Received: by 2002:a05:620a:bca:: with SMTP id s10mr47942153qki.416.1636146725249;
-        Fri, 05 Nov 2021 14:12:05 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id g19sm6764888qtg.78.2021.11.05.14.12.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 14:12:04 -0700 (PDT)
-Subject: Re: [PATCH] crypto: qce: fix uaf on qce_skcipher_register_one
-To:     Chengfeng Ye <cyeaa@connect.ust.hk>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, svarbanov@mm-sol.com
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20211104134642.20638-1-cyeaa@connect.ust.hk>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <7a158429-6eed-bbcb-f4d0-a6db8ba40d58@linaro.org>
-Date:   Fri, 5 Nov 2021 17:12:04 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=eriDMJ1VSc5nz4G+g+1zHzTH043RgXlZ6cpKSPDYOeU=;
+        b=FA+NgnQCO0R7UBpVmv+GatR7o0ctM38VK5KCOowstAIVSg1krqsbc6uJjnGhPjZ8pl
+         mCcSMsDRnISdim6GocdMwOkNEcdkJiiwCDEwOSNZclhwULPdXg2zTL7I9k7qmdPXgyNm
+         v+Rm5w3zakNfSF3cweETTy+WW+srDKEUIFhtbWeagFHMNP/lwKg9ugzkKuChDxIcX2N1
+         uajP1P7ZMvkpoJonrk/EI4XYKbns7mH8uILg/IEH8dKctfSckrcKB0qqdR264KPpiIvM
+         Z5/9ppT9YoJnT/kCVdRJvvxmI01lJ8lZ1lpdbWPEFC59Uv8ttudjlMLcxw5b/qe6HxrA
+         PG4g==
+X-Gm-Message-State: AOAM530h/QZhYSfIX7UnB4A+kbCETqv0uXxRWzMkKWNblVBNGbTP+cu7
+        /wsLhVhbh6Ln+exX3joj7l9NbBG88gq+m4/fU4A=
+X-Google-Smtp-Source: ABdhPJwDw//9w5bNxZOD8CzTR4OrMDl86wBIBnN/YYDyh+tRmzNGAajX5JtwMYlidXfRoLHnjcFBs4F3nIR60trhApQ=
+X-Received: by 2002:a05:6e02:1848:: with SMTP id b8mr17249798ilv.299.1636151672065;
+ Fri, 05 Nov 2021 15:34:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211104134642.20638-1-cyeaa@connect.ust.hk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6638:24ce:0:0:0:0 with HTTP; Fri, 5 Nov 2021 15:34:31
+ -0700 (PDT)
+Reply-To: morissarhodesville326@gmail.com
+From:   Morissa Rhodesville <bahalhassane726@gmail.com>
+Date:   Fri, 5 Nov 2021 22:34:31 +0000
+Message-ID: <CALtWYMFWW8Rcx_hmsaCdr=xPZ1-WZtDg+1E0bevf4U10LaHB1Q@mail.gmail.com>
+Subject: my pleasure meeting you
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-
-
-On 11/4/21 9:46 AM, Chengfeng Ye wrote:
-> Pointer alg points to sub field of tmpl, it
-> is dereferenced after tmpl is freed. Fix
-> this by accessing alg before free tmpl.
-> 
-> Fixes: ec8f5d8f ("crypto: qce - Qualcomm crypto engine driver")
-> Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
-
-Acked-by: Thara Gopinath <thara.gopinath@linaro.org>
-
-> ---
->   drivers/crypto/qce/skcipher.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
-> index 8ff10928f581..3d27cd5210ef 100644
-> --- a/drivers/crypto/qce/skcipher.c
-> +++ b/drivers/crypto/qce/skcipher.c
-> @@ -484,8 +484,8 @@ static int qce_skcipher_register_one(const struct qce_skcipher_def *def,
->   
->   	ret = crypto_register_skcipher(alg);
->   	if (ret) {
-> -		kfree(tmpl);
->   		dev_err(qce->dev, "%s registration failed\n", alg->base.cra_name);
-> +		kfree(tmpl);
->   		return ret;
->   	}
->   
-> 
-
--- 
-Warm Regards
-Thara (She/Her/Hers)
+Hello Greetings.
+I wish to discuss very important issues with you, your urgent response
+is highly appreciated
+Miss Morissa
