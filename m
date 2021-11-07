@@ -2,113 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB851446E68
-	for <lists+linux-crypto@lfdr.de>; Sat,  6 Nov 2021 15:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FB64473F7
+	for <lists+linux-crypto@lfdr.de>; Sun,  7 Nov 2021 17:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234416AbhKFO6d (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 6 Nov 2021 10:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
+        id S235854AbhKGQvb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 7 Nov 2021 11:51:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233629AbhKFO6d (ORCPT
+        with ESMTP id S235287AbhKGQva (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 6 Nov 2021 10:58:33 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08ECFC061570
-        for <linux-crypto@vger.kernel.org>; Sat,  6 Nov 2021 07:55:52 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id r10-20020a056830448a00b0055ac7767f5eso17722762otv.3
-        for <linux-crypto@vger.kernel.org>; Sat, 06 Nov 2021 07:55:51 -0700 (PDT)
+        Sun, 7 Nov 2021 11:51:30 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A89C061205
+        for <linux-crypto@vger.kernel.org>; Sun,  7 Nov 2021 08:48:47 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id h24so5365985pjq.2
+        for <linux-crypto@vger.kernel.org>; Sun, 07 Nov 2021 08:48:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Z6z7bQGP9QoXYF9m0XlJi4+8f09VHtRvRe+KIdlh/HU=;
-        b=gx+g8e8rB9CL5wVuNLbUDjn4HUamEkRExjKFvpYx+XRAfjJbDbbTmLwTlGSVE9McrD
-         6utg73N6KJEIHcl7PVyOWlFArGM5QBYcLZzjVnev4j7E1M8dUOYJ/ONC6Q/kJGEZDKr9
-         OEWpeGyACEK+eFKp/S6Rs3jCJHp29GDO/N11Tp/5dEzbrpWr56fcemI1+hP71THjUnb3
-         4pD6EpSxpKk9HyJl6928QG1in0PZLsykFqC/AVjmEcuwVEkLvuhslKKjyKCoOj/wxd0e
-         daSKhS1i8638t5VSv/OlOqI1Wx0JdxJzO7ekW+dZrLnn5OJaH5akpz0LK0jfhTBhOGZs
-         9udQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=3KhLtwCKP93j3EcWq+BGTsAWsp8Oi4eBuXX0Ov40ah8=;
+        b=TNg4tHoQw5kKoLZkiGTAZIxJzUBBq4ejYt4ncgOecgNOvSUwtqqwittPPI+7pJVjX+
+         GpTp2M0KfhRYRUpBRXEYVXnxqP/7lqMWjwkVgxSXQTHg4r801CGBH3Cxkr2xCA8iHpDQ
+         PkNioeCtNa8D4FxZOybE5F6kFZNCXIj5SS/5dluRY9kmgQGkqsgb/0EL9qYgh0jdJYEk
+         mgqrImAxVO9xLB3ph2REOdqPQUk3eSUgj070IZGlv2zYI0h97xHGiGSssFFZrlwEHWTd
+         7gJa3FlCIyQYHI4/knwR34TShiwqFLlPcy+ypePmUlRAZLKNrHzuj6T1hpUgZdGxUgLr
+         tNtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Z6z7bQGP9QoXYF9m0XlJi4+8f09VHtRvRe+KIdlh/HU=;
-        b=ZGgQHHp0lRO70Fh5sd8PtnhEQfUD7zxNxfV4o6zFKpcW5vye0UrZ71rYYcL/cwIzMK
-         KbUbq734+SuhvQHDYkLmFbhr2/zXTNXLNqBXsxbYua3vfgE4mrMD44+ZLaF6ptFyHFx3
-         ISnu/ZF5L18qllPSxgt1WzpQ1whPh+ARiPOPSMzouwO1H4Pidq/XF/vqgciVBav7qLL9
-         mGSZBfo7iidVntgiGAdpNTZCBRUTzFCjfiIUB8+PMG1uf036QDmXwJgm7gU44QW3g7hu
-         vjSVKxn79jsJLP7bTDu6SF39sDRgba0IBjTgYHtC/4tZkTZYuEz4EverVZZVbyw5VERz
-         gmsw==
-X-Gm-Message-State: AOAM530Jly0UnYqQYHtAmCFFUGdwp1spRvINoYpQkrf6L05EiUrodmLy
-        EnHYuQbIpFiiw/ekCjHIt1dRgIg/+wY=
-X-Google-Smtp-Source: ABdhPJy9v+sxswyaelRAj2IzjV4MtVeS7bha0QJ6tU3CEe9Ayvo+euQfmOj7jUuubsghZxQNfp/G6A==
-X-Received: by 2002:a9d:de1:: with SMTP id 88mr38101898ots.286.1636210551094;
-        Sat, 06 Nov 2021 07:55:51 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u8sm1498218ote.17.2021.11.06.07.55.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Nov 2021 07:55:50 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [v2 PATCH] crypto: api - Fix built-in testing dependency failures
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Simo Sorce <ssorce@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>
-References: <20210913071251.GA15235@gondor.apana.org.au>
- <20210917002619.GA6407@gondor.apana.org.au>
- <20211026163319.GA2785420@roeck-us.net>
- <20211106034725.GA18680@gondor.apana.org.au>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <729fc135-8e55-fd4f-707a-60b9a222ab97@roeck-us.net>
-Date:   Sat, 6 Nov 2021 07:55:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=3KhLtwCKP93j3EcWq+BGTsAWsp8Oi4eBuXX0Ov40ah8=;
+        b=Aek6K4O3MbH4wFF8mb9Eto2hnXKX8tic8VnMK211lwQze6CbOIAqdYyCNs810SXL8w
+         XF4juEN/H4krVzUB0PjUHO95cZ87hyKRQKEraPrFWSeEW/Re4GZzo819BSTlliaF7pBo
+         Zx9KGQIweqfgEo9anwQ8vzvbjWBGXDU0uuQVahjbzIdmv7f7YZD5lQhM66NxwDJi/lQM
+         YNRiujyyTcuXVHlbBgYe5ai+mqBe6ZUxzGv7DM84M66xWsSYtmwoCh1bW3syo81nypOj
+         ioLDEwcKm9S6iHuvMBY2wmpPHEVT/uuZ85UvpDr49Z1Je3Iouzs49n5jeTQEFY6VHJqP
+         3ZbA==
+X-Gm-Message-State: AOAM533Pv/4678TuV4fnyxzOJ5Lp6bW8pbJltOG42YBOsINbfJFPFqYB
+        74c1fK9bCsHk00dNHVC/3Ntsqlf7wp6vZ4nSLig=
+X-Google-Smtp-Source: ABdhPJxAeCOxzzTO2bC1ebInPX7TK42gu5RWx2Xb9R/R8imfArbHNs+vmtD0xqJ/WYY5NVOuLREd2E+dZSLVoRt6leo=
+X-Received: by 2002:a17:902:a60b:b0:142:7621:be0b with SMTP id
+ u11-20020a170902a60b00b001427621be0bmr4070721plq.58.1636303726736; Sun, 07
+ Nov 2021 08:48:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211106034725.GA18680@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6a10:4a14:0:0:0:0 with HTTP; Sun, 7 Nov 2021 08:48:46
+ -0800 (PST)
+Reply-To: amabenchambers00@gmail.com
+From:   Amadou Benjamin <ousmanekarim54@gmail.com>
+Date:   Sun, 7 Nov 2021 08:48:46 -0800
+Message-ID: <CAJFAt4Zwu2DZNzEx2mhTp73fqWvHNwMrUMgOFZ==TBGW8S=HkA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 11/5/21 8:47 PM, Herbert Xu wrote:
-> On Tue, Oct 26, 2021 at 09:33:19AM -0700, Guenter Roeck wrote:
->> Hi,
->>
->> On Fri, Sep 17, 2021 at 08:26:19AM +0800, Herbert Xu wrote:
->>> When complex algorithms that depend on other algorithms are built
->>> into the kernel, the order of registration must be done such that
->>> the underlying algorithms are ready before the ones on top are
->>> registered.  As otherwise they would fail during the self-test
->>> which is required during registration.
->>>
->>> In the past we have used subsystem initialisation ordering to
->>> guarantee this.  The number of such precedence levels are limited
->>> and they may cause ripple effects in other subsystems.
->>>
->>> This patch solves this problem by delaying all self-tests during
->>> boot-up for built-in algorithms.  They will be tested either when
->>> something else in the kernel requests for them, or when we have
->>> finished registering all built-in algorithms, whichever comes
->>> earlier.
->>>
->>> Reported-by: Vladis Dronov <vdronov@redhat.com>
->>> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
->>>
->>
->> I can not explain it, but this patch causes a crash with one of my boot
->> tests (riscv32 with riscv32 virt machine and e1000 network adapter):
->>
->> [    9.948557] e1000 0000:00:01.0: enabling device (0000 -> 0003)
-> 
-> Does this still occur with the latest patch I sent yesterday?
-> 
+-- 
+Hello good day.
 
-No, I don't see that problem anymore, neither in mainline with your
-patch applied nor in the latest -next with your patch applied.
+I am Barrister Amadou Benjamin by name, with due respect, I am
+contacting you to help get the deposit 10.5 million Dollars, my late
+client Engineer Vasiliy left in his Bank before his sudden death on
+April 21, 2007, to avoid confiscation by Lloyds bank. Please write me
+back through this email (amabenchambers00@gmail.com)for more
+information about this transaction or send me your private email to
+Contact you myself.
 
-Guenter
-
+Sincerely,
+Barrister Amadou Benjamin Esq
