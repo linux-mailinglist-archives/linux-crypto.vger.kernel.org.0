@@ -2,179 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E204E44CADF
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Nov 2021 21:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB25A44CEF9
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Nov 2021 02:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbhKJUz4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 10 Nov 2021 15:55:56 -0500
-Received: from mga09.intel.com ([134.134.136.24]:55820 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233167AbhKJUzu (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 10 Nov 2021 15:55:50 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="232611495"
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="232611495"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 12:53:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="642663531"
-Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314.ger.corp.intel.com) ([10.237.222.51])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Nov 2021 12:53:00 -0800
-From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To:     herbert@gondor.apana.org.au
-Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        marco.chiappero@intel.com,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [PATCH 24/24] crypto: qat - improve logging of PFVF messages
-Date:   Wed, 10 Nov 2021 20:52:17 +0000
-Message-Id: <20211110205217.99903-25-giovanni.cabiddu@intel.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110205217.99903-1-giovanni.cabiddu@intel.com>
-References: <20211110205217.99903-1-giovanni.cabiddu@intel.com>
+        id S233487AbhKKBiw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 10 Nov 2021 20:38:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232974AbhKKBip (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 10 Nov 2021 20:38:45 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F38C061234
+        for <linux-crypto@vger.kernel.org>; Wed, 10 Nov 2021 17:35:43 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id a129so11035041yba.10
+        for <linux-crypto@vger.kernel.org>; Wed, 10 Nov 2021 17:35:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/yJJ1eLjVEBxlbbxBTFqS43d212h+YIqOC0povopvFQ=;
+        b=e1saD3h8ZTiJz1WPc393lhDIWAvFZtOWzP/1iIN1KdicX4+NrvRlvNT+3PrCl1GqMN
+         hcyRC8y01agFcLW5+tsWKem8XisbU3NfgOVZTXj+yM8hm783rPU/i/YuMOt9WJM1GE4/
+         JRXGoJXzKJizIUuyrjE1Imm5mvbvZzUfUnW1ilSzedfFOByO23CsotOGz9ho9UMOpmPB
+         I35hgpS1ccJyAsx8SK8mX+7lwpZDhh/s7p2JF/JACrgRoEUXPKCti/8Mke+cScvETWuN
+         /H3UoZ8xmLIIfMcXfhtyxis8wgN5U5+dx/bvbJ1ofktMXKhL3cY0XXO1GPMja8d0F/uW
+         PaWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/yJJ1eLjVEBxlbbxBTFqS43d212h+YIqOC0povopvFQ=;
+        b=u6KSvAlsj2DWR1kFNJ+QalQWU6B8rdgpYtwDW9CTKzGxAnfbzWf0db5QsTWUB/xTEU
+         eiZMRIkVMBPqPOM3IofrGVexuA8KlWceppCSlkbtbcC9zfhoA6PrPXRLIEBhJ0bphU3L
+         WTTxPHAlW++mFQ9ckzEeS6QqTzmx1rqK9ZkgeAByV3YtHPUTthk1ZSJpgE38QWlbbJ/L
+         oTHOsjz0kMi3ZvCunciCmyiMMIcBwYCN23vNmbQqCmchwLkpWftZLWghRum59brU7NKa
+         U5pmZozdgTXtq8YQa5ddRI/axYShl/yP0jJ1q23yMn6m2jCGvux8ifA7Okyilyehl4XC
+         T3hg==
+X-Gm-Message-State: AOAM530BpApxbiriFSyjL5fDngdyf8Xv31Pudma3aA3K9CnAKIZHnym2
+        8KIMzM78jnq9wnr3ub/yB6miYDSg+nLW99yb7bc=
+X-Google-Smtp-Source: ABdhPJwSvDsl6dRjntKMicOLsqdOi/dG2sfAv7B/U6vR9uOw26VAk/4zCWUkhL/n3HO29hhdK1BtX8sl0L4QCQV/QNc=
+X-Received: by 2002:a25:b20f:: with SMTP id i15mr3989503ybj.539.1636594542572;
+ Wed, 10 Nov 2021 17:35:42 -0800 (PST)
 MIME-Version: 1.0
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:7010:5d89:b0:1df:17ca:e9e5 with HTTP; Wed, 10 Nov 2021
+ 17:35:42 -0800 (PST)
+Reply-To: mrsambamalick@gmail.com
+From:   MR MALICK <aiolaras@gmail.com>
+Date:   Thu, 11 Nov 2021 02:35:42 +0100
+Message-ID: <CAKPiy1pxkL9E+t6fr2OcMGeiHjuYbwx6xEB+HwOuJAUpiUddcw@mail.gmail.com>
+Subject: NOTIFICATION
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Marco Chiappero <marco.chiappero@intel.com>
+LOTTO WINNING AWARD,;,
 
-Improve and simplify logging of PFVF messages.
+Your email won 2.6 million dollars, Contact Barrister Marcel Cremer
+through his email here ( cremerrsolicitors@gmail.com) to claim your
+winning fund with your details as follows, your full name, your
+country, your home address and your phone number.
 
-Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
----
- drivers/crypto/qat/qat_common/adf_gen2_pfvf.c |  4 +--
- .../crypto/qat/qat_common/adf_pfvf_pf_proto.c | 30 +++++++------------
- .../crypto/qat/qat_common/adf_pfvf_vf_proto.c |  7 +++--
- 3 files changed, 17 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/crypto/qat/qat_common/adf_gen2_pfvf.c b/drivers/crypto/qat/qat_common/adf_gen2_pfvf.c
-index b71230d8ec73..16d8f9056a1d 100644
---- a/drivers/crypto/qat/qat_common/adf_gen2_pfvf.c
-+++ b/drivers/crypto/qat/qat_common/adf_gen2_pfvf.c
-@@ -183,14 +183,14 @@ static u32 adf_gen2_pfvf_recv(struct adf_accel_dev *accel_dev, u8 vf_nr)
- 	msg = ADF_CSR_RD(pmisc_addr, pfvf_offset);
- 	if (!(msg & int_bit)) {
- 		dev_info(&GET_DEV(accel_dev),
--			 "Spurious PFVF interrupt, msg %X. Ignored\n", msg);
-+			 "Spurious PFVF interrupt, msg 0x%.8x. Ignored\n", msg);
- 		return 0;
- 	}
- 
- 	/* Ignore legacy non-system (non-kernel) VF2PF messages */
- 	if (!(msg & msg_origin)) {
- 		dev_dbg(&GET_DEV(accel_dev),
--			"Ignored non-system message (0x%x);\n", msg);
-+			"Ignored non-system message (0x%.8x);\n", msg);
- 		return 0;
- 	}
- 
-diff --git a/drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c b/drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c
-index 82b6cc7162ba..631038bad21e 100644
---- a/drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c
-+++ b/drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c
-@@ -49,20 +49,13 @@ static int adf_handle_vf2pf_msg(struct adf_accel_dev *accel_dev, u32 vf_nr,
- 		u8 compat;
- 
- 		dev_dbg(&GET_DEV(accel_dev),
--			"Compatibility Version Request from VF%d vers=%u\n",
--			vf_nr, vf_compat_ver);
-+			"VersionRequest received from VF%d (vers %d) to PF (vers %d)\n",
-+			vf_nr, vf_compat_ver, ADF_PFVF_COMPAT_THIS_VERSION);
- 
--		if (vf_compat_ver <= ADF_PFVF_COMPAT_THIS_VERSION) {
-+		if (vf_compat_ver <= ADF_PFVF_COMPAT_THIS_VERSION)
- 			compat = ADF_PF2VF_VF_COMPATIBLE;
--			dev_dbg(&GET_DEV(accel_dev),
--				"VF (vers %d) compatible with PF (vers %d)\n",
--				vf_compat_ver, ADF_PFVF_COMPAT_THIS_VERSION);
--		} else {
-+		else
- 			compat = ADF_PF2VF_VF_COMPAT_UNKNOWN;
--			dev_err(&GET_DEV(accel_dev),
--				"VF (vers %d) compat with PF (vers %d) unkn.\n",
--				vf_compat_ver, ADF_PFVF_COMPAT_THIS_VERSION);
--		}
- 
- 		resp =  ADF_PF2VF_MSGORIGIN_SYSTEM;
- 		resp |= ADF_PF2VF_MSGTYPE_VERSION_RESP << ADF_PF2VF_MSGTYPE_SHIFT;
-@@ -75,8 +68,8 @@ static int adf_handle_vf2pf_msg(struct adf_accel_dev *accel_dev, u32 vf_nr,
- 		u8 compat;
- 
- 		dev_dbg(&GET_DEV(accel_dev),
--			"Legacy VersionRequest received from VF%d 0x%x\n",
--			vf_nr, msg);
-+			"Legacy VersionRequest received from VF%d to PF (vers 1.1)\n",
-+			vf_nr);
- 
- 		/* PF always newer than legacy VF */
- 		compat = ADF_PF2VF_VF_COMPATIBLE;
-@@ -92,21 +85,19 @@ static int adf_handle_vf2pf_msg(struct adf_accel_dev *accel_dev, u32 vf_nr,
- 	case ADF_VF2PF_MSGTYPE_INIT:
- 		{
- 		dev_dbg(&GET_DEV(accel_dev),
--			"Init message received from VF%d 0x%x\n",
--			vf_nr, msg);
-+			"Init message received from VF%d\n", vf_nr);
- 		vf_info->init = true;
- 		}
- 		break;
- 	case ADF_VF2PF_MSGTYPE_SHUTDOWN:
- 		{
- 		dev_dbg(&GET_DEV(accel_dev),
--			"Shutdown message received from VF%d 0x%x\n",
--			vf_nr, msg);
-+			"Shutdown message received from VF%d\n", vf_nr);
- 		vf_info->init = false;
- 		}
- 		break;
- 	default:
--		dev_dbg(&GET_DEV(accel_dev), "Unknown message from VF%d (0x%x)\n",
-+		dev_dbg(&GET_DEV(accel_dev), "Unknown message from VF%d (0x%.8x)\n",
- 			vf_nr, msg);
- 		return -ENOMSG;
- 	}
-@@ -129,7 +120,8 @@ bool adf_recv_and_handle_vf2pf_msg(struct adf_accel_dev *accel_dev, u32 vf_nr)
- 		return false;
- 
- 	if (resp && adf_send_pf2vf_msg(accel_dev, vf_nr, resp))
--		dev_err(&GET_DEV(accel_dev), "Failed to send response to VF\n");
-+		dev_err(&GET_DEV(accel_dev),
-+			"Failed to send response to VF%d\n", vf_nr);
- 
- 	return true;
- }
-diff --git a/drivers/crypto/qat/qat_common/adf_pfvf_vf_proto.c b/drivers/crypto/qat/qat_common/adf_pfvf_vf_proto.c
-index ea1a00e746ff..9c7489ed122c 100644
---- a/drivers/crypto/qat/qat_common/adf_pfvf_vf_proto.c
-+++ b/drivers/crypto/qat/qat_common/adf_pfvf_vf_proto.c
-@@ -90,18 +90,19 @@ static bool adf_handle_pf2vf_msg(struct adf_accel_dev *accel_dev, u32 msg)
- {
- 	switch ((msg & ADF_PF2VF_MSGTYPE_MASK) >> ADF_PF2VF_MSGTYPE_SHIFT) {
- 	case ADF_PF2VF_MSGTYPE_RESTARTING:
--		dev_dbg(&GET_DEV(accel_dev),
--			"Restarting msg received from PF 0x%x\n", msg);
-+		dev_dbg(&GET_DEV(accel_dev), "Restarting message received from PF\n");
- 
- 		adf_pf2vf_handle_pf_restarting(accel_dev);
- 		return false;
- 	case ADF_PF2VF_MSGTYPE_VERSION_RESP:
-+		dev_dbg(&GET_DEV(accel_dev),
-+			"Response message received from PF (0x%.8x)\n", msg);
- 		accel_dev->vf.response = msg;
- 		complete(&accel_dev->vf.msg_received);
- 		return true;
- 	default:
- 		dev_err(&GET_DEV(accel_dev),
--			"Unknown PF2VF message(0x%x)\n", msg);
-+			"Unknown PF2VF message (0x%.8x) from PF\n", msg);
- 	}
- 
- 	return false;
--- 
-2.33.1
-
+Regards,,
+Mr.  Malick Samba.
