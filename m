@@ -2,257 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1A444FFBD
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Nov 2021 09:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C7E45003A
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Nov 2021 09:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236681AbhKOIJu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Nov 2021 03:09:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236869AbhKOIJG (ORCPT
+        id S236829AbhKOIu3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Nov 2021 03:50:29 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:22252 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236866AbhKOIsb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:09:06 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170EBC061200
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 00:06:10 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id bf8so33231754oib.6
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 00:06:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vInCllpdZJK8HYx6VQyYUDaprqkzpWu+HmJAPYn2v50=;
-        b=HxgSxKIntchJ9V+1j6TZ6/zSWnalYU4SllF6Qtl1TAmuWiQD/m8ic51slAuG0LR6uO
-         fnkH9OnHkBaQ+nyG2iYWLHXgWdRQHf0SFhhxZ9rU7G6tsGP/aQSD/vUOk57r8bO5BLVm
-         ktc2j7bpxi22rL+/rsWaQDWZS1eM59ibUf9gvizDgXrVa3Kx+fZKFhx4HaBZ4eVjLK4/
-         298CTDz2iJ58wlGFsU1O6ltqWSWRP/t3sVL086mcW+rdJYI6JUAtKWw6kH1hnPHOtkRC
-         HbeqEbqmRupAq0sMu/prFcPer60b1uIFdnXjh3t2f7XNaGfDnGRLdQxRxZSWWSOICyk6
-         nVnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vInCllpdZJK8HYx6VQyYUDaprqkzpWu+HmJAPYn2v50=;
-        b=rHN7YxycKaEkmOuk9Q70/XsYTZ0/uBjKoqOj4oJq93Whjf7SjjGpH5i1OArGeVP8+D
-         PivzznNFftGNMz/NWeL7LQ7zvrpZcEPxqiJtokJVwzTVcrbmCV41ADkZK/fOyxR3PH63
-         3bbyVE6aNCmwcW3pfGRVpbNIZKWWv8Syuqzris0ayScb8u7APT8UuV6RSimBLvcg/pTN
-         lE3JaJ8iYUAw76pgIdIFjKNdIPMRX1CYl/VZ0ScZic0R1cO7e7dQ9qQTSoIrGjxonKxf
-         a6EuHk+nL7VrTtDr2Qq3YNqo4tkjAtv/NUkNyUAcsbx5olh0vJR9boaaVxrngq5ywog5
-         2mnA==
-X-Gm-Message-State: AOAM532LOyIyQx8AS5PKoKpfwzkQk/sUsnhRmV3DLHH0hy9nGLQ03VzE
-        6Dn1+MqhD099MnMdrvig4+Xs37rtHHrDRoTTF8raLg==
-X-Google-Smtp-Source: ABdhPJzMEV2wPO87eb6zhBFjYr/AyoSofRxeiCu2JqzFVwV7tOI9z0eR69HajfWSWZZKHbGj2TJxsuZDqRt54wsuiwY=
-X-Received: by 2002:a05:6808:b08:: with SMTP id s8mr5206631oij.126.1636963569363;
- Mon, 15 Nov 2021 00:06:09 -0800 (PST)
+        Mon, 15 Nov 2021 03:48:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636965902;
+    s=strato-dkim-0002; d=chronox.de;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=PWMyDsmcKSEWVFLSslzU2PhMOipVs7+UjgDjeCNRvI8=;
+    b=pGSb0ZR2p+zjLnmaXAvXLkYtyxo8EzE9SAjrCUCl+PNi8bKkjwB0BinZbWLTtt2B94
+    G67EMVZdQgxbP7fWURwopyMPCojPxJMqzWx6vwjTK3B5BNs0FzbLwFW/mswmSVLWmSCD
+    BDqHeF9B0p/umzsCpjAFN+z3H+Dm3mfiLJqLI6DUFHf/YDbT0wEkNg8IbnPIWg6s7X4y
+    iy+wH4fg0H8vI/g1C3aiAfK41jM1+4KvyI53jlm/f1hkhRuoWmCc9hlC3VbYN0xFUPqu
+    C3vCvUr2hl0QoXJbDBQnGzfm2IaSsrHqDRURwIAwwtPJHVspBMKItTMZBNEN/Fg2hWzq
+    iejQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXvTOeuXTEc="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
+    with ESMTPSA id U02dfbxAF8j2U8v
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 15 Nov 2021 09:45:02 +0100 (CET)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     herbert@gondor.apana.org.au
+Cc:     ebiggers@kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings <keyrings@vger.kernel.org>, simo@redhat.com
+Subject: [PATCH v3 0/4] Add SP800-108 KDF implementation to crypto API
+Date:   Mon, 15 Nov 2021 09:41:04 +0100
+Message-ID: <2589009.vuYhMxLoTh@positron.chronox.de>
 MIME-Version: 1.0
-References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
- <20211110105922.217895-4-bhupesh.sharma@linaro.org> <YZAOTCQ0yIJUJTYO@builder.lan>
-In-Reply-To: <YZAOTCQ0yIJUJTYO@builder.lan>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Mon, 15 Nov 2021 13:35:58 +0530
-Message-ID: <CAH=2Ntw=GC0a2iscffe--6_UpnCkdpnNO=7bZSAgFQonuK-4BA@mail.gmail.com>
-Subject: Re: [PATCH v5 03/22] dt-bindings: qcom-bam: Convert binding to YAML
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Bjorn,
+Hi,
 
-On Sun, 14 Nov 2021 at 00:43, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Wed 10 Nov 04:59 CST 2021, Bhupesh Sharma wrote:
->
-> > Convert Qualcomm BAM DMA devicetree binding to YAML.
-> >
-> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > ---
-> >  .../devicetree/bindings/dma/qcom_bam_dma.txt  | 50 ----------
-> >  .../devicetree/bindings/dma/qcom_bam_dma.yaml | 91 +++++++++++++++++++
-> >  2 files changed, 91 insertions(+), 50 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
-> >  create mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt b/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
-> > deleted file mode 100644
-> > index cf5b9e44432c..000000000000
-> > --- a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
-> > +++ /dev/null
-> > @@ -1,50 +0,0 @@
-> > -QCOM BAM DMA controller
-> > -
-> > -Required properties:
-> > -- compatible: must be one of the following:
-> > - * "qcom,bam-v1.4.0" for MSM8974, APQ8074 and APQ8084
-> > - * "qcom,bam-v1.3.0" for APQ8064, IPQ8064 and MSM8960
-> > - * "qcom,bam-v1.7.0" for MSM8916
-> > -- reg: Address range for DMA registers
-> > -- interrupts: Should contain the one interrupt shared by all channels
-> > -- #dma-cells: must be <1>, the cell in the dmas property of the client device
-> > -  represents the channel number
-> > -- clocks: required clock
-> > -- clock-names: must contain "bam_clk" entry
-> > -- qcom,ee : indicates the active Execution Environment identifier (0-7) used in
-> > -  the secure world.
-> > -- qcom,controlled-remotely : optional, indicates that the bam is controlled by
-> > -  remote proccessor i.e. execution environment.
-> > -- num-channels : optional, indicates supported number of DMA channels in a
-> > -  remotely controlled bam.
-> > -- qcom,num-ees : optional, indicates supported number of Execution Environments
-> > -  in a remotely controlled bam.
-> > -
-> > -Example:
-> > -
-> > -     uart-bam: dma@f9984000 = {
-> > -             compatible = "qcom,bam-v1.4.0";
-> > -             reg = <0xf9984000 0x15000>;
-> > -             interrupts = <0 94 0>;
-> > -             clocks = <&gcc GCC_BAM_DMA_AHB_CLK>;
-> > -             clock-names = "bam_clk";
-> > -             #dma-cells = <1>;
-> > -             qcom,ee = <0>;
-> > -     };
-> > -
-> > -DMA clients must use the format described in the dma.txt file, using a two cell
-> > -specifier for each channel.
-> > -
-> > -Example:
-> > -     serial@f991e000 {
-> > -             compatible = "qcom,msm-uart";
-> > -             reg = <0xf991e000 0x1000>
-> > -                     <0xf9944000 0x19000>;
-> > -             interrupts = <0 108 0>;
-> > -             clocks = <&gcc GCC_BLSP1_UART2_APPS_CLK>,
-> > -                     <&gcc GCC_BLSP1_AHB_CLK>;
-> > -             clock-names = "core", "iface";
-> > -
-> > -             dmas = <&uart-bam 0>, <&uart-bam 1>;
-> > -             dma-names = "rx", "tx";
-> > -     };
-> > diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> > new file mode 100644
-> > index 000000000000..3ca222bd10bd
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> > @@ -0,0 +1,91 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/dma/qcom_bam_dma.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: QCOM BAM DMA controller binding
-> > +
-> > +maintainers:
-> > +  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > +
-> > +description: |
-> > +  This document defines the binding for the BAM DMA controller
-> > +  found on Qualcomm parts.
-> > +
-> > +allOf:
-> > +  - $ref: "dma-controller.yaml#"
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - qcom,bam-v1.3.0 # for APQ8064, IPQ8064 and MSM8960
-> > +      - qcom,bam-v1.4.0 # for MSM8974, APQ8074 and APQ8084
-> > +      - qcom,bam-v1.7.0 # for MSM8916
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    maxItems: 1
-> > +
-> > +  clock-names:
-> > +    const: bam_clk
-> > +
-> > +  interrupts:
-> > +    minItems: 1
-> > +    maxItems: 31
->
-> The old binding uses the wording "the one interrupt" and at least the
-> Linux implementation indicates that there's only a single interrupt.
->
-> So I think this should just be maxItems: 1
->
-> > +
-> > +  num-channels:
-> > +    maximum: 31
-> > +    description:
-> > +      Indicates supported number of DMA channels in a remotely controlled bam.
-> > +
-> > +  "#dma-cells":
-> > +    const: 1
-> > +    description: The single cell represents the channel index.
-> > +
-> > +  qcom,ee:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    minimum: 0
-> > +    maximum: 7
-> > +    description:
-> > +      Indicates the active Execution Environment identifier (0-7)
-> > +      used in the secure world.
-> > +
-> > +  qcom,controlled-remotely:
-> > +    $ref: /schemas/types.yaml#/definitions/flag
-> > +    description:
-> > +      Indicates that the bam is controlled by remote proccessor i.e.
-> > +      execution environment.
-> > +
-> > +  qcom,num-ees:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    minimum: 0
-> > +    maximum: 31
-> > +    default: 2
-> > +    description:
-> > +      Indicates supported number of Execution Environments in a
-> > +      remotely controlled bam.
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - "#dma-cells"
-> > +  - qcom,ee
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/clock/qcom,gcc-msm8974.h>
-> > +    dma-controller@f9984000 {
-> > +        compatible = "qcom,bam-v1.4.0";
-> > +        reg = <0xf9984000 0x15000>;
-> > +        interrupts = <0 94 0>;
->
-> While the txt->yaml conversion should retain the original content, I
-> think it's okay to fix this line up while you're at it; and make it:
->
->         interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
+The key derviation functions are considered to be a cryptographic
+operation. As cryptographic operations are provided via the kernel
+crypto API, this patch set consolidates the SP800-108 KDF
+implementation into the crypto API.
 
-Sure, will do this in v6.
+If this patch is accepted, another patch set will be published attempting
+to move the HKDF implementation from the crypto file system code base
+to the kernel crypto API.
 
-Regards,
-Bhupesh
+The KDF implementation is provided as service functions. Yet, the
+interface to the the provided KDF is modeled such, that additional
+KDF implementation can use the same API style. The goal is to allow
+the transformation from a service function into a crypto API template
+eventually.
 
-> > +        clocks = <&gcc GCC_BAM_DMA_AHB_CLK>;
-> > +        clock-names = "bam_clk";
-> > +        #dma-cells = <1>;
-> > +        qcom,ee = <0>;
-> > +    };
-> > --
-> > 2.31.1
-> >
+The KDF executes a power-on self test with test vectors from commonly
+known sources.
+
+Tbe SP800-108 KDF implementation is used to replace the implementation
+in the keys subsystem. The implementation was verified using the
+keyutils command line test code provided in
+tests/keyctl/dh_compute/valid. All tests show that the expected values
+are calculated with the new code.
+
+Changes v3:
+
+* port to kernel 5.16-rc1
+* remove the HKDF patch to only leave the SP800-108 patch
+
+Stephan Mueller (4):
+  crypto: Add key derivation self-test support code
+  crypto: add SP800-108 counter key derivation function
+  security: DH - remove dead code for zero padding
+  security: DH - use KDF implementation from crypto API
+
+ crypto/Kconfig                         |   7 ++
+ crypto/Makefile                        |   5 +
+ crypto/kdf_sp800108.c                  | 149 +++++++++++++++++++++++++
+ include/crypto/internal/kdf_selftest.h |  71 ++++++++++++
+ include/crypto/kdf_sp800108.h          |  61 ++++++++++
+ security/keys/Kconfig                  |   2 +-
+ security/keys/dh.c                     | 118 +++-----------------
+ 7 files changed, 310 insertions(+), 103 deletions(-)
+ create mode 100644 crypto/kdf_sp800108.c
+ create mode 100644 include/crypto/internal/kdf_selftest.h
+ create mode 100644 include/crypto/kdf_sp800108.h
+
+-- 
+2.33.1
+
+
+
+
