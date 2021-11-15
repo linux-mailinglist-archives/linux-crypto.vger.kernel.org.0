@@ -2,178 +2,450 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E3D45115D
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Nov 2021 20:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F277F451520
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Nov 2021 21:23:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243722AbhKOTGN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Nov 2021 14:06:13 -0500
-Received: from mail-bn7nam10on2048.outbound.protection.outlook.com ([40.107.92.48]:52960
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243433AbhKOTB5 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:01:57 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qz7oPQSRD76Cumyf4OTRDlM4PG051zuvrOiKnI7Q5a1O5HDu7ToN8DhwR3F2tNvnFQRklVOB5A07phBh2DxXmSt/ul1/jW8sc9aL1Eon+/in4jJpKyjG1TugybvRmdqZqEPKH7IhfUnVcd+k7NQCRjddv4gISWQ0fJG37jBw5gmN4Rgx0qdqno+4tbjTnZz5IGm5PTINqLCHrNwcWZHs6fcHFhGvZfS7xiZGZs4ELSjpkeH/IkAj6etT5qPy6WpOuXd2RDEo94IeQK0qUTd2cbpomvzn5gSHqIfddVenfcGG2XwFZyuAJKHoTE1C5TDpAW1EH4NlWH/Sw+s7yNnaZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KTrnN7Y01Lblrv7dMLTBO4KjD+T15IzdePoLJnPbrOk=;
- b=Ms1b3bj6AJmT9/rOxcyIP8JWHb0JKLyznMqom+WuaMgxI++7NUDK7DSKg5WooBWBGdN7yy9BgZaRcfG+AzjssEqaX9yC7PAjsabTm96MLOpw/7JqbQuR/MYuk4twKL7cnx2WjFWusD9mHmWLWDLF5TS/gP3CjcX5qAbFB1oznpwmmnD2CHqDak7GIIYNt9MFyPR7SFDibrZlcNSNccxuVsTV8hQLp2NxcG9HZ8ZhfoIF5tRZg2fXmFrMpHQvGGNGQKb/nZWbzRLWQFgpum7gtKtuYk/fheGJ1x9s30owFPqEi9P0nS+Re/qiqqdu1C7jiDAVIwOrH+TkmzgxR8xbgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KTrnN7Y01Lblrv7dMLTBO4KjD+T15IzdePoLJnPbrOk=;
- b=W9w8bz1Yp2l7+OOE3F/tixft2fXU692fjssB+yyxr+ipBkjZZT/H0Pi3qzQRNMlb1727jLkoccqzhDXoWm76mvPjRNBp5k1AZE9LLvZyc1NfxWrPMd072XyKMomAwuLQkg+jWBTe8MXpKZWLRONL7l/OdB98WK7wv9Yaj6k2Nco=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN6PR12MB2640.namprd12.prod.outlook.com (2603:10b6:805:6c::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Mon, 15 Nov
- 2021 18:58:59 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::e4da:b3ea:a3ec:761c]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::e4da:b3ea:a3ec:761c%7]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
- 18:58:59 +0000
-Cc:     brijesh.singh@amd.com, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Peter Gonda <pgonda@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        id S1350742AbhKOUZh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Nov 2021 15:25:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347484AbhKOTj7 (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:39:59 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92034C06122C
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 11:34:24 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id v133-20020a25c58b000000b005c20153475dso28265351ybe.17
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 11:34:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=aGpK0n+S3Cv9bjNDEf/KmKHHm2D/FjmK7hXeVTFlz/Q=;
+        b=YeUVYlPI1o2XyKC0lUT6UO6bcdDPQenFfuZiT/x6Ts/+02Q69ZDJfBjXSIt7LRnMwq
+         33GPPLXmgRE8bD5BvhWpK+Vy0FDWjUq27I2b3V3MFb3XVhy3F8X1H6Y7kzoZfk9yeS1b
+         OWKTVci3FkU1lwXkmjUnk+QI1Rt+4Rj5h8vLFL0xlWgfRLC6F3s1zcTztLcRDFd3/czK
+         h15fasakXJqlIq/VjjFlKCHs9zR3cofwZq0YQRYN8Um3XhA6ASWNNbIiP8ckkptBv3G5
+         3dZ+ES8D3CYTGTKA5O5rGwnrnMBCPqfjMZi7dZYhbajvzWKLIqaUVODrL4Xz6hg98M0D
+         AL5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=aGpK0n+S3Cv9bjNDEf/KmKHHm2D/FjmK7hXeVTFlz/Q=;
+        b=rdVrJuRd1/cJDT13rjzzzRtoy3HbN9lEKZqGAbwch7/R7s9wmbSghbYrM5ksoyFfcC
+         9PXwU6PES9BOjA5V2sPaMCNLjbJdXhtc/ur97VOYANMuACFVA6cD/2jYJNI5jD/FjLlK
+         8zDm77v7GJHVhd/duaBfn6AD7AWZPYKuhFfPEPqDIeBrzW4qtjKIhCH2EJ+mwjiYNLUZ
+         F/Se3qZu2RJ/l2tEZA8CbHyDEP59HRjnjwZNWBMJQFZ+Ip8JpsP19Z+s6zkL4z88wKQf
+         Qsa1Z5EF5pbXhpOOjH1uFUuIAVAUHI4gN87ysjl3Ly6Rhn5RsOcCUwkh/d/P+aAdzAq6
+         djvg==
+X-Gm-Message-State: AOAM5306acRbVy/qpN29jVeSDyPsSTf52p/wdcsUBGcN2+QG6PNhEXrN
+        16F97lJmXbp3k0NpJkNimHrv+eV3+UY=
+X-Google-Smtp-Source: ABdhPJwAk3Pef2Gs4wryc7PpFonYd0ZcZr1JsoV+FWUcjb1NlLsnZu6YPaiymBXfR27xEvQze0FWpLVHzf4=
+X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:9fb:192e:3671:218c])
+ (user=pgonda job=sendgmr) by 2002:a25:a2c1:: with SMTP id c1mr1485206ybn.473.1637004863853;
+ Mon, 15 Nov 2021 11:34:23 -0800 (PST)
+Date:   Mon, 15 Nov 2021 11:34:20 -0800
+Message-Id: <20211115193420.2288308-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
+Subject: [PATCH V4.1 5/5] crypto: ccp - Add SEV_INIT_EX support
+From:   Peter Gonda <pgonda@google.com>
+To:     thomas.lendacky@amd.com
+Cc:     David Rientjes <rientjes@google.com>,
+        Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-To:     Sean Christopherson <seanjc@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
- <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com> <YY6z5/0uGJmlMuM6@zn.tnic>
- <YY7FAW5ti7YMeejj@google.com> <YY7I6sgqIPubTrtA@zn.tnic>
- <YY7Qp8c/gTD1rT86@google.com> <f2edf71e-f3b5-f8e3-a75e-e0f811fe6a14@amd.com>
- <YZKqoPAoMCqPZymh@google.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <f7b37ae0-4b7f-5b2a-1720-cfba0163de3e@amd.com>
-Date:   Mon, 15 Nov 2021 12:58:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <YZKqoPAoMCqPZymh@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR02CA0016.namprd02.prod.outlook.com
- (2603:10b6:208:fc::29) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
-MIME-Version: 1.0
-Received: from [10.236.30.107] (165.204.77.1) by MN2PR02CA0016.namprd02.prod.outlook.com (2603:10b6:208:fc::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.25 via Frontend Transport; Mon, 15 Nov 2021 18:58:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0b91141d-8951-4726-fb6d-08d9a869fb6e
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2640:
-X-Microsoft-Antispam-PRVS: <SN6PR12MB26400D5E4EE8D6126C701B2DE5989@SN6PR12MB2640.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TCbw4vU+mnoULq9zNfAljBKlAzaUDsJrQ9DMqKm1dPsMDHSNliUUbm4jnKvrlbwwQ32B4Hrq/i69KLhnzcqBwwV/tGW/hko3bdekNxQjlK+MUTQLxU+8KXWTDhhgWYE3m4ULGRq+mi8oYImuqt8aR3kjOyQ/rKt8GecMGVkqeai2JRK7fG83lVywhfps8qN14WO1E2euTfBaaFRs4M8/+Ie5Wd2JpAjfHmPXJgzwGnVq3uPF2sfjsXZi51ttyZNBFseSMzN16LoqwZxk4qGxJcv83C/GJ/KBFGatxQnqVZ8+yj9vervCFF3f4ZDRVKUUzGnf/QorFfDhUvfJ+5B1Xy0rZ6w7v9s2J0UGZOfaikhsMHPPx4//AW54jmSfdyoVG4EqPbT+ZQbP2bXNmNBSXuA/bnOjuwavxdAyydQ7UNjacJUlNlbgkzvnSP3KwJ1vyj9cDlLqnBfDRODBe96WELVRnNYpERiwygIkqrTY4lByZDHgnvHrRnT2ZwA3lfKH6kOF3T3+jn6b44HS9C4ZC8e+574A8BzV3pGSmCey8EC7fSRw9P5Bvtjawd13sCW9iAOHgB/Sek3IfQvB+A6VltT6w3goXFFo70QrpgmvGjL0y/MKpisq7Q3W0lMLSXVfAfz0KDwIeim0737VHRDYHshSaZmiQDcN8ORaydgAa0L5y5BWtLB/RXVciy3W5OGgghAQHx7SiUr6DImW8iBcnSdo0amF7NAaCxtPD7+F7pA7mCzYh+xYtZdYs7yEjlXC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(66556008)(508600001)(53546011)(66946007)(16576012)(66476007)(186003)(36756003)(8676002)(38100700002)(6486002)(26005)(8936002)(31686004)(7406005)(7416002)(6916009)(86362001)(31696002)(2616005)(2906002)(316002)(5660300002)(4326008)(956004)(44832011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TjRoaGZiMXZOaFMwOG9CZVpVVVlaUnhubkkvL2FzMS9ua0VGR3cwNU9ZbVND?=
- =?utf-8?B?YXBzWnI4ek9tVEZXem9NRWxQVm4xa0huSkhnQ0l6eEIyNWVtS3llY1FwNHhF?=
- =?utf-8?B?QmJTUU9DcTFxc29ydmRSU0J6SWQwYVpkNDNmTG1CQTZSazllWXo0d0FHMmpw?=
- =?utf-8?B?ZCtJWFNObmkyVnJBcDQzWW9ReUtYaFJHYlFjdC9aUzYwYWNWTkFQbm04MGJo?=
- =?utf-8?B?Q0lGcFYvY2xTWU84T1RTNDNUNGZmak5Lbk5MZzZIMUZ6RW0wRlcwdWpQZVYr?=
- =?utf-8?B?bzBKc3c4V1M2QkxDMTlyOGZKbEpoTnJFT2tOZWZjMm9hYTd2TmREVWgvVGRs?=
- =?utf-8?B?NmV6Q09BQk11TEJhelN2K1V0NExqVUxpTnFTRzlMY2FzVm1DMTZRS2J4US8y?=
- =?utf-8?B?M3VaWHE5UWd0RXcrVkdESC9ZVCtMNzNDb0RyWmJMcGVLcm9IaVZIN2UzN3NT?=
- =?utf-8?B?NHJkblZsQ2tEQ1haQUxISTVFbm1pNkRvN0l6VVdycVgyYmp6SmJkTGVGbzhE?=
- =?utf-8?B?aVNGSk1pS0dUWEpDSzVybFBtYStzR1UzV1dvM3RDa1ROaXlKT09kcmQyZWxP?=
- =?utf-8?B?UmU0MVg2RDliVXFyNTlkcnN0dkMwQWNqMlRUcTYxaGhIbUtQcWIzV0tEMHZq?=
- =?utf-8?B?QVg0NVRWZHlFME1OMU5ocTI1TFJVQWltU1VYMllIRm1aUzFlbTVTOTJ2aHlp?=
- =?utf-8?B?ZUxUNjlvUEJHK09USkIzZGkwOGN5U1Q3cmFLMTNTNTBjM092VCttd0pYc0lT?=
- =?utf-8?B?dWNibm5jWmFmK1Q2RmRPT3plc0YzY2ZFTmFlZ0U3Vm1aOHhOZUFZUldXR0E5?=
- =?utf-8?B?MTA3aERtSytlVGpzUWI0VDdVSzFEYXViU3JVY011L0pNV29QakdFbDhzODNO?=
- =?utf-8?B?RFZvYnM2blovL2dWZ1B6M2oxbzVRKzVkeGYvWDVxMk1QVS9adGpGZHhLbzZl?=
- =?utf-8?B?TkcxUWtMNXNnNjR6VFNPT2RIcHQyMjF0OGpNajFvN2cvd0tZVVFHQmdYV1pG?=
- =?utf-8?B?d3g0dlppbUdjUmY0SlBvME9senZYZDBLOWoybjl3R2I5RTZVZ0tIYlVlTWVi?=
- =?utf-8?B?NGlRb3B4WEsyUHZlRFh4Tm9UK0RPNmlqVzJ2SjZ0SmwxcnBnaWdCUDd4aFF2?=
- =?utf-8?B?L20xdi95aXdtaEZtMnBQeUNyMXhJYktyR0NtbUZteFN5K3lHdlVkd204akI4?=
- =?utf-8?B?NnRpcEo3ZXVvNjdUelNQR25ZRFpmRjB3VlBKTEd6MWRUNFZpM085ZUdXaGRI?=
- =?utf-8?B?bWpudmVoaXh6RU10aWhTVnpGQkY4TVNQKzZyYzVnN2toV1V0VHF0Z09oYlV1?=
- =?utf-8?B?RGJ3Q2JYTjAxTmF5bE5TVGQvWFpuRHhGWVo1TmZpRnVLV3NTSENCS2RyR1FZ?=
- =?utf-8?B?QlFWcUxFVmZ5YnlQNWRiVHV1c3JFZ3dJOEk3bUlyZEsvZU44bHFsS2NPbUlF?=
- =?utf-8?B?YnlYdlljaTJoUCtud1MrS2hhSGdoMy9aTEFRRnE4RXhHSUMwZU84ekcxSkU4?=
- =?utf-8?B?WmdRalJyTVZSaE9BWHp0akV3T2ljdFdUV1p6amc5SkVENFBPN29ZYkFNekNS?=
- =?utf-8?B?eVRud2sybGdYVDRRai9UY0dBaWxiYVluckNrOEtLQzljRjQ4eGVmNTZ1cmxR?=
- =?utf-8?B?anVYSjg3QU9UM3VZTXRjdkxTSVNId3k4cDR4SzhJYmMxS0tjbi9KalpwaDhE?=
- =?utf-8?B?eXRhK1pNdmpINkNZNmtrdTBaM2xFRmZoVFFGbjF3aGMxNkFhbXdvZ1BlYm1V?=
- =?utf-8?B?Qm9KMFllRkw0aXRsL1QraFR0WnN1OE13K1F1V0lRQy9lNlppa1Q0QS9lN0dW?=
- =?utf-8?B?ZGNCQVdTUFJoMTlFYUFzT1BBbWh1SXRWOGVlMmhtQ3ZxL0hUV3VGc25MUC9z?=
- =?utf-8?B?TlRwd2JTME9jQ3ZUTkMycm9ZSkRIR0ZKdVJUL0U5aUpNVW1LRkhEcHN6VWJL?=
- =?utf-8?B?elhnL3R1YU01WkE5OGZWODl1Mm56MENtcXpuS0xwbUNmeE9JdXpkVDR2dVBp?=
- =?utf-8?B?dzhWbmhhdmVIb09pWHMrV3FzT1hydldYRzNhdkR0d3FVNXFxSnZxZS85NTZK?=
- =?utf-8?B?S29TYkYzaEd3NjRlelYvUUlNOUN0YUU1SWhGS05jTHZydm8rR2JlUzJlaFFS?=
- =?utf-8?B?VmZ4L2RiZW1IWlByZkxFKzJ4S2FQcUJyWGo1VnlHMG83MTA1Nko0eHZkazhL?=
- =?utf-8?Q?gLxleFeWHEykRt75RCjs+9U=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b91141d-8951-4726-fb6d-08d9a869fb6e
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 18:58:59.5001
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /KgZFkcdtd0K1vGKrCCApX+518TXAA8i63plKQdhO12SI4ajqOM6rzhqmcbjOM/gphPNuPLLczHAfzedj0Abig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2640
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+From: David Rientjes <rientjes@google.com>
 
+Add new module parameter to allow users to use SEV_INIT_EX instead of
+SEV_INIT. This helps users who lock their SPI bus to use the PSP for SEV
+functionality. The 'init_ex_path' parameter defaults to NULL which means
+the kernel will use SEV_INIT, if a path is specified SEV_INIT_EX will be
+used with the data found at the path. On certain PSP commands this
+file is written to as the PSP updates the NV memory region. Depending on
+file system initialization this file open may fail during module init
+but the CCP driver for SEV already has sufficient retries for platform
+initialization. During normal operation of PSP system and SEV commands
+if the PSP has not been initialized it is at run time. If the file at
+'init_ex_path' does not exist the PSP will not be initialized. The user
+must create the file prior to use with 32Kb of 0xFFs per spec.
 
-On 11/15/21 12:44 PM, Sean Christopherson wrote:
-> On Mon, Nov 15, 2021, Brijesh Singh wrote:
->>
->> On 11/12/21 2:37 PM, Sean Christopherson wrote:
->>> This is the direction KVM TDX support is headed, though it's obviously still a WIP.
->>>
->>
->> Just curious, in this approach, how do you propose handling the host
->> kexec/kdump? If a kexec/kdump occurs while the VM is still active, the new
->> kernel will encounter the #PF (RMP violation) because some pages are still
->> marked 'private' in the RMP table.
-> 
-> There are two basic options: a) eagerly purge the RMP or b) lazily fixup the RMP
-> on #PF.  Either approach can be made to work.  I'm not opposed to fixing up the RMP
-> on #PF in the kexec/kdump case, I'm opposed to blindly updating the RMP on _all_
-> RMP #PFs, i.e. the kernel should modify the RMP if and only if it knows that doing
-> so is correct.  E.g. a naive lazy-fixup solution would be to track which pages have
-> been sanitized and adjust the RMP on #PF to a page that hasn't yet been sanitized.
-> 
+Signed-off-by: David Rientjes <rientjes@google.com>
+Co-developed-by: Peter Gonda <pgonda@google.com>
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Reviewed-by: Marc Orr <marcorr@google.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Marc Orr <marcorr@google.com>
+Cc: Joerg Roedel <jroedel@suse.de>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: David Rientjes <rientjes@google.com>
+Cc: John Allen <john.allen@amd.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
 
-Yap, I think option #a will require the current kernel to iterate 
-through the entire memory and make it shared before booting the kexec 
-kernel. It may bring another ask to track the guest private/shared on 
-the host to minimize the iterations.
+V4.1
+* Fixed missing loff_t paramter for kernel_read().
 
-thanks
+--
+ .../virt/kvm/amd-memory-encryption.rst        |   6 +
+ drivers/crypto/ccp/sev-dev.c                  | 194 ++++++++++++++++--
+ include/linux/psp-sev.h                       |  21 ++
+ 3 files changed, 206 insertions(+), 15 deletions(-)
+
+diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+index 5c081c8c7164..1c6847fff304 100644
+--- a/Documentation/virt/kvm/amd-memory-encryption.rst
++++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+@@ -85,6 +85,12 @@ guests, such as launching, running, snapshotting, migrating and decommissioning.
+ The KVM_SEV_INIT command is used by the hypervisor to initialize the SEV platform
+ context. In a typical workflow, this command should be the first command issued.
+ 
++The firmware can be initialized either by using its own non-volatile storage or
++the OS can manage the NV storage for the firmware using the module parameter
++``init_ex_path``. The file specified by ``init_ex_path`` must exist. To create
++a new NV storage file allocate the file with 32KB bytes of 0xFF as required by
++the SEV spec.
++
+ Returns: 0 on success, -negative on error
+ 
+ 2. KVM_SEV_LAUNCH_START
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index ee9f194d460e..5e32fd44f804 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -22,6 +22,7 @@
+ #include <linux/firmware.h>
+ #include <linux/gfp.h>
+ #include <linux/cpufeature.h>
++#include <linux/fs.h>
+ 
+ #include <asm/smp.h>
+ 
+@@ -43,6 +44,10 @@ static int psp_probe_timeout = 5;
+ module_param(psp_probe_timeout, int, 0644);
+ MODULE_PARM_DESC(psp_probe_timeout, " default timeout value, in seconds, during PSP device probe");
+ 
++static char *init_ex_path;
++module_param(init_ex_path, charp, 0444);
++MODULE_PARM_DESC(init_ex_path, " Path for INIT_EX data; if set try INIT_EX");
++
+ static bool psp_init_on_probe = true;
+ module_param(psp_init_on_probe, bool, 0444);
+ MODULE_PARM_DESC(psp_init_on_probe, "  if true, the PSP will be initialized on module init. Else the PSP will be initialized on the first command requiring it");
+@@ -62,6 +67,14 @@ static int psp_timeout;
+ #define SEV_ES_TMR_SIZE		(1024 * 1024)
+ static void *sev_es_tmr;
+ 
++/* INIT_EX NV Storage:
++ *   The NV Storage is a 32Kb area and must be 4Kb page aligned.  Use the page
++ *   allocator to allocate the memory, which will return aligned memory for the
++ *   specified allocation order.
++ */
++#define NV_LENGTH (32 * 1024)
++static void *sev_init_ex_buffer;
++
+ static inline bool sev_version_greater_or_equal(u8 maj, u8 min)
+ {
+ 	struct sev_device *sev = psp_master->sev_data;
+@@ -111,6 +124,7 @@ static int sev_cmd_buffer_len(int cmd)
+ {
+ 	switch (cmd) {
+ 	case SEV_CMD_INIT:			return sizeof(struct sev_data_init);
++	case SEV_CMD_INIT_EX:                   return sizeof(struct sev_data_init_ex);
+ 	case SEV_CMD_PLATFORM_STATUS:		return sizeof(struct sev_user_data_status);
+ 	case SEV_CMD_PEK_CSR:			return sizeof(struct sev_data_pek_csr);
+ 	case SEV_CMD_PEK_CERT_IMPORT:		return sizeof(struct sev_data_pek_cert_import);
+@@ -156,6 +170,102 @@ static void *sev_fw_alloc(unsigned long len)
+ 	return page_address(page);
+ }
+ 
++static int sev_read_init_ex_file(void)
++{
++	struct sev_device *sev = psp_master->sev_data;
++	struct file *fp;
++	ssize_t nread;
++	loff_t pos = 0;
++
++	lockdep_assert_held(sev_cmd_mutex);
++
++	if (!sev_init_ex_buffer)
++		return -EOPNOTSUPP;
++
++	fp = filp_open(init_ex_path, O_RDONLY, 0);
++	if (IS_ERR(fp)) {
++		int ret = PTR_ERR(fp);
++
++		dev_err(sev->dev,
++			"SEV: could not open %s for read, error %d\n",
++			init_ex_path, ret);
++		return ret;
++	}
++
++	nread = kernel_read(fp, sev_init_ex_buffer, NV_LENGTH, &pos);
++	if (nread != NV_LENGTH) {
++		dev_err(sev->dev,
++			"SEV: failed to read %u bytes to non volatile memory area, ret %ld\n",
++			NV_LENGTH, nread);
++		return -EIO;
++	}
++
++	dev_dbg(sev->dev, "SEV: read %ld bytes from NV file\n", nread);
++	filp_close(fp, NULL);
++
++	return 0;
++}
++
++static void sev_write_init_ex_file(void)
++{
++	struct sev_device *sev = psp_master->sev_data;
++	struct file *fp;
++	loff_t offset = 0;
++	ssize_t nwrite;
++
++	lockdep_assert_held(sev_cmd_mutex);
++
++	if (!sev_init_ex_buffer)
++		return;
++
++	fp = filp_open(init_ex_path, O_CREAT | O_WRONLY, 0600);
++	if (IS_ERR(fp)) {
++		dev_err(sev->dev,
++			"SEV: could not open file for write, error %d\n",
++			PTR_ERR(fp));
++		return;
++	}
++
++	nwrite = kernel_write(fp, sev_init_ex_buffer, NV_LENGTH, &offset);
++	vfs_fsync(fp, 0);
++	filp_close(fp, NULL);
++
++	if (nwrite != NV_LENGTH) {
++		dev_err(sev->dev,
++			"SEV: failed to write %u bytes to non volatile memory area, ret %ld\n",
++			NV_LENGTH, nwrite);
++		return;
++	}
++
++	dev_dbg(sev->dev, "SEV: write successful to NV file\n");
++}
++
++static void sev_write_init_ex_file_if_required(int cmd_id)
++{
++	lockdep_assert_held(sev_cmd_mutex);
++
++	if (!sev_init_ex_buffer)
++		return;
++
++        /*
++         * Only a few platform commands modify the SPI/NV area, but none of the
++         * non-platform commands do. Only INIT(_EX), PLATFORM_RESET, PEK_GEN,
++         * PEK_CERT_IMPORT, and PDH_GEN do.
++         */
++	switch (cmd_id) {
++	case SEV_CMD_FACTORY_RESET:
++	case SEV_CMD_INIT_EX:
++	case SEV_CMD_PDH_GEN:
++	case SEV_CMD_PEK_CERT_IMPORT:
++	case SEV_CMD_PEK_GEN:
++		break;
++	default:
++		return;
++	};
++
++	sev_write_init_ex_file();
++}
++
+ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+ {
+ 	struct psp_device *psp = psp_master;
+@@ -225,6 +335,8 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+ 		dev_dbg(sev->dev, "sev command %#x failed (%#010x)\n",
+ 			cmd, reg & PSP_CMDRESP_ERR_MASK);
+ 		ret = -EIO;
++	} else {
++		sev_write_init_ex_file_if_required(cmd);
+ 	}
+ 
+ 	print_hex_dump_debug("(out): ", DUMP_PREFIX_OFFSET, 16, 2, data,
+@@ -251,37 +363,71 @@ static int sev_do_cmd(int cmd, void *data, int *psp_ret)
+ 	return rc;
+ }
+ 
+-static int __sev_platform_init_locked(int *error)
++static int __sev_init_locked(int *error)
+ {
+-	struct psp_device *psp = psp_master;
+ 	struct sev_data_init data;
+-	struct sev_device *sev;
+-	int psp_ret, rc = 0;
+ 
+-	if (!psp || !psp->sev_data)
+-		return -ENODEV;
++	memset(&data, 0, sizeof(data));
++	if (sev_es_tmr) {
++		/*
++		 * Do not include the encryption mask on the physical
++		 * address of the TMR (firmware should clear it anyway).
++		 */
++		data.tmr_address = __pa(sev_es_tmr);
+ 
+-	sev = psp->sev_data;
++		data.flags |= SEV_INIT_FLAGS_SEV_ES;
++		data.tmr_len = SEV_ES_TMR_SIZE;
++	}
+ 
+-	if (sev->state == SEV_STATE_INIT)
+-		return 0;
++	return __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
++}
++
++static int __sev_init_ex_locked(int *error)
++{
++	struct sev_data_init_ex data;
++	int ret;
+ 
+ 	memset(&data, 0, sizeof(data));
+-	if (sev_es_tmr) {
+-		u64 tmr_pa;
++	data.length = sizeof(data);
++	data.nv_address = __psp_pa(sev_init_ex_buffer);
++	data.nv_len = NV_LENGTH;
+ 
++	ret = sev_read_init_ex_file();
++	if (ret)
++		return ret;
++
++	if (sev_es_tmr) {
+ 		/*
+ 		 * Do not include the encryption mask on the physical
+ 		 * address of the TMR (firmware should clear it anyway).
+ 		 */
+-		tmr_pa = __pa(sev_es_tmr);
++		data.tmr_address = __pa(sev_es_tmr);
+ 
+ 		data.flags |= SEV_INIT_FLAGS_SEV_ES;
+-		data.tmr_address = tmr_pa;
+ 		data.tmr_len = SEV_ES_TMR_SIZE;
+ 	}
+ 
+-	rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, &psp_ret);
++	return __sev_do_cmd_locked(SEV_CMD_INIT_EX, &data, error);
++}
++
++static int __sev_platform_init_locked(int *error)
++{
++	struct psp_device *psp = psp_master;
++	struct sev_device *sev;
++	int rc, psp_ret;
++	int (*init_function)(int *error);
++
++	if (!psp || !psp->sev_data)
++		return -ENODEV;
++
++	sev = psp->sev_data;
++
++	if (sev->state == SEV_STATE_INIT)
++		return 0;
++
++        init_function = sev_init_ex_buffer ? __sev_init_ex_locked :
++			__sev_init_locked;
++	rc = init_function(&psp_ret);
+ 	if (rc && psp_ret == SEV_RET_SECURE_DATA_INVALID) {
+ 		/*
+ 		 * Initialization command returned an integrity check failure
+@@ -291,7 +437,7 @@ static int __sev_platform_init_locked(int *error)
+ 		 * with a reset state.
+ 		 */
+ 		dev_dbg(sev->dev, "SEV: retrying INIT command");
+-		rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, &psp_ret);
++		rc = init_function(&psp_ret);
+ 	}
+ 	if (error)
+ 		*error = psp_ret;
+@@ -1066,6 +1212,12 @@ static void sev_firmware_shutdown(struct sev_device *sev)
+ 			   get_order(SEV_ES_TMR_SIZE));
+ 		sev_es_tmr = NULL;
+ 	}
++
++	if (sev_init_ex_buffer) {
++		free_pages((unsigned long)sev_init_ex_buffer,
++			   get_order(NV_LENGTH));
++		sev_init_ex_buffer = NULL;
++	}
+ }
+ 
+ void sev_dev_destroy(struct psp_device *psp)
+@@ -1111,6 +1263,18 @@ void sev_pci_init(void)
+ 	    sev_update_firmware(sev->dev) == 0)
+ 		sev_get_api_version();
+ 
++	/* If an init_ex_path is provided rely on INIT_EX for PSP initialization
++	 * instead of INIT.
++	 */
++	if (init_ex_path) {
++		sev_init_ex_buffer = sev_fw_alloc(NV_LENGTH);
++		if (!sev_init_ex_buffer) {
++			dev_err(sev->dev,
++				"SEV: INIT_EX NV memory allocation failed\n");
++			goto err;
++		}
++	}
++
+ 	/* Obtain the TMR memory area for SEV-ES use */
+ 	sev_es_tmr = sev_fw_alloc(SEV_ES_TMR_SIZE);
+ 	if (!sev_es_tmr)
+diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
+index d48a7192e881..1595088c428b 100644
+--- a/include/linux/psp-sev.h
++++ b/include/linux/psp-sev.h
+@@ -52,6 +52,7 @@ enum sev_cmd {
+ 	SEV_CMD_DF_FLUSH		= 0x00A,
+ 	SEV_CMD_DOWNLOAD_FIRMWARE	= 0x00B,
+ 	SEV_CMD_GET_ID			= 0x00C,
++	SEV_CMD_INIT_EX                 = 0x00D,
+ 
+ 	/* Guest commands */
+ 	SEV_CMD_DECOMMISSION		= 0x020,
+@@ -102,6 +103,26 @@ struct sev_data_init {
+ 	u32 tmr_len;			/* In */
+ } __packed;
+ 
++/**
++ * struct sev_data_init_ex - INIT_EX command parameters
++ *
++ * @length: len of the command buffer read by the PSP
++ * @flags: processing flags
++ * @tmr_address: system physical address used for SEV-ES
++ * @tmr_len: len of tmr_address
++ * @nv_address: system physical address used for PSP NV storage
++ * @nv_len: len of nv_address
++ */
++struct sev_data_init_ex {
++	u32 length;                     /* In */
++	u32 flags;                      /* In */
++	u64 tmr_address;                /* In */
++	u32 tmr_len;                    /* In */
++	u32 reserved;                   /* In */
++	u64 nv_address;                 /* In/Out */
++	u32 nv_len;                     /* In */
++} __packed;
++
+ #define SEV_INIT_FLAGS_SEV_ES	0x01
+ 
+ /**
+-- 
+2.34.0.rc1.387.gb447b232ab-goog
+
