@@ -2,132 +2,158 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F76451528
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Nov 2021 21:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 422A6452098
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Nov 2021 01:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346916AbhKOUZw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Nov 2021 15:25:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49210 "EHLO
+        id S1345403AbhKPAzs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Nov 2021 19:55:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350419AbhKOUXs (ORCPT
+        with ESMTP id S1343580AbhKOTVX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Nov 2021 15:23:48 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93946C079785
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 12:11:40 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso22301002otf.12
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 12:11:40 -0800 (PST)
+        Mon, 15 Nov 2021 14:21:23 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C483BC07DE4C
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 10:17:56 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so13906134pjc.4
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 10:17:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=DnTpN3V7pf+joD5qh4ITq1+EZdAEZtVPtGOOXePkcLQ=;
-        b=IN0jBpF9GlP8d27T+5LzU2/AdrYDUqj9FftsV7QDHYobl1bErsLOf8Rb9o2pRiEMYz
-         35LEE6+iUMNIVkswnf+GLmDVCiZlx55IDnYKoxcb+4Wt//yd45BpRJ6L7YX5rHlIF0Nl
-         ulwhYE9lMWQcE93WL5nWj9/iFnL9xSbtVKJ70UNRpN7vX/L2iIMaSv/Z05JHlXwYj28r
-         6CalhJpzjD7lwWq//gcdg0CN3b514j7PtwTiJbc6RHG8XQ4/dRL+TbNFI00i0h/4Pbkl
-         9oqAaB9/ab4/op84A3R4wxiC41QcN6uXqfkgGvG+oSXoB1hDx3wIFXEdJYWbu+q3qFJX
-         27Sg==
+        bh=zVIigt5hFRhwoHdnPkqdezNkgtT3bQVD+JV1TZ0yBQk=;
+        b=aIFb+Bg2kAQ6u2avnkXgX+2F+XsjwU8PJbAILzNG66y0Npi9zFLasu3DiaXqW2vnUq
+         XQn2eLnu4wHnrtJsF/JKd/GXTb/hXXs1b1tvMaulKoZJJG/RKlWLZNxsr6DJPAMgyhyQ
+         gLSA7I+KjaST0YMZnMn+HI9FW40+/+MwqE+2nhY8Y+6N2j7cMXMxniw6Tf0yVSTkiE3U
+         w1EBeHcm/riM8DRmyCdwozujjMclAB0IhtYBKO4J4uioDIWabX2Ng1GO2HH+mbCJlpC9
+         38U5GlMY9tw62ZR1mlT3p0jLcsVoNuP7Qbvh/lSUuU7SQnhyzDLppN9qLlWFSqBZZGwk
+         +MGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=DnTpN3V7pf+joD5qh4ITq1+EZdAEZtVPtGOOXePkcLQ=;
-        b=DYLklt43pq3R89UrpSN+IxmsgqG7GNjdI2BS4p16vUV6bF3/k4bWKV8GqjrJDcZW3n
-         fSaD6rLGWLpnH1Mb/pc1RlrbLIcJoxiPcGz0phyfyKE88muicMz8nmLxqthLlkAixuRF
-         8ObUj3ODmtzITsfFIQ3ZvxznSer+vW/fv9va6DmYcefnq3ijhQ4/bxjE65X9J7AyLMNF
-         Xg5mlgwRwZfkiTVq5wcpj4xy2gOpr8yDLuVRsNMETykXOriRmwPargiuEernbrc3JBWR
-         GWAggf/qzhkmz6Ve0UAcJZtU3Lv2y/If0/vRKOhwgvia9nZ8dHNtFzTESR91ayVRCd46
-         IylA==
-X-Gm-Message-State: AOAM533bwrvSq5jSlkXzqaEj77iKb3dYbrzGQKI/R/8MYAlxVMVX9v7V
-        1Qd0OVq2Bt0xvR6SPl3c3z0wznI2ohmpaw==
-X-Google-Smtp-Source: ABdhPJwDHcO1BFEuFFDETnP3C+wXDED5yvMFPiZg845gXJiwCR4MHwdU6Nd4vXCoK4GwOkbs5dEH2Q==
-X-Received: by 2002:a05:6830:22d8:: with SMTP id q24mr1373215otc.170.1637007099923;
-        Mon, 15 Nov 2021 12:11:39 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w22sm1775175ooc.47.2021.11.15.12.11.39
+        bh=zVIigt5hFRhwoHdnPkqdezNkgtT3bQVD+JV1TZ0yBQk=;
+        b=d9Q9jTfbo0C8VLpkGBGcTLcj/3pYtUNmGB5HqKrHaG2vFOW1eUHVmHbVjCTA6rIXT8
+         0xQZwSQyClzKG/zQh7/c/yHFI1V7NaKmbVz5xW3rnlOTrA5EHTve3U0qf6V9bquips7K
+         KPcf/S/MtHRAsuyIynp6vkEaZPz3cJEMls48ZqIEjv4T6qDsK9hp7PgWMtET8kI9oTm1
+         AgACF+H2iSy9C56Go5HEU4WfVu7K4B97fNsurLUlMeAp5K9ET7PFywJQzn9rhd8j/vSI
+         sgfYBbZ17BT8fmx7TAO8p4O7SDwkJ996qIkzJ3lseyXDoMBOlIa8yOaO7Tg4uGQo2mUG
+         M6tQ==
+X-Gm-Message-State: AOAM532zIt0KnaWySY8FKFwi7woKrGSBBiDlXjt7RURjPtsElHhzUmWL
+        p/BjKlY1TVEcNSlKZA6IWbU+xQ==
+X-Google-Smtp-Source: ABdhPJyEk01A4cEBJRk2IJwMDA9ufuQA+Un9JScTgr2yhZJMzSPbmQlcRKUkuJ1yVS564FPMQwEnDg==
+X-Received: by 2002:a17:90b:4b04:: with SMTP id lx4mr647925pjb.11.1637000276010;
+        Mon, 15 Nov 2021 10:17:56 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id c3sm11160202pgk.16.2021.11.15.10.17.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 12:11:39 -0800 (PST)
-Date:   Mon, 15 Nov 2021 14:11:34 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>
-Subject: Re: [PATCH v5 21/22] arm64/dts: qcom: sm8250: Add dt entries to
- support crypto engine.
-Message-ID: <YZK+9pT7tsbkMz9J@builder.lan>
-References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
- <20211110105922.217895-22-bhupesh.sharma@linaro.org>
+        Mon, 15 Nov 2021 10:17:55 -0800 (PST)
+Date:   Mon, 15 Nov 2021 18:17:51 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Marc Orr <marcorr@google.com>
+Cc:     Peter Gonda <pgonda@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <Michael.Roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+Message-ID: <YZKkT1jwfGbkrGqu@google.com>
+References: <YY7I6sgqIPubTrtA@zn.tnic>
+ <YY7Qp8c/gTD1rT86@google.com>
+ <CAA03e5GwHMPYHHq3Nkkq1HnEJUUsw-Vk+5wFCott3pmJY7WuAw@mail.gmail.com>
+ <2cb3217b-8af5-4349-b59f-ca4a3703a01a@www.fastmail.com>
+ <CAA03e5Fw9cRnb=+eJmzEB+0QmdgaGZ7=fPTUYx7f55mGVXLRMA@mail.gmail.com>
+ <CAMkAt6q9Wsw_KYypyZxhA1gkd=kFepk5rC5QeZ6Vo==P6=EAxg@mail.gmail.com>
+ <YY8Mi36N/e4PzGP0@google.com>
+ <CAA03e5F=7T3TcJBksiJ9ovafX65YfzAc0S+uYu5LjfTQ60yC7w@mail.gmail.com>
+ <YZADwHxsx5cZ6m47@google.com>
+ <CAA03e5HwYtn+eG1f5eP-SrZPyE4D2uf0v10=VkVoTNQQk87Kew@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211110105922.217895-22-bhupesh.sharma@linaro.org>
+In-Reply-To: <CAA03e5HwYtn+eG1f5eP-SrZPyE4D2uf0v10=VkVoTNQQk87Kew@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed 10 Nov 04:59 CST 2021, Bhupesh Sharma wrote:
-
-Forgot to mention, please double check that the $subject prefix matches
-other patches to the file.
-
-Regards,
-Bjorn
-
-> Add crypto engine (CE) and CE BAM related nodes and definitions to
-> "sm8250.dtsi".
+On Sat, Nov 13, 2021, Marc Orr wrote:
+> On Sat, Nov 13, 2021 at 10:28 AM Sean Christopherson <seanjc@google.com> wrote:
+> > The behavior is no different than it is today for regular VMs.
 > 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sm8250.dtsi | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
+> Isn't this counter to the sketch you laid out earlier where you wrote:
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> index 6f6129b39c9c..691c28066cec 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> @@ -4104,6 +4104,34 @@ cpufreq_hw: cpufreq@18591000 {
->  
->  			#freq-domain-cells = <1>;
->  		};
-> +
-> +		cryptobam: dma-controller@1dc4000 {
-> +			compatible = "qcom,bam-v1.7.0";
-> +			reg = <0 0x01dc4000 0 0x24000>;
-> +			interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
-> +			#dma-cells = <1>;
-> +			qcom,ee = <0>;
-> +			qcom,controlled-remotely;
-> +			iommus = <&apps_smmu 0x584 0x0011>,
-> +				 <&apps_smmu 0x586 0x0011>,
-> +				 <&apps_smmu 0x594 0x0011>,
-> +				 <&apps_smmu 0x596 0x0011>;
-> +			interconnects = <&aggre2_noc MASTER_CRYPTO_CORE_0 &mc_virt SLAVE_EBI_CH0>;
-> +			interconnect-names = "memory";
-> +		};
-> +
-> +		crypto: crypto@1dfa000 {
-> +			compatible = "qcom,sm8250-qce";
-> +			reg = <0 0x01dfa000 0 0x6000>;
-> +			dmas = <&cryptobam 4>, <&cryptobam 5>;
-> +			dma-names = "rx", "tx";
-> +			iommus = <&apps_smmu 0x584 0x0011>,
-> +				 <&apps_smmu 0x586 0x0011>,
-> +				 <&apps_smmu 0x594 0x0011>,
-> +				 <&apps_smmu 0x596 0x0011>;
-> +			interconnects = <&aggre2_noc MASTER_CRYPTO_CORE_0 &mc_virt SLAVE_EBI_CH0>;
-> +			interconnect-names = "memory";
-> +		};
->  	};
->  
->  	timer {
-> -- 
-> 2.31.1
+> --- QUOTE START ---
+>   - if userspace accesses guest private memory, it gets SIGSEGV or whatever.
+>   - if kernel accesses guest private memory, it does BUG/panic/oops[*]
+>   - if guest accesses memory with the incorrect C/SHARED-bit, it gets killed.
+> --- QUOTE END ---
 > 
+> Here, the guest does not get killed. Which seems hard to debug.
+
+No, it does contradict that statement.
+ 
+  If the guest requests a conversion from shared=>private without first ensuring
+  the gfn is unused (by a host "device"), the host will side will continue accessing
+  the old, shared memory, which it locked, while the guest will be doing who knows
+  what.
+
+In this case, the guest will have converted a GPA from shared=>private, i.e. changed
+the effective GFN for a e.g. a shared queue, without informing host userspace that
+the GFN, and thus the associated HVA in the host, has changed. For TDX that is
+literally the same bug as the guest changing the GFN without informing the host, as
+the SHARED bit is just an address bit with some extra meaning piled on top.  For SNP,
+it's slightly different because the C-bit isn't strictly required to be an address
+bit, but for all intents and purposes it's the same type of bug.
+
+I phrased it "guest will be doing who knows what" because from a host userspace
+perspective, it can't know what the guest behavior will be, and more importantly,
+it doesn't care because (a) the guest is buggy and (b) the host itself  is _not_ in
+danger.
+
+Yes, those types of bugs suck to debug.  But they really should be few and far
+between.  The only reason I called out this specific scenario was to note that host
+userspace doesn't need to take extra steps to guard against bogus shared=>private
+conversions, because host userspace already needs to have such guards in place.  In
+prior (offline?) conversations, we had assumed that host userspace would need to
+propagate the shared vs. private status to any and all processes that map guest
+memory, i.e. would require substantial enabling, but that assumption was wrong.
+
+> If allowing userspace to inject #VC into the guest means that the host
+> can continue to serve other guests, that seems like a win. The
+> alternative, to blow up the host, essentially expands the blast radius
+> from a single guest to all guests.
+
+As mentioned in other threads of this conversation, when I say "host crashes", I
+am specifically talking about scenarios where it is simply not possible for the
+host kernel to recover, e.g. an RMP #PF violation on the IDT.
+
+Setting that aside, injecting a #VC into the guest is not in anyway necessary for
+a buggy host userspace to terminate a single guest, host userspace can simply stop
+running that specific guest.
