@@ -2,58 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A0B451E1F
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Nov 2021 01:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 547C9451D85
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Nov 2021 01:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhKPAfL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Nov 2021 19:35:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
+        id S1346129AbhKPAal (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Nov 2021 19:30:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345176AbhKOT1V (ORCPT
+        with ESMTP id S1346134AbhKOT36 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:27:21 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754E4C09E004
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 10:44:53 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id n26so11213643pff.3
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 10:44:53 -0800 (PST)
+        Mon, 15 Nov 2021 14:29:58 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977AEC04C350
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 11:15:12 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso707101pjb.0
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 11:15:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=YnA5RxswdR0pXIdDfw42jEIDMfa1Anknf8jHYLDLebQ=;
-        b=b2wJRkAtOs8VLbM0lZNMe/RxwW3htbsJhf+JSJaqKtTxUt1keDFKRzlcUNWyPRBoxr
-         LBU9Tn21V6eNtb8W2Ualydb/xatXcwyrVl137vORscIWpZaHyqhtaJ4PL//nGRBuvlVf
-         5Lk0OB2dy54Hh7saCw2v3Mzu3qwwaI2j4DGdC76QW8zGmrexY7HRIYzc4TLXnHc/XzER
-         piGaJLzdwxwiNPpaBVCWww3uXt8XWY3x2Qzr69DlQN7DsLjKBaIJfEtq5ll5aehSHh79
-         9DNaDrov5aBJp9lHbu2laW/mwNkbPco4mg1trxgMYI0j2IaFvXiSMYscDWB6oXCmZKp4
-         AdyQ==
+        bh=Y6OLQ3pmyLU/AZ8mF6RNILhOeEW50lkatnqGQxIhBPM=;
+        b=NE9Q7X3JQ8LUyUWzz9DeIgL8OoW6QfsSl8vnkAy3xBAwWAiJcKASkCUUxhcuo6wGyj
+         z0tTg0V02jsjXd11PJgj5pF2sV6adXai4Cr/YnvZX6P2JywIyZqrgMvIK1o4b4n3CR4U
+         kb1rRvSa9srpZSUM73KrRPAW7WF63brJAF7P+m9rZj00jlEp1gmZnXael/2ixsugtcfF
+         5ypgZuP4pQNZdnFB+tzrTmgfKrUWEuMx2G8v8dc03lWFP5lJXYJ/csad9Fg7klPM3GOB
+         tMQ6yZKMaygcUZXi1oP+i64HY5Cs9C48DJy9vo9/LqSUFte0HE75KGuv45yY5HXtL2KK
+         KeeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=YnA5RxswdR0pXIdDfw42jEIDMfa1Anknf8jHYLDLebQ=;
-        b=DUD6Xb8MNX57ya1w5+B97cNVnLJmtgvspuVBmMfaqDTTZawGUOvHkjoZCdsvomIKxg
-         nHyQkMmLehjI0BsYKj066Et8dg6c4W7T3MwFIwjrRMj+lue6H8VTV3E8xlO+YyRSAsCN
-         9lsTn09goQEEDewohWRSF+xZEmgYmc/ZrVu74ydtuPUc8/UQutYQevGbzfJEje8MowLy
-         enNwdlcdLnQc8KR/pqyWc6thkTipreUnQ2JEFD4gFmuY4FSEUaqVAcHnzKKyuhsjnd6v
-         a6bQVmO6tvCo3q7JhAQCVbNcWXDFL86mEptBF+IJKEsyl41W0R02ATwf+l6zGSFkYVts
-         lCIA==
-X-Gm-Message-State: AOAM530z+3Thak+sa88xWhtlrg91bfEcsTRbthu4SO1+H2hKvdkljUix
-        hsKU/swEwfbO6VAEe8v7WJRrJA==
-X-Google-Smtp-Source: ABdhPJwv65aVu6kpZNGGw0N7gTXRvONlRDhXoyAUv+VgR6kFzqLSM/NP5wts15+VyzsP2RdH5A+iaA==
-X-Received: by 2002:a63:33cc:: with SMTP id z195mr669715pgz.339.1637001892769;
-        Mon, 15 Nov 2021 10:44:52 -0800 (PST)
+        bh=Y6OLQ3pmyLU/AZ8mF6RNILhOeEW50lkatnqGQxIhBPM=;
+        b=ithWbrsNXtKvLFtgZuR55bcmjsd4AMV9M7oepJMiZ+RikRat3rGh4rFzOrBflm5t/z
+         4SUSf/j9qyVRvtlhsuALLc0ax8wbc/1zVyksSmfp891pS0qSovlnLpH0VScblWyUAm+n
+         inJsfDfImn13gjZLO5grV4vJ8UhDKxy1GaGkfl0HQth7Xn0DNWNEjhASfvTHQXlUkGkw
+         M+bWEmahgNy/PMbIiEu/DnebvzHuyiUPYyNu28lbrnrG2R/01oC7dHJN3dUW5P5nHnBD
+         EAPPTukHenG7Ar+mvkAu2/wXpKwBqmCQNBAl3tF2gC1kS7jJOpRV6eC1NZEJQc1E4Hvb
+         AmRg==
+X-Gm-Message-State: AOAM533AGCuyqiq9jJPD6QtBE7NOLKxZ51hzzZEOeXiT+WsX3bjfiwxz
+        uGBgmr14didXcaS1I/K9uTnhUw==
+X-Google-Smtp-Source: ABdhPJwIFe7bp49F+hbCo4lJVLh4GeyP1ulE3zxQubU+9fPyf7wjxXFI+ZxzYa7IzMeEdwHA9OfIBA==
+X-Received: by 2002:a17:902:f24a:b0:141:c6fc:2e18 with SMTP id j10-20020a170902f24a00b00141c6fc2e18mr38537915plc.55.1637003711772;
+        Mon, 15 Nov 2021 11:15:11 -0800 (PST)
 Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id on6sm72382pjb.47.2021.11.15.10.44.51
+        by smtp.gmail.com with ESMTPSA id h10sm17329094pfc.104.2021.11.15.11.15.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 10:44:52 -0800 (PST)
-Date:   Mon, 15 Nov 2021 18:44:48 +0000
+        Mon, 15 Nov 2021 11:15:11 -0800 (PST)
+Date:   Mon, 15 Nov 2021 19:15:07 +0000
 From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
+To:     Marc Orr <marcorr@google.com>
+Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@intel.com>,
-        Peter Gonda <pgonda@google.com>, x86@kernel.org,
+        Peter Gonda <pgonda@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         linux-coco@lists.linux.dev, linux-mm@kvack.org,
         linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
@@ -72,44 +74,130 @@ Cc:     Borislav Petkov <bp@alien8.de>,
         David Rientjes <rientjes@google.com>,
         Dov Murik <dovmurik@linux.ibm.com>,
         Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
+        Michael Roth <Michael.Roth@amd.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         "Kirill A . Shutemov" <kirill@shutemov.name>,
         Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>
 Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
  Hypervisor Support
-Message-ID: <YZKqoPAoMCqPZymh@google.com>
+Message-ID: <YZKxuxZurFW6BVZJ@google.com>
 References: <20210820155918.7518-1-brijesh.singh@amd.com>
  <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
  <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com>
  <YY6z5/0uGJmlMuM6@zn.tnic>
  <YY7FAW5ti7YMeejj@google.com>
- <YY7I6sgqIPubTrtA@zn.tnic>
- <YY7Qp8c/gTD1rT86@google.com>
- <f2edf71e-f3b5-f8e3-a75e-e0f811fe6a14@amd.com>
+ <YZJTA1NyLCmVtGtY@work-vm>
+ <YZKmSDQJgCcR06nE@google.com>
+ <CAA03e5E3Rvx0t8_ZrbNMZwBkjPivGKOg5HCShSFYwfkKDDHWtA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f2edf71e-f3b5-f8e3-a75e-e0f811fe6a14@amd.com>
+In-Reply-To: <CAA03e5E3Rvx0t8_ZrbNMZwBkjPivGKOg5HCShSFYwfkKDDHWtA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Nov 15, 2021, Brijesh Singh wrote:
-> 
-> On 11/12/21 2:37 PM, Sean Christopherson wrote:
-> > This is the direction KVM TDX support is headed, though it's obviously still a WIP.
-> > 
-> 
-> Just curious, in this approach, how do you propose handling the host
-> kexec/kdump? If a kexec/kdump occurs while the VM is still active, the new
-> kernel will encounter the #PF (RMP violation) because some pages are still
-> marked 'private' in the RMP table.
++arm64 KVM folks
 
-There are two basic options: a) eagerly purge the RMP or b) lazily fixup the RMP
-on #PF.  Either approach can be made to work.  I'm not opposed to fixing up the RMP
-on #PF in the kexec/kdump case, I'm opposed to blindly updating the RMP on _all_
-RMP #PFs, i.e. the kernel should modify the RMP if and only if it knows that doing
-so is correct.  E.g. a naive lazy-fixup solution would be to track which pages have
-been sanitized and adjust the RMP on #PF to a page that hasn't yet been sanitized.
+On Mon, Nov 15, 2021, Marc Orr wrote:
+> On Mon, Nov 15, 2021 at 10:26 AM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Mon, Nov 15, 2021, Dr. David Alan Gilbert wrote:
+> > > * Sean Christopherson (seanjc@google.com) wrote:
+> > > > On Fri, Nov 12, 2021, Borislav Petkov wrote:
+> > > > > On Fri, Nov 12, 2021 at 09:59:46AM -0800, Dave Hansen wrote:
+> > > > > > Or, is there some mechanism that prevent guest-private memory from being
+> > > > > > accessed in random host kernel code?
+> > > >
+> > > > Or random host userspace code...
+> > > >
+> > > > > So I'm currently under the impression that random host->guest accesses
+> > > > > should not happen if not previously agreed upon by both.
+> > > >
+> > > > Key word "should".
+> > > >
+> > > > > Because, as explained on IRC, if host touches a private guest page,
+> > > > > whatever the host does to that page, the next time the guest runs, it'll
+> > > > > get a #VC where it will see that that page doesn't belong to it anymore
+> > > > > and then, out of paranoia, it will simply terminate to protect itself.
+> > > > >
+> > > > > So cloud providers should have an interest to prevent such random stray
+> > > > > accesses if they wanna have guests. :)
+> > > >
+> > > > Yes, but IMO inducing a fault in the guest because of _host_ bug is wrong.
+> > >
+> > > Would it necessarily have been a host bug?  A guest telling the host a
+> > > bad GPA to DMA into would trigger this wouldn't it?
+> >
+> > No, because as Andy pointed out, host userspace must already guard against a bad
+> > GPA, i.e. this is just a variant of the guest telling the host to DMA to a GPA
+> > that is completely bogus.  The shared vs. private behavior just means that when
+> > host userspace is doing a GPA=>HVA lookup, it needs to incorporate the "shared"
+> > state of the GPA.  If the host goes and DMAs into the completely wrong HVA=>PFN,
+> > then that is a host bug; that the bug happened to be exploited by a buggy/malicious
+> > guest doesn't change the fact that the host messed up.
+> 
+> "If the host goes and DMAs into the completely wrong HVA=>PFN, then
+> that is a host bug; that the bug happened to be exploited by a
+> buggy/malicious guest doesn't change the fact that the host messed
+> up."
+> ^^^
+> Again, I'm flabbergasted that you are arguing that it's OK for a guest
+> to exploit a host bug to take down host-side processes or the host
+> itself, either of which could bring down all other VMs on the machine.
+> 
+> I'm going to repeat -- this is not OK! Period.
+
+Huh?  At which point did I suggest it's ok to ship software with bugs?  Of course
+it's not ok to introduce host bugs that let the guest crash the host (or host
+processes).  But _if_ someone does ship buggy host software, it's not like we can
+wave a magic wand and stop the guest from exploiting the bug.  That's why they're
+such a big deal.
+
+Yes, in this case a very specific flavor of host userspace bug could be morphed
+into a guest exception, but as mentioned ad nauseum, _if_ host userspace has bug
+where it does not properly validate a GPA=>HVA, then any such bug exists and is
+exploitable today irrespective of SNP.
+
+> Again, if the community wants to layer some orchestration scheme
+> between host userspace, host kernel, and guest, on top of the code to
+> inject the #VC into the guest, that's fine. This proposal is not
+> stopping that. In fact, the two approaches are completely orthogonal
+> and compatible.
+> 
+> But so far I have heard zero reasons why injecting a #VC into the
+> guest is wrong. Other than just stating that it's wrong.
+
+It creates a new attack surface, e.g. if the guest mishandles the #VC and does
+PVALIDATE on memory that it previously accepted, then userspace can attack the
+guest by accessing guest private memory to coerce the guest into consuming corrupted
+data.
+
+> Again, the guest must be able to detect buggy and malicious host-side
+> writes to private memory. Or else "confidential computing" doesn't
+> work.
+
+That assertion assumes the host _hypervisor_ is untrusted, which does not hold true
+for all use cases.  The Cc'd arm64 folks are working on a protected VM model where
+the host kernel at large is untrusted, but the "hypervisor" (KVM plus a few other
+bits), is still trusted by the guest.  Because the hypervisor is trusted, the guest
+doesn't need to be hardened against event injection attacks from the host.
+
+Note, SNP already has a similar concept in it's VMPLs.  VMPL3 runs a confidential VM
+that is not hardened in any way, and fully trusts VMPL0 to not inject bogus faults.
+
+And along the lines of arm64's pKVM, I would very much like to get KVM to a point
+where it can remove host userspace from the guest's TCB without relying on hardware.
+Anything that can be in hardware absolutely can be done in the kernel, and likely
+can be done with significantly less performance overhead.  Confidential computing is
+not a binary thing where the only valid use case is removing the host kernel from
+the TCB and trusting only hardware.  There are undoubtedly use cases where trusting
+the host kernel but not host userspace brings tangible value, but the overhead of
+TDX/SNP to get the host kernel out of the TCB is the wrong tradeoff for performance
+vs. security.
+
+> Assuming that's not true is not a valid argument to dismiss
+> injecting a #VC exception into the guest.
