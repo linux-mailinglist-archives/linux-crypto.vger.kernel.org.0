@@ -2,90 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82F8453070
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Nov 2021 12:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BA645307A
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Nov 2021 12:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235004AbhKPL3t (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 16 Nov 2021 06:29:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
+        id S234961AbhKPLap (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 16 Nov 2021 06:30:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234874AbhKPL3b (ORCPT
+        with ESMTP id S234869AbhKPLaH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:29:31 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B19C061766;
-        Tue, 16 Nov 2021 03:25:35 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id b184-20020a1c1bc1000000b0033140bf8dd5so2095684wmb.5;
-        Tue, 16 Nov 2021 03:25:35 -0800 (PST)
+        Tue, 16 Nov 2021 06:30:07 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D04C061206
+        for <linux-crypto@vger.kernel.org>; Tue, 16 Nov 2021 03:26:46 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id p18so7234141wmq.5
+        for <linux-crypto@vger.kernel.org>; Tue, 16 Nov 2021 03:26:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=KIxL8pBMd//z5YINEw+kh9VMjDTIKYH5lzSpZAefCDI=;
-        b=WjtCOMMLpaA8sOhPA/0pKpG5Pjx22ssT5Zy9+XY45U6LQ7ZVk/7eaNAi4nZPfhoT09
-         7R4XhIrksJQ1CdNDDFWh1WJBhfGmzbwc+bGMwxKAC6ttM4G5LOS5AySeONbhcI1xHve/
-         X5wuPCrQR5rAfnh+sG1Yb7QziO5QrrIOxmSBH//cO0iUYtPws1fjK9ZiCNmVVEUU576H
-         haZKIcCgIglMWTisNVK3Vd9dI8GqPpvTeqoEs7+71qxDhH5oTBmrWEgUEAwUF705qJ3z
-         4uzlGH6g5wHgOjurP7ylVKCafttBGNEZBHeYJEs+g3xAJo4Rj4avxR+UE9Fy+8Z65bSl
-         5fiA==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=49VN2EPgYHrEXK97OpQX0CxGM5w7EiGtxSfN5GFh/XE=;
+        b=JHkobXVvRWKPjJgpwGctsZrNZAaUXURTmWtz1PAwkjpShtnw2xIe4IxyGotDPuzibC
+         Q5mot2AR1EdZp0YszaR3r2ybEOx2FNi+mf9boXaZtQYZk2aaSxUll9YDCw62bdI1DnLQ
+         oIH4ijYH8dimZ9b18CZOM02DemPbh5TPbp0IZQP6LRYEW6CI4vBuyYF3v6dQKruXhra0
+         ISrh3nRfCz/kgnPaZL6TX2CyZGhX8FthNY6hgTSNy87Rzf6pOs269tH9u40KOKtFP2VF
+         vmbdlhp1YbM/ub4lOMlme0/ipfqvkOa6H2ey7QjU3Yr8TVzgn7XtIn6eo6g0+GjlmkU9
+         mnhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=KIxL8pBMd//z5YINEw+kh9VMjDTIKYH5lzSpZAefCDI=;
-        b=yiEfgKW3d3TAxoGksgOH1hscOjdHkHpsxyUHCNtdy1qFZ52yosuH6wPwn7yFySqzb/
-         SD8IeZDHp+TTAev54D3qIWcjwDyq8zLCL3hxw1T1CEJj82/3ZrOUOxYSiiK/bM3CA/ii
-         DjGkNJk9tz74XBxm4nmOp3JH9x+OU4tHiQmCW6zWkhC+6W7CE1iIgwi19smIgpkvdBpb
-         WyrCiIeCv6bmE+NWkJrN1KitmjMiEifBNxnLlY+yF0Y7CZ8psSDo7+SgcjK6LWznr5IW
-         oeSVQwGJ7/uUYsLEd0hWOPiI7l5M+js1KyxwoEOSf/XAFO0Iady/SIxiyuyFbcM1NA26
-         uqxg==
-X-Gm-Message-State: AOAM533FNYTD0hF+iM6DoiyQMVY/Z7IWmrQMncau++DbnQq4zKlfbMCb
-        sD4aXmIBMCDbSRo1+XRtsvDHTl2EMVd6vg623yq7ajo4rM0=
-X-Google-Smtp-Source: ABdhPJxnbFQv1dTzlXUN67+XMFz/lUUZpvt7OlTc0tdxapNHsE53zcaflGNH6ScTj3O2csAYZxRXAeBNNWGHy7A7oNk=
-X-Received: by 2002:a7b:cf10:: with SMTP id l16mr69365510wmg.17.1637061933897;
- Tue, 16 Nov 2021 03:25:33 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=49VN2EPgYHrEXK97OpQX0CxGM5w7EiGtxSfN5GFh/XE=;
+        b=E4dWEZ1HFDLTEeizAG1e9Sau3oLUqXVQFyIATGPqimRb8rzAHdHig0oj7KlTFe3o4p
+         66wCo37ThuTmsLKzFun5lawZ9xSpx3Y3RSyzpNmpyla+x3JMqgbvQVi4SjrqMErmHaQS
+         uklSAun8wQMOZEIqBK55g0o1+6r11fWxOThAnaEpCYqmVcKExaAx1dIdSnTBa2gNKU1p
+         L7Zqr+3OPTh+xcafflLNimuobkfjbaoZT/bAnpJxtYh5OqW51JU00MX06x6y9BA6K68Y
+         Uq3rGpsD6Gl+howGHkZ2aa3Zb7W2OCfIG97DOghlrGClN/j9C/oy2Fr48ELQr6McQfVg
+         58ZQ==
+X-Gm-Message-State: AOAM530D18yYAgGy1cFTmcH8X2s5P3a9lyglrj0KQ2d2bpL8zw0Lf3QT
+        YSwzJRq3Gy/miuT2N2CRoQjsk3d4XDJhy6rhIJk=
+X-Google-Smtp-Source: ABdhPJxY17HC6nmGOHWE6iqbA8wRJP0vZMHkpbaBLpxjBs8AHHbhGKQYmexWpwcaaXI+7XwIdfO/LY/kc1YAwclgHr0=
+X-Received: by 2002:a1c:f213:: with SMTP id s19mr68487015wmc.169.1637062003979;
+ Tue, 16 Nov 2021 03:26:43 -0800 (PST)
 MIME-Version: 1.0
-From:   Sandy Harris <sandyinchina@gmail.com>
-Date:   Tue, 16 Nov 2021 19:25:22 +0800
-Message-ID: <CACXcFm=kwziZ5Etdevu0uq_t5qy0NbGY753WfLvnwkMqtU9Tvg@mail.gmail.com>
-Subject: [PATCH 1/8] Replace memset() with memzero_explicit()
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Received: by 2002:a05:600c:3b97:0:0:0:0 with HTTP; Tue, 16 Nov 2021 03:26:43
+ -0800 (PST)
+Reply-To: ebodrdickson1020@gmail.com
+From:   "Dr.Dickson Ebo" <drdicksonelo1023@gmail.com>
+Date:   Tue, 16 Nov 2021 03:26:43 -0800
+Message-ID: <CABq-xD5cMc7YDaqm-jE=T02sHTTAJFwPRjYALiWxVYa2NbnX+Q@mail.gmail.com>
+Subject: hello
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Replace memset(address,0,bytes) which may be optimised away
-with memzero_explicit(address,bytes) which resists
-such optimisation
+Finance and Audit Department, Zenith Bank Plc.
 
----
- crypto/des_generic.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The President of the Federal Republic of Nigeria through the Zenith
+International Bank Nigeria PLC has released your
+Contract/Inheritance/Compensation Fund.
 
-diff --git a/crypto/des_generic.c b/crypto/des_generic.c
-index c85354a5e94c..105a32e7afea 100644
---- a/crypto/des_generic.c
-+++ b/crypto/des_generic.c
-@@ -30,7 +30,7 @@ static int des_setkey(struct crypto_tfm *tfm, const u8 *key,
-             err = 0;
-     }
-     if (err)
--        memset(dctx, 0, sizeof(*dctx));
-+        memzero_explicit(dctx, sizeof(*dctx));
-     return err;
- }
+Kindly get back to us as soon as possible.
 
-@@ -62,7 +62,7 @@ static int des3_ede_setkey(struct crypto_tfm *tfm,
-const u8 *key,
-             err = 0;
-     }
-     if (err)
--        memset(dctx, 0, sizeof(*dctx));
-+        memzero_explicit(dctx, sizeof(*dctx));
-     return err;
- }
-
---
+Yours faithfully,
+Dr. Dickson Ebo.
