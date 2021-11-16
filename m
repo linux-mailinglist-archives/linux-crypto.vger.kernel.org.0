@@ -2,123 +2,116 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAA1452222
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Nov 2021 02:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D04C74528C8
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Nov 2021 04:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351394AbhKPBKK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Nov 2021 20:10:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        id S235537AbhKPDyp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 Nov 2021 22:54:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245132AbhKOTTc (ORCPT
+        with ESMTP id S235506AbhKPDyo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:19:32 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C06C0386CA
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 10:10:48 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id x43-20020a056830246b00b00570d09d34ebso15368923otr.2
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 10:10:48 -0800 (PST)
+        Mon, 15 Nov 2021 22:54:44 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3BDC1A2993
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 16:31:10 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id 200so16035717pga.1
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Nov 2021 16:31:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=btXP5JTOTPHN2wBCk/VjqAMkewryvyIZIdcv+nbDmjs=;
-        b=KFeET7Jo1zA/GLeNPXLNhLjW4GX0S6rNhH8crHvhvla+DjueTpwSw5iF9onmZhMU9U
-         L0TJbxv9B85FBo1rztKCQARvrlLxO1EPlOuS5DNmtX3uwAJezbb+oDBMZuylRANWbUfb
-         WL4s4i4FGldWsdq8g8HvmZUDRFg7eJFE8JnQITAd2WSFuuYb6Oasun9CD2yHY7GfUr8C
-         HTpFSjPJPCGefDJE8i+K/58Ccq0yEPlwFXXds4//i1UEl3XfUxlo/tHnVfLJyu8maid6
-         6hXMppAVCA2WE36IwlazSwxpQfgxWXam5ezKWFxLRXOUYdxJZM7HplXaFG8ZSytzUCXH
-         /D+g==
+        bh=zUAbk3pYDxq1bSuJItD74NAh/MbYUz0fiMi2jjsqIPc=;
+        b=jkN0+anUkVZEafZbns3mnQH3BOzdPE6stTt8SrDHZFGkz5SQGDyxTuScjmOkAtjtG9
+         AT2XFauNYqbJ3Hv+WUTHMAUTNsTes+od+8KqsU/GEVyVgjrYYw/xt4G0TAF8HM1LcPVm
+         2WJe85H3kQUjZSV8Rb5yVnjCooZk+xWNu9wek=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=btXP5JTOTPHN2wBCk/VjqAMkewryvyIZIdcv+nbDmjs=;
-        b=W4RnXMe7CX/kAprzRKnb8GMHD1vR5n0Tyy7lwgAkdwsGwIK0ZamZUHqwwOVtIroUUn
-         kgFB7OXjN6pL2n7T/4k7TEgaiNbYvGOmx6Wq+aDUU8U2Kpkzd+wFfMAVm5zHtcpAhg4g
-         oSMxON/7Vr8Is+FmoajXQ3V3ed+9G7Mbz9WA1J+bO97tvxTKBLI+cqvwjP+zU4ukUSlf
-         oIRW4H4awmfeuizo7UjqlCfvYi21dJmCKdlHx6Qsj9FidwQ2Z8u655rlxBhYWifETvNj
-         FCaEaE6y16Ufz6hCj4bMP2Pm7gUF64KdQwlVYE/46F9WjF8fXPpn+24C6TvpxAY59wUk
-         TStA==
-X-Gm-Message-State: AOAM533gbzDYfzizMmizrQHzRABjp+N65KMuVBSAfEsFm2AYUquUp80I
-        tUhcpsojokhmQtzYjvxUGh4MMQ==
-X-Google-Smtp-Source: ABdhPJwvZP5w9iunnbVacXS+t5Qx3X/+MhKg+S8e/AkaARLNqNF8AI5kwj0o3zSAz8HdWkU64r1Diw==
-X-Received: by 2002:a05:6830:3155:: with SMTP id c21mr764093ots.183.1636999848157;
-        Mon, 15 Nov 2021 10:10:48 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id n23sm3309780oic.26.2021.11.15.10.10.47
+        bh=zUAbk3pYDxq1bSuJItD74NAh/MbYUz0fiMi2jjsqIPc=;
+        b=RYiqPnD+WTii/r6m8K0xFQR9QjIwv6tTvAsu2Rb6g+R03bY2DoT0ANaNpZgwMW9s9h
+         6ISM3nPEcbcOIoQ+duoqq8ufw4kNsda2OeNo4xjW7aZcGn/HT3Bgy/WL7AJRJIgBe/FL
+         y+DID31mdUzKwrQ/hum409bc3OJA4mQSD+xUs/zGOIQi/t6XBunrHrKeSt39LQ/oGSed
+         N9domuWuGPBYBkhCSE2FJVDiD37JqIEZHRb+EWnWbYJkaLzwRoPK67Zew4rUU4bm7ePM
+         yn/DZ2XCemhTW5wBOe5gCYFNNDyZG4UyqDzkXu3+gpvvtQLoHN7I/MbB7h2oMRVkDwQ6
+         gTJQ==
+X-Gm-Message-State: AOAM530DawJ5yR33Ph01LjKs/SDr5AS8dDSXRUQyDQdtq5EvhquOxbyJ
+        tY7GcIZ0SvOCy8zJ7gIwyDFLew==
+X-Google-Smtp-Source: ABdhPJxDrEb7NedduOiss/lXzBJfLpYZT+5k0kObH71YXHTZztaI+VVMmjTV988TJQv8GS02GfUMPA==
+X-Received: by 2002:a05:6a00:1945:b0:44c:a955:35ea with SMTP id s5-20020a056a00194500b0044ca95535eamr36094903pfk.85.1637022670112;
+        Mon, 15 Nov 2021 16:31:10 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h21sm12755848pgk.74.2021.11.15.16.31.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 10:10:47 -0800 (PST)
-Date:   Mon, 15 Nov 2021 12:10:42 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>
-Subject: Re: [PATCH v5 17/22] crypto: qce: Print a failure msg in case
- probe() fails
-Message-ID: <YZKiovE1D9t17TVe@builder.lan>
-References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
- <20211110105922.217895-18-bhupesh.sharma@linaro.org>
+        Mon, 15 Nov 2021 16:31:09 -0800 (PST)
+Date:   Mon, 15 Nov 2021 16:31:09 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Rob Clark <robdclark@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Hector Martin <marcan@marcan.st>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-ntfs-dev@lists.sourceforge.net,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Subject: Re: Build regressions/improvements in v5.16-rc1
+Message-ID: <202111151624.91EDCFF7@keescook>
+References: <20211115155105.3797527-1-geert@linux-m68k.org>
+ <CAMuHMdUCsyUxaEf1Lz7+jMnur4ECwK+JoXQqmOCkRKqXdb1hTQ@mail.gmail.com>
+ <YZKOce4XhAU49+Yn@elver.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211110105922.217895-18-bhupesh.sharma@linaro.org>
+In-Reply-To: <YZKOce4XhAU49+Yn@elver.google.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed 10 Nov 04:59 CST 2021, Bhupesh Sharma wrote:
-
-> Print a failure message (dev_err) in case the qcom qce crypto
-> driver probe() fails.
+On Mon, Nov 15, 2021 at 05:44:33PM +0100, Marco Elver wrote:
+> On Mon, Nov 15, 2021 at 05:12PM +0100, Geert Uytterhoeven wrote:
+> [...]
+> > >   + /kisskb/src/include/linux/fortify-string.h: error: call to '__read_overflow' declared with attribute error: detected read beyond size of object (1st parameter):  => 263:25, 277:17
+> > 
+> >     in lib/test_kasan.c
+> > 
+> > s390-all{mod,yes}config
+> > arm64-allmodconfig (gcc11)
 > 
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->  drivers/crypto/qce/core.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> index 98784d63d78c..7c90401a2ef1 100644
-> --- a/drivers/crypto/qce/core.c
-> +++ b/drivers/crypto/qce/core.c
-> @@ -280,6 +280,7 @@ static int qce_crypto_probe(struct platform_device *pdev)
->  err_mem_path_disable:
->  	icc_set_bw(qce->mem_path, 0, 0);
->  err:
-> +	dev_err(dev, "%s failed : %d\n", __func__, ret);
+> Kees, wasn't that what [1] was meant to fix?
+> [1] https://lkml.kernel.org/r/20211006181544.1670992-1-keescook@chromium.org
 
-There's two possible outcomes of this style of error logging:
+[1] fixed the ones I found when scanning for __write_overflow(). [2]
+fixed some others, so it's possible there are yet more to fix?
 
-1) You came through a code path with a specific error message, so you
-will have something that will say:
+Taking a look at Linus's tree, though, the "263" and "277" lines don't
+line up correctly. I'll go see if I can reproduce this. Is this with
+W=1?
 
-qce: Some useful error text
-qce: qce_crypto_probe failed: -22
+-Kees
 
-2) You came through a code path without a specific error message:
-
-qce: qce_crypto_probe failed: -22
+[2] https://www.ozlabs.org/~akpm/mmotm/broken-out/kasan-test-consolidate-workarounds-for-unwanted-__alloc_size-protection.patch
 
 
-In the first case the second line is just pure spam, in the second case
-the bare -22 is typically completely useless - given that there tend to
-be just a few commonly used errno values coming from multiple possible
-error sources.
-
-As such, no thanks. If you have an error case in qce_crypto_probe() that
-doesn't have a good, useful, error message, please fix that.
-
-Regards,
-Bjorn
-
->  	return ret;
->  }
->  
-> -- 
-> 2.31.1
-> 
+-- 
+Kees Cook
