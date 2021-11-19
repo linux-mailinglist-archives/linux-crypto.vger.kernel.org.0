@@ -2,106 +2,127 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A71456BAF
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 Nov 2021 09:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E582457319
+	for <lists+linux-crypto@lfdr.de>; Fri, 19 Nov 2021 17:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhKSIcX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 19 Nov 2021 03:32:23 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:33963 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231271AbhKSIcX (ORCPT
+        id S236527AbhKSQih (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 19 Nov 2021 11:38:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236525AbhKSQih (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 19 Nov 2021 03:32:23 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 76BAE5C0103;
-        Fri, 19 Nov 2021 03:29:21 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 19 Nov 2021 03:29:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=LW/p0wyoCcIJog59YYQV//3Akj0
-        rWF+oNpGoc/GozLo=; b=gIispYTY6e+7QaxE5wpdCJnEYr/NIkLBOjnK1D/0p0U
-        mUWvYkXRXnOsj/dG2e5vbJ5t4z3xSRKC6ac4unew1aBioOAtcOJQlun6/Wh30ls6
-        a9Y66DR6y8IJ/z5C2WYPMmztF7SmQgCtOnB1ks8w//BG3JXQE6qEskJh2TJy+/UP
-        5Z86fWuiHUirauZUQZC0qASsOi8xtg6215eoD20mEIfWJmtfAScv5VTp7EQ10RcW
-        etp22l5UMs6f22giprSZZh/YQ/bDDPyzIXCE+DFOx1SAvixX1RzPk7rlrF7tkNeW
-        rnEFLZbYU50IKWIxZ+U4KKZ1Wewoihd+qE+dVGiBm3g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=LW/p0w
-        yoCcIJog59YYQV//3Akj0rWF+oNpGoc/GozLo=; b=hwI+NaioJIwamB4b5IZrCi
-        XRId1VIy9G7gP3O6C43GC+Q2dVW+0JRzI/Pij/LWogvDqjb7uxgDFIU3K6SSU7ND
-        qcjuorXbc7hoxPVFSZrFWnjG5d8wx0Lg1yosG2ztmU9AQoaCD3cE2GNsp/sGlbys
-        Gv9Xq/AD4SWdJqUy/cUQ+f2cBc+ZKzj4JIA7J1UO17rfMpt0l17ipFPSJh915rx6
-        M049RDPUuhIZTXhrQNInhwB7LWHBQUwJsnqqn1n2HStGpfWCN0RGNMiFkSm0U0ou
-        qO+ghkKC846MA5WdbIv+FXyOtH7ov/oCgY39YTWrOCf+Jhum87Nb/tP3m65pgBBQ
-        ==
-X-ME-Sender: <xms:YGCXYRcT8UvME9qz4tK6yFVQy3PtDhnggv1pxEDG1DtQ6Z0WiMi44A>
-    <xme:YGCXYfPm9b8CO1EylbabEBj5uTX4IsYdnpMT7oOPwNSwD6C265TCfyhxKhRvaadPa
-    b7S5NNR0kk2Nc3cap8>
-X-ME-Received: <xmr:YGCXYaj_lUIZIFF99s1vm_PMvpCM_aWSJgAoPROfrDUC4d93hALSWltaKSIeXaq8umkZwLUriM8JX7dDKBKAQ8hgrKFYKp5vJf2cgJ-E4JU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeejgdduudekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:YGCXYa82UsGR1WsrywHQucvPPwIT6DT6zY3sKuME4tgtyy56KVKVyg>
-    <xmx:YGCXYdtGupRHGCTYWfTaMwINBJrq3fO-JhaCrAFTQlYIJmnbkHR6SQ>
-    <xmx:YGCXYZGJw2uhm5nAIVQIxH9mqBF6xazB8Ed36ZZn1pzUkm0T-4ZcVw>
-    <xmx:YWCXYTAi5COVehX8pG2sv6FyJdRdzS25DoGpC935sP4mu7t30r3EQw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Nov 2021 03:29:20 -0500 (EST)
-Date:   Fri, 19 Nov 2021 09:29:19 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: sun8i-ce: Add compatible for D1
-Message-ID: <20211119082919.k4r7ln4jfseqblcr@gilmour>
-References: <20211119051026.13049-1-samuel@sholland.org>
+        Fri, 19 Nov 2021 11:38:37 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DF8C061574
+        for <linux-crypto@vger.kernel.org>; Fri, 19 Nov 2021 08:35:35 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id l19so10837643ilk.0
+        for <linux-crypto@vger.kernel.org>; Fri, 19 Nov 2021 08:35:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=eibhgHyEnDty6prD7kw2qZTGk1uH223Sz/QXKL+fHLw=;
+        b=LEdjIZjniznzB6AYSBnBUqx7THOf1HNWrafFIgWZzZ2DTCJySocHaTQU+DEIReZtcC
+         /Dm10aYbgF0RcoZPvoyA6OMOhxDeGKtuNyifq8EHS+oL7ZuwXxQZReSLtjHVOERheFiA
+         NvtJy4BUWYI4HzWmWcNnLBn6yDr5WnVAH/XRmzYXule8vb7WM70tcL5GloFXf339m+xM
+         apnDjxnJ9toLLoIq3CA0msnCcFqeDVdnGMIgukJvLAxHZvTLHybsCN5aeWqaRaW8Bvuc
+         FcZCDoMEWzkvUqaEWd8sw24FF909KPHd9gb8yRb5ZfFGjZ5eP75ABr2v+6ZH5lkWP9gq
+         ItQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=eibhgHyEnDty6prD7kw2qZTGk1uH223Sz/QXKL+fHLw=;
+        b=7X3YoQWfWdwBs+lxFmfgF828iReyRyG/WFmTB+sfhyddD9dQYnxHCfKb6FYSUu2CHo
+         cgxIhmEgl+iNL8obv+452BKGmBo1aWju0eLgt5m6MxKRCPprxi6bvW3tr0LHJJw4TLz6
+         gmluusGOfPNhUYyF7fwAl3T8n7OaWjgPZftVGQgWaRs8/naoYj0vTmAQhq81e/1OqQCk
+         onWskjnJtbbfwAguAxcatu59kiyY03Lqd+XD1aztSZM0Qf83HQJwUrUi3ATn4JhY8u+m
+         Zjz3PBCOMZpureq9fKE0rpO4868sQXSLN9BpjwUp5FyKF95SOq/9SUV/UElobgtzVr/T
+         sgpA==
+X-Gm-Message-State: AOAM53049aSc2SnhykpfeTVs4eRBxSyRUC/iuTqAYQO+gIVD8QiCjMMK
+        ikA9uetQR+Zmx9fGkYnOX2bF3WrAwh7OX4+wpbI=
+X-Google-Smtp-Source: ABdhPJwrrvG5Pxxj/SCfjtC789LGfNgnF+Sc3e1k8s3nGKuCtcCPHhtUJ8qWFCh+knjTu13erW33Mdd5o4WF6Js9JWI=
+X-Received: by 2002:a05:6e02:1066:: with SMTP id q6mr5459562ilj.263.1637339734666;
+ Fri, 19 Nov 2021 08:35:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lmxak3wlnqlumgug"
-Content-Disposition: inline
-In-Reply-To: <20211119051026.13049-1-samuel@sholland.org>
+Received: by 2002:a05:6622:2749:0:0:0:0 with HTTP; Fri, 19 Nov 2021 08:35:34
+ -0800 (PST)
+Reply-To: msbelinaya892@gmail.com
+From:   msbelinaya <deligiozelenadeligioz@gmail.com>
+Date:   Fri, 19 Nov 2021 16:35:34 +0000
+Message-ID: <CAHeiC3S9AN4s9KjeBaaVL7q4o9+bERcx+r0YACHLE++bvKEjcg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Ich biete meine Freundschaft an und glaube, dass Sie mich mit gutem
+Herzen akzeptieren werden. Ich wurde gedr=C3=A4ngt, Sie zu kontaktieren und
+zu sehen, wie wir einander am besten unterst=C3=BCtzen k=C3=B6nnen. Ich bin=
+ Frau
+Kodjovi Hegbor aus der T=C3=BCrkei und arbeite als Divisionsleiterin f=C3=
+=BCr
+Operationen bei der StandardBNP bank limited Turkey . Ich glaube, es
+ist der Wille Gottes, dass ich Ihnen jetzt begegnen werde. Ich habe
+ein wichtiges gesch=C3=A4ftliches Gespr=C3=A4ch, das ich mit Ihnen teilen
+m=C3=B6chte, von dem ich glaube, dass es Sie interessiert, da es mit Ihrem
+Nachnamen in Verbindung steht und Sie davon profitieren werden.
 
---lmxak3wlnqlumgug
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ Im Jahr 2006 hat ein B=C3=BCrger Ihres Landes ein Nicht-Residentenkonto
+f=C3=BCr 36 Monate des Kalenders im Wert von =C2=A38.400.000,00 bei meiner =
+Bank
+eingerichtet. Das Ablaufdatum f=C3=BCr diesen Einlagenvertrag war der 16.
+Januar 2009. Leider starb er w=C3=A4hrend einer Gesch=C3=A4ftsreise bei ein=
+em
+t=C3=B6dlichen Erdbeben am 12. Mai 2008 in Sichuan, China, bei dem
+mindestens 68.000 Menschen ums Leben kamen.
 
-On Thu, Nov 18, 2021 at 11:10:24PM -0600, Samuel Holland wrote:
-> D1 has a crypto engine similar to the one in other Allwinner SoCs.
-> Like H6, it has a separate MBUS clock gate.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+Das Management meiner Bank hat noch nichts von seinem Tod erfahren,
+ich wusste davon, weil er mein Freund war und ich sein Kontof=C3=BChrer
+war, als das Konto vor meiner Bef=C3=B6rderung er=C3=B6ffnet wurde. Jedoch =
+Herr
+ erw=C3=A4hnte bei der Kontoer=C3=B6ffnung keine n=C3=A4chsten Verwandten/E=
+rben, und
+er war nicht verheiratet und hatte keine Kinder. Letzte Woche hat
+meine Bankdirektion mich gebeten, Anweisungen zu geben, was mit seinen
+Geldern zu tun ist, wenn der Vertrag verl=C3=A4ngert werden soll.
 
-Acked-by: Maxime Ripard <maxime@cerno.tech>
+Ich wei=C3=9F, dass dies passieren wird, und deshalb habe ich nach einem
+Mittel gesucht, um mit der Situation umzugehen, denn wenn meine
+Bankdirektoren wissen, dass sie tot sind und keinen Erben haben,
+werden sie das Geld f=C3=BCr ihren pers=C3=B6nlichen Gebrauch nehmen, also =
+Ich
+m=C3=B6chte nicht, dass so etwas passiert. Das war, als ich Ihren Nachnamen
+sah, ich war gl=C3=BCcklich und suche jetzt Ihre Mitarbeit, um Sie als Next
+of Kin/Erbe des Kontos zu pr=C3=A4sentieren, da Sie den gleichen Nachnamen
+wie er haben und meine Bankzentrale das Konto freigeben wird f=C3=BCr dich.
+Es besteht kein Risiko; die Transaktion wird im Rahmen einer legitimen
+Vereinbarung ausgef=C3=BChrt, die Sie vor Rechtsverletzungen sch=C3=BCtzt.
 
-Maxime
+Es ist besser, dass wir das Geld beanspruchen, als es den
+Bankdirektoren zu erlauben, es zu nehmen, sie sind bereits reich. Ich
+bin kein gieriger Mensch, daher schlage ich vor, dass wir das Geld zu
+gleichen Teilen teilen, 50/50% auf beide Parteien. Mein Anteil wird
+mir helfen, mein eigenes Unternehmen zu gr=C3=BCnden und den Erl=C3=B6s f=
+=C3=BCr
+wohlt=C3=A4tige Zwecke zu verwenden, was mein Traum war.
 
---lmxak3wlnqlumgug
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYZdgXgAKCRDj7w1vZxhR
-xaDTAP9Y0zp+1nrtorIbXYFgevtVz8+kCmHvzv6r4091HP92twEAyCcQwpl3NTQe
-Rb74BF/TcPGlUR07Tyzg2LurLRFpRgw=
-=GvEZ
------END PGP SIGNATURE-----
-
---lmxak3wlnqlumgug--
+Teilen Sie mir Ihre Meinung zu meinem Vorschlag mit, bitte ich brauche
+wirklich Ihre Hilfe bei dieser Transaktion. Ich habe Sie ausgew=C3=A4hlt,
+um mir zu helfen, nicht durch mein eigenes Tun, meine Liebe, sondern
+durch Gott wollte ich, dass Sie wissen, dass ich mir Zeit zum Beten
+genommen habe =C3=BCber diese Mitteilung, bevor ich Sie jemals kontaktiert
+habe, teilen Sie mir Ihre Meinung dazu mit und behandeln Sie diese
+Informationen bitte als STRENG GEHEIM. Nach Erhalt Ihrer Antwort,
+ausschlie=C3=9Flich =C3=BCber meine pers=C3=B6nliche E-Mail-Adresse,
+msbelinaya892@gmail.com
+gibt Ihnen Details zur Transaktion. Und eine Kopie der
+Einlagenbescheinigung des Fonds sowie die Gr=C3=BCndungsurkunde der
+Gesellschaft, die den Fonds erstellt hat.
+Gott segne, in Erwartung Ihrer dringenden Antwort
+Mit freundlichen Gr=C3=BC=C3=9Fen
+Frau Kodjovi Hegbor
+msbelinaya892@gmail.com
