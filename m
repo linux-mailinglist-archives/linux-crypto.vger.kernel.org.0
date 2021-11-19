@@ -2,152 +2,112 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352F7456968
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 Nov 2021 06:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12041456A96
+	for <lists+linux-crypto@lfdr.de>; Fri, 19 Nov 2021 07:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbhKSFNg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 19 Nov 2021 00:13:36 -0500
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:36941 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229675AbhKSFNe (ORCPT
+        id S232967AbhKSHCb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 19 Nov 2021 02:02:31 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:14448 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232523AbhKSHC2 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 19 Nov 2021 00:13:34 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id 6B1092B01143;
-        Fri, 19 Nov 2021 00:10:32 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 19 Nov 2021 00:10:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=958dHVlrtoqnp
-        /Is71jDQ6iJUv3oa+p7GUL7loCPVBk=; b=RBqKS3zUFnqRpg6Gnh9wsyg4Zb21r
-        uJojl9pmATjalSNUxDI0RHt+oYUAdJe1zFVEw2j48z7m0aUPrGjP+Y0URCm9Fd0Q
-        RsDK+TVwu9fgwrXAAj0raNYsO5dTQ6tDS1SfyAvm2YHWIUbk0XCp0uQgLyWO6NEE
-        2oCJYMUNTAm6CarYNZzEDOiO4FYQ2I48Uk3WGrXYT9fFFAoA+1c+RJvDNYYtA34M
-        WgJ6jwAg6pcKRL6mbf0pf3ABOkWLN/SjpsFOCWAtKjPhRJ5A9zfAFrTplaDU8rlK
-        63SJWLzgQS62NwxvlQVKNoIeypNmhEj7TTBdknYImWz2+Kz2corfEFgQg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=958dHVlrtoqnp/Is71jDQ6iJUv3oa+p7GUL7loCPVBk=; b=YONPrywN
-        v2hI2LsgbO7JOWWEF0Snp2LEumDr5/upUTvJliu3AQaC02Mv+q0flJCnz5l8KkY/
-        NK5c8leAGVY6KnFVXenZ4C1vMkB6Ld16eQZOZHTpQ0xO3VDLS4yt+1bv4ydDXwlO
-        EOa2dLIgb1c24cOQjF9n4BYsuzBI5lrYMF+XgmjozXB4omHyhAQx0TXg8H1M1P/h
-        +PTSaxLknuLHtf4wN01LlaQEf1zQvD80k6R2tOuOhP6DKePKxNVc1TOKj9Ex/MJg
-        w3nl7uElcLkqMnamvt7LDFo0b7EDLzigXVAmi1WGtxgoqzQnXwqvI3nes2Ytpdh1
-        17xsC/4LQCxcmA==
-X-ME-Sender: <xms:xzGXYY-F566_eTJpfU7_jSNXdyYMnvXc3B14mq9OcYcYVEm7scdP-A>
-    <xme:xzGXYQt0XOR-VO-sad2uDiF1i2G7i8GXK3zD4dr_6zHphWL51ILt-6x67ptUnhm3K
-    tVgrxb317AmBNIYWA>
-X-ME-Received: <xmr:xzGXYeCiI8eqfWKWLNqyeykBJ6RbDkDIjXAZBAVURebmsIEiWW_9uP8u0Hf19N4m7Sl1XX7_VN0HAMR29ltwFxJ_e5c_eOVDf1iOPx8AmWxC_Yx5W_LPRDp7EnQk-OV1LFHVDg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeejgdejlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
-    ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
-    grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
-    jeehueeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:xzGXYYcF5XlCSAxr-xM6PsmP3juriKsu9FUMAU5fvzjWTEYi1JOUHw>
-    <xmx:xzGXYdNoMhAXrwZlyCoa8Mu0KUI_tPjTkVzfXE5gW88WMmhfI1-VJw>
-    <xmx:xzGXYSnQDk37zgSac3pbyfNaxBZObso3aA9c7aQXs8JIkKlD9holaQ>
-    <xmx:yDGXYQqWcvu4G1aNR8AHdaAs1mIpqZEfTddBrz5GUj3GPkWsaMW0vEUjpLA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Nov 2021 00:10:30 -0500 (EST)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-sunxi@lists.linux.dev, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH 2/2] crypto: sun8i-ce: Add support for the D1 variant
-Date:   Thu, 18 Nov 2021 23:10:25 -0600
-Message-Id: <20211119051026.13049-2-samuel@sholland.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211119051026.13049-1-samuel@sholland.org>
-References: <20211119051026.13049-1-samuel@sholland.org>
+        Fri, 19 Nov 2021 02:02:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637305165;
+    s=strato-dkim-0002; d=chronox.de;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=kZAaIDsfZBiixiGkfImYztcXIyeoEl1um0RYkvsN28E=;
+    b=jH1xxBdj9ZM0qcOLfFO7UlL40qy+oSQRZe6bWFjqt98WPXCSybgL3xD5Nfz1L7wNYu
+    HQII0SQxAps0I67U6G2uC9uxZUz8YZZvQP86DuWisySHCUnwQQJnceChD3YTHwJ1YBgv
+    hXhulpt1T6yY83yX6yohfQ0bbs7nby0aldZagNuDglF8V8v2prCrzc8mbH5F4xMQivl9
+    pxbEorQr/2vBme8pvafeltkT10xzA+u1VpYo0CFPMmSIQvqWCgsf2KI3BZlXU/sxTM7x
+    TMRKt/hOWdmO/njJxz6EoZgkHfNN5ps4Ru3P2qM6PAvW+pdx+bt51eyevGWIZHMmuZXJ
+    chqQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPZJ/SWpaI="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
+    with ESMTPSA id U02dfbxAJ6xOu44
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 19 Nov 2021 07:59:24 +0100 (CET)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     herbert@gondor.apana.org.au
+Cc:     ebiggers@kernel.org, jarkko@kernel.org,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        dhowells@redhat.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        simo@redhat.com
+Subject: [PATCH v4 0/4] Add SP800-108 KDF implementation to crypto API
+Date:   Fri, 19 Nov 2021 07:55:03 +0100
+Message-ID: <4642773.OV4Wx5bFTl@positron.chronox.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Corentin Labbe <clabbe.montjoie@gmail.com>
+Hi,
 
-The Allwinner D1 SoC has a crypto engine compatible with sun8i-ce.
-Add support for it.
+The key derviation functions are considered to be a cryptographic
+operation. As cryptographic operations are provided via the kernel
+crypto API, this patch set consolidates the SP800-108 KDF
+implementation into the crypto API.
 
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
+If this patch is accepted, another patch set will be published attempting
+to move the HKDF implementation from the crypto file system code base
+to the kernel crypto API.
 
- .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 21 +++++++++++++++++++
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h  |  1 +
- 2 files changed, 22 insertions(+)
+The KDF implementation is provided as service functions. Yet, the
+interface to the the provided KDF is modeled such, that additional
+KDF implementation can use the same API style. The goal is to allow
+the transformation from a service function into a crypto API template
+eventually.
 
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-index 00194d1d9ae6..d8623c7e0d1d 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-@@ -106,6 +106,24 @@ static const struct ce_variant ce_a64_variant = {
- 	.trng = CE_ID_NOTSUPP,
- };
- 
-+static const struct ce_variant ce_d1_variant = {
-+	.alg_cipher = { CE_ALG_AES, CE_ALG_DES, CE_ALG_3DES,
-+	},
-+	.alg_hash = { CE_ALG_MD5, CE_ALG_SHA1, CE_ALG_SHA224, CE_ALG_SHA256,
-+		CE_ALG_SHA384, CE_ALG_SHA512
-+	},
-+	.op_mode = { CE_OP_ECB, CE_OP_CBC
-+	},
-+	.ce_clks = {
-+		{ "bus", 0, 200000000 },
-+		{ "mod", 300000000, 0 },
-+		{ "ram", 0, 400000000 },
-+		},
-+	.esr = ESR_D1,
-+	.prng = CE_ALG_PRNG,
-+	.trng = CE_ALG_TRNG,
-+};
-+
- static const struct ce_variant ce_r40_variant = {
- 	.alg_cipher = { CE_ALG_AES, CE_ALG_DES, CE_ALG_3DES,
- 	},
-@@ -192,6 +210,7 @@ int sun8i_ce_run_task(struct sun8i_ce_dev *ce, int flow, const char *name)
- 			dev_err(ce->dev, "CE ERROR: keysram access error for AES\n");
- 		break;
- 	case ESR_A64:
-+	case ESR_D1:
- 	case ESR_H5:
- 	case ESR_R40:
- 		v >>= (flow * 4);
-@@ -990,6 +1009,8 @@ static const struct of_device_id sun8i_ce_crypto_of_match_table[] = {
- 	  .data = &ce_h3_variant },
- 	{ .compatible = "allwinner,sun8i-r40-crypto",
- 	  .data = &ce_r40_variant },
-+	{ .compatible = "allwinner,sun20i-d1-crypto",
-+	  .data = &ce_d1_variant },
- 	{ .compatible = "allwinner,sun50i-a64-crypto",
- 	  .data = &ce_a64_variant },
- 	{ .compatible = "allwinner,sun50i-h5-crypto",
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-index cec781d5063c..624a5926f21f 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-@@ -94,6 +94,7 @@
- #define ESR_R40	2
- #define ESR_H5	3
- #define ESR_H6	4
-+#define ESR_D1	5
- 
- #define PRNG_DATA_SIZE (160 / 8)
- #define PRNG_SEED_SIZE DIV_ROUND_UP(175, 8)
+The KDF executes a power-on self test with test vectors from commonly
+known sources.
+
+Tbe SP800-108 KDF implementation is used to replace the implementation
+in the keys subsystem. The implementation was verified using the
+keyutils command line test code provided in
+tests/keyctl/dh_compute/valid. All tests show that the expected values
+are calculated with the new code.
+
+Changes v3 to v4:
+* SP800-108 KDF kernel configuration parameter is not user selectable
+  as suggested by Eric Biggers
+* update the error code path for the self test handling to mirror
+  testmgr.c as suggested by Eric Biggers
+* further cleanup in kdf_alloc as suggested by Mat Martineau
+
+Changes v2 to v3:
+
+* port to kernel 5.16-rc1
+* remove the HKDF patch to only leave the SP800-108 patch
+
+Stephan Mueller (4):
+  crypto: Add key derivation self-test support code
+  crypto: add SP800-108 counter key derivation function
+  security: DH - remove dead code for zero padding
+  security: DH - use KDF implementation from crypto API
+
+ crypto/Kconfig                         |   4 +
+ crypto/Makefile                        |   5 +
+ crypto/kdf_sp800108.c                  | 153 +++++++++++++++++++++++++
+ include/crypto/internal/kdf_selftest.h |  71 ++++++++++++
+ include/crypto/kdf_sp800108.h          |  61 ++++++++++
+ security/keys/Kconfig                  |   2 +-
+ security/keys/dh.c                     | 130 ++++-----------------
+ 7 files changed, 315 insertions(+), 111 deletions(-)
+ create mode 100644 crypto/kdf_sp800108.c
+ create mode 100644 include/crypto/internal/kdf_selftest.h
+ create mode 100644 include/crypto/kdf_sp800108.h
+
 -- 
-2.32.0
+2.33.1
+
+
+
 
