@@ -2,183 +2,69 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169E3457B4E
-	for <lists+linux-crypto@lfdr.de>; Sat, 20 Nov 2021 05:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA50457E1E
+	for <lists+linux-crypto@lfdr.de>; Sat, 20 Nov 2021 13:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234128AbhKTEw4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 19 Nov 2021 23:52:56 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:26341 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbhKTEwz (ORCPT
+        id S237283AbhKTMhQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 20 Nov 2021 07:37:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237305AbhKTMhP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 19 Nov 2021 23:52:55 -0500
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hx1D52clkzbhvt;
-        Sat, 20 Nov 2021 12:44:53 +0800 (CST)
-Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 20 Nov 2021 12:49:50 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml100012.china.huawei.com
- (7.185.36.121) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 20 Nov
- 2021 12:49:50 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH 4/4] crypto: hisilicon/qm - simplified the calculation of qos shaper parameters
-Date:   Sat, 20 Nov 2021 12:47:39 +0800
-Message-ID: <20211120044739.5667-5-yekai13@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211120044739.5667-1-yekai13@huawei.com>
-References: <20211120044739.5667-1-yekai13@huawei.com>
+        Sat, 20 Nov 2021 07:37:15 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FA6C061574
+        for <linux-crypto@vger.kernel.org>; Sat, 20 Nov 2021 04:34:12 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id bu18so56723737lfb.0
+        for <linux-crypto@vger.kernel.org>; Sat, 20 Nov 2021 04:34:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=w2dLnl5hsLVKZTBAdcVFnDnMtM7+guW1LU+8LG4nir0=;
+        b=SfgrxszVAhIUhPhcltLFYjTgn8qP3dMZiJeatgbs4CMgmp9wHWdKySGpbmjZiqoH7W
+         QqnrA/Luw9RwpQ1sEm3NtAfjUcqrGetfb8MfoniTr/cGOaiUwRnkidKPhG9sJ7Q/ylYg
+         QnhEodclXSg4eKTsXOltnuxbA/MwWdnZgkftZR1xKb9zIdKYIc0J42PA8vFSkmI+Pio1
+         q3vjTpDwjEWKfMMN8Sbyp7O03J26GokdX3bZLF48yRrnVNwstZt61tqobKO1Fh8ulFWA
+         aNFykCu5v2789Xcka6PIGqzYhBcz0Z+Q6K1o0AmOGgc73aPZfDHtbPxq7hOoUe19n+wo
+         avYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=w2dLnl5hsLVKZTBAdcVFnDnMtM7+guW1LU+8LG4nir0=;
+        b=A+OFba9RuAGGnoMTPHbWSpLTZ6JnyuotgSPVZRoIZ0UkTvSW3dUzIZ46JTmzSbNDdm
+         z7gL2gjQoO1YcpghRbnJ8+9oBiyFJCsPLxpZ1wapjqGp5Seu1IzZ9pGFNz01ZbR8tM/A
+         dCbX6gn+TWPZQK1ENIS4mLsoZhKYlpUkoVqDyDF6GOXHYmI+051frpw/6/OM+JDdgB7s
+         6rmtODcviwyHshI8KlOUUAG7TeK3M0OcL9gW/X151asEcKw+/g6oJc8ST96fN6C+z6cv
+         ZRJWT5xeOZOHjLbWqt4DdY1TUilU/HCeQ0Iz67XhfMOCzf6eMs+rrS/7+IjQEbK8fOh0
+         S0ZQ==
+X-Gm-Message-State: AOAM533u4MS8Blk0cxtORmwY2GKAocjVcUNLxjS0mtHfN6cKZQItUdAF
+        /xUtI3C80GrGCAoF7O+CO5GHaTvDcBJ9Zg6QbpCMcxq+NODxWQ==
+X-Google-Smtp-Source: ABdhPJwNeYCRmVDovPQVSwxxibNU3kfyr0SfgKTRhpGgm92tt3xvJBu3f86ir8VvjZwVO3Ztzl/nnM56CXXB2xWuEHE=
+X-Received: by 2002:a05:6000:18ad:: with SMTP id b13mr17285116wri.195.1637411639427;
+ Sat, 20 Nov 2021 04:33:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml100012.china.huawei.com (7.185.36.121)
-X-CFilter-Loop: Reflected
+Received: by 2002:adf:f989:0:0:0:0:0 with HTTP; Sat, 20 Nov 2021 04:33:58
+ -0800 (PST)
+Reply-To: mitchellvivian01@gamil.com
+From:   Mitchell Vivian <duplanmartine36@gmail.com>
+Date:   Sat, 20 Nov 2021 12:33:58 +0000
+Message-ID: <CAO-XXH5uGE2Yd4cjnLYeWr_OADiBftpJAikaRx5eamVu8xQgPw@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Some optimize for the calculation of qos shaper parameters.
-and modify the comments.
+Hello
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 84 +++++++++++++++++++++++------------
- 1 file changed, 55 insertions(+), 29 deletions(-)
+My name is Miss Vivian Mitchell. I want to donate my fund $ 4.5
+million USD to you on a charity name to help the poor People.
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 88e638491e8f..81a94e05948e 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -501,10 +501,30 @@ static const char * const qp_s[] = {
- 	"none", "init", "start", "stop", "close",
- };
- 
--static const u32 typical_qos_val[QM_QOS_TYPICAL_NUM] = {100, 250, 500, 1000,
--						10000, 25000, 50000, 100000};
--static const u32 typical_qos_cbs_s[QM_QOS_TYPICAL_NUM] = {9, 10, 11, 12, 16,
--							 17, 18, 19};
-+struct qm_typical_qos_table {
-+	u32 start;
-+	u32 end;
-+	u32 val;
-+};
-+
-+/* the qos step is 100 */
-+static struct qm_typical_qos_table shaper_cir_s[] = {
-+	{100, 100, 4},
-+	{200, 200, 3},
-+	{300, 500, 2},
-+	{600, 1000, 1},
-+	{1100, 100000, 0},
-+};
-+
-+static struct qm_typical_qos_table shaper_cbs_s[] = {
-+	{100, 200, 9},
-+	{300, 500, 11},
-+	{600, 1000, 12},
-+	{1100, 10000, 16},
-+	{10100, 25000, 17},
-+	{25100, 50000, 18},
-+	{50100, 100000, 19}
-+};
- 
- static bool qm_avail_state(struct hisi_qm *qm, enum qm_state new)
- {
-@@ -988,12 +1008,14 @@ static void qm_init_prefetch(struct hisi_qm *qm)
- }
- 
- /*
-+ * acc_shaper_para_calc() Get the IR value by the qos formula, the return value
-+ * is the expected qos calculated.
-  * the formula:
-  * IR = X Mbps if ir = 1 means IR = 100 Mbps, if ir = 10000 means = 10Gbps
-  *
-- *		        IR_b * (2 ^ IR_u) * 8
-- * IR(Mbps) * 10 ^ -3 = -------------------------
-- *		        Tick * (2 ^ IR_s)
-+ *		IR_b * (2 ^ IR_u) * 8000
-+ * IR(Mbps) = -------------------------
-+ *		  Tick * (2 ^ IR_s)
-  */
- static u32 acc_shaper_para_calc(u64 cir_b, u64 cir_u, u64 cir_s)
- {
-@@ -1003,17 +1025,28 @@ static u32 acc_shaper_para_calc(u64 cir_b, u64 cir_u, u64 cir_s)
- 
- static u32 acc_shaper_calc_cbs_s(u32 ir)
- {
-+	int table_size = ARRAY_SIZE(shaper_cbs_s);
- 	int i;
- 
--	if (ir < typical_qos_val[0])
--		return QM_SHAPER_MIN_CBS_S;
-+	for (i = 0; i < table_size; i++) {
-+		if (ir >= shaper_cbs_s[i].start && ir <= shaper_cbs_s[i].end)
-+			return shaper_cbs_s[i].val;
-+	}
- 
--	for (i = 1; i < QM_QOS_TYPICAL_NUM; i++) {
--		if (ir >= typical_qos_val[i - 1] && ir < typical_qos_val[i])
--			return typical_qos_cbs_s[i - 1];
-+	return QM_SHAPER_MIN_CBS_S;
-+}
-+
-+static u32 acc_shaper_calc_cir_s(u32 ir)
-+{
-+	int table_size = ARRAY_SIZE(shaper_cir_s);
-+	int i;
-+
-+	for (i = 0; i < table_size; i++) {
-+		if (ir >= shaper_cir_s[i].start && ir <= shaper_cir_s[i].end)
-+			return shaper_cir_s[i].val;
- 	}
- 
--	return typical_qos_cbs_s[QM_QOS_TYPICAL_NUM - 1];
-+	return 0;
- }
- 
- static int qm_get_shaper_para(u32 ir, struct qm_shaper_factor *factor)
-@@ -1022,25 +1055,18 @@ static int qm_get_shaper_para(u32 ir, struct qm_shaper_factor *factor)
- 	u32 error_rate;
- 
- 	factor->cbs_s = acc_shaper_calc_cbs_s(ir);
-+	cir_s = acc_shaper_calc_cir_s(ir);
- 
- 	for (cir_b = QM_QOS_MIN_CIR_B; cir_b <= QM_QOS_MAX_CIR_B; cir_b++) {
- 		for (cir_u = 0; cir_u <= QM_QOS_MAX_CIR_U; cir_u++) {
--			for (cir_s = 0; cir_s <= QM_QOS_MAX_CIR_S; cir_s++) {
--				/** the formula is changed to:
--				 *	   IR_b * (2 ^ IR_u) * DIVISOR_CLK
--				 * IR(Mbps) = -------------------------
--				 *	       768 * (2 ^ IR_s)
--				 */
--				ir_calc = acc_shaper_para_calc(cir_b, cir_u,
--							       cir_s);
--				error_rate = QM_QOS_EXPAND_RATE * (u32)abs(ir_calc - ir) / ir;
--				if (error_rate <= QM_QOS_MIN_ERROR_RATE) {
--					factor->cir_b = cir_b;
--					factor->cir_u = cir_u;
--					factor->cir_s = cir_s;
--
--					return 0;
--				}
-+			ir_calc = acc_shaper_para_calc(cir_b, cir_u, cir_s);
-+
-+			error_rate = QM_QOS_EXPAND_RATE * (u32)abs(ir_calc - ir) / ir;
-+			if (error_rate <= QM_QOS_MIN_ERROR_RATE) {
-+				factor->cir_b = cir_b;
-+				factor->cir_u = cir_u;
-+				factor->cir_s = cir_s;
-+				return 0;
- 			}
- 		}
- 	}
--- 
-2.33.0
+As soon as I read from you I will give you more details on how to
+achieve this goal and get this fund transferred into your bank
+account.
 
+Thanks have a nice day,
+Miss.vivian
