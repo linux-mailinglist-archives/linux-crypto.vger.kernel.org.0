@@ -2,37 +2,37 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114614584DC
-	for <lists+linux-crypto@lfdr.de>; Sun, 21 Nov 2021 17:50:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DADFD4584D2
+	for <lists+linux-crypto@lfdr.de>; Sun, 21 Nov 2021 17:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238625AbhKUQx2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 21 Nov 2021 11:53:28 -0500
-Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.121]:9000 "EHLO
+        id S238367AbhKUQxG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 21 Nov 2021 11:53:06 -0500
+Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.177]:29147 "EHLO
         mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238387AbhKUQxC (ORCPT
+        with ESMTP id S238079AbhKUQwz (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 21 Nov 2021 11:53:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637513320;
+        Sun, 21 Nov 2021 11:52:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637513318;
     s=strato-dkim-0002; d=chronox.de;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=cmDmxmsj+vi3iFFx9IyinCwhf8EiGpD4ffVQNQAHtI4=;
-    b=CkFfriCL+SWOC/ODilx5k47FXINAVXcyrboj2HNRLKPy0elfToJE1WOBOrDtgEJzxZ
-    OHW767gHlGO9bwE79uh4LGUyr4QOiy5/PdgU2XzO/6s3dYlYw9JOoKaepMxW760eIiLa
-    AfJESxbx7OtVXhN7vEDZAhxnEyF7zhbNIbt0gXTxiBWOe2G8O/iJ7PpJJq5dRD33+ePs
-    jGYTa/7+M1j0gvxu5rScyOzNkao1TrQ/3VS63Wj0hrDP0r08LDQ53u4jbYWZSJIzC/yv
-    HrH/afETw3aNTzKgg6KitmS+FxaU3budGdjURKBea3+susz2L0VqTaOb0CqUYsMcMdYh
-    GELQ==
+    bh=YUtaUGvXy4RCwHEdoN+oGR/T7eofnkQwvJGOX+pp5/s=;
+    b=BUovignxOjM0jsdtw2/OZwtcEeVLWrBTSukaBoDwwA4wkpFWM4l9qyus3Cob57YdX+
+    MR9Cq6z04gUUFzpxJ7ma6++vrt//RVXA0AqPUPEsgajUvFL1aKhXGaiCIi1ReuwMQuil
+    3xT6MPkVE5CsypJt2zkRqGXzQNWJTJFqBOno3pUH7cWg1X9Waj6iQIPsi7aX3ayW7fcu
+    aUbxYYO0syGoPKyNUDvr57hIdGlWdM/pvpGOv1aUfyJOixlWhzCaaBWu9DneFW1eb1fC
+    +lQqSPwTbfDcfk9QxWqYxU0GO5eQi0AiJvCgA1tn7cKrB87dCt0yckDygb/VGG+jPZ55
+    i8tA==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJvSfE+K2"
 X-RZG-CLASS-ID: mo00
 Received: from positron.chronox.de
     by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
-    with ESMTPSA id U02dfbxALGmc3Wl
+    with ESMTPSA id U02dfbxALGmb3Wk
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Sun, 21 Nov 2021 17:48:38 +0100 (CET)
+    Sun, 21 Nov 2021 17:48:37 +0100 (CET)
 From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
 To:     Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org
 Cc:     Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
@@ -64,9 +64,9 @@ Cc:     Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
         John Haxby <john.haxby@oracle.com>,
         Alexander Lobakin <alobakin@mailbox.org>,
         Jirka Hladky <jhladky@redhat.com>
-Subject: [PATCH v43 04/15] LRNG - allocate one DRNG instance per NUMA node
-Date:   Sun, 21 Nov 2021 17:41:37 +0100
-Message-ID: <5319346.rdbgypaU67@positron.chronox.de>
+Subject: [PATCH v43 05/15] LRNG - CPU entropy source
+Date:   Sun, 21 Nov 2021 17:42:09 +0100
+Message-ID: <6686472.9J7NaK4W3v@positron.chronox.de>
 In-Reply-To: <2036923.9o76ZdvQCi@positron.chronox.de>
 References: <2036923.9o76ZdvQCi@positron.chronox.de>
 MIME-Version: 1.0
@@ -76,21 +76,9 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-In order to improve NUMA-locality when serving getrandom(2) requests,
-allocate one DRNG instance per node.
-
-The DRNG instance that is present right from the start of the kernel is
-reused as the first per-NUMA-node DRNG. For all remaining online NUMA
-nodes a new DRNG instance is allocated.
-
-During boot time, the multiple DRNG instances are seeded sequentially.
-With this, the first DRNG instance (referenced as the initial DRNG
-in the code) is completely seeded with 256 bits of entropy before the
-next DRNG instance is completely seeded.
-
-When random numbers are requested, the NUMA-node-local DRNG is checked
-whether it has been already fully seeded. If this is not the case, the
-initial DRNG is used to serve the request.
+Certain CPUs provide instructions giving access to an entropy source
+(e.g. RDSEED on Intel/AMD, DARN on POWER, etc.). The LRNG can utilize
+the entropy source to seed its DRNG from.
 
 CC: Torsten Duwe <duwe@lst.de>
 CC: "Eric W. Biederman" <ebiederm@xmission.com>
@@ -109,9 +97,9 @@ CC: Andy Lutomirski <luto@kernel.org>
 CC: Florian Weimer <fweimer@redhat.com>
 CC: Lennart Poettering <mzxreary@0pointer.de>
 CC: Nicolai Stange <nstange@suse.de>
-CC: Eric Biggers <ebiggers@kernel.org>
 Reviewed-by: Alexander Lobakin <alobakin@pm.me>
 Tested-by: Alexander Lobakin <alobakin@pm.me>
+Mathematical aspects Reviewed-by: "Peter, Matthias" <matthias.peter@bsi.bund.de>
 Reviewed-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
 Reviewed-by: Roman Drahtmueller <draht@schaltsekun.de>
 Tested-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
@@ -120,147 +108,301 @@ Tested-by: Jirka Hladky <jhladky@redhat.com>
 Reviewed-by: Jirka Hladky <jhladky@redhat.com>
 Signed-off-by: Stephan Mueller <smueller@chronox.de>
 ---
- drivers/char/lrng/Makefile    |   1 +
- drivers/char/lrng/lrng_numa.c | 122 ++++++++++++++++++++++++++++++++++
- 2 files changed, 123 insertions(+)
- create mode 100644 drivers/char/lrng/lrng_numa.c
+ drivers/char/lrng/Kconfig              |  38 +++++
+ drivers/char/lrng/Makefile             |   1 +
+ drivers/char/lrng/lrng_es_archrandom.c | 226 +++++++++++++++++++++++++
+ 3 files changed, 265 insertions(+)
+ create mode 100644 drivers/char/lrng/lrng_es_archrandom.c
 
+diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
+index a9ae35d9f648..d3abdfa28493 100644
+--- a/drivers/char/lrng/Kconfig
++++ b/drivers/char/lrng/Kconfig
+@@ -215,6 +215,44 @@ config LRNG_IRQ_ENTROPY_RATE
+ 	  interrupt entropy source will still deliver data but without
+ 	  being credited with entropy.
+ 
++comment "CPU Entropy Source"
++
++config LRNG_CPU
++	bool "Enable CPU Entropy Source as LRNG Seed Source"
++	default y
++	help
++	  Current CPUs commonly contain entropy sources which can be
++	  used to seed the LRNG. For example, the Intel RDSEED
++	  instruction, or the POWER DARN instruction will be sourced
++	  to seed the LRNG if this option is enabled.
++
++	  Note, if this option is enabled and the underlying CPU
++	  does not offer such entropy source, the LRNG will automatically
++	  detect this and ignore the hardware.
++
++config LRNG_CPU_FULL_ENT_MULTIPLIER
++	int
++	default 1 if !LRNG_TEST_CPU_ES_COMPRESSION
++	default 123 if LRNG_TEST_CPU_ES_COMPRESSION
++
++config LRNG_CPU_ENTROPY_RATE
++	int "CPU Entropy Source Entropy Rate"
++	depends on LRNG_CPU
++	range 0 256
++	default 8
++	help
++	  The option defines the amount of entropy the LRNG applies to 256
++	  bits of data obtained from the CPU entropy source. The LRNG
++	  enforces the limit that this value must be in the range between
++	  0 and 256.
++
++	  When configuring this value to 0, the CPU entropy source will
++	  provide 256 bits of data without being credited to contain
++	  entropy.
++
++	  Note, this option is overwritten when the option
++	  CONFIG_RANDOM_TRUST_CPU is set.
++
+ endmenu # "Entropy Source Configuration"
+ 
+ endif # LRNG
 diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
-index d7df72a702e4..1e722e0967e0 100644
+index 1e722e0967e0..1e18e2c1016b 100644
 --- a/drivers/char/lrng/Makefile
 +++ b/drivers/char/lrng/Makefile
-@@ -9,3 +9,4 @@ obj-y				+= lrng_es_mgr.o lrng_aux.o \
- 
+@@ -10,3 +10,4 @@ obj-y				+= lrng_es_mgr.o lrng_aux.o \
  obj-$(CONFIG_LRNG_IRQ)		+= lrng_es_irq.o
  obj-$(CONFIG_SYSCTL)		+= lrng_proc.o
-+obj-$(CONFIG_NUMA)		+= lrng_numa.o
-diff --git a/drivers/char/lrng/lrng_numa.c b/drivers/char/lrng/lrng_numa.c
+ obj-$(CONFIG_NUMA)		+= lrng_numa.o
++obj-$(CONFIG_LRNG_CPU)		+= lrng_es_archrandom.o
+diff --git a/drivers/char/lrng/lrng_es_archrandom.c b/drivers/char/lrng/lrng_es_archrandom.c
 new file mode 100644
-index 000000000000..fbfb40a5fb8d
+index 000000000000..6965f9b8ae50
 --- /dev/null
-+++ b/drivers/char/lrng/lrng_numa.c
-@@ -0,0 +1,122 @@
++++ b/drivers/char/lrng/lrng_es_archrandom.c
+@@ -0,0 +1,226 @@
 +// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
 +/*
-+ * LRNG NUMA support
++ * LRNG Fast Entropy Source: CPU-based entropy source
 + *
 + * Copyright (C) 2016 - 2021, Stephan Mueller <smueller@chronox.de>
 + */
 +
 +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 +
++#include <crypto/hash.h>
 +#include <linux/lrng.h>
-+#include <linux/slab.h>
++#include <linux/random.h>
 +
 +#include "lrng_internal.h"
 +
-+static struct lrng_drng **lrng_drng __read_mostly = NULL;
++/*
++ * Estimated entropy of data is a 32th of LRNG_DRNG_SECURITY_STRENGTH_BITS.
++ * As we have no ability to review the implementation of those noise sources,
++ * it is prudent to have a conservative estimate here.
++ */
++#define LRNG_ARCHRANDOM_DEFAULT_STRENGTH CONFIG_LRNG_CPU_ENTROPY_RATE
++#define LRNG_ARCHRANDOM_TRUST_CPU_STRENGTH LRNG_DRNG_SECURITY_STRENGTH_BITS
++#ifdef CONFIG_RANDOM_TRUST_CPU
++static u32 archrandom = LRNG_ARCHRANDOM_TRUST_CPU_STRENGTH;
++#else
++static u32 archrandom = LRNG_ARCHRANDOM_DEFAULT_STRENGTH;
++#endif
++#ifdef CONFIG_LRNG_RUNTIME_ES_CONFIG
++module_param(archrandom, uint, 0644);
++MODULE_PARM_DESC(archrandom, "Entropy in bits of 256 data bits from CPU noise source (e.g. RDSEED)");
++#endif
 +
-+struct lrng_drng **lrng_drng_instances(void)
++static int __init lrng_parse_trust_cpu(char *arg)
 +{
-+	return smp_load_acquire(&lrng_drng);
++	int ret;
++	bool trust_cpu = false;
++
++	ret = kstrtobool(arg, &trust_cpu);
++	if (ret)
++		return ret;
++
++	if (trust_cpu) {
++		archrandom = LRNG_ARCHRANDOM_TRUST_CPU_STRENGTH;
++		lrng_pool_add_entropy();
++	} else {
++		archrandom = LRNG_ARCHRANDOM_DEFAULT_STRENGTH;
++	}
++
++	return 0;
++}
++early_param("random.trust_cpu", lrng_parse_trust_cpu);
++
++u32 lrng_archrandom_entropylevel(u32 requested_bits)
++{
++	return lrng_fast_noise_entropylevel(archrandom, requested_bits);
 +}
 +
-+/* Allocate the data structures for the per-NUMA node DRNGs */
-+static void _lrng_drngs_numa_alloc(struct work_struct *work)
++static u32 lrng_get_arch_data(u8 *outbuf, u32 requested_bits)
 +{
-+	struct lrng_drng **drngs;
-+	struct lrng_drng *lrng_drng_init = lrng_drng_init_instance();
-+	u32 node;
-+	bool init_drng_used = false;
++	u32 i;
 +
-+	mutex_lock(&lrng_crypto_cb_update);
++	/* operate on full blocks */
++	BUILD_BUG_ON(LRNG_DRNG_SECURITY_STRENGTH_BYTES % sizeof(unsigned long));
++	BUILD_BUG_ON(CONFIG_LRNG_SEED_BUFFER_INIT_ADD_BITS %
++							 sizeof(unsigned long));
++	/* ensure we have aligned buffers */
++	BUILD_BUG_ON(LRNG_KCAPI_ALIGN % sizeof(unsigned long));
 +
-+	/* per-NUMA-node DRNGs are already present */
-+	if (lrng_drng)
-+		goto unlock;
-+
-+	drngs = kcalloc(nr_node_ids, sizeof(void *), GFP_KERNEL|__GFP_NOFAIL);
-+	for_each_online_node(node) {
-+		struct lrng_drng *drng;
-+
-+		if (!init_drng_used) {
-+			drngs[node] = lrng_drng_init;
-+			init_drng_used = true;
-+			continue;
++	for (i = 0; i < (requested_bits >> 3);
++	     i += sizeof(unsigned long)) {
++		if (!arch_get_random_seed_long((unsigned long *)(outbuf + i)) &&
++		    !arch_get_random_long((unsigned long *)(outbuf + i))) {
++			archrandom = 0;
++			return 0;
 +		}
-+
-+		drng = kmalloc_node(sizeof(struct lrng_drng),
-+				     GFP_KERNEL|__GFP_NOFAIL, node);
-+		memset(drng, 0, sizeof(lrng_drng));
-+
-+		drng->crypto_cb = lrng_drng_init->crypto_cb;
-+		drng->drng = drng->crypto_cb->lrng_drng_alloc(
-+					LRNG_DRNG_SECURITY_STRENGTH_BYTES);
-+		if (IS_ERR(drng->drng)) {
-+			kfree(drng);
-+			goto err;
-+		}
-+
-+		drng->hash = drng->crypto_cb->lrng_hash_alloc();
-+		if (IS_ERR(drng->hash)) {
-+			drng->crypto_cb->lrng_drng_dealloc(drng->drng);
-+			kfree(drng);
-+			goto err;
-+		}
-+
-+		mutex_init(&drng->lock);
-+		spin_lock_init(&drng->spin_lock);
-+		rwlock_init(&drng->hash_lock);
-+
-+		/*
-+		 * Switch the hash used by the per-CPU pool.
-+		 * We do not need to lock the new hash as it is not usable yet
-+		 * due to **drngs not yet being initialized.
-+		 */
-+		if (lrng_pcpu_switch_hash(node, drng->crypto_cb, drng->hash,
-+					  &lrng_cc20_crypto_cb))
-+			goto err;
-+
-+		/*
-+		 * No reseeding of NUMA DRNGs from previous DRNGs as this
-+		 * would complicate the code. Let it simply reseed.
-+		 */
-+		lrng_drng_reset(drng);
-+		drngs[node] = drng;
-+
-+		lrng_pool_inc_numa_node();
-+		pr_info("DRNG and entropy pool read hash for NUMA node %d allocated\n",
-+			node);
 +	}
 +
-+	/* counterpart to smp_load_acquire in lrng_drng_instances */
-+	if (!cmpxchg_release(&lrng_drng, NULL, drngs)) {
-+		lrng_pool_all_numa_nodes_seeded(false);
-+		goto unlock;
++	return requested_bits;
++}
++
++static u32 inline lrng_get_arch_data_compress(u8 *outbuf, u32 requested_bits,
++					      u32 data_multiplier)
++{
++	SHASH_DESC_ON_STACK(shash, NULL);
++	const struct lrng_crypto_cb *crypto_cb;
++	struct lrng_drng *drng = lrng_drng_init_instance();
++	unsigned long flags;
++	u32 ent_bits = 0, i, partial_bits = 0,
++	    full_bits = requested_bits * data_multiplier;
++	void *hash;
++
++	/* Calculate oversampling for SP800-90C */
++	if (lrng_sp80090c_compliant()) {
++		/* Complete amount of bits to be pulled */
++		full_bits += CONFIG_LRNG_OVERSAMPLE_ES_BITS * data_multiplier;
++		/* Full blocks that will be pulled */
++		data_multiplier = full_bits / requested_bits;
++		/* Partial block in bits to be pulled */
++		partial_bits = full_bits - (data_multiplier * requested_bits);
 +	}
++
++	lrng_hash_lock(drng, &flags);
++	crypto_cb = drng->crypto_cb;
++	hash = drng->hash;
++
++	if (crypto_cb->lrng_hash_init(shash, hash))
++		goto out;
++
++	/* Hash all data from the CPU entropy source */
++	for (i = 0; i < data_multiplier; i++) {
++		ent_bits = lrng_get_arch_data(outbuf, requested_bits);
++		if (!ent_bits)
++			goto out;
++
++		if (crypto_cb->lrng_hash_update(shash, outbuf, ent_bits >> 3))
++			goto err;
++	}
++
++	/* Hash partial block, if applicable */
++	ent_bits = lrng_get_arch_data(outbuf, partial_bits);
++	if (ent_bits &&
++	    crypto_cb->lrng_hash_update(shash, outbuf, ent_bits >> 3))
++		goto err;
++
++	pr_debug("pulled %u bits from CPU RNG entropy source\n", full_bits);
++
++	/* Generate the compressed data to be returned to the caller */
++	ent_bits = crypto_cb->lrng_hash_digestsize(hash) << 3;
++	if (requested_bits < ent_bits) {
++		u8 digest[LRNG_MAX_DIGESTSIZE];
++
++		if (crypto_cb->lrng_hash_final(shash, digest))
++			goto err;
++
++		/* Truncate output data to requested size */
++		memcpy(outbuf, digest, requested_bits >> 3);
++		memzero_explicit(digest, crypto_cb->lrng_hash_digestsize(hash));
++		ent_bits = requested_bits;
++	} else {
++		if (crypto_cb->lrng_hash_final(shash, outbuf))
++			goto err;
++	}
++
++out:
++	crypto_cb->lrng_hash_desc_zero(shash);
++	lrng_hash_unlock(drng, flags);
++	return ent_bits;
 +
 +err:
-+	for_each_online_node(node) {
-+		struct lrng_drng *drng = drngs[node];
-+
-+		if (drng == lrng_drng_init)
-+			continue;
-+
-+		if (drng) {
-+			lrng_pcpu_switch_hash(node, &lrng_cc20_crypto_cb, NULL,
-+					      drng->crypto_cb);
-+			drng->crypto_cb->lrng_hash_dealloc(drng->hash);
-+			drng->crypto_cb->lrng_drng_dealloc(drng->drng);
-+			kfree(drng);
-+		}
-+	}
-+	kfree(drngs);
-+
-+unlock:
-+	mutex_unlock(&lrng_crypto_cb_update);
++	ent_bits = 0;
++	goto out;
 +}
 +
-+static DECLARE_WORK(lrng_drngs_numa_alloc_work, _lrng_drngs_numa_alloc);
-+
-+void lrng_drngs_numa_alloc(void)
++/*
++ * If CPU entropy source requires does not return full entropy, return the
++ * multiplier of how much data shall be sampled from it.
++ */
++static u32 lrng_arch_multiplier(void)
 +{
-+	schedule_work(&lrng_drngs_numa_alloc_work);
++	static u32 data_multiplier = 0;
++
++	if (data_multiplier > 0) {
++		return data_multiplier;
++	} else {
++		unsigned long v;
++
++		if (IS_ENABLED(CONFIG_X86) && !arch_get_random_seed_long(&v)) {
++			/*
++			 * Intel SPEC: pulling 512 blocks from RDRAND ensures
++			 * one reseed making it logically equivalent to RDSEED.
++			 */
++			data_multiplier = 512;
++		} else if (IS_ENABLED(CONFIG_PPC)) {
++			/*
++			 * PowerISA defines DARN to deliver at least 0.5 bits of
++			 * entropy per data bit.
++			 */
++			data_multiplier = 2;
++		} else {
++			/* CPU provides full entropy */
++			data_multiplier = CONFIG_LRNG_CPU_FULL_ENT_MULTIPLIER;
++		}
++	}
++	return data_multiplier;
++}
++
++/*
++ * lrng_get_arch() - Get CPU entropy source entropy
++ *
++ * @outbuf: buffer to store entropy of size requested_bits
++ *
++ * Return:
++ * * > 0 on success where value provides the added entropy in bits
++ * *   0 if no fast source was available
++ */
++u32 lrng_get_arch(u8 *outbuf, u32 requested_bits)
++{
++	u32 ent_bits, data_multiplier = lrng_arch_multiplier();
++
++	if (data_multiplier <= 1) {
++		ent_bits = lrng_get_arch_data(outbuf, requested_bits);
++	} else {
++		ent_bits = lrng_get_arch_data_compress(outbuf, requested_bits,
++						       data_multiplier);
++	}
++
++	ent_bits = lrng_archrandom_entropylevel(ent_bits);
++	pr_debug("obtained %u bits of entropy from CPU RNG entropy source\n",
++		 ent_bits);
++	return ent_bits;
++}
++
++void lrng_arch_es_state(unsigned char *buf, size_t buflen)
++{
++	const struct lrng_drng *lrng_drng_init = lrng_drng_init_instance();
++	u32 data_multiplier = lrng_arch_multiplier();
++
++	/* Assume the lrng_drng_init lock is taken by caller */
++	snprintf(buf, buflen,
++		 "CPU ES properties:\n"
++		 " Hash for compressing data: %s\n"
++		 " Data multiplier: %u\n",
++		 (data_multiplier <= 1) ?
++			"N/A" : lrng_drng_init->crypto_cb->lrng_hash_name(),
++		 data_multiplier);
 +}
 -- 
 2.31.1
