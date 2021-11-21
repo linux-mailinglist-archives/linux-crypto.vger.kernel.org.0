@@ -2,58 +2,92 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978694581B6
-	for <lists+linux-crypto@lfdr.de>; Sun, 21 Nov 2021 05:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79CC1458400
+	for <lists+linux-crypto@lfdr.de>; Sun, 21 Nov 2021 15:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237560AbhKUEtn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 20 Nov 2021 23:49:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237211AbhKUEtm (ORCPT
+        id S237083AbhKUORc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 21 Nov 2021 09:17:32 -0500
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.21]:31253 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236405AbhKUORb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 20 Nov 2021 23:49:42 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376E6C06173E
-        for <linux-crypto@vger.kernel.org>; Sat, 20 Nov 2021 20:46:38 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id bu18so63887797lfb.0
-        for <linux-crypto@vger.kernel.org>; Sat, 20 Nov 2021 20:46:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=0zcITak9Kqm6QyW0Txix3p5nbnZkx8Nxm4wQil6oEz0=;
-        b=qTu1c0N4oQagv5IdlnGiioy4JecOmQ7Ba44ZGGs9x2+FPzA+lFRSVfAU3uU/3pXUdi
-         eQ1HFT1DdJ2ynWwchvpQkBRZtOX1M8jS3u5b/OZlJtODnplhcNXr/yJFODx1hYlTNJfq
-         K5vk+JZMopEhj8wzLTQhQQC6tdcElkD8ia3gqSdRaJMctyR53dcrG+4FCqRv1W5jEuZP
-         Q+mezos1liLSwWjPGA55/0v1UdgFPeGQJebD9Zszhclx4CLeS0Id4svHn6dn0aRVqgw0
-         yd3EIpgFwLHrZ8dWgHVT65rUZv4WZW+eEsAp9Ox1E0rhMJdPlXF1d9SGF/3v/lfveAuN
-         zNyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=0zcITak9Kqm6QyW0Txix3p5nbnZkx8Nxm4wQil6oEz0=;
-        b=RKrn1y7xK5kuTGjdqEgbainEMLZZoBts0QbNu8WuMmd4nFefOZiajvCGEXD4N0HJpO
-         RC5bwiv1MMQrLfEaz4yu1B0mn/WQc973iF/Dcrk+VmOkEslHAVOX6pTNNDK29A0v91Sc
-         eTwJzeJZ3M8q1LZOidQR3gM46fcQknQylWBmsB9ho0NnHLpHwoVcUhbtZIpWwpYHiAeK
-         8/aMT2lr+8nLTYpTpJp+ibjT3wyl6N03coKTALgq+Un2OM2I5W0R+m2w2EI8aQqj1f3K
-         jlkz1Uo+hFN4yAz2+8oN2XME3YzbO+GBY74kzA34Uf/eC09fUkQTbkyPDIzSo0KIWxHI
-         j15Q==
-X-Gm-Message-State: AOAM531OiWnh8g9yNW/uZR4Gcs3vinIVsnt8GLXBeKaxJKC7FEOYJAa1
-        w0sNWDP6ztcZWdEvVBZyPw6+OC1otqa/LaENpL4=
-X-Google-Smtp-Source: ABdhPJy7TWEW1w4kEu2Ox1owlSYKFUTCE9x2UiM3qSdj89BQQDQ8qXqSx1HWrxOjpJn5ZsN2ExoDAgG73Rx+frYwUWE=
-X-Received: by 2002:a05:6512:228b:: with SMTP id f11mr44679381lfu.491.1637469996486;
- Sat, 20 Nov 2021 20:46:36 -0800 (PST)
+        Sun, 21 Nov 2021 09:17:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637504062;
+    s=strato-dkim-0002; d=chronox.de;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=15sWvFb3q2s6oiV3qHU6PvIicdlkGPTCIfTp/IQwKTM=;
+    b=lQjFvST2+/6GdA4YG/pxBwoYK/L+mcgXLzs1kyX8Q+EbjTxyCFg1izBQPUUECYsJ+z
+    YvDPoqhO4EFucLhuD/kkPunEA0XCXi/hYO/G8OlmSbyN4+64WEldGy9wV5FiGl1BwfNp
+    WMqX+QHeeyA9Ct4UpSJbnwerAZzlt8phKQ5L+8AA946MYA+rRJH6pnwzIY95SQkyrFlW
+    JLNPLdJ9w65xAuY9q+5o2Hq8+mKhweUlI9ccP7auudsTZ76/v/x0TEKR+PcKdthH/g5D
+    QUDVHRkXowANnkLxoio/JtezVDaCtYJJ3ejtxMnU4zYf9RUX8fyGhpxWNIFfV72PeM7i
+    oigA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJvSfE+K2"
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
+    with ESMTPSA id U02dfbxALEEK3FD
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Sun, 21 Nov 2021 15:14:20 +0100 (CET)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org
+Subject: [PATCH] crypto: Jitter RNG - consider 32 LSB for APT
+Date:   Sun, 21 Nov 2021 15:14:20 +0100
+Message-ID: <2572116.vuYhMxLoTh@positron.chronox.de>
 MIME-Version: 1.0
-Received: by 2002:a05:6512:3d14:0:0:0:0 with HTTP; Sat, 20 Nov 2021 20:46:36
- -0800 (PST)
-From:   greenn rodriguez <greennrodriguez1@gmail.com>
-Date:   Sat, 20 Nov 2021 20:46:36 -0800
-Message-ID: <CAN4yomrDMCw1-GQVo0-tOT598RADbWvroa-FC0-NNJ9gUcGsZQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+The APT compares the current time stamp with a pre-set value. The
+current code only considered the 4 LSB only. Yet, after reviews by
+mathematicians of the user space Jitter RNG version >= 3.1.0, it was
+concluded that the APT can be calculated on the 32 LSB of the time
+delta. Thi change is applied to the kernel.
+
+This fixes a bug where an AMD EPYC fails this test as its RDTSC value
+contains zeros in the LSB. The most appropriate fix would have been to
+apply a GCD calculation and divide the time stamp by the GCD. Yet, this
+is a significant code change that will be considered for a future
+update. Note, tests showed that constantly the GCD always was 32 on
+these systems, i.e. the 5 LSB were always zero (thus failing the APT
+since it only considered the 4 LSB for its calculation).
+
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+---
+ crypto/jitterentropy.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/crypto/jitterentropy.c b/crypto/jitterentropy.c
+index a11b3208760f..f6d3a84e3c21 100644
+--- a/crypto/jitterentropy.c
++++ b/crypto/jitterentropy.c
+@@ -265,7 +265,6 @@ static int jent_stuck(struct rand_data *ec, __u64 current_delta)
+ {
+ 	__u64 delta2 = jent_delta(ec->last_delta, current_delta);
+ 	__u64 delta3 = jent_delta(ec->last_delta2, delta2);
+-	unsigned int delta_masked = current_delta & JENT_APT_WORD_MASK;
+ 
+ 	ec->last_delta = current_delta;
+ 	ec->last_delta2 = delta2;
+@@ -274,7 +273,7 @@ static int jent_stuck(struct rand_data *ec, __u64 current_delta)
+ 	 * Insert the result of the comparison of two back-to-back time
+ 	 * deltas.
+ 	 */
+-	jent_apt_insert(ec, delta_masked);
++	jent_apt_insert(ec, current_delta);
+ 
+ 	if (!current_delta || !delta2 || !delta3) {
+ 		/* RCT with a stuck bit */
 -- 
-Do you need loan?
+2.33.1
+
+
+
+
