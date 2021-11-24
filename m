@@ -2,25 +2,25 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA28F45CDCB
-	for <lists+linux-crypto@lfdr.de>; Wed, 24 Nov 2021 21:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCAE45CDD3
+	for <lists+linux-crypto@lfdr.de>; Wed, 24 Nov 2021 21:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235074AbhKXURr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 24 Nov 2021 15:17:47 -0500
-Received: from mga05.intel.com ([192.55.52.43]:13503 "EHLO mga05.intel.com"
+        id S1351676AbhKXUSC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 24 Nov 2021 15:18:02 -0500
+Received: from mga05.intel.com ([192.55.52.43]:13501 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351555AbhKXURe (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:17:34 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="321601965"
+        id S1351687AbhKXURm (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 24 Nov 2021 15:17:42 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="321601966"
 X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="321601965"
+   d="scan'208";a="321601966"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 12:14:22 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="510015835"
+   d="scan'208";a="510015839"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by orsmga008.jf.intel.com with ESMTP; 24 Nov 2021 12:14:21 -0800
+  by orsmga008.jf.intel.com with ESMTP; 24 Nov 2021 12:14:22 -0800
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
 To:     tglx@linutronix.de, bp@suse.de, dave.hansen@linux.intel.com,
         mingo@kernel.org, luto@kernel.org, x86@kernel.org,
@@ -29,9 +29,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
         dan.j.williams@intel.com, charishma1.gairuboyina@intel.com,
         kumar.n.dwarakanath@intel.com, lalithambika.krishnakumar@intel.com,
         ravi.v.shankar@intel.com, chang.seok.bae@intel.com
-Subject: [PATCH v3 13/15] crypto: x86/aes-kl - Support CBC mode
-Date:   Wed, 24 Nov 2021 12:06:58 -0800
-Message-Id: <20211124200700.15888-14-chang.seok.bae@intel.com>
+Subject: [PATCH v3 14/15] crypto: x86/aes-kl - Support CTR mode
+Date:   Wed, 24 Nov 2021 12:06:59 -0800
+Message-Id: <20211124200700.15888-15-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211124200700.15888-1-chang.seok.bae@intel.com>
 References: <20211124200700.15888-1-chang.seok.bae@intel.com>
@@ -39,8 +39,8 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Implement CBC using AES-KL. Export the methods with a lower priority than
-AES-NI to avoid from selected by default.
+Implement CTR mode using AES-KL. Export the methods with a lower priority
+than AES-NI to avoid from selected by default.
 
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Acked-by: Dan Williams <dan.j.williams@intel.com>
@@ -52,302 +52,276 @@ Cc: linux-kernel@vger.kernel.org
 Changes from RFC v2:
 * Separate out the code as a new patch.
 ---
- arch/x86/crypto/aeskl-intel_asm.S  | 188 +++++++++++++++++++++++++++++
- arch/x86/crypto/aeskl-intel_glue.c |  67 ++++++++++
- 2 files changed, 255 insertions(+)
+ arch/x86/crypto/aeskl-intel_asm.S  | 174 +++++++++++++++++++++++++++++
+ arch/x86/crypto/aeskl-intel_glue.c |  55 +++++++++
+ 2 files changed, 229 insertions(+)
 
 diff --git a/arch/x86/crypto/aeskl-intel_asm.S b/arch/x86/crypto/aeskl-intel_asm.S
-index 833bb39ae903..5ee7b24ee3c8 100644
+index 5ee7b24ee3c8..ffde0cd3dd42 100644
 --- a/arch/x86/crypto/aeskl-intel_asm.S
 +++ b/arch/x86/crypto/aeskl-intel_asm.S
-@@ -375,3 +375,191 @@ SYM_FUNC_START(_aeskl_ecb_dec)
+@@ -563,3 +563,177 @@ SYM_FUNC_START(_aeskl_cbc_dec)
  	ret
- SYM_FUNC_END(_aeskl_ecb_dec)
+ SYM_FUNC_END(_aeskl_cbc_dec)
  
-+/*
-+ * int _aeskl_cbc_enc(struct crypto_aes_ctx *ctx, const u8 *dst, u8 *src,
-+ *		      size_t len, u8 *iv)
-+ */
-+SYM_FUNC_START(_aeskl_cbc_enc)
-+	FRAME_BEGIN
-+#ifndef __x86_64__
-+	pushl IVP
-+	pushl LEN
-+	pushl HANDLEP
-+	pushl KLEN
-+	movl (FRAME_OFFSET+20)(%esp), HANDLEP	# ctx
-+	movl (FRAME_OFFSET+24)(%esp), OUTP	# dst
-+	movl (FRAME_OFFSET+28)(%esp), INP	# src
-+	movl (FRAME_OFFSET+32)(%esp), LEN	# len
-+	movl (FRAME_OFFSET+36)(%esp), IVP	# iv
-+#endif
-+
-+	cmp $16, LEN
-+	jb .Lcbc_enc_noerr
-+	mov 480(HANDLEP), KLEN
-+	movdqu (IVP), STATE
-+
-+.align 4
-+.Lcbc_enc1:
-+	movdqu (INP), IN
-+	pxor IN, STATE
-+
-+	cmp $16, KLEN
-+	je .Lcbc_enc1_128
-+	aesenc256kl (HANDLEP), STATE
-+	jz .Lcbc_enc_err
-+	jmp .Lcbc_enc1_end
-+.Lcbc_enc1_128:
-+	aesenc128kl (HANDLEP), STATE
-+	jz .Lcbc_enc_err
-+
-+.Lcbc_enc1_end:
-+	movdqu STATE, (OUTP)
-+	sub $16, LEN
-+	add $16, INP
-+	add $16, OUTP
-+	cmp $16, LEN
-+	jge .Lcbc_enc1
-+	movdqu STATE, (IVP)
-+
-+.Lcbc_enc_noerr:
-+	xor AREG, AREG
-+	jmp .Lcbc_enc_end
-+.Lcbc_enc_err:
-+	mov $1, AREG
-+.Lcbc_enc_end:
-+#ifndef __x86_64__
-+	popl KLEN
-+	popl HANDLEP
-+	popl LEN
-+	popl IVP
-+#endif
-+	FRAME_END
-+	ret
-+SYM_FUNC_END(_aeskl_cbc_enc)
-+
-+/*
-+ * int _aeskl_cbc_dec(struct crypto_aes_ctx *ctx, const u8 *dst, u8 *src,
-+ *		      size_t len, u8 *iv)
-+ */
-+SYM_FUNC_START(_aeskl_cbc_dec)
-+	FRAME_BEGIN
-+#ifndef __x86_64__
-+	pushl IVP
-+	pushl LEN
-+	pushl HANDLEP
-+	pushl KLEN
-+	movl (FRAME_OFFSET+20)(%esp), HANDLEP	# ctx
-+	movl (FRAME_OFFSET+24)(%esp), OUTP	# dst
-+	movl (FRAME_OFFSET+28)(%esp), INP	# src
-+	movl (FRAME_OFFSET+32)(%esp), LEN	# len
-+	movl (FRAME_OFFSET+36)(%esp), IVP	# iv
-+#endif
-+
-+	cmp $16, LEN
-+	jb .Lcbc_dec_noerr
-+	mov 480(HANDLEP), KLEN
 +#ifdef __x86_64__
++
++/*
++ * _aeskl_ctr_inc_init:	internal ABI
++ *	setup registers used by _aesni_inc
++ * input:
++ *	IV
++ * output:
++ *	CTR:	== IV, in little endian
++ *	TCTR_LOW: == lower qword of CTR
++ *	INC:	== 1, in little endian
++ *	BSWAP_MASK == endian swapping mask
++ */
++SYM_FUNC_START_LOCAL(_aeskl_ctr_inc_init)
++	movaps .Lbswap_mask, BSWAP_MASK
++	movaps IV, CTR
++	pshufb BSWAP_MASK, CTR
++	mov $1, TCTR_LOW
++	movq TCTR_LOW, INC
++	movq CTR, TCTR_LOW
++	ret
++SYM_FUNC_END(_aeskl_ctr_inc_init)
++
++/*
++ * _aeskl_ctr_inc:		internal ABI
++ *	Increase IV by 1, IV is in big endian
++ * input:
++ *	IV
++ *	CTR:	== IV, in little endian
++ *	TCTR_LOW: == lower qword of CTR
++ *	INC:	== 1, in little endian
++ *	BSWAP_MASK == endian swapping mask
++ * output:
++ *	IV:	Increase by 1
++ * changed:
++ *	CTR:	== output IV, in little endian
++ *	TCTR_LOW: == lower qword of CTR
++ */
++SYM_FUNC_START_LOCAL(_aeskl_ctr_inc)
++	paddq INC, CTR
++	add $1, TCTR_LOW
++	jnc .Linc_low
++	pslldq $8, INC
++	paddq INC, CTR
++	psrldq $8, INC
++.Linc_low:
++	movaps CTR, IV
++	pshufb BSWAP_MASK, IV
++	ret
++SYM_FUNC_END(_aeskl_ctr_inc)
++
++/*
++ * CTR implementations
++ */
++
++/*
++ * int _aeskl_ctr_enc(struct crypto_aes_ctx *ctx, const u8 *dst, u8 *src,
++ *		      size_t len, u8 *iv)
++ */
++SYM_FUNC_START(_aeskl_ctr_enc)
++	FRAME_BEGIN
++	cmp $16, LEN
++	jb .Lctr_enc_noerr
++	mov 480(HANDLEP), KLEN
++	movdqu (IVP), IV
++	call _aeskl_ctr_inc_init
 +	cmp $128, LEN
-+	jb .Lcbc_dec1_pre
++	jb .Lctr_enc1
 +
 +.align 4
-+.Lcbc_dec8:
-+	movdqu 0x0(INP), STATE1
-+	movdqu 0x10(INP), STATE2
-+	movdqu 0x20(INP), STATE3
-+	movdqu 0x30(INP), STATE4
-+	movdqu 0x40(INP), STATE5
-+	movdqu 0x50(INP), STATE6
-+	movdqu 0x60(INP), STATE7
-+	movdqu 0x70(INP), STATE8
-+
-+	movdqu (IVP), IN1
-+	movdqa STATE1, IN2
-+	movdqa STATE2, IN3
-+	movdqa STATE3, IN4
-+	movdqa STATE4, IN5
-+	movdqa STATE5, IN6
-+	movdqa STATE6, IN7
-+	movdqa STATE7, IN8
-+	movdqu STATE8, (IVP)
++.Lctr_enc8:
++	movaps IV, STATE1
++	call _aeskl_ctr_inc
++	movaps IV, STATE2
++	call _aeskl_ctr_inc
++	movaps IV, STATE3
++	call _aeskl_ctr_inc
++	movaps IV, STATE4
++	call _aeskl_ctr_inc
++	movaps IV, STATE5
++	call _aeskl_ctr_inc
++	movaps IV, STATE6
++	call _aeskl_ctr_inc
++	movaps IV, STATE7
++	call _aeskl_ctr_inc
++	movaps IV, STATE8
++	call _aeskl_ctr_inc
 +
 +	cmp $16, KLEN
-+	je .Lcbc_dec8_128
-+	aesdecwide256kl (HANDLEP)
-+	jz .Lcbc_dec_err
-+	jmp .Lcbc_dec8_end
-+.Lcbc_dec8_128:
-+	aesdecwide128kl (HANDLEP)
-+	jz .Lcbc_dec_err
++	je .Lctr_enc8_128
++	aesencwide256kl (%rdi)
++	jz .Lctr_enc_err
++	jmp .Lctr_enc8_end
++.Lctr_enc8_128:
++	aesencwide128kl (%rdi)
++	jz .Lctr_enc_err
++.Lctr_enc8_end:
 +
-+.Lcbc_dec8_end:
++	movups (INP), IN1
 +	pxor IN1, STATE1
-+	pxor IN2, STATE2
-+	pxor IN3, STATE3
-+	pxor IN4, STATE4
-+	pxor IN5, STATE5
-+	pxor IN6, STATE6
-+	pxor IN7, STATE7
-+	pxor IN8, STATE8
++	movups STATE1, (OUTP)
 +
-+	movdqu STATE1, 0x0(OUTP)
-+	movdqu STATE2, 0x10(OUTP)
-+	movdqu STATE3, 0x20(OUTP)
-+	movdqu STATE4, 0x30(OUTP)
-+	movdqu STATE5, 0x40(OUTP)
-+	movdqu STATE6, 0x50(OUTP)
-+	movdqu STATE7, 0x60(OUTP)
-+	movdqu STATE8, 0x70(OUTP)
++	movups 0x10(INP), IN1
++	pxor IN1, STATE2
++	movups STATE2, 0x10(OUTP)
++
++	movups 0x20(INP), IN1
++	pxor IN1, STATE3
++	movups STATE3, 0x20(OUTP)
++
++	movups 0x30(INP), IN1
++	pxor IN1, STATE4
++	movups STATE4, 0x30(OUTP)
++
++	movups 0x40(INP), IN1
++	pxor IN1, STATE5
++	movups STATE5, 0x40(OUTP)
++
++	movups 0x50(INP), IN1
++	pxor IN1, STATE6
++	movups STATE6, 0x50(OUTP)
++
++	movups 0x60(INP), IN1
++	pxor IN1, STATE7
++	movups STATE7, 0x60(OUTP)
++
++	movups 0x70(INP), IN1
++	pxor IN1, STATE8
++	movups STATE8, 0x70(OUTP)
 +
 +	sub $128, LEN
 +	add $128, INP
 +	add $128, OUTP
 +	cmp $128, LEN
-+	jge .Lcbc_dec8
++	jge .Lctr_enc8
 +	cmp $16, LEN
-+	jb .Lcbc_dec_noerr
-+#endif
++	jb .Lctr_enc_end
 +
 +.align 4
-+.Lcbc_dec1_pre:
-+	movdqu (IVP), STATE3
-+.Lcbc_dec1:
-+	movdqu (INP), STATE2
-+	movdqa STATE2, STATE1
++.Lctr_enc1:
++	movaps IV, STATE1
++	call _aeskl_ctr_inc
 +
 +	cmp $16, KLEN
-+	je .Lcbc_dec1_128
-+	aesdec256kl (HANDLEP), STATE1
-+	jz .Lcbc_dec_err
-+	jmp .Lcbc_dec1_end
-+.Lcbc_dec1_128:
-+	aesdec128kl (HANDLEP), STATE1
-+	jz .Lcbc_dec_err
++	je .Lctr_enc1_128
++	aesenc256kl (HANDLEP), STATE1
++	jz .Lctr_enc_err
++	jmp .Lctr_enc1_end
++.Lctr_enc1_128:
++	aesenc128kl (HANDLEP), STATE1
++	jz .Lctr_enc_err
 +
-+.Lcbc_dec1_end:
-+	pxor STATE3, STATE1
-+	movdqu STATE1, (OUTP)
-+	movdqa STATE2, STATE3
++.Lctr_enc1_end:
++	movups (INP), IN1
++	pxor IN1, STATE1
++	movups STATE1, (OUTP)
 +	sub $16, LEN
 +	add $16, INP
 +	add $16, OUTP
 +	cmp $16, LEN
-+	jge .Lcbc_dec1
-+	movdqu STATE3, (IVP)
++	jge .Lctr_enc1
 +
-+.Lcbc_dec_noerr:
++.Lctr_enc_end:
++	movdqu IV, (IVP)
++.Lctr_enc_noerr:
 +	xor AREG, AREG
-+	jmp .Lcbc_dec_end
-+.Lcbc_dec_err:
++	jmp .Lctr_enc_ret
++.Lctr_enc_err:
 +	mov $1, AREG
-+.Lcbc_dec_end:
-+#ifndef __x86_64__
-+	popl KLEN
-+	popl HANDLEP
-+	popl LEN
-+	popl IVP
-+#endif
++.Lctr_enc_ret:
 +	FRAME_END
 +	ret
-+SYM_FUNC_END(_aeskl_cbc_dec)
++SYM_FUNC_END(_aeskl_ctr_enc)
 +
 diff --git a/arch/x86/crypto/aeskl-intel_glue.c b/arch/x86/crypto/aeskl-intel_glue.c
-index 7c9794a0969d..742576ae0481 100644
+index 742576ae0481..f99dfa4a052f 100644
 --- a/arch/x86/crypto/aeskl-intel_glue.c
 +++ b/arch/x86/crypto/aeskl-intel_glue.c
-@@ -30,6 +30,11 @@ asmlinkage int _aeskl_dec(const void *ctx, u8 *out, const u8 *in);
- asmlinkage int _aeskl_ecb_enc(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in, unsigned int len);
- asmlinkage int _aeskl_ecb_dec(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in, unsigned int len);
+@@ -35,6 +35,11 @@ asmlinkage int _aeskl_cbc_enc(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in,
+ asmlinkage int _aeskl_cbc_dec(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in, unsigned int len,
+ 			      u8 *iv);
  
-+asmlinkage int _aeskl_cbc_enc(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in, unsigned int len,
++#ifdef CONFIG_X86_64
++asmlinkage int _aeskl_ctr_enc(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in, unsigned int len,
 +			      u8 *iv);
-+asmlinkage int _aeskl_cbc_dec(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in, unsigned int len,
-+			      u8 *iv);
++#endif
 +
  static int aeskl_setkey_common(struct crypto_tfm *tfm, void *raw_ctx, const u8 *in_key,
  			       unsigned int key_len)
  {
-@@ -113,6 +118,32 @@ static int aeskl_ecb_dec(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in, unsi
+@@ -144,6 +149,23 @@ static int aeskl_cbc_dec(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in, unsi
  		return 0;
  }
  
-+static int aeskl_cbc_enc(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in, unsigned int len,
++#ifdef CONFIG_X86_64
++
++static int aeskl_ctr_enc(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in, unsigned int len,
 +			 u8 *iv)
 +{
 +	if (unlikely(ctx->key_length == AES_KEYSIZE_192))
 +		return -EINVAL;
 +	else if (!valid_keylocker())
 +		return -ENODEV;
-+	else if (_aeskl_cbc_enc(ctx, out, in, len, iv))
++	else if (_aeskl_ctr_enc(ctx, out, in, len, iv))
 +		return -EINVAL;
 +	else
 +		return 0;
 +}
 +
-+static int aeskl_cbc_dec(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in, unsigned int len,
-+			 u8 *iv)
-+{
-+	if (unlikely(ctx->key_length == AES_KEYSIZE_192))
-+		return -EINVAL;
-+	else if (!valid_keylocker())
-+		return -ENODEV;
-+	else if (_aeskl_cbc_dec(ctx, out, in, len, iv))
-+		return -EINVAL;
-+	else
-+		return 0;
-+}
++#endif /* CONFIG_X86_64 */
 +
  static int aeskl_skcipher_setkey(struct crypto_skcipher *tfm, const u8 *key,
  				 unsigned int len)
  {
-@@ -142,6 +173,26 @@ static int ecb_decrypt(struct skcipher_request *req)
- 		return ecb_crypt_common(req, aesni_ecb_dec);
+@@ -193,6 +215,20 @@ static int cbc_decrypt(struct skcipher_request *req)
+ 		return cbc_crypt_common(req, aesni_cbc_dec);
  }
  
-+static int cbc_encrypt(struct skcipher_request *req)
++#ifdef CONFIG_X86_64
++
++static int ctr_crypt(struct skcipher_request *req)
 +{
 +	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
 +
 +	if (likely(keylength(crypto_skcipher_ctx(tfm)) != AES_KEYSIZE_192))
-+		return cbc_crypt_common(req, aeskl_cbc_enc);
++		return ctr_crypt_common(req, aeskl_ctr_enc, aeskl_enc);
 +	else
-+		return cbc_crypt_common(req, aesni_cbc_enc);
++		return ctr_crypt_common(req, aesni_ctr_enc, aesni_enc);
 +}
 +
-+static int cbc_decrypt(struct skcipher_request *req)
-+{
-+	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-+
-+	if (likely(keylength(crypto_skcipher_ctx(tfm)) != AES_KEYSIZE_192))
-+		return cbc_crypt_common(req, aeskl_cbc_dec);
-+	else
-+		return cbc_crypt_common(req, aesni_cbc_dec);
-+}
++#endif /* CONFIG_X86_64 */
 +
  static struct skcipher_alg aeskl_skciphers[] = {
  	{
  		.base = {
-@@ -158,6 +209,22 @@ static struct skcipher_alg aeskl_skciphers[] = {
+@@ -225,6 +261,25 @@ static struct skcipher_alg aeskl_skciphers[] = {
  		.setkey		= aeskl_skcipher_setkey,
- 		.encrypt	= ecb_encrypt,
- 		.decrypt	= ecb_decrypt,
+ 		.encrypt	= cbc_encrypt,
+ 		.decrypt	= cbc_decrypt,
++#ifdef CONFIG_X86_64
 +	}, {
 +		.base = {
-+			.cra_name		= "__cbc(aes)",
-+			.cra_driver_name	= "__cbc-aes-aeskl",
++			.cra_name		= "__ctr(aes)",
++			.cra_driver_name	= "__ctr-aes-aeskl",
 +			.cra_priority		= 200,
 +			.cra_flags		= CRYPTO_ALG_INTERNAL,
-+			.cra_blocksize		= AES_BLOCK_SIZE,
++			.cra_blocksize		= 1,
 +			.cra_ctxsize		= CRYPTO_AES_CTX_SIZE,
 +			.cra_module		= THIS_MODULE,
 +		},
 +		.min_keysize	= AES_MIN_KEY_SIZE,
 +		.max_keysize	= AES_MAX_KEY_SIZE,
 +		.ivsize		= AES_BLOCK_SIZE,
++		.chunksize	= AES_BLOCK_SIZE,
 +		.setkey		= aeskl_skcipher_setkey,
-+		.encrypt	= cbc_encrypt,
-+		.decrypt	= cbc_decrypt,
++		.encrypt	= ctr_crypt,
++		.decrypt	= ctr_crypt,
++#endif
  	}
  };
  
