@@ -2,81 +2,96 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA2245B0BC
-	for <lists+linux-crypto@lfdr.de>; Wed, 24 Nov 2021 01:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D7E45B28A
+	for <lists+linux-crypto@lfdr.de>; Wed, 24 Nov 2021 04:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239878AbhKXAeH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 23 Nov 2021 19:34:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240741AbhKXAdW (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 23 Nov 2021 19:33:22 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD944C06174A
-        for <linux-crypto@vger.kernel.org>; Tue, 23 Nov 2021 16:30:13 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id b16so1561063ljf.12
-        for <linux-crypto@vger.kernel.org>; Tue, 23 Nov 2021 16:30:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=zejIlZjGjvzTKDlE9IDzfKlgpBmC2NhrN3/klGVK4ZA=;
-        b=BOX3BoYl8kkZ5wFN2RxfUWqF4uAeNeD/+IzWEt54T3NegeDW3kvmC1tjePiuT9gEvS
-         MOLztt7Wjvy5eZulYcF6znumaO/KNjeiw9D//NS8sNb7wE/sdCw0VrUoWjat/wEjWn5j
-         qVu5Zavfqhu3ZQ00fuaf7FMDOy3fspjxfTSrl7MmgAJmTDs90ffoMJ6Ff2HJ5nSKwS7T
-         w0JO/+BI7gjN5U0yozjq9S7/9tkxMlMRGow2lE9FzHKkqzwN6fbnchKyGsR6+mgXQTck
-         pWLTdmyfEJAP0oRJiCXtZe62i2MRh00UILPLNclfrJWrOvA6s2ypTc5JDvfizNyL9NlL
-         74qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=zejIlZjGjvzTKDlE9IDzfKlgpBmC2NhrN3/klGVK4ZA=;
-        b=Hwg7l+xgoKwKrFv5Q8LfZ+kbCMmdnUWnvgBBXYwjfYe4adldMw5oEnNN5zbcuLktOw
-         MYvirx57nl05Edmn9K+dKPO5EspIdOOUKTdYNWbp6mSHGBw8dQCBbomxR4JZaWf8rA1a
-         3xnXapPY1w6pvG6gArvBO55sMGWNGTkLnO81lFsU7sWDN8ScYyBwign5Ti9WWY1cdGid
-         8URw8z6EZGwvegbBzM8Q0Ey81bhQ3gj80/Q94BgNE2VzXE7ePwr6rBPEs1e+8xpmXVx/
-         DLiMt/Hz/DbJlk4CigUrRhcmLok24P9P/sFvBIPTeOML1+m10D6NsOqYNDgEuou33PCu
-         KDnA==
-X-Gm-Message-State: AOAM531gFqS74oCY7H6Uv/SlRwKlI+EgoFb++H8npWoiS+CQmnqFIBXi
-        JasTdR/WMfL+YXkDp3CSoSbNRpp2Lt9qg8aP7vM=
-X-Google-Smtp-Source: ABdhPJxLTUC6kGdE8pxRp4n8/ygKhHFI1AmEo6EpxKA59xLAFn4mtvai0Qp/t27WYBSjj3SeGNCyj8/7Xk1LvEzu/g0=
-X-Received: by 2002:a2e:a5c9:: with SMTP id n9mr10018243ljp.512.1637713811299;
- Tue, 23 Nov 2021 16:30:11 -0800 (PST)
+        id S240809AbhKXDUi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 23 Nov 2021 22:20:38 -0500
+Received: from mga09.intel.com ([134.134.136.24]:56227 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240802AbhKXDUi (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 23 Nov 2021 22:20:38 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="235012512"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="235012512"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 19:17:29 -0800
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="674714109"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.28.39]) ([10.255.28.39])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 19:17:25 -0800
+Subject: Re: [kbuild-all] Re: [PATCH] crypto: fix flexible_array.cocci
+ warnings
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Julia Lawall <julia.lawall@inria.fr>
+Cc:     Megha Dey <megha.dey@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Tomasz Kantecki <tomasz.kantecki@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-crypto@vger.kernel.org
+References: <alpine.DEB.2.22.394.2111121154320.2916@hadrien>
+ <20211120040625.GA25678@gondor.apana.org.au>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <4514c646-cae1-cd50-8a1c-1a550593c7a8@intel.com>
+Date:   Wed, 24 Nov 2021 11:17:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Received: by 2002:aa6:d981:0:b0:14f:34a7:74b2 with HTTP; Tue, 23 Nov 2021
- 16:30:10 -0800 (PST)
-Reply-To: rubenherbert789@gmail.com
-From:   Ruben Herbert <mamadouflorent8@gmail.com>
-Date:   Wed, 24 Nov 2021 01:30:10 +0100
-Message-ID: <CABYuY+XWdbFU0oCr_rDuVWoSdopU2vEES0YsaTyknFdVwNh=QA@mail.gmail.com>
-Subject: ABANDONED FUND
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211120040625.GA25678@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear Beneficiary,
+Hi Herbert,
 
-How are you today? I need the following answers from you immediately:
+On 11/20/2021 12:06 PM, Herbert Xu wrote:
+> On Fri, Nov 12, 2021 at 11:56:22AM +0100, Julia Lawall wrote:
+>> From: kernel test robot <lkp@intel.com>
+>>
+>>   Zero-length and one-element arrays are deprecated, see
+>>   Documentation/process/deprecated.rst
+>>   Flexible-array members should be used instead.
+>>
+>> Generated by: scripts/coccinelle/misc/flexible_array.cocci
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+>> ---
+>>
+>> tree:   https://github.com/meghadey/crypto crypto-avx512
+>> head:   9c8c2ca77f6e2575a130bddb9767d068e1162d71
+>> commit: 377aede9f10ee28be954473668bc6d33c6c9db75 [5/6] crypto: aesni - AVX512 version of AESNI-GCM using VPCLMULQDQ
 
-Did you abandon your funds of US$35,000,000.00?
+Sorry for the noise, this patch tries to fix the above commit, it seems
+the commit is still in the private tree, we have fixed it to avoid 
+sending to maintainers.
 
-Did you authorize a lawyer to claim the fund on your behalf and that
-the funds should be sent to the below account details?;
+Best Regards,
+Rong Chen
 
-Canadian Imperial Bank of Commerce
-1120 Grant Ave Wpg Mb Canada R3M 2A6
-Usd Acct No: 01007-93-17899
-Swift Code: cibccatt
-Beneficiary Name: Fitzroy Joseph
-
-Kindly get back to me immediately to avoid paying the wrong person.
-
-I await your urgent response.
-
-Yours sincerely,,
-Dr. Ruben Herbert
-Head, Financial System Stability,
-Central Bank of Nigeria (CBN)
+>> :::::: branch date: 7 weeks ago
+>> :::::: commit date: 7 weeks ago
+>>
+>>   aesni-intel_glue.c |    2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> --- a/arch/x86/crypto/aesni-intel_glue.c
+>> +++ b/arch/x86/crypto/aesni-intel_glue.c
+>> @@ -87,7 +87,7 @@ struct gcm_context_data {
+>>   	u64 partial_block_len;
+>>   	u64 unused;
+>>   	/* Allocate space for hash_keys later */
+>> -	u8 hash_keys[0];
+>> +	u8 hash_keys[];
+> 
+> Which tree did this come from? Not only is this not zero in my
+> tree, but it seems to have never been zero in the git history.
+> 
+> Thanks,
+> 
