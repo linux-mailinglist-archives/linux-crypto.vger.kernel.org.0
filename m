@@ -2,219 +2,129 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4694657A3
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 Dec 2021 21:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEEF94659E8
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 Dec 2021 00:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353266AbhLAU42 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 1 Dec 2021 15:56:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
+        id S1353811AbhLAXm3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 1 Dec 2021 18:42:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353232AbhLAUz2 (ORCPT
+        with ESMTP id S1343755AbhLAXm3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 1 Dec 2021 15:55:28 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3660C06174A;
-        Wed,  1 Dec 2021 12:52:07 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id z6so18649904plk.6;
-        Wed, 01 Dec 2021 12:52:07 -0800 (PST)
+        Wed, 1 Dec 2021 18:42:29 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA0AC061748
+        for <linux-crypto@vger.kernel.org>; Wed,  1 Dec 2021 15:39:07 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id j5-20020a17090a318500b001a6c749e697so1923883pjb.1
+        for <linux-crypto@vger.kernel.org>; Wed, 01 Dec 2021 15:39:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Z+SJkx7gZpNSKY4hP5L7YJpSZTXuOMEA5gcyCCsEvsg=;
-        b=HlQUEM8THquWt6x0dLOJGG/7ST0cRNjhD2RO0NxDe9QDgSRYzpjnChlTkF+gPXhz62
-         qVgHu+jifwqKySgi9hwWXucaQbivTi3wBwJEieRnadI95e+5Dzfjd4spx/f3E6IqpqwR
-         lpSQZy00/0SlBL4eK7QRcv0WUfW3zqgVt8QkZZ4J1ibQiZi36+bieo67cjUPwRDAwDIB
-         R5Jq3sfjH22mxgMpjYrqRm/mwO/ZJfGXda01W/4VRt2MREcIyfQBQraq40rIlrfsV825
-         6Vm5O3PqWnB00RDHSa+RE2CtLEJCLuX2Q1TVb91F/wl1g5qZk69eWgpneUfXRnExaumJ
-         zG1Q==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UawCFas+5bZ9exexPy9lvfbEbmZL7VR3eGOrgATJsH8=;
+        b=A8eNGOFu0vIOMaHT4l7C4EoIimLChbTvJpK/SjbKL+cGy7flSP2NYafcB63LvueIup
+         71/cJtJUgSz+4eibG0/SOn2Xm1bVGwsersyiW63GCH1NxiMc5tlcHFN34TbR6YtloFcN
+         USJwViJRknUN91ndNZl/fKfQRnFt7j8LvKk2Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Z+SJkx7gZpNSKY4hP5L7YJpSZTXuOMEA5gcyCCsEvsg=;
-        b=h1lVr1At93Gj6bXPHRuhpVmU00IYelLkhCvt0QPbG3kdErq9ypb3UtL3zGrWTMIY/L
-         MUkbUx5OKXfWt9uSD3XexvK94o8HrfVqQa7yrwJC3cigDSZQa5J2zOBJ1211mpE1g8hK
-         YTjV/vhtHUJCtHk9KzzTH3dr7cq2JUvd2MtoTEUZQH2YP12Ht8EpkRZ9748koikRPtgy
-         ON2+6+of5CAZtGzRUEOSlTY8z0wR+ivrj0zZevOmsNWosmcIurEGdp4ZguKt3AN0UvY0
-         X2YvyVU11Bsgd6SC1GYMegMA/lWBdRgA9kKSca00D16ZgpOhgWvP7qVcxFArmvH4j6Fb
-         sdhQ==
-X-Gm-Message-State: AOAM532mYqSlR60Gxf0MsbX9+Ithp8/F1LeHO4bftgRZ+9abgDctxRsm
-        ABpDKrtzhH2Xb6m7cecK3rObQ8JnG1Q=
-X-Google-Smtp-Source: ABdhPJycFkYcanZu711/X/cGVfD11g1lE+wluwV3VRtNHqKIZWwA+CdO5KEBLg047YADwpUvmJSe5Q==
-X-Received: by 2002:a17:90b:19c8:: with SMTP id nm8mr725245pjb.163.1638391926915;
-        Wed, 01 Dec 2021 12:52:06 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id p20sm729117pfw.96.2021.12.01.12.52.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UawCFas+5bZ9exexPy9lvfbEbmZL7VR3eGOrgATJsH8=;
+        b=RrjcuRbXtGrzPsTEf6dvYnHyWeqz4VLX/ptiq46fIW7aDXPNnhrZwc7B53lm0rpgPC
+         sXhosAAC3IyX7B5feUPotKHQYjf1sYc5DVS0Hfdigqs7jcslzKHvufoZmwmyH4704vme
+         FMyO61FHBXK3TxicW9kptD2vrPfzLCdDdF3Yz+HGOIBP9zR8GsvgLBuy7K+Coje4aUZx
+         7eBcbK7f0uKkfWqwsn66tUIWBgjdzSNDaxGD4uvI8OkR8vg0fDH84xpv7uL7FhPCk6HW
+         VrAJKLOhQ7+3drrju6lKyMx7jYfZGOLS8TcgU6kEVoG3XGTXA2yfTKrZW+Jw4zbCSVOd
+         WeZg==
+X-Gm-Message-State: AOAM5301dBjiNZmhpAsTYKANiTBvdbAxbLB3ugFLnVSo6AQlJLy/Sq8c
+        Oibdpe/NxNl3T7O5DR7m8VOCQA==
+X-Google-Smtp-Source: ABdhPJyxw1qs9NtdzCmDjuuVZNqmvVXK2zwTG8U0NkrN5jw/rru6EDAv7ww9fqfBoloYaFmt+iz8qQ==
+X-Received: by 2002:a17:90b:4a0f:: with SMTP id kk15mr1639024pjb.223.1638401947451;
+        Wed, 01 Dec 2021 15:39:07 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q17sm1024190pfu.117.2021.12.01.15.39.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Dec 2021 12:52:06 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     devicetree@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM BCM7XXX ARM
-        ARCHITECTURE), Gregory Fong <gregory.0xf0@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Markus Mayer <mmayer@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Doug Berger <opendmb@gmail.com>,
-        linux-ide@vger.kernel.org (open list:LIBATA SUBSYSTEM (Serial and
-        Parallel ATA drivers)), linux-kernel@vger.kernel.org (open list),
-        linux-gpio@vger.kernel.org (open list:GPIO SUBSYSTEM),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX
-        ARM ARCHITECTURE),
-        linux-mmc@vger.kernel.org (open list:MULTIMEDIA CARD (MMC), SECURE
-        DIGITAL (SD) AND...),
-        linux-pwm@vger.kernel.org (open list:PWM SUBSYSTEM),
-        linux-crypto@vger.kernel.org (open list:HARDWARE RANDOM NUMBER
-        GENERATOR CORE),
-        linux-rtc@vger.kernel.org (open list:REAL TIME CLOCK (RTC) SUBSYSTEM),
-        linux-pm@vger.kernel.org (open list:THERMAL),
-        linux-usb@vger.kernel.org (open list:USB SUBSYSTEM)
-Subject: [PATCH 14/14] dt-bindings: usb: Convert BDC to YAML
-Date:   Wed,  1 Dec 2021 12:51:10 -0800
-Message-Id: <20211201205110.41656-15-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211201205110.41656-1-f.fainelli@gmail.com>
-References: <20211201205110.41656-1-f.fainelli@gmail.com>
+        Wed, 01 Dec 2021 15:39:06 -0800 (PST)
+Date:   Wed, 1 Dec 2021 15:39:06 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Geliang Tang <geliangtang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Haren Myneni <haren@us.ibm.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        linux-crypto <linux-crypto@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH 1/9] crypto: add zbufsize() interface
+Message-ID: <202112011529.699092F@keescook>
+References: <20180802215118.17752-1-keescook@chromium.org>
+ <20180802215118.17752-2-keescook@chromium.org>
+ <20180807094513.vstt5dhbb7n6kvds@gondor.apana.org.au>
+ <CAGXu5j+dPqpJZbO_AuGsNqJzq7XGcB2deXA5RELWv1-Ywi5QOA@mail.gmail.com>
+ <20180808025319.32d57wtjpyyapwo5@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180808025319.32d57wtjpyyapwo5@gondor.apana.org.au>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Convert the Broadcom BDC device controller Device Tree binding to YAML
-to help with validation.
+On Wed, Aug 08, 2018 at 10:53:19AM +0800, Herbert Xu wrote:
+> On Tue, Aug 07, 2018 at 11:10:10AM -0700, Kees Cook wrote:
+> >
+> > > Please don't add new features to the old compress interface.  Any
+> > > new improvements should be added to scomp/acomp only.  Users who
+> > > need new features should be converted.
+> > 
+> > So, keep crypto_scomp_zbufsize() and drop crypto_comp_zbufsize() and
+> > crypto_zbufsize()? Should I add crypto_acomp_zbufsize()?
+> 
+> Yes and yes.  acomp is the primary interface and should support
+> all the features in scomp.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- .../devicetree/bindings/usb/brcm,bdc.txt      | 29 ------------
- .../devicetree/bindings/usb/brcm,bdc.yaml     | 46 +++++++++++++++++++
- MAINTAINERS                                   |  2 +-
- 3 files changed, 47 insertions(+), 30 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/usb/brcm,bdc.txt
- create mode 100644 Documentation/devicetree/bindings/usb/brcm,bdc.yaml
+*thread necromancy*
 
-diff --git a/Documentation/devicetree/bindings/usb/brcm,bdc.txt b/Documentation/devicetree/bindings/usb/brcm,bdc.txt
-deleted file mode 100644
-index c9f52b97cef1..000000000000
---- a/Documentation/devicetree/bindings/usb/brcm,bdc.txt
-+++ /dev/null
-@@ -1,29 +0,0 @@
--Broadcom USB Device Controller (BDC)
--====================================
--
--Required properties:
--
--- compatible: must be one of:
--                "brcm,bdc-udc-v2"
--                "brcm,bdc"
--- reg: the base register address and length
--- interrupts: the interrupt line for this controller
--
--Optional properties:
--
--On Broadcom STB platforms, these properties are required:
--
--- phys: phandle to one or two USB PHY blocks
--        NOTE: Some SoC's have a single phy and some have
--        USB 2.0 and USB 3.0 phys
--- clocks: phandle to the functional clock of this block
--
--Example:
--
--        bdc@f0b02000 {
--                compatible = "brcm,bdc-udc-v2";
--                reg = <0xf0b02000 0xfc4>;
--                interrupts = <0x0 0x60 0x0>;
--                phys = <&usbphy_0 0x0>;
--                clocks = <&sw_usbd>;
--        };
-diff --git a/Documentation/devicetree/bindings/usb/brcm,bdc.yaml b/Documentation/devicetree/bindings/usb/brcm,bdc.yaml
-new file mode 100644
-index 000000000000..48831b62ab31
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/brcm,bdc.yaml
-@@ -0,0 +1,46 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/brcm,bdc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Broadcom USB Device Controller (BDC)
-+
-+maintainers:
-+  - Al Cooper <alcooperx@gmail.com>
-+  - Florian Fainelli <f.fainelli@gmail.com>
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - brcm,bdc-udc-v2
-+          - brcm,bdc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts: true
-+
-+  phys:
-+    $ref: "/schemas/types.yaml#/definitions/phandle-array"
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+        bdc@f0b02000 {
-+                compatible = "brcm,bdc-udc-v2";
-+                reg = <0xf0b02000 0xfc4>;
-+                interrupts = <0x0 0x60 0x0>;
-+                phys = <&usbphy_0 0x0>;
-+                clocks = <&sw_usbd>;
-+        };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 11808be8e128..2f657775eb59 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3690,7 +3690,7 @@ M:	Al Cooper <alcooperx@gmail.com>
- L:	linux-usb@vger.kernel.org
- L:	bcm-kernel-feedback-list@broadcom.com
- S:	Maintained
--F:	Documentation/devicetree/bindings/usb/brcm,bdc.txt
-+F:	Documentation/devicetree/bindings/usb/brcm,bdc.yaml
- F:	drivers/usb/gadget/udc/bdc/
- 
- BROADCOM BMIPS CPUFREQ DRIVER
+Okay, I'm looking at this again because of the need in the module loader
+to know "worst case decompression size"[1]. I am at a loss for how (or
+why) the acomp interface is the "primary interface".
+
+For modules, all that would be wanted is this, where the buffer size can
+be allocated on demand:
+
+u8 *decompressed = NULL;
+size_t decompressed_size = 0;
+
+decompressed = decompress(decompressed, compressed, compressed_size, &decompressed_size);
+
+For pstore, the compressed_size is fixed and the decompression buffer
+must be preallocated (for catching panic dumps), so the worst-case size
+needs to be known in advance:
+
+u8 *decompressed = NULL;
+size_t decompressed_worst_size = 0;
+size_t decompressed_size = 0;
+
+worst_case(&decompressed_worst_size, compressed_size);
+
+decompressed = kmalloc(decompressed_worst_size, GFP_KERNEL);
+...
+decompressed_size = decompressed_worst_size;
+decompress(decompressed, compressed, compressed_size, &decompressed_size);
+
+
+I don't see anything like this in the kernel for handling a simple
+buffer-to-buffer decompression besides crypto_comp_decompress(). The
+acomp interface is wildly over-complex for this. What the right
+way to do this? (I can't find any documentation that discusses
+compress/decompress[2].)
+
+-Kees
+
+[1] https://lore.kernel.org/linux-modules/YaMYJv539OEBz5B%2F@google.com/
+[2] https://www.kernel.org/doc/html/latest/crypto/api-samples.html
+
 -- 
-2.25.1
-
+Kees Cook
