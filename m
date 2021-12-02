@@ -2,155 +2,176 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7FB465F27
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 Dec 2021 09:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B531466665
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 Dec 2021 16:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356039AbhLBINp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 2 Dec 2021 03:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345488AbhLBINh (ORCPT
+        id S1358939AbhLBP1d (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 2 Dec 2021 10:27:33 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:42080 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358938AbhLBP1c (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 2 Dec 2021 03:13:37 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B90C061574
-        for <linux-crypto@vger.kernel.org>; Thu,  2 Dec 2021 00:10:15 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id b68so27163187pfg.11
-        for <linux-crypto@vger.kernel.org>; Thu, 02 Dec 2021 00:10:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vzt0vc1FGLcHyQtAyTO4rOSF0GuAETX/HuyJW5j/lao=;
-        b=XWkB08lWmrH2SQ4esLxVUu3v5FVno5qn5ViFCwXLRAf1VyWqBQ/89rAInKjCntXgKI
-         MpBDE6CUSAjXCIgaNslrNGEdTbpsM8cODFkrtPHNXZk00MMItZVvyGoBpNrVW0vIJmBP
-         mEEImeCN6fTnhkWqDiUn9VRy5XFEUOHvKBwLQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vzt0vc1FGLcHyQtAyTO4rOSF0GuAETX/HuyJW5j/lao=;
-        b=4gPu8nS/HubEzwRXjgII5LXzbg4eFp308AKpI7YC7Wh7c7cb3Jdxc1EWSqhTdf50ON
-         wx0FeBjTjDHClKNwzYYElSXz/opKym/N72u+kazFmOHEKNhgtnrxLAvoDco43tr4gV3a
-         lxsivVuu3tyET3luxc7czMViMkP96mUEjclrxr9linMXRsZS8nqbWI5UWstShlLTScmL
-         kRKT/1ifQ0zdedBgtDR5ek4kyF5SifwNlvY+kiEmG5YLeTwl8kHaEghbiEhHZ/JY8Xic
-         hMmEyb/xxNfaQxf+lDhz3pwJtA72rciQkyCp8McOmWila0K7kpqHsiDSVT/79cNvSsXr
-         l2Ew==
-X-Gm-Message-State: AOAM532jtRnNFbA7sCbH3eoAtbMyBFoyI4u5eGwm9dHBaf2D3b2uxNRJ
-        uFr/rrjfmuUV0qWWbilJ/OSXAw==
-X-Google-Smtp-Source: ABdhPJw/sPQlWtsiDdrnHCkQ1KJTOhiMndJZ9z0mo6cajV0qfgkhQZKfdE8UEwXwti2XKg6yid9org==
-X-Received: by 2002:a65:4d47:: with SMTP id j7mr467748pgt.472.1638432614306;
-        Thu, 02 Dec 2021 00:10:14 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d17sm2157030pfo.40.2021.12.02.00.10.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Dec 2021 00:10:13 -0800 (PST)
-Date:   Thu, 2 Dec 2021 00:10:13 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Geliang Tang <geliangtang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Haren Myneni <haren@us.ibm.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH 1/9] crypto: add zbufsize() interface
-Message-ID: <202112012304.973C04859C@keescook>
-References: <20180802215118.17752-1-keescook@chromium.org>
- <20180802215118.17752-2-keescook@chromium.org>
- <20180807094513.vstt5dhbb7n6kvds@gondor.apana.org.au>
- <CAGXu5j+dPqpJZbO_AuGsNqJzq7XGcB2deXA5RELWv1-Ywi5QOA@mail.gmail.com>
- <20180808025319.32d57wtjpyyapwo5@gondor.apana.org.au>
- <202112011529.699092F@keescook>
- <20211202015820.GB8138@gondor.apana.org.au>
- <202112011947.7FA0A587C@keescook>
- <20211202035727.GC8138@gondor.apana.org.au>
+        Thu, 2 Dec 2021 10:27:32 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 9A9B71FDFC;
+        Thu,  2 Dec 2021 15:24:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1638458648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=3jrv8XXfzAYeFjpUwXdrOdb6w3FpaD0XbnQueuej7IU=;
+        b=UigLECO3ezIGusjqzcpDNd788/GNTSui1hfE3raDsejYUyCXQdSl/k8e59SxZzioy9zank
+        0paZFZ5q6pL5DcRZHfY0Y74rq+3AJ7Ai13bCt4cX9ribk9knDR/3IhXnxkD7iV0DLn8wai
+        m+poG4fo0R/5eWdMIlnUdeLe2VcU0u8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1638458648;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=3jrv8XXfzAYeFjpUwXdrOdb6w3FpaD0XbnQueuej7IU=;
+        b=3uPFjB+ZL9MGblVoMQMimn8eAlw2F1Ae6st+d0T4PTYk8bdHdQpHHratiSE/US26+wQ6xV
+        j2dtxavVV59MqSAg==
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id DFFF1A3B8A;
+        Thu,  2 Dec 2021 15:24:07 +0000 (UTC)
+Received: by adalid.arch.suse.de (Postfix, from userid 16045)
+        id 1B6C55191DE8; Thu,  2 Dec 2021 16:24:07 +0100 (CET)
+From:   Hannes Reinecke <hare@suse.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     Christoph Hellwig <hch@lst.de>, Keith Busch <keith.busch@wdc.com>,
+        linux-nvme@lists.infradead.org, linux-crypto@vger.kernel.org,
+        Hannes Reinecke <hare@suse.de>
+Subject: [PATCHv8 00/12] nvme: In-band authentication support
+Date:   Thu,  2 Dec 2021 16:23:46 +0100
+Message-Id: <20211202152358.60116-1-hare@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211202035727.GC8138@gondor.apana.org.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Dec 02, 2021 at 02:57:27PM +1100, Herbert Xu wrote:
-> On Wed, Dec 01, 2021 at 07:51:25PM -0800, Kees Cook wrote:
-> >
-> > But the scomp API appears to be "internal only":
-> > 
-> > include/crypto/internal/scompress.h:static inline int crypto_scomp_decompress(struct crypto_scomp *tfm,
-> > 
-> > What's the correct API calling sequence to do a simple decompress?
-> 
-> OK we haven't wired up scomp to users because there was no user
-> to start with.  So if you like you can create it just as we did
-> for shash.
-> 
-> The question becomes do you want to restrict your use-case to
-> synchronous-only algorithms, i.e., you will never be able to access
-> offload devices that support compression?
+Hi all,
 
-I'd rather just have a simple API that hid all the async (or sync) details
-and would work with whatever was the "best" implementation. Neither pstore
-nor the module loader has anything else to do while decompression happens.
+recent updates to the NVMe spec have added definitions for in-band
+authentication, and seeing that it provides some real benefit
+especially for NVMe-TCP here's an attempt to implement it.
 
-> Typically this would only make sense if you process a very small
-> amount of data, but this seems counter-intuitive with compression
-> (it does make sense with hashing where we often hash just 16 bytes).
+The ffdhe implementation given here is preliminary; there is a
+patchset from Nicolai Stange to implement FFDHE as a 'real'
+crypto algorithm, and also implements ephemeral keys for in-kernel DH.
+Once that is merged I'll be updating this patchset.
 
-pstore works on usually a handful of small buffers. (One of the largest
-I've seen is used by Chrome OS: 6 128K buffers.) Speed is not important
-(done at most 6 times at boot, and 1 time on panic), and, in fact,
-offload is probably a bad idea just to keep the machinery needed to
-store a panic log as small as possible.
+Also note that this is just for in-band authentication. Secure
+concatenation (ie starting TLS with the negotiated parameters) is not
+implemented; one would need to update the kernel TLS implementation
+for this, which at this time is beyond scope.
 
-The module loader is also doing non-fast-path decompression of modules,
-with each of those being maybe a couple megabytes. This isn't fast-path
-either: if it's not the kernel, it'd be userspace doing the decompression,
-and it only happens once per module, usually at boot.
+The nvme-cli support has already been merged; please use the latest
+nvme-cli git repository to build the most recent version.
 
-Why can't crypto_comp_*() be refactored to wrap crypto_acomp_*() (and
-crypto_scomp_*())? I can see so many other places that would benefit from
-this. Here are just some of the places that appear to be hand-rolling
-compression/decompression routines that might benefit from this kind of
-code re-use and compression alg agnosticism:
+A copy of this patchset can be found at
+git://git.kernel.org/pub/scm/linux/kernel/git/hare/scsi-devel
+branch auth.v8
 
-fs/pstore/platform.c
-drivers/gpu/drm/i915/i915_gpu_error.c
-kernel/power/swap.c
-arch/powerpc/kernel/nvram_64.c
-security/apparmor/policy_unpack.c
-drivers/base/regmap/regcache-lzo.c
-fs/btrfs/lzo.c
-fs/btrfs/zlib.c
-fs/f2fs/compress.c
-fs/jffs2/compr_lzo.c
-drivers/net/ethernet/chelsio/cxgb4/cudbg_zlib.h
-drivers/net/ppp/ppp_deflate.c
-fs/jffs2/compr_lzo.c
-fs/jffs2/compr_zlib.c
+As usual, comments and reviews are welcome.
 
-But right now there isn't a good way to just do a simple one-off:
+Changes to v7:
+- Space out hash list and dhgroup list in nvme negotiate data
+  to be conformant with the spec
+- Update sequence number handling to start with a random value and
+  ignore '0' as mandated by the spec
+- Update nvme_auth_generate_key to return the key as suggested by Sagi
+- Add nvmet_parse_fabrics_io_cmd() as suggested by hch
 
-	dst = decompress_named(alg_name, dst, dst_len, src, src_len);
+Changes to v6:
+- Use 'u8' for DH group id and hash id
+- Use 'struct nvme_dhchap_key'
+- Rename variables to drop 'DHCHAP'
+- Include reviews from Chaitanya
 
-or if it happens more than once:
+Changes to v5:
+- Unify nvme_auth_generate_key()
+- Unify nvme_auth_extract_key()
+- Fixed bug where re-authentication with wrong controller key would not fail
+- Include reviews from Sagi
 
-	alg = compressor(alg_name);
-	set_comp_alg_param(param, value);
-        ...
-        for (...) {
-		...
-		dst = compress(alg, dst, dst_len, src, src_len);
-		...
-	}
-        ...
-        free_compressor(alg);
+Changes to v4:
+- Validate against blktest suite
+- Fixup base64 decoding
+- Transform secret with correct hmac algorithm
 
--Kees
+Changes to v3:
+- Renamed parameter to 'dhchap_ctrl_key'
+- Fixed bi-directional authentication
+- Included reviews from Sagi
+- Fixed base64 algorithm for transport encoding
+
+Changes to v2:
+- Dropped non-standard algorithms
+- Reworked base64 based on fs/crypto/fname.c
+- Fixup crash with no keys
+
+Changes to the original submission:
+- Included reviews from Vladislav
+- Included reviews from Sagi
+- Implemented re-authentication support
+- Fixed up key handling
+
+Hannes Reinecke (12):
+  crypto: add crypto_has_shash()
+  crypto: add crypto_has_kpp()
+  crypto/ffdhe: Finite Field DH Ephemeral Parameters
+  lib/base64: RFC4648-compliant base64 encoding
+  nvme: add definitions for NVMe In-Band authentication
+  nvme-fabrics: decode 'authentication required' connect error
+  nvme: Implement In-Band authentication
+  nvme-auth: Diffie-Hellman key exchange support
+  nvmet: parse fabrics commands on io queues
+  nvmet: Implement basic In-Band Authentication
+  nvmet-auth: Diffie-Hellman key exchange support
+  nvmet-auth: expire authentication sessions
+
+ crypto/Kconfig                         |    8 +
+ crypto/Makefile                        |    1 +
+ crypto/ffdhe_helper.c                  |  880 +++++++++++++
+ crypto/kpp.c                           |    6 +
+ crypto/shash.c                         |    6 +
+ drivers/nvme/host/Kconfig              |   12 +
+ drivers/nvme/host/Makefile             |    1 +
+ drivers/nvme/host/auth.c               | 1569 ++++++++++++++++++++++++
+ drivers/nvme/host/auth.h               |   42 +
+ drivers/nvme/host/core.c               |  141 ++-
+ drivers/nvme/host/fabrics.c            |   83 +-
+ drivers/nvme/host/fabrics.h            |    7 +
+ drivers/nvme/host/nvme.h               |   31 +
+ drivers/nvme/host/rdma.c               |    1 +
+ drivers/nvme/host/tcp.c                |    1 +
+ drivers/nvme/host/trace.c              |   32 +
+ drivers/nvme/target/Kconfig            |   13 +
+ drivers/nvme/target/Makefile           |    1 +
+ drivers/nvme/target/admin-cmd.c        |    6 +-
+ drivers/nvme/target/auth.c             |  523 ++++++++
+ drivers/nvme/target/configfs.c         |  138 ++-
+ drivers/nvme/target/core.c             |   15 +
+ drivers/nvme/target/fabrics-cmd-auth.c |  534 ++++++++
+ drivers/nvme/target/fabrics-cmd.c      |   55 +-
+ drivers/nvme/target/nvmet.h            |   75 +-
+ include/crypto/ffdhe.h                 |   24 +
+ include/crypto/hash.h                  |    2 +
+ include/crypto/kpp.h                   |    2 +
+ include/linux/base64.h                 |   16 +
+ include/linux/nvme.h                   |  188 ++-
+ lib/Makefile                           |    2 +-
+ lib/base64.c                           |  103 ++
+ 32 files changed, 4503 insertions(+), 15 deletions(-)
+ create mode 100644 crypto/ffdhe_helper.c
+ create mode 100644 drivers/nvme/host/auth.c
+ create mode 100644 drivers/nvme/host/auth.h
+ create mode 100644 drivers/nvme/target/auth.c
+ create mode 100644 drivers/nvme/target/fabrics-cmd-auth.c
+ create mode 100644 include/crypto/ffdhe.h
+ create mode 100644 include/linux/base64.h
+ create mode 100644 lib/base64.c
 
 -- 
-Kees Cook
+2.29.2
+
