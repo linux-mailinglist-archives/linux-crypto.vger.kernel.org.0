@@ -2,289 +2,134 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF37466765
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 Dec 2021 17:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2999E466922
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 Dec 2021 18:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347500AbhLBQEW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 2 Dec 2021 11:04:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        id S1348129AbhLBRea (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 2 Dec 2021 12:34:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhLBQER (ORCPT
+        with ESMTP id S1376333AbhLBRe3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 2 Dec 2021 11:04:17 -0500
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AB3C06174A;
-        Thu,  2 Dec 2021 08:00:54 -0800 (PST)
-Received: by mail-ua1-x92b.google.com with SMTP id n6so56819328uak.1;
-        Thu, 02 Dec 2021 08:00:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U2sZPQd798weph9knxMPMeinCmRojfS8Pfapl2giXJM=;
-        b=jzpN2txMKcqDve7u5vuRi2+S6p2VzSDwNSmwgr2/5gAHntXTVsO8sG16S0sfqGyEUK
-         i5x27dvhK+nePQ8Yv1FdSGF/aNukodMSRBjErWtEoehmr5hBVhIJR+8fxfg19jP0VmLF
-         kDLyA3Rcf/hL1qOS1mxoSB8r7ot6uNKvV7zfnrN4auV/nXuMVm9ZJkxGibAMDmn/SoBe
-         ROrk7jYNBy4vRtneCuKrpYlAlXLqbg6VPDloVm3HCa7hmqiu7kasCokZzPej4vufQLcm
-         C103EOF/74+rSPWk4wyF6S+J+jQQ02uAbpL/QaSvdMcka5dyzJ3Tk3nenPYbgspH8T3x
-         7IvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U2sZPQd798weph9knxMPMeinCmRojfS8Pfapl2giXJM=;
-        b=HRZ3wB4So2gPSE9p3PGj91dZ32K3lvzrb4NYqR0D3dhitPorDeKlwtxAW7rQW0OMGn
-         aijsNxew002ftVOAutuVn3Z3FFYJAYFmUbZQinOWgZqHA7Ucwjb4DOl7WepV6FdPMsVd
-         2p+ZLCA+JoMVdY9jFkBwvrqCm/AG45qyX5PKTXmYqhzxTVJK8M/utfFs6iEpnIp1Jhoh
-         sjTrwkyU2bhK0o9slrhIt556uW4qUz1DgG36+tjrEwOb14Rd/ZEzvTVcwHKCzeJjotUU
-         yWw28KoWYqhGo4K+MN8+jH7A2MdSxIJL5c/Rf5OpcV0fpXNK0BSaQRZY2E7VIxo0ejTS
-         44RA==
-X-Gm-Message-State: AOAM530hese71zCkqrBBUAZbUNYt/GciqMDW2cJ22x9UMV2CGeebhavF
-        ktIsvDhUevpGeD0FvTfafVp21jofAmoM9laPd60=
-X-Google-Smtp-Source: ABdhPJybAreaEhSuo2y2Tbo1YdlgTaiMlhDNtXg5D8QWfVW6+flBljZULwo/BbqpU2HaLcu7I83aSoQSfdCygG1zQUs=
-X-Received: by 2002:ab0:45a8:: with SMTP id u37mr15834000uau.24.1638460853923;
- Thu, 02 Dec 2021 08:00:53 -0800 (PST)
+        Thu, 2 Dec 2021 12:34:29 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158CCC06174A;
+        Thu,  2 Dec 2021 09:31:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=P9ciscIKXRAxAw+4iBT/XYfUrd6b+KlvnMlD147Wp5A=; b=Jgdikhh31azCpOta9MwerTYVma
+        5NbgV0oClwq8Qllp3OykfMWiKUF7dsoRr8zzXKNyWuh1kDKov+Zbw2Ux+0PVd9RdnlsBT3qsDnOiw
+        ecYrJX3Iu1lHIxvK3iOQAeHkcoXvKi/mEJjkObvxUkxSlpV4548XQ+GjIHtLs63AftiRp0gDokQ6b
+        QlseesdLEwARUtzVxA5cMpWYNqMWHZguyESIYKTkukos03LS7dnx5g10H8TqIz0xo2drSecdaPJMz
+        MGBjLLs3R4Wmgzk558p6kbFXXI9bJd9Jq8P3INg6zGi6m9zEgHFyGx9pphyFu51+6HMRFm4oEXdIF
+        AYarYHOw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mspuw-001qkd-UE; Thu, 02 Dec 2021 17:30:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6407D300293;
+        Thu,  2 Dec 2021 18:30:45 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B8D972008DFBA; Thu,  2 Dec 2021 15:21:22 +0100 (CET)
+Date:   Thu, 2 Dec 2021 15:21:22 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     tglx@linutronix.de, bp@suse.de, dave.hansen@linux.intel.com,
+        mingo@kernel.org, luto@kernel.org, x86@kernel.org,
+        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, dan.j.williams@intel.com,
+        charishma1.gairuboyina@intel.com, kumar.n.dwarakanath@intel.com,
+        lalithambika.krishnakumar@intel.com, ravi.v.shankar@intel.com
+Subject: Re: [PATCH v3 11/15] crypto: x86/aes-kl - Support AES algorithm
+ using Key Locker instructions
+Message-ID: <YajWYuwFAy81VP5t@hirez.programming.kicks-ass.net>
+References: <20211124200700.15888-1-chang.seok.bae@intel.com>
+ <20211124200700.15888-12-chang.seok.bae@intel.com>
 MIME-Version: 1.0
-References: <20211201205110.41656-1-f.fainelli@gmail.com> <20211201205110.41656-6-f.fainelli@gmail.com>
-In-Reply-To: <20211201205110.41656-6-f.fainelli@gmail.com>
-From:   Gregory Fong <gregory.0xf0@gmail.com>
-Date:   Thu, 2 Dec 2021 08:00:00 -0800
-Message-ID: <CADtm3G7wiNdDq2fagWeSDd_RV_dyfrNy+5e-VL9OKjwGAWzNtg@mail.gmail.com>
-Subject: Re: [PATCH 05/14] dt-bindings: gpio: Convert Broadcom STB GPIO to YAML
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Markus Mayer <mmayer@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Doug Berger <opendmb@gmail.com>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:MULTIMEDIA CARD (MMC), SECURE DIGITAL (SD) AND..." 
-        <linux-mmc@vger.kernel.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124200700.15888-12-chang.seok.bae@intel.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Florian,
+On Wed, Nov 24, 2021 at 12:06:56PM -0800, Chang S. Bae wrote:
+> +	encodekey256 %eax, %eax
 
-I haven't kept up with the new yaml format, so not entirely sure I
-know what I'm talking about yet, but here are a few comments:
+So this thing uses the fancy new keylocker instructions, however:
 
-On Wed, Dec 1, 2021 at 12:51 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> Convert the Broadcom STB GPIO Device Tree binding to YAML to help with
-> validation.
->
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  .../bindings/gpio/brcm,brcmstb-gpio.txt       |  83 --------------
->  .../bindings/gpio/brcm,brcmstb-gpio.yaml      | 104 ++++++++++++++++++
->  MAINTAINERS                                   |   2 +-
->  3 files changed, 105 insertions(+), 84 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.txt
->  create mode 100644 Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.yaml
->
-> diff --git a/Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.txt b/Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.txt
-> deleted file mode 100644
-> index 5d468ecd1809..000000000000
-> --- a/Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.txt
-> +++ /dev/null
-> @@ -1,83 +0,0 @@
-> [snip]
-> -
-> -- interrupts-extended:
-> -    Alternate form of specifying interrupts and parents that allows for
-> -    multiple parents.  This takes precedence over 'interrupts' and
-> -    'interrupt-parent'.  Wakeup-capable GPIO controllers often route their
-> -    wakeup interrupt lines through a different interrupt controller than the
-> -    primary interrupt line, making this property necessary.
+> diff --git a/crypto/Kconfig b/crypto/Kconfig
+> index 285f82647d2b..784a04433549 100644
+> --- a/crypto/Kconfig
+> +++ b/crypto/Kconfig
+> @@ -1113,6 +1113,50 @@ config CRYPTO_AES_NI_INTEL
+>  	  ECB, CBC, LRW, XTS. The 64 bit version has additional
+>  	  acceleration for CTR.
+>  
+> +config CRYPTO_AES_KL
+> +	tristate "AES cipher algorithms (AES-KL)"
+> +	depends on (LD_VERSION >= 23600) || (LLD_VERSION >= 120000)
+> +	depends on DM_CRYPT
+> +	select X86_KEYLOCKER
+> +	select CRYPTO_AES_NI_INTEL
 
-It looks like interrupts-extended was removed from the new docs, I'm
-assuming that was intentional?
 
-> [snip]
-> diff --git a/Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.yaml b/Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.yaml
-> new file mode 100644
-> index 000000000000..4b7309dc74dc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.yaml
-> @@ -0,0 +1,104 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/gpio/brcm,brcmstb-gpio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Broadcom STB "UPG GIO" GPIO controller
-> +
-> +description: >
-> +  The controller's registers are organized as sets of eight 32-bit
-> +  registers with each set controlling a bank of up to 32 pins.  A single
-> +  interrupt is shared for all of the banks handled by the controller.
-> +
-> +maintainers:
-> +  - Doug Berger <opendmb@gmail.com>
-> +  - Florian Fainelli <f.fainelli@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - brcm,bcm7445-gpio
-> +          - const: brcm,brcmstb-gpio
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description:
+There is no dependency on the compiler actually supporting them..
 
-Missing folded block scalar marker ('>') above
+config AS_HAS_KEYLOCKER
+	def_bool $(as-instr,encodekey256)
 
-> +      Define the base and range of the I/O address space containing
-> +      the brcmstb GPIO controller registers
-> +
-> +  "#gpio-cells":
-> +    const: 2
-> +    description: >
-> +      The first cell is the pin number (within the controller's
-> +      pin space), and the second is used for the following:
-> +      bit[0]: polarity (0 for active-high, 1 for active-low)
-> +
-> +  gpio-controller: true
-> +
-> +  "brcm,gpio-bank-widths":
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    description:
+	depends on AS_HAS_KEYLOCKER
 
-Same here
+Hmm?
 
-> +      Number of GPIO lines for each bank.  Number of elements must
-> +      correspond to number of banks suggested by the 'reg' property.
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description:
-
-While it's not necessary while this is only one line, consider adding
-'>' here too.
-
-> +      The interrupt shared by all GPIO lines for this controller.
-> +
-> +  "#interrupt-cells":
-> +    const: 2
-> +    description: >
-
-This next block could get formatted strangely with '>'; recommend
-using '|' instead
-
-> +      The first cell is the GPIO number, the second should specify
-> +      flags.  The following subset of flags is supported:
-> +      - bits[3:0] trigger type and level flags
-> +        1 = low-to-high edge triggered
-> +        2 = high-to-low edge triggered
-> +        4 = active high level-sensitive
-> +        8 = active low level-sensitive
-> +      Valid combinations are 1, 2, 3, 4, 8.
-> +
-> +  interrupt-controller: true
-> +
-> +  wakeup-source:
-> +    type: boolean
-> +    description: >
-> +      GPIOs for this controller can be used as a wakeup source
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - gpio-controller
-> +  - "#gpio-cells"
-
-Need to add required property "brcm,gpio-bank-widths"
 
 > +
-> +additionalProperties: false
+> +	help
+> +	  Key Locker provides AES SIMD instructions (AES-KL) for secure
+> +	  data encryption and decryption. While this new instruction
+> +	  set is analogous to AES-NI, AES-KL supports to encode an AES
+> +	  key to an encoded form ('key handle') and uses it to transform
+> +	  data instead of accessing the AES key.
 > +
-> +examples:
-> +  - |
-> +    upg_gio: gpio@f040a700 {
-> +        #gpio-cells = <2>;
-> +        #interrupt-cells = <2>;
-> +        compatible = "brcm,bcm7445-gpio", "brcm,brcmstb-gpio";
-> +        gpio-controller;
-> +        interrupt-controller;
-> +        reg = <0xf040a700 0x80>;
-> +        interrupt-parent = <&irq0_intc>;
-> +        interrupts = <0x6>;
-> +        brcm,gpio-bank-widths = <32 32 32 24>;
-> +    };
+> +	  The setkey() transforms an AES key to a key handle, then the AES
+> +	  key is no longer needed for data transformation. A user may
+> +	  displace their keys from possible exposition.
 > +
-> +    upg_gio_aon: gpio@f04172c0 {
-> +        #gpio-cells = <2>;
-> +        #interrupt-cells = <2>;
-> +        compatible = "brcm,bcm7445-gpio", "brcm,brcmstb-gpio";
-> +        gpio-controller;
-> +        interrupt-controller;
-> +        reg = <0xf04172c0 0x40>;
-> +        interrupt-parent = <&irq0_aon_intc>;
-> +        interrupts = <0x6>;
-> +        wakeup-source;
-> +        brcm,gpio-bank-widths = <18 4>;
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 913856599623..78161abc384f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3772,7 +3772,7 @@ BROADCOM BRCMSTB GPIO DRIVER
->  M:     Gregory Fong <gregory.0xf0@gmail.com>
-
-Not really related to this patch, but I should probably update this
-entry to reflect current reality. Should that be you and/or Doug?
-
->  L:     bcm-kernel-feedback-list@broadcom.com
->  S:     Supported
-> -F:     Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.txt
-> +F:     Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.yaml
->  F:     drivers/gpio/gpio-brcmstb.c
->
->  BROADCOM BRCMSTB I2C DRIVER
-> --
-> 2.25.1
->
-
-Best regards,
-Gregory
+> +	  This key encryption is done by the CPU-internal wrapping key. The
+> +	  x86 core code loads a new random key at every boot time and
+> +	  restores it from deep sleep states. This wrapping key support is
+> +	  provided with X86_KEYLOCKER.
+> +
+> +	  AES-KL supports 128-/256-bit keys only. While giving a 192-bit
+> +	  key does not return an error, as AES-NI is chosen to process it,
+> +	  the claimed security property is not available with that.
+> +
+> +	  GNU binutils version 2.36 or above and LLVM version 12 or above
+> +	  are assemblers that support AES-KL instructions.
+> +
+> +	  Bare metal disk encryption is the preferred use case. Make it
+> +	  depend on DM_CRYPT.
+> +
+> +	  This selection enables an alternative crypto cipher for
+> +	  cryptsetup, e.g. "capi:xts-aes-aeskl-plain", to use with dm-crypt
+> +	  volumes. It trades off raw performance for reduced clear-text key
+> +	  exposure and has an additional failure mode compared to AES-NI.
+> +	  See Documentation/x86/keylocker.rst for more details. Key Locker
+> +	  usage requires explicit opt-in at cryptsetup time. So, select it
+> +	  if unsure.
+> +
+> +	  See also the CRYPTO_AES_NI_INTEL description for more about the
+> +	  AES cipher algorithm.
+> +
+>  config CRYPTO_AES_SPARC64
+>  	tristate "AES cipher algorithms (SPARC64)"
+>  	depends on SPARC64
+> -- 
+> 2.17.1
+> 
