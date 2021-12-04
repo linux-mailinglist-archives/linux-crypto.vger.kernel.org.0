@@ -2,69 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC038468371
-	for <lists+linux-crypto@lfdr.de>; Sat,  4 Dec 2021 10:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6946E468390
+	for <lists+linux-crypto@lfdr.de>; Sat,  4 Dec 2021 10:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384187AbhLDJHD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 4 Dec 2021 04:07:03 -0500
-Received: from sv7438.xserver.jp ([202.254.239.119]:58268 "EHLO
-        sv7438.xserver.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354761AbhLDJHD (ORCPT
+        id S1354962AbhLDJd5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 4 Dec 2021 04:33:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236112AbhLDJd4 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 4 Dec 2021 04:07:03 -0500
-X-Greylist: delayed 340 seconds by postgrey-1.27 at vger.kernel.org; Sat, 04 Dec 2021 04:07:03 EST
-Received: from virusgw7003.xserver.jp (virusgw7003.xserver.jp [202.254.239.243])
-        by sv7438.xserver.jp (Postfix) with ESMTP id CBD0A140F28C0D
-        for <linux-crypto@vger.kernel.org>; Sat,  4 Dec 2021 17:57:56 +0900 (JST)
-Received: from sv7438.xserver.jp (202.254.239.119)
- by virusgw7003.xserver.jp (F-Secure/fsigk_smtp/521/virusgw7003.xserver.jp);
- Sat, 04 Dec 2021 17:57:56 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/521/virusgw7003.xserver.jp)
-Received: by sv7438.xserver.jp (Postfix, from userid 20019)
-        id CA422140EFF42D; Sat,  4 Dec 2021 17:57:56 +0900 (JST)
-To:     linux-crypto@vger.kernel.org
-Subject: =?ISO-2022-JP?B?GyRCJCpMZCQkOWckbyQ7JCIkaiQsJEgkJiQ0JDYkJCReJDkhSmhfPHc/KUlKM3Q8MDJxPFIhSxsoQg==?=
-Date:   Sat, 4 Dec 2021 08:57:56 +0000
-From:   =?ISO-2022-JP?B?GyRCaF88dz8pSUozdDwwMnE8UhsoQg==?= 
-        <noreply@manjufoods.com>
-Message-ID: <bd0a5ee2fc3a730860af87e02e1eac2b@manjufoods.com>
-X-Mailer: PHPMailer 5.2.22 (https://github.com/PHPMailer/PHPMailer)
+        Sat, 4 Dec 2021 04:33:56 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BD9C061751
+        for <linux-crypto@vger.kernel.org>; Sat,  4 Dec 2021 01:30:31 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id i5-20020a05683033e500b0057a369ac614so6677184otu.10
+        for <linux-crypto@vger.kernel.org>; Sat, 04 Dec 2021 01:30:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eLphoARnpNhDXvL/GS5YL9RgcLOE5n6S5NZrlzfMofM=;
+        b=llOAXJm5MzQYiE+MazC9mn/XoF6LdmtNr6HngrGBE+8Y1lx89AKnq42S7r0ajFUQyv
+         wFNZgOPvvg7juRdE9iSDCd27+HZkVl6OSwF+UwGReFjSamzHAEHKGJnXPhNS4sVaYvVo
+         7kruoaIHHNbgeLeun8UKl5Xd7XaGD2TMVOFmJic0DqmtjELZpZdECrgMJsUh5wUMAXkd
+         V7teXsptQWlO+fYxVvRGivJk+x1wH1Wg3JmW0QJ7ZHMLazx45NUN+14EGg6jBcF7er89
+         QbsaE/oamYMXXFeG6JLN+hW0qUdS0qv0S7NsL5u9u2Rvc/AXri17V/WWDk24uwTzuLj1
+         9GXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eLphoARnpNhDXvL/GS5YL9RgcLOE5n6S5NZrlzfMofM=;
+        b=QFeN7i76tCu/l1ECiWUuQHwLo0VH1JznH/AAR215qnScSPfWGOs4hCc1dYhmtjA+qO
+         ZHfzfkLU6DAZtNfrNZBAuia36Brx1k0M+91qRFo42cOslBx4oF7tvuHI1HdXcZkiLr44
+         2yIkvA98N++K76Gisd6QTae0XuFlimUEk5eThdPXcwW51MMBIYzhQOd53o86MY82PnAv
+         BlVvKFipzU72qJ1PuPP9sgk3X/ZFeAiVrnWdNU3NgQFDwZLEqZCWtJfXemeDDTc3xGLq
+         AkUJs45gHXBqo3nGKXHrUbwHJW8cfH6QjKlGArthC7RC3XZWwYQTJD9sqn4Rb7FOfwtF
+         KPnA==
+X-Gm-Message-State: AOAM532Hq2TVrhUVdsy6yrINOgVcxMgLT1PO49nJ7dgNgDCjvS6p+VNY
+        r5pxmZ8pa3ce/qOPIX2+LEjiqmtASqS7MxrVMZhgbw==
+X-Google-Smtp-Source: ABdhPJxWLMXNiseULS8xzg2rcQuqSyZ333C5GChbK035qBdy0M3bFTiSm/PagUOPjuOGCwafbdcw4FOLEMTUuB7OECw=
+X-Received: by 2002:a05:6830:1356:: with SMTP id r22mr20127609otq.196.1638610230450;
+ Sat, 04 Dec 2021 01:30:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
+References: <000000000000a9ed6205c67e08c6@google.com> <0000000000006ce3ce05d220c008@google.com>
+In-Reply-To: <0000000000006ce3ce05d220c008@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sat, 4 Dec 2021 10:30:19 +0100
+Message-ID: <CACT4Y+ZJHZKD4S4CNM1L1QK2ZDdUW5DAGtUocZp1GxrGwAH1dA@mail.gmail.com>
+Subject: Re: [syzbot] INFO: task hung in set_current_rng
+To:     syzbot <syzbot+681da20be7291be15dca@syzkaller.appspotmail.com>
+Cc:     colin.king@canonical.com, f.fangjian@huawei.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lvivier@redhat.com, mpm@selenic.com,
+        mst@redhat.com, syzkaller-bugs@googlegroups.com,
+        tangzihao1@hisilicon.com, yuehaibing@huawei.com,
+        zhangshaokun@hisilicon.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-自動返信メールです
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-bqxovuz 様
+On Thu, 2 Dec 2021 at 03:43, syzbot
+<syzbot+681da20be7291be15dca@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 2bb31abdbe55742c89f4dc0cc26fcbc8467364f6
+> Author: Laurent Vivier <lvivier@redhat.com>
+> Date:   Thu Oct 28 10:11:09 2021 +0000
+>
+>     hwrng: virtio - don't wait on cleanup
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=171ad129b00000
+> start commit:   3dbdb38e2869 Merge branch 'for-5.14' of git://git.kernel.o..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1700b0b2b41cd52c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=681da20be7291be15dca
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15a472e4300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c51a28300000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: hwrng: virtio - don't wait on cleanup
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-この度はお問い合わせをいただき、誠にありがとうございます。
 
-===【お問い合わせ内容】=========================
+Sounds reasonable:
 
-[会社名・店舗名]：?? Alice want to meet you! Click Here: http://bit.do/fSMno?6su2 ?? 
-[お名前]：bqxovuz 様
-[フリガナ]：483zuck 様
-[メールアドレス]：linux-crypto@vger.kernel.org 
-[電話番号番号]：311582468428 
-[お問い合わせ項目]：その他のお問い合わせ
-[お問い合わせ内容]：
-lt3kc6gt 
-
-=========================================
-
-頂戴いたしましたお問い合わせにつきましては、内容を確認の上、
-担当者より後ほど回答いたします。
-	
-----------------------------------------------------------------
-萬寿食品株式会社
-
-〒463-0037
-愛知県名古屋市守山区天子田1-705
-TEL：052-776-3566
-E-mail：info@manjufoods.com
-URL：https://manjufoods.com
-----------------------------------------------------------------
-
+#syz fix: hwrng: virtio - don't wait on cleanup
