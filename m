@@ -2,159 +2,328 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF2346A49D
-	for <lists+linux-crypto@lfdr.de>; Mon,  6 Dec 2021 19:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2DF46A8AA
+	for <lists+linux-crypto@lfdr.de>; Mon,  6 Dec 2021 21:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232512AbhLFSd3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 6 Dec 2021 13:33:29 -0500
-Received: from mail-bn8nam11hn2214.outbound.protection.outlook.com ([52.100.171.214]:62743
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230448AbhLFSd3 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 6 Dec 2021 13:33:29 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jyt3cIgm620f58SbddrRtdOIs+jVVa6qBLs5mBfi7wnSUyB4x4t4IPegnStyKWj4eoW5crZIA3HX/fiHB9nRMSl+H7jSOoqVIfQ9HcGu3gN5JJODKAdBOnWi4qIWVsTHnjhLsQukfbLIOYnQ3HIMZkxAfnwV07JTy3AYBB+B6Q9HiMqutR5MRXRQbDnZ0/JS7HoqK9PPvAUn5EggXIRke649u86nBJoWlaaVvH3panHrSgh6LnSW4k9Sh505Jq2qpYn2LLSPlPFiatcrip1CL5le2jGZI0VN7fuxPKAo7dwZA3N85IcYxAFXSbz2xinErH0icxNLncqeAEtHsG41ow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NTkULZ5UHExQp4+lt+mjKcEqTWLs4cv4821EJcQtSYE=;
- b=beVNyBS33UG2WyOI3llEy12OIYetdLOYsH2jO/35NX9e9hFVfC3x4/P9e+Y9BCKQXbf/TkOF6134zlPq5p6JndIfSX4tTdv1fi9H4+9FXytqVXnG+8c4SiK9JMw2JPnHC5u7j3n1DWTU9xGWc8HQ8fOI6ztxksaU8/amyXcXR6lVrKzZwuGgQArz+fp+qAK0SNCS2fllzJbmPo1ImUbj8rPT7ee6TzRE7GtAxgXnw0jOHGrRPREm09zGGSZb0Mehs1y5VEL6zzwcnN8dvSNMzHPAeApW1/cslzxBLa9Vllozv6g9+AYJXAfTcN1ls4dOFgueUtZ85NCtWo7CNxHAEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
- is 146.201.107.145) smtp.rcpttodomain=soundwitness.org smtp.mailfrom=msn.com;
- dmarc=fail (p=none sp=quarantine pct=100) action=none header.from=msn.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fsu.onmicrosoft.com;
- s=selector2-fsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NTkULZ5UHExQp4+lt+mjKcEqTWLs4cv4821EJcQtSYE=;
- b=EIpEA49GT6RHkL2Rgp6zbPmnh7/3T7nnkAOHbrJ3WwI4kfny5YvxAIDaMaW6LJBDISUuImTL4wD9AZxmE0hsmfXw5U1sjlv4vZPGDo2co3u5iahckjIe+d6VzglqN+1FWJaRgFGiqBkU/cQsJV4ksY6pUIubBuJ62wRvNgQMSyU=
-Received: from DS7PR03CA0216.namprd03.prod.outlook.com (2603:10b6:5:3ba::11)
- by SJ0P220MB0384.NAMP220.PROD.OUTLOOK.COM (2603:10b6:a03:3ba::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.11; Mon, 6 Dec
- 2021 18:29:51 +0000
-Received: from DM6NAM04FT043.eop-NAM04.prod.protection.outlook.com
- (2603:10b6:5:3ba:cafe::dc) by DS7PR03CA0216.outlook.office365.com
- (2603:10b6:5:3ba::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.22 via Frontend
- Transport; Mon, 6 Dec 2021 18:29:51 +0000
-X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
- 146.201.107.145) smtp.mailfrom=msn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=msn.com;
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
- msn.com discourages use of 146.201.107.145 as permitted sender)
-Received: from mailrelay03.its.fsu.edu (146.201.107.145) by
- DM6NAM04FT043.mail.protection.outlook.com (10.13.158.132) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4755.13 via Frontend Transport; Mon, 6 Dec 2021 18:29:51 +0000
-Received: from [10.0.0.200] (ani.stat.fsu.edu [128.186.4.119])
-        by mailrelay03.its.fsu.edu (Postfix) with ESMTP id 35C3E962F8;
-        Mon,  6 Dec 2021 13:29:14 -0500 (EST)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
+        id S1349771AbhLFUoV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 6 Dec 2021 15:44:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344890AbhLFUoS (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 6 Dec 2021 15:44:18 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4D4C061746;
+        Mon,  6 Dec 2021 12:40:49 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id m9so14578566iop.0;
+        Mon, 06 Dec 2021 12:40:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=iucRg1A8O0b/DSlL+QUGuCPoLHVICPlHNX37Ro375BQ=;
+        b=KncN5votJOwMoSlpiuiuzB057dMGARhjKDyxunvNzo1Dump0KT7X2PFkch0itMhVYt
+         4JtVagEWUS9Biu0EhHyrImOOljaHqZqjpWXSRzdRzGf3CXF4RmJ5/fqSW8/X9t1cAxp1
+         KpXZhSCoRg8lry5AoBX38MXw6Pa0ar0Z9BDHEMsryVreBPq5n+ILoREmsyUDrelVeOta
+         E25m641PjbEGO1E6hV43nTUvzlRs2Jn5qdUF2QyzY0JeNBXCL8lPCRbBe72iGLmx2+0i
+         cx7JKYvFOdii8r9a+wbEtsM13GbCzEoeMM+ifYC9tYFhQG2l8n097Lukh0ejX6HikDK9
+         pNJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=iucRg1A8O0b/DSlL+QUGuCPoLHVICPlHNX37Ro375BQ=;
+        b=ealEKZkW8ITBTXcGvGeU/veRopRtyOtMlM3vRSMx4scnSmFFnBculhcoKQ7ghJBB2c
+         mmCb8tV51GmIUxPdhE4Yj/vXG8HepqGUgabllG5OGtrVHrqCaRZLvAboU53VRA7c7YXh
+         W4QK9THDyo+If4zYJNrVJg4mQ2HhncB8B29h1uAs9VxL5rJ6dXQNaxUDUeRcp7myXJGY
+         67P+fBD9c+bX+4JdiYqwtDQQMfLq6Lxy43BjNuUsioZrJHSoyaHKXOtx/GgUmSLFuqH8
+         3TwNkrfBQ2UCbiEv01WnrdBPspI9ygkikLgLZ6uaHi2ZRhesGS6q7qRqPpQpgv3h7wku
+         fQbA==
+X-Gm-Message-State: AOAM531mqXpZK41jYlVTlL5R35K8fybMgLOh4GD1ICKGteI6M7/FyBLE
+        MhaVG1+6kYUTqjCcrfdQeh0=
+X-Google-Smtp-Source: ABdhPJxWK5HARIkqCVgCIuhPmrbv5yIqhL3LymQ5dC3KkNhuN/IJgtB9V02hGfdn47rORfQe1XCwhg==
+X-Received: by 2002:a05:6602:1813:: with SMTP id t19mr35468573ioh.135.1638823249201;
+        Mon, 06 Dec 2021 12:40:49 -0800 (PST)
+Received: from localhost ([172.243.151.11])
+        by smtp.gmail.com with ESMTPSA id m2sm7297819iob.21.2021.12.06.12.40.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Dec 2021 12:40:48 -0800 (PST)
+Date:   Mon, 06 Dec 2021 12:40:40 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Luca Boccassi <bluca@debian.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        keyrings@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Message-ID: <61ae75487d445_c5bd20827@john.notmuch>
+In-Reply-To: <0079fd757676e62f45f28510a5fd13a9996870be.camel@debian.org>
+References: <20211203191844.69709-1-mcroce@linux.microsoft.com>
+ <CAADnVQLDEPxOvGn8CxwcG7phy26BKuOqpSQ5j7yZhZeEVoCC4w@mail.gmail.com>
+ <CAFnufp1_p8XCUf-RdHpByKnR9MfXQoDWw6Pvm_dtuH4nD6dZnQ@mail.gmail.com>
+ <CAADnVQ+DSGoF2YoTrp2kTLoFBNAgdU8KbcCupicrVGCWvdxZ7w@mail.gmail.com>
+ <86e70da74cb34b59c53b1e5e4d94375c1ef30aa1.camel@debian.org>
+ <CAADnVQLCmbUJD29y2ovD+SV93r8jon2-f+fJzJFp6qZOUTWA4w@mail.gmail.com>
+ <CAFnufp2S7fPt7CKSjH+MBBvvFu9F9Yop_RAkX_3ZtgtZhRqrHw@mail.gmail.com>
+ <CAADnVQ+WLGiQvaoTPwu_oRj54h4oMwh-z5RV0WAMFRA9Wco_iA@mail.gmail.com>
+ <61aae2da8c7b0_68de0208dd@john.notmuch>
+ <0079fd757676e62f45f28510a5fd13a9996870be.camel@debian.org>
+Subject: Re: [PATCH bpf-next 0/3] bpf: add signature
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Re: From Fred!
-To:     Recipients <fred128@msn.com>
-From:   "Fred Gamba." <fred128@msn.com>
-Date:   Mon, 06 Dec 2021 19:28:31 +0100
-Reply-To: fred_gamba@yahoo.co.jp
-Message-ID: <139cc0b8-5995-4018-ae13-5ae262f98b55@DM6NAM04FT043.eop-NAM04.prod.protection.outlook.com>
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c678ecf7-c0ed-4336-288f-08d9b8e66471
-X-MS-TrafficTypeDiagnostic: SJ0P220MB0384:EE_
-X-Microsoft-Antispam-PRVS: <SJ0P220MB0384EB4096B6074E8C7E7CB1EB6D9@SJ0P220MB0384.NAMP220.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 2
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Forefront-Antispam-Report: CIP:146.201.107.145;CTRY:US;LANG:en;SCL:5;SRV:;IPV:CAL;SFV:SPM;H:mailrelay03.its.fsu.edu;PTR:mailrelay03.its.fsu.edu;CAT:OSPM;SFS:(4636009)(84050400002)(46966006)(40470700001)(6862004)(47076005)(82202003)(6666004)(2860700004)(6200100001)(31696002)(83380400001)(508600001)(7406005)(6266002)(316002)(786003)(7416002)(7366002)(8676002)(82310400004)(956004)(70206006)(86362001)(3480700007)(7116003)(5660300002)(40460700001)(26005)(31686004)(2906002)(7596003)(336012)(35950700001)(8936002)(356005)(9686003)(70586007)(480584002);DIR:OUT;SFP:1501;
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?QVJDZDJmeElSTGR1cWo0U0tNQXlya2NMajdsem8vK2JvYkxBalh3OG15QmlS?=
- =?utf-8?B?Ym5abEpYMjBmSzRFdmQvM2xaME4xa0k0YjY2LzBISkhyUUVsSzRrR0dMcnZS?=
- =?utf-8?B?a3ZZanRkcWlYRlZLVlQrUnZQMnd2TllTUlhkU1RmTEQ5VFhvUDExN0xFQWdG?=
- =?utf-8?B?MG9Ja25nN0Z2eXpaKzV0aTlSSEpERWRObzhmb0lIMDhmZmlDU2xoM0pXYy9R?=
- =?utf-8?B?cE9jMjdFZVhOK1libTNJRWtWRmEwY2FtTXJaczlQSG5CTHdlZEpOczZuVnBz?=
- =?utf-8?B?cTA1T0dUMTdjdm9xUUVWdEVQMDlLbGZmT1RLUVRsekkzaVBoM3dQQy9oQXRG?=
- =?utf-8?B?UlBNRTBhVHpjWngwQ21KbWhxUzZzVlVUOTJzTWVjdmJpNjNTa2dML1cvM0xj?=
- =?utf-8?B?cVpibXBlUWVKVnpYUFFHM21jeER2bG80R1hjWTdjQ1lNd0pGWXJQWGVSMWVw?=
- =?utf-8?B?WkpYcldSUmcxUzg5YUh2bkkrdkJLeWIrM1d4MWFRL2xmQTRkc2J5ODZoRU9F?=
- =?utf-8?B?bXE3Y3NVUFdWb1ZzSzBka0tLQ1kvNG9xb2pzVCtoNGRMTGZtR3NQQzkvOXZ4?=
- =?utf-8?B?ZVZja2ltVEcwbmNjL3JHK28vdU5CVGJVWXVpeEUwMVBBRjRFRTgzcGZHK2dq?=
- =?utf-8?B?TTdwWXNDTVRqTzNNQldhNHlPMlZmY1ZacWxaRXlNY3NXYjRZWkR6WFZ0MWdn?=
- =?utf-8?B?OFd3V1dsRkVNUzdQbERGZWEwZnhKZVZMQVI1VWNUa1A5bDBackxzU3k4Tndo?=
- =?utf-8?B?SG1CZG1tOEQxSjhETkhWNENXZWlQNWFlYzZMckthUFVnaHVUaGo0Nk5GZnBq?=
- =?utf-8?B?cDdOWUN5ZXdtY0xPRkVYOXgyYmgwS0tDR2IzRHVOMUdCZFhycGNocGlWcTR5?=
- =?utf-8?B?MGxhR1d1SmcxV20xOCt4d3pqOXREWk9aT3dCL3RySmNzWWRQT3JJQno4NVAz?=
- =?utf-8?B?OFZiRko2Y2FMZTN1UzhqbjVvMUtrc3RhallWVGFvQjdiUmI1OWFnU2dSZGFz?=
- =?utf-8?B?OGdkZlJab0VTMXFQZXA3UXhQV2c3czRWSFk0OXU5ZVc1ZGRYSkI2Q2lKZ05U?=
- =?utf-8?B?d0NsR3d0V0lMS1h1dkM5MzR4dkVLQXMvS0JhM2lORDVRaFJkcVhaTmFvNHZN?=
- =?utf-8?B?QUtOTDdST2VsVm53d2VxeDJzL1cwTnZNK1B1YmtSR1dBZjdOVVUxS2NRTXZR?=
- =?utf-8?B?TnV2RE83cHFocDhOWkNUYzF2RG84MjVodUtndmRiUml6MDVGRkF3NS9jSDdF?=
- =?utf-8?B?aFYrK0Z5RFZibEp0ZW1JenlkL1lLNURlV05hdjAvam4zKzd4TnB4KzFFZTlt?=
- =?utf-8?B?VW5uYnRkVUZHWnhKODVQb0o1KzVsV2w2TG8ya2pvaVd1cTU0VkJ3cVVPejRo?=
- =?utf-8?B?ZXovOTBOaTYzc2xyQ0ExSDljWnA2VmMvTmpKWHA1dU9JU1JhZkpTSTkxQzB0?=
- =?utf-8?Q?dhGew0Hf?=
-X-OriginatorOrg: fsu.edu
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2021 18:29:51.5356
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c678ecf7-c0ed-4336-288f-08d9b8e66471
-X-MS-Exchange-CrossTenant-Id: a36450eb-db06-42a7-8d1b-026719f701e3
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a36450eb-db06-42a7-8d1b-026719f701e3;Ip=[146.201.107.145];Helo=[mailrelay03.its.fsu.edu]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM04FT043.eop-NAM04.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0P220MB0384
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello,
+Luca Boccassi wrote:
 
-I decided to write you this proposal in good faith, believing that you will=
- not betray me. I have been in search of someone with the same last name of=
- our late customer and close friend of mine (Mr. Richard), heence I contact=
-ed you Because both of you bear the same surname and coincidentally from th=
-e same country, and I was pushed to contact you and see how best we can ass=
-ist each other. Meanwhile I am Mr. Fred Gamba, a reputable banker here in A=
-ccra Ghana.
+cutting to just the relevant pieces here.
 
-On the 15 January 2009, the young millionaire (Mr. Richard) a citizen of yo=
-ur country and Crude Oil dealer made a fixed deposit with my bank for 60 ca=
-lendar months, valued at US $ 6,500,000.00 (Six Million, Five Hundred Thous=
-and US Dollars) and The mature date for this deposit contract was on 15th o=
-f January, 2015. But sadly he was among the death victims in the 03 March 2=
-011, Earthquake disaster in Japan that killed over 20,000 people including =
-him. Because he was in Japan on a business trip and that was how he met his=
- end.
+[...]
 
-My bank management is yet to know about his death, but I knew about it beca=
-use he was my friend and I am his Account Relationship Officer, and he did =
-not mention any Next of Kin / Heir when the account was opened, because he =
-was not married and no children. Last week my Bank Management reminded me a=
-gain requested that Mr. Richard should give instructions on what to do abou=
-t his funds, if to renew the contract or not.
+> =
 
-I know this will happen and that is why I have been looking for a means to =
-handle the situation, because if my Bank Directors happens to know that he =
-is dead and do not have any Heir, they will take the funds for their person=
-al use, That is why I am seeking your co-operation to present you as the Ne=
-xt of Kin / Heir to the account, since you bear same last name with the dec=
-eased customer.
+> > I'll give the outline of the argument here.
+> > =
 
-There is no risk involved; the transaction will be executed under a legitim=
-ate arrangement that will protect you from any breach of law okay. So It's =
-better that we claim the money, than allowing the Bank Directors to take it=
-, they are rich already. I am not a greedy person, so I am suggesting we sh=
-are the funds in this ratio, 50% 50, ie equal.
+> > I do not believe signing BPF instructions for real programs provides
+> > much additional security. Given most real programs if the application=
 
-Let me know your mind on this and please do treat this information highly c=
-onfidential.
+> > or loader is exploited at runtime we have all sorts of trouble. First=
 
-I will review further information to you as soon as I receive your
-positive response.
+> > simply verifying the program doesn't prevent malicious use of the
+> > program. If its in the network program this means DDOS, data
+> > exfiltration,
+> > mitm attacks, many other possibilities. If its enforcement program
+> > most enforcement actions are programmed from this application so
+> > system
+> > security is lost already.=C2=A0 If its observability application simp=
+ly
+> > drops/manipulates observations that it wants. I don't know of any
+> > useful programs that exist in isolation without user space input
+> > and output as a critical component. If its not a privileged user,
+> > well it better not be doing anything critical anyways or disabled
+> > outright for the security focused.
+> > =
 
-Have a nice day and I anticipating your communication.
+> > Many critical programs can't be signed by the nature of the program.
+> > Optimizing network app generates optimized code at runtime.
+> > Observability
+> > tools JIT the code on the fly, similarly enforcement tools will do
+> > the
+> > same. I think the power of being able to optimize JIT the code in
+> > application and give to the kernel is something we will see more and
+> > more of. Saying I'm only going to accept signed programs, for a
+> > distribution or something other than niche use case, is non starter
+> > IMO because it breaks so many real use cases. We should encourage
+> > these optimizing use cases as I see it as critical to performance
+> > and keeping overhead low.
+> > =
 
-With Regards,
-Fred Gamba.
+> > From a purely security standpoint I believe you are better off
+> > defining characteristics an application is allowed to have. For
+> > example allowed to probe kernel memory, make these helpers calls,
+> > have this many instructions, use this much memory, this much cpu,
+> > etc. This lets you sandbox a BPF application (both user space and
+> > kernel side) much nicer than any signing will allow.
+> > =
+
+> > If we want to 'sign' programs we should do that from a BPF program
+> > directly where other metadata can be included in the policy. For
+> > example having a hash of the program loaded along with the calls
+> > made and process allows for rich policy decisions. I have other
+> > use cases that need a hash/signature for data blobs, so its on
+> > my todo list but not at the top yet.=C2=A0 But, being able to verify
+> > arbitrary blob of data from BPF feels like a useful operation to me
+> > in general. The fact in your case its a set of eBPF insns and in
+> > my case its some key in a network header shouldn't matter.
+> > =
+
+> > The series as is, scanned commit descriptions, is going to break
+> > lots of in-use-today programs if it was ever enabled. And
+> > is not as flexible (can't support bpftrace, etc.) or powerful
+> > (can't consider fine grained policy decisions) as above.
+> > =
+
+> > Add a function we can hook after verify (or before up for
+> > debate) and helpers to verify signatures and/or generate
+> > hashes and we get a better more general solution. And it can
+> > also solve your use case even if I believe its not useful and
+> > may break many BPF users running bpftrace, libbpf, etc.
+> > =
+
+> > Thanks,
+> > John
+> =
+
+> Hello John,
+> =
+
+> Thank you for the summary, this is much clearer.
+> =
+
+> First of all, I think there's some misunderstanding: this series does
+> not enable optional signatures by default, and does not enable
+> mandatory signatures by default either. So I don't see how it would
+> break existing use cases as you are saying? Unless I'm missing
+> something?
+> =
+
+> There's a kconfig to enable optional signatures - if they are there,
+> they are verified, if they are not present then nothing different
+> happens. Unless I am missing something, this should be backward
+> compatible. This kconfig would likely be enabled in most use cases,
+> just like optionally signed kernel modules are.
+
+Agree, without enforcement things should continue to work.
+
+> =
+
+> Then there's a kconfig on top of that which makes signatures mandatory.=
+
+> I would not imagine this to be enabled in may cases, just in custom
+> builds that have more stringent requirements. It certainly would not be=
+
+> enabled in generalist distros. Perhaps a more flexible way would be to
+> introduce a sysctl, like fsverity has with
+> 'fs.verity.require_signatures'? That would be just fine for our use
+> case. Matteo can we do that instead in the next revision?
+
+We want to manage this from BPF side directly. It looks
+like policy decision and we have use cases that are not as
+simple as yes/no with global switch. For example, in k8s world
+this might be enabled via labels which are user specific per container
+policy. e.g. lockdown some containers more strictly than others.
+
+> =
+
+> Secondly, I understand that for your use case signing programs would
+> not be the best approach. That's fine, and I'm glad you are working on
+> an alternative that better fits your model, it will be very interesting=
+
+> to see how it looks like once implemented. But that model doesn't fit
+> all cases. In our case at Microsoft, we absolutely want to be able to
+> pre-define at build time a list of BPF programs that are allowed to be
+> loaded, and reject anything else. Userspace processes in our case are
+
+By building this into BPF you can get the 'reject anything else' policy
+and I get the metadata + reject/accept from the same hook. Its
+just your program can be very simple.
+
+> mostly old and crufty c++ programs that can most likely be pwned by
+> looking at them sideways, so they get locked down hard with multiple
+> redundant layers and so on and so forth. But right now for BPF you only=
+
+> have a "can load BPF" or "cannot load BPF" knob, and that's it. This is=
+
+> not good enough: we need to be able to define a list of allowed
+> payloads, and be able to enforce it, so when (not if) said processes do=
+
+> get tricked into loading something else, it will fail, despite having
+
+Yikes, this is a bit scary from a sec point of view right? Are those
+programs read-only maps or can the C++ program also write into the
+maps and control plane. Assuming they do some critical functions then
+you really shouldn't be trusting them to not do all sorts of other
+horrible things. Anyways not too important to this discussion.
+
+I'll just reiterate (I think you get it though) that simply signing
+enforcement doesn't mean now BPF is safe. Further these programs
+have very high privileges and can do all sorts of things to the
+system. But, sure sig enforcement locks down one avenue of loading
+bogus program.
+
+> the capability of calling bpf(). Trying to define heuristics is also
+> not good enough for us - creative malicious actors have a tendency to
+> come up with ways to chain things that individually are allowed and
+> benign, but combined in a way that you just couldn't foresee. It would
+
+Sure, but I would argue some things can be very restrictive and
+generally useful. For example, never allow kernel memory read could be
+enforced from BPF side directly. Never allow pkt redirect, etc.
+
+> certainly cover a lot of cases, but not all. A strictly pre-defined
+> list of what is allowed to run and what is not is what we need for our
+> case, so that we always know exactly what is going to run and what is
+> not, and can deal with the consequences accordingly, without nasty
+> surprises waiting around the corner. Now in my naive view the best way
+> to achieve this is via signatures and certs, as it's a well-understood
+> system, with processes already in place to revoke/rotate/etc, and it's
+> already used for kmods. An alternative would be hard-coding hashes I
+> guess, but that would be terribly inflexible.
+
+Another option would be to load your programs at boot time, presumably
+with trusted boot enabled and then lock down BPF completely. Then
+ensure all your BPF 'programs' are read-only from user<->kernel
+interface and this should start looking fairly close to what you
+want and all programs are correct by root of trust back to
+trusted boot. Would assume you know what programs to load at boot
+though. May or may not be a big assumption depending on your env.
+
+> =
+
+> Now in terms of _how_ the signatures are done and validated, I'm sure
+> there are multiple ways, and if some are better than what this series
+> implements, then that's not an issue, it can be reworked. But the core
+> requirement for us is: offline pre-defined list of what is allowed to
+> run and what is not, with ability for hard enforcement that cannot be
+> bypassed. Yes, you lose some features like JIT and so on: we don't
+> care, we don't need those for our use cases. If others have different
+> needs that's fine, this is all intended to be optional, not mandatory.
+> There are obviously trade-offs, as always when security is involved,
+> and each user can decide what's best for them.
+> =
+
+> Hope this makes sense. Thanks!
+
+I think I understand your use case. When done as BPF helper you
+can get the behavior you want with a one line BPF program
+loaded at boot.
+
+int verify_all(struct bpf_prog **prog) {
+	return verify_signature(prog->insn,
+				prog->len * sizeof(struct bpf_insn),
+			        signature, KEYRING, BPF_SIGTYPE);
+}
+
+And I can write some more specific things as,
+
+int verify_blobs(void data) {
+  int reject =3D verify_signature(data, data_len, sig, KEYRING, TYPE);
+  struct policy_key *key =3D map_get_key();
+
+  return policy(key, reject);  =
+
+}
+
+map_get_key() looks into some datastor with the policy likely using
+'current' to dig something up. It doesn't just apply to BPF progs
+we can use it on other executables more generally. And I get more
+interesting use cases like, allowing 'tc' programs unsigned, but
+requiring kernel memory reads to require signatures or any N
+other policies that may have value. Or only allowing my dbg user
+to run read-only programs, because the dbg maybe shouldn't ever
+be writing into packets, etc. Driving least privilege use cases
+in fine detail.
+
+By making it a BPF program we side step the debate where the kernel
+tries to get the 'right' policy for you, me, everyone now and in
+the future. The only way I can see to do this without getting N
+policies baked into the kernel and at M different hook points is via
+a BPF helper.
+
+Thanks,
+John=
