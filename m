@@ -2,112 +2,142 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D7446BE77
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Dec 2021 15:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 137DF46C06A
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Dec 2021 17:13:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238367AbhLGPCK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 7 Dec 2021 10:02:10 -0500
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:39440 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238337AbhLGPBv (ORCPT
+        id S239503AbhLGQOZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 7 Dec 2021 11:14:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:52714 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239496AbhLGQOS (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 7 Dec 2021 10:01:51 -0500
-Received: by mail-oi1-f182.google.com with SMTP id bf8so28199783oib.6;
-        Tue, 07 Dec 2021 06:58:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=55srzYY1ppnVfuRkuBM2BCV46CNk0tpVbIJ64T+tBjk=;
-        b=KDnoOR+yvLFTGR6yTTfU37pfs3jkn/f/+ExgoeQtkEmo/9Jpv9uARspEDxAlgjEBO3
-         ovwIs9FZmVhZ9f2Onf0spTfTEW2OfU7rAqC/F0N4PnQtCxDw1tbdQOFl0Gf1rV84BKgH
-         v0JJ//11fo3BeaAQ+5K1twmKhwxkk9QdvbslmWBjpTQ7Qv9deDcxmJhuqg93zJckiDnL
-         87U/zqq373OSHj1cNVZVD1piqIv8OTUddpU77ZelmepTSQpEEN7eojApUBQbSfeauoRx
-         CZ3coriZ1CajvGWXw0zYFX+MUD0xrLZLtVgsVdBhoEcXCXAnufPAVKIkiZS8UfunqjJ8
-         fnTA==
-X-Gm-Message-State: AOAM530NkGHCSngRIzAWVGXhn1GZYH9BH3fdLu5nK+XgBMBBLBt/CKl1
-        ZSeDKt4JwNbYnvvyo7oY9w==
-X-Google-Smtp-Source: ABdhPJx308W+qbNIEcIs/sxpoxaXSfVLMzfWn6R3dMEM5BXFYP4m4OTloeynRhVUpXtoFvav/hfcFQ==
-X-Received: by 2002:aca:b387:: with SMTP id c129mr5663673oif.6.1638889100127;
-        Tue, 07 Dec 2021 06:58:20 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id c9sm2877544oog.43.2021.12.07.06.58.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Dec 2021 06:58:19 -0800 (PST)
-Received: (nullmailer pid 5802 invoked by uid 1000);
-        Tue, 07 Dec 2021 14:58:10 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Doug Berger <opendmb@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
-        Gregory Fong <gregory.0xf0@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ray Jui <rjui@broadcom.com>, linux-usb@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Scott Branden <sbranden@broadcom.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pwm@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        Tue, 7 Dec 2021 11:14:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638893447;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cRuhMEvh5y04pVDZ1GcGtb8K0Y4SblDcdZyDgF/tcjA=;
+        b=P5yXy8uWLzKZUon6GvocyPlZIHpmKnct+ZOoCmOYNuLh5qsQIBy+KoKqUDRkaY6IWFmMn2
+        zqi/0+Pw9cOp0q1MS69v7g27isu98TSmc424FfSCDeoQKfjGZJjDePKy+geejwYFTV8e9h
+        aH2vdL6BDOHWGoZJu/YFuZtzEKzdmGg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-559-RhqUZOdDO7OBgmU9unhUqg-1; Tue, 07 Dec 2021 11:10:31 -0500
+X-MC-Unique: RhqUZOdDO7OBgmU9unhUqg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8693F801B25;
+        Tue,  7 Dec 2021 16:10:25 +0000 (UTC)
+Received: from rhtmp (unknown [10.39.192.202])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F3E25BE0C;
+        Tue,  7 Dec 2021 16:10:17 +0000 (UTC)
+Date:   Tue, 7 Dec 2021 17:10:14 +0100
+From:   Philipp Rudo <prudo@redhat.com>
+To:     Michal Suchanek <msuchanek@suse.de>
+Cc:     keyrings@vger.kernel.org, kexec@lists.infradead.org,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna <nayna@linux.vnet.ibm.com>, Rob Herring <robh@kernel.org>,
+        linux-s390@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Frank van der Linden <fllinden@amazon.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Daniel Axtens <dja@axtens.net>, buendgen@de.ibm.com,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Markus Mayer <mmayer@broadcom.com>, linux-mmc@vger.kernel.org
-In-Reply-To: <20211206182616.2089677-10-f.fainelli@gmail.com>
-References: <20211206182616.2089677-1-f.fainelli@gmail.com> <20211206182616.2089677-10-f.fainelli@gmail.com>
-Subject: Re: [PATCH v2 09/14] dt-bindings: interrupt-controller: Convert Broadcom STB L2 to YAML
-Date:   Tue, 07 Dec 2021 08:58:10 -0600
-Message-Id: <1638889090.711166.5801.nullmailer@robh.at.kernel.org>
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] KEXEC_SIG with appended signature
+Message-ID: <20211207171014.2cfc4a54@rhtmp>
+In-Reply-To: <cover.1637862358.git.msuchanek@suse.de>
+References: <cover.1637862358.git.msuchanek@suse.de>
+Organization: Red Hat inc.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, 06 Dec 2021 10:26:11 -0800, Florian Fainelli wrote:
-> Convert the Broadcom STB L2 generic Level 2 interrupt controller Device
-> Tree binding to YAML to help with validation.
+Hi Michal,
+
+i finally had the time to take a closer look at the series. Except for
+the nit in patch 4 and my personal preference in patch 6 the code looks
+good to me.
+
+What I don't like are the commit messages on the first commits. In my
+opinion they are so short that they are almost useless. For example in
+patch 2 there is absolutely no explanation why you can simply copy the
+s390 over to ppc. Or in patch 3 you are silently changing the error
+code in kexec from EKEYREJECT to ENODATA. So I would appreciate it if
+you could improve them a little.
+
+Thanks
+Philipp
+
+On Thu, 25 Nov 2021 19:02:38 +0100
+Michal Suchanek <msuchanek@suse.de> wrote:
+
+> Hello,
 > 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  .../interrupt-controller/brcm,l2-intc.txt     | 31 ---------
->  .../interrupt-controller/brcm,l2-intc.yaml    | 64 +++++++++++++++++++
->  2 files changed, 64 insertions(+), 31 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/brcm,l2-intc.txt
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/brcm,l2-intc.yaml
+> This is resend of the KEXEC_SIG patchset.
 > 
-
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
-
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
-
-Full log is available here: https://patchwork.ozlabs.org/patch/1564135
-
-
-interrupt-controller@3e1000: 'interrupt-names' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm/boot/dts/bcm7445-bcm97445svmb.dt.yaml
-
-interrupt-controller@7ef00100: compatible: 'oneOf' conditional failed, one must be fixed:
-	arch/arm64/boot/dts/broadcom/bcm2711-rpi-400.dt.yaml
-	arch/arm64/boot/dts/broadcom/bcm2711-rpi-4-b.dt.yaml
-	arch/arm64/boot/dts/broadcom/bcm2711-rpi-cm4-io.dt.yaml
-	arch/arm/boot/dts/bcm2711-rpi-400.dt.yaml
-	arch/arm/boot/dts/bcm2711-rpi-4-b.dt.yaml
-	arch/arm/boot/dts/bcm2711-rpi-cm4-io.dt.yaml
+> The first patch is new because it'a a cleanup that does not require any
+> change to the module verification code.
+> 
+> The second patch is the only one that is intended to change any
+> functionality.
+> 
+> The rest only deduplicates code but I did not receive any review on that
+> part so I don't know if it's desirable as implemented.
+> 
+> The first two patches can be applied separately without the rest.
+> 
+> Thanks
+> 
+> Michal
+> 
+> Michal Suchanek (6):
+>   s390/kexec_file: Don't opencode appended signature check.
+>   powerpc/kexec_file: Add KEXEC_SIG support.
+>   kexec_file: Don't opencode appended signature verification.
+>   module: strip the signature marker in the verification function.
+>   module: Use key_being_used_for for log messages in
+>     verify_appended_signature
+>   module: Move duplicate mod_check_sig users code to mod_parse_sig
+> 
+>  arch/powerpc/Kconfig                     | 11 +++++
+>  arch/powerpc/kexec/elf_64.c              | 14 ++++++
+>  arch/s390/kernel/machine_kexec_file.c    | 42 ++----------------
+>  crypto/asymmetric_keys/asymmetric_type.c |  1 +
+>  include/linux/module_signature.h         |  1 +
+>  include/linux/verification.h             |  4 ++
+>  kernel/module-internal.h                 |  2 -
+>  kernel/module.c                          | 12 +++--
+>  kernel/module_signature.c                | 56 +++++++++++++++++++++++-
+>  kernel/module_signing.c                  | 33 +++++++-------
+>  security/integrity/ima/ima_modsig.c      | 22 ++--------
+>  11 files changed, 113 insertions(+), 85 deletions(-)
+> 
 
