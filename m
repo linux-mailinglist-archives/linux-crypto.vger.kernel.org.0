@@ -2,86 +2,51 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E3F46CC0A
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Dec 2021 05:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DA346CCA1
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Dec 2021 05:40:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239974AbhLHEPZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 7 Dec 2021 23:15:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244096AbhLHEPZ (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 7 Dec 2021 23:15:25 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E800DC061574;
-        Tue,  7 Dec 2021 20:11:53 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 347C1B81F5F;
-        Wed,  8 Dec 2021 04:11:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28B7EC00446;
-        Wed,  8 Dec 2021 04:11:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638936710;
-        bh=Jwh/IcVCIy1tBRw7SlT1zlgLiIm03nZ4YhwPblrnhX4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hrkypQYVkUVIQG8PPtX9a8kZexqGvFoZCejjHjhg/3+ogxHHgFbSaRQyfAMPSm8q3
-         dOsvul+225Ew9iueO2ql8GoVShontjxq+A0Vvs3vZVOBxeUe5o780UJgMEDJfbF1j/
-         rAgI2Q9DnswYULnAUYugv6MNnGNWi14rUseZqwxPLRXjR6GHV/saciwaJWSl4lwpu+
-         mBzASdqUEetwOyrAKdamLuP3itQrgmgD2j7qnvZLQBtbMNSJJ6MPFnbJR/eCXRl0De
-         EX6Z6YxjCEXSqoAhrSB+U2vmZFC3iOCKQMn3+o91bnTTFcVM3JrZaNN787+C3y3ZwB
-         SLVGOnWKG/J+A==
-Date:   Tue, 7 Dec 2021 22:17:21 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Boris Brezillon <bbrezillon@kernel.org>,
-        Arnaud Ebalard <arno@natisbad.org>,
-        Srujana Challa <schalla@marvell.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] crypto: marvell/octeontx - Use kcalloc() instead of
- kzalloc()
-Message-ID: <20211208041721.GA171099@embeddedor>
+        id S239746AbhLHEoM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 7 Dec 2021 23:44:12 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:57552 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235223AbhLHEoM (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 7 Dec 2021 23:44:12 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1muokv-0001BJ-C6; Wed, 08 Dec 2021 15:40:38 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 08 Dec 2021 15:40:37 +1100
+Date:   Wed, 8 Dec 2021 15:40:37 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-crypto@vger.kernel.org, Sabrina Dubroca <sd@queasysnail.net>
+Subject: Re: x86 AES crypto alignment
+Message-ID: <20211208044037.GA11399@gondor.apana.org.au>
+References: <20211207113252.162701ed@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20211207113252.162701ed@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Use 2-factor multiplication argument form kcalloc() instead
-of kzalloc().
+On Tue, Dec 07, 2021 at 11:32:52AM -0800, Jakub Kicinski wrote:
+> Hi!
+> 
+> The x86 AES crypto (gcm(aes)) requires 16B alignment which is hard to
+> achieve in networking. Is there any reason for this? On any moderately 
+> recent Intel platform aligned and unaligned vmovdq should have the same
+> performance (reportedly).
 
-Link: https://github.com/KSPP/linux/issues/162
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/crypto/marvell/octeontx/otx_cptvf_main.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+There is no such thing as an alignment requirement.  If an algorithm
+specifies an alignment and you pass it a request which is unaligned,
+the Crypto API will automatically align the data for you.
 
-diff --git a/drivers/crypto/marvell/octeontx/otx_cptvf_main.c b/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
-index c076d0b3ad5f..b681bd2dc6ad 100644
---- a/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
-+++ b/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
-@@ -94,15 +94,13 @@ static int alloc_pending_queues(struct otx_cpt_pending_qinfo *pqinfo, u32 qlen,
- 				u32 num_queues)
- {
- 	struct otx_cpt_pending_queue *queue = NULL;
--	size_t size;
- 	int ret;
- 	u32 i;
- 
- 	pqinfo->num_queues = num_queues;
--	size = (qlen * sizeof(struct otx_cpt_pending_entry));
- 
- 	for_each_pending_queue(pqinfo, queue, i) {
--		queue->head = kzalloc((size), GFP_KERNEL);
-+		queue->head = kcalloc(qlen, sizeof(*queue->head), GFP_KERNEL);
- 		if (!queue->head) {
- 			ret = -ENOMEM;
- 			goto pending_qfail;
+So what is the actual problem here?
+
+Thanks,
 -- 
-2.27.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
