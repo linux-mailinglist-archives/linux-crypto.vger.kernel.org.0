@@ -2,84 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE0247149E
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Dec 2021 17:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCD4471511
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Dec 2021 18:48:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhLKQFb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 11 Dec 2021 11:05:31 -0500
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:48675 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229953AbhLKQFb (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 11 Dec 2021 11:05:31 -0500
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 1BBG4Pcm006075;
-        Sat, 11 Dec 2021 17:04:25 +0100
-Date:   Sat, 11 Dec 2021 17:04:25 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas Schoebel-Theuer <tst@schoebel-theuer.de>
-Cc:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
-        Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        John Haxby <john.haxby@oracle.com>,
-        Alexander Lobakin <alobakin@mailbox.org>,
-        Jirka Hladky <jhladky@redhat.com>
-Subject: Re: [PATCH v43 00/15] /dev/random - a new approach
-Message-ID: <20211211160425.GA6023@1wt.eu>
-References: <2036923.9o76ZdvQCi@positron.chronox.de>
- <f59e7a25-ea0b-b36e-791e-8ab49bc7102c@schoebel-theuer.de>
+        id S230007AbhLKRsc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 11 Dec 2021 12:48:32 -0500
+Received: from mailgw16-59.onamae.ne.jp ([118.27.95.59]:21562 "EHLO
+        mailgw16.onamae.ne.jp" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229988AbhLKRsc (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Sat, 11 Dec 2021 12:48:32 -0500
+X-Greylist: delayed 315 seconds by postgrey-1.27 at vger.kernel.org; Sat, 11 Dec 2021 12:48:32 EST
+Received: from www70.onamae.ne.jp (unknown [172.16.42.155])
+        by mailgw16.onamae.ne.jp (Postfix) with ESMTP id C1ED9CFC97
+        for <linux-crypto@vger.kernel.org>; Sun, 12 Dec 2021 02:43:15 +0900 (JST)
+Received: by www70.onamae.ne.jp (Postfix, from userid 10029)
+        id C155F20167DB3; Sun, 12 Dec 2021 02:43:15 +0900 (JST)
+To:     linux-crypto@vger.kernel.org
+Subject: =?ISO-2022-JP?B?GyRCJD0kTkI+GyhC?=
+X-PHP-Script: inezpro.com/index.php for 45.153.160.136
+X-PHP-Filename: /home/r7969951/public_html/inezpro.com/index.php REMOTE_ADDR: 45.153.160.136
+Date:   Sat, 11 Dec 2021 17:43:15 +0000
+From:   WordPress <info@inezpro.com>
+Message-ID: <4a4802239f30fd3fa918c6d764e4edd8@inezpro.com>
+X-Mailer: PHPMailer 5.2.27 (https://github.com/PHPMailer/PHPMailer)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f59e7a25-ea0b-b36e-791e-8ab49bc7102c@schoebel-theuer.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=ISO-2022-JP
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Dec 11, 2021 at 04:45:55PM +0100, Thomas Schoebel-Theuer wrote:
-> 4) Collection of entropy vs consumption of entropy: the old /dev/random has
-> an important feature for me: any _mass_ usage by whatever class of users
-> (whether tenthousands of UIDs per server and/or HTTP/second, or maybe even
-> some privileged orchestration scripts) would _consume_ masses of entropy.
-> When suchalike consumption would exceed the production rate, the old
-> /dev/random would become so slow that our internal monitoring processes
-> would certainly alert, and consequently would hint our responsibles (located
-> at other teams) at the problem.
+差出人: [your-name] <linux-crypto@vger.kernel.org>
 
-I'm sorry but I cannot agree with you on this. You are claiming that your
-monitoring processes are so limited that the only situation they can
-discover is when the machine is basically dead. There are plenty of
-users who end up replacing /dev/random with /dev/urandom in production
-to make sure a terrible service outage never happens again, and one
-important feature of an RNG is its performance, particularly when it's
-shared between processes and users. The fact that your monitoring only
-triggers when the system becomes unusable is a proof that it must be
-fixed, and certainly not an indication that any possible kernel
-limitation you're benefitting from does not deserve to be addressed.
+題名: その他
 
-Willy
+お名前:?? Beatrice liked you! Click Here: https://bit.ly/3y9jhol?f7xe ??
+
+フリガナ:ozb7unv
+
+貴社名:t5bw8e7
+
+メールアドレス:linux-crypto@vger.kernel.org
+
+郵便番号:jca2kzwf
+
+住所:0knyxc6x
+
+電話番号:611393772934
+
+メッセージ本文:
+evjclf
+
+
+このメールは Inezpro.com (http://inezpro.com) のお問い合わせフォームから送信されました
