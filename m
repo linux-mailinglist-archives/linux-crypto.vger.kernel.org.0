@@ -2,114 +2,159 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7CCE4713A2
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Dec 2021 12:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F86D471496
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Dec 2021 16:58:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhLKLaU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 11 Dec 2021 06:30:20 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:16367 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbhLKLaM (ORCPT
+        id S231376AbhLKP6B (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 11 Dec 2021 10:58:01 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:9000 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229953AbhLKP6B (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 11 Dec 2021 06:30:12 -0500
-Received: from kwepemi500003.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JB5CF6Q04z91Px;
-        Sat, 11 Dec 2021 19:29:29 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi500003.china.huawei.com (7.221.188.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 11 Dec 2021 19:30:10 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 11 Dec 2021 19:30:10 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <liulongfang@huawei.com>,
-        Weili Qian <qianweili@huawei.com>
-Subject: [PATCH 6/6] crypto: hisilicon/qm - disable queue when 'CQ' error
-Date:   Sat, 11 Dec 2021 19:25:19 +0800
-Message-ID: <20211211112519.21201-7-qianweili@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211211112519.21201-1-qianweili@huawei.com>
-References: <20211211112519.21201-1-qianweili@huawei.com>
+        Sat, 11 Dec 2021 10:58:01 -0500
+X-Greylist: delayed 695 seconds by postgrey-1.27 at vger.kernel.org; Sat, 11 Dec 2021 10:58:00 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1639237557;
+    s=strato-dkim-0002; d=schoebel-theuer.de;
+    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=PBlFu+wsThkymIMAFq4AB4JTJ9Of5haIcw9PRdsiO0o=;
+    b=cJ6JKzYai20jnurxW1YYQFuqqZa97ogddbNTI2d1+Uc8hQwotvMp0DG+zc6EdJXJ2Y
+    kD4AEW8AY7E9K5IHjGOoQUzpOKO7DcRSLWGJyjsRsgzdgRrxeKD2OMruc16NZwUjNxlL
+    R7luu2qp5yaUwUkEdIq4KXP643IXudwZgpIF7qRGBIrggCJQpYMq6+zUH4dStS7kXmX4
+    LAyvBibcPfXuumDJx8CkWMyXZWTRJEexD7t2LJhCui10j9I0isIDKIDNZRmtNsV0wpOf
+    /hjM1D9VxLIwpLPtA7mWPtJKRFOnqOYhGoaurpG+zlTmyezM+tyD9TqUnzqRs3YpiTZa
+    a+zw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":OH8QVVOrc/CP6za/qRmbF3BWedPGA1vjs2e0bDjfg8OiOrPJifeRMRhMbfOob5IoQoyC2I0MN+jr"
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.2.102]
+    by smtp.strato.de (RZmta 47.35.3 DYNA|AUTH)
+    with ESMTPSA id x08697xBBFjt8HI
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Sat, 11 Dec 2021 16:45:55 +0100 (CET)
+Subject: Re: [PATCH v43 00/15] /dev/random - a new approach
+To:     =?UTF-8?Q?Stephan_M=c3=bcller?= <smueller@chronox.de>,
+        Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org
+Cc:     Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        John Haxby <john.haxby@oracle.com>,
+        Alexander Lobakin <alobakin@mailbox.org>,
+        Jirka Hladky <jhladky@redhat.com>
+References: <2036923.9o76ZdvQCi@positron.chronox.de>
+From:   Thomas Schoebel-Theuer <tst@schoebel-theuer.de>
+Message-ID: <f59e7a25-ea0b-b36e-791e-8ab49bc7102c@schoebel-theuer.de>
+Date:   Sat, 11 Dec 2021 16:45:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+In-Reply-To: <2036923.9o76ZdvQCi@positron.chronox.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-If the hardware reports the 'CQ' overflow or 'CQE' error by the abnormal
-interrupt, disable the queue and stop tasks send to hardware.
+On 11/21/21 5:39 PM, Stephan Müller wrote:
+> The following patch set provides a complete production-
+> ready and yet different approach to /dev/random which is called Linux
+> Random Number Generator (LRNG) to collect entropy within the Linux kernel.
+> It provides the same API and ABI and can be used as a drop-in replacement.
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+My suggestion: please name it /dev/fastrandom or /dev/fips-random or 
+/dev/scalable-random or whatever is appropriate, and please leave the 
+traditional /dev/random as it was for decades.
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 6c61f9d25f75..b1fe9c7b8cc8 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -89,7 +89,10 @@
- 
- #define QM_AEQE_PHASE(aeqe)		((le32_to_cpu((aeqe)->dw0) >> 16) & 0x1)
- #define QM_AEQE_TYPE_SHIFT		17
-+#define QM_AEQE_CQN_MASK		GENMASK(15, 0)
-+#define QM_CQ_OVERFLOW			0
- #define QM_EQ_OVERFLOW			1
-+#define QM_CQE_ERROR			2
- 
- #define QM_DOORBELL_CMD_SQ		0
- #define QM_DOORBELL_CMD_CQ		1
-@@ -989,6 +992,15 @@ static void qm_set_qp_disable(struct hisi_qp *qp, int offset)
- 	mb();
- }
- 
-+static void qm_disable_qp(struct hisi_qm *qm, u32 qp_id)
-+{
-+	struct hisi_qp *qp = &qm->qp_array[qp_id];
-+
-+	qm_set_qp_disable(qp, QM_RESET_STOP_TX_OFFSET);
-+	hisi_qm_stop_qp(qp);
-+	qm_set_qp_disable(qp, QM_RESET_STOP_RX_OFFSET);
-+}
-+
- static void qm_reset_function(struct hisi_qm *qm)
- {
- 	struct hisi_qm *pf_qm = pci_get_drvdata(pci_physfn(qm->pdev));
-@@ -1022,16 +1034,24 @@ static irqreturn_t qm_aeq_thread(int irq, void *data)
- {
- 	struct hisi_qm *qm = data;
- 	struct qm_aeqe *aeqe = qm->aeqe + qm->status.aeq_head;
--	u32 type;
-+	u32 type, qp_id;
- 
- 	while (QM_AEQE_PHASE(aeqe) == qm->status.aeqc_phase) {
- 		type = le32_to_cpu(aeqe->dw0) >> QM_AEQE_TYPE_SHIFT;
-+		qp_id = le32_to_cpu(aeqe->dw0) & QM_AEQE_CQN_MASK;
- 
- 		switch (type) {
- 		case QM_EQ_OVERFLOW:
- 			dev_err(&qm->pdev->dev, "eq overflow, reset function\n");
- 			qm_reset_function(qm);
- 			return IRQ_HANDLED;
-+		case QM_CQ_OVERFLOW:
-+			dev_err(&qm->pdev->dev, "cq overflow, stop qp(%u)\n",
-+				qp_id);
-+			fallthrough;
-+		case QM_CQE_ERROR:
-+			qm_disable_qp(qm, qp_id);
-+			break;
- 		default:
- 			dev_err(&qm->pdev->dev, "unknown error type %u\n",
- 				type);
--- 
-2.33.0
+My reasons:
+
+I am one of the downstream kernel responsibles you might affect with 
+your changes. I am responsible for any kernel issues for millions of 
+customers.
+
+For me, the _slowness_ of the traditional /dev/random is a _feature_.
+
+Some more detailed arguments, important for my use cases as seen by me:
+
+1) Personally, I have made some 1&1-internal scripts which don't rely on 
+a single source of entropy, as seen by sysadmins. Note that each 
+/dev/$other_random is a _single_ _source_ of entropy from a sysadmin's 
+perspective (and also a "blackbox"), although the role is different from 
+a kernel developer's perspective.
+
+2) Any new kernel must be able to run on any of our machines, even very 
+old machines (bound by old customer contracts) which don't have certain 
+hardware features, or have a different non-functional behaviour like 
+performance, or interrupt timing behaviour, etc. Thus the non-functional 
+behaviour of the traditional /dev/random is important for me. Please do 
+not change it.
+
+3) Whenever a new kernel behaviour is "discovered" by some userspace 
+developers (whether in-house or from many OpenSource projects around the 
+world), they tend to use it sooner or later, for whatever reason. If 
+suchalike would happen at the traditional /dev/random, it would be 
+noticed by some of our sysadmin teams. Here is the reason:
+
+4) Collection of entropy vs consumption of entropy: the old /dev/random 
+has an important feature for me: any _mass_ usage by whatever class of 
+users (whether tenthousands of UIDs per server and/or HTTP/second, or 
+maybe even some privileged orchestration scripts) would _consume_ masses 
+of entropy. When suchalike consumption would exceed the production rate, 
+the old /dev/random would become so slow that our internal monitoring 
+processes would certainly alert, and consequently would hint our 
+responsibles (located at other teams) at the problem. Traditionally, 
+/dev/random and /dev/urandom are thus used for different purposes.
+
+5) Please don't misunderstand me: I am _not_ against the bazaar model 
+which allows you to develop new and interesting features. Just don't 
+throw away the traditional solutions, encapsulating huge amounts of 
+manpower. Please create a new booth at the bazaar. Then some hundreds of 
+userspace developers can support the new solution, or even  migrate from 
+traditional interfaces like /dev/urandom to newer ones. Many userspace 
+projects are widely distributed, and independent from each other. By 
+providing a different interface (which is easily detectable), separation 
+of concerns will become easy in a worldwide scale.
+
+Hints: whenever changing / improving non-functional properties of your 
+new /dev/$new_random, please report _separate_ version numbers for 
+non-functional vs feature versions. Please maintain it over many years 
+(hopefully comparable to the lifetime of /dev/random). Please long-term 
+document the rules how its new features should be _interpreted_. Please 
+document important use cases. Please create a better documentation than 
+the traditional ones, also understandable by sysadmins (not only by 
+certain developers or security experts). Even more important: please 
+document and depict _scenarios_ where certain features should _NOT_ be used.
+
+Cheers and very sincerly,
+
+Thomas
+
+Homepage: https://github.com/schoebel and look into the mars/ project 
+and also into its docu/ subfolder. Please read the big pdfs. Then you 
+might notice that I could become a potential future user of your new code.
 
