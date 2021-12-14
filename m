@@ -2,300 +2,92 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4494740D2
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Dec 2021 11:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D4C474483
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Dec 2021 15:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbhLNKv6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 14 Dec 2021 05:51:58 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:35842 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233288AbhLNKv5 (ORCPT
+        id S230374AbhLNOHv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 14 Dec 2021 09:07:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230295AbhLNOHv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 Dec 2021 05:51:57 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BEAJNtZ019136;
-        Tue, 14 Dec 2021 02:51:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=xDPXA9Dvs1IphzstMbremuaj22AGEVES4+HfoxNs3QY=;
- b=SsSSpFXKI1la35sWQ7iHiMuT1jlaFrheUSq7uCz8puZuj0iws/lhqtlZsQpKfnvCrHwW
- Riy1vYc+oR3i+3y5NuLxPkQSS9LX+lTSbVt+7dy3w6Vu5Jt4Zi7pYLnUgNeTLJ/ykiP7
- wO+nHbytMz1s++GAKbdBfiTuaWnexCPC20HUGnpqs+iPWPdiC0xxxvVlBjkWr/7RYJHZ
- bnOHVT300f9IdEdIjk2ZjA/5zRRl87hZwbJe9GqIpPX3dvCm+aMR14e72Kks5RyX1wxy
- 6xri38ps/pq+Klg+C4FZjNlIJNcibnVgl86EKlIzIaS+IRS/1SQ3X0RzAdaL9BsXI4Ys wA== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3cxsds03n3-14
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 14 Dec 2021 02:51:52 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 14 Dec
- 2021 02:51:13 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Tue, 14 Dec 2021 02:51:13 -0800
-Received: from machine421.marvell.com (unknown [10.29.37.2])
-        by maili.marvell.com (Postfix) with ESMTP id 65B603F703F;
-        Tue, 14 Dec 2021 02:51:11 -0800 (PST)
-From:   <sgoutham@marvell.com>
-To:     <herbert@gondor.apana.org.au>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <sunil.kovvuri@gmail.com>, Sunil Goutham <sgoutham@marvell.com>,
-        "Bharat Bhushan" <bbhushan2@marvell.com>,
-        Joseph Longever <jlongever@marvell.com>
-Subject: [PATCH v2] hwrng: cn10k: Add random number generator support
-Date:   Tue, 14 Dec 2021 16:21:08 +0530
-Message-ID: <1639479068-22101-1-git-send-email-sgoutham@marvell.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 14 Dec 2021 09:07:51 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB477C061574
+        for <linux-crypto@vger.kernel.org>; Tue, 14 Dec 2021 06:07:50 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id g14so62534079edb.8
+        for <linux-crypto@vger.kernel.org>; Tue, 14 Dec 2021 06:07:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=KzLgDz7d2Gll4mrNvllKXj4KFgN8S+Ovisil7/bb6fs=;
+        b=hs5Ivqloj+xCnT5bYmHIxTQeDz3+dtHUOHcpWC7xLNhqhEHeY2eyr2VR8qFsuN/vah
+         htca7qT2sYot8JoAsxyIJLimC3dD1xD1MeIxUEwY1gq7MkzVlVepsesGWdKPPH3+gpxc
+         Q7eBl+ukdk2ngeuR3s5fVOu/F2iqtWCfPFucg0GKqTjuSfUS2Qcit9HpQ95c+cIcZSKp
+         KKv4F3hS5QrepVKXx2AQjyPF0dzoHX5gWI4pqBQPHiGKx4hRTNOj13qT9TGyWeDF8y82
+         0GD/77cHxxita5YQxAxpqbdV1x91rgfWmoAobEkrZznHH1sktA4n0TGtL2g0DhS5t3ll
+         KFlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=KzLgDz7d2Gll4mrNvllKXj4KFgN8S+Ovisil7/bb6fs=;
+        b=2zfbnDwgcSV+Jx1AxXhouqhxjG/VRQ3viDSG2HnvtMI5X0yi644AIRgduFEGGX7FOF
+         ci920AwUWbS8ALSAkmUtqoDkO7P4xWMKxkCz1HO/oBlUH+BDWmAyfOGC19kUd8eeSs3P
+         YEErOwsS+JojklmrxS0SVL+Ng1QK0/it+ikgqDeRtxJ0NVyYaJJbqRcpu4fc6lWJKaH+
+         z2WZLzc0p21f4WrjQgqgSnHIryG8wrtJDfD2crWPAJv98aNLVDcvWmsCvV2FGNWQoJ20
+         zEoD7n/T8XsX2s4GFN1v3XnEtc8jn4T3hzNwC1S6qGQtDdWfhqvunjME7iQ7pim8A/wW
+         /eDA==
+X-Gm-Message-State: AOAM533PLOBqlHiP1fqOBAQ+o30L5xyU9c57IG/0j+jJ8/hUz9QdBI3m
+        RtWCrkwVusc/JOIBzyOuTI5fHLIoFWF7US+2B+s=
+X-Google-Smtp-Source: ABdhPJxH0ViF60Q/KfCGncYXmIpwMltThqgGpaamOrDxONRJNnJQHJei81Lxo7i96f6ahMVBX+1ydUG8cFveHQVJEXI=
+X-Received: by 2002:a17:907:9056:: with SMTP id az22mr5731478ejc.107.1639490868918;
+ Tue, 14 Dec 2021 06:07:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: bhbxnzEal0kYVDlP1RV0SF1EvwDt5Obr
-X-Proofpoint-ORIG-GUID: bhbxnzEal0kYVDlP1RV0SF1EvwDt5Obr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-14_06,2021-12-14_01,2021-12-02_01
+Received: by 2002:a54:3842:0:0:0:0:0 with HTTP; Tue, 14 Dec 2021 06:07:48
+ -0800 (PST)
+Reply-To: uchennailobitenone@gmail.com
+From:   uchenna <okeyyoyopa@gmail.com>
+Date:   Tue, 14 Dec 2021 06:07:48 -0800
+Message-ID: <CAHTws=JMS1qcjYy8qyxJOqujDwrvpz4ZXmQyHxLWoBj5+G34-g@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Sunil Goutham <sgoutham@marvell.com>
+May the Almighty Lord be with you....
+Am A WIDOW TO LATE MR David HOLLAND,  I AM 59 .YEARS OLD. My name is
+Josephine HOLLAND.  I am married to Late Mr. David HOLLAND, who worked
+in the France Embassy a here in Lome -Togo West Africa for nine years
+before he died in the
+year 2019.
 
-CN10K series of silicons support true random number
-generators. This patch adds support for the same. Also
-supports entropy health status checking.
+You are chosen to Receive A Donation Cash Grant of my late husband
+that funds $5.7,000,  000,00 (Five Million Seven Hundred Thousand
+United States Dollars) to help the poor and orphanages through your
+sincere help before my death. I am suffering from long time cancer of
+the Breast, from all indication my conditions is really deteriorating
+and it is quite obvious that I wouldn't live any more longer according
+to my doctor because the cancer has gotten to a very bad stage that no
+hope for me to be a living person again, All i need from you is your
+sincerity to use this funds to do this project as i desired and I need
+your information as where My Bank will be sending the funds,
 
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
-Signed-off-by: Joseph Longever <jlongever@marvell.com>
----
-v1 -> v2:
-	Fixed warnings reported by kernel test robot.
-	Also modified TRNG read logix to address an issue where TRNG_STATUS
-	read from HW could be incorrect.
----
- drivers/char/hw_random/Kconfig     |  11 +++
- drivers/char/hw_random/Makefile    |   1 +
- drivers/char/hw_random/cn10k-rng.c | 181 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 193 insertions(+)
- create mode 100644 drivers/char/hw_random/cn10k-rng.c
+such as:
+Receiver's name:_ Address:_ Phone
+number:_ Country:_
 
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 1da6477..001b819 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -538,6 +538,17 @@ config HW_RANDOM_ARM_SMCCC_TRNG
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called arm_smccc_trng.
- 
-+config HW_RANDOM_CN10K
-+       tristate "Marvell CN10K Random Number Generator support"
-+       depends on HW_RANDOM && PCI && ARM64
-+       default HW_RANDOM
-+       help
-+	 This driver provides support for the True Random Number
-+	 generator available in Marvell CN10K SoCs.
-+
-+	 To compile this driver as a module, choose M here.
-+	 The module will be called cn10k_rng. If unsure, say Y.
-+
- endif # HW_RANDOM
- 
- config UML_RANDOM
-diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-index a5a1c76..a2f1ce0 100644
---- a/drivers/char/hw_random/Makefile
-+++ b/drivers/char/hw_random/Makefile
-@@ -46,3 +46,4 @@ obj-$(CONFIG_HW_RANDOM_NPCM) += npcm-rng.o
- obj-$(CONFIG_HW_RANDOM_CCTRNG) += cctrng.o
- obj-$(CONFIG_HW_RANDOM_XIPHERA) += xiphera-trng.o
- obj-$(CONFIG_HW_RANDOM_ARM_SMCCC_TRNG) += arm_smccc_trng.o
-+obj-$(CONFIG_HW_RANDOM_CN10K) += cn10k-rng.o
-diff --git a/drivers/char/hw_random/cn10k-rng.c b/drivers/char/hw_random/cn10k-rng.c
-new file mode 100644
-index 0000000..35001c6
---- /dev/null
-+++ b/drivers/char/hw_random/cn10k-rng.c
-@@ -0,0 +1,181 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Marvell CN10K RVU Hardware Random Number Generator.
-+ *
-+ * Copyright (C) 2021 Marvell.
-+ *
-+ */
-+
-+#include <linux/hw_random.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/pci.h>
-+#include <linux/pci_ids.h>
-+#include <linux/delay.h>
-+
-+#include <linux/arm-smccc.h>
-+
-+/* CSRs */
-+#define RNM_CTL_STATUS		0x000
-+#define RNM_ENTROPY_STATUS	0x008
-+#define RNM_CONST		0x030
-+#define RNM_EBG_ENT		0x048
-+#define RNM_PF_EBG_HEALTH	0x050
-+#define RNM_PF_RANDOM		0x400
-+#define RNM_TRNG_RESULT		0x408
-+
-+struct cn10k_rng {
-+	void __iomem *reg_base;
-+	struct hwrng ops;
-+	struct pci_dev *pdev;
-+};
-+
-+#define PLAT_OCTEONTX_RESET_RNG_EBG_HEALTH_STATE     0xc2000b0f
-+
-+static int reset_rng_health_state(struct cn10k_rng *rng)
-+{
-+	struct arm_smccc_res res;
-+
-+	/* Send SMC service call to reset EBG health state */
-+	arm_smccc_smc(PLAT_OCTEONTX_RESET_RNG_EBG_HEALTH_STATE, 0, 0, 0, 0, 0, 0, 0, &res);
-+	if (res.a0 != 0UL)
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static int check_rng_health(struct cn10k_rng *rng)
-+{
-+	u64 status;
-+	int err;
-+
-+	/* Skip checking health */
-+	if (!rng->reg_base)
-+		return 0;
-+
-+	status = readq(rng->reg_base + RNM_PF_EBG_HEALTH);
-+	if (status & BIT_ULL(20)) {
-+		err = reset_rng_health_state(rng);
-+		if (err) {
-+			dev_err(&rng->pdev->dev, "HWRNG: Health test failed (status=%llx)\n",
-+					status);
-+			dev_err(&rng->pdev->dev, "HWRNG: error during reset\n");
-+		}
-+	}
-+	return 0;
-+}
-+
-+static void cn10k_read_trng(struct cn10k_rng *rng, u64 *value)
-+{
-+	u64 upper, lower;
-+
-+	*value = readq(rng->reg_base + RNM_PF_RANDOM);
-+
-+	/* HW can run out of entropy if large amount random data is read in
-+	 * quick succession. Zeros may not be real random data from HW.
-+	 */
-+	if (!*value) {
-+		upper = readq(rng->reg_base + RNM_PF_RANDOM);
-+		lower = readq(rng->reg_base + RNM_PF_RANDOM);
-+		while (!(upper & 0x00000000FFFFFFFFULL))
-+			upper = readq(rng->reg_base + RNM_PF_RANDOM);
-+		while (!(lower & 0xFFFFFFFF00000000ULL))
-+			lower = readq(rng->reg_base + RNM_PF_RANDOM);
-+
-+		*value = (upper & 0xFFFFFFFF00000000) | (lower & 0xFFFFFFFF);
-+	}
-+}
-+
-+static int cn10k_rng_read(struct hwrng *hwrng, void *data,
-+			  size_t max, bool wait)
-+{
-+	struct cn10k_rng *rng = (struct cn10k_rng *)hwrng->priv;
-+	unsigned int size;
-+	int err = 0;
-+	u64 value;
-+
-+	err = check_rng_health(rng);
-+	if (err)
-+		return err;
-+
-+	size = max;
-+
-+	while (size >= 8) {
-+		cn10k_read_trng(rng, &value);
-+
-+		*((u64 *)data) = (u64)value;
-+		size -= 8;
-+		data += 8;
-+	}
-+
-+	while (size > 0) {
-+		cn10k_read_trng(rng, &value);
-+
-+		*((u8 *)data) = (u8)value;
-+		size--;
-+		data++;
-+	}
-+
-+	return max - size;
-+}
-+
-+static int cn10k_rng_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-+{
-+	struct	cn10k_rng *rng;
-+	int	err;
-+
-+	rng = devm_kzalloc(&pdev->dev, sizeof(*rng), GFP_KERNEL);
-+	if (!rng)
-+		return -ENOMEM;
-+
-+	rng->pdev = pdev;
-+	pci_set_drvdata(pdev, rng);
-+
-+	rng->reg_base = pcim_iomap(pdev, 0, 0);
-+	if (!rng->reg_base) {
-+		dev_err(&pdev->dev, "Error while mapping CSRs, exiting\n");
-+		return -ENOMEM;
-+	}
-+
-+	rng->ops.name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-+				       "cn10k-rng-%s", dev_name(&pdev->dev));
-+	if (!rng->ops.name)
-+		return -ENOMEM;
-+
-+	rng->ops.read    = cn10k_rng_read;
-+	rng->ops.quality = 1000;
-+	rng->ops.priv = (unsigned long)rng;
-+
-+	reset_rng_health_state(rng);
-+
-+	err = devm_hwrng_register(&pdev->dev, &rng->ops);
-+	if (err) {
-+		dev_err(&pdev->dev, "Could not register hwrng device.\n");
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static void cn10k_rng_remove(struct pci_dev *pdev)
-+{
-+	/* Nothing to do */
-+}
-+
-+static const struct pci_device_id cn10k_rng_id_table[] = {
-+	{ PCI_DEVICE(PCI_VENDOR_ID_CAVIUM, 0xA098) }, /* RNG PF */
-+	{0,},
-+};
-+
-+MODULE_DEVICE_TABLE(pci, cn10k_rng_id_table);
-+
-+static struct pci_driver cn10k_rng_driver = {
-+	.name		= "cn10k_rng",
-+	.id_table	= cn10k_rng_id_table,
-+	.probe		= cn10k_rng_probe,
-+	.remove		= cn10k_rng_remove,
-+};
-+
-+module_pci_driver(cn10k_rng_driver);
-+MODULE_AUTHOR("Sunil Goutham <sgoutham@marvell.com>");
-+MODULE_DESCRIPTION("Marvell CN10K HW RNG Driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
+Please do not be offended by the way or manner I came to you as a
+stranger to do this, it is about the only way I could get to you after
+going through your contacts Id. I shall give you the contacts of the
+bank. For legitimacy with  a letter of authority that will establish
+you as my appointed beneficiary of this money.
 
+I am waiting for your reply.
+From Sister Josephine HOLLAND.
+
+You should contact me through my private email address:
+
+mrsjosephineoneholland@gmail.com
