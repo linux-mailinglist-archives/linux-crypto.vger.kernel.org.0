@@ -2,46 +2,46 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70323476D05
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Dec 2021 10:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CB2476D08
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Dec 2021 10:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232975AbhLPJL4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 16 Dec 2021 04:11:56 -0500
-Received: from mga12.intel.com ([192.55.52.136]:9697 "EHLO mga12.intel.com"
+        id S232932AbhLPJMK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 16 Dec 2021 04:12:10 -0500
+Received: from mga12.intel.com ([192.55.52.136]:9714 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232990AbhLPJLv (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 16 Dec 2021 04:11:51 -0500
+        id S233020AbhLPJME (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 16 Dec 2021 04:12:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1639645911; x=1671181911;
+  t=1639645924; x=1671181924;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ouyMvUDAN3KXYSLCbWLt66R/lZCAu8o3pCcKUKN0fOU=;
-  b=XnH376esNVxLlndh3VThK4T/mQUJ7/nZ09C3z4DW3qcUydLyKUJ9aFVt
-   BzxuD1mSdiXamb+V6LDOEk8pf6eF6UJzJwLb+C38uiV6VFMfbO4IfyXV3
-   jTeMf6h6/tGxwTdRwdTpkf9lkSgXQTGbk+IeDuTlWyD0V85c3NAgbGYav
-   xtI9AMkGiBvhfu75df884Iuc1V3P63atNDeSfpvHt3eYKUn8D1CD/1ABJ
-   I7QRYOZjU5iWB5Jn01ogRSU2UssTSbe/XsPk/uZfm8nVnQ9CeVwuq9d6m
-   QiiQJt36EkTLW9fN2KalzhA7OiIn8AmoBGpfOS1xGS5Zu/oV/jtc0iEgh
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10199"; a="219458474"
+  bh=B8dblDQHwmC2tLTKguHb6fpvQ+cI//N1hj+Fdn/F2qc=;
+  b=i+qq3rHD+kOm80EHEAaNeOJaVWemkDk/tyyeJE8FVG+b5t57H7AS2Z8y
+   /JKafLxDF/82rAdnq4gd3IQiU+jaUyU7thx5Vxv9eVJJPYUdi7vTaOCbH
+   xiL1pUG+bFDYHXo0464+eEZlWwdLWYbzOBUKnNTRM+2ToyyKBr5eeQgoH
+   ANXISFLke+dGucmkOvuAkxLvt3rK7TA4Tz1iiG4Yqd9H54c1l5NPJKbp3
+   ZpcRVl1lDcib5GK/XEAfJkFfQ7MsXXps+UWrrLz5qpmAcz4NoPpVpmFDj
+   qzTSHjoPIRVq2jc55YOqxWXWMWdSq7TUawRWou5QGX2hXqid+mJtlqj5B
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10199"; a="219458482"
 X-IronPort-AV: E=Sophos;i="5.88,211,1635231600"; 
-   d="scan'208";a="219458474"
+   d="scan'208";a="219458482"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2021 01:11:46 -0800
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2021 01:11:48 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.88,211,1635231600"; 
-   d="scan'208";a="465968602"
+   d="scan'208";a="465968623"
 Received: from silpixa00393544.ir.intel.com ([10.237.213.118])
-  by orsmga006.jf.intel.com with ESMTP; 16 Dec 2021 01:11:44 -0800
+  by orsmga006.jf.intel.com with ESMTP; 16 Dec 2021 01:11:46 -0800
 From:   Marco Chiappero <marco.chiappero@intel.com>
 To:     herbert@gondor.apana.org.au
 Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
         giovanni.cabiddu@intel.com, marco.chiappero@intel.com,
         Fiona Trahe <fiona.trahe@intel.com>
-Subject: [PATCH 18/24] crypto: qat - support fast ACKs in the PFVF protocol
-Date:   Thu, 16 Dec 2021 09:13:28 +0000
-Message-Id: <20211216091334.402420-19-marco.chiappero@intel.com>
+Subject: [PATCH 19/24] crypto: qat - exchange ring-to-service mappings over PFVF
+Date:   Thu, 16 Dec 2021 09:13:29 +0000
+Message-Id: <20211216091334.402420-20-marco.chiappero@intel.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211216091334.402420-1-marco.chiappero@intel.com>
 References: <20211216091334.402420-1-marco.chiappero@intel.com>
@@ -52,318 +52,175 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The original design and current implementation of the PFVF protocol
-expects the sender to both acquire and relinquish the ownership of the
-shared CSR by setting and clearing the "in use" pattern on the remote
-half of the register when sending a message. This happens regardless of
-the acknowledgment of the reception, to guarantee changes, including
-collisions, are surely detected.
+In addition to retrieving the device capabilities, a VF may also need to
+retrieve the mapping of its ring pairs to crypto and or compression
+services in order to work properly.
 
-However, in the case of a request that requires a response, collisions
-can also be detected by the lack of a reply. This can be exploited to
-speed up and simplify the above behaviour, letting the receiver both
-acknowledge the message and release the CSR in a single transaction:
-
-1) the sender can return as soon as the message has been acknowledged
-2) the receiver doesn't have to wait long before acquiring ownership
-of the CSR for the response message, greatly improving the overall
-throughput.
-
-Howerver, this improvement cannot be leveraged for fire-and-forget
-notifications, as it would be impossible for the sender to clearly
-distinguish between a collision and an ack immediately followed by a new
-message.
-
-This patch implements this optimization in a new version of the protocol
-(v3), which applies the fast-ack logic only whenever possible and
-guarantees backward compatibility with older versions. For requests, a
-new retry loop guarantees a correct behaviour.
+Make the VF receive the ring-to-service mappings from the PF by means of a
+new REQ_RING_SVC_MAP Block Message and add the request and response
+logic on VF and PF respectively. This change requires to bump the PFVF
+protocol to version 4.
 
 Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
 Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
 ---
- .../crypto/qat/qat_common/adf_accel_devices.h |  2 +-
- drivers/crypto/qat/qat_common/adf_gen2_pfvf.c | 68 ++++++++++++++++---
- drivers/crypto/qat/qat_common/adf_pfvf_msg.h  |  4 +-
- .../crypto/qat/qat_common/adf_pfvf_pf_proto.c |  3 +-
- .../crypto/qat/qat_common/adf_pfvf_vf_proto.c | 44 ++++++------
- 5 files changed, 91 insertions(+), 30 deletions(-)
+ drivers/crypto/qat/qat_common/adf_pfvf_msg.h  | 15 ++++++++++-
+ .../crypto/qat/qat_common/adf_pfvf_pf_msg.c   | 14 ++++++++++
+ .../crypto/qat/qat_common/adf_pfvf_pf_msg.h   |  2 ++
+ .../crypto/qat/qat_common/adf_pfvf_pf_proto.c |  1 +
+ .../crypto/qat/qat_common/adf_pfvf_vf_msg.c   | 27 +++++++++++++++++++
+ .../crypto/qat/qat_common/adf_pfvf_vf_msg.h   |  1 +
+ .../crypto/qat/qat_common/adf_pfvf_vf_proto.c |  4 +++
+ 7 files changed, 63 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/qat/qat_common/adf_accel_devices.h b/drivers/crypto/qat/qat_common/adf_accel_devices.h
-index 55e8948a8c5e..1b9d4ed03dd0 100644
---- a/drivers/crypto/qat/qat_common/adf_accel_devices.h
-+++ b/drivers/crypto/qat/qat_common/adf_accel_devices.h
-@@ -158,7 +158,7 @@ struct adf_pfvf_ops {
- 	int (*send_msg)(struct adf_accel_dev *accel_dev, struct pfvf_message msg,
- 			u32 pfvf_offset, struct mutex *csr_lock);
- 	struct pfvf_message (*recv_msg)(struct adf_accel_dev *accel_dev,
--					u32 pfvf_offset);
-+					u32 pfvf_offset, u8 compat_ver);
- };
- 
- struct adf_hw_device_data {
-diff --git a/drivers/crypto/qat/qat_common/adf_gen2_pfvf.c b/drivers/crypto/qat/qat_common/adf_gen2_pfvf.c
-index feab01ec4bbb..1a9072aac2ca 100644
---- a/drivers/crypto/qat/qat_common/adf_gen2_pfvf.c
-+++ b/drivers/crypto/qat/qat_common/adf_gen2_pfvf.c
-@@ -124,11 +124,34 @@ static bool is_legacy_user_pfvf_message(u32 msg)
- 	return !(msg & ADF_PFVF_MSGORIGIN_SYSTEM);
- }
- 
-+static bool is_pf2vf_notification(u8 msg_type)
-+{
-+	switch (msg_type) {
-+	case ADF_PF2VF_MSGTYPE_RESTARTING:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool is_vf2pf_notification(u8 msg_type)
-+{
-+	switch (msg_type) {
-+	case ADF_VF2PF_MSGTYPE_INIT:
-+	case ADF_VF2PF_MSGTYPE_SHUTDOWN:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
- struct pfvf_gen2_params {
- 	u32 pfvf_offset;
- 	struct mutex *csr_lock; /* lock preventing concurrent access of CSR */
- 	enum gen2_csr_pos local_offset;
- 	enum gen2_csr_pos remote_offset;
-+	bool (*is_notification_message)(u8 msg_type);
-+	u8 compat_ver;
- };
- 
- static int adf_gen2_pfvf_send(struct adf_accel_dev *accel_dev,
-@@ -190,15 +213,27 @@ static int adf_gen2_pfvf_send(struct adf_accel_dev *accel_dev,
- 		csr_val &= ~int_bit;
- 	}
- 
--	if (csr_val != csr_msg) {
--		dev_dbg(&GET_DEV(accel_dev),
--			"Collision - PFVF CSR overwritten by remote function\n");
-+	/* For fire-and-forget notifications, the receiver does not clear
-+	 * the in-use pattern. This is used to detect collisions.
-+	 */
-+	if (params->is_notification_message(msg.type) && csr_val != csr_msg) {
-+		/* Collision must have overwritten the message */
-+		dev_err(&GET_DEV(accel_dev),
-+			"Collision on notification - PFVF CSR overwritten by remote function\n");
- 		goto retry;
- 	}
- 
--	/* Finished with the PFVF CSR; relinquish it and leave msg in CSR */
--	gen2_csr_clear_in_use(&csr_val, remote_offset);
--	ADF_CSR_WR(pmisc_addr, pfvf_offset, csr_val);
-+	/* If the far side did not clear the in-use pattern it is either
-+	 * 1) Notification - message left intact to detect collision
-+	 * 2) Older protocol (compatibility version < 3) on the far side
-+	 *    where the sender is responsible for clearing the in-use
-+	 *    pattern after the received has acknowledged receipt.
-+	 * In either case, clear the in-use pattern now.
-+	 */
-+	if (gen2_csr_is_in_use(csr_val, remote_offset)) {
-+		gen2_csr_clear_in_use(&csr_val, remote_offset);
-+		ADF_CSR_WR(pmisc_addr, pfvf_offset, csr_val);
-+	}
- 
- out:
- 	mutex_unlock(lock);
-@@ -218,6 +253,7 @@ static struct pfvf_message adf_gen2_pfvf_recv(struct adf_accel_dev *accel_dev,
- 					      struct pfvf_gen2_params *params)
- {
- 	void __iomem *pmisc_addr = adf_get_pmisc_base(accel_dev);
-+	enum gen2_csr_pos remote_offset = params->remote_offset;
- 	enum gen2_csr_pos local_offset = params->local_offset;
- 	u32 pfvf_offset = params->pfvf_offset;
- 	struct pfvf_message msg = { 0 };
-@@ -242,12 +278,22 @@ static struct pfvf_message adf_gen2_pfvf_recv(struct adf_accel_dev *accel_dev,
- 	if (unlikely(is_legacy_user_pfvf_message(csr_msg))) {
- 		dev_dbg(&GET_DEV(accel_dev),
- 			"Ignored non-system message (0x%.8x);\n", csr_val);
-+		/* Because this must be a legacy message, the far side
-+		 * must clear the in-use pattern, so don't do it.
-+		 */
- 		return msg;
- 	}
- 
- 	/* Return the pfvf_message format */
- 	msg = adf_pfvf_message_of(accel_dev, csr_msg, &csr_gen2_fmt);
- 
-+	/* The in-use pattern is not cleared for notifications (so that
-+	 * it can be used for collision detection) or older implementations
-+	 */
-+	if (params->compat_ver >= ADF_PFVF_COMPAT_FAST_ACK &&
-+	    !params->is_notification_message(msg.type))
-+		gen2_csr_clear_in_use(&csr_val, remote_offset);
-+
- 	/* To ACK, clear the INT bit */
- 	csr_val &= ~int_bit;
- 	ADF_CSR_WR(pmisc_addr, pfvf_offset, csr_val);
-@@ -263,6 +309,7 @@ static int adf_gen2_pf2vf_send(struct adf_accel_dev *accel_dev, struct pfvf_mess
- 		.pfvf_offset = pfvf_offset,
- 		.local_offset = ADF_GEN2_CSR_PF2VF_OFFSET,
- 		.remote_offset = ADF_GEN2_CSR_VF2PF_OFFSET,
-+		.is_notification_message = is_pf2vf_notification,
- 	};
- 
- 	return adf_gen2_pfvf_send(accel_dev, msg, &params);
-@@ -276,30 +323,35 @@ static int adf_gen2_vf2pf_send(struct adf_accel_dev *accel_dev, struct pfvf_mess
- 		.pfvf_offset = pfvf_offset,
- 		.local_offset = ADF_GEN2_CSR_VF2PF_OFFSET,
- 		.remote_offset = ADF_GEN2_CSR_PF2VF_OFFSET,
-+		.is_notification_message = is_vf2pf_notification,
- 	};
- 
- 	return adf_gen2_pfvf_send(accel_dev, msg, &params);
- }
- 
- static struct pfvf_message adf_gen2_pf2vf_recv(struct adf_accel_dev *accel_dev,
--					       u32 pfvf_offset)
-+					       u32 pfvf_offset, u8 compat_ver)
- {
- 	struct pfvf_gen2_params params = {
- 		.pfvf_offset = pfvf_offset,
- 		.local_offset = ADF_GEN2_CSR_PF2VF_OFFSET,
- 		.remote_offset = ADF_GEN2_CSR_VF2PF_OFFSET,
-+		.is_notification_message = is_pf2vf_notification,
-+		.compat_ver = compat_ver,
- 	};
- 
- 	return adf_gen2_pfvf_recv(accel_dev, &params);
- }
- 
- static struct pfvf_message adf_gen2_vf2pf_recv(struct adf_accel_dev *accel_dev,
--					       u32 pfvf_offset)
-+					       u32 pfvf_offset, u8 compat_ver)
- {
- 	struct pfvf_gen2_params params = {
- 		.pfvf_offset = pfvf_offset,
- 		.local_offset = ADF_GEN2_CSR_VF2PF_OFFSET,
- 		.remote_offset = ADF_GEN2_CSR_PF2VF_OFFSET,
-+		.is_notification_message = is_vf2pf_notification,
-+		.compat_ver = compat_ver,
- 	};
- 
- 	return adf_gen2_pfvf_recv(accel_dev, &params);
 diff --git a/drivers/crypto/qat/qat_common/adf_pfvf_msg.h b/drivers/crypto/qat/qat_common/adf_pfvf_msg.h
-index f418dd26a742..df052194ece7 100644
+index df052194ece7..1d3cad7d4999 100644
 --- a/drivers/crypto/qat/qat_common/adf_pfvf_msg.h
 +++ b/drivers/crypto/qat/qat_common/adf_pfvf_msg.h
-@@ -89,8 +89,10 @@ enum vf2pf_msgtype {
- enum pfvf_compatibility_version {
- 	/* Support for extended capabilities */
+@@ -91,8 +91,10 @@ enum pfvf_compatibility_version {
  	ADF_PFVF_COMPAT_CAPABILITIES		= 0x02,
-+	/* In-use pattern cleared by receiver */
-+	ADF_PFVF_COMPAT_FAST_ACK		= 0x03,
+ 	/* In-use pattern cleared by receiver */
+ 	ADF_PFVF_COMPAT_FAST_ACK		= 0x03,
++	/* Ring to service mapping support for non-standard mappings */
++	ADF_PFVF_COMPAT_RING_TO_SVC_MAP		= 0x04,
  	/* Reference to the latest version */
--	ADF_PFVF_COMPAT_THIS_VERSION		= 0x02,
-+	ADF_PFVF_COMPAT_THIS_VERSION		= 0x03,
+-	ADF_PFVF_COMPAT_THIS_VERSION		= 0x03,
++	ADF_PFVF_COMPAT_THIS_VERSION		= 0x04,
  };
  
  /* PF->VF Version Response */
+@@ -139,6 +141,7 @@ enum pf2vf_blkmsg_error {
+  */
+ enum vf2pf_blkmsg_req_type {
+ 	ADF_VF2PF_BLKMSG_REQ_CAP_SUMMARY	= 0x02,
++	ADF_VF2PF_BLKMSG_REQ_RING_SVC_MAP	= 0x03,
+ };
+ 
+ #define ADF_VF2PF_SMALL_BLOCK_TYPE_MAX \
+@@ -202,4 +205,14 @@ struct capabilities_v3 {
+ 	u32 frequency;
+ } __packed;
+ 
++/* PF/VF Ring to service mapping values */
++enum blkmsg_ring_to_svc_versions {
++	ADF_PFVF_RING_TO_SVC_VERSION		= 0x01,
++};
++
++struct ring_to_svc_map_v1 {
++	struct pfvf_blkmsg_header hdr;
++	u16 map;
++} __packed;
++
+ #endif /* ADF_PFVF_MSG_H */
+diff --git a/drivers/crypto/qat/qat_common/adf_pfvf_pf_msg.c b/drivers/crypto/qat/qat_common/adf_pfvf_pf_msg.c
+index 5732cea1c7ca..14c069f0d71a 100644
+--- a/drivers/crypto/qat/qat_common/adf_pfvf_pf_msg.c
++++ b/drivers/crypto/qat/qat_common/adf_pfvf_pf_msg.c
+@@ -36,3 +36,17 @@ int adf_pf_capabilities_msg_provider(struct adf_accel_dev *accel_dev,
+ 
+ 	return 0;
+ }
++
++int adf_pf_ring_to_svc_msg_provider(struct adf_accel_dev *accel_dev,
++				    u8 *buffer, u8 compat)
++{
++	struct ring_to_svc_map_v1 rts_map_msg;
++
++	rts_map_msg.map = accel_dev->hw_device->ring_to_svc_map;
++	rts_map_msg.hdr.version = ADF_PFVF_RING_TO_SVC_VERSION;
++	rts_map_msg.hdr.payload_size = ADF_PFVF_BLKMSG_PAYLOAD_SIZE(rts_map_msg);
++
++	memcpy(buffer, &rts_map_msg, sizeof(rts_map_msg));
++
++	return 0;
++}
+diff --git a/drivers/crypto/qat/qat_common/adf_pfvf_pf_msg.h b/drivers/crypto/qat/qat_common/adf_pfvf_pf_msg.h
+index 401450bd30b0..e8982d1ac896 100644
+--- a/drivers/crypto/qat/qat_common/adf_pfvf_pf_msg.h
++++ b/drivers/crypto/qat/qat_common/adf_pfvf_pf_msg.h
+@@ -12,5 +12,7 @@ typedef int (*adf_pf2vf_blkmsg_provider)(struct adf_accel_dev *accel_dev,
+ 
+ int adf_pf_capabilities_msg_provider(struct adf_accel_dev *accel_dev,
+ 				     u8 *buffer, u8 comapt);
++int adf_pf_ring_to_svc_msg_provider(struct adf_accel_dev *accel_dev,
++				    u8 *buffer, u8 comapt);
+ 
+ #endif /* ADF_PFVF_PF_MSG_H */
 diff --git a/drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c b/drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c
-index 1256d68c3efd..cd728d5ac9ab 100644
+index cd728d5ac9ab..84230aac67e6 100644
 --- a/drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c
 +++ b/drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c
-@@ -48,10 +48,11 @@ int adf_send_pf2vf_msg(struct adf_accel_dev *accel_dev, u8 vf_nr, struct pfvf_me
-  */
- static struct pfvf_message adf_recv_vf2pf_msg(struct adf_accel_dev *accel_dev, u8 vf_nr)
- {
-+	struct adf_accel_vf_info *vf_info = &accel_dev->pf.vf_info[vf_nr];
- 	struct adf_pfvf_ops *pfvf_ops = GET_PFVF_OPS(accel_dev);
- 	u32 pfvf_offset = pfvf_ops->get_vf2pf_offset(vf_nr);
- 
--	return pfvf_ops->recv_msg(accel_dev, pfvf_offset);
-+	return pfvf_ops->recv_msg(accel_dev, pfvf_offset, vf_info->vf_compat_ver);
- }
- 
- static adf_pf2vf_blkmsg_provider get_blkmsg_response_provider(u8 type)
-diff --git a/drivers/crypto/qat/qat_common/adf_pfvf_vf_proto.c b/drivers/crypto/qat/qat_common/adf_pfvf_vf_proto.c
-index a85bd6dcb62a..b9a1cf5d58a9 100644
---- a/drivers/crypto/qat/qat_common/adf_pfvf_vf_proto.c
-+++ b/drivers/crypto/qat/qat_common/adf_pfvf_vf_proto.c
-@@ -15,6 +15,8 @@
- #define ADF_PFVF_MSG_ACK_DELAY			2
- #define ADF_PFVF_MSG_ACK_MAX_RETRY		100
- 
-+/* How often to retry if there is no response */
-+#define ADF_PFVF_MSG_RESP_RETRIES	5
- #define ADF_PFVF_MSG_RESP_TIMEOUT	(ADF_PFVF_MSG_ACK_DELAY * \
- 					 ADF_PFVF_MSG_ACK_MAX_RETRY + \
- 					 ADF_PFVF_MSG_COLLISION_DETECT_DELAY)
-@@ -50,7 +52,7 @@ static struct pfvf_message adf_recv_pf2vf_msg(struct adf_accel_dev *accel_dev)
- 	struct adf_pfvf_ops *pfvf_ops = GET_PFVF_OPS(accel_dev);
- 	u32 pfvf_offset = pfvf_ops->get_pf2vf_offset(0);
- 
--	return pfvf_ops->recv_msg(accel_dev, pfvf_offset);
-+	return pfvf_ops->recv_msg(accel_dev, pfvf_offset, accel_dev->vf.pf_compat_ver);
- }
+@@ -16,6 +16,7 @@ static const adf_pf2vf_blkmsg_provider pf2vf_blkmsg_providers[] = {
+ 	NULL,				  /* no message type defined for value 0 */
+ 	NULL,				  /* no message type defined for value 1 */
+ 	adf_pf_capabilities_msg_provider, /* ADF_VF2PF_BLKMSG_REQ_CAP_SUMMARY */
++	adf_pf_ring_to_svc_msg_provider,  /* ADF_VF2PF_BLKMSG_REQ_RING_SVC_MAP */
+ };
  
  /**
-@@ -68,33 +70,37 @@ int adf_send_vf2pf_req(struct adf_accel_dev *accel_dev, struct pfvf_message msg,
- 		       struct pfvf_message *resp)
- {
- 	unsigned long timeout = msecs_to_jiffies(ADF_PFVF_MSG_RESP_TIMEOUT);
-+	unsigned int retries = ADF_PFVF_MSG_RESP_RETRIES;
- 	int ret;
+diff --git a/drivers/crypto/qat/qat_common/adf_pfvf_vf_msg.c b/drivers/crypto/qat/qat_common/adf_pfvf_vf_msg.c
+index b08f8544991a..14b222691c9c 100644
+--- a/drivers/crypto/qat/qat_common/adf_pfvf_vf_msg.c
++++ b/drivers/crypto/qat/qat_common/adf_pfvf_vf_msg.c
+@@ -138,3 +138,30 @@ int adf_vf2pf_get_capabilities(struct adf_accel_dev *accel_dev)
  
- 	reinit_completion(&accel_dev->vf.msg_received);
- 
- 	/* Send request from VF to PF */
--	ret = adf_send_vf2pf_msg(accel_dev, msg);
--	if (ret) {
--		dev_err(&GET_DEV(accel_dev),
--			"Failed to send request msg to PF\n");
--		return ret;
--	}
-+	do {
-+		ret = adf_send_vf2pf_msg(accel_dev, msg);
-+		if (ret) {
-+			dev_err(&GET_DEV(accel_dev),
-+				"Failed to send request msg to PF\n");
-+			return ret;
-+		}
- 
--	/* Wait for response */
--	if (!wait_for_completion_timeout(&accel_dev->vf.msg_received,
--					 timeout)) {
--		dev_err(&GET_DEV(accel_dev),
--			"PFVF request/response message timeout expired\n");
--		return -EIO;
--	}
-+		/* Wait for response, if it times out retry */
-+		ret = wait_for_completion_timeout(&accel_dev->vf.msg_received,
-+						  timeout);
-+		if (ret) {
-+			if (likely(resp))
-+				*resp = accel_dev->vf.response;
- 
--	if (likely(resp))
--		*resp = accel_dev->vf.response;
-+			/* Once copied, set to an invalid value */
-+			accel_dev->vf.response.type = 0;
- 
--	/* Once copied, set to an invalid value */
--	accel_dev->vf.response.type = 0;
-+			return 0;
-+		}
- 
--	return 0;
-+		dev_err(&GET_DEV(accel_dev), "PFVF response message timeout\n");
-+	} while (--retries);
-+
-+	return -EIO;
+ 	return 0;
  }
++
++int adf_vf2pf_get_ring_to_svc(struct adf_accel_dev *accel_dev)
++{
++	struct ring_to_svc_map_v1 rts_map_msg = { { 0 }, };
++	unsigned int len = sizeof(rts_map_msg);
++
++	if (accel_dev->vf.pf_compat_ver < ADF_PFVF_COMPAT_RING_TO_SVC_MAP)
++		/* Use already set default mappings */
++		return 0;
++
++	if (adf_send_vf2pf_blkmsg_req(accel_dev, ADF_VF2PF_BLKMSG_REQ_RING_SVC_MAP,
++				      (u8 *)&rts_map_msg, &len)) {
++		dev_err(&GET_DEV(accel_dev),
++			"QAT: Failed to get block message response\n");
++		return -EFAULT;
++	}
++
++	if (unlikely(len < sizeof(struct ring_to_svc_map_v1))) {
++		dev_err(&GET_DEV(accel_dev),
++			"RING_TO_SVC message truncated to %d bytes\n", len);
++		return -EFAULT;
++	}
++
++	/* Only v1 at present */
++	accel_dev->hw_device->ring_to_svc_map = rts_map_msg.map;
++	return 0;
++}
+diff --git a/drivers/crypto/qat/qat_common/adf_pfvf_vf_msg.h b/drivers/crypto/qat/qat_common/adf_pfvf_vf_msg.h
+index c1f31354c138..71bc0e3f1d93 100644
+--- a/drivers/crypto/qat/qat_common/adf_pfvf_vf_msg.h
++++ b/drivers/crypto/qat/qat_common/adf_pfvf_vf_msg.h
+@@ -8,6 +8,7 @@ int adf_vf2pf_notify_init(struct adf_accel_dev *accel_dev);
+ void adf_vf2pf_notify_shutdown(struct adf_accel_dev *accel_dev);
+ int adf_vf2pf_request_version(struct adf_accel_dev *accel_dev);
+ int adf_vf2pf_get_capabilities(struct adf_accel_dev *accel_dev);
++int adf_vf2pf_get_ring_to_svc(struct adf_accel_dev *accel_dev);
+ #else
+ static inline int adf_vf2pf_notify_init(struct adf_accel_dev *accel_dev)
+ {
+diff --git a/drivers/crypto/qat/qat_common/adf_pfvf_vf_proto.c b/drivers/crypto/qat/qat_common/adf_pfvf_vf_proto.c
+index b9a1cf5d58a9..0e4b8397cbe3 100644
+--- a/drivers/crypto/qat/qat_common/adf_pfvf_vf_proto.c
++++ b/drivers/crypto/qat/qat_common/adf_pfvf_vf_proto.c
+@@ -357,6 +357,10 @@ int adf_enable_vf2pf_comms(struct adf_accel_dev *accel_dev)
+ 		return ret;
  
- static int adf_vf2pf_blkmsg_data_req(struct adf_accel_dev *accel_dev, bool crc,
+ 	ret = adf_vf2pf_get_capabilities(accel_dev);
++	if (ret)
++		return ret;
++
++	ret = adf_vf2pf_get_ring_to_svc(accel_dev);
+ 
+ 	return ret;
+ }
 -- 
 2.31.1
 
