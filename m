@@ -2,86 +2,59 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B76F47707B
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Dec 2021 12:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3AE477550
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Dec 2021 16:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233254AbhLPLmS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 16 Dec 2021 06:42:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232550AbhLPLmP (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 16 Dec 2021 06:42:15 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A95C06175E
-        for <linux-crypto@vger.kernel.org>; Thu, 16 Dec 2021 03:42:06 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id m25so25063709qtq.13
-        for <linux-crypto@vger.kernel.org>; Thu, 16 Dec 2021 03:42:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=xre5um49Rnqa1tZMCD58Cd6UlD4MleswKAp3tzt2gjo=;
-        b=DbH1Ji01P93LyTzDoauO1Rc48sDWVtdwnBGUamxeb8T/9DnmNwFlL0JvNxtTxnIik8
-         AF4fiOnh94EFQzdZz8KJBnzwauC2lZM0yNVUv4pWHip6opgPog4u/vluZhPJXjw78vDA
-         f6sh/ed1OxoJ1g1t7gzdPodwSxTC5c4DgCybEoK61DXARfmFs8snxFiiIRa/Iu1/hNzN
-         fZIim177r1ShSprd0HKY5DfawS5hKhFwBWxLO3U7SnQ0mHNCzrBDbHpz1jt5tPoBjmr8
-         7Ae3NOwI9TZO/6l6pkdqJZg2o0eCT7Tj9ACDNqagtOISwltP3H2yXXWnIzZMI4wBc7By
-         rM9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=xre5um49Rnqa1tZMCD58Cd6UlD4MleswKAp3tzt2gjo=;
-        b=LMWn9TbnB4FJLOsOlTIPR7gJfFSFgq177nhL+VXQQEVJPYb9/pal2UNt/FREGSyoOC
-         L0KUQahT/artElOGn9pX5wN55p4+se3l5oZxPfqk19u2ZD5NmAm+zFTAmDY69X3DQkKA
-         gdryHiBEbhQ8vcoJ+B73n8aGrz6FCVtl5O1HkL7Mulfgw6oyasFA1yQtVQ93tOSnWCGS
-         hdByPcjwmIY1EoSp+7ohcIT4+5A3Ubi+UEYEecM1UE2Q+mhH2ixrVSL6DwpxSFhVJ7YR
-         rX5fQnlIHA9JYPB03rXRYYnUfNYRr63m0BYt81uubJNxzgglCZBC/k8A/X+/nWD51KzS
-         Lqzg==
-X-Gm-Message-State: AOAM533o3nqrSlGEBSU7wt+Dlgcuc7VzYezy7HnTTsOFUnzmMyJJEE1r
-        qcFsplPQJn+OZ3hht5ta3zhBN/fudt9FfAwrFUI=
-X-Google-Smtp-Source: ABdhPJyrnf396a9ziJGBm+8eiYGOgUpOQ7p2/85GJukkUSbvGu1la687iolipeGN8a/w1GmTH3LvDnglSFpjsilKeBU=
-X-Received: by 2002:a05:622a:510:: with SMTP id l16mr16475505qtx.619.1639654925163;
- Thu, 16 Dec 2021 03:42:05 -0800 (PST)
+        id S238260AbhLPPGI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 16 Dec 2021 10:06:08 -0500
+Received: from mga11.intel.com ([192.55.52.93]:19849 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235111AbhLPPGI (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 16 Dec 2021 10:06:08 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10199"; a="237053341"
+X-IronPort-AV: E=Sophos;i="5.88,211,1635231600"; 
+   d="scan'208";a="237053341"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2021 07:04:14 -0800
+X-IronPort-AV: E=Sophos;i="5.88,211,1635231600"; 
+   d="scan'208";a="520300937"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2021 07:04:11 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mxsHs-0075JR-FC;
+        Thu, 16 Dec 2021 17:03:16 +0200
+Date:   Thu, 16 Dec 2021 17:03:16 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Eric Biggers <ebiggers@google.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Subject: Re: [PATCH v1 1/1] crypto: Replace kernel.h with the necessary
+ inclusions
+Message-ID: <YbtVNKdrIKFsbIAc@smile.fi.intel.com>
+References: <20211210143009.4770-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Received: by 2002:a05:622a:199c:0:0:0:0 with HTTP; Thu, 16 Dec 2021 03:42:04
- -0800 (PST)
-Reply-To: selviasantiago1@gmail.com
-From:   Selvia Santiago <mariamatinez119@gmail.com>
-Date:   Thu, 16 Dec 2021 11:42:04 +0000
-Message-ID: <CAONDhKNqZ3ja5a2mdpyxiYfPYVQwq_MdxvhX-F--7sW9gxb1ZQ@mail.gmail.com>
-Subject: Urgent
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211210143009.4770-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On Fri, Dec 10, 2021 at 04:30:09PM +0200, Andy Shevchenko wrote:
+> When kernel.h is used in the headers it adds a lot into dependency hell,
+> especially when there are circular dependencies are involved.
+> 
+> Replace kernel.h inclusion with the list of what is really being used.
+
+Any comments on this?
+
 -- 
-Urgent
+With Best Regards,
+Andy Shevchenko
 
-I am Mrs. Selvia Santiago from Abidjan, Cote D'Ivoire, I am a widow
-suffering from long time illness (Cancer), there is funds I inherited
-from my late loving husband Mr. Santiago Carlos, the sum of (US$2.7
-Million Dollars) which he deposited in bank before his death, I need a
-honest and Faithful person that can use these funds for humanity work.
 
-I took this decision because I don't have any child that will inherit
-this money and I don't want a situation where this money will be used
-in an ungodly way. That is why I am taking this decision, and my
-doctor has confirmed to me that I have less than two weeks to live,
-having known my condition I decided to donate this fund to a charity
-or individual that will utilize this money to assist the poor and the
-needy in accordance to my instructions.
-
-I want you to use 70% of this funds for orphanages, school, church,
-widows, propagating the word and other humanity works,The remaining
-30% should be yours for your efforts as the new beneficiary.
-
-Please if you would be able to use these funds for humanity work
-kindly reply me. As soon as I have received your response, I will give
-you further directives on how you are to go about the claims of the
-said funds.
-
-Remain blessed.
-Mrs Selvia Santiago.
