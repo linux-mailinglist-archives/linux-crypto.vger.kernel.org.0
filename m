@@ -2,129 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD018478CBE
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Dec 2021 14:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 771CD478D86
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Dec 2021 15:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234403AbhLQNvp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 17 Dec 2021 08:51:45 -0500
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:43886 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233082AbhLQNvo (ORCPT
+        id S237113AbhLQOVr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 17 Dec 2021 09:21:47 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:45599 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237156AbhLQOVj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 17 Dec 2021 08:51:44 -0500
-Received: by mail-ua1-f43.google.com with SMTP id 107so4400892uaj.10;
-        Fri, 17 Dec 2021 05:51:43 -0800 (PST)
+        Fri, 17 Dec 2021 09:21:39 -0500
+Received: by mail-oi1-f182.google.com with SMTP id 7so3761514oip.12;
+        Fri, 17 Dec 2021 06:21:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IzymPMQBtSGyl0KMkX7mRJW21YY8HhWUvGCPuNIAzLc=;
-        b=2kmyB2CVofVserc+bm2snp8gFJudz+9Hm0Ie9OK3Ob6ICL/0ZVvkFIF5D5LEna8bJE
-         qwxgbnh1ncfXnWocglQ75JtnRtLjp8vTCaoytyUTpUqANMK9P88DMsJ0S9imCGf3lFvv
-         pnI7AQYJONE9svhSkwvRLsf/94xuMPP0lMSdwNhz50oVqmpGaSom3lhqVB81QHAuaDTL
-         9XoScuDy43ZsH/uBadV6Y+jm46tv+GLJi8Vr65RfjWWqQNNasd/le0sHuW1XWFylM6dn
-         NYKu32pC+5Byz4HoZvcFw7MyBKnw/VEWn4kjMTappASDkLlNyg5fuY9jm63C3Ik2QP9N
-         Rr5A==
-X-Gm-Message-State: AOAM530VPHD6YiubK+QRkTlu98hCP8EE7I7BSCvKXLexqKXBQzKaVrCL
-        W2sHg63xPV430QP+yaLya12UhcizDFhlRA==
-X-Google-Smtp-Source: ABdhPJygqHbD/X/j8BRU0bhjpRRjRAWfUxD7m6R8LZ06FOC/Bi4xRjb7x1NpLLTc+CgbjrViTdloRw==
-X-Received: by 2002:ab0:6f49:: with SMTP id r9mr899509uat.111.1639749103352;
-        Fri, 17 Dec 2021 05:51:43 -0800 (PST)
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
-        by smtp.gmail.com with ESMTPSA id c14sm1769301vkm.10.2021.12.17.05.51.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Dec 2021 05:51:43 -0800 (PST)
-Received: by mail-vk1-f174.google.com with SMTP id m200so1568227vka.6;
-        Fri, 17 Dec 2021 05:51:43 -0800 (PST)
-X-Received: by 2002:a1f:4641:: with SMTP id t62mr1041561vka.0.1639748601739;
- Fri, 17 Dec 2021 05:43:21 -0800 (PST)
-MIME-Version: 1.0
-References: <20211217093325.30612-1-conor.dooley@microchip.com> <20211217093325.30612-15-conor.dooley@microchip.com>
-In-Reply-To: <20211217093325.30612-15-conor.dooley@microchip.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 17 Dec 2021 14:43:10 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV0N-15kNZ1fnzaj_psNVCRUQP506Noc-tHawmgxqCVeA@mail.gmail.com>
-Message-ID: <CAMuHMdV0N-15kNZ1fnzaj_psNVCRUQP506Noc-tHawmgxqCVeA@mail.gmail.com>
-Subject: Re: [PATCH v2 14/17] riscv: dts: microchip: add fpga fabric section
- to icicle kit
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bin Meng <bin.meng@windriver.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lewis Hanly <lewis.hanly@microchip.com>,
-        daire.mcnamara@microchip.com, ivan.griffin@microchip.com,
-        Atish Patra <atish.patra@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=9o4EOmq+ROwfzC6UvQVhsNjTkGdilWZSOYUxWW+IJhU=;
+        b=3tNzg+70gK8qkrpWuOlO5ML4uSGsja+bXzvvlSIFW4U/N164inoW/Gu8DgW69NHQY9
+         tpVFKsEvZDPD9uiLeSJ4f+GCWGF5wFg8Ikiaq8Ciu7VP+a0MaHbpLCvwFeOibw7Ah5JM
+         PFoJoawykdSh18ZGeuUBxDC1xs8/BV7J2983+cKS6XY8PzBJmdPOKUR5TPiLSySiY7hw
+         wyeTRxopzlKN141lRG5aVnErxxs5RFCw6Z0KD+D5WTy7hi39YrxCKih8cRkinDwtx/mM
+         hN4cSVTGPElGxkmKYUyC7jgj4EnqPzjTmbneeod8Wu6epp7jy0yNYaLTdvCtWfLY8x1i
+         kqEQ==
+X-Gm-Message-State: AOAM533X9LvSp6xf4BRIOmdGn8WLAdHQCtcmLhWDp4JQh8Ewa3Odpd1Z
+        lBdMIbT8PU0nJblIJTXQmA==
+X-Google-Smtp-Source: ABdhPJwd27y64wtW+mXglGkwTczy+y8F0FV0caGHNfX0/bkBe8x1ZLiaYabb22tee0bgLK+EssyWUw==
+X-Received: by 2002:aca:44c5:: with SMTP id r188mr8352516oia.177.1639750898331;
+        Fri, 17 Dec 2021 06:21:38 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id d6sm1597483otb.4.2021.12.17.06.21.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Dec 2021 06:21:37 -0800 (PST)
+Received: (nullmailer pid 2814885 invoked by uid 1000);
+        Fri, 17 Dec 2021 14:21:22 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     conor.dooley@microchip.com
+Cc:     jassisinghbrar@gmail.com, devicetree@vger.kernel.org,
+        bgolaszewski@baylibre.com, palmer@dabbelt.com,
+        linux-crypto@vger.kernel.org, u.kleine-koenig@pengutronix.de,
+        linus.walleij@linaro.org, linux-rtc@vger.kernel.org,
+        lee.jones@linaro.org, bin.meng@windriver.com, robh+dt@kernel.org,
+        geert@linux-m68k.org, gregkh@linuxfoundation.org,
+        paul.walmsley@sifive.com, alexandre.belloni@bootlin.com,
+        broonie@kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        aou@eecs.berkeley.edu, heiko@sntech.de, ivan.griffin@microchip.com,
+        thierry.reding@gmail.com, linux-gpio@vger.kernel.org,
+        daire.mcnamara@microchip.com, atish.patra@wdc.com,
+        linux-i2c@vger.kernel.org, a.zummo@towertech.it,
+        linux-spi@vger.kernel.org, lewis.hanly@microchip.com,
+        linux-riscv@lists.infradead.org, krzysztof.kozlowski@canonical.com
+In-Reply-To: <20211217093325.30612-10-conor.dooley@microchip.com>
+References: <20211217093325.30612-1-conor.dooley@microchip.com> <20211217093325.30612-10-conor.dooley@microchip.com>
+Subject: Re: [PATCH v2 09/17] dt-bindings: gpio: add bindings for microchip mpfs gpio
+Date:   Fri, 17 Dec 2021 08:21:22 -0600
+Message-Id: <1639750882.674842.2814884.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Conor,
-
-On Fri, Dec 17, 2021 at 10:33 AM <conor.dooley@microchip.com> wrote:
+On Fri, 17 Dec 2021 09:33:17 +0000, conor.dooley@microchip.com wrote:
 > From: Conor Dooley <conor.dooley@microchip.com>
->
-> Split the device tree for the Microchip MPFS into two sections by adding
-> microchip-mpfs-fabric.dtsi, which contains peripherals contained in the
-> FPGA fabric.
->
+> 
+> Add device tree bindings for the gpio controller on
+> the Microchip PolarFire SoC.
+> 
 > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+>  .../bindings/gpio/microchip,mpfs-gpio.yaml    | 80 +++++++++++++++++++
+>  1 file changed, 80 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml
+> 
 
-Thanks for your patch!
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-fabric.dtsi
-> @@ -0,0 +1,13 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/* Copyright (c) 2020-2021 Microchip Technology Inc */
-> +
-> +/ {
-> +       corePWM0: pwm@41000000 {
-> +               compatible = "microchip,corepwm";
-> +               reg = <0x0 0x41000000 0x0 0xF0>;
-> +               microchip,sync-update = /bits/ 8 <0>;
-> +               #pwm-cells = <2>;
-> +               clocks = <&clkcfg CLK_FIC3>;
-> +               status = "disabled";
-> +       };
+yamllint warnings/errors:
 
-I'm wondering if these should be grouped under a "fabric" subnode,
-like we have an "soc" subnode for on-SoC devices? Rob?
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.example.dts:19:18: fatal error: dt-bindings/clock/microchip,mpfs-clock.h: No such file or directory
+   19 |         #include "dt-bindings/clock/microchip,mpfs-clock.h"
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:373: Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1413: dt_binding_check] Error 2
 
-BTW, do you already have a naming plan for different revisions of
-FPGA fabric cores?
+doc reference errors (make refcheckdocs):
 
-Gr{oetje,eeting}s,
+See https://patchwork.ozlabs.org/patch/1569834
 
-                        Geert
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
