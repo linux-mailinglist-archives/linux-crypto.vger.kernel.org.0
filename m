@@ -2,157 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BAB47AB9C
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Dec 2021 15:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDEE47B026
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Dec 2021 16:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234278AbhLTOh4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 20 Dec 2021 09:37:56 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:44863 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234003AbhLTOhc (ORCPT
+        id S239767AbhLTP0T (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 20 Dec 2021 10:26:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240104AbhLTPZm (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 20 Dec 2021 09:37:32 -0500
-Received: by mail-oi1-f175.google.com with SMTP id be32so16010867oib.11;
-        Mon, 20 Dec 2021 06:37:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MX2xD6NxZlK32RqDAc9k/pbvJlT/hpUSltlaWuBfZyY=;
-        b=EFHAOJhyVqLeqLC/eUZp83i4qW9h4YsxiQz2Endqotu0xrixWxvWd51u/Mqkb7sMio
-         h1Lyk7zHU/w+XXWEEgVN3nKVgjv6g+RLXclq7nzzprAVXh4W9b+Ozxm4O1+5k8KN+6xy
-         XqTGAUAk5YcfTKNpVtaCVP0Ahj97GESfyZvC+rm5DzW0nr/SXBiyg96cardibAGmTXYx
-         BaRm7Y5xBsHam/DpXYVW8zj5cr4360MEa6PZsVWOd6/6IzxloEx6JGSaTz2a1rZExP2y
-         EmyzyOLEyAkn0MqxUzZBstAbOTf9K9C8J7lupepcNiEftPFer015i4OyhcLXUFuc/ZCj
-         RsTw==
-X-Gm-Message-State: AOAM531PojBh0b0PMiH0ad3dIU3BUpU2gh04Izx25rJJo1R2ztYNFii1
-        Du0pl3Pu0uP9Z+ShpT1I/A==
-X-Google-Smtp-Source: ABdhPJwb8Epp66kgn5FAQJGNGoQLiIht6dxhdac9TXEyh6nIWNGhfonlF1xdobHH+VltWNqopZLZIQ==
-X-Received: by 2002:a05:6808:11:: with SMTP id u17mr1043535oic.88.1640011051574;
-        Mon, 20 Dec 2021 06:37:31 -0800 (PST)
-Received: from robh.at.kernel.org ([12.252.7.226])
-        by smtp.gmail.com with ESMTPSA id ay40sm3423367oib.1.2021.12.20.06.37.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Dec 2021 06:37:30 -0800 (PST)
-Received: (nullmailer pid 3403888 invoked by uid 1000);
-        Mon, 20 Dec 2021 14:37:28 -0000
-Date:   Mon, 20 Dec 2021 08:37:28 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     conor.dooley@microchip.com
-Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        jassisinghbrar@gmail.com, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, a.zummo@towertech.it,
-        alexandre.belloni@bootlin.com, broonie@kernel.org,
-        gregkh@linuxfoundation.org, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
-        krzysztof.kozlowski@canonical.com, geert@linux-m68k.org,
-        bin.meng@windriver.com, heiko@sntech.de, lewis.hanly@microchip.com,
-        daire.mcnamara@microchip.com, ivan.griffin@microchip.com,
-        atish.patra@wdc.com
-Subject: Re: [PATCH v2 07/17] dt-bindings: rtc: add bindings for microchip
- mpfs rtc
-Message-ID: <YcCVKFm+7aEG2FYH@robh.at.kernel.org>
-References: <20211217093325.30612-1-conor.dooley@microchip.com>
- <20211217093325.30612-8-conor.dooley@microchip.com>
+        Mon, 20 Dec 2021 10:25:42 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36824C09B134;
+        Mon, 20 Dec 2021 07:07:43 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C35FC61183;
+        Mon, 20 Dec 2021 15:07:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA3E1C36AE9;
+        Mon, 20 Dec 2021 15:07:41 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="aPupP9kj"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1640012860;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oAsc3YprQ6FgGJHxcPGw3/DqBtjZ2J9beUNauVhWwbA=;
+        b=aPupP9kj75WK/PtqIMzBZs4KjIxMNGRfWfqMHhaThLM8xvIrcxMNa/LovCtPjZHKP75I/c
+        KbGrRuriDWF5dWYuPYO2Ovn38U9Ku1VCMHEZnjxjOR+/eYRQ6ZT+51xnj+IbpXIgv8X57M
+        YEjT5TlTFS28t5uPueuHSjVANwuAnXE=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 137499dd (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Mon, 20 Dec 2021 15:07:40 +0000 (UTC)
+Received: by mail-yb1-f179.google.com with SMTP id f9so29650971ybq.10;
+        Mon, 20 Dec 2021 07:07:40 -0800 (PST)
+X-Gm-Message-State: AOAM533abn5kRiwS79MdWAo9TcE4eaxRvAUkpSrMpAJOKqA8qdqetnsS
+        z+jCndnbYigXMCsIxR4omYsBsJz6Hmh7vsuVkAk=
+X-Google-Smtp-Source: ABdhPJxjl0OfxTfadBI9gYggUPvoirNaCHNBvVb8gXYAuMjh6IbdW0F4p2gD2dSAnIHzuv9eG1S/QJ+RSLcsV7KiU90=
+X-Received: by 2002:a25:13c6:: with SMTP id 189mr23069037ybt.113.1640012859536;
+ Mon, 20 Dec 2021 07:07:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211217093325.30612-8-conor.dooley@microchip.com>
+References: <20211219025139.31085-1-ebiggers@kernel.org>
+In-Reply-To: <20211219025139.31085-1-ebiggers@kernel.org>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Mon, 20 Dec 2021 16:07:28 +0100
+X-Gmail-Original-Message-ID: <CAHmME9pQ4vp0jHpOyQXHRbJ-xQKYapQUsWPrLouK=dMO56y1zA@mail.gmail.com>
+Message-ID: <CAHmME9pQ4vp0jHpOyQXHRbJ-xQKYapQUsWPrLouK=dMO56y1zA@mail.gmail.com>
+Subject: Re: [PATCH RESEND] random: use correct memory barriers for crng_node_pool
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 09:33:15AM +0000, conor.dooley@microchip.com wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
-> 
-> Add device tree bindings for the real time clock on
-> the Microchip PolarFire SoC.
-> 
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: Daire McNamara <daire.mcnamara@microchip.com>
-> ---
->  .../bindings/rtc/microchip,mfps-rtc.yaml      | 63 +++++++++++++++++++
->  1 file changed, 63 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/rtc/microchip,mfps-rtc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/rtc/microchip,mfps-rtc.yaml b/Documentation/devicetree/bindings/rtc/microchip,mfps-rtc.yaml
-> new file mode 100644
-> index 000000000000..d57460cbe5e3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/rtc/microchip,mfps-rtc.yaml
-> @@ -0,0 +1,63 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/rtc/microchip,mfps-rtc.yaml#
-> +
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Microchip PolarFire Soc (MPFS) RTC Device Tree Bindings
-> +
-> +allOf:
-> +  - $ref: rtc.yaml#
-> +
-> +maintainers:
-> +  - Daire McNamara <daire.mcnamara@microchip.com>
-> +  - Lewis Hanly <lewis.hanly@microchip.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - microchip,mpfs-rtc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 2
+Hi Eric,
 
-Need to define what each one is.
+This patch seems fine to me, and I'll apply it in a few days after
+sitting on the list for comments, but:
 
-> +
-> +  microchip,prescaler:
-> +    description: |
-> +      The prescaler divides the input frequency to create a time-based strobe (typically 1 Hz) for
-> +      the calendar counter. The Alarm and Compare Registers, in conjunction with the calendar
-> +      counter, facilitate time-matched events. To properly operate in Calendar or Binary mode,
-> +      the 26-bit prescaler must be programmed to generate a strobe to the RTC.
-> +    maxItems: 1
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: rtc
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/microchip,mpfs-clock.h>
-> +    rtc@20124000 {
-> +        compatible = "microchip,mpfs-rtc";
-> +        reg = <0x20124000 0x1000>;
-> +        clocks = <&clkcfg CLK_RTC>;
-> +        clock-names = "rtc";
-> +        interrupts = <80>, <81>;
-> +    };
-> +...
-> -- 
-> 2.33.1
-> 
-> 
+> Note: READ_ONCE() could be used instead of smp_load_acquire(), but it is
+> harder to verify that it is correct, so I'd prefer not to use it here.
+> (https://lore.kernel.org/lkml/20200916233042.51634-1-ebiggers@kernel.org/T/#u),
+> and though it's a correct fix, it was derailed by a debate about whether
+> it's safe to use READ_ONCE() instead of smp_load_acquire() or not.
+
+But holy smokes... I chuckled at your, "please explain in English." :)
+
+Paul - if you'd like to look at this patch and confirm that this
+specific patch and usage is fine to be changed into READ_ONCE()
+instead of smp_load_acquire(), please pipe up here. And I really do
+mean this specific patch and usage, not to be confused with any other
+usage elsewhere in the kernel or question about general things, which
+doubtlessly involve larger discussions like the one Eric linked to
+above. If you're certain this patch here is READ_ONCE()able, I'd
+appreciate your saying so with a simple, "it is safe; go for it",
+since I'd definitely like the optimization if it's safe. If I don't
+hear from you, I'll apply this as-is from Eric, as I'd rather be safe
+than sorry.
+
+Jason
