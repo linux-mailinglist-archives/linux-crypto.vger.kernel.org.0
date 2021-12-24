@@ -2,52 +2,46 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC2B47EAE1
-	for <lists+linux-crypto@lfdr.de>; Fri, 24 Dec 2021 04:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD1547EAE0
+	for <lists+linux-crypto@lfdr.de>; Fri, 24 Dec 2021 04:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245478AbhLXD0T (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 23 Dec 2021 22:26:19 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:58464 "EHLO fornost.hmeau.com"
+        id S245521AbhLXD0S (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 23 Dec 2021 22:26:18 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:58462 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351168AbhLXD0J (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 23 Dec 2021 22:26:09 -0500
+        id S245526AbhLXD0I (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Thu, 23 Dec 2021 22:26:08 -0500
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1n0bDQ-0006LP-CY; Fri, 24 Dec 2021 14:25:57 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 24 Dec 2021 14:25:56 +1100
-Date:   Fri, 24 Dec 2021 14:25:56 +1100
+        id 1n0bDZ-0006MF-3P; Fri, 24 Dec 2021 14:26:06 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 24 Dec 2021 14:26:04 +1100
+Date:   Fri, 24 Dec 2021 14:26:04 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Boris Brezillon <bbrezillon@kernel.org>,
-        Srujana Challa <schalla@marvell.com>,
-        Arnaud Ebalard <arno@natisbad.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Suheil Chandran <schandran@marvell.com>,
-        Shijith Thotton <sthotton@marvell.com>,
-        linux-crypto@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] crypto: octeontx2 - out of bounds access in
- otx2_cpt_dl_custom_egrp_delete()
-Message-ID: <YcU9xBEc9kFlm+at@gondor.apana.org.au>
-References: <20211217071232.GG26548@kili>
+To:     Pankaj Gupta <pankaj.gupta@nxp.com>
+Cc:     davem@davemloft.net, horia.geanta@nxp.com, gaurav.jain@nxp.com,
+        linux-crypto@vger.kernel.org,
+        " dl-linux-imx linux-kernel @ vger . kernel . org" 
+        <linux-imx@nxp.com>
+Subject: Re: [PATCH] MAINTAINERS: update caam crypto driver maintainers list
+Message-ID: <YcU9zMqflCeiI0A1@gondor.apana.org.au>
+References: <20211217081233.2206-1-pankaj.gupta@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211217071232.GG26548@kili>
+In-Reply-To: <20211217081233.2206-1-pankaj.gupta@nxp.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 10:12:32AM +0300, Dan Carpenter wrote:
-> If "egrp" is negative then it is causes an out of bounds access in
-> eng_grps->grp[].
+On Fri, Dec 17, 2021 at 01:42:33PM +0530, Pankaj Gupta wrote:
+> Adding Gaurav as caam maintainer.
 > 
-> Fixes: d9d7749773e8 ("crypto: octeontx2 - add apis for custom engine groups")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
 > ---
->  drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
