@@ -2,58 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0F848036B
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Dec 2021 19:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1146D48035A
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Dec 2021 19:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbhL0Sdb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 27 Dec 2021 13:33:31 -0500
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:45544
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231934AbhL0SdS (ORCPT
+        id S231747AbhL0SdG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 27 Dec 2021 13:33:06 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:59494
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229643AbhL0SdE (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 27 Dec 2021 13:33:18 -0500
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        Mon, 27 Dec 2021 13:33:04 -0500
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 746DD3F1B2
-        for <linux-crypto@vger.kernel.org>; Mon, 27 Dec 2021 18:33:16 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 6E7873FFDB
+        for <linux-crypto@vger.kernel.org>; Mon, 27 Dec 2021 18:33:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1640629996;
-        bh=YNz7bZBCirgiUqMV90mDMcfWLPuTB2AJTgAPIRcxfBU=;
+        s=20210705; t=1640629983;
+        bh=3Q76L02spV6rbbuHR2sV57AudkwFdOfi5uJcF47/ZVw=;
         h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=SLK+cbsNF7S/1jcil4uFrinILONFKOA45rU4XsL7urHtY9FyUzLxQppRobK4tlgwG
-         GfMmKmjPEAYl+TmM+95qcDRQ95y3AMa6d48wcr0m4Ue0+F9390Bt/aJORQBMyZ+aCM
-         WdJ0OiceOJ/udAXQmDOX7fCCaTEXMwKmzfOSOn9e0cCMJqKxjxS68Mpc5mQ0UqXqsY
-         6uwlaSIryhyNRWu95Gxc+M6vj6okBnyKDnidqPIm1jsRDa4ncZGqwVCqQdEKa2wOJ2
-         rgX9NcFPSpwWrxz5oObtoUasaqfCmp4CcWMKaJYuVR24TgV8RhoYlOKWgutbrbnelQ
-         MSnf7VcunT4Eg==
-Received: by mail-lj1-f197.google.com with SMTP id j15-20020a2e6e0f000000b0022db2724332so2935814ljc.3
-        for <linux-crypto@vger.kernel.org>; Mon, 27 Dec 2021 10:33:16 -0800 (PST)
+        b=FDQNMg1UR5tuBhmC05kar3Pdl8TtNpCecm2xOO7nOeFIpxcwVq3B7tT3yi48dVF/x
+         u+o8cGwsxAHIfQRMO64lLmuIeJxuTHjRZvIbx0IEVPUfPsPdxfqMqHu2yLR2FtwRDb
+         H2w5LH/+ZdcNm6KsotJQI4qCVV/i8sszdIJx+p4A7lv1sYspFe9KQsAYy/itHXdS3Z
+         9Z88lIb0RljwmdXv0OCvomeNxTuSG7OutFbN+2lTnoU6BX5n6rNKHonG6y5OcVr3iD
+         iryfUfb9L9yKq084BVa2xkaxYpBByuwhk05hWzF5WiDyKMAuseECqT+UNXhJ8/WNdf
+         MRNinV8vPM4lA==
+Received: by mail-lj1-f199.google.com with SMTP id w17-20020a05651c119100b0022dcdb204b9so1914099ljo.5
+        for <linux-crypto@vger.kernel.org>; Mon, 27 Dec 2021 10:33:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YNz7bZBCirgiUqMV90mDMcfWLPuTB2AJTgAPIRcxfBU=;
-        b=OA1dskMc0MzylVpPWtp5TzUb/pZ5mrP5cqz+5jROjmHKpsVlGfund90JBxVK3xULIl
-         hC7+VCFCmXVb1wtnms14IvYem/X3rzqmQGyFg6NlbpMLibkGaivdrOqp3EKGArVptBh4
-         9MYYjR9P+N+YTxPQVV18JW5yvlBNzWTw2jSk9CGVjjxpsEGwrfY8mmj60aDORy5tnIW2
-         yeEdXt9zQZjGa1B5BMoNZuIWWktwG+GlZrdM1eoKsdPDSSNzZCTJl7hGV3yYi+1X/9sv
-         hbuJ9iABSkGqBzlWHCdjjNxmZit1EhbDl4L3oevKHJ30xSkBGMRSgeLTYxweg0rAPmMj
-         7GdA==
-X-Gm-Message-State: AOAM530WywdHXarbwM12ffButKEzXEY6ZcCxTwfyFF1NSbZqwziUaVcU
-        lXyYcGLFlqkdg2LIe4LUMmn65jIVxHM7XZq5s4Km/O7rqmElcbzUkVms298FruezmkRRlEGZmq8
-        3Ajj4muJh0cGWsw+qSIwr1fkpB/huL4wM63k5M12EmA==
-X-Received: by 2002:a05:6512:228d:: with SMTP id f13mr10245778lfu.6.1640629980947;
-        Mon, 27 Dec 2021 10:33:00 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx2MVFgtxVXl9dkYylvm3W8Z0PJf+NtYNzVtH9LFtR6/thbbsYTREB34HF4sYqA19ZCqZuMBw==
-X-Received: by 2002:a05:6512:228d:: with SMTP id f13mr10245747lfu.6.1640629980747;
-        Mon, 27 Dec 2021 10:33:00 -0800 (PST)
+        bh=3Q76L02spV6rbbuHR2sV57AudkwFdOfi5uJcF47/ZVw=;
+        b=M1lSkSqXsQqpONAO0V9mCW6NOUyX8IJIy+6UVIZH1fYxJuIKqOtPBF1SFuOFq5i4MJ
+         zv4eFisxL6EwN4LXD0kt1UB77z+0PQKcU67kotcyV+21pG3GXqld6diDzZ4tNf6Z73ID
+         YKrHLDcOAkNCKibDM2Jc9yBnEQ7pYoSylWovsxtc3VDzoFuOXrNIfLhadeZWkDvm//aN
+         dkrYFoN/oEB81K9SLXqteANFm2A6D+a1sSyDbOaXzWdnHoSiRjzi+AvM6PqhdWIKs8Y5
+         FcHh+iP1U4M2xDmaI5/rxpZtLHpanlnjdforBGob7dzQHZFYAA82+rHmkzB9YcZGXgsU
+         l+UA==
+X-Gm-Message-State: AOAM530TkDdJy1eKDU92zqIIvWWhsaT1AL1I+WqUzKJg8Xdqhx8QSK+q
+        vLZapjD8laY4fYJeUPd0Kt7SDs8abXk5B3pw+G+SSZwZlyFozCVW9xHB/iwHDlwGRMqLPhjgUQ0
+        GePfgSzm3iJdbbOmDBQ7zB5K+DxNLsY/IXgdrzpI21g==
+X-Received: by 2002:a2e:141c:: with SMTP id u28mr15227856ljd.338.1640629982310;
+        Mon, 27 Dec 2021 10:33:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy3O/GRYpaNdG1mlwpRYPezP3gDyMQfsP+6AvdRKYOdbC4zcWygSTmf7lt1HtEIyYzxmmRdEw==
+X-Received: by 2002:a2e:141c:: with SMTP id u28mr15227822ljd.338.1640629982100;
+        Mon, 27 Dec 2021 10:33:02 -0800 (PST)
 Received: from krzk-bin.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id o12sm1299622ljc.5.2021.12.27.10.32.59
+        by smtp.gmail.com with ESMTPSA id o12sm1299622ljc.5.2021.12.27.10.33.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Dec 2021 10:33:00 -0800 (PST)
+        Mon, 27 Dec 2021 10:33:01 -0800 (PST)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Matt Mackall <mpm@selenic.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
@@ -76,9 +76,9 @@ To:     Matt Mackall <mpm@selenic.com>,
         Tony Lindgren <tony@atomide.com>, linux-crypto@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org
-Subject: [PATCH 4/8] dt-bindings: rng: ti,keystone-rng: convert TI Keystone RNG to dtschema
-Date:   Mon, 27 Dec 2021 19:32:47 +0100
-Message-Id: <20211227183251.132525-4-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 5/8] dt-bindings: rng: nuvoton,npcm-rng: convert Nuvoton NPCM RNG to dtschema
+Date:   Mon, 27 Dec 2021 19:32:48 +0100
+Message-Id: <20211227183251.132525-5-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211227183251.132525-1-krzysztof.kozlowski@canonical.com>
 References: <20211227183251.132525-1-krzysztof.kozlowski@canonical.com>
@@ -88,98 +88,74 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Convert the TI Keystone RNG bindings to DT schema.
+Convert the Nuvoton NPCM RNG bindings to DT schema.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- .../devicetree/bindings/rng/ks-sa-rng.txt     | 21 --------
- .../bindings/rng/ti,keystone-rng.yaml         | 50 +++++++++++++++++++
- 2 files changed, 50 insertions(+), 21 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/rng/ks-sa-rng.txt
- create mode 100644 Documentation/devicetree/bindings/rng/ti,keystone-rng.yaml
+ .../bindings/rng/nuvoton,npcm-rng.txt         | 12 -------
+ .../bindings/rng/nuvoton,npcm-rng.yaml        | 35 +++++++++++++++++++
+ 2 files changed, 35 insertions(+), 12 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.txt
+ create mode 100644 Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.yaml
 
-diff --git a/Documentation/devicetree/bindings/rng/ks-sa-rng.txt b/Documentation/devicetree/bindings/rng/ks-sa-rng.txt
+diff --git a/Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.txt b/Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.txt
 deleted file mode 100644
-index b7a65b487901..000000000000
---- a/Documentation/devicetree/bindings/rng/ks-sa-rng.txt
+index 65c04172fc8c..000000000000
+--- a/Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.txt
 +++ /dev/null
-@@ -1,21 +0,0 @@
--Keystone SoC Hardware Random Number Generator(HWRNG) Module
+@@ -1,12 +0,0 @@
+-NPCM SoC Random Number Generator
 -
--On Keystone SoCs HWRNG module is a submodule of the Security Accelerator.
--
--- compatible: should be "ti,keystone-rng"
--- ti,syscon-sa-cfg: phandle to syscon node of the SA configuration registers.
--		    This registers are shared between hwrng and crypto drivers.
--- clocks: phandle to the reference clocks for the subsystem
--- clock-names: functional clock name. Should be set to "fck"
--- reg: HWRNG module register space
+-Required properties:
+-- compatible  : "nuvoton,npcm750-rng" for the NPCM7XX BMC.
+-- reg         : Specifies physical base address and size of the registers.
 -
 -Example:
--/* K2HK */
 -
--rng@24000 {
--	compatible = "ti,keystone-rng";
--	ti,syscon-sa-cfg = <&sa_config>;
--	clocks = <&clksa>;
--	clock-names = "fck";
--	reg = <0x24000 0x1000>;
+-rng: rng@f000b000 {
+-	compatible = "nuvoton,npcm750-rng";
+-	reg = <0xf000b000 0x8>;
 -};
-diff --git a/Documentation/devicetree/bindings/rng/ti,keystone-rng.yaml b/Documentation/devicetree/bindings/rng/ti,keystone-rng.yaml
+diff --git a/Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.yaml b/Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.yaml
 new file mode 100644
-index 000000000000..e749818fc193
+index 000000000000..abd134c9d400
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/rng/ti,keystone-rng.yaml
-@@ -0,0 +1,50 @@
++++ b/Documentation/devicetree/bindings/rng/nuvoton,npcm-rng.yaml
+@@ -0,0 +1,35 @@
 +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/rng/ti,keystone-rng.yaml#
++$id: http://devicetree.org/schemas/rng/nuvoton,npcm-rng.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Keystone SoC Hardware Random Number Generator
++title: Nuvoton NPCM SoC Random Number Generator
 +
 +maintainers:
-+  - Nishanth Menon <nm@ti.com>
-+  - Santosh Shilimkar <ssantosh@kernel.org>
++  - Avi Fishman <avifishman70@gmail.com>
++  - Tomer Maimon <tmaimon77@gmail.com>
++  - Tali Perry <tali.perry1@gmail.com>
++  - Patrick Venture <venture@google.com>
++  - Nancy Yuen <yuenn@google.com>
++  - Benjamin Fair <benjaminfair@google.com>
 +
 +properties:
 +  compatible:
-+    const: ti,keystone-rng
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: fck
++    const: nuvoton,npcm750-rng
 +
 +  reg:
 +    maxItems: 1
 +
-+  ti,syscon-sa-cfg:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: |
-+      Phandle to syscon node of the SA configuration registers.  These
-+      registers are shared between HWRNG and crypto drivers.
-+
 +required:
 +  - compatible
-+  - clocks
-+  - clock-names
 +  - reg
-+  - ti,syscon-sa-cfg
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    rng@24000 {
-+        compatible = "ti,keystone-rng";
-+        ti,syscon-sa-cfg = <&sa_config>;
-+        clocks = <&clksa>;
-+        clock-names = "fck";
-+        reg = <0x24000 0x1000>;
++    rng@f000b000 {
++        compatible = "nuvoton,npcm750-rng";
++        reg = <0xf000b000 0x8>;
 +    };
 -- 
 2.32.0
