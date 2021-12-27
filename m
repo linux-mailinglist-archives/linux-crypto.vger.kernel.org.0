@@ -2,57 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E8C480366
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Dec 2021 19:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CF6480357
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Dec 2021 19:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhL0SdT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 27 Dec 2021 13:33:19 -0500
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:45492
+        id S231717AbhL0SdF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 27 Dec 2021 13:33:05 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:45336
         "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231748AbhL0SdP (ORCPT
+        by vger.kernel.org with ESMTP id S231720AbhL0SdD (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 27 Dec 2021 13:33:15 -0500
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        Mon, 27 Dec 2021 13:33:03 -0500
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 2AF493F1EE
-        for <linux-crypto@vger.kernel.org>; Mon, 27 Dec 2021 18:33:14 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 97C193FFDE
+        for <linux-crypto@vger.kernel.org>; Mon, 27 Dec 2021 18:32:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1640629994;
-        bh=i54sREsIiziNBvMfagruvxn2qixoZveyXs+MJUzMCDQ=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=Ea18Fp0D5YA6f2t67keaW8IfqaQJRHBelugvQfo+DlEzIluWgmnKqdXUkArxTv0dy
-         jW2B2LMc0/3uqLQs9EJit5BOSSfMf5fyf7KD5fpz/n6JLRqoYLSGs/qk5IzzWgRGDW
-         BtA4wNE2BnBlBdgo/CySgF6aF+fqLQGqBur5HCJBkzzUHGZmrRUvACnMO5/tcznVYX
-         0R9guPWh1Cud8WgdG/uJpVD4gji23OqQW4Qe3jyp99iaFcEXU9I1l4hwxKWgj9wN4x
-         bRc67U0kNAkxWhJO/1EFcqCzOBAMTtHD4vxAsk9hwjDILYFlc6XyK1S+JU4s/sWtjI
-         r/AMdSwul7NIw==
-Received: by mail-ed1-f69.google.com with SMTP id z10-20020a05640235ca00b003f8efab3342so4458768edc.2
-        for <linux-crypto@vger.kernel.org>; Mon, 27 Dec 2021 10:33:14 -0800 (PST)
+        s=20210705; t=1640629978;
+        bh=Ha91ZDV5aCOHeV4K+0XvZy0cP8PcDx+1Y/WeQ3R169I=;
+        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=bz8aWCzJhPborglQ6dQTuo5DBiWfOehSPenCvx6PtASXuIeSeQcIwadEu1gRJofcr
+         T0YyDeNyW0zK94wR9UgLWZ3OEBJBmiA3GKiGtHxwwkaSedit4P80erOED4LwuEGmIy
+         j5MwB1NWYkd850x6O/bNbz537EiJuzropU2M9EIDawUUSBjlDfmNECnjrQtq7frTgU
+         14UbxMlOdj6hw5CqpAIVjGLf5IBjVQ7iCvDNwxYbcjGztkD6y3KJI0HVDpIR1NvKDN
+         Q4wbz5/YjxccdAL8PO+cqDsRdpOQdyBbAuT4f2VbAMXC36m4uxIhBLxdqSsHnpDuqZ
+         TUcufQ1hCWUOQ==
+Received: by mail-lj1-f197.google.com with SMTP id k11-20020a05651c0a0b00b0022dc4d55f14so2296593ljq.22
+        for <linux-crypto@vger.kernel.org>; Mon, 27 Dec 2021 10:32:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i54sREsIiziNBvMfagruvxn2qixoZveyXs+MJUzMCDQ=;
-        b=5Xc9q2r1yn0vi2Z0finDsNMOKZin+vr8AT7aOzoG97bLbJgysEqrt8CComoJ/FQa2c
-         rE/EyGfOxfoC4aAr1M25Apjnm+82XdZGH77XDp71Fd1zdrHpy/HMvJfsH2iChcbqynwn
-         5Ng6UDg8oh2QLMD+YAjMPVRpyoI/0LhhlSqsxAsaV0LyZayWaGKsFTccNct5msC65IyX
-         6VxthXf1M77n8+KK5UZpME8UwB4MLYX2sy3j+6p4Y6Z/I1lO+rsZ9g3PBcCcrSxThrM5
-         +EQsHv0md5vWiEVlWcvLMOcvyXRDnSuZgohGQURky/XXwDTz3rQ8UTRqftedkIPg+DMg
-         XBdA==
-X-Gm-Message-State: AOAM530OlEGWmTLgLC2Bq4ZbVlxVld6A77b99cJz2Mltsk9yRA5u2/AO
-        CaS7b4Jq9GYz+1wJNxDweDqe9vKh/6BmvW8rjjLkA/KnJJhqjQNjzwow+MKrnfJDnCzdmRiSiz5
-        sThRMtmPH10dMWP8sbE74DcTmz5N8CeTTSBUewIRw5A==
-X-Received: by 2002:a05:6512:139e:: with SMTP id p30mr16310392lfa.492.1640629976400;
-        Mon, 27 Dec 2021 10:32:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxAZ3WEqusbAy4q7yWvfndZFSCKKy0G3HTKCX5F7Y7Ex31eIeYUwjTgsdfidX3vvAEfthquPg==
-X-Received: by 2002:a05:6512:139e:: with SMTP id p30mr16310362lfa.492.1640629976089;
-        Mon, 27 Dec 2021 10:32:56 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Ha91ZDV5aCOHeV4K+0XvZy0cP8PcDx+1Y/WeQ3R169I=;
+        b=nc4PTsSny1fJjrQLEMOwCt1cflMqle1OmC9TMeBNE8zKI2JEKbucBkgN7MJyVo4cF7
+         5rpiVRVNq0T7kT2SA255c2ZCvOx9A1tr7JgDejNqdiPvaUDzm1tKLSaPHHIvwLT3yL/X
+         p9oUMWcNGtvJAOEEL8AcwOUMroYyyXZeHAnx4jRwNCy2ptw6AHKpb1jYiCM3n2oeyaW5
+         lFwYDq1KGxsz06F2ayab4nEB/0Jc20kmWHZ1uGlNrQ57+D2d5WI9LrPOEdxy9CvBIMYm
+         hfHv+BBvpJXEgqRPZvPL24rIpnuTe/rxciaTdzJ+ebZN6INKYXcEVoFL3rNrqJquP6zT
+         qqXg==
+X-Gm-Message-State: AOAM5324j9cLRSQ2hFCZLyijc1orwLSxL2KnshBj/g3mdOmCLb1RC8EJ
+        bKYvNBfsFkSMgyFSWj5h7OgFOG+hQe3m6MTJ5WiXQthHdCskE6PMlKkvhX8PHPQrUPl+9qLiZnR
+        XgEZ0WWqGed+OWbt7BYSa0hpMK9DfkQ10DZYMSumgrA==
+X-Received: by 2002:ac2:4d34:: with SMTP id h20mr16342027lfk.617.1640629977839;
+        Mon, 27 Dec 2021 10:32:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxw2ascN7H6LYQsbejqKJs7k+yaXgGe30MRDmj5xMYPmLPKoxgkmpwR4T2jbxwJKJSp1I0tQg==
+X-Received: by 2002:ac2:4d34:: with SMTP id h20mr16342015lfk.617.1640629977677;
+        Mon, 27 Dec 2021 10:32:57 -0800 (PST)
 Received: from krzk-bin.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id o12sm1299622ljc.5.2021.12.27.10.32.54
+        by smtp.gmail.com with ESMTPSA id o12sm1299622ljc.5.2021.12.27.10.32.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Dec 2021 10:32:55 -0800 (PST)
+        Mon, 27 Dec 2021 10:32:57 -0800 (PST)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Matt Mackall <mpm@selenic.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
@@ -75,69 +76,52 @@ To:     Matt Mackall <mpm@selenic.com>,
         Tony Lindgren <tony@atomide.com>, linux-crypto@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org
-Subject: [PATCH 1/8] dt-bindings: rng: apm,x-gene-rng: convert APM RNG to dtschema
-Date:   Mon, 27 Dec 2021 19:32:44 +0100
-Message-Id: <20211227183251.132525-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 2/8] dt-bindings: rng: atmel,at91-trng: convert Atmel TRNG to dtschema
+Date:   Mon, 27 Dec 2021 19:32:45 +0100
+Message-Id: <20211227183251.132525-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211227183251.132525-1-krzysztof.kozlowski@canonical.com>
+References: <20211227183251.132525-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Convert the APM X-Gene RNG bindings to DT schema.
+Convert the Atmel TRNG bindings to DT schema.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- .../devicetree/bindings/rng/apm,rng.txt       | 17 -------
- .../bindings/rng/apm,x-gene-rng.yaml          | 47 +++++++++++++++++++
- 2 files changed, 47 insertions(+), 17 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/rng/apm,rng.txt
- create mode 100644 Documentation/devicetree/bindings/rng/apm,x-gene-rng.yaml
+ .../bindings/rng/atmel,at91-trng.yaml         | 46 +++++++++++++++++++
+ .../devicetree/bindings/rng/atmel-trng.txt    | 16 -------
+ 2 files changed, 46 insertions(+), 16 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/rng/atmel,at91-trng.yaml
+ delete mode 100644 Documentation/devicetree/bindings/rng/atmel-trng.txt
 
-diff --git a/Documentation/devicetree/bindings/rng/apm,rng.txt b/Documentation/devicetree/bindings/rng/apm,rng.txt
-deleted file mode 100644
-index 4dde4b06cdd9..000000000000
---- a/Documentation/devicetree/bindings/rng/apm,rng.txt
-+++ /dev/null
-@@ -1,17 +0,0 @@
--APM X-Gene SoC random number generator.
--
--Required properties:
--
--- compatible  : should be "apm,xgene-rng"
--- reg         : specifies base physical address and size of the registers map
--- clocks      : phandle to clock-controller plus clock-specifier pair
--- interrupts  : specify the fault interrupt for the RNG device
--
--Example:
--
--	rng: rng@10520000 {
--		compatible = "apm,xgene-rng";
--		reg = <0x0 0x10520000 0x0 0x100>;
--		interrupts =   <0x0 0x41 0x4>;
--		clocks = <&rngpkaclk 0>;
--	};
-diff --git a/Documentation/devicetree/bindings/rng/apm,x-gene-rng.yaml b/Documentation/devicetree/bindings/rng/apm,x-gene-rng.yaml
+diff --git a/Documentation/devicetree/bindings/rng/atmel,at91-trng.yaml b/Documentation/devicetree/bindings/rng/atmel,at91-trng.yaml
 new file mode 100644
-index 000000000000..02be143cc829
+index 000000000000..0324e863dab8
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/rng/apm,x-gene-rng.yaml
-@@ -0,0 +1,47 @@
++++ b/Documentation/devicetree/bindings/rng/atmel,at91-trng.yaml
+@@ -0,0 +1,46 @@
 +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/rng/apm,x-gene-rng.yaml#
++$id: http://devicetree.org/schemas/rng/atmel,at91-trng.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: APM X-Gene SoC Random Number Generator
++title: Atmel AT91 True Random Number Generator
 +
 +maintainers:
-+  - Khuong Dinh <khuong@os.amperecomputing.com>
++  - Nicolas Ferre <nicolas.ferre@microchip.com>
++  - Alexandre Belloni <alexandre.belloni@bootlin.com>
++  - Ludovic Desroches <ludovic.desroches@microchip.com>
 +
 +properties:
 +  compatible:
-+    const: apm,xgene-rng
++    enum:
++      - atmel,at91sam9g45-trng
++      - microchip,sam9x60-trng
 +
 +  clocks:
 +    maxItems: 1
@@ -158,19 +142,36 @@ index 000000000000..02be143cc829
 +
 +examples:
 +  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
 +
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        rng@10520000 {
-+            compatible = "apm,xgene-rng";
-+            reg = <0x0 0x10520000 0x0 0x100>;
-+            interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>;
-+            clocks = <&rngpkaclk 0>;
-+        };
++    rng@fffcc000 {
++        compatible = "atmel,at91sam9g45-trng";
++        reg = <0xfffcc000 0x4000>;
++        interrupts = <6 IRQ_TYPE_LEVEL_HIGH 0>;
++        clocks = <&trng_clk>;
 +    };
+diff --git a/Documentation/devicetree/bindings/rng/atmel-trng.txt b/Documentation/devicetree/bindings/rng/atmel-trng.txt
+deleted file mode 100644
+index 3900ee4f3532..000000000000
+--- a/Documentation/devicetree/bindings/rng/atmel-trng.txt
++++ /dev/null
+@@ -1,16 +0,0 @@
+-Atmel TRNG (True Random Number Generator) block
+-
+-Required properties:
+-- compatible : Should be "atmel,at91sam9g45-trng" or "microchip,sam9x60-trng"
+-- reg : Offset and length of the register set of this block
+-- interrupts : the interrupt number for the TRNG block
+-- clocks: should contain the TRNG clk source
+-
+-Example:
+-
+-trng@fffcc000 {
+-	compatible = "atmel,at91sam9g45-trng";
+-	reg = <0xfffcc000 0x4000>;
+-	interrupts = <6 IRQ_TYPE_LEVEL_HIGH 0>;
+-	clocks = <&trng_clk>;
+-};
 -- 
 2.32.0
 
