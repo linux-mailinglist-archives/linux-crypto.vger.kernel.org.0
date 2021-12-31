@@ -2,69 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DB14823B2
-	for <lists+linux-crypto@lfdr.de>; Fri, 31 Dec 2021 12:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 210234823BF
+	for <lists+linux-crypto@lfdr.de>; Fri, 31 Dec 2021 12:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbhLaLe1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 31 Dec 2021 06:34:27 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:58786 "EHLO fornost.hmeau.com"
+        id S229743AbhLaLfK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 31 Dec 2021 06:35:10 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:58796 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhLaLe1 (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 31 Dec 2021 06:34:27 -0500
+        id S229718AbhLaLfK (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 31 Dec 2021 06:35:10 -0500
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1n3GAw-0004rs-JK; Fri, 31 Dec 2021 22:34:23 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 31 Dec 2021 22:34:22 +1100
-Date:   Fri, 31 Dec 2021 22:34:22 +1100
+        id 1n3GB5-0004sN-4E; Fri, 31 Dec 2021 22:34:32 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 31 Dec 2021 22:34:30 +1100
+Date:   Fri, 31 Dec 2021 22:34:30 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
-Cc:     linux-crypto@vger.kernel.org, simo@redhat.com, skozina@redhat.com,
-        Nicolai Stange <nstange@suse.de>
-Subject: Re: [PATCH v3] crypto: jitter - add oversampling of noise source
-Message-ID: <Yc7qvt5/nysNh4sW@gondor.apana.org.au>
-References: <2573346.vuYhMxLoTh@positron.chronox.de>
- <4712718.vXUDI8C0e8@positron.chronox.de>
- <2790259.vuYhMxLoTh@positron.chronox.de>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-crypto@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH 0/5] Remove duplicate context init function for sha
+ algorithm
+Message-ID: <Yc7qxrxxIMr5kPSj@gondor.apana.org.au>
+References: <20211220092318.5793-1-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2790259.vuYhMxLoTh@positron.chronox.de>
+In-Reply-To: <20211220092318.5793-1-tianjia.zhang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Dec 20, 2021 at 07:21:53AM +0100, Stephan Müller wrote:
-> The output n bits can receive more than n bits of min entropy, of course,
-> but the fixed output of the conditioning function can only asymptotically
-> approach the output size bits of min entropy, not attain that bound.
-> Random maps will tend to have output collisions, which reduces the
-> creditable output entropy (that is what SP 800-90B Section 3.1.5.1.2
-> attempts to bound).
+On Mon, Dec 20, 2021 at 05:23:13PM +0800, Tianjia Zhang wrote:
+> This series of patches is mainly for repetitive code cleaning. The sha
+> algorithm has provided generic context initialization implementation.
+> The context initialization code in the optimized implementation of each
+> platform is a repetitive code and can be deleted. The sha*_base_init()
+> series of functions are used uniformly.
 > 
-> The value "64" is justified in Appendix A.4 of the current 90C draft,
-> and aligns with NIST's in "epsilon" definition in this document, which is
-> that a string can be considered "full entropy" if you can bound the min
-> entropy in each bit of output to at least 1-epsilon, where epsilon is
-> required to be <= 2^(-32).
+> Tianjia Zhang (5):
+>   crypto: sha256 - remove duplicate generic hash init function
+>   crypto: mips/sha - remove duplicate hash init function
+>   crypto: powerpc/sha - remove duplicate hash init function
+>   crypto: sparc/sha - remove duplicate hash init function
+>   crypto: s390/sha512 - Use macros instead of direct IV numbers
 > 
-> Note, this patch causes the Jitter RNG to cut its performance in half in
-> FIPS mode because the conditioning function of the LFSR produces 64 bits
-> of entropy in one block. The oversampling requires that additionally 64
-> bits of entropy are sampled from the noise source. If the conditioner is
-> changed, such as using SHA-256, the impact of the oversampling is only
-> one fourth, because for the 256 bit block of the conditioner, only 64
-> additional bits from the noise source must be sampled.
-> 
-> This patch is derived from the user space jitterentropy-library.
-> 
-> Signed-off-by: Stephan Mueller <smueller@chronox.de>
-> Reviewed-by: Simo Sorce <simo@redhat.com>
-> ---
->  crypto/jitterentropy.c | 23 +++++++++++++++++++++--
->  1 file changed, 21 insertions(+), 2 deletions(-)
+>  arch/mips/cavium-octeon/crypto/octeon-sha1.c  | 17 +-------
+>  .../mips/cavium-octeon/crypto/octeon-sha256.c | 39 ++-----------------
+>  .../mips/cavium-octeon/crypto/octeon-sha512.c | 39 ++-----------------
+>  arch/powerpc/crypto/sha1-spe-glue.c           | 17 +-------
+>  arch/powerpc/crypto/sha1.c                    | 14 +------
+>  arch/powerpc/crypto/sha256-spe-glue.c         | 39 ++-----------------
+>  arch/s390/crypto/sha512_s390.c                | 32 +++++++--------
+>  arch/sparc/crypto/sha1_glue.c                 | 14 +------
+>  arch/sparc/crypto/sha256_glue.c               | 37 ++----------------
+>  arch/sparc/crypto/sha512_glue.c               | 37 ++----------------
+>  crypto/sha256_generic.c                       | 16 +-------
+>  11 files changed, 41 insertions(+), 260 deletions(-)
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
