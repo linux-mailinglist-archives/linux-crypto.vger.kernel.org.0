@@ -2,74 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210234823BF
-	for <lists+linux-crypto@lfdr.de>; Fri, 31 Dec 2021 12:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D68F4823B4
+	for <lists+linux-crypto@lfdr.de>; Fri, 31 Dec 2021 12:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhLaLfK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 31 Dec 2021 06:35:10 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:58796 "EHLO fornost.hmeau.com"
+        id S229545AbhLaLev (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 31 Dec 2021 06:34:51 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:58788 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229718AbhLaLfK (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 31 Dec 2021 06:35:10 -0500
+        id S229457AbhLaLev (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 31 Dec 2021 06:34:51 -0500
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1n3GB5-0004sN-4E; Fri, 31 Dec 2021 22:34:32 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 31 Dec 2021 22:34:30 +1100
-Date:   Fri, 31 Dec 2021 22:34:30 +1100
+        id 1n3GBG-0004se-P3; Fri, 31 Dec 2021 22:34:43 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 31 Dec 2021 22:34:42 +1100
+Date:   Fri, 31 Dec 2021 22:34:42 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-crypto@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: Re: [PATCH 0/5] Remove duplicate context init function for sha
- algorithm
-Message-ID: <Yc7qxrxxIMr5kPSj@gondor.apana.org.au>
-References: <20211220092318.5793-1-tianjia.zhang@linux.alibaba.com>
+To:     Marek Vasut <marex@denx.de>
+Cc:     linux-crypto@vger.kernel.org, stable@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabien Dessenne <fabien.dessenne@st.com>,
+        Lionel Debieve <lionel.debieve@st.com>,
+        Nicolas Toromanoff <nicolas.toromanoff@st.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH] crypto: stm32/crc32 - Fix kernel BUG triggered in probe()
+Message-ID: <Yc7q0o1HL2THW2Kc@gondor.apana.org.au>
+References: <20211220195022.1387104-1-marex@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211220092318.5793-1-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <20211220195022.1387104-1-marex@denx.de>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Dec 20, 2021 at 05:23:13PM +0800, Tianjia Zhang wrote:
-> This series of patches is mainly for repetitive code cleaning. The sha
-> algorithm has provided generic context initialization implementation.
-> The context initialization code in the optimized implementation of each
-> platform is a repetitive code and can be deleted. The sha*_base_init()
-> series of functions are used uniformly.
+On Mon, Dec 20, 2021 at 08:50:22PM +0100, Marek Vasut wrote:
+> The include/linux/crypto.h struct crypto_alg field cra_driver_name description
+> states "Unique name of the transformation provider. " ... " this contains the
+> name of the chip or provider and the name of the transformation algorithm."
 > 
-> Tianjia Zhang (5):
->   crypto: sha256 - remove duplicate generic hash init function
->   crypto: mips/sha - remove duplicate hash init function
->   crypto: powerpc/sha - remove duplicate hash init function
->   crypto: sparc/sha - remove duplicate hash init function
->   crypto: s390/sha512 - Use macros instead of direct IV numbers
+> In case of the stm32-crc driver, field cra_driver_name is identical for all
+> registered transformation providers and set to the name of the driver itself,
+> which is incorrect. This patch fixes it by assigning a unique cra_driver_name
+> to each registered transformation provider.
 > 
->  arch/mips/cavium-octeon/crypto/octeon-sha1.c  | 17 +-------
->  .../mips/cavium-octeon/crypto/octeon-sha256.c | 39 ++-----------------
->  .../mips/cavium-octeon/crypto/octeon-sha512.c | 39 ++-----------------
->  arch/powerpc/crypto/sha1-spe-glue.c           | 17 +-------
->  arch/powerpc/crypto/sha1.c                    | 14 +------
->  arch/powerpc/crypto/sha256-spe-glue.c         | 39 ++-----------------
->  arch/s390/crypto/sha512_s390.c                | 32 +++++++--------
->  arch/sparc/crypto/sha1_glue.c                 | 14 +------
->  arch/sparc/crypto/sha256_glue.c               | 37 ++----------------
->  arch/sparc/crypto/sha512_glue.c               | 37 ++----------------
->  crypto/sha256_generic.c                       | 16 +-------
->  11 files changed, 41 insertions(+), 260 deletions(-)
+> The kernel crash is triggered when the driver calls crypto_register_shashes()
+> which calls crypto_register_shash(), which calls crypto_register_alg(), which
+> calls __crypto_register_alg(), which returns -EEXIST, which is propagated
+> back through this call chain. Upon -EEXIST from crypto_register_shash(), the
+> crypto_register_shashes() starts unregistering the providers back, and calls
+> crypto_unregister_shash(), which calls crypto_unregister_alg(), and this is
+> where the BUG() triggers due to incorrect cra_refcnt.
+> 
+> Fixes: b51dbe90912a ("crypto: stm32 - Support for STM32 CRC32 crypto module")
+> Signed-off-by: Marek Vasut <marex@denx.de>
+> Cc: <stable@vger.kernel.org> # 4.12+
+> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> Cc: Fabien Dessenne <fabien.dessenne@st.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: Lionel Debieve <lionel.debieve@st.com>
+> Cc: Nicolas Toromanoff <nicolas.toromanoff@st.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-stm32@st-md-mailman.stormreply.com
+> To: linux-crypto@vger.kernel.org
+> ---
+>  drivers/crypto/stm32/stm32-crc32.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
