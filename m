@@ -2,43 +2,55 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4E04823BB
-	for <lists+linux-crypto@lfdr.de>; Fri, 31 Dec 2021 12:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9B44823C1
+	for <lists+linux-crypto@lfdr.de>; Fri, 31 Dec 2021 12:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbhLaLfI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 31 Dec 2021 06:35:08 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:58794 "EHLO fornost.hmeau.com"
+        id S229642AbhLaLfd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 31 Dec 2021 06:35:33 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:58798 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229727AbhLaLfH (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 31 Dec 2021 06:35:07 -0500
+        id S229498AbhLaLfc (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 31 Dec 2021 06:35:32 -0500
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1n3GBd-0004vM-2r; Fri, 31 Dec 2021 22:35:06 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 31 Dec 2021 22:35:04 +1100
-Date:   Fri, 31 Dec 2021 22:35:04 +1100
+        id 1n3GBn-0004xW-BQ; Fri, 31 Dec 2021 22:35:16 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 31 Dec 2021 22:35:15 +1100
+Date:   Fri, 31 Dec 2021 22:35:15 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
-Cc:     linux-crypto@vger.kernel.org, simo@redhat.com
-Subject: Re: [PATCH] crypto: KDF - select SHA-256 required for self-test
-Message-ID: <Yc7q6NHG339T9bn5@gondor.apana.org.au>
-References: <2576506.vuYhMxLoTh@positron.chronox.de>
+To:     trix@redhat.com
+Cc:     wangzhou1@hisilicon.com, davem@davemloft.net, nathan@kernel.org,
+        ndesaulniers@google.com, yekai13@huawei.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v2] crypto: cleanup warning in qm_get_qos_value()
+Message-ID: <Yc7q8yhSp+aRy1Xg@gondor.apana.org.au>
+References: <20211222172923.3209810-1-trix@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2576506.vuYhMxLoTh@positron.chronox.de>
+In-Reply-To: <20211222172923.3209810-1-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Dec 21, 2021 at 08:31:42PM +0100, Stephan Müller wrote:
-> The self test of the KDF is based on SHA-256. Thus, this algorithm must
-> be present as otherwise a warning is issued.
+On Wed, Dec 22, 2021 at 09:29:23AM -0800, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Signed-off-by: Stephan Mueller <smueller@chronox.de>
+> Building with clang static analysis returns this warning:
+> 
+> qm.c:4382:11: warning: The left operand of '==' is a garbage value
+>         if (*val == 0 || *val > QM_QOS_MAX_VAL || ret) {
+>             ~~~~ ^
+> 
+> The call to qm_qos_value_init() can return an error without setting
+> *val.  So check ret before checking *val.
+> 
+> Fixes: 72b010dc33b9 ("crypto: hisilicon/qm - supports writing QoS int the host")
+> Signed-off-by: Tom Rix <trix@redhat.com>
 > ---
->  crypto/Kconfig | 2 +-
+> v2: Add Fixes: line
+> 
+>  drivers/crypto/hisilicon/qm.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Patch applied.  Thanks.
