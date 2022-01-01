@@ -2,95 +2,324 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E7F48277C
-	for <lists+linux-crypto@lfdr.de>; Sat,  1 Jan 2022 13:06:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84BFB4827E4
+	for <lists+linux-crypto@lfdr.de>; Sat,  1 Jan 2022 16:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbiAAMF7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 1 Jan 2022 07:05:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37514 "EHLO
+        id S232489AbiAAP7y (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 1 Jan 2022 10:59:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232361AbiAAMF7 (ORCPT
+        with ESMTP id S231305AbiAAP7x (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 1 Jan 2022 07:05:59 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4503BC061574;
-        Sat,  1 Jan 2022 04:05:59 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id i8so17389646pgt.13;
-        Sat, 01 Jan 2022 04:05:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=dhFaFNGf9P/hgzfpigNOAcNefTeR7Csml9+Bh/hdy/w=;
-        b=EXvZL00u6uXG+OIxvAv86ri/WYc0aaA4/LPVPh7UF9DDvULTSfWQLt0bY2ngHeLgQI
-         syRNBHFq2czJY9wWKXlsvLz/xoz0LuMcZlEVm8B/ofiYGc6h3+ADtcIl1Rv1i8h6bBX2
-         nRAmM262IPWkA+NDNIHFUR7JAunGAUPMrYR7dwioDCei2RDFUkTo+A4I4GqRyfOXNqh8
-         dViDwTAduGaf9teR+8HuM5wArnrLIoXtkfICPiZKaCM3YxwlkJNcsj5rFajUOdEwBYwZ
-         k+mFdXOpzE9LDMkzM217i21BSh2MEkQAjpXtol0UWtUNClAG6xh5JLW87onMNsLZ0mfW
-         foew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=dhFaFNGf9P/hgzfpigNOAcNefTeR7Csml9+Bh/hdy/w=;
-        b=7vnxCcHPbNrXmTKQLty4g+LyInsods4m6pJNpf6PuKAKDyyI1CM66Qyc/puZVGoa+u
-         sz/YizXysmu1nnoAUzsxSGV7j4KY/IclVaXzdZkz0uwQVyPOkbL658vRgXDQ4U39zCx1
-         DSdy2gS65AfLpDWCoKsb9XtRvEPsMs1aanwxf4hQarp/C1R4DewlIDq2ydnCn8QJPhN9
-         +eyNsh+RgczvqoEnlw7vMqhYWOzo1Vll1MprFx6Y2koSiWIsYDshK7Ek+ZRVqc9VNPXv
-         5sOEa9FIEzlguvrpJlWZJmLy6qKO02Yl4dau8oIbJaW//+5eG8AD2KNHb8Eb20yfnvk2
-         NIig==
-X-Gm-Message-State: AOAM533RFZ8NklDcF01V01fJ/iuFcyMLaZRbEacc+LhrLUeQEU1Z3qhC
-        xdAwF5SU0xnMnvAYCJk51o0=
-X-Google-Smtp-Source: ABdhPJxGyB/wzvHc15hgzEfTxxuQJvHNBVHUoJzvH7VIsP/0hZIwPwDWjfY9v+tAreYWIWVNQovS2Q==
-X-Received: by 2002:aa7:928e:0:b0:4ba:fa67:d87 with SMTP id j14-20020aa7928e000000b004bafa670d87mr39045352pfa.41.1641038758868;
-        Sat, 01 Jan 2022 04:05:58 -0800 (PST)
-Received: from [192.168.0.153] ([143.244.48.136])
-        by smtp.gmail.com with ESMTPSA id a21sm32528954pfg.204.2022.01.01.04.05.51
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Sat, 01 Jan 2022 04:05:58 -0800 (PST)
-Message-ID: <61d043a6.1c69fb81.a0875.98f7@mx.google.com>
-From:   yalaiibrahim818@gmail.com
-X-Google-Original-From: suport.prilend@gmail.com
-Content-Type: text/plain; charset="iso-8859-1"
+        Sat, 1 Jan 2022 10:59:53 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86248C061574;
+        Sat,  1 Jan 2022 07:59:53 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1FABE60B46;
+        Sat,  1 Jan 2022 15:59:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1E6AC36AEA;
+        Sat,  1 Jan 2022 15:59:50 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Uksrn5Aw"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1641052788;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MXfRnkGZJ721hGiwJRuhfNcDbk4qEezkQtUg9hAhwak=;
+        b=Uksrn5AwO7ZV/ulrAmHz96YhaBly5CAE5fC7+BYdwIZhWnQjWB5jjwsK3HNoVAQgVDUwiR
+        aBqhV3k+a95FIegl3DzFLNjxNbXiz0prqbzs8Hligu6YEPJmssMTFf60D+wlTpX4ajZKXv
+        t/SgURm4WGxX6ZwLUARhf7GUPNGJfe8=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 54effb9e (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Sat, 1 Jan 2022 15:59:48 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH v5] lib/crypto: blake2s: include as built-in
+Date:   Sat,  1 Jan 2022 16:59:37 +0100
+Message-Id: <20220101155937.381821-1-Jason@zx2c4.com>
+In-Reply-To: <20211227142016.166116-1-Jason@zx2c4.com>
+References: <20211227142016.166116-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: RE:
-To:     Recipients <suport.prilend@gmail.com>
-Date:   Sat, 01 Jan 2022 14:05:41 +0200
-Reply-To: andres.stemmet1@gmail.com
-X-Mailer: TurboMailer 2
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-I want to confide in you to finalize this transaction of mutual benefits. I=
-t may seem strange to you, but it is real. This is a transaction that has n=
-o risk at all, due process shall be followed and it shall be carried out un=
-der the ambit of the financial laws. Being the Chief Financial Officer, BP =
-Plc. I want to trust and put in your care Eighteen Million British Pounds S=
-terling, The funds were acquired from an over-invoiced payment from a past =
-contract executed in one of my departments. I can't successfully achieve th=
-is transaction without presenting you as foreign contractor who will provid=
-e a bank account to receive the funds.
+In preparation for using blake2s in the RNG, we change the way that it
+is wired-in to the build system. Instead of using ifdefs to select the
+right symbol, we use weak symbols. And because ARM doesn't need the
+generic implementation, we make the generic one default only if an arch
+library doesn't need it already, and then have arch libraries that do
+need it opt-in.
 
-Documentation for the claim of the funds will be legally processed and docu=
-mented, so I will need your full cooperation on this matter for our mutual =
-benefits. We will discuss details if you are interested to work with me to =
-secure this funds. I will appreciate your prompt response in every bit of o=
-ur communication. Stay Blessed and Stay Safe.
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: linux-crypto@vger.kernel.org
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+Herbert - As mentioned with the vPrev, I intend to take this via the
+crng/random.git tree, since it forms a dependency and I'd like to send a
+pull early in 5.17 cycle.
 
-Best Regards
+Changes v4->v5:
+- Move sourcing the lib/crypto Kconfig file outside of 'if CRYPTO'.
 
+ arch/arm/crypto/blake2s-core.S    |  8 ++++----
+ arch/arm/crypto/blake2s-glue.c    |  6 +++---
+ arch/x86/crypto/blake2s-glue.c    | 11 +++++------
+ crypto/Kconfig                    |  3 ++-
+ drivers/net/Kconfig               |  1 -
+ include/crypto/internal/blake2s.h |  6 +++---
+ lib/crypto/Kconfig                | 13 ++-----------
+ lib/crypto/Makefile               |  9 ++++-----
+ lib/crypto/blake2s-generic.c      |  6 +++++-
+ lib/crypto/blake2s.c              |  6 ------
+ 10 files changed, 28 insertions(+), 41 deletions(-)
 
-Tel: +44 7537 185910
-Andres  Stemmet
-Email: andres.stemmet1@gmail.com  =
-
-Chief financial officer
-BP Petroleum p.l.c.
-
-                                                                           =
-                        Copyright =A9 1996-2021
+diff --git a/arch/arm/crypto/blake2s-core.S b/arch/arm/crypto/blake2s-core.S
+index 86345751bbf3..df40e46601f1 100644
+--- a/arch/arm/crypto/blake2s-core.S
++++ b/arch/arm/crypto/blake2s-core.S
+@@ -167,8 +167,8 @@
+ .endm
+ 
+ //
+-// void blake2s_compress_arch(struct blake2s_state *state,
+-//			      const u8 *block, size_t nblocks, u32 inc);
++// void blake2s_compress(struct blake2s_state *state,
++//			 const u8 *block, size_t nblocks, u32 inc);
+ //
+ // Only the first three fields of struct blake2s_state are used:
+ //	u32 h[8];	(inout)
+@@ -176,7 +176,7 @@
+ //	u32 f[2];	(in)
+ //
+ 	.align		5
+-ENTRY(blake2s_compress_arch)
++ENTRY(blake2s_compress)
+ 	push		{r0-r2,r4-r11,lr}	// keep this an even number
+ 
+ .Lnext_block:
+@@ -303,4 +303,4 @@ ENTRY(blake2s_compress_arch)
+ 	str		r3, [r12], #4
+ 	bne		1b
+ 	b		.Lcopy_block_done
+-ENDPROC(blake2s_compress_arch)
++ENDPROC(blake2s_compress)
+diff --git a/arch/arm/crypto/blake2s-glue.c b/arch/arm/crypto/blake2s-glue.c
+index f2cc1e5fc9ec..09d3a0cabd2c 100644
+--- a/arch/arm/crypto/blake2s-glue.c
++++ b/arch/arm/crypto/blake2s-glue.c
+@@ -11,17 +11,17 @@
+ #include <linux/module.h>
+ 
+ /* defined in blake2s-core.S */
+-EXPORT_SYMBOL(blake2s_compress_arch);
++EXPORT_SYMBOL(blake2s_compress);
+ 
+ static int crypto_blake2s_update_arm(struct shash_desc *desc,
+ 				     const u8 *in, unsigned int inlen)
+ {
+-	return crypto_blake2s_update(desc, in, inlen, blake2s_compress_arch);
++	return crypto_blake2s_update(desc, in, inlen, blake2s_compress);
+ }
+ 
+ static int crypto_blake2s_final_arm(struct shash_desc *desc, u8 *out)
+ {
+-	return crypto_blake2s_final(desc, out, blake2s_compress_arch);
++	return crypto_blake2s_final(desc, out, blake2s_compress);
+ }
+ 
+ #define BLAKE2S_ALG(name, driver_name, digest_size)			\
+diff --git a/arch/x86/crypto/blake2s-glue.c b/arch/x86/crypto/blake2s-glue.c
+index a40365ab301e..ef91a3167d27 100644
+--- a/arch/x86/crypto/blake2s-glue.c
++++ b/arch/x86/crypto/blake2s-glue.c
+@@ -28,9 +28,8 @@ asmlinkage void blake2s_compress_avx512(struct blake2s_state *state,
+ static __ro_after_init DEFINE_STATIC_KEY_FALSE(blake2s_use_ssse3);
+ static __ro_after_init DEFINE_STATIC_KEY_FALSE(blake2s_use_avx512);
+ 
+-void blake2s_compress_arch(struct blake2s_state *state,
+-			   const u8 *block, size_t nblocks,
+-			   const u32 inc)
++void blake2s_compress(struct blake2s_state *state, const u8 *block,
++		      size_t nblocks, const u32 inc)
+ {
+ 	/* SIMD disables preemption, so relax after processing each page. */
+ 	BUILD_BUG_ON(SZ_4K / BLAKE2S_BLOCK_SIZE < 8);
+@@ -56,17 +55,17 @@ void blake2s_compress_arch(struct blake2s_state *state,
+ 		block += blocks * BLAKE2S_BLOCK_SIZE;
+ 	} while (nblocks);
+ }
+-EXPORT_SYMBOL(blake2s_compress_arch);
++EXPORT_SYMBOL(blake2s_compress);
+ 
+ static int crypto_blake2s_update_x86(struct shash_desc *desc,
+ 				     const u8 *in, unsigned int inlen)
+ {
+-	return crypto_blake2s_update(desc, in, inlen, blake2s_compress_arch);
++	return crypto_blake2s_update(desc, in, inlen, blake2s_compress);
+ }
+ 
+ static int crypto_blake2s_final_x86(struct shash_desc *desc, u8 *out)
+ {
+-	return crypto_blake2s_final(desc, out, blake2s_compress_arch);
++	return crypto_blake2s_final(desc, out, blake2s_compress);
+ }
+ 
+ #define BLAKE2S_ALG(name, driver_name, digest_size)			\
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 285f82647d2b..55718de56137 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -1919,9 +1919,10 @@ config CRYPTO_STATS
+ config CRYPTO_HASH_INFO
+ 	bool
+ 
+-source "lib/crypto/Kconfig"
+ source "drivers/crypto/Kconfig"
+ source "crypto/asymmetric_keys/Kconfig"
+ source "certs/Kconfig"
+ 
+ endif	# if CRYPTO
++
++source "lib/crypto/Kconfig"
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index 6cccc3dc00bc..b2a4f998c180 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -81,7 +81,6 @@ config WIREGUARD
+ 	select CRYPTO
+ 	select CRYPTO_LIB_CURVE25519
+ 	select CRYPTO_LIB_CHACHA20POLY1305
+-	select CRYPTO_LIB_BLAKE2S
+ 	select CRYPTO_CHACHA20_X86_64 if X86 && 64BIT
+ 	select CRYPTO_POLY1305_X86_64 if X86 && 64BIT
+ 	select CRYPTO_BLAKE2S_X86 if X86 && 64BIT
+diff --git a/include/crypto/internal/blake2s.h b/include/crypto/internal/blake2s.h
+index 8e50d487500f..d39cfa0d333e 100644
+--- a/include/crypto/internal/blake2s.h
++++ b/include/crypto/internal/blake2s.h
+@@ -11,11 +11,11 @@
+ #include <crypto/internal/hash.h>
+ #include <linux/string.h>
+ 
+-void blake2s_compress_generic(struct blake2s_state *state,const u8 *block,
++void blake2s_compress_generic(struct blake2s_state *state, const u8 *block,
+ 			      size_t nblocks, const u32 inc);
+ 
+-void blake2s_compress_arch(struct blake2s_state *state,const u8 *block,
+-			   size_t nblocks, const u32 inc);
++void blake2s_compress(struct blake2s_state *state, const u8 *block,
++		      size_t nblocks, const u32 inc);
+ 
+ bool blake2s_selftest(void);
+ 
+diff --git a/lib/crypto/Kconfig b/lib/crypto/Kconfig
+index 545ccbddf6a1..0f27976b5038 100644
+--- a/lib/crypto/Kconfig
++++ b/lib/crypto/Kconfig
+@@ -9,14 +9,14 @@ config CRYPTO_LIB_ARC4
+ 	tristate
+ 
+ config CRYPTO_ARCH_HAVE_LIB_BLAKE2S
+-	tristate
++	bool
+ 	help
+ 	  Declares whether the architecture provides an arch-specific
+ 	  accelerated implementation of the Blake2s library interface,
+ 	  either builtin or as a module.
+ 
+ config CRYPTO_LIB_BLAKE2S_GENERIC
+-	tristate
++	def_bool !CRYPTO_ARCH_HAVE_LIB_BLAKE2S
+ 	help
+ 	  This symbol can be depended upon by arch implementations of the
+ 	  Blake2s library interface that require the generic code as a
+@@ -24,15 +24,6 @@ config CRYPTO_LIB_BLAKE2S_GENERIC
+ 	  implementation is enabled, this implementation serves the users
+ 	  of CRYPTO_LIB_BLAKE2S.
+ 
+-config CRYPTO_LIB_BLAKE2S
+-	tristate "BLAKE2s hash function library"
+-	depends on CRYPTO_ARCH_HAVE_LIB_BLAKE2S || !CRYPTO_ARCH_HAVE_LIB_BLAKE2S
+-	select CRYPTO_LIB_BLAKE2S_GENERIC if CRYPTO_ARCH_HAVE_LIB_BLAKE2S=n
+-	help
+-	  Enable the Blake2s library interface. This interface may be fulfilled
+-	  by either the generic implementation or an arch-specific one, if one
+-	  is available and enabled.
+-
+ config CRYPTO_ARCH_HAVE_LIB_CHACHA
+ 	tristate
+ 	help
+diff --git a/lib/crypto/Makefile b/lib/crypto/Makefile
+index 73205ed269ba..ed43a41f2dcc 100644
+--- a/lib/crypto/Makefile
++++ b/lib/crypto/Makefile
+@@ -10,11 +10,10 @@ libaes-y					:= aes.o
+ obj-$(CONFIG_CRYPTO_LIB_ARC4)			+= libarc4.o
+ libarc4-y					:= arc4.o
+ 
+-obj-$(CONFIG_CRYPTO_LIB_BLAKE2S_GENERIC)	+= libblake2s-generic.o
+-libblake2s-generic-y				+= blake2s-generic.o
+-
+-obj-$(CONFIG_CRYPTO_LIB_BLAKE2S)		+= libblake2s.o
+-libblake2s-y					+= blake2s.o
++# blake2s is used by the /dev/random driver which is always builtin
++obj-y						+= libblake2s.o
++libblake2s-y					:= blake2s.o
++libblake2s-$(CONFIG_CRYPTO_LIB_BLAKE2S_GENERIC)	+= blake2s-generic.o
+ 
+ obj-$(CONFIG_CRYPTO_LIB_CHACHA20POLY1305)	+= libchacha20poly1305.o
+ libchacha20poly1305-y				+= chacha20poly1305.o
+diff --git a/lib/crypto/blake2s-generic.c b/lib/crypto/blake2s-generic.c
+index 04ff8df24513..75ccb3e633e6 100644
+--- a/lib/crypto/blake2s-generic.c
++++ b/lib/crypto/blake2s-generic.c
+@@ -37,7 +37,11 @@ static inline void blake2s_increment_counter(struct blake2s_state *state,
+ 	state->t[1] += (state->t[0] < inc);
+ }
+ 
+-void blake2s_compress_generic(struct blake2s_state *state,const u8 *block,
++void blake2s_compress(struct blake2s_state *state, const u8 *block,
++		      size_t nblocks, const u32 inc)
++		      __weak __alias(blake2s_compress_generic);
++
++void blake2s_compress_generic(struct blake2s_state *state, const u8 *block,
+ 			      size_t nblocks, const u32 inc)
+ {
+ 	u32 m[16];
+diff --git a/lib/crypto/blake2s.c b/lib/crypto/blake2s.c
+index 4055aa593ec4..93f2ae051370 100644
+--- a/lib/crypto/blake2s.c
++++ b/lib/crypto/blake2s.c
+@@ -16,12 +16,6 @@
+ #include <linux/init.h>
+ #include <linux/bug.h>
+ 
+-#if IS_ENABLED(CONFIG_CRYPTO_ARCH_HAVE_LIB_BLAKE2S)
+-#  define blake2s_compress blake2s_compress_arch
+-#else
+-#  define blake2s_compress blake2s_compress_generic
+-#endif
+-
+ void blake2s_update(struct blake2s_state *state, const u8 *in, size_t inlen)
+ {
+ 	__blake2s_update(state, in, inlen, blake2s_compress);
+-- 
+2.34.1
 
