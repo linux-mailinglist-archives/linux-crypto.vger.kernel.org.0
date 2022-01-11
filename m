@@ -2,77 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE6748B8FC
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jan 2022 21:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6FC48B9D3
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jan 2022 22:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbiAKUxy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 11 Jan 2022 15:53:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
+        id S245451AbiAKVoF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 11 Jan 2022 16:44:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244632AbiAKUxK (ORCPT
+        with ESMTP id S245445AbiAKVoB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 11 Jan 2022 15:53:10 -0500
+        Tue, 11 Jan 2022 16:44:01 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6F4C03400A;
-        Tue, 11 Jan 2022 12:53:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDC8C06173F
+        for <linux-crypto@vger.kernel.org>; Tue, 11 Jan 2022 13:44:01 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 812B5616B7;
-        Tue, 11 Jan 2022 20:53:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 548BCC36AEF;
-        Tue, 11 Jan 2022 20:53:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A564617AF
+        for <linux-crypto@vger.kernel.org>; Tue, 11 Jan 2022 21:44:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51EFDC36AE3;
+        Tue, 11 Jan 2022 21:44:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641934390;
-        bh=jxUZ606xjHrygy5OsIYobq3FoIFdtp2RDbu5bAsla3Q=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=D87y6895m5UlKBGi3p/oY9+BEo+9XDdwGOoeRv8aUTIo08rN3b3aagHZdY2ekU7tE
-         5QGiwhSthYtLuP9M+TokPvnzWy3kbH0jZnDr4j3CXT+3nu4OmMSnpXskOTbPJmmB3A
-         yepxsOrv1i0U+9oo1TTV6Cyy6vrHySxS7rdqWS+rbBMAihGhozBmnTlT5cN3U6eLE6
-         iE8daQ6tphrpjVCz3BxjBes9rO0HDzF8c5cCIzX4PO2WVirQEEWnJmvALmaJ560rpc
-         F5tTy28znACMcLO/zFitB5bbybnn9E6dy2fNKf4GRKlJFsoQvQRO6bdZzyIYdTbi9w
-         3xHvo9kuQMsTw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 43D98F6078C;
-        Tue, 11 Jan 2022 20:53:10 +0000 (UTC)
-Subject: Re: [GIT PULL] Crypto Update for 5.17
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <Ydzlo+UmL5bbDgUZ@gondor.apana.org.au>
-References: <20200803044024.GA6429@gondor.apana.org.au>
- <20201012033249.GA25179@gondor.apana.org.au>
- <20201214055515.GA14196@gondor.apana.org.au>
- <20210215024721.GA20593@gondor.apana.org.au>
- <20210426123200.kgbyk6ayey4l4lrw@gondor.apana.org.au>
- <20210628110050.GA12162@gondor.apana.org.au>
- <20210830082818.GA30921@gondor.apana.org.au>
- <20211102035201.GA23331@gondor.apana.org.au> <Ydzlo+UmL5bbDgUZ@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <Ydzlo+UmL5bbDgUZ@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
-X-PR-Tracked-Commit-Id: 5f21d7d283dd82865bdb0123795b3accf0d42b67
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5c947d0dbae8038ec1c8b538891f6475350542ee
-Message-Id: <164193439027.11435.3994810490249594244.pr-tracker-bot@kernel.org>
-Date:   Tue, 11 Jan 2022 20:53:10 +0000
+        s=k20201202; t=1641937440;
+        bh=T4c2OoSAdRrkTt8fLZY/k1miG6vyy4R0XrZSy0eZWl0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qXrU0w6eJTyVmXl817zj6o2nqMvH35CAdF71P/3jKtHlZkpn9NhEXigzoc8j8WUCK
+         EnpMD9q94/pAdVKcpWUE+DfK/u+v5wFCYZlY+NhKvaFJTOLBuxQeDLNeCes74axH+a
+         qORV8dubtByJyp1vtXo89mCr5GgjyWACXemDf9Y5XGmj/j1nLWNm51XJ2/j0VX7lMY
+         HaW8juRiNCTos6hiB3DnUzVVCmu/CRJrxoBsGNuZDBnchMCajdqk7z7FqEaqvlGTJf
+         MxmVZ7408oQl4X9+EeallPVG4qzcp+enL5YIp17wck4jQuhMsjtPcueL3Xqj8Ke21T
+         3/gI/nwdXnf4w==
+Date:   Tue, 11 Jan 2022 13:43:58 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
 To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH] crypto: testmgr - Move crypto_simd_disabled_for_test out
+Message-ID: <Yd36HsgI+ya6P7RF@gmail.com>
+References: <Yd0jA4VOjysrdOu7@gondor.apana.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yd0jA4VOjysrdOu7@gondor.apana.org.au>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The pull request you sent on Tue, 11 Jan 2022 13:04:19 +1100:
+On Tue, Jan 11, 2022 at 05:26:11PM +1100, Herbert Xu wrote:
+> As testmgr is part of cryptomgr which was designed to be unloadable
+> as a module, it shouldn't export any symbols for other crypto
+> modules to use as that would prevent it from being unloaded.  All
+> its functionality is meant to be accessed through notifiers.
+> 
+> The symbol crypto_simd_disabled_for_test was added to testmgr
+> which caused it to be pinned as a module if its users were also
+> loaded.  This patch moves it out of testmgr and into crypto/simd.c
+> so cryptomgr can again be unloaded and replaced on demand.
+> 
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> 
+> diff --git a/crypto/simd.c b/crypto/simd.c
+> index edaa479a1ec5..2027d747b746 100644
+> --- a/crypto/simd.c
+> +++ b/crypto/simd.c
+> @@ -47,6 +47,11 @@ struct simd_skcipher_ctx {
+>  	struct cryptd_skcipher *cryptd_tfm;
+>  };
+>  
+> +#ifdef CONFIG_CRYPTO_MANAGER_EXTRA_TESTS
+> +DEFINE_PER_CPU(bool, crypto_simd_disabled_for_test);
+> +EXPORT_PER_CPU_SYMBOL_GPL(crypto_simd_disabled_for_test);
+> +#endif
+> +
+>  static int simd_skcipher_setkey(struct crypto_skcipher *tfm, const u8 *key,
+>  				unsigned int key_len)
+>  {
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+It doesn't look like all the users of crypto_simd_usable() select CRYPTO_SIMD.
+So this will cause a build break in some configurations.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5c947d0dbae8038ec1c8b538891f6475350542ee
+Maybe CRYPTO_MANAGER_EXTRA_TESTS should select CRYPTO_SIMD?
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+- Eric
