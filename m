@@ -2,21 +2,25 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D758948A6A8
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jan 2022 05:05:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4577B48A6C3
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jan 2022 05:21:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbiAKEFr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 10 Jan 2022 23:05:47 -0500
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:50379 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231165AbiAKEFr (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 10 Jan 2022 23:05:47 -0500
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 20B446pm026610;
-        Tue, 11 Jan 2022 05:04:06 +0100
-Date:   Tue, 11 Jan 2022 05:04:06 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     "Theodore Ts'o" <tytso@mit.edu>
+        id S1347785AbiAKEVr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 10 Jan 2022 23:21:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231966AbiAKEVr (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 10 Jan 2022 23:21:47 -0500
+X-Greylist: delayed 475 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 10 Jan 2022 20:21:47 PST
+Received: from cavan.codon.org.uk (cavan.codon.org.uk [IPv6:2a00:1098:84:22e::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1131BC06173F
+        for <linux-crypto@vger.kernel.org>; Mon, 10 Jan 2022 20:21:46 -0800 (PST)
+Received: by cavan.codon.org.uk (Postfix, from userid 1000)
+        id 7C9DA424F9; Tue, 11 Jan 2022 04:13:49 +0000 (GMT)
+Date:   Tue, 11 Jan 2022 04:13:49 +0000
+From:   Matthew Garrett <mjg59@srcf.ucam.org>
+To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     Andy Lutomirski <luto@kernel.org>,
         "Jason A. Donenfeld" <Jason@zx2c4.com>,
         Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
@@ -25,13 +29,12 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Jeffrey Walton <noloader@gmail.com>,
         Stephan Mueller <smueller@chronox.de>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Nicolai Stange <nstange@suse.de>,
+        Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
         "Eric W. Biederman" <ebiederm@xmission.com>,
         "Alexander E. Patrakov" <patrakov@gmail.com>,
         "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
         Vito Caputo <vcaputo@pengaru.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
@@ -51,7 +54,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Jirka Hladky <jhladky@redhat.com>,
         Eric Biggers <ebiggers@kernel.org>
 Subject: Re: [PATCH v43 01/15] Linux Random Number Generator
-Message-ID: <20220111040406.GB26248@1wt.eu>
+Message-ID: <20220111041349.GA5542@srcf.ucam.org>
 References: <CAHmME9oSK5sVVhMewm-oVvn=twP4yyYnLY0OVebYZ0sy1mQAyA@mail.gmail.com>
  <YdxCsI3atPILABYe@mit.edu>
  <CAHmME9oRdoc3c36gXAcmOwumwvUi_6oqCsLmFxRP_NDMz_MK1Q@mail.gmail.com>
@@ -72,6 +75,24 @@ List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
 On Mon, Jan 10, 2022 at 10:10:15PM -0500, Theodore Ts'o wrote:
+
+> Right now, the enterprise distros are doing their own thing, and quite
+> frankly, I don't see a problem with that.  If it turns out DRBG is
+> less secure (and there are some things that fill me with disquiet),
+> then let them take the economic consequences, since they are the ones
+> who are doing this for the economic advantages of trying to claim FIPS
+> compliance.
+
+The goal is to identify a solution that avoids the enterprise kernels 
+needing to do their own thing. They're in a position to globally 
+LD_PRELOAD something to thunk getrandom() to improve compatibility if 
+they want to, and they're also able to define the expected level of 
+breakage if you enable FIPS mode. An approach that allows a single 
+kernel to provide different policies in different contexts (eg, 
+different namespaces could have different device nodes providing 
+/dev/random) makes it easier to configure that based on customer 
+requirements.
+
 > If we must support this in the upstream kernel, then configure it via
 > CONFIG_RANDOM_SECURITY_THEATRE which redirects getrandom(2) and
 > /dev/[u]random to DRBG.  I'd prefer that it be possible for someone to
@@ -80,12 +101,12 @@ On Mon, Jan 10, 2022 at 10:10:15PM -0500, Theodore Ts'o wrote:
 > DRBG *is* less secure, we can give advice on how to turn it off
 > without requiring a patched kernel.  :-)
 
-In this case, why not do it the other way around ? Instead of having
-yet-another config option, just indicate that fips-like randoms are
-enabled at boot via "random_security_theatre=1". Distros have their
-solution which can even be documented for their customers and that's
-done. Nobody uses it by default, the name is discouraging enough, but
-for those who know they want it, it's easy to turn it on, and at the
-same time it delivers them the reminder about what all this really is.
-
-Willy
+The majority of enterprise customers don't need FIPS compliance, so all 
+that would happen in that case is that the vendors would flip the sense 
+of that config option and the docs for enterprise distros and mainline 
+would be out of sync. I understand that this is a situation where a 
+niche case is making life miserable for everyone else, and I understand 
+that this is a hole that the enterprise world has dug for itself, but 
+where there are people expressing a real tangible use case that exists 
+for reasons outside their control, it really feels like we should try to 
+find a solution that works for everyone.
