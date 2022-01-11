@@ -2,88 +2,171 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7107448B2F2
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jan 2022 18:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED73648B4E0
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jan 2022 19:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243138AbiAKRLB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 11 Jan 2022 12:11:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243128AbiAKRLA (ORCPT
+        id S1350020AbiAKSEB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 11 Jan 2022 13:04:01 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4388 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345156AbiAKSDv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 11 Jan 2022 12:11:00 -0500
-Received: from cavan.codon.org.uk (cavan.codon.org.uk [IPv6:2a00:1098:84:22e::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C05AC06173F;
-        Tue, 11 Jan 2022 09:11:00 -0800 (PST)
-Received: by cavan.codon.org.uk (Postfix, from userid 1000)
-        id 0C042424F9; Tue, 11 Jan 2022 17:10:59 +0000 (GMT)
-Date:   Tue, 11 Jan 2022 17:10:59 +0000
-From:   Matthew Garrett <mjg59@srcf.ucam.org>
-To:     "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Andy Lutomirski <luto@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Simo Sorce <simo@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jeffrey Walton <noloader@gmail.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        John Haxby <john.haxby@oracle.com>,
-        Alexander Lobakin <alobakin@mailbox.org>,
-        Jirka Hladky <jhladky@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH v43 01/15] Linux Random Number Generator
-Message-ID: <20220111171059.GA10674@srcf.ucam.org>
-References: <CAHmME9oRdoc3c36gXAcmOwumwvUi_6oqCsLmFxRP_NDMz_MK1Q@mail.gmail.com>
- <Ydxu+KS5UkQ6hU9R@mit.edu>
- <Ydx7D3H0PS0Zs9/B@sol.localdomain>
- <CAHmME9pe-DxTcFcMtsNnLPcccoY+0gEysivZQszAusH1M8ThmA@mail.gmail.com>
- <YdyNxJzdBmSSEtDC@mit.edu>
- <CAHmME9rmWBA02SyeFiiGZ8=kydYJSJwcYPscBrTBzoXMEPH9sQ@mail.gmail.com>
- <e6fac6ab-07eb-4d8c-9206-bacf6660a7cf@www.fastmail.com>
- <Ydz1F/AqB1oO/qHF@mit.edu>
- <20220111041349.GA5542@srcf.ucam.org>
- <CAN_LGv0CTDi9k=t=TGHvaHZz5YVT+OUEBaRXjP=Xv=kousHY1w@mail.gmail.com>
+        Tue, 11 Jan 2022 13:03:51 -0500
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4JYJQj1JcLz67Cr0;
+        Wed, 12 Jan 2022 02:01:01 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 11 Jan 2022 19:03:46 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <dhowells@redhat.com>, <dwmw2@infradead.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-integrity@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <zohar@linux.ibm.com>,
+        <ebiggers@kernel.org>, Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH 00/14] KEYS: Add support for PGP keys and signatures
+Date:   Tue, 11 Jan 2022 19:03:04 +0100
+Message-ID: <20220111180318.591029-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAN_LGv0CTDi9k=t=TGHvaHZz5YVT+OUEBaRXjP=Xv=kousHY1w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.63.22]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 02:57:54PM +0500, Alexander E. Patrakov wrote:
+Support for PGP keys and signatures was proposed by David long time ago,
+before the decision of using PKCS#7 for kernel modules signatures
+verification was made. After that, there has been not enough interest to
+support PGP too.
 
-> LD_PRELOAD is not a solution because of containers and statically-linked
-> binaries.
+Lately, when discussing a proposal of introducing fsverity signatures in
+Fedora [1], developers expressed their preference on not having a separate
+key for signing, which would complicate the management of the distribution.
+They would be more in favor of using the same PGP key, currently used for
+signing RPM headers, also for file-based signatures (not only fsverity, but
+also IMA ones).
 
-No, it doesn't solve all problems, but the question is whether it needs 
-to. We're talking about the scenario where:
+Another envisioned use case would be to add the ability to appraise RPM
+headers with their existing PGP signature, so that they can be used as an
+authenticated source of reference values for appraising remaining
+files [2].
 
-a) a customer requires FIPS compliance, and
-b) the customer has an app that calls getrandom() and doesn't fallback, 
-and
-c) they're doing so with statically linked binaries or container 
-infrastructure that doesn't allow injection of other libraries
+To make these use cases possible, introduce support for PGP keys and
+signatures in the kernel, and load provided PGP keys in the built-in
+keyring, so that PGP signatures of RPM headers, fsverity digests, and IMA
+digests can be verified from this trust anchor.
 
-How common is this? Does the kernel need to solve this scenario?
+In addition to the original version of the patch set, also introduce
+support for signature verification of PGP keys, so that those keys can be
+added to keyrings with a signature-based restriction (e.g. .ima). PGP keys
+are searched with partial IDs, provided with signature subtype 16 (Issuer).
+Search with full IDs could be supported with
+draft-ietf-openpgp-rfc4880bis-10, by retrieving the information from
+signature subtype 33 (Issuer Fingerprint). Due to the possibility of ID
+collisions, the key_or_keyring restriction is not supported.
+
+The patch set includes two preliminary patches: patch 1 introduces
+mpi_key_length(), to get the number of bits and bytes of an MPI; patch 2
+introduces rsa_parse_priv_key_raw() and rsa_parse_pub_key_raw(), to parse
+an RSA key in RAW format if the ASN.1 parser returns an error.
+
+Patches 3-5 introduce the library necessary to parse PGP keys and
+signatures, whose support is added with patches 6-10. Patch 11 introduces
+verify_pgp_signature() to be used by kernel subsystems (e.g. fsverity and
+IMA). Patch 12 is for testing of PGP signatures. Finally, patches 13-14
+allow loading a set of PGP keys from a supplied blob at boot time.
+
+I generated the diff from [3] (rebased). It is available at:
+
+https://github.com/robertosassu/linux/compare/pgp-signatures-v1-orig..pgp-signatures-v1
+
+Changelog
+
+v0 [3]:
+- style fixes
+- move include/linux/pgp.h and pgplib.h to crypto/asymmetric_keys
+- introduce verify_pgp_signature()
+- replace KEY_ALLOC_TRUSTED flag with KEY_ALLOC_BUILT_IN
+- don't fetch PGP subkeys
+- drop support for DSA
+- store number of MPIs in pgp_key_algo_p_num_mpi array
+- replace dynamic memory allocations with static ones in
+  pgp_generate_fingerprint()
+- store only keys with capability of verifying signatures
+- remember selection of PGP signature packet and don't repeat parsing
+- move search of the PGP key to verify the signature from the beginning
+  to the end of the verification process (to be similar with PKCS#7)
+- don't retry key search in the session keyring from the signature
+  verification code, let the caller pass the desired keyring
+- for the PGP signature test key type, retry the key search in the session
+  keyring
+- retry key search in restrict_link_by_signature() with a partial ID
+  (provided in the PGP signature)
+
+[1] https://fedoraproject.org/wiki/Changes/FsVerityRPM
+[2] https://fedoraproject.org/wiki/Changes/DIGLIM
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-modsign.git/log/?h=pgp-parser
+
+David Howells (8):
+  PGPLIB: PGP definitions (RFC 4880)
+  PGPLIB: Basic packet parser
+  PGPLIB: Signature parser
+  KEYS: PGP data parser
+  KEYS: Provide PGP key description autogeneration
+  KEYS: PGP-based public key signature verification
+  PGP: Provide a key type for testing PGP signatures
+  KEYS: Provide a function to load keys from a PGP keyring blob
+
+Roberto Sassu (6):
+  mpi: Introduce mpi_key_length()
+  rsa: add parser of raw format
+  KEYS: Retry asym key search with partial ID in
+    restrict_link_by_signature()
+  KEYS: Calculate key digest and get signature of the key
+  verification: introduce verify_pgp_signature()
+  KEYS: Introduce load_pgp_public_keyring()
+
+ MAINTAINERS                             |   1 +
+ certs/Kconfig                           |  11 +
+ certs/Makefile                          |   7 +
+ certs/system_certificates.S             |  18 +
+ certs/system_keyring.c                  |  91 ++++
+ crypto/asymmetric_keys/Kconfig          |  38 ++
+ crypto/asymmetric_keys/Makefile         |  13 +
+ crypto/asymmetric_keys/pgp.h            | 206 ++++++++
+ crypto/asymmetric_keys/pgp_library.c    | 620 ++++++++++++++++++++++++
+ crypto/asymmetric_keys/pgp_parser.h     |  18 +
+ crypto/asymmetric_keys/pgp_preload.c    | 110 +++++
+ crypto/asymmetric_keys/pgp_public_key.c | 484 ++++++++++++++++++
+ crypto/asymmetric_keys/pgp_signature.c  | 507 +++++++++++++++++++
+ crypto/asymmetric_keys/pgp_test_key.c   | 129 +++++
+ crypto/asymmetric_keys/pgplib.h         |  74 +++
+ crypto/asymmetric_keys/restrict.c       |  10 +-
+ crypto/rsa.c                            |  14 +-
+ crypto/rsa_helper.c                     |  69 +++
+ include/crypto/internal/rsa.h           |   6 +
+ include/crypto/pgp.h                    |  35 ++
+ include/linux/mpi.h                     |   2 +
+ include/linux/verification.h            |  23 +
+ lib/mpi/mpicoder.c                      |  33 +-
+ 23 files changed, 2506 insertions(+), 13 deletions(-)
+ create mode 100644 crypto/asymmetric_keys/pgp.h
+ create mode 100644 crypto/asymmetric_keys/pgp_library.c
+ create mode 100644 crypto/asymmetric_keys/pgp_parser.h
+ create mode 100644 crypto/asymmetric_keys/pgp_preload.c
+ create mode 100644 crypto/asymmetric_keys/pgp_public_key.c
+ create mode 100644 crypto/asymmetric_keys/pgp_signature.c
+ create mode 100644 crypto/asymmetric_keys/pgp_test_key.c
+ create mode 100644 crypto/asymmetric_keys/pgplib.h
+ create mode 100644 include/crypto/pgp.h
+
+-- 
+2.32.0
+
