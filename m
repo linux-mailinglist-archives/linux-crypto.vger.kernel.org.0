@@ -2,296 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FD648ACA8
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jan 2022 12:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1602F48AD28
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jan 2022 12:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349657AbiAKLiG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 11 Jan 2022 06:38:06 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:34626 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238542AbiAKLiA (ORCPT
+        id S239471AbiAKL7h (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 11 Jan 2022 06:59:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239378AbiAKL7b (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 11 Jan 2022 06:38:00 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 87B8B21639;
-        Tue, 11 Jan 2022 11:37:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1641901078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nnudm31TWLhKvg8iKBvA1bfNToyh2dvEbi+Aqj3JOf0=;
-        b=Fp+F/vKcFMIPQuUQo8UVNYTohpH+hIN5v1sf3mvXCWYdHNhkYzinY1elREcV4EAoB2XrU6
-        w2s4w4eM6vF23rHLly3Thnnn0hO/93uEQ4XB3IwNPW+WsrvbrFTAcuNCfdHfprvBEaNnhb
-        E9kPOPr5vwJdhr6w0HzffkSX82F0lPw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1641901078;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nnudm31TWLhKvg8iKBvA1bfNToyh2dvEbi+Aqj3JOf0=;
-        b=fAw0JhWNwop5nDbpxOR5hDu1JdKpGwH7AXDTV128GOp5d8eA8ZaWvQxIzuH9ztG3pbiEh0
-        VT07iLtEGTaYHwAA==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        by relay2.suse.de (Postfix) with ESMTP id 3A301A3B92;
-        Tue, 11 Jan 2022 11:37:58 +0000 (UTC)
-From:   Michal Suchanek <msuchanek@suse.de>
-To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Cc:     Michal Suchanek <msuchanek@suse.de>, kexec@lists.infradead.org,
-        Philipp Rudo <prudo@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Nayna <nayna@linux.vnet.ibm.com>, Rob Herring <robh@kernel.org>,
-        linux-s390@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Frank van der Linden <fllinden@amazon.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Daniel Axtens <dja@axtens.net>, buendgen@de.ibm.com,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Tue, 11 Jan 2022 06:59:31 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF377C06173F;
+        Tue, 11 Jan 2022 03:59:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=L90dZXr+DchG0EERWhDGtHsJnyZXsrxTqBwOQGncg8Q=; b=SoTdUUyLlm0b3pZIpOMczUxg/U
+        xJbtK0g+lu8BnWTD214WLoFzAQKb9gxtskfxFKvLcXy/J3ww+3uMdEDygFIA1epmBjKtSy8Hs85ef
+        cNAfn+nm8dMuuOAzB5oRHc4+JgVJUpODgEfHI8npUAQNIy7rnRgf+OpHn9agoozCFC+0ZovL1vcP2
+        9Xkuo0ZEy/cHKGNwt3GaA4fFE60C+lK3kvQjN+1Zl+XOy52ODKcFEKA3VMMv4pMpLC7UQep2R8auq
+        Xw+1/sNbQmmr2In80BNcSG0MrBHplHV3Yx9T3L5RF7nnlw7zF07qsrKCoZNM2/gBfu1lvG1O3rh+P
+        f58fiK8g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1n7Fnj-003DIw-Ch; Tue, 11 Jan 2022 11:58:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6ABDC3002C5;
+        Tue, 11 Jan 2022 12:58:53 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 25934203E80F6; Tue, 11 Jan 2022 12:58:53 +0100 (CET)
+Date:   Tue, 11 Jan 2022 12:58:53 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Alexander Duyck <alexanderduyck@fb.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Segall <bsegall@google.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH v5 6/6] module: Move duplicate mod_check_sig users code to mod_parse_sig
-Date:   Tue, 11 Jan 2022 12:37:48 +0100
-Message-Id: <687db74a714d50b9c83d7ac024da4f7dec0d9a1d.1641900831.git.msuchanek@suse.de>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1641900831.git.msuchanek@suse.de>
-References: <cover.1641900831.git.msuchanek@suse.de>
+        Ingo Molnar <mingo@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Michal Hocko <mhocko@suse.com>, Nico Pache <npache@redhat.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-mm@kvack.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: Re: [RFC 15/16] sched/fair: Account kthread runtime debt for CFS
+ bandwidth
+Message-ID: <Yd1w/TxTcGk5Ht53@hirez.programming.kicks-ass.net>
+References: <20220106004656.126790-1-daniel.m.jordan@oracle.com>
+ <20220106004656.126790-16-daniel.m.jordan@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220106004656.126790-16-daniel.m.jordan@oracle.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Multiple users of mod_check_sig check for the marker, then call
-mod_check_sig, extract signature length, and remove the signature.
+On Wed, Jan 05, 2022 at 07:46:55PM -0500, Daniel Jordan wrote:
+> As before, helpers in multithreaded jobs don't honor the main thread's
+> CFS bandwidth limits, which could lead to the group exceeding its quota.
+> 
+> Fix it by having helpers remote charge their CPU time to the main
+> thread's task group.  A helper calls a pair of new interfaces
+> cpu_cgroup_remote_begin() and cpu_cgroup_remote_charge() (see function
+> header comments) to achieve this.
+> 
+> This is just supposed to start a discussion, so it's pretty simple.
+> Once a kthread has finished a remote charging period with
+> cpu_cgroup_remote_charge(), its runtime is subtracted from the target
+> task group's runtime (cfs_bandwidth::runtime) and any remainder is saved
+> as debt (cfs_bandwidth::debt) to pay off in later periods.
+> 
+> Remote charging tasks aren't throttled when the group reaches its quota,
+> and a task group doesn't run at all until its debt is completely paid,
+> but these shortcomings can be addressed if the approach ends up being
+> taken.
+> 
 
-Put this code in one place together with mod_check_sig.
-
-This changes the error from ENOENT to ENODATA for ima_read_modsig in the
-case the signature marker is missing.
-
-This also changes the buffer length in ima_read_modsig from size_t to
-unsigned long. This reduces the possible value range on 32bit but the
-length refers to kernel in-memory buffer which cannot be longer than
-ULONG_MAX.
-
-Also change mod_check_sig to unsigned long while at it.
-
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
----
-v3: - Philipp Rudo <prudo@redhat.com>: Update the commit with note about
-      change of raturn value
-    - Preserve the EBADMSG error code while moving code araound
-v4: - remove unused variable ms in module_signing.c
-    - note about buffer length
-v5: - also change the functions in module_signature.c to unsigned long
----
- include/linux/module_signature.h    |  4 +-
- kernel/module_signature.c           | 58 ++++++++++++++++++++++++++++-
- kernel/module_signing.c             | 27 ++------------
- security/integrity/ima/ima_modsig.c | 22 ++---------
- 4 files changed, 66 insertions(+), 45 deletions(-)
-
-diff --git a/include/linux/module_signature.h b/include/linux/module_signature.h
-index 7eb4b00381ac..e5fb157c085c 100644
---- a/include/linux/module_signature.h
-+++ b/include/linux/module_signature.h
-@@ -40,7 +40,9 @@ struct module_signature {
- 	__be32	sig_len;	/* Length of signature data */
- };
- 
--int mod_check_sig(const struct module_signature *ms, size_t file_len,
-+int mod_check_sig(const struct module_signature *ms, unsigned long file_len,
-+		  const char *name);
-+int mod_parse_sig(const void *data, unsigned long *len, unsigned long *sig_len,
- 		  const char *name);
- 
- #endif /* _LINUX_MODULE_SIGNATURE_H */
-diff --git a/kernel/module_signature.c b/kernel/module_signature.c
-index 00132d12487c..4a36405ecd08 100644
---- a/kernel/module_signature.c
-+++ b/kernel/module_signature.c
-@@ -8,17 +8,39 @@
- 
- #include <linux/errno.h>
- #include <linux/printk.h>
-+#include <linux/string.h>
- #include <linux/module_signature.h>
- #include <asm/byteorder.h>
- 
-+/**
-+ * mod_check_sig_marker - check that the given data has signature marker at the end
-+ *
-+ * @data:	Data with appended signature
-+ * @len:	Length of data. Signature marker length is subtracted on success.
-+ */
-+static inline int mod_check_sig_marker(const void *data, unsigned long *len)
-+{
-+	const unsigned long markerlen = sizeof(MODULE_SIG_STRING) - 1;
-+
-+	if (markerlen > *len)
-+		return -ENODATA;
-+
-+	if (memcmp(data + *len - markerlen, MODULE_SIG_STRING,
-+		   markerlen))
-+		return -ENODATA;
-+
-+	*len -= markerlen;
-+	return 0;
-+}
-+
- /**
-  * mod_check_sig - check that the given signature is sane
-  *
-  * @ms:		Signature to check.
-- * @file_len:	Size of the file to which @ms is appended.
-+ * @file_len:	Size of the file to which @ms is appended (without the marker).
-  * @name:	What is being checked. Used for error messages.
-  */
--int mod_check_sig(const struct module_signature *ms, size_t file_len,
-+int mod_check_sig(const struct module_signature *ms, unsigned long file_len,
- 		  const char *name)
- {
- 	if (be32_to_cpu(ms->sig_len) >= file_len - sizeof(*ms))
-@@ -44,3 +66,35 @@ int mod_check_sig(const struct module_signature *ms, size_t file_len,
- 
- 	return 0;
- }
-+
-+/**
-+ * mod_parse_sig - check that the given signature is sane and determine signature length
-+ *
-+ * @data:	Data with appended signature.
-+ * @len:	Length of data. Signature and marker length is subtracted on success.
-+ * @sig_len:	Length of signature. Filled on success.
-+ * @name:	What is being checked. Used for error messages.
-+ */
-+int mod_parse_sig(const void *data, unsigned long *len, unsigned long *sig_len, const char *name)
-+{
-+	const struct module_signature *sig;
-+	int rc;
-+
-+	rc = mod_check_sig_marker(data, len);
-+	if (rc)
-+		return rc;
-+
-+	if (*len < sizeof(*sig))
-+		return -EBADMSG;
-+
-+	sig = data + (*len - sizeof(*sig));
-+
-+	rc = mod_check_sig(sig, *len, name);
-+	if (rc)
-+		return rc;
-+
-+	*sig_len = be32_to_cpu(sig->sig_len);
-+	*len -= *sig_len + sizeof(*sig);
-+
-+	return 0;
-+}
-diff --git a/kernel/module_signing.c b/kernel/module_signing.c
-index 20857d2a15ca..1d4cb03cce21 100644
---- a/kernel/module_signing.c
-+++ b/kernel/module_signing.c
-@@ -25,35 +25,16 @@ int verify_appended_signature(const void *data, unsigned long *len,
- 			      struct key *trusted_keys,
- 			      enum key_being_used_for purpose)
- {
--	const unsigned long markerlen = sizeof(MODULE_SIG_STRING) - 1;
--	struct module_signature *ms;
--	unsigned long sig_len, modlen = *len;
-+	unsigned long sig_len;
- 	int ret;
- 
--	pr_devel("==>%s %s(,%lu)\n", __func__, key_being_used_for[purpose], modlen);
-+	pr_devel("==>%s %s(,%lu)\n", __func__, key_being_used_for[purpose], *len);
- 
--	if (markerlen > modlen)
--		return -ENODATA;
--
--	if (memcmp(data + modlen - markerlen, MODULE_SIG_STRING,
--		   markerlen))
--		return -ENODATA;
--	modlen -= markerlen;
--
--	if (modlen <= sizeof(*ms))
--		return -EBADMSG;
--
--	ms = data + modlen - sizeof(*ms);
--
--	ret = mod_check_sig(ms, modlen, key_being_used_for[purpose]);
-+	ret = mod_parse_sig(data, len, &sig_len, key_being_used_for[purpose]);
- 	if (ret)
- 		return ret;
- 
--	sig_len = be32_to_cpu(ms->sig_len);
--	modlen -= sig_len + sizeof(*ms);
--	*len = modlen;
--
--	return verify_pkcs7_signature(data, modlen, data + modlen, sig_len,
-+	return verify_pkcs7_signature(data, *len, data + *len, sig_len,
- 				      trusted_keys,
- 				      purpose,
- 				      NULL, NULL);
-diff --git a/security/integrity/ima/ima_modsig.c b/security/integrity/ima/ima_modsig.c
-index fb25723c65bc..b40c8fdf6139 100644
---- a/security/integrity/ima/ima_modsig.c
-+++ b/security/integrity/ima/ima_modsig.c
-@@ -37,33 +37,17 @@ struct modsig {
-  *
-  * Return: 0 on success, error code otherwise.
-  */
--int ima_read_modsig(enum ima_hooks func, const void *buf, loff_t buf_len,
-+int ima_read_modsig(enum ima_hooks func, const void *buf, loff_t len,
- 		    struct modsig **modsig)
- {
--	const size_t marker_len = strlen(MODULE_SIG_STRING);
--	const struct module_signature *sig;
- 	struct modsig *hdr;
--	size_t sig_len;
--	const void *p;
-+	unsigned long sig_len, buf_len = len;
- 	int rc;
- 
--	if (buf_len <= marker_len + sizeof(*sig))
--		return -ENOENT;
--
--	p = buf + buf_len - marker_len;
--	if (memcmp(p, MODULE_SIG_STRING, marker_len))
--		return -ENOENT;
--
--	buf_len -= marker_len;
--	sig = (const struct module_signature *)(p - sizeof(*sig));
--
--	rc = mod_check_sig(sig, buf_len, func_tokens[func]);
-+	rc = mod_parse_sig(buf, &buf_len, &sig_len, func_tokens[func]);
- 	if (rc)
- 		return rc;
- 
--	sig_len = be32_to_cpu(sig->sig_len);
--	buf_len -= sig_len + sizeof(*sig);
--
- 	/* Allocate sig_len additional bytes to hold the raw PKCS#7 data. */
- 	hdr = kzalloc(sizeof(*hdr) + sig_len, GFP_KERNEL);
- 	if (!hdr)
--- 
-2.31.1
-
+*groan*... and not a single word on why it wouldn't be much better to
+simply move the task into the relevant cgroup..
