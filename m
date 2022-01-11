@@ -2,121 +2,64 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33B948B7A6
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jan 2022 20:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B88DD48B916
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jan 2022 21:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240254AbiAKTxP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 11 Jan 2022 14:53:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240201AbiAKTxO (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 11 Jan 2022 14:53:14 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860BEC061748
-        for <linux-crypto@vger.kernel.org>; Tue, 11 Jan 2022 11:53:14 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id s127so572370oig.2
-        for <linux-crypto@vger.kernel.org>; Tue, 11 Jan 2022 11:53:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Tjcdg3Ey3f8JqyyzT+Cl24fjuGmW4SbKqOF/PBidjqw=;
-        b=hi83Xs0ac2F2+QsZ7+i2Hvbx/N2A5elBXFw59+QgJjNTybr6QyoaM6Zfx7JgdZslxu
-         rYjHABxNI2z+2nxJQBInxUuqgV+q+FJc+NPZMSPAL/qaCRlnwZfY1+iWE+hugdo0Q3+j
-         jfNOQIMppS9rJOWHEeQkr+4yXDt0DhCdAzvp0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Tjcdg3Ey3f8JqyyzT+Cl24fjuGmW4SbKqOF/PBidjqw=;
-        b=lUsPsXhwJ+gIFZnZ+N5+46KPbB5mat40uzZGXhuidii430HZIQNuCQ501hxB49rR5S
-         wsjr+DeA5fA3goNT7woBtf9RBSmFV7khx5WGSEBkhYCwFLY9rKnraAbZsTNmGkJUfEvh
-         1pSdgpRTrXripGF/gnt2N99R8j+8Q/ORDECWGsjetsvJHfr+cLEJbHIxsuFqQDlzjo/I
-         xMGIfie5L2o57quApVygW4xO0gBDwbG3xxIaZDudYsnbaf6V8PQyIkwfiVs0QLX9z9kl
-         dISEfYFx6L5VsiUlPXA4sFUc289oEvKun1R1iXbCTdKo5J7LGtYc6aXvr8K4bPm4WfDX
-         kvzA==
-X-Gm-Message-State: AOAM5338A2ul+yVQv/QqjWhPCt76DRUPhBFb/9wuBRoxubM4xs8ZlNS+
-        TLKKgiSoHgyXVL+sFRLdeAgkNw==
-X-Google-Smtp-Source: ABdhPJx4/yEP3bceehG7/01WrYo9pOVIDHPGvoHXeK1GTaH4YVVWOuoHDy92ZZExzuMV5qgkl5CD0g==
-X-Received: by 2002:a05:6808:169f:: with SMTP id bb31mr3002278oib.87.1641930793777;
-        Tue, 11 Jan 2022 11:53:13 -0800 (PST)
-Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
-        by smtp.gmail.com with ESMTPSA id bb20sm2178310oob.4.2022.01.11.11.53.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jan 2022 11:53:12 -0800 (PST)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-From:   "Justin M. Forbes" <jforbes@fedoraproject.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jmforbes@linuxtx.org,
-        "Justin M. Forbes" <jforbes@fedoraproject.org>
-Subject: [PATCH] lib/crypto: add prompts back to crypto libraries
-Date:   Tue, 11 Jan 2022 13:53:08 -0600
-Message-Id: <20220111195309.634965-1-jforbes@fedoraproject.org>
-X-Mailer: git-send-email 2.34.1
+        id S234266AbiAKU6l (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 11 Jan 2022 15:58:41 -0500
+Received: from vps-vb.mhejs.net ([37.28.154.113]:58236 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236303AbiAKU6k (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 11 Jan 2022 15:58:40 -0500
+X-Greylist: delayed 1509 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 Jan 2022 15:58:39 EST
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1n7NpY-00034Q-U7; Tue, 11 Jan 2022 21:33:20 +0100
+Message-ID: <ab29dd6f-1301-e012-8898-9c739ca511a3@maciej.szmigiero.name>
+Date:   Tue, 11 Jan 2022 21:33:15 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Content-Language: en-US
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
+        ebiggers@kernel.org, dhowells@redhat.com, dwmw2@infradead.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net
+References: <20220111180318.591029-1-roberto.sassu@huawei.com>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 00/14] KEYS: Add support for PGP keys and signatures
+In-Reply-To: <20220111180318.591029-1-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Commit 6048fdcc5f269 ("lib/crypto: blake2s: include as built-in") took
-away a number of prompt texts from other crypto libraries. This makes
-values flip from built-in to module when oldconfig runs, and causes
-problems when these crypto libs need to be built in for thingslike
-BIG_KEYS.
+On 11.01.2022 19:03, Roberto Sassu wrote:
+> Support for PGP keys and signatures was proposed by David long time ago,
+> before the decision of using PKCS#7 for kernel modules signatures
+> verification was made. After that, there has been not enough interest to
+> support PGP too.
+> 
+> Lately, when discussing a proposal of introducing fsverity signatures in
+> Fedora [1], developers expressed their preference on not having a separate
+> key for signing, which would complicate the management of the distribution.
+> They would be more in favor of using the same PGP key, currently used for
+> signing RPM headers, also for file-based signatures (not only fsverity, but
+> also IMA ones).
 
-Fixes: 6048fdcc5f269 ("lib/crypto: blake2s: include as built-in")
-Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
----
- lib/crypto/Kconfig | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Aren't PGP keys simply RSA / ECC / EdDSA keys with additional metadata?
+Can't they be unwrapped from their (complex) PGP format in userspace and
+loaded raw into the kernel, in a similar way as they are sometimes used
+for SSH authentication?
 
-diff --git a/lib/crypto/Kconfig b/lib/crypto/Kconfig
-index 8620f38e117c..a3e41b7a8054 100644
---- a/lib/crypto/Kconfig
-+++ b/lib/crypto/Kconfig
-@@ -40,7 +40,7 @@ config CRYPTO_LIB_CHACHA_GENERIC
- 	  of CRYPTO_LIB_CHACHA.
+This will save us from having to add complex parsers (a well-known source
+of bugs) into the kernel - I guess there aren't any plans to add an
+in-kernel PGP Web of Trust implementation.
 
- config CRYPTO_LIB_CHACHA
--	tristate
-+	tristate "ChaCha library interface"
- 	depends on CRYPTO_ARCH_HAVE_LIB_CHACHA || !CRYPTO_ARCH_HAVE_LIB_CHACHA
- 	select CRYPTO_LIB_CHACHA_GENERIC if CRYPTO_ARCH_HAVE_LIB_CHACHA=n
- 	help
-@@ -65,7 +65,7 @@ config CRYPTO_LIB_CURVE25519_GENERIC
- 	  of CRYPTO_LIB_CURVE25519.
-
- config CRYPTO_LIB_CURVE25519
--	tristate
-+	tristate "Curve25519 scalar multiplication library"
- 	depends on CRYPTO_ARCH_HAVE_LIB_CURVE25519 || !CRYPTO_ARCH_HAVE_LIB_CURVE25519
- 	select CRYPTO_LIB_CURVE25519_GENERIC if CRYPTO_ARCH_HAVE_LIB_CURVE25519=n
- 	help
-@@ -100,7 +100,7 @@ config CRYPTO_LIB_POLY1305_GENERIC
- 	  of CRYPTO_LIB_POLY1305.
-
- config CRYPTO_LIB_POLY1305
--	tristate
-+	tristate "Poly1305 library interface"
- 	depends on CRYPTO_ARCH_HAVE_LIB_POLY1305 || !CRYPTO_ARCH_HAVE_LIB_POLY1305
- 	select CRYPTO_LIB_POLY1305_GENERIC if CRYPTO_ARCH_HAVE_LIB_POLY1305=n
- 	help
-@@ -109,7 +109,7 @@ config CRYPTO_LIB_POLY1305
- 	  is available and enabled.
-
- config CRYPTO_LIB_CHACHA20POLY1305
--	tristate
-+	tristate "ChaCha20-Poly1305 AEAD support (8-byte nonce library version)"
- 	depends on CRYPTO_ARCH_HAVE_LIB_CHACHA || !CRYPTO_ARCH_HAVE_LIB_CHACHA
- 	depends on CRYPTO_ARCH_HAVE_LIB_POLY1305 || !CRYPTO_ARCH_HAVE_LIB_POLY1305
- 	select CRYPTO_LIB_CHACHA
--- 
-2.34.1
-
+Thanks,
+Maciej
