@@ -2,98 +2,62 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AC148E44D
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Jan 2022 07:40:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 706AB48E5FD
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Jan 2022 09:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234063AbiANGkd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 14 Jan 2022 01:40:33 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:59498 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232400AbiANGkd (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 14 Jan 2022 01:40:33 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1n8GGE-0006T6-M5; Fri, 14 Jan 2022 17:40:31 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Jan 2022 17:40:30 +1100
-Date:   Fri, 14 Jan 2022 17:40:30 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [v2 PATCH] crypto: testmgr - Move crypto_simd_disabled_for_test out
-Message-ID: <YeEa3qCB7b4QzBH9@gondor.apana.org.au>
-References: <Yd0jA4VOjysrdOu7@gondor.apana.org.au>
- <Yd36HsgI+ya6P7RF@gmail.com>
- <Yd4nmLgFr8XTxCo6@gondor.apana.org.au>
+        id S239878AbiANIW3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 14 Jan 2022 03:22:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239883AbiANIVS (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 14 Jan 2022 03:21:18 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273CAC0617A6;
+        Fri, 14 Jan 2022 00:21:12 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BB04861E2E;
+        Fri, 14 Jan 2022 08:21:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E35DFC36AEC;
+        Fri, 14 Jan 2022 08:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642148471;
+        bh=epCDida4a4Ou2Fod/Q+FP4fZKEQDmGyRp8ACSKP+uw8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dG6o01Y9ONAiRtJ+NuDHQNWJnacHL1Ah31z9hF5XnPLnSRuEkFt4A5/0krr8G5aZ1
+         1poED0aWds57+CvgVZX9IZ8frUZnHK+ne9vRG8MJJ7JTskcxeix8IZrCJ8YHlriON4
+         I2SIjWsU5e89sOUJgLX+nK6dnH8txev7Z7pL994E/zD/TjA2G4Nldno1SwwiSQY5k4
+         Y7Ur+8cC9vd0kNujBysvBBW+gN5Wg8j0D6jS302UXxDpHFZCWdZTqev8P1no1noqA+
+         BCbJ9YYSZ0/vEsXw+M9krHgS6fW2GD6y1EtrFR1FkGgNlblQIRi9dpIGMVS9RvKq8Z
+         omI83auNrwlOQ==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     keyrings@vger.kernel.org, Vitaly Chikunov <vt@altlinux.org>,
+        Denis Kenzior <denkenz@gmail.com>
+Subject: [PATCH 0/3] crypto: more rsa-pkcs1pad fixes
+Date:   Fri, 14 Jan 2022 00:19:36 -0800
+Message-Id: <20220114081939.218416-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yd4nmLgFr8XTxCo6@gondor.apana.org.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jan 12, 2022 at 11:58:00AM +1100, Herbert Xu wrote:
-> On Tue, Jan 11, 2022 at 01:43:58PM -0800, Eric Biggers wrote:
-> >
-> > Maybe CRYPTO_MANAGER_EXTRA_TESTS should select CRYPTO_SIMD?
-> 
-> You're right.  I was focusing only on the module dependencies
-> but neglected to change the Kconfig dependencies.
-> 
-> I'll fix this in the next version.
+This series fixes two more bugs in rsa-pkcs1pad.
 
----8<---
-As testmgr is part of cryptomgr which was designed to be unloadable
-as a module, it shouldn't export any symbols for other crypto
-modules to use as that would prevent it from being unloaded.  All
-its functionality is meant to be accessed through notifiers.
+Eric Biggers (3):
+  crypto: rsa-pkcs1pad - correctly get hash from source scatterlist
+  crypto: rsa-pkcs1pad - fix buffer overread in
+    pkcs1pad_verify_complete()
+  crypto: rsa-pkcs1pad - use clearer variable names
 
-The symbol crypto_simd_disabled_for_test was added to testmgr
-which caused it to be pinned as a module if its users were also
-loaded.  This patch moves it out of testmgr and into crypto/algapi.c
-so cryptomgr can again be unloaded and replaced on demand.
+ crypto/rsa-pkcs1pad.c | 33 ++++++++++++++++++---------------
+ 1 file changed, 18 insertions(+), 15 deletions(-)
 
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-diff --git a/crypto/algapi.c b/crypto/algapi.c
-index a366cb3e8aa1..9f15e11f5d73 100644
---- a/crypto/algapi.c
-+++ b/crypto/algapi.c
-@@ -6,6 +6,7 @@
-  */
- 
- #include <crypto/algapi.h>
-+#include <crypto/internal/simd.h>
- #include <linux/err.h>
- #include <linux/errno.h>
- #include <linux/fips.h>
-@@ -21,6 +22,11 @@
- 
- static LIST_HEAD(crypto_template_list);
- 
-+#ifdef CONFIG_CRYPTO_MANAGER_EXTRA_TESTS
-+DEFINE_PER_CPU(bool, crypto_simd_disabled_for_test);
-+EXPORT_PER_CPU_SYMBOL_GPL(crypto_simd_disabled_for_test);
-+#endif
-+
- static inline void crypto_check_module_sig(struct module *mod)
- {
- 	if (fips_enabled && mod && !module_sig_ok(mod))
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 5831d4bbc64f..3a5a3e5cb77b 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -55,9 +55,6 @@ MODULE_PARM_DESC(noextratests, "disable expensive crypto self-tests");
- static unsigned int fuzz_iterations = 100;
- module_param(fuzz_iterations, uint, 0644);
- MODULE_PARM_DESC(fuzz_iterations, "number of fuzz test iterations");
--
--DEFINE_PER_CPU(bool, crypto_simd_disabled_for_test);
--EXPORT_PER_CPU_SYMBOL_GPL(crypto_simd_disabled_for_test);
- #endif
- 
- #ifdef CONFIG_CRYPTO_MANAGER_DISABLE_TESTS
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.34.1
+
