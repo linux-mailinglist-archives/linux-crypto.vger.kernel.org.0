@@ -2,85 +2,101 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B8648ED2F
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Jan 2022 16:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5741E48ED57
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Jan 2022 16:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238587AbiANPgf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 14 Jan 2022 10:36:35 -0500
-Received: from mail-vk1-f178.google.com ([209.85.221.178]:47077 "EHLO
-        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbiANPgf (ORCPT
+        id S242177AbiANPrH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 14 Jan 2022 10:47:07 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:36710 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238763AbiANPrH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 14 Jan 2022 10:36:35 -0500
-Received: by mail-vk1-f178.google.com with SMTP id bj47so6010278vkb.13;
-        Fri, 14 Jan 2022 07:36:35 -0800 (PST)
+        Fri, 14 Jan 2022 10:47:07 -0500
+Received: by mail-ot1-f54.google.com with SMTP id s21-20020a05683004d500b0058f585672efso10501389otd.3;
+        Fri, 14 Jan 2022 07:47:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YJjdZDOE3o2kL7hMCs+KcBi0cfqKaf561XO1uO98LqA=;
-        b=jKv34m9Xik7cvyi1qWqtZFBtdMR88awmRcZkLEeA7XZVZba4y6gszFTE0s7E7Ab5Rq
-         5KbNZpjvdKNOxDg4xz9jgl7+OHQeR/PExvzxfv2nDvGrmNwPQrEIwHvkueMXgAWgPK4p
-         +xBfj9vHjMlB6DxV2djQmKxrjPKNY0LJoXOuf6lMbVz4K1CBIJAF1zUY4xMa2Y/jy0Zv
-         IQ1/WLMbUc/T96jbZeYyhO9Yery8eGN+P6av1B+bd+MeRxXboyU89eoHLd2wkokKC2xH
-         uhiy3uAmRmA//jXvOC9bhSWbnawimCdWsminunYrNO5F/AopKAzLAUbRrlA4GGmxtACY
-         cOIw==
-X-Gm-Message-State: AOAM531aYTh8dRH+GIFLosy6g05xKRC6fwSl3uzaz0ra1gAWe/qPt6GU
-        04MspgBmR/9UgUmktrhagk4g3OR+Zg6Xewrv
-X-Google-Smtp-Source: ABdhPJz9d1jGDGtXclbJT1JVstQJwp3ulw7+h2mXY52hq6cOelrhOpLJ+gL4rOiKf0M61CISDB/+Bg==
-X-Received: by 2002:ac5:c18f:: with SMTP id z15mr2784842vkb.24.1642174594644;
-        Fri, 14 Jan 2022 07:36:34 -0800 (PST)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id o12sm2172193uae.1.2022.01.14.07.36.34
+        bh=5dzA66i4ivAiYOjfo8oco9UtNpMipS0k8jsB20XDEr0=;
+        b=N+I3et3MOlnEZV8DM6er7cWyvhAel8u3zbYT4IdkjRbaYJ1wSy51YtefUMNptFLOF9
+         R6xIdZ4M9SlZ4vOLF3X/HdH49K7tpIjqZgyIwVKLdlJCiAe/4dNsIY4I29Kq+ngaFho2
+         zUHeARHYuMXf3du9MTcTBvvbEtSFP8NoGK0EmHvHDz4maAxgxXP8iAZGlQaBZt/9Ppd1
+         tJTCdhIeveNUM7W3Mfsl+yPKjEVLLTQ3YH7nAtG7YRdXmHOJ5pe4g/LzAxvNL7Xpxtec
+         iK8W2lbUY8SPfArE093Pny8QKnqEkBwl4mmWbWt4wEKhtBkSgwmYndMyj+lZDHpTU646
+         DfkQ==
+X-Gm-Message-State: AOAM533ohJCVk7mYO8P/MfJ/D6UtOExSyXgOQkXJH99w1zh82P6MW0NX
+        EQ7RiiDapyRHgDKlTKX0/fn1pMhaKkm3oxF5
+X-Google-Smtp-Source: ABdhPJzpq+bIHymNtfPPEI7X6nGEw7++j4Q0gG6AcAn3BffD6q8SLt066o/eRJwcRmhe0sqCKuwePQ==
+X-Received: by 2002:a9d:6c4f:: with SMTP id g15mr6987331otq.3.1642175226110;
+        Fri, 14 Jan 2022 07:47:06 -0800 (PST)
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com. [209.85.210.47])
+        by smtp.gmail.com with ESMTPSA id 17sm1311947oij.21.2022.01.14.07.47.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jan 2022 07:36:34 -0800 (PST)
-Received: by mail-ua1-f47.google.com with SMTP id p1so17529862uap.9;
-        Fri, 14 Jan 2022 07:36:34 -0800 (PST)
-X-Received: by 2002:a9f:3e01:: with SMTP id o1mr4495386uai.89.1642174593855;
- Fri, 14 Jan 2022 07:36:33 -0800 (PST)
+        Fri, 14 Jan 2022 07:47:05 -0800 (PST)
+Received: by mail-ot1-f47.google.com with SMTP id z25-20020a0568301db900b005946f536d85so1467309oti.9;
+        Fri, 14 Jan 2022 07:47:05 -0800 (PST)
+X-Received: by 2002:ab0:4d42:: with SMTP id k2mr2650964uag.78.1642174814894;
+ Fri, 14 Jan 2022 07:40:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20220112131204.800307-1-Jason@zx2c4.com> <20220112131204.800307-2-Jason@zx2c4.com>
- <87tue8ftrm.fsf@toke.dk> <CAADnVQJqoHy+EQ-G5fUtkPpeHaA6YnqsOjjhUY6UW0v7eKSTZw@mail.gmail.com>
- <CAHmME9ork6wh-T=sRfX6X0B4j-Vb36GVO0v=Yda0Hac1hiN_KA@mail.gmail.com>
- <CAADnVQLF_tmNmNk+H+jP1Ubmw-MBhG1FevFmtZY6yw5xk2314g@mail.gmail.com>
- <CAHmME9oq36JdV8ap9sPZ=CDfNyaQd6mXd21ztAaZiL7pJh8RCw@mail.gmail.com>
- <CAMj1kXE3JtNjgF3FZjbL-GOQG41yODup4+XdEFP063F=-AWg8A@mail.gmail.com> <CAHmME9oa8dAeRQfgj-U00gUtVOJ_CTGwtyBxUB4=8+XO_fFjNQ@mail.gmail.com>
-In-Reply-To: <CAHmME9oa8dAeRQfgj-U00gUtVOJ_CTGwtyBxUB4=8+XO_fFjNQ@mail.gmail.com>
+References: <20220114151727.2319915-1-conor.dooley@microchip.com> <20220114151727.2319915-4-conor.dooley@microchip.com>
+In-Reply-To: <20220114151727.2319915-4-conor.dooley@microchip.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 14 Jan 2022 16:36:22 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXDmwHaJuvNo8vkzudfhL0E3b=0b4mP_OqDCYFqm82J5Q@mail.gmail.com>
-Message-ID: <CAMuHMdXDmwHaJuvNo8vkzudfhL0E3b=0b4mP_OqDCYFqm82J5Q@mail.gmail.com>
-Subject: Re: [PATCH RFC v1 1/3] bpf: move from sha1 to blake2s in tag calculation
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
+Date:   Fri, 14 Jan 2022 16:40:03 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUXD8CHqoaygXzcC0YpsbRT_KAUni1hD4sMn=k=WD+DuQ@mail.gmail.com>
+Message-ID: <CAMuHMdUXD8CHqoaygXzcC0YpsbRT_KAUni1hD4sMn=k=WD+DuQ@mail.gmail.com>
+Subject: Re: [PATCH v3 03/15] mailbox: change mailbox-mpfs compatible string
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bin Meng <bin.meng@windriver.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lewis Hanly <lewis.hanly@microchip.com>,
+        daire.mcnamara@microchip.com, ivan.griffin@microchip.com,
+        Atish Patra <atishp@rivosinc.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Jason,
+Hi Conor,
 
-On Fri, Jan 14, 2022 at 4:20 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> I think the reason that Alexei doesn't think that the SHA-1 choice
-> really matters is because the result is being truncated to 64-bits, so
-> collisions are easy anyway, regardless of which hash function is
-> chosen (birthday bound and all). But from Geert's perspective, that
-> SHA-1 is still taking up precious bytes in m68k builds. And from my
-> perspective, it's poor form and clutters vmlinux, and plus, now I'm
-> curious about why this isn't using a more appropriately sized tag in
-> the first place.
+On Fri, Jan 14, 2022 at 4:16 PM <conor.dooley@microchip.com> wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
+>
+> The Polarfire SoC is currently using two different compatible string
+> prefixes. Fix this by changing "polarfire-soc-*" strings to "mpfs-*" in
+> its system controller in order to match the compatible string used in
+> the soc binding and device tree.
+>
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 
-Not just on m68k. Same on other architectures.
-Yes, people do make products with SoCs with 8 MiB of builtin SRAM,
-running Linux. They might stay away from BPF, though ;-)
+This is already upstream, commit f10b1fc0161cd99e ("mailbox: change
+mailbox-mpfs compatible string").
 
 Gr{oetje,eeting}s,
 
