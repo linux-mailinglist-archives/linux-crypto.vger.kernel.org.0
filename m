@@ -2,109 +2,92 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5741E48ED57
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Jan 2022 16:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE3748ED48
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Jan 2022 16:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242177AbiANPrH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 14 Jan 2022 10:47:07 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:36710 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238763AbiANPrH (ORCPT
+        id S229884AbiANPm7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 14 Jan 2022 10:42:59 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:57268 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242634AbiANPm6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 14 Jan 2022 10:47:07 -0500
-Received: by mail-ot1-f54.google.com with SMTP id s21-20020a05683004d500b0058f585672efso10501389otd.3;
-        Fri, 14 Jan 2022 07:47:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5dzA66i4ivAiYOjfo8oco9UtNpMipS0k8jsB20XDEr0=;
-        b=N+I3et3MOlnEZV8DM6er7cWyvhAel8u3zbYT4IdkjRbaYJ1wSy51YtefUMNptFLOF9
-         R6xIdZ4M9SlZ4vOLF3X/HdH49K7tpIjqZgyIwVKLdlJCiAe/4dNsIY4I29Kq+ngaFho2
-         zUHeARHYuMXf3du9MTcTBvvbEtSFP8NoGK0EmHvHDz4maAxgxXP8iAZGlQaBZt/9Ppd1
-         tJTCdhIeveNUM7W3Mfsl+yPKjEVLLTQ3YH7nAtG7YRdXmHOJ5pe4g/LzAxvNL7Xpxtec
-         iK8W2lbUY8SPfArE093Pny8QKnqEkBwl4mmWbWt4wEKhtBkSgwmYndMyj+lZDHpTU646
-         DfkQ==
-X-Gm-Message-State: AOAM533ohJCVk7mYO8P/MfJ/D6UtOExSyXgOQkXJH99w1zh82P6MW0NX
-        EQ7RiiDapyRHgDKlTKX0/fn1pMhaKkm3oxF5
-X-Google-Smtp-Source: ABdhPJzpq+bIHymNtfPPEI7X6nGEw7++j4Q0gG6AcAn3BffD6q8SLt066o/eRJwcRmhe0sqCKuwePQ==
-X-Received: by 2002:a9d:6c4f:: with SMTP id g15mr6987331otq.3.1642175226110;
-        Fri, 14 Jan 2022 07:47:06 -0800 (PST)
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com. [209.85.210.47])
-        by smtp.gmail.com with ESMTPSA id 17sm1311947oij.21.2022.01.14.07.47.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jan 2022 07:47:05 -0800 (PST)
-Received: by mail-ot1-f47.google.com with SMTP id z25-20020a0568301db900b005946f536d85so1467309oti.9;
-        Fri, 14 Jan 2022 07:47:05 -0800 (PST)
-X-Received: by 2002:ab0:4d42:: with SMTP id k2mr2650964uag.78.1642174814894;
- Fri, 14 Jan 2022 07:40:14 -0800 (PST)
+        Fri, 14 Jan 2022 10:42:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2124461F38;
+        Fri, 14 Jan 2022 15:42:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17B9FC36AEA;
+        Fri, 14 Jan 2022 15:42:57 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="J50NzVoQ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1642174976;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jHAjYaJLduk1oUVrq3t+bswqqI+Vo9Ud2UlUUNOhc3w=;
+        b=J50NzVoQ/cbnu7PvlAljPB2adxPxtTbcpV518xAwKtnnFVteirroyQHFH+QvrwXAmjdH6r
+        kcSh/aS4PEL2p/SQzdlILejpqte0HhIlABh9U3fcFBdV8kzZkpfMAXZ3rlH8MFDFUzuA1j
+        2qkerbMEh9m/2OaeYQxR6pbZBHXKuFM=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 92ac44a4 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Fri, 14 Jan 2022 15:42:55 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        geert@linux-m68k.org, herbert@gondor.apana.org.au
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH crypto v3 0/2] reduce code size from blake2s on m68k and other small platforms
+Date:   Fri, 14 Jan 2022 16:42:45 +0100
+Message-Id: <20220114154247.99773-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-References: <20220114151727.2319915-1-conor.dooley@microchip.com> <20220114151727.2319915-4-conor.dooley@microchip.com>
-In-Reply-To: <20220114151727.2319915-4-conor.dooley@microchip.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 14 Jan 2022 16:40:03 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUXD8CHqoaygXzcC0YpsbRT_KAUni1hD4sMn=k=WD+DuQ@mail.gmail.com>
-Message-ID: <CAMuHMdUXD8CHqoaygXzcC0YpsbRT_KAUni1hD4sMn=k=WD+DuQ@mail.gmail.com>
-Subject: Re: [PATCH v3 03/15] mailbox: change mailbox-mpfs compatible string
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bin Meng <bin.meng@windriver.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lewis Hanly <lewis.hanly@microchip.com>,
-        daire.mcnamara@microchip.com, ivan.griffin@microchip.com,
-        Atish Patra <atishp@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Conor,
+[ Resending this v3, because the previous one was so deeply nested
+  inside other patchset threads that b4 was unable to extract it without
+  getting terribly confused. And if b4 was confused, probably human
+  readers were too. This new cover letter is a new root thread. ]
 
-On Fri, Jan 14, 2022 at 4:16 PM <conor.dooley@microchip.com> wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
->
-> The Polarfire SoC is currently using two different compatible string
-> prefixes. Fix this by changing "polarfire-soc-*" strings to "mpfs-*" in
-> its system controller in order to match the compatible string used in
-> the soc binding and device tree.
->
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+Hi,
 
-This is already upstream, commit f10b1fc0161cd99e ("mailbox: change
-mailbox-mpfs compatible string").
+Geert emailed me this afternoon concerned about blake2s codesize on m68k
+and other small systems. We identified two effective ways of chopping
+down the size. One of them moves some wireguard-specific things into
+wireguard proper. The other one adds a slower codepath for small
+machines to blake2s. This worked, and was v1 of this patchset, but I
+wasn't so much of a fan. Then someone pointed out that the generic C
+SHA-1 implementation is still unrolled, which is a *lot* of extra code.
+Simply rerolling that saves about as much as v1 did. So, we instead do
+that in this patchset. SHA-1 is being phased out, and soon it won't
+be included at all (hopefully). And nothing performance-oriented has
+anything to do with it anyway.
 
-Gr{oetje,eeting}s,
+The result of these two patches mitigates Geert's feared code size
+increase for 5.17.
 
-                        Geert
+v3 improves on v2 by making the re-rolling of SHA-1 much simpler,
+resulting in even larger code size reduction and much better
+performance. The reason I'm sending yet a third version in such a short
+amount of time is because the trick here feels obvious and substantial
+enough that I'd hate for Geert to waste time measuring the impact of the
+previous commit.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks,
+Jason
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Jason A. Donenfeld (2):
+  lib/crypto: blake2s: move hmac construction into wireguard
+  lib/crypto: sha1: re-roll loops to reduce code size
+
+ drivers/net/wireguard/noise.c | 45 ++++++++++++++---
+ include/crypto/blake2s.h      |  3 --
+ lib/crypto/blake2s-selftest.c | 31 ------------
+ lib/crypto/blake2s.c          | 37 --------------
+ lib/sha1.c                    | 95 ++++++-----------------------------
+ 5 files changed, 53 insertions(+), 158 deletions(-)
+
+-- 
+2.34.1
+
