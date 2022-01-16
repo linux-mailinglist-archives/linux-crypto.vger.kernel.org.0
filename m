@@ -2,24 +2,24 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D22048F9ED
-	for <lists+linux-crypto@lfdr.de>; Sun, 16 Jan 2022 01:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F19448FB73
+	for <lists+linux-crypto@lfdr.de>; Sun, 16 Jan 2022 08:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233952AbiAPAIf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Sat, 15 Jan 2022 19:08:35 -0500
-Received: from ec2-13-115-114-132.ap-northeast-1.compute.amazonaws.com ([13.115.114.132]:49602
+        id S234527AbiAPHlb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Sun, 16 Jan 2022 02:41:31 -0500
+Received: from ec2-13-115-114-132.ap-northeast-1.compute.amazonaws.com ([13.115.114.132]:39370
         "EHLO mail.gunma-suigai-risk.jp" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231448AbiAPAIf (ORCPT
+        by vger.kernel.org with ESMTP id S230389AbiAPHlb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 15 Jan 2022 19:08:35 -0500
-Received: from Unknown (unknown [202.62.37.187])
-        by mail.gunma-suigai-risk.jp (Postfix) with ESMTPA id A9520209F946;
-        Sat, 15 Jan 2022 21:23:31 +0000 (UTC)
-Message-ID: <7277C192994D63A07C79308C8851298F@jytfy>
+        Sun, 16 Jan 2022 02:41:31 -0500
+Received: from Unknown (unknown [190.115.255.106])
+        by mail.gunma-suigai-risk.jp (Postfix) with ESMTPA id E784923A95C7;
+        Sun, 16 Jan 2022 02:21:03 +0000 (UTC)
+Message-ID: <383D8BD8D30729EA36337AC6C2655B4A@emoj>
 Reply-To: "Fredrik Elvebakk" <fcresswell9@gmail.com>
 From:   "Fredrik Elvebakk" <investment@dnb.no>
 Subject: Re:
-Date:   Sat, 15 Jan 2022 13:21:02 -0800
+Date:   Sat, 15 Jan 2022 18:20:58 -0800
 MIME-Version: 1.0
 Content-Type: text/plain;
         format=flowed;
