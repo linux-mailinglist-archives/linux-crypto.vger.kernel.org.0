@@ -2,43 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F19448FB73
-	for <lists+linux-crypto@lfdr.de>; Sun, 16 Jan 2022 08:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D606248FD48
+	for <lists+linux-crypto@lfdr.de>; Sun, 16 Jan 2022 14:48:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234527AbiAPHlb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Sun, 16 Jan 2022 02:41:31 -0500
-Received: from ec2-13-115-114-132.ap-northeast-1.compute.amazonaws.com ([13.115.114.132]:39370
-        "EHLO mail.gunma-suigai-risk.jp" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230389AbiAPHlb (ORCPT
+        id S230028AbiAPNsi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 16 Jan 2022 08:48:38 -0500
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:60628 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbiAPNsi (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 16 Jan 2022 02:41:31 -0500
-Received: from Unknown (unknown [190.115.255.106])
-        by mail.gunma-suigai-risk.jp (Postfix) with ESMTPA id E784923A95C7;
-        Sun, 16 Jan 2022 02:21:03 +0000 (UTC)
-Message-ID: <383D8BD8D30729EA36337AC6C2655B4A@emoj>
-Reply-To: "Fredrik Elvebakk" <fcresswell9@gmail.com>
-From:   "Fredrik Elvebakk" <investment@dnb.no>
-Subject: Re:
-Date:   Sat, 15 Jan 2022 18:20:58 -0800
+        Sun, 16 Jan 2022 08:48:38 -0500
+Date:   Sun, 16 Jan 2022 13:48:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail2; t=1642340915;
+        bh=bwU6pvleZwgGVAcnFlHXD7WXvOTQdAfgrmW5sho68S0=;
+        h=Date:To:From:Cc:Reply-To:Subject:Message-ID:From:To:Cc;
+        b=cMTM5ffj7jf+s+7f9hZyDASuf3zOTHYMUMbyQMjVkYYG4kJxGMylBnHudVkfdRIEI
+         PDrMAKaQuJvJBa85bUhy6emrGMLfAjjNsp87bhg34jK551j4L2zlwA61e6wVApOVSq
+         Ug9an9AU1ZA80jWV+39vBd0mEsl7CiQrm6yRl2v3gdBpO+J8HoCM9edM0QHpDQ8gV8
+         1QGrBvcnc2zk3Uc62lckZnKx9V4XS07OZalNe3i1b9rPDjIsXdG1vNW9JaOmomARxx
+         Q3qRkhognFC+ZddmI7lLGolB3eRWKiGGXSeKVrr9dIU6LFtwKwjHrS0vDtXdj2VJEi
+         td4OgnYbfriSg==
+To:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: Announce loop-AES-v3.7w file/swap crypto package
+Message-ID: <8LUdOFjFwCBEYnY82H3a1lkMp0bcXSZs4UNYBpQP9lNigJqB7tnq6OUQR5LB4Lk1eus6P2XpWAlzbTBGc1RJNpkwD7dIED07P5E1N87YL80=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        format=flowed;
-        charset="windows-1251";
-        reply-type=original
-Content-Transfer-Encoding: 8BIT
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Windows Live Mail 16.4.3528.331
-X-MimeOLE: Produced By Microsoft MimeOLE V16.4.3528.331
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello
+loop-AES changes since previous release:
+- Worked around kernel interface changes on 5.16 kernels.
+- Silenced switch-case fall through C-compiler warnings.
 
-Kindly get back to me for an important 
-discussion
+bzip2 compressed tarball is here:
 
-Best regards
-Fredrik Elvebakk
+    http://loop-aes.sourceforge.net/loop-AES/loop-AES-v3.7w.tar.bz2
+    md5sum b0d091656ee091d7a8f74ef2a54c0520
+
+    http://loop-aes.sourceforge.net/loop-AES/loop-AES-v3.7w.tar.bz2.sign
+
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
+
