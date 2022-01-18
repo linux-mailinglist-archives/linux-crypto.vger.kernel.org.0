@@ -2,77 +2,81 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11096492230
-	for <lists+linux-crypto@lfdr.de>; Tue, 18 Jan 2022 10:07:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CCF4923CA
+	for <lists+linux-crypto@lfdr.de>; Tue, 18 Jan 2022 11:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237280AbiARJH1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 18 Jan 2022 04:07:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345304AbiARJHS (ORCPT
+        id S237505AbiARKdS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 18 Jan 2022 05:33:18 -0500
+Received: from 9.mo548.mail-out.ovh.net ([46.105.48.137]:51101 "EHLO
+        9.mo548.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232429AbiARKdM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 18 Jan 2022 04:07:18 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B736FC061574
-        for <linux-crypto@vger.kernel.org>; Tue, 18 Jan 2022 01:07:17 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id m1so35061739ybo.5
-        for <linux-crypto@vger.kernel.org>; Tue, 18 Jan 2022 01:07:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=AIHedDQeQ2nfeFyhlIY6iBZ7Eo/kAlP72EhStgPHV1I=;
-        b=YzhnDX/mPEneGMzgPa3dCb9MUrLbMllH77Iq4UrJ9q2c1DDyzQpvjwvZ5j+2VaOBoX
-         RFLE4f72gZu1cxPicl8LXrv+hMJvU05bdWpeEO85lAHtEVPc9o5s+0zzZw3h22/0Zfn/
-         z9ErGxTqHRqVxcYCU6r0+PXKJhVkymNIYBAxQQgxjU7fp9G+5u6mHogz6BaAcQX2Na7C
-         24qyjhq2TeqEQHXiYPb4ps4lQqX1baNEdfTjMj8Diftcrq3ilKNF+o5MIAieQ/ABz0IK
-         HCBZTYZUqbU9/lN4A2Zqy9Rht7BFZr0TQuE/2QB+SlISTshTCiD7XG2IkWY8wRjQ3ZVQ
-         wnpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=AIHedDQeQ2nfeFyhlIY6iBZ7Eo/kAlP72EhStgPHV1I=;
-        b=bGlzivgZnSxQklgTi8t+RYYVhYPE9F27Bz4pXQK9MO8k+bG7Uk0f1xmyRNuX0naZa0
-         9yuJJUkER07uNRhNyhshEeSgFu5lUnU3BqZpaYWBpuOrJ6KYFS8ugiTI5aOZGlEPvQqB
-         mCyYuCllp3CTrbIphk19au1KNOY6vbirlre9prwnkHChlgxD32qD6Zsibaj5ij3fRxO+
-         EFIoEtBTYnP9Or8KKz/flNJ8ZtqWC195YJoo8JhnMUh1xXONZRlWbycsuIrSnuzkNEHd
-         HrZFZ51URi+g43A7UD6ZEKWfNCMW8sHqUGVmz4opW/F76w+NgfuG7Xaua5MMi856R0VT
-         /THg==
-X-Gm-Message-State: AOAM533Bzde1u/70EMjEcuu74Yxu9KuJb6FD15PbKyW5WHnXslb/+CQs
-        DtMuIW3dnYZlVICpc6t9eRMSzQdOeS1RsIzCLRQ=
-X-Google-Smtp-Source: ABdhPJyF+oV2TRIWyllHntkA4Yx2yE/7b0Ikh3gc5HxYSk3zamu0u4GmsZ5fzzhdzgSjkggpcij52/5j/gLzQF94eRM=
-X-Received: by 2002:a05:6902:1006:: with SMTP id w6mr18026417ybt.238.1642496836980;
- Tue, 18 Jan 2022 01:07:16 -0800 (PST)
+        Tue, 18 Jan 2022 05:33:12 -0500
+X-Greylist: delayed 550 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 Jan 2022 05:33:12 EST
+Received: from mxplan1.mail.ovh.net (unknown [10.109.143.188])
+        by mo548.mail-out.ovh.net (Postfix) with ESMTPS id 7A8FF202AE;
+        Tue, 18 Jan 2022 10:23:59 +0000 (UTC)
+Received: from bracey.fi (37.59.142.101) by DAG4EX1.mxp1.local (172.16.2.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Tue, 18 Jan
+ 2022 11:23:58 +0100
+Authentication-Results: garm.ovh; auth=pass (GARM-101G0042346288b-dc62-4f9e-ae6f-c68d33800242,
+                    D2C519BAB91300E05C7E54B340BF794D215B5709) smtp.auth=kevin@bracey.fi
+X-OVh-ClientIp: 82.181.225.135
+From:   Kevin Bracey <kevin@bracey.fi>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kevin Bracey <kevin@bracey.fi>
+Subject: [PATCH v3 0/4] arm64: accelerate crc32_be
+Date:   Tue, 18 Jan 2022 12:23:47 +0200
+Message-ID: <20220118102351.3356105-1-kevin@bracey.fi>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a05:7108:3655:0:0:0:0 with HTTP; Tue, 18 Jan 2022 01:07:16
- -0800 (PST)
-Reply-To: asil.ajwad@gmail.com
-From:   Asil Ajwad <graceyaogokamboule@gmail.com>
-Date:   Mon, 17 Jan 2022 21:07:16 -1200
-Message-ID: <CA+Yy_gBhEwRmOE8XtkDKWCw6voXv2DNRtj+9KZUeEP-BsnrQeQ@mail.gmail.com>
-Subject: Greetings,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [37.59.142.101]
+X-ClientProxiedBy: DAG8EX2.mxp1.local (172.16.2.16) To DAG4EX1.mxp1.local
+ (172.16.2.7)
+X-Ovh-Tracer-GUID: 320ff225-2336-4bd6-a476-b579844d0d1c
+X-Ovh-Tracer-Id: 10754314438517493865
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvvddrudefgddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfgtihesthekredtredttdenucfhrhhomhepmfgvvhhinhcuuehrrggtvgihuceokhgvvhhinhessghrrggtvgihrdhfiheqnecuggftrfgrthhtvghrnhepueektdeiuefhueevheejudetleehudffheekffdtteegheefueeggfetudejgedunecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpohhuthdphhgvlhhopehmgihplhgrnhdurdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepkhgvvhhinhessghrrggtvgihrdhfihdpnhgspghrtghpthhtohepuddprhgtphhtthhopehkvghvihhnsegsrhgrtggvhidrfhhi
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Originally sent only to the arm-linux list - now including linux-crypto.
+Ard suggested that Herbert take the series.
+
+This series completes the arm64 crc32 helper acceleration by adding crc32_be.
+
+There are plenty of users, for example OF.
+
+To compensate for the extra supporting cruft in lib/crc32.c, a couple of minor
+tidies.
+
+changes since v2:
+- no code change, but sent to Herbert+crypto with Catalin's ack for arm64
+
+changes since v1:
+- assembler style fixes from Ard's review
+
+Kevin Bracey (4):
+  lib/crc32.c: remove unneeded casts
+  lib/crc32.c: Make crc32_be weak for arch override
+  lib/crc32test.c: correct printed bytes count
+  arm64: accelerate crc32_be
+
+ arch/arm64/lib/crc32.S | 87 +++++++++++++++++++++++++++++++++++-------
+ lib/crc32.c            | 14 +++----
+ lib/crc32test.c        |  2 +-
+ 3 files changed, 80 insertions(+), 23 deletions(-)
+
 -- 
-Greetings,
+2.25.1
 
-I am Mr.Asil Ajwad, I work with United Bank of Africa, can you use
-an ATM Visa Card to withdraw money at, ATM Cash Machine in your
-country, if yes I want to transfer abounded fund the sum of $10.5million
-US-Dollars, to you from my country, this is part of the money that was
-abounded by our late old client a politician who unfortunately lost
-his life and was forced out of power Du to his greedy act, the bank will
-
-change the account details to your name, and apply for a Visa Card
-with your details, the Visa Card will be send to you, and you can be
-withdrawing money with it always, whatever any amount you withdraw
-daily, you will send 60% to me and you will take 40%, the Visa Card
-and the bank account will be on your name, I will be waiting for your
-response for more details, thanks to you a lot for giving me your time.
-
-regards,
-Mr.Asil Ajwad.
