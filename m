@@ -2,100 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61045491961
-	for <lists+linux-crypto@lfdr.de>; Tue, 18 Jan 2022 03:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FC6491F0C
+	for <lists+linux-crypto@lfdr.de>; Tue, 18 Jan 2022 06:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346141AbiARCx4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 17 Jan 2022 21:53:56 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:50504 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245273AbiARClp (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 17 Jan 2022 21:41:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9122CB81262;
-        Tue, 18 Jan 2022 02:41:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FBDEC36AF6;
-        Tue, 18 Jan 2022 02:41:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642473699;
-        bh=cp+p/t25XdZb2rsecPqcVi9U8jj0FyYDOxIhELjcxZY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rxTaj6+nq7IvXJZL2VCn6loHWT0Nu+TlqhjUYyo/J63TMt+TuoEkSZZSvmFOE1S+t
-         lryXZc8K2kCEOsFIMPMGQj2MTzZ+Mp3sRW98vBnHgRO7f1LCQ/J8qgjqQ/sC92GrJw
-         0i/+qfVNC8Wso1aY0FtlFV7dhuhPkUq8/gQdknbsaxoZhL8R9nJ/U9fL0Ju/QpPBth
-         0U7AGwGBFig0jJYs3kajK2vk8n6j5RV+5hHgOMlxuAca/v+MSwJCToEKTn/JGIoDIC
-         Ir/pHgrCroe1/f1NZYWafKw3anv49iViculInmBMDu7Iv6wcagMjwQmybJ0+9QUn8l
-         GyW/kfJ8Q9a+Q==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 030/116] crypto: jitter - consider 32 LSB for APT
-Date:   Mon, 17 Jan 2022 21:38:41 -0500
-Message-Id: <20220118024007.1950576-30-sashal@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220118024007.1950576-1-sashal@kernel.org>
-References: <20220118024007.1950576-1-sashal@kernel.org>
+        id S229510AbiARFbr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 18 Jan 2022 00:31:47 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:59636 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235752AbiARFbq (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 18 Jan 2022 00:31:46 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1n9h5d-0006et-EJ; Tue, 18 Jan 2022 16:31:30 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 18 Jan 2022 16:31:29 +1100
+Date:   Tue, 18 Jan 2022 16:31:29 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [PATCH] crypto: kdf - Select hmac in addition to sha256
+Message-ID: <YeZQsSkRsioTHE1z@gondor.apana.org.au>
+References: <20220118015649.GA12486@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220118015649.GA12486@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Stephan Müller <smueller@chronox.de>
+On Tue, Jan 18, 2022 at 09:56:49AM +0800, kernel test robot wrote:
+> 
+> [ 42.753085][ T1] WARNING: CPU: 1 PID: 1 at crypto/kdf_sp800108.c:138 crypto_kdf108_init (crypto/kdf_sp800108.c:136) 
+> [   42.754665][    T1] Modules linked in:
+> [   42.755366][    T1] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.16.0-rc1-00049-gd3b04a4398fe #2
+> [   42.756752][    T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+> [ 42.758199][ T1] RIP: 0010:crypto_kdf108_init (crypto/kdf_sp800108.c:136) 
+>
+> CONFIG_CRYPTO_HMAC=m
+> CONFIG_CRYPTO_KDF800108_CTR=y
 
-[ Upstream commit 552d03a223eda3df84526ab2c1f4d82e15eaee7a ]
+---8<---
+In addition to sha256 we must also enable hmac for the kdf self-test
+to work.
 
-The APT compares the current time stamp with a pre-set value. The
-current code only considered the 4 LSB only. Yet, after reviews by
-mathematicians of the user space Jitter RNG version >= 3.1.0, it was
-concluded that the APT can be calculated on the 32 LSB of the time
-delta. Thi change is applied to the kernel.
-
-This fixes a bug where an AMD EPYC fails this test as its RDTSC value
-contains zeros in the LSB. The most appropriate fix would have been to
-apply a GCD calculation and divide the time stamp by the GCD. Yet, this
-is a significant code change that will be considered for a future
-update. Note, tests showed that constantly the GCD always was 32 on
-these systems, i.e. the 5 LSB were always zero (thus failing the APT
-since it only considered the 4 LSB for its calculation).
-
-Signed-off-by: Stephan Mueller <smueller@chronox.de>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Fixes: 304b4acee2f0 ("crypto: kdf - select SHA-256 required...")
+Fixes: 026a733e6659 ("crypto: kdf - add SP800-108 counter key...")
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- crypto/jitterentropy.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/crypto/jitterentropy.c b/crypto/jitterentropy.c
-index 6e147c43fc186..37c4c308339e4 100644
---- a/crypto/jitterentropy.c
-+++ b/crypto/jitterentropy.c
-@@ -265,7 +265,6 @@ static int jent_stuck(struct rand_data *ec, __u64 current_delta)
- {
- 	__u64 delta2 = jent_delta(ec->last_delta, current_delta);
- 	__u64 delta3 = jent_delta(ec->last_delta2, delta2);
--	unsigned int delta_masked = current_delta & JENT_APT_WORD_MASK;
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 3ba2f532d79c..2b0456731603 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -1850,6 +1850,7 @@ config CRYPTO_JITTERENTROPY
  
- 	ec->last_delta = current_delta;
- 	ec->last_delta2 = delta2;
-@@ -274,7 +273,7 @@ static int jent_stuck(struct rand_data *ec, __u64 current_delta)
- 	 * Insert the result of the comparison of two back-to-back time
- 	 * deltas.
- 	 */
--	jent_apt_insert(ec, delta_masked);
-+	jent_apt_insert(ec, current_delta);
+ config CRYPTO_KDF800108_CTR
+ 	tristate
++	select CRYPTO_HMAC
+ 	select CRYPTO_SHA256
  
- 	if (!current_delta || !delta2 || !delta3) {
- 		/* RCT with a stuck bit */
+ config CRYPTO_USER_API
 -- 
-2.34.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
