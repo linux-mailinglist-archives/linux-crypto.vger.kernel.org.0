@@ -2,217 +2,161 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6684923C6
-	for <lists+linux-crypto@lfdr.de>; Tue, 18 Jan 2022 11:32:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 598A14923D9
+	for <lists+linux-crypto@lfdr.de>; Tue, 18 Jan 2022 11:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237454AbiARKcn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 18 Jan 2022 05:32:43 -0500
-Received: from smtpout4.mo529.mail-out.ovh.net ([217.182.185.173]:49797 "EHLO
-        smtpout4.mo529.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237443AbiARKcn (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 18 Jan 2022 05:32:43 -0500
-Received: from mxplan1.mail.ovh.net (unknown [10.109.156.48])
-        by mo529.mail-out.ovh.net (Postfix) with ESMTPS id 5BB21D86FA3B;
-        Tue, 18 Jan 2022 11:24:03 +0100 (CET)
-Received: from bracey.fi (37.59.142.101) by DAG4EX1.mxp1.local (172.16.2.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Tue, 18 Jan
- 2022 11:24:02 +0100
-Authentication-Results: garm.ovh; auth=pass (GARM-101G0049ec73664-5e08-45a5-a937-b75d1194a294,
-                    D2C519BAB91300E05C7E54B340BF794D215B5709) smtp.auth=kevin@bracey.fi
-X-OVh-ClientIp: 82.181.225.135
-From:   Kevin Bracey <kevin@bracey.fi>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kevin Bracey <kevin@bracey.fi>
-Subject: [PATCH v3 4/4] arm64: accelerate crc32_be
-Date:   Tue, 18 Jan 2022 12:23:51 +0200
-Message-ID: <20220118102351.3356105-5-kevin@bracey.fi>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220118102351.3356105-1-kevin@bracey.fi>
-References: <20220118102351.3356105-1-kevin@bracey.fi>
+        id S237567AbiARKfV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 18 Jan 2022 05:35:21 -0500
+Received: from mga05.intel.com ([192.55.52.43]:5874 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235295AbiARKfU (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Tue, 18 Jan 2022 05:35:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1642502120; x=1674038120;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6AJKbu49rpyuZwA711GK3TxhZxOQXUI1e5GQsGxfgAI=;
+  b=h+YLmIns7C+rJ05rlvy+pkIDjTpCWCe0bKEElsHmQCyqfL+XxdXgSB1d
+   2EvwQEvulVzz2HNrPFNzB2PvFyWIaX+vHevXobFpo6jjZJ75AB5e43rmt
+   yOedCGMAtsSZj52BfvgnHNaTFdYV97IgUIIxTslOHK63gMY6xWNFzSriJ
+   uaWQ/F8+ImgB08RbHyP5i/XFl8JTcFS8VLdfcrZHAlggdhdFep3ZLmQy3
+   4FHWmDs2zwk1GanmogzPWBCN8iiO+kU5l3Kp4DB65iEYKkeBWiAzgNgGs
+   vZv5o7HeRfQIxhsQleHEqQu67bpxdmywOYsGuvpp2xf6PLyTIAbr1NoS4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10230"; a="331135286"
+X-IronPort-AV: E=Sophos;i="5.88,297,1635231600"; 
+   d="scan'208";a="331135286"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2022 02:35:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,297,1635231600"; 
+   d="scan'208";a="615312836"
+Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314.ger.corp.intel.com) ([10.237.222.76])
+  by FMSMGA003.fm.intel.com with ESMTP; 18 Jan 2022 02:35:18 -0800
+From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Siming Wan <siming.wan@intel.com>,
+        Xin Zeng <xin.zeng@intel.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Marco Chiappero <marco.chiappero@intel.com>
+Subject: [PATCH] crypto: qat - fix access to PFVF interrupt registers for GEN4
+Date:   Tue, 18 Jan 2022 10:35:15 +0000
+Message-Id: <20220118103515.51374-1-giovanni.cabiddu@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [37.59.142.101]
-X-ClientProxiedBy: DAG8EX2.mxp1.local (172.16.2.16) To DAG4EX1.mxp1.local
- (172.16.2.7)
-X-Ovh-Tracer-GUID: 0cc6860a-4815-45c3-989e-d261c4950712
-X-Ovh-Tracer-Id: 10755440337342599273
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvvddrudefgddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgjfhgggfgtihesthekredtredttdenucfhrhhomhepmfgvvhhinhcuuehrrggtvgihuceokhgvvhhinhessghrrggtvgihrdhfiheqnecuggftrfgrthhtvghrnhepjedujeevgeekhfdvlefhvdetueeuudehteejgfeiheehgfeikeeludefleetjeeunecuffhomhgrihhnpegtrhgtfedvrdhssgenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphhouhhtpdhhvghlohepmhigphhlrghnuddrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehkvghvihhnsegsrhgrtggvhidrfhhipdhnsggprhgtphhtthhopedupdhrtghpthhtohepkhgvvhhinhessghrrggtvgihrdhfih
+Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-It makes no sense to leave crc32_be using the generic code while we
-only accelerate the little-endian ops.
+The logic that detects, enables and disables pfvf interrupts was
+expecting a single CSR per VF. Instead, the source and mask register are
+two registers with a bit per VF.
+Due to this, the driver is reading and setting reserved CSRs and not
+masking the correct source of interrupts.
 
-Even though the big-endian form doesn't fit as smoothly into the arm64,
-we can speed it up and avoid hitting the D cache.
+Fix the access to the source and mask register for QAT GEN4 devices by
+removing the outer loop in adf_gen4_get_vf2pf_sources(),
+adf_gen4_enable_vf2pf_interrupts() and
+adf_gen4_disable_vf2pf_interrupts() and changing the helper macros
+ADF_4XXX_VM2PF_SOU and ADF_4XXX_VM2PF_MSK.
 
-Tested on Cortex-A53. Without acceleration:
-
-    crc32: CRC_LE_BITS = 64, CRC_BE BITS = 64
-    crc32: self tests passed, processed 225944 bytes in 192240 nsec
-    crc32c: CRC_LE_BITS = 64
-    crc32c: self tests passed, processed 112972 bytes in 21360 nsec
-
-With acceleration:
-
-    crc32: CRC_LE_BITS = 64, CRC_BE BITS = 64
-    crc32: self tests passed, processed 225944 bytes in 53480 nsec
-    crc32c: CRC_LE_BITS = 64
-    crc32c: self tests passed, processed 112972 bytes in 21480 nsec
-
-Signed-off-by: Kevin Bracey <kevin@bracey.fi>
-Tested-by: Ard Biesheuvel <ardb@kernel.org>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Fixes: a9dc0d966605 ("crypto: qat - add PFVF support to the GEN4 host driver")
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Co-developed-by: Siming Wan <siming.wan@intel.com>
+Signed-off-by: Siming Wan <siming.wan@intel.com>
+Reviewed-by: Xin Zeng <xin.zeng@intel.com>
+Reviewed-by: Wojciech Ziemba <wojciech.ziemba@intel.com>
+Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
 ---
- arch/arm64/lib/crc32.S | 87 +++++++++++++++++++++++++++++++++++-------
- 1 file changed, 73 insertions(+), 14 deletions(-)
+ drivers/crypto/qat/qat_common/adf_gen4_pfvf.c | 42 ++++---------------
+ 1 file changed, 9 insertions(+), 33 deletions(-)
 
-diff --git a/arch/arm64/lib/crc32.S b/arch/arm64/lib/crc32.S
-index 0f9e10ecda23..8340dccff46f 100644
---- a/arch/arm64/lib/crc32.S
-+++ b/arch/arm64/lib/crc32.S
-@@ -11,7 +11,44 @@
+diff --git a/drivers/crypto/qat/qat_common/adf_gen4_pfvf.c b/drivers/crypto/qat/qat_common/adf_gen4_pfvf.c
+index 8efbedf63bc8..3b3ea849c5e5 100644
+--- a/drivers/crypto/qat/qat_common/adf_gen4_pfvf.c
++++ b/drivers/crypto/qat/qat_common/adf_gen4_pfvf.c
+@@ -9,15 +9,12 @@
+ #include "adf_pfvf_pf_proto.h"
+ #include "adf_pfvf_utils.h"
  
- 	.arch		armv8-a+crc
+-#define ADF_4XXX_MAX_NUM_VFS		16
+-
+ #define ADF_4XXX_PF2VM_OFFSET(i)	(0x40B010 + ((i) * 0x20))
+ #define ADF_4XXX_VM2PF_OFFSET(i)	(0x40B014 + ((i) * 0x20))
  
--	.macro		__crc32, c
-+	.macro		byteorder, reg, be
-+	.if		\be
-+CPU_LE( rev		\reg, \reg	)
-+	.else
-+CPU_BE( rev		\reg, \reg	)
-+	.endif
-+	.endm
-+
-+	.macro		byteorder16, reg, be
-+	.if		\be
-+CPU_LE( rev16		\reg, \reg	)
-+	.else
-+CPU_BE( rev16		\reg, \reg	)
-+	.endif
-+	.endm
-+
-+	.macro		bitorder, reg, be
-+	.if		\be
-+	rbit		\reg, \reg
-+	.endif
-+	.endm
-+
-+	.macro		bitorder16, reg, be
-+	.if		\be
-+	rbit		\reg, \reg
-+	lsr		\reg, \reg, #16
-+	.endif
-+	.endm
-+
-+	.macro		bitorder8, reg, be
-+	.if		\be
-+	rbit		\reg, \reg
-+	lsr		\reg, \reg, #24
-+	.endif
-+	.endm
-+
-+	.macro		__crc32, c, be=0
-+	bitorder	w0, \be
- 	cmp		x2, #16
- 	b.lt		8f			// less than 16 bytes
+ /* VF2PF interrupt source registers */
+-#define ADF_4XXX_VM2PF_SOU(i)		(0x41A180 + ((i) * 4))
+-#define ADF_4XXX_VM2PF_MSK(i)		(0x41A1C0 + ((i) * 4))
+-#define ADF_4XXX_VM2PF_INT_EN_MSK	BIT(0)
++#define ADF_4XXX_VM2PF_SOU		0x41A180
++#define ADF_4XXX_VM2PF_MSK		0x41A1C0
  
-@@ -24,10 +61,14 @@
- 	add		x8, x8, x1
- 	add		x1, x1, x7
- 	ldp		x5, x6, [x8]
--CPU_BE(	rev		x3, x3		)
--CPU_BE(	rev		x4, x4		)
--CPU_BE(	rev		x5, x5		)
--CPU_BE(	rev		x6, x6		)
-+	byteorder	x3, \be
-+	byteorder	x4, \be
-+	byteorder	x5, \be
-+	byteorder	x6, \be
-+	bitorder	x3, \be
-+	bitorder	x4, \be
-+	bitorder	x5, \be
-+	bitorder	x6, \be
+ #define ADF_PFVF_GEN4_MSGTYPE_SHIFT	2
+ #define ADF_PFVF_GEN4_MSGTYPE_MASK	0x3F
+@@ -41,51 +38,30 @@ static u32 adf_gen4_pf_get_vf2pf_offset(u32 i)
  
- 	tst		x7, #8
- 	crc32\c\()x	w8, w0, x3
-@@ -55,33 +96,43 @@ CPU_BE(	rev		x6, x6		)
- 32:	ldp		x3, x4, [x1], #32
- 	sub		x2, x2, #32
- 	ldp		x5, x6, [x1, #-16]
--CPU_BE(	rev		x3, x3		)
--CPU_BE(	rev		x4, x4		)
--CPU_BE(	rev		x5, x5		)
--CPU_BE(	rev		x6, x6		)
-+	byteorder	x3, \be
-+	byteorder	x4, \be
-+	byteorder	x5, \be
-+	byteorder	x6, \be
-+	bitorder	x3, \be
-+	bitorder	x4, \be
-+	bitorder	x5, \be
-+	bitorder	x6, \be
- 	crc32\c\()x	w0, w0, x3
- 	crc32\c\()x	w0, w0, x4
- 	crc32\c\()x	w0, w0, x5
- 	crc32\c\()x	w0, w0, x6
- 	cbnz		x2, 32b
--0:	ret
-+0:	bitorder	w0, \be
-+	ret
+ static u32 adf_gen4_get_vf2pf_sources(void __iomem *pmisc_addr)
+ {
+-	int i;
+ 	u32 sou, mask;
+-	int num_csrs = ADF_4XXX_MAX_NUM_VFS;
+-	u32 vf_mask = 0;
  
- 8:	tbz		x2, #3, 4f
- 	ldr		x3, [x1], #8
--CPU_BE(	rev		x3, x3		)
-+	byteorder	x3, \be
-+	bitorder	x3, \be
- 	crc32\c\()x	w0, w0, x3
- 4:	tbz		x2, #2, 2f
- 	ldr		w3, [x1], #4
--CPU_BE(	rev		w3, w3		)
-+	byteorder	w3, \be
-+	bitorder	w3, \be
- 	crc32\c\()w	w0, w0, w3
- 2:	tbz		x2, #1, 1f
- 	ldrh		w3, [x1], #2
--CPU_BE(	rev16		w3, w3		)
-+	byteorder16	w3, \be
-+	bitorder16	w3, \be
- 	crc32\c\()h	w0, w0, w3
- 1:	tbz		x2, #0, 0f
- 	ldrb		w3, [x1]
-+	bitorder8	w3, \be
- 	crc32\c\()b	w0, w0, w3
--0:	ret
-+0:	bitorder	w0, \be
-+	ret
- 	.endm
+-	for (i = 0; i < num_csrs; i++) {
+-		sou = ADF_CSR_RD(pmisc_addr, ADF_4XXX_VM2PF_SOU(i));
+-		mask = ADF_CSR_RD(pmisc_addr, ADF_4XXX_VM2PF_MSK(i));
+-		sou &= ~mask;
+-		vf_mask |= sou << i;
+-	}
++	sou = ADF_CSR_RD(pmisc_addr, ADF_4XXX_VM2PF_SOU);
++	mask = ADF_CSR_RD(pmisc_addr, ADF_4XXX_VM2PF_MSK);
  
- 	.align		5
-@@ -99,3 +150,11 @@ alternative_if_not ARM64_HAS_CRC32
- alternative_else_nop_endif
- 	__crc32		c
- SYM_FUNC_END(__crc32c_le)
-+
-+	.align		5
-+SYM_FUNC_START(crc32_be)
-+alternative_if_not ARM64_HAS_CRC32
-+	b		crc32_be_base
-+alternative_else_nop_endif
-+	__crc32		be=1
-+SYM_FUNC_END(crc32_be)
+-	return vf_mask;
++	return sou &= ~mask;
+ }
+ 
+ static void adf_gen4_enable_vf2pf_interrupts(void __iomem *pmisc_addr,
+ 					     u32 vf_mask)
+ {
+-	int num_csrs = ADF_4XXX_MAX_NUM_VFS;
+-	unsigned long mask = vf_mask;
+ 	unsigned int val;
+-	int i;
+-
+-	for_each_set_bit(i, &mask, num_csrs) {
+-		unsigned int offset = ADF_4XXX_VM2PF_MSK(i);
+ 
+-		val = ADF_CSR_RD(pmisc_addr, offset) & ~ADF_4XXX_VM2PF_INT_EN_MSK;
+-		ADF_CSR_WR(pmisc_addr, offset, val);
+-	}
++	val = ADF_CSR_RD(pmisc_addr, ADF_4XXX_VM2PF_MSK) & ~vf_mask;
++	ADF_CSR_WR(pmisc_addr, ADF_4XXX_VM2PF_MSK, val);
+ }
+ 
+ static void adf_gen4_disable_vf2pf_interrupts(void __iomem *pmisc_addr,
+ 					      u32 vf_mask)
+ {
+-	int num_csrs = ADF_4XXX_MAX_NUM_VFS;
+-	unsigned long mask = vf_mask;
+ 	unsigned int val;
+-	int i;
+-
+-	for_each_set_bit(i, &mask, num_csrs) {
+-		unsigned int offset = ADF_4XXX_VM2PF_MSK(i);
+ 
+-		val = ADF_CSR_RD(pmisc_addr, offset) | ADF_4XXX_VM2PF_INT_EN_MSK;
+-		ADF_CSR_WR(pmisc_addr, offset, val);
+-	}
++	val = ADF_CSR_RD(pmisc_addr, ADF_4XXX_VM2PF_MSK) | vf_mask;
++	ADF_CSR_WR(pmisc_addr, ADF_4XXX_VM2PF_MSK, val);
+ }
+ 
+ static int adf_gen4_pfvf_send(struct adf_accel_dev *accel_dev,
 -- 
-2.25.1
+2.34.1
 
