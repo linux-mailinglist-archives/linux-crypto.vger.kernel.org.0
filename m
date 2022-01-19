@@ -2,163 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1B14931A8
-	for <lists+linux-crypto@lfdr.de>; Wed, 19 Jan 2022 01:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC894931C7
+	for <lists+linux-crypto@lfdr.de>; Wed, 19 Jan 2022 01:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350331AbiASAO7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 18 Jan 2022 19:14:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346916AbiASAO6 (ORCPT
+        id S1350417AbiASAW0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 18 Jan 2022 19:22:26 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:60896 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244782AbiASAWZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 18 Jan 2022 19:14:58 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6027C061574;
-        Tue, 18 Jan 2022 16:14:57 -0800 (PST)
+        Tue, 18 Jan 2022 19:22:25 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 74DAE6149D;
-        Wed, 19 Jan 2022 00:14:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA452C340E0;
-        Wed, 19 Jan 2022 00:14:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0619D614BB;
+        Wed, 19 Jan 2022 00:22:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32395C340E0;
+        Wed, 19 Jan 2022 00:22:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642551296;
-        bh=QtK9vZtfEtGk5fagKyEwFJSB/y/naDXkPKnDDSOiCPo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j2ZPqEz1n4HUm2aAfyLvThBNUnF8JoL0A18xK2EoX2tEFXbL3bgkCqHMi8FZAEg0d
-         sCYQsVlQNc0bl7OsDACdDuV4hxjX724OZogqTf7oIMK+MMgxtrfSZWEnz88vWJD3vm
-         eZTJ+K4l4KetygupUjVm4JM4z/Swv9y3PZD4ylgyPtm1MgZG1JOxn+RSzpiQQrAZtc
-         ngFLCdhuKQA6K9tsvrg+fUxFxHt8mUtINumzCO9HIhJzVRuiQv6A+79SGrou0uhzFy
-         D6Nh9P63lPzebUADuTAxZIzlDSz7PGQfkofoXRUUENvcogQnRuo5eqfEwvYReruQG4
-         tONbr/Mw/9MRg==
+        s=k20201202; t=1642551744;
+        bh=b429HbqqH8lUXICzovtu5109bnCHzy+254BIOm8+Gz0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aXCOo7/IhVJnUEXuLzfd9NklLIMxWxcNE77iGSprLJGG3T31wMa4NekDkA17SDp7T
+         tcD0AeSA/OPu+DvIbFFYc3vL7KCQV96iedLiOMC8xSEelasSW1SZdZpkgniloijiCD
+         rsU0VhazHGqvGd3xCtNX7hqbjm9ywy7yAN+eIXD0DVqFn3UV32ixEXwAdO+gqITgVu
+         TAEVK2rlnvuktSDJIUFqVcY6t9a80dQmjM6XM7FDneWMqq37XkxhE7YQQU+rsMcKrh
+         X889hA2mIBa1nkVXDQmEoxHXVFTupITSRYSRYWX2ZK8ivS+95u8VfaRqyjO7wp6iwU
+         Hl6G8XdIkVKvw==
+Date:   Tue, 18 Jan 2022 16:22:22 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     keyrings@vger.kernel.org, Vitaly Chikunov <vt@altlinux.org>,
-        Denis Kenzior <denkenz@gmail.com>
-Subject: [PATCH v2 5/5] crypto: rsa-pkcs1pad - use clearer variable names
-Date:   Tue, 18 Jan 2022 16:13:06 -0800
-Message-Id: <20220119001306.85355-6-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220119001306.85355-1-ebiggers@kernel.org>
-References: <20220119001306.85355-1-ebiggers@kernel.org>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     keyrings@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        linux-crypto@vger.kernel.org,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Denis Kenzior <denkenz@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] KEYS: fix length validation in keyctl_pkey_params_get_2()
+Message-ID: <YedZviVNB2X7yeTX@sol.localdomain>
+References: <20220113200454.72609-1-ebiggers@kernel.org>
+ <YeMWLyceg4xcwShF@iki.fi>
+ <YeMmPs+gf+q7XUv4@sol.localdomain>
+ <YeM7+Nyi2p7Yv7+Q@iki.fi>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YeM7+Nyi2p7Yv7+Q@iki.fi>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Sat, Jan 15, 2022 at 11:26:16PM +0200, Jarkko Sakkinen wrote:
+> On Sat, Jan 15, 2022 at 11:53:34AM -0800, Eric Biggers wrote:
+> > On Sat, Jan 15, 2022 at 08:45:03PM +0200, Jarkko Sakkinen wrote:
+> > > On Thu, Jan 13, 2022 at 12:04:54PM -0800, Eric Biggers wrote:
+> > > > From: Eric Biggers <ebiggers@google.com>
+> > > > 
+> > > > In many cases, keyctl_pkey_params_get_2() is validating the user buffer
+> > > > lengths against the wrong algorithm properties.  Fix it to check against
+> > > > the correct properties.
+> > > > 
+> > > > Probably this wasn't noticed before because for all asymmetric keys of
+> > > > the "public_key" subtype, max_data_size == max_sig_size == max_enc_size
+> > > > == max_dec_size.  However, this isn't necessarily true for the
+> > > > "asym_tpm" subtype (it should be, but it's not strictly validated).  Of
+> > > > course, future key types could have different values as well.
+> > > 
+> > > With a quick look, asym_tpm is TPM 1.x only, which only has 2048-bit RSA
+> > > keys.
+> > 
+> > The code allows other lengths, as well as the case where the "RSA key size"
+> > doesn't match the "public key size".  Probably both are bugs and they should
+> > both be 256 bytes (2048 bits) only.  Anyway, that would be a separate fix.
+> > 
+> > - Eric
+> 
+> I'm fine with the current commit message. E.g. I have no idea at this
+> point whether there should be in future separate asym_tpm2 or all bundled
+> to asym_tpm.
+> 
+> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+> 
 
-The new convention for akcipher_alg::verify makes it unclear which
-values are the lengths of the signature and digest.  Add local variables
-to make it clearer what is going on.
+Okay, great.  Just to be clear, I'm expecting either you or David
+(maintainer:KEYS/KEYRINGS) to apply this patch.  Acked-by is usually given by a
+maintainer when someone else applies a patch.
 
-Also rename the digest_size variable in pkcs1pad_sign(), as it is
-actually the digest *info* size, not the digest size which is different.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- crypto/rsa-pkcs1pad.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
-
-diff --git a/crypto/rsa-pkcs1pad.c b/crypto/rsa-pkcs1pad.c
-index 9d804831c8b3f..3285e3af43e14 100644
---- a/crypto/rsa-pkcs1pad.c
-+++ b/crypto/rsa-pkcs1pad.c
-@@ -385,15 +385,15 @@ static int pkcs1pad_sign(struct akcipher_request *req)
- 	struct pkcs1pad_inst_ctx *ictx = akcipher_instance_ctx(inst);
- 	const struct rsa_asn1_template *digest_info = ictx->digest_info;
- 	int err;
--	unsigned int ps_end, digest_size = 0;
-+	unsigned int ps_end, digest_info_size = 0;
- 
- 	if (!ctx->key_size)
- 		return -EINVAL;
- 
- 	if (digest_info)
--		digest_size = digest_info->size;
-+		digest_info_size = digest_info->size;
- 
--	if (req->src_len + digest_size > ctx->key_size - 11)
-+	if (req->src_len + digest_info_size > ctx->key_size - 11)
- 		return -EOVERFLOW;
- 
- 	if (req->dst_len < ctx->key_size) {
-@@ -406,7 +406,7 @@ static int pkcs1pad_sign(struct akcipher_request *req)
- 	if (!req_ctx->in_buf)
- 		return -ENOMEM;
- 
--	ps_end = ctx->key_size - digest_size - req->src_len - 2;
-+	ps_end = ctx->key_size - digest_info_size - req->src_len - 2;
- 	req_ctx->in_buf[0] = 0x01;
- 	memset(req_ctx->in_buf + 1, 0xff, ps_end - 1);
- 	req_ctx->in_buf[ps_end] = 0x00;
-@@ -441,6 +441,8 @@ static int pkcs1pad_verify_complete(struct akcipher_request *req, int err)
- 	struct akcipher_instance *inst = akcipher_alg_instance(tfm);
- 	struct pkcs1pad_inst_ctx *ictx = akcipher_instance_ctx(inst);
- 	const struct rsa_asn1_template *digest_info = ictx->digest_info;
-+	const unsigned int sig_size = req->src_len;
-+	const unsigned int digest_size = req->dst_len;
- 	unsigned int dst_len;
- 	unsigned int pos;
- 	u8 *out_buf;
-@@ -487,20 +489,19 @@ static int pkcs1pad_verify_complete(struct akcipher_request *req, int err)
- 
- 	err = 0;
- 
--	if (req->dst_len != dst_len - pos) {
-+	if (digest_size != dst_len - pos) {
- 		err = -EKEYREJECTED;
- 		req->dst_len = dst_len - pos;
- 		goto done;
- 	}
- 	/* Extract appended digest. */
- 	sg_pcopy_to_buffer(req->src,
--			   sg_nents_for_len(req->src,
--					    req->src_len + req->dst_len),
-+			   sg_nents_for_len(req->src, sig_size + digest_size),
- 			   req_ctx->out_buf + ctx->key_size,
--			   req->dst_len, req->src_len);
-+			   digest_size, sig_size);
- 	/* Do the actual verification step. */
- 	if (memcmp(req_ctx->out_buf + ctx->key_size, out_buf + pos,
--		   req->dst_len) != 0)
-+		   digest_size) != 0)
- 		err = -EKEYREJECTED;
- done:
- 	kfree_sensitive(req_ctx->out_buf);
-@@ -536,14 +537,15 @@ static int pkcs1pad_verify(struct akcipher_request *req)
- 	struct crypto_akcipher *tfm = crypto_akcipher_reqtfm(req);
- 	struct pkcs1pad_ctx *ctx = akcipher_tfm_ctx(tfm);
- 	struct pkcs1pad_request *req_ctx = akcipher_request_ctx(req);
-+	const unsigned int sig_size = req->src_len;
-+	const unsigned int digest_size = req->dst_len;
- 	int err;
- 
--	if (WARN_ON(req->dst) ||
--	    WARN_ON(!req->dst_len) ||
--	    !ctx->key_size || req->src_len != ctx->key_size)
-+	if (WARN_ON(req->dst) || WARN_ON(!digest_size) ||
-+	    !ctx->key_size || sig_size != ctx->key_size)
- 		return -EINVAL;
- 
--	req_ctx->out_buf = kmalloc(ctx->key_size + req->dst_len, GFP_KERNEL);
-+	req_ctx->out_buf = kmalloc(ctx->key_size + digest_size, GFP_KERNEL);
- 	if (!req_ctx->out_buf)
- 		return -ENOMEM;
- 
-@@ -556,8 +558,7 @@ static int pkcs1pad_verify(struct akcipher_request *req)
- 
- 	/* Reuse input buffer, output to a new buffer */
- 	akcipher_request_set_crypt(&req_ctx->child_req, req->src,
--				   req_ctx->out_sg, req->src_len,
--				   ctx->key_size);
-+				   req_ctx->out_sg, sig_size, ctx->key_size);
- 
- 	err = crypto_akcipher_encrypt(&req_ctx->child_req);
- 	if (err != -EINPROGRESS && err != -EBUSY)
--- 
-2.34.1
-
+- Eric
