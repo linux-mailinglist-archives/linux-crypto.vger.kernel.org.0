@@ -2,118 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02528493631
-	for <lists+linux-crypto@lfdr.de>; Wed, 19 Jan 2022 09:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B11304936C2
+	for <lists+linux-crypto@lfdr.de>; Wed, 19 Jan 2022 10:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350246AbiASIYw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 19 Jan 2022 03:24:52 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:40938 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1348529AbiASIYw (ORCPT
+        id S1352767AbiASJAj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 19 Jan 2022 04:00:39 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:59532 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237437AbiASJAj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 19 Jan 2022 03:24:52 -0500
-X-UUID: 97f9c6ab74ca4abdbe273660cd85ffeb-20220119
-X-UUID: 97f9c6ab74ca4abdbe273660cd85ffeb-20220119
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 645517797; Wed, 19 Jan 2022 16:24:48 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 19 Jan 2022 16:24:47 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 19 Jan 2022 16:24:47 +0800
-From:   <miles.chen@mediatek.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Wed, 19 Jan 2022 04:00:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F2793B81910;
+        Wed, 19 Jan 2022 09:00:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62C44C340E6;
+        Wed, 19 Jan 2022 09:00:36 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="c3dQq4AT"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1642582833;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2dOFJ+UpcJtVObG5xI+XoGYifJptafHjJhs8HGfwX1w=;
+        b=c3dQq4ATbm3F/187EqTQn/DEc2+TVz5Z6Leei8F10Yf3ixE2Uu6PJW8ci1EnHZrfZM0tzK
+        HOkeqMqMuOacinhQ2L5LbbQObXWehm5LhxLXbvyOgx2P8gpomIxL5mz6xFs3X39Twpe18H
+        6UV6m97d9dMYHbb/v+7tKMp5de21ePo=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 421036da (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Wed, 19 Jan 2022 09:00:32 +0000 (UTC)
+Received: by mail-yb1-f171.google.com with SMTP id h14so5248579ybe.12;
+        Wed, 19 Jan 2022 01:00:32 -0800 (PST)
+X-Gm-Message-State: AOAM530BhqfR3QltI3Z7G0ouie/zAHliCS+NY/St1793O9Xz0eMhzuTM
+        GtHe7NGb1D1BfdzgEVAsDpWx6R8yivZkteqdB/M=
+X-Google-Smtp-Source: ABdhPJx4RyuigxoTOZs8Or8CkU4hkibFalbgQMbYzSXkFlEEIcgX6zw0oBRh/W5vLkIRmue8eoXzbhHlni3UQuAdKpE=
+X-Received: by 2002:a25:e7c7:: with SMTP id e190mr12418681ybh.457.1642582830614;
+ Wed, 19 Jan 2022 01:00:30 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a05:7110:209:b0:11c:1b85:d007 with HTTP; Wed, 19 Jan 2022
+ 01:00:30 -0800 (PST)
+In-Reply-To: <20220119082447.1675-1-miles.chen@mediatek.com>
+References: <20220119082447.1675-1-miles.chen@mediatek.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Wed, 19 Jan 2022 10:00:30 +0100
+X-Gmail-Original-Message-ID: <CAHmME9pv4WWATjdqZgwrtHDmq3sX4ABfB9PoNT9Z4tSEduR2Lw@mail.gmail.com>
+Message-ID: <CAHmME9pv4WWATjdqZgwrtHDmq3sX4ABfB9PoNT9Z4tSEduR2Lw@mail.gmail.com>
+Subject: Re: [PATCH] lib/crypto: blake2s: fix a CFI failure
+To:     miles.chen@mediatek.com
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-CC:     Miles Chen <miles.chen@mediatek.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH] lib/crypto: blake2s: fix a CFI failure
-Date:   Wed, 19 Jan 2022 16:24:46 +0800
-Message-ID: <20220119082447.1675-1-miles.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Miles Chen <miles.chen@mediatek.com>
+Hi Miles,
 
-With CONFIG_CFI_CLANG=y, we observe a CFI failure of
-blake2s_compress_generic.
+Thanks for the patch. Could you let me know which architecture and
+compiler this was broken on? If I had to guess, I'd wager arm32, and
+you hit this by enabling optimized blake2s?
 
-Reverting commit 6048fdcc5f26 ("lib/crypto: blake2s: include as built-in")
-is a solution for this problem. So I looked into the patch
-and I think it is caused by the weak symbols use by blake2s_compress().
+If so, I'm not sure the problem is with weak symbols. Why should CFI
+break weak symbols? Rather, perhaps the issue is that the function is
+defined in blake2s-core.S? Are there some CFI macros we need for that
+definition?
 
-To fix it, remove the weak symbol and use CRYPTO_ARCH_HAVE_LIB_BLAKE2S
-to select blake2s_compress_arch/blake2s_compress_generic.
-
-log:
-[    0.000000][    T0] Kernel panic - not syncing: CFI failure (target: blake2s_compress_generic+0x0/0x1444)
-[    0.000000][    T0] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.16.0-mainline-06981-g076c855b846e #1
-[    0.000000][    T0] Hardware name: MT6873 (DT)
-[    0.000000][    T0] Call trace:
-[    0.000000][    T0]  dump_backtrace+0xfc/0x1dc
-[    0.000000][    T0]  dump_stack_lvl+0xa8/0x11c
-[    0.000000][    T0]  panic+0x194/0x464
-[    0.000000][    T0]  __cfi_check_fail+0x54/0x58
-[    0.000000][    T0]  __cfi_slowpath_diag+0x354/0x4b0
-[    0.000000][    T0]  blake2s_update+0x14c/0x178
-[    0.000000][    T0]  _extract_entropy+0xf4/0x29c
-[    0.000000][    T0]  crng_initialize_primary+0x24/0x94
-[    0.000000][    T0]  rand_initialize+0x2c/0x6c
-[    0.000000][    T0]  start_kernel+0x2f8/0x65c
-[    0.000000][    T0]  __primary_switched+0xc4/0x7be4
-[    0.000000][    T0] Rebooting in 5 seconds..
-
-Fixes: 6048fdcc5f26 ("lib/crypto: blake2s: include as built-in")
-Signed-off-by: Miles Chen <miles.chen@mediatek.com>
----
- lib/crypto/blake2s-generic.c | 3 +--
- lib/crypto/blake2s.c         | 6 ++++++
- 2 files changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/lib/crypto/blake2s-generic.c b/lib/crypto/blake2s-generic.c
-index 75ccb3e633e6..22fa3ea1689e 100644
---- a/lib/crypto/blake2s-generic.c
-+++ b/lib/crypto/blake2s-generic.c
-@@ -38,8 +38,7 @@ static inline void blake2s_increment_counter(struct blake2s_state *state,
- }
- 
- void blake2s_compress(struct blake2s_state *state, const u8 *block,
--		      size_t nblocks, const u32 inc)
--		      __weak __alias(blake2s_compress_generic);
-+		      size_t nblocks, const u32 inc);
- 
- void blake2s_compress_generic(struct blake2s_state *state, const u8 *block,
- 			      size_t nblocks, const u32 inc)
-diff --git a/lib/crypto/blake2s.c b/lib/crypto/blake2s.c
-index 93f2ae051370..4055aa593ec4 100644
---- a/lib/crypto/blake2s.c
-+++ b/lib/crypto/blake2s.c
-@@ -16,6 +16,12 @@
- #include <linux/init.h>
- #include <linux/bug.h>
- 
-+#if IS_ENABLED(CONFIG_CRYPTO_ARCH_HAVE_LIB_BLAKE2S)
-+#  define blake2s_compress blake2s_compress_arch
-+#else
-+#  define blake2s_compress blake2s_compress_generic
-+#endif
-+
- void blake2s_update(struct blake2s_state *state, const u8 *in, size_t inlen)
- {
- 	__blake2s_update(state, in, inlen, blake2s_compress);
--- 
-2.18.0
-
+Jason
