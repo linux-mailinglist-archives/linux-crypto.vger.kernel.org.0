@@ -2,71 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9927496B70
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jan 2022 10:35:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB894496D0E
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jan 2022 18:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbiAVJfy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 22 Jan 2022 04:35:54 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:17360 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbiAVJfx (ORCPT
+        id S234586AbiAVRW6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Sat, 22 Jan 2022 12:22:58 -0500
+Received: from 103.86.160.220.broad.fz.fj.dynamic.163data.com.cn ([220.160.86.103]:37580
+        "EHLO fjxxll.cn" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232018AbiAVRW6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 22 Jan 2022 04:35:53 -0500
-Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JgrgH22kmz9rxh;
-        Sat, 22 Jan 2022 17:34:35 +0800 (CST)
-Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
- dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 22 Jan 2022 17:35:51 +0800
-Received: from huawei.com (10.67.165.24) by dggpeml100012.china.huawei.com
- (7.185.36.121) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Sat, 22 Jan
- 2022 17:35:51 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH v2] crypto: hisilicon/qm - cleanup warning in qm_vf_read_qos
-Date:   Sat, 22 Jan 2022 17:30:42 +0800
-Message-ID: <20220122093042.40131-1-yekai13@huawei.com>
-X-Mailer: git-send-email 2.33.0
+        Sat, 22 Jan 2022 12:22:58 -0500
+X-Greylist: delayed 89169 seconds by postgrey-1.27 at vger.kernel.org; Sat, 22 Jan 2022 12:22:55 EST
+Received: from Unknown (unknown [179.60.243.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by fjxxll.cn (Postfix) with ESMTPSA id 1D1F850D0E9A;
+        Fri, 21 Jan 2022 09:28:56 +0800 (CST)
+Message-ID: <1B1EA8FBF0240AB96560299591CB7AFD@wbavklb>
+Reply-To: "Fredrik Elvebakk" <fcresswell9@gmail.com>
+From:   "Fredrik Elvebakk" <investment@dnb.no>
+Subject: Re:
+Date:   Thu, 20 Jan 2022 17:27:18 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml100012.china.huawei.com (7.185.36.121)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain;
+        format=flowed;
+        charset="windows-1251";
+        reply-type=original
+Content-Transfer-Encoding: 8BIT
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Windows Live Mail 14.0.8117.416
+X-MimeOLE: Produced By Microsoft MimeOLE V14.0.8117.416
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The kernel test rebot report this warning: Uninitialized variable: ret.
-The code flow may return value of ret directly. This value is an
-uninitialized variable, here is fix it.
+Hello,
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
-changes v1->v2:
-	modfiy the comments.
+Am Fredrik Elvebakk an Investment Manager from Norway. I wish to solicit 
+your interest in an investment project that is currently ongoing in my company (DNB); 
+It is a short term investment with good returns. 
+Simply reply for me to confirm the validity of your email so i shall give you comprehensive details about the project.
 
- drivers/crypto/hisilicon/qm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index c5b84a5ea350..3b29c8993b8c 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -4295,7 +4295,7 @@ static void qm_vf_get_qos(struct hisi_qm *qm, u32 fun_num)
- static int qm_vf_read_qos(struct hisi_qm *qm)
- {
- 	int cnt = 0;
--	int ret;
-+	int ret = -EINVAL;
- 
- 	/* reset mailbox qos val */
- 	qm->mb_qos = 0;
--- 
-2.33.0
-
+Best Regards,
+Fredrik Elvebakk
+Business Consultant
