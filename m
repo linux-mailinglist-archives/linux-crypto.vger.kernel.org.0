@@ -2,49 +2,73 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB894496D0E
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jan 2022 18:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75761496D09
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jan 2022 18:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234586AbiAVRW6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Sat, 22 Jan 2022 12:22:58 -0500
-Received: from 103.86.160.220.broad.fz.fj.dynamic.163data.com.cn ([220.160.86.103]:37580
-        "EHLO fjxxll.cn" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232018AbiAVRW6 (ORCPT
+        id S232346AbiAVRJ6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 22 Jan 2022 12:09:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232018AbiAVRJ6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 22 Jan 2022 12:22:58 -0500
-X-Greylist: delayed 89169 seconds by postgrey-1.27 at vger.kernel.org; Sat, 22 Jan 2022 12:22:55 EST
-Received: from Unknown (unknown [179.60.243.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by fjxxll.cn (Postfix) with ESMTPSA id 1D1F850D0E9A;
-        Fri, 21 Jan 2022 09:28:56 +0800 (CST)
-Message-ID: <1B1EA8FBF0240AB96560299591CB7AFD@wbavklb>
-Reply-To: "Fredrik Elvebakk" <fcresswell9@gmail.com>
-From:   "Fredrik Elvebakk" <investment@dnb.no>
-Subject: Re:
-Date:   Thu, 20 Jan 2022 17:27:18 -0800
-MIME-Version: 1.0
+        Sat, 22 Jan 2022 12:09:58 -0500
+X-Greylist: delayed 108 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 22 Jan 2022 09:09:57 PST
+Received: from mxd1.seznam.cz (mxd1.seznam.cz [IPv6:2a02:598:a::78:210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A146C06173B
+        for <linux-crypto@vger.kernel.org>; Sat, 22 Jan 2022 09:09:57 -0800 (PST)
+Received: from email.seznam.cz
+        by email-smtpc3a.ko.seznam.cz (email-smtpc3a.ko.seznam.cz [10.53.10.75])
+        id 7719c8bb89ed7a11779746a3;
+        Sat, 22 Jan 2022 18:09:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cz; s=beta;
+        t=1642871395; bh=fpq8Nbwu1MXscMCBs7feSbWaonKy3kOVxBmxvPkfOH0=;
+        h=Received:From:To:Subject:Date:Message-Id:Mime-Version:X-Mailer:
+         Content-Type:Content-Transfer-Encoding:X-szn-frgn:X-szn-frgc;
+        b=Y3/lp7INXlrw/ThPXwP3+zGX0P6nVeneFds/uK1hiy9N5p30dJRySrVCa2QXIgy9x
+         ibfIP8uXhsdoS8ZD7oJCTc+Pp2KmR3PfCfAYpsv4DgOcuoGmHA93UoyX1jywGWqfhR
+         mUvucJlH/rhHdYl5grbWlkme4YUntG+TQdLkezYo=
+Received: from unknown ([::ffff:95.182.76.34])
+        by email.seznam.cz (szn-ebox-5.0.95) with HTTP;
+        Sat, 22 Jan 2022 18:07:53 +0100 (CET)
+From:   "Tomas Paukrt" <tomaspaukrt@email.cz>
+To:     <linux-crypto@vger.kernel.org>
+Subject: [PATCH] crypto: mxs-dcp - Fix scatterlist processing
+Date:   Sat, 22 Jan 2022 18:07:53 +0100 (CET)
+Message-Id: <T0R.ZXsl.2soFymqM66b.1Xx3df@seznam.cz>
+Mime-Version: 1.0 (szn-mime-2.1.18)
+X-Mailer: szn-ebox-5.0.95
 Content-Type: text/plain;
-        format=flowed;
-        charset="windows-1251";
-        reply-type=original
-Content-Transfer-Encoding: 8BIT
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Windows Live Mail 14.0.8117.416
-X-MimeOLE: Produced By Microsoft MimeOLE V14.0.8117.416
-To:     unlisted-recipients:; (no To-header on input)
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-szn-frgn: <697b78df-1da0-408b-ad5e-fb0bf38ccfe1>
+X-szn-frgc: <0>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello,
+This patch fixes a bug in scatterlist processing that may cause incorrect =
+AES block encryption/decryption.
 
-Am Fredrik Elvebakk an Investment Manager from Norway. I wish to solicit 
-your interest in an investment project that is currently ongoing in my company (DNB); 
-It is a short term investment with good returns. 
-Simply reply for me to confirm the validity of your email so i shall give you comprehensive details about the project.
+Fixes: 2e6d793e1bf0 ("crypto: mxs-dcp - Use sg_mapping_iter to copy data")=
 
-Best Regards,
-Fredrik Elvebakk
-Business Consultant
+Signed-off-by: Tomas Paukrt <tomaspaukrt@email.cz>
+---
+ drivers/crypto/mxs-dcp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/mxs-dcp.c b/drivers/crypto/mxs-dcp.c
+index d19e5ff..d6f9e2f 100644
+--- a/drivers/crypto/mxs-dcp.c
++++ b/drivers/crypto/mxs-dcp.c
+@@ -331,7 +331,7 @@ static int mxs_dcp_aes_block_crypt(struct crypto_async=
+_request *arq)
+ 		memset(key + AES_KEYSIZE_128, 0, AES_KEYSIZE_128);
+ 	}
+ 
+-	for_each_sg(req->src, src, sg_nents(src), i) {
++	for_each_sg(req->src, src, sg_nents(req->src), i) {
+ 		src_buf =3D sg_virt(src);
+ 		len =3D sg_dma_len(src);
+ 		tlen +=3D len;
+-- 
+2.7.4 
