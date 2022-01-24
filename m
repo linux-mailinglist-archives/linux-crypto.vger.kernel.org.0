@@ -2,33 +2,33 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB459498CF7
-	for <lists+linux-crypto@lfdr.de>; Mon, 24 Jan 2022 20:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C22498F7F
+	for <lists+linux-crypto@lfdr.de>; Mon, 24 Jan 2022 20:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345805AbiAXT0s (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 24 Jan 2022 14:26:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50462 "EHLO
+        id S1352369AbiAXTwx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 24 Jan 2022 14:52:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346809AbiAXTXZ (ORCPT
+        with ESMTP id S1356359AbiAXTqB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 24 Jan 2022 14:23:25 -0500
+        Mon, 24 Jan 2022 14:46:01 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D5AC061244;
-        Mon, 24 Jan 2022 11:10:22 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5713CC02417B;
+        Mon, 24 Jan 2022 11:22:41 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 00AD36121F;
-        Mon, 24 Jan 2022 19:10:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDCC4C340E5;
-        Mon, 24 Jan 2022 19:10:20 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA72E6143D;
+        Mon, 24 Jan 2022 19:22:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBBEBC340E8;
+        Mon, 24 Jan 2022 19:22:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1643051421;
-        bh=WO3Y96d8ujRmduRbZRHZ6fINYqgCWEHggCq4NSV+Gr0=;
+        s=korg; t=1643052160;
+        bh=T4/i0YuXX/RMcyoaCx/hrRoyWRKFKPUqGz9imKlq18w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=120WpT3DMAm5gwTtnDcLqpTrylMDnHHv2SCS5IVegT57QiGZUqCGGfY53BFDfEp+f
-         DhwVq9WwZ76FAx4GjwiWEssvIgWxGmZKszJ+y5cK0FE3/G2biqzSq4KeanhgYgNUSm
-         NYJ5ZLH8fZXy9B/oA9TuNUgf/M1J49/GUF41dq40=
+        b=RRbOcHXKXtDrWbwlXI3Ua5jakU8m74I/qmEPlu/m/X5WWFU0+5hdAgz/FsilPlU4c
+         9epGAVvKpjLmdTkIa/62ApY0scJYkuZ3rPLa2leoq/faic9f/0n8Ke+/3T/Aehu4gn
+         PEu2Xbdz5yLeQvBKC4posgKZw/VRGNKdo6tO/MHI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -41,12 +41,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-arm-kernel@lists.infradead.org,
         linux-stm32@st-md-mailman.stormreply.com,
         Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
-Subject: [PATCH 4.14 157/186] crypto: stm32/crc32 - Fix kernel BUG triggered in probe()
-Date:   Mon, 24 Jan 2022 19:43:52 +0100
-Message-Id: <20220124183942.146431609@linuxfoundation.org>
+Subject: [PATCH 4.19 207/239] crypto: stm32/crc32 - Fix kernel BUG triggered in probe()
+Date:   Mon, 24 Jan 2022 19:44:05 +0100
+Message-Id: <20220124183949.688480674@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220124183937.101330125@linuxfoundation.org>
-References: <20220124183937.101330125@linuxfoundation.org>
+In-Reply-To: <20220124183943.102762895@linuxfoundation.org>
+References: <20220124183943.102762895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -96,7 +96,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/crypto/stm32/stm32_crc32.c
 +++ b/drivers/crypto/stm32/stm32_crc32.c
-@@ -206,7 +206,7 @@ static struct shash_alg algs[] = {
+@@ -230,7 +230,7 @@ static struct shash_alg algs[] = {
  		.digestsize     = CHKSUM_DIGEST_SIZE,
  		.base           = {
  			.cra_name               = "crc32",
@@ -105,7 +105,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			.cra_priority           = 200,
  			.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
  			.cra_blocksize          = CHKSUM_BLOCK_SIZE,
-@@ -228,7 +228,7 @@ static struct shash_alg algs[] = {
+@@ -252,7 +252,7 @@ static struct shash_alg algs[] = {
  		.digestsize     = CHKSUM_DIGEST_SIZE,
  		.base           = {
  			.cra_name               = "crc32c",
