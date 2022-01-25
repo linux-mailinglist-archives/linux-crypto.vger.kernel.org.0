@@ -2,73 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8260749ACF2
-	for <lists+linux-crypto@lfdr.de>; Tue, 25 Jan 2022 08:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F9B49ADC9
+	for <lists+linux-crypto@lfdr.de>; Tue, 25 Jan 2022 09:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442158AbiAYHFq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 25 Jan 2022 02:05:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46422 "EHLO
+        id S1447987AbiAYIBT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 25 Jan 2022 03:01:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1391754AbiAYHCc (ORCPT
+        with ESMTP id S1357852AbiAYH7I (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 25 Jan 2022 02:02:32 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695E2C034013
-        for <linux-crypto@vger.kernel.org>; Mon, 24 Jan 2022 21:41:42 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id k31so56811903ybj.4
-        for <linux-crypto@vger.kernel.org>; Mon, 24 Jan 2022 21:41:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=KeMi8W+p20zdR41YZoRj2EapY7imNsLYkAgQIQsIzqY=;
-        b=omchJdYJcVvbnbx3iWDsqNfzfvgFxRY5UV8d5JFHFd0Qxp4Fs99oOTWbnsLJvmkGLO
-         KJ9h0aIZipzZCxLYUC1EbKJQXjsTnrYD4skWPu5L6KEa7WwksJ/DgfAKn2I//FvNz16e
-         yvRSMjBJIkfJOiN7QosmIFzfX6t0OymUxXq/kzoldmt5Tk4SMXy3poAlzZfnj4tLqkCO
-         r1uVZjBjIcfKcTHUm4yIRwmNGijXGA0OAhFYRol/6hiAAZJ37V1K6a3bLM+XpGdFXGos
-         hPiIHyT9XSW8aiVFGjIdHRgRcnWLHkX21ZW87GvspRwlXlL9xuI6dXFZXWxBZnRTJWgA
-         Bk5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=KeMi8W+p20zdR41YZoRj2EapY7imNsLYkAgQIQsIzqY=;
-        b=rw07dFZRnUCvmm0rx1FEiTSxXc3gHDciIvTyMFnMG6p59kfupQyCvLN8RuLR6JPxSe
-         w5m2lrwZPojQzbdo1Ym7EXVqQmp1jnl7R1nVGJcz0wgVERZ8TpizrTzUGLHqT20Q6kU8
-         5wgf21cy76CS1NSqvxQmN/r30I57AURde7BhPYxLqNh5RzeexEf5i4j6DO8A3KKdbAl0
-         MFLzRYBmOnwG3H5HsuMogthTSyHkA/t5DCwO9GVnEuFLr4sbSEsDWAxoPTcwz4q9gkBp
-         lfuoQevmQbjuGhVTnEdzfWFIcAYuqJ/TOVKpk5/DkiYiqwXdpEpDdPiK/UWpZnnHlPn3
-         uHmQ==
-X-Gm-Message-State: AOAM530sKLHDnIYuHncGOIsywNzgFCauGy8aFuVHvNqPFrhieHyShgQy
-        Ona3A8Cb026HqxQGAlmPfAkWVqwdTSfKKN46YSQ=
-X-Google-Smtp-Source: ABdhPJwywiwyTtOCXfovmJIEM7Vqt+PFDzMW3tzxRj90P3fJDPhIlV2jOd/vI9WPw47eCab8Z7S4n4qldrLRD5Ly+Sc=
-X-Received: by 2002:a25:d783:: with SMTP id o125mr27594671ybg.710.1643089301256;
- Mon, 24 Jan 2022 21:41:41 -0800 (PST)
+        Tue, 25 Jan 2022 02:59:08 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF43FC0544EE;
+        Mon, 24 Jan 2022 22:40:46 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id AB3F1B8162C;
+        Tue, 25 Jan 2022 06:40:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A039C340E0;
+        Tue, 25 Jan 2022 06:40:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643092844;
+        bh=Lwx8mO5mMqVbKGdRGLJ5Wq0V96nxImmH2K5npNDXyPo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aDYbJ54OdpYQH01sLWo6acgjo8qZxxsj5hf0BEz/3pM17AdmYDd79I60lzTIhUpBK
+         tZ/Zd0fkpj1zZVVnwb8BY7KdPS6sn/d8iGvu3AGEeoa8s5JGpLsc/+8QoBTSn5sy4K
+         87ue1vH1zG2J+UYhwUx8uABQlsy4hNN5IXf1XY2azdir6SF+kaA/SlosgGa2efuaF1
+         dIS+zic5ikcm9DkMo/w3YJOlOas99uUHjhYpq45XLImKkrP2s48ipbUuHkqZ+T5XT0
+         RNiRAINIfyy47CjENgEG8forPLg5AJ7Rng/PFlnhr63dgLAxKNdpQ53/wntdqWq2Oa
+         QILBRw3Jb5mgA==
+Date:   Mon, 24 Jan 2022 22:40:42 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Miles Chen <miles.chen@mediatek.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH v2] lib/crypto: blake2s: avoid indirect calls to
+ compression function for Clang CFI
+Message-ID: <Ye+bam3aSIjz8n9E@sol.localdomain>
+References: <20220119135450.564115-1-Jason@zx2c4.com>
+ <20220124192849.14755-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7000:ad9d:0:0:0:0 with HTTP; Mon, 24 Jan 2022 21:41:40
- -0800 (PST)
-Reply-To: danielseyba@yahoo.com
-From:   Seyba Daniel <mrssuzaramaling19@gmail.com>
-Date:   Tue, 25 Jan 2022 06:41:40 +0100
-Message-ID: <CAKN-9XgQjuMspSnu-F01fv+Bgr6eZEygpsR3pZ-5cF=m78av-Q@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220124192849.14755-1-Jason@zx2c4.com>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello,
+On Mon, Jan 24, 2022 at 08:28:49PM +0100, Jason A. Donenfeld wrote:
+> blake2s_compress_generic is weakly aliased by blake2s_generic. The
 
-I am so sorry contacting you in this means especially when we have never
-met before. I urgently seek your service to represent me in investing in
-your region / country and you will be rewarded for your service without
-affecting your present job with very little time invested in it.
+Don't you mean "weakly aliased by blake2s_compress"?
 
-My interest is in buying real estate, private schools or companies with
-potentials for rapid growth in long terms.
+> Fixes: 6048fdcc5f26 ("lib/crypto: blake2s: include as built-in")
+> Reported-by: Miles Chen <miles.chen@mediatek.com>
+> Tested-by: Miles Chen <miles.chen@mediatek.com>
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1567
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Sami Tolvanen <samitolvanen@google.com>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
 
-So please confirm interest by responding back.
+Otherwise this looks fine, though it's unfortunate this is needed.  You can add:
 
-My dearest regards
+	Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-Seyba Daniel
+> Changes v1->v2:
+> - Wrapped columns at 80 for Eric.
+
+It is the recommended coding style, so not just for me :-)
+
+- Eric
