@@ -2,109 +2,182 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7684249BD28
-	for <lists+linux-crypto@lfdr.de>; Tue, 25 Jan 2022 21:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A84549C400
+	for <lists+linux-crypto@lfdr.de>; Wed, 26 Jan 2022 08:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbiAYUa4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 25 Jan 2022 15:30:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232049AbiAYUaz (ORCPT
+        id S237574AbiAZHHa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 26 Jan 2022 02:07:30 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.169]:42537 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237569AbiAZHH1 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 25 Jan 2022 15:30:55 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73569C06173B;
-        Tue, 25 Jan 2022 12:30:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eAYuA3IYpDa6asQzwjsBPd1aG38lL6DwpQeaWb0KZyc=; b=u7umuGcoWurUr5OPmMAUZ3xGOO
-        YZiX6q/jpumt1aXHBk0BRLa5mmm9kCWWQpjv+D+DNgzXt/hAZ/1V8K68SoeXS2I4ruU9h1fnzRxL7
-        Q+v8WVLR5gsp86yCkzDQtJhNLAl0+mfJakpZ69hu4fKdKAkmEtvCPvmiRSlDnANtsDQT6pz4hjSzR
-        xMbM9JQTQYMOR+ZtpeyzckbV9oBqTDIZOAdvoQRotKUuqC5AMSg6f3IBy3cCqcPm6s/ntnHh2qrQf
-        Qn7DZFJJ/KLQ2aRQ9i+Rk7qAATcNDR2Tc7uzY7jX7MYwF/4xCi5ms7LWHkr//RCN1H/PeV/jKv5KR
-        lb1i4Ksw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nCSSq-009VdS-1L; Tue, 25 Jan 2022 20:30:52 +0000
-Date:   Tue, 25 Jan 2022 12:30:52 -0800
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Michal Suchanek <msuchanek@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        Aaron Tomlin <atomlin@redhat.com>
-Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org, kexec@lists.infradead.org,
-        Philipp Rudo <prudo@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Nayna <nayna@linux.vnet.ibm.com>, Rob Herring <robh@kernel.org>,
-        linux-s390@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Frank van der Linden <fllinden@amazon.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Daniel Axtens <dja@axtens.net>, buendgen@de.ibm.com,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v5 0/6] KEXEC_SIG with appended signature
-Message-ID: <YfBd/EDGUx9UIHcb@bombadil.infradead.org>
-References: <cover.1641900831.git.msuchanek@suse.de>
+        Wed, 26 Jan 2022 02:07:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1643180842;
+    s=strato-dkim-0002; d=chronox.de;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=SGs0oV4J96NbISh9Fa5d6Soto2HLZrt9B0f82iJ84Q8=;
+    b=moQrozm8g07oItpu26IzdZsxMxFbIybxes3Tz6NrNF96O55yRc2Hwa5+gRgQiGrUTo
+    HK0bEe2xsmBEFDQXLGzqZcr6bjkwfuumrmWPZ1bMId7B7HxAtNNh6hErBYqqqXeu7r7v
+    BrAp3meBUxNG/0bkIX7V5e8zJbq+GlmyEyhKL6NeRft2+sK+2Wh9Y3kCFuAqI4T54Vdf
+    /WaXbnXEdsXgFG32SKEssMZq2zUvrz78HVFuS2NWLEMLTumNhcv4r7QHp5hnLuQNOgz+
+    hbBtmbmLPMXHQZns7kpT4jgSqBYmNjsjttRZq/CpL9zP2FR850URIvW00gdLjYJovKKi
+    QDjw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaJvScdWrN"
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.38.0 DYNA|AUTH)
+    with ESMTPSA id v5f65ay0Q77MiuT
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 26 Jan 2022 08:07:22 +0100 (CET)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, simo@redhat.com,
+        Nicolai Stange <nstange@suse.de>
+Subject: [PATCH 0/7] Common entropy source and DRNG management
+Date:   Wed, 26 Jan 2022 08:02:54 +0100
+Message-ID: <2486550.t9SDvczpPo@positron.chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1641900831.git.msuchanek@suse.de>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 12:37:42PM +0100, Michal Suchanek wrote:
-> Hello,
-> 
-> This is a refresh of the KEXEC_SIG series.
-> 
-> This adds KEXEC_SIG support on powerpc and deduplicates the code dealing
-> with appended signatures in the kernel.
-> 
-> powerpc supports IMA_KEXEC but that's an exception rather than the norm.
-> On the other hand, KEXEC_SIG is portable across platforms.
-> 
-> For distributions to have uniform security features across platforms one
-> option should be used on all platforms.
-> 
-> Thanks
-> 
-> Michal
-> 
-> Previous revision: https://lore.kernel.org/linuxppc-dev/cover.1637862358.git.msuchanek@suse.de/
-> Patched kernel tree: https://github.com/hramrach/kernel/tree/kexec_sig
-> 
-> Michal Suchanek (6):
->   s390/kexec_file: Don't opencode appended signature check.
->   powerpc/kexec_file: Add KEXEC_SIG support.
->   kexec_file: Don't opencode appended signature verification.
->   module: strip the signature marker in the verification function.
->   module: Use key_being_used_for for log messages in
->     verify_appended_signature
->   module: Move duplicate mod_check_sig users code to mod_parse_sig
+The current code base of the kernel crypto API random number support
+leaves the task to seed and reseed the DRNG to either the caller or
+the DRNG implementation. The code in crypto/drbg.c implements its own
+seeding strategy. crypto/ansi_cprng.c does not contain any seeding
+operation. The implementation in arch/s390/crypto/prng.c has yet
+another approach for seeding. Albeit the crypto_rng_reset() contains
+a seeding logic from get_random_bytes, there is no management of
+the DRNG to ensure proper reseeding or control which entropy sources
+are used for pulling data from.
 
-What tree should this go through? I'd prefer if over through modules
-tree as it can give a chance for Aaron Tomlin to work with this for his
-code refactoring of kernel/module*.c to kernel/module/
+The task of seeding and reseeding a DRNG including the controlling
+of the state of the entropy sources is security sensitive as the
+strength of the data obtained from the DRNG rests in large parts on
+the proper seeding. In addition, various aspects need to be considered
+when (re)seeding a DRNG. This gap is filled with the Entropy Source and
+DRNG Manager (ESDM) proposed by this patch set.
 
-  Luis
+The ESDM consists of two managers: the manager for the DRNG(s) and
+manager for the entropy sources. The DRNG manager ensures that DRNGs
+are properly seeded before random numbers are obtained from them.
+Similarly, the entropy source manager ensures that the available
+entropy sources are properly initialized if needed, and that data
+is obtained with an appropriately considered entropy rate.
+
+Both, the DRNG and entropy source managers offer a pluggable interface
+allowing to use different DRNG implementations as well as various
+entropy sources. Each provided entropy source may be enabled during
+compile time. The ESDM therefore provides flexibility in the future
+to extend the set of entropy sources or the supported DRNGs to the
+required algorithms.
+
+The patch set consists of the following changes:
+
+- Patch 1 removes the seeding and reseeding logic from the DRBG
+  transforming it into a pure deterministic implementation.
+
+- Patch 2 removes the special AF_ALG interface used to test
+  the DRBG implementation which requires bypassing of the DRBG
+  automated seeding from entropy sources. With patch 1 this is
+  not needed any more.
+
+- Patch 3 adds the ESDM with its DRNG and entropy source
+  managers. It contains the support to use the kernel crypto
+  API's DRNG implementations.
+
+- Patches 4 and 5 use the existing Jitter RNG as an entropy
+  source for the ESDM.
+
+- Patch 6 provides the glue code to use the get_random_bytes
+  function as entropy source to the ESDM.
+
+- Patch 7 adds the ESDM interface to register it with the kernel
+  crypto API RNG framework as "stdrng" with the highest priority.
+  This way, the ESDM is used per default when using the call
+  crypto_get_default_rng().
+
+With this patch series, callers to the kernel crypto API would not
+experience any difference. When using the RNG framework, the function
+crypto_get_default_rng is commonly used. Instead of providing the
+DRBG implementation, the ESDM is used which returns random numbers
+from a properly seeded DRBG.
+
+Stephan Mueller (7):
+  crypto: DRBG - remove internal reseeding operation
+  crypto: AF_ALG - remove ALG_SET_DRBG_ENTROPY interface
+  crypto: Entropy Source and DRNG Manager
+  crypto: move Jitter RNG header include dir
+  crypto: ESDM - add Jitter RNG entropy source
+  crypto: ESDM - add Kernel RNG entropy source
+  crypto: ESDM - add kernel crypto API RNG interface
+
+ crypto/Kconfig                                |  11 +-
+ crypto/Makefile                               |   1 +
+ crypto/af_alg.c                               |   7 -
+ crypto/algif_rng.c                            |  74 +-
+ crypto/drbg.c                                 | 640 ++++-------------
+ crypto/esdm/Kconfig                           | 166 +++++
+ crypto/esdm/Makefile                          |  15 +
+ crypto/esdm/esdm_definitions.h                | 141 ++++
+ crypto/esdm/esdm_drng_kcapi.c                 | 202 ++++++
+ crypto/esdm/esdm_drng_kcapi.h                 |  13 +
+ crypto/esdm/esdm_drng_mgr.c                   | 398 +++++++++++
+ crypto/esdm/esdm_drng_mgr.h                   |  85 +++
+ crypto/esdm/esdm_es_aux.c                     | 332 +++++++++
+ crypto/esdm/esdm_es_aux.h                     |  44 ++
+ crypto/esdm/esdm_es_jent.c                    | 128 ++++
+ crypto/esdm/esdm_es_jent.h                    |  17 +
+ crypto/esdm/esdm_es_krng.c                    | 120 ++++
+ crypto/esdm/esdm_es_krng.h                    |  17 +
+ crypto/esdm/esdm_es_mgr.c                     | 372 ++++++++++
+ crypto/esdm/esdm_es_mgr.h                     |  46 ++
+ crypto/esdm/esdm_es_mgr_cb.h                  |  73 ++
+ crypto/esdm/esdm_interface_kcapi.c            |  91 +++
+ crypto/esdm/esdm_sha.h                        |  14 +
+ crypto/esdm/esdm_sha256.c                     |  72 ++
+ crypto/jitterentropy-kcapi.c                  |   3 +-
+ crypto/jitterentropy.c                        |   2 +-
+ crypto/testmgr.c                              | 104 +--
+ crypto/testmgr.h                              | 641 +-----------------
+ include/crypto/drbg.h                         |  84 ---
+ include/crypto/esdm.h                         | 115 ++++
+ include/crypto/if_alg.h                       |   1 -
+ .../crypto/internal}/jitterentropy.h          |   0
+ include/crypto/internal/rng.h                 |   6 -
+ include/crypto/rng.h                          |   4 -
+ include/uapi/linux/if_alg.h                   |   2 +-
+ 35 files changed, 2615 insertions(+), 1426 deletions(-)
+ create mode 100644 crypto/esdm/Kconfig
+ create mode 100644 crypto/esdm/Makefile
+ create mode 100644 crypto/esdm/esdm_definitions.h
+ create mode 100644 crypto/esdm/esdm_drng_kcapi.c
+ create mode 100644 crypto/esdm/esdm_drng_kcapi.h
+ create mode 100644 crypto/esdm/esdm_drng_mgr.c
+ create mode 100644 crypto/esdm/esdm_drng_mgr.h
+ create mode 100644 crypto/esdm/esdm_es_aux.c
+ create mode 100644 crypto/esdm/esdm_es_aux.h
+ create mode 100644 crypto/esdm/esdm_es_jent.c
+ create mode 100644 crypto/esdm/esdm_es_jent.h
+ create mode 100644 crypto/esdm/esdm_es_krng.c
+ create mode 100644 crypto/esdm/esdm_es_krng.h
+ create mode 100644 crypto/esdm/esdm_es_mgr.c
+ create mode 100644 crypto/esdm/esdm_es_mgr.h
+ create mode 100644 crypto/esdm/esdm_es_mgr_cb.h
+ create mode 100644 crypto/esdm/esdm_interface_kcapi.c
+ create mode 100644 crypto/esdm/esdm_sha.h
+ create mode 100644 crypto/esdm/esdm_sha256.c
+ create mode 100644 include/crypto/esdm.h
+ rename {crypto => include/crypto/internal}/jitterentropy.h (100%)
+
+-- 
+2.33.1
+
+
+
+
