@@ -2,44 +2,44 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E4549C3FC
-	for <lists+linux-crypto@lfdr.de>; Wed, 26 Jan 2022 08:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2EE49C3FA
+	for <lists+linux-crypto@lfdr.de>; Wed, 26 Jan 2022 08:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237562AbiAZHH1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 26 Jan 2022 02:07:27 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:40413 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237559AbiAZHHZ (ORCPT
+        id S230103AbiAZHHY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 26 Jan 2022 02:07:24 -0500
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:41793 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229979AbiAZHHX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 26 Jan 2022 02:07:25 -0500
+        Wed, 26 Jan 2022 02:07:23 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1643180839;
     s=strato-dkim-0002; d=chronox.de;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=1VapLQQk9KAoOWLbgE8//O90bixt9wVg2yiZM3bOoYI=;
-    b=gnT0c/JnmA2GHytrDNIL+W+uN+ieUWcp/2MSrziOF+Rdu4jP0jIa4ecWumWJdtPm5/
-    bavnMiIBmL+gL/8EI3hw8jmagTJUiHp7sAH9Do1vQqtrB0reL9VtkNtUp/Ck4XbT7FzL
-    pYEWZBb1LedxLFXTvOFws2sWWBFlJncM4BGZFt3AIHbiF5ec6XVdQ+T+GiydpxasX84S
-    7V8d/RQnjSxrYDUkP/Jcrf7mNehixit1+jtb8R+4gpKHybITO8NPzi3nI+5TmOzRbpZr
-    cBS4wsroT5/4rAWEBtWcAu0gG12YXo1s23OSv6/AAuIhcOcrTZsr4fNJ/wCm5ebtL/cv
-    S6dw==
+    bh=kKMeQ4jbF2RlwL77OU3Y0p14ptPgkI8XQ+SVVGGN4cQ=;
+    b=bRrUL/ly8ep2ngLTlSwiQF72bS8kJe6ZpTKou/po8G9gQ8BMM54iJqd1+e2Yr0708B
+    8Xy7TPYje/lC4QsXfmLM4MuG/vbOEPW9BrfcWnt0gqg9vsQbIRYJZZaJ0KegQWA/ce7w
+    b9rKZPx2/w4Oxtlp+Y0T9//z6PWvKEgtF6hHe36zST1laySy45Fvt9cWsTWR3AARxsmD
+    zXC5XAvz8+hXgXg54gOFDowybTownaua7Z7cx/OdyMlVECG1kj/7mdA1m7HawIm+6J2T
+    YE2x9/g2zQiyeAakoXTpUwun+EkCNFmxKv/zqyeWCvrjfHTnlqPWcdAn5TN3418rxfKO
+    zGsw==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaJvScdWrN"
 X-RZG-CLASS-ID: mo00
 Received: from positron.chronox.de
     by smtp.strato.de (RZmta 47.38.0 DYNA|AUTH)
-    with ESMTPSA id v5f65ay0Q77JiuN
+    with ESMTPSA id v5f65ay0Q77IiuM
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Wed, 26 Jan 2022 08:07:19 +0100 (CET)
+    Wed, 26 Jan 2022 08:07:18 +0100 (CET)
 From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
 To:     herbert@gondor.apana.org.au
 Cc:     linux-crypto@vger.kernel.org, simo@redhat.com,
         Nicolai Stange <nstange@suse.de>
-Subject: [PATCH 6/7] crypto: ESDM - add Kernel RNG entropy source
-Date:   Wed, 26 Jan 2022 08:05:08 +0100
-Message-ID: <274193597.ifERbkFSEj@positron.chronox.de>
+Subject: [PATCH 7/7] crypto: ESDM - add kernel crypto API RNG interface
+Date:   Wed, 26 Jan 2022 08:05:29 +0100
+Message-ID: <3328650.KVeVyVuyWN@positron.chronox.de>
 In-Reply-To: <2486550.t9SDvczpPo@positron.chronox.de>
 References: <2486550.t9SDvczpPo@positron.chronox.de>
 MIME-Version: 1.0
@@ -49,274 +49,224 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The Kernel RNG entropy source is used as a separate entropy source for
-the ESDM. It can be enabled at compile time together with its implied
-entropy rate. If the FIPS mode is enabled, the entropy rate is
-automatically set to 0 since the entropy source is not SP800-90B
-compliant and thus must be considered to deliver no entropy.
+The ESDM export interfaces that allow obtaining random numbers from a
+fully seeded DRNG as specified in crypto/esdm.h. By using the interface
+function esdm_get_random_bytes_full, the ESDM is registered as a random
+number generator with the kernel crypto API's RNG framework. This
+registered RNG provides random numbers from an always appropriately
+seeded and initialized DRNG.
 
-As long as the Kernel RNG is not fully initialized, the entropy rate is
-also forced to 0.
+When a caller performs a crypto_rng_reset() call on the ESDM, the ESDM
+injects the provided data into the auxiliary pool and flags a reseed.
+This reseed is performed by the immediate subsequent DRNG generation
+operation.
 
-The entropy rate states how many bits of entropy are present in 256 bits
-of data from that entropy source. If a different amount of data is
-pulled from the entropy source, the entropy ratio is scaled accordingly.
+The RNG registered by the ESDM with the kernel crypto API is accessible
+via the name "esdm". In addition, the ESDM is registered as "stdrng"
+with the highest priority which implies that the kernel crypto API call
+of crypto_get_default_rng accesses the ESDM.
 
-When the entropy ratio is set to zero, the Kernel RNG provides data but
-without claiming any entropy for it.
+The ESDM is marked as fips_allowed = 1 in the testmgr because it
+complies with the FIPS 140 rules as follows:
 
-When the compile time switch for enabling runtime setting of the entropy
-rate is enabled (CONFIG_CRYPTO_ESDM_RUNTIME_ES_CONFIG), the entropy rate
-can be configured at the kernel command line with the option
-esdm_es_random.krng_entropy. If this option is not set, the default
-value set during compile time is used.
+- SP800-90A: The ESDM uses the kernel crypto API's DRBG and thus
+  provides access to a fully seeded and SP800-90A DRBG.
+
+- SP800-90B: The ESDM manages entropy sources via its plugins. Currently
+  there is no internal entropy source provided which means that the used
+  entropy sources must provide their own SP800-90B analysis. For the
+  Jitter RNG, a separate SP800-90B analysis is provided. The ESDM only
+  ensures that the Jitter RNG is appropriately initialized before it is
+  used as an entropy source. The kernel RNG (random.c) entropy source on
+  the other hand is not SP800-90B compliant. Thus, in FIPS mode, the
+  ESDM credits its data with zero bits of entropy.
+
+- SP800-90C: The ESDM follows the current draft of SP800-90C when
+  compiled with the option CONFIG_CRYPTO_ESDM_OVERSAMPLE_ENTROPY_SOURCES.
+  The DRBG is initially seeded with at least 384 bits of entropy before
+  it is marked as fully seeded (and thus produces random numbers via the
+  esdm_get_random_bytes_full call. Subsequent reseeds are performed with
+  at least 256 bits of entropy. The conditioning operation performed in
+  the auxiliary pool requires 64 more bits of entropy to be fed into the
+  conditioner function provide the respective entropy output (e.g. 256
+  bits of entropy are fed into the SHA-256 conditioner resulting in the
+  output of 192 bits of entropy provided by the entropy source to the
+  ESDM). With the given entropy sources, the ESDM follows the RBG2(NP)
+  construction method.
 
 Signed-off-by: Stephan Mueller <smueller@chronox.de>
 ---
- crypto/esdm/Kconfig          |  28 ++++++++
- crypto/esdm/Makefile         |   1 +
- crypto/esdm/esdm_es_krng.c   | 120 +++++++++++++++++++++++++++++++++++
- crypto/esdm/esdm_es_krng.h   |  17 +++++
- crypto/esdm/esdm_es_mgr.c    |   4 ++
- crypto/esdm/esdm_es_mgr_cb.h |   3 +
- 6 files changed, 173 insertions(+)
- create mode 100644 crypto/esdm/esdm_es_krng.c
- create mode 100644 crypto/esdm/esdm_es_krng.h
+ crypto/esdm/Kconfig                | 14 +++++
+ crypto/esdm/Makefile               |  2 +
+ crypto/esdm/esdm_drng_kcapi.c      |  1 +
+ crypto/esdm/esdm_interface_kcapi.c | 91 ++++++++++++++++++++++++++++++
+ crypto/testmgr.c                   |  8 +++
+ 5 files changed, 116 insertions(+)
+ create mode 100644 crypto/esdm/esdm_interface_kcapi.c
 
 diff --git a/crypto/esdm/Kconfig b/crypto/esdm/Kconfig
-index eeef71546bc3..43e11484e95c 100644
+index 43e11484e95c..3636c1c79602 100644
 --- a/crypto/esdm/Kconfig
 +++ b/crypto/esdm/Kconfig
-@@ -111,6 +111,34 @@ config CRYPTO_ESDM_JENT_ENTROPY_RATE
- 	  will provide 256 bits of data without being credited to contain
- 	  entropy.
+@@ -27,6 +27,20 @@ config CRYPTO_ESDM_SHA256
+ 	bool
+ 	default y if CRYPTO_LIB_SHA256
  
-+comment "Kernel RNG Entropy Source"
++menu "ESDM Interfaces"
 +
-+config CRYPTO_ESDM_KERNEL_RNG
-+	bool "Enable Kernel RNG as ESDM Seed Source"
++config CRYPTO_ESDM_KCAPI_IF
++	tristate "Interface with Kernel Crypto API"
++	depends on CRYPTO_RNG
 +	help
-+	  The Linux RNG may use the kernel RNG (random.c) as entropy
-+	  source.
++	  The ESDM can be registered with the kernel crypto API's
++	  random number generator framework. This offers a random
++	  number generator with the name "esdm" and a priority that
++	  is intended to be higher than the existing RNG
++	  implementations.
 +
-+config CRYPTO_ESDM_KERNEL_RNG_ENTROPY_RATE
-+	int "Kernel RNG Entropy Source Entropy Rate"
-+	depends on CRYPTO_ESDM_KERNEL_RNG
-+	range 0 256
-+	default 256
-+	help
-+	  The option defines the amount of entropy the ESDM applies to 256
-+	  bits of data obtained from the kernel RNG entropy source. The
-+	  ESDM enforces the limit that this value must be in the range
-+	  between 0 and 256.
++endmenu # "ESDM Interfaces"
 +
-+	  When configuring this value to 0, the kernel RNG entropy source
-+	  will provide 256 bits of data without being credited to contain
-+	  entropy.
-+
-+	  Note: This value is set to 0 automatically when booting the
-+	  kernel in FIPS mode (with fips=1 kernel command line option).
-+	  This is due to the fact that random.c is not SP800-90B
-+	  compliant.
-+
- endmenu # "Entropy Source Configuration"
+ menu "Specific DRNG seeding strategies"
  
- config CRYPTO_ESDM_DRNG_KCAPI
+ config CRYPTO_ESDM_OVERSAMPLE_ENTROPY_SOURCES
 diff --git a/crypto/esdm/Makefile b/crypto/esdm/Makefile
-index 99a86ce3e3af..404436de0aa2 100644
+index 404436de0aa2..0bf8d65dd5fa 100644
 --- a/crypto/esdm/Makefile
 +++ b/crypto/esdm/Makefile
-@@ -9,4 +9,5 @@ obj-$(CONFIG_CRYPTO_ESDM_SHA256)	+= esdm_sha256.o
+@@ -11,3 +11,5 @@ obj-$(CONFIG_CRYPTO_ESDM_DRNG_KCAPI)	+= esdm_drng_kcapi.o
  
- obj-$(CONFIG_CRYPTO_ESDM_DRNG_KCAPI)	+= esdm_drng_kcapi.o
- 
-+obj-$(CONFIG_CRYPTO_ESDM_KERNEL_RNG)	+= esdm_es_krng.o
+ obj-$(CONFIG_CRYPTO_ESDM_KERNEL_RNG)	+= esdm_es_krng.o
  obj-$(CONFIG_CRYPTO_ESDM_JENT)		+= esdm_es_jent.o
-diff --git a/crypto/esdm/esdm_es_krng.c b/crypto/esdm/esdm_es_krng.c
++
++obj-$(CONFIG_CRYPTO_ESDM_KCAPI_IF)	+= esdm_interface_kcapi.o
+diff --git a/crypto/esdm/esdm_drng_kcapi.c b/crypto/esdm/esdm_drng_kcapi.c
+index ae8d2be91b37..03135337196b 100644
+--- a/crypto/esdm/esdm_drng_kcapi.c
++++ b/crypto/esdm/esdm_drng_kcapi.c
+@@ -99,6 +99,7 @@ static void *esdm_kcapi_drng_alloc(u32 sec_strength)
+ 	}
+ 
+ 	if (!memcmp(drng_name, "stdrng", 6) ||
++	    !memcmp(drng_name, "esdm", 4) ||
+ 	    !memcmp(drng_name, "jitterentropy_rng", 17)) {
+ 		pr_err("Refusing to load the requested random number generator\n");
+ 		return ERR_PTR(-EINVAL);
+diff --git a/crypto/esdm/esdm_interface_kcapi.c b/crypto/esdm/esdm_interface_kcapi.c
 new file mode 100644
-index 000000000000..d536a9139276
+index 000000000000..f2968d83c991
 --- /dev/null
-+++ b/crypto/esdm/esdm_es_krng.c
-@@ -0,0 +1,120 @@
++++ b/crypto/esdm/esdm_interface_kcapi.c
+@@ -0,0 +1,91 @@
 +// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
 +/*
-+ * ESDM Fast Entropy Source: Linux kernel RNG (random.c)
++ * ESDM interface with the RNG framework of the kernel crypto API
 + *
 + * Copyright (C) 2022, Stephan Mueller <smueller@chronox.de>
 + */
 +
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/fips.h>
++#include <crypto/esdm.h>
 +#include <linux/module.h>
-+#include <linux/random.h>
-+#include <linux/types.h>
++#include <crypto/internal/rng.h>
 +
++#include "esdm_drng_mgr.h"
 +#include "esdm_es_aux.h"
-+#include "esdm_es_krng.h"
 +
-+static u32 krng_entropy = CONFIG_CRYPTO_ESDM_KERNEL_RNG_ENTROPY_RATE;
-+#ifdef CONFIG_CRYPTO_ESDM_RUNTIME_ES_CONFIG
-+module_param(krng_entropy, uint, 0644);
-+MODULE_PARM_DESC(krng_entropy, "Entropy in bits of 256 data bits from the kernel RNG noise source");
-+#endif
-+
-+static atomic_t esdm_krng_initial_rate = ATOMIC_INIT(0);
-+
-+static struct random_ready_callback esdm_krng_ready = {
-+	.owner = THIS_MODULE,
-+	.func = NULL,
-+};
-+
-+static u32 esdm_krng_fips_entropylevel(u32 entropylevel)
++static int esdm_kcapi_if_init(struct crypto_tfm *tfm)
 +{
-+	return fips_enabled ? 0 : entropylevel;
++	return 0;
 +}
 +
-+static void esdm_krng_adjust_entropy(struct random_ready_callback *rdy)
++static void esdm_kcapi_if_cleanup(struct crypto_tfm *tfm) { }
++
++static int esdm_kcapi_if_reseed(const u8 *src, unsigned int slen)
 +{
-+	u32 entropylevel;
++	int ret;
 +
-+	krng_entropy = atomic_read_u32(&esdm_krng_initial_rate);
++	if (!slen)
++		return 0;
 +
-+	entropylevel = esdm_krng_fips_entropylevel(krng_entropy);
-+	pr_debug("Kernel RNG is fully seeded, setting entropy rate to %u bits of entropy\n",
-+		 entropylevel);
++	/* Insert caller-provided data without crediting entropy */
++	ret = esdm_pool_insert_aux((u8 *)src, slen, 0);
++	if (ret)
++		return ret;
++
++	/* Make sure the new data is immediately available to DRNG */
 +	esdm_drng_force_reseed();
-+	if (entropylevel)
-+		esdm_es_add_entropy();
++
++	return 0;
 +}
 +
-+static u32 esdm_krng_entropylevel(u32 requested_bits)
++static int esdm_kcapi_if_random(struct crypto_rng *tfm,
++				const u8 *src, unsigned int slen,
++				u8 *rdata, unsigned int dlen)
 +{
-+	if (esdm_krng_ready.func == NULL) {
-+		int err;
++	int ret = esdm_kcapi_if_reseed(src, slen);
 +
-+		esdm_krng_ready.func = esdm_krng_adjust_entropy;
++	if (!ret)
++		esdm_get_random_bytes_full(rdata, dlen);
 +
-+		err = add_random_ready_callback(&esdm_krng_ready);
-+		switch (err) {
-+		case 0:
-+			atomic_set(&esdm_krng_initial_rate, krng_entropy);
-+			krng_entropy = 0;
-+			pr_debug("Kernel RNG is not yet seeded, setting entropy rate to 0 bits of entropy\n");
-+			break;
++	return ret;
++}
 +
-+		case -EALREADY:
-+			pr_debug("Kernel RNG is fully seeded, setting entropy rate to %u bits of entropy\n",
-+				 esdm_krng_fips_entropylevel(krng_entropy));
-+			break;
-+		default:
-+			esdm_krng_ready.func = NULL;
-+			return 0;
-+		}
++static int esdm_kcapi_if_reset(struct crypto_rng *tfm,
++			       const u8 *seed, unsigned int slen)
++{
++	return esdm_kcapi_if_reseed(seed, slen);
++}
++
++static struct rng_alg esdm_alg = {
++	.generate		= esdm_kcapi_if_random,
++	.seed			= esdm_kcapi_if_reset,
++	.seedsize		= 0,
++	.base			= {
++		.cra_name               = "stdrng",
++		.cra_driver_name        = "esdm",
++		.cra_priority           = 500,
++		.cra_ctxsize            = 0,
++		.cra_module             = THIS_MODULE,
++		.cra_init               = esdm_kcapi_if_init,
++		.cra_exit               = esdm_kcapi_if_cleanup,
++
 +	}
-+
-+	return esdm_fast_noise_entropylevel(
-+		esdm_krng_fips_entropylevel(krng_entropy), requested_bits);
-+}
-+
-+static u32 esdm_krng_poolsize(void)
-+{
-+	return esdm_krng_entropylevel(esdm_security_strength());
-+}
-+
-+/*
-+ * esdm_krng_get() - Get kernel RNG entropy
-+ *
-+ * @eb: entropy buffer to store entropy
-+ * @requested_bits: requested entropy in bits
-+ */
-+static void esdm_krng_get(struct entropy_buf *eb, u32 requested_bits,
-+			  bool __unused)
-+{
-+	u32 ent_bits = esdm_krng_entropylevel(requested_bits);
-+
-+	get_random_bytes(eb->e[esdm_ext_es_krng], requested_bits >> 3);
-+
-+	pr_debug("obtained %u bits of entropy from kernel RNG noise source\n",
-+		 ent_bits);
-+
-+	eb->e_bits[esdm_ext_es_krng] = ent_bits;
-+}
-+
-+static void esdm_krng_es_state(unsigned char *buf, size_t buflen)
-+{
-+	snprintf(buf, buflen,
-+		 " Available entropy: %u\n"
-+		 " Entropy Rate per 256 data bits: %u\n",
-+		 esdm_krng_poolsize(),
-+		 esdm_krng_entropylevel(256));
-+}
-+
-+struct esdm_es_cb esdm_es_krng = {
-+	.name			= "KernelRNG",
-+	.get_ent		= esdm_krng_get,
-+	.curr_entropy		= esdm_krng_entropylevel,
-+	.max_entropy		= esdm_krng_poolsize,
-+	.state			= esdm_krng_es_state,
-+	.reset			= NULL,
-+	.switch_hash		= NULL,
 +};
-diff --git a/crypto/esdm/esdm_es_krng.h b/crypto/esdm/esdm_es_krng.h
-new file mode 100644
-index 000000000000..b164594bfe79
---- /dev/null
-+++ b/crypto/esdm/esdm_es_krng.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-+/*
-+ * Copyright (C) 2022, Stephan Mueller <smueller@chronox.de>
-+ */
 +
-+#ifndef _ESDM_ES_RANDOM_H
-+#define _ESDM_ES_RANDOM_H
++static int __init esdm_kcapi_if_mod_init(void)
++{
++	return crypto_register_rng(&esdm_alg);
++}
 +
-+#include "esdm_es_mgr_cb.h"
++static void __exit esdm_kcapi_if_mod_exit(void)
++{
++	crypto_unregister_rng(&esdm_alg);
++}
 +
-+#ifdef CONFIG_CRYPTO_ESDM_KERNEL_RNG
++module_init(esdm_kcapi_if_mod_init);
++module_exit(esdm_kcapi_if_mod_exit);
 +
-+extern struct esdm_es_cb esdm_es_krng;
-+
-+#endif /* CONFIG_CRYPTO_ESDM_KERNEL_RNG */
-+
-+#endif /* _ESDM_ES_RANDOM_H */
-diff --git a/crypto/esdm/esdm_es_mgr.c b/crypto/esdm/esdm_es_mgr.c
-index b7b1a4151137..0a65aafac8d2 100644
---- a/crypto/esdm/esdm_es_mgr.c
-+++ b/crypto/esdm/esdm_es_mgr.c
-@@ -14,6 +14,7 @@
- #include "esdm_drng_mgr.h"
- #include "esdm_es_aux.h"
- #include "esdm_es_jent.h"
-+#include "esdm_es_krng.h"
- #include "esdm_es_mgr.h"
- 
- struct esdm_state {
-@@ -57,6 +58,9 @@ u32 esdm_write_wakeup_bits = (ESDM_WRITE_WAKEUP_ENTROPY << 3);
- struct esdm_es_cb *esdm_es[] = {
- #ifdef CONFIG_CRYPTO_ESDM_JENT
- 	&esdm_es_jent,
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_AUTHOR("Stephan Mueller <smueller@chronox.de>");
++MODULE_DESCRIPTION("Entropy Source and DRNG Manager kernel crypto API RNG framework interface");
++MODULE_ALIAS_CRYPTO("esdm");
++MODULE_ALIAS_CRYPTO("stdrng");
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index 2ce698eb14b6..0865105f9377 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -4878,6 +4878,14 @@ static const struct alg_test_desc alg_test_descs[] = {
+ 		.suite = {
+ 			.akcipher = __VECS(ecrdsa_tv_template)
+ 		}
++	}, {
++		.alg = "esdm",
++		.test = alg_test_null,
++#ifdef CONFIG_CRYPTO_ESDM_OVERSAMPLE_ENTROPY_SOURCES
++		.fips_allowed = 1,
++#else
++		.fips_allowed = 0,
 +#endif
-+#ifdef CONFIG_CRYPTO_ESDM_KERNEL_RNG
-+	&esdm_es_krng,
- #endif
- 	&esdm_es_aux
- };
-diff --git a/crypto/esdm/esdm_es_mgr_cb.h b/crypto/esdm/esdm_es_mgr_cb.h
-index 18f0e4317691..a94ad28f7d0f 100644
---- a/crypto/esdm/esdm_es_mgr_cb.h
-+++ b/crypto/esdm/esdm_es_mgr_cb.h
-@@ -16,6 +16,9 @@
- enum esdm_external_es {
- #ifdef CONFIG_CRYPTO_ESDM_JENT
- 	esdm_ext_es_jitter,			/* Jitter RNG */
-+#endif
-+#ifdef CONFIG_CRYPTO_ESDM_KERNEL_RNG
-+	esdm_ext_es_krng,			/* random.c */
- #endif
- 	esdm_ext_es_aux,			/* MUST BE LAST ES! */
- 	esdm_ext_es_last			/* MUST be the last entry */
+ 	}, {
+ 		.alg = "essiv(authenc(hmac(sha256),cbc(aes)),sha256)",
+ 		.test = alg_test_aead,
 -- 
 2.33.1
 
