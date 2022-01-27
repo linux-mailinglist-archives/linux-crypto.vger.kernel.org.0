@@ -2,96 +2,82 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F6F49DC52
-	for <lists+linux-crypto@lfdr.de>; Thu, 27 Jan 2022 09:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B77A49DD40
+	for <lists+linux-crypto@lfdr.de>; Thu, 27 Jan 2022 10:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237685AbiA0IMp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 27 Jan 2022 03:12:45 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:57968 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237720AbiA0IMo (ORCPT
+        id S234567AbiA0JEV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 27 Jan 2022 04:04:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234573AbiA0JEU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 27 Jan 2022 03:12:44 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CF471B821C9
-        for <linux-crypto@vger.kernel.org>; Thu, 27 Jan 2022 08:12:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DA58C340E6;
-        Thu, 27 Jan 2022 08:12:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643271161;
-        bh=rNG85CkQHYUoADadt+1RadTkg6tLzQAOOLmWYflMaxo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W3RU8fwSS+cDYuRYfBHneJWtALJDh5kgeYJH8ysYF333OLiyhyzjeAru52aaqqXVh
-         6u7uEtQFB4xgH63fzB/xTGDTQbIATFoxf3eH2uoIo5Y31FVVncHWiBBJ561Kr1ehcb
-         x4w+kZZ4PvtDtAeyU82Tb17Ij4DmbhtQFYqkOvS9lQptZEvJFJbbQnCcdBXbkXDVHP
-         5pIWqi2XURMKHWZrUYgqNFsFKjltavgJyJTOYPu92Ae5cmsr+J6hENTkk1Bdz56PEo
-         oM4Puo8UqDDCy/GrKmOeMDF8TJz6YtNm3ENCSd4hi4IjgrMOrORPdrA46+D1PskXva
-         n/IqdAtAT+LPQ==
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, Ard Biesheuvel <ardb@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH 2/2] crypto: arm/xor - make vectorized C code Clang-friendly
-Date:   Thu, 27 Jan 2022 09:12:27 +0100
-Message-Id: <20220127081227.2430-3-ardb@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220127081227.2430-1-ardb@kernel.org>
-References: <20220127081227.2430-1-ardb@kernel.org>
+        Thu, 27 Jan 2022 04:04:20 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D60DC061714
+        for <linux-crypto@vger.kernel.org>; Thu, 27 Jan 2022 01:04:20 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id ka4so4176094ejc.11
+        for <linux-crypto@vger.kernel.org>; Thu, 27 Jan 2022 01:04:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=ufqOzcf7/E89VOK7/ROtJFtuJTogMX2K8iCroA8sc2k=;
+        b=nMHtAWcbUm82teCSPFm7rxv4FsxFZAr3HoaxWxC55dygVFxn/afhIvFowg9KkxnLmH
+         mzxXagRWbNkozY7lFn/1RJuiYjsf17kMgAdHUpI2T/sDzzPZrAf/EpD5g/fNKKleIQDg
+         d81Rc/O80wDXOJjZvDv9Ma/BPvX6Y5tm9S5MA+N9g9Kgzp6tQ9y23XfQnJE/NFkrFPRM
+         uRpMJCxp3gQ+XMVgRCH1sXoNtMmp94zj0t4moVk7sFKqnsZ3NccJV0beXHBUvLlqBvkm
+         40WwA0sFIqxicZZ+cAnr3aIXHNPV1bYotLSFEeOIxwYulw87uhHgsVG/DPWYgLjInLKS
+         UrCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=ufqOzcf7/E89VOK7/ROtJFtuJTogMX2K8iCroA8sc2k=;
+        b=CTRxfhvnQmKhe/d1CfDEsEkjOgNNqQOlIs6TcNZi7whG8/+8nhXN8mE6B/YmfmqBLm
+         AoHE8b2J0hgv4jq3tuanuTcck+7bL2X9IIwF8hbiE0h6zJ5OvG3cmX4KSe4GITJd/OFZ
+         cDqYgdevQzuuHgzVsVoaT/OtBc4PlsInWppHsJ9/zNNT6MiKf2tUzDLcjjnCtbaX2TOh
+         uFO943E0bMJ0j99u4Lsc31BkL6tV890nN+auAnqwXSbca2F30W1XoFpOPEW2RuQMazPT
+         HqI0vQoXHOq3tColio4QGe0SL6XMMouiN0xNSyTIxzufGO2TE/r/VslPQknXMgI53sSy
+         pFcA==
+X-Gm-Message-State: AOAM530AQGZ1ZGVqN+APTblVRS4YWpPY0H6HA9Ug6pI14YBkR82MMx5J
+        lzdKikG3sNgQWdzHzQ6ebteO1gyos/rG5g7R0NIIo38QtOs=
+X-Google-Smtp-Source: ABdhPJx/Jf5MCKPFpALWuyYXNZsldXCOLHoE48RzSOsdmsik/PIULwou6E3ztVGegsnspTOIIGZoiWGE3mX9H4bZH0k=
+X-Received: by 2002:a17:907:d86:: with SMTP id go6mr2244933ejc.482.1643274258678;
+ Thu, 27 Jan 2022 01:04:18 -0800 (PST)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1904; h=from:subject; bh=rNG85CkQHYUoADadt+1RadTkg6tLzQAOOLmWYflMaxo=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBh8lPqrXdKXgXsJZzdBhWSqiwt6LyXOJcJIMg04C0M v7yv+c2JAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYfJT6gAKCRDDTyI5ktmPJBSRDA C4Lg58KgAAHe9V8R6ZHoUC8hNPk93Fh5ycqujLA0Sf9f5IBx+qrtso9cXW6trn/90Rqf0s/3CBO9N1 SaHu2ERAeZS1CEEZdS2U6RqbbVvXxbexhk4NnB35YJxvkifTNnzkQIWvKazdz+jf5cy8pT56tQ1r4H uGzcYOfgmz0RESzjZuI+ymkIghe2WLiO6x+6RSwvCKRraf9YvWk6L0g/YbSx1f8x3l4OjFGkEZ9tBr afiEt45LXVhd8WQfMg2W+GUqTzXyBFVzeDOsS4v9roalbQ9UzfmrqacKf9Rv/r84dgrud9V8AZsx/M mFYw4/39XqqT1j7nfi9FENoHfKdsC6ZkVjuDwMVJEN7Pppi3d0W+GRX7ohejucggQL7avLfJsH/UW4 GEewzEHjxlOGxAQkgd+095iPY2UwjasnJB7uwL8TEm382V65Ld1zmxHuweLlmO9jNYejiY9dsivIzN Hf/5lLTGZD1OQP/29QCMo/0FcjgzANtLHurmgO2LvGPiU=
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-Content-Transfer-Encoding: 8bit
+From:   Sandy Harris <sandyinchina@gmail.com>
+Date:   Thu, 27 Jan 2022 17:04:07 +0800
+Message-ID: <CACXcFmkhWDwJ2AwpBFnyYrM-YXDgBfFyCeJsmMux3gM8G+Gveg@mail.gmail.com>
+Subject: RFC random(4) We don't need no steenking ...
+To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "Ted Ts'o" <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Denker <jsd@av8n.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The ARM version of the accelerated XOR routines are simply the 8-way C
-routines passed through the auto-vectorizer with SIMD codegen enabled.
-This used to require GCC version 4.6 at least, but given that 5.1 is now
-the baseline, this check is no longer necessary, and actually
-misidentifies Clang as GCC < 4.6 as Clang defines the GCC major/minor as
-well, but makes no attempt at doing this in a way that conveys feature
-parity with a certain version of GCC (which would not be a great idea in
-the first place).
+In normal usage of either a hash or a cipher, consistent results are
+needed because we want the hash to be usable for authentication and
+the cipher to be decryptable. We therefore require a standard
+initialisation using known constants, macros to deal with endinanness
+so different systems can get the same results, and sometimes locking
+of the inputs to avoid having a hash give indeterminate results.
 
-So let's drop the version check, and make the auto-vectorize pragma
-(which is based on a GCC-specific command line option) GCC-only. Since
-Clang performs SIMD auto-vectorization by default at -O2, no pragma is
-necessary here.
+I would contend that in the context of random(4), none of the above
+are desirable, except perhaps for the first initialisation at boot
+time & even that should use random data rather than constants if
+possible, Thereafter, the input pool, hash context & chacha context
+should all be updated only with ^= or += so they cannot lose entropy.
+Nor should any code here lock any structure it only reads or
+manipulate data for endianness.
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/arm/lib/xor-neon.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+Current code in extract_buf() declares a local struct blake2s_state,
+calls blake2s_init() which uses initialisation constants, and moves
+data into the chacha state with memcpy(). As I see it, those are
+mistakes.
 
-diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
-index b99dd8e1c93f..522510baed49 100644
---- a/arch/arm/lib/xor-neon.c
-+++ b/arch/arm/lib/xor-neon.c
-@@ -17,17 +17,11 @@ MODULE_LICENSE("GPL");
- /*
-  * Pull in the reference implementations while instructing GCC (through
-  * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
-- * NEON instructions.
-+ * NEON instructions. Clang does this by default at O2 so no pragma is
-+ * needed.
-  */
--#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
-+#ifdef CONFIG_CC_IS_GCC
- #pragma GCC optimize "tree-vectorize"
--#else
--/*
-- * While older versions of GCC do not generate incorrect code, they fail to
-- * recognize the parallel nature of these functions, and emit plain ARM code,
-- * which is known to be slower than the optimized ARM code in asm-arm/xor.h.
-- */
--#warning This code requires at least version 4.6 of GCC
- #endif
- 
- #pragma GCC diagnostic ignored "-Wunused-variable"
--- 
-2.30.2
+I'm inclined to think we need only one 512-bit context[]; use chacha
+on it to generate output and hash directly into it to rekey. I have
+not yet worked out the details or all the implications.
 
+Other opinions?
