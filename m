@@ -2,84 +2,197 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037D249ED13
-	for <lists+linux-crypto@lfdr.de>; Thu, 27 Jan 2022 22:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C3A49ED7B
+	for <lists+linux-crypto@lfdr.de>; Thu, 27 Jan 2022 22:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244531AbiA0VKv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 27 Jan 2022 16:10:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59258 "EHLO
+        id S1344401AbiA0VhD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 27 Jan 2022 16:37:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245665AbiA0VKu (ORCPT
+        with ESMTP id S232131AbiA0VhC (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 27 Jan 2022 16:10:50 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A844C061751
-        for <linux-crypto@vger.kernel.org>; Thu, 27 Jan 2022 13:10:49 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id h25so2670325qtm.1
-        for <linux-crypto@vger.kernel.org>; Thu, 27 Jan 2022 13:10:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=wXM0hly6tyNlZq07rMipvtfpnu3wRqtV0B2JSV05g3E=;
-        b=m0D8ivz9PDCDCKh/arptMpR3/ao+LhFd+WDbL0Ndw6mZAYZf1UgxGLzVj40s+AmZjb
-         DuEwjd7NT9LFwA9OjKx7vr7puLYpS6zkJNbh+1BfuQgx4db+dU06Jgc7C75K093Hwjn/
-         9mCc5rYI5j3y1VvMx9vpxL5dad+OafMT9QhIQgFRN9dvv+QgByQ7o1yzKGSP02L54Znm
-         q7FBXWGkelfiR3xpWnnkdKDqg2UlG70uCnsM1s4SP7cRlEb+IJNQAjeVKHpZy42mZonq
-         RnHAdJAaDrxUHvlQWr6CsD5rnkBvpJUkcJOYzRgUFr/Bb7DCHALpPY9Ux9K4Rjywr0lt
-         YgYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=wXM0hly6tyNlZq07rMipvtfpnu3wRqtV0B2JSV05g3E=;
-        b=vJptdURtaalAs0+w7NGa/tPb+xQYGxjtHWO6Y4hJ9LCIyCQnGTE1vMBVxIBT2E16io
-         exkK55T9/mmgr2xGr3NxS7IemT8jEoTMs1No9lgV4y+HCnNv79deBBDwNOObRAs2/NlC
-         9JNxQK2rb4QMNpkm8500RvmzT61bPEiJHBi2ZODlb7jCGi8ffbpNQf/rL2YrHvjX6OP8
-         mXv7euk3txWOYQbkFqZLorShNnT5jSRXUWuQvYX6ophxLvAmZ8IKy7yOoeUDuF81gqaa
-         43decKStxQ6Sg+lhrhf1Cl+wwf5HyURx6tisWDyusgplAguPKHiPlGIG5+8jQ2XcoSwB
-         CAHQ==
-X-Gm-Message-State: AOAM533R6o9LZX+zLYu4XaNW0Tbane7d50R64Mltjytcahecc/gsFXsV
-        irfPbRmaB4vYLuvP89Y5Yo15fbfVPTOogL+glho=
-X-Google-Smtp-Source: ABdhPJxjfwa8g49rNfb5xQ4Dtq316EM5E6QepnaR+uvM+BcTaI+qmB/caHz8VslukXXXqzp0798ys0wp0mZ+YQ4gMH8=
-X-Received: by 2002:ac8:4e48:: with SMTP id e8mr4202203qtw.64.1643317847801;
- Thu, 27 Jan 2022 13:10:47 -0800 (PST)
+        Thu, 27 Jan 2022 16:37:02 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89470C061714
+        for <linux-crypto@vger.kernel.org>; Thu, 27 Jan 2022 13:37:02 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 31B98618EA
+        for <linux-crypto@vger.kernel.org>; Thu, 27 Jan 2022 21:37:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D4E4C340E4;
+        Thu, 27 Jan 2022 21:37:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643319421;
+        bh=qMbqBkkVNK440C8IwMbZegi4qUBpLSoWKFUzbGYL/2I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fy1Av58U141oebk3uXZ5QOCtnKv+JJMXQ5mRPHqIACZNBxg09Tw1olGc4TIgn8APP
+         aPGGPR9dbxCSnAoKgEx+1UMV+AEwxV6EGXe512Vq3e0obAdTyaeu6fS078n2x8DNaQ
+         Pm8rpork0VAHENJw28eFbYVZuTJlNBp96TTVUnvkpWarO85BLGdCcX7dSWH0I8kSx5
+         rTePaavjj2akHXlc4BeXbcvtnzznFZc2hRSOCICnXkL0ppl7XuiH15b1qt0BSpJXKR
+         iqvpBs0+8LWarDp3gU3vHCjf2whxTG5KTDUVTC7yCE1sRkyPsmB2A47N7+cvFL2G9o
+         dsraYvGXh/RhA==
+Date:   Thu, 27 Jan 2022 14:36:57 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH 0/2] xor: enable auto-vectorization in Clang
+Message-ID: <YfMQeRVkNMHr81P9@dev-arch.archlinux-ax161>
+References: <20220127081227.2430-1-ardb@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a05:6214:e4b:0:0:0:0 with HTTP; Thu, 27 Jan 2022 13:10:46
- -0800 (PST)
-Reply-To: eanna00111@gmail.com
-From:   Mrs Anna Edward <mussaaliooooo7@gmail.com>
-Date:   Thu, 27 Jan 2022 13:10:46 -0800
-Message-ID: <CAFbf-n2dj0f-EXo2OhZA4D_6QXVYoysuMB5_+AOQv9Sb_nGe0w@mail.gmail.com>
-Subject: Urgent Reply
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220127081227.2430-1-ardb@kernel.org>
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Greeting to you,
-Please forgive me for stressing you with my predicaments and I sorry
-to approach you through this media because it serves the fastest means
-of communication. I came across your E-mail from my personal search
-and I decided to contact you believing you will be honest to fulfill
-my final wish before I die.
+Hi Ard,
 
-I am Mrs Anna Edward, 63 years, from USA, I am childless and I am
-suffering from a pro-long critical cancer, my doctors confirmed I may
-not live beyond two months from now as my ill health has defiled all
-forms of medical treatment. Since my days are numbered, I have decided
-willingly to fulfill my long-time promise to donate you the sum
-($5.000.000.00) million dollars I inherited from my late husband Mr.
-Edward Herbart, foreign bank account over years. I need a very honest
-person who can assist in transfer of this money to his or her account
-and use the funds for charity work of God while you use 50% for
-yourself. I want you to know there is no risk involved; it is 100%
-hitch free & safe.
+On Thu, Jan 27, 2022 at 09:12:25AM +0100, Ard Biesheuvel wrote:
+> Update the xor_blocks() prototypes so that the compiler understands that
+> the inputs always refer to distinct regions of memory. This is implied
+> by the existing implementations, as they use different granularities for
+> the load/xor/store loops.
+> 
+> With that, we can fix the ARM/Clang version, which refuses to SIMD
+> vectorize otherwise, and throws a spurious warning related to the GCC
+> version being incompatible.
+> 
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> 
+> Ard Biesheuvel (2):
+>   lib/xor: make xor prototypes more friendely to compiler vectorization
+>   crypto: arm/xor - make vectorized C code Clang-friendly
 
-If you are interested in assisting in getting this fund into your
-account for a charity project to fulfill my promise before I die
-please let me know immediately.
+I tested multi_v7_defconfig + CONFIG_BTRFS=y (to get
+CONFIG_XOR_BLOCKS=y) in QEMU 6.2.0 (10 boots) and the xor neon code gets
+faster according to do_xor_speed():
 
-I will appreciate your utmost confidentiality as I wait for your reply.
-Best Regards,
-Mrs Anna Edward
+mainline @ 626b2dda7651:
+
+[    2.591449]    neon            :  1166 MB/sec
+[    2.579454]    neon            :  1118 MB/sec
+[    2.589061]    neon            :  1163 MB/sec
+[    2.581827]    neon            :  1167 MB/sec
+[    2.599079]    neon            :  1166 MB/sec
+[    2.579252]    neon            :  1147 MB/sec
+[    2.582637]    neon            :  1168 MB/sec
+[    2.582872]    neon            :  1164 MB/sec
+[    2.570671]    neon            :  1167 MB/sec
+[    2.571830]    neon            :  1166 MB/sec
+
+mainline @ 626b2dda7651 with series:
+
+[    2.570227]    neon            :  1238 MB/sec
+[    2.571642]    neon            :  1237 MB/sec
+[    2.580370]    neon            :  1234 MB/sec
+[    2.581966]    neon            :  1238 MB/sec
+[    2.582313]    neon            :  1236 MB/sec
+[    2.572291]    neon            :  1238 MB/sec
+[    2.570625]    neon            :  1233 MB/sec
+[    2.571897]    neon            :  1234 MB/sec
+[    2.589616]    neon            :  1228 MB/sec
+[    2.582449]    neon            :  1236 MB/sec
+
+This series is currently broken for powerpc [1], as the functions in
+arch/powerpc/lib/xor_vmx.c were not updated.
+
+arch/powerpc/lib/xor_vmx.c:52:6: error: conflicting types for '__xor_altivec_2'
+void __xor_altivec_2(unsigned long bytes, unsigned long *v1_in,
+     ^
+arch/powerpc/lib/xor_vmx.h:9:6: note: previous declaration is here
+void __xor_altivec_2(unsigned long bytes, unsigned long * __restrict p1,
+     ^
+arch/powerpc/lib/xor_vmx.c:70:6: error: conflicting types for '__xor_altivec_3'
+void __xor_altivec_3(unsigned long bytes, unsigned long *v1_in,
+     ^
+arch/powerpc/lib/xor_vmx.h:11:6: note: previous declaration is here
+void __xor_altivec_3(unsigned long bytes, unsigned long * __restrict p1,
+     ^
+arch/powerpc/lib/xor_vmx.c:92:6: error: conflicting types for '__xor_altivec_4'
+void __xor_altivec_4(unsigned long bytes, unsigned long *v1_in,
+     ^
+arch/powerpc/lib/xor_vmx.h:14:6: note: previous declaration is here
+void __xor_altivec_4(unsigned long bytes, unsigned long * __restrict p1,
+     ^
+arch/powerpc/lib/xor_vmx.c:119:6: error: conflicting types for '__xor_altivec_5'
+void __xor_altivec_5(unsigned long bytes, unsigned long *v1_in,
+     ^
+arch/powerpc/lib/xor_vmx.h:18:6: note: previous declaration is here
+void __xor_altivec_5(unsigned long bytes, unsigned long * __restrict p1,
+     ^
+4 errors generated.
+
+If I fix that up [2], it builds and resolves an instance of
+-Wframe-larger-than= in the xor altivec code, as seen with
+pmac32_defconfig.
+
+Before this series:
+
+arch/powerpc/lib/xor_vmx.c:119:6: error: stack frame size (1232) exceeds limit (1024) in '__xor_altivec_5' [-Werror,-Wframe-larger-than]
+void __xor_altivec_5(unsigned long bytes, unsigned long *v1_in,
+     ^
+1 error generated.
+
+After this patch (with CONFIG_FRAME_WARN=100 and
+CONFIG_PPC_DISABLE_WERROR=y):
+
+arch/powerpc/lib/xor_vmx.c:52:6: warning: stack frame size (128) exceeds limit (100) in '__xor_altivec_2' [-Wframe-larger-than]
+void __xor_altivec_2(unsigned long bytes,
+     ^
+arch/powerpc/lib/xor_vmx.c:71:6: warning: stack frame size (160) exceeds limit (100) in '__xor_altivec_3' [-Wframe-larger-than]
+void __xor_altivec_3(unsigned long bytes,
+     ^
+arch/powerpc/lib/xor_vmx.c:95:6: warning: stack frame size (144) exceeds limit (100) in '__xor_altivec_4' [-Wframe-larger-than]
+void __xor_altivec_4(unsigned long bytes,
+     ^
+arch/powerpc/lib/xor_vmx.c:124:6: warning: stack frame size (160) exceeds limit (100) in '__xor_altivec_5' [-Wframe-larger-than]
+void __xor_altivec_5(unsigned long bytes,
+     ^
+4 warnings generated.
+
+There is a similar performance gain as ARM according to do_xor_speed():
+
+Before:
+
+   altivec         :   222 MB/sec
+   altivec         :   222 MB/sec
+   altivec         :   222 MB/sec
+   altivec         :   219 MB/sec
+   altivec         :   222 MB/sec
+   altivec         :   222 MB/sec
+   altivec         :   222 MB/sec
+   altivec         :   222 MB/sec
+   altivec         :   222 MB/sec
+   altivec         :   222 MB/sec
+
+After:
+
+   altivec         :   278 MB/sec
+   altivec         :   276 MB/sec
+   altivec         :   278 MB/sec
+   altivec         :   278 MB/sec
+   altivec         :   278 MB/sec
+   altivec         :   278 MB/sec
+   altivec         :   278 MB/sec
+   altivec         :   278 MB/sec
+   altivec         :   278 MB/sec
+   altivec         :   278 MB/sec
+
+I did also build test arm64 and x86_64 and saw no errors. I did runtime
+test arm64 for improvements and did not see any, which is good, since I
+take that as meaning it was working fine before and there is no
+regression.
+
+Once the build error is fixed, consider this series:
+
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+
+[1]: https://lore.kernel.org/r/202112310646.kuh2pXiG-lkp@intel.com/
+[2]: https://github.com/ClangBuiltLinux/linux/issues/563#issuecomment-1005175153
+
+Cheers,
+Nathan
