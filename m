@@ -2,53 +2,53 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D08349F398
-	for <lists+linux-crypto@lfdr.de>; Fri, 28 Jan 2022 07:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BBFE49F39B
+	for <lists+linux-crypto@lfdr.de>; Fri, 28 Jan 2022 07:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346466AbiA1G1P (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 28 Jan 2022 01:27:15 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:60618 "EHLO fornost.hmeau.com"
+        id S1346468AbiA1G1s (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 28 Jan 2022 01:27:48 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:60622 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346464AbiA1G1O (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 28 Jan 2022 01:27:14 -0500
+        id S1346464AbiA1G1r (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Fri, 28 Jan 2022 01:27:47 -0500
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1nDKj1-0001Cz-L8; Fri, 28 Jan 2022 17:27:12 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 28 Jan 2022 17:27:11 +1100
-Date:   Fri, 28 Jan 2022 17:27:11 +1100
+        id 1nDKjP-0001EQ-Bt; Fri, 28 Jan 2022 17:27:36 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 28 Jan 2022 17:27:35 +1100
+Date:   Fri, 28 Jan 2022 17:27:35 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-crypto@vger.kernel.org, arnd@arndb.de
-Subject: Re: [PATCH] crypto: memneq: avoid implicit unaligned accesses
-Message-ID: <YfOMv8c4h7MridGH@gondor.apana.org.au>
-References: <20220119093109.1567314-1-ardb@kernel.org>
+To:     Shijith Thotton <sthotton@marvell.com>
+Cc:     arno@natisbad.org, bbrezillon@kernel.org, sthotton@marvell.com,
+        linux-crypto@vger.kernel.org, jerinj@marvell.com,
+        sgoutham@marvell.com, schalla@marvell.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: octeontx2: select CONFIG_NET_DEVLINK
+Message-ID: <YfOM1+ydDpsbV09r@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220119093109.1567314-1-ardb@kernel.org>
+In-Reply-To: <41b2f0754d958e2659a88e4c8d005267ef428302.1642763325.git.sthotton@marvell.com>
+X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jan 19, 2022 at 10:31:09AM +0100, Ard Biesheuvel wrote:
-> The C standard does not support dereferencing pointers that are not
-> aligned with respect to the pointed-to type, and doing so is technically
-> undefined behavior, even if the underlying hardware supports it.
+Shijith Thotton <sthotton@marvell.com> wrote:
+> OcteonTX2 CPT driver will fail to link without devlink support.
 > 
-> This means that conditionally dereferencing such pointers based on
-> whether CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=y is not the right thing
-> to do, and actually results in alignment faults on ARM, which are fixed
-> up on a slow path. Instead, we should use the unaligned accessors in
-> such cases: on architectures that don't care about alignment, they will
-> result in identical codegen whereas, e.g., codegen on ARM will avoid
-> doubleword loads and stores but use ordinary ones, which are able to
-> tolerate misalignment.
+> aarch64-linux-gnu-ld: otx2_cpt_devlink.o: in function `otx2_cpt_dl_egrp_delete':
+> otx2_cpt_devlink.c:18: undefined reference to `devlink_priv'
+> aarch64-linux-gnu-ld: otx2_cpt_devlink.o: in function `otx2_cpt_dl_egrp_create':
+> otx2_cpt_devlink.c:9: undefined reference to `devlink_priv'
+> aarch64-linux-gnu-ld: otx2_cpt_devlink.o: in function `otx2_cpt_dl_uc_info':
+> otx2_cpt_devlink.c:27: undefined reference to `devlink_priv'
 > 
-> Link: https://lore.kernel.org/linux-crypto/CAHk-=wiKkdYLY0bv+nXrcJz3NH9mAqPAafX7PpW5EwVtxsEu7Q@mail.gmail.com/
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> Fixes: fed8f4d5f946 ("crypto: octeontx2 - parameters for custom engine groups")
+> 
+> Signed-off-by: Shijith Thotton <sthotton@marvell.com>
 > ---
->  crypto/memneq.c | 22 +++++++++++++++-------
->  1 file changed, 15 insertions(+), 7 deletions(-)
+> drivers/crypto/marvell/Kconfig | 1 +
+> 1 file changed, 1 insertion(+)
 
 Patch applied.  Thanks.
 -- 
