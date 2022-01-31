@@ -2,82 +2,91 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2EB4A4F4B
-	for <lists+linux-crypto@lfdr.de>; Mon, 31 Jan 2022 20:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B04D54A5184
+	for <lists+linux-crypto@lfdr.de>; Mon, 31 Jan 2022 22:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244344AbiAaTSy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 31 Jan 2022 14:18:54 -0500
-Received: from mga02.intel.com ([134.134.136.20]:50518 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244151AbiAaTSy (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 31 Jan 2022 14:18:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1643656734; x=1675192734;
-  h=message-id:date:mime-version:to:cc:references:from:
-   subject:in-reply-to:content-transfer-encoding;
-  bh=4cWRWKgSilAN/g7tM1/aIXkv1ERGqhDlMGjd2wXvSPk=;
-  b=au20vETgXs8+C1CjEgr+yqUt7UMn3G4gq7qt6loV8i7AvA9M0kWc62NV
-   qerLJuM5ttAgDQJon9H/LgAbi/hHA0k+In0Mf9aZ0nRUWFncH7k2IdA7Q
-   oMrKFrkvdIpgKNnjv0uRF+ecex6kWp5Kt91S9sX6ROv41ZW55uSBWoPPC
-   9fa3wvB0oZvV6rMcl405wb3epcWOCCJs+lNNVtd3YpN1vKp6QXkQho+l0
-   pESlI5I2B59OByUuVVgnmcnruITEELD3FYtojKlwm9agAxXuvwsiY1dmY
-   Ux17NfwOHgWkUCFkm9TL6zS7NL+aqvpdVqzfY7DBUxOPSawnottp579rm
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10244"; a="234925688"
-X-IronPort-AV: E=Sophos;i="5.88,331,1635231600"; 
-   d="scan'208";a="234925688"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2022 11:18:53 -0800
-X-IronPort-AV: E=Sophos;i="5.88,331,1635231600"; 
-   d="scan'208";a="630127991"
-Received: from kcoopwoo-mobl1.amr.corp.intel.com (HELO [10.252.132.7]) ([10.252.132.7])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2022 11:18:53 -0800
-Message-ID: <0a10e16b-df77-9a7f-6964-8dc3e114b30b@intel.com>
-Date:   Mon, 31 Jan 2022 11:18:50 -0800
+        id S1381030AbiAaVg7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 31 Jan 2022 16:36:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1380569AbiAaVg5 (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Mon, 31 Jan 2022 16:36:57 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3EFC061741
+        for <linux-crypto@vger.kernel.org>; Mon, 31 Jan 2022 13:36:56 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id m10so4366652oie.2
+        for <linux-crypto@vger.kernel.org>; Mon, 31 Jan 2022 13:36:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=RcCyF58LaRxi/j1nHAT0ApLeXmQ9s66f3iMVqhPacvY=;
+        b=h0/ZbeSbhpQI9P1vadFWIIwaFx6Wg7DqXMk6y/6+HmqNlUgv3SlNpJw4qpKTo06mte
+         9c8XYB94UqfO8qOJWjzFkjv5zc9WvJZZl3Js9F72ABObxzvVfflP7X59ytjFJOxjOG2l
+         LO3Y+aza5Rf6VWZX6T/nuKCfE48EtABITU6cGLgH5Lgy6DZ7btNOQ2K6FCDw4SVAmVb+
+         bozVeCVEuRNzl4R/3iiKyQWEN4FwtOoBFNE1mvxGgM+MeOAXwYWRhKwNuVBkTmZ3ljfc
+         /CIpJAIw2H+Xim8Oyn6ivr2wbXYsB8V9T2ZN0w8wKdgaTu/QkrQmZRS8vp1zfQE1kyl/
+         bECA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=RcCyF58LaRxi/j1nHAT0ApLeXmQ9s66f3iMVqhPacvY=;
+        b=VyaT2WnxXLa8GBlhOgjPTMljB68VlAsdYPndQVec6jExZwqG7cZEBI2gRF07sJ8yDX
+         xbGqOTqArhbRiP33JNcqQI4SAd4xskuD6rLlCgWLDIhi0FXZGak4GO5ffb38zQB3LEep
+         /JXCtGDv5VrF0s2p5vvCBbDFpxvmAZdbiPnLLZqYT1wyB6WTnNxhwX6M/ZmolqL8Fupz
+         pEoEfir611HnRYdNqsBedPvX2/KJNsgy6ZpvJ3US0dMH0ZeXWJLH9jGSzvmO452TlSKX
+         SE34HeIisuGgC11GKepYuNYu/ONXWWwZMncGJMqGmbZCbxslLtHvVuESvIkhtzdsC33K
+         m5DA==
+X-Gm-Message-State: AOAM533rBdAvJE9QSuFIxxUN26MSH9j14CCJGDc2N07mJ1rzbTucnNuk
+        svp8zzsoS0l37Hz07mp+XsLQil5/a2Pk1yCyIVo=
+X-Google-Smtp-Source: ABdhPJwOKKiu9r5CLPBfR9xT27fzBbARJMbuDEn6UccpYrL5eWNExCgl2kvk+baqoa5SwK6UrZG3WcDm232+Riit43k=
+X-Received: by 2002:a54:4490:: with SMTP id v16mr14816050oiv.157.1643665016077;
+ Mon, 31 Jan 2022 13:36:56 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.2
-Content-Language: en-US
-To:     "Dey, Megha" <megha.dey@intel.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Asit K Mallick <asit.k.mallick@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        "Chen, Tim C" <tim.c.chen@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>, greg.b.tucker@intel.com,
-        "Kasten, Robert A" <robert.a.kasten@intel.com>,
-        rajendrakumar.chinnaiyan@intel.com, tomasz.kantecki@intel.com,
-        ryan.d.saffores@intel.com, ilya.albrekht@intel.com,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        Weiny Ira <ira.weiny@intel.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, X86 ML <x86@kernel.org>
-References: <1611386920-28579-1-git-send-email-megha.dey@intel.com>
- <CALCETrU06cuvUF5NDSm8--dy3dOkxYQ88cGWaakOQUE4Vkz88w@mail.gmail.com>
- <3878af8d-ac1e-522a-7c9f-fda4a1f5b967@intel.com>
- <CALCETrUWgLwp6yfu9ODY1UYufHeAgsnOOCOAwXZQK6FJk_YdUA@mail.gmail.com>
- <e8ce1146-3952-6977-1d0e-a22758e58914@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Subject: Re: [RFC V2 0/5] Introduce AVX512 optimized crypto algorithms
-In-Reply-To: <e8ce1146-3952-6977-1d0e-a22758e58914@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a4a:c30d:0:0:0:0:0 with HTTP; Mon, 31 Jan 2022 13:36:55
+ -0800 (PST)
+Reply-To: westerunion909@gmail.com
+From:   "Antonia Lloyd." <anthonylloydatmxxx04@gmail.com>
+Date:   Mon, 31 Jan 2022 13:36:55 -0800
+Message-ID: <CAExPwBBtJH3GcqF-weqUuAur7b38Y2T1d6e9FzvuN_q1Nhi-zw@mail.gmail.com>
+Subject: Dear Email ID Owner.(USD$4000 IMF COMPENSATION FUND TO PICK UP TODAY).
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 1/31/22 10:43, Dey, Megha wrote:
-> With this implementation, we see a 1.5X improvement on ICX/ICL for 16KB
-> buffers compared to the existing kernel AES-GCM implementation that
-> works on 128-bit XMM registers.
+Dear Email ID Owner.
 
-What is your best guess about how future-proof this implementation is?
+The IMF is compensating all the email address that was funds as one of
+the ward win Victims and your email address and your name is among the
+listed one of approved to pay the sum of $3.6 million U.S Dollars. We
+have concluded to effect your own payment through Western Union Money
+Transfer for easy pick-up of those funds in good condition,$4000 twice
+daily,till the $3.6 million is completely transferred to you.We now
+need your information where we will be sending the funds,such
+as;Receiver name(Your full Name)address and phone number.Contact
+Western Union agent with this Email: ( westerunion995@gmail.com  ) for
+your payment fund.
 
-Will this be an ICL/ICX one-off?  Or, will implementations using 256-bit
-YMM registers continue to enjoy a frequency advantage over the 512-bit
-implementations for a long time?
+Ms.Maria Zatto
+E-mail:westerunion995@gmail.com
+Telephone: +229 682 97 169
+
+Contact Ms.Maria,immediately you get this mail through western union
+email address above to enable her speed-up.your payment and release
+the $4000 dollars MTCN today for you to pick up the payment OK.
+
+You are expected to provide us with the details as prescribed below to
+enable safe and easy release of your funds today.
+
+(1)Your Full name:
+(2)Your Phone number:
+(3)Your Country:
+(4)Your Age:
+
+Thank you,
+Dr.Antonia Lloyd.
+Contact Dir.Western Union Money Transfer,
+Cotonou-Benin Republic.
