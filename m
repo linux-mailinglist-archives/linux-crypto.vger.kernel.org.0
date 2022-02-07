@@ -2,69 +2,95 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3AB4AB880
-	for <lists+linux-crypto@lfdr.de>; Mon,  7 Feb 2022 11:15:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9AD4ABF52
+	for <lists+linux-crypto@lfdr.de>; Mon,  7 Feb 2022 14:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236326AbiBGKNr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 7 Feb 2022 05:13:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44130 "EHLO
+        id S1358867AbiBGNAC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 7 Feb 2022 08:00:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245652AbiBGKC1 (ORCPT
+        with ESMTP id S1388333AbiBGLnd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 7 Feb 2022 05:02:27 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5DF2C043181
-        for <linux-crypto@vger.kernel.org>; Mon,  7 Feb 2022 02:02:24 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id o12so25660270lfg.12
-        for <linux-crypto@vger.kernel.org>; Mon, 07 Feb 2022 02:02:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=5/sAtrtXAxiLSOFIbur9L0YbxuEh3t+bQyTbkqJmxzs=;
-        b=P9JCi7djAHMxX0MsCO20BzCvQNgLzlVAbJfCDtkOTb7pbDaPEqKGJAjyrQccx8eIJ0
-         qlxW2pJhZK1J+KF7XYisqEeW7sL67rMQuoyDTOgvAT3b/sy9dK2MFLTZJ2FBkuccjYT+
-         v517WOU+hUQfSwLdMr/s9oOxSaChaSRtpOp1qE4/TJ7mylVwDneMS9q/OhmgaiCJBSJC
-         JSLGfufSPBOhB08Gs3FFdMPYNj7PWZ4RiGgWUmDgPSNI1AzfRBGkvK1FzJVIXbhGAEYl
-         IG0QV4LZ42GbBWQvzQc5kJuBVKP8NtzPH1I/EUsMhgd2X50lUGskudEsLIedRzJV0k2t
-         g5WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=5/sAtrtXAxiLSOFIbur9L0YbxuEh3t+bQyTbkqJmxzs=;
-        b=XlLMUwWZue6YLnlaAHwRLlKlp1ydOOig8SfFA+vvRuSj0WSXtlWVjFwIe18Ly6KCCq
-         mIbmgbaW3a6fzGiGQFCi9PLN0mme1pqmkrlz7wxfrm0yWk0OA7YElOtPoCfj2yhc4a4l
-         JRjMhqdPj1vP36UXpqQ7kWl51U9n/WBs3FS9Kt5tLqwAz82K9k2rB8W33MBsEfZT69gr
-         qH2T2v/Ch05leX4c1AUyoyznf5TSOGP3HEfIrrEr7pUFPIQeqbPQ0f+NZJnBf7oGqQMd
-         SEcio+Wu2mDw4JyIx3wEYDm8PKAh5ax8OAGrSW6ZxQd170903eIt4wlm1U3YGFoBTktV
-         WYTg==
-X-Gm-Message-State: AOAM532uSGO789aICmYFHXZr0/ObYjgbtzdeGPER4j59zeaHmkwg4r2f
-        l2zWRB7jBSP6tOUn8ffDk0lU55xdAIVegNYt7FA=
-X-Google-Smtp-Source: ABdhPJyzM/xmNoiBrdsz4n+GuU6BfDmxXzazZF2akTYyJNwey7T8abiEVDx7rmjtxddADqS2XLImmUjMc7Ir5z9LAU8=
-X-Received: by 2002:a19:f806:: with SMTP id a6mr8007968lff.27.1644228143261;
- Mon, 07 Feb 2022 02:02:23 -0800 (PST)
+        Mon, 7 Feb 2022 06:43:33 -0500
+Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1427C043181;
+        Mon,  7 Feb 2022 03:43:31 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0V3r3syy_1644234208;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0V3r3syy_1644234208)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 07 Feb 2022 19:43:28 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Eric Biggers <ebiggers@google.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Vitaly Chikunov <vt@altlinux.org>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        "Gilad Ben-Yossef" <gilad@benyossef.com>,
+        David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH] KEYS: asymmetric: enforce SM2 signature use pkey algo
+Date:   Mon,  7 Feb 2022 19:43:27 +0800
+Message-Id: <20220207114327.7929-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220201003414.55380-1-ebiggers@kernel.org>
+References: <20220201003414.55380-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a19:7517:0:0:0:0:0 with HTTP; Mon, 7 Feb 2022 02:02:22 -0800 (PST)
-Reply-To: heatherwiilliams19@gmail.com
-From:   Heather Williams <ayefouninestor@gmail.com>
-Date:   Mon, 7 Feb 2022 10:02:22 +0000
-Message-ID: <CADoQv959pKF2Z7iUtb_R6OkL9F6a+ELKSkiF-gm+MZM5D024Vw@mail.gmail.com>
-Subject: Re
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+The signature verification of SM2 needs to add the Za value and
+recalculate sig->digest, which requires the detection of the pkey_algo
+in public_key_verify_signature(). As Eric Biggers said, the pkey_algo
+field in sig is attacker-controlled and should be use pkey->pkey_algo
+instead of sig->pkey_algo, and secondly, if sig->pkey_algo is NULL, it
+will also cause signature verification failure.
+
+The software_key_determine_akcipher() already forces the algorithms
+are matched, so the SM3 algorithm is enforced in the SM2 signature,
+although this has been checked, we still avoid using any algorithm
+information in the signature as input.
+
+Reported-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+---
+ crypto/asymmetric_keys/public_key.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
+index a603ee8afdb8..ea9a5501f87e 100644
+--- a/crypto/asymmetric_keys/public_key.c
++++ b/crypto/asymmetric_keys/public_key.c
+@@ -309,7 +309,8 @@ static int cert_sig_digest_update(const struct public_key_signature *sig,
+ 	if (ret)
+ 		return ret;
+ 
+-	tfm = crypto_alloc_shash(sig->hash_algo, 0, 0);
++	/* SM2 signatures always use the SM3 hash algorithm */
++	tfm = crypto_alloc_shash("sm3", 0, 0);
+ 	if (IS_ERR(tfm))
+ 		return PTR_ERR(tfm);
+ 
+@@ -414,8 +415,7 @@ int public_key_verify_signature(const struct public_key *pkey,
+ 	if (ret)
+ 		goto error_free_key;
+ 
+-	if (sig->pkey_algo && strcmp(sig->pkey_algo, "sm2") == 0 &&
+-	    sig->data_size) {
++	if (strcmp(pkey->pkey_algo, "sm2") == 0 && sig->data_size) {
+ 		ret = cert_sig_digest_update(sig, tfm);
+ 		if (ret)
+ 			goto error_free_key;
 -- 
-How are you doing? My name is Heather Williams from the State, please
-can I have a chat with you if you wouldn't mind? Have a nice day and
-stay safe.
+2.34.1
+
