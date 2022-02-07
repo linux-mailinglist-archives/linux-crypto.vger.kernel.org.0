@@ -2,57 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F5B4AB092
-	for <lists+linux-crypto@lfdr.de>; Sun,  6 Feb 2022 17:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0A04AB44F
+	for <lists+linux-crypto@lfdr.de>; Mon,  7 Feb 2022 07:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236254AbiBFQIa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 6 Feb 2022 11:08:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
+        id S233475AbiBGGC2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 7 Feb 2022 01:02:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231915AbiBFQIa (ORCPT
+        with ESMTP id S243620AbiBGDZQ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 6 Feb 2022 11:08:30 -0500
-X-Greylist: delayed 178 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 06 Feb 2022 08:08:28 PST
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1476C06173B
-        for <linux-crypto@vger.kernel.org>; Sun,  6 Feb 2022 08:08:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1644163343;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=ajoLvXOqNUsQDqmDZKsWT4JQr84dpEvj/4vqEVhVNZQ=;
-    b=FFwpIsca12VqssxpQD5wcww02Xywkw82X+hgU1cY+IvKW9QgfDtvD0UJqYUN7RoD0s
-    Db5vozmgtt9diDru2HA4LqUdCGDTbtElqKxR+mT4pWlsiPULAcAl+vRrbJPf3Y7AN3Re
-    UYAFfLgNpQp0rALhgaqq352iUYMhCo5ZV+S6Vr4EsmAKxptfKFuW9RAjPZyHlhp78fUl
-    qB6HoBigNqCyhdYdgmyv4x72Slvy7nOJo+KDCebYMO+C/WBUj4ZhGQ5JhmlghCGy+XxQ
-    0g5Xvg2jNrVrXr6Y3gdMSTxaILHioKilwd1LE2ctFprQ/sqCgl5Us64glgKYhzYLbH5p
-    oFbA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXvcOeibdLc="
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-    by smtp.strato.de (RZmta 47.39.0 DYNA|AUTH)
-    with ESMTPSA id z28df7y16G2MNjO
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sun, 6 Feb 2022 17:02:22 +0100 (CET)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Eric Biggers <ebiggers@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, simo@redhat.com,
-        Nicolai Stange <nstange@suse.de>
-Subject: Re: [PATCH 0/7] Common entropy source and DRNG management
-Date:   Sun, 06 Feb 2022 17:02:21 +0100
-Message-ID: <2092435.IRzVExRRsL@tauon.chronox.de>
-In-Reply-To: <Yf30GEJi/61RNq8A@gondor.apana.org.au>
-References: <2486550.t9SDvczpPo@positron.chronox.de> <YfQ7FDJqb2zhVcfp@sol.localdomain> <Yf30GEJi/61RNq8A@gondor.apana.org.au>
+        Sun, 6 Feb 2022 22:25:16 -0500
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 06 Feb 2022 19:25:13 PST
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8992BC061A73;
+        Sun,  6 Feb 2022 19:25:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1644204313; x=1675740313;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GreEbN9bxCgqwDOJq88wEmj1GZLM/Ik6W+xfBQPRD0Y=;
+  b=j99kwDuJo2eom7bdaUJzHgTqxG7zfvLrahitlArtSiP4DoXKsvVQkCO3
+   3uFTIoTOSu3kxbA/KcDMsHOdikCh0lBA8OivwM9hgZqTBGQ2u5uI0YL+M
+   KouFAKqFXONAg740kHbRrSbkC0LiM4Y9QBdABrTAh+HGcGp4Ii+meGzM0
+   WOD0lCbIbn7eEOoR3C2eGJA+lPZFZDspHPWaa9bQEzGu+1vDvOlB/Psv2
+   Xf6OTrsLHq/nf+ewqjNmxqmyqZWlpHbQTKmH4nSIGTkvTWXbGtk0Fk8bm
+   lFJZ9CsPrtqwMwL79XxhRD2dmb9u4LCWDOhcESuGFFDe6X5Mb9PETq0vV
+   w==;
+IronPort-SDR: UFH1WsWImFsqwwLj1WuLG3LnumHPkLeqP1aAbx3l2Q+vT74Qb28uaamQIJTD7yn17w+FAzwzZG
+ wixrkeYuu+lgURWUXCvL3rk8GUGjFEuaYHHBrOE5Xc9U58XNJ0shF5+baU7fyPJaBJx/ZQL4nP
+ ORZis4eYaXpt5QRQuOsm3yB43AhiI61o6HqIDYnCrcPBah1C8Sx/NV6qCVfDhqqwbZgpj+oTTI
+ akDcqPA5lrP3gXVEJVjFlfYGO4VNt7wWxx1A4SGlyZZX7wM5zaRVaSVRxae7ngKjt2mL4AL8uo
+ 3jrMHGKLdUEoklfLrOOKe9Ph
+X-IronPort-AV: E=Sophos;i="5.88,348,1635231600"; 
+   d="scan'208";a="152654138"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Feb 2022 20:24:10 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Sun, 6 Feb 2022 20:24:10 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2375.17 via Frontend Transport; Sun, 6 Feb 2022 20:24:07 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <herbert@gondor.apana.org.au>, <robh+dt@kernel.org>
+CC:     <davem@davemloft.net>, <nicolas.ferre@microchip.com>,
+        <claudiu.beznea@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Tudor Ambarus" <tudor.ambarus@microchip.com>
+Subject: [PATCH 0/3] dt-bindings: crypto: Convert atmel-{aes,tdes,sha} to YAML
+Date:   Mon, 7 Feb 2022 05:24:02 +0200
+Message-ID: <20220207032405.70733-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,49 +70,28 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Am Samstag, 5. Februar 2022, 04:50:48 CET schrieb Herbert Xu:
+Convert Atmel AES, TDES and SHA documentation to yaml format. There is one
+binding defined per file. Keeping all bindings under the same yaml does
+not make sense, as these are individual IPs. With the conversion the clock
+and clock-names properties are made mandatory, to reflect how the drivers
+treat them: when these properties are not provided, the drivers return
+error.
 
-Hi Herbert,
+Tudor Ambarus (3):
+  dt-bindings: crypto: Convert Atmel AES to yaml
+  dt-bindings: crypto: Convert Atmel TDES to yaml
+  dt-bindings: crypto: Convert Atmel SHA to yaml
 
-> On Fri, Jan 28, 2022 at 10:51:00AM -0800, Eric Biggers wrote:
-> > > The extraction of the entropy source and DRNG management into its own
-> > > component separates out the security sensitive implementation currently
-> > > found in multiple locations following the strategy found in the crypto
-> > > API where each moving part is separated and encapsulated.
-> > > 
-> > > The current implementation of the ESDM allows an easy addition of new
-> > > entropy sources which are properly encapsulated in self-contained code
-> > > allowing self- contained entropy analyses to be performed for each.
-> > > These entropy sources would provide their seed data completely separate
-> > > from other entropy sources to the DRNG preventing any mutual
-> > > entanglement and thus challenges in the entropy assessment. I have
-> > > additional entropy sources already available that I would like to
-> > > contribute at a later stage. These entropy sources can be enabled,
-> > > disabled or its entropy rate set as needed by vendors depending on
-> > > their entropy source analysis. Proper default values would be used for
-> > > the common case where a vendor does not want to perform its own
-> > > analysis or a distro which want to provide a common kernel binary for
-> > > many users.> 
-> > What is the actual point of this?  The NIST DRBGs are already seeded from
-> > random.c, which is sufficient by itself but doesn't play well with
-> > certifications, and from Jitterentropy which the certification side is
-> > happy with.  And the NIST DRBGs are only present for certification
-> > purposes anyway; all real users use random.c instead.  So what problem
-> > still needs to be solved?
-> Indeed.  Stephan, could you please explain exactly what additional
-> seeding sources are needed over the current jitter+/dev/random sources
-> (and why).  Or even better, add those seeding sources that we must have
-> in your patch series so that they can be evaluated together.
-> 
-> As it stands this patch series seems to be adding a lot of code without
-> any uses.
+ .../devicetree/bindings/crypto/atmel,aes.yaml | 65 ++++++++++++++++++
+ .../devicetree/bindings/crypto/atmel,sha.yaml | 59 ++++++++++++++++
+ .../bindings/crypto/atmel,tdes.yaml           | 63 +++++++++++++++++
+ .../bindings/crypto/atmel-crypto.txt          | 68 -------------------
+ 4 files changed, 187 insertions(+), 68 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/crypto/atmel,aes.yaml
+ create mode 100644 Documentation/devicetree/bindings/crypto/atmel,sha.yaml
+ create mode 100644 Documentation/devicetree/bindings/crypto/atmel,tdes.yaml
+ delete mode 100644 Documentation/devicetree/bindings/crypto/atmel-crypto.txt
 
-Thank you for the clarification. I will provide that information.
-> 
-> Thanks,
-
-
-Ciao
-Stephan
-
+-- 
+2.25.1
 
