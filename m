@@ -2,138 +2,227 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 937E14B0B02
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Feb 2022 11:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D4A4B0D30
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Feb 2022 13:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239905AbiBJKjT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Feb 2022 05:39:19 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51346 "EHLO
+        id S241407AbiBJMFu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Feb 2022 07:05:50 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234608AbiBJKjS (ORCPT
+        with ESMTP id S237431AbiBJMFt (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 10 Feb 2022 05:39:18 -0500
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710B8FD6
-        for <linux-crypto@vger.kernel.org>; Thu, 10 Feb 2022 02:39:19 -0800 (PST)
-Received: by mail-io1-f69.google.com with SMTP id k20-20020a5d91d4000000b0061299fad2fdso3748708ior.21
-        for <linux-crypto@vger.kernel.org>; Thu, 10 Feb 2022 02:39:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=PlW2h6/5s4oCJUA+8z2HFxMVXAg0bk5HdTfwA3/Bxig=;
-        b=tm+1uqu2DgYJJQpLPs3FxrQz3AeFRNH6vMjvXL4e3tITOb0AwZre0G7PerwZm67+B3
-         RQnWMSyu2xqhDUQKbMknkudwu6fkf1844xCL/Py/dVntktzrz4JfYnyjfP4IosuksMED
-         leFv/FxtNkr+HOObRYLOFOD4Ua4DZn6OkpFZpoW+n0qPsf/e2/nGZ2KHdixvTPdPgVdt
-         J+82e6gVZXK0P6oKlFxGQf7KHVlQ9d1GGc4yUFRGjv0BDyCND/wU0sGx7ALAutk/4fQT
-         F8mroHp/uESjdrwzX4/efGJV8xDDs7KGXTzrx+FWLJDuRPLsBUU6S+EJkJxmqczYnMyw
-         urYA==
-X-Gm-Message-State: AOAM532NMUrfzjVVaVEEOHSFIXgvsaTCYvODf2Mx+eostZfO65Nv+B6u
-        bSqaX4TYVKn/6JImUOuwn3aLRfICWJ6UqpOnXtVtI6H0X4H4
-X-Google-Smtp-Source: ABdhPJwxEL/23hYjmK317KjnFqyOg+FpEa4Zg1RMKPM9RssZeBr2k8ArUZHYLItqrnjqj8k/qvGp+ZAFr8N6zjsPiwjAHqw9K6oA
+        Thu, 10 Feb 2022 07:05:49 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17EC111E;
+        Thu, 10 Feb 2022 04:05:50 -0800 (PST)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21ABpfKN031976;
+        Thu, 10 Feb 2022 12:04:01 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e4cb7cmjk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Feb 2022 12:04:01 +0000
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21ABJLH1031188;
+        Thu, 10 Feb 2022 12:04:00 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e4cb7cmhr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Feb 2022 12:04:00 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21ABhrWj022206;
+        Thu, 10 Feb 2022 12:03:58 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma05fra.de.ibm.com with ESMTP id 3e1gvanq1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Feb 2022 12:03:58 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21AC3r4o45875476
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Feb 2022 12:03:53 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 02035A4054;
+        Thu, 10 Feb 2022 12:03:53 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3E4AA405C;
+        Thu, 10 Feb 2022 12:03:48 +0000 (GMT)
+Received: from sig-9-65-78-200.ibm.com (unknown [9.65.78.200])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Feb 2022 12:03:48 +0000 (GMT)
+Received: from ltcimap1.rchland.ibm.com ([unix socket]) by
+ ltcimap1.rchland.ibm.com (Cyrus v2.4.17-Fedora-RPM-2.4.17-15.el7) with
+ LMTPA; Tue, 08 Feb 2022 22:46:15 -0600
+X-Sieve: CMU Sieve 2.4
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by ltcimap1.rchland.ibm.com (Postfix) with ESMTP id 702B57200D45;
+        Tue,  8 Feb 2022 22:46:15 -0600 (CST)
+X-Virus-Scanned: amavisd-new at linux.ibm.com
+X-Spam-Score: -0.109
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,KHOP_HELO_FCRDNS,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
+Received: from ltcimap1.rchland.ibm.com ([127.0.0.1]) by localhost
+ (ltcimap1.rchland.ibm.com [127.0.0.1]) (amavisd-new, port 10024) with LMTP
+ id RYcC9RZqfe6t; Tue,  8 Feb 2022 22:46:13 -0600 (CST)
+Received: from ltcmx2.rchland.ibm.com (ltcmx2.rchland.ibm.com
+ [9.10.229.81]) by ltcimap1.rchland.ibm.com (Postfix) with ESMTP id
+ C4ED17200D26; Tue,  8 Feb 2022 22:46:13 -0600 (CST)
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com
+ [9.57.198.24]) by ltcmx2.rchland.ibm.com (Postfix) with ESMTP id 44D05367;
+ Tue,  8 Feb 2022 22:46:12 -0600 (CST)
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com
+ [9.57.199.110]) by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0)
+ with ESMTP id 2194kBIu40239504 (version=TLSv1/SSLv3
+ cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK); Wed, 9 Feb 2022
+ 04:46:12 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DA0DFAE05F;
+        Wed,  9 Feb 2022 04:46:11 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C35E1AE060;
+        Wed,  9 Feb 2022 04:46:11 +0000 (GMT)
+Received: from ppma02dal.us.ibm.com (unknown [9.209.225.56])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Wed,  9 Feb 2022 04:46:11 +0000 (GMT)
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2194inRK013937;
+        Wed, 9 Feb 2022 04:46:11 GMT
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5]) by ppma02dal.us.ibm.com with ESMTP id 3e3gpyv9uc-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 09 Feb 2022 04:46:11 +0000
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1]) by
+ mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2190oaBg007118;
+ Wed, 9 Feb 2022 04:46:10 GMT
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e3yq2gcq2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Feb 2022 04:46:10 +0000
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1]) (using
+ TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits) key-exchange
+ ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested) by mail.ozlabs.org (Postfix) with ESMTPSA
+ id 4JtnQ60Fbjz4xNq; Wed,  9 Feb 2022 15:46:06 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1644381966;
+        bh=4LBu3b4sqV42JJCmT2RvLfUf47/jOabbpGeO17DWNxg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=VpsRKjTOAuTL4YVFAXqLwlQNTVN2PnFaRNMaDdmekioS+Axih9wqxwuuZXvgF38GV
+         BtlQrTRz2IAQ9QmpujmvPxeEPJBOCKQODVTttnlXUqTA3LNbZRxgAs7FMDYFW7UAzp
+         hNZMjJnJRRBuEQsm/scDVGFl3F1CnxD/UQBFK7HXqfl2FNQM9xzVfhzm6vaSQz1Oui
+         eoQoylhJFl+fMdpPBEWkx0gW9z1nkkfG9Ee4wjyAlpTXz2FASBp3lrsVq34UIp87iV
+         WiyxUBkfMXtIWN/O5RXzGc5uFFcCQQWtagfWwXYs+Xzz/Ci/ixvZSY69tgrW3wLzm6
+         VxO4WOGIITJUw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Michal Suchanek <msuchanek@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        Aaron Tomlin <atomlin@redhat.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org, kexec@lists.infradead.org,
+        Philipp Rudo <prudo@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna <nayna@linux.vnet.ibm.com>, Rob Herring <robh@kernel.org>,
+        linux-s390@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Frank van der Linden <fllinden@amazon.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Daniel Axtens <dja@axtens.net>, buendgen@de.ibm.com,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v5 0/6] KEXEC_SIG with appended signature
+In-Reply-To: <YfBd/EDGUx9UIHcb@bombadil.infradead.org>
+References: <cover.1641900831.git.msuchanek@suse.de>
+ <YfBd/EDGUx9UIHcb@bombadil.infradead.org>
+Date:   Wed, 09 Feb 2022 15:46:05 +1100
+Message-ID: <87pmnwlkaa.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain
+X-Proofpoint-Banner-Trigger: inbound
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-09_01,2022-02-07_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=inbound_notspam policy=inbound score=0
+ priorityscore=0 mlxscore=0 suspectscore=0 adultscore=0 phishscore=0
+ spamscore=0 malwarescore=0 clxscore=266 lowpriorityscore=0 mlxlogscore=811
+ impostorscore=0 bulkscore=0 classifier=spam adjust=-480 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2202090033
+X-TM-AS-GCONF: 00
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+X-Proofpoint-ORIG-GUID: sgISM_EWnI_noxew-AAhi8REcIgE3pOK
+X-Proofpoint-GUID: fs62dQ07YCVy2FuRhMfUGIrBPvbAxd8l
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1544:: with SMTP id j4mr3548120ilu.77.1644489558712;
- Thu, 10 Feb 2022 02:39:18 -0800 (PST)
-Date:   Thu, 10 Feb 2022 02:39:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fbe5bb05d7a78fe6@google.com>
-Subject: [syzbot] KCSAN: data-race in random_recv_done / virtio_read
-From:   syzbot <syzbot+9f00f7796f970f61ce79@syzkaller.appspotmail.com>
-To:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvivier@redhat.com, mpm@selenic.com,
-        mst@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-10_05,2022-02-09_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 bulkscore=0 mlxlogscore=902 phishscore=0 impostorscore=0
+ mlxscore=0 spamscore=0 malwarescore=0 priorityscore=1501 clxscore=1034
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202100066
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello,
+Luis Chamberlain <mcgrof@kernel.org> writes:
+> On Tue, Jan 11, 2022 at 12:37:42PM +0100, Michal Suchanek wrote:
+>> Hello,
+>>=20
+>> This is a refresh of the KEXEC_SIG series.
+>>=20
+>> This adds KEXEC_SIG support on powerpc and deduplicates the code dealing
+>> with appended signatures in the kernel.
+>>=20
+>> powerpc supports IMA_KEXEC but that's an exception rather than the norm.
+>> On the other hand, KEXEC_SIG is portable across platforms.
+>>=20
+>> For distributions to have uniform security features across platforms one
+>> option should be used on all platforms.
+>>=20
+>> Thanks
+>>=20
+>> Michal
+>>=20
+>> Previous revision: https://lore.kernel.org/linuxppc-dev/cover.1637862358=
+.git.msuchanek@suse.de/
+>> Patched kernel tree: https://github.com/hramrach/kernel/tree/kexec_sig
+>>=20
+>> Michal Suchanek (6):
+>>   s390/kexec_file: Don't opencode appended signature check.
+>>   powerpc/kexec_file: Add KEXEC_SIG support.
+>>   kexec_file: Don't opencode appended signature verification.
+>>   module: strip the signature marker in the verification function.
+>>   module: Use key_being_used_for for log messages in
+>>     verify_appended_signature
+>>   module: Move duplicate mod_check_sig users code to mod_parse_sig
+>
+> What tree should this go through? I'd prefer if over through modules
+> tree as it can give a chance for Aaron Tomlin to work with this for his
+> code refactoring of kernel/module*.c to kernel/module/
 
-syzbot found the following issue on:
+Yeah that's fine by me, the arch changes are pretty minimal and unlikely
+to conflict much.
 
-HEAD commit:    f4bc5bbb5fef Merge tag 'nfsd-5.17-2' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=149676d8700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1dcc3374da7c1f7c
-dashboard link: https://syzkaller.appspot.com/bug?extid=9f00f7796f970f61ce79
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+cheers
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9f00f7796f970f61ce79@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KCSAN: data-race in random_recv_done / virtio_read
-
-write to 0xffff88810254d8cc of 4 bytes by interrupt on cpu 1:
- random_recv_done+0x58/0x80 drivers/char/hw_random/virtio-rng.c:45
- vring_interrupt+0x15d/0x180 drivers/virtio/virtio_ring.c:2165
- __handle_irq_event_percpu+0x92/0x450 kernel/irq/handle.c:158
- handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
- handle_irq_event+0x7b/0x110 kernel/irq/handle.c:210
- handle_edge_irq+0x18e/0x5f0 kernel/irq/chip.c:820
- generic_handle_irq_desc include/linux/irqdesc.h:158 [inline]
- handle_irq arch/x86/kernel/irq.c:231 [inline]
- __common_interrupt+0x60/0x100 arch/x86/kernel/irq.c:250
- common_interrupt+0x9a/0xc0 arch/x86/kernel/irq.c:240
- asm_common_interrupt+0x1e/0x40
- preempt_count arch/x86/include/asm/preempt.h:27 [inline]
- check_kcov_mode kernel/kcov.c:166 [inline]
- __sanitizer_cov_trace_pc+0x14/0x60 kernel/kcov.c:200
- zap_pte_range+0x87d/0x10e0 mm/memory.c:1423
- zap_pmd_range mm/memory.c:1490 [inline]
- zap_pud_range mm/memory.c:1519 [inline]
- zap_p4d_range mm/memory.c:1540 [inline]
- unmap_page_range+0x2dc/0x3d0 mm/memory.c:1561
- unmap_single_vma+0x157/0x210 mm/memory.c:1606
- unmap_vmas+0xd0/0x180 mm/memory.c:1638
- exit_mmap+0x261/0x4b0 mm/mmap.c:3178
- __mmput+0x27/0x1b0 kernel/fork.c:1114
- mmput+0x3d/0x50 kernel/fork.c:1135
- exit_mm+0xdb/0x170 kernel/exit.c:507
- do_exit+0x569/0x16a0 kernel/exit.c:793
- do_group_exit+0x8b/0x160 kernel/exit.c:935
- __do_sys_exit_group+0xb/0x10 kernel/exit.c:946
- __se_sys_exit_group+0x5/0x10 kernel/exit.c:944
- __x64_sys_exit_group+0x16/0x20 kernel/exit.c:944
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-write to 0xffff88810254d8cc of 4 bytes by task 30156 on cpu 0:
- request_entropy drivers/char/hw_random/virtio-rng.c:56 [inline]
- copy_data drivers/char/hw_random/virtio-rng.c:74 [inline]
- virtio_read+0x1a0/0x450 drivers/char/hw_random/virtio-rng.c:92
- rng_get_data drivers/char/hw_random/core.c:192 [inline]
- rng_dev_read+0x1b4/0x630 drivers/char/hw_random/core.c:229
- vfs_read+0x1e6/0x750 fs/read_write.c:479
- ksys_read+0xd9/0x190 fs/read_write.c:619
- __do_sys_read fs/read_write.c:629 [inline]
- __se_sys_read fs/read_write.c:627 [inline]
- __x64_sys_read+0x3e/0x50 fs/read_write.c:627
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-value changed: 0x00000040 -> 0x00000000
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 30156 Comm: syz-executor.0 Not tainted 5.17.0-rc3-syzkaller-00043-gf4bc5bbb5fef-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
