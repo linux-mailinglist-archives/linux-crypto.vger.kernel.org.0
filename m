@@ -2,120 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D574B75CA
-	for <lists+linux-crypto@lfdr.de>; Tue, 15 Feb 2022 21:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 801674B7589
+	for <lists+linux-crypto@lfdr.de>; Tue, 15 Feb 2022 21:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242962AbiBOSRz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 15 Feb 2022 13:17:55 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34830 "EHLO
+        id S235944AbiBOS75 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 15 Feb 2022 13:59:57 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237880AbiBOSRw (ORCPT
+        with ESMTP id S243332AbiBOS74 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 15 Feb 2022 13:17:52 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF8C11987F
-        for <linux-crypto@vger.kernel.org>; Tue, 15 Feb 2022 10:17:42 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id v5-20020a17090a4ec500b001b8b702df57so3872700pjl.2
-        for <linux-crypto@vger.kernel.org>; Tue, 15 Feb 2022 10:17:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=rU/cr+2YS83r8ZzfG0ihHyfke5lY7dzNO33vRqwTRo0=;
-        b=BbY3zUMbpsKVLuD6QiFaFpnxej58wpxQPVVGisDcf+K+2coTsFmZNXGoWqBeKoLb1x
-         3ZptFg7el6LpqeSuHR1QjwuSCHfpkEX/T+XcjAHpaQzkvx2kHT7d0+kYGoaayuMfQhPV
-         CAs5kcpK7DDzn/NDlTFukbq1xe316LjUYcWLM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=rU/cr+2YS83r8ZzfG0ihHyfke5lY7dzNO33vRqwTRo0=;
-        b=HMFUr/b3d/ipfEPwspl/pTbHlGUy3bVm02YuP7G6UzoVxS3x13H94vyW2f/JDghsC2
-         LDRhNZ99bzJhTpngSZYhqpzhKAx8Dwhz7yIB7SFTzBfANUy2hIi4iDAugzxgS6QdWnT+
-         UUCPEKg+d97imnQnv79R5m60HOlu9xVQQmtH5n+NBLgVGbIrdljZDeWr/SPqqW3SoVT7
-         j++PRMxbSFTRpsWPAAwT8X27Y9YrE123C7+Cxmt3vTVdmL45CiozrRBKnxOjtGZAbq8W
-         kmRewEySGHg8Sc1vS85n6D9zOjH6s/TRnH++R1WCAWxUW5qTyF4BxXFNHVisN9gZVoSZ
-         RjBg==
-X-Gm-Message-State: AOAM533sPdum3O0VJUmEBHbauPOVdK9+0nJ390+eWDT9Dx891p/EGkIt
-        1ivgBxxgcBxDGAuPEYEGSq+p/A==
-X-Google-Smtp-Source: ABdhPJwjJJkj0fC2gO+FdGjnaisWCk9FKkCf0qazg7PUuY4rrjoW+egyeLOWB+yCEr/MI5qa+9+dbA==
-X-Received: by 2002:a17:902:eb8f:: with SMTP id q15mr235036plg.67.1644949062021;
-        Tue, 15 Feb 2022 10:17:42 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a186sm3157627pgc.70.2022.02.15.10.17.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Feb 2022 10:17:41 -0800 (PST)
-Date:   Tue, 15 Feb 2022 10:17:40 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     GR-QLogic-Storage-Upstream@marvell.com,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-crypto@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, mpi3mr-linuxdrv.pdl@broadcom.com,
-        linux-staging@lists.linux.dev,
-        linux-rpi-kernel@lists.infradead.org, sparmaintainer@unisys.com,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-ext4@vger.kernel.org, linux-acpi@vger.kernel.org,
-        devel@acpica.org, linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        greybus-dev@lists.linaro.org, linux-i3c@lists.infradead.org,
-        linux-rdma@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] treewide: Replace zero-length arrays with
- flexible-array members
-Message-ID: <202202151016.C0471D6E@keescook>
-References: <20220215174743.GA878920@embeddedor>
+        Tue, 15 Feb 2022 13:59:56 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49330EBBBB;
+        Tue, 15 Feb 2022 10:59:46 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C3E781F382;
+        Tue, 15 Feb 2022 18:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1644951584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=5YAUHqgVBs+pDipEZBxQHmXGJ42CBpjYidJwV8WeMtc=;
+        b=jB12KMIUWcSWnbHdoRAisy258SrDEEcRYT8dTOTG+Hg5tNVxFSfXqr5Zj8ZzScvwH143ky
+        on/mKMw1ruWYkkNHOv4NPWlTIotJ5gEv5sK4XQinzEL+kHKvD4H05XiiyccsM+lA9+R6/J
+        OmSg/SQrTi3cpPRhALK+ONanH1LWDmM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1644951584;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=5YAUHqgVBs+pDipEZBxQHmXGJ42CBpjYidJwV8WeMtc=;
+        b=3A8UJ97dC6BgqoV4B9DofBSpEYlz/gEdAmvgGUFg5jmrJV6c7+zPmuel4YnhrRWD8Gsa6m
+        CJGqRCW9oG3vyZBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 45EE31376E;
+        Tue, 15 Feb 2022 18:59:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fVAoDyD4C2L2MwAAMHmgww
+        (envelope-from <pvorel@suse.cz>); Tue, 15 Feb 2022 18:59:44 +0000
+From:   Petr Vorel <pvorel@suse.cz>
+To:     linux-crypto@vger.kernel.org
+Cc:     Petr Vorel <pvorel@suse.cz>, Nicolai Stange <nstange@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>, leitao@debian.org,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
+Subject: [PATCH v2 0/2] vmx-crypto: Add missing dependencies
+Date:   Tue, 15 Feb 2022 19:59:34 +0100
+Message-Id: <20220215185936.15576-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220215174743.GA878920@embeddedor>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Feb 15, 2022 at 11:47:43AM -0600, Gustavo A. R. Silva wrote:
-> There is a regular need in the kernel to provide a way to declare
-> having a dynamically sized set of trailing elements in a structure.
-> Kernel code should always use “flexible array members”[1] for these
-> cases. The older style of one-element or zero-length arrays should
-> no longer be used[2].
-> 
-> This code was transformed with the help of Coccinelle:
-> (next-20220214$ spatch --jobs $(getconf _NPROCESSORS_ONLN) --sp-file script.cocci --include-headers --dir . > output.patch)
-> 
-> @@
-> identifier S, member, array;
-> type T1, T2;
-> @@
-> 
-> struct S {
->   ...
->   T1 member;
->   T2 array[
-> - 0
->   ];
-> };
+Hi,
 
-These all look trivially correct to me. Only two didn't have the end of
-the struct visible in the patch, and checking those showed them to be
-trailing members as well, so:
+[ Cc powerpc list and VMX people this time ]
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+changes v1->v2:
+* new commit: crypto: vmx: Turn CRYPTO_DEV_VMX_ENCRYPT into tristate
+* use "select" instead of "depends on" (Nicolai)
+* drop !CRYPTO_MANAGER_DISABLE_TESTS as the dependency is always (Nicolai)
+
+Petr Vorel (2):
+  crypto: vmx: Turn CRYPTO_DEV_VMX_ENCRYPT into tristate
+  crypto: vmx: Add missing dependencies
+
+ MAINTAINERS                            | 2 +-
+ arch/powerpc/configs/powernv_defconfig | 2 +-
+ arch/powerpc/configs/ppc64_defconfig   | 2 +-
+ arch/powerpc/configs/pseries_defconfig | 2 +-
+ drivers/crypto/Kconfig                 | 6 ------
+ drivers/crypto/vmx/Kconfig             | 8 ++++++--
+ 6 files changed, 10 insertions(+), 12 deletions(-)
 
 -- 
-Kees Cook
+2.35.1
+
