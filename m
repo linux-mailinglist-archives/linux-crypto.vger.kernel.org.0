@@ -2,94 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E014BB5D9
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Feb 2022 10:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639BC4BB69C
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Feb 2022 11:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbiBRJnn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Feb 2022 04:43:43 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50838 "EHLO
+        id S233975AbiBRKQ1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Feb 2022 05:16:27 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231655AbiBRJnn (ORCPT
+        with ESMTP id S232790AbiBRKQ0 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Feb 2022 04:43:43 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4006E23BCF;
-        Fri, 18 Feb 2022 01:43:27 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id k1so13526659wrd.8;
-        Fri, 18 Feb 2022 01:43:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=mS4LgDgn7RWAOaBoEfxml6SAyAPFqdzmOTJ3SaSVOeg=;
-        b=PhqWKMWWgeeQJMoOwP2sGYFnaiME8Py4XuKv/FNLg+oxrBvgIDzFl40h94ciw66Zaz
-         pf285sm3W9ykpH0bXPqgasO0fz01ELbf9U3MObUpmvhS8H1Sp8JNVrIGkJwfFrVCJb17
-         lysDexqtrpQuwQop8Irtmxa+frUY3lWXvzdZAuqUEnQRL3hMfYWRFg/zWE05Gjs3x81C
-         so+6NCG9GFbQuNclXgd5MO0n/mWkyusTQ0vwKm+N7i4iUM8UU+ao4zwbxBDm7xSHP0zX
-         1pX1gs8WXB9y0DZTIbhfmMxJ7eLx7h71Df/uTvwos3woFRVaYzbjvSd9Trin+Hm4gzl4
-         uKEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=mS4LgDgn7RWAOaBoEfxml6SAyAPFqdzmOTJ3SaSVOeg=;
-        b=DBQ/L6EDz73Vck1VSJ3+JuFZFSgFi+q8RSV7gq9VwrnfNkw8hnDBLYVf+bK/Fyw0G0
-         SAnKaZ+q5N2KjJw9+txrlehz/vwhvccZjkK0ajKEa3/N0ch/c+B+xMMxoDptfHKBNko5
-         B0h6spB/q7TnkFNHJ+IMEcBvJgBFEf92lZ9/XA9zVTuNnxPsFgXeOdTZYH3TYvQ9Z+5p
-         m9l3UupcMfYJdPce+k39FQZ2pg/siNj5ZFLmHzhaP1z0RotiFUlYsFHclij32rUWKonk
-         tynB+9UEZF8j9+nBV44YNidiScluaDTSPUfxayBwZtsSSqhzh2WgV0FPrXE+wjNu676o
-         pQjA==
-X-Gm-Message-State: AOAM5304JCca+ByB+0tZxzqVuBn5u4+FPwOZ+PwEbM/DVPpIeTjSU9L0
-        5iVf3HTAAKJfT+QHGMFEnjcV36G8jLs=
-X-Google-Smtp-Source: ABdhPJw0vAAQkT0x994IAxnaYkD6Qnca5fJ5t1ZmQuM0sNSlBj6amqw5jRZoC1o5/oKHQSt0hgqjwQ==
-X-Received: by 2002:a5d:59a6:0:b0:1e8:580f:9f5b with SMTP id p6-20020a5d59a6000000b001e8580f9f5bmr5345961wrr.64.1645177405752;
-        Fri, 18 Feb 2022 01:43:25 -0800 (PST)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id c9sm20846026wrn.51.2022.02.18.01.43.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Feb 2022 01:43:25 -0800 (PST)
-Date:   Fri, 18 Feb 2022 10:43:22 +0100
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Harsha <harsha.harsha@xilinx.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, michals@xilinx.com,
-        saratcha@xilinx.com, harshj@xilinx.com, git@xilinx.com
-Subject: Re: [PATCH V2 2/4] firmware: xilinx: Add ZynqMP SHA API for SHA3
- functionality
-Message-ID: <Yg9qOrjJuttVSetN@Red>
-References: <1645125264-11033-1-git-send-email-harsha.harsha@xilinx.com>
- <1645125264-11033-3-git-send-email-harsha.harsha@xilinx.com>
+        Fri, 18 Feb 2022 05:16:26 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038532AC909;
+        Fri, 18 Feb 2022 02:16:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1645179369; x=1676715369;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=b6jyNc5TsAM7TWNnI+hOWz6Q72t0GMAoWfyakMBe+ag=;
+  b=lcF7sf8RTBUWT2NzSSTqAQvdaiccC/Z+IhL5KuCtqZPuOTbviKoZlAG2
+   q1O1c1EsCtGBDIUwfKHxGuErO2T3e7CvEf+CrO21ySEfNcNIRJRJXGo1e
+   odPaHGxcRpXPu6iXNXfmo3esuFBc6bVtg+S0of5BYRthjq9+SMWmuFesX
+   lfY9/GcUIeX0E1Rv91qzraDkslvMLaG50eSCrWuIbbmeQXnm76/cdVhZD
+   pnSZgN4yW/lWRp0b7A1MXqZoImd5z+oUAWs0vNSrIwRNemtmXu53e1+dV
+   Wc7vALCRsqExqBzAKEKCm4jX6OKn//b9NsZTJunPF9Tv0CZnYcL1xD/ZV
+   A==;
+X-IronPort-AV: E=Sophos;i="5.88,378,1635231600"; 
+   d="scan'208";a="146491107"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Feb 2022 03:16:08 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Fri, 18 Feb 2022 03:16:06 -0700
+Received: from localhost.localdomain (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2375.17 via Frontend Transport; Fri, 18 Feb 2022 03:16:03 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <mpm@selenic.com>, <herbert@gondor.apana.org.au>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <linux-crypto@vger.kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH 0/7] hwrnd: atmel - add runtime pm support
+Date:   Fri, 18 Feb 2022 12:17:05 +0200
+Message-ID: <20220218101712.530576-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1645125264-11033-3-git-send-email-harsha.harsha@xilinx.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Le Fri, Feb 18, 2022 at 12:44:22AM +0530, Harsha a écrit :
-> This patch adds zynqmp_pm_sha_hash API in the ZynqMP firmware to compute
-> SHA3 hash of given data.
-> 
-> Signed-off-by: Harsha <harsha.harsha@xilinx.com>
-> Acked-by: Michal Simek <michal.simek@xilinx.com>
-> ---
+Hi,
 
-Hello
+This series adds runtime PM support for atmel-rng driver. Along with
+this some cleanup and fixes patches were added to the series.
 
-Your signed-off should contain your real name.
-Furthermore why did you drop copyright from previous poster ?
-See https://patchwork.kernel.org/project/linux-crypto/cover/1556793282-17346-1-git-send-email-kalyani.akula@xilinx.com/ for reference.
+Thank you,
+Claudiu Beznea
 
-Furthermore, the previous poster didnt answered my questions about parallel processing and tests.
+Claudiu Beznea (7):
+  hwrng: atmel - add wait for ready support on read
+  hwrnd: atmel - disable trng on failure path
+  hwrnd: atmel - rename enable/disable functions to init/cleanup
+  hwrng: atmel - move set of TRNG_HALFR in atmel_trng_init()
+  hwrnd: atmel - use __maybe_unused and pm_ptr() for pm ops
+  hwrnd: atmel - add runtime pm support
+  hwrnd: atmel - remove extra line
 
-Regards
+ drivers/char/hw_random/atmel-rng.c | 148 ++++++++++++++++++-----------
+ 1 file changed, 91 insertions(+), 57 deletions(-)
+
+-- 
+2.32.0
+
