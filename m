@@ -2,40 +2,40 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA6C4BC42F
-	for <lists+linux-crypto@lfdr.de>; Sat, 19 Feb 2022 02:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 179104BC42B
+	for <lists+linux-crypto@lfdr.de>; Sat, 19 Feb 2022 02:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240901AbiBSA50 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Feb 2022 19:57:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40354 "EHLO
+        id S240795AbiBSA5i (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Feb 2022 19:57:38 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239523AbiBSA4y (ORCPT
+        with ESMTP id S240935AbiBSA5Z (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Feb 2022 19:56:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B674327B9A4
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Feb 2022 16:56:20 -0800 (PST)
+        Fri, 18 Feb 2022 19:57:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B7C0927D693
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Feb 2022 16:56:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645232170;
+        s=mimecast20190719; t=1645232183;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=zPMhp9x1c0LUaXTNjQzx3Ki328/reRSQPGCipmskGY4=;
-        b=R/gHAFJVHQi413rtS+avQkPYQCFa7/Me5Vs159/jPZLTK84abCCoFiBZwqe7d6d/PjhenX
-        mFA0QYnBs/bBrMmqPZghZ3fQ5C4rwNmyeDexZs/3l2nsM+NAJhwMb2PdqUT4p6FWA5j/I1
-        2DyqKSg70paT8FBosclBkeLlpI7Ru0k=
+        bh=yAdt8c3Kx+H+/O3yRynb0JPTBtvJf6iuj3i77jiRv/E=;
+        b=WJ+uEzLyQ6WN6zH23ufzU+ZK7xLjiK1ReDleCXCIX4tU2GtI+44iCDprERigXVgQ7zx42a
+        u9mYqYU6GMKyRqakmbFtpxb5OK4SunoFi0RFUDxV7Q8YluxLgw5z0J/fLf8CtcE7ilP9mn
+        NJvC9nvyqQUkbsYuJWZdKvx1KpnOMgg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-392-yQBzCFbFOsyrrFCvPcd0NQ-1; Fri, 18 Feb 2022 19:56:07 -0500
-X-MC-Unique: yQBzCFbFOsyrrFCvPcd0NQ-1
+ us-mta-475-VXpIlbqxMZCUfEdjOGjxyg-1; Fri, 18 Feb 2022 19:56:19 -0500
+X-MC-Unique: VXpIlbqxMZCUfEdjOGjxyg-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4506E801AA6;
-        Sat, 19 Feb 2022 00:56:04 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 64C331091DA1;
+        Sat, 19 Feb 2022 00:56:16 +0000 (UTC)
 Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-39.pek2.redhat.com [10.72.12.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A731F62D57;
-        Sat, 19 Feb 2022 00:55:52 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D760D62D4E;
+        Sat, 19 Feb 2022 00:56:04 +0000 (UTC)
 From:   Baoquan He <bhe@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, hch@lst.de,
@@ -48,9 +48,9 @@ Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, hch@lst.de,
         agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
         svens@linux.ibm.com, linux-s390@vger.kernel.org, michael@walle.cc,
         linux-i2c@vger.kernel.org, wsa@kernel.org
-Subject: [PATCH 15/22] usb: cdns3: Don't use GFP_DMA32 when calling dma_pool_alloc()
-Date:   Sat, 19 Feb 2022 08:52:14 +0800
-Message-Id: <20220219005221.634-16-bhe@redhat.com>
+Subject: [PATCH 16/22] usb: udc: lpc32xx: Don't use GFP_DMA when calling dma_pool_alloc()
+Date:   Sat, 19 Feb 2022 08:52:15 +0800
+Message-Id: <20220219005221.634-17-bhe@redhat.com>
 In-Reply-To: <20220219005221.634-1-bhe@redhat.com>
 References: <20220219005221.634-1-bhe@redhat.com>
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
@@ -65,26 +65,26 @@ List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
 dma_pool_alloc() uses dma_alloc_coherent() to pre-allocate DMA buffer,
-so it's redundent to specify GFP_DMA32 when calling.
+so it's redundent to specify GFP_DMA when calling.
 
 Signed-off-by: Baoquan He <bhe@redhat.com>
 ---
- drivers/usb/cdns3/cdns3-gadget.c | 2 +-
+ drivers/usb/gadget/udc/lpc32xx_udc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-index c0937d3d663f..6afac25ff2c7 100644
---- a/drivers/usb/cdns3/cdns3-gadget.c
-+++ b/drivers/usb/cdns3/cdns3-gadget.c
-@@ -220,7 +220,7 @@ int cdns3_allocate_trb_pool(struct cdns3_endpoint *priv_ep)
+diff --git a/drivers/usb/gadget/udc/lpc32xx_udc.c b/drivers/usb/gadget/udc/lpc32xx_udc.c
+index bcba5f9bc5a3..d234de1c62b3 100644
+--- a/drivers/usb/gadget/udc/lpc32xx_udc.c
++++ b/drivers/usb/gadget/udc/lpc32xx_udc.c
+@@ -922,7 +922,7 @@ static struct lpc32xx_usbd_dd_gad *udc_dd_alloc(struct lpc32xx_udc *udc)
+ 	dma_addr_t			dma;
+ 	struct lpc32xx_usbd_dd_gad	*dd;
  
- 	if (!priv_ep->trb_pool) {
- 		priv_ep->trb_pool = dma_pool_alloc(priv_dev->eps_dma_pool,
--						   GFP_DMA32 | GFP_ATOMIC,
-+						   GFP_ATOMIC,
- 						   &priv_ep->trb_pool_dma);
+-	dd = dma_pool_alloc(udc->dd_cache, GFP_ATOMIC | GFP_DMA, &dma);
++	dd = dma_pool_alloc(udc->dd_cache, GFP_ATOMIC, &dma);
+ 	if (dd)
+ 		dd->this_dma = dma;
  
- 		if (!priv_ep->trb_pool)
 -- 
 2.17.2
 
