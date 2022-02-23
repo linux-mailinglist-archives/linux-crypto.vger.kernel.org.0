@@ -2,57 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5DE4C0A4E
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Feb 2022 04:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1394C0CBE
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Feb 2022 07:45:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237937AbiBWDc7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Feb 2022 22:32:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
+        id S233018AbiBWGpg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Feb 2022 01:45:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237683AbiBWDcy (ORCPT
+        with ESMTP id S232875AbiBWGpf (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Feb 2022 22:32:54 -0500
-Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2C357B34;
-        Tue, 22 Feb 2022 19:32:27 -0800 (PST)
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1nMiO6-0006wl-PC; Wed, 23 Feb 2022 14:32:23 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 23 Feb 2022 15:32:22 +1200
-Date:   Wed, 23 Feb 2022 15:32:22 +1200
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Kai Ye <yekai13@huawei.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH] crypto: hisilicon/sec - fix the aead software fallback
- for engine
-Message-ID: <YhWqxmqRIO7UA8Gq@gondor.apana.org.au>
-References: <20220219080808.12212-1-yekai13@huawei.com>
+        Wed, 23 Feb 2022 01:45:35 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBFA06D874
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Feb 2022 22:45:08 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8755161484
+        for <linux-crypto@vger.kernel.org>; Wed, 23 Feb 2022 06:45:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB11FC340E7
+        for <linux-crypto@vger.kernel.org>; Wed, 23 Feb 2022 06:45:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645598708;
+        bh=6xg8D/XX6WqodUh2YEOZYBPRCmDxcytkiqDeRi/LDEA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sIwX1W4XS9acxVOtG6Fy3wuMnh2z9X3fhSZbW4Bu2RzeXVu+lrWD7TvVoDTl/5IVX
+         Qe9TK1WWFTPczBxNhY74Leg6jM96e/dks4YBlSCH+Rujsn/zhi9l/H+8ZUtwPcCOVJ
+         bkCuAVkG4FKKw1WCliyxgDvVRc2g5ATARwyS4JHBCvl3wXFhO3yV7SXXJQ6Ar+b/vH
+         myJjplATr0N2IRWuwoRhevijuoQBbU4JlzOFqLcYQsuKJvMR01svf6jDaUvW3DvDIa
+         oHnamT81IZguh8Fjj079+wSuQsUcCvbVXGyNMzi/hUqPhotuRPgU8e8JpDBXilSgLy
+         oDFy+LOIJhFIw==
+Received: by mail-yb1-f171.google.com with SMTP id j12so45959853ybh.8
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Feb 2022 22:45:07 -0800 (PST)
+X-Gm-Message-State: AOAM532CSU9/dM6UFimZ96JiGlVVEj+CkO6hPWpfRzknstzPjOoCSyWJ
+        cCc9LC7zDI4+SvBm85+YzlVyWBKnN6iOAxcTbwg=
+X-Google-Smtp-Source: ABdhPJyUgqPkbXsadF8xEnnF7GCIcnHphT7ekNfN4L68PkcN7f/xTRZWl/E8RlS4QSokjdzpmldx5+GypBXkulsB318=
+X-Received: by 2002:a25:24ce:0:b0:61e:1276:bfcf with SMTP id
+ k197-20020a2524ce000000b0061e1276bfcfmr26619857ybk.299.1645598707010; Tue, 22
+ Feb 2022 22:45:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220219080808.12212-1-yekai13@huawei.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220215105717.184572-1-ardb@kernel.org> <YhWg246ql3Xa0MRR@gondor.apana.org.au>
+In-Reply-To: <YhWg246ql3Xa0MRR@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 23 Feb 2022 07:44:56 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGKtLagHZsZV2KMGNqp3Cn8V6c8CJvLhrFJ63ND33XNqQ@mail.gmail.com>
+Message-ID: <CAMj1kXGKtLagHZsZV2KMGNqp3Cn8V6c8CJvLhrFJ63ND33XNqQ@mail.gmail.com>
+Subject: Re: [PATCH] crypto: crypto_xor - use helpers for unaligned accesses
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Feb 19, 2022 at 04:08:08PM +0800, Kai Ye wrote:
-> Due to the subreq pointer misuse the private context memory. The aead
-> soft crypto occasionally casues the OS panic as setting the 64K page.
-> Here is fix it.
-> 
-> Signed-off-by: Kai Ye <yekai13@huawei.com>
-> ---
->  drivers/crypto/hisilicon/sec2/sec_crypto.c | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
+On Wed, 23 Feb 2022 at 03:50, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Tue, Feb 15, 2022 at 11:57:17AM +0100, Ard Biesheuvel wrote:
+> > Dereferencing a misaligned pointer is undefined behavior in C, and may
+> > result in codegen on architectures such as ARM that trigger alignments
+> > traps and expensive fixups in software.
+> >
+> > Instead, use the get_aligned()/put_aligned() accessors, which are cheap
+> > or even completely free when CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=y.
+> >
+> > In the converse case, the prior alignment checks ensure that the casts
+> > are safe, and so no unaligned accessors are necessary.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  crypto/algapi.c         | 24 +++++++++++++++++++++---
+> >  include/crypto/algapi.h | 11 +++++++++--
+> >  2 files changed, 30 insertions(+), 5 deletions(-)
+>
+> Ard, could you please take a look at the two kbuild reports and
+> see if there is an issue that needs to be resolved?
+>
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+My patch is flawed - I'll fix it and send a v2.
