@@ -2,117 +2,119 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE404C18D9
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Feb 2022 17:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0C44C18A5
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Feb 2022 17:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbiBWQi7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 23 Feb 2022 11:38:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
+        id S231128AbiBWQfQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Feb 2022 11:35:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242969AbiBWQiy (ORCPT
+        with ESMTP id S242667AbiBWQfP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 23 Feb 2022 11:38:54 -0500
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB00C7E9C;
-        Wed, 23 Feb 2022 08:38:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1645634297; x=1677170297;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=z+NrxgTDITMoT3Rx2AO5jzVTn98+WKENiTVzqhfsXOE=;
-  b=jQ9ZMLm9WSLdJa5fLHuebMD088v0uK6zlKQQ+m5f0ES4Nhe3kQlYPlkB
-   hhLfRvcTNb/wsUNlBxN7vtMJw6tnk5HcNEbu4xLUXt2llrm4nIzuR//nI
-   Zkq8JSZTbuZ4z3PyGNP2xfczSlNppiObRQ96a7Jp15zPttFH1i5xD5FGS
-   vGwfR5/VOLGwvHcfKeCtzhHlsyMOYZPC1KvyuFvIGSD1TFs/4TxyiITB5
-   Js6zdfco94PeaE56hIwgFGuV9lKlnrnPtm3kj+B7LPLBcVInq6gyymy7t
-   q/fHjRvV7sul0o7gLFcjt1xma70l1gctYh/3hguLmv+20V18sPHOh7r50
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10267"; a="312730696"
-X-IronPort-AV: E=Sophos;i="5.88,391,1635231600"; 
-   d="scan'208";a="312730696"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2022 08:26:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,391,1635231600"; 
-   d="scan'208";a="607109146"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 23 Feb 2022 08:26:04 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 9BD343BC; Wed, 23 Feb 2022 18:26:21 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH v2 1/1] crypto: cavium/nitrox - don't cast parameter in bit operations
-Date:   Wed, 23 Feb 2022 18:26:20 +0200
-Message-Id: <20220223162620.44307-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 23 Feb 2022 11:35:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 180E350E0F
+        for <linux-crypto@vger.kernel.org>; Wed, 23 Feb 2022 08:34:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1645634087;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nQ3OobjVOllFjF//341g+8FVMNuOOL65pOBy6n0VyaU=;
+        b=Ejj2iU4cZ/2qtJPBUiHrCiWJ7Qm1ARp14iPAWckKRRG7uYyZ1RsXc6U3UlHe5mVi0wsEkm
+        HmoivDhmm5y8UcYHjfUi/sS6Po1SYvd3KFL82ZaOx2ibrYGsYld9k6nvNhpHuQkRe6FPk9
+        agdZKBpV80/o9Oohwkz8DCssXw99BQo=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-178-zmg8bS27N5yPPHufbecXOA-1; Wed, 23 Feb 2022 11:34:46 -0500
+X-MC-Unique: zmg8bS27N5yPPHufbecXOA-1
+Received: by mail-ot1-f72.google.com with SMTP id l23-20020a056830239700b005ad40210ca2so10612907ots.3
+        for <linux-crypto@vger.kernel.org>; Wed, 23 Feb 2022 08:34:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=nQ3OobjVOllFjF//341g+8FVMNuOOL65pOBy6n0VyaU=;
+        b=rfkKyHA6BzbAf0W6MHTs4pl4WR92jqvKyTbTBWhCEoAqFzDNDwLNTI+ugBRRL3kRkl
+         WND1cBN+tXYzEImBQyijuQyWnPfkieWMmcvpX3Xu4It5v7eSgYV+mL5bdPXB2tm6IYRJ
+         G1iZ8Xy81vbCr+RHsoGLgED3wuD95/+1Eyyls0S0mYVLtEBRuxC1a8lmOgCQlZwhZPes
+         HqzfWhZ6HYQdd3eLUXg0FFITmb7Dqc2j/2Vojr9lPa2b6QGOYyaTp4+7bBvtL6S0nEfD
+         4SVOlWils0Qla05RW6eqdazQhALao5RVG/P3zPvNwfwcWnRp/OLv3ou/8zahw6Kf/2CE
+         B6Og==
+X-Gm-Message-State: AOAM530u7R3nBvJCl7YjYPY5Ls/DhbssfyFPHGTJsnAG0b0dxroPlpPH
+        IrQx6CFiNJQwTElvXIcWVrSwMqvIA8+rftj6vrEqCYyoCagyrH/3/ib4aDwT2OMqZnSkmGahV8x
+        XEVJryPGg+Quc8UvIwiBqNob0
+X-Received: by 2002:a54:4085:0:b0:2d4:6f0b:f3b7 with SMTP id i5-20020a544085000000b002d46f0bf3b7mr258687oii.148.1645634085370;
+        Wed, 23 Feb 2022 08:34:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxaP/1ZvmMsLm7zZq6HfYZWjNtio48LTCUjFpR9oZZdGxGMhkpLSdC41ujeIjXVdKBnwi0P6A==
+X-Received: by 2002:a54:4085:0:b0:2d4:6f0b:f3b7 with SMTP id i5-20020a544085000000b002d46f0bf3b7mr258680oii.148.1645634085157;
+        Wed, 23 Feb 2022 08:34:45 -0800 (PST)
+Received: from redhat.com ([38.15.36.239])
+        by smtp.gmail.com with ESMTPSA id s9sm55235otg.6.2022.02.23.08.34.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Feb 2022 08:34:44 -0800 (PST)
+Date:   Wed, 23 Feb 2022 09:34:43 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, cohuck@redhat.com,
+        mgurtovoy@nvidia.com, yishaih@nvidia.com, linuxarm@huawei.com,
+        liulongfang@huawei.com, prime.zeng@hisilicon.com,
+        jonathan.cameron@huawei.com, wangzhou1@hisilicon.com
+Subject: Re: [PATCH v5 7/8] hisi_acc_vfio_pci: Add support for VFIO live
+ migration
+Message-ID: <20220223093443.367ee531.alex.williamson@redhat.com>
+In-Reply-To: <20220223005251.GJ10061@nvidia.com>
+References: <20220221114043.2030-1-shameerali.kolothum.thodi@huawei.com>
+        <20220221114043.2030-8-shameerali.kolothum.thodi@huawei.com>
+        <20220223005251.GJ10061@nvidia.com>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-While in this particular case it would not be a (critical) issue,
-the pattern itself is bad and error prone in case the location
-of the parameter is changed.
+On Tue, 22 Feb 2022 20:52:51 -0400
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-Don't cast parameter to unsigned long pointer in the bit operations.
-Instead copy to a local variable on stack of a proper type and use.
+> On Mon, Feb 21, 2022 at 11:40:42AM +0000, Shameer Kolothum wrote:
+> 
+> > +	/*
+> > +	 * ACC VF dev BAR2 region consists of both functional register space
+> > +	 * and migration control register space. For migration to work, we
+> > +	 * need access to both. Hence, we map the entire BAR2 region here.
+> > +	 * But from a security point of view, we restrict access to the
+> > +	 * migration control space from Guest(Please see mmap/ioctl/read/write
+> > +	 * override functions).
+> > +	 *
+> > +	 * Also the HiSilicon ACC VF devices supported by this driver on
+> > +	 * HiSilicon hardware platforms are integrated end point devices
+> > +	 * and has no capability to perform PCIe P2P.  
+> 
+> If that is the case why not implement the RUNNING_P2P as well as a
+> NOP?
+> 
+> Alex expressed concerned about proliferation of non-P2P devices as it
+> complicates qemu to support mixes
 
-Fixes: cf718eaa8f9b ("crypto: cavium/nitrox - Enabled Mailbox support")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: fixed typo (LKP, Herbert)
- drivers/crypto/cavium/nitrox/nitrox_mbx.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+I read the above as more of a statement about isolation, ie. grouping.
+Given that all DMA from the device is translated by the IOMMU, how is
+it possible that a device can entirely lack p2p support, or even know
+that the target address post-translation is to a peer device rather
+than system memory.  If this is the case, it sounds like a restriction
+of the SMMU not supporting translations that reflect back to the I/O
+bus rather than a feature of the device itself.  Thanks,
 
-diff --git a/drivers/crypto/cavium/nitrox/nitrox_mbx.c b/drivers/crypto/cavium/nitrox/nitrox_mbx.c
-index 2e9c0d214363..9e7308e39b30 100644
---- a/drivers/crypto/cavium/nitrox/nitrox_mbx.c
-+++ b/drivers/crypto/cavium/nitrox/nitrox_mbx.c
-@@ -1,4 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <linux/bitmap.h>
- #include <linux/workqueue.h>
- 
- #include "nitrox_csr.h"
-@@ -120,6 +121,7 @@ static void pf2vf_resp_handler(struct work_struct *work)
- 
- void nitrox_pf2vf_mbox_handler(struct nitrox_device *ndev)
- {
-+	DECLARE_BITMAP(csr, BITS_PER_TYPE(u64));
- 	struct nitrox_vfdev *vfdev;
- 	struct pf2vf_work *pfwork;
- 	u64 value, reg_addr;
-@@ -129,7 +131,8 @@ void nitrox_pf2vf_mbox_handler(struct nitrox_device *ndev)
- 	/* loop for VF(0..63) */
- 	reg_addr = NPS_PKT_MBOX_INT_LO;
- 	value = nitrox_read_csr(ndev, reg_addr);
--	for_each_set_bit(i, (const unsigned long *)&value, BITS_PER_LONG) {
-+	bitmap_from_u64(csr, value);
-+	for_each_set_bit(i, csr, BITS_PER_TYPE(csr)) {
- 		/* get the vfno from ring */
- 		vfno = RING_TO_VFNO(i, ndev->iov.max_vf_queues);
- 		vfdev = ndev->iov.vfdev + vfno;
-@@ -151,7 +154,8 @@ void nitrox_pf2vf_mbox_handler(struct nitrox_device *ndev)
- 	/* loop for VF(64..127) */
- 	reg_addr = NPS_PKT_MBOX_INT_HI;
- 	value = nitrox_read_csr(ndev, reg_addr);
--	for_each_set_bit(i, (const unsigned long *)&value, BITS_PER_LONG) {
-+	bitmap_from_u64(csr, value);
-+	for_each_set_bit(i, csr, BITS_PER_TYPE(csr)) {
- 		/* get the vfno from ring */
- 		vfno = RING_TO_VFNO(i + 64, ndev->iov.max_vf_queues);
- 		vfdev = ndev->iov.vfdev + vfno;
--- 
-2.34.1
+Alex
 
