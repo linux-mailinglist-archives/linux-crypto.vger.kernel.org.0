@@ -2,39 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E26044C0A37
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Feb 2022 04:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC04E4C0A48
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Feb 2022 04:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237877AbiBWDaH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Feb 2022 22:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
+        id S233182AbiBWDcO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 22 Feb 2022 22:32:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237874AbiBWDaG (ORCPT
+        with ESMTP id S235270AbiBWDcO (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Feb 2022 22:30:06 -0500
-X-Greylist: delayed 1894 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 22 Feb 2022 19:29:40 PST
+        Tue, 22 Feb 2022 22:32:14 -0500
 Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0058639141;
-        Tue, 22 Feb 2022 19:29:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A132D2DA80
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Feb 2022 19:31:47 -0800 (PST)
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1nMhrU-0006Db-0w; Wed, 23 Feb 2022 13:58:41 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 23 Feb 2022 14:58:40 +1200
-Date:   Wed, 23 Feb 2022 14:58:39 +1200
+        id 1nMiNQ-0006vK-8K; Wed, 23 Feb 2022 14:31:41 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 23 Feb 2022 15:31:40 +1200
+Date:   Wed, 23 Feb 2022 15:31:40 +1200
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Petr Vorel <pvorel@suse.cz>
-Cc:     linux-crypto@vger.kernel.org, Nicolai Stange <nstange@suse.de>,
-        leitao@debian.org, Nayna Jain <nayna@linux.ibm.com>,
-        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] crypto: vmx - add missing dependencies
-Message-ID: <YhWi3xAOXlF+tKan@gondor.apana.org.au>
-References: <20220217105751.6330-1-pvorel@suse.cz>
- <20220217105751.6330-3-pvorel@suse.cz>
+To:     Harman Kalra <hkalra@marvell.com>
+Cc:     Arnaud Ebalard <arno@natisbad.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Srujana Challa <schalla@marvell.com>,
+        linux-crypto@vger.kernel.org, jerinj@marvell.com,
+        sgoutham@marvell.com
+Subject: Re: [PATCH] crypto: octeontx2 - add synchronization between mailbox
+ accesses
+Message-ID: <YhWqnBOO5eHOusqs@gondor.apana.org.au>
+References: <20220204124601.3617217-1-hkalra@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220217105751.6330-3-pvorel@suse.cz>
+In-Reply-To: <20220204124601.3617217-1-hkalra@marvell.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -44,47 +44,25 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 11:57:51AM +0100, Petr Vorel wrote:
-> vmx-crypto module depends on CRYPTO_AES, CRYPTO_CBC, CRYPTO_CTR or
-> CRYPTO_XTS, thus add them.
+On Fri, Feb 04, 2022 at 06:16:01PM +0530, Harman Kalra wrote:
+> Since there are two workqueues implemented in CPTPF driver - one
+> for handling mailbox requests from VFs and another for handling FLR.
+> In both cases PF driver will forward the request to AF driver by
+> writing to mailbox memory. A race condition may arise if two
+> simultaneous requests are written to mailbox memory. Introducing
+> locking mechanism to maintain synchronization between multiple
+> mailbox accesses.
 > 
-> These dependencies are likely to be enabled, but if
-> CRYPTO_DEV_VMX=y && !CRYPTO_MANAGER_DISABLE_TESTS
-> and either of CRYPTO_AES, CRYPTO_CBC, CRYPTO_CTR or CRYPTO_XTS is built
-> as module or disabled, alg_test() from crypto/testmgr.c complains during
-> boot about failing to allocate the generic fallback implementations
-> (2 == ENOENT):
-> 
-> [    0.540953] Failed to allocate xts(aes) fallback: -2
-> [    0.541014] alg: skcipher: failed to allocate transform for p8_aes_xts: -2
-> [    0.541120] alg: self-tests for p8_aes_xts (xts(aes)) failed (rc=-2)
-> [    0.544440] Failed to allocate ctr(aes) fallback: -2
-> [    0.544497] alg: skcipher: failed to allocate transform for p8_aes_ctr: -2
-> [    0.544603] alg: self-tests for p8_aes_ctr (ctr(aes)) failed (rc=-2)
-> [    0.547992] Failed to allocate cbc(aes) fallback: -2
-> [    0.548052] alg: skcipher: failed to allocate transform for p8_aes_cbc: -2
-> [    0.548156] alg: self-tests for p8_aes_cbc (cbc(aes)) failed (rc=-2)
-> [    0.550745] Failed to allocate transformation for 'aes': -2
-> [    0.550801] alg: cipher: Failed to load transform for p8_aes: -2
-> [    0.550892] alg: self-tests for p8_aes (aes) failed (rc=-2)
-> 
-> Fixes: c07f5d3da643 ("crypto: vmx - Adding support for XTS")
-> Fixes: d2e3ae6f3aba ("crypto: vmx - Enabling VMX module for PPC64")
-> 
-> Suggested-by: Nicolai Stange <nstange@suse.de>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> Signed-off-by: Harman Kalra <hkalra@marvell.com>
 > ---
-> changes v2->v3:
-> * more less the same, just in drivers/crypto/Kconfig (previously it was
->   in drivers/crypto/vmx/Kconfig)
-> * change commit subject to be compatible
-> 
->  drivers/crypto/Kconfig | 4 ++++
->  1 file changed, 4 insertions(+)
+>  .../marvell/octeontx2/otx2_cpt_common.h       |  1 +
+>  .../marvell/octeontx2/otx2_cpt_mbox_common.c  | 14 +++++++++++
+>  drivers/crypto/marvell/octeontx2/otx2_cptpf.h |  1 +
+>  .../marvell/octeontx2/otx2_cptpf_main.c       | 21 ++++++++++-------
+>  .../marvell/octeontx2/otx2_cptpf_mbox.c       | 23 ++++++++++++++-----
+>  5 files changed, 46 insertions(+), 14 deletions(-)
 
-Please respin this patch to add the selects to the existing tristate.
-
-Thanks,
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
