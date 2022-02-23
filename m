@@ -2,35 +2,34 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E64824C099C
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Feb 2022 03:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C414C09AA
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Feb 2022 03:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234474AbiBWCra (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Feb 2022 21:47:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50290 "EHLO
+        id S233587AbiBWCue (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 22 Feb 2022 21:50:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237733AbiBWCrU (ORCPT
+        with ESMTP id S233116AbiBWCud (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Feb 2022 21:47:20 -0500
+        Tue, 22 Feb 2022 21:50:33 -0500
 Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1E8193F5;
-        Tue, 22 Feb 2022 18:46:15 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F3C4D609
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Feb 2022 18:50:06 -0800 (PST)
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1nMhfM-00060X-S4; Wed, 23 Feb 2022 13:46:10 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 23 Feb 2022 14:46:08 +1200
-Date:   Wed, 23 Feb 2022 14:46:08 +1200
+        id 1nMhj9-00067c-Mt; Wed, 23 Feb 2022 13:50:04 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 23 Feb 2022 14:50:03 +1200
+Date:   Wed, 23 Feb 2022 14:50:03 +1200
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     mpm@selenic.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH -next] hwrng: core: Remove duplicated include in core.c
-Message-ID: <YhWf8ANo+yyLpIYi@gondor.apana.org.au>
-References: <20220215005505.80430-1-yang.lee@linux.alibaba.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-crypto@vger.kernel.org, ebiggers@kernel.org
+Subject: Re: [PATCH] crypto: crypto_xor - use helpers for unaligned accesses
+Message-ID: <YhWg246ql3Xa0MRR@gondor.apana.org.au>
+References: <20220215105717.184572-1-ardb@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220215005505.80430-1-yang.lee@linux.alibaba.com>
+In-Reply-To: <20220215105717.184572-1-ardb@kernel.org>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -40,30 +39,27 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Feb 15, 2022 at 08:55:05AM +0800, Yang Li wrote:
-> Fix following includecheck warning:
-> ./drivers/char/hw_random/core.c: linux/random.h is included more than
-> once.
+On Tue, Feb 15, 2022 at 11:57:17AM +0100, Ard Biesheuvel wrote:
+> Dereferencing a misaligned pointer is undefined behavior in C, and may
+> result in codegen on architectures such as ARM that trigger alignments
+> traps and expensive fixups in software.
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> Instead, use the get_aligned()/put_aligned() accessors, which are cheap
+> or even completely free when CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=y.
+> 
+> In the converse case, the prior alignment checks ensure that the casts
+> are safe, and so no unaligned accessors are necessary.
+> 
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 > ---
->  drivers/char/hw_random/core.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/char/hw_random/core.c b/drivers/char/hw_random/core.c
-> index be2953aa5145..94626f533361 100644
-> --- a/drivers/char/hw_random/core.c
-> +++ b/drivers/char/hw_random/core.c
-> @@ -21,7 +21,6 @@
->  #include <linux/sched/signal.h>
->  #include <linux/miscdevice.h>
->  #include <linux/module.h>
-> -#include <linux/random.h>
+>  crypto/algapi.c         | 24 +++++++++++++++++++++---
+>  include/crypto/algapi.h | 11 +++++++++--
+>  2 files changed, 30 insertions(+), 5 deletions(-)
 
-This file does not appear to have been included twice.
+Ard, could you please take a look at the two kbuild reports and
+see if there is an issue that needs to be resolved?
 
-Cheers,
+Thanks,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
