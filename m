@@ -2,52 +2,70 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CCA4C6553
-	for <lists+linux-crypto@lfdr.de>; Mon, 28 Feb 2022 10:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E644C6570
+	for <lists+linux-crypto@lfdr.de>; Mon, 28 Feb 2022 10:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbiB1JEq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 28 Feb 2022 04:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
+        id S234198AbiB1JJo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 28 Feb 2022 04:09:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234282AbiB1JEN (ORCPT
+        with ESMTP id S233379AbiB1JJn (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 28 Feb 2022 04:04:13 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32AD342A3F;
-        Mon, 28 Feb 2022 01:03:18 -0800 (PST)
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4K6ZD206Snz67ySD;
-        Mon, 28 Feb 2022 17:03:14 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Mon, 28 Feb 2022 10:03:15 +0100
-Received: from A2006125610.china.huawei.com (10.47.94.1) by
- lhreml710-chm.china.huawei.com (10.201.108.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Mon, 28 Feb 2022 09:03:08 +0000
-From:   Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>
-CC:     <alex.williamson@redhat.com>, <jgg@nvidia.com>,
-        <cohuck@redhat.com>, <mgurtovoy@nvidia.com>, <yishaih@nvidia.com>,
-        <linuxarm@huawei.com>, <liulongfang@huawei.com>,
-        <prime.zeng@hisilicon.com>, <jonathan.cameron@huawei.com>,
-        <wangzhou1@hisilicon.com>
-Subject: [PATCH v6 10/10] hisi_acc_vfio_pci: Use its own PCI reset_done error handler
-Date:   Mon, 28 Feb 2022 09:01:21 +0000
-Message-ID: <20220228090121.1903-11-shameerali.kolothum.thodi@huawei.com>
-X-Mailer: git-send-email 2.12.0.windows.1
-In-Reply-To: <20220228090121.1903-1-shameerali.kolothum.thodi@huawei.com>
-References: <20220228090121.1903-1-shameerali.kolothum.thodi@huawei.com>
+        Mon, 28 Feb 2022 04:09:43 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C476E49CA9
+        for <linux-crypto@vger.kernel.org>; Mon, 28 Feb 2022 01:09:04 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id u3so19114907ybh.5
+        for <linux-crypto@vger.kernel.org>; Mon, 28 Feb 2022 01:09:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=benyossef-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FiyRI5DHlb96l/+rmBXOae4F7ATJ/xLo/4ohoO57pkc=;
+        b=cdKByohAsWXJXwPllDc7pyrfXAVLilSsZKbLHuCjxbOyvB0D8A+9rZpwdn3Ok3JVdy
+         PMne06PyJIyLBNmyxaAAbL3PIWzSkzQ2rTLaihsWtB/oZZmnuOCpgC+R0EUohg9BUTX9
+         1Zx/pyDlo8vGUrXneQhecsXYiesuPwo6XRzNYQ3zTU2lVUuRukRyKQBbyKSX8ExV9iEJ
+         AAIy0Sz7kf+zKkLoXLKUA1pQm7UYHb49/LL+dNqz1DWEHFk60qIJC8M2GOK++nRL36qR
+         mBsHrQvFixzpSEB6IVw63u3qpS0j/IzueLYptj1un7eNwjT+GacOaCx3yOHEMIs/qXFG
+         i0Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FiyRI5DHlb96l/+rmBXOae4F7ATJ/xLo/4ohoO57pkc=;
+        b=cChp30GX26bViMCXmM6MIwAUJ8e1hn5LIXb0vVonkDXlcjUHXyj4UMDQ6X9hHV+yW7
+         dIC+JaPJ3n+hmEuH5QMvfX+z432ckLoxjHotxqgZFTodKuQJphdugcnxIuIbUylP3K42
+         xnx3CheGeiDYddQH86zBJEEYGk0nnlo9FHcj4xnu+CY1MH9Ge6HEbAHCMTIIDOOPPfdV
+         UMXwWGBaZSzkvfM+3UkR2NYW1FRgUB45/IuksNi6CIpagXo5Xs233Zmis59uu/VRPBcg
+         kgWrSF3ADmY+rZ62bvy54eAHDNB6b3kNFjjtoSbEo9/jFxlJOyqM8UK3SMdj+YgGwq+B
+         RKoA==
+X-Gm-Message-State: AOAM5332Djg8tHcFgyrxt8iil+qcWjDuZcJbGRmAgWy0Aj//rRKb2VwN
+        ljCFMbdwPdQw3dlmYG7MuU3u5y4WHin+TEkCEVyQ4SyPk3A=
+X-Google-Smtp-Source: ABdhPJxi5xP1NReREnqaUApMZPGYKwblM7pKFPpW8ybZdTK+TGL3WH1MfRBRieseBU2tUW8obscPn0cMtmzcquy83zg=
+X-Received: by 2002:a25:5047:0:b0:61a:ea8e:cc6d with SMTP id
+ e68-20020a255047000000b0061aea8ecc6dmr17403314ybb.65.1646039343950; Mon, 28
+ Feb 2022 01:09:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.47.94.1]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+References: <20220223080400.139367-1-gilad@benyossef.com> <Yhbjq3cVsMVUQLio@sol.localdomain>
+ <YhblA1qQ9XLb2nmO@sol.localdomain> <CAOtvUMfFhQABmmZe7EH-o=ULEChm_t=KY7ORBRgm94O=1MiuFw@mail.gmail.com>
+ <YhfWzLBq2A2nr5Ey@sol.localdomain> <CAOtvUMcDcouMPmVUYpYEPdxPS+7_r9S_OXz1FR5tQJM6hWzRmA@mail.gmail.com>
+In-Reply-To: <CAOtvUMcDcouMPmVUYpYEPdxPS+7_r9S_OXz1FR5tQJM6hWzRmA@mail.gmail.com>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Mon, 28 Feb 2022 11:09:05 +0200
+Message-ID: <CAOtvUMdX2N9XcBV81rSKz=orZ-3XHWW8ChXnuKAeiAsQy5P_Vg@mail.gmail.com>
+Subject: Re: [PATCH] crypto: drbg: fix crypto api abuse
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ofir Drang <ofir.drang@arm.com>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        stable <stable@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,133 +73,35 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Register private handler for pci_error_handlers.reset_done and update
-state accordingly.
+Hi,
 
-Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
----
- .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 56 ++++++++++++++++++-
- .../vfio/pci/hisilicon/hisi_acc_vfio_pci.h    |  4 +-
- 2 files changed, 56 insertions(+), 4 deletions(-)
+On Sun, Feb 27, 2022 at 12:12 PM Gilad Ben-Yossef <gilad@benyossef.com> wro=
+te:
+...
 
-diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
-index ce57c230d1a0..cdd278d6be11 100644
---- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
-+++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
-@@ -868,6 +868,26 @@ hisi_acc_vf_set_device_state(struct hisi_acc_vf_core_device *hisi_acc_vdev,
- 	return ERR_PTR(-EINVAL);
- }
- 
-+/*
-+ * This function is called in all state_mutex unlock cases to
-+ * handle a 'deferred_reset' if exists.
-+ */
-+static void hisi_acc_vf_state_mutex_unlock(struct hisi_acc_vf_core_device *hisi_acc_vdev)
-+{
-+again:
-+	spin_lock(&hisi_acc_vdev->reset_lock);
-+	if (hisi_acc_vdev->deferred_reset) {
-+		hisi_acc_vdev->deferred_reset = false;
-+		spin_unlock(&hisi_acc_vdev->reset_lock);
-+		hisi_acc_vdev->vf_qm_state = QM_NOT_READY;
-+		hisi_acc_vdev->mig_state = VFIO_DEVICE_STATE_RUNNING;
-+		hisi_acc_vf_disable_fds(hisi_acc_vdev);
-+		goto again;
-+	}
-+	mutex_unlock(&hisi_acc_vdev->state_mutex);
-+	spin_unlock(&hisi_acc_vdev->reset_lock);
-+}
-+
- static struct file *
- hisi_acc_vfio_pci_set_device_state(struct vfio_device *vdev,
- 				   enum vfio_device_mig_state new_state)
-@@ -898,7 +918,7 @@ hisi_acc_vfio_pci_set_device_state(struct vfio_device *vdev,
- 			break;
- 		}
- 	}
--	mutex_unlock(&hisi_acc_vdev->state_mutex);
-+	hisi_acc_vf_state_mutex_unlock(hisi_acc_vdev);
- 	return res;
- }
- 
-@@ -911,10 +931,35 @@ hisi_acc_vfio_pci_get_device_state(struct vfio_device *vdev,
- 
- 	mutex_lock(&hisi_acc_vdev->state_mutex);
- 	*curr_state = hisi_acc_vdev->mig_state;
--	mutex_unlock(&hisi_acc_vdev->state_mutex);
-+	hisi_acc_vf_state_mutex_unlock(hisi_acc_vdev);
- 	return 0;
- }
- 
-+static void hisi_acc_vf_pci_aer_reset_done(struct pci_dev *pdev)
-+{
-+	struct hisi_acc_vf_core_device *hisi_acc_vdev = dev_get_drvdata(&pdev->dev);
-+
-+	if (hisi_acc_vdev->core_device.vdev.migration_flags !=
-+				VFIO_MIGRATION_STOP_COPY)
-+		return;
-+
-+	/*
-+	 * As the higher VFIO layers are holding locks across reset and using
-+	 * those same locks with the mm_lock we need to prevent ABBA deadlock
-+	 * with the state_mutex and mm_lock.
-+	 * In case the state_mutex was taken already we defer the cleanup work
-+	 * to the unlock flow of the other running context.
-+	 */
-+	spin_lock(&hisi_acc_vdev->reset_lock);
-+	hisi_acc_vdev->deferred_reset = true;
-+	if (!mutex_trylock(&hisi_acc_vdev->state_mutex)) {
-+		spin_unlock(&hisi_acc_vdev->reset_lock);
-+		return;
-+	}
-+	spin_unlock(&hisi_acc_vdev->reset_lock);
-+	hisi_acc_vf_state_mutex_unlock(hisi_acc_vdev);
-+}
-+
- static int hisi_acc_vf_qm_init(struct hisi_acc_vf_core_device *hisi_acc_vdev)
- {
- 	struct vfio_pci_core_device *vdev = &hisi_acc_vdev->core_device;
-@@ -1257,12 +1302,17 @@ static const struct pci_device_id hisi_acc_vfio_pci_table[] = {
- 
- MODULE_DEVICE_TABLE(pci, hisi_acc_vfio_pci_table);
- 
-+static const struct pci_error_handlers hisi_acc_vf_err_handlers = {
-+	.reset_done = hisi_acc_vf_pci_aer_reset_done,
-+	.error_detected = vfio_pci_core_aer_err_detected,
-+};
-+
- static struct pci_driver hisi_acc_vfio_pci_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = hisi_acc_vfio_pci_table,
- 	.probe = hisi_acc_vfio_pci_probe,
- 	.remove = hisi_acc_vfio_pci_remove,
--	.err_handler = &vfio_pci_core_err_handlers,
-+	.err_handler = &hisi_acc_vf_err_handlers,
- };
- 
- module_pci_driver(hisi_acc_vfio_pci_driver);
-diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
-index 51bc7e92a776..6c18f7c74f34 100644
---- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
-+++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
-@@ -96,6 +96,7 @@ struct hisi_acc_vf_migration_file {
- struct hisi_acc_vf_core_device {
- 	struct vfio_pci_core_device core_device;
- 	u8 match_done:1;
-+	u8 deferred_reset:1;
- 	/* for migration state */
- 	struct mutex state_mutex;
- 	enum vfio_device_mig_state mig_state;
-@@ -105,7 +106,8 @@ struct hisi_acc_vf_core_device {
- 	struct hisi_qm vf_qm;
- 	u32 vf_qm_state;
- 	int vf_id;
--
-+	/* for reset handler */
-+	spinlock_t reset_lock;
- 	struct hisi_acc_vf_migration_file resuming_migf;
- 	struct hisi_acc_vf_migration_file saving_migf;
- };
--- 
-2.25.1
 
+>
+> I think the right thing to do right now is to verify that we indeed
+> have a general issue and not something specific to one singular
+> platform
+> So the question becomes - do indeed the DMA api forbits aliased
+> mappings and if so, under what conditions?
+>
+> Any ideas on how to check this?
+
+OK, I've looked into this further and I think I was wrong.
+The DMA api doesn't like overlapping writable mappings, but it seems
+an overlapping read-only and writable mapping are fine.
+If so I can indeed resolve this in the driver code by better
+specifying DMA direction. Let me give this a go and let's drop this
+patch in the meantime.
+
+Thank you and sorry for the noise.
+
+Gilad
+
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
+
+values of =CE=B2 will give rise to dom!
