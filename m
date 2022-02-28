@@ -2,119 +2,96 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 129A64C77DC
-	for <lists+linux-crypto@lfdr.de>; Mon, 28 Feb 2022 19:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBC04C77FF
+	for <lists+linux-crypto@lfdr.de>; Mon, 28 Feb 2022 19:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240568AbiB1SeU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 28 Feb 2022 13:34:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38754 "EHLO
+        id S240539AbiB1SjK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 28 Feb 2022 13:39:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240546AbiB1Sdl (ORCPT
+        with ESMTP id S239015AbiB1SjD (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 28 Feb 2022 13:33:41 -0500
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2FB7C7AE;
-        Mon, 28 Feb 2022 10:19:13 -0800 (PST)
-Received: by mail-yb1-f178.google.com with SMTP id b35so22228626ybi.13;
-        Mon, 28 Feb 2022 10:19:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w+StE5EDrX4KonZXXrEcAwaI/5yqzkjCqX+Vj4i9MMQ=;
-        b=WEIuor3xIzRiN8woA7Rcg50X0GuVsL5DpyLnJdCvy8E3ZpdmjLqEk2sIeB0rThYByW
-         8UzokdCy1u7RksAqWY8b0/SpNCXRjoQdeR7fDjG32F4jdm4ndBJol/8muEMBsrxmsmdo
-         T+pXbA+CGOOY9WwsG3e9YJAXotRRTHyq/uaW6fbMUyevFvyuA+9qmNd/UM19fwWtemFG
-         /ModbKAHBvNdebwPK0qq16UhZi5IvcjRqi9ZZkcUJDyyvzAnByXpQjajattQxgPHXOIc
-         eE+qNkj9dIdDwxZEtcSXk6WdYBpGtYxw5C9jwOxTP8PNHzKQU4lg4ChqOmC0HJauEf0O
-         vGkg==
-X-Gm-Message-State: AOAM532h7WxVBFUm0YlTb0+wzmRMNnedJdJQA4X7pYzQ0Z1mwDPWRR1N
-        HRsHevlgdbLhjJRpsYNRLW4+rokj7Asv3gsclbI=
-X-Google-Smtp-Source: ABdhPJzWsCzDi+CFokdvxLYx8iy1cRJSPWBfOjOBbMf8ycRw2gUE3AI/ZxXAtE+1gGwxMpftuEdKMtEjV390ThV5muM=
-X-Received: by 2002:a25:fe10:0:b0:625:262f:e792 with SMTP id
- k16-20020a25fe10000000b00625262fe792mr18395899ybe.365.1646072352451; Mon, 28
- Feb 2022 10:19:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20220226220639.1173594-1-Jason@zx2c4.com> <20220226220639.1173594-3-Jason@zx2c4.com>
- <0c73d29e-e558-efb9-d0d7-c612b2bb7e90@amazon.com> <YhtyBHUyFysmZ9bC@zx2c4.com>
- <CAHmME9pocD1CoZbnF7p4k0ws7-R0Vc9H4i5TRJ_MCX-d3AZhFw@mail.gmail.com>
-In-Reply-To: <CAHmME9pocD1CoZbnF7p4k0ws7-R0Vc9H4i5TRJ_MCX-d3AZhFw@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 28 Feb 2022 19:19:01 +0100
-Message-ID: <CAJZ5v0h_Z9XS9ZgSF4CWrZ4RU7=Oa02MY3_g0Y_rcgRNzsizfQ@mail.gmail.com>
-Subject: Re: [PATCH v5 2/3] ACPI: allow longer device IDs
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Alexander Graf <graf@amazon.com>, Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mon, 28 Feb 2022 13:39:03 -0500
+Received: from relay4.hostedemail.com (relay4.hostedemail.com [64.99.140.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E5B14266B;
+        Mon, 28 Feb 2022 10:26:58 -0800 (PST)
+Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay11.hostedemail.com (Postfix) with ESMTP id 8480C81766;
+        Mon, 28 Feb 2022 18:20:49 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 5C4272002A;
+        Mon, 28 Feb 2022 18:20:29 +0000 (UTC)
+Message-ID: <0be9de3920442df490f01b6fb1c42521c3de6190.camel@perches.com>
+Subject: Re: [PATCH 1/6] drivers: usb: remove usage of list iterator past
+ the loop body
+From:   Joe Perches <joe@perches.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Jakob Koschel <jakobkoschel@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergman <arnd@arndb.de>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Brian Johannesmeyer <bjohannesmeyer@gmail.com>,
+        Cristiano Giuffrida <c.giuffrida@vu.nl>,
+        "Bos, H.J." <h.j.bos@vu.nl>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-sgx@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-crypto@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-usb@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-tegra@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, kvm@vger.kernel.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        v9fs-developer@lists.sourceforge.net,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
+Date:   Mon, 28 Feb 2022 10:20:28 -0800
+In-Reply-To: <20220228112413.GA2812@kadam>
+References: <20220228110822.491923-1-jakobkoschel@gmail.com>
+         <20220228110822.491923-2-jakobkoschel@gmail.com>
+         <20220228112413.GA2812@kadam>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1ubuntu2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: 1e1i8ombnsc3cdkptu3anccezjc89zox
+X-Rspamd-Server: rspamout07
+X-Rspamd-Queue-Id: 5C4272002A
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=unavailable autolearn_force=no
+        version=3.4.6
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+i6vY6IDwHpNq++UEo/5hqvP4PvgQNb4E=
+X-HE-Tag: 1646072429-12569
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-+Mika, Andy and Hans in case they have something to add
+On Mon, 2022-02-28 at 14:24 +0300, Dan Carpenter wrote:
 
-On Mon, Feb 28, 2022 at 12:27 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
->
-> Hey again,
->
-> On Sun, Feb 27, 2022 at 1:43 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> >
-> > Hi Alex,
-> >
-> > On Sun, Feb 27, 2022 at 12:42:03PM +0100, Alexander Graf wrote:
-> > > > To allow device drivers to match identifiers that exceed the 9 byte
-> > > > limit, this simply ups the length to 16, just like it was before the
-> > > > aforementioned commit. Empirical testing indicates that this
-> > >
-> > >
-> > > This is only true for 64bit systems where padding automatically bloated
-> > > to 9 byte array to 16. I still believe the patch is fine as it is, but
-> > > there will be minor .rodata overhead on 32bit targets which you may want
-> > > to quantify in the patch description.
-> >
-> > Good point. So I just tried this out with a 32-bit i686 kernel and the
-> > results are the same again for the size of vmlinux. I then ran `objdump
-> > --headers` and looked at the size of the .rodata section, where it's
-> > also the same. I'm not quite sure what to make of this, as it's not what
-> > I was expecting, but I think I tested it right. So maybe we're lucky
-> > here?
->
-> I tried a little harder to get _some_ difference on 32-bit, and
-> managed to get one by doing i386_defconfig and then switching off
-> modules to make all M into Y, and then compared sizes:
->
-> vmlinux: 25590780 -> 25598972, so a 0.032% increase.
-> bzImage: 8698944 -> 8699424, so a 0.0055% increase.
->
-> So it does increase, ever so slightly, but a) on 32-bit, and b) a
-> super, super tiny amount.
->
-> In other words, I still think this patch is very much a-okay. But very
-> eager to hear from Rafael on the approach.
+> a multi-line indent gets curly braces for readability even though
+> it's not required by C.  And then both sides would get curly braces.
 
-Increasing the ACPI_ID_LEN value is fine with me, but the patch
-changelog is not entirely accurate.
+That's more your personal preference than a coding style guideline.
 
-The ACPI subsystem uses struct acpi_device_id mostly (if not only) for
-device ID matching and it is generally used for creating lists of ACPI
-device IDs in drivers (and allow/deny lists etc).  The device IDs
-extracted from the ACPI tables can be longer than ACPI_ID_LEN.
 
-This means that drivers cannot match device IDs longer than 8
-characters (excluding the terminating 0), because the IDs in the lists
-used by them for ID matching cannot be longer than this and not
-because the ACPI subsystem is limited by that value.
