@@ -2,163 +2,146 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CF54C7EAF
-	for <lists+linux-crypto@lfdr.de>; Tue,  1 Mar 2022 00:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEA44C7FA3
+	for <lists+linux-crypto@lfdr.de>; Tue,  1 Mar 2022 01:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbiB1Xr6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 28 Feb 2022 18:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
+        id S231903AbiCAAsQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 28 Feb 2022 19:48:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231446AbiB1Xry (ORCPT
+        with ESMTP id S231397AbiCAAsP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 28 Feb 2022 18:47:54 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2089.outbound.protection.outlook.com [40.107.93.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC9010E548;
-        Mon, 28 Feb 2022 15:47:14 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AX9JFBVJONe47Nw7Za9BwMVE63hvzlZXWFTuw83H/GQNV+fGq2WtavrSjOltlGDlhPuVL9I2/3kri/La+OIHb+JEFcEOcgkyuVZ+F9zQTSQ7EQxUEQbaPyEVuRYX72E5ZarzCkKOd3plBj+7tyIH09xIrdAIXUy7eCbkqoxfByUTcPyIls3wx0X08kQbk8CQEcGY74zAQsHAK5IVw32FKRpjlaYerV6O3006rCrXlhIEElMFJ7ZeD6Ktij2m6r8xkYEroTDvH4VI8cNJlnO9XHbyIMaRuylYni1+7QiHENM6RdH8BpQHftYjUJWNFVFw4q4IX1BX5mdiyG+f6Oy23Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x6Efx1Xj9YAqGQdrgT9QD2RAnS6wKagFKdBJvNqxKwU=;
- b=YtkgDCSvZHz52f7SVmXDQbSJ9S/NnXKP/GEQPUEaj7kB7+cvbWyO6smtk9Emt6Cataseq7Y8pfdIxWdwzNOzULQC2N5mKt4qMCQnWcLgk/1SIr1K/li+qNoBDpuGe8IFoFdW8A2zw7f2MXdm//t8U9lWBoVDcYISZO8jGpqyqR805dyWUIYIdmLY7PluY/R2kGRP+okvmtWE3YzKDNH/d6gEJCaTEhuOyanb4W3rXvpRtWsnWFPFNk2wKSomdda7TH7biqO2iQMhuu7lPNqwUl8GNMh+1Mb7YeayDR4vECiWt0XDTNdvczsG+yUGSE9ZbNOMvaMW/BUU/Ih3X8CK2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x6Efx1Xj9YAqGQdrgT9QD2RAnS6wKagFKdBJvNqxKwU=;
- b=ugvKJqzIFG0lKM71T1vhgclB/rgR0MjfkVYbCK0z7X0HcG+TmTSbvEeau0TPosRUIo+1yDy9N7ErSnAJWQsGqKFvBL3by98I7HO7zCXkTWAQqo++JxkepZHCkcfB6MkLI67F9LYRnA7Qgr+c97JenlEzGSDFx3eby1QNfkUTlB+FlrHWF5/BzDlTImv/0mt7HssZBvtwow50//6BAaxeUwFncAK/w4tB+3aCI9G6bGWjDIxfAjw6g/rqA0P+nvElm6RTNnlBpt+5V4IjoAlE8kMcCKl5NWnqCcpRJ11IoCXWtZ/AYo0xFiCqXmEjhOoxV8aLZrGDUYjgi264qBvMIg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by BY5PR12MB3873.namprd12.prod.outlook.com (2603:10b6:a03:1a3::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.21; Mon, 28 Feb
- 2022 23:47:11 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::e8f4:9793:da37:1bd3]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::e8f4:9793:da37:1bd3%4]) with mapi id 15.20.5017.027; Mon, 28 Feb 2022
- 23:47:11 +0000
-Date:   Mon, 28 Feb 2022 19:47:09 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "mgurtovoy@nvidia.com" <mgurtovoy@nvidia.com>,
-        "yishaih@nvidia.com" <yishaih@nvidia.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        liulongfang <liulongfang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>
-Subject: Re: [PATCH v6 09/10] hisi_acc_vfio_pci: Add support for VFIO live
- migration
-Message-ID: <20220228234709.GV219866@nvidia.com>
-References: <20220228090121.1903-1-shameerali.kolothum.thodi@huawei.com>
- <20220228090121.1903-10-shameerali.kolothum.thodi@huawei.com>
- <20220228145731.GH219866@nvidia.com>
- <58fa5572e8e44c91a77bd293b2ec6e33@huawei.com>
- <20220228180520.GO219866@nvidia.com>
- <20220228131614.27ad37dc.alex.williamson@redhat.com>
- <20220228202919.GP219866@nvidia.com>
- <20220228142034.024e7be6.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=us-ascii
+        Mon, 28 Feb 2022 19:48:15 -0500
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4EE5127CCE;
+        Mon, 28 Feb 2022 16:47:33 -0800 (PST)
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 2210V56x017328;
+        Mon, 28 Feb 2022 18:31:05 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 2210V0er017322;
+        Mon, 28 Feb 2022 18:31:00 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Mon, 28 Feb 2022 18:30:59 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        alsa-devel@alsa-project.org, KVM list <kvm@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        linux-iio@vger.kernel.org, nouveau@lists.freedesktop.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Cristiano Giuffrida <c.giuffrida@vu.nl>,
+        "Bos, H.J." <h.j.bos@vu.nl>, linux1394-devel@lists.sourceforge.net,
+        drbd-dev@lists.linbit.com, linux-arch <linux-arch@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>, linux-aspeed@lists.ozlabs.org,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        intel-wired-lan@lists.osuosl.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        bcm-kernel-feedback-list@broadcom.com,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergman <arnd@arndb.de>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Brian Johannesmeyer <bjohannesmeyer@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        dma <dmaengine@vger.kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jakob Koschel <jakobkoschel@gmail.com>,
+        v9fs-developer@lists.sourceforge.net,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-sgx@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, linux-usb@vger.kernel.org,
+        samba-technical@lists.samba.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux F2FS Dev Mailing List 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        tipc-discussion@lists.sourceforge.net,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 2/6] treewide: remove using list iterator after loop body as a ptr
+Message-ID: <20220301003059.GE614@gate.crashing.org>
+References: <20220228110822.491923-1-jakobkoschel@gmail.com> <20220228110822.491923-3-jakobkoschel@gmail.com> <2e4e95d6-f6c9-a188-e1cd-b1eae465562a@amd.com> <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com> <282f0f8d-f491-26fc-6ae0-604b367a5a1a@amd.com> <b2d20961dbb7533f380827a7fcc313ff849875c1.camel@HansenPartnership.com> <7D0C2A5D-500E-4F38-AD0C-A76E132A390E@kernel.org> <73fa82a20910c06784be2352a655acc59e9942ea.camel@HansenPartnership.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20220228142034.024e7be6.alex.williamson@redhat.com>
-X-ClientProxiedBy: BL1PR13CA0091.namprd13.prod.outlook.com
- (2603:10b6:208:2b9::6) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8fde11d3-91d5-4fcc-1673-08d9fb14a376
-X-MS-TrafficTypeDiagnostic: BY5PR12MB3873:EE_
-X-Microsoft-Antispam-PRVS: <BY5PR12MB38739D55FBA21B3C88BF0C65C2019@BY5PR12MB3873.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nGbkFKu5t4eqzyEkuDwFxdCy0ag8tZXVwCJ8jKL8JJ0M0oaj5DIuib9058k3S9t7ORauJmrt341lNAbd7t8BecRzCAYhEjjtXC17iLfdqmj2fGWlroMBGnTJAmpGZAFcmjfnW3w5BjrC9dzFDDi9Dtf8G9zNxBKaimIKxv4GiGtT5NKpajd6KqZR05qza26rJu4PRM8+rs0bhAcNH/hqZrG3qlbAuueM+Da+o6Q9AuMJpkYHdr5T0YdSK9+EqI70JUmj8q2NGNh4oUkX7Kg/4JgaXwfkpRm8Iig+zEMt+7/Na3BEJ6BTiGN+GRThLsh/rKBrcQcglHDtcNQpRg71desEyRkKcdx1RB8TG26BmXgp6BVG9k8OLs9WwadNnTZ9g+5dI+AkNnFiACHiS+iFB+DC/tXMAZg16ldMEZhySBKOS4PDK3qBwQw48g573o4Ez0UrYSx3lo4C3myt8U26UJBH6hbLl9wHD/sErUN3J7jesQV+tSQyMOSupnzA0pQ9nCYitqBGIDIZlojxM0L42SVsXywtAZE4HabDdUFdM7ngmYwftsHbbjIUI5kZGiH4nAm/Pc7zzqYI3WbPhLOymUVcCK45ki9vg5hjYUMQ0+8loGc/Y6/c9jDgnCPfunzADsNLGcyaFzcWHo0G0y1oZ8/r7Qn83zHub+i5YWj6yx1hXZjTxl9hu1hAlf+1dJY2
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(38100700002)(66476007)(2906002)(86362001)(6486002)(36756003)(33656002)(186003)(26005)(2616005)(508600001)(1076003)(6506007)(6512007)(8676002)(4326008)(6916009)(7416002)(8936002)(66556008)(5660300002)(83380400001)(316002)(66946007)(54906003)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sHsCxMXjNLBbvf/RMJQJgvesxzJ2ljFwW4uBQVcILhLt8F4fpO9AtSMOhAtd?=
- =?us-ascii?Q?zje2TAlzK/fNEqozGUJqtkTuZGWGVQn4vCNIQBJ69XlKNUKh7Mv3dFhvvZ2R?=
- =?us-ascii?Q?1jbolR9cTZ0Of8stPIKtYxhZ+RajK7Qeb9UuSixolqs47eJGdzPWrMIqdxl2?=
- =?us-ascii?Q?mH8uXqU844GIthniBf/rZSYWARHhbfOxv4TVuh9z1CbQAA5bf2xM55tTsvs+?=
- =?us-ascii?Q?QO1PDBdPrE825EbznnJOoXQkdmh6//rv2QuJTwsVBb3jdeFh4WjMby2si/3e?=
- =?us-ascii?Q?ITOYjJAUzBMQi65s2ddBbIPFO6pGlhBeUnqxjXn6/7WykONvEsIJ/a9AOa/8?=
- =?us-ascii?Q?C6JZvqtLh12QLXv4BtViIQpMwSjZuyUTor5Vt68lxQzprWDym+Piy9xGTyqP?=
- =?us-ascii?Q?m0U87rKQacbj141UZDliY6f7f9tm6ZMwkVTBOofwyAPAGj8mU9+aClcRL0/r?=
- =?us-ascii?Q?2/Jbo3I0blMn9k3uRyrLGT/Ogg7TD5fD2ic2mIMCwzRg1tkNmVRlAgoqVuNW?=
- =?us-ascii?Q?/zUYDeeFFRDXF99pT7EoBWYwl9fMPvpgPPCq3xrNErdoHLYi4kzURtQl+r1s?=
- =?us-ascii?Q?5B7DqhV3GoI71CgYQq4jI4WQ+/03Z2aSm8kbHAJ14k0x+jZkPYVLjalzFm2i?=
- =?us-ascii?Q?lTLvw94PNh7ST9JxnP9ABTobg57XlDGAtAlcsGwLqt06wTL45EpWFVVn1VJr?=
- =?us-ascii?Q?dH8Ug+NowQSqnWie3Z6xJu+ReEQ0G+td8pQLb2kIfXIrk3uSvo70mSQ1syha?=
- =?us-ascii?Q?48SfUmr4S/LHSk7X22X6U3JgtHObpD+gGE/FvXUisBQLYt9sqowp6F779rk2?=
- =?us-ascii?Q?iGFOF6hv8UNckthLl3oySuXvfJLYfcT450Nsmz2WKgGg9d/kDgEs3ao4zhdu?=
- =?us-ascii?Q?MxU53chnxJgpts+Vyvmz8CWJNsHMsvwsIve4essVdummp9+fEXgZ1pNJrkWV?=
- =?us-ascii?Q?nI7jQJNXA0hrhByysF5ejVPThIFF9XV+VS3UPYn9OC55V//z5JXDbZBdTTy6?=
- =?us-ascii?Q?HbJWA6Y/pC7cnD5Gpu53Ad6DqU5nPRaMXNHGkY+jXTIoNHCOHDDijzrxBjor?=
- =?us-ascii?Q?jCkR0CTBDKbqUQcSAKdg5sZYv/rm0Jtwoz0nHCosKnGw0Rlc7WHfMVaJd6bs?=
- =?us-ascii?Q?FAmE9erZB5njha7Vsw5auf1A6IUuXDn4PHrPokUgXKIAXEHSTB2yVovaBH0Z?=
- =?us-ascii?Q?oiWJM0b4pi1Cns7RnRX9wiEsfvwYAFT/zUp8/ygpcOlfAS6XLMzOOPtJoCnv?=
- =?us-ascii?Q?odx1dlKg7cAkAPzH7WQkT7e9m2hltlzL/CoDnHZ91Ta0dHlzct/+OlYRgaix?=
- =?us-ascii?Q?JEwz+IEW+dax4bU7C6lfITqb5AnQO7a3AeNU4mBPAuBZvnIE3uXupC3un1ep?=
- =?us-ascii?Q?lPj1dBD9jT1f8goosrSEeoj2Y4Dmh2CYr0jLTXHATsPmZwkhMvcQDQ0xQV5g?=
- =?us-ascii?Q?zaDbRtlOEvITLPHfL4XoOJ4qMs/uq+yTjjKeSLgAKymwQTHpeogXntur0mAW?=
- =?us-ascii?Q?U8ZKjlVowtGCG81ZQoL/6lqHypVOwbTUujrn9CcQ/ysJyL2g9Gy1MK4me2bO?=
- =?us-ascii?Q?LNm5JYMXvFcqra+9AUg=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fde11d3-91d5-4fcc-1673-08d9fb14a376
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2022 23:47:11.2791
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /IjHWm8az0f/S9e2sGgu3snOXaNyYcy2ojzux5SjzZ7yehZWKQva6SyMHguMpr8/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3873
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <73fa82a20910c06784be2352a655acc59e9942ea.camel@HansenPartnership.com>
+User-Agent: Mutt/1.4.2.3i
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 02:20:34PM -0700, Alex Williamson wrote:
-
-> > Unless you think we should block it.
+On Mon, Feb 28, 2022 at 05:28:58PM -0500, James Bottomley wrote:
+> On Mon, 2022-02-28 at 23:59 +0200, Mike Rapoport wrote:
+> > 
+> > On February 28, 2022 10:42:53 PM GMT+02:00, James Bottomley <
+> > James.Bottomley@HansenPartnership.com> wrote:
+> > > On Mon, 2022-02-28 at 21:07 +0100, Christian König wrote:
+> [...]
+> > > > > I do wish we could actually poison the 'pos' value after the
+> > > > > loop somehow - but clearly the "might be uninitialized" I was
+> > > > > hoping for isn't the way to do it.
+> > > > > 
+> > > > > Anybody have any ideas?
+> > > > 
+> > > > I think we should look at the use cases why code is touching
+> > > > (pos) after the loop.
+> > > > 
+> > > > Just from skimming over the patches to change this and experience
+> > > > with the drivers/subsystems I help to maintain I think the
+> > > > primary pattern looks something like this:
+> > > > 
+> > > > list_for_each_entry(entry, head, member) {
+> > > >      if (some_condition_checking(entry))
+> > > >          break;
+> > > > }
+> > > > do_something_with(entry);
+> > > 
+> > > Actually, we usually have a check to see if the loop found
+> > > anything, but in that case it should something like
+> > > 
+> > > if (list_entry_is_head(entry, head, member)) {
+> > >    return with error;
+> > > }
+> > > do_somethin_with(entry);
+> > > 
+> > > Suffice?  The list_entry_is_head() macro is designed to cope with
+> > > the bogus entry on head problem.
+> > 
+> > Won't suffice because the end goal of this work is to limit scope of
+> > entry only to loop. Hence the need for additional variable.
 > 
-> What's the meaning of initial_bytes and dirty_bytes while in
-> STOP_COPY?
+> Well, yes, but my objection is more to the size of churn than the
+> desire to do loop local.  I'm not even sure loop local is possible,
+> because it's always annoyed me that for (int i = 0; ...  in C++ defines
+> i in the outer scope not the loop scope, which is why I never use it.
 
-Same as during pre-copy - both numbers are the bytes remaining to be
-read() from the FD in each bucket. They should continue to decline as
-read() progresses regardless of what state the data_fd is in.
+In C its scope is the rest of the declaration and the entire loop, not
+anything after it.  This was the same in C++98 already, btw (but in
+pre-standard versions of C++ things were like you remember, yes, and it
+was painful).
 
-The only special thing about STOP_COPY is that dirty_bytes should not
-increase as the device should not be generating new dirty data.
 
-How about:
-
- * Drivers should attempt to return estimates so that initial_bytes +
- * dirty_bytes matches the amount of data an immediate transition to STOP_COPY
- * will require to be streamed. While in STOP_COPY the initial_bytes
- * and dirty_bytes should continue to be decrease as the data_fd
- * progresses streaming out the data.
-
-Remove the 'in the precopy phase' from the first sentance
-
-Adjust the last paragraph as:
-
-+ * returning readable. ENOMSG may not be returned in STOP_COPY. Support
-+ * for this ioctl is required when VFIO_MIGRATION_PRE_COPY is set.
-
-Jason
+Segher
