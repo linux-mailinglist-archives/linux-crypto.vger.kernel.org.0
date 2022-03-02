@@ -2,37 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E024CB34A
-	for <lists+linux-crypto@lfdr.de>; Thu,  3 Mar 2022 01:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C63464CB3AD
+	for <lists+linux-crypto@lfdr.de>; Thu,  3 Mar 2022 01:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbiCCAAz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 2 Mar 2022 19:00:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
+        id S229793AbiCCAAa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 2 Mar 2022 19:00:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbiCCAAw (ORCPT
+        with ESMTP id S229820AbiCCAA3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 2 Mar 2022 19:00:52 -0500
+        Wed, 2 Mar 2022 19:00:29 -0500
 Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F281D532DF
-        for <linux-crypto@vger.kernel.org>; Wed,  2 Mar 2022 16:00:01 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061A54D637;
+        Wed,  2 Mar 2022 15:59:44 -0800 (PST)
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1nPXwQ-0006Dh-Em; Thu, 03 Mar 2022 09:59:31 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 03 Mar 2022 10:59:30 +1200
-Date:   Thu, 3 Mar 2022 10:59:30 +1200
+        id 1nPXwY-0006E8-RW; Thu, 03 Mar 2022 09:59:39 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 03 Mar 2022 10:59:38 +1200
+Date:   Thu, 3 Mar 2022 10:59:38 +1200
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Petr Vorel <pvorel@suse.cz>
-Cc:     linux-crypto@vger.kernel.org, Nicolai Stange <nstange@suse.de>,
-        leitao@debian.org, Nayna Jain <nayna@linux.ibm.com>,
-        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v4 1/1] crypto: vmx - add missing dependencies
-Message-ID: <Yh/20gN+shzCcGYC@gondor.apana.org.au>
-References: <20220223151115.28536-1-pvorel@suse.cz>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v2 1/1] crypto: cavium/nitrox - don't cast parameter in
+ bit operations
+Message-ID: <Yh/22twvqyRsSy7P@gondor.apana.org.au>
+References: <20220223162620.44307-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220223151115.28536-1-pvorel@suse.cz>
+In-Reply-To: <20220223162620.44307-1-andriy.shevchenko@linux.intel.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -42,42 +41,20 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Feb 23, 2022 at 04:11:15PM +0100, Petr Vorel wrote:
-> vmx-crypto module depends on CRYPTO_AES, CRYPTO_CBC, CRYPTO_CTR or
-> CRYPTO_XTS, thus add them.
+On Wed, Feb 23, 2022 at 06:26:20PM +0200, Andy Shevchenko wrote:
+> While in this particular case it would not be a (critical) issue,
+> the pattern itself is bad and error prone in case the location
+> of the parameter is changed.
 > 
-> These dependencies are likely to be enabled, but if
-> CRYPTO_DEV_VMX=y && !CRYPTO_MANAGER_DISABLE_TESTS
-> and either of CRYPTO_AES, CRYPTO_CBC, CRYPTO_CTR or CRYPTO_XTS is built
-> as module or disabled, alg_test() from crypto/testmgr.c complains during
-> boot about failing to allocate the generic fallback implementations
-> (2 == ENOENT):
+> Don't cast parameter to unsigned long pointer in the bit operations.
+> Instead copy to a local variable on stack of a proper type and use.
 > 
-> [    0.540953] Failed to allocate xts(aes) fallback: -2
-> [    0.541014] alg: skcipher: failed to allocate transform for p8_aes_xts: -2
-> [    0.541120] alg: self-tests for p8_aes_xts (xts(aes)) failed (rc=-2)
-> [    0.544440] Failed to allocate ctr(aes) fallback: -2
-> [    0.544497] alg: skcipher: failed to allocate transform for p8_aes_ctr: -2
-> [    0.544603] alg: self-tests for p8_aes_ctr (ctr(aes)) failed (rc=-2)
-> [    0.547992] Failed to allocate cbc(aes) fallback: -2
-> [    0.548052] alg: skcipher: failed to allocate transform for p8_aes_cbc: -2
-> [    0.548156] alg: self-tests for p8_aes_cbc (cbc(aes)) failed (rc=-2)
-> [    0.550745] Failed to allocate transformation for 'aes': -2
-> [    0.550801] alg: cipher: Failed to load transform for p8_aes: -2
-> [    0.550892] alg: self-tests for p8_aes (aes) failed (rc=-2)
-> 
-> Fixes: c07f5d3da643 ("crypto: vmx - Adding support for XTS")
-> Fixes: d2e3ae6f3aba ("crypto: vmx - Enabling VMX module for PPC64")
-> 
-> Suggested-by: Nicolai Stange <nstange@suse.de>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> Fixes: cf718eaa8f9b ("crypto: cavium/nitrox - Enabled Mailbox support")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
-> Changes v3->v4:
-> * Drop commit which merged CRYPTO_DEV_VMX and CRYPTO_DEV_VMX_ENCRYPT
->   (Herbert)
-> 
->  drivers/crypto/vmx/Kconfig | 4 ++++
->  1 file changed, 4 insertions(+)
+> v2: fixed typo (LKP, Herbert)
+>  drivers/crypto/cavium/nitrox/nitrox_mbx.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 
 Patch applied.  Thanks.
 -- 
