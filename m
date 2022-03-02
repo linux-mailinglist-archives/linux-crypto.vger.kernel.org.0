@@ -2,37 +2,37 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F664CB379
-	for <lists+linux-crypto@lfdr.de>; Thu,  3 Mar 2022 01:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E024CB34A
+	for <lists+linux-crypto@lfdr.de>; Thu,  3 Mar 2022 01:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbiCCAAs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 2 Mar 2022 19:00:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
+        id S229904AbiCCAAz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 2 Mar 2022 19:00:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbiCCAAq (ORCPT
+        with ESMTP id S229853AbiCCAAw (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 2 Mar 2022 19:00:46 -0500
+        Wed, 2 Mar 2022 19:00:52 -0500
 Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD804D9CF;
-        Wed,  2 Mar 2022 15:59:53 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F281D532DF
+        for <linux-crypto@vger.kernel.org>; Wed,  2 Mar 2022 16:00:01 -0800 (PST)
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1nPXwE-0006DT-Lo; Thu, 03 Mar 2022 09:59:19 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 03 Mar 2022 10:59:18 +1200
-Date:   Thu, 3 Mar 2022 10:59:18 +1200
+        id 1nPXwQ-0006Dh-Em; Thu, 03 Mar 2022 09:59:31 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 03 Mar 2022 10:59:30 +1200
+Date:   Thu, 3 Mar 2022 10:59:30 +1200
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Harsha <harsha.harsha@xilinx.com>
-Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        michals@xilinx.com, saratcha@xilinx.com, harshj@xilinx.com,
-        git@xilinx.com
-Subject: Re: [PATCH V3 0/4] crypto: Add Xilinx ZynqMP SHA3 driver support
-Message-ID: <Yh/2xoWQ1Ogq69y7@gondor.apana.org.au>
-References: <1645612504-3047-1-git-send-email-harsha.harsha@xilinx.com>
+To:     Petr Vorel <pvorel@suse.cz>
+Cc:     linux-crypto@vger.kernel.org, Nicolai Stange <nstange@suse.de>,
+        leitao@debian.org, Nayna Jain <nayna@linux.ibm.com>,
+        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v4 1/1] crypto: vmx - add missing dependencies
+Message-ID: <Yh/20gN+shzCcGYC@gondor.apana.org.au>
+References: <20220223151115.28536-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1645612504-3047-1-git-send-email-harsha.harsha@xilinx.com>
+In-Reply-To: <20220223151115.28536-1-pvorel@suse.cz>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -42,65 +42,44 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Feb 23, 2022 at 04:05:00PM +0530, Harsha wrote:
-> This patch set does the following:
->   - Updates the Makefile for xilinx subdirectory
->   - Adds communication layer support for sha_hash in zynqmp.c
->   - Adds Xilinx ZynqMP driver for SHA3 Algorithm
->   - Updates the list of MAINTAINERS
+On Wed, Feb 23, 2022 at 04:11:15PM +0100, Petr Vorel wrote:
+> vmx-crypto module depends on CRYPTO_AES, CRYPTO_CBC, CRYPTO_CTR or
+> CRYPTO_XTS, thus add them.
 > 
-> Following tests have been done for the driver:
->  - Enabled kernel self tests and extra run-time crypto self tests
->  - Tested SHA hash computation for different sizes of data using
->    userspace application
->  - Tested SHA hash computation using multiple updates of data using
->    userspace application
->  - Tested parallel hash computation
->  - Tested using the tcrypt module
+> These dependencies are likely to be enabled, but if
+> CRYPTO_DEV_VMX=y && !CRYPTO_MANAGER_DISABLE_TESTS
+> and either of CRYPTO_AES, CRYPTO_CBC, CRYPTO_CTR or CRYPTO_XTS is built
+> as module or disabled, alg_test() from crypto/testmgr.c complains during
+> boot about failing to allocate the generic fallback implementations
+> (2 == ENOENT):
 > 
-> V3 changes:
-> Added details of tests in cover letter
-> Added SOB for previous poster of RFC patch
-> Removed module_platform_driver in 3/4
-> Used memzero_explicit instead of memset in 3/4
+> [    0.540953] Failed to allocate xts(aes) fallback: -2
+> [    0.541014] alg: skcipher: failed to allocate transform for p8_aes_xts: -2
+> [    0.541120] alg: self-tests for p8_aes_xts (xts(aes)) failed (rc=-2)
+> [    0.544440] Failed to allocate ctr(aes) fallback: -2
+> [    0.544497] alg: skcipher: failed to allocate transform for p8_aes_ctr: -2
+> [    0.544603] alg: self-tests for p8_aes_ctr (ctr(aes)) failed (rc=-2)
+> [    0.547992] Failed to allocate cbc(aes) fallback: -2
+> [    0.548052] alg: skcipher: failed to allocate transform for p8_aes_cbc: -2
+> [    0.548156] alg: self-tests for p8_aes_cbc (cbc(aes)) failed (rc=-2)
+> [    0.550745] Failed to allocate transformation for 'aes': -2
+> [    0.550801] alg: cipher: Failed to load transform for p8_aes: -2
+> [    0.550892] alg: self-tests for p8_aes (aes) failed (rc=-2)
 > 
-> V2 changes:
-> - Removed dependency on COMPILE_TEST in 3/4
-> - Rebased this patchset on latest Cryptodev-2.6 tree which fixed
-> below kernel robot warning
->    In file included from ./arch/s390/include/generated/asm/cacheflush.h:1,
->                     from drivers/crypto/xilinx/zynqmp-sha.c:6:
-> include/asm-generic/cacheflush.h:53:46: warning: 'struct folio' declared
-> inside parameter list will not be visible outside of this definition
-> or declaration
->       53 | static inline void flush_dcache_folio(struct folio *folio) { }
->          |
-> - Included linux/cacheflush.h instead of asm/cacheflush.h in 3/4
->  
-> V1 changes:
-> - Converted RFC patch to PATCH
-> - Updated zynqmp-sha driver so that it can be self discovered 
-> - Removed patch 3/6 and 4/6 as they added support for device tree
-> - Substituted hw with hardware in drivers/crypto/Kconfig
+> Fixes: c07f5d3da643 ("crypto: vmx - Adding support for XTS")
+> Fixes: d2e3ae6f3aba ("crypto: vmx - Enabling VMX module for PPC64")
 > 
+> Suggested-by: Nicolai Stange <nstange@suse.de>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Changes v3->v4:
+> * Drop commit which merged CRYPTO_DEV_VMX and CRYPTO_DEV_VMX_ENCRYPT
+>   (Herbert)
 > 
-> Harsha (4):
->   drivers: crypto: Updated Makefile for xilinx subdirectory
->   firmware: xilinx: Add ZynqMP SHA API for SHA3 functionality
->   crypto: xilinx: Add Xilinx SHA3 driver
->   MAINTAINERS: Add maintainer for Xilinx ZynqMP SHA3 driver
-> 
->  MAINTAINERS                          |   5 +
->  drivers/crypto/Kconfig               |  10 ++
->  drivers/crypto/Makefile              |   2 +-
->  drivers/crypto/xilinx/Makefile       |   1 +
->  drivers/crypto/xilinx/zynqmp-sha.c   | 283 +++++++++++++++++++++++++++++++++++
->  drivers/firmware/xilinx/zynqmp.c     |  26 ++++
->  include/linux/firmware/xlnx-zynqmp.h |   8 +
->  7 files changed, 334 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/crypto/xilinx/zynqmp-sha.c
+>  drivers/crypto/vmx/Kconfig | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
