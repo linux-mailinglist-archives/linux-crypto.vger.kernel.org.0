@@ -2,62 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFA64CC4D2
-	for <lists+linux-crypto@lfdr.de>; Thu,  3 Mar 2022 19:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0154CC498
+	for <lists+linux-crypto@lfdr.de>; Thu,  3 Mar 2022 19:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbiCCSO0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 3 Mar 2022 13:14:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57502 "EHLO
+        id S234215AbiCCSGn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Thu, 3 Mar 2022 13:06:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233816AbiCCSOZ (ORCPT
+        with ESMTP id S230342AbiCCSGm (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 3 Mar 2022 13:14:25 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904ECEF7AF
-        for <linux-crypto@vger.kernel.org>; Thu,  3 Mar 2022 10:13:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1646331219; x=1677867219;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=YvFtguEdVtYSvc/8BUWq1lfFeWQ9inpeeCp0rT5BQ+M=;
-  b=UGIIrBE8QdnGO3150RnXXCGYOqi/jim7bsIsf0uHxwLbqeDVrGssx61F
-   fvKj2wcWQA8zQsQmyolR7tlP30KfKkAph7LDRVEWJ5qcCf8vL+NTBd8BJ
-   NxXWoSo9ZVL1KS+wd8xvFXF1NxEz8SG12JVTl4lX7SrA4G0YEMW5cNkoa
-   CYNIxvUvVgjtPehebmvRiXAAI1q+GK9iJ/ywGmSvhc69DF6m9thMVxCfP
-   d48B3VF029BjdaSXmj/pZApnoAhWduYFClBYAzUm4XqUV858838SaRPAw
-   KTRx8BMujCoaK/Q+7FkhpHy+m4DIJgU9KsqadOaG6sFu1DaIbkWnsYxp7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10275"; a="278447794"
-X-IronPort-AV: E=Sophos;i="5.90,151,1643702400"; 
-   d="scan'208";a="278447794"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2022 10:00:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,151,1643702400"; 
-   d="scan'208";a="640279734"
-Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314.ger.corp.intel.com) ([10.237.222.76])
-  by fmsmga002.fm.intel.com with ESMTP; 03 Mar 2022 10:00:55 -0800
-From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To:     herbert@gondor.apana.org.au
-Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        Kyle Sanderson <kyle.leet@gmail.com>,
-        Vlad Dronov <vdronov@redhat.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>
-Subject: [RFC 3/3] crypto: qat - remove CRYPTO_ALG_ALLOCATES_MEMORY flag
-Date:   Thu,  3 Mar 2022 18:00:36 +0000
-Message-Id: <20220303180036.13475-4-giovanni.cabiddu@intel.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220303180036.13475-1-giovanni.cabiddu@intel.com>
-References: <20220303180036.13475-1-giovanni.cabiddu@intel.com>
+        Thu, 3 Mar 2022 13:06:42 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02BB1959FE;
+        Thu,  3 Mar 2022 10:05:56 -0800 (PST)
+Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4K8f6Z6zwwz681Z4;
+        Fri,  4 Mar 2022 02:05:42 +0800 (CST)
+Received: from lhreml714-chm.china.huawei.com (10.201.108.65) by
+ fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Thu, 3 Mar 2022 19:05:54 +0100
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ lhreml714-chm.china.huawei.com (10.201.108.65) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Thu, 3 Mar 2022 18:05:53 +0000
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.2308.021; Thu, 3 Mar 2022 18:05:53 +0000
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "mgurtovoy@nvidia.com" <mgurtovoy@nvidia.com>,
+        "yishaih@nvidia.com" <yishaih@nvidia.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        liulongfang <liulongfang@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "Wangzhou (B)" <wangzhou1@hisilicon.com>
+Subject: RE: [PATCH v7 07/10] vfio: Extend the device migration protocol with
+ PRE_COPY
+Thread-Topic: [PATCH v7 07/10] vfio: Extend the device migration protocol with
+ PRE_COPY
+Thread-Index: AQHYLltB55o0MLr0xUuA2wIPWDOs6KysjGuAgAA7pQCAAD4kAIAAmqcAgAAm6gCAACxRYA==
+Date:   Thu, 3 Mar 2022 18:05:53 +0000
+Message-ID: <0cee64d555624e669028ba17d04b8737@huawei.com>
+References: <20220302172903.1995-1-shameerali.kolothum.thodi@huawei.com>
+        <20220302172903.1995-8-shameerali.kolothum.thodi@huawei.com>
+        <20220302133159.3c803f56.alex.williamson@redhat.com>
+        <20220303000528.GW219866@nvidia.com>
+        <20220302204752.71ea8b32.alex.williamson@redhat.com>
+        <20220303130124.GX219866@nvidia.com>
+ <20220303082040.1f88e24c.alex.williamson@redhat.com>
+In-Reply-To: <20220303082040.1f88e24c.alex.williamson@redhat.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.82.4]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,80 +77,110 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Remove the CRYPTO_ALG_ALLOCATES_MEMORY flag from the aead and skcipher
-alg structures.
 
-This allows the QAT driver to be used by dm-crypt after it has been
-changed to (1) use pre-allocated buffers in the datapath and (2) to
-handle skcipher and aead requests with the CRYPTO_TFM_REQ_MAY_BACKLOG
-flag set.
 
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
-Reviewed-by: Wojciech Ziemba <wojciech.ziemba@intel.com>
----
- drivers/crypto/qat/qat_common/qat_algs.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+> -----Original Message-----
+> From: Alex Williamson [mailto:alex.williamson@redhat.com]
+> Sent: 03 March 2022 15:21
+> To: Jason Gunthorpe <jgg@nvidia.com>
+> Cc: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>;
+> kvm@vger.kernel.org; linux-kernel@vger.kernel.org;
+> linux-crypto@vger.kernel.org; linux-pci@vger.kernel.org; cohuck@redhat.com;
+> mgurtovoy@nvidia.com; yishaih@nvidia.com; Linuxarm
+> <linuxarm@huawei.com>; liulongfang <liulongfang@huawei.com>; Zengtao (B)
+> <prime.zeng@hisilicon.com>; Jonathan Cameron
+> <jonathan.cameron@huawei.com>; Wangzhou (B) <wangzhou1@hisilicon.com>
+> Subject: Re: [PATCH v7 07/10] vfio: Extend the device migration protocol with
+> PRE_COPY
+> 
+> On Thu, 3 Mar 2022 09:01:24 -0400
+> Jason Gunthorpe <jgg@nvidia.com> wrote:
+> 
+> > On Wed, Mar 02, 2022 at 08:47:52PM -0700, Alex Williamson wrote:
+> > > On Wed, 2 Mar 2022 20:05:28 -0400
+> > > Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > >
+> > > > On Wed, Mar 02, 2022 at 01:31:59PM -0700, Alex Williamson wrote:
+> > > > > > + * initial_bytes reflects the estimated remaining size of any
+> > > > > > + initial mandatory
+> > > > > > + * precopy data transfer. When initial_bytes returns as zero
+> > > > > > + then the initial
+> > > > > > + * phase of the precopy data is completed. Generally initial_bytes
+> should start
+> > > > > > + * out as approximately the entire device state.
+> > > > >
+> > > > > What is "mandatory" intended to mean here?  The user isn't required
+> to
+> > > > > collect any data from the device in the PRE_COPY states.
+> > > >
+> > > > If the data is split into initial,dirty,trailer then mandatory
+> > > > means that first chunk.
+> > >
+> > > But there's no requirement to read anything in PRE_COPY, so initial
+> > > becomes indistinguishable from trailer and dirty doesn't exist.
+> >
+> > It is still mandatory to read that data out, it doesn't matter if it
+> > is read during PRE_COPY or STOP_COPY.
+> 
+> Not really, PRE_COPY -> RUNNING is a valid arc.
+> 
+> > > > > "The vfio_precopy_info data structure returned by this ioctl
+> > > > > provides  estimates of data available from the device during the
+> PRE_COPY states.
+> > > > >  This estimate is split into two categories, initial_bytes and
+> > > > > dirty_bytes.
+> > > > >
+> > > > >  The initial_bytes field indicates the amount of static data
+> > > > > available  from the device.  This field should have a non-zero initial
+> value and
+> > > > >  decrease as migration data is read from the device.
+> > > >
+> > > > static isn't great either, how about just say 'minimum data available'
+> > >
+> > > 'initial precopy data-set'?
+> >
+> > Sure
+> >
+> > > We have no basis to make that assertion.  We've agreed that precopy
+> > > can be used for nothing more than a compatibility test, so we could
+> > > have a vGPU with a massive framebuffer and no ability to provide
+> > > dirty tracking implement precopy only to include the entire
+> > > framebuffer in the trailing STOP_COPY data set.  Per my
+> > > understanding and the fact that we cannot enforce any heuristics
+> > > regarding the size of the tailer relative to the pre-copy data set,
+> > > I think the above strongly phrased sentence is necessary to
+> > > understand the limitations of what this ioctl is meant to convey.
+> > > Thanks,
+> >
+> > This is why abusing precopy for compatability is not a great idea. It
+> > is OK for acc because its total state is tiny, but I would not agree
+> > to a vGPU driver being merged working like you describe. It distorts
+> > the entire purpose of PRE_COPY and this whole estimation mechanism.
+> >
+> > The ioctl is intended to convey when to switch to STOP_COPY, and the
+> > driver should provide a semantic where the closer the reported length
+> > is to 0 then the faster the STOP_COPY will go.
+> 
+> If it's an abuse, then let's not do it.  It was never my impression or intention
+> that this was ok for acc only due to the minimal trailing data size.  My
+> statement was that use of PRE_COPY for compatibility testing only had been a
+> previously agreed valid use case of the original migration interface.
+> 
+> Furthermore the acc driver was explicitly directed not to indicate any degree
+> of trailing data size in dirty_bytes, so while trailing data may be small for acc,
+> this interface is explicitly not intended to provide any indication of trailing
+> data size.  Thanks,
 
-diff --git a/drivers/crypto/qat/qat_common/qat_algs.c b/drivers/crypto/qat/qat_common/qat_algs.c
-index 765377cebcca..38ccb20c507e 100644
---- a/drivers/crypto/qat/qat_common/qat_algs.c
-+++ b/drivers/crypto/qat/qat_common/qat_algs.c
-@@ -1588,7 +1588,7 @@ static struct aead_alg qat_aeads[] = { {
- 		.cra_name = "authenc(hmac(sha1),cbc(aes))",
- 		.cra_driver_name = "qat_aes_cbc_hmac_sha1",
- 		.cra_priority = 4001,
--		.cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY,
-+		.cra_flags = CRYPTO_ALG_ASYNC,
- 		.cra_blocksize = AES_BLOCK_SIZE,
- 		.cra_ctxsize = sizeof(struct qat_alg_aead_ctx),
- 		.cra_module = THIS_MODULE,
-@@ -1605,7 +1605,7 @@ static struct aead_alg qat_aeads[] = { {
- 		.cra_name = "authenc(hmac(sha256),cbc(aes))",
- 		.cra_driver_name = "qat_aes_cbc_hmac_sha256",
- 		.cra_priority = 4001,
--		.cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY,
-+		.cra_flags = CRYPTO_ALG_ASYNC,
- 		.cra_blocksize = AES_BLOCK_SIZE,
- 		.cra_ctxsize = sizeof(struct qat_alg_aead_ctx),
- 		.cra_module = THIS_MODULE,
-@@ -1622,7 +1622,7 @@ static struct aead_alg qat_aeads[] = { {
- 		.cra_name = "authenc(hmac(sha512),cbc(aes))",
- 		.cra_driver_name = "qat_aes_cbc_hmac_sha512",
- 		.cra_priority = 4001,
--		.cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY,
-+		.cra_flags = CRYPTO_ALG_ASYNC,
- 		.cra_blocksize = AES_BLOCK_SIZE,
- 		.cra_ctxsize = sizeof(struct qat_alg_aead_ctx),
- 		.cra_module = THIS_MODULE,
-@@ -1640,7 +1640,7 @@ static struct skcipher_alg qat_skciphers[] = { {
- 	.base.cra_name = "cbc(aes)",
- 	.base.cra_driver_name = "qat_aes_cbc",
- 	.base.cra_priority = 4001,
--	.base.cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY,
-+	.base.cra_flags = CRYPTO_ALG_ASYNC,
- 	.base.cra_blocksize = AES_BLOCK_SIZE,
- 	.base.cra_ctxsize = sizeof(struct qat_alg_skcipher_ctx),
- 	.base.cra_alignmask = 0,
-@@ -1658,7 +1658,7 @@ static struct skcipher_alg qat_skciphers[] = { {
- 	.base.cra_name = "ctr(aes)",
- 	.base.cra_driver_name = "qat_aes_ctr",
- 	.base.cra_priority = 4001,
--	.base.cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY,
-+	.base.cra_flags = CRYPTO_ALG_ASYNC,
- 	.base.cra_blocksize = 1,
- 	.base.cra_ctxsize = sizeof(struct qat_alg_skcipher_ctx),
- 	.base.cra_alignmask = 0,
-@@ -1676,8 +1676,7 @@ static struct skcipher_alg qat_skciphers[] = { {
- 	.base.cra_name = "xts(aes)",
- 	.base.cra_driver_name = "qat_aes_xts",
- 	.base.cra_priority = 4001,
--	.base.cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_NEED_FALLBACK |
--			  CRYPTO_ALG_ALLOCATES_MEMORY,
-+	.base.cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_NEED_FALLBACK,
- 	.base.cra_blocksize = AES_BLOCK_SIZE,
- 	.base.cra_ctxsize = sizeof(struct qat_alg_skcipher_ctx),
- 	.base.cra_alignmask = 0,
--- 
-2.35.1
+Just to clarify, so the suggestion here is not to use PRE_COPY for compatibility
+check at all and have a different proper infrastructure for that later as Jason
+suggested?
+
+If so, I will remove this patch from this series and go back to the old revision
+where we only have STOP_COPY and do the compatibility check during the final
+load data operation.
+
+Please let me know.
+
+Thanks,
+Shameer
 
