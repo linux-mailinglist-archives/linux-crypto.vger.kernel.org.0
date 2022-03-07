@@ -2,88 +2,69 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0906C4D030C
-	for <lists+linux-crypto@lfdr.de>; Mon,  7 Mar 2022 16:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C6F4D03C2
+	for <lists+linux-crypto@lfdr.de>; Mon,  7 Mar 2022 17:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243837AbiCGPi1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 7 Mar 2022 10:38:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57336 "EHLO
+        id S244027AbiCGQPN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 7 Mar 2022 11:15:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240008AbiCGPiT (ORCPT
+        with ESMTP id S229987AbiCGQPN (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 7 Mar 2022 10:38:19 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C6591AF6;
-        Mon,  7 Mar 2022 07:37:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1646667443; x=1678203443;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TrTmRDWS002Fs0oH2HQhyZPSCME9/cyHeGCKtKiJKfo=;
-  b=ZRyBoHmNCWWmmWmfKHZSrQ37E4nWJoTVG6su0GCzilRg+C6ltAg0RnNz
-   UUSV8OZlCRRbn/eFM1Z+KMYnDXZkAeH/NIo1GiFBwLWggnuaKK7bST/9O
-   H8Eq49RGrtY9Jj9ZGJmJ7vKZkcaUoEMi4hFjDFaFIJEfkFcE7rAJ3eMhH
-   RiTc0CaF4y3q6ddZZLEWJo9i+w6IKt7zPn8fsDnRQhnjOmbtrSo4v0IWp
-   8+QigtYKfFgRFyF+6s0WIkerN2QJQqQuyFZskUsSmIBGovAc8eQe9EB2e
-   3j5iOJPpiwqjek7RP+ErgRfjau9Lkc9LMdTNgPEp4orgVPKZG4LfOGXFV
-   g==;
-X-IronPort-AV: E=Sophos;i="5.90,162,1643698800"; 
-   d="scan'208";a="151110204"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Mar 2022 08:37:23 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Mon, 7 Mar 2022 08:37:23 -0700
-Received: from wendy.microchip.com (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2375.17 via Frontend
- Transport; Mon, 7 Mar 2022 08:37:21 -0700
-From:   <conor.dooley@microchip.com>
-To:     <mpm@selenic.com>, <herbert@gondor.apana.org.au>
-CC:     <lewis.hanly@microchip.com>, <linux-kernel@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        "Conor Dooley" <conor.dooley@microchip.com>
-Subject: [PATCH 2/2] MAINTAINERS: update PolarFire SoC support
-Date:   Mon, 7 Mar 2022 15:40:24 +0000
-Message-ID: <20220307154023.813158-3-conor.dooley@microchip.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220307154023.813158-1-conor.dooley@microchip.com>
-References: <20220307154023.813158-1-conor.dooley@microchip.com>
+        Mon, 7 Mar 2022 11:15:13 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6AB3BA43
+        for <linux-crypto@vger.kernel.org>; Mon,  7 Mar 2022 08:14:18 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id kl20so2720050qvb.10
+        for <linux-crypto@vger.kernel.org>; Mon, 07 Mar 2022 08:14:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=c3P4r2Qz0VdfRBuStsXVpcJEgpWE5t0Sgi1SeeHIl+U=;
+        b=BtvLFmkM7MnzsLyPIqEJn5Vd/bILDTYY/LHhmcNfwufP29QGQAASjVNn/ueSotmi2a
+         zbY8bYYED8d+yBuXFobKA0H9LSb8fm7+3T69PvDDEMFVcn6Sb0kLbLwJhKKrckkq3rgB
+         O3oApHvpJ58zw7p6HA6UqTUtO9nzvjQ2PQNMbqRHREBcovCW+bDHt+nxgs4acI1pt6rW
+         DvSZXALVDO5A5bbnZYtcEhA/BYHR0s/d6+6OvWhDDe1GRP4e/IC1VbiGS26isayweQYs
+         hW9HWTcE2UoEcE1OXVRS1JmojSwQizpaYN9un3k+J/hLkbv0853gA2ab8wpLOrixqUdK
+         xc8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=c3P4r2Qz0VdfRBuStsXVpcJEgpWE5t0Sgi1SeeHIl+U=;
+        b=Av48zEKz29pqxGUGc0TUq8cBSIRXGixD3VfE5kLkmLlAGlOqpENJ7ltN2oE5hE3WPJ
+         11dWA2rYJho5QCSCT/he6wDcUgcuXBi2ft9WVp4ddrGiin/304GXJ/dKxEWbhzJeqxFM
+         9mef593j5Qi6yM63CiIytocCkZz596sXIuYhs590pNljeX0NjGmEqIdjknRz0K8vYnmd
+         7LEIBbTr1bYuObA+oirHFCgD6lVRMbqhWbwoaSaCpwgRObgadZlKsdcfH4OagHGuYG8u
+         n0MAP0Chh7nFbFxQgzmx4+a3KW1BIhRZCYiFOsjea4ym3fZRa032b8NMZqUmvKVSl3uQ
+         UmeQ==
+X-Gm-Message-State: AOAM532UVtZf49N1k3clnRIK3O73vHwpHcC783CIvt8PQ6NY9kTvnlv6
+        BQ+ErVgZws9BlCR9Q8i+HyWMIMF5S/eFY7CFtJw=
+X-Google-Smtp-Source: ABdhPJwqLfTUe2+fFTf/T2OXiuIb4RcetxxeLBydTavmMBOH6yUF0UYoGvp+XjW/ypLR3mZdmqtOqtxQ8Dds7L07jF4=
+X-Received: by 2002:a05:6214:250a:b0:435:31d6:a18f with SMTP id
+ gf10-20020a056214250a00b0043531d6a18fmr8592813qvb.72.1646669657978; Mon, 07
+ Mar 2022 08:14:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:622a:1354:0:0:0:0 with HTTP; Mon, 7 Mar 2022 08:14:17
+ -0800 (PST)
+Reply-To: fionahill.usa@outlook.com
+From:   Fiona Hill <fernadezl768@gmail.com>
+Date:   Mon, 7 Mar 2022 08:14:17 -0800
+Message-ID: <CA+J-fD52vy+SuJ5kfqKCt4+dN007W7wsmVK+Q7KembE8pkxa5w@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.1 required=5.0 tests=BAYES_05,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Conor Dooley <conor.dooley@microchip.com>
-
-Add mpfs-rng to the list of files included in PolarFire SoC support.
-
-Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 573e5ee54162..dfbd076bddb6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16589,6 +16589,7 @@ RISC-V/MICROCHIP POLARFIRE SOC SUPPORT
- M:	Lewis Hanly <lewis.hanly@microchip.com>
- L:	linux-riscv@lists.infradead.org
- S:	Supported
-+F:	drivers/char/hw_random/mpfs-rng.c
- F:	drivers/mailbox/mailbox-mpfs.c
- F:	drivers/soc/microchip/
- F:	include/soc/microchip/mpfs.h
 -- 
-2.35.1
-
+Please with honesty did you receive our message we send to you?
