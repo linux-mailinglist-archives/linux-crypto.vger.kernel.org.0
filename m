@@ -2,95 +2,147 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C324D7244
-	for <lists+linux-crypto@lfdr.de>; Sun, 13 Mar 2022 04:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CA74D7254
+	for <lists+linux-crypto@lfdr.de>; Sun, 13 Mar 2022 04:39:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbiCMDL6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 12 Mar 2022 22:11:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50490 "EHLO
+        id S233483AbiCMDkp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 12 Mar 2022 22:40:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbiCMDL6 (ORCPT
+        with ESMTP id S229796AbiCMDkp (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 12 Mar 2022 22:11:58 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F3F70CF8
-        for <linux-crypto@vger.kernel.org>; Sat, 12 Mar 2022 19:10:50 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id l1-20020a05600c4f0100b00389645443d2so7606897wmq.2
-        for <linux-crypto@vger.kernel.org>; Sat, 12 Mar 2022 19:10:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=p4GORicRfKYMmuTaUvzvYC0X6pcYWYL8sK1k4bp9fMA=;
-        b=CW3WqYBXDcrfLy3J0altxzkAoarRdTo7xKYoHgB2xy9LETLTNrp63m1uxZJpQIXGpq
-         vrSOwISRf8ko5OUhoWONCmn3YbUmJfB32kOZvYCD8qVbfjiN3K7pVhuLuADhM7DG697I
-         f4oDv4mmWuh+9xOS/wk6QSuuD4ezDKHEEoulcqET1Mn1844ft51gwXEt45j+ZE0GlkIV
-         FzDxB55HsANTVS49ZirDizlyXZfw9SYjTf040ZDzU/48+qFi/OfIWApx4CpHbM1HCYim
-         M2toHYph39SdtG/Vm88oML6JuhEvUujhTDICG1uF56owCEt9THdEw2udxMTySzEZQ+Z/
-         +KQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=p4GORicRfKYMmuTaUvzvYC0X6pcYWYL8sK1k4bp9fMA=;
-        b=bj0G4+i04ZyKufQqHvp3CfJWFIiujmstrZyTRznEAcWgR9l5wNHaBD8lhYoIJQZrM7
-         Qse0PpBp6kAL6bFwNgPTkAm7Y/HrMgc3d7ayDKZ6o3+YvhRo5I+aYUXDZzk2lUGvXgeg
-         +DEhRjsH87ndhndOpH5eX0W7ysBI60JjHkFbUKEWDpQD8/4LRw9I2kB+JbuFnEgdf6RB
-         qiwGyZ2jWu48RThTy0EhD2q1v1MBU7oVpYS9I1DglX82nQmfvBdpzVQ6rvETZXoRJ4NH
-         DSygSSe3Lq5zjJnqXSvl2BgsV+7wNMc22lcQo1Z9LTg7IGpSD+7GsQGKYtXpYlOkYci3
-         5smg==
-X-Gm-Message-State: AOAM530w1QenqVSWniiqF/fJe6A7HGDJsnSaG2TYYr4RoJc/nrA2YGY1
-        sAAzbNcF2XS2S4+h2MbGRN0LP9oW8l2YVg==
-X-Google-Smtp-Source: ABdhPJxLkD078n405mOjfXX2KEdEATUlu0MdCEjoCEM1le/eA5pjKo0tx5sFT3jI4lGeQtW4qJO8lw==
-X-Received: by 2002:a05:600c:4f8f:b0:389:eae9:90bb with SMTP id n15-20020a05600c4f8f00b00389eae990bbmr8388312wmq.97.1647141048660;
-        Sat, 12 Mar 2022 19:10:48 -0800 (PST)
-Received: from DESKTOP-26CLNVD.localdomain ([102.91.5.233])
-        by smtp.gmail.com with ESMTPSA id g11-20020a5d554b000000b001f0326a23ddsm10049455wrw.70.2022.03.12.19.10.43
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Sat, 12 Mar 2022 19:10:47 -0800 (PST)
-Message-ID: <622d60b7.1c69fb81.96c40.94e8@mx.google.com>
-From:   Mrs Maria Elisabeth Schaeffler <deargideon04@gmail.com>
-X-Google-Original-From: Mrs Maria Elisabeth Schaeffler  <info@gmail.com>
-Content-Type: text/plain; charset="iso-8859-1"
+        Sat, 12 Mar 2022 22:40:45 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4242714E;
+        Sat, 12 Mar 2022 19:39:37 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C67260EC0;
+        Sun, 13 Mar 2022 03:39:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6414C340ED;
+        Sun, 13 Mar 2022 03:39:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647142776;
+        bh=3grix6c5JEW70SAnWuXhRzKY1J3Fk+9KbH2TzPwc3QE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HRYBJwlhp6nEp5h7zayJkFd+4xG9JHyIbpD/eeCRxexFMvSyA97biWkFn0wMuJmYe
+         RfjEOqDo5T6aETVQ0Tyn6AovxZtBw3MoToDVoe7wOCgAvvDcoF5VmO5d5HMg0ZeYiO
+         qMdh/bPjMZkYLMkXzIDARJKSCsV1BL6tcHSRfu+mrxTca/nWWJnXSQNJMZ5yWK3M5T
+         ugHNxqyWlXfsJ/bccsWD6luFS5IfvYJxadBkzf3BI4qO5gBOxVVemmFlLe2M1s48Ry
+         GweReTIxCIL+kqRlU9W63WqEAgu54yl0rR6s66M0bzTszzjclW5f6URLBjT8kIA9yy
+         AD6u7ngzyvmAg==
+Date:   Sat, 12 Mar 2022 19:39:35 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: Re: [PATCH v4] random: reseed more often immediately after booting
+Message-ID: <Yi1nd4rWI2dzg23J@sol.localdomain>
+References: <CAHmME9rkiAquqASMocBtj9VAHXJCTJCwA+_iNVc2R5DKs6eMoQ@mail.gmail.com>
+ <20220313014110.54451-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Spende
-To:     Recipients <info@gmail.com>
-Date:   Sat, 12 Mar 2022 19:10:38 -0800
-Reply-To: mariaelisabethschaeffler88@gmail.com
-X-Spam-Status: No, score=2.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        HK_NAME_FM_MR_MRS,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220313014110.54451-1-Jason@zx2c4.com>
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On Sat, Mar 12, 2022 at 06:41:10PM -0700, Jason A. Donenfeld wrote:
+> In order to chip away at the "premature first" problem, we augment our
+> existing entropy accounting with more frequent reseedings at boot.
+> 
+> The idea is that at boot, we're getting entropy from various places, and
+> we're not very sure which of early boot entropy is good and which isn't.
+> Even when we're crediting the entropy, we're still not totally certain
+> that it's any good. Since boot is the one time (aside from a compromise)
+> that we have zero entropy, it's important that we shepherd entropy into
+> the crng fairly often.
+> 
+> At the same time, we don't want a "premature next" problem, whereby an
+> attacker can brute force individual bits of added entropy. In lieu of
+> going full-on Fortuna (for now), we can pick a simpler strategy of just
+> reseeding more often during the first 5 minutes after boot. This is
+> still bounded by the 256-bit entropy credit requirement, so we'll skip a
+> reseeding if we haven't reached that, but in case entropy /is/ coming
+> in, this ensures that it makes its way into the crng rather rapidly
+> during these early stages.
+> 
+> Ordinarily we reseed if the previous reseeding is 300 seconds old. This
+> commit changes things so that for the first 600 seconds of boot time, we
+> reseed if the previous reseeding is uptime / 2 seconds old. That means
+> that we'll reseed at the very least double the uptime of the previous
+> reseeding.
+> 
+> Cc: Theodore Ts'o <tytso@mit.edu>
+> Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+> Cc: Eric Biggers <ebiggers@google.com>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+> v4 uses Eric's formulation relative to the last reseed time, rather than
+> my prior one relative to boot time alone.
+> 
+>  drivers/char/random.c | 28 +++++++++++++++++++++++++---
+>  1 file changed, 25 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/char/random.c b/drivers/char/random.c
+> index 19a602c69f2f..defdba110d1d 100644
+> --- a/drivers/char/random.c
+> +++ b/drivers/char/random.c
+> @@ -327,6 +327,28 @@ static void crng_fast_key_erasure(u8 key[CHACHA_KEY_SIZE],
+>  	memzero_explicit(first_block, sizeof(first_block));
+>  }
+>  
+> +/*
+> + * Return whether the crng seed is considered to be sufficiently
+> + * old that a reseeding might be attempted. This happens if the last
+> + * reseeding was CRNG_RESEED_INTERVAL ago, or during early boot, at
+> + * an interval proportional to the uptime.
+> + */
+> +static bool crng_has_old_seed(void)
+> +{
+> +	static bool early_boot = true;
+> +	unsigned long interval = CRNG_RESEED_INTERVAL;
+> +
+> +	if (unlikely(READ_ONCE(early_boot))) {
+> +		time64_t uptime = ktime_get_seconds();
+> +		if (uptime >= CRNG_RESEED_INTERVAL / HZ * 2)
+> +			WRITE_ONCE(early_boot, false);
+> +		else
+> +			interval = max_t(unsigned int, 5 * HZ,
+> +					 (unsigned int)uptime / 2 * HZ);
+> +	}
+> +	return time_after(jiffies, READ_ONCE(base_crng.birth) + interval);
+> +}
+> +
+>  /*
+>   * This function returns a ChaCha state that you may use for generating
+>   * random data. It also returns up to 32 bytes on its own of random data
+> @@ -360,10 +382,10 @@ static void crng_make_state(u32 chacha_state[CHACHA_STATE_WORDS],
+>  	}
+>  
+>  	/*
+> -	 * If the base_crng is more than 5 minutes old, we reseed, which
+> -	 * in turn bumps the generation counter that we check below.
+> +	 * If the base_crng is old enough, we try to reseed, which in turn
+> +	 * bumps the generation counter that we check below.
+>  	 */
+> -	if (unlikely(time_after(jiffies, READ_ONCE(base_crng.birth) + CRNG_RESEED_INTERVAL)))
+> +	if (unlikely(crng_has_old_seed()))
+>  		crng_reseed(false);
+>  
 
-Hallo,
+Looks good,
 
-Ich bin Frau Maria Elisabeth Schaeffler, eine deutsche Wirtschaftsmagnatin,=
- Investorin und Philanthropin. Ich bin der Vorsitzende von Wipro Limited. I=
-ch habe 25 Prozent meines pers=F6nlichen Verm=F6gens f=FCr wohlt=E4tige Zwe=
-cke ausgegeben. Und ich habe auch versprochen, die restlichen 25% dieses Ja=
-hr 2022 an Einzelpersonen zu verschenken. Ich habe mich entschieden, 1.500.=
-000,00 Euro an Sie zu spenden. Wenn Sie an meiner Spende interessiert sind,=
- kontaktieren Sie mich f=FCr weitere Informationen.
+Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-Unter folgendem Link k=F6nnen Sie auch mehr =FCber mich lesen
-
-https://www.forbes.com/profile/maria-elisabeth-schaeffler-thumann/#443b4a6e=
-19c7
-
-Gr=FC=DFe
-Gesch=E4ftsf=FChrer Wipro Limited
-Maria-Elisabeth_Schaeffler
-Email:mariaelisabethschaeffler88@gmail.com
-
+- Eric
