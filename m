@@ -2,80 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01CDF4DD231
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Mar 2022 02:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE3D4DD2EA
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Mar 2022 03:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbiCRBCO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 17 Mar 2022 21:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
+        id S231533AbiCRCNa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 17 Mar 2022 22:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbiCRBCN (ORCPT
+        with ESMTP id S230202AbiCRCNa (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 17 Mar 2022 21:02:13 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C4B2571B1
-        for <linux-crypto@vger.kernel.org>; Thu, 17 Mar 2022 18:00:56 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id n35so2460969wms.5
-        for <linux-crypto@vger.kernel.org>; Thu, 17 Mar 2022 18:00:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=/c0Iug26q6VjeWZuRvSdzvpLlZxwZvT/Nmzo+p+K+ao=;
-        b=IJzDw1LUzjMz/SaCdpKDlH51qxNhMMrObMRC+x2ibspiWEG5MgXQ67f5+sXOcivbTk
-         JYaYmJMfuSAMx0PEutir5WkgDREg0xQ25ofVLj+DTNEgj2Q4FUJlNNrbeevbsMjLAUI7
-         s0L8PiEUPKFP2foM2CgUdQK0FJxUDUcAIuRljVvBLa3Cdcfq5PgNpl8bBhoORK/1L0nt
-         eCli1UJ1+URUqy7o3ZLW61DViNH2QXTJmYo2UsqE9z6j/DE3CqusTSOIPqAyeg1elXxy
-         P5JM9+BNoKMkoOpUyfLQU393L21n1YqcAAQSrmrz6TIf65Qy+SnuX5FFN1DTU6SlVMEl
-         GfpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=/c0Iug26q6VjeWZuRvSdzvpLlZxwZvT/Nmzo+p+K+ao=;
-        b=0udTsgW1YaL+SaRIYVIDlh6QuG5VuPF3nQuu4fpohGsxMfQB6h/vFOwE5LIg0DzV0Q
-         kmgjN0ySutSANNEFrPEUhiRPtdTYwucYo3G6ZdGN+0vgSLkvnO6p9Cr7QJvFrKiTWrGD
-         WMYbWblJAqTHTDV8AYVTGFAd7nsNJUAPKGTxwFIYxzI4p/3tXRIPD+KCWLbc0CPQGK3Z
-         xN9FePnVUL6wfnZw6/Az1F0LuZBWaI7GF9+UbKhZSJz2uZacW51bRKLv1o/W0qSw8XaJ
-         FaWKv+5vD6wBf0OFRkP58dSq6v8L5jUwtkSqSBlwF0U3tMYe9U7/FyB8Y3WxcfxG4Pdv
-         N55Q==
-X-Gm-Message-State: AOAM531ChMgQ/x6kJHjm7RDlYz7TFa1sWqwgQ4WIuId44r8D2QVFpK7F
-        46DrqPjmVt0zs2N3JU24e1s=
-X-Google-Smtp-Source: ABdhPJyEMeE0UGjSC77iQUloGWW4P6RbZ113iGQSdPYEKjr8NM1soyC9ymxgQRB2G/jMSj1wvKNPSQ==
-X-Received: by 2002:a05:600c:4f07:b0:38c:72f0:1c30 with SMTP id l7-20020a05600c4f0700b0038c72f01c30mr7404801wmq.204.1647565254752;
-        Thu, 17 Mar 2022 18:00:54 -0700 (PDT)
-Received: from DESKTOP-26CLNVD.localdomain ([197.210.53.144])
-        by smtp.gmail.com with ESMTPSA id s2-20020a1cf202000000b0038977146b28sm5560062wmc.18.2022.03.17.18.00.50
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Thu, 17 Mar 2022 18:00:54 -0700 (PDT)
-Message-ID: <6233d9c6.1c69fb81.acce4.6ebd@mx.google.com>
-From:   Barbara Finance Company <aondoyimatyoakaa@gmail.com>
-X-Google-Original-From: Barbara Finance Company <info@gmail.com>
-Content-Type: text/plain; charset="iso-8859-1"
+        Thu, 17 Mar 2022 22:13:30 -0400
+X-Greylist: delayed 67 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 17 Mar 2022 19:12:11 PDT
+Received: from mail.meizu.com (edge07.meizu.com [112.91.151.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BB62B5EC1
+        for <linux-crypto@vger.kernel.org>; Thu, 17 Mar 2022 19:12:10 -0700 (PDT)
+Received: from IT-EXMB-1-125.meizu.com (172.16.1.125) by mz-mail11.meizu.com
+ (172.16.1.15) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 18 Mar
+ 2022 10:11:04 +0800
+Received: from meizu.meizu.com (172.16.137.70) by IT-EXMB-1-125.meizu.com
+ (172.16.1.125) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Fri, 18 Mar
+ 2022 10:11:01 +0800
+From:   Haowen Bai <baihaowen@meizu.com>
+To:     <giovanni.cabiddu@intel.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>, <marco.chiappero@intel.com>,
+        <fiona.trahe@intel.com>, <wojciech.ziemba@intel.com>
+CC:     <qat-linux@intel.com>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Haowen Bai <baihaowen@meizu.com>
+Subject: [PATCH] crypto: qat: Fix unsigned comparison with less than zero
+Date:   Fri, 18 Mar 2022 10:10:59 +0800
+Message-ID: <1647569459-18376-1-git-send-email-baihaowen@meizu.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Schnelles Kreditangebot
-To:     Recipients <info@gmail.com>
-Date:   Thu, 17 Mar 2022 18:00:39 -0700
-Reply-To: barbarafinancecompany@gmail.com
-X-Spam-Status: No, score=1.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain
+X-Originating-IP: [172.16.137.70]
+X-ClientProxiedBy: IT-EXMB-1-126.meizu.com (172.16.1.126) To
+ IT-EXMB-1-125.meizu.com (172.16.1.125)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hallo
+drivers/crypto/qat/qat_4xxx/adf_4xxx_hw_data.c:67:5-8: WARNING: Unsigned expression compared with zero: ret < 0
 
-Ben=F6tigen Sie dringend einen Kredit?? Wir sind ein zuverl=E4ssiger, vertr=
-auensw=FCrdiger Kreditgeber. Wir verleihen Unternehmen und Privatpersonen K=
-redite zu einem niedrigen und erschwinglichen Zinssatz von 3 %. Antworten S=
-ie uns unten mit Details, wenn Sie interessiert sind. Vollst=E4ndiger Name,=
- ben=F6tigter Kreditbetrag, Kreditdauer, Land, Telefonnummer, kontaktieren =
-Sie uns jetzt unter: barbarafinancecompany@gmail.com
+Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+---
+ drivers/crypto/qat/qat_4xxx/adf_4xxx_hw_data.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/qat/qat_4xxx/adf_4xxx_hw_data.c b/drivers/crypto/qat/qat_4xxx/adf_4xxx_hw_data.c
+index 6d10edc..0143835 100644
+--- a/drivers/crypto/qat/qat_4xxx/adf_4xxx_hw_data.c
++++ b/drivers/crypto/qat/qat_4xxx/adf_4xxx_hw_data.c
+@@ -52,7 +52,7 @@ static const char *const dev_cfg_services[] = {
+ static int get_service_enabled(struct adf_accel_dev *accel_dev)
+ {
+ 	char services[ADF_CFG_MAX_VAL_LEN_IN_BYTES] = {0};
+-	u32 ret;
++	s32 ret;
+ 
+ 	ret = adf_cfg_get_param_value(accel_dev, ADF_GENERAL_SEC,
+ 				      ADF_SERVICES_ENABLED, services);
+-- 
+2.7.4
+
