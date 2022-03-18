@@ -2,79 +2,80 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C3F4DD096
-	for <lists+linux-crypto@lfdr.de>; Thu, 17 Mar 2022 23:15:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CDF4DD231
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Mar 2022 02:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbiCQWQx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 17 Mar 2022 18:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39902 "EHLO
+        id S231320AbiCRBCO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 17 Mar 2022 21:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbiCQWQx (ORCPT
+        with ESMTP id S231246AbiCRBCN (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 17 Mar 2022 18:16:53 -0400
-Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7753AF3282
-        for <linux-crypto@vger.kernel.org>; Thu, 17 Mar 2022 15:15:35 -0700 (PDT)
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1nUyP1-00079d-9J; Fri, 18 Mar 2022 09:15:28 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Mar 2022 10:15:26 +1200
-Date:   Fri, 18 Mar 2022 10:15:26 +1200
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Simo Sorce <ssorce@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        kernel@pengutronix.de, Guenter Roeck <linux@roeck-us.net>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] crypto: arm/aes-neonbs-cbc - Select generic cbc and aes
-Message-ID: <YjOy/rrYekCuqsaB@gondor.apana.org.au>
-References: <20211026163319.GA2785420@roeck-us.net>
- <20211106034725.GA18680@gondor.apana.org.au>
- <729fc135-8e55-fd4f-707a-60b9a222ab97@roeck-us.net>
- <20211222102246.qibf7v2q4atl6gc6@pengutronix.de>
- <YcvCglFcJEA87KNN@gondor.apana.org.au>
- <20211229110523.rsbzlkpjzwmqyvfs@pengutronix.de>
- <YjE5Ed5e1jjFFVn3@gondor.apana.org.au>
- <20220316163719.ud2s36e5zwmtmzef@pengutronix.de>
- <YjJq0RLIHvN7YWaT@gondor.apana.org.au>
- <c725d68e69dd7caf3ff6e78d11e41e2c4c3a05cc.camel@pengutronix.de>
+        Thu, 17 Mar 2022 21:02:13 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C4B2571B1
+        for <linux-crypto@vger.kernel.org>; Thu, 17 Mar 2022 18:00:56 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id n35so2460969wms.5
+        for <linux-crypto@vger.kernel.org>; Thu, 17 Mar 2022 18:00:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:from:mime-version:content-transfer-encoding
+         :content-description:subject:to:date:reply-to;
+        bh=/c0Iug26q6VjeWZuRvSdzvpLlZxwZvT/Nmzo+p+K+ao=;
+        b=IJzDw1LUzjMz/SaCdpKDlH51qxNhMMrObMRC+x2ibspiWEG5MgXQ67f5+sXOcivbTk
+         JYaYmJMfuSAMx0PEutir5WkgDREg0xQ25ofVLj+DTNEgj2Q4FUJlNNrbeevbsMjLAUI7
+         s0L8PiEUPKFP2foM2CgUdQK0FJxUDUcAIuRljVvBLa3Cdcfq5PgNpl8bBhoORK/1L0nt
+         eCli1UJ1+URUqy7o3ZLW61DViNH2QXTJmYo2UsqE9z6j/DE3CqusTSOIPqAyeg1elXxy
+         P5JM9+BNoKMkoOpUyfLQU393L21n1YqcAAQSrmrz6TIf65Qy+SnuX5FFN1DTU6SlVMEl
+         GfpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:from:mime-version
+         :content-transfer-encoding:content-description:subject:to:date
+         :reply-to;
+        bh=/c0Iug26q6VjeWZuRvSdzvpLlZxwZvT/Nmzo+p+K+ao=;
+        b=0udTsgW1YaL+SaRIYVIDlh6QuG5VuPF3nQuu4fpohGsxMfQB6h/vFOwE5LIg0DzV0Q
+         kmgjN0ySutSANNEFrPEUhiRPtdTYwucYo3G6ZdGN+0vgSLkvnO6p9Cr7QJvFrKiTWrGD
+         WMYbWblJAqTHTDV8AYVTGFAd7nsNJUAPKGTxwFIYxzI4p/3tXRIPD+KCWLbc0CPQGK3Z
+         xN9FePnVUL6wfnZw6/Az1F0LuZBWaI7GF9+UbKhZSJz2uZacW51bRKLv1o/W0qSw8XaJ
+         FaWKv+5vD6wBf0OFRkP58dSq6v8L5jUwtkSqSBlwF0U3tMYe9U7/FyB8Y3WxcfxG4Pdv
+         N55Q==
+X-Gm-Message-State: AOAM531ChMgQ/x6kJHjm7RDlYz7TFa1sWqwgQ4WIuId44r8D2QVFpK7F
+        46DrqPjmVt0zs2N3JU24e1s=
+X-Google-Smtp-Source: ABdhPJyEMeE0UGjSC77iQUloGWW4P6RbZ113iGQSdPYEKjr8NM1soyC9ymxgQRB2G/jMSj1wvKNPSQ==
+X-Received: by 2002:a05:600c:4f07:b0:38c:72f0:1c30 with SMTP id l7-20020a05600c4f0700b0038c72f01c30mr7404801wmq.204.1647565254752;
+        Thu, 17 Mar 2022 18:00:54 -0700 (PDT)
+Received: from DESKTOP-26CLNVD.localdomain ([197.210.53.144])
+        by smtp.gmail.com with ESMTPSA id s2-20020a1cf202000000b0038977146b28sm5560062wmc.18.2022.03.17.18.00.50
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Thu, 17 Mar 2022 18:00:54 -0700 (PDT)
+Message-ID: <6233d9c6.1c69fb81.acce4.6ebd@mx.google.com>
+From:   Barbara Finance Company <aondoyimatyoakaa@gmail.com>
+X-Google-Original-From: Barbara Finance Company <info@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c725d68e69dd7caf3ff6e78d11e41e2c4c3a05cc.camel@pengutronix.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Schnelles Kreditangebot
+To:     Recipients <info@gmail.com>
+Date:   Thu, 17 Mar 2022 18:00:39 -0700
+Reply-To: barbarafinancecompany@gmail.com
+X-Spam-Status: No, score=1.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Mar 17, 2022 at 10:16:16AM +0100, Philipp Zabel wrote:
->
-> What commit adad556efcdd caused was allowing the error path in
-> late_initcall(aes_init) to be hit before
-> late_initcall(crypto_algapi_init) would start the tests.
+Hallo
 
-OK I know what's going on now.  Yes the registration had always
-failed but it was silent so nobody noticed.
-
-What adad556efcdd did different was to create larvals pointing
-to the algorithms which will hang around until all tests complete
-and that is what triggers the crash during unregister (that bug
-during unregister has always existed too, it's just that it
-was pretty much impossible to trigger as usually there aren't
-any third parties allocating tfms during the init call).
-
-I'll continue to work on the unregister crash.
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Ben=F6tigen Sie dringend einen Kredit?? Wir sind ein zuverl=E4ssiger, vertr=
+auensw=FCrdiger Kreditgeber. Wir verleihen Unternehmen und Privatpersonen K=
+redite zu einem niedrigen und erschwinglichen Zinssatz von 3 %. Antworten S=
+ie uns unten mit Details, wenn Sie interessiert sind. Vollst=E4ndiger Name,=
+ ben=F6tigter Kreditbetrag, Kreditdauer, Land, Telefonnummer, kontaktieren =
+Sie uns jetzt unter: barbarafinancecompany@gmail.com
