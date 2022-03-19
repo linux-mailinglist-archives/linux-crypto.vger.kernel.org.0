@@ -2,189 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 518A34DE432
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Mar 2022 23:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 246424DE513
+	for <lists+linux-crypto@lfdr.de>; Sat, 19 Mar 2022 02:55:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234187AbiCRWrU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Mar 2022 18:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37096 "EHLO
+        id S238343AbiCSB4w (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Mar 2022 21:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241343AbiCRWrT (ORCPT
+        with ESMTP id S234358AbiCSB4v (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Mar 2022 18:47:19 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C55422C6F3
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Mar 2022 15:45:58 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id j7-20020a4ad6c7000000b0031c690e4123so11874405oot.11
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Mar 2022 15:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ekiD2sX45IwGk6wtsqdwxLttTAGZcGccRjZl1i6g1JA=;
-        b=dMDapo5gWo0mYQwoT0A/aOZqMdPyZSCOVsL5zPGffJvLJZp0AfN2E9xdlck/nSLv/N
-         hEsSe5KNbjsmefIhgIIv1yDVHMP+6YIgd44fW9U2d/c1Akfns382n70WbM/10yIkuHjZ
-         SUNIZp82WOT2MEcG49QwDBCrffF4++Gcu4CkY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ekiD2sX45IwGk6wtsqdwxLttTAGZcGccRjZl1i6g1JA=;
-        b=01Oer/JL8tWB2+nDgr7sPAUTKqRPFCtJDaBGXTJKg1FFLxOswlCFh6pssjiusTk6vk
-         57l7zJLp5qlaZkS3qqrwvlTA2XFG4/kd1GbOj9FRSImLRMgKniv/XFIhLKCJ2twJ2UwH
-         ldFTxtQ7CF5IQJ/eb4/K+Rm+uHD8mAckFoGzTJycsr9Pnh6D56YPBX2SCklxBHWo6J1T
-         y0EqWDsXfIT1OsvcjZ3ivQIKsBdf+ctfezGyO00JdEhaombce3vAEsxQ/t//+Vf2N2D0
-         2eT/9WjrrLZVG28FmUWfIM/E3ZpMQsnVGP/gH8BMzZPMe2La/lp4MxMdhOagTMFXaulY
-         h0iw==
-X-Gm-Message-State: AOAM532/+NTmc9+H6JupqhGRES/HvS7a6p6IknEaWbJAPEh9sp7E7Lde
-        Umwr/OF8tjrwQ97CMk7aQ/lIhg==
-X-Google-Smtp-Source: ABdhPJziihDBziDyTkE7iKcLTBW6BUUFUpCgkLWdsk/9MySxxcozoxXb4xoR4U6FbxLxPWes+cEMkA==
-X-Received: by 2002:a05:6820:814:b0:322:b1b2:2456 with SMTP id bg20-20020a056820081400b00322b1b22456mr3591951oob.0.1647643557718;
-        Fri, 18 Mar 2022 15:45:57 -0700 (PDT)
-Received: from [192.168.1.128] ([71.205.29.0])
-        by smtp.gmail.com with ESMTPSA id x12-20020a056830244c00b005ad233e0ba3sm4330223otr.48.2022.03.18.15.45.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Mar 2022 15:45:57 -0700 (PDT)
-Subject: Re: [PATCH 7/9] usb: usbip: eliminate anonymous module_init &
- module_exit
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Amit Shah <amit@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Eli Cohen <eli@mellanox.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Krzysztof Opasiak <k.opasiak@samsung.com>,
-        Igor Kotrasinski <i.kotrasinsk@samsung.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Jussi Kivilinna <jussi.kivilinna@mbnet.fi>,
-        Joachim Fritschi <jfritschi@freenet.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Karol Herbst <karolherbst@gmail.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-usb@vger.kernel.org, nouveau@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org, x86@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20220316192010.19001-1-rdunlap@infradead.org>
- <20220316192010.19001-8-rdunlap@infradead.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <282f4857-7b4f-810e-af0e-e9ca8129c7fc@linuxfoundation.org>
-Date:   Fri, 18 Mar 2022 16:45:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 18 Mar 2022 21:56:51 -0400
+Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92862DE7BA;
+        Fri, 18 Mar 2022 18:55:30 -0700 (PDT)
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1nVOJA-0002Jb-9d; Sat, 19 Mar 2022 12:55:09 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Sat, 19 Mar 2022 13:55:07 +1200
+Date:   Sat, 19 Mar 2022 13:55:07 +1200
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Haowen Bai <baihaowen@meizu.com>
+Cc:     mpm@selenic.com, sgoutham@marvell.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwrng: cavium: fix possible NULL pointer dereference
+Message-ID: <YjU3++JNa+XMt/0c@gondor.apana.org.au>
+References: <1647573872-19278-1-git-send-email-baihaowen@meizu.com>
 MIME-Version: 1.0
-In-Reply-To: <20220316192010.19001-8-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1647573872-19278-1-git-send-email-baihaowen@meizu.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 3/16/22 1:20 PM, Randy Dunlap wrote:
-> Eliminate anonymous module_init() and module_exit(), which can lead to
-> confusion or ambiguity when reading System.map, crashes/oops/bugs,
-> or an initcall_debug log.
+On Fri, Mar 18, 2022 at 11:24:32AM +0800, Haowen Bai wrote:
+> pdev is NULL but dereference to pdev->dev
 > 
-> Give each of these init and exit functions unique driver-specific
-> names to eliminate the anonymous names.
-> 
-> Example 1: (System.map)
->   ffffffff832fc78c t init
->   ffffffff832fc79e t init
->   ffffffff832fc8f8 t init
-> 
-> Example 2: (initcall_debug log)
->   calling  init+0x0/0x12 @ 1
->   initcall init+0x0/0x12 returned 0 after 15 usecs
->   calling  init+0x0/0x60 @ 1
->   initcall init+0x0/0x60 returned 0 after 2 usecs
->   calling  init+0x0/0x9a @ 1
->   initcall init+0x0/0x9a returned 0 after 74 usecs
-> 
-> Fixes: 80fd9cd52de6 ("usbip: vudc: Add VUDC main file")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Krzysztof Opasiak <k.opasiak@samsung.com>
-> Cc: Igor Kotrasinski <i.kotrasinsk@samsung.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Valentina Manea <valentina.manea.m@gmail.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Shuah Khan <skhan@linuxfoundation.org>
-> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Haowen Bai <baihaowen@meizu.com>
 > ---
->   drivers/usb/usbip/vudc_main.c |    8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
+>  drivers/char/hw_random/cavium-rng-vf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> --- lnx-517-rc8.orig/drivers/usb/usbip/vudc_main.c
-> +++ lnx-517-rc8/drivers/usb/usbip/vudc_main.c
-> @@ -28,7 +28,7 @@ static struct platform_driver vudc_drive
->   
->   static struct list_head vudc_devices = LIST_HEAD_INIT(vudc_devices);
->   
-> -static int __init init(void)
-> +static int __init vudc_init(void)
->   {
->   	int retval = -ENOMEM;
->   	int i;
-> @@ -86,9 +86,9 @@ cleanup:
->   out:
->   	return retval;
->   }
-> -module_init(init);
-> +module_init(vudc_init);
->   
-> -static void __exit cleanup(void)
-> +static void __exit vudc_cleanup(void)
->   {
->   	struct vudc_device *udc_dev = NULL, *udc_dev2 = NULL;
->   
-> @@ -103,7 +103,7 @@ static void __exit cleanup(void)
->   	}
->   	platform_driver_unregister(&vudc_driver);
->   }
-> -module_exit(cleanup);
-> +module_exit(vudc_cleanup);
->   
->   MODULE_DESCRIPTION("USB over IP Device Controller");
->   MODULE_AUTHOR("Krzysztof Opasiak, Karol Kosik, Igor Kotrasinski");
-> 
+> diff --git a/drivers/char/hw_random/cavium-rng-vf.c b/drivers/char/hw_random/cavium-rng-vf.c
+> index 6f66919..bffcb01 100644
+> --- a/drivers/char/hw_random/cavium-rng-vf.c
+> +++ b/drivers/char/hw_random/cavium-rng-vf.c
+> @@ -179,7 +179,7 @@ static int cavium_map_pf_regs(struct cavium_rng *rng)
+>  	pdev = pci_get_device(PCI_VENDOR_ID_CAVIUM,
+>  			      PCI_DEVID_CAVIUM_RNG_PF, NULL);
+>  	if (!pdev) {
+> -		dev_err(&pdev->dev, "Cannot find RNG PF device\n");
+> +		printk(KERN_ERR "Cannot find RNG PF device\n");
 
-Thanks for fixing this.
+Please use pr_err.
 
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
