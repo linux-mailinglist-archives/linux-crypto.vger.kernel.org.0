@@ -2,147 +2,252 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA894E3EB7
-	for <lists+linux-crypto@lfdr.de>; Tue, 22 Mar 2022 13:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A3E4E3EE1
+	for <lists+linux-crypto@lfdr.de>; Tue, 22 Mar 2022 13:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235004AbiCVMqG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Mar 2022 08:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54710 "EHLO
+        id S234000AbiCVM6P (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 22 Mar 2022 08:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbiCVMqF (ORCPT
+        with ESMTP id S234029AbiCVM6P (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Mar 2022 08:46:05 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DF61DA56
-        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 05:44:37 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1532B210F3;
-        Tue, 22 Mar 2022 12:44:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1647953076; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=66C1Tt60lTc2dTAFcxf1X3iml+8FNPPGH0Qyxe2exkM=;
-        b=m4C/gOsMBBnj5U7SD+3qeaHORCCSvGe5MKOq3rdx+ohqp1dIMEcpZeiHrgZPmq2rZZKZMW
-        lWIFdfioQq6AV2fUjcthrWLywR44oL8krxzFsA70211wfxZ9A1xtL6lDRw50BrmVL883QF
-        DTmEFNm6Xz+sTLyuA3wI6xfijHxanlc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1647953076;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=66C1Tt60lTc2dTAFcxf1X3iml+8FNPPGH0Qyxe2exkM=;
-        b=5O1rlcfNil8Ak4Qfk+aZgCzmVnyLAbw3Qbf7NveAxg+37znAA85TxmoprPREG1aViF7ve4
-        z1ZHIF5V6qp5t7Bw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0465912FC5;
-        Tue, 22 Mar 2022 12:44:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cODWALTEOWKecAAAMHmgww
-        (envelope-from <hare@suse.de>); Tue, 22 Mar 2022 12:44:36 +0000
-Message-ID: <d7689bfa-787c-8ece-1b87-d147ad5e3ed2@suse.de>
-Date:   Tue, 22 Mar 2022 13:44:35 +0100
+        Tue, 22 Mar 2022 08:58:15 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105876BDD8
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 05:56:46 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id c62so2048793edf.5
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 05:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=RpNDE+NQdE9P4TAEep76tk6uwbTamSrXJxQiX7LzDmA=;
+        b=lX+X9maIKUJOLri8mprQ4Qmj91/gjBbEx8RQ4xszeU7Yez8pDm/yEYLFPEhfR9hoSi
+         fCSX+1wfijU6ET5bZ2wFPrqEZYX/7GdNpJAEzHf5bhtj9cINsyg/J7eNRxeohHzzxN/O
+         f45QGU5PKEyqIUbPr0/7y4h4NEoWfkDt7UHIgLU07InyvbtJtEqhHV0vmYAW1ekycXbS
+         UM+2URli33c3DuLbfgmfp05bsNtFdgYiWevAMFdHyWF3EDY7uvP0Mxz11O5XtkCJGkqn
+         KB8XwGM8+GFAYWiAMc/tCJl/yJ/jJLW+6bTp8o7/aOWwtJ7f+9vcYLbIiNWvh7MM/JH/
+         l8RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=RpNDE+NQdE9P4TAEep76tk6uwbTamSrXJxQiX7LzDmA=;
+        b=LD3z+Ubjcah+COQ4VbpPz51AckdFDMK6zYGQ6a7ep3JvGKJUF2CzaHbW4NN3aKF0JM
+         ejqkUzzwNOZ1whVlQaGna6y+kEKjqXZre3H/N7Qwbhn1OjK+O1bv1AKMQye+W5Z3VK9W
+         PEk+SJnahZgUj2gWfF4TId6j/tS/DI61FQZpabiW0KmsJZ67KRlmyq+B04wRlf7qALcf
+         ME4Z45Hb1FazlUHdHvqrDsXOSJCey3/jHIMhmiHrh/MZYr9cbhJcPTq7NULD5YOZKqxB
+         kII85Apa8MiOEwPsPavRsON3t7t30/5SDQPmIa8lSLD9uUjShKdPvgQpUAKiWJD/7eqk
+         0tOg==
+X-Gm-Message-State: AOAM531y9VQXGVdHZ8oL8DniEM8lGaah8rUMh+YPiWAzZctNYk42mfFA
+        KOV0PoiePEMWoMBYgUJ6hD55/y7HHepoIc2wV50=
+X-Google-Smtp-Source: ABdhPJxDMYmxXWtAPybkm95NxHlSLzAZxS7jp7bunCMyQFGxcOzHKiNga7Yb5Kaxy+uJgi+Yz/DQ56qp4e+cW1CDQFY=
+X-Received: by 2002:a50:99cd:0:b0:418:d6c2:2405 with SMTP id
+ n13-20020a5099cd000000b00418d6c22405mr28043520edb.342.1647953804463; Tue, 22
+ Mar 2022 05:56:44 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Content-Language: en-US
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-Cc:     Christoph Hellwig <hch@lst.de>, Keith Busch <keith.busch@wdc.com>,
-        linux-nvme@lists.infradead.org, linux-crypto@vger.kernel.org
-References: <20211202152358.60116-1-hare@suse.de>
- <20211202152358.60116-8-hare@suse.de>
- <346e03e9-ece1-73f9-f7f4-c987055c5b9f@nvidia.com>
- <3382242d-7349-e6f9-9b3c-4a5162f630c0@suse.de>
- <4f320d3b-7ade-211c-e1ff-d4eb37fe540a@nvidia.com>
-From:   Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH 07/12] nvme: Implement In-Band authentication
-In-Reply-To: <4f320d3b-7ade-211c-e1ff-d4eb37fe540a@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Duke Abbaddon <duke.abbaddon@gmail.com>
+Date:   Tue, 22 Mar 2022 12:56:34 +0000
+Message-ID: <CAHpNFcMJwu1JDMxuYygeMZbP3Y+L+Cv9=YRuBBVtj_Koe9169A@mail.gmail.com>
+Subject: Reference Kernel Security: https://science.n-helix.com/2019/06/kernel.html
+To:     torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,PDS_OTHER_BAD_TLD,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 3/22/22 13:21, Max Gurtovoy wrote:
-> 
-> On 3/22/2022 2:10 PM, Hannes Reinecke wrote:
->> On 3/22/22 12:40, Max Gurtovoy wrote:
->>> Hi Hannes,
->>>
->>> On 12/2/2021 5:23 PM, Hannes Reinecke wrote:
->>>> Implement NVMe-oF In-Band authentication according to NVMe TPAR 8006.
->>>> This patch adds two new fabric options 'dhchap_secret' to specify the
->>>> pre-shared key (in ASCII respresentation according to NVMe 2.0 section
->>>> 8.13.5.8 'Secret representation') and 'dhchap_ctrl_secret' to specify
->>>> the pre-shared controller key for bi-directional authentication of both
->>>> the host and the controller.
->>>> Re-authentication can be triggered by writing the PSK into the new
->>>> controller sysfs attribute 'dhchap_secret' or 'dhchap_ctrl_secret'.
->>>
->>> Can you please add to commit log an example of the process ?
->>>
->>>  From target configuration through the 'nvme connect' cmd.
->>>
->>>
->>
->> Please check:
->>
->> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2Fhreinecke%2Fblktests%2Ftree%2Fauth.v3&amp;data=04%7C01%7Cmgurtovoy%40nvidia.com%7C4e6a16198c834c87e2ac08da0bfd01fc%7C43083d15727340c1b7db39efd9ccc17a%7C0%7C0%7C637835478535167965%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=OgZkPCwDUIllRWfKF0SoC6osWJy3hqAZouME3KDnIGQ%3D&amp;reserved=0 
->>
->>
->> That contains the blktest scripts I'm using to validate the 
->> implementation.
->>
-> blktest is great but for features in this magnitude I think we need to 
-> add a simple usage example in the commit log or in the cover letter.
-> 
-> for someone that is not familiar with blktests, one should start reverse 
-> engineering 4000 LOC to use it.
-> 
+https://science.n-helix.com/2019/06/kernel.html
 
-Right.
-Essentially it boils down to this:
+Trace ID : Kernel & Bios HASH Reference
+https://lkml.org/lkml/2022/3/22/446
 
-nvme gen-dhchap-key > host_key.txt
-nvme gen-dhchap-key > target_key.txt
-mkdir /sys/kernel/config/nvmet/hosts/<hostnqn>
-cd /sys/kernel/config/nvmet/hosts/<hostnqn>
-cat host_key.txt > dhchap_key
-cat target_key.txt > dhchap_ctrl_key
-<link 'hostnqn' to the target subsystem>
+Jumpless Security HASH
+https://lkml.org/lkml/2022/3/22/440
 
-And then one the host you need to call
+SPE Decode & Encode
+https://lkml.org/lkml/2022/3/22/415
 
-'nvme connect ... --dhchap-key=$(cat host_key)'
+*****
 
-And things should work.
+VM Virtual Call Frame : Security Aspect Leaf HASH Identifiers : Rupert S
 
-But I can put a more detailed description in the commit log.
+Leaf HASH Identifiers in 16Bit/32Bit/64Bit : RS
 
-Note, I'm waiting for Herbert Xu to merge his 'cryptodev' tree with 
-upstream; once that's done I'll be submitting these patches.
+With this example in mind 16Bit HASH Values & identifiers make sense.
 
-Cheers,
+16Bit HASH Reasoning Table: based upon Leaf HASH Identifiers in
+16Bit/32Bit/64Bit
 
-Hannes
--- 
-Dr. Hannes Reinecke		           Kernel Storage Architect
-hare@suse.de			                  +49 911 74053 688
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
+16Bit Leaf HASH, Compatible max RAM) : 4GB Large Page
+
+16 Million HASH groups for identifiers with 128MB RAM per HASH Master group..
+
+256 HASH master Table
+256 HASH Per Group
+
+16:32MB up to 4GB(16Bit Leaf HASH, Compatible max RAM) : RAM per group
+
+16Bit Hash identifier tables load into 16KB of processor cache
+Load, Save & Store can be done in a higher Bit depth; 32Bit for example
+SiMD can operate in Half, Single & Double Float capacity
+
+Micro work loads such as motion & video & 3D Tessellation
+
+*
+
+VM Virtual Call Frame : Security Aspect Leaf HASH Identifiers in
+16Bit/32Bit/64Bit : RS
+
+If the CPU Manager can call Compression & Cypher independently on TASK Call,
+If the Processor Manager can call from Virtualisation functions for
+each secure task group.
+
+Security Aspect : With CPU Cache in the 8MB+ Region Leaf HASH
+Identifiers can be stored:
+
+Compressed if Processor has Compression such as BZip
+Encrypted Compressed if Processor has Compression such as AES
+
+In a Secure &+ Work Isolation Container : WIC or SWIC contained L2
+(Compress Store Small Identifier List)
+
+In a Secure &+ Work Isolation Container : WIC or SWIC contained L3
+(larger identifier lists),
+
+(c)Rupert S
+
+Reference Kernel Security:
+
+https://science.n-helix.com/2021/11/monticarlo-workload-selector.html
+
+https://science.n-helix.com/2022/02/interrupt-entropy.html
+
+https://science.n-helix.com/2018/12/rng.html
+
+https://science.n-helix.com/2022/02/rdseed.html
+
+https://science.n-helix.com/2017/04/rng-and-random-web.html
+
+https://science.n-helix.com/2022/03/security-aspect-leaf-hash-identifiers.html
+
+Leaf HASH Identifier Paths to clear logic:
+
+Performance issues related to handheld would be solved with the use of:
+
+FP16 packed pixel
+FP16 background object maths
+FP/Int8/4 Machine learning adaptive code...
+Compute Shaders
+Compression > DOT Image format
+
+With these resources available, We can potentially do more!
+
+https://science.n-helix.com/2019/06/vulkan-stack.html
+https://science.n-helix.com/2022/03/fsr-focal-length.html
+https://science.n-helix.com/2021/09/temporal-aliasing-image-shaping-polygon.html
+https://science.n-helix.com/2022/03/simd-render.html
+
+*
+https://science.n-helix.com/2019/06/kernel.html
+
+Trace ID : Kernel & Bios HASH Reference
+https://lkml.org/lkml/2022/3/22/446
+
+Jumpless Security HASH
+https://lkml.org/lkml/2022/3/22/440
+
+SPE Decode & Encode
+https://lkml.org/lkml/2022/3/22/415
+*
+
+As you know in my studies i found that 16x AA rarely has a performance
+hit on all verified hardware since RX200 3GB (and the RX560) & even
+the RX5770 1GB.The NVidia 1080 can manage most of this & i optimised
+Elite Dangerous for the 1080 & RX200 market.
+
+
+A lot of the performance issues related to handheld would be solved
+with the use of:
+
+FP16 packed pixel
+FP16 background object maths
+FP/Int8/4 Machine learning adaptive code...
+Compute Shaders
+Compression > DOT Image format
+
+With these resources available, We can potentially do more!
+
+*
+
+"Apex Legends : I get the feeling that the lower final precision on
+the screen output is the result of a 4x Anti Aliasing layer and lower
+Image compression settings,"
+
+*
+
+Elite Dangerous Reference
+Videos:https://www.youtube.com/watch?v=JmMQPS_azJA&list=PL8DNvgnwiUU1cezx_Y9DraHjyqJxnrrN7
+
+ML & Game performance improvement
+
+Rupert S
+
+The Handheld market performance ratings are :
+
+Snapdragon (often used & is good)
+
+High quality option based upon Notebook expectations
+
+AMD Chipset
+NVidia
+
+My studies concluded that both NVidia and AMD have little to worry
+about AA performance upto 16x and it makes almost no performance
+advantage to use less in my performance tuning...
+
+I am frequently in possession of older hardware; Like many users i
+cannot always afford all the best gear,
+
+However there are examples of things that make a bigger hit:
+
+16x tessellation rarely causes a problem (RX200 3GB+)24 & 32 both
+dynamically jiggle FPS around heavy asteroids & space stations in
+frontier elite..
+
+but looks amazing!
+
+Multisampling is manageable at 2x on RX200 on elite dangerous
+
+(a quite intense graphic space MMO)
+4x MultiSampling does involve a 20% frame rate drop, Quality is
+preferred but i went for 2x as it rarely causes issues.
+
+Texture Image compression format optimisation is a priority NO.1 Priority..
+
+You save a lot of space & heavy usage of DOT 1 > 5 compression
+management is advised..
+10Bit sampling is perfectly logical.
+
+https://www.nintendolife.com/news/2021/03/video_check_out_this_side-by-side_comparison_of_apex_legends_running_on_switch_and_ps4_pro
+
+https://www.youtube.com/watch?v=uGrPwt_KHRE
+
+Elite Dangerous 64Bit PvP Arena DeathMatch 4Q 2xMultiSampling.mp4
+(93.26 MB) https://mirrorace.org/m/6qr3y
+
+Elite Dangerous 64 Sub.FM Rastafari PvP 2016-04-23 19-27-22-552.mp4
+(89.27 MB) https://mirrorace.org/m/54waA
+
+EliteDangerous - CQC PvP Arena - Bloody is the bath of kings -
+2016-05-05 14-30-27-909.mp4 (277.04 MB) https://mirrorace.org/m/3IO7p
+
+yes cloudflare apex_eoso.nx7v.icu apex_eu.nx7v.icu apex_wes.nx7v.icu
+apex_eas.nx7v.icu
+
+USA: pop: apex_sv1.nx7v.icu apex_sv2.nx7v.icu apex_sv3.nx7v.icu
+
+*
