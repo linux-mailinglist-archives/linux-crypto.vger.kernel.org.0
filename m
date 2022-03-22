@@ -2,91 +2,113 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6295C4E3F13
-	for <lists+linux-crypto@lfdr.de>; Tue, 22 Mar 2022 14:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFEF4E3F9A
+	for <lists+linux-crypto@lfdr.de>; Tue, 22 Mar 2022 14:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234966AbiCVNDv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Mar 2022 09:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43676 "EHLO
+        id S235318AbiCVNf0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 22 Mar 2022 09:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235195AbiCVNDu (ORCPT
+        with ESMTP id S234566AbiCVNfX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Mar 2022 09:03:50 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434A885BC1
-        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 06:02:23 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id q5so6161125plg.3
-        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 06:02:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=M/XbYmdchGb4htIgyglLZmtK2Rqo0eR5QKNfFg2mxH8=;
-        b=TFPNMS9qTjP0AvWCDwmzNwq5vcwJPaA9h+ATwVKFM9eUj0XaV5kZt2be9vvjr4LGcQ
-         DF5xrzSXGINDeq14lyZrHGCW8S7YkcTNTSr4BTKMuvI/0DQN9sggYqY7QC0T3vJNee86
-         lKyKPsZvmARNTeDT5O6qAdS885M1wtzNEfZkVL5/05KB0rzbD4/1ZYF6vrwRBjZGA1J1
-         4ltnMBsV+AGjQneA8ux95gebwUKY0d4oUO7LSXYPTYXs5hro22X60OZKR1uUn1A+dRwN
-         8919m/tDL8B1cCrGkq5V2oYWIB8EIhCuGXyypwNES9wUiaSmpjCCPmdAvY5mwrkWDvgy
-         4/GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=M/XbYmdchGb4htIgyglLZmtK2Rqo0eR5QKNfFg2mxH8=;
-        b=Mj8T29QAUfzffvPNydKNHQNNyewG4YnIjZlKpXn2NaybYYj3HwLU+4LrRfEjjzLdyu
-         X2qPft967lX5PNCAJ09rbS/gsKXLGFD1HQNkELK+PrUkeb/MDEQ3yACw4WvjlKDghgyF
-         iHv+aH1xHbC7ueVATpjztj4g6mw6oaAa8dxn9LNkAVnrUx2/G8EDZe48yvqSAqwES7X1
-         BeFsDZcndjBCL/ksFV/FDlZUc2RnQ3UltLMS7nW8BLR/2Ybwx0BO0YyXlaSVQh1yYuOU
-         FVHFxk8uYBCZvtqS6ROIoPo32Hd25xfXRteBD5MJBZiPXbCKV9kz7cZQXa8Gz/b0G2LI
-         8UWQ==
-X-Gm-Message-State: AOAM532aYXy5Ink+Zn6IRtapbzeFGQjQrToiAG0aEs0+PasWFDQeHca4
-        vUVj63ldR3aiGP2AWT5Vqy6TQJDcYNC8oF9D
-X-Google-Smtp-Source: ABdhPJwFI/IRn1/8u+uFGz/5nbAX4iuEA+B9DgJePrej8zIN1Ok43G5ao3329yIy/Ob6/yjwYYmSig==
-X-Received: by 2002:a17:90a:628b:b0:1c6:a410:d73f with SMTP id d11-20020a17090a628b00b001c6a410d73fmr5051550pjj.96.1647954142569;
-        Tue, 22 Mar 2022 06:02:22 -0700 (PDT)
-Received: from [192.168.1.100] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id f14-20020a056a0022ce00b004fabe9fac23sm2618177pfj.151.2022.03.22.06.02.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Mar 2022 06:02:22 -0700 (PDT)
-Message-ID: <650655da-e719-4e48-5dc5-2e6529674f65@kernel.dk>
-Date:   Tue, 22 Mar 2022 07:02:20 -0600
+        Tue, 22 Mar 2022 09:35:23 -0400
+X-Greylist: delayed 1226 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 22 Mar 2022 06:33:56 PDT
+Received: from gateway24.websitewelcome.com (gateway24.websitewelcome.com [192.185.51.253])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B858B6D38E
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 06:33:56 -0700 (PDT)
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id E50CB2A48
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 08:13:28 -0500 (CDT)
+Received: from 162-215-252-75.unifiedlayer.com ([208.91.199.152])
+        by cmsmtp with SMTP
+        id WeKGngsSPb6UBWeKGnx9VE; Tue, 22 Mar 2022 08:13:28 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=A+xNZ3MvECqWmVurH8kTIBYeensVUd574nB3jEFM9QA=; b=IaO90SuNkjvu0rc3bzfU3AAwxC
+        G6mgIyiJJD37N4vFEBE8h1DQul9RNySgTDmrN+sZWwfN1g7APykRCg17R5slOKP/+3QyMNgruWIYN
+        gCPgOFOQAMVQXrnjDNkLvLj1gqzywawVBrZE+2uVP3HTV4RJwNvMaJpcF5LApArDTOGh3V2WxoXyl
+        Pou0i5xbIlFQ0qLfrQ1T60GtpnsUQLWqZ1zI3mlw4H6QboxwfxvjK+Ngd0jIJhukD0jlUWUkH51pe
+        7AyFEReEZ21zdg+zIr4V/R5EGjnyHMB8jJZliJ429hvFgKqYKHIRxFx33aofSBZ8x81PQbhr2Kdq1
+        rSjlxl6g==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:57608 helo=localhost)
+        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@roeck-us.net>)
+        id 1nWeKF-0034fO-UT; Tue, 22 Mar 2022 13:13:28 +0000
+Date:   Tue, 22 Mar 2022 06:13:27 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Harsha <harsha.harsha@xilinx.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: crypto: xilinx - Turn SHA into a tristate and allow COMPILE_TEST
+Message-ID: <20220322131327.GA747088@roeck-us.net>
+References: <Yigc4cQlTJRRZsQg@gondor.apana.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: crypto: crc64-rocksoft-generic test failed (wrong result) on test
- vector 0
-Content-Language: en-US
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        herbert@gondor.apana.org.au, kbusch@kernel.org
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <YjmeVttXDd/FPwUP@Red>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <YjmeVttXDd/FPwUP@Red>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yigc4cQlTJRRZsQg@gondor.apana.org.au>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1nWeKF-0034fO-UT
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:57608
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 7
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,SPF_HELO_PASS,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 3/22/22 4:00 AM, Corentin Labbe wrote:
-> Hello
+On Wed, Mar 09, 2022 at 03:20:01PM +1200, Herbert Xu wrote:
+> This patch turns the new SHA driver into a tristate and also allows
+> compile testing.
 > 
-> Booting an arm64_defconfig with BigEndian lead to:
-> alg: shash: crc64-rocksoft-generic test failed (wrong result) on test vector 0, cfg=\"init+update+final aligned buffer\"
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+This results in:
+
+Building s390:allmodconfig ... failed
+--------------
+Error log:
+In file included from drivers/crypto/xilinx/zynqmp-sha.c:6:
+include/linux/cacheflush.h:12:46: error: 'struct folio' declared inside parameter list will not be visible outside of this definition or declaration [-Werror]
+   12 | static inline void flush_dcache_folio(struct folio *folio)
+
+Guenter
+
 > 
-> Reproductible on the virt qemu machine.
-> 
-> Furthermore, none of crc64 files have clear MAINTAINERS entry.
-
-Keith, can you send in your BE fix? The commit is upstream now.
-
--- 
-Jens Axboe
-
+> diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
+> index 5d7508230b7d..97455a5f05c1 100644
+> --- a/drivers/crypto/Kconfig
+> +++ b/drivers/crypto/Kconfig
+> @@ -809,8 +809,8 @@ config CRYPTO_DEV_ZYNQMP_AES
+>  	  for AES algorithms.
+>  
+>  config CRYPTO_DEV_ZYNQMP_SHA3
+> -	bool "Support for Xilinx ZynqMP SHA3 hardware accelerator"
+> -	depends on ZYNQMP_FIRMWARE
+> +	tristate "Support for Xilinx ZynqMP SHA3 hardware accelerator"
+> +	depends on ZYNQMP_FIRMWARE || COMPILE_TEST
+>  	select CRYPTO_SHA3
+>  	help
+>  	  Xilinx ZynqMP has SHA3 engine used for secure hash calculation.
