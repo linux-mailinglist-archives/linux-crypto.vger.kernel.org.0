@@ -2,86 +2,142 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD8A4E53D8
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Mar 2022 15:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9114E5491
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Mar 2022 15:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244600AbiCWODI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 23 Mar 2022 10:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58546 "EHLO
+        id S231801AbiCWOwa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Mar 2022 10:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244597AbiCWODH (ORCPT
+        with ESMTP id S236610AbiCWOwa (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 23 Mar 2022 10:03:07 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 21CB276E0E
-        for <linux-crypto@vger.kernel.org>; Wed, 23 Mar 2022 07:01:37 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-62-d9WQqktKNfuEPIK2YXUnUQ-1; Wed, 23 Mar 2022 14:01:34 +0000
-X-MC-Unique: d9WQqktKNfuEPIK2YXUnUQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.32; Wed, 23 Mar 2022 14:01:34 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.033; Wed, 23 Mar 2022 14:01:34 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Jason A. Donenfeld'" <Jason@zx2c4.com>,
-        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-CC:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>,
-        "Dominik Brodowski" <linux@dominikbrodowski.net>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Sandy Harris <sandyinchina@gmail.com>
-Subject: RE: [PATCH] random: allow writes to /dev/urandom to influence fast
- init
-Thread-Topic: [PATCH] random: allow writes to /dev/urandom to influence fast
- init
-Thread-Index: AQHYPnEnHr6Egf4vbEGW28icqj7YNKzM/Low
-Date:   Wed, 23 Mar 2022 14:01:34 +0000
-Message-ID: <7cde489e73c8448b95a1b7bc6ed1d75b@AcuMS.aculab.com>
-References: <20220322191436.110963-1-Jason@zx2c4.com>
- <1648009787.fah6dos6ya.none@localhost>
- <CAHmME9rsvxczJrhPwRX6nyrh9NB2AuJqkEKrTLx-G-T1J6_czQ@mail.gmail.com>
-In-Reply-To: <CAHmME9rsvxczJrhPwRX6nyrh9NB2AuJqkEKrTLx-G-T1J6_czQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 23 Mar 2022 10:52:30 -0400
+X-Greylist: delayed 1616 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 23 Mar 2022 07:51:00 PDT
+Received: from gateway33.websitewelcome.com (gateway33.websitewelcome.com [192.185.146.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D8BE7E082
+        for <linux-crypto@vger.kernel.org>; Wed, 23 Mar 2022 07:51:00 -0700 (PDT)
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 604ED9451
+        for <linux-crypto@vger.kernel.org>; Wed, 23 Mar 2022 09:24:01 -0500 (CDT)
+Received: from 162-215-252-75.unifiedlayer.com ([208.91.199.152])
+        by cmsmtp with SMTP
+        id X1u5nW41EHnotX1u5nYMFF; Wed, 23 Mar 2022 09:24:01 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:Subject:From:References:Cc:To:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=id4KakR43VwvSclTscrtuuJMK1IX+RuWRI/B9xFRJpk=; b=SVzwFj19iwEqII6is3hOB116dH
+        +gBfETPclRjBnoEvnRrOoeW+sDTr+HJAtSYVUX8gptsIpITfOUg1cFuME2dcm3P5UMk415bAELP/q
+        feklv8fsUk4sIh/rzmueB+y6EwGWnCT8cYq9MBPTPnF+K6XqVjwm20bzbyvaGgIARVK331DUeq7vB
+        iKjDb2KIwYx0QExPQA1aDN8T9L8/ZY9tOlyI2WV8vMP8YqAcjUROIvSlWeFIoFUome6eiJCc1+sNL
+        HC35XPU2SmqRcuAwhX0a9ZQNFnMOgeqdHQUFBTz4nCq7XF7OxOzzMW6Uk8Q4rdd1dU0F/DaKDZhG1
+        0UL+lFyA==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:54412)
+        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@roeck-us.net>)
+        id 1nX1u3-002CJg-TF; Wed, 23 Mar 2022 14:23:59 +0000
+Message-ID: <ebafdf77-5d96-556b-0197-a172b656bb01@roeck-us.net>
+Date:   Wed, 23 Mar 2022 07:23:56 -0700
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+To:     Mark Brown <broonie@kernel.org>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-arch@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Michal Simek <monstr@monstr.eu>,
+        Borislav Petkov <bp@alien8.de>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Joshua Kinard <kumba@gentoo.org>,
+        David Laight <David.Laight@aculab.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Theodore Ts'o <tytso@mit.edu>
+References: <20220217162848.303601-1-Jason@zx2c4.com>
+ <20220322155820.GA1745955@roeck-us.net> <YjoUU+8zrzB02pW7@sirena.org.uk>
+ <0d20fb04-81b8-eeee-49ab-5b0a9e78c9f8@roeck-us.net>
+ <YjsOHmvDgAxwLFMg@sirena.org.uk>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v1] random: block in /dev/urandom
+In-Reply-To: <YjsOHmvDgAxwLFMg@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1nX1u3-002CJg-TF
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net [108.223.40.66]:54412
+X-Source-Auth: linux@roeck-us.net
+X-Email-Count: 26
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-RnJvbTogSmFzb24gQS4gRG9uZW5mZWxkDQo+IFNlbnQ6IDIzIE1hcmNoIDIwMjIgMDQ6NDgNCi4u
-Lg0KPiAtIFBsZW50eSBvZiB0aGluZ3MgYXJlIHNlZWRpbmcgdGhlIFJORyBjb3JyZWN0bHksIGFu
-ZCBidWlsZHJvb3Qncw0KPiBzaGVsbCBzY3JpcHQgaXMganVzdCAiZG9pbmcgaXQgd3JvbmciLg0K
-PiANCj4gT24gdGhhdCBsYXN0IHBvaW50LCBJIHNob3VsZCByZWl0ZXJhdGUgdGhhdCBidWlsZHJv
-b3QncyBzaGVsbCBzY3JpcHQNCj4gc3RpbGwgaXNuJ3QgYWN0dWFsbHkgaW5pdGlhbGl6aW5nIHRo
-ZSBSTkcsIGRlc3BpdGUgd2hhdCBpdCBzYXlzIGluIGl0cw0KPiBlY2hvOyB0aGVyZSdzIG5ldmVy
-IGJlZW4gYSB3YXkgdG8gaW5pdGlhbGl6ZSB0aGUgUk5HIGZyb20gYSBzaGVsbA0KPiBzY3JpcHQs
-IHdpdGhvdXQgY2FsbGluZyBvdXQgdG8gdmFyaW91cyBzcGVjaWFsIHB1cnBvc2UgaW9jdGwtYXdh
-cmUNCj4gYmluYXJpZXMuDQoNClBlcmhhcHMgdGhlIHZlcnkgZmlyc3Qgd3JpdGUgYWZ0ZXIgYm9v
-dCBjb3VsZCBiZSBhc3N1bWVkIHRvDQpiZSB2YWxpZCBpbml0aWFsaXNhdGlvbiBkYXRhPw0KKE9u
-IHRvcCBvZiBhIGZldyBvdGhlciB0ZXN0cy4pDQoNClRoZW4gSSBuZWVkIGEgcGF0Y2ggYWdhaW5z
-dCA1LjEwIDotKQ0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBC
-cmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdp
-c3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On 3/23/22 05:10, Mark Brown wrote:
+> On Tue, Mar 22, 2022 at 02:54:20PM -0700, Guenter Roeck wrote:
+>> On 3/22/22 11:24, Mark Brown wrote:
+> 
+>>> Just as a datapoint for debugging at least qemu/arm is getting coverage
+>>> in CI systems (KernelCI is covering a bunch of different emulated
+>>> machines and LKFT has at least one configuration as well, clang's tests
+>>> have some wider architecture coverage as well I think) and they don't
+>>> seem to be seeing any problems - there's some other variable in there.
+> 
+>> I use buildroot 2021.02.3. I have not changed the buildroot code, and it
+>> still seems to be the same in 2022.02. I don't see the problem with all
+>> boot tests, only with the architectures mentioned above, and not with all
+>> qemu machines on the affected platforms. For arm, mostly older machines
+>> are affected (versatile, realview, pxa configurations, collie, integratorcp,
+>> sx1, mps2-an385, vexpress-a9, cubieboard). I didn't check, but maybe
+>> kernelci doesn't test those machines ?
+> 
+> Kind of academic given that Jason seems to have a handle on what the
+> issues are but for KernelCI it's variations on mach-virt, plus
+> versatile-pb.  There's a physical cubietruck as well, and BeagleBone
+> Blacks among others.  My best guess would be systems with low RAM are
+> somehow more prone to issues.
 
+I don't think it is entirely academic. versatile-pb fails for me;
+if it doesn't fail at KernelCI, I'd like to understand why - not to
+fix it in my test environment, but to make sure that I _don't_ fix it.
+After all, it _is_ a regression. Even if that regression is triggered
+by bad (for a given definition of "bad") userspace code, it is still
+a regression.
+
+Thanks,
+Guenter
