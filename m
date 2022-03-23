@@ -2,194 +2,131 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CDF4E4BB8
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Mar 2022 05:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0150F4E4BED
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Mar 2022 05:33:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229436AbiCWEC0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 23 Mar 2022 00:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
+        id S232170AbiCWEe7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Mar 2022 00:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbiCWECZ (ORCPT
+        with ESMTP id S229446AbiCWEe4 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 23 Mar 2022 00:02:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F36403EF;
-        Tue, 22 Mar 2022 21:00:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FDB86152F;
-        Wed, 23 Mar 2022 04:00:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DB13C340E8;
-        Wed, 23 Mar 2022 04:00:54 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="B8jjZXYB"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1648008052;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rArObsGrIA+CZzY+aR2vyQPSwI1FLNZscc57zebd6IA=;
-        b=B8jjZXYBZhomYifjoxrnHX0BOz4rDhGe68SOXLYYABff4xVw2pBFTu3S7+x6j5RjayefSL
-        LHQ9qQlqfmM0AAM953ycgmzLda363Otc3cIEmN8WvYof5TIsi8zrKYwQQqRYGMbP89exwr
-        LnU+Fh+VZbp5DHtSsZB1vn7sUbI45+g=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 19660a94 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Wed, 23 Mar 2022 04:00:52 +0000 (UTC)
-Date:   Tue, 22 Mar 2022 22:00:49 -0600
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH] random: allow writes to /dev/urandom to influence fast
- init
-Message-ID: <YjqbcQbYHCOpgqGg@zx2c4.com>
-References: <20220322191436.110963-1-Jason@zx2c4.com>
- <YjqVemCkZCU1pOzj@mit.edu>
+        Wed, 23 Mar 2022 00:34:56 -0400
+X-Greylist: delayed 1371 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 22 Mar 2022 21:33:26 PDT
+Received: from gateway31.websitewelcome.com (gateway31.websitewelcome.com [192.185.143.234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136035D5F2
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 21:33:24 -0700 (PDT)
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id 96B1942093
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 23:10:32 -0500 (CDT)
+Received: from 162-215-252-75.unifiedlayer.com ([208.91.199.152])
+        by cmsmtp with SMTP
+        id WsKOnH9Gzdx86WsKOn1cUB; Tue, 22 Mar 2022 23:10:32 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:Cc:
+        To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=BZKkdo1sSVKxfV6q1iBgWqA7GO4OH2toIRNkvBXIVJQ=; b=criNZPJ6YjDcgtnTv9SiV9ePxq
+        5AgWDQ4b6G7azJqOJiWHrFLIAHe9+chGbQR/hDP92fKcw7QhnNv5Uk0Dpb8wKSxHH8Nly6eXA0Tx6
+        /zDULqUQlbWLBC/GHI7SCIH/cf1QnBtVcXzKJ3rNtfwlbxS6gz72FgEgPgCp1VgmtwQcmDHkJodOb
+        A4Mi9zZdq23n7GcykfDqc4ymOmnT2vUWY91hvbOMf8u4XhaANqbR9pnMc3HMQG2xbEAfQhJNVNJeI
+        TWA1gy2L94sDWV+/aIpaQoZPSE97Au2fsEt00IX7M0JcvEaRH29ZrNMN3KlIXfspZEeB2/2pnQmME
+        eh0Ej1kg==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:57620 helo=localhost)
+        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@roeck-us.net>)
+        id 1nWsKN-001pSg-Um; Wed, 23 Mar 2022 04:10:32 +0000
+Date:   Tue, 22 Mar 2022 21:10:30 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Harsha <harsha.harsha@xilinx.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] cacheflush.h: Add forward declaration for struct folio
+Message-ID: <20220323041030.GA2968769@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YjqVemCkZCU1pOzj@mit.edu>
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1nWsKN-001pSg-Um
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:57620
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 3
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Ted,
+On Wed, Mar 23, 2022 at 03:35:10PM +1200, Herbert Xu wrote:
+> On Tue, Mar 22, 2022 at 06:13:27AM -0700, Guenter Roeck wrote:
+> > On Wed, Mar 09, 2022 at 03:20:01PM +1200, Herbert Xu wrote:
+> > > This patch turns the new SHA driver into a tristate and also allows
+> > > compile testing.
+> > > 
+> > > Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> > 
+> > This results in:
+> > 
+> > Building s390:allmodconfig ... failed
+> > --------------
+> > Error log:
+> > In file included from drivers/crypto/xilinx/zynqmp-sha.c:6:
+> > include/linux/cacheflush.h:12:46: error: 'struct folio' declared inside parameter list will not be visible outside of this definition or declaration [-Werror]
+> >    12 | static inline void flush_dcache_folio(struct folio *folio)
+> 
+> This should be fixed in cacheflush.h:
+> 
+> ---8<---
+> The struct folio is not declared in cacheflush.h so we need to
+> provide a forward declaration as otherwise users of this header
+> file may get warnings.
+> 
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Fixes: 522a0032af00 ("Add linux/cacheflush.h")
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-On Tue, Mar 22, 2022 at 9:35 PM Theodore Ts'o <tytso@mit.edu> wrote:
-> One of the big issues with /dev/urandom writes is that *anyone*,
-> including malicious user space, can force specific bytes to be mixed
-> in.  That's the source of the reluctance to immediate use inputs from
-> writes into /dev/[u]random until there is a chance for it to be mixed
-> in with other entropy which is hopefully not under the control of
-> malicious userspace.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Right, sort of. Since we now always use a cryptographic hash function,
-we can haphazardly mix whatever any user wants, without too much
-concern. The issue is whether we _credit_ those bits. Were we to credit
-those bits, a malicious unpriv'd user could credit 248 bits of known
-input, and then bruteforce 8 bits of unknown input, and repeat, and in
-that way destroy the security of the thing. So, yea, the current
-reluctance does make sense.
-
-> Now, I recognize that things are a bit special in early boot, and if
-> we have a malicious script running in a systemd unit script, we might
-> as well go home.  But something to consider is whether we want to do
-> soemthing special if the process writing to /dev/[u]random has
-> CAP_SYS_ADMIN, or some such.
-
-Exactly. So one way of approaching this would be to simply credit writes
-to /dev/urandom if it's CAP_SYS_ADMIN and maybe if also !crng_ready(),
-and just skip the crng_pre_init_inject() part that this current patch
-adds. I'll attach a sample patch of what this might look like at the end
-of this email.
-
-The problem with that approach, though, is that various userspaces might
-already write garbage into /dev/urandom, not expecting them to be
-credited -- for example, some userspace hardware configuration component
-that writes some serial number there. So I'm sort of hesitant to
-_change_ the behavior that we've had for so long.
-
-Another variation on that would be to do what this current patch does,
-but only crng_pre_init_inject() on CAP_SYS_ADMIN. But this has the same
-pitfall of only working as intended at cnrg_init=0 but not crng_init=1.
-That's better than nothing, but it's not perfect, and it introduces that
-problem with RNDADDTOENTCNT.
-
-Also, to echo the point I made in the email I just sent to David, this
-has _always_ been broken, and those shell scripts have _always_ been
-vulnerable. Maybe the kernel should fix that, but due to the ambiguity
-of the /dev/urandom write interface, maybe the best fix is actually in
-userspace itself, which means it'd work on old kernels too (which are
-rather common for the embedded devices that tend to have those types of
-shell scripts). Specifically, I'm talking about this fix I did for
-systemd:
-
-https://github.com/systemd/systemd/commit/da2862ef06f22fc8d31dafced6d2d6dc14f2ee0b
-
-And then the same fix that I just submitted this evening for Buildroot:
-
-https://lists.buildroot.org/pipermail/buildroot/2022-March/639359.html
-
-It seems like hashing the old seed together with the new one ought to be
-a good standard practice to mitigate against all sorts of bugs.
-
-> Yeah, no one should ever ver ever be using RNDADDTOENTCNT.  It's an
-> ioctl which requires root privilegs, and if it breaks, you get to keep
-> both pieces.
->
-> > And perhaps we might consider attempting to deprecate RNDADDTOENTCNT at
-> > some point in the future.
->
-> That would be a good idea.  :-)
-
-Oh cool, I'm glad you agree. Let's do that then. Have a preferred path?
-Maybe just a pr_once() saying not to use it?
-
-Jason
-
---------8<-------------------------------------------
-
-The CAP_SYS_ADMIN idea, maybe not so good, but here for illustration:
-
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 706f08edf0dc..d1dc46366647 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -1493,12 +1493,16 @@ static __poll_t random_poll(struct file *file, poll_table *wait)
- 	return mask;
- }
- 
--static int write_pool(const char __user *ubuf, size_t count)
-+static int write_pool(const char __user *ubuf, size_t count, bool credit_at_boot)
- {
--	size_t len;
-+	size_t len, bits;
- 	int ret = 0;
- 	u8 block[BLAKE2S_BLOCK_SIZE];
- 
-+	if (count > SIZE_MAX / 8)
-+		return -EINVAL;
-+	bits = count * 8;
-+
- 	while (count) {
- 		len = min(count, sizeof(block));
- 		if (copy_from_user(block, ubuf, len)) {
-@@ -1511,6 +1515,9 @@ static int write_pool(const char __user *ubuf, size_t count)
- 		cond_resched();
- 	}
- 
-+	if (credit_at_boot && !crng_ready() && capable(CAP_SYS_ADMIN))
-+		credit_entropy_bits(bits);
-+
- out:
- 	memzero_explicit(block, sizeof(block));
- 	return ret;
-@@ -1521,7 +1528,7 @@ static ssize_t random_write(struct file *file, const char __user *buffer,
- {
- 	int ret;
- 
--	ret = write_pool(buffer, count);
-+	ret = write_pool(buffer, count, true);
- 	if (ret)
- 		return ret;
- 
-@@ -1584,7 +1591,7 @@ static long random_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- 			return -EINVAL;
- 		if (get_user(size, p++))
- 			return -EFAULT;
--		retval = write_pool((const char __user *)p, size);
-+		retval = write_pool((const char __user *)p, size, false);
- 		if (retval < 0)
- 			return retval;
- 		credit_entropy_bits(ent_count);
+Guenter
+> 
+> diff --git a/include/linux/cacheflush.h b/include/linux/cacheflush.h
+> index fef8b607f97e..a6189d21f2ba 100644
+> --- a/include/linux/cacheflush.h
+> +++ b/include/linux/cacheflush.h
+> @@ -4,6 +4,8 @@
+>  
+>  #include <asm/cacheflush.h>
+>  
+> +struct folio;
+> +
+>  #if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+>  #ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_FOLIO
+>  void flush_dcache_folio(struct folio *folio);
+> -- 
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
