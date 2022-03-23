@@ -2,475 +2,507 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9034E4A55
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Mar 2022 02:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BAE84E4ACB
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Mar 2022 03:15:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241029AbiCWBLf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Mar 2022 21:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
+        id S236958AbiCWCQk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 22 Mar 2022 22:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241034AbiCWBLe (ORCPT
+        with ESMTP id S241134AbiCWCQj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Mar 2022 21:11:34 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB676FA01
-        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 18:10:00 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id bi12so39798009ejb.3
-        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 18:10:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Usl1cb51/8av9PlFaE8pZNe2bf5KKJvN2T2RDmfs+5U=;
-        b=aHnC0nri4D5uQSk+Up+F9iO14ux5h+n+BlngUlSSFeHS/nBafyWB5cs4vZ93RjxRy2
-         wJXhLNWWc4Sik01lxZUoXit/e8NGk9gmTwKIthzLrAuEpaZh/OXDTTV5kj4arkx5nlBV
-         9lQ+a3b/01wBnY+xhOVsxRiB6sr0n+zL4SRu1X9Kk8Tid9zvjnlN/06+uOJfUpKf1D+a
-         EyrESDwNVBpZnhUZMlSYX17D9zFLXFZx3X9SRPvtUYZlKfhl5VEftIoXXGtqluU9hmzs
-         AhnTYmCOcYwIIpU0FxoE2e3NPn77ruuyWC/AdHP727WgZeNKirx17nssTJB6pquUPX5I
-         FL+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Usl1cb51/8av9PlFaE8pZNe2bf5KKJvN2T2RDmfs+5U=;
-        b=GF7tz7y7kBuNzwnsnRFCz22KmShxowVQAGQQA0xO5JDRjxv0j63MjMgcWoYg/XMR3x
-         VhFSDvHcUkln+a3j1xKQZOeBy7qi/bzUFsh42koW4D2veti9zWM47RuU0gKV/QPAsMRe
-         sIJi2mMCob/Vmg1+/SoCT2G03X3F9dRcjkY1ver525JdOJC1hbjK2XoySQ+JeuJiPrcL
-         kLoLA8m/dHmiRlu+bLjVyLgrM8DkIFzq3tTOsL3q6+NnlCJErVcy9yUIKmxae54SHYaR
-         7UIlinqThY+fqzR56XtTki3AxUItHiH9r0cgyFkCTsnhv1GB4h8WA5zmcIn4dvOImLXK
-         3ykg==
-X-Gm-Message-State: AOAM532KXQ2Oc+G3PFi78L7jYzcWioUs6ZfSaUVWaVAigOfgRnLr1v3j
-        j3uzoo91iMv5c0FLoW1QoOgj4Ewu2YVdaRYbPiw=
-X-Google-Smtp-Source: ABdhPJx2Fe0bZIuqd87mbasfgYXrFbgLcYQO3s8qk+AEOPZGfqexNtyVhVbs6oN/bUxTGEH4Qt7tzAlq7El+neeWNC0=
-X-Received: by 2002:a17:907:c0c:b0:6d1:8c46:6415 with SMTP id
- ga12-20020a1709070c0c00b006d18c466415mr29543836ejc.326.1647997799095; Tue, 22
- Mar 2022 18:09:59 -0700 (PDT)
+        Tue, 22 Mar 2022 22:16:39 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 607B170075
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 19:15:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C08BBB81DE3
+        for <linux-crypto@vger.kernel.org>; Wed, 23 Mar 2022 02:15:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 462C1C340F3;
+        Wed, 23 Mar 2022 02:15:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648001705;
+        bh=TDdno/jQsh4BZoZT9Z/5rf8DDidcaJffNvwJocy8FzQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dpvW0nBScJCwkgPD0hJE/QD5nThGWiC2/WGr2D7r0gWc469RiOwGVURsNSotOZCDK
+         lVzGAe1buMb5kex9954MGOqU7HHM6xYFvNYmXMImhHuUpyeEx6xT1siytm8jVTcpin
+         aLQvjzJcn/URaYQmZQqPvpsMkHDhRSF/ixMcpYB5oUHhTGHzt9dRrgSSNdk9RZ1JX5
+         Eif1OyfzRoUS2IbrRshmNcrjVEiTlDNikQ9y7+GH73cyAA7KPsxb0829eXgV/PQLCc
+         DYINib4YrYeE5U74QXg+y3k/hRjfK2nY18GhJrFXKHT6Sgtr5CWQHO9FWjTH5q4Kku
+         pp0h5EhVym4vA==
+Date:   Tue, 22 Mar 2022 19:15:03 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Nathan Huckleberry <nhuck@google.com>
+Cc:     linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org,
+        Paul Crowley <paulcrowley@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH v3 6/8] crypto: x86/polyval: Add PCLMULQDQ accelerated
+ implementation of POLYVAL
+Message-ID: <YjqCpxNiFqefyuFO@sol.localdomain>
+References: <20220315230035.3792663-1-nhuck@google.com>
+ <20220315230035.3792663-7-nhuck@google.com>
 MIME-Version: 1.0
-From:   Duke Abbaddon <duke.abbaddon@gmail.com>
-Date:   Wed, 23 Mar 2022 01:09:50 +0000
-Message-ID: <CAHpNFcN_tkiK1hO5HkJtvydLhj8biSLVQ+sFsuidM7wYF8PJPw@mail.gmail.com>
-Subject: GPIO & QFFT : RS : Subject Re: [PATCH] watchdog: gpio_wdt: Support
- GPO lines with the toggle algorithm
-To:     torvalds@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220315230035.3792663-7-nhuck@google.com>
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-GPIO is used for Super speed output, However Serialised Parallel
-processing allows constant flow:
-
-Examples:
-
-Audio devices such as creative logic ISA & PCI Cards on SUPER
-input mode (Mic & Input ports)16Bit HQ into 256 Drums in 32Bit Super HQ
-
-CPU Coprocessors such as the QFFT : Input & Output alternate lines on pins
-
-Parallel ports in Super IO mode! 4MB/S WOW
-
-Hard Drives IO 120MB/s Write Cycle (Audio Recording Desks & Studio
-Recording Studios)
-
-Tape DECKS : IBM, Fuji, Sony & Samsung TAPE Backups Super IO GPIO :
-1.2GB/s to 72GB/s Compressed
-
-GPIO Could be used on RAM : Examples is 4 special pins on the RAM for
-burst mode!
-
-GPIO is rather more relevant than you think!
-
-Rupert S
-
-https://science.n-helix.com/2021/11/wave-focus-anc.html
-
-https://science.n-helix.com/2021/10/noise-violation-technology-bluetooth.ht=
-ml
-
-
-https://www.orosound.com/
-
-https://www.consumerreports.org/noise-canceling-headphone/best-noise-cancel=
-ing-headphones-of-the-year-a1166868524/
-
-
-https://lkml.org/lkml/2022/3/22/1112
-
-Date Tue, 22 Mar 2022 17:04:53 -0700
-From Guenter Roeck <>
-Subject Re: [PATCH] watchdog: gpio_wdt: Support GPO lines with the
-toggle algorithm
-share 0
-On 3/22/22 15:29, Tobias Waldekranz wrote:
-> Support using GPO lines (i.e. GPIOs that are output-only) with
-> gpio_wdt using the "toggle" algorithm.
->
-> Since its inception, gpio_wdt has configured its GPIO line as an input
-> when using the "toggle" algorithm, even though it is used as an output
-> when kicking. This needlessly barred hardware with output-only pins
-> from using the driver.
->
-> Signed-off-by: Tobias Waldekranz <tobias@waldekranz.com>
-> ---
->
-> Hi,
->
-> This patch has been in our downstream tree for a long time. We need it
-> because our kick GPIO can't be used as an input.
->
-> What I really can't figure out is why the driver would request the pin
-> as in input, when it's always going to end up being used as an output
-> anyway.
->
-> So I thought I'd send it upstream in the hopes of either getting it
-> merged, or an explanation as to why it is needed.
->
-
-I _think_ the assumption / idea was that "toggle" implies that the output
-is connected to a pull-up resistor and that the pin either floats or is
-pulled down to ground, causing the signal to toggle. I don't know if/how
-that works in practice, though.
-
-Guenter
-
->   drivers/watchdog/gpio_wdt.c | 13 +++++--------
->   1 file changed, 5 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/watchdog/gpio_wdt.c b/drivers/watchdog/gpio_wdt.c
-> index 0923201ce874..f7686688e0e2 100644
-> --- a/drivers/watchdog/gpio_wdt.c
-> +++ b/drivers/watchdog/gpio_wdt.c
-> @@ -108,7 +108,6 @@ static int gpio_wdt_probe(struct platform_device *pde=
-v)
->   struct device *dev =3D &pdev->dev;
->   struct device_node *np =3D dev->of_node;
->   struct gpio_wdt_priv *priv;
-> - enum gpiod_flags gflags;
->   unsigned int hw_margin;
->   const char *algo;
->   int ret;
-> @@ -122,17 +121,15 @@ static int gpio_wdt_probe(struct platform_device *p=
-dev)
->   ret =3D of_property_read_string(np, "hw_algo", &algo);
->   if (ret)
->   return ret;
-> - if (!strcmp(algo, "toggle")) {
+On Tue, Mar 15, 2022 at 11:00:33PM +0000, Nathan Huckleberry wrote:
+> diff --git a/arch/x86/crypto/polyval-clmulni_asm.S b/arch/x86/crypto/polyval-clmulni_asm.S
+> new file mode 100644
+> index 000000000000..ad7126d9f0ff
+> --- /dev/null
+> +++ b/arch/x86/crypto/polyval-clmulni_asm.S
+> @@ -0,0 +1,376 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright 2021 Google LLC
+> + */
+> +/*
+> + * This is an efficient implementation of POLYVAL using intel PCLMULQDQ-NI
+> + * instructions. It works on 8 blocks at a time, by precomputing the first 8
+> + * keys powers h^8, ..., h^1 in the POLYVAL finite field. This precomputation
+> + * allows us to split finite field multiplication into two steps.
+> + *
+> + * In the first step, we consider h^i, m_i as normal polynomials of degree less
+> + * than 128. We then compute p(x) = h^8m_0 + ... + h^1m_7 where multiplication
+> + * is simply polynomial multiplication.
+> + *
+> + * In the second step, we compute the reduction of p(x) modulo the finite field
+> + * modulus g(x) = x^128 + x^127 + x^126 + x^121 + 1.
+> + *
+> + * This two step process is equivalent to computing h^8m_0 + ... + h^1m_7 where
+> + * multiplication is finite field multiplication. The advantage is that the
+> + * two-step process  only requires 1 finite field reduction for every 8
+> + * polynomial multiplications. Further parallelism is gained by interleaving the
+> + * multiplications and polynomial reductions.
+> + */
 > +
-> + if (!strcmp(algo, "toggle"))
->   priv->hw_algo =3D HW_ALGO_TOGGLE;
-> - gflags =3D GPIOD_IN;
-> - } else if (!strcmp(algo, "level")) {
-> + else if (!strcmp(algo, "level"))
->   priv->hw_algo =3D HW_ALGO_LEVEL;
-> - gflags =3D GPIOD_OUT_LOW;
-> - } else {
-> + else
->   return -EINVAL;
-> - }
->
-> - priv->gpiod =3D devm_gpiod_get(dev, NULL, gflags);
-> + priv->gpiod =3D devm_gpiod_get(dev, NULL, GPIOD_OUT_LOW);
->   if (IS_ERR(priv->gpiod))
->   return PTR_ERR(priv->gpiod);
->
-
-*****
-
-Get the best out of Youtube encoding with GPL QFFT Codecs for :
-Windows,Linux & Android #RockTheHouseGoogle!
-
-Advanced FFT & 3D Audio functions for CPU & GPU
-https://gpuopen.com/true-audio-next/
-
-Multimedia Codec SDK https://gpuopen.com/advanced-media-framework/
-
-(c)Rupert S https://science.n-helix.com
-
-***
-Decoder CB 2021 Codecs
-
-kAudioDecoderName "FFmpegAudioDecoder"
-kAudioTracks [{"bytes per channel":2,"bytes per frame":4,"channel
-layout":"STEREO","channels":2,"codec":"aac","codec delay":0,"discard
-decoder delay":false,"encryption scheme":"Unencrypted","has extra
-data":false,"profile":"unknown","sample format":"Signed
-16-bit","samples per second":48000,"seek preroll":"0us"}]
-
-kVideoDecoderName "MojoVideoDecoder"
-kVideoPlaybackFreezing 0.10006
-kVideoPlaybackRoughness 3.048
-kVideoTracks [{"alpha mode":"is_opaque","codec":"h264","coded
-size":"426x240","color space":"{primaries:BT709, transfer:BT709,
-matrix:BT709, range:LIMITED}","encryption scheme":"Unencrypted","has
-extra data":false,"hdr metadata":"unset","natural
-size":"426x240","orientation":"0=C2=B0","profile":"h264 baseline","visible
-rect":"0,0 426x240"}]
-
-info "Selected FFmpegAudioDecoder for audio decoding, config: codec:
-mp3, profile: unknown, bytes_per_channel: 2, channel_layout: STEREO,
-channels: 2, samples_per_second: 44100, sample_format: Signed 16-bit
-planar, bytes_per_frame: 4, seek_preroll: 0us, codec_delay: 0, has
-extra data: false, encryption scheme: Unencrypted, discard decoder
-delay: true"
-kAudioDecoderName "FFmpegAudioDecoder"
-kAudioTracks [{"bytes per channel":2,"bytes per frame":4,"channel
-layout":"STEREO","channels":2,"codec":"mp3","codec delay":0,"discard
-decoder delay":true,"encryption scheme":"Unencrypted","has extra
-data":false,"profile":"unknown","sample format":"Signed 16-bit
-planar","samples per second":44100,"seek preroll":"0us"}]
-kBitrate 192000
-
-kAudioDecoderName "FFmpegAudioDecoder"
-kAudioTracks [{"bytes per channel":4,"bytes per frame":8,"channel
-layout":"STEREO","channels":2,"codec":"opus","codec
-delay":312,"discard decoder delay":true,"encryption
-scheme":"Unencrypted","has extra
-data":true,"profile":"unknown","sample format":"Float 32-bit","samples
-per second":48000,"seek preroll":"80000us"}]
-
-kVideoDecoderName "VpxVideoDecoder"
-kVideoTracks [{"alpha mode":"is_opaque","codec":"vp9","coded
-size":"1920x1080","color space":"{primaries:BT709, transfer:BT709,
-matrix:BT709, range:LIMITED}","encryption scheme":"Unencrypted","has
-extra data":false,"hdr metadata":"unset","natural
-size":"1920x1080","orientation":"0=C2=B0","profile":"vp9 profile0","visible
-rect":"0,0 1920x1080"}]
-
-kAudioDecoderName "FFmpegAudioDecoder"
-kAudioTracks [{"bytes per channel":2,"bytes per frame":4,"channel
-layout":"STEREO","channels":2,"codec":"aac","codec delay":0,"discard
-decoder delay":false,"encryption scheme":"Unencrypted","has extra
-data":false,"profile":"unknown","sample format":"Signed
-16-bit","samples per second":44100,"seek preroll":"0us"}]
-
-kVideoDecoderName "MojoVideoDecoder"
-kVideoTracks [{"alpha mode":"is_opaque","codec":"h264","coded
-size":"1920x1080","color space":"{primaries:BT709, transfer:BT709,
-matrix:BT709, range:LIMITED}","encryption scheme":"Unencrypted","has
-extra data":false,"hdr metadata":"unset","natural
-size":"1920x1080","orientation":"0=C2=B0","profile":"h264 main","visible
-rect":"0,0 1920x1080"}]
-***
-
-PlayStation 5 and Xbox Series Spatial Audio Comparison | Technalysis
-Audio 3D Tested : Tempest,ATMOS,DTX,DTS
-
-https://www.youtube.com/watch?v=3DvsC2orqiCwI
-
-*
-
-Waves & Shape FFT original QFFT Audio device & CPU/GPU : (c)RS
-
-The use of an FFT simple unit to output directly: Sound
-& other content such as a BLENDER or DAC Content : (c)RS
-
-FFT Examples :
-
-Analogue smoothed audio ..
-Using a capacitor on the pin output to a micro diode laser (for analogue Fi=
-bre)
-
-Digital output using:
-8 to 128Bit multiple high frequency burst mode..
-
-(Multi Phase step at higher frequency & smooth interpolation)
-Analogue wave converted to digital in key steps through a DAC at
-higher frequency & amplitude.
-
-For many systems an analogue wave makes sense when high speed crystal
-digital is too expensive.
-
-Multiple frequency overlapped digital signals with a time formula is
-also possible.
-
-The mic works by calculating angle on a drum...
-Light.. and timing & dispersion...
-The audio works by QFFT replication of audio function..
-The DAC works by quantifying as Analog digital or Metric Matrix..
-The CPU/GPU by interpreting the data of logic, Space & timing...
-
-We need to calculate Quantum is not the necessary feature;
-
-But it is the highlight of our:
-Data storage cache.
-Our Temporary RAM
-Our Data transport..
-Of our fusion future.
-
-FFT & fast precise wave operations in SiMD
-
-Several features included for Audio & Video : Add to Audio & Video
-drivers & sdk i love you <3 DL
-
-In particular I want Bluetooth audio optimized with SiMD,AVX vector
-instructions & DSP process drivers..
-
-The opportunity presents itself to improve the DAC; In particular of
-the Video cards & Audio devices & HardDrives & BDBlueRay Player Record
-& load functions of the fluctuating laser..
-More than that FFT is logical and fast; Precise & adaptive; FP & SiMD
-present these opportunities with correct FFT operations & SDK's.
-
-3D surround optimised the same, In particular with FFT efficient code,
-As one imagines video is also effected by FFT ..
-
-Video colour & representation & wavelet compression & sharpness restoration=
-..
-Vivid presentation of audio & video & 3D objects and texture; For
-example DOT compression & image,Audio presentation...
-
-SSD & HD technology presents unique opportunities for magnetic waves
-and amplitude speculation & presentation.
-
-FFT : FMA : SiMD instructions & speed : application examples : Audio,
-Colour pallet , Rainbows, LUT, Blood corpuscles with audio & vibration
-interaction, Rain with environmental effects & gravity.. There are
-many application examples of transforms in action (More and more
-complex by example)
-
-High performance SIMD modular arithmetic for polynomial evaluation
-
-FFT Examples :  in the SiMD Folder...
-
-Evaluation of FFT and polynomial X array algebra .. is here handled to
-over 50Bits...
-As we understand it the maths depends on a 64bit value with a 128Bit  ..
-as explained in the article value have to be in identical ranges bit
-wise, However odd bit depth sizes are non conforming (God i need
-coffee!)
-
-In one example (page 9) Most of the maths is 64Bit & One value 128Bit
-"We therefore focus in this article on the use of floating-point (FP)
-FMA (fused multiply-add) instructions for floating-point based modular
-arithmetic. Since the FMA instruction performs two operations (a =E2=88=97 =
-b +
-c) with one single final rounding, it can indeed be used to design a
-fast error-free transformation of the product of two floating-point
-numbers"
-
-Our latest addition is a quite detailed example for us
-High performance SIMD modular arithmetic for
-polynomial evaluation 2020
-
-Pierre Fortin, Ambroise Fleury, Fran=C3=A7ois Lemaire, Michael Monagan
-
-https://hal.archives-ouvertes.fr/hal-02552673/document
-
-Contains multiple algorithm examples & is open about the computer
-operations in use.
-
-Advanced FFT & 3D Audio functions for CPU & GPU
-https://gpuopen.com/true-audio-next/
-
-Multimedia Codec SDK https://gpuopen.com/advanced-media-framework/
-
-(c)Rupert S https://science.n-helix.com
-
-*****
-
-Lets face it, Realtec could well resource the QFFT Audio device &
-transformer/DAC
-
-(c)Rupert S https://science.n-helix.com
-
-document work examples :
-
-https://eurekalert.org/pub_releases/2021-01/epfd-lpb010621.php
-
-"Light-based processors boost machine-learning processing
-ECOLE POLYTECHNIQUE F=C3=89D=C3=89RALE DE LAUSANNE
-
-Research News
-
-IMAGE
-IMAGE: SCHEMATIC REPRESENTATION OF A PROCESSOR FOR MATRIX
-MULTIPLICATIONS WHICH RUNS ON LIGHT. view more
-
-CREDIT: UNIVERSITY OF OXFORD
-
-The exponential growth of data traffic in our digital age poses some
-real challenges on processing power. And with the advent of machine
-learning and AI in, for example, self-driving vehicles and speech
-recognition, the upward trend is set to continue. All this places a
-heavy burden on the ability of current computer processors to keep up
-with demand.
-
-Now, an international team of scientists has turned to light to tackle
-the problem. The researchers developed a new approach and architecture
-that combines processing and data storage onto a single chip by using
-light-based, or "photonic" processors, which are shown to surpass
-conventional electronic chips by processing information much more
-rapidly and in parallel.
-
-The scientists developed a hardware accelerator for so-called
-matrix-vector multiplications, which are the backbone of neural
-networks (algorithms that simulate the human brain), which themselves
-are used for machine-learning algorithms. Since different light
-wavelengths (colors) don't interfere with each other, the researchers
-could use multiple wavelengths of light for parallel calculations. But
-to do this, they used another innovative technology, developed at
-EPFL, a chip-based "frequency comb", as a light source.
-
-"Our study is the first to apply frequency combs in the field of
-artificially neural networks," says Professor Tobias Kippenberg at
-EPFL, one the study's leads. Professor Kippenberg's research has
-pioneered the development of frequency combs. "The frequency comb
-provides a variety of optical wavelengths that are processed
-independently of one another in the same photonic chip."
-
-"Light-based processors for speeding up tasks in the field of machine
-learning enable complex mathematical tasks to be processed at high
-speeds and throughputs," says senior co-author Wolfram Pernice at
-M=C3=BCnster University, one of the professors who led the research. "This
-is much faster than conventional chips which rely on electronic data
-transfer, such as graphic cards or specialized hardware like TPU's
-(Tensor Processing Unit)."
-
-After designing and fabricating the photonic chips, the researchers
-tested them on a neural network that recognizes of hand-written
-numbers. Inspired by biology, these networks are a concept in the
-field of machine learning and are used primarily in the processing of
-image or audio data. "The convolution operation between input data and
-one or more filters - which can identify edges in an image, for
-example, are well suited to our matrix architecture," says Johannes
-Feldmann, now based at the University of Oxford Department of
-Materials. Nathan Youngblood (Oxford University) adds: "Exploiting
-wavelength multiplexing permits higher data rates and computing
-densities, i.e. operations per area of processor, not previously
-attained."
-
-"This work is a real showcase of European collaborative research,"
-says David Wright at the University of Exeter, who leads the EU
-project FunComp, which funded the work. "Whilst every research group
-involved is world-leading in their own way, it was bringing all these
-parts together that made this work truly possible."
-
-The study is published in Nature this week, and has far-reaching
-applications: higher simultaneous (and energy-saving) processing of
-data in artificial intelligence, larger neural networks for more
-accurate forecasts and more precise data analysis, large amounts of
-clinical data for diagnoses, enhancing rapid evaluation of sensor data
-in self-driving vehicles, and expanding cloud computing
-infrastructures with more storage space, computing power, and
-applications software.
-
-###
-
-Reference
-
-J. Feldmann, N. Youngblood, M. Karpov, H. Gehring, X. Li, M. Stappers,
-M. Le Gallo, X. Fu, A. Lukashchuk, A.S. Raja, J. Liu, C.D. Wright, A.
-Sebastian, T.J. Kippenberg, W.H.P. Pernice, H. Bhaskaran. Parallel
-convolution processing using an integrated photonic tensor core.
-Nature 07 January 2021. DOI: 10.1038/s41586-020-03070-1"
-
-Time Measurement
-
-"Let's Play" Station NitroMagika_LightCaster
+> +#include <linux/linkage.h>
+> +#include <asm/frame.h>
+> +
+> +#define NUM_PRECOMPUTE_POWERS 8
+
+STRIDE_BLOCKS might be a better name than NUM_PRECOMPUTE_POWERS.  Shorter but
+more descriptive, IMO.
+
+> +/*
+> + * Performs schoolbook1_iteration on two lists of 128-bit polynomials of length
+> + * b pointed to by MSG and KEY_POWERS.
+> + */
+> +.macro schoolbook1 count
+> +	.set i, 0
+> +	.rept (\count)
+> +		schoolbook1_iteration i 0
+> +		.set i, (i +1)
+> +	.endr
+> +.endm
+
+'count', not 'b'.
+
+> +/*
+> + * Computes the product of two 128-bit polynomials at the memory locations
+> + * specified by (MSG + 16*i) and (KEY_POWERS + 16*i) and XORs the components of the
+> + * 256-bit product into LO, MI, HI.
+> + *
+> + * The multiplication produces four parts:
+> + *   LOW: The polynomial given by performing carryless multiplication of the
+> + *   bottom 64-bits of each polynomial
+> + *   MID1: The polynomial given by performing carryless multiplication of the
+> + *   bottom 64-bits of the first polynomial and the top 64-bits of the second
+> + *   MID2: The polynomial given by performing carryless multiplication of the
+> + *   bottom 64-bits of the second polynomial and the top 64-bits of the first
+> + *   HIGH: The polynomial given by performing carryless multiplication of the
+> + *   top 64-bits of each polynomial
+> + *
+> + * We compute:
+> + *  LO ^= LOW
+> + *  MI ^= MID1 ^ MID2
+> + *  HI ^= HIGH
+> + *
+> + * Later, the 256-bit result can be extracted as:
+> + *   [HI_H : HI_L ^ MI_H : LO_H ^ MI_L : LO_L]
+> + * This step is done when computing the polynomial reduction for efficiency
+> + * reasons.
+> + *
+> + * If xor_sum == 1, then also XOR the value of SUM into m_0.  This avoids an
+> + * extra multiplication of SUM and h^N.
+> + */
+
+h^8 instead of h^N?  The above is one of only two places where "N" is mentioned,
+and the other uses to mean something different from here.
+
+> +/*
+> + * Performs the same computation as schoolbook1_iteration, except we expect the
+> + * arguments to already be loaded into xmm0 and xmm1.
+> + */
+> +.macro schoolbook1_noload
+> +	vpclmulqdq $0x01, %xmm0, %xmm1, %xmm2
+> +	vpclmulqdq $0x00, %xmm0, %xmm1, %xmm3
+> +	vpclmulqdq $0x11, %xmm0, %xmm1, %xmm4
+> +	vpclmulqdq $0x10, %xmm0, %xmm1, %xmm5
+> +	vpxor %xmm2, MI, MI
+> +	vpxor %xmm3, LO, LO
+> +	vpxor %xmm5, MI, MI
+> +	vpxor %xmm4, HI, HI
+> +.endm
+
+How about making this macro set LO, MI, HI and directly instead of XOR'ing into
+them?  That's actually what the two users of it want.  I.e.:
+
+/*
+ * Performs the same computation as schoolbook1_iteration, except we expect the
+ * arguments to already be loaded into xmm0 and xmm1, and we set the result
+ * registers LO, MI, and HI directly rather than XOR'ing into them.
+ */
+.macro schoolbook1_noload
+        vpclmulqdq $0x01, %xmm0, %xmm1, MI
+        vpclmulqdq $0x10, %xmm0, %xmm1, %xmm2
+        vpclmulqdq $0x00, %xmm0, %xmm1, LO
+        vpclmulqdq $0x11, %xmm0, %xmm1, HI
+        vpxor %xmm2, MI, MI
+.endm
+
+That would save some instructions.
+
+> +/*
+> + * Computes the 128-bit reduction of PL, PH. Stores the result in PH.
+
+"PL, PH" => "PH : PL".
+
+Also mention which register this clobbers.
+
+> + *
+> + * This macro computes p(x) mod g(x) where p(x) is in montgomery form and g(x) =
+> + * x^128 + x^127 + x^126 + x^121 + 1.
+> + *
+> + * We have a 256-bit polynomial P_3 : P_2 : P_1 : P_0 that is the product of
+
+"P_3 : P_2 : P_1 : P_0" => "PH : PL = P_3 : P_2 : P_1 : P_0", so that it's clear
+how P_3 through P_0 relate to PH and PL.
+
+> + * two 128-bit polynomials in Montgomery form.  We need to reduce it mod g(x).
+> + * Also, since polynomials in Montgomery form have an "extra" factor of x^128,
+> + * this product has two extra factors of x^128.  To get it back into Montgomery
+> + * form, we need to remove one of these factors by dividing by x^128.
+> + *
+> + * To accomplish both of these goals, we add multiples of g(x) that cancel out
+> + * the low 128 bits P_1 : P_0, leaving just the high 128 bits. Since the low
+> + * bits are zero, the polynomial division by x^128 can be done by right shifting.
+> + *
+> + * Since the only nonzero term in the low 64 bits of g(x) is the constant term,
+> + * the multiple of g(x) needed to cancel out P_0 is P_0 * g(x).  The CPU can
+> + * only do 64x64 bit multiplications, so split P_0 * g(x) into x^128 * P_0 +
+> + * x^64 g*(x) * P_0 + P_0, where g*(x) is bits 64-127 of g(x).  Adding this to
+
+"x^64 g*(x)" => "x^64 * g*(x)"
+
+> + * the original polynomial gives P_3 : P_2 + P_0 + T_1 : P_1 + T_0 : 0, where T
+> + * = T_1 : T_0 = g*(x) * P0.  Thus, bits 0-63 got "folded" into bits 64-191.
+
+"P0" => "P_0"
+
+> + *
+> + * Repeating this same process on the next 64 bits "folds" bits 64-127 into bits
+> + * 128-255, giving the answer in bits 128-255. This time, we need to cancel P_1
+> + * + T_0 in bits 64-127. The multiple of g(x) required is (P_1 + T_0) * g(x) *
+> + * x^64. Adding this to our previous computation gives P_3 + P_1 + T_0 + V_1 :
+> + * P_2 + P_0 + T_1 + V_0 : 0 : 0, where V = V_1 : V_0 = g*(x) * (P_1 + T_0).
+> + *
+> + * So our final computation is:
+> + *   T = T_1 : T_0 = g*(x) * P_0
+> + *   V = V_1 : V_0 = g*(x) * (T_0 ^ P_1)
+> + *   p(x) / x^{128} mod g(x) = P_3 ^ P_1 ^ V_1 ^ T_0 : P_2 ^ P_0 ^ V_0 ^ T_1
+
+The notation suddenly changes from + to ^.  How about consistently using +?
+Or ^, either one as long as it's consistent...
+
+Also, for the final line, the order "P_3 + P_1 + T_0 + V_1 : P_2 + P_0 + T_1 +
+V_0" would make more sense, as it would match the logic of the code.
+
+> + *
+> + * The implementation below saves a XOR instruction by computing P_1 ^ T_0 : P_0
+> + * ^ T_1 and XORing into PH, rather than directly XORing P_1 : P_0, T_0 : T1
+> + * into PH.  This allows us to reuse P_1 ^ T_0 when computing V.
+> + */
+> +.macro montgomery_reduction
+> +	movdqa PL, T
+> +	pclmulqdq $0x00, GSTAR, T # T = [P_0 * g*(x)]
+> +	pshufd $0b01001110, T, V # V = [T_0 : T_1]
+> +	pxor V, PL # PL = [P_1 ^ T_0 : P_0 ^ T_1]
+> +	pxor PL, PH # PH = [P_1 ^ T_0 ^ P_3 : P_0 ^ T_1 ^ P_2]
+> +	pclmulqdq $0x11, GSTAR, PL # PL = [(P_1 ^ T_0) * g*(x)]
+> +	pxor PL, PH
+> +.endm
+
+Several comments here:
+
+- Aligning the comments would make them much easier to read.
+
+- Only one temporary register is needed, since T isn't used after it's used to
+  compute V.
+
+- The thing called V isn't actually the same as the V described in the long
+  comment above.  Maybe just call the temporary variable 'TMP_XMM' or something?
+  Or even just hard-code %xmm6, similar to %xmm0-%xmm5.
+
+- It's not necessary to modify PL.
+
+- Since this file is relying on AVX anyway, the three-operand instructions are
+  available, and can be used to avoid the 'movdqa' at the beginning.
+
+- None of the users of this macro really want the result in register PH.  How
+  about passing the destination register as an argument and using vpxor to put
+  it in the appropriate place?
+
+So in summary, this is what I'd suggest:
+
+.macro montgomery_reduction dest
+	vpclmulqdq $0x00, GSTAR, PL, TMP_XMM	# TMP_XMM = T_1 : T_0 = P_0 * g*(x)
+	pshufd $0b01001110, TMP_XMM, TMP_XMM	# TMP_XMM = T_0 : T_1
+	pxor PL, TMP_XMM			# TMP_XMM = P_1 + T_0 : P_0 + T_1
+	pxor TMP_XMM, PH			# PH = P_3 + P_1 + T_0 : P_2 + P_0 + T_1
+	pclmulqdq $0x11, GSTAR, TMP_XMM		# TMP_XMM = V_1 : V_0 = V = [(P_1 + T_0) * g*(x)]
+	vpxor TMP_XMM, PH, \dest
+.endm
+
+> +
+> +/*
+> + * Compute schoolbook multiplication for 8 blocks
+> + * m_0h^8 + ... + m_7h^1
+> + *
+> + * If reduce is set, also computes the montgomery reduction of the
+> + * previous full_stride call and XORs with the first message block.
+> + * (m_0 + REDUCE(PL, PH))h^8 + ... + m_7h^1.
+> + * I.e., the first multiplication uses m_0 + REDUCE(PL, PH) instead of m_0.
+> + *
+> + * Sets PL, PH
+> + * Clobbers LO, HI, MI
+> + *
+> + */
+> +.macro full_stride reduce
+> +	mov %rsi, KEY_POWERS
+
+I don't see why KEY_POWERS and %rsi are different registers.  Why not just
+define KEY_POWERS to %rsi?  It stays the same during any full_strides, and then
+will be incremented by partial_stride.  That's fine.
+
+[...]
+> +	addq $(8*16), KEY_POWERS
+
+As per the above, there's no need to increment KEY_POWERS here.
+
+> +	schoolbook2
+> +.endm
+> +
+> +/*
+> + * Compute poly on window size of %rdx blocks
+> + * 0 < %rdx < NUM_PRECOMPUTE_POWERS
+> + */
+
+The code doesn't actually use %rdx directly.  It should be BLOCKS_LEFT.
+
+> +.macro partial_stride
+> +	pxor LO, LO
+> +	pxor HI, HI
+> +	pxor MI, MI
+> +	mov BLOCKS_LEFT, TMP
+> +	shlq $4, TMP
+> +	mov %rsi, KEY_POWERS
+> +	addq $(16*NUM_PRECOMPUTE_POWERS), KEY_POWERS
+> +	subq TMP, KEY_POWERS
+> +	# Multiply sum by h^N
+> +	movups (KEY_POWERS), %xmm0
+> +	movdqa SUM, %xmm1
+> +	schoolbook1_noload
+> +	schoolbook2
+> +	montgomery_reduction
+> +	movdqa PH, SUM
+> +	pxor LO, LO
+> +	pxor HI, HI
+> +	pxor MI, MI
+> +	xor IDX, IDX
+> +.LloopPartial:
+> +	cmpq BLOCKS_LEFT, IDX # IDX < rdx
+> +	jae .LloopExitPartial
+> +
+> +	movq BLOCKS_LEFT, TMP
+> +	subq IDX, TMP # TMP = rdx - IDX
+> +
+> +	cmp $4, TMP # TMP < 4 ?
+> +	jl .Llt4Partial
+> +	schoolbook1 4
+> +	addq $4, IDX
+> +	addq $(4*16), MSG
+> +	addq $(4*16), KEY_POWERS
+> +	jmp .LoutPartial
+> +.Llt4Partial:
+> +	cmp $3, TMP # TMP < 3 ?
+> +	jl .Llt3Partial
+> +	schoolbook1 3
+> +	addq $3, IDX
+> +	addq $(3*16), MSG
+> +	addq $(3*16), KEY_POWERS
+> +	jmp .LoutPartial
+> +.Llt3Partial:
+> +	cmp $2, TMP # TMP < 2 ?
+> +	jl .Llt2Partial
+> +	schoolbook1 2
+> +	addq $2, IDX
+> +	addq $(2*16), MSG
+> +	addq $(2*16), KEY_POWERS
+> +	jmp .LoutPartial
+> +.Llt2Partial:
+> +	schoolbook1 1 # TMP < 1 ?
+> +	addq $1, IDX
+> +	addq $(1*16), MSG
+> +	addq $(1*16), KEY_POWERS
+> +.LoutPartial:
+> +	jmp .LloopPartial
+> +.LloopExitPartial:
+> +	schoolbook2
+> +	montgomery_reduction
+> +	pxor PH, SUM
+> +.endm
+
+This can be simplified and optimized quite a bit:
+
+- The first schoolbook2 and montgomery_reduction are unnecessary.
+- The IDX variable is unnecessary.
+- There's no need for a loop if there are going to be separate cases for 4, 2,
+  and 1 blocks anyway.  We can just always jump forward.
+- There's no need to increment MSG and KEY_POWERS after the last block.
+
+Can you consider the following?
+
+/*
+ * Process BLOCKS_LEFT blocks, where 0 < BLOCKS_LEFT < STRIDE_BLOCKS
+ */
+.macro partial_stride
+	mov BLOCKS_LEFT, TMP
+	shlq $4, TMP
+	addq $(16*STRIDE_BLOCKS), KEY_POWERS
+	subq TMP, KEY_POWERS
+
+	movups (MSG), %xmm0
+	pxor SUM, %xmm0
+	movaps (KEY_POWERS), %xmm1
+	schoolbook1_noload
+	dec BLOCKS_LEFT
+	addq $16, MSG
+	addq $16, KEY_POWERS
+
+	test $4, BLOCKS_LEFT
+	jz .Lpartial4BlocksDone
+	schoolbook1 4
+	addq $(4*16), MSG
+	addq $(4*16), KEY_POWERS
+.Lpartial4BlocksDone:
+	test $2, BLOCKS_LEFT
+	jz .Lpartial2BlocksDone
+	schoolbook1 2
+	addq $(2*16), MSG
+	addq $(2*16), KEY_POWERS
+.Lpartial2BlocksDone:
+	test $1, BLOCKS_LEFT
+	jz .LpartialDone
+	schoolbook1 1
+.LpartialDone:
+	schoolbook2
+	montgomery_reduction SUM
+.endm
+
+> +	FRAME_END
+> +	ret
+> +SYM_FUNC_END(clmul_polyval_mul)
+
+It needs to be RET, not ret.  See https://git.kernel.org/linus/f94909ceb1ed4bfd
+
+> +
+> +/*
+> + * Perform polynomial evaluation as specified by POLYVAL.  This computes:
+> + * 	h^n * accumulator + h^n * m_0 + ... + h^1 * m_{n-1}
+> + * where n=nblocks, h is the hash key, and m_i are the message blocks.
+> + *
+> + * rdi - pointer to message blocks
+> + * rsi - pointer to precomputed key powers h^8 ... h^1
+> + * rdx - number of blocks to hash
+> + * rcx - pointer to the accumulator
+> + *
+> + * void clmul_polyval_update(const u8 *in, const struct polyval_ctx *ctx,
+> + *			     size_t nblocks, u8 *accumulator);
+> + */
+> +SYM_FUNC_START(clmul_polyval_update)
+> +	FRAME_BEGIN
+> +	vmovdqa .Lgstar(%rip), GSTAR
+> +	movups (%rcx), SUM
+> +	cmpq $NUM_PRECOMPUTE_POWERS, BLOCKS_LEFT
+> +	jb .LstrideLoopExit
+> +	full_stride 0
+> +	subq $NUM_PRECOMPUTE_POWERS, BLOCKS_LEFT
+> +.LstrideLoop:
+> +	cmpq $NUM_PRECOMPUTE_POWERS, BLOCKS_LEFT
+> +	jb .LstrideLoopExitReduce
+> +	full_stride 1
+> +	subq $NUM_PRECOMPUTE_POWERS, BLOCKS_LEFT
+> +	jmp .LstrideLoop
+> +.LstrideLoopExitReduce:
+> +	montgomery_reduction
+> +	movdqa PH, SUM
+> +.LstrideLoopExit:
+> +	test BLOCKS_LEFT, BLOCKS_LEFT
+> +	je .LskipPartial
+> +	partial_stride
+> +.LskipPartial:
+> +	movups SUM, (%rcx)
+> +	FRAME_END
+> +	ret
+> +SYM_FUNC_END(clmul_polyval_update)
+
+There are several unneeded instructions above.  Unconditional jumps can be
+avoided, as can comparisons if they are already paired with subtractions using
+the same amounts (since on x86, subtractions set the flags too).
+
+Consider the following:
+
+SYM_FUNC_START(clmul_polyval_update)
+	FRAME_BEGIN
+	vmovdqa .Lgstar(%rip), GSTAR
+	movups (%rcx), SUM
+	subq $STRIDE_BLOCKS, BLOCKS_LEFT
+	js .LstrideLoopExit
+	full_stride 0
+	subq $STRIDE_BLOCKS, BLOCKS_LEFT
+	js .LstrideLoopExitReduce
+.LstrideLoop:
+	full_stride 1
+	subq $STRIDE_BLOCKS, BLOCKS_LEFT
+	jns .LstrideLoop
+.LstrideLoopExitReduce:
+	montgomery_reduction SUM
+.LstrideLoopExit:
+	add $STRIDE_BLOCKS, BLOCKS_LEFT
+	jz .LskipPartial
+	partial_stride
+.LskipPartial:
+	movups SUM, (%rcx)
+	FRAME_END
+	RET
+SYM_FUNC_END(clmul_polyval_update)
+
+
+- Eric
