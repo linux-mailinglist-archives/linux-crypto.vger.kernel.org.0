@@ -2,191 +2,475 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 100614E49CF
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Mar 2022 00:55:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9034E4A55
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Mar 2022 02:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240666AbiCVX4c (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Mar 2022 19:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
+        id S241029AbiCWBLf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 22 Mar 2022 21:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbiCVX4b (ORCPT
+        with ESMTP id S241034AbiCWBLe (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Mar 2022 19:56:31 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9581C5DA0B;
-        Tue, 22 Mar 2022 16:55:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 36478B81DCB;
-        Tue, 22 Mar 2022 23:55:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74402C340F2;
-        Tue, 22 Mar 2022 23:54:59 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="gGrZMvSJ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1647993296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=f8Wt8uBQYGZQhCEfKCpobGBc6rfav6vAiizVahglg7Y=;
-        b=gGrZMvSJhpGKwYpEvMw3JXc9i6s5pdiVOJLM+Bunnp5sM9tSMfKiBf2V4fBXATB/GK82My
-        yZ4hMzEMg1Ci0b3RNz4rKvEUQ51MCTOltz5eJCOKYMsAjpw8oO/WBUdoC59esVAAAQyqEh
-        7i4r41at9nbrOXp2yKSHJkJcaf+yiCg=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 541f7814 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Tue, 22 Mar 2022 23:54:56 +0000 (UTC)
-Received: by mail-yb1-f177.google.com with SMTP id j2so36685047ybu.0;
-        Tue, 22 Mar 2022 16:54:55 -0700 (PDT)
-X-Gm-Message-State: AOAM5334vBd6c+Ymx6c3MDZHsZ5f4N/pVa5ZMOQzlDu6zr64LxrsOCq/
-        idMRLy8Kjk7YE3XxfnHavFBi/fsWw4uJ2c3uj3s=
-X-Google-Smtp-Source: ABdhPJwhufIrGQCUm2LFHBr+tlbqbyrb24JNhjp3dM/qKs4S8AeovmWrI2Joovd0HAOMldLapu3D7vYgYBJwknWUgcE=
-X-Received: by 2002:a5b:782:0:b0:634:683f:310e with SMTP id
- b2-20020a5b0782000000b00634683f310emr294616ybq.398.1647993294612; Tue, 22 Mar
- 2022 16:54:54 -0700 (PDT)
+        Tue, 22 Mar 2022 21:11:34 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB676FA01
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 18:10:00 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id bi12so39798009ejb.3
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Mar 2022 18:10:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Usl1cb51/8av9PlFaE8pZNe2bf5KKJvN2T2RDmfs+5U=;
+        b=aHnC0nri4D5uQSk+Up+F9iO14ux5h+n+BlngUlSSFeHS/nBafyWB5cs4vZ93RjxRy2
+         wJXhLNWWc4Sik01lxZUoXit/e8NGk9gmTwKIthzLrAuEpaZh/OXDTTV5kj4arkx5nlBV
+         9lQ+a3b/01wBnY+xhOVsxRiB6sr0n+zL4SRu1X9Kk8Tid9zvjnlN/06+uOJfUpKf1D+a
+         EyrESDwNVBpZnhUZMlSYX17D9zFLXFZx3X9SRPvtUYZlKfhl5VEftIoXXGtqluU9hmzs
+         AhnTYmCOcYwIIpU0FxoE2e3NPn77ruuyWC/AdHP727WgZeNKirx17nssTJB6pquUPX5I
+         FL+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Usl1cb51/8av9PlFaE8pZNe2bf5KKJvN2T2RDmfs+5U=;
+        b=GF7tz7y7kBuNzwnsnRFCz22KmShxowVQAGQQA0xO5JDRjxv0j63MjMgcWoYg/XMR3x
+         VhFSDvHcUkln+a3j1xKQZOeBy7qi/bzUFsh42koW4D2veti9zWM47RuU0gKV/QPAsMRe
+         sIJi2mMCob/Vmg1+/SoCT2G03X3F9dRcjkY1ver525JdOJC1hbjK2XoySQ+JeuJiPrcL
+         kLoLA8m/dHmiRlu+bLjVyLgrM8DkIFzq3tTOsL3q6+NnlCJErVcy9yUIKmxae54SHYaR
+         7UIlinqThY+fqzR56XtTki3AxUItHiH9r0cgyFkCTsnhv1GB4h8WA5zmcIn4dvOImLXK
+         3ykg==
+X-Gm-Message-State: AOAM532KXQ2Oc+G3PFi78L7jYzcWioUs6ZfSaUVWaVAigOfgRnLr1v3j
+        j3uzoo91iMv5c0FLoW1QoOgj4Ewu2YVdaRYbPiw=
+X-Google-Smtp-Source: ABdhPJx2Fe0bZIuqd87mbasfgYXrFbgLcYQO3s8qk+AEOPZGfqexNtyVhVbs6oN/bUxTGEH4Qt7tzAlq7El+neeWNC0=
+X-Received: by 2002:a17:907:c0c:b0:6d1:8c46:6415 with SMTP id
+ ga12-20020a1709070c0c00b006d18c466415mr29543836ejc.326.1647997799095; Tue, 22
+ Mar 2022 18:09:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220322191436.110963-1-Jason@zx2c4.com> <CAHk-=wgSRk_-Nh5gtDKZj_fKya1NKry1Y5jdejfKNPnB+Pr4cw@mail.gmail.com>
-In-Reply-To: <CAHk-=wgSRk_-Nh5gtDKZj_fKya1NKry1Y5jdejfKNPnB+Pr4cw@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 22 Mar 2022 17:54:43 -0600
-X-Gmail-Original-Message-ID: <CAHmME9oWzXeuEJacLoKWHer82LwCtD6+9Kv9gMOKYcZOhhN7pA@mail.gmail.com>
-Message-ID: <CAHmME9oWzXeuEJacLoKWHer82LwCtD6+9Kv9gMOKYcZOhhN7pA@mail.gmail.com>
-Subject: Re: [PATCH] random: allow writes to /dev/urandom to influence fast init
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jann Horn <jannh@google.com>
+From:   Duke Abbaddon <duke.abbaddon@gmail.com>
+Date:   Wed, 23 Mar 2022 01:09:50 +0000
+Message-ID: <CAHpNFcN_tkiK1hO5HkJtvydLhj8biSLVQ+sFsuidM7wYF8PJPw@mail.gmail.com>
+Subject: GPIO & QFFT : RS : Subject Re: [PATCH] watchdog: gpio_wdt: Support
+ GPO lines with the toggle algorithm
+To:     torvalds@linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hey Linus,
+GPIO is used for Super speed output, However Serialised Parallel
+processing allows constant flow:
 
-On Tue, Mar 22, 2022 at 2:42 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+Examples:
+
+Audio devices such as creative logic ISA & PCI Cards on SUPER
+input mode (Mic & Input ports)16Bit HQ into 256 Drums in 32Bit Super HQ
+
+CPU Coprocessors such as the QFFT : Input & Output alternate lines on pins
+
+Parallel ports in Super IO mode! 4MB/S WOW
+
+Hard Drives IO 120MB/s Write Cycle (Audio Recording Desks & Studio
+Recording Studios)
+
+Tape DECKS : IBM, Fuji, Sony & Samsung TAPE Backups Super IO GPIO :
+1.2GB/s to 72GB/s Compressed
+
+GPIO Could be used on RAM : Examples is 4 special pins on the RAM for
+burst mode!
+
+GPIO is rather more relevant than you think!
+
+Rupert S
+
+https://science.n-helix.com/2021/11/wave-focus-anc.html
+
+https://science.n-helix.com/2021/10/noise-violation-technology-bluetooth.ht=
+ml
+
+
+https://www.orosound.com/
+
+https://www.consumerreports.org/noise-canceling-headphone/best-noise-cancel=
+ing-headphones-of-the-year-a1166868524/
+
+
+https://lkml.org/lkml/2022/3/22/1112
+
+Date Tue, 22 Mar 2022 17:04:53 -0700
+From Guenter Roeck <>
+Subject Re: [PATCH] watchdog: gpio_wdt: Support GPO lines with the
+toggle algorithm
+share 0
+On 3/22/22 15:29, Tobias Waldekranz wrote:
+> Support using GPO lines (i.e. GPIOs that are output-only) with
+> gpio_wdt using the "toggle" algorithm.
 >
-> On Tue, Mar 22, 2022 at 12:15 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> >
-> > @@ -1507,6 +1507,8 @@ static int write_pool(const char __user *ubuf, size_t count)
-> >                 }
-> >                 count -= len;
-> >                 ubuf += len;
-> > +               if (unlikely(crng_init == 0 && !will_credit))
-> > +                       crng_pre_init_inject(block, len, false);
-> >                 mix_pool_bytes(block, len);
-> >                 cond_resched();
-> >         }
+> Since its inception, gpio_wdt has configured its GPIO line as an input
+> when using the "toggle" algorithm, even though it is used as an output
+> when kicking. This needlessly barred hardware with output-only pins
+> from using the driver.
 >
-> Ugh. I hate that whole crng_pre_init_inject() dance.
+> Signed-off-by: Tobias Waldekranz <tobias@waldekranz.com>
+> ---
+>
+> Hi,
+>
+> This patch has been in our downstream tree for a long time. We need it
+> because our kick GPIO can't be used as an input.
+>
+> What I really can't figure out is why the driver would request the pin
+> as in input, when it's always going to end up being used as an output
+> anyway.
+>
+> So I thought I'd send it upstream in the hopes of either getting it
+> merged, or an explanation as to why it is needed.
+>
 
-Yea it's not great, but it's a helluva lot better than what was there
-before 5.18, when there were two different ways of mixing into the
-crng key, both of which were insecure. At least now it's a hash
-function. As I mentioned in that pull request, I tried to shore up the
-existing design as much as I could without departing from it in any
-large fundamental ways. It may well be time to revisit the pre init
-situation though.
+I _think_ the assumption / idea was that "toggle" implies that the output
+is connected to a pull-up resistor and that the pin either floats or is
+pulled down to ground, causing the signal to toggle. I don't know if/how
+that works in practice, though.
 
-Maybe it'd help if I described what the goals are of the current
-approach and how it attempts to accomplish that.
+Guenter
 
-The chacha key that's used for random bytes is separate from the input
-pool, which is where entropy gets dumped. The reason for that
-separation is because it's important that we decide when and under
-what conditions to extract from the input pool into a new chacha key.
-If we do it too often or prematurely, then we risk updating the chacha
-key with very few new bits of entropy. If there aren't enough new
-bits, and an attacker knows the old state (say, because the system
-just booted), then it's trivial to bruteforce those new bits, since
-read access to /dev/urandom is unprivileged. That's very bad.
+>   drivers/watchdog/gpio_wdt.c | 13 +++++--------
+>   1 file changed, 5 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/watchdog/gpio_wdt.c b/drivers/watchdog/gpio_wdt.c
+> index 0923201ce874..f7686688e0e2 100644
+> --- a/drivers/watchdog/gpio_wdt.c
+> +++ b/drivers/watchdog/gpio_wdt.c
+> @@ -108,7 +108,6 @@ static int gpio_wdt_probe(struct platform_device *pde=
+v)
+>   struct device *dev =3D &pdev->dev;
+>   struct device_node *np =3D dev->of_node;
+>   struct gpio_wdt_priv *priv;
+> - enum gpiod_flags gflags;
+>   unsigned int hw_margin;
+>   const char *algo;
+>   int ret;
+> @@ -122,17 +121,15 @@ static int gpio_wdt_probe(struct platform_device *p=
+dev)
+>   ret =3D of_property_read_string(np, "hw_algo", &algo);
+>   if (ret)
+>   return ret;
+> - if (!strcmp(algo, "toggle")) {
+> +
+> + if (!strcmp(algo, "toggle"))
+>   priv->hw_algo =3D HW_ALGO_TOGGLE;
+> - gflags =3D GPIOD_IN;
+> - } else if (!strcmp(algo, "level")) {
+> + else if (!strcmp(algo, "level"))
+>   priv->hw_algo =3D HW_ALGO_LEVEL;
+> - gflags =3D GPIOD_OUT_LOW;
+> - } else {
+> + else
+>   return -EINVAL;
+> - }
+>
+> - priv->gpiod =3D devm_gpiod_get(dev, NULL, gflags);
+> + priv->gpiod =3D devm_gpiod_get(dev, NULL, GPIOD_OUT_LOW);
+>   if (IS_ERR(priv->gpiod))
+>   return PTR_ERR(priv->gpiod);
+>
 
-For that reason, we only reseed when we've collected 256 bits of
-entropy, and at a schedule of uptime/2 for the first 10 minutes, and
-then every 5 minutes after that.
+*****
 
-The question, here, is what to do before we've collected 256 bits of
-entropy. 80 bits is still better than 0, for example. The existing
-scheme (from Ted) is that we maintain a state variable, crng_init.
-When crng_init=0, we direct all entropy into the chacha key directly.
-If that entropy is creditable, then we account for up to 64 bytes of
-input total, regardless of how many "bits" of entropy we would
-otherwise be crediting were it not pre-init phase. That's kinda weird,
-but the motivating mantra has always been, "fast init is garbage, but
-it's better than nothing." Then, once we hit 64 bytes of fast init
-accounting, we transition to crng_init=1. At this stage, we're putting
-bytes into the normal input pool and crediting it as usual, not
-updating the crng key directly anymore with injection, and the crng is
-still blocked. When we hit 256 bits of accounted entropy from the
-crng_init=1 stage, then we're ready to go, and we transition to
-crng_init=2.
+Get the best out of Youtube encoding with GPL QFFT Codecs for :
+Windows,Linux & Android #RockTheHouseGoogle!
 
-So this patch helps with the crng_init=0 case. It doesn't address the
-crng_init=1 case, when the bytes written to /dev/urandom won't be
-directly injected as they are for crng_init=0. In any case, the one
-thing we're trying to preserve in all of this is that when we do
-transition to crng_init=2, it's with a pool that contains 256 bits of
-entropy that haven't previously been exposed anywhere, so that they
-can't be brute forced.
+Advanced FFT & 3D Audio functions for CPU & GPU
+https://gpuopen.com/true-audio-next/
 
-With that as background, to answer your question:
+Multimedia Codec SDK https://gpuopen.com/advanced-media-framework/
 
-> Maybe I'm missing something. But it seems kind of silly to use
-> base_crng AT ALL before crng_ready(). Why not use the pool we have
-> that *is* actually updated (that 'input_pool')?
+(c)Rupert S https://science.n-helix.com
 
-In this case, base_crng.key is really just doubling as a separate
-pool. The "pre init pool", the "fast init pool", the "super terrible
-but at least not zero pool", the "all bets are off pool", ... whatever
-you want to call it. Why a separate pool for pre init? Because the
-real input pool needs to accumulate 256 bits of entropy before it's
-safe to use.
+***
+Decoder CB 2021 Codecs
 
-Your suggestion is to instead not have a separate pool, but perhaps
-just do separate accounting. That might work to some degree, but the
-devil is in the details, and that sounds a lot harder and messier to
-code. For example, you wrote:
+kAudioDecoderName "FFmpegAudioDecoder"
+kAudioTracks [{"bytes per channel":2,"bytes per frame":4,"channel
+layout":"STEREO","channels":2,"codec":"aac","codec delay":0,"discard
+decoder delay":false,"encryption scheme":"Unencrypted","has extra
+data":false,"profile":"unknown","sample format":"Signed
+16-bit","samples per second":48000,"seek preroll":"0us"}]
 
-> +               crng_fast_key_erasure(input_pool.key, chacha_state,
-> +                                     random_data, random_data_len);
+kVideoDecoderName "MojoVideoDecoder"
+kVideoPlaybackFreezing 0.10006
+kVideoPlaybackRoughness 3.048
+kVideoTracks [{"alpha mode":"is_opaque","codec":"h264","coded
+size":"426x240","color space":"{primaries:BT709, transfer:BT709,
+matrix:BT709, range:LIMITED}","encryption scheme":"Unencrypted","has
+extra data":false,"hdr metadata":"unset","natural
+size":"426x240","orientation":"0=C2=B0","profile":"h264 baseline","visible
+rect":"0,0 426x240"}]
 
-Except there is no input_pool.key, because the input_pool's state is
-actually an un-finalized hash function. So what you wind up with
-instead is calling extract_entropy() on every read. But then you have
-to decide a certain point when you stop doing that, so it can
-accumulate 256 bits prior to exposure, and things quickly get
-extremely messy. So I don't think your suggestion improves much.
+info "Selected FFmpegAudioDecoder for audio decoding, config: codec:
+mp3, profile: unknown, bytes_per_channel: 2, channel_layout: STEREO,
+channels: 2, samples_per_second: 44100, sample_format: Signed 16-bit
+planar, bytes_per_frame: 4, seek_preroll: 0us, codec_delay: 0, has
+extra data: false, encryption scheme: Unencrypted, discard decoder
+delay: true"
+kAudioDecoderName "FFmpegAudioDecoder"
+kAudioTracks [{"bytes per channel":2,"bytes per frame":4,"channel
+layout":"STEREO","channels":2,"codec":"mp3","codec delay":0,"discard
+decoder delay":true,"encryption scheme":"Unencrypted","has extra
+data":false,"profile":"unknown","sample format":"Signed 16-bit
+planar","samples per second":44100,"seek preroll":"0us"}]
+kBitrate 192000
 
-The long term solution to this stuff might be doing away with the
-entropy accounting entirely, as I suggested in the other thread. The
-shorter term solution, though, might be reimagining how the
-crng_init=1/2 states work to begin with. (And the shortest-term "fix"
-is this patch, which while not perfect is at least something.)
+kAudioDecoderName "FFmpegAudioDecoder"
+kAudioTracks [{"bytes per channel":4,"bytes per frame":8,"channel
+layout":"STEREO","channels":2,"codec":"opus","codec
+delay":312,"discard decoder delay":true,"encryption
+scheme":"Unencrypted","has extra
+data":true,"profile":"unknown","sample format":"Float 32-bit","samples
+per second":48000,"seek preroll":"80000us"}]
 
-Just sort of spitballing what the shorter term solution might be, we
-could do something exponential, where we get rid of the
-pre_init_inject stuff entirely, but call `crng_reseed(force=true)` at
-1 bit, 2 bits, 4 bits, 8 bits, 16 bits, 32 bits, ... 256 bits, the
-same way we do now with the time. (This is somewhat similar to what NT
-does, fwiw.) A downside is that the gap between, say, 64 bits and 128
-bits is much "longer" than what we have now with pre_init_inject.
+kVideoDecoderName "VpxVideoDecoder"
+kVideoTracks [{"alpha mode":"is_opaque","codec":"vp9","coded
+size":"1920x1080","color space":"{primaries:BT709, transfer:BT709,
+matrix:BT709, range:LIMITED}","encryption scheme":"Unencrypted","has
+extra data":false,"hdr metadata":"unset","natural
+size":"1920x1080","orientation":"0=C2=B0","profile":"vp9 profile0","visible
+rect":"0,0 1920x1080"}]
 
-While the above might be an improvement, that doesn't help with our
-/dev/urandom problem, though. Perhaps for that we could have some
-messy heuristic, like `if (capable(CAP_SYS_ADMIN) && !crng_ready())
-crng_reseed(force=true);`. That's sort of ugly too, but it would help
-with the /dev/urandom shellscript seeders.
+kAudioDecoderName "FFmpegAudioDecoder"
+kAudioTracks [{"bytes per channel":2,"bytes per frame":4,"channel
+layout":"STEREO","channels":2,"codec":"aac","codec delay":0,"discard
+decoder delay":false,"encryption scheme":"Unencrypted","has extra
+data":false,"profile":"unknown","sample format":"Signed
+16-bit","samples per second":44100,"seek preroll":"0us"}]
 
-I'll think on it some more, but these two spitball ideas together
-might result in a nice simplification by eliminating the fast pool
-entirely. Happy to hear more ideas from you too if the above inspires
-anything.
+kVideoDecoderName "MojoVideoDecoder"
+kVideoTracks [{"alpha mode":"is_opaque","codec":"h264","coded
+size":"1920x1080","color space":"{primaries:BT709, transfer:BT709,
+matrix:BT709, range:LIMITED}","encryption scheme":"Unencrypted","has
+extra data":false,"hdr metadata":"unset","natural
+size":"1920x1080","orientation":"0=C2=B0","profile":"h264 main","visible
+rect":"0,0 1920x1080"}]
+***
 
-Jason
+PlayStation 5 and Xbox Series Spatial Audio Comparison | Technalysis
+Audio 3D Tested : Tempest,ATMOS,DTX,DTS
+
+https://www.youtube.com/watch?v=3DvsC2orqiCwI
+
+*
+
+Waves & Shape FFT original QFFT Audio device & CPU/GPU : (c)RS
+
+The use of an FFT simple unit to output directly: Sound
+& other content such as a BLENDER or DAC Content : (c)RS
+
+FFT Examples :
+
+Analogue smoothed audio ..
+Using a capacitor on the pin output to a micro diode laser (for analogue Fi=
+bre)
+
+Digital output using:
+8 to 128Bit multiple high frequency burst mode..
+
+(Multi Phase step at higher frequency & smooth interpolation)
+Analogue wave converted to digital in key steps through a DAC at
+higher frequency & amplitude.
+
+For many systems an analogue wave makes sense when high speed crystal
+digital is too expensive.
+
+Multiple frequency overlapped digital signals with a time formula is
+also possible.
+
+The mic works by calculating angle on a drum...
+Light.. and timing & dispersion...
+The audio works by QFFT replication of audio function..
+The DAC works by quantifying as Analog digital or Metric Matrix..
+The CPU/GPU by interpreting the data of logic, Space & timing...
+
+We need to calculate Quantum is not the necessary feature;
+
+But it is the highlight of our:
+Data storage cache.
+Our Temporary RAM
+Our Data transport..
+Of our fusion future.
+
+FFT & fast precise wave operations in SiMD
+
+Several features included for Audio & Video : Add to Audio & Video
+drivers & sdk i love you <3 DL
+
+In particular I want Bluetooth audio optimized with SiMD,AVX vector
+instructions & DSP process drivers..
+
+The opportunity presents itself to improve the DAC; In particular of
+the Video cards & Audio devices & HardDrives & BDBlueRay Player Record
+& load functions of the fluctuating laser..
+More than that FFT is logical and fast; Precise & adaptive; FP & SiMD
+present these opportunities with correct FFT operations & SDK's.
+
+3D surround optimised the same, In particular with FFT efficient code,
+As one imagines video is also effected by FFT ..
+
+Video colour & representation & wavelet compression & sharpness restoration=
+..
+Vivid presentation of audio & video & 3D objects and texture; For
+example DOT compression & image,Audio presentation...
+
+SSD & HD technology presents unique opportunities for magnetic waves
+and amplitude speculation & presentation.
+
+FFT : FMA : SiMD instructions & speed : application examples : Audio,
+Colour pallet , Rainbows, LUT, Blood corpuscles with audio & vibration
+interaction, Rain with environmental effects & gravity.. There are
+many application examples of transforms in action (More and more
+complex by example)
+
+High performance SIMD modular arithmetic for polynomial evaluation
+
+FFT Examples :  in the SiMD Folder...
+
+Evaluation of FFT and polynomial X array algebra .. is here handled to
+over 50Bits...
+As we understand it the maths depends on a 64bit value with a 128Bit  ..
+as explained in the article value have to be in identical ranges bit
+wise, However odd bit depth sizes are non conforming (God i need
+coffee!)
+
+In one example (page 9) Most of the maths is 64Bit & One value 128Bit
+"We therefore focus in this article on the use of floating-point (FP)
+FMA (fused multiply-add) instructions for floating-point based modular
+arithmetic. Since the FMA instruction performs two operations (a =E2=88=97 =
+b +
+c) with one single final rounding, it can indeed be used to design a
+fast error-free transformation of the product of two floating-point
+numbers"
+
+Our latest addition is a quite detailed example for us
+High performance SIMD modular arithmetic for
+polynomial evaluation 2020
+
+Pierre Fortin, Ambroise Fleury, Fran=C3=A7ois Lemaire, Michael Monagan
+
+https://hal.archives-ouvertes.fr/hal-02552673/document
+
+Contains multiple algorithm examples & is open about the computer
+operations in use.
+
+Advanced FFT & 3D Audio functions for CPU & GPU
+https://gpuopen.com/true-audio-next/
+
+Multimedia Codec SDK https://gpuopen.com/advanced-media-framework/
+
+(c)Rupert S https://science.n-helix.com
+
+*****
+
+Lets face it, Realtec could well resource the QFFT Audio device &
+transformer/DAC
+
+(c)Rupert S https://science.n-helix.com
+
+document work examples :
+
+https://eurekalert.org/pub_releases/2021-01/epfd-lpb010621.php
+
+"Light-based processors boost machine-learning processing
+ECOLE POLYTECHNIQUE F=C3=89D=C3=89RALE DE LAUSANNE
+
+Research News
+
+IMAGE
+IMAGE: SCHEMATIC REPRESENTATION OF A PROCESSOR FOR MATRIX
+MULTIPLICATIONS WHICH RUNS ON LIGHT. view more
+
+CREDIT: UNIVERSITY OF OXFORD
+
+The exponential growth of data traffic in our digital age poses some
+real challenges on processing power. And with the advent of machine
+learning and AI in, for example, self-driving vehicles and speech
+recognition, the upward trend is set to continue. All this places a
+heavy burden on the ability of current computer processors to keep up
+with demand.
+
+Now, an international team of scientists has turned to light to tackle
+the problem. The researchers developed a new approach and architecture
+that combines processing and data storage onto a single chip by using
+light-based, or "photonic" processors, which are shown to surpass
+conventional electronic chips by processing information much more
+rapidly and in parallel.
+
+The scientists developed a hardware accelerator for so-called
+matrix-vector multiplications, which are the backbone of neural
+networks (algorithms that simulate the human brain), which themselves
+are used for machine-learning algorithms. Since different light
+wavelengths (colors) don't interfere with each other, the researchers
+could use multiple wavelengths of light for parallel calculations. But
+to do this, they used another innovative technology, developed at
+EPFL, a chip-based "frequency comb", as a light source.
+
+"Our study is the first to apply frequency combs in the field of
+artificially neural networks," says Professor Tobias Kippenberg at
+EPFL, one the study's leads. Professor Kippenberg's research has
+pioneered the development of frequency combs. "The frequency comb
+provides a variety of optical wavelengths that are processed
+independently of one another in the same photonic chip."
+
+"Light-based processors for speeding up tasks in the field of machine
+learning enable complex mathematical tasks to be processed at high
+speeds and throughputs," says senior co-author Wolfram Pernice at
+M=C3=BCnster University, one of the professors who led the research. "This
+is much faster than conventional chips which rely on electronic data
+transfer, such as graphic cards or specialized hardware like TPU's
+(Tensor Processing Unit)."
+
+After designing and fabricating the photonic chips, the researchers
+tested them on a neural network that recognizes of hand-written
+numbers. Inspired by biology, these networks are a concept in the
+field of machine learning and are used primarily in the processing of
+image or audio data. "The convolution operation between input data and
+one or more filters - which can identify edges in an image, for
+example, are well suited to our matrix architecture," says Johannes
+Feldmann, now based at the University of Oxford Department of
+Materials. Nathan Youngblood (Oxford University) adds: "Exploiting
+wavelength multiplexing permits higher data rates and computing
+densities, i.e. operations per area of processor, not previously
+attained."
+
+"This work is a real showcase of European collaborative research,"
+says David Wright at the University of Exeter, who leads the EU
+project FunComp, which funded the work. "Whilst every research group
+involved is world-leading in their own way, it was bringing all these
+parts together that made this work truly possible."
+
+The study is published in Nature this week, and has far-reaching
+applications: higher simultaneous (and energy-saving) processing of
+data in artificial intelligence, larger neural networks for more
+accurate forecasts and more precise data analysis, large amounts of
+clinical data for diagnoses, enhancing rapid evaluation of sensor data
+in self-driving vehicles, and expanding cloud computing
+infrastructures with more storage space, computing power, and
+applications software.
+
+###
+
+Reference
+
+J. Feldmann, N. Youngblood, M. Karpov, H. Gehring, X. Li, M. Stappers,
+M. Le Gallo, X. Fu, A. Lukashchuk, A.S. Raja, J. Liu, C.D. Wright, A.
+Sebastian, T.J. Kippenberg, W.H.P. Pernice, H. Bhaskaran. Parallel
+convolution processing using an integrated photonic tensor core.
+Nature 07 January 2021. DOI: 10.1038/s41586-020-03070-1"
+
+Time Measurement
+
+"Let's Play" Station NitroMagika_LightCaster
