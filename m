@@ -2,73 +2,251 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A68E24E737B
-	for <lists+linux-crypto@lfdr.de>; Fri, 25 Mar 2022 13:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 094E74E74B0
+	for <lists+linux-crypto@lfdr.de>; Fri, 25 Mar 2022 15:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237386AbiCYMcb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 25 Mar 2022 08:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38846 "EHLO
+        id S1358441AbiCYOEY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 25 Mar 2022 10:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244732AbiCYMc3 (ORCPT
+        with ESMTP id S1348191AbiCYOEY (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 25 Mar 2022 08:32:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 765E3D0817;
-        Fri, 25 Mar 2022 05:30:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YcSVVivNSS6HKwFtzFw9OEfDniOM+I9GJAUb7FZ1W4A=; b=fxduNBYyWHO7Q1Uha+uM3IlStL
-        lTG/7c1EFPnG0OYn5uQ6TJEuaizhCeLP5adQrm26TsmRP7uZPScATVueABjnfn2sg0ocQO1wkR6IA
-        e9YxSGZrMvzUu4XZCoJPfekTLsjnlLYiivJD6F9XYR4NEWARiqVKLGG3DBf8CuV+wj6CoDVrdiuo8
-        LoqIB+iwnrCoERz0M9v0HOK9Zl0kfsMHIEdoqT3GKx8NBFheOqDyqR5G1ZF//Aekrl0P/sjJD0FYv
-        vPprZhs55FC4NtDE+I6pHZQT4wKMkIFjjDNeio2ub3qLZFqIvqLMIzD2iXlBDAK5qFxnqBAWcwO77
-        F6rD3BUg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nXj5c-00EM6s-F7; Fri, 25 Mar 2022 12:30:48 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 13483987D26; Fri, 25 Mar 2022 13:30:48 +0100 (CET)
-Date:   Fri, 25 Mar 2022 13:30:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        ebiggers@google.com, herbert@gondor.apana.org.au, Jason@zx2c4.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH 5/2] x86/sm3: Fixup SLS
-Message-ID: <20220325123047.GR8939@worktop.programming.kicks-ass.net>
-References: <20220322114809.381992456@infradead.org>
+        Fri, 25 Mar 2022 10:04:24 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E1DD76F5
+        for <linux-crypto@vger.kernel.org>; Fri, 25 Mar 2022 07:02:49 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id p15so15561350ejc.7
+        for <linux-crypto@vger.kernel.org>; Fri, 25 Mar 2022 07:02:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=mTkB/8ok0Jsn34jiNB203Plx4NPfqmN3UIIy2Jyu7bo=;
+        b=In8qGeWW39amfdfMaC7ALJwwk2vGMRr7lk3s0LuuCmMDrxlYuKp3Rw/6rsW5fK8Glk
+         owwPL6TsetbV897lpSyliYR53rBbH8Du7kfmVB1i0Wx9yhTKjEZhQsfhRlWmVajNgvOM
+         nhs+APW1gXhEvsnz0sfKQ/EUrupA0vRe1xplRl8+TDIn9B7Zncg8D4QuK/DlQ4WuexHq
+         UWWHyB9h7j7K03KcGsElBWO8Kkm7WPVH4bc32h1GD8EeuI25OMggTeHvyLN/rqLMAY8N
+         JKCGBqpmnvRhobpxCr29K1Y3o9HVPXUz4M0crNYKx0m2G2e+u0xQ2+x4B7N6x2u/wK/X
+         LWxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=mTkB/8ok0Jsn34jiNB203Plx4NPfqmN3UIIy2Jyu7bo=;
+        b=JxPgiyE5z3fu/jMF/dSDKH2tpieBdTjGGhm06imXJR/A7SZWi/Ig+vHIyApxMkUAH7
+         FhERXj/N9wT1wRJnrg4fYOThfp58N4JK6/+vEe/kcPVZ2ByfJ4dpjJd4BrIl8bikkORx
+         xZ+YX2rjcoiV5AWcfy1SS/l/uPvQQS7l7Xwf2pxXjmPaLIuqqNs4q5HtbIL9/ZvmEz6O
+         B6daBhTsayewOY7/QAVUoj37NaZ6SZNngTQQXzg/Dfnao2c/zwCHfUwjuG8H0a1MzOl2
+         s7q3zOUABcQ53mzV9x55qP1+Cp7tdKXfklRjW40gn9jCrcFqFD/KBoiKScZvnMCkXAfl
+         Dqpg==
+X-Gm-Message-State: AOAM531IFe8DT/TW1HBNSVPodXhRcCU/jzVyjlH79mi+QYqgH4nBGcU0
+        7WRKET7/NiuENPtRz7iZhMGLGq+WAraO7rzhjD4=
+X-Google-Smtp-Source: ABdhPJwa+fESlJNgq3HJUEZBYThRPkGFuUFWog5FxbokThEcrv6N1wNu+ZKY4DjXlyBAga2mWsQ1PY/VlBrI93FD4kU=
+X-Received: by 2002:a17:906:d555:b0:6db:148e:5cc with SMTP id
+ cr21-20020a170906d55500b006db148e05ccmr11527925ejc.63.1648216967841; Fri, 25
+ Mar 2022 07:02:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220322114809.381992456@infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Duke Abbaddon <duke.abbaddon@gmail.com>
+Date:   Fri, 25 Mar 2022 14:02:37 +0000
+Message-ID: <CAHpNFcMj2Pr5EyTEW2S_UDnLSpzacEznEb=aSOr-arV5F-i4oA@mail.gmail.com>
+Subject: New GPU/CPU & Motherboard Bios strategy for ASUS unique RX6700XTC-FlareEdition2021
+To:     mobile@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+https://www.phoronix.com/scan.php?page=3Dnews_item&px=3DLinux-5.18-x86-Plat=
+form-Drivers
 
-This missed the big asm update due to being merged through the crypto
-tree.
+New GPU/CPU & Motherboard Bios strategy for ASUS unique
+RX6700XTC-FlareEdition2021
 
-Fixes: f94909ceb1ed ("x86: Prepare asm files for straight-line-speculation")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/crypto/sm3-avx-asm_64.S |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Important Business : RS
+Date: Sun, Jan 3, 2021 at 11:12 AM
+To: Kr*****, L** <l**.kr****@amd.com>
+  To: <Med**@xilinx.com>
 
---- a/arch/x86/crypto/sm3-avx-asm_64.S
-+++ b/arch/x86/crypto/sm3-avx-asm_64.S
-@@ -513,5 +513,5 @@ SYM_FUNC_START(sm3_transform_avx)
- 
- 	movq %rbp, %rsp;
- 	popq %rbp;
--	ret;
-+	RET;
- SYM_FUNC_END(sm3_transform_avx)
+FPGA BitFile & Code Opt (c)RS 2021-01
+
+Priority of Operating process for streamlining Dynamic FPGA units on
+CPU & GPU By Rupert S
+
+Factors common in FPGA are:100000 Gates to 750000 Gates (Ideal for
+complex tasks)
+
+Programmable Processor command implementation & reprogram  speed 3ns
+to 15 Seconds
+2 million gates
+Processor core usage to reprogram ?
+15% of a 200Mhz processor =3D 200ns programming time
+Processor core usage to reprogram ? 20% to 25% of a 200Mhz processor =3D
+30ns programming time
+
+250 to 2900 Gates 1uns to 2ns
+(ideal for small complex instructions)
+Processor usage (in programming) 2 to 5% CPU @200Mhz
+
+2000 to 12500 to 25000 Gates (ideal for very complex function)
+30uns to 8ns (ideal for small complex instructions & RISC)
+
+Processor usage (in programming) 2 to 9% CPU @200Mhz
+
+Plans to load a BitFile rely on constant use & not on the fly, However
+small gate arrays permit microsecond coding..
+
+However I do state that a parameter for operating order is specified &
+for most users Automatic.
+
+Operating system functions.. for example AUDIO are a priority & will
+stay consistent..
+
+So we will have specific common instructions that are specific to OS &
+BIOS Firmware..
+Commons will take 20% of a large FPGA (relative)
+
+With the aim of having at least 4 common & hard to match functions; As
+a core large ARRAY..The aim being not to reprogram every second,
+
+For example during boot process with: Bitfile preorder profile:
+1uns to 2ns (ideal for small complex instructions)
+
+During the operation of the Computer or array the FPGA may contain
+specific ANTIVirus & firewall functions, That we map to ML
+
+The small unit groups of fast reprogrammables will be ideal for
+application that we are using for more than 30 minutes.. & May be
+clustered.
+
+Optimus (Prime) bitfile : RS
+Obviously handheld devices require uniquely optimum feature set & tiny
+processor size..
+Create the boundry and push that limit.
+
+We will obviously prefer to enable Hardcode pre trained models such as :
+
+SiMD
+Tessellation & maths objective : for gaming & science
+Dynamic DMA Clusters (OS,Security,Root)
+Maths Unit
+HardDrive Accelerators
+Compressors
+Compiler optimisers CPU/GPU
+Core Prefetch/ML optimiser (on die)
+Combined Shader & function for both DirectX,Metal & Vulkan utility..
+GPU & CPU Synergy Network & Cache.
+Direct Audio & Video,Haptic processing dynamic; element 3D Extrapolation..
+Dynamic Meta Data processing & conversion ..
+(Very important because not all Meta data is understood directly in
+the used process.)
+
+Obviously handheld devices require uniquely optimum feature set & tiny
+processor size..
+Create the boundry and push that limit.
+
+(c)Rupert S https://science.n-helix.com
+
+"processor programs a reprogrammable execution unit with the bitfile
+so that the reprogrammable execution unit is capable of executing
+specialized instructions associated with the program."
+
+https://hothardware.com/news/amd-patent-hybrid-cpu-fpga-design-xilinx
+
+"AMD Patent Reveals Hybrid CPU-FPGA Design That Could Be Enabled By Xilinx =
+Tech
+xilinx office
+
+While they often aren=E2=80=99t as great as CPUs on their own, FPGAs can do=
+ a
+wonderful job accelerating specific tasks. Whether it's accelerating
+acting as a fabric for wide-scale datacenter services boosting AI
+performance, an FPGA in the hands of a capable engineer can offload a
+wide variety of tasks from a CPU and speed processes along. Intel has
+talked a big game about integrating Xeons with FPGAs over the last six
+years, but it hasn't resulted in a single product hitting its lineup.
+A new patent by AMD, though, could mean that the FPGA newcomer might
+be ready to make one of its own.
+
+In October, AMD announced plans to acquire Xilinx as part of a big
+push into the datacenter. On Thursday, the United States Patent and
+Trademark Office (USPTO) published an AMD patent for integrating
+programmable execution units with a CPU. AMD made 20 claims in its
+patent application, but the gist is that a processor can include one
+or more execution units that can be programmed to handle different
+types of custom instruction sets. That's exactly what an FPGA does. It
+might be a little bit until we see products based on this design, as
+it seems a little too soon to be part of CPUs included in recent EPYC
+leaks.
+
+While AMD has made waves with its chiplet designs for Zen 2 and Zen 3
+processors, that doesn't seem to be what's happening here. The
+programmable unit in AMD's FPGA patent actually shares registers with
+the processor's floating-point and integer execution units, which
+would be difficult, or at least very slow, if they're not on the same
+package. This kind of integration should make it easy for developers
+to weave these custom instructions into applications, and the CPU
+would just know to pass those onto the on-processor FPGA. Those
+programmable units can handle atypical data types, specifically FP16
+(or half-precision) values used to speed up AI training and inference.
+
+xilinx vu19p
+
+In the case of multiple programmable units, each unit could be
+programmed with a different set of specialized instructions, so the
+processor could accelerate multiple instruction sets, and these
+programmable EUs can be reprogrammed on the fly. The idea is that when
+a processor loads a program, it also loads a bitfile that configures
+the programmable execution unit to speed up certain tasks. The CPU's
+own decode and dispatch unit could address the programmable unit,
+passing those custom instructions to be processed.
+
+AMD has been working on different ways to speed up AI calculations for
+years. First the company announced and released the Radeon Impact
+series of AI accelerators, which were just big headless Radeon
+graphics processors with custom drivers. The company doubled down on
+that with the release of the MI60, its first 7-nm GPU ahead of the
+Radeon RX 5000 series launch, in 2018. A shift to focusing on AI via
+FPGAs after the Xilinx acquisition makes sense, and we're excited to
+see what the company comes up with."
+
+*****
+
+https://science.n-helix.com/2018/12/rng.html
+
+https://science.n-helix.com/2022/02/rdseed.html
+
+https://science.n-helix.com/2017/04/rng-and-random-web.html
+
+https://science.n-helix.com/2022/02/interrupt-entropy.html
+
+https://science.n-helix.com/2021/11/monticarlo-workload-selector.html
+
+https://science.n-helix.com/2022/03/security-aspect-leaf-hash-identifiers.h=
+tml
+
+
+Audio, Visual & Bluetooth & Headset & mobile developments only go so far:
+
+https://science.n-helix.com/2022/02/visual-acuity-of-eye-replacements.html
+
+https://science.n-helix.com/2022/03/ice-ssrtp.html
+
+https://science.n-helix.com/2021/11/ihmtes.html
+
+https://science.n-helix.com/2021/10/eccd-vr-3datmos-enhanced-codec.html
+https://science.n-helix.com/2021/11/wave-focus-anc.html
+https://science.n-helix.com/2021/12/3d-audio-plugin.html
+
+Integral to Telecoms Security TRNG
+
+*RAND OP Ubuntu :
+https://manpages.ubuntu.com/manpages/trusty/man1/pollinate.1.html
+
+https://pollinate.n-helix.com
