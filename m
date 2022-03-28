@@ -2,118 +2,69 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D490C4E8F2C
-	for <lists+linux-crypto@lfdr.de>; Mon, 28 Mar 2022 09:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665DB4E8F95
+	for <lists+linux-crypto@lfdr.de>; Mon, 28 Mar 2022 10:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234976AbiC1HlM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 28 Mar 2022 03:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55012 "EHLO
+        id S233682AbiC1IBl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 28 Mar 2022 04:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238875AbiC1HlK (ORCPT
+        with ESMTP id S231859AbiC1IBk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 28 Mar 2022 03:41:10 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2822B52E1C;
-        Mon, 28 Mar 2022 00:39:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D3428B80E67;
-        Mon, 28 Mar 2022 07:39:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51D28C34100;
-        Mon, 28 Mar 2022 07:39:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648453166;
-        bh=Y3D0Y07G0RU3hYpbOKQsQlIhpGXe9fEsIt2tSvoMROQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sszPDGSg+zPRYwRHrekax9kkwFh7EIknbfoPAkDT5rE0ezdFWguwVHLUF4FTNLbUp
-         aqhNQOrNivckgEQA/LTuF64CchTZoa/ZhCYM90v3FOkqaaqHx9KTC6LJUVRhorOGU9
-         i8Tzq4Vns59glvv7UQVg7LUTVCi713NhBGWcFv12cDTWAd4W+yqkU5t/RBPBe2wCaM
-         fuz0pLa69M/OfccqsH1YiFxxglPbOI7vxp0bPViEGIrh9PCm1UPowsUaTi1Vl3knPR
-         jygLaKKjBy+jUdSXOzZsQqpRMsdl99AGyFl0GEjP3Spw7ngso54Fr2A8q5SMoz1nVv
-         z/fvulXQaFVZw==
-Received: by mail-ot1-f52.google.com with SMTP id i11-20020a9d4a8b000000b005cda3b9754aso10121001otf.12;
-        Mon, 28 Mar 2022 00:39:26 -0700 (PDT)
-X-Gm-Message-State: AOAM531oPd6PEqGRDDs1Ne5t59kx6y6VrnAKdkgH0ZmhHUsBVozPGzja
-        wWlWqRfPcuxzLSyPFZlUwoprkKLLcNFCczz69+A=
-X-Google-Smtp-Source: ABdhPJzn1zIPrYjl5hE8jh+EbsIGMCPB+U0fNhCYfMpIJclzXpSeC2ympvLgAsQF0DbLd/W/NtHGF3vMBf2Cv0M/qR0=
-X-Received: by 2002:a05:6830:1e9c:b0:5cd:8c15:5799 with SMTP id
- n28-20020a0568301e9c00b005cd8c155799mr9420603otr.265.1648453165431; Mon, 28
- Mar 2022 00:39:25 -0700 (PDT)
+        Mon, 28 Mar 2022 04:01:40 -0400
+X-Greylist: delayed 501 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 28 Mar 2022 01:00:00 PDT
+Received: from mail.ourpartnership.pl (mail.ourpartnership.pl [80.211.82.238])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A62B2D1D3
+        for <linux-crypto@vger.kernel.org>; Mon, 28 Mar 2022 01:00:00 -0700 (PDT)
+Received: by mail.ourpartnership.pl (Postfix, from userid 1001)
+        id 68F9B638CD; Mon, 28 Mar 2022 08:46:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ourpartnership.pl;
+        s=mail; t=1648453731;
+        bh=M1ZVeu3q6Upppe+FUx/3rgI7MKJXh389NZDbgCK1SX4=;
+        h=Date:From:To:Subject:From;
+        b=TYbkMqwCN+qgGe5951X56i1UDPdCq7Q2bBRg82SNhGwmom9qobkyAiUqepPMhE3sf
+         hcGGLNXOl6MDocQKsVPmnOxl0lSP0Pzub9IuQzAA00mvYvRz43shHhxlzasHrfs6Jd
+         N0UUbsNzo7L8dTr2R0Q0RK7SSQzF00ZSHjndlt80YxWQo6JYkdCt+dTlGyVbl77/r0
+         EbKVrESaP+nIdaaawhIN+UixWaY0p1+rqsYSFcljXiREGsUQra9FZLckYwHpcPVGLo
+         k4YsUvwOQSiHC2hwnFZJlm/Q9w8FgWmZ1NGMJgb8ABGjnwVtxJ3U16lqGUSW4Xwz/2
+         NLVLGBYj+y1CQ==
+Received: by mail.ourpartnership.pl for <linux-crypto@vger.kernel.org>; Mon, 28 Mar 2022 07:46:04 GMT
+Message-ID: <20220328074501-0.1.9.2b2t.0.eprzu2k707@ourpartnership.pl>
+Date:   Mon, 28 Mar 2022 07:46:04 GMT
+From:   =?UTF-8?Q? "Arkadiusz_Soko=C5=82owski" ?= 
+        <arkadiusz.sokolowski@ourpartnership.pl>
+To:     <linux-crypto@vger.kernel.org>
+Subject: Koszty instalacji fotowoltaicznej
+X-Mailer: mail.ourpartnership.pl
 MIME-Version: 1.0
-References: <20220326172051.14722-1-thepaulodoom@thepaulodoom.com>
- <CAMj1kXEQtTAMPLTtgc=9sDYvgxs+oihfnY7Q6bggC0p5u-V1Hw@mail.gmail.com> <20220327224009.2jotnczk67j4cfh2@hp-amd-paul>
-In-Reply-To: <20220327224009.2jotnczk67j4cfh2@hp-amd-paul>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 28 Mar 2022 09:39:14 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHCR1nD24WDnYpD4Nu23x9+hw+=7EXOpq7y7m9LDk2J0w@mail.gmail.com>
-Message-ID: <CAMj1kXHCR1nD24WDnYpD4Nu23x9+hw+=7EXOpq7y7m9LDk2J0w@mail.gmail.com>
-Subject: Re: [PATCH] crypto: aes_generic: fixed styling warnings
-To:     Paul Lemmermann <thepaulodoom@thepaulodoom.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-(please keep the cc's)
+Dzie=C5=84 dobry,
 
-On Mon, 28 Mar 2022 at 00:46, Paul Lemmermann
-<thepaulodoom@thepaulodoom.com> wrote:
->
-> On Sun, Mar 27, 2022 at 01:41:19PM +0200, Ard Biesheuvel wrote:
-> > On Sat, 26 Mar 2022 at 18:48, Paul Lemmermann
-> > <thepaulodoom@thepaulodoom.com> wrote:
-> > >
-> > > Fixed all styling warnings from the checkpatch.pl script.
-> > >
-> > > Signed-off-by: Paul Lemmermann <thepaulodoom@thepaulodoom.com>
-> >
-> > Did you test this code after 'fixing' it?
-> >
-> No, I did not. Now that I scrutinized it a bit more, I realized the
-> kernel coding conventions. Sorry about that, this is my first patch.
+stworzyli=C5=9Bmy specjaln=C4=85 ofert=C4=99 dla firm, na kompleksow=C4=85=
+ obs=C5=82ug=C4=99 inwestycji w fotowoltaik=C4=99. =20
 
-In that case, welcome!
+Specjalizujemy si=C4=99 w zakresie doboru, monta=C5=BCu i serwisie instal=
+acji fotowoltaicznych, dysponujemy najnowocze=C5=9Bniejszymi rozwi=C4=85z=
+ania, kt=C3=B3re zapewni=C4=85 Pa=C5=84stwu oczekiwane rezultaty.
 
-This is not about coding conventions. This is about correctness.
+Mo=C5=BCemy przygotowa=C4=87 dla Pa=C5=84stwa wst=C4=99pn=C4=85 kalkulacj=
+=C4=99 i przeanalizowa=C4=87 efekty mo=C5=BCliwe do osi=C4=85gni=C4=99cia=
+=2E
 
-For instance,
+Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
+temacie?
 
-> > >
-> > > -#define f_nround(bo, bi, k)    do {\
-> > > +#define f_nround(bo, bi, k)    while (0) {\
-> > >         f_rn(bo, bi, 0, k);     \
-> > >         f_rn(bo, bi, 1, k);     \
-> > >         f_rn(bo, bi, 2, k);     \
-> > >         f_rn(bo, bi, 3, k);     \
-> > >         k += 4;                 \
-> > > -} while (0)
-> > > +}
-> > >
 
-Why are you making this change, and why do you think it produces the
-same result?
-
-> Can you remove everything in the patch past the section with line
-> 1144, or do I have to resubit the patch?
->
-
-checkpatch.pl is a useful tool for finding style issues, but please
-use it with care. And changing decades old code just to fix issues
-reported by checkpatch.pl is really just pointless churn.
-
-So let's just drop this patch altogether, shall we? If you're
-interested in helping out, please have a look at the staging/ tree -
-there is a lot of code there that needs cleaning up.
-
-Thanks,
-Ard.
+Pozdrawiam
+Arkadiusz Soko=C5=82owski
