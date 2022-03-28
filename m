@@ -2,94 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC454E9430
-	for <lists+linux-crypto@lfdr.de>; Mon, 28 Mar 2022 13:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 842DC4E970D
+	for <lists+linux-crypto@lfdr.de>; Mon, 28 Mar 2022 14:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238774AbiC1L0h (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 28 Mar 2022 07:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
+        id S242658AbiC1Mxf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 28 Mar 2022 08:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241729AbiC1LYJ (ORCPT
+        with ESMTP id S242688AbiC1Mxd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 28 Mar 2022 07:24:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2A356222;
-        Mon, 28 Mar 2022 04:21:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 559576114A;
-        Mon, 28 Mar 2022 11:21:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D611CC340EC;
-        Mon, 28 Mar 2022 11:21:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648466507;
-        bh=4iVXIPkT3ePxCznX2ZMKrI8so8HKS+0aauaqn24SB9c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KfWcXDfpmz1A88JWC4iqh3ZqMIpqr+sHb7NXqz9C4uXbfOvDL7YoCa6eF36TvYczv
-         JldGPO4fZc9pIEUUHFozxbtVKAcfJnNKjeQmBAr/N/utVfwcg1nABtMdWh144E7dv5
-         oHySNxFZi6aQ9XtfMFf3LDp5Ri7+cW7KqkoGUAwenHzWK1eEapYl3AW73Tp1e21bGV
-         YXUBZXzkwkbK99VywTgi3ECOsm5tuQ4rF8JLwdK53UnybP7EuDHY0WSkLarz2a1TnQ
-         vs02cZpwynideqyxq78bvALdpGT/4CwSB9G8yVdDEaS7UP83XYZbGo16hqIOTU0V0c
-         xNHJjhsT9sf8A==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kai Ye <yekai13@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, liulongfang@huawei.com,
-        davem@davemloft.net, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 09/29] crypto: hisilicon/sec - not need to enable sm4 extra mode at HW V3
-Date:   Mon, 28 Mar 2022 07:21:11 -0400
-Message-Id: <20220328112132.1555683-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220328112132.1555683-1-sashal@kernel.org>
-References: <20220328112132.1555683-1-sashal@kernel.org>
+        Mon, 28 Mar 2022 08:53:33 -0400
+Received: from mail.thepaulodoom.com (www.thepaulodoom.com [45.77.108.202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BFB3C5D19F;
+        Mon, 28 Mar 2022 05:51:43 -0700 (PDT)
+Received: from hp-amd-paul (c-98-240-189-147.hsd1.mn.comcast.net [98.240.189.147])
+        by vultr.guest (OpenSMTPD) with ESMTPSA id 6629f991 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Mon, 28 Mar 2022 12:51:41 +0000 (UTC)
+Date:   Mon, 28 Mar 2022 07:51:37 -0500
+From:   Paul Lemmermann <thepaulodoom@thepaulodoom.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: aes_generic: fixed styling warnings
+Message-ID: <20220328125137.bsbvroyxcjw6rl5m@hp-amd-paul>
+References: <20220326172051.14722-1-thepaulodoom@thepaulodoom.com>
+ <CAMj1kXEQtTAMPLTtgc=9sDYvgxs+oihfnY7Q6bggC0p5u-V1Hw@mail.gmail.com>
+ <20220327224009.2jotnczk67j4cfh2@hp-amd-paul>
+ <CAMj1kXHCR1nD24WDnYpD4Nu23x9+hw+=7EXOpq7y7m9LDk2J0w@mail.gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXHCR1nD24WDnYpD4Nu23x9+hw+=7EXOpq7y7m9LDk2J0w@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Kai Ye <yekai13@huawei.com>
+On Mon, Mar 28, 2022 at 09:39:14AM +0200, Ard Biesheuvel wrote:
+> (please keep the cc's)
+> 
+> On Mon, 28 Mar 2022 at 00:46, Paul Lemmermann
+> <thepaulodoom@thepaulodoom.com> wrote:
+> >
+> > On Sun, Mar 27, 2022 at 01:41:19PM +0200, Ard Biesheuvel wrote:
+> > > On Sat, 26 Mar 2022 at 18:48, Paul Lemmermann
+> > > <thepaulodoom@thepaulodoom.com> wrote:
+> > > >
+> > > > Fixed all styling warnings from the checkpatch.pl script.
+> > > >
+> > > > Signed-off-by: Paul Lemmermann <thepaulodoom@thepaulodoom.com>
+> > >
+> > > Did you test this code after 'fixing' it?
+> > >
+> > No, I did not. Now that I scrutinized it a bit more, I realized the
+> > kernel coding conventions. Sorry about that, this is my first patch.
+> 
+> In that case, welcome!
+> 
+> This is not about coding conventions. This is about correctness.
+> 
+> For instance,
+> 
+> > > >
+> > > > -#define f_nround(bo, bi, k)    do {\
+> > > > +#define f_nround(bo, bi, k)    while (0) {\
+> > > >         f_rn(bo, bi, 0, k);     \
+> > > >         f_rn(bo, bi, 1, k);     \
+> > > >         f_rn(bo, bi, 2, k);     \
+> > > >         f_rn(bo, bi, 3, k);     \
+> > > >         k += 4;                 \
+> > > > -} while (0)
+> > > > +}
+> > > >
+> 
+> Why are you making this change, and why do you think it produces the
+> same result?
+> 
+> > Can you remove everything in the patch past the section with line
+> > 1144, or do I have to resubit the patch?
+> >
+> 
+> checkpatch.pl is a useful tool for finding style issues, but please
+> use it with care. And changing decades old code just to fix issues
+> reported by checkpatch.pl is really just pointless churn.
+> 
+> So let's just drop this patch altogether, shall we? If you're
+> interested in helping out, please have a look at the staging/ tree -
+> there is a lot of code there that needs cleaning up.
+> 
+Yes, we can drop the patch. Thank you so much for your help and support.
+Looking forward to contributing more to the Linux kernel.
 
-[ Upstream commit f8a2652826444d13181061840b96a5d975d5b6c6 ]
-
-It is not need to enable sm4 extra mode in at HW V3. Here is fix it.
-
-Signed-off-by: Kai Ye <yekai13@huawei.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/crypto/hisilicon/sec2/sec_main.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 90551bf38b52..03d239cfdf8c 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -443,9 +443,11 @@ static int sec_engine_init(struct hisi_qm *qm)
- 
- 	writel(SEC_SAA_ENABLE, qm->io_base + SEC_SAA_EN_REG);
- 
--	/* Enable sm4 extra mode, as ctr/ecb */
--	writel_relaxed(SEC_BD_ERR_CHK_EN0,
--		       qm->io_base + SEC_BD_ERR_CHK_EN_REG0);
-+	/* HW V2 enable sm4 extra mode, as ctr/ecb */
-+	if (qm->ver < QM_HW_V3)
-+		writel_relaxed(SEC_BD_ERR_CHK_EN0,
-+			       qm->io_base + SEC_BD_ERR_CHK_EN_REG0);
-+
- 	/* Enable sm4 xts mode multiple iv */
- 	writel_relaxed(SEC_BD_ERR_CHK_EN1,
- 		       qm->io_base + SEC_BD_ERR_CHK_EN_REG1);
--- 
-2.34.1
-
+Thanks,
+Paul
