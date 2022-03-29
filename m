@@ -2,140 +2,70 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C70E4EA5DD
-	for <lists+linux-crypto@lfdr.de>; Tue, 29 Mar 2022 05:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BA54EAF62
+	for <lists+linux-crypto@lfdr.de>; Tue, 29 Mar 2022 16:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbiC2DTq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 28 Mar 2022 23:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
+        id S234969AbiC2Oj1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 29 Mar 2022 10:39:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231646AbiC2DR7 (ORCPT
+        with ESMTP id S233612AbiC2OjZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 28 Mar 2022 23:17:59 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2067.outbound.protection.outlook.com [40.107.243.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8761D247C1D;
-        Mon, 28 Mar 2022 20:16:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A7eBfOhE67oUwDNkuQxm93P8xHFdMxi/7wPUS7hARFNuvP9ceVQbzEeHms/YXfSWT9Dcfyx4052c2HMKXKBuVhkBfhq1qyRGgGGuwk7OsVWwcWC54JvhnH1fzkBSAXGUjwwAPzB+wMgE6eEPZKw+qapk24Y88tElOCyWioOF+IiDCYReYf1lrt+O4j/8teKd+wIKiac9T6kLXrhYez3AG4tQg8sqA83fHoRoHAAlW5AzYUId7CmO3cE3+KnkK362sDJ1pDU+4k1aRHZIji0zceCIH2AEq6daYBpc7yaePQS5sj89/faYDh+1pz/v1aba3zVqgSMa5RmmOYOTE5qC+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6J7O4kk3tQimnKCE2CAtdQ7Z01mVVXKYeIjgyRkn9uo=;
- b=QlT6o9iutFYjeZre3QL2qEOqyanZM1cKm0jl0Lh6Z5YPpnXbQU4WkS8AnnTW2p0Abp5fGxk2ybrsSD7eYoziaQ29xabZ+Y+wBNFyYopdwUUgRtMpwgW3/WHC3ppj6RlE9s484pU4bpS8JGiOWIY6cc1rvO0jH/bjoF4L1b6yy7yp22aIjq9OadigaXK2DIf9BUXk6q+9jG9s1I+gAWUMeA10JOJ/VQVySyXeFDeREut1MU5Q6wDqEl9Hc393t496IqQyZGWTRA0x7sDxTe7EPvmgKgH1cg+xzjh/XPMPKu3sWPY/4RXMMp50h475zKo3os+l+m51ezn0OnxjDHkQ2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gondor.apana.org.au smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6J7O4kk3tQimnKCE2CAtdQ7Z01mVVXKYeIjgyRkn9uo=;
- b=hMtWeLG1T+VYDe7H4KEIGZd0PIT+DAbrvbd/QHIN/oLNNSb23i1FrVnvZguUGJbrNSYdPPYVnlajqgUIE11kjGcK8YEs0L5/PIv7xZGIntZoHndErOJiMgcTcvFx3N1Qh5+/5IdU4x0dYwQgVNAFdNthgqwV6TbrcboMwUbJPY0=
-Received: from DS7PR03CA0314.namprd03.prod.outlook.com (2603:10b6:8:2b::26) by
- CH0PR12MB5329.namprd12.prod.outlook.com (2603:10b6:610:d4::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5102.16; Tue, 29 Mar 2022 03:16:10 +0000
-Received: from DM6NAM11FT049.eop-nam11.prod.protection.outlook.com
- (2603:10b6:8:2b:cafe::cb) by DS7PR03CA0314.outlook.office365.com
- (2603:10b6:8:2b::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5102.17 via Frontend
- Transport; Tue, 29 Mar 2022 03:16:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT049.mail.protection.outlook.com (10.13.172.188) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5102.17 via Frontend Transport; Tue, 29 Mar 2022 03:16:09 +0000
-Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 28 Mar
- 2022 22:15:56 -0500
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>
-CC:     open list <linux-kernel@vger.kernel.org>,
-        "open list:AMD CRYPTOGRAPHIC COPROCESSOR (CCP) DRIVER" 
-        <linux-crypto@vger.kernel.org>,
-        Kerneis Gabriel <Gabriel.Kerneis@ssi.gouv.fr>,
-        Richard Hughes <hughsient@gmail.com>,
-        "Mario Limonciello" <mario.limonciello@amd.com>
-Subject: [PATCH 4/4] crypto: ccp: When TSME and SME both detected notify user
-Date:   Mon, 28 Mar 2022 22:15:53 -0500
-Message-ID: <20220329031553.798-4-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220329031553.798-1-mario.limonciello@amd.com>
-References: <20220329031553.798-1-mario.limonciello@amd.com>
+        Tue, 29 Mar 2022 10:39:25 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC41165B85
+        for <linux-crypto@vger.kernel.org>; Tue, 29 Mar 2022 07:37:42 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id q19so14979586pgm.6
+        for <linux-crypto@vger.kernel.org>; Tue, 29 Mar 2022 07:37:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=q0c5a48rdHEMGjqBcTxcJnAosl7aEJFlOiN/doZRAK8=;
+        b=fI1bkI89oOtuBONJenp9hF0cmYQyZSVn/smPzx8PC7NwgGdSsTAw2bhxn62BYf+TJ1
+         GvDorMUtsG+8OlXBZSFEIYQggahYLc2etW6txnhjsOmjrf4wqIuFCZChYRmq3COqTPV+
+         3+qrMwmXp3vL3WtX15oR20YX/sgiFHCt/a4b5J081Q35RAHwW6FqdOWnxzV+KL8D+h7E
+         fcVH4erTPQRVTg4ED8PqOXSpTzZsSWzlknnDQn6dTS2nectY7z8PlR20F0w5qphDMBud
+         FGmNUGzZCZLncpA4j8uMiREsqdh6Nn6KXgMuagPi40OdQ78u3Dc4qaT/tEmUU+HdQ6dZ
+         xojQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=q0c5a48rdHEMGjqBcTxcJnAosl7aEJFlOiN/doZRAK8=;
+        b=qrm0+bqlyTeYWEtz+cb4lU1hryKAfFctc0qXAj72wxDLdJRD/RyfPib6lRaCdwRTpk
+         ERJeKrNL63Ib4xhStZY/9eScsyrC6hjC9qSJ6FbY4lZKW8jA9/VnbgCAE2ta7kOFrlYE
+         ul5OPyELBy3msIbAfKD2OggESonaZuhmk9IKV35m0xykY1y0K9kB4aDVhgLgDMbMii5t
+         b4Ps4zqc3CHTG/3aWTdzD3VDBa52sOwhTJdlKqyaZSh7UyFJmeqiC8weCWVaEPHQP3DR
+         yviuMugS8rMLsJERGD8jDpEevV3P5Ccnz6YzafSy4y8YcIvv2Mx9IhxHSkRub2OHqsgn
+         HBmQ==
+X-Gm-Message-State: AOAM532IzrIcBW24Px3D+xGPb5EmDzKqliYbf9rlZTtJg9QXjD04NVmf
+        S+NNRJWcHW/IhkJpPFeIFlpmYy9TrmrRYzIg1kM=
+X-Google-Smtp-Source: ABdhPJxU/bVDWHt2ikFvjplBLcupn41Utz4uiX5IDIjFW0t2IRidX3YeDDscRCJriQT6UlIqrmj7Lmrpat9rrE6DLTg=
+X-Received: by 2002:a62:84d3:0:b0:4fa:72e2:1c64 with SMTP id
+ k202-20020a6284d3000000b004fa72e21c64mr28651220pfd.29.1648564662425; Tue, 29
+ Mar 2022 07:37:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e4819c36-75c7-4f58-538d-08da11327890
-X-MS-TrafficTypeDiagnostic: CH0PR12MB5329:EE_
-X-Microsoft-Antispam-PRVS: <CH0PR12MB5329AA8596695A234EEB2874E21E9@CH0PR12MB5329.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /MUw97iWLe1gNLN735imp0isiWpEZBIN4/h3vmICaY7FeQHKmyslP459hVF5+gim3zeEu5hTe2+ZEM42ay3OGqp9kGOTPRfO38zejmeIR636JUCPuuOkC/fwQovjL9iGlO0h4Q60BliFD8Ed+25gBixv3Kopgl6gXw/ZdqUt1drEUg2/kBaD709ENP4vrKva13pyby598Neee6igZxFpVctYYetuXT+zMSP/+vgTNnl18h79qMZu5QQutpP7nIXNqi9QkxuTB6NkJ/r0uHc3DrgFnTsMhUx2MdTEtMLiXAUQZy66V6340+3pWOTd6S19p5DlZVthSfMZA30PtpXTdsIYNBZiC2x6XICXMkt7rTgXcjnzkXuEB7Cn0Oym2im0huve90S3PUvLJRlBBY99PEtVdDqHVfCezPRhWA/WhpAyCUeuNGY752xHPDbMMfcXA+1773U9cTJewqS1mpTAYKoCWFCSBlAVQhQhpmxv4HU7l+rLsVCjnoHPDgq/cD+JOtTed3D/NuPBgrqKhkeFl9aQw43GmtMO7dYfVm0WfQ45Y+BD+T2uUOX3H6r9/6zOpzKUIxuMnK3ubuS7C96XAN9sJHkjWlBYod4JE73fW+27LHr30dxHzXS2U7B8TO2SypvtLdvZNDPDpQ3Hv4kWaRwS226CB9MTPW3dQJPbX9cFu48fb2ZMpOaa0vxFeM8x0Oy6C09Yx0iScqgP/ak7/A==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230001)(4636009)(40470700004)(46966006)(36840700001)(47076005)(86362001)(36860700001)(82310400004)(40460700003)(316002)(356005)(54906003)(81166007)(110136005)(5660300002)(70586007)(44832011)(4326008)(508600001)(36756003)(2906002)(8676002)(70206006)(26005)(426003)(336012)(186003)(2616005)(7696005)(1076003)(83380400001)(16526019)(6666004)(8936002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2022 03:16:09.4170
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4819c36-75c7-4f58-538d-08da11327890
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT049.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5329
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Sender: sarahouse887@gmail.com
+Received: by 2002:a05:6a10:ce9c:0:0:0:0 with HTTP; Tue, 29 Mar 2022 07:37:41
+ -0700 (PDT)
+From:   sarah House <sarahrittierhouse1@gmail.com>
+Date:   Tue, 29 Mar 2022 14:37:41 +0000
+X-Google-Sender-Auth: szaw1Z1WCENSx2AdjGK9C6ZUhZk
+Message-ID: <CAP2aFd+nkUgJJ1xG7OsSjS1wiK9HsXTL0TDDHaTKdEHG3YxF=w@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_40,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The SME flag is used to relay that memory encryption has been activated by
-the kernel.
-
-As it's technically possible to enable both SME and TSME at the same time,
-detect this scenario and notify the user that enabling TSME and SME at the
-same time is unnecessary.
-
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- drivers/crypto/ccp/psp-dev.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/crypto/ccp/psp-dev.c b/drivers/crypto/ccp/psp-dev.c
-index 3f47b2d81e3c..0e3f1a332d61 100644
---- a/drivers/crypto/ccp/psp-dev.c
-+++ b/drivers/crypto/ccp/psp-dev.c
-@@ -74,6 +74,13 @@ static unsigned int psp_get_capability(struct psp_device *psp)
- 	}
- 	psp->capability = val;
- 
-+
-+	/* Detect TSME / SME both enabled */
-+	if (psp->capability & PSP_CAPABILITY_PSP_SECURITY_REPORTING &&
-+	    psp->capability & (PSP_SECURITY_TSME_STATUS << PSP_CAPABILITY_PSP_SECURITY_OFFSET) &&
-+	    boot_cpu_has(X86_FEATURE_SME))
-+		dev_notice(psp->dev, "psp: TSME was enabled by the BIOS and SME was enabled by the kernel, this is unnecessary.\n");
-+
- 	return 0;
- }
- 
--- 
-2.34.1
-
+LS0gDQoNCtCS0Ysg0L/QvtC70YPRh9C40LvQuCDQvNC+0LUg0L/QvtGB0LvQtdC00L3QtdC1INC/
+0LjRgdGM0LzQvj8NCg==
