@@ -2,55 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D927A4ECA2C
-	for <lists+linux-crypto@lfdr.de>; Wed, 30 Mar 2022 18:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F8D4ECA82
+	for <lists+linux-crypto@lfdr.de>; Wed, 30 Mar 2022 19:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349120AbiC3RAq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 30 Mar 2022 13:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
+        id S1349245AbiC3R00 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 30 Mar 2022 13:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349105AbiC3RAq (ORCPT
+        with ESMTP id S1344056AbiC3R0X (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 30 Mar 2022 13:00:46 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5B139D
-        for <linux-crypto@vger.kernel.org>; Wed, 30 Mar 2022 09:58:59 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id r13so42776018ejd.5
-        for <linux-crypto@vger.kernel.org>; Wed, 30 Mar 2022 09:58:59 -0700 (PDT)
+        Wed, 30 Mar 2022 13:26:23 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD86124F27
+        for <linux-crypto@vger.kernel.org>; Wed, 30 Mar 2022 10:24:34 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id qa43so42886162ejc.12
+        for <linux-crypto@vger.kernel.org>; Wed, 30 Mar 2022 10:24:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=tC9xiYjFteTOncjiaBTt8b1lonIMt5KBs2kzaARMTvg=;
-        b=gKilfGZ/BW4ymBas9eTaslJMraxFS69x8emaggw5hq09SM6nYnv9h+AV/76n0VI0oV
-         diIJ1dvJN+Iyfdp/NHmHmzUOK/AdR4GMzuzjkXkLM3ssOqJC0deW4IAX7imMiRryVMIN
-         EuX3A6lcmpNH2R9sEPCFSjiWmFK/9V7Q4WBxUIAyqOa4e2UHy/OUW2A/kumVQAYtHwGF
-         0LZevRFY4+Dp8P4U115YBFCZKlro1ppgzRYDJ2gmZr2v3KKtvvgsqWWX7Rgv+1B8d4i7
-         BjEZvJ5KglcpLyachzbPFEWjCjXho5hmJ05TNYs3Bp+uE2j4sGUf6kvtIJ9p03RcNJd/
-         S08w==
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=52Imdz9LTLLhUAe2riVstsfW97W1L5sckaV7qKMt/gE=;
+        b=l+fChiN/G7QlB0oP01+Qvg5n5Ivu04cIWjsZIJDHCAcAOowQHZBUfyXqWtNbKfoctd
+         tI9MsRnfMsA5a/bt9kA8OweCNbYK9uCCoYB2iOo8oJUh/m0PBdtFz/OSSpwtM2GvX7hw
+         ne6ogZkk4x02sOwgvRtmFej18zmBPs6dfmtrhrXn50wY8+juokugVQrFjcYX8N0R2cbs
+         EKn8GJ07g34TG8wZMREN9U9vZ+DwcthhcAXZ1TqmbRCkLu9WuBcyMVgiKvxajaUkjfKU
+         KQan/xSyrU4VCWGtwKEjD2fOb4KB6tr6YwZRX7Jp1F1vRShu+Xrkao87TnNL5XqkBjD7
+         0hQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=tC9xiYjFteTOncjiaBTt8b1lonIMt5KBs2kzaARMTvg=;
-        b=AmtSHtNHlK7FnXJW7PTf60ZHagGrefwq37uma6sDiIyl8Hmlr08S3yy8O1Cei4LPP/
-         BiVGGJ+V58MxcNJq87vkbBbyiP7JLUmI3XFzgtE0csuesvOSFYNMSYZsqSMu1WBHwUA8
-         UYYjoiUjgpQjiqxkwsiUIb+dXbZNtMWzAa7tWiHz128oEdmEQDlzQwmeF4ofxZB6JCMF
-         Ab89NJQurYcdws+smzJYe0iVVVl3/am/HhVLN1ua9eE5C8Mw+Ni2xMP+Ms25I/LFl215
-         my1dMoG3nI9Heh8TQmcDxhhcmJ5dQXf7IHvQShH+ysgrTRz6AlLX8BMR2S7sAFKJZrw7
-         jLMg==
-X-Gm-Message-State: AOAM531W3gaWKBW9MWWeti/Nwg1Ild8oKXCX98emR6cQyHKBSJzz4skp
-        EXUDrVlhlqnh1jk0URjaxHkG/P8RwLrGweuKVSw=
-X-Google-Smtp-Source: ABdhPJww1SXOxh8nP7o9HrnJ/L1MBAAibUfwnCN0DkBlbqocQ/BR/7lGbG0fiXP7I2EAmgZqSgcPOR/b/3gCtBN78cU=
-X-Received: by 2002:a17:907:980d:b0:6d6:f910:513a with SMTP id
- ji13-20020a170907980d00b006d6f910513amr447634ejc.643.1648659537865; Wed, 30
- Mar 2022 09:58:57 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=52Imdz9LTLLhUAe2riVstsfW97W1L5sckaV7qKMt/gE=;
+        b=V/3Sw8OVrgt/2W+mUGv+qRJU3JVAAUh4N+LpGrOoSXO/Dirz5+3eK1B5UM1Cvuw/fV
+         NQwesBfebfGsjx3KYXT5OxW0y64zYd3DUqhHtI5Ty9aE3mV1s16NLGCN0tpnt5hg2ugm
+         lcJhZNfeydiyiY8udpTdJDgkavh3TJ9LuontD+8jkPBgpPpmiYPaHT0467Wei+KEfbxD
+         hZfwZTL+I0c2e7O9vGKDr/u7Ja7Me3zv+FgW/iIjR8T+B4alWzoCyh9/7ALUHxR9uT6y
+         N53reIUjyaW9GsugTEnNwvkXlsS4O5HFM7okVQlMlgEBXEb3V3oKpoX0g9LjM2YkI/wJ
+         0rDg==
+X-Gm-Message-State: AOAM533p/WiuLyd5cLzfp9ZUbAe88Db1ptXQwukQarhcnIqlXcqWbato
+        pkTRhRO1Beu93JSV0AjiA6ZarHEOBG/eysOQ0Sc=
+X-Google-Smtp-Source: ABdhPJzdotyfYEAOnFIQXJXfHJENMHvyzErr97xPrz2X3rh73YDVaJp31DFaANMjEXAYXXKM3nycU5bR0lgRC0OBSdY=
+X-Received: by 2002:a17:906:1e94:b0:6cc:4382:f12e with SMTP id
+ e20-20020a1709061e9400b006cc4382f12emr649377ejj.482.1648661073115; Wed, 30
+ Mar 2022 10:24:33 -0700 (PDT)
 MIME-Version: 1.0
 From:   Duke Abbaddon <duke.abbaddon@gmail.com>
-Date:   Wed, 30 Mar 2022 17:58:53 +0100
-Message-ID: <CAHpNFcNLTDRtiLZ4sSTzWpOtX_UgdNOZUowgfKoMrTbJN44V8A@mail.gmail.com>
-Subject: (Security & Performance Profile : RS-PSPVita) +PSP ARM Features &
- Secure DMA : headers cpufeatures: Sync with the kernel sources https://lkml.org/lkml/2022/3/30/1060
+Date:   Wed, 30 Mar 2022 18:24:26 +0100
+Message-ID: <CAHpNFcPOyrPjxSVahyJr=ntrn-XGnzwc1K=aGWHX3pvePr-mCg@mail.gmail.com>
+Subject: TOP BOOSTER Cloud Enemy(tm) Provided by potentially DLSS Cloud Founder
 To:     submissions@vialicensing.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -61,43 +63,132 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-(Security & Performance Profile : RS-PSPVita) +PSP ARM Features &
-Secure DMA : headers cpufeatures: Sync with the kernel sources
-https://lkml.org/lkml/2022/3/30/1060
+TOP BOOSTER Cloud Enemy(tm) Provided by potentially DLSS Cloud Founder :
 
-So + Properties PSP & for simple reasons ARCH Basics By Creational A-Sym-metry
+We cannot all Buy a founders GPU But we can all use your Founders
+Edition low price Cloud plugin for MMO & Online activated play Gaming
+:
+Cloud Enemy(tm) - TENSOR CORE + TOPS + We cannot all buy your cloud
+GPU Founders edition...
 
-RS
+for reasons that AMD & NVidia and ARM & Intel do not directly buy a
+RTX3080TI Founders edition :p ^^ but we can all use your :
 
-On the subject of PSP processors : Arm features include NEON2!
-Why not use this to our advantage? if safely potentiated! Every SiMD
-matters after all,
+Cloud Enemy(tm):(c)RS TENSOR CORE : All GPU of note have TOPS and
+obviously we all specialise <3
 
-Particularly preparing for the GPU & Audio output!
-As a driver specific the advantages are around 13% improved
-performance & 20% improved code flexibility on SiMD compatibility.
+My proposal is simple : All special console MMO need a 370 Tensore
+core server side :
 
-We can also directly utilize for Automated Direct Reactive Secure DMA or ADRSDMA
+Enemy, Friend,Pet, Emoti play(tm)
 
-(signed RS)
+(read at the bottom of the post please, Bear in mind this does not
+mean NVidia is the best at RayTracing..
+But it does mean we can truly afford to activate the full benefits of
+having ML TOPS..
+Mobile phones often only have 4 TOPS or even 2! at the most 10 and
+specialists like IPhone 20>30
 
-ARM Patches 3 arte enabled! https://lkml.org/lkml/2022/3/30/977
+But could all afford a small compliment to the Founders Cloud in that
+ML is dealt with for the entire MMO by the cloud; That way no one
+needs to know that ..
 
-*
+GPU RTP (Complex 3D RTP, Simple message, local cache, Monster cloud
+render + local)(c)RSExists specifically for You the client:
 
-GPRS for immediate use in all SFR SIM's & SFR Firmware & routers &
-boxes including ADSL & Fibre
+NVidiaMicrosoft..
+Google
+Apple
+AMD
+Cloud gaming and service providers
 
-Cloudflare Kernels & VM linux, I pretty obviously would like to be
-able to utilise cloudflare Kernel & Linux & cloudflare is very special
-to me
+Linux VM
+Windows VM
+Mac VM
+
+Cloud Machine learning at GPU specialist clouds is of very high
+potency & potential,
+But for a 1$ a week subscription game like Quake? very hard at large cost!
+
+(c)Rupert S https://science.n-helix.com
+
+Cloud Enemy(tm)
+
+Core strategic advice & adaptable SVM CPU <> GPU
+
+SVM/Int List:
+Hard mode: Smaller refinement
+Advance Hard mode: Micro model save, Micro model regression
+
+Advance BattleMode: Hard mode: Micro model save, Varied challenge
+(small regression),Indirect reference chat
+Advance BattleMode: Hard mode: Micro model save, Varied challenge
+(small regression),Indirect reference chat,Personal chat
+Advance BattleMode: Hard mode:RND resurgence, Micro model save, Varied
+challenge (small regression),Indirect reference chat,Personal chat
+
+(c)RS
+
+Machine learning,
+The Advanced SVM feature Set & Development
+
+CPU lead Advanced SVM/ML potential
+GPU refinement & memory Expansion/Expression/Development
+
+SVM/ML Logic for:
+Shaders,
+Tessellation,
+Compression,
+PML Vector Ray-Tracing
+
+Sharpening Image Enhancement:
+
+(S=C2=B2ecRETA=C2=B2i)(tm)
+Reactive Image Enhancement : ML VSR : Super Sampling Resolution
+Enhancement with Tessellated Precision & Anti-Aliasing Ai (S=C2=B2ecRETA=C2=
+=B2i)
++ (SSAA)
+Color Dynamic Range Quantification, Mesh Tessellation, Smoothing & Interpol=
+ation
+Finally MIP-MAP optimised sampling with size/distance, dynamic cache
+compression.
+
+Machine learning,
+The Advanced SVM feature Set & New developments..TPU <> GDev,AMD
+
+Extended support for ML means dynamic INT4/8/16/Float types and dot
+product instructions execution.
+GPU/CPU/Feature-set/SVM
+
+Dual compute unit exposure of additional mixed-precision dot-product
+modes in the ALUs,
+Primarily for accelerating machine learning inference,
+A mixed-precision FMA dot2 will compute two half-precision
+multiplications and then add the results to a single-precision
+accumulator. For even greater throughput,
+
+Some ALUs will support 8-bit integer dot4 operations and 4-bit dot8 operati=
+ons,
+All of which use 32-bit accumulators to avoid any overflows."
+
+Core-ML runs on all 3 hardware parts: CPU, GPU, Neural Engine ASIC;SVM.
+The developer doesn=E2=80=99t specify; The software middle-ware chooses whi=
+ch
+part to run ML models,
+
+(c)RS
 
 Submissions for review
 
 RS
 
-https://drive.google.com/drive/folders/1X5fUvsXkvBU6td78uq3EdEUJ_S6iUplA?usp=sharing
+https://drive.google.com/drive/folders/1X5fUvsXkvBU6td78uq3EdEUJ_S6iUplA?us=
+p=3Dsharing
 
-https://lore.kernel.org/lkml/20220329164117.1449-1-mario.limonciello@amd.com/
+https://lore.kernel.org/lkml/20220329164117.1449-1-mario.limonciello@amd.co=
+m/
 
-https://www.phoronix.com/scan.php?page=news_item&px=AMD-PSP-Sysfs-Expose
+https://www.phoronix.com/scan.php?page=3Dnews_item&px=3DAMD-PSP-Sysfs-Expos=
+e
+
+https://lkml.org/lkml/2022/3/30/1005
