@@ -2,167 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD244ED25B
-	for <lists+linux-crypto@lfdr.de>; Thu, 31 Mar 2022 06:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595E14EDCC8
+	for <lists+linux-crypto@lfdr.de>; Thu, 31 Mar 2022 17:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbiCaEIa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 31 Mar 2022 00:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50524 "EHLO
+        id S236235AbiCaP3w (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 31 Mar 2022 11:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbiCaEIT (ORCPT
+        with ESMTP id S233539AbiCaP3v (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 31 Mar 2022 00:08:19 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC7123F3AC
-        for <linux-crypto@vger.kernel.org>; Wed, 30 Mar 2022 20:57:11 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id bh17so5936646ejb.8
-        for <linux-crypto@vger.kernel.org>; Wed, 30 Mar 2022 20:57:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=DQEdIqJQMT2DTXxNnryD3JrAvawMTCRUVp7h3+Y4I58=;
-        b=cc2rALVw1jxOK2Gb8L0J6Mph69Y5VA57JZQiuXcdW5z3m5d/DZa8hjTvhe9AMJD+oR
-         sZWBxGtudQhCDz36qcCCNXc3ZsuQhTI5QG975d+QEmIL1cXJrOcVg13mjtJE8BHQS/S4
-         iIpcrSGJc0jxFV9wD+VDOhUyo6n2rNmRzTngyO4v1oH9t0lTZGBvhB7L8IY+4CzZD6+5
-         M4FqiJvek0gzYy5Td1KrRIVZHZrS0to+wXWFHnEmd210xrZ0KyIsMVxwUnRTdhYssOXv
-         tEb6TOB/UOHofzCf3ePHP/RV74cESHbxnUZZk4LeNqIi36k63llzvcvq1RWBRsRe+fH3
-         8SsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=DQEdIqJQMT2DTXxNnryD3JrAvawMTCRUVp7h3+Y4I58=;
-        b=VMq21yQY7JXtw4XSJNb/JgAOJa4muUzClY51vfvaT5zN/oQ/8j194htX4guJypudPw
-         gqu3okCEVtZ+85syQQcwvnWTvXPNH51Xnz8GYBqz9aHHJ3wRMq/RCx7hUqpwwRim/OnU
-         07KVulRzw64bOPKG2QESp+ooxRUJMTK6QVSYmhVBHTnwJ+rhEUrMUAipNI5aE0urFTzt
-         YVhcJBzqyoRluQqd99TyM/inNeNxfCPyMs1O21VdWEuUYbq8OhC3j24Oo0vO9kHl8XUA
-         xueGkC9MInrJCCbySUc0gOP5rKz0ywume45vnisZhi/iQ3LmM3dAlN6FzY0Wh5LBd6Gg
-         d3mQ==
-X-Gm-Message-State: AOAM530YLizcI6End935d4l1bhMqyv87gbwtp+OHltcFr50uvjPrT2B1
-        9ZhDJH7hcCaW76Qm0JLeMwfaONP8Xt+Tq2awD4k=
-X-Google-Smtp-Source: ABdhPJy14q49ndRpft22Zxx3hmPk1d7rlxFG+MTHM3G13eqOKVC53V7KmYGrVmRIuAapJFVzhRur/hctam12CatbZ+4=
-X-Received: by 2002:a17:907:980d:b0:6d6:f910:513a with SMTP id
- ji13-20020a170907980d00b006d6f910513amr2951893ejc.643.1648699030251; Wed, 30
- Mar 2022 20:57:10 -0700 (PDT)
+        Thu, 31 Mar 2022 11:29:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC8C21BC64;
+        Thu, 31 Mar 2022 08:28:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 523D961ADE;
+        Thu, 31 Mar 2022 15:28:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D921C340ED;
+        Thu, 31 Mar 2022 15:28:03 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="DwM2QVqb"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1648740481;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gyym09nEXYz1vXWaGFoZImcv0N4xudomjsRouLwVCy4=;
+        b=DwM2QVqbYVkY7XhqfgI0zmYswv37XQd0+mcVx/kkeM9pTOt69bIUto5IDT4l4FWZ8SjmJI
+        bfXjvJ6tZ/GNLay1m6nO0KKiWHtPK+NEQFeJA4j0M4bAX+9StqYV88sRYEGJDSh2d/OTYf
+        xPp4tyIxl8WNEF1jT1K+LUyi3ikv5vQ=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 9011b3a2 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Thu, 31 Mar 2022 15:28:01 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: [PATCH v2] random: mix build-time latent entropy into pool at init
+Date:   Thu, 31 Mar 2022 11:26:41 -0400
+Message-Id: <20220331152641.169301-1-Jason@zx2c4.com>
+In-Reply-To: <20220331150706.124075-1-Jason@zx2c4.com>
+References: <20220331150706.124075-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-From:   Duke Abbaddon <duke.abbaddon@gmail.com>
-Date:   Thu, 31 Mar 2022 04:57:06 +0100
-Message-ID: <CAHpNFcPLqwMyzHt9F5WTGSHr8goaFcczEHS5YL7uajnhe3EwZw@mail.gmail.com>
-Subject: Fast AMD, MIPS & RISC Instruction guidance in reference to https://lkml.org/lkml/2022/3/30/1565
-To:     support.android@sfr.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-RISC Instructions : What do they all mean ? Todays manuel BLTU
+Prior, the "input_pool_data" array needed no real initialization, and so
+it was easy to mark it with __latent_entropy to populate it during
+compile-time. In switching to using a hash function, this required us to
+specifically initialize it to some specific state, which means we
+dropped the __latent_entropy attribute. An unfortunate side effect was
+this meant the pool was no longer seeded using compile-time random data.
+In order to bring this back, we declare an array in rand_initialize()
+with __latent_entropy and call mix_pool_bytes() on that at init, which
+accomplishes the same thing as before. We make this __initconst, so that
+it doesn't take up space at runtime after init.
 
-signed magnitude (BLT/BGE) or unsigned magnitude (BLTU/ BGEU) =E2=80=A2 12-=
-bit
-immediate encodes branch target address as a signed o=EF=AC=80set from PC, =
-in
-units of 16-bits (i.e., shiR leR by 1 then add to
+Fixes: 6e8ec2552c7d ("random: use computational hash for entropy extraction")
+Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+Changes v1->v2:
+- Use __initconst.
 
-https://passlab.github.io/CSE564/notes/lecture08_RISCV_Impl.pdf
+ drivers/char/random.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-#CryptoFASTintFL Polynomial ROOFLINING : In terms of Entropy pool Int
-& Timer collections Polynomial is a Cryptologic_Functiontion & should
-be A : Rooflined B : Streamlined & C : In Crypto_hash_function.h
-https://lkml.org/lkml/2022/3/30/1313
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 40107f8b9e9e..1d8242969751 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -975,6 +975,11 @@ int __init rand_initialize(void)
+ 	bool arch_init = true;
+ 	unsigned long rv;
+ 
++#if defined(LATENT_ENTROPY_PLUGIN)
++	static const u8 compiletime_seed[BLAKE2S_BLOCK_SIZE] __initconst __latent_entropy;
++	_mix_pool_bytes(compiletime_seed, sizeof(compiletime_seed));
++#endif
++
+ 	for (i = 0; i < BLAKE2S_BLOCK_SIZE; i += sizeof(rv)) {
+ 		if (!arch_get_random_seed_long_early(&rv) &&
+ 		    !arch_get_random_long_early(&rv)) {
+-- 
+2.35.1
 
-https://lkml.org/lkml/2022/3/30/1565
-
-Coding folder:
-https://bit.ly/VESA_BT
-
-Rupert S
-*****
-
-Polynomial ROOFLINING : #CryptoFASTintFL
-
-In terms of Entropy pool Int & Timer collections Polynomial is a
-Cryptologic_Functiontion & should be A : Rooflined B : Streamlined & C
-: In Crypto_hash_function.h
-
-https://lkml.org/lkml/2022/3/30/1313
-
-**Reference**
-
-Multi Bit load operations for bitmap,Texture & Other tasks +ON+HighLowOP (c=
-)RS
-May take higher or lower bit depth & precisions: Rupert S 2021
-
-MultiBit Serial & Parallel execution conversion inline of N*Bit -+
-
-2 16 Bit loads is 32Bit but takes 2 cycles...
-
-16 Bit loads with 32 Bit Stores & Math unit:
-
-Operation 1
-
-16Bit , 16Bit , 16Bit , 16Bit Operation
-    \         /    \         /
-           Inline Store
-     32Bit Store 32Bit Store
-           64Bit Store
-       \     /
-32Bit ADD/DIV x 2 or 64Bit ADD/DIV x1
-
-Operation 2
-
-32Bit ADD/DIV x 2 or 64Bit ADD/DIV x1
-          \            /
-          4x 16Bit Store
-
-4 x 16Bit Operation
-
-MultiBit Serial & Parallel execution conversion inline of N*Bit -+
-
-In the case of ADD -+ Signed for example:(c)RS
-Plus & - Lines ADD or Subtract (Signed, Bit Depth Irrelevant)
-
-Multiples of 16Bit works in place of 32Bit or 64Bit
-
-V1: 16Bit Values composing a total 128Bit number
-V2: 16Bit Values composing a total 128Bit number - (Value less than V1)
-V3: Result
-NBit: Bit Depth
-
-4x16Bit operations in the same cycle >
-If Value =3D 16Bit =3D Store
-If Value =3D V3=3DBit =3D Store * NBit
-
-Stored 128Bit RAM or if remainder =3D less > 4x16Bit -1-1-1 ; 16Bit Value S=
-tore
-
-*
-
-*RAND OP Ubuntu
-
-https://pollinate.n-helix.com/
-
-(Rn1 *<>/ Rn2 *<>/ Rn3)
-
--+
-VAR(+-) Var =3D Rn1 +- Rn8
-
-(Rn5 *<>/ Rn6 *<>/ Rn7)
-
-4 Samples over N * Sample 1 to 4
-
-Input into pool 1 Low half -+
-Input into pool 1 High half -+
-
-*RAND OP Recycle It
-
-*
-
-(c)RS https://bit.ly/DJ_EQ
