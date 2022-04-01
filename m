@@ -2,91 +2,156 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 368EC4EE550
-	for <lists+linux-crypto@lfdr.de>; Fri,  1 Apr 2022 02:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316D54EE7E7
+	for <lists+linux-crypto@lfdr.de>; Fri,  1 Apr 2022 07:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243493AbiDAAZS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 31 Mar 2022 20:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43770 "EHLO
+        id S245183AbiDAFvz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 1 Apr 2022 01:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243492AbiDAAZR (ORCPT
+        with ESMTP id S245190AbiDAFvy (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 31 Mar 2022 20:25:17 -0400
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E87E13E156;
-        Thu, 31 Mar 2022 17:23:28 -0700 (PDT)
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-d6e29fb3d7so1067644fac.7;
-        Thu, 31 Mar 2022 17:23:28 -0700 (PDT)
+        Fri, 1 Apr 2022 01:51:54 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D38200352
+        for <linux-crypto@vger.kernel.org>; Thu, 31 Mar 2022 22:50:03 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id y10so1681604edv.7
+        for <linux-crypto@vger.kernel.org>; Thu, 31 Mar 2022 22:50:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=ppHqKeKh+Y7gLl6VUDX29RPztSoubgtGlWJ4DyZKx/4=;
+        b=SrFIMyQmbcifUZtE2XZV9zXfqRE/TCP1E4NsZnkzG13uBXCopfUUfGcv2QegxSP8ef
+         RP/+bGAq/wfwxbri7yClPbM4OoLT20QZEOuzI8NNJe8vRa05ZGRe/QnpFeCFDiBAiqGv
+         eKXdnJaIaVF2nIo/j5VEOsS+LO752p+I+P5C+mS7k74dOX145Prx0c1U4CZymrhxZH0G
+         v0N7GLzVYAOAhzauF1mlKJnAFcX2z//yLeMvNGVI9HsZaGHbX/rwNOc4i2KpmqbnR/2+
+         AgWLD2hDQybrCIFZog++dc9DEvy9zC7YntGydkLyTKNk7+fmEvFQq/wpsd1yX7qq0v3d
+         cKeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fOE48022hc3x2gliekkxOTZif4fFeGF8GjZh2xBtXt4=;
-        b=0DiOJkLRd+kb6NFK0DgYOHAR+5lHwWW7BqnesaJBExS7rYXgRLxsZv+Q1LdOMphEQI
-         tgBn3cV4aDQL9P+ZwFlV3250fBxOAtFWUNKdOqqpkkmbDcmssXhYidKb2+SR/SQnqytu
-         e2TSODwv3GGtY8KzwbxuyEAhSi/BrcHlX9tUMlk+wRzgqzpWULg3EiT1nAaamwb8yD1J
-         XsK0I/N9428POslgdHIKHyaymYgaDNFKNbpAYgO+voAViw8tRitJTs109PNtiy3gQN+b
-         RfB10SUGE6JbqznEkxK5LtBX0NqZeAhIjlHc3vzpAE74UTuJUp/UAl0RjxLIuwZF8E8q
-         uRJA==
-X-Gm-Message-State: AOAM530zis2DgyjSVItCitrpgmyPt1DX4a/nxT/7TW6V10j67hkdRRKr
-        rHpJfjVCzSapOdmSJP+sfQ==
-X-Google-Smtp-Source: ABdhPJwXfYSy4UVEgOmFowj/6TwnmGvQgex34BICM0iH5iTXjzsfi8KjQFplYq0mWrD5dTSk3o6wOQ==
-X-Received: by 2002:a05:6871:85:b0:d9:ac7a:7a5a with SMTP id u5-20020a056871008500b000d9ac7a7a5amr3969928oaa.9.1648772607461;
-        Thu, 31 Mar 2022 17:23:27 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id t14-20020a05683014ce00b005b23657f66esm483609otq.31.2022.03.31.17.23.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Mar 2022 17:23:26 -0700 (PDT)
-Received: (nullmailer pid 1773996 invoked by uid 1000);
-        Fri, 01 Apr 2022 00:23:25 -0000
-Date:   Thu, 31 Mar 2022 19:23:25 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Corentin Labbe <clabbe@baylibre.com>
-Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        jernej.skrabec@gmail.com, krzk+dt@kernel.org, samuel@sholland.org,
-        wens@csie.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH] dt-bindings: crypto: sun8i-ce: remove extra line
-Message-ID: <YkZF/STFg9u1g1BZ@robh.at.kernel.org>
-References: <20220324144233.1119495-1-clabbe@baylibre.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=ppHqKeKh+Y7gLl6VUDX29RPztSoubgtGlWJ4DyZKx/4=;
+        b=sldncacLHAo6CTEPXpT7AxZ29ZUHC/rW3WLvkMC94q58j/0fa+PyT/9Bjb9B587U8R
+         2M5/QbwxtckD+fbbfmRvgZ3wCXXNOSjHPlhEOHTHcSwBfw7fornQpIoCqEm3ZMit4B0N
+         A7hSRm7QE8urPHROPhD5mDPRAkaHYt7M1/5BU8lDNYHkkpD4iE2/GQTwhhmICRaGDHBe
+         Ls9opKEAoyPUnpu+Lr9sH7qB8Iec0zM5pckHgqfcIgPxhtcRg7a3Lo+li1UXyw+qeHzC
+         NLuep+wtUqJLPBXJab9XoIIrmn/VsM1EDhjG/YaltIBSEt6nmFoqrssecfE0wpQagLMB
+         dm4w==
+X-Gm-Message-State: AOAM531nVfAdW+TxJ1z7vsN37/lJ8swYdGM6yd0ScmCPBujdxALydUy/
+        ZE1KjFRIYXyyYIBizRt4cR66tqjwvsgk49OAygg=
+X-Google-Smtp-Source: ABdhPJxdw69QRhZcQ645gQ1IgdvpT2+04O1H4WlJhDiamWBUDRGKhNKV0kw4z6AwIbTOtVIZGb7qJbUOnNFNlf2iu8o=
+X-Received: by 2002:a50:99cd:0:b0:418:d6c2:2405 with SMTP id
+ n13-20020a5099cd000000b00418d6c22405mr19628573edb.342.1648792202191; Thu, 31
+ Mar 2022 22:50:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220324144233.1119495-1-clabbe@baylibre.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+From:   Duke Abbaddon <duke.abbaddon@gmail.com>
+Date:   Fri, 1 Apr 2022 06:49:47 +0100
+Message-ID: <CAHpNFcOiFu-ZUBKiEHzzbVusUVVceMaKFTsNpr5S01qjCvbCdQ@mail.gmail.com>
+Subject: OT-SVG Fonts & TT-SVG Obviously Rendered in Direct X 9+ & OpenGL 3+
+ Mode & Desktop Rendering modes
+To:     submissions@vialicensing.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Mar 24, 2022 at 02:42:33PM +0000, Corentin Labbe wrote:
-> yamllint complains about this extra line.
+VecSR - Vector Standard Render
 
-It does? Where?
+VESA Standards : Vector Graphics, Boxes, Ellipses, Curves & Fonts :
+Consolas & other brilliant fonts : (c)RS
 
-Or maybe we already fixed...
+SiMD Render - Vector Graphics, Boxes, Ellipses, Curves & Fonts
 
-> 
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-> ---
->  Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml b/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml
-> index 00648f9d9278..026a9f9e1aeb 100644
-> --- a/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml
-> +++ b/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml
-> @@ -82,4 +82,3 @@ examples:
->        clock-names = "bus", "mod";
->        resets = <&ccu RST_BUS_CE>;
->      };
-> -
-> -- 
-> 2.34.1
-> 
-> 
+OT-SVG Fonts & TT-SVG Obviously Rendered in Direct X 9+ & OpenGL 3+
+Mode & Desktop Rendering modes
+
+Improve Console & TV & BIOS & General Animated Render
+
+Vector Display Standards with low relative CPU Weight
+SiMD Polygon Font Method Render
+
+Default option point scaling (the space) : Metadata Vector Fonts with
+Curl mathematical vector :
+
+16 Bit : SiMD 1 width
+32 Bit : SiMD Double Width
+
+High precision for AVX 32Bit to 256Bit width precision.
+
+Vectoring with SiMD allows traditional CPU mastered VESA Emulation
+desktops & safe mode to be super fast & displays to conform to VESA
+render standards with little effort & a 1MB Table ROM.
+
+https://science.n-helix.com/2016/04/3d-desktop-virtualization.html
+
+https://science.n-helix.com/2019/06/vulkan-stack.html
+
+https://science.n-helix.com/2019/06/kernel.html
+
+https://science.n-helix.com/2022/03/fsr-focal-length.html
+
+https://science.n-helix.com/2018/01/integer-floats-with-remainder-theory.html
+
+https://bit.ly/VESA_BT
+
+*
+
+*Application of SiMD Polygon Font Method Render
+*3D Render method with Console input DEMO : RS
+
+3D Display access to correct display of fonts at angles in games &
+apps without Utilizing 3rd Axis maths on a simple Shape polygon Vector
+font or shape. (c)Rupert S
+
+3rd dimensional access with vector fonts by a simple method:
+
+Render text to virtual screen layer AKA a fully rendered monochrome, 2
+colour or multi colour..
+
+Bitmap/Texture,
+
+Due to latency we have 3 frames ahead to render to bitmap DPT 3 / Dot 5
+
+Can be higher resolution & we can sub sample with closer view priority...
+
+We then rotate the texture on our output polygon & factor size differential.
+
+The maths is simple enough to implement in games on an SSE configured
+Celeron D (depending on resolution and Bilinear filter & resize
+
+Why ? Because rotating a polygon is harder than subtracting or adding
+width, Hight & direction to fully complex polygon Fonts & Polygon
+lines or curves...
+
+The maths is simple enough to implement in games on an SSE configured
+Celeron D (depending on resolution and Bilinear filter & resize.
+
+https://bit.ly/VESA_BT
+
+https://www.phoronix.com/scan.php?page=news_item&px=FreeType-2.12-Released
+
+FreeType 2.12 Released With Support For OT-SVG Fonts
+Written by Michael Larabel in Desktop on 1 April 2022 at 12:00 AM EDT.
+Add A Comment
+DESKTOP -- FreeType as the widely-used, open-source library for font
+rendering is out with FreeType 2.12 as its first big feature release
+since last summer.
+
+Most significant to FreeType 2.12 is introducing support for OT-SVG
+(OpenType-SVG) fonts. OpenType-SVG fonts have been backed by the likes
+of Adobe and Mozilla for adding an SVG table to OpenType fonts.
+FreeType relies on an external SVG rendering engine via the svg-hooks
+property of OT-SVG. FreeType's demo programs are making use of librsvg
+as its SVG rendering engine.
+
+FreeType 2.12 also updates its internal Zlib code, provides minor
+improvements to the build system, support for non-desktop Universal
+Windows Platforms, and has a wide variety of bug fixes.
+
+Downloads and more details on FreeType 2.12 via FreeType.org.
