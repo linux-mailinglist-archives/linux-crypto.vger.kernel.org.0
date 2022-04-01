@@ -2,54 +2,54 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 316D54EE7E7
-	for <lists+linux-crypto@lfdr.de>; Fri,  1 Apr 2022 07:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 800584EE842
+	for <lists+linux-crypto@lfdr.de>; Fri,  1 Apr 2022 08:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245183AbiDAFvz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 1 Apr 2022 01:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        id S243444AbiDAGgY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 1 Apr 2022 02:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245190AbiDAFvy (ORCPT
+        with ESMTP id S245421AbiDAGgW (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 1 Apr 2022 01:51:54 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D38200352
-        for <linux-crypto@vger.kernel.org>; Thu, 31 Mar 2022 22:50:03 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id y10so1681604edv.7
-        for <linux-crypto@vger.kernel.org>; Thu, 31 Mar 2022 22:50:03 -0700 (PDT)
+        Fri, 1 Apr 2022 02:36:22 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1FD154704
+        for <linux-crypto@vger.kernel.org>; Thu, 31 Mar 2022 23:34:31 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id h1so1811849edj.1
+        for <linux-crypto@vger.kernel.org>; Thu, 31 Mar 2022 23:34:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:from:date:message-id:subject:to;
-        bh=ppHqKeKh+Y7gLl6VUDX29RPztSoubgtGlWJ4DyZKx/4=;
-        b=SrFIMyQmbcifUZtE2XZV9zXfqRE/TCP1E4NsZnkzG13uBXCopfUUfGcv2QegxSP8ef
-         RP/+bGAq/wfwxbri7yClPbM4OoLT20QZEOuzI8NNJe8vRa05ZGRe/QnpFeCFDiBAiqGv
-         eKXdnJaIaVF2nIo/j5VEOsS+LO752p+I+P5C+mS7k74dOX145Prx0c1U4CZymrhxZH0G
-         v0N7GLzVYAOAhzauF1mlKJnAFcX2z//yLeMvNGVI9HsZaGHbX/rwNOc4i2KpmqbnR/2+
-         AgWLD2hDQybrCIFZog++dc9DEvy9zC7YntGydkLyTKNk7+fmEvFQq/wpsd1yX7qq0v3d
-         cKeA==
+        bh=VQ9dInbN1MIbDpNZ3yhXf78kn1bDUy2UR64X9mj+xE8=;
+        b=KjvLVqIt1cJBJcaGY0wPZRu5D/ym4w/vcqDpPPQ1QuGVqxsjNExImrzLzTKOgbF3nT
+         GLxfzNhoAlQAAU920jo/RtVCvPrF3eiHVgWkqAsI4zVu2ZwgjN74/+plZGQ8DIVoZoXH
+         eRJ/pVXsupKEZB+nsA7YqjO1w+W1NYA9Teq1tNfODfOFwd03Zp/RU2cbKB8zwC7jJ5/F
+         TOMdOdOdCVDPC3vBudLhq/ok/sHmNbJW+RyUeUU+HQkZfsbL3Sg0F556O3PxZISBTzwx
+         kPM0T4HGeoKTuMgulqt9z4zvl8urEnBQHgsOxpENCKYL7euXEtPfKdPpwCR40Rq36et2
+         HJqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=ppHqKeKh+Y7gLl6VUDX29RPztSoubgtGlWJ4DyZKx/4=;
-        b=sldncacLHAo6CTEPXpT7AxZ29ZUHC/rW3WLvkMC94q58j/0fa+PyT/9Bjb9B587U8R
-         2M5/QbwxtckD+fbbfmRvgZ3wCXXNOSjHPlhEOHTHcSwBfw7fornQpIoCqEm3ZMit4B0N
-         A7hSRm7QE8urPHROPhD5mDPRAkaHYt7M1/5BU8lDNYHkkpD4iE2/GQTwhhmICRaGDHBe
-         Ls9opKEAoyPUnpu+Lr9sH7qB8Iec0zM5pckHgqfcIgPxhtcRg7a3Lo+li1UXyw+qeHzC
-         NLuep+wtUqJLPBXJab9XoIIrmn/VsM1EDhjG/YaltIBSEt6nmFoqrssecfE0wpQagLMB
-         dm4w==
-X-Gm-Message-State: AOAM531nVfAdW+TxJ1z7vsN37/lJ8swYdGM6yd0ScmCPBujdxALydUy/
-        ZE1KjFRIYXyyYIBizRt4cR66tqjwvsgk49OAygg=
-X-Google-Smtp-Source: ABdhPJxdw69QRhZcQ645gQ1IgdvpT2+04O1H4WlJhDiamWBUDRGKhNKV0kw4z6AwIbTOtVIZGb7qJbUOnNFNlf2iu8o=
+        bh=VQ9dInbN1MIbDpNZ3yhXf78kn1bDUy2UR64X9mj+xE8=;
+        b=vroK6e+6nej2lb0ea2gcVlEPZjXV/4HDPTQsXd+etiazb41Np7+WsyaaqzHMa5VntD
+         e2vfobTTAdV98TFir9LsbSzcXHtTFseOEh8NXDKt/Qm3mqqWOS/i44Q4hX9VkKqNBVtf
+         oZuLQo7FdDMiIoJctkSNUFXAE/r3zZzAcFdbHfUg8lgHyXoHq1t0XpGL68Hiig9KD/wC
+         3d7NvIUWXjs8BuWfVEIaL4m7qSH7wRF4Gm+NOkJbHQlwvmj7HCMVBL8dEM5Zym6N2fJT
+         HkCD8+hLY4xFidPXbG7F9ofzI/kNiKu2SVOuxb/6WpY0RNTC77xB/9hHU9086irtGM8i
+         C26w==
+X-Gm-Message-State: AOAM531K/G+/HY7tog4Sb0En5IoisKji8z2DW4OsJ7ppUrXFyOWUn9zw
+        0xkmbwwpzsa8ZgR1z/hlEK3leVNwLyQ4Kh6E3fc=
+X-Google-Smtp-Source: ABdhPJxe/nXEOdSnbLjj9SQqwGpdB7DLMEPTtY1e/RCzyO7/w2isO7hubMGdTWKrBPttE9SLQOvzU8uZChoZBxKeCdE=
 X-Received: by 2002:a50:99cd:0:b0:418:d6c2:2405 with SMTP id
- n13-20020a5099cd000000b00418d6c22405mr19628573edb.342.1648792202191; Thu, 31
- Mar 2022 22:50:02 -0700 (PDT)
+ n13-20020a5099cd000000b00418d6c22405mr19764333edb.342.1648794869607; Thu, 31
+ Mar 2022 23:34:29 -0700 (PDT)
 MIME-Version: 1.0
 From:   Duke Abbaddon <duke.abbaddon@gmail.com>
-Date:   Fri, 1 Apr 2022 06:49:47 +0100
-Message-ID: <CAHpNFcOiFu-ZUBKiEHzzbVusUVVceMaKFTsNpr5S01qjCvbCdQ@mail.gmail.com>
-Subject: OT-SVG Fonts & TT-SVG Obviously Rendered in Direct X 9+ & OpenGL 3+
- Mode & Desktop Rendering modes
-To:     submissions@vialicensing.com
+Date:   Fri, 1 Apr 2022 07:34:28 +0100
+Message-ID: <CAHpNFcOJJPTSnhKCyAk-B8hSvoe4hPoC2rz0cTDqNXMKPh1L0g@mail.gmail.com>
+Subject: VecSR - Vector Standard Render VESA Standards : Vector Graphics,
+ Boxes, Ellipses, Curves & Fonts : Consolas & other brilliant fonts
+To:     torvalds@linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -132,26 +132,4 @@ lines or curves...
 The maths is simple enough to implement in games on an SSE configured
 Celeron D (depending on resolution and Bilinear filter & resize.
 
-https://bit.ly/VESA_BT
-
-https://www.phoronix.com/scan.php?page=news_item&px=FreeType-2.12-Released
-
-FreeType 2.12 Released With Support For OT-SVG Fonts
-Written by Michael Larabel in Desktop on 1 April 2022 at 12:00 AM EDT.
-Add A Comment
-DESKTOP -- FreeType as the widely-used, open-source library for font
-rendering is out with FreeType 2.12 as its first big feature release
-since last summer.
-
-Most significant to FreeType 2.12 is introducing support for OT-SVG
-(OpenType-SVG) fonts. OpenType-SVG fonts have been backed by the likes
-of Adobe and Mozilla for adding an SVG table to OpenType fonts.
-FreeType relies on an external SVG rendering engine via the svg-hooks
-property of OT-SVG. FreeType's demo programs are making use of librsvg
-as its SVG rendering engine.
-
-FreeType 2.12 also updates its internal Zlib code, provides minor
-improvements to the build system, support for non-desktop Universal
-Windows Platforms, and has a wide variety of bug fixes.
-
-Downloads and more details on FreeType 2.12 via FreeType.org.
+https://science.n-helix.com/2022/04/vecsr.html
